@@ -28,8 +28,8 @@
   "dependencies": {
     "@dreampipcom/oneiros": "0.0.26",
     "@sentry/nextjs": "7.118.0",
-    "lazysizes": "^5.3.2",
-    "next": "14.2.4",
+    "lazysizes": "5.3.2",
+    "next": "14.2.15",
     "react": "18",
     "react-dom": "18"
   },
