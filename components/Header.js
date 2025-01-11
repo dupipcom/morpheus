@@ -64,9 +64,6 @@ const Social = styled.div`
 `
 
 const useStyles = makeStyles((theme) => ({
-  appBar: {
-    backgroundColor: "#1a1a1a"
-  },
   drawer: {
     width: '50%',
     maxWidth: '300px',
@@ -93,6 +90,8 @@ const useStyles = makeStyles((theme) => ({
 function Header({ title = 'Headless by WP Engine', description }) {
   const [interacted, setInteracted] = useState(false)
   const classes = useStyles();
+  const navClasses = ``;
+  const toolsClasses = `bg-primary-dark2`;
 
   // TODO: accept a `menuItems` prop to receive menu items from WordPress.
   const [isPlayingA, setIsPlayingA] = useState(false);
@@ -161,8 +160,8 @@ function Header({ title = 'Headless by WP Engine', description }) {
           <Image fill alt='Download on App Store' src='/images/appstore.svg' />
         </a>
       </Apps>
-      <AppBar className={classes.appBar} position='relative'>
-        <Toolbar variant="dense" sx={{ minHeight: '120px', backgroundColor: '#1a1a1a', justifyContent: 'space-between' }}>
+      <AppBar className={navClasses} position='relative'>
+        <Toolbar className={toolsClasses} variant="dense" sx={{ minHeight: '120px', backgroundColor: '#1a1a1a', justifyContent: 'space-between' }}>
           <Grid variant={EGridVariant.DEFAULT} bleed={EBleedVariant.ZERO}>
             <div className="justify-self-start self-center col-span-1 col-start-0 md:!col-span-1 md:!col-start-0">
               <Button icon={ESystemIcon['apps']} onClick={() => {
