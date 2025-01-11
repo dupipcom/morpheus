@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import styled from 'styled-components';
+import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
 // import Link from 'next/link';
 import Link from 'next/link';
 import {
@@ -12,12 +14,11 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Player from './Player';
 import Image from '../components/ImageBlock';
 import { HeaderLocale } from '../locale';
-import { useRouter } from 'next/router';
+import { AppContext } from '../context';
 import { localizeUrl, pzTrack, generateApiCall } from '../lib/helpers';
 import { useFirstInteraction } from '../hooks/useFirstInteraction';
-import dynamic from 'next/dynamic';
 
-import { Button, Grid, AudioPlayer, EGridVariant, EBleedVariant, ESystemIcon } from '@dreampipcom/oneiros';
+import { Button, Grid, Typography, AudioPlayer, EGridVariant, EBleedVariant, ESystemIcon } from '@dreampipcom/oneiros';
 
 const MenuDrawer = dynamic(() => import("../components/MenuDrawer"))
 
@@ -92,6 +93,7 @@ function Header({ title = 'Headless by WP Engine', description }) {
   const classes = useStyles();
   const navClasses = ``;
   const toolsClasses = `bg-primary-dark2`;
+  const { whereami } = useContext(AppContext);
 
   // TODO: accept a `menuItems` prop to receive menu items from WordPress.
   const [isPlayingA, setIsPlayingA] = useState(false);
@@ -163,13 +165,13 @@ function Header({ title = 'Headless by WP Engine', description }) {
       <AppBar className={navClasses} position='relative'>
         <Toolbar className={toolsClasses} variant="dense" sx={{ minHeight: '120px', backgroundColor: '#1a1a1a', justifyContent: 'space-between' }}>
           <Grid variant={EGridVariant.DEFAULT} bleed={EBleedVariant.ZERO}>
-            <div className="justify-self-start self-center col-span-1 col-start-0 md:!col-span-1 md:!col-start-0">
+            <div className="justify-self-start self-center col-span-2 col-start-0 md:!col-span-1 md:!col-start-0">
               <Button icon={ESystemIcon['apps']} onClick={() => {
                 setIsMenuOpen(true)
               }} edge="end" color="inherit" aria-label="menu" />
             </div>
             <div 
-              className="justify-self-center self-center col-span-4 col-start-2 md:!col-span-2 md:!col-start-4"
+              className="justify-self-center self-center col-span-2 col-start-2 md:!col-span-2 md:!col-start-4"
             >
               {image && (
                 <img alt="Header image" src={image} style={{ width: "auto", height: 75, position: 'absolute', left: -55, top: "50%", transform: "translateY(-50%)" }} />
@@ -180,9 +182,10 @@ function Header({ title = 'Headless by WP Engine', description }) {
                 </span>
               </Link>
             </div>
-            <Grid className="grid md:justify-self-end self-center col-span-6 col-start-0 md:!col-span-4 md:!col-start-6">
+            <Grid className="grid md:justify-self-end self-center col-span-6 col-start-0 md:!col-span-3 md:!col-start-6">
+                <Typography className="justify-self-start self-center col-span-1 col-start-0 md:col-span-2 col-start-0">{whereami}</Typography>
                 <AudioPlayer
-                  className="justify-self-start self-center col-span-1 col-start-0 md:col-span-2 col-start-0"
+                  className="justify-self-start self-center col-span-1 col-start-1 md:col-span-2 md:col-start-2"
                   prompt=""
                   src={generateApiCall('/api/nexus/audio')}
                   onPlay={switchPlayerA}

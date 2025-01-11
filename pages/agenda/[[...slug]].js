@@ -3,21 +3,18 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { BLOCKS, INLINES } from "@contentful/rich-text-types";
-import { Template } from '../../templates';
-import { MAP_CENTRES, TIMEFRAMES, localeMap } from '../../lib/constants';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import { documentToPlainTextString } from '@contentful/rich-text-plain-text-renderer';
-import Calendar from '../../components/Calendar';
+import { Template } from '../../templates';
 import { getAllPages, getCalData, getPage } from '../../lib/api';
-import { Box, Button, Checkbox, FormControl, IconButton, Input, MenuItem, Select, Snackbar, Switch } from '@mui/material';
-import { InputLabel, ListItemText } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import { MAP_CENTRES, TIMEFRAMES, localeMap } from '../../lib/constants';
+import Calendar from '../../components/Calendar';
 import { EventLocale } from '../../locale';
 import { checkAgenda, pzTrack } from '../../lib/helpers';
 import styled from 'styled-components';
 import VideoPlayer from '../../components/VideoPlayer';
 import { AppContext } from '../../context';
-import CloseIcon from '@mui/icons-material/Close';
+import { Button, Grid, Dropdown, Typography, TypographyVariant, EGridVariant, EBleedVariant, ESystemIcon } from '@dreampipcom/oneiros'
 
 
 const Controls = styled.div`
@@ -92,22 +89,16 @@ const renderOptions = (content, params) => {
   }
 }
 
-const useStyles = makeStyles((theme) => ({
-  font: {
-    textDecoration: 'none',
-    fontStyle: 'italic',
-  },
-}));
 
 export default function Page({ page, agenda, generatedIn, cal }) {
   const context = useContext(AppContext)
   const { setContext, agendaData, agendaCities, setAgendaData, setAgendaCities } = context
   const { url: slug, title: metaTitle, description, metaImage, content } = page
   const { city: serverCity, where, zoom, center } = cal
-  if (!agenda?.calData || !agenda.mapData) return
+  // if (!agenda?.calData || !agenda.mapData) return
   const { locale: orig, pathname, query } = useRouter()
-  const city = serverCity.toLowerCase() || query?.slug || 'global'
-  const classes = useStyles();
+  const city = "default" || serverCity?.toLowerCase() || query?.slug || 'global'
+  console.log({ city })
   // const [calData, setCalData] = useState(agendaData?.calData || agenda.calData)
   // const [mapData, setMapData] = useState(agendaData?.mapData || agenda.mapData)
   // const [cities, setCities] = useState(agendaCities || [city])
@@ -117,6 +108,8 @@ export default function Page({ page, agenda, generatedIn, cal }) {
   const [selectedTimeframe, setSelectedTimeframe] = useState('W')
   const [lastUpdate, setLastUpdate] = useState(undefined)
   const locale = orig === "default" ? "en" : orig
+
+  console.log('logico', city)
 
   const [selectedFacets, setSelectedFacets] = useState({ cities });
 
@@ -267,15 +260,14 @@ export default function Page({ page, agenda, generatedIn, cal }) {
       <Button size="small" onClick={handleClick} sx={{ color: 'black' }} color="primary">
         {localization['sendEmail']}
       </Button>
-      <IconButton
+      <Button
         size="small"
         aria-label="close"
         onClick={handleClose}
         color='primary'
         sx={{ color: 'black' }}
       >
-        <CloseIcon fontSize="small" />
-      </IconButton>
+      </Button>
     </div>
   );
 
@@ -312,113 +304,76 @@ export default function Page({ page, agenda, generatedIn, cal }) {
         })}
       </Head>
       <article className="content-page">
-        <Controls style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: "#1a1a1a", color: "white", textAlign: 'center', padding: '16px', fontSize: '12px' }}>
-          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '16px' }}>
-            <InputLabel id="mode" className={classes.font}>{localization.mode}</InputLabel>
-            <FormControl sx={{ justifyContent: 'center', alignItems: 'center', marginX: '16px' }}>
-              <Switch id="mode" {...label} onClick={toggleMode} />{mapMode === 'space' ? localization['space'] : localization['time']}
-            </FormControl>
-          </Box>
-          <FormControl sx={{ width: "300px", marginY: ["16px", null, null, 0], marginX: '16px' }}>
-            <InputLabel id="terms" className={classes.font}>{localization.terms}</InputLabel>
-            <Select
-              labelId="terms"
+        <Controls className="toolbox bg-primary-dark" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: "white", textAlign: 'center', padding: '16px', fontSize: '12px' }}>
+          <Grid variant={EGridVariant.DEFAULT} bleed={EBleedVariant.ZERO} className="w-full grid items-center">
+            <Typography truncate className="max-h-a8 row-start-4 col-start-0 col-span-6 md:row-start-1 md:!col-span-3 md:!col-start-0" variant={TypographyVariant.SMALL} as="h1">{ metaTitle }</Typography>
+            <div className="col-start-0 col-span-6 md:!col-span-2 md:!col-start-4" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '16px' }}>
+                <Button id="mode" onClick={toggleMode} icon={mapMode === 'space' ? ESystemIcon['map'] : ESystemIcon['calendar']} />
+            </div>
+            <Dropdown
+              className="items-center col-start-0 col-span-6 md:!col-span-1 md:!col-start-7"
+              theme="dark"
               id="terms"
+              name="terms"
               multiple
               value={selectedFacets["terms"] || []}
               label={localization.terms} // Label for the form control
-              renderValue={(selected) => {
-                return selected.map((term) => term).join(', ')
-              }} // Display selected values
-              onChange={(e) => {
+              onSelect={(e) => {
                 const value = e?.target?.value;
                 toggleFacetOption('terms', value);
               }}
-              input={<Input label={localization.terms} />} // Input label
+              options={terms?.length > 0 ? [...terms].map((name) => {
+                return {
+                  label: name,
+                  value: name,
+                }}) : [{ label: "No options", value: 0 }]}
             >
-              {/* Mapping through the available countries */}
-              {terms && [...terms].map((name) => (
-                <MenuItem
-                  key={`${name}-${locale}`}
-                  value={name}
+            </Dropdown>
+            {mapMode === 'space' ? (
+                <Dropdown
+                  className="align-center col-start-0 col-span-6 md:!col-span-1 md:!col-start-8"
+                  id="timeFrame"
+                  name="timeFrame"
+                  theme="dark"
+                  value={selectedTimeframe}
+                  label={localization.timeframe} // Label for the form control
+                  onSelect={(e) => {
+                    const value = e?.target?.value;
+                    setSelectedTimeframe(value);
+                  }}
+                  options={Object.keys(TIMEFRAMES).map((name) => {
+                    return { value: name, label: localization[name] }
+                  })}
+                />
+            ) : (
+                <Dropdown
+                  className="align-center col-start-0 col-span-6 md:!col-span-1 md:!col-start-8"
+                  id="cities"
+                  name="cities"
+                  theme="dark"
+                  value={selectedFacets["cities"] || []}
+                  label={localization.city} // Label for the form control
+                  onSelect={(e) => {
+                    const value = e?.target?.value;
+                    toggleFacetOption('cities', value);
+                  }}
+                  options={
+                  Object.keys(MAP_CENTRES) && Object.values(MAP_CENTRES).filter((agenda) => agenda.slug).map((name) => {
+                  return { name: name.slug, value: name.city}})}
                 >
-                  {/* Checkbox and country name */}
-                  <Checkbox checked={selectedFacets['terms']?.indexOf(name) > -1} />
-                  <ListItemText primary={name} />
-                </MenuItem>
-              ))}
-            </Select>
-
-          </FormControl>
-          {mapMode === 'space' ? (
-            <FormControl sx={{ width: "300px", marginY: ["16px", null, null, 0], marginX: '16px' }}>
-              <InputLabel id="timeframe" className={classes.font}>{localization.timeframe}</InputLabel>
-              <Select
-                labelId="timeFrame"
-                id="timeFrame"
-                value={selectedTimeframe}
-                label={localization.timeframe} // Label for the form control
-                onChange={(e) => {
-                  const value = e?.target?.value;
-                  setSelectedTimeframe(value);
-                }}
-                input={<Input label={localization.timeframe} />} // Input label
-              >
-                {/* Mapping through the available countries */}
-                {Object.keys(TIMEFRAMES).map((name) => (
-                  <MenuItem
-                    key={`${name}-${locale}`}
-                    value={name}
-                  >
-                    {/* Checkbox and country name */}
-                    {/* <Checkbox checked={selectedcountries.indexOf(name) > -1} /> */}
-                    <ListItemText primary={localization[name]} />
-                  </MenuItem>
-                ))}
-              </Select>
-
-            </FormControl>
-          ) : (
-            <FormControl sx={{ width: "300px", marginY: ["16px", null, null, 0], marginX: '16px' }}>
-              <InputLabel id="cities" className={classes.font}>{localization.city}</InputLabel>
-              <Select
-                labelId="cities"
-                id="cities"
-                multiple
-                value={selectedFacets["cities"] || []}
-                label={localization.terms} // Label for the form control
-                renderValue={(selected) => selected.map((city) => MAP_CENTRES[city]?.city).join(', ')} // Display selected values
-                onChange={(e) => {
-                  const value = e?.target?.value;
-                  toggleFacetOption('cities', value);
-                }}
-                input={<Input label={localization.city} />} // Input label
-              >
-                {/* Mapping through the available countries */}
-                {Object.keys(MAP_CENTRES) && Object.values(MAP_CENTRES).filter((agenda) => agenda.slug).map((name) => (
-                  <MenuItem
-                    key={`${name.slug}-${locale}`}
-                    value={name.slug}
-                  >
-                    {/* Checkbox and country name */}
-                    <Checkbox checked={selectedFacets['cities']?.indexOf(name.slug) > -1} />
-                    <ListItemText primary={name.city} />
-                  </MenuItem>
-                ))}
-              </Select>
-
-            </FormControl>
-          )}
+                </Dropdown>
+            )}
+          </Grid>
         </Controls>
-        <section className='wrap content content-single'>
+        <section className='content content-single'>
           {parsed}
         </section>
-        <Snackbar
+{/*        <Badge
           open={ctaOpen}
           message={localization['ctaMessage']}
           position="bottom-center"
           action={action}
-        />
+        />*/}
       </article>
     </>
   );
@@ -427,9 +382,13 @@ export default function Page({ page, agenda, generatedIn, cal }) {
 export async function getStaticProps({ params, preview = false, locale }) {
   const slug = params?.slug ? params?.slug : 'global'
   const data = await getPage(`agenda/${slug}`, preview, locale)
-  const cal = await getCalData(slug, preview, locale)
+  // const cal = await getCalData(slug, preview, locale)
+  const cal = { cal: [] }
 
-  const agenda = (await checkAgenda({ cities: slug || 'global' })) || {}
+  const agenda = [];
+  // (await checkAgenda({ cities: slug || 'global' })) || {}
+
+  console.log({ data })
 
   if (!data?.page || !agenda || !cal?.cal) {
     return {
@@ -454,11 +413,12 @@ export async function getStaticPaths() {
     return url.startsWith('agenda/') || url === 'agenda'
   })
 
-  if (!agendas) return
+  // if (!agendas) return
 
   return {
     //paths: episodes?.map(({ url }) => `/episode/${url}`) ?? [],
-    paths: agendas?.map(({ url }) => `/${url}`),
+    paths: ['/agenda/ok'],
+    // paths: agendas?.map(({ url }) => `/${url}`),
     fallback: 'blocking',
   }
 }

@@ -24,12 +24,14 @@ const comfortaa = Comfortaa({ subsets: ['latin'], display: 'swap' })
 export const theme = generateTheme({ fontFamily: comfortaa.style.fontFamily })
 
 export function Template({ children }) {
-  const { locale: orig, pathname } = useRouter()
+  const { locale: orig, query, pathname  } = useRouter()
   const locale = orig === "default" ? "en" : orig
   const [rootContext, setRootContext] = useState({ locale })
   const [rootAgenda, setRootAgenda] = useState({})
   const [rootCities, setRootCities] = useState([])
   const [loadGlow, setLoadGlow] = useState("")
+
+  const whereami = pathname.split('/')[1] || "home";
 
   useEffect(() => {
     function getQueryVariable(variable) {
@@ -52,6 +54,8 @@ export function Template({ children }) {
     if (!rootContext?.setContext) {
       setRootContext({
         ...rootContext,
+        whereami,
+        slug: query.slug,
         setContext: setRootContext,
         agendaData: rootAgenda,
         agendaCities: rootCities,
@@ -77,12 +81,12 @@ export function Template({ children }) {
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
       </Head>
         <AppContext.Provider value={rootContext}>
-          <ThemeProvider theme={theme}>
+          <ThemeProvider theme={theme} className="bg-">
               <GlobalStyle />
               <CssBaseline />
               <Globals theme="dark">
-                {!rootContext.mobileApp && (<Header title="DreamPip" description="Upstreaming. 📡" />)}
-                <main className={"thebigbody bg-primary-dark"} sx={{ minHeight: !!rootContext.mobileApp ? pathname === '/chat' ? 'calc(100vh - 64px)' : '100vh' : 'initial' }}>
+                {!rootContext.mobileApp && (<Header title="DreamPip" description="Fintech for compassion." />)}
+                <main className={"thebigbody"} sx={{ minHeight: !!rootContext.mobileApp ? pathname === '/chat' ? 'calc(100vh - 64px)' : '100vh' : 'initial' }}>
                   {children}
                 </main>
                 <Footer />
