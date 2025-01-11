@@ -34,20 +34,27 @@ const reinsertRichField = ({ locale, fieldName }) => {
         }
 
         // For each filtered data item, navigate to the original entry and replace
-        filteredData.map(dataItem => {
+        const _next = filteredData.map(dataItem => {
             const entry = originalData.items.find(entry => entry.sys.id === dataItem.entryId);
             if (entry && entry.fields) {
+                console.log({ entry })
                 const nextData =  _.merge({}, entry.fields.superData, { [locale]: { [fieldName]: entry.fields[fieldName] } });
-                entry.fields.superData = nextData
-                replaceNode(entry.fields.superData[locale][fieldName].content, dataItem.path, dataItem.value);
+                entry.fields.superData = nextData;
+                const memo = entry.fields.superData[locale][fieldName].content
+                replaceNode(memo, dataItem.path, dataItem.value);
+                entry.fields.superData[locale][fieldName].content = memo
             }
+            console.log({ entry, eid: dataItem })
+            return entry;
         });
+
+        console.log({ field: _next, filteredData })
         const nextItems = originalData.items.map(item => {
             item.fields = { superData: { ['en-US']: item.fields.superData } }
             return item
         })
         originalData.items = nextItems
-        console.log({ sd: nextItems })
+        // console.log({ sd: nextItems })
 
         // Save the updated data back to the original file
         fs.writeFileSync(`./migrations/data/destination-${locale}.json`, JSON.stringify(originalData, null, 4), 'utf-8');

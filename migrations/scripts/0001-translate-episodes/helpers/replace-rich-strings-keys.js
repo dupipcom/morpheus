@@ -5,6 +5,7 @@ const { params } = require('../params');
 const replaceRichStringsKeys = ({ locale }) => {
     //const locale = params.locale
     function replaceValues(objArray, strArray) {
+        console.log({ objArray, strArray })
         if (objArray.length !== strArray.length) {
             console.error('The arrays do not have the same length!');
             return;

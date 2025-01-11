@@ -140,6 +140,8 @@ const PhotoWrapper = styled.div`
 export default function Event(props) {
   const { event } = props
 
+  console.log({ body: event?.body })
+
   const { locale: orig, pathname } = useRouter()
   const locale = orig === "default" ? "en" : orig
 
@@ -437,7 +439,7 @@ export default function Event(props) {
               <section style={{ color: "white" }}>
                 <hr />
                 {/* eslint-disable-next-line react/no-danger */}
-                {documentToReactComponents(event?.body?.json, renderOptions(event?.body?.links))}
+                {documentToReactComponents(event?.body, renderOptions(event?.body))}
               </section>
               <section>
                 {event?.warmUpCollection?.items?.length > 0 && (

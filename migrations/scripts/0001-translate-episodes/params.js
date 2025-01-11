@@ -7,9 +7,9 @@ const entry = {
 
 const params = {
   ...entry,
-  fieldName: ['title'],
+  fieldName: [],
   richFieldName: ['body'],
-  locale: ['hi', 'ms', 'bn', 'pa', 'tr', 'fi', 'el', 'ko'],
+  locale: ['ar', 'hi', 'ms', 'bn', 'pa', 'tr', 'fi', 'el', 'ko'],
   type: 'events',
   model: 'gpt-4',
   chunkSize: 3,

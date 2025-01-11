@@ -6,10 +6,10 @@ const { params } = require("./params");
 
 const prepareToUpdate = ({ isRichText, locale, fieldName }) => {
   if (isRichText) {
-    replaceRichStringsKeys({ locale, fieldName });
+    // replaceRichStringsKeys({ locale, fieldName });
     reinsertRichField({ locale, fieldName });
   } else {
-    replaceStringsKey({ locale, fieldName });
+    // replaceStringsKey({ locale, fieldName });
     reinsertField({ locale, fieldName });
   }
 }

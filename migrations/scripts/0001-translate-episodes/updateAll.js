@@ -46,9 +46,9 @@ async function updateEntries({ locale, fieldName, superData, isRichText }) {
   } else {
       await getData({ fieldName });
 
-      prepareToTranslate({ locale, fieldName, isRichText });
+      // prepareToTranslate({ locale, fieldName, isRichText });
 
-      await doTranslations({ locale, fieldName });
+      // await doTranslations({ locale, fieldName });
 
       prepareToUpdate({ locale, fieldName, isRichText });
   }
@@ -78,7 +78,7 @@ async function updateEntries({ locale, fieldName, superData, isRichText }) {
       entry.fields = nextEntryFields
       dest = 'superData'
       fs.writeFileSync(`./migrations/data/next-${locale}.json`, JSON.stringify(entry, null, 4), 'utf-8');
-      await entry.update();
+      // await entry.update();
       console.log(`SUCCESS Updated entry ${entryId} on the field ${dest}.`);
 
     } catch (error) {
