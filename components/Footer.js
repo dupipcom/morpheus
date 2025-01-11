@@ -113,7 +113,7 @@ function Footer({ copyrightHolder = 'Company Name' }) {
       )}
 
       {!context.mobileApp && (
-        <footer className='content-page' style={{ paddingBottom: '32px' }}>
+        <footer className='content-page bg-primary-dark' style={{ paddingBottom: '32px' }}>
           <div className="wrap" style={{ height: '100%' }}>
             <Wrapper>
               <section style={{
