@@ -11,10 +11,7 @@ import { Nav } from '@dreampipcom/oneiros';
 
 
 function Header({}) {
-  return (<div className="sticky top-0 z-[999]">
-      <Nav hideTheme hideProfile  />
-    </div>
-  );
+  return <Nav hideTheme hideProfile />;
 }
 
 export default Header;
