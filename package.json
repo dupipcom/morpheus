@@ -26,9 +26,10 @@
     "format:fix": "next lint --fix && prettier --write --ignore-path .gitignore --ignore-path .prettierignore ."
   },
   "dependencies": {
-    "@dreampipcom/oneiros": "0.0.21",
+    "@dreampipcom/oneiros": "0.0.41",
     "@sentry/nextjs": "7.118.0",
-    "next": "14.2.4",
+    "lazysizes": "5.3.2",
+    "next": "14.2.15",
     "react": "18",
     "react-dom": "18"
   },

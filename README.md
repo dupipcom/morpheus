@@ -1,6 +1,6 @@
 # Morpheus - DreamPip's Content Presence Website
 
-What: Legacy Next.js SSG Engine, Contentful, Payload CMS (TBI)
+What: Legacy Next.js SSG Engine, Contentful
 
 ## Getting Started
 

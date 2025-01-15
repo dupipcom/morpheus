@@ -78,9 +78,14 @@ const config = {
                 permanent: false
             },
             {
+                source: '/join',
+                destination: '/dash/signin',
+                permanent: false
+            },
+            {
                 source: '/subscribe',
                 destination: '/dash/signin',
-                permanent: true
+                permanent: false
             },
             {
                 source: '/dash',
