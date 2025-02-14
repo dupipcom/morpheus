@@ -10,7 +10,7 @@ export default function Posts(props) {
   return (
     <>
       <Head>
-        <title>Dream, Vibe, ...Pip! — Blog</title>
+        <title>DreamPip — Blog</title>
         <meta property="og:title" content="DreamPip — Blog" />
         <meta property="og:site_name" content="DreamPip" />
         <meta property="og:url" content="https://www.dreampip.com/blog" />

@@ -1,4 +1,3 @@
-
 import { SwipeableDrawer, List, ListItem } from '@mui/material';
 import Link from 'next/link';
 
@@ -40,4 +39,3 @@ const MenuDrawer = ({ classes, listItems, open, onClose, onOpen }) => {
 }
 
 export default MenuDrawer
-

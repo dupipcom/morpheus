@@ -79,7 +79,7 @@ function Footer({ copyrightHolder = 'Company Name' }) {
   return (
     <>
       {(hasPlayer || !!context.mobileApp) && (
-        <section key={`${context?.episode?.mixcloud}+${!!context.mobileApp}`} style={{ bottom: 0, position: "sticky", bottom: 0, zIndex: 3, backgroundColor: '#1a1a1a' }}>
+        <section key={`${context?.episode?.mixcloud}+${!!context.mobileApp}`} style={{ bottom: 0, position: "sticky", bottom: 0, zIndex: 3 }}>
           {hasPlayer && (
             <iframe key={context?.episode?.mixcloud} width="100%" style={{ marginBottom: "-9px" }} height="60" src={`https://www.mixcloud.com/widget/iframe/?hide_cover=1&mini=1&hide_artwork=1&feed=%2Fdreampip%2F${encodeURIComponent(context.episode?.mixcloud?.split('/purizu/')[1])}`} frameBorder="0" ></iframe>
           )}
@@ -104,6 +104,7 @@ function Footer({ copyrightHolder = 'Company Name' }) {
                 <MenuItem value="cs-cz">Český</MenuItem>
                 <MenuItem value="sv-se">Svenska</MenuItem>
                 <MenuItem value="et-ee">Eesti</MenuItem>
+                <MenuItem value="ru-ru">Русский</MenuItem> 
                 <MenuItem value="ja-jp">日本語</MenuItem> 
               </Select>
             </FormControl>
@@ -112,7 +113,7 @@ function Footer({ copyrightHolder = 'Company Name' }) {
       )}
 
       {!context.mobileApp && (
-        <footer className='content-page' style={{ paddingBottom: '32px' }}>
+        <footer className='content-page !bg-primary-dark' style={{ paddingBottom: '32px' }}>
           <div className="wrap" style={{ height: '100%' }}>
             <Wrapper>
               <section style={{
@@ -147,6 +148,7 @@ function Footer({ copyrightHolder = 'Company Name' }) {
                     <MenuItem value="cs-cz">Český</MenuItem>
                     <MenuItem value="sv-se">Svenska</MenuItem>
                     <MenuItem value="et-ee">Eesti</MenuItem>
+                    <MenuItem value="ru-ru">Русский</MenuItem>
                     <MenuItem value="ja-jp">日本語</MenuItem>
                   </Select>
                 </FormControl>

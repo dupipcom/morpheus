@@ -1,8 +1,4 @@
-const { LOCALES } = require("./lib/cjs-constants")
-
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
-    enabled: process.env.ANALYZE === 'true',
-})
+// import { LOCALES } from "./lib/cjs-constants.js"
 
 const config = {
     async headers() {
@@ -45,14 +41,22 @@ const config = {
             },
         ]
     },
+    transpilePackages: ['@mui/x-date-pickers', '/@mui/x-date-pickers-pro'],
     modularizeImports: {
         'lodash': {
             transform: 'lodash/dist/{{member}}',
         },
+        // to-do barrel folders
+        // '@dreampipcom/oneiros/atoms': {
+        //     transform: '@dreampipcom/oneiros/dist/src/atoms/{{member}}',
+        // },
+        // '@dreampipcom/oneiros/molecules': {
+        //     transform: '@dreampipcom/oneiros/dist/src/molecules/{{member}}',
+        // },
     },
     productionBrowserSourceMaps: false,
     i18n: {
-        locales: LOCALES,
+        locales: ["en", "pt-br", "it-it", "de-de", "fr-fr", "es-es", "ro", "pl-pl", "cs-cz", "sv-se", "et-ee", "ja-jp", "ru-ru", "default"],
         defaultLocale: "default",
         localeDetection: true,
     },
@@ -63,6 +67,9 @@ const config = {
     compiler: {
         styledComponents: true
     },
+    assetPrefix: (process.env.VERCEL_ENV && process.env.VERCEL_ENV !== 'production'
+      ? `https://${process.env.VERCEL_URL}`
+      : process.env.MAIN_URL) || 'https://www.dreampip.com',
     async redirects() {
         return [
             {
@@ -71,8 +78,23 @@ const config = {
                 permanent: false
             },
             {
+                source: '/join',
+                destination: '/dash/signin',
+                permanent: false
+            },
+            {
                 source: '/subscribe',
-                destination: 'https://dreampip.sumupstore.com/',
+                destination: '/dash/signin',
+                permanent: false
+            },
+            {
+                source: '/dash',
+                destination: '/dash/signin',
+                permanent: false
+            },
+            {
+                source: '/members',
+                destination: '/dash/signin',
                 permanent: false                
             },
             {
@@ -108,7 +130,7 @@ const config = {
             {
                 source: '/chat',
                 destination: '/subscribe',
-                permanent: true,
+                permanent: false,
             },
             {
                 source: '/event/purizu-presents-abrakadabra-with-alabastro-mapa-splinter-dakaza-reale',
@@ -129,84 +151,30 @@ const config = {
     },
     async rewrites() {
         return [
+            {"source": "/dash", "destination": process.env.NEXUS_HOST, locale: false},
+            {"source": "/dash/:match*", "destination": `${process.env.NEXUS_HOST}/dash/:match*`, locale: false},
+            {"source": "/:locale/dash", "destination": `${process.env.NEXUS_HOST}/:locale`, locale: false},
+            {"source": "/:locale/dash/:match*", "destination": `${process.env.NEXUS_HOST}/:locale/dash/:match*`, locale: false},
+            {"source": "/api/v1", "destination": `${process.env.NEXUS_HOST}/api/v1`},
+            {"source": "/api/v1/:match*", "destination": `${process.env.NEXUS_HOST}/api/v1/:match*`},
+            {"source": "/services", "destination": `${process.env.NEXUS_HOST}/dash/services`, locale: false},
+            {"source": "/services/:match*", "destination": `${process.env.NEXUS_HOST}/dash/services/:match*`, locale: false},
+            {"source": "/:locale/services", "destination": `${process.env.NEXUS_HOST}/:locale/dash/services`, locale: false},
+            {"source": "/:locale/services/:match*", "destination": `${process.env.NEXUS_HOST}/:locale/dash/services/:match*`, locale: false},
             {"source": "/app", "destination": "https://alpha.dreampip.com/"},
             {"source": "/app/:match*", "destination": "https://alpha.dreampip.com/:match*"},
             {"source": "/cloud", "destination": "https://zelta.dreampip.com/cloud"},
             {"source": "/cloud/:match*", "destination": "https://zelta.dreampip.com/cloud/:match*"},
             {
                 source: '/api/nexus/audio/0',
-                destination: 'https://radio.media.infra.dreampip.com/0',
-            },
+                destination: 'http://207.246.121.205/0',
+            },            
             {
                 source: '/api/nexus/audio/1',
-                destination: 'http://66.135.5.207/0',
-            },
-            {
-                source: '/api/nexus/audio/2',
-                destination: 'http://66.135.5.207/1',
-            },
-            {
-                source: '/api/nexus/audio/4',
-                destination: 'https://radio.media.infra.dreampip.com/3',
-            },
-            {
-                source: '/api/nexus/audio/5',
-                destination: 'https://radio.media.infra.dreampip.com/4',
-            },
-            {
-                source: '/api/nexus/audio/6',
-                destination: 'https://radio.media.infra.dreampip.com/5',
-            },
-            {
-                source: '/api/nexus/audio/7',
-                destination: 'https://radio.media.infra.dreampip.com/6',
-            },
-            {
-                source: '/api/nexus/audio/8',
-                destination: 'https://radio.media.infra.dreampip.com/7',
-            },
-            {
-                source: '/api/nexus/audio/9',
-                destination: 'https://radio.media.infra.dreampip.com/8',
-            },
-            {
-                source: '/api/nexus/audio/10',
-                destination: 'https://radio.media.infra.dreampip.com/9',
-            },
-            {
-                source: '/api/nexus/audio/11',
-                destination: 'https://radio.media.infra.dreampip.com/10',
-            },
-            {
-                source: '/api/nexus/audio/12',
-                destination: 'https://radio.media.infra.dreampip.com/12',
-            },
-            {
-                source: '/api/nexus/audio/13',
-                destination: 'https://radio.media.infra.dreampip.com/12',
-            },
-            {
-                source: '/api/nexus/audio/14',
-                destination: 'https://radio.media.infra.dreampip.com/13',
-            },
-            {
-                source: '/api/nexus/audio/15',
-                destination: 'https://radio.media.infra.dreampip.com/14',
-            },
-            {
-                source: '/api/nexus/audio/16',
-                destination: 'https://radio.media.infra.dreampip.com/15',
-            },
-            {
-                source: '/api/nexus/audio/17',
-                destination: 'https://radio.media.infra.dreampip.com/16',
-            },
-            {
-                source: '/api/nexus/audio/3',
-                destination: 'http://66.135.5.207/1',
+                destination: 'http://207.246.121.205/1',
             },
         ]
     }
 }
 
-module.exports = withBundleAnalyzer(config)
+export default config

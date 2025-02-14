@@ -48,5 +48,9 @@ export const CB_LOCALE = {
       "submit": "DreamPipを購読する",
       "already": "すでに登録されています！"
     },
+    "ru-ru": {
+      "submit": "Подписаться на DreamPip",
+      "already": "Вы уже подписаны!"
+    }
   }
 }

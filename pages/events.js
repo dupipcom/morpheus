@@ -96,8 +96,8 @@ export default function Events({ events }) {
 
   const url = `https://www.dreampip.com/${orig !== 'default' ? `${locale}/` : ''}events`
 
-  const title = `Dream, Vibe, ...Pip! — ${localization.events}`;
-  const ogTitle = `${localization.events} — Dream, Vibe, ...Pip!`;
+  const title = `DreamPip — ${localization.events}`;
+  const ogTitle = `${localization.events} — DreamPip`;
   const ogDescription = localization.eventsDescription;
   const ogImageUrl = 'https://www.dreampip.com/og-image.png'; // Replace with your actual image URL
   const defaultUrl = 'https://www.dreampip.com/events';
@@ -173,7 +173,7 @@ export default function Events({ events }) {
         ))}
       </Head>
       <article className="content-page">
-        <section style={{ backgroundColor: "#1a1a1a", color: "white", textAlign: 'center', padding: '16px', fontSize: '12px' }}>
+        <section className="!bg-primary-dark" style={{ color: "white", textAlign: 'center', padding: '16px', fontSize: '12px' }}>
           <FormControl sx={{ minWidth: "300px" }}>
             <InputLabel id="countries" className={classes.font}>{localization.countries}</InputLabel>
             <Select

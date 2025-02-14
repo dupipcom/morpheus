@@ -166,5 +166,19 @@ export const HeaderLocale = {
         "locale": "言語",
         "blog": "ブログ",
         "agenda": "議題"
+    },
+    "ru-ru": {
+        "home": "Главная",
+        "shows": "Шоу",
+        "episodes": "Эпизоды",
+        "chat": "Присоединиться к нам",
+        "events": "События",
+        "label": "Лейбл",
+        "support-us": "Поддержите нас",
+        "about": "О нас",
+        "privacy": "Политика конфиденциальности",
+        "locale": "Язык",
+        "blog": "Блог",
+        "agenda": "Программа"
     }
 }

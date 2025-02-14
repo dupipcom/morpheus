@@ -58,5 +58,10 @@ export const MapLocale = {
     "locale": "ja-jp",
     "view": "もっと見る",
     "calendar": "カレンダーに追加"
+  },
+  "ru-ru": {
+    "locale": "ru-ru",
+    "view": "Просмотреть больше",
+    "calendar": "Добавить в календарь"
   }
 }

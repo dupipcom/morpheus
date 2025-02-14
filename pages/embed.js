@@ -12,7 +12,6 @@ export default function Embed() {
         justifyContent: 'center',
         width: '100%',
         height: '100vh',
-        backgroundColor: '#1a1a1a',
         zIndex: 2,
       }}>
       <div style={{

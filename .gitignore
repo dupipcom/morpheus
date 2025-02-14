@@ -132,3 +132,5 @@ dist
 .pnp.*
 
 **/migrations/data/*
+
+.DS_Store

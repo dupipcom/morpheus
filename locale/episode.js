@@ -239,4 +239,24 @@ export const EpisodeLocale = {
         "episodesDescription": "私たちのショーのリスト。あなたの耳の喜びのために。",
         "listen": "このエピソードはによって紹介されます"
     },
+    "ru-ru": {
+        "locale": "ru-ru",
+        "artist": "Артисты",
+        "show": "Шоу",
+        "event": "Событие",
+        "country": "Страна",
+        "city": "Город",
+        "when": "Когда",
+        "back": "Назад к эпизодам",
+        "countdown": "Обратный отсчёт",
+        "local": "Местное время",
+        "calendar": "Добавить в календарь",
+        "artistsShows": "Артисты и Шоу",
+        "featured": "Популярные",
+        "genres": "Жанры",
+        "reset": "Сбросить",
+        "episodes": "Эпизоды",
+        "episodesDescription": "Список наших шоу. Для вашего удовольствия.",
+        "listen": "Прослушать этот эпизод"
+    }
 };

@@ -40,8 +40,8 @@ export default function Shows(props) {
 
   const localization = ShowLocale[locale] || ShowLocale["default"]
 
-  const title = `Dream, Vibe, ...Pip! — ${localization.shows}`;
-  const ogTitle = `${localization.shows} — Dream, Vibe, ...Pip!`;
+  const title = `DreamPip — ${localization.shows}`;
+  const ogTitle = `${localization.shows} — DreamPip`;
   const ogDescription = localization.showsDescription;
   const ogImageUrl = 'https://www.dreampip.com/og-image.png'; // Replace with your actual image URL
   const defaultUrl = 'https://www.dreampip.com/shows';
@@ -122,7 +122,7 @@ export default function Shows(props) {
         ))}
       </Head>
       <article className="content-page">
-        <section style={{ backgroundColor: "#1a1a1a", color: "white", textAlign: 'center', padding: '16px', fontSize: '12px' }}>
+        <section className="!bg-primary-dark" style={{ color: "white", textAlign: 'center', padding: '16px', fontSize: '12px' }}>
           <FormControl sx={{ minWidth: "300px" }}>
             <InputLabel id="countries" className={classes.font}>{localization.countries}</InputLabel>
             <Select

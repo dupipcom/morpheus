@@ -39,8 +39,8 @@ export default function Episodes({ episodes }) {
   const localization = EpisodeLocale[locale] || EpisodeLocale["default"];
 
   const url = `https://www.dreampip.com/${orig !== 'default' ? `${locale}/` : ''}shows`
-  const title = `Dream, Vibe, ...Pip! — ${localization.episodes}`;
-  const ogTitle = `${localization.episodes} — Dream, Vibe, ...Pip!`;
+  const title = `DreamPip — ${localization.episodes}`;
+  const ogTitle = `${localization.episodes} — DreamPip`;
   const ogDescription = localization.episodesDescription;
   const ogImageUrl = 'https://www.dreampip.com/og-image.png'; // Replace with your actual image URL
   const defaultUrl = 'https://www.dreampip.com/episodes';
@@ -205,7 +205,7 @@ export default function Episodes({ episodes }) {
         ))}
       </Head>
       <article className="content-page">
-        <section style={{ backgroundColor: "#1a1a1a", color: "white", textAlign: 'center', padding: '16px', fontSize: '12px' }}>
+        <section className="!bg-primary-dark" style={{ color: "white", textAlign: 'center', padding: '16px', fontSize: '12px' }}>
           <FormControl sx={{ m: 1 }}>
             <FormControlLabel value={onlyFeatured} className={classes.font} control={<Checkbox type="checkbox" onChange={(e) => setOnlyFeatured(e?.target?.checked)} checked={onlyFeatured} style={{ marginRight: '8px' }} />} label={localization.featured}/>
           </FormControl>

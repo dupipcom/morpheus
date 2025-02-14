@@ -14,64 +14,69 @@ import { addPlaceholders } from '../lib/server-helpers';
 import Bugsnag from '@bugsnag/js';
 
 const DEFAULT = {
-  title: 'Dream, Vibe, ...Pip! — Upstreaming. 📡',
-  description: `Dream, Vibe, ...Pip! Dream, or Vibe Pip, is a community-oriented vibe modulation platform based now in Barcelona, and established on Sep. 2012.`
+  title: 'DreamPip — Fintech for compassion. 📡',
+  description: `DreamPip plex the experience of happiness, investing crowdfunding and charity, connecting individuals and communities across the globe, in transactions that thrive to fulfil in nothing but happiness, by means of healthy competition.`
 }
 
 // Translation
 const IT = {
-  title: 'Dream, Vibe, ...Pip! — Upstreaming. 📡',
-  description: `Dream, Vibe, ...Pip! Dream, or Vibe Pip, è una piattaforma di modulazione delle vibrazioni orientata alla comunità, ora con sede a Barcellona e fondata nel settembre 2012.`
+  title: 'DreamPip — Fintech for compassion. 📡',
+  description: `DreamPip amplifica l’esperienza della felicità, investendo in crowdfunding e beneficenza, connettendo individui e comunità di tutto il mondo, in transazioni che mirano a soddisfare solo la felicità, attraverso una sana competizione.`
 }
 
 const PT = {
-  title: 'Dream, Vibe, ...Pip! — Upstreaming. 📡',
-  description: `Dream, Vibe, ...Pip! Dream, or Vibe Pip, é uma plataforma de modulação de vibração orientada para a comunidade, agora sediada em Barcelona, e estabelecida em setembro de 2012.`
+  title: 'DreamPip — Fintech for compassion. 📡',
+  description: `DreamPip amplifica a experiência da felicidade, investindo em crowdfunding e caridade, conectando indivíduos e comunidades ao redor do mundo, em transações que buscam nada além da felicidade, por meio de uma competição saudável.`
 }
 
 const ES = {
-  title: 'Dream, Vibe, ...Pip! — Upstreaming. 📡',
-  description: `Dream, Vibe, ...Pip! Dream, or Vibe Pip, es una plataforma de modulación de vibraciones orientada a la comunidad, ahora con sede en Barcelona, y establecida en septiembre de 2012.`
+  title: 'DreamPip — Fintech for compassion. 📡',
+  description: `DreamPip amplifica la experiencia de la felicidad, invirtiendo en crowdfunding y caridad, conectando individuos y comunidades en todo el mundo, en transacciones que buscan cumplir solo con la felicidad, a través de una competencia sana.`
 }
 
 const DE = {
-  title: 'Dream, Vibe, ...Pip! — Upstreaming. 📡',
-  description: `Dream, Vibe, ...Pip! Dream, or Vibe Pip, ist eine gemeinschaftsorientierte Vibe-Modulationsplattform, die jetzt in Barcelona ansässig ist und im Sep. 2012 gegründet wurde.`
+  title: 'DreamPip — Fintech for compassion. 📡',
+  description: `DreamPip verstärkt das Glückserlebnis, investiert in Crowdfunding und Wohltätigkeit und verbindet Menschen und Gemeinschaften auf der ganzen Welt in Transaktionen, die dazu dienen, ausschließlich Glück zu erfüllen, durch gesunden Wettbewerb.`
 }
 
 const FR = {
-  title: 'Dream, Vibe, ...Pip! — Upstreaming. 📡',
-  description: `Dream, Vibe, ...Pip! Dream, or Vibe Pip, est une plateforme de modulation de vibe orientée communauté, désormais basée à Barcelone, et fondée en septembre 2012.`
+  title: 'DreamPip — Fintech for compassion. 📡',
+  description: `DreamPip amplifie l’expérience du bonheur, investit dans le crowdfunding et la charité, connectant les individus et les communautés à travers le monde, dans des transactions qui s’efforcent de n’accomplir que le bonheur, au moyen d’une compétition saine.`
 }
 
 const RO = {
-  title: 'Dream, Vibe, ...Pip! — Upstreaming. 📡',
-  description: `Dream, Vibe, ...Pip! Dream, or Vibe Pip, este o platformă de modulare a vibrațiilor orientată către comunitate, acum cu sediul în Barcelona și înființată în septembrie 2012.`
+  title: 'DreamPip — Fintech for compassion. 📡',
+  description: `DreamPip amplifică experiența fericirii, investind în finanțare participativă și caritate, conectând indivizii și comunitățile din întreaga lume, în tranzacții care tind să îndeplinească doar fericirea, prin intermediul unei competiții sănătoase.`
 }
 
 const PL = {
-  title: 'Dream, Vibe, ...Pip! — Upstreaming. 📡',
-  description: `Dream, Vibe, ...Pip! Dream, or Vibe Pip, to platforma modulacji wibracji zorientowana na społeczność, obecnie z siedzibą w Barcelonie i założona we wrześniu 2012 roku.`
+  title: 'DreamPip — Fintech for compassion. 📡',
+  description: `DreamPip wzmacnia doświadczenie szczęścia, inwestując w crowdfundingu i działalność charytatywną, łącząc jednostki i społeczności na całym świecie, w transakcjach, które dążą do spełnienia jedynie szczęścia, poprzez zdrową konkurencję.`
 }
 
 const CZ = {
-  title: 'Dream, Vibe, ...Pip! — Upstreaming. 📡',
-  description: `Dream, Vibe, ...Pip! Dream, or Vibe Pip, je komunitně orientovaná platforma modulace vibe, nyní s působištěm v Barceloně a založená v září 2012.`
+  title: 'DreamPip — Fintech for compassion. 📡',
+  description: `DreamPip zesiluje zážitek štěstí investováním do crowdfunding a charity, spojující jednotlivce a komunity po celém světě, v transakcích, které usilují o naplnění pouze štěstím, prostřednictvím zdravé soutěže.`
 }
 
 const SE = {
-  title: 'Dream, Vibe, ...Pip! — Upstreaming. 📡',
-  description: `Dream, Vibe, ...Pip! Dream, or Vibe Pip, är en samhällsorienterad vibe-moduleringsplattform som nu är baserad i Barcelona och etablerades i sep. 2012.`
+  title: 'DreamPip — Fintech for compassion. 📡',
+  description: `DreamPip förstärker upplevelsen av lycka genom investeringar i crowdfunding och välgörenhet, som förbinder individer och samhällen över hela världen, genom transaktioner som strävar efter att endast uppfylla lycka genom hälsosam konkurrens.`
 }
 
 const EE = {
-  title: 'Dream, Vibe, ...Pip! — Upstreaming. 📡',
-  description: `Dream, Vibe, ...Pip! Dream, or Vibe Pip, on kogukonnakeskne vibe modulatsiooni platvorm, mis nüüd asub Barcelonas ja asutati septembris 2012.`
+  title: 'DreamPip — Fintech for compassion. 📡',
+  description: `DreamPip võimendab õnne kogemust, investeerides rahakogumisse ja heategevusse, ühendades üksikisikuid ja kogukondi kogu maailmas tehingutes, mis püüavad täita vaid õnne, tervisliku konkurentsi kaudu.`
 }
 
 const JP = {
-  title: 'Dream, Vibe, ...Pip! — Upstreaming. 📡',
-  description: `Dream, Vibe, ...Pip! Dream, or Vibe Pipは、現在バルセロナを拠点としたコミュニティ志向のバイブモジュレーションプラットフォームで、2012年9月に設立されました。`
+  title: 'DreamPip — Fintech for compassion. 📡',
+  description: `DreamPipは投資クラウドファンディングやチャリティを通じて幸福の経験を拡大し、世界中の個人やコミュニティをつなげ、純粋な幸福だけを追求する取引を行う健全な競争を通じて満足させることをめざしています。`
+}
+
+const RU = {
+  title: 'DreamPip — Fintech for compassion. 📡',
+  description: `DreamPip усиливает опыт счастья, инвестируя в краудфандинг и благотворительность, связывая людей и сообщества по всему миру в трансакциях, нацеленных лишь на счастье, через здоровое соперничество.`
 }
 
 
@@ -119,7 +124,8 @@ export default function Home(props) {
     "pl-pl": PL,
     "cs-cz": CZ,
     "et-ee": EE,
-    "ja-jp": JP
+    "ja-jp": JP,
+    "ru-ru": RU,
   }
 
   const meta = localeMap[locale] || localeMap['en']
@@ -219,7 +225,6 @@ export default function Home(props) {
                 position: 'relative',
                 width: '100%',
                 zIndex: 2,
-                backgroundColor: "#1a1a1a"
               }}>
               <ReactPlayer
                 url="https://live.infra.dreampip.com/main.m3u8"

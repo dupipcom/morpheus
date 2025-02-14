@@ -148,7 +148,7 @@ export default function Post(props) {
         })}
       </Head>
       <article className="content content-single">
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "#1a1a1a", flexWrap: "wrap", padding: "32px" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", flexWrap: "wrap", padding: "32px" }}>
           <section className="landscape" style={{ maxHeight: '100%', flexBasis: '33.333%', flexGrow: 1, maxWidth: '500px', position: 'relative', alignSelf: "flex-start", overflow: "hidden" }} >
             {heroContent}
           </section>

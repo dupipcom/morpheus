@@ -176,5 +176,19 @@ export const consentLocales = {
     analytics: 'UA-53455506-5',
     acceptBtnTxt: '同意する',
     rejectBtnTxt: '拒否'
+  },
+  'ru-ru': {
+    policyLink: '/privacy',
+    hideAfterClick: true,
+    bannerDescription: `Для использования DreamPip вам необходимо принять нашу Политику конфиденциальности и Условия обслуживания. <br /><br /> Вкратце, наши условия обслуживания таковы: <br /><br />🧓 вам должно быть больше 18 лет; <br />📽 вы не можете записывать/скачивать то, что не находится на Mixcloud <br />`,
+    bannerLinkText: '<br />Юридическая страница.',
+    bannerBackground: '#1a1a1a',
+    bannerColor: '#ffffff',
+    bannerHeading: '<h3 style="color: white; margin-top: 0;">Вы согласны?</h3>',
+    acceptBtnBackground: '#f8f8f8',
+    acceptBtnColor: '#1a1a1a',
+    analytics: 'UA-53455506-5',
+    acceptBtnTxt: 'Принять',
+    rejectBtnTxt: 'Отклонить'
   }
 };

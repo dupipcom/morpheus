@@ -108,7 +108,7 @@ export default function Page({ url: slug, title: metaTitle, description, metaIma
   const locale = orig === "default" ? "en" : orig
 
   const image = metaImage?.url
-  const title = `Dream, Vibe, ...Pip! — ${metaTitle}`
+  const title = `DreamPip — ${metaTitle}`
 
   const url = `https://www.dreampip.com${orig !== 'default' ? `/${locale}` : ''}/${slug}`
 
@@ -143,7 +143,7 @@ export default function Page({ url: slug, title: metaTitle, description, metaIma
         })}
       </Head>
       <article className="content-page">
-        <div className="wrap bg-gray" style={{ marginBottom: '80px' }}>
+        <div className="wrap bg-gray">
           {parsed}
         </div>
       </article>

@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import ReactAudioPlayer from 'react-audio-player';
 import { isVideoConsented } from '../lib/helpers';
 import { AppContext } from '../context';
 
@@ -15,7 +14,6 @@ const VolumeWrapper = styled.div`
 const Wrapper = styled.section`
   padding: 8px 16px;
   display: flex;
-  background: ${(props) => (props.theme === 'dark' ? '#1a1a1a' : 'white')};
   justify-content: center;
   box-sizing: border-box;
   flex-direction: column;

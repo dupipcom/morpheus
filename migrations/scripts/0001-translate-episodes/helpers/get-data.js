@@ -8,10 +8,11 @@ async function getData({ fieldName }) {
     let url
 
     if(!params.slug) {
-      url = `https://preview.contentful.com/spaces/${process.env.CONTENTFUL_SPACE_ID}/environments/${params?.sourceEnv}/entries?access_token=${process.env.CONTENTFUL_PREVIEW_ACCESS_TOKEN}&content_type=${params.type}&fields.${fieldName}[exists]=true&select=fields.${fieldName},sys.id&limit=1000`;
+      url = `https://preview.contentful.com/spaces/${process.env.CONTENTFUL_SPACE_ID}/environments/${params?.sourceEnv}/entries?access_token=${process.env.CONTENTFUL_ACCESS_TOKEN}&content_type=${params.type}&fields.${fieldName}[exists]=true&select=fields.${fieldName},sys.id&limit=1000`;
     } else {
-      url = `https://preview.contentful.com/spaces/${process.env.CONTENTFUL_SPACE_ID}/environments/${params?.sourceEnv}/entries?access_token=${process.env.CONTENTFUL_PREVIEW_ACCESS_TOKEN}&content_type=${params.type}&fields.${fieldName}[exists]=true&fields.${params.slugField}=${params.slug}&select=fields.${fieldName},sys.id`
+      url = `https://preview.contentful.com/spaces/${process.env.CONTENTFUL_SPACE_ID}/environments/${params?.sourceEnv}/entries?access_token=${process.env.CONTENTFUL_ACCESS_TOKEN}&content_type=${params.type}&fields.${fieldName}[exists]=true&fields.${params.slugField}=${params.slug}&select=fields.${fieldName},sys.id`
     }
+    console.log({ url })
     const response = await fetch(url);
     const parsed = await response.json();
 

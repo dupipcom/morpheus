@@ -46,6 +46,9 @@ export const HomeLocale = {
   "ja-jp": {
     "locale": "ja-jp",
     "view": "他の投稿を表示"
+  },
+  "ru-ru": {
+    "locale": "ru-ru",
+    "view": "Просмотреть больше записей"
   }
-
 }

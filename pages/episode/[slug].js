@@ -19,7 +19,9 @@ import ReactPlayer from 'react-player';
 import VideoPlayer from '../../components/VideoPlayer';
 import { addPlaceholders } from '../../lib/server-helpers';
 import { useAsync } from '../../hooks/useAsync';
-const ics = require('ics')
+// const ics = require('ics')
+
+const ics = ""
 
 const TitleWrapper = styled.div`
   max-width: 768px;
@@ -269,7 +271,6 @@ export default function Episode({ episode, preview }) {
                 position: 'relative',
                 width: '100%',
                 zIndex: 2,
-                backgroundColor: "#1a1a1a"
               }}>
               <ReactPlayer
                 url="https://live.infra.dreampip.com/main.m3u8"
@@ -282,7 +283,7 @@ export default function Episode({ episode, preview }) {
           </>
         )}
         {episode?.title && (
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "#1a1a1a", padding: "32px", flexWrap: 'wrap' }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "32px", flexWrap: 'wrap' }}>
             <ImageWrapper className="square" style={{ position: 'relative', alignSelf: 'flex-start', justifySelf: 'flex-start' }} >
               {heroContent}
               {/* <Image placeholder={episode?.placeholder?.url} fill alt="Episode art" src={episode?.image?.url + "?fm=webp"} /> */}
