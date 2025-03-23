@@ -29,7 +29,7 @@
     "@dreampipcom/oneiros": "0.0.42",
     "@sentry/nextjs": "7.118.0",
     "lazysizes": "5.3.2",
-    "next": "14.2.15",
+    "next": "14.2.25",
     "react": "18",
     "react-dom": "18"
   },
