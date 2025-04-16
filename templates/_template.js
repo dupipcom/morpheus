@@ -80,9 +80,9 @@ export function Template({ children }) {
           <ThemeProvider theme={theme}>
               <GlobalStyle />
               <CssBaseline />
-              <Globals theme="dark">
+              <Globals theme="light">
                 {!rootContext.mobileApp && (<Header title="DreamPip" description="Upstreaming. 📡" />)}
-                <main className={"thebigbody bg-primary-dark min-h-screen md:min-h-0"} >
+                <main className={"thebigbody !bg-soft-light text-body-light min-h-screen md:min-h-0"} >
                   {children}
                 </main>
                 <Footer />

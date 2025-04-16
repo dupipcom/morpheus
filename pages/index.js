@@ -12,6 +12,7 @@ import { HomeLocale } from '../locale/home';
 import ReactPlayer from 'react-player';
 import { addPlaceholders } from '../lib/server-helpers';
 import Bugsnag from '@bugsnag/js';
+import { Button } from '@dreampipcom/oneiros';
 
 const DEFAULT = {
   title: 'DreamPip — Fintech for compassion. 📡',
@@ -206,7 +207,7 @@ export default function Home(props) {
           return <link key={locale} rel="alternate" hrefLang={locale} href={`https://www.dreampip.com/${locale}`} />
         })}
       </Head>
-      <article className="content content-page">
+      <article className="content content-page !bg-soft-light">
         {parsedHeros?.length ? (
           <Hero
             title={parsedHeros?.title}
@@ -237,7 +238,7 @@ export default function Home(props) {
           </>
         )}
         <section style={{ display: 'block', position: 'relative' }}>
-          <ShowGrid even {...{ items: feed, locale, live, directory: '/episode' }} />
+          {/*<ShowGrid even {...{ items: feed, locale, live, directory: '/episode' }} />*/}
           {/* <Link href="/episodes"><span style={{ display: "block", textAlign: "center", margin: 32, width: "100%" }}>View all episodes</span></Link> */}
         </section>
         <section style={{ display: 'block', position: 'relative' }} className='wrap'>
@@ -247,7 +248,9 @@ export default function Home(props) {
             headingLevel="h2"
             postTitleLevel="h3"
           />
-          <Link href={localizeUrl("/blog", locale)}><span style={{ display: "block", textAlign: "center", margin: '32px 0', width: "100%" }}>{localization['view']}</span></Link>
+          <div style={{ marginTop: "32px" }} className="mt-a3">
+            <Button href={localizeUrl("/blog", locale)}>{localization['view']}</Button>
+          </div>
         </section>
       </article>
     </div>

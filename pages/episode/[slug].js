@@ -295,41 +295,41 @@ export default function Episode({ episode, preview }) {
                   <Chip key={genre + index} label={genre} sx={{ marginLeft: index > 0 ? 1 : 0, marginY: "16px" }} />
                 )
               })}
-              <h1 style={{ fontWeight: "300", color: "white" }}>{episode?.title}</h1>
-              <div style={{ color: "white" }}>{localization["artist"]}: {artists}</div>
+              <h1 style={{ fontWeight: "300", color: "black" }}>{episode?.title}</h1>
+              <div style={{ color: "black" }}>{localization["artist"]}: {artists}</div>
               {
                 !!episode?.show?.url && (
-                  <div style={{ color: "white" }}>{localization["show"]}: <Link href={`/show/${episode?.show?.url}`} style={{ color: "white" }}>{episode?.show?.title}</Link></div>
+                  <div style={{ color: "black" }}>{localization["show"]}: <Link href={`/show/${episode?.show?.url}`} style={{ color: "black" }}>{episode?.show?.title}</Link></div>
                 )
               }
               {
                 !!episode?.event?.url && (
-                  <div style={{ color: "white" }}>{localization["event"]}: <Link href={`/event/${episode?.event?.url}`} style={{ color: "white" }}>{episode?.event?.title}</Link></div>
+                  <div style={{ color: "black" }}>{localization["event"]}: <Link href={`/event/${episode?.event?.url}`} style={{ color: "black" }}>{episode?.event?.title}</Link></div>
                 )
               }
               {!!episode?.artist?.country && (
-                <div style={{ color: "white" }} >{localization["country"]}: {country}</div>
+                <div style={{ color: "black" }} >{localization["country"]}: {country}</div>
               )}
               {!!countdownString ? (
-                <div style={{ color: "white", height: 32, marginBottom: "16px", marginTop: "16px", display: 'flex', flexWrap: 'wrap', height: '100%', alignItems: 'center' }}>{localization["countdown"]}: {countdownString + " "}
+                <div style={{ color: "black", height: 32, marginBottom: "16px", marginTop: "16px", display: 'flex', flexWrap: 'wrap', height: '100%', alignItems: 'center' }}>{localization["countdown"]}: {countdownString + " "}
                   <Button sx={{ marginY: "4px" }} startIcon={<EventIcon />} onClick={downloadEventCalendar}>{localization["calendar"]}</Button>
                 </div>
               ) : !isPast(episode?.date) ? (<Skeleton variant="rectangular" width="100%" height={32} sx={{ marginY: 2 }} />) : undefined}
               {
                 !!episode?.body?.json?.data ? (
-                  <div style={{ color: "white", marginTop: '32px' }}>
+                  <div style={{ color: "black", marginTop: '32px' }}>
                     {/* eslint-disable-next-line react/no-danger */}
                     {documentToReactComponents(episode?.body?.json, renderOptions(episode?.body?.links))}
                   </div>
                 ) : (
-                  <div style={{ color: "white", marginTop: '32px' }}>
+                  <div style={{ color: "black", marginTop: '32px' }}>
                     {/* eslint-disable-next-line react/no-danger */}
                     {documentToReactComponents(episode?.show?.bioRich?.json, renderOptions(episode?.show?.bioRich?.links))}
                   </div>
                 )
               }
               <hr />
-              <Link href="/episodes" style={{ color: "white" }}>{localization["back"]}</Link>
+              <Link href="/episodes" style={{ color: "black" }}>{localization["back"]}</Link>
             </TitleWrapper>
           </div>
         )}

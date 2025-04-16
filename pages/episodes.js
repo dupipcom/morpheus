@@ -205,7 +205,7 @@ export default function Episodes({ episodes }) {
         ))}
       </Head>
       <article className="content-page">
-        <section className="!bg-primary-dark" style={{ color: "white", textAlign: 'center', padding: '16px', fontSize: '12px' }}>
+        <section className="!bg-soft-light" style={{ color: "black", textAlign: 'center', padding: '16px', fontSize: '12px' }}>
           <FormControl sx={{ m: 1 }}>
             <FormControlLabel value={onlyFeatured} className={classes.font} control={<Checkbox type="checkbox" onChange={(e) => setOnlyFeatured(e?.target?.checked)} checked={onlyFeatured} style={{ marginRight: '8px' }} />} label={localization.featured}/>
           </FormControl>

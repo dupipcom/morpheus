@@ -370,9 +370,9 @@ export default function Event(props) {
             </section>
             <TitleWrapper>
               <section>
-                <h1 style={{ fontWeight: "300", color: "white" }}>{event?.title}</h1>
+                <h1 style={{ fontWeight: "300", color: "black" }}>{event?.title}</h1>
                 {!!countdownString ? (
-                  <p style={{ color: "white", height: 32, marginBottom: "16px", marginTop: "16px", display: 'flex', flexWrap: 'wrap', height: '100%', alignItems: 'center' }}>{localization["countdown"]}: {countdownString + " "}
+                  <p style={{ color: "black", height: 32, marginBottom: "16px", marginTop: "16px", display: 'flex', flexWrap: 'wrap', height: '100%', alignItems: 'center' }}>{localization["countdown"]}: {countdownString + " "}
                     <Button sx={{ marginY: "4px" }} startIcon={<EventIcon />} onClick={downloadEventCalendar}>{localization["calendar"]}</Button>
                   </p>
                 ) : !isPast(event?.date) ? (<Skeleton variant="rectangular" width="100%" height={32} sx={{ marginY: 2 }} />) : undefined}
@@ -382,7 +382,7 @@ export default function Event(props) {
                 {event?.photosCollection?.items?.length > 0 && (
                   <>
                     <hr />
-                    <p style={{ color: "white" }}><strong>{localization["photos"]}:</strong></p>
+                    <p style={{ color: "black" }}><strong>{localization["photos"]}:</strong></p>
                     <ShowGrid {...{ items: event?.photosCollection?.items, locale, onClick: setSelectedPhoto }} />
                     <Modal
                       open={!!selectedPhoto}
@@ -401,7 +401,7 @@ export default function Event(props) {
                 {event?.episodesCollection?.items?.length > 0 && (
                   <>
                     <hr />
-                    <p style={{ color: "white" }}><strong>{localization["episodes"]}:</strong></p>
+                    <p style={{ color: "black" }}><strong>{localization["episodes"]}:</strong></p>
                     <ShowGrid {...{ items: event?.episodesCollection?.items, locale, directory: '/episode' }} />
                   </>
                 )}
@@ -434,7 +434,7 @@ export default function Event(props) {
                   )
                 }
               </section>
-              <section style={{ color: "white" }}>
+              <section style={{ color: "black" }}>
                 <hr />
                 {/* eslint-disable-next-line react/no-danger */}
                 {documentToReactComponents(event?.body?.json, renderOptions(event?.body?.links))}
@@ -443,14 +443,14 @@ export default function Event(props) {
                 {event?.warmUpCollection?.items?.length > 0 && (
                   <>
                     <hr />
-                    <p style={{ color: "white" }}><strong>{localization["related"]}:</strong></p>
+                    <p style={{ color: "black" }}><strong>{localization["related"]}:</strong></p>
                     <ShowGrid {...{ items: event?.warmUpCollection?.items, locale, directory: '/episode' }} />
                   </>
                 )}
               </section>
               {!isPast(event?.date) && FORM()}
               <hr style={{ marginBottom: "32px" }} />
-              <Link href="/events" style={{ color: "white" }}>{localization["back"] + '.'}</Link>
+              <Link href="/events" style={{ color: "black" }}>{localization["back"] + '.'}</Link>
             </TitleWrapper>
           </section>
         )}

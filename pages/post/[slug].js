@@ -153,15 +153,15 @@ export default function Post(props) {
             {heroContent}
           </section>
           <Wrapper>
-            <header style={{ marginBottom: '48px' }}>
+            <header style={{ marginBottom: '48px', color: "black" }}>
               <Title>{metaTitle}</Title>
-              <p style={{ fontWeight: "300", color: "white" }}>{localization['by']} {authors}, {new Date(post?.publishedOn).toLocaleString(locale, {})}</p>
+              <p style={{ fontWeight: "300", color: "black" }}>{localization['by']} {authors}, {new Date(post?.publishedOn).toLocaleString(locale, {})}</p>
             </header>
-            <section style={{ color: "white" }}>
+            <section style={{ color: "black" }}>
               {content}
             </section>
             <hr style={{ marginBottom: "32px" }} />
-            <Link href="/" style={{ color: "white" }}>{localization['back']}.</Link>
+            <Link href="/" style={{ color: "black" }}>{localization['back']}.</Link>
           </Wrapper>
         </div>
       </article>

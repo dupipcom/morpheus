@@ -312,7 +312,7 @@ export default function Page({ page, agenda, generatedIn, cal }) {
         })}
       </Head>
       <article className="content-page">
-        <Controls style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: "#1a1a1a", color: "white", textAlign: 'center', padding: '16px', fontSize: '12px' }}>
+        <Controls style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: "#1a1a1a", color: "black", textAlign: 'center', padding: '16px', fontSize: '12px' }}>
           <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '16px' }}>
             <InputLabel id="mode" className={classes.font}>{localization.mode}</InputLabel>
             <FormControl sx={{ justifyContent: 'center', alignItems: 'center', marginX: '16px' }}>

@@ -4,15 +4,25 @@ import { useRouter } from 'next/router';
 import { BlogLocale } from '../locale';
 import Image from './ImageBlock';
 import { localizeUrl } from '../lib/helpers';
-import styled from 'styled-components';
+import { CardGrid, ECardGridVariant } from '@dreampipcom/oneiros';
 
-const PostsGrid = styled.div`
-  grid-template-columns: 1fr;
+// const PostsGrid = styled.div`
+//   grid-template-columns: 1fr;
 
-  @media screen and (min-width: 768px) {
-    grid-template-columns: 1fr 1fr;
-  }
-`
+//   @media screen and (min-width: 768px) {
+//     grid-template-columns: 1fr 1fr;
+//   }
+// `
+
+export const BLOG_POSTS = [
+  {
+    id: 'molecule__cardgrid__card--01',
+    className: '',
+    title: 'This is a card example #01',
+    link: 'https://dreampip.com',
+    // images: [],
+  },
+];
 
 function Posts({
   posts,
@@ -26,34 +36,20 @@ function Posts({
   const { locale: orig, pathname, isFallback } = useRouter()
   const locale = orig === "default" ? "en" : orig
   const localization = BlogLocale[locale] || BlogLocale["default"]
+  console.log({ ECardGridVariant })
+  const postsMap = posts.map((post, index) => {
+    return {
+      className: `molecule__cardgrid__post--${post.title}--${index}`,
+      title: post?.title,
+      images: [post?.image?.url],
+      link: localizeUrl(`/post/${post.url}`, locale),
+    }
+  })
   return (
     // eslint-disable-next-line react/jsx-props-no-spreading
     <section {...(id && { id })}>
       <div>
-        <PostsGrid style={{ display: 'grid', gridGap: '48px 32px' }}>
-          {posts &&
-            posts.map((post, index) => (
-              <article
-                key={post.url}
-                id={`post-${post.url}`}>
-                <div>
-                  <Link className='landscape' style={{ overflow: 'hidden', display: 'block' }} href={localizeUrl(`/post/${post.url}`, locale)} prefetch={false}>
-                    <Image className="landscape mb-4" sizes="(max-width: 768px) 50vw, (max-width: 1024px) 20vw, 20vw" eager={index <= 1} video={post?.video?.url} videoMp4={post?.videoMp4?.url} placeholder={post?.placeholder?.url} shim={post.placeholderUrl} customStyles={{ width: '100%', height: 'auto', cursor: 'pointer' }} src={post.image?.url} alt="Post image" width="768" height="320" />
-                  </Link>
-                  <h3 level={postTitleLevel}>
-                    <Link href={`/post/${post.url}`} prefetch={false}>
-                      {post?.title}
-                    </Link>
-                  </h3>
-                  <div
-                    // eslint-disable-next-line react/no-danger
-                    dangerouslySetInnerHTML={{ __html: post.excerpt ?? '' }}
-                  />
-                </div>
-              </article>
-            ))}
-          {posts && posts?.length < 1 && <p>{localization['not']}</p>}
-        </PostsGrid>
+        <CardGrid cards={postsMap} theme="light" variant={ECardGridVariant.FULL_WIDTH_IMAGE} />
       </div>
     </section>
   );

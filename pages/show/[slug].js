@@ -239,34 +239,34 @@ export default function Show(props) {
             </div>
             <TitleWrapper>
               <div>
-                <h1 style={{ fontWeight: "300", color: "white" }}>{show?.title}</h1>
+                <h1 style={{ fontWeight: "300", color: "black" }}>{show?.title}</h1>
                 {
                   !!artists ? (
-                    <p style={{ color: "white" }}><strong>{localization['artist']}</strong>: {artists}</p>
+                    <p style={{ color: "black" }}><strong>{localization['artist']}</strong>: {artists}</p>
 
                   ) : null
                 }
                 {
                   !!country ? (
-                    <p style={{ color: "white" }}><strong>{localization['country']}</strong>: {country}</p>
+                    <p style={{ color: "black" }}><strong>{localization['country']}</strong>: {country}</p>
 
                   ) : null
                 }
                 {countdown ? <CountdownComponent url={url} event={show} locale={locale} mobileApp={context?.mobileApp} countStart={countdown} localization={localization} /> : !!show?.rotationWeeks ? (<Skeleton variant="rectangular" width="100%" height={32} sx={{ marginY: 2 }} />) : undefined}
               </div>
-              <div style={{ color: "white" }}>
+              <div style={{ color: "black" }}>
                 {/* eslint-disable-next-line react/no-danger */}
                 {documentToReactComponents(show?.bioRich?.json, renderOptions(show?.bioRich?.links))}
               </div>
               {lastShows.length > 0 && (
                 <div>
                   <hr />
-                  <p style={{ color: "white" }}><strong>{localization['episodes']}:</strong></p>
+                  <p style={{ color: "black" }}><strong>{localization['episodes']}:</strong></p>
                   <ShowGrid key={""} {...{ items: lastShows, live, nextUp, locale, directory: '/episode' }} />
                 </div>
               )}
               <hr style={{ marginBottom: "32px" }} />
-              <Link href="/shows" style={{ color: "white" }}>{localization['back']}.</Link>
+              <Link href="/shows" style={{ color: "black" }}>{localization['back']}.</Link>
             </TitleWrapper>
           </div>
         )}
@@ -339,7 +339,7 @@ const CountdownComponent = ({ mobileApp, countStart, localization, event, locale
     }
   }, [])
   return countdownString ? (
-    <p style={{ color: "white", height: 32, marginBottom: "16px", marginTop: "16px", display: 'flex', flexWrap: 'wrap', height: '100%', alignItems: 'center' }}>{localization["next"]}: {countdownString + " "}
+    <p style={{ color: "black", height: 32, marginBottom: "16px", marginTop: "16px", display: 'flex', flexWrap: 'wrap', height: '100%', alignItems: 'center' }}>{localization["next"]}: {countdownString + " "}
       <Button sx={{ marginY: "4px" }} startIcon={<EventIcon />} onClick={handleIcs}>{localization["calendar"]}</Button>
     </p>
   ) : undefined

@@ -526,13 +526,13 @@ const GlobalStyle = createGlobalStyle`
 
 .fc .fc-button-primary {
     background: none;
-    border-color: white;
+    border-color: black;
     border-radius: 0;
-    color: white;
+    color: black;
     margin: 8px;
 
     &:disabled, .fc .fc-button-primary:not(:disabled).fc-button-active {
-      border-color: white;
+      border-color: black;
       background-color: gray;
     }
 
@@ -547,8 +547,8 @@ const GlobalStyle = createGlobalStyle`
 }
 
 .fc .fc-button-primary:not(:disabled).fc-button-active, .fc .fc-button-primary:not(:disabled):active {
-  border-color: white;
-  background-color: white;
+  border-color: black;
+  background-color: black;
   color: black;
 }
 

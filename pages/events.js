@@ -173,7 +173,7 @@ export default function Events({ events }) {
         ))}
       </Head>
       <article className="content-page">
-        <section className="!bg-primary-dark" style={{ color: "white", textAlign: 'center', padding: '16px', fontSize: '12px' }}>
+        <section className="!bg-soft-light" style={{ color: "black", textAlign: 'center', padding: '16px', fontSize: '12px' }}>
           <FormControl sx={{ minWidth: "300px" }}>
             <InputLabel id="countries" className={classes.font}>{localization.countries}</InputLabel>
             <Select

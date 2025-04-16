@@ -8,19 +8,6 @@ import { setCookie } from '../lib/helpers';
 import { HeaderLocale } from '../locale';
 import Link from 'next/link';
 
-const Social = styled.section`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  justify-self: self-end;
-  margin: 24px;
-  & img {
-    max-height: 32px;
-
-    margin-left: 4px;
-  }
-`
-
 const Apps = styled.section`
   display: none;
   justify-content: center;
@@ -113,7 +100,7 @@ function Footer({ copyrightHolder = 'Company Name' }) {
       )}
 
       {!context.mobileApp && (
-        <footer className='content-page !bg-primary-dark' style={{ paddingBottom: '32px' }}>
+        <footer className='content-page !text-body-dark !bg-primary-dark' style={{ paddingBottom: '32px' }}>
           <div className="wrap" style={{ height: '100%' }}>
             <Wrapper>
               <section style={{
@@ -123,19 +110,20 @@ function Footer({ copyrightHolder = 'Company Name' }) {
                 flexDirection: 'column',
                 justifySelf: 'self-start',
               }}>
-                <Link href="/privacy" style={{ fontSize: '12px', color: 'white', marginTop: '24px', justifySelf: 'self-start' }}>{`© 2012-${year} Purizu D.I. Angelo Reale`}</Link>
-                <span style={{ display: 'block', fontSize: '12px', color: 'white', justifySelf: 'self-start', lineHeight: '16px' }}>VAT: IT02925300903</span>
-                <span style={{ display: 'block', fontSize: '12px', color: 'white', justifySelf: 'self-start', lineHeight: '16px' }}>REA: 572763</span>
-                <span style={{ display: 'block', fontSize: '12px', color: 'white', justifySelf: 'self-start', lineHeight: '16px' }}>SIAE License: 202300000075</span>
-                <Link href="/impressum" style={{ fontSize: '12px', lineHeight: '16px', color: 'white', marginBottom: '24px', justifySelf: 'self-start' }}>{`Impressum.`}</Link>
+                <Link className="text-body-dark" href="/privacy" style={{ fontSize: '12px', marginTop: '24px', justifySelf: 'self-start' }}>{`© 2012-${year} Purizu D.I. Angelo Reale`}</Link>
+                <span style={{ display: 'block', fontSize: '12px', justifySelf: 'self-start', lineHeight: '16px' }}>VAT: IT02925300903</span>
+                <span style={{ display: 'block', fontSize: '12px', justifySelf: 'self-start', lineHeight: '16px' }}>REA: 572763</span>
+                <span style={{ display: 'block', fontSize: '12px', justifySelf: 'self-start', lineHeight: '16px' }}>SIAE License: 202300000075</span>
+                <Link className="text-body-dark" href="/impressum" style={{ fontSize: '12px', lineHeight: '16px', marginBottom: '24px', justifySelf: 'self-start' }}>{`Impressum.`}</Link>
                 <FormControl fullWidth variant="standard">
-                  <InputLabel id="locale-switcher">{localization["locale"]}</InputLabel>
+                  <InputLabel className="text-body-dark border-body-light" id="locale-switcher">{localization["locale"]}</InputLabel>
                   <Select
                     labelId="locale-switcher"
                     id="locale"
                     value={locale}
                     label="Locale"
                     onChange={handleChange}
+                    className="text-body-dark"
                   >
                     <MenuItem value="en">English</MenuItem>
                     <MenuItem value="it-it">Italiano</MenuItem>
@@ -153,31 +141,23 @@ function Footer({ copyrightHolder = 'Company Name' }) {
                   </Select>
                 </FormControl>
               </section>
-              <Apps>
-                <a href='https://play.google.com/store/apps/details?id=com.angeloreale.purizumobile' style={{ marginRight: '8px', position: 'relative', display: 'block', height: 36, width: 124 }} >
-                  <Image width={124} height={36} customStyles={{ width: '100%', height: 'auto' }} alt='Get it on Google Play' src='/images/googleplay.svg' />
+              <div className="mt-a3">
+                <a className="m-a2 !text-xs text-body-dark" style={{ position: 'relative', display: 'flex', alignItems: 'center' }} href="https://facebook.com/dreampipcom" target="_blank">
+                  Facebook
                 </a>
-                <a style={{ position: 'relative', display: 'block', height: 36, width: 109 }} href='https://apps.apple.com/us/app/purizu/id1639022876'>
-                  <Image width={109} height={36} customStyles={{ width: '100%', height: 'auto' }} alt='Download on App Store' src='/images/appstore.svg' />
+                <a className="m-a2 !text-xs text-body-dark" style={{ position: 'relative', display: 'flex', alignItems: 'center' }} href="https://instagram.com/dreampipcom" target="_blank">
+                  Instagram
                 </a>
-              </Apps>
-              <Social>
-                <a style={{ position: 'relative', display: 'flex', height: 36, width: 36, alignItems: 'center' }} href="https://facebook.com/dreampipcom" target="_blank">
-                  <Image q={100} width={36} height={36} customStyles={{ width: '100%', height: 'auto' }} alt="Facebook" src='https://images.ctfassets.net/jbs68hjf5qms/2v6UoLN0NM5ARkzN3fK1Sb/ca89ac953674e53062dcdc5b4ba4295f/facebook-icon-white.png?fm=webp' />
+                <a className="m-a2 !text-xs text-body-dark" style={{ position: 'relative', display: 'flex', alignItems: 'center' }} href="https://x.com/dreampipcom" target="_blank">
+                  Twitter
                 </a>
-                <a style={{ position: 'relative', display: 'flex', height: 36, width: 36, alignItems: 'center' }} href="https://instagram.com/dreampipcom" target="_blank">
-                  <Image q={100} width={36} height={36} customStyles={{ width: '100%', height: 'auto' }} alt="Instagram" src='https://images.contentful.com/jbs68hjf5qms/2LfvsXivHHfsWPCH88WoAk/5a5720411fffff7932d142fd3e409b62/instagram.png?fm=webp' />
-                </a>
-                <a style={{ position: 'relative', display: 'flex', height: 36, width: 36, alignItems: 'center' }} href="https://x.com/dreampipcom" target="_blank">
-                  <Image q={100} width={36} height={36} customStyles={{ width: '100%', height: 'auto' }} alt="Twitter" src='https://images.contentful.com/jbs68hjf5qms/41iVrTWnxF2hrgcSaq99Yg/6a03c41537424d03b7d672b6a1299243/twitter.png?fm=webp' />
-                </a>
-                {/* <a style={{ position: 'relative', display: 'flex', height: 36, width: 36, alignItems: 'center' }} href="https://soundcloud.com/dreampipcom" target="_blank">
-                  <Image width={36} height={36} customStyles={{ width: '100%', height: 'auto' }}  alt="Soundcloud" src='https://images.contentful.com/jbs68hjf5qms/3WqADRPPpNDFZhbWmkoW5c/d783b91b13e64f0018e8edc23c166e42/soundcloud.png?fm=webp' />
+                {/* <a className="m-a2 !text-xs text-body-dark" style={{ position: 'relative', display: 'flex', alignItems: 'center' }} href="https://soundcloud.com/dreampipcom" target="_blank">
+                  Soundcloud
                 </a> */}
-                <a style={{ position: 'relative', display: 'flex', height: 36, width: 36, alignItems: 'center' }} href="https://mixcloud.com/dreampip" target="_blank">
-                  <Image q={100} width={36} height={36} customStyles={{ width: '100%', height: 'auto' }} alt="Mixcloud" src='https://images.contentful.com/jbs68hjf5qms/22Nni1aXvpHsFijjjudV8W/a52ae7d6120286357bb8df113388d2ca/mixcloud.png?fm=webp' />
+                <a className="m-a2 !text-xs text-body-dark" style={{ position: 'relative', display: 'flex', alignItems: 'center' }} href="https://mixcloud.com/dreampip" target="_blank">
+                  Mixcloud
                 </a>
-              </Social>
+              </div>
             </Wrapper>
           </div>
         </footer>

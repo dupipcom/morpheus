@@ -274,7 +274,7 @@ export default function Artist(props) {
             </section>
             <Content>
               <section>
-                <h1 style={{ fontWeight: "300", color: "white" }}>{artist?.name}</h1>
+                <h1 style={{ fontWeight: "300", color: "black" }}>{artist?.name}</h1>
                 {artist?.imagesCollection?.items?.length > 0 && (
                   <section style={{ marginTop: '16px' }}>
                     <h2>{localization['gallery']}</h2>
@@ -295,39 +295,39 @@ export default function Artist(props) {
               <section>
                 {
                   !!aliases ? (
-                    <p style={{ color: "white" }}><strong>{localization['aliases']}</strong>: {aliases}</p>
+                    <p style={{ color: "black" }}><strong>{localization['aliases']}</strong>: {aliases}</p>
 
                   ) : null
                 }
                 {
                   !!country ? (
-                    <p style={{ color: "white" }}><strong>{localization['country']}</strong>: {countries}</p>
+                    <p style={{ color: "black" }}><strong>{localization['country']}</strong>: {countries}</p>
 
                   ) : null
                 }
                 {countdown ? <CountdownComponent url={url} event={artist} locale={locale} mobileApp={context?.mobileApp} countStart={countdown} localization={localization} /> : !!artist?.rotationWeeks ? (<Skeleton variant="rectangular" width="100%" height={32} sx={{ marginY: 2 }} />) : undefined}
               </section>
 
-              <section style={{ color: "white" }}>
+              <section style={{ color: "black" }}>
                 {/* eslint-disable-next-line react/no-danger */}
                 {documentToReactComponents(artist?.content?.json, renderOptions(artist?.content?.links))}
               </section>
               {artist?.highlightsCollection?.items?.length > 0 && (
                 <section>
                   <hr />
-                  <p style={{ color: "white" }}><strong>{localization['highlights']}:</strong></p>
+                  <p style={{ color: "black" }}><strong>{localization['highlights']}:</strong></p>
                   <ShowGrid key={""} {...{ items: artist?.highlightsCollection?.items, live, nextUp, locale, directory: '/episode' }} />
                 </section>
               )}
               {lastShows.length > 0 && (
                 <section>
                   <hr />
-                  <p style={{ color: "white" }}><strong>{localization['episodes']}:</strong></p>
+                  <p style={{ color: "black" }}><strong>{localization['episodes']}:</strong></p>
                   <ShowGrid key={""} {...{ items: lastShows, live, nextUp, locale, directory: '/episode' }} />
                 </section>
               )}
               {/* <hr style={{ marginBottom: "32px" }} />
-              <Link href="/shows" style={{ color: "white" }}>{localization['back']}.</Link> */}
+              <Link href="/shows" style={{ color: "black" }}>{localization['back']}.</Link> */}
             </Content>
           </section>
         )}
@@ -400,7 +400,7 @@ const CountdownComponent = ({ mobileApp, countStart, localization, event, locale
     }
   }, [])
   return countdownString ? (
-    <p style={{ color: "white", height: 32, marginBottom: "16px", marginTop: "16px", display: 'flex', flexWrap: 'wrap', height: '100%', alignItems: 'center' }}>{localization["next"]}: {countdownString + " "}
+    <p style={{ color: "black", height: 32, marginBottom: "16px", marginTop: "16px", display: 'flex', flexWrap: 'wrap', height: '100%', alignItems: 'center' }}>{localization["next"]}: {countdownString + " "}
       <Button sx={{ marginY: "4px" }} startIcon={<EventIcon />} onClick={handleIcs}>{localization["calendar"]}</Button>
     </p>
   ) : undefined

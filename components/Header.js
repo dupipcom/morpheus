@@ -7,11 +7,10 @@ import { localizeUrl, pzTrack, generateApiCall } from '../lib/helpers';
 import { useFirstInteraction } from '../hooks/useFirstInteraction';
 import dynamic from 'next/dynamic';
 
-import { Nav } from '@dreampipcom/oneiros';
-
+import { Nav, ESpotBadgeVariant, EIcon } from '@dreampipcom/oneiros';
 
 function Header({}) {
-  return <Nav hideTheme hideProfile />;
+  return <Nav hideTheme hideProfile hideSpots />;
 }
 
 export default Header;
