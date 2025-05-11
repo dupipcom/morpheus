@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@dreampipcom/oneiros": "0.0.42",
-    "@sentry/nextjs": "7.118.0",
+    "@sentry/nextjs": "^8.32.0",
     "lazysizes": "5.3.2",
     "next": "14.2.15",
     "react": "18",
