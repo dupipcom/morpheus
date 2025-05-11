@@ -143,7 +143,7 @@ export default function Page({ url: slug, title: metaTitle, description, metaIma
         })}
       </Head>
       <article className="content-page">
-        <div className="wrap bg-gray" style={{ marginBottom: '80px' }}>
+        <div className="wrap bg-gray">
           {parsed}
         </div>
       </article>

@@ -90,5 +90,5 @@ export default async function handler(req, res) {
       // res.setHeader('Referrer-Policy', "same-origin")
       if (response.status === 200) return res.redirect(303, BASE + BACKUP);
     
-    return res.end("no donut")
+    return res.status(500).json({ ok: false, status: 500, message: 'Code 000/1: Service unavailable.'})
 }

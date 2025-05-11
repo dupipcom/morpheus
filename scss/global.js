@@ -84,7 +84,6 @@ const GlobalStyle = createGlobalStyle`
 .content {
   width: 100%;
   overflow: hidden;
-  background-color: #1a1a1a;
   color: #fff !important;
 }
 

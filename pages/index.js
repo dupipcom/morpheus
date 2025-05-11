@@ -225,7 +225,6 @@ export default function Home(props) {
                 position: 'relative',
                 width: '100%',
                 zIndex: 2,
-                backgroundColor: "#1a1a1a"
               }}>
               <ReactPlayer
                 url="https://live.infra.dreampip.com/main.m3u8"
