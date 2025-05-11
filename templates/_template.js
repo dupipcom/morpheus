@@ -82,7 +82,7 @@ export function Template({ children }) {
               <CssBaseline />
               <Globals theme="dark">
                 {!rootContext.mobileApp && (<Header title="DreamPip" description="Upstreaming. 📡" />)}
-                <main className={"thebigbody"} sx={{ minHeight: !!rootContext.mobileApp ? pathname === '/chat' ? 'calc(100vh - 64px)' : '100vh' : 'initial' }}>
+                <main className={"thebigbody bg-primary-dark min-h-screen md:min-h-0"} >
                   {children}
                 </main>
                 <Footer />

@@ -14,7 +14,6 @@ const VolumeWrapper = styled.div`
 const Wrapper = styled.section`
   padding: 8px 16px;
   display: flex;
-  background: ${(props) => (props.theme === 'dark' ? '#1a1a1a' : 'white')};
   justify-content: center;
   box-sizing: border-box;
   flex-direction: column;

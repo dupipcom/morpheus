@@ -78,9 +78,14 @@ const config = {
                 permanent: false
             },
             {
+                source: '/join',
+                destination: '/dash/signin',
+                permanent: false
+            },
+            {
                 source: '/subscribe',
                 destination: '/dash/signin',
-                permanent: true
+                permanent: false
             },
             {
                 source: '/dash',
@@ -188,11 +193,11 @@ const config = {
             },
             {
                 source: '/api/nexus/audio/0',
-                destination: 'http://207.246.121.205/0',
+                destination: 'https://radio.dreampip.com/listen/dpip-stream-000/live',
             },            
             {
                 source: '/api/nexus/audio/1',
-                destination: 'http://207.246.121.205/1',
+                destination: 'https://radio.dreampip.com/listen/dpip-stream-001/live',
             },
         ]
     }
