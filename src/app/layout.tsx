@@ -1,8 +1,7 @@
-import type { Metadata } from "next";
-import { Comfortaa } from "next/font/google";
+import type { Metadata } from "next"
+import { Comfortaa } from "next/font/google"
 import "@dreampipcom/oneiros/styles"
-import "./globals.css";
-
+import "./globals.css"
 
 const comfortaa = Comfortaa({
   variable: "--font-comforta",
