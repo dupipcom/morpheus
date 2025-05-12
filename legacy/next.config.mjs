@@ -163,34 +163,8 @@ const config = {
             {"source": "/:locale/services/:match*", "destination": `${process.env.NEXUS_HOST}/:locale/dash/services/:match*`, locale: false},
             {"source": "/app", "destination": "https://alpha.dreampip.com/"},
             {"source": "/app/:match*", "destination": "https://alpha.dreampip.com/:match*"},
-            // {
-            //     source: '/subscribe',
-            //     destination: '/dash/signin',
-            // },
-            // {
-            //     source: '/members',
-            //     destination: '/dash/signin',
-            // },
-            // {
-            //     source: '/chat',
-            //     destination: '/dash/signin',
-            // },
-            {
-                source: '/members/calendar',
-                destination: 'https://chat.workspace.dreampip.com',                
-            },
-            {
-                source: '/members/chat',
-                destination: 'https://chat.workspace.dreampip.com',                
-            },
-            {
-                source: '/members/mail',
-                destination: 'https://mail.workspace.dreampip.com',                
-            },
-            {
-                source: '/members/storage',
-                destination: 'https://storage.workspace.dreampip.com',                
-            },
+            {"source": "/cloud", "destination": "https://zelta.dreampip.com/cloud"},
+            {"source": "/cloud/:match*", "destination": "https://zelta.dreampip.com/cloud/:match*"},
             {
                 source: '/api/nexus/audio/0',
                 destination: 'https://radio.dreampip.com/listen/dpip-stream-000/live',
