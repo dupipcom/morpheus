@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import { notion, fetchPages, fetchPageBySlug, fetchPageBlocks } from "@/lib/notion"
 import bookmarkPlugin from "@notion-render/bookmark-plugin"
 import { NotionRenderer } from "@notion-render/client"
@@ -21,7 +22,11 @@ export default async function Page({
   params: Promise<{ page: string }>
 }) {
   const { page } = await params
-  const pageData = await fetchPageBySlug(page)
+  const slug = page?.join("/") || "/"
+
+  const pageData = await fetchPageBySlug(slug)
+  if (!pageData) notFound()
+
   const pageContent = await fetchPageBlocks(pageData.id)
 
   const data = {

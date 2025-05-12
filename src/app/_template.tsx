@@ -43,9 +43,9 @@ export default function Template({ title, content }: any) {
           <div className="md:hidden flex relative p-a2 w-full">
             <AudioPlayer className="w-full" />
           </div>
+          { title && !content ? <Typography className="p-[32px] md:max-w-[720px] md:m-auto" variant={TypographyVariant.H1}>{title}</Typography> : undefined }
           { content ? <div className="p-[32px] md:max-w-[720px] md:m-auto">
-            { title ? <Typography variant={TypographyVariant.H1}>{title}</Typography> : undefined }
-            <div className="mt-[32px]" dangerouslySetInnerHTML={{ __html: content }} />
+            <div dangerouslySetInnerHTML={{ __html: content }} />
           </div> : undefined }
         </main>
     </>
