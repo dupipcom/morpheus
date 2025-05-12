@@ -18,7 +18,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api/nexus/audio',
-        destination: 'https://radio.dreampip.com/listen/dpip-stream-000/live.ogg',
+        destination: 'https://radio.dreampip.com/listen/dpip000/live.ogg',
       },
     ]
   },
