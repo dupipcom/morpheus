@@ -60,6 +60,8 @@ export default function Template({ title, content, isomorphicContent }: any) {
     ],
   };
 
+  // try not to lazy around for long and actually update Oneiros components to include the right margins, Angelo. I'll let this one pass since we're using a single renderer parser for the whole hydration engine and we need some more content live (minimalism is good, but SEO is important).
+
   const paragraphRenderer = createBlockRenderer<ParagraphBlockObjectResponse>(
     'paragraph',
     (data, renderer) => {
