@@ -17,7 +17,7 @@ import Layout from './layout'
 export default function Template({ title, content, isomorphicContent }: any) {
 
   /* 
-    05/2025: we currently need this implementation to preserve SEO capabilities, and CLS and to a minimum, 
+    05/2025: we currently need this implementation to preserve SEO capabilities, and keep CLS to a minimum, 
     where the hydration is isomorphic, regardless of using custom renderers 
     for different richtext blocks, which will glitch upon loading.
     reasons for this are:
