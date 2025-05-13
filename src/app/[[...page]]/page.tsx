@@ -25,8 +25,6 @@ export default async function Page({
   const locale = getLocaleFromPath(slug)
   const clearSlug = stripLocaleFromPath(slug)
 
-  console.log({ locale, slug, clearSlug })
-
   const pageData = await fetchPageBySlug(clearSlug)
 
   if (!pageData) {
@@ -35,7 +33,6 @@ export default async function Page({
   }
 
   const contentProperty = `$content_${locale}`
-  console.log({ contentProperty })
 
   const localizedContentId = pageData?.properties[contentProperty]?.relation[0]?.id
 
