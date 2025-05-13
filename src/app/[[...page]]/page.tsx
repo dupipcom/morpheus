@@ -1,8 +1,6 @@
 import { notFound } from "next/navigation";
 import { notion, fetchPages, fetchPageBySlug, fetchPageBlocks } from "@/lib/notion"
-import bookmarkPlugin from "@notion-render/bookmark-plugin"
 import { NotionRenderer } from "@notion-render/client"
-import hljsPlugin from "@notion-render/hljs-plugin"
 import Template from "../_template"
 
 export async function generateStaticParams() {
@@ -33,15 +31,10 @@ export default async function Page({
     title: pageData.properties.Title.formula.string,
   }
 
-  const renderer = new NotionRenderer({
-      client: notion,
-  });
-
-  renderer.use(hljsPlugin())
-  renderer.use(bookmarkPlugin())
+  const renderer = new NotionRenderer()
 
   const html = await renderer.render(...pageContent)
         
-  return <Template title={data.title} content={html} />
+  return <Template title={data.title} content={pageContent} isomorphicContent={html} />
 }
 

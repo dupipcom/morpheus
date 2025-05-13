@@ -1,15 +1,40 @@
 'use client'
 
-import { useRef, useMemo, useState, useCallback, useEffect } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
+import ReactDOMServer from 'react-dom/server';
+
 import Link from 'next/link'
-import Layout from './layout'
+import { NotionRenderer, createBlockRenderer } from "@notion-render/client"
+
 import { Nav, Typography, TypographyVariant, ENavControlVariant, EIcon, AudioPlayer } from '@dreampipcom/oneiros'
 import "@dreampipcom/oneiros/styles"
 
+import Layout from './layout'
 
 
 
-export default function Template({ title, content }: any) {
+
+export default function Template({ title, content, isomorphicContent }: any) {
+
+  /* 
+    05/2025: we currently need this implementation to preserve SEO capabilities, and CLS and to a minimum, 
+    where the hydration is isomorphic, regardless of using custom renderers 
+    for different richtext blocks, which will glitch upon loading.
+    reasons for this are:
+      1. we use ESM for Oneiros, so it can only run on the client. it has a CJS bundle available, but we need to set it up in this Next.js instance so it will be available during build time.
+      2. the library for parsing Notion returns a promise from the render function, so either it only runs on the server without Oneiros as a custom visual representation of the content (we keep doing it for this hydration engine to be isomorphic), or we contribute to it for it to have a synchronous export as well: e.g. syncRender.
+  */
+  const [html, setHtml] = useState(isomorphicContent)
+  useEffect(() => {
+    if (Array.isArray(content)) {
+      const renderer = new NotionRenderer({
+        renderers: [paragraphRenderer, headingRenderer]
+      })
+      renderer.render(...content).then((_html) => {
+        setHtml(_html)
+      })
+    }
+  }, [])
 
   const TMP_CONTROLS = {
     top: [
@@ -35,6 +60,23 @@ export default function Template({ title, content }: any) {
     ],
   };
 
+  const paragraphRenderer = createBlockRenderer<ParagraphBlockObjectResponse>(
+    'paragraph',
+    (data, renderer) => {
+      
+      if (data.paragraph.rich_text.length === 0) return
+      return ReactDOMServer.renderToStaticMarkup(<Typography className="!mb-[12px]" variant={TypographyVariant.BODY} >{data.paragraph.rich_text[0].plain_text}</Typography>);
+    }
+  );
+
+  const headingRenderer = createBlockRenderer<HeadingBlockObjectResponse>(
+    'heading_1',
+    (data, renderer) => {
+      if (data.heading_1.length === 0) return
+      return ReactDOMServer.renderToStaticMarkup(<Typography variant={TypographyVariant.H1} >{data.heading_1.rich_text[0].plain_text}</Typography>);
+    }
+  );
+
 
   return (
     <>
@@ -43,9 +85,9 @@ export default function Template({ title, content }: any) {
           <div className="md:hidden flex relative p-a2 w-full">
             <AudioPlayer className="w-full" />
           </div>
-          { title && !content ? <Typography className="p-[32px] md:max-w-[720px] md:m-auto" variant={TypographyVariant.H1}>{title}</Typography> : undefined }
-          { content ? <div className="p-[32px] md:max-w-[720px] md:m-auto">
-            <div dangerouslySetInnerHTML={{ __html: content }} />
+          { title && !content ? <Typography className="p-[32px] md:p-[64px] md:max-w-[720px] md:m-auto" variant={TypographyVariant.H1}>{title}</Typography> : undefined }
+          { content ? <div className="p-[32px] md:p-[64px] md:max-w-[720px] md:m-auto">
+            <div dangerouslySetInnerHTML={{ __html: html }} />
           </div> : undefined }
         </main>
     </>
