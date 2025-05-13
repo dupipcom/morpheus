@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { notion, fetchPages, fetchPageBySlug, fetchPageBlocks } from "@/lib/notion"
 import { NotionRenderer } from "@notion-render/client"
 import Template from "../_template"
+import { stripLocaleFromPath, getLocaleFromPath } from "../helpers"
 
 export async function generateStaticParams() {
   const pages = await fetchPages()
@@ -19,17 +20,27 @@ export default async function Page({
 }: {
   params: Promise<{ page: string }>
 }) {
-  const { page } = await params
-  const slug = page?.join("/") || "/"
+  const { page, lang } = await params
+  const slug = "/" + page?.join("/") || "/"
+  const locale = getLocaleFromPath(slug)
+  const clearSlug = stripLocaleFromPath(slug)
 
-  const pageData = await fetchPageBySlug(slug)
+  console.log({ locale, slug, clearSlug })
+
+  const pageData = await fetchPageBySlug(clearSlug)
 
   if (!pageData) {
     notFound()
     return
   }
 
-  const pageContent = await fetchPageBlocks(pageData?.id)
+  const contentProperty = `$content_${locale}`
+  console.log({ contentProperty })
+
+  const localizedContentId = pageData?.properties[contentProperty]?.relation[0]?.id
+
+  const pageContent = await fetchPageBlocks(localizedContentId || pageData.id)
+  
 
   const data = {
     title: pageData.properties.Title.formula.string,
