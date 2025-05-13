@@ -23,9 +23,13 @@ export default async function Page({
   const slug = page?.join("/") || "/"
 
   const pageData = await fetchPageBySlug(slug)
-  if (!pageData) notFound()
 
-  const pageContent = await fetchPageBlocks(pageData.id)
+  if (!pageData) {
+    notFound()
+    return
+  }
+
+  const pageContent = await fetchPageBlocks(pageData?.id)
 
   const data = {
     title: pageData.properties.Title.formula.string,
