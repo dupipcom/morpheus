@@ -101,6 +101,7 @@ export default function Template({ title, content, isomorphicContent }: any) {
                   src="https://video.dreampip.com/live/index.m3u8"
                   controls={true}
                   autoPlay={true}
+                  playsinline={true}
                   className="w-full"
                   hlsConfig={{
                     maxLoadingDelay: 4,
