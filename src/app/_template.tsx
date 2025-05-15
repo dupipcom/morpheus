@@ -2,6 +2,7 @@
 
 import React, { useRef, useState, useEffect } from 'react'
 import ReactDOMServer from 'react-dom/server';
+import ReactHlsPlayer from 'react-hls-player';
 
 import Link from 'next/link'
 import { NotionRenderer, createBlockRenderer } from "@notion-render/client"
@@ -25,6 +26,8 @@ export default function Template({ title, content, isomorphicContent }: any) {
       2. the library for parsing Notion returns a promise from the render function, so either it only runs on the server without Oneiros as a custom visual representation of the content (we keep doing it for this hydration engine to be isomorphic), or we contribute to it for it to have a synchronous export as well: e.g. syncRender.
   */
   const [html, setHtml] = useState(isomorphicContent)
+  const [showStream, setShowStream] = useState(false)
+
   useEffect(() => {
     if (Array.isArray(content)) {
       const renderer = new NotionRenderer({
@@ -34,6 +37,14 @@ export default function Template({ title, content, isomorphicContent }: any) {
         setHtml(_html)
       })
     }
+
+    const checkLive = async () => {
+      const req = await fetch("https://video.dreampip.com/live/index.m3u8")
+      if (req.status === 200) setShowStream(true)
+      else setShowStream(false)
+    }
+    checkLive()
+    setInterval(checkLive, 5000)
   }, [])
 
   const TMP_CONTROLS = {
@@ -84,9 +95,25 @@ export default function Template({ title, content, isomorphicContent }: any) {
     <>
         <Nav hideSpots hideMenu controls={TMP_CONTROLS} />
         <main>
-          <div className="md:hidden flex relative p-a2 w-full">
-            <AudioPlayer className="w-full" />
-          </div>
+          { showStream ? (
+              <div className="w-full">
+                <ReactHlsPlayer 
+                  src="https://video.dreampip.com/live/index.m3u8"
+                  controls={true}
+                  autoPlay={true}
+                  className="w-full"
+                  hlsConfig={{
+                    maxLoadingDelay: 4,
+                    minAutoBitrate: 0,
+                    lowLatencyMode: true,
+                  }} 
+                />
+              </div>
+            ) : (
+              <div className="md:hidden flex relative p-a2 w-full">
+                <AudioPlayer className="w-full" />
+              </div>
+            )}
           { title && !content ? <Typography className="p-[32px] md:p-[64px] md:max-w-[720px] md:m-auto" variant={TypographyVariant.H1}>{title}</Typography> : undefined }
           { content ? <div className="p-[32px] md:p-[64px] md:max-w-[720px] md:m-auto">
             <div dangerouslySetInnerHTML={{ __html: html }} />
