@@ -59,7 +59,6 @@ export default function Template({ title, content, isomorphicContent }: any) {
         type: ENavControlVariant.AUDIO_PLAYER,
         mods: '$flip',
         label: 'Rotations portal live',
-        src: '/api/nexus/audio',
       },
     ],
     bottom: [
