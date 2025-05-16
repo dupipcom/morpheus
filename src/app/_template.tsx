@@ -7,7 +7,7 @@ import ReactHlsPlayer from 'react-hls-player';
 import Link from 'next/link'
 import { NotionRenderer, createBlockRenderer } from "@notion-render/client"
 
-import { Nav, Typography, TypographyVariant, ENavControlVariant, EIcon, AudioPlayer } from '@dreampipcom/oneiros'
+import { Nav, Typography, TypographyVariant, ENavControlVariant, EIcon, AudioPlayer, Globals } from '@dreampipcom/oneiros'
 import "@dreampipcom/oneiros/styles"
 
 import Layout from './layout'
@@ -28,6 +28,9 @@ export default function Template({ title, content, isomorphicContent }: any) {
   const [html, setHtml] = useState(isomorphicContent)
   const [showStream, setShowStream] = useState(false)
 
+  // i know this is a funny theme implementation, but i wasn't even thinking of supporting it now, and we need contexts with more structure than snug coding.
+  const [themeDark, setThemeDark] = useState(false)
+
   useEffect(() => {
     if (Array.isArray(content)) {
       const renderer = new NotionRenderer({
@@ -39,36 +42,19 @@ export default function Template({ title, content, isomorphicContent }: any) {
     }
 
     const checkLive = async () => {
-      const req = await fetch("https://video.dreampip.com/live/index.m3u8")
-      if (req.status === 200) setShowStream(true)
-      else setShowStream(false)
+      try {
+          const req = await fetch("https://video.dreampip.com/live/index.m3u8")
+          if (req.status === 200) setShowStream(true)
+          else setShowStream(false)
+      } catch (e) {
+        setShowStream(false)
+      }
     }
+
     checkLive()
     setInterval(checkLive, 5000)
-  }, [])
 
-  const TMP_CONTROLS = {
-    top: [
-      {
-        type: ENavControlVariant.BREADCRUMB,
-        label: title,
-      },
-    ],
-    center: [
-      {
-        type: ENavControlVariant.AUDIO_PLAYER,
-        mods: '$flip',
-        label: 'Rotations portal live',
-      },
-    ],
-    bottom: [
-      {
-        type: ENavControlVariant.BUTTON,
-        icon: EIcon['music-note'],
-        href: "https://mixcloud.com/dreampip"
-      },
-    ],
-  };
+  }, [])
 
   // try not to lazy around for long and actually update Oneiros components to include the right margins, Angelo. I'll let this one pass since we're using a single renderer parser for the whole hydration engine and we need some more content live (minimalism is good, but SEO is important).
 
@@ -91,8 +77,8 @@ export default function Template({ title, content, isomorphicContent }: any) {
 
 
   return (
-    <>
-        <Nav hideSpots controls={TMP_CONTROLS} />
+    <div>
+        <Nav className={`${themeDark ? 'dark' : 'light'}`} onThemeChange={() => setThemeDark(!themeDark)} />
         <main>
           { showStream ? (
               <div className="w-full">
@@ -115,6 +101,6 @@ export default function Template({ title, content, isomorphicContent }: any) {
             <div dangerouslySetInnerHTML={{ __html: html }} />
           </div> : undefined }
         </main>
-    </>
+    </div>
   )
 }

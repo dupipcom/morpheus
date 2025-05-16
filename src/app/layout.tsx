@@ -26,8 +26,8 @@ export default function RootLayout({
       >
         {children}
         <footer>
-          <div className="" style={{ display: "flex", justifyContent: "center"}}>
-            <small className="text-[12px] text-[#563769] m-8" >
+          <div className="flex-center">
+            <small className="text-[12px]" >
               © 1992—Present Angelo Reale
             </small>
           </div>
