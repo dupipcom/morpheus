@@ -92,7 +92,7 @@ export default function Template({ title, content, isomorphicContent }: any) {
 
   return (
     <>
-        <Nav hideSpots hideMenu controls={TMP_CONTROLS} />
+        <Nav hideSpots controls={TMP_CONTROLS} />
         <main>
           { showStream ? (
               <div className="w-full">
