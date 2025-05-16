@@ -22,6 +22,15 @@ const nextConfig: NextConfig = {
       },
     ]
   },
+  async redirects() {
+    return [
+      {
+        source: "/episodes",
+        destination: "https://mixcloud.com/dreampip",
+        permanent: false,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
