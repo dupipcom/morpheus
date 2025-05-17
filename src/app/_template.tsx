@@ -101,6 +101,7 @@ export default function Template({ title, content, isomorphicContent }: any) {
                   playsInline={true}
                   className="w-full"
                   type="hls"
+                  preferPlayback="mse"
                 />
               </div>
             ) : undefined}
