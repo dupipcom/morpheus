@@ -1,16 +1,17 @@
 'use client'
 
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect, useContext } from 'react'
 import ReactDOMServer from 'react-dom/server';
 import ReactHlsPlayer from 'react-hls-player';
 
 import Link from 'next/link'
 import { NotionRenderer, createBlockRenderer } from "@notion-render/client"
 
-import { Nav, Typography, TypographyVariant, ENavControlVariant, EIcon, AudioPlayer, Globals } from '@dreampipcom/oneiros'
+import { Globals, Nav, Typography, TypographyVariant, ENavControlVariant, EIcon, AudioPlayer } from '@dreampipcom/oneiros'
 import "@dreampipcom/oneiros/styles"
 
 import Layout from './layout'
+import { GlobalContext } from "./contexts"
 
 
 
@@ -29,7 +30,18 @@ export default function Template({ title, content, isomorphicContent }: any) {
   const [showStream, setShowStream] = useState(false)
 
   // i know this is a funny theme implementation, but i wasn't even thinking of supporting it now, and we need contexts with more structure than snug coding.
-  const [themeDark, setThemeDark] = useState(false)
+  const [globalContext, setGlobalContext] = useState({
+    theme: 'light'
+  })
+
+  const handleThemeChange = () => {
+    if (globalContext.theme === 'light') {
+      setGlobalContext({...globalContext, theme: 'dark'})
+    } else {
+      setGlobalContext({...globalContext, theme: 'light'})
+    }
+  }
+
 
   useEffect(() => {
     if (Array.isArray(content)) {
@@ -77,9 +89,9 @@ export default function Template({ title, content, isomorphicContent }: any) {
 
 
   return (
-    <div>
-        <Nav className={`${themeDark ? 'dark' : 'light'}`} onThemeChange={() => setThemeDark(!themeDark)} />
-        <main>
+      <Globals theme={globalContext.theme}>
+        <Nav onThemeChange={handleThemeChange} />
+        <main className="min-h-[100vh]">
           { showStream ? (
               <div className="w-full">
                 <ReactHlsPlayer 
@@ -100,7 +112,14 @@ export default function Template({ title, content, isomorphicContent }: any) {
           { content ? <div className="p-[32px] md:p-[64px] md:max-w-[720px] md:m-auto">
             <div dangerouslySetInnerHTML={{ __html: html }} />
           </div> : undefined }
+          <footer>
+            <div className="flex w-full flex-center justify-center p-a2">
+              <Typography>
+                © 1992—Present Angelo Reale
+              </Typography>
+            </div>
+          </footer>
         </main>
-    </div>
+      </Globals>
   )
 }
