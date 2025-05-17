@@ -2,7 +2,7 @@
 
 import React, { useRef, useState, useEffect, useContext } from 'react'
 import ReactDOMServer from 'react-dom/server';
-import ReactHlsPlayer from 'react-hls-player';
+import '@mux/mux-video';
 
 import Link from 'next/link'
 import { NotionRenderer, createBlockRenderer } from "@notion-render/client"
@@ -94,17 +94,13 @@ export default function Template({ title, content, isomorphicContent }: any) {
         <main className="min-h-[100vh]">
           { showStream ? (
               <div className="w-full">
-                <ReactHlsPlayer 
+                <mux-video 
                   src="https://video.dreampip.com/live/index.m3u8"
                   controls={true}
                   autoPlay={true}
                   playsInline={true}
                   className="w-full"
-                  hlsConfig={{
-                    maxLoadingDelay: 4,
-                    minAutoBitrate: 0,
-                    lowLatencyMode: true,
-                  }} 
+                  type="hls"
                 />
               </div>
             ) : undefined}
