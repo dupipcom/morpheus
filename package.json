@@ -14,7 +14,7 @@
     "react-dom": "18"
   },
   "devDependencies": {
-    "@dreampipcom/oneiros": "^0.0.62",
+    "@dreampipcom/oneiros": "^0.0.63",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@eslint/eslintrc": "^3",
