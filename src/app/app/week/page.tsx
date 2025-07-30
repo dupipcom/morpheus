@@ -59,11 +59,12 @@ export default function Template({ title, content, isomorphicContent }: any) {
         <div className="flex flex-wrap justify-center">
           <div className="m-8 flex flex-col">
             <label>Week 29</label>
+            <small>2025-07-22 to 2025-07-29</small>
             <Button>Close week</Button>
           </div>
           <div className="m-8 flex flex-col">
-            <label>{getWeekNumber(new Date())}</label>
-            <Button>Close week</Button>
+            <label>Current: {getWeekNumber(new Date())}</label>
+            <small>2025-07-22 to 2025-07-29</small>
           </div>
         </div>
         <h1 className="m-8 text-center">{getWeekNumber(new Date())}</h1>
