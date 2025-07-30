@@ -46,7 +46,7 @@ const data: Payment[] = [
   {
     id: "3u1reuv4",
     earnings: 242,
-    status: "Skipped",
+    status: "Pending",
     day: "2025-07-28",
   },
   {
