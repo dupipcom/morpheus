@@ -28,7 +28,7 @@ function getWeekNumber(d) {
     // Calculate full weeks to nearest Thursday
     var weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
     // Return array of year and week number
-    return ['W', weekNo];
+    return ['Week ', weekNo];
 }
 
 
@@ -55,9 +55,10 @@ export default function Template({ title, content, isomorphicContent }: any) {
       <main className="min-h-[100vh]">
 
         <ViewMenu active="week" />
+                <p className="m-8 text-center">Your earnings this week, so far: $</p>
         <div className="flex flex-wrap justify-center">
           <div className="m-8 flex flex-col">
-            <label>W29</label>
+            <label>Week 29</label>
             <Button>Close week</Button>
           </div>
           <div className="m-8 flex flex-col">
@@ -65,9 +66,8 @@ export default function Template({ title, content, isomorphicContent }: any) {
             <Button>Close week</Button>
           </div>
         </div>
-        <h1 className="m-8 text-center">{new Date().toLocaleString("en-US", {weekday: "long", year: "numeric", month: "short", day: "numeric" })}</h1>
-        <p className="m-8 text-center">Your earnings this week, so far: $</p>
-        <p className="m-8 text-center">What did you accomplish this week?</p>
+        <h1 className="m-8 text-center">{getWeekNumber(new Date())}</h1>
+        <p className="m-8 text-center">What did you accomplish this week already?</p>
 
       <TaskView timeframe="week" />
       <footer>
