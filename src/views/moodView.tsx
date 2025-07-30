@@ -18,8 +18,6 @@ export const MoodView = ({ timeframe = "day" }) => {
       <Slider defaultValue={[3]} max={5} step={1}/>
       <h3 className="mt-8">Trust in others</h3>
       <Slider defaultValue={[3]} max={5} step={1}/>
-      <h3 className="mt-8">Funds locked</h3>
-      <Input/>
       <h3 className="mt-8">What's in your mind?</h3>
       <Textarea />
       <Button className="my-8 w-full">Submit</Button>
