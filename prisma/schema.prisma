@@ -56,7 +56,16 @@ model User {
   sessions      Session[]
   entries       Json?
   availableBalance String?
+}
 
+type Mood {
+  gratitude Int
+  acceptance Int
+  restedness Int
+  tolerance Int
+  selfEsteem Int
+  trust Int
+  text String
 }
 
 type Day {
@@ -64,6 +73,7 @@ type Day {
   earnings String
   date String
   status String
+  mood Mood?
 }
 
 type Week {

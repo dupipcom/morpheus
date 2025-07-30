@@ -40,8 +40,6 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   const dayEarnings = user.availableBalance * dayProgress / 30
   const weekEarnings = user.availableBalance * weekProgress / 4
 
-  console.log({ dayDone, weekDone })
-
   if (data.availableBalance) {
     await prisma.user.update({
       data: {
@@ -163,6 +161,39 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                     status: "Open",
                     tasks: data.dayActions,
                     earnings: dayEarnings
+                  }
+              },
+            }
+          },
+        },
+      },
+      where: { email: user.email },
+    })
+    user = await getUser()
+  }
+
+  if (data.mood) {
+    await prisma.user.update({
+      data: {
+        entries: {
+            ...user.entries,
+            [year]: {
+              ...user.entries[year],
+              [weekNumber]: {
+                ...user.entries[year][weekNumber],
+                days: {
+                  ...user.entries[year][weekNumber]?.days,
+                  [date]: {
+                    ...user.entries[year][weekNumber]?.days[date],
+                    mood: {
+                      gratitude: data.mood.gratitude || 3,
+                      restedness: data.mood.restedness || 3,
+                      acceptance: data.mood.acceptance || 3,
+                      trust: data.mood.trust || 3,
+                      selfEsteem: data.mood.selfEsteem || 3,
+                      tolerance: data.mood.tolerance || 3,
+                      text: data.mood.text || 3
+                    }
                   }
               },
             }

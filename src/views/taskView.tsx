@@ -20,8 +20,6 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     }
   }, [JSON.stringify(session)])
 
-  console.log({ userTasks })
-
   const userDone = useMemo(() => userTasks?.filter((task) => task.status === "Done").map((task) => task.name), [userTasks])
   const [values, setValues] = useState(userDone)
 
