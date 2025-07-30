@@ -16,6 +16,13 @@ import { useSession, signIn, signOut } from "next-auth/react"
 import { TaskView } from "@/views/taskView"
 import { ViewMenu } from "@/components/viewMenu"
 import { Button } from "@/components/ui/button"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
 
 
 
@@ -44,14 +51,17 @@ export default function Template({ title, content, isomorphicContent }: any) {
       <ViewMenu active="day" />
 
       <div className="flex flex-wrap justify-center">
-      <div className="m-8 flex flex-col">
-        <label>Friday, Jul 25, 2025</label>
-        <Button>Close day</Button>
-      </div>
-      <div className="m-8 flex flex-col">
-        <label>Saturday, Jul 26, 2025</label>
-        <Button>Close day</Button>
-      </div>
+        <Carousel>
+          <CarouselContent>
+            <CarouselItem className="flex flex-col">        <label>Friday, Jul 25, 2025</label>
+        <Button>Close day</Button></CarouselItem>
+            <CarouselItem className="flex flex-col"><label>Saturday, Jul 26, 2025</label>
+        <Button>Close day</Button></CarouselItem>
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
+
     </div>
       <div className="m-8 flex flex-col justify-center text-center">
         <label>It's {new Date().toLocaleString("en-US", {weekday: "long", year: "numeric", month: "short", day: "numeric" })}.</label>
