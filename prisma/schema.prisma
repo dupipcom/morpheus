@@ -30,14 +30,14 @@ type Entry {
 type Day {
   tasks Task[]
   earnings String
-  availableBudget String
+  availableBalance String
   date String
 }
 
 type Week {
   tasks  Task[]
   earnings String
-  availableBudget String
+  availableBalance String
   date String
 }
 

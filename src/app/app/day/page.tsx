@@ -26,108 +26,197 @@ import {
 
 const DAILY_ACTIONS = [
   {
-    name: 'Drink Water',
+    name: 'Drank Water',
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
+    status: 'Done'
   },
   {
-    name: 'Shower',
+    name: 'Showered',
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
+    status: 'Not started'
   },
   {
-    name: 'Take meds',
+    name: 'Took meds',
     area: 'self',
     categories: ['body'],
     cadence: '2-daily',
+    status: 'Not started'
   },
   {
-    name: 'Log mood',
+    name: 'Logged mood',
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
+    status: 'Not started'
   },
   {
-    name: 'Eat breakfast',
+    name: 'Ate breakfast',
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
+    status: 'Not started'
   },
   {
-    name: 'Eat lunch',
+    name: 'Ate lunch',
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
+    status: 'Not started'
   },
   {
-    name: 'Eat dinner',
+    name: 'Ate dinner',
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
+    status: 'Not started'
   },
   {
-    name: 'Brush teeth',
+    name: 'Brushed teeth',
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
+    status: 'Not started'
   },
   {
-    name: 'Workout',
+    name: 'Worked-out',
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
+    status: 'Not started'
   },
   {
-    name: 'Use CBD',
-    area: 'self',
-    categories: ['spirituality'],
-    cadence: 'daily',
-  },
-  {
-    name: 'Work',
+    name: 'Worked',
     area: 'home',
     categories: ['work'],
     cadence: 'daily',
+    status: 'Not started'
   },
   {
-    name: 'Wash dishes',
+    name: 'Washed dishes',
     area: 'home',
     categories: ['clean'],
     cadence: 'daily',
+    status: 'Not started'
   },
   {
-    name: 'Store dishes',
+    name: 'Stored dishes',
     area: 'home',
     categories: ['clean'],
     cadence: 'daily',
+    status: 'Not started'
   },
   {
-    name: 'Check trash',
+    name: 'Checked trash',
     area: 'home',
     categories: ['clean'],
     cadence: 'daily',
+    status: 'Not started'
   },
   {
-    name: 'Brush floor',
+    name: 'Brushed floor',
     area: 'home',
     categories: ['clean'],
     cadence: 'daily',
+    status: 'Not started'
   },
   {
-    name: 'Had an orgasm',
+    name: 'Made love',
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
+    status: 'Not started'
   },
   {
     name: 'Went out',
     area: 'social',
     categories: ['community'],
     cadence: 'daily',
+    status: 'Not started'
   },
 ]
+
+const WEEKS = {
+  W30: {
+    year: 2025,
+    week: 29,
+    startDay: "2025-07-20",
+    endDay: "2025-07-26",
+    availableBalance: 1832.32,
+    earnings: 282.00,
+    days: {
+      '2025-07-20': {
+        date: '2025-07-20',
+        availableBalance: 1832.32,
+        earnings: 271.32,
+        status: 'Closed',
+        tasks: DAILY_ACTIONS
+      },
+      '2025-07-21': {
+        date: '2025-07-20',
+        availableBalance: 1832.32,
+        earnings: 271.32,
+        status: 'Closed',
+        tasks: DAILY_ACTIONS
+      },
+      '2025-07-22': {
+        date: '2025-07-20',
+        availableBalance: 1832.32,
+        earnings: 271.32,
+        status: 'Closed',
+        tasks: DAILY_ACTIONS
+      },
+      '2025-07-23': {
+        date: '2025-07-20',
+        availableBalance: 1832.32,
+        earnings: 271.32,
+        status: 'Closed',
+        tasks: DAILY_ACTIONS
+      }
+    }
+  },
+  W29: {
+    year: 2025,
+    week: 30,
+    startDay: "2025-07-27",
+    endDay: "2025-08-03",
+    availableBalance: 1832.32,
+    earnings: 280.00,
+    days: {
+      '2025-07-20': {
+        date: '2025-07-20',
+        availableBalance: 1832.32,
+        earnings: 271.32,
+        status: 'Closed',
+        tasks: DAILY_ACTIONS
+      },
+      '2025-07-21': {
+        date: '2025-07-20',
+        availableBalance: 1832.32,
+        earnings: 271.32,
+        status: 'Closed',
+        tasks: DAILY_ACTIONS
+      },
+      '2025-07-22': {
+        date: '2025-07-20',
+        availableBalance: 1832.32,
+        earnings: 271.32,
+        status: 'Closed',
+        tasks: DAILY_ACTIONS
+      },
+      '2025-07-23': {
+        date: '2025-07-20',
+        availableBalance: 1832.32,
+        earnings: 271.32,
+        status: 'Closed',
+        tasks: DAILY_ACTIONS
+      }
+    }
+  },
+}
 
 
 
@@ -177,7 +266,7 @@ export default function Template({ title, content, isomorphicContent }: any) {
       </div>
       <p className="m-8 text-center">What did you accomplish today?</p>
 
-      <TaskView />
+      <TaskView actions={DAILY_ACTIONS} />
        <p className="m-8 text-center">Your earnings today, so far: $</p>
       <footer>
             <div className="flex w-full flex-center justify-center p-a2">

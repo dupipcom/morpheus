@@ -10,7 +10,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const handleDone = (values) => {
     setValues(values)
   }
-  
+
   return <>
   <ToggleGroup defaultValue={done} value={values} onValueChange={handleDone} variant="outline" className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-8 align-center justify-center w-full m-auto" type="multiple" orientation="horizontal">
    { actions.map((action) => {
