@@ -55,23 +55,25 @@ export default function Template({ title, content, isomorphicContent }: any) {
       <main className="min-h-[100vh]">
 
         <ViewMenu active="week" />
-                <p className="m-8 text-center">Your earnings this week, so far: $</p>
         <div className="flex flex-wrap justify-center">
           <div className="m-8 flex flex-col">
             <label>Week 29</label>
             <small>2025-07-22 to 2025-07-29</small>
+            <small>$280</small>
             <Button>Close week</Button>
           </div>
           <div className="m-8 flex flex-col">
             <label>Week 30</label>
             <small>2025-07-22 to 2025-07-29</small>
+            <small>$370</small>
             <Button>Close week</Button>
           </div>
         </div>
-        <h1 className="m-8 text-center">Current: {getWeekNumber(new Date())}</h1>
-        <p className="m-8 text-center">What did you accomplish this week already?</p>
+        <h1 className="m-8 text-center">This is {getWeekNumber(new Date())}.</h1>
+        <p className="m-8 text-center">What did you accomplish so far?</p>
 
       <TaskView timeframe="week" />
+      <p className="m-8 text-center">Your earnings this week, so far: $</p>
       <footer>
             <div className="flex w-full flex-center justify-center p-a2">
               <Typography>
