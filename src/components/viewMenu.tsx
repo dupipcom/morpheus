@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button"
 export const ViewMenu = ({ active }) =>{
 
   return <NavigationMenu className="flex flex-col center text-center w-full m-auto">
-  <NavigationMenuList className="flex flex-wrap flex-col md:!flex-row">
+  <NavigationMenuList className="grid grid-cols-3">
       <NavigationMenuItem >
         <NavigationMenuLink active={active === 'dashboard'}>
           <a href="/app/dashboard">Dashboard</a>

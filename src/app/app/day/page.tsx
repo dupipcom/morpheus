@@ -190,7 +190,7 @@ const WEEKS = {
         date: '2025-07-20',
         availableBalance: 1832.32,
         earnings: 271.32,
-        status: 'Closed',
+        status: 'Open',
         tasks: DAILY_ACTIONS
       },
       '2025-07-21': {
@@ -228,6 +228,12 @@ export default function Template({ title, content, isomorphicContent }: any) {
 
   const { data: session } = useSession()
 
+  const flatDays = Object.values(WEEKS).flatMap((week) => week.days).reduce((acc, week) => {
+    acc = {...acc, ...week}
+    return acc
+  }, {})
+  const openDays = Object.values(flatDays).filter((day) => day.status === "Open")
+
 
   const handleThemeChange = () => {
     if (globalContext.theme === 'light') {
@@ -244,26 +250,29 @@ export default function Template({ title, content, isomorphicContent }: any) {
         
       <ViewMenu active="day" />
 
+      <div className="m-8 flex flex-col justify-center text-center">
+        <label>Today is {new Date().toLocaleString("en-US", {weekday: "long", year: "numeric", month: "short", day: "numeric" })}.</label>
+      </div>
+
       <div className="flex flex-wrap justify-center">
         <Carousel>
           <CarouselContent>
-            <CarouselItem className="flex flex-col text-center">        
-              <small>$280</small>
-              <label>Friday, Jul 25, 2025</label>
-              
-        <Button>Close day</Button></CarouselItem>
-            <CarouselItem className="flex flex-col"><label>Saturday, Jul 26, 2025</label>
-              <small>$280</small>
-        <Button>Close day</Button></CarouselItem>
+            {
+              openDays.map((day) => {
+                return <CarouselItem className="flex flex-col">
+                  <small>$280</small>
+                  <label>Friday, Jul 25, 2025</label>
+                  <Button>Close day</Button>
+                </CarouselItem>
+              })
+            }
           </CarouselContent>
           <CarouselPrevious />
           <CarouselNext />
         </Carousel>
 
     </div>
-      <div className="m-8 flex flex-col justify-center text-center">
-        <label>It's {new Date().toLocaleString("en-US", {weekday: "long", year: "numeric", month: "short", day: "numeric" })}.</label>
-      </div>
+      
       <p className="m-8 text-center">What did you accomplish today?</p>
 
       <TaskView actions={DAILY_ACTIONS} />
