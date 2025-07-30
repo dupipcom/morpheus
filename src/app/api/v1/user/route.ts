@@ -21,9 +21,11 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   const actions = data.actions
   const session = await getServerSession(authOptions);
 
-  const user = await prisma.user.findUnique({
+  const getUser = async () => await prisma.user.findUnique({
        where: { email: "varsnothing@gmail.com" }
     })
+
+  let user = await getUser()
 
   const fullDate = new Date()
   const date = fullDate.toISOString().split('T')[0]
@@ -46,6 +48,75 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
       },
       where: { email: user.email },
     })
+    user = await getUser()
+  }
+
+  if (!user.entries) {
+    await prisma.user.update({
+      data: {
+        entries: {},
+      },
+      where: { email: user.email }, 
+    })
+    user = await getUser()
+  }
+
+  if (!user.entries[year]) {
+    await prisma.user.update({
+      data: {
+        entries: {
+            ...user.entries,
+            [year]: {
+            },
+          }
+        },
+      where: { email: user.email }, 
+    })
+    user = await getUser()
+  }
+
+  if (!user.entries[year][weekNumber]) {
+    await prisma.user.update({
+      data: {
+        entries: {
+            ...user.entries,
+            [year]: {
+              ...user.entries[year],
+              [weekNumber]: {
+                days: {},
+                year,
+                week: weekNumber,
+                earnings: weekEarnings,
+                tasks: {}
+              }
+            },
+          }
+        },
+      where: { email: user.email }, 
+    })
+    user = await getUser()
+  }
+
+  if (!user.entries[year][weekNumber].days[date]) {
+    await prisma.user.update({
+      data: {
+        entries: {
+            ...user.entries,
+            [year]: {
+              ...user.entries[year],
+              [weekNumber]: {
+                ...user.entries[year][weekNumber],
+                days: {
+                  ...user.entries[year][weekNumber].days,
+                  [date]: {}
+                },
+              }
+            },
+          }
+        },
+      where: { email: user.email }, 
+    })
+    user = await getUser()
   }
 
   if (data.weekActions?.length) {
@@ -53,19 +124,22 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
       data: {
         entries: {
             ...user.entries,
-            ['2025-' + weekNumber]: {
-              ...user.entries['2025-' + weekNumber],
-              week: weekNumber,
-              status: "Open",
-              tasks: actions,
-              year,
-              earnings: weekEarnings
+            [year]: {
+              ...user.entries[year],
+              [weekNumber]: {
+                ...user.entries[year][weekNumber],
+                week: weekNumber,
+                status: "Open",
+                tasks: actions,
+                year,
+                earnings: weekEarnings
             },
+          }
         },
       },
       where: { email: user.email },
     })
-
+    user = await getUser()
   }
 
   if (data.dayActions?.length) {
@@ -73,17 +147,21 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
       data: {
         entries: {
             ...user.entries,
-            ['2025-' + weekNumber]: {
-              ...user.entries['2025-' + weekNumber],
-              days: {
-                [date]: {
-                  ...user.entries['2025-' + weekNumber].days[date],
-                  status: "Open",
-                  tasks: data.dayActions,
-                  earnings: dayEarnings
-                }
+            [year]: {
+              ...user.entries[year],
+              [weekNumber]: {
+                ...user.entries[year][weekNumber],
+                days: {
+                  ...user.entries[year][weekNumber]?.days,
+                  [date]: {
+                    ...user.entries[year][weekNumber]?.days[date],
+                    status: "Open",
+                    tasks: data.dayActions,
+                    earnings: dayEarnings
+                  }
               },
-            },
+            }
+          },
         },
       },
       where: { email: user.email },
