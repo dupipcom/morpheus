@@ -49,18 +49,17 @@ export default function Template({ title, content, isomorphicContent }: any) {
         <Button>Close day</Button>
       </div>
       <div className="m-8 flex flex-col">
-        <label>Friday, Jul 25, 2025</label>
-        <Button>Close day</Button>
-      </div>
-      <div className="m-8 flex flex-col">
-        <label>{new Date().toLocaleString("en-US", {weekday: "long", year: "numeric", month: "short", day: "numeric" })}</label>
+        <label>Saturday, Jul 26, 2025</label>
         <Button>Close day</Button>
       </div>
     </div>
-      <p className="m-8 text-center">Your earnings today, so far: $</p>
+      <div className="m-8 flex flex-col justify-center text-center">
+        <label>It's {new Date().toLocaleString("en-US", {weekday: "long", year: "numeric", month: "short", day: "numeric" })}.</label>
+      </div>
       <p className="m-8 text-center">What did you accomplish today?</p>
 
       <TaskView />
+       <p className="m-8 text-center">Your earnings today, so far: $</p>
       <footer>
             <div className="flex w-full flex-center justify-center p-a2">
               <Typography>

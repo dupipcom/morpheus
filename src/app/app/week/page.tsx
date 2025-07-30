@@ -63,11 +63,12 @@ export default function Template({ title, content, isomorphicContent }: any) {
             <Button>Close week</Button>
           </div>
           <div className="m-8 flex flex-col">
-            <label>Current: {getWeekNumber(new Date())}</label>
+            <label>Week 30</label>
             <small>2025-07-22 to 2025-07-29</small>
+            <Button>Close week</Button>
           </div>
         </div>
-        <h1 className="m-8 text-center">{getWeekNumber(new Date())}</h1>
+        <h1 className="m-8 text-center">Current: {getWeekNumber(new Date())}</h1>
         <p className="m-8 text-center">What did you accomplish this week already?</p>
 
       <TaskView timeframe="week" />
