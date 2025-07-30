@@ -25,6 +25,6 @@ export function middleware(request) {
  
 export const config = {
   matcher: [
-    '/((?!services|dash|subs|members|app|.well-known|api|favicon.ico|fonts|images|scripts|og-image.png|sitemap|robots|_next).*)',
+    '/((?!services|subs|members|app|.well-known|api|login|favicon.ico|fonts|images|scripts|og-image.png|sitemap|robots|_next).*)',
   ],
 }
