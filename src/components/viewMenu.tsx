@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -12,6 +13,14 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 
 export const ViewMenu = ({ active }) =>{
+  const [balance, setBalance] = useState(0)
+
+  const handleBalanceChange = (e) => {
+    console.log("UPDATE")
+    fetch('/api/v1/user', { method: 'POST', body: JSON.stringify({
+      availableBalance: e.currentTarget.value
+    }) })
+  }
 
   return <NavigationMenu className="flex flex-col center text-center w-full m-auto">
   <NavigationMenuList className="grid grid-cols-3">
@@ -43,7 +52,7 @@ export const ViewMenu = ({ active }) =>{
   </NavigationMenuList>
   <div className="my-8">
     <label>Available Balance:</label>
-    <Input />
+    <Input onChange={handleBalanceChange} />
   </div>
 </NavigationMenu>
 

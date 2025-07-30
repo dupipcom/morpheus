@@ -18,10 +18,8 @@ function getWeekNumber(d) {
 
 export async function POST(req: NextApiRequest, res: NextApiResponse) {
   const data = await req.json()
-  const tasks = data.actions
+  const actions = data.actions
   const session = await getServerSession(authOptions);
-
-  console.log({ data })
 
   const user = await prisma.user.findUnique({
        where: { email: "varsnothing@gmail.com" }
@@ -32,43 +30,68 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   const year = Number(date.split('-')[0])
   const weekNumber = getWeekNumber(fullDate)
 
+  const dayDone = data.dayActions?.filter((action) => action.status === "Done")
+  const weekDone = data.weekActions?.filter((action) => action.status === "Done")
 
-  console.log({ session, user })
+  const dayProgress = data.dayActions?.length ? dayDone.length / data.dayActions.length : undefined
+  const weekProgress = data.weekActions?.length ? weekDone.length / data.weekActions.length : undefined
 
-  const dayDone = data.dayActions.filter((action) => action.status === "Done")
-  const weekDone = data.weekActions.filter((action) => action.status === "Done")
+  const dayEarnings = user.availableBalance * dayProgress / 30
+  const weekEarnings = user.availableBalance * weekProgress / 4
 
-  const dayProgress = data.dayActions.length ? dayDone.length / data.dayActions.length : undefined
-  const weekProgress = data.weekActions.length ? weekDone.length / data.weekActions.length : undefined
+  if (data.availableBalance) {
+    await prisma.user.update({
+      data: {
+        availableBalance: data.availableBalance
+      },
+      where: { email: user.email },
+    })
+  }
 
-  console.log({ dayDone, dayProgress, weekProgress })
-
-
-  await prisma.user.update({
+  if (data.weekActions?.length) {
+    await prisma.user.update({
       data: {
         entries: {
             ...user.entries,
             ['2025-' + weekNumber]: {
-              days: {
-                [date]: {
-                  status: "Open",
-                  tasks: data.dayActions,
-                  earnings: dayProgress
-                }
-              },
+              ...user.entries['2025-' + weekNumber],
               week: weekNumber,
               status: "Open",
-              tasks: data.weekActions,
+              tasks: actions,
               year,
-              earnings: weekProgress
+              earnings: weekEarnings
             },
         },
       },
       where: { email: user.email },
     })
-  if (req.method === "POST") {
-  
+
   }
 
+  if (data.dayActions?.length) {
+    await prisma.user.update({
+      data: {
+        entries: {
+            ...user.entries,
+            ['2025-' + weekNumber]: {
+              ...user.entries['2025-' + weekNumber],
+              days: {
+                [date]: {
+                  ...user.entries['2025-' + weekNumber].days[date],
+                  status: "Open",
+                  tasks: data.dayActions,
+                  earnings: dayEarnings
+                }
+              },
+            },
+        },
+      },
+      where: { email: user.email },
+    })
+
+  }
+
+
+  
   return Response.json({})
 }

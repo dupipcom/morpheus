@@ -55,13 +55,13 @@ model User {
   accounts      Account[]
   sessions      Session[]
   entries       Json?
+  availableBalance String?
 
 }
 
 type Day {
   tasks Task[]
   earnings String
-  availableBalance String
   date String
   status String
 }
@@ -71,7 +71,6 @@ type Week {
   year  Int
   tasks  Task[]
   earnings String
-  availableBalance String
   date String
   status String
   days Day[]
