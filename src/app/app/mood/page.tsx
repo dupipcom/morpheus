@@ -39,7 +39,7 @@ export default function Template({ title, content, isomorphicContent }: any) {
       <Nav onThemeChange={handleThemeChange} />
       <main className="min-h-[100vh]">
         <ViewMenu active="mood" />
-        <h1 className="m-8 text-center">{new Date().toLocaleString("en-US", {weekday: "long", year: "numeric", month: "short", day: "numeric" })}<br /> How is your mood right now?</h1>
+        <h1 className="m-8 text-center">It's {new Date().toLocaleString("en-US", {weekday: "long", year: "numeric", month: "short", day: "numeric" })}.<br /> u k, g?</h1>
         <MoodView />
       
       <footer>
