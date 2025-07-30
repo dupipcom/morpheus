@@ -18,7 +18,6 @@ function getWeekNumber(d) {
 
 export async function POST(req: NextApiRequest, res: NextApiResponse) {
   const data = await req.json()
-  const actions = data.actions
   const session = await getServerSession(authOptions);
 
   const getUser = async () => await prisma.user.findUnique({
@@ -130,7 +129,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                 ...user.entries[year][weekNumber],
                 week: weekNumber,
                 status: "Open",
-                tasks: actions,
+                tasks: data.weekActions,
                 year,
                 earnings: weekEarnings
             },
