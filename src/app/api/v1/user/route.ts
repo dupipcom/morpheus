@@ -205,6 +205,22 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     user = await getUser()
   }
 
+  console.log({ data })
+
+  if (data.settings) {
+    await prisma.user.update({
+      data: {
+        settings: {
+          ...user.settings,
+          ...data.settings
+        },
+      },
+      where: { email: user.email },
+    })
+    user = await getUser()
+  }
+
+
 
   
   return Response.json(user)

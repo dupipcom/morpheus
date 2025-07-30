@@ -55,7 +55,15 @@ model User {
   accounts      Account[]
   sessions      Session[]
   entries       Json?
+  settings      Settings
+}
+
+type Settings {
   availableBalance String?
+  monthsFixedIncome  String?
+  monthsVariableIncome String?
+  monthsNeedFixedExpenses String?
+  monthsNeedVariableExpenses String?
 }
 
 type Mood {
