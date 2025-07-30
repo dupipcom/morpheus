@@ -3,6 +3,8 @@ import { type ChartConfig } from "@/components/ui/chart"
 import { Area, CartesianGrid, Bar, AreaChart } from "recharts"
  
 import { ChartContainer, ChartTooltipContent, ChartTooltip } from "@/components/ui/chart"
+
+import { EarningsTable } from '@/components/earningsTable'
  
 
  const chartData = [
@@ -37,5 +39,6 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
           <ChartTooltip content={<ChartTooltipContent />} />
         </AreaChart>
       </ChartContainer>
+      <EarningsTable />
     </div>
 }

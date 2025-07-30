@@ -38,7 +38,7 @@ export default function Template({ title, content, isomorphicContent }: any) {
       <Globals theme={globalContext.theme}>
       <Nav onThemeChange={handleThemeChange} />
       <main className="min-h-[100vh]">
-        <ViewMenu active="mood" />
+        <ViewMenu active="settings" />
         <h1 className="m-8 text-center">Let's configure things.</h1>
         <SettingsView />
       

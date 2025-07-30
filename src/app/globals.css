@@ -5,7 +5,7 @@
  
 :root {
   --background: oklch(1 0 0);
-  --foreground: #c4abef;
+  --foreground: #2f2f8d;
   --card: oklch(1 0 0);
   --card-foreground: red;
   --popover: oklch(1 0 0);
