@@ -7,12 +7,6 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const done = actions.filter((action) => action.status === "Done").map((action) => action.name)
   const [values, setValues] = useState(done)
 
-  const handleDone = (values) => {
-    setValues(values)
-    fetch('/api/v1/user', { method: 'POST', body: JSON.stringify({}) })
-    upsertDay()
-  }
-
   const nextActions = useMemo(() => {
     return actions.map((action) => {
       const clonedAction = { ...action }
@@ -23,6 +17,17 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       }
       return clonedAction
     })}, [values]) 
+
+  const handleDone = (values) => {
+    setValues(values)
+    fetch('/api/v1/user', { method: 'POST', body: JSON.stringify({
+      dayActions: timeframe === 'day' ? nextActions : [],
+      weekActions: timeframe === 'week' ? nextActions : [] 
+    }) })
+    upsertDay()
+  }
+
+  
 
 
 

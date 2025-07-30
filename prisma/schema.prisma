@@ -54,14 +54,8 @@ model User {
   updatedAt     DateTime  @updatedAt
   accounts      Account[]
   sessions      Session[]
-  entries    Entry[]
+  entries       Json?
 
-}
-
-type Entry {
-  days  Day[]
-  weeks Week[]
-  year Int
 }
 
 type Day {
@@ -73,6 +67,8 @@ type Day {
 }
 
 type Week {
+  week String
+  year  Int
   tasks  Task[]
   earnings String
   availableBalance String
