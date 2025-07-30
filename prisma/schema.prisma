@@ -57,6 +57,7 @@ model User {
   entries       Json?
   settings      Settings?
   availableBalance  String?
+  hint String?
 }
 
 type Settings {
@@ -83,6 +84,7 @@ type Day {
   date String
   status String
   mood Mood?
+  hint String?
 }
 
 type Week {
@@ -93,6 +95,7 @@ type Week {
   date String
   status String
   days Day[]
+  hint String?
 }
 
 type Task {

@@ -1,6 +1,6 @@
 'use client'
 import { type ChartConfig } from "@/components/ui/chart"
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useSession, signIn, signOut } from "next-auth/react"
 import { Area, CartesianGrid, Bar, AreaChart } from "recharts"
  
@@ -36,9 +36,27 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
   const date = fullDate.toISOString().split('T')[0]
   const year = Number(date.split('-')[0])
   const weekNumber = getWeekNumber(fullDate)[1]
+  const [insight, setInsight] = useState("")
   const { data: session, update } = useSession()
 
+  const generateInsight = async (value, field) => {
+    const response = await fetch('/api/v1/hint', 
+      { method: 'POST', 
+        body: JSON.stringify({
+      }) 
+    })
+    const json = await response.json()
+    console.log({ json })
+    setInsight(json.result)
+  }
+
+  useEffect(() => {
+    generateInsight()
+  }, [])
+
+
   return <div className="w-full m-auto">
+      <p>{insight}</p>
       <ChartContainer config={chartConfig}>
         <AreaChart data={chartData}>
           <CartesianGrid vertical={true} horizontal={true} />
