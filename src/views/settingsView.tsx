@@ -41,8 +41,8 @@ export const SettingsView = ({ timeframe = "day" }) => {
       <h3 className="mt-8">Month’s Variable Income</h3>
       <Input defaultValue={serverSettings.monthsVariableIncome} onBlur={(e) => handleSubmit(e.currentTarget.value, "monthsVariableIncome")}/>
       <h3 className="mt-8">Fixed Need Costs</h3>
-      <Input defaultValue={serverSettings.monthsFixedExpenses} onBlur={(e) => handleSubmit(e.currentTarget.value, "monthsNeedFixedExpenses")}/>
+      <Input defaultValue={serverSettings.monthsNeedFixedExpenses} onBlur={(e) => handleSubmit(e.currentTarget.value, "monthsNeedFixedExpenses")}/>
       <h3 className="mt-8">Expected Need Utilities Average</h3>
-      <Input defaultValue={serverSettings.monthsVariableExpenses} onBlur={(e) => handleSubmit(e.currentTarget.value, "monthsNeedVariableExpenses")}/>
+      <Input defaultValue={serverSettings.monthsNeedVariableExpenses} onBlur={(e) => handleSubmit(e.currentTarget.value, "monthsNeedVariableExpenses")}/>
     </div>
 }
