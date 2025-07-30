@@ -15,19 +15,16 @@ import { useSession, signIn, signOut } from "next-auth/react"
 
 export const ViewMenu = ({ active }) =>{
   const { data: session } = useSession()
-  const [balance, setBalance] = useState(session?.user?.availableBalance)
+  const serverBalance = session?.user?.availableBalance
+
+  console.log({ serverBalance })
   
 
   const handleBalanceChange = (e) => {
-    setBalance(e.currentTarget.value)
     fetch('/api/v1/user', { method: 'POST', body: JSON.stringify({
       availableBalance: e.currentTarget.value
     }) })
   }
-
-  useEffect(() => {
-    setBalance(session?.user?.availableBalance)
-  }, [session?.user])
 
   return <NavigationMenu className="flex flex-col center text-center w-full m-auto">
   <NavigationMenuList className="grid grid-cols-3">
@@ -59,7 +56,7 @@ export const ViewMenu = ({ active }) =>{
   </NavigationMenuList>
   <div className="my-8">
     <label>Available Balance:</label>
-    <Input onChange={handleBalanceChange} value={balance} />
+    <Input onBlur={handleBalanceChange} defaultValue={serverBalance} />
   </div>
 </NavigationMenu>
 

@@ -55,7 +55,8 @@ model User {
   accounts      Account[]
   sessions      Session[]
   entries       Json?
-  settings      Settings
+  settings      Settings?
+  availableBalance  String?
 }
 
 type Settings {

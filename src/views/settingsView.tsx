@@ -15,7 +15,7 @@ export const SettingsView = ({ timeframe = "day" }) => {
   const { data: session, update } = useSession()
   
 
-  const serverSettings = (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year][weekNumber] && session?.user?.entries[year][weekNumber].days[date] && session?.user?.entries[year][weekNumber].days[date].mood) || {}
+  const serverSettings = (session?.user?.settings) || {}
 
   const [mood, setMood] = useState(serverSettings)
 
@@ -29,7 +29,6 @@ export const SettingsView = ({ timeframe = "day" }) => {
       { method: 'POST', 
         body: JSON.stringify({
           settings: {
-            ...serverSettings,
             [field]: value
           }
       }) 
@@ -38,13 +37,12 @@ export const SettingsView = ({ timeframe = "day" }) => {
 
   return <div className="max-w-[320px] m-auto">
       <h3 className="mt-8">Month’s Recurring Income</h3>
-      <Input  onBlur={(e) => handleSubmit(e.current.value, "monthsFixedIncome")} />
+      <Input defaultValue={serverSettings.monthsFixedIncome} onBlur={(e) => handleSubmit(e.currentTarget.value, "monthsFixedIncome")} />
       <h3 className="mt-8">Month’s Variable Income</h3>
-      <Input onBlur={(e) => handleSubmit(e.current.value, "monthsVariableIncome")}/>
+      <Input defaultValue={serverSettings.monthsVariableIncome} onBlur={(e) => handleSubmit(e.currentTarget.value, "monthsVariableIncome")}/>
       <h3 className="mt-8">Fixed Need Costs</h3>
-      <Input onBlur={(e) => handleSubmit(e.current.value, "monthsFixedNeedExpenses")}/>
+      <Input defaultValue={serverSettings.monthsFixedExpenses} onBlur={(e) => handleSubmit(e.currentTarget.value, "monthsNeedFixedExpenses")}/>
       <h3 className="mt-8">Expected Need Utilities Average</h3>
-      <Input onBlur={(e) => handleSubmit(e.current.value, "monthsNeedVariableExpenses")}/>
-      <Button className="my-8 w-full">Save</Button>
+      <Input defaultValue={serverSettings.monthsVariableExpenses} onBlur={(e) => handleSubmit(e.currentTarget.value, "monthsNeedVariableExpenses")}/>
     </div>
 }
