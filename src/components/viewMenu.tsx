@@ -8,10 +8,11 @@ import {
   NavigationMenuTrigger,
   NavigationMenuViewport,
 } from "@/components/ui/navigation-menu"
+import { Input } from "@/components/ui/input"
 
 export const ViewMenu = ({ active }) =>{
 
-  return <NavigationMenu className="center text-center w-full m-auto">
+  return <NavigationMenu className="flex flex-col center text-center w-full m-auto">
   <NavigationMenuList>
       <NavigationMenuItem >
         <NavigationMenuLink active={active === 'dashboard'}>
@@ -40,6 +41,10 @@ export const ViewMenu = ({ active }) =>{
       </NavigationMenuItem>
    
   </NavigationMenuList>
+  <div className="my-8">
+    <label>Available Balance:</label>
+    <Input />
+  </div>
 </NavigationMenu>
 
 }

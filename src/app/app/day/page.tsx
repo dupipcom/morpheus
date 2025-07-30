@@ -40,7 +40,10 @@ export default function Template({ title, content, isomorphicContent }: any) {
       <Nav onThemeChange={handleThemeChange} />
       <main className="min-h-[100vh]">
       <ViewMenu active="day" />
-      <h1 className="m-8 text-center">{new Date().toLocaleString("en-US", {weekday: "long", year: "numeric", month: "short", day: "numeric" })}<br /> What did you accomplish today so far?</h1>
+      <h1 className="m-8 text-center">{new Date().toLocaleString("en-US", {weekday: "long", year: "numeric", month: "short", day: "numeric" })}</h1>
+      <p className="m-8 text-center">Your earnings today, so far: </p>
+      <p className="m-8 text-center">What did you accomplish today?</p>
+
       <TaskView />
       <footer>
             <div className="flex w-full flex-center justify-center p-a2">
