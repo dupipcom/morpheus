@@ -1,19 +1,18 @@
 import { getServerSession } from "next-auth/next"
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
+import { getWeekNumber } from "@/app/helpers"
 
-function getWeekNumber(d) {
-    // Copy date so don't modify original
-    d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-    // Set to nearest Thursday: current date + 4 - current day number
-    // Make Sunday's day number 7
-    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
-    // Get first day of year
-    var yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
-    // Calculate full weeks to nearest Thursday
-    var weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
-    // Return array of year and week number
-    return weekNo;
+export async function GET(req: NextApiRequest, res: NextApiResponse) {
+  const session = await getServerSession(authOptions);
+
+  const getUser = async () => await prisma.user.findUnique({
+       where: { email: session?.user?.email }
+    })
+
+  let user = await getUser()
+
+  return Response.json(user)
 }
 
 export async function POST(req: NextApiRequest, res: NextApiResponse) {
@@ -21,7 +20,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(authOptions);
 
   const getUser = async () => await prisma.user.findUnique({
-       where: { email: "varsnothing@gmail.com" }
+       where: { email: session?.user?.email  }
     })
 
   let user = await getUser()
@@ -29,7 +28,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   const fullDate = new Date()
   const date = fullDate.toISOString().split('T')[0]
   const year = Number(date.split('-')[0])
-  const weekNumber = getWeekNumber(fullDate)
+  const weekNumber = getWeekNumber(fullDate)[1]
 
   const dayDone = data.dayActions?.filter((action) => action.status === "Done")
   const weekDone = data.weekActions?.filter((action) => action.status === "Done")
@@ -39,6 +38,8 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
 
   const dayEarnings = user.availableBalance * dayProgress / 30
   const weekEarnings = user.availableBalance * weekProgress / 4
+
+  console.log({ dayDone, weekDone })
 
   if (data.availableBalance) {
     await prisma.user.update({
@@ -165,10 +166,10 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
       },
       where: { email: user.email },
     })
-
+    user = await getUser()
   }
 
 
   
-  return Response.json({})
+  return Response.json(user)
 }

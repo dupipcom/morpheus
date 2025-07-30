@@ -24,6 +24,8 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 
+import { getWeekNumber } from "@/app/helpers"
+
 const DAILY_ACTIONS = [
   {
     name: 'Drank Water',
@@ -228,7 +230,16 @@ export default function Template({ title, content, isomorphicContent }: any) {
     theme: 'light'
   })
 
-  const { data: session } = useSession()
+  const { data: session, update } = useSession()
+
+  const fullDate = new Date()
+  const date = fullDate.toISOString().split('T')[0]
+  const year = Number(date.split('-')[0])
+  const weekNumber = getWeekNumber(fullDate)[1]
+
+  const actions = (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year][weekNumber] && session?.user?.entries[year][weekNumber].days[date] && session?.user?.entries[year][weekNumber].days[date].tasks) || DAILY_ACTIONS
+
+
 
   const flatDays = Object.values(WEEKS).flatMap((week) => week.days).reduce((acc, week) => {
     acc = {...acc, ...week}
@@ -277,7 +288,7 @@ export default function Template({ title, content, isomorphicContent }: any) {
       
       <p className="m-8 text-center">What did you accomplish today?</p>
 
-      <TaskView actions={DAILY_ACTIONS} />
+      <TaskView actions={actions} />
        <p className="m-8 text-center">Your earnings today, so far: $</p>
       <footer>
             <div className="flex w-full flex-center justify-center p-a2">

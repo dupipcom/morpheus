@@ -1,14 +1,23 @@
 'use client'
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Slider } from "@/components/ui/slider"
+import { useSession, signIn, signOut } from "next-auth/react"
+import { getWeekNumber } from "@/app/helpers"
 
 export const TaskView = ({ timeframe = "day", actions = [] }) => {
-  const done = actions.filter((action) => action.status === "Done").map((action) => action.name)
-  const [values, setValues] = useState(done)
+  const fullDate = new Date()
+  const date = fullDate.toISOString().split('T')[0]
+  const year = Number(date.split('-')[0])
+  const weekNumber = getWeekNumber(fullDate)[1]
+  const { data: session, update } = useSession()
 
-  const nextActions = useMemo(() => {
-    return actions.map((action) => {
+  const userDayTasks = useMemo(() => (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year][weekNumber] && session?.user?.entries[year][weekNumber].days[date] && session?.user?.entries[year][weekNumber].days[date].tasks), [JSON.stringify(session)])
+  const userDone = useMemo(() => userDayTasks?.filter((task) => task.status === "Done").map((task) => task.name), [userDayTasks])
+  const [values, setValues] = useState(userDone)
+
+  const handleDone = async (values) => {
+    const nextActions = userDayTasks?.map((action) => {
       const clonedAction = { ...action }
       if (values.includes(action.name)) {
         clonedAction.status = "Done"
@@ -16,23 +25,29 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
         clonedAction.status = "Open"
       }
       return clonedAction
-    })}, [values]) 
-
-  const handleDone = (values) => {
-    setValues(values)
-    fetch('/api/v1/user', { method: 'POST', body: JSON.stringify({
-      dayActions: timeframe === 'day' ? nextActions : [],
+    })
+    const done = nextActions.filter((action) => action.status === "Done").map((action) => action.name)
+    setValues(done)
+    const response = await fetch('/api/v1/user', { method: 'POST', body: JSON.stringify({
+      dayActions: timeframe === 'day' ? nextActions : userDayTasks,
       weekActions: timeframe === 'week' ? nextActions : [] 
     }) })
-    upsertDay()
+    await updateUser()
   }
 
+  const updateUser = async () => {
+    const response = await fetch('/api/v1/user', { method: 'GET' })
+    const updatedUser = await response.json()
+    console.log({ updatedUser })
+    update({ ...session, user: { ...session?.user, ...updatedUser }})
+  }
+
+  useEffect(() => {
+    setValues(userDone)
+  }, [userDone])
   
-
-
-
   return <>
-  <ToggleGroup defaultValue={done} value={values} onValueChange={handleDone} variant="outline" className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-8 align-center justify-center w-full m-auto" type="multiple" orientation="horizontal">
+  <ToggleGroup value={values} onValueChange={handleDone} variant="outline" className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-8 align-center justify-center w-full m-auto" type="multiple" orientation="horizontal">
    { actions.map((action) => {
       return <ToggleGroupItem value={action.name}>{action.name}</ToggleGroupItem>
     }) }
