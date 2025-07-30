@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -11,16 +11,23 @@ import {
 } from "@/components/ui/navigation-menu"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { useSession, signIn, signOut } from "next-auth/react"
 
 export const ViewMenu = ({ active }) =>{
-  const [balance, setBalance] = useState(0)
+  const { data: session } = useSession()
+  const [balance, setBalance] = useState(session?.user?.availableBalance)
+  
 
   const handleBalanceChange = (e) => {
-    console.log("UPDATE")
+    setBalance(e.currentTarget.value)
     fetch('/api/v1/user', { method: 'POST', body: JSON.stringify({
       availableBalance: e.currentTarget.value
     }) })
   }
+
+  useEffect(() => {
+    setBalance(session?.user?.availableBalance)
+  }, [session?.user])
 
   return <NavigationMenu className="flex flex-col center text-center w-full m-auto">
   <NavigationMenuList className="grid grid-cols-3">
@@ -52,7 +59,7 @@ export const ViewMenu = ({ active }) =>{
   </NavigationMenuList>
   <div className="my-8">
     <label>Available Balance:</label>
-    <Input onChange={handleBalanceChange} />
+    <Input onChange={handleBalanceChange} value={balance} />
   </div>
 </NavigationMenu>
 

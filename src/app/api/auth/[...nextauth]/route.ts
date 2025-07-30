@@ -16,7 +16,10 @@ export const authOptions = {
   callbacks: {
     async redirect({ url, baseUrl }) {
       return '/app/day'
-    }
+    },
+    session: async (session, user) => {
+      return Promise.resolve(session);
+    },
   },
   adapter: PrismaAdapter(prisma)
 }
