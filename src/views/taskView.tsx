@@ -12,12 +12,21 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const weekNumber = getWeekNumber(fullDate)[1]
   const { data: session, update } = useSession()
 
-  const userDayTasks = useMemo(() => (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year][weekNumber] && session?.user?.entries[year][weekNumber].days[date] && session?.user?.entries[year][weekNumber].days[date].tasks), [JSON.stringify(session)])
-  const userDone = useMemo(() => userDayTasks?.filter((task) => task.status === "Done").map((task) => task.name), [userDayTasks])
+  const userTasks = useMemo(() => {
+    if(timeframe === 'day') {
+      return (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year][weekNumber] && session?.user?.entries[year][weekNumber].days[date] && session?.user?.entries[year][weekNumber].days[date].tasks) || []
+    } else {
+      return (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year][weekNumber] && session?.user?.entries[year][weekNumber].tasks) || []
+    }
+  }, [JSON.stringify(session)])
+
+  console.log({ userTasks })
+
+  const userDone = useMemo(() => userTasks?.filter((task) => task.status === "Done").map((task) => task.name), [userTasks])
   const [values, setValues] = useState(userDone)
 
   const handleDone = async (values) => {
-    const nextActions = userDayTasks?.map((action) => {
+    const nextActions = userTasks?.map((action) => {
       const clonedAction = { ...action }
       if (values.includes(action.name)) {
         clonedAction.status = "Done"
@@ -29,8 +38,8 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     const done = nextActions.filter((action) => action.status === "Done").map((action) => action.name)
     setValues(done)
     const response = await fetch('/api/v1/user', { method: 'POST', body: JSON.stringify({
-      dayActions: timeframe === 'day' ? nextActions : userDayTasks,
-      weekActions: timeframe === 'week' ? nextActions : [] 
+      dayActions: timeframe === 'day' ? nextActions : undefined,
+      weekActions: timeframe === 'week' ? nextActions : undefined 
     }) })
     await updateUser()
   }
@@ -45,7 +54,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   useEffect(() => {
     setValues(userDone)
   }, [userDone])
-  
+
   return <>
   <ToggleGroup value={values} onValueChange={handleDone} variant="outline" className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-8 align-center justify-center w-full m-auto" type="multiple" orientation="horizontal">
    { actions.map((action) => {

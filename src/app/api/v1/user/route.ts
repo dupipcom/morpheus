@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth/next"
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { getWeekNumber } from "@/app/helpers"
+import { WEEKLY_ACTIONS, DAILY_ACTIONS } from "@/app/constants"
 
 export async function GET(req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(authOptions);
@@ -87,7 +88,8 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                 year,
                 week: weekNumber,
                 earnings: weekEarnings,
-                tasks: {}
+                tasks: WEEKLY_ACTIONS,
+                status: "Open"
               }
             },
           }
@@ -108,7 +110,10 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                 ...user.entries[year][weekNumber],
                 days: {
                   ...user.entries[year][weekNumber].days,
-                  [date]: {}
+                  [date]: {
+                    tasks: DAILY_ACTIONS,
+                    status: "Open"
+                  }
                 },
               }
             },
