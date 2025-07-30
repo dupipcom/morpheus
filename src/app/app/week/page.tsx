@@ -15,6 +15,21 @@ import { GlobalContext } from "./contexts"
 import { useSession, signIn, signOut } from "next-auth/react"
 import { TaskView } from "@/views/taskView"
 import { ViewMenu } from "@/components/viewMenu"
+import { Button } from "@/components/ui/button"
+
+function getWeekNumber(d) {
+    // Copy date so don't modify original
+    d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    // Set to nearest Thursday: current date + 4 - current day number
+    // Make Sunday's day number 7
+    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
+    // Get first day of year
+    var yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+    // Calculate full weeks to nearest Thursday
+    var weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
+    // Return array of year and week number
+    return ['W', weekNo];
+}
 
 
 
@@ -38,7 +53,18 @@ export default function Template({ title, content, isomorphicContent }: any) {
       <Globals theme={globalContext.theme}>
       <Nav onThemeChange={handleThemeChange} />
       <main className="min-h-[100vh]">
+
         <ViewMenu active="week" />
+        <div className="flex flex-wrap justify-center">
+          <div className="m-8 flex flex-col">
+            <label>W29</label>
+            <Button>Close week</Button>
+          </div>
+          <div className="m-8 flex flex-col">
+            <label>{getWeekNumber(new Date())}</label>
+            <Button>Close week</Button>
+          </div>
+        </div>
         <h1 className="m-8 text-center">{new Date().toLocaleString("en-US", {weekday: "long", year: "numeric", month: "short", day: "numeric" })}</h1>
         <p className="m-8 text-center">Your earnings this week, so far: $</p>
         <p className="m-8 text-center">What did you accomplish this week?</p>

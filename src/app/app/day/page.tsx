@@ -15,6 +15,7 @@ import { GlobalContext } from "./contexts"
 import { useSession, signIn, signOut } from "next-auth/react"
 import { TaskView } from "@/views/taskView"
 import { ViewMenu } from "@/components/viewMenu"
+import { Button } from "@/components/ui/button"
 
 
 
@@ -39,7 +40,23 @@ export default function Template({ title, content, isomorphicContent }: any) {
       <Globals theme={globalContext.theme}>
       <Nav onThemeChange={handleThemeChange} />
       <main className="min-h-[100vh]">
+        
       <ViewMenu active="day" />
+
+      <div className="flex flex-wrap justify-center">
+      <div className="m-8 flex flex-col">
+        <label>Friday, Jul 25, 2025</label>
+        <Button>Close day</Button>
+      </div>
+      <div className="m-8 flex flex-col">
+        <label>Friday, Jul 25, 2025</label>
+        <Button>Close day</Button>
+      </div>
+      <div className="m-8 flex flex-col">
+        <label>{new Date().toLocaleString("en-US", {weekday: "long", year: "numeric", month: "short", day: "numeric" })}</label>
+        <Button>Close day</Button>
+      </div>
+    </div>
       <p className="m-8 text-center">Your earnings today, so far: $</p>
       <p className="m-8 text-center">What did you accomplish today?</p>
 
