@@ -50,6 +50,6 @@ export const MoodView = ({ timeframe = "day" }) => {
       <h3 className="mt-8">Trust in others</h3>
       <Slider defaultValue={[serverMood.trust || 0]} max={5} step={1} onValueCommit={(e) => handleSubmit(e[0], "trust")} />
       <h3 className="mt-8">What's in your mind?</h3>
-      <Textarea onBlur={(e) => handleSubmit(e.target.value, "text")} />
+      <Textarea defaultValue={serverMood.text} onBlur={(e) => handleSubmit(e.target.value, "text")} />
     </div>
 }

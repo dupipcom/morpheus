@@ -172,6 +172,8 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     user = await getUser()
   }
 
+  console.log({ data })
+
   if (data.mood) {
     await prisma.user.update({
       data: {

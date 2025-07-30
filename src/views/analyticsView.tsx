@@ -1,10 +1,14 @@
 'use client'
 import { type ChartConfig } from "@/components/ui/chart"
+import { useState } from 'react'
+import { useSession, signIn, signOut } from "next-auth/react"
 import { Area, CartesianGrid, Bar, AreaChart } from "recharts"
  
 import { ChartContainer, ChartTooltipContent, ChartTooltip } from "@/components/ui/chart"
 
 import { EarningsTable } from '@/components/earningsTable'
+
+import { getWeekNumber } from "@/app/helpers"
  
 
  const chartData = [
@@ -28,6 +32,12 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export const AnalyticsView = ({ timeframe = "day" }) => {
+  const fullDate = new Date()
+  const date = fullDate.toISOString().split('T')[0]
+  const year = Number(date.split('-')[0])
+  const weekNumber = getWeekNumber(fullDate)[1]
+  const { data: session, update } = useSession()
+
   return <div className="w-full m-auto">
       <ChartContainer config={chartConfig}>
         <AreaChart data={chartData}>
