@@ -18,18 +18,31 @@ export const MoodView = ({ timeframe = "day" }) => {
 
   const serverMood = (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date] && session?.user?.entries[year].days[date].mood) || {}
 
+  const serverText = (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date] && session?.user?.entries[year].days[date].text) || ""
+
   const [mood, setMood] = useState(serverMood)
 
   const handleSubmit = async (value, field) => {
     setMood({...mood, [field]: value})
-    const response = await fetch('/api/v1/user', 
+
+    if (field === 'text') {
+      const response = await fetch('/api/v1/user', 
+      { method: 'POST', 
+        body: JSON.stringify({
+          text: value
+      }) 
+    })
+    } else {
+      const response = await fetch('/api/v1/user', 
       { method: 'POST', 
         body: JSON.stringify({
           mood: {
             [field]: value
           }
-      }) 
-    })
+        }) 
+      })
+    }
+
   }
 
   const generateInsight = async (value, field) => {
@@ -80,6 +93,6 @@ export const MoodView = ({ timeframe = "day" }) => {
       </div>
       <Slider defaultValue={[serverMood.trust || 0]} max={5} step={1} onValueCommit={(e) => handleSubmit(e[0], "trust")} />
       <h3 className="mt-8">What's in your mind?</h3>
-      <Textarea defaultValue={serverMood.text} onBlur={(e) => handleSubmit(e.target.value, "text")} />
+      <Textarea defaultValue={serverText} onBlur={(e) => handleSubmit(e.target.value, "text")} />
     </div>
 }

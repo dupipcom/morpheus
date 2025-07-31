@@ -181,6 +181,8 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   const dayEarnings = ((5 - dayMoodAverage)) * 0.2 + ((dayProgress * 0.80)) * user?.availableBalance / 30
   const weekEarnings = ((5 - weekMoodAverage)) * 0.2 + ((weekProgress * 0.80)) * user?.availableBalance / 30
 
+  console.log({ data, weekMoodValues, moodValues, dayEarnings, dayMoodAverage, weekMoodAverage, balance: user?.availableBalance,  weekEarnings })
+
   if (data.weekActions?.length) {
     await prisma.user.update({
       data: {
@@ -257,7 +259,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     user = await getUser()
   }
 
-  if (!data?.mood?.text && data?.mood) {
+  if (data?.mood) {
     const key = Object.keys(data.mood)[0]
     await prisma.user.update({
       data: {
@@ -289,7 +291,9 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
       where: { name: user.name },
     })
     user = await getUser()
-  } else if (data?.mood) {
+  }
+
+  if (data?.text) {
     await prisma.user.update({
       data: {
         entries: {
@@ -300,7 +304,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                 ...user.entries[year].days,
                 [date]: {
                   ...user.entries[year].days[date],
-                  text: data?.mood?.text,
+                  text: data?.text,
                   moodAverage: dayMoodAverage
                 }
               },
@@ -319,7 +323,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     user = await getUser()
   }
 
-  if (data.settings) {
+  if (data?.settings) {
     await prisma.user.update({
       data: {
         settings: {
