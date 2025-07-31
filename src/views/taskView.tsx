@@ -77,6 +77,6 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     }) }
   </ToggleGroup>
     <p className="m-8">{timeframe === "day" ? insight.dayAnalysis : insight.weekAnalysis }</p>
-    <p className="m-8">{insight.last3days}</p>
+    <p className="m-8">{insight.last3daysAnalysis}</p>
     </>
 }
