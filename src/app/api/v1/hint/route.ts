@@ -99,7 +99,7 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
 
       user = getUser();
 
-      return Response.json({ result: response.output_text });
+      return Response.json({ result: JSON.parse(response.output_text) });
 
   } catch (error) {
     console.error(error);

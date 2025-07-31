@@ -36,7 +36,7 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
   const date = fullDate.toISOString().split('T')[0]
   const year = Number(date.split('-')[0])
   const weekNumber = getWeekNumber(fullDate)[1]
-  const [insight, setInsight] = useState("")
+  const [insight, setInsight] = useState({})
   const [relevantData, setRelevantData] = useState([])
   const { data: session, update } = useSession()
 
@@ -58,7 +58,7 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
 
 
   return <div className="w-full m-auto p-8 md:p-32 ">
-      <p className="mb-8">{insight}</p>
+      <p className="mb-8">{insight.yearAnalysis}</p>
       <ChartContainer config={chartConfig}>
         <AreaChart data={chartData}>
           <CartesianGrid vertical={true} horizontal={true} />
