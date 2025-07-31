@@ -10,6 +10,8 @@ interface GenerateRequest {
   prompt: string;
 }
 
+export const revalidate = 86400;
+
 export async function GET(req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(authOptions);
 
@@ -30,7 +32,10 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
 
   const entries = user.entries
 
-  try {
+  let returnValue
+
+  if (!prisma.user.analysis[date]) {
+      try {
     const response = await openai.responses.create({
       model: "gpt-4o",
       instructions: `
@@ -73,7 +78,21 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
       input: 'Please provide a series of 100 words analysis for the provided format',
     });
 
-    return Response.json({ result: response.output_text });
+    returnValue = response.output_text
+
+    await prisma.user.update({
+      data: {
+        analysis: {
+          [date]: response.output_text
+        },
+      },
+      where: { email: user.email },
+    })
+  }
+
+    returnValue = prisma.user.analysis[date];
+
+    return Response.json({ result: returnValue });
   } catch (error) {
     console.error(error);
     return Response.json({ error: "Failed to generate response" }, { status: 500 });
