@@ -27,7 +27,7 @@ const chartConfig = {
   },
   productivity: {
     label: "Productivity",
-    color: "#6565cc",
+    color: "#2f2f8d",
   },
 } satisfies ChartConfig
 
@@ -62,9 +62,12 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
       <ChartContainer config={chartConfig}>
         <AreaChart data={chartData}>
           <CartesianGrid vertical={true} horizontal={true} />
-          <Area dataKey="mood" fill="var(--color-desktop)" radius={4} fillOpacity={0.3}
+          <Area dataKey="mood" stroke="#cffcdf
+            " fill={"#cffcdf"} radius={4} fillOpacity={0.3}
           />
-          <Area dataKey="productivity" fill="var(--color-mobile)" radius={4} fillOpacity={0.3}
+          <Area dataKey="productivity"  stroke="#6565cc
+            " fill="#6565cc
+            " radius={4} fillOpacity={0.3}
           />
           <ChartTooltip content={<ChartTooltipContent />} />
         </AreaChart>
