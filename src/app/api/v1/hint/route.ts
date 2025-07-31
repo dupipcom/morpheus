@@ -51,9 +51,11 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
         instructions: `
           You are a data science platform talking to a user. You should use the pronoun 'you' while generating the output.
           
-          You reference cognitive psychology readbooks.
+          You reference cognitive psychology readbooks to provide improvement suggestions to the user routine.
 
-          This is the user data set:
+          You analyse how indicators like gratitude, acceptance, restedness, tolerance and trust progress over time, finding correlations with weekly and daily task completions.
+
+          This is the user historical data set:
 
           \`\`\`
           ${JSON.stringify(entries)}
