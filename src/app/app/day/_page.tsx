@@ -47,6 +47,7 @@ export default function Template({ title, content, isomorphicContent }: any) {
     acc = {...acc, ...week}
     return acc
   }, {})
+
   const openDays = Object.values(flatDays).filter((day) => day.status === "Open")
 
 
@@ -65,10 +66,16 @@ export default function Template({ title, content, isomorphicContent }: any) {
         
       <ViewMenu active="day" />
 
-      <div className="m-8 flex flex-col justify-center text-center">
+      <div className="scroll-m-20 text-2xl font-semibold tracking-tight text-center mb-8">
         <label>Today is {new Date().toLocaleString("en-US", {weekday: "long", year: "numeric", month: "short", day: "numeric" })}.</label>
       </div>
+      
+      <p className="text-center scroll-m-20 text-lg font-semibold tracking-tight mb-8">What did you accomplish today?</p>
 
+      <TaskView actions={actions} />
+       <p className="m-8 text-center">Your earnings today, so far: $</p>
+
+       
       <div className="flex flex-wrap justify-center">
         <Carousel>
           <CarouselContent>
@@ -87,11 +94,6 @@ export default function Template({ title, content, isomorphicContent }: any) {
         </Carousel>
 
     </div>
-      
-      <p className="m-8 text-center">What did you accomplish today?</p>
-
-      <TaskView actions={actions} />
-       <p className="m-8 text-center">Your earnings today, so far: $</p>
       <footer>
             <div className="flex w-full flex-center justify-center p-a2">
               <Typography>

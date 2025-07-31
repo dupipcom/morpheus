@@ -4,20 +4,20 @@
 @custom-variant dark (&:is(.dark *));
  
 :root {
-  --background: oklch(1 0 0);
+  --background: #c4abef;
   --foreground: #2f2f8d;
   --card: oklch(1 0 0);
   --card-foreground: red;
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
   --primary: #c4abef;
-  --primary-foreground: black;
+  --primary-foreground: #563769;
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
-  --muted: #f8eeff;
+  --muted: #563769;
   --muted-foreground: #c4abef;
   --accent: #c4abef;
-  --accent-foreground: black;
+  --accent-foreground: #563769;
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.577 0.245 27.325);
   --border: #c4abef;
@@ -112,6 +112,37 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 }
+
+body {
+    color: #563769;
+}
+
+.dark div[data-slot="carousel"] button {
+  background-color: #f1cfff!important;
+}
+
+
+
+.dark h2, .dark h1, .dark h3, .dark p, .dark label, .dark small, .dark a, .dark input, .dark .border-input {
+    color: #f1cfff;
+    border-color: #f1cfff;
+}
+
+a[data-active] a {
+  color: #563769;
+}
+
+.dark a[data-active] a {
+  color: #563769;
+}
+
+.dark a[data-active] a:hover {
+  color: #563769;
+}
+
+.dark a:hover[data-radix-collection-item] a {
+  color: #563769 !important;
+}
  
 @layer base {
   * {
@@ -119,5 +150,11 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+
+
+
+  .dark body {
+    color: #f1cfff;
   }
 }

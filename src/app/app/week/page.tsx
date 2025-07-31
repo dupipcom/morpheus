@@ -58,19 +58,20 @@ export default function Template({ title, content, isomorphicContent }: any) {
       <main className="min-h-[100vh]">
 
         <ViewMenu active="week" />
-        <h1 className="m-8 text-center">This is {getWeekNumber(new Date())}.</h1>
-        <Carousel className="max-w-[320px] m-auto">
+        <h1 className="scroll-m-20 text-2xl font-semibold tracking-tight text-center mb-8">This is {getWeekNumber(new Date())}.</h1>
+        
+        
+        <p className="text-center scroll-m-20 text-lg font-semibold tracking-tight mb-8">What did you accomplish so far?</p>
+
+      <TaskView timeframe="week" actions={WEEKLY_ACTIONS} />
+      <p className="m-8 text-center">Your earnings this week, so far: $</p>
+      <Carousel className="max-w-[320px] m-auto">
           <CarouselContent className="">
             <Weeks />
           </CarouselContent>
           <CarouselPrevious />
           <CarouselNext />
         </Carousel>
-        
-        <p className="m-8 text-center">What did you accomplish so far?</p>
-
-      <TaskView timeframe="week" actions={WEEKLY_ACTIONS} />
-      <p className="m-8 text-center">Your earnings this week, so far: $</p>
       <footer>
             <div className="flex w-full flex-center justify-center p-a2">
               <Typography>

@@ -56,7 +56,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   return <>
   <ToggleGroup value={values} onValueChange={handleDone} variant="outline" className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-8 align-center justify-center w-full m-auto" type="multiple" orientation="horizontal">
    { actions.map((action) => {
-      return <ToggleGroupItem value={action.name}>{action.name}</ToggleGroupItem>
+      return <ToggleGroupItem className="leading-7 m-2" value={action.name}>{action.name}</ToggleGroupItem>
     }) }
   </ToggleGroup>
     </>
