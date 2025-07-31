@@ -25,6 +25,8 @@ model Account {
   access_token       String?
   token_type         String?
   scope              String?
+  id_token           String?
+  expires_at         Int?
   accessTokenExpires DateTime?
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
@@ -47,7 +49,7 @@ model Session {
 model User {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
   name          String?
-  email         String?   @unique
+  email         String?
   emailVerified DateTime?
   image         String?
   createdAt     DateTime  @default(now())

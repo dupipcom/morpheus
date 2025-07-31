@@ -1,22 +1,18 @@
 import NextAuth from "next-auth"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
-import GithubProvider from "next-auth/providers/github"
-import EmailProvider from "next-auth/providers/email";
+import Auth0Provider from "next-auth/providers/auth0";
+import CredentialsProvider from "next-auth/providers/credentials";
 import prisma from "@/lib/prisma";
 
 export const authOptions = {
   // Configure one or more authentication providers
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
-    GithubProvider({
-      clientId: process.env.GITHUB_ID,
-      clientSecret: process.env.GITHUB_SECRET,
-    }),
-    EmailProvider({
-    server: process.env.EMAIL_SERVER,
-    from: process.env.EMAIL_FROM
-  }),
-    // ...add more providers here
+    Auth0Provider({
+    clientId: process.env.AUTH0_ID,
+    clientSecret: process.env.AUTH0_SECRET,
+    issuer: process.env.AUTH0_ISSUER
+    })
   ],
   callbacks: {
     async redirect({ url, baseUrl }) {
