@@ -14,9 +14,9 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
 
   const userTasks = useMemo(() => {
     if(timeframe === 'day') {
-      return (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year][weekNumber] && session?.user?.entries[year][weekNumber].days[date] && session?.user?.entries[year][weekNumber].days[date].tasks) || []
+      return (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date] && session?.user?.entries[year].days[date].tasks) || []
     } else if (timeframe === 'week') {
-      return (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year][weekNumber] && session?.user?.entries[year][weekNumber].tasks) || []
+      return (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks && session?.user?.entries[year].weeks[weekNumber].tasks) || []
     }
   }, [JSON.stringify(session)])
 

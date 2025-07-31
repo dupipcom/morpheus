@@ -15,21 +15,16 @@ export const MoodView = ({ timeframe = "day" }) => {
   const { data: session, update } = useSession()
   
 
-  const serverMood = (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year][weekNumber] && session?.user?.entries[year][weekNumber].days[date] && session?.user?.entries[year][weekNumber].days[date].mood) || {}
+  const serverMood = (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date] && session?.user?.entries[year].days[date].mood) || {}
 
   const [mood, setMood] = useState(serverMood)
 
-  console.log({ serverMood})
-
   const handleSubmit = async (value, field) => {
     setMood({...mood, [field]: value})
-    console.log({ value, field 
-    })
     const response = await fetch('/api/v1/user', 
       { method: 'POST', 
         body: JSON.stringify({
           mood: {
-            ...serverMood,
             [field]: value
           }
       }) 

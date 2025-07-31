@@ -37,16 +37,17 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
   const year = Number(date.split('-')[0])
   const weekNumber = getWeekNumber(fullDate)[1]
   const [insight, setInsight] = useState("")
+  const [relevantData, setRelevantData] = useState({})
   const { data: session, update } = useSession()
 
   const generateInsight = async (value, field) => {
     const response = await fetch('/api/v1/hint', 
       { method: 'POST', 
         body: JSON.stringify({
-      }) 
+          dataset: relevantData
+        }) 
     })
     const json = await response.json()
-    console.log({ json })
     setInsight(json.result)
   }
 

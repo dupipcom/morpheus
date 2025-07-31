@@ -29,6 +29,8 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   const fullDate = new Date()
   const date = fullDate.toISOString().split('T')[0]
   const year = Number(date.split('-')[0])
+  const month = Number(date.split('-')[1])
+  const day = Number(date.split('-')[2])
   const weekNumber = getWeekNumber(fullDate)[1]
 
   const dayDone = data.dayActions?.filter((action) => action.status === "Done")
@@ -66,6 +68,8 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
         entries: {
             ...user.entries,
             [year]: {
+              days: {},
+              weeks: {}
             },
           }
         },
@@ -74,20 +78,23 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     user = await getUser()
   }
 
-  if (!user.entries[year][weekNumber]) {
+  if (!user.entries[year].weeks[weekNumber]) {
     await prisma.user.update({
       data: {
         entries: {
             ...user.entries,
             [year]: {
               ...user.entries[year],
-              [weekNumber]: {
-                days: {},
-                year,
-                week: weekNumber,
-                earnings: weekEarnings,
-                tasks: WEEKLY_ACTIONS,
-                status: "Open"
+              weeks: {
+                ...user.entries[year].weeks,
+                [weekNumber]: {
+                  ...user.entries[year].weeks[weekNumber],
+                  year,
+                  week: weekNumber,
+                  earnings: weekEarnings,
+                  tasks: WEEKLY_ACTIONS,
+                  status: "Open"
+                }
               }
             },
           }
@@ -97,26 +104,28 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     user = await getUser()
   }
 
-  if (!user.entries[year][weekNumber].days[date]) {
+  if (!user.entries[year].days[date]) {
     await prisma.user.update({
       data: {
         entries: {
             ...user.entries,
             [year]: {
               ...user.entries[year],
-              [weekNumber]: {
-                ...user.entries[year][weekNumber],
-                days: {
-                  ...user.entries[year][weekNumber].days,
-                  [date]: {
-                    tasks: DAILY_ACTIONS,
-                    status: "Open"
-                  }
-                },
+              days: {
+                ...user.entries[year].days,
+                [date]: {
+                  year,
+                  week: weekNumber,
+                  month,
+                  day,
+                  earnings: dayEarnings,
+                  tasks: DAILY_ACTIONS,
+                  status: "Open"
+                }
               }
             },
           }
-        },
+      },
       where: { email: user.email }, 
     })
     user = await getUser()
@@ -129,14 +138,17 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
             ...user.entries,
             [year]: {
               ...user.entries[year],
-              [weekNumber]: {
-                ...user.entries[year][weekNumber],
-                week: weekNumber,
-                status: "Open",
-                tasks: data.weekActions,
-                year,
-                earnings: weekEarnings
-            },
+              weeks: {
+                ...user.entries[year].weeks,
+                [weekNumber]: {
+                  ...user.entries[year].weeks[weekNumber],
+                  year,
+                  week: weekNumber,
+                  earnings: weekEarnings,
+                  tasks: data.weekActions,
+                  status: "Open"
+                }
+              }
           }
         },
       },
@@ -152,20 +164,21 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
             ...user.entries,
             [year]: {
               ...user.entries[year],
-              [weekNumber]: {
-                ...user.entries[year][weekNumber],
-                days: {
-                  ...user.entries[year][weekNumber]?.days,
-                  [date]: {
-                    ...user.entries[year][weekNumber]?.days[date],
-                    status: "Open",
-                    tasks: data.dayActions,
-                    earnings: dayEarnings
-                  }
-              },
+              days: {
+                ...user.entries[year].days,
+                [date]: {
+                  ...user.entries[year].days[date],
+                  year,
+                  week: weekNumber,
+                  month,
+                  day,
+                  earnings: dayEarnings,
+                  tasks: data.dayActions,
+                  status: "Open"
+                }
+              }
             }
-          },
-        },
+          }
       },
       where: { email: user.email },
     })
@@ -175,39 +188,30 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   console.log({ data })
 
   if (data.mood) {
+    const key = Object.keys(data.mood)[0]
     await prisma.user.update({
       data: {
         entries: {
             ...user.entries,
             [year]: {
               ...user.entries[year],
-              [weekNumber]: {
-                ...user.entries[year][weekNumber],
-                days: {
-                  ...user.entries[year][weekNumber]?.days,
-                  [date]: {
-                    ...user.entries[year][weekNumber]?.days[date],
-                    mood: {
-                      gratitude: data.mood.gratitude || 3,
-                      restedness: data.mood.restedness || 3,
-                      acceptance: data.mood.acceptance || 3,
-                      trust: data.mood.trust || 3,
-                      selfEsteem: data.mood.selfEsteem || 3,
-                      tolerance: data.mood.tolerance || 3,
-                      text: data.mood.text || 3
-                    }
+              days: {
+                ...user.entries[year].days,
+                [date]: {
+                  ...user.entries[year].days[date],
+                  mood: {
+                    ...user.entries[year].days[date].mood,
+                    [key]: data.mood[key]
                   }
-              },
+                }
+              }
             }
-          },
+          }
         },
-      },
       where: { email: user.email },
     })
     user = await getUser()
   }
-
-  console.log({ data })
 
   if (data.settings) {
     await prisma.user.update({
