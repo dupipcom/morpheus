@@ -40,15 +40,15 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
   const [relevantData, setRelevantData] = useState([])
   const { data: session, update } = useSession()
 
-  const generateInsight = async (value, field) => {
-    const response = await fetch('/api/v1/hint', { method: 'GET' })
-    const json = await response.json()
-    setInsight(json.result)
-  }
+  // const generateInsight = async (value, field) => {
+  //   const response = await fetch('/api/v1/hint', { method: 'GET' })
+  //   const json = await response.json()
+  //   setInsight(json.result)
+  // }
 
-  useEffect(() => {
-    generateInsight()
-  }, [])
+  // useEffect(() => {
+  //   generateInsight()
+  // }, [])
 
 
   return <div className="w-full m-auto p-8 md:p-32 ">
