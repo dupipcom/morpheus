@@ -37,7 +37,7 @@ model Account {
 
 model Session {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId       String?
+  userId       String
   expires      DateTime?
   sessionToken String?
   accessToken  String?
