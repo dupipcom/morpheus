@@ -12,7 +12,7 @@ import "@dreampipcom/oneiros/styles"
 
 import Layout from './layout'
 import { GlobalContext } from "./contexts"
-
+import { useSession, signIn, signOut } from "next-auth/react"
 
 
 
@@ -33,6 +33,11 @@ export default function Template({ title, content, isomorphicContent }: any) {
   const [globalContext, setGlobalContext] = useState({
     theme: 'light'
   })
+
+  const { data: session } = useSession()
+
+  console.log({ session })
+
 
   const handleThemeChange = () => {
     if (globalContext.theme === 'light') {

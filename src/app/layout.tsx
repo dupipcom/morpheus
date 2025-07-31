@@ -1,5 +1,7 @@
+'use client'
 import type { Metadata } from "next"
 import { Comfortaa } from "next/font/google"
+import { SessionProvider } from "next-auth/react"
 
 import "@dreampipcom/oneiros/styles"
 import "./globals.css"
@@ -9,10 +11,10 @@ const comfortaa = Comfortaa({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "DreamPip",
-  description: "Fintech for compassion.",
-};
+// export const metadata: Metadata = {
+//   title: "DreamPip",
+//   description: "Fintech for compassion.",
+// };
 
 export default function RootLayout({
   children,
@@ -25,7 +27,9 @@ export default function RootLayout({
       <body
         className={`${comfortaa.variable} antialiased`}
       >
+        <SessionProvider>
         {children}
+        </SessionProvider>
       </body>
     </html>
   );
