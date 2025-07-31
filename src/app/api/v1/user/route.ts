@@ -222,6 +222,13 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   ...user.entries[year].days[date],
                   earnings: dayEarnings,
                 }
+              },
+              weeks: {
+                ...user.entries[year].weeks,
+                [weekNumber]: {
+                  ...user.entries[year].weeks[weekNumber],
+                  earnings: weekEarnings,
+                }
               }
             }
           }

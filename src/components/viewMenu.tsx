@@ -28,7 +28,7 @@ export const ViewMenu = ({ active }) =>{
     fetch('/api/v1/user', { method: 'POST', body: JSON.stringify({
       availableBalance: e.currentTarget.value
     }) })
-    updateUser()
+    setTimeout(() => updateUser(), 2000)
   }
 
   return <NavigationMenu className="flex flex-col center text-center w-full m-auto">
