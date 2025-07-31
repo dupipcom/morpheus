@@ -14,16 +14,21 @@ import { Button } from "@/components/ui/button"
 import { useSession, signIn, signOut } from "next-auth/react"
 
 export const ViewMenu = ({ active }) =>{
-  const { data: session } = useSession()
+  const { data: session, update } = useSession()
   const serverBalance = session?.user?.availableBalance
 
-  console.log({ serverBalance })
+  const updateUser = async () => {
+    const response = await fetch('/api/v1/user', { method: 'GET' })
+    const updatedUser = await response.json()
+    update({ ...session, user: { ...session?.user, ...updatedUser }})
+  }
   
 
   const handleBalanceChange = (e) => {
     fetch('/api/v1/user', { method: 'POST', body: JSON.stringify({
       availableBalance: e.currentTarget.value
     }) })
+    updateUser()
   }
 
   return <NavigationMenu className="flex flex-col center text-center w-full m-auto">

@@ -57,8 +57,8 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
   }, [])
 
 
-  return <div className="w-full m-auto p-8 md:p-32 ">
-      <p className="mb-8">{insight.yearAnalysis}</p>
+  return <div className="w-full m-auto p-8 md:px-32 ">
+      <p className="mt-0 mb-8">{insight.yearAnalysis}</p>
       <ChartContainer config={chartConfig}>
         <AreaChart data={chartData}>
           <CartesianGrid vertical={true} horizontal={true} />

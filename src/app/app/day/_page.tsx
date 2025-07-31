@@ -73,7 +73,6 @@ export default function Template({ title, content, isomorphicContent }: any) {
       <p className="text-center scroll-m-20 text-lg font-semibold tracking-tight mb-8">What did you accomplish today?</p>
 
       <TaskView actions={actions} />
-       <p className="m-8 text-center">Your earnings today, so far: ${session?.user?.entries[year].days[date].earnings.toLocaleString()}</p>
 
 
       <div className="flex flex-wrap justify-center">

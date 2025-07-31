@@ -129,11 +129,14 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     user = await getUser()
   }
 
-  const dayDone = data.dayActions?.filter((action) => action.status === "Done")
-  const weekDone = data.weekActions?.filter((action) => action.status === "Done")
+  const dayTasks = data?.dayActions || user?.entries[year].days[date].tasks
+  const weekTasks = data?.weekActions || user?.entries[year].weeks[weekNumber].tasks
 
-  const dayProgress = data.dayActions?.length ? dayDone.length / data.dayActions.length : undefined
-  const weekProgress = data.weekActions?.length ? weekDone.length / data.weekActions.length : undefined
+  const dayDone = dayTasks?.filter((action) => action.status === "Done")
+  const weekDone = weekTasks?.filter((action) => action.status === "Done")
+
+  const dayProgress = dayTasks?.length ? dayDone.length / dayTasks.length : undefined
+  const weekProgress = weekTasks?.length ? weekDone.length / weekTasks.length : undefined
 
     if(data?.mood) {
       const key = Object.keys(data?.mood)[0]
@@ -169,7 +172,6 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   const wantBudget = Number(user.settings.monthsFixedIncome) + Number(user.settings.monthsVariableIncome) - Number(user.settings.monthsNeedFixedExpenses) - Number(user.settings.monthsNeedVariableExpenses)
 
   const weekMoodValues = Object.values(user?.entries[year].days).length ? Object.values(user?.entries[year].days).sort().splice(0, 7).map((day) => {
-    console.log({ day })
     return Object.values(day?.mood)?.length ? Object.values(day?.mood) : [0].flat() 
     }).flat()
   : [0]
@@ -178,8 +180,6 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
 
   const dayEarnings = ((5 - dayMoodAverage)) * 0.2 + ((dayProgress * 0.80)) * user?.availableBalance / 30
   const weekEarnings = ((5 - weekMoodAverage)) * 0.2 + ((weekProgress * 0.80)) * user?.availableBalance / 30
-
-  console.log({ weekEarnings, dayEarnings })
 
   if (data.weekActions?.length) {
     await prisma.user.update({
@@ -201,6 +201,28 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
               }
           }
         },
+      },
+      where: { name: user.name },
+    })
+    user = await getUser()
+  }
+
+  if (data?.availableBalance) {
+    await prisma.user.update({
+      data: {
+        entries: {
+            ...user.entries,
+            [year]: {
+              ...user.entries[year],
+              days: {
+                ...user.entries[year].days,
+                [date]: {
+                  ...user.entries[year].days[date],
+                  earnings: dayEarnings,
+                }
+              }
+            }
+          }
       },
       where: { name: user.name },
     })

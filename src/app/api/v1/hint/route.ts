@@ -45,7 +45,7 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
     user = getUser();
   }
 
-  if (!prisma.user.analysis[date]) {
+  if (!user.analysis[date]) {
     try {
       const file = await openai.files.create({
         file: fs.createReadStream(process.cwd() + '/src/app/api/v1/hint/rag/atomic-habits.pdf'),
@@ -65,6 +65,8 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
         model: "gpt-4o",
         tools: [{ type: "file_search", vector_store_ids: [vectorStore.id] }],
         instructions: `
+          Please use file_search for this analysis.
+
           You are a data science platform talking to a user. You should use the pronoun 'you' while generating the output.
           
           You reference the file search vector store pdfs to provide improvement suggestions to the user routine.
