@@ -108,6 +108,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   week: weekNumber,
                   month,
                   day,
+                  date,
                   tasks: DAILY_ACTIONS,
                   status: "Open",
                   moodAverage: 0,
