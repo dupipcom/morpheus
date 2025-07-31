@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import openai from '@/lib/openai';
+import fs from "fs";
 import { getServerSession } from "next-auth/next"
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
@@ -18,7 +19,7 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
   // if (!data.prompt) {
   //   return Response.json({ error: "Prompt is required" }, { status: 400 });
   // }
-
+  
   const getUser = async () => await prisma.user.findUnique({
        where: { name: session?.user?.name  }
     })
@@ -44,14 +45,29 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
     user = getUser();
   }
 
-  if (!user.analysis[date]) {
+  if (!prisma.user.analysis[date]) {
     try {
+      const file = await openai.files.create({
+        file: fs.createReadStream(process.cwd() + '/src/app/api/v1/hint/rag/atomic-habits.pdf'),
+        purpose: "assistants",
+      });
+
+      const vectorStore = await openai.vectorStores.create({
+        name: "Book references",
+        file_ids: [file.id],
+        expires_after: {
+          anchor: "last_active_at",
+          days: 1
+        }
+      });
+
       const response = await openai.responses.create({
         model: "gpt-4o",
+        tools: [{ type: "file_search", vector_store_ids: [vectorStore.id] }],
         instructions: `
           You are a data science platform talking to a user. You should use the pronoun 'you' while generating the output.
           
-          You reference cognitive psychology readbooks to provide improvement suggestions to the user routine.
+          You reference the file search vector store pdfs to provide improvement suggestions to the user routine.
 
           You analyse how indicators like gratitude, acceptance, restedness, tolerance and trust progress over time, finding correlations with weekly and daily task completions.
 

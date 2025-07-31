@@ -33,6 +33,11 @@ export default function Template({ title, content, isomorphicContent }: any) {
 
   const { data: session } = useSession()
 
+  const fullDate = new Date()
+  const date = fullDate.toISOString().split('T')[0]
+  const year = Number(date.split('-')[0])
+  const weekNumber = getWeekNumber(fullDate)[1]
+
 
   const handleThemeChange = () => {
     if (globalContext.theme === 'light') {
@@ -64,7 +69,7 @@ export default function Template({ title, content, isomorphicContent }: any) {
         <p className="text-center scroll-m-20 text-lg font-semibold tracking-tight mb-8">What did you accomplish so far?</p>
 
       <TaskView timeframe="week" actions={WEEKLY_ACTIONS} />
-      <p className="m-8 text-center">Your earnings this week, so far: $</p>
+      <p className="m-8 text-center">Your earnings this week, so far: ${session?.user?.entries[year].weeks[weekNumber].earnings?.toLocaleString()}</p>
       <Carousel className="max-w-[320px] m-auto">
           <CarouselContent className="">
             <Weeks />

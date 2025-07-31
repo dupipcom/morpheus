@@ -33,15 +33,6 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   const day = Number(date.split('-')[2])
   const weekNumber = getWeekNumber(fullDate)[1]
 
-  const dayDone = data.dayActions?.filter((action) => action.status === "Done")
-  const weekDone = data.weekActions?.filter((action) => action.status === "Done")
-
-  const dayProgress = data.dayActions?.length ? dayDone.length / data.dayActions.length : undefined
-  const weekProgress = data.weekActions?.length ? weekDone.length / data.weekActions.length : undefined
-
-  const dayEarnings = user.availableBalance * dayProgress / 30
-  const weekEarnings = user.availableBalance * weekProgress / 4
-
   if (data.availableBalance) {
     await prisma.user.update({
       data: {
@@ -91,7 +82,6 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   ...user.entries[year].weeks[weekNumber],
                   year,
                   week: weekNumber,
-                  earnings: weekEarnings,
                   tasks: WEEKLY_ACTIONS,
                   status: "Open"
                 }
@@ -118,9 +108,17 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   week: weekNumber,
                   month,
                   day,
-                  earnings: dayEarnings,
                   tasks: DAILY_ACTIONS,
-                  status: "Open"
+                  status: "Open",
+                  moodAverage: 0,
+                  mood: {
+                    gratitude: 0,
+                    acceptance: 0,
+                    restedness: 0,
+                    tolerance: 0,
+                    selfEsteem: 0,
+                    trust: 0,
+                  }
                 }
               }
             },
@@ -130,6 +128,58 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     })
     user = await getUser()
   }
+
+  const dayDone = data.dayActions?.filter((action) => action.status === "Done")
+  const weekDone = data.weekActions?.filter((action) => action.status === "Done")
+
+  const dayProgress = data.dayActions?.length ? dayDone.length / data.dayActions.length : undefined
+  const weekProgress = data.weekActions?.length ? weekDone.length / data.weekActions.length : undefined
+
+    if(data?.mood) {
+      const key = Object.keys(data?.mood)[0]
+      if(user?.entries[year].days[date].mood) {
+        user = {
+          ...user,
+          entries: {
+            ...user.entries,
+            [year]: {
+              ...user.entries[year],
+              days: {
+                ...user.entries[year].days,
+                [date]: {
+                  ...user.entries[year].days[date],
+                  mood: {
+                    ...user.entries[year].days[date].mood,
+                    [key]: data?.mood[key]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+
+  const moodValues = user?.entries[year].days[date].mood  ? Object.values(user?.entries[year].days[date].mood ).splice(0, Object.values(user?.entries[year].days[date].mood ).length) : [0]
+
+
+  const dayMoodAverage = moodValues.reduce((acc,cur) => acc + cur, 0) / moodValues.length
+
+  const wantBudget = Number(user.settings.monthsFixedIncome) + Number(user.settings.monthsVariableIncome) - Number(user.settings.monthsNeedFixedExpenses) - Number(user.settings.monthsNeedVariableExpenses)
+
+  const weekMoodValues = Object.values(user?.entries[year].days).length ? Object.values(user?.entries[year].days).sort().splice(0, 7).map((day) => {
+    console.log({ day })
+    return Object.values(day?.mood)?.length ? Object.values(day?.mood) : [0].flat() 
+    }).flat()
+  : [0]
+
+  const weekMoodAverage = weekMoodValues.reduce((acc, cur) => Number(acc) + Number(cur), 0) / weekMoodValues.length
+
+  const dayEarnings = ((5 - dayMoodAverage)) * 0.2 + ((dayProgress * 0.80)) * user?.availableBalance / 30
+  const weekEarnings = ((5 - weekMoodAverage)) * 0.2 + ((weekProgress * 0.80)) * user?.availableBalance / 30
+
+  console.log({ weekEarnings, dayEarnings })
 
   if (data.weekActions?.length) {
     await prisma.user.update({
@@ -185,9 +235,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     user = await getUser()
   }
 
-  console.log({ data })
-
-  if (data.mood) {
+  if (!data?.mood?.text && data?.mood) {
     const key = Object.keys(data.mood)[0]
     await prisma.user.update({
       data: {
@@ -201,8 +249,44 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   ...user.entries[year].days[date],
                   mood: {
                     ...user.entries[year].days[date].mood,
-                    [key]: data.mood[key]
-                  }
+                    [key]: data.mood[key],
+                  },
+                  moodAverage: dayMoodAverage
+                }
+              },
+              weeks: {
+                ...user.entries[year].weeks,
+                [weekNumber]: {
+                  ...user.entries[year].weeks[weekNumber],
+                  moodAverage: weekMoodAverage
+                }
+              }
+            }
+          }
+        },
+      where: { name: user.name },
+    })
+    user = await getUser()
+  } else if (data?.mood) {
+    await prisma.user.update({
+      data: {
+        entries: {
+            ...user.entries,
+            [year]: {
+              ...user.entries[year],
+              days: {
+                ...user.entries[year].days,
+                [date]: {
+                  ...user.entries[year].days[date],
+                  text: data?.mood?.text,
+                  moodAverage: dayMoodAverage
+                }
+              },
+              weeks: {
+                ...user.entries[year].weeks,
+                [weekNumber]: {
+                  ...user.entries[year].weeks[weekNumber],
+                  moodAverage: weekMoodAverage
                 }
               }
             }

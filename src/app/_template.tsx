@@ -111,7 +111,9 @@ export default function Template({ title, content, isomorphicContent }: any) {
               </div>
             ) : undefined}
           { title && !content ? <Typography className="p-[32px] md:p-[64px] md:max-w-[720px] md:m-auto" variant={TypographyVariant.H1}>{title}</Typography> : undefined }
-          
+          { content ? <div className="p-[32px] md:p-[64px] md:max-w-[720px] md:m-auto">
+            <div dangerouslySetInnerHTML={{ __html: html }} />
+          </div> : undefined }
           <footer>
             <div className="flex w-full flex-center justify-center p-a2">
               <Typography>
