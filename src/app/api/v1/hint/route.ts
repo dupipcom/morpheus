@@ -20,7 +20,7 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
   // }
 
   const getUser = async () => await prisma.user.findUnique({
-       where: { email: session?.user?.email  }
+       where: { name: session?.user?.name  }
     })
 
   let user = await getUser()
@@ -39,7 +39,7 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
         data: {
           analysis: {},
         },
-        where: { email: user.email },
+        where: { name: user.name },
       });
     user = getUser();
   }
@@ -96,7 +96,7 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
             [date]: JSON.parse(response.output_text)
           },
         },
-        where: { email: user.email },
+        where: { name: user.name },
       })
 
       user = getUser();

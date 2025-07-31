@@ -8,7 +8,7 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(authOptions);
 
   const getUser = async () => await prisma.user.findUnique({
-       where: { email: session?.user?.email }
+       where: { name: session?.user?.name }
     })
 
   let user = await getUser()
@@ -21,7 +21,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(authOptions);
 
   const getUser = async () => await prisma.user.findUnique({
-       where: { email: session?.user?.email  }
+       where: { name: session?.user?.name  }
     })
 
   let user = await getUser()
@@ -47,7 +47,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
       data: {
         availableBalance: data.availableBalance
       },
-      where: { email: user.email },
+      where: { name: user.name },
     })
     user = await getUser()
   }
@@ -57,7 +57,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
       data: {
         entries: {},
       },
-      where: { email: user.email }, 
+      where: { name: user.name }, 
     })
     user = await getUser()
   }
@@ -73,7 +73,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
             },
           }
         },
-      where: { email: user.email }, 
+      where: { name: user.name }, 
     })
     user = await getUser()
   }
@@ -99,7 +99,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
             },
           }
         },
-      where: { email: user.email }, 
+      where: { name: user.name }, 
     })
     user = await getUser()
   }
@@ -126,7 +126,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
             },
           }
       },
-      where: { email: user.email }, 
+      where: { name: user.name }, 
     })
     user = await getUser()
   }
@@ -152,7 +152,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
           }
         },
       },
-      where: { email: user.email },
+      where: { name: user.name },
     })
     user = await getUser()
   }
@@ -180,7 +180,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
             }
           }
       },
-      where: { email: user.email },
+      where: { name: user.name },
     })
     user = await getUser()
   }
@@ -208,7 +208,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
             }
           }
         },
-      where: { email: user.email },
+      where: { name: user.name },
     })
     user = await getUser()
   }
@@ -221,7 +221,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
           ...data.settings
         },
       },
-      where: { email: user.email },
+      where: { name: user.name },
     })
     user = await getUser()
   }
