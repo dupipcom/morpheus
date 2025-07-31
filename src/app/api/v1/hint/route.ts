@@ -10,8 +10,7 @@ interface GenerateRequest {
   prompt: string;
 }
 
-export async function POST(req: NextApiRequest, res: NextApiResponse) {
-  const data = await req.json()
+export async function GET(req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(authOptions);
 
   // if (!data.prompt) {
@@ -35,19 +34,44 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     const response = await openai.responses.create({
       model: "gpt-4o",
       instructions: `
-        Can you please analyze this data set which is a timeseries (per weeks and days), in which the user logs their mood at \`entries[week].days[day].mood\` and their completed tasks at \`entries[week].days[day].tasks\` for the daily tasks and \`entries[week].tasks\` for the weekly tasks.
+        You are a data science platform talking to a user. You should use the pronoun 'you' while generating the output.
+        
+        You reference cognitive psychology readbooks.
+
+        This is the user data set:
 
         \`\`\`
         ${JSON.stringify(entries)}
         \`\`\`
 
-        Please refer to the subject as "You"
-
         `,
-      input: 'Please provide a 1 paragraph analysis of the data in the following dataset, focused on cognitive psychology lenses.',
+      text: {
+        format: {
+          type: "json_schema",
+          name: "analysis",
+          schema: {
+            type: "object",
+            properties: {
+              name: { type: "string" },
+              day_analysis: { type: "string" },
+              last3days_analysis: { type: "string" },
+              week_analysis: { type: "string" },
+              year_analysis: { type: "string" },
+              gratitude_analysis: { type: "string" },
+              acceptance_analysis: { type: "string" },
+              restedness_analysis: { type: "string" },
+              tolerance_analysis: { type: "string" },
+              selfEsteem_analysis: { type: "string" },
+              trust_analysis: { type: "string" },
+            },
+            required: ["name", "day_analysis", "last3days_analysis", "week_analysis", "year_analysis", "gratitude_analysis", "acceptance_analysis", "restedness_analysis", "tolerance_analysis", "selfEsteem_analysis", "trust_analysis"],
+            additionalProperties: false,
+          },
+          strict: true,
+        },
+      },
+      input: 'Please provide a series of 100 words analysis for the provided format',
     });
-
-    console.log({ response })
 
     return Response.json({ result: response.output_text });
   } catch (error) {
