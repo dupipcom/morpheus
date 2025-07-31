@@ -13,6 +13,8 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const { data: session, update } = useSession()
   const [insight, setInsight] = useState({})
 
+  const earnings = timeframe === "day" ? session?.user?.entries[year]?.days[date]?.earnings?.toLocaleString() : session?.user?.entries[year]?.weeks[weekNumber]?.earnings?.toLocaleString()
+
   const userTasks = useMemo(() => {
     if(timeframe === 'day') {
       return (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date] && session?.user?.entries[year].days[date].tasks) || []
@@ -78,6 +80,6 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   </ToggleGroup>
     <p className="m-8">{timeframe === "day" ? insight.dayAnalysis : insight.weekAnalysis }</p>
     <p className="m-8">{insight.last3daysAnalysis}</p>
-           <p className="m-8 text-center">Your earnings today, so far: ${session?.user?.entries[year]?.days[date]?.earnings?.toLocaleString()}</p>
+           <p className="m-8 text-center">Your earnings {timeframe === "day" ? "today" : "this week"}, so far: ${earnings}</p>
     </>
 }
