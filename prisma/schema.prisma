@@ -56,6 +56,7 @@ model User {
   sessions      Session[]
   entries       Json?
   settings      Settings?
+  analysis      Json?
   availableBalance  String?
   hint String?
 }

@@ -34,70 +34,79 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
 
   let returnValue
 
-  if (!prisma.user.analysis[date]) {
-      try {
-    const response = await openai.responses.create({
-      model: "gpt-4o",
-      instructions: `
-        You are a data science platform talking to a user. You should use the pronoun 'you' while generating the output.
-        
-        You reference cognitive psychology readbooks.
-
-        This is the user data set:
-
-        \`\`\`
-        ${JSON.stringify(entries)}
-        \`\`\`
-
-        `,
-      text: {
-        format: {
-          type: "json_schema",
-          name: "analysis",
-          schema: {
-            type: "object",
-            properties: {
-              name: { type: "string" },
-              dayAnalysis: { type: "string" },
-              last3daysAnalysis: { type: "string" },
-              weekAnalysis: { type: "string" },
-              yearAnalysis: { type: "string" },
-              gratitudeAnalysis: { type: "string" },
-              acceptanceAnalysis: { type: "string" },
-              restednessAnalysis: { type: "string" },
-              toleranceAnalysis: { type: "string" },
-              selfEsteemAnalysis: { type: "string" },
-              trustAnalysis: { type: "string" },
-            },
-            required: ["name", "dayAnalysis", "last3daysAnalysis", "weekAnalysis", "yearAnalysis", "gratitudeAnalysis", "acceptanceAnalysis", "restednessAnalysis", "toleranceAnalysis", "selfEsteemAnalysis", "trustAnalysis"],
-            additionalProperties: false,
-          },
-          strict: true,
-        },
-      },
-      input: 'Please provide a series of 100 words analysis for the provided format',
-    });
-
-    returnValue = response.output_text
-
+  if (!user.analysis) {
     await prisma.user.update({
-      data: {
-        analysis: {
-          [date]: response.output_text
+        data: {
+          analysis: {},
         },
-      },
-      where: { email: user.email },
-    })
+        where: { email: user.email },
+      });
+    user = getUser();
   }
 
-    returnValue = prisma.user.analysis[date];
+  if (!user.analysis[date]) {
+    try {
+      const response = await openai.responses.create({
+        model: "gpt-4o",
+        instructions: `
+          You are a data science platform talking to a user. You should use the pronoun 'you' while generating the output.
+          
+          You reference cognitive psychology readbooks.
 
-    return Response.json({ result: returnValue });
+          This is the user data set:
+
+          \`\`\`
+          ${JSON.stringify(entries)}
+          \`\`\`
+
+          `,
+        text: {
+          format: {
+            type: "json_schema",
+            name: "analysis",
+            schema: {
+              type: "object",
+              properties: {
+                name: { type: "string" },
+                dayAnalysis: { type: "string" },
+                last3daysAnalysis: { type: "string" },
+                weekAnalysis: { type: "string" },
+                yearAnalysis: { type: "string" },
+                gratitudeAnalysis: { type: "string" },
+                acceptanceAnalysis: { type: "string" },
+                restednessAnalysis: { type: "string" },
+                toleranceAnalysis: { type: "string" },
+                selfEsteemAnalysis: { type: "string" },
+                trustAnalysis: { type: "string" },
+              },
+              required: ["name", "dayAnalysis", "last3daysAnalysis", "weekAnalysis", "yearAnalysis", "gratitudeAnalysis", "acceptanceAnalysis", "restednessAnalysis", "toleranceAnalysis", "selfEsteemAnalysis", "trustAnalysis"],
+              additionalProperties: false,
+            },
+            strict: true,
+          },
+        },
+        input: 'Please provide a series of 100 words analysis for the provided format',
+      });
+
+      await prisma.user.update({
+        data: {
+          analysis: {
+            [date]: JSON.parse(response.output_text)
+          },
+        },
+        where: { email: user.email },
+      })
+
+      user = getUser();
+
+      return Response.json({ result: response.output_text });
+
   } catch (error) {
     console.error(error);
     return Response.json({ error: "Failed to generate response" }, { status: 500 });
+  }} else {
+    return Response.json({ result: user.analysis[date] });
   }
-
   
   return Response.json(user)
 }
