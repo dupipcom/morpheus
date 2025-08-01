@@ -60,7 +60,7 @@ export const ViewMenu = ({ active }) =>{
       </NavigationMenuItem>
       <NavigationMenuItem>
         <NavigationMenuLink>
-          <a href="/logout">Logout</a>
+          <a href="/logout">{ session?.user ? "Logout" : "Login" }</a>
         </NavigationMenuLink>
       </NavigationMenuItem>
   </NavigationMenuList>
