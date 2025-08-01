@@ -53,6 +53,7 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
       });
 
       const vectorStore = await openai.vectorStores.create({
+        name: "Book references",
         file_ids: [file.id],
         expires_after: {
           anchor: "last_active_at",
