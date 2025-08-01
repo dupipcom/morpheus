@@ -69,6 +69,14 @@ import {
 
 export type Payment = {
   earnings: number
+  gratitude: number
+  optimism: number
+  restedness: number
+  tolerance: number
+  selfEsteem: number
+  trust: number
+  progress: number
+  moodAverage: number
   date: string
 }
 
@@ -126,6 +134,79 @@ export const columns: ColumnDef<Payment>[] = [
     },
   },
   {
+    accessorKey: "moodAverage",
+    header: () => <div className="text-right">Mood Average</div>,
+    cell: ({ row }) => {
+      const moodAverage = parseFloat(row.getValue("moodAverage"))
+
+      return <div className="text-right font-medium">{moodAverage}</div>
+    },
+  },
+  {
+    accessorKey: "progress",
+    header: () => <div className="text-right">Productivity</div>,
+    cell: ({ row }) => {
+      const progress = parseFloat(row.getValue("progress"))
+
+      return <div className="text-right font-medium">{progress}</div>
+    },
+  },
+  {
+    accessorKey: "gratitude",
+    header: () => <div className="text-right">Gratitude</div>,
+    cell: ({ row }) => {
+      const gratitude = parseFloat(row.getValue("gratitude"))
+
+      return <div className="text-right font-medium">{gratitude}</div>
+    },
+  },
+      {
+    accessorKey: "optimism",
+    header: () => <div className="text-right">Optimism</div>,
+    cell: ({ row }) => {
+      const optimism = parseFloat(row.getValue("optimism"))
+
+      return <div className="text-right font-medium">{optimism}</div>
+    },
+  },
+  {
+    accessorKey: "restedness",
+    header: () => <div className="text-right">Restedness</div>,
+    cell: ({ row }) => {
+      const restedness = parseFloat(row.getValue("restedness"))
+
+      return <div className="text-right font-medium">{restedness}</div>
+    },
+  },
+  {
+    accessorKey: "tolerance",
+    header: () => <div className="text-right">Tolerance</div>,
+    cell: ({ row }) => {
+      const tolerance = parseFloat(row.getValue("tolerance"))
+
+      return <div className="text-right font-medium">{tolerance}</div>
+    },
+  },
+  {
+    accessorKey: "selfEsteem",
+    header: () => <div className="text-right">Self Esteem</div>,
+    cell: ({ row }) => {
+      const selfEsteem = parseFloat(row.getValue("selfEsteem"))
+
+      return <div className="text-right font-medium">{selfEsteem}</div>
+    },
+  },
+    {
+    accessorKey: "trust",
+    header: () => <div className="text-right">Trust</div>,
+    cell: ({ row }) => {
+      const trust = parseFloat(row.getValue("trust"))
+
+      return <div className="text-right font-medium">{trust}</div>
+    },
+  },
+
+  {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
@@ -144,11 +225,11 @@ export const columns: ColumnDef<Payment>[] = [
             <DropdownMenuItem
               onClick={() => navigator.clipboard.writeText(payment.id)}
             >
-              Copy payment ID
+              Close day
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <DropdownMenuItem>Edit day</DropdownMenuItem>
+            <DropdownMenuItem className="text-[red]">Delete day</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
