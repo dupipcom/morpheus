@@ -21,7 +21,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const { data: session, update } = useSession()
   const [insight, setInsight] = useState({})
 
-  const earnings = Object.keys(session?.user?.entries || 0).length > 0 ? timeframe === "day" ? session?.user?.entries[year]?.days[date]?.earnings?.toLocaleString() : session?.user?.entries[year]?.weeks[weekNumber]?.earnings?.toLocaleString() : 0
+  const earnings = Object.keys(session?.user?.entries || 0).length > 0 ? timeframe === "day" ? session?.user?.entries[year]?.days[date]?.earnings??.toLocaleString() : session?.user?.entries[year]?.weeks[weekNumber]?.earnings??.toLocaleString() : 0
 
   const userTasks = useMemo(() => {
     if(timeframe === 'day') {
