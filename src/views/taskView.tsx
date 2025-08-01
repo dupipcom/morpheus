@@ -42,6 +42,8 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const userDone = useMemo(() => userTasks?.filter((task) => task.status === "Done").map((task) => task.name), [userTasks])
   const [values, setValues] = useState(userDone)
 
+  const castActions = userTasks?.length ? userTasks : actions 
+
   const handleDone = async (values) => {
     const nextActions = userTasks?.map((action) => {
       const clonedAction = { ...action }
@@ -95,7 +97,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
 
   return <>
   <ToggleGroup value={values} onValueChange={handleDone} variant="outline" className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-8 align-center justify-center w-full m-auto" type="multiple" orientation="horizontal">
-   { userTasks?.map((action) => {
+   { castActions?.map((action) => {
       return <ToggleGroupItem className="leading-7 m-2" value={action.name}>{action.name}</ToggleGroupItem>
     }) }
   </ToggleGroup>
