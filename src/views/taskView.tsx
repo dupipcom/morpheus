@@ -95,8 +95,6 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     generateInsight()
   }, [])
 
-  console.log({ openDays, entries: session?.user?.entries })
-
   if (!session?.user) {
     return <div className="my-16 w-full flex align-center justify-center">
       <Button className="m-auto"><a  href="/login">Login</a></Button>

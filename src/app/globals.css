@@ -53,7 +53,7 @@
   --muted: oklch(0.269 0 0);
   --muted-foreground: #FACEFB;
   --accent: #FACEFB;
-  --accent-foreground: #c4abef;
+  --accent-foreground: #563769;
   --destructive: oklch(0.396 0.141 25.723);
   --destructive-foreground: oklch(0.637 0.237 25.331);
   --border: oklch(0.269 0 0);
@@ -114,36 +114,29 @@
 }
 
 .dark div[data-slot="carousel"] button {
-  background-color: #f1cfff !important;
+  background-color: #f1cfff;
 }
 
 .light h2, .light h1, .light h3, .light p, .light label,  .lightsmall, .light a, .light input, .light .border-input {
-    color: #563769 !important;
+    color: #563769;
 }
 
-.border-input input {
-  border-color: #f1cfff;
+.border-input {
+  border-color: #c4abef;
 }
 
-.dark .border-input input {
-  border-color: #f1cfff;
-}
-
-.border-input input {
-  border-color: #f1cfff;
-}
-
-.dark .border-input input {
+.dark .border-input {
   border-color: #f1cfff;
 }
 
 .dark button[type="button"] {
-  color: #f1cfff !important;
+  color: #f1cfff;
   border-color: #f1cfff;
 }
 
-button[data-state="on"] {
-  border-color: #c4abef !important;
+.dark button[data-state="on"] {
+  border-color: #6565cc;
+  color: red !important;
 }
 
 tr[data-state="selected"] {
