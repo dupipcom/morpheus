@@ -37,7 +37,13 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   })
 
 
-  const openDays = session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && Object.values(session?.user?.entries[year].days).filter((day) => { day.status == "Open" })
+  const openDays = session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && Object.values(session?.user?.entries[year].days).filter((day) => {
+   
+   return day.status == "Open" })
+
+  const openWeeks = session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks && Object.values(session?.user?.entries[year].weeks).filter((week) => {
+   
+   return week.status == "Open" })
 
   const userDone = useMemo(() => userTasks?.filter((task) => task.status === "Done").map((task) => task.name), [userTasks])
   const [values, setValues] = useState(userDone)
@@ -89,6 +95,8 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     generateInsight()
   }, [])
 
+  console.log({ openDays, entries: session?.user?.entries })
+
   if (!session?.user) {
     return <div className="my-16 w-full flex align-center justify-center">
       <Button className="m-auto"><a  href="/login">Login</a></Button>
@@ -101,14 +109,21 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       return <ToggleGroupItem className="leading-7 m-2" value={action.name}>{action.name}</ToggleGroupItem>
     }) }
   </ToggleGroup>
+               <p className="m-8 text-center">Your earnings {timeframe === "day" ? "today" : "this week"}, so far: ${earnings}</p>
           <Carousel>
-          <CarouselContent>
+          <CarouselContent className="text-center m-16">
             {
-              openDays?.map((day) => {
+              timeframe === "day" ? openDays?.map((day) => {
                 return <CarouselItem className="flex flex-col">
-                  <small>$280</small>
-                  <label>Friday, Jul 25, 2025</label>
+                  <small>${day.earnings}</small>
+                  <label>{day.date}</label>
                   <Button>Close day</Button>
+                </CarouselItem>
+              }) : openWeeks?.map((week) => {
+                return <CarouselItem className="flex flex-col">
+                  <small>${week.earnings}</small>
+                  <label>Week {week.week}</label>
+                  <Button>Close week</Button>
                 </CarouselItem>
               })
             }
@@ -117,7 +132,6 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
           <CarouselNext />
         </Carousel>
 
-             <p className="m-8 text-center">Your earnings {timeframe === "day" ? "today" : "this week"}, so far: ${earnings}</p>
     <p className="m-8">{timeframe === "day" ? insight?.dayAnalysis : insight?.weekAnalysis }</p>
     <p className="m-8">{insight?.last3daysAnalysis}</p>
           <div className="flex flex-wrap justify-center">

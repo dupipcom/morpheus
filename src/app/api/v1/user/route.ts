@@ -180,7 +180,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   const weekMoodAverage = weekMoodValues.reduce((acc, cur) => Number(acc) + Number(cur), 0) / weekMoodValues.length
 
   const dayEarnings = ((5 - dayMoodAverage)) * 0.2 + ((dayProgress * 0.80)) * user?.availableBalance / 30
-  const weekEarnings = ((5 - weekMoodAverage)) * 0.2 + ((weekProgress * 0.80)) * user?.availableBalance / 30
+  const weekEarnings = ((5 - weekMoodAverage)) * 0.2 + ((weekProgress * 0.80)) * user?.availableBalance / 4
 
   if (data.weekActions?.length) {
     await prisma.user.update({
@@ -200,7 +200,8 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   status: "Open",
                   progress: weekProgress,
                   done: weekDone.length,
-                  tasksNumber: weekTasks.length
+                  tasksNumber: weekTasks.length,
+                  availableBalance: user.availableBalance
                 }
               }
           }
@@ -260,7 +261,8 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   done: dayDone.length,
                   tasksNumber: dayTasks.length,
                   tasks: data.dayActions,
-                  status: "Open"
+                  status: "Open",
+                  availableBalance: user.availableBalance
                 }
               }
             }
