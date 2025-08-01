@@ -146,9 +146,26 @@ button[data-state="on"] {
   border-color: #c4abef !important;
 }
 
+tr[data-state="selected"] {
+  background-color: #f8eeff;
+
+}
+
+tr[data-state="selected"] td div {
+  color: #2f2f8d;
+}
+
+
+
+
+
 
 .dark h2, .dark h1, .dark h3, .dark p, .dark label, .dark small, .dark a, .dark input, .dark .border-input {
     color: #f1cfff;
+}
+
+.dark button[type="button"] {
+    border-color: #c4abef;
 }
 
 .dark div {
