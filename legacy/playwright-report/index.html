@@ -18089,7 +18089,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                   m.jsx('div', {
                     'data-testid': 'overall-time',
                     style: { color: 'var(--color-fg-subtle)', marginRight: '10px' },
-                    children: e ? new Date(e.startTime).toLocaleString() : '',
+                    children: e ? new Date(e.startTime)?.toLocaleString() : '',
                   }),
                   m.jsxs('div', {
                     'data-testid': 'overall-duration',
