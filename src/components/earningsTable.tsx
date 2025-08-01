@@ -36,44 +36,40 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-const data: Payment[] = [
-  {
-    id: "m5gr84i9",
-    earnings: 316,
-    status: "Done",
-    day: "2025-07-29",
-  },
-  {
-    id: "3u1reuv4",
-    earnings: 242,
-    status: "Pending",
-    day: "2025-07-28",
-  },
-  {
-    id: "derv1ws0",
-    earnings: 837,
-    status: "Done",
-    day: "W30",
-  },
-  {
-    id: "5kma53ae",
-    earnings: 874,
-    status: "Skipped",
-    day: "2025-07-26",
-  },
-  {
-    id: "bhqecj4p",
-    earnings: 721,
-    status: "Skipped",
-    day: "2025-07-25",
-  },
-]
+// const data: Payment[] = [
+//   {
+//     date: "m5gr84i9",
+//     earnings: 316,
+//   },
+//   {
+//     id: "3u1reuv4",
+//     earnings: 242,
+//     status: "Pending",
+//     day: "2025-07-28",
+//   },
+//   {
+//     id: "derv1ws0",
+//     earnings: 837,
+//     status: "Done",
+//     day: "W30",
+//   },
+//   {
+//     id: "5kma53ae",
+//     earnings: 874,
+//     status: "Skipped",
+//     day: "2025-07-26",
+//   },
+//   {
+//     id: "bhqecj4p",
+//     earnings: 721,
+//     status: "Skipped",
+//     day: "2025-07-25",
+//   },
+// ]
 
 export type Payment = {
-  id: string
   earnings: number
-  status: "pending" | "processing" | "success" | "failed"
-  day: string
+  date: string
 }
 
 export const columns: ColumnDef<Payment>[] = [
@@ -100,14 +96,7 @@ export const columns: ColumnDef<Payment>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "status",
-    header: "Status",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("status")}</div>
-    ),
-  },
-  {
-    accessorKey: "day",
+    accessorKey: "date",
     header: ({ column }) => {
       return (
         <Button
@@ -119,7 +108,7 @@ export const columns: ColumnDef<Payment>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("day")}</div>,
+    cell: ({ row }) => <div className="lowercase">{row.getValue("date")}</div>,
   },
   {
     accessorKey: "earnings",
@@ -167,7 +156,7 @@ export const columns: ColumnDef<Payment>[] = [
   },
 ]
 
-export function EarningsTable() {
+export function EarningsTable({ data = [] }) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []

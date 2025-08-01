@@ -97,12 +97,15 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
         tolerance: cur.mood.tolerance,
         selfEsteem: cur.mood.selfEsteem,
         trust: cur.mood.trust,
-        progress: cur.progress * 100 / 20
+        progress: cur.progress * 100 / 20,
+        earnings: cur.earnings
       }
 
     ]
     return acc
   }, []);
+
+  const plotTable = plotData.map((day) => ({ date: day.date, earnings: day.earnings }))
 
   return <div className="w-full m-auto p-8 md:px-32 ">
       <p className="mt-0 mb-8">{insight?.yearAnalysis}</p>
@@ -156,6 +159,8 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
       </ChartContainer>
 
       <h2 className="mb-8 mt-32 text-center scroll-m-20 text-lg font-semibold tracking-tight">Your data.</h2>
-      <EarningsTable />
+
+      <EarningsTable data={plotTable} />
+
     </div>
 }
