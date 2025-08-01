@@ -82,8 +82,8 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
           `,
         text: {
           format: {
+            name: "mood_analysis",
             type: "json_schema",
-            alltimeAnalysis: "analysis",
             schema: {
               type: "object",
               properties: {
