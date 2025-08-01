@@ -70,13 +70,6 @@ export default function Template({ title, content, isomorphicContent }: any) {
 
       <TaskView timeframe="week" actions={WEEKLY_ACTIONS} />
       
-      <Carousel className="max-w-[320px] m-auto">
-          <CarouselContent className="">
-            <Weeks />
-          </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
-        </Carousel>
       <footer>
             <div className="flex w-full flex-center justify-center p-a2">
               <Typography>
