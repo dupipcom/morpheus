@@ -77,8 +77,8 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       return <ToggleGroupItem className="leading-7 m-2" value={action.name}>{action.name}</ToggleGroupItem>
     }) }
   </ToggleGroup>
-    <p className="m-8">{timeframe === "day" ? insight.dayAnalysis : insight.weekAnalysis }</p>
-    <p className="m-8">{insight.last3daysAnalysis}</p>
+    <p className="m-8">{timeframe === "day" ? insight?.dayAnalysis : insight?.weekAnalysis }</p>
+    <p className="m-8">{insight?.last3daysAnalysis}</p>
            <p className="m-8 text-center">Your earnings {timeframe === "day" ? "today" : "this week"}, so far: ${earnings}</p>
     </>
 }

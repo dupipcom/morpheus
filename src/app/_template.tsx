@@ -2,7 +2,11 @@
 
 import React, { useRef, useState, useEffect, useContext } from 'react'
 import ReactDOMServer from 'react-dom/server';
+import { useRouter } from 'next/navigation'
+
 import '@mux/mux-video';
+
+
 
 import Link from 'next/link'
 import { NotionRenderer, createBlockRenderer } from "@notion-render/client"
@@ -35,9 +39,13 @@ export default function Template({ title, content, isomorphicContent }: any) {
   })
 
   const { data: session } = useSession()
+  const router = useRouter()
+
+  if (session?.user) {
+    router.push('/app/dashboard')
+  }
 
   console.log({ session })
-
 
   const handleThemeChange = () => {
     if (globalContext.theme === 'light') {
