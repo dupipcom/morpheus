@@ -2,7 +2,11 @@
 
 import React, { useRef, useState, useEffect, useContext } from 'react'
 import ReactDOMServer from 'react-dom/server';
+
 import '@mux/mux-video';
+
+import { Button } from "@/components/ui/button"
+
 
 import Link from 'next/link'
 import { NotionRenderer, createBlockRenderer } from "@notion-render/client"
@@ -12,7 +16,7 @@ import "@dreampipcom/oneiros/styles"
 
 import Layout from './layout'
 import { GlobalContext } from "./contexts"
-
+import { useSession, signIn, signOut } from "next-auth/react"
 
 
 
@@ -34,13 +38,7 @@ export default function Template({ title, content, isomorphicContent }: any) {
     theme: 'light'
   })
 
-  const handleThemeChange = () => {
-    if (globalContext.theme === 'light') {
-      setGlobalContext({...globalContext, theme: 'dark'})
-    } else {
-      setGlobalContext({...globalContext, theme: 'light'})
-    }
-  }
+  const { data: session } = useSession()
 
 
   useEffect(() => {
@@ -89,8 +87,7 @@ export default function Template({ title, content, isomorphicContent }: any) {
 
 
   return (
-      <Globals theme={globalContext.theme}>
-        <Nav onThemeChange={handleThemeChange} />
+
         <main className="min-h-[100vh]">
           { showStream ? (
               <div className="w-full">
@@ -105,18 +102,16 @@ export default function Template({ title, content, isomorphicContent }: any) {
                 />
               </div>
             ) : undefined}
+          { !session?.user ? <div className="my-16 w-full flex align-center justify-center">
+      <Button className="m-auto"><a  href="/login">Login</a></Button>
+    </div> : <div className="my-16 w-full flex align-center justify-center">
+      <Button className="m-auto"><a  href="/app/dashboard">Dashboard</a></Button>
+    </div>
+  }
           { title && !content ? <Typography className="p-[32px] md:p-[64px] md:max-w-[720px] md:m-auto" variant={TypographyVariant.H1}>{title}</Typography> : undefined }
           { content ? <div className="p-[32px] md:p-[64px] md:max-w-[720px] md:m-auto">
             <div dangerouslySetInnerHTML={{ __html: html }} />
           </div> : undefined }
-          <footer>
-            <div className="flex w-full flex-center justify-center p-a2">
-              <Typography>
-                © 1992—Present Angelo Reale
-              </Typography>
-            </div>
-          </footer>
         </main>
-      </Globals>
   )
 }
