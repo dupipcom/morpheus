@@ -110,24 +110,24 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     }) }
   </ToggleGroup>
                <p className="m-8 text-center">Your earnings {timeframe === "day" ? "today" : "this week"}, so far: ${earnings}</p>
-          <Carousel>
-          <CarouselContent className="text-center m-16">
-            {
-              timeframe === "day" ? openDays?.map((day) => {
-                return <CarouselItem className="flex flex-col">
-                  <small>${day.earnings}</small>
-                  <label>{day.date}</label>
-                  <Button>Close day</Button>
-                </CarouselItem>
-              }) : openWeeks?.map((week) => {
-                return <CarouselItem className="flex flex-col">
-                  <small>${week.earnings}</small>
-                  <label>Week {week.week}</label>
-                  <Button>Close week</Button>
-                </CarouselItem>
-              })
-            }
-          </CarouselContent>
+          <Carousel className="max-w-[320px] m-auto">
+            <CarouselContent className="text-center w-[320px]">
+              {
+                timeframe === "day" ? openDays?.map((day) => {
+                  return <CarouselItem className="flex flex-col">
+                    <small>${day.earnings}</small>
+                    <label>{day.date}</label>
+                    <Button>Close day</Button>
+                  </CarouselItem>
+                }) : openWeeks?.map((week) => {
+                  return <CarouselItem className="flex flex-col">
+                    <small>${week.earnings}</small>
+                    <label>Week {week.week}</label>
+                    <Button>Close week</Button>
+                  </CarouselItem>
+                })
+              }
+            </CarouselContent>
           <CarouselPrevious />
           <CarouselNext />
         </Carousel>
