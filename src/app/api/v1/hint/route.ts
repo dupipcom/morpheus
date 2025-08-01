@@ -71,7 +71,7 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
           
           You reference the file search vector store pdfs to provide improvement suggestions to the user routine.
 
-          You analyse how indicators like gratitude, acceptance, restedness, tolerance and trust progress over time, finding correlations with weekly and daily task completions.
+          You analyse how indicators like gratitude, optimism, restedness, tolerance and trust progress over time, finding correlations with weekly and daily task completions.
 
           This is the user historical data set:
 
@@ -93,13 +93,13 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
                 weekAnalysis: { type: "string" },
                 yearAnalysis: { type: "string" },
                 gratitudeAnalysis: { type: "string" },
-                acceptanceAnalysis: { type: "string" },
+                optimismAnalysis: { type: "string" },
                 restednessAnalysis: { type: "string" },
                 toleranceAnalysis: { type: "string" },
                 selfEsteemAnalysis: { type: "string" },
                 trustAnalysis: { type: "string" },
               },
-              required: ["name", "dayAnalysis", "last3daysAnalysis", "weekAnalysis", "yearAnalysis", "gratitudeAnalysis", "acceptanceAnalysis", "restednessAnalysis", "toleranceAnalysis", "selfEsteemAnalysis", "trustAnalysis"],
+              required: ["name", "dayAnalysis", "last3daysAnalysis", "weekAnalysis", "yearAnalysis", "gratitudeAnalysis", "optimismAnalysis", "restednessAnalysis", "toleranceAnalysis", "selfEsteemAnalysis", "trustAnalysis"],
               additionalProperties: false,
             },
             strict: true,

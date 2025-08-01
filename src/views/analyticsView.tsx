@@ -5,11 +5,12 @@ import { useSession, signIn, signOut } from "next-auth/react"
 import { Area, CartesianGrid, Bar, AreaChart } from "recharts"
  
 import { ChartContainer, ChartTooltipContent, ChartTooltip } from "@/components/ui/chart"
+import { Button } from "@/components/ui/button"
 
 import { EarningsTable } from '@/components/earningsTable'
 
 import { getWeekNumber } from "@/app/helpers"
- 
+
 
  const chartData = [
   { month: "January", mood: 186, productivity: 80 },
@@ -29,8 +30,8 @@ const chartConfig = {
     label: "Gratitude",
     color: "#2f2f8d",
   },
-  acceptance: {
-    label: "Acceptance",
+  optimism: {
+    label: "optimism",
     color: "#2f2f8d",
   },
   restedness: {
@@ -76,6 +77,12 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
     generateInsight()
   }, [])
 
+  if (!session?.user) {
+    return <div className="my-16 w-full flex align-center justify-center">
+      <Button className="m-auto"><a  href="/login">Login</a></Button>
+    </div>
+  }
+
   const userDays = session?.user?.entries[year]?.days ? Object.values(session?.user?.entries[year]?.days) : [];
   const plotData = userDays.reduce((acc, cur) => {
     acc = [
@@ -84,7 +91,7 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
         date: cur.date,
         moodAverage: cur.moodAverage,
         gratitude: cur.mood.gratitude,
-        acceptance: cur.mood.acceptance,
+        optimism: cur.mood.optimism,
         restedness: cur.mood.restedness,
         tolerance: cur.mood.tolerance,
         selfEsteem: cur.mood.selfEsteem,
@@ -97,7 +104,7 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
 
   console.log({ userDays, plotData })
   return <div className="w-full m-auto p-8 md:px-32 ">
-      <p className="mt-0 mb-8">{insight.yearAnalysis}</p>
+      <p className="mt-0 mb-8">{insight?.yearAnalysis}</p>
       <ChartContainer config={chartConfig}>
         <AreaChart data={plotData}>
           <CartesianGrid vertical={true} horizontal={true} />
@@ -108,7 +115,7 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
             " fill="#6565cc
             " radius={4} fillOpacity={0.3}
           />
-          <Area dataKey="acceptance" stroke="#fbd2b0
+          <Area dataKey="optimism" stroke="#fbd2b0
             " fill={"#fbd2b0"} radius={4} fillOpacity={0.3}
           />
           <Area dataKey="restedness"  stroke="#fcedd5

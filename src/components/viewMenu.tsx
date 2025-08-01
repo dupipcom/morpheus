@@ -58,6 +58,11 @@ export const ViewMenu = ({ active }) =>{
           <a href="/app/settings">Settings</a>
         </NavigationMenuLink>
       </NavigationMenuItem>
+      <NavigationMenuItem>
+        <NavigationMenuLink>
+          <a href="/logout">Logout</a>
+        </NavigationMenuLink>
+      </NavigationMenuItem>
   </NavigationMenuList>
   <div className="my-8">
     <label>Available Balance:</label>

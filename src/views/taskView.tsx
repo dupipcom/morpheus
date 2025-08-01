@@ -4,6 +4,14 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Slider } from "@/components/ui/slider"
 import { useSession, signIn, signOut } from "next-auth/react"
 import { getWeekNumber } from "@/app/helpers"
+import { Button } from "@/components/ui/button"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
 
 export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const fullDate = new Date()
@@ -22,6 +30,9 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       return (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks && session?.user?.entries[year].weeks[weekNumber].tasks) || []
     }
   }, [JSON.stringify(session)])
+
+
+  const openDays = []
 
   const userDone = useMemo(() => userTasks?.filter((task) => task.status === "Done").map((task) => task.name), [userTasks])
   const [values, setValues] = useState(userDone)
@@ -71,6 +82,12 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     generateInsight()
   }, [])
 
+  if (!session?.user) {
+    return <div className="my-16 w-full flex align-center justify-center">
+      <Button className="m-auto"><a  href="/login">Login</a></Button>
+    </div>
+  }
+
   return <>
   <ToggleGroup value={values} onValueChange={handleDone} variant="outline" className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-8 align-center justify-center w-full m-auto" type="multiple" orientation="horizontal">
    { actions.map((action) => {
@@ -80,5 +97,23 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     <p className="m-8">{timeframe === "day" ? insight?.dayAnalysis : insight?.weekAnalysis }</p>
     <p className="m-8">{insight?.last3daysAnalysis}</p>
            <p className="m-8 text-center">Your earnings {timeframe === "day" ? "today" : "this week"}, so far: ${earnings}</p>
+          <div className="flex flex-wrap justify-center">
+        <Carousel>
+          <CarouselContent>
+            {
+              openDays?.map((day) => {
+                return <CarouselItem className="flex flex-col">
+                  <small>$280</small>
+                  <label>Friday, Jul 25, 2025</label>
+                  <Button>Close day</Button>
+                </CarouselItem>
+              })
+            }
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
+
+    </div>
     </>
 }

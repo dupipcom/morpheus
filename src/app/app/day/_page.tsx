@@ -16,13 +16,7 @@ import { useSession, signIn, signOut } from "next-auth/react"
 import { TaskView } from "@/views/taskView"
 import { ViewMenu } from "@/components/viewMenu"
 import { Button } from "@/components/ui/button"
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel"
+
 
 import { getWeekNumber } from "@/app/helpers"
 import { DAILY_ACTIONS, WEEKS } from "@/app/constants"
@@ -48,8 +42,6 @@ export default function Template({ title, content, isomorphicContent }: any) {
     return acc
   }, {})
 
-  const openDays = Object.values(flatDays).filter((day) => day.status === "Open")
-
 
   const handleThemeChange = () => {
     if (globalContext.theme === 'light') {
@@ -74,25 +66,6 @@ export default function Template({ title, content, isomorphicContent }: any) {
 
       <TaskView actions={actions} />
 
-
-      <div className="flex flex-wrap justify-center">
-        <Carousel>
-          <CarouselContent>
-            {
-              openDays.map((day) => {
-                return <CarouselItem className="flex flex-col">
-                  <small>$280</small>
-                  <label>Friday, Jul 25, 2025</label>
-                  <Button>Close day</Button>
-                </CarouselItem>
-              })
-            }
-          </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
-        </Carousel>
-
-    </div>
       <footer>
             <div className="flex w-full flex-center justify-center p-a2">
               <Typography>

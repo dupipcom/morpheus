@@ -7,7 +7,7 @@ export const WEEKLY_ACTIONS = [
     area: 'social',
     categories: ['community'],
     cadence: 'weekly',
-    status: "Done"
+    status: "Not started"
   },
   {
     name: 'Flirt with someone',
@@ -214,7 +214,7 @@ export const DAILY_ACTIONS = [
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
-    status: 'Done'
+    status: 'Not started'
   },
   {
     name: 'Showered',

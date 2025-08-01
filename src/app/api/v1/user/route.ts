@@ -114,7 +114,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   moodAverage: 0,
                   mood: {
                     gratitude: 0,
-                    acceptance: 0,
+                    optimism: 0,
                     restedness: 0,
                     tolerance: 0,
                     selfEsteem: 0,

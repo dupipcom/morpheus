@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 
 import '@mux/mux-video';
 
+import { Button } from "@/components/ui/button"
 
 
 import Link from 'next/link'
@@ -118,6 +119,12 @@ export default function Template({ title, content, isomorphicContent }: any) {
                 />
               </div>
             ) : undefined}
+          { !session?.user ? <div className="my-16 w-full flex align-center justify-center">
+      <Button className="m-auto"><a  href="/login">Login</a></Button>
+    </div> : <div className="my-16 w-full flex align-center justify-center">
+      <Button className="m-auto"><a  href="/app/dashboard">Dashboard</a></Button>
+    </div>
+  }
           { title && !content ? <Typography className="p-[32px] md:p-[64px] md:max-w-[720px] md:m-auto" variant={TypographyVariant.H1}>{title}</Typography> : undefined }
           { content ? <div className="p-[32px] md:p-[64px] md:max-w-[720px] md:m-auto">
             <div dangerouslySetInnerHTML={{ __html: html }} />

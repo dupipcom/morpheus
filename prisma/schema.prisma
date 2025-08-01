@@ -69,7 +69,7 @@ type Settings {
 
 type Mood {
   gratitude Int
-  acceptance Int
+  optimism Int
   restedness Int
   tolerance Int
   selfEsteem Int
