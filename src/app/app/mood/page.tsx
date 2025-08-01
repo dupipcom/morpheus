@@ -7,7 +7,7 @@ import '@mux/mux-video';
 import Link from 'next/link'
 import { NotionRenderer, createBlockRenderer } from "@notion-render/client"
 
-import { Globals, Nav, Typography, TypographyVariant, ENavControlVariant, EIcon, AudioPlayer } from '@dreampipcom/oneiros'
+import { Typography, TypographyVariant, ENavControlVariant, EIcon, AudioPlayer } from '@dreampipcom/oneiros'
 import "@dreampipcom/oneiros/styles"
 
 import Layout from './layout'
@@ -35,21 +35,11 @@ export default function Template({ title, content, isomorphicContent }: any) {
   }
 
     return (
-      <Globals theme={globalContext.theme}>
-      <Nav onThemeChange={handleThemeChange} />
       <main className="min-h-[100vh]">
         <ViewMenu active="mood" />
         <h1 className="m-8 text-center">It's {new Date().toLocaleString("en-US", {weekday: "long", year: "numeric", month: "short", day: "numeric" })}.<br /> u k, g?</h1>
         <MoodView />
-      
-      <footer>
-            <div className="flex w-full flex-center justify-center p-a2">
-              <Typography>
-                © 1992—Present Angelo Reale
-              </Typography>
-            </div>
-          </footer>
+    
       </main>
-      </Globals>
     )
 }

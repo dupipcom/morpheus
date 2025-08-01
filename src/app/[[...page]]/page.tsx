@@ -17,15 +17,19 @@ export async function generateStaticParams() {
 
 export default async function Page({
   params,
+  session,
 }: {
   params: Promise<{ page: string }>
 }) {
   const { page, lang } = await params
   const slug = "/" + page?.join("/") || "/"
+
+  console.log({ slug })
   const locale = getLocaleFromPath(slug)
   const clearSlug = stripLocaleFromPath(slug)
 
   const pageData = await fetchPageBySlug(clearSlug)
+
 
   if (!pageData) {
     notFound()
@@ -45,7 +49,7 @@ export default async function Page({
 
   const renderer = new NotionRenderer()
 
-  const html = await renderer.render(...pageContent)
+  const html = renderer ? await renderer?.render(...pageContent) : undefined
         
   return <Template title={data.title} content={pageContent} isomorphicContent={html} />
 }

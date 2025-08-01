@@ -2,7 +2,6 @@
 
 import React, { useRef, useState, useEffect, useContext } from 'react'
 import ReactDOMServer from 'react-dom/server';
-import { useRouter } from 'next/navigation'
 
 import '@mux/mux-video';
 
@@ -40,19 +39,6 @@ export default function Template({ title, content, isomorphicContent }: any) {
   })
 
   const { data: session } = useSession()
-  const router = useRouter()
-
-  if (session?.user) {
-    router.push('/app/dashboard')
-  }
-
-  const handleThemeChange = () => {
-    if (globalContext.theme === 'light') {
-      setGlobalContext({...globalContext, theme: 'dark'})
-    } else {
-      setGlobalContext({...globalContext, theme: 'light'})
-    }
-  }
 
 
   useEffect(() => {
@@ -101,8 +87,7 @@ export default function Template({ title, content, isomorphicContent }: any) {
 
 
   return (
-      <Globals theme={globalContext.theme}>
-        <Nav onThemeChange={handleThemeChange} />
+
         <main className="min-h-[100vh]">
           { showStream ? (
               <div className="w-full">
@@ -127,14 +112,6 @@ export default function Template({ title, content, isomorphicContent }: any) {
           { content ? <div className="p-[32px] md:p-[64px] md:max-w-[720px] md:m-auto">
             <div dangerouslySetInnerHTML={{ __html: html }} />
           </div> : undefined }
-          <footer>
-            <div className="flex w-full flex-center justify-center p-a2">
-              <Typography>
-                © 1992—Present Angelo Reale
-              </Typography>
-            </div>
-          </footer>
         </main>
-      </Globals>
   )
 }

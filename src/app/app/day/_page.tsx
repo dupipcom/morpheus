@@ -7,7 +7,7 @@ import prisma from "@/lib/prisma";
 import Link from 'next/link'
 import { NotionRenderer, createBlockRenderer } from "@notion-render/client"
 
-import { Globals, Nav, Typography, TypographyVariant, ENavControlVariant, EIcon, AudioPlayer } from '@dreampipcom/oneiros'
+import { Typography, TypographyVariant, ENavControlVariant, EIcon, AudioPlayer } from '@dreampipcom/oneiros'
 import "@dreampipcom/oneiros/styles"
 
 import Layout from './layout'
@@ -52,8 +52,6 @@ export default function Template({ title, content, isomorphicContent }: any) {
   }
 
     return (
-      <Globals theme={globalContext.theme}>
-      <Nav onThemeChange={handleThemeChange} />
       <main className="min-h-[100vh]">
         
       <ViewMenu active="day" />
@@ -65,15 +63,6 @@ export default function Template({ title, content, isomorphicContent }: any) {
       <p className="text-center scroll-m-20 text-lg font-semibold tracking-tight mb-8">What did you accomplish today?</p>
 
       <TaskView actions={actions} />
-
-      <footer>
-            <div className="flex w-full flex-center justify-center p-a2">
-              <Typography>
-                © 1992—Present Angelo Reale
-              </Typography>
-            </div>
-          </footer>
       </main>
-      </Globals>
     )
 }
