@@ -29,7 +29,12 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     } else if (timeframe === 'week') {
       return (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks && session?.user?.entries[year].weeks[weekNumber].tasks) || []
     }
-  }, [JSON.stringify(session)])
+  }, [JSON.stringify(session)]).sort((a,b) => {
+    if (a.status === "Done") {
+      return 1
+    }
+    return -1
+  })
 
 
   const openDays = session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && Object.values(session?.user?.entries[year].days).filter((day) => { day.status == "Open" })
@@ -90,7 +95,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
 
   return <>
   <ToggleGroup value={values} onValueChange={handleDone} variant="outline" className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-8 align-center justify-center w-full m-auto" type="multiple" orientation="horizontal">
-   { actions.map((action) => {
+   { userTasks?.map((action) => {
       return <ToggleGroupItem className="leading-7 m-2" value={action.name}>{action.name}</ToggleGroupItem>
     }) }
   </ToggleGroup>

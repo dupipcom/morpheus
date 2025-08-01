@@ -19,12 +19,8 @@ export const SettingsView = ({ timeframe = "day" }) => {
 
   const [mood, setMood] = useState(serverSettings)
 
-  console.log({ serverSettings})
-
   const handleSubmit = async (value, field) => {
     setMood({...mood, [field]: value})
-    console.log({ value, field 
-    })
     const response = await fetch('/api/v1/user', 
       { method: 'POST', 
         body: JSON.stringify({

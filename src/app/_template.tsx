@@ -46,8 +46,6 @@ export default function Template({ title, content, isomorphicContent }: any) {
     router.push('/app/dashboard')
   }
 
-  console.log({ session })
-
   const handleThemeChange = () => {
     if (globalContext.theme === 'light') {
       setGlobalContext({...globalContext, theme: 'dark'})

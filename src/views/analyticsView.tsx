@@ -104,7 +104,6 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
     return acc
   }, []);
 
-  console.log({ userDays, plotData })
   return <div className="w-full m-auto p-8 md:px-32 ">
       <p className="mt-0 mb-8">{insight?.yearAnalysis}</p>
       <h2 className="mb-8 mt-32 text-center scroll-m-20 text-lg font-semibold tracking-tight">Your mood.</h2>
