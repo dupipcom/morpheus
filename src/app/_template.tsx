@@ -33,11 +33,6 @@ export default function Template({ title, content, isomorphicContent }: any) {
   const [html, setHtml] = useState(isomorphicContent)
   const [showStream, setShowStream] = useState(false)
 
-  // i know this is a funny theme implementation, but i wasn't even thinking of supporting it now, and we need contexts with more structure than snug coding.
-  const [globalContext, setGlobalContext] = useState({
-    theme: 'light'
-  })
-
   const { data: session } = useSession()
 
 
@@ -88,7 +83,7 @@ export default function Template({ title, content, isomorphicContent }: any) {
 
   return (
 
-        <main className="min-h-[100vh]">
+        <main className="">
           { showStream ? (
               <div className="w-full">
                 <mux-video 

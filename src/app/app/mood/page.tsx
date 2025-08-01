@@ -37,7 +37,8 @@ export default function Template({ title, content, isomorphicContent }: any) {
     return (
       <main className="min-h-[100vh]">
         <ViewMenu active="mood" />
-        <h1 className="m-8 text-center">It's {new Date().toLocaleString("en-US", {weekday: "long", year: "numeric", month: "short", day: "numeric" })}.<br /> u k, g?</h1>
+        <h1 className="scroll-m-20 text-2xl font-semibold tracking-tight text-center mb-8">It's {new Date().toLocaleString("en-US", {weekday: "long", year: "numeric", month: "short", day: "numeric" })}.</h1>
+        <p className="text-center scroll-m-20 text-lg font-semibold tracking-tight mb-8">u k, g?</p>
         <MoodView />
     
       </main>
