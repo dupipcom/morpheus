@@ -13,7 +13,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const { data: session, update } = useSession()
   const [insight, setInsight] = useState({})
 
-  const earnings = timeframe === "day" ? session?.user?.entries[year]?.days[date]?.earnings?.toLocaleString() : session?.user?.entries[year]?.weeks[weekNumber]?.earnings?.toLocaleString()
+  const earnings = Object.keys(session?.user?.entries || 0).length > 0 ? timeframe === "day" ? session?.user?.entries[year]?.days[date]?.earnings?.toLocaleString() : session?.user?.entries[year]?.weeks[weekNumber]?.earnings?.toLocaleString() : 0
 
   const userTasks = useMemo(() => {
     if(timeframe === 'day') {
@@ -48,7 +48,6 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const updateUser = async () => {
     const response = await fetch('/api/v1/user', { method: 'GET' })
     const updatedUser = await response.json()
-    console.log({ updatedUser })
     update({ ...session, user: { ...session?.user, ...updatedUser }})
   }
 

@@ -45,7 +45,7 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
     user = getUser();
   }
 
-  if (!user.analysis[date]) {
+  if (!Object.keys(user.analysis).length) {
     try {
       const file = await openai.files.create({
         file: fs.createReadStream(process.cwd() + '/src/app/api/v1/hint/rag/atomic-habits.pdf'),

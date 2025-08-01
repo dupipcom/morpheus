@@ -14,13 +14,28 @@ export const authOptions = {
     issuer: process.env.AUTH0_ISSUER
     })
   ],
+  events: { 
+    async signIn(message) {
+      if(message.isNewUser) {
+        console.log({ message })
+        await prisma.user.update({
+          data: {
+              entries: {},
+              settings: {},
+              analysis: {}
+          },
+          where: { name: message.user.name }
+        })
+      }
+    },
+  },
   callbacks: {
     async redirect({ url, baseUrl }) {
       return '/app/day'
     },
-    session: async (session, user) => {
-      return Promise.resolve(session);
-    },
+    async session({ session, user }) {
+      return {...session, user: {...session.user, ...user }}
+    }
   },
   adapter: PrismaAdapter(prisma)
 }
