@@ -182,8 +182,6 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   const dayEarnings = ((5 - dayMoodAverage)) * 0.2 + ((dayProgress * 0.80)) * user?.availableBalance / 30
   const weekEarnings = ((5 - weekMoodAverage)) * 0.2 + ((weekProgress * 0.80)) * user?.availableBalance / 30
 
-  console.log({ data, weekMoodValues, moodValues, dayEarnings, dayMoodAverage, weekMoodAverage, balance: user?.availableBalance,  weekEarnings })
-
   if (data.weekActions?.length) {
     await prisma.user.update({
       data: {
