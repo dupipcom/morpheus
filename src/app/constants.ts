@@ -3,98 +3,98 @@ export const defaultLocale = 'en'
 
 export const WEEKLY_ACTIONS = [
   {
-    name: 'Create content for social media',
+    name: 'Created content for social media',
     area: 'social',
     categories: ['community'],
     cadence: 'weekly',
     status: "Not started"
   },
   {
-    name: 'Flirt with someone',
+    name: 'Flirted with someone',
     area: 'social',
     categories: ['affection'],
     cadence: 'weekly',
     status: "Not started"
   },
   {
-    name: 'Talk to a friend',
+    name: 'Talked to a friend',
     area: 'social',
     categories: ['affection'],
     cadence: 'weekly',
     status: "Not started"
   },
   {
-    name: 'Navigate social media',
+    name: 'Navigated on social media',
     area: 'social',
     categories: ['community'],
     cadence: 'weekly',
     status: "Not started"
   },
   {
-    name: 'Talk to family',
+    name: 'Talked to family',
     area: 'social',
     categories: ['affection'],
     cadence: 'weekly',
     status: "Not started"
   },
   {
-    name: 'Make music',
+    name: 'Made music',
     area: 'self',
     categories: ['fun'],
     cadence: 'weekly',
     status: "Not started"
   },
   {
-    name: 'Meditate',
+    name: 'Meditated',
     area: 'self',
     categories: ['spirituality'],
     cadence: 'weekly',
     status: "Not started"
   },
   {
-    name: 'Pray',
+    name: 'Spoke to the holy',
     area: 'self',
     categories: ['spirituality'],
     cadence: 'weekly',
     status: "Not started"
   },
   {
-    name: 'Read the Bible',
+    name: 'Read a mystic book',
     area: 'self',
     categories: ['spirituality'],
     cadence: 'weekly',
     status: "Not started"
   },
   {
-    name: 'Share learnings',
+    name: 'Shared learnings',
     area: 'social',
     categories: ['community'],
     cadence: 'weekly',
     status: "Not started"
   },
   {
-    name: 'Study a subject',
+    name: 'Studied a subject',
     area: 'self',
     categories: ['growth'],
     cadence: 'weekly',
     status: "Not started"
   },
   {
-    name: 'Watch some educational content',
+    name: 'Watched some educational content',
     area: 'self',
     categories: ['growth'],
     cadence: 'weekly',
     status: "Not started"
   },
   {
-    name: 'Play a game',
+    name: 'Played a game',
     area: 'self',
     categories: ['fun'],
     cadence: 'weekly',
     status: "Not started"
   },
   {
-    name: 'Watch series or film',
+    name: 'Watched series or film',
     area: 'self',
     categories: ['fun'],
     cadence: 'weekly',
@@ -108,35 +108,35 @@ export const WEEKLY_ACTIONS = [
     status: "Not started"
   },
   {
-    name: 'Write an opinion',
+    name: 'Wrote an opinion',
     area: 'social',
     categories: ['community'],
     cadence: 'weekly',
     status: "Not started"
   },
   {
-    name: 'Clean bed',
+    name: 'Cleaned bed',
     area: 'home',
     categories: ['clean'],
     cadence: 'weekly',
     status: "Not started"
   },
   {
-    name: 'Ensure bedroom is ordered',
+    name: 'Ensured bedroom is ordered',
     area: 'home',
     categories: ['clean'],
     cadence: 'weekly',
     status: "Not started"
   },
   {
-    name: 'Shave body',
+    name: 'Shaved body',
     area: 'home',
     categories: ['clean', 'extra'],
     cadence: 'weekly',
     status: "Not started"
   },
   {
-    name: 'Shave face',
+    name: 'Shaved face',
     area: 'home',
     categories: ['clean', 'extra'],
     cadence: 'weekly',
@@ -150,56 +150,56 @@ export const WEEKLY_ACTIONS = [
     status: "Not started"
   },
   {
-    name: 'Brush surfaces',
+    name: 'Brushed surfaces',
     area: 'home',
     categories: ['clean', 'extra'],
     cadence: 'weekly',
     status: "Not started"
   },
   {
-    name: 'Mop floors',
+    name: 'Mopped floors',
     area: 'home',
     categories: ['clean', 'extra'],
     cadence: 'weekly',
     status: "Not started"
   },
   {
-    name: 'Wash clothes',
+    name: 'Washed clothes',
     area: 'home',
     categories: ['clean', 'extra'],
     cadence: 'weekly',
     status: "Not started"
   },
   {
-    name: 'Clean bathroom',
+    name: 'Cleaned bathroom',
     area: 'home',
     categories: ['clean', 'extra'],
     cadence: 'weekly',
     status: "Not started"
   },
   {
-    name: 'Clean kitchen',
+    name: 'Cleaned kitchen',
     area: 'home',
     categories: ['clean', 'extra'],
     cadence: 'weekly',
     status: "Not started"
   },
   {
-    name: 'Work on personal project',
+    name: 'Worked on personal project',
     area: 'self',
     categories: ['work'],
     cadence: 'weekly',
     status: "Not started"
   },
   {
-    name: 'Help someone',
+    name: 'Helped someone',
     area: 'social',
     categories: ['community'],
     cadence: 'weekly',
     status: "Not started"
   },
   {
-    name: 'Buy groceries',
+    name: 'Bought groceries',
     area: 'home',
     categories: ['maintenance'],
     cadence: 'weekly',
