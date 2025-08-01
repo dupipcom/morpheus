@@ -104,24 +104,24 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   return <>
   <ToggleGroup value={values} onValueChange={handleDone} variant="outline" className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-8 align-center justify-center w-full m-auto" type="multiple" orientation="horizontal">
    { castActions?.map((action) => {
-      return <ToggleGroupItem className="leading-7 m-2" value={action.name}>{action.name}</ToggleGroupItem>
+      return <ToggleGroupItem className="leading-7 m-2 text-md min-h-[40px]" value={action.name}>{action.name}</ToggleGroupItem>
     }) }
   </ToggleGroup>
-               <p className="m-8 text-center">Your earnings {timeframe === "day" ? "today" : "this week"}, so far: ${earnings}</p>
+               <p className="m-8 text-center">Your earnings {timeframe === "day" ? "today" : "this week"}, so far: ${earnings.toLocaleString()}</p>
           <Carousel className="max-w-[320px] m-auto">
             <CarouselContent className="text-center w-[320px]">
               {
                 timeframe === "day" ? openDays?.map((day) => {
                   return <CarouselItem className="flex flex-col">
-                    <small>${day.earnings}</small>
+                    <small>${day.earnings.toLocaleString()}</small>
                     <label>{day.date}</label>
                     <Button>Close day</Button>
                   </CarouselItem>
                 }) : openWeeks?.map((week) => {
                   return <CarouselItem className="flex flex-col">
-                    <small>${week.earnings}</small>
+                    <small>${week.earnings.toLocaleString()}</small>
                     <label>Week {week.week}</label>
-                    <Button>Close week</Button>
+                    <Button className="text-md p-5">Close week</Button>
                   </CarouselItem>
                 })
               }
@@ -130,8 +130,8 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
           <CarouselNext />
         </Carousel>
 
-    <p className="m-8">{timeframe === "day" ? insight?.dayAnalysis : insight?.weekAnalysis }</p>
-    <p className="m-8">{insight?.last3daysAnalysis}</p>
+    <p className="mx-8 mt-8">{timeframe === "day" ? insight?.dayAnalysis : insight?.weekAnalysis }</p>
+    <p className="mx-8 mt-8">{insight?.last3daysAnalysis}</p>
           <div className="flex flex-wrap justify-center">
     </div>
     </>

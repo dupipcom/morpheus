@@ -98,7 +98,7 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
         selfEsteem: cur.mood.selfEsteem,
         trust: cur.mood.trust,
         progress: cur.progress * 100 / 20,
-        earnings: cur.earnings
+        earnings: cur.earnings.toLocaleString()
       }
 
     ]

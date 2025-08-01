@@ -62,9 +62,8 @@ export default function RootLayout({
         </SessionProvider>
       </Globals>
         <footer>
-            <div className={`${ globalContext.theme == "dark" ? "bg-[#3e365c] text-[#f1cfff]" : "bg-[#f1cfff] text-[#3e365c]" } flex h-full w-full 
-              flex-col items-start justify-end justify-items-end
-               justify-end p-8 py-32 `}>
+            <div className={`${ globalContext.theme == "dark" ? "bg-[#3e365c] text-[#f1cfff]" : "bg-[#f1cfff] text-[#3e365c]" } flex w-full 
+              flex-col items-start p-8 py-32 `}>
               <small>
                 © 2012—Present DreamPip
               </small>
