@@ -68,6 +68,8 @@ export const MoodView = ({ timeframe = "day" }) => {
   }
 
   return <div key={JSON.stringify(serverMood)} className="max-w-[320px] m-auto">
+          <h3 className="mt-8">What's in your mind?</h3>
+      <Textarea defaultValue={serverText} onBlur={(e) => handleSubmit(e.target.value, "text")} />
       <div className="my-8">
         <h3 className="mt-8">Gratitude</h3>
         <small>{insight?.gratitudeAnalysis}</small>
@@ -98,7 +100,5 @@ export const MoodView = ({ timeframe = "day" }) => {
         <small>{insight?.trustAnalysis}</small>
       </div>
       <Slider defaultValue={[serverMood?.trust || 0]} max={5} step={1} onValueCommit={(e) => handleSubmit(e[0], "trust")} />
-      <h3 className="mt-8">What's in your mind?</h3>
-      <Textarea defaultValue={serverText} onBlur={(e) => handleSubmit(e.target.value, "text")} />
     </div>
 }
