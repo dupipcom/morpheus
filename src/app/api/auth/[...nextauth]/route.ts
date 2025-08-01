@@ -17,7 +17,6 @@ export const authOptions = {
   events: { 
     async signIn(message) {
       if(message.isNewUser) {
-        console.log({ message })
         await prisma.user.update({
           data: {
               entries: {},
