@@ -21,7 +21,7 @@ const moodChartConfig = {
     color: "#2f2f8d",
   },
   optimism: {
-    label: "optimism",
+    label: "Optimism",
     color: "#2f2f8d",
   },
   restedness: {

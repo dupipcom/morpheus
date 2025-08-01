@@ -36,19 +36,10 @@ export default function Template({ title, content, isomorphicContent }: any) {
 
     return (
       <Globals theme={globalContext.theme}>
-      <Nav onThemeChange={handleThemeChange} />
       <main className="min-h-[100vh]">
         <ViewMenu active="settings" />
         <h1 className="m-8 text-center">Let's configure things.</h1>
         <SettingsView />
-      
-      <footer>
-            <div className="flex w-full flex-center justify-center p-a2">
-              <Typography>
-                © 1992—Present Angelo Reale
-              </Typography>
-            </div>
-          </footer>
       </main>
       </Globals>
     )

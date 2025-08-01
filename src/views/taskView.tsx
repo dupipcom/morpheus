@@ -108,19 +108,19 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     }) }
   </ToggleGroup>
                <p className="m-8 text-center">Your earnings {timeframe === "day" ? "today" : "this week"}, so far: ${earnings.toLocaleString()}</p>
-          <Carousel className="max-w-[320px] m-auto">
-            <CarouselContent className="text-center w-[320px]">
+          <Carousel className="max-w-[196px] m-auto">
+            <CarouselContent className="text-center w-[192px]">
               {
                 timeframe === "day" ? openDays?.map((day) => {
                   return <CarouselItem className="flex flex-col">
                     <small>${day.earnings.toLocaleString()}</small>
-                    <label>{day.date}</label>
+                    <label className="mb-4">{day.date}</label>
                     <Button>Close day</Button>
                   </CarouselItem>
                 }) : openWeeks?.map((week) => {
                   return <CarouselItem className="flex flex-col">
                     <small>${week.earnings.toLocaleString()}</small>
-                    <label>Week {week.week}</label>
+                    <label className="mb-4">Week {week.week}</label>
                     <Button className="text-md p-5">Close week</Button>
                   </CarouselItem>
                 })
