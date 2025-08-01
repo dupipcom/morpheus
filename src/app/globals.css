@@ -114,14 +114,24 @@
 }
 
 .dark div[data-slot="carousel"] button {
-  background-color: #f1cfff!important;
+  background-color: #f1cfff !important;
 }
 
+.light h2, .light h1, .light h3, .light p, .light label,  .lightsmall, .light a, .light input, .light .border-input {
+    color: #2f2f8d;
+}
+
+.border-input input {
+  border-color: #f1cfff;
+}
+
+.dark .border-input input {
+  border-color: #f1cfff;
+}
 
 
 .dark h2, .dark h1, .dark h3, .dark p, .dark label, .dark small, .dark a, .dark input, .dark .border-input {
     color: #f1cfff;
-    border-color: #f1cfff;
 }
 
 .dark div {
