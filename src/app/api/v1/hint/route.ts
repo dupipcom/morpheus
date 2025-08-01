@@ -12,6 +12,7 @@ interface GenerateRequest {
 }
 
 export const revalidate = 86400;
+export const maxDuration = 30;
 
 export async function GET(req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(authOptions);
