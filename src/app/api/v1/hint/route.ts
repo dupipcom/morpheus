@@ -21,7 +21,7 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
   // }
   
   const getUser = async () => await prisma.user.findUnique({
-       where: { name: session?.user?.name  }
+       where: { id: session?.user?.id  }
     })
 
   let user = await getUser()
@@ -40,7 +40,7 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
         data: {
           analysis: {},
         },
-        where: { name: user.name },
+        where: { id: user.id },
       });
     user = getUser();
   }
@@ -53,7 +53,6 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
       });
 
       const vectorStore = await openai.vectorStores.create({
-        name: "Book references",
         file_ids: [file.id],
         expires_after: {
           anchor: "last_active_at",
@@ -83,11 +82,11 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
         text: {
           format: {
             type: "json_schema",
-            name: "analysis",
+            alltimeAnalysis: "analysis",
             schema: {
               type: "object",
               properties: {
-                name: { type: "string" },
+                alltimeAnalysis: { type: "string" },
                 dayAnalysis: { type: "string" },
                 last3daysAnalysis: { type: "string" },
                 weekAnalysis: { type: "string" },
@@ -99,7 +98,7 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
                 selfEsteemAnalysis: { type: "string" },
                 trustAnalysis: { type: "string" },
               },
-              required: ["name", "dayAnalysis", "last3daysAnalysis", "weekAnalysis", "yearAnalysis", "gratitudeAnalysis", "optimismAnalysis", "restednessAnalysis", "toleranceAnalysis", "selfEsteemAnalysis", "trustAnalysis"],
+              required: ["alltimeAnalysis", "dayAnalysis", "last3daysAnalysis", "weekAnalysis", "yearAnalysis", "gratitudeAnalysis", "optimismAnalysis", "restednessAnalysis", "toleranceAnalysis", "selfEsteemAnalysis", "trustAnalysis"],
               additionalProperties: false,
             },
             strict: true,
@@ -114,7 +113,7 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
             [date]: JSON.parse(response.output_text)
           },
         },
-        where: { name: user.name },
+        where: { id: user.id },
       })
 
       user = getUser();
