@@ -118,7 +118,7 @@
 }
 
 .light h2, .light h1, .light h3, .light p, .light label,  .lightsmall, .light a, .light input, .light .border-input {
-    color: #2f2f8d;
+    color: #563769 !important;
 }
 
 .border-input input {
@@ -127,6 +127,23 @@
 
 .dark .border-input input {
   border-color: #f1cfff;
+}
+
+.border-input input {
+  border-color: #f1cfff;
+}
+
+.dark .border-input input {
+  border-color: #f1cfff;
+}
+
+.dark button[type="button"] {
+  color: #f1cfff !important;
+  border-color: #f1cfff;
+}
+
+button[data-state="on"] {
+  border-color: #c4abef !important;
 }
 
 
