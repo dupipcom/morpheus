@@ -56,7 +56,7 @@ model User {
   analysis      Json?
   availableBalance  String?
   hint String?
-  @@unique([email])
+  @@unique([name, email])
 }
 
 type Settings {
