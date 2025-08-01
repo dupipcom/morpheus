@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { Metadata } from "next"
 import { Comfortaa } from "next/font/google"
 import { SessionProvider } from "next-auth/react"
@@ -9,6 +9,8 @@ import { Nav, Globals } from '@dreampipcom/oneiros'
 import "./globals.css"
 
 import "@dreampipcom/oneiros/styles"
+
+import { useLocalStorage } from 'usehooks-ts';
 
 
 const comfortaa = Comfortaa({
@@ -28,13 +30,21 @@ export default function RootLayout({
 }>) {
   const [globalContext, setGlobalContext] = useState({ theme: "light" })
 
+  const [value, setValue, removeValue] = useLocalStorage('theme', 0);
+
   const handleThemeChange = () => {
     if (globalContext.theme === 'light') {
       setGlobalContext({...globalContext, theme: 'dark'})
+      setValue('dark')
     } else {
       setGlobalContext({...globalContext, theme: 'light'})
+      setValue('light')
     }
   }
+
+  useEffect(() => {
+    setGlobalContext({ ...globalContext, theme: value})
+  }, [])
 
   return (
     <html lang="en">
