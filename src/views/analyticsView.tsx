@@ -11,17 +11,7 @@ import { EarningsTable } from '@/components/earningsTable'
 
 import { getWeekNumber } from "@/app/helpers"
 
-
- const chartData = [
-  { month: "January", mood: 186, productivity: 80 },
-  { month: "February", mood: 305, productivity: 200 },
-  { month: "March", mood: 237, productivity: 120 },
-  { month: "April", mood: 73, productivity: 190 },
-  { month: "May", mood: 209, productivity: 130 },
-  { month: "June", mood: 214, productivity: 140 },
-]
-
-const chartConfig = {
+const moodChartConfig = {
   moodAverage: {
     label: "Mood",
     color: "#2f2f8d",
@@ -48,6 +38,17 @@ const chartConfig = {
   },
   trust: {
     label: "Trust",
+    color: "#2f2f8d",
+  },
+} satisfies ChartConfig
+
+const productivityChartConfig = {
+  moodAverage: {
+    label: "Mood",
+    color: "#2f2f8d",
+  },
+  progress: {
+    label: "Progress",
     color: "#2f2f8d",
   },
 } satisfies ChartConfig
@@ -83,7 +84,7 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
     </div>
   }
 
-  const userDays = session?.user?.entries[year]?.days ? Object.values(session?.user?.entries[year]?.days) : [];
+  const userDays = session?.user?.entries && session?.user?.entries[year]?.days ? Object.values(session?.user?.entries[year]?.days) : [];
   const plotData = userDays.reduce((acc, cur) => {
     acc = [
       ...acc,
@@ -95,7 +96,8 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
         restedness: cur.mood.restedness,
         tolerance: cur.mood.tolerance,
         selfEsteem: cur.mood.selfEsteem,
-        trust: cur.mood.trust
+        trust: cur.mood.trust,
+        progress: cur.progress * 100 / 20
       }
 
     ]
@@ -105,7 +107,9 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
   console.log({ userDays, plotData })
   return <div className="w-full m-auto p-8 md:px-32 ">
       <p className="mt-0 mb-8">{insight?.yearAnalysis}</p>
-      <ChartContainer config={chartConfig}>
+      <h2 className="mb-8 mt-32 text-center scroll-m-20 text-lg font-semibold tracking-tight">Your mood.</h2>
+
+      <ChartContainer config={moodChartConfig}>
         <AreaChart data={plotData}>
           <CartesianGrid vertical={true} horizontal={true} />
           <Area dataKey="moodAverage" stroke="#cffcdf
@@ -135,6 +139,24 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
           <ChartTooltip content={<ChartTooltipContent />} />
         </AreaChart>
       </ChartContainer>
+
+      <h2 className="mb-8 mt-32 text-center scroll-m-20 text-lg font-semibold tracking-tight">Your productivity.</h2>
+
+      <ChartContainer config={productivityChartConfig}>
+        <AreaChart data={plotData}>
+          <CartesianGrid vertical={true} horizontal={true} />
+          <Area dataKey="moodAverage" stroke="#cffcdf
+            " fill={"#cffcdf"} radius={4} fillOpacity={0.3}
+          />
+          <Area dataKey="progress"  stroke="#6565cc
+            " fill="#6565cc
+            " radius={4} fillOpacity={0.3}
+          />
+          <ChartTooltip content={<ChartTooltipContent />} />
+        </AreaChart>
+      </ChartContainer>
+
+      <h2 className="mb-8 mt-32 text-center scroll-m-20 text-lg font-semibold tracking-tight">Your data.</h2>
       <EarningsTable />
     </div>
 }

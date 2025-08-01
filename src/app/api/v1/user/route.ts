@@ -170,7 +170,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
 
   const dayMoodAverage = moodValues.reduce((acc,cur) => acc + cur, 0) / moodValues.length
 
-  const wantBudget = Number(user.settings.monthsFixedIncome) + Number(user.settings.monthsVariableIncome) - Number(user.settings.monthsNeedFixedExpenses) - Number(user.settings.monthsNeedVariableExpenses)
+  const wantBudget = Number(user?.settings?.monthsFixedIncome) + Number(user?.settings?.monthsVariableIncome) - Number(user?.settings?.monthsNeedFixedExpenses) - Number(user?.settings?.monthsNeedVariableExpenses)
 
   const weekMoodValues = Object.values(user?.entries[year].days).length ? Object.values(user?.entries[year].days).sort().splice(0, 7).map((day) => {
     return Object.values(day?.mood)?.length ? Object.values(day?.mood) : [0].flat() 
@@ -197,7 +197,10 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   week: weekNumber,
                   earnings: weekEarnings,
                   tasks: data.weekActions,
-                  status: "Open"
+                  status: "Open",
+                  progress: weekProgress,
+                  done: weekDone.length,
+                  tasksNumber: weekTasks.length
                 }
               }
           }
@@ -253,6 +256,9 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   month,
                   day,
                   earnings: dayEarnings,
+                  progress: dayProgress,
+                  done: dayDone.length,
+                  tasksNumber: dayTasks.length,
                   tasks: data.dayActions,
                   status: "Open"
                 }
