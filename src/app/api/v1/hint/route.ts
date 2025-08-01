@@ -35,7 +35,7 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
 
   let returnValue
 
-  if (!user.analysis) {
+  if (!user?.analysis) {
     await prisma.user.update({
         data: {
           analysis: {},
@@ -45,7 +45,7 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
     user = getUser();
   }
 
-  if (!Object.keys(user.analysis).length) {
+  if (!user?.analysis || !Object.keys(user.analysis).length) {
     try {
       const file = await openai.files.create({
         file: fs.createReadStream(process.cwd() + '/src/app/api/v1/hint/rag/atomic-habits.pdf'),
