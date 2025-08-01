@@ -19,28 +19,14 @@ import { ViewMenu } from "@/components/viewMenu"
 
 
 export default function Template({ title, content, isomorphicContent }: any) {
-  const [globalContext, setGlobalContext] = useState({
-    theme: 'light'
-  })
-
   const { data: session } = useSession()
 
 
-  const handleThemeChange = () => {
-    if (globalContext.theme === 'light') {
-      setGlobalContext({...globalContext, theme: 'dark'})
-    } else {
-      setGlobalContext({...globalContext, theme: 'light'})
-    }
-  }
-
     return (
-      <Globals theme={globalContext.theme}>
       <main className="">
         <ViewMenu active="settings" />
         <h1 className="scroll-m-20 text-2xl font-semibold tracking-tight text-center mb-8">Let's configure things.</h1>
         <SettingsView />
       </main>
-      </Globals>
     )
 }
