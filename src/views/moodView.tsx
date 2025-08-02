@@ -94,6 +94,7 @@ export const MoodView = ({ timeframe = "day" }) => {
   }
 
   return <div key={JSON.stringify(serverMood)} className="max-w-[320px] m-auto">
+    <p className="text-center scroll-m-20 text-sm font-semibold tracking-tight mb-8">You're currently viewing the actions for: {date}</p>
           <h3 className="mt-8 mb-4">What's in your mind?</h3>
       <Textarea defaultValue={serverText} onBlur={(e) => handleSubmit(e.target.value, "text")} />
       <div className="my-8">
