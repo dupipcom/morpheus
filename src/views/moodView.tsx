@@ -73,7 +73,7 @@ export const MoodView = ({ timeframe = "day" }) => {
 
   const handleCloseDates = async (values) => {
     const response = await fetch('/api/v1/user', { method: 'POST', body: JSON.stringify({
-      weeksToClose: values,
+      daysToClose: values,
       date: fullDay 
     }) })
     await updateUser()
@@ -143,7 +143,7 @@ export const MoodView = ({ timeframe = "day" }) => {
                     <small>${day.earnings?.toLocaleString()}</small>
                     <label className="mb-4">{day.date}</label>
                     <Button className="text-md p-5 mb-2" onClick={() => handleEditDay(new Date(day.date))}>Edit day</Button>
-                    <Button className="text-md p-5" onClick={() => handleCloseDates([week.week])}>Close week</Button>
+                    <Button className="text-md p-5" onClick={() => handleCloseDates([day.date])}>Close day</Button>
                   </CarouselItem>
                 })
               }
