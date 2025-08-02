@@ -34,8 +34,6 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   const day = Number(date.split('-')[2])
   const weekNumber = getWeekNumber(fullDate)[1]
 
-  console.log({ date, data })
-
   if (data.availableBalance) {
     await prisma.user.update({
       data: {
