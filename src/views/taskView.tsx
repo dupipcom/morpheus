@@ -27,7 +27,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     if(timeframe === 'day') {
       return (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date] && session?.user?.entries[year].days[date].tasks) || []
     } else if (timeframe === 'week') {
-      return (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks && session?.user?.entries[year].weeks[weekNumber].tasks) || []
+      return (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks && session?.user?.entries[year].weeks[weekNumber]?.tasks) || []
     }
   }, [JSON.stringify(session)]).sort((a,b) => {
     if (a.status === "Done") {
@@ -52,6 +52,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const castActions = userTasks?.length ? userTasks : actions 
 
   const handleDone = async (values) => {
+    console.log("click")
     const nextActions = userTasks?.map((action) => {
       const clonedAction = { ...action }
       if (values.includes(action.name)) {
@@ -120,8 +121,8 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   }
 
   return <>
+      <p className="text-center scroll-m-20 text-sm font-semibold tracking-tight mb-8">You're currently viewing the actions for: {date}</p>
   <ToggleGroup value={values} onValueChange={handleDone} variant="outline" className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-8 align-center justify-center w-full m-auto" type="multiple" orientation="horizontal">
-    <p className="text-center scroll-m-20 text-sm font-semibold tracking-tight mb-8">You're currently viewing the actions for: {date}</p>
    { castActions?.sort().map((action) => {
       return <ToggleGroupItem className="leading-7 m-2 text-md min-h-[40px]" value={action.name}>{action.name}</ToggleGroupItem>
     }) }

@@ -114,8 +114,8 @@
 }
 
 .dark div[data-slot="carousel"] button {
-  background-color: red !important;
-  color: #f1cfff;
+  background-color: #f1cfff !important;
+  color: #3e365c;
 }
 
 .dark button {
@@ -140,10 +140,30 @@
   border-color: #f1cfff;
 }
 
-.dark button[data-state="on"] {
-  border-color: #6565cc;
-  color: red !important;
+
+.light button[data-state="on"] {
+  border-color: #c4abef;
+  background-color: #c4abef;
 }
+
+.light button[data-state="off"] {
+  color: #6565cc;
+  border-color: #6565cc;
+  background-color: transparent;
+}
+
+.dark button[data-state="on"] {
+  border-color: #f1cfff;
+  background-color: #f1cfff;
+  color: #3e365c;
+}
+
+.dark button[data-state="off"] {
+  border-color: #f1cfff;
+  background-color: #3e365c;
+  color: #f1cfff;
+}
+
 
 tr[data-state="selected"] {
   background-color: #f8eeff;
