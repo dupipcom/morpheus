@@ -114,7 +114,8 @@
 }
 
 .dark div[data-slot="carousel"] button {
-  background-color: #f1cfff;
+  background-color: red !important;
+  color: #f1cfff;
 }
 
 .dark button {
@@ -134,7 +135,8 @@
 }
 
 .dark button[type="button"] {
-  color: #f1cfff;
+  color: #3e365c;
+  background-color: #f1cfff;
   border-color: #f1cfff;
 }
 
