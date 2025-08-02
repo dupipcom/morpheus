@@ -114,7 +114,8 @@
 }
 
 .dark div[data-slot="carousel"] button {
-  background-color: #f1cfff;
+  background-color: #f1cfff !important;
+  color: #3e365c;
 }
 
 .dark button {
@@ -134,14 +135,35 @@
 }
 
 .dark button[type="button"] {
-  color: #f1cfff;
+  color: #3e365c;
+  background-color: #f1cfff;
   border-color: #f1cfff;
 }
 
-.dark button[data-state="on"] {
-  border-color: #6565cc;
-  color: red !important;
+
+.light button[data-state="on"] {
+  border-color: #c4abef;
+  background-color: #c4abef;
 }
+
+.light button[data-state="off"] {
+  color: #3e365c;
+  border-color: #c4abef;
+  background-color: transparent;
+}
+
+.dark button[data-state="on"] {
+  border-color: #f1cfff;
+  background-color: #f1cfff;
+  color: #3e365c;
+}
+
+.dark button[data-state="off"] {
+  border-color: #f1cfff;
+  background-color: #3e365c;
+  color: #f1cfff;
+}
+
 
 tr[data-state="selected"] {
   background-color: #f8eeff;
@@ -188,18 +210,15 @@ a[data-active] a {
 .dark a:hover[data-radix-collection-item] a {
   color: #563769 !important;
 }
+
+body {
+  background-color: #f1cfff;
+}
+
+.dark body {
+    color: #f1cfff;
+}
  
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-
-
-
-  .dark body {
-    color: #f1cfff;
-  }
+  
 }

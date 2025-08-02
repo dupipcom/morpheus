@@ -108,6 +108,7 @@ export const columns: ColumnDef<Payment>[] = [
     header: ({ column }) => {
       return (
         <Button
+          className="!bg-[#6565cc] !text-[#f1cfff] hover:text-[#FACEFB]"
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
@@ -352,6 +353,7 @@ export function EarningsTable({ data = [] }) {
         </div>
         <div className="space-x-2">
           <Button
+            className="!bg-[#563769] text-[#f1cfff]"
             variant="outline"
             size="sm"
             onClick={() => table.previousPage()}
@@ -360,6 +362,7 @@ export function EarningsTable({ data = [] }) {
             Previous
           </Button>
           <Button
+            className="!bg-[#563769] text-[#f1cfff]"
             variant="outline"
             size="sm"
             onClick={() => table.nextPage()}

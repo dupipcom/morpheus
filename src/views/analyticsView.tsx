@@ -90,13 +90,13 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
       ...acc,
       {
         date: cur.date,
-        moodAverage: cur.moodAverage,
-        gratitude: cur.mood.gratitude,
-        optimism: cur.mood.optimism,
-        restedness: cur.mood.restedness,
-        tolerance: cur.mood.tolerance,
-        selfEsteem: cur.mood.selfEsteem,
-        trust: cur.mood.trust,
+        moodAverage: cur.moodAverage?.toLocaleString(),
+        gratitude: cur.mood.gratitude?.toLocaleString(),
+        optimism: cur.mood.optimism?.toLocaleString(),
+        restedness: cur.mood.restedness?.toLocaleString(),
+        tolerance: cur.mood.tolerance?.toLocaleString(),
+        selfEsteem: cur.mood.selfEsteem?.toLocaleString(),
+        trust: cur.mood.trust?.toLocaleString(),
         progress: cur.progress * 100 / 20,
         earnings: cur.earnings?.toLocaleString()
       }

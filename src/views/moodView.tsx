@@ -1,26 +1,44 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useSession, signIn, signOut } from "next-auth/react"
 import { Slider } from "@/components/ui/slider"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { getWeekNumber } from "@/app/helpers"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
 
 export const MoodView = ({ timeframe = "day" }) => {
-  const fullDate = new Date()
-  const date = fullDate.toISOString().split('T')[0]
+  const [fullDay, setFullDay] = useState(new Date()) 
+  const date = fullDay.toISOString().split('T')[0]
   const year = Number(date.split('-')[0])
-  const weekNumber = getWeekNumber(fullDate)[1]
+  const [weekNumber, setWeekNumber] = useState(getWeekNumber(fullDay)[1])
+
   const { data: session, update } = useSession()
   const [insight, setInsight] = useState({})
-  
 
-  const serverMood = (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date] && session?.user?.entries[year].days[date].mood) || {}
+  const serverMood = useMemo(() => (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date] && session?.user?.entries[year].days[date].mood) || {}, [fullDay, JSON.stringify(session)])
 
-  const serverText = (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date] && session?.user?.entries[year].days[date].text) || ""
+  const serverText = useMemo(() => (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date] && session?.user?.entries[year].days[date].text) || "", [fullDay, JSON.stringify(session)])
+
+  const openDays = useMemo(() => {
+    return session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && Object.values(session?.user?.entries[year].days).filter((day) => {
+   return day.status == "Open" })
+  }, [JSON.stringify(session)])
 
   const [mood, setMood] = useState(serverMood)
+
+  const updateUser = async () => {
+    const response = await fetch('/api/v1/user', { method: 'GET' })
+    const updatedUser = await response.json()
+    update({ ...session, user: { ...session?.user, ...updatedUser }})
+  }
 
   const handleSubmit = async (value, field) => {
     setMood({...mood, [field]: value})
@@ -29,7 +47,8 @@ export const MoodView = ({ timeframe = "day" }) => {
       const response = await fetch('/api/v1/user', 
       { method: 'POST', 
         body: JSON.stringify({
-          text: value
+          text: value,
+          date: fullDay
       }) 
     })
     } else {
@@ -37,12 +56,27 @@ export const MoodView = ({ timeframe = "day" }) => {
       { method: 'POST', 
         body: JSON.stringify({
           mood: {
-            [field]: value
-          }
+            [field]: value,
+          },
+          date: fullDay
         }) 
       })
     }
+    await updateUser()
+  }
 
+
+
+  const handleEditDay = (date) => {
+    setFullDay(date)
+  }
+
+  const handleCloseDates = async (values) => {
+    const response = await fetch('/api/v1/user', { method: 'POST', body: JSON.stringify({
+      daysToClose: values,
+      date: fullDay 
+    }) })
+    await updateUser()
   }
 
   const generateInsight = async (value, field) => {
@@ -68,6 +102,7 @@ export const MoodView = ({ timeframe = "day" }) => {
   }
 
   return <div key={JSON.stringify(serverMood)} className="max-w-[320px] m-auto">
+    <p className="text-center scroll-m-20 text-sm font-semibold tracking-tight mb-8">You're currently viewing the actions for: {date}</p>
           <h3 className="mt-8 mb-4">What's in your mind?</h3>
       <Textarea defaultValue={serverText} onBlur={(e) => handleSubmit(e.target.value, "text")} />
       <div className="my-8">
@@ -99,6 +134,22 @@ export const MoodView = ({ timeframe = "day" }) => {
         <h3 className="mt-8 mb-4">Trust</h3>
         <small>{insight?.trustAnalysis}</small>
       </div>
-      <Slider defaultValue={[serverMood?.trust || 0]} max={5} step={1} onValueCommit={(e) => handleSubmit(e[0], "trust")} />
+      <Slider className="mb-16" defaultValue={[serverMood?.trust || 0]} max={5} step={1} onValueCommit={(e) => handleSubmit(e[0], "trust")} />
+        <Carousel className="max-w-[196px] m-auto">
+            <CarouselContent className="text-center w-[192px]">
+              {
+                openDays?.map((day) => {
+                  return <CarouselItem className="flex flex-col">
+                    <small>${day.earnings?.toLocaleString()}</small>
+                    <label className="mb-4">{day.date}</label>
+                    <Button className="text-md p-5 mb-2" onClick={() => handleEditDay(new Date(day.date))}>Edit day</Button>
+                    <Button className="text-md p-5" onClick={() => handleCloseDates([day.date])}>Close day</Button>
+                  </CarouselItem>
+                })
+              }
+            </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
     </div>
 }

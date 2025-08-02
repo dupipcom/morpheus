@@ -25,7 +25,8 @@ export const SettingsView = ({ timeframe = "day" }) => {
       { method: 'POST', 
         body: JSON.stringify({
           settings: {
-            [field]: value
+            [field]: value,
+            date: fullDate
           }
       }) 
     })
