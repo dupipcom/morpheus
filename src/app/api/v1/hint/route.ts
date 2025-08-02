@@ -112,7 +112,7 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
       await prisma.user.update({
         data: {
           analysis: {
-            [date]: JSON.parse(response.output_text)
+            [date]: JSON.parse(JSON.stringify(response.output_text))
           },
         },
         where: { id: user.id },
