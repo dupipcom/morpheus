@@ -15,7 +15,6 @@ import {
 
 export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const [fullDay, setFullDay] = useState(new Date()) 
-  console.log({ fullDay })
   const date = fullDay.toISOString().split('T')[0]
   const year = Number(date.split('-')[0])
   const [weekNumber, setWeekNumber] = useState(getWeekNumber(fullDay)[1])
@@ -68,6 +67,14 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       dayActions: timeframe === 'day' ? nextActions : undefined,
       weekActions: timeframe === 'week' ? nextActions : undefined,
       date: fullDay 
+    }) })
+    await updateUser()
+  }
+
+  const handleCloseDates = async (values) => {
+    const response = await fetch('/api/v1/user', { method: 'POST', body: JSON.stringify({
+      daysToClose: timeframe === 'day' ? values : undefined,
+      weeksToClose: timeframe === 'week' ? values : undefined
     }) })
     await updateUser()
   }
@@ -128,14 +135,14 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                     <small>${day.earnings?.toLocaleString()}</small>
                     <label className="mb-4">{day.date}</label>
                     <Button className="text-md p-5 mb-2" onClick={() => handleEditDay(new Date(day.date))}>Edit day</Button>
-                    <Button className="text-md p-5" >Close day</Button>
+                    <Button className="text-md p-5" onClick={() => handleCloseDates([day.date])} >Close day</Button>
                   </CarouselItem>
                 }) : openWeeks?.map((week) => {
                   return <CarouselItem className="flex flex-col">
                     <small>${week.earnings?.toLocaleString()}</small>
                     <label className="mb-4">Week {week.week}</label>
                     <Button onClick={() => handleEditWeek(new Date(week.week))} className="text-md p-5 mb-2">Edit week</Button>
-                    <Button className="text-md p-5">Close week</Button>
+                    <Button className="text-md p-5" onClick={() => handleCloseDates([{ week: week.week, year: week.year }])}>Close week</Button>
                   </CarouselItem>
                 })
               }
@@ -144,8 +151,8 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
           <CarouselNext />
         </Carousel>
 
-    <p className="mx-8 mt-8">{timeframe === "day" ? insight?.dayAnalysis : insight?.weekAnalysis }</p>
-    <p className="mx-8 mt-8">{insight?.last3daysAnalysis}</p>
+    <p className="mx-8 pt-8">{timeframe === "day" ? insight?.dayAnalysis : insight?.weekAnalysis }</p>
+    <p className="mx-8 pt-8">{insight?.last3daysAnalysis}</p>
           <div className="flex flex-wrap justify-center">
     </div>
     </>

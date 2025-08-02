@@ -188,18 +188,15 @@ a[data-active] a {
 .dark a:hover[data-radix-collection-item] a {
   color: #563769 !important;
 }
+
+body {
+  background-color: #f1cfff;
+}
+
+.dark body {
+    color: #f1cfff;
+}
  
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-
-
-
-  .dark body {
-    color: #f1cfff;
-  }
+  
 }

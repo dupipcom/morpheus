@@ -71,6 +71,14 @@ export const MoodView = ({ timeframe = "day" }) => {
     setFullDay(date)
   }
 
+  const handleCloseDates = async (values) => {
+    const response = await fetch('/api/v1/user', { method: 'POST', body: JSON.stringify({
+      weeksToClose: values,
+      date: fullDay 
+    }) })
+    await updateUser()
+  }
+
   const generateInsight = async (value, field) => {
     const response = await fetch('/api/v1/hint', { method: 'GET' }, {
   cache: 'force-cache',
@@ -135,7 +143,7 @@ export const MoodView = ({ timeframe = "day" }) => {
                     <small>${day.earnings?.toLocaleString()}</small>
                     <label className="mb-4">{day.date}</label>
                     <Button className="text-md p-5 mb-2" onClick={() => handleEditDay(new Date(day.date))}>Edit day</Button>
-                    <Button className="text-md p-5" >Close day</Button>
+                    <Button className="text-md p-5" onClick={() => handleCloseDates([week.week])}>Close week</Button>
                   </CarouselItem>
                 })
               }

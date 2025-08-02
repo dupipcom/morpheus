@@ -26,13 +26,15 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
 
   let user = await getUser()
 
-  const fullDate = new Date(data.date)
+  const fullDate = data?.date ? new Date(data?.date) : new Date()
 
   const date = fullDate.toISOString().split('T')[0]
   const year = Number(date.split('-')[0])
   const month = Number(date.split('-')[1])
   const day = Number(date.split('-')[2])
   const weekNumber = getWeekNumber(fullDate)[1]
+
+  console.log({ date, data })
 
   if (data.availableBalance) {
     await prisma.user.update({
@@ -336,6 +338,55 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
       where: { id: user.id },
     })
     user = await getUser()
+  }
+
+  if (data?.daysToClose) {
+    for (const date of data?.daysToClose) {
+      const year = Number(date.split('-')[0])
+      await prisma.user.update({
+        data: {
+          entries: {
+              ...user.entries,
+              [year]: {
+                ...user.entries[year],
+                days: {
+                  ...user.entries[year].days,
+                  [date]: {
+                    ...user.entries[year].days[date],
+                    status: "Closed",
+                  }
+                }
+              }
+            }
+        },
+        where: { id: user.id },
+      })
+      user = await getUser()
+    }
+  }
+
+  if (data?.weeksToClose) {
+    for (const week of data?.weeksToClose) {
+      await prisma.user.update({
+        data: {
+          entries: {
+              ...user.entries,
+              [week.year]: {
+                ...user.entries[week.year],
+                weeks: {
+                  ...user.entries[week.year].weeks,
+                  [weekNumber]: {
+                    ...user.entries[week.year].weeks[week],
+                    status: "Closed",
+                  }
+                }
+            }
+          },
+        },
+        where: { id: user.id },
+      })
+      user = await getUser()
+    }
   }
 
   if (data?.settings) {
