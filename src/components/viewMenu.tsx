@@ -26,7 +26,8 @@ export const ViewMenu = ({ active }) =>{
 
   const handleBalanceChange = (e) => {
     fetch('/api/v1/user', { method: 'POST', body: JSON.stringify({
-      availableBalance: e.currentTarget.value
+      availableBalance: e.currentTarget.value,
+      date: new Date()
     }) })
     setTimeout(() => updateUser(), 2000)
   }

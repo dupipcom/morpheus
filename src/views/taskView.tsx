@@ -14,10 +14,11 @@ import {
 } from "@/components/ui/carousel"
 
 export const TaskView = ({ timeframe = "day", actions = [] }) => {
-  const fullDate = new Date()
-  const date = fullDate.toISOString().split('T')[0]
+  const [fullDay, setFullDay] = useState(new Date()) 
+  console.log({ fullDay })
+  const date = fullDay.toISOString().split('T')[0]
   const year = Number(date.split('-')[0])
-  const weekNumber = getWeekNumber(fullDate)[1]
+  const [weekNumber, setWeekNumber] = useState(getWeekNumber(fullDay)[1])
   const { data: session, update } = useSession()
   const [insight, setInsight] = useState({})
 
@@ -37,9 +38,10 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   })
 
 
-  const openDays = session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && Object.values(session?.user?.entries[year].days).filter((day) => {
-   
+  const openDays = useMemo(() => {
+    return session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && Object.values(session?.user?.entries[year].days).filter((day) => {
    return day.status == "Open" })
+  }, [JSON.stringify(session)])
 
   const openWeeks = session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks && Object.values(session?.user?.entries[year].weeks).filter((week) => {
    
@@ -64,9 +66,18 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     setValues(done)
     const response = await fetch('/api/v1/user', { method: 'POST', body: JSON.stringify({
       dayActions: timeframe === 'day' ? nextActions : undefined,
-      weekActions: timeframe === 'week' ? nextActions : undefined 
+      weekActions: timeframe === 'week' ? nextActions : undefined,
+      date: fullDay 
     }) })
     await updateUser()
+  }
+
+  const handleEditDay = (date) => {
+    setFullDay(date)
+  }
+
+  const handleEditWeek = (date) => {
+    setWeekNumber(date)
   }
 
   const updateUser = async () => {
@@ -103,6 +114,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
 
   return <>
   <ToggleGroup value={values} onValueChange={handleDone} variant="outline" className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-8 align-center justify-center w-full m-auto" type="multiple" orientation="horizontal">
+    <p className="text-center scroll-m-20 text-sm font-semibold tracking-tight mb-8">You're currently viewing the actions for: {date}</p>
    { castActions?.sort().map((action) => {
       return <ToggleGroupItem className="leading-7 m-2 text-md min-h-[40px]" value={action.name}>{action.name}</ToggleGroupItem>
     }) }
@@ -115,12 +127,14 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                   return <CarouselItem className="flex flex-col">
                     <small>${day.earnings?.toLocaleString()}</small>
                     <label className="mb-4">{day.date}</label>
-                    <Button>Close day</Button>
+                    <Button className="text-md p-5 mb-2" onClick={() => handleEditDay(new Date(day.date))}>Edit day</Button>
+                    <Button className="text-md p-5" >Close day</Button>
                   </CarouselItem>
                 }) : openWeeks?.map((week) => {
                   return <CarouselItem className="flex flex-col">
                     <small>${week.earnings?.toLocaleString()}</small>
                     <label className="mb-4">Week {week.week}</label>
+                    <Button onClick={() => handleEditWeek(new Date(week.week))} className="text-md p-5 mb-2">Edit week</Button>
                     <Button className="text-md p-5">Close week</Button>
                   </CarouselItem>
                 })

@@ -26,7 +26,8 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
 
   let user = await getUser()
 
-  const fullDate = new Date()
+  const fullDate = new Date(data.date)
+
   const date = fullDate.toISOString().split('T')[0]
   const year = Number(date.split('-')[0])
   const month = Number(date.split('-')[1])
