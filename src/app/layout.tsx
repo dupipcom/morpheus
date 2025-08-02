@@ -62,7 +62,7 @@ export default function RootLayout({
         <meta property="og:image" content="https://www.dreampip.com/images/logo-social.jpg" />
       </head>
       <body
-        className={`${comfortaa.variable} antialiased`}
+        className={`${comfortaa.variable} antialiased min-h-[100vh]`}
       >
         
         <Globals theme={globalContext.theme}>
@@ -73,7 +73,7 @@ export default function RootLayout({
       </Globals>
         <footer>
             <div className={`${ globalContext.theme == "dark" ? "bg-[#3e365c] text-[#f1cfff]" : "bg-[#f1cfff] text-[#3e365c]" } flex w-full 
-              flex-col items-start p-8 py-32 `}>
+              flex-col items-start p-8 py-32`}>
               <small>
                 © 2012—Present DreamPip
               </small>
