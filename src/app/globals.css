@@ -117,7 +117,11 @@
   background-color: #f1cfff;
 }
 
-.light h2, .light h1, .light h3, .light p, .light label,  .lightsmall, .light a, .light input, .light .border-input {
+.dark button {
+  background-color: #f1cfff;
+}
+
+.light h2, .light h1, .light h3, .light p, .light label,  .light small, .light a, .light input, .light .border-input {
     color: #563769;
 }
 
@@ -153,7 +157,7 @@ tr[data-state="selected"] td div {
 
 
 
-.dark h2, .dark h1, .dark h3, .dark p, .dark label, .dark small, .dark a, .dark input, .dark .border-input {
+.dark h2, .dark h1, .dark h3, .dark p, .dark label, .dark small, .dark input, .dark .border-input {
     color: #f1cfff;
 }
 
