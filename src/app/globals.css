@@ -147,8 +147,8 @@
 }
 
 .light button[data-state="off"] {
-  color: #6565cc;
-  border-color: #6565cc;
+  color: #3e365c;
+  border-color: #c4abef;
   background-color: transparent;
 }
 
