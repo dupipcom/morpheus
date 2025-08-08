@@ -1,9 +1,8 @@
 import { NextResponse } from 'next/server';
+import { currentUser, auth } from '@clerk/nextjs/server'
 import openai from '@/lib/openai';
 import fs from "fs";
-import { getServerSession } from "next-auth/next"
 import prisma from "@/lib/prisma";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { getWeekNumber } from "@/app/helpers"
 import { WEEKLY_ACTIONS, DAILY_ACTIONS } from "@/app/constants"
 
@@ -15,14 +14,14 @@ export const revalidate = 86400;
 export const maxDuration = 30;
 
 export async function GET(req: NextApiRequest, res: NextApiResponse) {
-  const session = await getServerSession(authOptions);
+  const { userId } = await auth()
 
   // if (!data.prompt) {
   //   return Response.json({ error: "Prompt is required" }, { status: 400 });
   // }
   
   const getUser = async () => await prisma.user.findUnique({
-       where: { id: session?.user?.id  }
+       where: { userId }
     })
 
   let user = await getUser()
@@ -32,7 +31,7 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
   const year = Number(date.split('-')[0])
   const weekNumber = getWeekNumber(fullDate)[1]
 
-  const entries = user.entries
+  const entries = user?.entries
 
   let returnValue
 
@@ -41,7 +40,7 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
         data: {
           analysis: {},
         },
-        where: { id: user.id },
+        where: { userId },
       });
     user = getUser();
   }
@@ -115,7 +114,7 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
             [date]: JSON.parse(JSON.stringify(response.output_text))
           },
         },
-        where: { id: user.id },
+        where: { userId },
       })
 
       user = getUser();

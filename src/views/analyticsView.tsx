@@ -1,7 +1,6 @@
 'use client'
 import { type ChartConfig } from "@/components/ui/chart"
-import { useState, useEffect } from 'react'
-import { useSession, signIn, signOut } from "next-auth/react"
+import { useState, useEffect, useContext } from 'react'
 import { Area, CartesianGrid, Bar, AreaChart } from "recharts"
  
 import { ChartContainer, ChartTooltipContent, ChartTooltip } from "@/components/ui/chart"
@@ -10,6 +9,8 @@ import { Button } from "@/components/ui/button"
 import { EarningsTable } from '@/components/earningsTable'
 
 import { getWeekNumber } from "@/app/helpers"
+
+import { GlobalContext } from "@/lib/contexts"
 
 const moodChartConfig = {
   moodAverage: {
@@ -60,7 +61,7 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
   const weekNumber = getWeekNumber(fullDate)[1]
   const [insight, setInsight] = useState({})
   const [relevantData, setRelevantData] = useState([])
-  const { data: session, update } = useSession()
+    const { session, setGlobalContext, ...globalContext } = useContext(GlobalContext)
 
   const generateInsight = async (value, field) => {
     const response = await fetch('/api/v1/hint', { method: 'GET' }, {
@@ -105,9 +106,9 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
     return acc
   }, []);
 
-  return <div className="w-full m-auto p-8 md:px-32 ">
+  return <div className="max-w-[1200px] w-full m-auto p-8 md:px-32 ">
       <p className="mt-0 mb-8">{insight?.yearAnalysis}</p>
-      <h2 className="mb-8 mt-32 text-center scroll-m-20 text-lg font-semibold tracking-tight">Your mood.</h2>
+      <h2 className="mb-8 mt-16 text-center scroll-m-20 text-lg font-semibold tracking-tight">Your mood.</h2>
 
       <ChartContainer config={moodChartConfig}>
         <AreaChart data={plotData}>
@@ -140,7 +141,7 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
         </AreaChart>
       </ChartContainer>
 
-      <h2 className="mb-8 mt-32 text-center scroll-m-20 text-lg font-semibold tracking-tight">Your productivity.</h2>
+      <h2 className="mb-8 mt-16 text-center scroll-m-20 text-lg font-semibold tracking-tight">Your productivity.</h2>
 
       <ChartContainer config={productivityChartConfig}>
         <AreaChart data={plotData}>
@@ -156,7 +157,7 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
         </AreaChart>
       </ChartContainer>
 
-      <h2 className="mb-8 mt-32 text-center scroll-m-20 text-lg font-semibold tracking-tight">Your data.</h2>
+      <h2 className="mb-8 mt-16 text-center scroll-m-20 text-lg font-semibold tracking-tight">Your data.</h2>
 
       <EarningsTable data={plotData} />
 

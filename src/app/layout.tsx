@@ -1,14 +1,18 @@
 'use client'
 import { useState, useEffect } from 'react'
 import type { Metadata } from "next"
-import { Comfortaa } from "next/font/google"
-import { SessionProvider } from "next-auth/react"
 
-import { Nav, Globals } from '@dreampipcom/oneiros'
+import { GlobalContext } from "@/lib/contexts"
+
+import { Comfortaa } from "next/font/google"
+
+import {
+  ClerkProvider,
+} from '@clerk/nextjs'
+
+import { Nav } from '@/components/ui/nav'
 
 import "./globals.css"
-
-import "@dreampipcom/oneiros/styles"
 
 import { useLocalStorage } from 'usehooks-ts';
 
@@ -28,7 +32,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [globalContext, setGlobalContext] = useState({ theme: "light" })
+  const [globalContext, setGlobalContext] = useState({ theme: "light", session: { user: {} } })
 
   const [value, setValue, removeValue] = useLocalStorage('theme', 0);
 
@@ -43,6 +47,7 @@ export default function RootLayout({
   }
 
   useEffect(() => {
+    console.log({ value })
     setGlobalContext({ ...globalContext, theme: value  === "dark" ? "dark" : "light"})
   }, [])
 
@@ -55,25 +60,26 @@ export default function RootLayout({
         <meta name="description" content="DreamPip is fintech for compassion." />
         <meta name="keywords" content="mental health, fintech, atomic habits, game" />
         <meta name="robots" content="index, follow" />
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="language" content="English" />
         <meta name="revisit-after" content="7 days" />
         <meta name="author" content="DreamPip" />
         <meta property="og:image" content="https://www.dreampip.com/images/logo-social.jpg" />
       </head>
       <body
-        className={`${comfortaa.variable} antialiased min-h-[100vh]`}
+        className={`${comfortaa.variable} ${globalContext.theme}`}
       >
         
-        <Globals theme={globalContext.theme}>
-        <SessionProvider>
-          <Nav className="z-[999]" onThemeChange={handleThemeChange} />
+        <ClerkProvider appearance={{
+        cssLayerName: 'clerk',
+      }}>
+        <GlobalContext.Provider value={{...globalContext, setGlobalContext, theme: value }}>
+          <Nav onThemeChange={handleThemeChange} />
           {children}
-        </SessionProvider>
-      </Globals>
+        </GlobalContext.Provider>
+        </ClerkProvider>
         <footer>
-            <div className={`${ globalContext.theme == "dark" ? "bg-[#3e365c] text-[#f1cfff]" : "bg-[#f1cfff] text-[#3e365c]" } flex w-full 
-              flex-col items-start p-8 py-32`}>
+            <div className={`flex w-full flex-col items-start p-8 py-32`}>
               <small>
                 © 2012—Present DreamPip
               </small>

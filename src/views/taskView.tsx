@@ -1,9 +1,11 @@
 'use client'
-import { useState, useMemo, useEffect } from "react"
+import { useState, useMemo, useEffect, useContext } from "react"
+import useSWR from "swr"
+
+import { getWeekNumber } from "@/app/helpers"
+
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Slider } from "@/components/ui/slider"
-import { useSession, signIn, signOut } from "next-auth/react"
-import { getWeekNumber } from "@/app/helpers"
 import { Button } from "@/components/ui/button"
 import {
   Carousel,
@@ -13,12 +15,14 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 
+import { GlobalContext } from "@/lib/contexts"
+
 export const TaskView = ({ timeframe = "day", actions = [] }) => {
+  const { session, setGlobalContext, ...globalContext } = useContext(GlobalContext)
   const [fullDay, setFullDay] = useState(new Date()) 
   const date = fullDay.toISOString().split('T')[0]
   const year = Number(date.split('-')[0])
   const [weekNumber, setWeekNumber] = useState(getWeekNumber(fullDay)[1])
-  const { data: session, update } = useSession()
   const [insight, setInsight] = useState({})
 
   const earnings = Object.keys(session?.user?.entries || 0).length > 0 ? timeframe === "day" ? session?.user?.entries[year]?.days[date]?.earnings?.toLocaleString() : session?.user?.entries[year]?.weeks[weekNumber]?.earnings?.toLocaleString() : 0
@@ -52,7 +56,6 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const castActions = userTasks?.length ? userTasks : actions 
 
   const handleDone = async (values) => {
-    console.log("click")
     const nextActions = userTasks?.map((action) => {
       const clonedAction = { ...action }
       if (values.includes(action.name)) {
@@ -91,8 +94,10 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const updateUser = async () => {
     const response = await fetch('/api/v1/user', { method: 'GET' })
     const updatedUser = await response.json()
-    update({ ...session, user: { ...session?.user, ...updatedUser }})
+    setGlobalContext({...globalContext, session: { ...session, user: updatedUser } })
   }
+
+  const { data, mutate, error, isLoading } = useSWR(`/api/user`, updateUser)
 
   useEffect(() => {
     setValues(userDone)
@@ -111,6 +116,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   }
 
   useEffect(() => {
+    updateUser()
     generateInsight()
   }, [])
 
@@ -120,11 +126,11 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     </div>
   }
 
-  return <>
-      <p className="text-center scroll-m-20 text-sm font-semibold tracking-tight mb-8">You're currently viewing the actions for: {date}</p>
-  <ToggleGroup value={values} onValueChange={handleDone} variant="outline" className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-8 align-center justify-center w-full m-auto" type="multiple" orientation="horizontal">
+  return <div className="max-w-[1200px] m-auto">
+      <p className="text-center scroll-m-20 text-sm font-semibold tracking-tight mb-8">You're currently viewing the actions for: {timeframe === "day" ? date : `Week ${weekNumber}`}</p>
+  <ToggleGroup value={values} onValueChange={handleDone} variant="outline" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 align-center justify-center w-full m-auto" type="multiple" orientation="horizontal">
    { castActions?.sort().map((action) => {
-      return <ToggleGroupItem className="leading-7 m-2 text-md min-h-[40px]" value={action.name}>{action.name}</ToggleGroupItem>
+      return <ToggleGroupItem className="leading-7 m-1 text-sm min-h-[40px] truncate" value={action.name}>{action.name}</ToggleGroupItem>
     }) }
   </ToggleGroup>
                <p className="m-8 text-center">Your earnings {timeframe === "day" ? "today" : "this week"}, so far: ${earnings?.toLocaleString()}</p>
@@ -142,7 +148,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                   return <CarouselItem className="flex flex-col">
                     <small>${week.earnings?.toLocaleString()}</small>
                     <label className="mb-4">Week {week.week}</label>
-                    <Button onClick={() => handleEditWeek(new Date(week.week))} className="text-md p-5 mb-2">Edit week</Button>
+                    <Button onClick={() => handleEditWeek(week.week)} className="text-md p-5 mb-2">Edit week</Button>
                     <Button className="text-md p-5" onClick={() => handleCloseDates([{ week: week.week, year: week.year }])}>Close week</Button>
                   </CarouselItem>
                 })
@@ -156,5 +162,5 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     <p className="mx-8 pt-8">{insight?.last3daysAnalysis}</p>
           <div className="flex flex-wrap justify-center">
     </div>
-    </>
+    </div>
 }

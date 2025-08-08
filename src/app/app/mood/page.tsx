@@ -2,17 +2,12 @@
 
 import React, { useRef, useState, useEffect, useContext } from 'react'
 import ReactDOMServer from 'react-dom/server';
-import '@mux/mux-video';
 
 import Link from 'next/link'
-import { NotionRenderer, createBlockRenderer } from "@notion-render/client"
-
-import { Typography, TypographyVariant, ENavControlVariant, EIcon, AudioPlayer } from '@dreampipcom/oneiros'
-import "@dreampipcom/oneiros/styles"
 
 import Layout from './layout'
 import { GlobalContext } from "./contexts"
-import { useSession, signIn, signOut } from "next-auth/react"
+
 import { MoodView } from "@/views/moodView"
 import { ViewMenu } from "@/components/viewMenu"
 
@@ -23,8 +18,9 @@ export default function Template({ title, content, isomorphicContent }: any) {
     theme: 'light'
   })
 
-  const { data: session } = useSession()
-
+  const session = {
+    user: {}
+  }
 
   const handleThemeChange = () => {
     if (globalContext.theme === 'light') {

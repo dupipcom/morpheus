@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect, useMemo } from 'react'
-import { useSession, signIn, signOut } from "next-auth/react"
+
 import { Slider } from "@/components/ui/slider"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -20,7 +20,8 @@ export const MoodView = ({ timeframe = "day" }) => {
   const year = Number(date.split('-')[0])
   const [weekNumber, setWeekNumber] = useState(getWeekNumber(fullDay)[1])
 
-  const { data: session, update } = useSession()
+  const [session, setSession] = useState({ user: {} })
+
   const [insight, setInsight] = useState({})
 
   const serverMood = useMemo(() => (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date] && session?.user?.entries[year].days[date].mood) || {}, [fullDay, JSON.stringify(session)])
@@ -37,7 +38,7 @@ export const MoodView = ({ timeframe = "day" }) => {
   const updateUser = async () => {
     const response = await fetch('/api/v1/user', { method: 'GET' })
     const updatedUser = await response.json()
-    update({ ...session, user: { ...session?.user, ...updatedUser }})
+    setSession({...session, user: updatedUser })
   }
 
   const handleSubmit = async (value, field) => {
@@ -92,6 +93,7 @@ export const MoodView = ({ timeframe = "day" }) => {
   }
 
   useEffect(() => {
+    updateUser()
     generateInsight()
   }, [])
 
@@ -101,8 +103,8 @@ export const MoodView = ({ timeframe = "day" }) => {
     </div>
   }
 
-  return <div key={JSON.stringify(serverMood)} className="max-w-[320px] m-auto">
-    <p className="text-center scroll-m-20 text-sm font-semibold tracking-tight mb-8">You're currently viewing the actions for: {date}</p>
+  return <div key={JSON.stringify(serverMood)} className="max-w-[720px] m-auto">
+    <p className="text-center scroll-m-20 text-sm font-semibold tracking-tight mb-8">You're currently viewing the mood for: {date}</p>
           <h3 className="mt-8 mb-4">What's in your mind?</h3>
       <Textarea defaultValue={serverText} onBlur={(e) => handleSubmit(e.target.value, "text")} />
       <div className="my-8">
