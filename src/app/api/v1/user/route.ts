@@ -1,14 +1,13 @@
-import { getServerSession } from "next-auth/next"
 import prisma from "@/lib/prisma";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route"
+import { currentUser, auth } from '@clerk/nextjs/server'
 import { getWeekNumber } from "@/app/helpers"
 import { WEEKLY_ACTIONS, DAILY_ACTIONS } from "@/app/constants"
 
 export async function GET(req: NextApiRequest, res: NextApiResponse) {
-  const session = await getServerSession(authOptions);
+  const { userId } = await auth()
 
   const getUser = async () => await prisma.user.findUnique({
-       where: { id: session?.user?.id }
+       where: { userId }
     })
 
   let user = await getUser()
@@ -17,11 +16,12 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
 }
 
 export async function POST(req: NextApiRequest, res: NextApiResponse) {
+  const { userId } = await auth()
   const data = await req.json()
-  const session = await getServerSession(authOptions);
+
 
   const getUser = async () => await prisma.user.findUnique({
-       where: { id: session?.user?.id  }
+       where: { userId }
     })
 
   let user = await getUser()

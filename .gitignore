@@ -136,3 +136,6 @@ dist
 .DS_Store
 
 /generated/prisma
+
+# clerk configuration (can include secrets)
+/.clerk/

@@ -4,11 +4,11 @@
 @custom-variant dark (&:is(.dark *));
  
 :root {
-  --background: #c4abef;
-  --foreground: #2f2f8d;
+  --background: #f1cfff;
+  --foreground: #3e365c;
   --card: oklch(1 0 0);
   --card-foreground: red;
-  --popover: oklch(1 0 0);
+  --popover: #FACEFB;
   --popover-foreground: oklch(0.145 0 0);
   --primary: #c4abef;
   --primary-foreground: #563769;
@@ -40,13 +40,13 @@
 }
  
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
+  --background: #3e365c;
+  --foreground: #f1cfff;
   --card: oklch(0.145 0 0);
   --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.145 0 0);
+  --popover: #563769;
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
+  --primary: #c4abef;
   --primary-foreground: oklch(0.205 0 0);
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
@@ -57,7 +57,7 @@
   --destructive: oklch(0.396 0.141 25.723);
   --destructive-foreground: oklch(0.637 0.237 25.331);
   --border: oklch(0.269 0 0);
-  --input: oklch(0.269 0 0);
+  --input: #f1cfff;
   --ring: oklch(0.439 0 0);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
@@ -113,110 +113,18 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-.dark div[data-slot="carousel"] button {
-  background-color: #f1cfff !important;
-  color: #3e365c;
-}
-
-.dark button {
-  background-color: #f1cfff;
-}
-
-.light h2, .light h1, .light h3, .light p, .light label,  .light small, .light a, .light input, .light .border-input {
-    color: #563769;
-}
-
-.border-input {
-  border-color: #c4abef;
-}
-
-.dark .border-input {
-  border-color: #f1cfff;
-}
-
-.dark button[type="button"] {
-  color: #3e365c;
-  background-color: #f1cfff;
-  border-color: #f1cfff;
-}
-
-
-.light button[data-state="on"] {
-  border-color: #c4abef;
-  background-color: #c4abef;
-}
-
-.light button[data-state="off"] {
-  color: #3e365c;
-  border-color: #c4abef;
-  background-color: transparent;
-}
-
-.dark button[data-state="on"] {
-  border-color: #f1cfff;
-  background-color: #f1cfff;
-  color: #3e365c;
-}
-
-.dark button[data-state="off"] {
-  border-color: #f1cfff;
-  background-color: #3e365c;
-  color: #f1cfff;
-}
-
-
-tr[data-state="selected"] {
-  background-color: #f8eeff;
-
-}
-
-tr[data-state="selected"] td div {
-  color: #2f2f8d;
-}
-
-
-
-
-
-
-.dark h2, .dark h1, .dark h3, .dark p, .dark label, .dark small, .dark input, .dark .border-input {
-    color: #f1cfff;
-}
-
-.dark button[type="button"] {
-    border-color: #c4abef;
-}
-
-.dark div {
-  color: #f1cfff;
-}
-
-.light div {
-  color: #563769;
-}
-
-a[data-active] a {
-  color: #563769;
-}
-
-.dark a[data-active] a {
-  color: #563769;
-}
-
-.dark a[data-active] a:hover {
-  color: #563769;
-}
-
-.dark a:hover[data-radix-collection-item] a {
-  color: #563769 !important;
-}
-
 body {
+  color: #563769;
   background-color: #f1cfff;
 }
 
-.dark body {
-    color: #f1cfff;
+body.dark {
+  color: #f1cfff;
+  background-color: #3e365c;
+}
+
+@theme {
+    --font-sans: "Comfortaa", sans-serif;
 }
  
 @layer base {

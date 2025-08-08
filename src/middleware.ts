@@ -3,6 +3,8 @@ import { match } from '@formatjs/intl-localematcher'
 import Negotiator from 'negotiator'
 import { locales, defaultLocale } from './app/constants'
 import { pathHasLocale } from './app/helpers'
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
+
 
  
 function getLocale(headers) { 
@@ -11,8 +13,13 @@ function getLocale(headers) {
   return match(languages, locales, defaultLocale)
 }
  
-export function middleware(request) {
+function middleware(request) {
   const { pathname } = request.nextUrl
+
+  if(pathname.includes('api') || pathname.includes('app')) {
+    return
+  }
+
   const hasLocale = pathHasLocale(pathname)
  
   if (hasLocale) return
@@ -22,9 +29,20 @@ export function middleware(request) {
 
   return NextResponse.redirect(request.nextUrl)
 }
+
+const isProtectedRoute = createRouteMatcher(['app/dashboard/(.*)'])
+
+export default clerkMiddleware(async (auth, req) => {
+  if (isProtectedRoute(req)) await auth.protect()
+
+  return middleware(req)
+})
  
 export const config = {
   matcher: [
-    '/((?!services|subs|members|app|.well-known|api|login|favicon.ico|fonts|images|scripts|og-image.png|sitemap|robots|_next).*)',
+    // Skip Next.js internals and all static files, unless found in search params
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    // Always run for API routes
+    '/(api|trpc)(.*)',
   ],
 }

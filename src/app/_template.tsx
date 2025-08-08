@@ -7,17 +7,14 @@ import '@mux/mux-video';
 
 import { Button } from "@/components/ui/button"
 
+import { useAuth } from "@clerk/clerk-react";
+
 
 import Link from 'next/link'
 import { NotionRenderer, createBlockRenderer } from "@notion-render/client"
 
-import { Globals, Nav, Typography, TypographyVariant, ENavControlVariant, EIcon, AudioPlayer } from '@dreampipcom/oneiros'
-import "@dreampipcom/oneiros/styles"
-
 import Layout from './layout'
 import { GlobalContext } from "./contexts"
-import { useSession, signIn, signOut } from "next-auth/react"
-
 
 
 export default function Template({ title, content, isomorphicContent }: any) {
@@ -32,8 +29,7 @@ export default function Template({ title, content, isomorphicContent }: any) {
   */
   const [html, setHtml] = useState(isomorphicContent)
   const [showStream, setShowStream] = useState(false)
-
-  const { data: session } = useSession()
+  const { userId, sessionId, getToken, isLoaded, isSignedIn } = useAuth();
 
 
   useEffect(() => {
@@ -68,7 +64,7 @@ export default function Template({ title, content, isomorphicContent }: any) {
     (data, renderer) => {
       
       if (data.paragraph.rich_text.length === 0) return
-      return ReactDOMServer.renderToStaticMarkup(<Typography className="!mb-[12px]" variant={TypographyVariant.BODY} >{data.paragraph.rich_text[0].plain_text}</Typography>);
+      return ReactDOMServer.renderToStaticMarkup(<p className="!mb-[12px]" >{data.paragraph.rich_text[0].plain_text}</p>);
     }
   );
 
@@ -76,7 +72,7 @@ export default function Template({ title, content, isomorphicContent }: any) {
     'heading_1',
     (data, renderer) => {
       if (data.heading_1.length === 0) return
-      return ReactDOMServer.renderToStaticMarkup(<Typography variant={TypographyVariant.H1} >{data.heading_1.rich_text[0].plain_text}</Typography>);
+      return ReactDOMServer.renderToStaticMarkup(<p>{data.heading_1.rich_text[0].plain_text}</p>);
     }
   );
 
@@ -97,13 +93,7 @@ export default function Template({ title, content, isomorphicContent }: any) {
                 />
               </div>
             ) : undefined}
-          { !session?.user ? <div className="my-16 w-full flex align-center justify-center">
-      <Button className="m-auto"><a  href="/login">Login</a></Button>
-    </div> : <div className="my-16 w-full flex align-center justify-center">
-      <Button className="m-auto"><a  href="/app/dashboard">Dashboard</a></Button>
-    </div>
-  }
-          { title && !content ? <Typography className="p-[32px] md:p-[64px] md:max-w-[720px] md:m-auto" variant={TypographyVariant.H1}>{title}</Typography> : undefined }
+          { title && !content ? <p className="p-[32px] md:p-[64px] md:max-w-[720px] md:m-auto">{title}</p> : undefined }
           { content ? <div className="p-[32px] md:p-[64px] md:max-w-[720px] md:m-auto">
             <div dangerouslySetInnerHTML={{ __html: html }} />
           </div> : undefined }
