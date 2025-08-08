@@ -1,6 +1,5 @@
 'use client'
 import { useState } from 'react'
-import { useSession, signIn, signOut } from "next-auth/react"
 import { Slider } from "@/components/ui/slider"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -12,7 +11,9 @@ export const SettingsView = ({ timeframe = "day" }) => {
   const date = fullDate.toISOString().split('T')[0]
   const year = Number(date.split('-')[0])
   const weekNumber = getWeekNumber(fullDate)[1]
-  const { data: session, update } = useSession()
+  const session = {
+    user: {}
+  }
   
 
   const serverSettings = (session?.user?.settings) || {}

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -11,18 +11,23 @@ import {
 } from "@/components/ui/navigation-menu"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { useSession, signIn, signOut } from "next-auth/react"
+
+import useSWR from "swr"
+import { fetcher } from "@/lib/utils"
+
+import { GlobalContext } from "@/lib/contexts"
 
 export const ViewMenu = ({ active }) =>{
-  const { data: session, update } = useSession()
+  const { session, setGlobalContext, ...globalContext } = useContext(GlobalContext)
   const serverBalance = session?.user?.availableBalance
 
   const updateUser = async () => {
     const response = await fetch('/api/v1/user', { method: 'GET' })
     const updatedUser = await response.json()
-    update({ ...session, user: { ...session?.user, ...updatedUser }})
+    setGlobalContext({...globalContext, session: { ...session, user: updatedUser } })
   }
-  
+
+  const { data, mutate, error, isLoading } = useSWR(`/api/user`, updateUser)
 
   const handleBalanceChange = (e) => {
     fetch('/api/v1/user', { method: 'POST', body: JSON.stringify({
@@ -31,6 +36,10 @@ export const ViewMenu = ({ active }) =>{
     }) })
     setTimeout(() => updateUser(), 2000)
   }
+
+  useEffect(() => {
+    updateUser()
+  }, [])
 
   return <NavigationMenu className="flex flex-col center text-center w-full m-auto">
   <NavigationMenuList className="grid grid-cols-3">
@@ -57,11 +66,6 @@ export const ViewMenu = ({ active }) =>{
       <NavigationMenuItem>
         <NavigationMenuLink active={active === 'settings'}>
           <a href="/app/settings">Settings</a>
-        </NavigationMenuLink>
-      </NavigationMenuItem>
-      <NavigationMenuItem>
-        <NavigationMenuLink>
-          <a href="/logout">{ session?.user ? "Logout" : "Login" }</a>
         </NavigationMenuLink>
       </NavigationMenuItem>
   </NavigationMenuList>

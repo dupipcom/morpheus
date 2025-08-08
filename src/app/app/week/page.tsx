@@ -1,18 +1,11 @@
 'use client'
-
 import React, { useRef, useState, useEffect, useContext } from 'react'
 import ReactDOMServer from 'react-dom/server';
-import '@mux/mux-video';
 
 import Link from 'next/link'
-import { NotionRenderer, createBlockRenderer } from "@notion-render/client"
 
-import { Typography, TypographyVariant, ENavControlVariant, EIcon, AudioPlayer } from '@dreampipcom/oneiros'
-import "@dreampipcom/oneiros/styles"
-
-import Layout from './layout'
 import { GlobalContext } from "./contexts"
-import { useSession, signIn, signOut } from "next-auth/react"
+
 import { TaskView } from "@/views/taskView"
 import { ViewMenu } from "@/components/viewMenu"
 import { Button } from "@/components/ui/button"
@@ -23,6 +16,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
+
 import { getWeekNumber } from "@/app/helpers"
 import { WEEKLY_ACTIONS, WEEKS } from "@/app/constants"
 
@@ -31,7 +25,7 @@ export default function Template({ title, content, isomorphicContent }: any) {
     theme: 'light'
   })
 
-  const { data: session } = useSession()
+  
 
   const fullDate = new Date()
   const date = fullDate.toISOString().split('T')[0]
