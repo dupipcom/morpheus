@@ -33,7 +33,7 @@ export const SettingsView = ({ timeframe = "day" }) => {
     })
   }
 
-  return <div className="max-w-[320px] m-auto">
+  return <div className="max-w-[720px] m-auto p-4">
       <h3 className="mt-8">Month’s Recurring Income</h3>
       <Input defaultValue={serverSettings.monthsFixedIncome} onBlur={(e) => handleSubmit(e.currentTarget.value, "monthsFixedIncome")} />
       <h3 className="mt-8">Month’s Variable Income</h3>
