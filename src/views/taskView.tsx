@@ -126,7 +126,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     </div>
   }
 
-  return <div className="max-w-[1200px] m-auto">
+  return <div className="max-w-[1200px] m-auto p-4">
       <p className="text-center scroll-m-20 text-sm font-semibold tracking-tight mb-8">You're currently viewing the actions for: {timeframe === "day" ? date : `Week ${weekNumber}`}</p>
   <ToggleGroup value={values} onValueChange={handleDone} variant="outline" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 align-center justify-center w-full m-auto" type="multiple" orientation="horizontal">
    { castActions?.sort().map((action) => {

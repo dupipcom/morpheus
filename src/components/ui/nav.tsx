@@ -290,7 +290,7 @@ const Logo: TComponent = function ({
       auth: true,
       content:
                 <a href="/app/dashboard">
-                <Button variant="secondary" className="cursor-pointer">
+                <Button variant="outline" className="cursor-pointer">
                   Dashboard
                 </Button>
                 </a>

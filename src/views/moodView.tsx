@@ -103,7 +103,7 @@ export const MoodView = ({ timeframe = "day" }) => {
     </div>
   }
 
-  return <div key={JSON.stringify(serverMood)} className="max-w-[720px] m-auto">
+  return <div key={JSON.stringify(serverMood)} className="max-w-[720px] m-auto p-4">
     <p className="text-center scroll-m-20 text-sm font-semibold tracking-tight mb-8">You're currently viewing the mood for: {date}</p>
           <h3 className="mt-8 mb-4">What's in your mind?</h3>
       <Textarea defaultValue={serverText} onBlur={(e) => handleSubmit(e.target.value, "text")} />
@@ -144,7 +144,7 @@ export const MoodView = ({ timeframe = "day" }) => {
                   return <CarouselItem className="flex flex-col">
                     <small>${day.earnings?.toLocaleString()}</small>
                     <label className="mb-4">{day.date}</label>
-                    <Button className="text-md p-5 mb-2" onClick={() => handleEditDay(new Date(day.date))}>Edit day</Button>
+                    <Button className="bg- text-md p-5 mb-2" onClick={() => handleEditDay(new Date(day.date))}>Edit day</Button>
                     <Button className="text-md p-5" onClick={() => handleCloseDates([day.date])}>Close day</Button>
                   </CarouselItem>
                 })
