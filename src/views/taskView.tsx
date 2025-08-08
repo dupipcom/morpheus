@@ -112,7 +112,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   },
 })
     const json = await response.json()
-    setInsight(json.result)
+    setInsight(JSON.parse(json.result))
   }
 
   useEffect(() => {
@@ -141,15 +141,15 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                   return <CarouselItem className="flex flex-col">
                     <small>${day.earnings?.toLocaleString()}</small>
                     <label className="mb-4">{day.date}</label>
-                    <Button className="text-md p-5 mb-2" onClick={() => handleEditDay(new Date(day.date))}>Edit day</Button>
-                    <Button className="text-md p-5" onClick={() => handleCloseDates([day.date])} >Close day</Button>
+                    <Button className="dark:bg-foreground text-md p-5 mb-2" onClick={() => handleEditDay(new Date(day.date))}>Edit day</Button>
+                    <Button className="dark:bg-foreground text-md p-5" onClick={() => handleCloseDates([day.date])} >Close day</Button>
                   </CarouselItem>
                 }) : openWeeks?.map((week) => {
                   return <CarouselItem className="flex flex-col">
                     <small>${week.earnings?.toLocaleString()}</small>
-                    <label className="mb-4">Week {week.week}</label>
+                    <label className="dark:bg-foreground mb-4">Week {week.week}</label>
                     <Button onClick={() => handleEditWeek(week.week)} className="text-md p-5 mb-2">Edit week</Button>
-                    <Button className="text-md p-5" onClick={() => handleCloseDates([{ week: week.week, year: week.year }])}>Close week</Button>
+                    <Button className="dark:bg-foreground text-md p-5" onClick={() => handleCloseDates([{ week: week.week, year: week.year }])}>Close week</Button>
                   </CarouselItem>
                 })
               }

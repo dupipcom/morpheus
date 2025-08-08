@@ -68,11 +68,12 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
   cache: 'force-cache',
   next: {
     revalidate: 86400,
-    tags: ['test'],
+    tags: ['hint'],
   },
 })
     const json = await response.json()
-    setInsight(json.result)
+    setInsight(JSON.parse(json.result))
+    console.log({ json, parsed: JSON.parse(json.result) })
   }
 
   useEffect(() => {
