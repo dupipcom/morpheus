@@ -61,7 +61,7 @@ export const ViewMenu = ({ active }) =>{
   </NavigationMenuList>
   <div className="my-8">
     <label>Available Balance:</label>
-    <Input onBlur={handleBalanceChange} defaultValue={serverBalance} />
+    <Input type="number" step="0.01" onBlur={handleBalanceChange} defaultValue={serverBalance} />
   </div>
 </NavigationMenu>
 
