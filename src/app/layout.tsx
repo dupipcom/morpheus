@@ -77,7 +77,7 @@ export default function RootLayout({
           {children}
         </GlobalContext.Provider>
         </ClerkProvider>
-        <footer className="">
+        <footer className="mt-32">
             <div className={`m-auto max-w-[1200px] grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 text-[12px] flex w-full flex-col items-start p-8 pb-32 place-items-center`}>
               <small className="mb-4 ">
                 © 2012—Present Purizu and Remotelys dba DreamPip
