@@ -30,8 +30,8 @@ export const MoodView = ({ timeframe = "day" }) => {
 
   const openDays = useMemo(() => {
     return session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && Object.values(session?.user?.entries[year].days).filter((day) => {
-   return day.status == "Open" })
-  }, [JSON.stringify(session)])
+   return day.status === "Open" && day.date !== date }).sort()
+  }, [JSON.stringify(session), date])
 
   const [mood, setMood] = useState(serverMood)
 
@@ -104,7 +104,7 @@ export const MoodView = ({ timeframe = "day" }) => {
   }
 
   return <div key={JSON.stringify(serverMood)} className="max-w-[720px] m-auto p-4">
-    <p className="text-center scroll-m-20 text-sm font-semibold tracking-tight mb-8">You're currently viewing the mood for: {date}</p>
+          <p className="sticky top-25 truncate z-[999] text-center scroll-m-20 text-sm font-semibold tracking-tight mb-8">Editing: {date}</p>
           <h3 className="mt-8 mb-4">What's in your mind?</h3>
       <Textarea defaultValue={serverText} onBlur={(e) => handleSubmit(e.target.value, "text")} />
       <div className="my-8">

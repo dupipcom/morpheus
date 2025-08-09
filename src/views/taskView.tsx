@@ -48,7 +48,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
 
   const openWeeks = session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks && Object.values(session?.user?.entries[year].weeks).filter((week) => {
    
-   return week.status == "Open" })
+   return week.status == "Open"  && week.week !== weekNumber  })
 
   const userDone = useMemo(() => userTasks?.filter((task) => task.status === "Done").map((task) => task.name), [userTasks])
   const [values, setValues] = useState(userDone)
