@@ -112,6 +112,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   },
 })
     const json = await response.json()
+    console.log({ json, parsed: JSON.parse(json.result) })
     setInsight(JSON.parse(json.result))
   }
 
