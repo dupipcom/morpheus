@@ -84,6 +84,15 @@ export default function RootLayout({
                 <br /><br />Insights are AI generated via RAG and prompt engineering.
                 <br /><br />We use cookies, and by using this app you agree to it.
               </small>
+              <div className="mb-2 flex overflow-hidden max-h-[32px] bg-primary w-[128px]">
+                <img src="/images/europe.png" className="w-[32px] object-cover" />
+                <small className="p-2 text-[8px] font-bold">GDPR Compliant</small>
+              </div>
+
+              <div className="mb-8 flex overflow-hidden max-h-[32px] bg-primary w-[128px]">
+                <img src="/images/europe.png" className="w-[32px] object-cover" />
+                <small className="p-2 text-[8px] font-bold">DORA Ready</small>
+              </div>
               <a href="/code" className="text-sm"><small>Code</small></a>              
               <a href="/terms" className="text-sm"><small>Terms of Service</small></a>
               <a href="/privacy" className="text-sm"><small>Privacy Policy</small></a>
