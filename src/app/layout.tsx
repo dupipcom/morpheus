@@ -82,7 +82,7 @@ export default function RootLayout({
               <small className="mb-4">
                 © 2012—Present DreamPip
                 <br /><br />Insights are AI generated via RAG and prompt engineering.
-                <br /><br />We use cookies, and by using this site you agree to it.
+                <br /><br />We use cookies, and by using this app you agree to it.
               </small>
               <a href="/code" className="text-sm"><small>Code</small></a>              
               <a href="/terms" className="text-sm"><small>Terms of Service</small></a>
