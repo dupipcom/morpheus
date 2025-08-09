@@ -144,8 +144,8 @@ export const MoodView = ({ timeframe = "day" }) => {
                   return <CarouselItem className="flex flex-col">
                     <small>${day.earnings?.toLocaleString()}</small>
                     <label className="mb-4">{day.date}</label>
-                    <Button className="bg- text-md p-5 mb-2" onClick={() => handleEditDay(new Date(day.date))}>Edit day</Button>
-                    <Button className="text-md p-5" onClick={() => handleCloseDates([day.date])}>Close day</Button>
+                    <Button className="text-md p-5 mb-2 dark:bg-foreground" onClick={() => handleEditDay(new Date(day.date))}>Edit day</Button>
+                    <Button className="text-md p-5 dark:bg-foreground" onClick={() => handleCloseDates([day.date])}>Close day</Button>
                   </CarouselItem>
                 })
               }
