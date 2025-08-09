@@ -43,7 +43,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
 
   const openDays = useMemo(() => {
     return session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && Object.values(session?.user?.entries[year].days).filter((day) => {
-   return day.status == "Open" })
+   return day.status == "Open" && day.date !== date })
   }, [JSON.stringify(session)])
 
   const openWeeks = session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks && Object.values(session?.user?.entries[year].weeks).filter((week) => {
@@ -130,7 +130,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       <p className="text-center scroll-m-20 text-sm font-semibold tracking-tight mb-8">You're currently viewing the actions for: {timeframe === "day" ? date : `Week ${weekNumber}`}</p>
   <ToggleGroup value={values} onValueChange={handleDone} variant="outline" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 align-center justify-center w-full m-auto" type="multiple" orientation="horizontal">
    { castActions?.sort().map((action) => {
-      return <ToggleGroupItem className="leading-7 m-1 text-sm min-h-[40px] truncate" value={action.name}>{action.name}</ToggleGroupItem>
+      return <ToggleGroupItem key={`task__item--${action.name}`} className="leading-7 m-1 text-sm min-h-[40px] truncate" value={action.name}>{action.name}</ToggleGroupItem>
     }) }
   </ToggleGroup>
                <p className="m-8 text-center">Your earnings {timeframe === "day" ? "today" : "this week"}, so far: ${earnings?.toLocaleString()}</p>
@@ -142,14 +142,14 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                     <small>${day.earnings?.toLocaleString()}</small>
                     <label className="mb-4">{day.date}</label>
                     <Button className="dark:bg-foreground text-md p-5 mb-2" onClick={() => handleEditDay(new Date(day.date))}>Edit day</Button>
-                    <Button className="dark:bg-foreground text-md p-5" onClick={() => handleCloseDates([day.date])} >Close day</Button>
+                    <Button variant="outline" className="text-md p-5" onClick={() => handleCloseDates([day.date])} >Close day</Button>
                   </CarouselItem>
                 }) : openWeeks?.map((week) => {
                   return <CarouselItem className="flex flex-col">
                     <small>${week.earnings?.toLocaleString()}</small>
-                    <label className="dark:bg-foreground mb-4">Week {week.week}</label>
-                    <Button onClick={() => handleEditWeek(week.week)} className="text-md p-5 mb-2">Edit week</Button>
-                    <Button className="dark:bg-foreground text-md p-5" onClick={() => handleCloseDates([{ week: week.week, year: week.year }])}>Close week</Button>
+                    <label className="mb-4">Week {week.week}</label>
+                    <Button onClick={() => handleEditWeek(week.week)} className="text-md p-5 mb-2 dark:bg-foreground">Edit week</Button>
+                    <Button variant="outline" className="text-md p-5" onClick={() => handleCloseDates([{ week: week.week, year: week.year }])}>Close week</Button>
                   </CarouselItem>
                 })
               }

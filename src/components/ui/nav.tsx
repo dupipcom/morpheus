@@ -299,21 +299,21 @@ const Logo: TComponent = function ({
       name: "login",
       href: "/login",
       auth: false,
-      content: <SignInButton>
-                <Button variant="secondary" className="cursor-pointer">
-                  Login
+      content: <SignUpButton>
+                <Button variant="outline" className="cursor-pointer">
+                  Sign Up
                 </Button>
-              </SignInButton>
+              </SignUpButton>
     },
     {
       name: "login",
       href: "/login",
       auth: false,
-      content: <SignUpButton>
+      content: <SignInButton>
                 <Button className="cursor-pointer">
-                  Sign Up
+                  Login
                 </Button>
-              </SignUpButton>
+              </SignInButton>
     },
     {
       name: "user",
@@ -342,7 +342,12 @@ const Logo: TComponent = function ({
 
     const { userId, sessionId, getToken, isLoaded, isSignedIn } = useAuth();
 
-  	return <nav className="sticky top-0 bg-background p-8 z-[999]">
+  	return <nav className="sticky top-0 bg-gradient-to-bl 
+          from-[#c4abefcc]
+          to-[#f1cfffcc]
+          to-50%
+          dark:to-[#3e365ccc]
+          dark:from-[#563769cc] p-8 z-[999]">
           <div className="flex justify-between">
           <div className="hidden md:block basis-1/3">
           </div>

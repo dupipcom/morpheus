@@ -373,7 +373,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                 ...user.entries[week.year],
                 weeks: {
                   ...user.entries[week.year].weeks,
-                  [weekNumber]: {
+                  [week.week]: {
                     ...user.entries[week.year].weeks[week],
                     status: "Closed",
                   }
