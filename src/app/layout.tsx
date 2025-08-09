@@ -83,6 +83,7 @@ export default function RootLayout({
                 © 2012—Present DreamPip
                 <br />Insights are AI generated via RAG and prompt engineering.
               </small>
+              <a href="/code" className="text-sm"><small>Code</small></a>              
               <a href="/terms" className="text-sm"><small>Terms of Service</small></a>
               <a href="/privacy" className="text-sm"><small>Privacy Policy</small></a>
             </div>
