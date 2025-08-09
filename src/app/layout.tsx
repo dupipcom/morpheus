@@ -78,7 +78,7 @@ export default function RootLayout({
         </GlobalContext.Provider>
         </ClerkProvider>
         <footer className="">
-            <div className={`m-auto max-w-[1200px] grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 text-[12px] flex w-full flex-col items-start p-8 pb-32`}>
+            <div className={`m-auto max-w-[1200px] grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 text-[12px] flex w-full flex-col items-start p-8 pb-32 place-items-center`}>
               <small className="mb-4 ">
                 © 2012—Present Purizu and Remotelys dba DreamPip
                 <br />IVA IT02925300903 
