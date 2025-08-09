@@ -47,7 +47,6 @@ export default function RootLayout({
   }
 
   useEffect(() => {
-    console.log({ value })
     setGlobalContext({ ...globalContext, theme: value  === "dark" ? "dark" : "light"})
   }, [])
 

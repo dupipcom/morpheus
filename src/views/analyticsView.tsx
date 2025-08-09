@@ -73,7 +73,6 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
 })
     const json = await response.json()
     setInsight(JSON.parse(json.result))
-    console.log({ json, parsed: JSON.parse(json.result) })
   }
 
   useEffect(() => {

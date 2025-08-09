@@ -24,7 +24,6 @@ export default async function Page({
   const { page, lang } = await params
   const slug = "/" + page?.join("/") || "/"
 
-  console.log({ slug })
   const locale = getLocaleFromPath(slug)
   const clearSlug = stripLocaleFromPath(slug)
 
