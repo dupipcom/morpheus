@@ -79,11 +79,12 @@ export default function RootLayout({
         </ClerkProvider>
         <footer>
             <div className={`flex w-full flex-col items-start p-8 py-32`}>
-              <small>
+              <small className="mb-4">
                 © 2012—Present DreamPip
+                <br />Insights are AI generated via RAG and prompt engineering.
               </small>
-              <a href="/terms" className="text-sm">Terms of Service</a>
-              <a href="/privacy" className="text-sm">Privacy Policy</a>
+              <a href="/terms" className="text-sm"><small>Terms of Service</small></a>
+              <a href="/privacy" className="text-sm"><small>Privacy Policy</small></a>
             </div>
           </footer>
       </body>
