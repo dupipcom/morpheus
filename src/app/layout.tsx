@@ -77,8 +77,8 @@ export default function RootLayout({
           {children}
         </GlobalContext.Provider>
         </ClerkProvider>
-        <footer className="">
-            <div className={`m-auto max-w-[1200px] grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 text-[12px] flex w-full flex-col items-start p-8 pb-32`}>
+        <footer className="mt-32">
+            <div className={`m-auto max-w-[1200px] grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 text-[12px] flex w-full flex-col items-start p-8 pb-32 place-items-center`}>
               <small className="mb-4 ">
                 © 2012—Present Purizu and Remotelys dba DreamPip
                 <br />IVA IT02925300903 
@@ -87,6 +87,10 @@ export default function RootLayout({
                 <br /><br />
               </small>
               <div>
+                <div className="rounded text-foreground dark:text-muted mb-2 flex overflow-hidden max-h-[32px] bg-primary w-[128px]">
+                  <img src="/images/brazil.webp" className="w-[32px] object-cover" />
+                  <small className="p-2 text-[8px] font-bold">LGPD Compliant</small>
+                </div>
                 <div className="rounded text-foreground dark:text-muted mb-2 flex overflow-hidden max-h-[32px] bg-primary w-[128px]">
                   <img src="/images/europe.png" className="w-[32px] object-cover" />
                   <small className="p-2 text-[8px] font-bold">GDPR Compliant</small>
