@@ -78,24 +78,31 @@ export default function RootLayout({
         </GlobalContext.Provider>
         </ClerkProvider>
         <footer>
-            <div className={`flex w-full flex-col items-start p-8 py-32`}>
-              <small className="mb-4">
-                © 2012—Present DreamPip
-                <br /><br />Insights are AI generated via RAG and prompt engineering.
-                <br /><br />We use cookies, and by using this app you agree to it.
+            <div className={`bg-muted grid grid-cols-1 sm:grid-cols-4 md:grid-cols-4 text-[12px] flex w-full flex-col items-start p-8 pb-32`}>
+              <small className="mb-4 ">
+                © 2012—Present Purizu and Remotelys dba DreamPip
+                <br />IVA IT02925300903 
+                <br />REA 572763 
+                <br />CNPJ 37.553.462/0001-46
+                <br /><br />
               </small>
-              <div className="mb-2 flex overflow-hidden max-h-[32px] bg-primary w-[128px]">
+              <div className="dark:text-muted mb-2 flex overflow-hidden max-h-[32px] bg-primary w-[128px]">
                 <img src="/images/europe.png" className="w-[32px] object-cover" />
                 <small className="p-2 text-[8px] font-bold">GDPR Compliant</small>
               </div>
 
-              <div className="mb-8 flex overflow-hidden max-h-[32px] bg-primary w-[128px]">
+              <div className="dark:text-muted mb-8 flex overflow-hidden max-h-[32px] bg-primary w-[128px]">
                 <img src="/images/europe.png" className="w-[32px] object-cover" />
                 <small className="p-2 text-[8px] font-bold">DORA Ready</small>
               </div>
-              <a href="/code" className="text-sm"><small>Code</small></a>              
-              <a href="/terms" className="text-sm"><small>Terms of Service</small></a>
-              <a href="/privacy" className="text-sm"><small>Privacy Policy</small></a>
+
+              <small className="">Insights are AI generated via RAG and prompt engineering.
+              <br /><br />We use cookies, and by using this app you agree to it.<br /><br /></small>
+              <div className="flex flex-col">
+              <a href="/code" className=""><small>Code</small></a>              
+              <a href="/terms" className=""><small>Terms of Service</small></a>
+              <a href="/privacy" className=""><small>Privacy Policy</small></a>
+            </div>
             </div>
           </footer>
       </body>
