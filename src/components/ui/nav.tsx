@@ -299,21 +299,21 @@ const Logo: TComponent = function ({
       name: "login",
       href: "/login",
       auth: false,
-      content: <SignInButton>
-                <Button variant="secondary" className="cursor-pointer">
-                  Login
+      content: <SignUpButton>
+                <Button variant="outline" className="cursor-pointer">
+                  Sign Up
                 </Button>
-              </SignInButton>
+              </SignUpButton>
     },
     {
       name: "login",
       href: "/login",
       auth: false,
-      content: <SignUpButton>
+      content: <SignInButton>
                 <Button className="cursor-pointer">
-                  Sign Up
+                  Login
                 </Button>
-              </SignUpButton>
+              </SignInButton>
     },
     {
       name: "user",
