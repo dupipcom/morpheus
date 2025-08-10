@@ -3,6 +3,8 @@
 import prisma from '@/lib/prisma';
 import type { WebhookEvent } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
+import { WEEKLY_ACTIONS, DAILY_ACTIONS } from "@/app/constants"
+
 
 export async function POST(req: Request) {
     try {
@@ -24,9 +26,17 @@ export async function POST(req: Request) {
                     },
                     update: {
                         userId: clerkUserId,
+                        settings: {
+                            dailyTemplate: DAILY_ACTIONS,
+                            weeklyTemplate: WEEKLY_ACTIONS
+                        }
                     },
                     create: {
                         userId: clerkUserId,
+                        settings: {
+                            dailyTemplate: DAILY_ACTIONS,
+                            weeklyTemplate: WEEKLY_ACTIONS
+                        }
                     },
                 });
                 break;
