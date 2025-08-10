@@ -431,7 +431,7 @@ const Logo: TComponent = function ({
   		]
   	}
 
-  	  const RIGHT_MENU = useMemo(() => ({
+  	  const RIGHT_MENU = {
     items: [
    		{
   				name: "player",
@@ -522,7 +522,7 @@ const Logo: TComponent = function ({
       content: <Switch onCheckedChange={onThemeChange} />
     }
   ]
-  }), [isPlaying])
+  }
 
   const menu = {
   	left: LEFT_MENU,
