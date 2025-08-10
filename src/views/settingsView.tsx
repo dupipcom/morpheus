@@ -304,7 +304,7 @@ export const SettingsView = ({ timeframe = "day" }) => {
         <Input name="dailyTimes" placeholder="Type action name..." className="md:basis-2/3 md:mr-4 my-4 md:my-0" onBlur={(e) => {
           dailyEntry.current = { ...dailyEntry.current, name: e.currentTarget.value }
         }} />
-        <Select className="mr-4" defaultValue="1" onValueChange={(e) => {
+        <Select className="mr-4" placeholder="# of times" onValueChange={(e) => {
           dailyEntry.current = { ...dailyEntry.current, times: Number(e) }
         }} >
           <SelectTrigger className="w-full md:w-[120px] mb-4 mr-4">
@@ -409,7 +409,7 @@ export const SettingsView = ({ timeframe = "day" }) => {
         <Input name="dailyTimes" placeholder="Type action name..." className="md:basis-2/3 md:mr-4 my-4 md:my-0" onBlur={(e) => {
           weeklyEntry.current = { ...weeklyEntry.current, name: e.currentTarget.value }
         }} />
-        <Select className="mr-4" defaultValue="1" onValueChange={(e) => {
+        <Select className="mr-4" placeholder="# of times" onValueChange={(e) => {
           weeklyEntry.current = { ...weeklyEntry.current, times: Number(e) }
         }} >
           <SelectTrigger className="w-full md:w-[120px] mb-4 mr-4">
