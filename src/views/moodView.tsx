@@ -140,7 +140,7 @@ export const MoodView = ({ timeframe = "day" }) => {
         <small>{insight?.trustAnalysis}</small>
       </div>
       <Slider className="mb-16" defaultValue={[serverMood?.trust || 0]} max={5} step={0.5} onValueCommit={(e) => handleSubmit(e[0], "trust")} />
-        <Carousel className="max-w-[196px] m-auto">
+        {openDays?.length ? <Carousel className="max-w-[196px] m-auto">
             <CarouselContent className="text-center w-[192px]">
               {
                 openDays?.map((day) => {
@@ -155,6 +155,6 @@ export const MoodView = ({ timeframe = "day" }) => {
             </CarouselContent>
           <CarouselPrevious />
           <CarouselNext />
-        </Carousel>
+        </Carousel> : undefined }
     </div>
 }
