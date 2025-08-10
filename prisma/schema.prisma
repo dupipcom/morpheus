@@ -73,6 +73,7 @@ type Task {
   status String
   cadence String
   times Int
+  count Int
 }
 
 enum Areas {

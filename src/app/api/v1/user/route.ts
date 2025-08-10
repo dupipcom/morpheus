@@ -54,7 +54,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     user = await getUser()
   }
 
-  if (!user.settings?.weeklyTemplate && !user.settings?.dailyTemplate) {
+  if (!user.settings?.weeklyTemplate?.length && !user.settings?.dailyTemplate?.length) {
     await prisma.user.update({
       data: {
         settings: {
@@ -97,7 +97,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   ...user.entries[year].weeks[weekNumber],
                   year,
                   week: weekNumber,
-                  tasks: user.settings.weekTemplate || WEEKLY_ACTIONS,
+                  tasks: user?.settings?.weekTemplate?.length ? user.settings.weekTemplate : WEEKLY_ACTIONS,
                   status: "Open"
                 }
               }
@@ -124,7 +124,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   month,
                   day,
                   date,
-                  tasks: user.settings.dailyTemplate || DAILY_ACTIONS,
+                  tasks: user?.settings?.dailyTemplate?.length ? user.settings.dailyTemplate : DAILY_ACTIONS,
                   status: "Open",
                   moodAverage: 0,
                   mood: {
@@ -225,6 +225,34 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
       where: { id: user.id },
     })
     user = await getUser()
+  } else if (data.weekActions) {
+    await prisma.user.update({
+      data: {
+        entries: {
+            ...user.entries,
+            [year]: {
+              ...user.entries[year],
+              weeks: {
+                ...user.entries[year].weeks,
+                [data.week]: {
+                  ...user.entries[year].weeks[data.week],
+                  year,
+                  week: data.week,
+                  earnings: weekEarnings,
+                  tasks: user?.settings?.weeklyTemplate?.length ? user?.settings?.weeklyTemplate : WEEKLY_ACTIONS,
+                  status: "Open",
+                  progress: weekProgress,
+                  done: weekDone.length,
+                  tasksNumber: weekTasks.length,
+                  availableBalance: user.availableBalance
+                }
+              }
+          }
+        },
+      },
+      where: { id: user.id },
+    })
+    user = await getUser()
   }
 
   if (data?.availableBalance) {
@@ -276,6 +304,36 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   done: dayDone.length,
                   tasksNumber: dayTasks.length,
                   tasks: data.dayActions,
+                  status: "Open",
+                  availableBalance: user.availableBalance
+                }
+              }
+            }
+          }
+      },
+      where: { id: user.id },
+    })
+    user = await getUser()
+  } else if (data.dayActions) {
+    await prisma.user.update({
+      data: {
+        entries: {
+            ...user.entries,
+            [year]: {
+              ...user.entries[year],
+              days: {
+                ...user.entries[year].days,
+                [date]: {
+                  ...user.entries[year].days[date],
+                  year,
+                  week: weekNumber,
+                  month,
+                  day,
+                  earnings: dayEarnings,
+                  progress: dayProgress,
+                  done: dayDone.length,
+                  tasksNumber: dayTasks.length,
+                  tasks: user?.settings?.dailyTemplate.length ? user?.settings?.dailyTemplate : DAILY_ACTIONS,
                   status: "Open",
                   availableBalance: user.availableBalance
                 }
