@@ -11,10 +11,6 @@ import { ViewMenu } from "@/components/viewMenu"
 
 
 export default function Template({ title, content, isomorphicContent }: any) {
-  const session = {
-    user: {}
-  }
-
     return (
       <main className="">
         <ViewMenu active="settings" />
