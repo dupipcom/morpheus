@@ -75,8 +75,10 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
         clonedAction.count += 1
       } else {
         if (!values.includes(action.name) && clonedAction.times <= clonedAction.count) {
-          clonedAction.count -= 1
-          clonedAction.status = "Open"
+          if (clonedAction.count > 0) {
+            clonedAction.count -= 1
+            clonedAction.status = "Open"
+          }
         }
       }
       return clonedAction
