@@ -24,9 +24,6 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const todayDate = today.toLocaleString('en-uk', { timeZone: userTimezone }).split(',')[0].split('/').reverse().join('-')
   const [fullDay, setFullDay] = useState(todayDate) 
   const date = fullDay ? new Date(fullDay).toISOString().split('T')[0] : todayDate
-
-
-
   const year = Number(date.split('-')[0])
   const [weekNumber, setWeekNumber] = useState(getWeekNumber(today)[1])
   const [insight, setInsight] = useState({})
@@ -142,7 +139,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     }) }
   </ToggleGroup>
                <p className="m-8 text-center">Your earnings {timeframe === "day" ? "today" : "this week"}, so far: ${earnings?.toLocaleString()}</p>
-          <Carousel className="max-w-[196px] m-auto">
+          {( timeframe === "day" && openDays?.length) || (timeframe === "week" && openWeeks?.length) ? <Carousel className="max-w-[196px] m-auto">
             <CarouselContent className="text-center w-[192px]">
               {
                 timeframe === "day" ? openDays?.map((day) => {
@@ -164,7 +161,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
             </CarouselContent>
           <CarouselPrevious />
           <CarouselNext />
-        </Carousel>
+        </Carousel> : undefined }
 
     <p className="mx-8 pt-8">{timeframe === "day" ? insight?.dayAnalysis : insight?.weekAnalysis }</p>
     <p className="mx-8 pt-8">{insight?.last3daysAnalysis}</p>
