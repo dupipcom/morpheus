@@ -19,10 +19,16 @@ import { GlobalContext } from "@/lib/contexts"
 
 export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const { session, setGlobalContext, ...globalContext } = useContext(GlobalContext)
-  const [fullDay, setFullDay] = useState(new Date()) 
-  const date = fullDay.toISOString().split('T')[0]
+  const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+  const today = new Date()
+  const todayDate = today.toLocaleString('en-uk', { timeZone: userTimezone }).split(',')[0].split('/').reverse().join('-')
+  const [fullDay, setFullDay] = useState(todayDate) 
+  const date = fullDay ? new Date(fullDay).toISOString().split('T')[0] : todayDate
+
+
+
   const year = Number(date.split('-')[0])
-  const [weekNumber, setWeekNumber] = useState(getWeekNumber(fullDay)[1])
+  const [weekNumber, setWeekNumber] = useState(getWeekNumber(today)[1])
   const [insight, setInsight] = useState({})
 
   const earnings = Object.keys(session?.user?.entries || 0).length > 0 ? timeframe === "day" ? session?.user?.entries[year]?.days[date]?.earnings?.toLocaleString() : session?.user?.entries[year]?.weeks[weekNumber]?.earnings?.toLocaleString() : 0
@@ -44,16 +50,17 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const openDays = useMemo(() => {
     return session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && Object.values(session?.user?.entries[year].days).filter((day) => {
    return day.status == "Open" && day.date !== date })
-  }, [JSON.stringify(session)])
+  }, [JSON.stringify(session), date])
 
   const openWeeks = session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks && Object.values(session?.user?.entries[year].weeks).filter((week) => {
    
-   return week.status == "Open"  && week.week !== weekNumber  })
+  return week.status == "Open"  && week.week !== weekNumber  })
 
   const userDone = useMemo(() => userTasks?.filter((task) => task.status === "Done").map((task) => task.name), [userTasks])
   const [values, setValues] = useState(userDone)
 
   const castActions = userTasks?.length ? userTasks : actions 
+
 
   const handleDone = async (values) => {
     const nextActions = userTasks?.map((action) => {
@@ -70,7 +77,8 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     const response = await fetch('/api/v1/user', { method: 'POST', body: JSON.stringify({
       dayActions: timeframe === 'day' ? nextActions : undefined,
       weekActions: timeframe === 'week' ? nextActions : undefined,
-      date: fullDay 
+      date: fullDay,
+      week: weekNumber
     }) })
     await updateUser()
   }
@@ -112,7 +120,6 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   },
 })
     const json = await response.json()
-    console.log({ json, parsed: JSON.parse(json.result) })
     setInsight(JSON.parse(json.result))
   }
 
