@@ -19,9 +19,9 @@ import { GlobalContext } from "@/lib/contexts"
 
 export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const { session, setGlobalContext, ...globalContext } = useContext(GlobalContext)
+  const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const today = new Date()
-  const todayDate = today.toLocaleString('en-uk', { timeZone: 'America/Bahia' }).split(',')[0].split('/').reverse().join('-')
-
+  const todayDate = today.toLocaleString('en-uk', { timeZone: userTimezone }).split(',')[0].split('/').reverse().join('-')
   const [fullDay, setFullDay] = useState(todayDate) 
   const date = fullDay ? new Date(fullDay).toISOString().split('T')[0] : todayDate
 
@@ -54,7 +54,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
 
   const openWeeks = session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks && Object.values(session?.user?.entries[year].weeks).filter((week) => {
    
-   return week.status == "Open"  && week.week !== weekNumber  })
+  return week.status == "Open"  && week.week !== weekNumber  })
 
   const userDone = useMemo(() => userTasks?.filter((task) => task.status === "Done").map((task) => task.name), [userTasks])
   const [values, setValues] = useState(userDone)
