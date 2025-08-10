@@ -36,36 +36,6 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-// const data: Payment[] = [
-//   {
-//     date: "m5gr84i9",
-//     earnings: 316,
-//   },
-//   {
-//     id: "3u1reuv4",
-//     earnings: 242,
-//     status: "Pending",
-//     day: "2025-07-28",
-//   },
-//   {
-//     id: "derv1ws0",
-//     earnings: 837,
-//     status: "Done",
-//     day: "W30",
-//   },
-//   {
-//     id: "5kma53ae",
-//     earnings: 874,
-//     status: "Skipped",
-//     day: "2025-07-26",
-//   },
-//   {
-//     id: "bhqecj4p",
-//     earnings: 721,
-//     status: "Skipped",
-//     day: "2025-07-25",
-//   },
-// ]
 
 export type Payment = {
   earnings: number

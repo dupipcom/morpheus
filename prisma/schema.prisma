@@ -32,6 +32,8 @@ type Settings {
   monthsVariableIncome String?
   monthsNeedFixedExpenses String?
   monthsNeedVariableExpenses String?
+  dailyTemplate Task[]
+  weeklyTemplate Task[]
 }
 
 type Mood {
@@ -65,10 +67,12 @@ type Week {
 }
 
 type Task {
-  category Category
+  name String
+  categories Category[]
   area Areas
   status String
   cadence String
+  times Int
 }
 
 enum Areas {
@@ -84,6 +88,8 @@ enum Category {
   extra
   clean
   affection
+  maintenance
+  community
   growth
   work
 }

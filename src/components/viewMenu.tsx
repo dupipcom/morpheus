@@ -44,18 +44,18 @@ export const ViewMenu = ({ active }) =>{
   return <NavigationMenu className="flex flex-col center text-center w-full m-auto">
   <NavigationMenuList className="grid grid-cols-3">
       <NavigationMenuItem >
-        <NavigationMenuLink active={active === 'day'}>
-          <a href="/app/day">Day</a>
+        <NavigationMenuLink href="/app/day" active={active === 'day'}>
+          Day
         </NavigationMenuLink>
       </NavigationMenuItem>
       <NavigationMenuItem>
-        <NavigationMenuLink active={active === 'week'}>
-          <a href="/app/week">Week</a>
+        <NavigationMenuLink href="/app/week" active={active === 'week'}>
+          Week
         </NavigationMenuLink>
       </NavigationMenuItem>
       <NavigationMenuItem>
-        <NavigationMenuLink active={active === 'mood'}>
-          <a href="/app/mood">Mood</a>
+        <NavigationMenuLink href="/app/mood" active={active === 'mood'}>
+          Mood
         </NavigationMenuLink>
        </NavigationMenuItem>
   </NavigationMenuList>
