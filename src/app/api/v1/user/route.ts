@@ -256,8 +256,6 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     user = await getUser()
   }
 
-  console.log({ data: JSON.stringify(data.dayActions) })
-
   if (data.dayActions?.length) {
     await prisma.user.update({
       data: {

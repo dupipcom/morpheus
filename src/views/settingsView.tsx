@@ -1,5 +1,6 @@
 'use client'
 import { useState, useRef, useContext, useEffect } from 'react'
+import useSWR from 'swr'
 import { Slider } from "@/components/ui/slider"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -52,7 +53,69 @@ import { WEEKLY_ACTIONS, DAILY_ACTIONS } from "@/app/constants"
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
 import { GlobalContext } from "@/lib/contexts"
 
-export const columns: ColumnDef<Payment>[] = [
+export const SettingsView = ({ timeframe = "day" }) => {
+  const fullDate = new Date()
+  const date = fullDate.toISOString().split('T')[0]
+  const year = Number(date.split('-')[0])
+  const weekNumber = getWeekNumber(fullDate)[1]
+
+  const dailyEntry = useRef({ times: 1, status: "Open", cadence: "daily" })
+  const weeklyEntry = useRef({ times: 1, status: "Open", cadence: "weekly" })
+  
+  const { session, setGlobalContext, ...globalContext } = useContext(GlobalContext)
+
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
+    []
+  )
+  const [columnVisibility, setColumnVisibility] =
+    useState<VisibilityState>({})
+  const [rowSelection, setRowSelection] = useState({})
+
+  const serverSettings = (session?.user?.settings) || {}
+
+  const updateUser = async () => {
+    const response = await fetch('/api/v1/user', { method: 'GET' })
+    const updatedUser = await response.json()
+    setGlobalContext({...globalContext, session: { ...session, user: updatedUser } })
+  }
+
+  const { data, mutate, error, isLoading } = useSWR(`/api/user`, updateUser)
+
+
+  const handleSubmit = async (value, field) => {
+    const response = await fetch('/api/v1/user', 
+      { method: 'POST', 
+        body: JSON.stringify({
+          settings: {
+            [field]: value,
+          }
+      }) 
+    })
+  }
+
+  const handleDailyAdd = async () => {
+    const payload = [...session?.user?.settings?.dailyTemplate, dailyEntry.current]
+    await handleSubmit(payload , "dailyTemplate")
+    mutate('/api/v1/user')
+  }
+
+  const handleWeeklyAdd = async () => {
+    await handleSubmit([...session?.user?.settings?.weeklyTemplate, weeklyEntry.current], "weeklyTemplate")
+    mutate('/api/v1/user')
+  }
+
+  const handleDailyDelete = async (e) => {
+    await handleSubmit(session?.user?.settings?.dailyTemplate.filter((task) => task.name !== e), "dailyTemplate")
+    mutate('/api/v1/user')
+  }
+
+  const handleWeeklyDelete = async (e) => {
+    await handleSubmit(session?.user?.settings?.weeklyTemplate.filter((task) => task.name !== e), "weeklyTemplate")
+    mutate('/api/v1/user')
+  }
+
+  const dayColumns: ColumnDef<Payment>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -100,6 +163,7 @@ export const columns: ColumnDef<Payment>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       const payment = row.original
+      const name = row.getValue("name")
 
       return (
         <DropdownMenu>
@@ -110,7 +174,7 @@ export const columns: ColumnDef<Payment>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem className="text-accent">Delete action</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleDailyDelete(name)} className="">Delete action</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
@@ -118,60 +182,77 @@ export const columns: ColumnDef<Payment>[] = [
   },
 ]
 
-export const SettingsView = ({ timeframe = "day" }) => {
-  const fullDate = new Date()
-  const date = fullDate.toISOString().split('T')[0]
-  const year = Number(date.split('-')[0])
-  const weekNumber = getWeekNumber(fullDate)[1]
+  const weekColumns: ColumnDef<Payment>[] = [
+  {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    accessorKey: "name",
+    header: ({ column }) => {
+      return (
+        <div>
+          Action
+        </div>
+      )
+    },
+    cell: ({ row }) => <div>{row.getValue("name")}</div>,
+  },
+  {
+    accessorKey: "times",
+    header: () => <div className="text-right"># of times</div>,
+    cell: ({ row }) => {
+      const times = parseFloat(row.getValue("times"))
 
-  const dailyEntry = useRef({ times: 1, status: "Open", cadence: "daily" })
-  const weeklyEntry = useRef({ times: 1, status: "Open", cadence: "weekly" })
-  
-  const { session, setGlobalContext, ...globalContext } = useContext(GlobalContext)
+      return <div className="text-right font-medium">{times}x</div>
+    },
+  },
+  {
+    id: "actions",
+    enableHiding: false,
+    cell: ({ row }) => {
+      const payment = row.original
+      const name = row.getValue("name")
 
-  const [sorting, setSorting] = useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
-    []
-  )
-  const [columnVisibility, setColumnVisibility] =
-    useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = useState({})
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <MoreHorizontal />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => handleWeeklyDelete(name)} className="">Delete action</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )
+    },
+  },
+]
 
-  
-
-  const serverSettings = (session?.user?.settings) || {}
-
-  const updateUser = async () => {
-    const response = await fetch('/api/v1/user', { method: 'GET' })
-    const updatedUser = await response.json()
-    setGlobalContext({...globalContext, session: { ...session, user: updatedUser } })
-  }
-
-  const handleSubmit = async (value, field) => {
-    const response = await fetch('/api/v1/user', 
-      { method: 'POST', 
-        body: JSON.stringify({
-          settings: {
-            [field]: value,
-          }
-      }) 
-    })
-  }
-
-  const handleDailyAdd = async () => {
-    const payload = [...session?.user?.settings?.dailyTemplate, dailyEntry.current]
-    await handleSubmit(payload , "dailyTemplate")
-    console.log("add", { dailyEntry, payload })
-  }
-
-  const handleWeeklyAdd = async () => {
-    await handleSubmit([...session?.user?.settings?.weeklyTemplate, weeklyEntry.current], "weeklyTemplate")
-    console.log("add", { weeklyEntry })
-  }
 
   const dailyTable = useReactTable({
     data: session?.user?.settings?.dailyTemplate || [],
-    columns,
+    columns: dayColumns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -195,7 +276,7 @@ export const SettingsView = ({ timeframe = "day" }) => {
 
   const weeklyTable = useReactTable({
     data: session?.user?.settings?.weeklyTemplate || [],
-    columns,
+    columns: weekColumns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -314,7 +395,7 @@ export const SettingsView = ({ timeframe = "day" }) => {
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length}
+                  colSpan={dayColumns.length}
                   className="h-24 text-center"
                 >
                   No results.
@@ -360,7 +441,7 @@ export const SettingsView = ({ timeframe = "day" }) => {
           </SelectContent>
         </Select>
         <Select className="mr-4" onValueChange={(e) => {
-          weeklyEntry.current = { ...weeklyEntry.current, category: [e] }
+          weeklyEntry.current = { ...weeklyEntry.current, categories: [e] }
         }}>
           <SelectTrigger className="w-full md:w-[120px] mb-4">
             <SelectValue placeholder="Category" />
@@ -419,7 +500,7 @@ export const SettingsView = ({ timeframe = "day" }) => {
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length}
+                  colSpan={weekColumns.length}
                   className="h-24 text-center"
                 >
                   No results.

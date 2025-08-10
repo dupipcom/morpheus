@@ -37,7 +37,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     } else if (timeframe === 'week') {
       return (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks) && merge([], session?.user?.settings?.weeklyTemplate, session?.user?.entries[year].weeks[weekNumber]?.tasks) || []
     }
-  }, [JSON.stringify(session)]).sort((a,b) => {
+  }, [JSON.stringify(session), date, weekNumber]).sort((a,b) => {
     if (a.status === "Done") {
       return 1
     }
