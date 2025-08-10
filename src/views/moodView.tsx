@@ -109,37 +109,37 @@ export const MoodView = ({ timeframe = "day" }) => {
   return <div key={JSON.stringify(serverMood)} className="max-w-[720px] m-auto p-4">
           <p className="sticky top-25 truncate z-[999] text-center scroll-m-20 text-sm font-semibold tracking-tight mb-8">Editing: {date}</p>
           <h3 className="mt-8 mb-4">What's in your mind?</h3>
-      <Textarea defaultValue={serverText} onBlur={(e) => handleSubmit(e.target.value, "text")} />
-      <div className="my-8">
+      <Textarea className="mb-16" defaultValue={serverText} onBlur={(e) => handleSubmit(e.target.value, "text")} />
+      <div className="my-12">
         <h3 className="mt-8 mb-4">Gratitude</h3>
         <small>{insight?.gratitudeAnalysis}</small>
       </div>
-      <Slider defaultValue={[serverMood.gratitude || 0]} max={5} step={0.5} onValueCommit={(e) => handleSubmit(e[0], "gratitude")} />
-      <div className="my-8">
+      <Slider className="mb-24" defaultValue={[serverMood.gratitude || 0]} max={5} step={0.5} onValueCommit={(e) => handleSubmit(e[0], "gratitude")} />
+      <div className="my-12">
         <h3 className="mt-8 mb-4">Optimism</h3>
         <small>{insight?.optimismAnalysis}</small>
       </div>
-      <Slider defaultValue={[serverMood.optimism || 0]} max={5} step={0.5} onValueCommit={(e) => handleSubmit(e[0], "optimism")} />
-      <div className="my-8">
+      <Slider className="mb-24" defaultValue={[serverMood.optimism || 0]} max={5} step={0.5} onValueCommit={(e) => handleSubmit(e[0], "optimism")} />
+      <div className="my-12">
         <h3 className="mt-8 mb-4">Restedness</h3>
         <small>{insight?.restednessAnalysis}</small>
       </div>
-      <Slider defaultValue={[serverMood.restedness || 0]} max={5} step={0.5} onValueCommit={(e) => handleSubmit(e[0], "restedness")} />
-      <div className="my-8">
+      <Slider className="mb-24" defaultValue={[serverMood.restedness || 0]} max={5} step={0.5} onValueCommit={(e) => handleSubmit(e[0], "restedness")} />
+      <div className="my-12">
         <h3 className="mt-8 mb-4">Tolerance</h3>
         <small>{insight?.toleranceAnalysis}</small>
       </div>
-      <Slider defaultValue={[serverMood.tolerance || 0]} max={5} step={0.5} onValueCommit={(e) => handleSubmit(e[0], "tolerance")} />
-      <div className="my-8">
-        <h3 className="mt-8 mb-4">Self-Esteem</h3>
+      <Slider className="mb-24" defaultValue={[serverMood.tolerance || 0]} max={5} step={0.5} onValueCommit={(e) => handleSubmit(e[0], "tolerance")} />
+      <div className="my-12">
+        <h3 className="mb-4">Self-Esteem</h3>
         <small>{insight?.selfEsteemAnalysis}</small>
       </div>
-      <Slider defaultValue={[serverMood.selfEsteem || 0]} max={5} step={0.5} onValueCommit={(e) => handleSubmit(e[0], "selfEsteem")} />
-      <div className="my-8">
+      <Slider className="mb-24" defaultValue={[serverMood.selfEsteem || 0]} max={5} step={0.5} onValueCommit={(e) => handleSubmit(e[0], "selfEsteem")} />
+      <div className="my-12">
         <h3 className="mt-8 mb-4">Trust</h3>
         <small>{insight?.trustAnalysis}</small>
       </div>
-      <Slider className="mb-16" defaultValue={[serverMood?.trust || 0]} max={5} step={0.5} onValueCommit={(e) => handleSubmit(e[0], "trust")} />
+      <Slider className="mb-24" defaultValue={[serverMood?.trust || 0]} max={5} step={0.5} onValueCommit={(e) => handleSubmit(e[0], "trust")} />
         {openDays?.length ? <Carousel className="max-w-[196px] m-auto">
             <CarouselContent className="text-center w-[192px]">
               {

@@ -331,7 +331,7 @@ const Logo: TComponent = function ({
     {
       name: "theme",
       auth: false,
-      content: <Switch onCheckedChanged={onThemeChange} />
+      content: <Switch onCheckedChange={onThemeChange} />
     }
   ]
   }

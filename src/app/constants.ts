@@ -7,203 +7,232 @@ export const WEEKLY_ACTIONS = [
     area: 'social',
     categories: ['community'],
     cadence: 'weekly',
-    status: "Not started"
+    status: "Not started",
+    times: 1
   },
   {
     name: 'Flirted with someone',
     area: 'social',
     categories: ['affection'],
     cadence: 'weekly',
-    status: "Not started"
+    status: "Not started",
+    times: 1
   },
   {
     name: 'Talked to a friend',
     area: 'social',
     categories: ['affection'],
     cadence: 'weekly',
-    status: "Not started"
+    status: "Not started",
+    times: 1
   },
   {
     name: 'Navigated on social media',
     area: 'social',
     categories: ['community'],
     cadence: 'weekly',
-    status: "Not started"
+    status: "Not started",
+    times: 1
   },
   {
     name: 'Talked to family',
     area: 'social',
     categories: ['affection'],
     cadence: 'weekly',
-    status: "Not started"
+    status: "Not started",
+    times: 1
   },
   {
     name: 'Made music',
     area: 'self',
     categories: ['fun'],
     cadence: 'weekly',
-    status: "Not started"
+    status: "Not started",
+    times: 1
   },
   {
     name: 'Meditated',
     area: 'self',
     categories: ['spirituality'],
     cadence: 'weekly',
-    status: "Not started"
+    status: "Not started",
+    times: 1
   },
   {
     name: 'Spoke to the holy',
     area: 'self',
     categories: ['spirituality'],
     cadence: 'weekly',
-    status: "Not started"
+    status: "Not started",
+    times: 1
   },
   {
     name: 'Read a mystic book',
     area: 'self',
     categories: ['spirituality'],
     cadence: 'weekly',
-    status: "Not started"
+    status: "Not started",
+    times: 1
   },
   {
     name: 'Shared learnings',
     area: 'social',
     categories: ['community'],
     cadence: 'weekly',
-    status: "Not started"
+    status: "Not started",
+    times: 1
   },
   {
     name: 'Studied a subject',
     area: 'self',
     categories: ['growth'],
     cadence: 'weekly',
-    status: "Not started"
+    status: "Not started",
+    times: 1
   },
   {
     name: 'Watched some educational content',
     area: 'self',
     categories: ['growth'],
     cadence: 'weekly',
-    status: "Not started"
+    status: "Not started",
+    times: 1
   },
   {
     name: 'Played a game',
     area: 'self',
     categories: ['fun'],
     cadence: 'weekly',
-    status: "Not started"
+    status: "Not started",
+    times: 1
   },
   {
     name: 'Watched series or film',
     area: 'self',
     categories: ['fun'],
     cadence: 'weekly',
-    status: "Not started"
+    status: "Not started",
+    times: 1
   },
   {
     name: 'Read news',
     area: 'social',
     categories: ['community'],
     cadence: 'weekly',
-    status: "Not started"
+    status: "Not started",
+    times: 1
   },
   {
     name: 'Wrote an opinion',
     area: 'social',
     categories: ['community'],
     cadence: 'weekly',
-    status: "Not started"
+    status: "Not started",
+    times: 1
   },
   {
     name: 'Cleaned bed',
     area: 'home',
     categories: ['clean'],
     cadence: 'weekly',
-    status: "Not started"
+    status: "Not started",
+    times: 1
   },
   {
     name: 'Ensured bedroom is ordered',
     area: 'home',
     categories: ['clean'],
     cadence: 'weekly',
-    status: "Not started"
+    status: "Not started",
+    times: 1
   },
   {
     name: 'Shaved body',
     area: 'home',
     categories: ['clean', 'extra'],
     cadence: 'weekly',
-    status: "Not started"
+    status: "Not started",
+    times: 1
   },
   {
     name: 'Shaved face',
     area: 'home',
     categories: ['clean', 'extra'],
     cadence: 'weekly',
-    status: "Not started"
+    status: "Not started",
+    times: 1
   },
   {
     name: 'Cut nails',
     area: 'home',
     categories: ['clean', 'extra'],
     cadence: 'weekly',
-    status: "Not started"
+    status: "Not started",
+    times: 1
   },
   {
     name: 'Brushed surfaces',
     area: 'home',
     categories: ['clean', 'extra'],
     cadence: 'weekly',
-    status: "Not started"
+    status: "Not started",
+    times: 1
   },
   {
     name: 'Mopped floors',
     area: 'home',
     categories: ['clean', 'extra'],
     cadence: 'weekly',
-    status: "Not started"
+    status: "Not started",
+    times: 1
   },
   {
     name: 'Washed clothes',
     area: 'home',
     categories: ['clean', 'extra'],
     cadence: 'weekly',
-    status: "Not started"
+    status: "Not started",
+    times: 1
   },
   {
     name: 'Cleaned bathroom',
     area: 'home',
     categories: ['clean', 'extra'],
     cadence: 'weekly',
-    status: "Not started"
+    status: "Not started",
+    times: 1
   },
   {
     name: 'Cleaned kitchen',
     area: 'home',
     categories: ['clean', 'extra'],
     cadence: 'weekly',
-    status: "Not started"
+    status: "Not started",
+    times: 1
   },
   {
     name: 'Worked on personal project',
     area: 'self',
     categories: ['work'],
     cadence: 'weekly',
-    status: "Not started"
+    status: "Not started",
+    times: 1
   },
   {
     name: 'Helped someone',
     area: 'social',
     categories: ['community'],
     cadence: 'weekly',
-    status: "Not started"
+    status: "Not started",
+    times: 1
   },
   {
     name: 'Bought groceries',
     area: 'home',
     categories: ['maintenance'],
     cadence: 'weekly',
-    status: "Not started"
+    status: "Not started",
+    times: 1
   },
 ]
 
@@ -214,112 +243,128 @@ export const DAILY_ACTIONS = [
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
-    status: 'Not started'
+    status: 'Not started',
+    times: 1
   },
   {
     name: 'Showered',
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
-    status: 'Not started'
+    status: 'Not started',
+    times: 1
   },
   {
     name: 'Took meds',
     area: 'self',
     categories: ['body'],
     cadence: '2-daily',
-    status: 'Not started'
+    status: 'Not started',
+    times: 1
   },
   {
     name: 'Logged mood',
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
-    status: 'Not started'
+    status: 'Not started',
+    times: 1
   },
   {
     name: 'Ate breakfast',
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
-    status: 'Not started'
+    status: 'Not started',
+    times: 1
   },
   {
     name: 'Ate lunch',
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
-    status: 'Not started'
+    status: 'Not started',
+    times: 1
   },
   {
     name: 'Ate dinner',
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
-    status: 'Not started'
+    status: 'Not started',
+    times: 1
   },
   {
     name: 'Brushed teeth',
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
-    status: 'Not started'
+    status: 'Not started',
+    times: 1
   },
   {
     name: 'Worked-out',
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
-    status: 'Not started'
+    status: 'Not started',
+    times: 1
   },
   {
     name: 'Worked',
     area: 'home',
     categories: ['work'],
     cadence: 'daily',
-    status: 'Not started'
+    status: 'Not started',
+    times: 1
   },
   {
     name: 'Washed dishes',
     area: 'home',
     categories: ['clean'],
     cadence: 'daily',
-    status: 'Not started'
+    status: 'Not started',
+    times: 1
   },
   {
     name: 'Stored dishes',
     area: 'home',
     categories: ['clean'],
     cadence: 'daily',
-    status: 'Not started'
+    status: 'Not started',
+    times: 1
   },
   {
     name: 'Checked trash',
     area: 'home',
     categories: ['clean'],
     cadence: 'daily',
-    status: 'Not started'
+    status: 'Not started',
+    times: 1
   },
   {
     name: 'Brushed floor',
     area: 'home',
     categories: ['clean'],
     cadence: 'daily',
-    status: 'Not started'
+    status: 'Not started',
+    times: 1
   },
   {
     name: 'Made love',
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
-    status: 'Not started'
+    status: 'Not started',
+    times: 1
   },
   {
     name: 'Went out',
     area: 'social',
     categories: ['community'],
     cadence: 'daily',
-    status: 'Not started'
+    status: 'Not started',
+    times: 1
   },
 ]
 
