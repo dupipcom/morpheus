@@ -192,10 +192,10 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
               ...user.entries[year],
               weeks: {
                 ...user.entries[year].weeks,
-                [weekNumber]: {
-                  ...user.entries[year].weeks[weekNumber],
+                [data.week]: {
+                  ...user.entries[year].weeks[data.week],
                   year,
-                  week: weekNumber,
+                  week: data.week,
                   earnings: weekEarnings,
                   tasks: data.weekActions,
                   status: "Open",
