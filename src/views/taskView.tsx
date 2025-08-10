@@ -1,6 +1,7 @@
 'use client'
 import { useState, useMemo, useEffect, useContext } from "react"
 import useSWR from "swr"
+import { merge } from 'lodash'
 
 import { getWeekNumber } from "@/app/helpers"
 
@@ -32,9 +33,9 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
 
   const userTasks = useMemo(() => {
     if(timeframe === 'day') {
-      return (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date] && session?.user?.entries[year].days[date].tasks) || []
+      return (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date]) && merge([], session?.user?.settings?.dailyTemplate, session?.user?.entries[year].days[date].tasks) || []
     } else if (timeframe === 'week') {
-      return (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks && session?.user?.entries[year].weeks[weekNumber]?.tasks) || []
+      return (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks) && merge([], session?.user?.settings?.weeklyTemplate, session?.user?.entries[year].weeks[weekNumber]?.tasks) || []
     }
   }, [JSON.stringify(session)]).sort((a,b) => {
     if (a.status === "Done") {

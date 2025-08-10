@@ -124,8 +124,8 @@ export const SettingsView = ({ timeframe = "day" }) => {
   const year = Number(date.split('-')[0])
   const weekNumber = getWeekNumber(fullDate)[1]
 
-  const dailyEntry = useRef({ times: 1 })
-  const [weeklyEntry, setWeeklyEntry] = useState({})
+  const dailyEntry = useRef({ times: 1, status: "Open", cadence: "daily" })
+  const weeklyEntry = useRef({ times: 1, status: "Open", cadence: "weekly" })
   
   const { session, setGlobalContext, ...globalContext } = useContext(GlobalContext)
 
@@ -147,24 +147,26 @@ export const SettingsView = ({ timeframe = "day" }) => {
     setGlobalContext({...globalContext, session: { ...session, user: updatedUser } })
   }
 
-  const handleDailyAdd = () => {
-    console.log("add", { dailyEntry })
-  }
-
-  const handleWeeklyAdd = () => {
-    console.log("add", { weeklyEntry })
-  }
-
   const handleSubmit = async (value, field) => {
     const response = await fetch('/api/v1/user', 
       { method: 'POST', 
         body: JSON.stringify({
           settings: {
             [field]: value,
-            date: fullDate
           }
       }) 
     })
+  }
+
+  const handleDailyAdd = async () => {
+    const payload = [...session?.user?.settings?.dailyTemplate, dailyEntry.current]
+    await handleSubmit(payload , "dailyTemplate")
+    console.log("add", { dailyEntry, payload })
+  }
+
+  const handleWeeklyAdd = async () => {
+    await handleSubmit([...session?.user?.settings?.weeklyTemplate, weeklyEntry.current], "weeklyTemplate")
+    console.log("add", { weeklyEntry })
   }
 
   const dailyTable = useReactTable({
@@ -253,7 +255,7 @@ export const SettingsView = ({ timeframe = "day" }) => {
           </SelectContent>
         </Select>
         <Select className="mr-4" onValueChange={(e) => {
-          dailyEntry.current = { ...dailyEntry.current, category: [e] }
+          dailyEntry.current = { ...dailyEntry.current, categories: [e] }
         }}>
           <SelectTrigger className="w-full md:w-[120px] mb-4">
             <SelectValue placeholder="Category" />

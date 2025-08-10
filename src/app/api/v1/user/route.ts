@@ -54,7 +54,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     user = await getUser()
   }
 
-  if (!user.weeklyTemplate && !user.dailyTemplate) {
+  if (!user.settings?.weeklyTemplate && !user.settings?.dailyTemplate) {
     await prisma.user.update({
       data: {
         settings: {
@@ -255,6 +255,8 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     })
     user = await getUser()
   }
+
+  console.log({ data: JSON.stringify(data.dayActions) })
 
   if (data.dayActions?.length) {
     await prisma.user.update({
