@@ -6,6 +6,8 @@ import { useAuth } from "@clerk/clerk-react";
 import { Button } from '@/components/ui/button'
 import { Switch } from "@/components/ui/switch"
 
+import { SlidersVertical } from "lucide-react"
+
 
 import {
   ClerkProvider,
@@ -320,7 +322,15 @@ const Logo: TComponent = function ({
       href: "/user",
       auth: true,
       content: <SignedIn>
-              <UserButton />
+              <UserButton>
+				        <UserButton.MenuItems>
+				          <UserButton.Link
+				            label="Settings"
+				            labelIcon={<SlidersVertical className="w-[14px] pb-2" />}
+				            href="/app/settings"
+				          />
+				        </UserButton.MenuItems>
+				      </UserButton>
             </SignedIn>
     },
     {
