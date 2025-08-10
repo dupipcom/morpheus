@@ -111,6 +111,7 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
       await prisma.user.update({
         data: {
           analysis: {
+            ...user.analysis,
             [date]: JSON.parse(JSON.stringify(response.output_text))
           },
         },
