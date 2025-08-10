@@ -15,10 +15,13 @@ import {
 } from "@/components/ui/carousel"
 
 export const MoodView = ({ timeframe = "day" }) => {
-  const [fullDay, setFullDay] = useState(new Date()) 
-  const date = fullDay.toISOString().split('T')[0]
+  const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+  const today = new Date()
+  const todayDate = today.toLocaleString('en-uk', { timeZone: userTimezone }).split(',')[0].split('/').reverse().join('-')
+  const [fullDay, setFullDay] = useState(todayDate) 
+  const date = fullDay ? new Date(fullDay).toISOString().split('T')[0] : todayDate
   const year = Number(date.split('-')[0])
-  const [weekNumber, setWeekNumber] = useState(getWeekNumber(fullDay)[1])
+  const [weekNumber, setWeekNumber] = useState(getWeekNumber(today)[1])
 
   const [session, setSession] = useState({ user: {} })
 
