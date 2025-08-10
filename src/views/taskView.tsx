@@ -63,8 +63,10 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const handleDone = async (values) => {
     const nextActions = userTasks?.map((action) => {
       const clonedAction = { ...action }
-      if (values.includes(action.name)) {
+      if (values.includes(action.name) && action.times === 1) {
         clonedAction.status = "Done"
+      } else if (values.includes(action.name)) {
+        clonedAction.times -= 1
       } else {
         clonedAction.status = "Open"
       }
@@ -136,7 +138,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       <p className="sticky top-25 truncate z-[999] text-center scroll-m-20 text-sm font-semibold tracking-tight mb-8">Editing: {timeframe === "day" ? date : `Week ${weekNumber}`}</p>
   <ToggleGroup value={values} onValueChange={handleDone} variant="outline" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 align-center justify-center w-full m-auto" type="multiple" orientation="horizontal">
    { castActions?.sort().map((action) => {
-      return <ToggleGroupItem key={`task__item--${action.name}`} className="leading-7 m-1 text-sm min-h-[40px] truncate" value={action.name}>{action.name}</ToggleGroupItem>
+      return <ToggleGroupItem key={`task__item--${action.name}`} className="leading-7 m-1 text-sm min-h-[40px] truncate" value={action.name}>{action.times > 1 ? `${action.times}x ` : ''}{action.name}</ToggleGroupItem>
     }) }
   </ToggleGroup>
                <p className="m-8 text-center">Your earnings {timeframe === "day" ? "today" : "this week"}, so far: ${earnings?.toLocaleString()}</p>
