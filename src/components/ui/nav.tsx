@@ -1,12 +1,14 @@
+import { useState, useRef, useEffect, useMemo } from 'react'
 import Image from "next/image"
 import Link from "next/link"
+import MuxAudio from '@mux/mux-audio-react';
 
 import { useAuth } from "@clerk/clerk-react";
 
 import { Button } from '@/components/ui/button'
 import { Switch } from "@/components/ui/switch"
 
-import { SlidersVertical } from "lucide-react"
+import { SlidersVertical, Play, Square as Stop, Gauge, LogIn, DoorOpen } from "lucide-react"
 
 
 import {
@@ -18,6 +20,27 @@ import {
   UserButton,
 } from '@clerk/nextjs'
 
+export const DEFAULT_TRACKS = [
+  {
+    id: 'dreampip__chan_0000',
+    className: '',
+    onPlay: () => {},
+    title: 'This is the track playing',
+    url: 'https://www.dreampip.com/api/nexus/audio',
+    isPlaying: false,
+  },
+  {
+    id: 'dreampip__chan_0001',
+    className: '',
+    onPlay: () => {},
+    title: 'This is the track playing',
+    url: 'https://radio.dreampip.com/hls/dpip000/live.m3u8',
+    nowPlaying: 'https://radio.dreampip.com/api/nowplaying/dpip000',
+    isPlaying: false,
+  },
+];
+
+
 
 interface LogoProps {
   color?: string;
@@ -26,8 +49,6 @@ interface LogoProps {
 }
 
 type TComponent = React.FC<LogoProps & React.SVGProps<SVGSVGElement>>;
-
-
 
 const Logo: TComponent = function ({
   color = 'black',
@@ -282,18 +303,165 @@ const Logo: TComponent = function ({
 };
 
 
-  export const Nav = ({ subHeader, onThemeChange }) => {
+  export const Nav = ({ subHeader, onThemeChange, tracks = DEFAULT_TRACKS, prompt = 'Rotation portals', }) => {
+	  const audioElement = useRef<HTMLAudioElement>(null);
+	  const [status, setStatus] = useState('loading');
+	  const [title, setTitle] = useState(prompt);
+	  const [isPlaying, setIsPlaying] = useState(false);
+	  const selectedTrack = tracks[1];
+	  const icon = useMemo(() => isPlaying ? <Stop /> : <Play />, [isPlaying]);
 
-  	  const RIGHT_MENU = {
+	const handlePlaying = () => {
+    if (!audioElement.current) return;
+    setIsPlaying(true);
+    setStatus('playing');
+  };
+
+  const handleStopping = () => {
+    if (!audioElement.current) return;
+    setIsPlaying(false);
+    setStatus('stopped');
+  };
+
+  const handleStalled = () => {
+    if (!audioElement.current) return;
+    setStatus('stalled');
+  };
+
+  const handlePlay = () => {
+    if (!audioElement.current) return;
+    audioElement?.current?.play();
+    console.log("play")
+  };
+
+  const handleStop = () => {
+    if (!audioElement.current) return;
+    audioElement?.current?.pause();
+    console.log("stop")
+  };
+
+  const handleClick = () => {
+  	console.log("play click", audioElement)
+    if (!audioElement.current) return;
+    if (isPlaying) {
+      handleStop();
+    } else {
+      handlePlay();
+    }
+  };
+
+  const updatePrompt = async () => {
+    console.log(
+      '%c dp::oneiros::audio_player::prompt::now_playing(fetching)',
+      'background-color: pink; color: blue;',
+    );
+    const url = selectedTrack.nowPlaying;
+    if (url) {
+      try {
+        const req = await fetch(url);
+        const json = await req.json();
+        const text = json?.now_playing?.song?.title;
+
+        if (text.match(/^[0-9]*$/)) {
+          setTitle(`Rotation Portal ${text}`);
+        } else {
+          setTitle(text);
+        }
+      } catch (e) {
+        console.log(
+          '%c dp::oneiros::audio_player::prompt::now_playing(error)',
+          'background-color: red; color: white;',
+        );
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (audioElement.current) {
+      const memo = {
+        clearPromptInterval: () => {},
+      };
+
+      const checkPrompt = () => {
+        const interval = setInterval(() => {
+          updatePrompt();
+        }, 5000);
+        memo.clearPromptInterval = () => clearInterval(interval);
+      };
+
+      const handleOnline = () => {
+        setStatus('online');
+        setTimeout(handlePlay, 5000);
+      };
+
+      const handleOffline = () => {
+        setStatus('offline');
+        handleStopping();
+      };
+
+      audioElement.current.addEventListener('play', handlePlaying);
+      audioElement.current.addEventListener('playing', handlePlaying);
+      audioElement.current.addEventListener('pause', handleStopping);
+
+      audioElement.current.addEventListener('ended', handleStopping);
+      audioElement.current.addEventListener('stalled', handleStalled);
+
+      window.addEventListener('online', handleOnline);
+      window.addEventListener('offline', handleOffline);
+
+      checkPrompt();
+
+      return () => {
+        audioElement?.current?.removeEventListener('play', handlePlaying);
+        audioElement?.current?.removeEventListener('playing', handlePlaying);
+        audioElement?.current?.removeEventListener('ended', handleStopping);
+        audioElement?.current?.removeEventListener('stalled', handleStalled);
+        window.removeEventListener('online', handleOnline);
+        window.removeEventListener('offline', handleOffline);
+        memo.clearPromptInterval();
+      };
+    }
+    return () => {};
+  }, []);
+
+
+
+  	const LEFT_MENU = {
+  		items: [
+  		]
+  	}
+
+  	  const RIGHT_MENU = useMemo(() => ({
     items: [
+   		{
+  				name: "player",
+  				auth: "both",
+  				content: <div>
+	          <Button
+	            variant="outline"
+	            onClick={handleClick}
+	          >
+	          	{icon}
+	          </Button>
+		        <MuxAudio
+		          src={selectedTrack.url}
+		          ref={audioElement}
+		          loop
+		          preferPlayback="mse"
+		        />
+        </div>
+  			},
     {
       name: "dashboard",
       href: "/app/dashboard",
       auth: true,
       content:
                 <a href="/app/dashboard">
-                <Button variant="outline" className="cursor-pointer">
+                <Button variant="outline" className="hidden lg:flex cursor-pointer">
                   Dashboard
+                </Button>
+                <Button variant="outline" className="flex lg:hidden cursor-pointer">
+                  <Gauge />
                 </Button>
                 </a>
     },
@@ -302,9 +470,14 @@ const Logo: TComponent = function ({
       href: "/login",
       auth: false,
       content: <SignUpButton>
-                <Button variant="outline" className="cursor-pointer">
-                  Sign Up
-                </Button>
+      					<div>
+	                <Button variant="outline" className="hidden lg:flex cursor-pointer">
+	                  Sign Up
+	                </Button>
+	                <Button variant="outline" className="flex lg:hidden">
+	                	<DoorOpen />
+	                </Button>
+                </div>
               </SignUpButton>
     },
     {
@@ -312,9 +485,14 @@ const Logo: TComponent = function ({
       href: "/login",
       auth: false,
       content: <SignInButton>
-                <Button className="cursor-pointer">
-                  Login
-                </Button>
+      					<div>
+	                <Button className="hidden lg:flex cursor-pointer">
+	                  Login
+	                </Button>
+	                <Button className="flex lg:hidden">
+	                	<LogIn />
+	                </Button>
+              	</div>
               </SignInButton>
     },
     {
@@ -344,9 +522,10 @@ const Logo: TComponent = function ({
       content: <Switch onCheckedChange={onThemeChange} />
     }
   ]
-  }
+  }), [isPlaying])
 
   const menu = {
+  	left: LEFT_MENU,
     right: RIGHT_MENU,
   }
 
@@ -359,17 +538,22 @@ const Logo: TComponent = function ({
           dark:to-[#3e365ccc]
           dark:from-[#563769cc] p-8 z-[999]">
           <div className="flex justify-between">
-          <div className="hidden md:block basis-1/3">
+          <div className="md:flex hidden md:basis-1/3 items-center justify-start">
+          	{
+              menu?.left?.items?.filter((item) => item.auth === !!userId).map((item, index) => {
+                return <div key={`nav__${item.name}--${index}`} className="ml-4 flex items-center justify-center">{item.content}</div>
+              })
+            }
           </div>
-          <div className="relative basis-1/3 flex justify-center">
+          <div className="relative basis-1/3 flex justify-start sm:justify-center">
             <Link href="/" className="">
               <Logo />
             </Link>
           </div>
           <div className="flex items-center justify-end basis-1/3">
             {
-              menu.right.items.filter((item) => item.auth === !!userId).map((item, index) => {
-                return <div key={`nav__${item.name}--${index}`} className="ml-4 flex items-center justify-center">{item.content}</div>
+              menu?.right?.items?.filter((item) => item.auth === "both" ||  item.auth === !!userId).map((item, index) => {
+                return <div key={`nav__${item.name}--${index}`} className="ml-2 flex items-center justify-center">{item.content}</div>
               })
             }
           </div>
