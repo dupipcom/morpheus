@@ -305,7 +305,7 @@ export const SettingsView = ({ timeframe = "day" }) => {
           dailyEntry.current = { ...dailyEntry.current, name: e.currentTarget.value }
         }} />
         <Select className="mr-4" placeholder="# of times" onValueChange={(e) => {
-          dailyEntry.current = { ...dailyEntry.current, times: Number(e) }
+          dailyEntry.current = { ...dailyEntry.current, times: Number(e), count: 0 }
         }} >
           <SelectTrigger className="w-full md:w-[120px] mb-4 mr-4">
             <SelectValue placeholder="# times" />
@@ -410,7 +410,7 @@ export const SettingsView = ({ timeframe = "day" }) => {
           weeklyEntry.current = { ...weeklyEntry.current, name: e.currentTarget.value }
         }} />
         <Select className="mr-4" placeholder="# of times" onValueChange={(e) => {
-          weeklyEntry.current = { ...weeklyEntry.current, times: Number(e) }
+          weeklyEntry.current = { ...weeklyEntry.current, times: Number(e), count: 0 }
         }} >
           <SelectTrigger className="w-full md:w-[120px] mb-4 mr-4">
             <SelectValue placeholder="# times" />

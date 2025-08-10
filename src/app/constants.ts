@@ -8,7 +8,8 @@ export const WEEKLY_ACTIONS = [
     categories: ['community'],
     cadence: 'weekly',
     status: "Not started",
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Flirted with someone',
@@ -16,7 +17,8 @@ export const WEEKLY_ACTIONS = [
     categories: ['affection'],
     cadence: 'weekly',
     status: "Not started",
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Talked to a friend',
@@ -24,7 +26,8 @@ export const WEEKLY_ACTIONS = [
     categories: ['affection'],
     cadence: 'weekly',
     status: "Not started",
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Navigated on social media',
@@ -32,7 +35,8 @@ export const WEEKLY_ACTIONS = [
     categories: ['community'],
     cadence: 'weekly',
     status: "Not started",
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Talked to family',
@@ -40,7 +44,8 @@ export const WEEKLY_ACTIONS = [
     categories: ['affection'],
     cadence: 'weekly',
     status: "Not started",
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Made music',
@@ -48,7 +53,8 @@ export const WEEKLY_ACTIONS = [
     categories: ['fun'],
     cadence: 'weekly',
     status: "Not started",
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Meditated',
@@ -56,7 +62,8 @@ export const WEEKLY_ACTIONS = [
     categories: ['spirituality'],
     cadence: 'weekly',
     status: "Not started",
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Spoke to the holy',
@@ -64,7 +71,8 @@ export const WEEKLY_ACTIONS = [
     categories: ['spirituality'],
     cadence: 'weekly',
     status: "Not started",
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Read a mystic book',
@@ -72,7 +80,8 @@ export const WEEKLY_ACTIONS = [
     categories: ['spirituality'],
     cadence: 'weekly',
     status: "Not started",
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Shared learnings',
@@ -80,7 +89,8 @@ export const WEEKLY_ACTIONS = [
     categories: ['community'],
     cadence: 'weekly',
     status: "Not started",
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Studied a subject',
@@ -88,7 +98,8 @@ export const WEEKLY_ACTIONS = [
     categories: ['growth'],
     cadence: 'weekly',
     status: "Not started",
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Watched some educational content',
@@ -96,7 +107,8 @@ export const WEEKLY_ACTIONS = [
     categories: ['growth'],
     cadence: 'weekly',
     status: "Not started",
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Played a game',
@@ -104,7 +116,8 @@ export const WEEKLY_ACTIONS = [
     categories: ['fun'],
     cadence: 'weekly',
     status: "Not started",
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Watched series or film',
@@ -112,7 +125,8 @@ export const WEEKLY_ACTIONS = [
     categories: ['fun'],
     cadence: 'weekly',
     status: "Not started",
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Read news',
@@ -120,7 +134,8 @@ export const WEEKLY_ACTIONS = [
     categories: ['community'],
     cadence: 'weekly',
     status: "Not started",
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Wrote an opinion',
@@ -128,7 +143,8 @@ export const WEEKLY_ACTIONS = [
     categories: ['community'],
     cadence: 'weekly',
     status: "Not started",
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Cleaned bed',
@@ -136,7 +152,8 @@ export const WEEKLY_ACTIONS = [
     categories: ['clean'],
     cadence: 'weekly',
     status: "Not started",
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Ensured bedroom is ordered',
@@ -144,7 +161,8 @@ export const WEEKLY_ACTIONS = [
     categories: ['clean'],
     cadence: 'weekly',
     status: "Not started",
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Shaved body',
@@ -152,7 +170,8 @@ export const WEEKLY_ACTIONS = [
     categories: ['clean', 'extra'],
     cadence: 'weekly',
     status: "Not started",
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Shaved face',
@@ -160,7 +179,8 @@ export const WEEKLY_ACTIONS = [
     categories: ['clean', 'extra'],
     cadence: 'weekly',
     status: "Not started",
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Cut nails',
@@ -168,7 +188,8 @@ export const WEEKLY_ACTIONS = [
     categories: ['clean', 'extra'],
     cadence: 'weekly',
     status: "Not started",
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Brushed surfaces',
@@ -176,7 +197,8 @@ export const WEEKLY_ACTIONS = [
     categories: ['clean', 'extra'],
     cadence: 'weekly',
     status: "Not started",
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Mopped floors',
@@ -184,7 +206,8 @@ export const WEEKLY_ACTIONS = [
     categories: ['clean', 'extra'],
     cadence: 'weekly',
     status: "Not started",
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Washed clothes',
@@ -192,7 +215,8 @@ export const WEEKLY_ACTIONS = [
     categories: ['clean', 'extra'],
     cadence: 'weekly',
     status: "Not started",
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Cleaned bathroom',
@@ -200,7 +224,8 @@ export const WEEKLY_ACTIONS = [
     categories: ['clean', 'extra'],
     cadence: 'weekly',
     status: "Not started",
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Cleaned kitchen',
@@ -208,7 +233,8 @@ export const WEEKLY_ACTIONS = [
     categories: ['clean', 'extra'],
     cadence: 'weekly',
     status: "Not started",
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Worked on personal project',
@@ -216,7 +242,8 @@ export const WEEKLY_ACTIONS = [
     categories: ['work'],
     cadence: 'weekly',
     status: "Not started",
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Helped someone',
@@ -224,7 +251,8 @@ export const WEEKLY_ACTIONS = [
     categories: ['community'],
     cadence: 'weekly',
     status: "Not started",
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Bought groceries',
@@ -232,7 +260,8 @@ export const WEEKLY_ACTIONS = [
     categories: ['maintenance'],
     cadence: 'weekly',
     status: "Not started",
-    times: 1
+    times: 1,
+    count: 0,
   },
 ]
 
@@ -244,7 +273,8 @@ export const DAILY_ACTIONS = [
     categories: ['body'],
     cadence: 'daily',
     status: 'Not started',
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Showered',
@@ -252,7 +282,8 @@ export const DAILY_ACTIONS = [
     categories: ['body'],
     cadence: 'daily',
     status: 'Not started',
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Took meds',
@@ -260,7 +291,8 @@ export const DAILY_ACTIONS = [
     categories: ['body'],
     cadence: '2-daily',
     status: 'Not started',
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Logged mood',
@@ -268,7 +300,8 @@ export const DAILY_ACTIONS = [
     categories: ['body'],
     cadence: 'daily',
     status: 'Not started',
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Ate breakfast',
@@ -276,7 +309,8 @@ export const DAILY_ACTIONS = [
     categories: ['body'],
     cadence: 'daily',
     status: 'Not started',
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Ate lunch',
@@ -284,7 +318,8 @@ export const DAILY_ACTIONS = [
     categories: ['body'],
     cadence: 'daily',
     status: 'Not started',
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Ate dinner',
@@ -292,7 +327,8 @@ export const DAILY_ACTIONS = [
     categories: ['body'],
     cadence: 'daily',
     status: 'Not started',
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Brushed teeth',
@@ -300,7 +336,8 @@ export const DAILY_ACTIONS = [
     categories: ['body'],
     cadence: 'daily',
     status: 'Not started',
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Worked-out',
@@ -308,7 +345,8 @@ export const DAILY_ACTIONS = [
     categories: ['body'],
     cadence: 'daily',
     status: 'Not started',
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Worked',
@@ -316,7 +354,8 @@ export const DAILY_ACTIONS = [
     categories: ['work'],
     cadence: 'daily',
     status: 'Not started',
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Washed dishes',
@@ -324,7 +363,8 @@ export const DAILY_ACTIONS = [
     categories: ['clean'],
     cadence: 'daily',
     status: 'Not started',
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Stored dishes',
@@ -332,7 +372,8 @@ export const DAILY_ACTIONS = [
     categories: ['clean'],
     cadence: 'daily',
     status: 'Not started',
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Checked trash',
@@ -340,7 +381,8 @@ export const DAILY_ACTIONS = [
     categories: ['clean'],
     cadence: 'daily',
     status: 'Not started',
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Brushed floor',
@@ -348,7 +390,8 @@ export const DAILY_ACTIONS = [
     categories: ['clean'],
     cadence: 'daily',
     status: 'Not started',
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Made love',
@@ -356,7 +399,8 @@ export const DAILY_ACTIONS = [
     categories: ['body'],
     cadence: 'daily',
     status: 'Not started',
-    times: 1
+    times: 1,
+    count: 0,
   },
   {
     name: 'Went out',
@@ -364,7 +408,8 @@ export const DAILY_ACTIONS = [
     categories: ['community'],
     cadence: 'daily',
     status: 'Not started',
-    times: 1
+    times: 1,
+    count: 0,
   },
 ]
 
