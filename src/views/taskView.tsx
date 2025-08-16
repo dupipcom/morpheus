@@ -132,7 +132,11 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   },
 })
     const json = await response.json()
-    setInsight(JSON.parse(json.result))
+    try {
+      setInsight(JSON.parse(json.result))
+    } catch (e) {
+      setInsight(JSON.parse(JSON.stringify(json.result)))
+    }
   }
 
   useEffect(() => {
@@ -157,15 +161,15 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
           {( timeframe === "day" && openDays?.length) || (timeframe === "week" && openWeeks?.length) ? <Carousel className="max-w-[196px] m-auto">
             <CarouselContent className="text-center w-[192px]">
               {
-                timeframe === "day" ? openDays?.map((day) => {
-                  return <CarouselItem className="flex flex-col">
+                timeframe === "day" ? openDays?.map((day, index) => {
+                  return <CarouselItem key={`task__carousel--${day.date}--${index}`} className="flex flex-col">
                     <small>${day.earnings?.toLocaleString()}</small>
                     <label className="mb-4">{day.date}</label>
                     <Button className="dark:bg-foreground text-md p-5 mb-2" onClick={() => handleEditDay(new Date(day.date))}>Edit day</Button>
                     <Button variant="outline" className="text-md p-5" onClick={() => handleCloseDates([day.date])} >Close day</Button>
                   </CarouselItem>
-                }) : openWeeks?.map((week) => {
-                  return <CarouselItem className="flex flex-col">
+                }) : openWeeks?.map((week, index) => {
+                  return <CarouselItem key={`task__carousel--${week.date}--${index}`} className="flex flex-col">
                     <small>${week.earnings?.toLocaleString()}</small>
                     <label className="mb-4">Week {week.week}</label>
                     <Button onClick={() => handleEditWeek(week.week)} className="text-md p-5 mb-2 dark:bg-foreground">Edit week</Button>
