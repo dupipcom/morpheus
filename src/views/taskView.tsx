@@ -39,12 +39,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       const weeklyTasks = (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks) && session?.user?.entries[year].weeks[weekNumber]?.tasks || []
       return merge([], session?.user?.settings?.weeklyTemplate, weeklyTasks)
     }
-  }, [JSON.stringify(session), date, weekNumber]).sort((a,b) => {
-    if (a.status === "Done") {
-      return 1
-    }
-    return -1
-  })
+  }, [JSON.stringify(session), date, weekNumber])
 
 
   const openDays = useMemo(() => {
@@ -157,8 +152,8 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   return <div className="max-w-[1200px] m-auto p-4">
       <p className="sticky top-25 truncate z-[999] text-center scroll-m-20 text-sm font-semibold tracking-tight mb-8">Editing: {timeframe === "day" ? date : `Week ${weekNumber}`}</p>
   <ToggleGroup value={values} onValueChange={handleDone} variant="outline" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 align-center justify-center w-full m-auto" type="multiple" orientation="horizontal">
-   { castActions?.sort().map((action) => {
-      return <ToggleGroupItem key={`task__item--${action.name}`} className="leading-7 m-1 text-sm min-h-[40px] truncate" value={action.name}>{action.times - action.count > 1 ? `${action.times - action.count}x ` : ''}{action.name}</ToggleGroupItem>
+   { castActions?.sort((a,b) => a.status === "Done" ? 1 : -1).map((action) => {
+      return <ToggleGroupItem key={`task__item--${action.name}`} className="leading-7 m-1 text-sm min-h-[40px] truncate" value={action.name}>{action.times > 1 ? `${action.count}/${action.times} ` : ''}{action.name}</ToggleGroupItem>
     }) }
   </ToggleGroup>
                <p className="m-8 text-center">Your earnings {timeframe === "day" ? "today" : "this week"}, so far: ${earnings?.toLocaleString()}</p>

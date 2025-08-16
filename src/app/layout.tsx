@@ -76,12 +76,14 @@ export default function RootLayout({
       }}>
         <GlobalContext.Provider value={{...globalContext, setGlobalContext, theme: value }}>
           <Nav onThemeChange={handleThemeChange} />
-          {children}
+          <article className="p-2 md:p-8">
+            {children}
+          </article>
         </GlobalContext.Provider>
         </ClerkProvider>
-        <footer className="mt-8 md:mt-32">
-            <div className={`m-auto max-w-[1200px] grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 text-[12px] flex w-full flex-col items-start p-8 pb-32 place-items-center`}>
-              <small className="mb-4 ">
+        <footer className="mt-8 md:mt-32 p-2">
+            <div className={`m-auto max-w-[1200px] grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 text-[12px] flex w-full flex-col items-start p-2 pb-16`}>
+              <small className="mb-4">
                 © 2012—Present Purizu and Remotelys dba DreamPip
                 <br />IVA IT02925300903 
                 <br />REA 572763 
