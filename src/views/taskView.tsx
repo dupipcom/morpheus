@@ -169,7 +169,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                     <Button variant="outline" className="text-md p-5" onClick={() => handleCloseDates([day.date])} >Close day</Button>
                   </CarouselItem>
                 }) : openWeeks?.map((week, index) => {
-                  return <CarouselItem key={`task__carousel--${week.date}--${index}`} className="flex flex-col">
+                  return <CarouselItem key={`task__carousel--${week.week}--${index}`} className="flex flex-col">
                     <small>${week.earnings?.toLocaleString()}</small>
                     <label className="mb-4">Week {week.week}</label>
                     <Button onClick={() => handleEditWeek(week.week)} className="text-md p-5 mb-2 dark:bg-foreground">Edit week</Button>
