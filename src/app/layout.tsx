@@ -53,8 +53,8 @@ export default function RootLayout({
 
   useEffect(() => {
     setGlobalContext({ ...globalContext, theme: value })
-    setIsLoading(false)
-  }, [])
+    if (!!value) setIsLoading(false)
+  }, [value])
 
   return (
     <html lang="en">
