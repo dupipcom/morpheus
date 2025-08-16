@@ -17,6 +17,8 @@ import "./globals.css"
 
 import { useLocalStorage } from 'usehooks-ts';
 
+import { Skeleton } from "@/components/ui/skeleton"
+
 
 const comfortaa = Comfortaa({
   variable: "--font-comforta",
@@ -33,9 +35,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [globalContext, setGlobalContext] = useState({ theme: "light", session: { user: {} } })
+  const [value, setValue, removeValue] = useLocalStorage('theme', undefined);
+  const [globalContext, setGlobalContext] = useState({ theme: value, session: { user: {} } })
 
-  const [value, setValue, removeValue] = useLocalStorage('theme', 0);
+  
 
   const handleThemeChange = () => {
     if (globalContext.theme === 'light') {
@@ -48,7 +51,7 @@ export default function RootLayout({
   }
 
   useEffect(() => {
-    setGlobalContext({ ...globalContext, theme: value  === "dark" ? "dark" : "light"})
+    setGlobalContext({ ...globalContext, theme: value })
   }, [])
 
   return (
@@ -66,20 +69,26 @@ export default function RootLayout({
         <meta name="author" content="DreamPip" />
         <meta property="og:image" content="https://www.dreampip.com/images/logo-social.jpg" />
       </head>
-      <body
-        className={`${comfortaa.variable} ${globalContext.theme}`}
+      { !value ? <body><Skeleton /> </body>: (
+
+              <body
+        suppressHydrationWarning
+        className={`${comfortaa.variable} ${value}`}
       >
         
         <ClerkProvider appearance={{
         cssLayerName: 'clerk',
         baseTheme: shadcn,
-      }}>
-        <GlobalContext.Provider value={{...globalContext, setGlobalContext, theme: value }}>
-          <Nav onThemeChange={handleThemeChange} />
-          <article className="p-2 md:p-8">
-            {children}
-          </article>
-        </GlobalContext.Provider>
+        }}>
+          <GlobalContext.Provider value={{...globalContext, setGlobalContext }}>
+            <Nav onThemeChange={handleThemeChange} />
+            <article className="p-2 md:p-8">
+              {globalContext?.session?.user?.entries ? undefined : <Skeleton className="bg-muted h-[75vh] w-full z-[999]" />}
+              <div className={`${globalContext?.session?.user?.entries ? "block" : "hidden"}`}>
+                {children}
+              </div>
+            </article>
+          </GlobalContext.Provider>
         </ClerkProvider>
         <footer className="mt-8 md:mt-32 p-2">
             <div className={`m-auto max-w-[1200px] grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 text-[12px] flex w-full flex-col items-start p-2 pb-16`}>
@@ -114,6 +123,8 @@ export default function RootLayout({
             </div>
           </footer>
       </body>
+      )}
+
     </html>
   );
 }

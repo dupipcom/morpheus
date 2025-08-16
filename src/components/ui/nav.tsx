@@ -499,7 +499,7 @@ const Logo: TComponent = function ({
       name: "user",
       href: "/user",
       auth: true,
-      content: <SignedIn>
+      content: <div className="p-2 flex items-center"> <SignedIn>
               <UserButton>
 				        <UserButton.MenuItems>
 				          <UserButton.Link
@@ -510,6 +510,7 @@ const Logo: TComponent = function ({
 				        </UserButton.MenuItems>
 				      </UserButton>
             </SignedIn>
+            </div>
     },
     {
       name: "theme",
