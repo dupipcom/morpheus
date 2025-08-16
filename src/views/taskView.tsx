@@ -152,7 +152,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   return <div className="max-w-[1200px] m-auto p-4">
       <p className="sticky top-25 truncate z-[999] text-center scroll-m-20 text-sm font-semibold tracking-tight mb-8">Editing: {timeframe === "day" ? date : `Week ${weekNumber}`}</p>
   <ToggleGroup value={values} onValueChange={handleDone} variant="outline" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 align-center justify-center w-full m-auto" type="multiple" orientation="horizontal">
-   { castActions?.sort((a,b) => a.status === "Done" ? 1 : -1).map((action) => {
+   { castActions?.map((action) => {
       return <ToggleGroupItem key={`task__item--${action.name}`} className="leading-7 m-1 text-sm min-h-[40px] truncate" value={action.name}>{action.times > 1 ? `${action.count}/${action.times} ` : ''}{action.name}</ToggleGroupItem>
     }) }
   </ToggleGroup>
