@@ -92,7 +92,11 @@ export const MoodView = ({ timeframe = "day" }) => {
   },
 })
     const json = await response.json()
-    setInsight(JSON.parse(json.result))
+    try {
+      setInsight(JSON.parse(json.result))
+    } catch (e) {
+      setInsight(JSON.parse(JSON.stringify(json.result)))
+    }
   }
 
   useEffect(() => {
