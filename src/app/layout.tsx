@@ -57,7 +57,7 @@ export default function RootLayout({
   }, [value])
 
   return (
-    <html lang="en">
+    <html lang="en" className="notranslate">
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <head>
         <title>DreamPip · Fintech for compassion</title>
