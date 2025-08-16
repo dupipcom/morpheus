@@ -211,7 +211,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   year,
                   week: data.week,
                   earnings: weekEarnings,
-                  tasks: data.weekActions,
+                  tasks: data.weekActions.sort((a, b) => a.status === "Done" ? 1 : -1),
                   status: "Open",
                   progress: weekProgress,
                   done: weekDone.length,
@@ -239,7 +239,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   year,
                   week: data.week,
                   earnings: weekEarnings,
-                  tasks: user?.settings?.weeklyTemplate?.length ? user?.settings?.weeklyTemplate : WEEKLY_ACTIONS,
+                  tasks: (user?.settings?.weeklyTemplate?.length ? user?.settings?.weeklyTemplate : WEEKLY_ACTIONS).sort((a, b) => a.status === "Done" ? 1 : -1),
                   status: "Open",
                   progress: weekProgress,
                   done: weekDone.length,
@@ -303,7 +303,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   progress: dayProgress,
                   done: dayDone.length,
                   tasksNumber: dayTasks.length,
-                  tasks: data.dayActions,
+                  tasks: data.dayActions.sort((a, b) => a.status === "Done" ? 1 : -1),
                   status: "Open",
                   availableBalance: user.availableBalance
                 }
@@ -333,7 +333,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   progress: dayProgress,
                   done: dayDone.length,
                   tasksNumber: dayTasks.length,
-                  tasks: user?.settings?.dailyTemplate.length ? user?.settings?.dailyTemplate : DAILY_ACTIONS,
+                  tasks: (user?.settings?.dailyTemplate.length ? user?.settings?.dailyTemplate : DAILY_ACTIONS).sort((a, b) => a.status === "Done" ? 1 : -1),
                   status: "Open",
                   availableBalance: user.availableBalance
                 }
