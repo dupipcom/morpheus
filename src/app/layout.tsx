@@ -53,11 +53,11 @@ export default function RootLayout({
 
   useEffect(() => {
     setGlobalContext({ ...globalContext, theme: value })
-    setIsLoading(false)
-  }, [])
+    if (!!value) setIsLoading(false)
+  }, [value])
 
   return (
-    <html lang="en">
+    <html lang="en" className="notranslate">
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <head>
         <title>DreamPip · Fintech for compassion</title>
