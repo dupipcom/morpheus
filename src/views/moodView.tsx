@@ -39,9 +39,13 @@ export const MoodView = ({ timeframe = "day" }) => {
   const [mood, setMood] = useState(serverMood)
 
   const updateUser = async () => {
-    const response = await fetch('/api/v1/user', { method: 'GET' })
-    const updatedUser = await response.json()
-    setSession({...session, user: updatedUser })
+    try {
+      const response = await fetch('/api/v1/user', { method: 'GET' })
+      const updatedUser = await response.json()
+      setGlobalContext({...globalContext, session: { ...session, user: updatedUser } })
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   const handleSubmit = async (value, field) => {

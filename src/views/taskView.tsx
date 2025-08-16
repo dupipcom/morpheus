@@ -112,9 +112,13 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   }
 
   const updateUser = async () => {
-    const response = await fetch('/api/v1/user', { method: 'GET' })
-    const updatedUser = await response.json()
-    setGlobalContext({...globalContext, session: { ...session, user: updatedUser } })
+    try {
+      const response = await fetch('/api/v1/user', { method: 'GET' })
+      const updatedUser = await response.json()
+      setGlobalContext({...globalContext, session: { ...session, user: updatedUser } })
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   const { data, mutate, error, isLoading } = useSWR(`/api/user`, updateUser)
