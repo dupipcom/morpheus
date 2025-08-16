@@ -35,6 +35,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const [isLoading, setIsLoading] = useState(true);
   const [value, setValue, removeValue] = useLocalStorage('theme', undefined);
   const [globalContext, setGlobalContext] = useState({ theme: value, session: { user: {} } })
 
@@ -52,6 +53,7 @@ export default function RootLayout({
 
   useEffect(() => {
     setGlobalContext({ ...globalContext, theme: value })
+    setIsLoading(false)
   }, [])
 
   return (
@@ -69,7 +71,7 @@ export default function RootLayout({
         <meta name="author" content="DreamPip" />
         <meta property="og:image" content="https://www.dreampip.com/images/logo-social.jpg" />
       </head>
-      { !value ? <body><Skeleton /> </body>: (
+      { isLoading ? <body><Skeleton /> </body>: (
 
               <body
         suppressHydrationWarning
@@ -83,8 +85,8 @@ export default function RootLayout({
           <GlobalContext.Provider value={{...globalContext, setGlobalContext }}>
             <Nav onThemeChange={handleThemeChange} />
             <article className="p-2 md:p-8">
-              {globalContext?.session?.user?.entries ? undefined : <Skeleton className="bg-muted h-[75vh] w-full z-[999]" />}
-              <div className={`${globalContext?.session?.user?.entries ? "block" : "hidden"}`}>
+              {!isLoading ? undefined : <Skeleton className="bg-muted h-[75vh] w-full z-[999]" />}
+              <div className={`${!isLoading ? "block" : "hidden"}`}>
                 {children}
               </div>
             </article>
