@@ -18,7 +18,7 @@ import { GlobalContext } from "@/lib/contexts"
 import { setLoginTime, getLoginTime } from '@/lib/cookieManager'
 import { useI18n } from "@/lib/contexts/i18n"
 
-export default function Template({ title, content, isomorphicContent }: any) {
+export default function LocalizedDay({ params }: { params: { locale: string } }) {
   const { session, setGlobalContext } = useContext(GlobalContext)
   const { isLoaded, isSignedIn } = useAuth();
   const { t, formatDate } = useI18n();
@@ -40,27 +40,15 @@ export default function Template({ title, content, isomorphicContent }: any) {
   const year = Number(date.split('-')[0])
   const weekNumber = getWeekNumber(fullDate)[1]
 
-  const actions = (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year][weekNumber] && session?.user?.entries[year][weekNumber].days[date] && session?.user?.entries[year][weekNumber].days[date].tasks) || DAILY_ACTIONS
+  const actions = ((session?.user as any)?.entries && (session?.user as any)?.entries[year] && (session?.user as any)?.entries[year][weekNumber] && (session?.user as any)?.entries[year][weekNumber].days[date] && (session?.user as any)?.entries[year][weekNumber].days[date].tasks) || DAILY_ACTIONS
 
-
-
-  const flatDays = Object.values(WEEKS).flatMap((week) => week.days).reduce((acc, week) => {
+  const flatDays = Object.values(WEEKS).flatMap((week: any) => week.days).reduce((acc: any, week: any) => {
     acc = {...acc, ...week}
     return acc
   }, {})
 
-
-  const handleThemeChange = () => {
-    if (globalContext.theme === 'light') {
-      setGlobalContext({...globalContext, theme: 'dark'})
-    } else {
-      setGlobalContext({...globalContext, theme: 'light'})
-    }
-  }
-
-    return (
-      <main className="min-h-[100vh]">
-        
+  return (
+    <main className="min-h-[100vh]">
       <ViewMenu active="day" />
 
       <div className="scroll-m-20 text-2xl font-semibold tracking-tight text-center mb-8">
@@ -70,6 +58,6 @@ export default function Template({ title, content, isomorphicContent }: any) {
       <p className="text-center scroll-m-20 text-lg font-semibold tracking-tight mb-8">{t('dashboard.whatDidYouAccomplish')}</p>
 
       <TaskView actions={actions} />
-      </main>
-    )
-}
+    </main>
+  )
+} 

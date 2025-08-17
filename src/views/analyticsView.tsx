@@ -11,6 +11,7 @@ import { EarningsTable } from '@/components/earningsTable'
 import { getWeekNumber } from "@/app/helpers"
 
 import { GlobalContext } from "@/lib/contexts"
+import { useI18n } from "@/lib/contexts/i18n"
 import { generateInsight } from "@/lib/userUtils"
 import { AnalyticsViewSkeleton } from "@/components/ui/skeleton-loader"
 
@@ -63,42 +64,44 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
   const weekNumber = getWeekNumber(fullDate)[1]
   const [insight, setInsight] = useState({})
   const [relevantData, setRelevantData] = useState([])
-    const { session, setGlobalContext, ...globalContext } = useContext(GlobalContext)
+  const { session, setGlobalContext, ...globalContext } = useContext(GlobalContext)
+  const { t, locale } = useI18n()
 
 
 
   useEffect(() => {
-    generateInsight(setInsight, 'hint')
-  }, [])
+    generateInsight(setInsight, 'hint', locale)
+  }, [locale])
 
   if (!session?.user) {
     return <AnalyticsViewSkeleton />
   }
 
   const userDays = session?.user?.entries && session?.user?.entries[year]?.days ? Object.values(session?.user?.entries[year]?.days) : [];
-  const plotData = userDays.reduce((acc, cur) => {
-    acc = [
-      ...acc,
-      {
-        date: cur.date,
-        moodAverage: cur.moodAverage?.toLocaleString(),
-        gratitude: cur.mood.gratitude?.toLocaleString(),
-        optimism: cur.mood.optimism?.toLocaleString(),
-        restedness: cur.mood.restedness?.toLocaleString(),
-        tolerance: cur.mood.tolerance?.toLocaleString(),
-        selfEsteem: cur.mood.selfEsteem?.toLocaleString(),
-        trust: cur.mood.trust?.toLocaleString(),
-        progress: cur.progress * 100 / 20,
-        earnings: cur.earnings?.toLocaleString()
-      }
-
-    ]
-    return acc
-  }, []);
+  const plotData = userDays
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()) // Sort by most recent first
+    .reduce((acc, cur) => {
+      acc = [
+        ...acc,
+        {
+          date: cur.date,
+          moodAverage: cur.moodAverage?.toLocaleString(),
+          gratitude: cur.mood.gratitude?.toLocaleString(),
+          optimism: cur.mood.optimism?.toLocaleString(),
+          restedness: cur.mood.restedness?.toLocaleString(),
+          tolerance: cur.mood.tolerance?.toLocaleString(),
+          selfEsteem: cur.mood.selfEsteem?.toLocaleString(),
+          trust: cur.mood.trust?.toLocaleString(),
+          progress: cur.progress * 100 / 20,
+          earnings: cur.earnings?.toLocaleString()
+        }
+      ]
+      return acc
+    }, []);
 
   return <div className="max-w-[1200px] w-full m-auto p-4 md:px-32 ">
       <p className="mt-0 mb-8">{insight?.yearAnalysis}</p>
-      <h2 className="mb-8 mt-16 text-center scroll-m-20 text-lg font-semibold tracking-tight">Your mood.</h2>
+      <h2 className="mb-8 mt-16 text-center scroll-m-20 text-lg font-semibold tracking-tight">{t('dashboard.yourMood')}</h2>
 
       <ChartContainer config={moodChartConfig}>
         <AreaChart data={plotData}>
@@ -131,7 +134,7 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
         </AreaChart>
       </ChartContainer>
 
-      <h2 className="mb-8 mt-16 text-center scroll-m-20 text-lg font-semibold tracking-tight">Your productivity.</h2>
+      <h2 className="mb-8 mt-16 text-center scroll-m-20 text-lg font-semibold tracking-tight">{t('dashboard.yourProductivity')}</h2>
 
       <ChartContainer config={productivityChartConfig}>
         <AreaChart data={plotData}>
@@ -147,7 +150,7 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
         </AreaChart>
       </ChartContainer>
 
-      <h2 className="mb-8 mt-16 text-center scroll-m-20 text-lg font-semibold tracking-tight">Your data.</h2>
+      <h2 className="mb-8 mt-16 text-center scroll-m-20 text-lg font-semibold tracking-tight">{t('dashboard.yourData')}</h2>
 
       <EarningsTable data={plotData} />
 

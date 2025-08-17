@@ -1,0 +1,92 @@
+{
+  "common": {
+    "day": "দিন",
+    "week": "সপ্তাহ",
+    "mood": "মেজাজ",
+    "availableBalance": "উপলব্ধ ব্যালেন্স",
+    "login": "লগইন",
+    "edit": "সম্পাদনা",
+    "close": "বন্ধ",
+    "save": "সংরক্ষণ",
+    "cancel": "বাতিল",
+    "delete": "মুছুন",
+    "loading": "লোড হচ্ছে...",
+    "error": "ত্রুটি",
+    "success": "সফল",
+    "welcome": "DreamPip-এ স্বাগতম!",
+    "signInToAccess": "আপনার ড্যাশবোর্ডে অ্যাক্সেস করতে এবং আপনার অগ্রগতি ট্র্যাক করতে সাইন ইন করুন।",
+    "dismiss": "বন্ধ করুন",
+    "selectLanguage": "ভাষা নির্বাচন করুন"
+  },
+  "navigation": {
+    "dashboard": "ড্যাশবোর্ড",
+    "profile": "প্রোফাইল",
+    "settings": "সেটিংস",
+    "logout": "লগআউট"
+  },
+  "dashboard": {
+    "title": "এক নজরে আপনার জীবন।",
+    "todayIs": "আজ {date}।",
+    "whatDidYouAccomplish": "আজ আপনি কী অর্জন করেছেন?",
+    "yourEarnings": "আপনার আয় {timeframe}, এখন পর্যন্ত: ${amount}",
+    "today": "আজ",
+    "thisWeek": "এই সপ্তাহ",
+    "yourMood": "আপনার মেজাজ।",
+    "yourProductivity": "আপনার উৎপাদনশীলতা।",
+    "yourData": "আপনার ডেটা।"
+  },
+  "mood": {
+    "title": "{date} এর জন্য আপনার মেজাজ রেকর্ড করুন",
+    "subtitle": "আজ আপনি কীভাবে অনুভব করছেন?",
+    "selfEsteem": "আত্মসম্মান",
+    "trust": "বিশ্বাস",
+    "editDay": "দিন সম্পাদনা করুন",
+    "closeDay": "দিন বন্ধ করুন"
+  },
+  "week": {
+    "weekNumber": "সপ্তাহ {number}",
+    "to": "থেকে",
+    "closeWeek": "সপ্তাহ বন্ধ করুন"
+  },
+  "tasks": {
+    "editing": "সম্পাদনা",
+    "weekNumber": "সপ্তাহ {number}",
+    "yourEarnings": "আপনার আয়"
+  },
+  "actions": {
+    "add": "যোগ করুন",
+    "remove": "সরান",
+    "update": "আপডেট করুন",
+    "refresh": "রিফ্রেশ করুন"
+  },
+  "footer": {
+    "copyright": "© {year} DreamPip. All rights reserved.",
+    "terms": "সেবার শর্তাবলী",
+    "privacy": "গোপনীয়তা নীতি"
+  },
+  "earningsTable": {
+    "day": "দিন",
+    "earnings": "আয়",
+    "moodAverage": "গড় মেজাজ",
+    "productivity": "উৎপাদনশীলতা",
+    "gratitude": "কৃতজ্ঞতা",
+    "optimism": "আশাবাদ",
+    "restedness": "বিশ্রাম",
+    "tolerance": "সহনশীলতা",
+    "selfEsteem": "আত্মসম্মান",
+    "trust": "বিশ্বাস",
+    "actions": "কর্ম",
+    "closeDay": "দিন বন্ধ করুন",
+    "editDay": "দিন সম্পাদনা করুন",
+    "deleteDay": "দিন মুছুন",
+    "columns": "কলাম",
+    "noResults": "কোন ফলাফল নেই।",
+    "rowsSelected": "{selected} এর {total} সারি নির্বাচিত।",
+    "previous": "পূর্ববর্তী",
+    "next": "পরবর্তী"
+  },
+  "errors": {
+    "notFound": "ওহ! এই ফ্রিকোয়েন্সিতে টিউন করা যায়নি।",
+    "genericError": "কিছু ভুল হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।"
+  }
+}

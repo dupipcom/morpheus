@@ -1,0 +1,92 @@
+{
+  "common": {
+    "day": "Hari",
+    "week": "Minggu",
+    "mood": "Mood",
+    "availableBalance": "Baki Tersedia",
+    "login": "Log Masuk",
+    "edit": "Sunting",
+    "close": "Tutup",
+    "save": "Simpan",
+    "cancel": "Batal",
+    "delete": "Padam",
+    "loading": "Memuat...",
+    "error": "Ralat",
+    "success": "Berjaya",
+    "welcome": "Selamat datang ke DreamPip!",
+    "signInToAccess": "Log masuk untuk mengakses papan pemuka anda dan menjejaki kemajuan anda.",
+    "dismiss": "Tutup",
+    "selectLanguage": "Pilih bahasa"
+  },
+  "navigation": {
+    "dashboard": "Papan Pemuka",
+    "profile": "Profil",
+    "settings": "Tetapan",
+    "logout": "Log Keluar"
+  },
+  "dashboard": {
+    "title": "Hidup anda dalam sekilas.",
+    "todayIs": "Hari ini adalah {date}.",
+    "whatDidYouAccomplish": "Apa yang anda capai hari ini?",
+    "yourEarnings": "Pendapatan anda {timeframe}, setakat ini: ${amount}",
+    "today": "hari ini",
+    "thisWeek": "minggu ini",
+    "yourMood": "Mood anda.",
+    "yourProductivity": "Produktiviti anda.",
+    "yourData": "Data anda."
+  },
+  "mood": {
+    "title": "Rekod mood anda untuk {date}",
+    "subtitle": "Bagaimana perasaan anda hari ini?",
+    "selfEsteem": "Harga Diri",
+    "trust": "Kepercayaan",
+    "editDay": "Sunting hari",
+    "closeDay": "Tutup hari"
+  },
+  "week": {
+    "weekNumber": "Minggu {number}",
+    "to": "hingga",
+    "closeWeek": "Tutup minggu"
+  },
+  "tasks": {
+    "editing": "Menyunting",
+    "weekNumber": "Minggu {number}",
+    "yourEarnings": "Pendapatan anda"
+  },
+  "actions": {
+    "add": "Tambah",
+    "remove": "Buang",
+    "update": "Kemas kini",
+    "refresh": "Muat semula"
+  },
+  "footer": {
+    "copyright": "© {year} DreamPip. Hak cipta terpelihara.",
+    "terms": "Terma Perkhidmatan",
+    "privacy": "Dasar Privasi"
+  },
+  "earningsTable": {
+    "day": "Hari",
+    "earnings": "Pendapatan",
+    "moodAverage": "Purata Mood",
+    "productivity": "Produktiviti",
+    "gratitude": "Kesyukuran",
+    "optimism": "Optimisme",
+    "restedness": "Kerehatan",
+    "tolerance": "Toleransi",
+    "selfEsteem": "Harga Diri",
+    "trust": "Kepercayaan",
+    "actions": "Tindakan",
+    "closeDay": "Tutup hari",
+    "editDay": "Sunting hari",
+    "deleteDay": "Padam hari",
+    "columns": "Lajur",
+    "noResults": "Tiada hasil.",
+    "rowsSelected": "{selected} daripada {total} baris dipilih.",
+    "previous": "Sebelumnya",
+    "next": "Seterusnya"
+  },
+  "errors": {
+    "notFound": "Ops! Tidak dapat menala ke frekuensi ini.",
+    "genericError": "Sesuatu yang salah berlaku. Sila cuba lagi."
+  }
+}

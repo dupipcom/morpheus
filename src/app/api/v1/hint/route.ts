@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { currentUser, auth } from '@clerk/nextjs/server'
 import openai from '@/lib/openai';
 import fs from "fs";
@@ -50,8 +50,12 @@ interface GenerateRequest {
 export const revalidate = 86400;
 export const maxDuration = 30;
 
-export async function GET(req: NextApiRequest, res: NextApiResponse) {
+export async function GET(req: NextRequest) {
   const { userId } = await auth()
+  
+  // Extract locale from request headers or query parameters
+  const url = new URL(req.url)
+  const locale = url.searchParams.get('locale') || 'en'
 
   // if (!data.prompt) {
   //   return Response.json({ error: "Prompt is required" }, { status: 400 });
@@ -109,6 +113,8 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
           You reference the file search vector store pdfs to provide improvement suggestions to the user routine.
 
           You analyse how indicators like gratitude, optimism, restedness, tolerance and trust progress over time, finding correlations with weekly and daily task completions.
+
+          Please generate the insights in this locale: ${locale}
 
           This is the user historical data set:
 

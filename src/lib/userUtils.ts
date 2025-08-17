@@ -127,12 +127,15 @@ export const updateUser = async (
  * Generates insights by fetching from the hint API
  * @param setInsight - Function to set the insight state
  * @param cacheTag - Optional cache tag for the request (defaults to 'test')
+ * @param locale - Optional locale for the insights (defaults to 'en')
  */
 export const generateInsight = async (
   setInsight: (insight: any) => void,
-  cacheTag: string = 'test'
+  cacheTag: string = 'test',
+  locale: string = 'en'
 ) => {
-  const response = await fetch('/api/v1/hint', { method: 'GET' }, {
+  const response = await fetch(`/api/v1/hint?locale=${locale}`, {
+    method: 'GET',
     cache: 'force-cache',
     next: {
       revalidate: 86400,

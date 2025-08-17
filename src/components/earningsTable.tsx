@@ -35,6 +35,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { useI18n } from "@/lib/contexts/i18n"
 
 
 export type Payment = {
@@ -50,7 +51,7 @@ export type Payment = {
   date: string
 }
 
-export const columns: ColumnDef<Payment>[] = [
+const createColumns = (t: (key: string) => string): ColumnDef<Payment>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -82,7 +83,7 @@ export const columns: ColumnDef<Payment>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Day
+          {t('earningsTable.day')}
           <ArrowUpDown />
         </Button>
       )
@@ -91,7 +92,7 @@ export const columns: ColumnDef<Payment>[] = [
   },
   {
     accessorKey: "earnings",
-    header: () => <div className="text-right">Earnings</div>,
+    header: () => <div className="text-right">{t('earningsTable.earnings')}</div>,
     cell: ({ row }) => {
       const earnings = parseFloat(row.getValue("earnings"))
 
@@ -106,7 +107,7 @@ export const columns: ColumnDef<Payment>[] = [
   },
   {
     accessorKey: "moodAverage",
-    header: () => <div className="text-right">Mood Average</div>,
+    header: () => <div className="text-right">{t('earningsTable.moodAverage')}</div>,
     cell: ({ row }) => {
       const moodAverage = parseFloat(row.getValue("moodAverage"))
 
@@ -115,7 +116,7 @@ export const columns: ColumnDef<Payment>[] = [
   },
   {
     accessorKey: "progress",
-    header: () => <div className="text-right">Productivity</div>,
+    header: () => <div className="text-right">{t('earningsTable.productivity')}</div>,
     cell: ({ row }) => {
       const progress = parseFloat(row.getValue("progress"))
 
@@ -124,16 +125,16 @@ export const columns: ColumnDef<Payment>[] = [
   },
   {
     accessorKey: "gratitude",
-    header: () => <div className="text-right">Gratitude</div>,
+    header: () => <div className="text-right">{t('earningsTable.gratitude')}</div>,
     cell: ({ row }) => {
       const gratitude = parseFloat(row.getValue("gratitude"))
 
       return <div className="text-right font-medium">{gratitude}</div>
     },
   },
-      {
+  {
     accessorKey: "optimism",
-    header: () => <div className="text-right">Optimism</div>,
+    header: () => <div className="text-right">{t('earningsTable.optimism')}</div>,
     cell: ({ row }) => {
       const optimism = parseFloat(row.getValue("optimism"))
 
@@ -142,7 +143,7 @@ export const columns: ColumnDef<Payment>[] = [
   },
   {
     accessorKey: "restedness",
-    header: () => <div className="text-right">Restedness</div>,
+    header: () => <div className="text-right">{t('earningsTable.restedness')}</div>,
     cell: ({ row }) => {
       const restedness = parseFloat(row.getValue("restedness"))
 
@@ -151,7 +152,7 @@ export const columns: ColumnDef<Payment>[] = [
   },
   {
     accessorKey: "tolerance",
-    header: () => <div className="text-right">Tolerance</div>,
+    header: () => <div className="text-right">{t('earningsTable.tolerance')}</div>,
     cell: ({ row }) => {
       const tolerance = parseFloat(row.getValue("tolerance"))
 
@@ -160,23 +161,22 @@ export const columns: ColumnDef<Payment>[] = [
   },
   {
     accessorKey: "selfEsteem",
-    header: () => <div className="text-right">Self Esteem</div>,
+    header: () => <div className="text-right">{t('earningsTable.selfEsteem')}</div>,
     cell: ({ row }) => {
       const selfEsteem = parseFloat(row.getValue("selfEsteem"))
 
       return <div className="text-right font-medium">{selfEsteem}</div>
     },
   },
-    {
+  {
     accessorKey: "trust",
-    header: () => <div className="text-right">Trust</div>,
+    header: () => <div className="text-right">{t('earningsTable.trust')}</div>,
     cell: ({ row }) => {
       const trust = parseFloat(row.getValue("trust"))
 
       return <div className="text-right font-medium">{trust}</div>
     },
   },
-
   {
     id: "actions",
     enableHiding: false,
@@ -192,15 +192,15 @@ export const columns: ColumnDef<Payment>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuLabel>{t('earningsTable.actions')}</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
+              onClick={() => navigator.clipboard.writeText(payment.date)}
             >
-              Close day
+              {t('earningsTable.closeDay')}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Edit day</DropdownMenuItem>
-            <DropdownMenuItem className="text-[red]">Delete day</DropdownMenuItem>
+            <DropdownMenuItem>{t('earningsTable.editDay')}</DropdownMenuItem>
+            <DropdownMenuItem className="text-[red]">{t('earningsTable.deleteDay')}</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
@@ -209,7 +209,15 @@ export const columns: ColumnDef<Payment>[] = [
 ]
 
 export function EarningsTable({ data = [] }) {
-  const [sorting, setSorting] = React.useState<SortingState>([])
+  const { t } = useI18n()
+  const columns = createColumns(t)
+  
+  const [sorting, setSorting] = React.useState<SortingState>([
+    {
+      id: "date",
+      desc: true, // Sort by most recent first
+    },
+  ])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   )
@@ -242,7 +250,7 @@ export function EarningsTable({ data = [] }) {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
-              Columns <ChevronDown />
+              {t('earningsTable.columns')} <ChevronDown />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -309,7 +317,7 @@ export function EarningsTable({ data = [] }) {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  {t('earningsTable.noResults')}
                 </TableCell>
               </TableRow>
             )}
@@ -318,8 +326,10 @@ export function EarningsTable({ data = [] }) {
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="text-muted-foreground flex-1 text-sm">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
+          {t('earningsTable.rowsSelected', { 
+            selected: table.getFilteredSelectedRowModel().rows.length,
+            total: table.getFilteredRowModel().rows.length 
+          })}
         </div>
         <div className="space-x-2">
           <Button
@@ -329,7 +339,7 @@ export function EarningsTable({ data = [] }) {
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            Previous
+            {t('earningsTable.previous')}
           </Button>
           <Button
             className="!bg-[#563769] text-[#f1cfff]"
@@ -338,7 +348,7 @@ export function EarningsTable({ data = [] }) {
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            Next
+            {t('earningsTable.next')}
           </Button>
         </div>
       </div>

@@ -17,11 +17,13 @@ import {
 } from "@/components/ui/carousel"
 
 import { GlobalContext } from "@/lib/contexts"
+import { useI18n } from "@/lib/contexts/i18n"
 import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil, isUserDataReady, useEnhancedLoadingState } from "@/lib/userUtils"
 import { TaskViewSkeleton } from "@/components/ui/skeleton-loader"
 
 export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const { session, setGlobalContext, theme } = useContext(GlobalContext)
+  const { t, locale } = useI18n()
   const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const today = new Date()
   const todayDate = today.toLocaleString('en-uk', { timeZone: userTimezone }).split(',')[0].split('/').reverse().join('-')
@@ -120,8 +122,8 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
 
   useEffect(() => {
     updateUser(session, setGlobalContext, { session, theme })
-    generateInsight(setInsight)
-  }, [])
+    generateInsight(setInsight, 'test', locale)
+  }, [locale])
 
   // Use enhanced loading state to prevent flashing
   const isDataLoading = useEnhancedLoadingState(isLoading, session, 100, timeframe)
@@ -132,18 +134,18 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
 
   if (!session?.user) {
     return <div className="my-16 w-full flex align-center justify-center">
-      <Button className="m-auto"><a  href="/app/dashboard">Login</a></Button>
+      <Button className="m-auto"><a  href="/app/dashboard">{t('common.login')}</a></Button>
     </div>
   }
 
   return <div className="max-w-[1200px] m-auto p-4">
-      <p className="sticky top-25 truncate z-[999] text-center scroll-m-20 text-sm font-semibold tracking-tight mb-8">Editing: {timeframe === "day" ? date : `Week ${weekNumber}`}</p>
+      <p className="sticky top-25 truncate z-[999] text-center scroll-m-20 text-sm font-semibold tracking-tight mb-8">{t('tasks.editing', { timeframe: timeframe === "day" ? date : t('tasks.weekNumber', { number: weekNumber }) })}</p>
   <ToggleGroup value={values} onValueChange={handleDone} variant="outline" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 align-center justify-center w-full m-auto" type="multiple" orientation="horizontal">
    { castActions?.map((action) => {
       return <ToggleGroupItem key={`task__item--${action.name}`} className="leading-7 m-1 text-sm min-h-[40px] truncate" value={action.name}>{action.times > 1 ? `${action.count}/${action.times} ` : ''}{action.name}</ToggleGroupItem>
     }) }
   </ToggleGroup>
-               <p className="m-8 text-center">Your earnings {timeframe === "day" ? "today" : "this week"}, so far: ${earnings?.toLocaleString()}</p>
+               <p className="m-8 text-center">{t('tasks.yourEarnings', { timeframe: timeframe === "day" ? t('dashboard.today') : t('dashboard.thisWeek'), amount: earnings?.toLocaleString() })}</p>
           {( timeframe === "day" && openDays?.length) || (timeframe === "week" && openWeeks?.length) ? <Carousel className="max-w-[196px] m-auto">
             <CarouselContent className="text-center w-[192px]">
               {
@@ -151,15 +153,15 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                   return <CarouselItem key={`task__carousel--${day.date}--${index}`} className="flex flex-col">
                     <small>${day.earnings?.toLocaleString()}</small>
                     <label className="mb-4">{day.date}</label>
-                    <Button className="dark:bg-foreground text-md p-5 mb-2" onClick={() => handleEditDay(new Date(day.date))}>Edit day</Button>
-                    <Button variant="outline" className="text-md p-5" onClick={() => handleCloseDates([day.date])} >Close day</Button>
+                    <Button className="dark:bg-foreground text-md p-5 mb-2" onClick={() => handleEditDay(new Date(day.date))}>{t('common.edit')} {t('common.day').toLowerCase()}</Button>
+                    <Button variant="outline" className="text-md p-5" onClick={() => handleCloseDates([day.date])} >{t('common.close')} {t('common.day').toLowerCase()}</Button>
                   </CarouselItem>
                 }) : openWeeks?.map((week, index) => {
                   return <CarouselItem key={`task__carousel--${week.week}--${index}`} className="flex flex-col">
                     <small>${week.earnings?.toLocaleString()}</small>
-                    <label className="mb-4">Week {week.week}</label>
-                    <Button onClick={() => handleEditWeek(week.week)} className="text-md p-5 mb-2 dark:bg-foreground">Edit week</Button>
-                    <Button variant="outline" className="text-md p-5" onClick={() => handleCloseDates([{ week: week.week, year: week.year }])}>Close week</Button>
+                    <label className="mb-4">{t('week.weekNumber', { number: week.week })}</label>
+                    <Button onClick={() => handleEditWeek(week.week)} className="text-md p-5 mb-2 dark:bg-foreground">{t('common.edit')} {t('common.week').toLowerCase()}</Button>
+                    <Button variant="outline" className="text-md p-5" onClick={() => handleCloseDates([{ week: week.week, year: week.year }])}>{t('common.close')} {t('common.week').toLowerCase()}</Button>
                   </CarouselItem>
                 })
               }

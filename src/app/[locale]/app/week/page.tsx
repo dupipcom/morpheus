@@ -1,11 +1,12 @@
 'use client'
+
 import React, { useRef, useState, useEffect, useContext } from 'react'
 import ReactDOMServer from 'react-dom/server';
 import { useAuth } from '@clerk/nextjs';
 
 import Link from 'next/link'
 
-import { GlobalContext } from "../../contexts"
+import { GlobalContext } from "@/lib/contexts"
 
 import { TaskView } from "@/views/taskView"
 import { ViewMenu } from "@/components/viewMenu"
@@ -23,7 +24,7 @@ import { getWeekNumber } from "@/app/helpers"
 import { WEEKLY_ACTIONS, WEEKS } from "@/app/constants"
 import { setLoginTime, getLoginTime } from '@/lib/cookieManager'
 
-export default function Template({ title, content, isomorphicContent }: any) {
+export default function LocalizedWeek({ params }: { params: { locale: string } }) {
   const [globalContext, setGlobalContext] = useState({
     theme: 'light'
   })
@@ -47,36 +48,23 @@ export default function Template({ title, content, isomorphicContent }: any) {
   const year = Number(date.split('-')[0])
   const weekNumber = getWeekNumber(fullDate)[1]
 
+  const Weeks = () => 
+      Object.values(WEEKS).map((week) => {
+        return <div className="flex flex-col text-center m-2">
+          <small>${week.earnings}</small>
+          <label>{t('week.weekNumber', { number: week.week })}</label>
+          <small>{week.startDay} {t('week.to')} {week.endDay}</small>
+          <Button>{t('week.closeWeek')}</Button>
+        </div>
+  })
 
-  const handleThemeChange = () => {
-    if (globalContext.theme === 'light') {
-      setGlobalContext({...globalContext, theme: 'dark'})
-    } else {
-      setGlobalContext({...globalContext, theme: 'light'})
-    }
-  }
-
-    const Weeks = () => 
-        Object.values(WEEKS).map((week) => {
-          return <div className="flex flex-col text-center m-2">
-            <small>${week.earnings}</small>
-            <label>{t('week.weekNumber', { number: week.week })}</label>
-            <small>{week.startDay} {t('week.to')} {week.endDay}</small>
-            <Button>{t('week.closeWeek')}</Button>
-          </div>
-    })
-
-    return (
-      <main className="min-h-[100vh]">
-
-        <ViewMenu active="week" />
-        <h1 className="scroll-m-20 text-2xl font-semibold tracking-tight text-center mb-8">This is {getWeekNumber(new Date())}.</h1>
-        
-        
-        <p className="text-center scroll-m-20 text-lg font-semibold tracking-tight mb-8">What did you accomplish so far?</p>
+  return (
+    <main className="min-h-[100vh]">
+      <ViewMenu active="week" />
+      <h1 className="scroll-m-20 text-2xl font-semibold tracking-tight text-center mb-8">{t('week.weekNumber', { number: weekNumber })}</h1>
+      <p className="text-center scroll-m-20 text-lg font-semibold tracking-tight mb-8">What did you accomplish this week?</p>
 
       <TaskView timeframe="week" actions={WEEKLY_ACTIONS} />
-    
-      </main>
-    )
-}
+    </main>
+  )
+} 

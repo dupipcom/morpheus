@@ -1,0 +1,92 @@
+{
+  "common": {
+    "day": "اليوم",
+    "week": "الأسبوع",
+    "mood": "المزاج",
+    "availableBalance": "الرصيد المتاح",
+    "login": "تسجيل الدخول",
+    "edit": "تعديل",
+    "close": "إغلاق",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "loading": "جاري التحميل...",
+    "error": "خطأ",
+    "success": "نجح",
+    "welcome": "مرحباً بك في DreamPip!",
+    "signInToAccess": "سجل الدخول للوصول إلى لوحة التحكم وتتبع تقدمك.",
+    "dismiss": "إغلاق",
+    "selectLanguage": "اختر اللغة"
+  },
+  "navigation": {
+    "dashboard": "لوحة التحكم",
+    "profile": "الملف الشخصي",
+    "settings": "الإعدادات",
+    "logout": "تسجيل الخروج"
+  },
+  "dashboard": {
+    "title": "حياتك في لمحة.",
+    "todayIs": "اليوم هو {date}.",
+    "whatDidYouAccomplish": "ماذا أنجزت اليوم؟",
+    "yourEarnings": "أرباحك {timeframe}، حتى الآن: ${amount}",
+    "today": "اليوم",
+    "thisWeek": "هذا الأسبوع",
+    "yourMood": "مزاجك.",
+    "yourProductivity": "إنتاجيتك.",
+    "yourData": "بياناتك."
+  },
+  "mood": {
+    "title": "سجل مزاجك لـ {date}",
+    "subtitle": "كيف تشعر اليوم؟",
+    "selfEsteem": "تقدير الذات",
+    "trust": "الثقة",
+    "editDay": "تعديل اليوم",
+    "closeDay": "إغلاق اليوم"
+  },
+  "week": {
+    "weekNumber": "الأسبوع {number}",
+    "to": "إلى",
+    "closeWeek": "إغلاق الأسبوع"
+  },
+  "tasks": {
+    "editing": "تعديل",
+    "weekNumber": "الأسبوع {number}",
+    "yourEarnings": "أرباحك"
+  },
+  "actions": {
+    "add": "إضافة",
+    "remove": "إزالة",
+    "update": "تحديث",
+    "refresh": "تحديث"
+  },
+  "footer": {
+    "copyright": "© {year} DreamPip. All rights reserved.",
+    "terms": "الشروط والأحكام",
+    "privacy": "سياسة الخصوصية"
+  },
+  "earningsTable": {
+    "day": "اليوم",
+    "earnings": "الأرباح",
+    "moodAverage": "متوسط المزاج",
+    "productivity": "الإنتاجية",
+    "gratitude": "الامتنان",
+    "optimism": "التفاؤل",
+    "restedness": "الراحة",
+    "tolerance": "التسامح",
+    "selfEsteem": "تقدير الذات",
+    "trust": "الثقة",
+    "actions": "الإجراءات",
+    "closeDay": "إغلاق اليوم",
+    "editDay": "تعديل اليوم",
+    "deleteDay": "حذف اليوم",
+    "columns": "الأعمدة",
+    "noResults": "لا توجد نتائج.",
+    "rowsSelected": "{selected} من {total} صف(وف) محدد(ة).",
+    "previous": "السابق",
+    "next": "التالي"
+  },
+  "errors": {
+    "notFound": "عذراً! لا يمكن ضبط هذه التردد.",
+    "genericError": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+  }
+}
