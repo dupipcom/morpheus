@@ -26,19 +26,19 @@ import { useLocalStorage } from 'usehooks-ts';
 
 export const ViewMenu = ({ active }) =>{
   
-  const { session, setGlobalContext, ...globalContext } = useContext(GlobalContext)
+  const { session, setGlobalContext, theme } = useContext(GlobalContext)
   const serverBalance = session?.user?.availableBalance
   const [value, setValue, removeValue] = useLocalStorage('redacted', 0);
   const [hiddenBalance, setHiddenBalance] = useState(true)
 
-  const { data, mutate, error, isLoading } = useSWR(`/api/user`, () => updateUser(session, setGlobalContext, globalContext))
+  const { data, mutate, error, isLoading } = useSWR(`/api/user`, () => updateUser(session, setGlobalContext, { session, theme }))
 
   const handleBalanceChange = (e) => {
     fetch('/api/v1/user', { method: 'POST', body: JSON.stringify({
       availableBalance: e.currentTarget.value,
       date: new Date()
     }) })
-    setTimeout(() => updateUser(session, setGlobalContext, globalContext), 2000)
+    setTimeout(() => updateUser(session, setGlobalContext, { session, theme }), 2000)
   }
 
   const handleHideBalance = () => {
@@ -47,7 +47,7 @@ export const ViewMenu = ({ active }) =>{
   }
 
   useEffect(() => {
-    updateUser(session, setGlobalContext, globalContext)
+    updateUser(session, setGlobalContext, { session, theme })
   }, [])
 
   if (isLoading) {

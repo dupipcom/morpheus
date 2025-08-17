@@ -64,7 +64,7 @@ export const SettingsView = ({ timeframe = "day" }) => {
   const dailyEntry = useRef({ times: 1, status: "Open", cadence: "daily" })
   const weeklyEntry = useRef({ times: 1, status: "Open", cadence: "weekly" })
   
-  const { session, setGlobalContext, ...globalContext } = useContext(GlobalContext)
+  const { session, setGlobalContext, theme } = useContext(GlobalContext)
 
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
@@ -77,7 +77,7 @@ export const SettingsView = ({ timeframe = "day" }) => {
 
   const serverSettings = (session?.user?.settings) || {}
 
-  const { data, mutate, error, isLoading } = useSWR(`/api/user`, () => updateUser(session, setGlobalContext, globalContext))
+  const { data, mutate, error, isLoading } = useSWR(`/api/user`, () => updateUser(session, setGlobalContext, { session, theme }))
 
 
 

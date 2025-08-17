@@ -21,7 +21,7 @@ import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil }
 import { TaskViewSkeleton } from "@/components/ui/skeleton-loader"
 
 export const TaskView = ({ timeframe = "day", actions = [] }) => {
-  const { session, setGlobalContext, ...globalContext } = useContext(GlobalContext)
+  const { session, setGlobalContext, theme } = useContext(GlobalContext)
   const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const today = new Date()
   const todayDate = today.toLocaleString('en-uk', { timeZone: userTimezone }).split(',')[0].split('/').reverse().join('-')
@@ -89,12 +89,12 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       date: fullDay,
       week: weekNumber
     }) })
-    await updateUser(session, setGlobalContext, globalContext)
+    await updateUser(session, setGlobalContext, { session, theme })
   }
 
   const handleCloseDates = async (values) => {
     await handleCloseDatesUtil(values, timeframe)
-    await updateUser(session, setGlobalContext, globalContext)
+    await updateUser(session, setGlobalContext, { session, theme })
   }
 
   const handleEditDay = (date) => {
@@ -105,7 +105,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     setWeekNumber(date)
   }
 
-  const { data, mutate, error, isLoading } = useSWR(`/api/user`, () => updateUser(session, setGlobalContext, globalContext))
+  const { data, mutate, error, isLoading } = useSWR(`/api/user`, () => updateUser(session, setGlobalContext, { session, theme }))
 
   useEffect(() => {
     setValues(userDone)
@@ -114,7 +114,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
 
 
   useEffect(() => {
-    updateUser(session, setGlobalContext, globalContext)
+    updateUser(session, setGlobalContext, { session, theme })
     generateInsight(setInsight)
   }, [])
 

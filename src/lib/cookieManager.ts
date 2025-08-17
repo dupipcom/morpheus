@@ -208,7 +208,6 @@ export const setLoginTime = (): void => {
     const timestamp = Date.now().toString();
     localStorage.setItem(LOGIN_TIME_KEY, timestamp);
     updateLastActivity(); // Also update last activity on login
-    console.log('Login time set:', timestamp, 'for key:', LOGIN_TIME_KEY);
   } catch (error) {
     console.error('Error setting login time:', error);
   }

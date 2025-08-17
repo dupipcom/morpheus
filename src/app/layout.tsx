@@ -41,7 +41,7 @@ export default function RootLayout({
   const [isLoading, setIsLoading] = useState(true);
   const [value, setValue, removeValue] = useLocalStorage('theme', 'light');
   const [globalContext, setGlobalContext] = useState({ theme: value, session: { user: {} } })
-  const signedIn = !!globalContext?.session?.user?.settings
+  const signedIn = !!(globalContext?.session?.user as any)?.settings
 
   const handleThemeChange = () => {
     if (globalContext.theme === 'light') {
@@ -85,7 +85,7 @@ export default function RootLayout({
         baseTheme: shadcn,
         }}>
           <AuthWrapper isLoading={isLoading}>
-            <GlobalContext.Provider value={globalContext}>
+            <GlobalContext.Provider value={{ ...globalContext, setGlobalContext }}>
               <Nav subHeader="" onThemeChange={handleThemeChange} />
               <article className="p-2 md:p-8">
                 {!isLoading ? undefined : <Skeleton className="bg-muted h-[75vh] w-full z-[999]" />}
