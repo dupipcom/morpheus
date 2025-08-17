@@ -52,6 +52,7 @@ import {
 import { WEEKLY_ACTIONS, DAILY_ACTIONS } from "@/app/constants"
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
 import { GlobalContext } from "@/lib/contexts"
+import { updateUser, handleSettingsSubmit } from "@/lib/userUtils"
 
 export const SettingsView = ({ timeframe = "day" }) => {
   const fullDate = new Date()
@@ -74,44 +75,29 @@ export const SettingsView = ({ timeframe = "day" }) => {
 
   const serverSettings = (session?.user?.settings) || {}
 
-  const updateUser = async () => {
-    const response = await fetch('/api/v1/user', { method: 'GET' })
-    const updatedUser = await response.json()
-    setGlobalContext({...globalContext, session: { ...session, user: updatedUser } })
-  }
-
-  const { data, mutate, error, isLoading } = useSWR(`/api/user`, updateUser)
+  const { data, mutate, error, isLoading } = useSWR(`/api/user`, () => updateUser(session, setGlobalContext, globalContext))
 
 
-  const handleSubmit = async (value, field) => {
-    const response = await fetch('/api/v1/user', 
-      { method: 'POST', 
-        body: JSON.stringify({
-          settings: {
-            [field]: value,
-          }
-      }) 
-    })
-  }
+
 
   const handleDailyAdd = async () => {
     const payload = [...session?.user?.settings?.dailyTemplate, dailyEntry.current]
-    await handleSubmit(payload , "dailyTemplate")
+    await handleSettingsSubmit(payload, "dailyTemplate")
     mutate('/api/v1/user')
   }
 
   const handleWeeklyAdd = async () => {
-    await handleSubmit([...session?.user?.settings?.weeklyTemplate, weeklyEntry.current], "weeklyTemplate")
+    await handleSettingsSubmit([...session?.user?.settings?.weeklyTemplate, weeklyEntry.current], "weeklyTemplate")
     mutate('/api/v1/user')
   }
 
   const handleDailyDelete = async (e) => {
-    await handleSubmit(session?.user?.settings?.dailyTemplate.filter((task) => task.name !== e), "dailyTemplate")
+    await handleSettingsSubmit(session?.user?.settings?.dailyTemplate.filter((task) => task.name !== e), "dailyTemplate")
     mutate('/api/v1/user')
   }
 
   const handleWeeklyDelete = async (e) => {
-    await handleSubmit(session?.user?.settings?.weeklyTemplate.filter((task) => task.name !== e), "weeklyTemplate")
+    await handleSettingsSubmit(session?.user?.settings?.weeklyTemplate.filter((task) => task.name !== e), "weeklyTemplate")
     mutate('/api/v1/user')
   }
 
@@ -510,12 +496,12 @@ export const SettingsView = ({ timeframe = "day" }) => {
           </TableBody>
         </Table>
       <h3 className="mt-8">Month’s Recurring Income</h3>
-      <Input defaultValue={serverSettings.monthsFixedIncome} onBlur={(e) => handleSubmit(e.currentTarget.value, "monthsFixedIncome")} />
+      <Input defaultValue={serverSettings.monthsFixedIncome} onBlur={(e) => handleSettingsSubmit(e.currentTarget.value, "monthsFixedIncome")} />
       <h3 className="mt-8">Month’s Variable Income</h3>
-      <Input defaultValue={serverSettings.monthsVariableIncome} onBlur={(e) => handleSubmit(e.currentTarget.value, "monthsVariableIncome")}/>
+      <Input defaultValue={serverSettings.monthsVariableIncome} onBlur={(e) => handleSettingsSubmit(e.currentTarget.value, "monthsVariableIncome")}/>
       <h3 className="mt-8">Fixed Need Costs</h3>
-      <Input defaultValue={serverSettings.monthsNeedFixedExpenses} onBlur={(e) => handleSubmit(e.currentTarget.value, "monthsNeedFixedExpenses")}/>
+      <Input defaultValue={serverSettings.monthsNeedFixedExpenses} onBlur={(e) => handleSettingsSubmit(e.currentTarget.value, "monthsNeedFixedExpenses")}/>
       <h3 className="mt-8">Expected Need Utilities Average</h3>
-      <Input defaultValue={serverSettings.monthsNeedVariableExpenses} onBlur={(e) => handleSubmit(e.currentTarget.value, "monthsNeedVariableExpenses")}/>
+      <Input defaultValue={serverSettings.monthsNeedVariableExpenses} onBlur={(e) => handleSettingsSubmit(e.currentTarget.value, "monthsNeedVariableExpenses")}/>
     </div>
 }

@@ -15,6 +15,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 import useSWR from "swr"
 import { fetcher } from "@/lib/utils"
+import { updateUser } from "@/lib/userUtils"
 
 import { GlobalContext } from "@/lib/contexts"
 
@@ -29,24 +30,14 @@ export const ViewMenu = ({ active }) =>{
   const [value, setValue, removeValue] = useLocalStorage('redacted', 0);
   const [hiddenBalance, setHiddenBalance] = useState(true)
 
-  const updateUser = async () => {
-    try {
-      const response = await fetch('/api/v1/user', { method: 'GET' })
-      const updatedUser = await response.json()
-      setGlobalContext({...globalContext, session: { ...session, user: updatedUser } })
-    } catch (e) {
-      console.error(e)
-    }
-  }
-
-  const { data, mutate, error, isLoading } = useSWR(`/api/user`, updateUser)
+  const { data, mutate, error, isLoading } = useSWR(`/api/user`, () => updateUser(session, setGlobalContext, globalContext))
 
   const handleBalanceChange = (e) => {
     fetch('/api/v1/user', { method: 'POST', body: JSON.stringify({
       availableBalance: e.currentTarget.value,
       date: new Date()
     }) })
-    setTimeout(() => updateUser(), 2000)
+    setTimeout(() => updateUser(session, setGlobalContext, globalContext), 2000)
   }
 
   const handleHideBalance = () => {
@@ -55,7 +46,7 @@ export const ViewMenu = ({ active }) =>{
   }
 
   useEffect(() => {
-    updateUser()
+    updateUser(session, setGlobalContext, globalContext)
   }, [])
 
   return <NavigationMenu className="flex flex-col center text-center w-full m-auto">

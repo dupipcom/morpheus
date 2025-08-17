@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/carousel"
 
 import { GlobalContext } from "@/lib/contexts"
+import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil } from "@/lib/userUtils"
 
 export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const { session, setGlobalContext, ...globalContext } = useContext(GlobalContext)
@@ -87,15 +88,12 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       date: fullDay,
       week: weekNumber
     }) })
-    await updateUser()
+    await updateUser(session, setGlobalContext, globalContext)
   }
 
   const handleCloseDates = async (values) => {
-    const response = await fetch('/api/v1/user', { method: 'POST', body: JSON.stringify({
-      daysToClose: timeframe === 'day' ? values : undefined,
-      weeksToClose: timeframe === 'week' ? values : undefined
-    }) })
-    await updateUser()
+    await handleCloseDatesUtil(values, timeframe)
+    await updateUser(session, setGlobalContext, globalContext)
   }
 
   const handleEditDay = (date) => {
@@ -106,41 +104,17 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     setWeekNumber(date)
   }
 
-  const updateUser = async () => {
-    try {
-      const response = await fetch('/api/v1/user', { method: 'GET' })
-      const updatedUser = await response.json()
-      setGlobalContext({...globalContext, session: { ...session, user: updatedUser } })
-    } catch (e) {
-      console.error(e)
-    }
-  }
-
-  const { data, mutate, error, isLoading } = useSWR(`/api/user`, updateUser)
+  const { data, mutate, error, isLoading } = useSWR(`/api/user`, () => updateUser(session, setGlobalContext, globalContext))
 
   useEffect(() => {
     setValues(userDone)
   }, [userDone])
 
-  const generateInsight = async (value, field) => {
-    const response = await fetch('/api/v1/hint', { method: 'GET' }, {
-  cache: 'force-cache',
-  next: {
-    revalidate: 86400,
-    tags: ['test'],
-  },
-})
-    const json = await response.json()
-    try {
-      setInsight(JSON.parse(json.result))
-    } catch (e) {
-      setInsight(JSON.parse(JSON.stringify(json.result)))
-    }
-  }
+
 
   useEffect(() => {
-    updateUser()
-    generateInsight()
+    updateUser(session, setGlobalContext, globalContext)
+    generateInsight(setInsight)
   }, [])
 
   if (!session?.user) {
