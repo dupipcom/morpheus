@@ -67,6 +67,23 @@
     "weekNumber": "Week {number}",
     "yourEarnings": "Your earnings {timeframe}, so far: ${amount}"
   },
+  "settings": {
+    "title": "Settings",
+    "dailyActions": "Your daily actions:",
+    "weeklyActions": "Your weekly actions:",
+    "actionName": "Type action name...",
+    "numberOfTimes": "# of times",
+    "area": "Area",
+    "category": "Category",
+    "add": "Add",
+    "deleteAction": "Delete action",
+    "deleteSelected": "Delete Selected ({count})",
+    "noResults": "No results.",
+    "monthsFixedIncome": "Month's Recurring Income",
+    "monthsVariableIncome": "Month's Variable Income",
+    "fixedNeedCosts": "Fixed Need Costs",
+    "expectedNeedUtilities": "Expected Need Utilities Average"
+  },
   "actions": {
     "daily": {
       "drankWater": "Drank Water",

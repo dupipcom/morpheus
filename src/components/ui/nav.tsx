@@ -510,16 +510,6 @@ export const Logo: TComponent = function ({
             labelIcon={<SlidersVertical className="w-[14px] pb-2" />}
             href="/app/settings"
           />
-          <UserButton.Link
-            label={t('common.manageAccount')}
-            labelIcon={<User className="w-[14px] pb-2" />}
-            href="/user"
-          />
-          <UserButton.Link
-            label={t('common.signOut')}
-            labelIcon={<LogOut className="w-[14px] pb-2" />}
-            href="/sign-out"
-          />
 				        </UserButton.MenuItems>
 				      </UserButton>
             </SignedIn>

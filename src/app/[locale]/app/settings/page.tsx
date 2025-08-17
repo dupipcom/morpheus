@@ -7,14 +7,14 @@ import { useAuth } from '@clerk/nextjs';
 
 import Link from 'next/link'
 
-import { GlobalContext } from "../../contexts"
-import { AnalyticsView } from "@/views/analyticsView"
+import { GlobalContext } from "@/lib/contexts"
+import { SettingsView } from "@/views/settingsView"
 import { ViewMenu } from "@/components/viewMenu"
 import { setLoginTime, getLoginTime } from '@/lib/cookieManager'
 import { useI18n } from "@/lib/contexts/i18n"
+import { ContentLoadingWrapper } from "@/components/ContentLoadingWrapper"
 
-
-export default function Template({ title, content, isomorphicContent }: any) {
+export default function LocalizedSettings({ params }: { params: Promise<{ locale: string }> }) {
   const [globalContext, setGlobalContext] = useState({
     theme: 'light'
   })
@@ -41,13 +41,15 @@ export default function Template({ title, content, isomorphicContent }: any) {
     }
   }
 
-    return (
-      <main className="">
-      <ViewMenu active="dashboard" />
+  return (
+    <main className="">
+      <ViewMenu active="settings" />
       <h1 className="scroll-m-20 text-2xl font-semibold tracking-tight text-center mb-8">{formatDate(new Date())}</h1>
-      <h2 className="text-center scroll-m-20 text-lg font-semibold tracking-tight">{t('dashboard.title')}</h2>
+      <h2 className="text-center scroll-m-20 text-lg font-semibold tracking-tight">{t('settings.title')}</h2>
 
-      <AnalyticsView />
-      </main>
-    )
-}
+      <ContentLoadingWrapper>
+        <SettingsView />
+      </ContentLoadingWrapper>
+    </main>
+  )
+} 

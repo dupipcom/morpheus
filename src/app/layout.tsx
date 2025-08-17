@@ -23,8 +23,8 @@ import { useLocalStorage } from 'usehooks-ts';
 import { Skeleton } from "@/components/ui/skeleton"
 import { Toaster } from '@/components/ui/sonner'
 import { AuthWrapper } from '@/components/auth-wrapper'
-import { AuthTracker } from '@/components/auth-tracker'
 import { AuthToast } from '@/components/auth-toast'
+import { AppContent } from '@/components/app-content'
 import { getLocaleFromPath } from './helpers'
 import { defaultLocale } from './constants'
 import { getLocaleCookie } from '@/lib/localeUtils'
@@ -48,8 +48,8 @@ export default function RootLayout({
 }>) {
   const [isLoading, setIsLoading] = useState(true);
   const [value, setValue, removeValue] = useLocalStorage('theme', 'light');
-  const [globalContext, setGlobalContext] = useState({ theme: value, session: { user: {} } })
-  const signedIn = !!(globalContext?.session?.user as any)?.settings
+  const [globalContext, setGlobalContext] = useState({ theme: 'light', session: { user: {} } })
+  const [isClient, setIsClient] = useState(false)
   
   // Get locale from URL path, cookie, or default
   const locale = typeof window !== 'undefined' 
@@ -69,9 +69,9 @@ export default function RootLayout({
       })()
     : defaultLocale
 
-  // Check if current path is a localized route
+  // Check if current path is a localized route (any path starting with /locale/)
   const isLocalizedRoute = typeof window !== 'undefined' 
-    ? window.location.pathname.startsWith('/' + locale + '/')
+    ? window.location.pathname.match(/^\/([a-z]{2})(\/|$)/) !== null
     : false
 
   const handleThemeChange = () => {
@@ -84,10 +84,18 @@ export default function RootLayout({
     }
   }
 
+  // Set client flag on mount
   useEffect(() => {
-    setGlobalContext({ ...globalContext, theme: value })
-    if (!!value) setIsLoading(false)
-  }, [value])
+    setIsClient(true)
+  }, [])
+
+  // Update theme from localStorage once client is ready
+  useEffect(() => {
+    if (isClient && value) {
+      setGlobalContext(prev => ({ ...prev, theme: value }))
+      setIsLoading(false)
+    }
+  }, [isClient, value])
 
   return (
     <html lang="en" className="notranslate">
@@ -104,11 +112,10 @@ export default function RootLayout({
         <meta name="author" content="DreamPip" />
         <meta property="og:image" content="https://www.dreampip.com/images/logo-social.jpg" />
       </head>
-      { isLoading ? <body><Skeleton /> </body>: (
 
               <body
         suppressHydrationWarning
-        className={`${comfortaa.variable} ${value}`}
+        className={`${comfortaa.variable} ${isClient ? value : 'light'}`}
       >
         
         <ClerkProvider 
@@ -121,15 +128,12 @@ export default function RootLayout({
           <AuthWrapper isLoading={isLoading}>
             <I18nProvider locale={locale}>
               <GlobalContext.Provider value={{ ...globalContext, setGlobalContext }}>
-                {!isLocalizedRoute && <Nav subHeader="" onThemeChange={handleThemeChange} />}
+
                 <article className="">
                   <div>
-                    {!signedIn || isLoading ? children : <AuthTracker>
-                      {children}
-                    </AuthTracker>}
+                      <AppContent>{children}</AppContent>
                   </div>
                 </article>
-                {!isLocalizedRoute && <Footer />}
                 <AuthToast />
               </GlobalContext.Provider>
             </I18nProvider>
@@ -137,7 +141,6 @@ export default function RootLayout({
         </ClerkProvider>
         <Toaster />
       </body>
-      )}
 
     </html>
   );

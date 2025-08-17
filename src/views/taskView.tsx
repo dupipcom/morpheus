@@ -129,7 +129,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   // Use enhanced loading state to prevent flashing
   const isDataLoading = useEnhancedLoadingState(isLoading, session, 100, timeframe)
 
-  if (isDataLoading) {
+  if (isLoading) {
     return <TaskViewSkeleton />
   }
 

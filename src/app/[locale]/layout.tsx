@@ -7,8 +7,8 @@ import { Nav } from '@/components/ui/nav'
 import { Footer } from '@/components/Footer'
 import { Toaster } from '@/components/ui/sonner'
 import { AuthWrapper } from '@/components/auth-wrapper'
-import { AuthTracker } from '@/components/auth-tracker'
 import { AuthToast } from '@/components/auth-toast'
+import { AppContent } from '@/components/app-content'
 import { Skeleton } from "@/components/ui/skeleton"
 
 import { useLocalStorage } from 'usehooks-ts'
@@ -17,24 +17,36 @@ import { getLocaleCookie } from '@/lib/localeUtils'
 
 interface LocalizedLayoutProps {
   children: ReactNode
-  params: { locale: string }
+  params: Promise<{ locale: string }>
 }
 
 export default function LocalizedLayout({ children, params }: LocalizedLayoutProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [value, setValue, removeValue] = useLocalStorage('theme', 'light')
-  const [globalContext, setGlobalContext] = useState({ theme: value, session: { user: {} } })
-  const signedIn = !!(globalContext?.session?.user as any)?.settings
+  const [globalContext, setGlobalContext] = useState({ theme: 'light', session: { user: {} } })
+  const [isClient, setIsClient] = useState(false)
+  const [resolvedParams, setResolvedParams] = useState<{ locale: string } | null>(null)
+
+  // Resolve params promise
+  useEffect(() => {
+    const resolveParams = async () => {
+      const resolved = await params
+      setResolvedParams(resolved)
+    }
+    resolveParams()
+  }, [params])
 
   // Check if cookie locale differs from URL locale and redirect if needed
   useEffect(() => {
+    if (!resolvedParams) return
+    
     const cookieLocale = getLocaleCookie()
-    if (cookieLocale && cookieLocale !== params.locale) {
+    if (cookieLocale && cookieLocale !== resolvedParams.locale) {
       const currentPath = window.location.pathname
-      const newPath = currentPath.replace(`/${params.locale}`, `/${cookieLocale}`)
+      const newPath = currentPath.replace(`/${resolvedParams.locale}`, `/${cookieLocale}`)
       window.location.pathname = newPath
     }
-  }, [params.locale])
+  }, [resolvedParams])
 
   const handleThemeChange = () => {
     if (globalContext.theme === 'light') {
@@ -46,23 +58,31 @@ export default function LocalizedLayout({ children, params }: LocalizedLayoutPro
     }
   }
 
+  // Set client flag on mount
   useEffect(() => {
-    setGlobalContext({ ...globalContext, theme: value })
-    if (!!value) setIsLoading(false)
-  }, [value])
+    setIsClient(true)
+  }, [])
+
+  // Update theme from localStorage once client is ready
+  useEffect(() => {
+    if (isClient && value) {
+      setGlobalContext(prev => ({ ...prev, theme: value }))
+      setIsLoading(false)
+    }
+  }, [isClient, value])
+
+  // Don't render until params are resolved
+  if (!resolvedParams) {
+    return null
+  }
 
   return (
-    <I18nProvider locale={params.locale}>
+    <I18nProvider locale={resolvedParams.locale}>
       <AuthWrapper isLoading={isLoading}>
         <GlobalContext.Provider value={{ ...globalContext, setGlobalContext }}>
           <Nav subHeader="" onThemeChange={handleThemeChange} />
-          <article className="p-2 md:p-8">
-            {!isLoading ? undefined : <Skeleton className="bg-muted h-[75vh] w-full z-[999]" />}
-            <div className={`${!isLoading ? "block" : "hidden"}`}>
-              {(!signedIn || isLoading) ? children : <AuthTracker>
-                {children}
-              </AuthTracker>}
-            </div>
+          <article className="p-2 md:p-8"> 
+              <AppContent>{children}</AppContent>
           </article>
           <Footer />
           <AuthToast />

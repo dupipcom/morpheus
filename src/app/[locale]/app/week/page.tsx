@@ -24,7 +24,7 @@ import { getWeekNumber } from "@/app/helpers"
 import { WEEKLY_ACTIONS, WEEKS } from "@/app/constants"
 import { setLoginTime, getLoginTime } from '@/lib/cookieManager'
 
-export default function LocalizedWeek({ params }: { params: { locale: string } }) {
+export default function LocalizedWeek({ params }: { params: Promise<{ locale: string }> }) {
   const [globalContext, setGlobalContext] = useState({
     theme: 'light'
   })

@@ -18,7 +18,7 @@ import { GlobalContext } from "@/lib/contexts"
 import { setLoginTime, getLoginTime } from '@/lib/cookieManager'
 import { useI18n } from "@/lib/contexts/i18n"
 
-export default function LocalizedDay({ params }: { params: { locale: string } }) {
+export default function LocalizedDay({ params }: { params: Promise<{ locale: string }> }) {
   const { session, setGlobalContext } = useContext(GlobalContext)
   const { isLoaded, isSignedIn } = useAuth();
   const { t, formatDate } = useI18n();

@@ -13,7 +13,7 @@ import { ViewMenu } from "@/components/viewMenu"
 import { setLoginTime, getLoginTime } from '@/lib/cookieManager'
 import { useI18n } from "@/lib/contexts/i18n"
 
-export default function LocalizedMood({ params }: { params: { locale: string } }) {
+export default function LocalizedMood({ params }: { params: Promise<{ locale: string }> }) {
   const [globalContext, setGlobalContext] = useState({
     theme: 'light'
   })

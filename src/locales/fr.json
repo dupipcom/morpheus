@@ -67,6 +67,23 @@
     "weekNumber": "Semaine {number}",
     "yourEarnings": "Vos gains {timeframe}, jusqu'à présent : ${amount}"
   },
+  "settings": {
+    "title": "Paramètres",
+    "dailyActions": "Vos actions quotidiennes :",
+    "weeklyActions": "Vos actions hebdomadaires :",
+    "actionName": "Tapez le nom de l'action...",
+    "numberOfTimes": "# de fois",
+    "area": "Zone",
+    "category": "Catégorie",
+    "add": "Ajouter",
+    "deleteAction": "Supprimer l'action",
+    "deleteSelected": "Supprimer Sélectionnés ({count})",
+    "noResults": "Aucun résultat.",
+    "monthsFixedIncome": "Revenus Fixes Mensuels",
+    "monthsVariableIncome": "Revenus Variables Mensuels",
+    "fixedNeedCosts": "Coûts Fixes de Besoins",
+    "expectedNeedUtilities": "Moyenne Attendue des Services Publics"
+  },
   "actions": {
     "daily": {
       "drankWater": "A bu de l'eau",
