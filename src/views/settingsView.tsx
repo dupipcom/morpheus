@@ -55,6 +55,7 @@ import { GlobalContext } from "@/lib/contexts"
 import { updateUser, handleSettingsSubmit, isUserDataReady, useEnhancedLoadingState } from "@/lib/userUtils"
 import { logger } from "@/lib/logger"
 import { SettingsSkeleton } from "@/components/ui/skeleton-loader"
+import { useI18n } from "@/lib/contexts/i18n"
 
 export const SettingsView = ({ timeframe = "day" }) => {
   const fullDate = new Date()
@@ -66,6 +67,7 @@ export const SettingsView = ({ timeframe = "day" }) => {
   const weeklyEntry = useRef({ times: 1, status: "Open", cadence: "weekly" })
   
   const { session, setGlobalContext, theme } = useContext(GlobalContext)
+  const { t } = useI18n()
 
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
@@ -196,7 +198,7 @@ export const SettingsView = ({ timeframe = "day" }) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => handleDailyDelete(name)} className="">Delete action</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleDailyDelete(name)} className="">{t('settings.deleteAction')}</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
@@ -263,7 +265,7 @@ export const SettingsView = ({ timeframe = "day" }) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => handleWeeklyDelete(name)} className="">Delete action</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleWeeklyDelete(name)} className="">{t('settings.deleteAction')}</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
@@ -328,16 +330,16 @@ export const SettingsView = ({ timeframe = "day" }) => {
   }
 
   return <div className="max-w-[720px] m-auto p-4">
-      <h3 className="my-8">Your daily actions:</h3>
+      <h3 className="my-8">{t('settings.dailyActions')}</h3>
       <div className="flex flex-col md:flex-row mb-8">
-        <Input name="dailyTimes" placeholder="Type action name..." className="md:basis-2/3 md:mr-4 my-4 md:my-0" onBlur={(e) => {
+        <Input name="dailyTimes" placeholder={t('settings.actionName')} className="md:basis-2/3 md:mr-4 my-4 md:my-0" onBlur={(e) => {
           dailyEntry.current = { ...dailyEntry.current, name: e.currentTarget.value }
         }} />
-        <Select className="mr-4" placeholder="# of times" onValueChange={(e) => {
+        <Select className="mr-4" placeholder={t('settings.numberOfTimes')} onValueChange={(e) => {
           dailyEntry.current = { ...dailyEntry.current, times: Number(e), count: 0 }
         }} >
           <SelectTrigger className="w-full md:w-[120px] mb-4 mr-4">
-            <SelectValue placeholder="# times" />
+            <SelectValue placeholder={t('settings.numberOfTimes')} />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="1">1</SelectItem>
@@ -356,7 +358,7 @@ export const SettingsView = ({ timeframe = "day" }) => {
           dailyEntry.current = { ...dailyEntry.current, area: e }
         }}>
           <SelectTrigger className="w-full md:w-[120px] mb-4 mr-4">
-            <SelectValue placeholder="Area" />
+            <SelectValue placeholder={t('settings.area')} />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="self">Self</SelectItem>
@@ -368,7 +370,7 @@ export const SettingsView = ({ timeframe = "day" }) => {
           dailyEntry.current = { ...dailyEntry.current, categories: [e] }
         }}>
           <SelectTrigger className="w-full md:w-[120px] mb-4">
-            <SelectValue placeholder="Category" />
+            <SelectValue placeholder={t('settings.category')} />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="body">Body</SelectItem>
@@ -383,7 +385,7 @@ export const SettingsView = ({ timeframe = "day" }) => {
             <SelectItem value="community">Community</SelectItem>
           </SelectContent>
         </Select>
-        <Button onClick={handleDailyAdd} className="md:ml-4">Add</Button>
+        <Button onClick={handleDailyAdd} className="md:ml-4">{t('settings.add')}</Button>
       </div>
       {dailyTable.getFilteredSelectedRowModel().rows.length > 0 && (
         <div className="mb-4">
@@ -392,7 +394,7 @@ export const SettingsView = ({ timeframe = "day" }) => {
             onClick={handleDailyBulkDelete}
             className="mr-2"
           >
-            Delete Selected ({dailyTable.getFilteredSelectedRowModel().rows.length})
+            {t('settings.deleteSelected', { count: dailyTable.getFilteredSelectedRowModel().rows.length })}
           </Button>
         </div>
       )}
@@ -438,22 +440,22 @@ export const SettingsView = ({ timeframe = "day" }) => {
                   colSpan={dayColumns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  {t('settings.noResults')}
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
-     <h3 className="my-8 mt-16">Your weekly actions:</h3>
+     <h3 className="my-8 mt-16">{t('settings.weeklyActions')}</h3>
       <div className="flex flex-col md:flex-row mb-8">
-        <Input name="dailyTimes" placeholder="Type action name..." className="md:basis-2/3 md:mr-4 my-4 md:my-0" onBlur={(e) => {
+        <Input name="dailyTimes" placeholder={t('settings.actionName')} className="md:basis-2/3 md:mr-4 my-4 md:my-0" onBlur={(e) => {
           weeklyEntry.current = { ...weeklyEntry.current, name: e.currentTarget.value }
         }} />
-        <Select className="mr-4" placeholder="# of times" onValueChange={(e) => {
+        <Select className="mr-4" placeholder={t('settings.numberOfTimes')} onValueChange={(e) => {
           weeklyEntry.current = { ...weeklyEntry.current, times: Number(e), count: 0 }
         }} >
           <SelectTrigger className="w-full md:w-[120px] mb-4 mr-4">
-            <SelectValue placeholder="# times" />
+            <SelectValue placeholder={t('settings.numberOfTimes')} />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="1">1</SelectItem>
@@ -472,7 +474,7 @@ export const SettingsView = ({ timeframe = "day" }) => {
           weeklyEntry.current = { ...weeklyEntry.current, area: e }
         }}>
           <SelectTrigger className="w-full md:w-[120px] mb-4 mr-4">
-            <SelectValue placeholder="Area" />
+            <SelectValue placeholder={t('settings.area')} />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="self">Self</SelectItem>
@@ -484,7 +486,7 @@ export const SettingsView = ({ timeframe = "day" }) => {
           weeklyEntry.current = { ...weeklyEntry.current, categories: [e] }
         }}>
           <SelectTrigger className="w-full md:w-[120px] mb-4">
-            <SelectValue placeholder="Category" />
+            <SelectValue placeholder={t('settings.category')} />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="body">Body</SelectItem>
@@ -499,7 +501,7 @@ export const SettingsView = ({ timeframe = "day" }) => {
             <SelectItem value="community">Community</SelectItem>
           </SelectContent>
         </Select>
-        <Button onClick={handleWeeklyAdd} className="md:ml-4">Add</Button>
+        <Button onClick={handleWeeklyAdd} className="md:ml-4">{t('settings.add')}</Button>
       </div>
       {weeklyTable.getFilteredSelectedRowModel().rows.length > 0 && (
         <div className="mb-4">
@@ -508,7 +510,7 @@ export const SettingsView = ({ timeframe = "day" }) => {
             onClick={handleWeeklyBulkDelete}
             className="mr-2"
           >
-            Delete Selected ({weeklyTable.getFilteredSelectedRowModel().rows.length})
+            {t('settings.deleteSelected', { count: weeklyTable.getFilteredSelectedRowModel().rows.length })}
           </Button>
         </div>
       )}
@@ -554,19 +556,19 @@ export const SettingsView = ({ timeframe = "day" }) => {
                   colSpan={weekColumns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  {t('settings.noResults')}
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
-      <h3 className="mt-8">Month’s Recurring Income</h3>
+      <h3 className="mt-8">{t('settings.monthsFixedIncome')}</h3>
       <Input defaultValue={serverSettings.monthsFixedIncome} onBlur={(e) => handleSettingsSubmit(e.currentTarget.value, "monthsFixedIncome")} />
-      <h3 className="mt-8">Month’s Variable Income</h3>
+      <h3 className="mt-8">{t('settings.monthsVariableIncome')}</h3>
       <Input defaultValue={serverSettings.monthsVariableIncome} onBlur={(e) => handleSettingsSubmit(e.currentTarget.value, "monthsVariableIncome")}/>
-      <h3 className="mt-8">Fixed Need Costs</h3>
+      <h3 className="mt-8">{t('settings.fixedNeedCosts')}</h3>
       <Input defaultValue={serverSettings.monthsNeedFixedExpenses} onBlur={(e) => handleSettingsSubmit(e.currentTarget.value, "monthsNeedFixedExpenses")}/>
-      <h3 className="mt-8">Expected Need Utilities Average</h3>
+      <h3 className="mt-8">{t('settings.expectedNeedUtilities')}</h3>
       <Input defaultValue={serverSettings.monthsNeedVariableExpenses} onBlur={(e) => handleSettingsSubmit(e.currentTarget.value, "monthsNeedVariableExpenses")}/>
     </div>
 }
