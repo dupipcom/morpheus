@@ -52,7 +52,8 @@ import {
 import { WEEKLY_ACTIONS, DAILY_ACTIONS } from "@/app/constants"
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
 import { GlobalContext } from "@/lib/contexts"
-import { updateUser, handleSettingsSubmit } from "@/lib/userUtils"
+import { updateUser, handleSettingsSubmit, isUserDataReady, useEnhancedLoadingState } from "@/lib/userUtils"
+import { logger } from "@/lib/logger"
 import { SettingsSkeleton } from "@/components/ui/skeleton-loader"
 
 export const SettingsView = ({ timeframe = "day" }) => {
@@ -77,7 +78,10 @@ export const SettingsView = ({ timeframe = "day" }) => {
 
   const serverSettings = (session?.user?.settings) || {}
 
-  const { data, mutate, error, isLoading } = useSWR(`/api/user`, () => updateUser(session, setGlobalContext, { session, theme }))
+  const { data, mutate, error, isLoading } = useSWR(
+    session?.user ? `/api/user` : null, 
+    () => updateUser(session, setGlobalContext, { session, theme })
+  )
 
 
 
@@ -114,7 +118,7 @@ export const SettingsView = ({ timeframe = "day" }) => {
       setDailyRowSelection({})
       mutate('/api/v1/user')
     } catch (error) {
-      console.error('Error deleting daily actions:', error)
+      logger('delete_daily_actions_error', `Error deleting daily actions: ${error}`)
     }
   }
 
@@ -129,7 +133,7 @@ export const SettingsView = ({ timeframe = "day" }) => {
       setWeeklyRowSelection({})
       mutate('/api/v1/user')
     } catch (error) {
-      console.error('Error deleting weekly actions:', error)
+      logger('delete_weekly_actions_error', `Error deleting weekly actions: ${error}`)
     }
   }
 
@@ -316,7 +320,10 @@ export const SettingsView = ({ timeframe = "day" }) => {
     },
   })
 
-  if (isLoading) {
+  // Use enhanced loading state to prevent flashing
+  const isDataLoading = useEnhancedLoadingState(isLoading, session)
+
+  if (isDataLoading) {
     return <SettingsSkeleton />
   }
 

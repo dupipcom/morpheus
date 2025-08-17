@@ -14,7 +14,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 import { GlobalContext } from "@/lib/contexts"
-import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil, handleMoodSubmit } from "@/lib/userUtils"
+import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil, handleMoodSubmit, isUserDataReady, useEnhancedLoadingState } from "@/lib/userUtils"
 import { MoodViewSkeleton } from "@/components/ui/skeleton-loader"
 
 export const MoodView = ({ timeframe = "day" }) => {
@@ -66,7 +66,10 @@ export const MoodView = ({ timeframe = "day" }) => {
     generateInsight(setInsight)
   }, [])
 
-  if (!session?.user) {
+  // Use enhanced loading state to prevent flashing (moodView doesn't use SWR)
+  const isDataLoading = useEnhancedLoadingState(false, session)
+
+  if (isDataLoading) {
     return <MoodViewSkeleton />
   }
 

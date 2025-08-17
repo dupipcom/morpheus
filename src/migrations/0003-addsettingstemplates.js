@@ -172,8 +172,7 @@ async function main() {
 // 7. Execute the main function and handle potential errors.
 main()
   .catch((e) => {
-    console.error('Migration failed:');
-    console.error(e);
+    logger('migration_failed', `Migration failed: ${e}`);
     process.exit(1);
   })
   .finally(async () => {

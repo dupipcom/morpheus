@@ -20,7 +20,7 @@ export const AuthWrapper = ({ children, isLoading }: AuthWrapperProps) => {
       // Only check if user is authenticated
       handleSessionExpirationOnLoad(INACTIVITY_TIMEOUT, () => {
         // Custom logout handler if needed
-        window.location.href = '/login';
+        window.location.href = '/app/dashboard';
       });
     }
   }, [isLoaded, isSignedIn]);

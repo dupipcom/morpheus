@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/carousel"
 
 import { GlobalContext } from "@/lib/contexts"
-import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil } from "@/lib/userUtils"
+import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil, isUserDataReady, useEnhancedLoadingState } from "@/lib/userUtils"
 import { TaskViewSkeleton } from "@/components/ui/skeleton-loader"
 
 export const TaskView = ({ timeframe = "day", actions = [] }) => {
@@ -49,9 +49,11 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
    return day.status == "Open" && day.date !== date })
   }, [JSON.stringify(session), date])
 
-  const openWeeks = session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks && Object.values(session?.user?.entries[year].weeks).filter((week) => {
-   
-  return week.status == "Open"  && week.week !== weekNumber  })
+  const openWeeks = useMemo(() => {
+    return session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks && Object.values(session?.user?.entries[year].weeks).filter((week) => {
+      return week.status == "Open" && week.week !== weekNumber
+    })
+  }, [JSON.stringify(session), weekNumber])
 
   const userDone = useMemo(() => userTasks?.filter((task) => task.status === "Done").map((task) => task.name), [userTasks])
 
@@ -105,7 +107,10 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     setWeekNumber(date)
   }
 
-  const { data, mutate, error, isLoading } = useSWR(`/api/user`, () => updateUser(session, setGlobalContext, { session, theme }))
+  const { data, mutate, error, isLoading } = useSWR(
+    session?.user ? `/api/user` : null, 
+    () => updateUser(session, setGlobalContext, { session, theme })
+  )
 
   useEffect(() => {
     setValues(userDone)
@@ -118,13 +123,16 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     generateInsight(setInsight)
   }, [])
 
-  if (isLoading) {
+  // Use enhanced loading state to prevent flashing
+  const isDataLoading = useEnhancedLoadingState(isLoading, session, 100, timeframe)
+
+  if (isDataLoading) {
     return <TaskViewSkeleton />
   }
 
   if (!session?.user) {
     return <div className="my-16 w-full flex align-center justify-center">
-      <Button className="m-auto"><a  href="/login">Login</a></Button>
+      <Button className="m-auto"><a  href="/app/dashboard">Login</a></Button>
     </div>
   }
 

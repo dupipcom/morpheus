@@ -57,7 +57,7 @@ export const deleteClerkCookies = () => {
     // Also clear activity storage when cookies are deleted
     clearActivityStorage();
   } catch (error) {
-    console.error('Error deleting Clerk cookies:', error);
+    logger('delete_cookies_error', `Error deleting Clerk cookies: ${error}`);
   }
 };
 
@@ -103,7 +103,7 @@ export const setupInactivityTimer = (
       if (onLogout) {
         onLogout();
       } else {
-        window.location.href = '/login';
+        window.location.href = '/';
       }
       return;
     }
@@ -159,7 +159,7 @@ export const setupInactivityTimer = (
       if (onLogout) {
         onLogout();
       } else {
-        window.location.href = '/login';
+        window.location.href = '/app/dashboard';
       }
     }, timeout);
   };
@@ -222,7 +222,7 @@ export const getLastActivity = (): number => {
     logger('get_last_activity', 'Retrieved');
     return result;
   } catch (error) {
-    console.error('Error getting last activity:', error);
+    logger('get_last_activity_error', `Error getting last activity: ${error}`);
     return Date.now();
   }
 };
@@ -236,7 +236,7 @@ export const updateLastActivity = (): void => {
     localStorage.setItem(LAST_ACTIVITY_KEY, timestamp);
     logger('update_last_activity', 'Updated');
   } catch (error) {
-    console.error('Error updating last activity:', error);
+    logger('update_last_activity_error', `Error updating last activity: ${error}`);
   }
 };
 
@@ -249,7 +249,7 @@ export const setLoginTime = (): void => {
     localStorage.setItem(LOGIN_TIME_KEY, timestamp);
     updateLastActivity(); // Also update last activity on login
   } catch (error) {
-    console.error('Error setting login time:', error);
+    logger('set_login_time_error', `Error setting login time: ${error}`);
   }
 };
 
@@ -260,7 +260,7 @@ export const clearLoginTime = (): void => {
   try {
     localStorage.removeItem(LOGIN_TIME_KEY);
   } catch (error) {
-    console.error('Error clearing login time:', error);
+    logger('clear_login_time_error', `Error clearing login time: ${error}`);
   }
 };
 
@@ -272,7 +272,7 @@ export const getLoginTime = (): number | null => {
     const loginTime = localStorage.getItem(LOGIN_TIME_KEY);
     return loginTime ? parseInt(loginTime, 10) : null;
   } catch (error) {
-    console.error('Error getting login time:', error);
+    logger('get_login_time_error', `Error getting login time: ${error}`);
     return null;
   }
 };
@@ -285,7 +285,7 @@ export const clearActivityStorage = (): void => {
     localStorage.removeItem(LAST_ACTIVITY_KEY);
     localStorage.removeItem(LOGIN_TIME_KEY);
   } catch (error) {
-    console.error('Error clearing activity storage:', error);
+    logger('clear_activity_storage_error', `Error clearing activity storage: ${error}`);
   }
 };
 
@@ -302,7 +302,7 @@ export const shouldLogoutDueToInactivity = (timeout: number = INACTIVITY_TIMEOUT
     
     return timeSinceLastActivity >= timeout;
   } catch (error) {
-    console.error('Error checking inactivity logout:', error);
+    logger('check_inactivity_logout_error', `Error checking inactivity logout: ${error}`);
     return false;
   }
 };
@@ -320,7 +320,7 @@ export const getTimeRemainingBeforeLogout = (timeout: number = INACTIVITY_TIMEOU
     
     return Math.max(0, timeout - timeSinceLastActivity);
   } catch (error) {
-    console.error('Error getting time remaining:', error);
+    logger('get_time_remaining_error', `Error getting time remaining: ${error}`);
     return 0;
   }
 };
@@ -336,7 +336,7 @@ export const isAuthenticated = (): boolean => {
       return name.trim().startsWith('__clerk');
     });
   } catch (error) {
-    console.error('Error checking authentication:', error);
+    logger('check_authentication_error', `Error checking authentication: ${error}`);
     return false;
   }
 };
@@ -367,7 +367,7 @@ export const isSessionExpired = (timeout: number = INACTIVITY_TIMEOUT): boolean 
     
     return hasExpired;
   } catch (error) {
-    console.error('Error checking session expiration:', error);
+    logger('check_session_expiration_error', `Error checking session expiration: ${error}`);
     return false;
   }
 };
@@ -390,7 +390,7 @@ export const handleSessionExpirationOnLoad = (
     if (onLogout) {
       onLogout();
     } else {
-      window.location.href = '/login';
+      window.location.href = '/app/dashboard';
     }
   }
 };
@@ -428,7 +428,7 @@ export const getSessionInfo = () => {
       timeout: `${Math.floor(INACTIVITY_TIMEOUT / 60000)} minutes`
     };
   } catch (error) {
-    console.error('Error getting session info:', error);
+    logger('get_session_info_error', `Error getting session info: ${error}`);
     return { error: 'Failed to get session info' };
   }
 }; 

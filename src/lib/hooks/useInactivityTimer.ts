@@ -8,6 +8,7 @@ import {
   updateLastActivity,
   clearActivityStorage 
 } from '../cookieManager';
+import { logger } from '../logger';
 
 interface UseInactivityTimerOptions {
   timeout?: number;
@@ -49,7 +50,7 @@ export const useInactivityTimer = ({
     if (onLogout) {
       onLogout();
     } else {
-      window.location.href = '/login';
+      window.location.href = '/app/dashboard';
     }
   }, [onLogout]);
 
@@ -141,7 +142,7 @@ export const useInactivityTimer = ({
     isInitializedRef.current = true;
     
     // Debug log to track initialization
-    console.log('🔧 Inactivity timer initialized');
+    logger('inactivity_timer_initialized', '🔧 Inactivity timer initialized');
 
     // Setup the inactivity timer
     cleanupRef.current = setupInactivityTimer(timeout, warningTime, handleWarning, handleLogout);

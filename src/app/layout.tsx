@@ -90,7 +90,7 @@ export default function RootLayout({
               <article className="p-2 md:p-8">
                 {!isLoading ? undefined : <Skeleton className="bg-muted h-[75vh] w-full z-[999]" />}
                 <div className={`${!isLoading ? "block" : "hidden"}`}>
-                  {!signedIn ? children : <AuthTracker>
+                  {(!signedIn || isLoading) ? children : <AuthTracker>
                     {children}
                   </AuthTracker>}
                 </div>

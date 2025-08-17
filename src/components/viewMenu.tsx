@@ -15,7 +15,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 import useSWR from "swr"
 import { fetcher } from "@/lib/utils"
-import { updateUser } from "@/lib/userUtils"
+import { updateUser, isUserDataReady, useEnhancedLoadingState } from "@/lib/userUtils"
 import { LoadingSkeleton } from "@/components/ui/skeleton-loader"
 
 import { GlobalContext } from "@/lib/contexts"
@@ -31,7 +31,10 @@ export const ViewMenu = ({ active }) =>{
   const [value, setValue, removeValue] = useLocalStorage('redacted', 0);
   const [hiddenBalance, setHiddenBalance] = useState(true)
 
-  const { data, mutate, error, isLoading } = useSWR(`/api/user`, () => updateUser(session, setGlobalContext, { session, theme }))
+  const { data, mutate, error, isLoading } = useSWR(
+    session?.user ? `/api/user` : null, 
+    () => updateUser(session, setGlobalContext, { session, theme })
+  )
 
   const handleBalanceChange = (e) => {
     fetch('/api/v1/user', { method: 'POST', body: JSON.stringify({
@@ -50,7 +53,10 @@ export const ViewMenu = ({ active }) =>{
     updateUser(session, setGlobalContext, { session, theme })
   }, [])
 
-  if (isLoading) {
+  // Use enhanced loading state to prevent flashing
+  const isDataLoading = useEnhancedLoadingState(isLoading, session)
+
+  if (isDataLoading) {
     return <LoadingSkeleton />
   }
 
