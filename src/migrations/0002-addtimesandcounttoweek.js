@@ -24,6 +24,43 @@
 
 const { PrismaClient } = require('../../generated/prisma')
 
+// Logger helper function for consistent console logging format
+const logger = (str, originalMessage) => {
+  // Convert objects to strings to avoid circular references
+  let message = str;
+  if (originalMessage !== undefined) {
+    if (typeof originalMessage === 'object') {
+      try {
+        message = `${str} - ${JSON.stringify(originalMessage, null, 2)}`;
+      } catch (error) {
+        message = `${str} - [Object - circular reference or non-serializable]`;
+      }
+    } else {
+      message = `${str} - ${String(originalMessage)}`;
+    }
+  }
+
+  // Determine colors based on message content
+  const isDb = str.includes('db');
+  const isError = str.includes('error');
+  const isIdle = str.includes('idle');
+  const isWarning = str.includes('warning');
+
+  // Create console.log color settings object
+  const colorSettings = {
+    background: isDb ? 'cyan' : '#1f1f1f',
+    color: isError ? 'red' : isIdle || isWarning ? 'yellow' : 'green',
+    fontWeight: 'bold',
+    padding: '2px 4px',
+    borderRadius: '3px'
+  };
+
+  console.log(
+    `%cdpip::morpheus::${message}`,
+    `background: ${colorSettings.background}; color: ${colorSettings.color}; font-weight: ${colorSettings.fontWeight}; padding: ${colorSettings.padding}; border-radius: ${colorSettings.borderRadius};`
+  );
+};
+
 // Instantiate Prisma Client
 const prisma = new PrismaClient();
 
@@ -31,12 +68,12 @@ const prisma = new PrismaClient();
  * The main migration function.
  */
 async function main() {
-  console.log('Starting migration for the "users" collection...');
+  logger('migration_start', 'Started');
 
   // 1. Fetch all documents from the target collection.
   //    This now targets the `user` model, corresponding to your `users` collection.
   const documents = await prisma.user.findMany();
-  console.log(`Found ${documents.length} documents to process.`);
+  logger('migration_documents_found', `Found ${documents.length} documents`);
 
   let updatedCount = 0;
   const updatePromises = [];
@@ -103,17 +140,17 @@ async function main() {
         },
       });
       updatePromises.push(updatePromise);
-      console.log(`- Document with ID '${doc.id}' will be updated.`);
+      logger('migration_document_update', 'Document updated');
     }
   }
 
   // 8. Execute all update promises in a single transaction.
   if (updatePromises.length > 0) {
-    console.log(`\nApplying updates to ${updatedCount} documents...`);
+    logger('migration_applying_updates', `Applying ${updatedCount} updates`);
     await prisma.$transaction(updatePromises);
-    console.log('✅ Migration successful: All documents have been updated.');
+    logger('migration_success', 'Completed');
   } else {
-    console.log('✅ Migration complete: No documents required updates.');
+    logger('migration_complete', 'No updates needed');
   }
 }
 

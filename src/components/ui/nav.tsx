@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useMemo } from 'react'
 import Image from "next/image"
 import Link from "next/link"
 import MuxAudio from '@mux/mux-audio-react';
+import { logger } from '@/lib/logger';
 
 import { useAuth } from "@clerk/clerk-react";
 
@@ -332,17 +333,17 @@ export const Logo: TComponent = function ({
   const handlePlay = () => {
     if (!audioElement.current) return;
     audioElement?.current?.play();
-    console.log("play")
+    logger('audio_play', 'Started');
   };
 
   const handleStop = () => {
     if (!audioElement.current) return;
     audioElement?.current?.pause();
-    console.log("stop")
+    logger('audio_stop', 'Stopped');
   };
 
   const handleClick = () => {
-  	console.log("play click", audioElement)
+  	logger('audio_play_click', 'Clicked');
     if (!audioElement.current) return;
     if (isPlaying) {
       handleStop();
@@ -352,10 +353,7 @@ export const Logo: TComponent = function ({
   };
 
   const updatePrompt = async () => {
-    console.log(
-      '%c dp::oneiros::audio_player::prompt::now_playing(fetching)',
-      'background-color: pink; color: blue;',
-    );
+    logger('audio_player_prompt_fetching', 'Fetching');
     const url = selectedTrack.nowPlaying;
     if (url) {
       try {
@@ -369,10 +367,7 @@ export const Logo: TComponent = function ({
           setTitle(text);
         }
       } catch (e) {
-        console.log(
-          '%c dp::oneiros::audio_player::prompt::now_playing(error)',
-          'background-color: red; color: white;',
-        );
+        logger('audio_player_prompt_error', 'Error');
       }
     }
   };

@@ -43,16 +43,6 @@ const nextConfig: NextConfig = {
         permanent: false,
       },
       { 
-        source: "/login",
-        destination: '/api/auth/signin',
-        permanent: false,
-      },
-      { 
-        source: "/logout",
-        destination: '/api/auth/signout',
-        permanent: false,
-      },
-      { 
         source: "/code",
         destination: 'https://github.com/dreampipcom',
         permanent: false,

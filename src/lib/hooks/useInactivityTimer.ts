@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { toast } from '@/components/ui/sonner';
 import { 
   setupInactivityTimer, 
@@ -29,6 +29,55 @@ export const useInactivityTimer = ({
   const cleanupRef = useRef<(() => void) | null>(null);
   const countdownIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const toastIdRef = useRef<string | number | null>(null);
+  const isInitializedRef = useRef(false);
+  const timeoutRef = useRef(timeout);
+
+  // Update timeout ref when it changes
+  useEffect(() => {
+    timeoutRef.current = timeout;
+  }, [timeout]);
+
+  const handleLogout = useCallback(() => {
+    // Dismiss warning toast
+    if (toastIdRef.current) {
+      toast.dismiss(toastIdRef.current);
+      toastIdRef.current = null;
+    }
+    
+    deleteClerkCookies();
+    clearActivityStorage();
+    if (onLogout) {
+      onLogout();
+    } else {
+      window.location.href = '/login';
+    }
+  }, [onLogout]);
+
+  const handleExtend = useCallback(() => {
+    // Dismiss warning toast
+    if (toastIdRef.current) {
+      toast.dismiss(toastIdRef.current);
+      toastIdRef.current = null;
+    }
+    
+    // Clear existing countdown
+    if (countdownIntervalRef.current) {
+      clearInterval(countdownIntervalRef.current);
+      countdownIntervalRef.current = null;
+    }
+    
+    // Update last activity to extend session
+    updateLastActivity();
+    
+    // Show success toast
+    toast.success('Session extended successfully');
+    
+    // Reset the inactivity timer
+    if (cleanupRef.current) {
+      cleanupRef.current();
+    }
+    cleanupRef.current = setupInactivityTimer(timeoutRef.current, warningTime, handleWarning, handleLogout);
+  }, [handleLogout, warningTime]);
 
   const handleWarning = useCallback(() => {
     // Show warning toast with countdown
@@ -36,7 +85,7 @@ export const useInactivityTimer = ({
       const lastActivity = getLastActivity();
       const now = Date.now();
       const timeSinceLastActivity = now - lastActivity;
-      const remainingTime = timeout - timeSinceLastActivity;
+      const remainingTime = timeoutRef.current - timeSinceLastActivity;
       
       if (remainingTime <= 0) {
         handleLogout();
@@ -80,57 +129,22 @@ export const useInactivityTimer = ({
     // Start countdown to update toast
     const countdown = setInterval(showWarningToast, 1000);
     countdownIntervalRef.current = countdown;
-  }, [timeout]);
-
-  const handleLogout = useCallback(() => {
-    // Dismiss warning toast
-    if (toastIdRef.current) {
-      toast.dismiss(toastIdRef.current);
-      toastIdRef.current = null;
-    }
-    
-    deleteClerkCookies();
-    clearActivityStorage();
-    if (onLogout) {
-      onLogout();
-    } else {
-      window.location.href = '/login';
-    }
-  }, [onLogout]);
-
-  const handleExtend = useCallback(() => {
-    // Dismiss warning toast
-    if (toastIdRef.current) {
-      toast.dismiss(toastIdRef.current);
-      toastIdRef.current = null;
-    }
-    
-    // Clear existing countdown
-    if (countdownIntervalRef.current) {
-      clearInterval(countdownIntervalRef.current);
-      countdownIntervalRef.current = null;
-    }
-    
-    // Update last activity to extend session
-    updateLastActivity();
-    
-    // Show success toast
-    toast.success('Session extended successfully');
-    
-    // Reset the inactivity timer
-    if (cleanupRef.current) {
-      cleanupRef.current();
-    }
-    cleanupRef.current = setupInactivityTimer(timeout, handleWarning, handleLogout);
-  }, [timeout, handleWarning, handleLogout]);
+  }, [handleExtend, handleLogout]);
 
   useEffect(() => {
-    if (!enabled) {
+    if (!enabled || isInitializedRef.current) {
       return;
     }
 
+    // Set login time on first initialization
+    setLoginTime();
+    isInitializedRef.current = true;
+    
+    // Debug log to track initialization
+    console.log('🔧 Inactivity timer initialized');
+
     // Setup the inactivity timer
-    cleanupRef.current = setupInactivityTimer(timeout, handleWarning, handleLogout);
+    cleanupRef.current = setupInactivityTimer(timeout, warningTime, handleWarning, handleLogout);
 
     // Cleanup function
     return () => {
@@ -143,7 +157,7 @@ export const useInactivityTimer = ({
         countdownIntervalRef.current = null;
       }
     };
-  }, [timeout, enabled, handleWarning, handleLogout]);
+  }, [enabled, timeout, warningTime, handleWarning, handleLogout]);
 
   // Manual cleanup function
   const manualCleanup = useCallback(() => {
@@ -160,13 +174,6 @@ export const useInactivityTimer = ({
   // Manual cookie deletion function
   const manualDeleteCookies = useCallback(() => {
     deleteClerkCookies();
-  }, []);
-
-  // Format time for display
-  const formatTime = useCallback((ms: number) => {
-    const minutes = Math.floor(ms / 60000);
-    const seconds = Math.floor((ms % 60000) / 1000);
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   }, []);
 
   return {
