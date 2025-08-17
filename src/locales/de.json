@@ -65,6 +65,23 @@
     "weekNumber": "Woche {number}",
     "yourEarnings": "Ihr Verdienst {timeframe}, bisher: ${amount}"
   },
+  "settings": {
+    "title": "Einstellungen",
+    "dailyActions": "Ihre täglichen Aktionen:",
+    "weeklyActions": "Ihre wöchentlichen Aktionen:",
+    "actionName": "Aktionsname eingeben...",
+    "numberOfTimes": "# mal",
+    "area": "Bereich",
+    "category": "Kategorie",
+    "add": "Hinzufügen",
+    "deleteAction": "Aktion löschen",
+    "deleteSelected": "Ausgewählte löschen ({count})",
+    "noResults": "Keine Ergebnisse.",
+    "monthsFixedIncome": "Monatliches festes Einkommen",
+    "monthsVariableIncome": "Monatliches variables Einkommen",
+    "fixedNeedCosts": "Feste Bedarfskosten",
+    "expectedNeedUtilities": "Erwarteter Durchschnitt der Versorgungsunternehmen"
+  },
   "actions": {
     "daily": {
       "drankWater": "Hat Wasser getrunken",

@@ -67,6 +67,23 @@
     "weekNumber": "第{number}周",
     "yourEarnings": "您的收入{timeframe}，到目前为止：${amount}"
   },
+  "settings": {
+    "title": "设置",
+    "dailyActions": "您的每日行动:",
+    "weeklyActions": "您的每周行动:",
+    "actionName": "输入行动名称...",
+    "numberOfTimes": "# 次",
+    "area": "区域",
+    "category": "类别",
+    "add": "添加",
+    "deleteAction": "删除行动",
+    "deleteSelected": "删除已选 ({count})",
+    "noResults": "没有结果。",
+    "monthsFixedIncome": "月固定收入",
+    "monthsVariableIncome": "月变动收入",
+    "fixedNeedCosts": "固定需求成本",
+    "expectedNeedUtilities": "预期需求公用事业平均值"
+  },
   "actions": {
     "daily": {
       "drankWater": "喝了水",

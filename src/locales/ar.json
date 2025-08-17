@@ -55,6 +55,23 @@
     "weekNumber": "الأسبوع {number}",
     "yourEarnings": "أرباحك"
   },
+  "settings": {
+    "title": "الإعدادات",
+    "dailyActions": "إجراءاتك اليومية:",
+    "weeklyActions": "إجراءاتك الأسبوعية:",
+    "actionName": "اكتب اسم الإجراء...",
+    "numberOfTimes": "# من المرات",
+    "area": "المنطقة",
+    "category": "الفئة",
+    "add": "إضافة",
+    "deleteAction": "حذف الإجراء",
+    "deleteSelected": "حذف المحدد ({count})",
+    "noResults": "لا توجد نتائج.",
+    "monthsFixedIncome": "الدخل الثابت الشهري",
+    "monthsVariableIncome": "الدخل المتغير الشهري",
+    "fixedNeedCosts": "تكاليف الاحتياجات الثابتة",
+    "expectedNeedUtilities": "متوسط المرافق المتوقع"
+  },
   "actions": {
     "daily": {
       "drankWater": "شرب الماء",

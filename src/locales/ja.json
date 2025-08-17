@@ -67,6 +67,23 @@
     "weekNumber": "週{number}",
     "yourEarnings": "あなたの収益{timeframe}、これまで：${amount}"
   },
+  "settings": {
+    "title": "設定",
+    "dailyActions": "あなたの毎日のアクション:",
+    "weeklyActions": "あなたの週次のアクション:",
+    "actionName": "アクション名を入力...",
+    "numberOfTimes": "# 回",
+    "area": "エリア",
+    "category": "カテゴリ",
+    "add": "追加",
+    "deleteAction": "アクションを削除",
+    "deleteSelected": "選択されたものを削除 ({count})",
+    "noResults": "結果がありません。",
+    "monthsFixedIncome": "月次固定収入",
+    "monthsVariableIncome": "月次変動収入",
+    "fixedNeedCosts": "固定必要コスト",
+    "expectedNeedUtilities": "期待される必要公共料金の平均"
+  },
   "actions": {
     "daily": {
       "drankWater": "水を飲んだ",
