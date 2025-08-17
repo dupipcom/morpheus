@@ -20,6 +20,7 @@ import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
 import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil, isUserDataReady, useEnhancedLoadingState } from "@/lib/userUtils"
 import { TaskViewSkeleton } from "@/components/ui/skeleton-loader"
+import { ContentLoadingWrapper } from '@/components/ContentLoadingWrapper'
 
 export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const { session, setGlobalContext, theme } = useContext(GlobalContext)
