@@ -12,6 +12,7 @@ import { getWeekNumber } from "@/app/helpers"
 
 import { GlobalContext } from "@/lib/contexts"
 import { generateInsight } from "@/lib/userUtils"
+import { AnalyticsViewSkeleton } from "@/components/ui/skeleton-loader"
 
 const moodChartConfig = {
   moodAverage: {
@@ -71,9 +72,7 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
   }, [])
 
   if (!session?.user) {
-    return <div className="my-16 w-full flex align-center justify-center">
-      <Button className="m-auto"><a  href="/login">Login</a></Button>
-    </div>
+    return <AnalyticsViewSkeleton />
   }
 
   const userDays = session?.user?.entries && session?.user?.entries[year]?.days ? Object.values(session?.user?.entries[year]?.days) : [];

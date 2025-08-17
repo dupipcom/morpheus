@@ -18,6 +18,7 @@ import {
 
 import { GlobalContext } from "@/lib/contexts"
 import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil } from "@/lib/userUtils"
+import { TaskViewSkeleton } from "@/components/ui/skeleton-loader"
 
 export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const { session, setGlobalContext, ...globalContext } = useContext(GlobalContext)
@@ -116,6 +117,10 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     updateUser(session, setGlobalContext, globalContext)
     generateInsight(setInsight)
   }, [])
+
+  if (isLoading) {
+    return <TaskViewSkeleton />
+  }
 
   if (!session?.user) {
     return <div className="my-16 w-full flex align-center justify-center">

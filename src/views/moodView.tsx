@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/carousel"
 import { GlobalContext } from "@/lib/contexts"
 import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil, handleMoodSubmit } from "@/lib/userUtils"
+import { MoodViewSkeleton } from "@/components/ui/skeleton-loader"
 
 export const MoodView = ({ timeframe = "day" }) => {
   const { session, setGlobalContext, ...globalContext } = useContext(GlobalContext)
@@ -66,9 +67,7 @@ export const MoodView = ({ timeframe = "day" }) => {
   }, [])
 
   if (!session?.user) {
-    return <div className="my-16 w-full flex align-center justify-center">
-      <Button className="m-auto"><a  href="/login">Login</a></Button>
-    </div>
+    return <MoodViewSkeleton />
   }
 
   return <div key={JSON.stringify(serverMood)} className="max-w-[720px] m-auto p-4">

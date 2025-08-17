@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Switch } from "@/components/ui/switch"
 
 import { SlidersVertical, Play, Square as Stop, Gauge, LogIn, DoorOpen } from "lucide-react"
+import { NavSkeleton } from "./skeleton-loader"
 
 
 import {
@@ -50,7 +51,7 @@ interface LogoProps {
 
 type TComponent = React.FC<LogoProps & React.SVGProps<SVGSVGElement>>;
 
-const Logo: TComponent = function ({
+export const Logo: TComponent = function ({
   color = 'black',
   width = 64,
   height = 64,
@@ -531,6 +532,11 @@ const Logo: TComponent = function ({
   }
 
     const { userId, sessionId, getToken, isLoaded, isSignedIn } = useAuth();
+
+    // Show skeleton while authentication is loading
+    if (!isLoaded) {
+      return <NavSkeleton />
+    }
 
   	return <nav className="sticky top-0 bg-gradient-to-bl 
           from-[#c4abefcc]

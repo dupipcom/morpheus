@@ -53,6 +53,7 @@ import { WEEKLY_ACTIONS, DAILY_ACTIONS } from "@/app/constants"
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
 import { GlobalContext } from "@/lib/contexts"
 import { updateUser, handleSettingsSubmit } from "@/lib/userUtils"
+import { SettingsSkeleton } from "@/components/ui/skeleton-loader"
 
 export const SettingsView = ({ timeframe = "day" }) => {
   const fullDate = new Date()
@@ -71,7 +72,8 @@ export const SettingsView = ({ timeframe = "day" }) => {
   )
   const [columnVisibility, setColumnVisibility] =
     useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = useState({})
+  const [dailyRowSelection, setDailyRowSelection] = useState({})
+  const [weeklyRowSelection, setWeeklyRowSelection] = useState({})
 
   const serverSettings = (session?.user?.settings) || {}
 
@@ -99,6 +101,36 @@ export const SettingsView = ({ timeframe = "day" }) => {
   const handleWeeklyDelete = async (e) => {
     await handleSettingsSubmit(session?.user?.settings?.weeklyTemplate.filter((task) => task.name !== e), "weeklyTemplate")
     mutate('/api/v1/user')
+  }
+
+  const handleDailyBulkDelete = async () => {
+    try {
+      const selectedRows = dailyTable.getFilteredSelectedRowModel().rows
+      if (selectedRows.length === 0) return
+      
+      const selectedNames = selectedRows.map(row => row.getValue("name"))
+      const filteredTemplate = session?.user?.settings?.dailyTemplate.filter((task) => !selectedNames.includes(task.name))
+      await handleSettingsSubmit(filteredTemplate, "dailyTemplate")
+      setDailyRowSelection({})
+      mutate('/api/v1/user')
+    } catch (error) {
+      console.error('Error deleting daily actions:', error)
+    }
+  }
+
+  const handleWeeklyBulkDelete = async () => {
+    try {
+      const selectedRows = weeklyTable.getFilteredSelectedRowModel().rows
+      if (selectedRows.length === 0) return
+      
+      const selectedNames = selectedRows.map(row => row.getValue("name"))
+      const filteredTemplate = session?.user?.settings?.weeklyTemplate.filter((task) => !selectedNames.includes(task.name))
+      await handleSettingsSubmit(filteredTemplate, "weeklyTemplate")
+      setWeeklyRowSelection({})
+      mutate('/api/v1/user')
+    } catch (error) {
+      console.error('Error deleting weekly actions:', error)
+    }
   }
 
   const dayColumns: ColumnDef<Payment>[] = [
@@ -246,7 +278,7 @@ export const SettingsView = ({ timeframe = "day" }) => {
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
+    onRowSelectionChange: setDailyRowSelection,
     initialState: {
       pagination: {
         pageSize: 50,
@@ -256,7 +288,7 @@ export const SettingsView = ({ timeframe = "day" }) => {
       sorting,
       columnFilters,
       columnVisibility,
-      rowSelection,
+      rowSelection: dailyRowSelection,
     },
   })
 
@@ -270,7 +302,7 @@ export const SettingsView = ({ timeframe = "day" }) => {
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
+    onRowSelectionChange: setWeeklyRowSelection,
     initialState: {
       pagination: {
         pageSize: 50,
@@ -280,9 +312,13 @@ export const SettingsView = ({ timeframe = "day" }) => {
       sorting,
       columnFilters,
       columnVisibility,
-      rowSelection,
+      rowSelection: weeklyRowSelection,
     },
   })
+
+  if (isLoading) {
+    return <SettingsSkeleton />
+  }
 
   return <div className="max-w-[720px] m-auto p-4">
       <h3 className="my-8">Your daily actions:</h3>
@@ -342,6 +378,17 @@ export const SettingsView = ({ timeframe = "day" }) => {
         </Select>
         <Button onClick={handleDailyAdd} className="md:ml-4">Add</Button>
       </div>
+      {dailyTable.getFilteredSelectedRowModel().rows.length > 0 && (
+        <div className="mb-4">
+          <Button 
+            variant="destructive" 
+            onClick={handleDailyBulkDelete}
+            className="mr-2"
+          >
+            Delete Selected ({dailyTable.getFilteredSelectedRowModel().rows.length})
+          </Button>
+        </div>
+      )}
       <Table>
           <TableHeader>
             {dailyTable?.getHeaderGroups().map((headerGroup) => (
@@ -447,6 +494,17 @@ export const SettingsView = ({ timeframe = "day" }) => {
         </Select>
         <Button onClick={handleWeeklyAdd} className="md:ml-4">Add</Button>
       </div>
+      {weeklyTable.getFilteredSelectedRowModel().rows.length > 0 && (
+        <div className="mb-4">
+          <Button 
+            variant="destructive" 
+            onClick={handleWeeklyBulkDelete}
+            className="mr-2"
+          >
+            Delete Selected ({weeklyTable.getFilteredSelectedRowModel().rows.length})
+          </Button>
+        </div>
+      )}
       <Table>
           <TableHeader>
             {weeklyTable?.getHeaderGroups().map((headerGroup) => (
