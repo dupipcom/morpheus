@@ -11,6 +11,7 @@ import { EarningsTable } from '@/components/earningsTable'
 import { getWeekNumber } from "@/app/helpers"
 
 import { GlobalContext } from "@/lib/contexts"
+import { generateInsight } from "@/lib/userUtils"
 
 const moodChartConfig = {
   moodAverage: {
@@ -63,24 +64,10 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
   const [relevantData, setRelevantData] = useState([])
     const { session, setGlobalContext, ...globalContext } = useContext(GlobalContext)
 
-  const generateInsight = async (value, field) => {
-    const response = await fetch('/api/v1/hint', { method: 'GET' }, {
-  cache: 'force-cache',
-  next: {
-    revalidate: 86400,
-    tags: ['hint'],
-  },
-})
-    const json = await response.json()
-    try {
-      setInsight(JSON.parse(json.result))
-    } catch (e) {
-      setInsight(JSON.parse(JSON.stringify(json.result)))
-    }
-  }
+
 
   useEffect(() => {
-    generateInsight()
+    generateInsight(setInsight, 'hint')
   }, [])
 
   if (!session?.user) {

@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useContext } from 'react'
 
 import { Slider } from "@/components/ui/slider"
 import { Input } from "@/components/ui/input"
@@ -13,8 +13,11 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
+import { GlobalContext } from "@/lib/contexts"
+import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil, handleMoodSubmit } from "@/lib/userUtils"
 
 export const MoodView = ({ timeframe = "day" }) => {
+  const { session, setGlobalContext, ...globalContext } = useContext(GlobalContext)
   const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const today = new Date()
   const todayDate = today.toLocaleString('en-uk', { timeZone: userTimezone }).split(',')[0].split('/').reverse().join('-')
@@ -22,8 +25,6 @@ export const MoodView = ({ timeframe = "day" }) => {
   const date = fullDay ? new Date(fullDay).toISOString().split('T')[0] : todayDate
   const year = Number(date.split('-')[0])
   const [weekNumber, setWeekNumber] = useState(getWeekNumber(today)[1])
-
-  const [session, setSession] = useState({ user: {} })
 
   const [insight, setInsight] = useState({})
 
@@ -38,39 +39,12 @@ export const MoodView = ({ timeframe = "day" }) => {
 
   const [mood, setMood] = useState(serverMood)
 
-  const updateUser = async () => {
-    try {
-      const response = await fetch('/api/v1/user', { method: 'GET' })
-      const updatedUser = await response.json()
-      setGlobalContext({...globalContext, session: { ...session, user: updatedUser } })
-    } catch (e) {
-      console.error(e)
-    }
-  }
+
 
   const handleSubmit = async (value, field) => {
     setMood({...mood, [field]: value})
-
-    if (field === 'text') {
-      const response = await fetch('/api/v1/user', 
-      { method: 'POST', 
-        body: JSON.stringify({
-          text: value,
-          date: fullDay
-      }) 
-    })
-    } else {
-      const response = await fetch('/api/v1/user', 
-      { method: 'POST', 
-        body: JSON.stringify({
-          mood: {
-            [field]: value,
-          },
-          date: fullDay
-        }) 
-      })
-    }
-    await updateUser()
+    await handleMoodSubmit(value, field, fullDay)
+    await updateUser(session, setGlobalContext, globalContext)
   }
 
 
@@ -80,32 +54,15 @@ export const MoodView = ({ timeframe = "day" }) => {
   }
 
   const handleCloseDates = async (values) => {
-    const response = await fetch('/api/v1/user', { method: 'POST', body: JSON.stringify({
-      daysToClose: values,
-      date: fullDay 
-    }) })
-    await updateUser()
+    await handleCloseDatesUtil(values, undefined, fullDay)
+    await updateUser(session, setGlobalContext, globalContext)
   }
 
-  const generateInsight = async (value, field) => {
-    const response = await fetch('/api/v1/hint', { method: 'GET' }, {
-  cache: 'force-cache',
-  next: {
-    revalidate: 86400,
-    tags: ['test'],
-  },
-})
-    const json = await response.json()
-    try {
-      setInsight(JSON.parse(json.result))
-    } catch (e) {
-      setInsight(JSON.parse(JSON.stringify(json.result)))
-    }
-  }
+
 
   useEffect(() => {
-    updateUser()
-    generateInsight()
+    updateUser(session, setGlobalContext, globalContext)
+    generateInsight(setInsight)
   }, [])
 
   if (!session?.user) {
