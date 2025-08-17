@@ -78,11 +78,11 @@ export const ViewMenu = ({ active }) =>{
   </NavigationMenuList>
   <div className="my-8">
     <label>Available Balance:</label>
-    <div className="flex">
+    <div key={`menu__balance--${hiddenBalance}`} className="flex">
       { hiddenBalance ? <Input disabled /> :
         <Input type="number" step="0.01" onBlur={handleBalanceChange} defaultValue={serverBalance} />
       }
-      <Button className={`ml-2 border-accent ${ hiddenBalance ? "bg-input/80" : "bg-input/30"} text-foreground`} onClick={handleHideBalance}>
+      <Button className={`ml-2 border-accent ${ hiddenBalance ? "bg-input/80" : "bg-input/30"} text-foreground hover:text-background`} onClick={handleHideBalance}>
         {hiddenBalance ?
           <Eye /> : <EyeOff />
         }
