@@ -3,6 +3,7 @@
 import React, { useRef, useState, useEffect, useContext } from 'react'
 import ReactDOMServer from 'react-dom/server';
 import prisma from "@/lib/prisma";
+import { useAuth } from '@clerk/nextjs';
 
 import Link from 'next/link'
 
@@ -17,9 +18,23 @@ import { getWeekNumber } from "@/app/helpers"
 import { DAILY_ACTIONS, WEEKS } from "@/app/constants"
 
 import { GlobalContext } from "@/lib/contexts"
+import { setLoginTime, getLoginTime } from '@/lib/cookieManager'
 
 export default function Template({ title, content, isomorphicContent }: any) {
   const { session, setGlobalContext } = useContext(GlobalContext)
+  const { isLoaded, isSignedIn } = useAuth();
+
+  // Set login time when user is authenticated
+  useEffect(() => {
+    if (isLoaded && isSignedIn) {
+      const loginTime = getLoginTime();
+      
+      // Set login time if not already set
+      if (loginTime === null) {
+        setLoginTime();
+      }
+    }
+  }, [isLoaded, isSignedIn]);
 
   const fullDate = new Date()
   const date = fullDate.toISOString().split('T')[0]

@@ -14,11 +14,11 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 import { GlobalContext } from "@/lib/contexts"
-import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil, handleMoodSubmit } from "@/lib/userUtils"
+import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil, handleMoodSubmit, isUserDataReady, useEnhancedLoadingState } from "@/lib/userUtils"
 import { MoodViewSkeleton } from "@/components/ui/skeleton-loader"
 
 export const MoodView = ({ timeframe = "day" }) => {
-  const { session, setGlobalContext, ...globalContext } = useContext(GlobalContext)
+  const { session, setGlobalContext, theme } = useContext(GlobalContext)
   const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const today = new Date()
   const todayDate = today.toLocaleString('en-uk', { timeZone: userTimezone }).split(',')[0].split('/').reverse().join('-')
@@ -45,7 +45,7 @@ export const MoodView = ({ timeframe = "day" }) => {
   const handleSubmit = async (value, field) => {
     setMood({...mood, [field]: value})
     await handleMoodSubmit(value, field, fullDay)
-    await updateUser(session, setGlobalContext, globalContext)
+    await updateUser(session, setGlobalContext, { session, theme })
   }
 
 
@@ -56,17 +56,20 @@ export const MoodView = ({ timeframe = "day" }) => {
 
   const handleCloseDates = async (values) => {
     await handleCloseDatesUtil(values, undefined, fullDay)
-    await updateUser(session, setGlobalContext, globalContext)
+    await updateUser(session, setGlobalContext, { session, theme })
   }
 
 
 
   useEffect(() => {
-    updateUser(session, setGlobalContext, globalContext)
+    updateUser(session, setGlobalContext, { session, theme })
     generateInsight(setInsight)
   }, [])
 
-  if (!session?.user) {
+  // Use enhanced loading state to prevent flashing (moodView doesn't use SWR)
+  const isDataLoading = useEnhancedLoadingState(false, session)
+
+  if (isDataLoading) {
     return <MoodViewSkeleton />
   }
 

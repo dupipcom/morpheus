@@ -3,6 +3,7 @@
 import React, { useRef, useState, useEffect, useContext } from 'react'
 import ReactDOMServer from 'react-dom/server';
 import '@mux/mux-video';
+import { useAuth } from '@clerk/nextjs';
 
 import Link from 'next/link'
 
@@ -10,13 +11,26 @@ import Layout from './layout'
 import { GlobalContext } from "./contexts"
 import { AnalyticsView } from "@/views/analyticsView"
 import { ViewMenu } from "@/components/viewMenu"
+import { setLoginTime, getLoginTime } from '@/lib/cookieManager'
 
 
 export default function Template({ title, content, isomorphicContent }: any) {
   const [globalContext, setGlobalContext] = useState({
     theme: 'light'
   })
+  const { isLoaded, isSignedIn } = useAuth();
 
+  // Set login time when user is authenticated
+  useEffect(() => {
+    if (isLoaded && isSignedIn) {
+      const loginTime = getLoginTime();
+      
+      // Set login time if not already set
+      if (loginTime === null) {
+        setLoginTime();
+      }
+    }
+  }, [isLoaded, isSignedIn]);
 
   const handleThemeChange = () => {
     if (globalContext.theme === 'light') {
@@ -31,6 +45,7 @@ export default function Template({ title, content, isomorphicContent }: any) {
       <ViewMenu active="dashboard" />
       <h1 className="scroll-m-20 text-2xl font-semibold tracking-tight text-center mb-8">{new Date().toLocaleString("en-US", {weekday: "long", year: "numeric", month: "short", day: "numeric" })}</h1>
       <h2 className="text-center scroll-m-20 text-lg font-semibold tracking-tight">Your life at a glimpse.</h2>
+
       <AnalyticsView />
       </main>
     )

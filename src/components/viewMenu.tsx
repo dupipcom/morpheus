@@ -15,7 +15,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 import useSWR from "swr"
 import { fetcher } from "@/lib/utils"
-import { updateUser } from "@/lib/userUtils"
+import { updateUser, isUserDataReady, useEnhancedLoadingState } from "@/lib/userUtils"
 import { LoadingSkeleton } from "@/components/ui/skeleton-loader"
 
 import { GlobalContext } from "@/lib/contexts"
@@ -26,19 +26,22 @@ import { useLocalStorage } from 'usehooks-ts';
 
 export const ViewMenu = ({ active }) =>{
   
-  const { session, setGlobalContext, ...globalContext } = useContext(GlobalContext)
+  const { session, setGlobalContext, theme } = useContext(GlobalContext)
   const serverBalance = session?.user?.availableBalance
   const [value, setValue, removeValue] = useLocalStorage('redacted', 0);
   const [hiddenBalance, setHiddenBalance] = useState(true)
 
-  const { data, mutate, error, isLoading } = useSWR(`/api/user`, () => updateUser(session, setGlobalContext, globalContext))
+  const { data, mutate, error, isLoading } = useSWR(
+    session?.user ? `/api/user` : null, 
+    () => updateUser(session, setGlobalContext, { session, theme })
+  )
 
   const handleBalanceChange = (e) => {
     fetch('/api/v1/user', { method: 'POST', body: JSON.stringify({
       availableBalance: e.currentTarget.value,
       date: new Date()
     }) })
-    setTimeout(() => updateUser(session, setGlobalContext, globalContext), 2000)
+    setTimeout(() => updateUser(session, setGlobalContext, { session, theme }), 2000)
   }
 
   const handleHideBalance = () => {
@@ -47,10 +50,13 @@ export const ViewMenu = ({ active }) =>{
   }
 
   useEffect(() => {
-    updateUser(session, setGlobalContext, globalContext)
+    updateUser(session, setGlobalContext, { session, theme })
   }, [])
 
-  if (isLoading) {
+  // Use enhanced loading state to prevent flashing
+  const isDataLoading = useEnhancedLoadingState(isLoading, session)
+
+  if (isDataLoading) {
     return <LoadingSkeleton />
   }
 

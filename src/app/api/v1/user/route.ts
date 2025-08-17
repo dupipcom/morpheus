@@ -6,11 +6,30 @@ import { WEEKLY_ACTIONS, DAILY_ACTIONS } from "@/app/constants"
 export async function GET(req: NextApiRequest, res: NextApiResponse) {
   const { userId } = await auth()
 
+  // Check if user is authenticated
+  if (!userId) {
+    return Response.json({ error: 'User not authenticated' }, { status: 401 })
+  }
+
   const getUser = async () => await prisma.user.findUnique({
        where: { userId }
     })
 
   let user = await getUser()
+
+  // If user doesn't exist in database, create them
+  if (!user) {
+    user = await prisma.user.create({
+      data: {
+        userId,
+        entries: {},
+        settings: {
+          dailyTemplate: [],
+          weeklyTemplate: []
+        }
+      }
+    })
+  }
 
   return Response.json(user)
 }
@@ -19,12 +38,30 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   const { userId } = await auth()
   const data = await req.json()
 
+  // Check if user is authenticated
+  if (!userId) {
+    return Response.json({ error: 'User not authenticated' }, { status: 401 })
+  }
 
   const getUser = async () => await prisma.user.findUnique({
        where: { userId }
     })
 
   let user = await getUser()
+
+  // If user doesn't exist in database, create them
+  if (!user) {
+    user = await prisma.user.create({
+      data: {
+        userId,
+        entries: {},
+        settings: {
+          dailyTemplate: [],
+          weeklyTemplate: []
+        }
+      }
+    })
+  }
 
   const fullDate = data?.date ? new Date(data?.date) : new Date()
 

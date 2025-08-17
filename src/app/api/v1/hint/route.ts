@@ -6,6 +6,43 @@ import prisma from "@/lib/prisma";
 import { getWeekNumber } from "@/app/helpers"
 import { WEEKLY_ACTIONS, DAILY_ACTIONS } from "@/app/constants"
 
+// Logger helper function for consistent console logging format
+const logger = (str: string, originalMessage?: any) => {
+  // Convert objects to strings to avoid circular references
+  let message = str;
+  if (originalMessage !== undefined) {
+    if (typeof originalMessage === 'object') {
+      try {
+        message = `${str} - ${JSON.stringify(originalMessage, null, 2)}`;
+      } catch (error) {
+        message = `${str} - [Object - circular reference or non-serializable]`;
+      }
+    } else {
+      message = `${str} - ${String(originalMessage)}`;
+    }
+  }
+
+  // Determine colors based on message content
+  const isDb = str.includes('db');
+  const isError = str.includes('error');
+  const isIdle = str.includes('idle');
+  const isWarning = str.includes('warning');
+
+  // Create console.log color settings object
+  const colorSettings = {
+    background: isDb ? 'cyan' : '#1f1f1f',
+    color: isError ? 'red' : isIdle || isWarning ? 'yellow' : 'green',
+    fontWeight: 'bold',
+    padding: '2px 4px',
+    borderRadius: '3px'
+  };
+
+  console.log(
+    `%cdpip::morpheus::${message}`,
+    `background: ${colorSettings.background}; color: ${colorSettings.color}; font-weight: ${colorSettings.fontWeight}; padding: ${colorSettings.padding}; border-radius: ${colorSettings.borderRadius};`
+  );
+};
+
 interface GenerateRequest {
   prompt: string;
 }
@@ -123,7 +160,7 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
       return Response.json({ result: JSON.parse(response.output_text) });
 
   } catch (error) {
-    console.error(error);
+    logger('hint_generation_error', `Failed to generate response: ${error}`);
     return Response.json({ error: "Failed to generate response" }, { status: 500 });
   }} else {
     return Response.json({ result: user.analysis[date] });

@@ -18,6 +18,9 @@ import "./globals.css"
 import { useLocalStorage } from 'usehooks-ts';
 
 import { Skeleton } from "@/components/ui/skeleton"
+import { Toaster } from '@/components/ui/sonner'
+import { AuthWrapper } from '@/components/auth-wrapper'
+import { AuthTracker } from '@/components/auth-tracker'
 
 
 const comfortaa = Comfortaa({
@@ -36,10 +39,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const [isLoading, setIsLoading] = useState(true);
-  const [value, setValue, removeValue] = useLocalStorage('theme', undefined);
+  const [value, setValue, removeValue] = useLocalStorage('theme', 'light');
   const [globalContext, setGlobalContext] = useState({ theme: value, session: { user: {} } })
-
-  
+  const signedIn = !!(globalContext?.session?.user as any)?.settings
 
   const handleThemeChange = () => {
     if (globalContext.theme === 'light') {
@@ -78,20 +80,25 @@ export default function RootLayout({
         className={`${comfortaa.variable} ${value}`}
       >
         
-        <ClerkProvider appearance={{
+        <ClerkProvider forceRedirectUrl="/app/dashboard" appearance={{
         cssLayerName: 'clerk',
         baseTheme: shadcn,
         }}>
-          <GlobalContext.Provider value={{...globalContext, setGlobalContext }}>
-            <Nav onThemeChange={handleThemeChange} />
-            <article className="p-2 md:p-8">
-              {!isLoading ? undefined : <Skeleton className="bg-muted h-[75vh] w-full z-[999]" />}
-              <div className={`${!isLoading ? "block" : "hidden"}`}>
-                {children}
-              </div>
-            </article>
-          </GlobalContext.Provider>
+          <AuthWrapper isLoading={isLoading}>
+            <GlobalContext.Provider value={{ ...globalContext, setGlobalContext }}>
+              <Nav subHeader="" onThemeChange={handleThemeChange} />
+              <article className="p-2 md:p-8">
+                {!isLoading ? undefined : <Skeleton className="bg-muted h-[75vh] w-full z-[999]" />}
+                <div className={`${!isLoading ? "block" : "hidden"}`}>
+                  {(!signedIn || isLoading) ? children : <AuthTracker>
+                    {children}
+                  </AuthTracker>}
+                </div>
+              </article>
+            </GlobalContext.Provider>
+          </AuthWrapper>
         </ClerkProvider>
+        <Toaster />
         <footer className="mt-8 md:mt-32 p-2">
             <div className={`m-auto max-w-[1200px] grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 text-[12px] flex w-full flex-col items-start p-2 pb-16 place-items-center`}>
               <small className="mb-4">
