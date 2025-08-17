@@ -17,6 +17,43 @@
 
 const { PrismaClient } = require('../../generated/prisma')
 
+// Logger helper function for consistent console logging format
+const logger = (str, originalMessage) => {
+  // Convert objects to strings to avoid circular references
+  let message = str;
+  if (originalMessage !== undefined) {
+    if (typeof originalMessage === 'object') {
+      try {
+        message = `${str} - ${JSON.stringify(originalMessage, null, 2)}`;
+      } catch (error) {
+        message = `${str} - [Object - circular reference or non-serializable]`;
+      }
+    } else {
+      message = `${str} - ${String(originalMessage)}`;
+    }
+  }
+
+  // Determine colors based on message content
+  const isDb = str.includes('db');
+  const isError = str.includes('error');
+  const isIdle = str.includes('idle');
+  const isWarning = str.includes('warning');
+
+  // Create console.log color settings object
+  const colorSettings = {
+    background: isDb ? 'cyan' : '#1f1f1f',
+    color: isError ? 'red' : isIdle || isWarning ? 'yellow' : 'green',
+    fontWeight: 'bold',
+    padding: '2px 4px',
+    borderRadius: '3px'
+  };
+
+  console.log(
+    `%cdpip::morpheus::${message}`,
+    `background: ${colorSettings.background}; color: ${colorSettings.color}; font-weight: ${colorSettings.fontWeight}; padding: ${colorSettings.padding}; border-radius: ${colorSettings.borderRadius};`
+  );
+};
+
 // --- Template Data ---
 
 const WEEKLY_ACTIONS = [
@@ -78,11 +115,11 @@ const prisma = new PrismaClient();
  * The main migration function.
  */
 async function main() {
-  console.log('Starting migration to populate settings templates...');
+  logger('migration_start', 'Started');
 
   // 1. Fetch all documents from the 'users' collection.
   const documents = await prisma.user.findMany();
-  console.log(`Found ${documents.length} documents to process.`);
+  logger('migration_documents_found', `Found ${documents.length} documents`);
 
   let updatedCount = 0;
   const updatePromises = [];
@@ -98,14 +135,14 @@ async function main() {
     if (!settings.weeklyTemplate || settings.weeklyTemplate.length === 0) {
       settings.weeklyTemplate = WEEKLY_ACTIONS;
       wasModified = true;
-      console.log(`- User ${doc.id}: Adding weekly template.`);
+      logger('migration_add_weekly_template', 'Added weekly template');
     }
 
     // 4. Populate `dailyTemplate` if it doesn't exist or is empty.
     if (!settings.dailyTemplate || settings.dailyTemplate.length === 0) {
         settings.dailyTemplate = DAILY_ACTIONS;
         wasModified = true;
-        console.log(`- User ${doc.id}: Adding daily template.`);
+        logger('migration_add_daily_template', 'Added daily template');
     }
 
     // 5. If the document was changed, add its update operation to our list of promises.
@@ -124,19 +161,18 @@ async function main() {
 
   // 6. Execute all update promises in a single transaction.
   if (updatePromises.length > 0) {
-    console.log(`\nApplying updates to ${updatedCount} documents...`);
+    logger('migration_applying_updates', `Applying ${updatedCount} updates`);
     await prisma.$transaction(updatePromises);
-    console.log('✅ Migration successful: All documents have been updated.');
+    logger('migration_success', 'Completed');
   } else {
-    console.log('✅ Migration complete: No documents required updates.');
+    logger('migration_complete', 'No updates needed');
   }
 }
 
 // 7. Execute the main function and handle potential errors.
 main()
   .catch((e) => {
-    console.error('Migration failed:');
-    console.error(e);
+    logger('migration_failed', `Migration failed: ${e}`);
     process.exit(1);
   })
   .finally(async () => {

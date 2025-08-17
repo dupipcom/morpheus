@@ -1,0 +1,92 @@
+{
+  "common": {
+    "day": "Dag",
+    "week": "Uge",
+    "mood": "Humør",
+    "availableBalance": "Tilgængelig saldo",
+    "login": "Log ind",
+    "edit": "Rediger",
+    "close": "Luk",
+    "save": "Gem",
+    "cancel": "Annuller",
+    "delete": "Slet",
+    "loading": "Indlæser...",
+    "error": "Fejl",
+    "success": "Succes",
+    "welcome": "Velkommen til DreamPip!",
+    "signInToAccess": "Log ind for at få adgang til dit dashboard og spore din fremskridt.",
+    "dismiss": "Luk",
+    "selectLanguage": "Vælg sprog"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "profile": "Profil",
+    "settings": "Indstillinger",
+    "logout": "Log ud"
+  },
+  "dashboard": {
+    "title": "Dit liv på et øjeblik.",
+    "todayIs": "I dag er det {date}.",
+    "whatDidYouAccomplish": "Hvad opnåede du i dag?",
+    "yourEarnings": "Din indtjening {timeframe}, indtil videre: ${amount}",
+    "today": "i dag",
+    "thisWeek": "denne uge",
+    "yourMood": "Dit humør.",
+    "yourProductivity": "Din produktivitet.",
+    "yourData": "Dine data."
+  },
+  "mood": {
+    "title": "Registrer dit humør for {date}",
+    "subtitle": "Hvordan føler du dig i dag?",
+    "selfEsteem": "Selvværd",
+    "trust": "Tillid",
+    "editDay": "Rediger dag",
+    "closeDay": "Luk dag"
+  },
+  "week": {
+    "weekNumber": "Uge {number}",
+    "to": "til",
+    "closeWeek": "Luk uge"
+  },
+  "tasks": {
+    "editing": "Redigerer",
+    "weekNumber": "Uge {number}",
+    "yourEarnings": "Din indtjening"
+  },
+  "actions": {
+    "add": "Tilføj",
+    "remove": "Fjern",
+    "update": "Opdater",
+    "refresh": "Opdater"
+  },
+  "footer": {
+    "copyright": "© {year} DreamPip. All rights reserved.",
+    "terms": "Servicevilkår",
+    "privacy": "Privatlivspolitik"
+  },
+  "earningsTable": {
+    "day": "Dag",
+    "earnings": "Indtjening",
+    "moodAverage": "Gennemsnitligt humør",
+    "productivity": "Produktivitet",
+    "gratitude": "Taknemmelighed",
+    "optimism": "Optimisme",
+    "restedness": "Hvile",
+    "tolerance": "Tolerance",
+    "selfEsteem": "Selvværd",
+    "trust": "Tillid",
+    "actions": "Handlinger",
+    "closeDay": "Luk dag",
+    "editDay": "Rediger dag",
+    "deleteDay": "Slet dag",
+    "columns": "Kolonner",
+    "noResults": "Ingen resultater.",
+    "rowsSelected": "{selected} af {total} række(r) valgt.",
+    "previous": "Forrige",
+    "next": "Næste"
+  },
+  "errors": {
+    "notFound": "Ups! Kunne ikke indstille denne frekvens.",
+    "genericError": "Noget gik galt. Prøv venligst igen."
+  }
+}

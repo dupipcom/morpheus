@@ -4,6 +4,8 @@ import type { Metadata } from "next"
 import { shadcn } from '@clerk/themes'
 
 import { GlobalContext } from "@/lib/contexts"
+import { I18nProvider } from "@/lib/contexts/i18n"
+
 
 import { Comfortaa } from "next/font/google"
 
@@ -12,12 +14,21 @@ import {
 } from '@clerk/nextjs'
 
 import { Nav } from '@/components/ui/nav'
+import { Footer } from '@/components/Footer'
 
 import "./globals.css"
 
 import { useLocalStorage } from 'usehooks-ts';
 
 import { Skeleton } from "@/components/ui/skeleton"
+import { Toaster } from '@/components/ui/sonner'
+import { AuthWrapper } from '@/components/auth-wrapper'
+import { AuthToast } from '@/components/auth-toast'
+import { AppContent } from '@/components/app-content'
+import { getLocaleFromPath } from './helpers'
+import { defaultLocale } from './constants'
+import { getLocaleCookie } from '@/lib/localeUtils'
+import { getClerkLocalization } from '@/lib/clerkLocalization'
 
 
 const comfortaa = Comfortaa({
@@ -36,10 +47,32 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const [isLoading, setIsLoading] = useState(true);
-  const [value, setValue, removeValue] = useLocalStorage('theme', undefined);
-  const [globalContext, setGlobalContext] = useState({ theme: value, session: { user: {} } })
-
+  const [value, setValue, removeValue] = useLocalStorage('theme', 'light');
+  const [globalContext, setGlobalContext] = useState({ theme: 'light', session: { user: {} } })
+  const [isClient, setIsClient] = useState(false)
   
+  // Get locale from URL path, cookie, or default
+  const locale = typeof window !== 'undefined' 
+    ? (() => {
+        const cookieLocale = getLocaleCookie()
+        if (cookieLocale && cookieLocale !== getLocaleFromPath(window.location.pathname)) {
+          // If cookie locale differs from path locale, redirect to cookie locale
+          const currentPath = window.location.pathname
+          const pathLocale = getLocaleFromPath(currentPath)
+          if (pathLocale && pathLocale !== cookieLocale) {
+            const newPath = currentPath.replace(`/${pathLocale}`, `/${cookieLocale}`)
+            window.location.pathname = newPath
+            return cookieLocale
+          }
+        }
+        return getLocaleFromPath(window.location.pathname) || cookieLocale || defaultLocale
+      })()
+    : defaultLocale
+
+  // Check if current path is a localized route (any path starting with /locale/)
+  const isLocalizedRoute = typeof window !== 'undefined' 
+    ? window.location.pathname.match(/^\/([a-z]{2})(\/|$)/) !== null
+    : false
 
   const handleThemeChange = () => {
     if (globalContext.theme === 'light') {
@@ -51,10 +84,18 @@ export default function RootLayout({
     }
   }
 
+  // Set client flag on mount
   useEffect(() => {
-    setGlobalContext({ ...globalContext, theme: value })
-    if (!!value) setIsLoading(false)
-  }, [value])
+    setIsClient(true)
+  }, [])
+
+  // Update theme from localStorage once client is ready
+  useEffect(() => {
+    if (isClient && value) {
+      setGlobalContext(prev => ({ ...prev, theme: value }))
+      setIsLoading(false)
+    }
+  }, [isClient, value])
 
   return (
     <html lang="en" className="notranslate">
@@ -71,61 +112,35 @@ export default function RootLayout({
         <meta name="author" content="DreamPip" />
         <meta property="og:image" content="https://www.dreampip.com/images/logo-social.jpg" />
       </head>
-      { isLoading ? <body><Skeleton /> </body>: (
 
               <body
         suppressHydrationWarning
-        className={`${comfortaa.variable} ${value}`}
+        className={`${comfortaa.variable} ${isClient ? value : 'light'}`}
       >
         
-        <ClerkProvider appearance={{
-        cssLayerName: 'clerk',
-        baseTheme: shadcn,
-        }}>
-          <GlobalContext.Provider value={{...globalContext, setGlobalContext }}>
-            <Nav onThemeChange={handleThemeChange} />
-            <article className="p-2 md:p-8">
-              {!isLoading ? undefined : <Skeleton className="bg-muted h-[75vh] w-full z-[999]" />}
-              <div className={`${!isLoading ? "block" : "hidden"}`}>
-                {children}
-              </div>
-            </article>
-          </GlobalContext.Provider>
+        <ClerkProvider 
+          redirectUrl="/app/dashboard" 
+          appearance={{
+            cssLayerName: 'clerk',
+            baseTheme: shadcn,
+          }}
+        >
+          <AuthWrapper isLoading={isLoading}>
+            <I18nProvider locale={locale}>
+              <GlobalContext.Provider value={{ ...globalContext, setGlobalContext }}>
+
+                <article className="">
+                  <div>
+                      <AppContent>{children}</AppContent>
+                  </div>
+                </article>
+                <AuthToast />
+              </GlobalContext.Provider>
+            </I18nProvider>
+          </AuthWrapper>
         </ClerkProvider>
-        <footer className="mt-8 md:mt-32 p-2">
-            <div className={`m-auto max-w-[1200px] grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 text-[12px] flex w-full flex-col items-start p-2 pb-16 place-items-center`}>
-              <small className="mb-4">
-                © 2012—Present Purizu and Remotelys dba DreamPip
-                <br />IVA IT02925300903 
-                <br />REA 572763 
-                <br />CNPJ 37.553.462/0001-46
-                <br /><br />
-              </small>
-              <div className="text-foreground">
-                <div className="rounded bg-accent dark:text-muted mb-2 flex overflow-hidden max-h-[32px] w-[128px]">
-                  <img src="/images/brazil.webp" className="w-[32px] object-cover" />
-                  <small className="p-2 text-[8px] font-bold">LGPD Compliant</small>
-                </div>
-                <div className="rounded bg-accent dark:text-muted mb-2 flex overflow-hidden max-h-[32px] w-[128px]">
-                  <img src="/images/europe.png" className="w-[32px] object-cover" />
-                  <small className="p-2 text-[8px] font-bold">GDPR Compliant</small>
-                </div>
-                <div className="rounded bg-accent dark:text-muted mb-8 flex overflow-hidden max-h-[32px] w-[128px]">
-                  <img src="/images/europe.png" className="w-[32px] object-cover" />
-                  <small className="p-2 text-[8px] font-bold">DORA Ready</small>
-                </div>
-              </div>
-              <div className="flex flex-col">
-                              <small className="">Insights are AI generated via RAG and prompt engineering.
-              <br /><br />We use cookies, and by using this app you agree to it.<br /><br /></small>
-              <a href="/code" className=""><small>Code</small></a>              
-              <a href="/terms" className=""><small>Terms of Service</small></a>
-              <a href="/privacy" className=""><small>Privacy Policy</small></a>
-            </div>
-            </div>
-          </footer>
+        <Toaster />
       </body>
-      )}
 
     </html>
   );

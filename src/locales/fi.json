@@ -1,0 +1,92 @@
+{
+  "common": {
+    "day": "Päivä",
+    "week": "Viikko",
+    "mood": "Mieliala",
+    "availableBalance": "Käytettävissä oleva saldo",
+    "login": "Kirjaudu sisään",
+    "edit": "Muokkaa",
+    "close": "Sulje",
+    "save": "Tallenna",
+    "cancel": "Peruuta",
+    "delete": "Poista",
+    "loading": "Ladataan...",
+    "error": "Virhe",
+    "success": "Onnistui",
+    "welcome": "Tervetuloa DreamPip!",
+    "signInToAccess": "Kirjaudu sisään päästäksesi hallintapaneeliin ja seurataksesi edistymistäsi.",
+    "dismiss": "Sulje",
+    "selectLanguage": "Valitse kieli"
+  },
+  "navigation": {
+    "dashboard": "Kojelauta",
+    "profile": "Profiili",
+    "settings": "Asetukset",
+    "logout": "Kirjaudu ulos"
+  },
+  "dashboard": {
+    "title": "Elämäsi yhdellä silmäyksellä.",
+    "todayIs": "Tänään on {date}.",
+    "whatDidYouAccomplish": "Mitä saavutit tänään?",
+    "yourEarnings": "Tulosi {timeframe}, toistaiseksi: ${amount}",
+    "today": "tänään",
+    "thisWeek": "tällä viikolla",
+    "yourMood": "Mielialasi.",
+    "yourProductivity": "Tuottavuutesi.",
+    "yourData": "Tietosi."
+  },
+  "mood": {
+    "title": "Kirjaa mielialasi {date} päivälle",
+    "subtitle": "Miltä sinusta tuntuu tänään?",
+    "selfEsteem": "Itsetunto",
+    "trust": "Luottamus",
+    "editDay": "Muokkaa päivää",
+    "closeDay": "Sulje päivä"
+  },
+  "week": {
+    "weekNumber": "Viikko {number}",
+    "to": "asti",
+    "closeWeek": "Sulje viikko"
+  },
+  "tasks": {
+    "editing": "Muokataan",
+    "weekNumber": "Viikko {number}",
+    "yourEarnings": "Tulosi"
+  },
+  "actions": {
+    "add": "Lisää",
+    "remove": "Poista",
+    "update": "Päivitä",
+    "refresh": "Päivitä"
+  },
+  "footer": {
+    "copyright": "© {year} DreamPip. All rights reserved.",
+    "terms": "Palveluehdot",
+    "privacy": "Tietosuojakäytäntö"
+  },
+  "earningsTable": {
+    "day": "Päivä",
+    "earnings": "Tulot",
+    "moodAverage": "Keskimääräinen mieliala",
+    "productivity": "Tuottavuus",
+    "gratitude": "Kiitollisuus",
+    "optimism": "Optimismi",
+    "restedness": "Lepo",
+    "tolerance": "Suvaitsevaisuus",
+    "selfEsteem": "Itsetunto",
+    "trust": "Luottamus",
+    "actions": "Toiminnot",
+    "closeDay": "Sulje päivä",
+    "editDay": "Muokkaa päivää",
+    "deleteDay": "Poista päivä",
+    "columns": "Sarakkeet",
+    "noResults": "Ei tuloksia.",
+    "rowsSelected": "{selected} {total} rivistä valittu.",
+    "previous": "Edellinen",
+    "next": "Seuraava"
+  },
+  "errors": {
+    "notFound": "Ups! Ei voitu virittää tätä taajuutta.",
+    "genericError": "Jokin meni pieleen. Yritä uudelleen."
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "common": {
+    "day": "Dzień",
+    "week": "Tydzień",
+    "mood": "Nastrój",
+    "availableBalance": "Dostępne saldo",
+    "login": "Zaloguj się",
+    "edit": "Edytuj",
+    "close": "Zamknij",
+    "save": "Zapisz",
+    "cancel": "Anuluj",
+    "delete": "Usuń",
+    "loading": "Ładowanie...",
+    "error": "Błąd",
+    "success": "Sukces",
+    "welcome": "Witamy w DreamPip!",
+    "signInToAccess": "Zaloguj się, aby uzyskać dostęp do swojego panelu i śledzić postępy.",
+    "dismiss": "Zamknij",
+    "selectLanguage": "Wybierz język"
+  },
+  "navigation": {
+    "dashboard": "Panel",
+    "profile": "Profil",
+    "settings": "Ustawienia",
+    "logout": "Wyloguj się"
+  },
+  "dashboard": {
+    "title": "Twoje życie w pigułce.",
+    "todayIs": "Dzisiaj jest {date}.",
+    "whatDidYouAccomplish": "Co osiągnąłeś dzisiaj?",
+    "yourEarnings": "Twoje zarobki {timeframe}, do tej pory: ${amount}",
+    "today": "dzisiaj",
+    "thisWeek": "w tym tygodniu",
+    "yourMood": "Twój nastrój.",
+    "yourProductivity": "Twoja produktywność.",
+    "yourData": "Twoje dane."
+  },
+  "mood": {
+    "title": "Zarejestruj swój nastrój na {date}",
+    "subtitle": "Jak się dzisiaj czujesz?",
+    "selfEsteem": "Poczucie własnej wartości",
+    "trust": "Zaufanie",
+    "editDay": "Edytuj dzień",
+    "closeDay": "Zamknij dzień"
+  },
+  "week": {
+    "weekNumber": "Tydzień {number}",
+    "to": "do",
+    "closeWeek": "Zamknij tydzień"
+  },
+  "tasks": {
+    "editing": "Edycja",
+    "weekNumber": "Tydzień {number}",
+    "yourEarnings": "Twoje zarobki"
+  },
+  "actions": {
+    "add": "Dodaj",
+    "remove": "Usuń",
+    "update": "Aktualizuj",
+    "refresh": "Odśwież"
+  },
+  "footer": {
+    "copyright": "© {year} DreamPip. Wszystkie prawa zastrzeżone.",
+    "terms": "Warunki korzystania",
+    "privacy": "Polityka prywatności"
+  },
+  "earningsTable": {
+    "day": "Dzień",
+    "earnings": "Zarobki",
+    "moodAverage": "Średni nastrój",
+    "productivity": "Produktywność",
+    "gratitude": "Wdzięczność",
+    "optimism": "Optymizm",
+    "restedness": "Wypoczęcie",
+    "tolerance": "Tolerancja",
+    "selfEsteem": "Poczucie własnej wartości",
+    "trust": "Zaufanie",
+    "actions": "Akcje",
+    "closeDay": "Zamknij dzień",
+    "editDay": "Edytuj dzień",
+    "deleteDay": "Usuń dzień",
+    "columns": "Kolumny",
+    "noResults": "Brak wyników.",
+    "rowsSelected": "{selected} z {total} wierszy wybranych.",
+    "previous": "Poprzedni",
+    "next": "Następny"
+  },
+  "errors": {
+    "notFound": "Ups! Nie można dostroić do tej częstotliwości.",
+    "genericError": "Coś poszło nie tak. Spróbuj ponownie."
+  }
+}
