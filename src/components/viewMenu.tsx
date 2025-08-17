@@ -16,6 +16,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import useSWR from "swr"
 import { fetcher } from "@/lib/utils"
 import { updateUser } from "@/lib/userUtils"
+import { LoadingSkeleton } from "@/components/ui/skeleton-loader"
 
 import { GlobalContext } from "@/lib/contexts"
 
@@ -48,6 +49,10 @@ export const ViewMenu = ({ active }) =>{
   useEffect(() => {
     updateUser(session, setGlobalContext, globalContext)
   }, [])
+
+  if (isLoading) {
+    return <LoadingSkeleton />
+  }
 
   return <NavigationMenu className="flex flex-col center text-center w-full m-auto">
   <NavigationMenuList className="grid grid-cols-3">

@@ -53,6 +53,7 @@ import { WEEKLY_ACTIONS, DAILY_ACTIONS } from "@/app/constants"
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
 import { GlobalContext } from "@/lib/contexts"
 import { updateUser, handleSettingsSubmit } from "@/lib/userUtils"
+import { SettingsSkeleton } from "@/components/ui/skeleton-loader"
 
 export const SettingsView = ({ timeframe = "day" }) => {
   const fullDate = new Date()
@@ -314,6 +315,10 @@ export const SettingsView = ({ timeframe = "day" }) => {
       rowSelection: weeklyRowSelection,
     },
   })
+
+  if (isLoading) {
+    return <SettingsSkeleton />
+  }
 
   return <div className="max-w-[720px] m-auto p-4">
       <h3 className="my-8">Your daily actions:</h3>
