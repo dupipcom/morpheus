@@ -14,6 +14,7 @@ import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
 import { generateInsight } from "@/lib/userUtils"
 import { AnalyticsViewSkeleton } from "@/components/ui/skeleton-loader"
+import { ContentLoadingWrapper } from '@/components/ContentLoadingWrapper'
 
 const moodChartConfig = {
   moodAverage: {
@@ -99,7 +100,9 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
       return acc
     }, []);
 
-  return <div className="max-w-[1200px] w-full m-auto p-4 md:px-32 ">
+  return (
+    <ContentLoadingWrapper>
+      <div className="max-w-[1200px] w-full m-auto p-4 md:px-32 ">
       <p className="mt-0 mb-8">{insight?.yearAnalysis}</p>
       <h2 className="mb-8 mt-16 text-center scroll-m-20 text-lg font-semibold tracking-tight">{t('dashboard.yourMood')}</h2>
 
@@ -153,6 +156,7 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
       <h2 className="mb-8 mt-16 text-center scroll-m-20 text-lg font-semibold tracking-tight">{t('dashboard.yourData')}</h2>
 
       <EarningsTable data={plotData} />
-
-    </div>
+      </div>
+    </ContentLoadingWrapper>
+  )
 }

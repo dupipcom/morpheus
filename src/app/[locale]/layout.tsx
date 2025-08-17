@@ -10,7 +10,7 @@ import { AuthWrapper } from '@/components/auth-wrapper'
 import { AuthTracker } from '@/components/auth-tracker'
 import { AuthToast } from '@/components/auth-toast'
 import { Skeleton } from "@/components/ui/skeleton"
-import { ContentLoadingWrapper } from '@/components/ContentLoadingWrapper'
+
 import { useLocalStorage } from 'usehooks-ts'
 import { useState, useEffect } from 'react'
 import { getLocaleCookie } from '@/lib/localeUtils'
@@ -56,16 +56,14 @@ export default function LocalizedLayout({ children, params }: LocalizedLayoutPro
       <AuthWrapper isLoading={isLoading}>
         <GlobalContext.Provider value={{ ...globalContext, setGlobalContext }}>
           <Nav subHeader="" onThemeChange={handleThemeChange} />
-          <ContentLoadingWrapper>
-            <article className="p-2 md:p-8">
-              {!isLoading ? undefined : <Skeleton className="bg-muted h-[75vh] w-full z-[999]" />}
-              <div className={`${!isLoading ? "block" : "hidden"}`}>
-                {(!signedIn || isLoading) ? children : <AuthTracker>
-                  {children}
-                </AuthTracker>}
-              </div>
-            </article>
-          </ContentLoadingWrapper>
+          <article className="p-2 md:p-8">
+            {!isLoading ? undefined : <Skeleton className="bg-muted h-[75vh] w-full z-[999]" />}
+            <div className={`${!isLoading ? "block" : "hidden"}`}>
+              {(!signedIn || isLoading) ? children : <AuthTracker>
+                {children}
+              </AuthTracker>}
+            </div>
+          </article>
           <Footer />
           <AuthToast />
         </GlobalContext.Provider>

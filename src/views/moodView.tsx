@@ -17,6 +17,7 @@ import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
 import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil, handleMoodSubmit, isUserDataReady, useEnhancedLoadingState } from "@/lib/userUtils"
 import { MoodViewSkeleton } from "@/components/ui/skeleton-loader"
+import { ContentLoadingWrapper } from '@/components/ContentLoadingWrapper'
 
 export const MoodView = ({ timeframe = "day" }) => {
   const { session, setGlobalContext, theme } = useContext(GlobalContext)
@@ -75,7 +76,9 @@ export const MoodView = ({ timeframe = "day" }) => {
     return <MoodViewSkeleton />
   }
 
-  return <div key={JSON.stringify(serverMood)} className="max-w-[720px] m-auto p-4">
+  return (
+    <ContentLoadingWrapper>
+      <div key={JSON.stringify(serverMood)} className="max-w-[720px] m-auto p-4">
           <p className="sticky top-25 truncate z-[999] text-center scroll-m-20 text-sm font-semibold tracking-tight mb-8">{t('tasks.editing', { timeframe: date })}</p>
           <h3 className="mt-8 mb-4">What's in your mind?</h3>
       <Textarea className="mb-16" defaultValue={serverText} onBlur={(e) => handleSubmit(e.target.value, "text")} />
@@ -125,5 +128,7 @@ export const MoodView = ({ timeframe = "day" }) => {
           <CarouselPrevious />
           <CarouselNext />
         </Carousel> : undefined }
-    </div>
+      </div>
+    </ContentLoadingWrapper>
+  )
 }

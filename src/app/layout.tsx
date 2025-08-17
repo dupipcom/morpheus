@@ -5,7 +5,7 @@ import { shadcn } from '@clerk/themes'
 
 import { GlobalContext } from "@/lib/contexts"
 import { I18nProvider } from "@/lib/contexts/i18n"
-import { ContentLoadingWrapper } from "@/components/ContentLoadingWrapper"
+
 
 import { Comfortaa } from "next/font/google"
 
@@ -118,16 +118,13 @@ export default function RootLayout({
             <I18nProvider locale={locale}>
               <GlobalContext.Provider value={{ ...globalContext, setGlobalContext }}>
                 {!isLocalizedRoute && <Nav subHeader="" onThemeChange={handleThemeChange} />}
-                <ContentLoadingWrapper>
-                  <article className="p-2 md:p-8">
-                    {!isLoading ? undefined : <Skeleton className="bg-muted h-[75vh] w-full z-[999]" />}
-                    <div className={`${!isLoading ? "block" : "hidden"}`}>
-                      {(!signedIn || isLoading) ? children : <AuthTracker>
-                        {children}
-                      </AuthTracker>}
-                    </div>
-                  </article>
-                </ContentLoadingWrapper>
+                <article className="">
+                  <div>
+                    <AuthTracker>
+                      {children}
+                    </AuthTracker>
+                  </div>
+                </article>
                 {!isLocalizedRoute && <Footer />}
                 <AuthToast />
               </GlobalContext.Provider>
