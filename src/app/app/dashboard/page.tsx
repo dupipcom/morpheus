@@ -3,6 +3,7 @@
 import React, { useRef, useState, useEffect, useContext } from 'react'
 import ReactDOMServer from 'react-dom/server';
 import '@mux/mux-video';
+import { useAuth } from '@clerk/nextjs';
 
 import Link from 'next/link'
 
@@ -10,13 +11,26 @@ import Layout from './layout'
 import { GlobalContext } from "./contexts"
 import { AnalyticsView } from "@/views/analyticsView"
 import { ViewMenu } from "@/components/viewMenu"
+import { setLoginTime, getLoginTime } from '@/lib/cookieManager'
 
 
 export default function Template({ title, content, isomorphicContent }: any) {
   const [globalContext, setGlobalContext] = useState({
     theme: 'light'
   })
+  const { isLoaded, isSignedIn } = useAuth();
 
+  // Set login time when user is authenticated
+  useEffect(() => {
+    if (isLoaded && isSignedIn) {
+      const loginTime = getLoginTime();
+      
+      // Set login time if not already set
+      if (loginTime === null) {
+        setLoginTime();
+      }
+    }
+  }, [isLoaded, isSignedIn]);
 
   const handleThemeChange = () => {
     if (globalContext.theme === 'light') {
