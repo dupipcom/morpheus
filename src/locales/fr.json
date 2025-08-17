@@ -19,7 +19,9 @@
     "welcome": "Bienvenue sur DreamPip !",
     "signInToAccess": "Connectez-vous pour accéder à votre tableau de bord et suivre vos progrès.",
     "dismiss": "Fermer",
-    "selectLanguage": "Sélectionner la langue"
+    "selectLanguage": "Sélectionner la langue",
+    "manageAccount": "Gérer Mon Compte",
+    "signOut": "Se Déconnecter"
   },
   "navigation": {
     "home": "Accueil",

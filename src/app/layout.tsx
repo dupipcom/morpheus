@@ -28,6 +28,7 @@ import { AuthToast } from '@/components/auth-toast'
 import { getLocaleFromPath } from './helpers'
 import { defaultLocale } from './constants'
 import { getLocaleCookie } from '@/lib/localeUtils'
+import { getClerkLocalization } from '@/lib/clerkLocalization'
 
 
 const comfortaa = Comfortaa({
@@ -110,19 +111,22 @@ export default function RootLayout({
         className={`${comfortaa.variable} ${value}`}
       >
         
-        <ClerkProvider redirectUrl="/app/dashboard" appearance={{
-        cssLayerName: 'clerk',
-        baseTheme: shadcn,
-        }}>
+        <ClerkProvider 
+          redirectUrl="/app/dashboard" 
+          appearance={{
+            cssLayerName: 'clerk',
+            baseTheme: shadcn,
+          }}
+        >
           <AuthWrapper isLoading={isLoading}>
             <I18nProvider locale={locale}>
               <GlobalContext.Provider value={{ ...globalContext, setGlobalContext }}>
                 {!isLocalizedRoute && <Nav subHeader="" onThemeChange={handleThemeChange} />}
                 <article className="">
                   <div>
-                    <AuthTracker>
+                    {!signedIn || isLoading ? children : <AuthTracker>
                       {children}
-                    </AuthTracker>
+                    </AuthTracker>}
                   </div>
                 </article>
                 {!isLocalizedRoute && <Footer />}

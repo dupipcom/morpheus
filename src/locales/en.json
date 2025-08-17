@@ -19,7 +19,9 @@
     "welcome": "Welcome to DreamPip!",
     "signInToAccess": "Sign in to access your dashboard and track your progress.",
     "dismiss": "Dismiss",
-    "selectLanguage": "Select language"
+    "selectLanguage": "Select language",
+    "manageAccount": "Manage My Account",
+    "signOut": "Sign Out"
   },
   "navigation": {
     "home": "Home",

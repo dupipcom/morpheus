@@ -19,7 +19,9 @@
     "welcome": "DreamPipへようこそ！",
     "signInToAccess": "ダッシュボードにアクセスして進捗を追跡するにはログインしてください。",
     "dismiss": "閉じる",
-    "selectLanguage": "言語を選択"
+    "selectLanguage": "言語を選択",
+    "manageAccount": "アカウント管理",
+    "signOut": "サインアウト"
   },
   "navigation": {
     "home": "ホーム",

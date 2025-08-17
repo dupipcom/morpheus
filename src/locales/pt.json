@@ -3,8 +3,11 @@
     "day": "Dia",
     "week": "Semana",
     "mood": "Humor",
-    "availableBalance": "Saldo Disponível",
+    "dashboard": "Painel",
+    "settings": "Configurações",
     "login": "Entrar",
+    "signUp": "Cadastrar",
+    "availableBalance": "Saldo Disponível:",
     "edit": "Editar",
     "close": "Fechar",
     "save": "Salvar",
@@ -16,13 +19,23 @@
     "welcome": "Bem-vindo ao DreamPip!",
     "signInToAccess": "Faça login para acessar seu painel e acompanhar seu progresso.",
     "dismiss": "Fechar",
-    "selectLanguage": "Selecionar idioma"
+    "selectLanguage": "Selecionar idioma",
+    "manageAccount": "Gerenciar Minha Conta",
+    "signOut": "Sair"
   },
   "navigation": {
-    "dashboard": "Painel",
-    "profile": "Perfil",
-    "settings": "Configurações",
-    "logout": "Sair"
+    "home": "Início",
+    "shows": "Programas",
+    "episodes": "Episódios",
+    "chat": "Junte-se a nós",
+    "events": "Eventos",
+    "label": "Rótulo",
+    "supportUs": "Apoie-nos",
+    "about": "Sobre nós",
+    "privacy": "Política de Privacidade",
+    "locale": "Idioma",
+    "blog": "Blog",
+    "agenda": "Agenda"
   },
   "dashboard": {
     "title": "Sua vida em um relance.",
@@ -36,12 +49,13 @@
     "yourData": "Seus dados."
   },
   "mood": {
-    "title": "Registre seu humor para {date}",
-    "subtitle": "Como você está se sentindo hoje?",
+    "title": "É {date}.",
+    "subtitle": "Você está bem?",
     "selfEsteem": "Autoestima",
     "trust": "Confiança",
     "editDay": "Editar dia",
-    "closeDay": "Fechar dia"
+    "closeDay": "Fechar dia",
+    "earnings": "Ganhos"
   },
   "week": {
     "weekNumber": "Semana {number}",
@@ -49,18 +63,72 @@
     "closeWeek": "Fechar semana"
   },
   "tasks": {
-    "editing": "Editando",
+    "editing": "Editando: {timeframe}",
     "weekNumber": "Semana {number}",
-    "yourEarnings": "Seus ganhos"
+    "yourEarnings": "Seus ganhos {timeframe}, até agora: ${amount}"
   },
   "actions": {
-    "add": "Adicionar",
-    "remove": "Remover",
-    "update": "Atualizar",
-    "refresh": "Atualizar"
+    "daily": {
+      "drankWater": "Bebeu água",
+      "showered": "Tomou banho",
+      "tookMeds": "Tomou remédios",
+      "loggedMood": "Registrou humor",
+      "ateBreakfast": "Tomou café da manhã",
+      "ateLunch": "Almoçou",
+      "ateDinner": "Jantou",
+      "brushedTeeth": "Escovou os dentes",
+      "workedOut": "Malhou",
+      "worked": "Trabalhou",
+      "washedDishes": "Lavou pratos",
+      "storedDishes": "Guardou pratos",
+      "checkedTrash": "Verificou lixo",
+      "brushedFloor": "Varreu o chão",
+      "madeLove": "Fez amor",
+      "wentOut": "Saiu"
+    },
+    "weekly": {
+      "createdContent": "Criou conteúdo para redes sociais",
+      "flirted": "Fez flerte com alguém",
+      "talkedToFriend": "Conversou com um amigo",
+      "navigatedSocial": "Navegou nas redes sociais",
+      "talkedToFamily": "Conversou com a família",
+      "madeMusic": "Fez música",
+      "meditated": "Meditou",
+      "spokeToHoly": "Falou com o sagrado",
+      "readMysticBook": "Leu um livro místico",
+      "sharedLearnings": "Compartilhou aprendizados",
+      "studiedSubject": "Estudou um assunto",
+      "watchedEducational": "Assistiu conteúdo educativo",
+      "playedGame": "Jogou um jogo",
+      "watchedSeries": "Assistiu séries ou filmes",
+      "readNews": "Leu notícias",
+      "wroteOpinion": "Escreveu uma opinião",
+      "cleanedBed": "Limpou a cama",
+      "ensuredBedroomOrdered": "Garantiu que o quarto está organizado",
+      "shavedBody": "Depilou o corpo",
+      "shavedFace": "Fez a barba",
+      "cutNails": "Cortou as unhas",
+      "brushedSurfaces": "Escovou superfícies",
+      "moppedFloors": "Limpou pisos",
+      "washedClothes": "Lavou roupas",
+      "cleanedBathroom": "Limpou o banheiro",
+      "cleanedKitchen": "Limpou a cozinha",
+      "workedOnProject": "Trabalhou em projeto pessoal",
+      "helpedSomeone": "Ajudou alguém",
+      "boughtGroceries": "Comprou mantimentos"
+    }
   },
   "footer": {
-    "copyright": "© {year} DreamPip. Todos os direitos reservados.",
+    "copyright": "© {year} Purizu and Remotelys dba DreamPip",
+    "iva": "IVA IT02925300903",
+    "rea": "REA 572763",
+    "cnpj": "CNPJ 37.553.462/0001-46",
+    "lgpdCompliant": "Conforme LGPD",
+    "gdprCompliant": "Conforme GDPR",
+    "doraReady": "Pronto para DORA",
+    "insights": "Os insights são gerados por IA via RAG e engenharia de prompts.",
+    "cookies": "Usamos cookies, e ao usar este aplicativo você concorda com isso.",
+    "code": "Código",
     "terms": "Termos de Serviço",
     "privacy": "Política de Privacidade"
   },

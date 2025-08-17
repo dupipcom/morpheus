@@ -17,7 +17,7 @@ export function Footer() {
           <br />{t('footer.cnpj')}
           <br /><br />
         </small>
-        <div className="text-foreground">
+        <div className="text-foreground flex flex-col items-center">
           <div className="rounded bg-accent dark:text-muted mb-2 flex overflow-hidden max-h-[32px] w-[128px]">
             <img src="/images/brazil.webp" className="w-[32px] object-cover" />
             <small className="p-2 text-[8px] font-bold">{t('footer.lgpdCompliant')}</small>
@@ -30,7 +30,7 @@ export function Footer() {
             <img src="/images/europe.png" className="w-[32px] object-cover" />
             <small className="p-2 text-[8px] font-bold">{t('footer.doraReady')}</small>
           </div>
-          <div className="mt-4 flex items-center gap-2">
+          <div className="m-8 flex items-center gap-2">
             <small className="text-[10px] text-muted-foreground">{t('navigation.locale')}:</small>
             <LocaleSelector className="h-8 text-xs" />
           </div>

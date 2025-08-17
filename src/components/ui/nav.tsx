@@ -4,13 +4,13 @@ import Link from "next/link"
 import MuxAudio from '@mux/mux-audio-react';
 import { logger } from '@/lib/logger';
 
-import { useAuth } from "@clerk/clerk-react";
+import { useAuth, useClerk } from "@clerk/clerk-react";
 import { useI18n } from '@/lib/contexts/i18n'
 
 import { Button } from '@/components/ui/button'
 import { Switch } from "@/components/ui/switch"
 
-import { SlidersVertical, Play, Square as Stop, Gauge, LogIn, DoorOpen } from "lucide-react"
+import { SlidersVertical, Play, Square as Stop, Gauge, LogIn, DoorOpen, User, LogOut } from "lucide-react"
 import { NavSkeleton } from "./skeleton-loader"
 
 
@@ -509,6 +509,16 @@ export const Logo: TComponent = function ({
             label={t('common.settings')}
             labelIcon={<SlidersVertical className="w-[14px] pb-2" />}
             href="/app/settings"
+          />
+          <UserButton.Link
+            label={t('common.manageAccount')}
+            labelIcon={<User className="w-[14px] pb-2" />}
+            href="/user"
+          />
+          <UserButton.Link
+            label={t('common.signOut')}
+            labelIcon={<LogOut className="w-[14px] pb-2" />}
+            href="/sign-out"
           />
 				        </UserButton.MenuItems>
 				      </UserButton>
