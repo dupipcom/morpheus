@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useAuth } from '@clerk/clerk-react'
-import { toast } from '@/components/ui/sonner'
 import { useI18n } from '@/lib/contexts/i18n'
 import { SignInButton, SignUpButton } from '@clerk/nextjs'
 import { Button } from '@/components/ui/button'
@@ -19,37 +18,17 @@ export const AuthToast = ({ showToast = true }: AuthToastProps) => {
   const [showAuthButtons, setShowAuthButtons] = useState(false)
 
   useEffect(() => {
-    // Only show toast if auth is loaded, user is not signed in, showToast is true, and toast hasn't been shown yet
+    // Only show auth panel if auth is loaded, user is not signed in, showToast is true, and panel hasn't been shown yet
     if (isLoaded && !isSignedIn && showToast && !toastShownRef.current) {
       // Small delay to ensure the page has loaded
       const timer = setTimeout(() => {
         toastShownRef.current = true
         setShowAuthButtons(true)
-        
-        toast(t('common.welcome') || 'Welcome to DreamPip!', {
-          description: (
-            <div className="flex flex-col gap-2 mt-2">
-              <p className="text-sm text-muted-foreground">
-                {t('common.signInToAccess') || 'Sign in to access your dashboard and track your progress.'}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Use the authentication buttons below to get started.
-              </p>
-            </div>
-          ),
-          duration: 15000, // 15 seconds
-          action: {
-            label: t('common.dismiss') || 'Dismiss',
-            onClick: () => {
-              setShowAuthButtons(false)
-            },
-          },
-        })
       }, 3000) // 3 second delay to let the page fully load
 
       return () => clearTimeout(timer)
     }
-  }, [isLoaded, isSignedIn, showToast, t])
+  }, [isLoaded, isSignedIn, showToast])
 
   // Reset the ref when user signs in
   useEffect(() => {
@@ -59,7 +38,7 @@ export const AuthToast = ({ showToast = true }: AuthToastProps) => {
     }
   }, [isSignedIn])
 
-  // Render auth buttons separately in the UI
+  // Render auth buttons in a fixed overlay
   if (showAuthButtons && !isSignedIn) {
     return (
       <div className="fixed bottom-4 right-4 z-50 bg-background border rounded-lg shadow-lg p-4 max-w-sm">
