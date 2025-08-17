@@ -1,0 +1,92 @@
+{
+  "common": {
+    "day": "День",
+    "week": "Неделя",
+    "mood": "Настроение",
+    "availableBalance": "Доступный баланс",
+    "login": "Войти",
+    "edit": "Редактировать",
+    "close": "Закрыть",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "delete": "Удалить",
+    "loading": "Загрузка...",
+    "error": "Ошибка",
+    "success": "Успех",
+    "welcome": "Добро пожаловать в DreamPip!",
+    "signInToAccess": "Войдите, чтобы получить доступ к панели управления и отслеживать свой прогресс.",
+    "dismiss": "Закрыть",
+    "selectLanguage": "Выбрать язык"
+  },
+  "navigation": {
+    "dashboard": "Панель управления",
+    "profile": "Профиль",
+    "settings": "Настройки",
+    "logout": "Выйти"
+  },
+  "dashboard": {
+    "title": "Ваша жизнь одним взглядом.",
+    "todayIs": "Сегодня {date}.",
+    "whatDidYouAccomplish": "Что вы достигли сегодня?",
+    "yourEarnings": "Ваш заработок {timeframe}, пока: ${amount}",
+    "today": "сегодня",
+    "thisWeek": "на этой неделе",
+    "yourMood": "Ваше настроение.",
+    "yourProductivity": "Ваша продуктивность.",
+    "yourData": "Ваши данные."
+  },
+  "mood": {
+    "title": "Запишите свое настроение на {date}",
+    "subtitle": "Как вы себя чувствуете сегодня?",
+    "selfEsteem": "Самооценка",
+    "trust": "Доверие",
+    "editDay": "Редактировать день",
+    "closeDay": "Закрыть день"
+  },
+  "week": {
+    "weekNumber": "Неделя {number}",
+    "to": "до",
+    "closeWeek": "Закрыть неделю"
+  },
+  "tasks": {
+    "editing": "Редактирование",
+    "weekNumber": "Неделя {number}",
+    "yourEarnings": "Ваш заработок"
+  },
+  "actions": {
+    "add": "Добавить",
+    "remove": "Удалить",
+    "update": "Обновить",
+    "refresh": "Обновить"
+  },
+  "footer": {
+    "copyright": "© {year} DreamPip. Все права защищены.",
+    "terms": "Условия использования",
+    "privacy": "Политика конфиденциальности"
+  },
+  "earningsTable": {
+    "day": "День",
+    "earnings": "Заработок",
+    "moodAverage": "Среднее настроение",
+    "productivity": "Продуктивность",
+    "gratitude": "Благодарность",
+    "optimism": "Оптимизм",
+    "restedness": "Отдых",
+    "tolerance": "Толерантность",
+    "selfEsteem": "Самооценка",
+    "trust": "Доверие",
+    "actions": "Действия",
+    "closeDay": "Закрыть день",
+    "editDay": "Редактировать день",
+    "deleteDay": "Удалить день",
+    "columns": "Столбцы",
+    "noResults": "Нет результатов.",
+    "rowsSelected": "{selected} из {total} строк выбрано.",
+    "previous": "Предыдущий",
+    "next": "Следующий"
+  },
+  "errors": {
+    "notFound": "Упс! Не удалось настроить эту частоту.",
+    "genericError": "Что-то пошло не так. Попробуйте еще раз."
+  }
+}

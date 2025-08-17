@@ -1,0 +1,92 @@
+{
+  "common": {
+    "day": "Gün",
+    "week": "Hafta",
+    "mood": "Ruh hali",
+    "availableBalance": "Mevcut bakiye",
+    "login": "Giriş yap",
+    "edit": "Düzenle",
+    "close": "Kapat",
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "delete": "Sil",
+    "loading": "Yükleniyor...",
+    "error": "Hata",
+    "success": "Başarılı",
+    "welcome": "DreamPip'e hoş geldiniz!",
+    "signInToAccess": "Dashboard'unuza erişmek ve ilerlemenizi takip etmek için giriş yapın.",
+    "dismiss": "Kapat",
+    "selectLanguage": "Dil seçin"
+  },
+  "navigation": {
+    "dashboard": "Gösterge Paneli",
+    "profile": "Profil",
+    "settings": "Ayarlar",
+    "logout": "Çıkış yap"
+  },
+  "dashboard": {
+    "title": "Hayatınız bir bakışta.",
+    "todayIs": "Bugün {date}.",
+    "whatDidYouAccomplish": "Bugün ne başardınız?",
+    "yourEarnings": "Kazancınız {timeframe}, şimdiye kadar: ${amount}",
+    "today": "bugün",
+    "thisWeek": "bu hafta",
+    "yourMood": "Ruh haliniz.",
+    "yourProductivity": "Verimliliğiniz.",
+    "yourData": "Verileriniz."
+  },
+  "mood": {
+    "title": "{date} için ruh halinizi kaydedin",
+    "subtitle": "Bugün kendinizi nasıl hissediyorsunuz?",
+    "selfEsteem": "Öz saygı",
+    "trust": "Güven",
+    "editDay": "Günü düzenle",
+    "closeDay": "Günü kapat"
+  },
+  "week": {
+    "weekNumber": "Hafta {number}",
+    "to": "kadar",
+    "closeWeek": "Haftayı kapat"
+  },
+  "tasks": {
+    "editing": "Düzenleniyor",
+    "weekNumber": "Hafta {number}",
+    "yourEarnings": "Kazancınız"
+  },
+  "actions": {
+    "add": "Ekle",
+    "remove": "Kaldır",
+    "update": "Güncelle",
+    "refresh": "Yenile"
+  },
+  "footer": {
+    "copyright": "© {year} DreamPip. Tüm hakları saklıdır.",
+    "terms": "Hizmet Şartları",
+    "privacy": "Gizlilik Politikası"
+  },
+  "earningsTable": {
+    "day": "Gün",
+    "earnings": "Kazanç",
+    "moodAverage": "Ortalama ruh hali",
+    "productivity": "Verimlilik",
+    "gratitude": "Minnettarlık",
+    "optimism": "İyimserlik",
+    "restedness": "Dinlenme",
+    "tolerance": "Hoşgörü",
+    "selfEsteem": "Öz saygı",
+    "trust": "Güven",
+    "actions": "Eylemler",
+    "closeDay": "Günü kapat",
+    "editDay": "Günü düzenle",
+    "deleteDay": "Günü sil",
+    "columns": "Sütunlar",
+    "noResults": "Sonuç bulunamadı.",
+    "rowsSelected": "{total} satırdan {selected} tanesi seçildi.",
+    "previous": "Önceki",
+    "next": "Sonraki"
+  },
+  "errors": {
+    "notFound": "Ups! Bu frekansa ayarlanamadı.",
+    "genericError": "Bir şeyler yanlış gitti. Lütfen tekrar deneyin."
+  }
+}

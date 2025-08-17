@@ -14,11 +14,14 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 import { GlobalContext } from "@/lib/contexts"
+import { useI18n } from "@/lib/contexts/i18n"
 import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil, handleMoodSubmit, isUserDataReady, useEnhancedLoadingState } from "@/lib/userUtils"
 import { MoodViewSkeleton } from "@/components/ui/skeleton-loader"
+import { ContentLoadingWrapper } from '@/components/ContentLoadingWrapper'
 
 export const MoodView = ({ timeframe = "day" }) => {
   const { session, setGlobalContext, theme } = useContext(GlobalContext)
+  const { t, locale } = useI18n()
   const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const today = new Date()
   const todayDate = today.toLocaleString('en-uk', { timeZone: userTimezone }).split(',')[0].split('/').reverse().join('-')
@@ -63,8 +66,8 @@ export const MoodView = ({ timeframe = "day" }) => {
 
   useEffect(() => {
     updateUser(session, setGlobalContext, { session, theme })
-    generateInsight(setInsight)
-  }, [])
+    generateInsight(setInsight, 'test', locale)
+  }, [locale])
 
   // Use enhanced loading state to prevent flashing (moodView doesn't use SWR)
   const isDataLoading = useEnhancedLoadingState(false, session)
@@ -73,8 +76,10 @@ export const MoodView = ({ timeframe = "day" }) => {
     return <MoodViewSkeleton />
   }
 
-  return <div key={JSON.stringify(serverMood)} className="max-w-[720px] m-auto p-4">
-          <p className="sticky top-25 truncate z-[999] text-center scroll-m-20 text-sm font-semibold tracking-tight mb-8">Editing: {date}</p>
+  return (
+    <ContentLoadingWrapper>
+      <div key={JSON.stringify(serverMood)} className="max-w-[720px] m-auto p-4">
+          <p className="sticky top-25 truncate z-[999] text-center scroll-m-20 text-sm font-semibold tracking-tight mb-8">{t('tasks.editing', { timeframe: date })}</p>
           <h3 className="mt-8 mb-4">What's in your mind?</h3>
       <Textarea className="mb-16" defaultValue={serverText} onBlur={(e) => handleSubmit(e.target.value, "text")} />
       <div className="my-12">
@@ -98,12 +103,12 @@ export const MoodView = ({ timeframe = "day" }) => {
       </div>
       <Slider className="mb-24" defaultValue={[serverMood.tolerance || 0]} max={5} step={0.5} onValueCommit={(e) => handleSubmit(e[0], "tolerance")} />
       <div className="my-12">
-        <h3 className="mb-4">Self-Esteem</h3>
+        <h3 className="mb-4">{t('mood.selfEsteem')}</h3>
         <small>{insight?.selfEsteemAnalysis}</small>
       </div>
       <Slider className="mb-24" defaultValue={[serverMood.selfEsteem || 0]} max={5} step={0.5} onValueCommit={(e) => handleSubmit(e[0], "selfEsteem")} />
       <div className="my-12">
-        <h3 className="mt-8 mb-4">Trust</h3>
+        <h3 className="mt-8 mb-4">{t('mood.trust')}</h3>
         <small>{insight?.trustAnalysis}</small>
       </div>
       <Slider className="mb-24" defaultValue={[serverMood?.trust || 0]} max={5} step={0.5} onValueCommit={(e) => handleSubmit(e[0], "trust")} />
@@ -114,8 +119,8 @@ export const MoodView = ({ timeframe = "day" }) => {
                   return <CarouselItem className="flex flex-col">
                     <small>${day.earnings?.toLocaleString()}</small>
                     <label className="mb-4">{day.date}</label>
-                    <Button className="text-md p-5 mb-2 dark:bg-foreground" onClick={() => handleEditDay(new Date(day.date))}>Edit day</Button>
-                    <Button variant="outline" className="text-md p-5" onClick={() => handleCloseDates([day.date])}>Close day</Button>
+                    <Button className="text-md p-5 mb-2 dark:bg-foreground" onClick={() => handleEditDay(new Date(day.date))}>{t('mood.editDay')}</Button>
+                    <Button variant="outline" className="text-md p-5" onClick={() => handleCloseDates([day.date])}>{t('mood.closeDay')}</Button>
                   </CarouselItem>
                 })
               }
@@ -123,5 +128,7 @@ export const MoodView = ({ timeframe = "day" }) => {
           <CarouselPrevious />
           <CarouselNext />
         </Carousel> : undefined }
-    </div>
+      </div>
+    </ContentLoadingWrapper>
+  )
 }

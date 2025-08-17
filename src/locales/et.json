@@ -1,0 +1,92 @@
+{
+  "common": {
+    "day": "Päev",
+    "week": "Nädal",
+    "mood": "Tuju",
+    "availableBalance": "Saadaval saldo",
+    "login": "Logi sisse",
+    "edit": "Redigeeri",
+    "close": "Sulge",
+    "save": "Salvesta",
+    "cancel": "Tühista",
+    "delete": "Kustuta",
+    "loading": "Laadimine...",
+    "error": "Viga",
+    "success": "Edu",
+    "welcome": "Tere tulemast DreamPip!",
+    "signInToAccess": "Logi sisse, et pääseda ligi oma armatuurlauale ja jälgida oma edusamme.",
+    "dismiss": "Sulge",
+    "selectLanguage": "Vali keel"
+  },
+  "navigation": {
+    "dashboard": "Armatuurlaud",
+    "profile": "Profiil",
+    "settings": "Seaded",
+    "logout": "Logi välja"
+  },
+  "dashboard": {
+    "title": "Sinu elu ühe pilguga.",
+    "todayIs": "Täna on {date}.",
+    "whatDidYouAccomplish": "Mida sa täna saavutasid?",
+    "yourEarnings": "Sinu sissetulek {timeframe}, seni: ${amount}",
+    "today": "täna",
+    "thisWeek": "sel nädalal",
+    "yourMood": "Sinu tuju.",
+    "yourProductivity": "Sinu produktiivsus.",
+    "yourData": "Sinu andmed."
+  },
+  "mood": {
+    "title": "Salvesta oma tuju {date} jaoks",
+    "subtitle": "Kuidas sa täna tunned?",
+    "selfEsteem": "Enesehinnang",
+    "trust": "Usaldus",
+    "editDay": "Redigeeri päeva",
+    "closeDay": "Sulge päev"
+  },
+  "week": {
+    "weekNumber": "Nädal {number}",
+    "to": "kuni",
+    "closeWeek": "Sulge nädal"
+  },
+  "tasks": {
+    "editing": "Redigeerimine",
+    "weekNumber": "Nädal {number}",
+    "yourEarnings": "Sinu sissetulek {timeframe}, seni: ${amount}"
+  },
+  "actions": {
+    "add": "Lisa",
+    "remove": "Eemalda",
+    "update": "Uuenda",
+    "refresh": "Värskenda"
+  },
+  "footer": {
+    "copyright": "© {year} DreamPip. All rights reserved.",
+    "terms": "Kasutustingimused",
+    "privacy": "Privaatsuspoliitika"
+  },
+  "earningsTable": {
+    "day": "Päev",
+    "earnings": "Sissetulek",
+    "moodAverage": "Keskmine tuju",
+    "productivity": "Produktiivsus",
+    "gratitude": "Tänulikkus",
+    "optimism": "Optimism",
+    "restedness": "Puhkus",
+    "tolerance": "Sallivus",
+    "selfEsteem": "Enesehinnang",
+    "trust": "Usaldus",
+    "actions": "Tegevused",
+    "closeDay": "Sulge päev",
+    "editDay": "Redigeeri päeva",
+    "deleteDay": "Kustuta päev",
+    "columns": "Veerud",
+    "noResults": "Tulemusi ei leitud.",
+    "rowsSelected": "{selected} {total} reast valitud.",
+    "previous": "Eelmine",
+    "next": "Järgmine"
+  },
+  "errors": {
+    "notFound": "Ups! Selle sageduse häälestamine ebaõnnestus.",
+    "genericError": "Midagi läks valesti. Palun proovi uuesti."
+  }
+}

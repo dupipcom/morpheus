@@ -5,6 +5,7 @@ import MuxAudio from '@mux/mux-audio-react';
 import { logger } from '@/lib/logger';
 
 import { useAuth } from "@clerk/clerk-react";
+import { useI18n } from '@/lib/contexts/i18n'
 
 import { Button } from '@/components/ui/button'
 import { Switch } from "@/components/ui/switch"
@@ -305,13 +306,19 @@ export const Logo: TComponent = function ({
 };
 
 
-  export const Nav = ({ subHeader, onThemeChange, tracks = DEFAULT_TRACKS, prompt = 'Rotation portals', }) => {
+  export const Nav = ({ subHeader, onThemeChange, tracks = DEFAULT_TRACKS, prompt = 'Rotation portals', }: {
+    subHeader: string;
+    onThemeChange: (checked: boolean) => void;
+    tracks?: typeof DEFAULT_TRACKS;
+    prompt?: string;
+  }) => {
 	  const audioElement = useRef<HTMLAudioElement>(null);
 	  const [status, setStatus] = useState('loading');
 	  const [title, setTitle] = useState(prompt);
 	  const [isPlaying, setIsPlaying] = useState(false);
 	  const selectedTrack = tracks[1];
 	  const icon = useMemo(() => isPlaying ? <Stop /> : <Play />, [isPlaying]);
+	  const { t } = useI18n();
 
 	const handlePlaying = () => {
     if (!audioElement.current) return;
@@ -454,7 +461,7 @@ export const Logo: TComponent = function ({
       content:
                 <a href="/app/dashboard">
                 <Button variant="outline" className="hidden lg:flex cursor-pointer">
-                  Dashboard
+                  {t('common.dashboard')}
                 </Button>
                 <Button variant="outline" className="flex lg:hidden cursor-pointer">
                   <Gauge />
@@ -468,7 +475,7 @@ export const Logo: TComponent = function ({
       content: <SignUpButton>
       					<div>
 	                <Button variant="outline" className="hidden lg:flex cursor-pointer">
-	                  Sign Up
+	                  {t('common.signUp')}
 	                </Button>
 	                <Button variant="outline" className="flex lg:hidden">
 	                	<DoorOpen />
@@ -483,7 +490,7 @@ export const Logo: TComponent = function ({
       content: <SignInButton>
       					<div>
 	                <Button className="hidden lg:flex cursor-pointer">
-	                  Login
+	                  {t('common.login')}
 	                </Button>
 	                <Button className="flex lg:hidden">
 	                	<LogIn />
@@ -498,11 +505,11 @@ export const Logo: TComponent = function ({
       content: <div className="p-2 flex items-center"> <SignedIn>
               <UserButton>
 				        <UserButton.MenuItems>
-				          <UserButton.Link
-				            label="Settings"
-				            labelIcon={<SlidersVertical className="w-[14px] pb-2" />}
-				            href="/app/settings"
-				          />
+				                    <UserButton.Link
+            label={t('common.settings')}
+            labelIcon={<SlidersVertical className="w-[14px] pb-2" />}
+            href="/app/settings"
+          />
 				        </UserButton.MenuItems>
 				      </UserButton>
             </SignedIn>

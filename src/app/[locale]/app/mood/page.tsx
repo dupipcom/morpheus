@@ -2,19 +2,18 @@
 
 import React, { useRef, useState, useEffect, useContext } from 'react'
 import ReactDOMServer from 'react-dom/server';
-import '@mux/mux-video';
 import { useAuth } from '@clerk/nextjs';
 
 import Link from 'next/link'
 
-import { GlobalContext } from "../../contexts"
-import { AnalyticsView } from "@/views/analyticsView"
+import { GlobalContext } from "@/lib/contexts"
+
+import { MoodView } from "@/views/moodView"
 import { ViewMenu } from "@/components/viewMenu"
 import { setLoginTime, getLoginTime } from '@/lib/cookieManager'
 import { useI18n } from "@/lib/contexts/i18n"
 
-
-export default function Template({ title, content, isomorphicContent }: any) {
+export default function LocalizedMood({ params }: { params: { locale: string } }) {
   const [globalContext, setGlobalContext] = useState({
     theme: 'light'
   })
@@ -33,21 +32,16 @@ export default function Template({ title, content, isomorphicContent }: any) {
     }
   }, [isLoaded, isSignedIn]);
 
-  const handleThemeChange = () => {
-    if (globalContext.theme === 'light') {
-      setGlobalContext({...globalContext, theme: 'dark'})
-    } else {
-      setGlobalContext({...globalContext, theme: 'light'})
-    }
+  const session = {
+    user: {}
   }
 
-    return (
-      <main className="">
-      <ViewMenu active="dashboard" />
-      <h1 className="scroll-m-20 text-2xl font-semibold tracking-tight text-center mb-8">{formatDate(new Date())}</h1>
-      <h2 className="text-center scroll-m-20 text-lg font-semibold tracking-tight">{t('dashboard.title')}</h2>
-
-      <AnalyticsView />
-      </main>
-    )
-}
+  return (
+    <main className="min-h-[100vh]">
+      <ViewMenu active="mood" />
+      <h1 className="scroll-m-20 text-2xl font-semibold tracking-tight text-center mb-8">{t('mood.title', { date: formatDate(new Date()) })}</h1>
+      <p className="text-center scroll-m-20 text-lg font-semibold tracking-tight mb-8">{t('mood.subtitle')}</p>
+      <MoodView />
+    </main>
+  )
+} 

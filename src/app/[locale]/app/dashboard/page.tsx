@@ -7,14 +7,13 @@ import { useAuth } from '@clerk/nextjs';
 
 import Link from 'next/link'
 
-import { GlobalContext } from "../../contexts"
+import { GlobalContext } from "@/lib/contexts"
 import { AnalyticsView } from "@/views/analyticsView"
 import { ViewMenu } from "@/components/viewMenu"
 import { setLoginTime, getLoginTime } from '@/lib/cookieManager'
 import { useI18n } from "@/lib/contexts/i18n"
 
-
-export default function Template({ title, content, isomorphicContent }: any) {
+export default function LocalizedDashboard({ params }: { params: { locale: string } }) {
   const [globalContext, setGlobalContext] = useState({
     theme: 'light'
   })
@@ -41,13 +40,13 @@ export default function Template({ title, content, isomorphicContent }: any) {
     }
   }
 
-    return (
-      <main className="">
+  return (
+    <main className="">
       <ViewMenu active="dashboard" />
       <h1 className="scroll-m-20 text-2xl font-semibold tracking-tight text-center mb-8">{formatDate(new Date())}</h1>
       <h2 className="text-center scroll-m-20 text-lg font-semibold tracking-tight">{t('dashboard.title')}</h2>
 
       <AnalyticsView />
-      </main>
-    )
-}
+    </main>
+  )
+} 

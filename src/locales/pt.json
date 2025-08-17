@@ -1,0 +1,92 @@
+{
+  "common": {
+    "day": "Dia",
+    "week": "Semana",
+    "mood": "Humor",
+    "availableBalance": "Saldo Disponível",
+    "login": "Entrar",
+    "edit": "Editar",
+    "close": "Fechar",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "loading": "Carregando...",
+    "error": "Erro",
+    "success": "Sucesso",
+    "welcome": "Bem-vindo ao DreamPip!",
+    "signInToAccess": "Faça login para acessar seu painel e acompanhar seu progresso.",
+    "dismiss": "Fechar",
+    "selectLanguage": "Selecionar idioma"
+  },
+  "navigation": {
+    "dashboard": "Painel",
+    "profile": "Perfil",
+    "settings": "Configurações",
+    "logout": "Sair"
+  },
+  "dashboard": {
+    "title": "Sua vida em um relance.",
+    "todayIs": "Hoje é {date}.",
+    "whatDidYouAccomplish": "O que você conquistou hoje?",
+    "yourEarnings": "Seus ganhos {timeframe}, até agora: ${amount}",
+    "today": "hoje",
+    "thisWeek": "esta semana",
+    "yourMood": "Seu humor.",
+    "yourProductivity": "Sua produtividade.",
+    "yourData": "Seus dados."
+  },
+  "mood": {
+    "title": "Registre seu humor para {date}",
+    "subtitle": "Como você está se sentindo hoje?",
+    "selfEsteem": "Autoestima",
+    "trust": "Confiança",
+    "editDay": "Editar dia",
+    "closeDay": "Fechar dia"
+  },
+  "week": {
+    "weekNumber": "Semana {number}",
+    "to": "até",
+    "closeWeek": "Fechar semana"
+  },
+  "tasks": {
+    "editing": "Editando",
+    "weekNumber": "Semana {number}",
+    "yourEarnings": "Seus ganhos"
+  },
+  "actions": {
+    "add": "Adicionar",
+    "remove": "Remover",
+    "update": "Atualizar",
+    "refresh": "Atualizar"
+  },
+  "footer": {
+    "copyright": "© {year} DreamPip. Todos os direitos reservados.",
+    "terms": "Termos de Serviço",
+    "privacy": "Política de Privacidade"
+  },
+  "earningsTable": {
+    "day": "Dia",
+    "earnings": "Ganhos",
+    "moodAverage": "Média do Humor",
+    "productivity": "Produtividade",
+    "gratitude": "Gratidão",
+    "optimism": "Otimismo",
+    "restedness": "Descanso",
+    "tolerance": "Tolerância",
+    "selfEsteem": "Autoestima",
+    "trust": "Confiança",
+    "actions": "Ações",
+    "closeDay": "Fechar dia",
+    "editDay": "Editar dia",
+    "deleteDay": "Excluir dia",
+    "columns": "Colunas",
+    "noResults": "Nenhum resultado.",
+    "rowsSelected": "{selected} de {total} linha(s) selecionada(s).",
+    "previous": "Anterior",
+    "next": "Próximo"
+  },
+  "errors": {
+    "notFound": "Ops! Não foi possível sintonizar esta frequência.",
+    "genericError": "Algo deu errado. Tente novamente."
+  }
+}

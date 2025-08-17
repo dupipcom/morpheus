@@ -1,0 +1,92 @@
+{
+  "common": {
+    "day": "ਦਿਨ",
+    "week": "ਹਫ਼ਤਾ",
+    "mood": "ਮੂਡ",
+    "availableBalance": "ਉਪਲਬਧ ਬਕਾਇਆ",
+    "login": "ਲਾਗਇਨ",
+    "edit": "ਸੰਪਾਦਿਤ ਕਰੋ",
+    "close": "ਬੰਦ ਕਰੋ",
+    "save": "ਸੇਵ ਕਰੋ",
+    "cancel": "ਰੱਦ ਕਰੋ",
+    "delete": "ਮਿਟਾਓ",
+    "loading": "ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...",
+    "error": "ਗਲਤੀ",
+    "success": "ਸਫਲ",
+    "welcome": "DreamPip ਵਿੱਚ ਤੁਹਾਡਾ ਸਵਾਗਤ ਹੈ!",
+    "signInToAccess": "ਆਪਣੇ ਡੈਸ਼ਬੋਰਡ ਤੱਕ ਪਹੁੰਚਣ ਅਤੇ ਆਪਣੀ ਤਰੱਕੀ ਨੂੰ ਟਰੈਕ ਕਰਨ ਲਈ ਸਾਈਨ ਇਨ ਕਰੋ।",
+    "dismiss": "ਬੰਦ ਕਰੋ",
+    "selectLanguage": "ਭਾਸ਼ਾ ਚੁਣੋ"
+  },
+  "navigation": {
+    "dashboard": "ਡੈਸ਼ਬੋਰਡ",
+    "profile": "ਪ੍ਰੋਫਾਈਲ",
+    "settings": "ਸੈਟਿੰਗਾਂ",
+    "logout": "ਲਾਗਆਊਟ"
+  },
+  "dashboard": {
+    "title": "ਤੁਹਾਡੀ ਜ਼ਿੰਦਗੀ ਇੱਕ ਨਜ਼ਰ ਵਿੱਚ।",
+    "todayIs": "ਅੱਜ {date} ਹੈ।",
+    "whatDidYouAccomplish": "ਅੱਜ ਤੁਸੀਂ ਕੀ ਪ੍ਰਾਪਤ ਕੀਤਾ?",
+    "yourEarnings": "ਤੁਹਾਡੀ ਕਮਾਈ {timeframe}, ਹੁਣ ਤੱਕ: ${amount}",
+    "today": "ਅੱਜ",
+    "thisWeek": "ਇਸ ਹਫ਼ਤੇ",
+    "yourMood": "ਤੁਹਾਡਾ ਮੂਡ।",
+    "yourProductivity": "ਤੁਹਾਡੀ ਉਤਪਾਦਕਤਾ।",
+    "yourData": "ਤੁਹਾਡਾ ਡੇਟਾ।"
+  },
+  "mood": {
+    "title": "{date} ਲਈ ਆਪਣਾ ਮੂਡ ਰਿਕਾਰਡ ਕਰੋ",
+    "subtitle": "ਅੱਜ ਤੁਸੀਂ ਕਿਵੇਂ ਮਹਿਸੂਸ ਕਰ ਰਹੇ ਹੋ?",
+    "selfEsteem": "ਆਤਮ-ਸਨਮਾਨ",
+    "trust": "ਭਰੋਸਾ",
+    "editDay": "ਦਿਨ ਸੰਪਾਦਿਤ ਕਰੋ",
+    "closeDay": "ਦਿਨ ਬੰਦ ਕਰੋ"
+  },
+  "week": {
+    "weekNumber": "ਹਫ਼ਤਾ {number}",
+    "to": "ਤੱਕ",
+    "closeWeek": "ਹਫ਼ਤਾ ਬੰਦ ਕਰੋ"
+  },
+  "tasks": {
+    "editing": "ਸੰਪਾਦਨ",
+    "weekNumber": "ਹਫ਼ਤਾ {number}",
+    "yourEarnings": "ਤੁਹਾਡੀ ਕਮਾਈ"
+  },
+  "actions": {
+    "add": "ਜੋੜੋ",
+    "remove": "ਹਟਾਓ",
+    "update": "ਅਪਡੇਟ ਕਰੋ",
+    "refresh": "ਰਿਫਰੈਸ਼ ਕਰੋ"
+  },
+  "footer": {
+    "copyright": "© {year} DreamPip. ਸਾਰੇ ਅਧਿਕਾਰ ਸੁਰੱਖਿਅਤ।",
+    "terms": "ਸੇਵਾ ਦੀਆਂ ਸ਼ਰਤਾਂ",
+    "privacy": "ਗੋਪਨੀਯਤਾ ਨੀਤੀ"
+  },
+  "earningsTable": {
+    "day": "ਦਿਨ",
+    "earnings": "ਕਮਾਈ",
+    "moodAverage": "ਔਸਤ ਮੂਡ",
+    "productivity": "ਉਤਪਾਦਕਤਾ",
+    "gratitude": "ਕ੍ਰਿਤਗਿਆ",
+    "optimism": "ਆਸ਼ਾਵਾਦ",
+    "restedness": "ਆਰਾਮ",
+    "tolerance": "ਸਹਿਣਸ਼ੀਲਤਾ",
+    "selfEsteem": "ਆਤਮ-ਸਨਮਾਨ",
+    "trust": "ਭਰੋਸਾ",
+    "actions": "ਕਾਰਵਾਈਆਂ",
+    "closeDay": "ਦਿਨ ਬੰਦ ਕਰੋ",
+    "editDay": "ਦਿਨ ਸੰਪਾਦਿਤ ਕਰੋ",
+    "deleteDay": "ਦਿਨ ਮਿਟਾਓ",
+    "columns": "ਕਾਲਮ",
+    "noResults": "ਕੋਈ ਨਤੀਜੇ ਨਹੀਂ।",
+    "rowsSelected": "{total} ਵਿੱਚੋਂ {selected} ਕਤਾਰਾਂ ਚੁਣੀਆਂ ਗਈਆਂ।",
+    "previous": "ਪਿਛਲਾ",
+    "next": "ਅਗਲਾ"
+  },
+  "errors": {
+    "notFound": "ਉਫ਼! ਇਸ ਫ੍ਰੀਕੁਐਂਸੀ ਤੇ ਟਿਊਨ ਨਹੀਂ ਕਰ ਸਕਿਆ।",
+    "genericError": "ਕੁਝ ਗਲਤ ਹੋ ਗਿਆ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
+  }
+}

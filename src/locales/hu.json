@@ -1,0 +1,92 @@
+{
+  "common": {
+    "day": "Nap",
+    "week": "Hét",
+    "mood": "Hangulat",
+    "availableBalance": "Rendelkezésre álló egyenleg",
+    "login": "Bejelentkezés",
+    "edit": "Szerkesztés",
+    "close": "Bezárás",
+    "save": "Mentés",
+    "cancel": "Mégse",
+    "delete": "Törlés",
+    "loading": "Betöltés...",
+    "error": "Hiba",
+    "success": "Sikeres",
+    "welcome": "Üdvözöljük a DreamPip-ben!",
+    "signInToAccess": "Jelentkezzen be a dashboard eléréséhez és a fejlődés követéséhez.",
+    "dismiss": "Bezárás",
+    "selectLanguage": "Nyelv kiválasztása"
+  },
+  "navigation": {
+    "dashboard": "Vezérlőpult",
+    "profile": "Profil",
+    "settings": "Beállítások",
+    "logout": "Kijelentkezés"
+  },
+  "dashboard": {
+    "title": "Az életed egy pillantásra.",
+    "todayIs": "Ma {date} van.",
+    "whatDidYouAccomplish": "Mit értél el ma?",
+    "yourEarnings": "A bevételed {timeframe}, eddig: ${amount}",
+    "today": "ma",
+    "thisWeek": "ezen a héten",
+    "yourMood": "A hangulatod.",
+    "yourProductivity": "A termelékenységed.",
+    "yourData": "Az adataid."
+  },
+  "mood": {
+    "title": "Rögzítsd a hangulatod {date} napra",
+    "subtitle": "Hogyan érzed magad ma?",
+    "selfEsteem": "Önbecsülés",
+    "trust": "Bizalom",
+    "editDay": "Nap szerkesztése",
+    "closeDay": "Nap bezárása"
+  },
+  "week": {
+    "weekNumber": "Hét {number}",
+    "to": "ig",
+    "closeWeek": "Hét bezárása"
+  },
+  "tasks": {
+    "editing": "Szerkesztés",
+    "weekNumber": "Hét {number}",
+    "yourEarnings": "A bevételed"
+  },
+  "actions": {
+    "add": "Hozzáadás",
+    "remove": "Eltávolítás",
+    "update": "Frissítés",
+    "refresh": "Frissítés"
+  },
+  "footer": {
+    "copyright": "© {year} DreamPip. Minden jog fenntartva.",
+    "terms": "Szolgáltatási feltételek",
+    "privacy": "Adatvédelmi irányelvek"
+  },
+  "earningsTable": {
+    "day": "Nap",
+    "earnings": "Bevétel",
+    "moodAverage": "Átlagos hangulat",
+    "productivity": "Termelékenység",
+    "gratitude": "Hála",
+    "optimism": "Optimizmus",
+    "restedness": "Pihenés",
+    "tolerance": "Tolerancia",
+    "selfEsteem": "Önbecsülés",
+    "trust": "Bizalom",
+    "actions": "Műveletek",
+    "closeDay": "Nap bezárása",
+    "editDay": "Nap szerkesztése",
+    "deleteDay": "Nap törlése",
+    "columns": "Oszlopok",
+    "noResults": "Nincs találat.",
+    "rowsSelected": "{selected} a {total} sorból kiválasztva.",
+    "previous": "Előző",
+    "next": "Következő"
+  },
+  "errors": {
+    "notFound": "Ups! Nem sikerült beállítani ezt a frekvenciát.",
+    "genericError": "Valami hiba történt. Kérjük, próbáld újra."
+  }
+}
