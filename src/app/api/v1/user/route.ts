@@ -134,7 +134,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   ...user.entries[year].weeks[weekNumber],
                   year,
                   week: weekNumber,
-                  tasks: user?.settings?.weekTemplate?.length ? user.settings.weekTemplate : WEEKLY_ACTIONS,
+                  tasks: user?.settings?.weeklyTemplate?.length ? user.settings.weeklyTemplate : WEEKLY_ACTIONS,
                   status: "Open"
                 }
               }

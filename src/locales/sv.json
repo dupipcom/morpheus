@@ -6,7 +6,7 @@
     "dashboard": "Instrumentpanel",
     "settings": "Inställningar",
     "login": "Logga in",
-    "signUp": "Sign Up",
+    "signUp": "Registrera dig",
     "availableBalance": "Tillgängligt saldo",
     "edit": "Redigera",
     "close": "Stäng",
@@ -19,21 +19,23 @@
     "welcome": "Välkommen till DreamPip!",
     "signInToAccess": "Logga in för att komma åt din dashboard och spåra din framsteg.",
     "dismiss": "Stäng",
-    "selectLanguage": "Välj språk"
+    "selectLanguage": "Välj språk",
+    "manageAccount": "Hantera mitt konto",
+    "signOut": "Logga ut"
   },
   "navigation": {
-    "home": "Home",
-    "shows": "Shows",
-    "episodes": "Episodes",
-    "chat": "Join us",
-    "events": "Events",
-    "label": "Label",
-    "supportUs": "Support Us",
-    "about": "About us",
-    "privacy": "Privacy Policy",
-    "locale": "Locale",
-    "blog": "Blog",
-    "agenda": "Agenda",
+    "home": "Hem",
+    "shows": "Shower",
+    "episodes": "Avsnitt",
+    "chat": "Gå med oss",
+    "events": "Evenemang",
+    "label": "Etikett",
+    "supportUs": "Stöd oss",
+    "about": "Om oss",
+    "privacy": "Integritetspolicy",
+    "locale": "Språk",
+    "blog": "Blogg",
+    "agenda": "Dagordning",
     "profile": "Profil",
     "settings": "Inställningar",
     "logout": "Logga ut"
@@ -56,7 +58,7 @@
     "trust": "Tillit",
     "editDay": "Redigera dag",
     "closeDay": "Stäng dag",
-    "earnings": "Earnings"
+    "earnings": "Intäkter"
   },
   "week": {
     "weekNumber": "Vecka {number}",
@@ -70,22 +72,22 @@
   },
   "actions": {
     "daily": {
-      "drankWater": "Drank Water",
-      "showered": "Showered",
-      "tookMeds": "Took meds",
-      "loggedMood": "Logged mood",
-      "ateBreakfast": "Ate breakfast",
-      "ateLunch": "Ate lunch",
-      "ateDinner": "Ate dinner",
-      "brushedTeeth": "Brushed teeth",
-      "workedOut": "Worked-out",
-      "worked": "Worked",
-      "washedDishes": "Washed dishes",
-      "storedDishes": "Stored dishes",
-      "checkedTrash": "Checked trash",
-      "brushedFloor": "Brushed floor",
-      "madeLove": "Made love",
-      "wentOut": "Went out"
+      "drankWater": "Drack vatten",
+      "showered": "Duschat",
+      "tookMeds": "Tog medicin",
+      "loggedMood": "Loggade humör",
+      "ateBreakfast": "Åt frukost",
+      "ateLunch": "Åt lunch",
+      "ateDinner": "Åt middag",
+      "brushedTeeth": "Borstade tänder",
+      "workedOut": "Tränade",
+      "worked": "Arbetade",
+      "washedDishes": "Diskade",
+      "storedDishes": "Städade",
+      "checkedTrash": "Kollade soporna",
+      "brushedFloor": "Sopade golvet",
+      "madeLove": "Älskade",
+      "wentOut": "Gick ut"
     },
     "weekly": {
       "createdContent": "Created content for social media",
@@ -161,5 +163,22 @@
   "errors": {
     "notFound": "Oj! Kunde inte stämma in på denna frekvens.",
     "genericError": "Något gick fel. Försök igen."
+  },
+  "settings": {
+    "title": "Inställningar",
+    "dailyActions": "Dina dagliga handlingar:",
+    "weeklyActions": "Dina veckohandlingar:",
+    "actionName": "Skriv åtgärdens namn...",
+    "numberOfTimes": "# gånger",
+    "area": "Område",
+    "category": "Kategori",
+    "add": "Lägg till",
+    "deleteAction": "Radera åtgärd",
+    "deleteSelected": "Radera valda ({count})",
+    "noResults": "Inga resultat.",
+    "monthsFixedIncome": "Month's Recurring Income",
+    "monthsVariableIncome": "Month's Variable Income",
+    "fixedNeedCosts": "Fixed Need Costs",
+    "expectedNeedUtilities": "Expected Need Utilities Average"
   }
 }

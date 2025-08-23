@@ -18,13 +18,28 @@
     "dismiss": "إغلاق",
     "selectLanguage": "اختر اللغة",
     "manageAccount": "إدارة حسابي",
-    "signOut": "تسجيل الخروج"
+    "signOut": "تسجيل الخروج",
+    "dashboard": "لوحة التحكم",
+    "settings": "الإعدادات",
+    "signUp": "إنشاء حساب"
   },
   "navigation": {
     "dashboard": "لوحة التحكم",
     "profile": "الملف الشخصي",
     "settings": "الإعدادات",
-    "logout": "تسجيل الخروج"
+    "logout": "تسجيل الخروج",
+    "home": "الرئيسية",
+    "shows": "العروض",
+    "episodes": "الحلقات",
+    "chat": "انضم إلينا",
+    "events": "الأحداث",
+    "label": "التسمية",
+    "supportUs": "ادعمنا",
+    "about": "من نحن",
+    "privacy": "سياسة الخصوصية",
+    "locale": "اللغة",
+    "blog": "المدونة",
+    "agenda": "الأجندة"
   },
   "dashboard": {
     "title": "حياتك في لمحة.",
@@ -43,7 +58,8 @@
     "selfEsteem": "تقدير الذات",
     "trust": "الثقة",
     "editDay": "تعديل اليوم",
-    "closeDay": "إغلاق اليوم"
+    "closeDay": "إغلاق اليوم",
+    "earnings": "الأرباح"
   },
   "week": {
     "weekNumber": "الأسبوع {number}",
@@ -81,7 +97,7 @@
       "ateBreakfast": "تناول الإفطار",
       "ateLunch": "تناول الغداء",
       "ateDinner": "تناول العشاء",
-      "brushedTeeth": "فرش الأسنان",
+      "brushedTeeth": "فرش أسنانه",
       "workedOut": "تمرن",
       "worked": "عمل",
       "washedDishes": "غسل الأطباق",

@@ -6,7 +6,7 @@
     "dashboard": "Armatuurlaud",
     "settings": "Seaded",
     "login": "Logi sisse",
-    "signUp": "Registreeri",
+    "signUp": "Registreeru",
     "availableBalance": "Saadaval saldo:",
     "edit": "Redigeeri",
     "close": "Sulge",
@@ -20,22 +20,22 @@
     "signInToAccess": "Logi sisse, et pääseda ligi oma armatuurlauale ja jälgida oma edusamme.",
     "dismiss": "Sulge",
     "selectLanguage": "Vali keel",
-    "manageAccount": "Halda Minu Kontot",
-    "signOut": "Logi Välja"
+    "manageAccount": "Hallata oma kontot",
+    "signOut": "Logi välja"
   },
   "navigation": {
-    "home": "Kodu",
+    "home": "Avaleht",
     "shows": "Saated",
     "episodes": "Episoodid",
     "chat": "Liitu meiega",
     "events": "Sündmused",
-    "label": "Märgis",
+    "label": "Silt",
     "supportUs": "Toeta meid",
     "about": "Meist",
     "privacy": "Privaatsuspoliitika",
     "locale": "Keel",
     "blog": "Blogi",
-    "agenda": "Ajakava"
+    "agenda": "Päevakord"
   },
   "dashboard": {
     "title": "Sinu elu ühe pilguga.",
@@ -70,9 +70,9 @@
   "actions": {
     "daily": {
       "drankWater": "Jõi vett",
-      "showered": "Võttis duši",
+      "showered": "Dusšis",
       "tookMeds": "Võttis ravimeid",
-      "loggedMood": "Logis tuju",
+      "loggedMood": "Registreeris tuju",
       "ateBreakfast": "Sõi hommikusööki",
       "ateLunch": "Sõi lõunasööki",
       "ateDinner": "Sõi õhtusööki",
@@ -80,9 +80,9 @@
       "workedOut": "Trennis",
       "worked": "Töötas",
       "washedDishes": "Pesin nõusid",
-      "storedDishes": "Panin nõud ära",
-      "checkedTrash": "Kontrollis prügi",
-      "brushedFloor": "Harjas põrandat",
+      "storedDishes": "Panesin nõusid ära",
+      "checkedTrash": "Kontrollisin prügi",
+      "brushedFloor": "Pühkisin põrandat",
       "madeLove": "Armastas",
       "wentOut": "Läks välja"
     },
@@ -156,5 +156,22 @@
   "errors": {
     "notFound": "Ups! Selle sageduse häälestamine ebaõnnestus.",
     "genericError": "Midagi läks valesti. Palun proovi uuesti."
+  },
+  "settings": {
+    "title": "Seaded",
+    "dailyActions": "Teie igapäevased tegevused:",
+    "weeklyActions": "Teie nädalategevused:",
+    "actionName": "Kirjutage tegevuse nimi...",
+    "numberOfTimes": "# korda",
+    "area": "Ala",
+    "category": "Kategooria",
+    "add": "Lisa",
+    "deleteAction": "Kustuta tegevus",
+    "deleteSelected": "Kustuta valitud ({count})",
+    "noResults": "Tulemusi pole.",
+    "monthsFixedIncome": "Month's Recurring Income",
+    "monthsVariableIncome": "Month's Variable Income",
+    "fixedNeedCosts": "Fixed Need Costs",
+    "expectedNeedUtilities": "Expected Need Utilities Average"
   }
 }

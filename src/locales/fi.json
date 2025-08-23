@@ -16,13 +16,30 @@
     "welcome": "Tervetuloa DreamPip!",
     "signInToAccess": "Kirjaudu sisään päästäksesi hallintapaneeliin ja seurataksesi edistymistäsi.",
     "dismiss": "Sulje",
-    "selectLanguage": "Valitse kieli"
+    "selectLanguage": "Valitse kieli",
+    "dashboard": "Kojelauta",
+    "settings": "Asetukset",
+    "signUp": "Rekisteröidy",
+    "manageAccount": "Hallitse tiliäni",
+    "signOut": "Kirjaudu ulos"
   },
   "navigation": {
     "dashboard": "Kojelauta",
     "profile": "Profiili",
     "settings": "Asetukset",
-    "logout": "Kirjaudu ulos"
+    "logout": "Kirjaudu ulos",
+    "home": "Koti",
+    "shows": "Ohjelmat",
+    "episodes": "Jaksot",
+    "chat": "Liity meihin",
+    "events": "Tapahtumat",
+    "label": "Otsikko",
+    "supportUs": "Tue meitä",
+    "about": "Tietoa meistä",
+    "privacy": "Tietosuojakäytäntö",
+    "locale": "Kieli",
+    "blog": "Blogi",
+    "agenda": "Esityslista"
   },
   "dashboard": {
     "title": "Elämäsi yhdellä silmäyksellä.",
@@ -41,7 +58,8 @@
     "selfEsteem": "Itsetunto",
     "trust": "Luottamus",
     "editDay": "Muokkaa päivää",
-    "closeDay": "Sulje päivä"
+    "closeDay": "Sulje päivä",
+    "earnings": "Tulot"
   },
   "week": {
     "weekNumber": "Viikko {number}",
@@ -57,12 +75,70 @@
     "add": "Lisää",
     "remove": "Poista",
     "update": "Päivitä",
-    "refresh": "Päivitä"
+    "refresh": "Päivitä",
+    "daily": {
+      "drankWater": "Joi vettä",
+      "showered": "Kävi suihkussa",
+      "tookMeds": "Otti lääkkeitä",
+      "loggedMood": "Kirjasi mielialan",
+      "ateBreakfast": "Söi aamiaisen",
+      "ateLunch": "Söi lounaan",
+      "ateDinner": "Söi illallisen",
+      "brushedTeeth": "Hampaat harjasi",
+      "workedOut": "Treenasi",
+      "worked": "Työskenteli",
+      "washedDishes": "Tiskasi",
+      "storedDishes": "Siivosi",
+      "checkedTrash": "Tarkisti roskat",
+      "brushedFloor": "Lakaisi lattia",
+      "madeLove": "Rakasteli",
+      "wentOut": "Lähti ulos"
+    },
+    "weekly": {
+      "createdContent": "Created content for social media",
+      "flirted": "Flirted with someone",
+      "talkedToFriend": "Talked to a friend",
+      "navigatedSocial": "Navigated on social media",
+      "talkedToFamily": "Talked to family",
+      "madeMusic": "Made music",
+      "meditated": "Meditated",
+      "spokeToHoly": "Spoke to the holy",
+      "readMysticBook": "Read a mystic book",
+      "sharedLearnings": "Shared learnings",
+      "studiedSubject": "Studied a subject",
+      "watchedEducational": "Watched some educational content",
+      "playedGame": "Played a game",
+      "watchedSeries": "Watched series or film",
+      "readNews": "Read news",
+      "wroteOpinion": "Wrote an opinion",
+      "cleanedBed": "Cleaned bed",
+      "ensuredBedroomOrdered": "Ensured bedroom is ordered",
+      "shavedBody": "Shaved body",
+      "shavedFace": "Shaved face",
+      "cutNails": "Cut nails",
+      "brushedSurfaces": "Brushed surfaces",
+      "moppedFloors": "Mopped floors",
+      "washedClothes": "Washed clothes",
+      "cleanedBathroom": "Cleaned bathroom",
+      "cleanedKitchen": "Cleaned kitchen",
+      "workedOnProject": "Worked on personal project",
+      "helpedSomeone": "Helped someone",
+      "boughtGroceries": "Bought groceries"
+    }
   },
   "footer": {
     "copyright": "© {year} DreamPip. All rights reserved.",
     "terms": "Palveluehdot",
-    "privacy": "Tietosuojakäytäntö"
+    "privacy": "Tietosuojakäytäntö",
+    "iva": "IVA IT02925300903",
+    "rea": "REA 572763",
+    "cnpj": "CNPJ 37.553.462/0001-46",
+    "lgpdCompliant": "LGPD Compliant",
+    "gdprCompliant": "GDPR Compliant",
+    "doraReady": "DORA Ready",
+    "insights": "Insights are AI generated via RAG and prompt engineering.",
+    "cookies": "We use cookies, and by using this app you agree to it.",
+    "code": "Code"
   },
   "earningsTable": {
     "day": "Päivä",
@@ -88,5 +164,22 @@
   "errors": {
     "notFound": "Ups! Ei voitu virittää tätä taajuutta.",
     "genericError": "Jokin meni pieleen. Yritä uudelleen."
+  },
+  "settings": {
+    "title": "Asetukset",
+    "dailyActions": "Päivittäiset toimenpiteesi:",
+    "weeklyActions": "Viikoittaiset toimenpiteesi:",
+    "actionName": "Kirjoita toiminnon nimi...",
+    "numberOfTimes": "# kertaa",
+    "area": "Alue",
+    "category": "Kategoria",
+    "add": "Lisää",
+    "deleteAction": "Poista toiminto",
+    "deleteSelected": "Poista valitut ({count})",
+    "noResults": "Ei tuloksia.",
+    "monthsFixedIncome": "Month's Recurring Income",
+    "monthsVariableIncome": "Month's Variable Income",
+    "fixedNeedCosts": "Fixed Need Costs",
+    "expectedNeedUtilities": "Expected Need Utilities Average"
   }
 }

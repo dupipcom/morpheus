@@ -6,7 +6,7 @@
     "dashboard": "Nástěnka",
     "settings": "Nastavení",
     "login": "Přihlásit",
-    "signUp": "Sign Up",
+    "signUp": "Registrovat se",
     "availableBalance": "Dostupný zůstatek",
     "edit": "Upravit",
     "close": "Zavřít",
@@ -19,21 +19,23 @@
     "welcome": "Vítejte v DreamPip!",
     "signInToAccess": "Přihlaste se pro přístup k vašemu dashboardu a sledování vašeho pokroku.",
     "dismiss": "Zavřít",
-    "selectLanguage": "Vybrat jazyk"
+    "selectLanguage": "Vybrat jazyk",
+    "manageAccount": "Spravovat můj účet",
+    "signOut": "Odhlásit se"
   },
   "navigation": {
-    "home": "Home",
-    "shows": "Shows",
-    "episodes": "Episodes",
-    "chat": "Join us",
-    "events": "Events",
-    "label": "Label",
-    "supportUs": "Support Us",
-    "about": "About us",
-    "privacy": "Privacy Policy",
-    "locale": "Locale",
+    "home": "Domů",
+    "shows": "Pořady",
+    "episodes": "Epizody",
+    "chat": "Připojte se k nám",
+    "events": "Události",
+    "label": "Štítek",
+    "supportUs": "Podpořte nás",
+    "about": "O nás",
+    "privacy": "Zásady ochrany osobních údajů",
+    "locale": "Jazyk",
     "blog": "Blog",
-    "agenda": "Agenda"
+    "agenda": "Program"
   },
   "dashboard": {
     "title": "Váš život na první pohled.",
@@ -52,7 +54,8 @@
     "selfEsteem": "Sebevědomí",
     "trust": "Důvěra",
     "editDay": "Upravit den",
-    "closeDay": "Zavřít den"
+    "closeDay": "Zavřít den",
+    "earnings": "Výdělky"
   },
   "week": {
     "weekNumber": "Týden {number}",
@@ -66,22 +69,22 @@
   },
   "actions": {
     "daily": {
-      "drankWater": "Drank Water",
-      "showered": "Showered",
-      "tookMeds": "Took meds",
-      "loggedMood": "Logged mood",
-      "ateBreakfast": "Ate breakfast",
-      "ateLunch": "Ate lunch",
-      "ateDinner": "Ate dinner",
-      "brushedTeeth": "Brushed teeth",
-      "workedOut": "Worked-out",
-      "worked": "Worked",
-      "washedDishes": "Washed dishes",
-      "storedDishes": "Stored dishes",
-      "checkedTrash": "Checked trash",
-      "brushedFloor": "Brushed floor",
-      "madeLove": "Made love",
-      "wentOut": "Went out"
+      "drankWater": "Vypil vodu",
+      "showered": "Osvčel se",
+      "tookMeds": "Vzal léky",
+      "loggedMood": "Zaznamenal náladu",
+      "ateBreakfast": "Snídal",
+      "ateLunch": "Obědval",
+      "ateDinner": "Večeřel",
+      "brushedTeeth": "Čistil si zuby",
+      "workedOut": "Cvičil",
+      "worked": "Pracoval",
+      "washedDishes": "Myl nádobí",
+      "storedDishes": "Ukládal nádobí",
+      "checkedTrash": "Zkontroloval odpadky",
+      "brushedFloor": "Zametl podlahu",
+      "madeLove": "Miloval se",
+      "wentOut": "Vyšel ven"
     },
     "weekly": {
       "createdContent": "Created content for social media",
@@ -153,5 +156,22 @@
   "errors": {
     "notFound": "Ups! Nepodařilo se naladit tuto frekvenci.",
     "genericError": "Něco se pokazilo. Zkuste to prosím znovu."
+  },
+  "settings": {
+    "title": "Nastavení",
+    "dailyActions": "Vaše denní akce:",
+    "weeklyActions": "Vaše týdenní akce:",
+    "actionName": "Napište název akce...",
+    "numberOfTimes": "# krát",
+    "area": "Oblast",
+    "category": "Kategorie",
+    "add": "Přidat",
+    "deleteAction": "Smazat akci",
+    "deleteSelected": "Smazat vybrané ({count})",
+    "noResults": "Žádné výsledky.",
+    "monthsFixedIncome": "Month's Recurring Income",
+    "monthsVariableIncome": "Month's Variable Income",
+    "fixedNeedCosts": "Fixed Need Costs",
+    "expectedNeedUtilities": "Expected Need Utilities Average"
   }
 }

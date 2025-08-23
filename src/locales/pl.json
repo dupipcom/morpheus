@@ -16,13 +16,30 @@
     "welcome": "Witamy w DreamPip!",
     "signInToAccess": "Zaloguj się, aby uzyskać dostęp do swojego panelu i śledzić postępy.",
     "dismiss": "Zamknij",
-    "selectLanguage": "Wybierz język"
+    "selectLanguage": "Wybierz język",
+    "dashboard": "Panel",
+    "settings": "Ustawienia",
+    "signUp": "Zarejestruj się",
+    "manageAccount": "Zarządzaj moim kontem",
+    "signOut": "Wyloguj się"
   },
   "navigation": {
     "dashboard": "Panel",
     "profile": "Profil",
     "settings": "Ustawienia",
-    "logout": "Wyloguj się"
+    "logout": "Wyloguj się",
+    "home": "Strona główna",
+    "shows": "Programy",
+    "episodes": "Odcinki",
+    "chat": "Dołącz do nas",
+    "events": "Wydarzenia",
+    "label": "Etykieta",
+    "supportUs": "Wesprzyj nas",
+    "about": "O nas",
+    "privacy": "Polityka prywatności",
+    "locale": "Język",
+    "blog": "Blog",
+    "agenda": "Agenda"
   },
   "dashboard": {
     "title": "Twoje życie w pigułce.",
@@ -41,7 +58,8 @@
     "selfEsteem": "Poczucie własnej wartości",
     "trust": "Zaufanie",
     "editDay": "Edytuj dzień",
-    "closeDay": "Zamknij dzień"
+    "closeDay": "Zamknij dzień",
+    "earnings": "Zarobki"
   },
   "week": {
     "weekNumber": "Tydzień {number}",
@@ -57,12 +75,70 @@
     "add": "Dodaj",
     "remove": "Usuń",
     "update": "Aktualizuj",
-    "refresh": "Odśwież"
+    "refresh": "Odśwież",
+    "daily": {
+      "drankWater": "Wypił wodę",
+      "showered": "Wziął prysznic",
+      "tookMeds": "Wziął leki",
+      "loggedMood": "Zarejestrował nastrój",
+      "ateBreakfast": "Zjadł śniadanie",
+      "ateLunch": "Zjadł obiad",
+      "ateDinner": "Zjadł kolację",
+      "brushedTeeth": "Mył zęby",
+      "workedOut": "Ćwiczył",
+      "worked": "Pracował",
+      "washedDishes": "Mył naczynia",
+      "storedDishes": "Sprzątał naczynia",
+      "checkedTrash": "Sprawdził śmieci",
+      "brushedFloor": "Zamiótł podłogę",
+      "madeLove": "Kochał się",
+      "wentOut": "Wyszedł"
+    },
+    "weekly": {
+      "createdContent": "Created content for social media",
+      "flirted": "Flirted with someone",
+      "talkedToFriend": "Talked to a friend",
+      "navigatedSocial": "Navigated on social media",
+      "talkedToFamily": "Talked to family",
+      "madeMusic": "Made music",
+      "meditated": "Meditated",
+      "spokeToHoly": "Spoke to the holy",
+      "readMysticBook": "Read a mystic book",
+      "sharedLearnings": "Shared learnings",
+      "studiedSubject": "Studied a subject",
+      "watchedEducational": "Watched some educational content",
+      "playedGame": "Played a game",
+      "watchedSeries": "Watched series or film",
+      "readNews": "Read news",
+      "wroteOpinion": "Wrote an opinion",
+      "cleanedBed": "Cleaned bed",
+      "ensuredBedroomOrdered": "Ensured bedroom is ordered",
+      "shavedBody": "Shaved body",
+      "shavedFace": "Shaved face",
+      "cutNails": "Cut nails",
+      "brushedSurfaces": "Brushed surfaces",
+      "moppedFloors": "Mopped floors",
+      "washedClothes": "Washed clothes",
+      "cleanedBathroom": "Cleaned bathroom",
+      "cleanedKitchen": "Cleaned kitchen",
+      "workedOnProject": "Worked on personal project",
+      "helpedSomeone": "Helped someone",
+      "boughtGroceries": "Bought groceries"
+    }
   },
   "footer": {
     "copyright": "© {year} DreamPip. Wszystkie prawa zastrzeżone.",
     "terms": "Warunki korzystania",
-    "privacy": "Polityka prywatności"
+    "privacy": "Polityka prywatności",
+    "iva": "IVA IT02925300903",
+    "rea": "REA 572763",
+    "cnpj": "CNPJ 37.553.462/0001-46",
+    "lgpdCompliant": "LGPD Compliant",
+    "gdprCompliant": "GDPR Compliant",
+    "doraReady": "DORA Ready",
+    "insights": "Insights are AI generated via RAG and prompt engineering.",
+    "cookies": "We use cookies, and by using this app you agree to it.",
+    "code": "Code"
   },
   "earningsTable": {
     "day": "Dzień",
@@ -88,5 +164,22 @@
   "errors": {
     "notFound": "Ups! Nie można dostroić do tej częstotliwości.",
     "genericError": "Coś poszło nie tak. Spróbuj ponownie."
+  },
+  "settings": {
+    "title": "Ustawienia",
+    "dailyActions": "Twoje codzienne działania:",
+    "weeklyActions": "Twoje cotygodniowe działania:",
+    "actionName": "Wpisz nazwę akcji...",
+    "numberOfTimes": "# razy",
+    "area": "Obszar",
+    "category": "Kategoria",
+    "add": "Dodaj",
+    "deleteAction": "Usuń akcję",
+    "deleteSelected": "Usuń wybrane ({count})",
+    "noResults": "Brak wyników.",
+    "monthsFixedIncome": "Month's Recurring Income",
+    "monthsVariableIncome": "Month's Variable Income",
+    "fixedNeedCosts": "Fixed Need Costs",
+    "expectedNeedUtilities": "Expected Need Utilities Average"
   }
 }
