@@ -19,19 +19,21 @@
     "welcome": "Benvingut a DreamPip!",
     "signInToAccess": "Inicia sessió per accedir al teu tauler de control i seguir el teu progrés.",
     "dismiss": "Tancar",
-    "selectLanguage": "Seleccionar idioma"
+    "selectLanguage": "Seleccionar idioma",
+    "manageAccount": "Gestionar el meu compte",
+    "signOut": "Tancar sessió"
   },
   "navigation": {
     "home": "Inici",
-    "shows": "Mostres",
+    "shows": "Programes",
     "episodes": "Episodis",
     "chat": "Uneix-te a nosaltres",
     "events": "Esdeveniments",
     "label": "Etiqueta",
     "supportUs": "Suporta'ns",
-    "about": "Sobre nosaltres",
+    "about": "Qui som",
     "privacy": "Política de privadesa",
-    "locale": "Llengua",
+    "locale": "Idioma",
     "blog": "Blog",
     "agenda": "Agenda"
   },
@@ -67,20 +69,20 @@
   },
   "actions": {
     "daily": {
-      "drankWater": "Beur",
-      "showered": "S'ha banyat",
-      "tookMeds": "Ha pres medicaments",
+      "drankWater": "Ha begut aigua",
+      "showered": "S'ha dutxat",
+      "tookMeds": "Ha pres medicació",
       "loggedMood": "Ha registrat l'estat d'ànim",
-      "ateBreakfast": "Ha menjat el despatx",
-      "ateLunch": "Ha menjat el lunch",
-      "ateDinner": "Ha menjat el dinar",
-      "brushedTeeth": "Ha netjat els dents",
-      "workedOut": "Ha treballat-hi",
+      "ateBreakfast": "Ha esmorzat",
+      "ateLunch": "Ha dinat",
+      "ateDinner": "Ha sopat",
+      "brushedTeeth": "S'ha rentat les dents",
+      "workedOut": "Ha fet exercici",
       "worked": "Ha treballat",
-      "washedDishes": "Ha netjat les rajoles",
-      "storedDishes": "Ha despatxat les rajoles",
-      "checkedTrash": "Ha revisat la paperera",
-      "brushedFloor": "Ha netjat el terra",
+      "washedDishes": "Ha rentat els plats",
+      "storedDishes": "Ha guardat els plats",
+      "checkedTrash": "Ha revisat les escombraries",
+      "brushedFloor": "Ha escombrat el terra",
       "madeLove": "Ha fet l'amor",
       "wentOut": "Ha sortit"
     },
@@ -154,5 +156,22 @@
   "errors": {
     "notFound": "Ups! No s'ha pogut sintonitzar aquesta freqüència.",
     "genericError": "Alguna cosa ha anat malament. Si us plau, torna-ho a provar."
+  },
+  "settings": {
+    "title": "Configuració",
+    "dailyActions": "Les teves accions diàries:",
+    "weeklyActions": "Les teves accions setmanals:",
+    "actionName": "Escriu el nom de l'acció...",
+    "numberOfTimes": "# de vegades",
+    "area": "Àrea",
+    "category": "Categoria",
+    "add": "Afegir",
+    "deleteAction": "Eliminar acció",
+    "deleteSelected": "Eliminar seleccionats ({count})",
+    "noResults": "Sense resultats.",
+    "monthsFixedIncome": "Month's Recurring Income",
+    "monthsVariableIncome": "Month's Variable Income",
+    "fixedNeedCosts": "Fixed Need Costs",
+    "expectedNeedUtilities": "Expected Need Utilities Average"
   }
 }

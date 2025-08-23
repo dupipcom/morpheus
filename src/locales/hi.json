@@ -70,18 +70,18 @@
   "actions": {
     "daily": {
       "drankWater": "पानी पिया",
-      "showered": "स्नान किया",
+      "showered": "नहाया",
       "tookMeds": "दवा ली",
-      "loggedMood": "मनोदशा दर्ज की",
+      "loggedMood": "मूड लॉग किया",
       "ateBreakfast": "नाश्ता किया",
-      "ateLunch": "दोपहर का भोजन किया",
-      "ateDinner": "रात का भोजन किया",
+      "ateLunch": "दोपहर का खाना खाया",
+      "ateDinner": "रात का खाना खाया",
       "brushedTeeth": "दांत साफ किए",
       "workedOut": "व्यायाम किया",
       "worked": "काम किया",
       "washedDishes": "बर्तन धोए",
       "storedDishes": "बर्तन रखे",
-      "checkedTrash": "कचरा जांचा",
+      "checkedTrash": "कचरा देखा",
       "brushedFloor": "फर्श साफ किया",
       "madeLove": "प्रेम किया",
       "wentOut": "बाहर गया"
@@ -156,5 +156,22 @@
   "errors": {
     "notFound": "उफ़! इस आवृत्ति को ट्यून नहीं कर सका।",
     "genericError": "कुछ गलत हो गया। कृपया पुनः प्रयास करें।"
+  },
+  "settings": {
+    "title": "सेटिंग्स",
+    "dailyActions": "आपके दैनिक कार्य:",
+    "weeklyActions": "आपके साप्ताहिक कार्य:",
+    "actionName": "कार्य का नाम टाइप करें...",
+    "numberOfTimes": "# बार",
+    "area": "क्षेत्र",
+    "category": "श्रेणी",
+    "add": "जोड़ें",
+    "deleteAction": "कार्य हटाएं",
+    "deleteSelected": "चयनित हटाएं ({count})",
+    "noResults": "कोई परिणाम नहीं।",
+    "monthsFixedIncome": "Month's Recurring Income",
+    "monthsVariableIncome": "Month's Variable Income",
+    "fixedNeedCosts": "Fixed Need Costs",
+    "expectedNeedUtilities": "Expected Need Utilities Average"
   }
 }

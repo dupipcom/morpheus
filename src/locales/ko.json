@@ -6,7 +6,7 @@
     "dashboard": "대시보드",
     "settings": "설정",
     "login": "로그인",
-    "signUp": "회원가입",
+    "signUp": "가입하기",
     "availableBalance": "사용 가능한 잔액:",
     "edit": "편집",
     "close": "닫기",
@@ -19,21 +19,23 @@
     "welcome": "DreamPip에 오신 것을 환영합니다!",
     "signInToAccess": "대시보드에 액세스하고 진행 상황을 추적하려면 로그인하세요.",
     "dismiss": "닫기",
-    "selectLanguage": "언어 선택"
+    "selectLanguage": "언어 선택",
+    "manageAccount": "내 계정 관리",
+    "signOut": "로그아웃"
   },
   "navigation": {
     "home": "홈",
     "shows": "쇼",
     "episodes": "에피소드",
-    "chat": "참여하기",
+    "chat": "우리와 함께하세요",
     "events": "이벤트",
-    "label": "레이블",
-    "supportUs": "지원하기",
+    "label": "라벨",
+    "supportUs": "우리를 지원하세요",
     "about": "우리에 대해",
     "privacy": "개인정보 처리방침",
     "locale": "언어",
     "blog": "블로그",
-    "agenda": "아젠다"
+    "agenda": "의제"
   },
   "dashboard": {
     "title": "한눈에 보는 당신의 삶.",
@@ -67,22 +69,22 @@
   },
   "actions": {
     "daily": {
-      "drankWater": "물을 마셨다",
-      "showered": "샤워를 했다",
-      "tookMeds": "약을 먹었다",
-      "loggedMood": "기분을 기록했다",
-      "ateBreakfast": "아침을 먹었다",
-      "ateLunch": "점심을 먹었다",
-      "ateDinner": "저녁을 먹었다",
-      "brushedTeeth": "양치를 했다",
-      "workedOut": "운동을 했다",
-      "worked": "일을 했다",
-      "washedDishes": "설거지를 했다",
-      "storedDishes": "그릇을 정리했다",
-      "checkedTrash": "쓰레기를 확인했다",
-      "brushedFloor": "바닥을 쓸었다",
-      "madeLove": "사랑을 나눴다",
-      "wentOut": "외출했다"
+      "drankWater": "물을 마셨습니다",
+      "showered": "샤워했습니다",
+      "tookMeds": "약을 복용했습니다",
+      "loggedMood": "기분을 기록했습니다",
+      "ateBreakfast": "아침 식사를 했습니다",
+      "ateLunch": "점심 식사를 했습니다",
+      "ateDinner": "저녁 식사를 했습니다",
+      "brushedTeeth": "양치질을 했습니다",
+      "workedOut": "운동을 했습니다",
+      "worked": "일했습니다",
+      "washedDishes": "설거지를 했습니다",
+      "storedDishes": "설거지를 정리했습니다",
+      "checkedTrash": "쓰레기를 확인했습니다",
+      "brushedFloor": "바닥을 쓸었습니다",
+      "madeLove": "사랑을 나눴습니다",
+      "wentOut": "외출했습니다"
     },
     "weekly": {
       "createdContent": "소셜미디어용 콘텐츠를 만들었다",
@@ -154,5 +156,22 @@
   "errors": {
     "notFound": "앗! 이 주파수에 맞출 수 없습니다.",
     "genericError": "문제가 발생했습니다. 다시 시도해 주세요."
+  },
+  "settings": {
+    "title": "설정",
+    "dailyActions": "일일 활동:",
+    "weeklyActions": "주간 활동:",
+    "actionName": "작업 이름을 입력하세요...",
+    "numberOfTimes": "# 회",
+    "area": "영역",
+    "category": "카테고리",
+    "add": "추가",
+    "deleteAction": "작업 삭제",
+    "deleteSelected": "선택된 항목 삭제 ({count})",
+    "noResults": "결과가 없습니다.",
+    "monthsFixedIncome": "Month's Recurring Income",
+    "monthsVariableIncome": "Month's Variable Income",
+    "fixedNeedCosts": "Fixed Need Costs",
+    "expectedNeedUtilities": "Expected Need Utilities Average"
   }
 }

@@ -16,13 +16,30 @@
     "welcome": "DreamPip'e hoş geldiniz!",
     "signInToAccess": "Dashboard'unuza erişmek ve ilerlemenizi takip etmek için giriş yapın.",
     "dismiss": "Kapat",
-    "selectLanguage": "Dil seçin"
+    "selectLanguage": "Dil seçin",
+    "dashboard": "Gösterge Paneli",
+    "settings": "Ayarlar",
+    "signUp": "Kayıt ol",
+    "manageAccount": "Hesabımı yönet",
+    "signOut": "Çıkış yap"
   },
   "navigation": {
     "dashboard": "Gösterge Paneli",
     "profile": "Profil",
     "settings": "Ayarlar",
-    "logout": "Çıkış yap"
+    "logout": "Çıkış yap",
+    "home": "Ana Sayfa",
+    "shows": "Gösteriler",
+    "episodes": "Bölümler",
+    "chat": "Bize katılın",
+    "events": "Etkinlikler",
+    "label": "Etiket",
+    "supportUs": "Bizi destekleyin",
+    "about": "Hakkımızda",
+    "privacy": "Gizlilik politikası",
+    "locale": "Dil",
+    "blog": "Blog",
+    "agenda": "Gündem"
   },
   "dashboard": {
     "title": "Hayatınız bir bakışta.",
@@ -41,7 +58,8 @@
     "selfEsteem": "Öz saygı",
     "trust": "Güven",
     "editDay": "Günü düzenle",
-    "closeDay": "Günü kapat"
+    "closeDay": "Günü kapat",
+    "earnings": "Kazanç"
   },
   "week": {
     "weekNumber": "Hafta {number}",
@@ -57,12 +75,70 @@
     "add": "Ekle",
     "remove": "Kaldır",
     "update": "Güncelle",
-    "refresh": "Yenile"
+    "refresh": "Yenile",
+    "daily": {
+      "drankWater": "Su içti",
+      "showered": "Duş aldı",
+      "tookMeds": "İlaç aldı",
+      "loggedMood": "Ruh halini kaydetti",
+      "ateBreakfast": "Kahvaltı yaptı",
+      "ateLunch": "Öğle yemeği yedi",
+      "ateDinner": "Akşam yemeği yedi",
+      "brushedTeeth": "Dişlerini fırçaladı",
+      "workedOut": "Egzersiz yaptı",
+      "worked": "Çalıştı",
+      "washedDishes": "Bulaşık yıkadı",
+      "storedDishes": "Bulaşıkları kaldırdı",
+      "checkedTrash": "Çöpü kontrol etti",
+      "brushedFloor": "Yeri süpürdü",
+      "madeLove": "Sevişti",
+      "wentOut": "Dışarı çıktı"
+    },
+    "weekly": {
+      "createdContent": "Created content for social media",
+      "flirted": "Flirted with someone",
+      "talkedToFriend": "Talked to a friend",
+      "navigatedSocial": "Navigated on social media",
+      "talkedToFamily": "Talked to family",
+      "madeMusic": "Made music",
+      "meditated": "Meditated",
+      "spokeToHoly": "Spoke to the holy",
+      "readMysticBook": "Read a mystic book",
+      "sharedLearnings": "Shared learnings",
+      "studiedSubject": "Studied a subject",
+      "watchedEducational": "Watched some educational content",
+      "playedGame": "Played a game",
+      "watchedSeries": "Watched series or film",
+      "readNews": "Read news",
+      "wroteOpinion": "Wrote an opinion",
+      "cleanedBed": "Cleaned bed",
+      "ensuredBedroomOrdered": "Ensured bedroom is ordered",
+      "shavedBody": "Shaved body",
+      "shavedFace": "Shaved face",
+      "cutNails": "Cut nails",
+      "brushedSurfaces": "Brushed surfaces",
+      "moppedFloors": "Mopped floors",
+      "washedClothes": "Washed clothes",
+      "cleanedBathroom": "Cleaned bathroom",
+      "cleanedKitchen": "Cleaned kitchen",
+      "workedOnProject": "Worked on personal project",
+      "helpedSomeone": "Helped someone",
+      "boughtGroceries": "Bought groceries"
+    }
   },
   "footer": {
     "copyright": "© {year} DreamPip. Tüm hakları saklıdır.",
     "terms": "Hizmet Şartları",
-    "privacy": "Gizlilik Politikası"
+    "privacy": "Gizlilik Politikası",
+    "iva": "IVA IT02925300903",
+    "rea": "REA 572763",
+    "cnpj": "CNPJ 37.553.462/0001-46",
+    "lgpdCompliant": "LGPD Compliant",
+    "gdprCompliant": "GDPR Compliant",
+    "doraReady": "DORA Ready",
+    "insights": "Insights are AI generated via RAG and prompt engineering.",
+    "cookies": "We use cookies, and by using this app you agree to it.",
+    "code": "Code"
   },
   "earningsTable": {
     "day": "Gün",
@@ -88,5 +164,22 @@
   "errors": {
     "notFound": "Ups! Bu frekansa ayarlanamadı.",
     "genericError": "Bir şeyler yanlış gitti. Lütfen tekrar deneyin."
+  },
+  "settings": {
+    "title": "Ayarlar",
+    "dailyActions": "Günlük eylemleriniz:",
+    "weeklyActions": "Haftalık eylemleriniz:",
+    "actionName": "Eylem adını yazın...",
+    "numberOfTimes": "# kez",
+    "area": "Alan",
+    "category": "Kategori",
+    "add": "Ekle",
+    "deleteAction": "Eylemi sil",
+    "deleteSelected": "Seçilenleri sil ({count})",
+    "noResults": "Sonuç yok.",
+    "monthsFixedIncome": "Month's Recurring Income",
+    "monthsVariableIncome": "Month's Variable Income",
+    "fixedNeedCosts": "Fixed Need Costs",
+    "expectedNeedUtilities": "Expected Need Utilities Average"
   }
 }

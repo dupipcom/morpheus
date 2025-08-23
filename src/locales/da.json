@@ -16,13 +16,30 @@
     "welcome": "Velkommen til DreamPip!",
     "signInToAccess": "Log ind for at få adgang til dit dashboard og spore din fremskridt.",
     "dismiss": "Luk",
-    "selectLanguage": "Vælg sprog"
+    "selectLanguage": "Vælg sprog",
+    "dashboard": "Dashboard",
+    "settings": "Indstillinger",
+    "signUp": "Tilmeld dig",
+    "manageAccount": "Administrer min konto",
+    "signOut": "Log ud"
   },
   "navigation": {
     "dashboard": "Dashboard",
     "profile": "Profil",
     "settings": "Indstillinger",
-    "logout": "Log ud"
+    "logout": "Log ud",
+    "home": "Hjem",
+    "shows": "Shows",
+    "episodes": "Episoder",
+    "chat": "Tilslut dig os",
+    "events": "Begivenheder",
+    "label": "Etiket",
+    "supportUs": "Støt os",
+    "about": "Om os",
+    "privacy": "Privatlivspolitik",
+    "locale": "Sprog",
+    "blog": "Blog",
+    "agenda": "Dagsorden"
   },
   "dashboard": {
     "title": "Dit liv på et øjeblik.",
@@ -41,7 +58,8 @@
     "selfEsteem": "Selvværd",
     "trust": "Tillid",
     "editDay": "Rediger dag",
-    "closeDay": "Luk dag"
+    "closeDay": "Luk dag",
+    "earnings": "Indtjening"
   },
   "week": {
     "weekNumber": "Uge {number}",
@@ -57,12 +75,70 @@
     "add": "Tilføj",
     "remove": "Fjern",
     "update": "Opdater",
-    "refresh": "Opdater"
+    "refresh": "Opdater",
+    "daily": {
+      "drankWater": "Drak vand",
+      "showered": "Tog brusebad",
+      "tookMeds": "Tog medicin",
+      "loggedMood": "Registrerede humør",
+      "ateBreakfast": "Spiste morgenmad",
+      "ateLunch": "Spiste frokost",
+      "ateDinner": "Spiste aftensmad",
+      "brushedTeeth": "Børstede tænder",
+      "workedOut": "Trænede",
+      "worked": "Arbejdede",
+      "washedDishes": "Vaskede op",
+      "storedDishes": "Ryddede op",
+      "checkedTrash": "Tjekkede skraldespanden",
+      "brushedFloor": "Børstede gulvet",
+      "madeLove": "Elskede",
+      "wentOut": "Gik ud"
+    },
+    "weekly": {
+      "createdContent": "Created content for social media",
+      "flirted": "Flirted with someone",
+      "talkedToFriend": "Talked to a friend",
+      "navigatedSocial": "Navigated on social media",
+      "talkedToFamily": "Talked to family",
+      "madeMusic": "Made music",
+      "meditated": "Meditated",
+      "spokeToHoly": "Spoke to the holy",
+      "readMysticBook": "Read a mystic book",
+      "sharedLearnings": "Shared learnings",
+      "studiedSubject": "Studied a subject",
+      "watchedEducational": "Watched some educational content",
+      "playedGame": "Played a game",
+      "watchedSeries": "Watched series or film",
+      "readNews": "Read news",
+      "wroteOpinion": "Wrote an opinion",
+      "cleanedBed": "Cleaned bed",
+      "ensuredBedroomOrdered": "Ensured bedroom is ordered",
+      "shavedBody": "Shaved body",
+      "shavedFace": "Shaved face",
+      "cutNails": "Cut nails",
+      "brushedSurfaces": "Brushed surfaces",
+      "moppedFloors": "Mopped floors",
+      "washedClothes": "Washed clothes",
+      "cleanedBathroom": "Cleaned bathroom",
+      "cleanedKitchen": "Cleaned kitchen",
+      "workedOnProject": "Worked on personal project",
+      "helpedSomeone": "Helped someone",
+      "boughtGroceries": "Bought groceries"
+    }
   },
   "footer": {
     "copyright": "© {year} DreamPip. All rights reserved.",
     "terms": "Servicevilkår",
-    "privacy": "Privatlivspolitik"
+    "privacy": "Privatlivspolitik",
+    "iva": "IVA IT02925300903",
+    "rea": "REA 572763",
+    "cnpj": "CNPJ 37.553.462/0001-46",
+    "lgpdCompliant": "LGPD Compliant",
+    "gdprCompliant": "GDPR Compliant",
+    "doraReady": "DORA Ready",
+    "insights": "Insights are AI generated via RAG and prompt engineering.",
+    "cookies": "We use cookies, and by using this app you agree to it.",
+    "code": "Code"
   },
   "earningsTable": {
     "day": "Dag",
@@ -88,5 +164,22 @@
   "errors": {
     "notFound": "Ups! Kunne ikke indstille denne frekvens.",
     "genericError": "Noget gik galt. Prøv venligst igen."
+  },
+  "settings": {
+    "title": "Indstillinger",
+    "dailyActions": "Dine daglige handlinger:",
+    "weeklyActions": "Dine ugentlige handlinger:",
+    "actionName": "Skriv handlingsnavn...",
+    "numberOfTimes": "# gange",
+    "area": "Område",
+    "category": "Kategori",
+    "add": "Tilføj",
+    "deleteAction": "Slet handling",
+    "deleteSelected": "Slet valgte ({count})",
+    "noResults": "Ingen resultater.",
+    "monthsFixedIncome": "Month's Recurring Income",
+    "monthsVariableIncome": "Month's Variable Income",
+    "fixedNeedCosts": "Fixed Need Costs",
+    "expectedNeedUtilities": "Expected Need Utilities Average"
   }
 }

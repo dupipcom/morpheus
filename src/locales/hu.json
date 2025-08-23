@@ -20,7 +20,7 @@
     "signInToAccess": "Jelentkezzen be a dashboard eléréséhez és a fejlődés követéséhez.",
     "dismiss": "Bezárás",
     "selectLanguage": "Nyelv kiválasztása",
-    "manageAccount": "Fiókom Kezelése",
+    "manageAccount": "Fiókom kezelése",
     "signOut": "Kijelentkezés"
   },
   "navigation": {
@@ -55,7 +55,7 @@
     "trust": "Bizalom",
     "editDay": "Nap szerkesztése",
     "closeDay": "Nap bezárása",
-    "earnings": "Bevétel"
+    "earnings": "Kereset"
   },
   "week": {
     "weekNumber": "Hét {number}",
@@ -72,7 +72,7 @@
       "drankWater": "Vizet ivott",
       "showered": "Zuhanyozott",
       "tookMeds": "Gyógyszert szedett",
-      "loggedMood": "Hangulatot rögzített",
+      "loggedMood": "Rögzítette a hangulatot",
       "ateBreakfast": "Reggelizett",
       "ateLunch": "Ebédelt",
       "ateDinner": "Vacsorázott",
@@ -80,9 +80,9 @@
       "workedOut": "Edzett",
       "worked": "Dolgozott",
       "washedDishes": "Mosogatott",
-      "storedDishes": "Elrakta az edényeket",
+      "storedDishes": "Elrakta a tányérokat",
       "checkedTrash": "Ellenőrizte a szemetet",
-      "brushedFloor": "Felsöpörte a padlót",
+      "brushedFloor": "Felseperte a padlót",
       "madeLove": "Szeretkezett",
       "wentOut": "Kiment"
     },
@@ -156,5 +156,22 @@
   "errors": {
     "notFound": "Ups! Nem sikerült beállítani ezt a frekvenciát.",
     "genericError": "Valami hiba történt. Kérjük, próbáld újra."
+  },
+  "settings": {
+    "title": "Beállítások",
+    "dailyActions": "Napi tevékenységei:",
+    "weeklyActions": "Heti tevékenységei:",
+    "actionName": "Írja be a művelet nevét...",
+    "numberOfTimes": "# alkalommal",
+    "area": "Terület",
+    "category": "Kategória",
+    "add": "Hozzáadás",
+    "deleteAction": "Művelet törlése",
+    "deleteSelected": "Kiválasztottak törlése ({count})",
+    "noResults": "Nincs eredmény.",
+    "monthsFixedIncome": "Month's Recurring Income",
+    "monthsVariableIncome": "Month's Variable Income",
+    "fixedNeedCosts": "Fixed Need Costs",
+    "expectedNeedUtilities": "Expected Need Utilities Average"
   }
 }

@@ -16,13 +16,30 @@
     "welcome": "DreamPip ਵਿੱਚ ਤੁਹਾਡਾ ਸਵਾਗਤ ਹੈ!",
     "signInToAccess": "ਆਪਣੇ ਡੈਸ਼ਬੋਰਡ ਤੱਕ ਪਹੁੰਚਣ ਅਤੇ ਆਪਣੀ ਤਰੱਕੀ ਨੂੰ ਟਰੈਕ ਕਰਨ ਲਈ ਸਾਈਨ ਇਨ ਕਰੋ।",
     "dismiss": "ਬੰਦ ਕਰੋ",
-    "selectLanguage": "ਭਾਸ਼ਾ ਚੁਣੋ"
+    "selectLanguage": "ਭਾਸ਼ਾ ਚੁਣੋ",
+    "dashboard": "ਡੈਸ਼ਬੋਰਡ",
+    "settings": "ਸੈਟਿੰਗਾਂ",
+    "signUp": "ਸਾਈਨ ਅਪ",
+    "manageAccount": "ਮੇਰਾ ਖਾਤਾ ਪ੍ਰਬੰਧਿਤ ਕਰੋ",
+    "signOut": "ਸਾਈਨ ਆਊਟ"
   },
   "navigation": {
     "dashboard": "ਡੈਸ਼ਬੋਰਡ",
     "profile": "ਪ੍ਰੋਫਾਈਲ",
     "settings": "ਸੈਟਿੰਗਾਂ",
-    "logout": "ਲਾਗਆਊਟ"
+    "logout": "ਲਾਗਆਊਟ",
+    "home": "ਹੋਮ",
+    "shows": "ਸ਼ੋਅ",
+    "episodes": "ਐਪੀਸੋਡ",
+    "chat": "ਸਾਡੇ ਨਾਲ ਜੁੜੋ",
+    "events": "ਇਵੈਂਟ",
+    "label": "ਲੇਬਲ",
+    "supportUs": "ਸਾਡਾ ਸਮਰਥਨ ਕਰੋ",
+    "about": "ਸਾਡੇ ਬਾਰੇ",
+    "privacy": "ਗੋਪਨੀਯਤਾ ਨੀਤੀ",
+    "locale": "ਭਾਸ਼ਾ",
+    "blog": "ਬਲੌਗ",
+    "agenda": "ਏਜੰਡਾ"
   },
   "dashboard": {
     "title": "ਤੁਹਾਡੀ ਜ਼ਿੰਦਗੀ ਇੱਕ ਨਜ਼ਰ ਵਿੱਚ।",
@@ -41,7 +58,8 @@
     "selfEsteem": "ਆਤਮ-ਸਨਮਾਨ",
     "trust": "ਭਰੋਸਾ",
     "editDay": "ਦਿਨ ਸੰਪਾਦਿਤ ਕਰੋ",
-    "closeDay": "ਦਿਨ ਬੰਦ ਕਰੋ"
+    "closeDay": "ਦਿਨ ਬੰਦ ਕਰੋ",
+    "earnings": "ਕਮਾਈ"
   },
   "week": {
     "weekNumber": "ਹਫ਼ਤਾ {number}",
@@ -57,12 +75,70 @@
     "add": "ਜੋੜੋ",
     "remove": "ਹਟਾਓ",
     "update": "ਅਪਡੇਟ ਕਰੋ",
-    "refresh": "ਰਿਫਰੈਸ਼ ਕਰੋ"
+    "refresh": "ਰਿਫਰੈਸ਼ ਕਰੋ",
+    "daily": {
+      "drankWater": "ਪਾਣੀ ਪੀਤਾ",
+      "showered": "ਗੁਸਲ ਕੀਤਾ",
+      "tookMeds": "ਦਵਾਈ ਲਈ",
+      "loggedMood": "ਮੂਡ ਲੌਗ ਕੀਤਾ",
+      "ateBreakfast": "ਨਾਸ਼ਤਾ ਕੀਤਾ",
+      "ateLunch": "ਦੁਪਹਿਰ ਦਾ ਖਾਣਾ ਖਾਧਾ",
+      "ateDinner": "ਰਾਤ ਦਾ ਖਾਣਾ ਖਾਧਾ",
+      "brushedTeeth": "ਦੰਦ ਸਾਫ਼ ਕੀਤੇ",
+      "workedOut": "ਕਸਰਤ ਕੀਤੀ",
+      "worked": "ਕੰਮ ਕੀਤਾ",
+      "washedDishes": "ਬਰਤਨ ਧੋਤੇ",
+      "storedDishes": "ਬਰਤਨ ਰੱਖੇ",
+      "checkedTrash": "ਕੂੜਾ ਚੈਕ ਕੀਤਾ",
+      "brushedFloor": "ਫਰਸ਼ ਸਾਫ਼ ਕੀਤਾ",
+      "madeLove": "ਪਿਆਰ ਕੀਤਾ",
+      "wentOut": "ਬਾਹਰ ਗਿਆ"
+    },
+    "weekly": {
+      "createdContent": "Created content for social media",
+      "flirted": "Flirted with someone",
+      "talkedToFriend": "Talked to a friend",
+      "navigatedSocial": "Navigated on social media",
+      "talkedToFamily": "Talked to family",
+      "madeMusic": "Made music",
+      "meditated": "Meditated",
+      "spokeToHoly": "Spoke to the holy",
+      "readMysticBook": "Read a mystic book",
+      "sharedLearnings": "Shared learnings",
+      "studiedSubject": "Studied a subject",
+      "watchedEducational": "Watched some educational content",
+      "playedGame": "Played a game",
+      "watchedSeries": "Watched series or film",
+      "readNews": "Read news",
+      "wroteOpinion": "Wrote an opinion",
+      "cleanedBed": "Cleaned bed",
+      "ensuredBedroomOrdered": "Ensured bedroom is ordered",
+      "shavedBody": "Shaved body",
+      "shavedFace": "Shaved face",
+      "cutNails": "Cut nails",
+      "brushedSurfaces": "Brushed surfaces",
+      "moppedFloors": "Mopped floors",
+      "washedClothes": "Washed clothes",
+      "cleanedBathroom": "Cleaned bathroom",
+      "cleanedKitchen": "Cleaned kitchen",
+      "workedOnProject": "Worked on personal project",
+      "helpedSomeone": "Helped someone",
+      "boughtGroceries": "Bought groceries"
+    }
   },
   "footer": {
     "copyright": "© {year} DreamPip. ਸਾਰੇ ਅਧਿਕਾਰ ਸੁਰੱਖਿਅਤ।",
     "terms": "ਸੇਵਾ ਦੀਆਂ ਸ਼ਰਤਾਂ",
-    "privacy": "ਗੋਪਨੀਯਤਾ ਨੀਤੀ"
+    "privacy": "ਗੋਪਨੀਯਤਾ ਨੀਤੀ",
+    "iva": "IVA IT02925300903",
+    "rea": "REA 572763",
+    "cnpj": "CNPJ 37.553.462/0001-46",
+    "lgpdCompliant": "LGPD Compliant",
+    "gdprCompliant": "GDPR Compliant",
+    "doraReady": "DORA Ready",
+    "insights": "Insights are AI generated via RAG and prompt engineering.",
+    "cookies": "We use cookies, and by using this app you agree to it.",
+    "code": "Code"
   },
   "earningsTable": {
     "day": "ਦਿਨ",
@@ -88,5 +164,22 @@
   "errors": {
     "notFound": "ਉਫ਼! ਇਸ ਫ੍ਰੀਕੁਐਂਸੀ ਤੇ ਟਿਊਨ ਨਹੀਂ ਕਰ ਸਕਿਆ।",
     "genericError": "ਕੁਝ ਗਲਤ ਹੋ ਗਿਆ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
+  },
+  "settings": {
+    "title": "ਸੈਟਿੰਗਾਂ",
+    "dailyActions": "ਤੁਹਾਡੇ ਰੋਜ਼ਾਨਾ ਕੰਮ:",
+    "weeklyActions": "ਤੁਹਾਡੇ ਹਫ਼ਤਾਵਾਰੀ ਕੰਮ:",
+    "actionName": "ਕਾਰਵਾਈ ਦਾ ਨਾਮ ਟਾਈਪ ਕਰੋ...",
+    "numberOfTimes": "# ਵਾਰ",
+    "area": "ਖੇਤਰ",
+    "category": "ਸ਼੍ਰੇਣੀ",
+    "add": "ਜੋੜੋ",
+    "deleteAction": "ਕਾਰਵਾਈ ਮਿਟਾਓ",
+    "deleteSelected": "ਚੁਣੇ ਹੋਏ ਮਿਟਾਓ ({count})",
+    "noResults": "ਕੋਈ ਨਤੀਜੇ ਨਹੀਂ।",
+    "monthsFixedIncome": "Month's Recurring Income",
+    "monthsVariableIncome": "Month's Variable Income",
+    "fixedNeedCosts": "Fixed Need Costs",
+    "expectedNeedUtilities": "Expected Need Utilities Average"
   }
 }

@@ -16,13 +16,30 @@
     "welcome": "Καλώς ήρθατε στο DreamPip!",
     "signInToAccess": "Συνδεθείτε για να αποκτήσετε πρόσβαση στον πίνακα ελέγχου και να παρακολουθήσετε την πρόοδό σας.",
     "dismiss": "Κλείσιμο",
-    "selectLanguage": "Επιλέξτε γλώσσα"
+    "selectLanguage": "Επιλέξτε γλώσσα",
+    "dashboard": "Πίνακας ελέγχου",
+    "settings": "Ρυθμίσεις",
+    "signUp": "Εγγραφή",
+    "manageAccount": "Διαχείριση λογαριασμού μου",
+    "signOut": "Αποσύνδεση"
   },
   "navigation": {
     "dashboard": "Πίνακας ελέγχου",
     "profile": "Προφίλ",
     "settings": "Ρυθμίσεις",
-    "logout": "Αποσύνδεση"
+    "logout": "Αποσύνδεση",
+    "home": "Αρχική",
+    "shows": "Εκπομπές",
+    "episodes": "Επεισόδια",
+    "chat": "Ελάτε μαζί μας",
+    "events": "Εκδηλώσεις",
+    "label": "Ετικέτα",
+    "supportUs": "Υποστηρίξτε μας",
+    "about": "Σχετικά με εμάς",
+    "privacy": "Πολιτική απορρήτου",
+    "locale": "Γλώσσα",
+    "blog": "Ιστολόγιο",
+    "agenda": "Ημερήσια διάταξη"
   },
   "dashboard": {
     "title": "Η ζωή σας με μια ματιά.",
@@ -41,7 +58,8 @@
     "selfEsteem": "Αυτοεκτίμηση",
     "trust": "Εμπιστοσύνη",
     "editDay": "Επεξεργασία ημέρας",
-    "closeDay": "Κλείσιμο ημέρας"
+    "closeDay": "Κλείσιμο ημέρας",
+    "earnings": "Κέρδη"
   },
   "week": {
     "weekNumber": "Εβδομάδα {number}",
@@ -57,12 +75,70 @@
     "add": "Προσθήκη",
     "remove": "Αφαίρεση",
     "update": "Ενημέρωση",
-    "refresh": "Ανανέωση"
+    "refresh": "Ανανέωση",
+    "daily": {
+      "drankWater": "Έπινε νερό",
+      "showered": "Καλούπισε",
+      "tookMeds": "Πήρε φάρμακα",
+      "loggedMood": "Κατέγραψε τη διάθεση",
+      "ateBreakfast": "Πήρε πρωινό",
+      "ateLunch": "Πήρε μεσημεριανό",
+      "ateDinner": "Πήρε βραδινό",
+      "brushedTeeth": "Βούρτσισε τα δόντια",
+      "workedOut": "Έκανε γυμναστική",
+      "worked": "Δούλεψε",
+      "washedDishes": "Έπλυνε τα πιάτα",
+      "storedDishes": "Έβαλε τα πιάτα στη θέση τους",
+      "checkedTrash": "Έλεγξε τα σκουπίδια",
+      "brushedFloor": "Σκούπισε το πάτωμα",
+      "madeLove": "Έκανε έρωτα",
+      "wentOut": "Βγήκε έξω"
+    },
+    "weekly": {
+      "createdContent": "Created content for social media",
+      "flirted": "Flirted with someone",
+      "talkedToFriend": "Talked to a friend",
+      "navigatedSocial": "Navigated on social media",
+      "talkedToFamily": "Talked to family",
+      "madeMusic": "Made music",
+      "meditated": "Meditated",
+      "spokeToHoly": "Spoke to the holy",
+      "readMysticBook": "Read a mystic book",
+      "sharedLearnings": "Shared learnings",
+      "studiedSubject": "Studied a subject",
+      "watchedEducational": "Watched some educational content",
+      "playedGame": "Played a game",
+      "watchedSeries": "Watched series or film",
+      "readNews": "Read news",
+      "wroteOpinion": "Wrote an opinion",
+      "cleanedBed": "Cleaned bed",
+      "ensuredBedroomOrdered": "Ensured bedroom is ordered",
+      "shavedBody": "Shaved body",
+      "shavedFace": "Shaved face",
+      "cutNails": "Cut nails",
+      "brushedSurfaces": "Brushed surfaces",
+      "moppedFloors": "Mopped floors",
+      "washedClothes": "Washed clothes",
+      "cleanedBathroom": "Cleaned bathroom",
+      "cleanedKitchen": "Cleaned kitchen",
+      "workedOnProject": "Worked on personal project",
+      "helpedSomeone": "Helped someone",
+      "boughtGroceries": "Bought groceries"
+    }
   },
   "footer": {
     "copyright": "© {year} DreamPip. All rights reserved.",
     "terms": "Όροι υπηρεσίας",
-    "privacy": "Πολιτική απορρήτου"
+    "privacy": "Πολιτική απορρήτου",
+    "iva": "IVA IT02925300903",
+    "rea": "REA 572763",
+    "cnpj": "CNPJ 37.553.462/0001-46",
+    "lgpdCompliant": "LGPD Compliant",
+    "gdprCompliant": "GDPR Compliant",
+    "doraReady": "DORA Ready",
+    "insights": "Insights are AI generated via RAG and prompt engineering.",
+    "cookies": "We use cookies, and by using this app you agree to it.",
+    "code": "Code"
   },
   "earningsTable": {
     "day": "Ημέρα",
@@ -88,5 +164,22 @@
   "errors": {
     "notFound": "Ουπς! Δεν ήταν δυνατή η συντονισμός σε αυτή τη συχνότητα.",
     "genericError": "Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά."
+  },
+  "settings": {
+    "title": "Ρυθμίσεις",
+    "dailyActions": "Οι καθημερινές σας ενέργειες:",
+    "weeklyActions": "Οι εβδομαδιαίες σας ενέργειες:",
+    "actionName": "Πληκτρολογήστε το όνομα της ενέργειας...",
+    "numberOfTimes": "# φορές",
+    "area": "Περιοχή",
+    "category": "Κατηγορία",
+    "add": "Προσθήκη",
+    "deleteAction": "Διαγραφή ενέργειας",
+    "deleteSelected": "Διαγραφή επιλεγμένων ({count})",
+    "noResults": "Δεν υπάρχουν αποτελέσματα.",
+    "monthsFixedIncome": "Month's Recurring Income",
+    "monthsVariableIncome": "Month's Variable Income",
+    "fixedNeedCosts": "Fixed Need Costs",
+    "expectedNeedUtilities": "Expected Need Utilities Average"
   }
 }

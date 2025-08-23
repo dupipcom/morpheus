@@ -6,7 +6,7 @@
     "dashboard": "Panel de control",
     "settings": "Configuración",
     "login": "Iniciar sesión",
-    "signUp": "Inscribirse",
+    "signUp": "Rexistrarse",
     "availableBalance": "Saldo dispoñible",
     "edit": "Editar",
     "close": "Pechar",
@@ -19,21 +19,23 @@
     "welcome": "Benvido a DreamPip!",
     "signInToAccess": "Inicia sesión para acceder ao teu panel e seguir o teu progreso.",
     "dismiss": "Pechar",
-    "selectLanguage": "Seleccionar idioma"
+    "selectLanguage": "Seleccionar idioma",
+    "manageAccount": "Xestionar a miña conta",
+    "signOut": "Pechar sesión"
   },
   "navigation": {
-    "home": "Home",
-    "shows": "Shows",
-    "episodes": "Episodes",
-    "chat": "Unirse a nós",
-    "events": "Events",
-    "label": "Label",
-    "supportUs": "Apoia-nos",
-    "about": "Sobre nós",
+    "home": "Inicio",
+    "shows": "Programas",
+    "episodes": "Episodios",
+    "chat": "Únete a nós",
+    "events": "Eventos",
+    "label": "Etiqueta",
+    "supportUs": "Apóyanos",
+    "about": "Quen somos",
     "privacy": "Política de privacidade",
-    "locale": "Locale",
+    "locale": "Idioma",
     "blog": "Blog",
-    "agenda": "Agenda",
+    "agenda": "Axenda",
     "profile": "Perfil",
     "settings": "Configuración",
     "logout": "Pechar sesión"
@@ -56,7 +58,7 @@
     "trust": "Confianza",
     "editDay": "Editar día",
     "closeDay": "Pechar día",
-    "earnings": "Ingresos"
+    "earnings": "Ganancias"
   },
   "week": {
     "weekNumber": "Semana {number}",
@@ -70,22 +72,22 @@
   },
   "actions": {
     "daily": {
-      "drankWater": "Bebida",
-      "showered": "Baño",
+      "drankWater": "Bebeu auga",
+      "showered": "Duchouse",
       "tookMeds": "Tomou medicamentos",
-      "loggedMood": "Rexistrou estado de ánimo",
-      "ateBreakfast": "Comió desxornado",
-      "ateLunch": "Comió almoco",
-      "ateDinner": "Comió cenas",
-      "brushedTeeth": "Escováronse os dentes",
-      "workedOut": "Traballou",
+      "loggedMood": "Rexistrou o humor",
+      "ateBreakfast": "Tomou o almorzo",
+      "ateLunch": "Almorzou",
+      "ateDinner": "Cenou",
+      "brushedTeeth": "Lavou os dentes",
+      "workedOut": "Fixo exercicio",
       "worked": "Traballou",
-      "washedDishes": "Laváronse os platos",
-      "storedDishes": "Gardáronse os platos",
-      "checkedTrash": "Comprobar o lixo",
-      "brushedFloor": "Escováronse o chan",
-      "madeLove": "Foste ao amor",
-      "wentOut": "Foste fóra"
+      "washedDishes": "Lavou os pratos",
+      "storedDishes": "Gardou os pratos",
+      "checkedTrash": "Revisou o lixo",
+      "brushedFloor": "Varreu o chan",
+      "madeLove": "Fixo o amor",
+      "wentOut": "Saeu"
     },
     "weekly": {
       "createdContent": "Creado contido para as redes sociais",
@@ -161,5 +163,22 @@
   "errors": {
     "notFound": "Ups! Non se puido sintonizar esta frecuencia.",
     "genericError": "Algo saíu mal. Por favor, inténtao de novo."
+  },
+  "settings": {
+    "title": "Configuración",
+    "dailyActions": "As túas accións diarias:",
+    "weeklyActions": "As túas accións semanais:",
+    "actionName": "Escribe o nome da acción...",
+    "numberOfTimes": "# de veces",
+    "area": "Área",
+    "category": "Categoría",
+    "add": "Engadir",
+    "deleteAction": "Eliminar acción",
+    "deleteSelected": "Eliminar seleccionados ({count})",
+    "noResults": "Sen resultados.",
+    "monthsFixedIncome": "Month's Recurring Income",
+    "monthsVariableIncome": "Month's Variable Income",
+    "fixedNeedCosts": "Fixed Need Costs",
+    "expectedNeedUtilities": "Expected Need Utilities Average"
   }
 }

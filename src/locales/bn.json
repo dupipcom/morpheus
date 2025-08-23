@@ -26,7 +26,7 @@
   "navigation": {
     "home": "হোম",
     "shows": "শো",
-    "episodes": "এপিসোড",
+    "episodes": "পর্ব",
     "chat": "আমাদের সাথে যোগ দিন",
     "events": "ইভেন্ট",
     "label": "লেবেল",
@@ -69,22 +69,22 @@
   },
   "actions": {
     "daily": {
-      "drankWater": "পানি পান করেছিল",
-      "showered": "গোসল করেছিল",
-      "tookMeds": "ওষুধ খেয়েছিল",
-      "loggedMood": "মেজাজ লগ করেছিল",
-      "ateBreakfast": "সকালের খাবার খেয়েছিল",
-      "ateLunch": "দুপুরের খাবার খেয়েছিল",
-      "ateDinner": "রাতের খাবার খেয়েছিল",
-      "brushedTeeth": "দাঁত ব্রাশ করেছিল",
-      "workedOut": "ব্যায়াম করেছিল",
-      "worked": "কাজ করেছিল",
-      "washedDishes": "বাসন ধুয়েছিল",
-      "storedDishes": "বাসন রাখেছিল",
-      "checkedTrash": "আবর্জনা চেক করেছিল",
-      "brushedFloor": "মেঝে ঝাড়ু দিয়েছিল",
-      "madeLove": "প্রেম করেছিল",
-      "wentOut": "বেরিয়েছিল"
+      "drankWater": "পানি পান করেছে",
+      "showered": "গোসল করেছে",
+      "tookMeds": "ওষুধ খেয়েছে",
+      "loggedMood": "মেজাজ লগ করেছে",
+      "ateBreakfast": "সকালের নাস্তা খেয়েছে",
+      "ateLunch": "দুপুরের খাবার খেয়েছে",
+      "ateDinner": "রাতের খাবার খেয়েছে",
+      "brushedTeeth": "দাঁত ব্রাশ করেছে",
+      "workedOut": "কসরত করেছে",
+      "worked": "কাজ করেছে",
+      "washedDishes": "বাসন মাজছে",
+      "storedDishes": "বাসন রাখছে",
+      "checkedTrash": "আবর্জনা দেখছে",
+      "brushedFloor": "মেঝে ঝাড়ছে",
+      "madeLove": "প্রেম করেছে",
+      "wentOut": "বের হয়েছে"
     },
     "weekly": {
       "createdContent": "সামাজিক মাধ্যমের জন্য কনটেন্ট তৈরি করেছিল",
@@ -156,5 +156,22 @@
   "errors": {
     "notFound": "ওহ! এই ফ্রিকোয়েন্সিতে টিউন করা যায়নি।",
     "genericError": "কিছু ভুল হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।"
+  },
+  "settings": {
+    "title": "সেটিংস",
+    "dailyActions": "আপনার দৈনিক কর্ম:",
+    "weeklyActions": "আপনার সাপ্তাহিক কর্ম:",
+    "actionName": "কর্মের নাম টাইপ করুন...",
+    "numberOfTimes": "# বার",
+    "area": "এলাকা",
+    "category": "বিভাগ",
+    "add": "যোগ করুন",
+    "deleteAction": "কর্ম মুছুন",
+    "deleteSelected": "নির্বাচিত মুছুন ({count})",
+    "noResults": "কোন ফলাফল নেই।",
+    "monthsFixedIncome": "Month's Recurring Income",
+    "monthsVariableIncome": "Month's Variable Income",
+    "fixedNeedCosts": "Fixed Need Costs",
+    "expectedNeedUtilities": "Expected Need Utilities Average"
   }
 }

@@ -19,18 +19,20 @@
     "welcome": "Benvenuto su DreamPip!",
     "signInToAccess": "Accedi per accedere alla tua dashboard e tracciare i tuoi progressi.",
     "dismiss": "Chiudi",
-    "selectLanguage": "Seleziona lingua"
+    "selectLanguage": "Seleziona lingua",
+    "manageAccount": "Gestisci il mio account",
+    "signOut": "Disconnetti"
   },
   "navigation": {
     "home": "Inizio",
     "shows": "Spettacoli",
     "episodes": "Episodi",
-    "chat": "Unisciti",
+    "chat": "Unisciti a noi",
     "events": "Eventi",
     "label": "Etichetta",
     "supportUs": "Supportaci",
     "about": "Chi siamo",
-    "privacy": "Privacy",
+    "privacy": "Informativa sulla privacy",
     "locale": "Lingua",
     "blog": "Blog",
     "agenda": "Agenda"
@@ -75,7 +77,7 @@
     "category": "Categoria",
     "add": "Aggiungi",
     "deleteAction": "Elimina azione",
-    "deleteSelected": "Elimina Selezionati ({count})",
+    "deleteSelected": "Elimina selezionati ({count})",
     "noResults": "Nessun risultato.",
     "monthsFixedIncome": "Reddito Fisso Mensile",
     "monthsVariableIncome": "Reddito Variabile Mensile",
@@ -172,4 +174,4 @@
     "notFound": "Ops! Non è stato possibile sintonizzarsi su questa frequenza.",
     "genericError": "Qualcosa è andato storto. Riprova."
   }
-} 
+}

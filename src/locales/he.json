@@ -3,7 +3,7 @@
     "day": "יום",
     "week": "שבוע",
     "mood": "מצב רוח",
-    "dashboard": "לוח בקרה",
+    "dashboard": "לוח מחוונים",
     "settings": "הגדרות",
     "login": "התחברות",
     "signUp": "הרשמה",
@@ -19,21 +19,23 @@
     "welcome": "ברוכים הבאים ל-DreamPip!",
     "signInToAccess": "התחבר כדי לגשת ללוח הבקרה שלך ולעקוב אחר ההתקדמות שלך.",
     "dismiss": "סגור",
-    "selectLanguage": "בחר שפה"
+    "selectLanguage": "בחר שפה",
+    "manageAccount": "נהל את החשבון שלי",
+    "signOut": "התנתק"
   },
   "navigation": {
     "home": "בית",
     "shows": "מופעים",
     "episodes": "פרקים",
-    "chat": "הצטרפות לנו",
+    "chat": "הצטרף אלינו",
     "events": "אירועים",
-    "label": "תווית",
-    "supportUs": "תמיכה בנו",
-    "about": "אודות",
+    "label": "תגית",
+    "supportUs": "תמוך בנו",
+    "about": "אודותינו",
     "privacy": "מדיניות פרטיות",
     "locale": "שפה",
     "blog": "בלוג",
-    "agenda": "לוח שנה"
+    "agenda": "סדר יום"
   },
   "dashboard": {
     "title": "חייך במבט אחד.",
@@ -53,7 +55,7 @@
     "trust": "אמון",
     "editDay": "עריכת יום",
     "closeDay": "סגירת יום",
-    "earnings": "הרווחים"
+    "earnings": "רווחים"
   },
   "week": {
     "weekNumber": "שבוע {number}",
@@ -67,22 +69,22 @@
   },
   "actions": {
     "daily": {
-      "drankWater": "שתית מים",
-      "showered": "ניקניק",
-      "tookMeds": "קיבל תרופות",
-      "loggedMood": "התעד במצב רוח",
-      "ateBreakfast": "אכל בוקר",
-      "ateLunch": "אכל צהריים",
-      "ateDinner": "אכל שבת",
-      "brushedTeeth": "נקניק שיניים",
-      "workedOut": "הלך לתרגול",
+      "drankWater": "שתה מים",
+      "showered": "התקלח",
+      "tookMeds": "לקח תרופות",
+      "loggedMood": "רשם מצב רוח",
+      "ateBreakfast": "אכל ארוחת בוקר",
+      "ateLunch": "אכל ארוחת צהריים",
+      "ateDinner": "אכל ארוחת ערב",
+      "brushedTeeth": "צחצח שיניים",
+      "workedOut": "התאמן",
       "worked": "עבד",
-      "washedDishes": "נקניק סידות",
-      "storedDishes": "אחסנת סידות",
-      "checkedTrash": "בדק שקית",
-      "brushedFloor": "נקניק רצפה",
-      "madeLove": "הלך לאהבה",
-      "wentOut": "הלך מחוץ"
+      "washedDishes": "שטף כלים",
+      "storedDishes": "אחסן כלים",
+      "checkedTrash": "בדק זבל",
+      "brushedFloor": "סחט רצפה",
+      "madeLove": "עשה אהבה",
+      "wentOut": "יצא"
     },
     "weekly": {
       "createdContent": "יצר תוכן לספקות חברתיות",
@@ -154,5 +156,22 @@
   "errors": {
     "notFound": "אופס! לא ניתן לכוון לתדר זה.",
     "genericError": "משהו השתבש. אנא נסה שוב."
+  },
+  "settings": {
+    "title": "הגדרות",
+    "dailyActions": "הפעולות היומיות שלך:",
+    "weeklyActions": "הפעולות השבועיות שלך:",
+    "actionName": "הקלד שם פעולה...",
+    "numberOfTimes": "# פעמים",
+    "area": "אזור",
+    "category": "קטגוריה",
+    "add": "הוסף",
+    "deleteAction": "מחק פעולה",
+    "deleteSelected": "מחק נבחר ({count})",
+    "noResults": "אין תוצאות.",
+    "monthsFixedIncome": "Month's Recurring Income",
+    "monthsVariableIncome": "Month's Variable Income",
+    "fixedNeedCosts": "Fixed Need Costs",
+    "expectedNeedUtilities": "Expected Need Utilities Average"
   }
 }
