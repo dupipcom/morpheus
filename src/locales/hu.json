@@ -116,9 +116,9 @@
       "workedOnProject": "Személyes projekten dolgozott",
       "helpedSomeone": "Segített valakinek",
       "boughtGroceries": "Vásárolt élelmiszereket",
-      "navigatedSocialMedia": "actions.weekly.navigatedSocialMedia",
-      "orderedBedroom": "actions.weekly.orderedBedroom",
-      "personalProject": "actions.weekly.personalProject"
+      "navigatedSocialMedia": "Böngészett a közösségi médiában",
+      "orderedBedroom": "Rendezette a hálószobát",
+      "personalProject": "Személyes projekten dolgozott"
     }
   },
   "footer": {

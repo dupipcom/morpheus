@@ -116,9 +116,9 @@
       "workedOnProject": "व्यक्तिगत प्रोजेक्ट पर काम किया",
       "helpedSomeone": "किसी की मदद की",
       "boughtGroceries": "किराने का सामान खरीदा",
-      "navigatedSocialMedia": "actions.weekly.navigatedSocialMedia",
-      "orderedBedroom": "actions.weekly.orderedBedroom",
-      "personalProject": "actions.weekly.personalProject"
+      "navigatedSocialMedia": "सोशल मीडिया पर नेविगेट किया",
+      "orderedBedroom": "बेडरूम को व्यवस्थित किया",
+      "personalProject": "व्यक्तिगत प्रोजेक्ट पर काम किया"
     }
   },
   "footer": {

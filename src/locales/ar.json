@@ -137,9 +137,9 @@
       "workedOnProject": "عمل على مشروع شخصي",
       "helpedSomeone": "ساعد شخصاً ما",
       "boughtGroceries": "اشترى البقالة",
-      "navigatedSocialMedia": "actions.weekly.navigatedSocialMedia",
-      "orderedBedroom": "actions.weekly.orderedBedroom",
-      "personalProject": "actions.weekly.personalProject"
+      "navigatedSocialMedia": "تصفح وسائل التواصل الاجتماعي",
+      "orderedBedroom": "أمر غرفة النوم",
+      "personalProject": "عمل على مشروع شخصي"
     }
   },
   "footer": {

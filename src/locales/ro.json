@@ -116,9 +116,9 @@
       "workedOnProject": "Ați lucrat la un proiect personal",
       "helpedSomeone": "Ați ajutat pe cineva",
       "boughtGroceries": "Ați cumpărat legume și fructe",
-      "navigatedSocialMedia": "actions.weekly.navigatedSocialMedia",
-      "orderedBedroom": "actions.weekly.orderedBedroom",
-      "personalProject": "actions.weekly.personalProject"
+      "navigatedSocialMedia": "Ați navigat pe rețelele sociale",
+      "orderedBedroom": "Ați ordonat camera",
+      "personalProject": "Ați lucrat la un proiect personal"
     }
   },
   "footer": {

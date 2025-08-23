@@ -133,9 +133,9 @@
       "workedOnProject": "做了个人项目",
       "helpedSomeone": "帮助了某人",
       "boughtGroceries": "买了杂货",
-      "navigatedSocialMedia": "actions.weekly.navigatedSocialMedia",
-      "orderedBedroom": "actions.weekly.orderedBedroom",
-      "personalProject": "actions.weekly.personalProject"
+      "navigatedSocialMedia": "浏览了社交媒体",
+      "orderedBedroom": "整理了卧室",
+      "personalProject": "做了个人项目"
     }
   },
   "footer": {

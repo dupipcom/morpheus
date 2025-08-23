@@ -133,9 +133,9 @@
       "workedOnProject": "A travaillé sur un projet personnel",
       "helpedSomeone": "A aidé quelqu'un",
       "boughtGroceries": "A acheté des courses",
-      "navigatedSocialMedia": "actions.weekly.navigatedSocialMedia",
-      "orderedBedroom": "actions.weekly.orderedBedroom",
-      "personalProject": "actions.weekly.personalProject"
+      "navigatedSocialMedia": "A navigué sur les réseaux sociaux",
+      "orderedBedroom": "A rangé la chambre",
+      "personalProject": "A travaillé sur un projet personnel"
     }
   },
   "footer": {

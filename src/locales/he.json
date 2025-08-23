@@ -116,9 +116,9 @@
       "workedOnProject": "עבד בפרויד פרטי",
       "helpedSomeone": "עזר למישהו",
       "boughtGroceries": "קנה מזון",
-      "navigatedSocialMedia": "actions.weekly.navigatedSocialMedia",
-      "orderedBedroom": "actions.weekly.orderedBedroom",
-      "personalProject": "actions.weekly.personalProject"
+      "navigatedSocialMedia": "נווט ברשתות חברתיות",
+      "orderedBedroom": "סידר את חדר השינה",
+      "personalProject": "עבד על פרויקט אישי"
     }
   },
   "footer": {

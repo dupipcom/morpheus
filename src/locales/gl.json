@@ -119,9 +119,9 @@
       "workedOnProject": "Traballáronse nun proyecto persoal",
       "helpedSomeone": "Axudáronse a alguén",
       "boughtGroceries": "Compráronse os alimentos",
-      "navigatedSocialMedia": "actions.weekly.navigatedSocialMedia",
-      "orderedBedroom": "actions.weekly.orderedBedroom",
-      "personalProject": "actions.weekly.personalProject"
+      "navigatedSocialMedia": "Navegáronse nas redes sociais",
+      "orderedBedroom": "Ordenáronse a habitación",
+      "personalProject": "Traballáronse nun proyecto persoal"
     },
     "add": "Engadir",
     "remove": "Eliminar",
