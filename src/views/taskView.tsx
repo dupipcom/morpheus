@@ -21,6 +21,7 @@ import { useI18n } from "@/lib/contexts/i18n"
 import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil, isUserDataReady, useEnhancedLoadingState } from "@/lib/userUtils"
 import { TaskViewSkeleton } from "@/components/ui/skeleton-loader"
 import { ContentLoadingWrapper } from '@/components/ContentLoadingWrapper'
+import { DAILY_ACTIONS, WEEKLY_ACTIONS } from "@/app/constants"
 
 export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const { session, setGlobalContext, theme } = useContext(GlobalContext)
@@ -38,13 +39,19 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
 
   const userTasks = useMemo(() => {
     if(timeframe === 'day') {
-      const dailyTasks = ((session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date]) && session?.user?.entries[year].days[date]?.tasks) || []
-      return merge([], session?.user?.settings?.dailyTemplate, dailyTasks)
+      const dailyTasks = ((session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date]) && session?.user?.entries[year].days[date]?.tasks) || DAILY_ACTIONS
+      if (!session?.user?.settings?.dailyTemplate) {
+        return dailyTasks
+      }
+     return session?.user?.settings?.dailyTemplate
     } else if (timeframe === 'week') {
-      const weeklyTasks = (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks) && session?.user?.entries[year].weeks[weekNumber]?.tasks || []
-      return merge([], session?.user?.settings?.weeklyTemplate, weeklyTasks)
+      const weeklyTasks = (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks) && session?.user?.entries[year].weeks[weekNumber]?.tasks || WEEKLY_ACTIONS
+      if (!session?.user?.settings?.weeklyTemplate) {
+        return weeklyTasks
+      }
+      return session?.user?.settings?.weeklyTemplate
     }
-  }, [JSON.stringify(session), date, weekNumber])
+  }, [JSON.stringify(session?.user?.settings), date, weekNumber])
 
 
   const openDays = useMemo(() => {
@@ -63,7 +70,9 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const [previousValues, setPreviousValues] = useState(userDone)
   const [values, setValues] = useState(userDone)
 
-  const castActions = userTasks?.length ? userTasks : actions 
+  const castActions = useMemo(() => {
+    return userTasks?.length > 0 ? userTasks : actions
+  }, [userTasks, actions])
 
 
   const handleDone = async (values) => {
