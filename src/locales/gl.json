@@ -118,7 +118,10 @@
       "cleanedKitchen": "Limáronse a cocina",
       "workedOnProject": "Traballáronse nun proyecto persoal",
       "helpedSomeone": "Axudáronse a alguén",
-      "boughtGroceries": "Compráronse os alimentos"
+      "boughtGroceries": "Compráronse os alimentos",
+      "navigatedSocialMedia": "Navegáronse nas redes sociais",
+      "orderedBedroom": "Ordenáronse a habitación",
+      "personalProject": "Traballáronse nun proyecto persoal"
     },
     "add": "Engadir",
     "remove": "Eliminar",

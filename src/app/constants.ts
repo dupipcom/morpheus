@@ -4,6 +4,7 @@ export const defaultLocale = 'en'
 export const WEEKLY_ACTIONS = [
   {
     name: 'Created content for social media',
+    localeKey: 'actions.weekly.createdContent',
     area: 'social',
     categories: ['community'],
     cadence: 'weekly',
@@ -13,6 +14,7 @@ export const WEEKLY_ACTIONS = [
   },
   {
     name: 'Flirted with someone',
+    localeKey: 'actions.weekly.flirted',
     area: 'social',
     categories: ['affection'],
     cadence: 'weekly',
@@ -22,6 +24,7 @@ export const WEEKLY_ACTIONS = [
   },
   {
     name: 'Talked to a friend',
+    localeKey: 'actions.weekly.talkedToFriend',
     area: 'social',
     categories: ['affection'],
     cadence: 'weekly',
@@ -31,6 +34,7 @@ export const WEEKLY_ACTIONS = [
   },
   {
     name: 'Navigated on social media',
+    localeKey: 'actions.weekly.navigatedSocialMedia',
     area: 'social',
     categories: ['community'],
     cadence: 'weekly',
@@ -40,6 +44,7 @@ export const WEEKLY_ACTIONS = [
   },
   {
     name: 'Talked to family',
+    localeKey: 'actions.weekly.talkedToFamily',
     area: 'social',
     categories: ['affection'],
     cadence: 'weekly',
@@ -49,6 +54,7 @@ export const WEEKLY_ACTIONS = [
   },
   {
     name: 'Made music',
+    localeKey: 'actions.weekly.madeMusic',
     area: 'self',
     categories: ['fun'],
     cadence: 'weekly',
@@ -58,6 +64,7 @@ export const WEEKLY_ACTIONS = [
   },
   {
     name: 'Meditated',
+    localeKey: 'actions.weekly.meditated',
     area: 'self',
     categories: ['spirituality'],
     cadence: 'weekly',
@@ -67,6 +74,7 @@ export const WEEKLY_ACTIONS = [
   },
   {
     name: 'Spoke to the holy',
+    localeKey: 'actions.weekly.spokeToHoly',
     area: 'self',
     categories: ['spirituality'],
     cadence: 'weekly',
@@ -76,6 +84,7 @@ export const WEEKLY_ACTIONS = [
   },
   {
     name: 'Read a mystic book',
+    localeKey: 'actions.weekly.readMysticBook',
     area: 'self',
     categories: ['spirituality'],
     cadence: 'weekly',
@@ -85,6 +94,7 @@ export const WEEKLY_ACTIONS = [
   },
   {
     name: 'Shared learnings',
+    localeKey: 'actions.weekly.sharedLearnings',
     area: 'social',
     categories: ['community'],
     cadence: 'weekly',
@@ -94,6 +104,7 @@ export const WEEKLY_ACTIONS = [
   },
   {
     name: 'Studied a subject',
+    localeKey: 'actions.weekly.studiedSubject',
     area: 'self',
     categories: ['growth'],
     cadence: 'weekly',
@@ -103,6 +114,7 @@ export const WEEKLY_ACTIONS = [
   },
   {
     name: 'Watched some educational content',
+    localeKey: 'actions.weekly.watchedEducational',
     area: 'self',
     categories: ['growth'],
     cadence: 'weekly',
@@ -112,6 +124,7 @@ export const WEEKLY_ACTIONS = [
   },
   {
     name: 'Played a game',
+    localeKey: 'actions.weekly.playedGame',
     area: 'self',
     categories: ['fun'],
     cadence: 'weekly',
@@ -121,6 +134,7 @@ export const WEEKLY_ACTIONS = [
   },
   {
     name: 'Watched series or film',
+    localeKey: 'actions.weekly.watchedSeries',
     area: 'self',
     categories: ['fun'],
     cadence: 'weekly',
@@ -130,6 +144,7 @@ export const WEEKLY_ACTIONS = [
   },
   {
     name: 'Read news',
+    localeKey: 'actions.weekly.readNews',
     area: 'social',
     categories: ['community'],
     cadence: 'weekly',
@@ -139,6 +154,7 @@ export const WEEKLY_ACTIONS = [
   },
   {
     name: 'Wrote an opinion',
+    localeKey: 'actions.weekly.wroteOpinion',
     area: 'social',
     categories: ['community'],
     cadence: 'weekly',
@@ -148,6 +164,7 @@ export const WEEKLY_ACTIONS = [
   },
   {
     name: 'Cleaned bed',
+    localeKey: 'actions.weekly.cleanedBed',
     area: 'home',
     categories: ['clean'],
     cadence: 'weekly',
@@ -157,6 +174,7 @@ export const WEEKLY_ACTIONS = [
   },
   {
     name: 'Ensured bedroom is ordered',
+    localeKey: 'actions.weekly.orderedBedroom',
     area: 'home',
     categories: ['clean'],
     cadence: 'weekly',
@@ -166,6 +184,7 @@ export const WEEKLY_ACTIONS = [
   },
   {
     name: 'Shaved body',
+    localeKey: 'actions.weekly.shavedBody',
     area: 'home',
     categories: ['clean', 'extra'],
     cadence: 'weekly',
@@ -175,6 +194,7 @@ export const WEEKLY_ACTIONS = [
   },
   {
     name: 'Shaved face',
+    localeKey: 'actions.weekly.shavedFace',
     area: 'home',
     categories: ['clean', 'extra'],
     cadence: 'weekly',
@@ -184,6 +204,7 @@ export const WEEKLY_ACTIONS = [
   },
   {
     name: 'Cut nails',
+    localeKey: 'actions.weekly.cutNails',
     area: 'home',
     categories: ['clean', 'extra'],
     cadence: 'weekly',
@@ -193,6 +214,7 @@ export const WEEKLY_ACTIONS = [
   },
   {
     name: 'Brushed surfaces',
+    localeKey: 'actions.weekly.brushedSurfaces',
     area: 'home',
     categories: ['clean', 'extra'],
     cadence: 'weekly',
@@ -202,6 +224,7 @@ export const WEEKLY_ACTIONS = [
   },
   {
     name: 'Mopped floors',
+    localeKey: 'actions.weekly.moppedFloors',
     area: 'home',
     categories: ['clean', 'extra'],
     cadence: 'weekly',
@@ -211,6 +234,7 @@ export const WEEKLY_ACTIONS = [
   },
   {
     name: 'Washed clothes',
+    localeKey: 'actions.weekly.washedClothes',
     area: 'home',
     categories: ['clean', 'extra'],
     cadence: 'weekly',
@@ -220,6 +244,7 @@ export const WEEKLY_ACTIONS = [
   },
   {
     name: 'Cleaned bathroom',
+    localeKey: 'actions.weekly.cleanedBathroom',
     area: 'home',
     categories: ['clean', 'extra'],
     cadence: 'weekly',
@@ -229,6 +254,7 @@ export const WEEKLY_ACTIONS = [
   },
   {
     name: 'Cleaned kitchen',
+    localeKey: 'actions.weekly.cleanedKitchen',
     area: 'home',
     categories: ['clean', 'extra'],
     cadence: 'weekly',
@@ -238,6 +264,7 @@ export const WEEKLY_ACTIONS = [
   },
   {
     name: 'Worked on personal project',
+    localeKey: 'actions.weekly.personalProject',
     area: 'self',
     categories: ['work'],
     cadence: 'weekly',
@@ -247,6 +274,7 @@ export const WEEKLY_ACTIONS = [
   },
   {
     name: 'Helped someone',
+    localeKey: 'actions.weekly.helpedSomeone',
     area: 'social',
     categories: ['community'],
     cadence: 'weekly',
@@ -256,6 +284,7 @@ export const WEEKLY_ACTIONS = [
   },
   {
     name: 'Bought groceries',
+    localeKey: 'actions.weekly.boughtGroceries',
     area: 'home',
     categories: ['maintenance'],
     cadence: 'weekly',
@@ -269,6 +298,7 @@ export const WEEKLY_ACTIONS = [
 export const DAILY_ACTIONS = [
   {
     name: 'Drank Water',
+    localeKey: 'actions.daily.drankWater',
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
@@ -278,6 +308,7 @@ export const DAILY_ACTIONS = [
   },
   {
     name: 'Showered',
+    localeKey: 'actions.daily.showered',
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
@@ -287,6 +318,7 @@ export const DAILY_ACTIONS = [
   },
   {
     name: 'Took meds',
+    localeKey: 'actions.daily.tookMeds',
     area: 'self',
     categories: ['body'],
     cadence: '2-daily',
@@ -296,6 +328,7 @@ export const DAILY_ACTIONS = [
   },
   {
     name: 'Logged mood',
+    localeKey: 'actions.daily.loggedMood',
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
@@ -305,6 +338,7 @@ export const DAILY_ACTIONS = [
   },
   {
     name: 'Ate breakfast',
+    localeKey: 'actions.daily.ateBreakfast',
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
@@ -314,6 +348,7 @@ export const DAILY_ACTIONS = [
   },
   {
     name: 'Ate lunch',
+    localeKey: 'actions.daily.ateLunch',
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
@@ -323,6 +358,7 @@ export const DAILY_ACTIONS = [
   },
   {
     name: 'Ate dinner',
+    localeKey: 'actions.daily.ateDinner',
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
@@ -332,6 +368,7 @@ export const DAILY_ACTIONS = [
   },
   {
     name: 'Brushed teeth',
+    localeKey: 'actions.daily.brushedTeeth',
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
@@ -341,6 +378,7 @@ export const DAILY_ACTIONS = [
   },
   {
     name: 'Worked-out',
+    localeKey: 'actions.daily.workedOut',
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
@@ -350,6 +388,7 @@ export const DAILY_ACTIONS = [
   },
   {
     name: 'Worked',
+    localeKey: 'actions.daily.worked',
     area: 'home',
     categories: ['work'],
     cadence: 'daily',
@@ -359,6 +398,7 @@ export const DAILY_ACTIONS = [
   },
   {
     name: 'Washed dishes',
+    localeKey: 'actions.daily.washedDishes',
     area: 'home',
     categories: ['clean'],
     cadence: 'daily',
@@ -368,6 +408,7 @@ export const DAILY_ACTIONS = [
   },
   {
     name: 'Stored dishes',
+    localeKey: 'actions.daily.storedDishes',
     area: 'home',
     categories: ['clean'],
     cadence: 'daily',
@@ -377,6 +418,7 @@ export const DAILY_ACTIONS = [
   },
   {
     name: 'Checked trash',
+    localeKey: 'actions.daily.checkedTrash',
     area: 'home',
     categories: ['clean'],
     cadence: 'daily',
@@ -386,6 +428,7 @@ export const DAILY_ACTIONS = [
   },
   {
     name: 'Brushed floor',
+    localeKey: 'actions.daily.brushedFloor',
     area: 'home',
     categories: ['clean'],
     cadence: 'daily',
@@ -395,6 +438,7 @@ export const DAILY_ACTIONS = [
   },
   {
     name: 'Made love',
+    localeKey: 'actions.daily.madeLove',
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
@@ -404,6 +448,7 @@ export const DAILY_ACTIONS = [
   },
   {
     name: 'Went out',
+    localeKey: 'actions.daily.wentOut',
     area: 'social',
     categories: ['community'],
     cadence: 'daily',
@@ -430,4 +475,28 @@ export const WEEKS = {
     earnings: 280.00,
     tasks: WEEKLY_ACTIONS
   },
+}
+
+// Utility function to get localized task name
+export function getLocalizedTaskName(task: any, t: (key: string) => string): string {
+  // If the task has a localeKey, try to translate it
+  if (task.localeKey) {
+    const translatedName = t(task.localeKey)
+    // If translation returns the same key, it means the translation doesn't exist
+    // In that case, fall back to the original name
+    if (translatedName !== task.localeKey) {
+      return translatedName
+    }
+  }
+  
+  // Fall back to the original name for custom tasks or missing translations
+  return task.name
+}
+
+// Utility function to get localized task names for an array of tasks
+export function getLocalizedTaskNames(tasks: any[], t: (key: string) => string): any[] {
+  return tasks.map(task => ({
+    ...task,
+    displayName: getLocalizedTaskName(task, t)
+  }))
 }

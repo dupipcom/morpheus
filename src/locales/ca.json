@@ -115,7 +115,10 @@
       "cleanedKitchen": "Ha netjat la cuina",
       "workedOnProject": "Ha treballat en un projecte personal",
       "helpedSomeone": "Ha ajudat algú",
-      "boughtGroceries": "Ha comprat aliments"
+      "boughtGroceries": "Ha comprat aliments",
+      "navigatedSocialMedia": "S'ha navegat a les xarxes socials",
+      "orderedBedroom": "Ha ordenat la cambra",
+      "personalProject": "Ha treballat en un projecte personal"
     }
   },
   "footer": {

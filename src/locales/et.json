@@ -115,7 +115,10 @@
       "cleanedKitchen": "Puhastas kööki",
       "workedOnProject": "Töötas isikliku projekti kallal",
       "helpedSomeone": "Aitas kedagi",
-      "boughtGroceries": "Ostis toiduaineid"
+      "boughtGroceries": "Ostis toiduaineid",
+      "navigatedSocialMedia": "Navigeeris sotsiaalmeedias",
+      "orderedBedroom": "Korraldas magamitoa",
+      "personalProject": "Töötas isikliku projekti kallal"
     }
   },
   "footer": {

@@ -136,7 +136,10 @@
       "cleanedKitchen": "نظف المطبخ",
       "workedOnProject": "عمل على مشروع شخصي",
       "helpedSomeone": "ساعد شخصاً ما",
-      "boughtGroceries": "اشترى البقالة"
+      "boughtGroceries": "اشترى البقالة",
+      "navigatedSocialMedia": "تصفح وسائل التواصل الاجتماعي",
+      "orderedBedroom": "أمر غرفة النوم",
+      "personalProject": "عمل على مشروع شخصي"
     }
   },
   "footer": {
