@@ -132,7 +132,10 @@
       "cleanedKitchen": "Ha pulito la cucina",
       "workedOnProject": "Ha lavorato a un progetto personale",
       "helpedSomeone": "Ha aiutato qualcuno",
-      "boughtGroceries": "Ha comprato la spesa"
+      "boughtGroceries": "Ha comprato la spesa",
+      "navigatedSocialMedia": "actions.weekly.navigatedSocialMedia",
+      "orderedBedroom": "actions.weekly.orderedBedroom",
+      "personalProject": "actions.weekly.personalProject"
     }
   },
   "footer": {

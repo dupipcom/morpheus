@@ -118,7 +118,10 @@
       "cleanedKitchen": "Cleaned kitchen",
       "workedOnProject": "Worked on personal project",
       "helpedSomeone": "Helped someone",
-      "boughtGroceries": "Bought groceries"
+      "boughtGroceries": "Bought groceries",
+      "navigatedSocialMedia": "actions.weekly.navigatedSocialMedia",
+      "orderedBedroom": "actions.weekly.orderedBedroom",
+      "personalProject": "actions.weekly.personalProject"
     },
     "add": "Lägg till",
     "remove": "Ta bort",

@@ -115,7 +115,10 @@
       "cleanedKitchen": "부엌을 청소했다",
       "workedOnProject": "개인 프로젝트에 작업했다",
       "helpedSomeone": "누군가를 도왔다",
-      "boughtGroceries": "식료품을 샀다"
+      "boughtGroceries": "식료품을 샀다",
+      "navigatedSocialMedia": "actions.weekly.navigatedSocialMedia",
+      "orderedBedroom": "actions.weekly.orderedBedroom",
+      "personalProject": "actions.weekly.personalProject"
     }
   },
   "footer": {

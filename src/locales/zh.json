@@ -132,7 +132,10 @@
       "cleanedKitchen": "清洁了厨房",
       "workedOnProject": "做了个人项目",
       "helpedSomeone": "帮助了某人",
-      "boughtGroceries": "买了杂货"
+      "boughtGroceries": "买了杂货",
+      "navigatedSocialMedia": "actions.weekly.navigatedSocialMedia",
+      "orderedBedroom": "actions.weekly.orderedBedroom",
+      "personalProject": "actions.weekly.personalProject"
     }
   },
   "footer": {

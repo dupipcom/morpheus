@@ -132,7 +132,10 @@
       "cleanedKitchen": "キッチンを掃除した",
       "workedOnProject": "個人的なプロジェクトに取り組んだ",
       "helpedSomeone": "誰かを助けた",
-      "boughtGroceries": "食料品を買った"
+      "boughtGroceries": "食料品を買った",
+      "navigatedSocialMedia": "actions.weekly.navigatedSocialMedia",
+      "orderedBedroom": "actions.weekly.orderedBedroom",
+      "personalProject": "actions.weekly.personalProject"
     }
   },
   "footer": {

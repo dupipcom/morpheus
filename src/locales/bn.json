@@ -115,7 +115,10 @@
       "cleanedKitchen": "রান্নাঘর পরিষ্কার করেছিল",
       "workedOnProject": "ব্যক্তিগত প্রকল্পে কাজ করেছিল",
       "helpedSomeone": "কারও সাহায্য করেছিল",
-      "boughtGroceries": "কেনাকাটা করেছিল"
+      "boughtGroceries": "কেনাকাটা করেছিল",
+      "navigatedSocialMedia": "actions.weekly.navigatedSocialMedia",
+      "orderedBedroom": "actions.weekly.orderedBedroom",
+      "personalProject": "actions.weekly.personalProject"
     }
   },
   "footer": {

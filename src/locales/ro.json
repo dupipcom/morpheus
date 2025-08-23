@@ -115,7 +115,10 @@
       "cleanedKitchen": "Ați curățat bucătăria",
       "workedOnProject": "Ați lucrat la un proiect personal",
       "helpedSomeone": "Ați ajutat pe cineva",
-      "boughtGroceries": "Ați cumpărat legume și fructe"
+      "boughtGroceries": "Ați cumpărat legume și fructe",
+      "navigatedSocialMedia": "actions.weekly.navigatedSocialMedia",
+      "orderedBedroom": "actions.weekly.orderedBedroom",
+      "personalProject": "actions.weekly.personalProject"
     }
   },
   "footer": {

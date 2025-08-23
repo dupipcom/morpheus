@@ -115,7 +115,10 @@
       "cleanedKitchen": "Kitakarított konyhát",
       "workedOnProject": "Személyes projekten dolgozott",
       "helpedSomeone": "Segített valakinek",
-      "boughtGroceries": "Vásárolt élelmiszereket"
+      "boughtGroceries": "Vásárolt élelmiszereket",
+      "navigatedSocialMedia": "actions.weekly.navigatedSocialMedia",
+      "orderedBedroom": "actions.weekly.orderedBedroom",
+      "personalProject": "actions.weekly.personalProject"
     }
   },
   "footer": {

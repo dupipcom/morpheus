@@ -21,7 +21,7 @@ import { useI18n } from "@/lib/contexts/i18n"
 import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil, isUserDataReady, useEnhancedLoadingState } from "@/lib/userUtils"
 import { TaskViewSkeleton } from "@/components/ui/skeleton-loader"
 import { ContentLoadingWrapper } from '@/components/ContentLoadingWrapper'
-import { DAILY_ACTIONS, WEEKLY_ACTIONS } from "@/app/constants"
+import { DAILY_ACTIONS, WEEKLY_ACTIONS, getLocalizedTaskNames } from "@/app/constants"
 
 export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const { session, setGlobalContext, theme } = useContext(GlobalContext)
@@ -41,17 +41,17 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     if(timeframe === 'day') {
       const dailyTasks = ((session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date]) && session?.user?.entries[year].days[date]?.tasks) || DAILY_ACTIONS
       if (!session?.user?.settings?.dailyTemplate) {
-        return dailyTasks
+        return getLocalizedTaskNames(dailyTasks, t)
       }
-     return session?.user?.settings?.dailyTemplate
+     return getLocalizedTaskNames(session?.user?.settings?.dailyTemplate, t)
     } else if (timeframe === 'week') {
       const weeklyTasks = (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks) && session?.user?.entries[year].weeks[weekNumber]?.tasks || WEEKLY_ACTIONS
       if (!session?.user?.settings?.weeklyTemplate) {
-        return weeklyTasks
+        return getLocalizedTaskNames(weeklyTasks, t)
       }
-      return session?.user?.settings?.weeklyTemplate
+      return getLocalizedTaskNames(session?.user?.settings?.weeklyTemplate, t)
     }
-  }, [JSON.stringify(session?.user?.settings), date, weekNumber])
+  }, [JSON.stringify(session?.user?.settings), date, weekNumber, t])
 
 
   const openDays = useMemo(() => {
@@ -152,7 +152,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       <p className="sticky top-25 truncate z-[999] text-center scroll-m-20 text-sm font-semibold tracking-tight mb-8">{t('tasks.editing', { timeframe: timeframe === "day" ? date : t('tasks.weekNumber', { number: weekNumber }) })}</p>
   <ToggleGroup value={values} onValueChange={handleDone} variant="outline" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 align-center justify-center w-full m-auto" type="multiple" orientation="horizontal">
    { castActions?.map((action) => {
-      return <ToggleGroupItem key={`task__item--${action.name}`} className="leading-7 m-1 text-sm min-h-[40px] truncate" value={action.name}>{action.times > 1 ? `${action.count}/${action.times} ` : ''}{action.name}</ToggleGroupItem>
+      return <ToggleGroupItem key={`task__item--${action.name}`} className="leading-7 m-1 text-sm min-h-[40px] truncate" value={action.name}>{action.times > 1 ? `${action.count}/${action.times} ` : ''}{action.displayName || action.name}</ToggleGroupItem>
     }) }
   </ToggleGroup>
                <p className="m-8 text-center">{t('tasks.yourEarnings', { timeframe: timeframe === "day" ? t('dashboard.today') : t('dashboard.thisWeek'), amount: earnings?.toLocaleString() })}</p>
