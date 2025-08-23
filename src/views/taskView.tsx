@@ -1,7 +1,7 @@
 'use client'
 import { useState, useMemo, useEffect, useContext } from "react"
 import useSWR from "swr"
-import { merge } from 'lodash'
+import { assign } from 'lodash'
 
 import { getWeekNumber } from "@/app/helpers"
 
@@ -43,13 +43,13 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       if (!session?.user?.settings?.dailyTemplate) {
         return getLocalizedTaskNames(dailyTasks, t)
       }
-     return getLocalizedTaskNames(session?.user?.settings?.dailyTemplate, t)
+     return assign(getLocalizedTaskNames(session?.user?.settings?.dailyTemplate, t), getLocalizedTaskNames(dailyTasks, t), { times: 1 })
     } else if (timeframe === 'week') {
       const weeklyTasks = (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks) && session?.user?.entries[year].weeks[weekNumber]?.tasks || WEEKLY_ACTIONS
       if (!session?.user?.settings?.weeklyTemplate) {
         return getLocalizedTaskNames(weeklyTasks, t)
       }
-      return getLocalizedTaskNames(session?.user?.settings?.weeklyTemplate, t)
+      return assign(getLocalizedTaskNames(session?.user?.settings?.weeklyTemplate, t), getLocalizedTaskNames(weeklyTasks, t), { times: 1 })
     }
   }, [JSON.stringify(session?.user?.settings), date, weekNumber, t])
 
