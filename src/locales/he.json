@@ -63,7 +63,7 @@
     "to": "עד"
   },
   "tasks": {
-    "editing": "עריכה",
+    "editing": "עריכה: {timeframe}",
     "weekNumber": "שבוע {number}",
     "yourEarnings": "הרווחים שלך"
   },

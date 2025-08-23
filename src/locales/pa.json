@@ -67,7 +67,7 @@
     "closeWeek": "ਹਫ਼ਤਾ ਬੰਦ ਕਰੋ"
   },
   "tasks": {
-    "editing": "ਸੰਪਾਦਨ",
+    "editing": "ਸੰਪਾਦਨ: {timeframe}",
     "weekNumber": "ਹਫ਼ਤਾ {number}",
     "yourEarnings": "ਤੁਹਾਡੀ ਕਮਾਈ"
   },

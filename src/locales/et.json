@@ -63,7 +63,7 @@
     "closeWeek": "Sulge nädal"
   },
   "tasks": {
-    "editing": "Redigeerimine",
+    "editing": "Redigeerimine: {timeframe}",
     "weekNumber": "Nädal {number}",
     "yourEarnings": "Sinu sissetulek {timeframe}, seni: ${amount}"
   },

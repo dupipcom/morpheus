@@ -67,7 +67,7 @@
     "closeWeek": "Sulje viikko"
   },
   "tasks": {
-    "editing": "Muokataan",
+    "editing": "Muokataan: {timeframe}",
     "weekNumber": "Viikko {number}",
     "yourEarnings": "Tulosi"
   },

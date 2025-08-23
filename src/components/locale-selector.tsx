@@ -58,7 +58,7 @@ export function LocaleSelector({ className }: LocaleSelectorProps) {
       <SelectTrigger className={`w-[140px] ${className || ''}`}>
         <SelectValue placeholder={t('common.selectLanguage') || "Select language"} />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className="z-[1001]">
         {availableLocales.map((localeOption) => (
           <SelectItem key={localeOption.value} value={localeOption.value}>
             {localeOption.label}

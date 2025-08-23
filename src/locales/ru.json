@@ -63,7 +63,7 @@
     "closeWeek": "Закрыть неделю"
   },
   "tasks": {
-    "editing": "Редактирование",
+    "editing": "Редактирование: {timeframe}",
     "weekNumber": "Неделя {number}",
     "yourEarnings": "Ваш заработок"
   },

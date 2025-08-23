@@ -74,6 +74,7 @@ type Task {
   cadence String
   times Int
   count Int?
+  localeKey String?
 }
 
 enum Areas {

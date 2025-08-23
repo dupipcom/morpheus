@@ -67,7 +67,7 @@
     "closeWeek": "Tutup minggu"
   },
   "tasks": {
-    "editing": "Menyunting",
+    "editing": "Menyunting: {timeframe}",
     "weekNumber": "Minggu {number}",
     "yourEarnings": "Pendapatan anda"
   },

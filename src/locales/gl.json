@@ -66,7 +66,7 @@
     "to": "a"
   },
   "tasks": {
-    "editing": "Editando",
+    "editing": "Editando: {timeframe}",
     "weekNumber": "Semana {number}",
     "yourEarnings": "Os teus ingresos"
   },
