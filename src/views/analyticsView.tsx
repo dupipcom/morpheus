@@ -90,6 +90,72 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
     return <AnalyticsViewSkeleton />
   }
 
+  // Function to aggregate daily data by week
+const aggregateDataByWeek = (dailyData: any[]) => {
+  const weeklyGroups: Record<string, any> = {}
+  
+  dailyData.forEach((day: any) => {
+    const date = new Date(day.date)
+    const [_, weekNumber] = getWeekNumber(date)
+    const weekKey = t('week.weekNumber', { number: weekNumber })
+    if (!weeklyGroups[weekKey]) {
+      weeklyGroups[weekKey] = {
+        week: weekKey,
+        weekNumber: weekNumber,
+        count: 0,
+        moodAverage: 0,
+        gratitude: 0,
+        optimism: 0,
+        restedness: 0,
+        tolerance: 0,
+        selfEsteem: 0,
+        trust: 0,
+        progress: 0,
+        moodAverageScale: 0,
+        earnings: 0,
+        balance: 0,
+        dates: []
+      }
+    }
+    
+    const week = weeklyGroups[weekKey]
+    week.count++
+    week.dates.push(day.date)
+    
+    // Sum up numeric values
+    week.moodAverage += parseFloat(day.moodAverage) || 0
+    week.gratitude += parseFloat(day.gratitude) || 0
+    week.optimism += parseFloat(day.optimism) || 0
+    week.restedness += parseFloat(day.restedness) || 0
+    week.tolerance += parseFloat(day.tolerance) || 0
+    week.selfEsteem += parseFloat(day.selfEsteem) || 0
+    week.trust += parseFloat(day.trust) || 0
+    week.progress += parseFloat(day.progress) || 0
+    week.moodAverageScale += parseFloat(day.moodAverageScale) || 0
+    week.earnings += parseFloat(day.earnings) || 0
+    week.balance += parseFloat(day.balance) || 0
+  })
+  
+  // Calculate averages
+  return Object.values(weeklyGroups).map((week: any) => ({
+    week: week.week,
+    weekNumber: week.weekNumber,
+    moodAverage: (week.moodAverage / week.count).toFixed(2),
+    gratitude: (week.gratitude / week.count).toFixed(2),
+    optimism: (week.optimism / week.count).toFixed(2),
+    restedness: (week.restedness / week.count).toFixed(2),
+    tolerance: (week.tolerance / week.count).toFixed(2),
+    selfEsteem: (week.selfEsteem / week.count).toFixed(2),
+    trust: (week.trust / week.count).toFixed(2),
+    progress: (week.progress / week.count).toFixed(2),
+    moodAverageScale: (week.moodAverageScale / week.count).toFixed(2),
+    earnings: (week.earnings / week.count).toFixed(2),
+    balance: (week.balance / week.count).toFixed(2),
+    count: week.count,
+    dates: week.dates
+  })).sort((a: any, b: any) => a.weekNumber - b.weekNumber)
+}
+
   const userDays = session?.user?.entries && session?.user?.entries[year]?.days ? Object.values(session?.user?.entries[year]?.days) : [];
   const userWeeks = session?.user?.entries && session?.user?.entries[year]?.weeks ? Object.values(session?.user?.entries[year]?.weeks) : [];
   
@@ -114,14 +180,17 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
           trust: cur.mood.trust?.toFixed(2),
           progress: (cur.progress * 100 / 20).toFixed(2),
           moodAverageScale: cur.moodAverage?.toFixed(2) * 500,
-          earnings: Number(cur.earnings).toFixed(2) * 50,
+          earnings: Number(cur.earnings).toFixed(2),
           balance:  cur.availableBalance,
         }
       ]
       return acc
     }, [])
     
-    const plotWeeks = userWeeks
+  // Aggregate daily data by week
+  const plotDataWeekly = aggregateDataByWeek(plotData)
+    
+  const plotWeeks = userWeeks
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()) // Sort by most recent first
     .reduce((acc, cur) => {
       if (!cur.moodAverage || !cur.progress) {
@@ -130,7 +199,7 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
       acc = [
         ...acc,
         {
-          week: cur.week,
+          week: t('week.weekNumber', { number: cur.week }),
           moodAverage: cur.moodAverage?.toFixed(2),
           progress: (cur.progress * 100 / 20).toFixed(2),
         }
@@ -142,10 +211,10 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
     <ContentLoadingWrapper>
       <div className="max-w-[1200px] w-full m-auto p-4 md:px-32 ">
       <p className="mt-0 mb-8">{insight?.yearAnalysis}</p>
-      <h2 className="mb-8 mt-16 text-center scroll-m-20 text-lg font-semibold tracking-tight">{t('dashboard.yourMood')}</h2>
+            <h2 className="mb-8 mt-16 text-center scroll-m-20 text-lg font-semibold tracking-tight">{t('dashboard.yourMood')}</h2>
 
       <ChartContainer config={moodChartConfig}>
-        <AreaChart data={plotData} accessibilityLayer>
+        <AreaChart data={plotDataWeekly} accessibilityLayer>
           <CartesianGrid vertical={true} horizontal={true} />
           <Area dataKey="moodAverage" stroke="#cffcdf
             " fill={"#cffcdf"} radius={4} fillOpacity={0.4}
@@ -172,7 +241,7 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
             " fill={"#f7bfa5"} radius={4} fillOpacity={0.4}
           />
           <XAxis
-            dataKey="date"
+            dataKey="week"
             tickLine={false}
             tickMargin={5}
             axisLine={true}
@@ -184,26 +253,6 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
 
       <h2 className="mb-8 mt-16 text-center scroll-m-20 text-lg font-semibold tracking-tight">{t('dashboard.yourProductivity')}</h2>
 
-      <ChartContainer config={productivityChartConfig}>
-        <AreaChart data={plotData} accessibilityLayer>
-          <CartesianGrid vertical={true} horizontal={true} />
-          <Area dataKey="moodAverage" stroke="#cffcdf
-            " fill={"#cffcdf"} radius={4} fillOpacity={0.4}
-          />
-          <Area dataKey="progress"  stroke="#6565cc
-            " fill="#6565cc
-            " radius={4} fillOpacity={0.4}
-          />
-
-          <XAxis
-            dataKey="date"
-            tickLine={false}
-            tickMargin={5}
-            axisLine={true}
-          />
-          <ChartLegend content={<ChartLegendContent />} />
-        </AreaChart>
-      </ChartContainer>
 
       <ChartContainer config={productivityChartConfig}>
         <AreaChart data={plotWeeks} accessibilityLayer>
