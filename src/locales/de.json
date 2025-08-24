@@ -46,7 +46,8 @@
     "thisWeek": "diese Woche",
     "yourMood": "Ihre Stimmung.",
     "yourProductivity": "Ihre Produktivität.",
-    "yourData": "Ihre Daten."
+    "yourData": "Ihre Daten.",
+    "yourBalance": "Ihr Geld."
   },
   "mood": {
     "title": "Es ist {date}.",

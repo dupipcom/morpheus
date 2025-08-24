@@ -50,7 +50,8 @@
     "thisWeek": "bu hafta",
     "yourMood": "Ruh haliniz.",
     "yourProductivity": "Verimliliğiniz.",
-    "yourData": "Verileriniz."
+    "yourData": "Verileriniz.",
+    "yourBalance": "Paranız."
   },
   "mood": {
     "title": "{date} için ruh halinizi kaydedin",

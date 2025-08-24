@@ -49,7 +49,8 @@
     "thisWeek": "denna vecka",
     "yourMood": "Ditt humör.",
     "yourProductivity": "Din produktivitet.",
-    "yourData": "Din data."
+    "yourData": "Din data.",
+    "yourBalance": "Dina pengar."
   },
   "mood": {
     "title": "Registrera ditt humör för {date}",

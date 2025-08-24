@@ -50,7 +50,8 @@
     "thisWeek": "minggu ini",
     "yourMood": "Mood anda.",
     "yourProductivity": "Produktiviti anda.",
-    "yourData": "Data anda."
+    "yourData": "Data anda.",
+    "yourBalance": "Wang anda."
   },
   "mood": {
     "title": "Rekod mood anda untuk {date}",

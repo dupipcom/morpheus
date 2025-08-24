@@ -46,7 +46,8 @@
     "thisWeek": "aquesta setmana",
     "yourMood": "El teu estat d'ànim.",
     "yourProductivity": "La teva productivitat.",
-    "yourData": "Les teves dades."
+    "yourData": "Les teves dades.",
+    "yourBalance": "Els teus diners."
   },
   "mood": {
     "title": "Registra el teu estat d'ànim per a {date}",

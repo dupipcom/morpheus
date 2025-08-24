@@ -46,7 +46,8 @@
     "thisWeek": "এই সপ্তাহ",
     "yourMood": "আপনার মেজাজ।",
     "yourProductivity": "আপনার উৎপাদনশীলতা।",
-    "yourData": "আপনার ডেটা।"
+    "yourData": "আপনার ডেটা।",
+    "yourBalance": "আপনার টাকা।"
   },
   "mood": {
     "title": "এটা {date}।",

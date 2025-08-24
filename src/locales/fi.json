@@ -50,7 +50,8 @@
     "thisWeek": "tällä viikolla",
     "yourMood": "Mielialasi.",
     "yourProductivity": "Tuottavuutesi.",
-    "yourData": "Tietosi."
+    "yourData": "Tietosi.",
+    "yourBalance": "Rahasi."
   },
   "mood": {
     "title": "Kirjaa mielialasi {date} päivälle",

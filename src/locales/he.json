@@ -46,7 +46,8 @@
     "thisWeek": "השבוע",
     "yourMood": "מצב הרוח שלך.",
     "yourProductivity": "הפרודוקטיביות שלך.",
-    "yourData": "הנתונים שלך."
+    "yourData": "הנתונים שלך.",
+    "yourBalance": "הכסף שלך."
   },
   "mood": {
     "title": "תעד את מצב הרוח שלך עבור {date}",

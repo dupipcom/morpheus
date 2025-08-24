@@ -46,7 +46,8 @@
     "thisWeek": "săptămâna aceasta",
     "yourMood": "Dispoziția ta.",
     "yourProductivity": "Productivitatea ta.",
-    "yourData": "Datele tale."
+    "yourData": "Datele tale.",
+    "yourBalance": "Banii tăi."
   },
   "mood": {
     "title": "Înregistrează-ți dispoziția pentru {date}",

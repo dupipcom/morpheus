@@ -46,7 +46,8 @@
     "thisWeek": "sel nädalal",
     "yourMood": "Sinu tuju.",
     "yourProductivity": "Sinu produktiivsus.",
-    "yourData": "Sinu andmed."
+    "yourData": "Sinu andmed.",
+    "yourBalance": "Sinu raha."
   },
   "mood": {
     "title": "Täna on {date}.",

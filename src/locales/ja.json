@@ -46,7 +46,8 @@
     "thisWeek": "今週",
     "yourMood": "あなたの気分。",
     "yourProductivity": "あなたの生産性。",
-    "yourData": "あなたのデータ。"
+    "yourData": "あなたのデータ。",
+    "yourBalance": "あなたのお金。"
   },
   "mood": {
     "title": "{date}です。",

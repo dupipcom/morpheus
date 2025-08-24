@@ -46,7 +46,8 @@
     "thisWeek": "本周",
     "yourMood": "您的心情。",
     "yourProductivity": "您的生产力。",
-    "yourData": "您的数据。"
+    "yourData": "您的数据。",
+    "yourBalance": "您的钱。"
   },
   "mood": {
     "title": "今天是{date}。",

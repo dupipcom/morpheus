@@ -119,7 +119,7 @@ export default function RootLayout({
       >
         
         <ClerkProvider 
-          redirectUrl="/app/dashboard" 
+          forceRedirectUrl="/app/dashboard" 
           appearance={{
             cssLayerName: 'clerk',
             baseTheme: shadcn,

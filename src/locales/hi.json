@@ -46,7 +46,8 @@
     "thisWeek": "इस सप्ताह",
     "yourMood": "आपकी मनोदशा।",
     "yourProductivity": "आपकी उत्पादकता।",
-    "yourData": "आपका डेटा।"
+    "yourData": "आपका डेटा।",
+    "yourBalance": "आपका पैसा।"
   },
   "mood": {
     "title": "यह {date} है।",

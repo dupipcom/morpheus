@@ -50,7 +50,8 @@
     "thisWeek": "ਇਸ ਹਫ਼ਤੇ",
     "yourMood": "ਤੁਹਾਡਾ ਮੂਡ।",
     "yourProductivity": "ਤੁਹਾਡੀ ਉਤਪਾਦਕਤਾ।",
-    "yourData": "ਤੁਹਾਡਾ ਡੇਟਾ।"
+    "yourData": "ਤੁਹਾਡਾ ਡੇਟਾ।",
+    "yourBalance": "ਤੁਹਾਡੇ ਪੈਸੇ।"
   },
   "mood": {
     "title": "{date} ਲਈ ਆਪਣਾ ਮੂਡ ਰਿਕਾਰਡ ਕਰੋ",
