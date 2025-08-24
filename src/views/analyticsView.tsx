@@ -191,8 +191,6 @@ const aggregateDataByWeek = (dailyData: any[]) => {
     
   // Aggregate daily data by week
   const plotDataWeekly = aggregateDataByWeek(plotData)
-
-  console.log(plotDataWeekly)
     
   const plotWeeks = userWeeks
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()) // Sort by most recent first
