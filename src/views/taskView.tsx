@@ -35,7 +35,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const [weekNumber, setWeekNumber] = useState(getWeekNumber(today)[1])
   const [insight, setInsight] = useState({})
 
-  const earnings = Object.keys(session?.user?.entries || 0).length > 0 ? timeframe === "day" ? session?.user?.entries[year]?.days[date]?.earnings?.toLocaleString() : session?.user?.entries[year]?.weeks[weekNumber]?.earnings?.toLocaleString() : 0
+  const earnings = Object.keys(session?.user?.entries || 0).length > 0 ? timeframe === "day" ? session?.user?.entries[year]?.days[date]?.earnings?.toFixed(2) : session?.user?.entries[year]?.weeks[weekNumber]?.earnings?.toFixed(2) : 0
 
   const userTasks = useMemo(() => {
     if(timeframe === 'day') {
@@ -151,7 +151,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   }
 
   return <div className="max-w-[1200px] m-auto p-4">
-      <p className="sticky top-25 truncate z-[999] text-center scroll-m-20 text-sm font-semibold tracking-tight mb-8">{t('tasks.editing', { timeframe: timeframe === "day" ? date : t('tasks.weekNumber', { number: weekNumber }) })}</p>
+      <p className="sticky top-25 truncate z-[999] text-center scroll-m-20 text-sm font-semibold tracking-tight mb-8">{t('tasks.editing', { timeframe: timeframe === "day" ? date : t('tasks.weekNumber', { number: weekNumber }) })} {!!earnings > 0 ? `($${earnings})` : ''}</p>
   <ToggleGroup value={values} onValueChange={handleDone} variant="outline" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 align-center justify-center w-full m-auto" type="multiple" orientation="horizontal">
    { castActions?.map((action) => {
       return <ToggleGroupItem key={`task__item--${action.name}`} className="leading-7 m-1 text-sm min-h-[40px] truncate" value={action.name}>{action.times > 1 ? `${action.count}/${action.times} ` : ''}{action.displayName || action.name}</ToggleGroupItem>
@@ -163,14 +163,14 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
               {
                 timeframe === "day" ? openDays?.map((day, index) => {
                   return <CarouselItem key={`task__carousel--${day.date}--${index}`} className="flex flex-col">
-                    <small>${day.earnings?.toLocaleString()}</small>
+                    <small>${day.earnings?.toFixed(2)}</small>
                     <label className="mb-4">{day.date}</label>
                     <Button className="dark:bg-foreground text-md p-5 mb-2" onClick={() => handleEditDay(new Date(day.date))}>{t('common.edit')} {t('common.day').toLowerCase()}</Button>
                     <Button variant="outline" className="text-md p-5" onClick={() => handleCloseDates([day.date])} >{t('common.close')} {t('common.day').toLowerCase()}</Button>
                   </CarouselItem>
                 }) : openWeeks?.map((week, index) => {
                   return <CarouselItem key={`task__carousel--${week.week}--${index}`} className="flex flex-col">
-                    <small>${week.earnings?.toLocaleString()}</small>
+                    <small>${week.earnings.toFixed(2)}</small>
                     <label className="mb-4">{t('week.weekNumber', { number: week.week })}</label>
                     <Button onClick={() => handleEditWeek(week.week)} className="text-md p-5 mb-2 dark:bg-foreground">{t('common.edit')} {t('common.week').toLowerCase()}</Button>
                     <Button variant="outline" className="text-md p-5" onClick={() => handleCloseDates([{ week: week.week, year: week.year }])}>{t('common.close')} {t('common.week').toLowerCase()}</Button>
