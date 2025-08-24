@@ -62,7 +62,7 @@ export default function LocalizedWeek({ params }: { params: Promise<{ locale: st
     <main className="min-h-[100vh]">
       <ViewMenu active="week" />
       <h1 className="scroll-m-20 text-2xl font-semibold tracking-tight text-center mb-8">{t('week.weekNumber', { number: weekNumber })}</h1>
-      <p className="text-center scroll-m-20 text-lg font-semibold tracking-tight mb-8">What did you accomplish this week?</p>
+      <p className="text-center scroll-m-20 text-lg font-semibold tracking-tight mb-8">{t('dashboard.whatDidYouAccomplish')}</p>
 
       <TaskView timeframe="week" actions={WEEKLY_ACTIONS} />
     </main>
