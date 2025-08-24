@@ -40,7 +40,7 @@
   "dashboard": {
     "title": "La tua vita in un colpo d'occhio.",
     "todayIs": "Oggi è {date}.",
-    "whatDidYouAccomplish": "Cosa hai realizzato oggi?",
+    "whatDidYouAccomplish": "Cosa hai fatto?",
     "yourEarnings": "I tuoi guadagni {timeframe}, finora: ${amount}",
     "today": "oggi",
     "thisWeek": "questa settimana",
