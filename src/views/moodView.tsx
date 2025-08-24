@@ -78,8 +78,8 @@ export const MoodView = ({ timeframe = "day" }) => {
 
   return (
     <ContentLoadingWrapper>
-      <div key={JSON.stringify(serverMood)} className="max-w-[720px] m-auto p-4">
-          <p className="sticky top-25 truncate z-[999] text-center scroll-m-20 text-sm font-semibold tracking-tight mb-8">{t('tasks.editing', { timeframe: date })}</p>
+      <div key={JSON.stringify(serverMood)} className="w-full m-auto p-4">
+      <h2 className="mt-8 mb-4 text-center text-lg">{t('mood.subtitle')}</h2>
       <Textarea className="mb-16" defaultValue={serverText} onBlur={(e) => handleSubmit(e.target.value, "text")} />
       <div className="my-12">
         <h3 className="mt-8 mb-4">{t('charts.gratitude')}</h3>
@@ -111,22 +111,6 @@ export const MoodView = ({ timeframe = "day" }) => {
         <small>{insight?.trustAnalysis}</small>
       </div>
       <Slider className="mb-24" defaultValue={[serverMood?.trust || 0]} max={5} step={0.5} onValueCommit={(e) => handleSubmit(e[0], "trust")} />
-        {openDays?.length ? <Carousel className="max-w-[196px] m-auto">
-            <CarouselContent className="text-center w-[192px]">
-              {
-                openDays?.map((day) => {
-                  return <CarouselItem className="flex flex-col">
-                    <small>${day.earnings?.toLocaleString()}</small>
-                    <label className="mb-4">{day.date}</label>
-                    <Button className="text-md p-5 mb-2 dark:bg-foreground" onClick={() => handleEditDay(new Date(day.date))}>{t('mood.editDay')}</Button>
-                    <Button variant="outline" className="text-md p-5" onClick={() => handleCloseDates([day.date])}>{t('mood.closeDay')}</Button>
-                  </CarouselItem>
-                })
-              }
-            </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
-        </Carousel> : undefined }
       </div>
     </ContentLoadingWrapper>
   )

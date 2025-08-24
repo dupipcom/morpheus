@@ -16,6 +16,8 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 
+import { MoodView } from "@/views/moodView"
+
 import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
 import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil, isUserDataReady, useEnhancedLoadingState } from "@/lib/userUtils"
@@ -152,28 +154,15 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
 
   return <div className="max-w-[1200px] m-auto p-4">
       <p className="sticky top-25 truncate z-[999] text-center scroll-m-20 text-sm font-semibold tracking-tight mb-8">{t('tasks.editing', { timeframe: timeframe === "day" ? date : t('tasks.weekNumber', { number: weekNumber }) })} {!!earnings > 0 ? `($${earnings})` : ''}</p>
-  <ToggleGroup value={values} onValueChange={handleDone} variant="outline" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 align-center justify-center w-full m-auto" type="multiple" orientation="horizontal">
-   { castActions?.map((action) => {
-      return <ToggleGroupItem key={`task__item--${action.name}`} className="leading-7 m-1 text-sm min-h-[40px] truncate" value={action.name}>{action.times > 1 ? `${action.count}/${action.times} ` : ''}{action.displayName || action.name}</ToggleGroupItem>
-    }) }
-  </ToggleGroup>
-               <p className="m-8 text-center">{t('tasks.yourEarnings', { timeframe: timeframe === "day" ? t('dashboard.today') : t('dashboard.thisWeek'), amount: earnings?.toLocaleString() })}</p>
-          {( timeframe === "day" && openDays?.length) || (timeframe === "week" && openWeeks?.length) ? <Carousel className="max-w-[196px] m-auto">
-            <CarouselContent className="text-center w-[192px]">
+      {openDays?.length ? <Carousel className="max-w-[196px] md:max-w-[720px] m-auto my-8">
+            <CarouselContent className="text-center w-full">
               {
-                timeframe === "day" ? openDays?.map((day, index) => {
-                  return <CarouselItem key={`task__carousel--${day.date}--${index}`} className="flex flex-col">
+                openDays?.map((day) => {
+                  return <CarouselItem className="flex flex-col">
                     <small>${day.earnings?.toFixed(2)}</small>
                     <label className="mb-4">{day.date}</label>
-                    <Button className="dark:bg-foreground text-md p-5 mb-2" onClick={() => handleEditDay(new Date(day.date))}>{t('common.edit')} {t('common.day').toLowerCase()}</Button>
-                    <Button variant="outline" className="text-md p-5" onClick={() => handleCloseDates([day.date])} >{t('common.close')} {t('common.day').toLowerCase()}</Button>
-                  </CarouselItem>
-                }) : openWeeks?.map((week, index) => {
-                  return <CarouselItem key={`task__carousel--${week.week}--${index}`} className="flex flex-col">
-                    <small>${week.earnings.toFixed(2)}</small>
-                    <label className="mb-4">{t('week.weekNumber', { number: week.week })}</label>
-                    <Button onClick={() => handleEditWeek(week.week)} className="text-md p-5 mb-2 dark:bg-foreground">{t('common.edit')} {t('common.week').toLowerCase()}</Button>
-                    <Button variant="outline" className="text-md p-5" onClick={() => handleCloseDates([{ week: week.week, year: week.year }])}>{t('common.close')} {t('common.week').toLowerCase()}</Button>
+                    <Button className="text-md p-5 mb-2 dark:bg-foreground" onClick={() => handleEditDay(new Date(day.date))}>{t('mood.editDay')}</Button>
+                    <Button variant="outline" className="text-md p-5" onClick={() => handleCloseDates([day.date])}>{t('mood.closeDay')}</Button>
                   </CarouselItem>
                 })
               }
@@ -181,10 +170,21 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
           <CarouselPrevious />
           <CarouselNext />
         </Carousel> : undefined }
+  <ToggleGroup value={values} onValueChange={handleDone} variant="outline" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 align-center justify-center w-full m-auto" type="multiple" orientation="horizontal">
+   { castActions?.map((action) => {
+      return <ToggleGroupItem key={`task__item--${action.name}`} className="leading-7 m-1 text-sm min-h-[40px] truncate" value={action.name}>{action.times > 1 ? `${action.count}/${action.times} ` : ''}{action.displayName || action.name}</ToggleGroupItem>
+    }) }
+  </ToggleGroup>
+               <p className="m-8 text-center">{t('tasks.yourEarnings', { timeframe: timeframe === "day" ? t('dashboard.today') : t('dashboard.thisWeek'), amount: earnings?.toLocaleString() })}</p>
+
+        <div className="flex flex-col">
+          <MoodView timeframe={timeframe} />
+        </div>
 
     <p className="mx-8 pt-8">{timeframe === "day" ? insight?.dayAnalysis : insight?.weekAnalysis }</p>
     <p className="mx-8 pt-8">{insight?.last3daysAnalysis}</p>
           <div className="flex flex-wrap justify-center">
     </div>
+    <Button variant="outline" className="text-md p-5 m-auto w-full" onClick={() => handleCloseDates([day.date])}>{t('mood.closeDay')}</Button>
     </div>
 }
