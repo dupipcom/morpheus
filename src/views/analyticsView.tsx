@@ -5,6 +5,13 @@ import { Area, CartesianGrid, Bar, AreaChart, XAxis } from "recharts"
  
 import { ChartContainer, ChartTooltipContent, ChartTooltip, ChartLegendContent, ChartLegend } from "@/components/ui/chart"
 import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { ChevronDown } from "lucide-react"
 
 import { EarningsTable } from '@/components/earningsTable'
 
@@ -16,62 +23,103 @@ import { generateInsight } from "@/lib/userUtils"
 import { AnalyticsViewSkeleton } from "@/components/ui/skeleton-loader"
 import { ContentLoadingWrapper } from '@/components/ContentLoadingWrapper'
 
-const moodChartConfig = {
+// Chart config generators that use translations
+const createMoodChartConfig = (t: (key: string) => string) => ({
   moodAverage: {
-    label: "Mood",
+    label: t('charts.moodAverage'),
     color: "#2f2f8d",
   },
   gratitude: {
-    label: "Gratitude",
+    label: t('charts.gratitude'),
     color: "#2f2f8d",
   },
   optimism: {
-    label: "Optimism",
+    label: t('charts.optimism'),
     color: "#2f2f8d",
   },
   restedness: {
-    label: "Restedness",
+    label: t('charts.restedness'),
     color: "#2f2f8d",
   },
   tolerance: {
-    label: "Tolerance",
+    label: t('charts.tolerance'),
     color: "#2f2f8d",
   },
   selfEsteem: {
-    label: "Self Esteem",
+    label: t('charts.selfEsteem'),
     color: "#2f2f8d",
   },
   trust: {
-    label: "Trust",
+    label: t('charts.trust'),
     color: "#2f2f8d",
   },
-} satisfies ChartConfig
+}) satisfies ChartConfig
 
-const productivityChartConfig = {
+const createProductivityChartConfig = (t: (key: string) => string) => ({
   moodAverage: {
-    label: "Mood",
+    label: t('charts.moodAverage'),
     color: "#2f2f8d",
   },
   progress: {
-    label: "Productivity",
+    label: t('charts.progress'),
     color: "#2f2f8d",
   },
-} satisfies ChartConfig
+}) satisfies ChartConfig
 
-const moneyChartConfig = {
+const createMoneyChartConfig = (t: (key: string) => string) => ({
   balance: {
-    label: "Balance",
+    label: t('charts.balance'),
     color: "#2f2f8d",
   },
   moodAverageScale: {
-    label: "Mood Derivate",
+    label: t('charts.moodAverageScale'),
     color: "#2f2f8d",
   },
   earningsScale: {
-    label: "Earnings Derivate",
+    label: t('charts.earningsScale'),
     color: "#2f2f8d",
   },
-} satisfies ChartConfig
+}) satisfies ChartConfig
+
+// Chart Dimension Selector Component
+const ChartDimensionSelector = ({ 
+  dimensions, 
+  visibleDimensions, 
+  onDimensionToggle, 
+  title 
+}: {
+  dimensions: string[]
+  visibleDimensions: Record<string, boolean>
+  onDimensionToggle: (dimension: string, visible: boolean) => void
+  title: string
+}) => {
+  const { t } = useI18n()
+  
+  return (
+    <div className="flex items-center justify-between mt-12 mb-4">
+      <h2 className="text-left scroll-m-20 text-lg font-semibold tracking-tight mr-2">{title}</h2>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" className="ml-auto">
+            {t('charts.dimensions')} <ChevronDown />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          {dimensions.map((dimension) => (
+            <DropdownMenuCheckboxItem
+              key={dimension}
+              className="capitalize"
+              checked={visibleDimensions[dimension] ?? true}
+              onCheckedChange={(value) => onDimensionToggle(dimension, !!value)}
+            >
+              {t(`charts.${dimension}`) || dimension}
+            </DropdownMenuCheckboxItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  )
+}
 
 export const AnalyticsView = ({ timeframe = "day" }) => {
   const fullDate = new Date()
@@ -80,11 +128,52 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
   const weekNumber = getWeekNumber(fullDate)[1]
   const [insight, setInsight] = useState({})
   const [relevantData, setRelevantData] = useState([])
+  
+  // Chart dimensions state
+  const [moodChartDimensions, setMoodChartDimensions] = useState({
+    moodAverage: true,
+    gratitude: true,
+    optimism: true,
+    restedness: true,
+    tolerance: true,
+    selfEsteem: true,
+    trust: true,
+  })
+  
+  const [productivityChartDimensions, setProductivityChartDimensions] = useState({
+    moodAverage: true,
+    progress: true,
+  })
+  
+  const [moneyChartDimensions, setMoneyChartDimensions] = useState({
+    moodAverageScale: true,
+    balance: true,
+    earningsScale: true,
+  })
+  
   const { session, setGlobalContext, ...globalContext } = useContext(GlobalContext)
   const { t, locale } = useI18n()
+  
+  // Create chart configs with translations
+  const moodChartConfig = createMoodChartConfig(t)
+  const productivityChartConfig = createProductivityChartConfig(t)
+  const moneyChartConfig = createMoneyChartConfig(t)
   useEffect(() => {
     generateInsight(setInsight, 'hint', locale)
   }, [locale])
+
+  // Dimension toggle handlers
+  const handleMoodDimensionToggle = (dimension: string, visible: boolean) => {
+    setMoodChartDimensions(prev => ({ ...prev, [dimension]: visible }))
+  }
+  
+  const handleProductivityDimensionToggle = (dimension: string, visible: boolean) => {
+    setProductivityChartDimensions(prev => ({ ...prev, [dimension]: visible }))
+  }
+  
+  const handleMoneyDimensionToggle = (dimension: string, visible: boolean) => {
+    setMoneyChartDimensions(prev => ({ ...prev, [dimension]: visible }))
+  }
 
   if (!session?.user) {
     return <AnalyticsViewSkeleton />
@@ -213,35 +302,38 @@ const aggregateDataByWeek = (dailyData: any[]) => {
     <ContentLoadingWrapper>
       <div className="max-w-[1200px] w-full m-auto p-4 md:px-32 ">
       <p className="mt-0 mb-8">{insight?.yearAnalysis}</p>
-            <h2 className="mb-8 mt-16 text-center scroll-m-20 text-lg font-semibold tracking-tight">{t('dashboard.yourMood')}</h2>
+      
+      <ChartDimensionSelector
+        dimensions={['moodAverage', 'gratitude', 'optimism', 'restedness', 'tolerance', 'selfEsteem', 'trust']}
+        visibleDimensions={moodChartDimensions}
+        onDimensionToggle={handleMoodDimensionToggle}
+        title={t('dashboard.yourMood')}
+      />
 
       <ChartContainer config={moodChartConfig}>
         <AreaChart data={plotDataWeekly} accessibilityLayer>
           <CartesianGrid vertical={true} horizontal={true} />
-          <Area dataKey="moodAverage" stroke="#cffcdf
-            " fill={"#cffcdf"} radius={4} fillOpacity={0.4}
-          />
-          <Area dataKey="gratitude"  stroke="#6565cc
-            " fill="#6565cc
-            " radius={4} fillOpacity={0.4}
-          />
-          <Area dataKey="optimism" stroke="#fbd2b0
-            " fill={"#fbd2b0"} radius={4} fillOpacity={0.4}
-          />
-          <Area dataKey="restedness"  stroke="#fcedd5
-            " fill="#fcedd5
-            " radius={4} fillOpacity={0.4}
-          />
-          <Area dataKey="tolerance" stroke="#FACEFB
-            " fill={"#FACEFB"} radius={4} fillOpacity={0.4}
-          />
-          <Area dataKey="selfEsteem"  stroke="#2f2f8d
-            " fill="#2f2f8d
-            " radius={4} fillOpacity={0.4}
-          />
-          <Area dataKey="trust" stroke="#f7bfa5
-            " fill={"#f7bfa5"} radius={4} fillOpacity={0.4}
-          />
+          {moodChartDimensions.moodAverage && (
+            <Area stackId="2" type="monotone" dataKey="moodAverage" stroke="#cffcdf" fill={"#cffcdf"} radius={4} fillOpacity={0.4} />
+          )}
+          {moodChartDimensions.gratitude && (
+            <Area stackId="1" type="monotone" dataKey="gratitude" stroke="#6565cc" fill="#6565cc" radius={4} fillOpacity={0.4} />
+          )}
+          {moodChartDimensions.optimism && (
+            <Area stackId="1" type="monotone" dataKey="optimism" stroke="#fbd2b0" fill={"#fbd2b0"} radius={4} fillOpacity={0.4} />
+          )}
+          {moodChartDimensions.restedness && (
+            <Area stackId="1" type="monotone" dataKey="restedness" stroke="#fcedd5" fill="#fcedd5" radius={4} fillOpacity={0.4} />
+          )}
+          {moodChartDimensions.tolerance && (
+            <Area stackId="1" type="monotone" dataKey="tolerance" stroke="#FACEFB" fill={"#FACEFB"} radius={4} fillOpacity={0.4} />
+          )}
+          {moodChartDimensions.selfEsteem && (
+            <Area stackId="1" type="monotone" dataKey="selfEsteem" stroke="#2f2f8d" fill="#2f2f8d" radius={4} fillOpacity={0.4} />
+          )}
+          {moodChartDimensions.trust && (
+            <Area stackId="1" type="monotone" dataKey="trust" stroke="#f7bfa5" fill={"#f7bfa5"} radius={4} fillOpacity={0.4} />
+          )}
           <XAxis
             dataKey="week"
             tickLine={false}
@@ -249,23 +341,26 @@ const aggregateDataByWeek = (dailyData: any[]) => {
             axisLine={true}
           />
           <ChartTooltip content={<ChartTooltipContent />} />
-          <ChartLegend content={<ChartLegendContent />} />
+          <ChartLegend verticalAlign="top" content={<ChartLegendContent />} />
         </AreaChart>
       </ChartContainer>
 
-      <h2 className="mb-8 mt-16 text-center scroll-m-20 text-lg font-semibold tracking-tight">{t('dashboard.yourProductivity')}</h2>
-
+      <ChartDimensionSelector
+        dimensions={['moodAverage', 'progress']}
+        visibleDimensions={productivityChartDimensions}
+        onDimensionToggle={handleProductivityDimensionToggle}
+        title={t('dashboard.yourProductivity')}
+      />
 
       <ChartContainer config={productivityChartConfig}>
         <AreaChart data={plotWeeks} accessibilityLayer>
           <CartesianGrid vertical={true} horizontal={true} />
-          <Area dataKey="moodAverage" stroke="#cffcdf
-            " fill={"#cffcdf"} radius={4} fillOpacity={0.4}
-          />
-          <Area dataKey="progress"  stroke="#6565cc
-            " fill="#6565cc
-            " radius={4} fillOpacity={0.4}
-          />
+          {productivityChartDimensions.moodAverage && (
+            <Area stackId="1" type="monotone" dataKey="moodAverage" stroke="#cffcdf" fill={"#cffcdf"} radius={4} fillOpacity={0.4} />
+          )}
+          {productivityChartDimensions.progress && (
+            <Area stackId="2" type="monotone" dataKey="progress" stroke="#6565cc" fill="#6565cc" radius={4} fillOpacity={0.4} />
+          )}
 
           <XAxis
             dataKey="week"
@@ -273,32 +368,36 @@ const aggregateDataByWeek = (dailyData: any[]) => {
             tickMargin={5}
             axisLine={true}
           />
-          <ChartLegend content={<ChartLegendContent />} />
+          <ChartLegend verticalAlign="top" content={<ChartLegendContent />} />
         </AreaChart>
       </ChartContainer>
 
-      <h2 className="mb-8 mt-16 text-center scroll-m-20 text-lg font-semibold tracking-tight">{t('dashboard.yourBalance')}</h2>
+      <ChartDimensionSelector
+        dimensions={['moodAverageScale', 'balance', 'earningsScale']}
+        visibleDimensions={moneyChartDimensions}
+        onDimensionToggle={handleMoneyDimensionToggle}
+        title={t('dashboard.yourBalance')}
+      />
 
       <ChartContainer config={moneyChartConfig}>
         <AreaChart data={plotDataWeekly} accessibilityLayer>
           <CartesianGrid vertical={true} horizontal={true} />
-          <Area dataKey="moodAverageScale" stroke="#cffcdf
-            " fill={"#cffcdf"} radius={4} fillOpacity={0.4}
-          />
-          <Area dataKey="balance"  stroke="#6565cc
-            " fill="#6565cc
-            " radius={4} fillOpacity={0.4}
-          />
-          <Area dataKey="earningsScale" stroke="#f7bfa5
-            " fill={"#f7bfa5"} radius={4} fillOpacity={0.4}
-          />
+          {moneyChartDimensions.moodAverageScale && (
+            <Area stackId="1" type="monotone" dataKey="moodAverageScale" stroke="#cffcdf" fill={"#cffcdf"} radius={4} fillOpacity={0.4} />
+          )}
+          {moneyChartDimensions.balance && (
+            <Area stackId="2" type="monotone" dataKey="balance" stroke="#6565cc" fill="#6565cc" radius={4} fillOpacity={0.4} />
+          )}
+          {moneyChartDimensions.earningsScale && (
+            <Area stackId="3" type="monotone" dataKey="earningsScale" stroke="#f7bfa5" fill={"#f7bfa5"} radius={4} fillOpacity={0.4} />
+          )}
           <XAxis
             dataKey="week"
             tickLine={false}
             tickMargin={5}
             axisLine={true}
           />
-          <ChartLegend content={<ChartLegendContent />} />
+          <ChartLegend verticalAlign="top" content={<ChartLegendContent />}  />
         </AreaChart>
       </ChartContainer>
 

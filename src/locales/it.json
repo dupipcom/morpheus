@@ -174,6 +174,20 @@
     "previous": "Precedente",
     "next": "Successivo"
   },
+  "charts": {
+    "dimensions": "Dimensioni",
+    "moodAverage": "Media Umore",
+    "gratitude": "Gratitudine",
+    "optimism": "Ottimismo",
+    "restedness": "Riposo",
+    "tolerance": "Tolleranza",
+    "selfEsteem": "Autostima",
+    "trust": "Fiducia",
+    "progress": "Progresso",
+    "moodAverageScale": "Scala Media Umore",
+    "balance": "Saldo",
+    "earningsScale": "Scala Guadagni"
+  },
   "errors": {
     "notFound": "Ops! Non è stato possibile sintonizzarsi su questa frequenza.",
     "genericError": "Qualcosa è andato storto. Riprova."

@@ -161,6 +161,20 @@
     "previous": "Предыдущий",
     "next": "Следующий"
   },
+  "charts": {
+    "dimensions": "Измерения",
+    "moodAverage": "Среднее настроение",
+    "gratitude": "Благодарность",
+    "optimism": "Оптимизм",
+    "restedness": "Отдых",
+    "tolerance": "Толерантность",
+    "selfEsteem": "Самооценка",
+    "trust": "Доверие",
+    "progress": "Прогресс",
+    "moodAverageScale": "Шкала среднего настроения",
+    "balance": "Баланс",
+    "earningsScale": "Шкала заработка"
+  },
   "errors": {
     "notFound": "Упс! Не удалось настроить эту частоту.",
     "genericError": "Что-то пошло не так. Попробуйте еще раз."

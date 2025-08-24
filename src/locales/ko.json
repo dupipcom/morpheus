@@ -157,6 +157,20 @@
     "previous": "이전",
     "next": "다음"
   },
+  "charts": {
+    "dimensions": "차원",
+    "moodAverage": "평균 기분",
+    "gratitude": "감사",
+    "optimism": "낙관주의",
+    "restedness": "휴식",
+    "tolerance": "관용",
+    "selfEsteem": "자존감",
+    "trust": "신뢰",
+    "progress": "진전",
+    "moodAverageScale": "평균 기분 스케일",
+    "balance": "잔액",
+    "earningsScale": "수익 스케일"
+  },
   "errors": {
     "notFound": "앗! 이 주파수에 맞출 수 없습니다.",
     "genericError": "문제가 발생했습니다. 다시 시도해 주세요."

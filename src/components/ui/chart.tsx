@@ -233,7 +233,7 @@ function ChartTooltipContent({
                       </span>
                     </div>
                     {item.value && (
-                      <span className="text-foreground font-mono font-medium tabular-nums">
+                      <span className="ml-2 text-foreground font-mono font-medium tabular-nums">
                         {item.value?.toLocaleString()}
                       </span>
                     )}
@@ -270,7 +270,7 @@ function ChartLegendContent({
   return (
     <div
       className={cn(
-        "flex items-center justify-center gap-4",
+        "flex items-center justify-center gap-4 overflow-x-auto pb-4",
         verticalAlign === "top" ? "pb-3" : "pt-3",
         className
       )}
@@ -283,7 +283,7 @@ function ChartLegendContent({
           <div
             key={item.value}
             className={cn(
-              "[&>svg]:text-muted-foreground flex items-center gap-1.5 [&>svg]:h-3 [&>svg]:w-3"
+              "[&>svg]:text-muted-foreground flex items-center gap-1 [&>svg]:h-3 [&>svg]:w-3"
             )}
           >
             {itemConfig?.icon && !hideIcon ? (

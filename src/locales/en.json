@@ -171,6 +171,20 @@
     "previous": "Previous",
     "next": "Next"
   },
+  "charts": {
+    "dimensions": "Dimensions",
+    "moodAverage": "Mood Average",
+    "gratitude": "Gratitude",
+    "optimism": "Optimism",
+    "restedness": "Restedness",
+    "tolerance": "Tolerance",
+    "selfEsteem": "Self Esteem",
+    "trust": "Trust",
+    "progress": "Progress",
+    "moodAverageScale": "Mood Average Scale",
+    "balance": "Balance",
+    "earningsScale": "Earnings Scale"
+  },
   "errors": {
     "notFound": "Ops! Could not tune to this frequency.",
     "genericError": "Something went wrong. Please try again."

@@ -178,6 +178,20 @@
     "previous": "السابق",
     "next": "التالي"
   },
+  "charts": {
+    "dimensions": "الأبعاد",
+    "moodAverage": "متوسط المزاج",
+    "gratitude": "الامتنان",
+    "optimism": "التفاؤل",
+    "restedness": "الراحة",
+    "tolerance": "التسامح",
+    "selfEsteem": "تقدير الذات",
+    "trust": "الثقة",
+    "progress": "التقدم",
+    "moodAverageScale": "مقياس متوسط المزاج",
+    "balance": "الرصيد",
+    "earningsScale": "مقياس الأرباح"
+  },
   "errors": {
     "notFound": "عذراً! لا يمكن ضبط هذه التردد.",
     "genericError": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
