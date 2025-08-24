@@ -148,8 +148,9 @@ const aggregateDataByWeek = (dailyData: any[]) => {
     selfEsteem: (week.selfEsteem / week.count).toFixed(2),
     trust: (week.trust / week.count).toFixed(2),
     progress: (week.progress / week.count).toFixed(2),
-    moodAverageScale: (week.moodAverageScale / week.count).toFixed(2),
+    moodAverageScale: ((week.moodAverageScale / week.count) * 500).toFixed(2),
     earnings: (week.earnings / week.count).toFixed(2),
+    earningsScale: ((week.earnings / week.count) * 50).toFixed(2),
     balance: (week.balance / week.count).toFixed(2),
     count: week.count,
     dates: week.dates
@@ -179,9 +180,9 @@ const aggregateDataByWeek = (dailyData: any[]) => {
           selfEsteem: cur.mood.selfEsteem?.toFixed(2),
           trust: cur.mood.trust?.toFixed(2),
           progress: (cur.progress * 100 / 20).toFixed(2),
-          moodAverageScale: cur.moodAverage?.toFixed(2) * 500,
+          moodAverageScale: (cur.moodAverage).toFixed(2),
           earnings: Number(cur.earnings).toFixed(2),
-          earningsScale: Number(cur.earnings).toFixed(2) * 50,
+          earningsScale: (Number(cur.earnings)).toFixed(2),
           balance:  cur.availableBalance,
         }
       ]
@@ -190,6 +191,8 @@ const aggregateDataByWeek = (dailyData: any[]) => {
     
   // Aggregate daily data by week
   const plotDataWeekly = aggregateDataByWeek(plotData)
+
+  console.log(plotDataWeekly)
     
   const plotWeeks = userWeeks
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()) // Sort by most recent first
@@ -279,7 +282,7 @@ const aggregateDataByWeek = (dailyData: any[]) => {
       <h2 className="mb-8 mt-16 text-center scroll-m-20 text-lg font-semibold tracking-tight">{t('dashboard.yourBalance')}</h2>
 
       <ChartContainer config={moneyChartConfig}>
-        <AreaChart data={plotData} accessibilityLayer>
+        <AreaChart data={plotDataWeekly} accessibilityLayer>
           <CartesianGrid vertical={true} horizontal={true} />
           <Area dataKey="moodAverageScale" stroke="#cffcdf
             " fill={"#cffcdf"} radius={4} fillOpacity={0.4}
@@ -292,7 +295,7 @@ const aggregateDataByWeek = (dailyData: any[]) => {
             " fill={"#f7bfa5"} radius={4} fillOpacity={0.4}
           />
           <XAxis
-            dataKey="date"
+            dataKey="week"
             tickLine={false}
             tickMargin={5}
             axisLine={true}
