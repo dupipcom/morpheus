@@ -63,7 +63,7 @@
     "to": "tot"
   },
   "tasks": {
-    "editing": "Bewerken",
+    "editing": "Bewerken: {timeframe}",
     "weekNumber": "Week {number}",
     "yourEarnings": "Je verdiensten"
   },

@@ -63,7 +63,7 @@
     "to": "până la"
   },
   "tasks": {
-    "editing": "Editare",
+    "editing": "Editare: {timeframe}",
     "weekNumber": "Săptămâna {number}",
     "yourEarnings": "Câștigurile tale"
   },

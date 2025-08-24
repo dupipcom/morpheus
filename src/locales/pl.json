@@ -67,7 +67,7 @@
     "closeWeek": "Zamknij tydzień"
   },
   "tasks": {
-    "editing": "Edycja",
+    "editing": "Edycja: {timeframe}",
     "weekNumber": "Tydzień {number}",
     "yourEarnings": "Twoje zarobki"
   },

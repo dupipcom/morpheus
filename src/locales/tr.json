@@ -67,7 +67,7 @@
     "closeWeek": "Haftayı kapat"
   },
   "tasks": {
-    "editing": "Düzenleniyor",
+    "editing": "Düzenleniyor: {timeframe}",
     "weekNumber": "Hafta {number}",
     "yourEarnings": "Kazancınız"
   },
