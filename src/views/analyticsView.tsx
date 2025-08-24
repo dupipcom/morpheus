@@ -67,7 +67,7 @@ const moneyChartConfig = {
     label: "Mood Derivate",
     color: "#2f2f8d",
   },
-  earnings: {
+  earningsScale: {
     label: "Earnings Derivate",
     color: "#2f2f8d",
   },
@@ -181,6 +181,7 @@ const aggregateDataByWeek = (dailyData: any[]) => {
           progress: (cur.progress * 100 / 20).toFixed(2),
           moodAverageScale: cur.moodAverage?.toFixed(2) * 500,
           earnings: Number(cur.earnings).toFixed(2),
+          earningsScale: Number(cur.earnings).toFixed(2) * 50,
           balance:  cur.availableBalance,
         }
       ]
@@ -287,7 +288,7 @@ const aggregateDataByWeek = (dailyData: any[]) => {
             " fill="#6565cc
             " radius={4} fillOpacity={0.4}
           />
-          <Area dataKey="earnings" stroke="#f7bfa5
+          <Area dataKey="earningsScale" stroke="#f7bfa5
             " fill={"#f7bfa5"} radius={4} fillOpacity={0.4}
           />
           <XAxis
