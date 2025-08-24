@@ -174,6 +174,20 @@
     "previous": "前へ",
     "next": "次へ"
   },
+  "charts": {
+    "dimensions": "ディメンション",
+    "moodAverage": "平均気分",
+    "gratitude": "感謝",
+    "optimism": "楽観主義",
+    "restedness": "休息",
+    "tolerance": "寛容",
+    "selfEsteem": "自尊心",
+    "trust": "信頼",
+    "progress": "進歩",
+    "moodAverageScale": "平均気分スケール",
+    "balance": "残高",
+    "earningsScale": "収益スケール"
+  },
   "errors": {
     "notFound": "おっと！この周波数にチューニングできませんでした。",
     "genericError": "何か問題が発生しました。もう一度お試しください。"

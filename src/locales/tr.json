@@ -165,6 +165,20 @@
     "previous": "Önceki",
     "next": "Sonraki"
   },
+  "charts": {
+    "dimensions": "Boyutlar",
+    "moodAverage": "Ortalama ruh hali",
+    "gratitude": "Minnettarlık",
+    "optimism": "İyimserlik",
+    "restedness": "Dinlenme",
+    "tolerance": "Hoşgörü",
+    "selfEsteem": "Öz saygı",
+    "trust": "Güven",
+    "progress": "İlerleme",
+    "moodAverageScale": "Ortalama ruh hali ölçeği",
+    "balance": "Bakiye",
+    "earningsScale": "Kazanç ölçeği"
+  },
   "errors": {
     "notFound": "Ups! Bu frekansa ayarlanamadı.",
     "genericError": "Bir şeyler yanlış gitti. Lütfen tekrar deneyin."

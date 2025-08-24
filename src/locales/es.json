@@ -174,6 +174,20 @@
     "previous": "Anterior",
     "next": "Siguiente"
   },
+  "charts": {
+    "dimensions": "Dimensiones",
+    "moodAverage": "Promedio de Estado de Ánimo",
+    "gratitude": "Gratitud",
+    "optimism": "Optimismo",
+    "restedness": "Descanso",
+    "tolerance": "Tolerancia",
+    "selfEsteem": "Autoestima",
+    "trust": "Confianza",
+    "progress": "Progreso",
+    "moodAverageScale": "Escala de Promedio de Estado de Ánimo",
+    "balance": "Saldo",
+    "earningsScale": "Escala de Ganancias"
+  },
   "errors": {
     "notFound": "¡Ups! No se pudo sintonizar esta frecuencia.",
     "genericError": "Algo salió mal. Por favor, inténtalo de nuevo."

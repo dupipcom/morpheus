@@ -165,6 +165,20 @@
     "previous": "Poprzedni",
     "next": "Następny"
   },
+  "charts": {
+    "dimensions": "Wymiary",
+    "moodAverage": "Średni nastrój",
+    "gratitude": "Wdzięczność",
+    "optimism": "Optymizm",
+    "restedness": "Wypoczęcie",
+    "tolerance": "Tolerancja",
+    "selfEsteem": "Poczucie własnej wartości",
+    "trust": "Zaufanie",
+    "progress": "Postęp",
+    "moodAverageScale": "Skala średniego nastroju",
+    "balance": "Saldo",
+    "earningsScale": "Skala zarobków"
+  },
   "errors": {
     "notFound": "Ups! Nie można dostroić do tej częstotliwości.",
     "genericError": "Coś poszło nie tak. Spróbuj ponownie."
