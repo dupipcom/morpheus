@@ -46,6 +46,11 @@ const nextConfig: NextConfig = {
         source: "/code",
         destination: 'https://github.com/dreampipcom',
         permanent: false,
+      },
+      { 
+        source: "/app/mood",
+        destination: '/app/day',
+        permanent: false,
       }
     ];
   },
