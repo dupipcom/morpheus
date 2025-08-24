@@ -39,13 +39,15 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
 
   const userTasks = useMemo(() => {
     if(timeframe === 'day') {
-      const dailyTasks = ((session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date]) && session?.user?.entries[year].days[date]?.tasks) || DAILY_ACTIONS
+      const noDayData = !session?.user?.entries || !session?.user?.entries[year] || !Object.keys(session?.user?.entries[year].days).length
+      const dailyTasks = ((session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date]) && session?.user?.entries[year].days[date]?.tasks) || ( noDayData ? DAILY_ACTIONS : [])
       if (!session?.user?.settings?.dailyTemplate) {
         return getLocalizedTaskNames(dailyTasks, t)
       }
      return assign(getLocalizedTaskNames(session?.user?.settings?.dailyTemplate, t), getLocalizedTaskNames(dailyTasks, t), { times: 1 })
     } else if (timeframe === 'week') {
-      const weeklyTasks = (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks) && session?.user?.entries[year].weeks[weekNumber]?.tasks || WEEKLY_ACTIONS
+      const noWeekData = !session?.user?.entries || !session?.user?.entries[year] || !Object.keys(session?.user?.entries[year].weeks).length
+      const weeklyTasks = (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks) && session?.user?.entries[year].weeks[weekNumber]?.tasks || ( noWeekData ? WEEKLY_ACTIONS : [])
       if (!session?.user?.settings?.weeklyTemplate) {
         return getLocalizedTaskNames(weeklyTasks, t)
       }
