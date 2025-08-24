@@ -46,7 +46,8 @@
     "thisWeek": "this week",
     "yourMood": "Your mood.",
     "yourProductivity": "Your productivity.",
-    "yourData": "Your data."
+    "yourData": "Your data.",
+    "yourBalance": "Your money."
   },
   "mood": {
     "title": "It's {date}.",

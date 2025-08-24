@@ -46,7 +46,8 @@
     "thisWeek": "이번 주",
     "yourMood": "당신의 기분.",
     "yourProductivity": "당신의 생산성.",
-    "yourData": "당신의 데이터."
+    "yourData": "당신의 데이터.",
+    "yourBalance": "당신의 돈."
   },
   "mood": {
     "title": "{date}입니다.",

@@ -46,7 +46,8 @@
     "thisWeek": "ezen a héten",
     "yourMood": "A hangulatod.",
     "yourProductivity": "A termelékenységed.",
-    "yourData": "Az adataid."
+    "yourData": "Az adataid.",
+    "yourBalance": "A pénzed."
   },
   "mood": {
     "title": "Ma {date} van.",

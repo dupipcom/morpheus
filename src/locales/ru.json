@@ -46,7 +46,8 @@
     "thisWeek": "на этой неделе",
     "yourMood": "Ваше настроение.",
     "yourProductivity": "Ваша продуктивность.",
-    "yourData": "Ваши данные."
+    "yourData": "Ваши данные.",
+    "yourBalance": "Ваши деньги."
   },
   "mood": {
     "title": "Сегодня {date}.",

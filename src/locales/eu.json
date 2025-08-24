@@ -49,7 +49,8 @@
     "thisWeek": "aste honetan",
     "yourMood": "Zure humorra.",
     "yourProductivity": "Zure produktibitatea.",
-    "yourData": "Zure datuak."
+    "yourData": "Zure datuak.",
+    "yourBalance": "Zure dirua."
   },
   "mood": {
     "title": "Erregistratu zure humorra {date} egunerako",

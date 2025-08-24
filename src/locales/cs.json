@@ -46,7 +46,8 @@
     "thisWeek": "tento týden",
     "yourMood": "Vaše nálada.",
     "yourProductivity": "Vaše produktivita.",
-    "yourData": "Vaše data."
+    "yourData": "Vaše data.",
+    "yourBalance": "Vaše peníze."
   },
   "mood": {
     "title": "Zaznamenejte svou náladu pro {date}",

@@ -46,7 +46,8 @@
     "thisWeek": "deze week",
     "yourMood": "Je stemming.",
     "yourProductivity": "Je productiviteit.",
-    "yourData": "Je gegevens."
+    "yourData": "Je gegevens.",
+    "yourBalance": "Je geld."
   },
   "mood": {
     "title": "Registreer je stemming voor {date}",

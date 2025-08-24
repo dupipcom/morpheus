@@ -50,7 +50,8 @@
     "thisWeek": "w tym tygodniu",
     "yourMood": "Twój nastrój.",
     "yourProductivity": "Twoja produktywność.",
-    "yourData": "Twoje dane."
+    "yourData": "Twoje dane.",
+    "yourBalance": "Twoje pieniądze."
   },
   "mood": {
     "title": "Zarejestruj swój nastrój na {date}",

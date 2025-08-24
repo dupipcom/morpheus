@@ -49,7 +49,8 @@
     "thisWeek": "esta semana",
     "yourMood": "O teu estado de ánimo.",
     "yourProductivity": "A túa produtividade.",
-    "yourData": "Os teus datos."
+    "yourData": "Os teus datos.",
+    "yourBalance": "O teu diñeiro."
   },
   "mood": {
     "title": "Rexistra o teu estado de ánimo para {date}",

@@ -50,7 +50,8 @@
     "thisWeek": "هذا الأسبوع",
     "yourMood": "مزاجك.",
     "yourProductivity": "إنتاجيتك.",
-    "yourData": "بياناتك."
+    "yourData": "بياناتك.",
+    "yourBalance": "أموالك."
   },
   "mood": {
     "title": "سجل مزاجك لـ {date}",
