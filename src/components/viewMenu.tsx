@@ -58,7 +58,7 @@ export const ViewMenu = ({ active }: { active: string }) =>{
   const isDataLoading = useEnhancedLoadingState(isLoading, session)
 
   return <NavigationMenu className="flex flex-col center text-center w-full m-auto">
-  <NavigationMenuList className="grid grid-cols-3">
+  <NavigationMenuList className="grid grid-cols-2">
       <NavigationMenuItem >
         <NavigationMenuLink href={`/${locale}/app/day`} active={active === 'day'}>
           {t('common.day')}
@@ -69,11 +69,6 @@ export const ViewMenu = ({ active }: { active: string }) =>{
           {t('common.week')}
         </NavigationMenuLink>
       </NavigationMenuItem>
-      <NavigationMenuItem>
-        <NavigationMenuLink href={`/${locale}/app/mood`} active={active === 'mood'}>
-          {t('common.mood')}
-        </NavigationMenuLink>
-       </NavigationMenuItem>
   </NavigationMenuList>
   <div className="my-8">
     <label>{t('common.availableBalance')}</label>
