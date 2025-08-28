@@ -104,7 +104,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       }
     }
     return true
-  }, [year, date, session.user])
+  }, [fullDay, year, date, session.user.id])
 
 
   const handleDone = async (values) => {
@@ -167,10 +167,6 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     generateInsight(setInsight, 'test', locale)
   }, [locale])
 
-  useEffect(() => {
-    console.log(isMoodEmpty)
-  }, [isMoodEmpty])
-
   // Use enhanced loading state to prevent flashing
   const isDataLoading = useEnhancedLoadingState(isLoading, session, 100, timeframe)
 
@@ -214,7 +210,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
         <AccordionTrigger>{t('common.mood')}</AccordionTrigger>
         <AccordionContent>
           <div className="flex flex-col max-w-[720px] m-auto">
-            <MoodView timeframe={timeframe} />
+            <MoodView timeframe={timeframe} date={fullDay} />
           </div>
         </AccordionContent>
       </AccordionItem>}
