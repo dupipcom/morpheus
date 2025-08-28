@@ -104,7 +104,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       }
     }
     return false
-  }, [year, date])
+  }, [year, date, session.user])
 
 
   const handleDone = async (values) => {
@@ -162,12 +162,14 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     setValues(userDone)
   }, [userDone])
 
-
-
   useEffect(() => {
     updateUser(session, setGlobalContext, { session, theme })
     generateInsight(setInsight, 'test', locale)
   }, [locale])
+
+  useEffect(() => {
+    console.log(isMoodEmpty)
+  }, [isMoodEmpty])
 
   // Use enhanced loading state to prevent flashing
   const isDataLoading = useEnhancedLoadingState(isLoading, session, 100, timeframe)
