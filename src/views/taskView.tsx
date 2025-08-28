@@ -38,6 +38,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const today = new Date()
   const todayDate = today.toLocaleString('en-uk', { timeZone: userTimezone }).split(',')[0].split('/').reverse().join('-')
+  const todayWeekNumber = getWeekNumber(today)[1]
   const [fullDay, setFullDay] = useState(todayDate)
   const date = fullDay ? new Date(fullDay).toISOString().split('T')[0] : todayDate
   const year = Number(date.split('-')[0])
@@ -67,13 +68,13 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
 
   const openDays = useMemo(() => {
     return session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && Object.values(session?.user?.entries[year].days).filter((day) => {
-      return day.status == "Open" && day.date !== date
+      return (day.status == "Open" && day.date !== date) || (todayDate === day.date && day.status == "Open")
     })
   }, [JSON.stringify(session), date])
 
   const openWeeks = useMemo(() => {
     return session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks && Object.values(session?.user?.entries[year].weeks).filter((week) => {
-      return week.status == "Open" && week.week !== weekNumber
+      return (week.status == "Open" && week.week !== weekNumber) || (todayWeekNumber === week.week && week.status == "Open")
     })
   }, [JSON.stringify(session), weekNumber])
 
@@ -103,7 +104,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       }
     }
     return false
-  }, [year, date])
+  }, [year, date, session.user])
 
 
   const handleDone = async (values) => {
@@ -161,12 +162,14 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     setValues(userDone)
   }, [userDone])
 
-
-
   useEffect(() => {
     updateUser(session, setGlobalContext, { session, theme })
     generateInsight(setInsight, 'test', locale)
   }, [locale])
+
+  useEffect(() => {
+    console.log(isMoodEmpty)
+  }, [isMoodEmpty])
 
   // Use enhanced loading state to prevent flashing
   const isDataLoading = useEnhancedLoadingState(isLoading, session, 100, timeframe)
