@@ -103,7 +103,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
         return false
       }
     }
-    return false
+    return true
   }, [year, date, session.user])
 
 
