@@ -19,13 +19,21 @@ import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil, 
 import { MoodViewSkeleton } from "@/components/ui/skeleton-loader"
 import { ContentLoadingWrapper } from '@/components/ContentLoadingWrapper'
 
-export const MoodView = ({ timeframe = "day" }) => {
+export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
   const { session, setGlobalContext, theme } = useContext(GlobalContext)
   const { t, locale } = useI18n()
   const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const today = new Date()
   const todayDate = today.toLocaleString('en-uk', { timeZone: userTimezone }).split(',')[0].split('/').reverse().join('-')
   const [fullDay, setFullDay] = useState(todayDate) 
+  
+  // Update fullDay when propDate changes
+  useEffect(() => {
+    if (propDate) {
+      setFullDay(propDate)
+    }
+  }, [propDate])
+  
   const date = fullDay ? new Date(fullDay).toISOString().split('T')[0] : todayDate
   const year = Number(date.split('-')[0])
   const [weekNumber, setWeekNumber] = useState(getWeekNumber(today)[1])
@@ -43,6 +51,10 @@ export const MoodView = ({ timeframe = "day" }) => {
 
   const [mood, setMood] = useState(serverMood)
 
+  // Update mood state when serverMood changes (due to date change)
+  useEffect(() => {
+    setMood(serverMood)
+  }, [serverMood])
 
 
   const handleSubmit = async (value, field) => {
