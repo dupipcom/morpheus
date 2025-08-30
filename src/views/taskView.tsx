@@ -293,7 +293,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                     <Users className="h-3 w-3" />
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-80">
+                <PopoverContent className="w-80 bg-transparent border-none">
                   <Card>
                     <CardHeader>
                       <CardTitle className="text-sm">{t('social.addContactsToTask', { taskName: action.displayName || action.name })}</CardTitle>
@@ -340,8 +340,8 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                                   }))
                                 }}
                                 max={5}
-                                min={1}
-                                step={1}
+                                min={0}
+                                step={0.5}
                                 className="w-full"
                               />
                             </div>

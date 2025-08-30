@@ -191,28 +191,7 @@ export const SocialView = () => {
       header: t('social.notes'),
       cell: ({ row }) => <div className="max-w-[200px] truncate">{row.getValue("notes") || '-'}</div>,
     },
-    {
-      id: "interactionQuality",
-      header: t('social.interactionQuality'),
-      cell: ({ row }) => {
-        const contact = row.original
-        return (
-                      <div className="w-[200px]">
-              <Slider
-                value={[contact.interactionQuality || 3]}
-                onValueChange={(value) => handleInteractionQualityChange(contact.id, value[0])}
-                max={5}
-                min={1}
-                step={1}
-                className="w-full"
-              />
-              <div className="text-xs text-muted-foreground mt-1">
-                {contact.interactionQuality || 3}/5
-              </div>
-            </div>
-        )
-      },
-    },
+
     {
       id: "actions",
       enableHiding: false,
@@ -369,8 +348,8 @@ export const SocialView = () => {
                   value={[selectedContact.interactionQuality || 3]}
                   onValueChange={(value) => setSelectedContact({...selectedContact, interactionQuality: value[0]})}
                   max={5}
-                  min={1}
-                  step={1}
+                  min={0}
+                  step={0.5}
                   className="w-full mt-2"
                 />
                 <div className="text-xs text-muted-foreground mt-1">

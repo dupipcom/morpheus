@@ -198,7 +198,7 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
         {/* Interaction Quality Sliders for Selected Contacts */}
         {moodContacts.length > 0 && (
           <div className="mt-6 space-y-4">
-            <h4 className="text-sm font-medium text-muted-foreground">Interaction Quality Ratings</h4>
+            <h4 className="text-sm font-medium text-muted-foreground">{t('social.interactionQualityRatings')}</h4>
             {moodContacts.map((contact) => (
               <div key={contact.id} className="space-y-2">
                 <div className="flex items-center justify-between">
@@ -224,8 +224,8 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
                     await handleMoodContactsChange(updatedContacts)
                   }}
                   max={5}
-                  min={1}
-                  step={1}
+                  min={0}
+                  step={0.5}
                   className="w-full"
                 />
               </div>

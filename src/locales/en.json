@@ -100,7 +100,8 @@
     "noContactsFound": "No contacts found. Add your first contact above.",
     "peopleInfluencedMood": "People who influenced your mood today",
     "addContactsToTask": "Add Contacts to \"{taskName}\"",
-    "selectContacts": "Select contacts..."
+    "selectContacts": "Select contacts...",
+    "interactionQualityRatings": "Interaction Quality Ratings"
   },
   "actions": {
     "daily": {

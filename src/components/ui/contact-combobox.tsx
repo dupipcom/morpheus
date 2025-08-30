@@ -210,8 +210,8 @@ export function ContactCombobox({
                           }))
                         }}
                         max={5}
-                        min={1}
-                        step={1}
+                        min={0}
+                        step={0.5}
                         className="w-full"
                       />
                       <div className="text-xs text-muted-foreground mt-1">

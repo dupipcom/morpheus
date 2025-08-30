@@ -161,6 +161,24 @@
     "notFound": "ওহ! এই ফ্রিকোয়েন্সিতে টিউন করা যায়নি।",
     "genericError": "কিছু ভুল হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।"
   },
+  "social": {
+    "title": "সামাজিক যোগাযোগ",
+    "addNewContact": "নতুন যোগাযোগ যোগ করুন",
+    "quickAccess": "দ্রুত প্রবেশ",
+    "name": "নাম",
+    "email": "ইমেইল",
+    "phone": "ফোন",
+    "notes": "নোট",
+    "interactionQuality": "যোগাযোগের মান",
+    "addContact": "যোগাযোগ যোগ করুন",
+    "editContact": "যোগাযোগ সম্পাদনা করুন",
+    "deleteContact": "যোগাযোগ মুছুন",
+    "noContactsFound": "কোন যোগাযোগ পাওয়া যায়নি। উপরে আপনার প্রথম যোগাযোগ যোগ করুন।",
+    "peopleInfluencedMood": "আজ আপনার মেজাজকে প্রভাবিত করেছে এমন মানুষ",
+    "addContactsToTask": "\"{taskName}\" এ যোগাযোগ যোগ করুন",
+    "selectContacts": "যোগাযোগ নির্বাচন করুন...",
+    "interactionQualityRatings": "যোগাযোগের মানের মূল্যায়ন"
+  },
   "settings": {
     "title": "সেটিংস",
     "dailyActions": "আপনার দৈনিক কর্ম:",

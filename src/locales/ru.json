@@ -179,6 +179,24 @@
     "notFound": "Упс! Не удалось настроить эту частоту.",
     "genericError": "Что-то пошло не так. Попробуйте еще раз."
   },
+  "social": {
+    "title": "Социальные контакты",
+    "addNewContact": "Добавить новый контакт",
+    "quickAccess": "Быстрый доступ",
+    "name": "Имя",
+    "email": "Электронная почта",
+    "phone": "Телефон",
+    "notes": "Заметки",
+    "interactionQuality": "Качество взаимодействия",
+    "addContact": "Добавить контакт",
+    "editContact": "Редактировать контакт",
+    "deleteContact": "Удалить контакт",
+    "noContactsFound": "Контакты не найдены. Добавьте свой первый контакт выше.",
+    "peopleInfluencedMood": "Люди, которые повлияли на ваше настроение сегодня",
+    "addContactsToTask": "Добавить контакты к \"{taskName}\"",
+    "selectContacts": "Выбрать контакты...",
+    "interactionQualityRatings": "Оценки качества взаимодействия"
+  },
   "settings": {
     "title": "Настройки",
     "dailyActions": "Ваши ежедневные действия:",

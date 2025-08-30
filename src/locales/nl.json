@@ -161,6 +161,24 @@
     "notFound": "Oeps! Kon niet afstemmen op deze frequentie.",
     "genericError": "Er is iets misgegaan. Probeer het opnieuw."
   },
+  "social": {
+    "title": "Sociale contacten",
+    "addNewContact": "Nieuw contact toevoegen",
+    "quickAccess": "Snelle toegang",
+    "name": "Naam",
+    "email": "E-mail",
+    "phone": "Telefoon",
+    "notes": "Notities",
+    "interactionQuality": "Interactiekwaliteit",
+    "addContact": "Contact toevoegen",
+    "editContact": "Contact bewerken",
+    "deleteContact": "Contact verwijderen",
+    "noContactsFound": "Geen contacten gevonden. Voeg je eerste contact hierboven toe.",
+    "peopleInfluencedMood": "Mensen die vandaag je stemming hebben beïnvloed",
+    "addContactsToTask": "Contacten toevoegen aan \"{taskName}\"",
+    "selectContacts": "Contacten selecteren...",
+    "interactionQualityRatings": "Interactiekwaliteit Beoordelingen"
+  },
   "settings": {
     "title": "Instellingen",
     "dailyActions": "Uw dagelijkse acties:",

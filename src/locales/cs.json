@@ -161,6 +161,24 @@
     "notFound": "Ups! Nepodařilo se naladit tuto frekvenci.",
     "genericError": "Něco se pokazilo. Zkuste to prosím znovu."
   },
+  "social": {
+    "title": "Sociální kontakty",
+    "addNewContact": "Přidat nový kontakt",
+    "quickAccess": "Rychlý přístup",
+    "name": "Jméno",
+    "email": "E-mail",
+    "phone": "Telefon",
+    "notes": "Poznámky",
+    "interactionQuality": "Kvalita interakce",
+    "addContact": "Přidat kontakt",
+    "editContact": "Upravit kontakt",
+    "deleteContact": "Smazat kontakt",
+    "noContactsFound": "Nebyly nalezeny žádné kontakty. Přidejte svůj první kontakt výše.",
+    "peopleInfluencedMood": "Lidé, kteří dnes ovlivnili vaši náladu",
+    "addContactsToTask": "Přidat kontakty k \"{taskName}\"",
+    "selectContacts": "Vybrat kontakty...",
+    "interactionQualityRatings": "Hodnocení kvality interakce"
+  },
   "settings": {
     "title": "Nastavení",
     "dailyActions": "Vaše denní akce:",
