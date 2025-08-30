@@ -169,6 +169,24 @@
     "notFound": "Ups! Ei voitu virittää tätä taajuutta.",
     "genericError": "Jokin meni pieleen. Yritä uudelleen."
   },
+  "social": {
+    "title": "Sosiaaliset yhteystiedot",
+    "addNewContact": "Lisää uusi yhteystieto",
+    "quickAccess": "Nopea pääsy",
+    "name": "Nimi",
+    "email": "Sähköposti",
+    "phone": "Puhelin",
+    "notes": "Muistiinpanot",
+    "interactionQuality": "Vuorovaikutuksen laatu",
+    "addContact": "Lisää yhteystieto",
+    "editContact": "Muokkaa yhteystietoa",
+    "deleteContact": "Poista yhteystieto",
+    "noContactsFound": "Yhteystietoja ei löytynyt. Lisää ensimmäinen yhteystietosi yllä.",
+    "peopleInfluencedMood": "Ihmiset, jotka vaikuttivat mielialaasi tänään",
+    "addContactsToTask": "Lisää yhteystiedot tehtävään \"{taskName}\"",
+    "selectContacts": "Valitse yhteystiedot...",
+    "interactionQualityRatings": "Vuorovaikutuksen Laadun Arvioinnit"
+  },
   "settings": {
     "title": "Asetukset",
     "dailyActions": "Päivittäiset toimenpiteesi:",

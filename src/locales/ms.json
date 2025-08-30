@@ -169,6 +169,24 @@
     "notFound": "Ops! Tidak dapat menala ke frekuensi ini.",
     "genericError": "Sesuatu yang salah berlaku. Sila cuba lagi."
   },
+  "social": {
+    "title": "Kenalan Sosial",
+    "addNewContact": "Tambah Kenalan Baru",
+    "quickAccess": "Akses Pantas",
+    "name": "Nama",
+    "email": "E-mel",
+    "phone": "Telefon",
+    "notes": "Nota",
+    "interactionQuality": "Kualiti Interaksi",
+    "addContact": "Tambah Kenalan",
+    "editContact": "Sunting Kenalan",
+    "deleteContact": "Padam Kenalan",
+    "noContactsFound": "Tiada kenalan dijumpai. Tambah kenalan pertama anda di atas.",
+    "peopleInfluencedMood": "Orang yang mempengaruhi mood anda hari ini",
+    "addContactsToTask": "Tambah Kenalan ke \"{taskName}\"",
+    "selectContacts": "Pilih kenalan...",
+    "interactionQualityRatings": "Penilaian Kualiti Interaksi"
+  },
   "settings": {
     "title": "Tetapan",
     "dailyActions": "Tindakan harian anda:",

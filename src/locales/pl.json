@@ -183,6 +183,24 @@
     "notFound": "Ups! Nie można dostroić do tej częstotliwości.",
     "genericError": "Coś poszło nie tak. Spróbuj ponownie."
   },
+  "social": {
+    "title": "Kontakty społeczne",
+    "addNewContact": "Dodaj nowy kontakt",
+    "quickAccess": "Szybki dostęp",
+    "name": "Nazwa",
+    "email": "E-mail",
+    "phone": "Telefon",
+    "notes": "Notatki",
+    "interactionQuality": "Jakość interakcji",
+    "addContact": "Dodaj kontakt",
+    "editContact": "Edytuj kontakt",
+    "deleteContact": "Usuń kontakt",
+    "noContactsFound": "Nie znaleziono kontaktów. Dodaj swój pierwszy kontakt powyżej.",
+    "peopleInfluencedMood": "Ludzie, którzy wpłynęli na twój nastrój dzisiaj",
+    "addContactsToTask": "Dodaj kontakty do \"{taskName}\"",
+    "selectContacts": "Wybierz kontakty...",
+    "interactionQualityRatings": "Oceny jakości interakcji"
+  },
   "settings": {
     "title": "Ustawienia",
     "dailyActions": "Twoje codzienne działania:",

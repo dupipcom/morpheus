@@ -85,6 +85,24 @@
     "fixedNeedCosts": "Coûts Fixes de Besoins",
     "expectedNeedUtilities": "Moyenne Attendue des Services Publics"
   },
+  "social": {
+    "title": "Contacts Sociaux",
+    "addNewContact": "Ajouter Nouveau Contact",
+    "quickAccess": "Accès Rapide",
+    "name": "Nom",
+    "email": "E-mail",
+    "phone": "Téléphone",
+    "notes": "Notes",
+    "interactionQuality": "Qualité d'Interaction",
+    "addContact": "Ajouter Contact",
+    "editContact": "Modifier Contact",
+    "deleteContact": "Supprimer Contact",
+    "noContactsFound": "Aucun contact trouvé. Ajoutez votre premier contact ci-dessus.",
+    "peopleInfluencedMood": "Personnes qui ont influencé votre humeur aujourd'hui",
+    "addContactsToTask": "Ajouter des Contacts à \"{taskName}\"",
+    "selectContacts": "Sélectionner des contacts...",
+    "interactionQualityRatings": "Évaluations de Qualité d'Interaction"
+  },
   "actions": {
     "daily": {
       "drankWater": "A bu de l'eau",

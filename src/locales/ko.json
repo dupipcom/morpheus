@@ -175,6 +175,24 @@
     "notFound": "앗! 이 주파수에 맞출 수 없습니다.",
     "genericError": "문제가 발생했습니다. 다시 시도해 주세요."
   },
+  "social": {
+    "title": "소셜 연락처",
+    "addNewContact": "새 연락처 추가",
+    "quickAccess": "빠른 접근",
+    "name": "이름",
+    "email": "이메일",
+    "phone": "전화",
+    "notes": "메모",
+    "interactionQuality": "상호작용 품질",
+    "addContact": "연락처 추가",
+    "editContact": "연락처 편집",
+    "deleteContact": "연락처 삭제",
+    "noContactsFound": "연락처를 찾을 수 없습니다. 위에서 첫 번째 연락처를 추가하세요.",
+    "peopleInfluencedMood": "오늘 당신의 기분에 영향을 준 사람들",
+    "addContactsToTask": "\"{taskName}\"에 연락처 추가",
+    "selectContacts": "연락처 선택...",
+    "interactionQualityRatings": "상호작용 품질 평가"
+  },
   "settings": {
     "title": "설정",
     "dailyActions": "일일 활동:",

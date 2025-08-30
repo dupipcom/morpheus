@@ -161,6 +161,24 @@
     "notFound": "אופס! לא ניתן לכוון לתדר זה.",
     "genericError": "משהו השתבש. אנא נסה שוב."
   },
+  "social": {
+    "title": "אנשי קשר חברתיים",
+    "addNewContact": "הוסף איש קשר חדש",
+    "quickAccess": "גישה מהירה",
+    "name": "שם",
+    "email": "דוא\"ל",
+    "phone": "טלפון",
+    "notes": "הערות",
+    "interactionQuality": "איכות אינטראקציה",
+    "addContact": "הוסף איש קשר",
+    "editContact": "ערוך איש קשר",
+    "deleteContact": "מחק איש קשר",
+    "noContactsFound": "לא נמצאו אנשי קשר. הוסף את איש הקשר הראשון שלך למעלה.",
+    "peopleInfluencedMood": "אנשים שהשפיעו על מצב הרוח שלך היום",
+    "addContactsToTask": "הוסף אנשי קשר ל-\"{taskName}\"",
+    "selectContacts": "בחר אנשי קשר...",
+    "interactionQualityRatings": "דירוגי איכות אינטראקציה"
+  },
   "settings": {
     "title": "הגדרות",
     "dailyActions": "הפעולות היומיות שלך:",

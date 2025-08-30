@@ -183,6 +183,24 @@
     "notFound": "Ups! Bu frekansa ayarlanamadı.",
     "genericError": "Bir şeyler yanlış gitti. Lütfen tekrar deneyin."
   },
+  "social": {
+    "title": "Sosyal Kişiler",
+    "addNewContact": "Yeni Kişi Ekle",
+    "quickAccess": "Hızlı Erişim",
+    "name": "Ad",
+    "email": "E-posta",
+    "phone": "Telefon",
+    "notes": "Notlar",
+    "interactionQuality": "Etkileşim Kalitesi",
+    "addContact": "Kişi Ekle",
+    "editContact": "Kişiyi Düzenle",
+    "deleteContact": "Kişiyi Sil",
+    "noContactsFound": "Kişi bulunamadı. İlk kişinizi yukarıda ekleyin.",
+    "peopleInfluencedMood": "Bugün ruh halinizi etkileyen kişiler",
+    "addContactsToTask": "\"{taskName}\" görevine kişi ekle",
+    "selectContacts": "Kişi seç...",
+    "interactionQualityRatings": "Etkileşim Kalitesi Değerlendirmeleri"
+  },
   "settings": {
     "title": "Ayarlar",
     "dailyActions": "Günlük eylemleriniz:",

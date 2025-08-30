@@ -161,6 +161,24 @@
     "notFound": "Ups! Nu s-a putut sintoniza pe această frecvență.",
     "genericError": "Ceva nu a mers bine. Te rugăm să încerci din nou."
   },
+  "social": {
+    "title": "Contacte sociale",
+    "addNewContact": "Adaugă contact nou",
+    "quickAccess": "Acces rapid",
+    "name": "Nume",
+    "email": "E-mail",
+    "phone": "Telefon",
+    "notes": "Note",
+    "interactionQuality": "Calitatea interacțiunii",
+    "addContact": "Adaugă contact",
+    "editContact": "Editează contact",
+    "deleteContact": "Șterge contact",
+    "noContactsFound": "Nu s-au găsit contacte. Adaugă primul tău contact mai sus.",
+    "peopleInfluencedMood": "Oameni care ți-au influențat dispoziția astăzi",
+    "addContactsToTask": "Adaugă contacte la \"{taskName}\"",
+    "selectContacts": "Selectează contacte...",
+    "interactionQualityRatings": "Evaluări Calitate Interacțiune"
+  },
   "settings": {
     "title": "Setări",
     "dailyActions": "Acțiunile tale zilnice:",

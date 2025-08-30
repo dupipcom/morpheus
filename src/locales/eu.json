@@ -168,6 +168,24 @@
     "notFound": "Ups! Ezin izan da maiztasun hori sintonizatu.",
     "genericError": "Zerbait gaizki joan da. Mesedez, saiatu berriro."
   },
+  "social": {
+    "title": "Kontaktu sozialak",
+    "addNewContact": "Kontaktu berria gehitu",
+    "quickAccess": "Sarbide azkarra",
+    "name": "Izena",
+    "email": "E-posta",
+    "phone": "Telefonoa",
+    "notes": "Oharrak",
+    "interactionQuality": "Elkarreraginaren kalitatea",
+    "addContact": "Kontaktua gehitu",
+    "editContact": "Kontaktua editatu",
+    "deleteContact": "Kontaktua ezabatu",
+    "noContactsFound": "Ez da kontakturik aurkitu. Gehitu zure lehen kontaktua goian.",
+    "peopleInfluencedMood": "Gaur zure humorea eragin zuten pertsonak",
+    "addContactsToTask": "Kontaktuak gehitu \"{taskName}\" atazara",
+    "selectContacts": "Kontaktuak hautatu...",
+    "interactionQualityRatings": "Elkarreraginaren Kalitate Ebaluazioak"
+  },
   "settings": {
     "title": "Ezarpenak",
     "dailyActions": "Zure eguneroko ekintzak:",
