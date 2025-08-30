@@ -85,6 +85,24 @@
     "fixedNeedCosts": "固定需求成本",
     "expectedNeedUtilities": "预期需求公用事业平均值"
   },
+  "social": {
+    "title": "社交联系人",
+    "addNewContact": "添加新联系人",
+    "quickAccess": "快速访问",
+    "name": "姓名",
+    "email": "电子邮件",
+    "phone": "电话",
+    "notes": "备注",
+    "interactionQuality": "互动质量",
+    "addContact": "添加联系人",
+    "editContact": "编辑联系人",
+    "deleteContact": "删除联系人",
+    "noContactsFound": "未找到联系人。在上面添加您的第一个联系人。",
+    "peopleInfluencedMood": "今天影响您心情的人",
+    "addContactsToTask": "向\"{taskName}\"添加联系人",
+    "selectContacts": "选择联系人...",
+    "interactionQualityRatings": "互动质量评分"
+  },
   "actions": {
     "daily": {
       "drankWater": "喝了水",

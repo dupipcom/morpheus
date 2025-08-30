@@ -168,6 +168,24 @@
     "notFound": "Oj! Kunde inte stämma in på denna frekvens.",
     "genericError": "Något gick fel. Försök igen."
   },
+  "social": {
+    "title": "Sociala kontakter",
+    "addNewContact": "Lägg till ny kontakt",
+    "quickAccess": "Snabb åtkomst",
+    "name": "Namn",
+    "email": "E-post",
+    "phone": "Telefon",
+    "notes": "Anteckningar",
+    "interactionQuality": "Interaktionskvalitet",
+    "addContact": "Lägg till kontakt",
+    "editContact": "Redigera kontakt",
+    "deleteContact": "Radera kontakt",
+    "noContactsFound": "Inga kontakter hittades. Lägg till din första kontakt ovan.",
+    "peopleInfluencedMood": "Människor som påverkade ditt humör idag",
+    "addContactsToTask": "Lägg till kontakter till \"{taskName}\"",
+    "selectContacts": "Välj kontakter...",
+    "interactionQualityRatings": "Interaktionskvalitetsbedömningar"
+  },
   "settings": {
     "title": "Inställningar",
     "dailyActions": "Dina dagliga handlingar:",

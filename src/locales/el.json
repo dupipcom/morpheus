@@ -169,6 +169,24 @@
     "notFound": "Ουπς! Δεν ήταν δυνατή η συντονισμός σε αυτή τη συχνότητα.",
     "genericError": "Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά."
   },
+  "social": {
+    "title": "Κοινωνικές επαφές",
+    "addNewContact": "Προσθήκη νέας επαφής",
+    "quickAccess": "Γρήγορη πρόσβαση",
+    "name": "Όνομα",
+    "email": "Email",
+    "phone": "Τηλέφωνο",
+    "notes": "Σημειώσεις",
+    "interactionQuality": "Ποιότητα αλληλεπίδρασης",
+    "addContact": "Προσθήκη επαφής",
+    "editContact": "Επεξεργασία επαφής",
+    "deleteContact": "Διαγραφή επαφής",
+    "noContactsFound": "Δεν βρέθηκαν επαφές. Προσθέστε την πρώτη σας επαφή παραπάνω.",
+    "peopleInfluencedMood": "Άνθρωποι που επηρέασαν τη διάθεσή σας σήμερα",
+    "addContactsToTask": "Προσθήκη επαφών στο \"{taskName}\"",
+    "selectContacts": "Επιλογή επαφών...",
+    "interactionQualityRatings": "Αξιολογήσεις Ποιότητας Αλληλεπίδρασης"
+  },
   "settings": {
     "title": "Ρυθμίσεις",
     "dailyActions": "Οι καθημερινές σας ενέργειες:",

@@ -235,6 +235,12 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   const weekEarnings = ((5 - weekMoodAverage)) * 0.2 + ((weekProgress * 0.80)) * user?.availableBalance / 4
 
   if (data.weekActions?.length) {
+    // Add contacts to tasks if provided
+    const tasksWithContacts = data.weekActions.map(task => ({
+      ...task,
+      contacts: data.taskContacts?.[task.name] || []
+    }))
+
     await prisma.user.update({
       data: {
         entries: {
@@ -248,12 +254,13 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   year,
                   week: data.week,
                   earnings: weekEarnings,
-                  tasks: data.weekActions.sort((a, b) => a.status === "Done" ? 1 : -1),
+                  tasks: tasksWithContacts.sort((a, b) => a.status === "Done" ? 1 : -1),
                   status: "Open",
                   progress: weekProgress,
                   done: weekDone.length,
                   tasksNumber: weekTasks.length,
-                  availableBalance: user.availableBalance
+                  availableBalance: user.availableBalance,
+                  contacts: data.weekContacts || []
                 }
               }
           }
@@ -322,6 +329,12 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   }
 
   if (data.dayActions?.length) {
+    // Add contacts to tasks if provided
+    const tasksWithContacts = data.dayActions.map(task => ({
+      ...task,
+      contacts: data.taskContacts?.[task.name] || []
+    }))
+
     await prisma.user.update({
       data: {
         entries: {
@@ -340,9 +353,10 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   progress: dayProgress,
                   done: dayDone.length,
                   tasksNumber: dayTasks.length,
-                  tasks: data.dayActions.sort((a, b) => a.status === "Done" ? 1 : -1),
+                  tasks: tasksWithContacts.sort((a, b) => a.status === "Done" ? 1 : -1),
                   status: "Open",
-                  availableBalance: user.availableBalance
+                  availableBalance: user.availableBalance,
+                  contacts: data.dayContacts || []
                 }
               }
             }
@@ -397,8 +411,9 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   ...user.entries[year].days[date],
                   mood: {
                     ...user.entries[year].days[date].mood,
-                    [key]: data.mood[key],
+                    [key]: data.mood[key]
                   },
+                  contacts: data.moodContacts || [],
                   moodAverage: dayMoodAverage
                 }
               },
@@ -407,6 +422,29 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                 [weekNumber]: {
                   ...user.entries[year].weeks[weekNumber],
                   moodAverage: weekMoodAverage
+                }
+              }
+            }
+          }
+        },
+      where: { id: user.id },
+    })
+    user = await getUser()
+  }
+
+  if (data?.moodContacts && !data?.mood && !data?.text) {
+    // Handle mood contacts only (when field is 'contacts')
+    await prisma.user.update({
+      data: {
+        entries: {
+            ...user.entries,
+            [year]: {
+              ...user.entries[year],
+              days: {
+                ...user.entries[year].days,
+                [date]: {
+                  ...user.entries[year].days[date],
+                  contacts: data.moodContacts
                 }
               }
             }
@@ -429,6 +467,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                 [date]: {
                   ...user.entries[year].days[date],
                   text: data?.text,
+                  contacts: data.moodContacts || [],
                   moodAverage: dayMoodAverage
                 }
               },

@@ -10,7 +10,7 @@ import { useI18n } from '@/lib/contexts/i18n'
 import { Button } from '@/components/ui/button'
 import { Switch } from "@/components/ui/switch"
 
-import { SlidersVertical, Play, Square as Stop, Gauge, LogIn, DoorOpen, User, LogOut } from "lucide-react"
+import { SlidersVertical, Play, Square as Stop, Gauge, LogIn, DoorOpen, User, LogOut, Users } from "lucide-react"
 import { NavSkeleton } from "./skeleton-loader"
 
 
@@ -509,6 +509,11 @@ export const Logo: TComponent = function ({
             label={t('common.settings')}
             labelIcon={<SlidersVertical className="w-[14px] pb-2" />}
             href="/app/settings"
+          />
+				                    <UserButton.Link
+            label="Social"
+            labelIcon={<Users className="w-[14px] pb-2" />}
+            href="/app/social"
           />
 				        </UserButton.MenuItems>
 				      </UserButton>

@@ -161,6 +161,24 @@
     "notFound": "Ups! No s'ha pogut sintonitzar aquesta freqüència.",
     "genericError": "Alguna cosa ha anat malament. Si us plau, torna-ho a provar."
   },
+  "social": {
+    "title": "Contactes Socials",
+    "addNewContact": "Afegir Nou Contacte",
+    "quickAccess": "Accés Ràpid",
+    "name": "Nom",
+    "email": "Correu electrònic",
+    "phone": "Telèfon",
+    "notes": "Notes",
+    "interactionQuality": "Qualitat d'Interacció",
+    "addContact": "Afegir Contacte",
+    "editContact": "Editar Contacte",
+    "deleteContact": "Eliminar Contacte",
+    "noContactsFound": "No s'han trobat contactes. Afegeix el teu primer contacte a dalt.",
+    "peopleInfluencedMood": "Persones que han influït en el teu estat d'ànim avui",
+    "addContactsToTask": "Afegir Contactes a \"{taskName}\"",
+    "selectContacts": "Seleccionar contactes...",
+    "interactionQualityRatings": "Valoracions de Qualitat d'Interacció"
+  },
   "settings": {
     "title": "Configuració",
     "dailyActions": "Les teves accions diàries:",

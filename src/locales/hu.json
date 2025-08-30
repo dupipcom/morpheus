@@ -161,6 +161,24 @@
     "notFound": "Ups! Nem sikerült beállítani ezt a frekvenciát.",
     "genericError": "Valami hiba történt. Kérjük, próbáld újra."
   },
+  "social": {
+    "title": "Közösségi kapcsolatok",
+    "addNewContact": "Új kapcsolat hozzáadása",
+    "quickAccess": "Gyors hozzáférés",
+    "name": "Név",
+    "email": "E-mail",
+    "phone": "Telefon",
+    "notes": "Megjegyzések",
+    "interactionQuality": "Kapcsolat minősége",
+    "addContact": "Kapcsolat hozzáadása",
+    "editContact": "Kapcsolat szerkesztése",
+    "deleteContact": "Kapcsolat törlése",
+    "noContactsFound": "Nem találhatók kapcsolatok. Adja hozzá az első kapcsolatát fent.",
+    "peopleInfluencedMood": "Olyan emberek, akik ma befolyásolták a hangulatát",
+    "addContactsToTask": "Kapcsolatok hozzáadása a \"{taskName}\" feladathoz",
+    "selectContacts": "Kapcsolatok kiválasztása...",
+    "interactionQualityRatings": "Kapcsolat Minőség Értékelések"
+  },
   "settings": {
     "title": "Beállítások",
     "dailyActions": "Napi tevékenységei:",

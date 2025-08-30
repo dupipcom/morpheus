@@ -85,6 +85,24 @@
     "fixedNeedCosts": "固定必要コスト",
     "expectedNeedUtilities": "期待される必要公共料金の平均"
   },
+  "social": {
+    "title": "ソーシャルコンタクト",
+    "addNewContact": "新しいコンタクトを追加",
+    "quickAccess": "クイックアクセス",
+    "name": "名前",
+    "email": "メール",
+    "phone": "電話",
+    "notes": "メモ",
+    "interactionQuality": "インタラクション品質",
+    "addContact": "コンタクトを追加",
+    "editContact": "コンタクトを編集",
+    "deleteContact": "コンタクトを削除",
+    "noContactsFound": "コンタクトが見つかりません。上記で最初のコンタクトを追加してください。",
+    "peopleInfluencedMood": "今日あなたの気分に影響を与えた人々",
+    "addContactsToTask": "\"{taskName}\"にコンタクトを追加",
+    "selectContacts": "コンタクトを選択...",
+    "interactionQualityRatings": "インタラクション品質評価"
+  },
   "actions": {
     "daily": {
       "drankWater": "水を飲んだ",

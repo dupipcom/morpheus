@@ -161,6 +161,24 @@
     "notFound": "उफ़! इस आवृत्ति को ट्यून नहीं कर सका।",
     "genericError": "कुछ गलत हो गया। कृपया पुनः प्रयास करें।"
   },
+  "social": {
+    "title": "सामाजिक संपर्क",
+    "addNewContact": "नया संपर्क जोड़ें",
+    "quickAccess": "त्वरित पहुंच",
+    "name": "नाम",
+    "email": "ईमेल",
+    "phone": "फोन",
+    "notes": "नोट्स",
+    "interactionQuality": "संपर्क की गुणवत्ता",
+    "addContact": "संपर्क जोड़ें",
+    "editContact": "संपर्क संपादित करें",
+    "deleteContact": "संपर्क हटाएं",
+    "noContactsFound": "कोई संपर्क नहीं मिला। ऊपर अपना पहला संपर्क जोड़ें।",
+    "peopleInfluencedMood": "आज आपके मनोदशा को प्रभावित करने वाले लोग",
+    "addContactsToTask": "\"{taskName}\" में संपर्क जोड़ें",
+    "selectContacts": "संपर्क चुनें...",
+    "interactionQualityRatings": "संपर्क गुणवत्ता मूल्यांकन"
+  },
   "settings": {
     "title": "सेटिंग्स",
     "dailyActions": "आपके दैनिक कार्य:",
