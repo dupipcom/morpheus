@@ -278,7 +278,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
         return (
           <div key={`task__item--${action.name}`} className="flex flex-col items-center m-1">
             <div className="relative w-full">
-              <ToggleGroupItem className="leading-7 text-sm min-h-[40px] truncate w-full" value={action.name}>
+              <ToggleGroupItem className="rounded-md leading-7 text-sm min-h-[40px] truncate w-full" value={action.name}>
                 {action.times > 1 ? `${action.count}/${action.times} ` : ''}{action.displayName || action.name}
               </ToggleGroupItem>
               
@@ -288,7 +288,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="absolute top-1/2 right-1 transform -translate-y-1/2 h-6 w-6 p-0 rounded-full"
+                    className="bg-muted absolute top-1/2 right-1 transform -translate-y-1/2 h-6 w-6 p-0 rounded-full"
                   >
                     <Users className="h-3 w-3" />
                   </Button>

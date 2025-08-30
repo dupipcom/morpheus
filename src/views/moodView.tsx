@@ -148,8 +148,40 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
       <div key={JSON.stringify(serverMood)} className="w-full m-auto p-4">
       <h2 className="mt-8 mb-4 text-center text-lg">{t('mood.subtitle')}</h2>
       
-      {/* Contact Management for Mood */}
-      <div className="mb-8 p-4 border rounded-lg">
+      <Textarea className="mb-16" defaultValue={serverText} onBlur={(e) => handleSubmit(e.target.value, "text")} />
+      <div className="my-12">
+        <h3 className="mt-8 mb-4">{t('charts.gratitude')}</h3>
+        <small>{insight?.gratitudeAnalysis}</small>
+      </div>
+      <Slider className="mb-24" defaultValue={[serverMood.gratitude || 0]} max={5} step={0.5} onValueCommit={(e) => handleSubmit(e[0], "gratitude")} />
+      <div className="my-12">
+        <h3 className="mt-8 mb-4">{t('charts.optimism')}</h3>
+        <small>{insight?.optimismAnalysis}</small>
+      </div>
+      <Slider className="mb-24" defaultValue={[serverMood.optimism || 0]} max={5} step={0.5} onValueCommit={(e) => handleSubmit(e[0], "optimism")} />
+      <div className="my-12">
+        <h3 className="mt-8 mb-4">{t('charts.restedness')}</h3>
+        <small>{insight?.restednessAnalysis}</small>
+      </div>
+      <Slider className="mb-24" defaultValue={[serverMood.restedness || 0]} max={5} step={0.5} onValueCommit={(e) => handleSubmit(e[0], "restedness")} />
+      <div className="my-12">
+        <h3 className="mt-8 mb-4">{t('charts.tolerance')}</h3>
+        <small>{insight?.toleranceAnalysis}</small>
+      </div>
+      <Slider className="mb-24" defaultValue={[serverMood.tolerance || 0]} max={5} step={0.5} onValueCommit={(e) => handleSubmit(e[0], "tolerance")} />
+      <div className="my-12">
+        <h3 className="mb-4">{t('charts.selfEsteem')}</h3>
+        <small>{insight?.selfEsteemAnalysis}</small>
+      </div>
+      <Slider className="mb-24" defaultValue={[serverMood.selfEsteem || 0]} max={5} step={0.5} onValueCommit={(e) => handleSubmit(e[0], "selfEsteem")} />
+      <div className="my-12">
+        <h3 className="mt-8 mb-4">{t('charts.trust')}</h3>
+        <small>{insight?.trustAnalysis}</small>
+      </div>
+      <Slider className="mb-24" defaultValue={[serverMood?.trust || 0]} max={5} step={0.5} onValueCommit={(e) => handleSubmit(e[0], "trust")} />
+      </div>
+            {/* Contact Management for Mood */}
+            <div className="mb-8 p-4 border rounded-lg">
         <h3 className="text-lg font-semibold mb-4">{t('social.peopleInfluencedMood')}</h3>
         {!contactsLoading && (
           <ContactCombobox
@@ -200,39 +232,6 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
             ))}
           </div>
         )}
-      </div>
-      
-      <Textarea className="mb-16" defaultValue={serverText} onBlur={(e) => handleSubmit(e.target.value, "text")} />
-      <div className="my-12">
-        <h3 className="mt-8 mb-4">{t('charts.gratitude')}</h3>
-        <small>{insight?.gratitudeAnalysis}</small>
-      </div>
-      <Slider className="mb-24" defaultValue={[serverMood.gratitude || 0]} max={5} step={0.5} onValueCommit={(e) => handleSubmit(e[0], "gratitude")} />
-      <div className="my-12">
-        <h3 className="mt-8 mb-4">{t('charts.optimism')}</h3>
-        <small>{insight?.optimismAnalysis}</small>
-      </div>
-      <Slider className="mb-24" defaultValue={[serverMood.optimism || 0]} max={5} step={0.5} onValueCommit={(e) => handleSubmit(e[0], "optimism")} />
-      <div className="my-12">
-        <h3 className="mt-8 mb-4">{t('charts.restedness')}</h3>
-        <small>{insight?.restednessAnalysis}</small>
-      </div>
-      <Slider className="mb-24" defaultValue={[serverMood.restedness || 0]} max={5} step={0.5} onValueCommit={(e) => handleSubmit(e[0], "restedness")} />
-      <div className="my-12">
-        <h3 className="mt-8 mb-4">{t('charts.tolerance')}</h3>
-        <small>{insight?.toleranceAnalysis}</small>
-      </div>
-      <Slider className="mb-24" defaultValue={[serverMood.tolerance || 0]} max={5} step={0.5} onValueCommit={(e) => handleSubmit(e[0], "tolerance")} />
-      <div className="my-12">
-        <h3 className="mb-4">{t('charts.selfEsteem')}</h3>
-        <small>{insight?.selfEsteemAnalysis}</small>
-      </div>
-      <Slider className="mb-24" defaultValue={[serverMood.selfEsteem || 0]} max={5} step={0.5} onValueCommit={(e) => handleSubmit(e[0], "selfEsteem")} />
-      <div className="my-12">
-        <h3 className="mt-8 mb-4">{t('charts.trust')}</h3>
-        <small>{insight?.trustAnalysis}</small>
-      </div>
-      <Slider className="mb-24" defaultValue={[serverMood?.trust || 0]} max={5} step={0.5} onValueCommit={(e) => handleSubmit(e[0], "trust")} />
       </div>
     </ContentLoadingWrapper>
   )
