@@ -1,10 +1,12 @@
 'use client'
 import { useState, useEffect, useMemo, useContext } from 'react'
+import useSWR from 'swr'
 
 import { Slider } from "@/components/ui/slider"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import { getWeekNumber } from "@/app/helpers"
 import {
   Carousel,
@@ -18,6 +20,7 @@ import { useI18n } from "@/lib/contexts/i18n"
 import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil, handleMoodSubmit, isUserDataReady, useEnhancedLoadingState } from "@/lib/userUtils"
 import { MoodViewSkeleton } from "@/components/ui/skeleton-loader"
 import { ContentLoadingWrapper } from '@/components/ContentLoadingWrapper'
+import { ContactCombobox } from "@/components/ui/contact-combobox"
 
 export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
   const { session, setGlobalContext, theme } = useContext(GlobalContext)
@@ -38,11 +41,31 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
   const year = Number(date.split('-')[0])
   const [weekNumber, setWeekNumber] = useState(getWeekNumber(today)[1])
 
-  const [insight, setInsight] = useState({})
-
   const serverMood = useMemo(() => (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date] && session?.user?.entries[year].days[date].mood) || {}, [fullDay, JSON.stringify(session)])
 
   const serverText = useMemo(() => (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date] && session?.user?.entries[year].days[date].text) || "", [fullDay, JSON.stringify(session)])
+
+  const serverMoodContacts = useMemo(() => {
+    const dayEntry = session?.user?.entries?.[year]?.days?.[date]
+    console.log('serverMoodContacts calculation:', {
+      year,
+      date,
+      dayEntry,
+      contacts: dayEntry?.contacts,
+      sessionEntries: session?.user?.entries?.[year]?.days?.[date]
+    })
+    return dayEntry?.contacts || []
+  }, [session?.user?.entries, year, date, session?.user?.entries?.[year]?.days?.[date]?.contacts])
+
+  const [insight, setInsight] = useState({})
+  const [contacts, setContacts] = useState([])
+  const [moodContacts, setMoodContacts] = useState([])
+
+  // Initialize mood contacts from server data
+  useEffect(() => {
+    console.log('Initializing mood contacts:', serverMoodContacts)
+    setMoodContacts(serverMoodContacts || [])
+  }, [serverMoodContacts])
 
   const openDays = useMemo(() => {
     return session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && Object.values(session?.user?.entries[year].days).filter((day) => {
@@ -57,10 +80,42 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
   }, [serverMood])
 
 
+
+  // Fetch contacts
+  const { data: contactsData, mutate: mutateContacts, isLoading: contactsLoading } = useSWR(
+    session?.user ? `/api/v1/contacts` : null,
+    async () => {
+      const response = await fetch('/api/v1/contacts')
+      if (response.ok) {
+        const data = await response.json()
+        setContacts(data.contacts || [])
+        return data
+      }
+      return { contacts: [] }
+    }
+  )
+
+  // Ensure contacts are loaded from SWR data
+  useEffect(() => {
+    if (contactsData?.contacts) {
+      setContacts(contactsData.contacts)
+    }
+  }, [contactsData])
+
   const handleSubmit = async (value, field) => {
     setMood({...mood, [field]: value})
-    await handleMoodSubmit(value, field, fullDay)
-    await updateUser(session, setGlobalContext, { session, theme })
+    // Always include current mood contacts when saving any mood data
+    await handleMoodSubmit(value, field, fullDay, moodContacts)
+    // Don't call updateUser immediately to avoid clearing mood contacts
+    // The session will be updated naturally when the user navigates or refreshes
+  }
+
+  const handleMoodContactsChange = async (newMoodContacts) => {
+    setMoodContacts(newMoodContacts)
+    // Save mood contacts to database immediately when they change
+    await handleMoodSubmit(null, 'contacts', fullDay, newMoodContacts)
+    // Don't call updateUser immediately to avoid race conditions
+    // The session will be updated naturally when the user navigates or refreshes
   }
 
 
@@ -92,6 +147,61 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
     <ContentLoadingWrapper>
       <div key={JSON.stringify(serverMood)} className="w-full m-auto p-4">
       <h2 className="mt-8 mb-4 text-center text-lg">{t('mood.subtitle')}</h2>
+      
+      {/* Contact Management for Mood */}
+      <div className="mb-8 p-4 border rounded-lg">
+        <h3 className="text-lg font-semibold mb-4">{t('social.peopleInfluencedMood')}</h3>
+        {!contactsLoading && (
+          <ContactCombobox
+            contacts={contacts}
+            selectedContacts={moodContacts}
+            onContactsChange={handleMoodContactsChange}
+            onContactsRefresh={() => {
+              // Trigger a refresh of the contacts data
+              mutateContacts()
+            }}
+          />
+        )}
+        
+        {/* Interaction Quality Sliders for Selected Contacts */}
+        {moodContacts.length > 0 && (
+          <div className="mt-6 space-y-4">
+            <h4 className="text-sm font-medium text-muted-foreground">Interaction Quality Ratings</h4>
+            {moodContacts.map((contact) => (
+              <div key={contact.id} className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">{contact.name}</span>
+                  <span className="text-xs text-muted-foreground">{contact.interactionQuality || 3}/5</span>
+                </div>
+                <Slider
+                  value={[contact.interactionQuality || 3]}
+                  onValueChange={(value) => {
+                    const updatedContacts = moodContacts.map(c => 
+                      c.id === contact.id 
+                        ? { ...c, interactionQuality: value[0] }
+                        : c
+                    )
+                    setMoodContacts(updatedContacts)
+                  }}
+                  onValueCommit={async (value) => {
+                    const updatedContacts = moodContacts.map(c => 
+                      c.id === contact.id 
+                        ? { ...c, interactionQuality: value[0] }
+                        : c
+                    )
+                    await handleMoodContactsChange(updatedContacts)
+                  }}
+                  max={5}
+                  min={1}
+                  step={1}
+                  className="w-full"
+                />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      
       <Textarea className="mb-16" defaultValue={serverText} onBlur={(e) => handleSubmit(e.target.value, "text")} />
       <div className="my-12">
         <h3 className="mt-8 mb-4">{t('charts.gratitude')}</h3>

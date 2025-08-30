@@ -23,6 +23,23 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+
+import { Badge } from "@/components/ui/badge"
+import { ContactCombobox } from "@/components/ui/contact-combobox"
+import { Users, X } from "lucide-react"
+
 import { MoodView } from "@/views/moodView"
 
 import { GlobalContext } from "@/lib/contexts"
@@ -44,6 +61,8 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const year = Number(date.split('-')[0])
   const [weekNumber, setWeekNumber] = useState(getWeekNumber(today)[1])
   const [insight, setInsight] = useState({})
+  const [contacts, setContacts] = useState([])
+  const [taskContacts, setTaskContacts] = useState({})
 
   const earnings = Object.keys(session?.user?.entries || 0).length > 0 ? timeframe === "day" ? session?.user?.entries[year]?.days[date]?.earnings?.toFixed(2) : session?.user?.entries[year]?.weeks[weekNumber]?.earnings?.toFixed(2) : 0
 
@@ -79,6 +98,19 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   }, [JSON.stringify(session), weekNumber])
 
   const userDone = useMemo(() => userTasks?.filter((task) => task.status === "Done").map((task) => task.name), [userTasks])
+
+  // Load existing task contacts from database
+  useEffect(() => {
+    if (userTasks && userTasks.length > 0) {
+      const existingTaskContacts = {}
+      userTasks.forEach(task => {
+        if (task.contacts && task.contacts.length > 0) {
+          existingTaskContacts[task.name] = task.contacts
+        }
+      })
+      setTaskContacts(existingTaskContacts)
+    }
+  }, [userTasks])
 
   const [previousValues, setPreviousValues] = useState(userDone)
   const [values, setValues] = useState(userDone)
@@ -133,6 +165,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       method: 'POST', body: JSON.stringify({
         dayActions: timeframe === 'day' ? nextActions : undefined,
         weekActions: timeframe === 'week' ? nextActions : undefined,
+        taskContacts: taskContacts,
         date: fullDay,
         week: weekNumber
       })
@@ -157,6 +190,27 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     session?.user ? `/api/user` : null,
     () => updateUser(session, setGlobalContext, { session, theme })
   )
+
+  // Fetch contacts
+  const { data: contactsData, mutate: mutateContacts, isLoading: contactsLoading } = useSWR(
+    session?.user ? `/api/v1/contacts` : null,
+    async () => {
+      const response = await fetch('/api/v1/contacts')
+      if (response.ok) {
+        const data = await response.json()
+        setContacts(data.contacts || [])
+        return data
+      }
+      return { contacts: [] }
+    }
+  )
+
+  // Ensure contacts are loaded from SWR data
+  useEffect(() => {
+    if (contactsData?.contacts) {
+      setContacts(contactsData.contacts)
+    }
+  }, [contactsData])
 
   useEffect(() => {
     setValues(userDone)
@@ -220,7 +274,121 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
           <div className="flex flex-col">
           <ToggleGroup value={values} onValueChange={handleDone} variant="outline" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 align-center justify-center w-full m-auto" type="multiple" orientation="horizontal">
       {castActions?.map((action) => {
-        return <ToggleGroupItem key={`task__item--${action.name}`} className="leading-7 m-1 text-sm min-h-[40px] truncate" value={action.name}>{action.times > 1 ? `${action.count}/${action.times} ` : ''}{action.displayName || action.name}</ToggleGroupItem>
+        const taskContactRefs = taskContacts[action.name] || []
+        return (
+          <div key={`task__item--${action.name}`} className="flex flex-col items-center m-1">
+            <div className="relative w-full">
+              <ToggleGroupItem className="leading-7 text-sm min-h-[40px] truncate w-full" value={action.name}>
+                {action.times > 1 ? `${action.count}/${action.times} ` : ''}{action.displayName || action.name}
+              </ToggleGroupItem>
+              
+              {/* Contact Management Popover */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="absolute top-1/2 right-1 transform -translate-y-1/2 h-6 w-6 p-0 rounded-full"
+                  >
+                    <Users className="h-3 w-3" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-80">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-sm">{t('social.addContactsToTask', { taskName: action.displayName || action.name })}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {!contactsLoading && (
+                        <ContactCombobox
+                          contacts={contacts}
+                          selectedContacts={taskContactRefs}
+                          onContactsChange={(newContacts) => {
+                            setTaskContacts(prev => ({
+                              ...prev,
+                              [action.name]: newContacts
+                            }))
+                          }}
+                          onContactsRefresh={() => {
+                            // Trigger a refresh of the contacts data
+                            mutateContacts()
+                          }}
+                        />
+                      )}
+                      
+                      {/* Interaction Quality Sliders for Selected Contacts */}
+                      {taskContactRefs.length > 0 && (
+                        <div className="mt-4 space-y-3">
+                          <h4 className="text-sm font-medium text-muted-foreground">Interaction Quality Ratings</h4>
+                          {taskContactRefs.map((contact) => (
+                            <div key={contact.id} className="space-y-2">
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm font-medium">{contact.name}</span>
+                                <span className="text-xs text-muted-foreground">{contact.interactionQuality || 3}/5</span>
+                              </div>
+                              <Slider
+                                value={[contact.interactionQuality || 3]}
+                                onValueChange={(value) => {
+                                  const updatedContacts = taskContactRefs.map(c => 
+                                    c.id === contact.id 
+                                      ? { ...c, interactionQuality: value[0] }
+                                      : c
+                                  )
+                                  setTaskContacts(prev => ({
+                                    ...prev,
+                                    [action.name]: updatedContacts
+                                  }))
+                                }}
+                                max={5}
+                                min={1}
+                                step={1}
+                                className="w-full"
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </PopoverContent>
+              </Popover>
+            </div>
+
+            {/* Contact Badges */}
+            {taskContactRefs.length > 0 && (
+              <div className="flex flex-wrap gap-1 justify-center mt-1">
+                {taskContactRefs.map((contact) => (
+                  <Badge
+                    key={contact.id}
+                    variant="outline"
+                    className="text-xs px-1 py-0 h-4"
+                  >
+                    {contact.name}
+                    {contact.interactionQuality && (
+                      <span className="ml-1 text-xs">
+                        {contact.interactionQuality}/5
+                      </span>
+                    )}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-3 w-3 p-0 ml-1 hover:bg-transparent"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setTaskContacts(prev => ({
+                          ...prev,
+                          [action.name]: prev[action.name].filter(c => c.id !== contact.id)
+                        }))
+                      }}
+                    >
+                      <X className="h-2 w-2" />
+                    </Button>
+                  </Badge>
+                ))}
+              </div>
+            )}
+          </div>
+        )
       })}
     </ToggleGroup>
           </div>

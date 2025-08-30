@@ -85,6 +85,23 @@
     "fixedNeedCosts": "Fixed Need Costs",
     "expectedNeedUtilities": "Expected Need Utilities Average"
   },
+  "social": {
+    "title": "Social Contacts",
+    "addNewContact": "Add New Contact",
+    "quickAccess": "Quick Access",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "notes": "Notes",
+    "interactionQuality": "Interaction Quality",
+    "addContact": "Add Contact",
+    "editContact": "Edit Contact",
+    "deleteContact": "Delete Contact",
+    "noContactsFound": "No contacts found. Add your first contact above.",
+    "peopleInfluencedMood": "People who influenced your mood today",
+    "addContactsToTask": "Add Contacts to \"{taskName}\"",
+    "selectContacts": "Select contacts..."
+  },
   "actions": {
     "daily": {
       "drankWater": "Drank Water",
