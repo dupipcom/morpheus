@@ -22,6 +22,7 @@ import { useI18n } from "@/lib/contexts/i18n"
 import { generateInsight } from "@/lib/userUtils"
 import { AnalyticsViewSkeleton } from "@/components/ui/skeleton-loader"
 import { ContentLoadingWrapper } from '@/components/ContentLoadingWrapper'
+import { ChartDebugger } from '@/components/ChartDebugger'
 
 // Chart config generators that use translations
 const createMoodChartConfig = (t: (key: string) => string) => ({
@@ -225,54 +226,71 @@ const aggregateDataByWeek = (dailyData: any[]) => {
     week.balance += parseFloat(day.balance) || 0
   })
   
-  // Calculate averages
-  return Object.values(weeklyGroups).map((week: any) => ({
-    week: week.week,
-    weekNumber: week.weekNumber,
-    moodAverage: (week.moodAverage / week.count).toFixed(2),
-    gratitude: (week.gratitude / week.count).toFixed(2),
-    optimism: (week.optimism / week.count).toFixed(2),
-    restedness: (week.restedness / week.count).toFixed(2),
-    tolerance: (week.tolerance / week.count).toFixed(2),
-    selfEsteem: (week.selfEsteem / week.count).toFixed(2),
-    trust: (week.trust / week.count).toFixed(2),
-    progress: (week.progress / week.count).toFixed(2),
-    moodAverageScale: ((week.moodAverageScale / week.count) * 500).toFixed(2),
-    earnings: (week.earnings / week.count).toFixed(2),
-    earningsScale: ((week.earnings / week.count) * 50).toFixed(2),
-    balance: (week.balance / week.count).toFixed(2),
-    count: week.count,
-    dates: week.dates
-  })).sort((a: any, b: any) => a.weekNumber - b.weekNumber)
+  // Calculate averages with safe division
+  return Object.values(weeklyGroups).map((week: any) => {
+    const count = week.count || 1 // Prevent division by zero
+    return {
+      week: week.week,
+      weekNumber: week.weekNumber,
+      moodAverage: (week.moodAverage / count).toFixed(2),
+      gratitude: (week.gratitude / count).toFixed(2),
+      optimism: (week.optimism / count).toFixed(2),
+      restedness: (week.restedness / count).toFixed(2),
+      tolerance: (week.tolerance / count).toFixed(2),
+      selfEsteem: (week.selfEsteem / count).toFixed(2),
+      trust: (week.trust / count).toFixed(2),
+      progress: (week.progress / count).toFixed(2),
+      moodAverageScale: ((week.moodAverageScale / count) * 500).toFixed(2),
+      earnings: (week.earnings / count).toFixed(2),
+      earningsScale: ((week.earnings / count) * 50).toFixed(2),
+      balance: (week.balance / count).toFixed(2),
+      count: week.count,
+      dates: week.dates
+    }
+  }).sort((a: any, b: any) => a.weekNumber - b.weekNumber)
 }
 
-  const userDays = session?.user?.entries && session?.user?.entries[year]?.days ? Object.values(session?.user?.entries[year]?.days) : [];
-  const userWeeks = session?.user?.entries && session?.user?.entries[year]?.weeks ? Object.values(session?.user?.entries[year]?.weeks) : [];
+  const userDays = ((session?.user as any)?.entries) && ((session?.user as any)?.entries[year]?.days) ? Object.values(((session?.user as any)?.entries[year]?.days)) : [];
+  const userWeeks = ((session?.user as any)?.entries) && ((session?.user as any)?.entries[year]?.weeks) ? Object.values(((session?.user as any)?.entries[year]?.weeks)) : [];
   
   const plotData = userDays
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()) // Sort by most recent first
-    .reduce((acc, cur) => {
-      const moodValues = Object.values(cur.mood)
-      const noMood = moodValues.every(value => value === 0)
+    .sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime()) // Sort by most recent first
+    .reduce((acc: any[], cur: any) => {
+      // Check if mood exists and has valid values
+      if (!cur.mood || typeof cur.mood !== 'object') {
+        return acc
+      }
+      
+      const moodValues = Object.values(cur.mood).filter(val => val !== null && val !== undefined && !isNaN(val))
+      const noMood = moodValues.length === 0 || moodValues.every(value => value === 0)
       if (noMood) {
         return acc
       }
+      
+      // Safe calculations with null checks
+      const moodAverage = cur.moodAverage && !isNaN(cur.moodAverage) ? cur.moodAverage : 0
+      const progress = cur.progress && !isNaN(cur.progress) ? cur.progress : 0
+      const earnings = cur.earnings && !isNaN(Number(cur.earnings)) ? Number(cur.earnings) : 0
+      
+      // Safe division for progress calculation (avoid division by zero)
+      const progressPercentage = progress > 0 && progress <= 20 ? (progress * 100 / 20) : 0
+      
       acc = [
         ...acc,
         {
           date: cur.date,
-          moodAverage: cur.moodAverage?.toFixed(2),
-          gratitude: cur.mood.gratitude?.toFixed(2),
-          optimism: cur.mood.optimism?.toFixed(2),
-          restedness: cur.mood.restedness?.toFixed(2),
-          tolerance: cur.mood.tolerance?.toFixed(2),
-          selfEsteem: cur.mood.selfEsteem?.toFixed(2),
-          trust: cur.mood.trust?.toFixed(2),
-          progress: (cur.progress * 100 / 20).toFixed(2),
-          moodAverageScale: (cur.moodAverage).toFixed(2),
-          earnings: Number(cur.earnings).toFixed(2),
-          earningsScale: (Number(cur.earnings)).toFixed(2),
-          balance:  cur.availableBalance,
+          moodAverage: moodAverage.toFixed(2),
+          gratitude: (cur.mood.gratitude || 0).toFixed(2),
+          optimism: (cur.mood.optimism || 0).toFixed(2),
+          restedness: (cur.mood.restedness || 0).toFixed(2),
+          tolerance: (cur.mood.tolerance || 0).toFixed(2),
+          selfEsteem: (cur.mood.selfEsteem || 0).toFixed(2),
+          trust: (cur.mood.trust || 0).toFixed(2),
+          progress: progressPercentage.toFixed(2),
+          moodAverageScale: moodAverage.toFixed(2),
+          earnings: earnings.toFixed(2),
+          earningsScale: earnings.toFixed(2),
+          balance: cur.availableBalance || 0,
         }
       ]
       return acc
@@ -282,17 +300,26 @@ const aggregateDataByWeek = (dailyData: any[]) => {
   const plotDataWeekly = aggregateDataByWeek(plotData)
     
   const plotWeeks = userWeeks
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()) // Sort by most recent first
-    .reduce((acc, cur) => {
-      if (!cur.moodAverage || !cur.progress) {
+    .sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime()) // Sort by most recent first
+    .reduce((acc: any[], cur: any) => {
+      // Safe checks for moodAverage and progress
+      const moodAverage = cur.moodAverage && !isNaN(cur.moodAverage) ? cur.moodAverage : 0
+      const progress = cur.progress && !isNaN(cur.progress) ? cur.progress : 0
+      
+      // Only include weeks with valid data
+      if (moodAverage === 0 && progress === 0) {
         return acc
       }
+      
+      // Safe division for progress calculation
+      const progressPercentage = progress > 0 && progress <= 20 ? (progress * 100 / 20) : 0
+      
       acc = [
         ...acc,
         {
           week: t('week.weekNumber', { number: cur.week }),
-          moodAverage: cur.moodAverage?.toFixed(2),
-          progress: (cur.progress * 100 / 20).toFixed(2),
+          moodAverage: moodAverage.toFixed(2),
+          progress: progressPercentage.toFixed(2),
         }
       ]
       return acc
@@ -301,7 +328,9 @@ const aggregateDataByWeek = (dailyData: any[]) => {
   return (
     <ContentLoadingWrapper>
       <div className="max-w-[1200px] w-full m-auto p-4 md:px-32 ">
-      <p className="mt-0 mb-8">{insight?.yearAnalysis}</p>
+      <p className="mt-0 mb-8">{(insight as any)?.yearAnalysis}</p>
+      
+      <ChartDebugger data={plotDataWeekly} title="Mood Chart" />
       
       <ChartDimensionSelector
         dimensions={['moodAverage', 'gratitude', 'optimism', 'restedness', 'tolerance', 'selfEsteem', 'trust']}
@@ -345,6 +374,8 @@ const aggregateDataByWeek = (dailyData: any[]) => {
         </AreaChart>
       </ChartContainer>
 
+      <ChartDebugger data={plotWeeks} title="Productivity Chart" />
+      
       <ChartDimensionSelector
         dimensions={['moodAverage', 'progress']}
         visibleDimensions={productivityChartDimensions}
