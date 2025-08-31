@@ -16,6 +16,7 @@ export const localeNames: Record<string, string> = {
   'fi': 'Suomi', // Finnish
   'fr': 'Français', // French
   'gl': 'Galego', // Galician
+  'ha': 'Hausa', // Hausa
   'he': 'עברית', // Hebrew
   'hi': 'हिन्दी', // Hindi
   'hu': 'Magyar', // Hungarian
@@ -30,7 +31,9 @@ export const localeNames: Record<string, string> = {
   'ro': 'Română', // Romanian
   'ru': 'Русский', // Russian
   'sv': 'Svenska', // Swedish
+  'sw': 'Kiswahili', // Swahili
   'tr': 'Türkçe', // Turkish
+  'yo': 'Yorùbá', // Yoruba
   'zh': '中文', // Chinese
 }
 
