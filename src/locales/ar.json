@@ -89,6 +89,24 @@
     "fixedNeedCosts": "تكاليف الاحتياجات الثابتة",
     "expectedNeedUtilities": "متوسط المرافق المتوقع"
   },
+  "social": {
+    "title": "جهات الاتصال الاجتماعية",
+    "addNewContact": "إضافة جهة اتصال جديدة",
+    "quickAccess": "الوصول السريع",
+    "name": "الاسم",
+    "email": "البريد الإلكتروني",
+    "phone": "الهاتف",
+    "notes": "الملاحظات",
+    "interactionQuality": "جودة التفاعل",
+    "addContact": "إضافة جهة اتصال",
+    "editContact": "تعديل جهة الاتصال",
+    "deleteContact": "حذف جهة الاتصال",
+    "noContactsFound": "لم يتم العثور على جهات اتصال. أضف جهة اتصالك الأولى أعلاه.",
+    "peopleInfluencedMood": "الأشخاص الذين أثروا على مزاجك اليوم",
+    "addContactsToTask": "إضافة جهات اتصال إلى \"{taskName}\"",
+    "selectContacts": "اختر جهات الاتصال...",
+    "interactionQualityRatings": "تقييمات جودة التفاعل"
+  },
   "actions": {
     "daily": {
       "drankWater": "شرب الماء",

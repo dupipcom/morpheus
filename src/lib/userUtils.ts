@@ -201,18 +201,29 @@ export const handleCloseDates = async (
  * @param value - The value to submit
  * @param field - The field name
  * @param fullDay - The date for the mood entry
+ * @param moodContacts - Optional contacts associated with the mood
  */
 export const handleMoodSubmit = async (
   value: any,
   field: string,
-  fullDay: string
+  fullDay: string,
+  moodContacts?: any[]
 ) => {
   let payload: any = { date: fullDay }
 
   if (field === 'text') {
     payload.text = value
+  } else if (field === 'contacts') {
+    // Handle contacts field specifically
+    if (moodContacts && moodContacts.length > 0) {
+      payload.moodContacts = moodContacts
+    }
   } else {
     payload.mood = { [field]: value }
+    // Add mood contacts if provided
+    if (moodContacts && moodContacts.length > 0) {
+      payload.moodContacts = moodContacts
+    }
   }
 
   return await submitUserData(payload)

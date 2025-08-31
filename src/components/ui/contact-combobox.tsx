@@ -193,7 +193,35 @@ export function ContactCombobox({
                         )}
                       />
                       {contact.name}
+<<<<<<< HEAD
                     </CommandItem>
+=======
+                      {contact.interactionQuality && (
+                        <span className="ml-2 text-xs text-muted-foreground">
+                          {contact.interactionQuality}/5
+                        </span>
+                      )}
+                    </CommandItem>
+                    <div className="px-2 pb-2">
+                      <div className="text-xs text-muted-foreground mb-1">Interaction Quality</div>
+                      <Slider
+                        value={[contactInteractionQualities[contact.id] || contact.interactionQuality || 3]}
+                        onValueChange={(value) => {
+                          setContactInteractionQualities(prev => ({
+                            ...prev,
+                            [contact.id]: value[0]
+                          }))
+                        }}
+                        max={5}
+                        min={0}
+                        step={0.5}
+                        className="w-full"
+                      />
+                      <div className="text-xs text-muted-foreground mt-1">
+                        {contactInteractionQualities[contact.id] || contact.interactionQuality || 3}/5
+                      </div>
+                    </div>
+>>>>>>> c796efa976c8a1b0c5c74a34c23c0300fa9dd5c5
                   </div>
                 ))}
                 <CommandItem
@@ -264,6 +292,23 @@ export function ContactCombobox({
                 value={newContact.notes}
                 onChange={(e) => setNewContact({...newContact, notes: e.target.value})}
               />
+<<<<<<< HEAD
+=======
+              <div>
+                <label className="text-sm font-medium">{t('social.interactionQuality')}</label>
+                              <Slider
+                  value={[newContact.interactionQuality]}
+                  onValueChange={(value) => setNewContact({...newContact, interactionQuality: value[0]})}
+                  max={5}
+                  min={1}
+                  step={1}
+                  className="w-full mt-2"
+                />
+                <div className="text-xs text-muted-foreground mt-1">
+                  {newContact.interactionQuality}/5
+                </div>
+            </div>
+>>>>>>> c796efa976c8a1b0c5c74a34c23c0300fa9dd5c5
                           <div className="flex space-x-2">
                 <Button onClick={handleAddNewContact} className="flex-1" disabled={!newContact.name.trim()}>
                   {t('social.addContact')}

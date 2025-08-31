@@ -169,6 +169,24 @@
     "notFound": "ਉਫ਼! ਇਸ ਫ੍ਰੀਕੁਐਂਸੀ ਤੇ ਟਿਊਨ ਨਹੀਂ ਕਰ ਸਕਿਆ।",
     "genericError": "ਕੁਝ ਗਲਤ ਹੋ ਗਿਆ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
   },
+  "social": {
+    "title": "ਸਮਾਜਿਕ ਸੰਪਰਕ",
+    "addNewContact": "ਨਵਾਂ ਸੰਪਰਕ ਜੋੜੋ",
+    "quickAccess": "ਤੇਜ਼ ਪਹੁੰਚ",
+    "name": "ਨਾਮ",
+    "email": "ਈਮੇਲ",
+    "phone": "ਫੋਨ",
+    "notes": "ਨੋਟਸ",
+    "interactionQuality": "ਸੰਪਰਕ ਦੀ ਗੁਣਵੱਤਾ",
+    "addContact": "ਸੰਪਰਕ ਜੋੜੋ",
+    "editContact": "ਸੰਪਰਕ ਸੰਪਾਦਿਤ ਕਰੋ",
+    "deleteContact": "ਸੰਪਰਕ ਮਿਟਾਓ",
+    "noContactsFound": "ਕੋਈ ਸੰਪਰਕ ਨਹੀਂ ਮਿਲਿਆ। ਉੱਪਰ ਆਪਣਾ ਪਹਿਲਾ ਸੰਪਰਕ ਜੋੜੋ।",
+    "peopleInfluencedMood": "ਅੱਜ ਤੁਹਾਡੇ ਮੂਡ ਨੂੰ ਪ੍ਰਭਾਵਿਤ ਕਰਨ ਵਾਲੇ ਲੋਕ",
+    "addContactsToTask": "\"{taskName}\" ਵਿੱਚ ਸੰਪਰਕ ਜੋੜੋ",
+    "selectContacts": "ਸੰਪਰਕ ਚੁਣੋ...",
+    "interactionQualityRatings": "ਸੰਪਰਕ ਗੁਣਵੱਤਾ ਮੁਲਾਂਕਣ"
+  },
   "settings": {
     "title": "ਸੈਟਿੰਗਾਂ",
     "dailyActions": "ਤੁਹਾਡੇ ਰੋਜ਼ਾਨਾ ਕੰਮ:",

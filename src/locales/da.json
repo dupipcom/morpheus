@@ -169,6 +169,24 @@
     "notFound": "Ups! Kunne ikke indstille denne frekvens.",
     "genericError": "Noget gik galt. Prøv venligst igen."
   },
+  "social": {
+    "title": "Sociale kontakter",
+    "addNewContact": "Tilføj ny kontakt",
+    "quickAccess": "Hurtig adgang",
+    "name": "Navn",
+    "email": "E-mail",
+    "phone": "Telefon",
+    "notes": "Noter",
+    "interactionQuality": "Interaktionskvalitet",
+    "addContact": "Tilføj kontakt",
+    "editContact": "Rediger kontakt",
+    "deleteContact": "Slet kontakt",
+    "noContactsFound": "Ingen kontakter fundet. Tilføj din første kontakt ovenfor.",
+    "peopleInfluencedMood": "Mennesker, der påvirkede dit humør i dag",
+    "addContactsToTask": "Tilføj kontakter til \"{taskName}\"",
+    "selectContacts": "Vælg kontakter...",
+    "interactionQualityRatings": "Interaktionskvalitetsvurderinger"
+  },
   "settings": {
     "title": "Indstillinger",
     "dailyActions": "Dine daglige handlinger:",

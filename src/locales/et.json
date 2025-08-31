@@ -161,6 +161,24 @@
     "notFound": "Ups! Selle sageduse häälestamine ebaõnnestus.",
     "genericError": "Midagi läks valesti. Palun proovi uuesti."
   },
+  "social": {
+    "title": "Sotsiaalsed kontaktid",
+    "addNewContact": "Lisa uus kontakt",
+    "quickAccess": "Kiire juurdepääs",
+    "name": "Nimi",
+    "email": "E-post",
+    "phone": "Telefon",
+    "notes": "Märkused",
+    "interactionQuality": "Suhtlemise kvaliteet",
+    "addContact": "Lisa kontakt",
+    "editContact": "Redigeeri kontakti",
+    "deleteContact": "Kustuta kontakt",
+    "noContactsFound": "Kontakte ei leitud. Lisa oma esimene kontakt ülal.",
+    "peopleInfluencedMood": "Inimesed, kes mõjutasid täna sinu tuju",
+    "addContactsToTask": "Lisa kontaktid ülesandesse \"{taskName}\"",
+    "selectContacts": "Vali kontaktid...",
+    "interactionQualityRatings": "Suhtlemise Kvaliteedi Hinnangud"
+  },
   "settings": {
     "title": "Seaded",
     "dailyActions": "Teie igapäevased tegevused:",

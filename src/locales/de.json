@@ -85,6 +85,24 @@
     "fixedNeedCosts": "Feste Bedarfskosten",
     "expectedNeedUtilities": "Erwarteter Durchschnitt der Versorgungsunternehmen"
   },
+  "social": {
+    "title": "Soziale Kontakte",
+    "addNewContact": "Neuen Kontakt hinzufügen",
+    "quickAccess": "Schnellzugriff",
+    "name": "Name",
+    "email": "E-Mail",
+    "phone": "Telefon",
+    "notes": "Notizen",
+    "interactionQuality": "Interaktionsqualität",
+    "addContact": "Kontakt hinzufügen",
+    "editContact": "Kontakt bearbeiten",
+    "deleteContact": "Kontakt löschen",
+    "noContactsFound": "Keine Kontakte gefunden. Füge deinen ersten Kontakt oben hinzu.",
+    "peopleInfluencedMood": "Menschen, die deine Stimmung heute beeinflusst haben",
+    "addContactsToTask": "Kontakte zu \"{taskName}\" hinzufügen",
+    "selectContacts": "Kontakte auswählen...",
+    "interactionQualityRatings": "Interaktionsqualitätsbewertungen"
+  },
   "actions": {
     "daily": {
       "drankWater": "Hat Wasser getrunken",
