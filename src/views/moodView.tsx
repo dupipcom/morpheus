@@ -21,6 +21,7 @@ import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil, 
 import { MoodViewSkeleton } from "@/components/ui/skeleton-loader"
 import { ContentLoadingWrapper } from '@/components/ContentLoadingWrapper'
 import { ContactCombobox } from "@/components/ui/contact-combobox"
+import { useDebounce } from "@/lib/hooks/useDebounce"
 
 export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
   const { session, setGlobalContext, theme } = useContext(GlobalContext)
@@ -102,6 +103,15 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
     }
   }, [contactsData])
 
+  // Create debounced version of handleSubmit for sliders
+  const debouncedHandleSubmit = useDebounce(async (value, field) => {
+    setMood({...mood, [field]: value})
+    // Always include current mood contacts when saving any mood data
+    await handleMoodSubmit(value, field, fullDay, moodContacts)
+    // Don't call updateUser immediately to avoid clearing mood contacts
+    // The session will be updated naturally when the user navigates or refreshes
+  }, 500)
+
   const handleSubmit = async (value, field) => {
     setMood({...mood, [field]: value})
     // Always include current mood contacts when saving any mood data
@@ -109,6 +119,15 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
     // Don't call updateUser immediately to avoid clearing mood contacts
     // The session will be updated naturally when the user navigates or refreshes
   }
+
+  // Create debounced version of handleMoodContactsChange for contact interaction sliders
+  const debouncedHandleMoodContactsChange = useDebounce(async (newMoodContacts) => {
+    setMoodContacts(newMoodContacts)
+    // Save mood contacts to database immediately when they change
+    await handleMoodSubmit(null, 'contacts', fullDay, newMoodContacts)
+    // Don't call updateUser immediately to avoid race conditions
+    // The session will be updated naturally when the user navigates or refreshes
+  }, 500)
 
   const handleMoodContactsChange = async (newMoodContacts) => {
     setMoodContacts(newMoodContacts)
@@ -153,32 +172,32 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
         <h3 className="mt-8 mb-4">{t('charts.gratitude')}</h3>
         <small>{insight?.gratitudeAnalysis}</small>
       </div>
-      <Slider className="mb-24" defaultValue={[serverMood.gratitude || 0]} max={5} step={0.5} onValueCommit={(e) => handleSubmit(e[0], "gratitude")} />
+      <Slider className="mb-24" defaultValue={[serverMood.gratitude || 0]} max={5} step={0.5} onValueChange={(e) => debouncedHandleSubmit(e[0], "gratitude")} />
       <div className="my-12">
         <h3 className="mt-8 mb-4">{t('charts.optimism')}</h3>
         <small>{insight?.optimismAnalysis}</small>
       </div>
-      <Slider className="mb-24" defaultValue={[serverMood.optimism || 0]} max={5} step={0.5} onValueCommit={(e) => handleSubmit(e[0], "optimism")} />
+      <Slider className="mb-24" defaultValue={[serverMood.optimism || 0]} max={5} step={0.5} onValueChange={(e) => debouncedHandleSubmit(e[0], "optimism")} />
       <div className="my-12">
         <h3 className="mt-8 mb-4">{t('charts.restedness')}</h3>
         <small>{insight?.restednessAnalysis}</small>
       </div>
-      <Slider className="mb-24" defaultValue={[serverMood.restedness || 0]} max={5} step={0.5} onValueCommit={(e) => handleSubmit(e[0], "restedness")} />
+      <Slider className="mb-24" defaultValue={[serverMood.restedness || 0]} max={5} step={0.5} onValueChange={(e) => debouncedHandleSubmit(e[0], "restedness")} />
       <div className="my-12">
         <h3 className="mt-8 mb-4">{t('charts.tolerance')}</h3>
         <small>{insight?.toleranceAnalysis}</small>
       </div>
-      <Slider className="mb-24" defaultValue={[serverMood.tolerance || 0]} max={5} step={0.5} onValueCommit={(e) => handleSubmit(e[0], "tolerance")} />
+      <Slider className="mb-24" defaultValue={[serverMood.tolerance || 0]} max={5} step={0.5} onValueChange={(e) => debouncedHandleSubmit(e[0], "tolerance")} />
       <div className="my-12">
         <h3 className="mb-4">{t('charts.selfEsteem')}</h3>
         <small>{insight?.selfEsteemAnalysis}</small>
       </div>
-      <Slider className="mb-24" defaultValue={[serverMood.selfEsteem || 0]} max={5} step={0.5} onValueCommit={(e) => handleSubmit(e[0], "selfEsteem")} />
+      <Slider className="mb-24" defaultValue={[serverMood.selfEsteem || 0]} max={5} step={0.5} onValueChange={(e) => debouncedHandleSubmit(e[0], "selfEsteem")} />
       <div className="my-12">
         <h3 className="mt-8 mb-4">{t('charts.trust')}</h3>
         <small>{insight?.trustAnalysis}</small>
       </div>
-      <Slider className="mb-24" defaultValue={[serverMood?.trust || 0]} max={5} step={0.5} onValueCommit={(e) => handleSubmit(e[0], "trust")} />
+      <Slider className="mb-24" defaultValue={[serverMood?.trust || 0]} max={5} step={0.5} onValueChange={(e) => debouncedHandleSubmit(e[0], "trust")} />
       </div>
             {/* Contact Management for Mood */}
             <div className="mb-8 p-4 border rounded-lg">
@@ -214,14 +233,8 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
                         : c
                     )
                     setMoodContacts(updatedContacts)
-                  }}
-                  onValueCommit={async (value) => {
-                    const updatedContacts = moodContacts.map(c => 
-                      c.id === contact.id 
-                        ? { ...c, interactionQuality: value[0] }
-                        : c
-                    )
-                    await handleMoodContactsChange(updatedContacts)
+                    // Use debounced handler to save to database
+                    debouncedHandleMoodContactsChange(updatedContacts)
                   }}
                   max={5}
                   min={0}

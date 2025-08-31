@@ -48,6 +48,7 @@ import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil, 
 import { TaskViewSkeleton } from "@/components/ui/skeleton-loader"
 import { ContentLoadingWrapper } from '@/components/ContentLoadingWrapper'
 import { DAILY_ACTIONS, WEEKLY_ACTIONS, getLocalizedTaskNames } from "@/app/constants"
+import { useDebounce } from "@/lib/hooks/useDebounce"
 
 export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const { session, setGlobalContext, theme } = useContext(GlobalContext)
@@ -70,17 +71,21 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     if (timeframe === 'day') {
       const noDayData = !session?.user?.entries || !session?.user?.entries[year] || !Object.keys(session?.user?.entries[year].days).length
       const dailyTasks = ((session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date]) && session?.user?.entries[year].days[date]?.tasks) || (noDayData ? DAILY_ACTIONS : [])
-      if (!session?.user?.settings?.dailyTemplate) {
-        return getLocalizedTaskNames(dailyTasks, t)
+      
+      // Always prioritize dailyTemplate if it exists, otherwise use dailyTasks
+      if (session?.user?.settings?.dailyTemplate && session?.user?.settings?.dailyTemplate.length > 0) {
+        return assign(getLocalizedTaskNames(session?.user?.settings?.dailyTemplate, t), getLocalizedTaskNames(dailyTasks, t), { times: 1 })
       }
-      return assign(getLocalizedTaskNames(session?.user?.settings?.dailyTemplate, t), getLocalizedTaskNames(dailyTasks, t), { times: 1 })
+      return getLocalizedTaskNames(dailyTasks, t)
     } else if (timeframe === 'week') {
       const noWeekData = !session?.user?.entries || !session?.user?.entries[year] || !Object.keys(session?.user?.entries[year].weeks).length
-      const weeklyTasks = (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks) && session?.user?.entries[year].weeks[weekNumber]?.tasks || (noWeekData ? WEEKLY_ACTIONS : [])
-      if (!session?.user?.settings?.weeklyTemplate) {
-        return getLocalizedTaskNames(weeklyTasks, t)
+      const weeklyTasks = (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks) && session?.user?.entries[year].weeks[weekNumber]?.tasks || []
+      
+      // Always prioritize weeklyTemplate if it exists, otherwise use weeklyTasks or default actions
+      if (session?.user?.settings?.weeklyTemplate && session?.user?.settings?.weeklyTemplate.length > 0) {
+        return assign(getLocalizedTaskNames(session?.user?.settings?.weeklyTemplate, t), getLocalizedTaskNames(weeklyTasks, t), { times: 1 })
       }
-      return assign(getLocalizedTaskNames(session?.user?.settings?.weeklyTemplate, t), getLocalizedTaskNames(weeklyTasks, t), { times: 1 })
+      return getLocalizedTaskNames(weeklyTasks.length > 0 ? weeklyTasks : WEEKLY_ACTIONS, t)
     }
   }, [JSON.stringify(session?.user?.settings), date, weekNumber, t])
 
@@ -204,6 +209,9 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     }
   }
 
+  // Create debounced version of saveTaskContacts for sliders
+  const debouncedSaveTaskContacts = useDebounce(saveTaskContacts, 500)
+
   const handleCloseDates = async (values) => {
     await handleCloseDatesUtil(values, timeframe)
     await updateUser(session, setGlobalContext, { session, theme })
@@ -279,7 +287,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
             </CarouselItem>
           }) : openWeeks?.map((week, index) => {
             return <CarouselItem key={`task__carousel--${week.week}--${index}`} className="flex flex-col">
-              <small>${week.earnings.toFixed(2)}</small>
+              <small>${week?.earnings?.toFixed(2)}</small>
               <label className="mb-4">{t('week.weekNumber', { number: week.week })}</label>
               <Button onClick={() => handleEditWeek(week.week)} className="text-md p-5 mb-2 dark:bg-foreground">{t('common.edit')} {t('common.week').toLowerCase()}</Button>
               <Button variant="outline" className="text-md p-5" onClick={() => handleCloseDates([{ week: week.week, year: week.year }])}>{t('common.close')} {t('common.week').toLowerCase()}</Button>
@@ -371,8 +379,8 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                                     ...prev,
                                     [action.name]: updatedContacts
                                   }))
-                                  // Save the updated contacts to the database
-                                  saveTaskContacts(action.name, updatedContacts)
+                                  // Use debounced handler to save to database
+                                  debouncedSaveTaskContacts(action.name, updatedContacts)
                                 }}
                                 max={5}
                                 min={0}
