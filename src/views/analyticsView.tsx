@@ -22,7 +22,6 @@ import { useI18n } from "@/lib/contexts/i18n"
 import { generateInsight } from "@/lib/userUtils"
 import { AnalyticsViewSkeleton } from "@/components/ui/skeleton-loader"
 import { ContentLoadingWrapper } from '@/components/ContentLoadingWrapper'
-import { ChartDebugger } from '@/components/ChartDebugger'
 
 // Chart config generators that use translations
 const createMoodChartConfig = (t: (key: string) => string) => ({
@@ -330,8 +329,6 @@ const aggregateDataByWeek = (dailyData: any[]) => {
       <div className="max-w-[1200px] w-full m-auto p-4 md:px-32 ">
       <p className="mt-0 mb-8">{(insight as any)?.yearAnalysis}</p>
       
-      <ChartDebugger data={plotDataWeekly} title="Mood Chart" />
-      
       <ChartDimensionSelector
         dimensions={['moodAverage', 'gratitude', 'optimism', 'restedness', 'tolerance', 'selfEsteem', 'trust']}
         visibleDimensions={moodChartDimensions}
@@ -374,8 +371,6 @@ const aggregateDataByWeek = (dailyData: any[]) => {
         </AreaChart>
       </ChartContainer>
 
-      <ChartDebugger data={plotWeeks} title="Productivity Chart" />
-      
       <ChartDimensionSelector
         dimensions={['moodAverage', 'progress']}
         visibleDimensions={productivityChartDimensions}
