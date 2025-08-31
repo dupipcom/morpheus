@@ -168,11 +168,6 @@ export const SocialView = () => {
       cell: ({ row }) => (
         <div className="flex items-center space-x-2">
           <div className="font-medium">{row.getValue("name")}</div>
-          {row.original.interactionQuality && (
-            <div className="flex items-center">
-              <span className="ml-1 text-sm">{row.original.interactionQuality}/5</span>
-            </div>
-          )}
         </div>
       ),
     },
@@ -295,11 +290,6 @@ export const SocialView = () => {
               }}
             >
               {contact.name}
-                              {contact.interactionQuality && (
-                  <span className="ml-2 text-xs">
-                    {contact.interactionQuality}/5
-                  </span>
-                )}
             </Badge>
           ))}
           <Button
