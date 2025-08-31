@@ -48,6 +48,7 @@ import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil, 
 import { TaskViewSkeleton } from "@/components/ui/skeleton-loader"
 import { ContentLoadingWrapper } from '@/components/ContentLoadingWrapper'
 import { DAILY_ACTIONS, WEEKLY_ACTIONS, getLocalizedTaskNames } from "@/app/constants"
+import { useDebounce } from "@/lib/hooks/useDebounce"
 
 export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const { session, setGlobalContext, theme } = useContext(GlobalContext)
@@ -70,17 +71,21 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     if (timeframe === 'day') {
       const noDayData = !session?.user?.entries || !session?.user?.entries[year] || !Object.keys(session?.user?.entries[year].days).length
       const dailyTasks = ((session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date]) && session?.user?.entries[year].days[date]?.tasks) || (noDayData ? DAILY_ACTIONS : [])
-      if (!session?.user?.settings?.dailyTemplate) {
-        return getLocalizedTaskNames(dailyTasks, t)
+      
+      // Always prioritize dailyTemplate if it exists, otherwise use dailyTasks
+      if (session?.user?.settings?.dailyTemplate && session?.user?.settings?.dailyTemplate.length > 0) {
+        return assign(getLocalizedTaskNames(session?.user?.settings?.dailyTemplate, t), getLocalizedTaskNames(dailyTasks, t), { times: 1 })
       }
-      return assign(getLocalizedTaskNames(session?.user?.settings?.dailyTemplate, t), getLocalizedTaskNames(dailyTasks, t), { times: 1 })
+      return getLocalizedTaskNames(dailyTasks, t)
     } else if (timeframe === 'week') {
       const noWeekData = !session?.user?.entries || !session?.user?.entries[year] || !Object.keys(session?.user?.entries[year].weeks).length
       const weeklyTasks = (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks) && session?.user?.entries[year].weeks[weekNumber]?.tasks || (noWeekData ? WEEKLY_ACTIONS : [])
-      if (!session?.user?.settings?.weeklyTemplate) {
-        return getLocalizedTaskNames(weeklyTasks, t)
+      
+      // Always prioritize weeklyTemplate if it exists, otherwise use weeklyTasks
+      if (session?.user?.settings?.weeklyTemplate && session?.user?.settings?.weeklyTemplate.length > 0) {
+        return assign(getLocalizedTaskNames(session?.user?.settings?.weeklyTemplate, t), getLocalizedTaskNames(weeklyTasks, t), { times: 1 })
       }
-      return assign(getLocalizedTaskNames(session?.user?.settings?.weeklyTemplate, t), getLocalizedTaskNames(weeklyTasks, t), { times: 1 })
+      return getLocalizedTaskNames(weeklyTasks, t)
     }
   }, [JSON.stringify(session?.user?.settings), date, weekNumber, t])
 
@@ -203,6 +208,9 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       console.error('Error saving task contacts:', error)
     }
   }
+
+  // Create debounced version of saveTaskContacts for sliders
+  const debouncedSaveTaskContacts = useDebounce(saveTaskContacts, 500)
 
   const handleCloseDates = async (values) => {
     await handleCloseDatesUtil(values, timeframe)
@@ -371,8 +379,8 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                                     ...prev,
                                     [action.name]: updatedContacts
                                   }))
-                                  // Save the updated contacts to the database
-                                  saveTaskContacts(action.name, updatedContacts)
+                                  // Use debounced handler to save to database
+                                  debouncedSaveTaskContacts(action.name, updatedContacts)
                                 }}
                                 max={5}
                                 min={0}
