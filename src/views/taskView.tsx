@@ -176,16 +176,28 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   // Function to save task contacts when they are modified
   const saveTaskContacts = async (taskName: string, contacts: any[]) => {
     try {
+      const payload: any = {
+        taskContacts: { [taskName]: contacts }
+      }
+      
+      // Only send the appropriate parameter based on timeframe
+      if (timeframe === 'day') {
+        payload.date = fullDay
+      } else if (timeframe === 'week') {
+        payload.week = weekNumber
+      }
+      
+      console.log('Saving task contacts:', { taskName, contacts, payload, timeframe })
+      
       const response = await fetch('/api/v1/user', {
         method: 'POST',
-        body: JSON.stringify({
-          taskContacts: { [taskName]: contacts },
-          date: fullDay,
-          week: weekNumber
-        })
+        body: JSON.stringify(payload)
       })
       if (response.ok) {
+        console.log('Task contacts saved successfully')
         await updateUser(session, setGlobalContext, { session, theme })
+      } else {
+        console.error('Failed to save task contacts:', response.status, response.statusText)
       }
     } catch (error) {
       console.error('Error saving task contacts:', error)
