@@ -2,6 +2,7 @@ import prisma from "@/lib/prisma";
 import { currentUser, auth } from '@clerk/nextjs/server'
 import { getWeekNumber } from "@/app/helpers"
 import { WEEKLY_ACTIONS, DAILY_ACTIONS } from "@/app/constants"
+import { safeUpdateWeekEntry, safeUpdateDayEntry, validateWeekData, validateDayData, logEntryData, ensureWeekDataIntegrity, ensureDayDataIntegrity } from "@/lib/entryUtils"
 
 export async function GET(req: NextApiRequest, res: NextApiResponse) {
   const { userId } = await auth()
@@ -553,21 +554,25 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   if (data?.daysToClose) {
     for (const date of data?.daysToClose) {
       const year = Number(date.split('-')[0])
+      
+      // Log current state for debugging
+      logEntryData(user.entries, year, undefined, date)
+      
+      // Get current day data
+      const currentDayData = user.entries?.[year]?.days?.[date] || {}
+      
+      // Ensure day data integrity before closing
+      const integrityDayData = ensureDayDataIntegrity(currentDayData, year, date, weekNumber)
+      
+      // Use safe update function to preserve existing data
+      const updatedEntries = safeUpdateDayEntry(user.entries, year, date, { 
+        ...integrityDayData,
+        status: "Closed" 
+      })
+      
       await prisma.user.update({
         data: {
-          entries: {
-              ...user.entries,
-              [year]: {
-                ...user.entries[year],
-                days: {
-                  ...user.entries[year].days,
-                  [date]: {
-                    ...user.entries[year].days[date],
-                    status: "Closed",
-                  }
-                }
-              }
-            }
+          entries: updatedEntries,
         },
         where: { id: user.id },
       })
@@ -577,21 +582,24 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
 
   if (data?.weeksToClose) {
     for (const week of data?.weeksToClose) {
+      // Log current state for debugging
+      logEntryData(user.entries, week.year, week.week)
+      
+      // Get current week data
+      const currentWeekData = user.entries?.[week.year]?.weeks?.[week.week] || {}
+      
+      // Ensure week data integrity before closing
+      const integrityWeekData = ensureWeekDataIntegrity(currentWeekData, week.year, week.week)
+      
+      // Use safe update function to preserve existing data
+      const updatedEntries = safeUpdateWeekEntry(user.entries, week.year, week.week, { 
+        ...integrityWeekData,
+        status: "Closed" 
+      })
+      
       await prisma.user.update({
         data: {
-          entries: {
-              ...user.entries,
-              [week.year]: {
-                ...user.entries[week.year],
-                weeks: {
-                  ...user.entries[week.year].weeks,
-                  [week.week]: {
-                    ...user.entries[week.year].weeks[week],
-                    status: "Closed",
-                  }
-                }
-            }
-          },
+          entries: updatedEntries,
         },
         where: { id: user.id },
       })
