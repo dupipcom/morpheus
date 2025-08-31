@@ -292,22 +292,12 @@ export const SocialView = () => {
               {contact.name}
             </Badge>
           ))}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              setSelectedContact(null)
-              setIsEditing(false)
-            }}
-          >
-            <Plus className="h-4 w-4" />
-          </Button>
         </div>
       </div>
 
       {/* Edit Contact Modal */}
       {selectedContact && isEditing && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-accent/70 flex items-center justify-center z-1002">
           <div className="bg-background p-6 rounded-lg max-w-md w-full mx-4">
             <h3 className="text-lg font-semibold mb-4">{t('social.editContact')}</h3>
                           <div className="space-y-4">
@@ -332,20 +322,6 @@ export const SocialView = () => {
                   value={selectedContact.notes || ''}
                   onChange={(e) => setSelectedContact({...selectedContact, notes: e.target.value})}
                 />
-                <div>
-                  <label className="text-sm font-medium">{t('social.interactionQuality')}</label>
-                <Slider
-                  value={[selectedContact.interactionQuality || 3]}
-                  onValueChange={(value) => setSelectedContact({...selectedContact, interactionQuality: value[0]})}
-                  max={5}
-                  min={0}
-                  step={0.5}
-                  className="w-full mt-2"
-                />
-                <div className="text-xs text-muted-foreground mt-1">
-                  {selectedContact.interactionQuality || 3}/5
-                </div>
-              </div>
               <div className="flex space-x-2">
                 <Button onClick={() => handleUpdateContact(selectedContact)} className="flex-1">
                   {t('common.save')}
