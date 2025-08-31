@@ -403,14 +403,25 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
 
   // Handle task contacts updates (when sent separately from actions)
   if (data?.taskContacts && !data?.dayActions && !data?.weekActions && user) {
+    console.log('Processing task contacts update:', { 
+      taskContacts: data.taskContacts, 
+      date: data.date, 
+      week: data.week,
+      hasDayActions: !!data?.dayActions,
+      hasWeekActions: !!data?.weekActions
+    })
+    // Update day tasks if date is provided
     if (data.date) {
+      console.log('Updating day tasks with contacts for date:', data.date)
       // Update day tasks with contacts
       const entries = user.entries as any
       const currentTasks = entries?.[year]?.days?.[date]?.tasks || []
+      console.log('Current day tasks:', currentTasks)
       const updatedTasks = currentTasks.map((task: any) => ({
         ...task,
         contacts: data.taskContacts[task.name] || task.contacts || []
       }))
+      console.log('Updated day tasks:', updatedTasks)
 
       await prisma.user.update({
         data: {
@@ -431,14 +442,20 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
         where: { id: user.id },
       })
       user = await getUser()
-    } else if (data.week) {
+    }
+    
+    // Update week tasks if week is provided
+    if (data.week) {
+      console.log('Updating week tasks with contacts for week:', data.week)
       // Update week tasks with contacts
       const entries = user.entries as any
       const currentTasks = entries?.[year]?.weeks?.[data.week]?.tasks || []
+      console.log('Current week tasks:', currentTasks)
       const updatedTasks = currentTasks.map((task: any) => ({
         ...task,
         contacts: data.taskContacts[task.name] || task.contacts || []
       }))
+      console.log('Updated week tasks:', updatedTasks)
 
       await prisma.user.update({
         data: {

@@ -54,9 +54,6 @@ export default function LocalizedDay({ params }: { params: Promise<{ locale: str
       <div className="scroll-m-20 text-2xl font-semibold tracking-tight text-center mb-8">
         <label>{t('dashboard.todayIs', { date: formatDate(new Date()) })}</label>
       </div>
-      
-      <p className="text-center scroll-m-20 text-lg font-semibold tracking-tight mb-8">{t('dashboard.whatDidYouAccomplish')}</p>
-
       <TaskView actions={actions} />
     </main>
   )
