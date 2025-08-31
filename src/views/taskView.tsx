@@ -173,6 +173,25 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     await updateUser(session, setGlobalContext, { session, theme })
   }
 
+  // Function to save task contacts when they are modified
+  const saveTaskContacts = async (taskName: string, contacts: any[]) => {
+    try {
+      const response = await fetch('/api/v1/user', {
+        method: 'POST',
+        body: JSON.stringify({
+          taskContacts: { [taskName]: contacts },
+          date: fullDay,
+          week: weekNumber
+        })
+      })
+      if (response.ok) {
+        await updateUser(session, setGlobalContext, { session, theme })
+      }
+    } catch (error) {
+      console.error('Error saving task contacts:', error)
+    }
+  }
+
   const handleCloseDates = async (values) => {
     await handleCloseDatesUtil(values, timeframe)
     await updateUser(session, setGlobalContext, { session, theme })
@@ -308,6 +327,8 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                               ...prev,
                               [action.name]: newContacts
                             }))
+                            // Save the updated contacts to the database
+                            saveTaskContacts(action.name, newContacts)
                           }}
                           onContactsRefresh={() => {
                             // Trigger a refresh of the contacts data
@@ -338,6 +359,8 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                                     ...prev,
                                     [action.name]: updatedContacts
                                   }))
+                                  // Save the updated contacts to the database
+                                  saveTaskContacts(action.name, updatedContacts)
                                 }}
                                 max={5}
                                 min={0}
@@ -375,10 +398,13 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                       className="h-3 w-3 p-0 ml-1 hover:bg-transparent"
                       onClick={(e) => {
                         e.stopPropagation()
+                        const updatedContacts = taskContacts[action.name].filter(c => c.id !== contact.id)
                         setTaskContacts(prev => ({
                           ...prev,
-                          [action.name]: prev[action.name].filter(c => c.id !== contact.id)
+                          [action.name]: updatedContacts
                         }))
+                        // Save the updated contacts to the database
+                        saveTaskContacts(action.name, updatedContacts)
                       }}
                     >
                       <X className="h-2 w-2" />
@@ -402,6 +428,18 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     <p className="mx-8 pt-8">{insight?.last3daysAnalysis}</p>
     <div className="flex flex-wrap justify-center">
     </div>
-    <Button variant="outline" className="text-md p-5 m-auto w-full my-8" onClick={() => handleCloseDates([day.date])}>{t('mood.closeDay')}</Button>
+    <Button 
+      variant="outline" 
+      className="text-md p-5 m-auto w-full my-8" 
+      onClick={() => {
+        if (timeframe === "day") {
+          handleCloseDates([date])
+        } else {
+          handleCloseDates([{ week: weekNumber, year: year }])
+        }
+      }}
+    >
+      {timeframe === "day" ? t('mood.closeDay') : t('week.closeWeek')}
+    </Button>
   </div >
 }
