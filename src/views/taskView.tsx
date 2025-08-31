@@ -278,7 +278,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       <CarouselPrevious />
       <CarouselNext />
     </Carousel> : undefined}
-    <Accordion key={`mood__accordion--${isMoodEmpty}`} type="multiple" collapsible defaultValue={isMoodEmpty ? "mood" : "tasks"}>
+    <Accordion key={`mood__accordion--${isMoodEmpty}`} type="single" collapsible defaultValue={isMoodEmpty ? "mood" : "tasks"}>
       {timeframe === "day" && <AccordionItem value="mood">
         <AccordionTrigger>{t('common.mood')}</AccordionTrigger>
         <AccordionContent>
