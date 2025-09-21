@@ -207,7 +207,8 @@ export const handleMoodSubmit = async (
   value: any,
   field: string,
   fullDay: string,
-  moodContacts?: any[]
+  moodContacts?: any[],
+  currentText?: string
 ) => {
   let payload: any = { date: fullDay }
 
@@ -223,6 +224,10 @@ export const handleMoodSubmit = async (
     // Add mood contacts if provided
     if (moodContacts && moodContacts.length > 0) {
       payload.moodContacts = moodContacts
+    }
+    // Include current text if provided (to preserve text when updating mood sliders)
+    if (currentText !== undefined) {
+      payload.text = currentText
     }
   }
 

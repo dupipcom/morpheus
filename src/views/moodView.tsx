@@ -61,12 +61,18 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
   const [insight, setInsight] = useState({})
   const [contacts, setContacts] = useState([])
   const [moodContacts, setMoodContacts] = useState([])
+  const [currentText, setCurrentText] = useState(serverText)
 
   // Initialize mood contacts from server data
   useEffect(() => {
     console.log('Initializing mood contacts:', serverMoodContacts)
     setMoodContacts(serverMoodContacts || [])
   }, [serverMoodContacts])
+
+  // Update currentText when serverText changes (when switching dates)
+  useEffect(() => {
+    setCurrentText(serverText)
+  }, [serverText])
 
   const openDays = useMemo(() => {
     return session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && Object.values(session?.user?.entries[year].days).filter((day) => {
@@ -108,6 +114,15 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
     setMood({...mood, [field]: value})
     // Always include current mood contacts when saving any mood data
     await handleMoodSubmit(value, field, fullDay, moodContacts)
+    // Don't call updateUser immediately to avoid clearing mood contacts
+    // The session will be updated naturally when the user navigates or refreshes
+  }, 500)
+
+  // Create debounced version that preserves text when updating mood sliders
+  const debouncedHandleSubmitWithText = useDebounce(async (value, field) => {
+    setMood({...mood, [field]: value})
+    // Include current text value when saving mood data
+    await handleMoodSubmit(value, field, fullDay, moodContacts, currentText)
     // Don't call updateUser immediately to avoid clearing mood contacts
     // The session will be updated naturally when the user navigates or refreshes
   }, 500)
@@ -174,37 +189,44 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
       <div key={JSON.stringify(serverMood)} className="w-full m-auto p-4">
       <h2 className="mt-8 mb-4 text-center text-lg">{t('mood.subtitle')}</h2>
       
-      <Textarea className="mb-16" defaultValue={serverText} onChange={(e) => debouncedHandleTextSubmit(e.target.value, "text")} />
+      <Textarea 
+        className="mb-16" 
+        value={currentText} 
+        onChange={(e) => {
+          setCurrentText(e.target.value)
+          debouncedHandleTextSubmit(e.target.value, "text")
+        }} 
+      />
       <div className="my-12">
         <h3 className="mt-8 mb-4">{t('charts.gratitude')}</h3>
         <small>{insight?.gratitudeAnalysis}</small>
       </div>
-      <Slider className="mb-24" defaultValue={[serverMood.gratitude || 0]} max={5} step={0.5} onValueChange={(e) => debouncedHandleSubmit(e[0], "gratitude")} />
+      <Slider className="mb-24" defaultValue={[serverMood.gratitude || 0]} max={5} step={0.5} onValueChange={(e) => debouncedHandleSubmitWithText(e[0], "gratitude")} />
       <div className="my-12">
         <h3 className="mt-8 mb-4">{t('charts.optimism')}</h3>
         <small>{insight?.optimismAnalysis}</small>
       </div>
-      <Slider className="mb-24" defaultValue={[serverMood.optimism || 0]} max={5} step={0.5} onValueChange={(e) => debouncedHandleSubmit(e[0], "optimism")} />
+      <Slider className="mb-24" defaultValue={[serverMood.optimism || 0]} max={5} step={0.5} onValueChange={(e) => debouncedHandleSubmitWithText(e[0], "optimism")} />
       <div className="my-12">
         <h3 className="mt-8 mb-4">{t('charts.restedness')}</h3>
         <small>{insight?.restednessAnalysis}</small>
       </div>
-      <Slider className="mb-24" defaultValue={[serverMood.restedness || 0]} max={5} step={0.5} onValueChange={(e) => debouncedHandleSubmit(e[0], "restedness")} />
+      <Slider className="mb-24" defaultValue={[serverMood.restedness || 0]} max={5} step={0.5} onValueChange={(e) => debouncedHandleSubmitWithText(e[0], "restedness")} />
       <div className="my-12">
         <h3 className="mt-8 mb-4">{t('charts.tolerance')}</h3>
         <small>{insight?.toleranceAnalysis}</small>
       </div>
-      <Slider className="mb-24" defaultValue={[serverMood.tolerance || 0]} max={5} step={0.5} onValueChange={(e) => debouncedHandleSubmit(e[0], "tolerance")} />
+      <Slider className="mb-24" defaultValue={[serverMood.tolerance || 0]} max={5} step={0.5} onValueChange={(e) => debouncedHandleSubmitWithText(e[0], "tolerance")} />
       <div className="my-12">
         <h3 className="mb-4">{t('charts.selfEsteem')}</h3>
         <small>{insight?.selfEsteemAnalysis}</small>
       </div>
-      <Slider className="mb-24" defaultValue={[serverMood.selfEsteem || 0]} max={5} step={0.5} onValueChange={(e) => debouncedHandleSubmit(e[0], "selfEsteem")} />
+      <Slider className="mb-24" defaultValue={[serverMood.selfEsteem || 0]} max={5} step={0.5} onValueChange={(e) => debouncedHandleSubmitWithText(e[0], "selfEsteem")} />
       <div className="my-12">
         <h3 className="mt-8 mb-4">{t('charts.trust')}</h3>
         <small>{insight?.trustAnalysis}</small>
       </div>
-      <Slider className="mb-24" defaultValue={[serverMood?.trust || 0]} max={5} step={0.5} onValueChange={(e) => debouncedHandleSubmit(e[0], "trust")} />
+      <Slider className="mb-24" defaultValue={[serverMood?.trust || 0]} max={5} step={0.5} onValueChange={(e) => debouncedHandleSubmitWithText(e[0], "trust")} />
       </div>
             {/* Contact Management for Mood */}
             <div className="mb-8 p-4 border rounded-lg">
