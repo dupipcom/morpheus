@@ -347,8 +347,8 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                               ...prev,
                               [action.name]: newContacts
                             }))
-                            // Save the updated contacts to the database
-                            saveTaskContacts(action.name, newContacts)
+                            // Save the updated contacts to the database using debounced handler
+                            debouncedSaveTaskContacts(action.name, newContacts)
                           }}
                           onContactsRefresh={() => {
                             // Trigger a refresh of the contacts data
@@ -423,8 +423,8 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                           ...prev,
                           [action.name]: updatedContacts
                         }))
-                        // Save the updated contacts to the database
-                        saveTaskContacts(action.name, updatedContacts)
+                        // Save the updated contacts to the database using debounced handler
+                        debouncedSaveTaskContacts(action.name, updatedContacts)
                       }}
                     >
                       <X className="h-2 w-2" />

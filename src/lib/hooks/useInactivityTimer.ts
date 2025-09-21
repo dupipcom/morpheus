@@ -5,6 +5,7 @@ import {
   deleteClerkCookies, 
   setLoginTime, 
   getLastActivity,
+  getLoginTime,
   updateLastActivity,
   clearActivityStorage 
 } from '../cookieManager';
@@ -67,7 +68,8 @@ export const useInactivityTimer = ({
       countdownIntervalRef.current = null;
     }
     
-    // Update last activity to extend session
+    // Reset login time to extend session (this is the key fix)
+    setLoginTime();
     updateLastActivity();
     
     // Show success toast
@@ -83,10 +85,17 @@ export const useInactivityTimer = ({
   const handleWarning = useCallback(() => {
     // Show warning toast with countdown
     const showWarningToast = () => {
-      const lastActivity = getLastActivity();
+      const loginTime = getLoginTime();
       const now = Date.now();
-      const timeSinceLastActivity = now - lastActivity;
-      const remainingTime = timeoutRef.current - timeSinceLastActivity;
+      
+      if (!loginTime) {
+        // If no login time, set it and return
+        setLoginTime();
+        return;
+      }
+      
+      const timeSinceLogin = now - loginTime;
+      const remainingTime = timeoutRef.current - timeSinceLogin;
       
       if (remainingTime <= 0) {
         handleLogout();

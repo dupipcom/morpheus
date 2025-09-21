@@ -67,8 +67,6 @@ export function ContactCombobox({
 
   const [newContact, setNewContact] = React.useState({
     name: '',
-    email: '',
-    phone: '',
     notes: '',
     interactionQuality: 3
   })
@@ -124,8 +122,6 @@ export function ContactCombobox({
         // Reset form
         setNewContact({
           name: '',
-          email: '',
-          phone: '',
           notes: '',
           interactionQuality: 3
         })
@@ -250,17 +246,6 @@ export function ContactCombobox({
         placeholder={`${t('social.name')} *`}
         value={newContact.name}
         onChange={(e) => setNewContact({ ...newContact, name: e.target.value })}
-      />
-      <Input
-        placeholder={t('social.email')}
-        type="email"
-        value={newContact.email}
-        onChange={(e) => setNewContact({ ...newContact, email: e.target.value })}
-      />
-      <Input
-        placeholder={t('social.phone')}
-        value={newContact.phone}
-        onChange={(e) => setNewContact({ ...newContact, phone: e.target.value })}
       />
       <Textarea
         placeholder={t('social.notes')}

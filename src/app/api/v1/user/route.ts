@@ -360,7 +360,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   tasks: tasksWithContacts.sort((a: any, b: any) => a.status === "Done" ? 1 : -1),
                   status: "Open",
                   availableBalance: user.availableBalance,
-                  contacts: data.dayContacts || []
+                  contacts: data.dayContacts || entries[year]?.days?.[date]?.contacts || []
                 }
               }
             }
