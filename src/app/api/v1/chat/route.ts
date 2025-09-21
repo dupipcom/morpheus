@@ -1,0 +1,142 @@
+import { NextResponse, NextRequest } from 'next/server';
+import { currentUser, auth } from '@clerk/nextjs/server'
+import openai from '@/lib/openai';
+import fs from "fs";
+import prisma from "@/lib/prisma";
+import { getWeekNumber } from "@/app/helpers"
+
+// Logger helper function for consistent console logging format
+const logger = (str: string, originalMessage?: any) => {
+  let message = str;
+  if (originalMessage !== undefined) {
+    if (typeof originalMessage === 'object') {
+      try {
+        message = `${str} - ${JSON.stringify(originalMessage, null, 2)}`;
+      } catch (error) {
+        message = `${str} - [Object - circular reference or non-serializable]`;
+      }
+    } else {
+      message = `${str} - ${String(originalMessage)}`;
+    }
+  }
+
+  const colorSettings = {
+    background: '#1f1f1f',
+    color: 'green',
+    fontWeight: 'bold',
+    padding: '2px 4px',
+    borderRadius: '3px'
+  };
+
+  console.log(
+    `%cdpip::morpheus::chat::${message}`,
+    `background: ${colorSettings.background}; color: ${colorSettings.color}; font-weight: ${colorSettings.fontWeight}; padding: ${colorSettings.padding}; border-radius: ${colorSettings.borderRadius};`
+  );
+};
+
+interface ChatRequest {
+  message: string;
+  locale?: string;
+}
+
+export const revalidate = 0;
+export const maxDuration = 30;
+
+export async function POST(req: NextRequest) {
+  const { userId } = await auth()
+  
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    const body: ChatRequest = await req.json();
+    const { message, locale = 'en' } = body;
+
+    if (!message) {
+      return NextResponse.json({ error: "Message is required" }, { status: 400 });
+    }
+
+    const getUser = async () => await prisma.user.findUnique({
+      where: { userId }
+    });
+
+    let user = await getUser();
+
+    const fullDate = new Date();
+    const date = fullDate.toISOString().split('T')[0];
+    const year = Number(date.split('-')[0]);
+    const weekNumber = getWeekNumber(fullDate)[1];
+
+    const entries = user?.entries;
+
+    if (!user?.analysis) {
+      await prisma.user.update({
+        data: {
+          analysis: {},
+        },
+        where: { userId },
+      });
+      user = await getUser();
+    }
+
+    // Create vector store for RAG
+    const file = await openai.files.create({
+      file: fs.createReadStream(process.cwd() + '/src/app/api/v1/hint/rag/atomic-habits.pdf'),
+      purpose: "assistants",
+    });
+
+    const vectorStore = await openai.vectorStores.create({
+      name: "Book references",
+      file_ids: [file.id],
+      expires_after: {
+        anchor: "last_active_at",
+        days: 1
+      }
+    });
+
+    // Create a conversational response using the existing RAG setup
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o",
+      messages: [
+        {
+          role: "system",
+          content: `
+            You are a compassionate AI assistant helping users with their mental health and habit tracking journey.
+            
+            You have access to the user's historical data and can reference the Atomic Habits book for guidance.
+            
+            Please respond in ${locale} and be supportive, encouraging, and helpful.
+            
+            User's historical data:
+            ${JSON.stringify(entries)}
+            
+            Use this data to provide personalized insights and advice.
+          `
+        },
+        {
+          role: "user",
+          content: message
+        }
+      ],
+      tools: [{ type: "file_search", vector_store_ids: [vectorStore.id] }],
+      tool_choice: "auto",
+      temperature: 0.7,
+      max_tokens: 1000
+    });
+
+    const assistantMessage = response.choices[0]?.message?.content || "I'm sorry, I couldn't process your message right now.";
+
+    return NextResponse.json({
+      success: true,
+      message: assistantMessage,
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Failed to process chat message" },
+      { status: 500 }
+    );
+  }
+}

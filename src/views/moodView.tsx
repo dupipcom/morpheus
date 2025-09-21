@@ -22,10 +22,13 @@ import { MoodViewSkeleton } from "@/components/ui/skeleton-loader"
 import { ContentLoadingWrapper } from '@/components/ContentLoadingWrapper'
 import { ContactCombobox } from "@/components/ui/contact-combobox"
 import { useDebounce } from "@/lib/hooks/useDebounce"
+import { useFeatureFlag } from "@/lib/hooks/useFeatureFlag"
+import { AgentChat } from "@/components/agent-chat"
 
 export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
   const { session, setGlobalContext, theme } = useContext(GlobalContext)
   const { t, locale } = useI18n()
+  const { isAgentChatEnabled } = useFeatureFlag()
   const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const today = new Date()
   const todayDate = today.toLocaleString('en-uk', { timeZone: userTimezone }).split(',')[0].split('/').reverse().join('-')
@@ -48,13 +51,6 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
 
   const serverMoodContacts = useMemo(() => {
     const dayEntry = session?.user?.entries?.[year]?.days?.[date]
-    console.log('serverMoodContacts calculation:', {
-      year,
-      date,
-      dayEntry,
-      contacts: dayEntry?.contacts,
-      sessionEntries: session?.user?.entries?.[year]?.days?.[date]
-    })
     return dayEntry?.contacts || []
   }, [session?.user?.entries, year, date, session?.user?.entries?.[year]?.days?.[date]?.contacts])
 
@@ -65,7 +61,6 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
 
   // Initialize mood contacts from server data
   useEffect(() => {
-    console.log('Initializing mood contacts:', serverMoodContacts)
     setMoodContacts(serverMoodContacts || [])
   }, [serverMoodContacts])
 
@@ -189,14 +184,27 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
       <div key={JSON.stringify(serverMood)} className="w-full m-auto p-4">
       <h2 className="mt-8 mb-4 text-center text-lg">{t('mood.subtitle')}</h2>
       
-      <Textarea 
-        className="mb-16" 
-        value={currentText} 
-        onChange={(e) => {
-          setCurrentText(e.target.value)
-          debouncedHandleTextSubmit(e.target.value, "text")
-        }} 
-      />
+      {isAgentChatEnabled ? (
+        <div className="mb-16">
+          <AgentChat 
+            onMessageChange={(message) => {
+              setCurrentText(message)
+              debouncedHandleTextSubmit(message, "text")
+            }}
+            initialMessage={currentText}
+            className="h-96"
+          />
+        </div>
+      ) : (
+        <Textarea 
+          className="mb-16" 
+          value={currentText} 
+          onChange={(e) => {
+            setCurrentText(e.target.value)
+            debouncedHandleTextSubmit(e.target.value, "text")
+          }} 
+        />
+      )}
       <div className="my-12">
         <h3 className="mt-8 mb-4">{t('charts.gratitude')}</h3>
         <small>{insight?.gratitudeAnalysis}</small>
