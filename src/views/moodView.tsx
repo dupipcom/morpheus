@@ -112,6 +112,13 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
     // The session will be updated naturally when the user navigates or refreshes
   }, 500)
 
+  // Create debounced version of handleSubmit for text input
+  const debouncedHandleTextSubmit = useDebounce(async (value, field) => {
+    await handleMoodSubmit(value, field, fullDay, moodContacts)
+    // Don't call updateUser immediately to avoid clearing mood contacts
+    // The session will be updated naturally when the user navigates or refreshes
+  }, 500)
+
   const handleSubmit = async (value, field) => {
     setMood({...mood, [field]: value})
     // Always include current mood contacts when saving any mood data
@@ -167,7 +174,7 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
       <div key={JSON.stringify(serverMood)} className="w-full m-auto p-4">
       <h2 className="mt-8 mb-4 text-center text-lg">{t('mood.subtitle')}</h2>
       
-      <Textarea className="mb-16" defaultValue={serverText} onBlur={(e) => handleSubmit(e.target.value, "text")} />
+      <Textarea className="mb-16" defaultValue={serverText} onChange={(e) => debouncedHandleTextSubmit(e.target.value, "text")} />
       <div className="my-12">
         <h3 className="mt-8 mb-4">{t('charts.gratitude')}</h3>
         <small>{insight?.gratitudeAnalysis}</small>
