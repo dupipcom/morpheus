@@ -4,7 +4,7 @@
 import { logger } from './logger';
 
 export const INACTIVITY_TIMEOUT = 15 * 60 * 1000; // 15 minutes in milliseconds
-export const WARNING_TIME = 2 * 60 * 1000; // 2 minutes in milliseconds
+export const WARNING_TIME = 5 * 60 * 1000; // 5 minutes (warning shows after 10 minutes) in milliseconds
 const LAST_ACTIVITY_KEY = 'dpip_last_activity';
 const LOGIN_TIME_KEY = 'dpip_login_time';
 
@@ -139,8 +139,8 @@ export const setupInactivityTimer = (
       clearInterval(activityCheckInterval);
     }
     
-    // Set up periodic checking for inactivity (check every 30 seconds instead of every second)
-    activityCheckInterval = setInterval(checkInactivity, 30000);
+    // Set up periodic checking for inactivity (check every 10 seconds for better accuracy)
+    activityCheckInterval = setInterval(checkInactivity, 10000);
     
     // Set warning timer
     logger('setting_warning_timer', 'Timer set');
@@ -177,6 +177,16 @@ export const setupInactivityTimer = (
     document.addEventListener(event, resetTimer, true);
   });
 
+  // Add visibility change handler to check session when tab becomes active
+  const handleVisibilityChange = () => {
+    if (!document.hidden) {
+      // Tab became active, check if session expired while inactive
+      checkInactivity();
+    }
+  };
+  
+  document.addEventListener('visibilitychange', handleVisibilityChange);
+
   // Check for existing inactivity on startup
   checkInactivity();
   
@@ -202,6 +212,9 @@ export const setupInactivityTimer = (
     activityEvents.forEach(event => {
       document.removeEventListener(event, resetTimer, true);
     });
+    
+    // Remove visibility change listener
+    document.removeEventListener('visibilitychange', handleVisibilityChange);
   };
 };
 
