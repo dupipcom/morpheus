@@ -193,7 +193,6 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   const weekProgress = weekTasks?.length ? weekDone.length / weekTasks.length : 0
 
     if(data?.mood) {
-      const key = Object.keys(data?.mood)[0]
       if(user?.entries[year].days[date].mood) {
         user = {
           ...user,
@@ -207,7 +206,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   ...user.entries[year].days[date],
                   mood: {
                     ...user.entries[year].days[date].mood,
-                    [key]: data?.mood[key]
+                    ...data.mood
                   }
                 }
               }

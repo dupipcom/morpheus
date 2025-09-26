@@ -207,7 +207,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   }
 
   // Create debounced version of saveTaskContacts for sliders
-  const debouncedSaveTaskContacts = useDebounce(saveTaskContacts, 500)
+  const debouncedSaveTaskContacts = useDebounce(saveTaskContacts, 300)
 
   const handleCloseDates = async (values) => {
     await handleCloseDatesUtil(values, timeframe)
