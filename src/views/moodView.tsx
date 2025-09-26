@@ -191,6 +191,7 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
               setCurrentText(message)
               debouncedHandleTextSubmit(message, "text")
             }}
+            history={session.user.entries[year].weeks[weekNumber].messages}
             initialMessage={currentText}
             className="h-96"
           />

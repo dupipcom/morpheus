@@ -137,7 +137,18 @@ export async function POST(req: NextRequest) {
       })
     }
 
+    const assistantMessage = response.choices[0]?.message?.content || "I'm sorry, I couldn't process your message right now.";
 
+    const nextMessages = [{
+      content: message,
+      timestamp: fullDate,
+      role: "user"
+    }, {
+      content: assistantMessage,
+      timestamp: fullDate,
+      role: "assistant"
+    }]
+    
     await prisma.user.update({
         data: {
           entries: { 
@@ -148,7 +159,7 @@ export async function POST(req: NextRequest) {
                 ...user?.entries[year].weeks, 
                 [weekNumber]: { 
                   ...user?.entries[year].weeks[weekNumber], 
-                  messages: [ ...user?.entries[year].weeks[weekNumber].messages, message, response.choices[0]?.message?.content ]
+                  messages: [ ...user?.entries[year].weeks[weekNumber].messages, ...nextMessages ]
                 }
               }
             }
@@ -156,8 +167,6 @@ export async function POST(req: NextRequest) {
         },
         where: { userId }
     })
-
-    const assistantMessage = response.choices[0]?.message?.content || "I'm sorry, I couldn't process your message right now.";
 
     return NextResponse.json({
       success: true,

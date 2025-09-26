@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Send, Bot, User, Loader2 } from "lucide-react"
 import { useI18n } from "@/lib/contexts/i18n"
 import { toast } from "@/components/ui/sonner"
+import { getWeekNumber } from "@/app/helpers"
 
 interface Message {
   id: string;
@@ -20,9 +21,10 @@ interface AgentChatProps {
   className?: string;
 }
 
-export const AgentChat = ({ onMessageChange, initialMessage = "", className = "" }: AgentChatProps) => {
+export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], className = "" }: AgentChatProps) => {
   const { t, locale } = useI18n()
-  const [messages, setMessages] = useState<Message[]>([])
+
+  const [messages, setMessages] = useState<Message[]>(history)
   const [inputMessage, setInputMessage] = useState(initialMessage)
   const [isLoading, setIsLoading] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -149,7 +151,7 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", className = ""
                         <div className="flex-1">
                           <p className="text-sm whitespace-pre-wrap">{message.content}</p>
                           <p className="text-xs opacity-70 mt-1">
-                            {message.timestamp.toLocaleTimeString()}
+                            {new Date(message.timestamp).toLocaleTimeString()}
                           </p>
                         </div>
                       </div>
@@ -181,7 +183,7 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", className = ""
           value={inputMessage}
           onChange={(e) => setInputMessage(e.target.value)}
           onKeyPress={handleKeyPress}
-          placeholder="Ask your AI assistant anything..."
+          placeholder={"Let's chat..."}
           className="flex-1 min-h-[60px] max-h-[120px] resize-none"
           disabled={isLoading}
         />
