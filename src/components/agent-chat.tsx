@@ -30,10 +30,6 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], 
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  // Auto-scroll to bottom when new messages arrive
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
 
   // Focus textarea when component mounts
   useEffect(() => {
