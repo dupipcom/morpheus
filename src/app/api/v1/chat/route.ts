@@ -70,30 +70,21 @@ export async function POST(req: NextRequest) {
 
     const entries = user?.entries;
 
-    if (!user?.analysis) {
-      await prisma.user.update({
-        data: {
-          analysis: {},
-        },
-        where: { userId },
-      });
-      user = await getUser();
-    }
 
-    // Create vector store for RAG
-    const file = await openai.files.create({
-      file: fs.createReadStream(process.cwd() + '/src/app/api/v1/hint/rag/atomic-habits.pdf'),
-      purpose: "assistants",
-    });
+    // // Create vector store for RAG
+    // const file = await openai.files.create({
+    //   file: fs.createReadStream(process.cwd() + ''),
+    //   purpose: "assistants",
+    // });
 
-    const vectorStore = await openai.vectorStores.create({
-      name: "Book references",
-      file_ids: [file.id],
-      expires_after: {
-        anchor: "last_active_at",
-        days: 1
-      }
-    });
+    // const vectorStore = await openai.vectorStores.create({
+    //   name: "Book references",
+    //   file_ids: [file.id],
+    //   expires_after: {
+    //     anchor: "last_active_at",
+    //     days: 1
+    //   }
+    // });
 
     // Create a conversational response using the existing RAG setup
     const response = await openai.chat.completions.create({
@@ -119,11 +110,52 @@ export async function POST(req: NextRequest) {
           content: message
         }
       ],
-      tools: [{ type: "file_search", vector_store_ids: [vectorStore.id] }],
-      tool_choice: "auto",
+      // tools: [{ type: "file_search", vector_store_ids: [vectorStore.id] }],
+      // tool_choice: "auto",
       temperature: 0.7,
       max_tokens: 1000
     });
+
+    if(!user.entries[year].weeks[weekNumber].messages) {
+      await prisma.user.update({
+        data: {
+          entries: { 
+            ...user?.entries, 
+            [year]: { 
+              ...user?.entries[year], 
+              weeks:  { 
+                ...user?.entries[year].weeks, 
+                [weekNumber]: { 
+                  ...user?.entries[year].weeks[weekNumber], 
+                  messages: [],
+                }
+              }
+            }
+          }
+        },
+        where: { userId }, 
+      })
+    }
+
+
+    await prisma.user.update({
+        data: {
+          entries: { 
+            ...user?.entries, 
+            [year]: { 
+              ...user?.entries[year], 
+              weeks:  { 
+                ...user?.entries[year].weeks, 
+                [weekNumber]: { 
+                  ...user?.entries[year].weeks[weekNumber], 
+                  messages: [ ...user?.entries[year].weeks[weekNumber].messages, message, response.choices[0]?.message?.content ]
+                }
+              }
+            }
+          }
+        },
+        where: { userId }
+    })
 
     const assistantMessage = response.choices[0]?.message?.content || "I'm sorry, I couldn't process your message right now.";
 
@@ -135,7 +167,7 @@ export async function POST(req: NextRequest) {
 
   } catch (error) {
     return NextResponse.json(
-      { error: "Failed to process chat message" },
+      { error: `Failed to process chat message: ${error}`  },
       { status: 500 }
     );
   }
