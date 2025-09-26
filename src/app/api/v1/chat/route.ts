@@ -88,7 +88,7 @@ export async function POST(req: NextRequest) {
 
     // Create a conversational response using the existing RAG setup
     const response = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-5-nano-2025-08-07",
       messages: [
         {
           role: "system",
@@ -96,6 +96,8 @@ export async function POST(req: NextRequest) {
             You are a compassionate AI assistant helping users with their mental health and habit tracking journey.
             
             You have access to the user's historical data and can reference the Atomic Habits book for guidance.
+
+            Pease keep your answers under 100 words.
             
             Please respond in ${locale} and be supportive, encouraging, and helpful.
             
