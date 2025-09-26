@@ -73,8 +73,11 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const [taskContacts, setTaskContacts] = useState({})
   const { isAgentChatEnabled } = useFeatureFlag()
   const messages = session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks && session?.user?.entries[year]?.weeks[weekNumber] && session?.user?.entries[year]?.weeks[weekNumber].messages
-  const history = useMemo(() => messages?.reverse() || [], [JSON.stringify(messages)])
+  const reverseMessages = useMemo (() => messages?.length ? messages.sort((a,b) => a ? 1 : -1) : [], [JSON.stringify(session?.user)])
+  
   const earnings = Object.keys(session?.user?.entries || 0).length > 0 ? timeframe === "day" ? session?.user?.entries[year]?.days[date]?.earnings?.toFixed(2) : session?.user?.entries[year]?.weeks[weekNumber]?.earnings?.toFixed(2) : 0
+
+
 
   const userTasks = useMemo(() => {
     if (timeframe === 'day') {
@@ -316,12 +319,12 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       {isAgentChatEnabled ? (
         <div className="mb-16">
           <AgentChat 
-            key={history}
+            key={reverseMessages}
             onMessageChange={(message) => {
               setCurrentText(message)
               debouncedHandleTextSubmit(message, "text")
             }}
-            history={history}
+            history={reverseMessages}
             initialMessage={currentText}
             className="h-96"
           />

@@ -118,7 +118,7 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], 
         <CardContent className="p-4 h-full">
           <div className="flex flex-col h-full">
             {isLoading && (
-                  <div className="flex justify-start">
+                  <div className="flex justify-start mb-4">
                     <div className="bg-muted rounded-lg p-3 max-w-[80%]">
                       <div className="flex items-center gap-2">
                         <Bot className="h-4 w-4" />
