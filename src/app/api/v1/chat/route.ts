@@ -114,7 +114,6 @@ export async function POST(req: NextRequest) {
       ],
       // tools: [{ type: "file_search", vector_store_ids: [vectorStore.id] }],
       // tool_choice: "auto",
-      temperature: 0.7,
       max_completion_tokens: 300
     });
 
