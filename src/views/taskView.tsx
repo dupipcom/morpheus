@@ -192,14 +192,11 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
         payload.week = weekNumber
       }
       
-      console.log('Saving task contacts:', { taskName, contacts, payload, timeframe })
-      
       const response = await fetch('/api/v1/user', {
         method: 'POST',
         body: JSON.stringify(payload)
       })
       if (response.ok) {
-        console.log('Task contacts saved successfully')
         await updateUser(session, setGlobalContext, { session, theme })
       } else {
         console.error('Failed to save task contacts:', response.status, response.statusText)
