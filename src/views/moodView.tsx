@@ -165,7 +165,7 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
     await updateUser(session, setGlobalContext, { session, theme })
   }
 
-
+  const history = session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks && session?.user?.entries[year]?.weeks[weekNumber] && session?.user?.entries[year]?.weeks[weekNumber].messages || []
 
   useEffect(() => {
     updateUser(session, setGlobalContext, { session, theme })
@@ -191,7 +191,7 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
               setCurrentText(message)
               debouncedHandleTextSubmit(message, "text")
             }}
-            history={session.user.entries[year].weeks[weekNumber].messages}
+            history={history}
             initialMessage={currentText}
             className="h-96"
           />
