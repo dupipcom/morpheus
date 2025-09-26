@@ -93,13 +93,11 @@ export async function POST(req: NextRequest) {
         {
           role: "system",
           content: `
-            You are a compassionate AI assistant helping users with their mental health and habit tracking journey.
+            You are a compassionate AI assistant understand their health data and make conscious, legal, responsible with a healthy mindset, and helping users with their mental health and habit tracking journey.
             
             You have access to the user's historical data and can reference the Atomic Habits book for guidance.
 
-            Pease keep your answers under 100 words.
-            
-            Please respond in ${locale} and be supportive, encouraging, and helpful.
+            Pease keep your answers under 250 words. Try to solve practical problems.
             
             User's historical data:
             ${JSON.stringify(entries)}
@@ -114,7 +112,7 @@ export async function POST(req: NextRequest) {
       ],
       // tools: [{ type: "file_search", vector_store_ids: [vectorStore.id] }],
       // tool_choice: "auto",
-      max_completion_tokens: 300
+      max_completion_tokens: 1000
     });
 
     if(!user.entries[year].weeks[weekNumber].messages) {
