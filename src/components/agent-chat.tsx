@@ -109,12 +109,25 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], 
     }
   }
 
+  const reversedMessages = [...messages].reverse()
+
   return (
     <div className={`flex flex-col h-96 ${className}`}>
       {/* Messages Container */}
       <Card className="flex-1 overflow-hidden">
         <CardContent className="p-4 h-full">
           <div className="flex flex-col h-full">
+            {isLoading && (
+                  <div className="flex justify-start">
+                    <div className="bg-muted rounded-lg p-3 max-w-[80%]">
+                      <div className="flex items-center gap-2">
+                        <Bot className="h-4 w-4" />
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <span className="text-sm text-muted-foreground">Thinking...</span>
+                      </div>
+                    </div>
+                  </div>
+            )}
             {messages.length === 0 ? (
               <div className="flex-1 flex items-center justify-center text-muted-foreground">
                 <div className="text-center">
@@ -124,8 +137,8 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], 
                 </div>
               </div>
             ) : (
-              <div className="flex-1 overflow-y-auto space-y-4 pr-2">
-                {messages.map((message) => (
+              <div className="flex-1 overflow-y-auto space-y-4 pr-2 ">
+                {reversedMessages.map((message) => (
                   <div
                     key={message.id}
                     className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
@@ -154,17 +167,6 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], 
                     </div>
                   </div>
                 ))}
-                {isLoading && (
-                  <div className="flex justify-start">
-                    <div className="bg-muted rounded-lg p-3 max-w-[80%]">
-                      <div className="flex items-center gap-2">
-                        <Bot className="h-4 w-4" />
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        <span className="text-sm text-muted-foreground">Thinking...</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
                 <div ref={messagesEndRef} />
               </div>
             )}

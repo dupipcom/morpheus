@@ -44,11 +44,14 @@ import { MoodView } from "@/views/moodView"
 
 import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
-import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil, isUserDataReady, useEnhancedLoadingState } from "@/lib/userUtils"
+import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil, isUserDataReady, useEnhancedLoadingState, handleMoodSubmit } from "@/lib/userUtils"
 import { TaskViewSkeleton } from "@/components/ui/skeleton-loader"
 import { ContentLoadingWrapper } from '@/components/ContentLoadingWrapper'
 import { DAILY_ACTIONS, WEEKLY_ACTIONS, getLocalizedTaskNames } from "@/app/constants"
 import { useDebounce } from "@/lib/hooks/useDebounce"
+
+import { useFeatureFlag } from "@/lib/hooks/useFeatureFlag"
+import { AgentChat } from "@/components/agent-chat"
 
 export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const { session, setGlobalContext, theme } = useContext(GlobalContext)
@@ -60,11 +63,17 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const [fullDay, setFullDay] = useState(todayDate)
   const date = fullDay ? new Date(fullDay).toISOString().split('T')[0] : todayDate
   const year = Number(date.split('-')[0])
+
+  const serverText = useMemo(() => (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date] && session?.user?.entries[year].days[date].text) || "", [fullDay, JSON.stringify(session)])
+
   const [weekNumber, setWeekNumber] = useState(getWeekNumber(today)[1])
   const [insight, setInsight] = useState({})
   const [contacts, setContacts] = useState([])
+  const [currentText, setCurrentText] = useState(serverText)
   const [taskContacts, setTaskContacts] = useState({})
-
+  const { isAgentChatEnabled } = useFeatureFlag()
+  const messages = session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks && session?.user?.entries[year]?.weeks[weekNumber] && session?.user?.entries[year]?.weeks[weekNumber].messages
+  const history = useMemo(() => messages?.reverse() || [], [JSON.stringify(messages)])
   const earnings = Object.keys(session?.user?.entries || 0).length > 0 ? timeframe === "day" ? session?.user?.entries[year]?.days[date]?.earnings?.toFixed(2) : session?.user?.entries[year]?.weeks[weekNumber]?.earnings?.toFixed(2) : 0
 
   const userTasks = useMemo(() => {
@@ -222,6 +231,13 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     setWeekNumber(date)
   }
 
+  // Create debounced version of handleSubmit for text input
+  const debouncedHandleTextSubmit = useDebounce(async (value, field) => {
+    await handleMoodSubmit(value, field, fullDay, moodContacts, undefined, mood)
+    // Don't call updateUser immediately to avoid clearing mood contacts
+    // The session will be updated naturally when the user navigates or refreshes
+  }, 500)
+
   const { data, mutate, error, isLoading } = useSWR(
     session?.user ? `/api/user` : null,
     () => updateUser(session, setGlobalContext, { session, theme })
@@ -295,6 +311,22 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       <CarouselPrevious />
       <CarouselNext />
     </Carousel> : undefined}
+    <h2 className="mt-8 mb-4 text-center text-lg">{t('mood.subtitle')}</h2>
+      
+      {isAgentChatEnabled ? (
+        <div className="mb-16">
+          <AgentChat 
+            key={history}
+            onMessageChange={(message) => {
+              setCurrentText(message)
+              debouncedHandleTextSubmit(message, "text")
+            }}
+            history={history}
+            initialMessage={currentText}
+            className="h-96"
+          />
+        </div>
+      ) : undefined}
     <Accordion key={`mood__accordion--${isMoodEmpty}`} type="single" collapsible defaultValue={isMoodEmpty ? "mood" : "tasks"}>
       {timeframe === "day" && <AccordionItem value="mood">
         <AccordionTrigger>{t('common.mood')}</AccordionTrigger>

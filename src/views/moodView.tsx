@@ -22,17 +22,15 @@ import { MoodViewSkeleton } from "@/components/ui/skeleton-loader"
 import { ContentLoadingWrapper } from '@/components/ContentLoadingWrapper'
 import { ContactCombobox } from "@/components/ui/contact-combobox"
 import { useDebounce } from "@/lib/hooks/useDebounce"
-import { useFeatureFlag } from "@/lib/hooks/useFeatureFlag"
-import { AgentChat } from "@/components/agent-chat"
 
 export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
   const { session, setGlobalContext, theme } = useContext(GlobalContext)
   const { t, locale } = useI18n()
-  const { isAgentChatEnabled } = useFeatureFlag()
   const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const today = new Date()
   const todayDate = today.toLocaleString('en-uk', { timeZone: userTimezone }).split(',')[0].split('/').reverse().join('-')
   const [fullDay, setFullDay] = useState(todayDate) 
+
   
   // Update fullDay when propDate changes
   useEffect(() => {
@@ -64,10 +62,6 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
     setMoodContacts(serverMoodContacts || [])
   }, [serverMoodContacts])
 
-  // Update currentText when serverText changes (when switching dates)
-  useEffect(() => {
-    setCurrentText(serverText)
-  }, [serverText])
 
   const openDays = useMemo(() => {
     return session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && Object.values(session?.user?.entries[year].days).filter((day) => {
@@ -80,6 +74,10 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
   useEffect(() => {
     setMood(serverMood)
   }, [serverMood])
+
+    useEffect(() => {
+    setCurrentText(serverText)
+  }, [serverText])
 
 
 
@@ -168,8 +166,7 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
     await updateUser(session, setGlobalContext, { session, theme })
   }
 
-  const history = session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks && session?.user?.entries[year]?.weeks[weekNumber] && session?.user?.entries[year]?.weeks[weekNumber].messages || []
-
+ 
   useEffect(() => {
     updateUser(session, setGlobalContext, { session, theme })
     generateInsight(setInsight, 'test', locale)
@@ -185,21 +182,6 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
   return (
     <ContentLoadingWrapper>
       <div key={JSON.stringify(serverMood)} className="w-full m-auto p-4">
-      <h2 className="mt-8 mb-4 text-center text-lg">{t('mood.subtitle')}</h2>
-      
-      {isAgentChatEnabled ? (
-        <div className="mb-16">
-          <AgentChat 
-            onMessageChange={(message) => {
-              setCurrentText(message)
-              debouncedHandleTextSubmit(message, "text")
-            }}
-            history={history}
-            initialMessage={currentText}
-            className="h-96"
-          />
-        </div>
-      ) : (
         <Textarea 
           className="mb-16" 
           value={currentText} 
@@ -208,7 +190,6 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
             debouncedHandleTextSubmit(e.target.value, "text")
           }} 
         />
-      )}
       <div className="my-12">
         <h3 className="mt-8 mb-4">{t('charts.gratitude')}</h3>
         <small>{insight?.gratitudeAnalysis}</small>
