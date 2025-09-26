@@ -88,23 +88,23 @@ export async function GET(req: NextRequest) {
 
   if (!user?.analysis || !Object.keys(user.analysis).includes(date)) {
     try {
-      const file = await openai.files.create({
-        file: fs.createReadStream(process.cwd() + '/src/app/api/v1/hint/rag/atomic-habits.pdf'),
-        purpose: "assistants",
-      });
+      // const file = await openai.files.create({
+      //   file: fs.createReadStream(process.cwd() + '/src/app/api/v1/hint/rag/atomic-habits.pdf'),
+      //   purpose: "assistants",
+      // });
 
-      const vectorStore = await openai.vectorStores.create({
-        name: "Book references",
-        file_ids: [file.id],
-        expires_after: {
-          anchor: "last_active_at",
-          days: 1
-        }
-      });
+      // const vectorStore = await openai.vectorStores.create({
+      //   name: "Book references",
+      //   file_ids: [file.id],
+      //   expires_after: {
+      //     anchor: "last_active_at",
+      //     days: 1
+      //   }
+      // });
 
       const response = await openai.responses.create({
-        model: "gpt-4o",
-        tools: [{ type: "file_search", vector_store_ids: [vectorStore.id] }],
+        model: "gpt-5-nano-2025-08-07",
+        // tools: [{ type: "file_search", vector_store_ids: [vectorStore.id] }],
         instructions: `
           Please use file_search for this analysis.
 
@@ -148,7 +148,7 @@ export async function GET(req: NextRequest) {
             strict: true,
           },
         },
-        input: 'Please provide a series of 100 words analysis for the provided format',
+        input: 'Please provide a series of 250 words analysis for the provided format',
       });
 
       await prisma.user.update({
