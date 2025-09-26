@@ -202,25 +202,42 @@ export const handleCloseDates = async (
  * @param field - The field name
  * @param fullDay - The date for the mood entry
  * @param moodContacts - Optional contacts associated with the mood
+ * @param currentText - Current text value
+ * @param currentMood - Current mood state to preserve all values
  */
 export const handleMoodSubmit = async (
   value: any,
   field: string,
   fullDay: string,
   moodContacts?: any[],
-  currentText?: string
+  currentText?: string,
+  currentMood?: any
 ) => {
   let payload: any = { date: fullDay }
 
   if (field === 'text') {
     payload.text = value
+    // Include current mood values when saving text to prevent data loss
+    if (currentMood) {
+      payload.mood = currentMood
+    }
+    // Add mood contacts if provided
+    if (moodContacts && moodContacts.length > 0) {
+      payload.moodContacts = moodContacts
+    }
   } else if (field === 'contacts') {
     // Handle contacts field specifically
     if (moodContacts && moodContacts.length > 0) {
       payload.moodContacts = moodContacts
     }
+    // Include current mood values when saving contacts to prevent data loss
+    if (currentMood) {
+      payload.mood = currentMood
+    }
   } else {
-    payload.mood = { [field]: value }
+    // Include all current mood values to prevent data loss
+    const moodToSubmit = currentMood ? { ...currentMood, [field]: value } : { [field]: value }
+    payload.mood = moodToSubmit
     // Add mood contacts if provided
     if (moodContacts && moodContacts.length > 0) {
       payload.moodContacts = moodContacts

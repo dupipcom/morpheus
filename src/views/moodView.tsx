@@ -106,33 +106,36 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
 
   // Create debounced version of handleSubmit for sliders
   const debouncedHandleSubmit = useDebounce(async (value, field) => {
-    setMood({...mood, [field]: value})
-    // Always include current mood contacts when saving any mood data
-    await handleMoodSubmit(value, field, fullDay, moodContacts)
+    const updatedMood = {...mood, [field]: value}
+    setMood(updatedMood)
+    // Always include current mood contacts and updated mood state when saving any mood data
+    await handleMoodSubmit(value, field, fullDay, moodContacts, undefined, updatedMood)
     // Don't call updateUser immediately to avoid clearing mood contacts
     // The session will be updated naturally when the user navigates or refreshes
   }, 500)
 
   // Create debounced version that preserves text when updating mood sliders
   const debouncedHandleSubmitWithText = useDebounce(async (value, field) => {
-    setMood({...mood, [field]: value})
-    // Include current text value when saving mood data
-    await handleMoodSubmit(value, field, fullDay, moodContacts, currentText)
+    const updatedMood = {...mood, [field]: value}
+    setMood(updatedMood)
+    // Include current text value and updated mood state when saving mood data
+    await handleMoodSubmit(value, field, fullDay, moodContacts, currentText, updatedMood)
     // Don't call updateUser immediately to avoid clearing mood contacts
     // The session will be updated naturally when the user navigates or refreshes
   }, 500)
 
   // Create debounced version of handleSubmit for text input
   const debouncedHandleTextSubmit = useDebounce(async (value, field) => {
-    await handleMoodSubmit(value, field, fullDay, moodContacts)
+    await handleMoodSubmit(value, field, fullDay, moodContacts, undefined, mood)
     // Don't call updateUser immediately to avoid clearing mood contacts
     // The session will be updated naturally when the user navigates or refreshes
   }, 500)
 
   const handleSubmit = async (value, field) => {
-    setMood({...mood, [field]: value})
-    // Always include current mood contacts when saving any mood data
-    await handleMoodSubmit(value, field, fullDay, moodContacts)
+    const updatedMood = {...mood, [field]: value}
+    setMood(updatedMood)
+    // Always include current mood contacts and updated mood state when saving any mood data
+    await handleMoodSubmit(value, field, fullDay, moodContacts, undefined, updatedMood)
     // Don't call updateUser immediately to avoid clearing mood contacts
     // The session will be updated naturally when the user navigates or refreshes
   }
@@ -141,7 +144,7 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
   const debouncedHandleMoodContactsChange = useDebounce(async (newMoodContacts) => {
     setMoodContacts(newMoodContacts)
     // Save mood contacts to database immediately when they change
-    await handleMoodSubmit(null, 'contacts', fullDay, newMoodContacts)
+    await handleMoodSubmit(null, 'contacts', fullDay, newMoodContacts, undefined, mood)
     // Don't call updateUser immediately to avoid race conditions
     // The session will be updated naturally when the user navigates or refreshes
   }, 500)
@@ -149,7 +152,7 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
   const handleMoodContactsChange = async (newMoodContacts) => {
     setMoodContacts(newMoodContacts)
     // Save mood contacts to database immediately when they change
-    await handleMoodSubmit(null, 'contacts', fullDay, newMoodContacts)
+    await handleMoodSubmit(null, 'contacts', fullDay, newMoodContacts, undefined, mood)
     // Don't call updateUser immediately to avoid race conditions
     // The session will be updated naturally when the user navigates or refreshes
   }
