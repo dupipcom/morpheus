@@ -588,7 +588,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="bg-muted absolute top-1/2 right-8 transform -translate-y-1/2 h-6 w-6 p-0 rounded-full"
+                    className="bg-muted absolute top-1/2 left-1 transform -translate-y-1/2 h-6 w-6 p-0 rounded-full"
                   >
                     <Users className="h-3 w-3" />
                   </Button>
@@ -663,7 +663,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="bg-muted border-muted absolute top-1/2 right-16 transform -translate-y-1/2 h-6 w-6 p-0 rounded-full"
+                    className="bg-muted border-muted absolute top-1/2 left-8 transform -translate-y-1/2 h-6 w-6 p-0 rounded-full"
                   >
                     <Package className="h-3 w-3" />
                   </Button>
