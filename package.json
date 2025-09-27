@@ -19,7 +19,7 @@
     "react-dom": "18"
   },
   "devDependencies": {
-    "@ai-sdk/openai": "^2.0.0",
+    "@ai-sdk/openai": "^2.0.38",
     "@ai-sdk/react": "^2.0.0",
     "@clerk/nextjs": "^6.29.0",
     "@clerk/themes": "^2.4.6",
@@ -48,6 +48,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "ai": "^5.0.56",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",

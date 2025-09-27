@@ -1,6 +1,7 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { currentUser, auth } from '@clerk/nextjs/server'
-import openai from '@/lib/openai';
+import { openai } from '@ai-sdk/openai';
+import { generateText } from 'ai';
 import fs from "fs";
 import prisma from "@/lib/prisma";
 import { getWeekNumber } from "@/app/helpers"
@@ -40,7 +41,7 @@ interface ChatRequest {
 }
 
 export const revalidate = 0;
-export const maxDuration = 30;
+export const maxDuration = 60;
 
 export async function POST(req: NextRequest) {
   const { userId } = await auth()
@@ -87,8 +88,8 @@ export async function POST(req: NextRequest) {
     // });
 
     // Create a conversational response using the existing RAG setup
-    const response = await openai.chat.completions.create({
-      model: "gpt-5-mini-2025-08-07",
+    const response = await generateText({
+      model: openai("gpt-5-mini-2025-08-07"),
       messages: [
         {
           role: "system",
@@ -146,8 +147,8 @@ export async function POST(req: NextRequest) {
         where: { userId }, 
       })
     }
-
-    const assistantMessage = response.choices[0]?.message?.content || "I'm sorry, I couldn't process your message right now.";
+    const reply = response.steps[0].content.map((c) => c.text).join(' ') 
+    const assistantMessage = reply || "I'm sorry, I couldn't process your message right now.";
 
     const nextMessages = [{
       content: message,
