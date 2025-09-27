@@ -51,7 +51,6 @@ import { DAILY_ACTIONS, WEEKLY_ACTIONS, getLocalizedTaskNames } from "@/app/cons
 import { useDebounce } from "@/lib/hooks/useDebounce"
 
 import { useFeatureFlag } from "@/lib/hooks/useFeatureFlag"
-import { AgentChat } from "@/components/agent-chat"
 
 export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const { session, setGlobalContext, theme } = useContext(GlobalContext)
@@ -315,21 +314,6 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       <CarouselNext />
     </Carousel> : undefined}
     <h2 className="mt-8 mb-4 text-center text-lg">{t('mood.subtitle')}</h2>
-      
-      {isAgentChatEnabled ? (
-        <div className="mb-16">
-          <AgentChat 
-            key={reverseMessages}
-            onMessageChange={(message) => {
-              setCurrentText(message)
-              debouncedHandleTextSubmit(message, "text")
-            }}
-            history={reverseMessages}
-            initialMessage={currentText}
-            className="h-96"
-          />
-        </div>
-      ) : undefined}
     <Accordion key={`mood__accordion--${isMoodEmpty}`} type="single" collapsible defaultValue={isMoodEmpty ? "mood" : "tasks"}>
       {timeframe === "day" && <AccordionItem value="mood">
         <AccordionTrigger>{t('common.mood')}</AccordionTrigger>

@@ -21,6 +21,7 @@ interface Message {
 interface AgentChatProps {
   onMessageChange?: (message: string) => void;
   initialMessage?: string;
+  history?: Message[];
   className?: string;
 }
 
