@@ -189,6 +189,49 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     await updateUser(session, setGlobalContext, { session, theme })
   }
 
+  // Create debounced version that only handles server requests
+  const debouncedServerUpdate = useDebounce(async (values) => {
+    setPreviousValues(values)
+    const nextActions = userTasks?.map((action) => {
+      const clonedAction = { ...action }
+      if (values.includes(action.name) && (action.times - action.count) === 1) {
+        clonedAction.count += 1
+        clonedAction.status = "Done"
+      } else if (values.includes(action.name) && (action.times - action.count) >= 1) {
+        clonedAction.count += 1
+      } else {
+        if (!values.includes(action.name) && clonedAction.times <= clonedAction.count) {
+          if (clonedAction.count > 0) {
+            clonedAction.count -= 1
+            clonedAction.status = "Open"
+          }
+        }
+      }
+      return clonedAction
+    })
+    const done = nextActions.filter((action) => action.status === "Done").map((action) => action.name)
+
+    const response = await fetch('/api/v1/user', {
+      method: 'POST', body: JSON.stringify({
+        dayActions: timeframe === 'day' ? nextActions : undefined,
+        weekActions: timeframe === 'week' ? nextActions : undefined,
+        taskContacts: taskContacts,
+        date: fullDay,
+        week: weekNumber
+      })
+    })
+    await updateUser(session, setGlobalContext, { session, theme })
+  }, 2000)
+
+  // Handle immediate UI updates and trigger debounced server update
+  const handleDoneWithDebounce = (values) => {
+    // Update UI state immediately for responsive feedback
+    setValues(values)
+    
+    // Trigger debounced server update with the current values
+    debouncedServerUpdate(values)
+  }
+
   // Function to save task contacts when they are modified
   const saveTaskContacts = async (taskName: string, contacts: any[]) => {
     try {
@@ -238,7 +281,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     await handleMoodSubmit(value, field, fullDay)
     // Don't call updateUser immediately to avoid clearing mood contacts
     // The session will be updated naturally when the user navigates or refreshes
-  }, 500)
+  }, 1000)
 
   const { data, mutate, error, isLoading } = useSWR(
     session?.user ? `/api/user` : null,
@@ -327,7 +370,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
         <AccordionTrigger>{t('dashboard.whatDidYouAccomplish')}</AccordionTrigger>
         <AccordionContent>
           <div className="flex flex-col">
-          <ToggleGroup value={values} onValueChange={handleDone} variant="outline" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 align-center justify-center w-full m-auto" type="multiple" orientation="horizontal">
+          <ToggleGroup value={values} onValueChange={handleDoneWithDebounce} variant="outline" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 align-center justify-center w-full m-auto" type="multiple" orientation="horizontal">
       {castActions?.map((action) => {
         const taskContactRefs = taskContacts[action.name] || []
         return (
