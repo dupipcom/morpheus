@@ -210,6 +210,7 @@ export const handleMoodSubmit = async (
   field: string,
   fullDay: string,
   moodContacts?: any[],
+  moodThings?: any[],
   currentText?: string,
   currentMood?: any
 ) => {
@@ -225,12 +226,33 @@ export const handleMoodSubmit = async (
     if (moodContacts && moodContacts.length > 0) {
       payload.moodContacts = moodContacts
     }
+    // Add mood things if provided
+    if (moodThings && moodThings.length > 0) {
+      payload.moodThings = moodThings
+    }
   } else if (field === 'contacts') {
     // Handle contacts field specifically
     if (moodContacts && moodContacts.length > 0) {
       payload.moodContacts = moodContacts
     }
+    // Add mood things if provided
+    if (moodThings && moodThings.length > 0) {
+      payload.moodThings = moodThings
+    }
     // Include current mood values when saving contacts to prevent data loss
+    if (currentMood) {
+      payload.mood = currentMood
+    }
+  } else if (field === 'things') {
+    // Handle things field specifically
+    if (moodThings && moodThings.length > 0) {
+      payload.moodThings = moodThings
+    }
+    // Add mood contacts if provided
+    if (moodContacts && moodContacts.length > 0) {
+      payload.moodContacts = moodContacts
+    }
+    // Include current mood values when saving things to prevent data loss
     if (currentMood) {
       payload.mood = currentMood
     }
@@ -241,6 +263,10 @@ export const handleMoodSubmit = async (
     // Add mood contacts if provided
     if (moodContacts && moodContacts.length > 0) {
       payload.moodContacts = moodContacts
+    }
+    // Add mood things if provided
+    if (moodThings && moodThings.length > 0) {
+      payload.moodThings = moodThings
     }
     // Include current text if provided (to preserve text when updating mood sliders)
     if (currentText !== undefined) {

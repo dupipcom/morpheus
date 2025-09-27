@@ -1,6 +1,6 @@
 "use client"
 import * as React from "react"
-import { Check, ChevronsUpDown, Plus } from "lucide-react"
+import { Check, ChevronsUpDown, Plus, Users } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { useI18n } from "@/lib/contexts/i18n"
@@ -157,9 +157,12 @@ export function ContactCombobox({
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="w-full justify-between"
+            className="w-full justify-between bg-green-50 border-green-200 hover:bg-green-100"
           >
-            {t('social.selectContacts')}
+            <div className="flex items-center">
+              <Users className="mr-2 h-4 w-4" />
+              {t('social.selectContacts')}
+            </div>
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
@@ -215,7 +218,7 @@ export function ContactCombobox({
         <Badge
           key={contact.id}
           variant="secondary"
-          className="flex items-center gap-1"
+          className="flex items-center gap-1 bg-green-100 text-green-800 border-green-200"
         >
           {contact.name}
           {contact.interactionQuality && (

@@ -467,6 +467,7 @@ export const SettingsView = ({ timeframe = "day" }) => {
             <SelectItem value="work">Work</SelectItem>
             <SelectItem value="maintenance">Maintenance</SelectItem>
             <SelectItem value="community">Community</SelectItem>
+            <SelectItem value="mind">Mind</SelectItem>
           </SelectContent>
         </Select>
         <Button onClick={handleDailyAdd} className="md:ml-4">{t('settings.add')}</Button>
@@ -583,6 +584,7 @@ export const SettingsView = ({ timeframe = "day" }) => {
             <SelectItem value="work">Work</SelectItem>
             <SelectItem value="maintenance">Maintenance</SelectItem>
             <SelectItem value="community">Community</SelectItem>
+            <SelectItem value="mind">Mind</SelectItem>
           </SelectContent>
         </Select>
         <Button onClick={handleWeeklyAdd} className="md:ml-4">{t('settings.add')}</Button>
