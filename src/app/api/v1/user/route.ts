@@ -240,7 +240,8 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     const entries = user.entries as any
     const tasksWithContacts = data.weekActions.map((task: any) => ({
       ...task,
-      contacts: data.taskContacts?.[task.name] || []
+      contacts: data.taskContacts?.[task.name] || [],
+      things: data.taskThings?.[task.name] || []
     }))
 
     await prisma.user.update({
@@ -335,7 +336,8 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     const entries = user.entries as any
     const tasksWithContacts = data.dayActions.map((task: any) => ({
       ...task,
-      contacts: data.taskContacts?.[task.name] || []
+      contacts: data.taskContacts?.[task.name] || [],
+      things: data.taskThings?.[task.name] || []
     }))
 
     await prisma.user.update({
@@ -400,8 +402,8 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     user = await getUser()
   }
 
-  // Handle task contacts updates (when sent separately from actions)
-  if (data?.taskContacts && !data?.dayActions && !data?.weekActions && user) {
+  // Handle task contacts and things updates (when sent separately from actions)
+  if ((data?.taskContacts || data?.taskThings) && !data?.dayActions && !data?.weekActions && user) {
     // Update day tasks if date is provided
     if (data.date) {
       // Update day tasks with contacts
@@ -409,7 +411,8 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
       const currentTasks = entries?.[year]?.days?.[date]?.tasks || []
       const updatedTasks = currentTasks.map((task: any) => ({
         ...task,
-        contacts: data.taskContacts[task.name] || task.contacts || []
+        contacts: data.taskContacts?.[task.name] || task.contacts || [],
+        things: data.taskThings?.[task.name] || task.things || []
       }))
 
       await prisma.user.update({
@@ -440,7 +443,8 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
       const currentTasks = entries?.[year]?.weeks?.[data.week]?.tasks || []
       const updatedTasks = currentTasks.map((task: any) => ({
         ...task,
-        contacts: data.taskContacts[task.name] || task.contacts || []
+        contacts: data.taskContacts?.[task.name] || task.contacts || [],
+        things: data.taskThings?.[task.name] || task.things || []
       }))
 
       await prisma.user.update({
@@ -482,6 +486,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                     [key]: data.mood[key]
                   },
                   contacts: data.moodContacts || [],
+                  things: data.moodThings || [],
                   moodAverage: dayMoodAverage
                 }
               },
@@ -500,8 +505,8 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     user = await getUser()
   }
 
-  if (data?.moodContacts && !data?.mood && !data?.text) {
-    // Handle mood contacts only (when field is 'contacts')
+  if ((data?.moodContacts || data?.moodThings) && !data?.mood && !data?.text) {
+    // Handle mood contacts and things only (when field is 'contacts' or 'things')
     await prisma.user.update({
       data: {
         entries: {
@@ -512,7 +517,8 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                 ...user.entries[year].days,
                 [date]: {
                   ...user.entries[year].days[date],
-                  contacts: data.moodContacts
+                  contacts: data.moodContacts || [],
+                  things: data.moodThings || []
                 }
               }
             }
@@ -536,6 +542,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   ...user.entries[year].days[date],
                   text: data?.text,
                   contacts: data.moodContacts || [],
+                  things: data.moodThings || [],
                   moodAverage: dayMoodAverage
                 }
               },

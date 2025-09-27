@@ -21,6 +21,7 @@ import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil, 
 import { MoodViewSkeleton } from "@/components/ui/skeleton-loader"
 import { ContentLoadingWrapper } from '@/components/ContentLoadingWrapper'
 import { ContactCombobox } from "@/components/ui/contact-combobox"
+import { ThingCombobox } from "@/components/ui/thing-combobox"
 import { useDebounce } from "@/lib/hooks/useDebounce"
 
 export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
@@ -52,15 +53,27 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
     return dayEntry?.contacts || []
   }, [session?.user?.entries, year, date, session?.user?.entries?.[year]?.days?.[date]?.contacts])
 
+  const serverMoodThings = useMemo(() => {
+    const dayEntry = session?.user?.entries?.[year]?.days?.[date]
+    return dayEntry?.things || []
+  }, [session?.user?.entries, year, date, session?.user?.entries?.[year]?.days?.[date]?.things])
+
   const [insight, setInsight] = useState({})
   const [contacts, setContacts] = useState([])
+  const [things, setThings] = useState([])
   const [moodContacts, setMoodContacts] = useState([])
+  const [moodThings, setMoodThings] = useState([])
   const [currentText, setCurrentText] = useState(serverText)
 
   // Initialize mood contacts from server data
   useEffect(() => {
     setMoodContacts(serverMoodContacts || [])
   }, [serverMoodContacts])
+
+  // Initialize mood things from server data
+  useEffect(() => {
+    setMoodThings(serverMoodThings || [])
+  }, [serverMoodThings])
 
 
   const openDays = useMemo(() => {
@@ -95,6 +108,20 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
     }
   )
 
+  // Fetch things
+  const { data: thingsData, mutate: mutateThings, isLoading: thingsLoading } = useSWR(
+    session?.user ? `/api/v1/things` : null,
+    async () => {
+      const response = await fetch('/api/v1/things')
+      if (response.ok) {
+        const data = await response.json()
+        setThings(data.things || [])
+        return data
+      }
+      return { things: [] }
+    }
+  )
+
   // Ensure contacts are loaded from SWR data
   useEffect(() => {
     if (contactsData?.contacts) {
@@ -102,13 +129,20 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
     }
   }, [contactsData])
 
+  // Ensure things are loaded from SWR data
+  useEffect(() => {
+    if (thingsData?.things) {
+      setThings(thingsData.things)
+    }
+  }, [thingsData])
+
   // Create debounced version of handleSubmit for sliders
   const debouncedHandleSubmit = useDebounce(async (value, field) => {
     const updatedMood = {...mood, [field]: value}
     setMood(updatedMood)
-    // Always include current mood contacts and updated mood state when saving any mood data
-    await handleMoodSubmit(value, field, fullDay, moodContacts, undefined, updatedMood)
-    // Don't call updateUser immediately to avoid clearing mood contacts
+    // Always include current mood contacts, things and updated mood state when saving any mood data
+    await handleMoodSubmit(value, field, fullDay, moodContacts, moodThings, undefined, updatedMood)
+    // Don't call updateUser immediately to avoid clearing mood contacts/things
     // The session will be updated naturally when the user navigates or refreshes
   }, 500)
 
@@ -116,25 +150,25 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
   const debouncedHandleSubmitWithText = useDebounce(async (value, field) => {
     const updatedMood = {...mood, [field]: value}
     setMood(updatedMood)
-    // Include current text value and updated mood state when saving mood data
-    await handleMoodSubmit(value, field, fullDay, moodContacts, currentText, updatedMood)
-    // Don't call updateUser immediately to avoid clearing mood contacts
+    // Include current text value, mood contacts, things and updated mood state when saving mood data
+    await handleMoodSubmit(value, field, fullDay, moodContacts, moodThings, currentText, updatedMood)
+    // Don't call updateUser immediately to avoid clearing mood contacts/things
     // The session will be updated naturally when the user navigates or refreshes
   }, 500)
 
   // Create debounced version of handleSubmit for text input
   const debouncedHandleTextSubmit = useDebounce(async (value, field) => {
-    await handleMoodSubmit(value, field, fullDay, moodContacts, undefined, mood)
-    // Don't call updateUser immediately to avoid clearing mood contacts
+    await handleMoodSubmit(value, field, fullDay, moodContacts, moodThings, undefined, mood)
+    // Don't call updateUser immediately to avoid clearing mood contacts/things
     // The session will be updated naturally when the user navigates or refreshes
   }, 500)
 
   const handleSubmit = async (value, field) => {
     const updatedMood = {...mood, [field]: value}
     setMood(updatedMood)
-    // Always include current mood contacts and updated mood state when saving any mood data
-    await handleMoodSubmit(value, field, fullDay, moodContacts, undefined, updatedMood)
-    // Don't call updateUser immediately to avoid clearing mood contacts
+    // Always include current mood contacts, things and updated mood state when saving any mood data
+    await handleMoodSubmit(value, field, fullDay, moodContacts, moodThings, undefined, updatedMood)
+    // Don't call updateUser immediately to avoid clearing mood contacts/things
     // The session will be updated naturally when the user navigates or refreshes
   }
 
@@ -150,7 +184,24 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
   const handleMoodContactsChange = async (newMoodContacts) => {
     setMoodContacts(newMoodContacts)
     // Save mood contacts to database immediately when they change
-    await handleMoodSubmit(null, 'contacts', fullDay, newMoodContacts, undefined, mood)
+    await handleMoodSubmit(null, 'contacts', fullDay, newMoodContacts, moodThings, undefined, mood)
+    // Don't call updateUser immediately to avoid race conditions
+    // The session will be updated naturally when the user navigates or refreshes
+  }
+
+  // Create debounced version of handleMoodThingsChange for thing interaction sliders
+  const debouncedHandleMoodThingsChange = useDebounce(async (newMoodThings) => {
+    setMoodThings(newMoodThings)
+    // Save mood things to database immediately when they change
+    await handleMoodSubmit(null, 'things', fullDay, moodContacts, newMoodThings, undefined, mood)
+    // Don't call updateUser immediately to avoid race conditions
+    // The session will be updated naturally when the user navigates or refreshes
+  }, 500)
+
+  const handleMoodThingsChange = async (newMoodThings) => {
+    setMoodThings(newMoodThings)
+    // Save mood things to database immediately when they change
+    await handleMoodSubmit(null, 'things', fullDay, moodContacts, newMoodThings, undefined, mood)
     // Don't call updateUser immediately to avoid race conditions
     // The session will be updated naturally when the user navigates or refreshes
   }
@@ -257,6 +308,54 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
                     setMoodContacts(updatedContacts)
                     // Use debounced handler to save to database
                     debouncedHandleMoodContactsChange(updatedContacts)
+                  }}
+                  max={5}
+                  min={0}
+                  step={0.5}
+                  className="w-full"
+                />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Things Management for Mood */}
+      <div className="mb-8 p-4 border rounded-lg bg-transparent border-body">
+        <h3 className="text-lg font-semibold mb-4 text-body">{t('social.thingsInfluencedMood')}</h3>
+        {!thingsLoading && (
+          <ThingCombobox
+            things={things}
+            selectedThings={moodThings}
+            onThingsChange={handleMoodThingsChange}
+            onThingsRefresh={() => {
+              // Trigger a refresh of the things data
+              mutateThings()
+            }}
+          />
+        )}
+        
+        {/* Interaction Quality Sliders for Selected Things */}
+        {moodThings.length > 0 && (
+          <div className="mt-6 space-y-4">
+            <h4 className="text-sm font-medium text-muted-foreground">{t('social.thingsInteractionQualityRatings')}</h4>
+            {moodThings.map((thing) => (
+              <div key={thing.id} className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">{thing.name}</span>
+                  <span className="text-xs text-muted-foreground">{thing.interactionQuality || 3}/5</span>
+                </div>
+                <Slider
+                  value={[thing.interactionQuality || 3]}
+                  onValueChange={(value) => {
+                    const updatedThings = moodThings.map(t => 
+                      t.id === thing.id 
+                        ? { ...t, interactionQuality: value[0] }
+                        : t
+                    )
+                    setMoodThings(updatedThings)
+                    // Use debounced handler to save to database
+                    debouncedHandleMoodThingsChange(updatedThings)
                   }}
                   max={5}
                   min={0}

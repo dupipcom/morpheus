@@ -38,7 +38,8 @@ import {
 
 import { Badge } from "@/components/ui/badge"
 import { ContactCombobox } from "@/components/ui/contact-combobox"
-import { Users, X, Heart, Settings } from "lucide-react"
+import { ThingCombobox } from "@/components/ui/thing-combobox"
+import { Users, X, Heart, Settings, Package } from "lucide-react"
 
 import { MoodView } from "@/views/moodView"
 
@@ -68,8 +69,10 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const [weekNumber, setWeekNumber] = useState(getWeekNumber(today)[1])
   const [insight, setInsight] = useState({})
   const [contacts, setContacts] = useState([])
+  const [things, setThings] = useState([])
   const [currentText, setCurrentText] = useState(serverText)
   const [taskContacts, setTaskContacts] = useState({})
+  const [taskThings, setTaskThings] = useState({})
   const [favorites, setFavorites] = useState(new Set())
   const [optimisticFavorites, setOptimisticFavorites] = useState(new Set())
   const { isAgentChatEnabled } = useFeatureFlag()
@@ -121,12 +124,17 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   useEffect(() => {
     if (userTasks && userTasks.length > 0) {
       const existingTaskContacts = {}
+      const existingTaskThings = {}
       userTasks.forEach(task => {
         if (task.contacts && task.contacts.length > 0) {
           existingTaskContacts[task.name] = task.contacts
         }
+        if (task.things && task.things.length > 0) {
+          existingTaskThings[task.name] = task.things
+        }
       })
       setTaskContacts(existingTaskContacts)
+      setTaskThings(existingTaskThings)
     }
   }, [userTasks])
 
@@ -231,6 +239,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
         dayActions: timeframe === 'day' ? nextActions : undefined,
         weekActions: timeframe === 'week' ? nextActions : undefined,
         taskContacts: taskContacts,
+        taskThings: taskThings,
         date: fullDay,
         week: weekNumber
       })
@@ -265,6 +274,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
         dayActions: timeframe === 'day' ? nextActions : undefined,
         weekActions: timeframe === 'week' ? nextActions : undefined,
         taskContacts: taskContacts,
+        taskThings: taskThings,
         date: fullDay,
         week: weekNumber
       })
@@ -371,8 +381,39 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     }
   }
 
+  // Function to save task things when they are modified
+  const saveTaskThings = async (taskName: string, things: any[]) => {
+    try {
+      const payload: any = {
+        taskThings: { [taskName]: things }
+      }
+      
+      // Only send the appropriate parameter based on timeframe
+      if (timeframe === 'day') {
+        payload.date = fullDay
+      } else if (timeframe === 'week') {
+        payload.week = weekNumber
+      }
+      
+      const response = await fetch('/api/v1/user', {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      })
+      if (response.ok) {
+        await updateUser(session, setGlobalContext, { session, theme })
+      } else {
+        console.error('Failed to save task things:', response.status, response.statusText)
+      }
+    } catch (error) {
+      console.error('Error saving task things:', error)
+    }
+  }
+
   // Create debounced version of saveTaskContacts for sliders
   const debouncedSaveTaskContacts = useDebounce(saveTaskContacts, 300)
+
+  // Create debounced version of saveTaskThings for sliders
+  const debouncedSaveTaskThings = useDebounce(saveTaskThings, 300)
 
   const handleCloseDates = async (values) => {
     await handleCloseDatesUtil(values, timeframe)
@@ -389,8 +430,8 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
 
   // Create debounced version of handleSubmit for text input
   const debouncedHandleTextSubmit = useDebounce(async (value, field) => {
-    await handleMoodSubmit(value, field, fullDay)
-    // Don't call updateUser immediately to avoid clearing mood contacts
+    await handleMoodSubmit(value, field, fullDay, [], [])
+    // Don't call updateUser immediately to avoid clearing mood contacts/things
     // The session will be updated naturally when the user navigates or refreshes
   }, 1000)
 
@@ -413,12 +454,33 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     }
   )
 
+  // Fetch things
+  const { data: thingsData, mutate: mutateThings, isLoading: thingsLoading } = useSWR(
+    session?.user ? `/api/v1/things` : null,
+    async () => {
+      const response = await fetch('/api/v1/things')
+      if (response.ok) {
+        const data = await response.json()
+        setThings(data.things || [])
+        return data
+      }
+      return { things: [] }
+    }
+  )
+
   // Ensure contacts are loaded from SWR data
   useEffect(() => {
     if (contactsData?.contacts) {
       setContacts(contactsData.contacts)
     }
   }, [contactsData])
+
+  // Ensure things are loaded from SWR data
+  useEffect(() => {
+    if (thingsData?.things) {
+      setThings(thingsData.things)
+    }
+  }, [thingsData])
 
   useEffect(() => {
     setValues(userDone)
@@ -495,6 +557,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
           <ToggleGroup value={values} onValueChange={handleDoneWithDebounce} variant="outline" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 align-center justify-center w-full m-auto" type="multiple" orientation="horizontal">
       {castActions?.map((action) => {
         const taskContactRefs = taskContacts[action.name] || []
+        const taskThingRefs = taskThings[action.name] || []
         return (
           <div key={`task__item--${action.name}`} className="flex flex-col items-center m-1">
             <div className="relative w-full">
@@ -593,6 +656,81 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                   </Card>
                 </PopoverContent>
               </Popover>
+
+              {/* Things Management Popover */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="bg-muted border-muted absolute top-1/2 right-16 transform -translate-y-1/2 h-6 w-6 p-0 rounded-full"
+                  >
+                    <Package className="h-3 w-3" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-80 bg-transparent border-none">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-sm">{t('social.addThingsToTask', { taskName: action.displayName || action.name })}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {!thingsLoading && (
+                        <ThingCombobox
+                          things={things}
+                          selectedThings={taskThingRefs}
+                          onThingsChange={(newThings) => {
+                            setTaskThings(prev => ({
+                              ...prev,
+                              [action.name]: newThings
+                            }))
+                            // Save the updated things to the database using debounced handler
+                            debouncedSaveTaskThings(action.name, newThings)
+                          }}
+                          onThingsRefresh={() => {
+                            // Trigger a refresh of the things data
+                            mutateThings()
+                          }}
+                        />
+                      )}
+                      
+                      {/* Interaction Quality Sliders for Selected Things */}
+                      {taskThingRefs.length > 0 && (
+                        <div className="mt-4 space-y-3">
+                          <h4 className="text-sm font-medium text-muted-foreground">Things Interaction Quality Ratings</h4>
+                          {taskThingRefs.map((thing) => (
+                            <div key={thing.id} className="space-y-2">
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm font-medium">{thing.name}</span>
+                                <span className="text-xs text-muted-foreground">{thing.interactionQuality || 3}/5</span>
+                              </div>
+                              <Slider
+                                value={[thing.interactionQuality || 3]}
+                                onValueChange={(value) => {
+                                  const updatedThings = taskThingRefs.map(t => 
+                                    t.id === thing.id 
+                                      ? { ...t, interactionQuality: value[0] }
+                                      : t
+                                  )
+                                  setTaskThings(prev => ({
+                                    ...prev,
+                                    [action.name]: updatedThings
+                                  }))
+                                  // Use debounced handler to save to database
+                                  debouncedSaveTaskThings(action.name, updatedThings)
+                                }}
+                                max={5}
+                                min={0}
+                                step={0.5}
+                                className="w-full"
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </PopoverContent>
+              </Popover>
             </div>
 
             {/* Contact Badges */}
@@ -602,7 +740,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                   <Badge
                     key={contact.id}
                     variant="outline"
-                    className="text-xs px-1 py-0 h-4"
+                    className="text-xs px-1 py-0 h-4 bg-green-100 text-green-800 border-green-200"
                   >
                     {contact.name}
                     {contact.interactionQuality && (
@@ -623,6 +761,43 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                         }))
                         // Save the updated contacts to the database using debounced handler
                         debouncedSaveTaskContacts(action.name, updatedContacts)
+                      }}
+                    >
+                      <X className="h-2 w-2" />
+                    </Button>
+                  </Badge>
+                ))}
+              </div>
+            )}
+
+            {/* Things Badges */}
+            {taskThingRefs.length > 0 && (
+              <div className="flex flex-wrap gap-1 justify-center mt-1">
+                {taskThingRefs.map((thing) => (
+                  <Badge
+                    key={thing.id}
+                    variant="outline"
+                    className="text-xs px-1 py-0 h-4 bg-blue-100 text-blue-800 border-blue-200"
+                  >
+                    {thing.name}
+                    {thing.interactionQuality && (
+                      <span className="ml-1 text-xs">
+                        {thing.interactionQuality}/5
+                      </span>
+                    )}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-3 w-3 p-0 ml-1 hover:bg-transparent"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        const updatedThings = taskThings[action.name].filter(t => t.id !== thing.id)
+                        setTaskThings(prev => ({
+                          ...prev,
+                          [action.name]: updatedThings
+                        }))
+                        // Save the updated things to the database using debounced handler
+                        debouncedSaveTaskThings(action.name, updatedThings)
                       }}
                     >
                       <X className="h-2 w-2" />
