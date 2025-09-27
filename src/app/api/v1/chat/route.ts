@@ -99,8 +99,11 @@ export async function POST(req: NextRequest) {
 
             Pease keep your answers under 250 words. Try to solve practical problems.
             
-            User's historical data:
+            User's historical daily data for ${year}:
             ${JSON.stringify(entries[year].days)}
+
+            User's historical weekly data for ${year}:
+            ${JSON.stringify(entries[year].weeks)}
             
             Use this data to provide personalized insights and advice.
           `
