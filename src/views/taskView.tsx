@@ -281,35 +281,21 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     debouncedServerUpdate(values)
   }
 
-  // Handle favorite toggle with optimistic UI
-  const handleToggleFavorite = async (actionName) => {
-    // Optimistic UI update - immediate visual feedback
-    const newOptimisticFavorites = new Set(optimisticFavorites)
-    
-    if (newOptimisticFavorites.has(actionName)) {
-      newOptimisticFavorites.delete(actionName)
-    } else {
-      newOptimisticFavorites.add(actionName)
-    }
-    
-    setOptimisticFavorites(newOptimisticFavorites)
-    
-    // Save to database with new data structure
+  // Create debounced version that only handles server requests for favorites
+  const debouncedFavoriteServerUpdate = useDebounce(async (currentOptimisticFavorites) => {
+    // Save to database with the passed optimistic favorites state
     try {
       const currentTemplate = timeframe === 'day' 
         ? session?.user?.settings?.dailyTemplate || []
         : session?.user?.settings?.weeklyTemplate || []
       
-      // Update template items with favorite flag
+      // Update template items with favorite flags based on the passed state
       const updatedTemplate = currentTemplate.map(item => {
         const itemName = typeof item === 'string' ? item : item.name
-        if (itemName === actionName) {
-          return {
-            ...(typeof item === 'object' ? item : { name: item }),
-            favorite: newOptimisticFavorites.has(actionName)
-          }
+        return {
+          ...(typeof item === 'object' ? item : { name: item }),
+          favorite: currentOptimisticFavorites.has(itemName)
         }
-        return typeof item === 'object' ? item : { name: item, favorite: false }
       })
       
       const payload = {
@@ -325,19 +311,37 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       
       if (response.ok) {
         // Update the actual favorites state on success
-        setFavorites(newOptimisticFavorites)
+        setFavorites(currentOptimisticFavorites)
         await updateUser(session, setGlobalContext, { session, theme })
       } else {
-        console.error('Failed to save favorite:', response.status, response.statusText)
+        console.error('Failed to save favorites:', response.status, response.statusText)
         // Revert optimistic state on error
         setOptimisticFavorites(favorites)
       }
     } catch (error) {
-      console.error('Error saving favorite:', error)
+      console.error('Error saving favorites:', error)
       // Revert optimistic state on error
       setOptimisticFavorites(favorites)
     }
+  }, 2000)
+
+  // Handle immediate UI updates and trigger debounced server update
+  const handleToggleFavorite = (actionName) => {
+    // Update optimistic UI state immediately for responsive feedback
+    const newOptimisticFavorites = new Set(optimisticFavorites)
+    
+    if (newOptimisticFavorites.has(actionName)) {
+      newOptimisticFavorites.delete(actionName)
+    } else {
+      newOptimisticFavorites.add(actionName)
+    }
+    
+    setOptimisticFavorites(newOptimisticFavorites)
+    
+    // Trigger debounced server update with the current state
+    debouncedFavoriteServerUpdate(newOptimisticFavorites)
   }
+
 
   // Function to save task contacts when they are modified
   const saveTaskContacts = async (taskName: string, contacts: any[]) => {

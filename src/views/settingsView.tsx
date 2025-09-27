@@ -37,6 +37,12 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+
+import {
   ColumnDef,
   ColumnFiltersState,
   flexRender,
@@ -50,7 +56,7 @@ import {
 } from "@tanstack/react-table"
 
 import { WEEKLY_ACTIONS, DAILY_ACTIONS } from "@/app/constants"
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
+import { ArrowUpDown, ChevronDown, MoreHorizontal, Edit, X } from "lucide-react"
 import { GlobalContext } from "@/lib/contexts"
 import { updateUser, handleSettingsSubmit, isUserDataReady, useEnhancedLoadingState } from "@/lib/userUtils"
 import { logger } from "@/lib/logger"
@@ -77,6 +83,36 @@ export const SettingsView = ({ timeframe = "day" }) => {
     useState<VisibilityState>({})
   const [dailyRowSelection, setDailyRowSelection] = useState({})
   const [weeklyRowSelection, setWeeklyRowSelection] = useState({})
+  
+  // Edit state management
+  const [isEditOpen, setIsEditOpen] = useState(false)
+  const [editingAction, setEditingAction] = useState(null)
+  const [editFormData, setEditFormData] = useState({
+    name: '',
+    times: 1,
+    area: '',
+    categories: []
+  })
+
+  // Handle escape key to close modal
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape' && isEditOpen) {
+        setIsEditOpen(false)
+      }
+    }
+    
+    if (isEditOpen) {
+      document.addEventListener('keydown', handleEscape)
+      // Prevent body scroll when modal is open
+      document.body.style.overflow = 'hidden'
+    }
+    
+    return () => {
+      document.removeEventListener('keydown', handleEscape)
+      document.body.style.overflow = 'unset'
+    }
+  }, [isEditOpen])
 
   const serverSettings = (session?.user?.settings) || {}
 
@@ -139,6 +175,43 @@ export const SettingsView = ({ timeframe = "day" }) => {
     }
   }
 
+  const handleEditAction = (action, templateType) => {
+    setEditingAction({ ...action, templateType })
+    setEditFormData({
+      name: action.name,
+      times: action.times,
+      area: action.area,
+      categories: action.categories || []
+    })
+    setIsEditOpen(true)
+  }
+
+  const handleEditSubmit = async () => {
+    try {
+      const { templateType, ...originalAction } = editingAction
+      const updatedAction = {
+        ...originalAction,
+        name: editFormData.name,
+        times: editFormData.times,
+        area: editFormData.area,
+        categories: editFormData.categories
+      }
+
+      const templateKey = templateType === 'daily' ? 'dailyTemplate' : 'weeklyTemplate'
+      const currentTemplate = session?.user?.settings?.[templateKey] || []
+      const updatedTemplate = currentTemplate.map(action => 
+        action.name === originalAction.name ? updatedAction : action
+      )
+
+      await handleSettingsSubmit(updatedTemplate, templateKey)
+      mutate('/api/v1/user')
+      setIsEditOpen(false)
+      setEditingAction(null)
+    } catch (error) {
+      logger('edit_action_error', `Error editing action: ${error}`)
+    }
+  }
+
   const dayColumns: ColumnDef<Payment>[] = [
   {
     id: "select",
@@ -198,7 +271,12 @@ export const SettingsView = ({ timeframe = "day" }) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => handleDailyDelete(name)} className="">{t('settings.deleteAction')}</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleEditAction(payment, 'daily')}>
+              {t('settings.editAction')}
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleDailyDelete(name)} className="text-destructive">
+              {t('settings.deleteAction')}
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
@@ -265,7 +343,13 @@ export const SettingsView = ({ timeframe = "day" }) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => handleWeeklyDelete(name)} className="">{t('settings.deleteAction')}</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleEditAction(payment, 'weekly')}>
+              <Edit className="mr-2 h-4 w-4" />
+              {t('settings.editAction')}
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleWeeklyDelete(name)} className="text-destructive">
+              {t('settings.deleteAction')}
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
@@ -570,5 +654,113 @@ export const SettingsView = ({ timeframe = "day" }) => {
       <Input defaultValue={serverSettings.monthsNeedFixedExpenses} onBlur={(e) => handleSettingsSubmit(e.currentTarget.value, "monthsNeedFixedExpenses")}/>
       <h3 className="mt-8">{t('settings.expectedNeedUtilities')}</h3>
       <Input defaultValue={serverSettings.monthsNeedVariableExpenses} onBlur={(e) => handleSettingsSubmit(e.currentTarget.value, "monthsNeedVariableExpenses")}/>
+      
+      {/* Edit Action Popover */}
+      {isEditOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-[9998] flex items-center justify-center p-4"
+          onClick={() => setIsEditOpen(false)}
+        >
+          <div 
+            className="bg-background border rounded-lg shadow-lg w-full max-w-md z-[9999]"
+            onClick={(e) => e.stopPropagation()}
+          >
+          <div className="space-y-4 p-4">
+            <div className="flex justify-between items-center">
+              <h4 className="font-medium">{t('settings.editAction')}</h4>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setIsEditOpen(false)}
+                className="h-8 w-8 p-0"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            <div className="space-y-2">
+              <Input
+                placeholder={t('settings.actionName')}
+                value={editFormData.name}
+                onChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-sm font-medium">{t('settings.numberOfTimes')}</label>
+              <Select
+                value={editFormData.times.toString()}
+                onValueChange={(value) => setEditFormData({ ...editFormData, times: Number(value) })}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="z-[10000]">
+                  <SelectItem value="1">1</SelectItem>
+                  <SelectItem value="2">2</SelectItem>
+                  <SelectItem value="3">3</SelectItem>
+                  <SelectItem value="4">4</SelectItem>
+                  <SelectItem value="5">5</SelectItem>
+                  <SelectItem value="6">6</SelectItem>
+                  <SelectItem value="7">7</SelectItem>
+                  <SelectItem value="8">8</SelectItem>
+                  <SelectItem value="9">9</SelectItem>
+                  <SelectItem value="10">10</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">{t('settings.area')}</label>
+              <Select
+                value={editFormData.area}
+                onValueChange={(value) => setEditFormData({ ...editFormData, area: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder={t('settings.area')} />
+                </SelectTrigger>
+                <SelectContent className="z-[10000]">
+                  <SelectItem value="self">Self</SelectItem>
+                  <SelectItem value="home">Home</SelectItem>
+                  <SelectItem value="social">Social</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">{t('settings.category')}</label>
+              <Select
+                value={editFormData.categories[0] || ''}
+                onValueChange={(value) => setEditFormData({ ...editFormData, categories: [value] })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder={t('settings.category')} />
+                </SelectTrigger>
+                <SelectContent className="z-[10000]">
+                  <SelectItem value="body">Body</SelectItem>
+                  <SelectItem value="spirituality">Spirituality</SelectItem>
+                  <SelectItem value="fun">Fun</SelectItem>
+                  <SelectItem value="extra">Extra</SelectItem>
+                  <SelectItem value="clean">Clean</SelectItem>
+                  <SelectItem value="affection">Affection</SelectItem>
+                  <SelectItem value="growth">Growth</SelectItem>
+                  <SelectItem value="work">Work</SelectItem>
+                  <SelectItem value="maintenance">Maintenance</SelectItem>
+                  <SelectItem value="community">Community</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex justify-end space-x-2 p-4">
+              <Button variant="outline" onClick={() => setIsEditOpen(false)}>
+                {t('settings.cancel')}
+              </Button>
+              <Button onClick={handleEditSubmit}>
+                {t('settings.save')}
+              </Button>
+            </div>
+          </div>
+          </div>
+        </div>
+      )}
     </div>
 }
