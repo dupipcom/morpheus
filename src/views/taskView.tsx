@@ -236,7 +236,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
 
   // Create debounced version of handleSubmit for text input
   const debouncedHandleTextSubmit = useDebounce(async (value, field) => {
-    await handleMoodSubmit(value, field, fullDay, moodContacts, undefined, mood)
+    await handleMoodSubmit(value, field, fullDay)
     // Don't call updateUser immediately to avoid clearing mood contacts
     // The session will be updated naturally when the user navigates or refreshes
   }, 500)

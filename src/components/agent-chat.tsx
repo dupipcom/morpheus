@@ -56,12 +56,12 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], 
   const handleSendMessage = async () => {
     if (!inputMessage.trim() || isLoading) return
 
-    // const userMessage: Message = {
-    //   id: Date.now().toString(),
-    //   content: inputMessage.trim(),
-    //   role: 'user',
-    //   timestamp: new Date()
-    // }
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      content: inputMessage.trim(),
+      role: 'user',
+      timestamp: new Date().toISOString()
+    }
 
     setMessages(prev => [...prev, userMessage])
     setInputMessage('')
@@ -89,7 +89,7 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], 
 
       const { messages, newMessage } = await continueConversation([
         ...conversation,
-        { role: 'user', content: inputMessage, timestamp: new Date().toISOString() },
+        userMessage,
       ], session?.user?.entries);
 
       let textContent = '';
