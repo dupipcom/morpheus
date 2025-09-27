@@ -202,6 +202,8 @@ export const handleCloseDates = async (
  * @param field - The field name
  * @param fullDay - The date for the mood entry
  * @param moodContacts - Optional contacts associated with the mood
+ * @param moodThings - Optional things associated with the mood
+ * @param moodLifeEvents - Optional life events associated with the mood
  * @param currentText - Current text value
  * @param currentMood - Current mood state to preserve all values
  */
@@ -212,7 +214,8 @@ export const handleMoodSubmit = async (
   moodContacts?: any[],
   moodThings?: any[],
   currentText?: string,
-  currentMood?: any
+  currentMood?: any,
+  moodLifeEvents?: any[]
 ) => {
   let payload: any = { date: fullDay }
 
@@ -230,6 +233,10 @@ export const handleMoodSubmit = async (
     if (moodThings && moodThings.length > 0) {
       payload.moodThings = moodThings
     }
+    // Add mood life events if provided
+    if (moodLifeEvents && moodLifeEvents.length > 0) {
+      payload.moodLifeEvents = moodLifeEvents
+    }
   } else if (field === 'contacts') {
     // Handle contacts field specifically
     if (moodContacts && moodContacts.length > 0) {
@@ -238,6 +245,10 @@ export const handleMoodSubmit = async (
     // Add mood things if provided
     if (moodThings && moodThings.length > 0) {
       payload.moodThings = moodThings
+    }
+    // Add mood life events if provided
+    if (moodLifeEvents && moodLifeEvents.length > 0) {
+      payload.moodLifeEvents = moodLifeEvents
     }
     // Include current mood values when saving contacts to prevent data loss
     if (currentMood) {
@@ -252,7 +263,28 @@ export const handleMoodSubmit = async (
     if (moodContacts && moodContacts.length > 0) {
       payload.moodContacts = moodContacts
     }
+    // Add mood life events if provided
+    if (moodLifeEvents && moodLifeEvents.length > 0) {
+      payload.moodLifeEvents = moodLifeEvents
+    }
     // Include current mood values when saving things to prevent data loss
+    if (currentMood) {
+      payload.mood = currentMood
+    }
+  } else if (field === 'lifeEvents') {
+    // Handle life events field specifically
+    if (moodLifeEvents && moodLifeEvents.length > 0) {
+      payload.moodLifeEvents = moodLifeEvents
+    }
+    // Add mood contacts if provided
+    if (moodContacts && moodContacts.length > 0) {
+      payload.moodContacts = moodContacts
+    }
+    // Add mood things if provided
+    if (moodThings && moodThings.length > 0) {
+      payload.moodThings = moodThings
+    }
+    // Include current mood values when saving life events to prevent data loss
     if (currentMood) {
       payload.mood = currentMood
     }
@@ -267,6 +299,10 @@ export const handleMoodSubmit = async (
     // Add mood things if provided
     if (moodThings && moodThings.length > 0) {
       payload.moodThings = moodThings
+    }
+    // Add mood life events if provided
+    if (moodLifeEvents && moodLifeEvents.length > 0) {
+      payload.moodLifeEvents = moodLifeEvents
     }
     // Include current text if provided (to preserve text when updating mood sliders)
     if (currentText !== undefined) {
