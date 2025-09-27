@@ -99,6 +99,12 @@ export async function POST(req: NextRequest) {
 
             Pease keep your answers under 250 words. Try to solve practical problems.
             
+            Today is ${date}.
+
+            The year is ${year}
+
+            Current week number for the current year is ${weekNumber}.
+
             User's historical daily data for ${year}:
             ${JSON.stringify(entries[year].days)}
 
