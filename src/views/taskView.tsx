@@ -38,7 +38,7 @@ import {
 
 import { Badge } from "@/components/ui/badge"
 import { ContactCombobox } from "@/components/ui/contact-combobox"
-import { Users, X } from "lucide-react"
+import { Users, X, Heart } from "lucide-react"
 
 import { MoodView } from "@/views/moodView"
 
@@ -70,6 +70,8 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const [contacts, setContacts] = useState([])
   const [currentText, setCurrentText] = useState(serverText)
   const [taskContacts, setTaskContacts] = useState({})
+  const [favorites, setFavorites] = useState(new Set())
+  const [optimisticFavorites, setOptimisticFavorites] = useState(new Set())
   const { isAgentChatEnabled } = useFeatureFlag()
   const messages = session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks && session?.user?.entries[year]?.weeks[weekNumber] && session?.user?.entries[year]?.weeks[weekNumber].messages
   const reverseMessages = useMemo (() => messages?.length ? messages.sort((a,b) => new Date(a.timestamp).getTime() > new Date(b.timestamp).getTime() ? 1 : -1) : [], [JSON.stringify(session?.user)])
@@ -128,20 +130,67 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     }
   }, [userTasks])
 
+  // Load favorites from user settings
+  useEffect(() => {
+    if (session?.user?.settings) {
+      const template = timeframe === 'day' 
+        ? session.user.settings.dailyTemplate 
+        : session.user.settings.weeklyTemplate
+      
+      if (template && Array.isArray(template)) {
+        const favoriteSet = new Set()
+        template.forEach(item => {
+          if (typeof item === 'object' && item.favorite) {
+            favoriteSet.add(item.name)
+          } else if (typeof item === 'string') {
+            // Handle legacy string format
+            favoriteSet.add(item)
+          }
+        })
+        setFavorites(favoriteSet)
+        setOptimisticFavorites(favoriteSet)
+      }
+    }
+  }, [session?.user?.settings, timeframe])
+
   const [previousValues, setPreviousValues] = useState(userDone)
   const [values, setValues] = useState(userDone)
 
   const castActions = useMemo(() => {
-    return userTasks?.length > 0 ? userTasks : actions
-  }, [userTasks, actions]).sort((a, b) => {
-    if (a.status === "Done") {
-      return 1
-    } else if (b.status === "Done") {
-      return -1
-    } else {
-      return a.name.localeCompare(b.name)
-    }
-  })
+    const tasks = userTasks?.length > 0 ? userTasks : actions
+    return tasks.sort((a, b) => {
+      const aIsDone = a.status === "Done"
+      const bIsDone = b.status === "Done"
+      const aIsFavorite = optimisticFavorites.has(a.name)
+      const bIsFavorite = optimisticFavorites.has(b.name)
+      
+      // Priority order:
+      // 1. not done favorite tasks
+      // 2. not done non-favorite tasks  
+      // 3. done favorite tasks
+      // 4. done non-favorite tasks
+      
+      // If both are not done
+      if (!aIsDone && !bIsDone) {
+        if (aIsFavorite && !bIsFavorite) return -1 // a (favorite) comes first
+        if (!aIsFavorite && bIsFavorite) return 1  // b (favorite) comes first
+        return a.name.localeCompare(b.name) // alphabetical if both have same favorite status
+      }
+      
+      // If both are done
+      if (aIsDone && bIsDone) {
+        if (aIsFavorite && !bIsFavorite) return -1 // a (favorite) comes first
+        if (!aIsFavorite && bIsFavorite) return 1  // b (favorite) comes first
+        return a.name.localeCompare(b.name) // alphabetical if both have same favorite status
+      }
+      
+      // If one is done and one is not done
+      if (!aIsDone && bIsDone) return -1 // not done comes first
+      if (aIsDone && !bIsDone) return 1  // not done comes first
+      
+      return 0
+    })
+  }, [userTasks, actions, optimisticFavorites])
 
   const isMoodEmpty = useMemo(() => {
     if (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date]) {
@@ -230,6 +279,64 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     
     // Trigger debounced server update with the current values
     debouncedServerUpdate(values)
+  }
+
+  // Handle favorite toggle with optimistic UI
+  const handleToggleFavorite = async (actionName) => {
+    // Optimistic UI update - immediate visual feedback
+    const newOptimisticFavorites = new Set(optimisticFavorites)
+    
+    if (newOptimisticFavorites.has(actionName)) {
+      newOptimisticFavorites.delete(actionName)
+    } else {
+      newOptimisticFavorites.add(actionName)
+    }
+    
+    setOptimisticFavorites(newOptimisticFavorites)
+    
+    // Save to database with new data structure
+    try {
+      const currentTemplate = timeframe === 'day' 
+        ? session?.user?.settings?.dailyTemplate || []
+        : session?.user?.settings?.weeklyTemplate || []
+      
+      // Update template items with favorite flag
+      const updatedTemplate = currentTemplate.map(item => {
+        const itemName = typeof item === 'string' ? item : item.name
+        if (itemName === actionName) {
+          return {
+            ...(typeof item === 'object' ? item : { name: item }),
+            favorite: newOptimisticFavorites.has(actionName)
+          }
+        }
+        return typeof item === 'object' ? item : { name: item, favorite: false }
+      })
+      
+      const payload = {
+        settings: {
+          [timeframe === 'day' ? 'dailyTemplate' : 'weeklyTemplate']: updatedTemplate
+        }
+      }
+      
+      const response = await fetch('/api/v1/user', {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      })
+      
+      if (response.ok) {
+        // Update the actual favorites state on success
+        setFavorites(newOptimisticFavorites)
+        await updateUser(session, setGlobalContext, { session, theme })
+      } else {
+        console.error('Failed to save favorite:', response.status, response.statusText)
+        // Revert optimistic state on error
+        setOptimisticFavorites(favorites)
+      }
+    } catch (error) {
+      console.error('Error saving favorite:', error)
+      // Revert optimistic state on error
+      setOptimisticFavorites(favorites)
+    }
   }
 
   // Function to save task contacts when they are modified
@@ -380,13 +487,30 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                 {action.times > 1 ? `${action.count}/${action.times} ` : ''}{action.displayName || action.name}
               </ToggleGroupItem>
               
+              {/* Favorite Button */}
+              <Button
+                variant="ghost"
+                size="sm"
+                className={`absolute top-1/2 right-1 transform -translate-y-1/2 h-6 w-6 p-0 rounded-full ${
+                  optimisticFavorites.has(action.name) 
+                    ? 'bg-primary' 
+                    : 'bg-muted'
+                }`}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleToggleFavorite(action.name)
+                }}
+              >
+                <Heart className={`h-3 w-3 ${optimisticFavorites.has(action.name) ? 'fill-muted' : ''}`} />
+              </Button>
+
               {/* Contact Management Popover */}
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="bg-muted absolute top-1/2 right-1 transform -translate-y-1/2 h-6 w-6 p-0 rounded-full"
+                    className="bg-muted absolute top-1/2 right-8 transform -translate-y-1/2 h-6 w-6 p-0 rounded-full"
                   >
                     <Users className="h-3 w-3" />
                   </Button>
