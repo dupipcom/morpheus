@@ -104,7 +104,16 @@
     "peopleInfluencedMood": "People who influenced your mood today",
     "addContactsToTask": "Add Contacts to \"{taskName}\"",
     "selectContacts": "Select contacts...",
-    "interactionQualityRatings": "Interaction Quality Ratings"
+    "interactionQualityRatings": "Interaction Quality Ratings",
+    "thingsInfluencedMood": "Things that influenced your mood today",
+    "addNewThing": "Add New Thing",
+    "addThing": "Add Thing",
+    "editThing": "Edit Thing",
+    "deleteThing": "Delete Thing",
+    "noThingsFound": "No things found. Add your first thing above.",
+    "addThingsToTask": "Add Things to \"{taskName}\"",
+    "selectThings": "Select things...",
+    "thingsInteractionQualityRatings": "Things Interaction Quality Ratings"
   },
   "actions": {
     "daily": {
