@@ -83,7 +83,10 @@
     "monthsFixedIncome": "Reddito Fisso Mensile",
     "monthsVariableIncome": "Reddito Variabile Mensile",
     "fixedNeedCosts": "Costi Fissi delle Necessità",
-    "expectedNeedUtilities": "Media Attesa dei Servizi Pubblici"
+    "expectedNeedUtilities": "Media Attesa dei Servizi Pubblici",
+    "editAction": "Modifica azione",
+    "save": "Salva",
+    "cancel": "Annulla"
   },
   "social": {
     "title": "Contatti Sociali",
@@ -101,7 +104,26 @@
     "peopleInfluencedMood": "Persone che hanno influenzato il tuo umore oggi",
     "addContactsToTask": "Aggiungi Contatti a \"{taskName}\"",
     "selectContacts": "Seleziona contatti...",
-    "interactionQualityRatings": "Valutazioni Qualità Interazione"
+    "interactionQualityRatings": "Valutazioni Qualità Interazione",
+    "thingsInfluencedMood": "Cose che hanno influenzato il tuo umore oggi",
+    "addNewThing": "Aggiungi Nuova Cosa",
+    "addThing": "Aggiungi Cosa",
+    "editThing": "Modifica Cosa",
+    "deleteThing": "Elimina Cosa",
+    "noThingsFound": "Nessuna cosa trovata. Aggiungi la tua prima cosa sopra.",
+    "addThingsToTask": "Aggiungi Cose a \"{taskName}\"",
+    "selectThings": "Seleziona cose...",
+    "thingsInteractionQualityRatings": "Valutazioni Qualità Interazione Cose",
+    "lifeEventsInfluencedMood": "Eventi di vita che hanno influenzato il tuo umore oggi",
+    "addNewLifeEvent": "Aggiungi Nuovo Evento di Vita",
+    "addLifeEvent": "Aggiungi Evento di Vita",
+    "editLifeEvent": "Modifica Evento di Vita",
+    "deleteLifeEvent": "Elimina Evento di Vita",
+    "noLifeEventsFound": "Nessun evento di vita trovato. Aggiungi il tuo primo evento di vita sopra.",
+    "addLifeEventsToTask": "Aggiungi Eventi di Vita a \"{taskName}\"",
+    "selectLifeEvents": "Seleziona eventi di vita...",
+    "lifeEventsImpactRatings": "Valutazioni Impatto Eventi di Vita",
+    "impact": "Impatto"
   },
   "actions": {
     "daily": {
@@ -205,6 +227,14 @@
     "moodAverageScale": "Scala Media Umore",
     "balance": "Saldo",
     "earningsScale": "Scala Guadagni"
+  },
+  "agentChat": {
+    "thinking": "Pensando...",
+    "startConversation": "Inizia una conversazione con il tuo assistente IA",
+    "getInsights": "Chiedi del tuo umore, abitudini o ottieni insights personalizzati",
+    "placeholder": "Chattiamo...",
+    "error": "Scusa, ho riscontrato un errore. Riprova.",
+    "failedToSend": "Invio messaggio fallito. Riprova."
   },
   "errors": {
     "notFound": "Ops! Non è stato possibile sintonizzarsi su questa frequenza.",

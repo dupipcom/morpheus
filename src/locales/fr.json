@@ -83,7 +83,10 @@
     "monthsFixedIncome": "Revenus Fixes Mensuels",
     "monthsVariableIncome": "Revenus Variables Mensuels",
     "fixedNeedCosts": "Coûts Fixes de Besoins",
-    "expectedNeedUtilities": "Moyenne Attendue des Services Publics"
+    "expectedNeedUtilities": "Moyenne Attendue des Services Publics",
+    "editAction": "Modifier l'action",
+    "save": "Enregistrer",
+    "cancel": "Annuler"
   },
   "social": {
     "title": "Contacts Sociaux",
@@ -101,7 +104,26 @@
     "peopleInfluencedMood": "Personnes qui ont influencé votre humeur aujourd'hui",
     "addContactsToTask": "Ajouter des Contacts à \"{taskName}\"",
     "selectContacts": "Sélectionner des contacts...",
-    "interactionQualityRatings": "Évaluations de Qualité d'Interaction"
+    "interactionQualityRatings": "Évaluations de Qualité d'Interaction",
+    "thingsInfluencedMood": "Choses qui ont influencé votre humeur aujourd'hui",
+    "addNewThing": "Ajouter Nouvelle Chose",
+    "addThing": "Ajouter Chose",
+    "editThing": "Modifier Chose",
+    "deleteThing": "Supprimer Chose",
+    "noThingsFound": "Aucune chose trouvée. Ajoutez votre première chose ci-dessus.",
+    "addThingsToTask": "Ajouter des Choses à \"{taskName}\"",
+    "selectThings": "Sélectionner des choses...",
+    "thingsInteractionQualityRatings": "Évaluations de Qualité d'Interaction des Choses",
+    "lifeEventsInfluencedMood": "Événements de vie qui ont influencé votre humeur aujourd'hui",
+    "addNewLifeEvent": "Ajouter Nouvel Événement de Vie",
+    "addLifeEvent": "Ajouter Événement de Vie",
+    "editLifeEvent": "Modifier Événement de Vie",
+    "deleteLifeEvent": "Supprimer Événement de Vie",
+    "noLifeEventsFound": "Aucun événement de vie trouvé. Ajoutez votre premier événement de vie ci-dessus.",
+    "addLifeEventsToTask": "Ajouter des Événements de Vie à \"{taskName}\"",
+    "selectLifeEvents": "Sélectionner des événements de vie...",
+    "lifeEventsImpactRatings": "Évaluations d'Impact des Événements de Vie",
+    "impact": "Impact"
   },
   "actions": {
     "daily": {
@@ -205,6 +227,14 @@
     "moodAverageScale": "Échelle de Moyenne d'Humeur",
     "balance": "Solde",
     "earningsScale": "Échelle de Gains"
+  },
+  "agentChat": {
+    "thinking": "Réflexion...",
+    "startConversation": "Commencez une conversation avec votre assistant IA",
+    "getInsights": "Demandez des informations sur votre humeur, vos habitudes ou obtenez des insights personnalisés",
+    "placeholder": "Discutons...",
+    "error": "Désolé, j'ai rencontré une erreur. Veuillez réessayer.",
+    "failedToSend": "Échec de l'envoi du message. Veuillez réessayer."
   },
   "errors": {
     "notFound": "Oups ! Impossible de s'accorder sur cette fréquence.",

@@ -177,7 +177,26 @@
     "peopleInfluencedMood": "אנשים שהשפיעו על מצב הרוח שלך היום",
     "addContactsToTask": "הוסף אנשי קשר ל-\"{taskName}\"",
     "selectContacts": "בחר אנשי קשר...",
-    "interactionQualityRatings": "דירוגי איכות אינטראקציה"
+    "interactionQualityRatings": "דירוגי איכות אינטראקציה",
+    "thingsInfluencedMood": "דברים שהשפיעו על מצב הרוח שלך היום",
+    "addNewThing": "הוסף דבר חדש",
+    "addThing": "הוסף דבר",
+    "editThing": "ערוך דבר",
+    "deleteThing": "מחק דבר",
+    "noThingsFound": "לא נמצאו דברים. הוסף את הדבר הראשון שלך למעלה.",
+    "addThingsToTask": "הוסף דברים ל-\"{taskName}\"",
+    "selectThings": "בחר דברים...",
+    "thingsInteractionQualityRatings": "דירוגי איכות אינטראקציה של דברים",
+    "lifeEventsInfluencedMood": "אירועי חיים שהשפיעו על מצב הרוח שלך היום",
+    "addNewLifeEvent": "הוסף אירוע חיים חדש",
+    "addLifeEvent": "הוסף אירוע חיים",
+    "editLifeEvent": "ערוך אירוע חיים",
+    "deleteLifeEvent": "מחק אירוע חיים",
+    "noLifeEventsFound": "לא נמצאו אירועי חיים. הוסף את אירוע החיים הראשון שלך למעלה.",
+    "addLifeEventsToTask": "הוסף אירועי חיים ל-\"{taskName}\"",
+    "selectLifeEvents": "בחר אירועי חיים...",
+    "lifeEventsImpactRatings": "דירוגי השפעה של אירועי חיים",
+    "impact": "השפעה"
   },
   "settings": {
     "title": "הגדרות",
@@ -194,6 +213,21 @@
     "monthsFixedIncome": "Month's Recurring Income",
     "monthsVariableIncome": "Month's Variable Income",
     "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average"
+    "expectedNeedUtilities": "Expected Need Utilities Average",
+    "editAction": "ערוך פעולה",
+    "save": "שמור",
+    "cancel": "בטל"
+  },
+  "agentChat": {
+    "thinking": "חושב...",
+    "startConversation": "התחל שיחה עם העוזר הבינה המלאכותית שלך",
+    "getInsights": "שאל על מצב הרוח שלך, הרגלים או קבל תובנות מותאמות אישית",
+    "placeholder": "בואו נשוחח...",
+    "error": "סליחה, נתקלתי בשגיאה. אנא נסה שוב.",
+    "failedToSend": "שליחת הודעה נכשלה. אנא נסה שוב."
+  },
+  "errors": {
+    "notFound": "אופס! לא ניתן לכוון לתדר זה.",
+    "genericError": "משהו השתבש. אנא נסה שוב."
   }
 }

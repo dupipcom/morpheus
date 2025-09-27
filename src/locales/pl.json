@@ -199,7 +199,26 @@
     "peopleInfluencedMood": "Ludzie, którzy wpłynęli na twój nastrój dzisiaj",
     "addContactsToTask": "Dodaj kontakty do \"{taskName}\"",
     "selectContacts": "Wybierz kontakty...",
-    "interactionQualityRatings": "Oceny jakości interakcji"
+    "interactionQualityRatings": "Oceny jakości interakcji",
+    "thingsInfluencedMood": "Rzeczy, które wpłynęły na twój nastrój dzisiaj",
+    "addNewThing": "Dodaj nową rzecz",
+    "addThing": "Dodaj rzecz",
+    "editThing": "Edytuj rzecz",
+    "deleteThing": "Usuń rzecz",
+    "noThingsFound": "Nie znaleziono rzeczy. Dodaj swoją pierwszą rzecz powyżej.",
+    "addThingsToTask": "Dodaj rzeczy do \"{taskName}\"",
+    "selectThings": "Wybierz rzeczy...",
+    "thingsInteractionQualityRatings": "Oceny jakości interakcji rzeczy",
+    "lifeEventsInfluencedMood": "Wydarzenia życiowe, które wpłynęły na twój nastrój dzisiaj",
+    "addNewLifeEvent": "Dodaj nowe wydarzenie życiowe",
+    "addLifeEvent": "Dodaj wydarzenie życiowe",
+    "editLifeEvent": "Edytuj wydarzenie życiowe",
+    "deleteLifeEvent": "Usuń wydarzenie życiowe",
+    "noLifeEventsFound": "Nie znaleziono wydarzeń życiowych. Dodaj swoje pierwsze wydarzenie życiowe powyżej.",
+    "addLifeEventsToTask": "Dodaj wydarzenia życiowe do \"{taskName}\"",
+    "selectLifeEvents": "Wybierz wydarzenia życiowe...",
+    "lifeEventsImpactRatings": "Oceny wpływu wydarzeń życiowych",
+    "impact": "Wpływ"
   },
   "settings": {
     "title": "Ustawienia",
@@ -216,6 +235,21 @@
     "monthsFixedIncome": "Month's Recurring Income",
     "monthsVariableIncome": "Month's Variable Income",
     "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average"
+    "expectedNeedUtilities": "Expected Need Utilities Average",
+    "editAction": "Edytuj akcję",
+    "save": "Zapisz",
+    "cancel": "Anuluj"
+  },
+  "agentChat": {
+    "thinking": "Myślę...",
+    "startConversation": "Rozpocznij rozmowę z asystentem AI",
+    "getInsights": "Zapytaj o swój nastrój, nawyki lub uzyskaj spersonalizowane spostrzeżenia",
+    "placeholder": "Porozmawiajmy...",
+    "error": "Przepraszam, napotkałem błąd. Spróbuj ponownie.",
+    "failedToSend": "Nie udało się wysłać wiadomości. Spróbuj ponownie."
+  },
+  "errors": {
+    "notFound": "Ups! Nie można dostroić tej częstotliwości.",
+    "genericError": "Coś poszło nie tak. Spróbuj ponownie."
   }
 }

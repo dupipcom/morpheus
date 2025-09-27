@@ -185,7 +185,26 @@
     "peopleInfluencedMood": "Ihmiset, jotka vaikuttivat mielialaasi tänään",
     "addContactsToTask": "Lisää yhteystiedot tehtävään \"{taskName}\"",
     "selectContacts": "Valitse yhteystiedot...",
-    "interactionQualityRatings": "Vuorovaikutuksen Laadun Arvioinnit"
+    "interactionQualityRatings": "Vuorovaikutuksen Laadun Arvioinnit",
+    "thingsInfluencedMood": "Asiat, jotka vaikuttivat mielialaasi tänään",
+    "addNewThing": "Lisää uusi asia",
+    "addThing": "Lisää asia",
+    "editThing": "Muokkaa asiaa",
+    "deleteThing": "Poista asia",
+    "noThingsFound": "Asioita ei löytynyt. Lisää ensimmäinen asiasi yllä.",
+    "addThingsToTask": "Lisää asioita \"{taskName}\"",
+    "selectThings": "Valitse asioita...",
+    "thingsInteractionQualityRatings": "Asioiden vuorovaikutuksen laadun arvioinnit",
+    "lifeEventsInfluencedMood": "Elämän tapahtumat, jotka vaikuttivat mielialaasi tänään",
+    "addNewLifeEvent": "Lisää uusi elämän tapahtuma",
+    "addLifeEvent": "Lisää elämän tapahtuma",
+    "editLifeEvent": "Muokkaa elämän tapahtumaa",
+    "deleteLifeEvent": "Poista elämän tapahtuma",
+    "noLifeEventsFound": "Elämän tapahtumia ei löytynyt. Lisää ensimmäinen elämän tapahtumasi yllä.",
+    "addLifeEventsToTask": "Lisää elämän tapahtumia \"{taskName}\"",
+    "selectLifeEvents": "Valitse elämän tapahtumia...",
+    "lifeEventsImpactRatings": "Elämän tapahtumien vaikutuksen arvioinnit",
+    "impact": "Vaikutus"
   },
   "settings": {
     "title": "Asetukset",
@@ -202,6 +221,21 @@
     "monthsFixedIncome": "Month's Recurring Income",
     "monthsVariableIncome": "Month's Variable Income",
     "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average"
+    "expectedNeedUtilities": "Expected Need Utilities Average",
+    "editAction": "Muokkaa toimintoa",
+    "save": "Tallenna",
+    "cancel": "Peruuta"
+  },
+  "agentChat": {
+    "thinking": "Ajattelen...",
+    "startConversation": "Aloita keskustelu AI-avustajasi kanssa",
+    "getInsights": "Kysy mielialastasi, tavoista tai saa henkilökohtaisia oivalluksia",
+    "placeholder": "Chatataan...",
+    "error": "Anteeksi, kohtasin virheen. Yritä uudelleen.",
+    "failedToSend": "Viestin lähettäminen epäonnistui. Yritä uudelleen."
+  },
+  "errors": {
+    "notFound": "Hups! Ei voitu virittää tätä taajuutta.",
+    "genericError": "Jokin meni pieleen. Yritä uudelleen."
   }
 }

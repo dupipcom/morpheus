@@ -225,6 +225,14 @@
     "balance": "Balance",
     "earningsScale": "Earnings Scale"
   },
+  "agentChat": {
+    "thinking": "Thinking...",
+    "startConversation": "Start a conversation with your AI assistant",
+    "getInsights": "Ask about your mood, habits, or get personalized insights",
+    "placeholder": "Let's chat...",
+    "error": "Sorry, I encountered an error. Please try again.",
+    "failedToSend": "Failed to send message. Please try again."
+  },
   "errors": {
     "notFound": "Ops! Could not tune to this frequency.",
     "genericError": "Something went wrong. Please try again."

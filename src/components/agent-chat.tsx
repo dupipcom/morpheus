@@ -131,11 +131,11 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], 
       setMessages(prev => [...prev, reply])
     } catch (error) {
       console.error('Chat error:', error)
-      // toast.error('Failed to send message. Please try again.')
+      // toast.error(t('agentChat.failedToSend'))
       
       // const errorMessage: Message = {
       //   id: (Date.now() + 1).toString(),
-      //   content: 'Sorry, I encountered an error. Please try again.',
+      //   content: t('agentChat.error'),
       //   role: 'assistant',
       //   timestamp: new Date()
       // }
@@ -167,7 +167,7 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], 
                       <div className="flex items-center gap-2">
                         <Bot className="h-4 w-4" />
                         <Loader2 className="h-4 w-4 animate-spin" />
-                        <span className="text-sm text-muted-foreground">Thinking...</span>
+                        <span className="text-sm text-muted-foreground">{t('agentChat.thinking')}</span>
                       </div>
                     </div>
                   </div>
@@ -176,8 +176,8 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], 
               <div className="flex-1 flex items-center justify-center text-muted-foreground">
                 <div className="text-center">
                   <Bot className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p className="text-sm">Start a conversation with your AI assistant</p>
-                  <p className="text-xs mt-2">Ask about your mood, habits, or get personalized insights</p>
+                  <p className="text-sm">{t('agentChat.startConversation')}</p>
+                  <p className="text-xs mt-2">{t('agentChat.getInsights')}</p>
                 </div>
               </div>
             ) : (
@@ -225,7 +225,7 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], 
           value={inputMessage}
           onChange={(e) => setInputMessage(e.target.value)}
           onKeyPress={handleKeyPress}
-          placeholder={"Let's chat..."}
+          placeholder={t('agentChat.placeholder')}
           className="flex-1 min-h-[60px] max-h-[120px] resize-none"
           disabled={isLoading}
         />

@@ -177,7 +177,26 @@
     "peopleInfluencedMood": "Persones que han influït en el teu estat d'ànim avui",
     "addContactsToTask": "Afegir Contactes a \"{taskName}\"",
     "selectContacts": "Seleccionar contactes...",
-    "interactionQualityRatings": "Valoracions de Qualitat d'Interacció"
+    "interactionQualityRatings": "Valoracions de Qualitat d'Interacció",
+    "thingsInfluencedMood": "Coses que han influït en el teu estat d'ànim avui",
+    "addNewThing": "Afegir cosa nova",
+    "addThing": "Afegir cosa",
+    "editThing": "Editar cosa",
+    "deleteThing": "Eliminar cosa",
+    "noThingsFound": "No s'han trobat coses. Afegeix la teva primera cosa a dalt.",
+    "addThingsToTask": "Afegir coses a \"{taskName}\"",
+    "selectThings": "Seleccionar coses...",
+    "thingsInteractionQualityRatings": "Avaluacions de qualitat d'interacció de coses",
+    "lifeEventsInfluencedMood": "Esdeveniments de vida que han influït en el teu estat d'ànim avui",
+    "addNewLifeEvent": "Afegir nou esdeveniment de vida",
+    "addLifeEvent": "Afegir esdeveniment de vida",
+    "editLifeEvent": "Editar esdeveniment de vida",
+    "deleteLifeEvent": "Eliminar esdeveniment de vida",
+    "noLifeEventsFound": "No s'han trobat esdeveniments de vida. Afegeix el teu primer esdeveniment de vida a dalt.",
+    "addLifeEventsToTask": "Afegir esdeveniments de vida a \"{taskName}\"",
+    "selectLifeEvents": "Seleccionar esdeveniments de vida...",
+    "lifeEventsImpactRatings": "Avaluacions d'impacte d'esdeveniments de vida",
+    "impact": "Impacte"
   },
   "settings": {
     "title": "Configuració",
@@ -194,6 +213,21 @@
     "monthsFixedIncome": "Month's Recurring Income",
     "monthsVariableIncome": "Month's Variable Income",
     "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average"
+    "expectedNeedUtilities": "Expected Need Utilities Average",
+    "editAction": "Editar acció",
+    "save": "Desar",
+    "cancel": "Cancel·lar"
+  },
+  "agentChat": {
+    "thinking": "Pensant...",
+    "startConversation": "Inicia una conversa amb el teu assistent d'IA",
+    "getInsights": "Pregunta sobre el teu estat d'ànim, hàbits o obtén perspectives personalitzades",
+    "placeholder": "Parlem...",
+    "error": "Ho sento, he trobat un error. Si us plau, torna-ho a intentar.",
+    "failedToSend": "L'enviament del missatge ha fallat. Si us plau, torna-ho a intentar."
+  },
+  "errors": {
+    "notFound": "Ups! No s'ha pogut sintonitzar aquesta freqüència.",
+    "genericError": "Alguna cosa ha anat malament. Si us plau, torna-ho a intentar."
   }
 }

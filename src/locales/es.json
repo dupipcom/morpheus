@@ -83,7 +83,10 @@
     "monthsFixedIncome": "Ingresos Fijos Mensuales",
     "monthsVariableIncome": "Ingresos Variables Mensuales",
     "fixedNeedCosts": "Costos Fijos de Necesidades",
-    "expectedNeedUtilities": "Promedio Esperado de Servicios Públicos"
+    "expectedNeedUtilities": "Promedio Esperado de Servicios Públicos",
+    "editAction": "Editar acción",
+    "save": "Guardar",
+    "cancel": "Cancelar"
   },
   "social": {
     "title": "Contactos Sociales",
@@ -101,7 +104,26 @@
     "peopleInfluencedMood": "Personas que influyeron en tu estado de ánimo hoy",
     "addContactsToTask": "Agregar Contactos a \"{taskName}\"",
     "selectContacts": "Seleccionar contactos...",
-    "interactionQualityRatings": "Calificaciones de Calidad de Interacción"
+    "interactionQualityRatings": "Calificaciones de Calidad de Interacción",
+    "thingsInfluencedMood": "Cosas que influyeron en tu estado de ánimo hoy",
+    "addNewThing": "Agregar Nueva Cosa",
+    "addThing": "Agregar Cosa",
+    "editThing": "Editar Cosa",
+    "deleteThing": "Eliminar Cosa",
+    "noThingsFound": "No se encontraron cosas. Agrega tu primera cosa arriba.",
+    "addThingsToTask": "Agregar Cosas a \"{taskName}\"",
+    "selectThings": "Seleccionar cosas...",
+    "thingsInteractionQualityRatings": "Calificaciones de Calidad de Interacción de Cosas",
+    "lifeEventsInfluencedMood": "Eventos de vida que influyeron en tu estado de ánimo hoy",
+    "addNewLifeEvent": "Agregar Nuevo Evento de Vida",
+    "addLifeEvent": "Agregar Evento de Vida",
+    "editLifeEvent": "Editar Evento de Vida",
+    "deleteLifeEvent": "Eliminar Evento de Vida",
+    "noLifeEventsFound": "No se encontraron eventos de vida. Agrega tu primer evento de vida arriba.",
+    "addLifeEventsToTask": "Agregar Eventos de Vida a \"{taskName}\"",
+    "selectLifeEvents": "Seleccionar eventos de vida...",
+    "lifeEventsImpactRatings": "Calificaciones de Impacto de Eventos de Vida",
+    "impact": "Impacto"
   },
   "actions": {
     "daily": {
@@ -205,6 +227,14 @@
     "moodAverageScale": "Escala de Promedio de Estado de Ánimo",
     "balance": "Saldo",
     "earningsScale": "Escala de Ganancias"
+  },
+  "agentChat": {
+    "thinking": "Pensando...",
+    "startConversation": "Comienza una conversación con tu asistente de IA",
+    "getInsights": "Pregunta sobre tu estado de ánimo, hábitos u obtén insights personalizados",
+    "placeholder": "Hablemos...",
+    "error": "Lo siento, encontré un error. Por favor, inténtalo de nuevo.",
+    "failedToSend": "Error al enviar mensaje. Por favor, inténtalo de nuevo."
   },
   "errors": {
     "notFound": "¡Ups! No se pudo sintonizar esta frecuencia.",

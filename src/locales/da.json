@@ -185,7 +185,26 @@
     "peopleInfluencedMood": "Mennesker, der påvirkede dit humør i dag",
     "addContactsToTask": "Tilføj kontakter til \"{taskName}\"",
     "selectContacts": "Vælg kontakter...",
-    "interactionQualityRatings": "Interaktionskvalitetsvurderinger"
+    "interactionQualityRatings": "Interaktionskvalitetsvurderinger",
+    "thingsInfluencedMood": "Ting, der påvirkede dit humør i dag",
+    "addNewThing": "Tilføj ny ting",
+    "addThing": "Tilføj ting",
+    "editThing": "Rediger ting",
+    "deleteThing": "Slet ting",
+    "noThingsFound": "Ingen ting fundet. Tilføj din første ting ovenfor.",
+    "addThingsToTask": "Tilføj ting til \"{taskName}\"",
+    "selectThings": "Vælg ting...",
+    "thingsInteractionQualityRatings": "Tinges interaktionskvalitetsvurderinger",
+    "lifeEventsInfluencedMood": "Livsbegivenheder, der påvirkede dit humør i dag",
+    "addNewLifeEvent": "Tilføj ny livsbegivenhed",
+    "addLifeEvent": "Tilføj livsbegivenhed",
+    "editLifeEvent": "Rediger livsbegivenhed",
+    "deleteLifeEvent": "Slet livsbegivenhed",
+    "noLifeEventsFound": "Ingen livsbegivenheder fundet. Tilføj din første livsbegivenhed ovenfor.",
+    "addLifeEventsToTask": "Tilføj livsbegivenheder til \"{taskName}\"",
+    "selectLifeEvents": "Vælg livsbegivenheder...",
+    "lifeEventsImpactRatings": "Livsbegivenheders påvirkningsvurderinger",
+    "impact": "Påvirkning"
   },
   "settings": {
     "title": "Indstillinger",
@@ -202,6 +221,21 @@
     "monthsFixedIncome": "Month's Recurring Income",
     "monthsVariableIncome": "Month's Variable Income",
     "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average"
+    "expectedNeedUtilities": "Expected Need Utilities Average",
+    "editAction": "Rediger handling",
+    "save": "Gem",
+    "cancel": "Annuller"
+  },
+  "agentChat": {
+    "thinking": "Tænker...",
+    "startConversation": "Start en samtale med din AI-assistent",
+    "getInsights": "Spørg om dit humør, vaner eller få personaliserede indsigter",
+    "placeholder": "Lad os chatte...",
+    "error": "Undskyld, jeg stødte på en fejl. Prøv igen.",
+    "failedToSend": "Beskeden kunne ikke sendes. Prøv igen."
+  },
+  "errors": {
+    "notFound": "Ups! Kunne ikke indstille denne frekvens.",
+    "genericError": "Noget gik galt. Prøv igen."
   }
 }

@@ -83,7 +83,10 @@
     "monthsFixedIncome": "月固定收入",
     "monthsVariableIncome": "月变动收入",
     "fixedNeedCosts": "固定需求成本",
-    "expectedNeedUtilities": "预期需求公用事业平均值"
+    "expectedNeedUtilities": "预期需求公用事业平均值",
+    "editAction": "编辑操作",
+    "save": "保存",
+    "cancel": "取消"
   },
   "social": {
     "title": "社交联系人",
@@ -101,7 +104,26 @@
     "peopleInfluencedMood": "今天影响您心情的人",
     "addContactsToTask": "向\"{taskName}\"添加联系人",
     "selectContacts": "选择联系人...",
-    "interactionQualityRatings": "互动质量评分"
+    "interactionQualityRatings": "互动质量评分",
+    "thingsInfluencedMood": "今天影响您心情的事物",
+    "addNewThing": "添加新事物",
+    "addThing": "添加事物",
+    "editThing": "编辑事物",
+    "deleteThing": "删除事物",
+    "noThingsFound": "未找到事物。请在上面添加您的第一个事物。",
+    "addThingsToTask": "将事物添加到\"{taskName}\"",
+    "selectThings": "选择事物...",
+    "thingsInteractionQualityRatings": "事物互动质量评分",
+    "lifeEventsInfluencedMood": "今天影响您心情的生活事件",
+    "addNewLifeEvent": "添加新生活事件",
+    "addLifeEvent": "添加生活事件",
+    "editLifeEvent": "编辑生活事件",
+    "deleteLifeEvent": "删除生活事件",
+    "noLifeEventsFound": "未找到生活事件。请在上面添加您的第一个生活事件。",
+    "addLifeEventsToTask": "将生活事件添加到\"{taskName}\"",
+    "selectLifeEvents": "选择生活事件...",
+    "lifeEventsImpactRatings": "生活事件影响评分",
+    "impact": "影响"
   },
   "actions": {
     "daily": {
@@ -205,6 +227,14 @@
     "moodAverageScale": "平均心情比例",
     "balance": "余额",
     "earningsScale": "收入比例"
+  },
+  "agentChat": {
+    "thinking": "思考中...",
+    "startConversation": "开始与您的AI助手对话",
+    "getInsights": "询问您的心情、习惯或获取个性化洞察",
+    "placeholder": "让我们聊天...",
+    "error": "抱歉，我遇到了错误。请重试。",
+    "failedToSend": "发送消息失败。请重试。"
   },
   "errors": {
     "notFound": "哎呀！无法调谐到此频率。",
