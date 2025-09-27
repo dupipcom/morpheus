@@ -73,7 +73,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const [taskContacts, setTaskContacts] = useState({})
   const { isAgentChatEnabled } = useFeatureFlag()
   const messages = session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks && session?.user?.entries[year]?.weeks[weekNumber] && session?.user?.entries[year]?.weeks[weekNumber].messages
-  const reverseMessages = useMemo (() => messages?.length ? messages.sort((a,b) => a ? 1 : -1) : [], [JSON.stringify(session?.user)])
+  const reverseMessages = useMemo (() => messages?.length ? messages.sort((a,b) => new Date(a.timestamp).getTime() > new Date(b.timestamp).getTime() ? 1 : -1) : [], [JSON.stringify(session?.user)])
   
   const earnings = Object.keys(session?.user?.entries || 0).length > 0 ? timeframe === "day" ? session?.user?.entries[year]?.days[date]?.earnings?.toFixed(2) : session?.user?.entries[year]?.weeks[weekNumber]?.earnings?.toFixed(2) : 0
 

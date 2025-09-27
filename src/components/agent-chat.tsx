@@ -1,5 +1,5 @@
 'use client'
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useContext } from 'react'
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent } from "@/components/ui/card"
@@ -7,6 +7,9 @@ import { Send, Bot, User, Loader2 } from "lucide-react"
 import { useI18n } from "@/lib/contexts/i18n"
 import { toast } from "@/components/ui/sonner"
 import { getWeekNumber } from "@/app/helpers"
+import { continueConversation } from "./agent-actions"
+import { readStreamableValue } from '@ai-sdk/rsc';
+import { GlobalContext } from "@/lib/contexts"
 
 interface Message {
   id: string;
@@ -21,9 +24,13 @@ interface AgentChatProps {
   className?: string;
 }
 
+// Allow streaming responses up to 30 seconds
+export const maxDuration = 60;
+
 export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], className = "" }: AgentChatProps) => {
   const { t, locale } = useI18n()
-
+  const { session, setGlobalContext, theme } = useContext(GlobalContext)
+  const [conversation, setConversation] = useState<Message[]>([]);
   const [messages, setMessages] = useState<Message[]>(history)
   const [inputMessage, setInputMessage] = useState(initialMessage)
   const [isLoading, setIsLoading] = useState(false)
@@ -48,25 +55,62 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], 
   const handleSendMessage = async () => {
     if (!inputMessage.trim() || isLoading) return
 
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      content: inputMessage.trim(),
-      role: 'user',
-      timestamp: new Date()
-    }
+    // const userMessage: Message = {
+    //   id: Date.now().toString(),
+    //   content: inputMessage.trim(),
+    //   role: 'user',
+    //   timestamp: new Date()
+    // }
 
-    setMessages(prev => [...prev, userMessage])
-    setInputMessage('')
+    // setMessages(prev => [...prev, userMessage])
+    // setInputMessage('')
     setIsLoading(true)
 
+
+
     try {
+    //   const response = await fetch('/api/v1/chat', {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify({
+    //       message: userMessage.content,
+    //       locale: locale
+    //     })
+    //   })
+
+    //   if (!response.ok) {
+    //     throw new Error('Failed to send message')
+    //   }
+
+    //   const data = await response.json()
+
+      const { messages, newMessage } = await continueConversation([
+        ...conversation,
+        { role: 'user', content: inputMessage, timestamp: new Date().toISOString() },
+      ], session?.user?.entries);
+
+      let textContent = '';
+
+      for await (const delta of readStreamableValue(newMessage)) {
+        textContent = `${textContent}${delta}`;
+
+        setConversation([
+          { role: 'assistant', content: textContent, timestamp: new Date().toISOString()  },
+            ...messages,
+        ]);
+      }
+
+      const reply = { role: "assistant", content: textContent, timestamp: new Date().toISOString()}
+
       const response = await fetch('/api/v1/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          message: userMessage.content,
+          message: [reply, ...messages],
           locale: locale
         })
       })
@@ -75,28 +119,26 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], 
         throw new Error('Failed to send message')
       }
 
-      const data = await response.json()
+      // const assistantMessage: Message = {
+      //   id: (Date.now() + 1).toString(),
+      //   content: data.message,
+      //   role: 'assistant',
+      //   timestamp: new Date()
+      // }
 
-      const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        content: data.message,
-        role: 'assistant',
-        timestamp: new Date()
-      }
-
-      setMessages(prev => [...prev, assistantMessage])
+      // setMessages(prev => [...prev, assistantMessage])
     } catch (error) {
       console.error('Chat error:', error)
-      toast.error('Failed to send message. Please try again.')
+      // toast.error('Failed to send message. Please try again.')
       
-      const errorMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        content: 'Sorry, I encountered an error. Please try again.',
-        role: 'assistant',
-        timestamp: new Date()
-      }
+      // const errorMessage: Message = {
+      //   id: (Date.now() + 1).toString(),
+      //   content: 'Sorry, I encountered an error. Please try again.',
+      //   role: 'assistant',
+      //   timestamp: new Date()
+      // }
       
-      setMessages(prev => [...prev, errorMessage])
+      // setMessages(prev => [...prev, errorMessage])
     } finally {
       setIsLoading(false)
     }
@@ -138,7 +180,7 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], 
               </div>
             ) : (
               <div className="flex-1 overflow-y-auto space-y-4 pr-2 ">
-                {reversedMessages.map((message) => (
+                {[...conversation, ...reversedMessages].map((message) => (
                   <div
                     key={message.id}
                     className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}

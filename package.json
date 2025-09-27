@@ -21,6 +21,7 @@
   "devDependencies": {
     "@ai-sdk/openai": "^2.0.38",
     "@ai-sdk/react": "^2.0.0",
+    "@ai-sdk/rsc": "^1.0.56",
     "@clerk/nextjs": "^6.29.0",
     "@clerk/themes": "^2.4.6",
     "@eslint/eslintrc": "^3",

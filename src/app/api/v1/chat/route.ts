@@ -88,44 +88,44 @@ export async function POST(req: NextRequest) {
     // });
 
     // Create a conversational response using the existing RAG setup
-    const response = await generateText({
-      model: openai("gpt-5-mini-2025-08-07"),
-      messages: [
-        {
-          role: "system",
-          content: `
-            You are a compassionate AI assistant understand their health data and make conscious, legal, responsible with a healthy mindset, and helping users with their mental health and habit tracking journey.
+    // const response = await generateText({
+    //   model: openai("gpt-5-nano"),
+    //   messages: [
+    //     {
+    //       role: "system",
+    //       content: `
+    //         You are a compassionate AI assistant understand their health data and make conscious, legal, responsible with a healthy mindset, and helping users with their mental health and habit tracking journey.
             
-            You have access to the user's historical data and can reference the Atomic Habits book for guidance.
+    //         You have access to the user's historical data and can reference the Atomic Habits book for guidance.
 
-            Pease keep your answers under 250 words. Try to solve practical problems.
+    //         Pease keep your answers under 250 words. Try to solve practical problems.
             
-            Today is ${date}.
+    //         Today is ${date}.
 
-            The year is ${year}
+    //         The year is ${year}
 
-            Current week number for the current year is ${weekNumber}.
+    //         Current week number for the current year is ${weekNumber}.
 
-            The definition of done for daily and weekly tasks is the count key-value matching times key-value in each object in the arrays. 
-            Otherwise, the count specifies the amount of times the task was completed in their respective period: daily or weekly.
-            User's historical daily data for ${year}:
-            ${JSON.stringify(entries[year].days)}
+    //         The definition of done for daily and weekly tasks is the count key-value matching times key-value in each object in the arrays. 
+    //         Otherwise, the count specifies the amount of times the task was completed in their respective period: daily or weekly.
+    //         User's historical daily data for ${year}:
+    //         ${JSON.stringify(entries[year].days)}
 
-            User's historical weekly data for ${year}:
-            ${JSON.stringify(entries[year].weeks)}
+    //         User's historical weekly data for ${year}:
+    //         ${JSON.stringify(entries[year].weeks)}
             
-            Use this data to provide personalized insights and advice.
-          `
-        },
-        {
-          role: "user",
-          content: message
-        }
-      ],
-      // tools: [{ type: "file_search", vector_store_ids: [vectorStore.id] }],
-      // tool_choice: "auto",
-      max_completion_tokens: 25000
-    });
+    //         Use this data to provide personalized insights and advice.
+    //       `
+    //     },
+    //     {
+    //       role: "user",
+    //       content: message
+    //     }
+    //   ],
+    //   // tools: [{ type: "file_search", vector_store_ids: [vectorStore.id] }],
+    //   // tool_choice: "auto",
+    //   max_completion_tokens: 25000
+    // });
 
     if(!user.entries[year].weeks[weekNumber].messages) {
       await prisma.user.update({
@@ -147,19 +147,19 @@ export async function POST(req: NextRequest) {
         where: { userId }, 
       })
     }
-    const reply = response.steps[0].content.map((c) => c.text).join(' ') 
-    const assistantMessage = reply || "I'm sorry, I couldn't process your message right now.";
+    // const reply = response.steps[0].content.map((c) => c.text).join(' ') 
+    // const assistantMessage = reply || "I'm sorry, I couldn't process your message right now.";
 
-    const nextMessages = [{
-      content: message,
-      timestamp: fullDate,
-      role: "user"
-    }, {
-      content: assistantMessage,
-      timestamp: fullDate,
-      role: "assistant"
-    }]
-    
+    // const nextMessages = [{
+    //   content: message,
+    //   timestamp: fullDate,
+    //   role: "user"
+    // }, {
+    //   content: assistantMessage,
+    //   timestamp: fullDate,
+    //   role: "assistant"
+    // }]
+
     await prisma.user.update({
         data: {
           entries: { 
@@ -170,7 +170,7 @@ export async function POST(req: NextRequest) {
                 ...user?.entries[year].weeks, 
                 [weekNumber]: { 
                   ...user?.entries[year].weeks[weekNumber], 
-                  messages: [ ...user?.entries[year].weeks[weekNumber].messages, ...nextMessages ]
+                  messages: [ ...user?.entries[year].weeks[weekNumber].messages, ...message ]
                 }
               }
             }
@@ -181,7 +181,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: assistantMessage,
+      message: "Saved messages",
       timestamp: new Date().toISOString()
     });
 
