@@ -27,6 +27,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
     if (profile.publicChartsVisible && profile.publicCharts) {
       const chartVisibility = {
         moodCharts: (profile.publicCharts as any)?.moodCharts || false,
+        simplifiedMoodChart: (profile.publicCharts as any)?.simplifiedMoodChart || false,
         productivityCharts: (profile.publicCharts as any)?.productivityCharts || false,
         earningsCharts: (profile.publicCharts as any)?.earningsCharts || false,
       }

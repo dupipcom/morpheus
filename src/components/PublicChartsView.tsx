@@ -20,6 +20,12 @@ interface PublicChartsViewProps {
         trust: number
       }>
     }
+    simplifiedMoodChart?: {
+      weeksData: Array<{
+        week: number
+        moodAverage: number
+      }>
+    }
     productivityCharts?: {
       weeksData: Array<{
         week: number
@@ -65,6 +71,13 @@ const moodChartConfig = {
   },
   trust: {
     label: "Trust (%)",
+    color: "#2f2f8d",
+  },
+} satisfies ChartConfig
+
+const simplifiedMoodChartConfig = {
+  moodAverage: {
+    label: "Mood Average (%)",
     color: "#2f2f8d",
   },
 } satisfies ChartConfig
@@ -180,6 +193,41 @@ export function PublicChartsView({ chartsData }: PublicChartsViewProps) {
                 dataKey="trust" 
                 stroke="#f7bfa5" 
                 fill="#f7bfa5" 
+                radius={4} 
+                fillOpacity={0.4} 
+              />
+              <XAxis
+                dataKey="week"
+                tickLine={false}
+                tickMargin={5}
+                axisLine={true}
+              />
+              <ChartTooltip content={<ChartTooltipContent />} />
+              <ChartLegend verticalAlign="top" content={<ChartLegendContent payload={[]} />} />
+            </AreaChart>
+          </ChartContainer>
+        </div>
+      )}
+
+      {/* Simplified Mood Chart */}
+      {chartsData.simplifiedMoodChart && (
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="text-lg font-semibold">Mood Overview</h3>
+              <p className="text-sm text-muted-foreground">Simplified mood tracking - values scaled to percentages for privacy</p>
+            </div>
+            <Badge variant="outline">Simplified Mood Chart</Badge>
+          </div>
+          
+          <ChartContainer config={simplifiedMoodChartConfig}>
+            <AreaChart data={chartsData.simplifiedMoodChart.weeksData} accessibilityLayer>
+              <CartesianGrid vertical={true} horizontal={true} />
+              <Area 
+                type="monotone" 
+                dataKey="moodAverage" 
+                stroke="#2f2f8d" 
+                fill="#2f2f8d" 
                 radius={4} 
                 fillOpacity={0.4} 
               />
