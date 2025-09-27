@@ -63,8 +63,8 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], 
     //   timestamp: new Date()
     // }
 
-    // setMessages(prev => [...prev, userMessage])
-    // setInputMessage('')
+    setMessages(prev => [...prev, userMessage])
+    setInputMessage('')
     setIsLoading(true)
 
 
@@ -127,7 +127,7 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], 
       //   timestamp: new Date()
       // }
 
-      // setMessages(prev => [...prev, assistantMessage])
+      setMessages(prev => [...prev, reply])
     } catch (error) {
       console.error('Chat error:', error)
       // toast.error('Failed to send message. Please try again.')
