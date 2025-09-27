@@ -38,7 +38,7 @@ import {
 
 import { Badge } from "@/components/ui/badge"
 import { ContactCombobox } from "@/components/ui/contact-combobox"
-import { Users, X, Heart } from "lucide-react"
+import { Users, X, Heart, Settings } from "lucide-react"
 
 import { MoodView } from "@/views/moodView"
 
@@ -477,6 +477,17 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
         <AccordionTrigger>{t('dashboard.whatDidYouAccomplish')}</AccordionTrigger>
         <AccordionContent>
           <div className="flex flex-col">
+          {/* Toolbar with edit button */}
+          <div className="flex justify-end mb-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="flex items-center text-muted-foreground hover:text-foreground"
+              onClick={() => window.location.href = '/app/settings'}
+            >
+              <Settings className="h-4 w-4" />
+            </Button>
+          </div>
           <ToggleGroup value={values} onValueChange={handleDoneWithDebounce} variant="outline" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 align-center justify-center w-full m-auto" type="multiple" orientation="horizontal">
       {castActions?.map((action) => {
         const taskContactRefs = taskContacts[action.name] || []
