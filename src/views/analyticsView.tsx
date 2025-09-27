@@ -1,6 +1,6 @@
 'use client'
 import { type ChartConfig } from "@/components/ui/chart"
-import { useState, useEffect, useContext } from 'react'
+import { useState, useEffect, useContext, useMemo } from 'react'
 import { Area, CartesianGrid, Bar, AreaChart, XAxis } from "recharts"
  
 import { ChartContainer, ChartTooltipContent, ChartTooltip, ChartLegendContent, ChartLegend } from "@/components/ui/chart"
@@ -19,9 +19,12 @@ import { getWeekNumber } from "@/app/helpers"
 
 import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
-import { generateInsight } from "@/lib/userUtils"
+import { generateInsight, updateUser, handleMoodSubmit } from "@/lib/userUtils"
 import { AnalyticsViewSkeleton } from "@/components/ui/skeleton-loader"
 import { ContentLoadingWrapper } from '@/components/ContentLoadingWrapper'
+import { AgentChat } from "@/components/agent-chat"
+import { useFeatureFlag } from "@/lib/hooks/useFeatureFlag"
+import { useDebounce } from "@/lib/hooks/useDebounce"
 
 // Chart config generators that use translations
 const createMoodChartConfig = (t: (key: string) => string) => ({
@@ -153,6 +156,13 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
   
   const { session, setGlobalContext, ...globalContext } = useContext(GlobalContext)
   const { t, locale } = useI18n()
+  const { isAgentChatEnabled } = useFeatureFlag()
+  
+  // Message history state
+  const [currentText, setCurrentText] = useState("")
+  const serverText = useMemo(() => (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date] && session?.user?.entries[year].days[date].text) || "", [JSON.stringify(session)])
+  const messages = session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks && session?.user?.entries[year]?.weeks[weekNumber] && session?.user?.entries[year]?.weeks[weekNumber].messages
+  const reverseMessages = useMemo(() => messages?.length ? messages.sort((a,b) => new Date(a.timestamp).getTime() > new Date(b.timestamp).getTime() ? 1 : -1) : [], [JSON.stringify(session?.user)])
   
   // Create chart configs with translations
   const moodChartConfig = createMoodChartConfig(t)
@@ -161,6 +171,16 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
   useEffect(() => {
     generateInsight(setInsight, 'hint', locale)
   }, [locale])
+
+  // Initialize currentText from serverText
+  useEffect(() => {
+    setCurrentText(serverText)
+  }, [serverText])
+
+  // Create debounced version of handleTextSubmit
+  const debouncedHandleTextSubmit = useDebounce(async (message, field) => {
+    await handleMoodSubmit(message, field, fullDate.toISOString().split('T')[0])
+  }, 500)
 
   // Dimension toggle handlers
   const handleMoodDimensionToggle = (dimension: string, visible: boolean) => {
@@ -328,6 +348,21 @@ const aggregateDataByWeek = (dailyData: any[]) => {
     <ContentLoadingWrapper>
       <div className="max-w-[1200px] w-full m-auto p-4 md:px-32 ">
       <p className="mt-0 mb-8">{(insight as any)?.yearAnalysis}</p>
+      
+      {isAgentChatEnabled ? (
+        <div className="mb-16">
+          <AgentChat 
+            key={reverseMessages}
+            onMessageChange={(message) => {
+              setCurrentText(message)
+              debouncedHandleTextSubmit(message, "text")
+            }}
+            history={reverseMessages}
+            initialMessage={currentText}
+            className="h-96"
+          />
+        </div>
+      ) : undefined}
       
       <ChartDimensionSelector
         dimensions={['moodAverage', 'gratitude', 'optimism', 'restedness', 'tolerance', 'selfEsteem', 'trust']}
