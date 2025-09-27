@@ -91,6 +91,7 @@ type Task {
   count Int?
   localeKey String?
   contacts ContactReference[]
+  favorite Boolean?
 }
 
 type ContactReference {
