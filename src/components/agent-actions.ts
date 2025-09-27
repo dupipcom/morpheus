@@ -16,13 +16,16 @@ export async function continueConversation(history: Message[], entries) {
   const stream = createStreamableValue();
 
   const fullDate = new Date();
-const date = fullDate.toISOString().split('T')[0];
-const year = Number(date.split('-')[0]);
-const weekNumber = getWeekNumber(fullDate)[1];
+  const date = fullDate.toISOString().split('T')[0];
+  const year = Number(date.split('-')[0]);
+  const weekNumber = getWeekNumber(fullDate)[1];
 
   (async () => {
     const { textStream } = streamText({
-      model: openai('gpt-5-nano'),
+      model: openai('gpt-5-mini'),
+      maxOutputTokens: 25000,
+      temperature: 0.3,
+      maxRetries: 5,
       system: `You are a compassionate AI assistant understand their health data and make conscious, legal, responsible with a healthy mindset, and helping users with their mental health and habit tracking journey.
             
             You have access to the user's historical data and can reference the Atomic Habits book for guidance.
