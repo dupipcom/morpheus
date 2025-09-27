@@ -185,7 +185,26 @@
     "peopleInfluencedMood": "Orang yang mempengaruhi mood anda hari ini",
     "addContactsToTask": "Tambah Kenalan ke \"{taskName}\"",
     "selectContacts": "Pilih kenalan...",
-    "interactionQualityRatings": "Penilaian Kualiti Interaksi"
+    "interactionQualityRatings": "Penilaian Kualiti Interaksi",
+    "thingsInfluencedMood": "Perkara yang mempengaruhi mood anda hari ini",
+    "addNewThing": "Tambah perkara baru",
+    "addThing": "Tambah perkara",
+    "editThing": "Edit perkara",
+    "deleteThing": "Padam perkara",
+    "noThingsFound": "Tiada perkara ditemui. Tambah perkara pertama anda di atas.",
+    "addThingsToTask": "Tambah perkara ke \"{taskName}\"",
+    "selectThings": "Pilih perkara...",
+    "thingsInteractionQualityRatings": "Penilaian kualiti interaksi perkara",
+    "lifeEventsInfluencedMood": "Peristiwa hidup yang mempengaruhi mood anda hari ini",
+    "addNewLifeEvent": "Tambah peristiwa hidup baru",
+    "addLifeEvent": "Tambah peristiwa hidup",
+    "editLifeEvent": "Edit peristiwa hidup",
+    "deleteLifeEvent": "Padam peristiwa hidup",
+    "noLifeEventsFound": "Tiada peristiwa hidup ditemui. Tambah peristiwa hidup pertama anda di atas.",
+    "addLifeEventsToTask": "Tambah peristiwa hidup ke \"{taskName}\"",
+    "selectLifeEvents": "Pilih peristiwa hidup...",
+    "lifeEventsImpactRatings": "Penilaian impak peristiwa hidup",
+    "impact": "Impak"
   },
   "settings": {
     "title": "Tetapan",
@@ -202,6 +221,21 @@
     "monthsFixedIncome": "Month's Recurring Income",
     "monthsVariableIncome": "Month's Variable Income",
     "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average"
+    "expectedNeedUtilities": "Expected Need Utilities Average",
+    "editAction": "Edit tindakan",
+    "save": "Simpan",
+    "cancel": "Batal"
+  },
+  "agentChat": {
+    "thinking": "Berfikir...",
+    "startConversation": "Mulakan perbualan dengan pembantu AI anda",
+    "getInsights": "Tanya tentang mood, tabiat anda atau dapatkan pandangan peribadi",
+    "placeholder": "Mari berbual...",
+    "error": "Maaf, saya menghadapi ralat. Sila cuba lagi.",
+    "failedToSend": "Gagal menghantar mesej. Sila cuba lagi."
+  },
+  "errors": {
+    "notFound": "Ups! Tidak dapat menala frekuensi ini.",
+    "genericError": "Sesuatu yang salah berlaku. Sila cuba lagi."
   }
 }

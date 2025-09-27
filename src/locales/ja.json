@@ -83,7 +83,10 @@
     "monthsFixedIncome": "月次固定収入",
     "monthsVariableIncome": "月次変動収入",
     "fixedNeedCosts": "固定必要コスト",
-    "expectedNeedUtilities": "期待される必要公共料金の平均"
+    "expectedNeedUtilities": "期待される必要公共料金の平均",
+    "editAction": "アクションを編集",
+    "save": "保存",
+    "cancel": "キャンセル"
   },
   "social": {
     "title": "ソーシャルコンタクト",
@@ -101,7 +104,26 @@
     "peopleInfluencedMood": "今日あなたの気分に影響を与えた人々",
     "addContactsToTask": "\"{taskName}\"にコンタクトを追加",
     "selectContacts": "コンタクトを選択...",
-    "interactionQualityRatings": "インタラクション品質評価"
+    "interactionQualityRatings": "インタラクション品質評価",
+    "thingsInfluencedMood": "今日あなたの気分に影響したもの",
+    "addNewThing": "新しいものを追加",
+    "addThing": "ものを追加",
+    "editThing": "ものを編集",
+    "deleteThing": "ものを削除",
+    "noThingsFound": "ものが見つかりません。上記に最初のものを追加してください。",
+    "addThingsToTask": "\"{taskName}\"にものを追加",
+    "selectThings": "ものを選択...",
+    "thingsInteractionQualityRatings": "もののインタラクション品質評価",
+    "lifeEventsInfluencedMood": "今日あなたの気分に影響した人生の出来事",
+    "addNewLifeEvent": "新しい人生の出来事を追加",
+    "addLifeEvent": "人生の出来事を追加",
+    "editLifeEvent": "人生の出来事を編集",
+    "deleteLifeEvent": "人生の出来事を削除",
+    "noLifeEventsFound": "人生の出来事が見つかりません。上記に最初の人生の出来事を追加してください。",
+    "addLifeEventsToTask": "\"{taskName}\"に人生の出来事を追加",
+    "selectLifeEvents": "人生の出来事を選択...",
+    "lifeEventsImpactRatings": "人生の出来事の影響評価",
+    "impact": "影響"
   },
   "actions": {
     "daily": {
@@ -205,6 +227,14 @@
     "moodAverageScale": "平均気分スケール",
     "balance": "残高",
     "earningsScale": "収益スケール"
+  },
+  "agentChat": {
+    "thinking": "考え中...",
+    "startConversation": "AIアシスタントとの会話を始めましょう",
+    "getInsights": "気分、習慣について質問したり、パーソナライズされたインサイトを取得したりできます",
+    "placeholder": "チャットしましょう...",
+    "error": "申し訳ありません。エラーが発生しました。再試行してください。",
+    "failedToSend": "メッセージの送信に失敗しました。再試行してください。"
   },
   "errors": {
     "notFound": "おっと！この周波数にチューニングできませんでした。",

@@ -177,7 +177,26 @@
     "peopleInfluencedMood": "Oameni care ți-au influențat dispoziția astăzi",
     "addContactsToTask": "Adaugă contacte la \"{taskName}\"",
     "selectContacts": "Selectează contacte...",
-    "interactionQualityRatings": "Evaluări Calitate Interacțiune"
+    "interactionQualityRatings": "Evaluări Calitate Interacțiune",
+    "thingsInfluencedMood": "Lucruri care au influențat dispoziția ta astăzi",
+    "addNewThing": "Adaugă lucru nou",
+    "addThing": "Adaugă lucru",
+    "editThing": "Editează lucru",
+    "deleteThing": "Șterge lucru",
+    "noThingsFound": "Nu s-au găsit lucruri. Adaugă primul tău lucru mai sus.",
+    "addThingsToTask": "Adaugă lucruri la \"{taskName}\"",
+    "selectThings": "Selectează lucruri...",
+    "thingsInteractionQualityRatings": "Evaluări calitate interacțiune lucruri",
+    "lifeEventsInfluencedMood": "Evenimente din viață care au influențat dispoziția ta astăzi",
+    "addNewLifeEvent": "Adaugă eveniment din viață nou",
+    "addLifeEvent": "Adaugă eveniment din viață",
+    "editLifeEvent": "Editează eveniment din viață",
+    "deleteLifeEvent": "Șterge eveniment din viață",
+    "noLifeEventsFound": "Nu s-au găsit evenimente din viață. Adaugă primul tău eveniment din viață mai sus.",
+    "addLifeEventsToTask": "Adaugă evenimente din viață la \"{taskName}\"",
+    "selectLifeEvents": "Selectează evenimente din viață...",
+    "lifeEventsImpactRatings": "Evaluări impact evenimente din viață",
+    "impact": "Impact"
   },
   "settings": {
     "title": "Setări",
@@ -194,6 +213,21 @@
     "monthsFixedIncome": "Month's Recurring Income",
     "monthsVariableIncome": "Month's Variable Income",
     "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average"
+    "expectedNeedUtilities": "Expected Need Utilities Average",
+    "editAction": "Editează acțiunea",
+    "save": "Salvează",
+    "cancel": "Anulează"
+  },
+  "agentChat": {
+    "thinking": "Gândesc...",
+    "startConversation": "Începe o conversație cu asistentul tău AI",
+    "getInsights": "Întreabă despre dispoziția ta, obiceiuri sau obține perspective personalizate",
+    "placeholder": "Să vorbim...",
+    "error": "Îmi pare rău, am întâlnit o eroare. Te rog încearcă din nou.",
+    "failedToSend": "Trimiterea mesajului a eșuat. Te rog încearcă din nou."
+  },
+  "errors": {
+    "notFound": "Ups! Nu s-a putut regla această frecvență.",
+    "genericError": "Ceva a mers greșit. Te rog încearcă din nou."
   }
 }

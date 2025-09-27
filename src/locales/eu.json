@@ -184,7 +184,26 @@
     "peopleInfluencedMood": "Gaur zure humorea eragin zuten pertsonak",
     "addContactsToTask": "Kontaktuak gehitu \"{taskName}\" atazara",
     "selectContacts": "Kontaktuak hautatu...",
-    "interactionQualityRatings": "Elkarreraginaren Kalitate Ebaluazioak"
+    "interactionQualityRatings": "Elkarreraginaren Kalitate Ebaluazioak",
+    "thingsInfluencedMood": "Gauzak zure humurra gaur eragin dutenak",
+    "addNewThing": "Gauza berria gehitu",
+    "addThing": "Gauza gehitu",
+    "editThing": "Gauza editatu",
+    "deleteThing": "Gauza ezabatu",
+    "noThingsFound": "Ez dira gauzak aurkitu. Gehitu zure lehen gauza goian.",
+    "addThingsToTask": "Gehitu gauzak \"{taskName}\" zereginera",
+    "selectThings": "Hautatu gauzak...",
+    "thingsInteractionQualityRatings": "Gauzen elkarrekintza kalitatearen ebaluazioak",
+    "lifeEventsInfluencedMood": "Bizitzako gertaerak zure humurra gaur eragin dutenak",
+    "addNewLifeEvent": "Bizitzako gertaera berria gehitu",
+    "addLifeEvent": "Bizitzako gertaera gehitu",
+    "editLifeEvent": "Bizitzako gertaera editatu",
+    "deleteLifeEvent": "Bizitzako gertaera ezabatu",
+    "noLifeEventsFound": "Ez dira bizitzako gertaerak aurkitu. Gehitu zure lehen bizitzako gertaera goian.",
+    "addLifeEventsToTask": "Gehitu bizitzako gertaerak \"{taskName}\" zereginera",
+    "selectLifeEvents": "Hautatu bizitzako gertaerak...",
+    "lifeEventsImpactRatings": "Bizitzako gertaeren eraginaren ebaluazioak",
+    "impact": "Eragina"
   },
   "settings": {
     "title": "Ezarpenak",
@@ -201,6 +220,21 @@
     "monthsFixedIncome": "Month's Recurring Income",
     "monthsVariableIncome": "Month's Variable Income",
     "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average"
+    "expectedNeedUtilities": "Expected Need Utilities Average",
+    "editAction": "Ekintza editatu",
+    "save": "Gorde",
+    "cancel": "Utzi"
+  },
+  "agentChat": {
+    "thinking": "Pentsatzen...",
+    "startConversation": "Hasi elkarrizketa zure IA laguntzailearekin",
+    "getInsights": "Galde zure humurrari, ohiturei buruz edo lortu ikuspegi pertsonalizatuak",
+    "placeholder": "Hitz egin dezagun...",
+    "error": "Barkatu, errore bat aurkitu dut. Mesedez, saiatu berriro.",
+    "failedToSend": "Mezuaren bidalketak huts egin du. Mesedez, saiatu berriro."
+  },
+  "errors": {
+    "notFound": "Ups! Ezin izan da maiztasun hori sintonizatu.",
+    "genericError": "Zerbait gaizki joan da. Mesedez, saiatu berriro."
   }
 }

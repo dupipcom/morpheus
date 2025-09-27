@@ -177,7 +177,26 @@
     "peopleInfluencedMood": "Olyan emberek, akik ma befolyásolták a hangulatát",
     "addContactsToTask": "Kapcsolatok hozzáadása a \"{taskName}\" feladathoz",
     "selectContacts": "Kapcsolatok kiválasztása...",
-    "interactionQualityRatings": "Kapcsolat Minőség Értékelések"
+    "interactionQualityRatings": "Kapcsolat Minőség Értékelések",
+    "thingsInfluencedMood": "Dolgok, amelyek ma befolyásolták a hangulatodat",
+    "addNewThing": "Új dolog hozzáadása",
+    "addThing": "Dolog hozzáadása",
+    "editThing": "Dolog szerkesztése",
+    "deleteThing": "Dolog törlése",
+    "noThingsFound": "Nem találhatók dolgok. Adja hozzá az első dolgát fent.",
+    "addThingsToTask": "Dolgok hozzáadása a \"{taskName}\" feladathoz",
+    "selectThings": "Dolgok kiválasztása...",
+    "thingsInteractionQualityRatings": "Dolgok interakció minőség értékelések",
+    "lifeEventsInfluencedMood": "Életesemények, amelyek ma befolyásolták a hangulatodat",
+    "addNewLifeEvent": "Új életesemény hozzáadása",
+    "addLifeEvent": "Életesemény hozzáadása",
+    "editLifeEvent": "Életesemény szerkesztése",
+    "deleteLifeEvent": "Életesemény törlése",
+    "noLifeEventsFound": "Nem találhatók életesemények. Adja hozzá az első életeseményét fent.",
+    "addLifeEventsToTask": "Életesemények hozzáadása a \"{taskName}\" feladathoz",
+    "selectLifeEvents": "Életesemények kiválasztása...",
+    "lifeEventsImpactRatings": "Életesemények hatás értékelések",
+    "impact": "Hatás"
   },
   "settings": {
     "title": "Beállítások",
@@ -194,6 +213,21 @@
     "monthsFixedIncome": "Month's Recurring Income",
     "monthsVariableIncome": "Month's Variable Income",
     "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average"
+    "expectedNeedUtilities": "Expected Need Utilities Average",
+    "editAction": "Művelet szerkesztése",
+    "save": "Mentés",
+    "cancel": "Mégse"
+  },
+  "agentChat": {
+    "thinking": "Gondolkodom...",
+    "startConversation": "Kezdjen beszélgetést az AI asszisztensével",
+    "getInsights": "Kérdezzen a hangulatáról, szokásairól vagy szerezzen személyre szabott betekintéseket",
+    "placeholder": "Beszéljünk...",
+    "error": "Sajnálom, hibába ütköztem. Próbálja újra.",
+    "failedToSend": "Az üzenet küldése sikertelen. Próbálja újra."
+  },
+  "errors": {
+    "notFound": "Hoppá! Nem sikerült beállítani ezt a frekvenciát.",
+    "genericError": "Valami elromlott. Kérjük, próbálja újra."
   }
 }

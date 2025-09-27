@@ -177,7 +177,26 @@
     "peopleInfluencedMood": "আজ আপনার মেজাজকে প্রভাবিত করেছে এমন মানুষ",
     "addContactsToTask": "\"{taskName}\" এ যোগাযোগ যোগ করুন",
     "selectContacts": "যোগাযোগ নির্বাচন করুন...",
-    "interactionQualityRatings": "যোগাযোগের মানের মূল্যায়ন"
+    "interactionQualityRatings": "যোগাযোগের মানের মূল্যায়ন",
+    "thingsInfluencedMood": "যে জিনিসগুলি আজ আপনার মেজাজকে প্রভাবিত করেছে",
+    "addNewThing": "নতুন জিনিস যোগ করুন",
+    "addThing": "জিনিস যোগ করুন",
+    "editThing": "জিনিস সম্পাদনা করুন",
+    "deleteThing": "জিনিস মুছুন",
+    "noThingsFound": "কোন জিনিস পাওয়া যায়নি। উপরে আপনার প্রথম জিনিস যোগ করুন।",
+    "addThingsToTask": "\"{taskName}\" টাস্কে জিনিস যোগ করুন",
+    "selectThings": "জিনিস নির্বাচন করুন...",
+    "thingsInteractionQualityRatings": "জিনিসের ইন্টারঅ্যাকশন গুণমান রেটিং",
+    "lifeEventsInfluencedMood": "জীবনের ঘটনাগুলি যা আজ আপনার মেজাজকে প্রভাবিত করেছে",
+    "addNewLifeEvent": "নতুন জীবন ঘটনা যোগ করুন",
+    "addLifeEvent": "জীবন ঘটনা যোগ করুন",
+    "editLifeEvent": "জীবন ঘটনা সম্পাদনা করুন",
+    "deleteLifeEvent": "জীবন ঘটনা মুছুন",
+    "noLifeEventsFound": "কোন জীবন ঘটনা পাওয়া যায়নি। উপরে আপনার প্রথম জীবন ঘটনা যোগ করুন।",
+    "addLifeEventsToTask": "\"{taskName}\" টাস্কে জীবন ঘটনা যোগ করুন",
+    "selectLifeEvents": "জীবন ঘটনা নির্বাচন করুন...",
+    "lifeEventsImpactRatings": "জীবন ঘটনার প্রভাব রেটিং",
+    "impact": "প্রভাব"
   },
   "settings": {
     "title": "সেটিংস",
@@ -194,6 +213,21 @@
     "monthsFixedIncome": "Month's Recurring Income",
     "monthsVariableIncome": "Month's Variable Income",
     "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average"
+    "expectedNeedUtilities": "Expected Need Utilities Average",
+    "editAction": "অ্যাকশন সম্পাদনা করুন",
+    "save": "সংরক্ষণ",
+    "cancel": "বাতিল"
+  },
+  "agentChat": {
+    "thinking": "চিন্তা করছি...",
+    "startConversation": "আপনার AI সহকারীর সাথে একটি কথোপকথন শুরু করুন",
+    "getInsights": "আপনার মেজাজ, অভ্যাস সম্পর্কে জিজ্ঞাসা করুন বা ব্যক্তিগত অন্তর্দৃষ্টি পান",
+    "placeholder": "আসুন চ্যাট করি...",
+    "error": "দুঃখিত, আমি একটি ত্রুটি পেয়েছি। দয়া করে আবার চেষ্টা করুন।",
+    "failedToSend": "বার্তা পাঠাতে ব্যর্থ। দয়া করে আবার চেষ্টা করুন।"
+  },
+  "errors": {
+    "notFound": "ওপস! এই ফ্রিকোয়েন্সি টিউন করতে পারেনি।",
+    "genericError": "কিছু ভুল হয়েছে। দয়া করে আবার চেষ্টা করুন।"
   }
 }

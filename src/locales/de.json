@@ -83,7 +83,10 @@
     "monthsFixedIncome": "Monatliches festes Einkommen",
     "monthsVariableIncome": "Monatliches variables Einkommen",
     "fixedNeedCosts": "Feste Bedarfskosten",
-    "expectedNeedUtilities": "Erwarteter Durchschnitt der Versorgungsunternehmen"
+    "expectedNeedUtilities": "Erwarteter Durchschnitt der Versorgungsunternehmen",
+    "editAction": "Aktion bearbeiten",
+    "save": "Speichern",
+    "cancel": "Abbrechen"
   },
   "social": {
     "title": "Soziale Kontakte",
@@ -101,7 +104,26 @@
     "peopleInfluencedMood": "Menschen, die deine Stimmung heute beeinflusst haben",
     "addContactsToTask": "Kontakte zu \"{taskName}\" hinzufügen",
     "selectContacts": "Kontakte auswählen...",
-    "interactionQualityRatings": "Interaktionsqualitätsbewertungen"
+    "interactionQualityRatings": "Interaktionsqualitätsbewertungen",
+    "thingsInfluencedMood": "Dinge, die deine Stimmung heute beeinflusst haben",
+    "addNewThing": "Neue Sache hinzufügen",
+    "addThing": "Sache hinzufügen",
+    "editThing": "Sache bearbeiten",
+    "deleteThing": "Sache löschen",
+    "noThingsFound": "Keine Dinge gefunden. Füge dein erstes Ding oben hinzu.",
+    "addThingsToTask": "Dinge zu \"{taskName}\" hinzufügen",
+    "selectThings": "Dinge auswählen...",
+    "thingsInteractionQualityRatings": "Interaktionsqualitätsbewertungen von Dingen",
+    "lifeEventsInfluencedMood": "Lebensereignisse, die deine Stimmung heute beeinflusst haben",
+    "addNewLifeEvent": "Neues Lebensereignis hinzufügen",
+    "addLifeEvent": "Lebensereignis hinzufügen",
+    "editLifeEvent": "Lebensereignis bearbeiten",
+    "deleteLifeEvent": "Lebensereignis löschen",
+    "noLifeEventsFound": "Keine Lebensereignisse gefunden. Füge dein erstes Lebensereignis oben hinzu.",
+    "addLifeEventsToTask": "Lebensereignisse zu \"{taskName}\" hinzufügen",
+    "selectLifeEvents": "Lebensereignisse auswählen...",
+    "lifeEventsImpactRatings": "Impact-Bewertungen von Lebensereignissen",
+    "impact": "Impact"
   },
   "actions": {
     "daily": {
@@ -205,6 +227,14 @@
     "moodAverageScale": "Stimmungs-Durchschnittsskala",
     "balance": "Kontostand",
     "earningsScale": "Verdienst-Skala"
+  },
+  "agentChat": {
+    "thinking": "Denke nach...",
+    "startConversation": "Beginnen Sie ein Gespräch mit Ihrem KI-Assistenten",
+    "getInsights": "Fragen Sie nach Ihrer Stimmung, Gewohnheiten oder erhalten Sie personalisierte Einblicke",
+    "placeholder": "Lassen Sie uns chatten...",
+    "error": "Entschuldigung, ich bin auf einen Fehler gestoßen. Bitte versuchen Sie es erneut.",
+    "failedToSend": "Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es erneut."
   },
   "errors": {
     "notFound": "Ups! Konnte diese Frequenz nicht einstellen.",

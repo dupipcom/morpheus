@@ -185,7 +185,26 @@
     "peopleInfluencedMood": "Άνθρωποι που επηρέασαν τη διάθεσή σας σήμερα",
     "addContactsToTask": "Προσθήκη επαφών στο \"{taskName}\"",
     "selectContacts": "Επιλογή επαφών...",
-    "interactionQualityRatings": "Αξιολογήσεις Ποιότητας Αλληλεπίδρασης"
+    "interactionQualityRatings": "Αξιολογήσεις Ποιότητας Αλληλεπίδρασης",
+    "thingsInfluencedMood": "Πράγματα που επηρέασαν τη συγκίνησή σας σήμερα",
+    "addNewThing": "Προσθήκη νέου πράγματος",
+    "addThing": "Προσθήκη πράγματος",
+    "editThing": "Επεξεργασία πράγματος",
+    "deleteThing": "Διαγραφή πράγματος",
+    "noThingsFound": "Δεν βρέθηκαν πράγματα. Προσθέστε το πρώτο σας πράγμα παραπάνω.",
+    "addThingsToTask": "Προσθήκη πραγμάτων στο \"{taskName}\"",
+    "selectThings": "Επιλογή πραγμάτων...",
+    "thingsInteractionQualityRatings": "Αξιολογήσεις ποιότητας αλληλεπίδρασης πραγμάτων",
+    "lifeEventsInfluencedMood": "Γεγονότα ζωής που επηρέασαν τη συγκίνησή σας σήμερα",
+    "addNewLifeEvent": "Προσθήκη νέου γεγονότος ζωής",
+    "addLifeEvent": "Προσθήκη γεγονότος ζωής",
+    "editLifeEvent": "Επεξεργασία γεγονότος ζωής",
+    "deleteLifeEvent": "Διαγραφή γεγονότος ζωής",
+    "noLifeEventsFound": "Δεν βρέθηκαν γεγονότα ζωής. Προσθέστε το πρώτο σας γεγονός ζωής παραπάνω.",
+    "addLifeEventsToTask": "Προσθήκη γεγονότων ζωής στο \"{taskName}\"",
+    "selectLifeEvents": "Επιλογή γεγονότων ζωής...",
+    "lifeEventsImpactRatings": "Αξιολογήσεις αντίκτυπου γεγονότων ζωής",
+    "impact": "Αντίκτυπος"
   },
   "settings": {
     "title": "Ρυθμίσεις",
@@ -202,6 +221,21 @@
     "monthsFixedIncome": "Month's Recurring Income",
     "monthsVariableIncome": "Month's Variable Income",
     "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average"
+    "expectedNeedUtilities": "Expected Need Utilities Average",
+    "editAction": "Επεξεργασία ενέργειας",
+    "save": "Αποθήκευση",
+    "cancel": "Ακύρωση"
+  },
+  "agentChat": {
+    "thinking": "Σκέφτομαι...",
+    "startConversation": "Ξεκινήστε μια συζήτηση με τον AI βοηθό σας",
+    "getInsights": "Ρωτήστε για τη συγκίνησή σας, συνήθειες ή λάβετε εξατομικευμένες πληροφορίες",
+    "placeholder": "Ας συζητήσουμε...",
+    "error": "Συγγνώμη, συνάντησα ένα σφάλμα. Παρακαλώ δοκιμάστε ξανά.",
+    "failedToSend": "Αποτυχία αποστολής μηνύματος. Παρακαλώ δοκιμάστε ξανά."
+  },
+  "errors": {
+    "notFound": "Ουπς! Δεν μπόρεσε να συντονιστεί σε αυτή τη συχνότητα.",
+    "genericError": "Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά."
   }
 }

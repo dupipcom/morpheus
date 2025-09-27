@@ -191,7 +191,26 @@
     "peopleInfluencedMood": "오늘 당신의 기분에 영향을 준 사람들",
     "addContactsToTask": "\"{taskName}\"에 연락처 추가",
     "selectContacts": "연락처 선택...",
-    "interactionQualityRatings": "상호작용 품질 평가"
+    "interactionQualityRatings": "상호작용 품질 평가",
+    "thingsInfluencedMood": "오늘 당신의 기분에 영향을 준 것들",
+    "addNewThing": "새로운 것 추가",
+    "addThing": "것 추가",
+    "editThing": "것 편집",
+    "deleteThing": "것 삭제",
+    "noThingsFound": "찾은 것이 없습니다. 위에 첫 번째 것을 추가하세요.",
+    "addThingsToTask": "\"{taskName}\"에 것들을 추가",
+    "selectThings": "것들 선택...",
+    "thingsInteractionQualityRatings": "것들의 상호작용 품질 평가",
+    "lifeEventsInfluencedMood": "오늘 당신의 기분에 영향을 준 인생 사건들",
+    "addNewLifeEvent": "새로운 인생 사건 추가",
+    "addLifeEvent": "인생 사건 추가",
+    "editLifeEvent": "인생 사건 편집",
+    "deleteLifeEvent": "인생 사건 삭제",
+    "noLifeEventsFound": "찾은 인생 사건이 없습니다. 위에 첫 번째 인생 사건을 추가하세요.",
+    "addLifeEventsToTask": "\"{taskName}\"에 인생 사건들을 추가",
+    "selectLifeEvents": "인생 사건들 선택...",
+    "lifeEventsImpactRatings": "인생 사건 영향 평가",
+    "impact": "영향"
   },
   "settings": {
     "title": "설정",
@@ -208,6 +227,21 @@
     "monthsFixedIncome": "Month's Recurring Income",
     "monthsVariableIncome": "Month's Variable Income",
     "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average"
+    "expectedNeedUtilities": "Expected Need Utilities Average",
+    "editAction": "액션 편집",
+    "save": "저장",
+    "cancel": "취소"
+  },
+  "agentChat": {
+    "thinking": "생각 중...",
+    "startConversation": "AI 어시스턴트와 대화를 시작하세요",
+    "getInsights": "당신의 기분, 습관에 대해 질문하거나 개인화된 인사이트를 얻으세요",
+    "placeholder": "채팅해요...",
+    "error": "죄송합니다. 오류가 발생했습니다. 다시 시도해주세요.",
+    "failedToSend": "메시지 전송에 실패했습니다. 다시 시도해주세요."
+  },
+  "errors": {
+    "notFound": "앗! 이 주파수에 맞출 수 없습니다.",
+    "genericError": "문제가 발생했습니다. 다시 시도해 주세요."
   }
 }

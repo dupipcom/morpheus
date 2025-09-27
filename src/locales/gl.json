@@ -184,7 +184,26 @@
     "peopleInfluencedMood": "Persoas que influíron no teu estado de ánimo hoxe",
     "addContactsToTask": "Engadir contactos a \"{taskName}\"",
     "selectContacts": "Seleccionar contactos...",
-    "interactionQualityRatings": "Valoracións de Calidade de Interacción"
+    "interactionQualityRatings": "Valoracións de Calidade de Interacción",
+    "thingsInfluencedMood": "Cousas que influíron no teu estado de ánimo hoxe",
+    "addNewThing": "Engadir cousa nova",
+    "addThing": "Engadir cousa",
+    "editThing": "Editar cousa",
+    "deleteThing": "Eliminar cousa",
+    "noThingsFound": "Non se atoparon cousas. Engade a túa primeira cousa arriba.",
+    "addThingsToTask": "Engadir cousas a \"{taskName}\"",
+    "selectThings": "Seleccionar cousas...",
+    "thingsInteractionQualityRatings": "Avaliacións de calidade de interacción de cousas",
+    "lifeEventsInfluencedMood": "Eventos de vida que influíron no teu estado de ánimo hoxe",
+    "addNewLifeEvent": "Engadir novo evento de vida",
+    "addLifeEvent": "Engadir evento de vida",
+    "editLifeEvent": "Editar evento de vida",
+    "deleteLifeEvent": "Eliminar evento de vida",
+    "noLifeEventsFound": "Non se atoparon eventos de vida. Engade o teu primeiro evento de vida arriba.",
+    "addLifeEventsToTask": "Engadir eventos de vida a \"{taskName}\"",
+    "selectLifeEvents": "Seleccionar eventos de vida...",
+    "lifeEventsImpactRatings": "Avaliacións de impacto de eventos de vida",
+    "impact": "Impacto"
   },
   "settings": {
     "title": "Configuración",
@@ -201,6 +220,21 @@
     "monthsFixedIncome": "Month's Recurring Income",
     "monthsVariableIncome": "Month's Variable Income",
     "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average"
+    "expectedNeedUtilities": "Expected Need Utilities Average",
+    "editAction": "Editar acción",
+    "save": "Gardar",
+    "cancel": "Cancelar"
+  },
+  "agentChat": {
+    "thinking": "Pensando...",
+    "startConversation": "Inicia unha conversa co teu asistente de IA",
+    "getInsights": "Pregunta sobre o teu estado de ánimo, hábitos ou obtén perspectivas personalizadas",
+    "placeholder": "Falemos...",
+    "error": "Síntoo, atopei un erro. Por favor, inténtao de novo.",
+    "failedToSend": "Fallou o envío da mensaxe. Por favor, inténtao de novo."
+  },
+  "errors": {
+    "notFound": "Ups! Non se puido sintonizar esta frecuencia.",
+    "genericError": "Algo saiu mal. Por favor, inténtao de novo."
   }
 }

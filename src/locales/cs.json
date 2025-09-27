@@ -177,7 +177,26 @@
     "peopleInfluencedMood": "Lidé, kteří dnes ovlivnili vaši náladu",
     "addContactsToTask": "Přidat kontakty k \"{taskName}\"",
     "selectContacts": "Vybrat kontakty...",
-    "interactionQualityRatings": "Hodnocení kvality interakce"
+    "interactionQualityRatings": "Hodnocení kvality interakce",
+    "thingsInfluencedMood": "Věci, které dnes ovlivnily vaši náladu",
+    "addNewThing": "Přidat novou věc",
+    "addThing": "Přidat věc",
+    "editThing": "Upravit věc",
+    "deleteThing": "Smazat věc",
+    "noThingsFound": "Žádné věci nenalezeny. Přidejte svou první věc výše.",
+    "addThingsToTask": "Přidat věci do \"{taskName}\"",
+    "selectThings": "Vybrat věci...",
+    "thingsInteractionQualityRatings": "Hodnocení kvality interakce věcí",
+    "lifeEventsInfluencedMood": "Životní události, které dnes ovlivnily vaši náladu",
+    "addNewLifeEvent": "Přidat novou životní událost",
+    "addLifeEvent": "Přidat životní událost",
+    "editLifeEvent": "Upravit životní událost",
+    "deleteLifeEvent": "Smazat životní událost",
+    "noLifeEventsFound": "Žádné životní události nenalezeny. Přidejte svou první životní událost výše.",
+    "addLifeEventsToTask": "Přidat životní události do \"{taskName}\"",
+    "selectLifeEvents": "Vybrat životní události...",
+    "lifeEventsImpactRatings": "Hodnocení dopadu životních událostí",
+    "impact": "Dopad"
   },
   "settings": {
     "title": "Nastavení",
@@ -194,6 +213,21 @@
     "monthsFixedIncome": "Month's Recurring Income",
     "monthsVariableIncome": "Month's Variable Income",
     "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average"
+    "expectedNeedUtilities": "Expected Need Utilities Average",
+    "editAction": "Upravit akci",
+    "save": "Uložit",
+    "cancel": "Zrušit"
+  },
+  "agentChat": {
+    "thinking": "Přemýšlím...",
+    "startConversation": "Začněte konverzaci s vaším AI asistentem",
+    "getInsights": "Zeptejte se na svou náladu, zvyky nebo získejte personalizované poznatky",
+    "placeholder": "Pojďme si povídat...",
+    "error": "Promiňte, narazil jsem na chybu. Zkuste to znovu.",
+    "failedToSend": "Zpráva se nepodařila odeslat. Zkuste to znovu."
+  },
+  "errors": {
+    "notFound": "Ups! Nepodařilo se naladit tuto frekvenci.",
+    "genericError": "Něco se pokazilo. Zkuste to znovu."
   }
 }

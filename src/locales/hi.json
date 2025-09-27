@@ -177,7 +177,26 @@
     "peopleInfluencedMood": "आज आपके मनोदशा को प्रभावित करने वाले लोग",
     "addContactsToTask": "\"{taskName}\" में संपर्क जोड़ें",
     "selectContacts": "संपर्क चुनें...",
-    "interactionQualityRatings": "संपर्क गुणवत्ता मूल्यांकन"
+    "interactionQualityRatings": "संपर्क गुणवत्ता मूल्यांकन",
+    "thingsInfluencedMood": "चीजें जिन्होंने आज आपकी मनोदशा को प्रभावित किया",
+    "addNewThing": "नई चीज जोड़ें",
+    "addThing": "चीज जोड़ें",
+    "editThing": "चीज संपादित करें",
+    "deleteThing": "चीज हटाएं",
+    "noThingsFound": "कोई चीज नहीं मिली। अपनी पहली चीज ऊपर जोड़ें।",
+    "addThingsToTask": "\"{taskName}\" में चीजें जोड़ें",
+    "selectThings": "चीजें चुनें...",
+    "thingsInteractionQualityRatings": "चीजों की इंटरैक्शन गुणवत्ता रेटिंग",
+    "lifeEventsInfluencedMood": "जीवन की घटनाएं जिन्होंने आज आपकी मनोदशा को प्रभावित किया",
+    "addNewLifeEvent": "नई जीवन घटना जोड़ें",
+    "addLifeEvent": "जीवन घटना जोड़ें",
+    "editLifeEvent": "जीवन घटना संपादित करें",
+    "deleteLifeEvent": "जीवन घटना हटाएं",
+    "noLifeEventsFound": "कोई जीवन घटना नहीं मिली। अपनी पहली जीवन घटना ऊपर जोड़ें।",
+    "addLifeEventsToTask": "\"{taskName}\" में जीवन घटनाएं जोड़ें",
+    "selectLifeEvents": "जीवन घटनाएं चुनें...",
+    "lifeEventsImpactRatings": "जीवन घटनाओं के प्रभाव रेटिंग",
+    "impact": "प्रभाव"
   },
   "settings": {
     "title": "सेटिंग्स",
@@ -194,6 +213,21 @@
     "monthsFixedIncome": "Month's Recurring Income",
     "monthsVariableIncome": "Month's Variable Income",
     "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average"
+    "expectedNeedUtilities": "Expected Need Utilities Average",
+    "editAction": "कार्य संपादित करें",
+    "save": "सहेजें",
+    "cancel": "रद्द करें"
+  },
+  "agentChat": {
+    "thinking": "सोच रहा हूं...",
+    "startConversation": "अपने AI सहायक के साथ बातचीत शुरू करें",
+    "getInsights": "अपनी मनोदशा, आदतों के बारे में पूछें या व्यक्तिगत अंतर्दृष्टि प्राप्त करें",
+    "placeholder": "आइए चैट करें...",
+    "error": "क्षमा करें, मुझे एक त्रुटि मिली। कृपया पुनः प्रयास करें।",
+    "failedToSend": "संदेश भेजने में विफल। कृपया पुनः प्रयास करें।"
+  },
+  "errors": {
+    "notFound": "ओह! इस आवृत्ति को ट्यून नहीं कर सका।",
+    "genericError": "कुछ गलत हुआ। कृपया पुनः प्रयास करें।"
   }
 }

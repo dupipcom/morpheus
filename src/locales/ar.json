@@ -87,7 +87,10 @@
     "monthsFixedIncome": "الدخل الثابت الشهري",
     "monthsVariableIncome": "الدخل المتغير الشهري",
     "fixedNeedCosts": "تكاليف الاحتياجات الثابتة",
-    "expectedNeedUtilities": "متوسط المرافق المتوقع"
+    "expectedNeedUtilities": "متوسط المرافق المتوقع",
+    "editAction": "تعديل الإجراء",
+    "save": "حفظ",
+    "cancel": "إلغاء"
   },
   "social": {
     "title": "جهات الاتصال الاجتماعية",
@@ -105,7 +108,26 @@
     "peopleInfluencedMood": "الأشخاص الذين أثروا على مزاجك اليوم",
     "addContactsToTask": "إضافة جهات اتصال إلى \"{taskName}\"",
     "selectContacts": "اختر جهات الاتصال...",
-    "interactionQualityRatings": "تقييمات جودة التفاعل"
+    "interactionQualityRatings": "تقييمات جودة التفاعل",
+    "thingsInfluencedMood": "الأشياء التي أثرت على مزاجك اليوم",
+    "addNewThing": "إضافة شيء جديد",
+    "addThing": "إضافة شيء",
+    "editThing": "تعديل الشيء",
+    "deleteThing": "حذف الشيء",
+    "noThingsFound": "لم يتم العثور على أشياء. أضف شيئك الأول أعلاه.",
+    "addThingsToTask": "إضافة أشياء إلى \"{taskName}\"",
+    "selectThings": "اختر الأشياء...",
+    "thingsInteractionQualityRatings": "تقييمات جودة تفاعل الأشياء",
+    "lifeEventsInfluencedMood": "أحداث الحياة التي أثرت على مزاجك اليوم",
+    "addNewLifeEvent": "إضافة حدث حياة جديد",
+    "addLifeEvent": "إضافة حدث حياة",
+    "editLifeEvent": "تعديل حدث الحياة",
+    "deleteLifeEvent": "حذف حدث الحياة",
+    "noLifeEventsFound": "لم يتم العثور على أحداث حياة. أضف حدث حياتك الأول أعلاه.",
+    "addLifeEventsToTask": "إضافة أحداث حياة إلى \"{taskName}\"",
+    "selectLifeEvents": "اختر أحداث الحياة...",
+    "lifeEventsImpactRatings": "تقييمات تأثير أحداث الحياة",
+    "impact": "التأثير"
   },
   "actions": {
     "daily": {
@@ -209,6 +231,14 @@
     "moodAverageScale": "مقياس متوسط المزاج",
     "balance": "الرصيد",
     "earningsScale": "مقياس الأرباح"
+  },
+  "agentChat": {
+    "thinking": "يفكر...",
+    "startConversation": "ابدأ محادثة مع مساعدك الذكي",
+    "getInsights": "اسأل عن مزاجك أو عاداتك أو احصل على رؤى شخصية",
+    "placeholder": "دعنا نتحدث...",
+    "error": "عذراً، واجهت خطأ. يرجى المحاولة مرة أخرى.",
+    "failedToSend": "فشل في إرسال الرسالة. يرجى المحاولة مرة أخرى."
   },
   "errors": {
     "notFound": "عذراً! لا يمكن ضبط هذه التردد.",

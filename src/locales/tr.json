@@ -199,7 +199,26 @@
     "peopleInfluencedMood": "Bugün ruh halinizi etkileyen kişiler",
     "addContactsToTask": "\"{taskName}\" görevine kişi ekle",
     "selectContacts": "Kişi seç...",
-    "interactionQualityRatings": "Etkileşim Kalitesi Değerlendirmeleri"
+    "interactionQualityRatings": "Etkileşim Kalitesi Değerlendirmeleri",
+    "thingsInfluencedMood": "Bugün ruh halinizi etkileyen şeyler",
+    "addNewThing": "Yeni şey ekle",
+    "addThing": "Şey ekle",
+    "editThing": "Şeyi düzenle",
+    "deleteThing": "Şeyi sil",
+    "noThingsFound": "Şey bulunamadı. İlk şeyinizi yukarıda ekleyin.",
+    "addThingsToTask": "\"{taskName}\" görevine şeyler ekle",
+    "selectThings": "Şeyleri seç...",
+    "thingsInteractionQualityRatings": "Şeylerin etkileşim kalitesi değerlendirmeleri",
+    "lifeEventsInfluencedMood": "Bugün ruh halinizi etkileyen yaşam olayları",
+    "addNewLifeEvent": "Yeni yaşam olayı ekle",
+    "addLifeEvent": "Yaşam olayı ekle",
+    "editLifeEvent": "Yaşam olayını düzenle",
+    "deleteLifeEvent": "Yaşam olayını sil",
+    "noLifeEventsFound": "Yaşam olayı bulunamadı. İlk yaşam olayınızı yukarıda ekleyin.",
+    "addLifeEventsToTask": "\"{taskName}\" görevine yaşam olayları ekle",
+    "selectLifeEvents": "Yaşam olaylarını seç...",
+    "lifeEventsImpactRatings": "Yaşam olayları etki değerlendirmeleri",
+    "impact": "Etki"
   },
   "settings": {
     "title": "Ayarlar",
@@ -216,6 +235,21 @@
     "monthsFixedIncome": "Month's Recurring Income",
     "monthsVariableIncome": "Month's Variable Income",
     "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average"
+    "expectedNeedUtilities": "Expected Need Utilities Average",
+    "editAction": "Eylemi düzenle",
+    "save": "Kaydet",
+    "cancel": "İptal"
+  },
+  "agentChat": {
+    "thinking": "Düşünüyor...",
+    "startConversation": "AI asistanınızla bir sohbet başlatın",
+    "getInsights": "Ruh haliniz, alışkanlıklarınız hakkında sorular sorun veya kişiselleştirilmiş içgörüler alın",
+    "placeholder": "Sohbet edelim...",
+    "error": "Üzgünüm, bir hata ile karşılaştım. Lütfen tekrar deneyin.",
+    "failedToSend": "Mesaj gönderilemedi. Lütfen tekrar deneyin."
+  },
+  "errors": {
+    "notFound": "Hay aksi! Bu frekansa ayarlanamadı.",
+    "genericError": "Bir şeyler ters gitti. Lütfen tekrar deneyin."
   }
 }

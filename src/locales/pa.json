@@ -185,7 +185,26 @@
     "peopleInfluencedMood": "ਅੱਜ ਤੁਹਾਡੇ ਮੂਡ ਨੂੰ ਪ੍ਰਭਾਵਿਤ ਕਰਨ ਵਾਲੇ ਲੋਕ",
     "addContactsToTask": "\"{taskName}\" ਵਿੱਚ ਸੰਪਰਕ ਜੋੜੋ",
     "selectContacts": "ਸੰਪਰਕ ਚੁਣੋ...",
-    "interactionQualityRatings": "ਸੰਪਰਕ ਗੁਣਵੱਤਾ ਮੁਲਾਂਕਣ"
+    "interactionQualityRatings": "ਸੰਪਰਕ ਗੁਣਵੱਤਾ ਮੁਲਾਂਕਣ",
+    "thingsInfluencedMood": "ਚੀਜ਼ਾਂ ਜੋ ਅੱਜ ਤੁਹਾਡੇ ਮੂਡ ਨੂੰ ਪ੍ਰਭਾਵਿਤ ਕੀਤੀਆਂ",
+    "addNewThing": "ਨਵੀਂ ਚੀਜ਼ ਸ਼ਾਮਲ ਕਰੋ",
+    "addThing": "ਚੀਜ਼ ਸ਼ਾਮਲ ਕਰੋ",
+    "editThing": "ਚੀਜ਼ ਸੰਪਾਦਿਤ ਕਰੋ",
+    "deleteThing": "ਚੀਜ਼ ਮਿਟਾਓ",
+    "noThingsFound": "ਕੋਈ ਚੀਜ਼ ਨਹੀਂ ਮਿਲੀ। ਉੱਪਰ ਆਪਣੀ ਪਹਿਲੀ ਚੀਜ਼ ਸ਼ਾਮਲ ਕਰੋ।",
+    "addThingsToTask": "\"{taskName}\" ਟਾਸਕ ਵਿੱਚ ਚੀਜ਼ਾਂ ਸ਼ਾਮਲ ਕਰੋ",
+    "selectThings": "ਚੀਜ਼ਾਂ ਚੁਣੋ...",
+    "thingsInteractionQualityRatings": "ਚੀਜ਼ਾਂ ਦੀ ਇੰਟਰਐਕਸ਼ਨ ਕੁਆਲਟੀ ਰੇਟਿੰਗ",
+    "lifeEventsInfluencedMood": "ਜ਼ਿੰਦਗੀ ਦੀਆਂ ਘਟਨਾਵਾਂ ਜੋ ਅੱਜ ਤੁਹਾਡੇ ਮੂਡ ਨੂੰ ਪ੍ਰਭਾਵਿਤ ਕੀਤੀਆਂ",
+    "addNewLifeEvent": "ਨਵੀਂ ਜ਼ਿੰਦਗੀ ਘਟਨਾ ਸ਼ਾਮਲ ਕਰੋ",
+    "addLifeEvent": "ਜ਼ਿੰਦਗੀ ਘਟਨਾ ਸ਼ਾਮਲ ਕਰੋ",
+    "editLifeEvent": "ਜ਼ਿੰਦਗੀ ਘਟਨਾ ਸੰਪਾਦਿਤ ਕਰੋ",
+    "deleteLifeEvent": "ਜ਼ਿੰਦਗੀ ਘਟਨਾ ਮਿਟਾਓ",
+    "noLifeEventsFound": "ਕੋਈ ਜ਼ਿੰਦਗੀ ਘਟਨਾ ਨਹੀਂ ਮਿਲੀ। ਉੱਪਰ ਆਪਣੀ ਪਹਿਲੀ ਜ਼ਿੰਦਗੀ ਘਟਨਾ ਸ਼ਾਮਲ ਕਰੋ।",
+    "addLifeEventsToTask": "\"{taskName}\" ਟਾਸਕ ਵਿੱਚ ਜ਼ਿੰਦਗੀ ਘਟਨਾਵਾਂ ਸ਼ਾਮਲ ਕਰੋ",
+    "selectLifeEvents": "ਜ਼ਿੰਦਗੀ ਘਟਨਾਵਾਂ ਚੁਣੋ...",
+    "lifeEventsImpactRatings": "ਜ਼ਿੰਦਗੀ ਘਟਨਾਵਾਂ ਦੇ ਪ੍ਰਭਾਵ ਰੇਟਿੰਗ",
+    "impact": "ਪ੍ਰਭਾਵ"
   },
   "settings": {
     "title": "ਸੈਟਿੰਗਾਂ",
@@ -202,6 +221,21 @@
     "monthsFixedIncome": "Month's Recurring Income",
     "monthsVariableIncome": "Month's Variable Income",
     "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average"
+    "expectedNeedUtilities": "Expected Need Utilities Average",
+    "editAction": "ਐਕਸ਼ਨ ਸੰਪਾਦਿਤ ਕਰੋ",
+    "save": "ਸੇਵ ਕਰੋ",
+    "cancel": "ਰੱਦ ਕਰੋ"
+  },
+  "agentChat": {
+    "thinking": "ਸੋਚ ਰਿਹਾ ਹਾਂ...",
+    "startConversation": "ਆਪਣੇ AI ਸਹਾਇਕ ਨਾਲ ਗੱਲਬਾਤ ਸ਼ੁਰੂ ਕਰੋ",
+    "getInsights": "ਆਪਣੇ ਮੂਡ, ਆਦਤਾਂ ਬਾਰੇ ਪੁੱਛੋ ਜਾਂ ਨਿੱਜੀ ਸੂਝ ਪ੍ਰਾਪਤ ਕਰੋ",
+    "placeholder": "ਆਓ ਚੈਟ ਕਰੀਏ...",
+    "error": "ਮਾਫ਼ ਕਰਨਾ, ਮੈਨੂੰ ਇੱਕ ਗਲਤੀ ਮਿਲੀ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
+    "failedToSend": "ਸੁਨੇਹਾ ਭੇਜਣ ਵਿੱਚ ਅਸਫਲ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
+  },
+  "errors": {
+    "notFound": "ਓਹ! ਇਸ ਫ੍ਰੀਕੁਐਂਸੀ ਨੂੰ ਟਿਊਨ ਨਹੀਂ ਕਰ ਸਕਿਆ।",
+    "genericError": "ਕੁਝ ਗਲਤ ਹੋ ਗਿਆ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
   }
 }

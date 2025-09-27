@@ -177,7 +177,26 @@
     "peopleInfluencedMood": "Inimesed, kes mõjutasid täna sinu tuju",
     "addContactsToTask": "Lisa kontaktid ülesandesse \"{taskName}\"",
     "selectContacts": "Vali kontaktid...",
-    "interactionQualityRatings": "Suhtlemise Kvaliteedi Hinnangud"
+    "interactionQualityRatings": "Suhtlemise Kvaliteedi Hinnangud",
+    "thingsInfluencedMood": "Asjad, mis mõjutasid sinu tuju täna",
+    "addNewThing": "Lisa uus asi",
+    "addThing": "Lisa asi",
+    "editThing": "Redigeeri asja",
+    "deleteThing": "Kustuta asi",
+    "noThingsFound": "Asju ei leitud. Lisa oma esimene asi ülal.",
+    "addThingsToTask": "Lisa asjad ülesandesse \"{taskName}\"",
+    "selectThings": "Vali asju...",
+    "thingsInteractionQualityRatings": "Asjade suhtluse kvaliteedi hinnangud",
+    "lifeEventsInfluencedMood": "Elusündmused, mis mõjutasid sinu tuju täna",
+    "addNewLifeEvent": "Lisa uus elusündmus",
+    "addLifeEvent": "Lisa elusündmus",
+    "editLifeEvent": "Redigeeri elusündmust",
+    "deleteLifeEvent": "Kustuta elusündmus",
+    "noLifeEventsFound": "Elusündmusi ei leitud. Lisa oma esimene elusündmus ülal.",
+    "addLifeEventsToTask": "Lisa elusündmused ülesandesse \"{taskName}\"",
+    "selectLifeEvents": "Vali elusündmusi...",
+    "lifeEventsImpactRatings": "Elusündmuste mõju hinnangud",
+    "impact": "Mõju"
   },
   "settings": {
     "title": "Seaded",
@@ -194,6 +213,21 @@
     "monthsFixedIncome": "Month's Recurring Income",
     "monthsVariableIncome": "Month's Variable Income",
     "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average"
+    "expectedNeedUtilities": "Expected Need Utilities Average",
+    "editAction": "Redigeeri tegevust",
+    "save": "Salvesta",
+    "cancel": "Tühista"
+  },
+  "agentChat": {
+    "thinking": "Mõtlen...",
+    "startConversation": "Alusta vestlust oma AI abilisega",
+    "getInsights": "Küsi oma tuju, harjumuste kohta või saa personaliseeritud teadmisi",
+    "placeholder": "Räägime...",
+    "error": "Vabandust, kohtasin viga. Palun proovi uuesti.",
+    "failedToSend": "Sõnumi saatmine ebaõnnestus. Palun proovi uuesti."
+  },
+  "errors": {
+    "notFound": "Ups! Ei saanud seda sagedust häälestada.",
+    "genericError": "Midagi läks valesti. Palun proovi uuesti."
   }
 }

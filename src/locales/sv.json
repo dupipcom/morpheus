@@ -184,7 +184,26 @@
     "peopleInfluencedMood": "Människor som påverkade ditt humör idag",
     "addContactsToTask": "Lägg till kontakter till \"{taskName}\"",
     "selectContacts": "Välj kontakter...",
-    "interactionQualityRatings": "Interaktionskvalitetsbedömningar"
+    "interactionQualityRatings": "Interaktionskvalitetsbedömningar",
+    "thingsInfluencedMood": "Saker som påverkade ditt humör idag",
+    "addNewThing": "Lägg till ny sak",
+    "addThing": "Lägg till sak",
+    "editThing": "Redigera sak",
+    "deleteThing": "Ta bort sak",
+    "noThingsFound": "Inga saker hittades. Lägg till din första sak ovan.",
+    "addThingsToTask": "Lägg till saker till \"{taskName}\"",
+    "selectThings": "Välj saker...",
+    "thingsInteractionQualityRatings": "Sakers interaktionskvalitetsbetyg",
+    "lifeEventsInfluencedMood": "Livshändelser som påverkade ditt humör idag",
+    "addNewLifeEvent": "Lägg till ny livshändelse",
+    "addLifeEvent": "Lägg till livshändelse",
+    "editLifeEvent": "Redigera livshändelse",
+    "deleteLifeEvent": "Ta bort livshändelse",
+    "noLifeEventsFound": "Inga livshändelser hittades. Lägg till din första livshändelse ovan.",
+    "addLifeEventsToTask": "Lägg till livshändelser till \"{taskName}\"",
+    "selectLifeEvents": "Välj livshändelser...",
+    "lifeEventsImpactRatings": "Livshändelsers påverkan betyg",
+    "impact": "Påverkan"
   },
   "settings": {
     "title": "Inställningar",
@@ -201,6 +220,21 @@
     "monthsFixedIncome": "Month's Recurring Income",
     "monthsVariableIncome": "Month's Variable Income",
     "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average"
+    "expectedNeedUtilities": "Expected Need Utilities Average",
+    "editAction": "Redigera åtgärd",
+    "save": "Spara",
+    "cancel": "Avbryt"
+  },
+  "agentChat": {
+    "thinking": "Tänker...",
+    "startConversation": "Starta en konversation med din AI-assistent",
+    "getInsights": "Fråga om ditt humör, vanor eller få personaliserade insikter",
+    "placeholder": "Låt oss chatta...",
+    "error": "Ledsen, jag stötte på ett fel. Försök igen.",
+    "failedToSend": "Meddelandet kunde inte skickas. Försök igen."
+  },
+  "errors": {
+    "notFound": "Hoppsan! Kunde inte ställa in denna frekvens.",
+    "genericError": "Något gick fel. Vänligen försök igen."
   }
 }

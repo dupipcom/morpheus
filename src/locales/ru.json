@@ -195,7 +195,26 @@
     "peopleInfluencedMood": "Люди, которые повлияли на ваше настроение сегодня",
     "addContactsToTask": "Добавить контакты к \"{taskName}\"",
     "selectContacts": "Выбрать контакты...",
-    "interactionQualityRatings": "Оценки качества взаимодействия"
+    "interactionQualityRatings": "Оценки качества взаимодействия",
+    "thingsInfluencedMood": "Вещи, которые повлияли на ваше настроение сегодня",
+    "addNewThing": "Добавить новую вещь",
+    "addThing": "Добавить вещь",
+    "editThing": "Редактировать вещь",
+    "deleteThing": "Удалить вещь",
+    "noThingsFound": "Вещи не найдены. Добавьте свою первую вещь выше.",
+    "addThingsToTask": "Добавить вещи в \"{taskName}\"",
+    "selectThings": "Выбрать вещи...",
+    "thingsInteractionQualityRatings": "Оценки качества взаимодействия вещей",
+    "lifeEventsInfluencedMood": "События жизни, которые повлияли на ваше настроение сегодня",
+    "addNewLifeEvent": "Добавить новое событие жизни",
+    "addLifeEvent": "Добавить событие жизни",
+    "editLifeEvent": "Редактировать событие жизни",
+    "deleteLifeEvent": "Удалить событие жизни",
+    "noLifeEventsFound": "События жизни не найдены. Добавьте свое первое событие жизни выше.",
+    "addLifeEventsToTask": "Добавить события жизни в \"{taskName}\"",
+    "selectLifeEvents": "Выбрать события жизни...",
+    "lifeEventsImpactRatings": "Оценки влияния событий жизни",
+    "impact": "Влияние"
   },
   "settings": {
     "title": "Настройки",
@@ -212,6 +231,21 @@
     "monthsFixedIncome": "Month's Recurring Income",
     "monthsVariableIncome": "Month's Variable Income",
     "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average"
+    "expectedNeedUtilities": "Expected Need Utilities Average",
+    "editAction": "Редактировать действие",
+    "save": "Сохранить",
+    "cancel": "Отмена"
+  },
+  "agentChat": {
+    "thinking": "Думаю...",
+    "startConversation": "Начните разговор с вашим ИИ-помощником",
+    "getInsights": "Спрашивайте о своем настроении, привычках или получайте персонализированные инсайты",
+    "placeholder": "Давайте поговорим...",
+    "error": "Извините, произошла ошибка. Попробуйте еще раз.",
+    "failedToSend": "Не удалось отправить сообщение. Попробуйте еще раз."
+  },
+  "errors": {
+    "notFound": "Упс! Не удалось настроить эту частоту.",
+    "genericError": "Что-то пошло не так. Пожалуйста, попробуйте еще раз."
   }
 }

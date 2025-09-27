@@ -177,7 +177,26 @@
     "peopleInfluencedMood": "Mensen die vandaag je stemming hebben beïnvloed",
     "addContactsToTask": "Contacten toevoegen aan \"{taskName}\"",
     "selectContacts": "Contacten selecteren...",
-    "interactionQualityRatings": "Interactiekwaliteit Beoordelingen"
+    "interactionQualityRatings": "Interactiekwaliteit Beoordelingen",
+    "thingsInfluencedMood": "Dingen die je stemming vandaag hebben beïnvloed",
+    "addNewThing": "Nieuw ding toevoegen",
+    "addThing": "Ding toevoegen",
+    "editThing": "Ding bewerken",
+    "deleteThing": "Ding verwijderen",
+    "noThingsFound": "Geen dingen gevonden. Voeg je eerste ding hierboven toe.",
+    "addThingsToTask": "Dingen toevoegen aan \"{taskName}\"",
+    "selectThings": "Dingen selecteren...",
+    "thingsInteractionQualityRatings": "Dingen interactiekwaliteit beoordelingen",
+    "lifeEventsInfluencedMood": "Levensgebeurtenissen die je stemming vandaag hebben beïnvloed",
+    "addNewLifeEvent": "Nieuwe levensgebeurtenis toevoegen",
+    "addLifeEvent": "Levensgebeurtenis toevoegen",
+    "editLifeEvent": "Levensgebeurtenis bewerken",
+    "deleteLifeEvent": "Levensgebeurtenis verwijderen",
+    "noLifeEventsFound": "Geen levensgebeurtenissen gevonden. Voeg je eerste levensgebeurtenis hierboven toe.",
+    "addLifeEventsToTask": "Levensgebeurtenissen toevoegen aan \"{taskName}\"",
+    "selectLifeEvents": "Levensgebeurtenissen selecteren...",
+    "lifeEventsImpactRatings": "Levensgebeurtenissen impact beoordelingen",
+    "impact": "Impact"
   },
   "settings": {
     "title": "Instellingen",
@@ -194,6 +213,21 @@
     "monthsFixedIncome": "Month's Recurring Income",
     "monthsVariableIncome": "Month's Variable Income",
     "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average"
+    "expectedNeedUtilities": "Expected Need Utilities Average",
+    "editAction": "Actie bewerken",
+    "save": "Opslaan",
+    "cancel": "Annuleren"
+  },
+  "agentChat": {
+    "thinking": "Denken...",
+    "startConversation": "Begin een gesprek met je AI-assistent",
+    "getInsights": "Vraag over je stemming, gewoonten of krijg gepersonaliseerde inzichten",
+    "placeholder": "Laten we chatten...",
+    "error": "Sorry, ik ben een fout tegengekomen. Probeer opnieuw.",
+    "failedToSend": "Bericht verzenden mislukt. Probeer opnieuw."
+  },
+  "errors": {
+    "notFound": "Oeps! Kon deze frequentie niet afstemmen.",
+    "genericError": "Er is iets misgegaan. Probeer het opnieuw."
   }
 }
