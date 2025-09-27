@@ -105,6 +105,8 @@ export async function POST(req: NextRequest) {
 
             Current week number for the current year is ${weekNumber}.
 
+            The definition of done for daily and weekly tasks is the count key-value matching times key-value in each object in the arrays. 
+            Otherwise, the count specifies the amount of times the task was completed in their respective period: daily or weekly.
             User's historical daily data for ${year}:
             ${JSON.stringify(entries[year].days)}
 
