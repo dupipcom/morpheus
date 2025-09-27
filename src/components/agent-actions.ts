@@ -53,7 +53,7 @@ export async function continueConversation(history: Message[], entries) {
             ${JSON.stringify(entries[year].weeks)}
             
             Use this data to provide personalized insights and advice.`,
-      messages: history,
+      messages: lookback,
     });
 
     for await (const text of textStream) {
