@@ -25,10 +25,32 @@ function middleware(request: Request) {
     return
   }
 
+  // Handle @username routes - redirect to localized profile route
+  if (pathname.startsWith('/@')) {
+    const username = pathname.substring(2) // Remove /@
+    const cookieHeader = request.headers.get('cookie') || ''
+    const cookies = parseCookies(cookieHeader)
+    const locale = getLocale(request.headers, cookies)
+    const url = new URL(request.url)
+    url.pathname = `/${locale}/profile/${username}`
+    return NextResponse.redirect(url)
+  }
+
   const hasLocale = pathHasLocale(pathname)
  
   // If path already has locale, let it through
   if (hasLocale) return
+
+  // Handle direct username routes (without @) - redirect to localized profile route
+  if (pathname.match(/^\/[^\/]+$/) && !pathname.startsWith('/app') && !pathname.startsWith('/api')) {
+    const username = pathname.substring(1) // Remove leading /
+    const cookieHeader = request.headers.get('cookie') || ''
+    const cookies = parseCookies(cookieHeader)
+    const locale = getLocale(request.headers, cookies)
+    const url = new URL(request.url)
+    url.pathname = `/${locale}/profile/${username}`
+    return NextResponse.redirect(url)
+  }
 
   // Parse cookies from request
   const cookieHeader = request.headers.get('cookie') || ''

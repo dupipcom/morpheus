@@ -511,6 +511,11 @@ export const Logo: TComponent = function ({
             href="/app/settings"
           />
 				                    <UserButton.Link
+            label="Profile"
+            labelIcon={<User className="w-[14px] pb-2" />}
+            href="/app/profile"
+          />
+				                    <UserButton.Link
             label="Social"
             labelIcon={<Users className="w-[14px] pb-2" />}
             href="/app/social"
