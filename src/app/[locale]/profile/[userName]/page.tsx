@@ -15,7 +15,7 @@ interface ProfileData {
 
 async function getProfile(userName: string): Promise<ProfileData | null> {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/v1/profile/${userName}`, {
+    const response = await fetch(`https://${process.env.VERCEL_URL || 'http://localhost:3000'}/api/v1/profile/${userName}`, {
       cache: 'no-store' // Ensure fresh data for SSR
     })
     
