@@ -160,7 +160,7 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
   
   // Message history state
   const [currentText, setCurrentText] = useState("")
-  const serverText = useMemo(() => (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date] && session?.user?.entries[year].days[date].text) || "", [JSON.stringify(session)])
+  const serverText = useMemo(() => (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date] && session?.user?.entries[year].days[date].analyticsAgentText) || "", [JSON.stringify(session)])
   const messages = session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks && session?.user?.entries[year]?.weeks[weekNumber] && session?.user?.entries[year]?.weeks[weekNumber].messages
   const reverseMessages = useMemo(() => messages?.length ? messages.sort((a,b) => new Date(a.timestamp).getTime() > new Date(b.timestamp).getTime() ? 1 : -1) : [], [JSON.stringify(session?.user)])
   
@@ -355,7 +355,7 @@ const aggregateDataByWeek = (dailyData: any[]) => {
             key={reverseMessages}
             onMessageChange={(message) => {
               setCurrentText(message)
-              debouncedHandleTextSubmit(message, "text")
+              debouncedHandleTextSubmit(message, "analyticsAgentText")
             }}
             history={reverseMessages}
             initialMessage={currentText}
