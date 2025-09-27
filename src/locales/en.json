@@ -113,7 +113,17 @@
     "noThingsFound": "No things found. Add your first thing above.",
     "addThingsToTask": "Add Things to \"{taskName}\"",
     "selectThings": "Select things...",
-    "thingsInteractionQualityRatings": "Things Interaction Quality Ratings"
+    "thingsInteractionQualityRatings": "Things Interaction Quality Ratings",
+    "lifeEventsInfluencedMood": "Life events that influenced your mood today",
+    "addNewLifeEvent": "Add New Life Event",
+    "addLifeEvent": "Add Life Event",
+    "editLifeEvent": "Edit Life Event",
+    "deleteLifeEvent": "Delete Life Event",
+    "noLifeEventsFound": "No life events found. Add your first life event above.",
+    "addLifeEventsToTask": "Add Life Events to \"{taskName}\"",
+    "selectLifeEvents": "Select life events...",
+    "lifeEventsImpactRatings": "Life Events Impact Ratings",
+    "impact": "Impact"
   },
   "actions": {
     "daily": {

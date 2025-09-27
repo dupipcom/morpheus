@@ -22,7 +22,9 @@ import { MoodViewSkeleton } from "@/components/ui/skeleton-loader"
 import { ContentLoadingWrapper } from '@/components/ContentLoadingWrapper'
 import { ContactCombobox } from "@/components/ui/contact-combobox"
 import { ThingCombobox } from "@/components/ui/thing-combobox"
+import { LifeEventCombobox } from "@/components/ui/life-event-combobox"
 import { useDebounce } from "@/lib/hooks/useDebounce"
+import { Plus } from "lucide-react"
 
 export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
   const { session, setGlobalContext, theme } = useContext(GlobalContext)
@@ -58,11 +60,19 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
     return dayEntry?.things || []
   }, [session?.user?.entries, year, date, session?.user?.entries?.[year]?.days?.[date]?.things])
 
+  const serverMoodLifeEvents = useMemo(() => {
+    const dayEntry = session?.user?.entries?.[year]?.days?.[date]
+    return dayEntry?.lifeEvents || []
+  }, [session?.user?.entries, year, date, session?.user?.entries?.[year]?.days?.[date]?.lifeEvents])
+
   const [insight, setInsight] = useState({})
-  const [contacts, setContacts] = useState([])
-  const [things, setThings] = useState([])
-  const [moodContacts, setMoodContacts] = useState([])
-  const [moodThings, setMoodThings] = useState([])
+  const [contacts, setContacts] = useState<any[]>([])
+  const [things, setThings] = useState<any[]>([])
+  const [lifeEvents, setLifeEvents] = useState<any[]>([])
+  const [moodContacts, setMoodContacts] = useState<any[]>([])
+  const [moodThings, setMoodThings] = useState<any[]>([])
+  const [moodLifeEvents, setMoodLifeEvents] = useState<any[]>([])
+  const [newLifeEventText, setNewLifeEventText] = useState('')
   const [currentText, setCurrentText] = useState(serverText)
 
   // Initialize mood contacts from server data
@@ -74,6 +84,11 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
   useEffect(() => {
     setMoodThings(serverMoodThings || [])
   }, [serverMoodThings])
+
+  // Initialize mood life events from server data
+  useEffect(() => {
+    setMoodLifeEvents(serverMoodLifeEvents || [])
+  }, [serverMoodLifeEvents])
 
 
   const openDays = useMemo(() => {
@@ -122,6 +137,20 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
     }
   )
 
+  // Fetch life events
+  const { data: lifeEventsData, mutate: mutateLifeEvents, isLoading: lifeEventsLoading } = useSWR(
+    session?.user ? `/api/v1/life-events` : null,
+    async () => {
+      const response = await fetch('/api/v1/life-events')
+      if (response.ok) {
+        const data = await response.json()
+        setLifeEvents(data.lifeEvents || [])
+        return data
+      }
+      return { lifeEvents: [] }
+    }
+  )
+
   // Ensure contacts are loaded from SWR data
   useEffect(() => {
     if (contactsData?.contacts) {
@@ -136,13 +165,20 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
     }
   }, [thingsData])
 
+  // Ensure life events are loaded from SWR data
+  useEffect(() => {
+    if (lifeEventsData?.lifeEvents) {
+      setLifeEvents(lifeEventsData.lifeEvents)
+    }
+  }, [lifeEventsData])
+
   // Create debounced version of handleSubmit for sliders
   const debouncedHandleSubmit = useDebounce(async (value, field) => {
     const updatedMood = {...mood, [field]: value}
     setMood(updatedMood)
-    // Always include current mood contacts, things and updated mood state when saving any mood data
-    await handleMoodSubmit(value, field, fullDay, moodContacts, moodThings, undefined, updatedMood)
-    // Don't call updateUser immediately to avoid clearing mood contacts/things
+    // Always include current mood contacts, things, life events and updated mood state when saving any mood data
+    await handleMoodSubmit(value, field, fullDay, moodContacts, moodThings, undefined, updatedMood, moodLifeEvents)
+    // Don't call updateUser immediately to avoid clearing mood contacts/things/life events
     // The session will be updated naturally when the user navigates or refreshes
   }, 500)
 
@@ -150,25 +186,25 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
   const debouncedHandleSubmitWithText = useDebounce(async (value, field) => {
     const updatedMood = {...mood, [field]: value}
     setMood(updatedMood)
-    // Include current text value, mood contacts, things and updated mood state when saving mood data
-    await handleMoodSubmit(value, field, fullDay, moodContacts, moodThings, currentText, updatedMood)
-    // Don't call updateUser immediately to avoid clearing mood contacts/things
+    // Include current text value, mood contacts, things, life events and updated mood state when saving mood data
+    await handleMoodSubmit(value, field, fullDay, moodContacts, moodThings, currentText, updatedMood, moodLifeEvents)
+    // Don't call updateUser immediately to avoid clearing mood contacts/things/life events
     // The session will be updated naturally when the user navigates or refreshes
   }, 500)
 
   // Create debounced version of handleSubmit for text input
   const debouncedHandleTextSubmit = useDebounce(async (value, field) => {
-    await handleMoodSubmit(value, field, fullDay, moodContacts, moodThings, undefined, mood)
-    // Don't call updateUser immediately to avoid clearing mood contacts/things
+    await handleMoodSubmit(value, field, fullDay, moodContacts, moodThings, undefined, mood, moodLifeEvents)
+    // Don't call updateUser immediately to avoid clearing mood contacts/things/life events
     // The session will be updated naturally when the user navigates or refreshes
   }, 500)
 
   const handleSubmit = async (value, field) => {
     const updatedMood = {...mood, [field]: value}
     setMood(updatedMood)
-    // Always include current mood contacts, things and updated mood state when saving any mood data
-    await handleMoodSubmit(value, field, fullDay, moodContacts, moodThings, undefined, updatedMood)
-    // Don't call updateUser immediately to avoid clearing mood contacts/things
+    // Always include current mood contacts, things, life events and updated mood state when saving any mood data
+    await handleMoodSubmit(value, field, fullDay, moodContacts, moodThings, undefined, updatedMood, moodLifeEvents)
+    // Don't call updateUser immediately to avoid clearing mood contacts/things/life events
     // The session will be updated naturally when the user navigates or refreshes
   }
 
@@ -176,7 +212,7 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
   const debouncedHandleMoodContactsChange = useDebounce(async (newMoodContacts) => {
     setMoodContacts(newMoodContacts)
     // Save mood contacts to database immediately when they change
-    await handleMoodSubmit(null, 'contacts', fullDay, newMoodContacts, undefined, mood)
+    await handleMoodSubmit(null, 'contacts', fullDay, newMoodContacts, moodThings, undefined, mood, moodLifeEvents)
     // Don't call updateUser immediately to avoid race conditions
     // The session will be updated naturally when the user navigates or refreshes
   }, 500)
@@ -184,7 +220,7 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
   const handleMoodContactsChange = async (newMoodContacts) => {
     setMoodContacts(newMoodContacts)
     // Save mood contacts to database immediately when they change
-    await handleMoodSubmit(null, 'contacts', fullDay, newMoodContacts, moodThings, undefined, mood)
+    await handleMoodSubmit(null, 'contacts', fullDay, newMoodContacts, moodThings, undefined, mood, moodLifeEvents)
     // Don't call updateUser immediately to avoid race conditions
     // The session will be updated naturally when the user navigates or refreshes
   }
@@ -193,7 +229,7 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
   const debouncedHandleMoodThingsChange = useDebounce(async (newMoodThings) => {
     setMoodThings(newMoodThings)
     // Save mood things to database immediately when they change
-    await handleMoodSubmit(null, 'things', fullDay, moodContacts, newMoodThings, undefined, mood)
+    await handleMoodSubmit(null, 'things', fullDay, moodContacts, newMoodThings, undefined, mood, moodLifeEvents)
     // Don't call updateUser immediately to avoid race conditions
     // The session will be updated naturally when the user navigates or refreshes
   }, 500)
@@ -201,9 +237,67 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
   const handleMoodThingsChange = async (newMoodThings) => {
     setMoodThings(newMoodThings)
     // Save mood things to database immediately when they change
-    await handleMoodSubmit(null, 'things', fullDay, moodContacts, newMoodThings, undefined, mood)
+    await handleMoodSubmit(null, 'things', fullDay, moodContacts, newMoodThings, undefined, mood, moodLifeEvents)
     // Don't call updateUser immediately to avoid race conditions
     // The session will be updated naturally when the user navigates or refreshes
+  }
+
+  // Create debounced version of handleMoodLifeEventsChange for life event interaction sliders
+  const debouncedHandleMoodLifeEventsChange = useDebounce(async (newMoodLifeEvents) => {
+    setMoodLifeEvents(newMoodLifeEvents)
+    // Save mood life events to database immediately when they change
+    await handleMoodSubmit(null, 'lifeEvents', fullDay, moodContacts, moodThings, undefined, mood, newMoodLifeEvents)
+    // Don't call updateUser immediately to avoid race conditions
+    // The session will be updated naturally when the user navigates or refreshes
+  }, 500)
+
+  const handleMoodLifeEventsChange = async (newMoodLifeEvents) => {
+    setMoodLifeEvents(newMoodLifeEvents)
+    // Save mood life events to database immediately when they change
+    await handleMoodSubmit(null, 'lifeEvents', fullDay, moodContacts, moodThings, undefined, mood, newMoodLifeEvents)
+    // Don't call updateUser immediately to avoid race conditions
+    // The session will be updated naturally when the user navigates or refreshes
+  }
+
+  const handleAddLifeEvent = async () => {
+    if (!newLifeEventText.trim()) return
+
+    try {
+      const response = await fetch('/api/v1/life-events', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: newLifeEventText.trim(),
+          impact: 3 // Default impact rating
+        }),
+      })
+
+      if (response.ok) {
+        const result = await response.json()
+        const lifeEvent = result.lifeEvent
+
+        // Add to selected life events immediately
+        const lifeEventRef = {
+          id: lifeEvent.id,
+          name: lifeEvent.name,
+          impact: 3
+        }
+        setMoodLifeEvents([...moodLifeEvents, lifeEventRef])
+
+        // Clear the textarea
+        setNewLifeEventText('')
+
+        // Refresh the life events list
+        mutateLifeEvents()
+
+        // Save to mood data
+        await handleMoodSubmit(null, 'lifeEvents', fullDay, moodContacts, moodThings, undefined, mood, [...moodLifeEvents, lifeEventRef])
+      }
+    } catch (error) {
+      console.error('Error adding life event:', error)
+    }
   }
 
 
@@ -272,8 +366,57 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
       </div>
       <Slider className="mb-24" defaultValue={[serverMood?.trust || 0]} max={5} step={0.5} onValueChange={(e) => debouncedHandleSubmitWithText(e[0], "trust")} />
       </div>
-            {/* Contact Management for Mood */}
-            <div className="mb-8 p-4 border rounded-lg">
+
+      {/* Life Events Management for Mood */}
+      <div className="mb-8 p-4 border rounded-lg bg-transparent border-body">
+        <h3 className="text-lg font-semibold mb-4 text-body">{t('social.lifeEventsInfluencedMood')}</h3>
+        
+        {/* Simple textarea with submit button for adding life events */}
+        <LifeEventCombobox
+          lifeEvents={lifeEvents}
+          selectedLifeEvents={moodLifeEvents}
+          onLifeEventsChange={handleMoodLifeEventsChange}
+          onLifeEventsRefresh={() => {
+            // Trigger a refresh of the life events data
+            mutateLifeEvents()
+          }}
+        />
+        
+        {/* Impact Sliders for Selected Life Events */}
+        {moodLifeEvents.length > 0 && (
+          <div className="mt-6 space-y-4">
+            <h4 className="text-sm font-medium text-muted-foreground">{t('social.lifeEventsImpactRatings')}</h4>
+            {moodLifeEvents.map((lifeEvent) => (
+              <div key={lifeEvent.id} className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">{lifeEvent.name}</span>
+                  <span className="text-xs text-muted-foreground">{lifeEvent.impact || 3}/5</span>
+                </div>
+                <Slider
+                  value={[lifeEvent.impact || 3]}
+                  onValueChange={(value) => {
+                    const updatedLifeEvents = moodLifeEvents.map(le => 
+                      le.id === lifeEvent.id 
+                        ? { ...le, impact: value[0] }
+                        : le
+                    )
+                    setMoodLifeEvents(updatedLifeEvents)
+                    // Use debounced handler to save to database
+                    debouncedHandleMoodLifeEventsChange(updatedLifeEvents)
+                  }}
+                  max={5}
+                  min={0}
+                  step={0.5}
+                  className="w-full"
+                />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* People Management for Mood */}
+      <div className="mb-8 p-4 border rounded-lg">
         <h3 className="text-lg font-semibold mb-4">{t('social.peopleInfluencedMood')}</h3>
         {!contactsLoading && (
           <ContactCombobox

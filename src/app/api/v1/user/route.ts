@@ -487,6 +487,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   },
                   contacts: data.moodContacts || [],
                   things: data.moodThings || [],
+                  lifeEvents: data.moodLifeEvents || [],
                   moodAverage: dayMoodAverage
                 }
               },
@@ -505,8 +506,8 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     user = await getUser()
   }
 
-  if ((data?.moodContacts || data?.moodThings) && !data?.mood && !data?.text) {
-    // Handle mood contacts and things only (when field is 'contacts' or 'things')
+  if ((data?.moodContacts || data?.moodThings || data?.moodLifeEvents) && !data?.mood && !data?.text) {
+    // Handle mood contacts, things, and life events only (when field is 'contacts', 'things', or 'lifeEvents')
     await prisma.user.update({
       data: {
         entries: {
@@ -518,7 +519,8 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                 [date]: {
                   ...user.entries[year].days[date],
                   contacts: data.moodContacts || [],
-                  things: data.moodThings || []
+                  things: data.moodThings || [],
+                  lifeEvents: data.moodLifeEvents || []
                 }
               }
             }
@@ -543,6 +545,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   text: data?.text,
                   contacts: data.moodContacts || [],
                   things: data.moodThings || [],
+                  lifeEvents: data.moodLifeEvents || [],
                   moodAverage: dayMoodAverage
                 }
               },
