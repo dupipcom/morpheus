@@ -12,6 +12,7 @@ import { Switch } from "@/components/ui/switch"
 
 import { SlidersVertical, Play, Square as Stop, Gauge, LogIn, DoorOpen, User, LogOut, Users } from "lucide-react"
 import { NavSkeleton } from "./skeleton-loader"
+import { FriendRequestsButton } from "@/components/FriendRequestsButton"
 
 
 import {
@@ -467,6 +468,11 @@ export const Logo: TComponent = function ({
                   <Gauge />
                 </Button>
                 </a>
+    },
+    {
+      name: "friend-requests",
+      auth: true,
+      content: <FriendRequestsButton />
     },
     {
       name: "login",

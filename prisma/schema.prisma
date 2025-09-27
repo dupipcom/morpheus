@@ -28,6 +28,9 @@ model User {
   things        Thing[]
   lifeEvents    LifeEvent[]
   profile       Profile?
+  friends       String[]  @db.ObjectId
+  closeFriends  String[]  @db.ObjectId
+  friendRequests String[] @db.ObjectId
 }
 
 model Contact {

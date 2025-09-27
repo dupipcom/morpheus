@@ -3,8 +3,11 @@ import { notFound } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { PublicChartsView } from "@/components/PublicChartsView"
+import { AddFriendButton } from "@/components/AddFriendButton"
+import { auth } from '@clerk/nextjs/server'
 
 interface ProfileData {
+  userId?: string
   firstName?: string
   lastName?: string
   userName?: string
@@ -67,6 +70,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 export default async function PublicProfilePage({ params }: { params: Promise<{ locale: string; userName: string }> }) {
   const { locale, userName } = await params
+  const { userId } = await auth()
   
   const profile = await getProfile(userName)
   
@@ -76,6 +80,7 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
 
   const fullName = [profile.firstName, profile.lastName].filter(Boolean).join(' ')
   const hasAnyPublicData = profile.firstName || profile.lastName || profile.userName || profile.bio || profile.profilePicture
+  const canAddFriend = userId && profile.userId && userId !== profile.userId
 
   return (
     <main className="min-h-screen bg-background">
@@ -83,25 +88,30 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
         {/* Profile Header */}
         <Card className="mb-6">
           <CardContent className="pt-6">
-            <div className="flex items-center space-x-4">
-              {profile.profilePicture && (
-                <img 
-                  src={profile.profilePicture} 
-                  alt="Profile" 
-                  className="w-20 h-20 rounded-full object-cover"
-                />
-              )}
-              <div className="flex-1">
-                <h1 className="text-2xl font-bold">
-                  {fullName || profile.userName || 'Anonymous User'}
-                </h1>
-                {profile.userName && (
-                  <p className="text-muted-foreground">@{profile.userName}</p>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                {profile.profilePicture && (
+                  <img 
+                    src={profile.profilePicture} 
+                    alt="Profile" 
+                    className="w-20 h-20 rounded-full object-cover"
+                  />
                 )}
-                {profile.bio && (
-                  <p className="mt-2 text-sm">{profile.bio}</p>
-                )}
+                <div className="flex-1">
+                  <h1 className="text-2xl font-bold">
+                    {fullName || profile.userName || 'Anonymous User'}
+                  </h1>
+                  {profile.userName && (
+                    <p className="text-muted-foreground">@{profile.userName}</p>
+                  )}
+                  {profile.bio && (
+                    <p className="mt-2 text-sm">{profile.bio}</p>
+                  )}
+                </div>
               </div>
+              {canAddFriend && profile.userId && (
+                <AddFriendButton targetUserId={profile.userId} />
+              )}
             </div>
           </CardContent>
         </Card>
