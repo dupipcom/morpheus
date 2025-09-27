@@ -25,6 +25,7 @@ export interface PublicChartsData {
       week: number
       earnings: number
       balance: number
+      moodAverage: number
     }>
   }
 }
@@ -45,14 +46,20 @@ export function generatePublicChartsData(
   userEntries: any,
   visibilitySettings: ChartVisibility
 ): PublicChartsData {
-  if (!userEntries) return {}
+  if (!userEntries) {
+    return {}
+  }
 
   const currentYear = new Date().getFullYear()
   const yearData = userEntries[currentYear]
   
-  if (!yearData?.weeks) return {}
+  if (!yearData?.weeks) {
+    return {}
+  }
 
   const weeks = Object.values(yearData.weeks) as any[]
+  const days = yearData.days || {}
+  
   const weeksData = weeks
     .filter(week => week && typeof week === 'object')
     .map(week => {
@@ -65,8 +72,12 @@ export function generatePublicChartsData(
       let selfEsteem = 0
       let trust = 0
       
-      if (week.days && Array.isArray(week.days)) {
-        const daysWithMood = week.days.filter((day: any) => day.mood)
+      // Get days for this week from the separate days object
+      const weekDays = Object.values(days).filter((day: any) => day.week === week.week)
+      
+      if (weekDays && weekDays.length > 0) {
+        const daysWithMood = weekDays.filter((day: any) => day.mood)
+        
         if (daysWithMood.length > 0) {
           gratitude = daysWithMood.reduce((sum: number, day: any) => sum + (day.mood.gratitude || 0), 0) / daysWithMood.length
           optimism = daysWithMood.reduce((sum: number, day: any) => sum + (day.mood.optimism || 0), 0) / daysWithMood.length
@@ -84,8 +95,9 @@ export function generatePublicChartsData(
       const completedTasks = week.tasks?.filter((task: any) => task.status === 'Done').length || 0
       const progress = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0
 
-      // Calculate earnings
+      // Calculate earnings and balance
       const earnings = parseFloat(week.earnings) || 0
+      const balance = parseFloat(week.availableBalance) || 0
 
       return {
         week: week.week,
@@ -98,10 +110,53 @@ export function generatePublicChartsData(
         trust: Math.round(trust * 10) / 10,
         progress: Math.round(progress * 10) / 10,
         earnings: Math.round(earnings * 100) / 100,
-        balance: 0 // This would need to be calculated from availableBalance
+        balance: Math.round(balance * 100) / 100
       }
     })
     .sort((a, b) => a.week - b.week)
+
+  // Scale values to percentages for privacy
+  const scaleToPercentage = (values: number[], maxValue: number = 100) => {
+    if (values.length === 0) return values
+    const max = Math.max(...values)
+    if (max === 0) return values
+    return values.map(value => Math.round((value / max) * maxValue * 10) / 10)
+  }
+
+  // Get arrays for scaling
+  const moodAverages = weeksData.map(w => w.moodAverage)
+  const gratitudes = weeksData.map(w => w.gratitude)
+  const optimisms = weeksData.map(w => w.optimism)
+  const restednesses = weeksData.map(w => w.restedness)
+  const tolerances = weeksData.map(w => w.tolerance)
+  const selfEsteems = weeksData.map(w => w.selfEsteem)
+  const trusts = weeksData.map(w => w.trust)
+  const earnings = weeksData.map(w => w.earnings)
+  const balances = weeksData.map(w => w.balance)
+
+  // Scale the data (all mood dimensions as percentage for privacy)
+  const scaledMoodAverages = scaleToPercentage(moodAverages, 100)
+  const scaledGratitudes = scaleToPercentage(gratitudes, 100)
+  const scaledOptimisms = scaleToPercentage(optimisms, 100)
+  const scaledRestednesses = scaleToPercentage(restednesses, 100)
+  const scaledTolerances = scaleToPercentage(tolerances, 100)
+  const scaledSelfEsteems = scaleToPercentage(selfEsteems, 100)
+  const scaledTrusts = scaleToPercentage(trusts, 100)
+  const scaledEarnings = scaleToPercentage(earnings, 100)
+  const scaledBalances = scaleToPercentage(balances, 100)
+
+  // Update weeksData with scaled values
+  weeksData.forEach((week, index) => {
+    week.moodAverage = scaledMoodAverages[index]
+    week.gratitude = scaledGratitudes[index]
+    week.optimism = scaledOptimisms[index]
+    week.restedness = scaledRestednesses[index]
+    week.tolerance = scaledTolerances[index]
+    week.selfEsteem = scaledSelfEsteems[index]
+    week.trust = scaledTrusts[index]
+    week.earnings = scaledEarnings[index]
+    week.balance = scaledBalances[index]
+  })
 
   const result: PublicChartsData = {}
 
@@ -135,7 +190,8 @@ export function generatePublicChartsData(
       weeksData: weeksData.map(week => ({
         week: week.week,
         earnings: week.earnings,
-        balance: week.balance
+        balance: week.balance,
+        moodAverage: week.moodAverage
       }))
     }
   }

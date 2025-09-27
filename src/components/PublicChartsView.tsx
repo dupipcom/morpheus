@@ -32,6 +32,7 @@ interface PublicChartsViewProps {
         week: number
         earnings: number
         balance: number
+        moodAverage: number
       }>
     }
   }
@@ -39,54 +40,58 @@ interface PublicChartsViewProps {
 
 const moodChartConfig = {
   moodAverage: {
-    label: "Mood Average",
+    label: "Mood Average (%)",
     color: "#2f2f8d",
   },
   gratitude: {
-    label: "Gratitude",
+    label: "Gratitude (%)",
     color: "#2f2f8d",
   },
   optimism: {
-    label: "Optimism",
+    label: "Optimism (%)",
     color: "#2f2f8d",
   },
   restedness: {
-    label: "Restedness",
+    label: "Restedness (%)",
     color: "#2f2f8d",
   },
   tolerance: {
-    label: "Tolerance",
+    label: "Tolerance (%)",
     color: "#2f2f8d",
   },
   selfEsteem: {
-    label: "Self Esteem",
+    label: "Self Esteem (%)",
     color: "#2f2f8d",
   },
   trust: {
-    label: "Trust",
+    label: "Trust (%)",
     color: "#2f2f8d",
   },
 } satisfies ChartConfig
 
 const productivityChartConfig = {
   moodAverage: {
-    label: "Mood Average",
+    label: "Mood Average (%)",
     color: "#2f2f8d",
   },
   progress: {
-    label: "Progress",
+    label: "Progress (%)",
     color: "#10b981",
   },
 } satisfies ChartConfig
 
 const earningsChartConfig = {
   earnings: {
-    label: "Earnings",
+    label: "Earnings (%)",
     color: "#10b981",
   },
   balance: {
-    label: "Balance",
+    label: "Balance (%)",
     color: "#3b82f6",
+  },
+  moodAverage: {
+    label: "Mood Average (%)",
+    color: "#2f2f8d",
   },
 } satisfies ChartConfig
 
@@ -105,7 +110,10 @@ export function PublicChartsView({ chartsData }: PublicChartsViewProps) {
       {chartsData.moodCharts && (
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold">Mood Tracking</h3>
+            <div>
+              <h3 className="text-lg font-semibold">Mood Tracking</h3>
+              <p className="text-sm text-muted-foreground">Values scaled to percentages for privacy</p>
+            </div>
             <Badge variant="outline">Mood Charts</Badge>
           </div>
           
@@ -182,7 +190,7 @@ export function PublicChartsView({ chartsData }: PublicChartsViewProps) {
                 axisLine={true}
               />
               <ChartTooltip content={<ChartTooltipContent />} />
-              <ChartLegend verticalAlign="top" content={<ChartLegendContent />} />
+              <ChartLegend verticalAlign="top" content={<ChartLegendContent payload={[]} />} />
             </AreaChart>
           </ChartContainer>
         </div>
@@ -192,7 +200,10 @@ export function PublicChartsView({ chartsData }: PublicChartsViewProps) {
       {chartsData.productivityCharts && (
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold">Productivity</h3>
+            <div>
+              <h3 className="text-lg font-semibold">Productivity</h3>
+              <p className="text-sm text-muted-foreground">Values scaled to percentages for privacy</p>
+            </div>
             <Badge variant="outline">Productivity Charts</Badge>
           </div>
           
@@ -224,7 +235,7 @@ export function PublicChartsView({ chartsData }: PublicChartsViewProps) {
                 axisLine={true}
               />
               <ChartTooltip content={<ChartTooltipContent />} />
-              <ChartLegend verticalAlign="top" content={<ChartLegendContent />} />
+              <ChartLegend verticalAlign="top" content={<ChartLegendContent payload={[]} />} />
             </AreaChart>
           </ChartContainer>
         </div>
@@ -234,7 +245,10 @@ export function PublicChartsView({ chartsData }: PublicChartsViewProps) {
       {chartsData.earningsCharts && (
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold">Earnings</h3>
+            <div>
+              <h3 className="text-lg font-semibold">Earnings</h3>
+              <p className="text-sm text-muted-foreground">Values scaled to percentages for privacy</p>
+            </div>
             <Badge variant="outline">Earnings Charts</Badge>
           </div>
           
@@ -259,6 +273,15 @@ export function PublicChartsView({ chartsData }: PublicChartsViewProps) {
                 radius={4} 
                 fillOpacity={0.4} 
               />
+              <Area 
+                stackId="3" 
+                type="monotone" 
+                dataKey="moodAverage" 
+                stroke="#2f2f8d" 
+                fill="#2f2f8d" 
+                radius={4} 
+                fillOpacity={0.4} 
+              />
               <XAxis
                 dataKey="week"
                 tickLine={false}
@@ -266,7 +289,7 @@ export function PublicChartsView({ chartsData }: PublicChartsViewProps) {
                 axisLine={true}
               />
               <ChartTooltip content={<ChartTooltipContent />} />
-              <ChartLegend verticalAlign="top" content={<ChartLegendContent />} />
+              <ChartLegend verticalAlign="top" content={<ChartLegendContent payload={[]} />} />
             </AreaChart>
           </ChartContainer>
         </div>
