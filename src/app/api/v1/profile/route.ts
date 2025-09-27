@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { currentUser, auth } from '@clerk/nextjs/server'
 import { NextRequest } from 'next/server'
+import { revalidatePath } from 'next/cache'
 
 export async function GET(req: NextRequest) {
   const { userId } = await auth()
@@ -93,6 +94,16 @@ export async function POST(req: NextRequest) {
           publicChartsVisible: data.publicChartsVisible ?? false,
         }
       })
+    }
+
+    // Revalidate the user's public profile page if userName exists
+    if (data.userName) {
+      try {
+        // Directly call revalidatePath instead of making HTTP request
+        revalidatePath(`/@${data.userName}`)
+      } catch (revalidateError) {
+        console.error('Error revalidating profile page:', revalidateError)
+      }
     }
 
     return Response.json({ profile })
