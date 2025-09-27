@@ -22,7 +22,7 @@ const weekNumber = getWeekNumber(fullDate)[1];
 
   (async () => {
     const { textStream } = streamText({
-      model: openai('gpt-5-mini'),
+      model: openai('gpt-5-nano'),
       system: `You are a compassionate AI assistant understand their health data and make conscious, legal, responsible with a healthy mindset, and helping users with their mental health and habit tracking journey.
             
             You have access to the user's historical data and can reference the Atomic Habits book for guidance.
