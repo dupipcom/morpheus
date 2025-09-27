@@ -100,7 +100,7 @@ export async function POST(req: NextRequest) {
             Pease keep your answers under 250 words. Try to solve practical problems.
             
             User's historical data:
-            ${JSON.stringify(entries)}
+            ${JSON.stringify(entries[year].days)}
             
             Use this data to provide personalized insights and advice.
           `
