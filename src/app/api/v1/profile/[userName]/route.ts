@@ -27,6 +27,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
     if (profile.publicChartsVisible && profile.publicCharts) {
       const chartVisibility = {
         moodCharts: (profile.publicCharts as any)?.moodCharts || false,
+        simplifiedMoodChart: (profile.publicCharts as any)?.simplifiedMoodChart || false,
         productivityCharts: (profile.publicCharts as any)?.productivityCharts || false,
         earningsCharts: (profile.publicCharts as any)?.earningsCharts || false,
       }
@@ -36,6 +37,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
 
     // Return only the public data based on visibility settings
     const publicProfile = {
+      userId: profile.user.id, // Include user ID for friend requests
       firstName: profile.firstNameVisible ? profile.firstName : null,
       lastName: profile.lastNameVisible ? profile.lastName : null,
       userName: profile.userNameVisible ? profile.userName : null,

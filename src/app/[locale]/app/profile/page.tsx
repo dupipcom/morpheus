@@ -37,7 +37,12 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
     publicChartsVisible: false,
   })
   
-  const [publicCharts, setPublicCharts] = useState({})
+  const [publicCharts, setPublicCharts] = useState<{
+    moodCharts?: boolean
+    simplifiedMoodChart?: boolean
+    productivityCharts?: boolean
+    earningsCharts?: boolean
+  }>({})
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
 
@@ -116,10 +121,11 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
 
   // Generate public charts data from user entries
   const generateChartsData = () => {
-    if (!session?.user?.entries) return {}
+    if (!session?.user || !('entries' in session.user) || !session.user.entries) return {}
     
     const chartVisibility = {
       moodCharts: publicCharts.moodCharts || false,
+      simplifiedMoodChart: publicCharts.simplifiedMoodChart || false,
       productivityCharts: publicCharts.productivityCharts || false,
       earningsCharts: publicCharts.earningsCharts || false,
     }
@@ -287,11 +293,22 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
               <div className="flex items-center justify-between">
                 <div>
                   <Label>Mood Charts</Label>
-                  <p className="text-sm text-muted-foreground">Show mood tracking data</p>
+                  <p className="text-sm text-muted-foreground">Show detailed mood tracking data</p>
                 </div>
                 <Switch
                   checked={publicCharts.moodCharts || false}
                   onCheckedChange={(checked) => handleChartsVisibilityChange('moodCharts', checked)}
+                />
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>Simplified Mood Chart</Label>
+                  <p className="text-sm text-muted-foreground">Show only mood average</p>
+                </div>
+                <Switch
+                  checked={publicCharts.simplifiedMoodChart || false}
+                  onCheckedChange={(checked) => handleChartsVisibilityChange('simplifiedMoodChart', checked)}
                 />
               </div>
               
@@ -368,6 +385,7 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
                 <h4 className="font-medium mb-2">Public Charts</h4>
                 <div className="space-y-2 mb-4">
                   {publicCharts.moodCharts && <Badge variant="outline">Mood Charts</Badge>}
+                  {publicCharts.simplifiedMoodChart && <Badge variant="outline">Simplified Mood Chart</Badge>}
                   {publicCharts.productivityCharts && <Badge variant="outline">Productivity Charts</Badge>}
                   {publicCharts.earningsCharts && <Badge variant="outline">Earnings Charts</Badge>}
                 </div>

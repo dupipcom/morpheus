@@ -13,6 +13,12 @@ export interface PublicChartsData {
       trust: number
     }>
   }
+  simplifiedMoodChart?: {
+    weeksData: Array<{
+      week: number
+      moodAverage: number
+    }>
+  }
   productivityCharts?: {
     weeksData: Array<{
       week: number
@@ -32,6 +38,7 @@ export interface PublicChartsData {
 
 export interface ChartVisibility {
   moodCharts: boolean
+  simplifiedMoodChart: boolean
   productivityCharts: boolean
   earningsCharts: boolean
 }
@@ -171,6 +178,15 @@ export function generatePublicChartsData(
         tolerance: week.tolerance,
         selfEsteem: week.selfEsteem,
         trust: week.trust
+      }))
+    }
+  }
+
+  if (visibilitySettings.simplifiedMoodChart) {
+    result.simplifiedMoodChart = {
+      weeksData: weeksData.map(week => ({
+        week: week.week,
+        moodAverage: week.moodAverage
       }))
     }
   }
