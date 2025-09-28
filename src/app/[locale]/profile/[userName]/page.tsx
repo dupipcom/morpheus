@@ -88,16 +88,16 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
         {/* Profile Header */}
         <Card className="mb-6">
           <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                 {profile.profilePicture && (
                   <img 
                     src={profile.profilePicture} 
                     alt="Profile" 
-                    className="w-20 h-20 rounded-full object-cover"
+                    className="w-20 h-20 rounded-full object-cover mx-auto sm:mx-0"
                   />
                 )}
-                <div className="flex-1">
+                <div className="flex-1 text-center sm:text-left">
                   <h1 className="text-2xl font-bold">
                     {fullName || profile.userName || 'Anonymous User'}
                   </h1>
@@ -110,7 +110,9 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
                 </div>
               </div>
               {canAddFriend && profile.userId && (
-                <AddFriendButton targetUserId={profile.userId} />
+                <div className="flex justify-center md:justify-end">
+                  <AddFriendButton targetUserId={profile.userId} />
+                </div>
               )}
             </div>
           </CardContent>
