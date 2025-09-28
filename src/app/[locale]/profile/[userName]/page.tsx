@@ -3,13 +3,11 @@ import { notFound } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { PublicChartsView } from "@/components/PublicChartsView"
-<<<<<<< Updated upstream
-=======
 import { AddFriendButtonOrSignIn } from "@/components/AddFriendButtonOrSignIn"
 import { auth } from '@clerk/nextjs/server'
->>>>>>> Stashed changes
 
 interface ProfileData {
+  userId?: string
   firstName?: string
   lastName?: string
   userName?: string
@@ -72,6 +70,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 export default async function PublicProfilePage({ params }: { params: Promise<{ locale: string; userName: string }> }) {
   const { locale, userName } = await params
+  const { userId } = await auth()
   
   const profile = await getProfile(userName)
   
@@ -81,11 +80,8 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
 
   const fullName = [profile.firstName, profile.lastName].filter(Boolean).join(' ')
   const hasAnyPublicData = profile.firstName || profile.lastName || profile.userName || profile.bio || profile.profilePicture
-<<<<<<< Updated upstream
-=======
   const canAddFriend = profile.userId && (userId !== profile.userId)
   const isLoggedIn = !!userId
->>>>>>> Stashed changes
 
   return (
     <main className="min-h-screen bg-background">
@@ -93,15 +89,6 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
         {/* Profile Header */}
         <Card className="mb-6">
           <CardContent className="pt-6">
-<<<<<<< Updated upstream
-            <div className="flex items-center space-x-4">
-              {profile.profilePicture && (
-                <img 
-                  src={profile.profilePicture} 
-                  alt="Profile" 
-                  className="w-20 h-20 rounded-full object-cover"
-                />
-=======
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                 {profile.profilePicture && (
@@ -130,19 +117,7 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
                     isLoggedIn={isLoggedIn}
                   />
                 </div>
->>>>>>> Stashed changes
               )}
-              <div className="flex-1">
-                <h1 className="text-2xl font-bold">
-                  {fullName || profile.userName || 'Anonymous User'}
-                </h1>
-                {profile.userName && (
-                  <p className="text-muted-foreground">@{profile.userName}</p>
-                )}
-                {profile.bio && (
-                  <p className="mt-2 text-sm">{profile.bio}</p>
-                )}
-              </div>
             </div>
           </CardContent>
         </Card>
