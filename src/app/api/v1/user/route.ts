@@ -2,7 +2,7 @@ import prisma from "@/lib/prisma";
 import { currentUser, auth } from '@clerk/nextjs/server'
 import { getWeekNumber } from "@/app/helpers"
 import { WEEKLY_ACTIONS, DAILY_ACTIONS } from "@/app/constants"
-import { safeUpdateWeekEntry, safeUpdateDayEntry, validateWeekData, validateDayData, logEntryData, ensureWeekDataIntegrity, ensureDayDataIntegrity } from "@/lib/entryUtils"
+import { safeUpdateWeekEntry, safeUpdateDayEntry, validateWeekData, validateDayData, logEntryData, ensureWeekDataIntegrity, ensureDayDataIntegrity, addEphemeralTaskToDay, addEphemeralTaskToWeek, updateEphemeralTaskInDay, updateEphemeralTaskInWeek, removeEphemeralTaskFromDay, removeEphemeralTaskFromWeek } from "@/lib/entryUtils"
 
 export async function GET(req: NextApiRequest, res: NextApiResponse) {
   const { userId } = await auth()
@@ -633,7 +633,107 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     user = await getUser()
   }
 
+  // Handle ephemeral tasks for day entries
+  if (data?.dayEphemeralTasks) {
+    const entries = user.entries as any
+    let updatedEntries = entries
 
+    if (data.dayEphemeralTasks.add) {
+      const ephemeralTask = {
+        id: data.dayEphemeralTasks.add.id || `ephemeral_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        name: data.dayEphemeralTasks.add.name,
+        status: data.dayEphemeralTasks.add.status || "Not started",
+        area: data.dayEphemeralTasks.add.area || "self",
+        categories: data.dayEphemeralTasks.add.categories || ["custom"],
+        cadence: "ephemeral",
+        times: data.dayEphemeralTasks.add.times || 1,
+        count: data.dayEphemeralTasks.add.count || 0,
+        contacts: data.dayEphemeralTasks.add.contacts || [],
+        things: data.dayEphemeralTasks.add.things || [],
+        createdAt: new Date().toISOString(),
+        isEphemeral: true
+      }
+      updatedEntries = addEphemeralTaskToDay(updatedEntries, year, date, ephemeralTask)
+    }
+
+    if (data.dayEphemeralTasks.update) {
+      updatedEntries = updateEphemeralTaskInDay(
+        updatedEntries, 
+        year, 
+        date, 
+        data.dayEphemeralTasks.update.id, 
+        data.dayEphemeralTasks.update.updates
+      )
+    }
+
+    if (data.dayEphemeralTasks.remove) {
+      updatedEntries = removeEphemeralTaskFromDay(
+        updatedEntries, 
+        year, 
+        date, 
+        data.dayEphemeralTasks.remove.id
+      )
+    }
+
+    await prisma.user.update({
+      data: {
+        entries: updatedEntries,
+      },
+      where: { id: user.id },
+    })
+    user = await getUser()
+  }
+
+  // Handle ephemeral tasks for week entries
+  if (data?.weekEphemeralTasks) {
+    const entries = user.entries as any
+    let updatedEntries = entries
+
+    if (data.weekEphemeralTasks.add) {
+      const ephemeralTask = {
+        id: data.weekEphemeralTasks.add.id || `ephemeral_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        name: data.weekEphemeralTasks.add.name,
+        status: data.weekEphemeralTasks.add.status || "Not started",
+        area: data.weekEphemeralTasks.add.area || "self",
+        categories: data.weekEphemeralTasks.add.categories || ["custom"],
+        cadence: "ephemeral",
+        times: data.weekEphemeralTasks.add.times || 1,
+        count: data.weekEphemeralTasks.add.count || 0,
+        contacts: data.weekEphemeralTasks.add.contacts || [],
+        things: data.weekEphemeralTasks.add.things || [],
+        createdAt: new Date().toISOString(),
+        isEphemeral: true
+      }
+      updatedEntries = addEphemeralTaskToWeek(updatedEntries, year, weekNumber, ephemeralTask)
+    }
+
+    if (data.weekEphemeralTasks.update) {
+      updatedEntries = updateEphemeralTaskInWeek(
+        updatedEntries, 
+        year, 
+        weekNumber, 
+        data.weekEphemeralTasks.update.id, 
+        data.weekEphemeralTasks.update.updates
+      )
+    }
+
+    if (data.weekEphemeralTasks.remove) {
+      updatedEntries = removeEphemeralTaskFromWeek(
+        updatedEntries, 
+        year, 
+        weekNumber, 
+        data.weekEphemeralTasks.remove.id
+      )
+    }
+
+    await prisma.user.update({
+      data: {
+        entries: updatedEntries,
+      },
+      where: { id: user.id },
+    })
+    user = await getUser()
+  }
 
   
   return Response.json(user)
