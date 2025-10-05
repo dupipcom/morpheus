@@ -39,7 +39,8 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { ContactCombobox } from "@/components/ui/contact-combobox"
 import { ThingCombobox } from "@/components/ui/thing-combobox"
-import { Users, X, Heart, Settings, Package } from "lucide-react"
+import { Users, X, Heart, Settings, Package, Plus } from "lucide-react"
+import { Switch } from "@/components/ui/switch"
 
 import { MoodView } from "@/views/moodView"
 
@@ -75,6 +76,19 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const [taskThings, setTaskThings] = useState({})
   const [favorites, setFavorites] = useState(new Set())
   const [optimisticFavorites, setOptimisticFavorites] = useState(new Set())
+  const [ephemeralTasks, setEphemeralTasks] = useState([])
+  const [showAddEphemeral, setShowAddEphemeral] = useState(false)
+  const [newEphemeralTask, setNewEphemeralTask] = useState({ name: '', area: 'self', category: 'custom', saveToTemplate: false })
+
+  // Load ephemeral tasks from session
+  const currentEphemeralTasks = useMemo(() => {
+    if (timeframe === 'day') {
+      return session?.user?.entries?.[year]?.days?.[date]?.ephemeralTasks || []
+    } else if (timeframe === 'week') {
+      return session?.user?.entries?.[year]?.weeks?.[weekNumber]?.ephemeralTasks || []
+    }
+    return []
+  }, [session?.user?.entries, year, date, weekNumber, timeframe])
   const { isAgentChatEnabled } = useFeatureFlag()
   const messages = session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks && session?.user?.entries[year]?.weeks[weekNumber] && session?.user?.entries[year]?.weeks[weekNumber].messages
   const reverseMessages = useMemo (() => messages?.length ? messages.sort((a,b) => new Date(a.timestamp).getTime() > new Date(b.timestamp).getTime() ? 1 : -1) : [], [JSON.stringify(session?.user)])
@@ -84,26 +98,39 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
 
 
   const userTasks = useMemo(() => {
+    let regularTasks = []
+    
     if (timeframe === 'day') {
       const noDayData = !session?.user?.entries || !session?.user?.entries[year] || !Object.keys(session?.user?.entries[year].days).length
       const dailyTasks = ((session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date]) && session?.user?.entries[year].days[date]?.tasks) || (noDayData ? DAILY_ACTIONS : [])
       
       // Always prioritize dailyTemplate if it exists, otherwise use dailyTasks
       if (session?.user?.settings?.dailyTemplate && session?.user?.settings?.dailyTemplate.length > 0) {
-        return assign(getLocalizedTaskNames(session?.user?.settings?.dailyTemplate, t), getLocalizedTaskNames(dailyTasks, t), { times: 1 })
+        regularTasks = assign(getLocalizedTaskNames(session?.user?.settings?.dailyTemplate, t), getLocalizedTaskNames(dailyTasks, t), { times: 1 })
+      } else {
+        regularTasks = getLocalizedTaskNames(dailyTasks, t)
       }
-      return getLocalizedTaskNames(dailyTasks, t)
     } else if (timeframe === 'week') {
       const noWeekData = !session?.user?.entries || !session?.user?.entries[year] || !Object.keys(session?.user?.entries[year].weeks).length
       const weeklyTasks = (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks) && session?.user?.entries[year].weeks[weekNumber]?.tasks || []
       
       // Always prioritize weeklyTemplate if it exists, otherwise use weeklyTasks or default actions
       if (session?.user?.settings?.weeklyTemplate && session?.user?.settings?.weeklyTemplate.length > 0) {
-        return assign(getLocalizedTaskNames(session?.user?.settings?.weeklyTemplate, t), getLocalizedTaskNames(weeklyTasks, t), { times: 1 })
+        regularTasks = assign(getLocalizedTaskNames(session?.user?.settings?.weeklyTemplate, t), getLocalizedTaskNames(weeklyTasks, t), { times: 1 })
+      } else {
+        regularTasks = getLocalizedTaskNames(weeklyTasks.length > 0 ? weeklyTasks : WEEKLY_ACTIONS, t)
       }
-      return getLocalizedTaskNames(weeklyTasks.length > 0 ? weeklyTasks : WEEKLY_ACTIONS, t)
     }
-  }, [JSON.stringify(session?.user?.settings), date, weekNumber, t])
+    
+    // Combine regular tasks with ephemeral tasks
+    const ephemeralTasksWithDisplayName = currentEphemeralTasks.map(task => ({
+      ...task,
+      displayName: task.name,
+      isEphemeral: true
+    }))
+    
+    return [...regularTasks, ...ephemeralTasksWithDisplayName]
+  }, [JSON.stringify(session?.user?.settings), date, weekNumber, t, currentEphemeralTasks])
 
 
   const openDays = useMemo(() => {
@@ -214,7 +241,13 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
 
   const handleDone = async (values) => {
     setPreviousValues(values)
-    const nextActions = userTasks?.map((action) => {
+    
+    // Separate regular tasks from ephemeral tasks
+    const regularTasks = userTasks?.filter(task => !task.isEphemeral) || []
+    const ephemeralTasks = userTasks?.filter(task => task.isEphemeral) || []
+    
+    // Handle regular tasks
+    const nextActions = regularTasks?.map((action) => {
       const clonedAction = { ...action }
       if (values.includes(action.name) && (action.times - action.count) === 1) {
         clonedAction.count += 1
@@ -231,26 +264,78 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       }
       return clonedAction
     })
-    const done = nextActions.filter((action) => action.status === "Done").map((action) => action.name)
+    
+    // Handle ephemeral tasks
+    const updatedEphemeralTasks = ephemeralTasks?.map((task) => {
+      const clonedTask = { ...task }
+      if (values.includes(task.name) && (task.times - task.count) === 1) {
+        clonedTask.count += 1
+        clonedTask.status = "Done"
+      } else if (values.includes(task.name) && (task.times - task.count) >= 1) {
+        clonedTask.count += 1
+      } else {
+        if (!values.includes(task.name) && clonedTask.times <= clonedTask.count) {
+          if (clonedTask.count > 0) {
+            clonedTask.count -= 1
+            clonedTask.status = "Open"
+          }
+        }
+      }
+      return clonedTask
+    })
+    
+    const done = [...(nextActions || []), ...(updatedEphemeralTasks || [])].filter((action) => action.status === "Done").map((action) => action.name)
 
     setValues(done)
-    const response = await fetch('/api/v1/user', {
-      method: 'POST', body: JSON.stringify({
-        dayActions: timeframe === 'day' ? nextActions : undefined,
-        weekActions: timeframe === 'week' ? nextActions : undefined,
-        taskContacts: taskContacts,
-        taskThings: taskThings,
-        date: fullDay,
-        week: weekNumber
+    
+    // Update regular tasks
+    if (nextActions && nextActions.length > 0) {
+      const response = await fetch('/api/v1/user', {
+        method: 'POST', body: JSON.stringify({
+          dayActions: timeframe === 'day' ? nextActions : undefined,
+          weekActions: timeframe === 'week' ? nextActions : undefined,
+          taskContacts: taskContacts,
+          taskThings: taskThings,
+          date: fullDay,
+          week: weekNumber
+        })
       })
-    })
+    }
+    
+    // Update ephemeral tasks
+    if (updatedEphemeralTasks && updatedEphemeralTasks.length > 0) {
+      for (const task of updatedEphemeralTasks) {
+        const response = await fetch('/api/v1/user', {
+          method: 'POST', body: JSON.stringify({
+            [timeframe === 'day' ? 'dayEphemeralTasks' : 'weekEphemeralTasks']: {
+              update: {
+                id: task.id,
+                updates: {
+                  status: task.status,
+                  count: task.count
+                }
+              }
+            },
+            date: fullDay,
+            week: weekNumber
+          })
+        })
+      }
+    }
+    
     await updateUser(session, setGlobalContext, { session, theme })
   }
 
   // Create debounced version that only handles server requests
   const debouncedServerUpdate = useDebounce(async (values) => {
     setPreviousValues(values)
-    const nextActions = userTasks?.map((action) => {
+    
+    // Separate regular tasks from ephemeral tasks
+    const regularTasks = userTasks?.filter(task => !task.isEphemeral) || []
+    const ephemeralTasks = userTasks?.filter(task => task.isEphemeral) || []
+    
+    // Handle regular tasks
+    const nextActions = regularTasks?.map((action) => {
       const clonedAction = { ...action }
       if (values.includes(action.name) && (action.times - action.count) === 1) {
         clonedAction.count += 1
@@ -267,18 +352,61 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       }
       return clonedAction
     })
-    const done = nextActions.filter((action) => action.status === "Done").map((action) => action.name)
-
-    const response = await fetch('/api/v1/user', {
-      method: 'POST', body: JSON.stringify({
-        dayActions: timeframe === 'day' ? nextActions : undefined,
-        weekActions: timeframe === 'week' ? nextActions : undefined,
-        taskContacts: taskContacts,
-        taskThings: taskThings,
-        date: fullDay,
-        week: weekNumber
-      })
+    
+    // Handle ephemeral tasks
+    const updatedEphemeralTasks = ephemeralTasks?.map((task) => {
+      const clonedTask = { ...task }
+      if (values.includes(task.name) && (task.times - task.count) === 1) {
+        clonedTask.count += 1
+        clonedTask.status = "Done"
+      } else if (values.includes(task.name) && (task.times - task.count) >= 1) {
+        clonedTask.count += 1
+      } else {
+        if (!values.includes(task.name) && clonedTask.times <= clonedTask.count) {
+          if (clonedTask.count > 0) {
+            clonedTask.count -= 1
+            clonedTask.status = "Open"
+          }
+        }
+      }
+      return clonedTask
     })
+
+    // Update regular tasks
+    if (nextActions && nextActions.length > 0) {
+      const response = await fetch('/api/v1/user', {
+        method: 'POST', body: JSON.stringify({
+          dayActions: timeframe === 'day' ? nextActions : undefined,
+          weekActions: timeframe === 'week' ? nextActions : undefined,
+          taskContacts: taskContacts,
+          taskThings: taskThings,
+          date: fullDay,
+          week: weekNumber
+        })
+      })
+    }
+    
+    // Update ephemeral tasks
+    if (updatedEphemeralTasks && updatedEphemeralTasks.length > 0) {
+      for (const task of updatedEphemeralTasks) {
+        const response = await fetch('/api/v1/user', {
+          method: 'POST', body: JSON.stringify({
+            [timeframe === 'day' ? 'dayEphemeralTasks' : 'weekEphemeralTasks']: {
+              update: {
+                id: task.id,
+                updates: {
+                  status: task.status,
+                  count: task.count
+                }
+              }
+            },
+            date: fullDay,
+            week: weekNumber
+          })
+        })
+      }
+    }
+    
     await updateUser(session, setGlobalContext, { session, theme })
   }, 2000)
 
@@ -415,6 +543,103 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   // Create debounced version of saveTaskThings for sliders
   const debouncedSaveTaskThings = useDebounce(saveTaskThings, 300)
 
+  // Function to add ephemeral task or template task
+  const addEphemeralTask = async (taskData) => {
+    try {
+      let payload = {}
+      
+      if (taskData.saveToTemplate) {
+        // Add to template instead of ephemeral tasks
+        const newTask = {
+          name: taskData.name,
+          area: taskData.area,
+          categories: [taskData.category],
+          cadence: timeframe,
+          status: "Not started",
+          times: 1,
+          count: 0
+        }
+        
+        const currentTemplate = timeframe === 'day' 
+          ? session?.user?.settings?.dailyTemplate || []
+          : session?.user?.settings?.weeklyTemplate || []
+        
+        payload = {
+          settings: {
+            [timeframe === 'day' ? 'dailyTemplate' : 'weeklyTemplate']: [...currentTemplate, newTask]
+          }
+        }
+      } else {
+        // Add as ephemeral task
+        payload = {
+          [timeframe === 'day' ? 'dayEphemeralTasks' : 'weekEphemeralTasks']: {
+            add: {
+              name: taskData.name,
+              area: taskData.area,
+              categories: [taskData.category],
+              status: "Not started",
+              times: 1,
+              count: 0
+            }
+          }
+        }
+        
+        if (timeframe === 'day') {
+          payload.date = fullDay
+        } else if (timeframe === 'week') {
+          payload.week = weekNumber
+        }
+      }
+      
+      const response = await fetch('/api/v1/user', {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      })
+      
+      if (response.ok) {
+        await updateUser(session, setGlobalContext, { session, theme })
+        setNewEphemeralTask({ name: '', area: 'self', category: 'custom', saveToTemplate: false })
+        setShowAddEphemeral(false)
+      } else {
+        console.error('Failed to add task:', response.status, response.statusText)
+      }
+    } catch (error) {
+      console.error('Error adding task:', error)
+    }
+  }
+
+  // Function to delete ephemeral task
+  const deleteEphemeralTask = async (taskId) => {
+    try {
+      const payload = {
+        [timeframe === 'day' ? 'dayEphemeralTasks' : 'weekEphemeralTasks']: {
+          remove: {
+            id: taskId
+          }
+        }
+      }
+      
+      if (timeframe === 'day') {
+        payload.date = fullDay
+      } else if (timeframe === 'week') {
+        payload.week = weekNumber
+      }
+      
+      const response = await fetch('/api/v1/user', {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      })
+      
+      if (response.ok) {
+        await updateUser(session, setGlobalContext, { session, theme })
+      } else {
+        console.error('Failed to delete ephemeral task:', response.status, response.statusText)
+      }
+    } catch (error) {
+      console.error('Error deleting ephemeral task:', error)
+    }
+  }
+
   const handleCloseDates = async (values) => {
     await handleCloseDatesUtil(values, timeframe)
     await updateUser(session, setGlobalContext, { session, theme })
@@ -543,8 +768,16 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
         <AccordionTrigger>{t('dashboard.whatDidYouAccomplish')}</AccordionTrigger>
         <AccordionContent>
           <div className="flex flex-col">
-          {/* Toolbar with edit button */}
-          <div className="flex justify-end mb-4">
+          {/* Toolbar with add ephemeral task and settings buttons */}
+          <div className="flex justify-end gap-2 mb-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="flex items-center text-muted-foreground hover:text-foreground"
+              onClick={() => setShowAddEphemeral(!showAddEphemeral)}
+            >
+              <Plus className="h-4 w-4 mr-1" />
+            </Button>
             <Button
               variant="ghost"
               size="sm"
@@ -554,6 +787,94 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
               <Settings className="h-4 w-4" />
             </Button>
           </div>
+          
+          {/* Add Ephemeral Task Form */}
+          {showAddEphemeral && (
+            <Card className="mb-4 p-4">
+              <CardHeader>
+                <CardTitle className="text-sm">Add Custom Task</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div>
+                  <label className="text-sm font-medium">Task Name</label>
+                  <input
+                    type="text"
+                    value={newEphemeralTask.name}
+                    onChange={(e) => setNewEphemeralTask(prev => ({ ...prev, name: e.target.value }))}
+                    placeholder="Enter task name..."
+                    className="w-full p-2 border rounded-md"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Area</label>
+                  <select
+                    value={newEphemeralTask.area}
+                    onChange={(e) => setNewEphemeralTask(prev => ({ ...prev, area: e.target.value }))}
+                    className="w-full p-2 border rounded-md"
+                  >
+                    <option value="self">Self</option>
+                    <option value="social">Social</option>
+                    <option value="home">Home</option>
+                    <option value="work">Work</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Category</label>
+                  <select
+                    value={newEphemeralTask.category}
+                    onChange={(e) => setNewEphemeralTask(prev => ({ ...prev, category: e.target.value }))}
+                    className="w-full p-2 border rounded-md"
+                  >
+                    <option value="custom">Custom</option>
+                    <option value="body">Body</option>
+                    <option value="mind">Mind</option>
+                    <option value="spirit">Spirit</option>
+                    <option value="social">Social</option>
+                    <option value="work">Work</option>
+                    <option value="home">Home</option>
+                    <option value="fun">Fun</option>
+                    <option value="growth">Growth</option>
+                    <option value="community">Community</option>
+                    <option value="affection">Affection</option>
+                    <option value="clean">Clean</option>
+                    <option value="maintenance">Maintenance</option>
+                    <option value="spirituality">Spirituality</option>
+                    <option value="event">Event</option>
+                  </select>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="save-to-template"
+                    checked={newEphemeralTask.saveToTemplate}
+                    onCheckedChange={(checked) => setNewEphemeralTask(prev => ({ ...prev, saveToTemplate: checked }))}
+                  />
+                  <label htmlFor="save-to-template" className="text-sm font-medium">
+                    Save to {timeframe === 'day' ? 'daily' : 'weekly'} template
+                  </label>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    onClick={() => addEphemeralTask(newEphemeralTask)}
+                    disabled={!newEphemeralTask.name.trim()}
+                    size="sm"
+                  >
+                    Add Task
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setShowAddEphemeral(false)
+                      setNewEphemeralTask({ name: '', area: 'self', category: 'custom', saveToTemplate: false })
+                    }}
+                    size="sm"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          
           <ToggleGroup value={values} onValueChange={handleDoneWithDebounce} variant="outline" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 align-center justify-center w-full m-auto" type="multiple" orientation="horizontal">
       {castActions?.map((action) => {
         const taskContactRefs = taskContacts[action.name] || []
@@ -565,22 +886,39 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                 {action.times > 1 ? `${action.count}/${action.times} ` : ''}{action.displayName || action.name}
               </ToggleGroupItem>
               
-              {/* Favorite Button */}
-              <Button
-                variant="ghost"
-                size="sm"
-                className={`absolute top-1/2 right-1 transform -translate-y-1/2 h-6 w-6 p-0 rounded-full ${
-                  optimisticFavorites.has(action.name) 
-                    ? 'bg-primary' 
-                    : 'bg-muted'
-                }`}
-                onClick={(e) => {
-                  e.stopPropagation()
-                  handleToggleFavorite(action.name)
-                }}
-              >
-                <Heart className={`h-3 w-3 ${optimisticFavorites.has(action.name) ? 'fill-muted' : ''}`} />
-              </Button>
+              {/* Favorite Button (only for non-ephemeral tasks) */}
+              {!action.isEphemeral && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={`absolute top-1/2 right-1 transform -translate-y-1/2 h-6 w-6 p-0 rounded-full ${
+                    optimisticFavorites.has(action.name) 
+                      ? 'bg-primary' 
+                      : 'bg-muted'
+                  }`}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleToggleFavorite(action.name)
+                  }}
+                >
+                  <Heart className={`h-3 w-3 ${optimisticFavorites.has(action.name) ? 'fill-muted' : ''}`} />
+                </Button>
+              )}
+
+              {/* Delete Button for Ephemeral Tasks */}
+              {action.isEphemeral && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="absolute top-1/2 right-1 transform -translate-y-1/2 h-6 w-6 p-0 rounded-full bg-muted hover:bg-primary"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    deleteEphemeralTask(action.id)
+                  }}
+                >
+                  <X className="h-3 w-3 text-destructive" />
+                </Button>
+              )}
 
               {/* Contact Management Popover */}
               <Popover>
