@@ -102,6 +102,7 @@ export function ensureWeekDataIntegrity(weekData: any, year: number, week: numbe
     year,
     week,
     tasks: [],
+    ephemeralTasks: [],
     status: "Open",
     earnings: "0",
     progress: 0,
@@ -126,6 +127,7 @@ export function ensureDayDataIntegrity(dayData: any, year: number, date: string,
     week: weekNumber,
     date,
     tasks: [],
+    ephemeralTasks: [],
     status: "Open",
     moodAverage: 0,
     mood: {
@@ -144,4 +146,120 @@ export function ensureDayDataIntegrity(dayData: any, year: number, date: string,
     ...defaultDayData,
     ...dayData
   }
+}
+
+/**
+ * Adds an ephemeral task to a day entry
+ */
+export function addEphemeralTaskToDay(
+  currentEntries: any,
+  year: number,
+  date: string,
+  ephemeralTask: any
+): any {
+  const currentDayData = currentEntries?.[year]?.days?.[date] || {}
+  const currentEphemeralTasks = currentDayData.ephemeralTasks || []
+  
+  return safeUpdateDayEntry(currentEntries, year, date, {
+    ephemeralTasks: [...currentEphemeralTasks, ephemeralTask]
+  })
+}
+
+/**
+ * Adds an ephemeral task to a week entry
+ */
+export function addEphemeralTaskToWeek(
+  currentEntries: any,
+  year: number,
+  week: number,
+  ephemeralTask: any
+): any {
+  const currentWeekData = currentEntries?.[year]?.weeks?.[week] || {}
+  const currentEphemeralTasks = currentWeekData.ephemeralTasks || []
+  
+  return safeUpdateWeekEntry(currentEntries, year, week, {
+    ephemeralTasks: [...currentEphemeralTasks, ephemeralTask]
+  })
+}
+
+/**
+ * Updates an ephemeral task in a day entry
+ */
+export function updateEphemeralTaskInDay(
+  currentEntries: any,
+  year: number,
+  date: string,
+  taskId: string,
+  updates: any
+): any {
+  const currentDayData = currentEntries?.[year]?.days?.[date] || {}
+  const currentEphemeralTasks = currentDayData.ephemeralTasks || []
+  
+  const updatedEphemeralTasks = currentEphemeralTasks.map((task: any) => 
+    task.id === taskId ? { ...task, ...updates } : task
+  )
+  
+  return safeUpdateDayEntry(currentEntries, year, date, {
+    ephemeralTasks: updatedEphemeralTasks
+  })
+}
+
+/**
+ * Updates an ephemeral task in a week entry
+ */
+export function updateEphemeralTaskInWeek(
+  currentEntries: any,
+  year: number,
+  week: number,
+  taskId: string,
+  updates: any
+): any {
+  const currentWeekData = currentEntries?.[year]?.weeks?.[week] || {}
+  const currentEphemeralTasks = currentWeekData.ephemeralTasks || []
+  
+  const updatedEphemeralTasks = currentEphemeralTasks.map((task: any) => 
+    task.id === taskId ? { ...task, ...updates } : task
+  )
+  
+  return safeUpdateWeekEntry(currentEntries, year, week, {
+    ephemeralTasks: updatedEphemeralTasks
+  })
+}
+
+/**
+ * Removes an ephemeral task from a day entry
+ */
+export function removeEphemeralTaskFromDay(
+  currentEntries: any,
+  year: number,
+  date: string,
+  taskId: string
+): any {
+  const currentDayData = currentEntries?.[year]?.days?.[date] || {}
+  const currentEphemeralTasks = currentDayData.ephemeralTasks || []
+  
+  const updatedEphemeralTasks = currentEphemeralTasks.filter((task: any) => task.id !== taskId)
+  
+  return safeUpdateDayEntry(currentEntries, year, date, {
+    ephemeralTasks: updatedEphemeralTasks
+  })
+}
+
+/**
+ * Removes an ephemeral task from a week entry
+ */
+export function removeEphemeralTaskFromWeek(
+  currentEntries: any,
+  year: number,
+  week: number,
+  taskId: string
+): any {
+  const currentWeekData = currentEntries?.[year]?.weeks?.[week] || {}
+  const currentEphemeralTasks = currentWeekData.ephemeralTasks || []
+  
+  const updatedEphemeralTasks = currentEphemeralTasks.filter((task: any) => task.id !== taskId)
+  
+  return safeUpdateWeekEntry(currentEntries, year, week, {
+    ephemeralTasks: updatedEphemeralTasks
+  })
 } 
