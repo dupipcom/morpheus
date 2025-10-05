@@ -323,7 +323,8 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       }
     }
     
-    await updateUser(session, setGlobalContext, { session, theme })
+    // Don't call updateUser to avoid resetting moodView selections
+    // The session will be updated naturally when the user navigates or refreshes
   }
 
   // Create debounced version that only handles server requests
@@ -407,7 +408,8 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       }
     }
     
-    await updateUser(session, setGlobalContext, { session, theme })
+    // Don't call updateUser to avoid resetting moodView selections
+    // The session will be updated naturally when the user navigates or refreshes
   }, 2000)
 
   // Handle immediate UI updates and trigger debounced server update
