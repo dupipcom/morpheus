@@ -332,8 +332,10 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
           value={currentText} 
           onChange={(e) => {
             setCurrentText(e.target.value)
-            debouncedHandleTextSubmit(e.target.value, "text")
-          }} 
+          }}
+          onBlur={() => {
+            debouncedHandleTextSubmit(currentText, "text")
+          }}
         />
       <div className="my-12">
         <h3 className="mt-8 mb-4">{t('charts.gratitude')}</h3>
