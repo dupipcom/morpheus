@@ -280,8 +280,11 @@ const aggregateDataByWeek = (dailyData: any[]) => {
         return acc
       }
       
-      const moodValues = Object.values(cur.mood).filter(val => val !== null && val !== undefined && !isNaN(val))
-      const noMood = moodValues.length === 0 || moodValues.every(value => value === 0)
+      // Coerce all mood values to numbers before validation
+      const numericMoodValues = Object.values(cur.mood)
+        .map((val) => Number(val))
+        .filter((val) => !Number.isNaN(val))
+      const noMood = numericMoodValues.length === 0 || numericMoodValues.every((value) => value === 0)
       if (noMood) {
         return acc
       }
@@ -299,12 +302,12 @@ const aggregateDataByWeek = (dailyData: any[]) => {
         {
           date: cur.date,
           moodAverage: moodAverage.toFixed(2),
-          gratitude: (cur.mood.gratitude || 0).toFixed(2),
-          optimism: (cur.mood.optimism || 0).toFixed(2),
-          restedness: (cur.mood.restedness || 0).toFixed(2),
-          tolerance: (cur.mood.tolerance || 0).toFixed(2),
-          selfEsteem: (cur.mood.selfEsteem || 0).toFixed(2),
-          trust: (cur.mood.trust || 0).toFixed(2),
+          gratitude: Number(cur.mood.gratitude || 0).toFixed(2),
+          optimism: Number(cur.mood.optimism || 0).toFixed(2),
+          restedness: Number(cur.mood.restedness || 0).toFixed(2),
+          tolerance: Number(cur.mood.tolerance || 0).toFixed(2),
+          selfEsteem: Number(cur.mood.selfEsteem || 0).toFixed(2),
+          trust: Number(cur.mood.trust || 0).toFixed(2),
           progress: progressPercentage.toFixed(2),
           moodAverageScale: moodAverage.toFixed(2),
           earnings: earnings.toFixed(2),
