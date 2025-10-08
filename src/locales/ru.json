@@ -21,7 +21,9 @@
     "dismiss": "Закрыть",
     "selectLanguage": "Выбрать язык",
     "manageAccount": "Управление моим аккаунтом",
-    "signOut": "Выйти"
+    "signOut": "Выйти",
+    "profile": "Профиль",
+    "social": "Социальные"
   },
   "navigation": {
     "home": "Главная",

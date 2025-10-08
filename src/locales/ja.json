@@ -21,7 +21,9 @@
     "dismiss": "閉じる",
     "selectLanguage": "言語を選択",
     "manageAccount": "アカウント管理",
-    "signOut": "サインアウト"
+    "signOut": "サインアウト",
+    "profile": "プロフィール",
+    "social": "ソーシャル"
   },
   "navigation": {
     "home": "ホーム",

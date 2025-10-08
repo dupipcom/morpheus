@@ -21,7 +21,9 @@
     "settings": "Ρυθμίσεις",
     "signUp": "Εγγραφή",
     "manageAccount": "Διαχείριση λογαριασμού μου",
-    "signOut": "Αποσύνδεση"
+    "signOut": "Αποσύνδεση",
+    "profile": "Προφίλ",
+    "social": "Κοινωνικό"
   },
   "navigation": {
     "dashboard": "Πίνακας ελέγχου",

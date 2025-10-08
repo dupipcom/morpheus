@@ -21,7 +21,9 @@
     "settings": "Asetukset",
     "signUp": "Rekisteröidy",
     "manageAccount": "Hallitse tiliäni",
-    "signOut": "Kirjaudu ulos"
+    "signOut": "Kirjaudu ulos",
+    "profile": "Profiili",
+    "social": "Sosiaalinen"
   },
   "navigation": {
     "dashboard": "Kojelauta",

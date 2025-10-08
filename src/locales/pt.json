@@ -21,7 +21,9 @@
     "dismiss": "Fechar",
     "selectLanguage": "Selecionar idioma",
     "manageAccount": "Gerenciar Minha Conta",
-    "signOut": "Sair"
+    "signOut": "Sair",
+    "profile": "Perfil",
+    "social": "Social"
   },
   "navigation": {
     "home": "Início",

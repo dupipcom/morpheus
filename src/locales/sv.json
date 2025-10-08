@@ -21,7 +21,9 @@
     "dismiss": "Stäng",
     "selectLanguage": "Välj språk",
     "manageAccount": "Hantera mitt konto",
-    "signOut": "Logga ut"
+    "signOut": "Logga ut",
+    "profile": "Profil",
+    "social": "Social"
   },
   "navigation": {
     "home": "Hem",

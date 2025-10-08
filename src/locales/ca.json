@@ -21,7 +21,9 @@
     "dismiss": "Tancar",
     "selectLanguage": "Seleccionar idioma",
     "manageAccount": "Gestionar el meu compte",
-    "signOut": "Tancar sessió"
+    "signOut": "Tancar sessió",
+    "profile": "Perfil",
+    "social": "Social"
   },
   "navigation": {
     "home": "Inici",

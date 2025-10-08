@@ -1,0 +1,40 @@
+import en from '@/locales/en.json'
+import es from '@/locales/es.json'
+import fr from '@/locales/fr.json'
+import it from '@/locales/it.json'
+import de from '@/locales/de.json'
+import pt from '@/locales/pt.json'
+import ar from '@/locales/ar.json'
+import bn from '@/locales/bn.json'
+import ca from '@/locales/ca.json'
+import cs from '@/locales/cs.json'
+import da from '@/locales/da.json'
+import el from '@/locales/el.json'
+import et from '@/locales/et.json'
+import eu from '@/locales/eu.json'
+import fi from '@/locales/fi.json'
+import gl from '@/locales/gl.json'
+import he from '@/locales/he.json'
+import hi from '@/locales/hi.json'
+import hu from '@/locales/hu.json'
+import ja from '@/locales/ja.json'
+import ko from '@/locales/ko.json'
+import ms from '@/locales/ms.json'
+import nl from '@/locales/nl.json'
+import pa from '@/locales/pa.json'
+import pl from '@/locales/pl.json'
+import ro from '@/locales/ro.json'
+import ru from '@/locales/ru.json'
+import sv from '@/locales/sv.json'
+import tr from '@/locales/tr.json'
+import zh from '@/locales/zh.json'
+import sw from '@/locales/sw.json'
+import yo from '@/locales/yo.json'
+
+import { type Locale } from '@/lib/i18n'
+
+export const localesPreloaded: Record<Locale, any> = {
+  en, es, fr, it, de, pt, ar, bn, ca, cs, da, el, et, eu, fi, gl, he, hi, hu, ja, ko, ms, nl, pa, pl, ro, ru, sv, tr, zh, sw, yo,
+}
+
+

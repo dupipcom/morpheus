@@ -21,7 +21,9 @@
     "dismiss": "关闭",
     "selectLanguage": "选择语言",
     "manageAccount": "管理我的账户",
-    "signOut": "退出登录"
+    "signOut": "退出登录",
+    "profile": "个人资料",
+    "social": "社交"
   },
   "navigation": {
     "home": "首页",

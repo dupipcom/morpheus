@@ -17,6 +17,21 @@ export async function loadTranslations(locale: Locale) {
   }
 }
 
+// Synchronous loader for server-side or first render hydration
+export function loadTranslationsSync(locale: Locale) {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const translations = require(`@/locales/${locale}.json`)
+    return translations.default || translations
+  } catch (error) {
+    console.warn(`Failed to synchronously load translations for locale: ${locale}`, error)
+    if (locale !== defaultLocale) {
+      return loadTranslationsSync(defaultLocale)
+    }
+    return {}
+  }
+}
+
 // Get nested translation value using dot notation (e.g., "common.day")
 export function getTranslationValue(translations: any, key: string): string {
   return key.split('.').reduce((obj, k) => obj?.[k], translations) || key

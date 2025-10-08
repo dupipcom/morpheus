@@ -21,7 +21,9 @@
     "dismiss": "Chiudi",
     "selectLanguage": "Seleziona lingua",
     "manageAccount": "Gestisci il mio account",
-    "signOut": "Disconnetti"
+    "signOut": "Disconnetti",
+    "profile": "Profilo",
+    "social": "Social"
   },
   "navigation": {
     "home": "Inizio",

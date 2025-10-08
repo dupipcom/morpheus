@@ -21,7 +21,9 @@
     "dismiss": "Itxi",
     "selectLanguage": "Hizkuntza hautatu",
     "manageAccount": "Kudeatu nire kontua",
-    "signOut": "Saioa itxi"
+    "signOut": "Saioa itxi",
+    "profile": "Profila",
+    "social": "Soziala"
   },
   "navigation": {
     "home": "Hasiera",

@@ -21,7 +21,9 @@
     "dismiss": "বন্ধ করুন",
     "selectLanguage": "ভাষা নির্বাচন করুন",
     "manageAccount": "আমার অ্যাকাউন্ট পরিচালনা করুন",
-    "signOut": "সাইন আউট"
+    "signOut": "সাইন আউট",
+    "profile": "প্রোফাইল",
+    "social": "সামাজিক"
   },
   "navigation": {
     "home": "হোম",

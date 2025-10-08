@@ -21,7 +21,9 @@
     "dismiss": "닫기",
     "selectLanguage": "언어 선택",
     "manageAccount": "내 계정 관리",
-    "signOut": "로그아웃"
+    "signOut": "로그아웃",
+    "profile": "프로필",
+    "social": "소셜"
   },
   "navigation": {
     "home": "홈",

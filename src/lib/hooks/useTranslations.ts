@@ -1,11 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { loadTranslations, t, formatDate, type Locale } from '@/lib/i18n'
+import { loadTranslations, loadTranslationsSync, t, formatDate, type Locale } from '@/lib/i18n'
 
 export function useTranslations(locale: Locale) {
-  const [translations, setTranslations] = useState<any>({})
-  const [isLoading, setIsLoading] = useState(true)
+  // Preload synchronously for first render so placeholders don't flash
+  const [translations, setTranslations] = useState<any>(() => loadTranslationsSync(locale))
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     async function loadTranslationsForLocale() {

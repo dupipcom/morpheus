@@ -31,6 +31,10 @@ export const getClerkLocalization = (locale: string) => {
       formButtonPrimary__signOut: localeData.common.signOut,
       formButtonPrimary__manageAccount: localeData.common.manageAccount,
     },
+    userButton: {
+      action__manageAccount: localeData.common.manageAccount,
+      action__signOut: localeData.common.signOut,
+    },
   }
 }
 

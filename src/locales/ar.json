@@ -21,7 +21,9 @@
     "signOut": "تسجيل الخروج",
     "dashboard": "لوحة التحكم",
     "settings": "الإعدادات",
-    "signUp": "إنشاء حساب"
+    "signUp": "إنشاء حساب",
+    "profile": "الملف الشخصي",
+    "social": "اجتماعي"
   },
   "navigation": {
     "dashboard": "لوحة التحكم",

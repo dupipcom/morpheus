@@ -21,7 +21,9 @@
     "dismiss": "Pechar",
     "selectLanguage": "Seleccionar idioma",
     "manageAccount": "Xestionar a miña conta",
-    "signOut": "Pechar sesión"
+    "signOut": "Pechar sesión",
+    "profile": "Perfil",
+    "social": "Social"
   },
   "navigation": {
     "home": "Inicio",

@@ -21,7 +21,9 @@
     "dismiss": "Sluiten",
     "selectLanguage": "Taal selecteren",
     "manageAccount": "Mijn account beheren",
-    "signOut": "Uitloggen"
+    "signOut": "Uitloggen",
+    "profile": "Profiel",
+    "social": "Sociaal"
   },
   "navigation": {
     "home": "Home",

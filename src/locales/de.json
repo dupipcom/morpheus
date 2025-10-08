@@ -21,7 +21,9 @@
     "dismiss": "Verwerfen",
     "selectLanguage": "Sprache auswählen",
     "manageAccount": "Mein Konto verwalten",
-    "signOut": "Abmelden"
+    "signOut": "Abmelden",
+    "profile": "Profil",
+    "social": "Social"
   },
   "navigation": {
     "home": "Startseite",

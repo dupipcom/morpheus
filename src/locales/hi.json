@@ -21,7 +21,9 @@
     "dismiss": "बंद करें",
     "selectLanguage": "भाषा चुनें",
     "manageAccount": "मेरा खाता प्रबंधित करें",
-    "signOut": "साइन आउट"
+    "signOut": "साइन आउट",
+    "profile": "प्रोफ़ाइल",
+    "social": "सामाजिक"
   },
   "navigation": {
     "home": "होम",

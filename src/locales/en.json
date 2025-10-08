@@ -21,7 +21,9 @@
     "dismiss": "Dismiss",
     "selectLanguage": "Select language",
     "manageAccount": "Manage My Account",
-    "signOut": "Sign Out"
+    "signOut": "Sign Out",
+    "profile": "Profile",
+    "social": "Social"
   },
   "navigation": {
     "home": "Home",

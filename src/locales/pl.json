@@ -21,7 +21,9 @@
     "settings": "Ustawienia",
     "signUp": "Zarejestruj się",
     "manageAccount": "Zarządzaj moim kontem",
-    "signOut": "Wyloguj się"
+    "signOut": "Wyloguj się",
+    "profile": "Profil",
+    "social": "Społeczność"
   },
   "navigation": {
     "dashboard": "Panel",

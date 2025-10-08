@@ -14,6 +14,37 @@ import { SlidersVertical, Play, Square as Stop, Gauge, LogIn, DoorOpen, User, Lo
 import { NavSkeleton } from "./skeleton-loader"
 import { FriendRequestsButton } from "@/components/FriendRequestsButton"
 
+// UserButtonMenu component to handle translations properly
+const UserButtonMenu = () => {
+  const { t } = useI18n();
+  
+  return (
+    <div className="p-2 flex items-center">
+      <SignedIn>
+        <UserButton>
+          <UserButton.MenuItems>
+            <UserButton.Link
+              label={t('common.settings')}
+              labelIcon={<SlidersVertical className="w-[14px] pb-2" />}
+              href="/app/settings"
+            />
+            <UserButton.Link
+              label={t('common.profile')}
+              labelIcon={<User className="w-[14px] pb-2" />}
+              href="/app/profile"
+            />
+            <UserButton.Link
+              label={t('common.social')}
+              labelIcon={<Users className="w-[14px] pb-2" />}
+              href="/app/social"
+            />
+          </UserButton.MenuItems>
+        </UserButton>
+      </SignedIn>
+    </div>
+  );
+};
+
 
 import {
   ClerkProvider,
@@ -431,8 +462,7 @@ export const Logo: TComponent = function ({
 
 
   	const LEFT_MENU = {
-  		items: [
-  		]
+  		items: [] as any[]
   	}
 
   	  const RIGHT_MENU = {
@@ -508,28 +538,7 @@ export const Logo: TComponent = function ({
       name: "user",
       href: "/user",
       auth: true,
-      content: <div className="p-2 flex items-center"> <SignedIn>
-              <UserButton>
-				        <UserButton.MenuItems>
-				                    <UserButton.Link
-            label={t('common.settings')}
-            labelIcon={<SlidersVertical className="w-[14px] pb-2" />}
-            href="/app/settings"
-          />
-				                    <UserButton.Link
-            label="Profile"
-            labelIcon={<User className="w-[14px] pb-2" />}
-            href="/app/profile"
-          />
-				                    <UserButton.Link
-            label="Social"
-            labelIcon={<Users className="w-[14px] pb-2" />}
-            href="/app/social"
-          />
-				        </UserButton.MenuItems>
-				      </UserButton>
-            </SignedIn>
-            </div>
+      content: <UserButtonMenu />
     },
     {
       name: "theme",

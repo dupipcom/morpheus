@@ -21,7 +21,9 @@
     "dismiss": "Sulge",
     "selectLanguage": "Vali keel",
     "manageAccount": "Hallata oma kontot",
-    "signOut": "Logi välja"
+    "signOut": "Logi välja",
+    "profile": "Profiil",
+    "social": "Sotsiaalne"
   },
   "navigation": {
     "home": "Avaleht",

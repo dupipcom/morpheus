@@ -112,6 +112,7 @@ export default function RootLayout({
             cssLayerName: 'clerk',
             baseTheme: shadcn,
           }}
+          localization={getClerkLocalization(locale)}
         >
           <AuthWrapper isLoading={isLoading}>
             <I18nProvider locale={locale}>

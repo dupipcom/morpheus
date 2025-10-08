@@ -21,7 +21,9 @@
     "settings": "Indstillinger",
     "signUp": "Tilmeld dig",
     "manageAccount": "Administrer min konto",
-    "signOut": "Log ud"
+    "signOut": "Log ud",
+    "profile": "Profil",
+    "social": "Social"
   },
   "navigation": {
     "dashboard": "Dashboard",

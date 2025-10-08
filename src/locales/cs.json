@@ -21,7 +21,9 @@
     "dismiss": "Zavřít",
     "selectLanguage": "Vybrat jazyk",
     "manageAccount": "Spravovat můj účet",
-    "signOut": "Odhlásit se"
+    "signOut": "Odhlásit se",
+    "profile": "Profil",
+    "social": "Sociální"
   },
   "navigation": {
     "home": "Domů",

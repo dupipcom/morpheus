@@ -21,7 +21,9 @@
     "settings": "Ayarlar",
     "signUp": "Kayıt ol",
     "manageAccount": "Hesabımı yönet",
-    "signOut": "Çıkış yap"
+    "signOut": "Çıkış yap",
+    "profile": "Profil",
+    "social": "Sosyal"
   },
   "navigation": {
     "dashboard": "Gösterge Paneli",
