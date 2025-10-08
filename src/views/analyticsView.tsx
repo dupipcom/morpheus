@@ -261,8 +261,8 @@ const aggregateDataByWeek = (dailyData: any[]) => {
       selfEsteem: (week.selfEsteem / count).toFixed(2),
       trust: (week.trust / count).toFixed(2),
       progress: (week.progress / count).toFixed(2),
-      // Scale mood average relative to average weekly balance
-      moodAverageScale: (avgBalance * (avgMood / 5)).toFixed(2),
+      // Keep moodAverageScale consistent using the global balance peak
+      moodAverageScale: (balancePeak * (avgMood / 5)).toFixed(2),
       earnings: (week.earnings / count).toFixed(2),
       earningsScale: ((week.earnings / count) * 50).toFixed(2),
       balance: avgBalance.toFixed(2),
@@ -273,6 +273,11 @@ const aggregateDataByWeek = (dailyData: any[]) => {
 }
 
   const userDays = ((session?.user as any)?.entries) && ((session?.user as any)?.entries[year]?.days) ? Object.values(((session?.user as any)?.entries[year]?.days)) : [];
+  // Determine a global balance peak to keep moodAverageScale on a consistent scale
+  const balancePeak = userDays.reduce((max: number, d: any) => {
+    const bal = Number(d?.availableBalance || 0)
+    return bal > max ? bal : max
+  }, 0)
   const userWeeks = ((session?.user as any)?.entries) && ((session?.user as any)?.entries[year]?.weeks) ? Object.values(((session?.user as any)?.entries[year]?.weeks)) : [];
   
   const plotData = userDays
@@ -312,7 +317,8 @@ const aggregateDataByWeek = (dailyData: any[]) => {
           selfEsteem: Number(cur.mood.selfEsteem || 0).toFixed(2),
           trust: Number(cur.mood.trust || 0).toFixed(2),
           progress: progressPercentage.toFixed(2),
-          moodAverageScale: (Number(cur.availableBalance || 0) * (moodAverage / 5)).toFixed(2),
+          // Use global balance peak to keep scale consistent across the entire plot
+          moodAverageScale: (balancePeak * (moodAverage / 5)).toFixed(2),
           earnings: earnings.toFixed(2),
           earningsScale: earnings.toFixed(2),
           balance: cur.availableBalance || 0,
