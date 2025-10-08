@@ -228,15 +228,20 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   }, [userTasks, actions, optimisticFavorites])
 
   const isMoodEmpty = useMemo(() => {
-    if (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date]) {
-      if (Object.values(session?.user?.entries[year].days[date].mood).every(value => value === 0)) {
-        return true
-      } else {
-        return false
-      }
+    const day = session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date]
+    if (!day) {
+      return true
     }
-    return true
-  }, [fullDay, year, date, session.user.id])
+    const mood = day.mood
+    if (!mood || typeof mood !== 'object') {
+      return true
+    }
+    const moodValues = Object.values(mood).filter((val) => val !== null && val !== undefined && !isNaN(val as any))
+    if (moodValues.length === 0) {
+      return true
+    }
+    return moodValues.every((value: any) => Number(value) === 0)
+  }, [fullDay, year, date, session?.user?.id])
 
 
   const handleDone = async (values) => {
