@@ -54,7 +54,26 @@ export function buildMetadata({
   type?: 'website' | 'profile' | 'article'
   locale?: string
 } = {}): Metadata {
-  const lang = (locale || defaultLocale) as any
+  // If middleware flagged this request as a bot without a preferred locale, force English metadata
+  let effectiveLocale = locale
+  if (typeof window === 'undefined') {
+    try {
+      // On server, try to read the cookie via headers if available in Next
+      // In App Router generateMetadata, we can't access request directly, but cookies() works.
+      // We use a dynamic import to avoid hard dependency for environments without cookies().
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const nextCookies = require('next/headers').cookies
+      const c = nextCookies?.()
+      const botEn = c?.get?.('dpip_bot_en')?.value
+      if (botEn === '1') {
+        effectiveLocale = 'en'
+      }
+    } catch (e) {
+      // no-op if headers are not available
+    }
+  }
+
+  const lang = (effectiveLocale || defaultLocale) as any
   const translations = loadTranslationsSync(lang)
   const localizedSiteName: string = translations?.seo?.siteName || siteName
   const localizedSiteDescription: string = translations?.seo?.siteDescription || siteDescription

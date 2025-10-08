@@ -17,6 +17,30 @@ function getLocale(headers: Headers, cookies: Record<string, string>) {
   return getBestLocale(acceptLanguage)
 }
  
+// Basic bot detection using common crawler user-agent substrings
+function isBotUserAgent(userAgent: string | null): boolean {
+  if (!userAgent) return false
+  const botPatterns = [
+    'googlebot', 'bingbot', 'yandex', 'baiduspider', 'duckduckbot', 'slurp', 'sogou', 'exabot', 'facebot', 'ia_archiver',
+    'twitterbot', 'facebookexternalhit', 'linkedinbot', 'embedly', 'quora link preview', 'showyoubot', 'outbrain', 'pinterest',
+    'redditbot', 'applebot', 'petalbot', 'discordbot', 'telegrambot'
+  ]
+  const ua = userAgent.toLowerCase()
+  return botPatterns.some(p => ua.includes(p))
+}
+
+function shouldFlagBotForEnglish(headers: Headers): boolean {
+  const userAgent = headers.get('user-agent')
+  const acceptLanguage = headers.get('accept-language')
+  // Flag well-known crawlers that typically don't send meaningful language,
+  // or when accept-language header is missing/empty.
+  if (!isBotUserAgent(userAgent)) return false
+  if (!acceptLanguage || acceptLanguage.trim().length === 0) return true
+  // If present but generic or wildcard, prefer English
+  if (acceptLanguage.trim() === '*' ) return true
+  return false
+}
+
 function middleware(request: Request) {
   const { pathname } = new URL(request.url)
 
@@ -39,7 +63,15 @@ function middleware(request: Request) {
   const hasLocale = pathHasLocale(pathname)
  
   // If path already has locale, let it through
-  if (hasLocale) return
+  if (hasLocale) {
+    // Optionally tag crawlers to prefer English metadata without changing routing
+    if (shouldFlagBotForEnglish(request.headers)) {
+      const res = NextResponse.next()
+      res.cookies.set('dpip_bot_en', '1', { path: '/', httpOnly: false })
+      return res
+    }
+    return
+  }
 
   // Handle direct username routes (without @) - redirect to localized profile route
   if (pathname.match(/^\/[^\/]+$/) && !pathname.startsWith('/app') && !pathname.startsWith('/api')) {
@@ -49,7 +81,11 @@ function middleware(request: Request) {
     const locale = getLocale(request.headers, cookies)
     const url = new URL(request.url)
     url.pathname = `/${locale}/profile/${username}`
-    return NextResponse.redirect(url)
+    const res = NextResponse.redirect(url)
+    if (shouldFlagBotForEnglish(request.headers)) {
+      res.cookies.set('dpip_bot_en', '1', { path: '/', httpOnly: false })
+    }
+    return res
   }
 
   // Parse cookies from request
@@ -61,7 +97,11 @@ function middleware(request: Request) {
     const locale = getLocale(request.headers, cookies)
     const url = new URL(request.url)
     url.pathname = `/${locale}${pathname}`
-    return NextResponse.redirect(url)
+    const res = NextResponse.redirect(url)
+    if (shouldFlagBotForEnglish(request.headers)) {
+      res.cookies.set('dpip_bot_en', '1', { path: '/', httpOnly: false })
+    }
+    return res
   }
 
   // For other routes, redirect to localized version
@@ -69,7 +109,11 @@ function middleware(request: Request) {
   const url = new URL(request.url)
   url.pathname = `/${locale}${pathname}`
 
-  return NextResponse.redirect(url)
+  const res = NextResponse.redirect(url)
+  if (shouldFlagBotForEnglish(request.headers)) {
+    res.cookies.set('dpip_bot_en', '1', { path: '/', httpOnly: false })
+  }
+  return res
 }
 
 const isProtectedRoute = createRouteMatcher(['app/(.*)'])
