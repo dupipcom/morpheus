@@ -248,10 +248,12 @@ const aggregateDataByWeek = (dailyData: any[]) => {
   // Calculate averages with safe division
   return Object.values(weeklyGroups).map((week: any) => {
     const count = week.count || 1 // Prevent division by zero
+    const avgMood = week.moodAverage / count
+    const avgBalance = week.balance / count
     return {
       week: week.week,
       weekNumber: week.weekNumber,
-      moodAverage: (week.moodAverage / count).toFixed(2),
+      moodAverage: avgMood.toFixed(2),
       gratitude: (week.gratitude / count).toFixed(2),
       optimism: (week.optimism / count).toFixed(2),
       restedness: (week.restedness / count).toFixed(2),
@@ -259,10 +261,11 @@ const aggregateDataByWeek = (dailyData: any[]) => {
       selfEsteem: (week.selfEsteem / count).toFixed(2),
       trust: (week.trust / count).toFixed(2),
       progress: (week.progress / count).toFixed(2),
-      moodAverageScale: ((week.moodAverageScale / count) * 500).toFixed(2),
+      // Scale mood average relative to average weekly balance
+      moodAverageScale: (avgBalance * (avgMood / 5)).toFixed(2),
       earnings: (week.earnings / count).toFixed(2),
       earningsScale: ((week.earnings / count) * 50).toFixed(2),
-      balance: (week.balance / count).toFixed(2),
+      balance: avgBalance.toFixed(2),
       count: week.count,
       dates: week.dates
     }
@@ -309,7 +312,7 @@ const aggregateDataByWeek = (dailyData: any[]) => {
           selfEsteem: Number(cur.mood.selfEsteem || 0).toFixed(2),
           trust: Number(cur.mood.trust || 0).toFixed(2),
           progress: progressPercentage.toFixed(2),
-          moodAverageScale: moodAverage.toFixed(2),
+          moodAverageScale: (Number(cur.availableBalance || 0) * (moodAverage / 5)).toFixed(2),
           earnings: earnings.toFixed(2),
           earningsScale: earnings.toFixed(2),
           balance: cur.availableBalance || 0,
