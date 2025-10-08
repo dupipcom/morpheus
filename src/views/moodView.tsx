@@ -180,7 +180,7 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
     await handleMoodSubmit(value, field, fullDay, moodContacts, moodThings, undefined, updatedMood, moodLifeEvents)
     // Don't call updateUser immediately to avoid clearing mood contacts/things/life events
     // The session will be updated naturally when the user navigates or refreshes
-  }, 500)
+  }, 3000)
 
   // Create debounced version that preserves text when updating mood sliders
   const debouncedHandleSubmitWithText = useDebounce(async (value, field) => {
@@ -190,14 +190,14 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
     await handleMoodSubmit(value, field, fullDay, moodContacts, moodThings, currentText, updatedMood, moodLifeEvents)
     // Don't call updateUser immediately to avoid clearing mood contacts/things/life events
     // The session will be updated naturally when the user navigates or refreshes
-  }, 500)
+  }, 3000)
 
   // Create debounced version of handleSubmit for text input
   const debouncedHandleTextSubmit = useDebounce(async (value, field) => {
     await handleMoodSubmit(value, field, fullDay, moodContacts, moodThings, undefined, mood, moodLifeEvents)
     // Don't call updateUser immediately to avoid clearing mood contacts/things/life events
     // The session will be updated naturally when the user navigates or refreshes
-  }, 500)
+  }, 3000)
 
   const handleSubmit = async (value, field) => {
     const updatedMood = {...mood, [field]: value}

@@ -485,9 +485,9 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                     ...user.entries[year].days[date].mood,
                     [key]: data.mood[key]
                   },
-                  contacts: data.moodContacts || [],
-                  things: data.moodThings || [],
-                  lifeEvents: data.moodLifeEvents || [],
+                  contacts: data.moodContacts ?? user.entries[year].days[date].contacts ?? [],
+                  things: data.moodThings ?? user.entries[year].days[date].things ?? [],
+                  lifeEvents: data.moodLifeEvents ?? user.entries[year].days[date].lifeEvents ?? [],
                   moodAverage: dayMoodAverage
                 }
               },
@@ -518,9 +518,9 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                 ...user.entries[year].days,
                 [date]: {
                   ...user.entries[year].days[date],
-                  contacts: data.moodContacts || [],
-                  things: data.moodThings || [],
-                  lifeEvents: data.moodLifeEvents || []
+                  contacts: data.moodContacts ?? user.entries[year].days[date].contacts ?? [],
+                  things: data.moodThings ?? user.entries[year].days[date].things ?? [],
+                  lifeEvents: data.moodLifeEvents ?? user.entries[year].days[date].lifeEvents ?? []
                 }
               }
             }
@@ -543,9 +543,9 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                 [date]: {
                   ...user.entries[year].days[date],
                   text: data?.text,
-                  contacts: data.moodContacts || [],
-                  things: data.moodThings || [],
-                  lifeEvents: data.moodLifeEvents || [],
+                  contacts: data.moodContacts ?? user.entries[year].days[date].contacts ?? [],
+                  things: data.moodThings ?? user.entries[year].days[date].things ?? [],
+                  lifeEvents: data.moodLifeEvents ?? user.entries[year].days[date].lifeEvents ?? [],
                   moodAverage: dayMoodAverage
                 }
               },
