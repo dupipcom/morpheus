@@ -425,6 +425,7 @@ export const isSessionExpired = (timeout: number = INACTIVITY_TIMEOUT): boolean 
 /**
  * Handles session expiration on page load
  * This should be called when the app initializes to check if the user should be logged out
+ * Enhanced for mobile scenarios where new tabs should respect existing session expiration
  * @param timeout - Timeout in milliseconds (defaults to 15 minutes)
  * @param onLogout - Optional callback function to call when logging out
  */
@@ -437,14 +438,35 @@ export const handleSessionExpirationOnLoad = (
     const lastActivity = getLastActivity();
     const now = Date.now();
     
-    // If no login time, set it and return
+    logger('session_expiration_check', `Checking session expiration. Login: ${loginTime ? new Date(loginTime).toISOString() : 'null'}, Last Activity: ${lastActivity ? new Date(lastActivity).toISOString() : 'null'}`);
+    
+    // If no login time, check if there's any activity data to determine if session should be expired
     if (loginTime === null) {
+      // If there's no login time but there is activity data, it means the session was cleared
+      // Check if the last activity was too long ago
+      if (lastActivity && (now - lastActivity) >= timeout) {
+        logger('handling_session_expiration', `No login time but activity expired (${Math.floor((now - lastActivity) / 60000)}min ago), logging out`);
+        deleteClerkCookies();
+        clearActivityStorage();
+        
+        if (onLogout) {
+          onLogout();
+        } else {
+          window.location.href = '/app/dashboard';
+        }
+        return;
+      }
+      
+      // If no login time and no expired activity, set a new login time
+      logger('session_expiration_check', 'No login time found, setting new login time');
       setLoginTime();
       return;
     }
     
     const timeSinceLogin = now - loginTime;
     const timeSinceLastActivity = now - lastActivity;
+    
+    logger('session_expiration_check', `Time since login: ${Math.floor(timeSinceLogin / 60000)}min, Time since activity: ${Math.floor(timeSinceLastActivity / 60000)}min`);
     
     // Check if session expired based on login time OR last activity
     const sessionExpiredByLogin = timeSinceLogin >= timeout;
@@ -460,9 +482,60 @@ export const handleSessionExpirationOnLoad = (
       } else {
         window.location.href = '/app/dashboard';
       }
+    } else {
+      logger('session_expiration_check', 'Session is still valid');
     }
   } catch (error) {
     logger('handle_session_expiration_error', `Error handling session expiration: ${error}`);
+  }
+};
+
+/**
+ * Immediate session expiration check for page load
+ * This should be called as soon as the page loads, before any React components mount
+ * @param timeout - Timeout in milliseconds (defaults to 15 minutes)
+ * @returns true if session is expired and user should be logged out
+ */
+export const checkSessionExpirationImmediate = (timeout: number = INACTIVITY_TIMEOUT): boolean => {
+  try {
+    const loginTime = getLoginTime();
+    const lastActivity = getLastActivity();
+    const now = Date.now();
+    
+    logger('immediate_session_check', `Immediate session check. Login: ${loginTime ? new Date(loginTime).toISOString() : 'null'}, Last Activity: ${lastActivity ? new Date(lastActivity).toISOString() : 'null'}`);
+    
+    // If no login time, check if there's any activity data to determine if session should be expired
+    if (loginTime === null) {
+      // If there's no login time but there is activity data, check if it's expired
+      if (lastActivity && (now - lastActivity) >= timeout) {
+        logger('immediate_session_check', `No login time but activity expired (${Math.floor((now - lastActivity) / 60000)}min ago), session should be expired`);
+        return true;
+      }
+      
+      // If no login time and no expired activity, session is not expired
+      logger('immediate_session_check', 'No login time found, session not expired');
+      return false;
+    }
+    
+    const timeSinceLogin = now - loginTime;
+    const timeSinceLastActivity = now - lastActivity;
+    
+    logger('immediate_session_check', `Time since login: ${Math.floor(timeSinceLogin / 60000)}min, Time since activity: ${Math.floor(timeSinceLastActivity / 60000)}min`);
+    
+    // Check if session expired based on login time OR last activity
+    const sessionExpiredByLogin = timeSinceLogin >= timeout;
+    const sessionExpiredByActivity = timeSinceLastActivity >= timeout;
+    
+    if (sessionExpiredByLogin || sessionExpiredByActivity) {
+      logger('immediate_session_check', `Session expired. Login: ${Math.floor(timeSinceLogin / 60000)}min, Activity: ${Math.floor(timeSinceLastActivity / 60000)}min`);
+      return true;
+    }
+    
+    logger('immediate_session_check', 'Session is still valid');
+    return false;
+  } catch (error) {
+    logger('immediate_session_check_error', `Error in immediate session check: ${error}`);
+    return false;
   }
 };
 
