@@ -3,8 +3,8 @@
  */
 import { logger } from './logger';
 
-export const INACTIVITY_TIMEOUT = 2 * 60 * 1000; // 15 minutes in milliseconds
-export const WARNING_TIME = 1 * 60 * 1000; // 5 minutes warning (shows after 10 minutes of inactivity)
+export const INACTIVITY_TIMEOUT = 15 * 60 * 1000; // 15 minutes in milliseconds
+export const WARNING_TIME = 5 * 60 * 1000; // 5 minutes warning (shows after 10 minutes of inactivity)
 const LAST_ACTIVITY_KEY = 'dpip_last_activity';
 const LOGIN_TIME_KEY = 'dpip_login_time';
 
