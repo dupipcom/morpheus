@@ -1,6 +1,8 @@
 'use client'
 
 import { ReactNode } from 'react'
+import type { Metadata } from 'next'
+import { buildMetadata } from '@/app/metadata'
 import { I18nProvider } from "@/lib/contexts/i18n"
 import { GlobalContext } from "@/lib/contexts"
 import { Nav } from '@/components/ui/nav'
@@ -92,3 +94,8 @@ export default function LocalizedLayout({ children, params }: LocalizedLayoutPro
     </I18nProvider>
   )
 } 
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params
+  return buildMetadata({ locale })
+}
