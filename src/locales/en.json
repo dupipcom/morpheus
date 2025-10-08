@@ -1,4 +1,8 @@
 {
+  "seo": {
+    "siteName": "DreamPip",
+    "siteDescription": "Fintech for compassion. Find your formula for happiness. Unlock money to track mood, habits and share your progress with friends."
+  },
   "common": {
     "day": "Day",
     "week": "Week",

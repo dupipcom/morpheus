@@ -1,4 +1,8 @@
 {
+  "seo": {
+    "siteName": "DreamPip",
+    "siteDescription": "Fintech kaastunde jaoks. Leia oma õnne valem. Jälgi tuju ja harjumusi ning jaga oma edenemist sõpradega."
+  },
   "common": {
     "day": "Päev",
     "week": "Nädal",

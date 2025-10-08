@@ -1,4 +1,8 @@
 {
+  "seo": {
+    "siteName": "DreamPip",
+    "siteDescription": "Fintech für Mitgefühl. Finde deine Formel für Glück. Schalte Geld frei, um Stimmung und Gewohnheiten zu verfolgen und deinen Fortschritt mit Freunden zu teilen."
+  },
   "common": {
     "day": "Tag",
     "week": "Woche",

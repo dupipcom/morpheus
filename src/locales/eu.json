@@ -1,4 +1,8 @@
 {
+  "seo": {
+    "siteName": "DreamPip",
+    "siteDescription": "Finantza-teknologia konpasiorako. Aurkitu zorionaren formula. Jarraitu aldartea eta ohiturak, eta partekatu zure aurrerapena lagunekin."
+  },
   "common": {
     "day": "Eguna",
     "week": "Astea",

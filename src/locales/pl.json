@@ -1,4 +1,8 @@
 {
+  "seo": {
+    "siteName": "DreamPip",
+    "siteDescription": "Fintech dla współczucia. Znajdź swój wzór na szczęście. Śledź nastrój i nawyki oraz dziel się postępami ze znajomymi."
+  },
   "common": {
     "day": "Dzień",
     "week": "Tydzień",

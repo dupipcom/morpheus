@@ -1,4 +1,8 @@
 {
+  "seo": {
+    "siteName": "DreamPip",
+    "siteDescription": "Fintech pour la compassion. Trouvez votre formule du bonheur. Débloquez l'argent pour suivre l'humeur, les habitudes et partager vos progrès avec vos amis."
+  },
   "common": {
     "day": "Jour",
     "week": "Semaine",

@@ -1,4 +1,8 @@
 {
+  "seo": {
+    "siteName": "DreamPip",
+    "siteDescription": "연민을 위한 핀테크. 당신의 행복 공식을 찾으세요. 기분과 습관을 추적하고 친구들과 진행 상황을 공유하세요."
+  },
   "common": {
     "day": "일",
     "week": "주",
@@ -173,10 +177,7 @@
     "balance": "잔액",
     "earningsScale": "수익 스케일"
   },
-  "errors": {
-    "notFound": "앗! 이 주파수에 맞출 수 없습니다.",
-    "genericError": "문제가 발생했습니다. 다시 시도해 주세요."
-  },
+ 
   "social": {
     "title": "소셜 연락처",
     "addNewContact": "새 연락처 추가",

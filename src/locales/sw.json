@@ -1,4 +1,8 @@
 {
+  "seo": {
+    "siteName": "DreamPip",
+    "siteDescription": "Fintech kwa huruma. Pata fomula yako ya furaha. Fuatilia hali ya moyo na tabia, na shiriki maendeleo yako na marafiki."
+  },
   "common": {
     "day": "Siku",
     "week": "Wiki",

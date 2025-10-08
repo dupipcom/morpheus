@@ -1,4 +1,8 @@
 {
+  "seo": {
+    "siteName": "DreamPip",
+    "siteDescription": "Fintech pro soucit. Najděte svůj vzorec štěstí. Sledujte náladu, návyky a sdílejte pokrok s přáteli."
+  },
   "common": {
     "day": "Den",
     "week": "Týden",

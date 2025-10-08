@@ -1,4 +1,8 @@
 {
+  "seo": {
+    "siteName": "DreamPip",
+    "siteDescription": "Şefkat için fintech. Mutluluk formülünü bulun. Ruh halinizi ve alışkanlıklarınızı takip edin ve ilerlemenizi arkadaşlarınızla paylaşın."
+  },
   "common": {
     "day": "Gün",
     "week": "Hafta",

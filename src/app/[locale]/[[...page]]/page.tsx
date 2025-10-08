@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import { notion, fetchPages, fetchPageBySlug, fetchPageBlocks } from "@/lib/notion"
 import { NotionRenderer } from "@notion-render/client"
 import Template from "../../_template"
+import type { Metadata } from 'next'
+import { buildMetadata } from '@/app/metadata'
 import { stripLocaleFromPath, getLocaleFromPath } from "../../helpers"
 
 export async function generateStaticParams() {
@@ -21,6 +23,21 @@ export async function generateStaticParams() {
     }
   }
   return params
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string; page?: string[] }> }): Promise<Metadata> {
+  const { locale, page = [] } = await params
+  const fullPath = "/" + locale + "/" + (page?.join("/") || "")
+  const clearSlug = stripLocaleFromPath(fullPath)
+
+  try {
+    const pageData = await fetchPageBySlug(clearSlug)
+    const title = (pageData as any)?.properties?.Title?.formula?.string || 'DreamPip'
+    const description = (pageData as any)?.properties?.Description?.rich_text?.[0]?.plain_text || undefined
+    return buildMetadata({ title, description, locale })
+  } catch (e) {
+    return buildMetadata({ locale })
+  }
 }
 
 export default async function Page({

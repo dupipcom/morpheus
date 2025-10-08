@@ -1,4 +1,8 @@
 {
+  "seo": {
+    "siteName": "DreamPip",
+    "siteDescription": "为慈悲而生的金融科技。找到你的幸福公式。解锁资金以追踪情绪、习惯，并与朋友分享你的进展。"
+  },
   "common": {
     "day": "日",
     "week": "周",

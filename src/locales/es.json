@@ -1,4 +1,8 @@
 {
+  "seo": {
+    "siteName": "DreamPip",
+    "siteDescription": "Finanzas para la compasión. Encuentra tu fórmula de felicidad. Desbloquea dinero para seguir el estado de ánimo, hábitos y compartir tu progreso con amigos."
+  },
   "common": {
     "day": "Día",
     "week": "Semana",

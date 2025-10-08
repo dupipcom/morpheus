@@ -1,4 +1,8 @@
 {
+  "seo": {
+    "siteName": "DreamPip",
+    "siteDescription": "Fintech para compaixão. Encontre sua fórmula da felicidade. Liberte dinheiro para acompanhar humor, hábitos e compartilhar seu progresso com amigos."
+  },
   "common": {
     "day": "Dia",
     "week": "Semana",

@@ -1,4 +1,8 @@
 {
+  "seo": {
+    "siteName": "DreamPip",
+    "siteDescription": "Fintech for medfølelse. Find din formel for lykke. Lås penge op for at spore humør, vaner og dele dine fremskridt med venner."
+  },
   "common": {
     "day": "Dag",
     "week": "Uge",

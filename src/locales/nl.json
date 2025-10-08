@@ -1,4 +1,8 @@
 {
+  "seo": {
+    "siteName": "DreamPip",
+    "siteDescription": "Fintech voor compassie. Vind jouw formule voor geluk. Ontsluit geld om humeur en gewoonten bij te houden en je voortgang met vrienden te delen."
+  },
   "common": {
     "day": "Dag",
     "week": "Week",

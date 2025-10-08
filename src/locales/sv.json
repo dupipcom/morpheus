@@ -1,4 +1,8 @@
 {
+  "seo": {
+    "siteName": "DreamPip",
+    "siteDescription": "Fintech för medkänsla. Hitta din formel för lycka. Lås upp pengar för att spåra humör och vanor och dela dina framsteg med vänner."
+  },
   "common": {
     "day": "Dag",
     "week": "Vecka",

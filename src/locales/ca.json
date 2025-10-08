@@ -1,4 +1,8 @@
 {
+  "seo": {
+    "siteName": "DreamPip",
+    "siteDescription": "Fintech per a la compassió. Troba la teva fórmula de la felicitat. Desbloqueja diners per fer seguiment de l'estat d'ànim, hàbits i compartir el teu progrés amb amics."
+  },
   "common": {
     "day": "Dia",
     "week": "Setmana",

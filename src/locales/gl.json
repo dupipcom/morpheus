@@ -1,4 +1,8 @@
 {
+  "seo": {
+    "siteName": "DreamPip",
+    "siteDescription": "Fintech para a compaixón. Atopa a túa fórmula da felicidade. Libera cartos para seguir o estado de ánimo, hábitos e compartir o teu progreso cos amigos."
+  },
   "common": {
     "day": "Día",
     "week": "Semana",
