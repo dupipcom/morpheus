@@ -100,18 +100,6 @@ export default function RootLayout({
   return (
     <html lang="en" className="notranslate">
       <meta name="viewport" content="width=device-width, initial-scale=1" />
-      <head>
-        <title>DreamPip · Fintech for compassion</title>
-        <meta name="title" content="DreamPip · Fintech for compassion" />
-        <meta name="description" content="DreamPip is fintech for compassion." />
-        <meta name="keywords" content="mental health, fintech, atomic habits, game" />
-        <meta name="robots" content="index, follow" />
-        <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
-        <meta name="language" content="English" />
-        <meta name="revisit-after" content="7 days" />
-        <meta name="author" content="DreamPip" />
-        <meta property="og:image" content="https://www.dreampip.com/images/logo-social.jpg" />
-      </head>
 
               <body
         suppressHydrationWarning

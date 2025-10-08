@@ -122,12 +122,14 @@ export function PublicChartsView({ chartsData }: PublicChartsViewProps) {
       {/* Mood Charts */}
       {chartsData.moodCharts && (
         <div>
-          <div className="flex items-center justify-between mb-4">
-            <div>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-2">
+            <div className="min-w-0">
               <h3 className="text-lg font-semibold">Mood Tracking</h3>
               <p className="text-sm text-muted-foreground">Values scaled to percentages for privacy</p>
             </div>
-            <Badge variant="outline">Mood Charts</Badge>
+            <div>
+              <Badge variant="outline">Mood Charts</Badge>
+            </div>
           </div>
           
           <ChartContainer config={moodChartConfig}>
@@ -212,12 +214,14 @@ export function PublicChartsView({ chartsData }: PublicChartsViewProps) {
       {/* Simplified Mood Chart */}
       {chartsData.simplifiedMoodChart && (
         <div>
-          <div className="flex items-center justify-between mb-4">
-            <div>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-2">
+            <div className="min-w-0">
               <h3 className="text-lg font-semibold">Mood Overview</h3>
               <p className="text-sm text-muted-foreground">Simplified mood tracking - values scaled to percentages for privacy</p>
             </div>
-            <Badge variant="outline">Simplified Mood Chart</Badge>
+            <div>
+              <Badge variant="outline">Simplified Mood Chart</Badge>
+            </div>
           </div>
           
           <ChartContainer config={simplifiedMoodChartConfig}>
@@ -247,12 +251,14 @@ export function PublicChartsView({ chartsData }: PublicChartsViewProps) {
       {/* Productivity Charts */}
       {chartsData.productivityCharts && (
         <div>
-          <div className="flex items-center justify-between mb-4">
-            <div>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-2">
+            <div className="min-w-0">
               <h3 className="text-lg font-semibold">Productivity</h3>
               <p className="text-sm text-muted-foreground">Values scaled to percentages for privacy</p>
             </div>
-            <Badge variant="outline">Productivity Charts</Badge>
+            <div>
+              <Badge variant="outline">Productivity Charts</Badge>
+            </div>
           </div>
           
           <ChartContainer config={productivityChartConfig}>
@@ -292,12 +298,14 @@ export function PublicChartsView({ chartsData }: PublicChartsViewProps) {
       {/* Earnings Charts */}
       {chartsData.earningsCharts && (
         <div>
-          <div className="flex items-center justify-between mb-4">
-            <div>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-2">
+            <div className="min-w-0">
               <h3 className="text-lg font-semibold">Earnings</h3>
               <p className="text-sm text-muted-foreground">Values scaled to percentages for privacy</p>
             </div>
-            <Badge variant="outline">Earnings Charts</Badge>
+            <div>
+              <Badge variant="outline">Earnings Charts</Badge>
+            </div>
           </div>
           
           <ChartContainer config={earningsChartConfig}>
