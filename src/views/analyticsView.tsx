@@ -321,8 +321,32 @@ const aggregateDataByWeek = (dailyData: any[]) => {
   const plotWeeks = userWeeks
     .sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime()) // Sort by most recent first
     .reduce((acc: any[], cur: any) => {
-      // Safe checks for moodAverage and progress
-      const moodAverage = cur.moodAverage && !isNaN(cur.moodAverage) ? cur.moodAverage : 0
+      // Calculate moodAverage from daily data for this week
+      let calculatedMoodAverage = 0
+      if (cur.week && session?.user?.entries?.[year]?.days) {
+        const weekDays = Object.values(session.user.entries[year].days).filter((day: any) => {
+          const dayDate = new Date(day.date)
+          const [_, dayWeekNumber] = getWeekNumber(dayDate)
+          return dayWeekNumber === cur.week
+        })
+        
+        if (weekDays.length > 0) {
+          const daysWithMood = weekDays.filter((day: any) => day.mood && typeof day.mood === 'object')
+          if (daysWithMood.length > 0) {
+            const moodValues = daysWithMood.map((day: any) => {
+              const values = Object.values(day.mood).filter(val => val !== null && val !== undefined && !isNaN(val) && val !== 0)
+              return values.length > 0 ? values.reduce((sum: number, val: any) => sum + Number(val), 0) / values.length : 0
+            }).filter(val => val > 0)
+            
+            if (moodValues.length > 0) {
+              calculatedMoodAverage = moodValues.reduce((sum: number, val: number) => sum + val, 0) / moodValues.length
+            }
+          }
+        }
+      }
+      
+      // Use calculated moodAverage or fallback to stored value
+      const moodAverage = calculatedMoodAverage > 0 ? calculatedMoodAverage : (cur.moodAverage && !isNaN(cur.moodAverage) ? cur.moodAverage : 0)
       const progress = cur.progress && !isNaN(cur.progress) ? cur.progress : 0
       
       // Only include weeks with valid data
