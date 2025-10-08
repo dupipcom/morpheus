@@ -4,7 +4,7 @@ import { buildMetadata } from '@/app/metadata'
 import { defaultLocale } from './constants'
 
 export async function generateMetadata(): Promise<Metadata> {
-  return buildMetadata({ locale: defaultLocale })
+  return await buildMetadata({ locale: defaultLocale })
 }
 
 export default function RootPage() {

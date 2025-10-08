@@ -14,7 +14,7 @@ interface AuthWrapperProps {
 export const AuthWrapper = ({ children, isLoading }: AuthWrapperProps) => {
   const { isLoaded, isSignedIn } = useAuth();
 
-  // Check for session expiration on page load
+  // Check for session expiration on page load and when auth state changes
   useEffect(() => {
     if (isLoaded && isSignedIn) {
       // Only check if user is authenticated
@@ -23,6 +23,20 @@ export const AuthWrapper = ({ children, isLoading }: AuthWrapperProps) => {
         window.location.href = '/app/dashboard';
       });
     }
+  }, [isLoaded, isSignedIn]);
+
+  // Additional check for session expiration when window regains focus
+  useEffect(() => {
+    const handleWindowFocus = () => {
+      if (isLoaded && isSignedIn) {
+        handleSessionExpirationOnLoad(INACTIVITY_TIMEOUT, () => {
+          window.location.href = '/app/dashboard';
+        });
+      }
+    };
+
+    window.addEventListener('focus', handleWindowFocus);
+    return () => window.removeEventListener('focus', handleWindowFocus);
   }, [isLoaded, isSignedIn]);
 
   // Memoize the timer configuration to prevent unnecessary re-renders

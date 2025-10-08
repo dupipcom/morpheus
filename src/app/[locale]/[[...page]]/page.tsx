@@ -34,9 +34,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     const pageData = await fetchPageBySlug(clearSlug)
     const title = (pageData as any)?.properties?.Title?.formula?.string || 'DreamPip'
     const description = (pageData as any)?.properties?.Description?.rich_text?.[0]?.plain_text || undefined
-    return buildMetadata({ title, description, locale })
+    return await buildMetadata({ title, description, locale })
   } catch (e) {
-    return buildMetadata({ locale })
+    return await buildMetadata({ locale })
   }
 }
 

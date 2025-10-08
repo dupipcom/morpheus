@@ -3,7 +3,7 @@ import { buildMetadata } from '@/app/metadata'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
-  return buildMetadata({
+  return await buildMetadata({
     title: 'Profile',
     description: 'Edit your public profile and sharing preferences.',
     locale,

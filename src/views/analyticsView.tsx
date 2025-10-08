@@ -158,19 +158,29 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
   const { t, locale } = useI18n()
   const { isAgentChatEnabled } = useFeatureFlag()
   
+  // Type guard to ensure session.user has the expected structure
+  const user = session?.user as any;
+  
   // Message history state
   const [currentText, setCurrentText] = useState("")
-  const serverText = useMemo(() => (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date] && session?.user?.entries[year].days[date].analyticsAgentText) || "", [JSON.stringify(session)])
-  const messages = session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks && session?.user?.entries[year]?.weeks[weekNumber] && session?.user?.entries[year]?.weeks[weekNumber].messages
-  const reverseMessages = useMemo(() => messages?.length ? messages.sort((a,b) => new Date(a.timestamp).getTime() > new Date(b.timestamp).getTime() ? 1 : -1) : [], [JSON.stringify(session?.user)])
+  const serverText = useMemo(() => (user?.entries && user?.entries[year] && user?.entries[year].days && user?.entries[year].days[date] && user?.entries[year].days[date].analyticsAgentText) || "", [JSON.stringify(user)])
+  const messages = user?.entries && user?.entries[year] && user?.entries[year].weeks && user?.entries[year]?.weeks[weekNumber] && user?.entries[year]?.weeks[weekNumber].messages
+  const reverseMessages = useMemo(() => messages?.length ? messages.sort((a: any, b: any) => new Date(a.timestamp).getTime() > new Date(b.timestamp).getTime() ? 1 : -1) : [], [JSON.stringify(user)])
   
   // Create chart configs with translations
   const moodChartConfig = createMoodChartConfig(t)
   const productivityChartConfig = createProductivityChartConfig(t)
   const moneyChartConfig = createMoneyChartConfig(t)
+  
+  // Get user entries for authentication check
+  const userEntries = user?.entries;
+  
   useEffect(() => {
-    generateInsight(setInsight, 'hint', locale)
-  }, [locale])
+    // Only generate insights if user is properly authenticated
+    if (user?.id && userEntries) {
+      generateInsight(setInsight, 'hint', locale)
+    }
+  }, [locale, user?.id, userEntries])
 
   // Initialize currentText from serverText
   useEffect(() => {
@@ -195,9 +205,16 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
     setMoneyChartDimensions(prev => ({ ...prev, [dimension]: visible }))
   }
 
-  if (!session?.user) {
+  // Check if user is properly authenticated and session is valid
+  if (!user || !user?.id || Object.keys(user).length === 0) {
     return <AnalyticsViewSkeleton />
   }
+
+  // Additional check to ensure user data is accessible (prevents showing data for expired sessions)
+  if (!userEntries || typeof userEntries !== 'object') {
+    return <AnalyticsViewSkeleton />
+  }
+
 
   // Function to aggregate daily data by week
 const aggregateDataByWeek = (dailyData: any[]) => {
@@ -272,13 +289,13 @@ const aggregateDataByWeek = (dailyData: any[]) => {
   }).sort((a: any, b: any) => a.weekNumber - b.weekNumber)
 }
 
-  const userDays = ((session?.user as any)?.entries) && ((session?.user as any)?.entries[year]?.days) ? Object.values(((session?.user as any)?.entries[year]?.days)) : [];
+  const userDays = user?.entries && user?.entries[year]?.days ? Object.values(user.entries[year].days) : [];
   // Determine a global balance peak to keep moodAverageScale on a consistent scale
   const balancePeak = userDays.reduce((max: number, d: any) => {
     const bal = Number(d?.availableBalance || 0)
     return bal > max ? bal : max
   }, 0)
-  const userWeeks = ((session?.user as any)?.entries) && ((session?.user as any)?.entries[year]?.weeks) ? Object.values(((session?.user as any)?.entries[year]?.weeks)) : [];
+  const userWeeks = user?.entries && user?.entries[year]?.weeks ? Object.values(user.entries[year].weeks) : [];
   
   const plotData = userDays
     .sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime()) // Sort by most recent first
@@ -335,8 +352,8 @@ const aggregateDataByWeek = (dailyData: any[]) => {
     .reduce((acc: any[], cur: any) => {
       // Calculate moodAverage from daily data for this week
       let calculatedMoodAverage = 0
-      if (cur.week && session?.user?.entries?.[year]?.days) {
-        const weekDays = Object.values(session.user.entries[year].days).filter((day: any) => {
+      if (cur.week && user?.entries?.[year]?.days) {
+        const weekDays = Object.values(user.entries[year].days).filter((day: any) => {
           const dayDate = new Date(day.date)
           const [_, dayWeekNumber] = getWeekNumber(dayDate)
           return dayWeekNumber === cur.week
@@ -385,7 +402,7 @@ const aggregateDataByWeek = (dailyData: any[]) => {
       <div className="max-w-[1200px] w-full m-auto p-4 md:px-32 ">
       <p className="mt-0 mb-8">{(insight as any)?.yearAnalysis}</p>
       
-      {isAgentChatEnabled ? (
+      {isAgentChatEnabled && user?.id ? (
         <div className="mb-16">
           <AgentChat 
             key={reverseMessages}

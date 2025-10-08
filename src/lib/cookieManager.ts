@@ -3,8 +3,8 @@
  */
 import { logger } from './logger';
 
-export const INACTIVITY_TIMEOUT = 15 * 60 * 1000; // 15 minutes in milliseconds
-export const WARNING_TIME = 5 * 60 * 1000; // 5 minutes (warning shows after 10 minutes) in milliseconds
+export const INACTIVITY_TIMEOUT = 2 * 60 * 1000; // 15 minutes in milliseconds
+export const WARNING_TIME = 1 * 60 * 1000; // 5 minutes warning (shows after 10 minutes of inactivity)
 const LAST_ACTIVITY_KEY = 'dpip_last_activity';
 const LOGIN_TIME_KEY = 'dpip_login_time';
 
@@ -69,17 +69,43 @@ export const deleteClerkCookies = () => {
  * @param onWarning - Callback function called when warning should be shown
  * @param onLogout - Callback function called when session should be terminated
  */
+// Global warning state to prevent multiple warnings across all timer instances
+let globalWarningShown = false;
+let globalTimerActive = false;
+
+/**
+ * Resets the global warning state - should be called when session is extended
+ */
+export const resetGlobalWarningState = (): void => {
+  globalWarningShown = false;
+};
+
+/**
+ * Resets the global timer state - should be called when cleaning up
+ */
+export const resetGlobalTimerState = (): void => {
+  globalTimerActive = false;
+  globalWarningShown = false;
+};
+
 export const setupInactivityTimer = (
   timeout: number = INACTIVITY_TIMEOUT,
   warningTime: number = WARNING_TIME,
   onWarning?: () => void,
   onLogout?: () => void
 ) => {
+  // Prevent multiple timer instances
+  if (globalTimerActive) {
+    logger('timer_already_active', 'Timer already active, skipping initialization');
+    return () => {}; // Return empty cleanup function
+  }
+  
+  globalTimerActive = true;
+  
   let inactivityTimer: NodeJS.Timeout;
   let warningTimer: NodeJS.Timeout;
   let activityCheckInterval: NodeJS.Timeout;
 
-  let warningShown = false;
   let lastResetTime = 0;
   const RESET_DEBOUNCE = 1000; // 1 second debounce
 
@@ -109,9 +135,9 @@ export const setupInactivityTimer = (
     }
     
     // If user has been logged in for (timeout - warningTime), show warning (only once)
-    if (timeSinceLogin >= (timeout - warningTime) && onWarning && !warningShown) {
+    if (timeSinceLogin >= (timeout - warningTime) && onWarning && !globalWarningShown) {
       logger('session_timeout_warning', 'Warning triggered');
-      warningShown = true;
+      globalWarningShown = true;
       onWarning();
     }
   };
@@ -181,11 +207,19 @@ export const setupInactivityTimer = (
   const handleVisibilityChange = () => {
     if (!document.hidden) {
       // Tab became active, check if session expired while inactive
+      logger('visibility_change', 'Tab became active, checking session');
       checkInactivity();
     }
   };
   
+  // Add focus handler for better mobile support
+  const handleFocus = () => {
+    logger('window_focus', 'Window focused, checking session');
+    checkInactivity();
+  };
+  
   document.addEventListener('visibilitychange', handleVisibilityChange);
+  window.addEventListener('focus', handleFocus);
 
   // Check for existing inactivity on startup
   checkInactivity();
@@ -195,11 +229,13 @@ export const setupInactivityTimer = (
 
   // Function to reset warning flag (called when session is extended)
   const resetWarning = () => {
-    warningShown = false;
+    globalWarningShown = false;
   };
 
   // Return cleanup function
   return () => {
+    globalTimerActive = false;
+    
     if (inactivityTimer) {
       clearTimeout(inactivityTimer);
     }
@@ -213,8 +249,9 @@ export const setupInactivityTimer = (
       document.removeEventListener(event, resetTimer, true);
     });
     
-    // Remove visibility change listener
+    // Remove visibility change and focus listeners
     document.removeEventListener('visibilitychange', handleVisibilityChange);
+    window.removeEventListener('focus', handleFocus);
   };
 };
 
@@ -395,16 +432,37 @@ export const handleSessionExpirationOnLoad = (
   timeout: number = INACTIVITY_TIMEOUT,
   onLogout?: () => void
 ): void => {
-  if (isSessionExpired(timeout)) {
-    logger('handling_session_expiration', 'Logging out due to expired session');
-    deleteClerkCookies();
-    clearActivityStorage();
+  try {
+    const loginTime = getLoginTime();
+    const lastActivity = getLastActivity();
+    const now = Date.now();
     
-    if (onLogout) {
-      onLogout();
-    } else {
-      window.location.href = '/app/dashboard';
+    // If no login time, set it and return
+    if (loginTime === null) {
+      setLoginTime();
+      return;
     }
+    
+    const timeSinceLogin = now - loginTime;
+    const timeSinceLastActivity = now - lastActivity;
+    
+    // Check if session expired based on login time OR last activity
+    const sessionExpiredByLogin = timeSinceLogin >= timeout;
+    const sessionExpiredByActivity = timeSinceLastActivity >= timeout;
+    
+    if (sessionExpiredByLogin || sessionExpiredByActivity) {
+      logger('handling_session_expiration', `Logging out due to expired session. Login: ${Math.floor(timeSinceLogin / 60000)}min, Activity: ${Math.floor(timeSinceLastActivity / 60000)}min`);
+      deleteClerkCookies();
+      clearActivityStorage();
+      
+      if (onLogout) {
+        onLogout();
+      } else {
+        window.location.href = '/app/dashboard';
+      }
+    }
+  } catch (error) {
+    logger('handle_session_expiration_error', `Error handling session expiration: ${error}`);
   }
 };
 

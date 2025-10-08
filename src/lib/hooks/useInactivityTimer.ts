@@ -7,7 +7,9 @@ import {
   getLastActivity,
   getLoginTime,
   updateLastActivity,
-  clearActivityStorage 
+  clearActivityStorage,
+  resetGlobalWarningState,
+  resetGlobalTimerState
 } from '../cookieManager';
 import { logger } from '../logger';
 
@@ -24,7 +26,7 @@ interface UseInactivityTimerOptions {
  */
 export const useInactivityTimer = ({
   timeout = 15 * 60 * 1000, // 15 minutes
-  warningTime = 2 * 60 * 1000, // 2 minutes
+  warningTime = 5 * 60 * 1000, // 5 minutes warning (shows after 10 minutes)
   enabled = true,
   onLogout
 }: UseInactivityTimerOptions = {}) => {
@@ -33,6 +35,7 @@ export const useInactivityTimer = ({
   const toastIdRef = useRef<string | number | null>(null);
   const isInitializedRef = useRef(false);
   const timeoutRef = useRef(timeout);
+  const warningShownRef = useRef(false);
 
   // Update timeout ref when it changes
   useEffect(() => {
@@ -68,6 +71,10 @@ export const useInactivityTimer = ({
       countdownIntervalRef.current = null;
     }
     
+    // Reset warning flag
+    warningShownRef.current = false;
+    resetGlobalWarningState();
+    
     // Reset login time to extend session (this is the key fix)
     setLoginTime();
     updateLastActivity();
@@ -83,6 +90,16 @@ export const useInactivityTimer = ({
   }, [handleLogout, warningTime]);
 
   const handleWarning = useCallback(() => {
+    // Prevent multiple warnings
+    if (warningShownRef.current || toastIdRef.current) {
+      return;
+    }
+    
+    // Dismiss any existing session toasts globally
+    toast.dismiss();
+    
+    warningShownRef.current = true;
+    
     // Show warning toast with countdown
     const showWarningToast = () => {
       const loginTime = getLoginTime();
@@ -166,6 +183,12 @@ export const useInactivityTimer = ({
         clearInterval(countdownIntervalRef.current);
         countdownIntervalRef.current = null;
       }
+      if (toastIdRef.current) {
+        toast.dismiss(toastIdRef.current);
+        toastIdRef.current = null;
+      }
+      warningShownRef.current = false;
+      resetGlobalTimerState();
     };
   }, [enabled, timeout, warningTime, handleWarning, handleLogout]);
 
@@ -179,6 +202,12 @@ export const useInactivityTimer = ({
       clearInterval(countdownIntervalRef.current);
       countdownIntervalRef.current = null;
     }
+    if (toastIdRef.current) {
+      toast.dismiss(toastIdRef.current);
+      toastIdRef.current = null;
+    }
+    warningShownRef.current = false;
+    resetGlobalTimerState();
   }, []);
 
   // Manual cookie deletion function

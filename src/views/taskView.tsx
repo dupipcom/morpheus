@@ -58,6 +58,9 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const { session, setGlobalContext, theme } = useContext(GlobalContext)
   const { t, locale } = useI18n()
   const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+  
+  // Get user entries for authentication check
+  const userEntries = session?.user?.entries;
   const today = new Date()
   const todayDate = today.toLocaleString('en-uk', { timeZone: userTimezone }).split(',')[0].split('/').reverse().join('-')
   const todayWeekNumber = getWeekNumber(today)[1]
@@ -719,9 +722,12 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   }, [userDone])
 
   useEffect(() => {
-    updateUser(session, setGlobalContext, { session, theme })
-    generateInsight(setInsight, 'test', locale)
-  }, [locale])
+    // Only update user and generate insights if user is properly authenticated
+    if (session?.user?.id && userEntries) {
+      updateUser(session, setGlobalContext, { session, theme })
+      generateInsight(setInsight, 'test', locale)
+    }
+  }, [locale, session?.user?.id, userEntries])
 
   // Use enhanced loading state to prevent flashing
   const isDataLoading = useEnhancedLoadingState(isLoading, session, 100, timeframe)
@@ -730,10 +736,14 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     return <TaskViewSkeleton />
   }
 
-  if (!session?.user) {
-    return <div className="my-16 w-full flex align-center justify-center">
-      <Button className="m-auto"><a href="/app/dashboard">{t('common.login')}</a></Button>
-    </div>
+  // Check if user is properly authenticated and session is valid
+  if (!session?.user || !session?.user?.id || Object.keys(session.user).length === 0) {
+    return <TaskViewSkeleton />
+  }
+
+  // Additional check to ensure user data is accessible (prevents showing data for expired sessions)
+  if (!userEntries || typeof userEntries !== 'object') {
+    return <TaskViewSkeleton />
   }
 
   return <div className="max-w-[1200px] m-auto p-4">
@@ -1162,8 +1172,13 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     <p className="m-8 text-center">{t('tasks.yourEarnings', { timeframe: timeframe === "day" ? t('dashboard.today') : t('dashboard.thisWeek'), amount: earnings?.toLocaleString() })}</p>
 
 
-    <p className="mx-8 pt-8">{timeframe === "day" ? insight?.dayAnalysis : insight?.weekAnalysis}</p>
-    <p className="mx-8 pt-8">{insight?.last3daysAnalysis}</p>
+    {/* Only show insights for authenticated users */}
+    {session?.user?.id && (
+      <>
+        <p className="mx-8 pt-8">{timeframe === "day" ? insight?.dayAnalysis : insight?.weekAnalysis}</p>
+        <p className="mx-8 pt-8">{insight?.last3daysAnalysis}</p>
+      </>
+    )}
     <div className="flex flex-wrap justify-center">
     </div>
     <Button 

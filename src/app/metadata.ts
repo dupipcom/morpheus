@@ -41,7 +41,7 @@ export const defaultMetadata: Metadata = {
   },
 }
 
-export function buildMetadata({
+export async function buildMetadata({
   title,
   description,
   image,
@@ -53,7 +53,7 @@ export function buildMetadata({
   image?: string | null
   type?: 'website' | 'profile' | 'article'
   locale?: string
-} = {}): Metadata {
+} = {}): Promise<Metadata> {
   // If middleware flagged this request as a bot without a preferred locale, force English metadata
   let effectiveLocale = locale
   if (typeof window === 'undefined') {
@@ -62,9 +62,9 @@ export function buildMetadata({
       // In App Router generateMetadata, we can't access request directly, but cookies() works.
       // We use a dynamic import to avoid hard dependency for environments without cookies().
       // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const nextCookies = require('next/headers').cookies
-      const c = nextCookies?.()
-      const botEn = c?.get?.('dpip_bot_en')?.value
+      const { cookies: getCookies } = require('next/headers')
+      const cookieStore = await getCookies()
+      const botEn = cookieStore.get('dpip_bot_en')?.value
       if (botEn === '1') {
         effectiveLocale = 'en'
       }
