@@ -239,5 +239,35 @@
   "errors": {
     "notFound": "おっと！この周波数にチューニングできませんでした。",
     "genericError": "何か問題が発生しました。もう一度お試しください。"
+  },
+  "publicProfile": {
+    "ctaTitle": "あなた自身の DreamPip の旅を始めましょう",
+    "ctaSubtitle": "DreamPip で気分、生産性、収益を追跡しましょう",
+    "getStarted": "始める"
+  },
+  "publicCharts": {
+    "noData": "公開チャートデータが利用できません。",
+    "moodTrackingTitle": "気分追跡",
+    "moodTrackingSubtitle": "プライバシーのためにパーセンテージにスケールされた値",
+    "moodChartsTag": "気分チャート",
+    "moodOverviewTitle": "気分概要",
+    "moodOverviewSubtitle": "簡略化された気分追跡 - プライバシーのためにスケールされた値",
+    "simplifiedMoodTag": "簡略化気分チャート",
+    "productivityTitle": "生産性",
+    "productivitySubtitle": "プライバシーのためにパーセンテージにスケールされた値",
+    "productivityTag": "生産性チャート",
+    "earningsTitle": "収益",
+    "earningsSubtitle": "プライバシーのためにパーセンテージにスケールされた値",
+    "earningsTag": "収益チャート"
+  },
+  "friends": {
+    "addFriend": "友達を追加",
+    "sending": "送信中...",
+    "checking": "確認中...",
+    "requestSent": "フレンド申請を送信しました！",
+    "failedToSend": "フレンド申請の送信に失敗しました",
+    "closeFriend": "親しい友達",
+    "friends": "友達",
+    "signInToAdd": "友達を追加するにはサインイン"
   }
 }

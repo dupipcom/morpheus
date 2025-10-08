@@ -243,5 +243,35 @@
   "errors": {
     "notFound": "عذراً! لا يمكن ضبط هذه التردد.",
     "genericError": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+  },
+  "publicProfile": {
+    "ctaTitle": "ابدأ رحلتك مع DreamPip",
+    "ctaSubtitle": "تتبّع مزاجك وإنتاجيتك وأرباحك مع DreamPip",
+    "getStarted": "ابدأ"
+  },
+  "publicCharts": {
+    "noData": "لا توجد بيانات عامة متاحة للمخططات.",
+    "moodTrackingTitle": "تتبّع المزاج",
+    "moodTrackingSubtitle": "قيم معبّرة كنِسب مئوية للخصوصية",
+    "moodChartsTag": "مخططات المزاج",
+    "moodOverviewTitle": "نظرة عامة على المزاج",
+    "moodOverviewSubtitle": "تتبّع مبسّط — قيم كنِسب مئوية للخصوصية",
+    "simplifiedMoodTag": "مخطط مزاج مبسّط",
+    "productivityTitle": "الإنتاجية",
+    "productivitySubtitle": "قيم كنِسب مئوية للخصوصية",
+    "productivityTag": "مخططات الإنتاجية",
+    "earningsTitle": "الأرباح",
+    "earningsSubtitle": "قيم كنِسب مئوية للخصوصية",
+    "earningsTag": "مخططات الأرباح"
+  },
+  "friends": {
+    "addFriend": "أضف صديقًا",
+    "sending": "جارٍ الإرسال...",
+    "checking": "جارٍ التحقق...",
+    "requestSent": "تم إرسال طلب الصداقة!",
+    "failedToSend": "فشل في إرسال طلب الصداقة",
+    "closeFriend": "صديق مقرّب",
+    "friends": "أصدقاء",
+    "signInToAdd": "سجّل الدخول لإضافة صديق"
   }
 }

@@ -236,5 +236,35 @@
   "errors": {
     "notFound": "Ops! Ba za a iya samun wannan mitar ba.",
     "genericError": "Wani abu ya tafi ba daidai ba. Don Allah a sake gwadawa."
+  },
+  "publicProfile": {
+    "ctaTitle": "Start Your Own DreamPip Journey",
+    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
+    "getStarted": "Get Started"
+  },
+  "publicCharts": {
+    "noData": "No public charts data available.",
+    "moodTrackingTitle": "Mood Tracking",
+    "moodTrackingSubtitle": "Values scaled to percentages for privacy",
+    "moodChartsTag": "Mood Charts",
+    "moodOverviewTitle": "Mood Overview",
+    "moodOverviewSubtitle": "Simplified mood tracking - values scaled to percentages for privacy",
+    "simplifiedMoodTag": "Simplified Mood Chart",
+    "productivityTitle": "Productivity",
+    "productivitySubtitle": "Values scaled to percentages for privacy",
+    "productivityTag": "Productivity Charts",
+    "earningsTitle": "Earnings",
+    "earningsSubtitle": "Values scaled to percentages for privacy",
+    "earningsTag": "Earnings Charts"
+  },
+  "friends": {
+    "addFriend": "Ƙara aboki",
+    "sending": "Ana aikawa...",
+    "checking": "Ana duba...",
+    "requestSent": "An aika da buƙatar abota!",
+    "failedToSend": "An kasa aikawa da buƙatar abota",
+    "closeFriend": "Aboki na kusa",
+    "friends": "Abokai",
+    "signInToAdd": "Shiga don ƙara aboki"
   }
 } 

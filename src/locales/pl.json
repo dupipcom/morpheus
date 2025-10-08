@@ -251,5 +251,35 @@
   "errors": {
     "notFound": "Ups! Nie można dostroić tej częstotliwości.",
     "genericError": "Coś poszło nie tak. Spróbuj ponownie."
+  },
+  "publicProfile": {
+    "ctaTitle": "Start Your Own DreamPip Journey",
+    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
+    "getStarted": "Get Started"
+  },
+  "publicCharts": {
+    "noData": "No public charts data available.",
+    "moodTrackingTitle": "Mood Tracking",
+    "moodTrackingSubtitle": "Values scaled to percentages for privacy",
+    "moodChartsTag": "Mood Charts",
+    "moodOverviewTitle": "Mood Overview",
+    "moodOverviewSubtitle": "Simplified mood tracking - values scaled to percentages for privacy",
+    "simplifiedMoodTag": "Simplified Mood Chart",
+    "productivityTitle": "Productivity",
+    "productivitySubtitle": "Values scaled to percentages for privacy",
+    "productivityTag": "Productivity Charts",
+    "earningsTitle": "Earnings",
+    "earningsSubtitle": "Values scaled to percentages for privacy",
+    "earningsTag": "Earnings Charts"
+  },
+  "friends": {
+    "addFriend": "Dodaj znajomego",
+    "sending": "Wysyłanie...",
+    "checking": "Sprawdzanie...",
+    "requestSent": "Wysłano zaproszenie do znajomych!",
+    "failedToSend": "Nie udało się wysłać zaproszenia do znajomych",
+    "closeFriend": "Bliski przyjaciel",
+    "friends": "Znajomi",
+    "signInToAdd": "Zaloguj się, aby dodać znajomego"
   }
 }

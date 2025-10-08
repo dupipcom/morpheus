@@ -229,5 +229,35 @@
   "errors": {
     "notFound": "ওপস! এই ফ্রিকোয়েন্সি টিউন করতে পারেনি।",
     "genericError": "কিছু ভুল হয়েছে। দয়া করে আবার চেষ্টা করুন।"
+  },
+  "publicProfile": {
+    "ctaTitle": "Start Your Own DreamPip Journey",
+    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
+    "getStarted": "Get Started"
+  },
+  "publicCharts": {
+    "noData": "No public charts data available.",
+    "moodTrackingTitle": "Mood Tracking",
+    "moodTrackingSubtitle": "Values scaled to percentages for privacy",
+    "moodChartsTag": "Mood Charts",
+    "moodOverviewTitle": "Mood Overview",
+    "moodOverviewSubtitle": "Simplified mood tracking - values scaled to percentages for privacy",
+    "simplifiedMoodTag": "Simplified Mood Chart",
+    "productivityTitle": "Productivity",
+    "productivitySubtitle": "Values scaled to percentages for privacy",
+    "productivityTag": "Productivity Charts",
+    "earningsTitle": "Earnings",
+    "earningsSubtitle": "Values scaled to percentages for privacy",
+    "earningsTag": "Earnings Charts"
+  },
+  "friends": {
+    "addFriend": "বন্ধু যোগ করুন",
+    "sending": "পাঠানো হচ্ছে...",
+    "checking": "পরীক্ষা করা হচ্ছে...",
+    "requestSent": "বন্ধুত্বের অনুরোধ পাঠানো হয়েছে!",
+    "failedToSend": "বন্ধুত্বের অনুরোধ পাঠাতে ব্যর্থ",
+    "closeFriend": "ঘনিষ্ঠ বন্ধু",
+    "friends": "বন্ধুরা",
+    "signInToAdd": "বন্ধু যোগ করতে সাইন ইন করুন"
   }
 }

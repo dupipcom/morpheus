@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { useI18n } from '@/lib/contexts/i18n'
 import { ChartContainer, ChartTooltipContent, ChartTooltip, ChartLegendContent, ChartLegend } from "@/components/ui/chart"
 import { Area, CartesianGrid, AreaChart, XAxis } from "recharts"
 import { type ChartConfig } from "@/components/ui/chart"
@@ -109,10 +110,11 @@ const earningsChartConfig = {
 } satisfies ChartConfig
 
 export function PublicChartsView({ chartsData }: PublicChartsViewProps) {
+  const { t } = useI18n()
   if (!chartsData) {
     return (
       <div className="text-center text-muted-foreground">
-        <p>No public charts data available.</p>
+        <p>{t('publicCharts.noData')}</p>
       </div>
     )
   }
@@ -124,11 +126,11 @@ export function PublicChartsView({ chartsData }: PublicChartsViewProps) {
         <div>
           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-2">
             <div className="min-w-0">
-              <h3 className="text-lg font-semibold">Mood Tracking</h3>
-              <p className="text-sm text-muted-foreground">Values scaled to percentages for privacy</p>
+              <h3 className="text-lg font-semibold">{t('publicCharts.moodTrackingTitle')}</h3>
+              <p className="text-sm text-muted-foreground">{t('publicCharts.moodTrackingSubtitle')}</p>
             </div>
             <div>
-              <Badge variant="outline">Mood Charts</Badge>
+              <Badge variant="outline">{t('publicCharts.moodChartsTag')}</Badge>
             </div>
           </div>
           
@@ -216,11 +218,11 @@ export function PublicChartsView({ chartsData }: PublicChartsViewProps) {
         <div>
           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-2">
             <div className="min-w-0">
-              <h3 className="text-lg font-semibold">Mood Overview</h3>
-              <p className="text-sm text-muted-foreground">Simplified mood tracking - values scaled to percentages for privacy</p>
+              <h3 className="text-lg font-semibold">{t('publicCharts.moodOverviewTitle')}</h3>
+              <p className="text-sm text-muted-foreground">{t('publicCharts.moodOverviewSubtitle')}</p>
             </div>
             <div>
-              <Badge variant="outline">Simplified Mood Chart</Badge>
+              <Badge variant="outline">{t('publicCharts.simplifiedMoodTag')}</Badge>
             </div>
           </div>
           
@@ -253,11 +255,11 @@ export function PublicChartsView({ chartsData }: PublicChartsViewProps) {
         <div>
           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-2">
             <div className="min-w-0">
-              <h3 className="text-lg font-semibold">Productivity</h3>
-              <p className="text-sm text-muted-foreground">Values scaled to percentages for privacy</p>
+              <h3 className="text-lg font-semibold">{t('publicCharts.productivityTitle')}</h3>
+              <p className="text-sm text-muted-foreground">{t('publicCharts.productivitySubtitle')}</p>
             </div>
             <div>
-              <Badge variant="outline">Productivity Charts</Badge>
+              <Badge variant="outline">{t('publicCharts.productivityTag')}</Badge>
             </div>
           </div>
           
@@ -300,11 +302,11 @@ export function PublicChartsView({ chartsData }: PublicChartsViewProps) {
         <div>
           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-2">
             <div className="min-w-0">
-              <h3 className="text-lg font-semibold">Earnings</h3>
-              <p className="text-sm text-muted-foreground">Values scaled to percentages for privacy</p>
+              <h3 className="text-lg font-semibold">{t('publicCharts.earningsTitle')}</h3>
+              <p className="text-sm text-muted-foreground">{t('publicCharts.earningsSubtitle')}</p>
             </div>
             <div>
-              <Badge variant="outline">Earnings Charts</Badge>
+              <Badge variant="outline">{t('publicCharts.earningsTag')}</Badge>
             </div>
           </div>
           

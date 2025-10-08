@@ -229,5 +229,35 @@
   "errors": {
     "notFound": "Ups! No s'ha pogut sintonitzar aquesta freqüència.",
     "genericError": "Alguna cosa ha anat malament. Si us plau, torna-ho a intentar."
+  },
+  "publicProfile": {
+    "ctaTitle": "Start Your Own DreamPip Journey",
+    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
+    "getStarted": "Get Started"
+  },
+  "publicCharts": {
+    "noData": "No public charts data available.",
+    "moodTrackingTitle": "Mood Tracking",
+    "moodTrackingSubtitle": "Values scaled to percentages for privacy",
+    "moodChartsTag": "Mood Charts",
+    "moodOverviewTitle": "Mood Overview",
+    "moodOverviewSubtitle": "Simplified mood tracking - values scaled to percentages for privacy",
+    "simplifiedMoodTag": "Simplified Mood Chart",
+    "productivityTitle": "Productivity",
+    "productivitySubtitle": "Values scaled to percentages for privacy",
+    "productivityTag": "Productivity Charts",
+    "earningsTitle": "Earnings",
+    "earningsSubtitle": "Values scaled to percentages for privacy",
+    "earningsTag": "Earnings Charts"
+  },
+  "friends": {
+    "addFriend": "Afegir amic",
+    "sending": "Enviant...",
+    "checking": "Verificant...",
+    "requestSent": "Sol·licitud d'amistat enviada!",
+    "failedToSend": "No s'ha pogut enviar la sol·licitud d'amistat",
+    "closeFriend": "Amic proper",
+    "friends": "Amics",
+    "signInToAdd": "Inicia sessió per afegir un amic"
   }
 }

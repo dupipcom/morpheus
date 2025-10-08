@@ -229,5 +229,35 @@
   "errors": {
     "notFound": "Hoppá! Nem sikerült beállítani ezt a frekvenciát.",
     "genericError": "Valami elromlott. Kérjük, próbálja újra."
+  },
+  "publicProfile": {
+    "ctaTitle": "Start Your Own DreamPip Journey",
+    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
+    "getStarted": "Get Started"
+  },
+  "publicCharts": {
+    "noData": "No public charts data available.",
+    "moodTrackingTitle": "Mood Tracking",
+    "moodTrackingSubtitle": "Values scaled to percentages for privacy",
+    "moodChartsTag": "Mood Charts",
+    "moodOverviewTitle": "Mood Overview",
+    "moodOverviewSubtitle": "Simplified mood tracking - values scaled to percentages for privacy",
+    "simplifiedMoodTag": "Simplified Mood Chart",
+    "productivityTitle": "Productivity",
+    "productivitySubtitle": "Values scaled to percentages for privacy",
+    "productivityTag": "Productivity Charts",
+    "earningsTitle": "Earnings",
+    "earningsSubtitle": "Values scaled to percentages for privacy",
+    "earningsTag": "Earnings Charts"
+  },
+  "friends": {
+    "addFriend": "Barát hozzáadása",
+    "sending": "Küldés...",
+    "checking": "Ellenőrzés...",
+    "requestSent": "Barátkérelem elküldve!",
+    "failedToSend": "A barátkérelem elküldése nem sikerült",
+    "closeFriend": "Közeli barát",
+    "friends": "Barátok",
+    "signInToAdd": "Jelentkezz be barát hozzáadásához"
   }
 }

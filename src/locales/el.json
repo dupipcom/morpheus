@@ -237,5 +237,35 @@
   "errors": {
     "notFound": "Ουπς! Δεν μπόρεσε να συντονιστεί σε αυτή τη συχνότητα.",
     "genericError": "Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά."
+  },
+  "publicProfile": {
+    "ctaTitle": "Start Your Own DreamPip Journey",
+    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
+    "getStarted": "Get Started"
+  },
+  "publicCharts": {
+    "noData": "No public charts data available.",
+    "moodTrackingTitle": "Mood Tracking",
+    "moodTrackingSubtitle": "Values scaled to percentages for privacy",
+    "moodChartsTag": "Mood Charts",
+    "moodOverviewTitle": "Mood Overview",
+    "moodOverviewSubtitle": "Simplified mood tracking - values scaled to percentages for privacy",
+    "simplifiedMoodTag": "Simplified Mood Chart",
+    "productivityTitle": "Productivity",
+    "productivitySubtitle": "Values scaled to percentages for privacy",
+    "productivityTag": "Productivity Charts",
+    "earningsTitle": "Earnings",
+    "earningsSubtitle": "Values scaled to percentages for privacy",
+    "earningsTag": "Earnings Charts"
+  },
+  "friends": {
+    "addFriend": "Προσθήκη φίλου",
+    "sending": "Αποστολή...",
+    "checking": "Έλεγχος...",
+    "requestSent": "Αίτημα φιλίας εστάλη!",
+    "failedToSend": "Αποτυχία αποστολής αιτήματος φιλίας",
+    "closeFriend": "Στενός φίλος",
+    "friends": "Φίλοι",
+    "signInToAdd": "Συνδεθείτε για να προσθέσετε φίλο"
   }
 }

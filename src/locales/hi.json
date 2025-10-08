@@ -229,5 +229,35 @@
   "errors": {
     "notFound": "ओह! इस आवृत्ति को ट्यून नहीं कर सका।",
     "genericError": "कुछ गलत हुआ। कृपया पुनः प्रयास करें।"
+  },
+  "publicProfile": {
+    "ctaTitle": "Start Your Own DreamPip Journey",
+    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
+    "getStarted": "Get Started"
+  },
+  "publicCharts": {
+    "noData": "No public charts data available.",
+    "moodTrackingTitle": "Mood Tracking",
+    "moodTrackingSubtitle": "Values scaled to percentages for privacy",
+    "moodChartsTag": "Mood Charts",
+    "moodOverviewTitle": "Mood Overview",
+    "moodOverviewSubtitle": "Simplified mood tracking - values scaled to percentages for privacy",
+    "simplifiedMoodTag": "Simplified Mood Chart",
+    "productivityTitle": "Productivity",
+    "productivitySubtitle": "Values scaled to percentages for privacy",
+    "productivityTag": "Productivity Charts",
+    "earningsTitle": "Earnings",
+    "earningsSubtitle": "Values scaled to percentages for privacy",
+    "earningsTag": "Earnings Charts"
+  },
+  "friends": {
+    "addFriend": "मित्र जोड़ें",
+    "sending": "भेजा जा रहा है...",
+    "checking": "जांच हो रही है...",
+    "requestSent": "मित्र अनुरोध भेजा गया!",
+    "failedToSend": "मित्र अनुरोध भेजने में विफल",
+    "closeFriend": "घनिष्ठ मित्र",
+    "friends": "मित्र",
+    "signInToAdd": "मित्र जोड़ने के लिए साइन इन करें"
   }
 }

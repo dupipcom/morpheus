@@ -239,5 +239,35 @@
   "errors": {
     "notFound": "哎呀！无法调谐到此频率。",
     "genericError": "出现错误。请重试。"
+  },
+  "publicProfile": {
+    "ctaTitle": "开始您的 DreamPip 之旅",
+    "ctaSubtitle": "使用 DreamPip 跟踪您的心情、生产力和收入",
+    "getStarted": "开始"
+  },
+  "publicCharts": {
+    "noData": "没有可用的公共图表数据。",
+    "moodTrackingTitle": "心情跟踪",
+    "moodTrackingSubtitle": "为隐私而缩放到百分比的值",
+    "moodChartsTag": "心情图表",
+    "moodOverviewTitle": "心情概览",
+    "moodOverviewSubtitle": "简化的心情跟踪 - 为隐私而缩放到百分比的值",
+    "simplifiedMoodTag": "简化心情图表",
+    "productivityTitle": "生产力",
+    "productivitySubtitle": "为隐私而缩放到百分比的值",
+    "productivityTag": "生产力图表",
+    "earningsTitle": "收入",
+    "earningsSubtitle": "为隐私而缩放到百分比的值",
+    "earningsTag": "收入图表"
+  },
+  "friends": {
+    "addFriend": "添加好友",
+    "sending": "发送中...",
+    "checking": "检查中...",
+    "requestSent": "好友请求已发送！",
+    "failedToSend": "发送好友请求失败",
+    "closeFriend": "挚友",
+    "friends": "好友",
+    "signInToAdd": "登录以添加好友"
   }
 }

@@ -407,9 +407,9 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
         })
       }
     }
-    
-    // Don't call updateUser to avoid resetting moodView selections
-    // The session will be updated naturally when the user navigates or refreshes
+
+    await updateUser(session, setGlobalContext, { session, theme })
+
   }, 2000)
 
   // Handle immediate UI updates and trigger debounced server update

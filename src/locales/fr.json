@@ -239,5 +239,35 @@
   "errors": {
     "notFound": "Oups ! Impossible de s'accorder sur cette fréquence.",
     "genericError": "Quelque chose s'est mal passé. Veuillez réessayer."
+  },
+  "publicProfile": {
+    "ctaTitle": "Commencez votre parcours DreamPip",
+    "ctaSubtitle": "Suivez votre humeur, votre productivité et vos gains avec DreamPip",
+    "getStarted": "Commencer"
+  },
+  "publicCharts": {
+    "noData": "Aucune donnée publique disponible pour les graphiques.",
+    "moodTrackingTitle": "Suivi de l'humeur",
+    "moodTrackingSubtitle": "Valeurs exprimées en pourcentage pour la confidentialité",
+    "moodChartsTag": "Graphiques d'humeur",
+    "moodOverviewTitle": "Aperçu de l'humeur",
+    "moodOverviewSubtitle": "Suivi simplifié — valeurs en pourcentage pour la confidentialité",
+    "simplifiedMoodTag": "Graphique d'humeur simplifié",
+    "productivityTitle": "Productivité",
+    "productivitySubtitle": "Valeurs exprimées en pourcentage pour la confidentialité",
+    "productivityTag": "Graphiques de productivité",
+    "earningsTitle": "Gains",
+    "earningsSubtitle": "Valeurs exprimées en pourcentage pour la confidentialité",
+    "earningsTag": "Graphiques de gains"
+  },
+  "friends": {
+    "addFriend": "Ajouter un ami",
+    "sending": "Envoi...",
+    "checking": "Vérification...",
+    "requestSent": "Demande d'ami envoyée !",
+    "failedToSend": "Échec de l'envoi de la demande d'ami",
+    "closeFriend": "Ami proche",
+    "friends": "Amis",
+    "signInToAdd": "Connectez-vous pour ajouter un ami"
   }
 }

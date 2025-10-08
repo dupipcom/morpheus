@@ -237,7 +237,37 @@
     "failedToSend": "Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es erneut."
   },
   "errors": {
-    "notFound": "Ups! Konnte diese Frequenz nicht einstellen.",
-    "genericError": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut."
+    "notFound": "Ops! Could not tune to this frequency.",
+    "genericError": "Something went wrong. Please try again."
+  },
+  "publicProfile": {
+    "ctaTitle": "Start Your Own DreamPip Journey",
+    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
+    "getStarted": "Get Started"
+  },
+  "publicCharts": {
+    "noData": "No public charts data available.",
+    "moodTrackingTitle": "Mood Tracking",
+    "moodTrackingSubtitle": "Values scaled to percentages for privacy",
+    "moodChartsTag": "Mood Charts",
+    "moodOverviewTitle": "Mood Overview",
+    "moodOverviewSubtitle": "Simplified mood tracking - values scaled to percentages for privacy",
+    "simplifiedMoodTag": "Simplified Mood Chart",
+    "productivityTitle": "Productivity",
+    "productivitySubtitle": "Values scaled to percentages for privacy",
+    "productivityTag": "Productivity Charts",
+    "earningsTitle": "Earnings",
+    "earningsSubtitle": "Values scaled to percentages for privacy",
+    "earningsTag": "Earnings Charts"
+  },
+  "friends": {
+    "addFriend": "Freund hinzufügen",
+    "sending": "Senden...",
+    "checking": "Überprüfung...",
+    "requestSent": "Freundschaftsanfrage gesendet!",
+    "failedToSend": "Freundschaftsanfrage konnte nicht gesendet werden",
+    "closeFriend": "Enger Freund",
+    "friends": "Freunde",
+    "signInToAdd": "Melde dich an, um einen Freund hinzuzufügen"
   }
 }

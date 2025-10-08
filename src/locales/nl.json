@@ -229,5 +229,35 @@
   "errors": {
     "notFound": "Oeps! Kon deze frequentie niet afstemmen.",
     "genericError": "Er is iets misgegaan. Probeer het opnieuw."
+  },
+  "publicProfile": {
+    "ctaTitle": "Begin je eigen DreamPip reis",
+    "ctaSubtitle": "Volg je stemming, productiviteit en verdiensten met DreamPip",
+    "getStarted": "Beginnen"
+  },
+  "publicCharts": {
+    "noData": "Geen openbare grafiekgegevens beschikbaar.",
+    "moodTrackingTitle": "Stemming volgen",
+    "moodTrackingSubtitle": "Waarden geschaald naar percentages voor privacy",
+    "moodChartsTag": "Stemming grafieken",
+    "moodOverviewTitle": "Stemming overzicht",
+    "moodOverviewSubtitle": "Vereenvoudigde stemming volgen - waarden geschaald voor privacy",
+    "simplifiedMoodTag": "Vereenvoudigde stemming grafiek",
+    "productivityTitle": "Productiviteit",
+    "productivitySubtitle": "Waarden geschaald naar percentages voor privacy",
+    "productivityTag": "Productiviteit grafieken",
+    "earningsTitle": "Verdiensten",
+    "earningsSubtitle": "Waarden geschaald naar percentages voor privacy",
+    "earningsTag": "Verdiensten grafieken"
+  },
+  "friends": {
+    "addFriend": "Vriend toevoegen",
+    "sending": "Verzenden...",
+    "checking": "Bezig met controleren...",
+    "requestSent": "Vriendschapsverzoek verzonden!",
+    "failedToSend": "Kon vriendschapsverzoek niet verzenden",
+    "closeFriend": "Dichte vriend",
+    "friends": "Vrienden",
+    "signInToAdd": "Log in om een vriend toe te voegen"
   }
 }

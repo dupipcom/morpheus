@@ -4,6 +4,7 @@ import { AddFriendButton } from './AddFriendButton'
 import { Button } from '@/components/ui/button'
 import { UserPlus, LogIn } from 'lucide-react'
 import { SignInButton } from '@clerk/nextjs'
+import { useI18n } from '@/lib/contexts/i18n'
 
 interface AddFriendButtonOrSignInProps {
   targetUserId: string
@@ -12,6 +13,7 @@ interface AddFriendButtonOrSignInProps {
 }
 
 export function AddFriendButtonOrSignIn({ targetUserId, isLoggedIn, className }: AddFriendButtonOrSignInProps) {
+  const { t } = useI18n()
   if (isLoggedIn) {
     return <AddFriendButton targetUserId={targetUserId} className={className} />
   }
@@ -20,7 +22,7 @@ export function AddFriendButtonOrSignIn({ targetUserId, isLoggedIn, className }:
     <SignInButton>
       <Button className={className}>
         <LogIn className="w-4 h-4 mr-2" />
-        Sign In to Add Friend
+        {t('friends.signInToAdd')}
       </Button>
     </SignInButton>
   )

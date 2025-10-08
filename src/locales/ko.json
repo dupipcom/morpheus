@@ -243,5 +243,35 @@
   "errors": {
     "notFound": "앗! 이 주파수에 맞출 수 없습니다.",
     "genericError": "문제가 발생했습니다. 다시 시도해 주세요."
+  },
+  "publicProfile": {
+    "ctaTitle": "나만의 DreamPip 여정을 시작하세요",
+    "ctaSubtitle": "DreamPip으로 기분, 생산성, 수익을 추적하세요",
+    "getStarted": "시작하기"
+  },
+  "publicCharts": {
+    "noData": "공개 차트 데이터를 사용할 수 없습니다.",
+    "moodTrackingTitle": "기분 추적",
+    "moodTrackingSubtitle": "개인정보 보호를 위해 백분율로 조정된 값",
+    "moodChartsTag": "기분 차트",
+    "moodOverviewTitle": "기분 개요",
+    "moodOverviewSubtitle": "간소화된 기분 추적 - 개인정보 보호를 위해 조정된 값",
+    "simplifiedMoodTag": "간소화 기분 차트",
+    "productivityTitle": "생산성",
+    "productivitySubtitle": "개인정보 보호를 위해 백분율로 조정된 값",
+    "productivityTag": "생산성 차트",
+    "earningsTitle": "수익",
+    "earningsSubtitle": "개인정보 보호를 위해 백분율로 조정된 값",
+    "earningsTag": "수익 차트"
+  },
+  "friends": {
+    "addFriend": "친구 추가",
+    "sending": "보내는 중...",
+    "checking": "확인 중...",
+    "requestSent": "친구 요청이 전송되었습니다!",
+    "failedToSend": "친구 요청 전송에 실패했습니다",
+    "closeFriend": "절친",
+    "friends": "친구",
+    "signInToAdd": "친구를 추가하려면 로그인"
   }
 }

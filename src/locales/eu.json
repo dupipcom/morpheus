@@ -236,5 +236,35 @@
   "errors": {
     "notFound": "Ups! Ezin izan da maiztasun hori sintonizatu.",
     "genericError": "Zerbait gaizki joan da. Mesedez, saiatu berriro."
+  },
+  "publicProfile": {
+    "ctaTitle": "Start Your Own DreamPip Journey",
+    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
+    "getStarted": "Get Started"
+  },
+  "publicCharts": {
+    "noData": "No public charts data available.",
+    "moodTrackingTitle": "Mood Tracking",
+    "moodTrackingSubtitle": "Values scaled to percentages for privacy",
+    "moodChartsTag": "Mood Charts",
+    "moodOverviewTitle": "Mood Overview",
+    "moodOverviewSubtitle": "Simplified mood tracking - values scaled to percentages for privacy",
+    "simplifiedMoodTag": "Simplified Mood Chart",
+    "productivityTitle": "Productivity",
+    "productivitySubtitle": "Values scaled to percentages for privacy",
+    "productivityTag": "Productivity Charts",
+    "earningsTitle": "Earnings",
+    "earningsSubtitle": "Values scaled to percentages for privacy",
+    "earningsTag": "Earnings Charts"
+  },
+  "friends": {
+    "addFriend": "Gehitu laguna",
+    "sending": "Bidaltzen...",
+    "checking": "Egiaztatzen...",
+    "requestSent": "Lagun-eskaera bidalia!",
+    "failedToSend": "Ezin izan da lagun-eskaera bidali",
+    "closeFriend": "Lagun hurbila",
+    "friends": "Lagunak",
+    "signInToAdd": "Hasi saioa lagun bat gehitzeko"
   }
 }

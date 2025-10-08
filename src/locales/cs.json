@@ -229,5 +229,35 @@
   "errors": {
     "notFound": "Ups! Nepodařilo se naladit tuto frekvenci.",
     "genericError": "Něco se pokazilo. Zkuste to znovu."
+  },
+  "publicProfile": {
+    "ctaTitle": "Start Your Own DreamPip Journey",
+    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
+    "getStarted": "Get Started"
+  },
+  "publicCharts": {
+    "noData": "No public charts data available.",
+    "moodTrackingTitle": "Mood Tracking",
+    "moodTrackingSubtitle": "Values scaled to percentages for privacy",
+    "moodChartsTag": "Mood Charts",
+    "moodOverviewTitle": "Mood Overview",
+    "moodOverviewSubtitle": "Simplified mood tracking - values scaled to percentages for privacy",
+    "simplifiedMoodTag": "Simplified Mood Chart",
+    "productivityTitle": "Productivity",
+    "productivitySubtitle": "Values scaled to percentages for privacy",
+    "productivityTag": "Productivity Charts",
+    "earningsTitle": "Earnings",
+    "earningsSubtitle": "Values scaled to percentages for privacy",
+    "earningsTag": "Earnings Charts"
+  },
+  "friends": {
+    "addFriend": "Přidat přítele",
+    "sending": "Odesílání...",
+    "checking": "Kontroluji...",
+    "requestSent": "Žádost o přátelství odeslána!",
+    "failedToSend": "Nepodařilo se odeslat žádost o přátelství",
+    "closeFriend": "Blízký přítel",
+    "friends": "Přátelé",
+    "signInToAdd": "Přihlaste se pro přidání přítele"
   }
 }

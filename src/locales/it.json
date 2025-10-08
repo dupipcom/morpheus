@@ -239,5 +239,35 @@
   "errors": {
     "notFound": "Ops! Non è stato possibile sintonizzarsi su questa frequenza.",
     "genericError": "Qualcosa è andato storto. Riprova."
+  },
+  "publicProfile": {
+    "ctaTitle": "Inizia il tuo percorso con DreamPip",
+    "ctaSubtitle": "Traccia umore, produttività e guadagni con DreamPip",
+    "getStarted": "Inizia"
+  },
+  "publicCharts": {
+    "noData": "Nessun dato pubblico disponibile per i grafici.",
+    "moodTrackingTitle": "Tracciamento dell'umore",
+    "moodTrackingSubtitle": "Valori scalati in percentuale per la privacy",
+    "moodChartsTag": "Grafici umore",
+    "moodOverviewTitle": "Panoramica umore",
+    "moodOverviewSubtitle": "Tracciamento semplificato - valori scalati per la privacy",
+    "simplifiedMoodTag": "Grafico umore semplificato",
+    "productivityTitle": "Produttività",
+    "productivitySubtitle": "Valori scalati in percentuale per la privacy",
+    "productivityTag": "Grafici produttività",
+    "earningsTitle": "Guadagni",
+    "earningsSubtitle": "Valori scalati in percentuale per la privacy",
+    "earningsTag": "Grafici guadagni"
+  },
+  "friends": {
+    "addFriend": "Aggiungi amico",
+    "sending": "Invio...",
+    "checking": "Verifica...",
+    "requestSent": "Richiesta di amicizia inviata!",
+    "failedToSend": "Impossibile inviare la richiesta di amicizia",
+    "closeFriend": "Amico stretto",
+    "friends": "Amici",
+    "signInToAdd": "Accedi per aggiungere un amico"
   }
 }

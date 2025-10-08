@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { PublicChartsView } from "@/components/PublicChartsView"
 import { AddFriendButtonOrSignIn } from "@/components/AddFriendButtonOrSignIn"
 import { auth } from '@clerk/nextjs/server'
+import { I18nProvider } from '@/lib/contexts/i18n'
+import { loadTranslations } from '@/lib/i18n'
 
 interface ProfileData {
   userId?: string
@@ -70,6 +72,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 export default async function PublicProfilePage({ params }: { params: Promise<{ locale: string; userName: string }> }) {
   const { locale, userName } = await params
   const { userId } = await auth()
+  const translations = await loadTranslations(locale as any)
   
   const profile = await getProfile(userName)
   
@@ -83,11 +86,12 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
   const isLoggedIn = !!userId
 
   return (
+    <I18nProvider locale={locale as any}>
     <main className="min-h-screen bg-background">
       <div className="max-w-4xl mx-auto p-4">
         {/* Profile Header */}
         <Card className="mb-6">
-          <CardContent className="pt-6">
+          <CardContent>
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                 {profile.profilePicture && (
@@ -148,15 +152,15 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
           <Card className="mt-6">
             <CardContent className="pt-6">
               <div className="text-center">
-                <h2 className="text-xl font-semibold mb-2">Start Your Own DreamPip Journey</h2>
+                <h2 className="text-xl font-semibold mb-2">{(translations as any)?.publicProfile?.ctaTitle || 'Start Your Own DreamPip Journey'}</h2>
                 <p className="text-muted-foreground mb-4">
-                  Track your mood, productivity, and earnings with DreamPip
+                  {(translations as any)?.publicProfile?.ctaSubtitle || 'Track your mood, productivity, and earnings with DreamPip'}
                 </p>
                 <a 
                   href={`/${locale}/app/dashboard`} 
                   className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
                 >
-                  Get Started
+                  {(translations as any)?.publicProfile?.getStarted || 'Get Started'}
                 </a>
               </div>
             </CardContent>
@@ -165,5 +169,6 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
 
       </div>
     </main>
+    </I18nProvider>
   )
 }

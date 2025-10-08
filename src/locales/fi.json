@@ -231,11 +231,41 @@
     "startConversation": "Aloita keskustelu AI-avustajasi kanssa",
     "getInsights": "Kysy mielialastasi, tavoista tai saa henkilökohtaisia oivalluksia",
     "placeholder": "Chatataan...",
-    "error": "Anteeksi, kohtasin virheen. Yritä uudelleen.",
+    "error": "Anteeksi, kohtasimme virheen. Yritä uudelleen.",
     "failedToSend": "Viestin lähettäminen epäonnistui. Yritä uudelleen."
   },
   "errors": {
     "notFound": "Hups! Ei voitu virittää tätä taajuutta.",
     "genericError": "Jokin meni pieleen. Yritä uudelleen."
+  },
+  "publicProfile": {
+    "ctaTitle": "Start Your Own DreamPip Journey",
+    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
+    "getStarted": "Get Started"
+  },
+  "publicCharts": {
+    "noData": "No public charts data available.",
+    "moodTrackingTitle": "Mood Tracking",
+    "moodTrackingSubtitle": "Values scaled to percentages for privacy",
+    "moodChartsTag": "Mood Charts",
+    "moodOverviewTitle": "Mood Overview",
+    "moodOverviewSubtitle": "Simplified mood tracking - values scaled to percentages for privacy",
+    "simplifiedMoodTag": "Simplified Mood Chart",
+    "productivityTitle": "Productivity",
+    "productivitySubtitle": "Values scaled to percentages for privacy",
+    "productivityTag": "Productivity Charts",
+    "earningsTitle": "Earnings",
+    "earningsSubtitle": "Values scaled to percentages for privacy",
+    "earningsTag": "Earnings Charts"
+  },
+  "friends": {
+    "addFriend": "Lisää ystävä",
+    "sending": "Lähetetään...",
+    "checking": "Tarkistetaan...",
+    "requestSent": "Kaveripyyntö lähetetty!",
+    "failedToSend": "Kaveripyynnön lähetys epäonnistui",
+    "closeFriend": "Läheinen ystävä",
+    "friends": "Ystävät",
+    "signInToAdd": "Kirjaudu sisään lisätäksesi ystävän"
   }
 }

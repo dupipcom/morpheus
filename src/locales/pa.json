@@ -237,5 +237,35 @@
   "errors": {
     "notFound": "ਓਹ! ਇਸ ਫ੍ਰੀਕੁਐਂਸੀ ਨੂੰ ਟਿਊਨ ਨਹੀਂ ਕਰ ਸਕਿਆ।",
     "genericError": "ਕੁਝ ਗਲਤ ਹੋ ਗਿਆ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
+  },
+  "publicProfile": {
+    "ctaTitle": "Start Your Own DreamPip Journey",
+    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
+    "getStarted": "Get Started"
+  },
+  "publicCharts": {
+    "noData": "No public charts data available.",
+    "moodTrackingTitle": "Mood Tracking",
+    "moodTrackingSubtitle": "Values scaled to percentages for privacy",
+    "moodChartsTag": "Mood Charts",
+    "moodOverviewTitle": "Mood Overview",
+    "moodOverviewSubtitle": "Simplified mood tracking - values scaled to percentages for privacy",
+    "simplifiedMoodTag": "Simplified Mood Chart",
+    "productivityTitle": "Productivity",
+    "productivitySubtitle": "Values scaled to percentages for privacy",
+    "productivityTag": "Productivity Charts",
+    "earningsTitle": "Earnings",
+    "earningsSubtitle": "Values scaled to percentages for privacy",
+    "earningsTag": "Earnings Charts"
+  },
+  "friends": {
+    "addFriend": "ਦੋਸਤ ਸ਼ਾਮਲ ਕਰੋ",
+    "sending": "ਭੇਜਿਆ ਜਾ ਰਿਹਾ ਹੈ...",
+    "checking": "ਜਾਂਚ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ...",
+    "requestSent": "ਦੋਸਤੀ ਬੇਨਤੀ ਭੇਜੀ ਗਈ!",
+    "failedToSend": "ਦੋਸਤੀ ਬੇਨਤੀ ਭੇਜਣ ਵਿੱਚ ਅਸਫਲ",
+    "closeFriend": "ਨਜ਼ਦੀਕੀ ਦੋਸਤ",
+    "friends": "ਦੋਸਤ",
+    "signInToAdd": "ਦੋਸਤ ਜੋੜਨ ਲਈ ਸਾਈਨ ਇਨ ਕਰੋ"
   }
 }

@@ -234,5 +234,35 @@
   "errors": {
     "notFound": "Ops! Kò le tọ́ ìwọ̀n yìí.",
     "genericError": "Nǹkan kan ṣẹlẹ̀. Jọ̀ọ́ gbìyànjú lẹ́ẹ̀kan si."
+  },
+  "publicProfile": {
+    "ctaTitle": "Start Your Own DreamPip Journey",
+    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
+    "getStarted": "Get Started"
+  },
+  "publicCharts": {
+    "noData": "No public charts data available.",
+    "moodTrackingTitle": "Mood Tracking",
+    "moodTrackingSubtitle": "Values scaled to percentages for privacy",
+    "moodChartsTag": "Mood Charts",
+    "moodOverviewTitle": "Mood Overview",
+    "moodOverviewSubtitle": "Simplified mood tracking - values scaled to percentages for privacy",
+    "simplifiedMoodTag": "Simplified Mood Chart",
+    "productivityTitle": "Productivity",
+    "productivitySubtitle": "Values scaled to percentages for privacy",
+    "productivityTag": "Productivity Charts",
+    "earningsTitle": "Earnings",
+    "earningsSubtitle": "Values scaled to percentages for privacy",
+    "earningsTag": "Earnings Charts"
+  },
+  "friends": {
+    "addFriend": "Fi ọrẹ kun",
+    "sending": "Nfiránṣẹ...",
+    "checking": "Ṣàyẹ̀wò...",
+    "requestSent": "Ìbéèrè ọ̀rẹ́ ti ránṣẹ́!",
+    "failedToSend": "Kùnà láti rán ìbéèrè ọ̀rẹ́",
+    "closeFriend": "Ọrẹ́ pẹ̀lú",
+    "friends": "Àwọn ọ̀rẹ́",
+    "signInToAdd": "Wọlé láti fi ọrẹ kun"
   }
 } 

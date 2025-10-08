@@ -237,5 +237,35 @@
   "errors": {
     "notFound": "Ups! Tidak dapat menala frekuensi ini.",
     "genericError": "Sesuatu yang salah berlaku. Sila cuba lagi."
+  },
+  "publicProfile": {
+    "ctaTitle": "Start Your Own DreamPip Journey",
+    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
+    "getStarted": "Get Started"
+  },
+  "publicCharts": {
+    "noData": "No public charts data available.",
+    "moodTrackingTitle": "Mood Tracking",
+    "moodTrackingSubtitle": "Values scaled to percentages for privacy",
+    "moodChartsTag": "Mood Charts",
+    "moodOverviewTitle": "Mood Overview",
+    "moodOverviewSubtitle": "Simplified mood tracking - values scaled to percentages for privacy",
+    "simplifiedMoodTag": "Simplified Mood Chart",
+    "productivityTitle": "Productivity",
+    "productivitySubtitle": "Values scaled to percentages for privacy",
+    "productivityTag": "Productivity Charts",
+    "earningsTitle": "Earnings",
+    "earningsSubtitle": "Values scaled to percentages for privacy",
+    "earningsTag": "Earnings Charts"
+  },
+  "friends": {
+    "addFriend": "Tambah rakan",
+    "sending": "Menghantar...",
+    "checking": "Menyemak...",
+    "requestSent": "Permintaan rakan dihantar!",
+    "failedToSend": "Gagal menghantar permintaan rakan",
+    "closeFriend": "Rakan rapat",
+    "friends": "Rakan-rakan",
+    "signInToAdd": "Log masuk untuk menambah rakan"
   }
 }

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { UserPlus, Check, Loader2, Heart, Users } from 'lucide-react'
 import { toast } from 'sonner'
+import { useI18n } from '@/lib/contexts/i18n'
 
 interface AddFriendButtonProps {
   targetUserId: string
@@ -18,6 +19,7 @@ interface FriendshipStatus {
 }
 
 export function AddFriendButton({ targetUserId, className }: AddFriendButtonProps) {
+  const { t } = useI18n()
   const [isLoading, setIsLoading] = useState(false)
   const [isSent, setIsSent] = useState(false)
   const [friendshipStatus, setFriendshipStatus] = useState<FriendshipStatus | null>(null)
@@ -60,13 +62,13 @@ export function AddFriendButton({ targetUserId, className }: AddFriendButtonProp
 
       if (response.ok) {
         setIsSent(true)
-        toast.success('Friend request sent!')
+        toast.success(t('friends.requestSent'))
       } else {
-        toast.error(data.error || 'Failed to send friend request')
+        toast.error(data.error || t('friends.failedToSend'))
       }
     } catch (error) {
       console.error('Error sending friend request:', error)
-      toast.error('Failed to send friend request')
+      toast.error(t('friends.failedToSend'))
     } finally {
       setIsLoading(false)
     }
@@ -77,7 +79,7 @@ export function AddFriendButton({ targetUserId, className }: AddFriendButtonProp
     return (
       <Button disabled className={className}>
         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-        Checking...
+        {t('friends.checking')}
       </Button>
     )
   }
@@ -87,7 +89,7 @@ export function AddFriendButton({ targetUserId, className }: AddFriendButtonProp
     return (
       <Button disabled className={className} variant="outline">
         <Heart className="w-4 h-4 mr-2" />
-        Close Friend
+        {t('friends.closeFriend')}
       </Button>
     )
   }
@@ -96,7 +98,7 @@ export function AddFriendButton({ targetUserId, className }: AddFriendButtonProp
     return (
       <Button disabled className={className} variant="outline">
         <Users className="w-4 h-4 mr-2" />
-        Friends
+        {t('friends.friends')}
       </Button>
     )
   }
@@ -105,7 +107,7 @@ export function AddFriendButton({ targetUserId, className }: AddFriendButtonProp
     return (
       <Button disabled className={className}>
         <Check className="w-4 h-4 mr-2" />
-        Request Sent
+        {t('friends.requestSent')}
       </Button>
     )
   }
@@ -114,7 +116,7 @@ export function AddFriendButton({ targetUserId, className }: AddFriendButtonProp
     return (
       <Button disabled className={className}>
         <Check className="w-4 h-4 mr-2" />
-        Request Sent
+        {t('friends.requestSent')}
       </Button>
     )
   }
@@ -130,7 +132,7 @@ export function AddFriendButton({ targetUserId, className }: AddFriendButtonProp
       ) : (
         <UserPlus className="w-4 h-4 mr-2" />
       )}
-      {isLoading ? 'Sending...' : 'Add Friend'}
+      {isLoading ? t('friends.sending') : t('friends.addFriend')}
     </Button>
   )
 }

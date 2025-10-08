@@ -236,5 +236,35 @@
   "errors": {
     "notFound": "Hoppsan! Kunde inte ställa in denna frekvens.",
     "genericError": "Något gick fel. Vänligen försök igen."
+  },
+  "publicProfile": {
+    "ctaTitle": "Start Your Own DreamPip Journey",
+    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
+    "getStarted": "Get Started"
+  },
+  "publicCharts": {
+    "noData": "No public charts data available.",
+    "moodTrackingTitle": "Mood Tracking",
+    "moodTrackingSubtitle": "Values scaled to percentages for privacy",
+    "moodChartsTag": "Mood Charts",
+    "moodOverviewTitle": "Mood Overview",
+    "moodOverviewSubtitle": "Simplified mood tracking - values scaled to percentages for privacy",
+    "simplifiedMoodTag": "Simplified Mood Chart",
+    "productivityTitle": "Productivity",
+    "productivitySubtitle": "Values scaled to percentages for privacy",
+    "productivityTag": "Productivity Charts",
+    "earningsTitle": "Earnings",
+    "earningsSubtitle": "Values scaled to percentages for privacy",
+    "earningsTag": "Earnings Charts"
+  },
+  "friends": {
+    "addFriend": "Lägg till vän",
+    "sending": "Skickar...",
+    "checking": "Kontrollerar...",
+    "requestSent": "Vänförfrågan skickad!",
+    "failedToSend": "Misslyckades med att skicka vänförfrågan",
+    "closeFriend": "Nära vän",
+    "friends": "Vänner",
+    "signInToAdd": "Logga in för att lägga till vän"
   }
 }
