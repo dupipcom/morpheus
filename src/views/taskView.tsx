@@ -744,11 +744,10 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   // }
 
   return <div className="max-w-[1200px] m-auto p-4">
-    <p className="sticky top-25 truncate z-[999] text-center scroll-m-20 text-sm font-semibold tracking-tight mb-8">
-      {t('tasks.editing', { timeframe: timeframe === "day" ? date : t('tasks.weekNumber', { number: weekNumber }) })}
-      {!!earnings > 0 && ` (Ð${earnings})`}
+    <p className="sticky top-25 truncate z-[999] text-center scroll-m-20 text-sm font-semibold tracking-tight mb-8 flex items-center justify-center gap-2">
+      <span>{t('tasks.editing', { timeframe: timeframe === "day" ? date : t('tasks.weekNumber', { number: weekNumber }) })}</span>
       {ticker !== undefined && ticker !== 0 && (
-        <span className={`ml-2 inline-flex items-center gap-1 ${ticker > 0 ? 'text-success' : 'text-destructive'}`}>
+        <span className={`inline-flex items-center gap-1 ${ticker > 0 ? 'text-success' : 'text-destructive'}`}>
           {ticker > 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
           {Math.abs(ticker?.toFixed(1))}%
         </span>
