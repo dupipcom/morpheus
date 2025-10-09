@@ -167,7 +167,7 @@ export function ContactCombobox({
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-full p-0">
-          <Command>
+          <Command shouldFilter={false}>
             <CommandInput
               placeholder="Search contacts..."
               className="h-9"

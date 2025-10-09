@@ -173,6 +173,19 @@ export const useInactivityTimer = ({
 
     // Set login time on first initialization
     setLoginTime();
+    
+    // For fresh logins, also update server lastLogin
+    const localLoginTime = getLoginTime();
+    if (localLoginTime) {
+      try {
+        fetch('/api/v1/user', {
+          method: 'POST',
+          body: JSON.stringify({ lastLogin: true }),
+          cache: 'no-store'
+        });
+      } catch {}
+    }
+    
     isInitializedRef.current = true;
     
     // Debug log to track initialization

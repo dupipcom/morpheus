@@ -434,7 +434,29 @@ export const handleSessionExpirationOnLoad = async (
   onLogout?: () => void
 ): Promise<void> => {
   try {
-    // Prefer server truth: fetch user.lastLogin from API
+    // Check if this is a fresh login (no local login time but user is authenticated)
+    const localLoginTime = getLoginTime();
+    const isFreshLogin = localLoginTime === null;
+    
+    // For fresh logins, set lastLogin immediately and be lenient
+    if (isFreshLogin) {
+      logger('fresh_login_detected', 'Fresh login detected, setting lastLogin and being lenient');
+      setLoginTime();
+      
+      // Update server lastLogin immediately for fresh logins
+      try {
+        await fetch('/api/v1/user', {
+          method: 'POST',
+          body: JSON.stringify({ lastLogin: true }),
+          cache: 'no-store'
+        });
+      } catch (e) {
+        logger('fresh_login_server_update_failed', `Failed to update server lastLogin: ${e}`);
+      }
+      return; // Don't check expiration for fresh logins
+    }
+
+    // For existing sessions, check server lastLogin
     try {
       const response = await fetch('/api/v1/user', { method: 'GET', cache: 'no-store' });
       if (response.ok) {
