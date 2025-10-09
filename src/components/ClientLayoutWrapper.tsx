@@ -19,57 +19,10 @@ interface ClientLayoutWrapperProps {
 }
 
 export default function ClientLayoutWrapper({ children, locale }: ClientLayoutWrapperProps) {
-  const [isLoading, setIsLoading] = useState(true)
-  const [value, setValue, removeValue] = useLocalStorage('theme', 'light')
-  const [globalContext, setGlobalContext] = useState({ theme: 'light', session: { user: {} } })
-  const [isClient, setIsClient] = useState(false)
-
-  // Check if cookie locale differs from URL locale and redirect if needed
-  useEffect(() => {
-    const cookieLocale = getLocaleCookie()
-    if (cookieLocale && cookieLocale !== locale) {
-      const currentPath = window.location.pathname
-      const newPath = currentPath.replace(`/${locale}`, `/${cookieLocale}`)
-      window.location.pathname = newPath
-    }
-  }, [locale])
-
-  const handleThemeChange = () => {
-    if (globalContext.theme === 'light') {
-      setGlobalContext({...globalContext, theme: 'dark'})
-      setValue('dark')
-    } else {
-      setGlobalContext({...globalContext, theme: 'light'})
-      setValue('light')
-    }
-  }
-
-  // Set client flag on mount
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
-
-  // Update theme from localStorage once client is ready
-  useEffect(() => {
-    if (isClient && value) {
-      setGlobalContext(prev => ({ ...prev, theme: value }))
-      setIsLoading(false)
-    }
-  }, [isClient, value])
-
+  // Deprecated: Root provider moved to src/app/layout.tsx
   return (
     <I18nProvider locale={locale}>
-      <AuthWrapper isLoading={isLoading}>
-        <GlobalContext.Provider value={{ ...globalContext, setGlobalContext }}>
-          <Nav subHeader="" onThemeChange={handleThemeChange} />
-          <article className="p-2 md:p-8"> 
-              <AppContent>{children}</AppContent>
-          </article>
-          <Footer />
-          <AuthToast />
-        </GlobalContext.Provider>
-      </AuthWrapper>
-      <Toaster />
+      {children}
     </I18nProvider>
   )
 }

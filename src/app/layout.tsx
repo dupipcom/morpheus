@@ -29,6 +29,7 @@ import { getLocaleFromPath } from './helpers'
 import { defaultLocale } from './constants'
 import { getLocaleCookie } from '@/lib/localeUtils'
 import { getClerkLocalization } from '@/lib/clerkLocalization'
+import { SWRConfig } from 'swr'
 
 
 const comfortaa = Comfortaa({
@@ -89,6 +90,8 @@ export default function RootLayout({
     setIsClient(true)
   }, [])
 
+  // removed debug log
+
   // Update theme from localStorage once client is ready
   useEffect(() => {
     if (isClient && value) {
@@ -118,11 +121,19 @@ export default function RootLayout({
             <I18nProvider locale={locale}>
               <GlobalContext.Provider value={{ ...globalContext, setGlobalContext }}>
 
-                <article className="">
-                  <div>
+                <SWRConfig value={{
+                  revalidateOnFocus: false,
+                  revalidateOnReconnect: false,
+                  shouldRetryOnError: false,
+                  dedupingInterval: 15000,
+                }}>
+                  <article className="">
+                    <div>
+                      <Nav subHeader="" onThemeChange={handleThemeChange} />
                       <AppContent>{children}</AppContent>
-                  </div>
-                </article>
+                    </div>
+                  </article>
+                </SWRConfig>
                 <AuthToast />
               </GlobalContext.Provider>
             </I18nProvider>

@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/carousel"
 import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
-import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil, handleMoodSubmit, isUserDataReady, useEnhancedLoadingState } from "@/lib/userUtils"
+import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil, handleMoodSubmit, isUserDataReady, useEnhancedLoadingState, useUserData } from "@/lib/userUtils"
 import { MoodViewSkeleton } from "@/components/ui/skeleton-loader"
 import { ContentLoadingWrapper } from '@/components/ContentLoadingWrapper'
 import { ContactCombobox } from "@/components/ui/contact-combobox"
@@ -306,14 +306,16 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
     setFullDay(date)
   }
 
+  const { refreshUser } = useUserData()
+
   const handleCloseDates = async (values) => {
     await handleCloseDatesUtil(values, undefined, fullDay)
-    await updateUser(session, setGlobalContext, { session, theme })
+    await refreshUser()
   }
 
  
   useEffect(() => {
-    updateUser(session, setGlobalContext, { session, theme })
+    // Only fetch hint; skip user refresh here to avoid duplicate GETs
     generateInsight(setInsight, 'test', locale)
   }, [locale])
 

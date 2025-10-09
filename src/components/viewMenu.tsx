@@ -15,7 +15,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 import useSWR from "swr"
 import { fetcher } from "@/lib/utils"
-import { updateUser, isUserDataReady, useEnhancedLoadingState } from "@/lib/userUtils"
+import { updateUser, isUserDataReady, useEnhancedLoadingState, useUserData } from "@/lib/userUtils"
 
 import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
@@ -32,17 +32,18 @@ export const ViewMenu = ({ active }: { active: string }) =>{
   const [value, setValue, removeValue] = useLocalStorage('redacted', 0);
   const [hiddenBalance, setHiddenBalance] = useState(true)
 
-  const { data, mutate, error, isLoading } = useSWR(
-    session?.user ? `/api/user` : null, 
-    () => updateUser(session, setGlobalContext, { session, theme })
-  )
+  const { isLoading, refreshUser } = useUserData()
 
   const handleBalanceChange = (e: React.FocusEvent<HTMLInputElement>) => {
     fetch('/api/v1/user', { method: 'POST', body: JSON.stringify({
       availableBalance: e.currentTarget.value,
       date: new Date()
     }) })
-    setTimeout(() => updateUser(session, setGlobalContext, { session, theme }), 2000)
+    setTimeout(() => {
+      if (session?.user) {
+        refreshUser()
+      }
+    }, 1500)
   }
 
   const handleHideBalance = () => {
@@ -50,9 +51,7 @@ export const ViewMenu = ({ active }: { active: string }) =>{
     setValue(!value ? 1 : 0)
   }
 
-  useEffect(() => {
-    updateUser(session, setGlobalContext, { session, theme })
-  }, [])
+  // No on-mount refresh; SWR fetches once and dedupes across components
 
   // Use enhanced loading state to prevent flashing
   const isDataLoading = useEnhancedLoadingState(isLoading, session)

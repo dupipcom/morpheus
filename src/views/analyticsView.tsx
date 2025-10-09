@@ -19,7 +19,7 @@ import { getWeekNumber } from "@/app/helpers"
 
 import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
-import { generateInsight, updateUser, handleMoodSubmit } from "@/lib/userUtils"
+import { generateInsight, updateUser, handleMoodSubmit, useHint, useUserData, useEnhancedLoadingState } from "@/lib/userUtils"
 import { AnalyticsViewSkeleton } from "@/components/ui/skeleton-loader"
 import { ContentLoadingWrapper } from '@/components/ContentLoadingWrapper'
 import { AgentChat } from "@/components/agent-chat"
@@ -157,9 +157,10 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
   const { session, setGlobalContext, ...globalContext } = useContext(GlobalContext)
   const { t, locale } = useI18n()
   const { isAgentChatEnabled } = useFeatureFlag()
+  const { isLoading } = useUserData()
   
   // Type guard to ensure session.user has the expected structure
-  const user = session?.user as any;
+  const user = useMemo(() => session?.user as any, [session?.user])
   
   // Message history state
   const [currentText, setCurrentText] = useState("")
@@ -175,12 +176,11 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
   // Get user entries for authentication check
   const userEntries = user?.entries;
   
+  // Use shared hint hook and update local state when data changes
+  const { data: hintData } = useHint(locale, 'hint')
   useEffect(() => {
-    // Only generate insights if user is properly authenticated
-    if (user?.id && userEntries) {
-      generateInsight(setInsight, 'hint', locale)
-    }
-  }, [locale, user?.id, userEntries])
+    if (hintData) setInsight(hintData as any)
+  }, [hintData])
 
   // Initialize currentText from serverText
   useEffect(() => {
@@ -205,8 +205,14 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
     setMoneyChartDimensions(prev => ({ ...prev, [dimension]: visible }))
   }
 
+  // Loading gate while initial user fetch populates GlobalContext
+  const isDataLoading = useEnhancedLoadingState(isLoading as any, (session as any))
+  if (isDataLoading) {
+    return <AnalyticsViewSkeleton />
+  }
+
   // Check if user is properly authenticated and session is valid
-  if (!user || !user?.id || Object.keys(user).length === 0) {
+  if (!user || !user?.userId || Object.keys(user).length === 0) {
     return <AnalyticsViewSkeleton />
   }
 

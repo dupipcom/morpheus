@@ -1,6 +1,7 @@
 import { GlobalContext } from './contexts'
 import { logger } from './logger'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo, useContext } from 'react'
+import useSWR from 'swr'
 
 /**
  * Checks if user data is fully loaded and ready to display
@@ -13,34 +14,19 @@ export const isUserDataReady = (session: any, timeframe?: string): boolean => {
     return false
   }
 
-  // Check if essential user data is available
-  const hasEntries = !!session.user.entries
-  const hasSettings = !!session.user.settings
-  const hasAvailableBalance = session.user.availableBalance !== undefined
-
-  // Additional checks for specific data structures
-  const hasValidEntries = hasEntries && typeof session.user.entries === 'object'
-  const hasValidSettings = hasSettings && typeof session.user.settings === 'object'
-
-  // Basic validation
-  if (!hasValidEntries || !hasValidSettings || !hasAvailableBalance) {
-    return false
-  }
+  // Consider user ready when authenticated and basic containers exist;
+  // do not block on optional fields like availableBalance
+  const hasValidEntries = session.user.entries === undefined || typeof session.user.entries === 'object'
+  const hasValidSettings = session.user.settings === undefined || typeof session.user.settings === 'object'
+  if (!hasValidEntries || !hasValidSettings) return false
 
   // Timeframe-specific validation
   if (timeframe === 'week') {
-    // For week view, ensure weeks data structure exists and is properly initialized
-    const currentYear = new Date().getFullYear()
-    const hasWeeksData = !!session.user.entries[currentYear]?.weeks
-    const hasWeeklyTemplate = !!session.user.settings?.weeklyTemplate
-    return hasWeeksData && hasWeeklyTemplate
+    // Be lenient: as long as structures (if present) are objects, allow render
+    return true
   } else if (timeframe === 'day') {
-    // For day view, ensure days data structure exists and is properly initialized
-    const currentYear = new Date().getFullYear()
-    const currentDate = new Date().toISOString().split('T')[0]
-    const hasDaysData = !!session.user.entries[currentYear]?.days
-    const hasDailyTemplate = !!session.user.settings?.dailyTemplate
-    return hasDaysData && hasDailyTemplate
+    // Be lenient for day as well
+    return true
   }
 
   return true
@@ -91,10 +77,8 @@ export const useEnhancedLoadingState = (
  * @param globalContext - Current global context object
  */
 export const updateUser = async (
-  session: any,
-  setGlobalContext: (context: any) => void,
-  globalContext: any
 ) => {
+  const { session, setGlobalContext, theme } = useContext(GlobalContext)
   // Check if session has a valid user before making API call
   if (!session?.user) {
     logger('update_user_skip', 'No valid session user found, skipping updateUser')
@@ -111,16 +95,68 @@ export const updateUser = async (
     }
     
     const updatedUser = await response.json()
-    
+
     // Only update context if we got valid user data
     if (updatedUser && !updatedUser.error) {
-      setGlobalContext({...globalContext, session: { ...session, user: updatedUser } })
+      setGlobalContext({
+        theme,
+        session: {
+          ...session,
+          user: updatedUser,
+        },
+      })
     } else {
       logger('update_user_invalid_data', `Invalid user data received: ${JSON.stringify(updatedUser)}`)
     }
   } catch (e) {
     logger('update_user_exception', `Error updating user: ${e}`)
   }
+}
+
+/**
+ * SWR hook to fetch user data once and expose a refresh method for post-update revalidation
+ * Ensures deduped fetch across components and no auto revalidation on focus/reconnect
+ */
+export const useUserData = (
+  enabled: boolean = true,
+) => {
+  const { session, setGlobalContext, theme } = useContext(GlobalContext)
+  const fetchUser = async () => {
+    const response = await fetch('/api/v1/user', { method: 'GET' })
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(`Failed to fetch user: ${JSON.stringify(errorData)}`)
+    }
+    return response.json()
+  }
+
+  const swr = useSWR(enabled ? '/api/v1/user' : null, fetchUser, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    shouldRetryOnError: false,
+    dedupingInterval: 1000,
+    onSuccess: (updatedUser: any) => {
+      if (updatedUser && !updatedUser.error) {
+        setGlobalContext({
+          theme,
+          session: {
+            ...session,
+            user: updatedUser,
+          },
+        })
+      }
+    },
+  })
+
+  const refreshUser = useMemo(() => async () => {
+    try {
+      await swr.mutate()
+    } catch (e) {
+      logger('user_refresh_error', String(e))
+    }
+  }, [swr])
+
+  return { ...swr, refreshUser }
 }
 
 /**
@@ -148,6 +184,47 @@ export const generateInsight = async (
   } catch (e) {
     setInsight(JSON.parse(JSON.stringify(json.result)))
   }
+}
+
+/**
+ * SWR hook to fetch insights once per locale; provides manual refresh
+ * Default cache: one day via API route revalidation; no auto revalidate on focus
+ */
+export const useHint = (locale: string = 'en', cacheTag: string = 'hint') => {
+  const fetchHint = async () => {
+    const response = await fetch(`/api/v1/hint?locale=${locale}`, {
+      method: 'GET',
+      cache: 'force-cache',
+      next: { revalidate: 86400, tags: [cacheTag] },
+    })
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(`Failed to fetch hint: ${JSON.stringify(errorData)}`)
+    }
+    const json = await response.json()
+    try {
+      return JSON.parse(json.result)
+    } catch (e) {
+      return JSON.parse(JSON.stringify(json.result))
+    }
+  }
+
+  const swr = useSWR(`/api/v1/hint?locale=${locale}`, fetchHint, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    shouldRetryOnError: false,
+    dedupingInterval: 86400 * 1000,
+  })
+
+  const refreshHint = useMemo(() => async () => {
+    try {
+      await swr.mutate()
+    } catch (e) {
+      logger('hint_refresh_error', String(e))
+    }
+  }, [swr])
+
+  return { ...swr, refreshHint }
 }
 
 /**
