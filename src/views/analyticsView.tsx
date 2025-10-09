@@ -311,17 +311,22 @@ const aggregateDataByWeek = (dailyData: any[]) => {
         return acc
       }
       
-      // Coerce all mood values to numbers before validation
-      const numericMoodValues = Object.values(cur.mood)
-        .map((val) => Number(val))
-        .filter((val) => !Number.isNaN(val))
-      const noMood = numericMoodValues.length === 0 || numericMoodValues.every((value) => value === 0)
+      // Determine if the entire mood set is zero; only drop the day if all six are zero
+      const moodKeys = ['gratitude', 'optimism', 'restedness', 'tolerance', 'selfEsteem', 'trust'] as const
+      const numericMoodValues = moodKeys.map((k) => Number((cur.mood as any)?.[k]) || 0)
+      const noMood = numericMoodValues.every((value) => value === 0)
       if (noMood) {
         return acc
       }
       
-      // Safe calculations with null checks
-      const moodAverage = cur.moodAverage && !isNaN(cur.moodAverage) ? cur.moodAverage : 0
+      // Recalculate mood average from all mood dimensions to ensure correctness
+      // Include zeros for missing dimensions; only ignore the day if all are zero (handled earlier)
+      const moodAverage = (() => {
+        const keys = ['gratitude', 'optimism', 'restedness', 'tolerance', 'selfEsteem', 'trust'] as const
+        const values = keys.map((k) => Number((cur.mood as any)?.[k]) || 0)
+        const sum = values.reduce((acc: number, val: number) => acc + val, 0)
+        return sum / keys.length
+      })()
       const progress = cur.progress && !isNaN(cur.progress) ? cur.progress : 0
       const earnings = cur.earnings && !isNaN(Number(cur.earnings)) ? Number(cur.earnings) : 0
       
@@ -369,8 +374,11 @@ const aggregateDataByWeek = (dailyData: any[]) => {
           const daysWithMood = weekDays.filter((day: any) => day.mood && typeof day.mood === 'object')
           if (daysWithMood.length > 0) {
             const moodValues = daysWithMood.map((day: any) => {
-              const values = Object.values(day.mood).filter(val => val !== null && val !== undefined && !isNaN(val) && val !== 0)
-              return values.length > 0 ? values.reduce((sum: number, val: any) => sum + Number(val), 0) / values.length : 0
+              // Average across all six dimensions including zeros
+              const keys = ['gratitude', 'optimism', 'restedness', 'tolerance', 'selfEsteem', 'trust'] as const
+              const values = keys.map((k) => Number(day.mood?.[k]) || 0)
+              const sum = values.reduce((sum: number, val: number) => sum + val, 0)
+              return sum / keys.length
             }).filter(val => val > 0)
             
             if (moodValues.length > 0) {
@@ -434,7 +442,7 @@ const aggregateDataByWeek = (dailyData: any[]) => {
         <AreaChart data={plotDataWeekly} accessibilityLayer>
           <CartesianGrid vertical={true} horizontal={true} />
           {moodChartDimensions.moodAverage && (
-            <Area stackId="2" type="monotone" dataKey="moodAverage" stroke="#cffcdf" fill={"#cffcdf"} radius={4} fillOpacity={0.4} />
+            <Area stackId="1" type="monotone" dataKey="moodAverage" stroke="#cffcdf" fill={"#cffcdf"} radius={4} fillOpacity={0.4} />
           )}
           {moodChartDimensions.gratitude && (
             <Area stackId="1" type="monotone" dataKey="gratitude" stroke="#6565cc" fill="#6565cc" radius={4} fillOpacity={0.4} />
@@ -461,7 +469,7 @@ const aggregateDataByWeek = (dailyData: any[]) => {
             axisLine={true}
           />
           <ChartTooltip content={<ChartTooltipContent />} />
-          <ChartLegend verticalAlign="top" content={<ChartLegendContent />} />
+          <ChartLegend verticalAlign="top" content={<ChartLegendContent payload={[]} />} />
         </AreaChart>
       </ChartContainer>
 
@@ -488,7 +496,7 @@ const aggregateDataByWeek = (dailyData: any[]) => {
             tickMargin={5}
             axisLine={true}
           />
-          <ChartLegend verticalAlign="top" content={<ChartLegendContent />} />
+          <ChartLegend verticalAlign="top" content={<ChartLegendContent payload={[]} />} />
         </AreaChart>
       </ChartContainer>
 
@@ -517,13 +525,13 @@ const aggregateDataByWeek = (dailyData: any[]) => {
             tickMargin={5}
             axisLine={true}
           />
-          <ChartLegend verticalAlign="top" content={<ChartLegendContent />}  />
+          <ChartLegend verticalAlign="top" content={<ChartLegendContent payload={[]} />}  />
         </AreaChart>
       </ChartContainer>
 
       <h2 className="mb-8 mt-16 text-center scroll-m-20 text-lg font-semibold tracking-tight">{t('dashboard.yourData')}</h2>
 
-      <EarningsTable data={plotData} />
+      <EarningsTable data={plotData as any} />
       </div>
     </ContentLoadingWrapper>
   )
