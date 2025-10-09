@@ -103,10 +103,12 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
   }, [JSON.stringify(session), date])
 
   const [mood, setMood] = useState(serverMood)
+  const [pendingMoodChanges, setPendingMoodChanges] = useState({})
 
   // Update mood state when serverMood changes (due to date change)
   useEffect(() => {
     setMood(serverMood)
+    setPendingMoodChanges({})
   }, [serverMood])
 
     useEffect(() => {
@@ -188,15 +190,28 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
     // The session will be updated naturally when the user navigates or refreshes
   }, 3000)
 
-  // Create debounced version that preserves text when updating mood sliders
-  const debouncedHandleSubmitWithText = useDebounce(async (value, field) => {
-    const updatedMood = {...mood, [field]: value}
-    setMood(updatedMood)
-    // Include current text value, mood contacts, things, life events and updated mood state when saving mood data
-    await handleMoodSubmit(value, field, fullDay, moodContacts, moodThings, currentText, updatedMood, moodLifeEvents)
+  // Create a single debounced function that aggregates all mood changes
+  const debouncedMoodUpdate = useDebounce(async () => {
+    // Aggregate all pending changes with current mood state
+    const aggregatedMood = {...mood, ...pendingMoodChanges}
+    setMood(aggregatedMood)
+    setPendingMoodChanges({})
+    
+    // Send the aggregated mood data to the server
+    await handleMoodSubmit(null, 'mood', fullDay, moodContacts, moodThings, currentText, aggregatedMood, moodLifeEvents)
     // Don't call updateUser immediately to avoid clearing mood contacts/things/life events
     // The session will be updated naturally when the user navigates or refreshes
   }, 3000)
+
+  // Function to handle individual slider changes
+  const handleMoodSliderChange = (field, value) => {
+    // Update the pending changes
+    setPendingMoodChanges(prev => ({...prev, [field]: value}))
+    // Update the local mood state for immediate UI feedback
+    setMood(prev => ({...prev, [field]: value}))
+    // Trigger the debounced update
+    debouncedMoodUpdate()
+  }
 
   // Create debounced version of handleSubmit for text input
   const debouncedHandleTextSubmit = useDebounce(async (value, field) => {
@@ -357,32 +372,32 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
         <h3 className="mt-8 mb-4">{t('charts.gratitude')}</h3>
         <small>{insight?.gratitudeAnalysis}</small>
       </div>
-      <Slider className="mb-24" defaultValue={[serverMood.gratitude || 0]} max={5} step={0.5} onValueChange={(e) => debouncedHandleSubmitWithText(e[0], "gratitude")} />
+      <Slider className="mb-24" defaultValue={[serverMood.gratitude || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("gratitude", e[0])} />
       <div className="my-12">
         <h3 className="mt-8 mb-4">{t('charts.optimism')}</h3>
         <small>{insight?.optimismAnalysis}</small>
       </div>
-      <Slider className="mb-24" defaultValue={[serverMood.optimism || 0]} max={5} step={0.5} onValueChange={(e) => debouncedHandleSubmitWithText(e[0], "optimism")} />
+      <Slider className="mb-24" defaultValue={[serverMood.optimism || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("optimism", e[0])} />
       <div className="my-12">
         <h3 className="mt-8 mb-4">{t('charts.restedness')}</h3>
         <small>{insight?.restednessAnalysis}</small>
       </div>
-      <Slider className="mb-24" defaultValue={[serverMood.restedness || 0]} max={5} step={0.5} onValueChange={(e) => debouncedHandleSubmitWithText(e[0], "restedness")} />
+      <Slider className="mb-24" defaultValue={[serverMood.restedness || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("restedness", e[0])} />
       <div className="my-12">
         <h3 className="mt-8 mb-4">{t('charts.tolerance')}</h3>
         <small>{insight?.toleranceAnalysis}</small>
       </div>
-      <Slider className="mb-24" defaultValue={[serverMood.tolerance || 0]} max={5} step={0.5} onValueChange={(e) => debouncedHandleSubmitWithText(e[0], "tolerance")} />
+      <Slider className="mb-24" defaultValue={[serverMood.tolerance || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("tolerance", e[0])} />
       <div className="my-12">
         <h3 className="mb-4">{t('charts.selfEsteem')}</h3>
         <small>{insight?.selfEsteemAnalysis}</small>
       </div>
-      <Slider className="mb-24" defaultValue={[serverMood.selfEsteem || 0]} max={5} step={0.5} onValueChange={(e) => debouncedHandleSubmitWithText(e[0], "selfEsteem")} />
+      <Slider className="mb-24" defaultValue={[serverMood.selfEsteem || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("selfEsteem", e[0])} />
       <div className="my-12">
         <h3 className="mt-8 mb-4">{t('charts.trust')}</h3>
         <small>{insight?.trustAnalysis}</small>
       </div>
-      <Slider className="mb-24" defaultValue={[serverMood?.trust || 0]} max={5} step={0.5} onValueChange={(e) => debouncedHandleSubmitWithText(e[0], "trust")} />
+      <Slider className="mb-24" defaultValue={[serverMood?.trust || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("trust", e[0])} />
       </div>
 
       {/* Life Events Management for Mood */}
