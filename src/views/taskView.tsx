@@ -77,6 +77,8 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const [currentText, setCurrentText] = useState(serverText)
   const [taskContacts, setTaskContacts] = useState({})
   const [taskThings, setTaskThings] = useState({})
+  const [optimisticTaskContacts, setOptimisticTaskContacts] = useState({})
+  const [optimisticTaskThings, setOptimisticTaskThings] = useState({})
   const [favorites, setFavorites] = useState(new Set())
   const [optimisticFavorites, setOptimisticFavorites] = useState(new Set())
   const [ephemeralTasks, setEphemeralTasks] = useState([])
@@ -92,6 +94,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     }
     return []
   }, [session?.user?.entries, year, date, weekNumber, timeframe])
+
   const { isAgentChatEnabled } = useFeatureFlag()
   const agentConversation = session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks && session?.user?.entries[year]?.weeks[weekNumber] && session?.user?.entries[year]?.weeks[weekNumber].agentConversation
   const reverseMessages = useMemo (() => agentConversation?.length ? agentConversation.sort((a,b) => new Date(a.timestamp).getTime() > new Date(b.timestamp).getTime() ? 1 : -1) : [], [JSON.stringify(session?.user)])
@@ -151,23 +154,26 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
 
   const userDone = useMemo(() => userTasks?.filter((task) => task.status === "Done").map((task) => task.name), [userTasks])
 
-  // Load existing task contacts from database
+  // Load existing task contacts and things from database
   useEffect(() => {
-    if (userTasks && userTasks.length > 0) {
-      const existingTaskContacts = {}
-      const existingTaskThings = {}
-      userTasks.forEach(task => {
-        if (task.contacts && task.contacts.length > 0) {
-          existingTaskContacts[task.name] = task.contacts
-        }
-        if (task.things && task.things.length > 0) {
-          existingTaskThings[task.name] = task.things
-        }
-      })
-      setTaskContacts(existingTaskContacts)
-      setTaskThings(existingTaskThings)
+    if (timeframe === 'day') {
+      const dayEntry = session?.user?.entries?.[year]?.days?.[date]
+      if (dayEntry) {
+        setTaskContacts(dayEntry.taskContacts || {})
+        setTaskThings(dayEntry.taskThings || {})
+        setOptimisticTaskContacts(dayEntry.taskContacts || {})
+        setOptimisticTaskThings(dayEntry.taskThings || {})
+      }
+    } else if (timeframe === 'week') {
+      const weekEntry = session?.user?.entries?.[year]?.weeks?.[weekNumber]
+      if (weekEntry) {
+        setTaskContacts(weekEntry.taskContacts || {})
+        setTaskThings(weekEntry.taskThings || {})
+        setOptimisticTaskContacts(weekEntry.taskContacts || {})
+        setOptimisticTaskThings(weekEntry.taskThings || {})
+      }
     }
-  }, [userTasks])
+  }, [session?.user?.entries, year, date, weekNumber, timeframe])
 
   // Load favorites from user settings
   useEffect(() => {
@@ -510,9 +516,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
         method: 'POST',
         body: JSON.stringify(payload)
       })
-      if (response.ok) {
-        await refreshUser()
-      } else {
+      if (!response.ok) {
         console.error('Failed to save task contacts:', response.status, response.statusText)
       }
     } catch (error) {
@@ -538,9 +542,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
         method: 'POST',
         body: JSON.stringify(payload)
       })
-      if (response.ok) {
-        await refreshUser()
-      } else {
+      if (!response.ok) {
         console.error('Failed to save task things:', response.status, response.statusText)
       }
     } catch (error) {
@@ -888,8 +890,8 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
           
           <ToggleGroup value={values} onValueChange={handleDoneWithDebounce} variant="outline" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 align-center justify-center w-full m-auto" type="multiple" orientation="horizontal">
       {castActions?.map((action) => {
-        const taskContactRefs = taskContacts[action.name] || []
-        const taskThingRefs = taskThings[action.name] || []
+        const taskContactRefs = optimisticTaskContacts[action.name] || []
+        const taskThingRefs = optimisticTaskThings[action.name] || []
         return (
           <div key={`task__item--${action.name}`} className="flex flex-col items-center m-1">
             <div className="relative w-full">
@@ -953,6 +955,11 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                           contacts={contacts}
                           selectedContacts={taskContactRefs}
                           onContactsChange={(newContacts) => {
+                            // Update both optimistic and server state
+                            setOptimisticTaskContacts(prev => ({
+                              ...prev,
+                              [action.name]: newContacts
+                            }))
                             setTaskContacts(prev => ({
                               ...prev,
                               [action.name]: newContacts
@@ -985,6 +992,12 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                                       ? { ...c, interactionQuality: value[0] }
                                       : c
                                   )
+                                  // Optimistic update for immediate UI response
+                                  setOptimisticTaskContacts(prev => ({
+                                    ...prev,
+                                    [action.name]: updatedContacts
+                                  }))
+                                  // Also update the server state
                                   setTaskContacts(prev => ({
                                     ...prev,
                                     [action.name]: updatedContacts
@@ -1028,6 +1041,11 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                           things={things}
                           selectedThings={taskThingRefs}
                           onThingsChange={(newThings) => {
+                            // Update both optimistic and server state
+                            setOptimisticTaskThings(prev => ({
+                              ...prev,
+                              [action.name]: newThings
+                            }))
                             setTaskThings(prev => ({
                               ...prev,
                               [action.name]: newThings
@@ -1060,6 +1078,12 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                                       ? { ...t, interactionQuality: value[0] }
                                       : t
                                   )
+                                  // Optimistic update for immediate UI response
+                                  setOptimisticTaskThings(prev => ({
+                                    ...prev,
+                                    [action.name]: updatedThings
+                                  }))
+                                  // Also update the server state
                                   setTaskThings(prev => ({
                                     ...prev,
                                     [action.name]: updatedThings
@@ -1104,6 +1128,11 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                       onClick={(e) => {
                         e.stopPropagation()
                         const updatedContacts = taskContacts[action.name].filter(c => c.id !== contact.id)
+                        // Update both optimistic and server state
+                        setOptimisticTaskContacts(prev => ({
+                          ...prev,
+                          [action.name]: updatedContacts
+                        }))
                         setTaskContacts(prev => ({
                           ...prev,
                           [action.name]: updatedContacts
@@ -1141,6 +1170,11 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                       onClick={(e) => {
                         e.stopPropagation()
                         const updatedThings = taskThings[action.name].filter(t => t.id !== thing.id)
+                        // Update both optimistic and server state
+                        setOptimisticTaskThings(prev => ({
+                          ...prev,
+                          [action.name]: updatedThings
+                        }))
                         setTaskThings(prev => ({
                           ...prev,
                           [action.name]: updatedThings

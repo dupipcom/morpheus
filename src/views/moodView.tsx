@@ -72,17 +72,23 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
   const [moodContacts, setMoodContacts] = useState<any[]>([])
   const [moodThings, setMoodThings] = useState<any[]>([])
   const [moodLifeEvents, setMoodLifeEvents] = useState<any[]>([])
+  const [optimisticMoodContacts, setOptimisticMoodContacts] = useState<any[]>([])
+  const [optimisticMoodThings, setOptimisticMoodThings] = useState<any[]>([])
   const [newLifeEventText, setNewLifeEventText] = useState('')
   const [currentText, setCurrentText] = useState(serverText)
 
   // Initialize mood contacts from server data
   useEffect(() => {
-    setMoodContacts(serverMoodContacts || [])
+    const contacts = serverMoodContacts || []
+    setMoodContacts(contacts)
+    setOptimisticMoodContacts(contacts)
   }, [serverMoodContacts])
 
   // Initialize mood things from server data
   useEffect(() => {
-    setMoodThings(serverMoodThings || [])
+    const things = serverMoodThings || []
+    setMoodThings(things)
+    setOptimisticMoodThings(things)
   }, [serverMoodThings])
 
   // Initialize mood life events from server data
@@ -210,6 +216,8 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
 
   // Create debounced version of handleMoodContactsChange for contact interaction sliders
   const debouncedHandleMoodContactsChange = useDebounce(async (newMoodContacts) => {
+    // Update both optimistic and server state
+    setOptimisticMoodContacts(newMoodContacts)
     setMoodContacts(newMoodContacts)
     // Save mood contacts to database immediately when they change
     await handleMoodSubmit(null, 'contacts', fullDay, newMoodContacts, moodThings, undefined, mood, moodLifeEvents)
@@ -218,6 +226,8 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
   }, 500)
 
   const handleMoodContactsChange = async (newMoodContacts) => {
+    // Update both optimistic and server state
+    setOptimisticMoodContacts(newMoodContacts)
     setMoodContacts(newMoodContacts)
     // Save mood contacts to database immediately when they change
     await handleMoodSubmit(null, 'contacts', fullDay, newMoodContacts, moodThings, undefined, mood, moodLifeEvents)
@@ -227,6 +237,8 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
 
   // Create debounced version of handleMoodThingsChange for thing interaction sliders
   const debouncedHandleMoodThingsChange = useDebounce(async (newMoodThings) => {
+    // Update both optimistic and server state
+    setOptimisticMoodThings(newMoodThings)
     setMoodThings(newMoodThings)
     // Save mood things to database immediately when they change
     await handleMoodSubmit(null, 'things', fullDay, moodContacts, newMoodThings, undefined, mood, moodLifeEvents)
@@ -235,6 +247,8 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
   }, 500)
 
   const handleMoodThingsChange = async (newMoodThings) => {
+    // Update both optimistic and server state
+    setOptimisticMoodThings(newMoodThings)
     setMoodThings(newMoodThings)
     // Save mood things to database immediately when they change
     await handleMoodSubmit(null, 'things', fullDay, moodContacts, newMoodThings, undefined, mood, moodLifeEvents)
@@ -435,10 +449,10 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
         )}
         
         {/* Interaction Quality Sliders for Selected Contacts */}
-        {moodContacts.length > 0 && (
+        {optimisticMoodContacts.length > 0 && (
           <div className="mt-6 space-y-4">
             <h4 className="text-sm font-medium text-muted-foreground">{t('social.interactionQualityRatings')}</h4>
-            {moodContacts.map((contact) => (
+            {optimisticMoodContacts.map((contact) => (
               <div key={contact.id} className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium">{contact.name}</span>
@@ -447,11 +461,14 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
                 <Slider
                   value={[contact.interactionQuality || 3]}
                   onValueChange={(value) => {
-                    const updatedContacts = moodContacts.map(c => 
+                    const updatedContacts = optimisticMoodContacts.map(c => 
                       c.id === contact.id 
                         ? { ...c, interactionQuality: value[0] }
                         : c
                     )
+                    // Optimistic update for immediate UI response
+                    setOptimisticMoodContacts(updatedContacts)
+                    // Also update the server state
                     setMoodContacts(updatedContacts)
                     // Use debounced handler to save to database
                     debouncedHandleMoodContactsChange(updatedContacts)
@@ -483,10 +500,10 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
         )}
         
         {/* Interaction Quality Sliders for Selected Things */}
-        {moodThings.length > 0 && (
+        {optimisticMoodThings.length > 0 && (
           <div className="mt-6 space-y-4">
             <h4 className="text-sm font-medium text-muted-foreground">{t('social.thingsInteractionQualityRatings')}</h4>
-            {moodThings.map((thing) => (
+            {optimisticMoodThings.map((thing) => (
               <div key={thing.id} className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium">{thing.name}</span>
@@ -495,11 +512,14 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
                 <Slider
                   value={[thing.interactionQuality || 3]}
                   onValueChange={(value) => {
-                    const updatedThings = moodThings.map(t => 
+                    const updatedThings = optimisticMoodThings.map(t => 
                       t.id === thing.id 
                         ? { ...t, interactionQuality: value[0] }
                         : t
                     )
+                    // Optimistic update for immediate UI response
+                    setOptimisticMoodThings(updatedThings)
+                    // Also update the server state
                     setMoodThings(updatedThings)
                     // Use debounced handler to save to database
                     debouncedHandleMoodThingsChange(updatedThings)
