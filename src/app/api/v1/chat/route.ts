@@ -127,7 +127,7 @@ export async function POST(req: NextRequest) {
     //   max_completion_tokens: 25000
     // });
 
-    if(!user.entries[year].weeks[weekNumber].messages) {
+    if(!user.entries[year].weeks[weekNumber].agentConversation) {
       await prisma.user.update({
         data: {
           entries: { 
@@ -138,7 +138,7 @@ export async function POST(req: NextRequest) {
                 ...user?.entries[year].weeks, 
                 [weekNumber]: { 
                   ...user?.entries[year].weeks[weekNumber], 
-                  messages: [],
+                  agentConversation: [],
                 }
               }
             }
@@ -170,7 +170,7 @@ export async function POST(req: NextRequest) {
                 ...user?.entries[year].weeks, 
                 [weekNumber]: { 
                   ...user?.entries[year].weeks[weekNumber], 
-                  messages: [ ...user?.entries[year].weeks[weekNumber].messages, ...message ]
+                  agentConversation: [ ...(user?.entries[year].weeks[weekNumber].agentConversation || []), ...message ]
                 }
               }
             }
@@ -181,7 +181,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: "Saved messages",
+      message: "Saved conversation",
       timestamp: new Date().toISOString()
     });
 

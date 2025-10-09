@@ -75,8 +75,16 @@ export const useInactivityTimer = ({
     warningShownRef.current = false;
     resetGlobalWarningState();
     
-    // Reset login time to extend session (this is the key fix)
+    // Reset login time locally and on server to extend session
     setLoginTime();
+    // Fire-and-forget server update of lastLogin
+    try {
+      fetch('/api/v1/user', {
+        method: 'POST',
+        body: JSON.stringify({ lastLogin: true }),
+        cache: 'no-store'
+      });
+    } catch {}
     updateLastActivity();
     
     // Show success toast

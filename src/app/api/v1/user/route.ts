@@ -64,6 +64,18 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     })
   }
 
+  // Update lastLogin timestamp if requested
+  if (data?.lastLogin === true) {
+    await prisma.user.update({
+      // Cast to any to tolerate generated client lag before prisma generate
+      data: ({
+        lastLogin: new Date()
+      } as any),
+      where: { id: (user as any).id },
+    })
+    user = await getUser()
+  }
+
   const fullDate = data?.date ? new Date(data?.date) : new Date()
 
   const date = fullDate.toISOString().split('T')[0]

@@ -429,11 +429,45 @@ export const isSessionExpired = (timeout: number = INACTIVITY_TIMEOUT): boolean 
  * @param timeout - Timeout in milliseconds (defaults to 15 minutes)
  * @param onLogout - Optional callback function to call when logging out
  */
-export const handleSessionExpirationOnLoad = (
+export const handleSessionExpirationOnLoad = async (
   timeout: number = INACTIVITY_TIMEOUT,
   onLogout?: () => void
-): void => {
+): Promise<void> => {
   try {
+    // Prefer server truth: fetch user.lastLogin from API
+    try {
+      const response = await fetch('/api/v1/user', { method: 'GET', cache: 'no-store' });
+      if (response.ok) {
+        const user = await response.json();
+        const lastLoginIso = user?.lastLogin as string | undefined;
+        if (lastLoginIso) {
+          const serverLoginTime = new Date(lastLoginIso).getTime();
+          const nowServerCheck = Date.now();
+          const expiredByServer = nowServerCheck - serverLoginTime >= timeout;
+          if (expiredByServer) {
+            logger('session_expired_server_last_login', 'Server lastLogin indicates expired session, logging out');
+            deleteClerkCookies();
+            clearActivityStorage();
+            if (onLogout) {
+              onLogout();
+            } else {
+              window.location.href = '/app/dashboard';
+            }
+            return;
+          }
+          // Sync local storage login time to server value if different
+          const localLogin = getLoginTime();
+          if (!localLogin || Math.abs(localLogin - serverLoginTime) > 1000) {
+            try {
+              localStorage.setItem('dpip_login_time', String(serverLoginTime));
+            } catch {}
+          }
+        }
+      }
+    } catch (e) {
+      logger('session_server_check_failed', `Failed to check server lastLogin: ${e}`);
+    }
+
     const loginTime = getLoginTime();
     const lastActivity = getLastActivity();
     const now = Date.now();

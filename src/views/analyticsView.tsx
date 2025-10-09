@@ -162,11 +162,10 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
   // Type guard to ensure session.user has the expected structure
   const user = useMemo(() => session?.user as any, [session?.user])
   
-  // Message history state
+  // Message history state (weekly agentConversation)
   const [currentText, setCurrentText] = useState("")
-  const serverText = useMemo(() => (user?.entries && user?.entries[year] && user?.entries[year].days && user?.entries[year].days[date] && user?.entries[year].days[date].analyticsAgentText) || "", [JSON.stringify(user)])
-  const messages = user?.entries && user?.entries[year] && user?.entries[year].weeks && user?.entries[year]?.weeks[weekNumber] && user?.entries[year]?.weeks[weekNumber].messages
-  const reverseMessages = useMemo(() => messages?.length ? messages.sort((a: any, b: any) => new Date(a.timestamp).getTime() > new Date(b.timestamp).getTime() ? 1 : -1) : [], [JSON.stringify(user)])
+  const conversation = user?.entries && user?.entries[year] && user?.entries[year].weeks && user?.entries[year]?.weeks[weekNumber] && user?.entries[year]?.weeks[weekNumber].agentConversation
+  const reverseMessages = useMemo(() => conversation?.length ? conversation.sort((a: any, b: any) => new Date(a.timestamp).getTime() > new Date(b.timestamp).getTime() ? 1 : -1) : [], [JSON.stringify(user)])
   
   // Create chart configs with translations
   const moodChartConfig = createMoodChartConfig(t)
@@ -182,14 +181,14 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
     if (hintData) setInsight(hintData as any)
   }, [hintData])
 
-  // Initialize currentText from serverText
+  // Reset input when week conversation changes
   useEffect(() => {
-    setCurrentText(serverText)
-  }, [serverText])
+    setCurrentText("")
+  }, [JSON.stringify(reverseMessages)])
 
-  // Create debounced version of handleTextSubmit
-  const debouncedHandleTextSubmit = useDebounce(async (message, field) => {
-    await handleMoodSubmit(message, field, fullDate.toISOString().split('T')[0])
+  // No longer persisting daily analyticsAgentText; weekly conversation is saved via /api/v1/chat
+  const debouncedHandleTextSubmit = useDebounce(async (_message, _field) => {
+    return
   }, 500)
 
   // Dimension toggle handlers
@@ -422,7 +421,6 @@ const aggregateDataByWeek = (dailyData: any[]) => {
             key={reverseMessages}
             onMessageChange={(message) => {
               setCurrentText(message)
-              debouncedHandleTextSubmit(message, "analyticsAgentText")
             }}
             history={reverseMessages}
             initialMessage={currentText}

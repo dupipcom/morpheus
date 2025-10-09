@@ -24,6 +24,7 @@ model User {
   availableBalance  String?
   hint String?
   userId        String?   @unique
+  lastLogin     DateTime?
   contacts      Contact[]
   things        Thing[]
   lifeEvents    LifeEvent[]
