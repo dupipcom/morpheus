@@ -51,7 +51,7 @@
     "title": "Elämäsi yhdellä silmäyksellä.",
     "todayIs": "Tänään on {date}.",
     "whatDidYouAccomplish": "Mitä saavutit tänään?",
-    "yourEarnings": "Tulosi {timeframe}, toistaiseksi: ${amount}",
+    "yourEarnings": "Tulosi {timeframe}, toistaiseksi: Ð{amount}",
     "today": "tänään",
     "thisWeek": "tällä viikolla",
     "yourMood": "Mielialasi.",

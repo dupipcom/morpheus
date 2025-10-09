@@ -47,7 +47,7 @@
     "title": "Váš život na první pohled.",
     "todayIs": "Dnes je {date}.",
     "whatDidYouAccomplish": "Co jste dnes dokázali?",
-    "yourEarnings": "Váš výdělek {timeframe}, zatím: ${amount}",
+    "yourEarnings": "Váš výdělek {timeframe}, zatím: Ð{amount}",
     "today": "dnes",
     "thisWeek": "tento týden",
     "yourMood": "Vaše nálada.",

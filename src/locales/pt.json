@@ -47,7 +47,7 @@
     "title": "Sua vida em um relance.",
     "todayIs": "Hoje é {date}.",
     "whatDidYouAccomplish": "O que você conquistou hoje?",
-    "yourEarnings": "Seus ganhos {timeframe}, até agora: ${amount}",
+    "yourEarnings": "Seus ganhos {timeframe}, até agora: Ð{amount}",
     "today": "hoje",
     "thisWeek": "esta semana",
     "yourMood": "Seu humor.",
@@ -72,7 +72,7 @@
   "tasks": {
     "editing": "Editando: {timeframe}",
     "weekNumber": "Semana {number}",
-    "yourEarnings": "Seus ganhos {timeframe}, até agora: ${amount}"
+    "yourEarnings": "Seus ganhos {timeframe}, até agora: Ð{amount}"
   },
   "settings": {
     "title": "Configurações",

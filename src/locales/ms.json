@@ -49,7 +49,7 @@
     "title": "Hidup anda dalam sekilas.",
     "todayIs": "Hari ini adalah {date}.",
     "whatDidYouAccomplish": "Apa yang anda capai hari ini?",
-    "yourEarnings": "Pendapatan anda {timeframe}, setakat ini: ${amount}",
+    "yourEarnings": "Pendapatan anda {timeframe}, setakat ini: Ð{amount}",
     "today": "hari ini",
     "thisWeek": "minggu ini",
     "yourMood": "Mood anda.",

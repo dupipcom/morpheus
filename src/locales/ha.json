@@ -47,7 +47,7 @@
     "title": "Rayuwarka a kallo ɗaya.",
     "todayIs": "Yau {date} ne.",
     "whatDidYouAccomplish": "Me ka cimma yau?",
-    "yourEarnings": "Kuɗin da ka samu {timeframe}, har yanzu: ${amount}",
+    "yourEarnings": "Kuɗin da ka samu {timeframe}, har yanzu: Ð{amount}",
     "today": "yau",
     "thisWeek": "wannan mako",
     "yourMood": "Yanayin zuciyarka.",
@@ -72,7 +72,7 @@
   "tasks": {
     "editing": "Ana gyara: {timeframe}",
     "weekNumber": "Mako {number}",
-    "yourEarnings": "Kuɗin da ka samu {timeframe}, har yanzu: ${amount}"
+    "yourEarnings": "Kuɗin da ka samu {timeframe}, har yanzu: Ð{amount}"
   },
   "settings": {
     "title": "Saiti",

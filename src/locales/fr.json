@@ -47,7 +47,7 @@
     "title": "Votre vie en un coup d'œil.",
     "todayIs": "Aujourd'hui, c'est {date}.",
     "whatDidYouAccomplish": "Qu'avez-vous accompli aujourd'hui ?",
-    "yourEarnings": "Vos gains {timeframe}, jusqu'à présent : ${amount}",
+    "yourEarnings": "Vos gains {timeframe}, jusqu'à présent : Ð{amount}",
     "today": "aujourd'hui",
     "thisWeek": "cette semaine",
     "yourMood": "Votre humeur.",
@@ -72,7 +72,7 @@
   "tasks": {
     "editing": "Modification : {timeframe}",
     "weekNumber": "Semaine {number}",
-    "yourEarnings": "Vos gains {timeframe}, jusqu'à présent : ${amount}"
+    "yourEarnings": "Vos gains {timeframe}, jusqu'à présent : Ð{amount}"
   },
   "settings": {
     "title": "Paramètres",

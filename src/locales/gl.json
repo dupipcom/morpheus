@@ -50,7 +50,7 @@
     "title": "A túa vida nunha ollada.",
     "todayIs": "Hoxe é {date}.",
     "whatDidYouAccomplish": "Que lograste hoxe?",
-    "yourEarnings": "Os teus ingresos {timeframe}, ata agora: ${amount}",
+    "yourEarnings": "Os teus ingresos {timeframe}, ata agora: Ð{amount}",
     "today": "hoxe",
     "thisWeek": "esta semana",
     "yourMood": "O teu estado de ánimo.",

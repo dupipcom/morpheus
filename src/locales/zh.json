@@ -47,7 +47,7 @@
     "title": "您的生活一目了然。",
     "todayIs": "今天是{date}。",
     "whatDidYouAccomplish": "今天您完成了什么？",
-    "yourEarnings": "您的收入{timeframe}，到目前为止：${amount}",
+    "yourEarnings": "您的收入{timeframe}，到目前为止：Ð{amount}",
     "today": "今天",
     "thisWeek": "本周",
     "yourMood": "您的心情。",
@@ -72,7 +72,7 @@
   "tasks": {
     "editing": "编辑中：{timeframe}",
     "weekNumber": "第{number}周",
-    "yourEarnings": "您的收入{timeframe}，到目前为止：${amount}"
+    "yourEarnings": "您的收入{timeframe}，到目前为止：Ð{amount}"
   },
   "settings": {
     "title": "设置",

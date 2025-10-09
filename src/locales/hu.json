@@ -45,7 +45,7 @@
     "title": "Az életed egy pillantásra.",
     "todayIs": "Ma {date} van.",
     "whatDidYouAccomplish": "Mit értél el ma?",
-    "yourEarnings": "A bevételed {timeframe}, eddig: ${amount}",
+    "yourEarnings": "A bevételed {timeframe}, eddig: Ð{amount}",
     "today": "ma",
     "thisWeek": "ezen a héten",
     "yourMood": "A hangulatod.",
@@ -70,7 +70,7 @@
   "tasks": {
     "editing": "Szerkesztés: {timeframe}",
     "weekNumber": "Hét {number}",
-    "yourEarnings": "A bevételed {timeframe}, eddig: ${amount}"
+    "yourEarnings": "A bevételed {timeframe}, eddig: Ð{amount}"
   },
   "actions": {
     "daily": {

@@ -45,7 +45,7 @@
     "title": "Viața ta într-o privire.",
     "todayIs": "Astăzi este {date}.",
     "whatDidYouAccomplish": "Ce ai realizat astăzi?",
-    "yourEarnings": "Câștigurile tale {timeframe}, până acum: ${amount}",
+    "yourEarnings": "Câștigurile tale {timeframe}, până acum: Ð{amount}",
     "today": "astăzi",
     "thisWeek": "săptămâna aceasta",
     "yourMood": "Dispoziția ta.",

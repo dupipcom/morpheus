@@ -47,7 +47,7 @@
     "title": "Your life at a glimpse.",
     "todayIs": "Today is {date}.",
     "whatDidYouAccomplish": "What did you accomplish today?",
-    "yourEarnings": "Your earnings {timeframe}, so far: ${amount}",
+    "yourEarnings": "Your earnings {timeframe}, so far: Ð{amount}",
     "today": "today",
     "thisWeek": "this week",
     "yourMood": "Your mood.",
@@ -72,7 +72,7 @@
   "tasks": {
     "editing": "Editing: {timeframe}",
     "weekNumber": "Week {number}",
-    "yourEarnings": "Your earnings {timeframe}, so far: ${amount}"
+    "yourEarnings": "Your earnings {timeframe}, so far: Ð{amount}"
   },
   "settings": {
     "title": "Settings",

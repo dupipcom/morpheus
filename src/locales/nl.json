@@ -47,7 +47,7 @@
     "title": "Je leven in één oogopslag.",
     "todayIs": "Vandaag is {date}.",
     "whatDidYouAccomplish": "Wat heb je vandaag bereikt?",
-    "yourEarnings": "Je verdiensten {timeframe}, tot nu toe: ${amount}",
+    "yourEarnings": "Je verdiensten {timeframe}, tot nu toe: Ð{amount}",
     "today": "vandaag",
     "thisWeek": "deze week",
     "yourMood": "Je stemming.",

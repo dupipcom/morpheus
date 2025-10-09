@@ -45,7 +45,7 @@
     "title": "Maisha yako kwa mtazamo mmoja.",
     "todayIs": "Leo ni {date}.",
     "whatDidYouAccomplish": "Ulimaliza nini leo?",
-    "yourEarnings": "Mapato yako {timeframe}, hadi sasa: ${amount}",
+    "yourEarnings": "Mapato yako {timeframe}, hadi sasa: Ð{amount}",
     "today": "leo",
     "thisWeek": "wiki hii",
     "yourMood": "Hali yako ya moyo.",
@@ -70,7 +70,7 @@
   "tasks": {
     "editing": "Inahariri: {timeframe}",
     "weekNumber": "Wiki {number}",
-    "yourEarnings": "Mapato yako {timeframe}, hadi sasa: ${amount}"
+    "yourEarnings": "Mapato yako {timeframe}, hadi sasa: Ð{amount}"
   },
   "settings": {
     "title": "Mipangilio",

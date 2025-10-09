@@ -49,7 +49,7 @@
     "title": "ਤੁਹਾਡੀ ਜ਼ਿੰਦਗੀ ਇੱਕ ਨਜ਼ਰ ਵਿੱਚ।",
     "todayIs": "ਅੱਜ {date} ਹੈ।",
     "whatDidYouAccomplish": "ਅੱਜ ਤੁਸੀਂ ਕੀ ਪ੍ਰਾਪਤ ਕੀਤਾ?",
-    "yourEarnings": "ਤੁਹਾਡੀ ਕਮਾਈ {timeframe}, ਹੁਣ ਤੱਕ: ${amount}",
+    "yourEarnings": "ਤੁਹਾਡੀ ਕਮਾਈ {timeframe}, ਹੁਣ ਤੱਕ: Ð{amount}",
     "today": "ਅੱਜ",
     "thisWeek": "ਇਸ ਹਫ਼ਤੇ",
     "yourMood": "ਤੁਹਾਡਾ ਮੂਡ।",

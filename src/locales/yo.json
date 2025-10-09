@@ -45,7 +45,7 @@
     "title": "Ìgbésí ayé rẹ̀ ní ìwojú kan.",
     "todayIs": "Òní ni {date}.",
     "whatDidYouAccomplish": "Kí ni o ṣe òní?",
-    "yourEarnings": "Owó tí o gbà {timeframe}, títí di báyìí: ${amount}",
+    "yourEarnings": "Owó tí o gbà {timeframe}, títí di báyìí: Ð{amount}",
     "today": "òní",
     "thisWeek": "ọ̀sẹ̀ yìí",
     "yourMood": "Ìwà rẹ̀.",
@@ -70,7 +70,7 @@
   "tasks": {
     "editing": "Ó ń ṣàtúnṣe: {timeframe}",
     "weekNumber": "Ọ̀sẹ̀ {number}",
-    "yourEarnings": "Owó tí o gbà {timeframe}, títí di báyìí: ${amount}"
+    "yourEarnings": "Owó tí o gbà {timeframe}, títí di báyìí: Ð{amount}"
   },
   "settings": {
     "title": "Ètò",

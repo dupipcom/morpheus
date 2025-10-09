@@ -45,7 +45,7 @@
     "title": "חייך במבט אחד.",
     "todayIs": "היום {date}.",
     "whatDidYouAccomplish": "מה השגת היום?",
-    "yourEarnings": "הרווחים שלך {timeframe}, עד כה: ${amount}",
+    "yourEarnings": "הרווחים שלך {timeframe}, עד כה: Ð{amount}",
     "today": "היום",
     "thisWeek": "השבוע",
     "yourMood": "מצב הרוח שלך.",

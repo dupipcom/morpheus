@@ -50,7 +50,7 @@
     "title": "Zure bizitza begirada batean.",
     "todayIs": "Gaur {date} da.",
     "whatDidYouAccomplish": "Zer lortu duzu gaur?",
-    "yourEarnings": "Zure irabaziak {timeframe}, orain arte: ${amount}",
+    "yourEarnings": "Zure irabaziak {timeframe}, orain arte: Ð{amount}",
     "today": "gaur",
     "thisWeek": "aste honetan",
     "yourMood": "Zure humorra.",

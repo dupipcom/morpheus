@@ -47,7 +47,7 @@
     "title": "La teva vida d'un cop d'ull.",
     "todayIs": "Avui és {date}.",
     "whatDidYouAccomplish": "Què has aconseguit avui?",
-    "yourEarnings": "Els teus guanys {timeframe}, fins ara: ${amount}",
+    "yourEarnings": "Els teus guanys {timeframe}, fins ara: Ð{amount}",
     "today": "avui",
     "thisWeek": "aquesta setmana",
     "yourMood": "El teu estat d'ànim.",

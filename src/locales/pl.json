@@ -51,7 +51,7 @@
     "title": "Twoje życie w pigułce.",
     "todayIs": "Dzisiaj jest {date}.",
     "whatDidYouAccomplish": "Co osiągnąłeś dzisiaj?",
-    "yourEarnings": "Twoje zarobki {timeframe}, do tej pory: ${amount}",
+    "yourEarnings": "Twoje zarobki {timeframe}, do tej pory: Ð{amount}",
     "today": "dzisiaj",
     "thisWeek": "w tym tygodniu",
     "yourMood": "Twój nastrój.",

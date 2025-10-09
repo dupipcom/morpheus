@@ -47,7 +47,7 @@
     "title": "La tua vita in un colpo d'occhio.",
     "todayIs": "Oggi è {date}.",
     "whatDidYouAccomplish": "Cosa hai fatto?",
-    "yourEarnings": "I tuoi guadagni {timeframe}, finora: ${amount}",
+    "yourEarnings": "I tuoi guadagni {timeframe}, finora: Ð{amount}",
     "today": "oggi",
     "thisWeek": "questa settimana",
     "yourMood": "Il tuo umore.",
@@ -72,7 +72,7 @@
   "tasks": {
     "editing": "Modifica: {timeframe}",
     "weekNumber": "Settimana {number}",
-    "yourEarnings": "I tuoi guadagni {timeframe}, finora: ${amount}"
+    "yourEarnings": "I tuoi guadagni {timeframe}, finora: Ð{amount}"
   },
   "settings": {
     "title": "Impostazioni",

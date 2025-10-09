@@ -47,7 +47,7 @@
     "title": "Tu vida de un vistazo.",
     "todayIs": "Hoy es {date}.",
     "whatDidYouAccomplish": "¿Qué lograste hoy?",
-    "yourEarnings": "Tus ganancias {timeframe}, hasta ahora: ${amount}",
+    "yourEarnings": "Tus ganancias {timeframe}, hasta ahora: Ð{amount}",
     "today": "hoy",
     "thisWeek": "esta semana",
     "yourMood": "Tu estado de ánimo.",
@@ -72,7 +72,7 @@
   "tasks": {
     "editing": "Editando: {timeframe}",
     "weekNumber": "Semana {number}",
-    "yourEarnings": "Tus ganancias {timeframe}, hasta ahora: ${amount}"
+    "yourEarnings": "Tus ganancias {timeframe}, hasta ahora: Ð{amount}"
   },
   "settings": {
     "title": "Configuración",

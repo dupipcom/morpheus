@@ -47,7 +47,7 @@
     "title": "এক নজরে আপনার জীবন।",
     "todayIs": "আজ {date}।",
     "whatDidYouAccomplish": "আজ আপনি কী অর্জন করেছেন?",
-    "yourEarnings": "আপনার আয় {timeframe}, এখন পর্যন্ত: ${amount}",
+    "yourEarnings": "আপনার আয় {timeframe}, এখন পর্যন্ত: Ð{amount}",
     "today": "আজ",
     "thisWeek": "এই সপ্তাহ",
     "yourMood": "আপনার মেজাজ।",
@@ -72,7 +72,7 @@
   "tasks": {
     "editing": "সম্পাদনা: {timeframe}",
     "weekNumber": "সপ্তাহ {number}",
-    "yourEarnings": "আপনার আয় {timeframe}، এখন পর্যন্ত: ${amount}"
+    "yourEarnings": "আপনার আয় {timeframe}، এখন পর্যন্ত: Ð{amount}"
   },
   "actions": {
     "daily": {

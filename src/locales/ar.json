@@ -51,7 +51,7 @@
     "title": "حياتك في لمحة.",
     "todayIs": "اليوم هو {date}.",
     "whatDidYouAccomplish": "ماذا أنجزت اليوم؟",
-    "yourEarnings": "أرباحك {timeframe}، حتى الآن: ${amount}",
+    "yourEarnings": "أرباحك {timeframe}، حتى الآن: Ð{amount}",
     "today": "اليوم",
     "thisWeek": "هذا الأسبوع",
     "yourMood": "مزاجك.",

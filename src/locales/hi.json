@@ -47,7 +47,7 @@
     "title": "एक नज़र में आपका जीवन।",
     "todayIs": "आज {date} है।",
     "whatDidYouAccomplish": "आज आपने क्या हासिल किया?",
-    "yourEarnings": "आपकी कमाई {timeframe}, अब तक: ${amount}",
+    "yourEarnings": "आपकी कमाई {timeframe}, अब तक: Ð{amount}",
     "today": "आज",
     "thisWeek": "इस सप्ताह",
     "yourMood": "आपकी मनोदशा।",
@@ -72,7 +72,7 @@
   "tasks": {
     "editing": "संपादन: {timeframe}",
     "weekNumber": "सप्ताह {number}",
-    "yourEarnings": "आपकी कमाई {timeframe}, अब तक: ${amount}"
+    "yourEarnings": "आपकी कमाई {timeframe}, अब तक: Ð{amount}"
   },
   "actions": {
     "daily": {

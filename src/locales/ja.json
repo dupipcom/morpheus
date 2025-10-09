@@ -47,7 +47,7 @@
     "title": "あなたの人生を一目で。",
     "todayIs": "今日は{date}です。",
     "whatDidYouAccomplish": "今日は何を達成しましたか？",
-    "yourEarnings": "あなたの収益{timeframe}、これまで：${amount}",
+    "yourEarnings": "あなたの収益{timeframe}、これまで：Ð{amount}",
     "today": "今日",
     "thisWeek": "今週",
     "yourMood": "あなたの気分。",
@@ -72,7 +72,7 @@
   "tasks": {
     "editing": "編集中：{timeframe}",
     "weekNumber": "週{number}",
-    "yourEarnings": "あなたの収益{timeframe}、これまで：${amount}"
+    "yourEarnings": "あなたの収益{timeframe}、これまで：Ð{amount}"
   },
   "settings": {
     "title": "設定",

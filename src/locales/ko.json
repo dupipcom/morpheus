@@ -47,7 +47,7 @@
     "title": "한눈에 보는 당신의 삶.",
     "todayIs": "오늘은 {date}입니다.",
     "whatDidYouAccomplish": "오늘 무엇을 성취했나요?",
-    "yourEarnings": "당신의 수익 {timeframe}, 지금까지: ${amount}",
+    "yourEarnings": "당신의 수익 {timeframe}, 지금까지: Ð{amount}",
     "today": "오늘",
     "thisWeek": "이번 주",
     "yourMood": "당신의 기분.",
@@ -72,7 +72,7 @@
   "tasks": {
     "editing": "편집 중: {timeframe}",
     "weekNumber": "주 {number}",
-    "yourEarnings": "당신의 수익 {timeframe}, 지금까지: ${amount}"
+    "yourEarnings": "당신의 수익 {timeframe}, 지금까지: Ð{amount}"
   },
   "actions": {
     "daily": {

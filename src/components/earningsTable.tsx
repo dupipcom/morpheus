@@ -96,11 +96,11 @@ const createColumns = (t: (key: string) => string): ColumnDef<Payment>[] => [
     cell: ({ row }) => {
       const earnings = parseFloat(row.getValue("earnings"))
 
-      // Format the earnings as a dollar earnings
+      // Format the earnings as USD and replace $ with Ð for display
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
-      }).format(earnings)
+      }).format(earnings).replace('$', 'Ð')
 
       return <div className="text-right font-medium">{formatted}</div>
     },

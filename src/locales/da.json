@@ -51,7 +51,7 @@
     "title": "Dit liv på et øjeblik.",
     "todayIs": "I dag er det {date}.",
     "whatDidYouAccomplish": "Hvad opnåede du i dag?",
-    "yourEarnings": "Din indtjening {timeframe}, indtil videre: ${amount}",
+    "yourEarnings": "Din indtjening {timeframe}, indtil videre: Ð{amount}",
     "today": "i dag",
     "thisWeek": "denne uge",
     "yourMood": "Dit humør.",

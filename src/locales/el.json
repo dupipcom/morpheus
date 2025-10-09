@@ -51,7 +51,7 @@
     "title": "Η ζωή σας με μια ματιά.",
     "todayIs": "Σήμερα είναι {date}.",
     "whatDidYouAccomplish": "Τι επιτύχατε σήμερα;",
-    "yourEarnings": "Τα κέρδη σας {timeframe}, μέχρι τώρα: ${amount}",
+    "yourEarnings": "Τα κέρδη σας {timeframe}, μέχρι τώρα: Ð{amount}",
     "today": "σήμερα",
     "thisWeek": "αυτή την εβδομάδα",
     "yourMood": "Η συγκίνησή σας.",
@@ -76,7 +76,7 @@
   "tasks": {
     "editing": "Επεξεργασία",
     "weekNumber": "Εβδομάδα {number}",
-    "yourEarnings": "Τα κέρδη σας {timeframe}, μέχρι τώρα: ${amount}"
+    "yourEarnings": "Τα κέρδη σας {timeframe}, μέχρι τώρα: Ð{amount}"
   },
   "actions": {
     "add": "Προσθήκη",

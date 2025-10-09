@@ -51,7 +51,7 @@
     "title": "Hayatınız bir bakışta.",
     "todayIs": "Bugün {date}.",
     "whatDidYouAccomplish": "Bugün ne başardınız?",
-    "yourEarnings": "Kazancınız {timeframe}, şimdiye kadar: ${amount}",
+    "yourEarnings": "Kazancınız {timeframe}, şimdiye kadar: Ð{amount}",
     "today": "bugün",
     "thisWeek": "bu hafta",
     "yourMood": "Ruh haliniz.",

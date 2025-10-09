@@ -50,7 +50,7 @@
     "title": "Ditt liv i en blick.",
     "todayIs": "Idag är {date}.",
     "whatDidYouAccomplish": "Vad uppnådde du idag?",
-    "yourEarnings": "Din inkomst {timeframe}, hittills: ${amount}",
+    "yourEarnings": "Din inkomst {timeframe}, hittills: Ð{amount}",
     "today": "idag",
     "thisWeek": "denna vecka",
     "yourMood": "Ditt humör.",

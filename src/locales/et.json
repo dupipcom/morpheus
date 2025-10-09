@@ -47,7 +47,7 @@
     "title": "Sinu elu ühe pilguga.",
     "todayIs": "Täna on {date}.",
     "whatDidYouAccomplish": "Mida sa täna saavutasid?",
-    "yourEarnings": "Sinu sissetulek {timeframe}, seni: ${amount}",
+    "yourEarnings": "Sinu sissetulek {timeframe}, seni: Ð{amount}",
     "today": "täna",
     "thisWeek": "sel nädalal",
     "yourMood": "Sinu tuju.",
@@ -72,7 +72,7 @@
   "tasks": {
     "editing": "Redigeerimine: {timeframe}",
     "weekNumber": "Nädal {number}",
-    "yourEarnings": "Sinu sissetulek {timeframe}, seni: ${amount}"
+    "yourEarnings": "Sinu sissetulek {timeframe}, seni: Ð{amount}"
   },
   "actions": {
     "daily": {

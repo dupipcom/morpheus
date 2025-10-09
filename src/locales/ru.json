@@ -47,7 +47,7 @@
     "title": "Ваша жизнь одним взглядом.",
     "todayIs": "Сегодня {date}.",
     "whatDidYouAccomplish": "Что вы достигли сегодня?",
-    "yourEarnings": "Ваш заработок {timeframe}, пока: ${amount}",
+    "yourEarnings": "Ваш заработок {timeframe}, пока: Ð{amount}",
     "today": "сегодня",
     "thisWeek": "на этой неделе",
     "yourMood": "Ваше настроение.",
