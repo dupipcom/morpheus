@@ -2,7 +2,7 @@ import prisma from "@/lib/prisma";
 import { currentUser, auth } from '@clerk/nextjs/server'
 import { getWeekNumber } from "@/app/helpers"
 import { WEEKLY_ACTIONS, DAILY_ACTIONS } from "@/app/constants"
-import { safeUpdateWeekEntry, safeUpdateDayEntry, validateWeekData, validateDayData, logEntryData, ensureWeekDataIntegrity, ensureDayDataIntegrity, addEphemeralTaskToDay, addEphemeralTaskToWeek, updateEphemeralTaskInDay, updateEphemeralTaskInWeek, removeEphemeralTaskFromDay, removeEphemeralTaskFromWeek } from "@/lib/entryUtils"
+import { safeUpdateWeekEntry, safeUpdateDayEntry, validateWeekData, validateDayData, logEntryData, ensureWeekDataIntegrity, ensureDayDataIntegrity, addEphemeralTaskToDay, addEphemeralTaskToWeek, updateEphemeralTaskInDay, updateEphemeralTaskInWeek, removeEphemeralTaskFromDay, removeEphemeralTaskFromWeek, calculateDayTicker, calculateWeekTicker } from "@/lib/entryUtils"
 
 export async function GET(req: NextApiRequest, res: NextApiResponse) {
   const { userId } = await auth()
@@ -261,6 +261,9 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
       things: data.taskThings?.[task.name] || []
     }))
 
+    // Calculate ticker value for the week
+    const weekTicker = calculateWeekTicker(entries, year, data.week, weekEarnings, parseFloat(user.availableBalance || "0"))
+
     await prisma.user.update({
       data: {
         entries: {
@@ -274,6 +277,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   year,
                   week: data.week,
                   earnings: weekEarnings,
+                  ticker: weekTicker,
                   tasks: tasksWithContacts.sort((a: any, b: any) => a.status === "Done" ? 1 : -1),
                   status: "Open",
                   progress: weekProgress,
@@ -290,6 +294,9 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     })
     user = await getUser()
   } else if (data.weekActions) {
+    // Calculate ticker value for the week
+    const weekTicker = calculateWeekTicker(user.entries, year, data.week, weekEarnings, parseFloat(user.availableBalance || "0"))
+    
     await prisma.user.update({
       data: {
         entries: {
@@ -303,6 +310,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   year,
                   week: data.week,
                   earnings: weekEarnings,
+                  ticker: weekTicker,
                   tasks: (user?.settings?.weeklyTemplate?.length ? user?.settings?.weeklyTemplate : WEEKLY_ACTIONS).sort((a, b) => a.status === "Done" ? 1 : -1),
                   status: "Open",
                   progress: weekProgress,
@@ -320,6 +328,10 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   }
 
   if (data?.availableBalance) {
+    // Calculate ticker values for current day and week
+    const dayTicker = calculateDayTicker(user.entries, year, date, dayEarnings, parseFloat(data.availableBalance))
+    const weekTicker = calculateWeekTicker(user.entries, year, weekNumber, weekEarnings, parseFloat(data.availableBalance))
+    
     await prisma.user.update({
       data: {
         entries: {
@@ -331,6 +343,8 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                 [date]: {
                   ...user.entries[year].days[date],
                   earnings: dayEarnings,
+                  ticker: dayTicker,
+                  availableBalance: data.availableBalance,
                 }
               },
               weeks: {
@@ -338,6 +352,8 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                 [weekNumber]: {
                   ...user.entries[year].weeks[weekNumber],
                   earnings: weekEarnings,
+                  ticker: weekTicker,
+                  availableBalance: data.availableBalance,
                 }
               }
             }
@@ -357,6 +373,9 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
       things: data.taskThings?.[task.name] || []
     }))
 
+    // Calculate ticker value for the day
+    const dayTicker = calculateDayTicker(entries, year, date, dayEarnings, parseFloat(user.availableBalance || "0"))
+
     await prisma.user.update({
       data: {
         entries: {
@@ -372,6 +391,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   month,
                   day,
                   earnings: dayEarnings,
+                  ticker: dayTicker,
                   progress: dayProgress,
                   done: dayDone.length,
                   tasksNumber: dayTasks.length,
@@ -388,6 +408,9 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     })
     user = await getUser()
   } else if (data.dayActions) {
+    // Calculate ticker value for the day
+    const dayTicker = calculateDayTicker(user.entries, year, date, dayEarnings, parseFloat(user.availableBalance || "0"))
+    
     await prisma.user.update({
       data: {
         entries: {
@@ -403,6 +426,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   month,
                   day,
                   earnings: dayEarnings,
+                  ticker: dayTicker,
                   progress: dayProgress,
                   done: dayDone.length,
                   tasksNumber: dayTasks.length,

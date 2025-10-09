@@ -117,6 +117,7 @@ type Day {
   tasks Task[]
   ephemeralTasks Task[]
   earnings String
+  ticker Float?
   date String
   status String
   mood Mood?
@@ -124,6 +125,7 @@ type Day {
   contacts ContactReference[]
   things ThingReference[]
   lifeEvents LifeEventReference[]
+  availableBalance String?
 }
 
 type Week {
@@ -132,10 +134,12 @@ type Week {
   tasks  Task[]
   ephemeralTasks Task[]
   earnings String
+  ticker Float?
   date String
   status String
   days Day[]
   hint String?
+  availableBalance String?
 }
 
 type Task {

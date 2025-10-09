@@ -105,6 +105,7 @@ export function ensureWeekDataIntegrity(weekData: any, year: number, week: numbe
     ephemeralTasks: [],
     status: "Open",
     earnings: "0",
+    ticker: 0,
     progress: 0,
     done: 0,
     tasksNumber: 0,
@@ -139,6 +140,8 @@ export function ensureDayDataIntegrity(dayData: any, year: number, date: string,
       trust: 0,
     },
     earnings: "0",
+    ticker: 0,
+    availableBalance: "0",
     contacts: []
   }
   
@@ -262,4 +265,74 @@ export function removeEphemeralTaskFromWeek(
   return safeUpdateWeekEntry(currentEntries, year, week, {
     ephemeralTasks: updatedEphemeralTasks
   })
+}
+
+/**
+ * Calculates the percentage delta between current and previous values
+ */
+export function calculatePercentageDelta(currentValue: number, previousValue: number): number {
+  if (previousValue === 0) {
+    return currentValue > 0 ? 100 : 0
+  }
+  return ((currentValue - previousValue) / previousValue) * 100
+}
+
+/**
+ * Gets the previous day's earnings and availableBalance for ticker calculation
+ */
+export function getPreviousDayData(entries: any, year: number, currentDate: string): { earnings: number, availableBalance: number } {
+  const currentDateObj = new Date(currentDate)
+  const previousDate = new Date(currentDateObj)
+  previousDate.setDate(previousDate.getDate() - 1)
+  const previousDateString = previousDate.toISOString().split('T')[0]
+  
+  const previousDay = entries?.[year]?.days?.[previousDateString]
+  if (!previousDay) {
+    return { earnings: 0, availableBalance: 0 }
+  }
+  
+  return {
+    earnings: parseFloat(previousDay.earnings) || 0,
+    availableBalance: parseFloat(previousDay.availableBalance) || 0
+  }
+}
+
+/**
+ * Gets the previous week's earnings and availableBalance for ticker calculation
+ */
+export function getPreviousWeekData(entries: any, year: number, currentWeek: number): { earnings: number, availableBalance: number } {
+  const previousWeek = currentWeek === 1 ? 52 : currentWeek - 1
+  const previousYear = currentWeek === 1 ? year - 1 : year
+  
+  const previousWeekData = entries?.[previousYear]?.weeks?.[previousWeek]
+  if (!previousWeekData) {
+    return { earnings: 0, availableBalance: 0 }
+  }
+  
+  return {
+    earnings: parseFloat(previousWeekData.earnings) || 0,
+    availableBalance: parseFloat(previousWeekData.availableBalance) || 0
+  }
+}
+
+/**
+ * Calculates ticker value for a day entry
+ */
+export function calculateDayTicker(entries: any, year: number, date: string, currentEarnings: number, currentAvailableBalance: number): number {
+  const previousData = getPreviousDayData(entries, year, date)
+  const currentRatio = currentEarnings / (currentAvailableBalance || 1)
+  const previousRatio = previousData.earnings / (previousData.availableBalance || 1)
+  
+  return calculatePercentageDelta(currentRatio, previousRatio)
+}
+
+/**
+ * Calculates ticker value for a week entry
+ */
+export function calculateWeekTicker(entries: any, year: number, week: number, currentEarnings: number, currentAvailableBalance: number): number {
+  const previousData = getPreviousWeekData(entries, year, week)
+  const currentRatio = currentEarnings / (currentAvailableBalance || 1)
+  const previousRatio = previousData.earnings / (previousData.availableBalance || 1)
+  
+  return calculatePercentageDelta(currentRatio, previousRatio)
 } 
