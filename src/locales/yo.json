@@ -25,7 +25,10 @@
     "dismiss": "Kọ́",
     "selectLanguage": "Yàn èdè",
     "manageAccount": "Ṣàkóso Ìwé Ìfọ̀rọ̀wérọ̀ Mi",
-    "signOut": "Jáde"
+    "signOut": "Jáde",
+    "stash": "Ipo",
+    "equity": "Owo",
+    "totalEarnings": "Owo gbogbo"
   },
   "navigation": {
     "home": "Ilé",
@@ -269,4 +272,4 @@
     "friends": "Àwọn ọ̀rẹ́",
     "signInToAdd": "Wọlé láti fi ọrẹ kun"
   }
-} 
+}

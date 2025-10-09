@@ -25,7 +25,10 @@
     "dismiss": "סגור",
     "selectLanguage": "בחר שפה",
     "manageAccount": "נהל את החשבון שלי",
-    "signOut": "התנתק"
+    "signOut": "התנתק",
+    "stash": "מאגר",
+    "equity": "הון עצמי",
+    "totalEarnings": "הכנסות כוללות"
   },
   "navigation": {
     "home": "בית",
@@ -229,10 +232,6 @@
     "placeholder": "בואו נשוחח...",
     "error": "סליחה, נתקלתי בשגיאה. אנא נסה שוב.",
     "failedToSend": "שליחת הודעה נכשלה. אנא נסה שוב."
-  },
-  "errors": {
-    "notFound": "אופס! לא ניתן לכוון לתדר זה.",
-    "genericError": "משהו השתבש. אנא נסה שוב."
   },
   "publicProfile": {
     "ctaTitle": "Start Your Own DreamPip Journey",

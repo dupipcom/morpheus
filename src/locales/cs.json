@@ -27,7 +27,10 @@
     "manageAccount": "Spravovat můj účet",
     "signOut": "Odhlásit se",
     "profile": "Profil",
-    "social": "Sociální"
+    "social": "Sociální",
+    "stash": "Zásoba",
+    "equity": "Vlastní kapitál",
+    "totalEarnings": "Celkové výdělky"
   },
   "navigation": {
     "home": "Domů",
@@ -165,7 +168,7 @@
   },
   "errors": {
     "notFound": "Ups! Nepodařilo se naladit tuto frekvenci.",
-    "genericError": "Něco se pokazilo. Zkuste to prosím znovu."
+    "genericError": "Něco se pokazilo. Zkuste to znovu."
   },
   "social": {
     "title": "Sociální kontakty",
@@ -231,10 +234,6 @@
     "placeholder": "Pojďme si povídat...",
     "error": "Promiňte, narazil jsem na chybu. Zkuste to znovu.",
     "failedToSend": "Zpráva se nepodařila odeslat. Zkuste to znovu."
-  },
-  "errors": {
-    "notFound": "Ups! Nepodařilo se naladit tuto frekvenci.",
-    "genericError": "Něco se pokazilo. Zkuste to znovu."
   },
   "publicProfile": {
     "ctaTitle": "Start Your Own DreamPip Journey",

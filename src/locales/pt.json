@@ -27,7 +27,10 @@
     "manageAccount": "Gerenciar Minha Conta",
     "signOut": "Sair",
     "profile": "Perfil",
-    "social": "Social"
+    "social": "Social",
+    "stash": "Reserva",
+    "equity": "Patrimônio",
+    "totalEarnings": "Ganhos Totais"
   },
   "navigation": {
     "home": "Início",

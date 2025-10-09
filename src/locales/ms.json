@@ -25,7 +25,10 @@
     "settings": "Tetapan",
     "signUp": "Daftar",
     "manageAccount": "Urus akaun saya",
-    "signOut": "Log keluar"
+    "signOut": "Log keluar",
+    "stash": "Stok",
+    "equity": "Ekuiti",
+    "totalEarnings": "Jumlah Pendapatan"
   },
   "navigation": {
     "dashboard": "Papan Pemuka",
@@ -170,7 +173,7 @@
     "next": "Seterusnya"
   },
   "errors": {
-    "notFound": "Ops! Tidak dapat menala ke frekuensi ini.",
+    "notFound": "Ups! Tidak dapat menala frekuensi ini.",
     "genericError": "Sesuatu yang salah berlaku. Sila cuba lagi."
   },
   "social": {
@@ -237,10 +240,6 @@
     "placeholder": "Mari berbual...",
     "error": "Maaf, saya menghadapi ralat. Sila cuba lagi.",
     "failedToSend": "Gagal menghantar mesej. Sila cuba lagi."
-  },
-  "errors": {
-    "notFound": "Ups! Tidak dapat menala frekuensi ini.",
-    "genericError": "Sesuatu yang salah berlaku. Sila cuba lagi."
   },
   "publicProfile": {
     "ctaTitle": "Start Your Own DreamPip Journey",

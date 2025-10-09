@@ -27,7 +27,10 @@
     "manageAccount": "Gestisci il mio account",
     "signOut": "Disconnetti",
     "profile": "Profilo",
-    "social": "Social"
+    "social": "Social",
+    "stash": "Scorta",
+    "equity": "Patrimonio netto",
+    "totalEarnings": "Guadagni totali"
   },
   "navigation": {
     "home": "Inizio",

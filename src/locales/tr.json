@@ -27,7 +27,10 @@
     "manageAccount": "Hesabımı yönet",
     "signOut": "Çıkış yap",
     "profile": "Profil",
-    "social": "Sosyal"
+    "social": "Sosyal",
+    "stash": "Stok",
+    "equity": "Öz sermaye",
+    "totalEarnings": "Toplam kazanç"
   },
   "navigation": {
     "dashboard": "Gösterge Paneli",
@@ -186,8 +189,8 @@
     "earningsScale": "Kazanç ölçeği"
   },
   "errors": {
-    "notFound": "Ups! Bu frekansa ayarlanamadı.",
-    "genericError": "Bir şeyler yanlış gitti. Lütfen tekrar deneyin."
+    "notFound": "Hay aksi! Bu frekansa ayarlanamadı.",
+    "genericError": "Bir şeyler ters gitti. Lütfen tekrar deneyin."
   },
   "social": {
     "title": "Sosyal Kişiler",
@@ -253,10 +256,6 @@
     "placeholder": "Sohbet edelim...",
     "error": "Üzgünüm, bir hata ile karşılaştım. Lütfen tekrar deneyin.",
     "failedToSend": "Mesaj gönderilemedi. Lütfen tekrar deneyin."
-  },
-  "errors": {
-    "notFound": "Hay aksi! Bu frekansa ayarlanamadı.",
-    "genericError": "Bir şeyler ters gitti. Lütfen tekrar deneyin."
   },
   "publicProfile": {
     "ctaTitle": "Start Your Own DreamPip Journey",

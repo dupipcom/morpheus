@@ -27,7 +27,10 @@
     "manageAccount": "Hallata oma kontot",
     "signOut": "Logi välja",
     "profile": "Profiil",
-    "social": "Sotsiaalne"
+    "social": "Sotsiaalne",
+    "stash": "Varu",
+    "equity": "Omakapital",
+    "totalEarnings": "Kogutulud"
   },
   "navigation": {
     "home": "Avaleht",
@@ -164,7 +167,7 @@
     "next": "Järgmine"
   },
   "errors": {
-    "notFound": "Ups! Selle sageduse häälestamine ebaõnnestus.",
+    "notFound": "Ups! Ei saanud seda sagedust häälestada.",
     "genericError": "Midagi läks valesti. Palun proovi uuesti."
   },
   "social": {
@@ -231,10 +234,6 @@
     "placeholder": "Räägime...",
     "error": "Vabandust, kohtasin viga. Palun proovi uuesti.",
     "failedToSend": "Sõnumi saatmine ebaõnnestus. Palun proovi uuesti."
-  },
-  "errors": {
-    "notFound": "Ups! Ei saanud seda sagedust häälestada.",
-    "genericError": "Midagi läks valesti. Palun proovi uuesti."
   },
   "publicProfile": {
     "ctaTitle": "Start Your Own DreamPip Journey",

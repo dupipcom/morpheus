@@ -27,7 +27,10 @@
     "manageAccount": "Administrer min konto",
     "signOut": "Log ud",
     "profile": "Profil",
-    "social": "Social"
+    "social": "Social",
+    "stash": "Lager",
+    "equity": "Egenkapital",
+    "totalEarnings": "Samlede indtægter"
   },
   "navigation": {
     "dashboard": "Dashboard",
@@ -173,7 +176,7 @@
   },
   "errors": {
     "notFound": "Ups! Kunne ikke indstille denne frekvens.",
-    "genericError": "Noget gik galt. Prøv venligst igen."
+    "genericError": "Noget gik galt. Prøv igen."
   },
   "social": {
     "title": "Sociale kontakter",
@@ -239,10 +242,6 @@
     "placeholder": "Lad os chatte...",
     "error": "Undskyld, jeg stødte på en fejl. Prøv igen.",
     "failedToSend": "Beskeden kunne ikke sendes. Prøv igen."
-  },
-  "errors": {
-    "notFound": "Ups! Kunne ikke indstille denne frekvens.",
-    "genericError": "Noget gik galt. Prøv igen."
   },
   "publicProfile": {
     "ctaTitle": "Start Your Own DreamPip Journey",

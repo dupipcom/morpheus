@@ -27,7 +27,10 @@
     "manageAccount": "Hantera mitt konto",
     "signOut": "Logga ut",
     "profile": "Profil",
-    "social": "Social"
+    "social": "Social",
+    "stash": "Lager",
+    "equity": "Eget kapital",
+    "totalEarnings": "Totala intäkter"
   },
   "navigation": {
     "home": "Hem",
@@ -171,8 +174,8 @@
     "next": "Nästa"
   },
   "errors": {
-    "notFound": "Oj! Kunde inte stämma in på denna frekvens.",
-    "genericError": "Något gick fel. Försök igen."
+    "notFound": "Hoppsan! Kunde inte ställa in denna frekvens.",
+    "genericError": "Något gick fel. Vänligen försök igen."
   },
   "social": {
     "title": "Sociala kontakter",
@@ -238,10 +241,6 @@
     "placeholder": "Låt oss chatta...",
     "error": "Ledsen, jag stötte på ett fel. Försök igen.",
     "failedToSend": "Meddelandet kunde inte skickas. Försök igen."
-  },
-  "errors": {
-    "notFound": "Hoppsan! Kunde inte ställa in denna frekvens.",
-    "genericError": "Något gick fel. Vänligen försök igen."
   },
   "publicProfile": {
     "ctaTitle": "Start Your Own DreamPip Journey",

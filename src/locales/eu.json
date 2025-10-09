@@ -27,7 +27,10 @@
     "manageAccount": "Kudeatu nire kontua",
     "signOut": "Saioa itxi",
     "profile": "Profila",
-    "social": "Soziala"
+    "social": "Soziala",
+    "stash": "Biltegia",
+    "equity": "Kapital propioa",
+    "totalEarnings": "Irabaziak guztira"
   },
   "navigation": {
     "home": "Hasiera",
@@ -238,10 +241,6 @@
     "placeholder": "Hitz egin dezagun...",
     "error": "Barkatu, errore bat aurkitu dut. Mesedez, saiatu berriro.",
     "failedToSend": "Mezuaren bidalketak huts egin du. Mesedez, saiatu berriro."
-  },
-  "errors": {
-    "notFound": "Ups! Ezin izan da maiztasun hori sintonizatu.",
-    "genericError": "Zerbait gaizki joan da. Mesedez, saiatu berriro."
   },
   "publicProfile": {
     "ctaTitle": "Start Your Own DreamPip Journey",

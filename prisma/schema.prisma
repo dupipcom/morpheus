@@ -22,6 +22,9 @@ model User {
   settings      Settings?
   analysis      Json?
   availableBalance  String?
+  stash         String?   @default("0")
+  equity        String?   @default("0")
+  totalEarnings String?   @default("0")
   hint String?
   userId        String?   @unique
   lastLogin     DateTime?

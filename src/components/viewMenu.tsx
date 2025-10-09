@@ -20,7 +20,7 @@ import { updateUser, isUserDataReady, useEnhancedLoadingState, useUserData } fro
 import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
 
-import { Eye, EyeOff } from "lucide-react"
+import { Eye, EyeOff, DollarSign } from "lucide-react"
 
 import { useLocalStorage } from 'usehooks-ts';
 
@@ -29,6 +29,9 @@ export const ViewMenu = ({ active }: { active: string }) =>{
   const { session, setGlobalContext, theme } = useContext(GlobalContext)
   const { t, locale } = useI18n()
   const serverBalance = (session?.user as any)?.availableBalance
+  const serverStash = (session?.user as any)?.stash || "0"
+  const serverEquity = (session?.user as any)?.equity || "0"
+  const serverTotalEarnings = (session?.user as any)?.totalEarnings || "0"
   const [value, setValue, removeValue] = useLocalStorage('redacted', 0);
   const [hiddenBalance, setHiddenBalance] = useState(true)
 
@@ -49,6 +52,22 @@ export const ViewMenu = ({ active }: { active: string }) =>{
   const handleHideBalance = () => {
     setHiddenBalance(!hiddenBalance)
     setValue(!value ? 1 : 0)
+  }
+
+  const handleWithdrawStash = async () => {
+    try {
+      await fetch('/api/v1/user', { 
+        method: 'POST', 
+        body: JSON.stringify({ withdrawStash: true })
+      })
+      setTimeout(() => {
+        if (session?.user) {
+          refreshUser()
+        }
+      }, 1500)
+    } catch (error) {
+      console.error('Error withdrawing stash:', error)
+    }
   }
 
   // No on-mount refresh; SWR fetches once and dedupes across components
@@ -84,8 +103,38 @@ export const ViewMenu = ({ active }: { active: string }) =>{
               <Eye /> : <EyeOff />
             }
           </Button>
+          <Button 
+            className="ml-2 border-accent bg-input/30 text-foreground hover:text-background" 
+            onClick={handleWithdrawStash}
+            disabled={parseFloat(serverStash) <= 0}
+            title="Withdraw Stash"
+          >
+            <DollarSign />
+          </Button>
         </>
       )}
+    </div>
+    
+    {/* Display stash and equity values */}
+    <div className="mt-4 space-y-2">
+      <div className="flex justify-between text-sm">
+        <span>{t('common.stash')}:</span>
+        <span className={hiddenBalance ? "blur-sm" : ""}>
+          Ð{parseFloat(serverStash).toFixed(2)}
+        </span>
+      </div>
+      <div className="flex justify-between text-sm">
+        <span>{t('common.equity')}:</span>
+        <span className={hiddenBalance ? "blur-sm" : ""}>
+          Ð{parseFloat(serverEquity).toFixed(2)}
+        </span>
+      </div>
+      <div className="flex justify-between text-sm">
+        <span>{t('common.totalEarnings')}:</span>
+        <span className={hiddenBalance ? "blur-sm" : ""}>
+          Ð{parseFloat(serverTotalEarnings).toFixed(2)}
+        </span>
+      </div>
     </div>
   </div>
 </NavigationMenu>

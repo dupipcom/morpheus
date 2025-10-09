@@ -27,7 +27,10 @@
     "manageAccount": "Gérer Mon Compte",
     "signOut": "Se Déconnecter",
     "profile": "Profil",
-    "social": "Social"
+    "social": "Social",
+    "stash": "Réserve",
+    "equity": "Capitaux propres",
+    "totalEarnings": "Gains totaux"
   },
   "navigation": {
     "home": "Accueil",

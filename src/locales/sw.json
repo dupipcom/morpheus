@@ -25,7 +25,10 @@
     "dismiss": "Ondoa",
     "selectLanguage": "Chagua lugha",
     "manageAccount": "Dhibiti Akaunti Yangu",
-    "signOut": "Ondoka"
+    "signOut": "Ondoka",
+    "stash": "Hifadhi",
+    "equity": "Mtaji",
+    "totalEarnings": "Mapato ya jumla"
   },
   "navigation": {
     "home": "Nyumbani",
@@ -269,4 +272,4 @@
     "friends": "Marafiki",
     "signInToAdd": "Ingia ili kuongeza rafiki"
   }
-} 
+}

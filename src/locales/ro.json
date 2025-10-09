@@ -25,7 +25,10 @@
     "dismiss": "Închide",
     "selectLanguage": "Selectează limba",
     "manageAccount": "Gestionează contul meu",
-    "signOut": "Deconectare"
+    "signOut": "Deconectare",
+    "stash": "Stoc",
+    "equity": "Capital propriu",
+    "totalEarnings": "Câștiguri totale"
   },
   "navigation": {
     "home": "Acasă",
@@ -162,8 +165,8 @@
     "next": "Următor"
   },
   "errors": {
-    "notFound": "Ups! Nu s-a putut sintoniza pe această frecvență.",
-    "genericError": "Ceva nu a mers bine. Te rugăm să încerci din nou."
+    "notFound": "Ups! Nu s-a putut regla această frecvență.",
+    "genericError": "Ceva a mers greșit. Te rog încearcă din nou."
   },
   "social": {
     "title": "Contacte sociale",
@@ -229,10 +232,6 @@
     "placeholder": "Să vorbim...",
     "error": "Îmi pare rău, am întâlnit o eroare. Te rog încearcă din nou.",
     "failedToSend": "Trimiterea mesajului a eșuat. Te rog încearcă din nou."
-  },
-  "errors": {
-    "notFound": "Ups! Nu s-a putut regla această frecvență.",
-    "genericError": "Ceva a mers greșit. Te rog încearcă din nou."
   },
   "publicProfile": {
     "ctaTitle": "Start Your Own DreamPip Journey",
