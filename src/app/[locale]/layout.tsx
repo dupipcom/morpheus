@@ -1,7 +1,6 @@
 import { ReactNode } from 'react'
 import type { Metadata } from 'next'
 import { buildMetadata } from '@/app/metadata'
-import ClientLayoutWrapper from '@/components/ClientLayoutWrapper'
 
 interface LocalizedLayoutProps {
   children: ReactNode
@@ -12,9 +11,7 @@ export default async function LocalizedLayout({ children, params }: LocalizedLay
   const { locale } = await params
 
   return (
-    <ClientLayoutWrapper locale={locale}>
-      {children}
-    </ClientLayoutWrapper>
+    <>{children}</>
   )
 } 
 

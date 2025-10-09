@@ -58,7 +58,7 @@ import {
 import { WEEKLY_ACTIONS, DAILY_ACTIONS } from "@/app/constants"
 import { ArrowUpDown, ChevronDown, MoreHorizontal, Edit, X } from "lucide-react"
 import { GlobalContext } from "@/lib/contexts"
-import { updateUser, handleSettingsSubmit, isUserDataReady, useEnhancedLoadingState } from "@/lib/userUtils"
+import { updateUser, handleSettingsSubmit, isUserDataReady, useEnhancedLoadingState, useUserData } from "@/lib/userUtils"
 import { logger } from "@/lib/logger"
 import { SettingsSkeleton } from "@/components/ui/skeleton-loader"
 import { useI18n } from "@/lib/contexts/i18n"
@@ -116,10 +116,7 @@ export const SettingsView = ({ timeframe = "day" }) => {
 
   const serverSettings = (session?.user?.settings) || {}
 
-  const { data, mutate, error, isLoading } = useSWR(
-    session?.user ? `/api/user` : null, 
-    () => updateUser(session, setGlobalContext, { session, theme })
-  )
+  const { mutate, isLoading, refreshUser } = useUserData()
 
 
 
@@ -127,22 +124,22 @@ export const SettingsView = ({ timeframe = "day" }) => {
   const handleDailyAdd = async () => {
     const payload = [...session?.user?.settings?.dailyTemplate, dailyEntry.current]
     await handleSettingsSubmit(payload, "dailyTemplate")
-    mutate('/api/v1/user')
+    await refreshUser()
   }
 
   const handleWeeklyAdd = async () => {
     await handleSettingsSubmit([...session?.user?.settings?.weeklyTemplate, weeklyEntry.current], "weeklyTemplate")
-    mutate('/api/v1/user')
+    await refreshUser()
   }
 
   const handleDailyDelete = async (e) => {
     await handleSettingsSubmit(session?.user?.settings?.dailyTemplate.filter((task) => task.name !== e), "dailyTemplate")
-    mutate('/api/v1/user')
+    await refreshUser()
   }
 
   const handleWeeklyDelete = async (e) => {
     await handleSettingsSubmit(session?.user?.settings?.weeklyTemplate.filter((task) => task.name !== e), "weeklyTemplate")
-    mutate('/api/v1/user')
+    await refreshUser()
   }
 
   const handleDailyBulkDelete = async () => {
@@ -154,7 +151,7 @@ export const SettingsView = ({ timeframe = "day" }) => {
       const filteredTemplate = session?.user?.settings?.dailyTemplate.filter((task) => !selectedNames.includes(task.name))
       await handleSettingsSubmit(filteredTemplate, "dailyTemplate")
       setDailyRowSelection({})
-      mutate('/api/v1/user')
+      await refreshUser()
     } catch (error) {
       logger('delete_daily_actions_error', `Error deleting daily actions: ${error}`)
     }
@@ -169,7 +166,7 @@ export const SettingsView = ({ timeframe = "day" }) => {
       const filteredTemplate = session?.user?.settings?.weeklyTemplate.filter((task) => !selectedNames.includes(task.name))
       await handleSettingsSubmit(filteredTemplate, "weeklyTemplate")
       setWeeklyRowSelection({})
-      mutate('/api/v1/user')
+      await refreshUser()
     } catch (error) {
       logger('delete_weekly_actions_error', `Error deleting weekly actions: ${error}`)
     }
@@ -204,7 +201,7 @@ export const SettingsView = ({ timeframe = "day" }) => {
       )
 
       await handleSettingsSubmit(updatedTemplate, templateKey)
-      mutate('/api/v1/user')
+      await refreshUser()
       setIsEditOpen(false)
       setEditingAction(null)
     } catch (error) {

@@ -46,7 +46,7 @@ import { MoodView } from "@/views/moodView"
 
 import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
-import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil, isUserDataReady, useEnhancedLoadingState, handleMoodSubmit } from "@/lib/userUtils"
+import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil, isUserDataReady, useEnhancedLoadingState, handleMoodSubmit, useUserData } from "@/lib/userUtils"
 import { TaskViewSkeleton } from "@/components/ui/skeleton-loader"
 import { ContentLoadingWrapper } from '@/components/ContentLoadingWrapper'
 import { DAILY_ACTIONS, WEEKLY_ACTIONS, getLocalizedTaskNames } from "@/app/constants"
@@ -98,6 +98,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   
   const earnings = Object.keys(session?.user?.entries || 0).length > 0 ? timeframe === "day" ? session?.user?.entries[year]?.days[date]?.earnings?.toFixed(2) : session?.user?.entries[year]?.weeks[weekNumber]?.earnings?.toFixed(2) : 0
 
+  // removed debug log
 
 
   const userTasks = useMemo(() => {
@@ -244,7 +245,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       return true
     }
     return moodValues.every((value: any) => Number(value) === 0)
-  }, [fullDay, year, date, session?.user?.id])
+  }, [fullDay, year, date, session?.user?.userId])
 
 
   const handleDone = async (values) => {
@@ -416,7 +417,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       }
     }
 
-    await updateUser(session, setGlobalContext, { session, theme })
+    await refreshUser()
 
   }, 2000)
 
@@ -460,7 +461,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       if (response.ok) {
         // Update the actual favorites state on success
         setFavorites(currentOptimisticFavorites)
-        await updateUser(session, setGlobalContext, { session, theme })
+        await refreshUser()
       } else {
         console.error('Failed to save favorites:', response.status, response.statusText)
         // Revert optimistic state on error
@@ -510,7 +511,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
         body: JSON.stringify(payload)
       })
       if (response.ok) {
-        await updateUser(session, setGlobalContext, { session, theme })
+        await refreshUser()
       } else {
         console.error('Failed to save task contacts:', response.status, response.statusText)
       }
@@ -538,7 +539,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
         body: JSON.stringify(payload)
       })
       if (response.ok) {
-        await updateUser(session, setGlobalContext, { session, theme })
+        await refreshUser()
       } else {
         console.error('Failed to save task things:', response.status, response.statusText)
       }
@@ -607,7 +608,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       })
       
       if (response.ok) {
-        await updateUser(session, setGlobalContext, { session, theme })
+        await refreshUser()
         setNewEphemeralTask({ name: '', area: 'self', category: 'custom', saveToTemplate: false })
         setShowAddEphemeral(false)
       } else {
@@ -641,7 +642,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       })
       
       if (response.ok) {
-        await updateUser(session, setGlobalContext, { session, theme })
+        await refreshUser()
       } else {
         console.error('Failed to delete ephemeral task:', response.status, response.statusText)
       }
@@ -652,7 +653,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
 
   const handleCloseDates = async (values) => {
     await handleCloseDatesUtil(values, timeframe)
-    await updateUser(session, setGlobalContext, { session, theme })
+    await refreshUser()
   }
 
   const handleEditDay = (date) => {
@@ -670,10 +671,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     // The session will be updated naturally when the user navigates or refreshes
   }, 1000)
 
-  const { data, mutate, error, isLoading } = useSWR(
-    session?.user ? `/api/user` : null,
-    () => updateUser(session, setGlobalContext, { session, theme })
-  )
+  const { isLoading, refreshUser } = useUserData(session, setGlobalContext)
 
   // Fetch contacts
   const { data: contactsData, mutate: mutateContacts, isLoading: contactsLoading } = useSWR(
@@ -721,30 +719,26 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     setValues(userDone)
   }, [userDone])
 
-  useEffect(() => {
-    // Only update user and generate insights if user is properly authenticated
-    if (session?.user?.id && userEntries) {
-      updateUser(session, setGlobalContext, { session, theme })
-      generateInsight(setInsight, 'test', locale)
-    }
-  }, [locale, session?.user?.id, userEntries])
+  // removed debug log
+
+  // No on-mount refresh to avoid duplicate GETs; rely on SWR cache
 
   // Use enhanced loading state to prevent flashing
   const isDataLoading = useEnhancedLoadingState(isLoading, session, 100, timeframe)
 
-  if (isLoading) {
+  if (isDataLoading) {
     return <TaskViewSkeleton />
   }
 
   // Check if user is properly authenticated and session is valid
-  if (!session?.user || !session?.user?.id || Object.keys(session.user).length === 0) {
-    return <TaskViewSkeleton />
-  }
+  // if (!session?.user || !session?.user?.userId || Object.keys(session.user).length === 0) {
+  //   return <TaskViewSkeleton />
+  // }
 
   // Additional check to ensure user data is accessible (prevents showing data for expired sessions)
-  if (!userEntries || typeof userEntries !== 'object') {
-    return <TaskViewSkeleton />
-  }
+  // if (!userEntries || typeof userEntries !== 'object') {
+  //   return <TaskViewSkeleton />
+  // }
 
   return <div className="max-w-[1200px] m-auto p-4">
     <p className="sticky top-25 truncate z-[999] text-center scroll-m-20 text-sm font-semibold tracking-tight mb-8">{t('tasks.editing', { timeframe: timeframe === "day" ? date : t('tasks.weekNumber', { number: weekNumber }) })} {!!earnings > 0 ? `($${earnings})` : ''}</p>
