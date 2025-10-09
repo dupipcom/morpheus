@@ -27,7 +27,10 @@
     "manageAccount": "Hallitse tiliäni",
     "signOut": "Kirjaudu ulos",
     "profile": "Profiili",
-    "social": "Sosiaalinen"
+    "social": "Sosiaalinen",
+    "stash": "Varasto",
+    "equity": "Oma pääoma",
+    "totalEarnings": "Kokonaistulot"
   },
   "navigation": {
     "dashboard": "Kojelauta",
@@ -172,7 +175,7 @@
     "next": "Seuraava"
   },
   "errors": {
-    "notFound": "Ups! Ei voitu virittää tätä taajuutta.",
+    "notFound": "Hups! Ei voitu virittää tätä taajuutta.",
     "genericError": "Jokin meni pieleen. Yritä uudelleen."
   },
   "social": {
@@ -239,10 +242,6 @@
     "placeholder": "Chatataan...",
     "error": "Anteeksi, kohtasimme virheen. Yritä uudelleen.",
     "failedToSend": "Viestin lähettäminen epäonnistui. Yritä uudelleen."
-  },
-  "errors": {
-    "notFound": "Hups! Ei voitu virittää tätä taajuutta.",
-    "genericError": "Jokin meni pieleen. Yritä uudelleen."
   },
   "publicProfile": {
     "ctaTitle": "Start Your Own DreamPip Journey",

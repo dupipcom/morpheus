@@ -27,7 +27,10 @@
     "manageAccount": "Zarządzaj moim kontem",
     "signOut": "Wyloguj się",
     "profile": "Profil",
-    "social": "Społeczność"
+    "social": "Społeczność",
+    "stash": "Zapasy",
+    "equity": "Kapitał własny",
+    "totalEarnings": "Całkowite dochody"
   },
   "navigation": {
     "dashboard": "Panel",
@@ -186,7 +189,7 @@
     "earningsScale": "Skala zarobków"
   },
   "errors": {
-    "notFound": "Ups! Nie można dostroić do tej częstotliwości.",
+    "notFound": "Ups! Nie można dostroić tej częstotliwości.",
     "genericError": "Coś poszło nie tak. Spróbuj ponownie."
   },
   "social": {
@@ -253,10 +256,6 @@
     "placeholder": "Porozmawiajmy...",
     "error": "Przepraszam, napotkałem błąd. Spróbuj ponownie.",
     "failedToSend": "Nie udało się wysłać wiadomości. Spróbuj ponownie."
-  },
-  "errors": {
-    "notFound": "Ups! Nie można dostroić tej częstotliwości.",
-    "genericError": "Coś poszło nie tak. Spróbuj ponownie."
   },
   "publicProfile": {
     "ctaTitle": "Start Your Own DreamPip Journey",

@@ -85,9 +85,14 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   const weekNumber = getWeekNumber(fullDate)[1]
 
   if (data.availableBalance) {
+    const newAvailableBalance = data.availableBalance
+    const currentStash = parseFloat(user.stash || "0")
+    const newEquity = (parseFloat(newAvailableBalance) - currentStash).toString()
+    
     await prisma.user.update({
       data: {
-        availableBalance: data.availableBalance
+        availableBalance: newAvailableBalance,
+        equity: newEquity
       },
       where: { id: user.id },
     })
@@ -243,9 +248,9 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
 
   const weekMoodAverage = weekMoodValues.length > 0 ? weekMoodValues.reduce((acc, cur) => Number(acc) + Number(cur), 0) / weekMoodValues.length : 0
 
-  const availableBalance = Number(user?.availableBalance) || 0
-  const dayEarnings = ((5 - dayMoodAverage)) * 0.2 + ((dayProgress * 0.80)) * availableBalance / 30
-  const weekEarnings = ((5 - weekMoodAverage)) * 0.2 + ((weekProgress * 0.80)) * availableBalance / 4
+  const userEquity = Number(user?.equity) || 0
+  const dayEarnings = ((5 - dayMoodAverage)) * 0.2 + ((dayProgress * 0.80)) * userEquity / 30
+  const weekEarnings = ((5 - weekMoodAverage)) * 0.2 + ((weekProgress * 0.80)) * userEquity / 4
 
   if (data.weekActions?.length && user) {
     // Add contacts to tasks if provided
@@ -585,9 +590,18 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
         status: "Closed" 
       })
       
+      // Calculate earnings for this day and update stash
+      const dayEarnings = parseFloat(integrityDayData.earnings) || 0
+      const currentStash = parseFloat(user.stash || "0")
+      const newStash = (currentStash + dayEarnings).toString()
+      const availableBalance = parseFloat(user.availableBalance || "0")
+      const newEquity = (availableBalance - parseFloat(newStash)).toString()
+      
       await prisma.user.update({
         data: {
           entries: updatedEntries,
+          stash: newStash,
+          equity: newEquity,
         },
         where: { id: user.id },
       })
@@ -612,14 +626,41 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
         status: "Closed" 
       })
       
+      // Calculate earnings for this week and update stash
+      const weekEarnings = parseFloat(integrityWeekData.earnings) || 0
+      const currentStash = parseFloat(user.stash || "0")
+      const newStash = (currentStash + weekEarnings).toString()
+      const availableBalance = parseFloat(user.availableBalance || "0")
+      const newEquity = (availableBalance - parseFloat(newStash)).toString()
+      
       await prisma.user.update({
         data: {
           entries: updatedEntries,
+          stash: newStash,
+          equity: newEquity,
         },
         where: { id: user.id },
       })
       user = await getUser()
     }
+  }
+
+  if (data?.withdrawStash) {
+    const currentStash = parseFloat(user.stash || "0")
+    const currentTotalEarnings = parseFloat(user.totalEarnings || "0")
+    const newTotalEarnings = (currentTotalEarnings + currentStash).toString()
+    const availableBalance = parseFloat(user.availableBalance || "0")
+    const newEquity = (availableBalance - 0).toString() // Equity becomes availableBalance since stash is 0
+    
+    await prisma.user.update({
+      data: {
+        stash: "0",
+        totalEarnings: newTotalEarnings,
+        equity: newEquity,
+      },
+      where: { id: user.id },
+    })
+    user = await getUser()
   }
 
   if (data?.settings) {

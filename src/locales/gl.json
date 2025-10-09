@@ -27,7 +27,10 @@
     "manageAccount": "Xestionar a miña conta",
     "signOut": "Pechar sesión",
     "profile": "Perfil",
-    "social": "Social"
+    "social": "Social",
+    "stash": "Reserva",
+    "equity": "Patrimonio",
+    "totalEarnings": "Ganancias Totais"
   },
   "navigation": {
     "home": "Inicio",
@@ -172,7 +175,7 @@
   },
   "errors": {
     "notFound": "Ups! Non se puido sintonizar esta frecuencia.",
-    "genericError": "Algo saíu mal. Por favor, inténtao de novo."
+    "genericError": "Algo saiu mal. Por favor, inténtao de novo."
   },
   "social": {
     "title": "Contactos sociais",
@@ -238,10 +241,6 @@
     "placeholder": "Falemos...",
     "error": "Síntoo, atopei un erro. Por favor, inténtao de novo.",
     "failedToSend": "Fallou o envío da mensaxe. Por favor, inténtao de novo."
-  },
-  "errors": {
-    "notFound": "Ups! Non se puido sintonizar esta frecuencia.",
-    "genericError": "Algo saiu mal. Por favor, inténtao de novo."
   },
   "publicProfile": {
     "ctaTitle": "Start Your Own DreamPip Journey",

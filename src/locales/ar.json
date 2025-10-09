@@ -27,7 +27,10 @@
     "settings": "الإعدادات",
     "signUp": "إنشاء حساب",
     "profile": "الملف الشخصي",
-    "social": "اجتماعي"
+    "social": "اجتماعي",
+    "stash": "الاحتياطي",
+    "equity": "الأسهم",
+    "totalEarnings": "إجمالي الأرباح"
   },
   "navigation": {
     "dashboard": "لوحة التحكم",

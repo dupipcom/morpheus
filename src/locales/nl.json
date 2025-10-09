@@ -27,7 +27,10 @@
     "manageAccount": "Mijn account beheren",
     "signOut": "Uitloggen",
     "profile": "Profiel",
-    "social": "Sociaal"
+    "social": "Sociaal",
+    "stash": "Voorraad",
+    "equity": "Eigen vermogen",
+    "totalEarnings": "Totale inkomsten"
   },
   "navigation": {
     "home": "Home",
@@ -164,7 +167,7 @@
     "next": "Volgende"
   },
   "errors": {
-    "notFound": "Oeps! Kon niet afstemmen op deze frequentie.",
+    "notFound": "Oeps! Kon deze frequentie niet afstemmen.",
     "genericError": "Er is iets misgegaan. Probeer het opnieuw."
   },
   "social": {
@@ -231,10 +234,6 @@
     "placeholder": "Laten we chatten...",
     "error": "Sorry, ik ben een fout tegengekomen. Probeer opnieuw.",
     "failedToSend": "Bericht verzenden mislukt. Probeer opnieuw."
-  },
-  "errors": {
-    "notFound": "Oeps! Kon deze frequentie niet afstemmen.",
-    "genericError": "Er is iets misgegaan. Probeer het opnieuw."
   },
   "publicProfile": {
     "ctaTitle": "Begin je eigen DreamPip reis",

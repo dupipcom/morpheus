@@ -27,7 +27,10 @@
     "manageAccount": "Manage My Account",
     "signOut": "Sign Out",
     "profile": "Profile",
-    "social": "Social"
+    "social": "Social",
+    "stash": "Stash",
+    "equity": "Equity",
+    "totalEarnings": "Total Earnings"
   },
   "navigation": {
     "home": "Home",
@@ -273,4 +276,4 @@
     "friends": "Friends",
     "signInToAdd": "Sign In to Add Friend"
   }
-} 
+}

@@ -27,7 +27,10 @@
     "manageAccount": "Gestionar el meu compte",
     "signOut": "Tancar sessió",
     "profile": "Perfil",
-    "social": "Social"
+    "social": "Social",
+    "stash": "Reserva",
+    "equity": "Patrimoni",
+    "totalEarnings": "Guanys Totals"
   },
   "navigation": {
     "home": "Inici",
@@ -165,7 +168,7 @@
   },
   "errors": {
     "notFound": "Ups! No s'ha pogut sintonitzar aquesta freqüència.",
-    "genericError": "Alguna cosa ha anat malament. Si us plau, torna-ho a provar."
+    "genericError": "Alguna cosa ha anat malament. Si us plau, torna-ho a intentar."
   },
   "social": {
     "title": "Contactes Socials",
@@ -231,10 +234,6 @@
     "placeholder": "Parlem...",
     "error": "Ho sento, he trobat un error. Si us plau, torna-ho a intentar.",
     "failedToSend": "L'enviament del missatge ha fallat. Si us plau, torna-ho a intentar."
-  },
-  "errors": {
-    "notFound": "Ups! No s'ha pogut sintonitzar aquesta freqüència.",
-    "genericError": "Alguna cosa ha anat malament. Si us plau, torna-ho a intentar."
   },
   "publicProfile": {
     "ctaTitle": "Start Your Own DreamPip Journey",

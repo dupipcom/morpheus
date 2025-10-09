@@ -25,7 +25,10 @@
     "dismiss": "Bezárás",
     "selectLanguage": "Nyelv kiválasztása",
     "manageAccount": "Fiókom kezelése",
-    "signOut": "Kijelentkezés"
+    "signOut": "Kijelentkezés",
+    "stash": "Készlet",
+    "equity": "Saját tőke",
+    "totalEarnings": "Összes bevétel"
   },
   "navigation": {
     "home": "Kezdőlap",
@@ -162,8 +165,8 @@
     "next": "Következő"
   },
   "errors": {
-    "notFound": "Ups! Nem sikerült beállítani ezt a frekvenciát.",
-    "genericError": "Valami hiba történt. Kérjük, próbáld újra."
+    "notFound": "Hoppá! Nem sikerült beállítani ezt a frekvenciát.",
+    "genericError": "Valami elromlott. Kérjük, próbálja újra."
   },
   "social": {
     "title": "Közösségi kapcsolatok",
@@ -229,10 +232,6 @@
     "placeholder": "Beszéljünk...",
     "error": "Sajnálom, hibába ütköztem. Próbálja újra.",
     "failedToSend": "Az üzenet küldése sikertelen. Próbálja újra."
-  },
-  "errors": {
-    "notFound": "Hoppá! Nem sikerült beállítani ezt a frekvenciát.",
-    "genericError": "Valami elromlott. Kérjük, próbálja újra."
   },
   "publicProfile": {
     "ctaTitle": "Start Your Own DreamPip Journey",

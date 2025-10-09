@@ -27,7 +27,10 @@
     "manageAccount": "Mein Konto verwalten",
     "signOut": "Abmelden",
     "profile": "Profil",
-    "social": "Social"
+    "social": "Social",
+    "stash": "Vorrat",
+    "equity": "Eigenkapital",
+    "totalEarnings": "Gesamteinnahmen"
   },
   "navigation": {
     "home": "Startseite",

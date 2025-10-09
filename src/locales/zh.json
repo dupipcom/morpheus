@@ -27,7 +27,10 @@
     "manageAccount": "管理我的账户",
     "signOut": "退出登录",
     "profile": "个人资料",
-    "social": "社交"
+    "social": "社交",
+    "stash": "库存",
+    "equity": "股本",
+    "totalEarnings": "总收入"
   },
   "navigation": {
     "home": "首页",

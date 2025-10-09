@@ -27,7 +27,10 @@
     "manageAccount": "내 계정 관리",
     "signOut": "로그아웃",
     "profile": "프로필",
-    "social": "소셜"
+    "social": "소셜",
+    "stash": "재고",
+    "equity": "자기자본",
+    "totalEarnings": "총 수익"
   },
   "navigation": {
     "home": "홈",
@@ -177,7 +180,6 @@
     "balance": "잔액",
     "earningsScale": "수익 스케일"
   },
- 
   "social": {
     "title": "소셜 연락처",
     "addNewContact": "새 연락처 추가",

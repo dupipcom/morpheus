@@ -27,7 +27,10 @@
     "manageAccount": "アカウント管理",
     "signOut": "サインアウト",
     "profile": "プロフィール",
-    "social": "ソーシャル"
+    "social": "ソーシャル",
+    "stash": "ストック",
+    "equity": "自己資本",
+    "totalEarnings": "総収益"
   },
   "navigation": {
     "home": "ホーム",
