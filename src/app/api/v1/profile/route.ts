@@ -23,6 +23,24 @@ export async function GET(req: NextRequest) {
       return Response.json({ error: 'User not found' }, { status: 404 })
     }
 
+    // Get Clerk user data to sync imageUrl
+    const clerkUser = await currentUser()
+    if (clerkUser && user.profile) {
+      // Update profile with Clerk's imageUrl if it's different
+      if (clerkUser.imageUrl && user.profile.profilePicture !== clerkUser.imageUrl) {
+        await prisma.profile.update({
+          where: { userId: user.id },
+          data: { profilePicture: clerkUser.imageUrl }
+        })
+        // Refetch user with updated profile
+        const updatedUser = await prisma.user.findUnique({
+          where: { userId },
+          include: { profile: true }
+        })
+        return Response.json({ user: updatedUser, profile: updatedUser?.profile })
+      }
+    }
+
     return Response.json({ user, profile: user.profile })
   } catch (error) {
     console.error('Error fetching profile:', error)
@@ -50,9 +68,10 @@ export async function POST(req: NextRequest) {
       return Response.json({ error: 'User not found' }, { status: 404 })
     }
 
-    // Get Clerk user data to ensure username comes from Clerk
+    // Get Clerk user data to ensure username and imageUrl come from Clerk
     const clerkUser = await currentUser()
     const clerkUsername = clerkUser?.username || null
+    const clerkImageUrl = clerkUser?.imageUrl || null
 
     // Check if profile already exists
     const existingProfile = await prisma.profile.findUnique({
@@ -61,7 +80,7 @@ export async function POST(req: NextRequest) {
 
     let profile
     if (existingProfile) {
-      // Update existing profile - use Clerk username, ignore manual username
+      // Update existing profile - use Clerk username and imageUrl, ignore manual values
       profile = await prisma.profile.update({
         where: { userId: user.id },
         data: {
@@ -69,7 +88,7 @@ export async function POST(req: NextRequest) {
           lastName: data.lastName,
           userName: clerkUsername, // Always use Clerk's username
           bio: data.bio,
-          profilePicture: data.profilePicture,
+          profilePicture: clerkImageUrl, // Always use Clerk's imageUrl
           publicCharts: data.publicCharts,
           firstNameVisible: data.firstNameVisible ?? false,
           lastNameVisible: data.lastNameVisible ?? false,
@@ -80,7 +99,7 @@ export async function POST(req: NextRequest) {
         }
       })
     } else {
-      // Create new profile - use Clerk username, ignore manual username
+      // Create new profile - use Clerk username and imageUrl, ignore manual values
       profile = await prisma.profile.create({
         data: {
           userId: user.id,
@@ -88,7 +107,7 @@ export async function POST(req: NextRequest) {
           lastName: data.lastName,
           userName: clerkUsername, // Always use Clerk's username
           bio: data.bio,
-          profilePicture: data.profilePicture,
+          profilePicture: clerkImageUrl, // Always use Clerk's imageUrl
           publicCharts: data.publicCharts,
           firstNameVisible: data.firstNameVisible ?? false,
           lastNameVisible: data.lastNameVisible ?? false,

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useContext } from 'react'
-import { useAuth } from '@clerk/nextjs'
+import { useAuth, useUser } from '@clerk/nextjs'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -17,9 +17,11 @@ import { AnalyticsView } from "@/views/analyticsView"
 import { useDebounce } from "@/lib/hooks/useDebounce"
 import { generatePublicChartsData } from "@/lib/profileUtils"
 import { PublicChartsView } from "@/components/PublicChartsView"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export default function ProfilePage({ params }: { params: Promise<{ locale: string }> }) {
   const { isLoaded, isSignedIn } = useAuth()
+  const { user: clerkUser } = useUser()
   const { t } = useI18n()
   const { session, setGlobalContext, theme } = useContext(GlobalContext)
   
@@ -28,7 +30,6 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
     lastName: '',
     userName: '',
     bio: '',
-    profilePicture: '',
     firstNameVisible: false,
     lastNameVisible: false,
     userNameVisible: false,
@@ -64,7 +65,6 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
             lastName: data.profile.lastName || '',
             userName: data.profile.userName || '',
             bio: data.profile.bio || '',
-            profilePicture: data.profile.profilePicture || '',
             firstNameVisible: data.profile.firstNameVisible || false,
             lastNameVisible: data.profile.lastNameVisible || false,
             userNameVisible: data.profile.userNameVisible || false,
@@ -138,9 +138,9 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
       <main className="">
         <ViewMenu active="profile" />
         <div className="max-w-4xl mx-auto p-4">
-          <div className="animate-pulse space-y-4">
-            <div className="h-8 bg-gray-200 rounded w-1/4"></div>
-            <div className="h-32 bg-gray-200 rounded"></div>
+          <div className="space-y-4">
+            <Skeleton className="h-8 w-1/4" />
+            <Skeleton className="h-32 w-full" />
           </div>
         </div>
       </main>
@@ -243,23 +243,6 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
                 </div>
               </div>
               
-              <div>
-                <Label htmlFor="profilePicture">{t('profile.profilePicture')}</Label>
-                <Input
-                  id="profilePicture"
-                  value={profile.profilePicture}
-                  onChange={(e) => handleProfileChange('profilePicture', e.target.value)}
-                  placeholder={t('profile.profilePicturePlaceholder')}
-                />
-                <div className="flex items-center space-x-2 mt-2">
-                  <Switch
-                    id="profilePicture-visible"
-                    checked={profile.profilePictureVisible}
-                    onCheckedChange={(checked) => handleProfileChange('profilePictureVisible', checked)}
-                  />
-                  <Label htmlFor="profilePicture-visible">{t('profile.makePublic')}</Label>
-                </div>
-              </div>
               
             </CardContent>
           </Card>
@@ -343,9 +326,9 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
           </CardHeader>
           <CardContent>
             <div className="flex items-center space-x-4">
-              {profile.profilePictureVisible && profile.profilePicture && (
+              {profile.profilePictureVisible && clerkUser?.imageUrl && (
                 <img 
-                  src={profile.profilePicture} 
+                  src={clerkUser.imageUrl} 
                   alt="Profile" 
                   className="w-16 h-16 rounded-full object-cover"
                 />
