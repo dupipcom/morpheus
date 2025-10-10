@@ -79,7 +79,7 @@ const moodChartConfig = {
 const simplifiedMoodChartConfig = {
   moodAverage: {
     label: "Mood Average (%)",
-    color: "#2f2f8d",
+    color: "var(--chart-2)",
   },
 } satisfies ChartConfig
 
@@ -232,8 +232,8 @@ export function PublicChartsView({ chartsData }: PublicChartsViewProps) {
               <Area 
                 type="monotone" 
                 dataKey="moodAverage" 
-                stroke="#2f2f8d" 
-                fill="#2f2f8d" 
+                stroke="var(--chart-2)" 
+                fill="var(--chart-2)" 
                 radius={4} 
                 fillOpacity={0.4} 
               />

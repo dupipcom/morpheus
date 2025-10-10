@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Users, Check, X, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
+import { useI18n } from '@/lib/contexts/i18n'
 
 interface FriendRequest {
   id: string
@@ -25,6 +26,7 @@ interface FriendRequest {
 }
 
 export function FriendRequestsButton() {
+  const { t } = useI18n()
   const [friendRequests, setFriendRequests] = useState<FriendRequest[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isOpen, setIsOpen] = useState(false)
@@ -60,13 +62,13 @@ export function FriendRequestsButton() {
       if (response.ok) {
         // Remove the request from the list
         setFriendRequests(prev => prev.filter(req => req.id !== requesterId))
-        toast.success(data.message)
+        toast.success(data.message || t('toast.friendRequestProcessed'))
       } else {
-        toast.error(data.error || 'Failed to process friend request')
+        toast.error(data.error || t('toast.friendRequestProcessFailed'))
       }
     } catch (error) {
       console.error('Error handling friend request:', error)
-      toast.error('Failed to process friend request')
+      toast.error(t('toast.friendRequestProcessFailed'))
     }
   }
 

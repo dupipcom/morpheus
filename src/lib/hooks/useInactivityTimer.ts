@@ -1,5 +1,6 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { toast } from '@/components/ui/sonner';
+import { useI18n } from '@/lib/contexts/i18n';
 import { 
   setupInactivityTimer, 
   deleteClerkCookies, 
@@ -30,6 +31,29 @@ export const useInactivityTimer = ({
   enabled = true,
   onLogout
 }: UseInactivityTimerOptions = {}) => {
+  // Safe i18n usage with fallbacks
+  let t: (key: string, params?: any) => string;
+  try {
+    const i18n = useI18n();
+    t = i18n.t;
+  } catch (error) {
+    // Fallback to English if I18nProvider is not available
+    t = (key: string, params?: any) => {
+      const fallbacks: Record<string, string> = {
+        'toast.sessionExtended': 'Session extended successfully',
+        'toast.sessionExpiresIn': 'Session expires in {time}',
+        'toast.extendSession': 'Extend Session',
+        'toast.logoutNow': 'Logout Now'
+      };
+      let message = fallbacks[key] || key;
+      if (params && typeof params === 'object') {
+        Object.keys(params).forEach(param => {
+          message = message.replace(`{${param}}`, params[param]);
+        });
+      }
+      return message;
+    };
+  }
   const cleanupRef = useRef<(() => void) | null>(null);
   const countdownIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const toastIdRef = useRef<string | number | null>(null);
@@ -88,7 +112,7 @@ export const useInactivityTimer = ({
     updateLastActivity();
     
     // Show success toast
-    toast.success('Session extended successfully');
+    toast.success(t('toast.sessionExtended'));
     
     // Reset the inactivity timer
     if (cleanupRef.current) {
@@ -133,25 +157,25 @@ export const useInactivityTimer = ({
       
       // Update or create toast
       if (toastIdRef.current) {
-        toast.loading(`Session expires in ${timeString}`, {
+        toast.loading(t('toast.sessionExpiresIn', { time: timeString }), {
           id: toastIdRef.current,
           action: {
-            label: 'Extend Session',
+            label: t('toast.extendSession'),
             onClick: handleExtend,
           },
           cancel: {
-            label: 'Logout Now',
+            label: t('toast.logoutNow'),
             onClick: handleLogout,
           },
         });
       } else {
-        toastIdRef.current = toast.loading(`Session expires in ${timeString}`, {
+        toastIdRef.current = toast.loading(t('toast.sessionExpiresIn', { time: timeString }), {
           action: {
-            label: 'Extend Session',
+            label: t('toast.extendSession'),
             onClick: handleExtend,
           },
           cancel: {
-            label: 'Logout Now',
+            label: t('toast.logoutNow'),
             onClick: handleLogout,
           },
         });

@@ -7,7 +7,7 @@ import { toast } from 'sonner'
 import { useI18n } from '@/lib/contexts/i18n'
 
 interface AddFriendButtonProps {
-  targetUserId: string
+  targetUserName: string
   className?: string
 }
 
@@ -18,7 +18,7 @@ interface FriendshipStatus {
   friendshipStatus: 'close_friend' | 'friend' | 'pending' | 'none'
 }
 
-export function AddFriendButton({ targetUserId, className }: AddFriendButtonProps) {
+export function AddFriendButton({ targetUserName, className }: AddFriendButtonProps) {
   const { t } = useI18n()
   const [isLoading, setIsLoading] = useState(false)
   const [isSent, setIsSent] = useState(false)
@@ -29,7 +29,7 @@ export function AddFriendButton({ targetUserId, className }: AddFriendButtonProp
   useEffect(() => {
     const checkFriendshipStatus = async () => {
       try {
-        const response = await fetch(`/api/v1/friendship-status?targetUserId=${targetUserId}`)
+        const response = await fetch(`/api/v1/friendship-status?targetUserName=${targetUserName}`)
         if (response.ok) {
           const data = await response.json()
           setFriendshipStatus(data)
@@ -42,7 +42,7 @@ export function AddFriendButton({ targetUserId, className }: AddFriendButtonProp
     }
 
     checkFriendshipStatus()
-  }, [targetUserId])
+  }, [targetUserName])
 
   const handleAddFriend = async () => {
     if (isLoading || isSent) return
@@ -55,7 +55,7 @@ export function AddFriendButton({ targetUserId, className }: AddFriendButtonProp
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ targetUserId }),
+        body: JSON.stringify({ targetUserName }),
       })
 
       const data = await response.json()
@@ -64,7 +64,11 @@ export function AddFriendButton({ targetUserId, className }: AddFriendButtonProp
         setIsSent(true)
         toast.success(t('friends.requestSent'))
       } else {
-        toast.error(data.error || t('friends.failedToSend'))
+        // Check if it's a translation key or a plain error message
+        const errorMessage = data.error === 'friendRequestSelfError' 
+          ? t('toast.friendRequestSelfError')
+          : data.error || t('friends.failedToSend')
+        toast.error(errorMessage)
       }
     } catch (error) {
       console.error('Error sending friend request:', error)

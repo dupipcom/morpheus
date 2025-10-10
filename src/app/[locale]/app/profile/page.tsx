@@ -153,8 +153,8 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
         <ViewMenu active="profile" />
         <div className="max-w-4xl mx-auto p-4">
           <div className="text-center">
-            <h1 className="text-2xl font-bold mb-4">Please sign in to edit your profile</h1>
-            <Button><a href="/app/dashboard">Go to Dashboard</a></Button>
+            <h1 className="text-2xl font-bold mb-4">{t('profile.pleaseSignIn')}</h1>
+            <Button><a href="/app/dashboard">{t('profile.goToDashboard')}</a></Button>
           </div>
         </div>
       </main>
@@ -166,15 +166,15 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
       <ViewMenu active="profile" />
       <div className="max-w-4xl mx-auto p-4">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold">Edit Profile</h1>
+          <h1 className="text-2xl font-bold">{t('profile.editProfile')}</h1>
           {profile.userName && (
             <a 
-              href={`/@${profile.userName}`}
+              href={`/profile/${profile.userName}`}
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm text-muted-foreground hover:text-foreground"
             >
-              View Public Profile →
+              {t('profile.viewPublicProfile')} →
             </a>
           )}
         </div>
@@ -183,17 +183,17 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
           {/* Profile Information */}
           <Card>
             <CardHeader>
-              <CardTitle>Profile Information</CardTitle>
+              <CardTitle>{t('profile.profileInformation')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="firstName">First Name</Label>
+                  <Label htmlFor="firstName">{t('profile.firstName')}</Label>
                   <Input
                     id="firstName"
                     value={profile.firstName}
                     onChange={(e) => handleProfileChange('firstName', e.target.value)}
-                    placeholder="Enter your first name"
+                    placeholder={t('profile.firstNamePlaceholder')}
                   />
                   <div className="flex items-center space-x-2 mt-2">
                     <Switch
@@ -201,17 +201,17 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
                       checked={profile.firstNameVisible}
                       onCheckedChange={(checked) => handleProfileChange('firstNameVisible', checked)}
                     />
-                    <Label htmlFor="firstName-visible">Make public</Label>
+                    <Label htmlFor="firstName-visible">{t('profile.makePublic')}</Label>
                   </div>
                 </div>
                 
                 <div>
-                  <Label htmlFor="lastName">Last Name</Label>
+                  <Label htmlFor="lastName">{t('profile.lastName')}</Label>
                   <Input
                     id="lastName"
                     value={profile.lastName}
                     onChange={(e) => handleProfileChange('lastName', e.target.value)}
-                    placeholder="Enter your last name"
+                    placeholder={t('profile.lastNamePlaceholder')}
                   />
                   <div className="flex items-center space-x-2 mt-2">
                     <Switch
@@ -219,18 +219,18 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
                       checked={profile.lastNameVisible}
                       onCheckedChange={(checked) => handleProfileChange('lastNameVisible', checked)}
                     />
-                    <Label htmlFor="lastName-visible">Make public</Label>
+                    <Label htmlFor="lastName-visible">{t('profile.makePublic')}</Label>
                   </div>
                 </div>
               </div>
               
               <div>
-                <Label htmlFor="userName">Username</Label>
+                <Label htmlFor="userName">{t('profile.userName')}</Label>
                 <Input
                   id="userName"
                   value={profile.userName}
                   onChange={(e) => handleProfileChange('userName', e.target.value)}
-                  placeholder="Choose a unique username"
+                  placeholder={t('profile.userNamePlaceholder')}
                 />
                 <div className="flex items-center space-x-2 mt-2">
                   <Switch
@@ -238,17 +238,17 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
                     checked={profile.userNameVisible}
                     onCheckedChange={(checked) => handleProfileChange('userNameVisible', checked)}
                   />
-                  <Label htmlFor="userName-visible">Make public</Label>
+                  <Label htmlFor="userName-visible">{t('profile.makePublic')}</Label>
                 </div>
               </div>
               
               <div>
-                <Label htmlFor="bio">Bio</Label>
+                <Label htmlFor="bio">{t('profile.bio')}</Label>
                 <Textarea
                   id="bio"
                   value={profile.bio}
                   onChange={(e) => handleProfileChange('bio', e.target.value)}
-                  placeholder="Tell us about yourself"
+                  placeholder={t('profile.bioPlaceholder')}
                   rows={3}
                 />
                 <div className="flex items-center space-x-2 mt-2">
@@ -257,17 +257,17 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
                     checked={profile.bioVisible}
                     onCheckedChange={(checked) => handleProfileChange('bioVisible', checked)}
                   />
-                  <Label htmlFor="bio-visible">Make public</Label>
+                  <Label htmlFor="bio-visible">{t('profile.makePublic')}</Label>
                 </div>
               </div>
               
               <div>
-                <Label htmlFor="profilePicture">Profile Picture URL</Label>
+                <Label htmlFor="profilePicture">{t('profile.profilePicture')}</Label>
                 <Input
                   id="profilePicture"
                   value={profile.profilePicture}
                   onChange={(e) => handleProfileChange('profilePicture', e.target.value)}
-                  placeholder="https://example.com/your-picture.jpg"
+                  placeholder={t('profile.profilePicturePlaceholder')}
                 />
                 <div className="flex items-center space-x-2 mt-2">
                   <Switch
@@ -275,7 +275,7 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
                     checked={profile.profilePictureVisible}
                     onCheckedChange={(checked) => handleProfileChange('profilePictureVisible', checked)}
                   />
-                  <Label htmlFor="profilePicture-visible">Make public</Label>
+                  <Label htmlFor="profilePicture-visible">{t('profile.makePublic')}</Label>
                 </div>
               </div>
             </CardContent>
@@ -284,16 +284,16 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
           {/* Charts Visibility */}
           <Card>
             <CardHeader>
-              <CardTitle>Charts Visibility</CardTitle>
+              <CardTitle>{t('profile.chartsVisibility')}</CardTitle>
               <p className="text-sm text-muted-foreground">
-                Choose which charts to display on your public profile
+                {t('profile.chartsVisibilityDescription')}
               </p>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <Label>Mood Charts</Label>
-                  <p className="text-sm text-muted-foreground">Show detailed mood tracking data</p>
+                  <Label>{t('profile.moodCharts')}</Label>
+                  <p className="text-sm text-muted-foreground">{t('profile.moodChartsDescription')}</p>
                 </div>
                 <Switch
                   checked={publicCharts.moodCharts || false}
@@ -303,8 +303,8 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
               
               <div className="flex items-center justify-between">
                 <div>
-                  <Label>Simplified Mood Chart</Label>
-                  <p className="text-sm text-muted-foreground">Show only mood average</p>
+                  <Label>{t('profile.simplifiedMoodChart')}</Label>
+                  <p className="text-sm text-muted-foreground">{t('profile.simplifiedMoodChartDescription')}</p>
                 </div>
                 <Switch
                   checked={publicCharts.simplifiedMoodChart || false}
@@ -314,8 +314,8 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
               
               <div className="flex items-center justify-between">
                 <div>
-                  <Label>Productivity Charts</Label>
-                  <p className="text-sm text-muted-foreground">Show task completion data</p>
+                  <Label>{t('profile.productivityCharts')}</Label>
+                  <p className="text-sm text-muted-foreground">{t('profile.productivityChartsDescription')}</p>
                 </div>
                 <Switch
                   checked={publicCharts.productivityCharts || false}
@@ -325,8 +325,8 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
               
               <div className="flex items-center justify-between">
                 <div>
-                  <Label>Earnings Charts</Label>
-                  <p className="text-sm text-muted-foreground">Show financial data</p>
+                  <Label>{t('profile.earningsCharts')}</Label>
+                  <p className="text-sm text-muted-foreground">{t('profile.earningsChartsDescription')}</p>
                 </div>
                 <Switch
                   checked={publicCharts.earningsCharts || false}
@@ -338,8 +338,8 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
               
               <div className="flex items-center justify-between">
                 <div>
-                  <Label>Make All Charts Public</Label>
-                  <p className="text-sm text-muted-foreground">Show all your analytics data</p>
+                  <Label>{t('profile.makeAllChartsPublic')}</Label>
+                  <p className="text-sm text-muted-foreground">{t('profile.makeAllChartsPublicDescription')}</p>
                 </div>
                 <Switch
                   checked={profile.publicChartsVisible}
@@ -353,9 +353,9 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
         {/* Preview Section */}
         <Card className="mt-6">
           <CardHeader>
-            <CardTitle>Preview</CardTitle>
+            <CardTitle>{t('profile.preview')}</CardTitle>
             <p className="text-sm text-muted-foreground">
-              This is how your profile will appear to others
+              {t('profile.previewDescription')}
             </p>
           </CardHeader>
           <CardContent>
@@ -382,17 +382,17 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
             
             {profile.publicChartsVisible && (
               <div className="mt-4">
-                <h4 className="font-medium mb-2">Public Charts</h4>
+                <h4 className="font-medium mb-2">{t('profile.publicCharts')}</h4>
                 <div className="space-y-2 mb-4">
-                  {publicCharts.moodCharts && <Badge variant="outline">Mood Charts</Badge>}
-                  {publicCharts.simplifiedMoodChart && <Badge variant="outline">Simplified Mood Chart</Badge>}
-                  {publicCharts.productivityCharts && <Badge variant="outline">Productivity Charts</Badge>}
-                  {publicCharts.earningsCharts && <Badge variant="outline">Earnings Charts</Badge>}
+                  {publicCharts.moodCharts && <Badge variant="outline">{t('profile.moodCharts')}</Badge>}
+                  {publicCharts.simplifiedMoodChart && <Badge variant="outline">{t('profile.simplifiedMoodChart')}</Badge>}
+                  {publicCharts.productivityCharts && <Badge variant="outline">{t('profile.productivityCharts')}</Badge>}
+                  {publicCharts.earningsCharts && <Badge variant="outline">{t('profile.earningsCharts')}</Badge>}
                 </div>
                 
                 {/* Preview of actual charts */}
                 <div className="mt-4">
-                  <h5 className="text-sm font-medium mb-2">Chart Preview:</h5>
+                  <h5 className="text-sm font-medium mb-2">{t('profile.chartPreview')}</h5>
                   <div className="border rounded-md p-4 bg-muted/50">
                     <PublicChartsView chartsData={generateChartsData()} />
                   </div>
@@ -404,7 +404,7 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
 
         {saving && (
           <div className="fixed bottom-4 right-4 bg-primary text-primary-foreground px-4 py-2 rounded-md">
-            Saving...
+            {t('profile.saving')}
           </div>
         )}
       </div>

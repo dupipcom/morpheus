@@ -263,6 +263,35 @@
     "failedToSend": "No s'ha pogut enviar la sol·licitud d'amistat",
     "closeFriend": "Amic proper",
     "friends": "Amics",
-    "signInToAdd": "Inicia sessió per afegir un amic"
+    "signInToAdd": "Inicia sessió per afegir un amic",
+    "editProfile": "Editar perfil"
+  },
+  "toast": {
+    "sessionExtended": "Sessió estesa amb èxit",
+    "sessionExpiresIn": "La sessió expira en {time}",
+    "extendSession": "Estendre Sessió",
+    "logoutNow": "Tancar Sessió Ara",
+    "friendRemovedSuccess": "Amic eliminat amb èxit",
+    "friendRemoveFailed": "Error en eliminar l'amic",
+    "friendRequestProcessed": "Sol·licitud d'amistat processada amb èxit",
+    "friendRequestProcessFailed": "Error en processar la sol·licitud d'amistat",
+    "friendRequestAccepted": "Sol·licitud d'amistat acceptada",
+    "friendRequestDeclined": "Sol·licitud d'amistat rebutjada",
+    "profileSaved": "Perfil desat amb èxit",
+    "profileSaveFailed": "Error en desar el perfil",
+    "settingsSaved": "Configuració desada amb èxit",
+    "settingsSaveFailed": "Error en desar la configuració",
+    "dataSaved": "Dades desades amb èxit",
+    "dataSaveFailed": "Error en desar les dades",
+    "actionCompleted": "Acció completada amb èxit",
+    "actionFailed": "L'acció ha fallat",
+    "networkError": "Error de xarxa. Comprova la teva connexió.",
+    "serverError": "Error del servidor. Torna-ho a provar més tard.",
+    "validationError": "Comprova les teves dades i torna-ho a provar.",
+    "unauthorized": "No tens autorització per realitzar aquesta acció.",
+    "forbidden": "Accés denegat. No tens permís per realitzar aquesta acció.",
+    "notFound": "El recurs sol·licitat no s'ha trobat.",
+    "timeout": "La sol·licitud ha expirat. Torna-ho a provar.",
+    "unknownError": "S'ha produït un error inesperat. Torna-ho a provar."
   }
 }

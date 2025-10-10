@@ -89,13 +89,13 @@ export const SocialView = () => {
       if (response.ok) {
         // Remove the friend from the list
         setFriends(prev => prev.filter(friend => friend.id !== friendId))
-        toast.success('Friend removed successfully')
+        toast.success(t('toast.friendRemovedSuccess'))
       } else {
-        toast.error(data.error || 'Failed to remove friend')
+        toast.error(data.error || t('toast.friendRemoveFailed'))
       }
     } catch (error) {
       console.error('Error removing friend:', error)
-      toast.error('Failed to remove friend')
+      toast.error(t('toast.friendRemoveFailed'))
     }
   }
 

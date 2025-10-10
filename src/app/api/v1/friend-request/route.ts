@@ -11,15 +11,16 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { targetUserId } = await req.json()
+    const { targetUserName } = await req.json()
 
-    if (!targetUserId) {
-      return Response.json({ error: 'Target user ID is required' }, { status: 400 })
+    if (!targetUserName) {
+      return Response.json({ error: 'Target username is required' }, { status: 400 })
     }
 
     // Get the current user, create if doesn't exist
     let currentUser = await prisma.user.findUnique({
-      where: { userId }
+      where: { userId },
+      include: { profile: true }
     })
 
     if (!currentUser) {
@@ -32,13 +33,18 @@ export async function POST(req: NextRequest) {
             dailyTemplate: [],
             weeklyTemplate: []
           }
-        }
+        },
+        include: { profile: true }
       })
     }
 
-    // Check if target user exists
-    const targetUser = await prisma.user.findUnique({
-      where: { id: targetUserId }
+    // Check if target user exists by username
+    const targetUser = await prisma.user.findFirst({
+      where: { 
+        profile: {
+          userName: targetUserName
+        }
+      }
     })
 
     if (!targetUser) {
@@ -46,17 +52,17 @@ export async function POST(req: NextRequest) {
     }
 
     // Check if trying to add self as friend
-    if (currentUser.id === targetUserId) {
-      return Response.json({ error: 'Cannot add yourself as a friend' }, { status: 400 })
+    if (currentUser.profile?.userName === targetUserName) {
+      return Response.json({ error: 'friendRequestSelfError' }, { status: 400 })
     }
 
     // Check if already friends
-    if (currentUser.friends?.includes(targetUserId)) {
+    if (currentUser.friends?.includes(targetUser.id)) {
       return Response.json({ error: 'Already friends with this user' }, { status: 400 })
     }
 
     // Check if already in close friends
-    if (currentUser.closeFriends?.includes(targetUserId)) {
+    if (currentUser.closeFriends?.includes(targetUser.id)) {
       return Response.json({ error: 'Already close friends with this user' }, { status: 400 })
     }
 
@@ -67,7 +73,7 @@ export async function POST(req: NextRequest) {
 
     // Add friend request to target user's friendRequests array
     await prisma.user.update({
-      where: { id: targetUserId },
+      where: { id: targetUser.id },
       data: {
         friendRequests: {
           push: currentUser.id

@@ -12,15 +12,16 @@ export async function GET(req: NextRequest) {
 
   try {
     const { searchParams } = new URL(req.url)
-    const targetUserId = searchParams.get('targetUserId')
+    const targetUserName = searchParams.get('targetUserName')
 
-    if (!targetUserId) {
-      return Response.json({ error: 'Target user ID is required' }, { status: 400 })
+    if (!targetUserName) {
+      return Response.json({ error: 'Target username is required' }, { status: 400 })
     }
 
     // Get the current user
     let currentUser = await prisma.user.findUnique({
-      where: { userId }
+      where: { userId },
+      include: { profile: true }
     })
 
     if (!currentUser) {
@@ -33,14 +34,28 @@ export async function GET(req: NextRequest) {
             dailyTemplate: [],
             weeklyTemplate: []
           }
-        }
+        },
+        include: { profile: true }
       })
     }
 
+    // Get target user by username
+    const targetUser = await prisma.user.findFirst({
+      where: { 
+        profile: {
+          userName: targetUserName
+        }
+      }
+    })
+
+    if (!targetUser) {
+      return Response.json({ error: 'Target user not found' }, { status: 404 })
+    }
+
     // Check if users are already friends
-    const isFriend = currentUser.friends?.includes(targetUserId) || false
-    const isCloseFriend = currentUser.closeFriends?.includes(targetUserId) || false
-    const hasPendingRequest = currentUser.friendRequests?.includes(targetUserId) || false
+    const isFriend = currentUser.friends?.includes(targetUser.id) || false
+    const isCloseFriend = currentUser.closeFriends?.includes(targetUser.id) || false
+    const hasPendingRequest = currentUser.friendRequests?.includes(targetUser.id) || false
 
     return Response.json({ 
       isFriend,

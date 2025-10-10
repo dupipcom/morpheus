@@ -6,6 +6,7 @@ import { AddFriendButtonOrSignIn } from "@/components/AddFriendButtonOrSignIn"
 import { auth } from '@clerk/nextjs/server'
 import { I18nProvider } from '@/lib/contexts/i18n'
 import { loadTranslations } from '@/lib/i18n'
+import prisma from "@/lib/prisma"
 
 interface ProfileData {
   userId?: string
@@ -80,9 +81,25 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
     notFound()
   }
 
+  // Get current user's username to check if they're viewing their own profile
+  let currentUserUsername = null
+  if (userId) {
+    try {
+      const user = await prisma.user.findUnique({
+        where: { userId },
+        include: { profile: true }
+      })
+      currentUserUsername = user?.profile?.userName
+    } catch (error) {
+      console.error('Error fetching current user profile:', error)
+    }
+  }
+
   const fullName = [profile.firstName, profile.lastName].filter(Boolean).join(' ')
   const hasAnyPublicData = profile.firstName || profile.lastName || profile.userName || profile.bio || profile.profilePicture
-  const canAddFriend = profile.userId && (userId !== profile.userId)
+  const isOwnProfile = currentUserUsername === userName
+  const canAddFriend = !isOwnProfile && profile.userName
+  const canEditProfile = isOwnProfile
   const isLoggedIn = !!userId
 
   return (
@@ -113,11 +130,12 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
                   )}
                 </div>
               </div>
-              {canAddFriend && profile.userId && (
+              {(canAddFriend || canEditProfile) && profile.userName && (
                 <div className="flex justify-center md:justify-end">
                   <AddFriendButtonOrSignIn 
-                    targetUserId={profile.userId} 
+                    targetUserName={profile.userName} 
                     isLoggedIn={isLoggedIn}
+                    currentUserName={currentUserUsername || undefined}
                   />
                 </div>
               )}
