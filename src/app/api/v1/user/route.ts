@@ -390,7 +390,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     const dayTickerObj = calculateDayTickers(entries, year, date, dayEarnings, availD)
     // Also recalc week blended tickers so week horizons reflect daily changes
     const weekTickerSingleBlend = calculateWeekTicker(entries, year, weekNumber, weekEarnings, availD)
-    const weekTickerObjBlend = calculateWeekTickers(entries, year, weekNumber, weekEarnings, availD, date)
+    const weekTickerObjBlend = calculateWeekTickers(entries, year, weekNumber, weekEarnings, availD, date, { dateISO: date, earnings: dayEarnings, availableBalance: availD })
 
     await prisma.user.update({
       data: {
@@ -441,7 +441,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     const dayTickerObj2 = calculateDayTickers(user.entries, year, date, dayEarnings, availD2)
     // Also recalc week blended tickers so week horizons reflect daily changes
     const weekTickerSingleBlend2 = calculateWeekTicker(user.entries, year, weekNumber, weekEarnings, availD2)
-    const weekTickerObjBlend2 = calculateWeekTickers(user.entries, year, weekNumber, weekEarnings, availD2, date)
+    const weekTickerObjBlend2 = calculateWeekTickers(user.entries, year, weekNumber, weekEarnings, availD2, date, { dateISO: date, earnings: dayEarnings, availableBalance: availD2 })
     
     await prisma.user.update({
       data: {

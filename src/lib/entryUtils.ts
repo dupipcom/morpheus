@@ -428,7 +428,8 @@ export function calculateWeekTickers(
   week: number,
   currentEarnings: number,
   currentAvailableBalance: number,
-  currentDate: string
+  currentDate: string,
+  overrideDay?: { dateISO: string, earnings: number, availableBalance: number }
 ): Record<string, number> {
   const currentRatio = currentEarnings / (currentAvailableBalance || 1)
 
@@ -439,10 +440,41 @@ export function calculateWeekTickers(
     return isNaN(v) ? 0 : v
   }
 
-  const computeDayBlend = (daysAgo: number, weekDelta: number) => {
-    const d = getDaysAgoData(entries, year, currentDate, daysAgo)
-    const dr = d.earnings / (d.availableBalance || 1)
-    const dayDelta = calculatePercentageDelta(currentRatio, dr)
+  // Average daily ratio helpers: compare current window vs previous equal-length window
+  const averageDailyRatioForWindow = (endDateISO: string, windowDays: number): number => {
+    const end = new Date(endDateISO)
+    let sumRatios = 0
+    let countedDays = 0
+    for (let i = 0; i < windowDays; i++) {
+      const past = new Date(end)
+      past.setDate(past.getDate() - i)
+      const y = past.getFullYear()
+      const dayKey = past.toISOString().split('T')[0]
+      // If override matches this day, use override values
+      const dayData = (overrideDay && overrideDay.dateISO === dayKey)
+        ? { earnings: overrideDay.earnings, availableBalance: overrideDay.availableBalance }
+        : entries?.[y]?.days?.[dayKey]
+      if (!dayData) continue
+      const earnings = parseFloat((dayData as any).earnings) || 0
+      const avail = parseFloat((dayData as any).availableBalance) || 0
+      const ratio = earnings / (avail || 1)
+      sumRatios += ratio
+      countedDays += 1
+    }
+    return countedDays > 0 ? (sumRatios / countedDays) : 0
+  }
+
+  const computeDayWindowDelta = (windowDays: number): number => {
+    const currentAvg = averageDailyRatioForWindow(currentDate, windowDays)
+    const prevEnd = new Date(currentDate)
+    prevEnd.setDate(prevEnd.getDate() - windowDays)
+    const prevEndISO = prevEnd.toISOString().split('T')[0]
+    const prevAvg = averageDailyRatioForWindow(prevEndISO, windowDays)
+    return calculatePercentageDelta(currentAvg, prevAvg)
+  }
+
+  const computeBlend = (windowDays: number, weekDelta: number) => {
+    const dayDelta = computeDayWindowDelta(windowDays)
     const validWeek = isFinite(weekDelta)
     const validDay = isFinite(dayDelta)
     if (validWeek && validDay) return (weekDelta + dayDelta) / 2
@@ -452,15 +484,14 @@ export function calculateWeekTickers(
   }
 
   return {
-    // Blend week-based delta with day-based delta for equivalent or approximate day horizons
-    '1w': computeDayBlend(7, compute(1)),
-    '2w': computeDayBlend(14, compute(2)),
-    // 1M ~ 30d; keep 4w key for storage but blend with 30d
-    '4w': computeDayBlend(30, compute(4)),
-    '12w': computeDayBlend(84, compute(12)),
-    '24w': computeDayBlend(168, compute(24)),
-    '26w': computeDayBlend(182, compute(26)),
-    '36w': computeDayBlend(252, compute(36)),
-    '52w': computeDayBlend(365, compute(52)),
+    // Blend week-based delta with day-window delta over the same timeframe
+    '1w': computeBlend(7, compute(1)),
+    '2w': computeBlend(14, compute(2)),
+    '4w': computeBlend(30, compute(4)),      // 1M ≈ 30d
+    '12w': computeBlend(84, compute(12)),    // 1Q ≈ 12w
+    '24w': computeBlend(168, compute(24)),
+    '26w': computeBlend(182, compute(26)),   // 6M ≈ 182d
+    '36w': computeBlend(252, compute(36)),
+    '52w': computeBlend(365, compute(52)),   // 1Y ≈ 365d
   }
 }
