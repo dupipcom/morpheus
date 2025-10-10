@@ -13,6 +13,7 @@ import { Switch } from "@/components/ui/switch"
 import { SlidersVertical, Play, Square as Stop, Gauge, LogIn, DoorOpen, User, LogOut, Users } from "lucide-react"
 import { NavSkeleton } from "./skeleton-loader"
 import { FriendRequestsButton } from "@/components/FriendRequestsButton"
+import { TickerStrip } from "@/components/TickerStrip"
 
 // UserButtonMenu component to handle translations properly
 const UserButtonMenu = () => {
@@ -570,7 +571,8 @@ export const Logo: TComponent = function ({
           to-[#f1cfffcc]
           to-50%
           dark:to-[#3e365ccc]
-          dark:from-[#563769cc] p-8 z-[999]">
+          dark:from-[#563769cc] p-4 z-[999] relative">
+          <TickerStrip />
           <div className="flex justify-between">
           <div className="md:flex hidden md:basis-1/3 items-center justify-start">
           	{

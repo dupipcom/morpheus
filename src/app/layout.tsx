@@ -131,6 +131,7 @@ export default function RootLayout({
                     <div>
                       <Nav subHeader="" onThemeChange={handleThemeChange} />
                       <AppContent>{children}</AppContent>
+                      <Footer />
                     </div>
                   </article>
                 </SWRConfig>

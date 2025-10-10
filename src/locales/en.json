@@ -30,7 +30,12 @@
     "social": "Social",
     "stash": "Stash",
     "equity": "Equity",
-    "totalEarnings": "Total Earnings"
+    "totalEarnings": "Total Earnings",
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "balance": "Balance",
+    "dailyEarnings": "Daily Earnings",
+    "weeklyEarnings": "Weekly Earnings"
   },
   "navigation": {
     "home": "Home",

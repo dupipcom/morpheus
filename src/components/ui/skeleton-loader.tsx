@@ -1,5 +1,6 @@
 import { Skeleton } from "./skeleton"
 import { Logo } from "./nav"
+import { TickerStrip } from "@/components/TickerStrip"
 
 // Skeleton for settings view
 export const SettingsSkeleton = () => {
@@ -200,7 +201,7 @@ export const NavSkeleton = () => {
           to-[#f1cfffcc]
           to-50%
           dark:to-[#3e365ccc]
-          dark:from-[#563769cc] p-8 z-[999]">
+          dark:from-[#563769cc] p-4 z-[999] relative">
       <div className="flex justify-between">
         {/* Left side - empty */}
         <div className="md:flex hidden md:basis-1/3 items-center justify-start">
@@ -241,6 +242,7 @@ export const NavSkeleton = () => {
           </div>
         </div>
       </div>
+      <TickerStrip />
     </nav>
   )
 } 
