@@ -4,7 +4,21 @@ import prisma from '@/lib/prisma';
 import type { WebhookEvent } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import { WEEKLY_ACTIONS, DAILY_ACTIONS } from "@/app/constants"
+import { currentUser } from '@clerk/nextjs/server'
+import { revalidatePath } from 'next/cache'
 
+// Helper function to revalidate public profile page
+const revalidateUserProfile = async (username: string) => {
+    try {
+        if (username) {
+            // Revalidate the public profile page with @ prefix
+            revalidatePath(`/@${username}`)
+            console.log(`Revalidated public profile page for username: @${username}`)
+        }
+    } catch (error) {
+        console.error('Error revalidating public profile page:', error)
+    }
+}
 
 export async function POST(req: Request) {
     try {
@@ -39,10 +53,38 @@ export async function POST(req: Request) {
                         }
                     },
                 });
+
+                // Sync username from webhook data when user is created
+                try {
+                    const webhookData: any = evt.data;
+                    const clerkUsername = webhookData?.username;
+                    
+                    if (clerkUsername && user) {
+                        // Create profile with username from Clerk webhook
+                        await prisma.profile.create({
+                            data: {
+                                userId: user.id,
+                                userName: clerkUsername,
+                                firstNameVisible: false,
+                                lastNameVisible: false,
+                                userNameVisible: false,
+                                bioVisible: false,
+                                profilePictureVisible: false,
+                                publicChartsVisible: false,
+                            }
+                        });
+                        console.log(`Username synced from Clerk webhook on user creation: ${clerkUsername} for user ${clerkUserId}`);
+                        
+                        // Revalidate the public profile page
+                        await revalidateUserProfile(clerkUsername);
+                    }
+                } catch (error) {
+                    console.error('Error syncing username from Clerk webhook on user creation:', error);
+                }
                 break;
             }
             case 'session.created': {
-                // When a new session is created (actual login), update lastLogin
+                // When a new session is created (actual login), update lastLogin and sync username
                 const sessionData: any = evt.data;
                 const sessionUserId: string | undefined = sessionData?.user_id || sessionData?.userId || clerkUserId;
                 if (sessionUserId) {
@@ -67,6 +109,94 @@ export async function POST(req: Request) {
                             }
                         })
                     }
+
+                    // Sync username from webhook data on login
+                    try {
+                        const webhookData: any = evt.data;
+                        const clerkUsername = webhookData?.username;
+                        
+                        if (clerkUsername) {
+                            const dbUser = await prisma.user.findUnique({
+                                where: { userId: sessionUserId },
+                                include: { profile: true }
+                            });
+
+                            if (dbUser) {
+                                if (dbUser.profile) {
+                                    await prisma.profile.update({
+                                        where: { userId: dbUser.id },
+                                        data: { userName: clerkUsername }
+                                    });
+                                } else {
+                                    await prisma.profile.create({
+                                        data: {
+                                            userId: dbUser.id,
+                                            userName: clerkUsername,
+                                            firstNameVisible: false,
+                                            lastNameVisible: false,
+                                            userNameVisible: false,
+                                            bioVisible: false,
+                                            profilePictureVisible: false,
+                                            publicChartsVisible: false,
+                                        }
+                                    });
+                                }
+                                console.log(`Username synced from Clerk webhook on login: ${clerkUsername} for user ${sessionUserId}`);
+                                
+                                // Revalidate the public profile page
+                                await revalidateUserProfile(clerkUsername);
+                            }
+                        }
+                    } catch (usernameError) {
+                        console.error('Error syncing username from Clerk webhook on login:', usernameError);
+                    }
+                }
+                break;
+            }
+            case 'user.updated': {
+                // Sync username from Clerk webhook data to Prisma database
+                try {
+                    const webhookData: any = evt.data;
+                    const clerkUsername = webhookData?.username;
+                    
+                    if (clerkUsername) {
+                        // Find the user in our database
+                        const dbUser = await prisma.user.findUnique({
+                            where: { userId: clerkUserId },
+                            include: { profile: true }
+                        });
+
+                        if (dbUser) {
+                            // Always update or create profile with username from Clerk webhook (overwrites any manual username)
+                            if (dbUser.profile) {
+                                await prisma.profile.update({
+                                    where: { userId: dbUser.id },
+                                    data: { userName: clerkUsername }
+                                });
+                            } else {
+                                await prisma.profile.create({
+                                    data: {
+                                        userId: dbUser.id,
+                                        userName: clerkUsername,
+                                        firstNameVisible: false,
+                                        lastNameVisible: false,
+                                        userNameVisible: false,
+                                        bioVisible: false,
+                                        profilePictureVisible: false,
+                                        publicChartsVisible: false,
+                                    }
+                                });
+                            }
+                            console.log(`Username synced from Clerk webhook: ${clerkUsername} for user ${clerkUserId}`);
+                            
+                            // Revalidate the public profile page
+                            await revalidateUserProfile(clerkUsername);
+                        }
+                    } else {
+                        console.log('No username found in Clerk webhook data');
+                    }
+                } catch (error) {
+                    console.error('Error syncing username from Clerk webhook:', error);
                 }
                 break;
             }

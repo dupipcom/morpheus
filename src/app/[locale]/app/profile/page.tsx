@@ -225,24 +225,6 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
               </div>
               
               <div>
-                <Label htmlFor="userName">{t('profile.userName')}</Label>
-                <Input
-                  id="userName"
-                  value={profile.userName}
-                  onChange={(e) => handleProfileChange('userName', e.target.value)}
-                  placeholder={t('profile.userNamePlaceholder')}
-                />
-                <div className="flex items-center space-x-2 mt-2">
-                  <Switch
-                    id="userName-visible"
-                    checked={profile.userNameVisible}
-                    onCheckedChange={(checked) => handleProfileChange('userNameVisible', checked)}
-                  />
-                  <Label htmlFor="userName-visible">{t('profile.makePublic')}</Label>
-                </div>
-              </div>
-              
-              <div>
                 <Label htmlFor="bio">{t('profile.bio')}</Label>
                 <Textarea
                   id="bio"
@@ -278,6 +260,7 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
                   <Label htmlFor="profilePicture-visible">{t('profile.makePublic')}</Label>
                 </div>
               </div>
+              
             </CardContent>
           </Card>
 
@@ -371,9 +354,6 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
                 <h3 className="text-lg font-semibold">
                   {profile.firstNameVisible && profile.firstName} {profile.lastNameVisible && profile.lastName}
                 </h3>
-                {profile.userNameVisible && profile.userName && (
-                  <p className="text-muted-foreground">@{profile.userName}</p>
-                )}
                 {profile.bioVisible && profile.bio && (
                   <p className="text-sm mt-1">{profile.bio}</p>
                 )}

@@ -50,6 +50,10 @@ export async function POST(req: NextRequest) {
       return Response.json({ error: 'User not found' }, { status: 404 })
     }
 
+    // Get Clerk user data to ensure username comes from Clerk
+    const clerkUser = await currentUser()
+    const clerkUsername = clerkUser?.username || null
+
     // Check if profile already exists
     const existingProfile = await prisma.profile.findUnique({
       where: { userId: user.id }
@@ -57,13 +61,13 @@ export async function POST(req: NextRequest) {
 
     let profile
     if (existingProfile) {
-      // Update existing profile
+      // Update existing profile - use Clerk username, ignore manual username
       profile = await prisma.profile.update({
         where: { userId: user.id },
         data: {
           firstName: data.firstName,
           lastName: data.lastName,
-          userName: data.userName,
+          userName: clerkUsername, // Always use Clerk's username
           bio: data.bio,
           profilePicture: data.profilePicture,
           publicCharts: data.publicCharts,
@@ -76,13 +80,13 @@ export async function POST(req: NextRequest) {
         }
       })
     } else {
-      // Create new profile
+      // Create new profile - use Clerk username, ignore manual username
       profile = await prisma.profile.create({
         data: {
           userId: user.id,
           firstName: data.firstName,
           lastName: data.lastName,
-          userName: data.userName,
+          userName: clerkUsername, // Always use Clerk's username
           bio: data.bio,
           profilePicture: data.profilePicture,
           publicCharts: data.publicCharts,
@@ -96,11 +100,11 @@ export async function POST(req: NextRequest) {
       })
     }
 
-    // Revalidate the user's public profile page if userName exists
-    if (data.userName) {
+    // Revalidate the user's public profile page if Clerk username exists
+    if (clerkUsername) {
       try {
         // Directly call revalidatePath instead of making HTTP request
-        revalidatePath(`/@${data.userName}`)
+        revalidatePath(`/@${clerkUsername}`)
       } catch (revalidateError) {
         console.error('Error revalidating profile page:', revalidateError)
       }

@@ -13,7 +13,8 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
   }
 
   const getUser = async () => await prisma.user.findUnique({
-       where: { userId }
+       where: { userId },
+       include: { profile: true }
     })
 
   let user = await getUser()
@@ -28,8 +29,41 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
           dailyTemplate: [],
           weeklyTemplate: []
         }
-      }
+      },
+      include: { profile: true }
     })
+  }
+
+  // Always sync username from Clerk if available - Clerk takes precedence
+  try {
+    const clerkUser = await currentUser()
+    if (clerkUser && clerkUser.username && user) {
+      if (user.profile) {
+        // Always update existing profile with Clerk username (overwrites any manual username)
+        await prisma.profile.update({
+          where: { userId: user.id },
+          data: { userName: clerkUser.username }
+        })
+      } else {
+        // Create new profile with Clerk username
+        await prisma.profile.create({
+          data: {
+            userId: user.id,
+            userName: clerkUser.username,
+            firstNameVisible: false,
+            lastNameVisible: false,
+            userNameVisible: false,
+            bioVisible: false,
+            profilePictureVisible: false,
+            publicChartsVisible: false,
+          }
+        })
+      }
+      // Refetch user with updated profile
+      user = await getUser()
+    }
+  } catch (error) {
+    console.error('Error syncing username from Clerk:', error)
   }
 
   return Response.json(user)
