@@ -100,7 +100,8 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const reverseMessages = useMemo (() => agentConversation?.length ? agentConversation.sort((a,b) => new Date(a.timestamp).getTime() > new Date(b.timestamp).getTime() ? 1 : -1) : [], [JSON.stringify(session?.user)])
   
   const earnings = Object.keys(session?.user?.entries || 0).length > 0 ? timeframe === "day" ? session?.user?.entries[year]?.days[date]?.earnings?.toFixed(2) : session?.user?.entries[year]?.weeks[weekNumber]?.earnings?.toFixed(2) : 0
-  const ticker = Object.keys(session?.user?.entries || 0).length > 0 ? timeframe === "day" ? session?.user?.entries[year]?.days[date]?.ticker : session?.user?.entries[year]?.weeks[weekNumber]?.ticker : 0
+  const rawTicker = Object.keys(session?.user?.entries || 0).length > 0 ? timeframe === "day" ? session?.user?.entries[year]?.days[date]?.ticker : session?.user?.entries[year]?.weeks[weekNumber]?.ticker : 0
+  const ticker = typeof rawTicker === 'object' ? (timeframe === 'day' ? rawTicker?.['1d'] : rawTicker?.['1w']) : rawTicker
 
   // removed debug log
 
@@ -744,7 +745,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   // }
 
   return <div className="max-w-[1200px] m-auto p-4">
-    <p className="sticky top-22 truncate z-[999] text-center scroll-m-20 text-sm font-semibold tracking-tight mb-8 flex items-center justify-center gap-2">
+    <p className="sticky top-23 truncate z-[999] text-center scroll-m-20 text-sm font-semibold tracking-tight mb-8 flex items-center justify-center gap-2">
       <span>{t('tasks.editing', { timeframe: timeframe === "day" ? date : t('tasks.weekNumber', { number: weekNumber }) })}</span>
       {ticker !== undefined && ticker !== 0 && (
         <span className={`inline-flex items-center gap-1 ${ticker > 0 ? 'text-success' : 'text-destructive'}`}>
@@ -757,24 +758,24 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       <CarouselContent className="text-center w-[192px] my-8">
         {
           timeframe === "day" ? openDays?.map((day, index) => {
-            const tickerValue = day.ticker || 0
+            const tickerValue = typeof day.ticker === 'object' ? (day.ticker?.['1d'] ?? 0) : (day.ticker || 0)
             return <CarouselItem key={`task__carousel--${day.date}--${index}`} className="flex flex-col">
               <small>Ð{day.earnings?.toFixed(2)}</small>
               <small className={`font-semibold flex items-center justify-center gap-1 ${tickerValue > 0 ? 'text-success' : tickerValue < 0 ? 'text-destructive' : 'text-muted-foreground'}`}>
                 {tickerValue > 0 ? <TrendingUp className="h-3 w-3" /> : tickerValue < 0 ? <TrendingDown className="h-3 w-3" /> : null}
-                {Math.abs(tickerValue?.toFixed(1))}%
+                {typeof tickerValue === 'number' ? Math.abs(tickerValue).toFixed(1) : '0.0'}%
               </small>
               <label className="mb-4">{day.date}</label>
               <Button className="dark:bg-foreground text-md p-5 mb-2" onClick={() => handleEditDay(new Date(day.date))}>{t('common.edit')} {t('common.day').toLowerCase()}</Button>
               <Button variant="outline" className="text-md p-5" onClick={() => handleCloseDates([day.date])} >{t('common.close')} {t('common.day').toLowerCase()}</Button>
             </CarouselItem>
           }) : openWeeks?.map((week, index) => {
-            const tickerValue = week.ticker || 0
+            const tickerValue = typeof week.ticker === 'object' ? (week.ticker?.['1w'] ?? 0) : (week.ticker || 0)
             return <CarouselItem key={`task__carousel--${week.week}--${index}`} className="flex flex-col">
               <small>Ð{week?.earnings?.toFixed(2)}</small>
               <small className={`font-semibold flex items-center justify-center gap-1 ${tickerValue > 0 ? 'text-success' : tickerValue < 0 ? 'text-destructive' : 'text-muted-foreground'}`}>
                 {tickerValue > 0 ? <TrendingUp className="h-3 w-3" /> : tickerValue < 0 ? <TrendingDown className="h-3 w-3" /> : null}
-                {Math.abs(tickerValue?.toFixed(1))}%
+                {typeof tickerValue === 'number' ? Math.abs(tickerValue).toFixed(1) : '0.0'}%
               </small>
               <label className="mb-4">{t('week.weekNumber', { number: week.week })}</label>
               <Button onClick={() => handleEditWeek(week.week)} className="text-md p-5 mb-2 dark:bg-foreground">{t('common.edit')} {t('common.week').toLowerCase()}</Button>

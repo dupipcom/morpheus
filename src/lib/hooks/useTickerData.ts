@@ -1,13 +1,16 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { useAuth } from '@clerk/clerk-react'
+import { GlobalContext } from '@/lib/contexts'
 
 interface TickerData {
   dailyTicker: number
   weeklyTicker: number
   threeDayTicker: number
+  twoWeekTicker: number
   fourWeekTicker: number
-  twentyEightWeekTicker: number
-  fiftySixWeekTicker: number
+  twelveWeekTicker: number
+  twentySixWeekTicker: number
+  fiftyTwoWeekTicker: number
   dailyEarnings: string
   weeklyEarnings: string
   availableBalance: string
@@ -74,6 +77,8 @@ export function useTickerData() {
   const [error, setError] = useState<string | null>(null)
   const { isLoaded, isSignedIn } = useAuth()
 
+  const { session } = useContext(GlobalContext)
+
   useEffect(() => {
     if (!isLoaded || !isSignedIn) {
       setIsLoading(false)
@@ -84,25 +89,32 @@ export function useTickerData() {
       try {
         setIsLoading(true)
         setError(null)
-
-        const response = await fetch('/api/v1/user')
-        if (!response.ok) {
-          throw new Error('Failed to fetch user data')
+        // Prefer in-memory session user from GlobalContext for immediate updates
+        const userData = (session as any)?.user || null
+        // If not available, fallback to API fetch
+        const ensureUser = async () => {
+          if (userData && userData.entries) return userData
+          const response = await fetch('/api/v1/user')
+          if (!response.ok) {
+            throw new Error('Failed to fetch user data')
+          }
+          return await response.json()
         }
-
-        const userData = await response.json()
+        const resolvedUser = await ensureUser()
         
-        if (!userData.entries) {
+        if (!resolvedUser.entries) {
           setTickerData({
             dailyTicker: 0,
             weeklyTicker: 0,
             threeDayTicker: 0,
+            twoWeekTicker: 0,
             fourWeekTicker: 0,
-            twentyEightWeekTicker: 0,
-            fiftySixWeekTicker: 0,
+            twelveWeekTicker: 0,
+            twentySixWeekTicker: 0,
+            fiftyTwoWeekTicker: 0,
             dailyEarnings: '0',
             weeklyEarnings: '0',
-            availableBalance: userData.availableBalance || '0'
+            availableBalance: resolvedUser.availableBalance || '0'
           })
           return
         }
@@ -118,30 +130,38 @@ export function useTickerData() {
         const weekNumber = Math.ceil((days + startOfYear.getDay() + 1) / 7)
 
         // Get current day and week data
-        const currentDay = userData.entries[year]?.days?.[date]
-        const currentWeek = userData.entries[year]?.weeks?.[weekNumber]
+        const currentDay = resolvedUser.entries[year]?.days?.[date]
+        const currentWeek = resolvedUser.entries[year]?.weeks?.[weekNumber]
         
         // Get current values for calculations
         const currentDayEarnings = parseFloat(currentDay?.earnings || '0')
         const currentWeekEarnings = parseFloat(currentWeek?.earnings || '0')
-        const currentAvailableBalance = parseFloat(currentDay?.availableBalance || currentWeek?.availableBalance || userData.availableBalance || '0')
+        const currentAvailableBalance = parseFloat(currentDay?.availableBalance || currentWeek?.availableBalance || resolvedUser.availableBalance || '0')
 
         // Calculate additional tickers with error handling
-        const threeDayTicker = calculateDaysAgoTicker(userData.entries, year, date, 3, currentDayEarnings, currentAvailableBalance) || 0
-        const fourWeekTicker = calculateWeeksAgoTicker(userData.entries, year, weekNumber, 4, currentWeekEarnings, currentAvailableBalance) || 0
-        const twentyEightWeekTicker = calculateWeeksAgoTicker(userData.entries, year, weekNumber, 28, currentWeekEarnings, currentAvailableBalance) || 0
-        const fiftySixWeekTicker = calculateWeeksAgoTicker(userData.entries, year, weekNumber, 56, currentWeekEarnings, currentAvailableBalance) || 0
+        // Prefer server-provided ticker objects if present, otherwise compute client-side fallback
+        const dayTickerObj = typeof currentDay?.ticker === 'object' ? currentDay.ticker : null
+        const weekTickerObj = typeof currentWeek?.ticker === 'object' ? currentWeek.ticker : null
+
+        const threeDayTicker = dayTickerObj?.['3d'] ?? (calculateDaysAgoTicker(resolvedUser.entries, year, date, 3, currentDayEarnings, currentAvailableBalance) || 0)
+        const twoWeekTicker = weekTickerObj?.['2w'] ?? (calculateWeeksAgoTicker(resolvedUser.entries, year, weekNumber, 2, currentWeekEarnings, currentAvailableBalance) || 0)
+        const fourWeekTicker = weekTickerObj?.['4w'] ?? (calculateWeeksAgoTicker(resolvedUser.entries, year, weekNumber, 4, currentWeekEarnings, currentAvailableBalance) || 0)
+        const twelveWeekTicker = weekTickerObj?.['12w'] ?? (calculateWeeksAgoTicker(resolvedUser.entries, year, weekNumber, 12, currentWeekEarnings, currentAvailableBalance) || 0)
+        const twentySixWeekTicker = weekTickerObj?.['26w'] ?? (calculateWeeksAgoTicker(resolvedUser.entries, year, weekNumber, 26, currentWeekEarnings, currentAvailableBalance) || 0)
+        const fiftyTwoWeekTicker = weekTickerObj?.['52w'] ?? (calculateWeeksAgoTicker(resolvedUser.entries, year, weekNumber, 52, currentWeekEarnings, currentAvailableBalance) || 0)
 
         setTickerData({
-          dailyTicker: currentDay?.ticker || 0,
-          weeklyTicker: currentWeek?.ticker || 0,
+          dailyTicker: (typeof currentDay?.ticker === 'object' ? currentDay?.ticker?.['1d'] : currentDay?.ticker) || 0,
+          weeklyTicker: (typeof currentWeek?.ticker === 'object' ? currentWeek?.ticker?.['1w'] : currentWeek?.ticker) || 0,
           threeDayTicker,
+          twoWeekTicker,
           fourWeekTicker,
-          twentyEightWeekTicker,
-          fiftySixWeekTicker,
+          twelveWeekTicker,
+          twentySixWeekTicker,
+          fiftyTwoWeekTicker,
           dailyEarnings: currentDay?.earnings || '0',
           weeklyEarnings: currentWeek?.earnings || '0',
-          availableBalance: currentDay?.availableBalance || currentWeek?.availableBalance || userData.availableBalance || '0'
+          availableBalance: currentDay?.availableBalance || currentWeek?.availableBalance || resolvedUser.availableBalance || '0'
         })
       } catch (err) {
         console.error('Error fetching ticker data:', err)
@@ -150,9 +170,11 @@ export function useTickerData() {
           dailyTicker: 0,
           weeklyTicker: 0,
           threeDayTicker: 0,
+          twoWeekTicker: 0,
           fourWeekTicker: 0,
-          twentyEightWeekTicker: 0,
-          fiftySixWeekTicker: 0,
+          twelveWeekTicker: 0,
+          twentySixWeekTicker: 0,
+          fiftyTwoWeekTicker: 0,
           dailyEarnings: '0',
           weeklyEarnings: '0',
           availableBalance: '0'
@@ -163,7 +185,7 @@ export function useTickerData() {
     }
 
     fetchTickerData()
-  }, [isLoaded, isSignedIn])
+  }, [isLoaded, isSignedIn, session])
 
   return { tickerData, isLoading, error }
 }

@@ -40,59 +40,41 @@ export function TickerStrip({ className = '' }: TickerStripProps) {
     return 'text-muted-foreground'
   }
 
-  const dailyTickerText = `D: ${formatTickerValue(tickerData.dailyTicker)}`
-  const weeklyTickerText = `W: ${formatTickerValue(tickerData.weeklyTicker)}`
+  const dailyTickerText = `1D: ${formatTickerValue(tickerData.dailyTicker)}`
   const threeDayTickerText = `3D: ${formatTickerValue(tickerData.threeDayTicker)}`
-  const fourWeekTickerText = `4W: ${formatTickerValue(tickerData.fourWeekTicker)}`
-  const twentyEightWeekTickerText = `28W: ${formatTickerValue(tickerData.twentyEightWeekTicker)}`
-  const fiftySixWeekTickerText = `56W: ${formatTickerValue(tickerData.fiftySixWeekTicker)}`
+  const weeklyTickerText = `1W: ${formatTickerValue(tickerData.weeklyTicker)}`
+  const twoWeekTickerText = `2W: ${formatTickerValue(tickerData.twoWeekTicker)}`
+  const oneMonthTickerText = `1M: ${formatTickerValue(tickerData.fourWeekTicker)}`
+  const oneQuarterTickerText = `1Q: ${formatTickerValue(tickerData.twelveWeekTicker)}`
+  const sixMonthTickerText = `6M: ${formatTickerValue(tickerData.twentySixWeekTicker)}`
+  const oneYearTickerText = `1Y: ${formatTickerValue(tickerData.fiftyTwoWeekTicker)}`
   
   // Create a long string that will scroll
-  const tickerContent = `${dailyTickerText} • ${weeklyTickerText} • ${threeDayTickerText} • ${fourWeekTickerText} • ${twentyEightWeekTickerText} • ${fiftySixWeekTickerText} • `
+  const tickerContent = `${dailyTickerText} • ${threeDayTickerText} • ${weeklyTickerText} • ${twoWeekTickerText} • ${oneMonthTickerText} • ${oneQuarterTickerText} • ${sixMonthTickerText} • ${oneYearTickerText} • `
 
   return (
     <div className={`bg-transparent h-4 overflow-hidden relative flex justify-center m-auto top-0 left-0 right-0 ${className}`}>
       <div className="h-full flex items-center max-w-[768px] overflow-hidden">
         <div className="flex animate-scroll whitespace-nowrap text-xs font-medium">
-          <span className={`${getTickerColor(tickerData.dailyTicker)} mr-4`}>
-            {dailyTickerText}
-          </span>
-          <span className={`${getTickerColor(tickerData.weeklyTicker)} mr-4`}>
-            {weeklyTickerText}
-          </span>
-          <span className={`${getTickerColor(tickerData.threeDayTicker)} mr-4`}>
-            {threeDayTickerText}
-          </span>
-          <span className={`${getTickerColor(tickerData.fourWeekTicker)} mr-4`}>
-            {fourWeekTickerText}
-          </span>
-          <span className={`${getTickerColor(tickerData.twentyEightWeekTicker)} mr-4`}>
-            {twentyEightWeekTickerText}
-          </span>
-          <span className={`${getTickerColor(tickerData.fiftySixWeekTicker)} mr-4`}>
-            {fiftySixWeekTickerText}
-          </span>
+          <span className={`${getTickerColor(tickerData.dailyTicker)} mr-4`}>{dailyTickerText}</span>
+          <span className={`${getTickerColor(tickerData.threeDayTicker)} mr-4`}>{threeDayTickerText}</span>
+          <span className={`${getTickerColor(tickerData.weeklyTicker)} mr-4`}>{weeklyTickerText}</span>
+          <span className={`${getTickerColor(tickerData.twoWeekTicker)} mr-4`}>{twoWeekTickerText}</span>
+          <span className={`${getTickerColor(tickerData.fourWeekTicker)} mr-4`}>{oneMonthTickerText}</span>
+          <span className={`${getTickerColor(tickerData.twelveWeekTicker)} mr-4`}>{oneQuarterTickerText}</span>
+          <span className={`${getTickerColor(tickerData.twentySixWeekTicker)} mr-4`}>{sixMonthTickerText}</span>
+          <span className={`${getTickerColor(tickerData.fiftyTwoWeekTicker)} mr-4`}>{oneYearTickerText}</span>
         </div>
         {/* Duplicate for seamless loop */}
         <div className="flex animate-scroll whitespace-nowrap text-xs font-medium">
-          <span className={`${getTickerColor(tickerData.dailyTicker)} mr-4`}>
-            {dailyTickerText}
-          </span>
-          <span className={`${getTickerColor(tickerData.weeklyTicker)} mr-4`}>
-            {weeklyTickerText}
-          </span>
-          <span className={`${getTickerColor(tickerData.threeDayTicker)} mr-4`}>
-            {threeDayTickerText}
-          </span>
-          <span className={`${getTickerColor(tickerData.fourWeekTicker)} mr-4`}>
-            {fourWeekTickerText}
-          </span>
-          <span className={`${getTickerColor(tickerData.twentyEightWeekTicker)} mr-4`}>
-            {twentyEightWeekTickerText}
-          </span>
-          <span className={`${getTickerColor(tickerData.fiftySixWeekTicker)} mr-4`}>
-            {fiftySixWeekTickerText}
-          </span>
+          <span className={`${getTickerColor(tickerData.dailyTicker)} mr-4`}>{dailyTickerText}</span>
+          <span className={`${getTickerColor(tickerData.threeDayTicker)} mr-4`}>{threeDayTickerText}</span>
+          <span className={`${getTickerColor(tickerData.weeklyTicker)} mr-4`}>{weeklyTickerText}</span>
+          <span className={`${getTickerColor(tickerData.twoWeekTicker)} mr-4`}>{twoWeekTickerText}</span>
+          <span className={`${getTickerColor(tickerData.fourWeekTicker)} mr-4`}>{oneMonthTickerText}</span>
+          <span className={`${getTickerColor(tickerData.twelveWeekTicker)} mr-4`}>{oneQuarterTickerText}</span>
+          <span className={`${getTickerColor(tickerData.twentySixWeekTicker)} mr-4`}>{sixMonthTickerText}</span>
+          <span className={`${getTickerColor(tickerData.fiftyTwoWeekTicker)} mr-4`}>{oneYearTickerText}</span>
         </div>
       </div>
     </div>

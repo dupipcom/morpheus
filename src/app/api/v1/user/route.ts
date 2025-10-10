@@ -2,7 +2,7 @@ import prisma from "@/lib/prisma";
 import { currentUser, auth } from '@clerk/nextjs/server'
 import { getWeekNumber } from "@/app/helpers"
 import { WEEKLY_ACTIONS, DAILY_ACTIONS } from "@/app/constants"
-import { safeUpdateWeekEntry, safeUpdateDayEntry, validateWeekData, validateDayData, logEntryData, ensureWeekDataIntegrity, ensureDayDataIntegrity, addEphemeralTaskToDay, addEphemeralTaskToWeek, updateEphemeralTaskInDay, updateEphemeralTaskInWeek, removeEphemeralTaskFromDay, removeEphemeralTaskFromWeek, calculateDayTicker, calculateWeekTicker } from "@/lib/entryUtils"
+import { safeUpdateWeekEntry, safeUpdateDayEntry, validateWeekData, validateDayData, logEntryData, ensureWeekDataIntegrity, ensureDayDataIntegrity, addEphemeralTaskToDay, addEphemeralTaskToWeek, updateEphemeralTaskInDay, updateEphemeralTaskInWeek, removeEphemeralTaskFromDay, removeEphemeralTaskFromWeek, calculateDayTicker, calculateWeekTicker, calculateDayTickers, calculateWeekTickers } from "@/lib/entryUtils"
 
 export async function GET(req: NextApiRequest, res: NextApiResponse) {
   const { userId } = await auth()
@@ -261,8 +261,10 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
       things: data.taskThings?.[task.name] || []
     }))
 
-    // Calculate ticker value for the week
-    const weekTicker = calculateWeekTicker(entries, year, data.week, weekEarnings, parseFloat(user.availableBalance || "0"))
+    // Calculate ticker values for the week
+    const availW = parseFloat(user.availableBalance || "0")
+    const weekTickerSingle = calculateWeekTicker(entries, year, data.week, weekEarnings, availW)
+    const weekTickerObj = calculateWeekTickers(entries, year, data.week, weekEarnings, availW, date)
 
     await prisma.user.update({
       data: {
@@ -277,7 +279,8 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   year,
                   week: data.week,
                   earnings: weekEarnings,
-                  ticker: weekTicker,
+                  ticker: { ...weekTickerObj },
+                  tickerLegacy: weekTickerSingle,
                   tasks: tasksWithContacts.sort((a: any, b: any) => a.status === "Done" ? 1 : -1),
                   status: "Open",
                   progress: weekProgress,
@@ -294,8 +297,10 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     })
     user = await getUser()
   } else if (data.weekActions) {
-    // Calculate ticker value for the week
-    const weekTicker = calculateWeekTicker(user.entries, year, data.week, weekEarnings, parseFloat(user.availableBalance || "0"))
+    // Calculate ticker values for the week
+    const availW2 = parseFloat(user.availableBalance || "0")
+    const weekTickerSingle2 = calculateWeekTicker(user.entries, year, data.week, weekEarnings, availW2)
+    const weekTickerObj2 = calculateWeekTickers(user.entries, year, data.week, weekEarnings, availW2, date)
     
     await prisma.user.update({
       data: {
@@ -310,7 +315,8 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   year,
                   week: data.week,
                   earnings: weekEarnings,
-                  ticker: weekTicker,
+                  ticker: { ...weekTickerObj2 },
+                  tickerLegacy: weekTickerSingle2,
                   tasks: (user?.settings?.weeklyTemplate?.length ? user?.settings?.weeklyTemplate : WEEKLY_ACTIONS).sort((a, b) => a.status === "Done" ? 1 : -1),
                   status: "Open",
                   progress: weekProgress,
@@ -328,9 +334,12 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   }
 
   if (data?.availableBalance) {
-    // Calculate ticker values for current day and week
-    const dayTicker = calculateDayTicker(user.entries, year, date, dayEarnings, parseFloat(data.availableBalance))
-    const weekTicker = calculateWeekTicker(user.entries, year, weekNumber, weekEarnings, parseFloat(data.availableBalance))
+    // Calculate ticker values for current day and week and multi-horizon tickers
+    const avail = parseFloat(data.availableBalance)
+    const dayTickerSingle = calculateDayTicker(user.entries, year, date, dayEarnings, avail)
+    const weekTickerSingle = calculateWeekTicker(user.entries, year, weekNumber, weekEarnings, avail)
+    const dayTickerObj = calculateDayTickers(user.entries, year, date, dayEarnings, avail)
+    const weekTickerObj = calculateWeekTickers(user.entries, year, weekNumber, weekEarnings, avail, date)
     
     await prisma.user.update({
       data: {
@@ -343,7 +352,8 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                 [date]: {
                   ...user.entries[year].days[date],
                   earnings: dayEarnings,
-                  ticker: dayTicker,
+                  ticker: { ...dayTickerObj },
+                  tickerLegacy: dayTickerSingle,
                   availableBalance: data.availableBalance,
                 }
               },
@@ -352,7 +362,8 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                 [weekNumber]: {
                   ...user.entries[year].weeks[weekNumber],
                   earnings: weekEarnings,
-                  ticker: weekTicker,
+                  ticker: { ...weekTickerObj },
+                  tickerLegacy: weekTickerSingle,
                   availableBalance: data.availableBalance,
                 }
               }
@@ -373,8 +384,13 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
       things: data.taskThings?.[task.name] || []
     }))
 
-    // Calculate ticker value for the day
-    const dayTicker = calculateDayTicker(entries, year, date, dayEarnings, parseFloat(user.availableBalance || "0"))
+    // Calculate ticker values for the day
+    const availD = parseFloat(user.availableBalance || "0")
+    const dayTickerSingle = calculateDayTicker(entries, year, date, dayEarnings, availD)
+    const dayTickerObj = calculateDayTickers(entries, year, date, dayEarnings, availD)
+    // Also recalc week blended tickers so week horizons reflect daily changes
+    const weekTickerSingleBlend = calculateWeekTicker(entries, year, weekNumber, weekEarnings, availD)
+    const weekTickerObjBlend = calculateWeekTickers(entries, year, weekNumber, weekEarnings, availD, date)
 
     await prisma.user.update({
       data: {
@@ -391,7 +407,8 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   month,
                   day,
                   earnings: dayEarnings,
-                  ticker: dayTicker,
+                  ticker: { ...dayTickerObj },
+                  tickerLegacy: dayTickerSingle,
                   progress: dayProgress,
                   done: dayDone.length,
                   tasksNumber: dayTasks.length,
@@ -399,6 +416,16 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   status: "Open",
                   availableBalance: user.availableBalance,
                   contacts: data.dayContacts || entries[year]?.days?.[date]?.contacts || []
+                }
+              },
+              weeks: {
+                ...entries[year]?.weeks,
+                [weekNumber]: {
+                  ...entries[year]?.weeks?.[weekNumber],
+                  earnings: weekEarnings,
+                  ticker: { ...weekTickerObjBlend },
+                  tickerLegacy: weekTickerSingleBlend,
+                  availableBalance: user.availableBalance,
                 }
               }
             }
@@ -408,8 +435,13 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     })
     user = await getUser()
   } else if (data.dayActions) {
-    // Calculate ticker value for the day
-    const dayTicker = calculateDayTicker(user.entries, year, date, dayEarnings, parseFloat(user.availableBalance || "0"))
+    // Calculate ticker values for the day
+    const availD2 = parseFloat(user.availableBalance || "0")
+    const dayTickerSingle2 = calculateDayTicker(user.entries, year, date, dayEarnings, availD2)
+    const dayTickerObj2 = calculateDayTickers(user.entries, year, date, dayEarnings, availD2)
+    // Also recalc week blended tickers so week horizons reflect daily changes
+    const weekTickerSingleBlend2 = calculateWeekTicker(user.entries, year, weekNumber, weekEarnings, availD2)
+    const weekTickerObjBlend2 = calculateWeekTickers(user.entries, year, weekNumber, weekEarnings, availD2, date)
     
     await prisma.user.update({
       data: {
@@ -426,13 +458,24 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   month,
                   day,
                   earnings: dayEarnings,
-                  ticker: dayTicker,
+                  ticker: { ...dayTickerObj2 },
+                  tickerLegacy: dayTickerSingle2,
                   progress: dayProgress,
                   done: dayDone.length,
                   tasksNumber: dayTasks.length,
                   tasks: (user?.settings?.dailyTemplate.length ? user?.settings?.dailyTemplate : DAILY_ACTIONS).sort((a, b) => a.status === "Done" ? 1 : -1),
                   status: "Open",
                   availableBalance: user.availableBalance
+                }
+              },
+              weeks: {
+                ...user.entries[year].weeks,
+                [weekNumber]: {
+                  ...user.entries[year].weeks[weekNumber],
+                  earnings: weekEarnings,
+                  ticker: { ...weekTickerObjBlend2 },
+                  tickerLegacy: weekTickerSingleBlend2,
+                  availableBalance: user.availableBalance,
                 }
               }
             }

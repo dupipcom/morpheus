@@ -282,37 +282,47 @@ export function calculatePercentageDelta(currentValue: number, previousValue: nu
  */
 export function getPreviousDayData(entries: any, year: number, currentDate: string): { earnings: number, availableBalance: number } {
   const currentDateObj = new Date(currentDate)
-  const previousDate = new Date(currentDateObj)
-  previousDate.setDate(previousDate.getDate() - 1)
-  const previousDateString = previousDate.toISOString().split('T')[0]
-  
-  const previousDay = entries?.[year]?.days?.[previousDateString]
-  if (!previousDay) {
-    return { earnings: 0, availableBalance: 0 }
+  const capDays = 60
+  for (let back = 1; back <= capDays; back++) {
+    const pastDate = new Date(currentDateObj)
+    pastDate.setDate(pastDate.getDate() - back)
+    const pastDateString = pastDate.toISOString().split('T')[0]
+    const y = pastDate.getFullYear()
+    const pastDay = entries?.[y]?.days?.[pastDateString]
+    const pastEarnings = parseFloat(pastDay?.earnings) || 0
+    if (pastDay && pastEarnings !== 0) {
+      return {
+        earnings: pastEarnings,
+        availableBalance: parseFloat(pastDay.availableBalance) || 0
+      }
+    }
   }
-  
-  return {
-    earnings: parseFloat(previousDay.earnings) || 0,
-    availableBalance: parseFloat(previousDay.availableBalance) || 0
-  }
+  return { earnings: 0, availableBalance: 0 }
 }
 
 /**
  * Gets the previous week's earnings and availableBalance for ticker calculation
  */
 export function getPreviousWeekData(entries: any, year: number, currentWeek: number): { earnings: number, availableBalance: number } {
-  const previousWeek = currentWeek === 1 ? 52 : currentWeek - 1
-  const previousYear = currentWeek === 1 ? year - 1 : year
-  
-  const previousWeekData = entries?.[previousYear]?.weeks?.[previousWeek]
-  if (!previousWeekData) {
-    return { earnings: 0, availableBalance: 0 }
+  let y = year
+  let w = currentWeek - 1
+  const capWeeks = 104
+  for (let i = 0; i < capWeeks; i++) {
+    if (w <= 0) {
+      y -= 1
+      w = 52 + w
+    }
+    const pastWeekData = entries?.[y]?.weeks?.[w]
+    const pastEarnings = parseFloat(pastWeekData?.earnings) || 0
+    if (pastWeekData && pastEarnings !== 0) {
+      return {
+        earnings: pastEarnings,
+        availableBalance: parseFloat(pastWeekData.availableBalance) || 0
+      }
+    }
+    w -= 1
   }
-  
-  return {
-    earnings: parseFloat(previousWeekData.earnings) || 0,
-    availableBalance: parseFloat(previousWeekData.availableBalance) || 0
-  }
+  return { earnings: 0, availableBalance: 0 }
 }
 
 /**
@@ -336,3 +346,121 @@ export function calculateWeekTicker(entries: any, year: number, week: number, cu
   
   return calculatePercentageDelta(currentRatio, previousRatio)
 } 
+
+/**
+ * Helpers to compute historical deltas used for multi-horizon tickers
+ */
+function getDaysAgoData(entries: any, year: number, currentDate: string, daysAgo: number): { earnings: number, availableBalance: number } {
+  const currentDateObj = new Date(currentDate)
+  const capDays = Math.max(daysAgo + 30, 60)
+  for (let back = daysAgo; back <= capDays; back++) {
+    const pastDate = new Date(currentDateObj)
+    pastDate.setDate(pastDate.getDate() - back)
+    const pastDateString = pastDate.toISOString().split('T')[0]
+    const y = pastDate.getFullYear()
+    const pastDay = entries?.[y]?.days?.[pastDateString]
+    const pastEarnings = parseFloat(pastDay?.earnings) || 0
+    if (pastDay && pastEarnings !== 0) {
+      return {
+        earnings: pastEarnings,
+        availableBalance: parseFloat(pastDay.availableBalance) || 0
+      }
+    }
+  }
+  return { earnings: 0, availableBalance: 0 }
+}
+
+function getWeeksAgoData(entries: any, year: number, currentWeek: number, weeksAgo: number): { earnings: number, availableBalance: number } {
+  let targetYear = year
+  let targetWeek = currentWeek - weeksAgo
+  const capWeeks = weeksAgo + 78
+  for (let i = 0; i <= capWeeks; i++) {
+    if (targetWeek <= 0) {
+      targetYear -= 1
+      targetWeek = 52 + targetWeek
+    }
+    const pastWeekData = entries?.[targetYear]?.weeks?.[targetWeek]
+    const pastEarnings = parseFloat(pastWeekData?.earnings) || 0
+    if (pastWeekData && pastEarnings !== 0) {
+      return {
+        earnings: pastEarnings,
+        availableBalance: parseFloat(pastWeekData.availableBalance) || 0
+      }
+    }
+    targetWeek -= 1
+  }
+  return { earnings: 0, availableBalance: 0 }
+}
+
+/**
+ * Calculates all day tickers (1d, 3d) relative to historical ratios.
+ * Returns an object with the requested horizons.
+ */
+export function calculateDayTickers(
+  entries: any,
+  year: number,
+  date: string,
+  currentEarnings: number,
+  currentAvailableBalance: number
+): Record<string, number> {
+  const currentRatio = currentEarnings / (currentAvailableBalance || 1)
+  const d1 = getPreviousDayData(entries, year, date)
+  const r1 = d1.earnings / (d1.availableBalance || 1)
+  const v1 = calculatePercentageDelta(currentRatio, r1)
+
+  const d3 = getDaysAgoData(entries, year, date, 3)
+  const r3 = d3.earnings / (d3.availableBalance || 1)
+  const v3 = calculatePercentageDelta(currentRatio, r3)
+
+  return {
+    '1d': isNaN(v1) ? 0 : v1,
+    '3d': isNaN(v3) ? 0 : v3,
+  }
+}
+
+/**
+ * Calculates all week tickers (1w, 2w, 4w, 12w, 24w, 36w, 52w) relative to historical ratios.
+ * Returns an object with the requested horizons.
+ */
+export function calculateWeekTickers(
+  entries: any,
+  year: number,
+  week: number,
+  currentEarnings: number,
+  currentAvailableBalance: number,
+  currentDate: string
+): Record<string, number> {
+  const currentRatio = currentEarnings / (currentAvailableBalance || 1)
+
+  const compute = (weeksAgo: number) => {
+    const w = weeksAgo === 1 ? getPreviousWeekData(entries, year, week) : getWeeksAgoData(entries, year, week, weeksAgo)
+    const r = w.earnings / (w.availableBalance || 1)
+    const v = calculatePercentageDelta(currentRatio, r)
+    return isNaN(v) ? 0 : v
+  }
+
+  const computeDayBlend = (daysAgo: number, weekDelta: number) => {
+    const d = getDaysAgoData(entries, year, currentDate, daysAgo)
+    const dr = d.earnings / (d.availableBalance || 1)
+    const dayDelta = calculatePercentageDelta(currentRatio, dr)
+    const validWeek = isFinite(weekDelta)
+    const validDay = isFinite(dayDelta)
+    if (validWeek && validDay) return (weekDelta + dayDelta) / 2
+    if (validWeek) return weekDelta
+    if (validDay) return dayDelta
+    return 0
+  }
+
+  return {
+    // Blend week-based delta with day-based delta for equivalent or approximate day horizons
+    '1w': computeDayBlend(7, compute(1)),
+    '2w': computeDayBlend(14, compute(2)),
+    // 1M ~ 30d; keep 4w key for storage but blend with 30d
+    '4w': computeDayBlend(30, compute(4)),
+    '12w': computeDayBlend(84, compute(12)),
+    '24w': computeDayBlend(168, compute(24)),
+    '26w': computeDayBlend(182, compute(26)),
+    '36w': computeDayBlend(252, compute(36)),
+    '52w': computeDayBlend(365, compute(52)),
+  }
+}
