@@ -166,9 +166,41 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
       <main className="">
         <ViewMenu active="profile" />
         <div className="max-w-4xl mx-auto p-4">
-          <div className="space-y-4">
-            <Skeleton className="h-8 w-1/4" />
-            <Skeleton className="h-32 w-full" />
+          <div className="space-y-6">
+            {/* Profile Header Skeleton */}
+            <div className="border rounded-lg p-6">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                  <Skeleton className="w-20 h-20 rounded-full" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-6 w-48" />
+                    <Skeleton className="h-4 w-32" />
+                    <Skeleton className="h-4 w-64" />
+                  </div>
+                </div>
+                <Skeleton className="h-10 w-32" />
+              </div>
+            </div>
+
+            {/* Charts Section Skeleton */}
+            <div className="border rounded-lg p-6">
+              <div className="space-y-4">
+                <Skeleton className="h-6 w-24" />
+                <Skeleton className="h-64 w-full" />
+              </div>
+            </div>
+
+            {/* Notes Section Skeleton */}
+            <div className="border rounded-lg p-6">
+              <div className="space-y-4">
+                <Skeleton className="h-6 w-32" />
+                <div className="space-y-3">
+                  <Skeleton className="h-16 w-full" />
+                  <Skeleton className="h-16 w-full" />
+                  <Skeleton className="h-16 w-full" />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </main>
@@ -194,13 +226,45 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
       <ViewMenu active="profile" />
       <div className="max-w-4xl mx-auto p-4">
 {/* Public Profile View */}
-{profile.userName && publicProfileData && (
+{profile.userName && (
           profileLoading ? (
-            <div className="space-y-4">
-              <Skeleton className="h-8 w-1/4" />
-              <Skeleton className="h-32 w-full" />
+            <div className="space-y-6">
+              {/* Profile Header Skeleton */}
+              <div className="border rounded-lg p-6">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                    <Skeleton className="w-20 h-20 rounded-full" />
+                    <div className="flex-1 space-y-2">
+                      <Skeleton className="h-6 w-48" />
+                      <Skeleton className="h-4 w-32" />
+                      <Skeleton className="h-4 w-64" />
+                    </div>
+                  </div>
+                  <Skeleton className="h-10 w-32" />
+                </div>
+              </div>
+
+              {/* Charts Section Skeleton */}
+              <div className="border rounded-lg p-6">
+                <div className="space-y-4">
+                  <Skeleton className="h-6 w-24" />
+                  <Skeleton className="h-64 w-full" />
+                </div>
+              </div>
+
+              {/* Notes Section Skeleton */}
+              <div className="border rounded-lg p-6">
+                <div className="space-y-4">
+                  <Skeleton className="h-6 w-32" />
+                  <div className="space-y-3">
+                    <Skeleton className="h-16 w-full" />
+                    <Skeleton className="h-16 w-full" />
+                    <Skeleton className="h-16 w-full" />
+                  </div>
+                </div>
+              </div>
             </div>
-          ) : (
+          ) : publicProfileData ? (
             <ProfileView 
               profile={publicProfileData}
               userName={profile.userName}
@@ -209,7 +273,7 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
               isLoggedIn={true}
               translations={loadTranslationsSync(locale)}
             />
-          )
+          ) : null
         )}
       </div>
     </main>

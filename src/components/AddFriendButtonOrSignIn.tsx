@@ -20,7 +20,7 @@ export function AddFriendButtonOrSignIn({ targetUserName, isLoggedIn, currentUse
   // If user is viewing their own profile, show Edit Profile button
   if (isLoggedIn && currentUserName && currentUserName === targetUserName) {
     return (
-      <Link href="/app/profile">
+      <Link href="/app/profile/edit">
         <Button className={className}>
           <Edit className="w-4 h-4 mr-2" />
           {t('friends.editProfile')}
