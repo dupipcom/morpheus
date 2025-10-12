@@ -122,7 +122,7 @@ type Mood {
   tolerance Int
   selfEsteem Int
   trust Int
-  text String
+  text String[]
 }
 
 type Day {
@@ -219,4 +219,5 @@ enum NoteVisibility {
   FRIENDS
   CLOSE_FRIENDS
   PUBLIC
+  AI_ENABLED
 }
