@@ -46,7 +46,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
 
       if (isOwnProfile) {
         // User can see all their own notes
-        visibilityFilter = ['PRIVATE', 'FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC']
+        visibilityFilter = ['PRIVATE', 'FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC', 'AI_ENABLED']
       } else if (isCloseFriend) {
         // Close friends can see close friends and public notes
         visibilityFilter = ['CLOSE_FRIENDS', 'PUBLIC']

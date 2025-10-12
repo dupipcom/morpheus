@@ -78,7 +78,7 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
   const [newLifeEventText, setNewLifeEventText] = useState('')
   const [currentText, setCurrentText] = useState(serverText)
   const [noteContent, setNoteContent] = useState('')
-  const [noteVisibility, setNoteVisibility] = useState('PRIVATE')
+  const [noteVisibility, setNoteVisibility] = useState('AI_ENABLED')
 
   // Initialize mood contacts from server data
   useEffect(() => {
@@ -349,6 +349,18 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
       })
 
       if (response.ok) {
+        // If AI_ENABLED is selected, also save to user.entries as an array
+        if (noteVisibility === 'AI_ENABLED') {
+          // Get current text array or create new one
+          const currentTextArray = Array.isArray(serverText) ? serverText : (serverText ? [serverText] : [])
+          
+          // Add new note to the array
+          const updatedTextArray = [...currentTextArray, noteContent.trim()]
+          
+          // Submit the updated array
+          await handleMoodSubmit(updatedTextArray, "text", fullDay, moodContacts, moodThings, undefined, mood, moodLifeEvents)
+        }
+        
         // Clear the note content after successful publish
         setNoteContent('')
         // Optionally show a success message or update UI
@@ -409,6 +421,7 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
                 <SelectItem value="FRIENDS">Friends</SelectItem>
                 <SelectItem value="CLOSE_FRIENDS">Close Friends</SelectItem>
                 <SelectItem value="PUBLIC">Public</SelectItem>
+                <SelectItem value="AI_ENABLED">AI Enabled</SelectItem>
               </SelectContent>
             </Select>
             <Button 
@@ -421,17 +434,6 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
           </div>
         </div>
 
-        {/* Original mood text area */}
-        <Textarea 
-          className="mb-16" 
-          value={currentText} 
-          onChange={(e) => {
-            setCurrentText(e.target.value)
-          }}
-          onBlur={() => {
-            debouncedHandleTextSubmit(currentText, "text")
-          }}
-        />
       <div className="my-12">
         <h3 className="mt-8 mb-4">{t('charts.gratitude')}</h3>
         <small>{insight?.gratitudeAnalysis}</small>
