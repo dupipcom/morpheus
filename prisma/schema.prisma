@@ -111,8 +111,6 @@ type Settings {
   monthsVariableIncome String?
   monthsNeedFixedExpenses String?
   monthsNeedVariableExpenses String?
-  dailyTemplate Task[]
-  weeklyTemplate Task[]
 }
 
 type Mood {
@@ -230,6 +228,7 @@ model TaskList {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   visibility    Visibility @default(PRIVATE)
+  role          String?   // e.g., "daily.default", "weekly.default", "custom"
   budget        String?
   dueDate       String?
   owners        String[]  @db.ObjectId // User IDs

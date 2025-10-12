@@ -106,6 +106,44 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   // removed debug log
 
 
+  // State for TaskLists
+  const [dailyTaskList, setDailyTaskList] = useState<any>(null)
+  const [weeklyTaskList, setWeeklyTaskList] = useState<any>(null)
+  const [taskListsLoading, setTaskListsLoading] = useState(true)
+
+  // Fetch TaskLists on component mount
+  useEffect(() => {
+    const fetchTaskLists = async () => {
+      if (!session?.user?.userId) return
+      
+      try {
+        setTaskListsLoading(true)
+        
+        // Fetch both daily and weekly TaskLists
+        const [dailyResponse, weeklyResponse] = await Promise.all([
+          fetch('/api/v1/tasklists?role=daily.default'),
+          fetch('/api/v1/tasklists?role=weekly.default')
+        ])
+        
+        if (dailyResponse.ok) {
+          const dailyData = await dailyResponse.json()
+          setDailyTaskList(dailyData.taskLists?.[0] || null)
+        }
+        
+        if (weeklyResponse.ok) {
+          const weeklyData = await weeklyResponse.json()
+          setWeeklyTaskList(weeklyData.taskLists?.[0] || null)
+        }
+      } catch (error) {
+        console.error('Error fetching task lists:', error)
+      } finally {
+        setTaskListsLoading(false)
+      }
+    }
+
+    fetchTaskLists()
+  }, [session?.user?.userId])
+
   const userTasks = useMemo(() => {
     let regularTasks = []
     
@@ -113,9 +151,9 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       const noDayData = !session?.user?.entries || !session?.user?.entries[year] || !Object.keys(session?.user?.entries[year].days).length
       const dailyTasks = ((session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date]) && session?.user?.entries[year].days[date]?.tasks) || (noDayData ? DAILY_ACTIONS : [])
       
-      // Always prioritize dailyTemplate if it exists, otherwise use dailyTasks
-      if (session?.user?.settings?.dailyTemplate && session?.user?.settings?.dailyTemplate.length > 0) {
-        regularTasks = assign(getLocalizedTaskNames(session?.user?.settings?.dailyTemplate, t), getLocalizedTaskNames(dailyTasks, t), { times: 1 })
+      // Always prioritize dailyTaskList if it exists, otherwise use dailyTasks
+      if (dailyTaskList?.tasks && dailyTaskList.tasks.length > 0) {
+        regularTasks = assign(getLocalizedTaskNames(dailyTaskList.tasks, t), getLocalizedTaskNames(dailyTasks, t), { times: 1 })
       } else {
         regularTasks = getLocalizedTaskNames(dailyTasks, t)
       }
@@ -123,9 +161,9 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       const noWeekData = !session?.user?.entries || !session?.user?.entries[year] || !Object.keys(session?.user?.entries[year].weeks).length
       const weeklyTasks = (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks) && session?.user?.entries[year].weeks[weekNumber]?.tasks || []
       
-      // Always prioritize weeklyTemplate if it exists, otherwise use weeklyTasks or default actions
-      if (session?.user?.settings?.weeklyTemplate && session?.user?.settings?.weeklyTemplate.length > 0) {
-        regularTasks = assign(getLocalizedTaskNames(session?.user?.settings?.weeklyTemplate, t), getLocalizedTaskNames(weeklyTasks, t), { times: 1 })
+      // Always prioritize weeklyTaskList if it exists, otherwise use weeklyTasks or default actions
+      if (weeklyTaskList?.tasks && weeklyTaskList.tasks.length > 0) {
+        regularTasks = assign(getLocalizedTaskNames(weeklyTaskList.tasks, t), getLocalizedTaskNames(weeklyTasks, t), { times: 1 })
       } else {
         regularTasks = getLocalizedTaskNames(weeklyTasks.length > 0 ? weeklyTasks : WEEKLY_ACTIONS, t)
       }
@@ -139,7 +177,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     }))
     
     return [...regularTasks, ...ephemeralTasksWithDisplayName]
-  }, [JSON.stringify(session?.user?.settings), date, weekNumber, t, currentEphemeralTasks])
+  }, [dailyTaskList, weeklyTaskList, date, weekNumber, t, currentEphemeralTasks])
 
 
   const openDays = useMemo(() => {
@@ -177,28 +215,24 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     }
   }, [session?.user?.entries, year, date, weekNumber, timeframe])
 
-  // Load favorites from user settings
+  // Load favorites from TaskLists
   useEffect(() => {
-    if (session?.user?.settings) {
-      const template = timeframe === 'day' 
-        ? session.user.settings.dailyTemplate 
-        : session.user.settings.weeklyTemplate
-      
-      if (template && Array.isArray(template)) {
-        const favoriteSet = new Set()
-        template.forEach(item => {
-          if (typeof item === 'object' && item.favorite) {
-            favoriteSet.add(item.name)
-          } else if (typeof item === 'string') {
-            // Handle legacy string format
-            favoriteSet.add(item)
-          }
-        })
-        setFavorites(favoriteSet)
-        setOptimisticFavorites(favoriteSet)
-      }
+    const taskList = timeframe === 'day' ? dailyTaskList : weeklyTaskList
+    
+    if (taskList?.tasks && Array.isArray(taskList.tasks)) {
+      const favoriteSet = new Set()
+      taskList.tasks.forEach(item => {
+        if (typeof item === 'object' && item.favorite) {
+          favoriteSet.add(item.name)
+        } else if (typeof item === 'string') {
+          // Handle legacy string format
+          favoriteSet.add(item)
+        }
+      })
+      setFavorites(favoriteSet)
+      setOptimisticFavorites(favoriteSet)
     }
-  }, [session?.user?.settings, timeframe])
+  }, [dailyTaskList, weeklyTaskList, timeframe])
 
   const [previousValues, setPreviousValues] = useState(userDone)
   const [values, setValues] = useState(userDone)
@@ -442,12 +476,16 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const debouncedFavoriteServerUpdate = useDebounce(async (currentOptimisticFavorites) => {
     // Save to database with the passed optimistic favorites state
     try {
-      const currentTemplate = timeframe === 'day' 
-        ? session?.user?.settings?.dailyTemplate || []
-        : session?.user?.settings?.weeklyTemplate || []
+      const currentTaskList = timeframe === 'day' ? dailyTaskList : weeklyTaskList
       
-      // Update template items with favorite flags based on the passed state
-      const updatedTemplate = currentTemplate.map(item => {
+      if (!currentTaskList?.tasks) {
+        console.error('No task list found for favorites update')
+        setOptimisticFavorites(favorites)
+        return
+      }
+      
+      // Update task list items with favorite flags based on the passed state
+      const updatedTasks = currentTaskList.tasks.map(item => {
         const itemName = typeof item === 'string' ? item : item.name
         return {
           ...(typeof item === 'object' ? item : { name: item }),
@@ -456,20 +494,26 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       })
       
       const payload = {
-        settings: {
-          [timeframe === 'day' ? 'dailyTemplate' : 'weeklyTemplate']: updatedTemplate
-        }
+        role: timeframe === 'day' ? 'daily.default' : 'weekly.default',
+        tasks: updatedTasks,
+        templateId: currentTaskList.templateId
       }
       
-      const response = await fetch('/api/v1/user', {
+      const response = await fetch('/api/v1/tasklists', {
         method: 'POST',
         body: JSON.stringify(payload)
       })
       
       if (response.ok) {
+        const data = await response.json()
+        // Update the local task list state
+        if (timeframe === 'day') {
+          setDailyTaskList(data.taskList)
+        } else {
+          setWeeklyTaskList(data.taskList)
+        }
         // Update the actual favorites state on success
         setFavorites(currentOptimisticFavorites)
-        await refreshUser()
       } else {
         console.error('Failed to save favorites:', response.status, response.statusText)
         // Revert optimistic state on error
@@ -561,10 +605,8 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   // Function to add ephemeral task or template task
   const addEphemeralTask = async (taskData) => {
     try {
-      let payload = {}
-      
       if (taskData.saveToTemplate) {
-        // Add to template instead of ephemeral tasks
+        // Add to TaskList instead of ephemeral tasks
         const newTask = {
           name: taskData.name,
           area: taskData.area,
@@ -575,18 +617,36 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
           count: 0
         }
         
-        const currentTemplate = timeframe === 'day' 
-          ? session?.user?.settings?.dailyTemplate || []
-          : session?.user?.settings?.weeklyTemplate || []
+        const currentTaskList = timeframe === 'day' ? dailyTaskList : weeklyTaskList
+        const currentTasks = currentTaskList?.tasks || []
         
-        payload = {
-          settings: {
-            [timeframe === 'day' ? 'dailyTemplate' : 'weeklyTemplate']: [...currentTemplate, newTask]
+        const payload = {
+          role: timeframe === 'day' ? 'daily.default' : 'weekly.default',
+          tasks: [...currentTasks, newTask],
+          templateId: currentTaskList?.templateId
+        }
+        
+        const response = await fetch('/api/v1/tasklists', {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        })
+        
+        if (response.ok) {
+          const data = await response.json()
+          // Update the local task list state
+          if (timeframe === 'day') {
+            setDailyTaskList(data.taskList)
+          } else {
+            setWeeklyTaskList(data.taskList)
           }
+          setNewEphemeralTask({ name: '', area: 'self', category: 'custom', saveToTemplate: false })
+          setShowAddEphemeral(false)
+        } else {
+          console.error('Failed to add task to template:', response.status, response.statusText)
         }
       } else {
         // Add as ephemeral task
-        payload = {
+        const payload = {
           [timeframe === 'day' ? 'dayEphemeralTasks' : 'weekEphemeralTasks']: {
             add: {
               name: taskData.name,
@@ -600,23 +660,23 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
         }
         
         if (timeframe === 'day') {
-          payload.date = fullDay
+          (payload as any).date = fullDay
         } else if (timeframe === 'week') {
-          payload.week = weekNumber
+          (payload as any).week = weekNumber
         }
-      }
-      
-      const response = await fetch('/api/v1/user', {
-        method: 'POST',
-        body: JSON.stringify(payload)
-      })
-      
-      if (response.ok) {
-        await refreshUser()
-        setNewEphemeralTask({ name: '', area: 'self', category: 'custom', saveToTemplate: false })
-        setShowAddEphemeral(false)
-      } else {
-        console.error('Failed to add task:', response.status, response.statusText)
+        
+        const response = await fetch('/api/v1/user', {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        })
+        
+        if (response.ok) {
+          await refreshUser()
+          setNewEphemeralTask({ name: '', area: 'self', category: 'custom', saveToTemplate: false })
+          setShowAddEphemeral(false)
+        } else {
+          console.error('Failed to add ephemeral task:', response.status, response.statusText)
+        }
       }
     } catch (error) {
       console.error('Error adding task:', error)
@@ -632,15 +692,15 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
             id: taskId
           }
         }
-      }
-      
-      if (timeframe === 'day') {
-        payload.date = fullDay
-      } else if (timeframe === 'week') {
-        payload.week = weekNumber
-      }
-      
-      const response = await fetch('/api/v1/user', {
+        }
+        
+        if (timeframe === 'day') {
+          (payload as any).date = fullDay
+        } else if (timeframe === 'week') {
+          (payload as any).week = weekNumber
+        }
+        
+        const response = await fetch('/api/v1/user', {
         method: 'POST',
         body: JSON.stringify(payload)
       })
@@ -730,7 +790,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   // Use enhanced loading state to prevent flashing
   const isDataLoading = useEnhancedLoadingState(isLoading, session, 100, timeframe)
 
-  if (isDataLoading) {
+  if (isDataLoading || taskListsLoading) {
     return <TaskViewSkeleton />
   }
 
