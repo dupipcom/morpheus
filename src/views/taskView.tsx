@@ -39,8 +39,32 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { ContactCombobox } from "@/components/ui/contact-combobox"
 import { ThingCombobox } from "@/components/ui/thing-combobox"
-import { Users, X, Heart, Settings, Package, Plus, TrendingUp, TrendingDown } from "lucide-react"
+import { Users, X, Heart, Settings, Package, Plus, TrendingUp, TrendingDown, List, FileText } from "lucide-react"
 import { Switch } from "@/components/ui/switch"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { format } from "date-fns"
+import { Calendar as CalendarIcon, Check } from "lucide-react"
+import { Calendar } from "@/components/ui/calendar"
 
 import { MoodView } from "@/views/moodView"
 
@@ -53,6 +77,27 @@ import { DAILY_ACTIONS, WEEKLY_ACTIONS, getLocalizedTaskNames } from "@/app/cons
 import { useDebounce } from "@/lib/hooks/useDebounce"
 
 import { useFeatureFlag } from "@/lib/hooks/useFeatureFlag"
+
+// Custom DatePicker component for forms
+const DatePicker = ({ date, onDateChange, placeholder = "Pick a date" }) => {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          data-empty={!date}
+          className="data-[empty=true]:text-muted-foreground w-full justify-start text-left font-normal"
+        >
+          <CalendarIcon className="mr-2 h-4 w-4" />
+          {date ? format(date, "PPP") : <span>{placeholder}</span>}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto p-0">
+        <Calendar mode="single" selected={date} onSelect={onDateChange} />
+      </PopoverContent>
+    </Popover>
+  )
+}
 
 export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const { session, setGlobalContext, theme } = useContext(GlobalContext)
@@ -84,16 +129,54 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const [ephemeralTasks, setEphemeralTasks] = useState([])
   const [showAddEphemeral, setShowAddEphemeral] = useState(false)
   const [newEphemeralTask, setNewEphemeralTask] = useState({ name: '', area: 'self', category: 'custom', saveToTemplate: false })
+  const [showAddTemplate, setShowAddTemplate] = useState(false)
+  const [showAddList, setShowAddList] = useState(false)
+  const [newTemplate, setNewTemplate] = useState({ 
+    name: '', 
+    entries: [], 
+    dueDate: undefined as Date | undefined, 
+    budget: 0, 
+    visibility: 'private', 
+    canClone: true 
+  })
+  const [newList, setNewList] = useState({
+    name: '',
+    templateName: '',
+    dueDate: undefined as Date | undefined,
+    budget: 0
+  })
+  const [templateTasks, setTemplateTasks] = useState([])
+  const [newTask, setNewTask] = useState({ name: '', area: 'self', category: 'custom', times: 1 })
+  const [selectedTemplate, setSelectedTemplate] = useState(timeframe === 'day' ? 'daily' : 'weekly')
+  const [customTemplates, setCustomTemplates] = useState({})
+  const [customEntries, setCustomEntries] = useState({})
+  const [editingBudget, setEditingBudget] = useState(false)
+  const [tempBudgetValue, setTempBudgetValue] = useState('')
+  const [editingDueDate, setEditingDueDate] = useState(false)
+  const [tempDueDateValue, setTempDueDateValue] = useState(undefined as Date | undefined)
 
-  // Load ephemeral tasks from session
+  // Load ephemeral tasks from session based on selected template
   const currentEphemeralTasks = useMemo(() => {
+    // If a custom entry is selected, don't show ephemeral tasks (they're part of the entry)
+    if (selectedTemplate !== 'daily' && selectedTemplate !== 'weekly' && customEntries[selectedTemplate]) {
+      return []
+    }
+    
+    // Show ephemeral tasks based on selected template, not just timeframe
+    if (selectedTemplate === 'daily' || (selectedTemplate === 'daily' && timeframe === 'day')) {
+      return session?.user?.entries?.[year]?.days?.[date]?.ephemeralTasks || []
+    } else if (selectedTemplate === 'weekly' || (selectedTemplate === 'weekly' && timeframe === 'week')) {
+      return session?.user?.entries?.[year]?.weeks?.[weekNumber]?.ephemeralTasks || []
+    }
+    
+    // Fallback to original logic
     if (timeframe === 'day') {
       return session?.user?.entries?.[year]?.days?.[date]?.ephemeralTasks || []
     } else if (timeframe === 'week') {
       return session?.user?.entries?.[year]?.weeks?.[weekNumber]?.ephemeralTasks || []
     }
     return []
-  }, [session?.user?.entries, year, date, weekNumber, timeframe])
+  }, [session?.user?.entries, year, date, weekNumber, timeframe, selectedTemplate, customEntries])
 
   const { isAgentChatEnabled } = useFeatureFlag()
   const agentConversation = session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks && session?.user?.entries[year]?.weeks[weekNumber] && session?.user?.entries[year]?.weeks[weekNumber].agentConversation
@@ -109,7 +192,13 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const userTasks = useMemo(() => {
     let regularTasks = []
     
-    if (timeframe === 'day') {
+    // Handle custom entry selection - only show custom tasks, no default tasks
+    if (selectedTemplate !== 'daily' && selectedTemplate !== 'weekly' && customEntries[selectedTemplate]) {
+      // Use custom entry (list) - show tasks with completion status
+      const customEntry = customEntries[selectedTemplate]
+      regularTasks = getLocalizedTaskNames(customEntry.tasks || [], t)
+    } else if (selectedTemplate === 'daily' || (selectedTemplate === 'daily' && timeframe === 'day')) {
+      // Show daily tasks regardless of current timeframe when daily is selected
       const noDayData = !session?.user?.entries || !session?.user?.entries[year] || !Object.keys(session?.user?.entries[year].days).length
       const dailyTasks = ((session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date]) && session?.user?.entries[year].days[date]?.tasks) || (noDayData ? DAILY_ACTIONS : [])
       
@@ -119,11 +208,32 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       } else {
         regularTasks = getLocalizedTaskNames(dailyTasks, t)
       }
-    } else if (timeframe === 'week') {
+    } else if (selectedTemplate === 'weekly' || (selectedTemplate === 'weekly' && timeframe === 'week')) {
+      // Show weekly tasks regardless of current timeframe when weekly is selected
       const noWeekData = !session?.user?.entries || !session?.user?.entries[year] || !Object.keys(session?.user?.entries[year].weeks).length
       const weeklyTasks = (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks) && session?.user?.entries[year].weeks[weekNumber]?.tasks || []
       
       // Always prioritize weeklyTemplate if it exists, otherwise use weeklyTasks or default actions
+      if (session?.user?.settings?.weeklyTemplate && session?.user?.settings?.weeklyTemplate.length > 0) {
+        regularTasks = assign(getLocalizedTaskNames(session?.user?.settings?.weeklyTemplate, t), getLocalizedTaskNames(weeklyTasks, t), { times: 1 })
+      } else {
+        regularTasks = getLocalizedTaskNames(weeklyTasks.length > 0 ? weeklyTasks : WEEKLY_ACTIONS, t)
+      }
+    } else if (timeframe === 'day') {
+      // Fallback to original day logic
+      const noDayData = !session?.user?.entries || !session?.user?.entries[year] || !Object.keys(session?.user?.entries[year].days).length
+      const dailyTasks = ((session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date]) && session?.user?.entries[year].days[date]?.tasks) || (noDayData ? DAILY_ACTIONS : [])
+      
+      if (session?.user?.settings?.dailyTemplate && session?.user?.settings?.dailyTemplate.length > 0) {
+        regularTasks = assign(getLocalizedTaskNames(session?.user?.settings?.dailyTemplate, t), getLocalizedTaskNames(dailyTasks, t), { times: 1 })
+      } else {
+        regularTasks = getLocalizedTaskNames(dailyTasks, t)
+      }
+    } else if (timeframe === 'week') {
+      // Fallback to original week logic
+      const noWeekData = !session?.user?.entries || !session?.user?.entries[year] || !Object.keys(session?.user?.entries[year].weeks).length
+      const weeklyTasks = (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks) && session?.user?.entries[year].weeks[weekNumber]?.tasks || []
+      
       if (session?.user?.settings?.weeklyTemplate && session?.user?.settings?.weeklyTemplate.length > 0) {
         regularTasks = assign(getLocalizedTaskNames(session?.user?.settings?.weeklyTemplate, t), getLocalizedTaskNames(weeklyTasks, t), { times: 1 })
       } else {
@@ -139,7 +249,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     }))
     
     return [...regularTasks, ...ephemeralTasksWithDisplayName]
-  }, [JSON.stringify(session?.user?.settings), date, weekNumber, t, currentEphemeralTasks])
+  }, [JSON.stringify(session?.user?.settings), date, weekNumber, t, currentEphemeralTasks, selectedTemplate, customTemplates])
 
 
   const openDays = useMemo(() => {
@@ -177,10 +287,10 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     }
   }, [session?.user?.entries, year, date, weekNumber, timeframe])
 
-  // Load favorites from user settings
+  // Load favorites from user settings based on selected template
   useEffect(() => {
     if (session?.user?.settings) {
-      const template = timeframe === 'day' 
+      const template = (selectedTemplate === 'daily' || (selectedTemplate === 'daily' && timeframe === 'day'))
         ? session.user.settings.dailyTemplate 
         : session.user.settings.weeklyTemplate
       
@@ -198,7 +308,21 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
         setOptimisticFavorites(favoriteSet)
       }
     }
-  }, [session?.user?.settings, timeframe])
+  }, [session?.user?.settings, timeframe, selectedTemplate])
+
+  // Load custom templates from user settings
+  useEffect(() => {
+    if (session?.user?.settings?.customTemplates) {
+      setCustomTemplates(session.user.settings.customTemplates)
+    }
+  }, [session?.user?.settings?.customTemplates])
+
+  // Load custom entries from user
+  useEffect(() => {
+    if (session?.user?.customEntries) {
+      setCustomEntries(session.user.customEntries)
+    }
+  }, [session?.user?.customEntries])
 
   const [previousValues, setPreviousValues] = useState(userDone)
   const [values, setValues] = useState(userDone)
@@ -305,18 +429,34 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
 
     setValues(done)
     
-    // Update regular tasks
+    // Update regular tasks based on selected template
     if (nextActions && nextActions.length > 0) {
+      // Handle custom entry updates
+      if (selectedTemplate !== 'daily' && selectedTemplate !== 'weekly' && customEntries[selectedTemplate]) {
       const response = await fetch('/api/v1/user', {
         method: 'POST', body: JSON.stringify({
-          dayActions: timeframe === 'day' ? nextActions : undefined,
-          weekActions: timeframe === 'week' ? nextActions : undefined,
+            customEntry: {
+              action: 'update',
+              entryName: selectedTemplate,
+              entryData: {
+                tasks: nextActions
+              }
+            }
+          })
+        })
+      } else {
+        // Handle daily/weekly updates
+        const response = await fetch('/api/v1/user', {
+          method: 'POST', body: JSON.stringify({
+            dayActions: (selectedTemplate === 'daily' || (selectedTemplate === 'daily' && timeframe === 'day')) ? nextActions : undefined,
+            weekActions: (selectedTemplate === 'weekly' || (selectedTemplate === 'weekly' && timeframe === 'week')) ? nextActions : undefined,
           taskContacts: taskContacts,
           taskThings: taskThings,
           date: fullDay,
           week: weekNumber
         })
       })
+      }
     }
     
     // Update ephemeral tasks
@@ -324,7 +464,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       for (const task of updatedEphemeralTasks) {
         const response = await fetch('/api/v1/user', {
           method: 'POST', body: JSON.stringify({
-            [timeframe === 'day' ? 'dayEphemeralTasks' : 'weekEphemeralTasks']: {
+            [(selectedTemplate === 'daily' || (selectedTemplate === 'daily' && timeframe === 'day')) ? 'dayEphemeralTasks' : 'weekEphemeralTasks']: {
               update: {
                 id: task.id,
                 updates: {
@@ -390,18 +530,34 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       return clonedTask
     })
 
-    // Update regular tasks
+    // Update regular tasks based on selected template
     if (nextActions && nextActions.length > 0) {
+      // Handle custom entry updates
+      if (selectedTemplate !== 'daily' && selectedTemplate !== 'weekly' && customEntries[selectedTemplate]) {
       const response = await fetch('/api/v1/user', {
         method: 'POST', body: JSON.stringify({
-          dayActions: timeframe === 'day' ? nextActions : undefined,
-          weekActions: timeframe === 'week' ? nextActions : undefined,
+            customEntry: {
+              action: 'update',
+              entryName: selectedTemplate,
+              entryData: {
+                tasks: nextActions
+              }
+            }
+          })
+        })
+      } else {
+        // Handle daily/weekly updates
+        const response = await fetch('/api/v1/user', {
+          method: 'POST', body: JSON.stringify({
+            dayActions: (selectedTemplate === 'daily' || (selectedTemplate === 'daily' && timeframe === 'day')) ? nextActions : undefined,
+            weekActions: (selectedTemplate === 'weekly' || (selectedTemplate === 'weekly' && timeframe === 'week')) ? nextActions : undefined,
           taskContacts: taskContacts,
           taskThings: taskThings,
           date: fullDay,
           week: weekNumber
         })
       })
+      }
     }
     
     // Update ephemeral tasks
@@ -409,7 +565,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       for (const task of updatedEphemeralTasks) {
         const response = await fetch('/api/v1/user', {
           method: 'POST', body: JSON.stringify({
-            [timeframe === 'day' ? 'dayEphemeralTasks' : 'weekEphemeralTasks']: {
+            [(selectedTemplate === 'daily' || (selectedTemplate === 'daily' && timeframe === 'day')) ? 'dayEphemeralTasks' : 'weekEphemeralTasks']: {
               update: {
                 id: task.id,
                 updates: {
@@ -442,7 +598,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const debouncedFavoriteServerUpdate = useDebounce(async (currentOptimisticFavorites) => {
     // Save to database with the passed optimistic favorites state
     try {
-      const currentTemplate = timeframe === 'day' 
+      const currentTemplate = (selectedTemplate === 'daily' || (selectedTemplate === 'daily' && timeframe === 'day'))
         ? session?.user?.settings?.dailyTemplate || []
         : session?.user?.settings?.weeklyTemplate || []
       
@@ -457,7 +613,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       
       const payload = {
         settings: {
-          [timeframe === 'day' ? 'dailyTemplate' : 'weeklyTemplate']: updatedTemplate
+          [(selectedTemplate === 'daily' || (selectedTemplate === 'daily' && timeframe === 'day')) ? 'dailyTemplate' : 'weeklyTemplate']: updatedTemplate
         }
       }
       
@@ -575,19 +731,75 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
           count: 0
         }
         
-        const currentTemplate = timeframe === 'day' 
+        // Check if we're in a custom entry and add to both the entry and its template
+        if (selectedTemplate !== 'daily' && selectedTemplate !== 'weekly' && customEntries[selectedTemplate]) {
+          const currentEntry = customEntries[selectedTemplate]
+          const templateName = currentEntry.templateName
+          
+          if (templateName && customTemplates[templateName]) {
+            // Add to both the current entry and its corresponding template
+            const currentTemplate = customTemplates[templateName] || { entries: [] }
+            const updatedTemplateEntries = [...(currentTemplate.entries || []), newTask]
+            const updatedEntryTasks = [...(currentEntry.tasks || []), newTask]
+            
+            // We need to make two API calls - one for the template and one for the entry
+            // First, add to the template
+            const templateResponse = await fetch('/api/v1/user', {
+              method: 'POST',
+              body: JSON.stringify({
+                customTemplate: {
+                  action: 'update',
+                  templateName: templateName,
+                  templateData: {
+                    entries: updatedTemplateEntries
+                  }
+                }
+              })
+            })
+            
+            if (templateResponse.ok) {
+              // Then add to the current entry
+              payload = {
+                customEntry: {
+                  action: 'update',
+                  entryName: selectedTemplate,
+                  entryData: {
+                    tasks: updatedEntryTasks
+                  }
+                }
+              }
+            } else {
+              console.error('Failed to update template:', templateResponse.status, templateResponse.statusText)
+              return
+            }
+          } else {
+            // Fallback to default template if no template reference found
+            const currentTemplate = (selectedTemplate === 'daily' || (selectedTemplate === 'daily' && timeframe === 'day'))
           ? session?.user?.settings?.dailyTemplate || []
           : session?.user?.settings?.weeklyTemplate || []
         
         payload = {
           settings: {
-            [timeframe === 'day' ? 'dailyTemplate' : 'weeklyTemplate']: [...currentTemplate, newTask]
+                [(selectedTemplate === 'daily' || (selectedTemplate === 'daily' && timeframe === 'day')) ? 'dailyTemplate' : 'weeklyTemplate']: [...currentTemplate, newTask]
+              }
+            }
+          }
+        } else {
+          // Add to default template
+          const currentTemplate = (selectedTemplate === 'daily' || (selectedTemplate === 'daily' && timeframe === 'day'))
+            ? session?.user?.settings?.dailyTemplate || []
+            : session?.user?.settings?.weeklyTemplate || []
+          
+          payload = {
+            settings: {
+              [(selectedTemplate === 'daily' || (selectedTemplate === 'daily' && timeframe === 'day')) ? 'dailyTemplate' : 'weeklyTemplate']: [...currentTemplate, newTask]
+            }
           }
         }
       } else {
         // Add as ephemeral task
         payload = {
-          [timeframe === 'day' ? 'dayEphemeralTasks' : 'weekEphemeralTasks']: {
+          [(selectedTemplate === 'daily' || (selectedTemplate === 'daily' && timeframe === 'day')) ? 'dayEphemeralTasks' : 'weekEphemeralTasks']: {
             add: {
               name: taskData.name,
               area: taskData.area,
@@ -599,9 +811,9 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
           }
         }
         
-        if (timeframe === 'day') {
+        if (selectedTemplate === 'daily' || (selectedTemplate === 'daily' && timeframe === 'day')) {
           payload.date = fullDay
-        } else if (timeframe === 'week') {
+        } else if (selectedTemplate === 'weekly' || (selectedTemplate === 'weekly' && timeframe === 'week')) {
           payload.week = weekNumber
         }
       }
@@ -623,20 +835,76 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     }
   }
 
+  // Function to save budget for custom entry
+  const saveBudget = async (entryName, budget) => {
+    try {
+      const response = await fetch('/api/v1/user', {
+        method: 'POST',
+        body: JSON.stringify({
+          customEntry: {
+            action: 'update',
+            entryName: entryName,
+            entryData: {
+              budget: parseFloat(budget) || 0
+            }
+          }
+        })
+      })
+      
+      if (response.ok) {
+        await refreshUser()
+        setEditingBudget(false)
+        setTempBudgetValue('')
+      } else {
+        console.error('Failed to save budget:', response.status, response.statusText)
+      }
+    } catch (error) {
+      console.error('Error saving budget:', error)
+    }
+  }
+
+  // Function to save due date for custom entry
+  const saveDueDate = async (entryName, dueDate) => {
+    try {
+      const response = await fetch('/api/v1/user', {
+        method: 'POST',
+        body: JSON.stringify({
+          customEntry: {
+            action: 'update',
+            entryName: entryName,
+            entryData: {
+              dueDate: dueDate ? dueDate.toISOString() : null
+            }
+          }
+        })
+      })
+      
+      if (response.ok) {
+        await refreshUser()
+        setEditingDueDate(false)
+        setTempDueDateValue(undefined)
+      } else {
+        console.error('Failed to save due date:', response.status, response.statusText)
+      }
+    } catch (error) {
+      console.error('Error saving due date:', error)
+    }
+  }
+
   // Function to delete ephemeral task
   const deleteEphemeralTask = async (taskId) => {
     try {
       const payload = {
-        [timeframe === 'day' ? 'dayEphemeralTasks' : 'weekEphemeralTasks']: {
+        [(selectedTemplate === 'daily' || (selectedTemplate === 'daily' && timeframe === 'day')) ? 'dayEphemeralTasks' : 'weekEphemeralTasks']: {
           remove: {
             id: taskId
           }
         }
       }
       
-      if (timeframe === 'day') {
+      if (selectedTemplate === 'daily' || (selectedTemplate === 'daily' && timeframe === 'day')) {
         payload.date = fullDay
-      } else if (timeframe === 'week') {
+      } else if (selectedTemplate === 'weekly' || (selectedTemplate === 'weekly' && timeframe === 'week')) {
         payload.week = weekNumber
       }
       
@@ -652,6 +920,119 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       }
     } catch (error) {
       console.error('Error deleting ephemeral task:', error)
+    }
+  }
+
+  // Function to add a task to the template
+  const addTaskToTemplate = () => {
+    if (!newTask.name.trim()) return
+    
+    const task = {
+      id: `template_task_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      name: newTask.name,
+      area: newTask.area,
+      category: newTask.category,
+      categories: [newTask.category],
+      status: "Not started",
+      times: newTask.times,
+      count: 0,
+      cadence: "custom"
+    }
+    
+    setTemplateTasks(prev => [...prev, task])
+    setNewTask({ name: '', area: 'self', category: 'custom', times: 1 })
+  }
+
+  // Function to remove a task from the template
+  const removeTaskFromTemplate = (taskId) => {
+    setTemplateTasks(prev => prev.filter(task => task.id !== taskId))
+  }
+
+  // Function to create a new custom entry (list) from a template
+  const createCustomEntry = async (listData) => {
+    try {
+      // Get the selected template
+      const selectedTemplate = customTemplates[listData.templateName]
+      if (!selectedTemplate) {
+        console.error('Template not found')
+        return
+      }
+
+      // Clone the template tasks and reset their status
+      const clonedTasks = selectedTemplate.entries.map(task => ({
+        ...task,
+        id: `entry_task_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        status: "Not started",
+        count: 0
+      }))
+
+      const payload = {
+        customEntry: {
+          action: 'create',
+          entryName: listData.name,
+          entryData: {
+            tasks: clonedTasks,
+            budget: listData.budget,
+            visibility: selectedTemplate.visibility,
+            canClone: selectedTemplate.canClone,
+            templateName: listData.templateName,
+            dueDate: listData.dueDate ? listData.dueDate.toISOString() : null
+          }
+        }
+      }
+      
+      const response = await fetch('/api/v1/user', {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      })
+      
+      if (response.ok) {
+        await refreshUser()
+        setNewList({ name: '', templateName: '', dueDate: undefined, budget: 0 })
+        setShowAddList(false)
+      } else {
+        console.error('Failed to create custom entry:', response.status, response.statusText)
+      }
+    } catch (error) {
+      console.error('Error creating custom entry:', error)
+    }
+  }
+
+  // Function to create a new custom template
+  const createCustomTemplate = async (templateData) => {
+    try {
+      const payload = {
+        customTemplate: {
+          action: 'create',
+          templateName: templateData.name,
+          templateData: {
+            entries: templateTasks,
+            dueDate: templateData.dueDate ? templateData.dueDate.toISOString() : null,
+            budget: templateData.budget,
+            viewers: [],
+            users: [],
+            visibility: templateData.visibility,
+            canClone: templateData.canClone
+          }
+        }
+      }
+      
+      const response = await fetch('/api/v1/user', {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      })
+      
+      if (response.ok) {
+        await refreshUser()
+        setNewTemplate({ name: '', entries: [], dueDate: undefined, budget: 0, visibility: 'private', canClone: true })
+        setTemplateTasks([])
+        setNewTask({ name: '', area: 'self', category: 'custom', times: 1 })
+        setShowAddTemplate(false)
+      } else {
+        console.error('Failed to create custom template:', response.status, response.statusText)
+      }
+    } catch (error) {
+      console.error('Error creating custom template:', error)
     }
   }
 
@@ -801,16 +1182,188 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
         <AccordionTrigger>{t('dashboard.whatDidYouAccomplish')}</AccordionTrigger>
         <AccordionContent>
           <div className="flex flex-col">
-          {/* Toolbar with add ephemeral task and settings buttons */}
-          <div className="flex justify-end gap-2 mb-4">
+          {/* Toolbar with template selector, add buttons, and settings */}
+          <div className="flex justify-between items-center gap-2 mb-4">
+            {/* Template Selector */}
+            <div className="flex items-center gap-2">
+              <Select value={selectedTemplate} onValueChange={setSelectedTemplate}>
+                <SelectTrigger className="w-[180px] h-[40px] px-3 py-2">
+                  <SelectValue placeholder="Select template" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="daily">Daily</SelectItem>
+                  <SelectItem value="weekly">Weekly</SelectItem>
+                  {Object.keys(customEntries)
+                    .filter((entryName) => {
+                      const entry = customEntries[entryName]
+                      // Only show entries that have tasks and not all tasks are done
+                      return entry.tasks && entry.tasks.length > 0 && 
+                             !entry.tasks.every((task) => task.status === "Done")
+                    })
+                    .map((entryName) => (
+                      <SelectItem key={entryName} value={entryName}>
+                        {entryName}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+              
+              {/* Budget Display */}
+              {selectedTemplate !== 'daily' && selectedTemplate !== 'weekly' && customEntries[selectedTemplate] && (
+                <div className="flex items-center gap-2 px-3 py-2 bg-muted rounded-md text-sm min-h-[40px]">
+                  {editingBudget ? (
+                    <>
+                      <span className="text-muted-foreground">Budget:</span>
+                      <input
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        value={tempBudgetValue}
+                        onChange={(e) => setTempBudgetValue(e.target.value)}
+                        className="w-24 px-2 py-1 border rounded text-sm"
+                        placeholder="0.00"
+                        autoFocus
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            saveBudget(selectedTemplate, tempBudgetValue)
+                          } else if (e.key === 'Escape') {
+                            setEditingBudget(false)
+                            setTempBudgetValue('')
+                          }
+                        }}
+                      />
+                      <button
+                        onClick={() => saveBudget(selectedTemplate, tempBudgetValue)}
+                        className="p-2 hover:bg-green-100 rounded"
+                        disabled={!tempBudgetValue || isNaN(parseFloat(tempBudgetValue))}
+                      >
+                        <Check className="h-4 w-4 text-green-600" />
+                      </button>
+                      <button
+                        onClick={() => {
+                          setEditingBudget(false)
+                          setTempBudgetValue('')
+                        }}
+                        className="p-2 hover:bg-red-100 rounded"
+                      >
+                        <X className="h-4 w-4 text-red-600" />
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-muted-foreground">Budget:</span>
+                      {customEntries[selectedTemplate].budget && customEntries[selectedTemplate].budget > 0 ? (
+                        <span 
+                          className="font-medium cursor-pointer hover:bg-primary hover:text-primary-foreground px-2 py-1 rounded transition-colors"
+                          onClick={() => {
+                            setTempBudgetValue(customEntries[selectedTemplate].budget?.toString() || '')
+                            setEditingBudget(true)
+                          }}
+                        >
+                          ${customEntries[selectedTemplate].budget}
+                        </span>
+                      ) : (
+                        <button 
+                          className="text-muted-foreground hover:text-primary-foreground text-sm font-medium px-2 py-1 rounded hover:bg-primary transition-colors"
+                          onClick={() => {
+                            setTempBudgetValue('')
+                            setEditingBudget(true)
+                          }}
+                        >
+                          Set Budget
+                        </button>
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
+
+              {/* Due Date Display */}
+              {selectedTemplate !== 'daily' && selectedTemplate !== 'weekly' && customEntries[selectedTemplate] && (
+                <div className="flex items-center gap-2 px-3 py-2 bg-muted rounded-md text-sm min-h-[40px]">
+                  {editingDueDate ? (
+                    <>
+                      <span className="text-muted-foreground">Due:</span>
+                      <div className="w-36">
+                        <DatePicker
+                          date={tempDueDateValue}
+                          onDateChange={setTempDueDateValue}
+                          placeholder="Select date"
+                        />
+                      </div>
+                      <button
+                        onClick={() => saveDueDate(selectedTemplate, tempDueDateValue)}
+                        className="p-2 hover:bg-green-100 rounded"
+                      >
+                        <Check className="h-4 w-4 text-green-600" />
+                      </button>
+                      <button
+                        onClick={() => {
+                          setEditingDueDate(false)
+                          setTempDueDateValue(undefined)
+                        }}
+                        className="p-2 hover:bg-red-100 rounded"
+                      >
+                        <X className="h-4 w-4 text-red-600" />
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-muted-foreground">Due:</span>
+                      {customEntries[selectedTemplate].dueDate ? (
+                        <span 
+                          className="font-medium cursor-pointer hover:bg-primary hover:text-primary-foreground px-2 py-1 rounded transition-colors"
+                          onClick={() => {
+                            setTempDueDateValue(customEntries[selectedTemplate].dueDate ? new Date(customEntries[selectedTemplate].dueDate) : undefined)
+                            setEditingDueDate(true)
+                          }}
+                        >
+                          {format(new Date(customEntries[selectedTemplate].dueDate), "MMM d")}
+                        </span>
+                      ) : (
+                        <button 
+                          className="text-muted-foreground hover:text-primary-foreground text-sm font-medium px-2 py-1 rounded hover:bg-primary transition-colors"
+                          onClick={() => {
+                            setTempDueDateValue(undefined)
+                            setEditingDueDate(true)
+                          }}
+                        >
+                          Set Due Date
+                        </button>
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Add buttons and settings */}
+            <div className="flex gap-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
               size="sm"
               className="flex items-center text-muted-foreground hover:text-foreground"
-              onClick={() => setShowAddEphemeral(!showAddEphemeral)}
             >
               <Plus className="h-4 w-4 mr-1" />
             </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => setShowAddEphemeral(!showAddEphemeral)}>
+                    <FileText className="h-4 w-4 mr-2" />
+                    New Task
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setShowAddTemplate(!showAddTemplate)}>
+                    <List className="h-4 w-4 mr-2" />
+                    New Template
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setShowAddList(!showAddList)}>
+                    <List className="h-4 w-4 mr-2" />
+                    New List
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             <Button
               variant="ghost"
               size="sm"
@@ -819,6 +1372,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
             >
               <Settings className="h-4 w-4" />
             </Button>
+            </div>
           </div>
           
           {/* Add Ephemeral Task Form */}
@@ -882,7 +1436,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                     onCheckedChange={(checked) => setNewEphemeralTask(prev => ({ ...prev, saveToTemplate: checked }))}
                   />
                   <label htmlFor="save-to-template" className="text-sm font-medium">
-                    Save to {timeframe === 'day' ? 'daily' : 'weekly'} template
+                    Save to template
                   </label>
                 </div>
                 <div className="flex gap-2">
@@ -891,13 +1445,273 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                     disabled={!newEphemeralTask.name.trim()}
                     size="sm"
                   >
-                    Add Task
+                    Save to template
                   </Button>
                   <Button
                     variant="outline"
                     onClick={() => {
                       setShowAddEphemeral(false)
                       setNewEphemeralTask({ name: '', area: 'self', category: 'custom', saveToTemplate: false })
+                    }}
+                    size="sm"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Add Custom List Form */}
+          {showAddList && (
+            <Card className="mb-4 p-4">
+              <CardHeader>
+                <CardTitle className="text-sm">Create Custom List</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div>
+                  <label className="text-sm font-medium">List Name</label>
+                  <input
+                    type="text"
+                    value={newList.name}
+                    onChange={(e) => setNewList(prev => ({ ...prev, name: e.target.value }))}
+                    placeholder="Enter list name..."
+                    className="w-full p-2 border rounded-md"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Template</label>
+                  <select
+                    value={newList.templateName}
+                    onChange={(e) => setNewList(prev => ({ ...prev, templateName: e.target.value }))}
+                    className="w-full p-2 border rounded-md"
+                  >
+                    <option value="">Select a template...</option>
+                    {Object.keys(customTemplates).map((templateName) => (
+                      <option key={templateName} value={templateName}>
+                        {templateName}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Due Date (optional)</label>
+                  <DatePicker
+                    date={newList.dueDate}
+                    onDateChange={(date) => setNewList(prev => ({ ...prev, dueDate: date }))}
+                    placeholder="Select due date"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Budget (optional)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={newList.budget || ''}
+                    onChange={(e) => setNewList(prev => ({ ...prev, budget: parseFloat(e.target.value) || 0 }))}
+                    placeholder="Enter budget amount..."
+                    className="w-full p-2 border rounded-md"
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    onClick={() => createCustomEntry(newList)}
+                    disabled={!newList.name.trim() || !newList.templateName}
+                    size="sm"
+                  >
+                    Create List
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setShowAddList(false)
+                      setNewList({ name: '', templateName: '', dueDate: undefined, budget: 0 })
+                    }}
+                    size="sm"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Add Custom Template Form */}
+          {showAddTemplate && (
+            <Card className="mb-4 p-4">
+              <CardHeader>
+                <CardTitle className="text-sm">Create Custom Template</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div>
+                  <label className="text-sm font-medium">Template Name</label>
+                  <input
+                    type="text"
+                    value={newTemplate.name}
+                    onChange={(e) => setNewTemplate(prev => ({ ...prev, name: e.target.value }))}
+                    placeholder="Enter template name..."
+                    className="w-full p-2 border rounded-md"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Due Date (optional)</label>
+                  <DatePicker
+                    date={newTemplate.dueDate}
+                    onDateChange={(date) => setNewTemplate(prev => ({ ...prev, dueDate: date }))}
+                    placeholder="Select due date"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Budget (optional)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={newTemplate.budget || ''}
+                    onChange={(e) => setNewTemplate(prev => ({ ...prev, budget: parseFloat(e.target.value) || 0 }))}
+                    placeholder="Enter budget amount..."
+                    className="w-full p-2 border rounded-md"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Visibility</label>
+                  <select
+                    value={newTemplate.visibility}
+                    onChange={(e) => setNewTemplate(prev => ({ ...prev, visibility: e.target.value }))}
+                    className="w-full p-2 border rounded-md"
+                  >
+                    <option value="private">Private</option>
+                    <option value="closeFriends">Close Friends</option>
+                    <option value="friends">Friends</option>
+                    <option value="public">Public</option>
+                  </select>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="can-clone"
+                    checked={newTemplate.canClone}
+                    onCheckedChange={(checked) => setNewTemplate(prev => ({ ...prev, canClone: checked }))}
+                  />
+                  <label htmlFor="can-clone" className="text-sm font-medium">
+                    Allow others to clone this template
+                  </label>
+                </div>
+                
+                {/* Task Management Section */}
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium">Template Tasks</h4>
+                  
+                  {/* Add Task Form */}
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-2 p-3 border rounded-md bg-muted/50">
+                    <input
+                      type="text"
+                      value={newTask.name}
+                      onChange={(e) => setNewTask(prev => ({ ...prev, name: e.target.value }))}
+                      placeholder="Task name..."
+                      className="p-2 border rounded-md text-sm"
+                    />
+                    <select
+                      value={newTask.area}
+                      onChange={(e) => setNewTask(prev => ({ ...prev, area: e.target.value }))}
+                      className="p-2 border rounded-md text-sm"
+                    >
+                      <option value="self">Self</option>
+                      <option value="social">Social</option>
+                      <option value="home">Home</option>
+                      <option value="work">Work</option>
+                    </select>
+                    <select
+                      value={newTask.category}
+                      onChange={(e) => setNewTask(prev => ({ ...prev, category: e.target.value }))}
+                      className="p-2 border rounded-md text-sm"
+                    >
+                      <option value="custom">Custom</option>
+                      <option value="body">Body</option>
+                      <option value="mind">Mind</option>
+                      <option value="spirit">Spirit</option>
+                      <option value="social">Social</option>
+                      <option value="work">Work</option>
+                      <option value="home">Home</option>
+                      <option value="fun">Fun</option>
+                      <option value="growth">Growth</option>
+                      <option value="community">Community</option>
+                      <option value="affection">Affection</option>
+                      <option value="clean">Clean</option>
+                      <option value="maintenance">Maintenance</option>
+                      <option value="spirituality">Spirituality</option>
+                      <option value="event">Event</option>
+                    </select>
+                    <div className="flex gap-2">
+                      <input
+                        type="number"
+                        min="1"
+                        value={newTask.times}
+                        onChange={(e) => setNewTask(prev => ({ ...prev, times: parseInt(e.target.value) || 1 }))}
+                        className="p-2 border rounded-md text-sm w-16"
+                        placeholder="Times"
+                      />
+                      <Button
+                        onClick={addTaskToTemplate}
+                        disabled={!newTask.name.trim()}
+                        size="sm"
+                        className="text-xs"
+                      >
+                        Add
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  {/* Tasks Table */}
+                  {templateTasks.length > 0 && (
+                    <div className="border rounded-md">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead className="text-xs">Task Name</TableHead>
+                            <TableHead className="text-xs">Area</TableHead>
+                            <TableHead className="text-xs">Category</TableHead>
+                            <TableHead className="text-xs">Times</TableHead>
+                            <TableHead className="text-xs w-16">Actions</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {templateTasks.map((task) => (
+                            <TableRow key={task.id}>
+                              <TableCell className="text-xs">{task.name}</TableCell>
+                              <TableCell className="text-xs capitalize">{task.area}</TableCell>
+                              <TableCell className="text-xs capitalize">{task.category}</TableCell>
+                              <TableCell className="text-xs">{task.times}</TableCell>
+                              <TableCell className="text-xs">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => removeTaskFromTemplate(task.id)}
+                                  className="h-6 w-6 p-0 text-destructive hover:text-destructive"
+                                >
+                                  <X className="h-3 w-3" />
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    onClick={() => createCustomTemplate(newTemplate)}
+                    disabled={!newTemplate.name.trim() || templateTasks.length === 0}
+                    size="sm"
+                  >
+                    Create Template
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setShowAddTemplate(false)
+                      setNewTemplate({ name: '', entries: [], dueDate: undefined, budget: 0, visibility: 'private', canClone: true })
+                      setTemplateTasks([])
+                      setNewTask({ name: '', area: 'self', category: 'custom', times: 1 })
                     }}
                     size="sm"
                   >

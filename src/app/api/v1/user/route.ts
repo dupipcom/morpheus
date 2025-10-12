@@ -777,6 +777,88 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     user = await getUser()
   }
 
+  // Handle custom template operations
+  if (data?.customTemplate) {
+    const { action, templateName, templateData } = data.customTemplate
+    
+    // Get current custom templates or initialize empty object
+    const currentCustomTemplates = user.settings?.customTemplates || {}
+    
+    let updatedCustomTemplates = { ...currentCustomTemplates }
+    
+    if (action === 'create') {
+      updatedCustomTemplates[templateName] = {
+        entries: templateData.entries || [],
+        dueDate: templateData.dueDate || null,
+        budget: templateData.budget || 0,
+        owner: userId,
+        viewers: templateData.viewers || [],
+        users: templateData.users || [],
+        visibility: templateData.visibility || 'private',
+        canClone: templateData.canClone !== undefined ? templateData.canClone : true
+      }
+    } else if (action === 'update') {
+      if (updatedCustomTemplates[templateName]) {
+        updatedCustomTemplates[templateName] = {
+          ...updatedCustomTemplates[templateName],
+          ...templateData
+        }
+      }
+    } else if (action === 'delete') {
+      delete updatedCustomTemplates[templateName]
+    }
+    
+    await prisma.user.update({
+      data: {
+        settings: {
+          ...user.settings,
+          customTemplates: updatedCustomTemplates
+        },
+      },
+      where: { id: user.id },
+    })
+    user = await getUser()
+  }
+
+  // Handle custom entries operations
+  if (data?.customEntry) {
+    const { action, entryName, entryData } = data.customEntry
+    
+    // Get current custom entries or initialize empty object
+    const currentCustomEntries = user.customEntries || {}
+    
+    let updatedCustomEntries = { ...currentCustomEntries }
+    
+    if (action === 'create') {
+      updatedCustomEntries[entryName] = {
+        tasks: entryData.tasks || [],
+        budget: entryData.budget || 0,
+        visibility: entryData.visibility || 'private',
+        canClone: entryData.canClone !== undefined ? entryData.canClone : true,
+        templateName: entryData.templateName || '',
+        createdAt: new Date().toISOString(),
+        dueDate: entryData.dueDate || null
+      }
+    } else if (action === 'update') {
+      if (updatedCustomEntries[entryName]) {
+        updatedCustomEntries[entryName] = {
+          ...updatedCustomEntries[entryName],
+          ...entryData
+        }
+      }
+    } else if (action === 'delete') {
+      delete updatedCustomEntries[entryName]
+    }
+    
+    await prisma.user.update({
+      data: {
+        customEntries: updatedCustomEntries,
+      },
+      where: { id: user.id },
+    })
+    user = await getUser()
+  }
+
   // Handle ephemeral tasks for day entries
   if (data?.dayEphemeralTasks) {
     const entries = user.entries as any

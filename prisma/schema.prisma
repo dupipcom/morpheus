@@ -35,6 +35,7 @@ model User {
   friends       String[]  @db.ObjectId
   closeFriends  String[]  @db.ObjectId
   friendRequests String[] @db.ObjectId
+  customEntries Json?
 }
 
 model Contact {
@@ -101,6 +102,35 @@ type Settings {
   monthsNeedVariableExpenses String?
   dailyTemplate Task[]
   weeklyTemplate Task[]
+  customTemplates Json?
+}
+
+type CustomTemplate {
+  entries Task[]
+  dueDate DateTime?
+  budget Float?
+  owner String
+  viewers String[]
+  users String[]
+  visibility TemplateVisibility
+  canClone Boolean
+}
+
+type CustomEntry {
+  tasks Task[]
+  budget Float?
+  visibility TemplateVisibility
+  canClone Boolean
+  templateName String
+  createdAt DateTime
+  dueDate DateTime?
+}
+
+enum TemplateVisibility {
+  private
+  closeFriends
+  friends
+  public
 }
 
 type Mood {
