@@ -8,6 +8,43 @@ import { I18nProvider } from '@/lib/contexts/i18n'
 import { loadTranslations } from '@/lib/i18n'
 import prisma from "@/lib/prisma"
 
+function getTimeAgo(date: Date): string {
+  const now = new Date()
+  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
+  
+  if (diffInSeconds < 60) {
+    return 'just now'
+  }
+  
+  const diffInMinutes = Math.floor(diffInSeconds / 60)
+  if (diffInMinutes < 60) {
+    return `${diffInMinutes} minute${diffInMinutes === 1 ? '' : 's'} ago`
+  }
+  
+  const diffInHours = Math.floor(diffInMinutes / 60)
+  if (diffInHours < 24) {
+    return `${diffInHours} hour${diffInHours === 1 ? '' : 's'} ago`
+  }
+  
+  const diffInDays = Math.floor(diffInHours / 24)
+  if (diffInDays < 7) {
+    return `${diffInDays} day${diffInDays === 1 ? '' : 's'} ago`
+  }
+  
+  const diffInWeeks = Math.floor(diffInDays / 7)
+  if (diffInWeeks < 4) {
+    return `${diffInWeeks} week${diffInWeeks === 1 ? '' : 's'} ago`
+  }
+  
+  const diffInMonths = Math.floor(diffInDays / 30)
+  if (diffInMonths < 12) {
+    return `${diffInMonths} month${diffInMonths === 1 ? '' : 's'} ago`
+  }
+  
+  const diffInYears = Math.floor(diffInDays / 365)
+  return `${diffInYears} year${diffInYears === 1 ? '' : 's'} ago`
+}
+
 interface ProfileData {
   userId?: string
   firstName?: string
@@ -16,6 +53,14 @@ interface ProfileData {
   bio?: string
   profilePicture?: string
   publicCharts?: any
+}
+
+interface Note {
+  id: string
+  content: string
+  visibility: string
+  createdAt: string
+  date?: string
 }
 
 async function getProfile(userName: string): Promise<ProfileData | null> {
@@ -33,6 +78,24 @@ async function getProfile(userName: string): Promise<ProfileData | null> {
   } catch (error) {
     console.error('Error fetching profile:', error)
     return null
+  }
+}
+
+async function getPublicNotes(userName: string): Promise<Note[]> {
+  try {
+    const response = await fetch(`${process.env.VERCEL_URL ? "https://" + process.env.VERCEL_URL : 'http://localhost:3000'}/api/v1/profile/${userName}/notes`, {
+      cache: 'no-store' // Ensure fresh data for SSR
+    })
+    
+    if (!response.ok) {
+      return []
+    }
+    
+    const data = await response.json()
+    return data.notes || []
+  } catch (error) {
+    console.error('Error fetching notes:', error)
+    return []
   }
 }
 
@@ -76,6 +139,7 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
   const translations = await loadTranslations(locale as any)
   
   const profile = await getProfile(userName)
+  const notes = await getPublicNotes(userName)
   
   if (!profile) {
     notFound()
@@ -96,7 +160,7 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
   }
 
   const fullName = [profile.firstName, profile.lastName].filter(Boolean).join(' ')
-  const hasAnyPublicData = profile.firstName || profile.lastName || profile.userName || profile.bio || profile.profilePicture
+  const hasAnyPublicData = profile.firstName || profile.lastName || profile.userName || profile.bio || profile.profilePicture || notes.length > 0
   const isOwnProfile = currentUserUsername === userName
   const canAddFriend = !isOwnProfile && profile.userName
   const canEditProfile = isOwnProfile
@@ -145,12 +209,39 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
 
         {/* Public Charts */}
         {profile.publicCharts && (
-          <Card>
+          <Card className="mb-6">
             <CardHeader>
               <CardTitle>Analytics</CardTitle>
             </CardHeader>
             <CardContent>
               <PublicChartsView chartsData={profile.publicCharts} />
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Public Notes */}
+        {notes.length > 0 && (
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle>Notes</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {notes.map((note) => (
+                  <div key={note.id} className="border rounded-lg p-4 bg-muted/30">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs text-muted-foreground">
+                        {getTimeAgo(new Date(note.createdAt))}
+                        {note.date && ` • ${note.date}`}
+                      </span>
+                      <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
+                        {note.visibility.toLowerCase().replace('_', ' ')}
+                      </span>
+                    </div>
+                    <p className="text-sm whitespace-pre-wrap">{note.content}</p>
+                  </div>
+                ))}
+              </div>
             </CardContent>
           </Card>
         )}

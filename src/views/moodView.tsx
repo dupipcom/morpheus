@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { getWeekNumber } from "@/app/helpers"
 import {
   Carousel,
@@ -76,6 +77,8 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
   const [optimisticMoodThings, setOptimisticMoodThings] = useState<any[]>([])
   const [newLifeEventText, setNewLifeEventText] = useState('')
   const [currentText, setCurrentText] = useState(serverText)
+  const [noteContent, setNoteContent] = useState('')
+  const [noteVisibility, setNoteVisibility] = useState('PRIVATE')
 
   // Initialize mood contacts from server data
   useEffect(() => {
@@ -329,6 +332,33 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
     }
   }
 
+  const handlePublishNote = async () => {
+    if (!noteContent.trim()) return
+
+    try {
+      const response = await fetch('/api/v1/notes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          content: noteContent.trim(),
+          visibility: noteVisibility,
+          date: fullDay
+        }),
+      })
+
+      if (response.ok) {
+        // Clear the note content after successful publish
+        setNoteContent('')
+        // Optionally show a success message or update UI
+        console.log('Note published successfully')
+      }
+    } catch (error) {
+      console.error('Error publishing note:', error)
+    }
+  }
+
 
 
   const handleEditDay = (date) => {
@@ -358,6 +388,40 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
   return (
     <ContentLoadingWrapper>
       <div key={JSON.stringify(serverMood)} className="w-full m-auto p-4">
+        {/* Notes Section */}
+        <div className="mb-16 p-4 border rounded-lg bg-transparent border-body">
+          <h3 className="text-lg font-semibold mb-4 text-body">Publish a Note</h3>
+          <Textarea 
+            className="mb-4" 
+            placeholder="Write your note here..."
+            value={noteContent} 
+            onChange={(e) => {
+              setNoteContent(e.target.value)
+            }}
+          />
+          <div className="flex items-center gap-4 mb-4">
+            <Select value={noteVisibility} onValueChange={setNoteVisibility}>
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder="Select visibility" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="PRIVATE">Private</SelectItem>
+                <SelectItem value="FRIENDS">Friends</SelectItem>
+                <SelectItem value="CLOSE_FRIENDS">Close Friends</SelectItem>
+                <SelectItem value="PUBLIC">Public</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button 
+              onClick={handlePublishNote}
+              disabled={!noteContent.trim()}
+              className="bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              Publish Note
+            </Button>
+          </div>
+        </div>
+
+        {/* Original mood text area */}
         <Textarea 
           className="mb-16" 
           value={currentText} 
