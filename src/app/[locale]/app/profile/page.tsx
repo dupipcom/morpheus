@@ -18,11 +18,13 @@ import { useDebounce } from "@/lib/hooks/useDebounce"
 import { generatePublicChartsData } from "@/lib/profileUtils"
 import { PublicChartsView } from "@/components/PublicChartsView"
 import { Skeleton } from "@/components/ui/skeleton"
+import { ProfileView } from "@/views/profileView"
+import { loadTranslationsSync } from "@/lib/i18n"
 
 export default function ProfilePage({ params }: { params: Promise<{ locale: string }> }) {
   const { isLoaded, isSignedIn } = useAuth()
   const { user: clerkUser } = useUser()
-  const { t } = useI18n()
+  const { t, locale } = useI18n()
   const { session, setGlobalContext, theme } = useContext(GlobalContext)
   
   const [profile, setProfile] = useState({
@@ -46,6 +48,8 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
   }>({})
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [publicProfileData, setPublicProfileData] = useState<any>(null)
+  const [profileLoading, setProfileLoading] = useState(false)
 
   // Load profile data
   useEffect(() => {
@@ -53,6 +57,13 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
       loadProfile()
     }
   }, [isLoaded, isSignedIn])
+
+  // Load public profile data when profile is loaded
+  useEffect(() => {
+    if (profile.userName) {
+      loadPublicProfile()
+    }
+  }, [profile.userName])
 
   const loadProfile = async () => {
     try {
@@ -79,6 +90,23 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
       console.error('Error loading profile:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const loadPublicProfile = async () => {
+    if (!profile.userName) return
+    
+    setProfileLoading(true)
+    try {
+      const response = await fetch(`/api/v1/profile/${profile.userName}`)
+      if (response.ok) {
+        const data = await response.json()
+        setPublicProfileData(data.profile)
+      }
+    } catch (error) {
+      console.error('Error loading public profile:', error)
+    } finally {
+      setProfileLoading(false)
     }
   }
 
@@ -165,210 +193,23 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
     <main className="">
       <ViewMenu active="profile" />
       <div className="max-w-4xl mx-auto p-4">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold">{t('profile.editProfile')}</h1>
-          {profile.userName && (
-            <a 
-              href={`/profile/${profile.userName}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-muted-foreground hover:text-foreground"
-            >
-              {t('profile.viewPublicProfile')} →
-            </a>
-          )}
-        </div>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Profile Information */}
-          <Card>
-            <CardHeader>
-              <CardTitle>{t('profile.profileInformation')}</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="firstName">{t('profile.firstName')}</Label>
-                  <Input
-                    id="firstName"
-                    value={profile.firstName}
-                    onChange={(e) => handleProfileChange('firstName', e.target.value)}
-                    placeholder={t('profile.firstNamePlaceholder')}
-                  />
-                  <div className="flex items-center space-x-2 mt-2">
-                    <Switch
-                      id="firstName-visible"
-                      checked={profile.firstNameVisible}
-                      onCheckedChange={(checked) => handleProfileChange('firstNameVisible', checked)}
-                    />
-                    <Label htmlFor="firstName-visible">{t('profile.makePublic')}</Label>
-                  </div>
-                </div>
-                
-                <div>
-                  <Label htmlFor="lastName">{t('profile.lastName')}</Label>
-                  <Input
-                    id="lastName"
-                    value={profile.lastName}
-                    onChange={(e) => handleProfileChange('lastName', e.target.value)}
-                    placeholder={t('profile.lastNamePlaceholder')}
-                  />
-                  <div className="flex items-center space-x-2 mt-2">
-                    <Switch
-                      id="lastName-visible"
-                      checked={profile.lastNameVisible}
-                      onCheckedChange={(checked) => handleProfileChange('lastNameVisible', checked)}
-                    />
-                    <Label htmlFor="lastName-visible">{t('profile.makePublic')}</Label>
-                  </div>
-                </div>
-              </div>
-              
-              <div>
-                <Label htmlFor="bio">{t('profile.bio')}</Label>
-                <Textarea
-                  id="bio"
-                  value={profile.bio}
-                  onChange={(e) => handleProfileChange('bio', e.target.value)}
-                  placeholder={t('profile.bioPlaceholder')}
-                  rows={3}
-                />
-                <div className="flex items-center space-x-2 mt-2">
-                  <Switch
-                    id="bio-visible"
-                    checked={profile.bioVisible}
-                    onCheckedChange={(checked) => handleProfileChange('bioVisible', checked)}
-                  />
-                  <Label htmlFor="bio-visible">{t('profile.makePublic')}</Label>
-                </div>
-              </div>
-              
-              
-            </CardContent>
-          </Card>
-
-          {/* Charts Visibility */}
-          <Card>
-            <CardHeader>
-              <CardTitle>{t('profile.chartsVisibility')}</CardTitle>
-              <p className="text-sm text-muted-foreground">
-                {t('profile.chartsVisibilityDescription')}
-              </p>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label>{t('profile.moodCharts')}</Label>
-                  <p className="text-sm text-muted-foreground">{t('profile.moodChartsDescription')}</p>
-                </div>
-                <Switch
-                  checked={publicCharts.moodCharts || false}
-                  onCheckedChange={(checked) => handleChartsVisibilityChange('moodCharts', checked)}
-                />
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label>{t('profile.simplifiedMoodChart')}</Label>
-                  <p className="text-sm text-muted-foreground">{t('profile.simplifiedMoodChartDescription')}</p>
-                </div>
-                <Switch
-                  checked={publicCharts.simplifiedMoodChart || false}
-                  onCheckedChange={(checked) => handleChartsVisibilityChange('simplifiedMoodChart', checked)}
-                />
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label>{t('profile.productivityCharts')}</Label>
-                  <p className="text-sm text-muted-foreground">{t('profile.productivityChartsDescription')}</p>
-                </div>
-                <Switch
-                  checked={publicCharts.productivityCharts || false}
-                  onCheckedChange={(checked) => handleChartsVisibilityChange('productivityCharts', checked)}
-                />
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label>{t('profile.earningsCharts')}</Label>
-                  <p className="text-sm text-muted-foreground">{t('profile.earningsChartsDescription')}</p>
-                </div>
-                <Switch
-                  checked={publicCharts.earningsCharts || false}
-                  onCheckedChange={(checked) => handleChartsVisibilityChange('earningsCharts', checked)}
-                />
-              </div>
-              
-              <Separator />
-              
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label>{t('profile.makeAllChartsPublic')}</Label>
-                  <p className="text-sm text-muted-foreground">{t('profile.makeAllChartsPublicDescription')}</p>
-                </div>
-                <Switch
-                  checked={profile.publicChartsVisible}
-                  onCheckedChange={(checked) => handleProfileChange('publicChartsVisible', checked)}
-                />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Preview Section */}
-        <Card className="mt-6">
-          <CardHeader>
-            <CardTitle>{t('profile.preview')}</CardTitle>
-            <p className="text-sm text-muted-foreground">
-              {t('profile.previewDescription')}
-            </p>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center space-x-4">
-              {profile.profilePictureVisible && clerkUser?.imageUrl && (
-                <img 
-                  src={clerkUser.imageUrl} 
-                  alt="Profile" 
-                  className="w-16 h-16 rounded-full object-cover"
-                />
-              )}
-              <div>
-                <h3 className="text-lg font-semibold">
-                  {profile.firstNameVisible && profile.firstName} {profile.lastNameVisible && profile.lastName}
-                </h3>
-                {profile.bioVisible && profile.bio && (
-                  <p className="text-sm mt-1">{profile.bio}</p>
-                )}
-              </div>
+{/* Public Profile View */}
+{profile.userName && publicProfileData && (
+          profileLoading ? (
+            <div className="space-y-4">
+              <Skeleton className="h-8 w-1/4" />
+              <Skeleton className="h-32 w-full" />
             </div>
-            
-            {profile.publicChartsVisible && (
-              <div className="mt-4">
-                <h4 className="font-medium mb-2">{t('profile.publicCharts')}</h4>
-                <div className="space-y-2 mb-4">
-                  {publicCharts.moodCharts && <Badge variant="outline">{t('profile.moodCharts')}</Badge>}
-                  {publicCharts.simplifiedMoodChart && <Badge variant="outline">{t('profile.simplifiedMoodChart')}</Badge>}
-                  {publicCharts.productivityCharts && <Badge variant="outline">{t('profile.productivityCharts')}</Badge>}
-                  {publicCharts.earningsCharts && <Badge variant="outline">{t('profile.earningsCharts')}</Badge>}
-                </div>
-                
-                {/* Preview of actual charts */}
-                <div className="mt-4">
-                  <h5 className="text-sm font-medium mb-2">{t('profile.chartPreview')}</h5>
-                  <div className="border rounded-md p-4 bg-muted/50">
-                    <PublicChartsView chartsData={generateChartsData()} />
-                  </div>
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {saving && (
-          <div className="fixed bottom-4 right-4 bg-primary text-primary-foreground px-4 py-2 rounded-md">
-            {t('profile.saving')}
-          </div>
+          ) : (
+            <ProfileView 
+              profile={publicProfileData}
+              userName={profile.userName}
+              locale={locale}
+              currentUserUsername={profile.userName}
+              isLoggedIn={true}
+              translations={loadTranslationsSync(locale)}
+            />
+          )
         )}
       </div>
     </main>
