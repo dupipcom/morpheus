@@ -25,14 +25,22 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
       return Response.json({ error: 'Profile not found' }, { status: 404 })
     }
 
-    // Get current user's ID if logged in
+    // Get current user's ID and friends list if logged in
     let currentUserId = null
+    let currentUserFriends = []
+    let currentUserCloseFriends = []
     if (userId) {
       const currentUser = await prisma.user.findUnique({
         where: { userId },
-        select: { id: true }
+        select: { 
+          id: true,
+          friends: true,
+          closeFriends: true
+        }
       })
       currentUserId = currentUser?.id
+      currentUserFriends = currentUser?.friends || []
+      currentUserCloseFriends = currentUser?.closeFriends || []
     }
 
     // Determine which notes the current user can see
@@ -41,8 +49,10 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
     if (currentUserId) {
       // If user is logged in, they can see more notes based on relationship
       const isOwnProfile = profile.user.id === currentUserId
-      const isFriend = profile.user.friends.includes(currentUserId)
-      const isCloseFriend = profile.user.closeFriends.includes(currentUserId)
+      
+      // Check bidirectional friendship - both users must have each other in their friends list
+      const isFriend = profile.user.friends.includes(currentUserId) && currentUserFriends.includes(profile.user.id)
+      const isCloseFriend = profile.user.closeFriends.includes(currentUserId) && currentUserCloseFriends.includes(profile.user.id)
 
       if (isOwnProfile) {
         // User can see all their own notes
