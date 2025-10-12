@@ -41,12 +41,36 @@ function shouldFlagBotForEnglish(headers: Headers): boolean {
   return false
 }
 
-function middleware(request: Request) {
+async function middleware(request: Request, auth: any) {
   const { pathname } = new URL(request.url)
 
   // Skip API routes
   if(pathname.includes('api')) {
     return
+  }
+
+  // Check if user is logged in for root and locale paths
+  const { userId } = await auth()
+  
+  // Handle root path "/" - redirect authenticated users to app profile
+  if (pathname === '/') {
+    if (userId) {
+      const cookieHeader = request.headers.get('cookie') || ''
+      const cookies = parseCookies(cookieHeader)
+      const locale = getLocale(request.headers, cookies)
+      const url = new URL(request.url)
+      url.pathname = `/${locale}/app/profile`
+      return NextResponse.redirect(url)
+    }
+  }
+
+  // Handle locale paths "/{locale}" - redirect authenticated users to app profile
+  if (pathname.match(/^\/[a-z]{2}$/)) {
+    if (userId) {
+      const url = new URL(request.url)
+      url.pathname = `${pathname}/app/profile`
+      return NextResponse.redirect(url)
+    }
   }
 
   // Handle @username routes - redirect to localized profile route
@@ -118,10 +142,10 @@ function middleware(request: Request) {
 
 const isProtectedRoute = createRouteMatcher(['app/(.*)'])
 
-export default clerkMiddleware(async (auth, req) => {
-  if (isProtectedRoute(req)) await auth.protect()
+export default clerkMiddleware((auth, req) => {
+  if (isProtectedRoute(req)) auth.protect()
 
-  return middleware(req)
+  return middleware(req, auth)
 })
  
 export const config = {
