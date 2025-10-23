@@ -183,3 +183,6 @@ createDefaultTemplates()
     console.error('Default template creation failed:', error);
     process.exit(1);
   });
+
+
+

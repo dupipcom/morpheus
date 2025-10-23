@@ -86,13 +86,22 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
 
   // If user doesn't exist in database, create them
   if (!user) {
+    // Find the default templates
+    const dailyDefaultTemplate = await prisma.template.findFirst({
+      where: { role: 'daily.default' }
+    })
+    
+    const weeklyDefaultTemplate = await prisma.template.findFirst({
+      where: { role: 'weekly.default' }
+    })
+    
     user = await prisma.user.create({
       data: {
         userId,
         entries: {},
         settings: {
-          dailyTemplate: [],
-          weeklyTemplate: []
+          dailyTemplate: dailyDefaultTemplate?.id || null,
+          weeklyTemplate: weeklyDefaultTemplate?.id || null
         }
       }
     })
@@ -143,18 +152,37 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     user = await getUser()
   }
 
-  if (!user.settings?.weeklyTemplate?.length && !user.settings?.dailyTemplate?.length) {
+  // Ensure user has template references
+  if (!user.settings?.weeklyTemplate || !user.settings?.dailyTemplate) {
+    // Find the default templates
+    const dailyDefaultTemplate = await prisma.template.findFirst({
+      where: { role: 'daily.default' }
+    })
+    
+    const weeklyDefaultTemplate = await prisma.template.findFirst({
+      where: { role: 'weekly.default' }
+    })
+    
     await prisma.user.update({
       data: {
         settings: {
           ...user?.settings,
-          weeklyTemplate: WEEKLY_ACTIONS,
-          dailyTemplate: DAILY_ACTIONS,
+          dailyTemplate: dailyDefaultTemplate?.id || null,
+          weeklyTemplate: weeklyDefaultTemplate?.id || null
         }
       },
       where: { id: user.id }, 
     })
     user = await getUser()
+  }
+
+  // Helper function to get template tasks
+  const getTemplateTasks = async (templateId) => {
+    if (!templateId) return []
+    const template = await prisma.template.findUnique({
+      where: { id: templateId }
+    })
+    return template?.tasks || []
   }
 
   if (!user.entries[year]) {
@@ -186,7 +214,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   ...user.entries[year].weeks[weekNumber],
                   year,
                   week: weekNumber,
-                  tasks: user?.settings?.weeklyTemplate?.length ? user.settings.weeklyTemplate : WEEKLY_ACTIONS,
+                  tasks: await getTemplateTasks(user?.settings?.weeklyTemplate) || WEEKLY_ACTIONS,
                   status: "Open"
                 }
               }
@@ -213,7 +241,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   month,
                   day,
                   date,
-                  tasks: user?.settings?.dailyTemplate?.length ? user.settings.dailyTemplate : DAILY_ACTIONS,
+                  tasks: await getTemplateTasks(user?.settings?.dailyTemplate) || DAILY_ACTIONS,
                   status: "Open",
                   moodAverage: 0,
                   mood: {
@@ -351,7 +379,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   earnings: weekEarnings,
                   ticker: { ...weekTickerObj2 },
                   tickerLegacy: weekTickerSingle2,
-                  tasks: (user?.settings?.weeklyTemplate?.length ? user?.settings?.weeklyTemplate : WEEKLY_ACTIONS).sort((a, b) => a.status === "Done" ? 1 : -1),
+                  tasks: (await getTemplateTasks(user?.settings?.weeklyTemplate) || WEEKLY_ACTIONS).sort((a, b) => a.status === "Done" ? 1 : -1),
                   status: "Open",
                   progress: weekProgress,
                   done: weekDone.length,
@@ -497,7 +525,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   progress: dayProgress,
                   done: dayDone.length,
                   tasksNumber: dayTasks.length,
-                  tasks: (user?.settings?.dailyTemplate.length ? user?.settings?.dailyTemplate : DAILY_ACTIONS).sort((a, b) => a.status === "Done" ? 1 : -1),
+                  tasks: (await getTemplateTasks(user?.settings?.dailyTemplate) || DAILY_ACTIONS).sort((a, b) => a.status === "Done" ? 1 : -1),
                   status: "Open",
                   availableBalance: user.availableBalance
                 }

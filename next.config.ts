@@ -31,7 +31,7 @@ const nextConfig: NextConfig = {
       //       {"source": "/app/:match*", "destination": "https://alpha.dreampip.com/:match*"},
       {
         source: '/api/nexus/audio',
-        destination: 'https://radio.dreampip.com/listen/dpip000/live.mp3',
+        destination: 'https://radio.dreampip.com/listen/dpipbase/live.mp3',
       },
     ]
   },

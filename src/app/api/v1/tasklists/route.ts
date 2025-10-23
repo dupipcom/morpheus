@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { role, tasks, templateId } = body
+    const { role, tasks, templateId, updateTemplate } = body
 
     // Find user by userId
     const user = await prisma.user.findUnique({
@@ -81,9 +81,11 @@ export async function POST(request: NextRequest) {
       }
     })
 
+    let taskList
+
     if (existingTaskList) {
       // Update existing TaskList
-      const updatedTaskList = await prisma.taskList?.update({
+      taskList = await prisma.taskList?.update({
         where: { id: existingTaskList.id },
         data: {
           tasks: tasks,
@@ -94,11 +96,9 @@ export async function POST(request: NextRequest) {
           template: true
         }
       })
-
-      return NextResponse.json({ taskList: updatedTaskList })
     } else {
       // Create new TaskList
-      const newTaskList = await prisma.taskList.create({
+      taskList = await prisma.taskList.create({
         data: {
           role: role,
           visibility: 'PRIVATE',
@@ -112,9 +112,26 @@ export async function POST(request: NextRequest) {
           template: true
         }
       })
-
-      return NextResponse.json({ taskList: newTaskList })
     }
+
+    // Optionally update the linked Template with the same tasks
+    if (updateTemplate && taskList?.templateId) {
+      await prisma.template.update({
+        where: { id: taskList.templateId },
+        data: {
+          tasks: tasks,
+          updatedAt: new Date()
+        }
+      })
+
+      // Re-fetch task list to include refreshed template relation
+      taskList = await prisma.taskList.findUnique({
+        where: { id: taskList.id },
+        include: { template: true }
+      })
+    }
+
+    return NextResponse.json({ taskList })
 
   } catch (error) {
     console.error('Error updating task list:', error)

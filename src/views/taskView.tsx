@@ -39,8 +39,15 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { ContactCombobox } from "@/components/ui/contact-combobox"
 import { ThingCombobox } from "@/components/ui/thing-combobox"
-import { Users, X, Heart, Settings, Package, Plus, TrendingUp, TrendingDown } from "lucide-react"
+import { Users, X, Heart, Settings, Package, Plus, TrendingUp, TrendingDown, ChevronDown } from "lucide-react"
 import { Switch } from "@/components/ui/switch"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 import { MoodView } from "@/views/moodView"
 
@@ -109,6 +116,8 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   // State for TaskLists
   const [dailyTaskList, setDailyTaskList] = useState<any>(null)
   const [weeklyTaskList, setWeeklyTaskList] = useState<any>(null)
+  const [allTaskLists, setAllTaskLists] = useState<any[]>([])
+  const [selectedTaskListId, setSelectedTaskListId] = useState<string>('')
   const [taskListsLoading, setTaskListsLoading] = useState(true)
 
   // Fetch TaskLists on component mount
@@ -119,20 +128,26 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       try {
         setTaskListsLoading(true)
         
-        // Fetch both daily and weekly TaskLists
-        const [dailyResponse, weeklyResponse] = await Promise.all([
-          fetch('/api/v1/tasklists?role=daily.default'),
-          fetch('/api/v1/tasklists?role=weekly.default')
-        ])
+        // Fetch all TaskLists for the user
+        const allTaskListsResponse = await fetch('/api/v1/tasklists')
         
-        if (dailyResponse.ok) {
-          const dailyData = await dailyResponse.json()
-          setDailyTaskList(dailyData.taskLists?.[0] || null)
-        }
-        
-        if (weeklyResponse.ok) {
-          const weeklyData = await weeklyResponse.json()
-          setWeeklyTaskList(weeklyData.taskLists?.[0] || null)
+        if (allTaskListsResponse.ok) {
+          const allTaskListsData = await allTaskListsResponse.json()
+          const taskLists = allTaskListsData.taskLists || []
+          setAllTaskLists(taskLists)
+          
+          // Set default TaskLists for daily/weekly
+          const dailyTaskList = taskLists.find(tl => tl.role === 'daily.default')
+          const weeklyTaskList = taskLists.find(tl => tl.role === 'weekly.default')
+          
+          setDailyTaskList(dailyTaskList || null)
+          setWeeklyTaskList(weeklyTaskList || null)
+          
+          // Set default selected TaskList based on timeframe
+          const defaultTaskList = timeframe === 'day' ? dailyTaskList : weeklyTaskList
+          if (defaultTaskList) {
+            setSelectedTaskListId(defaultTaskList.id)
+          }
         }
       } catch (error) {
         console.error('Error fetching task lists:', error)
@@ -142,18 +157,56 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     }
 
     fetchTaskLists()
-  }, [session?.user?.userId])
+  }, [session?.user?.userId, timeframe])
 
   const userTasks = useMemo(() => {
     let regularTasks = []
+    
+    // Get the selected TaskList
+    const selectedTaskList = allTaskLists.find(tl => tl.id === selectedTaskListId)
     
     if (timeframe === 'day') {
       const noDayData = !session?.user?.entries || !session?.user?.entries[year] || !Object.keys(session?.user?.entries[year].days).length
       const dailyTasks = ((session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date]) && session?.user?.entries[year].days[date]?.tasks) || (noDayData ? DAILY_ACTIONS : [])
       
-      // Always prioritize dailyTaskList if it exists, otherwise use dailyTasks
-      if (dailyTaskList?.tasks && dailyTaskList.tasks.length > 0) {
-        regularTasks = assign(getLocalizedTaskNames(dailyTaskList.tasks, t), getLocalizedTaskNames(dailyTasks, t), { times: 1 })
+      // Use selected TaskList if available, otherwise fall back to dailyTaskList or dailyTasks
+      if (selectedTaskList?.tasks && selectedTaskList.tasks.length > 0) {
+        // Start with TaskList tasks as base, then merge with day tasks for completion status
+        const taskListTasks = getLocalizedTaskNames(selectedTaskList.tasks, t)
+        const dayTasksLocalized = getLocalizedTaskNames(dailyTasks, t)
+        
+        // Create maps for proper merging
+        const taskListMap = {}
+        taskListTasks.forEach(task => {
+          taskListMap[task.name] = task
+        })
+        
+        const dayTasksMap = {}
+        dayTasksLocalized.forEach(task => {
+          dayTasksMap[task.name] = task
+        })
+        
+        // Merge using assign (day tasks override task list tasks for completion status)
+        const mergedTasks = assign({}, taskListMap, dayTasksMap)
+        // Only include tasks that are in the selected TaskList
+        regularTasks = Object.values(mergedTasks).filter(task => taskListMap[task.name])
+      } else if (dailyTaskList?.tasks && dailyTaskList.tasks.length > 0) {
+        const taskListTasks = getLocalizedTaskNames(dailyTaskList.tasks, t)
+        const dayTasksLocalized = getLocalizedTaskNames(dailyTasks, t)
+        
+        const taskListMap = {}
+        taskListTasks.forEach(task => {
+          taskListMap[task.name] = task
+        })
+        
+        const dayTasksMap = {}
+        dayTasksLocalized.forEach(task => {
+          dayTasksMap[task.name] = task
+        })
+        
+        const mergedTasks = assign({}, taskListMap, dayTasksMap)
+        // Only include tasks that are in the default TaskList
+        regularTasks = Object.values(mergedTasks).filter(task => taskListMap[task.name])
       } else {
         regularTasks = getLocalizedTaskNames(dailyTasks, t)
       }
@@ -161,9 +214,44 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       const noWeekData = !session?.user?.entries || !session?.user?.entries[year] || !Object.keys(session?.user?.entries[year].weeks).length
       const weeklyTasks = (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks) && session?.user?.entries[year].weeks[weekNumber]?.tasks || []
       
-      // Always prioritize weeklyTaskList if it exists, otherwise use weeklyTasks or default actions
-      if (weeklyTaskList?.tasks && weeklyTaskList.tasks.length > 0) {
-        regularTasks = assign(getLocalizedTaskNames(weeklyTaskList.tasks, t), getLocalizedTaskNames(weeklyTasks, t), { times: 1 })
+      // Use selected TaskList if available, otherwise fall back to weeklyTaskList or weeklyTasks
+      if (selectedTaskList?.tasks && selectedTaskList.tasks.length > 0) {
+        // Start with TaskList tasks as base, then merge with week tasks for completion status
+        const taskListTasks = getLocalizedTaskNames(selectedTaskList.tasks, t)
+        const weekTasksLocalized = getLocalizedTaskNames(weeklyTasks, t)
+        
+        // Create maps for proper merging
+        const taskListMap = {}
+        taskListTasks.forEach(task => {
+          taskListMap[task.name] = task
+        })
+        
+        const weekTasksMap = {}
+        weekTasksLocalized.forEach(task => {
+          weekTasksMap[task.name] = task
+        })
+        
+        // Merge using assign (week tasks override task list tasks for completion status)
+        const mergedTasks = assign({}, taskListMap, weekTasksMap)
+        // Only include tasks that are in the selected TaskList
+        regularTasks = Object.values(mergedTasks).filter(task => taskListMap[task.name])
+      } else if (weeklyTaskList?.tasks && weeklyTaskList.tasks.length > 0) {
+        const taskListTasks = getLocalizedTaskNames(weeklyTaskList.tasks, t)
+        const weekTasksLocalized = getLocalizedTaskNames(weeklyTasks, t)
+        
+        const taskListMap = {}
+        taskListTasks.forEach(task => {
+          taskListMap[task.name] = task
+        })
+        
+        const weekTasksMap = {}
+        weekTasksLocalized.forEach(task => {
+          weekTasksMap[task.name] = task
+        })
+        
+        const mergedTasks = assign({}, taskListMap, weekTasksMap)
+        // Only include tasks that are in the default TaskList
+        regularTasks = Object.values(mergedTasks).filter(task => taskListMap[task.name])
       } else {
         regularTasks = getLocalizedTaskNames(weeklyTasks.length > 0 ? weeklyTasks : WEEKLY_ACTIONS, t)
       }
@@ -175,9 +263,13 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       displayName: task.name,
       isEphemeral: true
     }))
+
+    // Dedupe: if an ephemeral task also exists in the selected TaskList by name, hide the entry-level copy
+    const listTaskNames = new Set((selectedTaskList?.tasks || []).map((t:any) => t.name))
+    const dedupedEphemeral = ephemeralTasksWithDisplayName.filter(t => !listTaskNames.has(t.name))
     
-    return [...regularTasks, ...ephemeralTasksWithDisplayName]
-  }, [dailyTaskList, weeklyTaskList, date, weekNumber, t, currentEphemeralTasks])
+    return [...regularTasks, ...dedupedEphemeral]
+  }, [selectedTaskListId, allTaskLists, dailyTaskList, weeklyTaskList, date, weekNumber, t, currentEphemeralTasks])
 
 
   const openDays = useMemo(() => {
@@ -215,13 +307,13 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     }
   }, [session?.user?.entries, year, date, weekNumber, timeframe])
 
-  // Load favorites from TaskLists
+  // Load favorites from selected TaskList
   useEffect(() => {
-    const taskList = timeframe === 'day' ? dailyTaskList : weeklyTaskList
+    const selectedTaskList = allTaskLists.find(tl => tl.id === selectedTaskListId)
     
-    if (taskList?.tasks && Array.isArray(taskList.tasks)) {
+    if (selectedTaskList?.tasks && Array.isArray(selectedTaskList.tasks)) {
       const favoriteSet = new Set()
-      taskList.tasks.forEach(item => {
+      selectedTaskList.tasks.forEach(item => {
         if (typeof item === 'object' && item.favorite) {
           favoriteSet.add(item.name)
         } else if (typeof item === 'string') {
@@ -232,7 +324,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       setFavorites(favoriteSet)
       setOptimisticFavorites(favoriteSet)
     }
-  }, [dailyTaskList, weeklyTaskList, timeframe])
+  }, [selectedTaskListId, allTaskLists])
 
   const [previousValues, setPreviousValues] = useState(userDone)
   const [values, setValues] = useState(userDone)
@@ -476,16 +568,16 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const debouncedFavoriteServerUpdate = useDebounce(async (currentOptimisticFavorites) => {
     // Save to database with the passed optimistic favorites state
     try {
-      const currentTaskList = timeframe === 'day' ? dailyTaskList : weeklyTaskList
+      const selectedTaskList = allTaskLists.find(tl => tl.id === selectedTaskListId)
       
-      if (!currentTaskList?.tasks) {
+      if (!selectedTaskList?.tasks) {
         console.error('No task list found for favorites update')
         setOptimisticFavorites(favorites)
         return
       }
       
       // Update task list items with favorite flags based on the passed state
-      const updatedTasks = currentTaskList.tasks.map(item => {
+      const updatedTasks = selectedTaskList.tasks.map(item => {
         const itemName = typeof item === 'string' ? item : item.name
         return {
           ...(typeof item === 'object' ? item : { name: item }),
@@ -494,9 +586,9 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       })
       
       const payload = {
-        role: timeframe === 'day' ? 'daily.default' : 'weekly.default',
+        role: selectedTaskList.role,
         tasks: updatedTasks,
-        templateId: currentTaskList.templateId
+        templateId: selectedTaskList.templateId
       }
       
       const response = await fetch('/api/v1/tasklists', {
@@ -507,11 +599,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       if (response.ok) {
         const data = await response.json()
         // Update the local task list state
-        if (timeframe === 'day') {
-          setDailyTaskList(data.taskList)
-        } else {
-          setWeeklyTaskList(data.taskList)
-        }
+        setAllTaskLists(prev => prev.map(tl => tl.id === selectedTaskListId ? data.taskList : tl))
         // Update the actual favorites state on success
         setFavorites(currentOptimisticFavorites)
       } else {
@@ -605,79 +693,81 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   // Function to add ephemeral task or template task
   const addEphemeralTask = async (taskData) => {
     try {
-      if (taskData.saveToTemplate) {
-        // Add to TaskList instead of ephemeral tasks
-        const newTask = {
-          name: taskData.name,
-          area: taskData.area,
-          categories: [taskData.category],
-          cadence: timeframe,
-          status: "Not started",
-          times: 1,
-          count: 0
-        }
-        
-        const currentTaskList = timeframe === 'day' ? dailyTaskList : weeklyTaskList
-        const currentTasks = currentTaskList?.tasks || []
-        
-        const payload = {
-          role: timeframe === 'day' ? 'daily.default' : 'weekly.default',
-          tasks: [...currentTasks, newTask],
-          templateId: currentTaskList?.templateId
-        }
-        
-        const response = await fetch('/api/v1/tasklists', {
-          method: 'POST',
-          body: JSON.stringify(payload)
-        })
-        
-        if (response.ok) {
-          const data = await response.json()
-          // Update the local task list state
-          if (timeframe === 'day') {
-            setDailyTaskList(data.taskList)
-          } else {
-            setWeeklyTaskList(data.taskList)
+      // Generate a stable id for the new ephemeral task
+      const newEphemeralId = `ephemeral_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`
+
+      const listTask = {
+        id: newEphemeralId,
+        name: taskData.name,
+        area: taskData.area,
+        categories: [taskData.category],
+        cadence: timeframe,
+        status: "Not started",
+        times: 1,
+        count: 0,
+        isEphemeral: !taskData.saveToTemplate,
+        createdAt: new Date().toISOString()
+      }
+
+      // Always add to the selected TaskList
+      const selectedTaskList = allTaskLists.find(tl => tl.id === selectedTaskListId)
+      const currentTasks = selectedTaskList?.tasks || []
+
+      const listPayload: any = {
+        role: selectedTaskList?.role || (timeframe === 'day' ? 'daily.default' : 'weekly.default'),
+        tasks: [...currentTasks, listTask],
+        templateId: selectedTaskList?.templateId,
+        updateTemplate: !!taskData.saveToTemplate
+      }
+
+      const listResponse = await fetch('/api/v1/tasklists', {
+        method: 'POST',
+        body: JSON.stringify(listPayload)
+      })
+
+      if (!listResponse.ok) {
+        console.error('Failed to save task to task list:', listResponse.status, listResponse.statusText)
+        return
+      }
+
+      const listData = await listResponse.json()
+      setAllTaskLists(prev => prev.map(tl => tl.id === selectedTaskListId ? listData.taskList : tl))
+
+      // Also add to the user's current entry as an ephemeral instance (so progress is tracked for this period)
+      const entryPayload: any = {
+        [timeframe === 'day' ? 'dayEphemeralTasks' : 'weekEphemeralTasks']: {
+          add: {
+            id: newEphemeralId,
+            name: taskData.name,
+            area: taskData.area,
+            categories: [taskData.category],
+            status: "Not started",
+            times: 1,
+            count: 0,
+            isEphemeral: true
           }
-          setNewEphemeralTask({ name: '', area: 'self', category: 'custom', saveToTemplate: false })
-          setShowAddEphemeral(false)
-        } else {
-          console.error('Failed to add task to template:', response.status, response.statusText)
-        }
-      } else {
-        // Add as ephemeral task
-        const payload = {
-          [timeframe === 'day' ? 'dayEphemeralTasks' : 'weekEphemeralTasks']: {
-            add: {
-              name: taskData.name,
-              area: taskData.area,
-              categories: [taskData.category],
-              status: "Not started",
-              times: 1,
-              count: 0
-            }
-          }
-        }
-        
-        if (timeframe === 'day') {
-          (payload as any).date = fullDay
-        } else if (timeframe === 'week') {
-          (payload as any).week = weekNumber
-        }
-        
-        const response = await fetch('/api/v1/user', {
-          method: 'POST',
-          body: JSON.stringify(payload)
-        })
-        
-        if (response.ok) {
-          await refreshUser()
-          setNewEphemeralTask({ name: '', area: 'self', category: 'custom', saveToTemplate: false })
-          setShowAddEphemeral(false)
-        } else {
-          console.error('Failed to add ephemeral task:', response.status, response.statusText)
         }
       }
+
+      if (timeframe === 'day') {
+        entryPayload.date = fullDay
+      } else if (timeframe === 'week') {
+        entryPayload.week = weekNumber
+      }
+
+      const entryResponse = await fetch('/api/v1/user', {
+        method: 'POST',
+        body: JSON.stringify(entryPayload)
+      })
+
+      if (!entryResponse.ok) {
+        console.error('Failed to add ephemeral task to entry:', entryResponse.status, entryResponse.statusText)
+      } else {
+        await refreshUser()
+      }
+
+      setNewEphemeralTask({ name: '', area: 'self', category: 'custom', saveToTemplate: false })
+      setShowAddEphemeral(false)
     } catch (error) {
       console.error('Error adding task:', error)
     }
@@ -686,21 +776,40 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   // Function to delete ephemeral task
   const deleteEphemeralTask = async (taskId) => {
     try {
-      const payload = {
+      // First, try to remove from the selected TaskList (if present)
+      const selectedTaskList = allTaskLists.find(tl => tl.id === selectedTaskListId)
+      const currentTasks = selectedTaskList?.tasks || []
+      const existsInList = currentTasks.some((t:any) => t.id === taskId)
+
+      if (existsInList) {
+        const updatedTasks = currentTasks.filter((t:any) => t.id !== taskId)
+        const listPayload = {
+          role: selectedTaskList?.role || (timeframe === 'day' ? 'daily.default' : 'weekly.default'),
+          tasks: updatedTasks,
+          templateId: selectedTaskList?.templateId
+        }
+        const listResp = await fetch('/api/v1/tasklists', {
+          method: 'POST',
+          body: JSON.stringify(listPayload)
+        })
+        if (listResp.ok) {
+          const data = await listResp.json()
+          setAllTaskLists(prev => prev.map(tl => tl.id === selectedTaskListId ? data.taskList : tl))
+        } else {
+          console.error('Failed to delete from task list:', listResp.status, listResp.statusText)
+        }
+      }
+
+      // Then remove from the current user entry, if exists
+      const payload:any = {
         [timeframe === 'day' ? 'dayEphemeralTasks' : 'weekEphemeralTasks']: {
-          remove: {
-            id: taskId
-          }
+          remove: { id: taskId }
         }
-        }
-        
-        if (timeframe === 'day') {
-          (payload as any).date = fullDay
-        } else if (timeframe === 'week') {
-          (payload as any).week = weekNumber
-        }
-        
-        const response = await fetch('/api/v1/user', {
+      }
+      if (timeframe === 'day') payload.date = fullDay
+      else if (timeframe === 'week') payload.week = weekNumber
+
+      const response = await fetch('/api/v1/user', {
         method: 'POST',
         body: JSON.stringify(payload)
       })
@@ -861,24 +970,53 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
         <AccordionTrigger>{t('dashboard.whatDidYouAccomplish')}</AccordionTrigger>
         <AccordionContent>
           <div className="flex flex-col">
-          {/* Toolbar with add ephemeral task and settings buttons */}
-          <div className="flex justify-end gap-2 mb-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="flex items-center text-muted-foreground hover:text-foreground"
-              onClick={() => setShowAddEphemeral(!showAddEphemeral)}
-            >
-              <Plus className="h-4 w-4 mr-1" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="flex items-center text-muted-foreground hover:text-foreground"
-              onClick={() => window.location.href = '/app/settings'}
-            >
-              <Settings className="h-4 w-4" />
-            </Button>
+          {/* Toolbar with TaskList selector, add ephemeral task and settings buttons */}
+          <div className="flex justify-between items-center gap-2 mb-4">
+            {/* TaskList Selector */}
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">Task List:</span>
+              <Select value={selectedTaskListId} onValueChange={setSelectedTaskListId}>
+                <SelectTrigger className="w-[200px] h-8">
+                  <SelectValue placeholder="Select task list" />
+                </SelectTrigger>
+                <SelectContent>
+                  {allTaskLists.map((taskList) => (
+                    <SelectItem key={taskList.id} value={taskList.id}>
+                      <div className="flex flex-col">
+                        <span className="font-medium">
+                          {taskList.role === 'daily.default' ? 'Daily Default' :
+                           taskList.role === 'weekly.default' ? 'Weekly Default' :
+                           taskList.role || 'Custom'}
+                        </span>
+                        <span className="text-xs text-muted-foreground">
+                          {taskList.tasks?.length || 0} tasks
+                        </span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            {/* Action buttons */}
+            <div className="flex gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="flex items-center text-muted-foreground hover:text-foreground"
+                onClick={() => setShowAddEphemeral(!showAddEphemeral)}
+              >
+                <Plus className="h-4 w-4 mr-1" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="flex items-center text-muted-foreground hover:text-foreground"
+                onClick={() => window.location.href = '/app/settings'}
+              >
+                <Settings className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
           
           {/* Add Ephemeral Task Form */}

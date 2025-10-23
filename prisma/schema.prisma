@@ -106,7 +106,8 @@ model Note {
 }
 
 type Settings {
-  availableBalance String?
+  dailyTemplate String? @db.ObjectId
+  weeklyTemplate String? @db.ObjectId
   monthsFixedIncome  String?
   monthsVariableIncome String?
   monthsNeedFixedExpenses String?
