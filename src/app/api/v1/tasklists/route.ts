@@ -1,6 +1,39 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
+import { loadTranslationsSync, t } from '@/lib/i18n'
+import { parseCookies } from '@/lib/localeUtils'
+import { getBestLocale } from '@/lib/i18n'
+
+// Helper function to get user's locale from request
+function getUserLocale(request: NextRequest): string {
+  const cookieHeader = request.headers.get('cookie') || ''
+  const cookies = parseCookies(cookieHeader)
+
+  // First check for user preference cookie
+  const userLocale = cookies['dpip_user_locale']
+  if (userLocale) {
+    return userLocale
+  }
+
+  // Fall back to browser locale
+  const acceptLanguage = request.headers.get('accept-language') || ''
+  return getBestLocale(acceptLanguage)
+}
+
+// Helper function to translate template tasks using localeKey
+function translateTemplateTasks(tasks: any[], translations: any): any[] {
+  return tasks.map((task: any) => {
+    if (task.localeKey && translations) {
+      const translatedName = t(translations, `actions.${task.localeKey}`)
+      return {
+        ...task,
+        name: translatedName || task.name // fallback to original name if translation not found
+      }
+    }
+    return task
+  })
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -36,19 +69,39 @@ export async function GET(request: NextRequest) {
     // Ensure default daily/weekly lists exist for the owner
     const ownerUser = await prisma.user.findUnique({ where: { userId } })
     if (ownerUser) {
+      const userLocale = getUserLocale(request)
+      const translations = loadTranslationsSync(userLocale)
+
       const ensureDefault = async (r: string) => {
         const existing = await prisma.taskList.findFirst({ where: { owners: { has: ownerUser.id }, role: r } })
         if (!existing) {
           const tpl = await prisma.template.findFirst({ where: { role: r } })
+
+          // Get localized name for the tasklist
+          let localizedName: string
+          if (r === 'daily.default') {
+            localizedName = t(translations, 'common.daily')
+          } else if (r === 'weekly.default') {
+            localizedName = t(translations, 'common.weekly')
+          } else {
+            localizedName = 'Default'
+          }
+
+          // Translate template tasks if they exist
+          let translatedTasks = (tpl?.tasks as any) || []
+          if (translatedTasks.length > 0) {
+            translatedTasks = translateTemplateTasks(translatedTasks, translations)
+          }
+
           await prisma.taskList.create({
             data: {
               role: r,
-              name: r === 'daily.default' ? 'Daily' : r === 'weekly.default' ? 'Weekly' : 'Default',
+              name: localizedName,
               visibility: 'PRIVATE',
               owners: [ownerUser.id],
               templateId: tpl?.id || null,
-              templateTasks: (tpl?.tasks as any) || [],
-              tasks: (tpl?.tasks as any) || [],
+              templateTasks: translatedTasks,
+              tasks: translatedTasks,
               ephemeralTasks: { open: [], closed: [] },
               completedTasks: {}
             } as any
@@ -80,7 +133,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const { userId } = await auth()
-    
+
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -95,6 +148,26 @@ export async function POST(request: NextRequest) {
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
+    }
+
+    // Get user's locale and translations
+    const userLocale = getUserLocale(request)
+    const translations = loadTranslationsSync(userLocale)
+
+    // Translate tasks if provided
+    let translatedTasks = tasks
+    if (Array.isArray(tasks) && tasks.length > 0) {
+      translatedTasks = translateTemplateTasks(tasks, translations)
+    }
+
+    // Get localized name if not provided and creating a default list
+    let localizedName = name
+    if (!localizedName && role && role.endsWith('.default')) {
+      if (role === 'daily.default') {
+        localizedName = t(translations, 'common.daily')
+      } else if (role === 'weekly.default') {
+        localizedName = t(translations, 'common.weekly')
+      }
     }
 
     // Delete a specific TaskList by ID
@@ -256,11 +329,15 @@ export async function POST(request: NextRequest) {
       if (!existingById) {
         return NextResponse.json({ error: 'TaskList not found' }, { status: 404 })
       }
+
+      // Translate tasks if provided
+      const updatedTasks = translatedTasks || (Array.isArray(tasks) ? tasks : existingById.tasks)
+
       const updated = await prisma.taskList.update({
         where: { id: existingById.id },
         data: ({
-          templateTasks: Array.isArray(tasks) ? tasks : existingById.templateTasks,
-          tasks: Array.isArray(tasks) ? tasks : existingById.tasks,
+          templateTasks: updatedTasks,
+          tasks: updatedTasks,
           templateId: typeof templateId !== 'undefined' ? templateId : existingById.templateId,
           role: typeof role === 'string' ? role : existingById.role,
           name: typeof name !== 'undefined' ? name : existingById.name,
@@ -299,13 +376,13 @@ export async function POST(request: NextRequest) {
       taskList = await prisma.taskList.create({
         data: ({
           role: role,
-          name: name,
+          name: localizedName,
           budget: budget,
           dueDate: dueDate,
           visibility: 'PRIVATE',
           owners: [user.id],
-          templateTasks: tasks,
-          tasks: tasks,
+          templateTasks: translatedTasks,
+          tasks: translatedTasks,
           templateId: templateId,
           collaborators: Array.isArray(collaborators) ? collaborators : [],
           managers: []
@@ -314,11 +391,12 @@ export async function POST(request: NextRequest) {
       })
     } else if (existingTaskList) {
       // Update existing TaskList
+      const updatedTasks = translatedTasks || tasks
       taskList = await prisma.taskList?.update({
         where: { id: existingTaskList.id },
         data: ({
-          templateTasks: tasks ?? existingTaskList.tasks,
-          tasks: tasks,
+          templateTasks: updatedTasks ?? existingTaskList.tasks,
+          tasks: updatedTasks,
           templateId: templateId,
           name: name ?? existingTaskList.name,
           budget: budget ?? existingTaskList.budget,
@@ -333,13 +411,13 @@ export async function POST(request: NextRequest) {
       taskList = await prisma.taskList.create({
         data: ({
           role: role,
-          name: name,
+          name: localizedName,
           budget: budget,
           dueDate: dueDate,
           visibility: 'PRIVATE',
           owners: [user.id],
-          templateTasks: tasks,
-          tasks: tasks,
+          templateTasks: translatedTasks,
+          tasks: translatedTasks,
           templateId: templateId,
           collaborators: Array.isArray(collaborators) ? collaborators : [],
           managers: []
@@ -353,7 +431,7 @@ export async function POST(request: NextRequest) {
       await prisma.template.update({
         where: { id: taskList.templateId },
         data: {
-          tasks: tasks,
+          tasks: translatedTasks,
           updatedAt: new Date()
         }
       })
