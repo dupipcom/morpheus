@@ -97,6 +97,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
+    // Delete a specific TaskList by ID
+    if (body.deleteTaskList && body.taskListId) {
+      const existing = await prisma.taskList.findUnique({ where: { id: body.taskListId } })
+      if (!existing) return NextResponse.json({ error: 'TaskList not found' }, { status: 404 })
+      await prisma.taskList.delete({ where: { id: body.taskListId } })
+      return NextResponse.json({ ok: true })
+    }
+
     // Lightweight path: record completions into completedTasks and Task.completers
     if (body.recordCompletions && body.taskListId && (body.dayActions?.length || body.weekActions?.length)) {
       const taskList = await prisma.taskList.findUnique({ where: { id: body.taskListId } })

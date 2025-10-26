@@ -113,6 +113,9 @@ export const ListView = () => {
           }
         }
       }
+      if ((c.count || 0) > 0 && c.status !== 'Done') {
+        c.status = 'Open'
+      }
       return c
     })
 
@@ -146,6 +149,34 @@ export const ListView = () => {
         })
       }
     }
+
+    // If this is a weekly list, also persist tasks under user.entries[year].weeks[weekNumber].tasks
+    try {
+      const isWeekly = typeof (selectedTaskList as any)?.role === 'string' && (selectedTaskList as any).role.startsWith('weekly')
+      if (isWeekly) {
+        const doneForWeek = nextActions.filter((a:any) => a?.status === 'Done')
+        if (doneForWeek.length > 0) {
+          const week = getWeekNumber(today)[1]
+          await fetch('/api/v1/user', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ weekTasksAppend: doneForWeek, week, date })
+          })
+        }
+      }
+    } catch {}
+
+    // Always append all Done tasks to user.entries[year].days[date].tasks
+    try {
+      const doneForDay = nextActions.filter((a:any) => a?.status === 'Done')
+      if (doneForDay.length > 0) {
+        await fetch('/api/v1/user', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ dayTasksAppend: doneForDay, date })
+        })
+      }
+    } catch {}
 
     await refreshTaskLists()
   }

@@ -214,7 +214,6 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   ...user.entries[year].weeks[weekNumber],
                   year,
                   week: weekNumber,
-                  tasks: await getTemplateTasks(user?.settings?.weeklyTemplate) || WEEKLY_ACTIONS,
                   status: "Open"
                 }
               }
@@ -241,7 +240,6 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   month,
                   day,
                   date,
-                  tasks: await getTemplateTasks(user?.settings?.dailyTemplate) || DAILY_ACTIONS,
                   status: "Open",
                   moodAverage: 0,
                   mood: {
@@ -474,7 +472,6 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   earnings: weekEarnings,
                   ticker: { ...weekTickerObj },
                   tickerLegacy: weekTickerSingle,
-                  tasks: tasksWithContacts.sort((a: any, b: any) => a.status === "Done" ? 1 : -1),
                   status: "Open",
                   progress: weekProgress,
                   done: weekDone.length,
@@ -510,7 +507,6 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   earnings: weekEarnings,
                   ticker: { ...weekTickerObj2 },
                   tickerLegacy: weekTickerSingle2,
-                  tasks: (await getTemplateTasks(user?.settings?.weeklyTemplate) || WEEKLY_ACTIONS).sort((a, b) => a.status === "Done" ? 1 : -1),
                   status: "Open",
                   progress: weekProgress,
                   done: weekDone.length,
@@ -524,6 +520,66 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
       where: { id: user.id },
     })
     user = await getUser()
+  }
+
+  // Append only the tasks that were just completed to week entry (without replacing others)
+  if (Array.isArray(data.weekTasksAppend) && data.weekTasksAppend.length && user) {
+    const entries = user.entries as any
+    const week = data.week || weekNumber
+    const ensureWeek = (e: any) => {
+      const copy = { ...(e || {}) }
+      if (!copy[year]) copy[year] = { days: {}, weeks: {} }
+      if (!copy[year].weeks) copy[year].weeks = {}
+      if (!copy[year].weeks[week]) copy[year].weeks[week] = { year, week, tasks: [] }
+      if (!Array.isArray(copy[year].weeks[week].tasks)) copy[year].weeks[week].tasks = []
+      return copy
+    }
+    const updated = ensureWeek(entries)
+    const existing = entries[year]?.weeks[week]?.tasks as any[] || []
+    const names = new Set(existing.map((t:any) => t.name))
+    const toAppend = data.weekTasksAppend.filter((t:any) => !names.has(t.name))
+    console.log({ entries: entries[year]?.weeks[week]?.tasks })
+    if (toAppend.length > 0) {
+      updated[year].weeks[week] = {
+        ...updated[year].weeks[week],
+        tasks: [...existing, ...toAppend]
+      }
+      await prisma.user.update({
+        data: { entries: updated },
+        where: { id: user.id },
+      })
+      user = await getUser()
+    }
+  }
+
+  // Append only the tasks that were just completed to day entry (without replacing others)
+  if (Array.isArray(data.dayTasksAppend) && data.dayTasksAppend.length && user) {
+    const entries = user.entries as any
+    const dateISO = data.date || date
+    const y = Number(String(dateISO).split('-')[0])
+    const ensureDay = (e: any) => {
+      const copy = { ...(e || {}) }
+      if (!copy[y]) copy[y] = { days: {}, weeks: {} }
+      if (!copy[y].days) copy[y].days = {}
+      if (!copy[y].days[dateISO]) copy[y].days[dateISO] = { year: y, date: dateISO, tasks: [] }
+      if (!Array.isArray(copy[y].days[dateISO].tasks)) copy[y].days[dateISO].tasks = []
+      return copy
+    }
+    const updated = ensureDay(entries)
+    const existing = updated[y].days[dateISO].tasks as any[]
+    const names = new Set(existing.map((t:any) => t.name))
+    const toAppend = data.dayTasksAppend.filter((t:any) => t.status === 'Done' && !names.has(t.name))
+    if (toAppend.length > 0) {
+      updated[y].days[dateISO] = {
+        ...updated[y].days[dateISO],
+        tasks: [...existing, ...toAppend]
+      }
+      await prisma.user.update({
+        data: { entries: updated },
+        where: { id: user.id },
+      })
+      user = await getUser()
+    }
   }
 
   if (data?.availableBalance) {
@@ -604,8 +660,6 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   tickerLegacy: dayTickerSingle,
                   progress: dayProgress,
                   done: dayDone.length,
-                  tasksNumber: dayTasks.length,
-                  tasks: tasksWithContacts.sort((a: any, b: any) => a.status === "Done" ? 1 : -1),
                   status: "Open",
                   availableBalance: user.availableBalance,
                   contacts: data.dayContacts || entries[year]?.days?.[date]?.contacts || []
@@ -656,7 +710,6 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
                   progress: dayProgress,
                   done: dayDone.length,
                   tasksNumber: dayTasks.length,
-                  tasks: (await getTemplateTasks(user?.settings?.dailyTemplate) || DAILY_ACTIONS).sort((a, b) => a.status === "Done" ? 1 : -1),
                   status: "Open",
                   availableBalance: user.availableBalance
                 }

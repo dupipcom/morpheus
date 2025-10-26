@@ -349,6 +349,27 @@ export const AddListForm = ({
         <div className="flex gap-2">
           <Button size="sm" onClick={handleSubmit} disabled={!form.name.trim()}>{isEditing ? 'Save' : 'Create'}</Button>
           <Button size="sm" variant="outline" onClick={onCancel}>Cancel</Button>
+          {isEditing && (
+            <Button
+              size="sm"
+              variant="destructive"
+              className="ml-auto"
+              onClick={async () => {
+                if (!initialList?.id) return
+                const confirmed = window.confirm('Delete this list? This cannot be undone.')
+                if (!confirmed) return
+                await fetch('/api/v1/tasklists', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ deleteTaskList: true, taskListId: initialList.id })
+                })
+                await onCreated()
+                onCancel()
+              }}
+            >
+              Delete list
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>
