@@ -40,7 +40,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { ContactCombobox } from "@/components/ui/contact-combobox"
 import { ThingCombobox } from "@/components/ui/thing-combobox"
-import { Users, X, Heart, Settings, Package, Plus, TrendingUp, TrendingDown, ChevronDown } from "lucide-react"
+import { Users, X, Heart, Settings, Package, Plus, TrendingUp, TrendingDown, ChevronDown, Calendar as CalendarIcon } from "lucide-react"
 import { Switch } from "@/components/ui/switch"
 import {
   Select,
@@ -49,6 +49,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Calendar } from "@/components/ui/calendar"
+
+import { Input } from "@/components/ui/input"
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command"
 
 import { MoodView } from "@/views/moodView"
 
@@ -92,6 +110,34 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const [ephemeralTasks, setEphemeralTasks] = useState([])
   const [showAddEphemeral, setShowAddEphemeral] = useState(false)
   const [newEphemeralTask, setNewEphemeralTask] = useState({ name: '', area: 'self', category: 'custom', saveToTemplate: false })
+
+  // New List form state
+  const [showAddList, setShowAddList] = useState(false)
+  const [newList, setNewList] = useState({
+    name: '',
+    templateId: '',
+    budget: '',
+    dueDate: '',
+    cadence: 'daily',
+    role: 'custom',
+    collaborators: [] as { id: string, userName: string }[]
+  })
+  const [dueDateObj, setDueDateObj] = useState<Date | undefined>(undefined)
+  const [dateOpen, setDateOpen] = useState(false)
+  const [collabQuery, setCollabQuery] = useState('')
+  const { data: collabResults } = useSWRImmutable(collabQuery ? `/api/v1/profiles?query=${encodeURIComponent(collabQuery)}` : null, async (key) => {
+    const res = await fetch(key)
+    if (!res.ok) return { profiles: [] }
+    return res.json()
+  })
+
+  // Fetch user templates for the template selector
+  const { data: templatesResp } = useSWRImmutable(session ? '/api/v1/templates' : null, async (key) => {
+    const res = await fetch(key)
+    if (!res.ok) return { templates: [] }
+    return res.json()
+  })
+  const userTemplates = templatesResp?.templates || []
 
   // Load ephemeral tasks from session
   const currentEphemeralTasks = useMemo(() => {
@@ -220,6 +266,47 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       setSelectedTaskListId(value)
     } catch (e) {
       console.error('Error selecting task list:', e)
+    }
+  }
+
+  // Open New List form
+  const handleOpenNewTaskListForm = () => {
+    setShowAddList(true)
+  }
+
+  // Submit New List
+  const handleCreateListSubmit = async () => {
+    try {
+      const selectedTemplate = userTemplates.find((tpl: any) => tpl.id === newList.templateId)
+      const tasks = Array.isArray(selectedTemplate?.tasks) ? selectedTemplate.tasks : []
+
+      const resp = await fetch('/api/v1/tasklists', {
+        method: 'POST',
+        body: JSON.stringify({
+          create: true,
+          role: newList.role,
+          name: newList.name || undefined,
+          budget: newList.budget || undefined,
+          dueDate: newList.dueDate || undefined,
+          templateId: newList.templateId || undefined,
+          collaborators: newList.collaborators.map(c => c.id),
+          tasks
+        })
+      })
+      if (!resp.ok) return
+
+      const refetch = await fetch('/api/v1/tasklists')
+      if (!refetch.ok) return
+      const data = await refetch.json()
+      const lists = data.taskLists || []
+      setAllTaskLists(lists)
+      // pick the newest matching role if default, else by name
+      const created = lists.find((tl: any) => (newList.role && tl.role === newList.role) || (newList.name && tl.name === newList.name))
+      if (created?.id) setSelectedTaskListId(created.id)
+      setShowAddList(false)
+      setNewList({ name: '', templateId: '', budget: '', dueDate: '', cadence: 'daily', role: 'custom', collaborators: [] })
+    } catch (e) {
+      console.error('Error creating list:', e)
     }
   }
 
@@ -1044,7 +1131,6 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
           <div className="flex justify-between items-center gap-2 mb-4">
             {/* TaskList Selector */}
             <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">Task List:</span>
               <Select value={selectedTaskListId} onValueChange={handleSelectTaskList}>
                 <SelectTrigger className="w-[200px] h-8">
                   <SelectValue placeholder="Select task list" />
@@ -1060,9 +1146,6 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                       <div className="flex flex-col">
                         <span className="font-medium">
                           {displayName}
-                        </span>
-                        <span className="text-xs text-muted-foreground">
-                          {taskList.tasks?.length || 0} tasks
                         </span>
                       </div>
                     </SelectItem>)
@@ -1088,14 +1171,28 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
             
             {/* Action buttons */}
             <div className="flex gap-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="flex items-center text-muted-foreground hover:text-foreground"
-                onClick={() => setShowAddEphemeral(!showAddEphemeral)}
-              >
-                <Plus className="h-4 w-4 mr-1" />
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="flex items-center text-muted-foreground hover:text-foreground"
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => setShowAddEphemeral(true)}>
+                    New task
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleOpenNewTaskListForm}>
+                    New list
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => (window.location.href = '/app/settings')}>
+                    New template
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
               <Button
                 variant="ghost"
                 size="sm"
@@ -1168,7 +1265,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                     onCheckedChange={(checked) => setNewEphemeralTask(prev => ({ ...prev, saveToTemplate: checked }))}
                   />
                   <label htmlFor="save-to-template" className="text-sm font-medium">
-                    Save to {timeframe === 'day' ? 'daily' : 'weekly'} template
+                    Save task to template
                   </label>
                 </div>
                 <div className="flex gap-2">
@@ -1184,6 +1281,201 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                     onClick={() => {
                       setShowAddEphemeral(false)
                       setNewEphemeralTask({ name: '', area: 'self', category: 'custom', saveToTemplate: false })
+                    }}
+                    size="sm"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Add New List Form */}
+          {showAddList && (
+            <Card className="mb-4 p-4">
+              <CardHeader>
+                <CardTitle className="text-sm">Create New List</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div>
+                  <label className="text-sm font-medium">Name</label>
+                  <input
+                    type="text"
+                    value={newList.name}
+                    onChange={(e) => setNewList(prev => ({ ...prev, name: e.target.value }))}
+                    placeholder="Enter list name..."
+                    className="w-full p-2 border rounded-md"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Template</label>
+                  <Select value={newList.templateId} onValueChange={(val) => setNewList(prev => ({ ...prev, templateId: val }))}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Choose a template" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {userTemplates.map((tpl: any) => (
+                        <SelectItem key={tpl.id} value={tpl.id} textValue={tpl.name || tpl.role || 'Template'}>
+                          {tpl.name || tpl.role || 'Template'}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div>
+                    <label className="text-sm font-medium">Budget</label>
+                    <input
+                      type="number"
+                      value={newList.budget}
+                      onChange={(e) => setNewList(prev => ({ ...prev, budget: e.target.value }))}
+                      placeholder="0"
+                      className="w-full p-2 border rounded-md"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium">Due date</label>
+                    <Popover open={dateOpen} onOpenChange={setDateOpen}>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" className="w-full justify-start text-left font-normal">
+                          {dueDateObj ? dueDateObj.toISOString().slice(0,10) : <span>Pick a date</span>}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="p-0">
+                        <Calendar
+                          mode="single"
+                          selected={dueDateObj}
+                          onSelect={(date) => {
+                            setDueDateObj(date)
+                            setNewList(prev => ({ ...prev, dueDate: date ? date.toISOString().slice(0,10) : '' }))
+                            setDateOpen(false)
+                          }}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium">Cadence</label>
+                    <Select value={newList.cadence} onValueChange={(val) => setNewList(prev => ({ ...prev, cadence: val }))}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="daily">Daily</SelectItem>
+                        <SelectItem value="weekly">Weekly</SelectItem>
+                        <SelectItem value="monthly">Monthly</SelectItem>
+                        <SelectItem value="quarterly">Quarterly</SelectItem>
+                        <SelectItem value="semester">Semester</SelectItem>
+                        <SelectItem value="yearly">Yearly</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Collaborators</label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" className="w-full justify-between">
+                        <span>{newList.collaborators.length > 0 ? `${newList.collaborators.length} selected` : 'Search usernames...'}</span>
+                        <ChevronDown className="h-4 w-4 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[320px] p-0">
+                      <Command shouldFilter={false}>
+                        <CommandInput placeholder="Type a username..." value={collabQuery} onValueChange={setCollabQuery} />
+                        <CommandList>
+                          <CommandEmpty>No results.</CommandEmpty>
+                          <CommandGroup>
+                            {(collabResults?.profiles || []).map((p: any) => (
+                              <CommandItem key={p.userId} value={p.userId} onSelect={() => {
+                                if (!newList.collaborators.find(c => c.id === p.userId)) {
+                                  setNewList(prev => ({ ...prev, collaborators: [...prev.collaborators, { id: p.userId, userName: p.userName }] }))
+                                }
+                              }}>
+                                @{p.userName}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  {newList.collaborators.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {newList.collaborators.map((c) => (
+                        <Badge key={c.id} variant="secondary" className="flex items-center gap-1">
+                          @{c.userName}
+                          <Button variant="ghost" size="sm" className="h-4 w-4 p-0 hover:bg-transparent" onClick={() => setNewList(prev => ({ ...prev, collaborators: prev.collaborators.filter(x => x.id !== c.id) }))}>
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Role</label>
+                  <Select value={newList.role} onValueChange={(val) => setNewList(prev => ({ ...prev, role: val }))}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="custom">Custom</SelectItem>
+                      <SelectItem value="daily.default">Daily default</SelectItem>
+                      <SelectItem value="weekly.default">Weekly default</SelectItem>
+                      <SelectItem value="monthly.default">Monthly default</SelectItem>
+                      <SelectItem value="quarterly.default">Quarterly default</SelectItem>
+                      <SelectItem value="semester.default">Semester default</SelectItem>
+                      <SelectItem value="yearly.default">Yearly default</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Template tasks preview table */}
+                {newList.templateId && (
+                  <div>
+                    <div className="text-sm font-medium mb-2">Template tasks preview</div>
+                    <div className="border rounded-md overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="bg-muted/50 text-left">
+                            <th className="p-2">Name</th>
+                            <th className="p-2">Times</th>
+                            <th className="p-2">Area</th>
+                            <th className="p-2">Categories</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {(userTemplates.find((tpl: any) => tpl.id === newList.templateId)?.tasks || []).map((task: any) => (
+                            <tr key={task.name}>
+                              <td className="p-2">{task.name}</td>
+                              <td className="p-2">{task.times}</td>
+                              <td className="p-2 capitalize">{task.area}</td>
+                              <td className="p-2">{Array.isArray(task.categories) ? task.categories.join(', ') : ''}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex gap-2">
+                  <Button
+                    onClick={handleCreateListSubmit}
+                    disabled={!newList.name.trim()}
+                    size="sm"
+                  >
+                    Create List
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setShowAddList(false)
+                      setNewList({ name: '', templateId: '', budget: '', dueDate: '', cadence: 'daily', role: 'custom', collaborators: [] })
                     }}
                     size="sm"
                   >

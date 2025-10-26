@@ -51,7 +51,29 @@ const nextConfig: NextConfig = {
         source: "/app/mood",
         destination: '/app/day',
         permanent: false,
-      }
+      },
+      // New 302s to /app/do
+      {
+        source: "/app/day",
+        destination: "/app/do",
+        permanent: false,
+      },
+      {
+        source: "/app/week",
+        destination: "/app/do",
+        permanent: false,
+      },
+      // Locale-prefixed variants
+      {
+        source: "/:locale/app/day",
+        destination: "/:locale/app/do",
+        permanent: false,
+      },
+      {
+        source: "/:locale/app/week",
+        destination: "/:locale/app/do",
+        permanent: false,
+      },
     ];
   },
 };

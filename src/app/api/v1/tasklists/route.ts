@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { role, tasks, templateId, updateTemplate } = body
+    const { role, tasks, templateId, updateTemplate, name, budget, dueDate, create, collaborators } = body
 
     // Find user by userId
     const user = await prisma.user.findUnique({
@@ -83,34 +83,61 @@ export async function POST(request: NextRequest) {
 
     let taskList
 
-    if (existingTaskList) {
+    if (create) {
+      // If creating a new default list, demote existing default to custom
+      if (role && role.endsWith('.default') && existingTaskList) {
+        await prisma.taskList.update({
+          where: { id: existingTaskList.id },
+          data: { role: 'custom' }
+        })
+      }
+      // Create new TaskList
+      taskList = await prisma.taskList.create({
+        data: {
+          role: role,
+          name: name,
+          budget: budget,
+          dueDate: dueDate,
+          visibility: 'PRIVATE',
+          owners: [user.id],
+          tasks: tasks,
+          templateId: templateId,
+          collaborators: Array.isArray(collaborators) ? collaborators : [],
+          managers: []
+        },
+        include: { template: true }
+      })
+    } else if (existingTaskList) {
       // Update existing TaskList
       taskList = await prisma.taskList?.update({
         where: { id: existingTaskList.id },
         data: {
           tasks: tasks,
           templateId: templateId,
+          name: name ?? existingTaskList.name,
+          budget: budget ?? existingTaskList.budget,
+          dueDate: dueDate ?? existingTaskList.dueDate,
+          collaborators: Array.isArray(collaborators) ? collaborators : existingTaskList.collaborators,
           updatedAt: new Date()
         },
-        include: {
-          template: true
-        }
+        include: { template: true }
       })
     } else {
       // Create new TaskList
       taskList = await prisma.taskList.create({
         data: {
           role: role,
+          name: name,
+          budget: budget,
+          dueDate: dueDate,
           visibility: 'PRIVATE',
           owners: [user.id],
           tasks: tasks,
           templateId: templateId,
-          collaborators: [],
+          collaborators: Array.isArray(collaborators) ? collaborators : [],
           managers: []
         },
-        include: {
-          template: true
-        }
+        include: { template: true }
       })
     }
 
