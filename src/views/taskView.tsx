@@ -40,7 +40,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { ContactCombobox } from "@/components/ui/contact-combobox"
 import { ThingCombobox } from "@/components/ui/thing-combobox"
-import { Users, X, Heart, Settings, Package, Plus, TrendingUp, TrendingDown, ChevronDown, Calendar as CalendarIcon } from "lucide-react"
+import { Users, X, Heart, Settings, Package, Plus, TrendingUp, TrendingDown, ChevronDown, Calendar as CalendarIcon, List as ListIcon } from "lucide-react"
 import { Switch } from "@/components/ui/switch"
 import {
   Select,
@@ -118,7 +118,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     templateId: '',
     budget: '',
     dueDate: '',
-    cadence: 'daily',
+    cadence: 'one-off',
     role: 'custom',
     collaborators: [] as { id: string, userName: string }[]
   })
@@ -138,6 +138,9 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     return res.json()
   })
   const userTemplates = templatesResp?.templates || []
+
+  // Preview tasks for selected template/list clone option (declared after allTaskLists is initialized)
+  // NOTE: this will be redefined later after allTaskLists is declared to avoid TDZ
 
   // Load ephemeral tasks from session
   const currentEphemeralTasks = useMemo(() => {
@@ -212,6 +215,22 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     
   }, [taskListsData, timeframe])
 
+  // Preview tasks for selected template/list clone option
+  const newListPreviewTasks = useMemo(() => {
+    if (!newList.templateId) return [] as any[]
+    if (newList.templateId.startsWith('template:')) {
+      const tplId = newList.templateId.split(':')[1]
+      const tpl = userTemplates.find((t: any) => t.id === tplId)
+      return Array.isArray(tpl?.tasks) ? tpl.tasks : []
+    }
+    if (newList.templateId.startsWith('list:')) {
+      const lstId = newList.templateId.split(':')[1]
+      const lst = allTaskLists.find((l: any) => l.id === lstId)
+      return Array.isArray(lst?.tasks) ? lst.tasks : []
+    }
+    return [] as any[]
+  }, [newList.templateId, userTemplates, allTaskLists])
+
   // Lists to display in selector: show all user task lists (no timeframe filtering)
   const displayedTaskLists = useMemo(() => {
     if (!Array.isArray(allTaskLists)) return []
@@ -277,18 +296,30 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   // Submit New List
   const handleCreateListSubmit = async () => {
     try {
-      const selectedTemplate = userTemplates.find((tpl: any) => tpl.id === newList.templateId)
-      const tasks = Array.isArray(selectedTemplate?.tasks) ? selectedTemplate.tasks : []
+      let tasks: any[] = []
+      let templateIdToLink: string | undefined = undefined
+      if (newList.templateId?.startsWith('template:')) {
+        const tplId = newList.templateId.split(':')[1]
+        const selectedTemplate = userTemplates.find((tpl: any) => tpl.id === tplId)
+        tasks = Array.isArray(selectedTemplate?.tasks) ? selectedTemplate.tasks : []
+        templateIdToLink = tplId
+      } else if (newList.templateId?.startsWith('list:')) {
+        const lstId = newList.templateId.split(':')[1]
+        const selectedList = allTaskLists.find((lst: any) => lst.id === lstId)
+        tasks = Array.isArray(selectedList?.tasks) ? selectedList.tasks : []
+        templateIdToLink = undefined
+      }
+      const roleJoined = `${newList.cadence}.${newList.role}`
 
       const resp = await fetch('/api/v1/tasklists', {
         method: 'POST',
         body: JSON.stringify({
           create: true,
-          role: newList.role,
+          role: roleJoined,
           name: newList.name || undefined,
           budget: newList.budget || undefined,
           dueDate: newList.dueDate || undefined,
-          templateId: newList.templateId || undefined,
+          templateId: templateIdToLink,
           collaborators: newList.collaborators.map(c => c.id),
           tasks
         })
@@ -300,11 +331,11 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       const data = await refetch.json()
       const lists = data.taskLists || []
       setAllTaskLists(lists)
-      // pick the newest matching role if default, else by name
-      const created = lists.find((tl: any) => (newList.role && tl.role === newList.role) || (newList.name && tl.name === newList.name))
+      // pick by exact concatenated role first, else by name
+      const created = lists.find((tl: any) => tl.role === roleJoined) || lists.find((tl: any) => newList.name && tl.name === newList.name)
       if (created?.id) setSelectedTaskListId(created.id)
       setShowAddList(false)
-      setNewList({ name: '', templateId: '', budget: '', dueDate: '', cadence: 'daily', role: 'custom', collaborators: [] })
+      setNewList({ name: '', templateId: '', budget: '', dueDate: '', cadence: 'one-off', role: 'custom', collaborators: [] })
     } catch (e) {
       console.error('Error creating list:', e)
     }
@@ -1309,15 +1340,26 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium">Template</label>
+                  <label className="text-sm font-medium">Template or List</label>
                   <Select value={newList.templateId} onValueChange={(val) => setNewList(prev => ({ ...prev, templateId: val }))}>
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Choose a template" />
                     </SelectTrigger>
                     <SelectContent>
                       {userTemplates.map((tpl: any) => (
-                        <SelectItem key={tpl.id} value={tpl.id} textValue={tpl.name || tpl.role || 'Template'}>
-                          {tpl.name || tpl.role || 'Template'}
+                        <SelectItem key={`tpl-${tpl.id}`} value={`template:${tpl.id}`} textValue={tpl.name || tpl.role || 'Template'}>
+                          <div className="flex items-center gap-2">
+                            <Package className="h-4 w-4 opacity-70" />
+                            <span>{tpl.name || tpl.role || 'Template'}</span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                      {allTaskLists.map((lst: any) => (
+                        <SelectItem key={`lst-${lst.id}`} value={`list:${lst.id}`} textValue={lst.name || lst.role || 'List'}>
+                          <div className="flex items-center gap-2">
+                            <ListIcon className="h-4 w-4 opacity-70" />
+                            <span>{lst.name || lst.role || 'List'}</span>
+                          </div>
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -1364,6 +1406,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
+                        <SelectItem value="one-off">One-off</SelectItem>
                         <SelectItem value="daily">Daily</SelectItem>
                         <SelectItem value="weekly">Weekly</SelectItem>
                         <SelectItem value="monthly">Monthly</SelectItem>
@@ -1424,12 +1467,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="custom">Custom</SelectItem>
-                      <SelectItem value="daily.default">Daily default</SelectItem>
-                      <SelectItem value="weekly.default">Weekly default</SelectItem>
-                      <SelectItem value="monthly.default">Monthly default</SelectItem>
-                      <SelectItem value="quarterly.default">Quarterly default</SelectItem>
-                      <SelectItem value="semester.default">Semester default</SelectItem>
-                      <SelectItem value="yearly.default">Yearly default</SelectItem>
+                      <SelectItem value="default">Default</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -1449,7 +1487,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                           </tr>
                         </thead>
                         <tbody>
-                          {(userTemplates.find((tpl: any) => tpl.id === newList.templateId)?.tasks || []).map((task: any) => (
+                          {newListPreviewTasks.map((task: any) => (
                             <tr key={task.name}>
                               <td className="p-2">{task.name}</td>
                               <td className="p-2">{task.times}</td>
@@ -1475,7 +1513,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                     variant="outline"
                     onClick={() => {
                       setShowAddList(false)
-                      setNewList({ name: '', templateId: '', budget: '', dueDate: '', cadence: 'daily', role: 'custom', collaborators: [] })
+                      setNewList({ name: '', templateId: '', budget: '', dueDate: '', cadence: 'one-off', role: 'custom', collaborators: [] })
                     }}
                     size="sm"
                   >

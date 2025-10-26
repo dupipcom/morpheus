@@ -11,14 +11,18 @@ export async function GET(request: NextRequest) {
     }
 
     const user = await prisma.user.findUnique({ where: { userId } })
-    if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 })
-    }
+
+    const whereClause = user
+      ? {
+          OR: [
+            { owners: { has: user.id } },
+            { visibility: 'PUBLIC' },
+          ],
+        }
+      : { visibility: 'PUBLIC' as const }
 
     const templates = await prisma.template.findMany({
-      where: {
-        owners: { has: user.id },
-      },
+      where: whereClause,
       orderBy: { createdAt: 'asc' },
     })
 
