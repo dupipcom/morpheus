@@ -10,14 +10,12 @@ import { useI18n } from '@/lib/contexts/i18n'
 import { getWeekNumber } from '@/app/helpers'
 
 export const ListView = () => {
-  const { session } = useContext(GlobalContext)
+  const { session, taskLists, refreshTaskLists } = useContext(GlobalContext)
   const { t, locale } = useI18n()
 
   const today = new Date()
   const date = today.toISOString().split('T')[0]
   const year = Number(date.split('-')[0])
-
-  const { taskLists, refreshTaskLists } = useContext(GlobalContext)
   const allTaskLists = taskLists || []
 
   const [selectedTaskListId, setSelectedTaskListId] = useState<string | undefined>(allTaskLists[0]?.id)
@@ -151,6 +149,10 @@ export const ListView = () => {
 
     await refreshTaskLists()
   }
+
+  console.log("LISTVIEW", { selectedTaskListId, selectedTaskList, allTaskLists })
+
+  if (!selectedTaskListId) return null
   return (
     <div className="space-y-4">
       <DoToolbar
