@@ -7,7 +7,7 @@ import { useAuth } from '@clerk/nextjs';
 
 import Link from 'next/link'
 
-import { TaskView } from "@/views/taskView"
+import { DoView } from "@/views/doView"
 import { ViewMenu } from "@/components/viewMenu"
 import { Button } from "@/components/ui/button"
 
@@ -22,7 +22,7 @@ import { useI18n } from "@/lib/contexts/i18n"
 export const maxDuration = 60;
 export const dynamic = "force-dynamic"
 
-export default function LocalizedDay({ params }: { params: Promise<{ locale: string }> }) {
+export default function LocalizedDo({ params }: { params: Promise<{ locale: string }> }) {
   const { session, setGlobalContext } = useContext(GlobalContext)
   const { isLoaded, isSignedIn } = useAuth();
   const { t, formatDate } = useI18n();
@@ -52,13 +52,8 @@ export default function LocalizedDay({ params }: { params: Promise<{ locale: str
   }, {})
 
   return (
-    <main className="min-h-[100vh]">
-      <ViewMenu active="day" />
-
-      <div className="scroll-m-20 text-2xl font-semibold tracking-tight text-center mb-8">
-        <label>{t('dashboard.todayIs', { date: formatDate(new Date()) })}</label>
-      </div>
-      <TaskView actions={actions} />
-    </main>
+    <DoView />
   )
-} 
+}
+
+

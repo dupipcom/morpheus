@@ -30,7 +30,17 @@
     "social": "Social",
     "stash": "Lager",
     "equity": "Egenkapital",
-    "totalEarnings": "Samlede indtægter"
+    "totalEarnings": "Samlede indtægter",
+    "daily": "Daglig",
+    "weekly": "Ugentlig",
+    "balance": "Saldo",
+    "dailyEarnings": "Daglige Indtægter",
+    "weeklyEarnings": "Ugentlige Indtægter",
+    "newTask": "Ny opgave",
+    "newList": "Ny liste",
+    "newTemplate": "Ny skabelon",
+    "budget": "Budget",
+    "due": "Forfaldsdato"
   },
   "navigation": {
     "dashboard": "Dashboard",
@@ -69,7 +79,20 @@
     "trust": "Tillid",
     "editDay": "Rediger dag",
     "closeDay": "Luk dag",
-    "earnings": "Indtjening"
+    "earnings": "Indtjening",
+    "publish": {
+      "title": "Publicer en note",
+      "placeholder": "Skriv din note her...",
+      "selectVisibility": "Vælg synlighed",
+      "visibility": {
+        "PRIVATE": "Privat",
+        "FRIENDS": "Venner",
+        "CLOSE_FRIENDS": "Nære venner",
+        "PUBLIC": "Offentlig",
+        "AI_ENABLED": "AI-aktiveret"
+      },
+      "action": "Publicer note"
+    }
   },
   "week": {
     "weekNumber": "Uge {number}",
@@ -77,67 +100,60 @@
     "closeWeek": "Luk uge"
   },
   "tasks": {
-    "editing": "Redigerer",
+    "editing": "Redigering: {timeframe}",
     "weekNumber": "Uge {number}",
-    "yourEarnings": "Din indtjening"
+    "yourEarnings": "Dine indtægter {timeframe}, hidtil: Ð{amount}",
+    "selectList": "Vælg liste"
   },
   "actions": {
-    "add": "Tilføj",
-    "remove": "Fjern",
-    "update": "Opdater",
-    "refresh": "Opdater",
-    "daily": {
-      "drankWater": "Drak vand",
-      "showered": "Tog brusebad",
-      "tookMeds": "Tog medicin",
-      "loggedMood": "Registrerede humør",
-      "ateBreakfast": "Spiste morgenmad",
-      "ateLunch": "Spiste frokost",
-      "ateDinner": "Spiste aftensmad",
-      "brushedTeeth": "Børstede tænder",
-      "workedOut": "Trænede",
-      "worked": "Arbejdede",
-      "washedDishes": "Vaskede op",
-      "storedDishes": "Ryddede op",
-      "checkedTrash": "Tjekkede skraldespanden",
-      "brushedFloor": "Børstede gulvet",
-      "madeLove": "Elskede",
-      "wentOut": "Gik ud"
-    },
-    "weekly": {
-      "createdContent": "Oprettede indhold til sociale medier",
-      "flirted": "Flirtede med nogen",
-      "talkedToFriend": "Talte med en ven",
-      "navigatedSocial": "Navigerede på sociale medier",
-      "talkedToFamily": "Talte med familien",
-      "madeMusic": "Lavede musik",
-      "meditated": "Mediterede",
-      "spokeToHoly": "Talte med det hellige",
-      "readMysticBook": "Læste en mystisk bog",
-      "sharedLearnings": "Delte læring",
-      "studiedSubject": "Studerede et emne",
-      "watchedEducational": "Så noget uddannelsesindhold",
-      "playedGame": "Spillede et spil",
-      "watchedSeries": "Så serie eller film",
-      "readNews": "Læste nyheder",
-      "wroteOpinion": "Skrev en mening",
-      "cleanedBed": "Rengjorde seng",
-      "ensuredBedroomOrdered": "Sikrede at soveværelset er ryddet",
-      "shavedBody": "Barberede kroppen",
-      "shavedFace": "Barberede ansigtet",
-      "cutNails": "Klippede negle",
-      "brushedSurfaces": "Børstede overflader",
-      "moppedFloors": "Vaskede gulve",
-      "washedClothes": "Vaskede tøj",
-      "cleanedBathroom": "Rengjorde badeværelse",
-      "cleanedKitchen": "Rengjorde køkken",
-      "workedOnProject": "Arbejdede på personligt projekt",
-      "helpedSomeone": "Hjalp nogen",
-      "boughtGroceries": "Købte dagligvarer",
-      "navigatedSocialMedia": "Navigerede på sociale medier",
-      "orderedBedroom": "Ryddede soveværelset",
-      "personalProject": "Arbejdede på personligt projekt"
-    }
+    "drankWater": "Drak vand",
+    "showered": "Tog brusebad",
+    "tookMeds": "Tog medicin",
+    "loggedMood": "Registrerede humør",
+    "ateBreakfast": "Spiste morgenmad",
+    "ateLunch": "Spiste frokost",
+    "ateDinner": "Spiste aftensmad",
+    "brushedTeeth": "Børstede tænder",
+    "workedOut": "Trænede",
+    "worked": "Arbejdede",
+    "washedDishes": "Vaskede op",
+    "storedDishes": "Ryddede op",
+    "checkedTrash": "Tjekkede skraldespanden",
+    "brushedFloor": "Børstede gulvet",
+    "madeLove": "Elskede",
+    "wentOut": "Gik ud",
+    "createdContent": "Oprettede indhold til sociale medier",
+    "flirted": "Flirtede med nogen",
+    "talkedToFriend": "Talte med en ven",
+    "navigatedSocial": "Navigerede på sociale medier",
+    "talkedToFamily": "Talte med familien",
+    "madeMusic": "Lavede musik",
+    "meditated": "Mediterede",
+    "spokeToHoly": "Talte med det hellige",
+    "readMysticBook": "Læste en mystisk bog",
+    "sharedLearnings": "Delte læring",
+    "studiedSubject": "Studerede et emne",
+    "watchedEducational": "Så noget uddannelsesindhold",
+    "playedGame": "Spillede et spil",
+    "watchedSeries": "Så serie eller film",
+    "readNews": "Læste nyheder",
+    "wroteOpinion": "Skrev en mening",
+    "cleanedBed": "Rengjorde seng",
+    "ensuredBedroomOrdered": "Sikrede at soveværelset er ryddet",
+    "shavedBody": "Barberede kroppen",
+    "shavedFace": "Barberede ansigtet",
+    "cutNails": "Klippede negle",
+    "brushedSurfaces": "Børstede overflader",
+    "moppedFloors": "Vaskede gulve",
+    "washedClothes": "Vaskede tøj",
+    "cleanedBathroom": "Rengjorde badeværelse",
+    "cleanedKitchen": "Rengjorde køkken",
+    "workedOnProject": "Arbejdede på personligt projekt",
+    "helpedSomeone": "Hjalp nogen",
+    "boughtGroceries": "Købte dagligvarer",
+    "navigatedSocialMedia": "Navigerede på sociale medier",
+    "orderedBedroom": "Ryddede soveværelset",
+    "personalProject": "Arbejdede på personligt projekt"
   },
   "footer": {
     "copyright": "© {year} DreamPip. All rights reserved.",
@@ -227,10 +243,10 @@
     "deleteAction": "Slet handling",
     "deleteSelected": "Slet valgte ({count})",
     "noResults": "Ingen resultater.",
-    "monthsFixedIncome": "Month's Recurring Income",
-    "monthsVariableIncome": "Month's Variable Income",
-    "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average",
+    "monthsFixedIncome": "Månedens faste indkomst",
+    "monthsVariableIncome": "Månedens variable indkomst",
+    "fixedNeedCosts": "Faste nødvendige omkostninger",
+    "expectedNeedUtilities": "Forventet nødvendigt gennemsnit for forsyningsselskaber",
     "editAction": "Rediger handling",
     "save": "Gem",
     "cancel": "Annuller"
@@ -244,24 +260,27 @@
     "failedToSend": "Beskeden kunne ikke sendes. Prøv igen."
   },
   "publicProfile": {
-    "ctaTitle": "Start Your Own DreamPip Journey",
-    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
-    "getStarted": "Get Started"
+    "ctaTitle": "Start din egen DreamPip-rejse",
+    "ctaSubtitle": "Spor dit humør, produktivitet og indtjening med DreamPip",
+    "getStarted": "Kom i gang",
+    "notes": "Noter",
+    "loadingNotes": "Indlæser noter...",
+    "profileNotPublic": "Denne bruger har ikke gjort sin profil offentlig endnu."
   },
   "publicCharts": {
-    "noData": "No public charts data available.",
-    "moodTrackingTitle": "Mood Tracking",
-    "moodTrackingSubtitle": "Values scaled to percentages for privacy",
-    "moodChartsTag": "Mood Charts",
-    "moodOverviewTitle": "Mood Overview",
-    "moodOverviewSubtitle": "Simplified mood tracking - values scaled to percentages for privacy",
-    "simplifiedMoodTag": "Simplified Mood Chart",
-    "productivityTitle": "Productivity",
-    "productivitySubtitle": "Values scaled to percentages for privacy",
-    "productivityTag": "Productivity Charts",
-    "earningsTitle": "Earnings",
-    "earningsSubtitle": "Values scaled to percentages for privacy",
-    "earningsTag": "Earnings Charts"
+    "noData": "Ingen offentlige diagramdata tilgængelige.",
+    "moodTrackingTitle": "Humør sporing",
+    "moodTrackingSubtitle": "Værdier skaleret til procenter for privatliv",
+    "moodChartsTag": "Humør diagrammer",
+    "moodOverviewTitle": "Humør oversigt",
+    "moodOverviewSubtitle": "Forenklet humør sporing - værdier skaleret til procenter for privatliv",
+    "simplifiedMoodTag": "Forenklet humør diagram",
+    "productivityTitle": "Produktivitet",
+    "productivitySubtitle": "Værdier skaleret til procenter for privatliv",
+    "productivityTag": "Produktivitet diagrammer",
+    "earningsTitle": "Indtjening",
+    "earningsSubtitle": "Værdier skaleret til procenter for privatliv",
+    "earningsTag": "Indtjening diagrammer"
   },
   "friends": {
     "addFriend": "Tilføj ven",
@@ -337,5 +356,133 @@
     "notFound": "Den ønskede ressource blev ikke fundet.",
     "timeout": "Anmodningen udløb. Prøv igen.",
     "unknownError": "En uventet fejl opstod. Prøv igen."
+  },
+  "forms": {
+    "commonOptions": {
+      "area": {
+        "self": "Selv",
+        "home": "Hjem",
+        "social": "Socialt",
+        "work": "Arbejde"
+      },
+      "category": {
+        "custom": "Brugerdefineret",
+        "body": "Krop",
+        "mind": "Sind",
+        "spirit": "Ånd",
+        "social": "Socialt",
+        "work": "Arbejde",
+        "home": "Hjem",
+        "fun": "Sjov",
+        "growth": "Vækst",
+        "community": "Fællesskab",
+        "affection": "Kærlighed",
+        "clean": "Rengøring",
+        "maintenance": "Vedligeholdelse",
+        "spirituality": "Spiritualitet",
+        "event": "Begivenhed"
+      },
+      "entities": {
+        "list": "Liste",
+        "template": "Skabelon"
+      }
+    },
+    "addTaskForm": {
+      "title": "Tilføj brugerdefineret opgave",
+      "taskNameLabel": "Opgavenavn",
+      "taskNamePlaceholder": "Indtast opgavenavn...",
+      "areaLabel": "Område",
+      "categoryLabel": "Kategori",
+      "timesLabel": "# gange",
+      "saveToTemplate": "Gem opgave til skabelon",
+      "addTask": "Tilføj opgave",
+      "cancel": "Annuller"
+    },
+    "addListForm": {
+      "titleCreate": "Opret ny liste",
+      "titleEdit": "Rediger liste",
+      "nameLabel": "Navn",
+      "templateOrListLabel": "Skabelon eller liste",
+      "chooseTemplatePlaceholder": "Vælg en skabelon",
+      "budgetLabel": "Budget",
+      "dueDateLabel": "Forfaldsdato",
+      "pickDatePlaceholder": "Vælg en dato",
+      "cadenceLabel": "Kadence",
+      "cadence": {
+        "oneOff": "Engangstidspunkt",
+        "daily": "Daglig",
+        "weekly": "Ugentlig",
+        "monthly": "Månedlig",
+        "quarterly": "Kvartalsvis",
+        "semester": "Semester",
+        "yearly": "Årlig"
+      },
+      "collaboratorsLabel": "Samarbejdspartnere",
+      "searchUsernames": "Søg brugernavne...",
+      "typeAUsername": "Skriv et brugernavn...",
+      "noResults": "Ingen resultater.",
+      "selectedCount": "{count} valgt",
+      "roleLabel": "Rolle",
+      "role": {
+        "custom": "Brugerdefineret",
+        "default": "Standard"
+      },
+      "addTaskButton": "Tilføj opgave",
+      "table": {
+        "name": "Navn",
+        "times": "Gange",
+        "area": "Område",
+        "categories": "Kategorier"
+      },
+      "create": "Opret",
+      "save": "Gem",
+      "cancel": "Annuller",
+      "deleteListConfirm": "Slet denne liste? Dette kan ikke fortrydes.",
+      "deleteList": "Slet liste"
+    },
+    "addTemplateForm": {
+      "title": "Opret ny skabelon",
+      "nameLabel": "Navn",
+      "createFromLabel": "Opret fra",
+      "chooseListToClonePlaceholder": "Vælg en liste at klone (valgfri)",
+      "visibilityLabel": "Synlighed",
+      "visibility": {
+        "private": "Privat",
+        "public": "Offentlig",
+        "friends": "Venner",
+        "closeFriends": "Nære venner"
+      },
+      "addTaskButton": "Tilføj opgave",
+      "task": {
+        "nameLabel": "Navn",
+        "areaLabel": "Område",
+        "categoryLabel": "Kategori",
+        "timesLabel": "# gange",
+        "add": "Tilføj",
+        "cancel": "Annuller"
+      },
+      "table": {
+        "name": "Navn",
+        "times": "Gange",
+        "area": "Område",
+        "categories": "Kategorier"
+      },
+      "create": "Opret",
+      "cancel": "Annuller"
+    }
+  },
+  "charts": {
+    "dimensions": "Dimensioner",
+    "moodAverage": "Gennemsnitligt humør",
+    "gratitude": "Taknemmelighed",
+    "optimism": "Optimisme",
+    "restedness": "Hvile",
+    "tolerance": "Tolerance",
+    "selfEsteem": "Selvværd",
+    "trust": "Tillid",
+    "progress": "Fremskridt",
+    "moodAverageScale": "Gennemsnitlig humør skala",
+    "balance": "Saldo",
+    "earningsScale": "Indtjening skala"
   }
 }

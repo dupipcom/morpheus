@@ -30,7 +30,17 @@
     "social": "소셜",
     "stash": "재고",
     "equity": "자기자본",
-    "totalEarnings": "총 수익"
+    "totalEarnings": "총 수익",
+    "daily": "매일",
+    "weekly": "매주",
+    "balance": "잔액",
+    "dailyEarnings": "일일 수익",
+    "weeklyEarnings": "주간 수익",
+    "newTask": "새 작업",
+    "newList": "새 목록",
+    "newTemplate": "새 템플릿",
+    "budget": "예산",
+    "due": "기한"
   },
   "navigation": {
     "home": "홈",
@@ -65,7 +75,20 @@
     "trust": "신뢰",
     "editDay": "일 편집",
     "closeDay": "일 닫기",
-    "earnings": "수익"
+    "earnings": "수익",
+    "publish": {
+      "title": "노트 게시",
+      "placeholder": "여기에 노트를 작성하세요...",
+      "selectVisibility": "공개 범위 선택",
+      "visibility": {
+        "PRIVATE": "비공개",
+        "FRIENDS": "친구",
+        "CLOSE_FRIENDS": "가까운 친구",
+        "PUBLIC": "공개",
+        "AI_ENABLED": "AI 활성화"
+      },
+      "action": "노트 게시"
+    }
   },
   "week": {
     "weekNumber": "주 {number}",
@@ -75,61 +98,58 @@
   "tasks": {
     "editing": "편집 중: {timeframe}",
     "weekNumber": "주 {number}",
-    "yourEarnings": "당신의 수익 {timeframe}, 지금까지: Ð{amount}"
+    "yourEarnings": "당신의 수익 {timeframe}, 지금까지: Ð{amount}",
+    "selectList": "목록 선택"
   },
   "actions": {
-    "daily": {
-      "drankWater": "물을 마셨습니다",
-      "showered": "샤워했습니다",
-      "tookMeds": "약을 복용했습니다",
-      "loggedMood": "기분을 기록했습니다",
-      "ateBreakfast": "아침 식사를 했습니다",
-      "ateLunch": "점심 식사를 했습니다",
-      "ateDinner": "저녁 식사를 했습니다",
-      "brushedTeeth": "양치질을 했습니다",
-      "workedOut": "운동을 했습니다",
-      "worked": "일했습니다",
-      "washedDishes": "설거지를 했습니다",
-      "storedDishes": "설거지를 정리했습니다",
-      "checkedTrash": "쓰레기를 확인했습니다",
-      "brushedFloor": "바닥을 쓸었습니다",
-      "madeLove": "사랑을 나눴습니다",
-      "wentOut": "외출했습니다"
-    },
-    "weekly": {
-      "createdContent": "소셜미디어용 콘텐츠를 만들었다",
-      "flirted": "누군가와 플러팅했다",
-      "talkedToFriend": "친구와 대화했다",
-      "navigatedSocial": "소셜미디어를 탐색했다",
-      "talkedToFamily": "가족과 대화했다",
-      "madeMusic": "음악을 만들었다",
-      "meditated": "명상을 했다",
-      "spokeToHoly": "신성한 것과 대화했다",
-      "readMysticBook": "신비로운 책을 읽었다",
-      "sharedLearnings": "학습을 공유했다",
-      "studiedSubject": "주제를 공부했다",
-      "watchedEducational": "교육 콘텐츠를 봤다",
-      "playedGame": "게임을 했다",
-      "watchedSeries": "시리즈나 영화를 봤다",
-      "readNews": "뉴스를 읽었다",
-      "wroteOpinion": "의견을 썼다",
-      "cleanedBed": "침대를 청소했다",
-      "ensuredBedroomOrdered": "침실이 정리되어 있는지 확인했다",
-      "shavedBody": "몸을 면도했다",
-      "shavedFace": "얼굴을 면도했다",
-      "cutNails": "손톱을 깎았다",
-      "brushedSurfaces": "표면을 브러시로 청소했다",
-      "moppedFloors": "바닥을 닦았다",
-      "washedClothes": "옷을 빨았다",
-      "cleanedBathroom": "욕실을 청소했다",
-      "cleanedKitchen": "부엌을 청소했다",
-      "workedOnProject": "개인 프로젝트에 작업했다",
-      "helpedSomeone": "누군가를 도왔다",
-      "boughtGroceries": "식료품을 샀다",
-      "navigatedSocialMedia": "소셜미디어를 탐색했다",
-      "orderedBedroom": "침실을 정리했다",
-      "personalProject": "개인 프로젝트에 작업했다"
-    }
+    "drankWater": "물을 마셨습니다",
+    "showered": "샤워했습니다",
+    "tookMeds": "약을 복용했습니다",
+    "loggedMood": "기분을 기록했습니다",
+    "ateBreakfast": "아침 식사를 했습니다",
+    "ateLunch": "점심 식사를 했습니다",
+    "ateDinner": "저녁 식사를 했습니다",
+    "brushedTeeth": "양치질을 했습니다",
+    "workedOut": "운동을 했습니다",
+    "worked": "일했습니다",
+    "washedDishes": "설거지를 했습니다",
+    "storedDishes": "설거지를 정리했습니다",
+    "checkedTrash": "쓰레기를 확인했습니다",
+    "brushedFloor": "바닥을 쓸었습니다",
+    "madeLove": "사랑을 나눴습니다",
+    "wentOut": "외출했습니다",
+    "createdContent": "소셜미디어용 콘텐츠를 만들었다",
+    "flirted": "누군가와 플러팅했다",
+    "talkedToFriend": "친구와 대화했다",
+    "navigatedSocial": "소셜미디어를 탐색했다",
+    "talkedToFamily": "가족과 대화했다",
+    "madeMusic": "음악을 만들었다",
+    "meditated": "명상을 했다",
+    "spokeToHoly": "신성한 것과 대화했다",
+    "readMysticBook": "신비로운 책을 읽었다",
+    "sharedLearnings": "학습을 공유했다",
+    "studiedSubject": "주제를 공부했다",
+    "watchedEducational": "교육 콘텐츠를 봤다",
+    "playedGame": "게임을 했다",
+    "watchedSeries": "시리즈나 영화를 봤다",
+    "readNews": "뉴스를 읽었다",
+    "wroteOpinion": "의견을 썼다",
+    "cleanedBed": "침대를 청소했다",
+    "ensuredBedroomOrdered": "침실이 정리되어 있는지 확인했다",
+    "shavedBody": "몸을 면도했다",
+    "shavedFace": "얼굴을 면도했다",
+    "cutNails": "손톱을 깎았다",
+    "brushedSurfaces": "표면을 브러시로 청소했다",
+    "moppedFloors": "바닥을 닦았다",
+    "washedClothes": "옷을 빨았다",
+    "cleanedBathroom": "욕실을 청소했다",
+    "cleanedKitchen": "부엌을 청소했다",
+    "workedOnProject": "개인 프로젝트에 작업했다",
+    "helpedSomeone": "누군가를 도왔다",
+    "boughtGroceries": "식료품을 샀다",
+    "navigatedSocialMedia": "소셜미디어를 탐색했다",
+    "orderedBedroom": "침실을 정리했다",
+    "personalProject": "개인 프로젝트에 작업했다"
   },
   "footer": {
     "copyright": "© {year} Purizu and Remotelys dba DreamPip",
@@ -229,11 +249,11 @@
     "deleteAction": "작업 삭제",
     "deleteSelected": "선택된 항목 삭제 ({count})",
     "noResults": "결과가 없습니다.",
-    "monthsFixedIncome": "Month's Recurring Income",
-    "monthsVariableIncome": "Month's Variable Income",
-    "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average",
-    "editAction": "액션 편집",
+    "monthsFixedIncome": "월 고정 수입",
+    "monthsVariableIncome": "월 변동 수입",
+    "fixedNeedCosts": "고정 필수 비용",
+    "expectedNeedUtilities": "예상 필수 공과금 평균",
+    "editAction": "작업 편집",
     "save": "저장",
     "cancel": "취소"
   },
@@ -252,7 +272,10 @@
   "publicProfile": {
     "ctaTitle": "나만의 DreamPip 여정을 시작하세요",
     "ctaSubtitle": "DreamPip으로 기분, 생산성, 수익을 추적하세요",
-    "getStarted": "시작하기"
+    "getStarted": "시작하기",
+    "notes": "메모",
+    "loadingNotes": "메모 로딩 중...",
+    "profileNotPublic": "이 사용자는 아직 프로필을 공개하지 않았습니다."
   },
   "publicCharts": {
     "noData": "공개 차트 데이터를 사용할 수 없습니다.",
@@ -343,5 +366,119 @@
     "notFound": "요청한 리소스를 찾을 수 없습니다.",
     "timeout": "요청이 시간 초과되었습니다. 다시 시도하세요.",
     "unknownError": "예상치 못한 오류가 발생했습니다. 다시 시도하세요."
+  },
+  "forms": {
+    "commonOptions": {
+      "area": {
+        "self": "자기",
+        "home": "가정",
+        "social": "사회",
+        "work": "일"
+      },
+      "category": {
+        "custom": "커스텀",
+        "body": "신체",
+        "mind": "마음",
+        "spirit": "정신",
+        "social": "사회",
+        "work": "일",
+        "home": "가정",
+        "fun": "재미",
+        "growth": "성장",
+        "community": "커뮤니티",
+        "affection": "애정",
+        "clean": "청소",
+        "maintenance": "유지관리",
+        "spirituality": "영성",
+        "event": "이벤트"
+      },
+      "entities": {
+        "list": "목록",
+        "template": "템플릿"
+      }
+    },
+    "addTaskForm": {
+      "title": "커스텀 작업 추가",
+      "taskNameLabel": "작업 이름",
+      "taskNamePlaceholder": "작업 이름 입력...",
+      "areaLabel": "영역",
+      "categoryLabel": "카테고리",
+      "timesLabel": "# 횟수",
+      "saveToTemplate": "템플릿에 작업 저장",
+      "addTask": "작업 추가",
+      "cancel": "취소"
+    },
+    "addListForm": {
+      "titleCreate": "새 목록 만들기",
+      "titleEdit": "목록 편집",
+      "nameLabel": "이름",
+      "templateOrListLabel": "템플릿 또는 목록",
+      "chooseTemplatePlaceholder": "템플릿 선택",
+      "budgetLabel": "예산",
+      "dueDateLabel": "기한",
+      "pickDatePlaceholder": "날짜 선택",
+      "cadenceLabel": "주기",
+      "cadence": {
+        "oneOff": "일회성",
+        "daily": "매일",
+        "weekly": "매주",
+        "monthly": "매월",
+        "quarterly": "분기별",
+        "semester": "학기별",
+        "yearly": "매년"
+      },
+      "collaboratorsLabel": "협력자",
+      "searchUsernames": "사용자명 검색...",
+      "typeAUsername": "사용자명 입력...",
+      "noResults": "결과 없음.",
+      "selectedCount": "{count}개 선택됨",
+      "roleLabel": "역할",
+      "role": {
+        "custom": "커스텀",
+        "default": "기본"
+      },
+      "addTaskButton": "작업 추가",
+      "table": {
+        "name": "이름",
+        "times": "횟수",
+        "area": "영역",
+        "categories": "카테고리"
+      },
+      "create": "만들기",
+      "save": "저장",
+      "cancel": "취소",
+      "deleteListConfirm": "이 목록을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.",
+      "deleteList": "목록 삭제"
+    },
+    "addTemplateForm": {
+      "title": "새 템플릿 만들기",
+      "nameLabel": "이름",
+      "createFromLabel": "생성 기준",
+      "chooseListToClonePlaceholder": "복제할 목록 선택 (선택사항)",
+      "visibilityLabel": "공개 범위",
+      "visibility": {
+        "private": "비공개",
+        "public": "공개",
+        "friends": "친구",
+        "closeFriends": "가까운 친구"
+      },
+      "addTaskButton": "작업 추가",
+      "task": {
+        "nameLabel": "이름",
+        "areaLabel": "영역",
+        "categoryLabel": "카테고리",
+        "timesLabel": "# 횟수",
+        "add": "추가",
+        "cancel": "취소"
+      },
+      "table": {
+        "name": "이름",
+        "times": "횟수",
+        "area": "영역",
+        "categories": "카테고리"
+      },
+      "create": "만들기",
+      "cancel": "취소"
+    }
   }
 }

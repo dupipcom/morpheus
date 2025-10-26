@@ -31,7 +31,7 @@ const nextConfig: NextConfig = {
       //       {"source": "/app/:match*", "destination": "https://alpha.dreampip.com/:match*"},
       {
         source: '/api/nexus/audio',
-        destination: 'https://radio.dreampip.com/listen/dpip000/live.mp3',
+        destination: 'https://radio.dreampip.com/listen/dpipbase/live.mp3',
       },
     ]
   },
@@ -51,7 +51,29 @@ const nextConfig: NextConfig = {
         source: "/app/mood",
         destination: '/app/day',
         permanent: false,
-      }
+      },
+      // New 302s to /app/do
+      {
+        source: "/app/day",
+        destination: "/app/do",
+        permanent: false,
+      },
+      {
+        source: "/app/week",
+        destination: "/app/do",
+        permanent: false,
+      },
+      // Locale-prefixed variants
+      {
+        source: "/:locale/app/day",
+        destination: "/:locale/app/do",
+        permanent: false,
+      },
+      {
+        source: "/:locale/app/week",
+        destination: "/:locale/app/do",
+        permanent: false,
+      },
     ];
   },
 };

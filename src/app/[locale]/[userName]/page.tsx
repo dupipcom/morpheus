@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { PublicChartsView } from "@/components/PublicChartsView"
 import { I18nProvider } from '@/lib/contexts/i18n'
+import { loadTranslations } from '@/lib/i18n'
 
 interface ProfileData {
   firstName?: string
@@ -75,8 +76,8 @@ export async function generateMetadata({ params }: { params: Promise<{ userName:
   }
 }
 
-export default async function PublicProfilePage({ params }: { params: Promise<{ userName: string }> }) {
-  const { userName } = await params
+export default async function PublicProfilePage({ params }: { params: Promise<{ locale: string; userName: string }> }) {
+  const { locale, userName } = await params
   const isLoggedIn = false // Public route without Clerk context; treat as logged out
   
   // Only match usernames that start with @
@@ -87,7 +88,8 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
   // Remove the @ prefix for the actual username
   const actualUserName = userName.substring(1)
   const profile = await getProfile(actualUserName)
-  
+  const translations = await loadTranslations(locale as any)
+
   if (!profile) {
     notFound()
   }
@@ -95,8 +97,11 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
   const fullName = [profile.firstName, profile.lastName].filter(Boolean).join(' ')
   const hasAnyPublicData = profile.firstName || profile.lastName || profile.userName || profile.bio || profile.profilePicture
 
+  // Display name logic: prefer fullName, then userName (even if not visible), then fallback
+  const displayName = fullName || profile.userName || 'Anonymous User'
+
   return (
-    <I18nProvider locale={"en" as any}>
+    <I18nProvider locale={locale as any}>
     <main className="min-h-screen bg-background">
       <div className="max-w-4xl mx-auto p-4">
         {/* Profile Header */}
@@ -104,15 +109,15 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
           <CardContent className="pt-6">
             <div className="flex items-center space-x-4">
               {profile.profilePicture && (
-                <img 
-                  src={profile.profilePicture} 
-                  alt="Profile" 
+                <img
+                  src={profile.profilePicture}
+                  alt="Profile"
                   className="w-20 h-20 rounded-full object-cover"
                 />
               )}
               <div className="flex-1">
                 <h1 className="text-2xl font-bold">
-                  {fullName || profile.userName || 'Anonymous User'}
+                  {displayName}
                 </h1>
                 {profile.userName && (
                   <p className="text-muted-foreground">@{profile.userName}</p>
@@ -142,7 +147,7 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
           <Card>
             <CardContent className="pt-6">
               <div className="text-center text-muted-foreground">
-                <p>This user hasn't made their profile public yet.</p>
+                <p>{(translations as any)?.publicProfile?.profileNotPublic || "This user hasn't made their profile public yet."}</p>
               </div>
             </CardContent>
           </Card>

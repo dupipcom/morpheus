@@ -35,7 +35,12 @@
     "weekly": "Weekly",
     "balance": "Balance",
     "dailyEarnings": "Daily Earnings",
-    "weeklyEarnings": "Weekly Earnings"
+    "weeklyEarnings": "Weekly Earnings",
+    "newTask": "New task",
+    "newList": "New list",
+    "newTemplate": "New template",
+    "budget": "Budget",
+    "due": "Due"
   },
   "navigation": {
     "home": "Home",
@@ -70,7 +75,20 @@
     "trust": "Trust",
     "editDay": "Edit day",
     "closeDay": "Close day",
-    "earnings": "Earnings"
+    "earnings": "Earnings",
+    "publish": {
+      "title": "Publish a Note",
+      "placeholder": "Write your note here...",
+      "selectVisibility": "Select visibility",
+      "visibility": {
+        "PRIVATE": "Private",
+        "FRIENDS": "Friends",
+        "CLOSE_FRIENDS": "Close Friends",
+        "PUBLIC": "Public",
+        "AI_ENABLED": "AI Enabled"
+      },
+      "action": "Publish Note"
+    }
   },
   "week": {
     "weekNumber": "Week {number}",
@@ -80,7 +98,122 @@
   "tasks": {
     "editing": "Editing: {timeframe}",
     "weekNumber": "Week {number}",
-    "yourEarnings": "Your earnings {timeframe}, so far: Ð{amount}"
+    "yourEarnings": "Your earnings {timeframe}, so far: Ð{amount}",
+    "selectList": "Select list"
+  },
+  "forms": {
+    "commonOptions": {
+      "area": {
+        "self": "Self",
+        "home": "Home",
+        "social": "Social",
+        "work": "Work"
+      },
+      "category": {
+        "custom": "Custom",
+        "body": "Body",
+        "mind": "Mind",
+        "spirit": "Spirit",
+        "social": "Social",
+        "work": "Work",
+        "home": "Home",
+        "fun": "Fun",
+        "growth": "Growth",
+        "community": "Community",
+        "affection": "Affection",
+        "clean": "Clean",
+        "maintenance": "Maintenance",
+        "spirituality": "Spirituality",
+        "event": "Event"
+      },
+      "entities": {
+        "list": "List",
+        "template": "Template"
+      }
+    },
+    "addTaskForm": {
+      "title": "Add Custom Task",
+      "taskNameLabel": "Task Name",
+      "taskNamePlaceholder": "Enter task name...",
+      "areaLabel": "Area",
+      "categoryLabel": "Category",
+      "timesLabel": "# of times",
+      "saveToTemplate": "Save task to template",
+      "addTask": "Add Task",
+      "cancel": "Cancel"
+    },
+    "addListForm": {
+      "titleCreate": "Create New List",
+      "titleEdit": "Edit List",
+      "nameLabel": "Name",
+      "templateOrListLabel": "Template or List",
+      "chooseTemplatePlaceholder": "Choose a template",
+      "budgetLabel": "Budget",
+      "dueDateLabel": "Due date",
+      "pickDatePlaceholder": "Pick a date",
+      "cadenceLabel": "Cadence",
+      "cadence": {
+        "oneOff": "One-off",
+        "daily": "Daily",
+        "weekly": "Weekly",
+        "monthly": "Monthly",
+        "quarterly": "Quarterly",
+        "semester": "Semester",
+        "yearly": "Yearly"
+      },
+      "collaboratorsLabel": "Collaborators",
+      "searchUsernames": "Search usernames...",
+      "typeAUsername": "Type a username...",
+      "noResults": "No results.",
+      "selectedCount": "{count} selected",
+      "roleLabel": "Role",
+      "role": {
+        "custom": "Custom",
+        "default": "Default"
+      },
+      "addTaskButton": "Add task",
+      "table": {
+        "name": "Name",
+        "times": "Times",
+        "area": "Area",
+        "categories": "Categories"
+      },
+      "create": "Create",
+      "save": "Save",
+      "cancel": "Cancel",
+      "deleteListConfirm": "Delete this list? This cannot be undone.",
+      "deleteList": "Delete list"
+    },
+    "addTemplateForm": {
+      "title": "Create New Template",
+      "nameLabel": "Name",
+      "createFromLabel": "Create from",
+      "chooseListToClonePlaceholder": "Choose a list to clone (optional)",
+      "visibilityLabel": "Visibility",
+      "visibility": {
+        "private": "Private",
+        "public": "Public",
+        "friends": "Friends",
+        "closeFriends": "Close friends"
+      },
+      "addTaskButton": "Add task",
+      "task": {
+        "nameLabel": "Name",
+        "areaLabel": "Area",
+        "categoryLabel": "Category",
+        "timesLabel": "# of times",
+        "add": "Add",
+        "cancel": "Cancel"
+      },
+      "table": {
+        "name": "Name",
+        "times": "Times",
+        "area": "Area",
+        "categories": "Categories"
+      },
+      "create": "Create",
+      "cancel": "Cancel"
+    }
   },
   "settings": {
     "title": "Settings",
@@ -140,55 +273,51 @@
     "impact": "Impact"
   },
   "actions": {
-    "daily": {
-      "drankWater": "Drank Water",
-      "showered": "Showered",
-      "tookMeds": "Took meds",
-      "loggedMood": "Logged mood",
-      "ateBreakfast": "Ate breakfast",
-      "ateLunch": "Ate lunch",
-      "ateDinner": "Ate dinner",
-      "brushedTeeth": "Brushed teeth",
-      "workedOut": "Worked-out",
-      "worked": "Worked",
-      "washedDishes": "Washed dishes",
-      "storedDishes": "Stored dishes",
-      "checkedTrash": "Checked trash",
-      "brushedFloor": "Brushed floor",
-      "madeLove": "Made love",
-      "wentOut": "Went out"
-    },
-    "weekly": {
-      "createdContent": "Created content for social media",
-      "flirted": "Flirted with someone",
-      "talkedToFriend": "Talked to a friend",
-      "navigatedSocial": "Navigated on social media",
-      "talkedToFamily": "Talked to family",
-      "madeMusic": "Made music",
-      "meditated": "Meditated",
-      "spokeToHoly": "Spoke to the holy",
-      "readMysticBook": "Read a mystic book",
-      "sharedLearnings": "Shared learnings",
-      "studiedSubject": "Studied a subject",
-      "watchedEducational": "Watched some educational content",
-      "playedGame": "Played a game",
-      "watchedSeries": "Watched series or film",
-      "readNews": "Read news",
-      "wroteOpinion": "Wrote an opinion",
-      "cleanedBed": "Cleaned bed",
-      "ensuredBedroomOrdered": "Ensured bedroom is ordered",
-      "shavedBody": "Shaved body",
-      "shavedFace": "Shaved face",
-      "cutNails": "Cut nails",
-      "brushedSurfaces": "Brushed surfaces",
-      "moppedFloors": "Mopped floors",
-      "washedClothes": "Washed clothes",
-      "cleanedBathroom": "Cleaned bathroom",
-      "cleanedKitchen": "Cleaned kitchen",
-      "workedOnProject": "Worked on personal project",
-      "helpedSomeone": "Helped someone",
-      "boughtGroceries": "Bought groceries"
-    }
+    "drankWater": "Drank Water",
+    "showered": "Showered",
+    "tookMeds": "Took meds",
+    "loggedMood": "Logged mood",
+    "ateBreakfast": "Ate breakfast",
+    "ateLunch": "Ate lunch",
+    "ateDinner": "Ate dinner",
+    "brushedTeeth": "Brushed teeth",
+    "workedOut": "Worked-out",
+    "worked": "Worked",
+    "washedDishes": "Washed dishes",
+    "storedDishes": "Stored dishes",
+    "checkedTrash": "Checked trash",
+    "brushedFloor": "Brushed floor",
+    "madeLove": "Made love",
+    "wentOut": "Went out",
+    "createdContent": "Created content for social media",
+    "flirted": "Flirted with someone",
+    "talkedToFriend": "Talked to a friend",
+    "navigatedSocial": "Navigated on social media",
+    "talkedToFamily": "Talked to family",
+    "madeMusic": "Made music",
+    "meditated": "Meditated",
+    "spokeToHoly": "Spoke to the holy",
+    "readMysticBook": "Read a mystic book",
+    "sharedLearnings": "Shared learnings",
+    "studiedSubject": "Studied a subject",
+    "watchedEducational": "Watched some educational content",
+    "playedGame": "Played a game",
+    "watchedSeries": "Watched series or film",
+    "readNews": "Read news",
+    "wroteOpinion": "Wrote an opinion",
+    "cleanedBed": "Cleaned bed",
+    "ensuredBedroomOrdered": "Ensured bedroom is ordered",
+    "shavedBody": "Shaved body",
+    "shavedFace": "Shaved face",
+    "cutNails": "Cut nails",
+    "brushedSurfaces": "Brushed surfaces",
+    "moppedFloors": "Mopped floors",
+    "washedClothes": "Washed clothes",
+    "cleanedBathroom": "Cleaned bathroom",
+    "cleanedKitchen": "Cleaned kitchen",
+    "workedOnProject": "Worked on personal project",
+    "helpedSomeone": "Helped someone",
+    "boughtGroceries": "Bought groceries"
   },
   "footer": {
     "copyright": "© {year} Purizu and Remotelys dba DreamPip",
@@ -254,7 +383,10 @@
   "publicProfile": {
     "ctaTitle": "Start Your Own DreamPip Journey",
     "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
-    "getStarted": "Get Started"
+    "getStarted": "Get Started",
+    "notes": "Notes",
+    "loadingNotes": "Loading notes...",
+    "profileNotPublic": "This user hasn't made their profile public yet."
   },
   "publicCharts": {
     "noData": "No public charts data available.",
@@ -283,6 +415,7 @@
     "editProfile": "Edit Profile"
   },
   "profile": {
+    "createProfile": "Create Profile",
     "editProfile": "Edit Profile",
     "viewPublicProfile": "View Public Profile",
     "profileInformation": "Profile Information",

@@ -49,7 +49,7 @@ export default function RootLayout({
 }>) {
   const [isLoading, setIsLoading] = useState(true);
   const [value, setValue, removeValue] = useLocalStorage('theme', 'light');
-  const [globalContext, setGlobalContext] = useState({ theme: 'light', session: { user: {} } })
+  const [globalContext, setGlobalContext] = useState({ theme: 'light', session: { user: {} }, taskLists: [] as any[], refreshTaskLists: async () => {} })
   const [isClient, setIsClient] = useState(false)
   
   // Get locale from URL path, cookie, or default
@@ -100,6 +100,20 @@ export default function RootLayout({
     }
   }, [isClient, value])
 
+  const refreshTaskLists = async () => {
+    try {
+      const res = await fetch('/api/v1/tasklists')
+      if (!res.ok) {
+        setGlobalContext(prev => ({ ...prev, taskLists: [] }))
+        return
+      }
+      const data = await res.json()
+      setGlobalContext(prev => ({ ...prev, taskLists: Array.isArray(data?.taskLists) ? data.taskLists : [] }))
+    } catch (_) {
+      setGlobalContext(prev => ({ ...prev, taskLists: [] }))
+    }
+  }
+
   return (
     <html lang="en" className="notranslate">
       <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -110,7 +124,7 @@ export default function RootLayout({
       >
         
         <ClerkProvider 
-          forceRedirectUrl="/app/dashboard" 
+          redirectUrl="/app/dashboard" 
           appearance={{
             cssLayerName: 'clerk',
             baseTheme: shadcn,
@@ -119,7 +133,7 @@ export default function RootLayout({
         >
           <AuthWrapper isLoading={isLoading}>
             <I18nProvider locale={locale}>
-              <GlobalContext.Provider value={{ ...globalContext, setGlobalContext }}>
+              <GlobalContext.Provider value={{ ...globalContext, setGlobalContext, refreshTaskLists }}>
 
                 <SWRConfig value={{
                   revalidateOnFocus: false,

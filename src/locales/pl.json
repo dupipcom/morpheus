@@ -30,7 +30,17 @@
     "social": "Społeczność",
     "stash": "Zapasy",
     "equity": "Kapitał własny",
-    "totalEarnings": "Całkowite dochody"
+    "totalEarnings": "Całkowite dochody",
+    "daily": "Codziennie",
+    "weekly": "Tygodniowo",
+    "balance": "Saldo",
+    "dailyEarnings": "Dzienne zarobki",
+    "weeklyEarnings": "Tygodniowe zarobki",
+    "newTask": "Nowe zadanie",
+    "newList": "Nowa lista",
+    "newTemplate": "Nowy szablon",
+    "budget": "Budżet",
+    "due": "Termin"
   },
   "navigation": {
     "dashboard": "Panel",
@@ -69,7 +79,20 @@
     "trust": "Zaufanie",
     "editDay": "Edytuj dzień",
     "closeDay": "Zamknij dzień",
-    "earnings": "Zarobki"
+    "earnings": "Zarobki",
+    "publish": {
+      "title": "Opublikuj notatkę",
+      "placeholder": "Napisz tutaj swoją notatkę...",
+      "selectVisibility": "Wybierz widoczność",
+      "visibility": {
+        "PRIVATE": "Prywatny",
+        "FRIENDS": "Przyjaciele",
+        "CLOSE_FRIENDS": "Bliscy przyjaciele",
+        "PUBLIC": "Publiczny",
+        "AI_ENABLED": "Obsługiwane przez sztuczną inteligencję"
+      },
+      "action": "Opublikuj notatkę"
+    }
   },
   "week": {
     "weekNumber": "Tydzień {number}",
@@ -79,65 +102,58 @@
   "tasks": {
     "editing": "Edycja: {timeframe}",
     "weekNumber": "Tydzień {number}",
-    "yourEarnings": "Twoje zarobki"
+    "yourEarnings": "Twoje zarobki {timeframe}, do tej pory: Ð{amount}",
+    "selectList": "Wybierz listę"
   },
   "actions": {
-    "add": "Dodaj",
-    "remove": "Usuń",
-    "update": "Aktualizuj",
-    "refresh": "Odśwież",
-    "daily": {
-      "drankWater": "Wypił wodę",
-      "showered": "Wziął prysznic",
-      "tookMeds": "Wziął leki",
-      "loggedMood": "Zarejestrował nastrój",
-      "ateBreakfast": "Zjadł śniadanie",
-      "ateLunch": "Zjadł obiad",
-      "ateDinner": "Zjadł kolację",
-      "brushedTeeth": "Mył zęby",
-      "workedOut": "Ćwiczył",
-      "worked": "Pracował",
-      "washedDishes": "Mył naczynia",
-      "storedDishes": "Sprzątał naczynia",
-      "checkedTrash": "Sprawdził śmieci",
-      "brushedFloor": "Zamiótł podłogę",
-      "madeLove": "Kochał się",
-      "wentOut": "Wyszedł"
-    },
-    "weekly": {
-      "createdContent": "Utworzył treść dla mediów społecznościowych",
-      "flirted": "Flirtował z kimś",
-      "talkedToFriend": "Rozmawiał z przyjacielem",
-      "navigatedSocial": "Przeglądał media społecznościowe",
-      "talkedToFamily": "Rozmawiał z rodziną",
-      "madeMusic": "Tworzył muzykę",
-      "meditated": "Medytował",
-      "spokeToHoly": "Rozmawiał ze świętym",
-      "readMysticBook": "Czytał mistyczną książkę",
-      "sharedLearnings": "Dzielił się nauką",
-      "studiedSubject": "Studiował przedmiot",
-      "watchedEducational": "Oglądał treści edukacyjne",
-      "playedGame": "Grał w grę",
-      "watchedSeries": "Oglądał serial lub film",
-      "readNews": "Czytał wiadomości",
-      "wroteOpinion": "Napisał opinię",
-      "cleanedBed": "Posprzątał łóżko",
-      "ensuredBedroomOrdered": "Upewnił się, że sypialnia jest uporządkowana",
-      "shavedBody": "Golił ciało",
-      "shavedFace": "Golił twarz",
-      "cutNails": "Obcinał paznokcie",
-      "brushedSurfaces": "Szczotkował powierzchnie",
-      "moppedFloors": "Mył podłogi",
-      "washedClothes": "Prał ubrania",
-      "cleanedBathroom": "Sprzątał łazienkę",
-      "cleanedKitchen": "Sprzątał kuchnię",
-      "workedOnProject": "Pracował nad osobistym projektem",
-      "helpedSomeone": "Pomógł komuś",
-      "boughtGroceries": "Kupił artykuły spożywcze",
-      "navigatedSocialMedia": "Przeglądał media społecznościowe",
-      "orderedBedroom": "Uporządkował sypialnię",
-      "personalProject": "Pracował nad osobistym projektem"
-    }
+    "drankWater": "Wypił wodę",
+    "showered": "Wziął prysznic",
+    "tookMeds": "Wziął leki",
+    "loggedMood": "Zarejestrował nastrój",
+    "ateBreakfast": "Zjadł śniadanie",
+    "ateLunch": "Zjadł obiad",
+    "ateDinner": "Zjadł kolację",
+    "brushedTeeth": "Mył zęby",
+    "workedOut": "Ćwiczył",
+    "worked": "Pracował",
+    "washedDishes": "Mył naczynia",
+    "storedDishes": "Sprzątał naczynia",
+    "checkedTrash": "Sprawdził śmieci",
+    "brushedFloor": "Zamiótł podłogę",
+    "madeLove": "Kochał się",
+    "wentOut": "Wyszedł",
+    "createdContent": "Utworzył treść dla mediów społecznościowych",
+    "flirted": "Flirtował z kimś",
+    "talkedToFriend": "Rozmawiał z przyjacielem",
+    "navigatedSocial": "Przeglądał media społecznościowe",
+    "talkedToFamily": "Rozmawiał z rodziną",
+    "madeMusic": "Tworzył muzykę",
+    "meditated": "Medytował",
+    "spokeToHoly": "Rozmawiał ze świętym",
+    "readMysticBook": "Czytał mistyczną książkę",
+    "sharedLearnings": "Dzielił się nauką",
+    "studiedSubject": "Studiował przedmiot",
+    "watchedEducational": "Oglądał treści edukacyjne",
+    "playedGame": "Grał w grę",
+    "watchedSeries": "Oglądał serial lub film",
+    "readNews": "Czytał wiadomości",
+    "wroteOpinion": "Napisał opinię",
+    "cleanedBed": "Posprzątał łóżko",
+    "ensuredBedroomOrdered": "Upewnił się, że sypialnia jest uporządkowana",
+    "shavedBody": "Golił ciało",
+    "shavedFace": "Golił twarz",
+    "cutNails": "Obcinał paznokcie",
+    "brushedSurfaces": "Szczotkował powierzchnie",
+    "moppedFloors": "Mył podłogi",
+    "washedClothes": "Prał ubrania",
+    "cleanedBathroom": "Sprzątał łazienkę",
+    "cleanedKitchen": "Sprzątał kuchnię",
+    "workedOnProject": "Pracował nad osobistym projektem",
+    "helpedSomeone": "Pomógł komuś",
+    "boughtGroceries": "Kupił artykuły spożywcze",
+    "navigatedSocialMedia": "Przeglądał media społecznościowe",
+    "orderedBedroom": "Uporządkował sypialnię",
+    "personalProject": "Pracował nad osobistym projektem"
   },
   "footer": {
     "copyright": "© {year} DreamPip. Wszystkie prawa zastrzeżone.",
@@ -241,10 +257,10 @@
     "deleteAction": "Usuń akcję",
     "deleteSelected": "Usuń wybrane ({count})",
     "noResults": "Brak wyników.",
-    "monthsFixedIncome": "Month's Recurring Income",
-    "monthsVariableIncome": "Month's Variable Income",
-    "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average",
+    "monthsFixedIncome": "Miesięczne powtarzające się dochody",
+    "monthsVariableIncome": "Miesięczne zmienne dochody",
+    "fixedNeedCosts": "Stałe koszty niezbędne",
+    "expectedNeedUtilities": "Przewidywane średnie koszty niezbędne",
     "editAction": "Edytuj akcję",
     "save": "Zapisz",
     "cancel": "Anuluj"
@@ -258,24 +274,27 @@
     "failedToSend": "Nie udało się wysłać wiadomości. Spróbuj ponownie."
   },
   "publicProfile": {
-    "ctaTitle": "Start Your Own DreamPip Journey",
-    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
-    "getStarted": "Get Started"
+    "ctaTitle": "Rozpocznij swoją przygodę z DreamPip",
+    "ctaSubtitle": "Śledź swój nastrój, produktywność i zarobki z DreamPip",
+    "getStarted": "Rozpocznij",
+    "notes": "Notatki",
+    "loadingNotes": "Ładowanie notatek...",
+    "profileNotPublic": "Ten użytkownik nie udostępnił jeszcze swojego profilu."
   },
   "publicCharts": {
-    "noData": "No public charts data available.",
-    "moodTrackingTitle": "Mood Tracking",
-    "moodTrackingSubtitle": "Values scaled to percentages for privacy",
-    "moodChartsTag": "Mood Charts",
-    "moodOverviewTitle": "Mood Overview",
-    "moodOverviewSubtitle": "Simplified mood tracking - values scaled to percentages for privacy",
-    "simplifiedMoodTag": "Simplified Mood Chart",
-    "productivityTitle": "Productivity",
-    "productivitySubtitle": "Values scaled to percentages for privacy",
-    "productivityTag": "Productivity Charts",
-    "earningsTitle": "Earnings",
-    "earningsSubtitle": "Values scaled to percentages for privacy",
-    "earningsTag": "Earnings Charts"
+    "noData": "Brak dostępnych danych wykresów publicznych.",
+    "moodTrackingTitle": "Śledzenie nastroju",
+    "moodTrackingSubtitle": "Wartości przeskalowane do procent dla prywatności",
+    "moodChartsTag": "Wykresy nastroju",
+    "moodOverviewTitle": "Przegląd nastroju",
+    "moodOverviewSubtitle": "Uproszczone śledzenie nastroju - wartości przeskalowane do procent dla prywatności",
+    "simplifiedMoodTag": "Uproszczony wykres nastroju",
+    "productivityTitle": "Produktywność",
+    "productivitySubtitle": "Wartości przeskalowane do procent dla prywatności",
+    "productivityTag": "Wykresy produktywności",
+    "earningsTitle": "Zarobki",
+    "earningsSubtitle": "Wartości przeskalowane do procent dla prywatności",
+    "earningsTag": "Wykresy zarobków"
   },
   "friends": {
     "addFriend": "Dodaj znajomego",
@@ -351,5 +370,119 @@
     "notFound": "Nie znaleziono żądanego zasobu.",
     "timeout": "Żądanie przekroczyło limit czasu. Spróbuj ponownie.",
     "unknownError": "Wystąpił nieoczekiwany błąd. Spróbuj ponownie."
+  },
+  "forms": {
+    "commonOptions": {
+      "area": {
+        "self": "Osobisty",
+        "home": "Dom",
+        "social": "Społeczny",
+        "work": "Praca"
+      },
+      "category": {
+        "custom": "Niestandardowy",
+        "body": "Ciało",
+        "mind": "Umysł",
+        "spirit": "Duch",
+        "social": "Społeczny",
+        "work": "Praca",
+        "home": "Dom",
+        "fun": "Zabawa",
+        "growth": "Wzrost",
+        "community": "Wspólnota",
+        "affection": "Czułość",
+        "clean": "Czyszczenie",
+        "maintenance": "Konserwacja",
+        "spirituality": "Duchowość",
+        "event": "Wydarzenie"
+      },
+      "entities": {
+        "list": "Lista",
+        "template": "Szablon"
+      }
+    },
+    "addTaskForm": {
+      "title": "Dodaj niestandardowe zadanie",
+      "taskNameLabel": "Nazwa zadania",
+      "taskNamePlaceholder": "Wpisz nazwę zadania...",
+      "areaLabel": "Obszar",
+      "categoryLabel": "Kategoria",
+      "timesLabel": "# razy",
+      "saveToTemplate": "Zapisz zadanie do szablonu",
+      "addTask": "Dodaj zadanie",
+      "cancel": "Anuluj"
+    },
+    "addListForm": {
+      "titleCreate": "Utwórz nową listę",
+      "titleEdit": "Edytuj listę",
+      "nameLabel": "Nazwa",
+      "templateOrListLabel": "Szablon lub Lista",
+      "chooseTemplatePlaceholder": "Wybierz szablon",
+      "budgetLabel": "Budżet",
+      "dueDateLabel": "Data wykonania",
+      "pickDatePlaceholder": "Wybierz datę",
+      "cadenceLabel": "Częstotliwość",
+      "cadence": {
+        "oneOff": "Jednorazowo",
+        "daily": "Codziennie",
+        "weekly": "Tygodniowo",
+        "monthly": "Miesięcznie",
+        "quarterly": "Kwartalnie",
+        "semester": "Semestrualnie",
+        "yearly": "Rocznie"
+      },
+      "collaboratorsLabel": "Współpracownicy",
+      "searchUsernames": "Wyszukaj nazwę użytkownika...",
+      "typeAUsername": "Wpisz nazwę użytkownika...",
+      "noResults": "Brak wyników.",
+      "selectedCount": "{count} wybranych",
+      "roleLabel": "Rola",
+      "role": {
+        "custom": "Niestandardowy",
+        "default": "Domyślna"
+      },
+      "addTaskButton": "Dodaj zadanie",
+      "table": {
+        "name": "Nazwa",
+        "times": "Czasy",
+        "area": "Obszar",
+        "categories": "Kategorie"
+      },
+      "create": "Utwórz",
+      "save": "Zapisz",
+      "cancel": "Anuluj",
+      "deleteListConfirm": "Usunąć tę listę? Nie można tego cofnąć.",
+      "deleteList": "Usuń listę"
+    },
+    "addTemplateForm": {
+      "title": "Utwórz nowy szablon",
+      "nameLabel": "Nazwa",
+      "createFromLabel": "Utwórz z",
+      "chooseListToClonePlaceholder": "Wybierz listę do sklonowania (opcjonalnie)",
+      "visibilityLabel": "Widoczność",
+      "visibility": {
+        "private": "Prywatny",
+        "public": "Publiczny",
+        "friends": "Przyjaciele",
+        "closeFriends": "Bliscy przyjaciele"
+      },
+      "addTaskButton": "Dodaj zadanie",
+      "task": {
+        "nameLabel": "Nazwa",
+        "areaLabel": "Obszar",
+        "categoryLabel": "Kategoria",
+        "timesLabel": "# razy",
+        "add": "Dodaj",
+        "cancel": "Anuluj"
+      },
+      "table": {
+        "name": "Nazwa",
+        "times": "Czasy",
+        "area": "Obszar",
+        "categories": "Kategorie"
+      },
+      "create": "Utwórz",
+      "cancel": "Anuluj"
+    }
   }
 }

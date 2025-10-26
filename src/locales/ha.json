@@ -30,7 +30,17 @@
     "social": "Zamantakewa",
     "stash": "Ajiya",
     "equity": "Dukiya",
-    "totalEarnings": "Kudaden gaba"
+    "totalEarnings": "Kudaden gaba",
+    "daily": "Kowace rana",
+    "weekly": "Mako-mako",
+    "balance": "Ma'auni",
+    "dailyEarnings": "Kudin ko rana",
+    "weeklyEarnings": "Kudin mako",
+    "newTask": "Sabon aiki",
+    "newList": "Sabon jeri",
+    "newTemplate": "Sabon samfurin",
+    "budget": "Kasafin kuɗi",
+    "due": "Lokacin ƙarewa"
   },
   "navigation": {
     "home": "Gida",
@@ -65,7 +75,20 @@
     "trust": "Aminci",
     "editDay": "Gyara rana",
     "closeDay": "Rufe rana",
-    "earnings": "Kuɗin da aka samu"
+    "earnings": "Kuɗin da aka samu",
+    "publish": {
+      "title": "Buga Bayani",
+      "placeholder": "Rubuta bayananku a nan...",
+      "selectVisibility": "Zaɓi ganewa",
+      "visibility": {
+        "PRIVATE": "Keɓance",
+        "FRIENDS": "Abokai",
+        "CLOSE_FRIENDS": "Abokai na kusa",
+        "PUBLIC": "Jama'a",
+        "AI_ENABLED": "AI Ana Kunna"
+      },
+      "action": "Buga Bayani"
+    }
   },
   "week": {
     "weekNumber": "Mako {number}",
@@ -75,7 +98,8 @@
   "tasks": {
     "editing": "Ana gyara: {timeframe}",
     "weekNumber": "Mako {number}",
-    "yourEarnings": "Kuɗin da ka samu {timeframe}, har yanzu: Ð{amount}"
+    "yourEarnings": "Kuɗin da ka samu {timeframe}, har yanzu: Ð{amount}",
+    "selectList": "Zaɓi jeri"
   },
   "settings": {
     "title": "Saiti",
@@ -89,64 +113,60 @@
     "deleteAction": "Share aiki",
     "deleteSelected": "Share zaɓaɓɓu ({count})",
     "noResults": "Babu sakamako.",
-    "monthsFixedIncome": "Month's Recurring Income",
-    "monthsVariableIncome": "Month's Variable Income",
-    "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average",
+    "monthsFixedIncome": "Kuɗin wata mai dawwama",
+    "monthsVariableIncome": "Kuɗin wata mai canzawa",
+    "fixedNeedCosts": "Ƙayyadaddun Farashin Buƙatun",
+    "expectedNeedUtilities": "Matsakaicin Abubuwan da ake sa ran Buƙatun",
     "editAction": "Gyara aiki",
     "save": "Ajiye",
     "cancel": "Soke"
   },
   "actions": {
-    "daily": {
-      "drankWater": "Sha ruwa",
-      "showered": "Yi wanka",
-      "tookMeds": "Sha magani",
-      "loggedMood": "Rubuta yanayin zuciya",
-      "ateBreakfast": "Ci karin kumallo",
-      "ateLunch": "Ci abincin rana",
-      "ateDinner": "Ci abincin dare",
-      "brushedTeeth": "Goge haƙora",
-      "workedOut": "Yi motsa jiki",
-      "worked": "Yi aiki",
-      "washedDishes": "Wanke kwanoni",
-      "storedDishes": "Ajiye kwanoni",
-      "checkedTrash": "Duba shara",
-      "brushedFloor": "Goge bene",
-      "madeLove": "Yi soyayya",
-      "wentOut": "Fita waje"
-    },
-    "weekly": {
-      "createdContent": "Ƙirƙiri abun ciki don hanyoyin sadarwar zamantakewa",
-      "flirted": "Yi soyayya da wani",
-      "talkedToFriend": "Yi magana da aboki",
-      "navigatedSocial": "Yi tafiya a hanyoyin sadarwar zamantakewa",
-      "talkedToFamily": "Yi magana da iyali",
-      "madeMusic": "Yi kiɗa",
-      "meditated": "Yi tunani mai zurfi",
-      "spokeToHoly": "Yi magana da Mai Tsarki",
-      "readMysticBook": "Kara littafi na ruhaniya",
-      "sharedLearnings": "Raba ilimi",
-      "studiedSubject": "Nazari wani batu",
-      "watchedEducational": "Kalli abun ciki na ilimi",
-      "playedGame": "Yi wasa",
-      "watchedSeries": "Kalli jerin shirye-shirye ko fim",
-      "readNews": "Kara labarai",
-      "wroteOpinion": "Rubuta ra'ayi",
-      "cleanedBed": "Tsaftace gado",
-      "ensuredBedroomOrdered": "Tabbatar da dakin kwana yana da tsari",
-      "shavedBody": "Aske jiki",
-      "shavedFace": "Aske fuska",
-      "cutNails": "Yanke farce",
-      "brushedSurfaces": "Goge saman",
-      "moppedFloors": "Goge benaye",
-      "washedClothes": "Wanke tufafi",
-      "cleanedBathroom": "Tsaftace bandaki",
-      "cleanedKitchen": "Tsaftace dakin dafa abinci",
-      "workedOnProject": "Yi aiki a kan aikin sirri",
-      "helpedSomeone": "Taimaki wani",
-      "boughtGroceries": "Sayi kayan abinci"
-    }
+    "drankWater": "Sha ruwa",
+    "showered": "Yi wanka",
+    "tookMeds": "Sha magani",
+    "loggedMood": "Rubuta yanayin zuciya",
+    "ateBreakfast": "Ci karin kumallo",
+    "ateLunch": "Ci abincin rana",
+    "ateDinner": "Ci abincin dare",
+    "brushedTeeth": "Goge haƙora",
+    "workedOut": "Yi motsa jiki",
+    "worked": "Yi aiki",
+    "washedDishes": "Wanke kwanoni",
+    "storedDishes": "Ajiye kwanoni",
+    "checkedTrash": "Duba shara",
+    "brushedFloor": "Goge bene",
+    "madeLove": "Yi soyayya",
+    "wentOut": "Fita waje",
+    "createdContent": "Ƙirƙiri abun ciki don hanyoyin sadarwar zamantakewa",
+    "flirted": "Yi soyayya da wani",
+    "talkedToFriend": "Yi magana da aboki",
+    "navigatedSocial": "Yi tafiya a hanyoyin sadarwar zamantakewa",
+    "talkedToFamily": "Yi magana da iyali",
+    "madeMusic": "Yi kiɗa",
+    "meditated": "Yi tunani mai zurfi",
+    "spokeToHoly": "Yi magana da Mai Tsarki",
+    "readMysticBook": "Kara littafi na ruhaniya",
+    "sharedLearnings": "Raba ilimi",
+    "studiedSubject": "Nazari wani batu",
+    "watchedEducational": "Kalli abun ciki na ilimi",
+    "playedGame": "Yi wasa",
+    "watchedSeries": "Kalli jerin shirye-shirye ko fim",
+    "readNews": "Kara labarai",
+    "wroteOpinion": "Rubuta ra'ayi",
+    "cleanedBed": "Tsaftace gado",
+    "ensuredBedroomOrdered": "Tabbatar da dakin kwana yana da tsari",
+    "shavedBody": "Aske jiki",
+    "shavedFace": "Aske fuska",
+    "cutNails": "Yanke farce",
+    "brushedSurfaces": "Goge saman",
+    "moppedFloors": "Goge benaye",
+    "washedClothes": "Wanke tufafi",
+    "cleanedBathroom": "Tsaftace bandaki",
+    "cleanedKitchen": "Tsaftace dakin dafa abinci",
+    "workedOnProject": "Yi aiki a kan aikin sirri",
+    "helpedSomeone": "Taimaki wani",
+    "boughtGroceries": "Sayi kayan abinci"
   },
   "footer": {
     "copyright": "© {year} Purizu da Remotelys dba DreamPip",
@@ -247,24 +267,27 @@
     "genericError": "Wani abu ya tafi ba daidai ba. Don Allah a sake gwadawa."
   },
   "publicProfile": {
-    "ctaTitle": "Start Your Own DreamPip Journey",
-    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
-    "getStarted": "Get Started"
+    "ctaTitle": "Fara Tafiyar DreamPip Naku",
+    "ctaSubtitle": "Bi diddigin yanayin zuciyarku, ayyuka da samun kuɗi tare da DreamPip",
+    "getStarted": "Fara",
+    "notes": "Bayani",
+    "loadingNotes": "Ana ɗauka bayani...",
+    "profileNotPublic": "Wannan mai amfani bai bayyana bayanin kansa ba tukuna."
   },
   "publicCharts": {
-    "noData": "No public charts data available.",
-    "moodTrackingTitle": "Mood Tracking",
-    "moodTrackingSubtitle": "Values scaled to percentages for privacy",
-    "moodChartsTag": "Mood Charts",
-    "moodOverviewTitle": "Mood Overview",
-    "moodOverviewSubtitle": "Simplified mood tracking - values scaled to percentages for privacy",
-    "simplifiedMoodTag": "Simplified Mood Chart",
-    "productivityTitle": "Productivity",
-    "productivitySubtitle": "Values scaled to percentages for privacy",
-    "productivityTag": "Productivity Charts",
-    "earningsTitle": "Earnings",
-    "earningsSubtitle": "Values scaled to percentages for privacy",
-    "earningsTag": "Earnings Charts"
+    "noData": "Babu bayanan ginshiƙai na jama'a.",
+    "moodTrackingTitle": "Bin Diddigin Yanayi",
+    "moodTrackingSubtitle": "Ƙididdiga da aka gyara zuwa kashi don sirri",
+    "moodChartsTag": "Ginshiƙan Yanayi",
+    "moodOverviewTitle": "Bayyani na Yanayi",
+    "moodOverviewSubtitle": "Sauƙaƙan bin diddigin yanayi - ƙididdiga da aka gyara zuwa kashi don sirri",
+    "simplifiedMoodTag": "Ginshiƙi Mai Sauƙi na Yanayi",
+    "productivityTitle": "Aiki",
+    "productivitySubtitle": "Ƙididdiga da aka gyara zuwa kashi don sirri",
+    "productivityTag": "Ginshiƙan Aiki",
+    "earningsTitle": "Samun Kuɗi",
+    "earningsSubtitle": "Ƙididdiga da aka gyara zuwa kashi don sirri",
+    "earningsTag": "Ginshiƙan Samun Kuɗi"
   },
   "friends": {
     "addFriend": "Ƙara aboki",
@@ -274,7 +297,8 @@
     "failedToSend": "An kasa aikawa da buƙatar abota",
     "closeFriend": "Aboki na kusa",
     "friends": "Abokai",
-    "signInToAdd": "Shiga don ƙara aboki"
+    "signInToAdd": "Shiga don ƙara aboki",
+    "editProfile": "Gyara Bayanan Martaba"
   },
   "profile": {
     "editProfile": "Gyara bayanan martaba",
@@ -339,5 +363,119 @@
     "notFound": "Ba a sami abin da aka nema.",
     "timeout": "Buƙatar ta ƙare. Gwada sake.",
     "unknownError": "Kuskure mara tsammani ya faru. Gwada sake."
+  },
+  "forms": {
+    "commonOptions": {
+      "area": {
+        "self": "Kai",
+        "home": "Gida",
+        "social": "Zamantakewa",
+        "work": "Aiki"
+      },
+      "category": {
+        "custom": "Keɓance",
+        "body": "Jiki",
+        "mind": "Hankali",
+        "spirit": "Ruhu",
+        "social": "Zamantakewa",
+        "work": "Aiki",
+        "home": "Gida",
+        "fun": "Nishadi",
+        "growth": "Ci gaba",
+        "community": "Al'umma",
+        "affection": "Ƙauna",
+        "clean": "Tsafta",
+        "maintenance": "Kula",
+        "spirituality": "Ruhaniya",
+        "event": "Abin da ya faru"
+      },
+      "entities": {
+        "list": "Jeri",
+        "template": "Samfurin"
+      }
+    },
+    "addTaskForm": {
+      "title": "Ƙara Aiki na Keɓance",
+      "taskNameLabel": "Sunan Aiki",
+      "taskNamePlaceholder": "Shigar da sunan aiki...",
+      "areaLabel": "Yanki",
+      "categoryLabel": "Rukuni",
+      "timesLabel": "# sau",
+      "saveToTemplate": "Ajiye aiki zuwa samfurin",
+      "addTask": "Ƙara Aiki",
+      "cancel": "Soke"
+    },
+    "addListForm": {
+      "titleCreate": "Ƙirƙiri Sabon Jeri",
+      "titleEdit": "Gyara Jeri",
+      "nameLabel": "Suna",
+      "templateOrListLabel": "Samfurin ko Jeri",
+      "chooseTemplatePlaceholder": "Zaɓi samfurin",
+      "budgetLabel": "Kasafin kuɗi",
+      "dueDateLabel": "Ranar ƙarewa",
+      "pickDatePlaceholder": "Zaɓi rana",
+      "cadenceLabel": "Yawan maimaituwa",
+      "cadence": {
+        "oneOff": "Sau ɗaya",
+        "daily": "Kowace rana",
+        "weekly": "Kowane mako",
+        "monthly": "Kowane wata",
+        "quarterly": "Kowane kwata",
+        "semester": "Semester",
+        "yearly": "Kowace shekara"
+      },
+      "collaboratorsLabel": "Masu haɗin gwiwa",
+      "searchUsernames": "Bincika sunaye na masu amfani...",
+      "typeAUsername": "Rubuta sunan mai amfani...",
+      "noResults": "Babu sakamako.",
+      "selectedCount": "{count} zaɓaɓɓu",
+      "roleLabel": "Matsayi",
+      "role": {
+        "custom": "Keɓance",
+        "default": "Asali"
+      },
+      "addTaskButton": "Ƙara aiki",
+      "table": {
+        "name": "Suna",
+        "times": "Sau",
+        "area": "Yanki",
+        "categories": "Rukunoni"
+      },
+      "create": "Ƙirƙira",
+      "save": "Ajiye",
+      "cancel": "Soke",
+      "deleteListConfirm": "Share wannan jerin? Ba za a iya soke wannan ba.",
+      "deleteList": "Share jeri"
+    },
+    "addTemplateForm": {
+      "title": "Ƙirƙiri Sabon Samfurin",
+      "nameLabel": "Suna",
+      "createFromLabel": "Ƙirƙira daga",
+      "chooseListToClonePlaceholder": "Zaɓi jeri don kwafin (na zaɓi)",
+      "visibilityLabel": "Ganewa",
+      "visibility": {
+        "private": "Keɓance",
+        "public": "Jama'a",
+        "friends": "Abokai",
+        "closeFriends": "Abokai na kusa"
+      },
+      "addTaskButton": "Ƙara aiki",
+      "task": {
+        "nameLabel": "Suna",
+        "areaLabel": "Yanki",
+        "categoryLabel": "Rukuni",
+        "timesLabel": "# sau",
+        "add": "Ƙara",
+        "cancel": "Soke"
+      },
+      "table": {
+        "name": "Suna",
+        "times": "Sau",
+        "area": "Yanki",
+        "categories": "Rukunoni"
+      },
+      "create": "Ƙirƙira",
+      "cancel": "Soke"
+    }
   }
 }

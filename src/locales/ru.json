@@ -30,7 +30,17 @@
     "social": "Социальные",
     "stash": "Запас",
     "equity": "Собственный капитал",
-    "totalEarnings": "Общий доход"
+    "totalEarnings": "Общий доход",
+    "daily": "Ежедневно",
+    "weekly": "Еженедельно",
+    "balance": "Баланс",
+    "dailyEarnings": "Ежедневные доходы",
+    "weeklyEarnings": "Еженедельные доходы",
+    "newTask": "Новое задание",
+    "newList": "Новый список",
+    "newTemplate": "Новый шаблон",
+    "budget": "Бюджет",
+    "due": "Срок"
   },
   "navigation": {
     "home": "Главная",
@@ -65,7 +75,20 @@
     "trust": "Доверие",
     "editDay": "Редактировать день",
     "closeDay": "Закрыть день",
-    "earnings": "Заработок"
+    "earnings": "Заработок",
+    "publish": {
+      "title": "Опубликовать заметку",
+      "placeholder": "Напишите свою записку здесь...",
+      "selectVisibility": "Выберите видимость",
+      "visibility": {
+        "PRIVATE": "Частный",
+        "FRIENDS": "Друзья",
+        "CLOSE_FRIENDS": "Близкие друзья",
+        "PUBLIC": "Общественность",
+        "AI_ENABLED": "AI Enabled"
+      },
+      "action": "Опубликовать заметку"
+    }
   },
   "week": {
     "weekNumber": "Неделя {number}",
@@ -75,65 +98,58 @@
   "tasks": {
     "editing": "Редактирование: {timeframe}",
     "weekNumber": "Неделя {number}",
-    "yourEarnings": "Ваш заработок"
+    "yourEarnings": "Ваш заработок",
+    "selectList": "Выберите список"
   },
   "actions": {
-    "add": "Добавить",
-    "remove": "Удалить",
-    "update": "Обновить",
-    "refresh": "Обновить",
-    "daily": {
-      "drankWater": "Пил воду",
-      "showered": "Принял душ",
-      "tookMeds": "Принял лекарства",
-      "loggedMood": "Записал настроение",
-      "ateBreakfast": "Позавтракал",
-      "ateLunch": "Пообедал",
-      "ateDinner": "Поужинал",
-      "brushedTeeth": "Почистил зубы",
-      "workedOut": "Тренировался",
-      "worked": "Работал",
-      "washedDishes": "Мыл посуду",
-      "storedDishes": "Убрал посуду",
-      "checkedTrash": "Проверил мусор",
-      "brushedFloor": "Подмел пол",
-      "madeLove": "Занимался любовью",
-      "wentOut": "Вышел"
-    },
-    "weekly": {
-      "createdContent": "Создал контент для социальных сетей",
-      "flirted": "Флиртовал с кем-то",
-      "talkedToFriend": "Поговорил с другом",
-      "navigatedSocial": "Просматривал социальные сети",
-      "talkedToFamily": "Поговорил с семьей",
-      "madeMusic": "Создавал музыку",
-      "meditated": "Медитировал",
-      "spokeToHoly": "Говорил со святым",
-      "readMysticBook": "Читал мистическую книгу",
-      "sharedLearnings": "Поделился знаниями",
-      "studiedSubject": "Изучал предмет",
-      "watchedEducational": "Смотрел образовательный контент",
-      "playedGame": "Играл в игру",
-      "watchedSeries": "Смотрел сериал или фильм",
-      "readNews": "Читал новости",
-      "wroteOpinion": "Написал мнение",
-      "cleanedBed": "Застелил кровать",
-      "ensuredBedroomOrdered": "Привел в порядок спальню",
-      "shavedBody": "Побрился",
-      "shavedFace": "Побрился",
-      "cutNails": "Подстриг ногти",
-      "brushedSurfaces": "Подмел поверхности",
-      "moppedFloors": "Мыл полы",
-      "washedClothes": "Стирал одежду",
-      "cleanedBathroom": "Убрал ванную",
-      "cleanedKitchen": "Убрал кухню",
-      "workedOnProject": "Работал над личным проектом",
-      "helpedSomeone": "Помог кому-то",
-      "boughtGroceries": "Купил продукты",
-      "navigatedSocialMedia": "Просматривал социальные сети",
-      "orderedBedroom": "Привел в порядок спальню",
-      "personalProject": "Работал над личным проектом"
-    }
+    "drankWater": "Пил воду",
+    "showered": "Принял душ",
+    "tookMeds": "Принял лекарства",
+    "loggedMood": "Записал настроение",
+    "ateBreakfast": "Позавтракал",
+    "ateLunch": "Пообедал",
+    "ateDinner": "Поужинал",
+    "brushedTeeth": "Почистил зубы",
+    "workedOut": "Тренировался",
+    "worked": "Работал",
+    "washedDishes": "Мыл посуду",
+    "storedDishes": "Убрал посуду",
+    "checkedTrash": "Проверил мусор",
+    "brushedFloor": "Подмел пол",
+    "madeLove": "Занимался любовью",
+    "wentOut": "Вышел",
+    "createdContent": "Создал контент для социальных сетей",
+    "flirted": "Флиртовал с кем-то",
+    "talkedToFriend": "Поговорил с другом",
+    "navigatedSocial": "Просматривал социальные сети",
+    "talkedToFamily": "Поговорил с семьей",
+    "madeMusic": "Создавал музыку",
+    "meditated": "Медитировал",
+    "spokeToHoly": "Говорил со святым",
+    "readMysticBook": "Читал мистическую книгу",
+    "sharedLearnings": "Поделился знаниями",
+    "studiedSubject": "Изучал предмет",
+    "watchedEducational": "Смотрел образовательный контент",
+    "playedGame": "Играл в игру",
+    "watchedSeries": "Смотрел сериал или фильм",
+    "readNews": "Читал новости",
+    "wroteOpinion": "Написал мнение",
+    "cleanedBed": "Застелил кровать",
+    "ensuredBedroomOrdered": "Привел в порядок спальню",
+    "shavedBody": "Побрился",
+    "shavedFace": "Побрился",
+    "cutNails": "Подстриг ногти",
+    "brushedSurfaces": "Подмел поверхности",
+    "moppedFloors": "Мыл полы",
+    "washedClothes": "Стирал одежду",
+    "cleanedBathroom": "Убрал ванную",
+    "cleanedKitchen": "Убрал кухню",
+    "workedOnProject": "Работал над личным проектом",
+    "helpedSomeone": "Помог кому-то",
+    "boughtGroceries": "Купил продукты",
+    "navigatedSocialMedia": "Просматривал социальные сети",
+    "orderedBedroom": "Привел в порядок спальню",
+    "personalProject": "Работал над личным проектом"
   },
   "footer": {
     "copyright": "© {year} DreamPip. Все права защищены.",
@@ -256,7 +272,10 @@
   "publicProfile": {
     "ctaTitle": "Начните свое путешествие с DreamPip",
     "ctaSubtitle": "Отслеживайте настроение, продуктивность и доходы с DreamPip",
-    "getStarted": "Начать"
+    "getStarted": "Начать",
+    "notes": "Заметки",
+    "loadingNotes": "Загрузка заметок...",
+    "profileNotPublic": "Этот пользователь еще не сделал свой профиль публичным."
   },
   "publicCharts": {
     "noData": "Нет доступных публичных данных диаграмм.",
@@ -347,5 +366,119 @@
     "notFound": "Запрашиваемый ресурс не найден.",
     "timeout": "Время запроса истекло. Попробуйте снова.",
     "unknownError": "Произошла неожиданная ошибка. Попробуйте снова."
+  },
+  "forms": {
+    "commonOptions": {
+      "area": {
+        "self": "Самостоятельно",
+        "home": "Главная",
+        "social": "Социальная",
+        "work": "Работа"
+      },
+      "category": {
+        "custom": "Пользовательское",
+        "body": "Тело",
+        "mind": "Разум",
+        "spirit": "Дух",
+        "social": "Социальная",
+        "work": "Работа",
+        "home": "Главная",
+        "fun": "Веселье",
+        "growth": "Рост",
+        "community": "Сообщество",
+        "affection": "Привязанность",
+        "clean": "Чистый",
+        "maintenance": "Техническое обслуживание",
+        "spirituality": "Духовность",
+        "event": "Событие"
+      },
+      "entities": {
+        "list": "Список",
+        "template": "Шаблон"
+      }
+    },
+    "addTaskForm": {
+      "title": "Добавить пользовательскую задачу",
+      "taskNameLabel": "Название задачи",
+      "taskNamePlaceholder": "Введите имя задачи...",
+      "areaLabel": "Область",
+      "categoryLabel": "Категория",
+      "timesLabel": "# раз",
+      "saveToTemplate": "Сохранить задачу в шаблоне",
+      "addTask": "Добавить задачу",
+      "cancel": "Отмена"
+    },
+    "addListForm": {
+      "titleCreate": "Создать новый список",
+      "titleEdit": "Список редактирования",
+      "nameLabel": "Имя",
+      "templateOrListLabel": "Шаблон или список",
+      "chooseTemplatePlaceholder": "Выберите шаблон",
+      "budgetLabel": "Бюджет",
+      "dueDateLabel": "Срок исполнения",
+      "pickDatePlaceholder": "Выберите дату",
+      "cadenceLabel": "Каденс",
+      "cadence": {
+        "oneOff": "Разовые",
+        "daily": "Ежедневно",
+        "weekly": "Еженедельник",
+        "monthly": "Ежемесячно",
+        "quarterly": "Ежеквартально",
+        "semester": "Семестр",
+        "yearly": "Ежегодно"
+      },
+      "collaboratorsLabel": "Сотрудники",
+      "searchUsernames": "Поиск по именам пользователей...",
+      "typeAUsername": "Введите имя пользователя...",
+      "noResults": "Никаких результатов.",
+      "selectedCount": "{счет} выбран",
+      "roleLabel": "Роль",
+      "role": {
+        "custom": "Пользовательское",
+        "default": "По умолчанию"
+      },
+      "addTaskButton": "Добавить задание",
+      "table": {
+        "name": "Имя",
+        "times": "Times",
+        "area": "Область",
+        "categories": "Категории"
+      },
+      "create": "Создать",
+      "save": "Сохранить",
+      "cancel": "Отмена",
+      "deleteListConfirm": "Удалить этот список? Это нельзя отменить.",
+      "deleteList": "Удалить список"
+    },
+    "addTemplateForm": {
+      "title": "Создать новый шаблон",
+      "nameLabel": "Имя",
+      "createFromLabel": "Создать из",
+      "chooseListToClonePlaceholder": "Выберите список для клонирования (необязательно)",
+      "visibilityLabel": "Видимость",
+      "visibility": {
+        "private": "Частный",
+        "public": "Общественность",
+        "friends": "Друзья",
+        "closeFriends": "Близкие друзья"
+      },
+      "addTaskButton": "Добавить задание",
+      "task": {
+        "nameLabel": "Имя",
+        "areaLabel": "Область",
+        "categoryLabel": "Категория",
+        "timesLabel": "# раз",
+        "add": "Добавить",
+        "cancel": "Отмена"
+      },
+      "table": {
+        "name": "Имя",
+        "times": "Times",
+        "area": "Область",
+        "categories": "Категории"
+      },
+      "create": "Создать",
+      "cancel": "Отмена"
+    }
   }
 }
