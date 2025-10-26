@@ -38,16 +38,21 @@ export const DoToolbar = ({
   const [showAddTemplate, setShowAddTemplate] = useState(false)
   const [userTemplates, setUserTemplates] = useState<any[]>([])
 
+  const refreshTemplates = async () => {
+    try {
+      const res = await fetch('/api/v1/templates')
+      if (res.ok) {
+        const data = await res.json()
+        setUserTemplates(data.templates || [])
+      }
+    } catch {}
+  }
+
   useEffect(() => {
     let cancelled = false
     const run = async () => {
-      try {
-        const res = await fetch('/api/v1/templates')
-        if (!cancelled && res.ok) {
-          const data = await res.json()
-          setUserTemplates(data.templates || [])
-        }
-      } catch {}
+      if (cancelled) return
+      await refreshTemplates()
     }
     run()
     return () => { cancelled = true }
@@ -119,7 +124,7 @@ export const DoToolbar = ({
         <AddTemplateForm
           allTaskLists={allTaskLists}
           onCancel={() => setShowAddTemplate(false)}
-          onCreated={refreshTaskLists}
+          onCreated={async () => { await refreshTemplates(); await refreshTaskLists() }}
         />
       )}
     </div>

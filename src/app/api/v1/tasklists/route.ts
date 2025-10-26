@@ -210,7 +210,7 @@ export async function POST(request: NextRequest) {
         const id = body.ephemeralTasks.close.id
         const item = open.find((x: any) => x.id === id)
         open = open.filter((x: any) => x.id !== id)
-        if (item) closed = [ { ...item, status: 'Closed' }, ...closed ]
+        if (item) closed = [ { ...item, status: 'Done' }, ...closed ]
       }
 
       const saved = await prisma.taskList.update({

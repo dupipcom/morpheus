@@ -1,9 +1,10 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useContext, useMemo } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
+import { GlobalContext } from '@/lib/contexts'
 
 export const AddTaskForm = ({
   selectedTaskListId,
@@ -14,26 +15,41 @@ export const AddTaskForm = ({
   onCancel: () => void
   onCreated: () => Promise<void> | void
 }) => {
-  const [newTask, setNewTask] = useState({ name: '', area: 'self', category: 'custom', saveToTemplate: false })
+  const [newTask, setNewTask] = useState({ name: '', area: 'self', category: 'custom', saveToTemplate: false, times: 1 })
+  const { taskLists } = useContext(GlobalContext)
+  const allTaskLists = useMemo(() => (Array.isArray(taskLists) ? taskLists : []), [taskLists])
+  const selectedList = useMemo(() => allTaskLists.find((l:any) => l.id === selectedTaskListId), [allTaskLists, selectedTaskListId])
 
   const handleSubmit = async () => {
     if (!selectedTaskListId || !newTask.name.trim()) return
-    const listTask = {
+    const baseTask = {
       name: newTask.name.trim(),
       area: newTask.area,
       categories: [newTask.category],
       cadence: 'day',
       status: 'Not started',
-      times: 1,
+      times: Math.max(1, Number(newTask.times) || 1),
       count: 0,
-      isEphemeral: !newTask.saveToTemplate,
-      createdAt: new Date().toISOString()
     }
-    await fetch('/api/v1/tasklists', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ taskListId: selectedTaskListId, ephemeralTasks: { add: listTask } })
-    })
+
+    if (newTask.saveToTemplate && selectedList) {
+      const blueprint = (Array.isArray((selectedList as any).templateTasks) && (selectedList as any).templateTasks.length > 0)
+        ? (selectedList as any).templateTasks
+        : ((selectedList as any).tasks || [])
+      const updatedTasks = [ { ...baseTask }, ...(blueprint || []) ]
+      await fetch('/api/v1/tasklists', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role: (selectedList as any).role, tasks: updatedTasks })
+      })
+    } else {
+      const ephemeralTask = { ...baseTask, isEphemeral: true, createdAt: new Date().toISOString() }
+      await fetch('/api/v1/tasklists', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ taskListId: selectedTaskListId, ephemeralTasks: { add: ephemeralTask } })
+      })
+    }
     await onCreated()
     onCancel()
   }
@@ -90,6 +106,16 @@ export const AddTaskForm = ({
             <option value="spirituality">Spirituality</option>
             <option value="event">Event</option>
           </select>
+        </div>
+        <div>
+          <label className="text-sm font-medium"># of times</label>
+          <input
+            type="number"
+            min={1}
+            value={newTask.times}
+            onChange={(e) => setNewTask(prev => ({ ...prev, times: Math.max(1, Number(e.target.value) || 1) }))}
+            className="w-full p-2 border rounded-md"
+          />
         </div>
         <div className="flex items-center space-x-2">
           <Switch
