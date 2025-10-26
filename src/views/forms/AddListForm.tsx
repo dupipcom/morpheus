@@ -47,7 +47,7 @@ export const AddListForm = ({
     if (initialList) {
       setForm({
         name: initialList.name || '',
-        templateId: initialList.templateId ? `template:${initialList.templateId}` : '',
+        templateId: isEditing ? '' : (initialList.templateId ? `template:${initialList.templateId}` : ''),
         budget: initialList.budget || '',
         dueDate: initialList.dueDate || '',
         cadence: initialList.cadence || 'one-off',
@@ -57,7 +57,7 @@ export const AddListForm = ({
       setTasks(Array.isArray(initialList.tasks) ? initialList.tasks : [])
       setDueDateObj(initialList.dueDate ? new Date(initialList.dueDate) : undefined)
     }
-  }, [JSON.stringify(initialList)])
+  }, [JSON.stringify(initialList), isEditing])
 
   const newListPreviewTasks = useMemo(() => {
     if (!form.templateId) return [] as any[]
@@ -75,8 +75,10 @@ export const AddListForm = ({
   }, [form.templateId, userTemplates, allTaskLists])
 
   useEffect(() => {
-    setTasks(newListPreviewTasks)
-  }, [newListPreviewTasks])
+    if (!isEditing) {
+      setTasks(newListPreviewTasks)
+    }
+  }, [newListPreviewTasks, isEditing])
 
   const [collabResults, setCollabResults] = useState<any[]>([])
   useEffect(() => {
@@ -96,11 +98,12 @@ export const AddListForm = ({
   const handleSubmit = async () => {
     const roleJoined = `${form.cadence}.${form.role}`
     let templateIdToLink: string | undefined
-    if (form.templateId?.startsWith('template:')) templateIdToLink = form.templateId.split(':')[1]
+    if (!isEditing && form.templateId?.startsWith('template:')) templateIdToLink = form.templateId.split(':')[1]
     await fetch('/api/v1/tasklists', {
       method: 'POST',
       body: JSON.stringify({
         create: !isEditing,
+        taskListId: isEditing && initialList?.id ? initialList.id : undefined,
         role: roleJoined,
         name: form.name || undefined,
         budget: form.budget || undefined,
@@ -124,32 +127,34 @@ export const AddListForm = ({
           <label className="text-sm font-medium">Name</label>
           <input className="w-full p-2 border rounded-md" value={form.name} onChange={(e) => setForm(prev => ({ ...prev, name: e.target.value }))} />
         </div>
-        <div>
-          <label className="text-sm font-medium">Template or List</label>
-          <Select value={form.templateId} onValueChange={(val) => setForm(prev => ({ ...prev, templateId: val }))}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Choose a template" />
-            </SelectTrigger>
-            <SelectContent>
-              {userTemplates.map((tpl: any) => (
-                <SelectItem key={`tpl-${tpl.id}`} value={`template:${tpl.id}`} textValue={tpl.name || tpl.role || 'Template'}>
-                  <div className="flex items-center gap-2">
-                    <Package className="h-4 w-4 opacity-70" />
-                    <span>{tpl.name || tpl.role || 'Template'}</span>
-                  </div>
-                </SelectItem>
-              ))}
-              {allTaskLists.map((lst: any) => (
-                <SelectItem key={`lst-${lst.id}`} value={`list:${lst.id}`} textValue={lst.name || lst.role || 'List'}>
-                  <div className="flex items-center gap-2">
-                    <ListIcon className="h-4 w-4 opacity-70" />
-                    <span>{lst.name || lst.role || 'List'}</span>
-                  </div>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        {!isEditing && (
+          <div>
+            <label className="text-sm font-medium">Template or List</label>
+            <Select value={form.templateId} onValueChange={(val) => setForm(prev => ({ ...prev, templateId: val }))}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Choose a template" />
+              </SelectTrigger>
+              <SelectContent>
+                {userTemplates.map((tpl: any) => (
+                  <SelectItem key={`tpl-${tpl.id}`} value={`template:${tpl.id}`} textValue={tpl.name || tpl.role || 'Template'}>
+                    <div className="flex items-center gap-2">
+                      <Package className="h-4 w-4 opacity-70" />
+                      <span>{tpl.name || tpl.role || 'Template'}</span>
+                    </div>
+                  </SelectItem>
+                ))}
+                {allTaskLists.map((lst: any) => (
+                  <SelectItem key={`lst-${lst.id}`} value={`list:${lst.id}`} textValue={lst.name || lst.role || 'List'}>
+                    <div className="flex items-center gap-2">
+                      <ListIcon className="h-4 w-4 opacity-70" />
+                      <span>{lst.name || lst.role || 'List'}</span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <div>
             <label className="text-sm font-medium">Budget</label>

@@ -221,6 +221,31 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ taskList: saved })
     }
 
+    // If editing a specific TaskList by ID, update directly
+    if (body.taskListId && create === false) {
+      const existingById = await prisma.taskList.findUnique({ where: { id: body.taskListId } })
+      if (!existingById) {
+        return NextResponse.json({ error: 'TaskList not found' }, { status: 404 })
+      }
+      const updated = await prisma.taskList.update({
+        where: { id: existingById.id },
+        data: ({
+          templateTasks: Array.isArray(tasks) ? tasks : existingById.templateTasks,
+          tasks: Array.isArray(tasks) ? tasks : existingById.tasks,
+          templateId: typeof templateId !== 'undefined' ? templateId : existingById.templateId,
+          role: typeof role === 'string' ? role : existingById.role,
+          name: typeof name !== 'undefined' ? name : existingById.name,
+          budget: typeof budget !== 'undefined' ? budget : existingById.budget,
+          dueDate: typeof dueDate !== 'undefined' ? dueDate : existingById.dueDate,
+          collaborators: Array.isArray(collaborators) ? collaborators : existingById.collaborators,
+          updatedAt: new Date()
+        } as any),
+        include: { template: true }
+      })
+
+      return NextResponse.json({ taskList: updated })
+    }
+
     // Check if TaskList with this role already exists for this user
     const existingTaskList = await prisma.taskList?.findFirst({
       where: {

@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Plus } from 'lucide-react'
+import { Plus, Pencil } from 'lucide-react'
 import { GlobalContext } from '@/lib/contexts'
 import { useI18n } from '@/lib/contexts/i18n'
 import { AddTaskForm } from '@/views/forms/AddTaskForm'
@@ -32,10 +32,12 @@ export const DoToolbar = ({
   const { t } = useI18n()
   const { taskLists, refreshTaskLists } = useContext(GlobalContext)
   const allTaskLists = useMemo(() => (Array.isArray(taskLists) ? taskLists : []), [taskLists]) as TaskList[]
+  const selectedList = useMemo(() => allTaskLists.find((l:any) => l.id === selectedTaskListId), [allTaskLists, selectedTaskListId])
 
   const [showAddTask, setShowAddTask] = useState(false)
   const [showAddList, setShowAddList] = useState(false)
   const [showAddTemplate, setShowAddTemplate] = useState(false)
+  const [isEditingList, setIsEditingList] = useState(false)
   const [userTemplates, setUserTemplates] = useState<any[]>([])
 
   const refreshTemplates = async () => {
@@ -91,7 +93,7 @@ export const DoToolbar = ({
               <DropdownMenuItem onClick={() => { closeAll(); setShowAddTask(true) }}>
                 {t('common.newTask') || 'New task'}
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => { closeAll(); setShowAddList(true) }}>
+              <DropdownMenuItem onClick={() => { closeAll(); setIsEditingList(false); setShowAddList(true) }}>
                 {t('common.newList') || 'New list'}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => { closeAll(); setShowAddTemplate(true) }}>
@@ -99,6 +101,16 @@ export const DoToolbar = ({
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            className="flex items-center text-muted-foreground hover:text-foreground"
+            onClick={() => { if (selectedList) { closeAll(); setIsEditingList(true); setShowAddList(true) } }}
+            disabled={!selectedList}
+          >
+            <Pencil className="h-4 w-4" />
+          </Button>
         </div>
       </div>
 
@@ -114,8 +126,9 @@ export const DoToolbar = ({
         <AddListForm
           allTaskLists={allTaskLists}
           userTemplates={userTemplates}
-          isEditing={false}
-          onCancel={() => setShowAddList(false)}
+          isEditing={isEditingList}
+          initialList={isEditingList ? (selectedList as any) : undefined}
+          onCancel={() => { setShowAddList(false); setIsEditingList(false) }}
           onCreated={refreshTaskLists}
         />
       )}
