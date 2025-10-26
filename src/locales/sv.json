@@ -27,10 +27,20 @@
     "manageAccount": "Hantera mitt konto",
     "signOut": "Logga ut",
     "profile": "Profil",
-    "social": "Social",
+    "social": "Socialt",
     "stash": "Lager",
     "equity": "Eget kapital",
-    "totalEarnings": "Totala intäkter"
+    "totalEarnings": "Totala intäkter",
+    "daily": "Dagligen",
+    "weekly": "Veckovis",
+    "balance": "Saldo",
+    "dailyEarnings": "Dagliga intäkter",
+    "weeklyEarnings": "Veckovisa intäkter",
+    "newTask": "Ny uppgift",
+    "newList": "Ny lista",
+    "newTemplate": "Ny mall",
+    "budget": "Budget",
+    "due": "Förfallodag"
   },
   "navigation": {
     "home": "Hem",
@@ -68,7 +78,20 @@
     "trust": "Tillit",
     "editDay": "Redigera dag",
     "closeDay": "Stäng dag",
-    "earnings": "Intäkter"
+    "earnings": "Intäkter",
+    "publish": {
+      "title": "Publicera en anteckning",
+      "placeholder": "Skriv din anteckning här...",
+      "selectVisibility": "Välj synlighet",
+      "visibility": {
+        "PRIVATE": "Privat",
+        "FRIENDS": "Vänner",
+        "CLOSE_FRIENDS": "Nära vänner",
+        "PUBLIC": "Allmänheten",
+        "AI_ENABLED": "AI aktiverad"
+      },
+      "action": "Publicera anteckning"
+    }
   },
   "week": {
     "weekNumber": "Vecka {number}",
@@ -78,7 +101,8 @@
   "tasks": {
     "editing": "Redigerar: {timeframe}",
     "weekNumber": "Vecka {number}",
-    "yourEarnings": "Din inkomst"
+    "yourEarnings": "Din inkomst",
+    "selectList": "Välj lista"
   },
   "actions": {
     "daily": {
@@ -226,10 +250,10 @@
     "deleteAction": "Radera åtgärd",
     "deleteSelected": "Radera valda ({count})",
     "noResults": "Inga resultat.",
-    "monthsFixedIncome": "Month's Recurring Income",
-    "monthsVariableIncome": "Month's Variable Income",
-    "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average",
+    "monthsFixedIncome": "Månads återkommande inkomst",
+    "monthsVariableIncome": "Månads variabel inkomst",
+    "fixedNeedCosts": "Fasta nödvändiga kostnader",
+    "expectedNeedUtilities": "Förväntat genomsnitt för nödvändiga tjänster",
     "editAction": "Redigera åtgärd",
     "save": "Spara",
     "cancel": "Avbryt"
@@ -243,24 +267,24 @@
     "failedToSend": "Meddelandet kunde inte skickas. Försök igen."
   },
   "publicProfile": {
-    "ctaTitle": "Start Your Own DreamPip Journey",
-    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
-    "getStarted": "Get Started"
+    "ctaTitle": "Börja din egen DreamPip-resa",
+    "ctaSubtitle": "Spåra ditt humör, produktivitet och inkomster med DreamPip",
+    "getStarted": "Kom igång"
   },
   "publicCharts": {
-    "noData": "No public charts data available.",
-    "moodTrackingTitle": "Mood Tracking",
-    "moodTrackingSubtitle": "Values scaled to percentages for privacy",
-    "moodChartsTag": "Mood Charts",
-    "moodOverviewTitle": "Mood Overview",
-    "moodOverviewSubtitle": "Simplified mood tracking - values scaled to percentages for privacy",
-    "simplifiedMoodTag": "Simplified Mood Chart",
-    "productivityTitle": "Productivity",
-    "productivitySubtitle": "Values scaled to percentages for privacy",
-    "productivityTag": "Productivity Charts",
-    "earningsTitle": "Earnings",
-    "earningsSubtitle": "Values scaled to percentages for privacy",
-    "earningsTag": "Earnings Charts"
+    "noData": "Inga tillgängliga data för offentliga diagram.",
+    "moodTrackingTitle": "Humörspårning",
+    "moodTrackingSubtitle": "Värden skalade till procent för integritet",
+    "moodChartsTag": "Humördiagram",
+    "moodOverviewTitle": "Humöröversikt",
+    "moodOverviewSubtitle": "Förenklad humörspårning - värden skalade till procent för integritet",
+    "simplifiedMoodTag": "Förenklat humördiagram",
+    "productivityTitle": "Produktivitet",
+    "productivitySubtitle": "Värden skalade till procent för integritet",
+    "productivityTag": "Produktivitetsdiagram",
+    "earningsTitle": "Inkomster",
+    "earningsSubtitle": "Värden skalade till procent för integritet",
+    "earningsTag": "Inkomstdiagram"
   },
   "friends": {
     "addFriend": "Lägg till vän",
@@ -336,5 +360,133 @@
     "notFound": "Den begärda resursen hittades inte.",
     "timeout": "Begäran gick ut på tid. Försök igen.",
     "unknownError": "Ett oväntat fel inträffade. Försök igen."
+  },
+  "forms": {
+    "commonOptions": {
+      "area": {
+        "self": "Själv",
+        "home": "Hem",
+        "social": "Sociala",
+        "work": "Arbete"
+      },
+      "category": {
+        "custom": "Anpassad",
+        "body": "Kropp",
+        "mind": "Sinne",
+        "spirit": "Ande",
+        "social": "Sociala",
+        "work": "Arbete",
+        "home": "Hem",
+        "fun": "Kul",
+        "growth": "Tillväxt",
+        "community": "Gemenskap",
+        "affection": "Tillgivenhet",
+        "clean": "Ren",
+        "maintenance": "Underhåll",
+        "spirituality": "Spiritualitet",
+        "event": "Händelse"
+      },
+      "entities": {
+        "list": "Lista",
+        "template": "Mall"
+      }
+    },
+    "addTaskForm": {
+      "title": "Lägg till anpassad uppgift",
+      "taskNameLabel": "Uppgiftens namn",
+      "taskNamePlaceholder": "Ange uppgiftsnamn...",
+      "areaLabel": "Område",
+      "categoryLabel": "Kategori",
+      "timesLabel": "# Antal gånger",
+      "saveToTemplate": "Spara uppgift till mall",
+      "addTask": "Lägg till uppgift",
+      "cancel": "Avbryt"
+    },
+    "addListForm": {
+      "titleCreate": "Skapa ny lista",
+      "titleEdit": "Redigera lista",
+      "nameLabel": "Namn",
+      "templateOrListLabel": "Mall eller lista",
+      "chooseTemplatePlaceholder": "Välj en mall",
+      "budgetLabel": "Budget",
+      "dueDateLabel": "Förfallodag",
+      "pickDatePlaceholder": "Välj ett datum",
+      "cadenceLabel": "Kadens",
+      "cadence": {
+        "oneOff": "Av engångskaraktär",
+        "daily": "Dagligen",
+        "weekly": "Veckovis",
+        "monthly": "Månadsvis",
+        "quarterly": "Kvartalsvis",
+        "semester": "Semester",
+        "yearly": "Årligen"
+      },
+      "collaboratorsLabel": "Medarbetare",
+      "searchUsernames": "Sök användarnamn...",
+      "typeAUsername": "Skriv ett användarnamn...",
+      "noResults": "Inga resultat.",
+      "selectedCount": "{antal} vald",
+      "roleLabel": "Roll",
+      "role": {
+        "custom": "Anpassad",
+        "default": "Standard"
+      },
+      "addTaskButton": "Lägg till uppgift",
+      "table": {
+        "name": "Namn",
+        "times": "Tider",
+        "area": "Område",
+        "categories": "Kategorier"
+      },
+      "create": "Skapa",
+      "save": "Spara",
+      "cancel": "Avbryt",
+      "deleteListConfirm": "Radera den här listan? Detta kan inte ångras.",
+      "deleteList": "Radera lista"
+    },
+    "addTemplateForm": {
+      "title": "Skapa ny mall",
+      "nameLabel": "Namn",
+      "createFromLabel": "Skapa från",
+      "chooseListToClonePlaceholder": "Välj en lista att klona (valfritt)",
+      "visibilityLabel": "Synlighet",
+      "visibility": {
+        "private": "Privat",
+        "public": "Allmänheten",
+        "friends": "Vänner",
+        "closeFriends": "Nära vänner"
+      },
+      "addTaskButton": "Lägg till uppgift",
+      "task": {
+        "nameLabel": "Namn",
+        "areaLabel": "Område",
+        "categoryLabel": "Kategori",
+        "timesLabel": "# Antal gånger",
+        "add": "Lägg till",
+        "cancel": "Avbryt"
+      },
+      "table": {
+        "name": "Namn",
+        "times": "Tider",
+        "area": "Område",
+        "categories": "Kategorier"
+      },
+      "create": "Skapa",
+      "cancel": "Avbryt"
+    }
+  },
+  "charts": {
+    "dimensions": "Dimensioner",
+    "moodAverage": "Humörgenomsnitt",
+    "gratitude": "Tacksamhet",
+    "optimism": "Optimism",
+    "restedness": "Utvila",
+    "tolerance": "Tolerans",
+    "selfEsteem": "Självkänsla",
+    "trust": "Tillit",
+    "progress": "Framsteg",
+    "moodAverageScale": "Humörgenomsnittskala",
+    "balance": "Saldo",
+    "earningsScale": "Inkomstskala"
   }
 }

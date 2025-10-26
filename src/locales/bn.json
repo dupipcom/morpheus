@@ -30,7 +30,17 @@
     "social": "সামাজিক",
     "stash": "স্ট্যাশ",
     "equity": "ইকুইটি",
-    "totalEarnings": "মোট আয়"
+    "totalEarnings": "মোট আয়",
+    "daily": "দৈনিক",
+    "weekly": "সাপ্তাহিক",
+    "balance": "ব্যালেন্স",
+    "dailyEarnings": "দৈনিক আয়",
+    "weeklyEarnings": "সাপ্তাহিক আয়",
+    "newTask": "নতুন কাজ",
+    "newList": "নতুন তালিকা",
+    "newTemplate": "নতুন টেমপ্লেট",
+    "budget": "বাজেট",
+    "due": "সময়সীমা"
   },
   "navigation": {
     "home": "হোম",
@@ -65,7 +75,20 @@
     "trust": "বিশ্বাস",
     "editDay": "দিন সম্পাদনা করুন",
     "closeDay": "দিন বন্ধ করুন",
-    "earnings": "আয়"
+    "earnings": "আয়",
+    "publish": {
+      "title": "একটি নোট প্রকাশ করুন",
+      "placeholder": "এখানে আপনার নোট লিখুন...",
+      "selectVisibility": "দৃশ্যমানতা নির্বাচন করুন",
+      "visibility": {
+        "PRIVATE": "ব্যক্তিগত",
+        "FRIENDS": "বন্ধুরা",
+        "CLOSE_FRIENDS": "ঘনিষ্ঠ বন্ধুরা",
+        "PUBLIC": "সর্বজনীন",
+        "AI_ENABLED": "এআই সক্রিয়"
+      },
+      "action": "নোট প্রকাশ করুন"
+    }
   },
   "week": {
     "weekNumber": "সপ্তাহ {number}",
@@ -75,7 +98,8 @@
   "tasks": {
     "editing": "সম্পাদনা: {timeframe}",
     "weekNumber": "সপ্তাহ {number}",
-    "yourEarnings": "আপনার আয় {timeframe}، এখন পর্যন্ত: Ð{amount}"
+    "yourEarnings": "আপনার আয় {timeframe}، এখন পর্যন্ত: Ð{amount}",
+    "selectList": "তালিকা নির্বাচন করুন"
   },
   "actions": {
     "daily": {
@@ -208,24 +232,24 @@
     "impact": "প্রভাব"
   },
   "settings": {
-    "title": "সেটিংস",
-    "dailyActions": "আপনার দৈনিক কর্ম:",
-    "weeklyActions": "আপনার সাপ্তাহিক কর্ম:",
-    "actionName": "কর্মের নাম টাইপ করুন...",
-    "numberOfTimes": "# বার",
-    "area": "এলাকা",
-    "category": "বিভাগ",
-    "add": "যোগ করুন",
-    "deleteAction": "কর্ম মুছুন",
-    "deleteSelected": "নির্বাচিত মুছুন ({count})",
-    "noResults": "কোন ফলাফল নেই।",
-    "monthsFixedIncome": "Month's Recurring Income",
-    "monthsVariableIncome": "Month's Variable Income",
-    "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average",
-    "editAction": "অ্যাকশন সম্পাদনা করুন",
-    "save": "সংরক্ষণ",
-    "cancel": "বাতিল"
+    "monthsFixedIncome": "মাসের পুনরাবৃত্ত আয়",
+    "monthsVariableIncome": "মাসের পরিবর্তনশীল আয়",
+    "fixedNeedCosts": "স্থির প্রয়োজনের খরচ",
+    "expectedNeedUtilities": "প্রয়োজনীয় ইউটিলিটির প্রত্যাশিত গড়",
+    "title": "Settings",
+    "dailyActions": "Your daily actions:",
+    "weeklyActions": "Your weekly actions:",
+    "actionName": "Type action name...",
+    "numberOfTimes": "# of times",
+    "area": "Area",
+    "category": "Category",
+    "add": "Add",
+    "editAction": "Edit action",
+    "deleteAction": "Delete action",
+    "deleteSelected": "Delete Selected ({count})",
+    "noResults": "No results.",
+    "cancel": "Cancel",
+    "save": "Save"
   },
   "agentChat": {
     "thinking": "চিন্তা করছি...",
@@ -236,24 +260,24 @@
     "failedToSend": "বার্তা পাঠাতে ব্যর্থ। দয়া করে আবার চেষ্টা করুন।"
   },
   "publicProfile": {
-    "ctaTitle": "Start Your Own DreamPip Journey",
-    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
-    "getStarted": "Get Started"
+    "ctaTitle": "আপনার নিজস্ব DreamPip যাত্রা শুরু করুন",
+    "ctaSubtitle": "DreamPip দিয়ে আপনার মেজাজ, উৎপাদনশীলতা এবং আয় ট্র্যাক করুন",
+    "getStarted": "শুরু করুন"
   },
   "publicCharts": {
-    "noData": "No public charts data available.",
-    "moodTrackingTitle": "Mood Tracking",
-    "moodTrackingSubtitle": "Values scaled to percentages for privacy",
-    "moodChartsTag": "Mood Charts",
-    "moodOverviewTitle": "Mood Overview",
-    "moodOverviewSubtitle": "Simplified mood tracking - values scaled to percentages for privacy",
-    "simplifiedMoodTag": "Simplified Mood Chart",
-    "productivityTitle": "Productivity",
-    "productivitySubtitle": "Values scaled to percentages for privacy",
-    "productivityTag": "Productivity Charts",
-    "earningsTitle": "Earnings",
-    "earningsSubtitle": "Values scaled to percentages for privacy",
-    "earningsTag": "Earnings Charts"
+    "noData": "কোনও পাবলিক চার্টের ডেটা উপলব্ধ নেই।",
+    "moodTrackingTitle": "মুড ট্র্যাকিং",
+    "moodTrackingSubtitle": "গোপনীয়তার জন্য মান শতাংশে স্কেল করা হয়েছে",
+    "moodChartsTag": "মুড চার্ট",
+    "moodOverviewTitle": "মুড ওভারভিউ",
+    "moodOverviewSubtitle": "সরলীকৃত মুড ট্র্যাকিং — গোপনীয়তার জন্য মান শতাংশে স্কেল",
+    "simplifiedMoodTag": "সরলীকৃত মুড চার্ট",
+    "productivityTitle": "উৎপাদনশীলতা",
+    "productivitySubtitle": "গোপনীয়তার জন্য মান শতাংশে স্কেল",
+    "productivityTag": "উৎপাদনশীলতা চার্ট",
+    "earningsTitle": "আয়",
+    "earningsSubtitle": "গোপনীয়তার জন্য মান শতাংশে স্কেল",
+    "earningsTag": "আয়ের চার্ট"
   },
   "friends": {
     "addFriend": "বন্ধু যোগ করুন",
@@ -329,5 +353,133 @@
     "notFound": "অনুরোধিত সম্পদ পাওয়া যায়নি।",
     "timeout": "অনুরোধের সময় শেষ। আবার চেষ্টা করুন।",
     "unknownError": "একটি অপ্রত্যাশিত ত্রুটি ঘটেছে। আবার চেষ্টা করুন।"
+  },
+  "forms": {
+    "commonOptions": {
+      "area": {
+        "self": "নিজস্ব",
+        "home": "বাড়ি",
+        "social": "সামাজিক",
+        "work": "কাজ"
+      },
+      "category": {
+        "custom": "কাস্টম",
+        "body": "শরীর",
+        "mind": "মন",
+        "spirit": "আত্মা",
+        "social": "সামাজিক",
+        "work": "কাজ",
+        "home": "বাড়ি",
+        "fun": "মজা",
+        "growth": "বিকাশ",
+        "community": "সম্প্রদায়",
+        "affection": "স্নেহ",
+        "clean": "পরিষ্কার",
+        "maintenance": "রক্ষণাবেক্ষণ",
+        "spirituality": "আধ্যাত্মিকতা",
+        "event": "ইভেন্ট"
+      },
+      "entities": {
+        "list": "তালিকা",
+        "template": "টেমপ্লেট"
+      }
+    },
+    "addTaskForm": {
+      "title": "কাস্টম কাজ যোগ করুন",
+      "taskNameLabel": "কাজের নাম",
+      "taskNamePlaceholder": "কাজের নাম লিখুন...",
+      "areaLabel": "এলাকা",
+      "categoryLabel": "বিভাগ",
+      "timesLabel": "# বার",
+      "saveToTemplate": "টেমপ্লেটে কাজ সংরক্ষণ করুন",
+      "addTask": "কাজ যোগ করুন",
+      "cancel": "বাতিল"
+    },
+    "addListForm": {
+      "titleCreate": "নতুন তালিকা তৈরি করুন",
+      "titleEdit": "তালিকা সম্পাদনা",
+      "nameLabel": "নাম",
+      "templateOrListLabel": "টেমপ্লেট বা তালিকা",
+      "chooseTemplatePlaceholder": "একটি টেমপ্লেট বেছে নিন",
+      "budgetLabel": "বাজেট",
+      "dueDateLabel": "নির্ধারিত তারিখ",
+      "pickDatePlaceholder": "একটি তারিখ বেছে নিন",
+      "cadenceLabel": "আবর্তন",
+      "cadence": {
+        "oneOff": "একবার",
+        "daily": "দৈনিক",
+        "weekly": "সাপ্তাহিক",
+        "monthly": "মাসিক",
+        "quarterly": "ত্রৈমাসিক",
+        "semester": "সেমিস্টার",
+        "yearly": "বার্ষিক"
+      },
+      "collaboratorsLabel": "সহযোগী",
+      "searchUsernames": "ব্যবহারকারীর নাম অনুসন্ধান করুন...",
+      "typeAUsername": "একটি ব্যবহারকারীর নাম টাইপ করুন...",
+      "noResults": "কোন ফলাফল নেই।",
+      "selectedCount": "{count}টি নির্বাচন",
+      "roleLabel": "ভূমিকা",
+      "role": {
+        "custom": "কাস্টম",
+        "default": "ডিফল্ট"
+      },
+      "addTaskButton": "কাজ যোগ করুন",
+      "table": {
+        "name": "নাম",
+        "times": "বার",
+        "area": "এলাকা",
+        "categories": "বিভাগসমূহ"
+      },
+      "create": "তৈরি করুন",
+      "save": "সংরক্ষণ",
+      "cancel": "বাতিল",
+      "deleteListConfirm": "এই তালিকাটি মুছবেন? এটি ফেরত নেওয়া যাবে না।",
+      "deleteList": "তালিকা মুছুন"
+    },
+    "addTemplateForm": {
+      "title": "নতুন টেমপ্লেট তৈরি করুন",
+      "nameLabel": "নাম",
+      "createFromLabel": "থেকে তৈরি করুন",
+      "chooseListToClonePlaceholder": "কপি করার জন্য একটি তালিকা বেছে নিন (ঐচ্ছিক)",
+      "visibilityLabel": "দৃশ্যমানতা",
+      "visibility": {
+        "private": "ব্যক্তিগত",
+        "public": "সর্বজনীন",
+        "friends": "বন্ধুরা",
+        "closeFriends": "ঘনিষ্ঠ বন্ধুরা"
+      },
+      "addTaskButton": "কাজ যোগ করুন",
+      "task": {
+        "nameLabel": "নাম",
+        "areaLabel": "এলাকা",
+        "categoryLabel": "বিভাগ",
+        "timesLabel": "# বার",
+        "add": "যোগ করুন",
+        "cancel": "বাতিল"
+      },
+      "table": {
+        "name": "নাম",
+        "times": "বার",
+        "area": "এলাকা",
+        "categories": "বিভাগসমূহ"
+      },
+      "create": "তৈরি করুন",
+      "cancel": "বাতিল"
+    }
+  },
+  "charts": {
+    "dimensions": "মাত্রা",
+    "moodAverage": "গড় মেজাজ",
+    "gratitude": "কৃতজ্ঞতা",
+    "optimism": "আশাবাদ",
+    "restedness": "বিশ্রাম",
+    "tolerance": "সহনশীলতা",
+    "selfEsteem": "আত্মসম্মান",
+    "trust": "বিশ্বাস",
+    "progress": "অগ্রগতি",
+    "moodAverageScale": "মুড গড়ের স্কেল",
+    "balance": "ব্যালেন্স",
+    "earningsScale": "আয়ের স্কেল"
   }
 }

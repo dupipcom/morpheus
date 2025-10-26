@@ -30,7 +30,17 @@
     "social": "ソーシャル",
     "stash": "ストック",
     "equity": "自己資本",
-    "totalEarnings": "総収益"
+    "totalEarnings": "総収益",
+    "daily": "毎日",
+    "weekly": "毎週",
+    "balance": "バランス",
+    "dailyEarnings": "日々の収益",
+    "weeklyEarnings": "週間収益",
+    "newTask": "新しいタスク",
+    "newList": "新しいリスト",
+    "newTemplate": "新しいテンプレート",
+    "budget": "予算",
+    "due": "期日"
   },
   "navigation": {
     "home": "ホーム",
@@ -65,7 +75,20 @@
     "trust": "信頼",
     "editDay": "日を編集",
     "closeDay": "日を閉じる",
-    "earnings": "収益"
+    "earnings": "収益",
+    "publish": {
+      "title": "ノートを公開",
+      "placeholder": "ここにノートを書いてください...",
+      "selectVisibility": "表示範囲を選択",
+      "visibility": {
+        "PRIVATE": "プライベート",
+        "FRIENDS": "友達",
+        "CLOSE_FRIENDS": "親しい友達",
+        "PUBLIC": "公開",
+        "AI_ENABLED": "AI有効"
+      },
+      "action": "ノートを公開"
+    }
   },
   "week": {
     "weekNumber": "週{number}",
@@ -75,7 +98,8 @@
   "tasks": {
     "editing": "編集中：{timeframe}",
     "weekNumber": "週{number}",
-    "yourEarnings": "あなたの収益{timeframe}、これまで：Ð{amount}"
+    "yourEarnings": "あなたの収益{timeframe}、これまで：Ð{amount}",
+    "selectList": "リストを選択"
   },
   "settings": {
     "title": "設定",
@@ -343,5 +367,119 @@
     "notFound": "要求されたリソースが見つかりません。",
     "timeout": "リクエストがタイムアウトしました。もう一度お試しください。",
     "unknownError": "予期しないエラーが発生しました。もう一度お試しください。"
+  },
+  "forms": {
+    "commonOptions": {
+      "area": {
+        "self": "自分",
+        "home": "家",
+        "social": "社交",
+        "work": "仕事"
+      },
+      "category": {
+        "custom": "カスタム",
+        "body": "体",
+        "mind": "心",
+        "spirit": "精神",
+        "social": "社交",
+        "work": "仕事",
+        "home": "家",
+        "fun": "楽しみ",
+        "growth": "成長",
+        "community": "コミュニティ",
+        "affection": "愛情",
+        "clean": "清掃",
+        "maintenance": "メンテナンス",
+        "spirituality": "精神性",
+        "event": "イベント"
+      },
+      "entities": {
+        "list": "リスト",
+        "template": "テンプレート"
+      }
+    },
+    "addTaskForm": {
+      "title": "カスタムタスクを追加",
+      "taskNameLabel": "タスク名",
+      "taskNamePlaceholder": "タスク名を入力...",
+      "areaLabel": "エリア",
+      "categoryLabel": "カテゴリ",
+      "timesLabel": "# 回数",
+      "saveToTemplate": "タスクをテンプレートに保存",
+      "addTask": "タスクを追加",
+      "cancel": "キャンセル"
+    },
+    "addListForm": {
+      "titleCreate": "新しいリストを作成",
+      "titleEdit": "リストを編集",
+      "nameLabel": "名前",
+      "templateOrListLabel": "テンプレートまたはリスト",
+      "chooseTemplatePlaceholder": "テンプレートを選択",
+      "budgetLabel": "予算",
+      "dueDateLabel": "期日",
+      "pickDatePlaceholder": "日付を選択",
+      "cadenceLabel": "頻度",
+      "cadence": {
+        "oneOff": "1回限り",
+        "daily": "毎日",
+        "weekly": "毎週",
+        "monthly": "毎月",
+        "quarterly": "四半期ごと",
+        "semester": "学期ごと",
+        "yearly": "毎年"
+      },
+      "collaboratorsLabel": "共同作業者",
+      "searchUsernames": "ユーザー名を検索...",
+      "typeAUsername": "ユーザー名を入力...",
+      "noResults": "結果がありません。",
+      "selectedCount": "{count}個選択済み",
+      "roleLabel": "役割",
+      "role": {
+        "custom": "カスタム",
+        "default": "デフォルト"
+      },
+      "addTaskButton": "タスクを追加",
+      "table": {
+        "name": "名前",
+        "times": "回数",
+        "area": "エリア",
+        "categories": "カテゴリ"
+      },
+      "create": "作成",
+      "save": "保存",
+      "cancel": "キャンセル",
+      "deleteListConfirm": "このリストを削除しますか？これは取り消せません。",
+      "deleteList": "リストを削除"
+    },
+    "addTemplateForm": {
+      "title": "新しいテンプレートを作成",
+      "nameLabel": "名前",
+      "createFromLabel": "作成元",
+      "chooseListToClonePlaceholder": "複製するリストを選択（任意）",
+      "visibilityLabel": "表示範囲",
+      "visibility": {
+        "private": "プライベート",
+        "public": "公開",
+        "friends": "友達",
+        "closeFriends": "親しい友達"
+      },
+      "addTaskButton": "タスクを追加",
+      "task": {
+        "nameLabel": "名前",
+        "areaLabel": "エリア",
+        "categoryLabel": "カテゴリ",
+        "timesLabel": "# 回数",
+        "add": "追加",
+        "cancel": "キャンセル"
+      },
+      "table": {
+        "name": "名前",
+        "times": "回数",
+        "area": "エリア",
+        "categories": "カテゴリ"
+      },
+      "create": "作成",
+      "cancel": "キャンセル"
+    }
   }
 }

@@ -30,7 +30,17 @@
     "social": "Sosyal",
     "stash": "Stok",
     "equity": "Öz sermaye",
-    "totalEarnings": "Toplam kazanç"
+    "totalEarnings": "Toplam kazanç",
+    "daily": "Günlük",
+    "weekly": "Haftalık",
+    "balance": "Bakiye",
+    "dailyEarnings": "Günlük kazançlar",
+    "weeklyEarnings": "Haftalık kazançlar",
+    "newTask": "Yeni görev",
+    "newList": "Yeni liste",
+    "newTemplate": "Yeni şablon",
+    "budget": "Bütçe",
+    "due": "Neden"
   },
   "navigation": {
     "dashboard": "Gösterge Paneli",
@@ -69,7 +79,20 @@
     "trust": "Güven",
     "editDay": "Günü düzenle",
     "closeDay": "Günü kapat",
-    "earnings": "Kazanç"
+    "earnings": "Kazanç",
+    "publish": {
+      "title": "Bir Not Yayınla",
+      "placeholder": "Notunuzu buraya yazın...",
+      "selectVisibility": "Görünürlük seçin",
+      "visibility": {
+        "PRIVATE": "Özel",
+        "FRIENDS": "Arkadaşlar",
+        "CLOSE_FRIENDS": "Yakın Arkadaşlar",
+        "PUBLIC": "Kamu",
+        "AI_ENABLED": "Yapay Zeka Etkin"
+      },
+      "action": "Not Yayınla"
+    }
   },
   "week": {
     "weekNumber": "Hafta {number}",
@@ -79,7 +102,8 @@
   "tasks": {
     "editing": "Düzenleniyor: {timeframe}",
     "weekNumber": "Hafta {number}",
-    "yourEarnings": "Kazancınız"
+    "yourEarnings": "Kazancınız",
+    "selectList": "Liste seçin"
   },
   "actions": {
     "add": "Ekle",
@@ -146,12 +170,12 @@
     "iva": "IVA IT02925300903",
     "rea": "REA 572763",
     "cnpj": "CNPJ 37.553.462/0001-46",
-    "lgpdCompliant": "LGPD Compliant",
-    "gdprCompliant": "GDPR Compliant",
-    "doraReady": "DORA Ready",
-    "insights": "Insights are AI generated via RAG and prompt engineering.",
-    "cookies": "We use cookies, and by using this app you agree to it.",
-    "code": "Code"
+    "lgpdCompliant": "LGPD Uyumlu",
+    "gdprCompliant": "GDPR Uyumlu",
+    "doraReady": "DORA Hazır",
+    "insights": "İçgörüler RAG ve prompt mühendisliği yöntemleriyle AI tarafından oluşturulur.",
+    "cookies": "Çerez kullanıyoruz ve bu uygulamayı kullanarak bunu kabul etmiş olursunuz.",
+    "code": "Kod"
   },
   "earningsTable": {
     "day": "Gün",
@@ -241,10 +265,10 @@
     "deleteAction": "Eylemi sil",
     "deleteSelected": "Seçilenleri sil ({count})",
     "noResults": "Sonuç yok.",
-    "monthsFixedIncome": "Month's Recurring Income",
-    "monthsVariableIncome": "Month's Variable Income",
-    "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average",
+    "monthsFixedIncome": "Aylık Düzenli Gelir",
+    "monthsVariableIncome": "Aylık Değişken Gelir",
+    "fixedNeedCosts": "Sabit İhtiyaç Maliyetleri",
+    "expectedNeedUtilities": "Beklenen İhtiyaç Yardımcı Programları Ortalaması",
     "editAction": "Eylemi düzenle",
     "save": "Kaydet",
     "cancel": "İptal"
@@ -258,24 +282,24 @@
     "failedToSend": "Mesaj gönderilemedi. Lütfen tekrar deneyin."
   },
   "publicProfile": {
-    "ctaTitle": "Start Your Own DreamPip Journey",
-    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
-    "getStarted": "Get Started"
+    "ctaTitle": "Kendi DreamPip Yolculuğunuzu Başlatın",
+    "ctaSubtitle": "DreamPip ile ruh halinizi, verimliliğinizi ve kazançlarınızı takip edin",
+    "getStarted": "Başlayın"
   },
   "publicCharts": {
-    "noData": "No public charts data available.",
-    "moodTrackingTitle": "Mood Tracking",
-    "moodTrackingSubtitle": "Values scaled to percentages for privacy",
-    "moodChartsTag": "Mood Charts",
-    "moodOverviewTitle": "Mood Overview",
-    "moodOverviewSubtitle": "Simplified mood tracking - values scaled to percentages for privacy",
-    "simplifiedMoodTag": "Simplified Mood Chart",
-    "productivityTitle": "Productivity",
-    "productivitySubtitle": "Values scaled to percentages for privacy",
-    "productivityTag": "Productivity Charts",
-    "earningsTitle": "Earnings",
-    "earningsSubtitle": "Values scaled to percentages for privacy",
-    "earningsTag": "Earnings Charts"
+    "noData": "Herkese açık grafik verisi mevcut değil.",
+    "moodTrackingTitle": "Ruh Hali Takibi",
+    "moodTrackingSubtitle": "Gizlilik için değerler yüzdeye dönüştürülmüştür",
+    "moodChartsTag": "Ruh Hali Grafikleri",
+    "moodOverviewTitle": "Ruh Hali Genel Bakışı",
+    "moodOverviewSubtitle": "Basitleştirilmiş ruh hali takibi - gizlilik için değerler yüzdeye dönüştürülmüştür",
+    "simplifiedMoodTag": "Basitleştirilmiş Ruh Hali Grafiği",
+    "productivityTitle": "Verimlilik",
+    "productivitySubtitle": "Gizlilik için değerler yüzdeye dönüştürülmüştür",
+    "productivityTag": "Verimlilik Grafikleri",
+    "earningsTitle": "Kazanç",
+    "earningsSubtitle": "Gizlilik için değerler yüzdeye dönüştürülmüştür",
+    "earningsTag": "Kazanç Grafikleri"
   },
   "friends": {
     "addFriend": "Arkadaş ekle",
@@ -351,5 +375,119 @@
     "notFound": "İstenen kaynak bulunamadı.",
     "timeout": "İstek zaman aşımına uğradı. Lütfen tekrar deneyin.",
     "unknownError": "Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin."
+  },
+  "forms": {
+    "commonOptions": {
+      "area": {
+        "self": "Kendi kendine",
+        "home": "Ev",
+        "social": "Sosyal",
+        "work": "İş"
+      },
+      "category": {
+        "custom": "Özel",
+        "body": "Vücut",
+        "mind": "Zihin",
+        "spirit": "Ruh",
+        "social": "Sosyal",
+        "work": "İş",
+        "home": "Ev",
+        "fun": "Eğlence",
+        "growth": "Büyüme",
+        "community": "Topluluk",
+        "affection": "Sevgi",
+        "clean": "Temiz",
+        "maintenance": "Bakım",
+        "spirituality": "Maneviyat",
+        "event": "Etkinlik"
+      },
+      "entities": {
+        "list": "Liste",
+        "template": "Şablon"
+      }
+    },
+    "addTaskForm": {
+      "title": "Özel Görev Ekleme",
+      "taskNameLabel": "Görev Adı",
+      "taskNamePlaceholder": "Görev adını girin...",
+      "areaLabel": "Alan",
+      "categoryLabel": "Kategori",
+      "timesLabel": "# Kaç kez",
+      "saveToTemplate": "Görevi şablona kaydet",
+      "addTask": "Görev Ekleme",
+      "cancel": "İptal"
+    },
+    "addListForm": {
+      "titleCreate": "Yeni Liste Oluştur",
+      "titleEdit": "Listeyi Düzenle",
+      "nameLabel": "İsim",
+      "templateOrListLabel": "Şablon veya Liste",
+      "chooseTemplatePlaceholder": "Bir şablon seçin",
+      "budgetLabel": "Bütçe",
+      "dueDateLabel": "Son tarih",
+      "pickDatePlaceholder": "Bir tarih seçin",
+      "cadenceLabel": "Kadans",
+      "cadence": {
+        "oneOff": "Tek seferlik",
+        "daily": "Günlük",
+        "weekly": "Haftalık",
+        "monthly": "Aylık",
+        "quarterly": "Üç Aylık",
+        "semester": "Sömestr",
+        "yearly": "Yıllık"
+      },
+      "collaboratorsLabel": "İşbirlikçiler",
+      "searchUsernames": "Kullanıcı adlarını ara...",
+      "typeAUsername": "Bir kullanıcı adı yazın...",
+      "noResults": "Sonuç yok.",
+      "selectedCount": "{count} seçildi",
+      "roleLabel": "Rol",
+      "role": {
+        "custom": "Özel",
+        "default": "Varsayılan"
+      },
+      "addTaskButton": "Görev ekle",
+      "table": {
+        "name": "İsim",
+        "times": "Kez",
+        "area": "Alan",
+        "categories": "Kategoriler"
+      },
+      "create": "Oluştur",
+      "save": "Kaydet",
+      "cancel": "İptal",
+      "deleteListConfirm": "Bu listeyi silmek mi? Bu işlem geri alınamaz.",
+      "deleteList": "Listeyi sil"
+    },
+    "addTemplateForm": {
+      "title": "Yeni Şablon Oluştur",
+      "nameLabel": "İsim",
+      "createFromLabel": "Şuradan oluşturun",
+      "chooseListToClonePlaceholder": "Klonlanacak bir liste seçin (isteğe bağlı)",
+      "visibilityLabel": "Görünürlük",
+      "visibility": {
+        "private": "Özel",
+        "public": "Kamu",
+        "friends": "Arkadaşlar",
+        "closeFriends": "Yakın arkadaşlar"
+      },
+      "addTaskButton": "Görev ekle",
+      "task": {
+        "nameLabel": "İsim",
+        "areaLabel": "Alan",
+        "categoryLabel": "Kategori",
+        "timesLabel": "# Kez sayısı",
+        "add": "Ekle",
+        "cancel": "İptal"
+      },
+      "table": {
+        "name": "İsim",
+        "times": "Kez",
+        "area": "Alan",
+        "categories": "Kategoriler"
+      },
+      "create": "Oluştur",
+      "cancel": "İptal"
+    }
   }
 }

@@ -30,7 +30,17 @@
     "social": "Social",
     "stash": "Reserva",
     "equity": "Patrimonio",
-    "totalEarnings": "Ganancias Totales"
+    "totalEarnings": "Ganancias Totales",
+    "daily": "Diario",
+    "weekly": "Semanal",
+    "balance": "Saldo",
+    "dailyEarnings": "Ganancias Diarias",
+    "weeklyEarnings": "Ganancias Semanales",
+    "newTask": "Nueva tarea",
+    "newList": "Nueva lista",
+    "newTemplate": "Nueva plantilla",
+    "budget": "Presupuesto",
+    "due": "Vencimiento"
   },
   "navigation": {
     "home": "Inicio",
@@ -65,7 +75,20 @@
     "trust": "Confianza",
     "editDay": "Editar día",
     "closeDay": "Cerrar día",
-    "earnings": "Ganancias"
+    "earnings": "Ganancias",
+    "publish": {
+      "title": "Publicar una nota",
+      "placeholder": "Escribe tu nota aquí...",
+      "selectVisibility": "Seleccionar visibilidad",
+      "visibility": {
+        "PRIVATE": "Privado",
+        "FRIENDS": "Amigos",
+        "CLOSE_FRIENDS": "Amigos cercanos",
+        "PUBLIC": "Público",
+        "AI_ENABLED": "IA habilitada"
+      },
+      "action": "Publicar nota"
+    }
   },
   "week": {
     "weekNumber": "Semana {number}",
@@ -75,7 +98,8 @@
   "tasks": {
     "editing": "Editando: {timeframe}",
     "weekNumber": "Semana {number}",
-    "yourEarnings": "Tus ganancias {timeframe}, hasta ahora: Ð{amount}"
+    "yourEarnings": "Tus ganancias {timeframe}, hasta ahora: Ð{amount}",
+    "selectList": "Seleccionar lista"
   },
   "settings": {
     "title": "Configuración",
@@ -343,5 +367,119 @@
     "notFound": "El recurso solicitado no fue encontrado.",
     "timeout": "La solicitud expiró. Por favor intenta de nuevo.",
     "unknownError": "Ocurrió un error inesperado. Por favor intenta de nuevo."
+  },
+  "forms": {
+    "commonOptions": {
+      "area": {
+        "self": "Personal",
+        "home": "Hogar",
+        "social": "Social",
+        "work": "Trabajo"
+      },
+      "category": {
+        "custom": "Personalizado",
+        "body": "Cuerpo",
+        "mind": "Mente",
+        "spirit": "Espíritu",
+        "social": "Social",
+        "work": "Trabajo",
+        "home": "Hogar",
+        "fun": "Diversión",
+        "growth": "Crecimiento",
+        "community": "Comunidad",
+        "affection": "Afecto",
+        "clean": "Limpieza",
+        "maintenance": "Mantenimiento",
+        "spirituality": "Espiritualidad",
+        "event": "Evento"
+      },
+      "entities": {
+        "list": "Lista",
+        "template": "Plantilla"
+      }
+    },
+    "addTaskForm": {
+      "title": "Agregar tarea personalizada",
+      "taskNameLabel": "Nombre de la tarea",
+      "taskNamePlaceholder": "Introduce el nombre de la tarea...",
+      "areaLabel": "Área",
+      "categoryLabel": "Categoría",
+      "timesLabel": "# de veces",
+      "saveToTemplate": "Guardar tarea en plantilla",
+      "addTask": "Agregar tarea",
+      "cancel": "Cancelar"
+    },
+    "addListForm": {
+      "titleCreate": "Crear nueva lista",
+      "titleEdit": "Editar lista",
+      "nameLabel": "Nombre",
+      "templateOrListLabel": "Plantilla o lista",
+      "chooseTemplatePlaceholder": "Elige una plantilla",
+      "budgetLabel": "Presupuesto",
+      "dueDateLabel": "Fecha de vencimiento",
+      "pickDatePlaceholder": "Elige una fecha",
+      "cadenceLabel": "Frecuencia",
+      "cadence": {
+        "oneOff": "Única",
+        "daily": "Diaria",
+        "weekly": "Semanal",
+        "monthly": "Mensual",
+        "quarterly": "Trimestral",
+        "semester": "Semestral",
+        "yearly": "Anual"
+      },
+      "collaboratorsLabel": "Colaboradores",
+      "searchUsernames": "Buscar nombres de usuario...",
+      "typeAUsername": "Escribe un nombre de usuario...",
+      "noResults": "Sin resultados.",
+      "selectedCount": "{count} seleccionado(s)",
+      "roleLabel": "Rol",
+      "role": {
+        "custom": "Personalizado",
+        "default": "Predeterminado"
+      },
+      "addTaskButton": "Agregar tarea",
+      "table": {
+        "name": "Nombre",
+        "times": "Veces",
+        "area": "Área",
+        "categories": "Categorías"
+      },
+      "create": "Crear",
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "deleteListConfirm": "¿Eliminar esta lista? Esta acción no se puede deshacer.",
+      "deleteList": "Eliminar lista"
+    },
+    "addTemplateForm": {
+      "title": "Crear nueva plantilla",
+      "nameLabel": "Nombre",
+      "createFromLabel": "Crear desde",
+      "chooseListToClonePlaceholder": "Elige una lista para clonar (opcional)",
+      "visibilityLabel": "Visibilidad",
+      "visibility": {
+        "private": "Privada",
+        "public": "Pública",
+        "friends": "Amigos",
+        "closeFriends": "Amigos cercanos"
+      },
+      "addTaskButton": "Agregar tarea",
+      "task": {
+        "nameLabel": "Nombre",
+        "areaLabel": "Área",
+        "categoryLabel": "Categoría",
+        "timesLabel": "# de veces",
+        "add": "Agregar",
+        "cancel": "Cancelar"
+      },
+      "table": {
+        "name": "Nombre",
+        "times": "Veces",
+        "area": "Área",
+        "categories": "Categorías"
+      },
+      "create": "Crear",
+      "cancel": "Cancelar"
+    }
   }
 }

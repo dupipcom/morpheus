@@ -30,7 +30,17 @@
     "social": "Soziala",
     "stash": "Biltegia",
     "equity": "Kapital propioa",
-    "totalEarnings": "Irabaziak guztira"
+    "totalEarnings": "Irabaziak guztira",
+    "daily": "Egunero",
+    "weekly": "Astero",
+    "balance": "Saldoa",
+    "dailyEarnings": "Egunero irabaziak",
+    "weeklyEarnings": "Astero irabaziak",
+    "newTask": "Ataza berria",
+    "newList": "Zerrenda berria",
+    "newTemplate": "Txantiloi berria",
+    "budget": "Aurrekontua",
+    "due": "Epemuga"
   },
   "navigation": {
     "home": "Hasiera",
@@ -68,7 +78,20 @@
     "trust": "Konfiantza",
     "editDay": "Eguna editatu",
     "closeDay": "Eguna itxi",
-    "earnings": "Irabaziak"
+    "earnings": "Irabaziak",
+    "publish": {
+      "title": "Argitaratu oharra",
+      "placeholder": "Idatzi zure oharra hemen...",
+      "selectVisibility": "Hautatu ikusgaitasuna",
+      "visibility": {
+        "PRIVATE": "Pribatua",
+        "FRIENDS": "Lagunak",
+        "CLOSE_FRIENDS": "Lagun hurbilak",
+        "PUBLIC": "Publikoa",
+        "AI_ENABLED": "AI gaituta"
+      },
+      "action": "Argitaratu oharra"
+    }
   },
   "week": {
     "weekNumber": "Astea {number}",
@@ -78,7 +101,8 @@
   "tasks": {
     "editing": "Editatzen: {timeframe}",
     "weekNumber": "Astea {number}",
-    "yourEarnings": "Zure irabaziak"
+    "yourEarnings": "Zure irabaziak",
+    "selectList": "Zerrenda hautatu"
   },
   "actions": {
     "daily": {
@@ -226,10 +250,10 @@
     "deleteAction": "Ekintza ezabatu",
     "deleteSelected": "Hautatutakoak ezabatu ({count})",
     "noResults": "Emaitzik ez.",
-    "monthsFixedIncome": "Month's Recurring Income",
-    "monthsVariableIncome": "Month's Variable Income",
-    "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average",
+    "monthsFixedIncome": "Hileko Diru-sarrera Errepetitiboak",
+    "monthsVariableIncome": "Hileko Diru-sarrera Aldakorrak",
+    "fixedNeedCosts": "Behar Finko Gastuak",
+    "expectedNeedUtilities": "Behar Zerbitzuen Batezbesteko Esperatua",
     "editAction": "Ekintza editatu",
     "save": "Gorde",
     "cancel": "Utzi"
@@ -243,24 +267,24 @@
     "failedToSend": "Mezuaren bidalketak huts egin du. Mesedez, saiatu berriro."
   },
   "publicProfile": {
-    "ctaTitle": "Start Your Own DreamPip Journey",
-    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
-    "getStarted": "Get Started"
+    "ctaTitle": "Hasi zure DreamPip bidaia",
+    "ctaSubtitle": "Jarraitu zure aldartea, produktibitatea eta irabaziak DreamPip-ekin",
+    "getStarted": "Hasi"
   },
   "publicCharts": {
-    "noData": "No public charts data available.",
-    "moodTrackingTitle": "Mood Tracking",
-    "moodTrackingSubtitle": "Values scaled to percentages for privacy",
-    "moodChartsTag": "Mood Charts",
-    "moodOverviewTitle": "Mood Overview",
-    "moodOverviewSubtitle": "Simplified mood tracking - values scaled to percentages for privacy",
-    "simplifiedMoodTag": "Simplified Mood Chart",
-    "productivityTitle": "Productivity",
-    "productivitySubtitle": "Values scaled to percentages for privacy",
-    "productivityTag": "Productivity Charts",
-    "earningsTitle": "Earnings",
-    "earningsSubtitle": "Values scaled to percentages for privacy",
-    "earningsTag": "Earnings Charts"
+    "noData": "Ez dago grafik publikoen daturik eskuragarri.",
+    "moodTrackingTitle": "Humor Jarraipena",
+    "moodTrackingSubtitle": "Balioak ehunekoetara eskalatuak pribatutasunerako",
+    "moodChartsTag": "Humor Grafikoak",
+    "moodOverviewTitle": "Humor Ikuspegi Orokorra",
+    "moodOverviewSubtitle": "Humor jarraipen sinplifikatua - balioak ehunekoetara eskalatuak pribatutasunerako",
+    "simplifiedMoodTag": "Humor Grafiko Sinplifikatua",
+    "productivityTitle": "Produktibitatea",
+    "productivitySubtitle": "Balioak ehunekoetara eskalatuak pribatutasunerako",
+    "productivityTag": "Produktibitate Grafikoak",
+    "earningsTitle": "Irabaziak",
+    "earningsSubtitle": "Balioak ehunekoetara eskalatuak pribatutasunerako",
+    "earningsTag": "Irabazi Grafikoak"
   },
   "friends": {
     "addFriend": "Gehitu laguna",
@@ -336,5 +360,133 @@
     "notFound": "Eskatutako baliabidea ez da aurkitu.",
     "timeout": "Eskaera denbora agortu da. Saiatu berriz.",
     "unknownError": "Ustekabeko errore bat gertatu da. Saiatu berriz."
+  },
+  "forms": {
+    "commonOptions": {
+      "area": {
+        "self": "Norbera",
+        "home": "Etxea",
+        "social": "Soziala",
+        "work": "Lana"
+      },
+      "category": {
+        "custom": "Pertsonalizatua",
+        "body": "Gorputza",
+        "mind": "Burua",
+        "spirit": "Espiritua",
+        "social": "Soziala",
+        "work": "Lana",
+        "home": "Etxea",
+        "fun": "Dibertsioa",
+        "growth": "Hazkundea",
+        "community": "Komunitatea",
+        "affection": "Afektua",
+        "clean": "Garbitu",
+        "maintenance": "Mantentzea",
+        "spirituality": "Espiritualitatea",
+        "event": "Ekitaldia"
+      },
+      "entities": {
+        "list": "Zerrenda",
+        "template": "Txantiloi"
+      }
+    },
+    "addTaskForm": {
+      "title": "Ataza pertsonalizatua gehitu",
+      "taskNameLabel": "Atazaren izena",
+      "taskNamePlaceholder": "Sartu atazaren izena...",
+      "areaLabel": "Arloa",
+      "categoryLabel": "Kategoria",
+      "timesLabel": "# aldiz",
+      "saveToTemplate": "Gorde ataza txantiloi gisa",
+      "addTask": "Ataza gehitu",
+      "cancel": "Utzi"
+    },
+    "addListForm": {
+      "titleCreate": "Zerrenda berria sortu",
+      "titleEdit": "Zerrenda editatu",
+      "nameLabel": "Izena",
+      "templateOrListLabel": "Txantiloi edo zerrenda",
+      "chooseTemplatePlaceholder": "Aukeratu txantiloi bat",
+      "budgetLabel": "Aurrekontua",
+      "dueDateLabel": "Epemuga",
+      "pickDatePlaceholder": "Aukeratu data bat",
+      "cadenceLabel": "Kadentzia",
+      "cadence": {
+        "oneOff": "Behin bakarrik",
+        "daily": "Egunero",
+        "weekly": "Astero",
+        "monthly": "Hilero",
+        "quarterly": "Hiruhileko",
+        "semester": "Sei hileko",
+        "yearly": "Urtero"
+      },
+      "collaboratorsLabel": "Kolaboratzaileak",
+      "searchUsernames": "Bilatu erabiltzaile-izenak...",
+      "typeAUsername": "Idatzi erabiltzaile-izen bat...",
+      "noResults": "Emaitzik ez.",
+      "selectedCount": "{count} hautatuta",
+      "roleLabel": "Rola",
+      "role": {
+        "custom": "Pertsonalizatua",
+        "default": "Lehenetsia"
+      },
+      "addTaskButton": "Ataza gehitu",
+      "table": {
+        "name": "Izena",
+        "times": "Aldiz",
+        "area": "Arloa",
+        "categories": "Kategoriak"
+      },
+      "create": "Sortu",
+      "save": "Gorde",
+      "cancel": "Utzi",
+      "deleteListConfirm": "Zerrenda hau ezabatu? Hau ezin da desegin.",
+      "deleteList": "Zerrenda ezabatu"
+    },
+    "addTemplateForm": {
+      "title": "Txantiloi berria sortu",
+      "nameLabel": "Izena",
+      "createFromLabel": "Sortu hemendik",
+      "chooseListToClonePlaceholder": "Aukeratu klonatzeko zerrenda (aukerakoa)",
+      "visibilityLabel": "Ikusgarritasuna",
+      "visibility": {
+        "private": "Pribatua",
+        "public": "Publikoa",
+        "friends": "Lagunak",
+        "closeFriends": "Lagun hurbilak"
+      },
+      "addTaskButton": "Ataza gehitu",
+      "task": {
+        "nameLabel": "Izena",
+        "areaLabel": "Arloa",
+        "categoryLabel": "Kategoria",
+        "timesLabel": "# aldiz",
+        "add": "Gehitu",
+        "cancel": "Utzi"
+      },
+      "table": {
+        "name": "Izena",
+        "times": "Aldiz",
+        "area": "Arloa",
+        "categories": "Kategoriak"
+      },
+      "create": "Sortu",
+      "cancel": "Utzi"
+    }
+  },
+  "charts": {
+    "dimensions": "Dimentsioak",
+    "moodAverage": "Humor batazbestekoa",
+    "gratitude": "Esker ona",
+    "optimism": "Optimismoa",
+    "restedness": "Atsedena",
+    "tolerance": "Tolerantzia",
+    "selfEsteem": "Autoestimua",
+    "trust": "Konfiantza",
+    "progress": "Aurrerapena",
+    "moodAverageScale": "Humor batazbesteko eskala",
+    "balance": "Saldoa",
+    "earningsScale": "Irabazi eskala"
   }
 }

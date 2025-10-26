@@ -30,7 +30,17 @@
     "social": "Sosiaalinen",
     "stash": "Varasto",
     "equity": "Oma pääoma",
-    "totalEarnings": "Kokonaistulot"
+    "totalEarnings": "Kokonaistulot",
+    "daily": "Päivittäinen",
+    "weekly": "Viikoittainen",
+    "balance": "Saldo",
+    "dailyEarnings": "Päivittäiset tulot",
+    "weeklyEarnings": "Viikoittaiset tulot",
+    "newTask": "Uusi tehtävä",
+    "newList": "Uusi lista",
+    "newTemplate": "Uusi malli",
+    "budget": "Budjetti",
+    "due": "Erääntyy"
   },
   "navigation": {
     "dashboard": "Kojelauta",
@@ -69,7 +79,20 @@
     "trust": "Luottamus",
     "editDay": "Muokkaa päivää",
     "closeDay": "Sulje päivä",
-    "earnings": "Tulot"
+    "earnings": "Tulot",
+    "publish": {
+      "title": "Julkaise muistiinpano",
+      "placeholder": "Kirjoita muistiinpanosi tähän...",
+      "selectVisibility": "Valitse näkyvyys",
+      "visibility": {
+        "PRIVATE": "Yksityinen",
+        "FRIENDS": "Ystävät",
+        "CLOSE_FRIENDS": "Läheiset ystävät",
+        "PUBLIC": "Julkinen",
+        "AI_ENABLED": "AI käytössä"
+      },
+      "action": "Julkaise muistiinpano"
+    }
   },
   "week": {
     "weekNumber": "Viikko {number}",
@@ -79,7 +102,8 @@
   "tasks": {
     "editing": "Muokataan: {timeframe}",
     "weekNumber": "Viikko {number}",
-    "yourEarnings": "Tulosi"
+    "yourEarnings": "Tulosi",
+    "selectList": "Valitse lista"
   },
   "actions": {
     "add": "Lisää",
@@ -227,10 +251,10 @@
     "deleteAction": "Poista toiminto",
     "deleteSelected": "Poista valitut ({count})",
     "noResults": "Ei tuloksia.",
-    "monthsFixedIncome": "Month's Recurring Income",
-    "monthsVariableIncome": "Month's Variable Income",
-    "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average",
+    "monthsFixedIncome": "Kuukausittaiset toistuvat tulot",
+    "monthsVariableIncome": "Kuukausittaiset muuttuvat tulot",
+    "fixedNeedCosts": "Kiinteät tarpeelliset kustannukset",
+    "expectedNeedUtilities": "Odotettavissa olevat tarpeelliset palvelukustannukset",
     "editAction": "Muokkaa toimintoa",
     "save": "Tallenna",
     "cancel": "Peruuta"
@@ -244,24 +268,24 @@
     "failedToSend": "Viestin lähettäminen epäonnistui. Yritä uudelleen."
   },
   "publicProfile": {
-    "ctaTitle": "Start Your Own DreamPip Journey",
-    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
-    "getStarted": "Get Started"
+    "ctaTitle": "Aloita oma DreamPip-matkasi",
+    "ctaSubtitle": "Seuraa mielialaa, tuottavuutta ja tuloja DreamPipillä",
+    "getStarted": "Aloita"
   },
   "publicCharts": {
-    "noData": "No public charts data available.",
-    "moodTrackingTitle": "Mood Tracking",
-    "moodTrackingSubtitle": "Values scaled to percentages for privacy",
-    "moodChartsTag": "Mood Charts",
-    "moodOverviewTitle": "Mood Overview",
-    "moodOverviewSubtitle": "Simplified mood tracking - values scaled to percentages for privacy",
-    "simplifiedMoodTag": "Simplified Mood Chart",
-    "productivityTitle": "Productivity",
-    "productivitySubtitle": "Values scaled to percentages for privacy",
-    "productivityTag": "Productivity Charts",
-    "earningsTitle": "Earnings",
-    "earningsSubtitle": "Values scaled to percentages for privacy",
-    "earningsTag": "Earnings Charts"
+    "noData": "Julkisia kaaviotietoja ei ole saatavilla.",
+    "moodTrackingTitle": "Mielialan seuranta",
+    "moodTrackingSubtitle": "Arvot skaalattu prosentteihin yksityisyyden suojaamiseksi",
+    "moodChartsTag": "Mielialakaaviot",
+    "moodOverviewTitle": "Mielialan yleiskatsaus",
+    "moodOverviewSubtitle": "Yksinkertaistettu mielialan seuranta - arvot skaalattu prosentteihin yksityisyyden suojaamiseksi",
+    "simplifiedMoodTag": "Yksinkertaistettu mielialakaavio",
+    "productivityTitle": "Tuottavuus",
+    "productivitySubtitle": "Arvot skaalattu prosentteihin yksityisyyden suojaamiseksi",
+    "productivityTag": "Tuottavuuskaaviot",
+    "earningsTitle": "Tulot",
+    "earningsSubtitle": "Arvot skaalattu prosentteihin yksityisyyden suojaamiseksi",
+    "earningsTag": "Tulokaaviot"
   },
   "friends": {
     "addFriend": "Lisää ystävä",
@@ -337,5 +361,133 @@
     "notFound": "Pyydettyä resurssia ei löytynyt.",
     "timeout": "Pyyntö aikakatkaistiin. Yritä uudelleen.",
     "unknownError": "Odottamaton virhe tapahtui. Yritä uudelleen."
+  },
+  "forms": {
+    "commonOptions": {
+      "area": {
+        "self": "Itse",
+        "home": "Koti",
+        "social": "Sosiaalinen",
+        "work": "Työ"
+      },
+      "category": {
+        "custom": "Mukautettu",
+        "body": "Keho",
+        "mind": "Mieli",
+        "spirit": "Henki",
+        "social": "Sosiaalinen",
+        "work": "Työ",
+        "home": "Koti",
+        "fun": "Hauskanpito",
+        "growth": "Kasvu",
+        "community": "Yhteisö",
+        "affection": "Kiintymys",
+        "clean": "Siisti",
+        "maintenance": "Huolto",
+        "spirituality": "Hengellisyys",
+        "event": "Tapahtuma"
+      },
+      "entities": {
+        "list": "Lista",
+        "template": "Malli"
+      }
+    },
+    "addTaskForm": {
+      "title": "Lisää mukautettu tehtävä",
+      "taskNameLabel": "Tehtävän nimi",
+      "taskNamePlaceholder": "Syötä tehtävän nimi...",
+      "areaLabel": "Alue",
+      "categoryLabel": "Kategoria",
+      "timesLabel": "# kertaa",
+      "saveToTemplate": "Tallenna tehtävä malliksi",
+      "addTask": "Lisää tehtävä",
+      "cancel": "Peruuta"
+    },
+    "addListForm": {
+      "titleCreate": "Luo uusi lista",
+      "titleEdit": "Muokkaa listaa",
+      "nameLabel": "Nimi",
+      "templateOrListLabel": "Malli tai lista",
+      "chooseTemplatePlaceholder": "Valitse malli",
+      "budgetLabel": "Budjetti",
+      "dueDateLabel": "Eräpäivä",
+      "pickDatePlaceholder": "Valitse päivämäärä",
+      "cadenceLabel": "Kadenssi",
+      "cadence": {
+        "oneOff": "Kertakäyttöinen",
+        "daily": "Päivittäinen",
+        "weekly": "Viikoittainen",
+        "monthly": "Kuukausittainen",
+        "quarterly": "Neljännesvuosittainen",
+        "semester": "Puolivuosittainen",
+        "yearly": "Vuosittainen"
+      },
+      "collaboratorsLabel": "Yhteistyökumppanit",
+      "searchUsernames": "Etsi käyttäjänimiä...",
+      "typeAUsername": "Kirjoita käyttäjänimi...",
+      "noResults": "Ei tuloksia.",
+      "selectedCount": "{count} valittu",
+      "roleLabel": "Rooli",
+      "role": {
+        "custom": "Mukautettu",
+        "default": "Oletus"
+      },
+      "addTaskButton": "Lisää tehtävä",
+      "table": {
+        "name": "Nimi",
+        "times": "Kerrat",
+        "area": "Alue",
+        "categories": "Kategoriat"
+      },
+      "create": "Luo",
+      "save": "Tallenna",
+      "cancel": "Peruuta",
+      "deleteListConfirm": "Poista tämä lista? Tätä ei voi peruuttaa.",
+      "deleteList": "Poista lista"
+    },
+    "addTemplateForm": {
+      "title": "Luo uusi malli",
+      "nameLabel": "Nimi",
+      "createFromLabel": "Luo perustuen",
+      "chooseListToClonePlaceholder": "Valitse kloonattava lista (valinnainen)",
+      "visibilityLabel": "Näkyvyys",
+      "visibility": {
+        "private": "Yksityinen",
+        "public": "Julkinen",
+        "friends": "Ystävät",
+        "closeFriends": "Läheiset ystävät"
+      },
+      "addTaskButton": "Lisää tehtävä",
+      "task": {
+        "nameLabel": "Nimi",
+        "areaLabel": "Alue",
+        "categoryLabel": "Kategoria",
+        "timesLabel": "# kertaa",
+        "add": "Lisää",
+        "cancel": "Peruuta"
+      },
+      "table": {
+        "name": "Nimi",
+        "times": "Kerrat",
+        "area": "Alue",
+        "categories": "Kategoriat"
+      },
+      "create": "Luo",
+      "cancel": "Peruuta"
+    }
+  },
+  "charts": {
+    "dimensions": "Mitat",
+    "moodAverage": "Mielialan keskiarvo",
+    "gratitude": "Kiitollisuus",
+    "optimism": "Optimismi",
+    "restedness": "Lepo",
+    "tolerance": "Suvaitsevaisuus",
+    "selfEsteem": "Itsetunto",
+    "trust": "Luottamus",
+    "progress": "Edistyminen",
+    "moodAverageScale": "Mielialan keskiarvon asteikko",
+    "balance": "Saldo",
+    "earningsScale": "Tulojen asteikko"
   }
 }

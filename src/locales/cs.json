@@ -30,7 +30,17 @@
     "social": "Sociální",
     "stash": "Zásoba",
     "equity": "Vlastní kapitál",
-    "totalEarnings": "Celkové výdělky"
+    "totalEarnings": "Celkové výdělky",
+    "daily": "Denně",
+    "weekly": "Týdně",
+    "balance": "Zůstatek",
+    "dailyEarnings": "Denní příjmy",
+    "weeklyEarnings": "Týdenní příjmy",
+    "newTask": "Nový úkol",
+    "newList": "Nový seznam",
+    "newTemplate": "Nová šablona",
+    "budget": "Rozpočet",
+    "due": "Splatnosti"
   },
   "navigation": {
     "home": "Domů",
@@ -65,7 +75,20 @@
     "trust": "Důvěra",
     "editDay": "Upravit den",
     "closeDay": "Zavřít den",
-    "earnings": "Výdělky"
+    "earnings": "Výdělky",
+    "publish": {
+      "title": "Publikovat poznámku",
+      "placeholder": "Napište svou poznámku zde...",
+      "selectVisibility": "Vyberte viditelnost",
+      "visibility": {
+        "PRIVATE": "Soukromé",
+        "FRIENDS": "Přátelé",
+        "CLOSE_FRIENDS": "Blízcí přátelé",
+        "PUBLIC": "Veřejné",
+        "AI_ENABLED": "Povoleno umělou inteligencí"
+      },
+      "action": "Publikovat poznámku"
+    }
   },
   "week": {
     "weekNumber": "Týden {number}",
@@ -73,9 +96,10 @@
     "to": "do"
   },
   "tasks": {
-    "editing": "Úprava",
+    "editing": "Úprava: {timeframe}",
     "weekNumber": "Týden {number}",
-    "yourEarnings": "Váš výdělek"
+    "yourEarnings": "Vaše příjmy {timeframe}, doposud: Ð{amount}",
+    "selectList": "Vyberte seznam"
   },
   "actions": {
     "daily": {
@@ -219,10 +243,10 @@
     "deleteAction": "Smazat akci",
     "deleteSelected": "Smazat vybrané ({count})",
     "noResults": "Žádné výsledky.",
-    "monthsFixedIncome": "Month's Recurring Income",
-    "monthsVariableIncome": "Month's Variable Income",
-    "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average",
+    "monthsFixedIncome": "Měsíční fixní příjem",
+    "monthsVariableIncome": "Měsíční variabilní příjem",
+    "fixedNeedCosts": "Fixní náklady na potřeby",
+    "expectedNeedUtilities": "Očekávaný průměr nákladů na energie",
     "editAction": "Upravit akci",
     "save": "Uložit",
     "cancel": "Zrušit"
@@ -236,24 +260,24 @@
     "failedToSend": "Zpráva se nepodařila odeslat. Zkuste to znovu."
   },
   "publicProfile": {
-    "ctaTitle": "Start Your Own DreamPip Journey",
-    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
-    "getStarted": "Get Started"
+    "ctaTitle": "Začněte svou vlastní cestu s DreamPip",
+    "ctaSubtitle": "Sledujte svou náladu, produktivitu a výdělky s DreamPip",
+    "getStarted": "Začít"
   },
   "publicCharts": {
-    "noData": "No public charts data available.",
-    "moodTrackingTitle": "Mood Tracking",
-    "moodTrackingSubtitle": "Values scaled to percentages for privacy",
-    "moodChartsTag": "Mood Charts",
-    "moodOverviewTitle": "Mood Overview",
-    "moodOverviewSubtitle": "Simplified mood tracking - values scaled to percentages for privacy",
-    "simplifiedMoodTag": "Simplified Mood Chart",
-    "productivityTitle": "Productivity",
-    "productivitySubtitle": "Values scaled to percentages for privacy",
-    "productivityTag": "Productivity Charts",
-    "earningsTitle": "Earnings",
-    "earningsSubtitle": "Values scaled to percentages for privacy",
-    "earningsTag": "Earnings Charts"
+    "noData": "Žádná veřejná data grafů k dispozici.",
+    "moodTrackingTitle": "Sledování nálady",
+    "moodTrackingSubtitle": "Hodnoty změněny na procenta pro ochranu soukromí",
+    "moodChartsTag": "Grafy nálady",
+    "moodOverviewTitle": "Přehled nálady",
+    "moodOverviewSubtitle": "Zjednodušené sledování nálady - hodnoty změněny na procenta pro ochranu soukromí",
+    "simplifiedMoodTag": "Zjednodušený graf nálady",
+    "productivityTitle": "Produktivita",
+    "productivitySubtitle": "Hodnoty změněny na procenta pro ochranu soukromí",
+    "productivityTag": "Grafy produktivity",
+    "earningsTitle": "Výdělky",
+    "earningsSubtitle": "Hodnoty změněny na procenta pro ochranu soukromí",
+    "earningsTag": "Grafy výdělků"
   },
   "friends": {
     "addFriend": "Přidat přítele",
@@ -329,5 +353,133 @@
     "notFound": "Požadovaný zdroj nebyl nalezen.",
     "timeout": "Požadavek vypršel. Zkuste to znovu.",
     "unknownError": "Došlo k neočekávané chybě. Zkuste to znovu."
+  },
+  "forms": {
+    "commonOptions": {
+      "area": {
+        "self": "Osobní",
+        "home": "Domov",
+        "social": "Sociální",
+        "work": "Práce"
+      },
+      "category": {
+        "custom": "Vlastní",
+        "body": "Tělo",
+        "mind": "Mysl",
+        "spirit": "Duch",
+        "social": "Sociální",
+        "work": "Práce",
+        "home": "Domov",
+        "fun": "Zábava",
+        "growth": "Růst",
+        "community": "Komunita",
+        "affection": "Náklonnost",
+        "clean": "Čistota",
+        "maintenance": "Údržba",
+        "spirituality": "Spiritualita",
+        "event": "Akce"
+      },
+      "entities": {
+        "list": "Seznam",
+        "template": "Šablona"
+      }
+    },
+    "addTaskForm": {
+      "title": "Přidat vlastní úkol",
+      "taskNameLabel": "Název úkolu",
+      "taskNamePlaceholder": "Zadejte název úkolu...",
+      "areaLabel": "Oblast",
+      "categoryLabel": "Kategorie",
+      "timesLabel": "# kolikrát",
+      "saveToTemplate": "Uložit úkol do šablony",
+      "addTask": "Přidat úkol",
+      "cancel": "Zrušit"
+    },
+    "addListForm": {
+      "titleCreate": "Vytvořit nový seznam",
+      "titleEdit": "Upravit seznam",
+      "nameLabel": "Název",
+      "templateOrListLabel": "Šablona nebo seznam",
+      "chooseTemplatePlaceholder": "Vyberte šablonu",
+      "budgetLabel": "Rozpočet",
+      "dueDateLabel": "Datum splatnosti",
+      "pickDatePlaceholder": "Vyberte datum",
+      "cadenceLabel": "Kadence",
+      "cadence": {
+        "oneOff": "Jednorázovo",
+        "daily": "Denně",
+        "weekly": "Týdně",
+        "monthly": "Měsíčně",
+        "quarterly": "Čtvrtletně",
+        "semester": "Pololetně",
+        "yearly": "Ročně"
+      },
+      "collaboratorsLabel": "Spolupracovníci",
+      "searchUsernames": "Hledat jména uživatelů...",
+      "typeAUsername": "Zadejte jméno uživatele...",
+      "noResults": "Žádné výsledky.",
+      "selectedCount": "{count} vybrány",
+      "roleLabel": "Role",
+      "role": {
+        "custom": "Vlastní",
+        "default": "Výchozí"
+      },
+      "addTaskButton": "Přidat úkol",
+      "table": {
+        "name": "Název",
+        "times": "Časy",
+        "area": "Oblast",
+        "categories": "Kategorie"
+      },
+      "create": "Vytvořit",
+      "save": "Uložit",
+      "cancel": "Zrušit",
+      "deleteListConfirm": "Smazat tento seznam? Toto nelze vrátit zpět.",
+      "deleteList": "Smazat seznam"
+    },
+    "addTemplateForm": {
+      "title": "Vytvořit novou šablonu",
+      "nameLabel": "Název",
+      "createFromLabel": "Vytvořit z",
+      "chooseListToClonePlaceholder": "Vyberte seznam ke klonování (volitelné)",
+      "visibilityLabel": "Viditelnost",
+      "visibility": {
+        "private": "Soukromé",
+        "public": "Veřejné",
+        "friends": "Přátelé",
+        "closeFriends": "Blízcí přátelé"
+      },
+      "addTaskButton": "Přidat úkol",
+      "task": {
+        "nameLabel": "Název",
+        "areaLabel": "Oblast",
+        "categoryLabel": "Kategorie",
+        "timesLabel": "# kolikrát",
+        "add": "Přidat",
+        "cancel": "Zrušit"
+      },
+      "table": {
+        "name": "Název",
+        "times": "Časy",
+        "area": "Oblast",
+        "categories": "Kategorie"
+      },
+      "create": "Vytvořit",
+      "cancel": "Zrušit"
+    }
+  },
+  "charts": {
+    "dimensions": "Dimenze",
+    "moodAverage": "Průměrná nálada",
+    "gratitude": "Vděčnost",
+    "optimism": "Optimismus",
+    "restedness": "Odpočinek",
+    "tolerance": "Tolerance",
+    "selfEsteem": "Sebevědomí",
+    "trust": "Důvěra",
+    "progress": "Pokrok",
+    "moodAverageScale": "Stupnice průměrné nálady",
+    "balance": "Zůstatek",
+    "earningsScale": "Stupnice výdělků"
   }
 }

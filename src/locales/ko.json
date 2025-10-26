@@ -30,7 +30,17 @@
     "social": "소셜",
     "stash": "재고",
     "equity": "자기자본",
-    "totalEarnings": "총 수익"
+    "totalEarnings": "총 수익",
+    "daily": "매일",
+    "weekly": "매주",
+    "balance": "잔액",
+    "dailyEarnings": "일일 수익",
+    "weeklyEarnings": "주간 수익",
+    "newTask": "새 작업",
+    "newList": "새 목록",
+    "newTemplate": "새 템플릿",
+    "budget": "예산",
+    "due": "기한"
   },
   "navigation": {
     "home": "홈",
@@ -65,7 +75,20 @@
     "trust": "신뢰",
     "editDay": "일 편집",
     "closeDay": "일 닫기",
-    "earnings": "수익"
+    "earnings": "수익",
+    "publish": {
+      "title": "노트 게시",
+      "placeholder": "여기에 노트를 작성하세요...",
+      "selectVisibility": "공개 범위 선택",
+      "visibility": {
+        "PRIVATE": "비공개",
+        "FRIENDS": "친구",
+        "CLOSE_FRIENDS": "가까운 친구",
+        "PUBLIC": "공개",
+        "AI_ENABLED": "AI 활성화"
+      },
+      "action": "노트 게시"
+    }
   },
   "week": {
     "weekNumber": "주 {number}",
@@ -75,7 +98,8 @@
   "tasks": {
     "editing": "편집 중: {timeframe}",
     "weekNumber": "주 {number}",
-    "yourEarnings": "당신의 수익 {timeframe}, 지금까지: Ð{amount}"
+    "yourEarnings": "당신의 수익 {timeframe}, 지금까지: Ð{amount}",
+    "selectList": "목록 선택"
   },
   "actions": {
     "daily": {
@@ -229,11 +253,11 @@
     "deleteAction": "작업 삭제",
     "deleteSelected": "선택된 항목 삭제 ({count})",
     "noResults": "결과가 없습니다.",
-    "monthsFixedIncome": "Month's Recurring Income",
-    "monthsVariableIncome": "Month's Variable Income",
-    "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average",
-    "editAction": "액션 편집",
+    "monthsFixedIncome": "월 고정 수입",
+    "monthsVariableIncome": "월 변동 수입",
+    "fixedNeedCosts": "고정 필수 비용",
+    "expectedNeedUtilities": "예상 필수 공과금 평균",
+    "editAction": "작업 편집",
     "save": "저장",
     "cancel": "취소"
   },
@@ -343,5 +367,119 @@
     "notFound": "요청한 리소스를 찾을 수 없습니다.",
     "timeout": "요청이 시간 초과되었습니다. 다시 시도하세요.",
     "unknownError": "예상치 못한 오류가 발생했습니다. 다시 시도하세요."
+  },
+  "forms": {
+    "commonOptions": {
+      "area": {
+        "self": "자기",
+        "home": "가정",
+        "social": "사회",
+        "work": "일"
+      },
+      "category": {
+        "custom": "커스텀",
+        "body": "신체",
+        "mind": "마음",
+        "spirit": "정신",
+        "social": "사회",
+        "work": "일",
+        "home": "가정",
+        "fun": "재미",
+        "growth": "성장",
+        "community": "커뮤니티",
+        "affection": "애정",
+        "clean": "청소",
+        "maintenance": "유지관리",
+        "spirituality": "영성",
+        "event": "이벤트"
+      },
+      "entities": {
+        "list": "목록",
+        "template": "템플릿"
+      }
+    },
+    "addTaskForm": {
+      "title": "커스텀 작업 추가",
+      "taskNameLabel": "작업 이름",
+      "taskNamePlaceholder": "작업 이름 입력...",
+      "areaLabel": "영역",
+      "categoryLabel": "카테고리",
+      "timesLabel": "# 횟수",
+      "saveToTemplate": "템플릿에 작업 저장",
+      "addTask": "작업 추가",
+      "cancel": "취소"
+    },
+    "addListForm": {
+      "titleCreate": "새 목록 만들기",
+      "titleEdit": "목록 편집",
+      "nameLabel": "이름",
+      "templateOrListLabel": "템플릿 또는 목록",
+      "chooseTemplatePlaceholder": "템플릿 선택",
+      "budgetLabel": "예산",
+      "dueDateLabel": "기한",
+      "pickDatePlaceholder": "날짜 선택",
+      "cadenceLabel": "주기",
+      "cadence": {
+        "oneOff": "일회성",
+        "daily": "매일",
+        "weekly": "매주",
+        "monthly": "매월",
+        "quarterly": "분기별",
+        "semester": "학기별",
+        "yearly": "매년"
+      },
+      "collaboratorsLabel": "협력자",
+      "searchUsernames": "사용자명 검색...",
+      "typeAUsername": "사용자명 입력...",
+      "noResults": "결과 없음.",
+      "selectedCount": "{count}개 선택됨",
+      "roleLabel": "역할",
+      "role": {
+        "custom": "커스텀",
+        "default": "기본"
+      },
+      "addTaskButton": "작업 추가",
+      "table": {
+        "name": "이름",
+        "times": "횟수",
+        "area": "영역",
+        "categories": "카테고리"
+      },
+      "create": "만들기",
+      "save": "저장",
+      "cancel": "취소",
+      "deleteListConfirm": "이 목록을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.",
+      "deleteList": "목록 삭제"
+    },
+    "addTemplateForm": {
+      "title": "새 템플릿 만들기",
+      "nameLabel": "이름",
+      "createFromLabel": "생성 기준",
+      "chooseListToClonePlaceholder": "복제할 목록 선택 (선택사항)",
+      "visibilityLabel": "공개 범위",
+      "visibility": {
+        "private": "비공개",
+        "public": "공개",
+        "friends": "친구",
+        "closeFriends": "가까운 친구"
+      },
+      "addTaskButton": "작업 추가",
+      "task": {
+        "nameLabel": "이름",
+        "areaLabel": "영역",
+        "categoryLabel": "카테고리",
+        "timesLabel": "# 횟수",
+        "add": "추가",
+        "cancel": "취소"
+      },
+      "table": {
+        "name": "이름",
+        "times": "횟수",
+        "area": "영역",
+        "categories": "카테고리"
+      },
+      "create": "만들기",
+      "cancel": "취소"
+    }
   }
 }

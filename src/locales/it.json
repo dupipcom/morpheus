@@ -30,7 +30,17 @@
     "social": "Social",
     "stash": "Scorta",
     "equity": "Patrimonio netto",
-    "totalEarnings": "Guadagni totali"
+    "totalEarnings": "Guadagni totali",
+    "daily": "Giornaliero",
+    "weekly": "Settimanale",
+    "balance": "Saldo",
+    "dailyEarnings": "Guadagni Giornalieri",
+    "weeklyEarnings": "Guadagni Settimanali",
+    "newTask": "Nuova attività",
+    "newList": "Nuovo elenco",
+    "newTemplate": "Nuovo modello",
+    "budget": "Budget",
+    "due": "Scadenza"
   },
   "navigation": {
     "home": "Inizio",
@@ -65,7 +75,20 @@
     "trust": "Fiducia",
     "editDay": "Modifica giorno",
     "closeDay": "Chiudi giorno",
-    "earnings": "Guadagni"
+    "earnings": "Guadagni",
+    "publish": {
+      "title": "Pubblica una Nota",
+      "placeholder": "Scrivi la tua nota qui...",
+      "selectVisibility": "Seleziona visibilità",
+      "visibility": {
+        "PRIVATE": "Privato",
+        "FRIENDS": "Amici",
+        "CLOSE_FRIENDS": "Amici Stretti",
+        "PUBLIC": "Pubblico",
+        "AI_ENABLED": "Abilitato IA"
+      },
+      "action": "Pubblica Nota"
+    }
   },
   "week": {
     "weekNumber": "Settimana {number}",
@@ -75,7 +98,8 @@
   "tasks": {
     "editing": "Modifica: {timeframe}",
     "weekNumber": "Settimana {number}",
-    "yourEarnings": "I tuoi guadagni {timeframe}, finora: Ð{amount}"
+    "yourEarnings": "I tuoi guadagni {timeframe}, finora: Ð{amount}",
+    "selectList": "Seleziona elenco"
   },
   "settings": {
     "title": "Impostazioni",
@@ -343,5 +367,119 @@
     "notFound": "La risorsa richiesta non è stata trovata.",
     "timeout": "La richiesta è scaduta. Riprova.",
     "unknownError": "Si è verificato un errore imprevisto. Riprova."
+  },
+  "forms": {
+    "commonOptions": {
+      "area": {
+        "self": "Personale",
+        "home": "Casa",
+        "social": "Sociale",
+        "work": "Lavoro"
+      },
+      "category": {
+        "custom": "Personalizzato",
+        "body": "Corpo",
+        "mind": "Mente",
+        "spirit": "Spirito",
+        "social": "Sociale",
+        "work": "Lavoro",
+        "home": "Casa",
+        "fun": "Divertimento",
+        "growth": "Crescita",
+        "community": "Comunità",
+        "affection": "Affetto",
+        "clean": "Pulizie",
+        "maintenance": "Manutenzione",
+        "spirituality": "Spiritualità",
+        "event": "Evento"
+      },
+      "entities": {
+        "list": "Elenco",
+        "template": "Modello"
+      }
+    },
+    "addTaskForm": {
+      "title": "Aggiungi Attività Personalizzata",
+      "taskNameLabel": "Nome Attività",
+      "taskNamePlaceholder": "Inserisci nome attività...",
+      "areaLabel": "Area",
+      "categoryLabel": "Categoria",
+      "timesLabel": "# di volte",
+      "saveToTemplate": "Salva attività nel modello",
+      "addTask": "Aggiungi Attività",
+      "cancel": "Annulla"
+    },
+    "addListForm": {
+      "titleCreate": "Crea Nuovo Elenco",
+      "titleEdit": "Modifica Elenco",
+      "nameLabel": "Nome",
+      "templateOrListLabel": "Modello o Elenco",
+      "chooseTemplatePlaceholder": "Scegli un modello",
+      "budgetLabel": "Budget",
+      "dueDateLabel": "Data di scadenza",
+      "pickDatePlaceholder": "Scegli una data",
+      "cadenceLabel": "Cadenza",
+      "cadence": {
+        "oneOff": "Una tantum",
+        "daily": "Giornaliero",
+        "weekly": "Settimanale",
+        "monthly": "Mensile",
+        "quarterly": "Trimestrale",
+        "semester": "Semestrale",
+        "yearly": "Annuale"
+      },
+      "collaboratorsLabel": "Collaboratori",
+      "searchUsernames": "Cerca nomi utente...",
+      "typeAUsername": "Digita un nome utente...",
+      "noResults": "Nessun risultato.",
+      "selectedCount": "{count} selezionati",
+      "roleLabel": "Ruolo",
+      "role": {
+        "custom": "Personalizzato",
+        "default": "Predefinito"
+      },
+      "addTaskButton": "Aggiungi attività",
+      "table": {
+        "name": "Nome",
+        "times": "Volte",
+        "area": "Area",
+        "categories": "Categorie"
+      },
+      "create": "Crea",
+      "save": "Salva",
+      "cancel": "Annulla",
+      "deleteListConfirm": "Eliminare questo elenco? Questa azione non può essere annullata.",
+      "deleteList": "Elimina elenco"
+    },
+    "addTemplateForm": {
+      "title": "Crea Nuovo Modello",
+      "nameLabel": "Nome",
+      "createFromLabel": "Crea da",
+      "chooseListToClonePlaceholder": "Scegli un elenco da clonare (facoltativo)",
+      "visibilityLabel": "Visibilità",
+      "visibility": {
+        "private": "Privato",
+        "public": "Pubblico",
+        "friends": "Amici",
+        "closeFriends": "Amici stretti"
+      },
+      "addTaskButton": "Aggiungi attività",
+      "task": {
+        "nameLabel": "Nome",
+        "areaLabel": "Area",
+        "categoryLabel": "Categoria",
+        "timesLabel": "# di volte",
+        "add": "Aggiungi",
+        "cancel": "Annulla"
+      },
+      "table": {
+        "name": "Nome",
+        "times": "Volte",
+        "area": "Area",
+        "categories": "Categorie"
+      },
+      "create": "Crea",
+      "cancel": "Annulla"
+    }
   }
 }

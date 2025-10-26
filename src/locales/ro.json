@@ -28,7 +28,19 @@
     "signOut": "Deconectare",
     "stash": "Stoc",
     "equity": "Capital propriu",
-    "totalEarnings": "Câștiguri totale"
+    "totalEarnings": "Câștiguri totale",
+    "profile": "Profil",
+    "social": "Social",
+    "daily": "Zilnic",
+    "weekly": "Săptămânal",
+    "balance": "Sold",
+    "dailyEarnings": "Câștiguri zilnice",
+    "weeklyEarnings": "Câștiguri săptămânale",
+    "newTask": "Sarcină nouă",
+    "newList": "Listă nouă",
+    "newTemplate": "Șablon nou",
+    "budget": "Buget",
+    "due": "Datorate"
   },
   "navigation": {
     "home": "Acasă",
@@ -63,7 +75,20 @@
     "trust": "Încredere",
     "editDay": "Editează ziua",
     "closeDay": "Închide ziua",
-    "earnings": "Câștiguri"
+    "earnings": "Câștiguri",
+    "publish": {
+      "title": "Publicați o notă",
+      "placeholder": "Scrieți nota dvs. aici...",
+      "selectVisibility": "Selectați vizibilitatea",
+      "visibility": {
+        "PRIVATE": "Privat",
+        "FRIENDS": "Prieteni",
+        "CLOSE_FRIENDS": "Prieteni apropiați",
+        "PUBLIC": "Public",
+        "AI_ENABLED": "AI activat"
+      },
+      "action": "Publică nota"
+    }
   },
   "week": {
     "weekNumber": "Săptămâna {number}",
@@ -73,7 +98,8 @@
   "tasks": {
     "editing": "Editare: {timeframe}",
     "weekNumber": "Săptămâna {number}",
-    "yourEarnings": "Câștigurile tale"
+    "yourEarnings": "Câștigurile tale",
+    "selectList": "Selectați lista"
   },
   "actions": {
     "daily": {
@@ -217,10 +243,10 @@
     "deleteAction": "Șterge acțiunea",
     "deleteSelected": "Șterge selectate ({count})",
     "noResults": "Fără rezultate.",
-    "monthsFixedIncome": "Month's Recurring Income",
-    "monthsVariableIncome": "Month's Variable Income",
-    "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average",
+    "monthsFixedIncome": "Venit lunar recurent",
+    "monthsVariableIncome": "Venit lunar variabil",
+    "fixedNeedCosts": "Costuri fixe necesare",
+    "expectedNeedUtilities": "Media costuri utilități necesare estimate",
     "editAction": "Editează acțiunea",
     "save": "Salvează",
     "cancel": "Anulează"
@@ -234,24 +260,24 @@
     "failedToSend": "Trimiterea mesajului a eșuat. Te rog încearcă din nou."
   },
   "publicProfile": {
-    "ctaTitle": "Start Your Own DreamPip Journey",
-    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
-    "getStarted": "Get Started"
+    "ctaTitle": "Începe-ți propria călătorie DreamPip",
+    "ctaSubtitle": "Urmărește-ți starea de spirit, productivitatea și câștigurile cu DreamPip",
+    "getStarted": "Începe"
   },
   "publicCharts": {
-    "noData": "No public charts data available.",
-    "moodTrackingTitle": "Mood Tracking",
-    "moodTrackingSubtitle": "Values scaled to percentages for privacy",
-    "moodChartsTag": "Mood Charts",
-    "moodOverviewTitle": "Mood Overview",
-    "moodOverviewSubtitle": "Simplified mood tracking - values scaled to percentages for privacy",
-    "simplifiedMoodTag": "Simplified Mood Chart",
-    "productivityTitle": "Productivity",
-    "productivitySubtitle": "Values scaled to percentages for privacy",
-    "productivityTag": "Productivity Charts",
-    "earningsTitle": "Earnings",
-    "earningsSubtitle": "Values scaled to percentages for privacy",
-    "earningsTag": "Earnings Charts"
+    "noData": "Nu sunt disponibile date pentru graficele publice.",
+    "moodTrackingTitle": "Urmărire dispoziție",
+    "moodTrackingSubtitle": "Valorile scalate la procente pentru confidențialitate",
+    "moodChartsTag": "Grafice dispoziție",
+    "moodOverviewTitle": "Prezentare generală dispoziție",
+    "moodOverviewSubtitle": "Urmărire simplificată a dispoziției - valorile scalate la procente pentru confidențialitate",
+    "simplifiedMoodTag": "Grafic dispoziție simplificat",
+    "productivityTitle": "Productivitate",
+    "productivitySubtitle": "Valorile scalate la procente pentru confidențialitate",
+    "productivityTag": "Grafice productivitate",
+    "earningsTitle": "Câștiguri",
+    "earningsSubtitle": "Valorile scalate la procente pentru confidențialitate",
+    "earningsTag": "Grafice câștiguri"
   },
   "friends": {
     "addFriend": "Adaugă prieten",
@@ -327,5 +353,133 @@
     "notFound": "Resursa solicitată nu a fost găsită.",
     "timeout": "Cererea a expirat. Încercați din nou.",
     "unknownError": "A apărut o eroare neașteptată. Încercați din nou."
+  },
+  "forms": {
+    "commonOptions": {
+      "area": {
+        "self": "Sine",
+        "home": "Acasă",
+        "social": "Social",
+        "work": "Muncă"
+      },
+      "category": {
+        "custom": "Personalizat",
+        "body": "Corp",
+        "mind": "Minte",
+        "spirit": "Spirit",
+        "social": "Social",
+        "work": "Muncă",
+        "home": "Acasă",
+        "fun": "Distracție",
+        "growth": "Creștere",
+        "community": "Comunitate",
+        "affection": "Afecțiune",
+        "clean": "Curat",
+        "maintenance": "Întreținere",
+        "spirituality": "Spiritualitate",
+        "event": "Eveniment"
+      },
+      "entities": {
+        "list": "Listă",
+        "template": "Șablon"
+      }
+    },
+    "addTaskForm": {
+      "title": "Adăugați o sarcină personalizată",
+      "taskNameLabel": "Numele sarcinii",
+      "taskNamePlaceholder": "Introduceți numele sarcinii...",
+      "areaLabel": "Zonă",
+      "categoryLabel": "Categorie",
+      "timesLabel": "# de ori",
+      "saveToTemplate": "Salvați sarcina în șablon",
+      "addTask": "Adăugați o sarcină",
+      "cancel": "Anulează"
+    },
+    "addListForm": {
+      "titleCreate": "Creați o listă nouă",
+      "titleEdit": "Editare listă",
+      "nameLabel": "Nume și prenume",
+      "templateOrListLabel": "Șablon sau listă",
+      "chooseTemplatePlaceholder": "Alegeți un șablon",
+      "budgetLabel": "Buget",
+      "dueDateLabel": "Data scadenței",
+      "pickDatePlaceholder": "Alegeți o dată",
+      "cadenceLabel": "Cadență",
+      "cadence": {
+        "oneOff": "O singură dată",
+        "daily": "Zilnic",
+        "weekly": "Săptămânal",
+        "monthly": "Lunar",
+        "quarterly": "Trimestrial",
+        "semester": "Semestru",
+        "yearly": "Anual"
+      },
+      "collaboratorsLabel": "Colaboratori",
+      "searchUsernames": "Căutare nume de utilizator...",
+      "typeAUsername": "Tastați un nume de utilizator...",
+      "noResults": "Niciun rezultat.",
+      "selectedCount": "{număr} selectat",
+      "roleLabel": "Rol",
+      "role": {
+        "custom": "Personalizat",
+        "default": "Implicit"
+      },
+      "addTaskButton": "Adăugați o sarcină",
+      "table": {
+        "name": "Nume și prenume",
+        "times": "Timpuri",
+        "area": "Zonă",
+        "categories": "Categorii"
+      },
+      "create": "Creați",
+      "save": "Salvați",
+      "cancel": "Anulează",
+      "deleteListConfirm": "Ștergeți această listă? Acest lucru nu poate fi anulat.",
+      "deleteList": "Ștergeți lista"
+    },
+    "addTemplateForm": {
+      "title": "Creați un șablon nou",
+      "nameLabel": "Nume și prenume",
+      "createFromLabel": "Creați din",
+      "chooseListToClonePlaceholder": "Alegeți o listă pentru clonare (opțional)",
+      "visibilityLabel": "Vizibilitate",
+      "visibility": {
+        "private": "Privat",
+        "public": "Public",
+        "friends": "Prieteni",
+        "closeFriends": "Prieteni apropiați"
+      },
+      "addTaskButton": "Adăugați o sarcină",
+      "task": {
+        "nameLabel": "Nume și prenume",
+        "areaLabel": "Zonă",
+        "categoryLabel": "Categorie",
+        "timesLabel": "# de ori",
+        "add": "Adaugă",
+        "cancel": "Anulează"
+      },
+      "table": {
+        "name": "Nume și prenume",
+        "times": "Timpuri",
+        "area": "Zonă",
+        "categories": "Categorii"
+      },
+      "create": "Creați",
+      "cancel": "Anulează"
+    }
+  },
+  "charts": {
+    "dimensions": "Dimensiuni",
+    "moodAverage": "Media dispoziției",
+    "gratitude": "Recunoștință",
+    "optimism": "Optimism",
+    "restedness": "Odihnă",
+    "tolerance": "Toleranță",
+    "selfEsteem": "Stimă de sine",
+    "trust": "Încredere",
+    "progress": "Progres",
+    "moodAverageScale": "Scara medie a dispoziției",
+    "balance": "Sold",
+    "earningsScale": "Scara câștigurilor"
   }
 }

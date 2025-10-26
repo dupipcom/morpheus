@@ -28,7 +28,19 @@
     "signOut": "התנתק",
     "stash": "מאגר",
     "equity": "הון עצמי",
-    "totalEarnings": "הכנסות כוללות"
+    "totalEarnings": "הכנסות כוללות",
+    "profile": "פרופיל",
+    "social": "חברתי",
+    "daily": "יומי",
+    "weekly": "שבועי",
+    "balance": "יתרה",
+    "dailyEarnings": "הכנסות יומיות",
+    "weeklyEarnings": "הכנסות שבועיות",
+    "newTask": "משימה חדשה",
+    "newList": "רשימה חדשה",
+    "newTemplate": "תבנית חדשה",
+    "budget": "תקציב",
+    "due": "תאריך יעד"
   },
   "navigation": {
     "home": "בית",
@@ -63,7 +75,20 @@
     "trust": "אמון",
     "editDay": "עריכת יום",
     "closeDay": "סגירת יום",
-    "earnings": "רווחים"
+    "earnings": "רווחים",
+    "publish": {
+      "title": "פרסם הערה",
+      "placeholder": "כתוב את ההערה שלך כאן...",
+      "selectVisibility": "בחר נראות",
+      "visibility": {
+        "PRIVATE": "פרטי",
+        "FRIENDS": "חברים",
+        "CLOSE_FRIENDS": "חברים קרובים",
+        "PUBLIC": "ציבורי",
+        "AI_ENABLED": "בינה מלאכותית מופעלת"
+      },
+      "action": "פרסם הערה"
+    }
   },
   "week": {
     "weekNumber": "שבוע {number}",
@@ -73,7 +98,8 @@
   "tasks": {
     "editing": "עריכה: {timeframe}",
     "weekNumber": "שבוע {number}",
-    "yourEarnings": "הרווחים שלך"
+    "yourEarnings": "הרווחים שלך",
+    "selectList": "בחר רשימה"
   },
   "actions": {
     "daily": {
@@ -217,10 +243,10 @@
     "deleteAction": "מחק פעולה",
     "deleteSelected": "מחק נבחר ({count})",
     "noResults": "אין תוצאות.",
-    "monthsFixedIncome": "Month's Recurring Income",
-    "monthsVariableIncome": "Month's Variable Income",
-    "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average",
+    "monthsFixedIncome": "הכנסה חוזרת חודשית",
+    "monthsVariableIncome": "הכנסה משתנה חודשית",
+    "fixedNeedCosts": "עלויות קבועות נדרשות",
+    "expectedNeedUtilities": "ממוצע שירותים נדרשים צפוי",
     "editAction": "ערוך פעולה",
     "save": "שמור",
     "cancel": "בטל"
@@ -234,24 +260,24 @@
     "failedToSend": "שליחת הודעה נכשלה. אנא נסה שוב."
   },
   "publicProfile": {
-    "ctaTitle": "Start Your Own DreamPip Journey",
-    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
-    "getStarted": "Get Started"
+    "ctaTitle": "התחל את המסע שלך עם DreamPip",
+    "ctaSubtitle": "עקוב אחר מצב הרוח, הפרודוקטיביות והרווחים שלך עם DreamPip",
+    "getStarted": "התחל"
   },
   "publicCharts": {
-    "noData": "No public charts data available.",
-    "moodTrackingTitle": "Mood Tracking",
-    "moodTrackingSubtitle": "Values scaled to percentages for privacy",
-    "moodChartsTag": "Mood Charts",
-    "moodOverviewTitle": "Mood Overview",
-    "moodOverviewSubtitle": "Simplified mood tracking - values scaled to percentages for privacy",
-    "simplifiedMoodTag": "Simplified Mood Chart",
-    "productivityTitle": "Productivity",
-    "productivitySubtitle": "Values scaled to percentages for privacy",
-    "productivityTag": "Productivity Charts",
-    "earningsTitle": "Earnings",
-    "earningsSubtitle": "Values scaled to percentages for privacy",
-    "earningsTag": "Earnings Charts"
+    "noData": "אין נתוני גרפים ציבוריים זמינים.",
+    "moodTrackingTitle": "מעקב מצב רוח",
+    "moodTrackingSubtitle": "ערכים מותאמים לאחוזים לטובת הפרטיות",
+    "moodChartsTag": "גרפי מצב רוח",
+    "moodOverviewTitle": "סקירת מצב רוח",
+    "moodOverviewSubtitle": "מעקב מצב רוח מפושט - ערכים מותאמים לאחוזים לטובת הפרטיות",
+    "simplifiedMoodTag": "גרף מצב רוח מפושט",
+    "productivityTitle": "פרודוקטיביות",
+    "productivitySubtitle": "ערכים מותאמים לאחוזים לטובת הפרטיות",
+    "productivityTag": "גרפי פרודוקטיביות",
+    "earningsTitle": "רווחים",
+    "earningsSubtitle": "ערכים מותאמים לאחוזים לטובת הפרטיות",
+    "earningsTag": "גרפי רווחים"
   },
   "friends": {
     "addFriend": "הוסף חבר",
@@ -327,5 +353,133 @@
     "notFound": "המשאב המבוקש לא נמצא.",
     "timeout": "הבקשה פגה. נסה שוב.",
     "unknownError": "אירעה שגיאה בלתי צפויה. נסה שוב."
+  },
+  "forms": {
+    "commonOptions": {
+      "area": {
+        "self": "עצמי",
+        "home": "בית",
+        "social": "חברתי",
+        "work": "עבודה"
+      },
+      "category": {
+        "custom": "מותאם אישית",
+        "body": "גוף",
+        "mind": "נפש",
+        "spirit": "רוח",
+        "social": "חברתי",
+        "work": "עבודה",
+        "home": "בית",
+        "fun": "כיף",
+        "growth": "צמיחה",
+        "community": "קהילה",
+        "affection": "חיבה",
+        "clean": "נקי",
+        "maintenance": "תחזוקה",
+        "spirituality": "רוחניות",
+        "event": "אירוע"
+      },
+      "entities": {
+        "list": "רשימה",
+        "template": "תבנית"
+      }
+    },
+    "addTaskForm": {
+      "title": "הוסף משימה מותאמת אישית",
+      "taskNameLabel": "שם המשימה",
+      "taskNamePlaceholder": "הכנס שם משימה...",
+      "areaLabel": "תחום",
+      "categoryLabel": "קטגוריה",
+      "timesLabel": "# פעמים",
+      "saveToTemplate": "שמור משימה כתבנית",
+      "addTask": "הוסף משימה",
+      "cancel": "ביטול"
+    },
+    "addListForm": {
+      "titleCreate": "צור רשימה חדשה",
+      "titleEdit": "ערוך רשימה",
+      "nameLabel": "שם",
+      "templateOrListLabel": "תבנית או רשימה",
+      "chooseTemplatePlaceholder": "בחר תבנית",
+      "budgetLabel": "תקציב",
+      "dueDateLabel": "תאריך יעד",
+      "pickDatePlaceholder": "בחר תאריך",
+      "cadenceLabel": "קצב",
+      "cadence": {
+        "oneOff": "חד פעמי",
+        "daily": "יומי",
+        "weekly": "שבועי",
+        "monthly": "חודשי",
+        "quarterly": "רבעוני",
+        "semester": "סמסטר",
+        "yearly": "שנתי"
+      },
+      "collaboratorsLabel": "משתתפים",
+      "searchUsernames": "חפש שמות משתמש...",
+      "typeAUsername": "הקלד שם משתמש...",
+      "noResults": "אין תוצאות.",
+      "selectedCount": "{count} נבחר",
+      "roleLabel": "תפקיד",
+      "role": {
+        "custom": "מותאם אישית",
+        "default": "ברירת מחדל"
+      },
+      "addTaskButton": "הוסף משימה",
+      "table": {
+        "name": "שם",
+        "times": "פעמים",
+        "area": "תחום",
+        "categories": "קטגוריות"
+      },
+      "create": "צור",
+      "save": "שמור",
+      "cancel": "ביטול",
+      "deleteListConfirm": "מחק רשימה זו? לא ניתן לבטל פעולה זו.",
+      "deleteList": "מחק רשימה"
+    },
+    "addTemplateForm": {
+      "title": "צור תבנית חדשה",
+      "nameLabel": "שם",
+      "createFromLabel": "צור מתוך",
+      "chooseListToClonePlaceholder": "בחר רשימה לשכפול (אופציונלי)",
+      "visibilityLabel": "נראות",
+      "visibility": {
+        "private": "פרטי",
+        "public": "ציבורי",
+        "friends": "חברים",
+        "closeFriends": "חברים קרובים"
+      },
+      "addTaskButton": "הוסף משימה",
+      "task": {
+        "nameLabel": "שם",
+        "areaLabel": "תחום",
+        "categoryLabel": "קטגוריה",
+        "timesLabel": "# פעמים",
+        "add": "הוסף",
+        "cancel": "ביטול"
+      },
+      "table": {
+        "name": "שם",
+        "times": "פעמים",
+        "area": "תחום",
+        "categories": "קטגוריות"
+      },
+      "create": "צור",
+      "cancel": "ביטול"
+    }
+  },
+  "charts": {
+    "dimensions": "ממדים",
+    "moodAverage": "ממוצע מצב רוח",
+    "gratitude": "תודה",
+    "optimism": "אופטימיות",
+    "restedness": "מנוחה",
+    "tolerance": "סובלנות",
+    "selfEsteem": "הערכה עצמית",
+    "trust": "אמון",
+    "progress": "התקדמות",
+    "moodAverageScale": "סולם ממוצע מצב רוח",
+    "balance": "יתרה",
+    "earningsScale": "סולם רווחים"
   }
 }

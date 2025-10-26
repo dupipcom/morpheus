@@ -28,7 +28,19 @@
     "signOut": "Ondoka",
     "stash": "Hifadhi",
     "equity": "Mtaji",
-    "totalEarnings": "Mapato ya jumla"
+    "totalEarnings": "Mapato ya jumla",
+    "profile": "Wasifu",
+    "social": "Kijamii",
+    "daily": "Kila siku",
+    "weekly": "Kila wiki",
+    "balance": "Salio",
+    "dailyEarnings": "Mapato ya kila siku",
+    "weeklyEarnings": "Mapato ya kila wiki",
+    "newTask": "Kazi mpya",
+    "newList": "Orodha mpya",
+    "newTemplate": "Kiolezo kipya",
+    "budget": "Bajeti",
+    "due": "Inahitajika"
   },
   "navigation": {
     "home": "Nyumbani",
@@ -63,7 +75,20 @@
     "trust": "Uaminifu",
     "editDay": "Hariri siku",
     "closeDay": "Funga siku",
-    "earnings": "Mapato"
+    "earnings": "Mapato",
+    "publish": {
+      "title": "Chapisha Maelezo",
+      "placeholder": "Andika maelezo yako hapa...",
+      "selectVisibility": "Chagua mwonekano",
+      "visibility": {
+        "PRIVATE": "Binafsi",
+        "FRIENDS": "Marafiki",
+        "CLOSE_FRIENDS": "Marafiki wa Karibu",
+        "PUBLIC": "Umma",
+        "AI_ENABLED": "AI Imewezeshwa"
+      },
+      "action": "Chapisha Maelezo"
+    }
   },
   "week": {
     "weekNumber": "Wiki {number}",
@@ -73,7 +98,8 @@
   "tasks": {
     "editing": "Inahariri: {timeframe}",
     "weekNumber": "Wiki {number}",
-    "yourEarnings": "Mapato yako {timeframe}, hadi sasa: Ð{amount}"
+    "yourEarnings": "Mapato yako {timeframe}, hadi sasa: Ð{amount}",
+    "selectList": "Chagua orodha"
   },
   "settings": {
     "title": "Mipangilio",
@@ -91,7 +117,10 @@
     "monthsFixedIncome": "Mapato ya Mwezi ya Kudumu",
     "monthsVariableIncome": "Mapato ya Mwezi ya Kubadilika",
     "fixedNeedCosts": "Gharama za Mahitaji ya Kudumu",
-    "expectedNeedUtilities": "Wastani wa Matumizi ya Mahitaji ya Kutarajiwa"
+    "expectedNeedUtilities": "Wastani wa Matumizi ya Mahitaji ya Kutarajiwa",
+    "editAction": "Hariri kitendo",
+    "cancel": "Ghairi",
+    "save": "Hifadhi"
   },
   "actions": {
     "daily": {
@@ -243,24 +272,24 @@
     "genericError": "Kuna kitu kilichokwenda vibaya. Tafadhali jaribu tena."
   },
   "publicProfile": {
-    "ctaTitle": "Start Your Own DreamPip Journey",
-    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
-    "getStarted": "Get Started"
+    "ctaTitle": "Anza Safari Yako ya DreamPip",
+    "ctaSubtitle": "Fuatilia hali yako ya moyo, uzalishaji na mapato na DreamPip",
+    "getStarted": "Anza"
   },
   "publicCharts": {
-    "noData": "No public charts data available.",
-    "moodTrackingTitle": "Mood Tracking",
-    "moodTrackingSubtitle": "Values scaled to percentages for privacy",
-    "moodChartsTag": "Mood Charts",
-    "moodOverviewTitle": "Mood Overview",
-    "moodOverviewSubtitle": "Simplified mood tracking - values scaled to percentages for privacy",
-    "simplifiedMoodTag": "Simplified Mood Chart",
-    "productivityTitle": "Productivity",
-    "productivitySubtitle": "Values scaled to percentages for privacy",
-    "productivityTag": "Productivity Charts",
-    "earningsTitle": "Earnings",
-    "earningsSubtitle": "Values scaled to percentages for privacy",
-    "earningsTag": "Earnings Charts"
+    "noData": "Hakuna data ya chati za umma inayopatikana.",
+    "moodTrackingTitle": "Ufuatiliaji wa Hali ya Moyo",
+    "moodTrackingSubtitle": "Thamani zimepunguzwa kwa asilimia kwa faragha",
+    "moodChartsTag": "Chati za Hali ya Moyo",
+    "moodOverviewTitle": "Muhtasari wa Hali ya Moyo",
+    "moodOverviewSubtitle": "Ufuatiliaji rahisi wa hali ya moyo - thamani zimepunguzwa kwa asilimia kwa faragha",
+    "simplifiedMoodTag": "Chati Rahisi ya Hali ya Moyo",
+    "productivityTitle": "Uzalishaji",
+    "productivitySubtitle": "Thamani zimepunguzwa kwa asilimia kwa faragha",
+    "productivityTag": "Chati za Uzalishaji",
+    "earningsTitle": "Mapato",
+    "earningsSubtitle": "Thamani zimepunguzwa kwa asilimia kwa faragha",
+    "earningsTag": "Chati za Mapato"
   },
   "friends": {
     "addFriend": "Ongeza rafiki",
@@ -336,5 +365,119 @@
     "notFound": "Rasilimali iliyoombwa haijapatikana.",
     "timeout": "Ombi limeisha muda. Jaribu tena.",
     "unknownError": "Hitilafu isiyotarajiwa imetokea. Jaribu tena."
+  },
+  "forms": {
+    "commonOptions": {
+      "area": {
+        "self": "Binafsi",
+        "home": "Nyumbani",
+        "social": "Kijamii",
+        "work": "Kazi"
+      },
+      "category": {
+        "custom": "Desturi",
+        "body": "Mwili",
+        "mind": "Akili",
+        "spirit": "Roho",
+        "social": "Kijamii",
+        "work": "Kazi",
+        "home": "Nyumbani",
+        "fun": "Burudani",
+        "growth": "Ukuaji",
+        "community": "Jumuiya",
+        "affection": "Mapenzi",
+        "clean": "Usafi",
+        "maintenance": "Matengenezo",
+        "spirituality": "Kiroho",
+        "event": "Tukio"
+      },
+      "entities": {
+        "list": "Orodha",
+        "template": "Kiolezo"
+      }
+    },
+    "addTaskForm": {
+      "title": "Ongeza Kazi ya Desturi",
+      "taskNameLabel": "Jina la Kazi",
+      "taskNamePlaceholder": "Ingiza jina la kazi...",
+      "areaLabel": "Eneo",
+      "categoryLabel": "Kategoria",
+      "timesLabel": "# ya mara",
+      "saveToTemplate": "Hifadhi kazi kwenye kiolezo",
+      "addTask": "Ongeza Kazi",
+      "cancel": "Ghairi"
+    },
+    "addListForm": {
+      "titleCreate": "Unda Orodha Mpya",
+      "titleEdit": "Hariri Orodha",
+      "nameLabel": "Jina",
+      "templateOrListLabel": "Kiolezo au Orodha",
+      "chooseTemplatePlaceholder": "Chagua kiolezo",
+      "budgetLabel": "Bajeti",
+      "dueDateLabel": "Tarehe ya mwisho",
+      "pickDatePlaceholder": "Chagua tarehe",
+      "cadenceLabel": "Mdundo",
+      "cadence": {
+        "oneOff": "Mara moja",
+        "daily": "Kila siku",
+        "weekly": "Kila wiki",
+        "monthly": "Kila mwezi",
+        "quarterly": "Kila robo mwaka",
+        "semester": "Kila nusu mwaka",
+        "yearly": "Kila mwaka"
+      },
+      "collaboratorsLabel": "Washiriki",
+      "searchUsernames": "Tafuta majina ya watumiaji...",
+      "typeAUsername": "Andika jina la mtumiaji...",
+      "noResults": "Hakuna matokeo.",
+      "selectedCount": "{count} imechaguliwa",
+      "roleLabel": "Jukumu",
+      "role": {
+        "custom": "Desturi",
+        "default": "Chaguo-msingi"
+      },
+      "addTaskButton": "Ongeza kazi",
+      "table": {
+        "name": "Jina",
+        "times": "Mara",
+        "area": "Eneo",
+        "categories": "Kategoria"
+      },
+      "create": "Unda",
+      "save": "Hifadhi",
+      "cancel": "Ghairi",
+      "deleteListConfirm": "Futa orodha hii? Hii haiwezi kurejeshwa.",
+      "deleteList": "Futa orodha"
+    },
+    "addTemplateForm": {
+      "title": "Unda Kiolezo Kipya",
+      "nameLabel": "Jina",
+      "createFromLabel": "Unda kutoka",
+      "chooseListToClonePlaceholder": "Chagua orodha ya kunakala (si lazima)",
+      "visibilityLabel": "Mwonekano",
+      "visibility": {
+        "private": "Binafsi",
+        "public": "Umma",
+        "friends": "Marafiki",
+        "closeFriends": "Marafiki wa karibu"
+      },
+      "addTaskButton": "Ongeza kazi",
+      "task": {
+        "nameLabel": "Jina",
+        "areaLabel": "Eneo",
+        "categoryLabel": "Kategoria",
+        "timesLabel": "# ya mara",
+        "add": "Ongeza",
+        "cancel": "Ghairi"
+      },
+      "table": {
+        "name": "Jina",
+        "times": "Mara",
+        "area": "Eneo",
+        "categories": "Kategoria"
+      },
+      "create": "Unda",
+      "cancel": "Ghairi"
+    }
   }
 }

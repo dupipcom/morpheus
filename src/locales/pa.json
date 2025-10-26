@@ -28,7 +28,19 @@
     "signOut": "ਸਾਈਨ ਆਊਟ",
     "stash": "ਸਟਾਕ",
     "equity": "ਇਕੁਇਟੀ",
-    "totalEarnings": "ਕੁੱਲ ਕਮਾਈ"
+    "totalEarnings": "ਕੁੱਲ ਕਮਾਈ",
+    "profile": "Profile",
+    "social": "Social",
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "balance": "Balance",
+    "dailyEarnings": "Daily Earnings",
+    "weeklyEarnings": "Weekly Earnings",
+    "newTask": "New task",
+    "newList": "New list",
+    "newTemplate": "New template",
+    "budget": "Budget",
+    "due": "Due"
   },
   "navigation": {
     "dashboard": "ਡੈਸ਼ਬੋਰਡ",
@@ -67,7 +79,20 @@
     "trust": "ਭਰੋਸਾ",
     "editDay": "ਦਿਨ ਸੰਪਾਦਿਤ ਕਰੋ",
     "closeDay": "ਦਿਨ ਬੰਦ ਕਰੋ",
-    "earnings": "ਕਮਾਈ"
+    "earnings": "ਕਮਾਈ",
+    "publish": {
+      "title": "Publish a Note",
+      "placeholder": "Write your note here...",
+      "selectVisibility": "Select visibility",
+      "visibility": {
+        "PRIVATE": "Private",
+        "FRIENDS": "Friends",
+        "CLOSE_FRIENDS": "Close Friends",
+        "PUBLIC": "Public",
+        "AI_ENABLED": "AI Enabled"
+      },
+      "action": "Publish Note"
+    }
   },
   "week": {
     "weekNumber": "ਹਫ਼ਤਾ {number}",
@@ -77,7 +102,8 @@
   "tasks": {
     "editing": "ਸੰਪਾਦਨ: {timeframe}",
     "weekNumber": "ਹਫ਼ਤਾ {number}",
-    "yourEarnings": "ਤੁਹਾਡੀ ਕਮਾਈ"
+    "yourEarnings": "ਤੁਹਾਡੀ ਕਮਾਈ",
+    "selectList": "Select list"
   },
   "actions": {
     "add": "ਜੋੜੋ",
@@ -225,10 +251,10 @@
     "deleteAction": "ਕਾਰਵਾਈ ਮਿਟਾਓ",
     "deleteSelected": "ਚੁਣੇ ਹੋਏ ਮਿਟਾਓ ({count})",
     "noResults": "ਕੋਈ ਨਤੀਜੇ ਨਹੀਂ।",
-    "monthsFixedIncome": "Month's Recurring Income",
-    "monthsVariableIncome": "Month's Variable Income",
-    "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average",
+    "monthsFixedIncome": "ਮਹੀਨੇ ਦੀ ਨਿਸ਼ਚਿਤ ਆਮਦਨ",
+    "monthsVariableIncome": "ਮਹੀਨੇ ਦੀ ਪਰਿਵਰਤਨਸ਼ੀਲ ਆਮਦਨ",
+    "fixedNeedCosts": "ਨਿਸ਼ਚਿਤ ਲੋੜੀਂਦੇ ਖਰਚੇ",
+    "expectedNeedUtilities": "ਲੋੜੀਂਦੇ ਉਪਯੋਗਤਾਵਾਂ ਦੀ ਔਸਤ",
     "editAction": "ਐਕਸ਼ਨ ਸੰਪਾਦਿਤ ਕਰੋ",
     "save": "ਸੇਵ ਕਰੋ",
     "cancel": "ਰੱਦ ਕਰੋ"
@@ -242,24 +268,24 @@
     "failedToSend": "ਸੁਨੇਹਾ ਭੇਜਣ ਵਿੱਚ ਅਸਫਲ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
   },
   "publicProfile": {
-    "ctaTitle": "Start Your Own DreamPip Journey",
-    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
-    "getStarted": "Get Started"
+    "ctaTitle": "ਆਪਣਾ ਖੁਦ ਦਾ DreamPip ਸਫ਼ਰ ਸ਼ੁਰੂ ਕਰੋ",
+    "ctaSubtitle": "DreamPip ਨਾਲ ਆਪਣੇ ਮੂਡ, ਉਤਪਾਦਕਤਾ ਅਤੇ ਕਮਾਈ ਨੂੰ ਟ੍ਰੈਕ ਕਰੋ",
+    "getStarted": "ਸ਼ੁਰੂ ਕਰੋ"
   },
   "publicCharts": {
-    "noData": "No public charts data available.",
-    "moodTrackingTitle": "Mood Tracking",
-    "moodTrackingSubtitle": "Values scaled to percentages for privacy",
-    "moodChartsTag": "Mood Charts",
-    "moodOverviewTitle": "Mood Overview",
-    "moodOverviewSubtitle": "Simplified mood tracking - values scaled to percentages for privacy",
-    "simplifiedMoodTag": "Simplified Mood Chart",
-    "productivityTitle": "Productivity",
-    "productivitySubtitle": "Values scaled to percentages for privacy",
-    "productivityTag": "Productivity Charts",
-    "earningsTitle": "Earnings",
-    "earningsSubtitle": "Values scaled to percentages for privacy",
-    "earningsTag": "Earnings Charts"
+    "noData": "ਕੋਈ ਜਨਤਕ ਚਾਰਟ ਡੇਟਾ ਉਪਲਬਧ ਨਹੀਂ।",
+    "moodTrackingTitle": "ਮੂਡ ਟ੍ਰੈਕਿੰਗ",
+    "moodTrackingSubtitle": "ਗੋਪਨੀਯਤਾ ਲਈ ਪ੍ਰਤੀਸ਼ਤ ਵਿੱਚ ਮੁੱਲ",
+    "moodChartsTag": "ਮੂਡ ਚਾਰਟ",
+    "moodOverviewTitle": "ਮੂਡ ਸੰਖੇਪ",
+    "moodOverviewSubtitle": "ਸਰਲ ਮੂਡ ਟ੍ਰੈਕਿੰਗ - ਗੋਪਨੀਯਤਾ ਲਈ ਪ੍ਰਤੀਸ਼ਤ ਵਿੱਚ ਮੁੱਲ",
+    "simplifiedMoodTag": "ਸਰਲ ਮੂਡ ਚਾਰਟ",
+    "productivityTitle": "ਉਤਪਾਦਕਤਾ",
+    "productivitySubtitle": "ਗੋਪਨੀਯਤਾ ਲਈ ਪ੍ਰਤੀਸ਼ਤ ਵਿੱਚ ਮੁੱਲ",
+    "productivityTag": "ਉਤਪਾਦਕਤਾ ਚਾਰਟ",
+    "earningsTitle": "ਕਮਾਈ",
+    "earningsSubtitle": "ਗੋਪਨੀਯਤਾ ਲਈ ਪ੍ਰਤੀਸ਼ਤ ਵਿੱਚ ਮੁੱਲ",
+    "earningsTag": "ਕਮਾਈ ਚਾਰਟ"
   },
   "friends": {
     "addFriend": "ਦੋਸਤ ਸ਼ਾਮਲ ਕਰੋ",
@@ -335,5 +361,133 @@
     "notFound": "ਬੇਨਤੀ ਕੀਤਾ ਗਿਆ ਸਰੋਤ ਨਹੀਂ ਮਿਲਿਆ।",
     "timeout": "ਬੇਨਤੀ ਦਾ ਸਮਾਂ ਖਤਮ ਹੋ ਗਿਆ। ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
     "unknownError": "ਇੱਕ ਅਚਾਨਕ ਗਲਤੀ ਆਈ। ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
+  },
+  "forms": {
+    "commonOptions": {
+      "area": {
+        "self": "ਸਵੈ",
+        "home": "ਘਰ",
+        "social": "ਸਮਾਜਿਕ",
+        "work": "ਕੰਮ"
+      },
+      "category": {
+        "custom": "ਕਸਟਮ",
+        "body": "ਸਰੀਰ",
+        "mind": "ਮਨ",
+        "spirit": "ਆਤਮਾ",
+        "social": "ਸਮਾਜਿਕ",
+        "work": "ਕੰਮ",
+        "home": "ਘਰ",
+        "fun": "ਮਨੋਰੰਜਨ",
+        "growth": "ਵਿਕਾਸ",
+        "community": "ਸਮੁਦਾਇ",
+        "affection": "ਸਨੇਹ",
+        "clean": "ਸਫਾਈ",
+        "maintenance": "ਰੱਖ-ਰਖਾਅ",
+        "spirituality": "ਅਧਿਆਤਮਿਕਤਾ",
+        "event": "ਸਮਾਗਮ"
+      },
+      "entities": {
+        "list": "ਸੂਚੀ",
+        "template": "ਟੈਂਪਲੇਟ"
+      }
+    },
+    "addTaskForm": {
+      "title": "ਕਸਟਮ ਟਾਸਕ ਜੋੜੋ",
+      "taskNameLabel": "ਕੰਮ ਦਾ ਨਾਮ",
+      "taskNamePlaceholder": "ਕੰਮ ਦਾ ਨਾਮ ਦਰਜ ਕਰੋ...",
+      "areaLabel": "ਖੇਤਰ",
+      "categoryLabel": "ਸ਼੍ਰੇਣੀ",
+      "timesLabel": "# ਵਾਰੀ",
+      "saveToTemplate": "ਟੈਂਪਲੇਟ ਵਿੱਚ ਕੰਮ ਸੇਵ ਕਰੋ",
+      "addTask": "ਕੰਮ ਜੋੜੋ",
+      "cancel": "ਰੱਦ ਕਰੋ"
+    },
+    "addListForm": {
+      "titleCreate": "ਨਵੀਂ ਸੂਚੀ ਬਣਾਓ",
+      "titleEdit": "ਸੂਚੀ ਸੰਪਾਦਿਤ ਕਰੋ",
+      "nameLabel": "ਨਾਮ",
+      "templateOrListLabel": "ਟੈਂਪਲੇਟ ਜਾਂ ਸੂਚੀ",
+      "chooseTemplatePlaceholder": "ਇੱਕ ਟੈਂਪਲੇਟ ਚੁਣੋ",
+      "budgetLabel": "ਬਜਟ",
+      "dueDateLabel": "ਮਿਆਦ",
+      "pickDatePlaceholder": "ਇੱਕ ਤਾਰੀਖ ਚੁਣੋ",
+      "cadenceLabel": "ਆਵਰਤੀ",
+      "cadence": {
+        "oneOff": "ਇੱਕ ਵਾਰ",
+        "daily": "ਰੋਜ਼ਾਨਾ",
+        "weekly": "ਹਫ਼ਤਾਵਾਰੀ",
+        "monthly": "ਮਹੀਨਾਵਾਰ",
+        "quarterly": "ਤਿਮਾਹੀ",
+        "semester": "ਸਮੈਸਟਰ",
+        "yearly": "ਸਾਲਾਨਾ"
+      },
+      "collaboratorsLabel": "ਸਹਿਯੋਗੀ",
+      "searchUsernames": "ਵਰਤੋਂਕਾਰ ਨਾਮ ਖੋਜੋ...",
+      "typeAUsername": "ਵਰਤੋਂਕਾਰ ਨਾਮ ਟਾਈਪ ਕਰੋ...",
+      "noResults": "ਕੋਈ ਨਤੀਜੇ ਨਹੀਂ।",
+      "selectedCount": "{count} ਚੁਣੇ",
+      "roleLabel": "ਭੂਮਿਕਾ",
+      "role": {
+        "custom": "ਕਸਟਮ",
+        "default": "ਡਿਫੌਲਟ"
+      },
+      "addTaskButton": "ਕੰਮ ਜੋੜੋ",
+      "table": {
+        "name": "ਨਾਮ",
+        "times": "ਵਾਰੀ",
+        "area": "ਖੇਤਰ",
+        "categories": "ਸ਼੍ਰੇਣੀਆਂ"
+      },
+      "create": "ਬਣਾਓ",
+      "save": "ਸੇਵ ਕਰੋ",
+      "cancel": "ਰੱਦ ਕਰੋ",
+      "deleteListConfirm": "ਇਹ ਸੂਚੀ ਮਿਟਾਓ? ਇਸਨੂੰ ਵਾਪਸ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ।",
+      "deleteList": "ਸੂਚੀ ਮਿਟਾਓ"
+    },
+    "addTemplateForm": {
+      "title": "ਨਵਾਂ ਟੈਂਪਲੇਟ ਬਣਾਓ",
+      "nameLabel": "ਨਾਮ",
+      "createFromLabel": "ਇਸ ਤੋਂ ਬਣਾਓ",
+      "chooseListToClonePlaceholder": "ਕਲੋਨ ਕਰਨ ਲਈ ਸੂਚੀ ਚੁਣੋ (ਵਿਕਲਪਿਕ)",
+      "visibilityLabel": "ਦਿੱਖ",
+      "visibility": {
+        "private": "ਨਿੱਜੀ",
+        "public": "ਜਨਤਕ",
+        "friends": "ਦੋਸਤ",
+        "closeFriends": "ਨਜ਼ਦੀਕੀ ਦੋਸਤ"
+      },
+      "addTaskButton": "ਕੰਮ ਜੋੜੋ",
+      "task": {
+        "nameLabel": "ਨਾਮ",
+        "areaLabel": "ਖੇਤਰ",
+        "categoryLabel": "ਸ਼੍ਰੇਣੀ",
+        "timesLabel": "# ਵਾਰੀ",
+        "add": "ਜੋੜੋ",
+        "cancel": "ਰੱਦ ਕਰੋ"
+      },
+      "table": {
+        "name": "ਨਾਮ",
+        "times": "ਵਾਰੀ",
+        "area": "ਖੇਤਰ",
+        "categories": "ਸ਼੍ਰੇਣੀਆਂ"
+      },
+      "create": "ਬਣਾਓ",
+      "cancel": "ਰੱਦ ਕਰੋ"
+    }
+  },
+  "charts": {
+    "dimensions": "ਮਾਪ",
+    "moodAverage": "ਔਸਤ ਮੂਡ",
+    "gratitude": "ਕ੍ਰਿਤਗਿਆ",
+    "optimism": "ਆਸ਼ਾਵਾਦ",
+    "restedness": "ਆਰਾਮ",
+    "tolerance": "ਸਹਿਣਸ਼ੀਲਤਾ",
+    "selfEsteem": "ਆਤਮ-ਸਨਮਾਨ",
+    "trust": "ਭਰੋਸਾ",
+    "progress": "ਤਰੱਕੀ",
+    "moodAverageScale": "ਔਸਤ ਮੂਡ ਸਕੇਲ",
+    "balance": "ਬਕਾਇਆ",
+    "earningsScale": "ਕਮਾਈ ਸਕੇਲ"
   }
 }

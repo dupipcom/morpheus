@@ -30,13 +30,19 @@
     "social": "Κοινωνικό",
     "stash": "Απόθεμα",
     "equity": "Ίδια κεφάλαια",
-    "totalEarnings": "Συνολικά κέρδη"
+    "totalEarnings": "Συνολικά κέρδη",
+    "daily": "Καθημερινά",
+    "weekly": "Εβδομαδιαία",
+    "balance": "Υπόλοιπο",
+    "dailyEarnings": "Καθημερινά κέρδη",
+    "weeklyEarnings": "Εβδομαδιαία κέρδη",
+    "newTask": "Νέα εργασία",
+    "newList": "Νέα λίστα",
+    "newTemplate": "Νέο πρότυπο",
+    "budget": "Προϋπολογισμός",
+    "due": "Λήξη"
   },
   "navigation": {
-    "dashboard": "Πίνακας ελέγχου",
-    "profile": "Προφίλ",
-    "settings": "Ρυθμίσεις",
-    "logout": "Αποσύνδεση",
     "home": "Αρχική",
     "shows": "Εκπομπές",
     "episodes": "Επεισόδια",
@@ -69,7 +75,20 @@
     "trust": "Εμπιστοσύνη",
     "editDay": "Επεξεργασία ημέρας",
     "closeDay": "Κλείσιμο ημέρας",
-    "earnings": "Κέρδη"
+    "earnings": "Κέρδη",
+    "publish": {
+      "title": "Δημοσίευση Σημείωσης",
+      "placeholder": "Γράψτε τη σημείωσή σας εδώ...",
+      "selectVisibility": "Επιλέξτε ορατότητα",
+      "visibility": {
+        "PRIVATE": "Ιδιωτικό",
+        "FRIENDS": "Φίλοι",
+        "CLOSE_FRIENDS": "Στενοί Φίλοι",
+        "PUBLIC": "Δημόσιο",
+        "AI_ENABLED": "AI Ενεργοποιημένο"
+      },
+      "action": "Δημοσίευση Σημείωσης"
+    }
   },
   "week": {
     "weekNumber": "Εβδομάδα {number}",
@@ -79,36 +98,33 @@
   "tasks": {
     "editing": "Επεξεργασία",
     "weekNumber": "Εβδομάδα {number}",
-    "yourEarnings": "Τα κέρδη σας {timeframe}, μέχρι τώρα: Ð{amount}"
+    "yourEarnings": "Τα κέρδη σας {timeframe}, μέχρι τώρα: Ð{amount}",
+    "selectList": "Επιλογή λίστας"
   },
   "actions": {
-    "add": "Προσθήκη",
-    "remove": "Αφαίρεση",
-    "update": "Ενημέρωση",
-    "refresh": "Ανανέωση",
     "daily": {
       "drankWater": "Έπινε νερό",
-      "showered": "Καλούπισε",
+      "showered": "Καθάρισε",
       "tookMeds": "Πήρε φάρμακα",
       "loggedMood": "Κατέγραψε τη διάθεση",
       "ateBreakfast": "Πήρε πρωινό",
       "ateLunch": "Πήρε μεσημεριανό",
       "ateDinner": "Πήρε βραδινό",
       "brushedTeeth": "Βούρτσισε τα δόντια",
-      "workedOut": "Έκανε γυμναστική",
+      "workedOut": "Γυμνάστηκε",
       "worked": "Δούλεψε",
       "washedDishes": "Έπλυνε τα πιάτα",
-      "storedDishes": "Έβαλε τα πιάτα στη θέση τους",
+      "storedDishes": "Αποθήκευσε τα πιάτα",
       "checkedTrash": "Έλεγξε τα σκουπίδια",
       "brushedFloor": "Σκούπισε το πάτωμα",
       "madeLove": "Έκανε έρωτα",
       "wentOut": "Βγήκε έξω"
     },
     "weekly": {
-      "createdContent": "Δημιούργησε περιεχόμενο για τα κοινωνικά μέσα",
-      "flirted": "Φλερτάρισε με κάποιον",
+      "createdContent": "Δημιούργησε περιεχόμενο για τα μέσα κοινωνικής δικτύωσης",
+      "flirted": "Φλέρταρε με κάποιον",
       "talkedToFriend": "Μίλησε με έναν φίλο",
-      "navigatedSocial": "Πλοήγησε στα κοινωνικά μέσα",
+      "navigatedSocial": "Πλοήγησε στα μέσα κοινωνικής δικτύωσης",
       "talkedToFamily": "Μίλησε με την οικογένεια",
       "madeMusic": "Έκανε μουσική",
       "meditated": "Διαλογίστηκε",
@@ -125,33 +141,30 @@
       "ensuredBedroomOrdered": "Βεβαιώθηκε ότι η κρεβατοκάμαρα είναι τακτοποιημένη",
       "shavedBody": "Ξύρισε το σώμα",
       "shavedFace": "Ξύρισε το πρόσωπο",
-      "cutNails": "Κόβει τα νύχια",
+      "cutNails": "Έκοψε τα νύχια",
       "brushedSurfaces": "Σκούπισε επιφάνειες",
-      "moppedFloors": "Πλύνει τα πάτωμα",
+      "moppedFloors": "Έπλυνε τα πατώματα",
       "washedClothes": "Έπλυνε ρούχα",
       "cleanedBathroom": "Καθάρισε το μπάνιο",
       "cleanedKitchen": "Καθάρισε την κουζίνα",
       "workedOnProject": "Εργάστηκε σε προσωπικό έργο",
       "helpedSomeone": "Βοήθησε κάποιον",
-      "boughtGroceries": "Αγόρασε τρόφιμα",
-      "navigatedSocialMedia": "Πλοήγησε στα κοινωνικά μέσα",
-      "orderedBedroom": "Τακτοποίησε την κρεβατοκάμαρα",
-      "personalProject": "Εργάστηκε σε προσωπικό έργο"
+      "boughtGroceries": "Αγόρασε είδη παντοπωλείου"
     }
   },
   "footer": {
-    "copyright": "© {year} DreamPip. All rights reserved.",
-    "terms": "Όροι υπηρεσίας",
-    "privacy": "Πολιτική απορρήτου",
+    "copyright": "© {year} Purizu and Remotelys dba DreamPip",
     "iva": "IVA IT02925300903",
     "rea": "REA 572763",
     "cnpj": "CNPJ 37.553.462/0001-46",
-    "lgpdCompliant": "LGPD Compliant",
-    "gdprCompliant": "GDPR Compliant",
-    "doraReady": "DORA Ready",
-    "insights": "Insights are AI generated via RAG and prompt engineering.",
-    "cookies": "We use cookies, and by using this app you agree to it.",
-    "code": "Code"
+    "lgpdCompliant": "Συμβατό με LGPD",
+    "gdprCompliant": "Συμβατό με GDPR",
+    "doraReady": "Έτοιμο για DORA",
+    "insights": "Οι επισημάνσεις δημιουργούνται με AI μέσω RAG και μηχανικής προτροπών.",
+    "cookies": "Χρησιμοποιούμε cookies και με τη χρήση αυτής της εφαρμογής συμφωνείτε σε αυτό.",
+    "code": "Κώδικας",
+    "terms": "Όροι υπηρεσίας",
+    "privacy": "Πολιτική απορρήτου"
   },
   "earningsTable": {
     "day": "Ημέρα",
@@ -227,10 +240,10 @@
     "deleteAction": "Διαγραφή ενέργειας",
     "deleteSelected": "Διαγραφή επιλεγμένων ({count})",
     "noResults": "Δεν υπάρχουν αποτελέσματα.",
-    "monthsFixedIncome": "Month's Recurring Income",
-    "monthsVariableIncome": "Month's Variable Income",
-    "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average",
+    "monthsFixedIncome": "Μηνιαίο Επαναλαμβανόμενο Εισόδημα",
+    "monthsVariableIncome": "Μηνιαίο Μεταβλητό Εισόδημα",
+    "fixedNeedCosts": "Σταθερές Δαπάνες Ανάγκης",
+    "expectedNeedUtilities": "Μέσος Όρος Εκτιμώμενων Δαπανών Ανάγκης",
     "editAction": "Επεξεργασία ενέργειας",
     "save": "Αποθήκευση",
     "cancel": "Ακύρωση"
@@ -244,24 +257,24 @@
     "failedToSend": "Αποτυχία αποστολής μηνύματος. Παρακαλώ δοκιμάστε ξανά."
   },
   "publicProfile": {
-    "ctaTitle": "Start Your Own DreamPip Journey",
-    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
-    "getStarted": "Get Started"
+    "ctaTitle": "Ξεκινήστε το Δικό σας Ταξίδι με το DreamPip",
+    "ctaSubtitle": "Παρακολουθήστε τη διάθεσή σας, την παραγωγικότητα και τα κέρδη σας με το DreamPip",
+    "getStarted": "Ξεκινήστε"
   },
   "publicCharts": {
-    "noData": "No public charts data available.",
-    "moodTrackingTitle": "Mood Tracking",
-    "moodTrackingSubtitle": "Values scaled to percentages for privacy",
-    "moodChartsTag": "Mood Charts",
-    "moodOverviewTitle": "Mood Overview",
-    "moodOverviewSubtitle": "Simplified mood tracking - values scaled to percentages for privacy",
-    "simplifiedMoodTag": "Simplified Mood Chart",
-    "productivityTitle": "Productivity",
-    "productivitySubtitle": "Values scaled to percentages for privacy",
-    "productivityTag": "Productivity Charts",
-    "earningsTitle": "Earnings",
-    "earningsSubtitle": "Values scaled to percentages for privacy",
-    "earningsTag": "Earnings Charts"
+    "noData": "Δεν υπάρχουν διαθέσιμα δημόσια δεδομένα γραφημάτων.",
+    "moodTrackingTitle": "Παρακολούθηση Διάθεσης",
+    "moodTrackingSubtitle": "Οι τιμές κλιμακώνονται σε ποσοστά για λόγους απορρήτου",
+    "moodChartsTag": "Γραφήματα Διάθεσης",
+    "moodOverviewTitle": "Επισκόπηση Διάθεσης",
+    "moodOverviewSubtitle": "Απλοποιημένη παρακολούθηση διάθεσης - οι τιμές κλιμακώνονται σε ποσοστά για λόγους απορρήτου",
+    "simplifiedMoodTag": "Απλοποιημένο Γράφημα Διάθεσης",
+    "productivityTitle": "Παραγωγικότητα",
+    "productivitySubtitle": "Οι τιμές κλιμακώνονται σε ποσοστά για λόγους απορρήτου",
+    "productivityTag": "Γραφήματα Παραγωγικότητας",
+    "earningsTitle": "Κέρδη",
+    "earningsSubtitle": "Οι τιμές κλιμακώνονται σε ποσοστά για λόγους απορρήτου",
+    "earningsTag": "Γραφήματα Κερδών"
   },
   "friends": {
     "addFriend": "Προσθήκη φίλου",
@@ -337,5 +350,261 @@
     "notFound": "Ο ζητούμενος πόρος δεν βρέθηκε.",
     "timeout": "Το αίτημα έληξε. Δοκιμάστε ξανά.",
     "unknownError": "Παρουσιάστηκε απροσδόκητο σφάλμα. Δοκιμάστε ξανά."
+  },
+  "forms": {
+    "commonOptions": {
+      "area": {
+        "self": "Εαυτός",
+        "home": "Σπίτι",
+        "social": "Κοινωνικό",
+        "work": "Εργασία"
+      },
+      "category": {
+        "custom": "Προσαρμοσμένο",
+        "body": "Σώμα",
+        "mind": "Νους",
+        "spirit": "Πνεύμα",
+        "social": "Κοινωνικό",
+        "work": "Εργασία",
+        "home": "Σπίτι",
+        "fun": "Διασκέδαση",
+        "growth": "Ανάπτυξη",
+        "community": "Κοινότητα",
+        "affection": "Στοργή",
+        "clean": "Καθαρό",
+        "maintenance": "Συντήρηση",
+        "spirituality": "Πνευματικότητα",
+        "event": "Εκδήλωση"
+      },
+      "entities": {
+        "list": "Λίστα",
+        "template": "Πρότυπο"
+      }
+    },
+    "addTaskForm": {
+      "title": "Προσθήκη Προσαρμοσμένης Εργασίας",
+      "taskNameLabel": "Όνομα Εργασίας",
+      "taskNamePlaceholder": "Εισάγετε όνομα εργασίας...",
+      "areaLabel": "Περιοχή",
+      "categoryLabel": "Κατηγορία",
+      "timesLabel": "# φορές",
+      "saveToTemplate": "Αποθήκευση εργασίας σε πρότυπο",
+      "addTask": "Προσθήκη Εργασίας",
+      "cancel": "Ακύρωση"
+    },
+    "addListForm": {
+      "titleCreate": "Δημιουργία Νέας Λίστας",
+      "titleEdit": "Επεξεργασία Λίστας",
+      "nameLabel": "Όνομα",
+      "templateOrListLabel": "Πρότυπο ή Λίστα",
+      "chooseTemplatePlaceholder": "Επιλέξτε ένα πρότυπο",
+      "budgetLabel": "Προϋπολογισμός",
+      "dueDateLabel": "Ημερομηνία λήξης",
+      "pickDatePlaceholder": "Επιλέξτε μια ημερομηνία",
+      "cadenceLabel": "Ρυθμός",
+      "cadence": {
+        "oneOff": "Μία φορά",
+        "daily": "Καθημερινά",
+        "weekly": "Εβδομαδιαία",
+        "monthly": "Μηνιαία",
+        "quarterly": "Τριμηνιαία",
+        "semester": "Εξάμηνο",
+        "yearly": "Ετήσια"
+      },
+      "collaboratorsLabel": "Συνεργάτες",
+      "searchUsernames": "Αναζήτηση ονομάτων χρήστη...",
+      "typeAUsername": "Πληκτρολογήστε ένα όνομα χρήστη...",
+      "noResults": "Δεν υπάρχουν αποτελέσματα.",
+      "selectedCount": "{count} επιλέχθηκε",
+      "roleLabel": "Ρόλος",
+      "role": {
+        "custom": "Προσαρμοσμένο",
+        "default": "Προεπιλογή"
+      },
+      "addTaskButton": "Προσθήκη εργασίας",
+      "table": {
+        "name": "Όνομα",
+        "times": "Φορές",
+        "area": "Περιοχή",
+        "categories": "Κατηγορίες"
+      },
+      "create": "Δημιουργία",
+      "save": "Αποθήκευση",
+      "cancel": "Ακύρωση",
+      "deleteListConfirm": "Διαγραφή αυτής της λίστας; Αυτό δεν μπορεί να αναιρεθεί.",
+      "deleteList": "Διαγραφή λίστας"
+    },
+    "addTemplateForm": {
+      "title": "Δημιουργία Νέου Προτύπου",
+      "nameLabel": "Όνομα",
+      "createFromLabel": "Δημιουργία από",
+      "chooseListToClonePlaceholder": "Επιλέξτε μια λίστα για κλωνοποίηση (προαιρετικό)",
+      "visibilityLabel": "Ορατότητα",
+      "visibility": {
+        "private": "Ιδιωτικό",
+        "public": "Δημόσιο",
+        "friends": "Φίλοι",
+        "closeFriends": "Στενοί φίλοι"
+      },
+      "addTaskButton": "Προσθήκη εργασίας",
+      "task": {
+        "nameLabel": "Όνομα",
+        "areaLabel": "Περιοχή",
+        "categoryLabel": "Κατηγορία",
+        "timesLabel": "# φορές",
+        "add": "Προσθήκη",
+        "cancel": "Ακύρωση"
+      },
+      "table": {
+        "name": "Όνομα",
+        "times": "Φορές",
+        "area": "Περιοχή",
+        "categories": "Κατηγορίες"
+      },
+      "create": "Δημιουργία",
+      "cancel": "Ακύρωση"
+    }
+  },
+  "charts": {
+    "dimensions": "Διαστάσεις",
+    "moodAverage": "Μέση διάθεση",
+    "gratitude": "Ευγνωμοσύνη",
+    "optimism": "Αισιοδοξία",
+    "restedness": "Ξεκούραση",
+    "tolerance": "Ανοχή",
+    "selfEsteem": "Αυτοεκτίμηση",
+    "trust": "Εμπιστοσύνη",
+    "progress": "Πρόοδος",
+    "moodAverageScale": "Κλίμακα μέσης διάθεσης",
+    "balance": "Υπόλοιπο",
+    "earningsScale": "Κλίμακα κερδών"
+  },
+  "forms": {
+    "commonOptions": {
+      "area": {
+        "self": "Εαυτός",
+        "home": "Σπίτι",
+        "social": "Κοινωνικό",
+        "work": "Εργασία"
+      },
+      "category": {
+        "custom": "Προσαρμοσμένο",
+        "body": "Σώμα",
+        "mind": "Νους",
+        "spirit": "Πνεύμα",
+        "social": "Κοινωνικό",
+        "work": "Εργασία",
+        "home": "Σπίτι",
+        "fun": "Διασκέδαση",
+        "growth": "Ανάπτυξη",
+        "community": "Κοινότητα",
+        "affection": "Στοργή",
+        "clean": "Καθαρό",
+        "maintenance": "Συντήρηση",
+        "spirituality": "Πνευματικότητα",
+        "event": "Εκδήλωση"
+      },
+      "entities": {
+        "list": "Λίστα",
+        "template": "Πρότυπο"
+      }
+    },
+    "addTaskForm": {
+      "title": "Προσθήκη Προσαρμοσμένης Εργασίας",
+      "taskNameLabel": "Όνομα Εργασίας",
+      "taskNamePlaceholder": "Εισάγετε όνομα εργασίας...",
+      "areaLabel": "Περιοχή",
+      "categoryLabel": "Κατηγορία",
+      "timesLabel": "# φορές",
+      "saveToTemplate": "Αποθήκευση εργασίας σε πρότυπο",
+      "addTask": "Προσθήκη Εργασίας",
+      "cancel": "Ακύρωση"
+    },
+    "addListForm": {
+      "titleCreate": "Δημιουργία Νέας Λίστας",
+      "titleEdit": "Επεξεργασία Λίστας",
+      "nameLabel": "Όνομα",
+      "templateOrListLabel": "Πρότυπο ή Λίστα",
+      "chooseTemplatePlaceholder": "Επιλέξτε ένα πρότυπο",
+      "budgetLabel": "Προϋπολογισμός",
+      "dueDateLabel": "Ημερομηνία λήξης",
+      "pickDatePlaceholder": "Επιλέξτε μια ημερομηνία",
+      "cadenceLabel": "Ρυθμός",
+      "cadence": {
+        "oneOff": "Μία φορά",
+        "daily": "Καθημερινά",
+        "weekly": "Εβδομαδιαία",
+        "monthly": "Μηνιαία",
+        "quarterly": "Τριμηνιαία",
+        "semester": "Εξάμηνο",
+        "yearly": "Ετήσια"
+      },
+      "collaboratorsLabel": "Συνεργάτες",
+      "searchUsernames": "Αναζήτηση ονομάτων χρήστη...",
+      "typeAUsername": "Πληκτρολογήστε ένα όνομα χρήστη...",
+      "noResults": "Δεν υπάρχουν αποτελέσματα.",
+      "selectedCount": "{count} επιλέχθηκε",
+      "roleLabel": "Ρόλος",
+      "role": {
+        "custom": "Προσαρμοσμένο",
+        "default": "Προεπιλογή"
+      },
+      "addTaskButton": "Προσθήκη εργασίας",
+      "table": {
+        "name": "Όνομα",
+        "times": "Φορές",
+        "area": "Περιοχή",
+        "categories": "Κατηγορίες"
+      },
+      "create": "Δημιουργία",
+      "save": "Αποθήκευση",
+      "cancel": "Ακύρωση",
+      "deleteListConfirm": "Διαγραφή αυτής της λίστας; Αυτό δεν μπορεί να αναιρεθεί.",
+      "deleteList": "Διαγραφή λίστας"
+    },
+    "addTemplateForm": {
+      "title": "Δημιουργία Νέου Προτύπου",
+      "nameLabel": "Όνομα",
+      "createFromLabel": "Δημιουργία από",
+      "chooseListToClonePlaceholder": "Επιλέξτε μια λίστα για κλωνοποίηση (προαιρετικό)",
+      "visibilityLabel": "Ορατότητα",
+      "visibility": {
+        "private": "Ιδιωτικό",
+        "public": "Δημόσιο",
+        "friends": "Φίλοι",
+        "closeFriends": "Στενοί φίλοι"
+      },
+      "addTaskButton": "Προσθήκη εργασίας",
+      "task": {
+        "nameLabel": "Όνομα",
+        "areaLabel": "Περιοχή",
+        "categoryLabel": "Κατηγορία",
+        "timesLabel": "# φορές",
+        "add": "Προσθήκη",
+        "cancel": "Ακύρωση"
+      },
+      "table": {
+        "name": "Όνομα",
+        "times": "Φορές",
+        "area": "Περιοχή",
+        "categories": "Κατηγορίες"
+      },
+      "create": "Δημιουργία",
+      "cancel": "Ακύρωση"
+    }
+  },
+  "charts": {
+    "dimensions": "Διαστάσεις",
+    "moodAverage": "Μέση Διάθεση",
+    "gratitude": "Ευγνωμοσύνη",
+    "optimism": "Αισιοδοξία",
+    "restedness": "Ξεκούραση",
+    "tolerance": "Ανοχή",
+    "selfEsteem": "Αυτοεκτίμηση",
+    "trust": "Εμπιστοσύνη",
+    "progress": "Πρόοδος",
+    "moodAverageScale": "Κλίμακα Μέσης Διάθεσης",
+    "balance": "Υπόλοιπο",
+    "earningsScale": "Κλίμακα Κερδών"
   }
 }

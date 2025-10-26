@@ -30,7 +30,17 @@
     "social": "Sociaal",
     "stash": "Voorraad",
     "equity": "Eigen vermogen",
-    "totalEarnings": "Totale inkomsten"
+    "totalEarnings": "Totale inkomsten",
+    "daily": "Dagelijks",
+    "weekly": "Wekelijks",
+    "balance": "Saldo",
+    "dailyEarnings": "Dagelijkse Inkomsten",
+    "weeklyEarnings": "Wekelijkse Inkomsten",
+    "newTask": "Nieuwe taak",
+    "newList": "Nieuwe lijst",
+    "newTemplate": "Nieuwe sjabloon",
+    "budget": "Budget",
+    "due": "Vervaldatum"
   },
   "navigation": {
     "home": "Home",
@@ -65,7 +75,20 @@
     "trust": "Vertrouwen",
     "editDay": "Dag bewerken",
     "closeDay": "Dag sluiten",
-    "earnings": "Verdiensten"
+    "earnings": "Verdiensten",
+    "publish": {
+      "title": "Publiceer een notitie",
+      "placeholder": "Schrijf uw notitie hier...",
+      "selectVisibility": "Kies zichtbaarheid",
+      "visibility": {
+        "PRIVATE": "Persoonlijk",
+        "FRIENDS": "Vrienden",
+        "CLOSE_FRIENDS": "Dichte vrienden",
+        "PUBLIC": "Openbaar",
+        "AI_ENABLED": "AI-ingeschakeld"
+      },
+      "action": "Publiceer notitie"
+    }
   },
   "week": {
     "weekNumber": "Week {number}",
@@ -75,7 +98,8 @@
   "tasks": {
     "editing": "Bewerken: {timeframe}",
     "weekNumber": "Week {number}",
-    "yourEarnings": "Je verdiensten"
+    "yourEarnings": "Uw inkomsten {timeframe}, tot nu toe: Ð{amount}",
+    "selectList": "Selecteer lijst"
   },
   "actions": {
     "daily": {
@@ -329,5 +353,133 @@
     "notFound": "Het gevraagde bron is niet gevonden.",
     "timeout": "Verzoek is verlopen. Probeer opnieuw.",
     "unknownError": "Er is een onverwachte fout opgetreden. Probeer opnieuw."
+  },
+  "forms": {
+    "commonOptions": {
+      "area": {
+        "self": "Persoonlijk",
+        "home": "Thuis",
+        "social": "Sociaal",
+        "work": "Werk"
+      },
+      "category": {
+        "custom": "Aangepast",
+        "body": "Lichaam",
+        "mind": "Geest",
+        "spirit": "Geest",
+        "social": "Sociaal",
+        "work": "Werk",
+        "home": "Thuis",
+        "fun": "Plezier",
+        "growth": "Groei",
+        "community": "Gemeenschap",
+        "affection": "Genegenheid",
+        "clean": "Schoonmaak",
+        "maintenance": "Onderhoud",
+        "spirituality": "Spiritualiteit",
+        "event": "Evenement"
+      },
+      "entities": {
+        "list": "Lijst",
+        "template": "Sjabloon"
+      }
+    },
+    "addTaskForm": {
+      "title": "Aangepaste taak toevoegen",
+      "taskNameLabel": "Taaknaam",
+      "taskNamePlaceholder": "Voer taaknaam in...",
+      "areaLabel": "Gebied",
+      "categoryLabel": "Categorie",
+      "timesLabel": "# keer",
+      "saveToTemplate": "Taak opslaan in sjabloon",
+      "addTask": "Taak toevoegen",
+      "cancel": "Annuleren"
+    },
+    "addListForm": {
+      "titleCreate": "Nieuwe lijst maken",
+      "titleEdit": "Lijst bewerken",
+      "nameLabel": "Naam",
+      "templateOrListLabel": "Sjabloon of Lijst",
+      "chooseTemplatePlaceholder": "Kies een sjabloon",
+      "budgetLabel": "Budget",
+      "dueDateLabel": "Vervaldatum",
+      "pickDatePlaceholder": "Kies een datum",
+      "cadenceLabel": "Frequentie",
+      "cadence": {
+        "oneOff": "Eenmalig",
+        "daily": "Dagelijks",
+        "weekly": "Wekelijks",
+        "monthly": "Maandelijks",
+        "quarterly": "Kwartaal",
+        "semester": "Semester",
+        "yearly": "Jaarlijks"
+      },
+      "collaboratorsLabel": "Medewerkers",
+      "searchUsernames": "Zoek gebruikersnamen...",
+      "typeAUsername": "Typ een gebruikersnaam...",
+      "noResults": "Geen resultaten.",
+      "selectedCount": "{count} geselecteerd",
+      "roleLabel": "Rol",
+      "role": {
+        "custom": "Aangepast",
+        "default": "Standaard"
+      },
+      "addTaskButton": "Taak toevoegen",
+      "table": {
+        "name": "Naam",
+        "times": "Keer",
+        "area": "Gebied",
+        "categories": "Categorieën"
+      },
+      "create": "Maken",
+      "save": "Opslaan",
+      "cancel": "Annuleren",
+      "deleteListConfirm": "Deze lijst verwijderen? Dit kan niet ongedaan worden gemaakt.",
+      "deleteList": "Lijst verwijderen"
+    },
+    "addTemplateForm": {
+      "title": "Nieuwe sjabloon maken",
+      "nameLabel": "Naam",
+      "createFromLabel": "Maken van",
+      "chooseListToClonePlaceholder": "Kies een lijst om te klonen (optioneel)",
+      "visibilityLabel": "Zichtbaarheid",
+      "visibility": {
+        "private": "Privé",
+        "public": "Openbaar",
+        "friends": "Vrienden",
+        "closeFriends": "Goede vrienden"
+      },
+      "addTaskButton": "Taak toevoegen",
+      "task": {
+        "nameLabel": "Naam",
+        "areaLabel": "Gebied",
+        "categoryLabel": "Categorie",
+        "timesLabel": "# keer",
+        "add": "Toevoegen",
+        "cancel": "Annuleren"
+      },
+      "table": {
+        "name": "Naam",
+        "times": "Keer",
+        "area": "Gebied",
+        "categories": "Categorieën"
+      },
+      "create": "Maken",
+      "cancel": "Annuleren"
+    }
+  },
+  "charts": {
+    "dimensions": "Dimensies",
+    "moodAverage": "Gemiddelde stemming",
+    "gratitude": "Dankbaarheid",
+    "optimism": "Optimisme",
+    "restedness": "Rust",
+    "tolerance": "Tolerantie",
+    "selfEsteem": "Zelfrespect",
+    "trust": "Vertrouwen",
+    "progress": "Vooruitgang",
+    "moodAverageScale": "Gemiddelde stemming schaal",
+    "balance": "Saldo",
+    "earningsScale": "Verdiensten schaal"
   }
 }

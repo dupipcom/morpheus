@@ -30,7 +30,17 @@
     "social": "Social",
     "stash": "Vorrat",
     "equity": "Eigenkapital",
-    "totalEarnings": "Gesamteinnahmen"
+    "totalEarnings": "Gesamteinnahmen",
+    "daily": "Täglich",
+    "weekly": "Wöchentlich",
+    "balance": "Bilanz",
+    "dailyEarnings": "Tägliche Einnahmen",
+    "weeklyEarnings": "Wöchentliche Einnahmen",
+    "newTask": "Neue Aufgabe",
+    "newList": "Neue Liste",
+    "newTemplate": "Neue Vorlage",
+    "budget": "Budget",
+    "due": "Fällig"
   },
   "navigation": {
     "home": "Startseite",
@@ -65,7 +75,20 @@
     "trust": "Vertrauen",
     "editDay": "Tag bearbeiten",
     "closeDay": "Tag schließen",
-    "earnings": "Verdienst"
+    "earnings": "Verdienst",
+    "publish": {
+      "title": "Notiz veröffentlichen",
+      "placeholder": "Schreiben Sie Ihre Notiz hier...",
+      "selectVisibility": "Sichtbarkeit wählen",
+      "visibility": {
+        "PRIVATE": "Privat",
+        "FRIENDS": "Freunde",
+        "CLOSE_FRIENDS": "Enge Freunde",
+        "PUBLIC": "Öffentlich",
+        "AI_ENABLED": "KI-aktiviert"
+      },
+      "action": "Notiz veröffentlichen"
+    }
   },
   "week": {
     "weekNumber": "Woche {number}",
@@ -73,9 +96,10 @@
     "closeWeek": "Woche schließen"
   },
   "tasks": {
-    "editing": "Bearbeiten: {timeframe}",
+    "editing": "Bearbeitung: {timeframe}",
     "weekNumber": "Woche {number}",
-    "yourEarnings": "Ihr Verdienst {timeframe}, bisher: Ð{amount}"
+    "yourEarnings": "Ihre Einnahmen {timeframe}, bisher: Ð{amount}",
+    "selectList": "Liste auswählen"
   },
   "settings": {
     "title": "Einstellungen",
@@ -343,5 +367,119 @@
     "notFound": "Die angeforderte Ressource wurde nicht gefunden.",
     "timeout": "Anfrage ist abgelaufen. Bitte versuche es erneut.",
     "unknownError": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut."
+  },
+  "forms": {
+    "commonOptions": {
+      "area": {
+        "self": "Eigene Person",
+        "home": "Zuhause",
+        "social": "Sozial",
+        "work": "Arbeit"
+      },
+      "category": {
+        "custom": "Benutzerdefiniert",
+        "body": "Körper",
+        "mind": "Verstand",
+        "spirit": "Geist",
+        "social": "Sozial",
+        "work": "Arbeit",
+        "home": "Zuhause",
+        "fun": "Spaß",
+        "growth": "Wachstum",
+        "community": "Gemeinschaft",
+        "affection": "Zuneigung",
+        "clean": "Reinigung",
+        "maintenance": "Wartung",
+        "spirituality": "Spiritualität",
+        "event": "Ereignis"
+      },
+      "entities": {
+        "list": "Liste",
+        "template": "Vorlage"
+      }
+    },
+    "addTaskForm": {
+      "title": "Benutzerdefinierte Aufgabe hinzufügen",
+      "taskNameLabel": "Aufgabenname",
+      "taskNamePlaceholder": "Aufgabennamen eingeben...",
+      "areaLabel": "Bereich",
+      "categoryLabel": "Kategorie",
+      "timesLabel": "# Anzahl der Zeiten",
+      "saveToTemplate": "Aufgabe in Vorlage speichern",
+      "addTask": "Aufgabe hinzufügen",
+      "cancel": "Abbrechen"
+    },
+    "addListForm": {
+      "titleCreate": "Neue Liste erstellen",
+      "titleEdit": "Liste bearbeiten",
+      "nameLabel": "Name",
+      "templateOrListLabel": "Vorlage oder Liste",
+      "chooseTemplatePlaceholder": "Vorlage wählen",
+      "budgetLabel": "Budget",
+      "dueDateLabel": "Fälligkeitsdatum",
+      "pickDatePlaceholder": "Datum wählen",
+      "cadenceLabel": "Rhythmus",
+      "cadence": {
+        "oneOff": "Einmalig",
+        "daily": "Täglich",
+        "weekly": "Wöchentlich",
+        "monthly": "Monatlich",
+        "quarterly": "Vierteljährlich",
+        "semester": "Semestral",
+        "yearly": "Jährlich"
+      },
+      "collaboratorsLabel": "Mitarbeiter",
+      "searchUsernames": "Benutzernamen durchsuchen...",
+      "typeAUsername": "Benutzernamen eingeben...",
+      "noResults": "Keine Ergebnisse.",
+      "selectedCount": "{count} ausgewählt",
+      "roleLabel": "Rolle",
+      "role": {
+        "custom": "Benutzerdefiniert",
+        "default": "Standard"
+      },
+      "addTaskButton": "Aufgabe hinzufügen",
+      "table": {
+        "name": "Name",
+        "times": "Zeiten",
+        "area": "Bereich",
+        "categories": "Kategorien"
+      },
+      "create": "Erstellen",
+      "save": "Speichern",
+      "cancel": "Abbrechen",
+      "deleteListConfirm": "Diese Liste löschen? Das kann nicht rückgängig gemacht werden.",
+      "deleteList": "Liste löschen"
+    },
+    "addTemplateForm": {
+      "title": "Neue Vorlage erstellen",
+      "nameLabel": "Name",
+      "createFromLabel": "Erstellen aus",
+      "chooseListToClonePlaceholder": "Liste zum Klonen wählen (optional)",
+      "visibilityLabel": "Sichtbarkeit",
+      "visibility": {
+        "private": "Privat",
+        "public": "Öffentlich",
+        "friends": "Freunde",
+        "closeFriends": "Enge Freunde"
+      },
+      "addTaskButton": "Aufgabe hinzufügen",
+      "task": {
+        "nameLabel": "Name",
+        "areaLabel": "Bereich",
+        "categoryLabel": "Kategorie",
+        "timesLabel": "# Anzahl der Zeiten",
+        "add": "Hinzufügen",
+        "cancel": "Abbrechen"
+      },
+      "table": {
+        "name": "Name",
+        "times": "Zeiten",
+        "area": "Bereich",
+        "categories": "Kategorien"
+      },
+      "create": "Erstellen",
+      "cancel": "Abbrechen"
+    }
   }
 }

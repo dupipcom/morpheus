@@ -28,7 +28,19 @@
     "signOut": "Kijelentkezés",
     "stash": "Készlet",
     "equity": "Saját tőke",
-    "totalEarnings": "Összes bevétel"
+    "totalEarnings": "Összes bevétel",
+    "profile": "Profil",
+    "social": "Társadalmi",
+    "daily": "Napi",
+    "weekly": "Heti",
+    "balance": "Egyenleg",
+    "dailyEarnings": "Napi Kereset",
+    "weeklyEarnings": "Heti Kereset",
+    "newTask": "Új feladat",
+    "newList": "Új lista",
+    "newTemplate": "Új sablon",
+    "budget": "Költségvetés",
+    "due": "Határidő"
   },
   "navigation": {
     "home": "Kezdőlap",
@@ -63,7 +75,20 @@
     "trust": "Bizalom",
     "editDay": "Nap szerkesztése",
     "closeDay": "Nap bezárása",
-    "earnings": "Kereset"
+    "earnings": "Kereset",
+    "publish": {
+      "title": "Jegyzet közzététele",
+      "placeholder": "Írja be jegyzetét ide...",
+      "selectVisibility": "Válassza ki a láthatóságot",
+      "visibility": {
+        "PRIVATE": "Privát",
+        "FRIENDS": "Barátok",
+        "CLOSE_FRIENDS": "Közeli barátok",
+        "PUBLIC": "Nyilvános",
+        "AI_ENABLED": "Mesterséges intelligencia engedélyezve"
+      },
+      "action": "Jegyzet közzététele"
+    }
   },
   "week": {
     "weekNumber": "Hét {number}",
@@ -72,8 +97,9 @@
   },
   "tasks": {
     "editing": "Szerkesztés: {timeframe}",
-    "weekNumber": "Hét {number}",
-    "yourEarnings": "A bevételed {timeframe}, eddig: Ð{amount}"
+    "weekNumber": "{number}. hét",
+    "yourEarnings": "Ön keresete {timeframe}, eddig: Ð{amount}",
+    "selectList": "Lista kiválasztása"
   },
   "actions": {
     "daily": {
@@ -234,24 +260,24 @@
     "failedToSend": "Az üzenet küldése sikertelen. Próbálja újra."
   },
   "publicProfile": {
-    "ctaTitle": "Start Your Own DreamPip Journey",
-    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
-    "getStarted": "Get Started"
+    "ctaTitle": "Kezdje el a saját DreamPip útját",
+    "ctaSubtitle": "Kövesse nyomon hangulatát, termelékenységét és bevételeit a DreamPip-pel",
+    "getStarted": "Kezdés"
   },
   "publicCharts": {
-    "noData": "No public charts data available.",
-    "moodTrackingTitle": "Mood Tracking",
-    "moodTrackingSubtitle": "Values scaled to percentages for privacy",
-    "moodChartsTag": "Mood Charts",
-    "moodOverviewTitle": "Mood Overview",
-    "moodOverviewSubtitle": "Simplified mood tracking - values scaled to percentages for privacy",
-    "simplifiedMoodTag": "Simplified Mood Chart",
-    "productivityTitle": "Productivity",
-    "productivitySubtitle": "Values scaled to percentages for privacy",
-    "productivityTag": "Productivity Charts",
-    "earningsTitle": "Earnings",
-    "earningsSubtitle": "Values scaled to percentages for privacy",
-    "earningsTag": "Earnings Charts"
+    "noData": "Nincs nyilvános grafikon adat.",
+    "moodTrackingTitle": "Hangulatkövetés",
+    "moodTrackingSubtitle": "Az értékek százalékosítva vannak az adatvédelem miatt",
+    "moodChartsTag": "Hangulat grafikonok",
+    "moodOverviewTitle": "Hangulat áttekintés",
+    "moodOverviewSubtitle": "Egyszerűsített hangulatkövetés - az értékek százalékosítva vannak az adatvédelem miatt",
+    "simplifiedMoodTag": "Egyszerűsített hangulat grafikon",
+    "productivityTitle": "Termelékenység",
+    "productivitySubtitle": "Az értékek százalékosítva vannak az adatvédelem miatt",
+    "productivityTag": "Termelékenység grafikonok",
+    "earningsTitle": "Bevétel",
+    "earningsSubtitle": "Az értékek százalékosítva vannak az adatvédelem miatt",
+    "earningsTag": "Bevétel grafikonok"
   },
   "friends": {
     "addFriend": "Barát hozzáadása",
@@ -327,5 +353,133 @@
     "notFound": "A kért erőforrás nem található.",
     "timeout": "A kérés időtúllépést szenvedett. Próbálja újra.",
     "unknownError": "Váratlan hiba történt. Próbálja újra."
+  },
+  "forms": {
+    "commonOptions": {
+      "area": {
+        "self": "Személyes",
+        "home": "Otthon",
+        "social": "Szociális",
+        "work": "Munka"
+      },
+      "category": {
+        "custom": "Egyéni",
+        "body": "Test",
+        "mind": "Elme",
+        "spirit": "Szellem",
+        "social": "Szociális",
+        "work": "Munka",
+        "home": "Otthon",
+        "fun": "Szórakozás",
+        "growth": "Növekedés",
+        "community": "Közösség",
+        "affection": "Szeretet",
+        "clean": "Takarítás",
+        "maintenance": "Karbantartás",
+        "spirituality": "Spiritualitás",
+        "event": "Esemény"
+      },
+      "entities": {
+        "list": "Lista",
+        "template": "Sablon"
+      }
+    },
+    "addTaskForm": {
+      "title": "Egyéni feladat hozzáadása",
+      "taskNameLabel": "Feladat neve",
+      "taskNamePlaceholder": "Adja meg a feladat nevét...",
+      "areaLabel": "Terület",
+      "categoryLabel": "Kategória",
+      "timesLabel": "# alkalommal",
+      "saveToTemplate": "Feladat mentése sablonként",
+      "addTask": "Feladat hozzáadása",
+      "cancel": "Mégse"
+    },
+    "addListForm": {
+      "titleCreate": "Új lista létrehozása",
+      "titleEdit": "Lista szerkesztése",
+      "nameLabel": "Név",
+      "templateOrListLabel": "Sablon vagy Lista",
+      "chooseTemplatePlaceholder": "Válasszon sablont",
+      "budgetLabel": "Költségvetés",
+      "dueDateLabel": "Határidő",
+      "pickDatePlaceholder": "Válasszon dátumot",
+      "cadenceLabel": "Kadencia",
+      "cadence": {
+        "oneOff": "Egyszeri",
+        "daily": "Napi",
+        "weekly": "Heti",
+        "monthly": "Havi",
+        "quarterly": "Negyedéves",
+        "semester": "Féléves",
+        "yearly": "Éves"
+      },
+      "collaboratorsLabel": "Közreműködők",
+      "searchUsernames": "Felhasználónevek keresése...",
+      "typeAUsername": "Írjon be egy felhasználónevet...",
+      "noResults": "Nincs eredmény.",
+      "selectedCount": "{count} kiválasztva",
+      "roleLabel": "Szerepkör",
+      "role": {
+        "custom": "Egyéni",
+        "default": "Alapértelmezett"
+      },
+      "addTaskButton": "Feladat hozzáadása",
+      "table": {
+        "name": "Név",
+        "times": "Alkalommal",
+        "area": "Terület",
+        "categories": "Kategóriák"
+      },
+      "create": "Létrehozás",
+      "save": "Mentés",
+      "cancel": "Mégse",
+      "deleteListConfirm": "Törli ezt a listát? Ez nem vonható vissza.",
+      "deleteList": "Lista törlése"
+    },
+    "addTemplateForm": {
+      "title": "Új sablon létrehozása",
+      "nameLabel": "Név",
+      "createFromLabel": "Létrehozás alapja",
+      "chooseListToClonePlaceholder": "Válasszon klónozni való listát (opcionális)",
+      "visibilityLabel": "Láthatóság",
+      "visibility": {
+        "private": "Privát",
+        "public": "Nyilvános",
+        "friends": "Barátok",
+        "closeFriends": "Közeli barátok"
+      },
+      "addTaskButton": "Feladat hozzáadása",
+      "task": {
+        "nameLabel": "Név",
+        "areaLabel": "Terület",
+        "categoryLabel": "Kategória",
+        "timesLabel": "# alkalommal",
+        "add": "Hozzáadás",
+        "cancel": "Mégse"
+      },
+      "table": {
+        "name": "Név",
+        "times": "Alkalommal",
+        "area": "Terület",
+        "categories": "Kategóriák"
+      },
+      "create": "Létrehozás",
+      "cancel": "Mégse"
+    }
+  },
+  "charts": {
+    "dimensions": "Dimenziók",
+    "moodAverage": "Hangulat átlag",
+    "gratitude": "Hála",
+    "optimism": "Optimizmus",
+    "restedness": "Kipihentség",
+    "tolerance": "Tolerancia",
+    "selfEsteem": "Önbecsülés",
+    "trust": "Bizalom",
+    "progress": "Fejlődés",
+    "moodAverageScale": "Hangulat átlag skála",
+    "balance": "Egyenleg",
+    "earningsScale": "Bevétel skála"
   }
 }
