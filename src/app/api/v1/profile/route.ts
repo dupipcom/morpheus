@@ -41,7 +41,13 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    return Response.json({ user, profile: user.profile })
+    // Also return lists where this user is a collaborator
+    const collaboratingTaskLists = await prisma.taskList.findMany({
+      where: { collaborators: { has: user.id } },
+      select: { id: true, name: true, role: true, budget: true, dueDate: true, createdAt: true, updatedAt: true }
+    })
+
+    return Response.json({ user, profile: user.profile, collaboratingTaskLists })
   } catch (error) {
     console.error('Error fetching profile:', error)
     return Response.json({ error: 'Internal server error' }, { status: 500 })

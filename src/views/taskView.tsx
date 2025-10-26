@@ -80,7 +80,7 @@ import { useDebounce } from "@/lib/hooks/useDebounce"
 
 import { useFeatureFlag } from "@/lib/hooks/useFeatureFlag"
 
-export const TaskView = ({ timeframe = "day", actions = [] }) => {
+export const TaskView = ({ actions = [] }) => {
   const { session, setGlobalContext, theme } = useContext(GlobalContext)
   const { t, locale } = useI18n()
   const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
@@ -146,7 +146,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   })
 
   // Fetch user templates for the template selector
-  const { data: templatesResp } = useSWRImmutable(session ? '/api/v1/templates' : null, async (key) => {
+  const { data: templatesResp, mutate: mutateTemplates } = useSWRImmutable(session ? '/api/v1/templates' : null, async (key) => {
     const res = await fetch(key)
     if (!res.ok) return { templates: [] }
     return res.json()
@@ -156,23 +156,18 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   // Preview tasks for selected template/list clone option (declared after allTaskLists is initialized)
   // NOTE: this will be redefined later after allTaskLists is declared to avoid TDZ
 
-  // Load ephemeral tasks from session
+  // Load ephemeral tasks from session (day-only)
   const currentEphemeralTasks = useMemo(() => {
-    if (timeframe === 'day') {
-      return session?.user?.entries?.[year]?.days?.[date]?.ephemeralTasks || []
-    } else if (timeframe === 'week') {
-      return session?.user?.entries?.[year]?.weeks?.[weekNumber]?.ephemeralTasks || []
-    }
-    return []
-  }, [session?.user?.entries, year, date, weekNumber, timeframe])
+    return session?.user?.entries?.[year]?.days?.[date]?.ephemeralTasks || []
+  }, [session?.user?.entries, year, date])
 
   const { isAgentChatEnabled } = useFeatureFlag()
   const agentConversation = session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks && session?.user?.entries[year]?.weeks[weekNumber] && session?.user?.entries[year]?.weeks[weekNumber].agentConversation
   const reverseMessages = useMemo (() => agentConversation?.length ? agentConversation.sort((a,b) => new Date(a.timestamp).getTime() > new Date(b.timestamp).getTime() ? 1 : -1) : [], [JSON.stringify(session?.user)])
   
-  const earnings = Object.keys(session?.user?.entries || 0).length > 0 ? timeframe === "day" ? session?.user?.entries[year]?.days[date]?.earnings?.toFixed(2) : session?.user?.entries[year]?.weeks[weekNumber]?.earnings?.toFixed(2) : 0
-  const rawTicker = Object.keys(session?.user?.entries || 0).length > 0 ? timeframe === "day" ? session?.user?.entries[year]?.days[date]?.ticker : session?.user?.entries[year]?.weeks[weekNumber]?.ticker : 0
-  const ticker = typeof rawTicker === 'object' ? (timeframe === 'day' ? rawTicker?.['1d'] : rawTicker?.['1w']) : rawTicker
+  const earnings = Object.keys(session?.user?.entries || 0).length > 0 ? session?.user?.entries[year]?.days[date]?.earnings?.toFixed(2) : 0
+  const rawTicker = Object.keys(session?.user?.entries || 0).length > 0 ? session?.user?.entries[year]?.days[date]?.ticker : 0
+  const ticker = typeof rawTicker === 'object' ? (rawTicker?.['1d']) : rawTicker
 
   // removed debug log
 
@@ -185,7 +180,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const [taskListsLoading, setTaskListsLoading] = useState(true)
 
   const userKey = session?.user?.userId || session?.user?.id
-  const { data: taskListsData, isLoading: swrTaskListsLoading } = useSWRImmutable(
+  const { data: taskListsData, isLoading: swrTaskListsLoading, mutate: mutateTaskLists } = useSWRImmutable(
     userKey ? `/api/v1/tasklists` : null,
     async () => {
       const response = await fetch('/api/v1/tasklists')
@@ -212,7 +207,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     setWeeklyTaskList(weeklyTaskList || null)
     
     if (!selectedTaskListId) {
-      const defaultTaskList = timeframe === 'day' ? dailyTaskList : weeklyTaskList
+      const defaultTaskList = dailyTaskList || weeklyTaskList
       if (defaultTaskList) {
         setSelectedTaskListId(defaultTaskList.id)
       } else if (taskLists.length > 0) {
@@ -222,12 +217,12 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       // Ensure currently selected list still exists; if not, pick a sensible default without triggering extra fetches
       const exists = taskLists.some((tl: any) => tl.id === selectedTaskListId)
       if (!exists) {
-        const fallback = (timeframe === 'day' ? dailyTaskList : weeklyTaskList) || taskLists[0]
+        const fallback = dailyTaskList || weeklyTaskList || taskLists[0]
         if (fallback?.id) setSelectedTaskListId(fallback.id)
       }
     }
     
-  }, [taskListsData, timeframe])
+  }, [taskListsData])
 
   // Compute preview tasks for new template (after allTaskLists is initialized)
   const newTemplatePreviewTasks = useMemo(() => {
@@ -401,120 +396,43 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   }
 
   const userTasks = useMemo(() => {
-    let regularTasks = []
-    
-    // Get the selected TaskList
+    // List-centric tasks with completion overlay for selected date
     const selectedTaskList = allTaskLists.find(tl => tl.id === selectedTaskListId)
-    
-    if (timeframe === 'day') {
-      const noDayData = !session?.user?.entries || !session?.user?.entries[year] || !Object.keys(session?.user?.entries[year].days).length
-      const listKey = selectedTaskListKey
-      const listScopedDayTasks = listKey ? (session?.user?.entries?.[year]?.[listKey]?.[date]?.tasks) : undefined
-      const dailyTasks = (listScopedDayTasks && Array.isArray(listScopedDayTasks) ? listScopedDayTasks : (((session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date]) && session?.user?.entries[year].days[date]?.tasks) || (noDayData ? DAILY_ACTIONS : [])))
-      
-      // Use selected TaskList if available, otherwise fall back to dailyTaskList or dailyTasks
-      if (selectedTaskList?.tasks && selectedTaskList.tasks.length > 0) {
-        // Start with TaskList tasks as base, then merge with day tasks for completion status
-        const taskListTasks = getLocalizedTaskNames(selectedTaskList.tasks, t)
-        const dayTasksLocalized = getLocalizedTaskNames(dailyTasks, t)
-        
-        // Create maps for proper merging
-        const taskListMap = {}
-        taskListTasks.forEach(task => {
-          taskListMap[task.name] = task
-        })
-        
-        const dayTasksMap = {}
-        dayTasksLocalized.forEach(task => {
-          dayTasksMap[task.name] = task
-        })
-        
-        // Merge using assign (day tasks override task list tasks for completion status)
-        const mergedTasks = assign({}, taskListMap, dayTasksMap)
-        // Only include tasks that are in the selected TaskList
-        regularTasks = Object.values(mergedTasks).filter(task => taskListMap[task.name])
-      } else if (dailyTaskList?.tasks && dailyTaskList.tasks.length > 0) {
-        const taskListTasks = getLocalizedTaskNames(dailyTaskList.tasks, t)
-        const dayTasksLocalized = getLocalizedTaskNames(dailyTasks, t)
-        
-        const taskListMap = {}
-        taskListTasks.forEach(task => {
-          taskListMap[task.name] = task
-        })
-        
-        const dayTasksMap = {}
-        dayTasksLocalized.forEach(task => {
-          dayTasksMap[task.name] = task
-        })
-        
-        const mergedTasks = assign({}, taskListMap, dayTasksMap)
-        // Only include tasks that are in the default TaskList
-        regularTasks = Object.values(mergedTasks).filter(task => taskListMap[task.name])
-      } else {
-        regularTasks = getLocalizedTaskNames(dailyTasks, t)
-      }
-    } else if (timeframe === 'week') {
-      const noWeekData = !session?.user?.entries || !session?.user?.entries[year] || !Object.keys(session?.user?.entries[year].weeks).length
-      const listKey = selectedTaskListKey
-      const listScopedWeekTasks = listKey ? (session?.user?.entries?.[year]?.[listKey]?.[weekNumber]?.tasks) : undefined
-      const weeklyTasks = (listScopedWeekTasks && Array.isArray(listScopedWeekTasks) ? listScopedWeekTasks : ((session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks) && session?.user?.entries[year].weeks[weekNumber]?.tasks || []))
-      
-      // Use selected TaskList if available, otherwise fall back to weeklyTaskList or weeklyTasks
-      if (selectedTaskList?.tasks && selectedTaskList.tasks.length > 0) {
-        // Start with TaskList tasks as base, then merge with week tasks for completion status
-        const taskListTasks = getLocalizedTaskNames(selectedTaskList.tasks, t)
-        const weekTasksLocalized = getLocalizedTaskNames(weeklyTasks, t)
-        
-        // Create maps for proper merging
-        const taskListMap = {}
-        taskListTasks.forEach(task => {
-          taskListMap[task.name] = task
-        })
-        
-        const weekTasksMap = {}
-        weekTasksLocalized.forEach(task => {
-          weekTasksMap[task.name] = task
-        })
-        
-        // Merge using assign (week tasks override task list tasks for completion status)
-        const mergedTasks = assign({}, taskListMap, weekTasksMap)
-        // Only include tasks that are in the selected TaskList
-        regularTasks = Object.values(mergedTasks).filter(task => taskListMap[task.name])
-      } else if (weeklyTaskList?.tasks && weeklyTaskList.tasks.length > 0) {
-        const taskListTasks = getLocalizedTaskNames(weeklyTaskList.tasks, t)
-        const weekTasksLocalized = getLocalizedTaskNames(weeklyTasks, t)
-        
-        const taskListMap = {}
-        taskListTasks.forEach(task => {
-          taskListMap[task.name] = task
-        })
-        
-        const weekTasksMap = {}
-        weekTasksLocalized.forEach(task => {
-          weekTasksMap[task.name] = task
-        })
-        
-        const mergedTasks = assign({}, taskListMap, weekTasksMap)
-        // Only include tasks that are in the default TaskList
-        regularTasks = Object.values(mergedTasks).filter(task => taskListMap[task.name])
-      } else {
-        regularTasks = getLocalizedTaskNames(weeklyTasks.length > 0 ? weeklyTasks : WEEKLY_ACTIONS, t)
-      }
-    }
-    
-    // Combine regular tasks with ephemeral tasks
-    const ephemeralTasksWithDisplayName = currentEphemeralTasks.map(task => ({
+    const baseListTasks = (selectedTaskList?.templateTasks && selectedTaskList.templateTasks.length > 0)
+      ? selectedTaskList.templateTasks
+      : (selectedTaskList?.tasks || [])
+    const taskListTasks = getLocalizedTaskNames(baseListTasks, t)
+
+    // Overlay completion from TaskList.completedTasks for this date
+    const completedForDay: any[] = (selectedList as any)?.completedTasks?.[year]?.[date] || []
+    const completedMap: Record<string, any> = {}
+    completedForDay.forEach((ct: any) => {
+      const k = (ct?.id || ct?.localeKey || (typeof ct?.name === 'string' ? ct.name.toLowerCase() : ''))
+      if (k) completedMap[k] = ct
+    })
+    const overlayedListTasks = taskListTasks.map((task: any) => {
+      const k = (task?.id || task?.localeKey || (typeof task?.name === 'string' ? task.name.toLowerCase() : ''))
+      const completed = completedMap[k]
+      if (!completed) return task
+      const completersLen = Array.isArray(completed?.completers) ? completed.completers.length : (Number(completed?.count || 0))
+      const times = Number(task?.times || completed?.times || 1)
+      return { ...task, status: completersLen >= (times || 1) ? 'Done' : 'Open', count: Math.min(completersLen || 0, times || 1) }
+    })
+    const baseWithFallback = overlayedListTasks && overlayedListTasks.length > 0
+      ? overlayedListTasks
+      : getLocalizedTaskNames(DAILY_ACTIONS, t)
+
+    // Ephemeral open from list, deduped by name against template tasks
+    const listEphemeralOpen = (selectedTaskList?.ephemeralTasks?.open || []).map((task: any) => ({
       ...task,
       displayName: task.name,
       isEphemeral: true
     }))
+    const listTaskNames = new Set((baseWithFallback || []).map((t:any) => t.name))
+    const dedupedEphemeral = listEphemeralOpen.filter((t:any) => !listTaskNames.has(t.name))
 
-    // Dedupe: if an ephemeral task also exists in the selected TaskList by name, hide the entry-level copy
-    const listTaskNames = new Set((selectedTaskList?.tasks || []).map((t:any) => t.name))
-    const dedupedEphemeral = ephemeralTasksWithDisplayName.filter(t => !listTaskNames.has(t.name))
-    
-    return [...regularTasks, ...dedupedEphemeral]
-  }, [selectedTaskListId, allTaskLists, dailyTaskList, weeklyTaskList, date, weekNumber, t, currentEphemeralTasks])
+    return [...baseWithFallback, ...dedupedEphemeral]
+  }, [selectedTaskListId, allTaskLists, selectedList, date, year, t])
 
 
   const openDays = useMemo(() => {
@@ -533,24 +451,14 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
 
   // Load existing task contacts and things from database
   useEffect(() => {
-    if (timeframe === 'day') {
-      const dayEntry = session?.user?.entries?.[year]?.days?.[date]
-      if (dayEntry) {
-        setTaskContacts(dayEntry.taskContacts || {})
-        setTaskThings(dayEntry.taskThings || {})
-        setOptimisticTaskContacts(dayEntry.taskContacts || {})
-        setOptimisticTaskThings(dayEntry.taskThings || {})
-      }
-    } else if (timeframe === 'week') {
-      const weekEntry = session?.user?.entries?.[year]?.weeks?.[weekNumber]
-      if (weekEntry) {
-        setTaskContacts(weekEntry.taskContacts || {})
-        setTaskThings(weekEntry.taskThings || {})
-        setOptimisticTaskContacts(weekEntry.taskContacts || {})
-        setOptimisticTaskThings(weekEntry.taskThings || {})
-      }
+    const dayEntry = session?.user?.entries?.[year]?.days?.[date]
+    if (dayEntry) {
+      setTaskContacts(dayEntry.taskContacts || {})
+      setTaskThings(dayEntry.taskThings || {})
+      setOptimisticTaskContacts(dayEntry.taskContacts || {})
+      setOptimisticTaskThings(dayEntry.taskThings || {})
     }
-  }, [session?.user?.entries, year, date, weekNumber, timeframe])
+  }, [session?.user?.entries, year, date])
 
   // Load favorites from selected TaskList
   useEffect(() => {
@@ -628,6 +536,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
 
 
   const handleDone = async (values) => {
+    const justCompletedNow = (values || []).filter((n: string) => !previousValues.includes(n))
     setPreviousValues(values)
     
     // Separate regular tasks from ephemeral tasks
@@ -678,17 +587,36 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     
     // Update regular tasks
     if (nextActions && nextActions.length > 0) {
-      const response = await fetch('/api/v1/user', {
+      await fetch('/api/v1/user', {
         method: 'POST', body: JSON.stringify({
-          dayActions: timeframe === 'day' ? nextActions : undefined,
-          weekActions: timeframe === 'week' ? nextActions : undefined,
+          dayActions: nextActions,
           taskContacts: taskContacts,
           taskThings: taskThings,
           date: fullDay,
-          week: weekNumber,
           taskListKey: selectedTaskListKey
         })
       })
+
+      // Also record per-task completion inside TaskList.task.completion[] if a TaskList is selected
+      if (selectedTaskListId) {
+      await fetch('/api/v1/tasklists', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            recordCompletions: true,
+            taskListId: selectedTaskListId,
+            dayActions: nextActions,
+            date: fullDay,
+            justCompletedNames: justCompletedNow
+          })
+        })
+      await Promise.all([
+        refreshUser(),
+        mutateTaskLists(),
+        mutateTemplates(),
+        mutateContacts(),
+        mutateThings(),
+      ]).catch(() => {})
     }
     
     // Update ephemeral tasks
@@ -696,7 +624,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       for (const task of updatedEphemeralTasks) {
         const response = await fetch('/api/v1/user', {
           method: 'POST', body: JSON.stringify({
-            [timeframe === 'day' ? 'dayEphemeralTasks' : 'weekEphemeralTasks']: {
+            dayEphemeralTasks: {
               update: {
                 id: task.id,
                 updates: {
@@ -705,11 +633,17 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                 }
               }
             },
-            date: fullDay,
-            week: weekNumber
+            date: fullDay
           })
         })
       }
+      await Promise.all([
+        refreshUser(),
+        mutateTaskLists(),
+        mutateTemplates(),
+        mutateContacts(),
+        mutateThings(),
+      ]).catch(() => {})
     }
     
     // Don't call updateUser to avoid resetting moodView selections
@@ -718,6 +652,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
 
   // Create debounced version that only handles server requests
   const debouncedServerUpdate = useDebounce(async (values) => {
+    const justCompletedNow = (values || []).filter((n: string) => !previousValues.includes(n))
     setPreviousValues(values)
     
     // Separate regular tasks from ephemeral tasks
@@ -764,17 +699,37 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
 
     // Update regular tasks
     if (nextActions && nextActions.length > 0) {
-      const response = await fetch('/api/v1/user', {
+      await fetch('/api/v1/user', {
         method: 'POST', body: JSON.stringify({
-          dayActions: timeframe === 'day' ? nextActions : undefined,
-          weekActions: timeframe === 'week' ? nextActions : undefined,
+          dayActions: nextActions,
           taskContacts: taskContacts,
           taskThings: taskThings,
           date: fullDay,
-          week: weekNumber,
           taskListKey: selectedTaskListKey
         })
       })
+
+      // Also record per-task completion inside TaskList.task.completion[] if a TaskList is selected
+      if (selectedTaskListId) {
+      await fetch('/api/v1/tasklists', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            recordCompletions: true,
+            taskListId: selectedTaskListId,
+            dayActions: nextActions,
+            date: fullDay,
+            justCompletedNames: justCompletedNow
+          })
+        })
+      }
+      await Promise.all([
+        refreshUser(),
+        mutateTaskLists(),
+        mutateTemplates(),
+        mutateContacts(),
+        mutateThings(),
+      ]).catch(() => {})
     }
     
     // Update ephemeral tasks
@@ -782,7 +737,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       for (const task of updatedEphemeralTasks) {
         const response = await fetch('/api/v1/user', {
           method: 'POST', body: JSON.stringify({
-            [timeframe === 'day' ? 'dayEphemeralTasks' : 'weekEphemeralTasks']: {
+            dayEphemeralTasks: {
               update: {
                 id: task.id,
                 updates: {
@@ -791,8 +746,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                 }
               }
             },
-            date: fullDay,
-            week: weekNumber
+            date: fullDay
           })
         })
       }
@@ -883,14 +837,8 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const saveTaskContacts = async (taskName: string, contacts: any[]) => {
     try {
       const payload: any = {
-        taskContacts: { [taskName]: contacts }
-      }
-      
-      // Only send the appropriate parameter based on timeframe
-      if (timeframe === 'day') {
-        payload.date = fullDay
-      } else if (timeframe === 'week') {
-        payload.week = weekNumber
+        taskContacts: { [taskName]: contacts },
+        date: fullDay
       }
       
       const response = await fetch('/api/v1/user', {
@@ -909,14 +857,8 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const saveTaskThings = async (taskName: string, things: any[]) => {
     try {
       const payload: any = {
-        taskThings: { [taskName]: things }
-      }
-      
-      // Only send the appropriate parameter based on timeframe
-      if (timeframe === 'day') {
-        payload.date = fullDay
-      } else if (timeframe === 'week') {
-        payload.week = weekNumber
+        taskThings: { [taskName]: things },
+        date: fullDay
       }
       
       const response = await fetch('/api/v1/user', {
@@ -948,7 +890,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
         name: taskData.name,
         area: taskData.area,
         categories: [taskData.category],
-        cadence: timeframe,
+        cadence: 'day',
         status: "Not started",
         times: 1,
         count: 0,
@@ -956,20 +898,16 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
         createdAt: new Date().toISOString()
       }
 
-      // Always add to the selected TaskList
-      const selectedTaskList = allTaskLists.find(tl => tl.id === selectedTaskListId)
-      const currentTasks = selectedTaskList?.tasks || []
-
-      const listPayload: any = {
-        role: selectedTaskList?.role || (timeframe === 'day' ? 'daily.default' : 'weekly.default'),
-        tasks: [...currentTasks, listTask],
-        templateId: selectedTaskList?.templateId,
-        updateTemplate: !!taskData.saveToTemplate
-      }
-
+      // Add into the selected TaskList ephemeralTasks.open
       const listResponse = await fetch('/api/v1/tasklists', {
         method: 'POST',
-        body: JSON.stringify(listPayload)
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          taskListId: selectedTaskListId,
+          ephemeralTasks: {
+            add: listTask
+          }
+        })
       })
 
       if (!listResponse.ok) {
@@ -982,7 +920,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
 
       // Also add to the user's current entry as an ephemeral instance (so progress is tracked for this period)
       const entryPayload: any = {
-        [timeframe === 'day' ? 'dayEphemeralTasks' : 'weekEphemeralTasks']: {
+        dayEphemeralTasks: {
           add: {
             id: newEphemeralId,
             name: taskData.name,
@@ -993,13 +931,8 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
             count: 0,
             isEphemeral: true
           }
-        }
-      }
-
-      if (timeframe === 'day') {
-        entryPayload.date = fullDay
-      } else if (timeframe === 'week') {
-        entryPayload.week = weekNumber
+        },
+        date: fullDay
       }
 
       const entryResponse = await fetch('/api/v1/user', {
@@ -1029,32 +962,29 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       const existsInList = currentTasks.some((t:any) => t.id === taskId)
 
       if (existsInList) {
-        const updatedTasks = currentTasks.filter((t:any) => t.id !== taskId)
-        const listPayload = {
-          role: selectedTaskList?.role || (timeframe === 'day' ? 'daily.default' : 'weekly.default'),
-          tasks: updatedTasks,
-          templateId: selectedTaskList?.templateId
-        }
         const listResp = await fetch('/api/v1/tasklists', {
           method: 'POST',
-          body: JSON.stringify(listPayload)
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            taskListId: selectedTaskListId,
+            ephemeralTasks: { close: { id: taskId } }
+          })
         })
         if (listResp.ok) {
           const data = await listResp.json()
           setAllTaskLists(prev => prev.map(tl => tl.id === selectedTaskListId ? data.taskList : tl))
         } else {
-          console.error('Failed to delete from task list:', listResp.status, listResp.statusText)
+          console.error('Failed to close from task list:', listResp.status, listResp.statusText)
         }
       }
 
       // Then remove from the current user entry, if exists
       const payload:any = {
-        [timeframe === 'day' ? 'dayEphemeralTasks' : 'weekEphemeralTasks']: {
+        dayEphemeralTasks: {
           remove: { id: taskId }
-        }
+        },
+        date: fullDay
       }
-      if (timeframe === 'day') payload.date = fullDay
-      else if (timeframe === 'week') payload.week = weekNumber
 
       const response = await fetch('/api/v1/user', {
         method: 'POST',
@@ -1072,7 +1002,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   }
 
   const handleCloseDates = async (values) => {
-    await handleCloseDatesUtil(values, timeframe)
+    await handleCloseDatesUtil(values)
     await refreshUser()
   }
 
@@ -1144,11 +1074,13 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   // No on-mount refresh to avoid duplicate GETs; rely on SWR cache
 
   // Use enhanced loading state to prevent flashing
-  const isDataLoading = useEnhancedLoadingState(isLoading, session, 100, timeframe)
+  const isDataLoading = useEnhancedLoadingState(isLoading, session, 100)
 
   if (isDataLoading || taskListsLoading) {
     return <TaskViewSkeleton />
   }
+
+  console.log({ allTasksList, openDays, openWeeks })
 
   // Check if user is properly authenticated and session is valid
   // if (!session?.user || !session?.user?.userId || Object.keys(session.user).length === 0) {
@@ -1162,7 +1094,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
 
   return <div className="max-w-[1200px] m-auto p-4">
     <p className="sticky top-23 truncate z-[999] text-center scroll-m-20 text-sm font-semibold tracking-tight mb-8 flex items-center justify-center gap-2">
-      <span>{t('tasks.editing', { timeframe: timeframe === "day" ? date : t('tasks.weekNumber', { number: weekNumber }) })}</span>
+      <span>{t('tasks.editing', { timeframe: date })}</span>
       {ticker !== undefined && ticker !== 0 && (
         <span className={`inline-flex items-center gap-1 ${ticker > 0 ? 'text-success' : 'text-destructive'}`}>
           {ticker > 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
@@ -1170,10 +1102,10 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
         </span>
       )}
     </p>
-    {(timeframe === "day" && openDays?.length) || (timeframe === "week" && openWeeks?.length) ? <Carousel className="max-w-[196px] md:max-w-[380px] m-auto">
+    {openDays?.length ? <Carousel className="max-w-[196px] md:max-w-[380px] m-auto">
       <CarouselContent className="text-center w-[192px] my-8">
         {
-          timeframe === "day" ? openDays?.map((day, index) => {
+          openDays?.map((day, index) => {
             const tickerValue = typeof day.ticker === 'object' ? (day.ticker?.['1d'] ?? 0) : (day.ticker || 0)
             return <CarouselItem key={`task__carousel--${day.date}--${index}`} className="flex flex-col">
               <small>Ð{day.earnings?.toFixed(2)}</small>
@@ -1185,18 +1117,6 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
               <Button className="dark:bg-foreground text-md p-5 mb-2" onClick={() => handleEditDay(new Date(day.date))}>{t('common.edit')} {t('common.day').toLowerCase()}</Button>
               <Button variant="outline" className="text-md p-5" onClick={() => handleCloseDates([day.date])} >{t('common.close')} {t('common.day').toLowerCase()}</Button>
             </CarouselItem>
-          }) : openWeeks?.map((week, index) => {
-            const tickerValue = typeof week.ticker === 'object' ? (week.ticker?.['1w'] ?? 0) : (week.ticker || 0)
-            return <CarouselItem key={`task__carousel--${week.week}--${index}`} className="flex flex-col">
-              <small>Ð{week?.earnings?.toFixed(2)}</small>
-              <small className={`font-semibold flex items-center justify-center gap-1 ${tickerValue > 0 ? 'text-success' : tickerValue < 0 ? 'text-destructive' : 'text-muted-foreground'}`}>
-                {tickerValue > 0 ? <TrendingUp className="h-3 w-3" /> : tickerValue < 0 ? <TrendingDown className="h-3 w-3" /> : null}
-                {typeof tickerValue === 'number' ? Math.abs(tickerValue).toFixed(1) : '0.0'}%
-              </small>
-              <label className="mb-4">{t('week.weekNumber', { number: week.week })}</label>
-              <Button onClick={() => handleEditWeek(week.week)} className="text-md p-5 mb-2 dark:bg-foreground">{t('common.edit')} {t('common.week').toLowerCase()}</Button>
-              <Button variant="outline" className="text-md p-5" onClick={() => handleCloseDates([{ week: week.week, year: week.year }])}>{t('common.close')} {t('common.week').toLowerCase()}</Button>
-            </CarouselItem>
           })
         }
       </CarouselContent>
@@ -1205,14 +1125,14 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     </Carousel> : undefined}
     <h2 className="mt-8 mb-4 text-center text-lg">{t('mood.subtitle')}</h2>
     <Accordion key={`mood__accordion--${isMoodEmpty}`} type="single" collapsible defaultValue={isMoodEmpty ? "mood" : "tasks"}>
-      {timeframe === "day" && <AccordionItem value="mood">
+      <AccordionItem value="mood">
         <AccordionTrigger>{t('common.mood')}</AccordionTrigger>
         <AccordionContent>
           <div className="flex flex-col max-w-[720px] m-auto">
-            <MoodView timeframe={timeframe} date={fullDay} />
+            <MoodView timeframe={"day"} date={fullDay} />
           </div>
         </AccordionContent>
-      </AccordionItem>}
+      </AccordionItem>
       <AccordionItem value="tasks">
         <AccordionTrigger>{t('dashboard.whatDidYouAccomplish')}</AccordionTrigger>
         <AccordionContent>
@@ -2271,7 +2191,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       </AccordionItem>
     </Accordion>
     <p className="m-8 text-center">
-      {t('tasks.yourEarnings', { timeframe: timeframe === "day" ? t('dashboard.today') : t('dashboard.thisWeek'), amount: earnings?.toLocaleString() })}
+      {t('tasks.yourEarnings', { timeframe: t('dashboard.today'), amount: earnings?.toLocaleString() })}
       {ticker !== undefined && ticker !== 0 && (
         <span className={`ml-2 flex items-center justify-center gap-1 ${ticker > 0 ? 'text-success' : 'text-destructive'}`}>
           {ticker > 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
@@ -2284,7 +2204,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     {/* Only show insights for authenticated users */}
     {session?.user?.id && (
       <>
-        <p className="mx-8 pt-8">{timeframe === "day" ? insight?.dayAnalysis : insight?.weekAnalysis}</p>
+        <p className="mx-8 pt-8">{insight?.dayAnalysis}</p>
         <p className="mx-8 pt-8">{insight?.last3daysAnalysis}</p>
       </>
     )}
@@ -2294,14 +2214,10 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       variant="outline" 
       className="text-md p-5 m-auto w-full my-8" 
       onClick={() => {
-        if (timeframe === "day") {
-          handleCloseDates([date])
-        } else {
-          handleCloseDates([{ week: weekNumber, year: year }])
-        }
+        handleCloseDates([date])
       }}
     >
-      {timeframe === "day" ? t('mood.closeDay') : t('week.closeWeek')}
+      {t('mood.closeDay')}
     </Button>
   </div >
 }

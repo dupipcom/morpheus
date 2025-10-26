@@ -331,6 +331,78 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
       updatedEntries[year][listKey] = {}
     }
 
+    // Try to resolve TaskList for earnings calculation (budget / task number)
+    let perTaskEarnings = 0
+    try {
+      const maybeListId = listKey.split("__").pop()
+      if (maybeListId) {
+        const listRecord = await prisma.taskList.findUnique({ where: { id: maybeListId } })
+        if (listRecord) {
+          const listBudget = parseFloat(listRecord.budget || "0")
+          const numTasks = (Array.isArray(listRecord.tasks) && listRecord.tasks.length) ? listRecord.tasks.length : ((data.dayActions?.length || data.weekActions?.length) || 1)
+          perTaskEarnings = numTasks > 0 ? (listBudget / numTasks) : 0
+        }
+      }
+    } catch (e) {
+      // ignore earnings calc errors; default stays 0
+    }
+
+    const addCompletionsFor = (scopeKey: string, tasksWithContacts: any[], scopeId: string | number) => {
+      // Prepare completions bucket under entries[year][listKey].completions[year][date]
+      const listScope = updatedEntries[year][listKey]
+      const completions = (listScope.completions || {})
+      const yearBucket = (completions[year] || {})
+      const dateKey = date
+      const existingCompletionsArr: any[] = Array.isArray(yearBucket[dateKey]) ? yearBucket[dateKey] : []
+
+      // Previous tasks to detect delta by name/id
+      const prevTasks: any[] = (listScope?.[scopeKey]?.tasks) || []
+
+      const toAppend: any[] = []
+      for (const task of tasksWithContacts) {
+        const identifier = task.id || task.name
+        const prev = prevTasks.find((t: any) => (t.id && task.id ? t.id === task.id : t.name === task.name))
+        const prevCount = Number(prev?.count || 0)
+        const newCount = Number(task?.count || (task.status === "Done" ? 1 : 0))
+        const delta = Math.max(0, newCount - prevCount)
+        if (delta > 0) {
+          for (let i = 0; i < delta; i++) {
+            toAppend.push({
+              ...task,
+              times: Number(task?.times || 0) + 1,
+              user: user.id,
+              earnings: perTaskEarnings.toString()
+            })
+          }
+        }
+      }
+
+      if (toAppend.length > 0) {
+        updatedEntries[year][listKey] = {
+          ...listScope,
+          completions: {
+            ...completions,
+            [year]: {
+              ...yearBucket,
+              [dateKey]: [...existingCompletionsArr, ...toAppend]
+            }
+          },
+          [scopeKey]: {
+            ...(listScope?.[scopeKey] || {}),
+            tasks: (tasksWithContacts || []).sort((a: any, b: any) => (a.status === "Done" ? 1 : -1))
+          }
+        }
+      } else {
+        updatedEntries[year][listKey] = {
+          ...listScope,
+          [scopeKey]: {
+            ...(listScope?.[scopeKey] || {}),
+            tasks: (tasksWithContacts || []).sort((a: any, b: any) => (a.status === "Done" ? 1 : -1))
+          }
+        }
+      }
+    }
+
     // Apply week-scoped tasks under list key (name+id)
     if (data.weekActions?.length) {
       const tasksWithContacts = data.weekActions.map((task: any) => ({
@@ -338,13 +410,15 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
         contacts: data.taskContacts?.[task.name] || [],
         things: data.taskThings?.[task.name] || []
       }))
+      const scopeId = (data.week ?? weekNumber)
+      // Ensure the scope container exists before reading prev
       updatedEntries[year][listKey] = {
         ...updatedEntries[year][listKey],
-        [data.week ?? weekNumber]: {
-          ...(updatedEntries[year][listKey]?.[data.week ?? weekNumber] || {}),
-          tasks: tasksWithContacts.sort((a: any, b: any) => (a.status === "Done" ? 1 : -1))
+        [scopeId]: {
+          ...(updatedEntries[year][listKey]?.[scopeId] || {})
         }
       }
+      addCompletionsFor(scopeId as any, tasksWithContacts, scopeId)
     }
 
     // Apply day-scoped tasks under list key (name+id)
@@ -354,13 +428,14 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
         contacts: data.taskContacts?.[task.name] || [],
         things: data.taskThings?.[task.name] || []
       }))
+      // Ensure the scope container exists before reading prev
       updatedEntries[year][listKey] = {
         ...updatedEntries[year][listKey],
         [date]: {
-          ...(updatedEntries[year][listKey]?.[date] || {}),
-          tasks: tasksWithContacts.sort((a: any, b: any) => (a.status === "Done" ? 1 : -1))
+          ...(updatedEntries[year][listKey]?.[date] || {})
         }
       }
+      addCompletionsFor(date, tasksWithContacts, date)
     }
 
     await prisma.user.update({

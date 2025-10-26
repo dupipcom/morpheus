@@ -7,7 +7,7 @@ import { useAuth } from '@clerk/nextjs';
 
 import Link from 'next/link'
 
-import { TaskView } from "@/views/taskView"
+import { DoView } from "@/views/doView"
 import { ViewMenu } from "@/components/viewMenu"
 import { Button } from "@/components/ui/button"
 
@@ -52,14 +52,7 @@ export default function LocalizedDo({ params }: { params: Promise<{ locale: stri
   }, {})
 
   return (
-    <main className="min-h-[100vh]">
-      <ViewMenu active="do" />
-
-      <div className="scroll-m-20 text-2xl font-semibold tracking-tight text-center mb-8">
-        <label>{t('dashboard.todayIs', { date: formatDate(new Date()) })}</label>
-      </div>
-      <TaskView actions={actions} />
-    </main>
+    <DoView />
   )
 }
 

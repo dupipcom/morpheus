@@ -160,7 +160,7 @@ type Task {
   area Areas
   status String
   cadence String
-  times Int
+  times Int?
   count Int?
   localeKey String?
   contacts ContactReference[]
@@ -168,6 +168,14 @@ type Task {
   favorite Boolean?
   isEphemeral Boolean?
   createdAt String?
+  completers Completer[]
+}
+
+type Completer {
+  id String  @db.ObjectId
+  earnings String?
+  time Int
+  completedAt DateTime
 }
 
 type ContactReference {
@@ -242,7 +250,15 @@ model TaskList {
   progress      String?
   templateId    String?   @db.ObjectId // Reference to Template
   template      Template? @relation(fields: [templateId], references: [id])
-  tasks         Task[]    // Array of Task objects
+  // Tasks that define the template for this list
+  templateTasks Task[]
+  // Legacy tasks field kept for backward compatibility
+  tasks         Task[]
+  // Ephemeral tasks scoped to this list, separated by open/closed
+  // Structure: { open: Task[]; closed: Task[] }
+  ephemeralTasks Json?
+  // Completed tasks by year/date: { [year]: { [date]: Task[] } }
+  completedTasks Json?
 }
 
 enum Visibility {
