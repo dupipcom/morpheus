@@ -10,18 +10,29 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ profiles: [] })
     }
 
-    // Search public usernames
+    // Fuzzy search across userName, firstName, lastName (case-insensitive)
     const profiles = await prisma.profile.findMany({
       where: {
-        userNameVisible: true,
-        userName: {
-          contains: query,
-          mode: 'insensitive'
-        }
+        OR: [
+          {
+            userNameVisible: true,
+            userName: { contains: query, mode: 'insensitive' }
+          },
+          {
+            firstNameVisible: true,
+            firstName: { contains: query, mode: 'insensitive' }
+          },
+          {
+            lastNameVisible: true,
+            lastName: { contains: query, mode: 'insensitive' }
+          },
+        ]
       },
       select: {
         userId: true,
         userName: true,
+        firstName: true,
+        lastName: true,
       },
       take: 20
     })

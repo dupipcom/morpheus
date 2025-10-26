@@ -27,13 +27,21 @@ export const ListView = () => {
 
   const selectedTaskList = useMemo(() => allTaskLists.find((l:any) => l.id === selectedTaskListId), [allTaskLists, selectedTaskListId])
 
-  // Collaborator profiles map (userId -> userName)
+  // Profiles cache (userId -> userName) for collaborators and completers
   const [collabProfiles, setCollabProfiles] = useState<Record<string, string>>({})
   useEffect(() => {
     let cancelled = false
     const run = async () => {
       try {
-        const ids: string[] = Array.isArray((selectedTaskList as any)?.collaborators) ? (selectedTaskList as any).collaborators : []
+        // Collaborators
+        const collaborators: string[] = Array.isArray((selectedTaskList as any)?.collaborators) ? (selectedTaskList as any).collaborators : []
+        // Today's completers from completedTasks map
+        const completedForDay: any[] = (selectedTaskList as any)?.completedTasks?.[year]?.[date] || []
+        const completerIds = new Set<string>()
+        completedForDay.forEach((t: any) => {
+          if (Array.isArray(t?.completers)) t.completers.forEach((c: any) => { if (c?.id) completerIds.add(String(c.id)) })
+        })
+        const ids = Array.from(new Set([...(collaborators || []), ...Array.from(completerIds)]))
         if (!ids.length) { setCollabProfiles({}); return }
         const res = await fetch(`/api/v1/profiles/by-ids?ids=${encodeURIComponent(ids.join(','))}`)
         if (!cancelled && res.ok) {
@@ -41,12 +49,16 @@ export const ListView = () => {
           const map: Record<string, string> = {}
           ;(data.profiles || []).forEach((p: any) => { map[p.userId] = p.userName || p.userId })
           setCollabProfiles(map)
+        } else if (!cancelled) {
+          setCollabProfiles({})
         }
-      } catch {}
+      } catch {
+        if (!cancelled) setCollabProfiles({})
+      }
     }
     run()
     return () => { cancelled = true }
-  }, [selectedTaskList?.id, JSON.stringify((selectedTaskList as any)?.collaborators || [])])
+  }, [selectedTaskList?.id, JSON.stringify((selectedTaskList as any)?.collaborators || []), (selectedTaskList as any)?.completedTasks?.[year]?.[date] ? JSON.stringify((selectedTaskList as any)?.completedTasks?.[year]?.[date]) : ''])
 
   // Build tasks: templateTasks + ephemeralTasks.open, overlay completedTasks[year][date]
   const mergedTasks = useMemo(() => {
@@ -228,7 +240,7 @@ export const ListView = () => {
           const isDone = (task?.status === 'Done') || values.includes(task?.name)
           const lastCompleter = Array.isArray(task?.completers) && task.completers.length > 0 ? task.completers[task.completers.length - 1] : undefined
           const isCollabCompleter = lastCompleter && Array.isArray((selectedTaskList as any)?.collaborators) && (selectedTaskList as any).collaborators.includes(lastCompleter.id)
-          const completerName = lastCompleter ? (collabProfiles[lastCompleter.id] || lastCompleter.id) : ''
+          const completerName = lastCompleter ? (collabProfiles[String(lastCompleter.id)] || String(lastCompleter.id)) : ''
           return (
             <div key={`task__item--${task.name}`} className="flex flex-col items-center m-1">
               <div className="relative w-full">
@@ -236,7 +248,7 @@ export const ListView = () => {
                   {task.times > 1 ? `${task.count || 0}/${task.times} ` : ''}{task.displayName || task.name}
                 </ToggleGroupItem>
               </div>
-              {isDone && isCollabCompleter && completerName && (
+              {isDone && lastCompleter && completerName && (
                 <div className="mt-1">
                   <Badge variant="secondary" className="bg-muted text-muted-foreground border-muted">
                     <UserIcon className="h-3 w-3 mr-1" />
