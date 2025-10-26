@@ -402,10 +402,10 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
       <div key={JSON.stringify(serverMood)} className="w-full m-auto p-4">
         {/* Notes Section */}
         <div className="mb-16 p-4 border rounded-lg bg-transparent border-body">
-          <h3 className="text-lg font-semibold mb-4 text-body">Publish a Note</h3>
+          <h3 className="text-lg font-semibold mb-4 text-body">{t('mood.publish.title') || 'Publish a Note'}</h3>
           <Textarea 
             className="mb-4" 
-            placeholder="Write your note here..."
+            placeholder={t('mood.publish.placeholder') || 'Write your note here...'}
             value={noteContent} 
             onChange={(e) => {
               setNoteContent(e.target.value)
@@ -414,14 +414,14 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
           <div className="flex items-center gap-4 mb-4">
             <Select value={noteVisibility} onValueChange={setNoteVisibility}>
               <SelectTrigger className="w-48">
-                <SelectValue placeholder="Select visibility" />
+                <SelectValue placeholder={t('mood.publish.selectVisibility') || 'Select visibility'} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="PRIVATE">Private</SelectItem>
-                <SelectItem value="FRIENDS">Friends</SelectItem>
-                <SelectItem value="CLOSE_FRIENDS">Close Friends</SelectItem>
-                <SelectItem value="PUBLIC">Public</SelectItem>
-                <SelectItem value="AI_ENABLED">AI Enabled</SelectItem>
+                <SelectItem value="PRIVATE">{t('mood.publish.visibility.PRIVATE') || 'Private'}</SelectItem>
+                <SelectItem value="FRIENDS">{t('mood.publish.visibility.FRIENDS') || 'Friends'}</SelectItem>
+                <SelectItem value="CLOSE_FRIENDS">{t('mood.publish.visibility.CLOSE_FRIENDS') || 'Close Friends'}</SelectItem>
+                <SelectItem value="PUBLIC">{t('mood.publish.visibility.PUBLIC') || 'Public'}</SelectItem>
+                <SelectItem value="AI_ENABLED">{t('mood.publish.visibility.AI_ENABLED') || 'AI Enabled'}</SelectItem>
               </SelectContent>
             </Select>
             <Button 
@@ -429,7 +429,7 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
               disabled={!noteContent.trim()}
               className="bg-primary text-primary-foreground hover:bg-primary/90"
             >
-              Publish Note
+              {t('mood.publish.action') || 'Publish Note'}
             </Button>
           </div>
         </div>

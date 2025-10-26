@@ -9,6 +9,7 @@ import { Calendar } from '@/components/ui/calendar'
 import { Badge } from '@/components/ui/badge'
 import { Package, List as ListIcon, MoreHorizontal, ChevronDown, Calendar as CalendarIcon } from 'lucide-react'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
+import { useI18n } from '@/lib/contexts/i18n'
 
 type Collaborator = { id: string, userName: string }
 
@@ -27,6 +28,7 @@ export const AddListForm = ({
   onCancel: () => void
   onCreated: () => Promise<void> | void
 }) => {
+  const { t } = useI18n()
   const [form, setForm] = useState({
     name: '',
     templateId: '',
@@ -144,34 +146,34 @@ export const AddListForm = ({
   return (
     <Card className="mb-2 p-4">
       <CardHeader>
-        <CardTitle className="text-sm">{isEditing ? 'Edit List' : 'Create New List'}</CardTitle>
+        <CardTitle className="text-sm">{isEditing ? (t('forms.addListForm.titleEdit') || 'Edit List') : (t('forms.addListForm.titleCreate') || 'Create New List')}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         <div>
-          <label className="text-sm font-medium">Name</label>
+          <label className="text-sm font-medium">{t('forms.addListForm.nameLabel') || 'Name'}</label>
           <input className="w-full p-2 border rounded-md" value={form.name} onChange={(e) => setForm(prev => ({ ...prev, name: e.target.value }))} />
         </div>
         {!isEditing && (
           <div>
-            <label className="text-sm font-medium">Template or List</label>
+            <label className="text-sm font-medium">{t('forms.addListForm.templateOrListLabel') || 'Template or List'}</label>
             <Select value={form.templateId} onValueChange={(val) => setForm(prev => ({ ...prev, templateId: val }))}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Choose a template" />
+                <SelectValue placeholder={t('forms.addListForm.chooseTemplatePlaceholder') || 'Choose a template'} />
               </SelectTrigger>
               <SelectContent>
                 {userTemplates.map((tpl: any) => (
-                  <SelectItem key={`tpl-${tpl.id}`} value={`template:${tpl.id}`} textValue={tpl.name || tpl.role || 'Template'}>
+                  <SelectItem key={`tpl-${tpl.id}`} value={`template:${tpl.id}`} textValue={tpl.name || tpl.role || (t('forms.commonOptions.entities.template') || 'Template')}>
                     <div className="flex items-center gap-2">
                       <Package className="h-4 w-4 opacity-70" />
-                      <span>{tpl.name || tpl.role || 'Template'}</span>
+                      <span>{tpl.name || tpl.role || (t('forms.commonOptions.entities.template') || 'Template')}</span>
                     </div>
                   </SelectItem>
                 ))}
                 {allTaskLists.map((lst: any) => (
-                  <SelectItem key={`lst-${lst.id}`} value={`list:${lst.id}`} textValue={lst.name || lst.role || 'List'}>
+                  <SelectItem key={`lst-${lst.id}`} value={`list:${lst.id}`} textValue={lst.name || lst.role || (t('forms.commonOptions.entities.list') || 'List')}>
                     <div className="flex items-center gap-2">
                       <ListIcon className="h-4 w-4 opacity-70" />
-                      <span>{lst.name || lst.role || 'List'}</span>
+                      <span>{lst.name || lst.role || (t('forms.commonOptions.entities.list') || 'List')}</span>
                     </div>
                   </SelectItem>
                 ))}
@@ -181,15 +183,15 @@ export const AddListForm = ({
         )}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <div>
-            <label className="text-sm font-medium">Budget</label>
+            <label className="text-sm font-medium">{t('forms.addListForm.budgetLabel') || 'Budget'}</label>
             <input type="number" value={form.budget} onChange={(e) => setForm(prev => ({ ...prev, budget: e.target.value }))} className="w-full p-2 border rounded-md" />
           </div>
           <div>
-            <label className="text-sm font-medium">Due date</label>
+            <label className="text-sm font-medium">{t('forms.addListForm.dueDateLabel') || 'Due date'}</label>
             <Popover open={dateOpen} onOpenChange={setDateOpen}>
               <PopoverTrigger asChild>
                 <Button variant="outline" className="w-full justify-start text-left font-normal">
-                  {dueDateObj ? dueDateObj.toISOString().slice(0,10) : <span>Pick a date</span>}
+                  {dueDateObj ? dueDateObj.toISOString().slice(0,10) : <span>{t('forms.addListForm.pickDatePlaceholder') || 'Pick a date'}</span>}
                   <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                 </Button>
               </PopoverTrigger>
@@ -204,37 +206,37 @@ export const AddListForm = ({
             </Popover>
           </div>
           <div>
-            <label className="text-sm font-medium">Cadence</label>
+            <label className="text-sm font-medium">{t('forms.addListForm.cadenceLabel') || 'Cadence'}</label>
             <Select value={form.cadence} onValueChange={(val) => setForm(prev => ({ ...prev, cadence: val }))}>
               <SelectTrigger className="w-full">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="one-off">One-off</SelectItem>
-                <SelectItem value="daily">Daily</SelectItem>
-                <SelectItem value="weekly">Weekly</SelectItem>
-                <SelectItem value="monthly">Monthly</SelectItem>
-                <SelectItem value="quarterly">Quarterly</SelectItem>
-                <SelectItem value="semester">Semester</SelectItem>
-                <SelectItem value="yearly">Yearly</SelectItem>
+                <SelectItem value="one-off">{t('forms.addListForm.cadence.oneOff') || 'One-off'}</SelectItem>
+                <SelectItem value="daily">{t('forms.addListForm.cadence.daily') || 'Daily'}</SelectItem>
+                <SelectItem value="weekly">{t('forms.addListForm.cadence.weekly') || 'Weekly'}</SelectItem>
+                <SelectItem value="monthly">{t('forms.addListForm.cadence.monthly') || 'Monthly'}</SelectItem>
+                <SelectItem value="quarterly">{t('forms.addListForm.cadence.quarterly') || 'Quarterly'}</SelectItem>
+                <SelectItem value="semester">{t('forms.addListForm.cadence.semester') || 'Semester'}</SelectItem>
+                <SelectItem value="yearly">{t('forms.addListForm.cadence.yearly') || 'Yearly'}</SelectItem>
               </SelectContent>
             </Select>
           </div>
         </div>
         <div>
-          <label className="text-sm font-medium">Collaborators</label>
+          <label className="text-sm font-medium">{t('forms.addListForm.collaboratorsLabel') || 'Collaborators'}</label>
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="outline" className="w-full justify-between">
-                <span>{form.collaborators.length > 0 ? `${form.collaborators.length} selected` : 'Search usernames...'}</span>
+                <span>{form.collaborators.length > 0 ? (t('forms.addListForm.selectedCount', { count: form.collaborators.length }) || `${form.collaborators.length} selected`) : (t('forms.addListForm.searchUsernames') || 'Search usernames...')}</span>
                 <ChevronDown className="h-4 w-4 opacity-50" />
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-[320px] p-0">
               <Command shouldFilter={false}>
-                <CommandInput placeholder="Type a username..." value={collabQuery} onValueChange={setCollabQuery} />
+                <CommandInput placeholder={t('forms.addListForm.typeAUsername') || 'Type a username...'} value={collabQuery} onValueChange={setCollabQuery} />
                 <CommandList>
-                  <CommandEmpty>No results.</CommandEmpty>
+                  <CommandEmpty>{t('forms.addListForm.noResults') || 'No results.'}</CommandEmpty>
                   <CommandGroup>
                     {collabResults.map((p: any) => (
                       <CommandItem key={p.userId} value={p.userId} onSelect={() => {
@@ -264,14 +266,14 @@ export const AddListForm = ({
           )}
         </div>
         <div>
-          <label className="text-sm font-medium">Role</label>
+          <label className="text-sm font-medium">{t('forms.addListForm.roleLabel') || 'Role'}</label>
           <Select value={form.role} onValueChange={(val) => setForm(prev => ({ ...prev, role: val }))}>
             <SelectTrigger className="w-full">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="custom">Custom</SelectItem>
-              <SelectItem value="default">Default</SelectItem>
+              <SelectItem value="custom">{t('forms.addListForm.role.custom') || 'Custom'}</SelectItem>
+              <SelectItem value="default">{t('forms.addListForm.role.default') || 'Default'}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -279,54 +281,54 @@ export const AddListForm = ({
         <div>
           <Popover open={addTaskOpen} onOpenChange={setAddTaskOpen}>
             <PopoverTrigger asChild>
-              <Button variant="default">Add task</Button>
+              <Button variant="default">{t('forms.addListForm.addTaskButton') || 'Add task'}</Button>
             </PopoverTrigger>
             <PopoverContent className="w-[320px]">
               <div className="space-y-2">
                 <div>
-                  <label className="text-sm font-medium">Name</label>
+                  <label className="text-sm font-medium">{t('forms.addListForm.table.name') || 'Name'}</label>
                   <input className="w-full p-2 border rounded-md" value={addTaskForm.name} onChange={(e) => setAddTaskForm(prev => ({ ...prev, name: e.target.value }))} />
                 </div>
                 <div>
-                  <label className="text-sm font-medium">Area</label>
+                  <label className="text-sm font-medium">{t('forms.addListForm.table.area') || 'Area'}</label>
                   <Select value={addTaskForm.area} onValueChange={(val) => setAddTaskForm(prev => ({ ...prev, area: val }))}>
                     <SelectTrigger className="w-full">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="self">Self</SelectItem>
-                      <SelectItem value="home">Home</SelectItem>
-                      <SelectItem value="social">Social</SelectItem>
-                      <SelectItem value="work">Work</SelectItem>
+                      <SelectItem value="self">{t('forms.commonOptions.area.self') || 'Self'}</SelectItem>
+                      <SelectItem value="home">{t('forms.commonOptions.area.home') || 'Home'}</SelectItem>
+                      <SelectItem value="social">{t('forms.commonOptions.area.social') || 'Social'}</SelectItem>
+                      <SelectItem value="work">{t('forms.commonOptions.area.work') || 'Work'}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
-                  <label className="text-sm font-medium">Category</label>
+                  <label className="text-sm font-medium">{t('forms.addListForm.table.categories') || 'Category'}</label>
                   <Select value={addTaskForm.category} onValueChange={(val) => setAddTaskForm(prev => ({ ...prev, category: val }))}>
                     <SelectTrigger className="w-full">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="custom">Custom</SelectItem>
-                      <SelectItem value="body">Body</SelectItem>
-                      <SelectItem value="mind">Mind</SelectItem>
-                      <SelectItem value="spirit">Spirit</SelectItem>
-                      <SelectItem value="fun">Fun</SelectItem>
-                      <SelectItem value="growth">Growth</SelectItem>
-                      <SelectItem value="community">Community</SelectItem>
-                      <SelectItem value="affection">Affection</SelectItem>
-                      <SelectItem value="clean">Clean</SelectItem>
-                      <SelectItem value="maintenance">Maintenance</SelectItem>
+                      <SelectItem value="custom">{t('forms.commonOptions.category.custom') || 'Custom'}</SelectItem>
+                      <SelectItem value="body">{t('forms.commonOptions.category.body') || 'Body'}</SelectItem>
+                      <SelectItem value="mind">{t('forms.commonOptions.category.mind') || 'Mind'}</SelectItem>
+                      <SelectItem value="spirit">{t('forms.commonOptions.category.spirit') || 'Spirit'}</SelectItem>
+                      <SelectItem value="fun">{t('forms.commonOptions.category.fun') || 'Fun'}</SelectItem>
+                      <SelectItem value="growth">{t('forms.commonOptions.category.growth') || 'Growth'}</SelectItem>
+                      <SelectItem value="community">{t('forms.commonOptions.category.community') || 'Community'}</SelectItem>
+                      <SelectItem value="affection">{t('forms.commonOptions.category.affection') || 'Affection'}</SelectItem>
+                      <SelectItem value="clean">{t('forms.commonOptions.category.clean') || 'Clean'}</SelectItem>
+                      <SelectItem value="maintenance">{t('forms.commonOptions.category.maintenance') || 'Maintenance'}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
-                  <label className="text-sm font-medium"># of times</label>
+                  <label className="text-sm font-medium">{t('forms.addListForm.table.times') || '# of times'}</label>
                   <input type="number" min={1} className="w-full p-2 border rounded-md" value={addTaskForm.times} onChange={(e) => setAddTaskForm(prev => ({ ...prev, times: Math.max(1, Number(e.target.value) || 1) }))} />
                 </div>
                 <div className="flex justify-end gap-2 pt-2">
-                  <Button variant="outline" size="sm" onClick={() => setAddTaskOpen(false)}>Cancel</Button>
+                  <Button variant="outline" size="sm" onClick={() => setAddTaskOpen(false)}>{t('forms.addTemplateForm.task.cancel') || 'Cancel'}</Button>
                   <Button size="sm" onClick={() => {
                     const name = addTaskForm.name.trim()
                     if (!name) return
@@ -334,7 +336,7 @@ export const AddListForm = ({
                     setTasks(prev => [newTask, ...(prev || [])])
                     setAddTaskForm({ name: '', area: 'self', category: 'custom', times: 1 })
                     setAddTaskOpen(false)
-                  }}>Add</Button>
+                  }}>{t('forms.addTemplateForm.task.add') || 'Add'}</Button>
                 </div>
               </div>
             </PopoverContent>
@@ -343,10 +345,10 @@ export const AddListForm = ({
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-muted/50 text-left">
-                  <th className="p-2">Name</th>
-                  <th className="p-2">Times</th>
-                  <th className="p-2">Area</th>
-                  <th className="p-2">Categories</th>
+                  <th className="p-2">{t('forms.addListForm.table.name') || 'Name'}</th>
+                  <th className="p-2">{t('forms.addListForm.table.times') || 'Times'}</th>
+                  <th className="p-2">{t('forms.addListForm.table.area') || 'Area'}</th>
+                  <th className="p-2">{t('forms.addListForm.table.categories') || 'Categories'}</th>
                   <th className="p-2 w-12 text-right"></th>
                 </tr>
               </thead>
@@ -371,8 +373,8 @@ export const AddListForm = ({
         </div>
 
         <div className="flex gap-2">
-          <Button size="sm" onClick={handleSubmit} disabled={!form.name.trim()}>{isEditing ? 'Save' : 'Create'}</Button>
-          <Button size="sm" variant="outline" onClick={onCancel}>Cancel</Button>
+          <Button size="sm" onClick={handleSubmit} disabled={!form.name.trim()}>{isEditing ? (t('forms.addListForm.save') || 'Save') : (t('forms.addListForm.create') || 'Create')}</Button>
+          <Button size="sm" variant="outline" onClick={onCancel}>{t('forms.addListForm.cancel') || 'Cancel'}</Button>
           {isEditing && (
             <Button
               size="sm"
@@ -380,7 +382,7 @@ export const AddListForm = ({
               className="ml-auto"
               onClick={async () => {
                 if (!initialList?.id) return
-                const confirmed = window.confirm('Delete this list? This cannot be undone.')
+                const confirmed = window.confirm(t('forms.addListForm.deleteListConfirm') || 'Delete this list? This cannot be undone.')
                 if (!confirmed) return
                 await fetch('/api/v1/tasklists', {
                   method: 'POST',
@@ -391,7 +393,7 @@ export const AddListForm = ({
                 onCancel()
               }}
             >
-              Delete list
+              {t('forms.addListForm.deleteList') || 'Delete list'}
             </Button>
           )}
         </div>
