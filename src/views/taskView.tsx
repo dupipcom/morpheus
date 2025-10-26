@@ -1274,6 +1274,18 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
             </div>
           </div>
           
+          {/* Selected List meta badges */}
+          {(selectedList?.budget || selectedList?.dueDate) && (
+            <div className="mb-4 flex items-center gap-2">
+              {selectedList?.budget && (
+                <Badge variant="secondary">Budget: {selectedList.budget}</Badge>
+              )}
+              {selectedList?.dueDate && (
+                <Badge variant="secondary">Due: {selectedList.dueDate}</Badge>
+              )}
+            </div>
+          )}
+
           {/* Add Ephemeral Task Form */}
           {showAddEphemeral && (
             <Card className="mb-4 p-4">
