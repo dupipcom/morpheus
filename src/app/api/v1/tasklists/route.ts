@@ -22,16 +22,16 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    // Build query for TaskLists
-    const whereClause: any = {
-      owners: {
-        has: user.id
-      }
+    // Build query for TaskLists where the user participates as owner, collaborator, or manager
+    const membershipClause = {
+      OR: [
+        { owners: { has: user.id } },
+        { collaborators: { has: user.id } },
+        { managers: { has: user.id } }
+      ]
     }
 
-    if (role) {
-      whereClause.role = role
-    }
+    const whereClause: any = role ? { role, ...membershipClause } : membershipClause
 
     const taskLists = await prisma.taskList?.findMany({
       where: whereClause,

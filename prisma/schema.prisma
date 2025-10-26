@@ -219,6 +219,7 @@ model Template {
   updatedAt     DateTime  @updatedAt
   visibility    Visibility @default(PRIVATE)
   role          String?   // e.g., "default.daily", "default.weekly", "custom"
+  name          String?
   owners        String[]  @db.ObjectId // User IDs
   tasks         Task[]    // Array of Task objects
   taskLists     TaskList[] // TaskLists that use this template
@@ -230,6 +231,7 @@ model TaskList {
   updatedAt     DateTime  @updatedAt
   visibility    Visibility @default(PRIVATE)
   role          String?   // e.g., "daily.default", "weekly.default", "custom"
+  name          String?
   budget        String?
   dueDate       String?
   owners        String[]  @db.ObjectId // User IDs

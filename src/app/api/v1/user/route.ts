@@ -314,7 +314,63 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   const dayEarnings = ((5 - dayMoodAverage)) * 0.2 + ((dayProgress * 0.80)) * userEquity / 30
   const weekEarnings = ((5 - weekMoodAverage)) * 0.2 + ((weekProgress * 0.80)) * userEquity / 4
 
-  if (data.weekActions?.length && user) {
+  // List-scoped task updates: when a taskListKey is provided, write under entries[year][taskListKey]
+  if ((data.taskListKey && (data.weekActions?.length || data.dayActions?.length)) && user) {
+    const entries = user.entries as any
+    const listKey = String(data.taskListKey)
+
+    let updatedEntries = { ...entries }
+
+    // Ensure year bucket
+    if (!updatedEntries[year]) {
+      updatedEntries[year] = { days: {}, weeks: {} }
+    }
+
+    // Ensure list bucket
+    if (!updatedEntries[year][listKey]) {
+      updatedEntries[year][listKey] = {}
+    }
+
+    // Apply week-scoped tasks under list key
+    if (data.weekActions?.length) {
+      const tasksWithContacts = data.weekActions.map((task: any) => ({
+        ...task,
+        contacts: data.taskContacts?.[task.name] || [],
+        things: data.taskThings?.[task.name] || []
+      }))
+      updatedEntries[year][listKey] = {
+        ...updatedEntries[year][listKey],
+        [data.week ?? weekNumber]: {
+          ...(updatedEntries[year][listKey]?.[data.week ?? weekNumber] || {}),
+          tasks: tasksWithContacts.sort((a: any, b: any) => (a.status === "Done" ? 1 : -1))
+        }
+      }
+    }
+
+    // Apply day-scoped tasks under list key
+    if (data.dayActions?.length) {
+      const tasksWithContacts = data.dayActions.map((task: any) => ({
+        ...task,
+        contacts: data.taskContacts?.[task.name] || [],
+        things: data.taskThings?.[task.name] || []
+      }))
+      updatedEntries[year][listKey] = {
+        ...updatedEntries[year][listKey],
+        [date]: {
+          ...(updatedEntries[year][listKey]?.[date] || {}),
+          tasks: tasksWithContacts.sort((a: any, b: any) => (a.status === "Done" ? 1 : -1))
+        }
+      }
+    }
+
+    await prisma.user.update({
+      data: { entries: updatedEntries },
+      where: { id: user.id },
+    })
+    user = await getUser()
+  }
+
+  if (data.weekActions?.length && user && !data.taskListKey) {
     // Add contacts to tasks if provided
     const entries = user.entries as any
     const tasksWithContacts = data.weekActions.map((task: any) => ({
@@ -358,7 +414,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
       where: { id: user.id },
     })
     user = await getUser()
-  } else if (data.weekActions) {
+  } else if (data.weekActions && !data.taskListKey) {
     // Calculate ticker values for the week
     const availW2 = parseFloat(user.availableBalance || "0")
     const weekTickerSingle2 = calculateWeekTicker(user.entries, year, data.week, weekEarnings, availW2)
@@ -437,7 +493,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     user = await getUser()
   }
 
-  if (data.dayActions?.length && user) {
+  if (data.dayActions?.length && user && !data.taskListKey) {
     // Add contacts to tasks if provided
     const entries = user.entries as any
     const tasksWithContacts = data.dayActions.map((task: any) => ({
@@ -496,7 +552,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
       where: { id: user.id },
     })
     user = await getUser()
-  } else if (data.dayActions) {
+  } else if (data.dayActions && !data.taskListKey) {
     // Calculate ticker values for the day
     const availD2 = parseFloat(user.availableBalance || "0")
     const dayTickerSingle2 = calculateDayTicker(user.entries, year, date, dayEarnings, availD2)

@@ -1,6 +1,7 @@
 'use client'
 import { useState, useMemo, useEffect, useContext } from "react"
 import useSWR from "swr"
+import useSWRImmutable from "swr/immutable"
 import { assign } from 'lodash'
 
 import { getWeekNumber } from "@/app/helpers"
@@ -120,44 +121,106 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   const [selectedTaskListId, setSelectedTaskListId] = useState<string>('')
   const [taskListsLoading, setTaskListsLoading] = useState(true)
 
-  // Fetch TaskLists on component mount
+  const userKey = session?.user?.userId || session?.user?.id
+  const { data: taskListsData, isLoading: swrTaskListsLoading } = useSWRImmutable(
+    userKey ? `/api/v1/tasklists` : null,
+    async () => {
+      const response = await fetch('/api/v1/tasklists')
+      if (response.ok) {
+        return await response.json()
+      }
+      return { taskLists: [] }
+    },
+    { revalidateOnFocus: false, revalidateOnReconnect: false, revalidateIfStale: false, dedupingInterval: 30000 }
+  )
+
   useEffect(() => {
-    const fetchTaskLists = async () => {
-      if (!session?.user?.userId) return
-      
-      try {
-        setTaskListsLoading(true)
-        
-        // Fetch all TaskLists for the user
-        const allTaskListsResponse = await fetch('/api/v1/tasklists')
-        
-        if (allTaskListsResponse.ok) {
-          const allTaskListsData = await allTaskListsResponse.json()
-          const taskLists = allTaskListsData.taskLists || []
-          setAllTaskLists(taskLists)
-          
-          // Set default TaskLists for daily/weekly
-          const dailyTaskList = taskLists.find(tl => tl.role === 'daily.default')
-          const weeklyTaskList = taskLists.find(tl => tl.role === 'weekly.default')
-          
-          setDailyTaskList(dailyTaskList || null)
-          setWeeklyTaskList(weeklyTaskList || null)
-          
-          // Set default selected TaskList based on timeframe
-          const defaultTaskList = timeframe === 'day' ? dailyTaskList : weeklyTaskList
-          if (defaultTaskList) {
-            setSelectedTaskListId(defaultTaskList.id)
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching task lists:', error)
-      } finally {
-        setTaskListsLoading(false)
+    setTaskListsLoading(swrTaskListsLoading)
+  }, [swrTaskListsLoading])
+
+  useEffect(() => {
+    if (!taskListsData) return
+    const taskLists = taskListsData.taskLists || []
+    setAllTaskLists(taskLists)
+    
+    const dailyTaskList = taskLists.find((tl: any) => tl.role === 'daily.default')
+    const weeklyTaskList = taskLists.find((tl: any) => tl.role === 'weekly.default')
+    setDailyTaskList(dailyTaskList || null)
+    setWeeklyTaskList(weeklyTaskList || null)
+    
+    if (!selectedTaskListId) {
+      const defaultTaskList = timeframe === 'day' ? dailyTaskList : weeklyTaskList
+      if (defaultTaskList) {
+        setSelectedTaskListId(defaultTaskList.id)
+      } else if (taskLists.length > 0) {
+        setSelectedTaskListId(taskLists[0].id)
+      }
+    } else {
+      // Ensure currently selected list still exists; if not, pick a sensible default without triggering extra fetches
+      const exists = taskLists.some((tl: any) => tl.id === selectedTaskListId)
+      if (!exists) {
+        const fallback = (timeframe === 'day' ? dailyTaskList : weeklyTaskList) || taskLists[0]
+        if (fallback?.id) setSelectedTaskListId(fallback.id)
       }
     }
+    
+  }, [taskListsData, timeframe])
 
-    fetchTaskLists()
-  }, [session?.user?.userId, timeframe])
+  // Lists to display in selector: show all user task lists (no timeframe filtering)
+  const displayedTaskLists = useMemo(() => {
+    if (!Array.isArray(allTaskLists)) return []
+    return allTaskLists
+  }, [allTaskLists])
+
+  // Selected TaskList object and key for storage
+  const selectedList = useMemo(() => allTaskLists.find(tl => tl.id === selectedTaskListId), [allTaskLists, selectedTaskListId])
+  const selectedTaskListKey = useMemo(() => {
+    const n = (selectedList && (selectedList.name || selectedList.role)) || undefined
+    return n
+  }, [selectedList])
+
+  // Handle select changes, including synthetic create options
+  const handleSelectTaskList = async (value: string) => {
+    try {
+      if (value === 'create-daily-default') {
+        const resp = await fetch('/api/v1/tasklists', { method: 'POST', body: JSON.stringify({ role: 'daily.default', tasks: DAILY_ACTIONS }) })
+        if (resp.ok) {
+          const refetch = await fetch('/api/v1/tasklists')
+          if (refetch.ok) {
+            const data = await refetch.json()
+            const lists = data.taskLists || []
+            setAllTaskLists(lists)
+            const created = lists.find((tl: any) => tl.role === 'daily.default')
+            if (created) {
+              setDailyTaskList(created)
+              setSelectedTaskListId(created.id)
+            }
+          }
+        }
+        return
+      }
+      if (value === 'create-weekly-default') {
+        const resp = await fetch('/api/v1/tasklists', { method: 'POST', body: JSON.stringify({ role: 'weekly.default', tasks: WEEKLY_ACTIONS }) })
+        if (resp.ok) {
+          const refetch = await fetch('/api/v1/tasklists')
+          if (refetch.ok) {
+            const data = await refetch.json()
+            const lists = data.taskLists || []
+            setAllTaskLists(lists)
+            const created = lists.find((tl: any) => tl.role === 'weekly.default')
+            if (created) {
+              setWeeklyTaskList(created)
+              setSelectedTaskListId(created.id)
+            }
+          }
+        }
+        return
+      }
+      setSelectedTaskListId(value)
+    } catch (e) {
+      console.error('Error selecting task list:', e)
+    }
+  }
 
   const userTasks = useMemo(() => {
     let regularTasks = []
@@ -167,7 +230,9 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     
     if (timeframe === 'day') {
       const noDayData = !session?.user?.entries || !session?.user?.entries[year] || !Object.keys(session?.user?.entries[year].days).length
-      const dailyTasks = ((session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date]) && session?.user?.entries[year].days[date]?.tasks) || (noDayData ? DAILY_ACTIONS : [])
+      const listKey = selectedTaskListKey
+      const listScopedDayTasks = listKey ? (session?.user?.entries?.[year]?.[listKey]?.[date]?.tasks) : undefined
+      const dailyTasks = (listScopedDayTasks && Array.isArray(listScopedDayTasks) ? listScopedDayTasks : (((session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date]) && session?.user?.entries[year].days[date]?.tasks) || (noDayData ? DAILY_ACTIONS : [])))
       
       // Use selected TaskList if available, otherwise fall back to dailyTaskList or dailyTasks
       if (selectedTaskList?.tasks && selectedTaskList.tasks.length > 0) {
@@ -212,7 +277,9 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       }
     } else if (timeframe === 'week') {
       const noWeekData = !session?.user?.entries || !session?.user?.entries[year] || !Object.keys(session?.user?.entries[year].weeks).length
-      const weeklyTasks = (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks) && session?.user?.entries[year].weeks[weekNumber]?.tasks || []
+      const listKey = selectedTaskListKey
+      const listScopedWeekTasks = listKey ? (session?.user?.entries?.[year]?.[listKey]?.[weekNumber]?.tasks) : undefined
+      const weeklyTasks = (listScopedWeekTasks && Array.isArray(listScopedWeekTasks) ? listScopedWeekTasks : ((session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].weeks) && session?.user?.entries[year].weeks[weekNumber]?.tasks || []))
       
       // Use selected TaskList if available, otherwise fall back to weeklyTaskList or weeklyTasks
       if (selectedTaskList?.tasks && selectedTaskList.tasks.length > 0) {
@@ -440,7 +507,8 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
           taskContacts: taskContacts,
           taskThings: taskThings,
           date: fullDay,
-          week: weekNumber
+          week: weekNumber,
+          taskListKey: selectedTaskListKey
         })
       })
     }
@@ -525,7 +593,8 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
           taskContacts: taskContacts,
           taskThings: taskThings,
           date: fullDay,
-          week: weekNumber
+          week: weekNumber,
+          taskListKey: selectedTaskListKey
         })
       })
     }
@@ -975,25 +1044,43 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
             {/* TaskList Selector */}
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground">Task List:</span>
-              <Select value={selectedTaskListId} onValueChange={setSelectedTaskListId}>
+              <Select value={selectedTaskListId} onValueChange={handleSelectTaskList}>
                 <SelectTrigger className="w-[200px] h-8">
                   <SelectValue placeholder="Select task list" />
                 </SelectTrigger>
                 <SelectContent>
-                  {allTaskLists.map((taskList) => (
-                    <SelectItem key={taskList.id} value={taskList.id}>
+                  {displayedTaskLists.length > 0 ? displayedTaskLists.map((taskList) => {
+                    const roleLabel = taskList.role === 'daily.default' ? 'Daily Default' :
+                           taskList.role === 'weekly.default' ? 'Weekly Default' :
+                           taskList.role || 'Custom'
+                    const displayName = taskList.name || roleLabel
+                    return (
+                    <SelectItem key={taskList.id} value={taskList.id} textValue={displayName}>
                       <div className="flex flex-col">
                         <span className="font-medium">
-                          {taskList.role === 'daily.default' ? 'Daily Default' :
-                           taskList.role === 'weekly.default' ? 'Weekly Default' :
-                           taskList.role || 'Custom'}
+                          {displayName}
                         </span>
                         <span className="text-xs text-muted-foreground">
                           {taskList.tasks?.length || 0} tasks
                         </span>
                       </div>
-                    </SelectItem>
-                  ))}
+                    </SelectItem>)
+                  }) : (
+                    <>
+                      <SelectItem value="create-daily-default" textValue="Create Daily Default">
+                        <div className="flex flex-col">
+                          <span className="font-medium">Create Daily Default</span>
+                          <span className="text-xs text-muted-foreground">Use built-in daily tasks</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="create-weekly-default" textValue="Create Weekly Default">
+                        <div className="flex flex-col">
+                          <span className="font-medium">Create Weekly Default</span>
+                          <span className="text-xs text-muted-foreground">Use built-in weekly tasks</span>
+                        </div>
+                      </SelectItem>
+                    </>
+                  )}
                 </SelectContent>
               </Select>
             </div>
