@@ -4,6 +4,8 @@ import React, { useMemo, useState, useEffect, useContext, useCallback } from 're
 
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { DoToolbar } from '@/views/doToolbar'
+import { Badge } from '@/components/ui/badge'
+import { User as UserIcon } from 'lucide-react'
 
 import { GlobalContext } from '@/lib/contexts'
 import { useI18n } from '@/lib/contexts/i18n'
@@ -25,6 +27,27 @@ export const ListView = () => {
 
   const selectedTaskList = useMemo(() => allTaskLists.find((l:any) => l.id === selectedTaskListId), [allTaskLists, selectedTaskListId])
 
+  // Collaborator profiles map (userId -> userName)
+  const [collabProfiles, setCollabProfiles] = useState<Record<string, string>>({})
+  useEffect(() => {
+    let cancelled = false
+    const run = async () => {
+      try {
+        const ids: string[] = Array.isArray((selectedTaskList as any)?.collaborators) ? (selectedTaskList as any).collaborators : []
+        if (!ids.length) { setCollabProfiles({}); return }
+        const res = await fetch(`/api/v1/profiles/by-ids?ids=${encodeURIComponent(ids.join(','))}`)
+        if (!cancelled && res.ok) {
+          const data = await res.json()
+          const map: Record<string, string> = {}
+          ;(data.profiles || []).forEach((p: any) => { map[p.userId] = p.userName || p.userId })
+          setCollabProfiles(map)
+        }
+      } catch {}
+    }
+    run()
+    return () => { cancelled = true }
+  }, [selectedTaskList?.id, JSON.stringify((selectedTaskList as any)?.collaborators || [])])
+
   // Build tasks: templateTasks + ephemeralTasks.open, overlay completedTasks[year][date]
   const mergedTasks = useMemo(() => {
     const base = (selectedTaskList?.templateTasks && selectedTaskList.templateTasks.length > 0)
@@ -44,7 +67,7 @@ export const ListView = () => {
       if (!completed) return t
       const doneCount = Array.isArray(completed?.completers) ? completed.completers.length : Number(completed?.count || 0)
       const times = Number(t?.times || completed?.times || 1)
-      return { ...t, status: doneCount >= (times || 1) ? 'Done' : 'Open', count: Math.min(doneCount || 0, times || 1) }
+      return { ...t, status: doneCount >= (times || 1) ? 'Done' : 'Open', count: Math.min(doneCount || 0, times || 1), completers: completed?.completers }
     })
 
     // Dedup ephemeral by name against base
@@ -201,15 +224,29 @@ export const ListView = () => {
         type="multiple"
         orientation="horizontal"
       >
-        {sortedMergedTasks.map((task:any) => (
-          <div key={`task__item--${task.name}`} className="flex flex-col items-center m-1">
-            <div className="relative w-full">
-              <ToggleGroupItem className="rounded-md leading-7 text-sm min-h-[40px] truncate w-full" value={task.name} aria-label={task.name}>
-                {task.times > 1 ? `${task.count || 0}/${task.times} ` : ''}{task.displayName || task.name}
-              </ToggleGroupItem>
+        {sortedMergedTasks.map((task:any) => {
+          const isDone = (task?.status === 'Done') || values.includes(task?.name)
+          const lastCompleter = Array.isArray(task?.completers) && task.completers.length > 0 ? task.completers[task.completers.length - 1] : undefined
+          const isCollabCompleter = lastCompleter && Array.isArray((selectedTaskList as any)?.collaborators) && (selectedTaskList as any).collaborators.includes(lastCompleter.id)
+          const completerName = lastCompleter ? (collabProfiles[lastCompleter.id] || lastCompleter.id) : ''
+          return (
+            <div key={`task__item--${task.name}`} className="flex flex-col items-center m-1">
+              <div className="relative w-full">
+                <ToggleGroupItem className="rounded-md leading-7 text-sm min-h-[40px] truncate w-full" value={task.name} aria-label={task.name}>
+                  {task.times > 1 ? `${task.count || 0}/${task.times} ` : ''}{task.displayName || task.name}
+                </ToggleGroupItem>
+              </div>
+              {isDone && isCollabCompleter && completerName && (
+                <div className="mt-1">
+                  <Badge variant="secondary" className="bg-muted text-muted-foreground border-muted">
+                    <UserIcon className="h-3 w-3 mr-1" />
+                    Completed by {completerName}
+                  </Badge>
+                </div>
+              )}
             </div>
-          </div>
-        ))}
+          )
+        })}
       </ToggleGroup>
     </div>
   )

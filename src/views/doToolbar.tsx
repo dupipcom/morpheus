@@ -9,12 +9,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Plus, Pencil } from 'lucide-react'
+import { Plus, Pencil, DollarSign, Calendar, User as UserIcon } from 'lucide-react'
 import { GlobalContext } from '@/lib/contexts'
 import { useI18n } from '@/lib/contexts/i18n'
 import { AddTaskForm } from '@/views/forms/AddTaskForm'
 import { AddListForm } from '@/views/forms/AddListForm'
 import { AddTemplateForm } from '@/views/forms/AddTemplateForm'
+import { Badge } from '@/components/ui/badge'
 
 type TaskList = { id: string; name?: string; role?: string }
 
@@ -39,6 +40,7 @@ export const DoToolbar = ({
   const [showAddTemplate, setShowAddTemplate] = useState(false)
   const [isEditingList, setIsEditingList] = useState(false)
   const [userTemplates, setUserTemplates] = useState<any[]>([])
+  const [collabProfiles, setCollabProfiles] = useState<Record<string, string>>({})
 
   const refreshTemplates = async () => {
     try {
@@ -59,6 +61,26 @@ export const DoToolbar = ({
     run()
     return () => { cancelled = true }
   }, [])
+
+  // Fetch collaborator profiles for badges
+  useEffect(() => {
+    let cancelled = false
+    const run = async () => {
+      try {
+        const ids: string[] = Array.isArray((selectedList as any)?.collaborators) ? (selectedList as any).collaborators : []
+        if (!ids.length) { setCollabProfiles({}); return }
+        const res = await fetch(`/api/v1/profiles/by-ids?ids=${encodeURIComponent(ids.join(','))}`)
+        if (!cancelled && res.ok) {
+          const data = await res.json()
+          const map: Record<string, string> = {}
+          ;(data.profiles || []).forEach((p: any) => { map[p.userId] = p.userName || p.userId })
+          setCollabProfiles(map)
+        }
+      } catch {}
+    }
+    run()
+    return () => { cancelled = true }
+  }, [selectedList?.id, JSON.stringify((selectedList as any)?.collaborators || [])])
 
   const closeAll = () => { setShowAddTask(false); setShowAddList(false); setShowAddTemplate(false) }
 
@@ -113,6 +135,30 @@ export const DoToolbar = ({
           </Button>
         </div>
       </div>
+
+      {/* Badges row: budget, due date, collaborators */}
+      {selectedList && (
+        <div className="flex items-center gap-2 flex-wrap">
+          {(selectedList as any)?.budget && (
+            <Badge variant="secondary" className="bg-muted text-muted-foreground border-muted">
+              <DollarSign className="h-3 w-3 mr-1" />
+              Budget: {(selectedList as any).budget}
+            </Badge>
+          )}
+          {(selectedList as any)?.dueDate && (
+            <Badge variant="outline" className="bg-muted text-muted-foreground border-muted">
+              <Calendar className="h-3 w-3 mr-1" />
+              Due: {(selectedList as any).dueDate}
+            </Badge>
+          )}
+          {Array.isArray((selectedList as any)?.collaborators) && (selectedList as any).collaborators.map((id: string) => (
+            <Badge key={`collab-${id}`} className="bg-muted text-muted-foreground border-muted">
+              <UserIcon className="h-3 w-3 mr-1" />
+              {collabProfiles[id] || id}
+            </Badge>
+          ))}
+        </div>
+      )}
 
       {showAddTask && (
         <AddTaskForm
