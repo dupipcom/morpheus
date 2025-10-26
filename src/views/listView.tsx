@@ -248,7 +248,12 @@ export const ListView = () => {
                   {task.times > 1 ? `${task.count || 0}/${task.times} ` : ''}{task.displayName || task.name}
                 </ToggleGroupItem>
               </div>
-              {isDone && lastCompleter && completerName && (
+              {isDone 
+                && Array.isArray((selectedTaskList as any)?.collaborators) 
+                && (selectedTaskList as any).collaborators.length > 0 
+                && isCollabCompleter 
+                && lastCompleter 
+                && completerName && (
                 <div className="mt-1">
                   <Badge variant="secondary" className="bg-muted text-muted-foreground border-muted">
                     <UserIcon className="h-3 w-3 mr-1" />
