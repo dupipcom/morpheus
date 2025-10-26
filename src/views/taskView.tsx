@@ -40,7 +40,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { ContactCombobox } from "@/components/ui/contact-combobox"
 import { ThingCombobox } from "@/components/ui/thing-combobox"
-import { Users, X, Heart, Settings, Package, Plus, TrendingUp, TrendingDown, ChevronDown, Calendar as CalendarIcon, List as ListIcon } from "lucide-react"
+import { Users, X, Heart, Settings, Package, Plus, TrendingUp, TrendingDown, ChevronDown, Calendar as CalendarIcon, List as ListIcon, MoreHorizontal } from "lucide-react"
 import { Switch } from "@/components/ui/switch"
 import {
   Select,
@@ -122,6 +122,19 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     role: 'custom',
     collaborators: [] as { id: string, userName: string }[]
   })
+  const [newListTasks, setNewListTasks] = useState<any[]>([])
+  const [addListTaskOpen, setAddListTaskOpen] = useState(false)
+  // New Template form state
+  const [showAddTemplate, setShowAddTemplate] = useState(false)
+  const [newTemplate, setNewTemplate] = useState({
+    name: '',
+    createFrom: '', // list:{id}
+    visibility: 'PRIVATE',
+    tasks: [] as any[]
+  })
+  const [newTemplateQuickTask, setNewTemplateQuickTask] = useState('')
+  const [addTaskOpen, setAddTaskOpen] = useState(false)
+  const [addTaskForm, setAddTaskForm] = useState({ name: '', area: 'self', category: 'custom', times: 1 })
   const [dueDateObj, setDueDateObj] = useState<Date | undefined>(undefined)
   const [dateOpen, setDateOpen] = useState(false)
   const [collabQuery, setCollabQuery] = useState('')
@@ -215,6 +228,21 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     
   }, [taskListsData, timeframe])
 
+  // Compute preview tasks for new template (after allTaskLists is initialized)
+  const newTemplatePreviewTasks = useMemo(() => {
+    if (newTemplate.createFrom?.startsWith('list:')) {
+      const lstId = newTemplate.createFrom.split(':')[1]
+      const lst = allTaskLists.find((l: any) => l.id === lstId)
+      return Array.isArray(lst?.tasks) ? lst.tasks : []
+    }
+    return [] as any[]
+  }, [newTemplate.createFrom, allTaskLists])
+
+  // Aggregated tasks for template: user-added (prepended) + selected list tasks
+  const newTemplateAggregatedTasks = useMemo(() => {
+    return [...newTemplate.tasks, ...newTemplatePreviewTasks]
+  }, [newTemplate.tasks, newTemplatePreviewTasks])
+
   // Preview tasks for selected template/list clone option
   const newListPreviewTasks = useMemo(() => {
     if (!newList.templateId) return [] as any[]
@@ -230,6 +258,11 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     }
     return [] as any[]
   }, [newList.templateId, userTemplates, allTaskLists])
+
+  // Sync selected template/list tasks into a temporary editable state for the New List form
+  useEffect(() => {
+    setNewListTasks(newListPreviewTasks)
+  }, [newListPreviewTasks])
 
   // Lists to display in selector: show all user task lists (no timeframe filtering)
   const displayedTaskLists = useMemo(() => {
@@ -288,25 +321,23 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
     }
   }
 
-  // Open New List form
+  // Open New List form (exclusive)
   const handleOpenNewTaskListForm = () => {
+    setShowAddEphemeral(false)
+    setShowAddTemplate(false)
     setShowAddList(true)
   }
 
   // Submit New List
   const handleCreateListSubmit = async () => {
     try {
-      let tasks: any[] = []
+      let tasks: any[] = newListTasks || []
       let templateIdToLink: string | undefined = undefined
       if (newList.templateId?.startsWith('template:')) {
         const tplId = newList.templateId.split(':')[1]
-        const selectedTemplate = userTemplates.find((tpl: any) => tpl.id === tplId)
-        tasks = Array.isArray(selectedTemplate?.tasks) ? selectedTemplate.tasks : []
         templateIdToLink = tplId
       } else if (newList.templateId?.startsWith('list:')) {
-        const lstId = newList.templateId.split(':')[1]
-        const selectedList = allTaskLists.find((lst: any) => lst.id === lstId)
-        tasks = Array.isArray(selectedList?.tasks) ? selectedList.tasks : []
+        // cloning from a list does not set templateId
         templateIdToLink = undefined
       }
       const roleJoined = `${newList.cadence}.${newList.role}`
@@ -1213,13 +1244,21 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => setShowAddEphemeral(true)}>
+                  <DropdownMenuItem onClick={() => {
+                    setShowAddList(false)
+                    setShowAddTemplate(false)
+                    setShowAddEphemeral(true)
+                  }}>
                     New task
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleOpenNewTaskListForm}>
                     New list
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => (window.location.href = '/app/settings')}>
+                  <DropdownMenuItem onClick={() => {
+                    setShowAddEphemeral(false)
+                    setShowAddList(false)
+                    setShowAddTemplate(true)
+                  }}>
                     New template
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -1472,34 +1511,122 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                   </Select>
                 </div>
 
-                {/* Template tasks preview table */}
-                {newList.templateId && (
-                  <div>
-                    <div className="text-sm font-medium mb-2">Template tasks preview</div>
-                    <div className="border rounded-md overflow-x-auto">
-                      <table className="w-full text-sm">
-                        <thead>
-                          <tr className="bg-muted/50 text-left">
-                            <th className="p-2">Name</th>
-                            <th className="p-2">Times</th>
-                            <th className="p-2">Area</th>
-                            <th className="p-2">Categories</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {newListPreviewTasks.map((task: any) => (
-                            <tr key={task.name}>
-                              <td className="p-2">{task.name}</td>
-                              <td className="p-2">{task.times}</td>
-                              <td className="p-2 capitalize">{task.area}</td>
-                              <td className="p-2">{Array.isArray(task.categories) ? task.categories.join(', ') : ''}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                )}
+                {/* List tasks preview/editor in Accordion */}
+                <div>
+                  <Accordion type="single" collapsible>
+                    <AccordionItem value="new-list-tasks">
+                      <AccordionTrigger>Tasks</AccordionTrigger>
+                      <AccordionContent>
+                        <div className="flex justify-end mb-2">
+                          <Popover open={addListTaskOpen} onOpenChange={setAddListTaskOpen}>
+                            <PopoverTrigger asChild>
+                              <Button variant="default">Add task</Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-[320px]">
+                              <div className="space-y-2">
+                                <div>
+                                  <label className="text-sm font-medium">Name</label>
+                                  <input className="w-full p-2 border rounded-md" value={addTaskForm.name} onChange={(e) => setAddTaskForm(prev => ({ ...prev, name: e.target.value }))} />
+                                </div>
+                                <div>
+                                  <label className="text-sm font-medium">Area</label>
+                                  <Select value={addTaskForm.area} onValueChange={(val) => setAddTaskForm(prev => ({ ...prev, area: val }))}>
+                                    <SelectTrigger className="w-full">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="self">Self</SelectItem>
+                                      <SelectItem value="home">Home</SelectItem>
+                                      <SelectItem value="social">Social</SelectItem>
+                                      <SelectItem value="work">Work</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                                <div>
+                                  <label className="text-sm font-medium">Category</label>
+                                  <Select value={addTaskForm.category} onValueChange={(val) => setAddTaskForm(prev => ({ ...prev, category: val }))}>
+                                    <SelectTrigger className="w-full">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="custom">Custom</SelectItem>
+                                      <SelectItem value="body">Body</SelectItem>
+                                      <SelectItem value="mind">Mind</SelectItem>
+                                      <SelectItem value="spirit">Spirit</SelectItem>
+                                      <SelectItem value="fun">Fun</SelectItem>
+                                      <SelectItem value="growth">Growth</SelectItem>
+                                      <SelectItem value="community">Community</SelectItem>
+                                      <SelectItem value="affection">Affection</SelectItem>
+                                      <SelectItem value="clean">Clean</SelectItem>
+                                      <SelectItem value="maintenance">Maintenance</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                                <div>
+                                  <label className="text-sm font-medium"># of times</label>
+                                  <input type="number" min={1} className="w-full p-2 border rounded-md" value={addTaskForm.times} onChange={(e) => setAddTaskForm(prev => ({ ...prev, times: Math.max(1, Number(e.target.value) || 1) }))} />
+                                </div>
+                                <div className="flex justify-end gap-2 pt-2">
+                                  <Button variant="outline" size="sm" onClick={() => setAddListTaskOpen(false)}>Cancel</Button>
+                                  <Button size="sm" onClick={() => {
+                                    const name = addTaskForm.name.trim()
+                                    if (!name) return
+                                    const newTask = { name, area: addTaskForm.area as any, categories: [addTaskForm.category], status: 'Not started', cadence: newList.cadence, times: addTaskForm.times, count: 0 }
+                                    // Prepend new task into the temporary list state
+                                    setNewListTasks(prev => [newTask, ...(prev || [])])
+                                    setAddTaskForm({ name: '', area: 'self', category: 'custom', times: 1 })
+                                    setAddListTaskOpen(false)
+                                  }}>Add</Button>
+                                </div>
+                              </div>
+                            </PopoverContent>
+                          </Popover>
+                        </div>
+                        <div className="border rounded-md overflow-x-auto">
+                          <table className="w-full text-sm">
+                            <thead>
+                              <tr className="bg-muted/50 text-left">
+                                <th className="p-2">Name</th>
+                                <th className="p-2">Times</th>
+                                <th className="p-2">Area</th>
+                                <th className="p-2">Categories</th>
+                                <th className="p-2 w-12 text-right"></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {(newListTasks || []).map((task: any, idx: number) => (
+                                <tr key={`${task.name}-${idx}`}>
+                                  <td className="p-2">{task.name}</td>
+                                  <td className="p-2">{task.times}</td>
+                                  <td className="p-2 capitalize">{task.area}</td>
+                                  <td className="p-2">{Array.isArray(task.categories) ? task.categories.join(', ') : ''}</td>
+                                  <td className="p-2 text-right">
+                                    <DropdownMenu>
+                                      <DropdownMenuTrigger asChild>
+                                        <Button variant="ghost" className="h-8 w-8 p-0">
+                                          <span className="sr-only">Open menu</span>
+                                          <MoreHorizontal className="h-4 w-4" />
+                                        </Button>
+                                      </DropdownMenuTrigger>
+                                      <DropdownMenuContent align="end">
+                                        <DropdownMenuItem onClick={() => {
+                                          setNewListTasks(prev => (prev || []).map((t: any, i: number) => i === idx ? { ...t, times: (t.times || 1) + 1 } : t))
+                                        }}>Edit</DropdownMenuItem>
+                                        <DropdownMenuItem className="text-destructive" onClick={() => {
+                                          setNewListTasks(prev => (prev || []).filter((_: any, i: number) => i !== idx))
+                                        }}>Remove</DropdownMenuItem>
+                                      </DropdownMenuContent>
+                                    </DropdownMenu>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                </div>
 
                 <div className="flex gap-2">
                   <Button
@@ -1514,6 +1641,219 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                     onClick={() => {
                       setShowAddList(false)
                       setNewList({ name: '', templateId: '', budget: '', dueDate: '', cadence: 'one-off', role: 'custom', collaborators: [] })
+                    }}
+                    size="sm"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Add New Template Form */}
+          {showAddTemplate && (
+            <Card className="mb-4 p-4">
+              <CardHeader>
+                <CardTitle className="text-sm">Create New Template</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div>
+                  <label className="text-sm font-medium">Name</label>
+                  <input
+                    type="text"
+                    value={newTemplate.name}
+                    onChange={(e) => setNewTemplate(prev => ({ ...prev, name: e.target.value }))}
+                    placeholder="Enter template name..."
+                    className="w-full p-2 border rounded-md"
+                  />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div>
+                    <label className="text-sm font-medium">Create from</label>
+                    <Select value={newTemplate.createFrom} onValueChange={(val) => setNewTemplate(prev => ({ ...prev, createFrom: val, tasks: [] }))}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Choose a list to clone (optional)" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {allTaskLists.map((lst: any) => (
+                          <SelectItem key={`from-${lst.id}`} value={`list:${lst.id}`} textValue={lst.name || lst.role || 'List'}>
+                            <div className="flex items-center gap-2">
+                              <ListIcon className="h-4 w-4 opacity-70" />
+                              <span>{lst.name || lst.role || 'List'}</span>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium">Visibility</label>
+                    <Select value={newTemplate.visibility} onValueChange={(val) => setNewTemplate(prev => ({ ...prev, visibility: val }))}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="PRIVATE">Private</SelectItem>
+                        <SelectItem value="PUBLIC">Public</SelectItem>
+                        <SelectItem value="FRIENDS">Friends</SelectItem>
+                        <SelectItem value="CLOSE_FRIENDS">Close friends</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                {/* Add quick task (moved above table) */}
+                
+
+                {/* Tasks preview/editor */}
+                <div>
+                  <Accordion type="single" collapsible>
+                    <AccordionItem value="new-template-tasks">
+                      <AccordionTrigger>Tasks</AccordionTrigger>
+                      <AccordionContent>
+                        <div className="flex justify-end mb-2">
+                          <Popover open={addTaskOpen} onOpenChange={setAddTaskOpen}>
+                            <PopoverTrigger asChild>
+                              <Button variant="default">Add task</Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-[320px]">
+                              <div className="space-y-2">
+                                <div>
+                                  <label className="text-sm font-medium">Name</label>
+                                  <input className="w-full p-2 border rounded-md" value={addTaskForm.name} onChange={(e) => setAddTaskForm(prev => ({ ...prev, name: e.target.value }))} />
+                                </div>
+                                <div>
+                                  <label className="text-sm font-medium">Area</label>
+                                  <Select value={addTaskForm.area} onValueChange={(val) => setAddTaskForm(prev => ({ ...prev, area: val }))}>
+                                    <SelectTrigger className="w-full">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="self">Self</SelectItem>
+                                      <SelectItem value="home">Home</SelectItem>
+                                      <SelectItem value="social">Social</SelectItem>
+                                      <SelectItem value="work">Work</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                                <div>
+                                  <label className="text-sm font-medium">Category</label>
+                                  <Select value={addTaskForm.category} onValueChange={(val) => setAddTaskForm(prev => ({ ...prev, category: val }))}>
+                                    <SelectTrigger className="w-full">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="custom">Custom</SelectItem>
+                                      <SelectItem value="body">Body</SelectItem>
+                                      <SelectItem value="mind">Mind</SelectItem>
+                                      <SelectItem value="spirit">Spirit</SelectItem>
+                                      <SelectItem value="fun">Fun</SelectItem>
+                                      <SelectItem value="growth">Growth</SelectItem>
+                                      <SelectItem value="community">Community</SelectItem>
+                                      <SelectItem value="affection">Affection</SelectItem>
+                                      <SelectItem value="clean">Clean</SelectItem>
+                          <SelectItem value="maintenance">Maintenance</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                                <div>
+                                  <label className="text-sm font-medium"># of times</label>
+                                  <input type="number" min={1} className="w-full p-2 border rounded-md" value={addTaskForm.times} onChange={(e) => setAddTaskForm(prev => ({ ...prev, times: Math.max(1, Number(e.target.value) || 1) }))} />
+                                </div>
+                                <div className="flex justify-end gap-2 pt-2">
+                                  <Button variant="outline" size="sm" onClick={() => setAddTaskOpen(false)}>Cancel</Button>
+                                  <Button size="sm" onClick={() => {
+                                    const name = addTaskForm.name.trim()
+                                    if (!name) return
+                            const newTask = { name, area: addTaskForm.area as any, categories: [addTaskForm.category], status: 'Not started', cadence: 'daily', times: addTaskForm.times, count: 0 }
+                                    setNewTemplate(prev => ({ ...prev, tasks: [...prev.tasks, newTask] }))
+                                    setAddTaskForm({ name: '', area: 'self', category: 'custom', times: 1 })
+                                    setAddTaskOpen(false)
+                                  }}>Add</Button>
+                                </div>
+                              </div>
+                            </PopoverContent>
+                          </Popover>
+                        </div>
+                        <div className="border rounded-md overflow-x-auto">
+                          <table className="w-full text-sm">
+                            <thead>
+                              <tr className="bg-muted/50 text-left">
+                                <th className="p-2">Name</th>
+                                <th className="p-2">Times</th>
+                                <th className="p-2">Area</th>
+                                <th className="p-2">Categories</th>
+                                <th className="p-2 w-12 text-right"></th>
+                              </tr>
+                            </thead>
+                              <tbody>
+                              {newTemplateAggregatedTasks.map((task: any, idx: number) => (
+                                <tr key={`${task.name}-${idx}`}>
+                                  <td className="p-2">{task.name}</td>
+                                  <td className="p-2">{task.times}</td>
+                                  <td className="p-2 capitalize">{task.area}</td>
+                                  <td className="p-2">{Array.isArray(task.categories) ? task.categories.join(', ') : ''}</td>
+                                  <td className="p-2 text-right">
+                                    <DropdownMenu>
+                                      <DropdownMenuTrigger asChild>
+                                        <Button variant="ghost" className="h-8 w-8 p-0">
+                                          <span className="sr-only">Open menu</span>
+                                          <MoreHorizontal className="h-4 w-4" />
+                                        </Button>
+                                      </DropdownMenuTrigger>
+                                      <DropdownMenuContent align="end">
+                                        <DropdownMenuItem onClick={() => {
+                                          const updated = newTemplateAggregatedTasks.map((t: any, i: number) => i === idx ? { ...t, times: (t.times || 1) + 1 } : t)
+                                          setNewTemplate(prev => ({ ...prev, tasks: updated }))
+                                        }}>
+                                          Edit
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => {
+                                          const updated = newTemplateAggregatedTasks.filter((_: any, i: number) => i !== idx)
+                                          setNewTemplate(prev => ({ ...prev, tasks: updated }))
+                                        }} className="text-destructive">
+                                          Remove
+                                        </DropdownMenuItem>
+                                      </DropdownMenuContent>
+                                    </DropdownMenu>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                </div>
+
+                <div className="flex gap-2">
+                  <Button
+                    onClick={async () => {
+                      const tasks = newTemplate.tasks.length > 0 ? newTemplate.tasks : newTemplatePreviewTasks
+                      const resp = await fetch('/api/v1/templates', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                          name: newTemplate.name,
+                          tasks,
+                          visibility: newTemplate.visibility
+                        })
+                      })
+                      if (!resp.ok) return
+                      setShowAddTemplate(false)
+                      setNewTemplate({ name: '', createFrom: '', visibility: 'PRIVATE', tasks: [] })
+                    }}
+                    disabled={!newTemplate.name.trim()}
+                    size="sm"
+                  >
+                    Create Template
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setShowAddTemplate(false)
+                      setNewTemplate({ name: '', createFrom: '', visibility: 'PRIVATE', tasks: [] })
                     }}
                     size="sm"
                   >
