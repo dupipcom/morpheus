@@ -106,7 +106,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Lightweight path: record completions into completedTasks and Task.completers
-    if (body.recordCompletions && body.taskListId && (body.dayActions?.length || body.weekActions?.length)) {
+    if (body.recordCompletions && body.taskListId && (body.dayActions?.length || body.weekActions?.length || Array.isArray(body.justUncompletedNames))) {
       const taskList = await prisma.taskList.findUnique({ where: { id: body.taskListId } })
       if (!taskList) {
         return NextResponse.json({ error: 'TaskList not found' }, { status: 404 })
@@ -148,6 +148,7 @@ export async function POST(request: NextRequest) {
 
       // For each incoming (localized) task, merge into completed map
       const justCompletedNames: string[] = Array.isArray(body.justCompletedNames) ? body.justCompletedNames : []
+      const justUncompletedNames: string[] = Array.isArray(body.justUncompletedNames) ? body.justUncompletedNames : []
       const nameSet = new Set(justCompletedNames.map((s) => typeof s === 'string' ? s.toLowerCase() : s))
 
       for (const incoming of incomingTasks) {
@@ -182,6 +183,26 @@ export async function POST(request: NextRequest) {
           completers: [...baseCompleters, ...appended]
         })
         byKey[key] = taskRecord
+      }
+
+      // Handle uncompletions: remove last completer for provided task names
+      if (justUncompletedNames.length > 0) {
+        const unNames = new Set(justUncompletedNames.map((s: string) => (s || '').toLowerCase()))
+        const values = Object.values(byKey) as any[]
+        for (const t of values) {
+          const nm = typeof t?.name === 'string' ? t.name.toLowerCase() : ''
+          if (!unNames.has(nm)) continue
+          const comps: any[] = Array.isArray(t?.completers) ? [...t.completers] : []
+          if (comps.length > 0) comps.pop()
+          if (comps.length === 0) {
+            // remove the entry entirely
+            const k = getKey(t)
+            if (k) delete (byKey as any)[k]
+          } else {
+            const k = getKey(t)
+            if (k) (byKey as any)[k] = { ...t, status: 'Open', completers: comps, count: comps.length }
+          }
+        }
       }
 
       const nextDayArr = Object.values(byKey)

@@ -27,6 +27,14 @@ export const DoView = () => {
     }
   }, [refreshTaskLists, taskLists])
 
+  // Refresh task lists every 10 seconds
+  useEffect(() => {
+    const id = setInterval(() => {
+      refreshTaskLists()
+    }, 10000)
+    return () => clearInterval(id)
+  }, [refreshTaskLists])
+
   return (
     <main className="min-h-[100vh]">
       <ViewMenu active="do" />

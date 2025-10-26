@@ -124,6 +124,7 @@ export const ListView = () => {
   const handleToggleChange = async (newValues: string[]) => {
     setValues(newValues)
     const justCompleted = newValues.filter(v => !prevValues.includes(v))
+    const justUncompleted = prevValues.filter(v => !newValues.includes(v))
     setPrevValues(newValues)
 
     if (!selectedTaskList) return
@@ -164,7 +165,8 @@ export const ListView = () => {
           taskListId: selectedTaskList.id,
           dayActions: nextActions,
           date,
-          justCompletedNames: justCompleted
+          justCompletedNames: justCompleted,
+          justUncompletedNames: justUncompleted
         })
       })
     }
@@ -198,6 +200,15 @@ export const ListView = () => {
             body: JSON.stringify({ weekTasksAppend: doneForWeek, week, date, listRole: (selectedTaskList as any)?.role })
           })
         }
+        // Remove uncompleted from week entry
+        if (justUncompleted.length > 0) {
+          const week = getWeekNumber(today)[1]
+          await fetch('/api/v1/user', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ weekTasksRemoveNames: justUncompleted, week, date, listRole: (selectedTaskList as any)?.role })
+          })
+        }
       }
     } catch {}
 
@@ -209,6 +220,13 @@ export const ListView = () => {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ dayTasksAppend: doneForDay, date, listRole: (selectedTaskList as any)?.role })
+        })
+      }
+      if (justUncompleted.length > 0) {
+        await fetch('/api/v1/user', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ dayTasksRemoveNames: justUncompleted, date, listRole: (selectedTaskList as any)?.role })
         })
       }
     } catch {}

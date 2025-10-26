@@ -587,6 +587,21 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     }
   }
 
+  // Remove tasks by name from week entry
+  if (Array.isArray(data.weekTasksRemoveNames) && data.weekTasksRemoveNames.length && user) {
+    const entries = user.entries as any
+    const week = data.week || weekNumber
+    const y = year
+    const removeSet = new Set((data.weekTasksRemoveNames as any[]).map((s:any) => typeof s === 'string' ? s.toLowerCase() : s))
+    const updated = { ...(entries || {}) }
+    if (!updated[y]) updated[y] = { days: {}, weeks: {} }
+    if (!updated[y].weeks) updated[y].weeks = {}
+    if (!updated[y].weeks[week]) updated[y].weeks[week] = { tasks: [], earnings: '', date: '', status: 'Open', days: [] }
+    const existing = Array.isArray(updated[y].weeks[week].tasks) ? updated[y].weeks[week].tasks : []
+    updated[y].weeks[week].tasks = existing.filter((t:any) => !removeSet.has((t?.name || '').toLowerCase()))
+    await prisma.user.update({ where: { id: user.id }, data: { entries: updated as any } })
+  }
+
   // Append only the tasks that were just completed to day entry (without replacing others)
   if (Array.isArray(data.dayTasksAppend) && data.dayTasksAppend.length && user) {
     const entries = user.entries as any
@@ -654,6 +669,30 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
       })
       user = await getUser()
     }
+  }
+
+  // Remove tasks by name from day entry
+  if (Array.isArray(data.dayTasksRemoveNames) && data.dayTasksRemoveNames.length && user) {
+    const entries = user.entries as any
+    const dateISO = data.date || date
+    const y = Number(String(dateISO).split('-')[0])
+    const rolePrefix = typeof data.listRole === 'string' ? String(data.listRole).split('.')[0] : 'daily'
+    const removeSet = new Set((data.dayTasksRemoveNames as any[]).map((s:any) => typeof s === 'string' ? s.toLowerCase() : s))
+    const updated = { ...(entries || {}) }
+    if (!updated[y]) updated[y] = { days: {}, weeks: {} }
+    if (rolePrefix === 'daily') {
+      if (!updated[y].days) updated[y].days = {}
+      if (!updated[y].days[dateISO]) updated[y].days[dateISO] = { tasks: [], earnings: '', date: dateISO, status: 'Open' }
+      const existing = Array.isArray(updated[y].days[dateISO].tasks) ? updated[y].days[dateISO].tasks : []
+      updated[y].days[dateISO].tasks = existing.filter((t:any) => !removeSet.has((t?.name || '').toLowerCase()))
+    } else if (rolePrefix === 'weekly') {
+      const week = data.week || getWeekNumber(new Date(dateISO))[1]
+      if (!updated[y].weeks) updated[y].weeks = {}
+      if (!updated[y].weeks[week]) updated[y].weeks[week] = { tasks: [], earnings: '', date: '', status: 'Open', days: [] }
+      const existing = Array.isArray(updated[y].weeks[week].tasks) ? updated[y].weeks[week].tasks : []
+      updated[y].weeks[week].tasks = existing.filter((t:any) => !removeSet.has((t?.name || '').toLowerCase()))
+    }
+    await prisma.user.update({ where: { id: user.id }, data: { entries: updated as any } })
   }
 
   if (data?.availableBalance) {
