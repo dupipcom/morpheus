@@ -270,7 +270,10 @@
   "publicProfile": {
     "ctaTitle": "Anza Safari Yako ya DreamPip",
     "ctaSubtitle": "Fuatilia hali yako ya moyo, uzalishaji na mapato na DreamPip",
-    "getStarted": "Anza"
+    "getStarted": "Anza",
+    "notes": "Maelezo",
+    "loadingNotes": "Inapakia maelezo...",
+    "profileNotPublic": "Mtumiaji huyu bado hajafanya wasifu wake kuwa wa umma."
   },
   "publicCharts": {
     "noData": "Hakuna data ya chati za umma inayopatikana.",

@@ -1,9 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-// Weekly action translations
+// Weekly action translations (flattened structure)
 const weeklyTranslations = {
-  'actions.weekly.createdContent': {
+  'createdContent': {
     'ar': 'أنشأ محتوى لوسائل التواصل الاجتماعي', 'bn': 'সামাজিক মিডিয়ার জন্য কন্টেন্ট তৈরি করেছে', 'ca': 'Ha creat contingut per a xarxes socials',
     'cs': 'Vytvořil obsah pro sociální sítě', 'da': 'Oprettede indhold til sociale medier', 'de': 'Hat Inhalte für soziale Medien erstellt',
     'el': 'Δημιούργησε περιεχόμενο για τα κοινωνικά μέσα', 'et': 'Lõi sotsiaalmeedia sisu', 'eu': 'Sare sozialetarako eduki sortu zuen',
@@ -13,7 +13,7 @@ const weeklyTranslations = {
     'pa': 'ਸੋਸ਼ਲ ਮੀਡੀਆ ਲਈ ਸਮੱਗਰੀ ਬਣਾਈ', 'pl': 'Stworzył treść dla mediów społecznościowych', 'ro': 'A creat conținut pentru rețelele sociale',
     'ru': 'Создал контент для социальных сетей', 'sv': 'Skapade innehåll för sociala medier', 'tr': 'Sosyal medya için içerik oluşturdu'
   },
-  'actions.weekly.flirted': {
+  'flirted': {
     'ar': 'غازل شخصاً', 'bn': 'কারও সাথে ফ্লার্ট করেছে', 'ca': 'Ha coquetejat amb algú',
     'cs': 'Flirtoval s někým', 'da': 'Flirtede med nogen', 'de': 'Hat mit jemandem geflirtet',
     'el': 'Φλερτάρισε με κάποιον', 'et': 'Flirdis kellegagi', 'eu': 'Norbaiti flirteatu zion',
@@ -295,23 +295,17 @@ const weeklyTranslations = {
   }
 };
 
-// Function to update specific keys in the content
+// Function to update specific keys in the content (flattened structure)
 function updateSpecificKeys(content, locale) {
+  // Check if actions object exists
+  if (!content.actions) {
+    content.actions = {};
+  }
+
   for (const [key, translations] of Object.entries(weeklyTranslations)) {
     if (translations[locale]) {
-      const keys = key.split('.');
-      let current = content;
-      
-      // Navigate to the nested key
-      for (let i = 0; i < keys.length - 1; i++) {
-        if (!current[keys[i]]) {
-          current[keys[i]] = {};
-        }
-        current = current[keys[i]];
-      }
-      
-      // Set the translation
-      current[keys[keys.length - 1]] = translations[locale];
+      // Set the translation directly in the flat actions object
+      content.actions[key] = translations[locale];
     }
   }
 }

@@ -241,10 +241,10 @@ export const AddListForm = ({
                     {collabResults.map((p: any) => (
                       <CommandItem key={p.userId} value={p.userId} onSelect={() => {
                         if (!form.collaborators.find(c => c.id === p.userId)) {
-                          setForm(prev => ({ ...prev, collaborators: [...prev.collaborators, { id: p.userId, userName: p.userName || [p.firstName, p.lastName].filter(Boolean).join(' ') || p.userId }] }))
+                          setForm(prev => ({ ...prev, collaborators: [...prev.collaborators, { id: p.userId, userName: [p.firstName, p.lastName].filter(Boolean).join(' ') || p.userName || p.userId }] }))
                         }
                       }}>
-                        @{p.userName || [p.firstName, p.lastName].filter(Boolean).join(' ') || p.userId}
+                        @{[p.firstName, p.lastName].filter(Boolean).join(' ') || p.userName || p.userId}
                       </CommandItem>
                     ))}
                   </CommandGroup>

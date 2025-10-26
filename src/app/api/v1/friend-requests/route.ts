@@ -36,6 +36,31 @@ export async function GET(req: NextRequest) {
       })
     }
 
+    // Ensure current user has a profile - create one if missing
+    if (currentUser && !currentUser.profile) {
+      try {
+        await prisma.profile.create({
+          data: {
+            userId: currentUser.id,
+            userName: null, // No Clerk username available in this context
+            firstNameVisible: false,
+            lastNameVisible: false,
+            userNameVisible: false,
+            bioVisible: false,
+            profilePictureVisible: false,
+            publicChartsVisible: false,
+          }
+        })
+        // Refetch user with new profile
+        currentUser = await prisma.user.findUnique({
+          where: { userId },
+          include: { profile: true }
+        })
+      } catch (error) {
+        console.error('Error creating profile in friend-requests endpoint:', error)
+      }
+    }
+
     // Get friend requests with user details
     const friendRequestIds = currentUser.friendRequests || []
     

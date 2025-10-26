@@ -256,9 +256,12 @@
     "failedToSend": "L'enviament del missatge ha fallat. Si us plau, torna-ho a intentar."
   },
   "publicProfile": {
-    "ctaTitle": "Start Your Own DreamPip Journey",
-    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
-    "getStarted": "Get Started"
+    "ctaTitle": "Comença el teu propi viatge DreamPip",
+    "ctaSubtitle": "Fes el seguiment del teu estat d'ànim, productivitat i guanys amb DreamPip",
+    "getStarted": "Comença",
+    "notes": "Notes",
+    "loadingNotes": "Carregant notes...",
+    "profileNotPublic": "Aquest usuari encara no ha fet públic el seu perfil."
   },
   "publicCharts": {
     "noData": "No public charts data available.",

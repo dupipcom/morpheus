@@ -272,7 +272,10 @@
   "publicProfile": {
     "ctaTitle": "나만의 DreamPip 여정을 시작하세요",
     "ctaSubtitle": "DreamPip으로 기분, 생산성, 수익을 추적하세요",
-    "getStarted": "시작하기"
+    "getStarted": "시작하기",
+    "notes": "메모",
+    "loadingNotes": "메모 로딩 중...",
+    "profileNotPublic": "이 사용자는 아직 프로필을 공개하지 않았습니다."
   },
   "publicCharts": {
     "noData": "공개 차트 데이터를 사용할 수 없습니다.",

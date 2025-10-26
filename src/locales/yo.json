@@ -270,7 +270,10 @@
   "publicProfile": {
     "ctaTitle": "Bẹ̀rẹ̀ Ìrìn àjò DreamPip tirẹ",
     "ctaSubtitle": "Tẹ̀lé ìwà rẹ, ìṣẹ́ àti owo pẹ̀lú DreamPip",
-    "getStarted": "Bẹ̀rẹ̀"
+    "getStarted": "Bẹ̀rẹ̀",
+    "notes": "Àwọn àkíyèsí",
+    "loadingNotes": "N gbé àwọn àkíyèsí...",
+    "profileNotPublic": "Olùmúlò yìí kò tí ì tí ì fi profaili rẹ̀ sí gbangba."
   },
   "publicCharts": {
     "noData": "Kò sí àwọn àkọsílẹ̀ àwòrán gbangba.",

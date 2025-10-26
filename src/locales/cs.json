@@ -258,7 +258,10 @@
   "publicProfile": {
     "ctaTitle": "Začněte svou vlastní cestu s DreamPip",
     "ctaSubtitle": "Sledujte svou náladu, produktivitu a výdělky s DreamPip",
-    "getStarted": "Začít"
+    "getStarted": "Začít",
+    "notes": "Poznámky",
+    "loadingNotes": "Načítání poznámek...",
+    "profileNotPublic": "Tento uživatel ještě nezveřejnil svůj profil."
   },
   "publicCharts": {
     "noData": "Žádná veřejná data grafů k dispozici.",

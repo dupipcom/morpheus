@@ -272,7 +272,10 @@
   "publicProfile": {
     "ctaTitle": "Comienza tu propio viaje con DreamPip",
     "ctaSubtitle": "Rastrea tu estado de ánimo, productividad y ganancias con DreamPip",
-    "getStarted": "Comenzar"
+    "getStarted": "Comenzar",
+    "notes": "Notas",
+    "loadingNotes": "Cargando notas...",
+    "profileNotPublic": "Este usuario no ha hecho público su perfil."
   },
   "publicCharts": {
     "noData": "No hay datos públicos de gráficos disponibles.",
@@ -301,6 +304,7 @@
     "editProfile": "Editar perfil"
   },
   "profile": {
+    "createProfile": "Crear Perfil",
     "editProfile": "Editar Perfil",
     "viewPublicProfile": "Ver Perfil Público",
     "profileInformation": "Información del Perfil",

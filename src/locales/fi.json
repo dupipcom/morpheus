@@ -262,7 +262,10 @@
   "publicProfile": {
     "ctaTitle": "Aloita oma DreamPip-matkasi",
     "ctaSubtitle": "Seuraa mielialaa, tuottavuutta ja tuloja DreamPipillä",
-    "getStarted": "Aloita"
+    "getStarted": "Aloita",
+    "notes": "Muistiinpanot",
+    "loadingNotes": "Ladataan muistiinpanoja...",
+    "profileNotPublic": "Tämä käyttäjä ei ole vielä tehnyt profiiliaan julkiseksi."
   },
   "publicCharts": {
     "noData": "Julkisia kaaviotietoja ei ole saatavilla.",

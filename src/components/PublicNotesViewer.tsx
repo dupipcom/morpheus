@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { RefreshCw } from "lucide-react"
+import { useI18n } from '@/lib/contexts/i18n'
 
 interface Note {
   id: string
@@ -55,6 +56,7 @@ function getTimeAgo(date: Date): string {
 }
 
 export function PublicNotesViewer({ userName }: PublicNotesViewerProps) {
+  const { t } = useI18n()
   const [notes, setNotes] = useState<Note[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -118,11 +120,11 @@ export function PublicNotesViewer({ userName }: PublicNotesViewerProps) {
     return (
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle>Notes</CardTitle>
+          <CardTitle>{t('publicProfile.notes')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center text-muted-foreground">
-            Loading notes...
+            {t('publicProfile.loadingNotes')}
           </div>
         </CardContent>
       </Card>
@@ -133,7 +135,7 @@ export function PublicNotesViewer({ userName }: PublicNotesViewerProps) {
     return (
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle>Notes</CardTitle>
+          <CardTitle>{t('publicProfile.notes')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center text-muted-foreground">
@@ -152,7 +154,7 @@ export function PublicNotesViewer({ userName }: PublicNotesViewerProps) {
     <Card className="mb-6">
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle>Notes</CardTitle>
+          <CardTitle>{t('publicProfile.notes')}</CardTitle>
           <Button
             variant="ghost"
             size="sm"

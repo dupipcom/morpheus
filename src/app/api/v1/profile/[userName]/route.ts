@@ -76,10 +76,11 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
     } catch (_) {}
 
     // Return only the public data based on visibility settings
+    // Username is ALWAYS public
     const publicProfile = {
       firstName: profile.firstNameVisible ? profile.firstName : null,
       lastName: profile.lastNameVisible ? profile.lastName : null,
-      userName: profile.userNameVisible ? profile.userName : null,
+      userName: profile.userName, // always expose username publicly
       bio: profile.bioVisible ? profile.bio : null,
       profilePicture: profile.profilePictureVisible ? profile.profilePicture : null,
       publicCharts: publicChartsData,

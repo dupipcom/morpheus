@@ -261,7 +261,10 @@
   "publicProfile": {
     "ctaTitle": "Hasi zure DreamPip bidaia",
     "ctaSubtitle": "Jarraitu zure aldartea, produktibitatea eta irabaziak DreamPip-ekin",
-    "getStarted": "Hasi"
+    "getStarted": "Hasi",
+    "notes": "Oharrak",
+    "loadingNotes": "Oharrak kargatzen...",
+    "profileNotPublic": "Erabiltzaile honek bere profila oraindik ez du publiko egin."
   },
   "publicCharts": {
     "noData": "Ez dago grafik publikoen daturik eskuragarri.",

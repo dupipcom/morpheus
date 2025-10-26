@@ -80,12 +80,9 @@ export function FriendRequestsButton() {
   const getDisplayName = (request: FriendRequest) => {
     if (request.profile) {
       const { firstName, lastName, userName } = request.profile
-      if (firstName && lastName) {
-        return `${firstName} ${lastName}`
-      }
-      if (userName) {
-        return `@${userName}`
-      }
+      const fullName = [firstName, lastName].filter(Boolean).join(' ')
+      // Display name logic: prefer fullName, then userName, then fallback
+      return fullName || userName || 'Anonymous User'
     }
     return 'Anonymous User'
   }

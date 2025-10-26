@@ -229,6 +229,15 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
     <main className="">
       <ViewMenu active="profile" />
       <div className="max-w-4xl mx-auto p-4">
+        {/* Edit Profile Button */}
+        <div className="mb-6 flex justify-end">
+          <Button asChild>
+            <a href="/app/profile/edit">
+              {profile.userName ? t('profile.editProfile') : t('profile.createProfile')}
+            </a>
+          </Button>
+        </div>
+
         {/* Collaborating Task Lists */}
         {collaboratingTaskLists.length > 0 && (
           <div className="mb-6">
@@ -248,8 +257,9 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
             </div>
           </div>
         )}
-{/* Public Profile View */}
-{profile.userName && (
+
+        {/* Public Profile View */}
+        {profile.userName && (
           profileLoading ? (
             <div className="space-y-6">
               {/* Profile Header Skeleton */}
@@ -288,7 +298,7 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
               </div>
             </div>
           ) : publicProfileData ? (
-            <ProfileView 
+            <ProfileView
               profile={publicProfileData}
               userName={profile.userName}
               locale={locale}

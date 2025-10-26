@@ -298,7 +298,7 @@ export const WEEKLY_ACTIONS = [
 export const DAILY_ACTIONS = [
   {
     name: 'Drank Water',
-    localeKey: 'actions.daily.drankWater',
+    localeKey: 'drankWater',
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
@@ -308,7 +308,7 @@ export const DAILY_ACTIONS = [
   },
   {
     name: 'Showered',
-    localeKey: 'actions.daily.showered',
+    localeKey: 'showered',
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
@@ -318,7 +318,7 @@ export const DAILY_ACTIONS = [
   },
   {
     name: 'Took meds',
-    localeKey: 'actions.daily.tookMeds',
+    localeKey: 'tookMeds',
     area: 'self',
     categories: ['body'],
     cadence: '2-daily',
@@ -328,7 +328,7 @@ export const DAILY_ACTIONS = [
   },
   {
     name: 'Logged mood',
-    localeKey: 'actions.daily.loggedMood',
+    localeKey: 'loggedMood',
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
@@ -338,7 +338,7 @@ export const DAILY_ACTIONS = [
   },
   {
     name: 'Ate breakfast',
-    localeKey: 'actions.daily.ateBreakfast',
+    localeKey: 'ateBreakfast',
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
@@ -348,7 +348,7 @@ export const DAILY_ACTIONS = [
   },
   {
     name: 'Ate lunch',
-    localeKey: 'actions.daily.ateLunch',
+    localeKey: 'ateLunch',
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
@@ -358,7 +358,7 @@ export const DAILY_ACTIONS = [
   },
   {
     name: 'Ate dinner',
-    localeKey: 'actions.daily.ateDinner',
+    localeKey: 'ateDinner',
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
@@ -368,7 +368,7 @@ export const DAILY_ACTIONS = [
   },
   {
     name: 'Brushed teeth',
-    localeKey: 'actions.daily.brushedTeeth',
+    localeKey: 'brushedTeeth',
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
@@ -378,7 +378,7 @@ export const DAILY_ACTIONS = [
   },
   {
     name: 'Worked-out',
-    localeKey: 'actions.daily.workedOut',
+    localeKey: 'workedOut',
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
@@ -388,7 +388,7 @@ export const DAILY_ACTIONS = [
   },
   {
     name: 'Worked',
-    localeKey: 'actions.daily.worked',
+    localeKey: 'worked',
     area: 'home',
     categories: ['work'],
     cadence: 'daily',
@@ -398,7 +398,7 @@ export const DAILY_ACTIONS = [
   },
   {
     name: 'Washed dishes',
-    localeKey: 'actions.daily.washedDishes',
+    localeKey: 'washedDishes',
     area: 'home',
     categories: ['clean'],
     cadence: 'daily',
@@ -408,7 +408,7 @@ export const DAILY_ACTIONS = [
   },
   {
     name: 'Stored dishes',
-    localeKey: 'actions.daily.storedDishes',
+    localeKey: 'storedDishes',
     area: 'home',
     categories: ['clean'],
     cadence: 'daily',
@@ -418,7 +418,7 @@ export const DAILY_ACTIONS = [
   },
   {
     name: 'Checked trash',
-    localeKey: 'actions.daily.checkedTrash',
+    localeKey: 'checkedTrash',
     area: 'home',
     categories: ['clean'],
     cadence: 'daily',
@@ -428,7 +428,7 @@ export const DAILY_ACTIONS = [
   },
   {
     name: 'Brushed floor',
-    localeKey: 'actions.daily.brushedFloor',
+    localeKey: 'brushedFloor',
     area: 'home',
     categories: ['clean'],
     cadence: 'daily',
@@ -438,7 +438,7 @@ export const DAILY_ACTIONS = [
   },
   {
     name: 'Made love',
-    localeKey: 'actions.daily.madeLove',
+    localeKey: 'madeLove',
     area: 'self',
     categories: ['body'],
     cadence: 'daily',
@@ -448,7 +448,7 @@ export const DAILY_ACTIONS = [
   },
   {
     name: 'Went out',
-    localeKey: 'actions.daily.wentOut',
+    localeKey: 'wentOut',
     area: 'social',
     categories: ['community'],
     cadence: 'daily',

@@ -262,7 +262,10 @@
   "publicProfile": {
     "ctaTitle": "ਆਪਣਾ ਖੁਦ ਦਾ DreamPip ਸਫ਼ਰ ਸ਼ੁਰੂ ਕਰੋ",
     "ctaSubtitle": "DreamPip ਨਾਲ ਆਪਣੇ ਮੂਡ, ਉਤਪਾਦਕਤਾ ਅਤੇ ਕਮਾਈ ਨੂੰ ਟ੍ਰੈਕ ਕਰੋ",
-    "getStarted": "ਸ਼ੁਰੂ ਕਰੋ"
+    "getStarted": "ਸ਼ੁਰੂ ਕਰੋ",
+    "notes": "ਨੋਟਸ",
+    "loadingNotes": "ਨੋਟਸ ਲੋਡ ਹੋ ਰਹੇ ਹਨ...",
+    "profileNotPublic": "ਇਸ ਯੂਜ਼ਰ ਨੇ ਅਜੇ ਤੱਕ ਆਪਣੀ ਪ੍ਰੋਫਾਈਲ ਨੂੰ ਜਨਤਕ ਨਹੀਂ ਕੀਤਾ।"
   },
   "publicCharts": {
     "noData": "ਕੋਈ ਜਨਤਕ ਚਾਰਟ ਡੇਟਾ ਉਪਲਬਧ ਨਹੀਂ।",

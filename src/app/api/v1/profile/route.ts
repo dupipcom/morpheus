@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const user = await prisma.user.findUnique({
+    let user = await prisma.user.findUnique({
       where: { userId },
       include: {
         profile: true
@@ -21,6 +21,51 @@ export async function GET(req: NextRequest) {
 
     if (!user) {
       return Response.json({ error: 'User not found' }, { status: 404 })
+    }
+
+    // Ensure user has a profile - create one if missing
+    if (!user.profile) {
+      try {
+        const clerkUser = await currentUser()
+        await prisma.profile.create({
+          data: {
+            userId: user.id,
+            userName: clerkUser?.username || null, // Use Clerk username if available
+            firstNameVisible: false,
+            lastNameVisible: false,
+            userNameVisible: false,
+            bioVisible: false,
+            profilePictureVisible: false,
+            publicChartsVisible: false,
+          }
+        })
+        // Refetch user with new profile
+        user = await prisma.user.findUnique({
+          where: { userId },
+          include: { profile: true }
+        })
+      } catch (error) {
+        console.error('Error creating profile:', error)
+      }
+    }
+
+    // Always sync username from Clerk if available - Clerk takes precedence
+    try {
+      const clerkUser = await currentUser()
+      if (clerkUser && clerkUser.username && user.profile) {
+        // Always update profile with Clerk username (overwrites any manual username)
+        await prisma.profile.update({
+          where: { userId: user.id },
+          data: { userName: clerkUser.username }
+        })
+        // Refetch user with updated profile
+        user = await prisma.user.findUnique({
+          where: { userId },
+          include: { profile: true }
+        })
+      }
+    } catch (error) {
+      console.error('Error syncing username from Clerk:', error)
     }
 
     // Get Clerk user data to sync imageUrl

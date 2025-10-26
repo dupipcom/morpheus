@@ -272,7 +272,10 @@
   "publicProfile": {
     "ctaTitle": "Начните свое путешествие с DreamPip",
     "ctaSubtitle": "Отслеживайте настроение, продуктивность и доходы с DreamPip",
-    "getStarted": "Начать"
+    "getStarted": "Начать",
+    "notes": "Заметки",
+    "loadingNotes": "Загрузка заметок...",
+    "profileNotPublic": "Этот пользователь еще не сделал свой профиль публичным."
   },
   "publicCharts": {
     "noData": "Нет доступных публичных данных диаграмм.",

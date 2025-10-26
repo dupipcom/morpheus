@@ -106,6 +106,9 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
   const canEditProfile = isOwnProfile
   const isLoggedIn = !!userId
 
+  // Display name logic: prefer fullName, then userName (even if not visible), then fallback
+  const displayName = fullName || profile.userName || 'Anonymous User'
+
   return (
     <I18nProvider locale={locale as any}>
     <main className="min-h-screen bg-background">
@@ -124,7 +127,7 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
                 )}
                 <div className="flex-1 text-center sm:text-left">
                   <h1 className="text-2xl font-bold">
-                    {fullName || profile.userName || 'Anonymous User'}
+                    {displayName}
                   </h1>
                   {profile.userName && (
                     <p className="text-muted-foreground">@{profile.userName}</p>

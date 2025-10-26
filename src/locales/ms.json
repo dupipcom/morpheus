@@ -260,9 +260,12 @@
     "failedToSend": "Gagal menghantar mesej. Sila cuba lagi."
   },
   "publicProfile": {
-    "ctaTitle": "Start Your Own DreamPip Journey",
-    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
-    "getStarted": "Get Started"
+    "ctaTitle": "Mulakan Perjalanan DreamPip Anda Sendiri",
+    "ctaSubtitle": "Jejaki mood, produktiviti dan pendapatan anda dengan DreamPip",
+    "getStarted": "Mulakan",
+    "notes": "Nota",
+    "loadingNotes": "Memuatkan nota...",
+    "profileNotPublic": "Pengguna ini belum menjadikan profil mereka awam."
   },
   "publicCharts": {
     "noData": "No public charts data available.",

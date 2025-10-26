@@ -258,7 +258,10 @@
   "publicProfile": {
     "ctaTitle": "अपनी खुद की DreamPip यात्रा शुरू करें",
     "ctaSubtitle": "DreamPip के साथ अपनी मनोदशा, उत्पादकता और कमाई को ट्रैक करें",
-    "getStarted": "शुरू करें"
+    "getStarted": "शुरू करें",
+    "notes": "नोट्स",
+    "loadingNotes": "नोट्स लोड हो रहे हैं...",
+    "profileNotPublic": "इस उपयोगकर्ता ने अभी तक अपना प्रोफ़ाइल सार्वजनिक नहीं किया है।"
   },
   "publicCharts": {
     "noData": "कोई सार्वजनिक चार्ट डेटा उपलब्ध नहीं है।",

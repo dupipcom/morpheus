@@ -262,7 +262,10 @@
   "publicProfile": {
     "ctaTitle": "Start din egen DreamPip-rejse",
     "ctaSubtitle": "Spor dit humør, produktivitet og indtjening med DreamPip",
-    "getStarted": "Kom i gang"
+    "getStarted": "Kom i gang",
+    "notes": "Noter",
+    "loadingNotes": "Indlæser noter...",
+    "profileNotPublic": "Denne bruger har ikke gjort sin profil offentlig endnu."
   },
   "publicCharts": {
     "noData": "Ingen offentlige diagramdata tilgængelige.",

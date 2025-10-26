@@ -258,7 +258,10 @@
   "publicProfile": {
     "ctaTitle": "Alusta oma DreamPip teekonda",
     "ctaSubtitle": "Jälgi oma tuju, produktiivsust ja sissetulekuid DreamPipiga",
-    "getStarted": "Alusta"
+    "getStarted": "Alusta",
+    "notes": "Märkmed",
+    "loadingNotes": "Märkmete laadimine...",
+    "profileNotPublic": "See kasutaja pole veel oma profiili avalikuks teinud."
   },
   "publicCharts": {
     "noData": "Avalikke diagrammi andmeid pole saadaval.",

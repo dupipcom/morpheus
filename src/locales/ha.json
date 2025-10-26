@@ -269,7 +269,10 @@
   "publicProfile": {
     "ctaTitle": "Fara Tafiyar DreamPip Naku",
     "ctaSubtitle": "Bi diddigin yanayin zuciyarku, ayyuka da samun kuɗi tare da DreamPip",
-    "getStarted": "Fara"
+    "getStarted": "Fara",
+    "notes": "Bayani",
+    "loadingNotes": "Ana ɗauka bayani...",
+    "profileNotPublic": "Wannan mai amfani bai bayyana bayanin kansa ba tukuna."
   },
   "publicCharts": {
     "noData": "Babu bayanan ginshiƙai na jama'a.",

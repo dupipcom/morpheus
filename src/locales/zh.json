@@ -272,7 +272,10 @@
   "publicProfile": {
     "ctaTitle": "开始您的 DreamPip 之旅",
     "ctaSubtitle": "使用 DreamPip 跟踪您的心情、生产力和收入",
-    "getStarted": "开始"
+    "getStarted": "开始",
+    "notes": "笔记",
+    "loadingNotes": "正在加载笔记...",
+    "profileNotPublic": "此用户尚未将他们的个人资料公开。"
   },
   "publicCharts": {
     "noData": "没有可用的公共图表数据。",

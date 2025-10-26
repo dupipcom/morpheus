@@ -270,9 +270,12 @@
     "genericError": "Something went wrong. Please try again."
   },
   "publicProfile": {
-    "ctaTitle": "Start Your Own DreamPip Journey",
-    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
-    "getStarted": "Get Started"
+    "ctaTitle": "Beginnen Sie Ihre eigene DreamPip-Reise",
+    "ctaSubtitle": "Verfolgen Sie Ihre Stimmung, Produktivität und Einnahmen mit DreamPip",
+    "getStarted": "Loslegen",
+    "notes": "Notizen",
+    "loadingNotes": "Notizen werden geladen...",
+    "profileNotPublic": "Dieser Benutzer hat sein Profil noch nicht öffentlich gemacht."
   },
   "publicCharts": {
     "noData": "No public charts data available.",
@@ -301,6 +304,7 @@
     "editProfile": "Profil bearbeiten"
   },
   "profile": {
+    "createProfile": "Profil erstellen",
     "editProfile": "Profil bearbeiten",
     "viewPublicProfile": "Öffentliches Profil anzeigen",
     "profileInformation": "Profilinformationen",

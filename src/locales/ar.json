@@ -276,7 +276,10 @@
   "publicProfile": {
     "ctaTitle": "ابدأ رحلتك مع DreamPip",
     "ctaSubtitle": "تتبّع مزاجك وإنتاجيتك وأرباحك مع DreamPip",
-    "getStarted": "ابدأ"
+    "getStarted": "ابدأ",
+    "notes": "ملاحظات",
+    "loadingNotes": "جارٍ تحميل الملاحظات...",
+    "profileNotPublic": "هذا المستخدم لم يجعل ملفه الشخصي عاماً بعد."
   },
   "publicCharts": {
     "noData": "لا توجد بيانات عامة متاحة للمخططات.",

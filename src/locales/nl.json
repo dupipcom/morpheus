@@ -258,7 +258,10 @@
   "publicProfile": {
     "ctaTitle": "Begin je eigen DreamPip reis",
     "ctaSubtitle": "Volg je stemming, productiviteit en verdiensten met DreamPip",
-    "getStarted": "Beginnen"
+    "getStarted": "Beginnen",
+    "notes": "Notities",
+    "loadingNotes": "Notities laden...",
+    "profileNotPublic": "Deze gebruiker heeft zijn profiel nog niet openbaar gemaakt."
   },
   "publicCharts": {
     "noData": "Geen openbare grafiekgegevens beschikbaar.",

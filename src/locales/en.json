@@ -383,7 +383,10 @@
   "publicProfile": {
     "ctaTitle": "Start Your Own DreamPip Journey",
     "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
-    "getStarted": "Get Started"
+    "getStarted": "Get Started",
+    "notes": "Notes",
+    "loadingNotes": "Loading notes...",
+    "profileNotPublic": "This user hasn't made their profile public yet."
   },
   "publicCharts": {
     "noData": "No public charts data available.",
@@ -412,6 +415,7 @@
     "editProfile": "Edit Profile"
   },
   "profile": {
+    "createProfile": "Create Profile",
     "editProfile": "Edit Profile",
     "viewPublicProfile": "View Public Profile",
     "profileInformation": "Profile Information",

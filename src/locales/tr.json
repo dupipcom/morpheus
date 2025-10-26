@@ -276,7 +276,10 @@
   "publicProfile": {
     "ctaTitle": "Kendi DreamPip Yolculuğunuzu Başlatın",
     "ctaSubtitle": "DreamPip ile ruh halinizi, verimliliğinizi ve kazançlarınızı takip edin",
-    "getStarted": "Başlayın"
+    "getStarted": "Başlayın",
+    "notes": "Notlar",
+    "loadingNotes": "Notlar yükleniyor...",
+    "profileNotPublic": "Bu kullanıcı profilini henüz herkese açık hale getirmemiş."
   },
   "publicCharts": {
     "noData": "Herkese açık grafik verisi mevcut değil.",

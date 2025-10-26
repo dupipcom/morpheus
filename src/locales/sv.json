@@ -261,7 +261,10 @@
   "publicProfile": {
     "ctaTitle": "Börja din egen DreamPip-resa",
     "ctaSubtitle": "Spåra ditt humör, produktivitet och inkomster med DreamPip",
-    "getStarted": "Kom igång"
+    "getStarted": "Kom igång",
+    "notes": "Anteckningar",
+    "loadingNotes": "Laddar anteckningar...",
+    "profileNotPublic": "Denna användare har inte gjort sin profil offentlig ännu."
   },
   "publicCharts": {
     "noData": "Inga tillgängliga data för offentliga diagram.",

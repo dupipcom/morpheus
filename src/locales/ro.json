@@ -258,7 +258,10 @@
   "publicProfile": {
     "ctaTitle": "Începe-ți propria călătorie DreamPip",
     "ctaSubtitle": "Urmărește-ți starea de spirit, productivitatea și câștigurile cu DreamPip",
-    "getStarted": "Începe"
+    "getStarted": "Începe",
+    "notes": "Note",
+    "loadingNotes": "Se încarcă notele...",
+    "profileNotPublic": "Acest utilizator nu și-a făcut profilul public încă."
   },
   "publicCharts": {
     "noData": "Nu sunt disponibile date pentru graficele publice.",

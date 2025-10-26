@@ -258,7 +258,10 @@
   "publicProfile": {
     "ctaTitle": "Kezdje el a saját DreamPip útját",
     "ctaSubtitle": "Kövesse nyomon hangulatát, termelékenységét és bevételeit a DreamPip-pel",
-    "getStarted": "Kezdés"
+    "getStarted": "Kezdés",
+    "notes": "Jegyzetek",
+    "loadingNotes": "Jegyzetek betöltése...",
+    "profileNotPublic": "Ez a felhasználó még nem tette nyilvánossá a profilját."
   },
   "publicCharts": {
     "noData": "Nincs nyilvános grafikon adat.",

@@ -4,7 +4,7 @@ import { getWeekNumber } from "@/app/helpers"
 import { WEEKLY_ACTIONS, DAILY_ACTIONS } from "@/app/constants"
 import { safeUpdateWeekEntry, safeUpdateDayEntry, validateWeekData, validateDayData, logEntryData, ensureWeekDataIntegrity, ensureDayDataIntegrity, addEphemeralTaskToDay, addEphemeralTaskToWeek, updateEphemeralTaskInDay, updateEphemeralTaskInWeek, removeEphemeralTaskFromDay, removeEphemeralTaskFromWeek, calculateDayTicker, calculateWeekTicker, calculateDayTickers, calculateWeekTickers } from "@/lib/entryUtils"
 
-export async function GET(req: NextApiRequest, res: NextApiResponse) {
+export async function GET(req: Request) {
   const { userId } = await auth()
 
   // Check if user is authenticated
@@ -34,6 +34,29 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
     })
   }
 
+  // Ensure user has a profile - create one if missing
+  if (user && !user.profile) {
+    try {
+      const clerkUser = await currentUser()
+      await prisma.profile.create({
+        data: {
+          userId: user.id,
+          userName: clerkUser?.username || null, // Use Clerk username if available
+          firstNameVisible: false,
+          lastNameVisible: false,
+          userNameVisible: false,
+          bioVisible: false,
+          profilePictureVisible: false,
+          publicChartsVisible: false,
+        }
+      })
+      // Refetch user with new profile
+      user = await getUser()
+    } catch (error) {
+      console.error('Error creating profile:', error)
+    }
+  }
+
   // Always sync username from Clerk if available - Clerk takes precedence
   try {
     const clerkUser = await currentUser()
@@ -43,20 +66,6 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
         await prisma.profile.update({
           where: { userId: user.id },
           data: { userName: clerkUser.username }
-        })
-      } else {
-        // Create new profile with Clerk username
-        await prisma.profile.create({
-          data: {
-            userId: user.id,
-            userName: clerkUser.username,
-            firstNameVisible: false,
-            lastNameVisible: false,
-            userNameVisible: false,
-            bioVisible: false,
-            profilePictureVisible: false,
-            publicChartsVisible: false,
-          }
         })
       }
       // Refetch user with updated profile
@@ -69,7 +78,7 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
   return Response.json(user)
 }
 
-export async function POST(req: NextApiRequest, res: NextApiResponse) {
+export async function POST(req: Request) {
   const { userId } = await auth()
   const data = await req.json()
 
