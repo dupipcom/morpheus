@@ -175,8 +175,9 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   // Selected TaskList object and key for storage
   const selectedList = useMemo(() => allTaskLists.find(tl => tl.id === selectedTaskListId), [allTaskLists, selectedTaskListId])
   const selectedTaskListKey = useMemo(() => {
-    const n = (selectedList && (selectedList.name || selectedList.role)) || undefined
-    return n
+    if (!selectedList) return undefined
+    const base = selectedList.name || selectedList.role || 'tasklist'
+    return `${base}__${selectedList.id}`
   }, [selectedList])
 
   // Handle select changes, including synthetic create options

@@ -314,7 +314,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   const dayEarnings = ((5 - dayMoodAverage)) * 0.2 + ((dayProgress * 0.80)) * userEquity / 30
   const weekEarnings = ((5 - weekMoodAverage)) * 0.2 + ((weekProgress * 0.80)) * userEquity / 4
 
-  // List-scoped task updates: when a taskListKey is provided, write under entries[year][taskListKey]
+  // List-scoped task updates: when a taskListKey is provided, write under entries[year][name+id]
   if ((data.taskListKey && (data.weekActions?.length || data.dayActions?.length)) && user) {
     const entries = user.entries as any
     const listKey = String(data.taskListKey)
@@ -331,7 +331,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
       updatedEntries[year][listKey] = {}
     }
 
-    // Apply week-scoped tasks under list key
+    // Apply week-scoped tasks under list key (name+id)
     if (data.weekActions?.length) {
       const tasksWithContacts = data.weekActions.map((task: any) => ({
         ...task,
@@ -347,7 +347,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
       }
     }
 
-    // Apply day-scoped tasks under list key
+    // Apply day-scoped tasks under list key (name+id)
     if (data.dayActions?.length) {
       const tasksWithContacts = data.dayActions.map((task: any) => ({
         ...task,
