@@ -40,7 +40,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { ContactCombobox } from "@/components/ui/contact-combobox"
 import { ThingCombobox } from "@/components/ui/thing-combobox"
-import { Users, X, Heart, Settings, Package, Plus, TrendingUp, TrendingDown, ChevronDown, Calendar as CalendarIcon, List as ListIcon, MoreHorizontal } from "lucide-react"
+import { Users, X, Heart, Settings, Package, Plus, TrendingUp, TrendingDown, ChevronDown, Calendar as CalendarIcon, List as ListIcon, MoreHorizontal, Pencil } from "lucide-react"
 import { Switch } from "@/components/ui/switch"
 import {
   Select,
@@ -124,6 +124,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
   })
   const [newListTasks, setNewListTasks] = useState<any[]>([])
   const [addListTaskOpen, setAddListTaskOpen] = useState(false)
+  const [isEditingList, setIsEditingList] = useState(false)
   // New Template form state
   const [showAddTemplate, setShowAddTemplate] = useState(false)
   const [newTemplate, setNewTemplate] = useState({
@@ -316,6 +317,32 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
         return
       }
       setSelectedTaskListId(value)
+      // If editing, repopulate form with the newly selected list
+      if (showAddList) {
+        const lst = (taskListsData?.taskLists || []).find((tl: any) => tl.id === value)
+        if (lst) {
+          let cadence = 'one-off'
+          let role = 'custom'
+          if (typeof lst.role === 'string' && lst.role.includes('.')) {
+            const [c, r] = lst.role.split('.')
+            cadence = c || cadence
+            role = r || role
+          } else if (lst.role === 'custom') {
+            role = 'custom'
+          }
+          setIsEditingList(true)
+          setNewList({
+            name: lst.name || '',
+            templateId: lst.templateId ? `template:${lst.templateId}` : '',
+            budget: lst.budget || '',
+            dueDate: lst.dueDate || '',
+            cadence,
+            role,
+            collaborators: (lst.collaborators || []).map((id: string) => ({ id, userName: id }))
+          })
+          setNewListTasks(Array.isArray(lst.tasks) ? lst.tasks : [])
+        }
+      }
     } catch (e) {
       console.error('Error selecting task list:', e)
     }
@@ -345,7 +372,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       const resp = await fetch('/api/v1/tasklists', {
         method: 'POST',
         body: JSON.stringify({
-          create: true,
+          create: !isEditingList,
           role: roleJoined,
           name: newList.name || undefined,
           budget: newList.budget || undefined,
@@ -366,6 +393,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
       const created = lists.find((tl: any) => tl.role === roleJoined) || lists.find((tl: any) => newList.name && tl.name === newList.name)
       if (created?.id) setSelectedTaskListId(created.id)
       setShowAddList(false)
+      setIsEditingList(false)
       setNewList({ name: '', templateId: '', budget: '', dueDate: '', cadence: 'one-off', role: 'custom', collaborators: [] })
     } catch (e) {
       console.error('Error creating list:', e)
@@ -1267,6 +1295,63 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                 variant="ghost"
                 size="sm"
                 className="flex items-center text-muted-foreground hover:text-foreground"
+                onClick={async () => {
+                  const lst: any = selectedList
+                  if (!lst) return
+                  // Exclusively open list form
+                  setShowAddEphemeral(false)
+                  setShowAddTemplate(false)
+                  setIsEditingList(true)
+                  // Pre-populate form
+                  let cadence = 'one-off'
+                  let role = 'custom'
+                  if (typeof lst.role === 'string' && lst.role.includes('.')) {
+                    const [c, r] = lst.role.split('.')
+                    cadence = c || cadence
+                    role = r || role
+                  } else if (lst.role === 'custom') {
+                    role = 'custom'
+                  }
+                  setNewList({
+                    name: lst.name || '',
+                    templateId: lst.templateId ? `template:${lst.templateId}` : '',
+                    budget: lst.budget || '',
+                    dueDate: lst.dueDate || '',
+                    cadence,
+                    role,
+                    collaborators: (lst.collaborators || []).map((id: string) => ({ id, userName: id }))
+                  })
+                  setNewListTasks(Array.isArray(lst.tasks) ? lst.tasks : [])
+                  setShowAddList(true)
+
+                  // Resolve collaborator usernames
+                  const ids = (lst.collaborators || [])
+                  if (Array.isArray(ids) && ids.length) {
+                    try {
+                      const res = await fetch(`/api/v1/profiles/by-ids?ids=${encodeURIComponent(ids.join(','))}`)
+                      if (res.ok) {
+                        const data = await res.json()
+                        const map: Record<string, string> = {}
+                        ;(data.profiles || []).forEach((p: any) => {
+                          map[p.userId] = p.userName
+                        })
+                        setNewList(prev => ({
+                          ...prev,
+                          collaborators: ids.map((id: string) => ({ id, userName: map[id] || id }))
+                        }))
+                      }
+                    } catch (e) {
+                      // ignore
+                    }
+                  }
+                }}
+              >
+                <Pencil className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="flex items-center text-muted-foreground hover:text-foreground"
                 onClick={() => window.location.href = '/app/settings'}
               >
                 <Settings className="h-4 w-4" />
@@ -1377,7 +1462,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
           {showAddList && (
             <Card className="mb-4 p-4">
               <CardHeader>
-                <CardTitle className="text-sm">Create New List</CardTitle>
+                <CardTitle className="text-sm">{isEditingList ? 'Edit List' : 'Create New List'}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div>
@@ -1646,7 +1731,7 @@ export const TaskView = ({ timeframe = "day", actions = [] }) => {
                     disabled={!newList.name.trim()}
                     size="sm"
                   >
-                    Create List
+                    {isEditingList ? 'Save List' : 'Create List'}
                   </Button>
                   <Button
                     variant="outline"
