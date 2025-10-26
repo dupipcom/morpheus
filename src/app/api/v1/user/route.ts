@@ -526,10 +526,16 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   if (Array.isArray(data.weekTasksAppend) && data.weekTasksAppend.length && user) {
     const entries = user.entries as any
     const week = data.week || weekNumber
+    const rolePrefix = typeof data.listRole === 'string' ? String(data.listRole).split('.')[0] : 'weekly'
     const ensureWeek = (e: any) => {
       const copy = { ...(e || {}) }
       if (!copy[year]) copy[year] = { days: {}, weeks: {} }
       if (!copy[year].weeks) copy[year].weeks = {}
+      if (!copy[year].months) copy[year].months = {}
+      if (!copy[year].quarters) copy[year].quarters = {}
+      if (!copy[year].semesters) copy[year].semesters = {}
+      if (!copy[year].oneOffs) copy[year].oneOffs = {}
+      if (!copy[year].year) copy[year].year = { tasks: [] }
       if (!copy[year].weeks[week]) copy[year].weeks[week] = { year, week, tasks: [] }
       if (!Array.isArray(copy[year].weeks[week].tasks)) copy[year].weeks[week].tasks = []
       return copy
@@ -540,9 +546,38 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     const toAppend = data.weekTasksAppend.filter((t:any) => !names.has(t.name))
     console.log({ entries: entries[year]?.weeks[week]?.tasks })
     if (toAppend.length > 0) {
-      updated[year].weeks[week] = {
-        ...updated[year].weeks[week],
-        tasks: [...existing, ...toAppend]
+      // Route based on role prefix
+      if (rolePrefix === 'weekly') {
+        updated[year].weeks[week] = {
+          ...updated[year].weeks[week],
+          tasks: [...existing, ...toAppend]
+        }
+      } else if (rolePrefix === 'monthly') {
+        const monthNum = Number(String(date).split('-')[1])
+        const ex = (updated[year].months[monthNum]?.tasks || [])
+        updated[year].months[monthNum] = { year, month: monthNum, tasks: [...ex, ...toAppend] }
+      } else if (rolePrefix === 'quarterly') {
+        const monthNum = Number(String(date).split('-')[1])
+        const quarter = Math.ceil(monthNum / 3)
+        const ex = (updated[year].quarters[quarter]?.tasks || [])
+        updated[year].quarters[quarter] = { year, quarter, tasks: [...ex, ...toAppend] }
+      } else if (rolePrefix === 'semester') {
+        const monthNum = Number(String(date).split('-')[1])
+        const semester = monthNum <= 6 ? 1 : 2
+        const ex = (updated[year].semesters[semester]?.tasks || [])
+        updated[year].semesters[semester] = { year, semester, tasks: [...ex, ...toAppend] }
+      } else if (rolePrefix === 'yearly') {
+        const ex = (updated[year].year?.tasks || [])
+        updated[year].year = { year, tasks: [...ex, ...toAppend] }
+      } else if (rolePrefix === 'one-off' || rolePrefix === 'oneoff' || rolePrefix === 'oneoff') {
+        const key = String(date)
+        const ex = (updated[year].oneOffs[key]?.tasks || [])
+        updated[year].oneOffs[key] = { year, date: key, tasks: [...ex, ...toAppend] }
+      } else {
+        updated[year].weeks[week] = {
+          ...updated[year].weeks[week],
+          tasks: [...existing, ...toAppend]
+        }
       }
       await prisma.user.update({
         data: { entries: updated },
@@ -557,10 +592,17 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     const entries = user.entries as any
     const dateISO = data.date || date
     const y = Number(String(dateISO).split('-')[0])
+    const rolePrefix = typeof data.listRole === 'string' ? String(data.listRole).split('.')[0] : 'daily'
     const ensureDay = (e: any) => {
       const copy = { ...(e || {}) }
       if (!copy[y]) copy[y] = { days: {}, weeks: {} }
       if (!copy[y].days) copy[y].days = {}
+      if (!copy[y].weeks) copy[y].weeks = {}
+      if (!copy[y].months) copy[y].months = {}
+      if (!copy[y].quarters) copy[y].quarters = {}
+      if (!copy[y].semesters) copy[y].semesters = {}
+      if (!copy[y].oneOffs) copy[y].oneOffs = {}
+      if (!copy[y].year) copy[y].year = { tasks: [] }
       if (!copy[y].days[dateISO]) copy[y].days[dateISO] = { year: y, date: dateISO, tasks: [] }
       if (!Array.isArray(copy[y].days[dateISO].tasks)) copy[y].days[dateISO].tasks = []
       return copy
@@ -570,9 +612,41 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     const names = new Set(existing.map((t:any) => t.name))
     const toAppend = data.dayTasksAppend.filter((t:any) => t.status === 'Done' && !names.has(t.name))
     if (toAppend.length > 0) {
-      updated[y].days[dateISO] = {
-        ...updated[y].days[dateISO],
-        tasks: [...existing, ...toAppend]
+      if (rolePrefix === 'daily') {
+        updated[y].days[dateISO] = {
+          ...updated[y].days[dateISO],
+          tasks: [...existing, ...toAppend]
+        }
+      } else if (rolePrefix === 'weekly') {
+        const w = getWeekNumber(new Date(dateISO))[1]
+        const ex = (updated[y].weeks[w]?.tasks || [])
+        updated[y].weeks[w] = { year: y, week: w, tasks: [...ex, ...toAppend] }
+      } else if (rolePrefix === 'monthly') {
+        const monthNum = Number(String(dateISO).split('-')[1])
+        const ex = (updated[y].months[monthNum]?.tasks || [])
+        updated[y].months[monthNum] = { year: y, month: monthNum, tasks: [...ex, ...toAppend] }
+      } else if (rolePrefix === 'quarterly') {
+        const monthNum = Number(String(dateISO).split('-')[1])
+        const quarter = Math.ceil(monthNum / 3)
+        const ex = (updated[y].quarters[quarter]?.tasks || [])
+        updated[y].quarters[quarter] = { year: y, quarter, tasks: [...ex, ...toAppend] }
+      } else if (rolePrefix === 'semester') {
+        const monthNum = Number(String(dateISO).split('-')[1])
+        const semester = monthNum <= 6 ? 1 : 2
+        const ex = (updated[y].semesters[semester]?.tasks || [])
+        updated[y].semesters[semester] = { year: y, semester, tasks: [...ex, ...toAppend] }
+      } else if (rolePrefix === 'yearly') {
+        const ex = (updated[y].year?.tasks || [])
+        updated[y].year = { year: y, tasks: [...ex, ...toAppend] }
+      } else if (rolePrefix === 'one-off' || rolePrefix === 'oneoff') {
+        const key = String(dateISO)
+        const ex = (updated[y].oneOffs[key]?.tasks || [])
+        updated[y].oneOffs[key] = { year: y, date: key, tasks: [...ex, ...toAppend] }
+      } else {
+        updated[y].days[dateISO] = {
+          ...updated[y].days[dateISO],
+          tasks: [...existing, ...toAppend]
+        }
       }
       await prisma.user.update({
         data: { entries: updated },

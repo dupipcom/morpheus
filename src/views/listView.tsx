@@ -160,7 +160,7 @@ export const ListView = () => {
           await fetch('/api/v1/user', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ weekTasksAppend: doneForWeek, week, date })
+            body: JSON.stringify({ weekTasksAppend: doneForWeek, week, date, listRole: (selectedTaskList as any)?.role })
           })
         }
       }
@@ -173,7 +173,7 @@ export const ListView = () => {
         await fetch('/api/v1/user', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ dayTasksAppend: doneForDay, date })
+          body: JSON.stringify({ dayTasksAppend: doneForDay, date, listRole: (selectedTaskList as any)?.role })
         })
       }
     } catch {}
