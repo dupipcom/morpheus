@@ -275,7 +275,7 @@ export const ListView = () => {
                 <div className="mt-1">
                   <Badge variant="secondary" className="bg-muted text-muted-foreground border-muted">
                     <UserIcon className="h-3 w-3 mr-1" />
-                    Completed by {completerName}
+                    {completerName}
                   </Badge>
                 </div>
               )}

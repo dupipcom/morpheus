@@ -142,13 +142,13 @@ export const DoToolbar = ({
           {(selectedList as any)?.budget && (
             <Badge variant="secondary" className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80">
               <DollarSign className="h-3 w-3 mr-1" />
-              Budget: {(selectedList as any).budget}
+              {(selectedList as any).budget}
             </Badge>
           )}
           {(selectedList as any)?.dueDate && (
             <Badge variant="outline" className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80">
               <Calendar className="h-3 w-3 mr-1" />
-              Due: {(selectedList as any).dueDate}
+              {(selectedList as any).dueDate}
             </Badge>
           )}
           {Array.isArray((selectedList as any)?.collaborators) && (selectedList as any).collaborators.map((id: string) => (
