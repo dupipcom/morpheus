@@ -229,14 +229,6 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
     <main className="">
       <ViewMenu active="profile" />
       <div className="max-w-4xl mx-auto p-4">
-        {/* Edit Profile Button */}
-        <div className="mb-6 flex justify-end">
-          <Button asChild>
-            <a href="/app/profile/edit">
-              {profile.userName ? t('profile.editProfile') : t('profile.createProfile')}
-            </a>
-          </Button>
-        </div>
 
         {/* Collaborating Task Lists */}
         {collaboratingTaskLists.length > 0 && (

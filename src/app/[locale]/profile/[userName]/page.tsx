@@ -100,7 +100,7 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
   }
 
   const fullName = [profile.firstName, profile.lastName].filter(Boolean).join(' ')
-  const hasAnyPublicData = profile.firstName || profile.lastName || profile.userName || profile.bio || profile.profilePicture
+  const hasAnyPublicData = profile.firstName || profile.lastName || profile.bio || profile.profilePicture || profile.publicCharts
   const isOwnProfile = currentUserUsername === userName
   const canAddFriend = !isOwnProfile && profile.userName
   const canEditProfile = isOwnProfile
@@ -162,19 +162,21 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
           </Card>
         )}
 
-        {/* Public Notes - Client-side rendered for dynamic friend status */}
-        <PublicNotesViewer userName={userName} />
-
         {/* No public data message */}
         {!hasAnyPublicData && !profile.publicCharts && (
           <Card>
             <CardContent className="pt-6">
               <div className="text-center text-muted-foreground">
-                <p>This user hasn't made their profile public yet.</p>
+                <p>{(translations as any)?.publicProfile?.profileNotPublic || "This user hasn't made their profile public yet."}</p>
               </div>
             </CardContent>
           </Card>
         )}
+
+        <div className="mt-8 w-full">
+        {/* Public Notes - Client-side rendered for dynamic friend status */}
+          <PublicNotesViewer userName={userName} />
+        </div>
 
         {!isLoggedIn && (
           <Card className="mt-6">

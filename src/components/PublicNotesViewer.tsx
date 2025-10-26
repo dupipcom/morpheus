@@ -146,10 +146,6 @@ export function PublicNotesViewer({ userName }: PublicNotesViewerProps) {
     )
   }
 
-  if (notes.length === 0) {
-    return null // Don't show the notes section if there are no notes
-  }
-
   return (
     <Card className="mb-6">
       <CardHeader>
