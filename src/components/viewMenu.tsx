@@ -78,12 +78,12 @@ export const ViewMenu = ({ active }: { active: string }) =>{
   return <NavigationMenu className="flex flex-col center text-center w-full m-auto">
   <NavigationMenuList className="grid grid-cols-2">
       <NavigationMenuItem >
-        <NavigationMenuLink href={`/${locale}/app/do`} active={active === 'do'}>
+        <NavigationMenuLink href={`/app/do`} active={active === 'do'}>
           Do
         </NavigationMenuLink>
       </NavigationMenuItem>
       <NavigationMenuItem>
-        <NavigationMenuLink href={`/${locale}/app/social`} active={active === 'social'}>
+        <NavigationMenuLink href={`/app/social`} active={active === 'social'}>
           Be
         </NavigationMenuLink>
       </NavigationMenuItem>

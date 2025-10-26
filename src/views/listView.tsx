@@ -1,7 +1,6 @@
 'use client'
 
-import React, { useMemo, useState, useEffect, useContext } from 'react'
-import useSWR from 'swr'
+import React, { useMemo, useState, useEffect, useContext, useCallback } from 'react'
 
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { DoToolbar } from '@/views/doToolbar'
@@ -18,13 +17,8 @@ export const ListView = () => {
   const date = today.toISOString().split('T')[0]
   const year = Number(date.split('-')[0])
 
-  const { data: listsData, mutate: mutateTaskLists } = useSWR('/api/v1/tasklists', async () => {
-    const res = await fetch('/api/v1/tasklists')
-    if (!res.ok) return { taskLists: [] }
-    return res.json()
-  })
-
-  const allTaskLists = listsData?.taskLists || []
+  const { taskLists, refreshTaskLists } = useContext(GlobalContext)
+  const allTaskLists = taskLists || []
 
   const [selectedTaskListId, setSelectedTaskListId] = useState<string | undefined>(allTaskLists[0]?.id)
   useEffect(() => {
@@ -65,6 +59,34 @@ export const ListView = () => {
   const [values, setValues] = useState<string[]>(doneNames)
   const [prevValues, setPrevValues] = useState<string[]>(doneNames)
   useEffect(() => { setValues(doneNames); setPrevValues(doneNames) }, [doneNames])
+
+  // Sort tasks: incomplete first, then completed. Use current toggles as well.
+  const sortedMergedTasks = useMemo(() => {
+    const isDone = (t:any) => (t?.status === 'Done') || values.includes(t?.name)
+    return [...mergedTasks].sort((a:any, b:any) => {
+      const aDone = isDone(a)
+      const bDone = isDone(b)
+      if (aDone === bDone) return 0
+      return aDone ? 1 : -1
+    })
+  }, [mergedTasks, values])
+
+  const handleAddEphemeral = useCallback(async () => {
+    if (!selectedTaskList) return
+    const name = prompt('New task name?')
+    if (!name) return
+    await fetch('/api/v1/tasklists', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        taskListId: selectedTaskList.id,
+        ephemeralTasks: { add: { name, cadence: 'day' } }
+      })
+    })
+    await refreshTaskLists()
+  }, [selectedTaskList, refreshTaskLists])
+
+  const refreshLists = useCallback(async () => { await refreshTaskLists() }, [refreshTaskLists])
 
   const handleToggleChange = async (newValues: string[]) => {
     setValues(newValues)
@@ -127,31 +149,15 @@ export const ListView = () => {
       }
     }
 
-    await mutateTaskLists()
+    await refreshTaskLists()
   }
-
   return (
     <div className="space-y-4">
       <DoToolbar
         locale={locale}
-        allTaskLists={allTaskLists}
         selectedTaskListId={selectedTaskListId}
         onChangeSelectedTaskListId={setSelectedTaskListId}
-        onAddEphemeral={async () => {
-          if (!selectedTaskList) return
-          const name = prompt('New task name?')
-          if (!name) return
-          await fetch('/api/v1/tasklists', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              taskListId: selectedTaskList.id,
-              ephemeralTasks: { add: { name, cadence: 'day' } }
-            })
-          })
-          await mutateTaskLists()
-        }}
-        refreshLists={async () => { await mutateTaskLists() }}
+        onAddEphemeral={handleAddEphemeral}
       />
 
       <ToggleGroup
@@ -162,7 +168,7 @@ export const ListView = () => {
         type="multiple"
         orientation="horizontal"
       >
-        {mergedTasks.map((task:any) => (
+        {sortedMergedTasks.map((task:any) => (
           <div key={`task__item--${task.name}`} className="flex flex-col items-center m-1">
             <div className="relative w-full">
               <ToggleGroupItem className="rounded-md leading-7 text-sm min-h-[40px] truncate w-full" value={task.name} aria-label={task.name}>

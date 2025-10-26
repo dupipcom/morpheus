@@ -1,6 +1,8 @@
 'use client'
 
 import React from 'react'
+import { useContext, useEffect, useRef } from 'react'
+import { GlobalContext } from '@/lib/contexts'
 
 import { ViewMenu } from '@/components/viewMenu'
 import { MoodView } from '@/views/moodView'
@@ -14,6 +16,17 @@ import {
 } from '@/components/ui/accordion'
 
 export const DoView = () => {
+  const { refreshTaskLists, taskLists } = useContext(GlobalContext)
+  const fetchedRef = useRef(false)
+
+  useEffect(() => {
+    if (fetchedRef.current) return
+    fetchedRef.current = true
+    if (!Array.isArray(taskLists) || taskLists.length === 0) {
+      refreshTaskLists()
+    }
+  }, [refreshTaskLists, taskLists])
+
   return (
     <main className="min-h-[100vh]">
       <ViewMenu active="do" />

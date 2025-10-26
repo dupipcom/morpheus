@@ -1,10 +1,11 @@
 'use client'
 
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useState, useContext } from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { useI18n } from '@/lib/contexts/i18n'
+import { GlobalContext } from '@/lib/contexts'
 import { Plus, Settings as SettingsIcon, Pencil } from 'lucide-react'
 import {
   DropdownMenu,
@@ -23,20 +24,18 @@ type TaskList = { id: string; name?: string; role?: string }
 
 export const DoToolbar = ({
   locale,
-  allTaskLists,
   selectedTaskListId,
   onChangeSelectedTaskListId,
   onAddEphemeral,
-  refreshLists,
 }: {
   locale: string
-  allTaskLists: TaskList[]
   selectedTaskListId?: string
   onChangeSelectedTaskListId: (id: string) => void
   onAddEphemeral: () => Promise<void> | void
-  refreshLists: () => Promise<any>
 }) => {
   const { t } = useI18n()
+  const { taskLists, refreshTaskLists } = useContext(GlobalContext)
+  const allTaskLists = taskLists || []
   const selectedList = useMemo(() => allTaskLists.find((l:any) => l.id === selectedTaskListId), [allTaskLists, selectedTaskListId])
 
   const [showAddTask, setShowAddTask] = useState(false)
@@ -78,7 +77,7 @@ export const DoToolbar = ({
     })
     setNewTaskName('')
     setShowAddTask(false)
-    await refreshLists()
+    await refreshTaskLists()
   }
 
   const submitList = async () => {
@@ -114,7 +113,7 @@ export const DoToolbar = ({
     setListBudget('')
     setListDueDate('')
     setShowAddList(false)
-    await refreshLists()
+    await refreshTaskLists()
   }
 
   const submitTemplate = async () => {
