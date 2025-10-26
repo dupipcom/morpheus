@@ -59,6 +59,30 @@ export const AddListForm = ({
     }
   }, [JSON.stringify(initialList), isEditing])
 
+  // Resolve collaborator usernames for existing lists (replace id placeholders)
+  useEffect(() => {
+    let cancelled = false
+    const run = async () => {
+      try {
+        const unresolved = (form.collaborators || []).filter((c) => !c.userName || c.userName === c.id)
+        if (unresolved.length === 0) return
+        const ids = unresolved.map((c) => c.id)
+        const res = await fetch(`/api/v1/profiles/by-ids?ids=${encodeURIComponent(ids.join(','))}`)
+        if (!cancelled && res.ok) {
+          const data = await res.json()
+          const idToUserName: Record<string, string> = {}
+          ;(data.profiles || []).forEach((p: any) => { idToUserName[p.userId] = p.userName || p.userId })
+          setForm((prev) => ({
+            ...prev,
+            collaborators: (prev.collaborators || []).map((c) => ({ ...c, userName: idToUserName[c.id] || c.userName }))
+          }))
+        }
+      } catch {}
+    }
+    run()
+    return () => { cancelled = true }
+  }, [JSON.stringify((form.collaborators || []).map((c) => c.id))])
+
   const newListPreviewTasks = useMemo(() => {
     if (!form.templateId) return [] as any[]
     if (form.templateId.startsWith('template:')) {
