@@ -30,7 +30,17 @@
     "social": "Social",
     "stash": "Scorta",
     "equity": "Patrimonio netto",
-    "totalEarnings": "Guadagni totali"
+    "totalEarnings": "Guadagni totali",
+    "daily": "Giornaliero",
+    "weekly": "Settimanale",
+    "balance": "Saldo",
+    "dailyEarnings": "Guadagni Giornalieri",
+    "weeklyEarnings": "Guadagni Settimanali",
+    "newTask": "Nuova attività",
+    "newList": "Nuovo elenco",
+    "newTemplate": "Nuovo modello",
+    "budget": "Budget",
+    "due": "Scadenza"
   },
   "navigation": {
     "home": "Inizio",
@@ -65,7 +75,20 @@
     "trust": "Fiducia",
     "editDay": "Modifica giorno",
     "closeDay": "Chiudi giorno",
-    "earnings": "Guadagni"
+    "earnings": "Guadagni",
+    "publish": {
+      "title": "Pubblica una Nota",
+      "placeholder": "Scrivi la tua nota qui...",
+      "selectVisibility": "Seleziona visibilità",
+      "visibility": {
+        "PRIVATE": "Privato",
+        "FRIENDS": "Amici",
+        "CLOSE_FRIENDS": "Amici Stretti",
+        "PUBLIC": "Pubblico",
+        "AI_ENABLED": "Abilitato IA"
+      },
+      "action": "Pubblica Nota"
+    }
   },
   "week": {
     "weekNumber": "Settimana {number}",
@@ -75,7 +98,8 @@
   "tasks": {
     "editing": "Modifica: {timeframe}",
     "weekNumber": "Settimana {number}",
-    "yourEarnings": "I tuoi guadagni {timeframe}, finora: Ð{amount}"
+    "yourEarnings": "I tuoi guadagni {timeframe}, finora: Ð{amount}",
+    "selectList": "Seleziona elenco"
   },
   "settings": {
     "title": "Impostazioni",
@@ -135,58 +159,54 @@
     "impact": "Impatto"
   },
   "actions": {
-    "daily": {
-      "drankWater": "Ha bevuto acqua",
-      "showered": "Si è fatto la doccia",
-      "tookMeds": "Ha preso i medicinali",
-      "loggedMood": "Ha registrato l'umore",
-      "ateBreakfast": "Ha fatto colazione",
-      "ateLunch": "Ha pranzato",
-      "ateDinner": "Ha cenato",
-      "brushedTeeth": "Si è lavato i denti",
-      "workedOut": "Ha fatto allenamento",
-      "worked": "Ha lavorato",
-      "washedDishes": "Ha lavato i piatti",
-      "storedDishes": "Ha riordinato i piatti",
-      "checkedTrash": "Ha controllato la spazzatura",
-      "brushedFloor": "Ha spazzato il pavimento",
-      "madeLove": "Ha fatto l'amore",
-      "wentOut": "È uscito"
-    },
-    "weekly": {
-      "createdContent": "Ha creato contenuti per i social media",
-      "flirted": "Ha flirtato con qualcuno",
-      "talkedToFriend": "Ha parlato con un amico",
-      "navigatedSocial": "Ha navigato sui social media",
-      "talkedToFamily": "Ha parlato con la famiglia",
-      "madeMusic": "Ha fatto musica",
-      "meditated": "Ha meditato",
-      "spokeToHoly": "Ha parlato al sacro",
-      "readMysticBook": "Ha letto un libro mistico",
-      "sharedLearnings": "Ha condiviso apprendimenti",
-      "studiedSubject": "Ha studiato un argomento",
-      "watchedEducational": "Ha guardato contenuti educativi",
-      "playedGame": "Ha giocato a un gioco",
-      "watchedSeries": "Ha guardato serie o film",
-      "readNews": "Ha letto le notizie",
-      "wroteOpinion": "Ha scritto un'opinione",
-      "cleanedBed": "Ha pulito il letto",
-      "ensuredBedroomOrdered": "Ha assicurato che la camera fosse ordinata",
-      "shavedBody": "Si è rasato il corpo",
-      "shavedFace": "Si è rasato la faccia",
-      "cutNails": "Si è tagliato le unghie",
-      "brushedSurfaces": "Ha spazzolato le superfici",
-      "moppedFloors": "Ha lavato i pavimenti",
-      "washedClothes": "Ha lavato i vestiti",
-      "cleanedBathroom": "Ha pulito il bagno",
-      "cleanedKitchen": "Ha pulito la cucina",
-      "workedOnProject": "Ha lavorato a un progetto personale",
-      "helpedSomeone": "Ha aiutato qualcuno",
-      "boughtGroceries": "Ha comprato la spesa",
-      "navigatedSocialMedia": "Ha navigato sui social media",
-      "orderedBedroom": "Ha ordinato la camera",
-      "personalProject": "Ha lavorato a un progetto personale"
-    }
+    "drankWater": "Ha bevuto acqua",
+    "showered": "Si è fatto la doccia",
+    "tookMeds": "Ha preso i medicinali",
+    "loggedMood": "Ha registrato l'umore",
+    "ateBreakfast": "Ha fatto colazione",
+    "ateLunch": "Ha pranzato",
+    "ateDinner": "Ha cenato",
+    "brushedTeeth": "Si è lavato i denti",
+    "workedOut": "Ha fatto allenamento",
+    "worked": "Ha lavorato",
+    "washedDishes": "Ha lavato i piatti",
+    "storedDishes": "Ha riordinato i piatti",
+    "checkedTrash": "Ha controllato la spazzatura",
+    "brushedFloor": "Ha spazzato il pavimento",
+    "madeLove": "Ha fatto l'amore",
+    "wentOut": "È uscito",
+    "createdContent": "Ha creato contenuti per i social media",
+    "flirted": "Ha flirtato con qualcuno",
+    "talkedToFriend": "Ha parlato con un amico",
+    "navigatedSocial": "Ha navigato sui social media",
+    "talkedToFamily": "Ha parlato con la famiglia",
+    "madeMusic": "Ha fatto musica",
+    "meditated": "Ha meditato",
+    "spokeToHoly": "Ha parlato al sacro",
+    "readMysticBook": "Ha letto un libro mistico",
+    "sharedLearnings": "Ha condiviso apprendimenti",
+    "studiedSubject": "Ha studiato un argomento",
+    "watchedEducational": "Ha guardato contenuti educativi",
+    "playedGame": "Ha giocato a un gioco",
+    "watchedSeries": "Ha guardato serie o film",
+    "readNews": "Ha letto le notizie",
+    "wroteOpinion": "Ha scritto un'opinione",
+    "cleanedBed": "Ha pulito il letto",
+    "ensuredBedroomOrdered": "Ha assicurato che la camera fosse ordinata",
+    "shavedBody": "Si è rasato il corpo",
+    "shavedFace": "Si è rasato la faccia",
+    "cutNails": "Si è tagliato le unghie",
+    "brushedSurfaces": "Ha spazzolato le superfici",
+    "moppedFloors": "Ha lavato i pavimenti",
+    "washedClothes": "Ha lavato i vestiti",
+    "cleanedBathroom": "Ha pulito il bagno",
+    "cleanedKitchen": "Ha pulito la cucina",
+    "workedOnProject": "Ha lavorato a un progetto personale",
+    "helpedSomeone": "Ha aiutato qualcuno",
+    "boughtGroceries": "Ha comprato la spesa",
+    "navigatedSocialMedia": "Ha navigato sui social media",
+    "orderedBedroom": "Ha ordinato la camera",
+    "personalProject": "Ha lavorato a un progetto personale"
   },
   "footer": {
     "copyright": "© {year} DreamPip. All rights reserved.",
@@ -252,7 +272,10 @@
   "publicProfile": {
     "ctaTitle": "Inizia il tuo percorso con DreamPip",
     "ctaSubtitle": "Traccia umore, produttività e guadagni con DreamPip",
-    "getStarted": "Inizia"
+    "getStarted": "Inizia",
+    "notes": "Note",
+    "loadingNotes": "Caricamento note...",
+    "profileNotPublic": "Questo utente non ha reso pubblico il suo profilo."
   },
   "publicCharts": {
     "noData": "Nessun dato pubblico disponibile per i grafici.",
@@ -343,5 +366,119 @@
     "notFound": "La risorsa richiesta non è stata trovata.",
     "timeout": "La richiesta è scaduta. Riprova.",
     "unknownError": "Si è verificato un errore imprevisto. Riprova."
+  },
+  "forms": {
+    "commonOptions": {
+      "area": {
+        "self": "Personale",
+        "home": "Casa",
+        "social": "Sociale",
+        "work": "Lavoro"
+      },
+      "category": {
+        "custom": "Personalizzato",
+        "body": "Corpo",
+        "mind": "Mente",
+        "spirit": "Spirito",
+        "social": "Sociale",
+        "work": "Lavoro",
+        "home": "Casa",
+        "fun": "Divertimento",
+        "growth": "Crescita",
+        "community": "Comunità",
+        "affection": "Affetto",
+        "clean": "Pulizie",
+        "maintenance": "Manutenzione",
+        "spirituality": "Spiritualità",
+        "event": "Evento"
+      },
+      "entities": {
+        "list": "Elenco",
+        "template": "Modello"
+      }
+    },
+    "addTaskForm": {
+      "title": "Aggiungi Attività Personalizzata",
+      "taskNameLabel": "Nome Attività",
+      "taskNamePlaceholder": "Inserisci nome attività...",
+      "areaLabel": "Area",
+      "categoryLabel": "Categoria",
+      "timesLabel": "# di volte",
+      "saveToTemplate": "Salva attività nel modello",
+      "addTask": "Aggiungi Attività",
+      "cancel": "Annulla"
+    },
+    "addListForm": {
+      "titleCreate": "Crea Nuovo Elenco",
+      "titleEdit": "Modifica Elenco",
+      "nameLabel": "Nome",
+      "templateOrListLabel": "Modello o Elenco",
+      "chooseTemplatePlaceholder": "Scegli un modello",
+      "budgetLabel": "Budget",
+      "dueDateLabel": "Data di scadenza",
+      "pickDatePlaceholder": "Scegli una data",
+      "cadenceLabel": "Cadenza",
+      "cadence": {
+        "oneOff": "Una tantum",
+        "daily": "Giornaliero",
+        "weekly": "Settimanale",
+        "monthly": "Mensile",
+        "quarterly": "Trimestrale",
+        "semester": "Semestrale",
+        "yearly": "Annuale"
+      },
+      "collaboratorsLabel": "Collaboratori",
+      "searchUsernames": "Cerca nomi utente...",
+      "typeAUsername": "Digita un nome utente...",
+      "noResults": "Nessun risultato.",
+      "selectedCount": "{count} selezionati",
+      "roleLabel": "Ruolo",
+      "role": {
+        "custom": "Personalizzato",
+        "default": "Predefinito"
+      },
+      "addTaskButton": "Aggiungi attività",
+      "table": {
+        "name": "Nome",
+        "times": "Volte",
+        "area": "Area",
+        "categories": "Categorie"
+      },
+      "create": "Crea",
+      "save": "Salva",
+      "cancel": "Annulla",
+      "deleteListConfirm": "Eliminare questo elenco? Questa azione non può essere annullata.",
+      "deleteList": "Elimina elenco"
+    },
+    "addTemplateForm": {
+      "title": "Crea Nuovo Modello",
+      "nameLabel": "Nome",
+      "createFromLabel": "Crea da",
+      "chooseListToClonePlaceholder": "Scegli un elenco da clonare (facoltativo)",
+      "visibilityLabel": "Visibilità",
+      "visibility": {
+        "private": "Privato",
+        "public": "Pubblico",
+        "friends": "Amici",
+        "closeFriends": "Amici stretti"
+      },
+      "addTaskButton": "Aggiungi attività",
+      "task": {
+        "nameLabel": "Nome",
+        "areaLabel": "Area",
+        "categoryLabel": "Categoria",
+        "timesLabel": "# di volte",
+        "add": "Aggiungi",
+        "cancel": "Annulla"
+      },
+      "table": {
+        "name": "Nome",
+        "times": "Volte",
+        "area": "Area",
+        "categories": "Categorie"
+      },
+      "create": "Crea",
+      "cancel": "Annulla"
+    }
   }
 }

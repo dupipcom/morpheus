@@ -100,11 +100,14 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
   }
 
   const fullName = [profile.firstName, profile.lastName].filter(Boolean).join(' ')
-  const hasAnyPublicData = profile.firstName || profile.lastName || profile.userName || profile.bio || profile.profilePicture
+  const hasAnyPublicData = profile.firstName || profile.lastName || profile.bio || profile.profilePicture || profile.publicCharts
   const isOwnProfile = currentUserUsername === userName
   const canAddFriend = !isOwnProfile && profile.userName
   const canEditProfile = isOwnProfile
   const isLoggedIn = !!userId
+
+  // Display name logic: prefer fullName, then userName (even if not visible), then fallback
+  const displayName = fullName || profile.userName || 'Anonymous User'
 
   return (
     <I18nProvider locale={locale as any}>
@@ -124,7 +127,7 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
                 )}
                 <div className="flex-1 text-center sm:text-left">
                   <h1 className="text-2xl font-bold">
-                    {fullName || profile.userName || 'Anonymous User'}
+                    {displayName}
                   </h1>
                   {profile.userName && (
                     <p className="text-muted-foreground">@{profile.userName}</p>
@@ -159,19 +162,21 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
           </Card>
         )}
 
-        {/* Public Notes - Client-side rendered for dynamic friend status */}
-        <PublicNotesViewer userName={userName} />
-
         {/* No public data message */}
         {!hasAnyPublicData && !profile.publicCharts && (
           <Card>
             <CardContent className="pt-6">
               <div className="text-center text-muted-foreground">
-                <p>This user hasn't made their profile public yet.</p>
+                <p>{(translations as any)?.publicProfile?.profileNotPublic || "This user hasn't made their profile public yet."}</p>
               </div>
             </CardContent>
           </Card>
         )}
+
+        <div className="mt-8 w-full">
+        {/* Public Notes - Client-side rendered for dynamic friend status */}
+          <PublicNotesViewer userName={userName} />
+        </div>
 
         {!isLoggedIn && (
           <Card className="mt-6">

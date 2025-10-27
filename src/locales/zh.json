@@ -30,7 +30,17 @@
     "social": "社交",
     "stash": "库存",
     "equity": "股本",
-    "totalEarnings": "总收入"
+    "totalEarnings": "总收入",
+    "daily": "每日",
+    "weekly": "每周",
+    "balance": "余额",
+    "dailyEarnings": "每日收入",
+    "weeklyEarnings": "每周收入",
+    "newTask": "新任务",
+    "newList": "新列表",
+    "newTemplate": "新模板",
+    "budget": "预算",
+    "due": "到期"
   },
   "navigation": {
     "home": "首页",
@@ -65,7 +75,20 @@
     "trust": "信任",
     "editDay": "编辑日期",
     "closeDay": "关闭日期",
-    "earnings": "收入"
+    "earnings": "收入",
+    "publish": {
+      "title": "发布说明",
+      "placeholder": "在这里写下您的留言...",
+      "selectVisibility": "选择可见性",
+      "visibility": {
+        "PRIVATE": "私人",
+        "FRIENDS": "朋友",
+        "CLOSE_FRIENDS": "亲密朋友",
+        "PUBLIC": "公众",
+        "AI_ENABLED": "支持人工智能"
+      },
+      "action": "出版说明"
+    }
   },
   "week": {
     "weekNumber": "第{number}周",
@@ -75,7 +98,8 @@
   "tasks": {
     "editing": "编辑中：{timeframe}",
     "weekNumber": "第{number}周",
-    "yourEarnings": "您的收入{timeframe}，到目前为止：Ð{amount}"
+    "yourEarnings": "您的收入{timeframe}，到目前为止：Ð{amount}",
+    "selectList": "选择列表"
   },
   "settings": {
     "title": "设置",
@@ -135,58 +159,54 @@
     "impact": "影响"
   },
   "actions": {
-    "daily": {
-      "drankWater": "喝了水",
-      "showered": "洗了澡",
-      "tookMeds": "吃了药",
-      "loggedMood": "记录了心情",
-      "ateBreakfast": "吃了早餐",
-      "ateLunch": "吃了午餐",
-      "ateDinner": "吃了晚餐",
-      "brushedTeeth": "刷了牙",
-      "workedOut": "锻炼了",
-      "worked": "工作了",
-      "washedDishes": "洗了碗",
-      "storedDishes": "收拾了餐具",
-      "checkedTrash": "检查了垃圾",
-      "brushedFloor": "扫了地",
-      "madeLove": "做了爱",
-      "wentOut": "出门了"
-    },
-    "weekly": {
-      "createdContent": "为社交媒体创建了内容",
-      "flirted": "与某人调情",
-      "talkedToFriend": "与朋友聊天",
-      "navigatedSocial": "浏览了社交媒体",
-      "talkedToFamily": "与家人聊天",
-      "madeMusic": "制作了音乐",
-      "meditated": "冥想",
-      "spokeToHoly": "与神圣对话",
-      "readMysticBook": "读了神秘书籍",
-      "sharedLearnings": "分享了学习",
-      "studiedSubject": "学习了科目",
-      "watchedEducational": "观看了教育内容",
-      "playedGame": "玩了游戏",
-      "watchedSeries": "观看了剧集或电影",
-      "readNews": "读了新闻",
-      "wroteOpinion": "写了意见",
-      "cleanedBed": "清洁了床",
-      "ensuredBedroomOrdered": "确保卧室整洁",
-      "shavedBody": "剃了体毛",
-      "shavedFace": "剃了脸",
-      "cutNails": "剪了指甲",
-      "brushedSurfaces": "刷了表面",
-      "moppedFloors": "拖了地板",
-      "washedClothes": "洗了衣服",
-      "cleanedBathroom": "清洁了浴室",
-      "cleanedKitchen": "清洁了厨房",
-      "workedOnProject": "做了个人项目",
-      "helpedSomeone": "帮助了某人",
-      "boughtGroceries": "买了杂货",
-      "navigatedSocialMedia": "浏览了社交媒体",
-      "orderedBedroom": "整理了卧室",
-      "personalProject": "做了个人项目"
-    }
+    "drankWater": "喝了水",
+    "showered": "洗了澡",
+    "tookMeds": "吃了药",
+    "loggedMood": "记录了心情",
+    "ateBreakfast": "吃了早餐",
+    "ateLunch": "吃了午餐",
+    "ateDinner": "吃了晚餐",
+    "brushedTeeth": "刷了牙",
+    "workedOut": "锻炼了",
+    "worked": "工作了",
+    "washedDishes": "洗了碗",
+    "storedDishes": "收拾了餐具",
+    "checkedTrash": "检查了垃圾",
+    "brushedFloor": "扫了地",
+    "madeLove": "做了爱",
+    "wentOut": "出门了",
+    "createdContent": "为社交媒体创建了内容",
+    "flirted": "与某人调情",
+    "talkedToFriend": "与朋友聊天",
+    "navigatedSocial": "浏览了社交媒体",
+    "talkedToFamily": "与家人聊天",
+    "madeMusic": "制作了音乐",
+    "meditated": "冥想",
+    "spokeToHoly": "与神圣对话",
+    "readMysticBook": "读了神秘书籍",
+    "sharedLearnings": "分享了学习",
+    "studiedSubject": "学习了科目",
+    "watchedEducational": "观看了教育内容",
+    "playedGame": "玩了游戏",
+    "watchedSeries": "观看了剧集或电影",
+    "readNews": "读了新闻",
+    "wroteOpinion": "写了意见",
+    "cleanedBed": "清洁了床",
+    "ensuredBedroomOrdered": "确保卧室整洁",
+    "shavedBody": "剃了体毛",
+    "shavedFace": "剃了脸",
+    "cutNails": "剪了指甲",
+    "brushedSurfaces": "刷了表面",
+    "moppedFloors": "拖了地板",
+    "washedClothes": "洗了衣服",
+    "cleanedBathroom": "清洁了浴室",
+    "cleanedKitchen": "清洁了厨房",
+    "workedOnProject": "做了个人项目",
+    "helpedSomeone": "帮助了某人",
+    "boughtGroceries": "买了杂货",
+    "navigatedSocialMedia": "浏览了社交媒体",
+    "orderedBedroom": "整理了卧室",
+    "personalProject": "做了个人项目"
   },
   "footer": {
     "copyright": "© {year} Purizu and Remotelys dba DreamPip",
@@ -252,7 +272,10 @@
   "publicProfile": {
     "ctaTitle": "开始您的 DreamPip 之旅",
     "ctaSubtitle": "使用 DreamPip 跟踪您的心情、生产力和收入",
-    "getStarted": "开始"
+    "getStarted": "开始",
+    "notes": "笔记",
+    "loadingNotes": "正在加载笔记...",
+    "profileNotPublic": "此用户尚未将他们的个人资料公开。"
   },
   "publicCharts": {
     "noData": "没有可用的公共图表数据。",
@@ -343,5 +366,119 @@
     "notFound": "未找到请求的资源。",
     "timeout": "请求超时。请重试。",
     "unknownError": "发生意外错误。请重试。"
+  },
+  "forms": {
+    "commonOptions": {
+      "area": {
+        "self": "自我",
+        "home": "首页",
+        "social": "社会",
+        "work": "工作"
+      },
+      "category": {
+        "custom": "定制",
+        "body": "身体",
+        "mind": "思想",
+        "spirit": "精神",
+        "social": "社会",
+        "work": "工作",
+        "home": "首页",
+        "fun": "乐趣",
+        "growth": "增长",
+        "community": "社区",
+        "affection": "情感",
+        "clean": "清洁",
+        "maintenance": "维护",
+        "spirituality": "灵性",
+        "event": "活动"
+      },
+      "entities": {
+        "list": "列表",
+        "template": "模板"
+      }
+    },
+    "addTaskForm": {
+      "title": "添加自定义任务",
+      "taskNameLabel": "任务名称",
+      "taskNamePlaceholder": "输入任务名称...",
+      "areaLabel": "地区",
+      "categoryLabel": "类别",
+      "timesLabel": "# 次数",
+      "saveToTemplate": "将任务保存到模板",
+      "addTask": "添加任务",
+      "cancel": "取消"
+    },
+    "addListForm": {
+      "titleCreate": "创建新列表",
+      "titleEdit": "编辑列表",
+      "nameLabel": "名称",
+      "templateOrListLabel": "模板或列表",
+      "chooseTemplatePlaceholder": "选择模板",
+      "budgetLabel": "预算",
+      "dueDateLabel": "到期日",
+      "pickDatePlaceholder": "选择日期",
+      "cadenceLabel": "节奏",
+      "cadence": {
+        "oneOff": "一次性",
+        "daily": "每日",
+        "weekly": "每周",
+        "monthly": "每月",
+        "quarterly": "季刊",
+        "semester": "学期",
+        "yearly": "每年"
+      },
+      "collaboratorsLabel": "合作者",
+      "searchUsernames": "搜索用户名...",
+      "typeAUsername": "输入用户名...",
+      "noResults": "无结果。",
+      "selectedCount": "{已选择",
+      "roleLabel": "角色",
+      "role": {
+        "custom": "定制",
+        "default": "默认值"
+      },
+      "addTaskButton": "添加任务",
+      "table": {
+        "name": "名称",
+        "times": "时代",
+        "area": "地区",
+        "categories": "类别"
+      },
+      "create": "创建",
+      "save": "节省",
+      "cancel": "取消",
+      "deleteListConfirm": "删除此列表？无法撤销。",
+      "deleteList": "删除列表"
+    },
+    "addTemplateForm": {
+      "title": "创建新模板",
+      "nameLabel": "名称",
+      "createFromLabel": "从",
+      "chooseListToClonePlaceholder": "选择要克隆的列表（可选）",
+      "visibilityLabel": "可见性",
+      "visibility": {
+        "private": "私人",
+        "public": "公众",
+        "friends": "朋友",
+        "closeFriends": "亲密朋友"
+      },
+      "addTaskButton": "添加任务",
+      "task": {
+        "nameLabel": "名称",
+        "areaLabel": "地区",
+        "categoryLabel": "类别",
+        "timesLabel": "# 次数",
+        "add": "添加",
+        "cancel": "取消"
+      },
+      "table": {
+        "name": "名称",
+        "times": "时代",
+        "area": "地区",
+        "categories": "类别"
+      },
+      "create": "创建",
+      "cancel": "取消"
+    }
   }
 }

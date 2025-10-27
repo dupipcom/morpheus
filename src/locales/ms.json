@@ -28,7 +28,19 @@
     "signOut": "Log keluar",
     "stash": "Stok",
     "equity": "Ekuiti",
-    "totalEarnings": "Jumlah Pendapatan"
+    "totalEarnings": "Jumlah Pendapatan",
+    "profile": "Profile",
+    "social": "Social",
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "balance": "Balance",
+    "dailyEarnings": "Daily Earnings",
+    "weeklyEarnings": "Weekly Earnings",
+    "newTask": "New task",
+    "newList": "New list",
+    "newTemplate": "New template",
+    "budget": "Budget",
+    "due": "Due"
   },
   "navigation": {
     "dashboard": "Papan Pemuka",
@@ -67,7 +79,20 @@
     "trust": "Kepercayaan",
     "editDay": "Sunting hari",
     "closeDay": "Tutup hari",
-    "earnings": "Pendapatan"
+    "earnings": "Pendapatan",
+    "publish": {
+      "title": "Publish a Note",
+      "placeholder": "Write your note here...",
+      "selectVisibility": "Select visibility",
+      "visibility": {
+        "PRIVATE": "Private",
+        "FRIENDS": "Friends",
+        "CLOSE_FRIENDS": "Close Friends",
+        "PUBLIC": "Public",
+        "AI_ENABLED": "AI Enabled"
+      },
+      "action": "Publish Note"
+    }
   },
   "week": {
     "weekNumber": "Minggu {number}",
@@ -77,65 +102,58 @@
   "tasks": {
     "editing": "Menyunting: {timeframe}",
     "weekNumber": "Minggu {number}",
-    "yourEarnings": "Pendapatan anda"
+    "yourEarnings": "Pendapatan anda",
+    "selectList": "Select list"
   },
   "actions": {
-    "add": "Tambah",
-    "remove": "Buang",
-    "update": "Kemas kini",
-    "refresh": "Muat semula",
-    "daily": {
-      "drankWater": "Minum air",
-      "showered": "Mandi",
-      "tookMeds": "Ambil ubat",
-      "loggedMood": "Log mood",
-      "ateBreakfast": "Makan sarapan",
-      "ateLunch": "Makan tengah hari",
-      "ateDinner": "Makan malam",
-      "brushedTeeth": "Gosok gigi",
-      "workedOut": "Bersenam",
-      "worked": "Bekerja",
-      "washedDishes": "Basuh pinggan",
-      "storedDishes": "Simpan pinggan",
-      "checkedTrash": "Periksa sampah",
-      "brushedFloor": "Sapu lantai",
-      "madeLove": "Buat cinta",
-      "wentOut": "Keluar"
-    },
-    "weekly": {
-      "createdContent": "Mencipta kandungan untuk media sosial",
-      "flirted": "Bercinta dengan seseorang",
-      "talkedToFriend": "Bercakap dengan rakan",
-      "navigatedSocial": "Melayari media sosial",
-      "talkedToFamily": "Bercakap dengan keluarga",
-      "madeMusic": "Membuat muzik",
-      "meditated": "Bertafakur",
-      "spokeToHoly": "Bercakap dengan yang suci",
-      "readMysticBook": "Membaca buku mistik",
-      "sharedLearnings": "Berkongsi pembelajaran",
-      "studiedSubject": "Belajar subjek",
-      "watchedEducational": "Menonton kandungan pendidikan",
-      "playedGame": "Bermain permainan",
-      "watchedSeries": "Menonton siri atau filem",
-      "readNews": "Membaca berita",
-      "wroteOpinion": "Menulis pendapat",
-      "cleanedBed": "Membersihkan katil",
-      "ensuredBedroomOrdered": "Memastikan bilik tidur teratur",
-      "shavedBody": "Mencukur badan",
-      "shavedFace": "Mencukur muka",
-      "cutNails": "Memotong kuku",
-      "brushedSurfaces": "Menyikat permukaan",
-      "moppedFloors": "Mengelap lantai",
-      "washedClothes": "Membasuh pakaian",
-      "cleanedBathroom": "Membersihkan bilik mandi",
-      "cleanedKitchen": "Membersihkan dapur",
-      "workedOnProject": "Bekerja pada projek peribadi",
-      "helpedSomeone": "Membantu seseorang",
-      "boughtGroceries": "Membeli barangan runcit",
-      "navigatedSocialMedia": "Melayari media sosial",
-      "orderedBedroom": "Mengatur bilik tidur",
-      "personalProject": "Bekerja pada projek peribadi"
-    }
+    "drankWater": "Minum air",
+    "showered": "Mandi",
+    "tookMeds": "Ambil ubat",
+    "loggedMood": "Log mood",
+    "ateBreakfast": "Makan sarapan",
+    "ateLunch": "Makan tengah hari",
+    "ateDinner": "Makan malam",
+    "brushedTeeth": "Gosok gigi",
+    "workedOut": "Bersenam",
+    "worked": "Bekerja",
+    "washedDishes": "Basuh pinggan",
+    "storedDishes": "Simpan pinggan",
+    "checkedTrash": "Periksa sampah",
+    "brushedFloor": "Sapu lantai",
+    "madeLove": "Buat cinta",
+    "wentOut": "Keluar",
+    "createdContent": "Mencipta kandungan untuk media sosial",
+    "flirted": "Bercinta dengan seseorang",
+    "talkedToFriend": "Bercakap dengan rakan",
+    "navigatedSocial": "Melayari media sosial",
+    "talkedToFamily": "Bercakap dengan keluarga",
+    "madeMusic": "Membuat muzik",
+    "meditated": "Bertafakur",
+    "spokeToHoly": "Bercakap dengan yang suci",
+    "readMysticBook": "Membaca buku mistik",
+    "sharedLearnings": "Berkongsi pembelajaran",
+    "studiedSubject": "Belajar subjek",
+    "watchedEducational": "Menonton kandungan pendidikan",
+    "playedGame": "Bermain permainan",
+    "watchedSeries": "Menonton siri atau filem",
+    "readNews": "Membaca berita",
+    "wroteOpinion": "Menulis pendapat",
+    "cleanedBed": "Membersihkan katil",
+    "ensuredBedroomOrdered": "Memastikan bilik tidur teratur",
+    "shavedBody": "Mencukur badan",
+    "shavedFace": "Mencukur muka",
+    "cutNails": "Memotong kuku",
+    "brushedSurfaces": "Menyikat permukaan",
+    "moppedFloors": "Mengelap lantai",
+    "washedClothes": "Membasuh pakaian",
+    "cleanedBathroom": "Membersihkan bilik mandi",
+    "cleanedKitchen": "Membersihkan dapur",
+    "workedOnProject": "Bekerja pada projek peribadi",
+    "helpedSomeone": "Membantu seseorang",
+    "boughtGroceries": "Membeli barangan runcit",
+    "navigatedSocialMedia": "Melayari media sosial",
+    "orderedBedroom": "Mengatur bilik tidur",
+    "personalProject": "Bekerja pada projek peribadi"
   },
   "footer": {
     "copyright": "© {year} DreamPip. Hak cipta terpelihara.",
@@ -242,9 +260,12 @@
     "failedToSend": "Gagal menghantar mesej. Sila cuba lagi."
   },
   "publicProfile": {
-    "ctaTitle": "Start Your Own DreamPip Journey",
-    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
-    "getStarted": "Get Started"
+    "ctaTitle": "Mulakan Perjalanan DreamPip Anda Sendiri",
+    "ctaSubtitle": "Jejaki mood, produktiviti dan pendapatan anda dengan DreamPip",
+    "getStarted": "Mulakan",
+    "notes": "Nota",
+    "loadingNotes": "Memuatkan nota...",
+    "profileNotPublic": "Pengguna ini belum menjadikan profil mereka awam."
   },
   "publicCharts": {
     "noData": "No public charts data available.",
@@ -335,5 +356,133 @@
     "notFound": "Sumber yang diminta tidak dijumpai.",
     "timeout": "Permintaan tamat masa. Sila cuba lagi.",
     "unknownError": "Ralat yang tidak dijangka berlaku. Sila cuba lagi."
+  },
+  "forms": {
+    "commonOptions": {
+      "area": {
+        "self": "Diri",
+        "home": "Rumah",
+        "social": "Sosial",
+        "work": "Kerja"
+      },
+      "category": {
+        "custom": "Tersuai",
+        "body": "Badan",
+        "mind": "Minda",
+        "spirit": "Rohani",
+        "social": "Sosial",
+        "work": "Kerja",
+        "home": "Rumah",
+        "fun": "Keseronokan",
+        "growth": "Pertumbuhan",
+        "community": "Komuniti",
+        "affection": "Kasih sayang",
+        "clean": "Bersih",
+        "maintenance": "Penyelenggaraan",
+        "spirituality": "Kerohanian",
+        "event": "Acara"
+      },
+      "entities": {
+        "list": "Senarai",
+        "template": "Templat"
+      }
+    },
+    "addTaskForm": {
+      "title": "Tambah Tugas Tersuai",
+      "taskNameLabel": "Nama Tugas",
+      "taskNamePlaceholder": "Masukkan nama tugas...",
+      "areaLabel": "Kawasan",
+      "categoryLabel": "Kategori",
+      "timesLabel": "# kali",
+      "saveToTemplate": "Simpan tugas ke templat",
+      "addTask": "Tambah Tugas",
+      "cancel": "Batal"
+    },
+    "addListForm": {
+      "titleCreate": "Cipta Senarai Baru",
+      "titleEdit": "Sunting Senarai",
+      "nameLabel": "Nama",
+      "templateOrListLabel": "Templat atau Senarai",
+      "chooseTemplatePlaceholder": "Pilih templat",
+      "budgetLabel": "Bajet",
+      "dueDateLabel": "Tarikh akhir",
+      "pickDatePlaceholder": "Pilih tarikh",
+      "cadenceLabel": "Kekerapan",
+      "cadence": {
+        "oneOff": "Sekali",
+        "daily": "Harian",
+        "weekly": "Mingguan",
+        "monthly": "Bulanan",
+        "quarterly": "Suku tahunan",
+        "semester": "Semester",
+        "yearly": "Tahunan"
+      },
+      "collaboratorsLabel": "Rakan kerjasama",
+      "searchUsernames": "Cari nama pengguna...",
+      "typeAUsername": "Taip nama pengguna...",
+      "noResults": "Tiada hasil.",
+      "selectedCount": "{count} dipilih",
+      "roleLabel": "Peranan",
+      "role": {
+        "custom": "Tersuai",
+        "default": "Lalai"
+      },
+      "addTaskButton": "Tambah tugas",
+      "table": {
+        "name": "Nama",
+        "times": "Kali",
+        "area": "Kawasan",
+        "categories": "Kategori"
+      },
+      "create": "Cipta",
+      "save": "Simpan",
+      "cancel": "Batal",
+      "deleteListConfirm": "Padam senarai ini? Tindakan ini tidak boleh dibatalkan.",
+      "deleteList": "Padam senarai"
+    },
+    "addTemplateForm": {
+      "title": "Cipta Templat Baru",
+      "nameLabel": "Nama",
+      "createFromLabel": "Cipta daripada",
+      "chooseListToClonePlaceholder": "Pilih senarai untuk diklon (pilihan)",
+      "visibilityLabel": "Keterlihatan",
+      "visibility": {
+        "private": "Peribadi",
+        "public": "Awam",
+        "friends": "Rakan",
+        "closeFriends": "Rakan rapat"
+      },
+      "addTaskButton": "Tambah tugas",
+      "task": {
+        "nameLabel": "Nama",
+        "areaLabel": "Kawasan",
+        "categoryLabel": "Kategori",
+        "timesLabel": "# kali",
+        "add": "Tambah",
+        "cancel": "Batal"
+      },
+      "table": {
+        "name": "Nama",
+        "times": "Kali",
+        "area": "Kawasan",
+        "categories": "Kategori"
+      },
+      "create": "Cipta",
+      "cancel": "Batal"
+    }
+  },
+  "charts": {
+    "dimensions": "Dimensi",
+    "moodAverage": "Purata Mood",
+    "gratitude": "Kesyukuran",
+    "optimism": "Optimisme",
+    "restedness": "Kerehatan",
+    "tolerance": "Toleransi",
+    "selfEsteem": "Harga Diri",
+    "trust": "Kepercayaan",
+    "progress": "Kemajuan",
+    "moodAverageScale": "Skala Purata Mood",
+    "balance": "Baki",
+    "earningsScale": "Skala Pendapatan"
   }
 }

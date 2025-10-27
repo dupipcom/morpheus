@@ -7,7 +7,7 @@
     "day": "Ọjọ́",
     "week": "Ọ̀sẹ̀",
     "mood": "Ìwà",
-    "dashboard": "Dashboard",
+    "dashboard": "Bóòdù",
     "settings": "Ètò",
     "login": "Wọlé",
     "signUp": "Forúkọ̀sílẹ̀",
@@ -28,7 +28,19 @@
     "signOut": "Jáde",
     "stash": "Ipo",
     "equity": "Owo",
-    "totalEarnings": "Owo gbogbo"
+    "totalEarnings": "Owo gbogbo",
+    "profile": "Profaili",
+    "social": "Àwùjọ",
+    "daily": "Lójoojúmọ́",
+    "weekly": "Lóṣẹ̀",
+    "balance": "Ìdẹ̀rùn",
+    "dailyEarnings": "Owo lójoojúmọ́",
+    "weeklyEarnings": "Owo lóṣẹ̀",
+    "newTask": "Iṣẹ́ tuntun",
+    "newList": "Àkójọ tuntun",
+    "newTemplate": "Àwòwé tuntun",
+    "budget": "Ìgbésẹ̀",
+    "due": "Tí ó yẹ"
   },
   "navigation": {
     "home": "Ilé",
@@ -63,7 +75,20 @@
     "trust": "Ìgbẹ́kẹ̀lé",
     "editDay": "Ṣàtúnṣe ọjọ́",
     "closeDay": "Pí ọjọ́",
-    "earnings": "Owó tí a gbà"
+    "earnings": "Owó tí a gbà",
+    "publish": {
+      "title": "Tẹ àkọsílẹ̀ jáde",
+      "placeholder": "Kọ àkọsílẹ̀ rẹ níbí...",
+      "selectVisibility": "Yàn ìhàn",
+      "visibility": {
+        "PRIVATE": "Aládáni",
+        "FRIENDS": "Àwọn ọ̀rẹ́",
+        "CLOSE_FRIENDS": "Àwọn ọ̀rẹ́ tímọ́tímọ́",
+        "PUBLIC": "Gbogbo ènìyàn",
+        "AI_ENABLED": "AI tí ó ń ṣiṣẹ́"
+      },
+      "action": "Tẹ àkọsílẹ̀ jáde"
+    }
   },
   "week": {
     "weekNumber": "Ọ̀sẹ̀ {number}",
@@ -73,7 +98,8 @@
   "tasks": {
     "editing": "Ó ń ṣàtúnṣe: {timeframe}",
     "weekNumber": "Ọ̀sẹ̀ {number}",
-    "yourEarnings": "Owó tí o gbà {timeframe}, títí di báyìí: Ð{amount}"
+    "yourEarnings": "Owó tí o gbà {timeframe}, títí di báyìí: Ð{amount}",
+    "selectList": "Yàn àkójọ"
   },
   "settings": {
     "title": "Ètò",
@@ -91,58 +117,57 @@
     "monthsFixedIncome": "Owó Ìgbàkẹgbẹ̀ Oṣù Tí A Fipamọ́",
     "monthsVariableIncome": "Owó Ìgbàkẹgbẹ̀ Oṣù Tí Ó Yípadà",
     "fixedNeedCosts": "Ìnáwó Ìbẹ̀rù Tí A Fipamọ́",
-    "expectedNeedUtilities": "Ìwọ̀n Ìnáwó Ìbẹ̀rù Tí A Rètí"
+    "expectedNeedUtilities": "Ìwọ̀n Ìnáwó Ìbẹ̀rù Tí A Rètí",
+    "editAction": "Ṣàtúnṣe ìṣẹ́",
+    "cancel": "Fagilé",
+    "save": "Fipamọ́"
   },
   "actions": {
-    "daily": {
-      "drankWater": "Mu omi",
-      "showered": "Wẹ̀",
-      "tookMeds": "Mu oògùn",
-      "loggedMood": "Kọ ìwà",
-      "ateBreakfast": "Jẹ́ ìrẹ́",
-      "ateLunch": "Jẹ́ oúnjẹ òsán",
-      "ateDinner": "Jẹ́ oúnjẹ alẹ́",
-      "brushedTeeth": "Fọ eeyín",
-      "workedOut": "Ṣe ìdárayá",
-      "worked": "Ṣiṣẹ́",
-      "washedDishes": "Fọ́ ìdẹ̀",
-      "storedDishes": "Fipamọ́ ìdẹ̀",
-      "checkedTrash": "Ṣàyẹ̀wò ìdọ̀tí",
-      "brushedFloor": "Fọ ilẹ̀",
-      "madeLove": "Ṣe ìfẹ́",
-      "wentOut": "Jáde"
-    },
-    "weekly": {
-      "createdContent": "Dá àkọsílẹ̀ fún àwọn ìkànnì awùjọ",
-      "flirted": "Ṣe ìfẹ́ pẹ̀lú ẹnì kan",
-      "talkedToFriend": "Sọ̀rọ̀ pẹ̀lú ọ̀rẹ́",
-      "navigatedSocial": "Ṣàwárí àwọn ìkànnì awùjọ",
-      "talkedToFamily": "Sọ̀rọ̀ pẹ̀lú ìdílé",
-      "madeMusic": "Ṣe orin",
-      "meditated": "Ṣe ìtura",
-      "spokeToHoly": "Sọ̀rọ̀ pẹ̀lú Ọlọ́run",
-      "readMysticBook": "Kà ìwé ìmọ̀ òrìṣà",
-      "sharedLearnings": "Pín ìmọ̀",
-      "studiedSubject": "Kẹ́kọ̀ọ́ ìmọ̀ kan",
-      "watchedEducational": "Wo àkọsílẹ̀ ẹ̀kọ́",
-      "playedGame": "Ṣeré",
-      "watchedSeries": "Wo ìṣeré tàbí fíìmù",
-      "readNews": "Kà ìròyìn",
-      "wroteOpinion": "Kọ ìròyìn",
-      "cleanedBed": "Mọ́ ìtẹ́",
-      "ensuredBedroomOrdered": "Rí i dájú́ pé yàrá ìtẹ́ wà ní ìtọ́sọ́nà",
-      "shavedBody": "Fọ ara",
-      "shavedFace": "Fọ ojú",
-      "cutNails": "Gé èékánná",
-      "brushedSurfaces": "Fọ òkè",
-      "moppedFloors": "Fọ ilẹ̀",
-      "washedClothes": "Fọ́ aṣọ",
-      "cleanedBathroom": "Mọ́ yàrá ìwẹ̀",
-      "cleanedKitchen": "Mọ́ ilé ìdáná",
-      "workedOnProject": "Ṣiṣẹ́ lórí iṣẹ́ ìfẹ́",
-      "helpedSomeone": "Ṣe ìrànlọ̀wọ́ fún ẹnì kan",
-      "boughtGroceries": "Rà oúnjẹ"
-    }
+    "drankWater": "Mu omi",
+    "showered": "Wẹ̀",
+    "tookMeds": "Mu oògùn",
+    "loggedMood": "Kọ ìwà",
+    "ateBreakfast": "Jẹ́ ìrẹ́",
+    "ateLunch": "Jẹ́ oúnjẹ òsán",
+    "ateDinner": "Jẹ́ oúnjẹ alẹ́",
+    "brushedTeeth": "Fọ eeyín",
+    "workedOut": "Ṣe ìdárayá",
+    "worked": "Ṣiṣẹ́",
+    "washedDishes": "Fọ́ ìdẹ̀",
+    "storedDishes": "Fipamọ́ ìdẹ̀",
+    "checkedTrash": "Ṣàyẹ̀wò ìdọ̀tí",
+    "brushedFloor": "Fọ ilẹ̀",
+    "madeLove": "Ṣe ìfẹ́",
+    "wentOut": "Jáde",
+    "createdContent": "Dá àkọsílẹ̀ fún àwọn ìkànnì awùjọ",
+    "flirted": "Ṣe ìfẹ́ pẹ̀lú ẹnì kan",
+    "talkedToFriend": "Sọ̀rọ̀ pẹ̀lú ọ̀rẹ́",
+    "navigatedSocial": "Ṣàwárí àwọn ìkànnì awùjọ",
+    "talkedToFamily": "Sọ̀rọ̀ pẹ̀lú ìdílé",
+    "madeMusic": "Ṣe orin",
+    "meditated": "Ṣe ìtura",
+    "spokeToHoly": "Sọ̀rọ̀ pẹ̀lú Ọlọ́run",
+    "readMysticBook": "Kà ìwé ìmọ̀ òrìṣà",
+    "sharedLearnings": "Pín ìmọ̀",
+    "studiedSubject": "Kẹ́kọ̀ọ́ ìmọ̀ kan",
+    "watchedEducational": "Wo àkọsílẹ̀ ẹ̀kọ́",
+    "playedGame": "Ṣeré",
+    "watchedSeries": "Wo ìṣeré tàbí fíìmù",
+    "readNews": "Kà ìròyìn",
+    "wroteOpinion": "Kọ ìròyìn",
+    "cleanedBed": "Mọ́ ìtẹ́",
+    "ensuredBedroomOrdered": "Rí i dájú́ pé yàrá ìtẹ́ wà ní ìtọ́sọ́nà",
+    "shavedBody": "Fọ ara",
+    "shavedFace": "Fọ ojú",
+    "cutNails": "Gé èékánná",
+    "brushedSurfaces": "Fọ òkè",
+    "moppedFloors": "Fọ ilẹ̀",
+    "washedClothes": "Fọ́ aṣọ",
+    "cleanedBathroom": "Mọ́ yàrá ìwẹ̀",
+    "cleanedKitchen": "Mọ́ ilé ìdáná",
+    "workedOnProject": "Ṣiṣẹ́ lórí iṣẹ́ ìfẹ́",
+    "helpedSomeone": "Ṣe ìrànlọ̀wọ́ fún ẹnì kan",
+    "boughtGroceries": "Rà oúnjẹ"
   },
   "footer": {
     "copyright": "© {year} Purizu àti Remotelys dba DreamPip",
@@ -243,24 +268,27 @@
     "genericError": "Nǹkan kan ṣẹlẹ̀. Jọ̀ọ́ gbìyànjú lẹ́ẹ̀kan si."
   },
   "publicProfile": {
-    "ctaTitle": "Start Your Own DreamPip Journey",
-    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
-    "getStarted": "Get Started"
+    "ctaTitle": "Bẹ̀rẹ̀ Ìrìn àjò DreamPip tirẹ",
+    "ctaSubtitle": "Tẹ̀lé ìwà rẹ, ìṣẹ́ àti owo pẹ̀lú DreamPip",
+    "getStarted": "Bẹ̀rẹ̀",
+    "notes": "Àwọn àkíyèsí",
+    "loadingNotes": "N gbé àwọn àkíyèsí...",
+    "profileNotPublic": "Olùmúlò yìí kò tí ì tí ì fi profaili rẹ̀ sí gbangba."
   },
   "publicCharts": {
-    "noData": "No public charts data available.",
-    "moodTrackingTitle": "Mood Tracking",
-    "moodTrackingSubtitle": "Values scaled to percentages for privacy",
-    "moodChartsTag": "Mood Charts",
-    "moodOverviewTitle": "Mood Overview",
-    "moodOverviewSubtitle": "Simplified mood tracking - values scaled to percentages for privacy",
-    "simplifiedMoodTag": "Simplified Mood Chart",
-    "productivityTitle": "Productivity",
-    "productivitySubtitle": "Values scaled to percentages for privacy",
-    "productivityTag": "Productivity Charts",
-    "earningsTitle": "Earnings",
-    "earningsSubtitle": "Values scaled to percentages for privacy",
-    "earningsTag": "Earnings Charts"
+    "noData": "Kò sí àwọn àkọsílẹ̀ àwòrán gbangba.",
+    "moodTrackingTitle": "Tẹ̀lé Ìwà",
+    "moodTrackingSubtitle": "Àwọn iye tí ó yí sí ìdínní fún àṣírí",
+    "moodChartsTag": "Àwọn Àwòrán Ìwà",
+    "moodOverviewTitle": "Ìwòye Ìwà",
+    "moodOverviewSubtitle": "Tẹ̀lé ìwà tí ó rọrùn - àwọn iye tí ó yí sí ìdínní fún àṣírí",
+    "simplifiedMoodTag": "Àwòrán Ìwà Tí Ó Rọrùn",
+    "productivityTitle": "Ìṣẹ́",
+    "productivitySubtitle": "Àwọn iye tí ó yí sí ìdínní fún àṣírí",
+    "productivityTag": "Àwọn Àwòrán Ìṣẹ́",
+    "earningsTitle": "Owo",
+    "earningsSubtitle": "Àwọn iye tí ó yí sí ìdínní fún àṣírí",
+    "earningsTag": "Àwọn Àwòrán Owo"
   },
   "friends": {
     "addFriend": "Fi ọrẹ kun",
@@ -336,5 +364,119 @@
     "notFound": "Akoonu ti a beere fun ko ri.",
     "timeout": "Ibeere ti pari. Gbiyanju lẹẹkansi.",
     "unknownError": "Aṣiṣe ti ko reti ṣẹlẹ. Gbiyanju lẹẹkansi."
+  },
+  "forms": {
+    "commonOptions": {
+      "area": {
+        "self": "Ara",
+        "home": "Ilé",
+        "social": "Àwùjọ",
+        "work": "Iṣẹ́"
+      },
+      "category": {
+        "custom": "Àdáni",
+        "body": "Ara",
+        "mind": "Ọkàn",
+        "spirit": "Ẹ̀mí",
+        "social": "Àwùjọ",
+        "work": "Iṣẹ́",
+        "home": "Ilé",
+        "fun": "Ìgbádùn",
+        "growth": "Ìdàgbàsókè",
+        "community": "Àdúgbò",
+        "affection": "Ìfẹ́",
+        "clean": "Mọ́",
+        "maintenance": "Ìtọ́jú",
+        "spirituality": "Ẹ̀mí",
+        "event": "Ìṣẹ̀lẹ̀"
+      },
+      "entities": {
+        "list": "Àkójọ",
+        "template": "Àwòwé"
+      }
+    },
+    "addTaskForm": {
+      "title": "Fi Iṣẹ́ Àdáni kún",
+      "taskNameLabel": "Orúkọ Iṣẹ́",
+      "taskNamePlaceholder": "Tẹ orúkọ iṣẹ́ sí...",
+      "areaLabel": "Agbègbè",
+      "categoryLabel": "Ẹ̀ka",
+      "timesLabel": "# ìgbà",
+      "saveToTemplate": "Fi iṣẹ́ pamọ́ sí àwòwé",
+      "addTask": "Fi Iṣẹ́ kún",
+      "cancel": "Fagilé"
+    },
+    "addListForm": {
+      "titleCreate": "Ṣẹ̀dá Àkójọ Tuntun",
+      "titleEdit": "Ṣàtúnṣe Àkójọ",
+      "nameLabel": "Orúkọ",
+      "templateOrListLabel": "Àwòwé tàbí Àkójọ",
+      "chooseTemplatePlaceholder": "Yàn àwòwé",
+      "budgetLabel": "Ìgbésẹ̀",
+      "dueDateLabel": "Ọjọ́ tí ó yẹ",
+      "pickDatePlaceholder": "Yàn ọjọ́",
+      "cadenceLabel": "Ìgbà",
+      "cadence": {
+        "oneOff": "Lẹ́ẹ̀kan",
+        "daily": "Lójoojúmọ́",
+        "weekly": "Lóṣẹ̀",
+        "monthly": "Lóṣù",
+        "quarterly": "Lókẹ́fẹ́fẹ́",
+        "semester": "Láàárín ọdún",
+        "yearly": "Lọdún"
+      },
+      "collaboratorsLabel": "Àwọn alábáṣiṣẹ́pọ̀",
+      "searchUsernames": "Wá orúkọ àwọn olumulo...",
+      "typeAUsername": "Tẹ orúkọ olumulo...",
+      "noResults": "Kò sí èsì.",
+      "selectedCount": "{count} tí a yàn",
+      "roleLabel": "Ipa",
+      "role": {
+        "custom": "Àdáni",
+        "default": "Àkọ́kọ́"
+      },
+      "addTaskButton": "Fi iṣẹ́ kún",
+      "table": {
+        "name": "Orúkọ",
+        "times": "Ìgbà",
+        "area": "Agbègbè",
+        "categories": "Ẹ̀ka"
+      },
+      "create": "Ṣẹ̀dá",
+      "save": "Fipamọ́",
+      "cancel": "Fagilé",
+      "deleteListConfirm": "Pa àkójọ yìí rẹ́? Èyí kò ṣeé yípadà.",
+      "deleteList": "Pa àkójọ rẹ́"
+    },
+    "addTemplateForm": {
+      "title": "Ṣẹ̀dá Àwòwé Tuntun",
+      "nameLabel": "Orúkọ",
+      "createFromLabel": "Ṣẹ̀dá láti",
+      "chooseListToClonePlaceholder": "Yàn àkójọ láti ẹ̀dà (àṣẹ)",
+      "visibilityLabel": "Ìhàn",
+      "visibility": {
+        "private": "Aládáni",
+        "public": "Gbogbo ènìyàn",
+        "friends": "Àwọn ọ̀rẹ́",
+        "closeFriends": "Àwọn ọ̀rẹ́ tímọ́tímọ́"
+      },
+      "addTaskButton": "Fi iṣẹ́ kún",
+      "task": {
+        "nameLabel": "Orúkọ",
+        "areaLabel": "Agbègbè",
+        "categoryLabel": "Ẹ̀ka",
+        "timesLabel": "# ìgbà",
+        "add": "Fi kún",
+        "cancel": "Fagilé"
+      },
+      "table": {
+        "name": "Orúkọ",
+        "times": "Ìgbà",
+        "area": "Agbègbè",
+        "categories": "Ẹ̀ka"
+      },
+      "create": "Ṣẹ̀dá",
+      "cancel": "Fagilé"
+    }
   }
 }

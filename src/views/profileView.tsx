@@ -36,6 +36,9 @@ export const ProfileView = ({
   const canAddFriend = !isOwnProfile && profile.userName
   const canEditProfile = isOwnProfile
 
+  // Display name logic: prefer fullName, then userName (even if not visible), then fallback
+  const displayName = fullName || profile.userName || 'Anonymous User'
+
   return (
     <main className="min-h-screen bg-background">
       <div className="max-w-4xl mx-auto p-4">
@@ -45,15 +48,15 @@ export const ProfileView = ({
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                 {profile.profilePicture && (
-                  <img 
-                    src={profile.profilePicture} 
-                    alt="Profile" 
+                  <img
+                    src={profile.profilePicture}
+                    alt="Profile"
                     className="w-20 h-20 rounded-full object-cover mx-auto sm:mx-0"
                   />
                 )}
                 <div className="flex-1 text-center sm:text-left">
                   <h1 className="text-2xl font-bold">
-                    {fullName || profile.userName || 'Anonymous User'}
+                    {displayName}
                   </h1>
                   {profile.userName && (
                     <p className="text-muted-foreground">@{profile.userName}</p>

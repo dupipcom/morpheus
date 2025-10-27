@@ -53,12 +53,9 @@ export const SocialView = () => {
   const getDisplayName = (friend: Friend) => {
     if (friend.profile) {
       const { firstName, lastName, userName } = friend.profile
-      if (firstName && lastName) {
-        return `${firstName} ${lastName}`
-      }
-      if (userName) {
-        return `@${userName}`
-      }
+      const fullName = [firstName, lastName].filter(Boolean).join(' ')
+      // Display name logic: prefer fullName, then userName, then fallback
+      return fullName || userName || 'Anonymous User'
     }
     return 'Anonymous User'
   }

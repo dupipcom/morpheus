@@ -30,7 +30,17 @@
     "social": "Social",
     "stash": "Vorrat",
     "equity": "Eigenkapital",
-    "totalEarnings": "Gesamteinnahmen"
+    "totalEarnings": "Gesamteinnahmen",
+    "daily": "Täglich",
+    "weekly": "Wöchentlich",
+    "balance": "Bilanz",
+    "dailyEarnings": "Tägliche Einnahmen",
+    "weeklyEarnings": "Wöchentliche Einnahmen",
+    "newTask": "Neue Aufgabe",
+    "newList": "Neue Liste",
+    "newTemplate": "Neue Vorlage",
+    "budget": "Budget",
+    "due": "Fällig"
   },
   "navigation": {
     "home": "Startseite",
@@ -65,7 +75,20 @@
     "trust": "Vertrauen",
     "editDay": "Tag bearbeiten",
     "closeDay": "Tag schließen",
-    "earnings": "Verdienst"
+    "earnings": "Verdienst",
+    "publish": {
+      "title": "Notiz veröffentlichen",
+      "placeholder": "Schreiben Sie Ihre Notiz hier...",
+      "selectVisibility": "Sichtbarkeit wählen",
+      "visibility": {
+        "PRIVATE": "Privat",
+        "FRIENDS": "Freunde",
+        "CLOSE_FRIENDS": "Enge Freunde",
+        "PUBLIC": "Öffentlich",
+        "AI_ENABLED": "KI-aktiviert"
+      },
+      "action": "Notiz veröffentlichen"
+    }
   },
   "week": {
     "weekNumber": "Woche {number}",
@@ -73,9 +96,10 @@
     "closeWeek": "Woche schließen"
   },
   "tasks": {
-    "editing": "Bearbeiten: {timeframe}",
+    "editing": "Bearbeitung: {timeframe}",
     "weekNumber": "Woche {number}",
-    "yourEarnings": "Ihr Verdienst {timeframe}, bisher: Ð{amount}"
+    "yourEarnings": "Ihre Einnahmen {timeframe}, bisher: Ð{amount}",
+    "selectList": "Liste auswählen"
   },
   "settings": {
     "title": "Einstellungen",
@@ -135,58 +159,54 @@
     "impact": "Impact"
   },
   "actions": {
-    "daily": {
-      "drankWater": "Hat Wasser getrunken",
-      "showered": "Hat geduscht",
-      "tookMeds": "Hat Medikamente genommen",
-      "loggedMood": "Hat Stimmung protokolliert",
-      "ateBreakfast": "Hat gefrühstückt",
-      "ateLunch": "Hat zu Mittag gegessen",
-      "ateDinner": "Hat zu Abend gegessen",
-      "brushedTeeth": "Hat sich die Zähne geputzt",
-      "workedOut": "Hat trainiert",
-      "worked": "Hat gearbeitet",
-      "washedDishes": "Hat Geschirr gespült",
-      "storedDishes": "Hat Geschirr weggeräumt",
-      "checkedTrash": "Hat Müll überprüft",
-      "brushedFloor": "Hat Boden gefegt",
-      "madeLove": "Hat Liebe gemacht",
-      "wentOut": "Ist ausgegangen"
-    },
-    "weekly": {
-      "createdContent": "Hat Content für soziale Medien erstellt",
-      "flirted": "Hat mit jemandem geflirtet",
-      "talkedToFriend": "Hat mit einem Freund gesprochen",
-      "navigatedSocial": "Hat in sozialen Medien navigiert",
-      "talkedToFamily": "Hat mit Familie gesprochen",
-      "madeMusic": "Hat Musik gemacht",
-      "meditated": "Hat meditiert",
-      "spokeToHoly": "Hat mit dem Heiligen gesprochen",
-      "readMysticBook": "Hat ein mystisches Buch gelesen",
-      "sharedLearnings": "Hat Lerninhalte geteilt",
-      "studiedSubject": "Hat ein Thema studiert",
-      "watchedEducational": "Hat Bildungsinhalte angesehen",
-      "playedGame": "Hat ein Spiel gespielt",
-      "watchedSeries": "Hat Serien oder Filme angesehen",
-      "readNews": "Hat Nachrichten gelesen",
-      "wroteOpinion": "Hat eine Meinung geschrieben",
-      "cleanedBed": "Hat Bett gereinigt",
-      "ensuredBedroomOrdered": "Hat sichergestellt, dass Schlafzimmer ordentlich ist",
-      "shavedBody": "Hat Körper rasiert",
-      "shavedFace": "Hat Gesicht rasiert",
-      "cutNails": "Hat Nägel geschnitten",
-      "brushedSurfaces": "Hat Oberflächen gebürstet",
-      "moppedFloors": "Hat Böden gewischt",
-      "washedClothes": "Hat Kleidung gewaschen",
-      "cleanedBathroom": "Hat Badezimmer gereinigt",
-      "cleanedKitchen": "Hat Küche gereinigt",
-      "workedOnProject": "Hat an persönlichem Projekt gearbeitet",
-      "helpedSomeone": "Hat jemandem geholfen",
-      "boughtGroceries": "Hat Lebensmittel gekauft",
-      "navigatedSocialMedia": "Hat in sozialen Medien navigiert",
-      "orderedBedroom": "Hat Schlafzimmer aufgeräumt",
-      "personalProject": "Hat an persönlichem Projekt gearbeitet"
-    }
+    "drankWater": "Hat Wasser getrunken",
+    "showered": "Hat geduscht",
+    "tookMeds": "Hat Medikamente genommen",
+    "loggedMood": "Hat Stimmung protokolliert",
+    "ateBreakfast": "Hat gefrühstückt",
+    "ateLunch": "Hat zu Mittag gegessen",
+    "ateDinner": "Hat zu Abend gegessen",
+    "brushedTeeth": "Hat sich die Zähne geputzt",
+    "workedOut": "Hat trainiert",
+    "worked": "Hat gearbeitet",
+    "washedDishes": "Hat Geschirr gespült",
+    "storedDishes": "Hat Geschirr weggeräumt",
+    "checkedTrash": "Hat Müll überprüft",
+    "brushedFloor": "Hat Boden gefegt",
+    "madeLove": "Hat Liebe gemacht",
+    "wentOut": "Ist ausgegangen",
+    "createdContent": "Hat Content für soziale Medien erstellt",
+    "flirted": "Hat mit jemandem geflirtet",
+    "talkedToFriend": "Hat mit einem Freund gesprochen",
+    "navigatedSocial": "Hat in sozialen Medien navigiert",
+    "talkedToFamily": "Hat mit Familie gesprochen",
+    "madeMusic": "Hat Musik gemacht",
+    "meditated": "Hat meditiert",
+    "spokeToHoly": "Hat mit dem Heiligen gesprochen",
+    "readMysticBook": "Hat ein mystisches Buch gelesen",
+    "sharedLearnings": "Hat Lerninhalte geteilt",
+    "studiedSubject": "Hat ein Thema studiert",
+    "watchedEducational": "Hat Bildungsinhalte angesehen",
+    "playedGame": "Hat ein Spiel gespielt",
+    "watchedSeries": "Hat Serien oder Filme angesehen",
+    "readNews": "Hat Nachrichten gelesen",
+    "wroteOpinion": "Hat eine Meinung geschrieben",
+    "cleanedBed": "Hat Bett gereinigt",
+    "ensuredBedroomOrdered": "Hat sichergestellt, dass Schlafzimmer ordentlich ist",
+    "shavedBody": "Hat Körper rasiert",
+    "shavedFace": "Hat Gesicht rasiert",
+    "cutNails": "Hat Nägel geschnitten",
+    "brushedSurfaces": "Hat Oberflächen gebürstet",
+    "moppedFloors": "Hat Böden gewischt",
+    "washedClothes": "Hat Kleidung gewaschen",
+    "cleanedBathroom": "Hat Badezimmer gereinigt",
+    "cleanedKitchen": "Hat Küche gereinigt",
+    "workedOnProject": "Hat an persönlichem Projekt gearbeitet",
+    "helpedSomeone": "Hat jemandem geholfen",
+    "boughtGroceries": "Hat Lebensmittel gekauft",
+    "navigatedSocialMedia": "Hat in sozialen Medien navigiert",
+    "orderedBedroom": "Hat Schlafzimmer aufgeräumt",
+    "personalProject": "Hat an persönlichem Projekt gearbeitet"
   },
   "footer": {
     "copyright": "© {year} Purizu and Remotelys dba DreamPip",
@@ -250,9 +270,12 @@
     "genericError": "Something went wrong. Please try again."
   },
   "publicProfile": {
-    "ctaTitle": "Start Your Own DreamPip Journey",
-    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
-    "getStarted": "Get Started"
+    "ctaTitle": "Beginnen Sie Ihre eigene DreamPip-Reise",
+    "ctaSubtitle": "Verfolgen Sie Ihre Stimmung, Produktivität und Einnahmen mit DreamPip",
+    "getStarted": "Loslegen",
+    "notes": "Notizen",
+    "loadingNotes": "Notizen werden geladen...",
+    "profileNotPublic": "Dieser Benutzer hat sein Profil noch nicht öffentlich gemacht."
   },
   "publicCharts": {
     "noData": "No public charts data available.",
@@ -281,6 +304,7 @@
     "editProfile": "Profil bearbeiten"
   },
   "profile": {
+    "createProfile": "Profil erstellen",
     "editProfile": "Profil bearbeiten",
     "viewPublicProfile": "Öffentliches Profil anzeigen",
     "profileInformation": "Profilinformationen",
@@ -343,5 +367,119 @@
     "notFound": "Die angeforderte Ressource wurde nicht gefunden.",
     "timeout": "Anfrage ist abgelaufen. Bitte versuche es erneut.",
     "unknownError": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut."
+  },
+  "forms": {
+    "commonOptions": {
+      "area": {
+        "self": "Eigene Person",
+        "home": "Zuhause",
+        "social": "Sozial",
+        "work": "Arbeit"
+      },
+      "category": {
+        "custom": "Benutzerdefiniert",
+        "body": "Körper",
+        "mind": "Verstand",
+        "spirit": "Geist",
+        "social": "Sozial",
+        "work": "Arbeit",
+        "home": "Zuhause",
+        "fun": "Spaß",
+        "growth": "Wachstum",
+        "community": "Gemeinschaft",
+        "affection": "Zuneigung",
+        "clean": "Reinigung",
+        "maintenance": "Wartung",
+        "spirituality": "Spiritualität",
+        "event": "Ereignis"
+      },
+      "entities": {
+        "list": "Liste",
+        "template": "Vorlage"
+      }
+    },
+    "addTaskForm": {
+      "title": "Benutzerdefinierte Aufgabe hinzufügen",
+      "taskNameLabel": "Aufgabenname",
+      "taskNamePlaceholder": "Aufgabennamen eingeben...",
+      "areaLabel": "Bereich",
+      "categoryLabel": "Kategorie",
+      "timesLabel": "# Anzahl der Zeiten",
+      "saveToTemplate": "Aufgabe in Vorlage speichern",
+      "addTask": "Aufgabe hinzufügen",
+      "cancel": "Abbrechen"
+    },
+    "addListForm": {
+      "titleCreate": "Neue Liste erstellen",
+      "titleEdit": "Liste bearbeiten",
+      "nameLabel": "Name",
+      "templateOrListLabel": "Vorlage oder Liste",
+      "chooseTemplatePlaceholder": "Vorlage wählen",
+      "budgetLabel": "Budget",
+      "dueDateLabel": "Fälligkeitsdatum",
+      "pickDatePlaceholder": "Datum wählen",
+      "cadenceLabel": "Rhythmus",
+      "cadence": {
+        "oneOff": "Einmalig",
+        "daily": "Täglich",
+        "weekly": "Wöchentlich",
+        "monthly": "Monatlich",
+        "quarterly": "Vierteljährlich",
+        "semester": "Semestral",
+        "yearly": "Jährlich"
+      },
+      "collaboratorsLabel": "Mitarbeiter",
+      "searchUsernames": "Benutzernamen durchsuchen...",
+      "typeAUsername": "Benutzernamen eingeben...",
+      "noResults": "Keine Ergebnisse.",
+      "selectedCount": "{count} ausgewählt",
+      "roleLabel": "Rolle",
+      "role": {
+        "custom": "Benutzerdefiniert",
+        "default": "Standard"
+      },
+      "addTaskButton": "Aufgabe hinzufügen",
+      "table": {
+        "name": "Name",
+        "times": "Zeiten",
+        "area": "Bereich",
+        "categories": "Kategorien"
+      },
+      "create": "Erstellen",
+      "save": "Speichern",
+      "cancel": "Abbrechen",
+      "deleteListConfirm": "Diese Liste löschen? Das kann nicht rückgängig gemacht werden.",
+      "deleteList": "Liste löschen"
+    },
+    "addTemplateForm": {
+      "title": "Neue Vorlage erstellen",
+      "nameLabel": "Name",
+      "createFromLabel": "Erstellen aus",
+      "chooseListToClonePlaceholder": "Liste zum Klonen wählen (optional)",
+      "visibilityLabel": "Sichtbarkeit",
+      "visibility": {
+        "private": "Privat",
+        "public": "Öffentlich",
+        "friends": "Freunde",
+        "closeFriends": "Enge Freunde"
+      },
+      "addTaskButton": "Aufgabe hinzufügen",
+      "task": {
+        "nameLabel": "Name",
+        "areaLabel": "Bereich",
+        "categoryLabel": "Kategorie",
+        "timesLabel": "# Anzahl der Zeiten",
+        "add": "Hinzufügen",
+        "cancel": "Abbrechen"
+      },
+      "table": {
+        "name": "Name",
+        "times": "Zeiten",
+        "area": "Bereich",
+        "categories": "Kategorien"
+      },
+      "create": "Erstellen",
+      "cancel": "Abbrechen"
+    }
   }
 }

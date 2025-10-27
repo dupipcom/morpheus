@@ -5,5 +5,7 @@ export const GlobalContext = createContext({
 	session: {
 		user: {}
 	},
+	taskLists: [] as any[],
+	refreshTaskLists: async () => {},
 	setGlobalContext: (context: any) => {}
 })

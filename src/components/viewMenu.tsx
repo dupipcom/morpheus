@@ -76,15 +76,20 @@ export const ViewMenu = ({ active }: { active: string }) =>{
   const isDataLoading = useEnhancedLoadingState(isLoading, session)
 
   return <NavigationMenu className="flex flex-col center text-center w-full m-auto">
-  <NavigationMenuList className="grid grid-cols-2">
+  <NavigationMenuList className="grid grid-cols-3">
+  <NavigationMenuItem>
+        <NavigationMenuLink href={`/app/feel`} active={active === 'feel'}>
+          Feel
+        </NavigationMenuLink>
+      </NavigationMenuItem>
       <NavigationMenuItem >
-        <NavigationMenuLink href={`/${locale}/app/day`} active={active === 'day'}>
-          {t('common.day')}
+        <NavigationMenuLink href={`/app/do`} active={active === 'do'}>
+          Do
         </NavigationMenuLink>
       </NavigationMenuItem>
       <NavigationMenuItem>
-        <NavigationMenuLink href={`/${locale}/app/week`} active={active === 'week'}>
-          {t('common.week')}
+        <NavigationMenuLink href={`/app/social`} active={active === 'social'}>
+          Be
         </NavigationMenuLink>
       </NavigationMenuItem>
   </NavigationMenuList>

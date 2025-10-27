@@ -30,7 +30,17 @@
     "social": "Social",
     "stash": "Réserve",
     "equity": "Capitaux propres",
-    "totalEarnings": "Gains totaux"
+    "totalEarnings": "Gains totaux",
+    "daily": "Quotidien",
+    "weekly": "Hebdomadaire",
+    "balance": "Solde",
+    "dailyEarnings": "Revenus quotidiens",
+    "weeklyEarnings": "Revenus hebdomadaires",
+    "newTask": "Nouvelle tâche",
+    "newList": "Nouvelle liste",
+    "newTemplate": "Nouveau modèle",
+    "budget": "Budget",
+    "due": "Dû"
   },
   "navigation": {
     "home": "Accueil",
@@ -65,7 +75,20 @@
     "trust": "Confiance",
     "editDay": "Modifier le jour",
     "closeDay": "Fermer le jour",
-    "earnings": "Gains"
+    "earnings": "Gains",
+    "publish": {
+      "title": "Publier une Note",
+      "placeholder": "Écrivez votre note ici...",
+      "selectVisibility": "Sélectionner la visibilité",
+      "visibility": {
+        "PRIVATE": "Privé",
+        "FRIENDS": "Amis",
+        "CLOSE_FRIENDS": "Amis Proches",
+        "PUBLIC": "Public",
+        "AI_ENABLED": "Activé par IA"
+      },
+      "action": "Publier la Note"
+    }
   },
   "week": {
     "weekNumber": "Semaine {number}",
@@ -75,7 +98,8 @@
   "tasks": {
     "editing": "Modification : {timeframe}",
     "weekNumber": "Semaine {number}",
-    "yourEarnings": "Vos gains {timeframe}, jusqu'à présent : Ð{amount}"
+    "yourEarnings": "Vos gains {timeframe}, jusqu'à présent : Ð{amount}",
+    "selectList": "Sélectionner une liste"
   },
   "settings": {
     "title": "Paramètres",
@@ -135,58 +159,54 @@
     "impact": "Impact"
   },
   "actions": {
-    "daily": {
-      "drankWater": "A bu de l'eau",
-      "showered": "S'est douché",
-      "tookMeds": "A pris ses médicaments",
-      "loggedMood": "A enregistré son humeur",
-      "ateBreakfast": "A pris le petit-déjeuner",
-      "ateLunch": "A déjeuné",
-      "ateDinner": "A dîné",
-      "brushedTeeth": "S'est brossé les dents",
-      "workedOut": "A fait de l'exercice",
-      "worked": "A travaillé",
-      "washedDishes": "A lavé la vaisselle",
-      "storedDishes": "A rangé la vaisselle",
-      "checkedTrash": "A vérifié les poubelles",
-      "brushedFloor": "A balayé le sol",
-      "madeLove": "A fait l'amour",
-      "wentOut": "Est sorti"
-    },
-    "weekly": {
-      "createdContent": "A créé du contenu pour les réseaux sociaux",
-      "flirted": "A flirté avec quelqu'un",
-      "talkedToFriend": "A parlé à un ami",
-      "navigatedSocial": "A navigué sur les réseaux sociaux",
-      "talkedToFamily": "A parlé à la famille",
-      "madeMusic": "A fait de la musique",
-      "meditated": "A médité",
-      "spokeToHoly": "A parlé au sacré",
-      "readMysticBook": "A lu un livre mystique",
-      "sharedLearnings": "A partagé des apprentissages",
-      "studiedSubject": "A étudié un sujet",
-      "watchedEducational": "A regardé du contenu éducatif",
-      "playedGame": "A joué à un jeu",
-      "watchedSeries": "A regardé des séries ou films",
-      "readNews": "A lu les actualités",
-      "wroteOpinion": "A écrit une opinion",
-      "cleanedBed": "A nettoyé le lit",
-      "ensuredBedroomOrdered": "A veillé à ce que la chambre soit rangée",
-      "shavedBody": "S'est rasé le corps",
-      "shavedFace": "S'est rasé le visage",
-      "cutNails": "S'est coupé les ongles",
-      "brushedSurfaces": "A brossé les surfaces",
-      "moppedFloors": "A lavé les sols",
-      "washedClothes": "A lavé les vêtements",
-      "cleanedBathroom": "A nettoyé la salle de bain",
-      "cleanedKitchen": "A nettoyé la cuisine",
-      "workedOnProject": "A travaillé sur un projet personnel",
-      "helpedSomeone": "A aidé quelqu'un",
-      "boughtGroceries": "A acheté des courses",
-      "navigatedSocialMedia": "A navigué sur les réseaux sociaux",
-      "orderedBedroom": "A rangé la chambre",
-      "personalProject": "A travaillé sur un projet personnel"
-    }
+    "drankWater": "A bu de l'eau",
+    "showered": "S'est douché",
+    "tookMeds": "A pris ses médicaments",
+    "loggedMood": "A enregistré son humeur",
+    "ateBreakfast": "A pris le petit-déjeuner",
+    "ateLunch": "A déjeuné",
+    "ateDinner": "A dîné",
+    "brushedTeeth": "S'est brossé les dents",
+    "workedOut": "A fait de l'exercice",
+    "worked": "A travaillé",
+    "washedDishes": "A lavé la vaisselle",
+    "storedDishes": "A rangé la vaisselle",
+    "checkedTrash": "A vérifié les poubelles",
+    "brushedFloor": "A balayé le sol",
+    "madeLove": "A fait l'amour",
+    "wentOut": "Est sorti",
+    "createdContent": "A créé du contenu pour les réseaux sociaux",
+    "flirted": "A flirté avec quelqu'un",
+    "talkedToFriend": "A parlé à un ami",
+    "navigatedSocial": "A navigué sur les réseaux sociaux",
+    "talkedToFamily": "A parlé à la famille",
+    "madeMusic": "A fait de la musique",
+    "meditated": "A médité",
+    "spokeToHoly": "A parlé au sacré",
+    "readMysticBook": "A lu un livre mystique",
+    "sharedLearnings": "A partagé des apprentissages",
+    "studiedSubject": "A étudié un sujet",
+    "watchedEducational": "A regardé du contenu éducatif",
+    "playedGame": "A joué à un jeu",
+    "watchedSeries": "A regardé des séries ou films",
+    "readNews": "A lu les actualités",
+    "wroteOpinion": "A écrit une opinion",
+    "cleanedBed": "A nettoyé le lit",
+    "ensuredBedroomOrdered": "A veillé à ce que la chambre soit rangée",
+    "shavedBody": "S'est rasé le corps",
+    "shavedFace": "S'est rasé le visage",
+    "cutNails": "S'est coupé les ongles",
+    "brushedSurfaces": "A brossé les surfaces",
+    "moppedFloors": "A lavé les sols",
+    "washedClothes": "A lavé les vêtements",
+    "cleanedBathroom": "A nettoyé la salle de bain",
+    "cleanedKitchen": "A nettoyé la cuisine",
+    "workedOnProject": "A travaillé sur un projet personnel",
+    "helpedSomeone": "A aidé quelqu'un",
+    "boughtGroceries": "A acheté des courses",
+    "navigatedSocialMedia": "A navigué sur les réseaux sociaux",
+    "orderedBedroom": "A rangé la chambre",
+    "personalProject": "A travaillé sur un projet personnel"
   },
   "footer": {
     "copyright": "© {year} Purizu and Remotelys dba DreamPip",
@@ -252,7 +272,10 @@
   "publicProfile": {
     "ctaTitle": "Commencez votre parcours DreamPip",
     "ctaSubtitle": "Suivez votre humeur, votre productivité et vos gains avec DreamPip",
-    "getStarted": "Commencer"
+    "getStarted": "Commencer",
+    "notes": "Notes",
+    "loadingNotes": "Chargement des notes...",
+    "profileNotPublic": "Cet utilisateur n'a pas rendu son profil public."
   },
   "publicCharts": {
     "noData": "Aucune donnée publique disponible pour les graphiques.",
@@ -281,6 +304,7 @@
     "editProfile": "Modifier le profil"
   },
   "profile": {
+    "createProfile": "Créer un Profil",
     "editProfile": "Modifier le Profil",
     "viewPublicProfile": "Voir le Profil Public",
     "profileInformation": "Informations du Profil",
@@ -343,5 +367,119 @@
     "notFound": "La ressource demandée n'a pas été trouvée.",
     "timeout": "La requête a expiré. Veuillez réessayer.",
     "unknownError": "Une erreur inattendue s'est produite. Veuillez réessayer."
+  },
+  "forms": {
+    "commonOptions": {
+      "area": {
+        "self": "Personnel",
+        "home": "Maison",
+        "social": "Social",
+        "work": "Travail"
+      },
+      "category": {
+        "custom": "Personnalisé",
+        "body": "Corps",
+        "mind": "Esprit",
+        "spirit": "Spirituel",
+        "social": "Social",
+        "work": "Travail",
+        "home": "Maison",
+        "fun": "Amusement",
+        "growth": "Croissance",
+        "community": "Communauté",
+        "affection": "Affection",
+        "clean": "Nettoyage",
+        "maintenance": "Maintenance",
+        "spirituality": "Spiritualité",
+        "event": "Événement"
+      },
+      "entities": {
+        "list": "Liste",
+        "template": "Modèle"
+      }
+    },
+    "addTaskForm": {
+      "title": "Ajouter une Tâche Personnalisée",
+      "taskNameLabel": "Nom de la Tâche",
+      "taskNamePlaceholder": "Entrez le nom de la tâche...",
+      "areaLabel": "Zone",
+      "categoryLabel": "Catégorie",
+      "timesLabel": "# de fois",
+      "saveToTemplate": "Enregistrer la tâche dans le modèle",
+      "addTask": "Ajouter une Tâche",
+      "cancel": "Annuler"
+    },
+    "addListForm": {
+      "titleCreate": "Créer une Nouvelle Liste",
+      "titleEdit": "Modifier la Liste",
+      "nameLabel": "Nom",
+      "templateOrListLabel": "Modèle ou Liste",
+      "chooseTemplatePlaceholder": "Choisir un modèle",
+      "budgetLabel": "Budget",
+      "dueDateLabel": "Date d'échéance",
+      "pickDatePlaceholder": "Choisir une date",
+      "cadenceLabel": "Cadence",
+      "cadence": {
+        "oneOff": "Unique",
+        "daily": "Quotidien",
+        "weekly": "Hebdomadaire",
+        "monthly": "Mensuel",
+        "quarterly": "Trimestriel",
+        "semester": "Semestriel",
+        "yearly": "Annuel"
+      },
+      "collaboratorsLabel": "Collaborateurs",
+      "searchUsernames": "Rechercher les noms d'utilisateur...",
+      "typeAUsername": "Tapez un nom d'utilisateur...",
+      "noResults": "Aucun résultat.",
+      "selectedCount": "{count} sélectionnés",
+      "roleLabel": "Rôle",
+      "role": {
+        "custom": "Personnalisé",
+        "default": "Par défaut"
+      },
+      "addTaskButton": "Ajouter une tâche",
+      "table": {
+        "name": "Nom",
+        "times": "Fois",
+        "area": "Zone",
+        "categories": "Catégories"
+      },
+      "create": "Créer",
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "deleteListConfirm": "Supprimer cette liste ? Cela ne peut pas être annulé.",
+      "deleteList": "Supprimer la liste"
+    },
+    "addTemplateForm": {
+      "title": "Créer un Nouveau Modèle",
+      "nameLabel": "Nom",
+      "createFromLabel": "Créer à partir de",
+      "chooseListToClonePlaceholder": "Choisir une liste à cloner (optionnel)",
+      "visibilityLabel": "Visibilité",
+      "visibility": {
+        "private": "Privé",
+        "public": "Public",
+        "friends": "Amis",
+        "closeFriends": "Amis Proches"
+      },
+      "addTaskButton": "Ajouter une tâche",
+      "task": {
+        "nameLabel": "Nom",
+        "areaLabel": "Zone",
+        "categoryLabel": "Catégorie",
+        "timesLabel": "# de fois",
+        "add": "Ajouter",
+        "cancel": "Annuler"
+      },
+      "table": {
+        "name": "Nom",
+        "times": "Fois",
+        "area": "Zone",
+        "categories": "Catégories"
+      },
+      "create": "Créer",
+      "cancel": "Annuler"
+    }
   }
 }

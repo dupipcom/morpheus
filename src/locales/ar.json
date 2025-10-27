@@ -30,7 +30,17 @@
     "social": "اجتماعي",
     "stash": "الاحتياطي",
     "equity": "الأسهم",
-    "totalEarnings": "إجمالي الأرباح"
+    "totalEarnings": "إجمالي الأرباح",
+    "daily": "يومي",
+    "weekly": "أسبوعي",
+    "balance": "الرصيد",
+    "dailyEarnings": "الأرباح اليومية",
+    "weeklyEarnings": "الأرباح الأسبوعية",
+    "newTask": "مهمة جديدة",
+    "newList": "قائمة جديدة",
+    "newTemplate": "قالب جديد",
+    "budget": "الميزانية",
+    "due": "المستحق"
   },
   "navigation": {
     "dashboard": "لوحة التحكم",
@@ -69,7 +79,20 @@
     "trust": "الثقة",
     "editDay": "تعديل اليوم",
     "closeDay": "إغلاق اليوم",
-    "earnings": "الأرباح"
+    "earnings": "الأرباح",
+    "publish": {
+      "title": "نشر مذكرة",
+      "placeholder": "اكتب ملاحظتك هنا...",
+      "selectVisibility": "تحديد الرؤية",
+      "visibility": {
+        "PRIVATE": "خاص",
+        "FRIENDS": "الأصدقاء",
+        "CLOSE_FRIENDS": "الأصدقاء المقربون",
+        "PUBLIC": "عام",
+        "AI_ENABLED": "تمكين الذكاء الاصطناعي"
+      },
+      "action": "نشر المذكرة"
+    }
   },
   "week": {
     "weekNumber": "الأسبوع {number}",
@@ -79,7 +102,8 @@
   "tasks": {
     "editing": "تعديل",
     "weekNumber": "الأسبوع {number}",
-    "yourEarnings": "أرباحك"
+    "yourEarnings": "أرباحك",
+    "selectList": "اختر القائمة"
   },
   "settings": {
     "title": "الإعدادات",
@@ -139,58 +163,54 @@
     "impact": "التأثير"
   },
   "actions": {
-    "daily": {
-      "drankWater": "شرب الماء",
-      "showered": "استحم",
-      "tookMeds": "تناول الدواء",
-      "loggedMood": "سجل المزاج",
-      "ateBreakfast": "تناول الإفطار",
-      "ateLunch": "تناول الغداء",
-      "ateDinner": "تناول العشاء",
-      "brushedTeeth": "فرش أسنانه",
-      "workedOut": "تمرن",
-      "worked": "عمل",
-      "washedDishes": "غسل الأطباق",
-      "storedDishes": "خزن الأطباق",
-      "checkedTrash": "فحص القمامة",
-      "brushedFloor": "فرش الأرضية",
-      "madeLove": "مارس الحب",
-      "wentOut": "خرج"
-    },
-    "weekly": {
-      "createdContent": "أنشأ محتوى لوسائل التواصل الاجتماعي",
-      "flirted": "غازل شخصاً ما",
-      "talkedToFriend": "تحدث مع صديق",
-      "navigatedSocial": "تصفح وسائل التواصل الاجتماعي",
-      "talkedToFamily": "تحدث مع العائلة",
-      "madeMusic": "صنع موسيقى",
-      "meditated": "تأمل",
-      "spokeToHoly": "تحدث مع المقدس",
-      "readMysticBook": "قرأ كتاباً روحانياً",
-      "sharedLearnings": "شارك التعلم",
-      "studiedSubject": "درس موضوعاً",
-      "watchedEducational": "شاهد محتوى تعليمياً",
-      "playedGame": "لعب لعبة",
-      "watchedSeries": "شاهد مسلسلاً أو فيلماً",
-      "readNews": "قرأ الأخبار",
-      "wroteOpinion": "كتب رأياً",
-      "cleanedBed": "نظف السرير",
-      "ensuredBedroomOrdered": "تأكد من ترتيب غرفة النوم",
-      "shavedBody": "حلق شعر الجسم",
-      "shavedFace": "حلق الوجه",
-      "cutNails": "قص الأظافر",
-      "brushedSurfaces": "فرش الأسطح",
-      "moppedFloors": "مسح الأرضيات",
-      "washedClothes": "غسل الملابس",
-      "cleanedBathroom": "نظف الحمام",
-      "cleanedKitchen": "نظف المطبخ",
-      "workedOnProject": "عمل على مشروع شخصي",
-      "helpedSomeone": "ساعد شخصاً ما",
-      "boughtGroceries": "اشترى البقالة",
-      "navigatedSocialMedia": "تصفح وسائل التواصل الاجتماعي",
-      "orderedBedroom": "أمر غرفة النوم",
-      "personalProject": "عمل على مشروع شخصي"
-    }
+    "drankWater": "شرب الماء",
+    "showered": "استحم",
+    "tookMeds": "تناول الدواء",
+    "loggedMood": "سجل المزاج",
+    "ateBreakfast": "تناول الإفطار",
+    "ateLunch": "تناول الغداء",
+    "ateDinner": "تناول العشاء",
+    "brushedTeeth": "فرش أسنانه",
+    "workedOut": "تمرن",
+    "worked": "عمل",
+    "washedDishes": "غسل الأطباق",
+    "storedDishes": "خزن الأطباق",
+    "checkedTrash": "فحص القمامة",
+    "brushedFloor": "فرش الأرضية",
+    "madeLove": "مارس الحب",
+    "wentOut": "خرج",
+    "createdContent": "أنشأ محتوى لوسائل التواصل الاجتماعي",
+    "flirted": "غازل شخصاً ما",
+    "talkedToFriend": "تحدث مع صديق",
+    "navigatedSocial": "تصفح وسائل التواصل الاجتماعي",
+    "talkedToFamily": "تحدث مع العائلة",
+    "madeMusic": "صنع موسيقى",
+    "meditated": "تأمل",
+    "spokeToHoly": "تحدث مع المقدس",
+    "readMysticBook": "قرأ كتاباً روحانياً",
+    "sharedLearnings": "شارك التعلم",
+    "studiedSubject": "درس موضوعاً",
+    "watchedEducational": "شاهد محتوى تعليمياً",
+    "playedGame": "لعب لعبة",
+    "watchedSeries": "شاهد مسلسلاً أو فيلماً",
+    "readNews": "قرأ الأخبار",
+    "wroteOpinion": "كتب رأياً",
+    "cleanedBed": "نظف السرير",
+    "ensuredBedroomOrdered": "تأكد من ترتيب غرفة النوم",
+    "shavedBody": "حلق شعر الجسم",
+    "shavedFace": "حلق الوجه",
+    "cutNails": "قص الأظافر",
+    "brushedSurfaces": "فرش الأسطح",
+    "moppedFloors": "مسح الأرضيات",
+    "washedClothes": "غسل الملابس",
+    "cleanedBathroom": "نظف الحمام",
+    "cleanedKitchen": "نظف المطبخ",
+    "workedOnProject": "عمل على مشروع شخصي",
+    "helpedSomeone": "ساعد شخصاً ما",
+    "boughtGroceries": "اشترى البقالة",
+    "navigatedSocialMedia": "تصفح وسائل التواصل الاجتماعي",
+    "orderedBedroom": "أمر غرفة النوم",
+    "personalProject": "عمل على مشروع شخصي"
   },
   "footer": {
     "copyright": "© {year} Purizu and Remotelys dba DreamPip",
@@ -256,7 +276,10 @@
   "publicProfile": {
     "ctaTitle": "ابدأ رحلتك مع DreamPip",
     "ctaSubtitle": "تتبّع مزاجك وإنتاجيتك وأرباحك مع DreamPip",
-    "getStarted": "ابدأ"
+    "getStarted": "ابدأ",
+    "notes": "ملاحظات",
+    "loadingNotes": "جارٍ تحميل الملاحظات...",
+    "profileNotPublic": "هذا المستخدم لم يجعل ملفه الشخصي عاماً بعد."
   },
   "publicCharts": {
     "noData": "لا توجد بيانات عامة متاحة للمخططات.",
@@ -347,5 +370,119 @@
     "notFound": "لم يتم العثور على المورد المطلوب.",
     "timeout": "انتهت مهلة الطلب. يرجى المحاولة مرة أخرى.",
     "unknownError": "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى."
+  },
+  "forms": {
+    "commonOptions": {
+      "area": {
+        "self": "ذاتي",
+        "home": "الصفحة الرئيسية",
+        "social": "اجتماعي",
+        "work": "العمل"
+      },
+      "category": {
+        "custom": "مخصص",
+        "body": "الجسم",
+        "mind": "العقل",
+        "spirit": "الروح",
+        "social": "اجتماعي",
+        "work": "العمل",
+        "home": "الصفحة الرئيسية",
+        "fun": "المرح",
+        "growth": "النمو",
+        "community": "المجتمع",
+        "affection": "المودة",
+        "clean": "نظيفة",
+        "maintenance": "الصيانة",
+        "spirituality": "الروحانيات",
+        "event": "الحدث"
+      },
+      "entities": {
+        "list": "القائمة",
+        "template": "القالب"
+      }
+    },
+    "addTaskForm": {
+      "title": "إضافة مهمة مخصصة",
+      "taskNameLabel": "اسم المهمة",
+      "taskNamePlaceholder": "أدخل اسم المهمة...",
+      "areaLabel": "المنطقة",
+      "categoryLabel": "الفئة",
+      "timesLabel": "# عدد المرات",
+      "saveToTemplate": "حفظ المهمة في قالب",
+      "addTask": "إضافة مهمة",
+      "cancel": "إلغاء"
+    },
+    "addListForm": {
+      "titleCreate": "إنشاء قائمة جديدة",
+      "titleEdit": "تحرير القائمة",
+      "nameLabel": "الاسم",
+      "templateOrListLabel": "القالب أو القائمة",
+      "chooseTemplatePlaceholder": "اختر قالباً",
+      "budgetLabel": "الميزانية",
+      "dueDateLabel": "تاريخ الاستحقاق",
+      "pickDatePlaceholder": "اختر تاريخاً",
+      "cadenceLabel": "الإيقاع",
+      "cadence": {
+        "oneOff": "لمرة واحدة",
+        "daily": "يومياً",
+        "weekly": "أسبوعياً",
+        "monthly": "شهرياً",
+        "quarterly": "ربع سنوي",
+        "semester": "الفصل الدراسي",
+        "yearly": "سنويًا"
+      },
+      "collaboratorsLabel": "المتعاونون",
+      "searchUsernames": "البحث في أسماء المستخدمين...",
+      "typeAUsername": "اكتب اسم المستخدم...",
+      "noResults": "لا توجد نتائج.",
+      "selectedCount": "{count} محدد",
+      "roleLabel": "الدور",
+      "role": {
+        "custom": "مخصص",
+        "default": "افتراضي"
+      },
+      "addTaskButton": "إضافة مهمة",
+      "table": {
+        "name": "الاسم",
+        "times": "المرات",
+        "area": "المنطقة",
+        "categories": "الفئات"
+      },
+      "create": "إنشاء",
+      "save": "حفظ",
+      "cancel": "إلغاء",
+      "deleteListConfirm": "حذف هذه القائمة؟ لا يمكن التراجع عن ذلك.",
+      "deleteList": "حذف القائمة"
+    },
+    "addTemplateForm": {
+      "title": "إنشاء قالب جديد",
+      "nameLabel": "الاسم",
+      "createFromLabel": "إنشاء من",
+      "chooseListToClonePlaceholder": "اختر قائمة لنسخها (اختياري)",
+      "visibilityLabel": "إمكانية الظهور",
+      "visibility": {
+        "private": "خاص",
+        "public": "عام",
+        "friends": "الأصدقاء",
+        "closeFriends": "الأصدقاء المقربون"
+      },
+      "addTaskButton": "إضافة مهمة",
+      "task": {
+        "nameLabel": "الاسم",
+        "areaLabel": "المنطقة",
+        "categoryLabel": "الفئة",
+        "timesLabel": "# عدد المرات",
+        "add": "إضافة",
+        "cancel": "إلغاء"
+      },
+      "table": {
+        "name": "الاسم",
+        "times": "المرات",
+        "area": "المنطقة",
+        "categories": "الفئات"
+      },
+      "create": "إنشاء",
+      "cancel": "إلغاء"
+    }
   }
 }

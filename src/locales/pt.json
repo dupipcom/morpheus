@@ -30,7 +30,17 @@
     "social": "Social",
     "stash": "Reserva",
     "equity": "Patrimônio",
-    "totalEarnings": "Ganhos Totais"
+    "totalEarnings": "Ganhos Totais",
+    "daily": "Diário",
+    "weekly": "Semanal",
+    "balance": "Saldo",
+    "dailyEarnings": "Ganhos Diários",
+    "weeklyEarnings": "Ganhos Semanais",
+    "newTask": "Nova tarefa",
+    "newList": "Nova lista",
+    "newTemplate": "Novo modelo",
+    "budget": "Orçamento",
+    "due": "Vencimento"
   },
   "navigation": {
     "home": "Início",
@@ -65,7 +75,20 @@
     "trust": "Confiança",
     "editDay": "Editar dia",
     "closeDay": "Fechar dia",
-    "earnings": "Ganhos"
+    "earnings": "Ganhos",
+    "publish": {
+      "title": "Publicar uma Nota",
+      "placeholder": "Escreva sua nota aqui...",
+      "selectVisibility": "Selecionar visibilidade",
+      "visibility": {
+        "PRIVATE": "Privado",
+        "FRIENDS": "Amigos",
+        "CLOSE_FRIENDS": "Amigos Próximos",
+        "PUBLIC": "Público",
+        "AI_ENABLED": "Habilitado para IA"
+      },
+      "action": "Publicar Nota"
+    }
   },
   "week": {
     "weekNumber": "Semana {number}",
@@ -75,7 +98,8 @@
   "tasks": {
     "editing": "Editando: {timeframe}",
     "weekNumber": "Semana {number}",
-    "yourEarnings": "Seus ganhos {timeframe}, até agora: Ð{amount}"
+    "yourEarnings": "Seus ganhos {timeframe}, até agora: Ð{amount}",
+    "selectList": "Selecionar lista"
   },
   "settings": {
     "title": "Configurações",
@@ -135,58 +159,54 @@
     "impact": "Impacto"
   },
   "actions": {
-    "daily": {
-      "drankWater": "Bebeu água",
-      "showered": "Tomou banho",
-      "tookMeds": "Tomou remédios",
-      "loggedMood": "Registrou humor",
-      "ateBreakfast": "Tomou café da manhã",
-      "ateLunch": "Almoçou",
-      "ateDinner": "Jantou",
-      "brushedTeeth": "Escovou os dentes",
-      "workedOut": "Malhou",
-      "worked": "Trabalhou",
-      "washedDishes": "Lavou pratos",
-      "storedDishes": "Guardou pratos",
-      "checkedTrash": "Verificou lixo",
-      "brushedFloor": "Varreu o chão",
-      "madeLove": "Fez amor",
-      "wentOut": "Saiu"
-    },
-    "weekly": {
-      "createdContent": "Criou conteúdo para redes sociais",
-      "flirted": "Fez flerte com alguém",
-      "talkedToFriend": "Conversou com um amigo",
-      "navigatedSocial": "Navegou nas redes sociais",
-      "talkedToFamily": "Conversou com a família",
-      "madeMusic": "Fez música",
-      "meditated": "Meditou",
-      "spokeToHoly": "Falou com o sagrado",
-      "readMysticBook": "Leu um livro místico",
-      "sharedLearnings": "Compartilhou aprendizados",
-      "studiedSubject": "Estudou um assunto",
-      "watchedEducational": "Assistiu conteúdo educativo",
-      "playedGame": "Jogou um jogo",
-      "watchedSeries": "Assistiu séries ou filmes",
-      "readNews": "Leu notícias",
-      "wroteOpinion": "Escreveu uma opinião",
-      "cleanedBed": "Limpou a cama",
-      "ensuredBedroomOrdered": "Garantiu que o quarto está organizado",
-      "shavedBody": "Depilou o corpo",
-      "shavedFace": "Fez a barba",
-      "cutNails": "Cortou as unhas",
-      "brushedSurfaces": "Escovou superfícies",
-      "moppedFloors": "Limpou pisos",
-      "washedClothes": "Lavou roupas",
-      "cleanedBathroom": "Limpou o banheiro",
-      "cleanedKitchen": "Limpou a cozinha",
-      "workedOnProject": "Trabalhou em projeto pessoal",
-      "helpedSomeone": "Ajudou alguém",
-      "boughtGroceries": "Comprou mantimentos",
-      "navigatedSocialMedia": "Navegou nas redes sociais",
-      "orderedBedroom": "Ordenou o quarto",
-      "personalProject": "Trabalhou em um projeto pessoal"
-    }
+    "drankWater": "Bebeu água",
+    "showered": "Tomou banho",
+    "tookMeds": "Tomou remédios",
+    "loggedMood": "Registrou humor",
+    "ateBreakfast": "Tomou café da manhã",
+    "ateLunch": "Almoçou",
+    "ateDinner": "Jantou",
+    "brushedTeeth": "Escovou os dentes",
+    "workedOut": "Malhou",
+    "worked": "Trabalhou",
+    "washedDishes": "Lavou pratos",
+    "storedDishes": "Guardou pratos",
+    "checkedTrash": "Verificou lixo",
+    "brushedFloor": "Varreu o chão",
+    "madeLove": "Fez amor",
+    "wentOut": "Saiu",
+    "createdContent": "Criou conteúdo para redes sociais",
+    "flirted": "Fez flerte com alguém",
+    "talkedToFriend": "Conversou com um amigo",
+    "navigatedSocial": "Navegou nas redes sociais",
+    "talkedToFamily": "Conversou com a família",
+    "madeMusic": "Fez música",
+    "meditated": "Meditou",
+    "spokeToHoly": "Falou com o sagrado",
+    "readMysticBook": "Leu um livro místico",
+    "sharedLearnings": "Compartilhou aprendizados",
+    "studiedSubject": "Estudou um assunto",
+    "watchedEducational": "Assistiu conteúdo educativo",
+    "playedGame": "Jogou um jogo",
+    "watchedSeries": "Assistiu séries ou filmes",
+    "readNews": "Leu notícias",
+    "wroteOpinion": "Escreveu uma opinião",
+    "cleanedBed": "Limpou a cama",
+    "ensuredBedroomOrdered": "Garantiu que o quarto está organizado",
+    "shavedBody": "Depilou o corpo",
+    "shavedFace": "Fez a barba",
+    "cutNails": "Cortou as unhas",
+    "brushedSurfaces": "Escovou superfícies",
+    "moppedFloors": "Limpou pisos",
+    "washedClothes": "Lavou roupas",
+    "cleanedBathroom": "Limpou o banheiro",
+    "cleanedKitchen": "Limpou a cozinha",
+    "workedOnProject": "Trabalhou em projeto pessoal",
+    "helpedSomeone": "Ajudou alguém",
+    "boughtGroceries": "Comprou mantimentos",
+    "navigatedSocialMedia": "Navegou nas redes sociais",
+    "orderedBedroom": "Ordenou o quarto",
+    "personalProject": "Trabalhou em um projeto pessoal"
   },
   "footer": {
     "copyright": "© {year} Purizu and Remotelys dba DreamPip",
@@ -252,7 +272,10 @@
   "publicProfile": {
     "ctaTitle": "Comece sua jornada com a DreamPip",
     "ctaSubtitle": "Acompanhe seu humor, produtividade e ganhos com a DreamPip",
-    "getStarted": "Começar"
+    "getStarted": "Começar",
+    "notes": "Notas",
+    "loadingNotes": "Carregando notas...",
+    "profileNotPublic": "Este usuário não tornou seu perfil público."
   },
   "publicCharts": {
     "noData": "Nenhum dado público disponível para gráficos.",
@@ -343,5 +366,119 @@
     "notFound": "O recurso solicitado não foi encontrado.",
     "timeout": "A solicitação expirou. Tente novamente.",
     "unknownError": "Ocorreu um erro inesperado. Tente novamente."
+  },
+  "forms": {
+    "commonOptions": {
+      "area": {
+        "self": "Pessoal",
+        "home": "Casa",
+        "social": "Social",
+        "work": "Trabalho"
+      },
+      "category": {
+        "custom": "Personalizado",
+        "body": "Corpo",
+        "mind": "Mente",
+        "spirit": "Espírito",
+        "social": "Social",
+        "work": "Trabalho",
+        "home": "Casa",
+        "fun": "Diversão",
+        "growth": "Crescimento",
+        "community": "Comunidade",
+        "affection": "Afeto",
+        "clean": "Limpeza",
+        "maintenance": "Manutenção",
+        "spirituality": "Espiritualidade",
+        "event": "Evento"
+      },
+      "entities": {
+        "list": "Lista",
+        "template": "Modelo"
+      }
+    },
+    "addTaskForm": {
+      "title": "Adicionar Tarefa Personalizada",
+      "taskNameLabel": "Nome da Tarefa",
+      "taskNamePlaceholder": "Insira o nome da tarefa...",
+      "areaLabel": "Área",
+      "categoryLabel": "Categoria",
+      "timesLabel": "# de vezes",
+      "saveToTemplate": "Salvar tarefa no modelo",
+      "addTask": "Adicionar Tarefa",
+      "cancel": "Cancelar"
+    },
+    "addListForm": {
+      "titleCreate": "Criar Nova Lista",
+      "titleEdit": "Editar Lista",
+      "nameLabel": "Nome",
+      "templateOrListLabel": "Modelo ou Lista",
+      "chooseTemplatePlaceholder": "Escolha um modelo",
+      "budgetLabel": "Orçamento",
+      "dueDateLabel": "Data de vencimento",
+      "pickDatePlaceholder": "Escolha uma data",
+      "cadenceLabel": "Frequência",
+      "cadence": {
+        "oneOff": "Único",
+        "daily": "Diário",
+        "weekly": "Semanal",
+        "monthly": "Mensal",
+        "quarterly": "Trimestral",
+        "semester": "Semestral",
+        "yearly": "Anual"
+      },
+      "collaboratorsLabel": "Colaboradores",
+      "searchUsernames": "Pesquisar nomes de usuário...",
+      "typeAUsername": "Digite um nome de usuário...",
+      "noResults": "Nenhum resultado.",
+      "selectedCount": "{count} selecionados",
+      "roleLabel": "Função",
+      "role": {
+        "custom": "Personalizado",
+        "default": "Padrão"
+      },
+      "addTaskButton": "Adicionar tarefa",
+      "table": {
+        "name": "Nome",
+        "times": "Vezes",
+        "area": "Área",
+        "categories": "Categorias"
+      },
+      "create": "Criar",
+      "save": "Salvar",
+      "cancel": "Cancelar",
+      "deleteListConfirm": "Excluir esta lista? Isto não pode ser desfeito.",
+      "deleteList": "Excluir lista"
+    },
+    "addTemplateForm": {
+      "title": "Criar Novo Modelo",
+      "nameLabel": "Nome",
+      "createFromLabel": "Criar a partir de",
+      "chooseListToClonePlaceholder": "Escolha uma lista para clonar (opcional)",
+      "visibilityLabel": "Visibilidade",
+      "visibility": {
+        "private": "Privado",
+        "public": "Público",
+        "friends": "Amigos",
+        "closeFriends": "Amigos próximos"
+      },
+      "addTaskButton": "Adicionar tarefa",
+      "task": {
+        "nameLabel": "Nome",
+        "areaLabel": "Área",
+        "categoryLabel": "Categoria",
+        "timesLabel": "# de vezes",
+        "add": "Adicionar",
+        "cancel": "Cancelar"
+      },
+      "table": {
+        "name": "Nome",
+        "times": "Vezes",
+        "area": "Área",
+        "categories": "Categorias"
+      },
+      "create": "Criar",
+      "cancel": "Cancelar"
+    }
   }
 }
