@@ -15,6 +15,7 @@ import {
 
 import { Nav } from '@/components/ui/nav'
 import { Footer } from '@/components/Footer'
+import { BottomNav } from '@/components/BottomNav'
 
 import "./globals.css"
 
@@ -104,13 +105,15 @@ export default function RootLayout({
     try {
       const res = await fetch('/api/v1/tasklists')
       if (!res.ok) {
-        setGlobalContext(prev => ({ ...prev, taskLists: [] }))
+        // Don't clear existing task lists on error - preserve them
+        console.warn('Failed to refresh task lists:', res.status)
         return
       }
       const data = await res.json()
       setGlobalContext(prev => ({ ...prev, taskLists: Array.isArray(data?.taskLists) ? data.taskLists : [] }))
-    } catch (_) {
-      setGlobalContext(prev => ({ ...prev, taskLists: [] }))
+    } catch (error) {
+      // Don't clear existing task lists on error - preserve them
+      console.warn('Error refreshing task lists:', error)
     }
   }
 
@@ -142,12 +145,13 @@ export default function RootLayout({
                   dedupingInterval: 15000,
                 }}>
                   <article className="">
-                    <div>
+                    <div className="pb-[80px]">
                       <Nav subHeader="" onThemeChange={handleThemeChange} />
                       <AppContent>{children}</AppContent>
                       <Footer />
                     </div>
                   </article>
+                  <BottomNav />
                 </SWRConfig>
                 <AuthToast />
               </GlobalContext.Provider>

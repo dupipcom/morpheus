@@ -2,6 +2,7 @@ import prisma from "@/lib/prisma";
 import { currentUser, auth } from '@clerk/nextjs/server'
 import { NextRequest } from 'next/server'
 import { revalidatePath } from 'next/cache'
+// no direct revalidatePath here; we call our v1 endpoint instead
 
 export async function GET(req: NextRequest) {
   const { userId } = await auth()
@@ -44,6 +45,20 @@ export async function GET(req: NextRequest) {
           where: { userId },
           include: { profile: true }
         })
+
+        if (!user) {
+          return Response.json({ error: 'User not found after profile creation' }, { status: 404 })
+        }
+
+        // Revalidate the public profile path for this user via v1 revalidate endpoint
+        try {
+          const username = clerkUser?.username
+          if (username) {
+            revalidatePath(`/@${username}`);
+          }
+        } catch (revalidateError) {
+          console.error('Error calling v1 revalidate for profile path:', revalidateError)
+        }
       } catch (error) {
         console.error('Error creating profile:', error)
       }
@@ -52,7 +67,7 @@ export async function GET(req: NextRequest) {
     // Always sync username from Clerk if available - Clerk takes precedence
     try {
       const clerkUser = await currentUser()
-      if (clerkUser && clerkUser.username && user.profile) {
+      if (clerkUser && clerkUser.username && user && user.profile) {
         // Always update profile with Clerk username (overwrites any manual username)
         await prisma.profile.update({
           where: { userId: user.id },
@@ -70,7 +85,7 @@ export async function GET(req: NextRequest) {
 
     // Get Clerk user data to sync imageUrl
     const clerkUser = await currentUser()
-    if (clerkUser && user.profile) {
+    if (clerkUser && user && user.profile) {
       // Update profile with Clerk's imageUrl if it's different
       if (clerkUser.imageUrl && user.profile.profilePicture !== clerkUser.imageUrl) {
         await prisma.profile.update({
@@ -84,6 +99,11 @@ export async function GET(req: NextRequest) {
         })
         return Response.json({ user: updatedUser, profile: updatedUser?.profile })
       }
+    }
+
+    // Ensure user still exists after any refetches
+    if (!user) {
+      return Response.json({ error: 'User not found' }, { status: 404 })
     }
 
     // Also return lists where this user is a collaborator
@@ -173,10 +193,14 @@ export async function POST(req: NextRequest) {
     // Revalidate the user's public profile page if Clerk username exists
     if (clerkUsername) {
       try {
-        // Directly call revalidatePath instead of making HTTP request
-        revalidatePath(`/@${clerkUsername}`)
+        const origin = new URL(req.url).origin
+        await fetch(`${origin}/api/v1/revalidate`, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ paths: [`/@${clerkUsername}`] })
+        })
       } catch (revalidateError) {
-        console.error('Error revalidating profile page:', revalidateError)
+        console.error('Error calling v1 revalidate for profile path:', revalidateError)
       }
     }
 
