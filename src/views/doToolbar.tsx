@@ -9,13 +9,21 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Plus, Pencil, DollarSign, Calendar, User as UserIcon } from 'lucide-react'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import { Plus, Pencil, DollarSign, Calendar as CalendarIcon, User as UserIcon } from 'lucide-react'
 import { GlobalContext } from '@/lib/contexts'
 import { useI18n } from '@/lib/contexts/i18n'
 import { AddTaskForm } from '@/views/forms/AddTaskForm'
 import { AddListForm } from '@/views/forms/AddListForm'
 import { AddTemplateForm } from '@/views/forms/AddTemplateForm'
 import { Badge } from '@/components/ui/badge'
+import { Calendar } from '@/components/ui/calendar'
+import { cn } from '@/lib/utils'
+import { getWeekNumber } from '@/app/helpers'
 
 type TaskList = { id: string; name?: string; role?: string }
 
@@ -24,11 +32,15 @@ export const DoToolbar = ({
   selectedTaskListId,
   onChangeSelectedTaskListId,
   onAddEphemeral: _onAddEphemeral,
+  selectedDate,
+  onDateChange,
 }: {
   locale: string
   selectedTaskListId?: string
   onChangeSelectedTaskListId: (id: string) => void
   onAddEphemeral: () => Promise<void> | void
+  selectedDate?: Date
+  onDateChange?: (date: Date | undefined) => void
 }) => {
   const { t } = useI18n()
   const { taskLists, refreshTaskLists } = useContext(GlobalContext)
@@ -84,6 +96,25 @@ export const DoToolbar = ({
 
   const closeAll = () => { setShowAddTask(false); setShowAddList(false); setShowAddTemplate(false) }
 
+  // Determine if we should show the date picker (only for daily.* or weekly.* lists)
+  const shouldShowDatePicker = useMemo(() => {
+    if (!selectedList?.role) return false
+    return selectedList.role.startsWith('daily.') || selectedList.role.startsWith('weekly.')
+  }, [selectedList])
+
+  // Format date for display
+  const formatDate = (date: Date | undefined) => {
+    if (!date) return 'Select date'
+    
+    // For weekly lists, show week number
+    if (selectedList?.role && selectedList.role.startsWith('weekly.')) {
+      const [, weekNum] = getWeekNumber(date)
+      return `Week ${weekNum}, ${date.getFullYear()}`
+    }
+    
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  }
+
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-2">
@@ -99,6 +130,31 @@ export const DoToolbar = ({
             ))}
           </SelectContent>
         </Select>
+
+        {shouldShowDatePicker && onDateChange && (
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className={cn(
+                  "w-[240px] justify-start text-left font-normal",
+                  !selectedDate && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {formatDate(selectedDate)}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                mode="single"
+                selected={selectedDate}
+                onSelect={onDateChange}
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
+        )}
 
         <div className="ml-auto flex items-center gap-2">
           <DropdownMenu>
