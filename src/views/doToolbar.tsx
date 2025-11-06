@@ -43,8 +43,20 @@ export const DoToolbar = ({
   onDateChange?: (date: Date | undefined) => void
 }) => {
   const { t } = useI18n()
-  const { taskLists, refreshTaskLists } = useContext(GlobalContext)
-  const allTaskLists = useMemo(() => (Array.isArray(taskLists) ? taskLists : []), [taskLists]) as TaskList[]
+  const { taskLists: contextTaskLists, refreshTaskLists } = useContext(GlobalContext)
+  
+  // Maintain stable task lists that never clear once loaded
+  const [stableTaskLists, setStableTaskLists] = useState<TaskList[]>([])
+  useEffect(() => {
+    if (Array.isArray(contextTaskLists) && contextTaskLists.length > 0) {
+      setStableTaskLists(contextTaskLists)
+    }
+  }, [contextTaskLists])
+  
+  const allTaskLists = useMemo(() => 
+    (stableTaskLists.length > 0 ? stableTaskLists : (Array.isArray(contextTaskLists) ? contextTaskLists : [])) as TaskList[],
+    [stableTaskLists, contextTaskLists]
+  )
   const selectedList = useMemo(() => allTaskLists.find((l:any) => l.id === selectedTaskListId), [allTaskLists, selectedTaskListId])
 
   const [showAddTask, setShowAddTask] = useState(false)

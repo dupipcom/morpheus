@@ -12,8 +12,16 @@ import { useI18n } from '@/lib/contexts/i18n'
 import { getWeekNumber } from '@/app/helpers'
 
 export const ListView = () => {
-  const { session, taskLists, refreshTaskLists } = useContext(GlobalContext)
+  const { session, taskLists: contextTaskLists, refreshTaskLists } = useContext(GlobalContext)
   const { t, locale } = useI18n()
+  
+  // Maintain stable task lists that never clear once loaded
+  const [stableTaskLists, setStableTaskLists] = useState<any[]>([])
+  useEffect(() => {
+    if (Array.isArray(contextTaskLists) && contextTaskLists.length > 0) {
+      setStableTaskLists(contextTaskLists)
+    }
+  }, [contextTaskLists])
 
   const today = new Date()
   
@@ -23,7 +31,7 @@ export const ListView = () => {
   // Compute date string and year from selected date
   const date = selectedDate.toISOString().split('T')[0]
   const year = Number(date.split('-')[0])
-  const allTaskLists = taskLists || []
+  const allTaskLists = stableTaskLists.length > 0 ? stableTaskLists : (contextTaskLists || [])
 
   const [selectedTaskListId, setSelectedTaskListId] = useState<string | undefined>(allTaskLists[0]?.id)
   useEffect(() => {

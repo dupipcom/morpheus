@@ -16,16 +16,24 @@ import {
 } from '@/components/ui/accordion'
 
 export const DoView = () => {
-  const { refreshTaskLists, taskLists, session } = useContext(GlobalContext)
-  const fetchedRef = useRef(false)
+  const { refreshTaskLists, taskLists: contextTaskLists, session } = useContext(GlobalContext)
+  const [stableTaskLists, setStableTaskLists] = useState<any[]>([])
+  const initialFetchDone = useRef(false)
 
+  // Fetch immediately on mount
   useEffect(() => {
-    if (fetchedRef.current) return
-    fetchedRef.current = true
-    if (!Array.isArray(taskLists) || taskLists.length === 0) {
+    if (!initialFetchDone.current) {
+      initialFetchDone.current = true
       refreshTaskLists()
     }
-  }, [refreshTaskLists, taskLists])
+  }, [refreshTaskLists])
+
+  // Update stable state only when context has valid data (never clear once we have data)
+  useEffect(() => {
+    if (Array.isArray(contextTaskLists) && contextTaskLists.length > 0) {
+      setStableTaskLists(contextTaskLists)
+    }
+  }, [contextTaskLists])
 
   // Refresh task lists every 10 seconds
   useEffect(() => {
