@@ -7,19 +7,6 @@ import { WEEKLY_ACTIONS, DAILY_ACTIONS } from "@/app/constants"
 import { currentUser } from '@clerk/nextjs/server'
 import { revalidatePath } from 'next/cache'
 
-// Helper function to revalidate public profile page
-const revalidateUserProfile = async (username: string) => {
-    try {
-        if (username) {
-            // Revalidate the public profile page with @ prefix
-            revalidatePath(`/@${username}`)
-            console.log(`Revalidated public profile page for username: @${username}`)
-        }
-    } catch (error) {
-        console.error('Error revalidating public profile page:', error)
-    }
-}
-
 export async function POST(req: Request) {
     try {
         const evt = (await req.json()) as WebhookEvent;
@@ -76,7 +63,7 @@ export async function POST(req: Request) {
                         console.log(`Username synced from Clerk webhook on user creation: ${clerkUsername} for user ${clerkUserId}`);
                         
                         // Revalidate the public profile page
-                        await revalidateUserProfile(clerkUsername);
+                        await revalidatePath(`/@${clerkUsername}`);
                     }
                 } catch (error) {
                     console.error('Error syncing username from Clerk webhook on user creation:', error);
@@ -144,7 +131,7 @@ export async function POST(req: Request) {
                                 console.log(`Username synced from Clerk webhook on login: ${clerkUsername} for user ${sessionUserId}`);
                                 
                                 // Revalidate the public profile page
-                                await revalidateUserProfile(clerkUsername);
+                                await revalidateUserProfile(clerkUsername, new URL(req.url).origin);
                             }
                         }
                     } catch (usernameError) {
@@ -190,7 +177,7 @@ export async function POST(req: Request) {
                             console.log(`Username synced from Clerk webhook: ${clerkUsername} for user ${clerkUserId}`);
                             
                             // Revalidate the public profile page
-                            await revalidateUserProfile(clerkUsername);
+                            await revalidateUserProfile(clerkUsername, new URL(req.url).origin);
                         }
                     } else {
                         console.log('No username found in Clerk webhook data');

@@ -1,11 +1,12 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useAuth } from '@clerk/clerk-react'
 import { useI18n } from '@/lib/contexts/i18n'
 import { SignInButton, SignUpButton } from '@clerk/nextjs'
 import { Button } from '@/components/ui/button'
 import { LogIn, UserPlus } from 'lucide-react'
+import { usePathname } from 'next/navigation'
 
 interface AuthToastProps {
   showToast?: boolean
@@ -14,29 +15,30 @@ interface AuthToastProps {
 export const AuthToast = ({ showToast = true }: AuthToastProps) => {
   const { isLoaded, isSignedIn } = useAuth()
   const { t } = useI18n()
-  const toastShownRef = useRef(false)
+  const pathname = usePathname()
   const [showAuthButtons, setShowAuthButtons] = useState(false)
+  const [dismissed, setDismissed] = useState(false)
 
   useEffect(() => {
-    // Only show auth panel if auth is loaded, user is not signed in, showToast is true, and panel hasn't been shown yet
-    if (isLoaded && !isSignedIn && showToast && !toastShownRef.current) {
+    // Reset dismissed state when route changes
+    setDismissed(false)
+  }, [pathname])
+
+  useEffect(() => {
+    // Only show auth panel if auth is loaded, user is not signed in, showToast is true, and hasn't been dismissed
+    if (isLoaded && !isSignedIn && showToast && !dismissed) {
       // Small delay to ensure the page has loaded
       const timer = setTimeout(() => {
-        toastShownRef.current = true
         setShowAuthButtons(true)
       }, 3000) // 3 second delay to let the page fully load
 
       return () => clearTimeout(timer)
-    }
-  }, [isLoaded, isSignedIn, showToast])
-
-  // Reset the ref when user signs in
-  useEffect(() => {
-    if (isSignedIn) {
-      toastShownRef.current = false
+    } else if (isSignedIn) {
+      // Hide auth buttons when user signs in
       setShowAuthButtons(false)
+      setDismissed(false)
     }
-  }, [isSignedIn])
+  }, [isLoaded, isSignedIn, showToast, dismissed, pathname])
 
   // Render auth buttons in a fixed overlay
   if (showAuthButtons && !isSignedIn) {
@@ -66,7 +68,10 @@ export const AuthToast = ({ showToast = true }: AuthToastProps) => {
           <Button 
             size="sm" 
             variant="ghost" 
-            onClick={() => setShowAuthButtons(false)}
+            onClick={() => {
+              setShowAuthButtons(false)
+              setDismissed(true)
+            }}
             className="text-xs"
           >
             {t('common.dismiss') || 'Dismiss'}

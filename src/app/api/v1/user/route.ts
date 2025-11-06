@@ -52,6 +52,21 @@ export async function GET(req: Request) {
       })
       // Refetch user with new profile
       user = await getUser()
+
+      // Revalidate the public profile path for this user via v1 revalidate endpoint
+      try {
+        const username = clerkUser?.username
+        if (username) {
+          const origin = new URL(req.url).origin
+          await fetch(`${origin}/api/v1/revalidate`, {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ paths: [`/@${username}`] })
+          })
+        }
+      } catch (revalidateError) {
+        console.error('Error calling v1 revalidate for profile path:', revalidateError)
+      }
     } catch (error) {
       console.error('Error creating profile:', error)
     }

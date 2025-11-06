@@ -15,6 +15,7 @@ import {
 
 import { Nav } from '@/components/ui/nav'
 import { Footer } from '@/components/Footer'
+import { BottomNav } from '@/components/BottomNav'
 
 import "./globals.css"
 
@@ -142,12 +143,13 @@ export default function RootLayout({
                   dedupingInterval: 15000,
                 }}>
                   <article className="">
-                    <div>
+                    <div className="pb-[80px]">
                       <Nav subHeader="" onThemeChange={handleThemeChange} />
                       <AppContent>{children}</AppContent>
                       <Footer />
                     </div>
                   </article>
+                  <BottomNav />
                 </SWRConfig>
                 <AuthToast />
               </GlobalContext.Provider>
