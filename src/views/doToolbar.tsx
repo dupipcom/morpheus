@@ -117,9 +117,9 @@ export const DoToolbar = ({
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center gap-2">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-2">
         <Select value={selectedTaskListId} onValueChange={onChangeSelectedTaskListId}>
-          <SelectTrigger className="w-[260px]">
+          <SelectTrigger className="w-full sm:w-[260px]">
             <SelectValue placeholder={t('tasks.selectList') || 'Select list'} />
           </SelectTrigger>
           <SelectContent>
@@ -137,7 +137,7 @@ export const DoToolbar = ({
               <Button
                 variant="outline"
                 className={cn(
-                  "w-[240px] justify-start text-left font-normal",
+                  "w-full sm:w-[240px] justify-start text-left font-normal",
                   !selectedDate && "text-muted-foreground"
                 )}
               >
@@ -156,7 +156,7 @@ export const DoToolbar = ({
           </Popover>
         )}
 
-        <div className="ml-auto flex items-center gap-2">
+        <div className="flex items-center gap-2 sm:ml-auto">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
