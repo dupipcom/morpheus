@@ -203,7 +203,7 @@ export const DoToolbar = ({
           )}
           {(selectedList as any)?.dueDate && (
             <Badge variant="outline" className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80">
-              <Calendar className="h-3 w-3 mr-1" />
+              <CalendarIcon className="h-3 w-3 mr-1" />
               {(selectedList as any).dueDate}
             </Badge>
           )}

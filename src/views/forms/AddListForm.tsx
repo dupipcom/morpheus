@@ -47,16 +47,24 @@ export const AddListForm = ({
 
   useEffect(() => {
     if (initialList) {
+      // Split role like "daily.default" into cadence and role
+      const fullRole = initialList.role || 'one-off.custom'
+      const [cadencePart, rolePart] = fullRole.includes('.') ? fullRole.split('.') : ['one-off', fullRole]
+      
       setForm({
         name: initialList.name || '',
         templateId: isEditing ? '' : (initialList.templateId ? `template:${initialList.templateId}` : ''),
         budget: initialList.budget || '',
         dueDate: initialList.dueDate || '',
-        cadence: initialList.cadence || 'one-off',
-        role: initialList.role || 'custom',
+        cadence: cadencePart || 'one-off',
+        role: rolePart || 'custom',
         collaborators: (initialList.collaborators || []).map((id: string) => ({ id, userName: id }))
       })
-      setTasks(Array.isArray(initialList.tasks) ? initialList.tasks : [])
+      // Load tasks from templateTasks if available, otherwise from tasks
+      const tasksToLoad = (Array.isArray(initialList.templateTasks) && initialList.templateTasks.length > 0)
+        ? initialList.templateTasks
+        : (Array.isArray(initialList.tasks) ? initialList.tasks : [])
+      setTasks(tasksToLoad)
       setDueDateObj(initialList.dueDate ? new Date(initialList.dueDate) : undefined)
     }
   }, [JSON.stringify(initialList), isEditing])
@@ -86,7 +94,7 @@ export const AddListForm = ({
   }, [JSON.stringify((form.collaborators || []).map((c) => c.id))])
 
   const newListPreviewTasks = useMemo(() => {
-    if (!form.templateId) return [] as any[]
+    if (!form.templateId) return null // Return null instead of empty array when no template
     if (form.templateId.startsWith('template:')) {
       const tplId = form.templateId.split(':')[1]
       const tpl = userTemplates.find((t: any) => t.id === tplId)
@@ -101,7 +109,7 @@ export const AddListForm = ({
   }, [form.templateId, userTemplates, allTaskLists])
 
   useEffect(() => {
-    if (!isEditing) {
+    if (!isEditing && newListPreviewTasks !== null) {
       setTasks(newListPreviewTasks)
     }
   }, [newListPreviewTasks, isEditing])
