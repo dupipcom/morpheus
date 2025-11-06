@@ -105,13 +105,15 @@ export default function RootLayout({
     try {
       const res = await fetch('/api/v1/tasklists')
       if (!res.ok) {
-        setGlobalContext(prev => ({ ...prev, taskLists: [] }))
+        // Don't clear existing task lists on error - preserve them
+        console.warn('Failed to refresh task lists:', res.status)
         return
       }
       const data = await res.json()
       setGlobalContext(prev => ({ ...prev, taskLists: Array.isArray(data?.taskLists) ? data.taskLists : [] }))
-    } catch (_) {
-      setGlobalContext(prev => ({ ...prev, taskLists: [] }))
+    } catch (error) {
+      // Don't clear existing task lists on error - preserve them
+      console.warn('Error refreshing task lists:', error)
     }
   }
 
