@@ -99,7 +99,15 @@
     "editing": "Editing: {timeframe}",
     "weekNumber": "Week {number}",
     "yourEarnings": "Your earnings {timeframe}, so far: Ð{amount}",
-    "selectList": "Select list"
+    "selectList": "Select list",
+    "status": {
+      "in progress": "In Progress",
+      "steady": "Steady",
+      "ready": "Ready",
+      "open": "Open",
+      "done": "Done",
+      "ignored": "Ignored"
+    }
   },
   "forms": {
     "commonOptions": {

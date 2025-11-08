@@ -99,7 +99,15 @@
     "editing": "编辑中：{timeframe}",
     "weekNumber": "第{number}周",
     "yourEarnings": "您的收入{timeframe}，到目前为止：Ð{amount}",
-    "selectList": "选择列表"
+    "selectList": "选择列表",
+    "status": {
+      "in progress": "进行中",
+      "steady": "稳定",
+      "ready": "就绪",
+      "open": "待办",
+      "done": "完成",
+      "ignored": "已忽略"
+    }
   },
   "settings": {
     "title": "设置",

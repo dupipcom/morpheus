@@ -103,7 +103,15 @@
     "editing": "Redigering: {timeframe}",
     "weekNumber": "Uge {number}",
     "yourEarnings": "Dine indtægter {timeframe}, hidtil: Ð{amount}",
-    "selectList": "Vælg liste"
+    "selectList": "Vælg liste",
+    "status": {
+      "in progress": "I Gang",
+      "steady": "Stabil",
+      "ready": "Klar",
+      "open": "Åben",
+      "done": "Færdig",
+      "ignored": "Ignoreret"
+    }
   },
   "actions": {
     "drankWater": "Drak vand",

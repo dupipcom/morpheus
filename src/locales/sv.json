@@ -102,7 +102,15 @@
     "editing": "Redigerar: {timeframe}",
     "weekNumber": "Vecka {number}",
     "yourEarnings": "Din inkomst",
-    "selectList": "Välj lista"
+    "selectList": "Välj lista",
+    "status": {
+      "in progress": "Pågående",
+      "steady": "Stabil",
+      "ready": "Redo",
+      "open": "Öppen",
+      "done": "Klar",
+      "ignored": "Ignorerad"
+    }
   },
   "actions": {
     "drankWater": "Drack vatten",

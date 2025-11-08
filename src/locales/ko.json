@@ -99,7 +99,15 @@
     "editing": "편집 중: {timeframe}",
     "weekNumber": "주 {number}",
     "yourEarnings": "당신의 수익 {timeframe}, 지금까지: Ð{amount}",
-    "selectList": "목록 선택"
+    "selectList": "목록 선택",
+    "status": {
+      "in progress": "진행 중",
+      "steady": "안정",
+      "ready": "준비됨",
+      "open": "열림",
+      "done": "완료",
+      "ignored": "무시됨"
+    }
   },
   "actions": {
     "drankWater": "물을 마셨습니다",

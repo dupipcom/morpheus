@@ -103,7 +103,15 @@
     "editing": "Muokataan: {timeframe}",
     "weekNumber": "Viikko {number}",
     "yourEarnings": "Tulosi",
-    "selectList": "Valitse lista"
+    "selectList": "Valitse lista",
+    "status": {
+      "in progress": "Käynnissä",
+      "steady": "Vakaa",
+      "ready": "Valmis",
+      "open": "Avoin",
+      "done": "Valmis",
+      "ignored": "Sivuutettu"
+    }
   },
   "actions": {
     "drankWater": "Joi vettä",

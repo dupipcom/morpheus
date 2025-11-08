@@ -102,7 +102,15 @@
     "editing": "Editando: {timeframe}",
     "weekNumber": "Semana {number}",
     "yourEarnings": "Os teus ingresos",
-    "selectList": "Seleccionar lista"
+    "selectList": "Seleccionar lista",
+    "status": {
+      "in progress": "En Progreso",
+      "steady": "Estable",
+      "ready": "Listo",
+      "open": "Aberto",
+      "done": "Feito",
+      "ignored": "Ignorado"
+    }
   },
   "actions": {
     "drankWater": "Bebeu auga",

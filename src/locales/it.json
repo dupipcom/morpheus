@@ -99,7 +99,15 @@
     "editing": "Modifica: {timeframe}",
     "weekNumber": "Settimana {number}",
     "yourEarnings": "I tuoi guadagni {timeframe}, finora: Ð{amount}",
-    "selectList": "Seleziona elenco"
+    "selectList": "Seleziona elenco",
+    "status": {
+      "in progress": "In Corso",
+      "steady": "Costante",
+      "ready": "Pronto",
+      "open": "Aperto",
+      "done": "Completato",
+      "ignored": "Ignorato"
+    }
   },
   "settings": {
     "title": "Impostazioni",

@@ -99,7 +99,15 @@
     "editing": "編集中：{timeframe}",
     "weekNumber": "週{number}",
     "yourEarnings": "あなたの収益{timeframe}、これまで：Ð{amount}",
-    "selectList": "リストを選択"
+    "selectList": "リストを選択",
+    "status": {
+      "in progress": "進行中",
+      "steady": "安定",
+      "ready": "準備完了",
+      "open": "オープン",
+      "done": "完了",
+      "ignored": "無視"
+    }
   },
   "settings": {
     "title": "設定",

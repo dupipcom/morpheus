@@ -102,7 +102,15 @@
     "editing": "Editatzen: {timeframe}",
     "weekNumber": "Astea {number}",
     "yourEarnings": "Zure irabaziak",
-    "selectList": "Zerrenda hautatu"
+    "selectList": "Zerrenda hautatu",
+    "status": {
+      "in progress": "Abian",
+      "steady": "Egonkor",
+      "ready": "Prest",
+      "open": "Ireki",
+      "done": "Eginda",
+      "ignored": "Ezikusia"
+    }
   },
   "actions": {
     "drankWater": "Ura edan zuen",

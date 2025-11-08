@@ -99,7 +99,15 @@
     "editing": "Επεξεργασία",
     "weekNumber": "Εβδομάδα {number}",
     "yourEarnings": "Τα κέρδη σας {timeframe}, μέχρι τώρα: Ð{amount}",
-    "selectList": "Επιλογή λίστας"
+    "selectList": "Επιλογή λίστας",
+    "status": {
+      "in progress": "Σε Εξέλιξη",
+      "steady": "Σταθερό",
+      "ready": "Έτοιμο",
+      "open": "Ανοιχτό",
+      "done": "Ολοκληρώθηκε",
+      "ignored": "Αγνοήθηκε"
+    }
   },
   "actions": {
     "drankWater": "Έπινε νερό",

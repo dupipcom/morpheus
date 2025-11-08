@@ -99,7 +99,15 @@
     "editing": "संपादन: {timeframe}",
     "weekNumber": "सप्ताह {number}",
     "yourEarnings": "आपकी कमाई {timeframe}, अब तक: Ð{amount}",
-    "selectList": "सूची चुनें"
+    "selectList": "सूची चुनें",
+    "status": {
+      "in progress": "प्रगति में",
+      "steady": "स्थिर",
+      "ready": "तैयार",
+      "open": "खुला",
+      "done": "पूर्ण",
+      "ignored": "अनदेखा"
+    }
   },
   "actions": {
     "drankWater": "पानी पिया",

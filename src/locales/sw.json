@@ -99,7 +99,15 @@
     "editing": "Inahariri: {timeframe}",
     "weekNumber": "Wiki {number}",
     "yourEarnings": "Mapato yako {timeframe}, hadi sasa: Ð{amount}",
-    "selectList": "Chagua orodha"
+    "selectList": "Chagua orodha",
+    "status": {
+      "in progress": "Inaendelea",
+      "steady": "Thabiti",
+      "ready": "Tayari",
+      "open": "Wazi",
+      "done": "Imekamilika",
+      "ignored": "Imepuuzwa"
+    }
   },
   "settings": {
     "title": "Mipangilio",

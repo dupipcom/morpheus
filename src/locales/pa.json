@@ -103,7 +103,15 @@
     "editing": "ਸੰਪਾਦਨ: {timeframe}",
     "weekNumber": "ਹਫ਼ਤਾ {number}",
     "yourEarnings": "ਤੁਹਾਡੀ ਕਮਾਈ",
-    "selectList": "Select list"
+    "selectList": "Select list",
+    "status": {
+      "in progress": "ਜਾਰੀ",
+      "steady": "ਸਥਿਰ",
+      "ready": "ਤਿਆਰ",
+      "open": "ਖੁੱਲ੍ਹਾ",
+      "done": "ਪੂਰਾ",
+      "ignored": "ਅਣਡਿੱਠ"
+    }
   },
   "actions": {
     "drankWater": "ਪਾਣੀ ਪੀਤਾ",

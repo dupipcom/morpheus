@@ -99,7 +99,15 @@
     "editing": "Editare: {timeframe}",
     "weekNumber": "Săptămâna {number}",
     "yourEarnings": "Câștigurile tale",
-    "selectList": "Selectați lista"
+    "selectList": "Selectați lista",
+    "status": {
+      "in progress": "În Curs",
+      "steady": "Constant",
+      "ready": "Gata",
+      "open": "Deschis",
+      "done": "Finalizat",
+      "ignored": "Ignorat"
+    }
   },
   "actions": {
     "drankWater": "A băut apă",

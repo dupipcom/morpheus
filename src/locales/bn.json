@@ -99,7 +99,15 @@
     "editing": "সম্পাদনা: {timeframe}",
     "weekNumber": "সপ্তাহ {number}",
     "yourEarnings": "আপনার আয় {timeframe}، এখন পর্যন্ত: Ð{amount}",
-    "selectList": "তালিকা নির্বাচন করুন"
+    "selectList": "তালিকা নির্বাচন করুন",
+    "status": {
+      "in progress": "চলমান",
+      "steady": "স্থিতিশীল",
+      "ready": "প্রস্তুত",
+      "open": "খোলা",
+      "done": "সম্পন্ন",
+      "ignored": "উপেক্ষিত"
+    }
   },
   "actions": {
     "drankWater": "পানি পান করেছে",

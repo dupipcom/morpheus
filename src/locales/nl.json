@@ -99,7 +99,15 @@
     "editing": "Bewerken: {timeframe}",
     "weekNumber": "Week {number}",
     "yourEarnings": "Uw inkomsten {timeframe}, tot nu toe: Ð{amount}",
-    "selectList": "Selecteer lijst"
+    "selectList": "Selecteer lijst",
+    "status": {
+      "in progress": "Bezig",
+      "steady": "Stabiel",
+      "ready": "Klaar",
+      "open": "Open",
+      "done": "Voltooid",
+      "ignored": "Genegeerd"
+    }
   },
   "actions": {
     "drankWater": "Heeft water gedronken",

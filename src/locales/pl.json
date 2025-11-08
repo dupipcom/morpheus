@@ -103,7 +103,15 @@
     "editing": "Edycja: {timeframe}",
     "weekNumber": "Tydzień {number}",
     "yourEarnings": "Twoje zarobki {timeframe}, do tej pory: Ð{amount}",
-    "selectList": "Wybierz listę"
+    "selectList": "Wybierz listę",
+    "status": {
+      "in progress": "W Trakcie",
+      "steady": "Stabilny",
+      "ready": "Gotowy",
+      "open": "Otwarty",
+      "done": "Ukończony",
+      "ignored": "Zignorowany"
+    }
   },
   "actions": {
     "drankWater": "Wypił wodę",

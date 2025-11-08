@@ -99,7 +99,15 @@
     "editing": "Úprava: {timeframe}",
     "weekNumber": "Týden {number}",
     "yourEarnings": "Vaše příjmy {timeframe}, doposud: Ð{amount}",
-    "selectList": "Vyberte seznam"
+    "selectList": "Vyberte seznam",
+    "status": {
+      "in progress": "Probíhá",
+      "steady": "Stabilní",
+      "ready": "Připraveno",
+      "open": "Otevřeno",
+      "done": "Hotovo",
+      "ignored": "Ignorováno"
+    }
   },
   "actions": {
     "drankWater": "Vypil vodu",

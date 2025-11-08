@@ -103,7 +103,15 @@
     "editing": "Menyunting: {timeframe}",
     "weekNumber": "Minggu {number}",
     "yourEarnings": "Pendapatan anda",
-    "selectList": "Select list"
+    "selectList": "Select list",
+    "status": {
+      "in progress": "Sedang Berjalan",
+      "steady": "Mantap",
+      "ready": "Sedia",
+      "open": "Terbuka",
+      "done": "Selesai",
+      "ignored": "Diabaikan"
+    }
   },
   "actions": {
     "drankWater": "Minum air",

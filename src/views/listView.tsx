@@ -679,7 +679,7 @@ const getIconColor = (status: TaskStatus): string => {
                             className={`h-4 w-4 mr-2`}
                             style={{fill: getStatusColor(status), color: getStatusColor(status) }}
                           />
-                          {status}
+                          {t(`tasks.status.${status}`)}
                         </DropdownMenuItem>
                       ))}
                     </DropdownMenuContent>

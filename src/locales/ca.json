@@ -99,7 +99,15 @@
     "editing": "Editant: {timeframe}",
     "weekNumber": "Setmana {number}",
     "yourEarnings": "Els teus ingressos {timeframe}, fins al moment: Ð{amount}",
-    "selectList": "Seleccionar llista"
+    "selectList": "Seleccionar llista",
+    "status": {
+      "in progress": "En Progrés",
+      "steady": "Estable",
+      "ready": "Llest",
+      "open": "Obert",
+      "done": "Fet",
+      "ignored": "Ignorat"
+    }
   },
   "actions": {
     "drankWater": "Ha begut aigua",

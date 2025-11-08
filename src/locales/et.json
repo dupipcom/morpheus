@@ -99,7 +99,15 @@
     "editing": "Redigeerimine: {timeframe}",
     "weekNumber": "Nädal {number}",
     "yourEarnings": "Sinu sissetulek {timeframe}, seni: Ð{amount}",
-    "selectList": "Vali nimekiri"
+    "selectList": "Vali nimekiri",
+    "status": {
+      "in progress": "Pooleli",
+      "steady": "Stabiilne",
+      "ready": "Valmis",
+      "open": "Avatud",
+      "done": "Tehtud",
+      "ignored": "Ignoreeritud"
+    }
   },
   "actions": {
     "drankWater": "Jõi vett",

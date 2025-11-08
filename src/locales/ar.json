@@ -103,7 +103,15 @@
     "editing": "تعديل",
     "weekNumber": "الأسبوع {number}",
     "yourEarnings": "أرباحك",
-    "selectList": "اختر القائمة"
+    "selectList": "اختر القائمة",
+    "status": {
+      "in progress": "قيد التنفيذ",
+      "steady": "مستقر",
+      "ready": "جاهز",
+      "open": "مفتوح",
+      "done": "مكتمل",
+      "ignored": "متجاهل"
+    }
   },
   "settings": {
     "title": "الإعدادات",

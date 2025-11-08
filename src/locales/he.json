@@ -99,7 +99,15 @@
     "editing": "עריכה: {timeframe}",
     "weekNumber": "שבוע {number}",
     "yourEarnings": "הרווחים שלך",
-    "selectList": "בחר רשימה"
+    "selectList": "בחר רשימה",
+    "status": {
+      "in progress": "בתהליך",
+      "steady": "יציב",
+      "ready": "מוכן",
+      "open": "פתוח",
+      "done": "הושלם",
+      "ignored": "התעלם"
+    }
   },
   "actions": {
     "drankWater": "שתה מים",

@@ -99,7 +99,15 @@
     "editing": "Szerkesztés: {timeframe}",
     "weekNumber": "{number}. hét",
     "yourEarnings": "Ön keresete {timeframe}, eddig: Ð{amount}",
-    "selectList": "Lista kiválasztása"
+    "selectList": "Lista kiválasztása",
+    "status": {
+      "in progress": "Folyamatban",
+      "steady": "Állandó",
+      "ready": "Kész",
+      "open": "Nyitott",
+      "done": "Kész",
+      "ignored": "Figyelmen kívül hagyva"
+    }
   },
   "actions": {
     "drankWater": "Vizet ivott",

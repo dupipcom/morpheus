@@ -99,7 +99,15 @@
     "editing": "Ó ń ṣàtúnṣe: {timeframe}",
     "weekNumber": "Ọ̀sẹ̀ {number}",
     "yourEarnings": "Owó tí o gbà {timeframe}, títí di báyìí: Ð{amount}",
-    "selectList": "Yàn àkójọ"
+    "selectList": "Yàn àkójọ",
+    "status": {
+      "in progress": "Ó Ń Lọ",
+      "steady": "Dúró",
+      "ready": "Tán",
+      "open": "Ṣíṣi",
+      "done": "Ti Parí",
+      "ignored": "Ti Kọjú"
+    }
   },
   "settings": {
     "title": "Ètò",

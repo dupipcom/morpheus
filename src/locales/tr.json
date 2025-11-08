@@ -103,7 +103,15 @@
     "editing": "Düzenleniyor: {timeframe}",
     "weekNumber": "Hafta {number}",
     "yourEarnings": "Kazancınız",
-    "selectList": "Liste seçin"
+    "selectList": "Liste seçin",
+    "status": {
+      "in progress": "Devam Ediyor",
+      "steady": "Sabit",
+      "ready": "Hazır",
+      "open": "Açık",
+      "done": "Tamamlandı",
+      "ignored": "Yoksayıldı"
+    }
   },
   "actions": {
     "drankWater": "Su içti",

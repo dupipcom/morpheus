@@ -99,7 +99,15 @@
     "editing": "Редактирование: {timeframe}",
     "weekNumber": "Неделя {number}",
     "yourEarnings": "Ваш заработок",
-    "selectList": "Выберите список"
+    "selectList": "Выберите список",
+    "status": {
+      "in progress": "В процессе",
+      "steady": "Стабильно",
+      "ready": "Готово",
+      "open": "Открыто",
+      "done": "Выполнено",
+      "ignored": "Игнорировано"
+    }
   },
   "actions": {
     "drankWater": "Пил воду",

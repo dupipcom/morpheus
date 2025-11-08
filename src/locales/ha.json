@@ -99,7 +99,15 @@
     "editing": "Ana gyara: {timeframe}",
     "weekNumber": "Mako {number}",
     "yourEarnings": "Kuɗin da ka samu {timeframe}, har yanzu: Ð{amount}",
-    "selectList": "Zaɓi jeri"
+    "selectList": "Zaɓi jeri",
+    "status": {
+      "in progress": "Ana Ci Gaba",
+      "steady": "Tsayayye",
+      "ready": "Shirye",
+      "open": "A Buɗe",
+      "done": "An Gama",
+      "ignored": "An Yi Watsi"
+    }
   },
   "settings": {
     "title": "Saiti",
