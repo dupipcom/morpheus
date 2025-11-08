@@ -584,22 +584,12 @@ export async function POST(req: Request) {
     console.log({ entries: entries[year]?.weeks[week]?.tasks })
     if (toAppend.length > 0) {
       // Route based on role prefix
+      // Note: Profit, prize, and earnings are calculated and updated by the tasklists API
+      // This route only stores task references in user entries
       if (rolePrefix === 'weekly') {
-        // Accumulate prize, profit, and earnings for weekly tasks
-        const currentPrize = parseFloat(updated[year].weeks[week].prize || '0')
-        const currentProfit = parseFloat(updated[year].weeks[week].profit || '0')
-        const currentEarnings = parseFloat(updated[year].weeks[week].earnings || '0')
-        
-        const newPrize = currentPrize + (parseFloat(data.weeklyPrize) || 0)
-        const newProfit = currentProfit + (parseFloat(data.weeklyProfit) || 0)
-        const newEarnings = currentEarnings + (parseFloat(data.weeklyEarnings) || 0)
-        
         updated[year].weeks[week] = {
           ...updated[year].weeks[week],
-          tasks: [...existing, ...toAppend],
-          prize: newPrize.toString(),
-          profit: newProfit.toString(),
-          earnings: newEarnings.toString()
+          tasks: [...existing, ...toAppend]
         }
       } else if (rolePrefix === 'monthly') {
         const monthNum = Number(String(date).split('-')[1])
@@ -628,6 +618,7 @@ export async function POST(req: Request) {
           tasks: [...existing, ...toAppend]
         }
       }
+      
       await prisma.user.update({
         data: { entries: updated },
         where: { id: user.id },
@@ -676,22 +667,12 @@ export async function POST(req: Request) {
     const names = new Set(existing.map((t:any) => t.name))
     const toAppend = data.dayTasksAppend.filter((t:any) => t.status === 'Done' && !names.has(t.name))
     if (toAppend.length > 0) {
+      // Note: Profit, prize, and earnings are calculated and updated by the tasklists API
+      // This route only stores task references in user entries
       if (rolePrefix === 'daily') {
-        // Accumulate prize, profit, and earnings
-        const currentPrize = parseFloat(updated[y].days[dateISO].prize || '0')
-        const currentProfit = parseFloat(updated[y].days[dateISO].profit || '0')
-        const currentEarnings = parseFloat(updated[y].days[dateISO].earnings || '0')
-        
-        const newPrize = currentPrize + (parseFloat(data.dailyPrize) || 0)
-        const newProfit = currentProfit + (parseFloat(data.dailyProfit) || 0)
-        const newEarnings = currentEarnings + (parseFloat(data.dailyEarnings) || 0)
-        
         updated[y].days[dateISO] = {
           ...updated[y].days[dateISO],
-          tasks: [...existing, ...toAppend],
-          prize: newPrize.toString(),
-          profit: newProfit.toString(),
-          earnings: newEarnings.toString()
+          tasks: [...existing, ...toAppend]
         }
       } else if (rolePrefix === 'weekly') {
         const w = getWeekNumber(new Date(dateISO))[1]
@@ -724,6 +705,7 @@ export async function POST(req: Request) {
           tasks: [...existing, ...toAppend]
         }
       }
+      
       await prisma.user.update({
         data: { entries: updated },
         where: { id: user.id },

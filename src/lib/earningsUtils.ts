@@ -51,19 +51,20 @@ interface CalculateEarningsParams {
   listRole?: string | null
   budgetPercentage?: number
   listBudget?: string | null
-  userAvailableBalance?: string | null
+  userEquity?: string | null
   numTasks: number
   date: Date
 }
 
 /**
  * Calculate earnings for a completed task
+ * Note: Prize calculations use user.equity (not availableBalance) for security
  */
 export function calculateTaskEarnings({
   listRole,
   budgetPercentage,
   listBudget,
-  userAvailableBalance,
+  userEquity,
   numTasks,
   date
 }: CalculateEarningsParams): EarningsCalculation {
@@ -78,13 +79,14 @@ export function calculateTaskEarnings({
 
   const isDaily = listRole?.startsWith('daily.')
   const isWeekly = listRole?.startsWith('weekly.')
-  const availableBalance = parseFloat(userAvailableBalance || '0')
+  const equity = parseFloat(userEquity || '0')
   const budget = parseFloat(listBudget || '0')
   const budgetAllocation = (budgetPercentage || 0) / 100 // Convert percentage to decimal
 
   // 1. Calculate actionPrize (if budgetPercentage is set)
-  if (budgetAllocation > 0 && availableBalance > 0) {
-    result.actionPrize = (budgetAllocation * availableBalance) / numTasks
+  // Prize is calculated from equity (availableBalance - stash)
+  if (budgetAllocation > 0 && equity > 0) {
+    result.actionPrize = (budgetAllocation * equity) / numTasks
     
     // For daily/weekly lists, divide by 30 or 4 respectively
     if (isDaily) {

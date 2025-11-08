@@ -206,7 +206,7 @@ export async function POST(request: NextRequest) {
         listRole: taskList.role,
         budgetPercentage: (taskList as any).budgetPercentage,
         listBudget: taskList.budget,
-        userAvailableBalance: userRecord?.availableBalance,
+        userEquity: userRecord?.equity,
         numTasks: totalTasks,
         date: completionDate
       })
@@ -407,6 +407,9 @@ export async function POST(request: NextRequest) {
 
         const updated = ensureStructure(entries, year)
         let entriesModified = false
+        
+        // Track stash changes (profit + prize deltas)
+        let stashDelta = 0
 
         // Handle completions
         if (justCompletedNames.length > 0) {
@@ -434,9 +437,14 @@ export async function POST(request: NextRequest) {
             const currentEarnings = parseFloat(updated[year].days[dateISO].earnings || '0')
 
             // Add earnings based on number of completions, not number of new tasks
-            const newPrize = currentPrize + (earnings.dailyPrize || 0) * numNewCompleters
-            const newProfit = currentProfit + (earnings.dailyProfit || 0) * numNewCompleters
+            const prizeDelta = (earnings.dailyPrize || 0) * numNewCompleters
+            const profitDelta = (earnings.dailyProfit || 0) * numNewCompleters
+            const newPrize = currentPrize + prizeDelta
+            const newProfit = currentProfit + profitDelta
             const newEarnings = currentEarnings + (earnings.dailyEarnings || 0) * numNewCompleters
+
+            // Accumulate stash delta
+            stashDelta += prizeDelta + profitDelta
 
             updated[year].days[dateISO] = {
               ...updated[year].days[dateISO],
@@ -464,9 +472,14 @@ export async function POST(request: NextRequest) {
             const currentEarnings = parseFloat(updated[year].weeks[week].earnings || '0')
 
             // Add earnings based on number of completions, not number of new tasks
-            const newPrize = currentPrize + (earnings.weeklyPrize || 0) * numNewCompleters
-            const newProfit = currentProfit + (earnings.weeklyProfit || 0) * numNewCompleters
+            const prizeDelta = (earnings.weeklyPrize || 0) * numNewCompleters
+            const profitDelta = (earnings.weeklyProfit || 0) * numNewCompleters
+            const newPrize = currentPrize + prizeDelta
+            const newProfit = currentProfit + profitDelta
             const newEarnings = currentEarnings + (earnings.weeklyEarnings || 0) * numNewCompleters
+
+            // Accumulate stash delta
+            stashDelta += prizeDelta + profitDelta
 
             updated[year].weeks[week] = {
               ...updated[year].weeks[week],
@@ -493,9 +506,14 @@ export async function POST(request: NextRequest) {
             const currentEarnings = parseFloat(updated[year].oneOffs[dateISO].earnings || '0')
 
             // Use full action values (no division by 30 or 4), multiplied by number of completions
-            const newPrize = currentPrize + (earnings.actionPrize || 0) * numNewCompleters
-            const newProfit = currentProfit + (earnings.actionProfit || 0) * numNewCompleters
+            const prizeDelta = (earnings.actionPrize || 0) * numNewCompleters
+            const profitDelta = (earnings.actionProfit || 0) * numNewCompleters
+            const newPrize = currentPrize + prizeDelta
+            const newProfit = currentProfit + profitDelta
             const newEarnings = currentEarnings + (earnings.actionValuation || 0) * numNewCompleters
+
+            // Accumulate stash delta
+            stashDelta += prizeDelta + profitDelta
 
             updated[year].oneOffs[dateISO] = {
               ...updated[year].oneOffs[dateISO],
@@ -523,9 +541,14 @@ export async function POST(request: NextRequest) {
             const currentProfit = parseFloat(updated[year].days[dateISO].profit || '0')
             const currentEarnings = parseFloat(updated[year].days[dateISO].earnings || '0')
 
-            const newPrize = Math.max(0, currentPrize - (earnings.dailyPrize || 0) * numUncompletions)
-            const newProfit = Math.max(0, currentProfit - (earnings.dailyProfit || 0) * numUncompletions)
+            const prizeDelta = (earnings.dailyPrize || 0) * numUncompletions
+            const profitDelta = (earnings.dailyProfit || 0) * numUncompletions
+            const newPrize = Math.max(0, currentPrize - prizeDelta)
+            const newProfit = Math.max(0, currentProfit - profitDelta)
             const newEarnings = Math.max(0, currentEarnings - (earnings.dailyEarnings || 0) * numUncompletions)
+
+            // Subtract from stash delta
+            stashDelta -= prizeDelta + profitDelta
 
             updated[year].days[dateISO] = {
               ...updated[year].days[dateISO],
@@ -548,9 +571,14 @@ export async function POST(request: NextRequest) {
               const currentProfit = parseFloat(updated[year].weeks[week].profit || '0')
               const currentEarnings = parseFloat(updated[year].weeks[week].earnings || '0')
 
-              const newPrize = Math.max(0, currentPrize - (earnings.weeklyPrize || 0) * numUncompletions)
-              const newProfit = Math.max(0, currentProfit - (earnings.weeklyProfit || 0) * numUncompletions)
+              const prizeDelta = (earnings.weeklyPrize || 0) * numUncompletions
+              const profitDelta = (earnings.weeklyProfit || 0) * numUncompletions
+              const newPrize = Math.max(0, currentPrize - prizeDelta)
+              const newProfit = Math.max(0, currentProfit - profitDelta)
               const newEarnings = Math.max(0, currentEarnings - (earnings.weeklyEarnings || 0) * numUncompletions)
+
+              // Subtract from stash delta
+              stashDelta -= prizeDelta + profitDelta
 
               updated[year].weeks[week] = {
                 ...updated[year].weeks[week],
@@ -572,9 +600,14 @@ export async function POST(request: NextRequest) {
             const currentProfit = parseFloat(updated[year].oneOffs[dateISO].profit || '0')
             const currentEarnings = parseFloat(updated[year].oneOffs[dateISO].earnings || '0')
 
-            const newPrize = Math.max(0, currentPrize - (earnings.actionPrize || 0) * numUncompletions)
-            const newProfit = Math.max(0, currentProfit - (earnings.actionProfit || 0) * numUncompletions)
+            const prizeDelta = (earnings.actionPrize || 0) * numUncompletions
+            const profitDelta = (earnings.actionProfit || 0) * numUncompletions
+            const newPrize = Math.max(0, currentPrize - prizeDelta)
+            const newProfit = Math.max(0, currentProfit - profitDelta)
             const newEarnings = Math.max(0, currentEarnings - (earnings.actionValuation || 0) * numUncompletions)
+
+            // Subtract from stash delta
+            stashDelta -= prizeDelta + profitDelta
 
             updated[year].oneOffs[dateISO] = {
               ...updated[year].oneOffs[dateISO],
@@ -586,11 +619,23 @@ export async function POST(request: NextRequest) {
           }
         }
 
-        // Save updated entries if modified
+        // Save updated entries and stash if modified
         if (entriesModified) {
+          // Calculate new stash value
+          const currentStash = parseFloat(userRecord.stash || '0')
+          const newStash = Math.max(0, currentStash + stashDelta)
+          
+          // Calculate new equity (availableBalance - stash)
+          const availableBalance = parseFloat(userRecord.availableBalance || '0')
+          const newEquity = (availableBalance - newStash).toString()
+
           await prisma.user.update({
             where: { id: userRecord.id },
-            data: { entries: updated as any }
+            data: { 
+              entries: updated as any,
+              stash: newStash.toString(),
+              equity: newEquity
+            }
           })
         }
       }
