@@ -1117,12 +1117,16 @@ export async function POST(req: Request) {
   if (data?.withdrawStash) {
     const currentStash = parseFloat(user.stash || "0")
     const currentTotalEarnings = parseFloat(user.totalEarnings || "0")
+    const currentAvailableBalance = parseFloat(user.availableBalance || "0")
+    
+    // Withdraw: subtract stash from availableBalance and add to totalEarnings
+    const newAvailableBalance = Math.max(0, currentAvailableBalance - currentStash)
     const newTotalEarnings = (currentTotalEarnings + currentStash).toString()
-    const availableBalance = parseFloat(user.availableBalance || "0")
-    const newEquity = (availableBalance - 0).toString() // Equity becomes availableBalance since stash is 0
+    const newEquity = newAvailableBalance.toString() // Equity = availableBalance since stash is 0
     
     await prisma.user.update({
       data: {
+        availableBalance: newAvailableBalance.toString(),
         stash: "0",
         totalEarnings: newTotalEarnings,
         equity: newEquity,

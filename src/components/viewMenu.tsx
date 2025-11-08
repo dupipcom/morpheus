@@ -34,12 +34,20 @@ export const ViewMenu = ({ active }: { active: string }) =>{
   const serverTotalEarnings = (session?.user as any)?.totalEarnings || "0"
   const [value, setValue, removeValue] = useLocalStorage('redacted', 0);
   const [hiddenBalance, setHiddenBalance] = useState(true)
+  const [localBalance, setLocalBalance] = useState(serverBalance)
 
   const { isLoading, refreshUser } = useUserData()
 
+  // Update local balance when server balance changes
+  useEffect(() => {
+    setLocalBalance(serverBalance)
+  }, [serverBalance])
+
   const handleBalanceChange = (e: React.FocusEvent<HTMLInputElement>) => {
+    const newValue = e.currentTarget.value
+    setLocalBalance(newValue)
     fetch('/api/v1/user', { method: 'POST', body: JSON.stringify({
-      availableBalance: e.currentTarget.value,
+      availableBalance: newValue,
       date: new Date()
     }) })
     setTimeout(() => {
@@ -56,15 +64,15 @@ export const ViewMenu = ({ active }: { active: string }) =>{
 
   const handleWithdrawStash = async () => {
     try {
-      await fetch('/api/v1/user', { 
+      const response = await fetch('/api/v1/user', { 
         method: 'POST', 
         body: JSON.stringify({ withdrawStash: true })
       })
-      setTimeout(() => {
-        if (session?.user) {
-          refreshUser()
-        }
-      }, 1500)
+      
+      if (response.ok) {
+        // Refresh user data immediately to update availableBalance
+        await refreshUser()
+      }
     } catch (error) {
       console.error('Error withdrawing stash:', error)
     }
@@ -100,8 +108,14 @@ export const ViewMenu = ({ active }: { active: string }) =>{
         <Skeleton className="h-9 flex-1" />
       ) : (
         <>
-          { hiddenBalance ? <Input disabled /> :
-            <Input type="number" step="0.01" onBlur={handleBalanceChange} defaultValue={serverBalance} />
+          { hiddenBalance ? <Input disabled value="••••••" /> :
+            <Input 
+              type="number" 
+              step="0.01" 
+              onBlur={handleBalanceChange} 
+              value={parseFloat(localBalance || '0').toFixed(2)}
+              onChange={(e) => setLocalBalance(e.target.value)}
+            />
           }
           <Button className={`ml-2 border-accent ${ hiddenBalance ? "bg-input/80" : "bg-input/30"} text-foreground hover:text-background`} onClick={handleHideBalance}>
             {hiddenBalance ?
