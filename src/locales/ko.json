@@ -423,6 +423,7 @@
       "templateOrListLabel": "템플릿 또는 목록",
       "chooseTemplatePlaceholder": "템플릿 선택",
       "budgetLabel": "예산",
+      "budgetPercentageLabel": "개인 예산 할당",
       "dueDateLabel": "기한",
       "pickDatePlaceholder": "날짜 선택",
       "cadenceLabel": "주기",

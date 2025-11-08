@@ -423,6 +423,7 @@
       "templateOrListLabel": "テンプレートまたはリスト",
       "chooseTemplatePlaceholder": "テンプレートを選択",
       "budgetLabel": "予算",
+      "budgetPercentageLabel": "個人予算の配分",
       "dueDateLabel": "期日",
       "pickDatePlaceholder": "日付を選択",
       "cadenceLabel": "頻度",

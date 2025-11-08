@@ -424,6 +424,7 @@
       "templateOrListLabel": "Plantilla o lista",
       "chooseTemplatePlaceholder": "Elige una plantilla",
       "budgetLabel": "Presupuesto",
+      "budgetPercentageLabel": "Asignación de presupuesto personal",
       "dueDateLabel": "Fecha de vencimiento",
       "pickDatePlaceholder": "Elige una fecha",
       "cadenceLabel": "Frecuencia",

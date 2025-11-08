@@ -14,7 +14,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { Plus, Pencil, DollarSign, Calendar as CalendarIcon, User as UserIcon } from 'lucide-react'
+import { Plus, Pencil, DollarSign, Calendar as CalendarIcon, User as UserIcon, TrendingUp, Award } from 'lucide-react'
 import { GlobalContext } from '@/lib/contexts'
 import { useI18n } from '@/lib/contexts/i18n'
 import { AddTaskForm } from '@/views/forms/AddTaskForm'
@@ -43,7 +43,7 @@ export const DoToolbar = ({
   onDateChange?: (date: Date | undefined) => void
 }) => {
   const { t } = useI18n()
-  const { taskLists: contextTaskLists, refreshTaskLists } = useContext(GlobalContext)
+  const { session, taskLists: contextTaskLists, refreshTaskLists } = useContext(GlobalContext)
   
   // Maintain stable task lists that never clear once loaded
   const [stableTaskLists, setStableTaskLists] = useState<TaskList[]>([])
@@ -65,6 +65,78 @@ export const DoToolbar = ({
   const [isEditingList, setIsEditingList] = useState(false)
   const [userTemplates, setUserTemplates] = useState<any[]>([])
   const [collabProfiles, setCollabProfiles] = useState<Record<string, string>>({})
+  const [listEarnings, setListEarnings] = useState<{ profit: number; prize: number; earnings: number }>({ profit: 0, prize: 0, earnings: 0 })
+
+  // Calculate earnings for the selected list from user entries
+  useEffect(() => {
+    if (!selectedList || !session?.user) {
+      setListEarnings({ profit: 0, prize: 0, earnings: 0 })
+      return
+    }
+
+    try {
+      const user = (session as any).user
+      const entries = user?.entries || {}
+      const listRole = (selectedList as any)?.role
+      
+      if (!listRole) {
+        setListEarnings({ profit: 0, prize: 0, earnings: 0 })
+        return
+      }
+
+      let totalProfit = 0
+      let totalPrize = 0
+      let totalEarnings = 0
+
+      // Determine list role type
+      const rolePrefix = listRole.split('.')[0]
+      const isDaily = rolePrefix === 'daily'
+      const isWeekly = rolePrefix === 'weekly'
+      const isOneOff = rolePrefix === 'one-off' || rolePrefix === 'oneoff'
+
+      // Sum up earnings from entries
+      for (const year in entries) {
+        const yearData = entries[year]
+        
+        if (isDaily && yearData?.days) {
+          // Sum daily earnings
+          for (const date in yearData.days) {
+            const day = yearData.days[date]
+            if (day) {
+              totalProfit += parseFloat(day.profit || '0')
+              totalPrize += parseFloat(day.prize || '0')
+              totalEarnings += parseFloat(day.earnings || '0')
+            }
+          }
+        } else if (isWeekly && yearData?.weeks) {
+          // Sum weekly earnings
+          for (const week in yearData.weeks) {
+            const weekData = yearData.weeks[week]
+            if (weekData) {
+              totalProfit += parseFloat(weekData.profit || '0')
+              totalPrize += parseFloat(weekData.prize || '0')
+              totalEarnings += parseFloat(weekData.earnings || '0')
+            }
+          }
+        } else if (isOneOff && yearData?.oneOffs) {
+          // Sum one-off earnings
+          for (const date in yearData.oneOffs) {
+            const oneOff = yearData.oneOffs[date]
+            if (oneOff) {
+              totalProfit += parseFloat(oneOff.profit || '0')
+              totalPrize += parseFloat(oneOff.prize || '0')
+              totalEarnings += parseFloat(oneOff.earnings || '0')
+            }
+          }
+        }
+      }
+
+      setListEarnings({ profit: totalProfit, prize: totalPrize, earnings: totalEarnings })
+    } catch (error) {
+      console.error('Error calculating list earnings:', error)
+      setListEarnings({ profit: 0, prize: 0, earnings: 0 })
+    }
+  }, [selectedList?.id, (selectedList as any)?.role, session])
 
   const refreshTemplates = async () => {
     try {
@@ -204,13 +276,30 @@ export const DoToolbar = ({
         </div>
       </div>
 
-      {/* Badges row: budget, due date, collaborators */}
+      {/* Badges row: budget, budgetPercentage, due date, collaborators, earnings */}
       {selectedList && (
         <div className="flex items-center gap-2 flex-wrap">
           {(selectedList as any)?.budget && (
             <Badge variant="secondary" className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80">
               <DollarSign className="h-3 w-3 mr-1" />
               {(selectedList as any).budget}
+            </Badge>
+          )}
+          {typeof (selectedList as any)?.budgetPercentage === 'number' && (selectedList as any).budgetPercentage > 0 && (
+            <Badge variant="outline" className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80">
+              {(selectedList as any).budgetPercentage.toFixed(0)}% of budget
+            </Badge>
+          )}
+          {typeof (selectedList as any)?.budgetPercentage === 'number' && (selectedList as any).budgetPercentage > 0 && (
+            <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 hover:bg-green-100">
+              <Award className="h-3 w-3 mr-1" />
+              Prize: ${listEarnings.prize.toFixed(2)}
+            </Badge>
+          )}
+          {(selectedList as any)?.budget && parseFloat((selectedList as any).budget || '0') > 0 && (
+            <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100">
+              <TrendingUp className="h-3 w-3 mr-1" />
+              Profit: ${listEarnings.profit.toFixed(2)}
             </Badge>
           )}
           {(selectedList as any)?.dueDate && (

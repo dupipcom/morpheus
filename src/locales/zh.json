@@ -423,6 +423,7 @@
       "templateOrListLabel": "模板或列表",
       "chooseTemplatePlaceholder": "选择模板",
       "budgetLabel": "预算",
+      "budgetPercentageLabel": "个人预算分配",
       "dueDateLabel": "到期日",
       "pickDatePlaceholder": "选择日期",
       "cadenceLabel": "节奏",
