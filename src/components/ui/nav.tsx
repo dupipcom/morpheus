@@ -37,7 +37,7 @@ const UserButtonMenu = () => {
             <UserButton.Link
               label={t('common.social')}
               labelIcon={<Users className="w-[14px] pb-2" />}
-              href="/app/social"
+              href="/app/be"
             />
           </UserButton.MenuItems>
         </UserButton>

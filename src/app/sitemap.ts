@@ -22,7 +22,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     'dashboard',
     'day', 
     'week',
-    'social',
+    'be',
     'settings',
     'profile'
   ]

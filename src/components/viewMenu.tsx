@@ -88,7 +88,7 @@ export const ViewMenu = ({ active }: { active: string }) =>{
         </NavigationMenuLink>
       </NavigationMenuItem>
       <NavigationMenuItem>
-        <NavigationMenuLink href={`/app/social`} active={active === 'social'}>
+        <NavigationMenuLink href={`/app/be`} active={active === 'be'}>
           Be
         </NavigationMenuLink>
       </NavigationMenuItem>

@@ -49,9 +49,9 @@ export function BottomNav() {
           </Button>
         </Link>
         
-        <Link href="/app/social" className="flex-1">
+        <Link href="/app/be" className="flex-1">
           <Button
-            variant={isActive('/app/social') ? 'default' : 'outline'}
+            variant={isActive('/app/be') ? 'default' : 'outline'}
             className="w-full h-14 flex items-center justify-center"
           >
             <Users className="w-6 h-6" />
