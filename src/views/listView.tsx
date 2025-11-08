@@ -281,8 +281,23 @@ const getIconColor = (status: TaskStatus): string => {
       const key = task?.id || task?.localeKey || task?.name
       const taskName = task?.name
 
+      // Check if the user is trying to mark task as "done" and assess times vs count
+      let effectiveStatus = newStatus
+      if (newStatus === 'done') {
+        const currentCount = task?.count || 0
+        const times = task?.times || 1
+        const newCount = currentCount + 1
+        
+        // Determine the appropriate status based on times and count
+        if (newCount < times) {
+          effectiveStatus = 'in progress'
+        } else if (newCount >= times) {
+          effectiveStatus = 'done'
+        }
+      }
+
       // Update local state immediately
-      setTaskStatuses(prev => ({ ...prev, [key]: newStatus }))
+      setTaskStatuses(prev => ({ ...prev, [key]: effectiveStatus }))
 
       // Persist to API - we'll store this in the task's metadata
       if (!selectedTaskList) return
@@ -290,10 +305,10 @@ const getIconColor = (status: TaskStatus): string => {
       try {
         // Store status in localStorage
         const statusKey = `task-status-${selectedTaskList.id}-${key}`
-        localStorage.setItem(statusKey, newStatus)
+        localStorage.setItem(statusKey, effectiveStatus)
 
         // If status is "done", also mark the task as completed
-        if (newStatus === 'done' && taskName && !values.includes(taskName)) {
+        if (effectiveStatus === 'done' && taskName && !values.includes(taskName)) {
           // Add to values to mark as toggled
           const newValues = [...values, taskName]
           setValues(newValues)
@@ -488,16 +503,28 @@ const getIconColor = (status: TaskStatus): string => {
       setTaskStatuses(prev => {
         const updated = { ...prev }
 
-        // Set newly completed tasks to "done"
+        // Set newly completed tasks to appropriate status based on times/count
         justCompleted.forEach(taskName => {
           const task = mergedTasks.find((t: any) => t.name === taskName)
           if (task) {
             const key = task?.id || task?.localeKey || task?.name
-            updated[key] = 'done'
+            const currentCount = task?.count || 0
+            const times = task?.times || 1
+            const newCount = currentCount + 1
+            
+            // Determine the appropriate status based on times and count
+            let taskStatus: TaskStatus = 'done'
+            if (newCount < times) {
+              taskStatus = 'in progress'
+            } else if (newCount >= times) {
+              taskStatus = 'done'
+            }
+            
+            updated[key] = taskStatus
             // Also save to localStorage
             try {
               const statusKey = `task-status-${selectedTaskList.id}-${key}`
-              localStorage.setItem(statusKey, 'done')
+              localStorage.setItem(statusKey, taskStatus)
             } catch (error) {
               console.error('Error saving task status:', error)
             }
