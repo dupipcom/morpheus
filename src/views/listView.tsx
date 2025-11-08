@@ -533,6 +533,21 @@ const getIconColor = (status: TaskStatus): string => {
             })
           } catch { }
 
+          // Handle ephemeral task uncompletion - reopen it if it was in closed
+          const ephemerals = mergedTasks.filter((t: any) => t.isEphemeral)
+          const ephemeralTask = ephemerals.find((e: any) => e.name === taskName)
+          if (ephemeralTask) {
+            const newCount = Math.max(0, (ephemeralTask.count || 1) - 1)
+            await fetch('/api/v1/tasklists', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                taskListId: selectedTaskList.id,
+                ephemeralTasks: { reopen: { id: ephemeralTask.id, count: newCount } }
+              })
+            })
+          }
+
           // Refresh task lists and user data
           await refreshTaskLists()
           await refreshUser()
@@ -605,7 +620,7 @@ const getIconColor = (status: TaskStatus): string => {
       setValues(adjustedValues)
       setPrevValues(adjustedValues)
 
-      // Update task statuses based on toggle state
+      // Update task statuses based on toggle state (optimistic UI update)
       setTaskStatuses(prev => {
         const updated = { ...prev }
 
@@ -627,18 +642,6 @@ const getIconColor = (status: TaskStatus): string => {
             }
             
             updated[key] = taskStatus
-            
-            // Persist to API
-            fetch('/api/v1/tasklists', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                updateTaskStatus: true,
-                taskListId: selectedTaskList.id,
-                taskKey: key,
-                taskStatus: taskStatus
-              })
-            }).catch(error => console.error('Error saving task status:', error))
           }
         })
 
@@ -648,18 +651,6 @@ const getIconColor = (status: TaskStatus): string => {
           if (task) {
             const key = task?.id || task?.localeKey || task?.name
             updated[key] = 'open'
-            
-            // Persist to API
-            fetch('/api/v1/tasklists', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                updateTaskStatus: true,
-                taskListId: selectedTaskList.id,
-                taskKey: key,
-                taskStatus: 'open'
-              })
-            }).catch(error => console.error('Error saving task status:', error))
           }
         })
 
@@ -732,9 +723,14 @@ const getIconColor = (status: TaskStatus): string => {
         })
       }
 
-      // Handle ephemerals: only close when fully completed (count >= times)
+      // Handle ephemerals: batch all operations into a single API call
+      const ephemeralToClose: any[] = []
+      const ephemeralToUpdate: any[] = []
+      const ephemeralToReopen: any[] = []
+      
       for (const eph of ephemerals) {
         const wasJustClicked = justCompleted.includes(eph.name)
+        const wasJustUncompleted = justUncompleted.includes(eph.name)
         const isFullyCompleted = adjustedValues.includes(eph.name)
         const wasDone = prevValues.includes(eph.name)
         
@@ -742,27 +738,35 @@ const getIconColor = (status: TaskStatus): string => {
           const updatedEph = nextActions.find((a: any) => a.name === eph.name)
           
           if (updatedEph && updatedEph.status === 'Done' && isFullyCompleted && !wasDone) {
-            // Fully completed - close it
-            await fetch('/api/v1/tasklists', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                taskListId: selectedTaskList.id,
-                ephemeralTasks: { close: { id: eph.id, count: updatedEph.count } }
-              })
-            })
+            // Fully completed - add to close batch
+            ephemeralToClose.push({ id: eph.id, count: updatedEph.count })
           } else if (updatedEph) {
-            // Partially completed - update count in open array
-            await fetch('/api/v1/tasklists', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                taskListId: selectedTaskList.id,
-                ephemeralTasks: { update: { id: eph.id, count: updatedEph.count, status: updatedEph.status } }
-              })
-            })
+            // Partially completed - add to update batch
+            ephemeralToUpdate.push({ id: eph.id, count: updatedEph.count, status: updatedEph.status })
           }
+        } else if (wasJustUncompleted && wasDone) {
+          // Task was uncompleted - reopen it (move from closed to open)
+          const updatedEph = nextActions.find((a: any) => a.name === eph.name)
+          const newCount = Math.max(0, (eph.count || 1) - 1)
+          ephemeralToReopen.push({ id: eph.id, count: newCount })
         }
+      }
+      
+      // Make a single API call with all ephemeral operations
+      if (ephemeralToClose.length > 0 || ephemeralToUpdate.length > 0 || ephemeralToReopen.length > 0) {
+        const ephemeralOperations: any = {}
+        if (ephemeralToClose.length > 0) ephemeralOperations.close = ephemeralToClose
+        if (ephemeralToUpdate.length > 0) ephemeralOperations.update = ephemeralToUpdate
+        if (ephemeralToReopen.length > 0) ephemeralOperations.reopen = ephemeralToReopen
+        
+        await fetch('/api/v1/tasklists', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            taskListId: selectedTaskList.id,
+            ephemeralTasks: ephemeralOperations
+          })
+        })
       }
 
       // If this is a weekly list, also persist tasks under user.entries[year].weeks[weekNumber].tasks
@@ -819,8 +823,6 @@ const getIconColor = (status: TaskStatus): string => {
       }
     }, [])
 
-    console.log("LISTVIEW", { selectedTaskListId, selectedTaskList, allTaskLists })
-
     if (!selectedTaskListId) return null
     return (
       <div className="space-y-4">
@@ -848,7 +850,20 @@ const getIconColor = (status: TaskStatus): string => {
             const completerName = lastCompleter ? (collabProfiles[String(lastCompleter.id)] || String(lastCompleter.id)) : ''
 
             const key = task?.id || task?.localeKey || task?.name
-            const taskStatus = taskStatuses[key] || (task?.taskStatus as TaskStatus) || 'open'
+            // Align status icon with toggleGroupItem completion state
+            let taskStatus: TaskStatus
+            if (values.includes(task?.name)) {
+              // Task is in values (completed) - use 'done' status
+              taskStatus = 'done'
+            } else if ((task.count || 0) > 0 && (task.count || 0) < (task.times || 1)) {
+              // Task has partial progress
+              taskStatus = 'in progress'
+            } else {
+              // Task is not in values (not completed)
+              // Use stored status but never 'done' (override if stored as done)
+              const storedStatus = taskStatuses[key] || (task?.taskStatus as TaskStatus) || 'open'
+              taskStatus = storedStatus === 'done' ? 'open' : storedStatus
+            }
             const statusColor = getStatusColor(taskStatus, 'css')
             const iconColor = getIconColor(taskStatus)
 
