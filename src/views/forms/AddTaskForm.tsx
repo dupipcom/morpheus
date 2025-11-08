@@ -35,9 +35,9 @@ export const AddTaskForm = ({
     }
 
     if (newTask.saveToTemplate && selectedList) {
-      const blueprint = (Array.isArray((selectedList as any).templateTasks) && (selectedList as any).templateTasks.length > 0)
-        ? (selectedList as any).templateTasks
-        : ((selectedList as any).tasks || [])
+      const blueprint = (Array.isArray((selectedList as any).tasks) && (selectedList as any).tasks.length > 0)
+        ? (selectedList as any).tasks
+        : ((selectedList as any).templateTasks || [])
       const updatedTasks = [ { ...baseTask }, ...(blueprint || []) ]
       await fetch('/api/v1/tasklists', {
         method: 'POST',

@@ -161,11 +161,11 @@ const getIconColor = (status: TaskStatus): string => {
       return () => { cancelled = true }
     }, [selectedTaskList?.id, JSON.stringify((selectedTaskList as any)?.collaborators || []), isWeeklyList, getWeekDates, date, year])
 
-    // Build tasks: templateTasks + ephemeralTasks.open, overlay completedTasks[year][date or week]
+    // Build tasks: tasks (working copy) + ephemeralTasks.open, overlay completedTasks[year][date or week]
     const mergedTasks = useMemo(() => {
-      const base = (selectedTaskList?.templateTasks && selectedTaskList.templateTasks.length > 0)
-        ? selectedTaskList.templateTasks
-        : (selectedTaskList?.tasks || [])
+      const base = (selectedTaskList?.tasks && selectedTaskList.tasks.length > 0)
+        ? selectedTaskList.tasks
+        : (selectedTaskList?.templateTasks || [])
 
       const ephemerals = (selectedTaskList?.ephemeralTasks?.open || []).map((t: any) => ({ ...t, isEphemeral: true }))
 

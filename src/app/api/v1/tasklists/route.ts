@@ -192,7 +192,7 @@ export async function POST(request: NextRequest) {
       }
 
       const incomingTasks: any[] = (body.dayActions?.length ? body.dayActions : body.weekActions) || []
-      const blueprintTasks: any[] = Array.isArray((taskList as any).templateTasks) ? ((taskList as any).templateTasks as any[]) : (Array.isArray(taskList.tasks) ? (taskList.tasks as any[]) : [])
+      const blueprintTasks: any[] = Array.isArray(taskList.tasks) ? (taskList.tasks as any[]) : (Array.isArray((taskList as any).templateTasks) ? ((taskList as any).templateTasks as any[]) : [])
 
       const totalTasks = blueprintTasks.length || incomingTasks.length || 1
       
@@ -305,13 +305,17 @@ export async function POST(request: NextRequest) {
         [year]: { ...yearBucket, [dateISO]: nextDayArr }
       }
 
-      // Update taskStatus in templateTasks to keep them in sync
-      let updatedTemplateTasks = (taskList as any).templateTasks || (taskList as any).tasks || []
-      updatedTemplateTasks = updatedTemplateTasks.map((task: any) => {
+      // Update taskStatus in tasks array (not templateTasks, which should remain unchanged)
+      let updatedTasks = (taskList as any).tasks || (taskList as any).templateTasks || []
+      updatedTasks = updatedTasks.map((task: any) => {
         const key = getKey(task)
         const incomingTask = incomingTasks.find((t: any) => getKey(t) === key)
-        if (incomingTask && incomingTask.taskStatus) {
-          return { ...task, taskStatus: incomingTask.taskStatus }
+        if (incomingTask) {
+          const updated = { ...task }
+          if (incomingTask.taskStatus) updated.taskStatus = incomingTask.taskStatus
+          if (incomingTask.count !== undefined) updated.count = incomingTask.count
+          if (incomingTask.status) updated.status = incomingTask.status
+          return updated
         }
         return task
       })
@@ -363,8 +367,7 @@ export async function POST(request: NextRequest) {
         where: { id: taskList.id },
         data: ({ 
           completedTasks: nextCompleted,
-          templateTasks: updatedTemplateTasks,
-          tasks: updatedTemplateTasks,
+          tasks: updatedTasks,
           ephemeralTasks: updatedEphemeralTasks,
           remainingBudget: newRemainingBudget
         } as any),
@@ -664,7 +667,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ taskList: saved })
     }
 
-    // Update task status in templateTasks or ephemeralTasks
+    // Update task status in tasks array (not templateTasks) or ephemeralTasks
     if (body.updateTaskStatus && body.taskListId) {
       const taskList = await prisma.taskList.findUnique({ where: { id: body.taskListId } })
       if (!taskList) return NextResponse.json({ error: 'TaskList not found' }, { status: 404 })
@@ -672,16 +675,16 @@ export async function POST(request: NextRequest) {
       const taskKey = body.taskKey // id, localeKey, or name
       const newStatus = body.taskStatus
 
-      // Update task status in templateTasks
-      let templateTasks = Array.isArray((taskList as any).templateTasks) 
-        ? (taskList as any).templateTasks 
-        : (Array.isArray(taskList.tasks) ? taskList.tasks : [])
+      // Update task status in tasks array (not templateTasks, which should remain unchanged)
+      let tasks = Array.isArray(taskList.tasks) 
+        ? taskList.tasks 
+        : (Array.isArray((taskList as any).templateTasks) ? (taskList as any).templateTasks : [])
 
-      let taskFoundInTemplate = false
-      templateTasks = templateTasks.map((task: any) => {
+      let taskFoundInTasks = false
+      tasks = tasks.map((task: any) => {
         const key = task?.id || task?.localeKey || task?.name
         if (key === taskKey) {
-          taskFoundInTemplate = true
+          taskFoundInTasks = true
           return { ...task, taskStatus: newStatus }
         }
         return task
@@ -715,8 +718,7 @@ export async function POST(request: NextRequest) {
       const updated = await prisma.taskList.update({
         where: { id: taskList.id },
         data: {
-          templateTasks: templateTasks,
-          tasks: templateTasks,
+          tasks: tasks,
           ephemeralTasks: ephemeralTasks,
           updatedAt: new Date()
         } as any,

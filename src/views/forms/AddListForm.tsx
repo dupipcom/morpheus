@@ -67,10 +67,10 @@ export const AddListForm = ({
         role: rolePart || 'custom',
         collaborators: (initialList.collaborators || []).map((id: string) => ({ id, userName: id }))
       })
-      // Load tasks from templateTasks if available, otherwise from tasks
-      const tasksToLoad = (Array.isArray(initialList.templateTasks) && initialList.templateTasks.length > 0)
-        ? initialList.templateTasks
-        : (Array.isArray(initialList.tasks) ? initialList.tasks : [])
+      // Load tasks from tasks (working copy) if available, otherwise from templateTasks
+      const tasksToLoad = (Array.isArray(initialList.tasks) && initialList.tasks.length > 0)
+        ? initialList.tasks
+        : (Array.isArray(initialList.templateTasks) ? initialList.templateTasks : [])
       setTasks(tasksToLoad)
       setDueDateObj(initialList.dueDate ? new Date(initialList.dueDate) : undefined)
     }
