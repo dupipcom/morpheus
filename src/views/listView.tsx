@@ -6,12 +6,13 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { DoToolbar } from '@/views/doToolbar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { User as UserIcon, Circle } from 'lucide-react'
+import { User as UserIcon, Circle, Minus } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
 
 import { GlobalContext } from '@/lib/contexts'
@@ -218,11 +219,17 @@ const getIconColor = (status: TaskStatus): string => {
           // No completion record yet - ensure count is initialized to 0
           return { ...t, count: t.count || 0 }
         }
-        const doneCount = Array.isArray(completed?.completers) ? completed.completers.length : Number(completed?.count || 0)
+        // The tasks array is the working copy and should be authoritative for count
+        // Only fall back to completedTasks completers array if tasks array count is not set
         const times = Number(t?.times || completed?.times || 1)
+        const tasksArrayCount = t.count !== undefined ? Number(t.count) : null
+        const completedCount = Array.isArray(completed?.completers) ? completed.completers.length : Number(completed?.count || 0)
+        
+        // Prefer tasks array count (working copy) over completed count (historical tracking)
+        const doneCount = tasksArrayCount !== null ? tasksArrayCount : completedCount
         const status = doneCount >= (times || 1) ? 'Done' : 'Open'
-        // Preserve taskStatus from completed record if available, otherwise infer from status
-        const taskStatus = completed?.taskStatus || (status === 'Done' ? 'done' : (doneCount > 0 ? 'in progress' : undefined))
+        // Preserve taskStatus from tasks array first, then completed record, then infer from status
+        const taskStatus = t.taskStatus || completed?.taskStatus || (status === 'Done' ? 'done' : (doneCount > 0 ? 'in progress' : undefined))
         return { 
           ...t, 
           status, 
@@ -519,6 +526,134 @@ const getIconColor = (status: TaskStatus): string => {
         console.error('Error saving task status:', error)
       }
     }, [selectedTaskList, values, mergedTasks, date, today, refreshTaskLists, refreshUser])
+
+    const handleDecrementCount = useCallback(async (task: any) => {
+      if (!selectedTaskList) return
+      const taskName = task?.name
+      const currentCount = task?.count || 0
+      
+      // Can't decrement below 0
+      if (currentCount <= 0) return
+
+      // Optimistic UI update for taskStatus
+      const key = task?.id || task?.localeKey || task?.name
+      const newCount = currentCount - 1
+      const times = task?.times || 1
+      
+      setTaskStatuses(prev => {
+        const updated = { ...prev }
+        if (newCount >= times) {
+          updated[key] = 'done'
+        } else if (newCount > 0) {
+          const existingStatus = prev[key]
+          if (!existingStatus || existingStatus === 'done' || existingStatus === 'open') {
+            updated[key] = 'in progress'
+          }
+        } else if (newCount === 0) {
+          updated[key] = 'open'
+        }
+        return updated
+      })
+
+      try {
+        // Prepare next actions with decremented count
+        const regular = mergedTasks.filter((t: any) => !t.isEphemeral)
+        const ephemerals = mergedTasks.filter((t: any) => t.isEphemeral)
+        const allTasks = [...regular, ...ephemerals]
+        
+        const nextActions = allTasks.map((action: any) => {
+          const c = { ...action }
+          if (action.name === taskName) {
+            c.count = Math.max(0, (c.count || 0) - 1)
+            // Update status and taskStatus based on new count
+            if (c.count >= (c.times || 1)) {
+              c.status = 'Done'
+              c.taskStatus = 'done'
+            } else {
+              c.status = 'Open'
+              // Preserve manually set status or default based on count
+              const key = action?.id || action?.localeKey || action?.name
+              const existingStatus = taskStatuses[key]
+              if (c.count > 0 && (!existingStatus || existingStatus === 'done' || existingStatus === 'open')) {
+                c.taskStatus = 'in progress'
+              } else if (c.count === 0) {
+                c.taskStatus = 'open'
+              }
+              // Otherwise preserve existing taskStatus
+            }
+          }
+          return c
+        })
+
+        // Persist to backend
+        await fetch('/api/v1/tasklists', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            recordCompletions: true,
+            taskListId: selectedTaskList.id,
+            dayActions: nextActions,
+            date,
+            justCompletedNames: [],
+            justUncompletedNames: []
+          })
+        })
+
+        // Handle ephemeral tasks
+        const ephemeralTask = ephemerals.find((e: any) => e.name === taskName)
+        if (ephemeralTask) {
+          const updatedEph = nextActions.find((a: any) => a.name === taskName)
+          if (updatedEph) {
+            const newCount = updatedEph.count || 0
+            const times = updatedEph.times || 1
+            
+            // Check if the ephemeral task is in the closed array
+            const closedEphemerals = (selectedTaskList?.ephemeralTasks?.closed || [])
+            const isInClosed = closedEphemerals.some((t: any) => t.id === ephemeralTask.id)
+            
+            if (isInClosed && newCount < times) {
+              // Task is closed but count is now below times - reopen it
+              await fetch('/api/v1/tasklists', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  taskListId: selectedTaskList.id,
+                  ephemeralTasks: { reopen: { id: ephemeralTask.id, count: newCount } }
+                })
+              })
+              // Remove from values since it's no longer completed
+              setValues(values.filter(v => v !== taskName))
+              setPrevValues(values.filter(v => v !== taskName))
+            } else if (!isInClosed) {
+              // Task is in open array - just update the count
+              await fetch('/api/v1/tasklists', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  taskListId: selectedTaskList.id,
+                  ephemeralTasks: { update: { id: ephemeralTask.id, count: newCount, status: updatedEph.status } }
+                })
+              })
+            }
+          }
+        }
+
+        // If task was in values and count is now less than times, remove it
+        if (values.includes(taskName)) {
+          const newCount = currentCount - 1
+          const times = task?.times || 1
+          if (newCount < times) {
+            setValues(values.filter(v => v !== taskName))
+            setPrevValues(values.filter(v => v !== taskName))
+          }
+        }
+
+        await refreshTaskLists()
+        await refreshUser()
+      } catch (error) {
+        console.error('Error decrementing count:', error)
+      }
+    }, [selectedTaskList, mergedTasks, values, date, refreshTaskLists, refreshUser, taskStatuses])
 
     // Initialize task statuses from API data
     useEffect(() => {
@@ -878,6 +1013,20 @@ const getIconColor = (status: TaskStatus): string => {
                           {t(`tasks.status.${status}`)}
                         </DropdownMenuItem>
                       ))}
+                      {(task.times || 1) > 1 && (task.count || 0) > 0 && (
+                        <>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleDecrementCount(task)
+                            }}
+                          >
+                            <Minus className={`h-4 w-4 mr-2`} />
+                            Decrement count
+                          </DropdownMenuItem>
+                        </>
+                      )}
                     </DropdownMenuContent>
                   </DropdownMenu>
 
