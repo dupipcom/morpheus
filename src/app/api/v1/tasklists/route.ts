@@ -4,6 +4,7 @@ import prisma from '@/lib/prisma'
 import { loadTranslationsSync, t } from '@/lib/i18n'
 import { parseCookies } from '@/lib/localeUtils'
 import { getBestLocale } from '@/lib/i18n'
+import { recalculateUserBudget } from '@/lib/budgetUtils'
 
 // Helper function to get user's locale from request
 function getUserLocale(request: NextRequest): string {
@@ -139,7 +140,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { role, tasks, templateId, updateTemplate, name, budget, dueDate, create, collaborators } = body
+    const { role, tasks, templateId, updateTemplate, name, budget, budgetPercentage, dueDate, create, collaborators } = body
 
     // Find user by userId
     const user = await prisma.user.findUnique({
@@ -175,6 +176,10 @@ export async function POST(request: NextRequest) {
       const existing = await prisma.taskList.findUnique({ where: { id: body.taskListId } })
       if (!existing) return NextResponse.json({ error: 'TaskList not found' }, { status: 404 })
       await prisma.taskList.delete({ where: { id: body.taskListId } })
+      
+      // Recalculate user's budget after deleting a list
+      await recalculateUserBudget(user.id)
+      
       return NextResponse.json({ ok: true })
     }
 
@@ -342,12 +347,18 @@ export async function POST(request: NextRequest) {
           role: typeof role === 'string' ? role : existingById.role,
           name: typeof name !== 'undefined' ? name : existingById.name,
           budget: typeof budget !== 'undefined' ? budget : existingById.budget,
+          budgetPercentage: typeof budgetPercentage === 'number' ? budgetPercentage : existingById.budgetPercentage,
           dueDate: typeof dueDate !== 'undefined' ? dueDate : existingById.dueDate,
           collaborators: Array.isArray(collaborators) ? collaborators : existingById.collaborators,
           updatedAt: new Date()
         } as any),
         include: { template: true }
       })
+
+      // Recalculate user's budget if budgetPercentage was updated
+      if (typeof budgetPercentage === 'number') {
+        await recalculateUserBudget(user.id)
+      }
 
       return NextResponse.json({ taskList: updated })
     }
@@ -378,6 +389,7 @@ export async function POST(request: NextRequest) {
           role: role,
           name: localizedName,
           budget: budget,
+          budgetPercentage: typeof budgetPercentage === 'number' ? budgetPercentage : 0,
           dueDate: dueDate,
           visibility: 'PRIVATE',
           owners: [user.id],
@@ -389,6 +401,11 @@ export async function POST(request: NextRequest) {
         } as any),
         include: { template: true }
       })
+      
+      // Recalculate user's budget after creating a new list
+      if (typeof budgetPercentage === 'number') {
+        await recalculateUserBudget(user.id)
+      }
     } else if (existingTaskList) {
       // Update existing TaskList
       const updatedTasks = translatedTasks || tasks
@@ -400,12 +417,18 @@ export async function POST(request: NextRequest) {
           templateId: templateId,
           name: name ?? existingTaskList.name,
           budget: budget ?? existingTaskList.budget,
+          budgetPercentage: typeof budgetPercentage === 'number' ? budgetPercentage : existingTaskList.budgetPercentage,
           dueDate: dueDate ?? existingTaskList.dueDate,
           collaborators: Array.isArray(collaborators) ? collaborators : existingTaskList.collaborators,
           updatedAt: new Date()
         } as any),
         include: { template: true }
       })
+      
+      // Recalculate user's budget if budgetPercentage was updated
+      if (typeof budgetPercentage === 'number') {
+        await recalculateUserBudget(user.id)
+      }
     } else {
       // Create new TaskList
       taskList = await prisma.taskList.create({
@@ -413,6 +436,7 @@ export async function POST(request: NextRequest) {
           role: role,
           name: localizedName,
           budget: budget,
+          budgetPercentage: typeof budgetPercentage === 'number' ? budgetPercentage : 0,
           dueDate: dueDate,
           visibility: 'PRIVATE',
           owners: [user.id],
@@ -424,6 +448,11 @@ export async function POST(request: NextRequest) {
         } as any),
         include: { template: true }
       })
+      
+      // Recalculate user's budget after creating a new list
+      if (typeof budgetPercentage === 'number') {
+        await recalculateUserBudget(user.id)
+      }
     }
 
     // Optionally update the linked Template with the same tasks

@@ -204,13 +204,18 @@ export const DoToolbar = ({
         </div>
       </div>
 
-      {/* Badges row: budget, due date, collaborators */}
+      {/* Badges row: budget, budgetPercentage, due date, collaborators */}
       {selectedList && (
         <div className="flex items-center gap-2 flex-wrap">
           {(selectedList as any)?.budget && (
             <Badge variant="secondary" className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80">
               <DollarSign className="h-3 w-3 mr-1" />
               {(selectedList as any).budget}
+            </Badge>
+          )}
+          {typeof (selectedList as any)?.budgetPercentage === 'number' && (selectedList as any).budgetPercentage > 0 && (
+            <Badge variant="outline" className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80">
+              {(selectedList as any).budgetPercentage.toFixed(0)}% of budget
             </Badge>
           )}
           {(selectedList as any)?.dueDate && (
