@@ -22,8 +22,8 @@
   },
   "organizer": {
     "@type": "Organization",
-      "name": "DreamPip",
-        "url": "https://www.dreampip.com"
+      "name": "Dupip",
+        "url": "https://www.dupip.com"
   },
   "performer": [
     ${ event?.artistsCollection?.items?.map((artist) => {

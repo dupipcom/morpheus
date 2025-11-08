@@ -1,6 +1,6 @@
 {
   "seo": {
-    "siteName": "DreamPip",
+    "siteName": "Dupip",
     "siteDescription": "Finanzas para la compasión. Encuentra tu fórmula de felicidad. Desbloquea dinero para seguir el estado de ánimo, hábitos y compartir tu progreso con amigos."
   },
   "common": {
@@ -20,7 +20,7 @@
     "loading": "Cargando...",
     "error": "Error",
     "success": "Éxito",
-    "welcome": "¡Bienvenido a DreamPip!",
+    "welcome": "¡Bienvenido a Dupip!",
     "signInToAccess": "Inicia sesión para acceder a tu panel de control y rastrear tu progreso.",
     "dismiss": "Descartar",
     "selectLanguage": "Seleccionar idioma",
@@ -99,7 +99,15 @@
     "editing": "Editando: {timeframe}",
     "weekNumber": "Semana {number}",
     "yourEarnings": "Tus ganancias {timeframe}, hasta ahora: Ð{amount}",
-    "selectList": "Seleccionar lista"
+    "selectList": "Seleccionar lista",
+    "status": {
+      "in progress": "En Progreso",
+      "steady": "Estable",
+      "ready": "Listo",
+      "open": "Abierto",
+      "done": "Completado",
+      "ignored": "Ignorado"
+    }
   },
   "settings": {
     "title": "Configuración",
@@ -209,7 +217,7 @@
     "personalProject": "Trabajó en proyecto personal"
   },
   "footer": {
-    "copyright": "© {year} Purizu and Remotelys dba DreamPip",
+    "copyright": "© {year} Purizu and Remotelys dba Dupip",
     "iva": "IVA IT02925300903",
     "rea": "REA 572763",
     "cnpj": "CNPJ 37.553.462/0001-46",
@@ -270,8 +278,8 @@
     "genericError": "Algo salió mal. Por favor, inténtalo de nuevo."
   },
   "publicProfile": {
-    "ctaTitle": "Comienza tu propio viaje con DreamPip",
-    "ctaSubtitle": "Rastrea tu estado de ánimo, productividad y ganancias con DreamPip",
+    "ctaTitle": "Comienza tu propio viaje con Dupip",
+    "ctaSubtitle": "Rastrea tu estado de ánimo, productividad y ganancias con Dupip",
     "getStarted": "Comenzar",
     "notes": "Notas",
     "loadingNotes": "Cargando notas...",
@@ -416,6 +424,7 @@
       "templateOrListLabel": "Plantilla o lista",
       "chooseTemplatePlaceholder": "Elige una plantilla",
       "budgetLabel": "Presupuesto",
+      "budgetPercentageLabel": "Asignación de presupuesto personal",
       "dueDateLabel": "Fecha de vencimiento",
       "pickDatePlaceholder": "Elige una fecha",
       "cadenceLabel": "Frecuencia",

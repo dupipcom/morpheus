@@ -4,6 +4,8 @@ import prisma from '@/lib/prisma'
 import { loadTranslationsSync, t } from '@/lib/i18n'
 import { parseCookies } from '@/lib/localeUtils'
 import { getBestLocale } from '@/lib/i18n'
+import { recalculateUserBudget } from '@/lib/budgetUtils'
+import { calculateTaskEarnings, calculateBudgetConsumption, initializeRemainingBudget } from '@/lib/earningsUtils'
 
 // Helper function to get user's locale from request
 function getUserLocale(request: NextRequest): string {
@@ -139,7 +141,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { role, tasks, templateId, updateTemplate, name, budget, dueDate, create, collaborators } = body
+    const { role, tasks, templateId, updateTemplate, name, budget, budgetPercentage, dueDate, create, collaborators } = body
 
     // Find user by userId
     const user = await prisma.user.findUnique({
@@ -175,6 +177,10 @@ export async function POST(request: NextRequest) {
       const existing = await prisma.taskList.findUnique({ where: { id: body.taskListId } })
       if (!existing) return NextResponse.json({ error: 'TaskList not found' }, { status: 404 })
       await prisma.taskList.delete({ where: { id: body.taskListId } })
+      
+      // Recalculate user's budget after deleting a list
+      await recalculateUserBudget(user.id)
+      
       return NextResponse.json({ ok: true })
     }
 
@@ -188,9 +194,24 @@ export async function POST(request: NextRequest) {
       const incomingTasks: any[] = (body.dayActions?.length ? body.dayActions : body.weekActions) || []
       const blueprintTasks: any[] = Array.isArray((taskList as any).templateTasks) ? ((taskList as any).templateTasks as any[]) : (Array.isArray(taskList.tasks) ? (taskList.tasks as any[]) : [])
 
-      const listBudget = parseFloat(taskList.budget || '0')
       const totalTasks = blueprintTasks.length || incomingTasks.length || 1
-      const perTaskEarnings = totalTasks > 0 ? (listBudget / totalTasks) : 0
+      
+      // Get user's available balance for earnings calculation
+      const userRecord = await prisma.user.findUnique({ where: { id: user.id } })
+      
+      // Calculate earnings for task completion
+      const dateISO = (body.date || new Date().toISOString().split('T')[0]) as string
+      const completionDate = new Date(dateISO)
+      const earnings = calculateTaskEarnings({
+        listRole: taskList.role,
+        budgetPercentage: (taskList as any).budgetPercentage,
+        listBudget: taskList.budget,
+        userAvailableBalance: userRecord?.availableBalance,
+        numTasks: totalTasks,
+        date: completionDate
+      })
+      
+      const perTaskEarnings = earnings.actionProfit
 
       const allowedKeys = new Set([
         'id', 'name', 'categories', 'area', 'status', 'cadence', 'times', 'count', 'localeKey', 'contacts', 'things', 'favorite', 'isEphemeral', 'createdAt', 'completers'
@@ -205,7 +226,6 @@ export async function POST(request: NextRequest) {
       }
 
       // Build completedTasks map
-      const dateISO = (body.date || new Date().toISOString().split('T')[0]) as string
       const year = Number(dateISO.split('-')[0])
       const priorCompleted = (taskList as any).completedTasks || {}
       const yearBucket = priorCompleted[year] || {}
@@ -284,13 +304,244 @@ export async function POST(request: NextRequest) {
         [year]: { ...yearBucket, [dateISO]: nextDayArr }
       }
 
+      // Calculate budget consumption
+      const numCompletedInThisCall = justCompletedNames.length
+      let newRemainingBudget = (taskList as any).remainingBudget
+      if (numCompletedInThisCall > 0) {
+        // Initialize remainingBudget if not set
+        newRemainingBudget = initializeRemainingBudget((taskList as any).remainingBudget, taskList.budget)
+        // Calculate new remaining budget
+        newRemainingBudget = calculateBudgetConsumption(newRemainingBudget, taskList.budget, totalTasks)
+      }
+
       const saved = await prisma.taskList.update({
         where: { id: taskList.id },
-        data: ({ completedTasks: nextCompleted } as any),
+        data: ({ 
+          completedTasks: nextCompleted,
+          remainingBudget: newRemainingBudget
+        } as any),
         include: { template: true }
       })
 
-      return NextResponse.json({ taskList: saved })
+      // Update user entries with earnings data (backend calculation for security)
+      if (userRecord) {
+        const entries = userRecord.entries as any
+        const rolePrefix = taskList.role?.split('.')[0] || ''
+        const isDailyRole = rolePrefix === 'daily'
+        const isWeeklyRole = rolePrefix === 'weekly'
+        const isOneOffRole = rolePrefix === 'one-off' || rolePrefix === 'oneoff'
+        
+        // Helper to get week number
+        const getWeekNumber = (date: Date): number => {
+          const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))
+          const dayNum = d.getUTCDay() || 7
+          d.setUTCDate(d.getUTCDate() + 4 - dayNum)
+          const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1))
+          return Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7)
+        }
+
+        // Initialize year structure if needed
+        const ensureStructure = (e: any, y: number) => {
+          const copy = { ...(e || {}) }
+          if (!copy[y]) copy[y] = { days: {}, weeks: {}, months: {}, quarters: {}, semesters: {}, oneOffs: {}, year: { tasks: [] } }
+          if (!copy[y].days) copy[y].days = {}
+          if (!copy[y].weeks) copy[y].weeks = {}
+          if (!copy[y].months) copy[y].months = {}
+          if (!copy[y].quarters) copy[y].quarters = {}
+          if (!copy[y].semesters) copy[y].semesters = {}
+          if (!copy[y].oneOffs) copy[y].oneOffs = {}
+          if (!copy[y].year) copy[y].year = { tasks: [] }
+          return copy
+        }
+
+        const updated = ensureStructure(entries, year)
+        let entriesModified = false
+
+        // Handle completions
+        if (justCompletedNames.length > 0) {
+          // Prepare completed tasks to append
+          const completedTasks = nextDayArr.filter((t: any) => {
+            const nm = typeof t?.name === 'string' ? t.name.toLowerCase() : ''
+            return justCompletedNames.some(jc => typeof jc === 'string' && jc.toLowerCase() === nm)
+          })
+
+          // Update daily entries
+          if (isDailyRole && completedTasks.length > 0) {
+            if (!updated[year].days[dateISO]) {
+              updated[year].days[dateISO] = { year, date: dateISO, tasks: [] }
+            }
+            const existing = updated[year].days[dateISO].tasks || []
+            const names = new Set(existing.map((t: any) => t.name))
+            const toAppend = completedTasks.filter((t: any) => !names.has(t.name))
+
+            if (toAppend.length > 0) {
+              const currentPrize = parseFloat(updated[year].days[dateISO].prize || '0')
+              const currentProfit = parseFloat(updated[year].days[dateISO].profit || '0')
+              const currentEarnings = parseFloat(updated[year].days[dateISO].earnings || '0')
+
+              const newPrize = currentPrize + (earnings.dailyPrize || 0)
+              const newProfit = currentProfit + (earnings.dailyProfit || 0)
+              const newEarnings = currentEarnings + (earnings.dailyEarnings || 0)
+
+              updated[year].days[dateISO] = {
+                ...updated[year].days[dateISO],
+                tasks: [...existing, ...toAppend],
+                prize: newPrize.toString(),
+                profit: newProfit.toString(),
+                earnings: newEarnings.toString()
+              }
+              entriesModified = true
+            }
+          }
+
+          // Update weekly entries
+          if (isWeeklyRole && completedTasks.length > 0) {
+            const week = getWeekNumber(completionDate)
+            if (!updated[year].weeks[week]) {
+              updated[year].weeks[week] = { year, week, tasks: [] }
+            }
+            const existing = updated[year].weeks[week].tasks || []
+            const names = new Set(existing.map((t: any) => t.name))
+            const toAppend = completedTasks.filter((t: any) => !names.has(t.name))
+
+            if (toAppend.length > 0) {
+              const currentPrize = parseFloat(updated[year].weeks[week].prize || '0')
+              const currentProfit = parseFloat(updated[year].weeks[week].profit || '0')
+              const currentEarnings = parseFloat(updated[year].weeks[week].earnings || '0')
+
+              const newPrize = currentPrize + (earnings.weeklyPrize || 0)
+              const newProfit = currentProfit + (earnings.weeklyProfit || 0)
+              const newEarnings = currentEarnings + (earnings.weeklyEarnings || 0)
+
+              updated[year].weeks[week] = {
+                ...updated[year].weeks[week],
+                tasks: [...existing, ...toAppend],
+                prize: newPrize.toString(),
+                profit: newProfit.toString(),
+                earnings: newEarnings.toString()
+              }
+              entriesModified = true
+            }
+          }
+
+          // Update one-off entries (use full action earnings, no division)
+          if (isOneOffRole && completedTasks.length > 0) {
+            if (!updated[year].oneOffs[dateISO]) {
+              updated[year].oneOffs[dateISO] = { year, date: dateISO, tasks: [] }
+            }
+            const existing = updated[year].oneOffs[dateISO].tasks || []
+            const names = new Set(existing.map((t: any) => t.name))
+            const toAppend = completedTasks.filter((t: any) => !names.has(t.name))
+
+            if (toAppend.length > 0) {
+              const currentPrize = parseFloat(updated[year].oneOffs[dateISO].prize || '0')
+              const currentProfit = parseFloat(updated[year].oneOffs[dateISO].profit || '0')
+              const currentEarnings = parseFloat(updated[year].oneOffs[dateISO].earnings || '0')
+
+              // Use full action values (no division by 30 or 4)
+              const newPrize = currentPrize + (earnings.actionPrize || 0)
+              const newProfit = currentProfit + (earnings.actionProfit || 0)
+              const newEarnings = currentEarnings + (earnings.actionValuation || 0)
+
+              updated[year].oneOffs[dateISO] = {
+                ...updated[year].oneOffs[dateISO],
+                tasks: [...existing, ...toAppend],
+                prize: newPrize.toString(),
+                profit: newProfit.toString(),
+                earnings: newEarnings.toString()
+              }
+              entriesModified = true
+            }
+          }
+        }
+
+        // Handle uncompletion - remove tasks from user entries and subtract earnings
+        if (justUncompletedNames.length > 0) {
+          const removeSet = new Set(justUncompletedNames.map((s: string) => typeof s === 'string' ? s.toLowerCase() : s))
+
+          // Remove from daily entries and subtract earnings
+          if (isDailyRole && updated[year]?.days?.[dateISO]) {
+            const existing = updated[year].days[dateISO].tasks || []
+            updated[year].days[dateISO].tasks = existing.filter((t: any) => !removeSet.has((t?.name || '').toLowerCase()))
+            
+            // Subtract earnings for uncompleted tasks
+            const currentPrize = parseFloat(updated[year].days[dateISO].prize || '0')
+            const currentProfit = parseFloat(updated[year].days[dateISO].profit || '0')
+            const currentEarnings = parseFloat(updated[year].days[dateISO].earnings || '0')
+
+            const newPrize = Math.max(0, currentPrize - (earnings.dailyPrize || 0))
+            const newProfit = Math.max(0, currentProfit - (earnings.dailyProfit || 0))
+            const newEarnings = Math.max(0, currentEarnings - (earnings.dailyEarnings || 0))
+
+            updated[year].days[dateISO] = {
+              ...updated[year].days[dateISO],
+              prize: newPrize.toString(),
+              profit: newProfit.toString(),
+              earnings: newEarnings.toString()
+            }
+            entriesModified = true
+          }
+
+          // Remove from weekly entries and subtract earnings
+          if (isWeeklyRole) {
+            const week = getWeekNumber(completionDate)
+            if (updated[year]?.weeks?.[week]) {
+              const existing = updated[year].weeks[week].tasks || []
+              updated[year].weeks[week].tasks = existing.filter((t: any) => !removeSet.has((t?.name || '').toLowerCase()))
+              
+              // Subtract earnings for uncompleted tasks
+              const currentPrize = parseFloat(updated[year].weeks[week].prize || '0')
+              const currentProfit = parseFloat(updated[year].weeks[week].profit || '0')
+              const currentEarnings = parseFloat(updated[year].weeks[week].earnings || '0')
+
+              const newPrize = Math.max(0, currentPrize - (earnings.weeklyPrize || 0))
+              const newProfit = Math.max(0, currentProfit - (earnings.weeklyProfit || 0))
+              const newEarnings = Math.max(0, currentEarnings - (earnings.weeklyEarnings || 0))
+
+              updated[year].weeks[week] = {
+                ...updated[year].weeks[week],
+                prize: newPrize.toString(),
+                profit: newProfit.toString(),
+                earnings: newEarnings.toString()
+              }
+              entriesModified = true
+            }
+          }
+
+          // Remove from one-off entries and subtract earnings
+          if (isOneOffRole && updated[year]?.oneOffs?.[dateISO]) {
+            const existing = updated[year].oneOffs[dateISO].tasks || []
+            updated[year].oneOffs[dateISO].tasks = existing.filter((t: any) => !removeSet.has((t?.name || '').toLowerCase()))
+            
+            // Subtract earnings for uncompleted tasks (use full action values)
+            const currentPrize = parseFloat(updated[year].oneOffs[dateISO].prize || '0')
+            const currentProfit = parseFloat(updated[year].oneOffs[dateISO].profit || '0')
+            const currentEarnings = parseFloat(updated[year].oneOffs[dateISO].earnings || '0')
+
+            const newPrize = Math.max(0, currentPrize - (earnings.actionPrize || 0))
+            const newProfit = Math.max(0, currentProfit - (earnings.actionProfit || 0))
+            const newEarnings = Math.max(0, currentEarnings - (earnings.actionValuation || 0))
+
+            updated[year].oneOffs[dateISO] = {
+              ...updated[year].oneOffs[dateISO],
+              prize: newPrize.toString(),
+              profit: newProfit.toString(),
+              earnings: newEarnings.toString()
+            }
+            entriesModified = true
+          }
+        }
+
+        // Save updated entries if modified
+        if (entriesModified) {
+          await prisma.user.update({
+            where: { id: userRecord.id },
+            data: { entries: updated as any }
+          })
+        }
+      }
+
+      return NextResponse.json({ taskList: saved, earnings })
     }
 
     // Ephemeral tasks operations scoped to a task list
@@ -312,7 +563,7 @@ export async function POST(request: NextRequest) {
         const id = body.ephemeralTasks.close.id
         const item = open.find((x: any) => x.id === id)
         open = open.filter((x: any) => x.id !== id)
-        if (item) closed = [ { ...item, status: 'Done' }, ...closed ]
+        if (item) closed = [ { ...item, status: 'Done', completedAt: new Date().toISOString() }, ...closed ]
       }
 
       const saved = await prisma.taskList.update({
@@ -342,12 +593,18 @@ export async function POST(request: NextRequest) {
           role: typeof role === 'string' ? role : existingById.role,
           name: typeof name !== 'undefined' ? name : existingById.name,
           budget: typeof budget !== 'undefined' ? budget : existingById.budget,
+          budgetPercentage: typeof budgetPercentage === 'number' ? budgetPercentage : existingById.budgetPercentage,
           dueDate: typeof dueDate !== 'undefined' ? dueDate : existingById.dueDate,
           collaborators: Array.isArray(collaborators) ? collaborators : existingById.collaborators,
           updatedAt: new Date()
         } as any),
         include: { template: true }
       })
+
+      // Recalculate user's budget if budgetPercentage was updated
+      if (typeof budgetPercentage === 'number') {
+        await recalculateUserBudget(user.id)
+      }
 
       return NextResponse.json({ taskList: updated })
     }
@@ -378,6 +635,7 @@ export async function POST(request: NextRequest) {
           role: role,
           name: localizedName,
           budget: budget,
+          budgetPercentage: typeof budgetPercentage === 'number' ? budgetPercentage : 0,
           dueDate: dueDate,
           visibility: 'PRIVATE',
           owners: [user.id],
@@ -389,6 +647,11 @@ export async function POST(request: NextRequest) {
         } as any),
         include: { template: true }
       })
+      
+      // Recalculate user's budget after creating a new list
+      if (typeof budgetPercentage === 'number') {
+        await recalculateUserBudget(user.id)
+      }
     } else if (existingTaskList) {
       // Update existing TaskList
       const updatedTasks = translatedTasks || tasks
@@ -400,12 +663,18 @@ export async function POST(request: NextRequest) {
           templateId: templateId,
           name: name ?? existingTaskList.name,
           budget: budget ?? existingTaskList.budget,
+          budgetPercentage: typeof budgetPercentage === 'number' ? budgetPercentage : existingTaskList.budgetPercentage,
           dueDate: dueDate ?? existingTaskList.dueDate,
           collaborators: Array.isArray(collaborators) ? collaborators : existingTaskList.collaborators,
           updatedAt: new Date()
         } as any),
         include: { template: true }
       })
+      
+      // Recalculate user's budget if budgetPercentage was updated
+      if (typeof budgetPercentage === 'number') {
+        await recalculateUserBudget(user.id)
+      }
     } else {
       // Create new TaskList
       taskList = await prisma.taskList.create({
@@ -413,6 +682,7 @@ export async function POST(request: NextRequest) {
           role: role,
           name: localizedName,
           budget: budget,
+          budgetPercentage: typeof budgetPercentage === 'number' ? budgetPercentage : 0,
           dueDate: dueDate,
           visibility: 'PRIVATE',
           owners: [user.id],
@@ -424,6 +694,11 @@ export async function POST(request: NextRequest) {
         } as any),
         include: { template: true }
       })
+      
+      // Recalculate user's budget after creating a new list
+      if (typeof budgetPercentage === 'number') {
+        await recalculateUserBudget(user.id)
+      }
     }
 
     // Optionally update the linked Template with the same tasks

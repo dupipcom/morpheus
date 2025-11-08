@@ -1,18 +1,18 @@
 {
-  "name": "@dreampipcom/morpheus",
+  "name": "@dupipcom/morpheus",
   "version": "1.0.0",
   "private": true,
-  "description": "DreamPip's Digital Content Website",
+  "description": "Dupip's Digital Content Website",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/@dreampipcom/morpheus"
+    "url": "git+https://github.com/@dupipcom/morpheus"
   },
   "keywords": [],
   "author": "Angelo Reale",
   "license": "HPL3-ECO-AND-ANC",
   "bugs": {
-    "url": "https://github.com/@dreampipcom/morpheus/tree/main/issues"
+    "url": "https://github.com/@dupipcom/morpheus/tree/main/issues"
   },
   "scripts": {
     "dev:install": "source .env.local && GITHUB_TOKEN=$GITHUB_TOKEN npm i",
@@ -26,7 +26,7 @@
     "format:fix": "next lint --fix && prettier --write --ignore-path .gitignore --ignore-path .prettierignore ."
   },
   "dependencies": {
-    "@dreampipcom/oneiros": "0.0.42",
+    "@dupipcom/oneiros": "0.0.42",
     "@sentry/nextjs": "7.118.0",
     "lazysizes": "5.3.2",
     "next": "14.2.15",

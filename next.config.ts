@@ -27,11 +27,11 @@ const nextConfig: NextConfig = {
       //       {"source": "/services/:match*", "destination": `${process.env.NEXUS_HOST}/dash/services/:match*`, locale: false},
       //       {"source": "/:locale/services", "destination": `${process.env.NEXUS_HOST}/:locale/dash/services`, locale: false},
       //       {"source": "/:locale/services/:match*", "destination": `${process.env.NEXUS_HOST}/:locale/dash/services/:match*`, locale: false},
-      //       {"source": "/app", "destination": "https://alpha.dreampip.com/"},
-      //       {"source": "/app/:match*", "destination": "https://alpha.dreampip.com/:match*"},
+      //       {"source": "/app", "destination": "https://alpha.dupip.com/"},
+      //       {"source": "/app/:match*", "destination": "https://alpha.dupip.com/:match*"},
       {
         source: '/api/nexus/audio',
-        destination: 'https://radio.dreampip.com/listen/dpipbase/live.mp3',
+        destination: 'https://radio.dupip.com/listen/dpipbase/live.mp3',
       },
     ]
   },
@@ -39,12 +39,12 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/episodes",
-        destination: "https://mixcloud.com/dreampip",
+        destination: "https://mixcloud.com/dupip",
         permanent: false,
       },
       { 
         source: "/code",
-        destination: 'https://github.com/dreampipcom',
+        destination: 'https://github.com/dupipcom',
         permanent: false,
       },
       { 
@@ -82,7 +82,7 @@ export default withSentryConfig(nextConfig, {
   // For all available options, see:
   // https://www.npmjs.com/package/@sentry/webpack-plugin#options
 
-  org: "dreampip",
+  org: "dupip",
 
   project: "morpheus",
 

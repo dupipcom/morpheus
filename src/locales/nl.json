@@ -1,6 +1,6 @@
 {
   "seo": {
-    "siteName": "DreamPip",
+    "siteName": "Dupip",
     "siteDescription": "Fintech voor compassie. Vind jouw formule voor geluk. Ontsluit geld om humeur en gewoonten bij te houden en je voortgang met vrienden te delen."
   },
   "common": {
@@ -20,7 +20,7 @@
     "loading": "Laden...",
     "error": "Fout",
     "success": "Succes",
-    "welcome": "Welkom bij DreamPip!",
+    "welcome": "Welkom bij Dupip!",
     "signInToAccess": "Log in om toegang te krijgen tot je dashboard en je voortgang bij te houden.",
     "dismiss": "Sluiten",
     "selectLanguage": "Taal selecteren",
@@ -99,7 +99,15 @@
     "editing": "Bewerken: {timeframe}",
     "weekNumber": "Week {number}",
     "yourEarnings": "Uw inkomsten {timeframe}, tot nu toe: Ð{amount}",
-    "selectList": "Selecteer lijst"
+    "selectList": "Selecteer lijst",
+    "status": {
+      "in progress": "Bezig",
+      "steady": "Stabiel",
+      "ready": "Klaar",
+      "open": "Open",
+      "done": "Voltooid",
+      "ignored": "Genegeerd"
+    }
   },
   "actions": {
     "drankWater": "Heeft water gedronken",
@@ -152,7 +160,7 @@
     "personalProject": "Heeft aan persoonlijk project gewerkt"
   },
   "footer": {
-    "copyright": "© {year} DreamPip. Alle rechten voorbehouden.",
+    "copyright": "© {year} Dupip. Alle rechten voorbehouden.",
     "iva": "IVA IT02925300903",
     "rea": "REA 572763",
     "cnpj": "CNPJ 37.553.462/0001-46",
@@ -256,8 +264,8 @@
     "failedToSend": "Bericht verzenden mislukt. Probeer opnieuw."
   },
   "publicProfile": {
-    "ctaTitle": "Begin je eigen DreamPip reis",
-    "ctaSubtitle": "Volg je stemming, productiviteit en verdiensten met DreamPip",
+    "ctaTitle": "Begin je eigen Dupip reis",
+    "ctaSubtitle": "Volg je stemming, productiviteit en verdiensten met Dupip",
     "getStarted": "Beginnen",
     "notes": "Notities",
     "loadingNotes": "Notities laden...",

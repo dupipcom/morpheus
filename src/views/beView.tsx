@@ -40,7 +40,7 @@ interface PublicNote {
   }
 }
 
-export const SocialView = () => {
+export const BeView = () => {
   const { session, setGlobalContext, theme } = useContext(GlobalContext)
   const { t } = useI18n()
   

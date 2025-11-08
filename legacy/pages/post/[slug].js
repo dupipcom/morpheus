@@ -92,7 +92,7 @@ export default function Post(props) {
   const locale = orig === "default" ? "en" : orig
   const { post } = props
 
-  const url = `https://www.dreampip.com/${orig !== 'default' ? `${locale}/` : ''}post/${post?.url}`
+  const url = `https://www.dupip.com/${orig !== 'default' ? `${locale}/` : ''}post/${post?.url}`
 
   const localization = BlogLocale[locale] || BlogLocale["default"]
 
@@ -119,9 +119,9 @@ export default function Post(props) {
   return (
     <>
       <Head>
-        <title>{post?.title} — DreamPip</title>
-        <meta property="og:title" content={`${metaTitle} — DreamPip`} />
-        <meta property="og:site_name" content="DreamPip" />
+        <title>{post?.title} — Dupip</title>
+        <meta property="og:title" content={`${metaTitle} — Dupip`} />
+        <meta property="og:site_name" content="Dupip" />
         <meta property="og:url" content={url} />
         <meta property="og:description" content={snippet || "Upstreaming. 📡"} />
         <meta name="description" content={snippet || "Upstreaming. 📡"} />
@@ -130,21 +130,21 @@ export default function Post(props) {
         <meta property="article:published_time" content={post?.publishedOn} />
         <meta
           property="og:image"
-          content={(post?.image?.url || "https://www.dreampip.com/og-image.png") + "?fm=jpg&w=512"}
+          content={(post?.image?.url || "https://www.dupip.com/og-image.png") + "?fm=jpg&w=512"}
         />
         <meta
           property="twitter:image"
-          content={(post?.image?.url || "https://www.dreampip.com/og-image.png") + "?fm=jpg&w=512"}
+          content={(post?.image?.url || "https://www.dupip.com/og-image.png") + "?fm=jpg&w=512"}
         />
         <meta
           property="og:image:secure_url"
-          content={(post?.image?.url || "https://www.dreampip.com/og-image.png") + "?fm=jpg&w=512"}
+          content={(post?.image?.url || "https://www.dupip.com/og-image.png") + "?fm=jpg&w=512"}
         />
         <meta property="og:image:type" content="image/jpeg" />
         <link rel="canonical" href={url} />
-        <link rel="alternate" hrefLang="x-default" href={"https://www.dreampip.com/" + "post/" + post?.url} />
+        <link rel="alternate" hrefLang="x-default" href={"https://www.dupip.com/" + "post/" + post?.url} />
         {Object.keys(localeMap).map((locale) => {
-          return <link key={locale} rel="alternate" hrefLang={locale} href={`https://www.dreampip.com/${locale}/post/${post?.url}`} />
+          return <link key={locale} rel="alternate" hrefLang={locale} href={`https://www.dupip.com/${locale}/post/${post?.url}`} />
         })}
       </Head>
       <article className="content content-single">

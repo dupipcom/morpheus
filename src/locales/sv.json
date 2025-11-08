@@ -1,6 +1,6 @@
 {
   "seo": {
-    "siteName": "DreamPip",
+    "siteName": "Dupip",
     "siteDescription": "Fintech för medkänsla. Hitta din formel för lycka. Lås upp pengar för att spåra humör och vanor och dela dina framsteg med vänner."
   },
   "common": {
@@ -20,7 +20,7 @@
     "loading": "Laddar...",
     "error": "Fel",
     "success": "Framgång",
-    "welcome": "Välkommen till DreamPip!",
+    "welcome": "Välkommen till Dupip!",
     "signInToAccess": "Logga in för att komma åt din dashboard och spåra din framsteg.",
     "dismiss": "Stäng",
     "selectLanguage": "Välj språk",
@@ -102,7 +102,15 @@
     "editing": "Redigerar: {timeframe}",
     "weekNumber": "Vecka {number}",
     "yourEarnings": "Din inkomst",
-    "selectList": "Välj lista"
+    "selectList": "Välj lista",
+    "status": {
+      "in progress": "Pågående",
+      "steady": "Stabil",
+      "ready": "Redo",
+      "open": "Öppen",
+      "done": "Klar",
+      "ignored": "Ignorerad"
+    }
   },
   "actions": {
     "drankWater": "Drack vatten",
@@ -155,7 +163,7 @@
     "personalProject": "Arbetade på personligt projekt"
   },
   "footer": {
-    "copyright": "© {year} DreamPip. Alla rättigheter förbehållna.",
+    "copyright": "© {year} Dupip. Alla rättigheter förbehållna.",
     "iva": "IVA IT02925300903",
     "rea": "REA 572763",
     "cnpj": "CNPJ 37.553.462/0001-46",
@@ -259,8 +267,8 @@
     "failedToSend": "Meddelandet kunde inte skickas. Försök igen."
   },
   "publicProfile": {
-    "ctaTitle": "Börja din egen DreamPip-resa",
-    "ctaSubtitle": "Spåra ditt humör, produktivitet och inkomster med DreamPip",
+    "ctaTitle": "Börja din egen Dupip-resa",
+    "ctaSubtitle": "Spåra ditt humör, produktivitet och inkomster med Dupip",
     "getStarted": "Kom igång",
     "notes": "Anteckningar",
     "loadingNotes": "Laddar anteckningar...",
@@ -404,6 +412,7 @@
       "templateOrListLabel": "Mall eller lista",
       "chooseTemplatePlaceholder": "Välj en mall",
       "budgetLabel": "Budget",
+      "budgetPercentageLabel": "Personlig budgetfördelning",
       "dueDateLabel": "Förfallodag",
       "pickDatePlaceholder": "Välj ett datum",
       "cadenceLabel": "Kadens",

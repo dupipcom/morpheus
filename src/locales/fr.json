@@ -1,6 +1,6 @@
 {
   "seo": {
-    "siteName": "DreamPip",
+    "siteName": "Dupip",
     "siteDescription": "Fintech pour la compassion. Trouvez votre formule du bonheur. Débloquez l'argent pour suivre l'humeur, les habitudes et partager vos progrès avec vos amis."
   },
   "common": {
@@ -20,7 +20,7 @@
     "loading": "Chargement...",
     "error": "Erreur",
     "success": "Succès",
-    "welcome": "Bienvenue sur DreamPip !",
+    "welcome": "Bienvenue sur Dupip !",
     "signInToAccess": "Connectez-vous pour accéder à votre tableau de bord et suivre vos progrès.",
     "dismiss": "Fermer",
     "selectLanguage": "Sélectionner la langue",
@@ -99,7 +99,15 @@
     "editing": "Modification : {timeframe}",
     "weekNumber": "Semaine {number}",
     "yourEarnings": "Vos gains {timeframe}, jusqu'à présent : Ð{amount}",
-    "selectList": "Sélectionner une liste"
+    "selectList": "Sélectionner une liste",
+    "status": {
+      "in progress": "En Cours",
+      "steady": "Stable",
+      "ready": "Prêt",
+      "open": "Ouvert",
+      "done": "Terminé",
+      "ignored": "Ignoré"
+    }
   },
   "settings": {
     "title": "Paramètres",
@@ -209,7 +217,7 @@
     "personalProject": "A travaillé sur un projet personnel"
   },
   "footer": {
-    "copyright": "© {year} Purizu and Remotelys dba DreamPip",
+    "copyright": "© {year} Purizu and Remotelys dba Dupip",
     "iva": "IVA IT02925300903",
     "rea": "REA 572763",
     "cnpj": "CNPJ 37.553.462/0001-46",
@@ -270,8 +278,8 @@
     "genericError": "Quelque chose s'est mal passé. Veuillez réessayer."
   },
   "publicProfile": {
-    "ctaTitle": "Commencez votre parcours DreamPip",
-    "ctaSubtitle": "Suivez votre humeur, votre productivité et vos gains avec DreamPip",
+    "ctaTitle": "Commencez votre parcours Dupip",
+    "ctaSubtitle": "Suivez votre humeur, votre productivité et vos gains avec Dupip",
     "getStarted": "Commencer",
     "notes": "Notes",
     "loadingNotes": "Chargement des notes...",
@@ -416,6 +424,7 @@
       "templateOrListLabel": "Modèle ou Liste",
       "chooseTemplatePlaceholder": "Choisir un modèle",
       "budgetLabel": "Budget",
+      "budgetPercentageLabel": "Allocation du budget personnel",
       "dueDateLabel": "Date d'échéance",
       "pickDatePlaceholder": "Choisir une date",
       "cadenceLabel": "Cadence",

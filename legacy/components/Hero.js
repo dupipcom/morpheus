@@ -35,7 +35,7 @@ function Hero({
               backgroundColor: "#1a1a1a"
             }}>
             <ReactPlayer
-              url="https://live.infra.dreampip.com/main.m3u8"
+              url="https://live.infra.dupip.com/main.m3u8"
               controls={true}
               width="100%"
               height="auto"

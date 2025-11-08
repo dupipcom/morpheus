@@ -3,6 +3,7 @@ import { currentUser, auth } from '@clerk/nextjs/server'
 import { getWeekNumber } from "@/app/helpers"
 import { WEEKLY_ACTIONS, DAILY_ACTIONS } from "@/app/constants"
 import { safeUpdateWeekEntry, safeUpdateDayEntry, validateWeekData, validateDayData, logEntryData, ensureWeekDataIntegrity, ensureDayDataIntegrity, addEphemeralTaskToDay, addEphemeralTaskToWeek, updateEphemeralTaskInDay, updateEphemeralTaskInWeek, removeEphemeralTaskFromDay, removeEphemeralTaskFromWeek, calculateDayTicker, calculateWeekTicker, calculateDayTickers, calculateWeekTickers } from "@/lib/entryUtils"
+import { recalculateUserBudget } from "@/lib/budgetUtils"
 
 export async function GET(req: Request) {
   const { userId } = await auth()
@@ -88,6 +89,18 @@ export async function GET(req: Request) {
     }
   } catch (error) {
     console.error('Error syncing username from Clerk:', error)
+  }
+
+  // Ensure budget fields are initialized for existing users
+  if (user && (user.usedBudget === null || user.usedBudget === undefined)) {
+    try {
+      // Recalculate budget based on existing task lists
+      await recalculateUserBudget(user.id)
+      // Refetch user with updated budget fields
+      user = await getUser()
+    } catch (error) {
+      console.error('Error initializing budget fields:', error)
+    }
   }
 
   return Response.json(user)
@@ -572,9 +585,21 @@ export async function POST(req: Request) {
     if (toAppend.length > 0) {
       // Route based on role prefix
       if (rolePrefix === 'weekly') {
+        // Accumulate prize, profit, and earnings for weekly tasks
+        const currentPrize = parseFloat(updated[year].weeks[week].prize || '0')
+        const currentProfit = parseFloat(updated[year].weeks[week].profit || '0')
+        const currentEarnings = parseFloat(updated[year].weeks[week].earnings || '0')
+        
+        const newPrize = currentPrize + (parseFloat(data.weeklyPrize) || 0)
+        const newProfit = currentProfit + (parseFloat(data.weeklyProfit) || 0)
+        const newEarnings = currentEarnings + (parseFloat(data.weeklyEarnings) || 0)
+        
         updated[year].weeks[week] = {
           ...updated[year].weeks[week],
-          tasks: [...existing, ...toAppend]
+          tasks: [...existing, ...toAppend],
+          prize: newPrize.toString(),
+          profit: newProfit.toString(),
+          earnings: newEarnings.toString()
         }
       } else if (rolePrefix === 'monthly') {
         const monthNum = Number(String(date).split('-')[1])
@@ -652,9 +677,21 @@ export async function POST(req: Request) {
     const toAppend = data.dayTasksAppend.filter((t:any) => t.status === 'Done' && !names.has(t.name))
     if (toAppend.length > 0) {
       if (rolePrefix === 'daily') {
+        // Accumulate prize, profit, and earnings
+        const currentPrize = parseFloat(updated[y].days[dateISO].prize || '0')
+        const currentProfit = parseFloat(updated[y].days[dateISO].profit || '0')
+        const currentEarnings = parseFloat(updated[y].days[dateISO].earnings || '0')
+        
+        const newPrize = currentPrize + (parseFloat(data.dailyPrize) || 0)
+        const newProfit = currentProfit + (parseFloat(data.dailyProfit) || 0)
+        const newEarnings = currentEarnings + (parseFloat(data.dailyEarnings) || 0)
+        
         updated[y].days[dateISO] = {
           ...updated[y].days[dateISO],
-          tasks: [...existing, ...toAppend]
+          tasks: [...existing, ...toAppend],
+          prize: newPrize.toString(),
+          profit: newProfit.toString(),
+          earnings: newEarnings.toString()
         }
       } else if (rolePrefix === 'weekly') {
         const w = getWeekNumber(new Date(dateISO))[1]

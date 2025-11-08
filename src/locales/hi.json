@@ -1,6 +1,6 @@
 {
   "seo": {
-    "siteName": "DreamPip",
+    "siteName": "Dupip",
     "siteDescription": "दया के लिए फिनटेक। अपनी खुशी का सूत्र खोजें। मनोदशा और आदतों को ट्रैक करें और अपने प्रगति को दोस्तों के साथ साझा करें।"
   },
   "common": {
@@ -20,7 +20,7 @@
     "loading": "लोड हो रहा है...",
     "error": "त्रुटि",
     "success": "सफल",
-    "welcome": "DreamPip में आपका स्वागत है!",
+    "welcome": "Dupip में आपका स्वागत है!",
     "signInToAccess": "अपने डैशबोर्ड तक पहुंचने और अपनी प्रगति को ट्रैक करने के लिए साइन इन करें।",
     "dismiss": "बंद करें",
     "selectLanguage": "भाषा चुनें",
@@ -99,7 +99,15 @@
     "editing": "संपादन: {timeframe}",
     "weekNumber": "सप्ताह {number}",
     "yourEarnings": "आपकी कमाई {timeframe}, अब तक: Ð{amount}",
-    "selectList": "सूची चुनें"
+    "selectList": "सूची चुनें",
+    "status": {
+      "in progress": "प्रगति में",
+      "steady": "स्थिर",
+      "ready": "तैयार",
+      "open": "खुला",
+      "done": "पूर्ण",
+      "ignored": "अनदेखा"
+    }
   },
   "actions": {
     "drankWater": "पानी पिया",
@@ -152,7 +160,7 @@
     "personalProject": "व्यक्तिगत प्रोजेक्ट पर काम किया"
   },
   "footer": {
-    "copyright": "© {year} Purizu and Remotelys dba DreamPip",
+    "copyright": "© {year} Purizu and Remotelys dba Dupip",
     "iva": "IVA IT02925300903",
     "rea": "REA 572763",
     "cnpj": "CNPJ 37.553.462/0001-46",
@@ -256,8 +264,8 @@
     "failedToSend": "संदेश भेजने में विफल। कृपया पुनः प्रयास करें।"
   },
   "publicProfile": {
-    "ctaTitle": "अपनी खुद की DreamPip यात्रा शुरू करें",
-    "ctaSubtitle": "DreamPip के साथ अपनी मनोदशा, उत्पादकता और कमाई को ट्रैक करें",
+    "ctaTitle": "अपनी खुद की Dupip यात्रा शुरू करें",
+    "ctaSubtitle": "Dupip के साथ अपनी मनोदशा, उत्पादकता और कमाई को ट्रैक करें",
     "getStarted": "शुरू करें",
     "notes": "नोट्स",
     "loadingNotes": "नोट्स लोड हो रहे हैं...",
@@ -401,6 +409,7 @@
       "templateOrListLabel": "टेम्प्लेट या सूची",
       "chooseTemplatePlaceholder": "एक टेम्प्लेट चुनें",
       "budgetLabel": "बजट",
+      "budgetPercentageLabel": "व्यक्तिगत बजट आवंटन",
       "dueDateLabel": "नियत तिथि",
       "pickDatePlaceholder": "एक तिथि चुनें",
       "cadenceLabel": "लय",

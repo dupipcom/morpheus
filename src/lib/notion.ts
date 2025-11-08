@@ -11,7 +11,7 @@ export const notion = new Client({
   auth: process.env.NOTION_TOKEN,
 });
 
-// DreamPip Pages
+// Dupip Pages
 export const fetchPages = React.cache(() => {
   return notion.databases.query({
     database_id: process.env.NOTION_PAGE_DATABASE!,
@@ -45,7 +45,7 @@ export const fetchPageBlocks = React.cache((pageId: string) => {
 });
 
 
-// DreamPip Episodes
+// Dupip Episodes
 export const fetchEpisodes = React.cache(() => {
   return notion.databases.query({
     database_id: process.env.NOTION_EPISODE_DATABASE!,

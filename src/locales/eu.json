@@ -1,6 +1,6 @@
 {
   "seo": {
-    "siteName": "DreamPip",
+    "siteName": "Dupip",
     "siteDescription": "Finantza-teknologia konpasiorako. Aurkitu zorionaren formula. Jarraitu aldartea eta ohiturak, eta partekatu zure aurrerapena lagunekin."
   },
   "common": {
@@ -20,7 +20,7 @@
     "loading": "Kargatzen...",
     "error": "Errorea",
     "success": "Arrakasta",
-    "welcome": "Ongi etorri DreamPip-era!",
+    "welcome": "Ongi etorri Dupip-era!",
     "signInToAccess": "Saioa hasi zure panelera sarbidea lortzeko eta zure aurrerapena jarraitzeko.",
     "dismiss": "Itxi",
     "selectLanguage": "Hizkuntza hautatu",
@@ -102,7 +102,15 @@
     "editing": "Editatzen: {timeframe}",
     "weekNumber": "Astea {number}",
     "yourEarnings": "Zure irabaziak",
-    "selectList": "Zerrenda hautatu"
+    "selectList": "Zerrenda hautatu",
+    "status": {
+      "in progress": "Abian",
+      "steady": "Egonkor",
+      "ready": "Prest",
+      "open": "Ireki",
+      "done": "Eginda",
+      "ignored": "Ezikusia"
+    }
   },
   "actions": {
     "drankWater": "Ura edan zuen",
@@ -155,7 +163,7 @@
     "personalProject": "Proiektu pertsonal batean lan egin zuen"
   },
   "footer": {
-    "copyright": "© {year} DreamPip. All rights reserved.",
+    "copyright": "© {year} Dupip. All rights reserved.",
     "iva": "IVA IT02925300903",
     "rea": "REA 572763",
     "cnpj": "CNPJ 37.553.462/0001-46",
@@ -259,8 +267,8 @@
     "failedToSend": "Mezuaren bidalketak huts egin du. Mesedez, saiatu berriro."
   },
   "publicProfile": {
-    "ctaTitle": "Hasi zure DreamPip bidaia",
-    "ctaSubtitle": "Jarraitu zure aldartea, produktibitatea eta irabaziak DreamPip-ekin",
+    "ctaTitle": "Hasi zure Dupip bidaia",
+    "ctaSubtitle": "Jarraitu zure aldartea, produktibitatea eta irabaziak Dupip-ekin",
     "getStarted": "Hasi",
     "notes": "Oharrak",
     "loadingNotes": "Oharrak kargatzen...",

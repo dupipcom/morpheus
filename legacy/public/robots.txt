@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Host
-Host: https://www.dreampip.com
+Host: https://www.dupip.com
 
 # Sitemaps
-Sitemap: https://www.dreampip.com/sitemap.xml
+Sitemap: https://www.dupip.com/sitemap.xml

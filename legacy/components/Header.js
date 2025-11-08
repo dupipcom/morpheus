@@ -7,7 +7,7 @@ import { localizeUrl, pzTrack, generateApiCall } from '../lib/helpers';
 import { useFirstInteraction } from '../hooks/useFirstInteraction';
 import dynamic from 'next/dynamic';
 
-import { Nav } from '@dreampipcom/oneiros';
+import { Nav } from '@dupipcom/oneiros';
 
 
 function Header({}) {

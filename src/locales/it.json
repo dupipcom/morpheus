@@ -1,6 +1,6 @@
 {
   "seo": {
-    "siteName": "DreamPip",
+    "siteName": "Dupip",
     "siteDescription": "Fintech per la compassione. Trova la tua formula della felicità. Sblocca denaro per tracciare umore, abitudini e condividere i tuoi progressi con gli amici."
   },
   "common": {
@@ -20,7 +20,7 @@
     "loading": "Caricamento...",
     "error": "Errore",
     "success": "Successo",
-    "welcome": "Benvenuto su DreamPip!",
+    "welcome": "Benvenuto su Dupip!",
     "signInToAccess": "Accedi per accedere alla tua dashboard e tracciare i tuoi progressi.",
     "dismiss": "Chiudi",
     "selectLanguage": "Seleziona lingua",
@@ -99,7 +99,15 @@
     "editing": "Modifica: {timeframe}",
     "weekNumber": "Settimana {number}",
     "yourEarnings": "I tuoi guadagni {timeframe}, finora: Ð{amount}",
-    "selectList": "Seleziona elenco"
+    "selectList": "Seleziona elenco",
+    "status": {
+      "in progress": "In Corso",
+      "steady": "Costante",
+      "ready": "Pronto",
+      "open": "Aperto",
+      "done": "Completato",
+      "ignored": "Ignorato"
+    }
   },
   "settings": {
     "title": "Impostazioni",
@@ -209,7 +217,7 @@
     "personalProject": "Ha lavorato a un progetto personale"
   },
   "footer": {
-    "copyright": "© {year} DreamPip. All rights reserved.",
+    "copyright": "© {year} Dupip. All rights reserved.",
     "iva": "IVA IT02925300903",
     "rea": "REA 572763",
     "cnpj": "CNPJ 37.553.462/0001-46",
@@ -270,8 +278,8 @@
     "genericError": "Qualcosa è andato storto. Riprova."
   },
   "publicProfile": {
-    "ctaTitle": "Inizia il tuo percorso con DreamPip",
-    "ctaSubtitle": "Traccia umore, produttività e guadagni con DreamPip",
+    "ctaTitle": "Inizia il tuo percorso con Dupip",
+    "ctaSubtitle": "Traccia umore, produttività e guadagni con Dupip",
     "getStarted": "Inizia",
     "notes": "Note",
     "loadingNotes": "Caricamento note...",
@@ -415,6 +423,7 @@
       "templateOrListLabel": "Modello o Elenco",
       "chooseTemplatePlaceholder": "Scegli un modello",
       "budgetLabel": "Budget",
+      "budgetPercentageLabel": "Allocazione del budget personale",
       "dueDateLabel": "Data di scadenza",
       "pickDatePlaceholder": "Scegli una data",
       "cadenceLabel": "Cadenza",

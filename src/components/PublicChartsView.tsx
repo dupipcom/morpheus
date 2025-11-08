@@ -48,31 +48,31 @@ interface PublicChartsViewProps {
 const moodChartConfig = {
   moodAverage: {
     label: "Mood Average (%)",
-    color: "#2f2f8d",
+    color: "var(--area-mood-average)",
   },
   gratitude: {
     label: "Gratitude (%)",
-    color: "#2f2f8d",
+    color: "var(--area-gratitude)",
   },
   optimism: {
     label: "Optimism (%)",
-    color: "#2f2f8d",
+    color: "var(--area-optimism)",
   },
   restedness: {
     label: "Restedness (%)",
-    color: "#2f2f8d",
+    color: "var(--area-restedness)",
   },
   tolerance: {
     label: "Tolerance (%)",
-    color: "#2f2f8d",
+    color: "var(--area-tolerance)",
   },
   selfEsteem: {
     label: "Self Esteem (%)",
-    color: "#2f2f8d",
+    color: "var(--area-self-esteem)",
   },
   trust: {
     label: "Trust (%)",
-    color: "#2f2f8d",
+    color: "var(--area-trust)",
   },
 } satisfies ChartConfig
 
@@ -86,26 +86,26 @@ const simplifiedMoodChartConfig = {
 const productivityChartConfig = {
   moodAverage: {
     label: "Mood Average (%)",
-    color: "#2f2f8d",
+    color: "var(--area-self-esteem)",
   },
   progress: {
     label: "Progress (%)",
-    color: "#10b981",
+    color: "var(--area-progress)",
   },
 } satisfies ChartConfig
 
 const earningsChartConfig = {
   earnings: {
     label: "Earnings (%)",
-    color: "#10b981",
+    color: "var(--area-earnings)",
   },
   balance: {
     label: "Balance (%)",
-    color: "#3b82f6",
+    color: "var(--area-balance)",
   },
   moodAverage: {
     label: "Mood Average (%)",
-    color: "#2f2f8d",
+    color: "var(--area-self-esteem)",
   },
 } satisfies ChartConfig
 
@@ -141,8 +141,8 @@ export function PublicChartsView({ chartsData }: PublicChartsViewProps) {
                 stackId="2" 
                 type="monotone" 
                 dataKey="moodAverage" 
-                stroke="#cffcdf" 
-                fill="#cffcdf" 
+                stroke="var(--area-mood-average)" 
+                fill="var(--area-mood-average)" 
                 radius={4} 
                 fillOpacity={0.4} 
               />
@@ -150,8 +150,8 @@ export function PublicChartsView({ chartsData }: PublicChartsViewProps) {
                 stackId="1" 
                 type="monotone" 
                 dataKey="gratitude" 
-                stroke="#6565cc" 
-                fill="#6565cc" 
+                stroke="var(--area-gratitude)" 
+                fill="var(--area-gratitude)" 
                 radius={4} 
                 fillOpacity={0.4} 
               />
@@ -159,8 +159,8 @@ export function PublicChartsView({ chartsData }: PublicChartsViewProps) {
                 stackId="1" 
                 type="monotone" 
                 dataKey="optimism" 
-                stroke="#fbd2b0" 
-                fill="#fbd2b0" 
+                stroke="var(--area-optimism)" 
+                fill="var(--area-optimism)" 
                 radius={4} 
                 fillOpacity={0.4} 
               />
@@ -168,8 +168,8 @@ export function PublicChartsView({ chartsData }: PublicChartsViewProps) {
                 stackId="1" 
                 type="monotone" 
                 dataKey="restedness" 
-                stroke="#fcedd5" 
-                fill="#fcedd5" 
+                stroke="var(--area-restedness)" 
+                fill="var(--area-restedness)" 
                 radius={4} 
                 fillOpacity={0.4} 
               />
@@ -177,8 +177,8 @@ export function PublicChartsView({ chartsData }: PublicChartsViewProps) {
                 stackId="1" 
                 type="monotone" 
                 dataKey="tolerance" 
-                stroke="#FACEFB" 
-                fill="#FACEFB" 
+                stroke="var(--area-tolerance)" 
+                fill="var(--area-tolerance)" 
                 radius={4} 
                 fillOpacity={0.4} 
               />
@@ -186,8 +186,8 @@ export function PublicChartsView({ chartsData }: PublicChartsViewProps) {
                 stackId="1" 
                 type="monotone" 
                 dataKey="selfEsteem" 
-                stroke="#2f2f8d" 
-                fill="#2f2f8d" 
+                stroke="var(--area-self-esteem)" 
+                fill="var(--area-self-esteem)" 
                 radius={4} 
                 fillOpacity={0.4} 
               />
@@ -195,8 +195,8 @@ export function PublicChartsView({ chartsData }: PublicChartsViewProps) {
                 stackId="1" 
                 type="monotone" 
                 dataKey="trust" 
-                stroke="#f7bfa5" 
-                fill="#f7bfa5" 
+                stroke="var(--area-trust)" 
+                fill="var(--area-trust)" 
                 radius={4} 
                 fillOpacity={0.4} 
               />
@@ -270,8 +270,8 @@ export function PublicChartsView({ chartsData }: PublicChartsViewProps) {
                 stackId="1" 
                 type="monotone" 
                 dataKey="moodAverage" 
-                stroke="#2f2f8d" 
-                fill="#2f2f8d" 
+                stroke="var(--area-self-esteem)" 
+                fill="var(--area-self-esteem)" 
                 radius={4} 
                 fillOpacity={0.4} 
               />
@@ -279,8 +279,8 @@ export function PublicChartsView({ chartsData }: PublicChartsViewProps) {
                 stackId="2" 
                 type="monotone" 
                 dataKey="progress" 
-                stroke="#10b981" 
-                fill="#10b981" 
+                stroke="var(--area-progress)" 
+                fill="var(--area-progress)" 
                 radius={4} 
                 fillOpacity={0.4} 
               />
@@ -317,8 +317,8 @@ export function PublicChartsView({ chartsData }: PublicChartsViewProps) {
                 stackId="1" 
                 type="monotone" 
                 dataKey="earnings" 
-                stroke="#10b981" 
-                fill="#10b981" 
+                stroke="var(--area-earnings)" 
+                fill="var(--area-earnings)" 
                 radius={4} 
                 fillOpacity={0.4} 
               />
@@ -326,8 +326,8 @@ export function PublicChartsView({ chartsData }: PublicChartsViewProps) {
                 stackId="2" 
                 type="monotone" 
                 dataKey="balance" 
-                stroke="#3b82f6" 
-                fill="#3b82f6" 
+                stroke="var(--area-balance)" 
+                fill="var(--area-balance)" 
                 radius={4} 
                 fillOpacity={0.4} 
               />
@@ -335,8 +335,8 @@ export function PublicChartsView({ chartsData }: PublicChartsViewProps) {
                 stackId="3" 
                 type="monotone" 
                 dataKey="moodAverage" 
-                stroke="#2f2f8d" 
-                fill="#2f2f8d" 
+                stroke="var(--area-self-esteem)" 
+                fill="var(--area-self-esteem)" 
                 radius={4} 
                 fillOpacity={0.4} 
               />

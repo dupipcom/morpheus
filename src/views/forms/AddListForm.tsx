@@ -1,15 +1,17 @@
 'use client'
 
-import React, { useMemo, useState, useEffect } from 'react'
+import React, { useMemo, useState, useEffect, useContext } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Calendar } from '@/components/ui/calendar'
 import { Badge } from '@/components/ui/badge'
-import { Package, List as ListIcon, MoreHorizontal, ChevronDown, Calendar as CalendarIcon } from 'lucide-react'
+import { Slider } from '@/components/ui/slider'
+import { Package, List as ListIcon, MoreHorizontal, ChevronDown, Calendar as CalendarIcon, Percent } from 'lucide-react'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { useI18n } from '@/lib/contexts/i18n'
+import { GlobalContext } from '@/lib/contexts'
 
 type Collaborator = { id: string, userName: string }
 
@@ -29,10 +31,12 @@ export const AddListForm = ({
   onCreated: () => Promise<void> | void
 }) => {
   const { t } = useI18n()
+  const { session } = useContext(GlobalContext)
   const [form, setForm] = useState({
     name: '',
     templateId: '',
     budget: '',
+    budgetPercentage: 0,
     dueDate: '',
     cadence: 'one-off',
     role: 'custom',
@@ -44,22 +48,67 @@ export const AddListForm = ({
   const [addTaskOpen, setAddTaskOpen] = useState(false)
   const [addTaskForm, setAddTaskForm] = useState({ name: '', area: 'self', category: 'custom', times: 1 })
   const [tasks, setTasks] = useState<any[]>([])
+  const [remainingBudget, setRemainingBudget] = useState<number>(100)
+  const [maxAllowedBudget, setMaxAllowedBudget] = useState<number>(100)
 
   useEffect(() => {
     if (initialList) {
+      // Split role like "daily.default" into cadence and role
+      const fullRole = initialList.role || 'one-off.custom'
+      const [cadencePart, rolePart] = fullRole.includes('.') ? fullRole.split('.') : ['one-off', fullRole]
+      
       setForm({
         name: initialList.name || '',
         templateId: isEditing ? '' : (initialList.templateId ? `template:${initialList.templateId}` : ''),
         budget: initialList.budget || '',
+        budgetPercentage: initialList.budgetPercentage || 0,
         dueDate: initialList.dueDate || '',
-        cadence: initialList.cadence || 'one-off',
-        role: initialList.role || 'custom',
+        cadence: cadencePart || 'one-off',
+        role: rolePart || 'custom',
         collaborators: (initialList.collaborators || []).map((id: string) => ({ id, userName: id }))
       })
-      setTasks(Array.isArray(initialList.tasks) ? initialList.tasks : [])
+      // Load tasks from templateTasks if available, otherwise from tasks
+      const tasksToLoad = (Array.isArray(initialList.templateTasks) && initialList.templateTasks.length > 0)
+        ? initialList.templateTasks
+        : (Array.isArray(initialList.tasks) ? initialList.tasks : [])
+      setTasks(tasksToLoad)
       setDueDateObj(initialList.dueDate ? new Date(initialList.dueDate) : undefined)
     }
   }, [JSON.stringify(initialList), isEditing])
+
+  // Calculate available budget dynamically from all task lists
+  useEffect(() => {
+    try {
+      // Calculate total budget used by all lists
+      const totalUsed = allTaskLists.reduce((sum, list: any) => {
+        return sum + (list.budgetPercentage || 0)
+      }, 0)
+
+      // Calculate total used by OTHER lists (excluding current list if editing)
+      const totalUsedByOthers = allTaskLists.reduce((sum, list: any) => {
+        // Skip the current list if editing
+        if (isEditing && initialList?.id && list.id === initialList.id) {
+          return sum
+        }
+        return sum + (list.budgetPercentage || 0)
+      }, 0)
+
+      // Remaining budget is what's left after all allocations
+      const remaining = Math.max(0, 100 - totalUsed)
+      
+      // When editing: max = remaining + current list's allocation
+      // When creating: max = remaining
+      const currentListBudget = initialList?.budgetPercentage || 0
+      const maxAllowed = Math.max(0, 100 - totalUsedByOthers)
+
+      setRemainingBudget(remaining)
+      setMaxAllowedBudget(maxAllowed)
+    } catch (error) {
+      console.error('Error calculating budget info:', error)
+      setRemainingBudget(100)
+      setMaxAllowedBudget(100)
+    }
+  }, [allTaskLists, initialList?.id, initialList?.budgetPercentage, isEditing])
 
   // Resolve collaborator usernames for existing lists (replace id placeholders)
   useEffect(() => {
@@ -86,7 +135,7 @@ export const AddListForm = ({
   }, [JSON.stringify((form.collaborators || []).map((c) => c.id))])
 
   const newListPreviewTasks = useMemo(() => {
-    if (!form.templateId) return [] as any[]
+    if (!form.templateId) return null // Return null instead of empty array when no template
     if (form.templateId.startsWith('template:')) {
       const tplId = form.templateId.split(':')[1]
       const tpl = userTemplates.find((t: any) => t.id === tplId)
@@ -101,7 +150,7 @@ export const AddListForm = ({
   }, [form.templateId, userTemplates, allTaskLists])
 
   useEffect(() => {
-    if (!isEditing) {
+    if (!isEditing && newListPreviewTasks !== null) {
       setTasks(newListPreviewTasks)
     }
   }, [newListPreviewTasks, isEditing])
@@ -133,6 +182,7 @@ export const AddListForm = ({
         role: roleJoined,
         name: form.name || undefined,
         budget: form.budget || undefined,
+        budgetPercentage: form.budgetPercentage,
         dueDate: form.dueDate || undefined,
         templateId: templateIdToLink,
         collaborators: form.collaborators.map(c => c.id),
@@ -181,7 +231,7 @@ export const AddListForm = ({
             </Select>
           </div>
         )}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div>
             <label className="text-sm font-medium">{t('forms.addListForm.budgetLabel') || 'Budget'}</label>
             <input type="number" value={form.budget} onChange={(e) => setForm(prev => ({ ...prev, budget: e.target.value }))} className="w-full p-2 border rounded-md" />
@@ -205,23 +255,48 @@ export const AddListForm = ({
               </PopoverContent>
             </Popover>
           </div>
+        </div>
+        {isEditing && (
           <div>
-            <label className="text-sm font-medium">{t('forms.addListForm.cadenceLabel') || 'Cadence'}</label>
-            <Select value={form.cadence} onValueChange={(val) => setForm(prev => ({ ...prev, cadence: val }))}>
-              <SelectTrigger className="w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="one-off">{t('forms.addListForm.cadence.oneOff') || 'One-off'}</SelectItem>
-                <SelectItem value="daily">{t('forms.addListForm.cadence.daily') || 'Daily'}</SelectItem>
-                <SelectItem value="weekly">{t('forms.addListForm.cadence.weekly') || 'Weekly'}</SelectItem>
-                <SelectItem value="monthly">{t('forms.addListForm.cadence.monthly') || 'Monthly'}</SelectItem>
-                <SelectItem value="quarterly">{t('forms.addListForm.cadence.quarterly') || 'Quarterly'}</SelectItem>
-                <SelectItem value="semester">{t('forms.addListForm.cadence.semester') || 'Semester'}</SelectItem>
-                <SelectItem value="yearly">{t('forms.addListForm.cadence.yearly') || 'Yearly'}</SelectItem>
-              </SelectContent>
-            </Select>
+            <label className="text-sm font-medium flex items-center gap-2">
+              <Percent className="h-4 w-4" />
+              {t('forms.addListForm.budgetPercentageLabel') || 'Budget Allocation'} ({form.budgetPercentage.toFixed(0)}%)
+            </label>
+            <div className="space-y-2 mt-2">
+              <Slider
+                value={[form.budgetPercentage]}
+                onValueChange={(values) => setForm(prev => ({ ...prev, budgetPercentage: values[0] }))}
+                min={0}
+                max={maxAllowedBudget}
+                step={1}
+                className="w-full"
+              />
+              <div className="flex justify-between text-xs text-muted-foreground">
+                <span>0%</span>
+                <span className="text-sm font-medium text-center flex-1">
+                  {remainingBudget.toFixed(0)}% of budget remaining (max: {maxAllowedBudget.toFixed(0)}%)
+                </span>
+                <span>{maxAllowedBudget.toFixed(0)}%</span>
+              </div>
+            </div>
           </div>
+        )}
+        <div>
+          <label className="text-sm font-medium">{t('forms.addListForm.cadenceLabel') || 'Cadence'}</label>
+          <Select value={form.cadence} onValueChange={(val) => setForm(prev => ({ ...prev, cadence: val }))}>
+            <SelectTrigger className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="one-off">{t('forms.addListForm.cadence.oneOff') || 'One-off'}</SelectItem>
+              <SelectItem value="daily">{t('forms.addListForm.cadence.daily') || 'Daily'}</SelectItem>
+              <SelectItem value="weekly">{t('forms.addListForm.cadence.weekly') || 'Weekly'}</SelectItem>
+              <SelectItem value="monthly">{t('forms.addListForm.cadence.monthly') || 'Monthly'}</SelectItem>
+              <SelectItem value="quarterly">{t('forms.addListForm.cadence.quarterly') || 'Quarterly'}</SelectItem>
+              <SelectItem value="semester">{t('forms.addListForm.cadence.semester') || 'Semester'}</SelectItem>
+              <SelectItem value="yearly">{t('forms.addListForm.cadence.yearly') || 'Yearly'}</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
         <div>
           <label className="text-sm font-medium">{t('forms.addListForm.collaboratorsLabel') || 'Collaborators'}</label>

@@ -5,7 +5,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params
   return await buildMetadata({
     title: 'Settings',
-    description: 'Manage your DreamPip preferences and privacy.',
+    description: 'Manage your Dupip preferences and privacy.',
     locale,
   })
 }

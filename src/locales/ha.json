@@ -1,6 +1,6 @@
 {
   "seo": {
-    "siteName": "DreamPip",
+    "siteName": "Dupip",
     "siteDescription": "Fintech don tausayi. Nemo tsarin farin ciki naka. Bibiyi yanayi da halaye kuma raba cigabanka da abokai."
   },
   "common": {
@@ -20,7 +20,7 @@
     "loading": "Ana loda...",
     "error": "Kuskure",
     "success": "Nasara",
-    "welcome": "Barka da zuwa DreamPip!",
+    "welcome": "Barka da zuwa Dupip!",
     "signInToAccess": "Shiga don samun damar dashboard ɗinka da bin diddigin ci gaban ka.",
     "dismiss": "Kore",
     "selectLanguage": "Zaɓi harshe",
@@ -99,7 +99,15 @@
     "editing": "Ana gyara: {timeframe}",
     "weekNumber": "Mako {number}",
     "yourEarnings": "Kuɗin da ka samu {timeframe}, har yanzu: Ð{amount}",
-    "selectList": "Zaɓi jeri"
+    "selectList": "Zaɓi jeri",
+    "status": {
+      "in progress": "Ana Ci Gaba",
+      "steady": "Tsayayye",
+      "ready": "Shirye",
+      "open": "A Buɗe",
+      "done": "An Gama",
+      "ignored": "An Yi Watsi"
+    }
   },
   "settings": {
     "title": "Saiti",
@@ -169,7 +177,7 @@
     "boughtGroceries": "Sayi kayan abinci"
   },
   "footer": {
-    "copyright": "© {year} Purizu da Remotelys dba DreamPip",
+    "copyright": "© {year} Purizu da Remotelys dba Dupip",
     "iva": "IVA IT02925300903",
     "rea": "REA 572763",
     "cnpj": "CNPJ 37.553.462/0001-46",
@@ -267,8 +275,8 @@
     "genericError": "Wani abu ya tafi ba daidai ba. Don Allah a sake gwadawa."
   },
   "publicProfile": {
-    "ctaTitle": "Fara Tafiyar DreamPip Naku",
-    "ctaSubtitle": "Bi diddigin yanayin zuciyarku, ayyuka da samun kuɗi tare da DreamPip",
+    "ctaTitle": "Fara Tafiyar Dupip Naku",
+    "ctaSubtitle": "Bi diddigin yanayin zuciyarku, ayyuka da samun kuɗi tare da Dupip",
     "getStarted": "Fara",
     "notes": "Bayani",
     "loadingNotes": "Ana ɗauka bayani...",

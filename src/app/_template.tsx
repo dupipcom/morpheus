@@ -44,7 +44,7 @@ export default function Template({ title, content, isomorphicContent }: any) {
 
     const checkLive = async () => {
       try {
-          const req = await fetch("https://video.dreampip.com/live/index.m3u8")
+          const req = await fetch("https://video.dupip.com/live/index.m3u8")
           if (req.status === 200) setShowStream(true)
           else setShowStream(false)
       } catch (e) {
@@ -83,7 +83,7 @@ export default function Template({ title, content, isomorphicContent }: any) {
           { showStream ? (
               <div className="w-full">
                 <mux-video 
-                  src="https://video.dreampip.com/live/index.m3u8"
+                  src="https://video.dupip.com/live/index.m3u8"
                   controls={true}
                   autoPlay={true}
                   playsInline={true}

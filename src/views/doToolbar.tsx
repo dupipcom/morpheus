@@ -9,13 +9,21 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Plus, Pencil, DollarSign, Calendar, User as UserIcon } from 'lucide-react'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import { Plus, Pencil, DollarSign, Calendar as CalendarIcon, User as UserIcon, TrendingUp, Award } from 'lucide-react'
 import { GlobalContext } from '@/lib/contexts'
 import { useI18n } from '@/lib/contexts/i18n'
 import { AddTaskForm } from '@/views/forms/AddTaskForm'
 import { AddListForm } from '@/views/forms/AddListForm'
 import { AddTemplateForm } from '@/views/forms/AddTemplateForm'
 import { Badge } from '@/components/ui/badge'
+import { Calendar } from '@/components/ui/calendar'
+import { cn } from '@/lib/utils'
+import { getWeekNumber } from '@/app/helpers'
 
 type TaskList = { id: string; name?: string; role?: string }
 
@@ -24,15 +32,31 @@ export const DoToolbar = ({
   selectedTaskListId,
   onChangeSelectedTaskListId,
   onAddEphemeral: _onAddEphemeral,
+  selectedDate,
+  onDateChange,
 }: {
   locale: string
   selectedTaskListId?: string
   onChangeSelectedTaskListId: (id: string) => void
   onAddEphemeral: () => Promise<void> | void
+  selectedDate?: Date
+  onDateChange?: (date: Date | undefined) => void
 }) => {
   const { t } = useI18n()
-  const { taskLists, refreshTaskLists } = useContext(GlobalContext)
-  const allTaskLists = useMemo(() => (Array.isArray(taskLists) ? taskLists : []), [taskLists]) as TaskList[]
+  const { session, taskLists: contextTaskLists, refreshTaskLists } = useContext(GlobalContext)
+  
+  // Maintain stable task lists that never clear once loaded
+  const [stableTaskLists, setStableTaskLists] = useState<TaskList[]>([])
+  useEffect(() => {
+    if (Array.isArray(contextTaskLists) && contextTaskLists.length > 0) {
+      setStableTaskLists(contextTaskLists)
+    }
+  }, [contextTaskLists])
+  
+  const allTaskLists = useMemo(() => 
+    (stableTaskLists.length > 0 ? stableTaskLists : (Array.isArray(contextTaskLists) ? contextTaskLists : [])) as TaskList[],
+    [stableTaskLists, contextTaskLists]
+  )
   const selectedList = useMemo(() => allTaskLists.find((l:any) => l.id === selectedTaskListId), [allTaskLists, selectedTaskListId])
 
   const [showAddTask, setShowAddTask] = useState(false)
@@ -41,6 +65,78 @@ export const DoToolbar = ({
   const [isEditingList, setIsEditingList] = useState(false)
   const [userTemplates, setUserTemplates] = useState<any[]>([])
   const [collabProfiles, setCollabProfiles] = useState<Record<string, string>>({})
+  const [listEarnings, setListEarnings] = useState<{ profit: number; prize: number; earnings: number }>({ profit: 0, prize: 0, earnings: 0 })
+
+  // Calculate earnings for the selected list from user entries
+  useEffect(() => {
+    if (!selectedList || !session?.user) {
+      setListEarnings({ profit: 0, prize: 0, earnings: 0 })
+      return
+    }
+
+    try {
+      const user = (session as any).user
+      const entries = user?.entries || {}
+      const listRole = (selectedList as any)?.role
+      
+      if (!listRole) {
+        setListEarnings({ profit: 0, prize: 0, earnings: 0 })
+        return
+      }
+
+      let totalProfit = 0
+      let totalPrize = 0
+      let totalEarnings = 0
+
+      // Determine list role type
+      const rolePrefix = listRole.split('.')[0]
+      const isDaily = rolePrefix === 'daily'
+      const isWeekly = rolePrefix === 'weekly'
+      const isOneOff = rolePrefix === 'one-off' || rolePrefix === 'oneoff'
+
+      // Sum up earnings from entries
+      for (const year in entries) {
+        const yearData = entries[year]
+        
+        if (isDaily && yearData?.days) {
+          // Sum daily earnings
+          for (const date in yearData.days) {
+            const day = yearData.days[date]
+            if (day) {
+              totalProfit += parseFloat(day.profit || '0')
+              totalPrize += parseFloat(day.prize || '0')
+              totalEarnings += parseFloat(day.earnings || '0')
+            }
+          }
+        } else if (isWeekly && yearData?.weeks) {
+          // Sum weekly earnings
+          for (const week in yearData.weeks) {
+            const weekData = yearData.weeks[week]
+            if (weekData) {
+              totalProfit += parseFloat(weekData.profit || '0')
+              totalPrize += parseFloat(weekData.prize || '0')
+              totalEarnings += parseFloat(weekData.earnings || '0')
+            }
+          }
+        } else if (isOneOff && yearData?.oneOffs) {
+          // Sum one-off earnings
+          for (const date in yearData.oneOffs) {
+            const oneOff = yearData.oneOffs[date]
+            if (oneOff) {
+              totalProfit += parseFloat(oneOff.profit || '0')
+              totalPrize += parseFloat(oneOff.prize || '0')
+              totalEarnings += parseFloat(oneOff.earnings || '0')
+            }
+          }
+        }
+      }
+
+      setListEarnings({ profit: totalProfit, prize: totalPrize, earnings: totalEarnings })
+    } catch (error) {
+      console.error('Error calculating list earnings:', error)
+      setListEarnings({ profit: 0, prize: 0, earnings: 0 })
+    }
+  }, [selectedList?.id, (selectedList as any)?.role, session])
 
   const refreshTemplates = async () => {
     try {
@@ -84,11 +180,30 @@ export const DoToolbar = ({
 
   const closeAll = () => { setShowAddTask(false); setShowAddList(false); setShowAddTemplate(false) }
 
+  // Determine if we should show the date picker (only for daily.* or weekly.* lists)
+  const shouldShowDatePicker = useMemo(() => {
+    if (!selectedList?.role) return false
+    return selectedList.role.startsWith('daily.') || selectedList.role.startsWith('weekly.')
+  }, [selectedList])
+
+  // Format date for display
+  const formatDate = (date: Date | undefined) => {
+    if (!date) return 'Select date'
+    
+    // For weekly lists, show week number
+    if (selectedList?.role && selectedList.role.startsWith('weekly.')) {
+      const [, weekNum] = getWeekNumber(date)
+      return `Week ${weekNum}, ${date.getFullYear()}`
+    }
+    
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  }
+
   return (
     <div className="space-y-3">
-      <div className="flex items-center gap-2">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-2">
         <Select value={selectedTaskListId} onValueChange={onChangeSelectedTaskListId}>
-          <SelectTrigger className="w-[260px]">
+          <SelectTrigger className="w-full sm:w-[260px]">
             <SelectValue placeholder={t('tasks.selectList') || 'Select list'} />
           </SelectTrigger>
           <SelectContent>
@@ -100,7 +215,32 @@ export const DoToolbar = ({
           </SelectContent>
         </Select>
 
-        <div className="ml-auto flex items-center gap-2">
+        {shouldShowDatePicker && onDateChange && (
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className={cn(
+                  "w-full sm:w-[240px] justify-start text-left font-normal",
+                  !selectedDate && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {formatDate(selectedDate)}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                mode="single"
+                selected={selectedDate}
+                onSelect={onDateChange}
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
+        )}
+
+        <div className="flex items-center gap-2 sm:ml-auto">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -136,7 +276,7 @@ export const DoToolbar = ({
         </div>
       </div>
 
-      {/* Badges row: budget, due date, collaborators */}
+      {/* Badges row: budget, budgetPercentage, due date, collaborators, earnings */}
       {selectedList && (
         <div className="flex items-center gap-2 flex-wrap">
           {(selectedList as any)?.budget && (
@@ -145,9 +285,26 @@ export const DoToolbar = ({
               {(selectedList as any).budget}
             </Badge>
           )}
+          {typeof (selectedList as any)?.budgetPercentage === 'number' && (selectedList as any).budgetPercentage > 0 && (
+            <Badge variant="outline" className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80">
+              {(selectedList as any).budgetPercentage.toFixed(0)}% of budget
+            </Badge>
+          )}
+          {typeof (selectedList as any)?.budgetPercentage === 'number' && (selectedList as any).budgetPercentage > 0 && (
+            <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 hover:bg-green-100">
+              <Award className="h-3 w-3 mr-1" />
+              Prize: ${listEarnings.prize.toFixed(2)}
+            </Badge>
+          )}
+          {(selectedList as any)?.budget && parseFloat((selectedList as any).budget || '0') > 0 && (
+            <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100">
+              <TrendingUp className="h-3 w-3 mr-1" />
+              Profit: ${listEarnings.profit.toFixed(2)}
+            </Badge>
+          )}
           {(selectedList as any)?.dueDate && (
             <Badge variant="outline" className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80">
-              <Calendar className="h-3 w-3 mr-1" />
+              <CalendarIcon className="h-3 w-3 mr-1" />
               {(selectedList as any).dueDate}
             </Badge>
           )}

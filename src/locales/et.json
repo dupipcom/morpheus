@@ -1,6 +1,6 @@
 {
   "seo": {
-    "siteName": "DreamPip",
+    "siteName": "Dupip",
     "siteDescription": "Fintech kaastunde jaoks. Leia oma õnne valem. Jälgi tuju ja harjumusi ning jaga oma edenemist sõpradega."
   },
   "common": {
@@ -20,7 +20,7 @@
     "loading": "Laadimine...",
     "error": "Viga",
     "success": "Edu",
-    "welcome": "Tere tulemast DreamPip!",
+    "welcome": "Tere tulemast Dupip!",
     "signInToAccess": "Logi sisse, et pääseda ligi oma armatuurlauale ja jälgida oma edusamme.",
     "dismiss": "Sulge",
     "selectLanguage": "Vali keel",
@@ -99,7 +99,15 @@
     "editing": "Redigeerimine: {timeframe}",
     "weekNumber": "Nädal {number}",
     "yourEarnings": "Sinu sissetulek {timeframe}, seni: Ð{amount}",
-    "selectList": "Vali nimekiri"
+    "selectList": "Vali nimekiri",
+    "status": {
+      "in progress": "Pooleli",
+      "steady": "Stabiilne",
+      "ready": "Valmis",
+      "open": "Avatud",
+      "done": "Tehtud",
+      "ignored": "Ignoreeritud"
+    }
   },
   "actions": {
     "drankWater": "Jõi vett",
@@ -152,7 +160,7 @@
     "personalProject": "Töötas isikliku projekti kallal"
   },
   "footer": {
-    "copyright": "© {year} Purizu and Remotelys dba DreamPip",
+    "copyright": "© {year} Purizu and Remotelys dba Dupip",
     "iva": "IVA IT02925300903",
     "rea": "REA 572763",
     "cnpj": "CNPJ 37.553.462/0001-46",
@@ -256,8 +264,8 @@
     "failedToSend": "Sõnumi saatmine ebaõnnestus. Palun proovi uuesti."
   },
   "publicProfile": {
-    "ctaTitle": "Alusta oma DreamPip teekonda",
-    "ctaSubtitle": "Jälgi oma tuju, produktiivsust ja sissetulekuid DreamPipiga",
+    "ctaTitle": "Alusta oma Dupip teekonda",
+    "ctaSubtitle": "Jälgi oma tuju, produktiivsust ja sissetulekuid Dupipiga",
     "getStarted": "Alusta",
     "notes": "Märkmed",
     "loadingNotes": "Märkmete laadimine...",

@@ -284,4 +284,4 @@ export const simplifiedLocales = {
 
 export const BASE_PAGES = ['', '/blog', '/episodes', '/events', '/shows']
 
-export const BASE_URL = process.env.SITE_URL || 'https://www.dreampip.com/'
+export const BASE_URL = process.env.SITE_URL || 'https://www.dupip.com/'

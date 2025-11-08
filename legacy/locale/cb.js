@@ -1,55 +1,55 @@
 export const CB_LOCALE = {
   "newsletterForm": {
     "default": {
-      "submit": "Subscribe to DreamPip",
+      "submit": "Subscribe to Dupip",
       "already": "You're already subscribed!"
     },
     "it-it": {
-      "submit": "Iscriviti a DreamPip",
+      "submit": "Iscriviti a Dupip",
       "already": "Sei già iscritto!"
     },
     "pt-br": {
-      "submit": "Assine o DreamPip",
+      "submit": "Assine o Dupip",
       "already": "Você já está inscrito!"
     },
     "es-es": {
-      "submit": "Suscríbete a DreamPip",
+      "submit": "Suscríbete a Dupip",
       "already": "¡Ya estás suscrito!"
     },
     "de-de": {
-      "submit": "Abonniere DreamPip",
+      "submit": "Abonniere Dupip",
       "already": "Du bist bereits abonniert!"
     },
     "fr-fr": {
-      "submit": "Abonnez-vous à DreamPip",
+      "submit": "Abonnez-vous à Dupip",
       "already": "Vous êtes déjà abonné!"
     },
     "ro": {
-      "submit": "Abonează-te la DreamPip",
+      "submit": "Abonează-te la Dupip",
       "already": "Ești deja abonat!"
     },
     "pl-pl": {
-      "submit": "Zasubskrybuj DreamPip",
+      "submit": "Zasubskrybuj Dupip",
       "already": "Jesteś już zapisany!"
     },
     "cs-cz": {
-      "submit": "Přihlaste se k odběru DreamPip",
+      "submit": "Přihlaste se k odběru Dupip",
       "already": "Již jste přihlášeni!"
     },
     "sv-se": {
-      "submit": "Prenumerera på DreamPip",
+      "submit": "Prenumerera på Dupip",
       "already": "Du är redan prenumerant!"
     },
     "et-ee": {
-      "submit": "Telli DreamPip",
+      "submit": "Telli Dupip",
       "already": "Sa oled juba tellinud!"
     },
     "ja-jp": {
-      "submit": "DreamPipを購読する",
+      "submit": "Dupipを購読する",
       "already": "すでに登録されています！"
     },
     "ru-ru": {
-      "submit": "Подписаться на DreamPip",
+      "submit": "Подписаться на Dupip",
       "already": "Вы уже подписаны!"
     }
   }

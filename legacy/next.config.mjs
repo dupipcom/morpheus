@@ -47,11 +47,11 @@ const config = {
             transform: 'lodash/dist/{{member}}',
         },
         // to-do barrel folders
-        // '@dreampipcom/oneiros/atoms': {
-        //     transform: '@dreampipcom/oneiros/dist/src/atoms/{{member}}',
+        // '@dupipcom/oneiros/atoms': {
+        //     transform: '@dupipcom/oneiros/dist/src/atoms/{{member}}',
         // },
-        // '@dreampipcom/oneiros/molecules': {
-        //     transform: '@dreampipcom/oneiros/dist/src/molecules/{{member}}',
+        // '@dupipcom/oneiros/molecules': {
+        //     transform: '@dupipcom/oneiros/dist/src/molecules/{{member}}',
         // },
     },
     productionBrowserSourceMaps: false,
@@ -69,7 +69,7 @@ const config = {
     },
     assetPrefix: (process.env.VERCEL_ENV && process.env.VERCEL_ENV !== 'production'
       ? `https://${process.env.VERCEL_URL}`
-      : process.env.MAIN_URL) || 'https://www.dreampip.com',
+      : process.env.MAIN_URL) || 'https://www.dupip.com',
     async redirects() {
         return [
             {
@@ -104,22 +104,22 @@ const config = {
             },
             {
                 source: '/members/calendar',
-                destination: 'http://calendar.workspace.dreampip.com',
+                destination: 'http://calendar.workspace.dupip.com',
                 permanent: false                
             },
             {
                 source: '/members/chat',
-                destination: 'https://dreampip.slack.com',
+                destination: 'https://dupip.slack.com',
                 permanent: false                
             },
             {
                 source: '/members/mail',
-                destination: 'http://mail.workspace.dreampip.com',
+                destination: 'http://mail.workspace.dupip.com',
                 permanent: false                
             },
             {
                 source: '/members/storage',
-                destination: 'http://storage.workspace.dreampip.com',
+                destination: 'http://storage.workspace.dupip.com',
                 permanent: false                
             },
             {
@@ -161,17 +161,17 @@ const config = {
             {"source": "/services/:match*", "destination": `${process.env.NEXUS_HOST}/dash/services/:match*`, locale: false},
             {"source": "/:locale/services", "destination": `${process.env.NEXUS_HOST}/:locale/dash/services`, locale: false},
             {"source": "/:locale/services/:match*", "destination": `${process.env.NEXUS_HOST}/:locale/dash/services/:match*`, locale: false},
-            {"source": "/app", "destination": "https://alpha.dreampip.com/"},
-            {"source": "/app/:match*", "destination": "https://alpha.dreampip.com/:match*"},
-            {"source": "/cloud", "destination": "https://zelta.dreampip.com/cloud"},
-            {"source": "/cloud/:match*", "destination": "https://zelta.dreampip.com/cloud/:match*"},
+            {"source": "/app", "destination": "https://alpha.dupip.com/"},
+            {"source": "/app/:match*", "destination": "https://alpha.dupip.com/:match*"},
+            {"source": "/cloud", "destination": "https://zelta.dupip.com/cloud"},
+            {"source": "/cloud/:match*", "destination": "https://zelta.dupip.com/cloud/:match*"},
             {
                 source: '/api/nexus/audio/0',
-                destination: 'https://radio.dreampip.com/listen/dpip-stream-000/live',
+                destination: 'https://radio.dupip.com/listen/dpip-stream-000/live',
             },            
             {
                 source: '/api/nexus/audio/1',
-                destination: 'https://radio.dreampip.com/listen/dpip-stream-001/live',
+                destination: 'https://radio.dupip.com/listen/dpip-stream-001/live',
             },
         ]
     }

@@ -1,6 +1,6 @@
 {
   "seo": {
-    "siteName": "DreamPip",
+    "siteName": "Dupip",
     "siteDescription": "ਦਇਆ ਲਈ ਫਿਨਟੈਕ। ਆਪਣੀ ਖੁਸ਼ੀ ਦਾ ਫ਼ਾਰਮੂਲਾ ਲੱਭੋ। ਮੂਡ ਅਤੇ ਆਦਤਾਂ ਨੂੰ ਟ੍ਰੈਕ ਕਰੋ ਅਤੇ ਆਪਣੀ ਪ੍ਰਗਤੀ ਦੋਸਤਾਂ ਨਾਲ ਸਾਂਝੀ ਕਰੋ।"
   },
   "common": {
@@ -17,7 +17,7 @@
     "loading": "ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...",
     "error": "ਗਲਤੀ",
     "success": "ਸਫਲ",
-    "welcome": "DreamPip ਵਿੱਚ ਤੁਹਾਡਾ ਸਵਾਗਤ ਹੈ!",
+    "welcome": "Dupip ਵਿੱਚ ਤੁਹਾਡਾ ਸਵਾਗਤ ਹੈ!",
     "signInToAccess": "ਆਪਣੇ ਡੈਸ਼ਬੋਰਡ ਤੱਕ ਪਹੁੰਚਣ ਅਤੇ ਆਪਣੀ ਤਰੱਕੀ ਨੂੰ ਟਰੈਕ ਕਰਨ ਲਈ ਸਾਈਨ ਇਨ ਕਰੋ।",
     "dismiss": "ਬੰਦ ਕਰੋ",
     "selectLanguage": "ਭਾਸ਼ਾ ਚੁਣੋ",
@@ -103,7 +103,15 @@
     "editing": "ਸੰਪਾਦਨ: {timeframe}",
     "weekNumber": "ਹਫ਼ਤਾ {number}",
     "yourEarnings": "ਤੁਹਾਡੀ ਕਮਾਈ",
-    "selectList": "Select list"
+    "selectList": "Select list",
+    "status": {
+      "in progress": "ਜਾਰੀ",
+      "steady": "ਸਥਿਰ",
+      "ready": "ਤਿਆਰ",
+      "open": "ਖੁੱਲ੍ਹਾ",
+      "done": "ਪੂਰਾ",
+      "ignored": "ਅਣਡਿੱਠ"
+    }
   },
   "actions": {
     "drankWater": "ਪਾਣੀ ਪੀਤਾ",
@@ -156,7 +164,7 @@
     "personalProject": "ਨਿੱਜੀ ਪ੍ਰੋਜੈਕਟ ਤੇ ਕੰਮ ਕੀਤਾ"
   },
   "footer": {
-    "copyright": "© {year} DreamPip. ਸਾਰੇ ਅਧਿਕਾਰ ਸੁਰੱਖਿਅਤ।",
+    "copyright": "© {year} Dupip. ਸਾਰੇ ਅਧਿਕਾਰ ਸੁਰੱਖਿਅਤ।",
     "terms": "ਸੇਵਾ ਦੀਆਂ ਸ਼ਰਤਾਂ",
     "privacy": "ਗੋਪਨੀਯਤਾ ਨੀਤੀ",
     "iva": "IVA IT02925300903",
@@ -260,8 +268,8 @@
     "failedToSend": "ਸੁਨੇਹਾ ਭੇਜਣ ਵਿੱਚ ਅਸਫਲ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
   },
   "publicProfile": {
-    "ctaTitle": "ਆਪਣਾ ਖੁਦ ਦਾ DreamPip ਸਫ਼ਰ ਸ਼ੁਰੂ ਕਰੋ",
-    "ctaSubtitle": "DreamPip ਨਾਲ ਆਪਣੇ ਮੂਡ, ਉਤਪਾਦਕਤਾ ਅਤੇ ਕਮਾਈ ਨੂੰ ਟ੍ਰੈਕ ਕਰੋ",
+    "ctaTitle": "ਆਪਣਾ ਖੁਦ ਦਾ Dupip ਸਫ਼ਰ ਸ਼ੁਰੂ ਕਰੋ",
+    "ctaSubtitle": "Dupip ਨਾਲ ਆਪਣੇ ਮੂਡ, ਉਤਪਾਦਕਤਾ ਅਤੇ ਕਮਾਈ ਨੂੰ ਟ੍ਰੈਕ ਕਰੋ",
     "getStarted": "ਸ਼ੁਰੂ ਕਰੋ",
     "notes": "ਨੋਟਸ",
     "loadingNotes": "ਨੋਟਸ ਲੋਡ ਹੋ ਰਹੇ ਹਨ...",

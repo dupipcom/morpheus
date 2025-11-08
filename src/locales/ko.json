@@ -1,6 +1,6 @@
 {
   "seo": {
-    "siteName": "DreamPip",
+    "siteName": "Dupip",
     "siteDescription": "연민을 위한 핀테크. 당신의 행복 공식을 찾으세요. 기분과 습관을 추적하고 친구들과 진행 상황을 공유하세요."
   },
   "common": {
@@ -20,7 +20,7 @@
     "loading": "로딩 중...",
     "error": "오류",
     "success": "성공",
-    "welcome": "DreamPip에 오신 것을 환영합니다!",
+    "welcome": "Dupip에 오신 것을 환영합니다!",
     "signInToAccess": "대시보드에 액세스하고 진행 상황을 추적하려면 로그인하세요.",
     "dismiss": "닫기",
     "selectLanguage": "언어 선택",
@@ -99,7 +99,15 @@
     "editing": "편집 중: {timeframe}",
     "weekNumber": "주 {number}",
     "yourEarnings": "당신의 수익 {timeframe}, 지금까지: Ð{amount}",
-    "selectList": "목록 선택"
+    "selectList": "목록 선택",
+    "status": {
+      "in progress": "진행 중",
+      "steady": "안정",
+      "ready": "준비됨",
+      "open": "열림",
+      "done": "완료",
+      "ignored": "무시됨"
+    }
   },
   "actions": {
     "drankWater": "물을 마셨습니다",
@@ -152,7 +160,7 @@
     "personalProject": "개인 프로젝트에 작업했다"
   },
   "footer": {
-    "copyright": "© {year} Purizu and Remotelys dba DreamPip",
+    "copyright": "© {year} Purizu and Remotelys dba Dupip",
     "iva": "IVA IT02925300903",
     "rea": "REA 572763",
     "cnpj": "CNPJ 37.553.462/0001-46",
@@ -270,8 +278,8 @@
     "genericError": "문제가 발생했습니다. 다시 시도해 주세요."
   },
   "publicProfile": {
-    "ctaTitle": "나만의 DreamPip 여정을 시작하세요",
-    "ctaSubtitle": "DreamPip으로 기분, 생산성, 수익을 추적하세요",
+    "ctaTitle": "나만의 Dupip 여정을 시작하세요",
+    "ctaSubtitle": "Dupip으로 기분, 생산성, 수익을 추적하세요",
     "getStarted": "시작하기",
     "notes": "메모",
     "loadingNotes": "메모 로딩 중...",
@@ -415,6 +423,7 @@
       "templateOrListLabel": "템플릿 또는 목록",
       "chooseTemplatePlaceholder": "템플릿 선택",
       "budgetLabel": "예산",
+      "budgetPercentageLabel": "개인 예산 할당",
       "dueDateLabel": "기한",
       "pickDatePlaceholder": "날짜 선택",
       "cadenceLabel": "주기",

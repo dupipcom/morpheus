@@ -1,6 +1,6 @@
 {
   "seo": {
-    "siteName": "DreamPip",
+    "siteName": "Dupip",
     "siteDescription": "Fintech para a compaixón. Atopa a túa fórmula da felicidade. Libera cartos para seguir o estado de ánimo, hábitos e compartir o teu progreso cos amigos."
   },
   "common": {
@@ -20,7 +20,7 @@
     "loading": "Cargando...",
     "error": "Erro",
     "success": "Éxito",
-    "welcome": "Benvido a DreamPip!",
+    "welcome": "Benvido a Dupip!",
     "signInToAccess": "Inicia sesión para acceder ao teu panel e seguir o teu progreso.",
     "dismiss": "Pechar",
     "selectLanguage": "Seleccionar idioma",
@@ -102,7 +102,15 @@
     "editing": "Editando: {timeframe}",
     "weekNumber": "Semana {number}",
     "yourEarnings": "Os teus ingresos",
-    "selectList": "Seleccionar lista"
+    "selectList": "Seleccionar lista",
+    "status": {
+      "in progress": "En Progreso",
+      "steady": "Estable",
+      "ready": "Listo",
+      "open": "Aberto",
+      "done": "Feito",
+      "ignored": "Ignorado"
+    }
   },
   "actions": {
     "drankWater": "Bebeu auga",
@@ -155,7 +163,7 @@
     "personalProject": "Traballáronse nun proyecto persoal"
   },
   "footer": {
-    "copyright": "© {year} DreamPip. All rights reserved.",
+    "copyright": "© {year} Dupip. All rights reserved.",
     "iva": "IVA IT02925300903",
     "rea": "REA 572763",
     "cnpj": "CNPJ 37.553.462/0001-46",
@@ -259,8 +267,8 @@
     "failedToSend": "Fallou o envío da mensaxe. Por favor, inténtao de novo."
   },
   "publicProfile": {
-    "ctaTitle": "Comeza a túa viaxe DreamPip",
-    "ctaSubtitle": "Segue o teu estado de ánimo, produtividade e ganancias con DreamPip",
+    "ctaTitle": "Comeza a túa viaxe Dupip",
+    "ctaSubtitle": "Segue o teu estado de ánimo, produtividade e ganancias con Dupip",
     "getStarted": "Comezar",
     "notes": "Notas",
     "loadingNotes": "Cargando notas...",

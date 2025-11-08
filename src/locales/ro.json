@@ -1,6 +1,6 @@
 {
   "seo": {
-    "siteName": "DreamPip",
+    "siteName": "Dupip",
     "siteDescription": "Fintech pentru compasiune. Găsește-ți formula fericirii. Urmărește starea de spirit și obiceiurile și împărtășește-ți progresul cu prietenii."
   },
   "common": {
@@ -20,7 +20,7 @@
     "loading": "Se încarcă...",
     "error": "Eroare",
     "success": "Succes",
-    "welcome": "Bun venit la DreamPip!",
+    "welcome": "Bun venit la Dupip!",
     "signInToAccess": "Conectează-te pentru a accesa panoul de control și a-ți urmări progresul.",
     "dismiss": "Închide",
     "selectLanguage": "Selectează limba",
@@ -99,7 +99,15 @@
     "editing": "Editare: {timeframe}",
     "weekNumber": "Săptămâna {number}",
     "yourEarnings": "Câștigurile tale",
-    "selectList": "Selectați lista"
+    "selectList": "Selectați lista",
+    "status": {
+      "in progress": "În Curs",
+      "steady": "Constant",
+      "ready": "Gata",
+      "open": "Deschis",
+      "done": "Finalizat",
+      "ignored": "Ignorat"
+    }
   },
   "actions": {
     "drankWater": "A băut apă",
@@ -152,7 +160,7 @@
     "personalProject": "Ați lucrat la un proiect personal"
   },
   "footer": {
-    "copyright": "© {year} DreamPip. Toate drepturile rezervate.",
+    "copyright": "© {year} Dupip. Toate drepturile rezervate.",
     "iva": "IVA IT02925300903",
     "rea": "REA 572763",
     "cnpj": "CNPJ 37.553.462/0001-46",
@@ -256,8 +264,8 @@
     "failedToSend": "Trimiterea mesajului a eșuat. Te rog încearcă din nou."
   },
   "publicProfile": {
-    "ctaTitle": "Începe-ți propria călătorie DreamPip",
-    "ctaSubtitle": "Urmărește-ți starea de spirit, productivitatea și câștigurile cu DreamPip",
+    "ctaTitle": "Începe-ți propria călătorie Dupip",
+    "ctaSubtitle": "Urmărește-ți starea de spirit, productivitatea și câștigurile cu Dupip",
     "getStarted": "Începe",
     "notes": "Note",
     "loadingNotes": "Se încarcă notele...",
@@ -401,6 +409,7 @@
       "templateOrListLabel": "Șablon sau listă",
       "chooseTemplatePlaceholder": "Alegeți un șablon",
       "budgetLabel": "Buget",
+      "budgetPercentageLabel": "Alocare buget personal",
       "dueDateLabel": "Data scadenței",
       "pickDatePlaceholder": "Alegeți o dată",
       "cadenceLabel": "Cadență",

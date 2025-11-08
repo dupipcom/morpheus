@@ -1,6 +1,6 @@
 {
   "seo": {
-    "siteName": "DreamPip",
+    "siteName": "Dupip",
     "siteDescription": "Şefkat için fintech. Mutluluk formülünü bulun. Ruh halinizi ve alışkanlıklarınızı takip edin ve ilerlemenizi arkadaşlarınızla paylaşın."
   },
   "common": {
@@ -17,7 +17,7 @@
     "loading": "Yükleniyor...",
     "error": "Hata",
     "success": "Başarılı",
-    "welcome": "DreamPip'e hoş geldiniz!",
+    "welcome": "Dupip'e hoş geldiniz!",
     "signInToAccess": "Dashboard'unuza erişmek ve ilerlemenizi takip etmek için giriş yapın.",
     "dismiss": "Kapat",
     "selectLanguage": "Dil seçin",
@@ -103,7 +103,15 @@
     "editing": "Düzenleniyor: {timeframe}",
     "weekNumber": "Hafta {number}",
     "yourEarnings": "Kazancınız",
-    "selectList": "Liste seçin"
+    "selectList": "Liste seçin",
+    "status": {
+      "in progress": "Devam Ediyor",
+      "steady": "Sabit",
+      "ready": "Hazır",
+      "open": "Açık",
+      "done": "Tamamlandı",
+      "ignored": "Yoksayıldı"
+    }
   },
   "actions": {
     "drankWater": "Su içti",
@@ -156,7 +164,7 @@
     "personalProject": "Kişisel proje üzerinde çalıştı"
   },
   "footer": {
-    "copyright": "© {year} DreamPip. Tüm hakları saklıdır.",
+    "copyright": "© {year} Dupip. Tüm hakları saklıdır.",
     "terms": "Hizmet Şartları",
     "privacy": "Gizlilik Politikası",
     "iva": "IVA IT02925300903",
@@ -274,8 +282,8 @@
     "failedToSend": "Mesaj gönderilemedi. Lütfen tekrar deneyin."
   },
   "publicProfile": {
-    "ctaTitle": "Kendi DreamPip Yolculuğunuzu Başlatın",
-    "ctaSubtitle": "DreamPip ile ruh halinizi, verimliliğinizi ve kazançlarınızı takip edin",
+    "ctaTitle": "Kendi Dupip Yolculuğunuzu Başlatın",
+    "ctaSubtitle": "Dupip ile ruh halinizi, verimliliğinizi ve kazançlarınızı takip edin",
     "getStarted": "Başlayın",
     "notes": "Notlar",
     "loadingNotes": "Notlar yükleniyor...",
@@ -419,6 +427,7 @@
       "templateOrListLabel": "Şablon veya Liste",
       "chooseTemplatePlaceholder": "Bir şablon seçin",
       "budgetLabel": "Bütçe",
+      "budgetPercentageLabel": "Kişisel bütçe tahsisi",
       "dueDateLabel": "Son tarih",
       "pickDatePlaceholder": "Bir tarih seçin",
       "cadenceLabel": "Kadans",

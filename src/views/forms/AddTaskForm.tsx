@@ -42,7 +42,12 @@ export const AddTaskForm = ({
       await fetch('/api/v1/tasklists', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ role: (selectedList as any).role, tasks: updatedTasks })
+        body: JSON.stringify({ 
+          taskListId: selectedTaskListId,
+          create: false,
+          role: (selectedList as any).role, 
+          tasks: updatedTasks 
+        })
       })
     } else {
       const ephemeralTask = { ...baseTask, isEphemeral: true, createdAt: new Date().toISOString() }

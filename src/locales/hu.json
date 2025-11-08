@@ -1,6 +1,6 @@
 {
   "seo": {
-    "siteName": "DreamPip",
+    "siteName": "Dupip",
     "siteDescription": "Fintech az együttérzésért. Találd meg a boldogság képleted. Kövesd a hangulatod és szokásaid, és oszd meg a fejlődésed a barátokkal."
   },
   "common": {
@@ -20,7 +20,7 @@
     "loading": "Betöltés...",
     "error": "Hiba",
     "success": "Sikeres",
-    "welcome": "Üdvözöljük a DreamPip-ben!",
+    "welcome": "Üdvözöljük a Dupip-ben!",
     "signInToAccess": "Jelentkezzen be a dashboard eléréséhez és a fejlődés követéséhez.",
     "dismiss": "Bezárás",
     "selectLanguage": "Nyelv kiválasztása",
@@ -99,7 +99,15 @@
     "editing": "Szerkesztés: {timeframe}",
     "weekNumber": "{number}. hét",
     "yourEarnings": "Ön keresete {timeframe}, eddig: Ð{amount}",
-    "selectList": "Lista kiválasztása"
+    "selectList": "Lista kiválasztása",
+    "status": {
+      "in progress": "Folyamatban",
+      "steady": "Állandó",
+      "ready": "Kész",
+      "open": "Nyitott",
+      "done": "Kész",
+      "ignored": "Figyelmen kívül hagyva"
+    }
   },
   "actions": {
     "drankWater": "Vizet ivott",
@@ -152,7 +160,7 @@
     "personalProject": "Személyes projekten dolgozott"
   },
   "footer": {
-    "copyright": "© {year} Purizu and Remotelys dba DreamPip",
+    "copyright": "© {year} Purizu and Remotelys dba Dupip",
     "iva": "IVA IT02925300903",
     "rea": "REA 572763",
     "cnpj": "CNPJ 37.553.462/0001-46",
@@ -256,8 +264,8 @@
     "failedToSend": "Az üzenet küldése sikertelen. Próbálja újra."
   },
   "publicProfile": {
-    "ctaTitle": "Kezdje el a saját DreamPip útját",
-    "ctaSubtitle": "Kövesse nyomon hangulatát, termelékenységét és bevételeit a DreamPip-pel",
+    "ctaTitle": "Kezdje el a saját Dupip útját",
+    "ctaSubtitle": "Kövesse nyomon hangulatát, termelékenységét és bevételeit a Dupip-pel",
     "getStarted": "Kezdés",
     "notes": "Jegyzetek",
     "loadingNotes": "Jegyzetek betöltése...",
@@ -401,6 +409,7 @@
       "templateOrListLabel": "Sablon vagy Lista",
       "chooseTemplatePlaceholder": "Válasszon sablont",
       "budgetLabel": "Költségvetés",
+      "budgetPercentageLabel": "Személyes költségvetés felosztása",
       "dueDateLabel": "Határidő",
       "pickDatePlaceholder": "Válasszon dátumot",
       "cadenceLabel": "Kadencia",

@@ -1,6 +1,6 @@
 {
   "seo": {
-    "siteName": "DreamPip",
+    "siteName": "Dupip",
     "siteDescription": "Fintech per a la compassió. Troba la teva fórmula de la felicitat. Desbloqueja diners per fer seguiment de l'estat d'ànim, hàbits i compartir el teu progrés amb amics."
   },
   "common": {
@@ -20,7 +20,7 @@
     "loading": "Carregant...",
     "error": "Error",
     "success": "Èxit",
-    "welcome": "Benvingut a DreamPip!",
+    "welcome": "Benvingut a Dupip!",
     "signInToAccess": "Inicia sessió per accedir al teu tauler de control i seguir el teu progrés.",
     "dismiss": "Tancar",
     "selectLanguage": "Seleccionar idioma",
@@ -99,7 +99,15 @@
     "editing": "Editant: {timeframe}",
     "weekNumber": "Setmana {number}",
     "yourEarnings": "Els teus ingressos {timeframe}, fins al moment: Ð{amount}",
-    "selectList": "Seleccionar llista"
+    "selectList": "Seleccionar llista",
+    "status": {
+      "in progress": "En Progrés",
+      "steady": "Estable",
+      "ready": "Llest",
+      "open": "Obert",
+      "done": "Fet",
+      "ignored": "Ignorat"
+    }
   },
   "actions": {
     "drankWater": "Ha begut aigua",
@@ -152,7 +160,7 @@
     "personalProject": "Ha treballat en un projecte personal"
   },
   "footer": {
-    "copyright": "© {year} DreamPip. All rights reserved.",
+    "copyright": "© {year} Dupip. All rights reserved.",
     "iva": "IVA IT02925300903",
     "rea": "REA 572763",
     "cnpj": "CNPJ 37.553.462/0001-46",
@@ -256,8 +264,8 @@
     "failedToSend": "L'enviament del missatge ha fallat. Si us plau, torna-ho a intentar."
   },
   "publicProfile": {
-    "ctaTitle": "Comença el teu propi viatge DreamPip",
-    "ctaSubtitle": "Fes el seguiment del teu estat d'ànim, productivitat i guanys amb DreamPip",
+    "ctaTitle": "Comença el teu propi viatge Dupip",
+    "ctaSubtitle": "Fes el seguiment del teu estat d'ànim, productivitat i guanys amb Dupip",
     "getStarted": "Comença",
     "notes": "Notes",
     "loadingNotes": "Carregant notes...",
