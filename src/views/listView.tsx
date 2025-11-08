@@ -685,7 +685,7 @@ const getIconColor = (status: TaskStatus): string => {
                     </DropdownMenuContent>
                   </DropdownMenu>
 
-                  <ToggleGroupItem className="rounded-md leading-7 text-sm min-h-[40px] truncate flex-1" value={task.name} aria-label={task.name}>
+                  <ToggleGroupItem className="rounded-md leading-7 text-sm min-h-[40px] h-auto flex-1 whitespace-normal break-words py-2" value={task.name} aria-label={task.name}>
                     {task.times > 1 ? `${task.count || 0}/${task.times} ` : ''}{task.displayName || task.name}
                   </ToggleGroupItem>
                 </div>
