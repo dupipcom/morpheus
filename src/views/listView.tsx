@@ -281,20 +281,9 @@ const getIconColor = (status: TaskStatus): string => {
       const key = task?.id || task?.localeKey || task?.name
       const taskName = task?.name
 
-      // Check if the user is trying to mark task as "done" and assess times vs count
-      let effectiveStatus = newStatus
-      if (newStatus === 'done') {
-        const currentCount = task?.count || 0
-        const times = task?.times || 1
-        const newCount = currentCount + 1
-        
-        // Determine the appropriate status based on times and count
-        if (newCount < times) {
-          effectiveStatus = 'in progress'
-        } else if (newCount >= times) {
-          effectiveStatus = 'done'
-        }
-      }
+      // Allow manual status setting to take precedence
+      // Only auto-determine status based on count/times when clicking "done" to increment count
+      const effectiveStatus = newStatus
 
       // Update local state immediately
       setTaskStatuses(prev => ({ ...prev, [key]: effectiveStatus }))
@@ -307,8 +296,14 @@ const getIconColor = (status: TaskStatus): string => {
         const statusKey = `task-status-${selectedTaskList.id}-${key}`
         localStorage.setItem(statusKey, effectiveStatus)
 
+<<<<<<< Updated upstream
         // If status is "done", also mark the task as completed
         if (effectiveStatus === 'done' && taskName && !values.includes(taskName)) {
+=======
+        // If user selected "done", handle completion logic based on times/count
+        if (effectiveStatus === 'done' && taskName && !values.includes(taskName)) {
+          // If status is "done" and count >= times, mark the task as completed
+>>>>>>> Stashed changes
           // Add to values to mark as toggled
           const newValues = [...values, taskName]
           setValues(newValues)
@@ -512,10 +507,18 @@ const getIconColor = (status: TaskStatus): string => {
             const times = task?.times || 1
             const newCount = currentCount + 1
             
+            // Check if there's a manually set status to preserve
+            const existingStatus = prev[key] || (task?.taskStatus as TaskStatus)
+            
             // Determine the appropriate status based on times and count
             let taskStatus: TaskStatus = 'done'
             if (newCount < times) {
-              taskStatus = 'in progress'
+              // Preserve manually set status (except 'open' and 'done')
+              if (existingStatus && existingStatus !== 'open' && existingStatus !== 'done') {
+                taskStatus = existingStatus
+              } else {
+                taskStatus = 'in progress'
+              }
             } else if (newCount >= times) {
               taskStatus = 'done'
             }
@@ -562,6 +565,28 @@ const getIconColor = (status: TaskStatus): string => {
           c.status = 'Done'
         } else if (newValues.includes(action.name) && (action.times - (action.count || 0)) >= 1) {
           c.count = (c.count || 0) + 1
+<<<<<<< Updated upstream
+=======
+          // Only mark as Done if count reaches times
+          if (c.count >= (c.times || 1)) {
+            c.status = 'Done'
+            c.taskStatus = 'done'
+          } else {
+            c.status = 'Open'
+            // Preserve manually set status if it exists (except 'open' and 'done')
+            const manualStatus = c.taskStatus
+            if (!manualStatus || manualStatus === 'open' || manualStatus === 'done') {
+              c.taskStatus = 'in progress'
+            }
+            // Otherwise keep the existing taskStatus
+          }
+        } else if (isFullyCompleted) {
+          // Task is in values but wasn't just clicked (was already completed)
+          // Ensure taskStatus is 'done'
+          if (c.status === 'Done') {
+            c.taskStatus = 'done'
+          }
+>>>>>>> Stashed changes
         } else {
           if (!newValues.includes(action.name) && (c.times || 1) <= (c.count || 0)) {
             if ((c.count || 0) > 0) {
@@ -690,7 +715,30 @@ const getIconColor = (status: TaskStatus): string => {
             const completerName = lastCompleter ? (collabProfiles[String(lastCompleter.id)] || String(lastCompleter.id)) : ''
 
             const key = task?.id || task?.localeKey || task?.name
+<<<<<<< Updated upstream
             const taskStatus = taskStatuses[key] || (task?.taskStatus as TaskStatus) || 'open'
+=======
+            // Prioritize manually set status over automatic count-based status
+            let taskStatus: TaskStatus
+            
+            // First check if there's a manually set status
+            const storedStatus = taskStatuses[key] || (task?.taskStatus as TaskStatus)
+            
+            if (values.includes(task?.name)) {
+              // Task is in values (completed) - use 'done' status
+              taskStatus = 'done'
+            } else if (storedStatus) {
+              // Use manually set status if available (takes precedence)
+              // But don't allow 'done' if task is not in values
+              taskStatus = storedStatus === 'done' ? 'open' : storedStatus
+            } else if ((task.count || 0) > 0 && (task.count || 0) < (task.times || 1)) {
+              // Fall back to count-based status if no manual status set
+              taskStatus = 'in progress'
+            } else {
+              // Default to 'open'
+              taskStatus = 'open'
+            }
+>>>>>>> Stashed changes
             const statusColor = getStatusColor(taskStatus, 'css')
             const iconColor = getIconColor(taskStatus)
 
