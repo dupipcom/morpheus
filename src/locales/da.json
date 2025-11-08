@@ -413,6 +413,7 @@
       "templateOrListLabel": "Skabelon eller liste",
       "chooseTemplatePlaceholder": "Vælg en skabelon",
       "budgetLabel": "Budget",
+      "budgetPercentageLabel": "Personlig budgetallokering",
       "dueDateLabel": "Forfaldsdato",
       "pickDatePlaceholder": "Vælg en dato",
       "cadenceLabel": "Kadence",

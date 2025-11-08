@@ -423,6 +423,7 @@
       "templateOrListLabel": "Шаблон или список",
       "chooseTemplatePlaceholder": "Выберите шаблон",
       "budgetLabel": "Бюджет",
+      "budgetPercentageLabel": "Распределение личного бюджета",
       "dueDateLabel": "Срок исполнения",
       "pickDatePlaceholder": "Выберите дату",
       "cadenceLabel": "Каденс",

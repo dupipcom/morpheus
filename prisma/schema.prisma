@@ -22,6 +22,8 @@ model User {
   settings      Settings?
   analysis      Json?
   availableBalance  String?
+  usedBudget    Float?    @default(0)  // Percentage of budget allocated to lists (0-100)
+  remainingBudget Float?  @default(100) // Percentage of budget remaining (0-100)
   stash         String?   @default("0")
   equity        String?   @default("0")
   totalEarnings String?   @default("0")
@@ -128,6 +130,8 @@ type Day {
   tasks Task[]
   ephemeralTasks Task[]
   earnings String
+  prize String?
+  profit String?
   ticker Float?
   date String
   status String
@@ -145,6 +149,8 @@ type Week {
   tasks  Task[]
   ephemeralTasks Task[]
   earnings String
+  prize String?
+  profit String?
   ticker Float?
   date String
   status String
@@ -169,6 +175,7 @@ type Task {
   isEphemeral Boolean?
   createdAt String?
   completers Completer[]
+  taskStatus String?
 }
 
 type Completer {
@@ -241,6 +248,8 @@ model TaskList {
   role          String?   // e.g., "daily.default", "weekly.default", "custom"
   name          String?
   budget        String?
+  budgetPercentage Float? @default(0) // Percentage of user's available budget allocated to this list (0-100)
+  remainingBudget String? // Remaining budget after task completions
   dueDate       String?
   owners        String[]  @db.ObjectId // User IDs
   collaborators String[]  @db.ObjectId // User IDs

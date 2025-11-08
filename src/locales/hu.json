@@ -409,6 +409,7 @@
       "templateOrListLabel": "Sablon vagy Lista",
       "chooseTemplatePlaceholder": "Válasszon sablont",
       "budgetLabel": "Költségvetés",
+      "budgetPercentageLabel": "Személyes költségvetés felosztása",
       "dueDateLabel": "Határidő",
       "pickDatePlaceholder": "Válasszon dátumot",
       "cadenceLabel": "Kadencia",
