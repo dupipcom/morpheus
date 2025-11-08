@@ -167,6 +167,22 @@ const getIconColor = (status: TaskStatus): string => {
 
       const ephemerals = (selectedTaskList?.ephemeralTasks?.open || []).map((t: any) => ({ ...t, isEphemeral: true }))
 
+      // Include closed ephemeral tasks that were completed on the current date/timeframe
+      const closedEphemerals = (selectedTaskList?.ephemeralTasks?.closed || [])
+        .filter((t: any) => {
+          if (!t.completedAt) return false
+          const completedDate = new Date(t.completedAt).toISOString().split('T')[0]
+          
+          // For weekly lists, check if completed within the week
+          if (isWeeklyList) {
+            return getWeekDates.includes(completedDate)
+          }
+          
+          // For daily lists, check if completed on the selected date
+          return completedDate === date
+        })
+        .map((t: any) => ({ ...t, isEphemeral: true }))
+
       // For weekly lists, merge completedTasks from all dates in the week
       const datesToCheck = isWeeklyList ? getWeekDates : [date]
       const byKey: Record<string, any> = {}
@@ -202,9 +218,12 @@ const getIconColor = (status: TaskStatus): string => {
         return { ...t, status: doneCount >= (times || 1) ? 'Done' : 'Open', count: Math.min(doneCount || 0, times || 1), completers: completed?.completers }
       })
 
+      // Combine all ephemeral tasks (open + closed for current date/timeframe)
+      const allEphemerals = [...ephemerals, ...closedEphemerals]
+      
       // Dedup ephemeral by name against base
       const names = new Set(overlayed.map((t: any) => t.name))
-      const dedupEphemeral = ephemerals.filter((t: any) => !names.has(t.name))
+      const dedupEphemeral = allEphemerals.filter((t: any) => !names.has(t.name))
       return [...overlayed, ...dedupEphemeral]
     }, [selectedTaskList, year, date, isWeeklyList, getWeekDates])
 
