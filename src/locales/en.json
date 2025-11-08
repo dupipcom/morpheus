@@ -1,6 +1,6 @@
 {
   "seo": {
-    "siteName": "DreamPip",
+    "siteName": "Dupip",
     "siteDescription": "Fintech for compassion. Find your formula for happiness. Unlock money to track mood, habits and share your progress with friends."
   },
   "common": {
@@ -20,7 +20,7 @@
     "loading": "Loading...",
     "error": "Error",
     "success": "Success",
-    "welcome": "Welcome to DreamPip!",
+    "welcome": "Welcome to Dupip!",
     "signInToAccess": "Sign in to access your dashboard and track your progress.",
     "dismiss": "Dismiss",
     "selectLanguage": "Select language",
@@ -328,7 +328,7 @@
     "boughtGroceries": "Bought groceries"
   },
   "footer": {
-    "copyright": "© {year} Purizu and Remotelys dba DreamPip",
+    "copyright": "© {year} Purizu and Remotelys dba Dupip",
     "iva": "IVA IT02925300903",
     "rea": "REA 572763",
     "cnpj": "CNPJ 37.553.462/0001-46",
@@ -389,8 +389,8 @@
     "genericError": "Something went wrong. Please try again."
   },
   "publicProfile": {
-    "ctaTitle": "Start Your Own DreamPip Journey",
-    "ctaSubtitle": "Track your mood, productivity, and earnings with DreamPip",
+    "ctaTitle": "Start Your Own Dupip Journey",
+    "ctaSubtitle": "Track your mood, productivity, and earnings with Dupip",
     "getStarted": "Get Started",
     "notes": "Notes",
     "loadingNotes": "Loading notes...",

@@ -1,6 +1,6 @@
 {
   "seo": {
-    "siteName": "DreamPip",
+    "siteName": "Dupip",
     "siteDescription": "Fintech kwa huruma. Pata fomula yako ya furaha. Fuatilia hali ya moyo na tabia, na shiriki maendeleo yako na marafiki."
   },
   "common": {
@@ -20,7 +20,7 @@
     "loading": "Inapakia...",
     "error": "Hitilafu",
     "success": "Mafanikio",
-    "welcome": "Karibu kwenye DreamPip!",
+    "welcome": "Karibu kwenye Dupip!",
     "signInToAccess": "Ingia ili kufikia dashibodi yako na kufuatilia maendeleo yako.",
     "dismiss": "Ondoa",
     "selectLanguage": "Chagua lugha",
@@ -178,7 +178,7 @@
     "boughtGroceries": "Kununua vyakula"
   },
   "footer": {
-    "copyright": "© {year} Purizu na Remotelys dba DreamPip",
+    "copyright": "© {year} Purizu na Remotelys dba Dupip",
     "iva": "IVA IT02925300903",
     "rea": "REA 572763",
     "cnpj": "CNPJ 37.553.462/0001-46",
@@ -276,8 +276,8 @@
     "genericError": "Kuna kitu kilichokwenda vibaya. Tafadhali jaribu tena."
   },
   "publicProfile": {
-    "ctaTitle": "Anza Safari Yako ya DreamPip",
-    "ctaSubtitle": "Fuatilia hali yako ya moyo, uzalishaji na mapato na DreamPip",
+    "ctaTitle": "Anza Safari Yako ya Dupip",
+    "ctaSubtitle": "Fuatilia hali yako ya moyo, uzalishaji na mapato na Dupip",
     "getStarted": "Anza",
     "notes": "Maelezo",
     "loadingNotes": "Inapakia maelezo...",

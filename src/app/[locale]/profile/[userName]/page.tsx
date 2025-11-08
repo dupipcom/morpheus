@@ -53,8 +53,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   }
 
   const fullName = [profile.firstName, profile.lastName].filter(Boolean).join(' ')
-  const title = profile.userName ? `@${profile.userName} · DreamPip` : 'DreamPip Profile'
-  const description = profile.bio || `View ${fullName || profile.userName || 'this user'}'s profile on DreamPip`
+  const title = profile.userName ? `@${profile.userName} · Dupip` : 'Dupip Profile'
+  const description = profile.bio || `View ${fullName || profile.userName || 'this user'}'s profile on Dupip`
 
   return {
     title,
@@ -182,9 +182,9 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
           <Card className="mt-6">
             <CardContent className="pt-6">
               <div className="text-center">
-                <h2 className="text-xl font-semibold mb-2">{(translations as any)?.publicProfile?.ctaTitle || 'Start Your Own DreamPip Journey'}</h2>
+                <h2 className="text-xl font-semibold mb-2">{(translations as any)?.publicProfile?.ctaTitle || 'Start Your Own Dupip Journey'}</h2>
                 <p className="text-muted-foreground mb-4">
-                  {(translations as any)?.publicProfile?.ctaSubtitle || 'Track your mood, productivity, and earnings with DreamPip'}
+                  {(translations as any)?.publicProfile?.ctaSubtitle || 'Track your mood, productivity, and earnings with Dupip'}
                 </p>
                 <a 
                   href={`/${locale}/app/dashboard`} 

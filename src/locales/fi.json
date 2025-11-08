@@ -1,6 +1,6 @@
 {
   "seo": {
-    "siteName": "DreamPip",
+    "siteName": "Dupip",
     "siteDescription": "Fintech myötätunnolle. Löydä onnellisuutesi kaava. Seuraa mielialaa ja tapoja ja jaa edistymisesi ystävien kanssa."
   },
   "common": {
@@ -17,7 +17,7 @@
     "loading": "Ladataan...",
     "error": "Virhe",
     "success": "Onnistui",
-    "welcome": "Tervetuloa DreamPip!",
+    "welcome": "Tervetuloa Dupip!",
     "signInToAccess": "Kirjaudu sisään päästäksesi hallintapaneeliin ja seurataksesi edistymistäsi.",
     "dismiss": "Sulje",
     "selectLanguage": "Valitse kieli",
@@ -164,7 +164,7 @@
     "personalProject": "Työskenteli henkilökohtaisessa projektissa"
   },
   "footer": {
-    "copyright": "© {year} DreamPip. All rights reserved.",
+    "copyright": "© {year} Dupip. All rights reserved.",
     "terms": "Palveluehdot",
     "privacy": "Tietosuojakäytäntö",
     "iva": "IVA IT02925300903",
@@ -268,8 +268,8 @@
     "failedToSend": "Viestin lähettäminen epäonnistui. Yritä uudelleen."
   },
   "publicProfile": {
-    "ctaTitle": "Aloita oma DreamPip-matkasi",
-    "ctaSubtitle": "Seuraa mielialaa, tuottavuutta ja tuloja DreamPipillä",
+    "ctaTitle": "Aloita oma Dupip-matkasi",
+    "ctaSubtitle": "Seuraa mielialaa, tuottavuutta ja tuloja Dupipillä",
     "getStarted": "Aloita",
     "notes": "Muistiinpanot",
     "loadingNotes": "Ladataan muistiinpanoja...",

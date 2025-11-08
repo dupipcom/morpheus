@@ -63,7 +63,7 @@ const renderOptions = (content) => {
                   <div style={{ position: 'relative' }}>
                     <ReactPlayer
                       key={`player-${playing}`}
-                      url={playing ? `https://media.infra.dreampip.com/videos/${entry.url}/main.m3u8` : 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'}
+                      url={playing ? `https://media.infra.dupip.com/videos/${entry.url}/main.m3u8` : 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'}
                       controls={true}
                       width="100%"
                       height="auto"
@@ -108,9 +108,9 @@ export default function Page({ url: slug, title: metaTitle, description, metaIma
   const locale = orig === "default" ? "en" : orig
 
   const image = metaImage?.url
-  const title = `DreamPip — ${metaTitle}`
+  const title = `Dupip — ${metaTitle}`
 
-  const url = `https://www.dreampip.com${orig !== 'default' ? `/${locale}` : ''}/${slug}`
+  const url = `https://www.dupip.com${orig !== 'default' ? `/${locale}` : ''}/${slug}`
 
   const parsed = documentToReactComponents(content?.json, renderOptions(content?.links))
   const snippet = documentToPlainTextString(content?.json).substring(0, 252) + "..."
@@ -120,26 +120,26 @@ export default function Page({ url: slug, title: metaTitle, description, metaIma
       <Head>
         <title>{title}</title>
         <meta property="og:title" content={title} />
-        <meta property="og:site_name" content="DreamPip" />
+        <meta property="og:site_name" content="Dupip" />
         <meta property="og:url" content={url} />
         <meta property="og:description" content={description || snippet}  />
         <meta name="description" content={description || snippet} />
         <meta property="og:type" content="website" />
         <meta
           property="og:image"
-          content={image || "https://www.dreampip.com/og-image.png"}
+          content={image || "https://www.dupip.com/og-image.png"}
         />
         <meta
           property="og:image:secure_url"
-          content={image || "https://www.dreampip.com/og-image.png"}
+          content={image || "https://www.dupip.com/og-image.png"}
         />
         <meta property="og:image:type" content="image/png" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <link rel="canonical" href={url} />
-        <link rel="alternate" hrefLang="x-default" href={`https://www.dreampip.com/${slug}`} />
+        <link rel="alternate" hrefLang="x-default" href={`https://www.dupip.com/${slug}`} />
         {Object.keys(localeMap).map((locale) => {
-          return <link key={locale} rel="alternate" hrefLang={locale} href={`https://www.dreampip.com/${locale}/${slug}`} />
+          return <link key={locale} rel="alternate" hrefLang={locale} href={`https://www.dupip.com/${locale}/${slug}`} />
         })}
       </Head>
       <article className="content-page">

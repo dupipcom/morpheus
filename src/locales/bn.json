@@ -1,6 +1,6 @@
 {
   "seo": {
-    "siteName": "DreamPip",
+    "siteName": "Dupip",
     "siteDescription": "সহমর্মিতার জন্য ফিনটেক। আপনার সুখের সূত্র খুঁজুন। মনের অবস্থা ও অভ্যাস ট্র্যাক করুন এবং বন্ধুদের সাথে অগ্রগতি শেয়ার করুন।"
   },
   "common": {
@@ -20,7 +20,7 @@
     "loading": "লোড হচ্ছে...",
     "error": "ত্রুটি",
     "success": "সফল",
-    "welcome": "DreamPip-এ স্বাগতম!",
+    "welcome": "Dupip-এ স্বাগতম!",
     "signInToAccess": "আপনার ড্যাশবোর্ডে অ্যাক্সেস করতে এবং আপনার অগ্রগতি ট্র্যাক করতে সাইন ইন করুন।",
     "dismiss": "বন্ধ করুন",
     "selectLanguage": "ভাষা নির্বাচন করুন",
@@ -160,7 +160,7 @@
     "personalProject": "ব্যক্তিগত প্রকল্পে কাজ করেছিল"
   },
   "footer": {
-    "copyright": "© {year} Purizu and Remotelys dba DreamPip",
+    "copyright": "© {year} Purizu and Remotelys dba Dupip",
     "iva": "IVA IT02925300903",
     "rea": "REA 572763",
     "cnpj": "CNPJ 37.553.462/0001-46",
@@ -264,8 +264,8 @@
     "failedToSend": "বার্তা পাঠাতে ব্যর্থ। দয়া করে আবার চেষ্টা করুন।"
   },
   "publicProfile": {
-    "ctaTitle": "আপনার নিজস্ব DreamPip যাত্রা শুরু করুন",
-    "ctaSubtitle": "DreamPip দিয়ে আপনার মেজাজ, উৎপাদনশীলতা এবং আয় ট্র্যাক করুন",
+    "ctaTitle": "আপনার নিজস্ব Dupip যাত্রা শুরু করুন",
+    "ctaSubtitle": "Dupip দিয়ে আপনার মেজাজ, উৎপাদনশীলতা এবং আয় ট্র্যাক করুন",
     "getStarted": "শুরু করুন",
     "notes": "নোটস",
     "loadingNotes": "নোটস লোড হচ্ছে...",

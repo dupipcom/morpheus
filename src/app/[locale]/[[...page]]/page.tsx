@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
   try {
     const pageData = await fetchPageBySlug(clearSlug)
-    const title = (pageData as any)?.properties?.Title?.formula?.string || 'DreamPip'
+    const title = (pageData as any)?.properties?.Title?.formula?.string || 'Dupip'
     const description = (pageData as any)?.properties?.Description?.rich_text?.[0]?.plain_text || undefined
     return await buildMetadata({ title, description, locale })
   } catch (e) {

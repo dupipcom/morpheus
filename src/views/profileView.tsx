@@ -109,9 +109,9 @@ export const ProfileView = ({
           <Card className="mt-6">
             <CardContent className="pt-6">
               <div className="text-center">
-                <h2 className="text-xl font-semibold mb-2">{(translations as any)?.publicProfile?.ctaTitle || 'Start Your Own DreamPip Journey'}</h2>
+                <h2 className="text-xl font-semibold mb-2">{(translations as any)?.publicProfile?.ctaTitle || 'Start Your Own Dupip Journey'}</h2>
                 <p className="text-muted-foreground mb-4">
-                  {(translations as any)?.publicProfile?.ctaSubtitle || 'Track your mood, productivity, and earnings with DreamPip'}
+                  {(translations as any)?.publicProfile?.ctaSubtitle || 'Track your mood, productivity, and earnings with Dupip'}
                 </p>
                 <a 
                   href={`/${locale}/app/dashboard`} 

@@ -1,6 +1,6 @@
 {
   "seo": {
-    "siteName": "DreamPip",
+    "siteName": "Dupip",
     "siteDescription": "思いやりのためのフィンテック。あなたの幸福の方程式を見つけましょう。気分や習慣を記録し、友達と進捗を共有しましょう。"
   },
   "common": {
@@ -20,7 +20,7 @@
     "loading": "読み込み中...",
     "error": "エラー",
     "success": "成功",
-    "welcome": "DreamPipへようこそ！",
+    "welcome": "Dupipへようこそ！",
     "signInToAccess": "ダッシュボードにアクセスして進捗を追跡するにはログインしてください。",
     "dismiss": "閉じる",
     "selectLanguage": "言語を選択",
@@ -217,7 +217,7 @@
     "personalProject": "個人的なプロジェクトに取り組んだ"
   },
   "footer": {
-    "copyright": "© {year} Purizu and Remotelys dba DreamPip",
+    "copyright": "© {year} Purizu and Remotelys dba Dupip",
     "iva": "IVA IT02925300903",
     "rea": "REA 572763",
     "cnpj": "CNPJ 37.553.462/0001-46",
@@ -278,8 +278,8 @@
     "genericError": "何か問題が発生しました。もう一度お試しください。"
   },
   "publicProfile": {
-    "ctaTitle": "あなた自身の DreamPip の旅を始めましょう",
-    "ctaSubtitle": "DreamPip で気分、生産性、収益を追跡しましょう",
+    "ctaTitle": "あなた自身の Dupip の旅を始めましょう",
+    "ctaSubtitle": "Dupip で気分、生産性、収益を追跡しましょう",
     "getStarted": "始める",
     "notes": "ノート",
     "loadingNotes": "ノートを読み込み中...",

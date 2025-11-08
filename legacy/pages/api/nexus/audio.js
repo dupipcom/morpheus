@@ -22,9 +22,9 @@ export const generateRadioApiCall = (path) => {
     if (process.env.NEXT_PUBLIC_LOCAL) {
       return `http://localhost:8080/api/nexus/audio/` + coercedPath
     }
-    return `https://beta.dreampip.com/api/nexus/audio/` + coercedPath
+    return `https://beta.dupip.com/api/nexus/audio/` + coercedPath
   }
-  return 'https://www.dreampip.com/api/nexus/audio/' + coercedPath
+  return 'https://www.dupip.com/api/nexus/audio/' + coercedPath
 }
 
 // // nexing things up
@@ -50,7 +50,7 @@ export default async function handler(req, res) {
         }
     }
 
-    const BASE = `https://www.dreampip.com/api/nexus/audio/`
+    const BASE = `https://www.dupip.com/api/nexus/audio/`
 
     const sourcesUrl = []
       for (let i = 0; i <= POOL_SIZE; i++) {

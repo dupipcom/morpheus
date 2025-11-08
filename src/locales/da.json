@@ -1,6 +1,6 @@
 {
   "seo": {
-    "siteName": "DreamPip",
+    "siteName": "Dupip",
     "siteDescription": "Fintech for medfølelse. Find din formel for lykke. Lås penge op for at spore humør, vaner og dele dine fremskridt med venner."
   },
   "common": {
@@ -17,7 +17,7 @@
     "loading": "Indlæser...",
     "error": "Fejl",
     "success": "Succes",
-    "welcome": "Velkommen til DreamPip!",
+    "welcome": "Velkommen til Dupip!",
     "signInToAccess": "Log ind for at få adgang til dit dashboard og spore din fremskridt.",
     "dismiss": "Luk",
     "selectLanguage": "Vælg sprog",
@@ -164,7 +164,7 @@
     "personalProject": "Arbejdede på personligt projekt"
   },
   "footer": {
-    "copyright": "© {year} DreamPip. All rights reserved.",
+    "copyright": "© {year} Dupip. All rights reserved.",
     "terms": "Servicevilkår",
     "privacy": "Privatlivspolitik",
     "iva": "IVA IT02925300903",
@@ -268,8 +268,8 @@
     "failedToSend": "Beskeden kunne ikke sendes. Prøv igen."
   },
   "publicProfile": {
-    "ctaTitle": "Start din egen DreamPip-rejse",
-    "ctaSubtitle": "Spor dit humør, produktivitet og indtjening med DreamPip",
+    "ctaTitle": "Start din egen Dupip-rejse",
+    "ctaSubtitle": "Spor dit humør, produktivitet og indtjening med Dupip",
     "getStarted": "Kom i gang",
     "notes": "Noter",
     "loadingNotes": "Indlæser noter...",

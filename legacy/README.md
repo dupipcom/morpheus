@@ -1,4 +1,4 @@
-# Morpheus - DreamPip's Content Presence Website
+# Morpheus - Dupip's Content Presence Website
 
 What: Legacy Next.js SSG Engine, Contentful
 
@@ -13,12 +13,12 @@ npm run dev
 
 Documentation: TBD
 
-Nightly Environment: https://beta.dreampip.com
+Nightly Environment: https://beta.dupip.com
 
-Production Environment: https://www.dreampip.com
+Production Environment: https://www.dupip.com
 
 License: HPL3-ECO-AND-ANC 2021—Present
 
-Purizu di Angelo Reale Caldeira de Lemos dba DreamPip
+Purizu di Angelo Reale Caldeira de Lemos dba Dupip
 
 IT02925300903

@@ -1,6 +1,6 @@
 {
   "seo": {
-    "siteName": "DreamPip",
+    "siteName": "Dupip",
     "siteDescription": "Fintech για τη συμπόνια. Βρείτε τον τύπο της ευτυχίας σας. Παρακολουθήστε διάθεση και συνήθειες και μοιραστείτε την πρόοδό σας με φίλους."
   },
   "common": {
@@ -17,7 +17,7 @@
     "loading": "Φόρτωση...",
     "error": "Σφάλμα",
     "success": "Επιτυχία",
-    "welcome": "Καλώς ήρθατε στο DreamPip!",
+    "welcome": "Καλώς ήρθατε στο Dupip!",
     "signInToAccess": "Συνδεθείτε για να αποκτήσετε πρόσβαση στον πίνακα ελέγχου και να παρακολουθήσετε την πρόοδό σας.",
     "dismiss": "Κλείσιμο",
     "selectLanguage": "Επιλέξτε γλώσσα",
@@ -157,7 +157,7 @@
     "boughtGroceries": "Αγόρασε είδη παντοπωλείου"
   },
   "footer": {
-    "copyright": "© {year} Purizu and Remotelys dba DreamPip",
+    "copyright": "© {year} Purizu and Remotelys dba Dupip",
     "iva": "IVA IT02925300903",
     "rea": "REA 572763",
     "cnpj": "CNPJ 37.553.462/0001-46",
@@ -261,8 +261,8 @@
     "failedToSend": "Αποτυχία αποστολής μηνύματος. Παρακαλώ δοκιμάστε ξανά."
   },
   "publicProfile": {
-    "ctaTitle": "Ξεκινήστε το Δικό σας Ταξίδι με το DreamPip",
-    "ctaSubtitle": "Παρακολουθήστε τη διάθεσή σας, την παραγωγικότητα και τα κέρδη σας με το DreamPip",
+    "ctaTitle": "Ξεκινήστε το Δικό σας Ταξίδι με το Dupip",
+    "ctaSubtitle": "Παρακολουθήστε τη διάθεσή σας, την παραγωγικότητα και τα κέρδη σας με το Dupip",
     "getStarted": "Ξεκινήστε",
     "notes": "Σημειώσεις",
     "loadingNotes": "Φόρτωση σημειώσεων...",

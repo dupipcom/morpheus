@@ -1,6 +1,6 @@
 {
   "seo": {
-    "siteName": "DreamPip",
+    "siteName": "Dupip",
     "siteDescription": "Fintech fún ìfẹ́kúfẹ̀. Wá fọ́ọ̀mùlà ayọ̀ rẹ. Tọ́pinpin ìmọ̀lára àti ìmọ̀ ìṣe, kí o sì pín ìlera rẹ pẹ̀lú ọ̀rẹ́."
   },
   "common": {
@@ -20,7 +20,7 @@
     "loading": "Ó ń gbé...",
     "error": "Àṣìṣe",
     "success": "Àṣeyọrí",
-    "welcome": "Káàbọ̀ sí DreamPip!",
+    "welcome": "Káàbọ̀ sí Dupip!",
     "signInToAccess": "Wọlé láti wọ dashboard rẹ̀ àti tẹ̀lé ìlọsíwájú rẹ̀.",
     "dismiss": "Kọ́",
     "selectLanguage": "Yàn èdè",
@@ -178,7 +178,7 @@
     "boughtGroceries": "Rà oúnjẹ"
   },
   "footer": {
-    "copyright": "© {year} Purizu àti Remotelys dba DreamPip",
+    "copyright": "© {year} Purizu àti Remotelys dba Dupip",
     "iva": "IVA IT02925300903",
     "rea": "REA 572763",
     "cnpj": "CNPJ 37.553.462/0001-46",
@@ -276,8 +276,8 @@
     "genericError": "Nǹkan kan ṣẹlẹ̀. Jọ̀ọ́ gbìyànjú lẹ́ẹ̀kan si."
   },
   "publicProfile": {
-    "ctaTitle": "Bẹ̀rẹ̀ Ìrìn àjò DreamPip tirẹ",
-    "ctaSubtitle": "Tẹ̀lé ìwà rẹ, ìṣẹ́ àti owo pẹ̀lú DreamPip",
+    "ctaTitle": "Bẹ̀rẹ̀ Ìrìn àjò Dupip tirẹ",
+    "ctaSubtitle": "Tẹ̀lé ìwà rẹ, ìṣẹ́ àti owo pẹ̀lú Dupip",
     "getStarted": "Bẹ̀rẹ̀",
     "notes": "Àwọn àkíyèsí",
     "loadingNotes": "N gbé àwọn àkíyèsí...",

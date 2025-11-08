@@ -1,6 +1,6 @@
 {
   "seo": {
-    "siteName": "DreamPip",
+    "siteName": "Dupip",
     "siteDescription": "Fintech para compaixão. Encontre sua fórmula da felicidade. Liberte dinheiro para acompanhar humor, hábitos e compartilhar seu progresso com amigos."
   },
   "common": {
@@ -20,7 +20,7 @@
     "loading": "Carregando...",
     "error": "Erro",
     "success": "Sucesso",
-    "welcome": "Bem-vindo ao DreamPip!",
+    "welcome": "Bem-vindo ao Dupip!",
     "signInToAccess": "Faça login para acessar seu painel e acompanhar seu progresso.",
     "dismiss": "Fechar",
     "selectLanguage": "Selecionar idioma",
@@ -217,7 +217,7 @@
     "personalProject": "Trabalhou em um projeto pessoal"
   },
   "footer": {
-    "copyright": "© {year} Purizu and Remotelys dba DreamPip",
+    "copyright": "© {year} Purizu and Remotelys dba Dupip",
     "iva": "IVA IT02925300903",
     "rea": "REA 572763",
     "cnpj": "CNPJ 37.553.462/0001-46",
@@ -278,8 +278,8 @@
     "genericError": "Algo deu errado. Tente novamente."
   },
   "publicProfile": {
-    "ctaTitle": "Comece sua jornada com a DreamPip",
-    "ctaSubtitle": "Acompanhe seu humor, produtividade e ganhos com a DreamPip",
+    "ctaTitle": "Comece sua jornada com a Dupip",
+    "ctaSubtitle": "Acompanhe seu humor, produtividade e ganhos com a Dupip",
     "getStarted": "Começar",
     "notes": "Notas",
     "loadingNotes": "Carregando notas...",

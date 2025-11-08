@@ -36,15 +36,15 @@ export default function Shows(props) {
   const { locale: orig, pathname, isFallback } = useRouter()
   const locale = orig === "default" ? "en" : orig
 
-  const url = `https://www.dreampip.com/${orig !== 'default' ? `${locale}/` : ''}shows`
+  const url = `https://www.dupip.com/${orig !== 'default' ? `${locale}/` : ''}shows`
 
   const localization = ShowLocale[locale] || ShowLocale["default"]
 
-  const title = `DreamPip — ${localization.shows}`;
-  const ogTitle = `${localization.shows} — DreamPip`;
+  const title = `Dupip — ${localization.shows}`;
+  const ogTitle = `${localization.shows} — Dupip`;
   const ogDescription = localization.showsDescription;
-  const ogImageUrl = 'https://www.dreampip.com/og-image.png'; // Replace with your actual image URL
-  const defaultUrl = 'https://www.dreampip.com/shows';
+  const ogImageUrl = 'https://www.dupip.com/og-image.png'; // Replace with your actual image URL
+  const defaultUrl = 'https://www.dupip.com/shows';
   const canonicalUrl = url;
 
   const [allcountries, setAllcountries] = useState(new Set());
@@ -100,7 +100,7 @@ export default function Shows(props) {
       <Head>
         <title>{title}</title>
         <meta property="og:title" content={ogTitle} />
-        <meta property="og:site_name" content="DreamPip" />
+        <meta property="og:site_name" content="Dupip" />
         <meta property="og:url" content={canonicalUrl} />
         <meta property="og:description" content={ogDescription} />
         <meta name="description" content={ogDescription} />
@@ -117,7 +117,7 @@ export default function Shows(props) {
             key={locale}
             rel="alternate"
             hrefLang={locale}
-            href={`https://www.dreampip.com/${locale}/shows`}
+            href={`https://www.dupip.com/${locale}/shows`}
           />
         ))}
       </Head>

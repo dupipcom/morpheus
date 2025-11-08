@@ -1,6 +1,6 @@
 {
   "seo": {
-    "siteName": "DreamPip",
+    "siteName": "Dupip",
     "siteDescription": "פינטק לחמלה. מצאו את נוסחת האושר שלכם. עקבו אחר מצב רוח והרגלים ושיתפו התקדמות עם חברים."
   },
   "common": {
@@ -20,7 +20,7 @@
     "loading": "טוען...",
     "error": "שגיאה",
     "success": "הצלחה",
-    "welcome": "ברוכים הבאים ל-DreamPip!",
+    "welcome": "ברוכים הבאים ל-Dupip!",
     "signInToAccess": "התחבר כדי לגשת ללוח הבקרה שלך ולעקוב אחר ההתקדמות שלך.",
     "dismiss": "סגור",
     "selectLanguage": "בחר שפה",
@@ -160,7 +160,7 @@
     "personalProject": "עבד על פרויקט אישי"
   },
   "footer": {
-    "copyright": "© {year} DreamPip. All rights reserved.",
+    "copyright": "© {year} Dupip. All rights reserved.",
     "iva": "IVA IT02925300903",
     "rea": "REA 572763",
     "cnpj": "CNPJ 37.553.462/0001-46",
@@ -264,8 +264,8 @@
     "failedToSend": "שליחת הודעה נכשלה. אנא נסה שוב."
   },
   "publicProfile": {
-    "ctaTitle": "התחל את המסע שלך עם DreamPip",
-    "ctaSubtitle": "עקוב אחר מצב הרוח, הפרודוקטיביות והרווחים שלך עם DreamPip",
+    "ctaTitle": "התחל את המסע שלך עם Dupip",
+    "ctaSubtitle": "עקוב אחר מצב הרוח, הפרודוקטיביות והרווחים שלך עם Dupip",
     "getStarted": "התחל",
     "notes": "הערות",
     "loadingNotes": "טוען הערות...",

@@ -1,6 +1,6 @@
 {
   "seo": {
-    "siteName": "DreamPip",
+    "siteName": "Dupip",
     "siteDescription": "Fintech untuk belas kasihan. Cari formula kebahagiaan anda. Jejak mood dan tabiat, dan kongsi kemajuan anda dengan rakan."
   },
   "common": {
@@ -17,7 +17,7 @@
     "loading": "Memuat...",
     "error": "Ralat",
     "success": "Berjaya",
-    "welcome": "Selamat datang ke DreamPip!",
+    "welcome": "Selamat datang ke Dupip!",
     "signInToAccess": "Log masuk untuk mengakses papan pemuka anda dan menjejaki kemajuan anda.",
     "dismiss": "Tutup",
     "selectLanguage": "Pilih bahasa",
@@ -164,7 +164,7 @@
     "personalProject": "Bekerja pada projek peribadi"
   },
   "footer": {
-    "copyright": "© {year} DreamPip. Hak cipta terpelihara.",
+    "copyright": "© {year} Dupip. Hak cipta terpelihara.",
     "terms": "Terma Perkhidmatan",
     "privacy": "Dasar Privasi",
     "iva": "IVA IT02925300903",
@@ -268,8 +268,8 @@
     "failedToSend": "Gagal menghantar mesej. Sila cuba lagi."
   },
   "publicProfile": {
-    "ctaTitle": "Mulakan Perjalanan DreamPip Anda Sendiri",
-    "ctaSubtitle": "Jejaki mood, produktiviti dan pendapatan anda dengan DreamPip",
+    "ctaTitle": "Mulakan Perjalanan Dupip Anda Sendiri",
+    "ctaSubtitle": "Jejaki mood, produktiviti dan pendapatan anda dengan Dupip",
     "getStarted": "Mulakan",
     "notes": "Nota",
     "loadingNotes": "Memuatkan nota...",

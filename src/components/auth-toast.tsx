@@ -46,7 +46,7 @@ export const AuthToast = ({ showToast = true }: AuthToastProps) => {
       <div className="fixed bottom-4 right-4 z-50 bg-background border rounded-lg shadow-lg p-4 max-w-sm">
         <div className="flex flex-col gap-3">
           <p className="text-sm font-medium">
-            {t('common.welcome') || 'Welcome to DreamPip!'}
+            {t('common.welcome') || 'Welcome to Dupip!'}
           </p>
           <p className="text-xs text-muted-foreground">
             {t('common.signInToAccess') || 'Sign in to access your dashboard and track your progress.'}

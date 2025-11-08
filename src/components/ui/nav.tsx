@@ -58,20 +58,20 @@ import {
 
 export const DEFAULT_TRACKS = [
   {
-    id: 'dreampip__chan_0000',
+    id: 'dupip__chan_0000',
     className: '',
     onPlay: () => {},
     title: 'This is the track playing',
-    url: 'https://www.dreampip.com/api/nexus/audio',
+    url: 'https://www.dupip.com/api/nexus/audio',
     isPlaying: false,
   },
   {
-    id: 'dreampip__chan_0001',
+    id: 'dupip__chan_0001',
     className: '',
     onPlay: () => {},
     title: 'This is the track playing',
-    url: 'https://radio.dreampip.com/hls/dpip000/live.m3u8',
-    nowPlaying: 'https://radio.dreampip.com/api/nowplaying/dpip000',
+    url: 'https://radio.dupip.com/hls/dpip000/live.m3u8',
+    nowPlaying: 'https://radio.dupip.com/api/nowplaying/dpip000',
     isPlaying: false,
   },
 ];

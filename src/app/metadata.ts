@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { loadTranslationsSync } from '@/lib/i18n'
 import { defaultLocale } from '@/app/constants'
 
-const siteName = 'DreamPip'
+const siteName = 'Dupip'
 const siteDescription = 'Fintech for compassion. Find your formula for happiness. Unlock money to track mood, habits and share your progress with friends.'
 const siteUrl = process.env.NEXT_PUBLIC_BASE_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
 const defaultImage = `${siteUrl}/public/images/logo-social.jpg`.replace(/\/+/, '/')
@@ -24,7 +24,7 @@ export const defaultMetadata: Metadata = {
         url: '/images/logo-social.jpg',
         width: 1200,
         height: 630,
-        alt: 'DreamPip',
+        alt: 'Dupip',
       },
     ],
     locale: 'en_US',

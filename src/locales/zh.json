@@ -1,6 +1,6 @@
 {
   "seo": {
-    "siteName": "DreamPip",
+    "siteName": "Dupip",
     "siteDescription": "为慈悲而生的金融科技。找到你的幸福公式。解锁资金以追踪情绪、习惯，并与朋友分享你的进展。"
   },
   "common": {
@@ -20,7 +20,7 @@
     "loading": "加载中...",
     "error": "错误",
     "success": "成功",
-    "welcome": "欢迎使用 DreamPip！",
+    "welcome": "欢迎使用 Dupip！",
     "signInToAccess": "登录以访问您的仪表板并跟踪您的进度。",
     "dismiss": "关闭",
     "selectLanguage": "选择语言",
@@ -217,7 +217,7 @@
     "personalProject": "做了个人项目"
   },
   "footer": {
-    "copyright": "© {year} Purizu and Remotelys dba DreamPip",
+    "copyright": "© {year} Purizu and Remotelys dba Dupip",
     "iva": "IVA IT02925300903",
     "rea": "REA 572763",
     "cnpj": "CNPJ 37.553.462/0001-46",
@@ -278,8 +278,8 @@
     "genericError": "出现错误。请重试。"
   },
   "publicProfile": {
-    "ctaTitle": "开始您的 DreamPip 之旅",
-    "ctaSubtitle": "使用 DreamPip 跟踪您的心情、生产力和收入",
+    "ctaTitle": "开始您的 Dupip 之旅",
+    "ctaSubtitle": "使用 Dupip 跟踪您的心情、生产力和收入",
     "getStarted": "开始",
     "notes": "笔记",
     "loadingNotes": "正在加载笔记...",

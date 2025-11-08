@@ -94,13 +94,13 @@ export default function Events({ events }) {
   const locale = orig === "default" ? "en" : orig;
   const localization = EventLocale[locale] || EventLocale["default"];
 
-  const url = `https://www.dreampip.com/${orig !== 'default' ? `${locale}/` : ''}events`
+  const url = `https://www.dupip.com/${orig !== 'default' ? `${locale}/` : ''}events`
 
-  const title = `DreamPip — ${localization.events}`;
-  const ogTitle = `${localization.events} — DreamPip`;
+  const title = `Dupip — ${localization.events}`;
+  const ogTitle = `${localization.events} — Dupip`;
   const ogDescription = localization.eventsDescription;
-  const ogImageUrl = 'https://www.dreampip.com/og-image.png'; // Replace with your actual image URL
-  const defaultUrl = 'https://www.dreampip.com/events';
+  const ogImageUrl = 'https://www.dupip.com/og-image.png'; // Replace with your actual image URL
+  const defaultUrl = 'https://www.dupip.com/events';
   const canonicalUrl = url;
 
 
@@ -151,7 +151,7 @@ export default function Events({ events }) {
       <Head>
         <title>{title}</title>
         <meta property="og:title" content={ogTitle} />
-        <meta property="og:site_name" content="DreamPip" />
+        <meta property="og:site_name" content="Dupip" />
         <meta property="og:url" content={canonicalUrl} />
         <meta property="og:description" content={ogDescription} />
         <meta name="description" content={ogDescription} />
@@ -168,7 +168,7 @@ export default function Events({ events }) {
             key={locale}
             rel="alternate"
             hrefLang={locale}
-            href={`https://www.dreampip.com/${locale}/events`}
+            href={`https://www.dupip.com/${locale}/events`}
           />
         ))}
       </Head>

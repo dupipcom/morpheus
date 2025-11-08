@@ -39,7 +39,7 @@ const comfortaa = Comfortaa({
 });
 
 // export const metadata: Metadata = {
-//   title: "DreamPip",
+//   title: "Dupip",
 //   description: "Fintech for compassion.",
 // };
 

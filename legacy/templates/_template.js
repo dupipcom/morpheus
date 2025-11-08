@@ -12,8 +12,8 @@ import { Comfortaa } from 'next/font/google';
 import dynamic from 'next/dynamic';
 import { useFirstInteraction } from '../hooks/useFirstInteraction';
 import Bugsnag from '@bugsnag/js';
-import { Globals } from '@dreampipcom/oneiros';
-import "@dreampipcom/oneiros/styles"
+import { Globals } from '@dupipcom/oneiros';
+import "@dupipcom/oneiros/styles"
 
 const GlowReact = dynamic(() =>
   import('../components/GlowReact').then((mod) => mod)
@@ -81,7 +81,7 @@ export function Template({ children }) {
               <GlobalStyle />
               <CssBaseline />
               <Globals theme="dark">
-                {!rootContext.mobileApp && (<Header title="DreamPip" description="Upstreaming. 📡" />)}
+                {!rootContext.mobileApp && (<Header title="Dupip" description="Upstreaming. 📡" />)}
                 <main className={"thebigbody bg-primary-dark min-h-screen md:min-h-0"} >
                   {children}
                 </main>
