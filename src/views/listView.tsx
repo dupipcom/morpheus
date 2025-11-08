@@ -214,10 +214,22 @@ const getIconColor = (status: TaskStatus): string => {
       const overlayed = base.map((t: any) => {
         const k = keyOf(t)
         const completed = k ? byKey[k] : undefined
-        if (!completed) return t
+        if (!completed) {
+          // No completion record yet - ensure count is initialized to 0
+          return { ...t, count: t.count || 0 }
+        }
         const doneCount = Array.isArray(completed?.completers) ? completed.completers.length : Number(completed?.count || 0)
         const times = Number(t?.times || completed?.times || 1)
-        return { ...t, status: doneCount >= (times || 1) ? 'Done' : 'Open', count: Math.min(doneCount || 0, times || 1), completers: completed?.completers }
+        const status = doneCount >= (times || 1) ? 'Done' : 'Open'
+        // Preserve taskStatus from completed record if available, otherwise infer from status
+        const taskStatus = completed?.taskStatus || (status === 'Done' ? 'done' : (doneCount > 0 ? 'in progress' : undefined))
+        return { 
+          ...t, 
+          status, 
+          count: Math.min(doneCount || 0, times || 1), 
+          completers: completed?.completers,
+          taskStatus
+        }
       })
 
       // Combine all ephemeral tasks (open + closed for current date/timeframe)
@@ -298,19 +310,59 @@ const getIconColor = (status: TaskStatus): string => {
         }
       }
 
-      // Update local state immediately
+      // Update local state immediately (optimistic update)
       setTaskStatuses(prev => ({ ...prev, [key]: effectiveStatus }))
 
-      // Persist to API - we'll store this in the task's metadata
+      // Persist to API
       if (!selectedTaskList) return
 
       try {
-        // Store status in localStorage
-        const statusKey = `task-status-${selectedTaskList.id}-${key}`
-        localStorage.setItem(statusKey, effectiveStatus)
+        // Persist task status to API
+        await fetch('/api/v1/tasklists', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            updateTaskStatus: true,
+            taskListId: selectedTaskList.id,
+            taskKey: key,
+            taskStatus: effectiveStatus
+          })
+        })
 
-        // If status is "done", also mark the task as completed
-        if (effectiveStatus === 'done' && taskName && !values.includes(taskName)) {
+        // If user selected "done" but task has times > 1, increment count without marking as completed
+        if (newStatus === 'done' && effectiveStatus === 'in progress' && taskName) {
+          // Handle count increment without completion
+          const regular = mergedTasks.filter((t: any) => !t.isEphemeral)
+
+          const nextActions = regular.map((action: any) => {
+            const c = { ...action }
+            if (action.name === taskName) {
+              c.count = (c.count || 0) + 1
+              c.status = 'Open'
+            }
+            return c
+          })
+
+          if (nextActions.length > 0) {
+            await fetch('/api/v1/tasklists', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                recordCompletions: true,
+                taskListId: selectedTaskList.id,
+                dayActions: nextActions,
+                date,
+                justCompletedNames: [],
+                justUncompletedNames: []
+              })
+            })
+          }
+
+          // Refresh task lists and user data
+          await refreshTaskLists()
+          await refreshUser()
+        } else if (effectiveStatus === 'done' && taskName && !values.includes(taskName)) {
+          // If status is "done" and count >= times, mark the task as completed
           // Add to values to mark as toggled
           const newValues = [...values, taskName]
           setValues(newValues)
@@ -320,8 +372,9 @@ const getIconColor = (status: TaskStatus): string => {
           const regular = mergedTasks.filter((t: any) => !t.isEphemeral)
           const ephemerals = mergedTasks.filter((t: any) => t.isEphemeral)
 
-          // Prepare next actions for regular tasks
-          const nextActions = regular.map((action: any) => {
+          // Prepare next actions for both regular and ephemeral tasks
+          const allTasks = [...regular, ...ephemerals]
+          const nextActions = allTasks.map((action: any) => {
             const c = { ...action }
             if (action.name === taskName) {
               // This is the task being marked as done
@@ -359,17 +412,31 @@ const getIconColor = (status: TaskStatus): string => {
             })
           }
 
-          // Handle ephemerals
+          // Handle ephemerals - only close if fully completed
           const ephemeralTask = ephemerals.find((e: any) => e.name === taskName)
           if (ephemeralTask) {
-            await fetch('/api/v1/tasklists', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                taskListId: selectedTaskList.id,
-                ephemeralTasks: { close: { id: ephemeralTask.id } }
+            const updatedEph = nextActions.find((a: any) => a.name === taskName)
+            if (updatedEph && updatedEph.status === 'Done') {
+              // Fully completed - close it
+              await fetch('/api/v1/tasklists', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  taskListId: selectedTaskList.id,
+                  ephemeralTasks: { close: { id: ephemeralTask.id, count: updatedEph.count } }
+                })
               })
-            })
+            } else if (updatedEph) {
+              // Partially completed - update count
+              await fetch('/api/v1/tasklists', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  taskListId: selectedTaskList.id,
+                  ephemeralTasks: { update: { id: ephemeralTask.id, count: updatedEph.count, status: updatedEph.status } }
+                })
+              })
+            }
           }
           // Update user entries for weekly lists
           try {
@@ -402,7 +469,7 @@ const getIconColor = (status: TaskStatus): string => {
           // Refresh task lists and user data
           await refreshTaskLists()
           await refreshUser()
-        } else if (newStatus !== 'done' && taskName && values.includes(taskName)) {
+        } else if (effectiveStatus !== 'done' && taskName && values.includes(taskName)) {
           // If status is changed away from "done", unmark the task
           const newValues = values.filter(v => v !== taskName)
           setValues(newValues)
@@ -469,24 +536,36 @@ const getIconColor = (status: TaskStatus): string => {
           // Refresh task lists and user data
           await refreshTaskLists()
           await refreshUser()
+        } else if (effectiveStatus !== 'done' && taskName && !values.includes(taskName)) {
+          // Task status changed to non-done and already uncompleted
+          // Just refresh to ensure UI is in sync
+          await refreshTaskLists()
+          await refreshUser()
         }
       } catch (error) {
         console.error('Error saving task status:', error)
       }
     }, [selectedTaskList, values, mergedTasks, date, today, refreshTaskLists, refreshUser])
 
-    // Load task statuses from localStorage on mount
+    // Initialize task statuses from API data
     useEffect(() => {
       if (!selectedTaskList) return
       const statuses: Record<string, TaskStatus> = {}
 
       mergedTasks.forEach((task: any) => {
         const key = task?.id || task?.localeKey || task?.name
-        const statusKey = `task-status-${selectedTaskList.id}-${key}`
-        const savedStatus = localStorage.getItem(statusKey) as TaskStatus | null
-        if (savedStatus && STATUS_OPTIONS.includes(savedStatus)) {
-          statuses[key] = savedStatus
+        
+        // Use taskStatus from the task object if available
+        if (task.taskStatus && STATUS_OPTIONS.includes(task.taskStatus as TaskStatus)) {
+          statuses[key] = task.taskStatus as TaskStatus
+        } else if (task.status === 'Done') {
+          // If task is completed but doesn't have taskStatus, default to 'done'
+          statuses[key] = 'done'
+        } else if ((task.count || 0) > 0 && (task.count || 0) < (task.times || 1)) {
+          // If task has partial progress, mark as 'in progress'
+          statuses[key] = 'in progress'
         }
+        // Otherwise, leave it undefined and it will default to 'open' in the render
       })
 
       setTaskStatuses(statuses)
@@ -495,18 +574,42 @@ const getIconColor = (status: TaskStatus): string => {
     const refreshLists = useCallback(async () => { await refreshTaskLists() }, [refreshTaskLists])
 
     const handleToggleChange = async (newValues: string[]) => {
-      setValues(newValues)
       const justCompleted = newValues.filter(v => !prevValues.includes(v))
       const justUncompleted = prevValues.filter(v => !newValues.includes(v))
-      setPrevValues(newValues)
 
       if (!selectedTaskList) return
+
+      // Filter out tasks that shouldn't be marked as completed yet (times > count + 1)
+      const actuallyCompleted: string[] = []
+      const tasksToRemoveFromValues: string[] = []
+
+      justCompleted.forEach(taskName => {
+        const task = mergedTasks.find((t: any) => t.name === taskName)
+        if (task) {
+          const currentCount = task?.count || 0
+          const times = task?.times || 1
+          const newCount = currentCount + 1
+          
+          // Only mark as completed in values if newCount >= times
+          if (newCount >= times) {
+            actuallyCompleted.push(taskName)
+          } else {
+            // Remove from values since it shouldn't show as completed yet
+            tasksToRemoveFromValues.push(taskName)
+          }
+        }
+      })
+
+      // Adjust newValues to exclude tasks that aren't fully completed yet
+      const adjustedValues = newValues.filter(v => !tasksToRemoveFromValues.includes(v))
+      setValues(adjustedValues)
+      setPrevValues(adjustedValues)
 
       // Update task statuses based on toggle state
       setTaskStatuses(prev => {
         const updated = { ...prev }
 
-        // Set newly completed tasks to appropriate status based on times/count
+        // Set newly clicked tasks to appropriate status based on times/count
         justCompleted.forEach(taskName => {
           const task = mergedTasks.find((t: any) => t.name === taskName)
           if (task) {
@@ -524,13 +627,18 @@ const getIconColor = (status: TaskStatus): string => {
             }
             
             updated[key] = taskStatus
-            // Also save to localStorage
-            try {
-              const statusKey = `task-status-${selectedTaskList.id}-${key}`
-              localStorage.setItem(statusKey, taskStatus)
-            } catch (error) {
-              console.error('Error saving task status:', error)
-            }
+            
+            // Persist to API
+            fetch('/api/v1/tasklists', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                updateTaskStatus: true,
+                taskListId: selectedTaskList.id,
+                taskKey: key,
+                taskStatus: taskStatus
+              })
+            }).catch(error => console.error('Error saving task status:', error))
           }
         })
 
@@ -540,13 +648,18 @@ const getIconColor = (status: TaskStatus): string => {
           if (task) {
             const key = task?.id || task?.localeKey || task?.name
             updated[key] = 'open'
-            // Also save to localStorage
-            try {
-              const statusKey = `task-status-${selectedTaskList.id}-${key}`
-              localStorage.setItem(statusKey, 'open')
-            } catch (error) {
-              console.error('Error saving task status:', error)
-            }
+            
+            // Persist to API
+            fetch('/api/v1/tasklists', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                updateTaskStatus: true,
+                taskListId: selectedTaskList.id,
+                taskKey: key,
+                taskStatus: 'open'
+              })
+            }).catch(error => console.error('Error saving task status:', error))
           }
         })
 
@@ -557,29 +670,53 @@ const getIconColor = (status: TaskStatus): string => {
       const regular = mergedTasks.filter((t: any) => !t.isEphemeral)
       const ephemerals = mergedTasks.filter((t: any) => t.isEphemeral)
 
-      // Prepare next actions for regular tasks
-      const nextActions = regular.map((action: any) => {
+      // Prepare next actions for regular tasks AND ephemeral tasks (both need count logic)
+      const allTasks = [...regular, ...ephemerals]
+      const nextActions = allTasks.map((action: any) => {
         const c = { ...action }
-        if (newValues.includes(action.name) && (action.times - (action.count || 0)) === 1) {
+        // Check if this task was just clicked (whether fully completed or not)
+        const wasJustClicked = justCompleted.includes(action.name)
+        const isFullyCompleted = adjustedValues.includes(action.name)
+        
+        if (wasJustClicked) {
+          // Increment count for any clicked task
           c.count = (c.count || 0) + 1
-          c.status = 'Done'
-        } else if (newValues.includes(action.name) && (action.times - (action.count || 0)) >= 1) {
-          c.count = (c.count || 0) + 1
+          // Only mark as Done if count reaches times
+          if (c.count >= (c.times || 1)) {
+            c.status = 'Done'
+            c.taskStatus = 'done'
+          } else {
+            c.status = 'Open'
+            c.taskStatus = 'in progress'
+          }
+        } else if (isFullyCompleted) {
+          // Task is in values but wasn't just clicked (was already completed)
+          // Ensure taskStatus is 'done'
+          if (c.status === 'Done') {
+            c.taskStatus = 'done'
+          }
         } else {
-          if (!newValues.includes(action.name) && (c.times || 1) <= (c.count || 0)) {
+          // Task is not in values - check if it should be uncompleted
+          if (!adjustedValues.includes(action.name) && (c.times || 1) <= (c.count || 0)) {
             if ((c.count || 0) > 0) {
               c.count = (c.count || 0) - 1
               c.status = 'Open'
+              c.taskStatus = 'open'
             }
           }
         }
         if ((c.count || 0) > 0 && c.status !== 'Done') {
           c.status = 'Open'
+          if (!c.taskStatus || c.taskStatus === 'done') {
+            c.taskStatus = (c.count || 0) > 0 ? 'in progress' : 'open'
+          }
         }
         return c
       })
 
       // Persist: record completions into TaskList.completedTasks (backend handles earnings and user entries)
+      // Send ALL clicked tasks (justCompleted) so backend increments count for all of them
+      // But only mark as fully "completed" in user entries for actuallyCompleted
       if (nextActions.length > 0) {
         await fetch('/api/v1/tasklists', {
           method: 'POST',
@@ -589,25 +726,42 @@ const getIconColor = (status: TaskStatus): string => {
             taskListId: selectedTaskList.id,
             dayActions: nextActions,
             date,
-            justCompletedNames: justCompleted,
+            justCompletedNames: justCompleted, // Send all clicked tasks to increment count
             justUncompletedNames: justUncompleted
           })
         })
       }
 
-      // Handle ephemerals: move from open to closed when toggled done
+      // Handle ephemerals: only close when fully completed (count >= times)
       for (const eph of ephemerals) {
-        const isNowDone = newValues.includes(eph.name)
+        const wasJustClicked = justCompleted.includes(eph.name)
+        const isFullyCompleted = adjustedValues.includes(eph.name)
         const wasDone = prevValues.includes(eph.name)
-        if (isNowDone && !wasDone) {
-          await fetch('/api/v1/tasklists', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              taskListId: selectedTaskList.id,
-              ephemeralTasks: { close: { id: eph.id } }
+        
+        if (wasJustClicked) {
+          const updatedEph = nextActions.find((a: any) => a.name === eph.name)
+          
+          if (updatedEph && updatedEph.status === 'Done' && isFullyCompleted && !wasDone) {
+            // Fully completed - close it
+            await fetch('/api/v1/tasklists', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                taskListId: selectedTaskList.id,
+                ephemeralTasks: { close: { id: eph.id, count: updatedEph.count } }
+              })
             })
-          })
+          } else if (updatedEph) {
+            // Partially completed - update count in open array
+            await fetch('/api/v1/tasklists', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                taskListId: selectedTaskList.id,
+                ephemeralTasks: { update: { id: eph.id, count: updatedEph.count, status: updatedEph.status } }
+              })
+            })
+          }
         }
       }
 

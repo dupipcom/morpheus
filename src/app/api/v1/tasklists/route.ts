@@ -214,7 +214,7 @@ export async function POST(request: NextRequest) {
       const perTaskEarnings = earnings.actionProfit
 
       const allowedKeys = new Set([
-        'id', 'name', 'categories', 'area', 'status', 'cadence', 'times', 'count', 'localeKey', 'contacts', 'things', 'favorite', 'isEphemeral', 'createdAt', 'completers'
+        'id', 'name', 'categories', 'area', 'status', 'cadence', 'times', 'count', 'localeKey', 'contacts', 'things', 'favorite', 'isEphemeral', 'createdAt', 'completers', 'taskStatus'
       ])
 
       const sanitizeTask = (task: any) => {
@@ -272,7 +272,8 @@ export async function POST(request: NextRequest) {
         const taskRecord = sanitizeTask({
           ...(existing || {}),
           ...incoming,
-          status: 'Done',
+          // Preserve the status from incoming task (may be 'Open' for partial completions or 'Done' for full)
+          status: incoming.status || 'Done',
           completers: [...baseCompleters, ...appended]
         })
         byKey[key] = taskRecord
@@ -304,6 +305,17 @@ export async function POST(request: NextRequest) {
         [year]: { ...yearBucket, [dateISO]: nextDayArr }
       }
 
+      // Update taskStatus in templateTasks to keep them in sync
+      let updatedTemplateTasks = (taskList as any).templateTasks || (taskList as any).tasks || []
+      updatedTemplateTasks = updatedTemplateTasks.map((task: any) => {
+        const key = getKey(task)
+        const incomingTask = incomingTasks.find((t: any) => getKey(t) === key)
+        if (incomingTask && incomingTask.taskStatus) {
+          return { ...task, taskStatus: incomingTask.taskStatus }
+        }
+        return task
+      })
+
       // Calculate budget consumption
       const numCompletedInThisCall = justCompletedNames.length
       let newRemainingBudget = (taskList as any).remainingBudget
@@ -318,6 +330,8 @@ export async function POST(request: NextRequest) {
         where: { id: taskList.id },
         data: ({ 
           completedTasks: nextCompleted,
+          templateTasks: updatedTemplateTasks,
+          tasks: updatedTemplateTasks,
           remainingBudget: newRemainingBudget
         } as any),
         include: { template: true }
@@ -561,9 +575,20 @@ export async function POST(request: NextRequest) {
 
       if (body.ephemeralTasks.close) {
         const id = body.ephemeralTasks.close.id
+        const count = body.ephemeralTasks.close.count
         const item = open.find((x: any) => x.id === id)
         open = open.filter((x: any) => x.id !== id)
-        if (item) closed = [ { ...item, status: 'Done', completedAt: new Date().toISOString() }, ...closed ]
+        if (item) closed = [ { ...item, status: 'Done', count: count || item.count, completedAt: new Date().toISOString() }, ...closed ]
+      }
+
+      if (body.ephemeralTasks.update) {
+        const { id, count, status } = body.ephemeralTasks.update
+        open = open.map((x: any) => {
+          if (x.id === id) {
+            return { ...x, count: count !== undefined ? count : x.count, status: status || x.status }
+          }
+          return x
+        })
       }
 
       const saved = await prisma.taskList.update({
@@ -572,6 +597,40 @@ export async function POST(request: NextRequest) {
       })
 
       return NextResponse.json({ taskList: saved })
+    }
+
+    // Update task status in templateTasks
+    if (body.updateTaskStatus && body.taskListId) {
+      const taskList = await prisma.taskList.findUnique({ where: { id: body.taskListId } })
+      if (!taskList) return NextResponse.json({ error: 'TaskList not found' }, { status: 404 })
+
+      const taskKey = body.taskKey // id, localeKey, or name
+      const newStatus = body.taskStatus
+
+      // Update task status in templateTasks
+      let templateTasks = Array.isArray((taskList as any).templateTasks) 
+        ? (taskList as any).templateTasks 
+        : (Array.isArray(taskList.tasks) ? taskList.tasks : [])
+
+      templateTasks = templateTasks.map((task: any) => {
+        const key = task?.id || task?.localeKey || task?.name
+        if (key === taskKey) {
+          return { ...task, taskStatus: newStatus }
+        }
+        return task
+      })
+
+      const updated = await prisma.taskList.update({
+        where: { id: taskList.id },
+        data: {
+          templateTasks: templateTasks,
+          tasks: templateTasks,
+          updatedAt: new Date()
+        } as any,
+        include: { template: true }
+      })
+
+      return NextResponse.json({ taskList: updated })
     }
 
     // If editing a specific TaskList by ID, update directly

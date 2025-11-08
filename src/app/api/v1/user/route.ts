@@ -339,7 +339,7 @@ export async function POST(req: Request) {
   const wantBudget = Number(user?.settings?.monthsFixedIncome) + Number(user?.settings?.monthsVariableIncome) - Number(user?.settings?.monthsNeedFixedExpenses) - Number(user?.settings?.monthsNeedVariableExpenses)
 
   const weekMoodValues = Object.values(user?.entries[year].days).length ? Object.values(user?.entries[year].days).sort().splice(0, 7).map((day) => {
-    return Object.values(day?.mood)?.length ? Object.values(day?.mood).filter(val => val !== null && val !== undefined && !isNaN(val)) : [0].flat() 
+    return (day?.mood && Object.values(day.mood)?.length) ? Object.values(day.mood).filter(val => val !== null && val !== undefined && !isNaN(val)) : [0].flat() 
     }).flat()
   : [0]
 

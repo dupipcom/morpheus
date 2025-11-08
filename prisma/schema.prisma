@@ -175,6 +175,7 @@ type Task {
   isEphemeral Boolean?
   createdAt String?
   completers Completer[]
+  taskStatus String?
 }
 
 type Completer {
