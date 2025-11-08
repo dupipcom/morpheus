@@ -157,6 +157,7 @@
       "templateOrListLabel": "Template or List",
       "chooseTemplatePlaceholder": "Choose a template",
       "budgetLabel": "Budget",
+      "budgetPercentageLabel": "Personal budget allocation",
       "dueDateLabel": "Due date",
       "pickDatePlaceholder": "Pick a date",
       "cadenceLabel": "Cadence",

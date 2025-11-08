@@ -423,6 +423,7 @@
       "templateOrListLabel": "Modello o Elenco",
       "chooseTemplatePlaceholder": "Scegli un modello",
       "budgetLabel": "Budget",
+      "budgetPercentageLabel": "Allocazione del budget personale",
       "dueDateLabel": "Data di scadenza",
       "pickDatePlaceholder": "Scegli una data",
       "cadenceLabel": "Cadenza",

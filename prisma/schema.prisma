@@ -130,6 +130,8 @@ type Day {
   tasks Task[]
   ephemeralTasks Task[]
   earnings String
+  prize String?
+  profit String?
   ticker Float?
   date String
   status String
@@ -147,6 +149,8 @@ type Week {
   tasks  Task[]
   ephemeralTasks Task[]
   earnings String
+  prize String?
+  profit String?
   ticker Float?
   date String
   status String
@@ -244,6 +248,7 @@ model TaskList {
   name          String?
   budget        String?
   budgetPercentage Float? @default(0) // Percentage of user's available budget allocated to this list (0-100)
+  remainingBudget String? // Remaining budget after task completions
   dueDate       String?
   owners        String[]  @db.ObjectId // User IDs
   collaborators String[]  @db.ObjectId // User IDs

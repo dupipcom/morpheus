@@ -427,6 +427,7 @@
       "templateOrListLabel": "Szablon lub Lista",
       "chooseTemplatePlaceholder": "Wybierz szablon",
       "budgetLabel": "Budżet",
+      "budgetPercentageLabel": "Przydział budżetu osobistego",
       "dueDateLabel": "Data wykonania",
       "pickDatePlaceholder": "Wybierz datę",
       "cadenceLabel": "Częstotliwość",

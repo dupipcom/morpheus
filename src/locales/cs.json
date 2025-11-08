@@ -409,6 +409,7 @@
       "templateOrListLabel": "Šablona nebo seznam",
       "chooseTemplatePlaceholder": "Vyberte šablonu",
       "budgetLabel": "Rozpočet",
+      "budgetPercentageLabel": "Přidělení osobního rozpočtu",
       "dueDateLabel": "Datum splatnosti",
       "pickDatePlaceholder": "Vyberte datum",
       "cadenceLabel": "Kadence",

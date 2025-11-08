@@ -17,6 +17,7 @@ import {
 import { GlobalContext } from '@/lib/contexts'
 import { useI18n } from '@/lib/contexts/i18n'
 import { getWeekNumber } from '@/app/helpers'
+import { useUserData } from '@/lib/userUtils'
 
 type TaskStatus = 'in progress' | 'steady' | 'ready' | 'open' | 'done' | 'ignored'
 
@@ -62,6 +63,7 @@ const getIconColor = (status: TaskStatus): string => {
   export const ListView = () => {
     const { session, taskLists: contextTaskLists, refreshTaskLists } = useContext(GlobalContext)
     const { t, locale } = useI18n()
+    const { refreshUser } = useUserData()
 
     // Maintain stable task lists that never clear once loaded
     const [stableTaskLists, setStableTaskLists] = useState<any[]>([])
@@ -341,7 +343,7 @@ const getIconColor = (status: TaskStatus): string => {
             return c
           })
 
-          // Persist to TaskList.completedTasks
+          // Persist to TaskList.completedTasks (backend handles earnings and user entries)
           if (nextActions.length > 0) {
             await fetch('/api/v1/tasklists', {
               method: 'POST',
@@ -370,36 +372,9 @@ const getIconColor = (status: TaskStatus): string => {
             })
           }
 
-          // Update user entries for weekly lists
-          try {
-            const isWeekly = typeof (selectedTaskList as any)?.role === 'string' && (selectedTaskList as any).role.startsWith('weekly')
-            if (isWeekly) {
-              const doneForWeek = nextActions.filter((a: any) => a?.status === 'Done')
-              if (doneForWeek.length > 0) {
-                const week = getWeekNumber(today)[1]
-                await fetch('/api/v1/user', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ weekTasksAppend: doneForWeek, week, date, listRole: (selectedTaskList as any)?.role })
-                })
-              }
-            }
-          } catch { }
-
-          // Update user entries for day
-          try {
-            const doneForDay = nextActions.filter((a: any) => a?.status === 'Done')
-            if (doneForDay.length > 0) {
-              await fetch('/api/v1/user', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ dayTasksAppend: doneForDay, date, listRole: (selectedTaskList as any)?.role })
-              })
-            }
-          } catch { }
-
-          // Refresh task lists
+          // Refresh task lists and user data
           await refreshTaskLists()
+          await refreshUser()
         } else if (newStatus !== 'done' && taskName && values.includes(taskName)) {
           // If status is changed away from "done", unmark the task
           const newValues = values.filter(v => v !== taskName)
@@ -427,7 +402,7 @@ const getIconColor = (status: TaskStatus): string => {
             return c
           })
 
-          // Persist uncompletion
+          // Persist uncompletion (backend handles user entry removal)
           if (nextActions.length > 0) {
             await fetch('/api/v1/tasklists', {
               method: 'POST',
@@ -443,34 +418,14 @@ const getIconColor = (status: TaskStatus): string => {
             })
           }
 
-          // Update user entries
-          try {
-            const isWeekly = typeof (selectedTaskList as any)?.role === 'string' && (selectedTaskList as any).role.startsWith('weekly')
-            if (isWeekly) {
-              const week = getWeekNumber(today)[1]
-              await fetch('/api/v1/user', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ weekTasksRemoveNames: [taskName], week, date, listRole: (selectedTaskList as any)?.role })
-              })
-            }
-          } catch { }
-
-          try {
-            await fetch('/api/v1/user', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ dayTasksRemoveNames: [taskName], date, listRole: (selectedTaskList as any)?.role })
-            })
-          } catch { }
-
-          // Refresh task lists
+          // Refresh task lists and user data
           await refreshTaskLists()
+          await refreshUser()
         }
       } catch (error) {
         console.error('Error saving task status:', error)
       }
-    }, [selectedTaskList, values, mergedTasks, date, today, refreshTaskLists])
+    }, [selectedTaskList, values, mergedTasks, date, today, refreshTaskLists, refreshUser])
 
     // Load task statuses from localStorage on mount
     useEffect(() => {
@@ -576,7 +531,7 @@ const getIconColor = (status: TaskStatus): string => {
         return c
       })
 
-      // Persist: record completions into TaskList.completedTasks
+      // Persist: record completions into TaskList.completedTasks (backend handles earnings and user entries)
       if (nextActions.length > 0) {
         await fetch('/api/v1/tasklists', {
           method: 'POST',
@@ -608,51 +563,8 @@ const getIconColor = (status: TaskStatus): string => {
         }
       }
 
-      // If this is a weekly list, also persist tasks under user.entries[year].weeks[weekNumber].tasks
-      try {
-        const isWeekly = typeof (selectedTaskList as any)?.role === 'string' && (selectedTaskList as any).role.startsWith('weekly')
-        if (isWeekly) {
-          const doneForWeek = nextActions.filter((a: any) => a?.status === 'Done')
-          if (doneForWeek.length > 0) {
-            const week = getWeekNumber(today)[1]
-            await fetch('/api/v1/user', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ weekTasksAppend: doneForWeek, week, date, listRole: (selectedTaskList as any)?.role })
-            })
-          }
-          // Remove uncompleted from week entry
-          if (justUncompleted.length > 0) {
-            const week = getWeekNumber(today)[1]
-            await fetch('/api/v1/user', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ weekTasksRemoveNames: justUncompleted, week, date, listRole: (selectedTaskList as any)?.role })
-            })
-          }
-        }
-      } catch { }
-
-      // Always append all Done tasks to user.entries[year].days[date].tasks
-      try {
-        const doneForDay = nextActions.filter((a: any) => a?.status === 'Done')
-        if (doneForDay.length > 0) {
-          await fetch('/api/v1/user', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ dayTasksAppend: doneForDay, date, listRole: (selectedTaskList as any)?.role })
-          })
-        }
-        if (justUncompleted.length > 0) {
-          await fetch('/api/v1/user', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ dayTasksRemoveNames: justUncompleted, date, listRole: (selectedTaskList as any)?.role })
-          })
-        }
-      } catch { }
-
       await refreshTaskLists()
+      await refreshUser()
     }
 
     const handleDateChange = useCallback((date: Date | undefined) => {
