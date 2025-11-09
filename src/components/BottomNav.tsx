@@ -16,10 +16,7 @@ export function BottomNav() {
   const isActive = (path: string) => {
     // Exact match
     const rootPath = pathname.split('/')[3]
-    console.log({ rootPath })
     if (rootPath === path) return true
-    // Sub-route match (e.g., /app/do/something matches /app/do)
-    if (rootPath.startsWith(path + '/')) return true
     return false
   }
 
