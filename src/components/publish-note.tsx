@@ -73,7 +73,7 @@ export const PublishNote = ({ onNotePublished, date, defaultVisibility = 'AI_ENA
   }
 
   return (
-    <div className="p-3 sm:p-4 border rounded-lg bg-transparent border-body w-full">
+    <div className="p-3 sm:p-4 border rounded-lg bg-transparent border-body w-full max-w-full">
       <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-body">{t('mood.publish.title') || 'Publish a Note'}</h3>
       {/* Mobile: 4-column grid (textarea 3/4, controls 1/4 stacked), Desktop: stacked */}
       <div className="grid grid-cols-4 gap-2 sm:grid-cols-1 sm:gap-0 mb-0">

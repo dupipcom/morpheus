@@ -102,7 +102,7 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
 
   return (
     <I18nProvider locale={locale as any}>
-    <main className="min-h-screen bg-background">
+    <main className="p-2 flex bg-background">
       <div className="max-w-4xl mx-auto p-4">
         {/* Profile Header */}
         <Card className="mb-6">
