@@ -45,7 +45,8 @@
     "untitledList": "قائمة بدون عنوان",
     "anonymousUser": "مستخدم مجهول",
     "anonymous": "مجهول",
-    "withdrawStash": "سحب المدخرات"
+    "withdrawStash": "سحب المدخرات",
+    "details": "التفاصيل"
   },
   "navigation": {
     "dashboard": "لوحة التحكم",
