@@ -13,6 +13,7 @@ import { GlobalContext } from '@/lib/contexts'
 import { useI18n } from '@/lib/contexts/i18n'
 import { getWeekNumber } from '@/app/helpers'
 import { useUserData } from '@/lib/userUtils'
+import { getProfitPerTask } from '@/lib/earningsUtils'
 
 type TaskStatus = 'in progress' | 'steady' | 'ready' | 'open' | 'done' | 'ignored'
 
@@ -570,33 +571,6 @@ const formatDateLocal = (date: Date): string => {
               })
             }
           }
-          // Update user entries for weekly lists
-          try {
-            const isWeekly = typeof (selectedTaskList as any)?.role === 'string' && (selectedTaskList as any).role.startsWith('weekly')
-            if (isWeekly) {
-              const doneForWeek = nextActions.filter((a: any) => a?.status === 'Done')
-              if (doneForWeek.length > 0) {
-                const week = getWeekNumber(today)[1]
-                await fetch('/api/v1/user', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ weekTasksAppend: doneForWeek, week, date, listRole: (selectedTaskList as any)?.role })
-                })
-              }
-            }
-          } catch { }
-
-          // Update user entries for day
-          try {
-            const doneForDay = nextActions.filter((a: any) => a?.status === 'Done')
-            if (doneForDay.length > 0) {
-              await fetch('/api/v1/user', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ dayTasksAppend: doneForDay, date, listRole: (selectedTaskList as any)?.role })
-              })
-            }
-          } catch { }
 
           // Refresh task lists and user data
           await refreshTaskLists()
@@ -643,27 +617,6 @@ const formatDateLocal = (date: Date): string => {
               })
             })
           }
-
-          // Update user entries
-          try {
-            const isWeekly = typeof (selectedTaskList as any)?.role === 'string' && (selectedTaskList as any).role.startsWith('weekly')
-            if (isWeekly) {
-              const week = getWeekNumber(today)[1]
-              await fetch('/api/v1/user', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ weekTasksRemoveNames: [taskName], week, date, listRole: (selectedTaskList as any)?.role })
-              })
-            }
-          } catch { }
-
-          try {
-            await fetch('/api/v1/user', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ dayTasksRemoveNames: [taskName], date, listRole: (selectedTaskList as any)?.role })
-            })
-          } catch { }
 
           // Handle ephemeral task uncompletion - reopen it if it was in closed
           const ephemerals = mergedTasks.filter((t: any) => t.isEphemeral)
@@ -1043,50 +996,6 @@ const formatDateLocal = (date: Date): string => {
         })
       }
 
-      // If this is a weekly list, also persist tasks under user.entries[year].weeks[weekNumber].tasks
-      try {
-        const isWeekly = typeof (selectedTaskList as any)?.role === 'string' && (selectedTaskList as any).role.startsWith('weekly')
-        if (isWeekly) {
-          const doneForWeek = nextActions.filter((a: any) => a?.status === 'Done')
-          if (doneForWeek.length > 0) {
-            const week = getWeekNumber(today)[1]
-            await fetch('/api/v1/user', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ weekTasksAppend: doneForWeek, week, date, listRole: (selectedTaskList as any)?.role })
-            })
-          }
-          // Remove uncompleted from week entry
-          if (justUncompleted.length > 0) {
-            const week = getWeekNumber(today)[1]
-            await fetch('/api/v1/user', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ weekTasksRemoveNames: justUncompleted, week, date, listRole: (selectedTaskList as any)?.role })
-            })
-          }
-        }
-      } catch { }
-
-      // Always append all Done tasks to user.entries[year].days[date].tasks
-      try {
-        const doneForDay = nextActions.filter((a: any) => a?.status === 'Done')
-        if (doneForDay.length > 0) {
-          await fetch('/api/v1/user', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ dayTasksAppend: doneForDay, date, listRole: (selectedTaskList as any)?.role })
-          })
-        }
-        if (justUncompleted.length > 0) {
-          await fetch('/api/v1/user', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ dayTasksRemoveNames: justUncompleted, date, listRole: (selectedTaskList as any)?.role })
-          })
-        }
-      } catch { }
-
       await refreshTaskLists()
       await refreshUser()
     }
@@ -1165,24 +1074,11 @@ const formatDateLocal = (date: Date): string => {
               : (ownerId ? (collabProfiles[String(ownerId)] || String(ownerId)) : '')
             
             // Calculate earnings for THIS specific task completion
-            const listBudget = parseFloat((selectedTaskList as any)?.budget || '0')
+            const listBudget = (selectedTaskList as any)?.budget
             const listRole = (selectedTaskList as any)?.role
-            const isDaily = listRole?.startsWith('daily.')
-            const isWeekly = listRole?.startsWith('weekly.')
             const totalTasks = (selectedTaskList?.tasks as any[])?.length || (selectedTaskList?.templateTasks as any[])?.length || 1
             
-            let taskEarnings = 0
-            if (listBudget > 0 && totalTasks > 0) {
-              const actionProfit = listBudget / totalTasks
-              
-              if (isDaily) {
-                taskEarnings = actionProfit / 30 // Daily profit per task
-              } else if (isWeekly) {
-                taskEarnings = actionProfit / 4 // Weekly profit per task
-              } else {
-                taskEarnings = actionProfit // One-off profit per task
-              }
-            }
+            const taskEarnings = getProfitPerTask(listBudget, totalTasks, listRole)
 
             const key = task?.id || task?.localeKey || task?.name
             // Prioritize manually set status over automatic count-based status

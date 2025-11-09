@@ -114,7 +114,7 @@ export function useTickerData() {
             fiftyTwoWeekTicker: 0,
             dailyEarnings: '0',
             weeklyEarnings: '0',
-            availableBalance: resolvedUser.availableBalance || '0'
+            availableBalance: resolvedUser.availableBalance != null ? String(resolvedUser.availableBalance) : '0'
           })
           return
         }
@@ -136,7 +136,7 @@ export function useTickerData() {
         // Get current values for calculations
         const currentDayEarnings = parseFloat(currentDay?.earnings || '0')
         const currentWeekEarnings = parseFloat(currentWeek?.earnings || '0')
-        const currentAvailableBalance = parseFloat(currentDay?.availableBalance || currentWeek?.availableBalance || resolvedUser.availableBalance || '0')
+        const currentAvailableBalance = parseFloat(currentDay?.availableBalance || currentWeek?.availableBalance || '') || (resolvedUser.availableBalance ?? 0)
 
         // Calculate additional tickers with error handling
         // Prefer server-provided ticker objects if present, otherwise compute client-side fallback
@@ -161,7 +161,7 @@ export function useTickerData() {
           fiftyTwoWeekTicker,
           dailyEarnings: currentDay?.earnings || '0',
           weeklyEarnings: currentWeek?.earnings || '0',
-          availableBalance: currentDay?.availableBalance || currentWeek?.availableBalance || resolvedUser.availableBalance || '0'
+          availableBalance: currentDay?.availableBalance || currentWeek?.availableBalance || (resolvedUser.availableBalance != null ? String(resolvedUser.availableBalance) : '0')
         })
       } catch (err) {
         console.error('Error fetching ticker data:', err)
