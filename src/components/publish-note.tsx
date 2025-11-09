@@ -88,7 +88,12 @@ export const PublishNote = ({ onNotePublished, date, defaultVisibility = 'AI_ENA
         <div className="col-span-1 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4 min-w-0">
           <Select value={noteVisibility} onValueChange={setNoteVisibility}>
             <SelectTrigger className="w-full min-h-[40px] sm:w-48 sm:h-auto justify-center md:justify-between">
-              <SelectValue />
+              <span className="sm:hidden">
+                {getVisibilityIcon(noteVisibility)}
+              </span>
+              <span className="hidden sm:block">
+                <SelectValue />
+              </span>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="PRIVATE">
