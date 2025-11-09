@@ -273,7 +273,15 @@
     "getStarted": "Aloita",
     "notes": "Muistiinpanot",
     "loadingNotes": "Ladataan muistiinpanoja...",
-    "profileNotPublic": "Tämä käyttäjä ei ole vielä tehnyt profiiliaan julkiseksi."
+    "profileNotPublic": "Tämä käyttäjä ei ole vielä tehnyt profiiliaan julkiseksi.",
+    "templates": "Templates & Lists",
+    "loadingTemplates": "Loading templates...",
+    "templatesSection": "Templates",
+    "taskListsSection": "Task Lists",
+    "cloneTemplate": "Clone",
+    "cloneTemplateSuccess": "Template cloned successfully!",
+    "cloneTemplateFailed": "Failed to clone template",
+    "cloning": "Cloning..."
   },
   "publicCharts": {
     "noData": "Julkisia kaaviotietoja ei ole saatavilla.",
@@ -334,7 +342,8 @@
     "chartPreview": "Kaavion esikatselu:",
     "saving": "Tallentaa...",
     "pleaseSignIn": "Ole hyvä ja kirjaudu sisään muokataksesi profiiliasi",
-    "goToDashboard": "Siirry hallintapaneeliin"
+    "goToDashboard": "Siirry hallintapaneeliin",
+    "createProfile": "Create Profile"
   },
   "toast": {
     "sessionExtended": "Istunto jatkettu onnistuneesti",

@@ -1,7 +1,11 @@
+'use client'
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { PublicChartsView } from "@/components/PublicChartsView"
 import { AddFriendButtonOrSignIn } from "@/components/AddFriendButtonOrSignIn"
 import { PublicNotesViewer } from "@/components/PublicNotesViewer"
+import { PublicTemplatesViewer } from "@/components/PublicTemplatesViewer"
 
 interface ProfileData {
   userId?: string
@@ -79,20 +83,51 @@ export const ProfileView = ({
           </CardContent>
         </Card>
 
-        {/* Public Charts */}
-        {profile.publicCharts && (
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle>Analytics</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <PublicChartsView chartsData={profile.publicCharts} />
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Public Notes - Client-side rendered for dynamic friend status */}
-        <PublicNotesViewer userName={userName} />
+        {/* Tabbed Content Section */}
+        <Card className="mb-6">
+          <CardContent className="pt-6">
+            <Tabs defaultValue="analytics" className="w-full">
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger 
+                  value="analytics"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                >
+                  Analytics
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="notes"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                >
+                  Notes
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="templates"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                >
+                  Templates & Lists
+                </TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="analytics" className="mt-4">
+                {profile.publicCharts ? (
+                  <PublicChartsView chartsData={profile.publicCharts} />
+                ) : (
+                  <div className="text-center text-muted-foreground py-8">
+                    <p>No analytics data available yet.</p>
+                  </div>
+                )}
+              </TabsContent>
+              
+              <TabsContent value="notes" className="mt-4">
+                <PublicNotesViewer userName={userName} showCard={false} />
+              </TabsContent>
+              
+              <TabsContent value="templates" className="mt-4">
+                <PublicTemplatesViewer userName={userName} showCard={false} isLoggedIn={isLoggedIn} />
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </Card>
 
         {/* No public data message */}
         {!hasAnyPublicData && !profile.publicCharts && (

@@ -5,15 +5,8 @@ import React, { useMemo, useState, useEffect, useContext, useCallback } from 're
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { DoToolbar } from '@/views/doToolbar'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { User as UserIcon, Circle, Minus } from 'lucide-react'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-} from '@/components/ui/dropdown-menu'
+import { OptionsButton, OptionsMenuItem } from '@/components/OptionsButton'
 
 import { GlobalContext } from '@/lib/contexts'
 import { useI18n } from '@/lib/contexts/i18n'
@@ -1009,56 +1002,43 @@ const getIconColor = (status: TaskStatus): string => {
             const statusColor = getStatusColor(taskStatus, 'css')
             const iconColor = getIconColor(taskStatus)
 
+            // Build options menu items
+            const optionsMenuItems: OptionsMenuItem[] = [
+              ...STATUS_OPTIONS.map((status) => ({
+                label: (
+                  <>
+                    <Circle
+                      className="h-4 w-4"
+                      style={{ fill: getStatusColor(status), color: getStatusColor(status) }}
+                    />
+                    <span className="ml-2">{t(`tasks.status.${status}`)}</span>
+                  </>
+                ),
+                onClick: () => handleStatusChange(task, status),
+                icon: null,
+              })),
+              ...((task.times || 1) > 1 && (task.count || 0) > 0
+                ? [
+                    {
+                      label: 'Decrement count',
+                      onClick: () => handleDecrementCount(task),
+                      icon: <Minus className="h-4 w-4" />,
+                      separator: true,
+                    },
+                  ]
+                : []),
+            ]
+
             return (
               <div key={`task__item--${task.name}`} className="flex flex-col items-center m-1">
                 <div className="relative w-full flex items-center gap-2">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 rounded-full shrink-0 p-0"
-                        style={{ backgroundColor: statusColor }}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <Circle 
-                          className={`h-4 w-4`} 
-                          style={taskStatus == "done" ? {fill: iconColor} : { color: iconColor }} 
-                        />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start">
-                      {STATUS_OPTIONS.map((status) => (
-                        <DropdownMenuItem
-                          key={status}
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            handleStatusChange(task, status)
-                          }}
-                        >
-                          <Circle
-                            className={`h-4 w-4 mr-2`}
-                            style={{fill: getStatusColor(status), color: getStatusColor(status) }}
-                          />
-                          {t(`tasks.status.${status}`)}
-                        </DropdownMenuItem>
-                      ))}
-                      {(task.times || 1) > 1 && (task.count || 0) > 0 && (
-                        <>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              handleDecrementCount(task)
-                            }}
-                          >
-                            <Minus className={`h-4 w-4 mr-2`} />
-                            Decrement count
-                          </DropdownMenuItem>
-                        </>
-                      )}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <OptionsButton
+                    items={optionsMenuItems}
+                    statusColor={statusColor}
+                    iconColor={iconColor}
+                    iconFilled={taskStatus === "done"}
+                    align="start"
+                  />
 
                   <ToggleGroupItem className="rounded-md leading-7 text-sm min-h-[40px] h-auto flex-1 whitespace-normal break-words py-2" value={task.name} aria-label={task.name}>
                     {task.times > 1 ? `${task.count || 0}/${task.times} ` : ''}{task.displayName || task.name}

@@ -283,7 +283,15 @@
     "getStarted": "开始",
     "notes": "笔记",
     "loadingNotes": "正在加载笔记...",
-    "profileNotPublic": "此用户尚未将他们的个人资料公开。"
+    "profileNotPublic": "此用户尚未将他们的个人资料公开。",
+    "templates": "Templates & Lists",
+    "loadingTemplates": "Loading templates...",
+    "templatesSection": "Templates",
+    "taskListsSection": "Task Lists",
+    "cloneTemplate": "Clone",
+    "cloneTemplateSuccess": "Template cloned successfully!",
+    "cloneTemplateFailed": "Failed to clone template",
+    "cloning": "Cloning..."
   },
   "publicCharts": {
     "noData": "没有可用的公共图表数据。",
@@ -344,7 +352,8 @@
     "chartPreview": "图表预览：",
     "saving": "保存中...",
     "pleaseSignIn": "请登录以编辑您的个人资料",
-    "goToDashboard": "前往仪表板"
+    "goToDashboard": "前往仪表板",
+    "createProfile": "Create Profile"
   },
   "toast": {
     "sessionExtended": "会话已成功延长",

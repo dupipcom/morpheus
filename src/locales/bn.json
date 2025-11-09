@@ -269,7 +269,15 @@
     "getStarted": "শুরু করুন",
     "notes": "নোটস",
     "loadingNotes": "নোটস লোড হচ্ছে...",
-    "profileNotPublic": "এই ব্যবহারকারী এখনও তাদের প্রোফাইল পাবলিক করেননি।"
+    "profileNotPublic": "এই ব্যবহারকারী এখনও তাদের প্রোফাইল পাবলিক করেননি।",
+    "templates": "Templates & Lists",
+    "loadingTemplates": "Loading templates...",
+    "templatesSection": "Templates",
+    "taskListsSection": "Task Lists",
+    "cloneTemplate": "Clone",
+    "cloneTemplateSuccess": "Template cloned successfully!",
+    "cloneTemplateFailed": "Failed to clone template",
+    "cloning": "Cloning..."
   },
   "publicCharts": {
     "noData": "কোনও পাবলিক চার্টের ডেটা উপলব্ধ নেই।",
@@ -330,7 +338,8 @@
     "chartPreview": "চার্টের পূর্বরূপ:",
     "saving": "সংরক্ষণ করা হচ্ছে...",
     "pleaseSignIn": "আপনার প্রোফাইল সম্পাদনা করতে দয়া করে সাইন ইন করুন",
-    "goToDashboard": "ড্যাশবোর্ডে যান"
+    "goToDashboard": "ড্যাশবোর্ডে যান",
+    "createProfile": "Create Profile"
   },
   "toast": {
     "sessionExtended": "সেশন সফলভাবে বাড়ানো হয়েছে",
@@ -442,7 +451,8 @@
       "save": "সংরক্ষণ",
       "cancel": "বাতিল",
       "deleteListConfirm": "এই তালিকাটি মুছবেন? এটি ফেরত নেওয়া যাবে না।",
-      "deleteList": "তালিকা মুছুন"
+      "deleteList": "তালিকা মুছুন",
+      "budgetPercentageLabel": "Personal budget allocation"
     },
     "addTemplateForm": {
       "title": "নতুন টেমপ্লেট তৈরি করুন",

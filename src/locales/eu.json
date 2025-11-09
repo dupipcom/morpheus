@@ -272,7 +272,15 @@
     "getStarted": "Hasi",
     "notes": "Oharrak",
     "loadingNotes": "Oharrak kargatzen...",
-    "profileNotPublic": "Erabiltzaile honek bere profila oraindik ez du publiko egin."
+    "profileNotPublic": "Erabiltzaile honek bere profila oraindik ez du publiko egin.",
+    "templates": "Templates & Lists",
+    "loadingTemplates": "Loading templates...",
+    "templatesSection": "Templates",
+    "taskListsSection": "Task Lists",
+    "cloneTemplate": "Clone",
+    "cloneTemplateSuccess": "Template cloned successfully!",
+    "cloneTemplateFailed": "Failed to clone template",
+    "cloning": "Cloning..."
   },
   "publicCharts": {
     "noData": "Ez dago grafik publikoen daturik eskuragarri.",
@@ -333,7 +341,8 @@
     "chartPreview": "Grafikoaren aurreikuspegia:",
     "saving": "Gordetzen...",
     "pleaseSignIn": "Mesedez, hasi saioa zure profila editatzeko",
-    "goToDashboard": "Aginte-panela joan"
+    "goToDashboard": "Aginte-panela joan",
+    "createProfile": "Create Profile"
   },
   "toast": {
     "sessionExtended": "Saioa arrakastaz luzatu da",
@@ -445,7 +454,8 @@
       "save": "Gorde",
       "cancel": "Utzi",
       "deleteListConfirm": "Zerrenda hau ezabatu? Hau ezin da desegin.",
-      "deleteList": "Zerrenda ezabatu"
+      "deleteList": "Zerrenda ezabatu",
+      "budgetPercentageLabel": "Personal budget allocation"
     },
     "addTemplateForm": {
       "title": "Txantiloi berria sortu",

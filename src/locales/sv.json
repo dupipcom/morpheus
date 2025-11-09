@@ -272,7 +272,15 @@
     "getStarted": "Kom igång",
     "notes": "Anteckningar",
     "loadingNotes": "Laddar anteckningar...",
-    "profileNotPublic": "Denna användare har inte gjort sin profil offentlig ännu."
+    "profileNotPublic": "Denna användare har inte gjort sin profil offentlig ännu.",
+    "templates": "Templates & Lists",
+    "loadingTemplates": "Loading templates...",
+    "templatesSection": "Templates",
+    "taskListsSection": "Task Lists",
+    "cloneTemplate": "Clone",
+    "cloneTemplateSuccess": "Template cloned successfully!",
+    "cloneTemplateFailed": "Failed to clone template",
+    "cloning": "Cloning..."
   },
   "publicCharts": {
     "noData": "Inga tillgängliga data för offentliga diagram.",
@@ -333,7 +341,8 @@
     "chartPreview": "Diagram förhandsvisning:",
     "saving": "Sparar...",
     "pleaseSignIn": "Vänligen logga in för att redigera din profil",
-    "goToDashboard": "Gå till instrumentpanel"
+    "goToDashboard": "Gå till instrumentpanel",
+    "createProfile": "Create Profile"
   },
   "toast": {
     "sessionExtended": "Session förlängd framgångsrikt",

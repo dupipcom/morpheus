@@ -273,7 +273,15 @@
     "getStarted": "ਸ਼ੁਰੂ ਕਰੋ",
     "notes": "ਨੋਟਸ",
     "loadingNotes": "ਨੋਟਸ ਲੋਡ ਹੋ ਰਹੇ ਹਨ...",
-    "profileNotPublic": "ਇਸ ਯੂਜ਼ਰ ਨੇ ਅਜੇ ਤੱਕ ਆਪਣੀ ਪ੍ਰੋਫਾਈਲ ਨੂੰ ਜਨਤਕ ਨਹੀਂ ਕੀਤਾ।"
+    "profileNotPublic": "ਇਸ ਯੂਜ਼ਰ ਨੇ ਅਜੇ ਤੱਕ ਆਪਣੀ ਪ੍ਰੋਫਾਈਲ ਨੂੰ ਜਨਤਕ ਨਹੀਂ ਕੀਤਾ।",
+    "templates": "Templates & Lists",
+    "loadingTemplates": "Loading templates...",
+    "templatesSection": "Templates",
+    "taskListsSection": "Task Lists",
+    "cloneTemplate": "Clone",
+    "cloneTemplateSuccess": "Template cloned successfully!",
+    "cloneTemplateFailed": "Failed to clone template",
+    "cloning": "Cloning..."
   },
   "publicCharts": {
     "noData": "ਕੋਈ ਜਨਤਕ ਚਾਰਟ ਡੇਟਾ ਉਪਲਬਧ ਨਹੀਂ।",
@@ -334,7 +342,8 @@
     "chartPreview": "ਚਾਰਟ ਪੂਰਵਾਵਲੋਕਨ:",
     "saving": "ਸੇਵ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ...",
     "pleaseSignIn": "ਕਿਰਪਾ ਕਰਕੇ ਆਪਣਾ ਪ੍ਰੋਫਾਈਲ ਸੰਪਾਦਿਤ ਕਰਨ ਲਈ ਸਾਈਨ ਇਨ ਕਰੋ",
-    "goToDashboard": "ਡੈਸ਼ਬੋਰਡ 'ਤੇ ਜਾਓ"
+    "goToDashboard": "ਡੈਸ਼ਬੋਰਡ 'ਤੇ ਜਾਓ",
+    "createProfile": "Create Profile"
   },
   "toast": {
     "sessionExtended": "ਸੈਸ਼ਨ ਸਫਲਤਾਪੂਰਵਕ ਵਧਾਇਆ ਗਿਆ",
@@ -446,7 +455,8 @@
       "save": "ਸੇਵ ਕਰੋ",
       "cancel": "ਰੱਦ ਕਰੋ",
       "deleteListConfirm": "ਇਹ ਸੂਚੀ ਮਿਟਾਓ? ਇਸਨੂੰ ਵਾਪਸ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ।",
-      "deleteList": "ਸੂਚੀ ਮਿਟਾਓ"
+      "deleteList": "ਸੂਚੀ ਮਿਟਾਓ",
+      "budgetPercentageLabel": "Personal budget allocation"
     },
     "addTemplateForm": {
       "title": "ਨਵਾਂ ਟੈਂਪਲੇਟ ਬਣਾਓ",

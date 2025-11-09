@@ -273,7 +273,15 @@
     "getStarted": "Mulakan",
     "notes": "Nota",
     "loadingNotes": "Memuatkan nota...",
-    "profileNotPublic": "Pengguna ini belum menjadikan profil mereka awam."
+    "profileNotPublic": "Pengguna ini belum menjadikan profil mereka awam.",
+    "templates": "Templates & Lists",
+    "loadingTemplates": "Loading templates...",
+    "templatesSection": "Templates",
+    "taskListsSection": "Task Lists",
+    "cloneTemplate": "Clone",
+    "cloneTemplateSuccess": "Template cloned successfully!",
+    "cloneTemplateFailed": "Failed to clone template",
+    "cloning": "Cloning..."
   },
   "publicCharts": {
     "noData": "No public charts data available.",
@@ -334,7 +342,8 @@
     "chartPreview": "Pratonton carta:",
     "saving": "Menyimpan...",
     "pleaseSignIn": "Sila log masuk untuk mengedit profil anda",
-    "goToDashboard": "Pergi ke dashboard"
+    "goToDashboard": "Pergi ke dashboard",
+    "createProfile": "Create Profile"
   },
   "toast": {
     "sessionExtended": "Sesi berjaya dipanjangkan",
@@ -446,7 +455,8 @@
       "save": "Simpan",
       "cancel": "Batal",
       "deleteListConfirm": "Padam senarai ini? Tindakan ini tidak boleh dibatalkan.",
-      "deleteList": "Padam senarai"
+      "deleteList": "Padam senarai",
+      "budgetPercentageLabel": "Personal budget allocation"
     },
     "addTemplateForm": {
       "title": "Cipta Templat Baru",

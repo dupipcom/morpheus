@@ -280,7 +280,15 @@
     "getStarted": "Fara",
     "notes": "Bayani",
     "loadingNotes": "Ana ɗauka bayani...",
-    "profileNotPublic": "Wannan mai amfani bai bayyana bayanin kansa ba tukuna."
+    "profileNotPublic": "Wannan mai amfani bai bayyana bayanin kansa ba tukuna.",
+    "templates": "Templates & Lists",
+    "loadingTemplates": "Loading templates...",
+    "templatesSection": "Templates",
+    "taskListsSection": "Task Lists",
+    "cloneTemplate": "Clone",
+    "cloneTemplateSuccess": "Template cloned successfully!",
+    "cloneTemplateFailed": "Failed to clone template",
+    "cloning": "Cloning..."
   },
   "publicCharts": {
     "noData": "Babu bayanan ginshiƙai na jama'a.",
@@ -341,7 +349,8 @@
     "chartPreview": "Rigakafin ginshiƙi:",
     "saving": "Ana adanawa...",
     "pleaseSignIn": "Don Allah shiga don gyara bayanan martaba",
-    "goToDashboard": "Je zuwa dashboard"
+    "goToDashboard": "Je zuwa dashboard",
+    "createProfile": "Create Profile"
   },
   "toast": {
     "sessionExtended": "Zangon ya ci nasara",
@@ -453,7 +462,8 @@
       "save": "Ajiye",
       "cancel": "Soke",
       "deleteListConfirm": "Share wannan jerin? Ba za a iya soke wannan ba.",
-      "deleteList": "Share jeri"
+      "deleteList": "Share jeri",
+      "budgetPercentageLabel": "Personal budget allocation"
     },
     "addTemplateForm": {
       "title": "Ƙirƙiri Sabon Samfurin",

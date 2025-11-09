@@ -283,7 +283,15 @@
     "getStarted": "Начать",
     "notes": "Заметки",
     "loadingNotes": "Загрузка заметок...",
-    "profileNotPublic": "Этот пользователь еще не сделал свой профиль публичным."
+    "profileNotPublic": "Этот пользователь еще не сделал свой профиль публичным.",
+    "templates": "Templates & Lists",
+    "loadingTemplates": "Loading templates...",
+    "templatesSection": "Templates",
+    "taskListsSection": "Task Lists",
+    "cloneTemplate": "Clone",
+    "cloneTemplateSuccess": "Template cloned successfully!",
+    "cloneTemplateFailed": "Failed to clone template",
+    "cloning": "Cloning..."
   },
   "publicCharts": {
     "noData": "Нет доступных публичных данных диаграмм.",
@@ -344,7 +352,8 @@
     "chartPreview": "Предварительный просмотр диаграммы:",
     "saving": "Сохранение...",
     "pleaseSignIn": "Пожалуйста, войдите, чтобы редактировать ваш профиль",
-    "goToDashboard": "Перейти к панели управления"
+    "goToDashboard": "Перейти к панели управления",
+    "createProfile": "Create Profile"
   },
   "toast": {
     "sessionExtended": "Сессия успешно продлена",

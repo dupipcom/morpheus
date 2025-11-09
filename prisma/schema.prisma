@@ -236,6 +236,7 @@ model Template {
   role          String?   // e.g., "default.daily", "default.weekly", "custom"
   name          String?
   owners        String[]  @db.ObjectId // User IDs
+  clonedBy      String[]  @default([]) @db.ObjectId // User IDs who cloned this template
   tasks         Task[]    // Array of Task objects
   taskLists     TaskList[] // TaskLists that use this template
 }

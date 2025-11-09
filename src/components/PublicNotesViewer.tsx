@@ -16,6 +16,7 @@ interface Note {
 
 interface PublicNotesViewerProps {
   userName: string
+  showCard?: boolean
 }
 
 function getTimeAgo(date: Date): string {
@@ -55,7 +56,7 @@ function getTimeAgo(date: Date): string {
   return `${diffInYears} year${diffInYears === 1 ? '' : 's'} ago`
 }
 
-export function PublicNotesViewer({ userName }: PublicNotesViewerProps) {
+export function PublicNotesViewer({ userName, showCard = true }: PublicNotesViewerProps) {
   const { t } = useI18n()
   const [notes, setNotes] = useState<Note[]>([])
   const [loading, setLoading] = useState(true)
@@ -117,34 +118,102 @@ export function PublicNotesViewer({ userName }: PublicNotesViewerProps) {
   }, [userName])
 
   if (loading) {
+    const content = (
+      <div className="text-center text-muted-foreground py-8">
+        {t('publicProfile.loadingNotes')}
+      </div>
+    )
+    
+    if (!showCard) return content
+    
     return (
       <Card className="mb-6">
         <CardHeader>
           <CardTitle>{t('publicProfile.notes')}</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-center text-muted-foreground">
-            {t('publicProfile.loadingNotes')}
-          </div>
+          {content}
         </CardContent>
       </Card>
     )
   }
 
   if (error) {
+    const content = (
+      <div className="text-center text-muted-foreground py-8">
+        {error}
+      </div>
+    )
+    
+    if (!showCard) return content
+    
     return (
       <Card className="mb-6">
         <CardHeader>
           <CardTitle>{t('publicProfile.notes')}</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-center text-muted-foreground">
-            {error}
-          </div>
+          {content}
         </CardContent>
       </Card>
     )
   }
+
+  if (notes.length === 0) {
+    const content = (
+      <div className="text-center text-muted-foreground py-8">
+        <p>No public notes available yet.</p>
+      </div>
+    )
+    
+    if (!showCard) return content
+    
+    return (
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle>{t('publicProfile.notes')}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {content}
+        </CardContent>
+      </Card>
+    )
+  }
+
+  const content = (
+    <div className="space-y-4">
+      {!showCard && (
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold">{t('publicProfile.notes')}</h3>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={fetchNotes}
+            disabled={loading}
+            className="h-8 w-8 p-0"
+          >
+            <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+          </Button>
+        </div>
+      )}
+      {notes.map((note) => (
+        <div key={note.id} className="border rounded-lg p-4 bg-muted/30">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs text-muted-foreground">
+              {getTimeAgo(new Date(note.createdAt))}
+              {note.date && ` • ${note.date}`}
+            </span>
+            <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
+              {note.visibility.toLowerCase().replace('_', ' ')}
+            </span>
+          </div>
+          <p className="text-sm whitespace-pre-wrap">{note.content}</p>
+        </div>
+      ))}
+    </div>
+  )
+
+  if (!showCard) return content
 
   return (
     <Card className="mb-6">
@@ -163,22 +232,7 @@ export function PublicNotesViewer({ userName }: PublicNotesViewerProps) {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
-          {notes.map((note) => (
-            <div key={note.id} className="border rounded-lg p-4 bg-muted/30">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-muted-foreground">
-                  {getTimeAgo(new Date(note.createdAt))}
-                  {note.date && ` • ${note.date}`}
-                </span>
-                <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
-                  {note.visibility.toLowerCase().replace('_', ' ')}
-                </span>
-              </div>
-              <p className="text-sm whitespace-pre-wrap">{note.content}</p>
-            </div>
-          ))}
-        </div>
+        {content}
       </CardContent>
     </Card>
   )

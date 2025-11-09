@@ -269,7 +269,15 @@
     "getStarted": "Beginnen",
     "notes": "Notities",
     "loadingNotes": "Notities laden...",
-    "profileNotPublic": "Deze gebruiker heeft zijn profiel nog niet openbaar gemaakt."
+    "profileNotPublic": "Deze gebruiker heeft zijn profiel nog niet openbaar gemaakt.",
+    "templates": "Templates & Lists",
+    "loadingTemplates": "Loading templates...",
+    "templatesSection": "Templates",
+    "taskListsSection": "Task Lists",
+    "cloneTemplate": "Clone",
+    "cloneTemplateSuccess": "Template cloned successfully!",
+    "cloneTemplateFailed": "Failed to clone template",
+    "cloning": "Cloning..."
   },
   "publicCharts": {
     "noData": "Geen openbare grafiekgegevens beschikbaar.",
@@ -330,7 +338,8 @@
     "chartPreview": "Grafiek voorbeeld:",
     "saving": "Opslaan...",
     "pleaseSignIn": "Log in om je profiel te bewerken",
-    "goToDashboard": "Ga naar dashboard"
+    "goToDashboard": "Ga naar dashboard",
+    "createProfile": "Create Profile"
   },
   "toast": {
     "sessionExtended": "Sessie succesvol verlengd",
@@ -442,7 +451,8 @@
       "save": "Opslaan",
       "cancel": "Annuleren",
       "deleteListConfirm": "Deze lijst verwijderen? Dit kan niet ongedaan worden gemaakt.",
-      "deleteList": "Lijst verwijderen"
+      "deleteList": "Lijst verwijderen",
+      "budgetPercentageLabel": "Personal budget allocation"
     },
     "addTemplateForm": {
       "title": "Nieuwe sjabloon maken",

@@ -269,7 +269,15 @@
     "getStarted": "शुरू करें",
     "notes": "नोट्स",
     "loadingNotes": "नोट्स लोड हो रहे हैं...",
-    "profileNotPublic": "इस उपयोगकर्ता ने अभी तक अपना प्रोफ़ाइल सार्वजनिक नहीं किया है।"
+    "profileNotPublic": "इस उपयोगकर्ता ने अभी तक अपना प्रोफ़ाइल सार्वजनिक नहीं किया है।",
+    "templates": "Templates & Lists",
+    "loadingTemplates": "Loading templates...",
+    "templatesSection": "Templates",
+    "taskListsSection": "Task Lists",
+    "cloneTemplate": "Clone",
+    "cloneTemplateSuccess": "Template cloned successfully!",
+    "cloneTemplateFailed": "Failed to clone template",
+    "cloning": "Cloning..."
   },
   "publicCharts": {
     "noData": "कोई सार्वजनिक चार्ट डेटा उपलब्ध नहीं है।",
@@ -330,7 +338,8 @@
     "chartPreview": "चार्ट पूर्वावलोकन:",
     "saving": "सहेजा जा रहा है...",
     "pleaseSignIn": "कृपया अपना प्रोफ़ाइल संपादित करने के लिए साइन इन करें",
-    "goToDashboard": "डैशबोर्ड पर जाएं"
+    "goToDashboard": "डैशबोर्ड पर जाएं",
+    "createProfile": "Create Profile"
   },
   "toast": {
     "sessionExtended": "सत्र सफलतापूर्वक बढ़ाया गया",

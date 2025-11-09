@@ -273,7 +273,15 @@
     "getStarted": "Kom i gang",
     "notes": "Noter",
     "loadingNotes": "Indlæser noter...",
-    "profileNotPublic": "Denne bruger har ikke gjort sin profil offentlig endnu."
+    "profileNotPublic": "Denne bruger har ikke gjort sin profil offentlig endnu.",
+    "templates": "Templates & Lists",
+    "loadingTemplates": "Loading templates...",
+    "templatesSection": "Templates",
+    "taskListsSection": "Task Lists",
+    "cloneTemplate": "Clone",
+    "cloneTemplateSuccess": "Template cloned successfully!",
+    "cloneTemplateFailed": "Failed to clone template",
+    "cloning": "Cloning..."
   },
   "publicCharts": {
     "noData": "Ingen offentlige diagramdata tilgængelige.",
@@ -334,7 +342,8 @@
     "chartPreview": "Diagram forhåndsvisning:",
     "saving": "Gemmer...",
     "pleaseSignIn": "Log venligst ind for at redigere din profil",
-    "goToDashboard": "Gå til dashboard"
+    "goToDashboard": "Gå til dashboard",
+    "createProfile": "Create Profile"
   },
   "toast": {
     "sessionExtended": "Session forlænget succesfuldt",

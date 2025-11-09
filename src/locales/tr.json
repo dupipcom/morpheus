@@ -287,7 +287,15 @@
     "getStarted": "Başlayın",
     "notes": "Notlar",
     "loadingNotes": "Notlar yükleniyor...",
-    "profileNotPublic": "Bu kullanıcı profilini henüz herkese açık hale getirmemiş."
+    "profileNotPublic": "Bu kullanıcı profilini henüz herkese açık hale getirmemiş.",
+    "templates": "Templates & Lists",
+    "loadingTemplates": "Loading templates...",
+    "templatesSection": "Templates",
+    "taskListsSection": "Task Lists",
+    "cloneTemplate": "Clone",
+    "cloneTemplateSuccess": "Template cloned successfully!",
+    "cloneTemplateFailed": "Failed to clone template",
+    "cloning": "Cloning..."
   },
   "publicCharts": {
     "noData": "Herkese açık grafik verisi mevcut değil.",
@@ -348,7 +356,8 @@
     "chartPreview": "Grafik önizlemesi:",
     "saving": "Kaydediliyor...",
     "pleaseSignIn": "Lütfen profilinizi düzenlemek için giriş yapın",
-    "goToDashboard": "Kontrol paneline git"
+    "goToDashboard": "Kontrol paneline git",
+    "createProfile": "Create Profile"
   },
   "toast": {
     "sessionExtended": "Oturum başarıyla uzatıldı",

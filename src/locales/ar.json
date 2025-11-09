@@ -287,7 +287,15 @@
     "getStarted": "ابدأ",
     "notes": "ملاحظات",
     "loadingNotes": "جارٍ تحميل الملاحظات...",
-    "profileNotPublic": "هذا المستخدم لم يجعل ملفه الشخصي عاماً بعد."
+    "profileNotPublic": "هذا المستخدم لم يجعل ملفه الشخصي عاماً بعد.",
+    "templates": "Templates & Lists",
+    "loadingTemplates": "Loading templates...",
+    "templatesSection": "Templates",
+    "taskListsSection": "Task Lists",
+    "cloneTemplate": "Clone",
+    "cloneTemplateSuccess": "Template cloned successfully!",
+    "cloneTemplateFailed": "Failed to clone template",
+    "cloning": "Cloning..."
   },
   "publicCharts": {
     "noData": "لا توجد بيانات عامة متاحة للمخططات.",
@@ -348,7 +356,8 @@
     "chartPreview": "معاينة المخطط:",
     "saving": "جارٍ الحفظ...",
     "pleaseSignIn": "يرجى تسجيل الدخول لتعديل ملفك الشخصي",
-    "goToDashboard": "الذهاب إلى لوحة التحكم"
+    "goToDashboard": "الذهاب إلى لوحة التحكم",
+    "createProfile": "Create Profile"
   },
   "toast": {
     "sessionExtended": "تم تمديد الجلسة بنجاح",

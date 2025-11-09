@@ -287,7 +287,15 @@
     "getStarted": "Rozpocznij",
     "notes": "Notatki",
     "loadingNotes": "Ładowanie notatek...",
-    "profileNotPublic": "Ten użytkownik nie udostępnił jeszcze swojego profilu."
+    "profileNotPublic": "Ten użytkownik nie udostępnił jeszcze swojego profilu.",
+    "templates": "Templates & Lists",
+    "loadingTemplates": "Loading templates...",
+    "templatesSection": "Templates",
+    "taskListsSection": "Task Lists",
+    "cloneTemplate": "Clone",
+    "cloneTemplateSuccess": "Template cloned successfully!",
+    "cloneTemplateFailed": "Failed to clone template",
+    "cloning": "Cloning..."
   },
   "publicCharts": {
     "noData": "Brak dostępnych danych wykresów publicznych.",
@@ -348,7 +356,8 @@
     "chartPreview": "Podgląd wykresu:",
     "saving": "Zapisywanie...",
     "pleaseSignIn": "Zaloguj się, aby edytować swój profil",
-    "goToDashboard": "Przejdź do pulpitu"
+    "goToDashboard": "Przejdź do pulpitu",
+    "createProfile": "Create Profile"
   },
   "toast": {
     "sessionExtended": "Sesja została pomyślnie przedłużona",

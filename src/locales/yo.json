@@ -281,7 +281,15 @@
     "getStarted": "Bẹ̀rẹ̀",
     "notes": "Àwọn àkíyèsí",
     "loadingNotes": "N gbé àwọn àkíyèsí...",
-    "profileNotPublic": "Olùmúlò yìí kò tí ì tí ì fi profaili rẹ̀ sí gbangba."
+    "profileNotPublic": "Olùmúlò yìí kò tí ì tí ì fi profaili rẹ̀ sí gbangba.",
+    "templates": "Templates & Lists",
+    "loadingTemplates": "Loading templates...",
+    "templatesSection": "Templates",
+    "taskListsSection": "Task Lists",
+    "cloneTemplate": "Clone",
+    "cloneTemplateSuccess": "Template cloned successfully!",
+    "cloneTemplateFailed": "Failed to clone template",
+    "cloning": "Cloning..."
   },
   "publicCharts": {
     "noData": "Kò sí àwọn àkọsílẹ̀ àwòrán gbangba.",
@@ -342,7 +350,8 @@
     "chartPreview": "Iwole chati:",
     "saving": "N fi pamọ...",
     "pleaseSignIn": "Jọwọ wọlé lati ṣatunkọ profaili rẹ",
-    "goToDashboard": "Lọ si dashboard"
+    "goToDashboard": "Lọ si dashboard",
+    "createProfile": "Create Profile"
   },
   "toast": {
     "sessionExtended": "Igbeyawo ti ni ilọsiwaju ni aṣeyọri",
@@ -454,7 +463,8 @@
       "save": "Fipamọ́",
       "cancel": "Fagilé",
       "deleteListConfirm": "Pa àkójọ yìí rẹ́? Èyí kò ṣeé yípadà.",
-      "deleteList": "Pa àkójọ rẹ́"
+      "deleteList": "Pa àkójọ rẹ́",
+      "budgetPercentageLabel": "Personal budget allocation"
     },
     "addTemplateForm": {
       "title": "Ṣẹ̀dá Àwòwé Tuntun",

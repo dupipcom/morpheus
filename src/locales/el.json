@@ -266,7 +266,15 @@
     "getStarted": "Ξεκινήστε",
     "notes": "Σημειώσεις",
     "loadingNotes": "Φόρτωση σημειώσεων...",
-    "profileNotPublic": "Αυτός ο χρήστης δεν έχει κάνει ακόμα το προφίλ του δημόσιο."
+    "profileNotPublic": "Αυτός ο χρήστης δεν έχει κάνει ακόμα το προφίλ του δημόσιο.",
+    "templates": "Templates & Lists",
+    "loadingTemplates": "Loading templates...",
+    "templatesSection": "Templates",
+    "taskListsSection": "Task Lists",
+    "cloneTemplate": "Clone",
+    "cloneTemplateSuccess": "Template cloned successfully!",
+    "cloneTemplateFailed": "Failed to clone template",
+    "cloning": "Cloning..."
   },
   "publicCharts": {
     "noData": "Δεν υπάρχουν διαθέσιμα δημόσια δεδομένα γραφημάτων.",
@@ -327,7 +335,8 @@
     "chartPreview": "Προεπισκόπηση γραφήματος:",
     "saving": "Αποθήκευση...",
     "pleaseSignIn": "Παρακαλώ συνδεθείτε για να επεξεργαστείτε το προφίλ σας",
-    "goToDashboard": "Μετάβαση στον πίνακα ελέγχου"
+    "goToDashboard": "Μετάβαση στον πίνακα ελέγχου",
+    "createProfile": "Create Profile"
   },
   "toast": {
     "sessionExtended": "Η συνεδρία επεκτάθηκε επιτυχώς",

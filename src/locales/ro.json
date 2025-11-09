@@ -269,7 +269,15 @@
     "getStarted": "Începe",
     "notes": "Note",
     "loadingNotes": "Se încarcă notele...",
-    "profileNotPublic": "Acest utilizator nu și-a făcut profilul public încă."
+    "profileNotPublic": "Acest utilizator nu și-a făcut profilul public încă.",
+    "templates": "Templates & Lists",
+    "loadingTemplates": "Loading templates...",
+    "templatesSection": "Templates",
+    "taskListsSection": "Task Lists",
+    "cloneTemplate": "Clone",
+    "cloneTemplateSuccess": "Template cloned successfully!",
+    "cloneTemplateFailed": "Failed to clone template",
+    "cloning": "Cloning..."
   },
   "publicCharts": {
     "noData": "Nu sunt disponibile date pentru graficele publice.",
@@ -330,7 +338,8 @@
     "chartPreview": "Previzualizare grafic:",
     "saving": "Se salvează...",
     "pleaseSignIn": "Vă rugăm să vă autentificați pentru a edita profilul",
-    "goToDashboard": "Mergi la panoul de control"
+    "goToDashboard": "Mergi la panoul de control",
+    "createProfile": "Create Profile"
   },
   "toast": {
     "sessionExtended": "Sesiunea a fost prelungită cu succes",

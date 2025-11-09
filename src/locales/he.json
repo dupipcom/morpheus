@@ -269,7 +269,15 @@
     "getStarted": "התחל",
     "notes": "הערות",
     "loadingNotes": "טוען הערות...",
-    "profileNotPublic": "משתמש זה לא עשה את הפרופיל שלו ציבורי עדיין."
+    "profileNotPublic": "משתמש זה לא עשה את הפרופיל שלו ציבורי עדיין.",
+    "templates": "Templates & Lists",
+    "loadingTemplates": "Loading templates...",
+    "templatesSection": "Templates",
+    "taskListsSection": "Task Lists",
+    "cloneTemplate": "Clone",
+    "cloneTemplateSuccess": "Template cloned successfully!",
+    "cloneTemplateFailed": "Failed to clone template",
+    "cloning": "Cloning..."
   },
   "publicCharts": {
     "noData": "אין נתוני גרפים ציבוריים זמינים.",
@@ -330,7 +338,8 @@
     "chartPreview": "תצוגה מקדימה של גרף:",
     "saving": "שומר...",
     "pleaseSignIn": "אנא התחבר כדי לערוך את הפרופיל שלך",
-    "goToDashboard": "עבור ללוח הבקרה"
+    "goToDashboard": "עבור ללוח הבקרה",
+    "createProfile": "Create Profile"
   },
   "toast": {
     "sessionExtended": "הפגישה הורחבה בהצלחה",

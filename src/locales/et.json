@@ -269,7 +269,15 @@
     "getStarted": "Alusta",
     "notes": "Märkmed",
     "loadingNotes": "Märkmete laadimine...",
-    "profileNotPublic": "See kasutaja pole veel oma profiili avalikuks teinud."
+    "profileNotPublic": "See kasutaja pole veel oma profiili avalikuks teinud.",
+    "templates": "Templates & Lists",
+    "loadingTemplates": "Loading templates...",
+    "templatesSection": "Templates",
+    "taskListsSection": "Task Lists",
+    "cloneTemplate": "Clone",
+    "cloneTemplateSuccess": "Template cloned successfully!",
+    "cloneTemplateFailed": "Failed to clone template",
+    "cloning": "Cloning..."
   },
   "publicCharts": {
     "noData": "Avalikke diagrammi andmeid pole saadaval.",
@@ -330,7 +338,8 @@
     "chartPreview": "Diagrammi eelvaade:",
     "saving": "Salvestamine...",
     "pleaseSignIn": "Palun logi sisse, et redigeerida oma profiili",
-    "goToDashboard": "Mine armatuurlauale"
+    "goToDashboard": "Mine armatuurlauale",
+    "createProfile": "Create Profile"
   },
   "toast": {
     "sessionExtended": "Sessioon pikendatud edukalt",
@@ -442,7 +451,8 @@
       "save": "Salvesta",
       "cancel": "Tühista",
       "deleteListConfirm": "Kustuta see nimekiri? Seda ei saa tagasi võtta.",
-      "deleteList": "Kustuta nimekiri"
+      "deleteList": "Kustuta nimekiri",
+      "budgetPercentageLabel": "Personal budget allocation"
     },
     "addTemplateForm": {
       "title": "Loo uus mall",
