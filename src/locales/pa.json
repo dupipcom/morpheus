@@ -274,14 +274,14 @@
     "notes": "ਨੋਟਸ",
     "loadingNotes": "ਨੋਟਸ ਲੋਡ ਹੋ ਰਹੇ ਹਨ...",
     "profileNotPublic": "ਇਸ ਯੂਜ਼ਰ ਨੇ ਅਜੇ ਤੱਕ ਆਪਣੀ ਪ੍ਰੋਫਾਈਲ ਨੂੰ ਜਨਤਕ ਨਹੀਂ ਕੀਤਾ।",
-    "templates": "Templates & Lists",
-    "loadingTemplates": "Loading templates...",
-    "templatesSection": "Templates",
-    "taskListsSection": "Task Lists",
-    "cloneTemplate": "Clone",
-    "cloneTemplateSuccess": "Template cloned successfully!",
-    "cloneTemplateFailed": "Failed to clone template",
-    "cloning": "Cloning..."
+    "templates": "ਟੈਂਪਲੇਟ ਅਤੇ ਸੂਚੀਆਂ",
+    "loadingTemplates": "ਟੈਂਪਲੇਟ ਲੋਡ ਹੋ ਰਹੇ ਹਨ...",
+    "templatesSection": "ਟੈਂਪਲੇਟ",
+    "taskListsSection": "ਕੰਮ ਦੀਆਂ ਸੂਚੀਆਂ",
+    "cloneTemplate": "ਕਲੋਨ ਕਰੋ",
+    "cloneTemplateSuccess": "ਟੈਂਪਲੇਟ ਸਫਲਤਾਪੂਰਵਕ ਕਲੋਨ ਕੀਤਾ ਗਿਆ!",
+    "cloneTemplateFailed": "ਟੈਂਪਲੇਟ ਕਲੋਨ ਕਰਨ ਵਿੱਚ ਅਸਫਲ",
+    "cloning": "ਕਲੋਨ ਹੋ ਰਿਹਾ ਹੈ..."
   },
   "publicCharts": {
     "noData": "ਕੋਈ ਜਨਤਕ ਚਾਰਟ ਡੇਟਾ ਉਪਲਬਧ ਨਹੀਂ।",

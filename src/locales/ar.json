@@ -288,14 +288,14 @@
     "notes": "ملاحظات",
     "loadingNotes": "جارٍ تحميل الملاحظات...",
     "profileNotPublic": "هذا المستخدم لم يجعل ملفه الشخصي عاماً بعد.",
-    "templates": "Templates & Lists",
-    "loadingTemplates": "Loading templates...",
-    "templatesSection": "Templates",
-    "taskListsSection": "Task Lists",
-    "cloneTemplate": "Clone",
-    "cloneTemplateSuccess": "Template cloned successfully!",
-    "cloneTemplateFailed": "Failed to clone template",
-    "cloning": "Cloning..."
+    "templates": "القوالب والقوائم",
+    "loadingTemplates": "جاري تحميل القوالب...",
+    "templatesSection": "القوالب",
+    "taskListsSection": "قوائم المهام",
+    "cloneTemplate": "استنساخ",
+    "cloneTemplateSuccess": "تم استنساخ القالب بنجاح!",
+    "cloneTemplateFailed": "فشل استنساخ القالب",
+    "cloning": "جاري الاستنساخ..."
   },
   "publicCharts": {
     "noData": "لا توجد بيانات عامة متاحة للمخططات.",

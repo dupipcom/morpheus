@@ -288,14 +288,14 @@
     "notes": "Notlar",
     "loadingNotes": "Notlar yükleniyor...",
     "profileNotPublic": "Bu kullanıcı profilini henüz herkese açık hale getirmemiş.",
-    "templates": "Templates & Lists",
-    "loadingTemplates": "Loading templates...",
-    "templatesSection": "Templates",
-    "taskListsSection": "Task Lists",
-    "cloneTemplate": "Clone",
-    "cloneTemplateSuccess": "Template cloned successfully!",
-    "cloneTemplateFailed": "Failed to clone template",
-    "cloning": "Cloning..."
+    "templates": "Şablonlar ve Listeler",
+    "loadingTemplates": "Şablonlar yükleniyor...",
+    "templatesSection": "Şablonlar",
+    "taskListsSection": "Görev Listeleri",
+    "cloneTemplate": "Klonla",
+    "cloneTemplateSuccess": "Şablon başarıyla klonlandı!",
+    "cloneTemplateFailed": "Şablon klonlama başarısız",
+    "cloning": "Klonlanıyor..."
   },
   "publicCharts": {
     "noData": "Herkese açık grafik verisi mevcut değil.",

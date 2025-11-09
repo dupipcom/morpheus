@@ -270,14 +270,14 @@
     "notes": "Jegyzetek",
     "loadingNotes": "Jegyzetek betöltése...",
     "profileNotPublic": "Ez a felhasználó még nem tette nyilvánossá a profilját.",
-    "templates": "Templates & Lists",
-    "loadingTemplates": "Loading templates...",
-    "templatesSection": "Templates",
-    "taskListsSection": "Task Lists",
-    "cloneTemplate": "Clone",
-    "cloneTemplateSuccess": "Template cloned successfully!",
-    "cloneTemplateFailed": "Failed to clone template",
-    "cloning": "Cloning..."
+    "templates": "Sablonok és Listák",
+    "loadingTemplates": "Sablonok betöltése...",
+    "templatesSection": "Sablonok",
+    "taskListsSection": "Feladatlisták",
+    "cloneTemplate": "Klónozás",
+    "cloneTemplateSuccess": "Sablon sikeresen klónozva!",
+    "cloneTemplateFailed": "A sablon klónozása sikertelen",
+    "cloning": "Klónozás..."
   },
   "publicCharts": {
     "noData": "Nincs nyilvános grafikon adat.",

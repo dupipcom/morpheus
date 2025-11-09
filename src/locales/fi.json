@@ -274,14 +274,14 @@
     "notes": "Muistiinpanot",
     "loadingNotes": "Ladataan muistiinpanoja...",
     "profileNotPublic": "Tämä käyttäjä ei ole vielä tehnyt profiiliaan julkiseksi.",
-    "templates": "Templates & Lists",
-    "loadingTemplates": "Loading templates...",
-    "templatesSection": "Templates",
-    "taskListsSection": "Task Lists",
-    "cloneTemplate": "Clone",
-    "cloneTemplateSuccess": "Template cloned successfully!",
-    "cloneTemplateFailed": "Failed to clone template",
-    "cloning": "Cloning..."
+    "templates": "Mallit ja Listat",
+    "loadingTemplates": "Ladataan malleja...",
+    "templatesSection": "Mallit",
+    "taskListsSection": "Tehtävälistat",
+    "cloneTemplate": "Kloonaa",
+    "cloneTemplateSuccess": "Malli kloonattu onnistuneesti!",
+    "cloneTemplateFailed": "Mallin kloonaaminen epäonnistui",
+    "cloning": "Kloonataan..."
   },
   "publicCharts": {
     "noData": "Julkisia kaaviotietoja ei ole saatavilla.",

@@ -273,14 +273,14 @@
     "notes": "Anteckningar",
     "loadingNotes": "Laddar anteckningar...",
     "profileNotPublic": "Denna användare har inte gjort sin profil offentlig ännu.",
-    "templates": "Templates & Lists",
-    "loadingTemplates": "Loading templates...",
-    "templatesSection": "Templates",
-    "taskListsSection": "Task Lists",
-    "cloneTemplate": "Clone",
-    "cloneTemplateSuccess": "Template cloned successfully!",
-    "cloneTemplateFailed": "Failed to clone template",
-    "cloning": "Cloning..."
+    "templates": "Mallar och Listor",
+    "loadingTemplates": "Laddar mallar...",
+    "templatesSection": "Mallar",
+    "taskListsSection": "Uppgiftslistor",
+    "cloneTemplate": "Klona",
+    "cloneTemplateSuccess": "Mall klonad framgångsrikt!",
+    "cloneTemplateFailed": "Kunde inte klona mall",
+    "cloning": "Klonar..."
   },
   "publicCharts": {
     "noData": "Inga tillgängliga data för offentliga diagram.",

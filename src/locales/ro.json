@@ -270,14 +270,14 @@
     "notes": "Note",
     "loadingNotes": "Se încarcă notele...",
     "profileNotPublic": "Acest utilizator nu și-a făcut profilul public încă.",
-    "templates": "Templates & Lists",
-    "loadingTemplates": "Loading templates...",
-    "templatesSection": "Templates",
-    "taskListsSection": "Task Lists",
-    "cloneTemplate": "Clone",
-    "cloneTemplateSuccess": "Template cloned successfully!",
-    "cloneTemplateFailed": "Failed to clone template",
-    "cloning": "Cloning..."
+    "templates": "Șabloane și Liste",
+    "loadingTemplates": "Se încarcă șabloanele...",
+    "templatesSection": "Șabloane",
+    "taskListsSection": "Liste de Sarcini",
+    "cloneTemplate": "Clonează",
+    "cloneTemplateSuccess": "Șablon clonat cu succes!",
+    "cloneTemplateFailed": "Clonarea șablonului a eșuat",
+    "cloning": "Se clonează..."
   },
   "publicCharts": {
     "noData": "Nu sunt disponibile date pentru graficele publice.",

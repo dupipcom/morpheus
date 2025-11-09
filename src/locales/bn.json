@@ -270,14 +270,14 @@
     "notes": "নোটস",
     "loadingNotes": "নোটস লোড হচ্ছে...",
     "profileNotPublic": "এই ব্যবহারকারী এখনও তাদের প্রোফাইল পাবলিক করেননি।",
-    "templates": "Templates & Lists",
-    "loadingTemplates": "Loading templates...",
-    "templatesSection": "Templates",
-    "taskListsSection": "Task Lists",
-    "cloneTemplate": "Clone",
-    "cloneTemplateSuccess": "Template cloned successfully!",
-    "cloneTemplateFailed": "Failed to clone template",
-    "cloning": "Cloning..."
+    "templates": "টেমপ্লেট এবং তালিকা",
+    "loadingTemplates": "টেমপ্লেট লোড হচ্ছে...",
+    "templatesSection": "টেমপ্লেট",
+    "taskListsSection": "কাজের তালিকা",
+    "cloneTemplate": "ক্লোন করুন",
+    "cloneTemplateSuccess": "টেমপ্লেট সফলভাবে ক্লোন করা হয়েছে!",
+    "cloneTemplateFailed": "টেমপ্লেট ক্লোন করতে ব্যর্থ",
+    "cloning": "ক্লোন হচ্ছে..."
   },
   "publicCharts": {
     "noData": "কোনও পাবলিক চার্টের ডেটা উপলব্ধ নেই।",

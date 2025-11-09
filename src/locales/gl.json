@@ -273,14 +273,14 @@
     "notes": "Notas",
     "loadingNotes": "Cargando notas...",
     "profileNotPublic": "Este usuario aínda non fixo público o seu perfil.",
-    "templates": "Templates & Lists",
-    "loadingTemplates": "Loading templates...",
-    "templatesSection": "Templates",
-    "taskListsSection": "Task Lists",
-    "cloneTemplate": "Clone",
-    "cloneTemplateSuccess": "Template cloned successfully!",
-    "cloneTemplateFailed": "Failed to clone template",
-    "cloning": "Cloning..."
+    "templates": "Modelos e Listas",
+    "loadingTemplates": "Cargando modelos...",
+    "templatesSection": "Modelos",
+    "taskListsSection": "Listas de Tarefas",
+    "cloneTemplate": "Clonar",
+    "cloneTemplateSuccess": "Modelo clonado con éxito!",
+    "cloneTemplateFailed": "Erro ao clonar modelo",
+    "cloning": "Clonando..."
   },
   "publicCharts": {
     "noData": "Non hai datos de gráficos públicos dispoñibles.",

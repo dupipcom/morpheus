@@ -284,14 +284,14 @@
     "notes": "메모",
     "loadingNotes": "메모 로딩 중...",
     "profileNotPublic": "이 사용자는 아직 프로필을 공개하지 않았습니다.",
-    "templates": "Templates & Lists",
-    "loadingTemplates": "Loading templates...",
-    "templatesSection": "Templates",
-    "taskListsSection": "Task Lists",
-    "cloneTemplate": "Clone",
-    "cloneTemplateSuccess": "Template cloned successfully!",
-    "cloneTemplateFailed": "Failed to clone template",
-    "cloning": "Cloning..."
+    "templates": "템플릿 및 목록",
+    "loadingTemplates": "템플릿 로딩 중...",
+    "templatesSection": "템플릿",
+    "taskListsSection": "작업 목록",
+    "cloneTemplate": "복제",
+    "cloneTemplateSuccess": "템플릿이 성공적으로 복제되었습니다!",
+    "cloneTemplateFailed": "템플릿 복제 실패",
+    "cloning": "복제 중..."
   },
   "publicCharts": {
     "noData": "공개 차트 데이터를 사용할 수 없습니다.",

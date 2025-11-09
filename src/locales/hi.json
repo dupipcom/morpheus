@@ -270,14 +270,14 @@
     "notes": "नोट्स",
     "loadingNotes": "नोट्स लोड हो रहे हैं...",
     "profileNotPublic": "इस उपयोगकर्ता ने अभी तक अपना प्रोफ़ाइल सार्वजनिक नहीं किया है।",
-    "templates": "Templates & Lists",
-    "loadingTemplates": "Loading templates...",
-    "templatesSection": "Templates",
-    "taskListsSection": "Task Lists",
-    "cloneTemplate": "Clone",
-    "cloneTemplateSuccess": "Template cloned successfully!",
-    "cloneTemplateFailed": "Failed to clone template",
-    "cloning": "Cloning..."
+    "templates": "टेम्पलेट और सूचियाँ",
+    "loadingTemplates": "टेम्पलेट लोड हो रहे हैं...",
+    "templatesSection": "टेम्पलेट",
+    "taskListsSection": "कार्य सूचियाँ",
+    "cloneTemplate": "क्लोन करें",
+    "cloneTemplateSuccess": "टेम्पलेट सफलतापूर्वक क्लोन किया गया!",
+    "cloneTemplateFailed": "टेम्पलेट क्लोन करने में विफल",
+    "cloning": "क्लोन हो रहा है..."
   },
   "publicCharts": {
     "noData": "कोई सार्वजनिक चार्ट डेटा उपलब्ध नहीं है।",

@@ -270,14 +270,14 @@
     "notes": "Notities",
     "loadingNotes": "Notities laden...",
     "profileNotPublic": "Deze gebruiker heeft zijn profiel nog niet openbaar gemaakt.",
-    "templates": "Templates & Lists",
-    "loadingTemplates": "Loading templates...",
-    "templatesSection": "Templates",
-    "taskListsSection": "Task Lists",
-    "cloneTemplate": "Clone",
-    "cloneTemplateSuccess": "Template cloned successfully!",
-    "cloneTemplateFailed": "Failed to clone template",
-    "cloning": "Cloning..."
+    "templates": "Sjablonen en Lijsten",
+    "loadingTemplates": "Sjablonen laden...",
+    "templatesSection": "Sjablonen",
+    "taskListsSection": "Takenlijsten",
+    "cloneTemplate": "Klonen",
+    "cloneTemplateSuccess": "Sjabloon succesvol gekloond!",
+    "cloneTemplateFailed": "Sjabloon klonen mislukt",
+    "cloning": "Klonen..."
   },
   "publicCharts": {
     "noData": "Geen openbare grafiekgegevens beschikbaar.",

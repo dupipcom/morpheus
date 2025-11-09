@@ -270,14 +270,14 @@
     "notes": "Notes",
     "loadingNotes": "Carregant notes...",
     "profileNotPublic": "Aquest usuari encara no ha fet públic el seu perfil.",
-    "templates": "Templates & Lists",
-    "loadingTemplates": "Loading templates...",
-    "templatesSection": "Templates",
-    "taskListsSection": "Task Lists",
-    "cloneTemplate": "Clone",
-    "cloneTemplateSuccess": "Template cloned successfully!",
-    "cloneTemplateFailed": "Failed to clone template",
-    "cloning": "Cloning..."
+    "templates": "Plantilles i Llistes",
+    "loadingTemplates": "Carregant plantilles...",
+    "templatesSection": "Plantilles",
+    "taskListsSection": "Llistes de Tasques",
+    "cloneTemplate": "Clonar",
+    "cloneTemplateSuccess": "Plantilla clonada amb èxit!",
+    "cloneTemplateFailed": "Error en clonar la plantilla",
+    "cloning": "Clonant..."
   },
   "publicCharts": {
     "noData": "No public charts data available.",

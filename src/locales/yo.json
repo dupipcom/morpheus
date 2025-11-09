@@ -282,14 +282,14 @@
     "notes": "Àwọn àkíyèsí",
     "loadingNotes": "N gbé àwọn àkíyèsí...",
     "profileNotPublic": "Olùmúlò yìí kò tí ì tí ì fi profaili rẹ̀ sí gbangba.",
-    "templates": "Templates & Lists",
-    "loadingTemplates": "Loading templates...",
-    "templatesSection": "Templates",
-    "taskListsSection": "Task Lists",
-    "cloneTemplate": "Clone",
-    "cloneTemplateSuccess": "Template cloned successfully!",
-    "cloneTemplateFailed": "Failed to clone template",
-    "cloning": "Cloning..."
+    "templates": "Àwọn Àpẹẹrẹ ati Àkójọ",
+    "loadingTemplates": "N gbé àwọn àpẹẹrẹ...",
+    "templatesSection": "Àwọn Àpẹẹrẹ",
+    "taskListsSection": "Àkójọ Iṣẹ́",
+    "cloneTemplate": "Ẹ̀dà",
+    "cloneTemplateSuccess": "A ti ṣe àdàkọ àpẹẹrẹ pẹ̀lú àṣeyọrí!",
+    "cloneTemplateFailed": "O kuna lati ṣe àdàkọ àpẹẹrẹ",
+    "cloning": "N ṣe àdàkọ..."
   },
   "publicCharts": {
     "noData": "Kò sí àwọn àkọsílẹ̀ àwòrán gbangba.",

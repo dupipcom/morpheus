@@ -284,14 +284,14 @@
     "notes": "ノート",
     "loadingNotes": "ノートを読み込み中...",
     "profileNotPublic": "このユーザーはまだプロフィールを公開していません。",
-    "templates": "Templates & Lists",
-    "loadingTemplates": "Loading templates...",
-    "templatesSection": "Templates",
-    "taskListsSection": "Task Lists",
-    "cloneTemplate": "Clone",
-    "cloneTemplateSuccess": "Template cloned successfully!",
-    "cloneTemplateFailed": "Failed to clone template",
-    "cloning": "Cloning..."
+    "templates": "テンプレートとリスト",
+    "loadingTemplates": "テンプレートを読み込み中...",
+    "templatesSection": "テンプレート",
+    "taskListsSection": "タスクリスト",
+    "cloneTemplate": "複製",
+    "cloneTemplateSuccess": "テンプレートの複製に成功しました！",
+    "cloneTemplateFailed": "テンプレートの複製に失敗しました",
+    "cloning": "複製中..."
   },
   "publicCharts": {
     "noData": "公開チャートデータが利用できません。",

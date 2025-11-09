@@ -270,14 +270,14 @@
     "notes": "הערות",
     "loadingNotes": "טוען הערות...",
     "profileNotPublic": "משתמש זה לא עשה את הפרופיל שלו ציבורי עדיין.",
-    "templates": "Templates & Lists",
-    "loadingTemplates": "Loading templates...",
-    "templatesSection": "Templates",
-    "taskListsSection": "Task Lists",
-    "cloneTemplate": "Clone",
-    "cloneTemplateSuccess": "Template cloned successfully!",
-    "cloneTemplateFailed": "Failed to clone template",
-    "cloning": "Cloning..."
+    "templates": "תבניות ורשימות",
+    "loadingTemplates": "טוען תבניות...",
+    "templatesSection": "תבניות",
+    "taskListsSection": "רשימות משימות",
+    "cloneTemplate": "שכפל",
+    "cloneTemplateSuccess": "התבנית שוכפלה בהצלחה!",
+    "cloneTemplateFailed": "שכפול התבנית נכשל",
+    "cloning": "משכפל..."
   },
   "publicCharts": {
     "noData": "אין נתוני גרפים ציבוריים זמינים.",

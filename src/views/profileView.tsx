@@ -86,7 +86,7 @@ export const ProfileView = ({
         {/* Tabbed Content Section */}
         <Card className="mb-6">
           <CardContent className="pt-6">
-            <Tabs defaultValue="analytics" className="w-full">
+            <Tabs defaultValue="notes" className="w-full">
               <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger 
                   value="analytics"
