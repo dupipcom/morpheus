@@ -176,23 +176,33 @@ export async function GET(request: NextRequest) {
         for (const year in completedTasks) {
           const yearData = completedTasks[year]
           for (const date in yearData) {
-            const tasksForDate = yearData[date]
-            if (Array.isArray(tasksForDate)) {
-              tasksForDate.forEach((task: any) => {
-                if (Array.isArray(task.completers)) {
-                  task.completers.forEach((completer: any) => {
-                    const userId = completer.id
-                    const userName = userIdToUserName[userId] || userId
-                    
-                    // Add profit for this completion
-                    if (!collaboratorEarnings[userName]) {
-                      collaboratorEarnings[userName] = 0
-                    }
-                    collaboratorEarnings[userName] += profitPerTask
-                  })
-                }
-              })
+            const dateBucket = yearData[date]
+            let tasksForDate: any[] = []
+            
+            // Support both old structure (array) and new structure (openTasks/closedTasks)
+            if (Array.isArray(dateBucket)) {
+              tasksForDate = dateBucket
+            } else if (dateBucket && (dateBucket.openTasks || dateBucket.closedTasks)) {
+              tasksForDate = [
+                ...(Array.isArray(dateBucket.openTasks) ? dateBucket.openTasks : []),
+                ...(Array.isArray(dateBucket.closedTasks) ? dateBucket.closedTasks : [])
+              ]
             }
+            
+            tasksForDate.forEach((task: any) => {
+              if (Array.isArray(task.completers)) {
+                task.completers.forEach((completer: any) => {
+                  const userId = completer.id
+                  const userName = userIdToUserName[userId] || userId
+                  
+                  // Add profit for this completion
+                  if (!collaboratorEarnings[userName]) {
+                    collaboratorEarnings[userName] = 0
+                  }
+                  collaboratorEarnings[userName] += profitPerTask
+                })
+              }
+            })
           }
         }
       }
@@ -304,42 +314,82 @@ export async function POST(request: NextRequest) {
         return out
       }
 
-      // Build completedTasks map
+      // Extract justCompletedNames and justUncompletedNames early
+      const justCompletedNames: string[] = Array.isArray(body.justCompletedNames) ? body.justCompletedNames : []
+      const justUncompletedNames: string[] = Array.isArray(body.justUncompletedNames) ? body.justUncompletedNames : []
+
+      // Build completedTasks map with new structure: completedTasks[year][date].openTasks and closedTasks
       const year = Number(dateISO.split('-')[0])
       const priorCompleted = (taskList as any).completedTasks || {}
       const yearBucket = priorCompleted[year] || {}
-      const dayArr: any[] = Array.isArray(yearBucket[dateISO]) ? yearBucket[dateISO] : []
+      const dateBucket = yearBucket[dateISO] || {}
+      
+      // Support both old structure (array) and new structure (openTasks/closedTasks)
+      let openTasks: any[] = []
+      let closedTasks: any[] = []
+      
+      if (Array.isArray(dateBucket)) {
+        // Legacy structure: migrate to new structure
+        openTasks = dateBucket.filter((t: any) => t.status !== 'Done')
+        closedTasks = dateBucket.filter((t: any) => t.status === 'Done')
+      } else if (dateBucket.openTasks || dateBucket.closedTasks) {
+        // New structure
+        openTasks = Array.isArray(dateBucket.openTasks) ? [...dateBucket.openTasks] : []
+        closedTasks = Array.isArray(dateBucket.closedTasks) ? [...dateBucket.closedTasks] : []
+      }
+      
+      // Check if this is the first completion for this date (no openTasks exist yet)
+      const isFirstCompletion = openTasks.length === 0 && closedTasks.length === 0 && justCompletedNames.length > 0
+      
+      // If first completion, copy tasks from taskList.tasks to openTasks
+      if (isFirstCompletion) {
+        const blueprintTasks: any[] = Array.isArray(taskList.tasks) ? (taskList.tasks as any[]) : (Array.isArray((taskList as any).templateTasks) ? ((taskList as any).templateTasks as any[]) : [])
+        openTasks = blueprintTasks.map((t: any) => sanitizeTask({ ...t, count: 0, status: 'Open' }))
+      }
 
       // Helpers to match tasks reliably even with localized names
       const getKey = (t: any) => (t?.id || t?.localeKey || (typeof t?.name === 'string' ? t.name.toLowerCase() : '')) as string
       const byKey: Record<string, any> = {}
-      dayArr.forEach((t: any) => {
+      openTasks.forEach((t: any) => {
         const key = getKey(t)
         byKey[key] = t
       })
 
       // For each incoming (localized) task, merge into completed map
-      const justCompletedNames: string[] = Array.isArray(body.justCompletedNames) ? body.justCompletedNames : []
-      const justUncompletedNames: string[] = Array.isArray(body.justUncompletedNames) ? body.justUncompletedNames : []
       const nameSet = new Set(justCompletedNames.map((s) => typeof s === 'string' ? s.toLowerCase() : s))
 
+      // Process all incoming tasks to update openTasks
       for (const incoming of incomingTasks) {
-        // Skip tasks that did not just transition to done in this interaction, if a filter is provided
-        if (nameSet.size > 0) {
-          const nm = typeof incoming?.name === 'string' ? incoming.name.toLowerCase() : ''
-          if (!nameSet.has(nm)) continue
-        }
         const key = getKey(incoming)
         if (!key) continue
         const existing = byKey[key]
         const prevCompletersLen = Array.isArray(existing?.completers) ? existing.completers.length : 0
-        const newCount = nameSet.size > 0 ? prevCompletersLen + 1 : Number(incoming?.count || (incoming.status === 'Done' ? 1 : 0))
-        const delta = Math.max(0, newCount - prevCompletersLen)
-        if (delta <= 0) {
-          // still ensure we copy the latest snapshot of the task if it wasn't present
-          if (!existing && newCount > 0) {
-            byKey[key] = sanitizeTask({ ...incoming, status: 'Done', completers: [] })
+        
+        // Determine new count and delta
+        let newCount: number
+        let delta: number
+        
+        if (nameSet.size > 0) {
+          // If filtering by justCompletedNames, only process those tasks
+          const nm = typeof incoming?.name === 'string' ? incoming.name.toLowerCase() : ''
+          if (!nameSet.has(nm)) {
+            // Not in justCompletedNames, but still update the task if it exists
+            if (existing) {
+              byKey[key] = sanitizeTask({ ...existing, ...incoming })
+            }
+            continue
           }
+          newCount = prevCompletersLen + 1
+          delta = 1
+        } else {
+          // Process all incoming tasks
+          newCount = Number(incoming?.count || (incoming.status === 'Done' ? 1 : 0))
+          delta = Math.max(0, newCount - prevCompletersLen)
+        }
+        
+        if (delta <= 0 && existing) {
+          // Update task without incrementing completers
+          byKey[key] = sanitizeTask({ ...existing, ...incoming })
           continue
         }
 
@@ -353,7 +403,8 @@ export async function POST(request: NextRequest) {
           ...incoming,
           // Preserve the status from incoming task (may be 'Open' for partial completions or 'Done' for full)
           status: incoming.status || 'Done',
-          completers: [...baseCompleters, ...appended]
+          completers: [...baseCompleters, ...appended],
+          count: newCount
         })
         byKey[key] = taskRecord
       }
@@ -361,43 +412,76 @@ export async function POST(request: NextRequest) {
       // Handle uncompletions: remove last completer for provided task names
       if (justUncompletedNames.length > 0) {
         const unNames = new Set(justUncompletedNames.map((s: string) => (s || '').toLowerCase()))
+        
+        // Check closedTasks for tasks to reopen
+        for (let i = closedTasks.length - 1; i >= 0; i--) {
+          const t = closedTasks[i]
+          const nm = typeof t?.name === 'string' ? t.name.toLowerCase() : ''
+          if (unNames.has(nm)) {
+            const comps: any[] = Array.isArray(t?.completers) ? [...t.completers] : []
+            if (comps.length > 0) comps.pop()
+            const updatedTask = { ...t, status: 'Open', completers: comps, count: comps.length }
+            // Move from closedTasks to openTasks
+            closedTasks.splice(i, 1)
+            const key = getKey(updatedTask)
+            if (key) byKey[key] = updatedTask
+          }
+        }
+        
+        // Also handle tasks in openTasks
         const values = Object.values(byKey) as any[]
         for (const t of values) {
           const nm = typeof t?.name === 'string' ? t.name.toLowerCase() : ''
           if (!unNames.has(nm)) continue
           const comps: any[] = Array.isArray(t?.completers) ? [...t.completers] : []
           if (comps.length > 0) comps.pop()
-          if (comps.length === 0) {
-            // remove the entry entirely
-            const k = getKey(t)
-            if (k) delete (byKey as any)[k]
+          const updatedTask = { ...t, status: 'Open', completers: comps, count: comps.length }
+          const k = getKey(updatedTask)
+          if (k) byKey[k] = updatedTask
+        }
+      }
+
+      // Separate openTasks and closedTasks based on status
+      const finalOpenTasks: any[] = []
+      const finalClosedTasks: any[] = [...closedTasks] // Keep existing closed tasks
+      
+      for (const task of Object.values(byKey)) {
+        const taskStatus = (task as any).status
+        const taskCount = (task as any).count || 0
+        const taskTimes = (task as any).times || 1
+        
+        // Task is done if status is 'Done' or count >= times
+        if (taskStatus === 'Done' || taskCount >= taskTimes) {
+          // Check if already in closedTasks
+          const key = getKey(task as any)
+          const alreadyClosed = finalClosedTasks.some((t: any) => getKey(t) === key)
+          if (!alreadyClosed) {
+            finalClosedTasks.push(task as any)
           } else {
-            const k = getKey(t)
-            if (k) (byKey as any)[k] = { ...t, status: 'Open', completers: comps, count: comps.length }
+            // Update existing closed task
+            const index = finalClosedTasks.findIndex((t: any) => getKey(t) === key)
+            if (index >= 0) {
+              finalClosedTasks[index] = task as any
+            }
+          }
+        } else {
+          finalOpenTasks.push(task as any)
+        }
+      }
+
+      // Save new structure
+      const nextCompleted = {
+        ...priorCompleted,
+        [year]: { 
+          ...yearBucket, 
+          [dateISO]: {
+            openTasks: finalOpenTasks,
+            closedTasks: finalClosedTasks
           }
         }
       }
 
-      const nextDayArr = Object.values(byKey)
-      const nextCompleted = {
-        ...priorCompleted,
-        [year]: { ...yearBucket, [dateISO]: nextDayArr }
-      }
-
-      // Update taskStatus in tasks array (not templateTasks, which should remain unchanged)
-      let updatedTasks = (taskList as any).tasks || (taskList as any).templateTasks || []
-      updatedTasks = updatedTasks.map((task: any) => {
-        const key = getKey(task)
-        const incomingTask = incomingTasks.find((t: any) => getKey(t) === key)
-        if (incomingTask) {
-          const updated = { ...task }
-          if (incomingTask.taskStatus) updated.taskStatus = incomingTask.taskStatus
-          if (incomingTask.count !== undefined) updated.count = incomingTask.count
-          if (incomingTask.status) updated.status = incomingTask.status
-          return updated
-        }
-        return task
-      })
+      // Don't update taskList.tasks - all updates go to completedTasks[year][date].openTasks/closedTasks
 
       // Update taskStatus in ephemeral tasks to keep them in sync
       let updatedEphemeralTasks = (taskList as any).ephemeralTasks || { open: [], closed: [] }
@@ -446,7 +530,6 @@ export async function POST(request: NextRequest) {
         where: { id: taskList.id },
         data: ({ 
           completedTasks: nextCompleted,
-          tasks: updatedTasks,
           ephemeralTasks: updatedEphemeralTasks,
           remainingBudget: newRemainingBudget
         } as any),
@@ -492,8 +575,8 @@ export async function POST(request: NextRequest) {
 
         // Handle completions
         if (justCompletedNames.length > 0) {
-          // Prepare completed tasks to append
-          const completedTasks = nextDayArr.filter((t: any) => {
+          // Prepare completed tasks to append (from closedTasks)
+          const completedTasks = finalClosedTasks.filter((t: any) => {
             const nm = typeof t?.name === 'string' ? t.name.toLowerCase() : ''
             return justCompletedNames.some(jc => typeof jc === 'string' && jc.toLowerCase() === nm)
           })
@@ -791,28 +874,38 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ taskList: saved })
     }
 
-    // Update task status in tasks array (not templateTasks) or ephemeralTasks
+    // Update task status in completedTasks[year][date].openTasks/closedTasks (not taskList.tasks)
     if (body.updateTaskStatus && body.taskListId) {
       const taskList = await prisma.taskList.findUnique({ where: { id: body.taskListId } })
       if (!taskList) return NextResponse.json({ error: 'TaskList not found' }, { status: 404 })
 
       const taskKey = body.taskKey // id, localeKey, or name
       const newStatus = body.taskStatus
+      const dateISO = body.date || new Date().toISOString().split('T')[0] // Use provided date or today
 
-      // Update task status in tasks array (not templateTasks, which should remain unchanged)
-      let tasks = Array.isArray(taskList.tasks) 
+      // Helper to match tasks reliably
+      const getKey = (t: any) => (t?.id || t?.localeKey || (typeof t?.name === 'string' ? t.name.toLowerCase() : '')) as string
+      const taskKeyLower = typeof taskKey === 'string' ? taskKey.toLowerCase() : taskKey
+
+      // Get task from templateTasks or tasks to use as base
+      let baseTask: any = null
+      const tasks = Array.isArray(taskList.tasks) 
         ? taskList.tasks 
         : (Array.isArray((taskList as any).templateTasks) ? (taskList as any).templateTasks : [])
-
-      let taskFoundInTasks = false
-      tasks = tasks.map((task: any) => {
-        const key = task?.id || task?.localeKey || task?.name
-        if (key === taskKey) {
-          taskFoundInTasks = true
-          return { ...task, taskStatus: newStatus }
-        }
-        return task
+      
+      baseTask = tasks.find((task: any) => {
+        const key = getKey(task)
+        return key === taskKeyLower || key === taskKey
       })
+
+      // If not found in tasks, check templateTasks
+      if (!baseTask) {
+        const templateTasks = Array.isArray((taskList as any).templateTasks) ? (taskList as any).templateTasks : []
+        baseTask = templateTasks.find((task: any) => {
+          const key = getKey(task)
+          return key === taskKeyLower || key === taskKey
+        })
+      }
 
       // Also check and update ephemeral tasks
       let ephemeralTasks = (taskList as any).ephemeralTasks || { open: [], closed: [] }
@@ -821,8 +914,9 @@ export async function POST(request: NextRequest) {
 
       // Update status in open ephemeral tasks
       open = open.map((task: any) => {
-        const key = task?.id || task?.localeKey || task?.name
-        if (key === taskKey) {
+        const key = getKey(task)
+        if (key === taskKeyLower || key === taskKey) {
+          if (!baseTask) baseTask = { ...task }
           return { ...task, taskStatus: newStatus }
         }
         return task
@@ -830,8 +924,9 @@ export async function POST(request: NextRequest) {
 
       // Also update status in closed ephemeral tasks
       closed = closed.map((task: any) => {
-        const key = task?.id || task?.localeKey || task?.name
-        if (key === taskKey) {
+        const key = getKey(task)
+        if (key === taskKeyLower || key === taskKey) {
+          if (!baseTask) baseTask = { ...task }
           return { ...task, taskStatus: newStatus }
         }
         return task
@@ -839,11 +934,66 @@ export async function POST(request: NextRequest) {
 
       ephemeralTasks = { open, closed }
 
+      // Update task in completedTasks[year][date].openTasks/closedTasks
+      let completedTasks = (taskList as any).completedTasks || {}
+      const year = Number(dateISO.split('-')[0])
+      const yearBucket = completedTasks[year] || {}
+      const dateBucket = yearBucket[dateISO] || {}
+      
+      // Support both old structure (array) and new structure (openTasks/closedTasks)
+      let openTasks: any[] = []
+      let closedTasks: any[] = []
+      
+      if (Array.isArray(dateBucket)) {
+        // Legacy structure: migrate to new structure
+        openTasks = dateBucket.filter((t: any) => t.status !== 'Done')
+        closedTasks = dateBucket.filter((t: any) => t.status === 'Done')
+      } else if (dateBucket.openTasks || dateBucket.closedTasks) {
+        // New structure
+        openTasks = Array.isArray(dateBucket.openTasks) ? [...dateBucket.openTasks] : []
+        closedTasks = Array.isArray(dateBucket.closedTasks) ? [...dateBucket.closedTasks] : []
+      } else if (baseTask) {
+        // First time - initialize from taskList.tasks
+        const blueprintTasks: any[] = Array.isArray(taskList.tasks) ? (taskList.tasks as any[]) : (Array.isArray((taskList as any).templateTasks) ? ((taskList as any).templateTasks as any[]) : [])
+        openTasks = blueprintTasks.map((t: any) => ({ ...t, count: 0, status: 'Open' }))
+      }
+      
+      if (baseTask) {
+        const updatedTask = { ...baseTask, taskStatus: newStatus }
+        
+        // Find task in openTasks or closedTasks
+        const openIndex = openTasks.findIndex((t: any) => {
+          const key = getKey(t)
+          return key === taskKeyLower || key === taskKey
+        })
+        const closedIndex = closedTasks.findIndex((t: any) => {
+          const key = getKey(t)
+          return key === taskKeyLower || key === taskKey
+        })
+        
+        if (openIndex >= 0) {
+          // Update in openTasks
+          openTasks[openIndex] = { ...openTasks[openIndex], ...updatedTask, taskStatus: newStatus }
+        } else if (closedIndex >= 0) {
+          // Update in closedTasks
+          closedTasks[closedIndex] = { ...closedTasks[closedIndex], ...updatedTask, taskStatus: newStatus }
+        } else {
+          // Add to openTasks if not found
+          openTasks.push(updatedTask)
+        }
+        
+        yearBucket[dateISO] = {
+          openTasks: openTasks,
+          closedTasks: closedTasks
+        }
+        completedTasks[year] = yearBucket
+      }
+
       const updated = await prisma.taskList.update({
         where: { id: taskList.id },
         data: {
-          tasks: tasks,
           ephemeralTasks: ephemeralTasks,
+          completedTasks: completedTasks,
           updatedAt: new Date()
         } as any,
         include: { template: true }

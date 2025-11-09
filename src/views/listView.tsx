@@ -55,6 +55,14 @@ const getIconColor = (status: TaskStatus): string => {
     return colorMap[status] || 'transparent'
 }
 
+// Helper function to format date in local timezone (YYYY-MM-DD)
+const formatDateLocal = (date: Date): string => {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
   export const ListView = () => {
     const { session, taskLists: contextTaskLists, refreshTaskLists } = useContext(GlobalContext)
     const { t, locale } = useI18n()
@@ -72,14 +80,19 @@ const getIconColor = (status: TaskStatus): string => {
       }
     }, [contextTaskLists])
 
-    const today = new Date()
+    // Get today's date in local timezone, normalized to midnight
+    const today = useMemo(() => {
+      const d = new Date()
+      return new Date(d.getFullYear(), d.getMonth(), d.getDate())
+    }, [])
 
     // State for selected date (defaults to today)
     const [selectedDate, setSelectedDate] = useState<Date>(today)
 
-    // Compute date string and year from selected date
-    const date = selectedDate.toISOString().split('T')[0]
-    const year = Number(date.split('-')[0])
+    // Compute date string and year from selected date (using local timezone)
+    // Memoize these so React can properly track changes
+    const date = useMemo(() => formatDateLocal(selectedDate), [selectedDate])
+    const year = useMemo(() => Number(date.split('-')[0]), [date])
     const allTaskLists = stableTaskLists.length > 0 ? stableTaskLists : (contextTaskLists || [])
 
     const [selectedTaskListId, setSelectedTaskListId] = useState<string | undefined>(allTaskLists[0]?.id)
@@ -93,11 +106,13 @@ const getIconColor = (status: TaskStatus): string => {
     useEffect(() => {
       const role = (selectedTaskList as any)?.role
       if (role && (role.startsWith('daily.') || role.startsWith('weekly.'))) {
-        setSelectedDate(new Date())
+        // Normalize to midnight in local timezone
+        const d = new Date()
+        setSelectedDate(new Date(d.getFullYear(), d.getMonth(), d.getDate()))
       }
     }, [selectedTaskListId])
 
-    // Helper to get all dates in a week
+    // Helper to get all dates in a week (using local timezone)
     const getWeekDates = useMemo(() => {
       const dates: string[] = []
       const d = new Date(selectedDate)
@@ -110,7 +125,7 @@ const getIconColor = (status: TaskStatus): string => {
       for (let i = 0; i < 7; i++) {
         const weekDate = new Date(monday)
         weekDate.setDate(monday.getDate() + i)
-        dates.push(weekDate.toISOString().split('T')[0])
+        dates.push(formatDateLocal(weekDate))
       }
       return dates
     }, [selectedDate])
@@ -138,10 +153,22 @@ const getIconColor = (status: TaskStatus): string => {
           const datesToCheck = isWeeklyList ? getWeekDates : [date]
 
           datesToCheck.forEach((checkDate: string) => {
-            const completedForDay: any[] = (selectedTaskList as any)?.completedTasks?.[year]?.[checkDate] || []
-            completedForDay.forEach((t: any) => {
-              if (Array.isArray(t?.completers)) t.completers.forEach((c: any) => { if (c?.id) completerIds.add(String(c.id)) })
-            })
+            const dateBucket = (selectedTaskList as any)?.completedTasks?.[year]?.[checkDate]
+            if (dateBucket) {
+              // Support both old structure (array) and new structure (openTasks/closedTasks)
+              let tasksToCheck: any[] = []
+              if (Array.isArray(dateBucket)) {
+                tasksToCheck = dateBucket
+              } else {
+                tasksToCheck = [
+                  ...(Array.isArray(dateBucket.openTasks) ? dateBucket.openTasks : []),
+                  ...(Array.isArray(dateBucket.closedTasks) ? dateBucket.closedTasks : [])
+                ]
+              }
+              tasksToCheck.forEach((t: any) => {
+                if (Array.isArray(t?.completers)) t.completers.forEach((c: any) => { if (c?.id) completerIds.add(String(c.id)) })
+              })
+            }
           })
 
           const ids = Array.from(new Set([...(owners || []), ...(collaborators || []), ...Array.from(completerIds)]))
@@ -163,91 +190,170 @@ const getIconColor = (status: TaskStatus): string => {
       return () => { cancelled = true }
     }, [selectedTaskList?.id, JSON.stringify((selectedTaskList as any)?.owners || []), JSON.stringify((selectedTaskList as any)?.collaborators || []), isWeeklyList, getWeekDates, date, year])
 
-    // Build tasks: tasks (working copy) + ephemeralTasks.open, overlay completedTasks[year][date or week]
+    // Memoize datesToCheck to ensure it's reactive for both daily and weekly lists
+    const datesToCheck = useMemo(() => {
+      return isWeeklyList ? getWeekDates : [date]
+    }, [isWeeklyList, getWeekDates, date])
+
+    // Build tasks: read from completedTasks[year][date].openTasks if exists, otherwise from tasklist.tasks
+    // Overlay completedTasks[year][date].closedTasks for completed tasks
     const mergedTasks = useMemo(() => {
-      const base = (selectedTaskList?.tasks && selectedTaskList.tasks.length > 0)
-        ? selectedTaskList.tasks
-        : (selectedTaskList?.templateTasks || [])
-
-      const ephemerals = (selectedTaskList?.ephemeralTasks?.open || []).map((t: any) => ({ ...t, isEphemeral: true }))
-
-      // Include closed ephemeral tasks that were completed on the current date/timeframe
-      const closedEphemerals = (selectedTaskList?.ephemeralTasks?.closed || [])
-        .filter((t: any) => {
-          if (!t.completedAt) return false
-          const completedDate = new Date(t.completedAt).toISOString().split('T')[0]
-          
-          // For weekly lists, check if completed within the week
-          if (isWeeklyList) {
-            return getWeekDates.includes(completedDate)
-          }
-          
-          // For daily lists, check if completed on the selected date
-          return completedDate === date
-        })
-        .map((t: any) => ({ ...t, isEphemeral: true }))
-
-      // For weekly lists, merge completedTasks from all dates in the week
-      const datesToCheck = isWeeklyList ? getWeekDates : [date]
-      const byKey: Record<string, any> = {}
       const keyOf = (t: any) => (t?.id || t?.localeKey || (typeof t?.name === 'string' ? t.name.toLowerCase() : ''))
-
+      
+      // Collect openTasks and closedTasks from all dates in the timeframe
+      const allOpenTasks: any[] = []
+      const allClosedTasks: any[] = []
+      const openTasksByKey: Record<string, any> = {}
+      const closedTasksByKey: Record<string, any> = {}
+      
       datesToCheck.forEach((checkDate: string) => {
-        const completedForDay: any[] = (selectedTaskList as any)?.completedTasks?.[year]?.[checkDate] || []
-        completedForDay.forEach((t: any) => {
-          const k = keyOf(t)
-          if (!k) return
-
-          // Merge completers from different days for weekly lists
-          if (byKey[k]) {
-            const existingCompleters = Array.isArray(byKey[k]?.completers) ? byKey[k].completers : []
-            const newCompleters = Array.isArray(t?.completers) ? t.completers : []
-            byKey[k] = {
-              ...byKey[k],
-              ...t,
-              completers: [...existingCompleters, ...newCompleters]
-            }
+        const dateBucket = (selectedTaskList as any)?.completedTasks?.[year]?.[checkDate]
+        
+        if (dateBucket) {
+          // Support both old structure (array) and new structure (openTasks/closedTasks)
+          if (Array.isArray(dateBucket)) {
+            // Legacy structure: migrate on read
+            dateBucket.forEach((t: any) => {
+              const k = keyOf(t)
+              if (!k) return
+              if (t.status === 'Done' || (t.count || 0) >= (t.times || 1)) {
+                if (!closedTasksByKey[k]) {
+                  closedTasksByKey[k] = t
+                  allClosedTasks.push(t)
+                }
+              } else {
+                if (!openTasksByKey[k]) {
+                  openTasksByKey[k] = t
+                  allOpenTasks.push(t)
+                }
+              }
+            })
           } else {
-            byKey[k] = t
+            // New structure
+            const openTasks = Array.isArray(dateBucket.openTasks) ? dateBucket.openTasks : []
+            const closedTasks = Array.isArray(dateBucket.closedTasks) ? dateBucket.closedTasks : []
+            
+            openTasks.forEach((t: any) => {
+              const k = keyOf(t)
+              if (!k) return
+              if (!openTasksByKey[k]) {
+                openTasksByKey[k] = t
+                allOpenTasks.push(t)
+              } else {
+                // Merge completers from different days for weekly lists
+                const existingCompleters = Array.isArray(openTasksByKey[k]?.completers) ? openTasksByKey[k].completers : []
+                const newCompleters = Array.isArray(t?.completers) ? t.completers : []
+                openTasksByKey[k] = {
+                  ...openTasksByKey[k],
+                  ...t,
+                  completers: [...existingCompleters, ...newCompleters]
+                }
+              }
+            })
+            
+            closedTasks.forEach((t: any) => {
+              const k = keyOf(t)
+              if (!k) return
+              if (!closedTasksByKey[k]) {
+                closedTasksByKey[k] = t
+                allClosedTasks.push(t)
+              } else {
+                // Merge completers from different days for weekly lists
+                const existingCompleters = Array.isArray(closedTasksByKey[k]?.completers) ? closedTasksByKey[k].completers : []
+                const newCompleters = Array.isArray(t?.completers) ? t.completers : []
+                closedTasksByKey[k] = {
+                  ...closedTasksByKey[k],
+                  ...t,
+                  completers: [...existingCompleters, ...newCompleters]
+                }
+              }
+            })
           }
-        })
+        }
       })
+      
+      // Determine base tasks: use openTasks if they exist, otherwise fall back to tasklist.tasks
+      let base: any[] = []
+      if (allOpenTasks.length > 0) {
+        // Use openTasks as base
+        base = allOpenTasks
+      } else {
+        // Fall back to tasklist.tasks or templateTasks
+        base = (selectedTaskList?.tasks && selectedTaskList.tasks.length > 0)
+          ? selectedTaskList.tasks
+          : (selectedTaskList?.templateTasks || [])
+      }
 
+      // Only show open ephemeral tasks from the selected task list
+      // Ensure we're using the correct task list by checking selectedTaskListId
+      const ephemerals = (selectedTaskList && selectedTaskList.id === selectedTaskListId && selectedTaskList?.ephemeralTasks?.open) 
+        ? (selectedTaskList.ephemeralTasks.open || []).map((t: any) => ({ ...t, isEphemeral: true }))
+        : []
+
+      // Only include closed ephemeral tasks from the selected task list that were closed on the selected date (or within selected week for weekly lists)
+      const closedEphemerals = (selectedTaskList && selectedTaskList.id === selectedTaskListId && selectedTaskList?.ephemeralTasks?.closed)
+        ? (selectedTaskList.ephemeralTasks.closed || [])
+            .filter((t: any) => {
+              // Must have a completedAt timestamp
+              if (!t.completedAt) return false
+              
+              // Format completed date in local timezone for comparison
+              const completedDate = formatDateLocal(new Date(t.completedAt))
+              
+              // For weekly lists, check if completed within the selected week
+              if (isWeeklyList) {
+                return getWeekDates.includes(completedDate)
+              }
+              
+              // For daily lists, only show if completed on the exact selected date
+              return completedDate === date
+            })
+            .map((t: any) => ({ ...t, isEphemeral: true }))
+        : []
+
+      // Merge base tasks with closedTasks (closedTasks take precedence for completed tasks)
       const overlayed = base.map((t: any) => {
         const k = keyOf(t)
-        const completed = k ? byKey[k] : undefined
-        if (!completed) {
-          // No completion record yet - ensure count is initialized to 0
-          return { ...t, count: t.count || 0 }
-        }
-        // The tasks array is the working copy and should be authoritative for count
-        // Only fall back to completedTasks completers array if tasks array count is not set
-        const times = Number(t?.times || completed?.times || 1)
-        const tasksArrayCount = t.count !== undefined ? Number(t.count) : null
-        const completedCount = Array.isArray(completed?.completers) ? completed.completers.length : Number(completed?.count || 0)
+        const closedTask = k ? closedTasksByKey[k] : undefined
         
-        // Prefer tasks array count (working copy) over completed count (historical tracking)
-        const doneCount = tasksArrayCount !== null ? tasksArrayCount : completedCount
-        const status = doneCount >= (times || 1) ? 'Done' : 'Open'
-        // Preserve taskStatus from tasks array first, then completed record, then infer from status
-        const taskStatus = t.taskStatus || completed?.taskStatus || (status === 'Done' ? 'done' : (doneCount > 0 ? 'in progress' : undefined))
-        return { 
-          ...t, 
-          status, 
-          count: Math.min(doneCount || 0, times || 1), 
-          completers: completed?.completers,
-          taskStatus
+        if (closedTask) {
+          // Task is completed - use closedTask data
+          const times = Number(closedTask?.times || t?.times || 1)
+          const completedCount = Array.isArray(closedTask?.completers) ? closedTask.completers.length : Number(closedTask?.count || 0)
+          const status = completedCount >= times ? 'Done' : 'Open'
+          const taskStatus = closedTask?.taskStatus || t?.taskStatus || (status === 'Done' ? 'done' : (completedCount > 0 ? 'in progress' : undefined))
+          
+          return { 
+            ...t, // Start with base task
+            ...closedTask, // Override with closedTask data (takes precedence)
+            status, 
+            count: Math.min(completedCount || 0, times || 1), 
+            completers: closedTask?.completers,
+            taskStatus
+          }
         }
+        
+        // Task is open - use base task data (from openTasks or tasklist.tasks)
+        return { ...t, count: t.count || 0 }
+      })
+      
+      // Add any closedTasks that aren't in base (shouldn't happen, but handle edge cases)
+      const baseKeys = new Set(base.map((t: any) => keyOf(t)))
+      const additionalClosedTasks = allClosedTasks.filter((t: any) => {
+        const k = keyOf(t)
+        return k && !baseKeys.has(k)
       })
 
       // Combine all ephemeral tasks (open + closed for current date/timeframe)
       const allEphemerals = [...ephemerals, ...closedEphemerals]
+
       
       // Dedup ephemeral by name against base
       const names = new Set(overlayed.map((t: any) => t.name))
       const dedupEphemeral = allEphemerals.filter((t: any) => !names.has(t.name))
-      return [...overlayed, ...dedupEphemeral]
-    }, [selectedTaskList, year, date, isWeeklyList, getWeekDates])
+      
+      return [...overlayed, ...additionalClosedTasks, ...dedupEphemeral]
+    }, [selectedTaskList, year, date, isWeeklyList, getWeekDates, selectedDate, datesToCheck])
 
     const doneNames = useMemo(() => mergedTasks.filter((t: any) => t.status === 'Done').map((t: any) => t.name), [mergedTasks])
     const [values, setValues] = useState<string[]>(doneNames)
@@ -314,7 +420,7 @@ const getIconColor = (status: TaskStatus): string => {
       if (!selectedTaskList) return
 
       try {
-        // Persist task status to API
+        // Persist task status to API (include date so task is copied to completedTasks)
         await fetch('/api/v1/tasklists', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -322,7 +428,8 @@ const getIconColor = (status: TaskStatus): string => {
             updateTaskStatus: true,
             taskListId: selectedTaskList.id,
             taskKey: key,
-            taskStatus: effectiveStatus
+            taskStatus: effectiveStatus,
+            date: date // Include current date so task is copied to completedTasks
           })
         })
 
@@ -926,7 +1033,9 @@ const getIconColor = (status: TaskStatus): string => {
 
     const handleDateChange = useCallback((date: Date | undefined) => {
       if (date) {
-        setSelectedDate(date)
+        // Normalize date to midnight in local timezone to avoid time component issues
+        const normalizedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+        setSelectedDate(normalizedDate)
       }
     }, [])
 
@@ -959,6 +1068,8 @@ const getIconColor = (status: TaskStatus): string => {
       )
     }
 
+
+
     if (!selectedTaskListId) return null
     return (
       <div className="space-y-4">
@@ -978,6 +1089,7 @@ const getIconColor = (status: TaskStatus): string => {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 align-center justify-center w-full m-auto"
           type="multiple"
           orientation="horizontal"
+          key={`list__selected--${selectedTaskListId}--${date}`}
         >
           {sortedMergedTasks.map((task: any) => {
             const isDone = (task?.status === 'Done') || values.includes(task?.name)

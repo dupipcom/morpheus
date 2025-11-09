@@ -160,6 +160,10 @@ export const SteadyTasks = () => {
     }))
     
     try {
+      // Get today's date in local timezone (YYYY-MM-DD format)
+      const today = new Date()
+      const dateISO = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+      
       await fetch('/api/v1/tasklists', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -167,7 +171,8 @@ export const SteadyTasks = () => {
           updateTaskStatus: true,
           taskListId: taskListId,
           taskKey: key,
-          taskStatus: newStatus
+          taskStatus: newStatus,
+          date: dateISO // Include date so task is copied to completedTasks
         })
       })
       
