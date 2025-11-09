@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { RefreshCw } from "lucide-react"
 import { useI18n } from '@/lib/contexts/i18n'
+import ActivityCard, { ActivityItem } from './ActivityCard'
 
 export interface Note {
   id: string
@@ -10,6 +11,10 @@ export interface Note {
   visibility: string
   createdAt: string
   date?: string
+  comments?: any[]
+  _count?: {
+    comments: number
+  }
 }
 
 interface NotesListProps {
@@ -100,20 +105,26 @@ export function NotesList({
           )}
         </div>
       )}
-      {notes.map((note) => (
-        <div key={note.id} className="border rounded-lg p-4 bg-muted/30">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs text-muted-foreground">
-              {getTimeAgo(new Date(note.createdAt))}
-              {note.date && ` • ${note.date}`}
-            </span>
-            <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
-              {note.visibility.toLowerCase().replace('_', ' ')}
-            </span>
-          </div>
-          <p className="text-sm whitespace-pre-wrap">{note.content}</p>
-        </div>
-      ))}
+      {notes.map((note) => {
+        const activityItem: ActivityItem = {
+          id: note.id,
+          type: 'note',
+          createdAt: note.createdAt,
+          content: note.content,
+          visibility: note.visibility,
+          date: note.date,
+          comments: note.comments,
+          _count: note._count
+        }
+        return (
+          <ActivityCard
+            key={note.id}
+            item={activityItem}
+            onCommentAdded={onRefresh}
+            getTimeAgo={getTimeAgo}
+          />
+        )
+      })}
     </div>
   )
 }

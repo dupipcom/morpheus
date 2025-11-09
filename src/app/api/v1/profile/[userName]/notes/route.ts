@@ -82,7 +82,12 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
         content: true,
         visibility: true,
         createdAt: true,
-        date: true
+        date: true,
+        _count: {
+          select: {
+            comments: true
+          }
+        }
       }
     })
 

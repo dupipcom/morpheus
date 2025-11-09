@@ -108,7 +108,12 @@ export async function GET(request: NextRequest) {
         visibility: true,
         createdAt: true,
         updatedAt: true,
-        owners: true
+        owners: true,
+        _count: {
+          select: {
+            comments: true
+          }
+        }
       }
     })
 

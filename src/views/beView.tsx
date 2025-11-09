@@ -6,7 +6,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
-import { User, UserMinus, Loader2, FileText } from "lucide-react"
+import { User, UserMinus, Loader2 } from "lucide-react"
+import ActivityCard, { ActivityItem } from "@/components/ActivityCard"
 import { OptionsButton, OptionsMenuItem } from "@/components/OptionsButton"
 import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
@@ -294,96 +295,31 @@ export const BeView = () => {
 
     return (
       <div className="mb-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
           {activityItems.map((item) => {
-            if (item.type === 'note') {
-              const note = item.data as PublicNote
-              const userName = getNoteUserName(note)
-              const profileUrl = userName ? `/profile/${userName}` : '#'
-              
-              return (
-                <Card key={item.id} className="hover:shadow-md transition-shadow">
-                  <CardContent className="pt-1">
-                    <div className="flex items-center gap-2 mb-3">
-                      <img
-                        src={getNoteUserProfilePicture(note)}
-                        alt="Profile"
-                        className="w-8 h-8 rounded-full object-cover"
-                        onError={(e) => {
-                          e.currentTarget.src = '/images/default-avatar.webp'
-                        }}
-                      />
-                      {userName ? (
-                        <Link 
-                          href={profileUrl}
-                          className="text-sm font-medium text-primary hover:underline"
-                        >
-                          @{userName}
-                        </Link>
-                      ) : (
-                        <span className="text-sm font-medium text-muted-foreground">
-                          @anonymous
-                        </span>
-                      )}
-                      <span className="text-xs text-muted-foreground ml-auto">
-                        {getTimeAgo(note.createdAt)}
-                      </span>
-                    </div>
-                    <p className="text-xs text-muted-foreground mb-2">
-                      {t('socialView.justSharedNote')}
-                    </p>
-                    <p className="text-sm whitespace-pre-wrap break-words">
-                      {note.content}
-                    </p>
-                  </CardContent>
-                </Card>
-              )
-            } else {
-              const template = item.data as PublicTemplate
-              const userName = getTemplateUserName(template)
-              const profileUrl = userName ? `/profile/${userName}` : '#'
-              
-              return (
-                <Card key={item.id} className="hover:shadow-md transition-shadow">
-                  <CardContent className="pt-1">
-                    <div className="flex items-center gap-2 mb-3">
-                      <img
-                        src={getTemplateUserProfilePicture(template)}
-                        alt="Profile"
-                        className="w-8 h-8 rounded-full object-cover"
-                        onError={(e) => {
-                          e.currentTarget.src = '/images/default-avatar.webp'
-                        }}
-                      />
-                      {userName ? (
-                        <Link 
-                          href={profileUrl}
-                          className="text-sm font-medium text-primary hover:underline"
-                        >
-                          @{userName}
-                        </Link>
-                      ) : (
-                        <span className="text-sm font-medium text-muted-foreground">
-                          @anonymous
-                        </span>
-                      )}
-                      <span className="text-xs text-muted-foreground ml-auto">
-                        {getTimeAgo(template.createdAt)}
-                      </span>
-                    </div>
-                    <p className="text-xs text-muted-foreground mb-2">
-                      {t('socialView.justSharedTemplate')}
-                    </p>
-                    <div className="flex items-center gap-2">
-                      <FileText className="w-4 h-4 text-muted-foreground" />
-                      <p className="text-sm font-medium">
-                        {template.name || template.role || 'Untitled Template'}
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-              )
+            const activityItem: ActivityItem = {
+              id: item.type === 'note' ? (item.data as PublicNote).id : (item.data as PublicTemplate).id,
+              type: item.type,
+              createdAt: item.createdAt,
+              content: item.type === 'note' ? (item.data as PublicNote).content : undefined,
+              name: item.type === 'template' ? (item.data as PublicTemplate).name || undefined : undefined,
+              role: item.type === 'template' ? (item.data as PublicTemplate).role || undefined : undefined,
+              visibility: item.type === 'note' ? (item.data as PublicNote).visibility : (item.data as PublicTemplate).visibility,
+              date: item.type === 'note' ? (item.data as PublicNote).date || undefined : undefined,
+              user: item.type === 'note' 
+                ? (item.data as PublicNote).user 
+                : (item.data as PublicTemplate).user || undefined,
+              _count: undefined // Will be fetched when needed
             }
+            
+            return (
+              <ActivityCard
+                key={item.id}
+                item={activityItem}
+                showUserInfo={true}
+                getTimeAgo={getTimeAgo}
+              />
+            )
           })}
         </div>
         {(hasMoreNotes || hasMoreTemplates) && (

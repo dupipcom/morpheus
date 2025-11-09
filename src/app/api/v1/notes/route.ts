@@ -14,7 +14,15 @@ export async function GET() {
     const user = await prisma.user.findUnique({
       where: { userId },
       include: { 
-        notes: true
+        notes: {
+          include: {
+            _count: {
+              select: {
+                comments: true
+              }
+            }
+          }
+        }
       }
     })
 

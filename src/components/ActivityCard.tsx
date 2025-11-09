@@ -1,0 +1,346 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { Button } from "@/components/ui/button"
+import { Textarea } from "@/components/ui/textarea"
+import { ChevronDown, ChevronUp, Send, Loader2, MessageSquare, FileText } from "lucide-react"
+import { useI18n } from '@/lib/contexts/i18n'
+import { useNotesRefresh } from "@/lib/contexts/notesRefresh"
+import Link from 'next/link'
+
+export interface Comment {
+  id: string
+  content: string
+  createdAt: string
+  user: {
+    id: string
+    profile?: {
+      userName?: string
+      profilePicture?: string
+      firstName?: string
+      lastName?: string
+    }
+  }
+}
+
+export interface ActivityItem {
+  id: string
+  type: 'note' | 'template' | string
+  createdAt: string
+  content?: string // For notes
+  name?: string // For templates
+  role?: string // For templates
+  visibility?: string
+  date?: string
+  user?: {
+    id: string
+    profile?: {
+      userName?: string
+      profilePicture?: string
+      firstName?: string
+      lastName?: string
+    } | null
+  }
+  comments?: Comment[]
+  _count?: {
+    comments: number
+  }
+}
+
+interface ActivityCardProps {
+  item: ActivityItem
+  onCommentAdded?: () => void
+  showUserInfo?: boolean
+  getTimeAgo: (date: Date) => string
+}
+
+function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo }: ActivityCardProps) {
+  const { t } = useI18n()
+  const { refreshAll } = useNotesRefresh()
+  const [comments, setComments] = useState<Comment[]>(item.comments || [])
+  const [commentCount, setCommentCount] = useState(item._count?.comments || item.comments?.length || 0)
+  const [isExpanded, setIsExpanded] = useState(false)
+  const [isLoadingComments, setIsLoadingComments] = useState(false)
+  const [newComment, setNewComment] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // Fetch comments when expanded (if we don't have them yet)
+  useEffect(() => {
+    if (isExpanded && comments.length === 0 && commentCount > 0) {
+      fetchComments()
+    }
+  }, [isExpanded, commentCount])
+
+  const fetchComments = async () => {
+    setIsLoadingComments(true)
+    try {
+      const response = await fetch(`/api/v1/comments?entityType=${item.type}&entityId=${item.id}`)
+      if (response.ok) {
+        const data = await response.json()
+        setComments(data.comments || [])
+        setCommentCount(data.comments?.length || 0)
+      }
+    } catch (error) {
+      console.error('Error fetching comments:', error)
+    } finally {
+      setIsLoadingComments(false)
+    }
+  }
+
+  const handleAddComment = async () => {
+    if (!newComment.trim() || isSubmitting) return
+
+    setIsSubmitting(true)
+    try {
+      const response = await fetch(`/api/v1/comments`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          content: newComment.trim(),
+          entityType: item.type,
+          entityId: item.id
+        }),
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setComments(prev => [data.comment, ...prev])
+        setCommentCount(prev => prev + 1)
+        setNewComment('')
+        if (onCommentAdded) {
+          onCommentAdded()
+        }
+        refreshAll()
+      }
+    } catch (error) {
+      console.error('Error adding comment:', error)
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  // Comments come from API in descending order (newest first)
+  // For collapsed view, show last 3 (newest 3, but display oldest first)
+  // For expanded view, show all (newest first)
+  const last3Comments = comments.slice(0, 3).reverse() // Show newest 3, but display oldest first
+  const hasMoreComments = commentCount > 3
+
+  const getUserName = () => {
+    if (item.user?.profile?.userName) {
+      return item.user.profile.userName
+    }
+    if (item.user?.profile?.firstName) {
+      return item.user.profile.firstName
+    }
+    return null
+  }
+
+  const getUserDisplayName = () => {
+    if (item.user?.profile) {
+      const { firstName, lastName, userName } = item.user.profile
+      const fullName = [firstName, lastName].filter(Boolean).join(' ')
+      return fullName || userName || 'Anonymous'
+    }
+    return 'Anonymous'
+  }
+
+  const getProfilePicture = () => {
+    return item.user?.profile?.profilePicture || '/images/default-avatar.webp'
+  }
+
+  const getProfileUrl = () => {
+    const userName = getUserName()
+    return userName ? `/profile/${userName}` : '#'
+  }
+
+  return (
+    <div className="border rounded-lg p-4 bg-muted/30 relative h-full flex flex-col">
+      {showUserInfo && item.user && (
+        <div className="flex items-center gap-2 mb-3">
+          <img
+            src={getProfilePicture()}
+            alt="Profile"
+            className="w-8 h-8 rounded-full object-cover"
+            onError={(e) => {
+              e.currentTarget.src = '/images/default-avatar.webp'
+            }}
+          />
+          {getUserName() ? (
+            <Link 
+              href={getProfileUrl()}
+              className="text-sm font-medium text-primary hover:underline"
+            >
+              @{getUserName()}
+            </Link>
+          ) : (
+            <span className="text-sm font-medium text-muted-foreground">
+              {getUserDisplayName()}
+            </span>
+          )}
+          <span className="text-xs text-muted-foreground ml-auto">
+            {getTimeAgo(new Date(item.createdAt))}
+          </span>
+        </div>
+      )}
+      
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-xs text-muted-foreground">
+          {!showUserInfo && getTimeAgo(new Date(item.createdAt))}
+          {item.date && ` • ${item.date}`}
+        </span>
+        {item.visibility && (
+          <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
+            {item.visibility.toLowerCase().replace('_', ' ')}
+          </span>
+        )}
+      </div>
+
+      {/* Content based on type */}
+      {item.type === 'note' && item.content && (
+        <p className="text-sm whitespace-pre-wrap mb-3">{item.content}</p>
+      )}
+      
+      {item.type === 'template' && (
+        <div className="mb-3">
+          <div className="flex items-center gap-2 mb-2">
+            <FileText className="w-4 h-4 text-muted-foreground" />
+            <p className="text-sm font-medium">
+              {item.name || item.role || 'Untitled Template'}
+            </p>
+          </div>
+          {item.content && (
+            <p className="text-xs text-muted-foreground">{item.content}</p>
+          )}
+        </div>
+      )}
+      
+      {/* Comment section - show if has comments or is expanded */}
+      {(commentCount > 0 || isExpanded) && (
+        <div className="mt-3 pt-3 border-t border-border/50 flex-1 flex flex-col">
+          {commentCount > 0 && (
+            <div className="flex items-center gap-1 text-xs text-muted-foreground mb-2">
+              <MessageSquare className="h-3 w-3" />
+              <span>{commentCount} {commentCount === 1 ? 'comment' : 'comments'}</span>
+            </div>
+          )}
+          
+          {/* Show last 3 comments when not expanded */}
+          {!isExpanded && last3Comments.length > 0 && (
+            <div className="space-y-2 mb-2">
+              {last3Comments.map((comment) => (
+                <div key={comment.id} className="text-xs text-muted-foreground bg-muted/50 rounded p-2">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="font-medium">
+                      {comment.user.profile?.userName 
+                        ? `@${comment.user.profile.userName}`
+                        : comment.user.profile?.firstName 
+                        ? comment.user.profile.firstName
+                        : 'Anonymous'}
+                    </span>
+                    <span className="text-[10px]">{getTimeAgo(new Date(comment.createdAt))}</span>
+                  </div>
+                  <p className="text-xs">{comment.content}</p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Show all comments when expanded */}
+          {isExpanded && (
+            <div className="space-y-2 mb-3 flex-1 min-h-0">
+              {isLoadingComments ? (
+                <div className="text-xs text-muted-foreground">Loading comments...</div>
+              ) : comments.length > 0 ? (
+                <div className="space-y-2 overflow-y-auto">
+                  {comments.map((comment) => (
+                    <div key={comment.id} className="text-xs text-muted-foreground bg-muted/50 rounded p-2">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-medium">
+                          {comment.user.profile?.userName 
+                            ? `@${comment.user.profile.userName}`
+                            : comment.user.profile?.firstName 
+                            ? comment.user.profile.firstName
+                            : 'Anonymous'}
+                        </span>
+                        <span className="text-[10px]">{getTimeAgo(new Date(comment.createdAt))}</span>
+                      </div>
+                      <p className="text-xs">{comment.content}</p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-xs text-muted-foreground">No comments yet</div>
+              )}
+            </div>
+          )}
+
+          {/* Expand button */}
+          <div className="flex justify-center mt-2">
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="bg-background/95 backdrop-blur-sm border border-border rounded-full p-2 shadow-lg hover:bg-background transition-colors z-10"
+              aria-label={isExpanded ? "Show less" : "Show more"}
+            >
+              {isExpanded ? (
+                <ChevronUp className="h-4 w-4 text-foreground" />
+              ) : (
+                <ChevronDown className="h-4 w-4 text-foreground" />
+              )}
+            </button>
+          </div>
+
+          {/* Condensed publish note field when expanded */}
+          {isExpanded && (
+            <div className="mt-3 pt-3 border-t border-border/50">
+              <div className="flex gap-2">
+                <Textarea
+                  className="flex-1 min-h-[60px] text-sm"
+                  placeholder="Add a comment..."
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+                      handleAddComment()
+                    }
+                  }}
+                />
+                <Button
+                  onClick={handleAddComment}
+                  disabled={!newComment.trim() || isSubmitting}
+                  size="sm"
+                  className="h-[60px] px-3"
+                >
+                  {isSubmitting ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Send className="h-4 w-4" />
+                  )}
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Show expand button when collapsed and no comments yet (to allow adding first comment) */}
+      {!isExpanded && commentCount === 0 && (
+        <div className="mt-3 pt-3 border-t border-border/50">
+          <div className="flex justify-center">
+            <button
+              onClick={() => setIsExpanded(true)}
+              className="bg-background/95 backdrop-blur-sm border border-border rounded-full p-2 shadow-lg hover:bg-background transition-colors z-10"
+              aria-label="Add comment"
+            >
+              <ChevronDown className="h-4 w-4 text-foreground" />
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+export default ActivityCard
+
