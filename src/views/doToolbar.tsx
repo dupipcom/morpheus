@@ -158,14 +158,17 @@ export const DoToolbar = ({
     return () => { cancelled = true }
   }, [])
 
-  // Fetch collaborator profiles for badges
+  // Fetch owner and collaborator profiles for badges
   useEffect(() => {
     let cancelled = false
     const run = async () => {
       try {
-        const ids: string[] = Array.isArray((selectedList as any)?.collaborators) ? (selectedList as any).collaborators : []
-        if (!ids.length) { setCollabProfiles({}); return }
-        const res = await fetch(`/api/v1/profiles/by-ids?ids=${encodeURIComponent(ids.join(','))}`)
+        const owners: string[] = Array.isArray((selectedList as any)?.owners) ? (selectedList as any).owners : []
+        const collaborators: string[] = Array.isArray((selectedList as any)?.collaborators) ? (selectedList as any).collaborators : []
+        const allIds = [...new Set([...owners, ...collaborators])]
+        
+        if (!allIds.length) { setCollabProfiles({}); return }
+        const res = await fetch(`/api/v1/profiles/by-ids?ids=${encodeURIComponent(allIds.join(','))}`)
         if (!cancelled && res.ok) {
           const data = await res.json()
           const map: Record<string, string> = {}
@@ -176,7 +179,7 @@ export const DoToolbar = ({
     }
     run()
     return () => { cancelled = true }
-  }, [selectedList?.id, JSON.stringify((selectedList as any)?.collaborators || [])])
+  }, [selectedList?.id, JSON.stringify((selectedList as any)?.owners || []), JSON.stringify((selectedList as any)?.collaborators || [])])
 
   const closeAll = () => { setShowAddTask(false); setShowAddList(false); setShowAddTemplate(false) }
 
@@ -308,12 +311,28 @@ export const DoToolbar = ({
               {(selectedList as any).dueDate}
             </Badge>
           )}
-          {Array.isArray((selectedList as any)?.collaborators) && (selectedList as any).collaborators.map((id: string) => (
-            <Badge key={`collab-${id}`} className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80">
-              <UserIcon className="h-3 w-3 mr-1" />
-              {collabProfiles[id] || id}
-            </Badge>
-          ))}
+          {/* Show owner badge when there are collaborators */}
+          {Array.isArray((selectedList as any)?.collaborators) && (selectedList as any).collaborators.length > 0 && Array.isArray((selectedList as any)?.owners) && (selectedList as any).owners.map((id: string) => {
+            const userName = collabProfiles[id] || id
+            const earnings = (selectedList as any)?.collaboratorEarnings?.[userName] || 0
+            return (
+              <Badge key={`owner-${id}`} variant="default" className="bg-primary text-primary-foreground hover:bg-primary/90">
+                <UserIcon className="h-3 w-3 mr-1" />
+                @{userName}{earnings > 0 ? `: $${earnings.toFixed(2)}` : ''}
+              </Badge>
+            )
+          })}
+          {/* Show collaborator badges */}
+          {Array.isArray((selectedList as any)?.collaborators) && (selectedList as any).collaborators.map((id: string) => {
+            const userName = collabProfiles[id] || id
+            const earnings = (selectedList as any)?.collaboratorEarnings?.[userName] || 0
+            return (
+              <Badge key={`collab-${id}`} className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80">
+                <UserIcon className="h-3 w-3 mr-1" />
+                @{userName}{earnings > 0 ? `: $${earnings.toFixed(2)}` : ''}
+              </Badge>
+            )
+          })}
         </div>
       )}
 

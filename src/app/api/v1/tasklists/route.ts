@@ -124,7 +124,86 @@ export async function GET(request: NextRequest) {
       }
     })
 
-    return NextResponse.json({ taskLists })
+    // Calculate collaborator earnings for each task list
+    const taskListsWithEarnings = await Promise.all(taskLists.map(async (taskList) => {
+      const collaboratorEarnings: Record<string, number> = {}
+      
+      // Only calculate if there are collaborators
+      if (Array.isArray(taskList.collaborators) && taskList.collaborators.length > 0) {
+        const completedTasks = (taskList.completedTasks as any) || {}
+        const allOwners = taskList.owners || []
+        const allCollaborators = [...allOwners, ...taskList.collaborators]
+        
+        // Get user profiles to map userId to userName
+        const userProfiles = await prisma.user.findMany({
+          where: {
+            id: { in: allCollaborators }
+          },
+          include: {
+            profile: true
+          }
+        })
+        
+        const userIdToUserName: Record<string, string> = {}
+        userProfiles.forEach(u => {
+          userIdToUserName[u.id] = u.profile?.userName || u.id
+        })
+        
+        // Calculate profit per task using earningsUtils formula
+        const listBudget = parseFloat(taskList.budget || '0')
+        const listRole = taskList.role
+        const isDaily = listRole?.startsWith('daily.')
+        const isWeekly = listRole?.startsWith('weekly.')
+        
+        // Get total number of tasks
+        const totalTasks = (taskList.tasks as any[])?.length || (taskList.templateTasks as any[])?.length || 1
+        
+        // Calculate profit per task based on cadence
+        let profitPerTask = 0
+        if (listBudget > 0 && totalTasks > 0) {
+          const actionProfit = listBudget / totalTasks
+          
+          if (isDaily) {
+            profitPerTask = actionProfit / 30 // Daily profit
+          } else if (isWeekly) {
+            profitPerTask = actionProfit / 4 // Weekly profit
+          } else {
+            profitPerTask = actionProfit // One-off profit
+          }
+        }
+        
+        // Iterate through all completed tasks to sum earnings per user
+        for (const year in completedTasks) {
+          const yearData = completedTasks[year]
+          for (const date in yearData) {
+            const tasksForDate = yearData[date]
+            if (Array.isArray(tasksForDate)) {
+              tasksForDate.forEach((task: any) => {
+                if (Array.isArray(task.completers)) {
+                  task.completers.forEach((completer: any) => {
+                    const userId = completer.id
+                    const userName = userIdToUserName[userId] || userId
+                    
+                    // Add profit for this completion
+                    if (!collaboratorEarnings[userName]) {
+                      collaboratorEarnings[userName] = 0
+                    }
+                    collaboratorEarnings[userName] += profitPerTask
+                  })
+                }
+              })
+            }
+          }
+        }
+      }
+      
+      return {
+        ...taskList,
+        collaboratorEarnings
+      }
+    }))
+
+    return NextResponse.json({ taskLists: taskListsWithEarnings })
 
   } catch (error) {
     console.error('Error fetching task lists:', error)

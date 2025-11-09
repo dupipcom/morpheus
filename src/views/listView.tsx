@@ -964,6 +964,26 @@ const getIconColor = (status: TaskStatus): string => {
             const completerName = lastCompleter 
               ? (collabProfiles[String(lastCompleter.id)] || String(lastCompleter.id))
               : (ownerId ? (collabProfiles[String(ownerId)] || String(ownerId)) : '')
+            
+            // Calculate earnings for THIS specific task completion
+            const listBudget = parseFloat((selectedTaskList as any)?.budget || '0')
+            const listRole = (selectedTaskList as any)?.role
+            const isDaily = listRole?.startsWith('daily.')
+            const isWeekly = listRole?.startsWith('weekly.')
+            const totalTasks = (selectedTaskList?.tasks as any[])?.length || (selectedTaskList?.templateTasks as any[])?.length || 1
+            
+            let taskEarnings = 0
+            if (listBudget > 0 && totalTasks > 0) {
+              const actionProfit = listBudget / totalTasks
+              
+              if (isDaily) {
+                taskEarnings = actionProfit / 30 // Daily profit per task
+              } else if (isWeekly) {
+                taskEarnings = actionProfit / 4 // Weekly profit per task
+              } else {
+                taskEarnings = actionProfit // One-off profit per task
+              }
+            }
 
             const key = task?.id || task?.localeKey || task?.name
             // Prioritize manually set status over automatic count-based status
@@ -1050,7 +1070,7 @@ const getIconColor = (status: TaskStatus): string => {
                     <div className="mt-1">
                       <Badge variant="secondary" className="bg-muted text-muted-foreground border-muted">
                         <UserIcon className="h-3 w-3 mr-1" />
-                        {completerName}
+                        @{completerName}{taskEarnings > 0 ? `: $${taskEarnings.toFixed(2)}` : ''}
                       </Badge>
                     </div>
                   )}
