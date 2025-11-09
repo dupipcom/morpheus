@@ -21,12 +21,13 @@ model User {
   entries       Json?
   settings      Settings?
   analysis      Json?
-  availableBalance  String?
+  availableBalance  Float?
   usedBudget    Float?    @default(0)  // Percentage of budget allocated to lists (0-100)
   remainingBudget Float?  @default(100) // Percentage of budget remaining (0-100)
-  stash         String?   @default("0")
-  equity        String?   @default("0")
-  totalEarnings String?   @default("0")
+  profit        Float?    @default(0)
+  stash         Float?    @default(0)
+  equity        Float?   @default(0)
+  totalEarnings Float?   @default(0)
   hint String?
   userId        String?   @unique
   lastLogin     DateTime?
@@ -218,7 +219,8 @@ type Task {
 
 type Completer {
   id String  @db.ObjectId
-  earnings String?
+  earnings Float?
+  prize Float?
   time Int
   completedAt DateTime
 }
@@ -288,7 +290,7 @@ model TaskList {
   visibility    Visibility @default(PRIVATE)
   role          String?   // e.g., "daily.default", "weekly.default", "custom"
   name          String?
-  budget        String?
+  budget        Float?
   budgetPercentage Float? @default(0) // Percentage of user's available budget allocated to this list (0-100)
   remainingBudget String? // Remaining budget after task completions
   dueDate       String?

@@ -57,10 +57,21 @@ export const AddListForm = ({
       const fullRole = initialList.role || 'one-off.custom'
       const [cadencePart, rolePart] = fullRole.includes('.') ? fullRole.split('.') : ['one-off', fullRole]
       
+      // Format budget to preserve decimal places (up to 2 decimal places)
+      let budgetValue = ''
+      if (initialList.budget != null) {
+        const budgetNum = typeof initialList.budget === 'number' ? initialList.budget : parseFloat(String(initialList.budget))
+        if (!isNaN(budgetNum)) {
+          // Check if the number has decimal places
+          const hasDecimals = budgetNum % 1 !== 0
+          budgetValue = hasDecimals ? budgetNum.toFixed(2) : String(budgetNum)
+        }
+      }
+      
       setForm({
         name: initialList.name || '',
         templateId: isEditing ? '' : (initialList.templateId ? `template:${initialList.templateId}` : ''),
-        budget: initialList.budget || '',
+        budget: budgetValue,
         budgetPercentage: initialList.budgetPercentage || 0,
         dueDate: initialList.dueDate || '',
         cadence: cadencePart || 'one-off',
@@ -181,6 +192,11 @@ export const AddListForm = ({
     const roleJoined = `${form.cadence}.${form.role}`
     let templateIdToLink: string | undefined
     if (!isEditing && form.templateId?.startsWith('template:')) templateIdToLink = form.templateId.split(':')[1]
+    // Parse budget as float, default to undefined if empty or invalid
+    const budgetValue = form.budget && form.budget.trim() !== '' 
+      ? parseFloat(form.budget) 
+      : undefined
+    
     await fetch('/api/v1/tasklists', {
       method: 'POST',
       body: JSON.stringify({
@@ -188,7 +204,7 @@ export const AddListForm = ({
         taskListId: isEditing && initialList?.id ? initialList.id : undefined,
         role: roleJoined,
         name: form.name || undefined,
-        budget: form.budget || undefined,
+        budget: budgetValue,
         budgetPercentage: form.budgetPercentage,
         dueDate: form.dueDate || undefined,
         templateId: templateIdToLink,
@@ -241,7 +257,20 @@ export const AddListForm = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div>
             <label className="text-sm font-medium">{t('forms.addListForm.budgetLabel') || 'Budget'}</label>
-            <input type="number" value={form.budget} onChange={(e) => setForm(prev => ({ ...prev, budget: e.target.value }))} className="w-full p-2 border rounded-md" />
+            <input 
+              type="text" 
+              inputMode="decimal"
+              pattern="[0-9]*\.?[0-9]*"
+              value={form.budget} 
+              onChange={(e) => {
+                const value = e.target.value
+                // Allow empty string, numbers, and decimal points
+                if (value === '' || /^\d*\.?\d*$/.test(value)) {
+                  setForm(prev => ({ ...prev, budget: value }))
+                }
+              }} 
+              className="w-full p-2 border rounded-md" 
+            />
           </div>
           <div>
             <label className="text-sm font-medium">{t('forms.addListForm.dueDateLabel') || 'Due date'}</label>

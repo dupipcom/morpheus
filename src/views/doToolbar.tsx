@@ -57,7 +57,10 @@ export const DoToolbar = ({
     (stableTaskLists.length > 0 ? stableTaskLists : (Array.isArray(contextTaskLists) ? contextTaskLists : [])) as TaskList[],
     [stableTaskLists, contextTaskLists]
   )
-  const selectedList = useMemo(() => allTaskLists.find((l:any) => l.id === selectedTaskListId), [allTaskLists, selectedTaskListId])
+  const selectedList = useMemo(() => {
+    const found = allTaskLists.find((l:any) => l.id === selectedTaskListId)
+    return found
+  }, [allTaskLists, selectedTaskListId])
 
   const [showAddTask, setShowAddTask] = useState(false)
   const [showAddList, setShowAddList] = useState(false)
@@ -78,8 +81,9 @@ export const DoToolbar = ({
       const user = (session as any).user
       const entries = user?.entries || {}
       const listRole = (selectedList as any)?.role
+      const listId = selectedList.id // Get listId for new structure
       
-      if (!listRole) {
+      if (!listRole || !listId) {
         setListEarnings({ profit: 0, prize: 0, earnings: 0 })
         return
       }
@@ -108,12 +112,19 @@ export const DoToolbar = ({
         }
       }
 
-      // Sum up earnings from entries
+      // Helper to convert to number (handles both string and number for backward compatibility)
+      const toNumber = (val: any): number => {
+        if (typeof val === 'number') return val
+        if (typeof val === 'string') return parseFloat(val) || 0
+        return 0
+      }
+
+      // Sum up earnings from entries using new structure with listId
       for (const year in entries) {
         const yearData = entries[year]
         
         if (isDaily && yearData?.days) {
-          // Sum daily earnings
+          // Sum daily earnings from new structure: days[date][listId]
           for (const date in yearData.days) {
             // If selectedDate is provided, only include that specific day
             if (targetDateISO && date !== targetDateISO) {
@@ -123,15 +134,24 @@ export const DoToolbar = ({
             if (targetYear && Number(year) !== targetYear) {
               continue
             }
-            const day = yearData.days[date]
-            if (day) {
-              totalProfit += parseFloat(day.profit || '0')
-              totalPrize += parseFloat(day.prize || '0')
-              totalEarnings += parseFloat(day.earnings || '0')
+            const dateEntry = yearData.days[date]
+            if (dateEntry) {
+              // Check new structure first: dateEntry[listId]
+              if (dateEntry[listId]) {
+                const listEntry = dateEntry[listId]
+                totalProfit += toNumber(listEntry.profit)
+                totalPrize += toNumber(listEntry.prize)
+                totalEarnings += toNumber(listEntry.earnings)
+              } else if (dateEntry.profit !== undefined || dateEntry.prize !== undefined || dateEntry.earnings !== undefined) {
+                // Backward compatibility: old structure (dateEntry directly)
+                totalProfit += toNumber(dateEntry.profit)
+                totalPrize += toNumber(dateEntry.prize)
+                totalEarnings += toNumber(dateEntry.earnings)
+              }
             }
           }
         } else if (isWeekly && yearData?.weeks) {
-          // Sum weekly earnings
+          // Sum weekly earnings from new structure: weeks[week][listId]
           for (const week in yearData.weeks) {
             // If selectedDate is provided, only include that specific week
             if (targetWeek !== null && Number(week) !== targetWeek) {
@@ -141,21 +161,40 @@ export const DoToolbar = ({
             if (targetYear && Number(year) !== targetYear) {
               continue
             }
-            const weekData = yearData.weeks[week]
-            if (weekData) {
-              totalProfit += parseFloat(weekData.profit || '0')
-              totalPrize += parseFloat(weekData.prize || '0')
-              totalEarnings += parseFloat(weekData.earnings || '0')
+            const weekEntry = yearData.weeks[week]
+            if (weekEntry) {
+              // Check new structure first: weekEntry[listId]
+              if (weekEntry[listId]) {
+                const listEntry = weekEntry[listId]
+                totalProfit += toNumber(listEntry.profit)
+                totalPrize += toNumber(listEntry.prize)
+                totalEarnings += toNumber(listEntry.earnings)
+              } else if (weekEntry.profit !== undefined || weekEntry.prize !== undefined || weekEntry.earnings !== undefined) {
+                // Backward compatibility: old structure (weekEntry directly)
+                totalProfit += toNumber(weekEntry.profit)
+                totalPrize += toNumber(weekEntry.prize)
+                totalEarnings += toNumber(weekEntry.earnings)
+              }
             }
           }
         } else if (isOneOff && yearData?.oneOffs) {
-          // Sum one-off earnings (always show total, not filtered by date)
+          // Sum one-off earnings from new structure: oneOffs[date][listId]
+          // Always show total, not filtered by date
           for (const date in yearData.oneOffs) {
-            const oneOff = yearData.oneOffs[date]
-            if (oneOff) {
-              totalProfit += parseFloat(oneOff.profit || '0')
-              totalPrize += parseFloat(oneOff.prize || '0')
-              totalEarnings += parseFloat(oneOff.earnings || '0')
+            const oneOffEntry = yearData.oneOffs[date]
+            if (oneOffEntry) {
+              // Check new structure first: oneOffEntry[listId]
+              if (oneOffEntry[listId]) {
+                const listEntry = oneOffEntry[listId]
+                totalProfit += toNumber(listEntry.profit)
+                totalPrize += toNumber(listEntry.prize)
+                totalEarnings += toNumber(listEntry.earnings)
+              } else if (oneOffEntry.profit !== undefined || oneOffEntry.prize !== undefined || oneOffEntry.earnings !== undefined) {
+                // Backward compatibility: old structure (oneOffEntry directly)
+                totalProfit += toNumber(oneOffEntry.profit)
+                totalPrize += toNumber(oneOffEntry.prize)
+                totalEarnings += toNumber(oneOffEntry.earnings)
+              }
             }
           }
         }
@@ -327,24 +366,28 @@ export const DoToolbar = ({
       {/* Badges row: budget, budgetPercentage, due date, collaborators, earnings */}
       {selectedList && (
         <div className="flex items-center gap-2 flex-wrap">
-          {(selectedList as any)?.budget && (
+          {/* Budget badge - show if budget is allocated (exists and > 0) */}
+          {(selectedList as any)?.budget && parseFloat(String((selectedList as any).budget || '0')) > 0 && (
             <Badge variant="secondary" className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80">
               <DollarSign className="h-3 w-3 mr-1" />
-              {(selectedList as any).budget}
+              Budget: ${parseFloat(String((selectedList as any).budget)).toFixed(2)}
             </Badge>
           )}
+          {/* Budget percentage badge - show if budgetPercentage is allocated */}
           {typeof (selectedList as any)?.budgetPercentage === 'number' && (selectedList as any).budgetPercentage > 0 && (
             <Badge variant="outline" className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80">
               {(selectedList as any).budgetPercentage.toFixed(0)}% of budget
             </Badge>
           )}
+          {/* Prize badge - show if budgetPercentage is allocated */}
           {shouldShowPrizeBadge && (
             <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 hover:bg-green-100">
               <Award className="h-3 w-3 mr-1" />
               Prize: ${listEarnings.prize.toFixed(2)}
             </Badge>
           )}
-          {(selectedList as any)?.budget && parseFloat((selectedList as any).budget || '0') > 0 && (
+          {/* Profit badge - show if there is a fixed budget */}
+          {(selectedList as any)?.budget && parseFloat(String((selectedList as any).budget || '0')) > 0 && (
             <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100">
               <TrendingUp className="h-3 w-3 mr-1" />
               Profit: ${listEarnings.profit.toFixed(2)}
@@ -396,7 +439,9 @@ export const DoToolbar = ({
           isEditing={isEditingList}
           initialList={isEditingList ? (selectedList as any) : undefined}
           onCancel={() => { setShowAddList(false); setIsEditingList(false) }}
-          onCreated={refreshTaskLists}
+          onCreated={async () => {
+            await refreshTaskLists()
+          }}
         />
       )}
 
