@@ -1,12 +1,13 @@
 'use client'
 
-import React, { useMemo, useState, useEffect, useContext, useCallback } from 'react'
+import React, { useMemo, useState, useEffect, useContext, useCallback, useRef } from 'react'
 
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { DoToolbar } from '@/views/doToolbar'
 import { Badge } from '@/components/ui/badge'
 import { User as UserIcon, Circle, Minus } from 'lucide-react'
 import { OptionsButton, OptionsMenuItem } from '@/components/OptionsButton'
+import { Skeleton } from '@/components/ui/skeleton'
 
 import { GlobalContext } from '@/lib/contexts'
 import { useI18n } from '@/lib/contexts/i18n'
@@ -59,11 +60,15 @@ const getIconColor = (status: TaskStatus): string => {
     const { t, locale } = useI18n()
     const { refreshUser } = useUserData()
 
+    // Track if initial load has been done
+    const initialLoadDone = useRef(false)
+
     // Maintain stable task lists that never clear once loaded
     const [stableTaskLists, setStableTaskLists] = useState<any[]>([])
     useEffect(() => {
       if (Array.isArray(contextTaskLists) && contextTaskLists.length > 0) {
         setStableTaskLists(contextTaskLists)
+        initialLoadDone.current = true
       }
     }, [contextTaskLists])
 
@@ -924,6 +929,35 @@ const getIconColor = (status: TaskStatus): string => {
         setSelectedDate(date)
       }
     }, [])
+
+    // Check if task lists are loading (only show skeleton on initial load, not on refreshes)
+    const isTaskListsLoading = !initialLoadDone.current && (contextTaskLists === null || contextTaskLists === undefined || (Array.isArray(contextTaskLists) && contextTaskLists.length === 0))
+    const isLoading = isTaskListsLoading || (!initialLoadDone.current && (!selectedTaskListId || !selectedTaskList))
+
+    if (isLoading) {
+      return (
+        <div className="space-y-4">
+          {/* Toolbar skeleton */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-4">
+            <Skeleton className="h-9 w-full sm:w-[260px]" />
+            <Skeleton className="h-9 w-full sm:w-[240px]" />
+            <Skeleton className="h-9 w-20" />
+          </div>
+          
+          {/* Tasks grid skeleton */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="flex flex-col items-center m-1">
+                <div className="relative w-full flex items-center gap-2">
+                  <Skeleton className="h-8 w-8 rounded-md" />
+                  <Skeleton className="h-10 flex-1 rounded-md" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+    }
 
     if (!selectedTaskListId) return null
     return (

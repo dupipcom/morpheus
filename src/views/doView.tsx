@@ -69,9 +69,7 @@ export const DoView = () => {
     <main className="min-h-[100vh]">
       <ViewMenu active="do">{null}</ViewMenu>
       <div className="container mx-auto px-4 py-6">
-
-              <ListView />
-
+        <ListView />
       </div>
     </main>
   )
