@@ -7,6 +7,9 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { OptionsButton, OptionsMenuItem } from '@/components/OptionsButton'
 import { Circle, Minus, ChevronDown, ChevronUp } from 'lucide-react'
 import { useI18n } from '@/lib/contexts/i18n'
+import { prepareIncrementActions, prepareDecrementActions, handleEphemeralTaskUpdate, updateUserEntriesForTasks, calculateTaskStatus } from '@/lib/taskUtils'
+import { useUserData } from '@/lib/userUtils'
+import { getWeekNumber } from '@/app/helpers'
 
 type TaskStatus = 'in progress' | 'steady' | 'ready' | 'open' | 'done' | 'ignored'
 
@@ -52,20 +55,24 @@ const getIconColor = (status: TaskStatus): string => {
 export const SteadyTasks = () => {
   const { taskLists: contextTaskLists, refreshTaskLists } = useContext(GlobalContext)
   const { t } = useI18n()
+  const { refreshUser } = useUserData()
   const [stableTaskLists, setStableTaskLists] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isExpanded, setIsExpanded] = useState(false)
   const [optimisticStatuses, setOptimisticStatuses] = useState<Record<string, TaskStatus>>({})
+  const [optimisticCounts, setOptimisticCounts] = useState<Record<string, number>>({})
   const initialFetchDone = useRef(false)
+  const initialLoadDone = useRef(false)
 
   // Maintain stable task lists that never clear once loaded
   useEffect(() => {
     if (Array.isArray(contextTaskLists) && contextTaskLists.length > 0) {
       setStableTaskLists(contextTaskLists)
       setIsLoading(false)
+      initialLoadDone.current = true
     } else if (contextTaskLists === null || contextTaskLists === undefined) {
-      // Still loading
-      setIsLoading(true)
+      // Still loading - only show skeleton on initial load
+      setIsLoading(!initialLoadDone.current)
     }
   }, [contextTaskLists])
 
@@ -105,14 +112,16 @@ export const SteadyTasks = () => {
       // Combine all tasks
       const tasks = [...baseTasks, ...ephemeralTasks].map((t: any) => {
         const taskKey = t?.id || t?.localeKey || t?.name
-        // Apply optimistic status if available
+        // Apply optimistic status and count if available
         const optimisticStatus = optimisticStatuses[taskKey]
+        const optimisticCount = optimisticCounts[taskKey]
         return {
           ...t,
           taskListName: taskList.name || taskList.role,
           taskListId: taskList.id,
           taskListRole: t.taskListRole || taskList.role || '',
-          taskStatus: optimisticStatus || t.taskStatus
+          taskStatus: optimisticStatus || t.taskStatus,
+          count: optimisticCount !== undefined ? optimisticCount : (t.count || 0)
         }
       })
       
@@ -139,7 +148,7 @@ export const SteadyTasks = () => {
       const priorityB = getRolePriority(b.taskListRole || '')
       return priorityA - priorityB
     })
-  }, [stableTaskLists, optimisticStatuses])
+  }, [stableTaskLists, optimisticStatuses, optimisticCounts])
 
   const handleStatusChange = useCallback(async (task: any, taskListId: string, newStatus: TaskStatus) => {
     const key = task?.id || task?.localeKey || task?.name
@@ -182,12 +191,233 @@ export const SteadyTasks = () => {
     }
   }, [refreshTaskLists])
   
-  const handleToggleClick = useCallback((task: any) => {
-    // When clicking the toggle item, mark as "done"
-    if (task.taskListId) {
-      handleStatusChange(task, task.taskListId, 'done')
+  const handleIncrementCount = useCallback(async (task: any) => {
+    if (!task.taskListId) return
+    
+    const taskKey = task?.id || task?.localeKey || task?.name
+    const currentCount = task.count || 0
+    const times = task.times || 1
+    const newCount = currentCount + 1
+    
+    // Optimistic update
+    setOptimisticCounts(prev => ({ ...prev, [taskKey]: newCount }))
+    const { taskStatus } = calculateTaskStatus(newCount, times, task.taskStatus as TaskStatus)
+    setOptimisticStatuses(prev => ({ ...prev, [taskKey]: taskStatus }))
+    
+    try {
+      // Find the task list
+      const taskList = stableTaskLists.find((tl: any) => tl.id === task.taskListId)
+      if (!taskList) return
+      
+      // Get all tasks from the task list
+      const baseTasks = (taskList?.tasks && taskList.tasks.length > 0)
+        ? taskList.tasks
+        : (taskList?.templateTasks || [])
+      const ephemerals = (taskList?.ephemeralTasks?.open || [])
+      const allTasks = [...baseTasks, ...ephemerals]
+      
+      // Prepare next actions
+      const nextActions = prepareIncrementActions(
+        allTasks,
+        task.name,
+        currentCount,
+        times,
+        task.taskStatus as TaskStatus
+      )
+      
+      // Get today's date
+      const today = new Date()
+      const date = today.toISOString().split('T')[0]
+      
+      // Persist to backend
+      await fetch('/api/v1/tasklists', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          recordCompletions: true,
+          taskListId: task.taskListId,
+          dayActions: nextActions,
+          date,
+          justCompletedNames: [task.name],
+          justUncompletedNames: []
+        })
+      })
+      
+      // Handle ephemeral tasks
+      const ephemeralTask = ephemerals.find((e: any) => e.name === task.name)
+      if (ephemeralTask) {
+        const updatedAction = nextActions.find((a: any) => a.name === task.name)
+        if (updatedAction) {
+          const closedEphemerals = (taskList?.ephemeralTasks?.closed || [])
+          const isInClosed = closedEphemerals.some((t: any) => t.id === ephemeralTask.id)
+          await handleEphemeralTaskUpdate(ephemeralTask, updatedAction, task.taskListId, isInClosed)
+        }
+      }
+      
+      // Update user entries only if fully completed (count >= times)
+      if (newCount >= times) {
+        const doneTasks = nextActions.filter((a: any) => a.status === 'Done')
+        if (doneTasks.length > 0) {
+          await updateUserEntriesForTasks(
+            doneTasks,
+            date,
+            taskList.role || '',
+            [task.name],
+            []
+          )
+        }
+      }
+      
+      await refreshTaskLists()
+      await refreshUser()
+      
+      // Clear optimistic updates
+      setOptimisticCounts(prev => {
+        const updated = { ...prev }
+        delete updated[taskKey]
+        return updated
+      })
+      setOptimisticStatuses(prev => {
+        const updated = { ...prev }
+        delete updated[taskKey]
+        return updated
+      })
+    } catch (error) {
+      console.error('Error incrementing count:', error)
+      // Revert optimistic updates
+      setOptimisticCounts(prev => {
+        const updated = { ...prev }
+        delete updated[taskKey]
+        return updated
+      })
+      setOptimisticStatuses(prev => {
+        const updated = { ...prev }
+        delete updated[taskKey]
+        return updated
+      })
     }
-  }, [handleStatusChange])
+  }, [stableTaskLists, refreshTaskLists, refreshUser])
+  
+  const handleDecrementCount = useCallback(async (task: any) => {
+    if (!task.taskListId) return
+    
+    const taskKey = task?.id || task?.localeKey || task?.name
+    const currentCount = task.count || 0
+    const times = task.times || 1
+    
+    // Can't decrement below 0
+    if (currentCount <= 0) return
+    
+    const newCount = currentCount - 1
+    
+    // Optimistic update
+    setOptimisticCounts(prev => ({ ...prev, [taskKey]: newCount }))
+    const { taskStatus } = calculateTaskStatus(newCount, times, task.taskStatus as TaskStatus)
+    setOptimisticStatuses(prev => ({ ...prev, [taskKey]: taskStatus }))
+    
+    try {
+      // Find the task list
+      const taskList = stableTaskLists.find((tl: any) => tl.id === task.taskListId)
+      if (!taskList) return
+      
+      // Get all tasks from the task list
+      const baseTasks = (taskList?.tasks && taskList.tasks.length > 0)
+        ? taskList.tasks
+        : (taskList?.templateTasks || [])
+      const ephemerals = (taskList?.ephemeralTasks?.open || [])
+      const allTasks = [...baseTasks, ...ephemerals]
+      
+      // Prepare next actions
+      const nextActions = prepareDecrementActions(
+        allTasks,
+        task.name,
+        currentCount,
+        times,
+        task.taskStatus as TaskStatus
+      )
+      
+      // Get today's date
+      const today = new Date()
+      const date = today.toISOString().split('T')[0]
+      
+      // Persist to backend
+      await fetch('/api/v1/tasklists', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          recordCompletions: true,
+          taskListId: task.taskListId,
+          dayActions: nextActions,
+          date,
+          justCompletedNames: [],
+          justUncompletedNames: []
+        })
+      })
+      
+      // Handle ephemeral tasks
+      const ephemeralTask = ephemerals.find((e: any) => e.name === task.name)
+      if (ephemeralTask) {
+        const updatedAction = nextActions.find((a: any) => a.name === task.name)
+        if (updatedAction) {
+          const closedEphemerals = (taskList?.ephemeralTasks?.closed || [])
+          const isInClosed = closedEphemerals.some((t: any) => t.id === ephemeralTask.id)
+          await handleEphemeralTaskUpdate(ephemeralTask, updatedAction, task.taskListId, isInClosed)
+        }
+      }
+      
+      // If task was fully completed and now isn't, remove from user entries
+      if (currentCount >= times && newCount < times) {
+        await updateUserEntriesForTasks(
+          [],
+          date,
+          taskList.role || '',
+          [],
+          [task.name]
+        )
+      }
+      
+      await refreshTaskLists()
+      await refreshUser()
+      
+      // Clear optimistic updates
+      setOptimisticCounts(prev => {
+        const updated = { ...prev }
+        delete updated[taskKey]
+        return updated
+      })
+      setOptimisticStatuses(prev => {
+        const updated = { ...prev }
+        delete updated[taskKey]
+        return updated
+      })
+    } catch (error) {
+      console.error('Error decrementing count:', error)
+      // Revert optimistic updates
+      setOptimisticCounts(prev => {
+        const updated = { ...prev }
+        delete updated[taskKey]
+        return updated
+      })
+      setOptimisticStatuses(prev => {
+        const updated = { ...prev }
+        delete updated[taskKey]
+        return updated
+      })
+    }
+  }, [stableTaskLists, refreshTaskLists, refreshUser])
+  
+  const handleToggleClick = useCallback((task: any) => {
+    // For tasks with times > 1, increment count instead of immediately marking as done
+    const times = task.times || 1
+    if (times > 1) {
+      handleIncrementCount(task)
+    } else {
+      // For tasks with times === 1, mark as done immediately
+      if (task.taskListId) {
+        handleStatusChange(task, task.taskListId, 'done')
+      }
+    }
+  }, [handleStatusChange, handleIncrementCount])
 
   if (isLoading) {
     return (
@@ -274,7 +504,7 @@ export const SteadyTasks = () => {
               ? [
                   {
                     label: 'Decrement count',
-                    onClick: () => {},
+                    onClick: () => handleDecrementCount(task),
                     icon: <Minus className="h-4 w-4" />,
                     separator: true,
                   },
