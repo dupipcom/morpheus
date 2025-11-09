@@ -499,19 +499,19 @@
     "earningsScale": "Κλίμακα Κερδών"
   },
   "socialView": {
-    "activity": "Activity",
-    "friends": "Friends",
-    "events": "Events",
-    "spaces": "Spaces",
-    "organizations": "Organizations",
-    "justSharedTemplate": "just shared a template",
-    "justSharedNote": "just shared a note",
-    "noFriendsYet": "No friends yet",
-    "startBuildingNetwork": "Start building your network by adding friends!",
-    "goToDashboard": "Go to Dashboard",
-    "viewProfile": "View Profile",
-    "unfriend": "Unfriend",
-    "loadMore": "Load More",
-    "noActivity": "No activity to show yet."
+    "activity": "Δραστηριότητα",
+    "friends": "Φίλοι",
+    "events": "Εκδηλώσεις",
+    "spaces": "Χώροι",
+    "organizations": "Οργανισμοί",
+    "justSharedTemplate": "μόλις μοιράστηκε ένα πρότυπο",
+    "justSharedNote": "μόλις μοιράστηκε μια σημείωση",
+    "noFriendsYet": "Δεν υπάρχουν ακόμα φίλοι",
+    "startBuildingNetwork": "Ξεκινήστε να χτίζετε το δίκτυό σας προσθέτοντας φίλους!",
+    "goToDashboard": "Μετάβαση στον Πίνακα Ελέγχου",
+    "viewProfile": "Προβολή Προφίλ",
+    "unfriend": "Αφαίρεση Φίλου",
+    "loadMore": "Φόρτωση Περισσότερων",
+    "noActivity": "Δεν υπάρχει ακόμα δραστηριότητα προς εμφάνιση."
   }
 }

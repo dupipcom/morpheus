@@ -502,19 +502,19 @@
     "earningsScale": "Verdiensten schaal"
   },
   "socialView": {
-    "activity": "Activity",
-    "friends": "Friends",
-    "events": "Events",
-    "spaces": "Spaces",
-    "organizations": "Organizations",
-    "justSharedTemplate": "just shared a template",
-    "justSharedNote": "just shared a note",
-    "noFriendsYet": "No friends yet",
-    "startBuildingNetwork": "Start building your network by adding friends!",
-    "goToDashboard": "Go to Dashboard",
-    "viewProfile": "View Profile",
-    "unfriend": "Unfriend",
-    "loadMore": "Load More",
-    "noActivity": "No activity to show yet."
+    "activity": "Activiteit",
+    "friends": "Vrienden",
+    "events": "Evenementen",
+    "spaces": "Ruimtes",
+    "organizations": "Organisaties",
+    "justSharedTemplate": "heeft zojuist een sjabloon gedeeld",
+    "justSharedNote": "heeft zojuist een notitie gedeeld",
+    "noFriendsYet": "Nog geen vrienden",
+    "startBuildingNetwork": "Begin je netwerk op te bouwen door vrienden toe te voegen!",
+    "goToDashboard": "Ga naar Dashboard",
+    "viewProfile": "Profiel Bekijken",
+    "unfriend": "Vriend Verwijderen",
+    "loadMore": "Meer Laden",
+    "noActivity": "Nog geen activiteit om te tonen."
   }
 }

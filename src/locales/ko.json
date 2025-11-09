@@ -502,19 +502,19 @@
     }
   },
   "socialView": {
-    "activity": "Activity",
-    "friends": "Friends",
-    "events": "Events",
-    "spaces": "Spaces",
-    "organizations": "Organizations",
-    "justSharedTemplate": "just shared a template",
-    "justSharedNote": "just shared a note",
-    "noFriendsYet": "No friends yet",
-    "startBuildingNetwork": "Start building your network by adding friends!",
-    "goToDashboard": "Go to Dashboard",
-    "viewProfile": "View Profile",
-    "unfriend": "Unfriend",
-    "loadMore": "Load More",
-    "noActivity": "No activity to show yet."
+    "activity": "활동",
+    "friends": "친구",
+    "events": "이벤트",
+    "spaces": "공간",
+    "organizations": "조직",
+    "justSharedTemplate": "가 템플릿을 공유했습니다",
+    "justSharedNote": "가 메모를 공유했습니다",
+    "noFriendsYet": "아직 친구가 없습니다",
+    "startBuildingNetwork": "친구를 추가하여 네트워크를 구축하세요!",
+    "goToDashboard": "대시보드로 이동",
+    "viewProfile": "프로필 보기",
+    "unfriend": "친구 삭제",
+    "loadMore": "더 보기",
+    "noActivity": "아직 표시할 활동이 없습니다."
   }
 }

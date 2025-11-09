@@ -506,19 +506,19 @@
     "earningsScale": "ਕਮਾਈ ਸਕੇਲ"
   },
   "socialView": {
-    "activity": "Activity",
-    "friends": "Friends",
-    "events": "Events",
-    "spaces": "Spaces",
-    "organizations": "Organizations",
-    "justSharedTemplate": "just shared a template",
-    "justSharedNote": "just shared a note",
-    "noFriendsYet": "No friends yet",
-    "startBuildingNetwork": "Start building your network by adding friends!",
-    "goToDashboard": "Go to Dashboard",
-    "viewProfile": "View Profile",
-    "unfriend": "Unfriend",
-    "loadMore": "Load More",
-    "noActivity": "No activity to show yet."
+    "activity": "ਸਰਗਰਮੀ",
+    "friends": "ਦੋਸਤ",
+    "events": "ਇਵੈਂਟ",
+    "spaces": "ਸਪੇਸ",
+    "organizations": "ਸੰਗਠਨ",
+    "justSharedTemplate": "ਨੇ ਹੁਣੇ ਇੱਕ ਟੈਂਪਲੇਟ ਸਾਂਝਾ ਕੀਤਾ",
+    "justSharedNote": "ਨੇ ਹੁਣੇ ਇੱਕ ਨੋਟ ਸਾਂਝਾ ਕੀਤਾ",
+    "noFriendsYet": "ਅਜੇ ਤੱਕ ਕੋਈ ਦੋਸਤ ਨਹੀਂ",
+    "startBuildingNetwork": "ਦੋਸਤਾਂ ਨੂੰ ਜੋੜ ਕੇ ਆਪਣਾ ਨੈੱਟਵਰਕ ਬਣਾਉਣਾ ਸ਼ੁਰੂ ਕਰੋ!",
+    "goToDashboard": "ਡੈਸ਼ਬੋਰਡ 'ਤੇ ਜਾਓ",
+    "viewProfile": "ਪ੍ਰੋਫਾਈਲ ਦੇਖੋ",
+    "unfriend": "ਦੋਸਤ ਹਟਾਓ",
+    "loadMore": "ਹੋਰ ਲੋਡ ਕਰੋ",
+    "noActivity": "ਅਜੇ ਤੱਕ ਦਿਖਾਉਣ ਲਈ ਕੋਈ ਸਰਗਰਮੀ ਨਹੀਂ ਹੈ।"
   }
 }

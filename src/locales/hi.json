@@ -502,19 +502,19 @@
     "earningsScale": "कमाई पैमाना"
   },
   "socialView": {
-    "activity": "Activity",
-    "friends": "Friends",
-    "events": "Events",
-    "spaces": "Spaces",
-    "organizations": "Organizations",
-    "justSharedTemplate": "just shared a template",
-    "justSharedNote": "just shared a note",
-    "noFriendsYet": "No friends yet",
-    "startBuildingNetwork": "Start building your network by adding friends!",
-    "goToDashboard": "Go to Dashboard",
-    "viewProfile": "View Profile",
-    "unfriend": "Unfriend",
-    "loadMore": "Load More",
-    "noActivity": "No activity to show yet."
+    "activity": "गतिविधि",
+    "friends": "मित्र",
+    "events": "घटनाएं",
+    "spaces": "स्पेस",
+    "organizations": "संगठन",
+    "justSharedTemplate": "ने अभी एक टेम्पलेट साझा किया",
+    "justSharedNote": "ने अभी एक नोट साझा किया",
+    "noFriendsYet": "अभी तक कोई मित्र नहीं",
+    "startBuildingNetwork": "मित्र जोड़कर अपना नेटवर्क बनाना शुरू करें!",
+    "goToDashboard": "डैशबोर्ड पर जाएं",
+    "viewProfile": "प्रोफ़ाइल देखें",
+    "unfriend": "मित्र हटाएं",
+    "loadMore": "और लोड करें",
+    "noActivity": "अभी तक दिखाने के लिए कोई गतिविधि नहीं है।"
   }
 }

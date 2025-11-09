@@ -502,19 +502,19 @@
     "earningsScale": "Scara câștigurilor"
   },
   "socialView": {
-    "activity": "Activity",
-    "friends": "Friends",
-    "events": "Events",
-    "spaces": "Spaces",
-    "organizations": "Organizations",
-    "justSharedTemplate": "just shared a template",
-    "justSharedNote": "just shared a note",
-    "noFriendsYet": "No friends yet",
-    "startBuildingNetwork": "Start building your network by adding friends!",
-    "goToDashboard": "Go to Dashboard",
-    "viewProfile": "View Profile",
-    "unfriend": "Unfriend",
-    "loadMore": "Load More",
-    "noActivity": "No activity to show yet."
+    "activity": "Activitate",
+    "friends": "Prieteni",
+    "events": "Evenimente",
+    "spaces": "Spații",
+    "organizations": "Organizații",
+    "justSharedTemplate": "tocmai a partajat un șablon",
+    "justSharedNote": "tocmai a partajat o notă",
+    "noFriendsYet": "Încă nu ai prieteni",
+    "startBuildingNetwork": "Începe să-ți construiești rețeaua adăugând prieteni!",
+    "goToDashboard": "Mergi la Panoul de Control",
+    "viewProfile": "Vezi Profilul",
+    "unfriend": "Elimină Prietenul",
+    "loadMore": "Încarcă Mai Mult",
+    "noActivity": "Încă nu există activitate de afișat."
   }
 }

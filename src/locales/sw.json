@@ -500,19 +500,19 @@
     }
   },
   "socialView": {
-    "activity": "Activity",
-    "friends": "Friends",
-    "events": "Events",
-    "spaces": "Spaces",
-    "organizations": "Organizations",
-    "justSharedTemplate": "just shared a template",
-    "justSharedNote": "just shared a note",
-    "noFriendsYet": "No friends yet",
-    "startBuildingNetwork": "Start building your network by adding friends!",
-    "goToDashboard": "Go to Dashboard",
-    "viewProfile": "View Profile",
-    "unfriend": "Unfriend",
-    "loadMore": "Load More",
-    "noActivity": "No activity to show yet."
+    "activity": "Shughuli",
+    "friends": "Marafiki",
+    "events": "Matukio",
+    "spaces": "Nafasi",
+    "organizations": "Mashirika",
+    "justSharedTemplate": "amegawanya kiolezo tu",
+    "justSharedNote": "amegawanya maelezo tu",
+    "noFriendsYet": "Hakuna marafiki bado",
+    "startBuildingNetwork": "Anza kujenga mtandao wako kwa kuongeza marafiki!",
+    "goToDashboard": "Nenda kwenye Dashibodi",
+    "viewProfile": "Angalia Wasifu",
+    "unfriend": "Ondoa Rafiki",
+    "loadMore": "Pakia Zaidi",
+    "noActivity": "Hakuna shughuli za kuonyesha bado."
   }
 }

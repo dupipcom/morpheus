@@ -502,19 +502,19 @@
     }
   },
   "socialView": {
-    "activity": "Activity",
-    "friends": "Friends",
-    "events": "Events",
-    "spaces": "Spaces",
-    "organizations": "Organizations",
-    "justSharedTemplate": "just shared a template",
-    "justSharedNote": "just shared a note",
-    "noFriendsYet": "No friends yet",
-    "startBuildingNetwork": "Start building your network by adding friends!",
-    "goToDashboard": "Go to Dashboard",
-    "viewProfile": "View Profile",
-    "unfriend": "Unfriend",
-    "loadMore": "Load More",
-    "noActivity": "No activity to show yet."
+    "activity": "アクティビティ",
+    "friends": "友達",
+    "events": "イベント",
+    "spaces": "スペース",
+    "organizations": "組織",
+    "justSharedTemplate": "がテンプレートを共有しました",
+    "justSharedNote": "がノートを共有しました",
+    "noFriendsYet": "まだ友達がいません",
+    "startBuildingNetwork": "友達を追加してネットワークを構築しましょう！",
+    "goToDashboard": "ダッシュボードに移動",
+    "viewProfile": "プロフィールを表示",
+    "unfriend": "友達を削除",
+    "loadMore": "さらに読み込む",
+    "noActivity": "表示するアクティビティがまだありません。"
   }
 }

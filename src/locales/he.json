@@ -502,19 +502,19 @@
     "earningsScale": "סולם רווחים"
   },
   "socialView": {
-    "activity": "Activity",
-    "friends": "Friends",
-    "events": "Events",
-    "spaces": "Spaces",
-    "organizations": "Organizations",
-    "justSharedTemplate": "just shared a template",
-    "justSharedNote": "just shared a note",
-    "noFriendsYet": "No friends yet",
-    "startBuildingNetwork": "Start building your network by adding friends!",
-    "goToDashboard": "Go to Dashboard",
-    "viewProfile": "View Profile",
-    "unfriend": "Unfriend",
-    "loadMore": "Load More",
-    "noActivity": "No activity to show yet."
+    "activity": "פעילות",
+    "friends": "חברים",
+    "events": "אירועים",
+    "spaces": "מרחבים",
+    "organizations": "ארגונים",
+    "justSharedTemplate": "שיתף זה עתה תבנית",
+    "justSharedNote": "שיתף זה עתה הערה",
+    "noFriendsYet": "אין עדיין חברים",
+    "startBuildingNetwork": "התחל לבנות את הרשת שלך על ידי הוספת חברים!",
+    "goToDashboard": "עבור ללוח הבקרה",
+    "viewProfile": "הצג פרופיל",
+    "unfriend": "הסר חבר",
+    "loadMore": "טען עוד",
+    "noActivity": "אין עדיין פעילות להצגה."
   }
 }

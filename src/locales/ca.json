@@ -502,19 +502,19 @@
     "createProfile": "Create Profile"
   },
   "socialView": {
-    "activity": "Activity",
-    "friends": "Friends",
-    "events": "Events",
-    "spaces": "Spaces",
-    "organizations": "Organizations",
-    "justSharedTemplate": "just shared a template",
-    "justSharedNote": "just shared a note",
-    "noFriendsYet": "No friends yet",
-    "startBuildingNetwork": "Start building your network by adding friends!",
-    "goToDashboard": "Go to Dashboard",
-    "viewProfile": "View Profile",
-    "unfriend": "Unfriend",
-    "loadMore": "Load More",
-    "noActivity": "No activity to show yet."
+    "activity": "Activitat",
+    "friends": "Amics",
+    "events": "Esdeveniments",
+    "spaces": "Espais",
+    "organizations": "Organitzacions",
+    "justSharedTemplate": "acaba de compartir una plantilla",
+    "justSharedNote": "acaba de compartir una nota",
+    "noFriendsYet": "Encara no tens amics",
+    "startBuildingNetwork": "Comença a construir la teva xarxa afegint amics!",
+    "goToDashboard": "Anar al Tauler",
+    "viewProfile": "Veure Perfil",
+    "unfriend": "Eliminar Amic",
+    "loadMore": "Carregar Més",
+    "noActivity": "Encara no hi ha activitat per mostrar."
   }
 }

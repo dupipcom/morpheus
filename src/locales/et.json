@@ -502,19 +502,19 @@
     "earningsScale": "Sissetulekute skaala"
   },
   "socialView": {
-    "activity": "Activity",
-    "friends": "Friends",
-    "events": "Events",
-    "spaces": "Spaces",
-    "organizations": "Organizations",
-    "justSharedTemplate": "just shared a template",
-    "justSharedNote": "just shared a note",
-    "noFriendsYet": "No friends yet",
-    "startBuildingNetwork": "Start building your network by adding friends!",
-    "goToDashboard": "Go to Dashboard",
-    "viewProfile": "View Profile",
-    "unfriend": "Unfriend",
-    "loadMore": "Load More",
-    "noActivity": "No activity to show yet."
+    "activity": "Tegevus",
+    "friends": "Sõbrad",
+    "events": "Sündmused",
+    "spaces": "Ruumid",
+    "organizations": "Organisatsioonid",
+    "justSharedTemplate": "jagas just malli",
+    "justSharedNote": "jagas just märkust",
+    "noFriendsYet": "Sõpru pole veel",
+    "startBuildingNetwork": "Alusta oma võrgu ehitamist sõprade lisamisega!",
+    "goToDashboard": "Mine Armatuurlauale",
+    "viewProfile": "Vaata Profiili",
+    "unfriend": "Eemalda Sõber",
+    "loadMore": "Laadi Rohkem",
+    "noActivity": "Näitamiseks pole veel tegevust."
   }
 }

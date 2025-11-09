@@ -502,19 +502,19 @@
     }
   },
   "socialView": {
-    "activity": "Activity",
-    "friends": "Friends",
-    "events": "Events",
-    "spaces": "Spaces",
-    "organizations": "Organizations",
-    "justSharedTemplate": "just shared a template",
-    "justSharedNote": "just shared a note",
-    "noFriendsYet": "No friends yet",
-    "startBuildingNetwork": "Start building your network by adding friends!",
-    "goToDashboard": "Go to Dashboard",
-    "viewProfile": "View Profile",
-    "unfriend": "Unfriend",
-    "loadMore": "Load More",
-    "noActivity": "No activity to show yet."
+    "activity": "Actividad",
+    "friends": "Amigos",
+    "events": "Eventos",
+    "spaces": "Espacios",
+    "organizations": "Organizaciones",
+    "justSharedTemplate": "acaba de compartir una plantilla",
+    "justSharedNote": "acaba de compartir una nota",
+    "noFriendsYet": "Aún no tienes amigos",
+    "startBuildingNetwork": "¡Comienza a construir tu red agregando amigos!",
+    "goToDashboard": "Ir al Panel",
+    "viewProfile": "Ver Perfil",
+    "unfriend": "Eliminar Amigo",
+    "loadMore": "Cargar Más",
+    "noActivity": "Aún no hay actividad para mostrar."
   }
 }

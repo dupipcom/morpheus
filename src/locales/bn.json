@@ -502,19 +502,19 @@
     "earningsScale": "আয়ের স্কেল"
   },
   "socialView": {
-    "activity": "Activity",
-    "friends": "Friends",
-    "events": "Events",
-    "spaces": "Spaces",
-    "organizations": "Organizations",
-    "justSharedTemplate": "just shared a template",
-    "justSharedNote": "just shared a note",
-    "noFriendsYet": "No friends yet",
-    "startBuildingNetwork": "Start building your network by adding friends!",
-    "goToDashboard": "Go to Dashboard",
-    "viewProfile": "View Profile",
-    "unfriend": "Unfriend",
-    "loadMore": "Load More",
-    "noActivity": "No activity to show yet."
+    "activity": "কার্যক্রম",
+    "friends": "বন্ধু",
+    "events": "ইভেন্ট",
+    "spaces": "স্পেস",
+    "organizations": "সংস্থা",
+    "justSharedTemplate": "এইমাত্র একটি টেমপ্লেট শেয়ার করেছে",
+    "justSharedNote": "এইমাত্র একটি নোট শেয়ার করেছে",
+    "noFriendsYet": "এখনও কোনও বন্ধু নেই",
+    "startBuildingNetwork": "বন্ধু যোগ করে আপনার নেটওয়ার্ক তৈরি করা শুরু করুন!",
+    "goToDashboard": "ড্যাশবোর্ডে যান",
+    "viewProfile": "প্রোফাইল দেখুন",
+    "unfriend": "বন্ধু সরান",
+    "loadMore": "আরও লোড করুন",
+    "noActivity": "এখনও দেখানোর জন্য কোনও কার্যক্রম নেই।"
   }
 }

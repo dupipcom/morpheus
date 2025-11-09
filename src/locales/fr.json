@@ -502,19 +502,19 @@
     }
   },
   "socialView": {
-    "activity": "Activity",
-    "friends": "Friends",
-    "events": "Events",
-    "spaces": "Spaces",
-    "organizations": "Organizations",
-    "justSharedTemplate": "just shared a template",
-    "justSharedNote": "just shared a note",
-    "noFriendsYet": "No friends yet",
-    "startBuildingNetwork": "Start building your network by adding friends!",
-    "goToDashboard": "Go to Dashboard",
-    "viewProfile": "View Profile",
-    "unfriend": "Unfriend",
-    "loadMore": "Load More",
-    "noActivity": "No activity to show yet."
+    "activity": "Activité",
+    "friends": "Amis",
+    "events": "Événements",
+    "spaces": "Espaces",
+    "organizations": "Organisations",
+    "justSharedTemplate": "vient de partager un modèle",
+    "justSharedNote": "vient de partager une note",
+    "noFriendsYet": "Pas encore d'amis",
+    "startBuildingNetwork": "Commencez à construire votre réseau en ajoutant des amis !",
+    "goToDashboard": "Aller au Tableau de Bord",
+    "viewProfile": "Voir le Profil",
+    "unfriend": "Retirer l'Ami",
+    "loadMore": "Charger Plus",
+    "noActivity": "Aucune activité à afficher pour le moment."
   }
 }
