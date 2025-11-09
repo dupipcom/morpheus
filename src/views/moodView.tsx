@@ -6,6 +6,8 @@ import { Slider } from "@/components/ui/slider"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import { NotesList, Note } from "@/components/NotesList"
 import { getWeekNumber } from "@/app/helpers"
 import {
   Carousel,
@@ -16,6 +18,7 @@ import {
 } from "@/components/ui/carousel"
 import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
+import { useNotesRefresh } from "@/lib/contexts/notesRefresh"
 import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil, handleMoodSubmit, isUserDataReady, useEnhancedLoadingState, useUserData } from "@/lib/userUtils"
 import { MoodViewSkeleton } from "@/components/ui/skeleton-loader"
 import { ContentLoadingWrapper } from '@/components/ContentLoadingWrapper'
@@ -28,6 +31,7 @@ import { Plus } from "lucide-react"
 export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
   const { session, setGlobalContext, theme } = useContext(GlobalContext)
   const { t, locale } = useI18n()
+  const { registerMutate, unregisterMutate } = useNotesRefresh()
   const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const today = new Date()
   const todayDate = today.toLocaleString('en-uk', { timeZone: userTimezone }).split(',')[0].split('/').reverse().join('-')
@@ -46,8 +50,6 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
   const [weekNumber, setWeekNumber] = useState(getWeekNumber(today)[1])
 
   const serverMood = useMemo(() => (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date] && session?.user?.entries[year].days[date].mood) || {}, [fullDay, JSON.stringify(session)])
-
-  const serverText = useMemo(() => (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date] && session?.user?.entries[year].days[date].text) || "", [fullDay, JSON.stringify(session)])
 
   const serverMoodContacts = useMemo(() => {
     const dayEntry = session?.user?.entries?.[year]?.days?.[date]
@@ -74,7 +76,7 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
   const [optimisticMoodContacts, setOptimisticMoodContacts] = useState<any[]>([])
   const [optimisticMoodThings, setOptimisticMoodThings] = useState<any[]>([])
   const [newLifeEventText, setNewLifeEventText] = useState('')
-  const [currentText, setCurrentText] = useState(serverText)
+  const [notes, setNotes] = useState<Note[]>([])
 
   // Initialize mood contacts from server data
   useEffect(() => {
@@ -110,9 +112,6 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
     setPendingMoodChanges({})
   }, [serverMood])
 
-    useEffect(() => {
-    setCurrentText(serverText)
-  }, [serverText])
 
 
 
@@ -158,6 +157,61 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
     }
   )
 
+  // Fetch notes for the selected date
+  const { data: notesData, mutate: mutateNotes, isLoading: notesLoading, error: notesError } = useSWR(
+    session?.user ? `/api/v1/notes` : null,
+    async () => {
+      try {
+        const response = await fetch('/api/v1/notes')
+        if (!response.ok) {
+          console.error('Failed to fetch notes:', response.status, response.statusText)
+          return { notes: [] }
+        }
+        const data = await response.json()
+        return data
+      } catch (error) {
+        console.error('Error fetching notes:', error)
+        return { notes: [] }
+      }
+    }
+  )
+
+  // Register the mutate function for notes refresh
+  useEffect(() => {
+    registerMutate('moodView-notes', mutateNotes)
+    return () => {
+      unregisterMutate('moodView-notes')
+    }
+  }, [mutateNotes, registerMutate, unregisterMutate])
+
+  // Update notes when date changes or notes data is loaded
+  useEffect(() => {
+    if (notesError) {
+      console.error('Notes fetch error:', notesError)
+      setNotes([])
+      return
+    }
+    
+    if (notesData?.notes) {
+      // Filter notes by the selected date (date format should match YYYY-MM-DD)
+      // Note: the date field in notes might be stored as a string in YYYY-MM-DD format
+      const filteredNotes = notesData.notes
+        .filter((note: Note) => {
+          // Handle both string and Date comparisons
+          const noteDate = note.date ? String(note.date).split('T')[0] : null
+          return noteDate === date
+        })
+        .sort((a: Note, b: Note) => {
+          // Sort by createdAt descending (newest first)
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        })
+      setNotes(filteredNotes)
+    } else if (notesData && !notesLoading) {
+      // If data is loaded but no notes array, set empty array
+      setNotes([])
+    }
+  }, [date, notesData, notesLoading, notesError])
+
   // Ensure contacts are loaded from SWR data
   useEffect(() => {
     if (contactsData?.contacts) {
@@ -197,7 +251,7 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
     setPendingMoodChanges({})
     
     // Send the aggregated mood data to the server
-    await handleMoodSubmit(null, 'mood', fullDay, moodContacts, moodThings, currentText, aggregatedMood, moodLifeEvents)
+    await handleMoodSubmit(null, 'mood', fullDay, moodContacts, moodThings, undefined, aggregatedMood, moodLifeEvents)
     // Don't call updateUser immediately to avoid clearing mood contacts/things/life events
     // The session will be updated naturally when the user navigates or refreshes
   }, 3000)
@@ -212,12 +266,6 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
     debouncedMoodUpdate()
   }
 
-  // Create debounced version of handleSubmit for text input
-  const debouncedHandleTextSubmit = useDebounce(async (value, field) => {
-    await handleMoodSubmit(value, field, fullDay, moodContacts, moodThings, undefined, mood, moodLifeEvents)
-    // Don't call updateUser immediately to avoid clearing mood contacts/things/life events
-    // The session will be updated naturally when the user navigates or refreshes
-  }, 3000)
 
   const handleSubmit = async (value, field) => {
     const updatedMood = {...mood, [field]: value}
@@ -358,186 +406,226 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
   return (
     <ContentLoadingWrapper>
       <div key={JSON.stringify(serverMood)} className="w-full m-auto p-4">
-      <div className="mb-12">
-        <h3 className="mt-0 mb-4">{t('charts.gratitude')}</h3>
-        <small>{insight?.gratitudeAnalysis}</small>
-      </div>
-      <Slider className="mb-24" defaultValue={[serverMood.gratitude || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("gratitude", e[0])} />
-      <div className="my-12">
-        <h3 className="mt-8 mb-4">{t('charts.optimism')}</h3>
-        <small>{insight?.optimismAnalysis}</small>
-      </div>
-      <Slider className="mb-24" defaultValue={[serverMood.optimism || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("optimism", e[0])} />
-      <div className="my-12">
-        <h3 className="mt-8 mb-4">{t('charts.restedness')}</h3>
-        <small>{insight?.restednessAnalysis}</small>
-      </div>
-      <Slider className="mb-24" defaultValue={[serverMood.restedness || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("restedness", e[0])} />
-      <div className="my-12">
-        <h3 className="mt-8 mb-4">{t('charts.tolerance')}</h3>
-        <small>{insight?.toleranceAnalysis}</small>
-      </div>
-      <Slider className="mb-24" defaultValue={[serverMood.tolerance || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("tolerance", e[0])} />
-      <div className="my-12">
-        <h3 className="mb-4">{t('charts.selfEsteem')}</h3>
-        <small>{insight?.selfEsteemAnalysis}</small>
-      </div>
-      <Slider className="mb-24" defaultValue={[serverMood.selfEsteem || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("selfEsteem", e[0])} />
-      <div className="my-12">
-        <h3 className="mt-8 mb-4">{t('charts.trust')}</h3>
-        <small>{insight?.trustAnalysis}</small>
-      </div>
-      <Slider className="mb-8" defaultValue={[serverMood?.trust || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("trust", e[0])} />
-      </div>
+        <Tabs defaultValue="mood" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger 
+              value="mood"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            >
+              {t('common.mood')}
+            </TabsTrigger>
+            <TabsTrigger 
+              value="notes"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            >
+              {t('publicProfile.notes')}
+            </TabsTrigger>
+            <TabsTrigger 
+              value="details"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            >
+              Details
+            </TabsTrigger>
+          </TabsList>
 
-      {/* Life Events Management for Mood */}
-      <div className="mb-8 p-4 border rounded-lg bg-transparent border-body">
-        <h3 className="text-lg font-semibold mb-4 text-body">{t('social.lifeEventsInfluencedMood')}</h3>
-        
-        {/* Simple textarea with submit button for adding life events */}
-        <LifeEventCombobox
-          lifeEvents={lifeEvents}
-          selectedLifeEvents={moodLifeEvents}
-          onLifeEventsChange={handleMoodLifeEventsChange}
-          onLifeEventsRefresh={() => {
-            // Trigger a refresh of the life events data
-            mutateLifeEvents()
-          }}
-        />
-        
-        {/* Impact Sliders for Selected Life Events */}
-        {moodLifeEvents.length > 0 && (
-          <div className="mt-6 space-y-4">
-            <h4 className="text-sm font-medium text-muted-foreground">{t('social.lifeEventsImpactRatings')}</h4>
-            {moodLifeEvents.map((lifeEvent) => (
-              <div key={lifeEvent.id} className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">{lifeEvent.name}</span>
-                  <span className="text-xs text-muted-foreground">{lifeEvent.impact || 3}/5</span>
-                </div>
-                <Slider
-                  value={[lifeEvent.impact || 3]}
-                  onValueChange={(value) => {
-                    const updatedLifeEvents = moodLifeEvents.map(le => 
-                      le.id === lifeEvent.id 
-                        ? { ...le, impact: value[0] }
-                        : le
-                    )
-                    setMoodLifeEvents(updatedLifeEvents)
-                    // Use debounced handler to save to database
-                    debouncedHandleMoodLifeEventsChange(updatedLifeEvents)
-                  }}
-                  max={5}
-                  min={0}
-                  step={0.5}
-                  className="w-full"
-                />
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+          {/* Mood Tab */}
+          <TabsContent value="mood" className="mt-4">
+            <div className="mb-12">
+              <h3 className="mt-0 mb-4">{t('charts.gratitude')}</h3>
+              <small>{insight?.gratitudeAnalysis}</small>
+            </div>
+            <Slider className="mb-24" defaultValue={[serverMood.gratitude || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("gratitude", e[0])} />
+            <div className="my-12">
+              <h3 className="mt-8 mb-4">{t('charts.optimism')}</h3>
+              <small>{insight?.optimismAnalysis}</small>
+            </div>
+            <Slider className="mb-24" defaultValue={[serverMood.optimism || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("optimism", e[0])} />
+            <div className="my-12">
+              <h3 className="mt-8 mb-4">{t('charts.restedness')}</h3>
+              <small>{insight?.restednessAnalysis}</small>
+            </div>
+            <Slider className="mb-24" defaultValue={[serverMood.restedness || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("restedness", e[0])} />
+            <div className="my-12">
+              <h3 className="mt-8 mb-4">{t('charts.tolerance')}</h3>
+              <small>{insight?.toleranceAnalysis}</small>
+            </div>
+            <Slider className="mb-24" defaultValue={[serverMood.tolerance || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("tolerance", e[0])} />
+            <div className="my-12">
+              <h3 className="mb-4">{t('charts.selfEsteem')}</h3>
+              <small>{insight?.selfEsteemAnalysis}</small>
+            </div>
+            <Slider className="mb-24" defaultValue={[serverMood.selfEsteem || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("selfEsteem", e[0])} />
+            <div className="my-12">
+              <h3 className="mt-8 mb-4">{t('charts.trust')}</h3>
+              <small>{insight?.trustAnalysis}</small>
+            </div>
+            <Slider className="mb-8" defaultValue={[serverMood?.trust || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("trust", e[0])} />
+          </TabsContent>
 
-      {/* People Management for Mood */}
-      <div className="mb-8 p-4 border rounded-lg">
-        <h3 className="text-lg font-semibold mb-4">{t('social.peopleInfluencedMood')}</h3>
-        {!contactsLoading && (
-          <ContactCombobox
-            contacts={contacts}
-            selectedContacts={moodContacts}
-            onContactsChange={handleMoodContactsChange}
-            onContactsRefresh={() => {
-              // Trigger a refresh of the contacts data
-              mutateContacts()
-            }}
-          />
-        )}
-        
-        {/* Interaction Quality Sliders for Selected Contacts */}
-        {optimisticMoodContacts.length > 0 && (
-          <div className="mt-6 space-y-4">
-            <h4 className="text-sm font-medium text-muted-foreground">{t('social.interactionQualityRatings')}</h4>
-            {optimisticMoodContacts.map((contact) => (
-              <div key={contact.id} className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">{contact.name}</span>
-                  <span className="text-xs text-muted-foreground">{contact.interactionQuality || 3}/5</span>
-                </div>
-                <Slider
-                  value={[contact.interactionQuality || 3]}
-                  onValueChange={(value) => {
-                    const updatedContacts = optimisticMoodContacts.map(c => 
-                      c.id === contact.id 
-                        ? { ...c, interactionQuality: value[0] }
-                        : c
-                    )
-                    // Optimistic update for immediate UI response
-                    setOptimisticMoodContacts(updatedContacts)
-                    // Also update the server state
-                    setMoodContacts(updatedContacts)
-                    // Use debounced handler to save to database
-                    debouncedHandleMoodContactsChange(updatedContacts)
-                  }}
-                  max={5}
-                  min={0}
-                  step={0.5}
-                  className="w-full"
-                />
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+          {/* Notes Tab */}
+          <TabsContent value="notes" className="mt-4">
+            <NotesList
+              notes={notes}
+              loading={notesLoading}
+              onRefresh={() => mutateNotes()}
+              showHeader={false}
+              emptyMessage="No notes for this date."
+            />
+          </TabsContent>
 
-      {/* Things Management for Mood */}
-      <div className="mb-8 p-4 border rounded-lg bg-transparent border-body">
-        <h3 className="text-lg font-semibold mb-4 text-body">{t('social.thingsInfluencedMood')}</h3>
-        {!thingsLoading && (
-          <ThingCombobox
-            things={things}
-            selectedThings={moodThings}
-            onThingsChange={handleMoodThingsChange}
-            onThingsRefresh={() => {
-              // Trigger a refresh of the things data
-              mutateThings()
-            }}
-          />
-        )}
-        
-        {/* Interaction Quality Sliders for Selected Things */}
-        {optimisticMoodThings.length > 0 && (
-          <div className="mt-6 space-y-4">
-            <h4 className="text-sm font-medium text-muted-foreground">{t('social.thingsInteractionQualityRatings')}</h4>
-            {optimisticMoodThings.map((thing) => (
-              <div key={thing.id} className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">{thing.name}</span>
-                  <span className="text-xs text-muted-foreground">{thing.interactionQuality || 3}/5</span>
+          {/* Details Tab */}
+          <TabsContent value="details" className="mt-4">
+            {/* Life Events Management for Mood */}
+            <div className="mb-8 p-4 border rounded-lg bg-transparent border-body">
+              <h3 className="text-lg font-semibold mb-4 text-body">{t('social.lifeEventsInfluencedMood')}</h3>
+              
+              {/* Simple textarea with submit button for adding life events */}
+              <LifeEventCombobox
+                lifeEvents={lifeEvents}
+                selectedLifeEvents={moodLifeEvents}
+                onLifeEventsChange={handleMoodLifeEventsChange}
+                onLifeEventsRefresh={() => {
+                  // Trigger a refresh of the life events data
+                  mutateLifeEvents()
+                }}
+              />
+              
+              {/* Impact Sliders for Selected Life Events */}
+              {moodLifeEvents.length > 0 && (
+                <div className="mt-6 space-y-4">
+                  <h4 className="text-sm font-medium text-muted-foreground">{t('social.lifeEventsImpactRatings')}</h4>
+                  {moodLifeEvents.map((lifeEvent) => (
+                    <div key={lifeEvent.id} className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">{lifeEvent.name}</span>
+                        <span className="text-xs text-muted-foreground">{lifeEvent.impact || 3}/5</span>
+                      </div>
+                      <Slider
+                        value={[lifeEvent.impact || 3]}
+                        onValueChange={(value) => {
+                          const updatedLifeEvents = moodLifeEvents.map(le => 
+                            le.id === lifeEvent.id 
+                              ? { ...le, impact: value[0] }
+                              : le
+                          )
+                          setMoodLifeEvents(updatedLifeEvents)
+                          // Use debounced handler to save to database
+                          debouncedHandleMoodLifeEventsChange(updatedLifeEvents)
+                        }}
+                        max={5}
+                        min={0}
+                        step={0.5}
+                        className="w-full"
+                      />
+                    </div>
+                  ))}
                 </div>
-                <Slider
-                  value={[thing.interactionQuality || 3]}
-                  onValueChange={(value) => {
-                    const updatedThings = optimisticMoodThings.map(t => 
-                      t.id === thing.id 
-                        ? { ...t, interactionQuality: value[0] }
-                        : t
-                    )
-                    // Optimistic update for immediate UI response
-                    setOptimisticMoodThings(updatedThings)
-                    // Also update the server state
-                    setMoodThings(updatedThings)
-                    // Use debounced handler to save to database
-                    debouncedHandleMoodThingsChange(updatedThings)
+              )}
+            </div>
+
+            {/* People Management for Mood */}
+            <div className="mb-8 p-4 border rounded-lg">
+              <h3 className="text-lg font-semibold mb-4">{t('social.peopleInfluencedMood')}</h3>
+              {!contactsLoading && (
+                <ContactCombobox
+                  contacts={contacts}
+                  selectedContacts={moodContacts}
+                  onContactsChange={handleMoodContactsChange}
+                  onContactsRefresh={() => {
+                    // Trigger a refresh of the contacts data
+                    mutateContacts()
                   }}
-                  max={5}
-                  min={0}
-                  step={0.5}
-                  className="w-full"
                 />
-              </div>
-            ))}
-          </div>
-        )}
+              )}
+              
+              {/* Interaction Quality Sliders for Selected Contacts */}
+              {optimisticMoodContacts.length > 0 && (
+                <div className="mt-6 space-y-4">
+                  <h4 className="text-sm font-medium text-muted-foreground">{t('social.interactionQualityRatings')}</h4>
+                  {optimisticMoodContacts.map((contact) => (
+                    <div key={contact.id} className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">{contact.name}</span>
+                        <span className="text-xs text-muted-foreground">{contact.interactionQuality || 3}/5</span>
+                      </div>
+                      <Slider
+                        value={[contact.interactionQuality || 3]}
+                        onValueChange={(value) => {
+                          const updatedContacts = optimisticMoodContacts.map(c => 
+                            c.id === contact.id 
+                              ? { ...c, interactionQuality: value[0] }
+                              : c
+                          )
+                          // Optimistic update for immediate UI response
+                          setOptimisticMoodContacts(updatedContacts)
+                          // Also update the server state
+                          setMoodContacts(updatedContacts)
+                          // Use debounced handler to save to database
+                          debouncedHandleMoodContactsChange(updatedContacts)
+                        }}
+                        max={5}
+                        min={0}
+                        step={0.5}
+                        className="w-full"
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Things Management for Mood */}
+            <div className="mb-8 p-4 border rounded-lg bg-transparent border-body">
+              <h3 className="text-lg font-semibold mb-4 text-body">{t('social.thingsInfluencedMood')}</h3>
+              {!thingsLoading && (
+                <ThingCombobox
+                  things={things}
+                  selectedThings={moodThings}
+                  onThingsChange={handleMoodThingsChange}
+                  onThingsRefresh={() => {
+                    // Trigger a refresh of the things data
+                    mutateThings()
+                  }}
+                />
+              )}
+              
+              {/* Interaction Quality Sliders for Selected Things */}
+              {optimisticMoodThings.length > 0 && (
+                <div className="mt-6 space-y-4">
+                  <h4 className="text-sm font-medium text-muted-foreground">{t('social.thingsInteractionQualityRatings')}</h4>
+                  {optimisticMoodThings.map((thing) => (
+                    <div key={thing.id} className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">{thing.name}</span>
+                        <span className="text-xs text-muted-foreground">{thing.interactionQuality || 3}/5</span>
+                      </div>
+                      <Slider
+                        value={[thing.interactionQuality || 3]}
+                        onValueChange={(value) => {
+                          const updatedThings = optimisticMoodThings.map(t => 
+                            t.id === thing.id 
+                              ? { ...t, interactionQuality: value[0] }
+                              : t
+                          )
+                          // Optimistic update for immediate UI response
+                          setOptimisticMoodThings(updatedThings)
+                          // Also update the server state
+                          setMoodThings(updatedThings)
+                          // Use debounced handler to save to database
+                          debouncedHandleMoodThingsChange(updatedThings)
+                        }}
+                        max={5}
+                        min={0}
+                        step={0.5}
+                        className="w-full"
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </ContentLoadingWrapper>
   )

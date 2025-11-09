@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useContext } from 'react'
 import { Button } from '@/components/ui/button'
-import { Heart, CheckSquare, Users } from 'lucide-react'
+import { Heart, CheckSquare, Users, Coins } from 'lucide-react'
 import { GlobalContext } from '@/lib/contexts'
 
 export function BottomNav() {
@@ -55,6 +55,15 @@ export function BottomNav() {
             className="w-full h-14 flex items-center justify-center"
           >
             <Users className="w-6 h-6" />
+          </Button>
+        </Link>
+        
+        <Link href="/app/invest" className="flex-1">
+          <Button
+            variant={isActive('/app/invest') ? 'default' : 'outline'}
+            className="w-full h-14 flex items-center justify-center"
+          >
+            <Coins className="w-6 h-6" />
           </Button>
         </Link>
       </div>

@@ -88,7 +88,7 @@ export function FriendRequestsButton() {
   }
 
   const getProfilePicture = (request: FriendRequest) => {
-    return request.profile?.profilePicture || '/images/default-avatar.png'
+    return request.profile?.profilePicture || '/images/default-avatar.webp'
   }
 
   return (
@@ -126,7 +126,7 @@ export function FriendRequestsButton() {
                     alt="Profile"
                     className="w-8 h-8 rounded-full object-cover"
                     onError={(e) => {
-                      e.currentTarget.src = '/images/default-avatar.png'
+                      e.currentTarget.src = '/images/default-avatar.webp'
                     }}
                   />
                   <div className="flex-1 min-w-0">

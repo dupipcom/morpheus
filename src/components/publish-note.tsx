@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { useI18n } from "@/lib/contexts/i18n"
+import { useNotesRefresh } from "@/lib/contexts/notesRefresh"
 import { Send, Loader2 } from "lucide-react"
 import { VisibilitySelect } from "@/components/VisibilitySelect"
 
@@ -16,6 +17,7 @@ interface PublishNoteProps {
 
 export const PublishNote = ({ onNotePublished, date, defaultVisibility = 'AI_ENABLED' }: PublishNoteProps) => {
   const { t } = useI18n()
+  const { refreshAll } = useNotesRefresh()
   const [noteContent, setNoteContent] = useState('')
   const [noteVisibility, setNoteVisibility] = useState(defaultVisibility)
   const [isPublishing, setIsPublishing] = useState(false)
@@ -45,6 +47,8 @@ export const PublishNote = ({ onNotePublished, date, defaultVisibility = 'AI_ENA
       if (response.ok) {
         // Clear the note content after successful publish
         setNoteContent('')
+        // Refresh all registered note lists
+        refreshAll()
         if (onNotePublished) {
           onNotePublished()
         }

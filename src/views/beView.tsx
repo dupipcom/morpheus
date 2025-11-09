@@ -158,7 +158,7 @@ export const BeView = () => {
   }
 
   const getProfilePicture = (friend: Friend) => {
-    return friend.profile?.profilePicture || '/images/default-avatar.png'
+    return friend.profile?.profilePicture || '/images/default-avatar.webp'
   }
 
   const getProfileUrl = (friend: Friend) => {
@@ -239,7 +239,7 @@ export const BeView = () => {
   }
 
   const getNoteUserProfilePicture = (note: PublicNote) => {
-    return note.user.profile?.profilePicture || '/images/default-avatar.png'
+    return note.user.profile?.profilePicture || '/images/default-avatar.webp'
   }
 
   const getNoteUserName = (note: PublicNote) => {
@@ -251,7 +251,7 @@ export const BeView = () => {
   }
 
   const getTemplateUserProfilePicture = (template: PublicTemplate) => {
-    return template.user?.profile?.profilePicture || '/images/default-avatar.png'
+    return template.user?.profile?.profilePicture || '/images/default-avatar.webp'
   }
 
   const getTemplateUserDisplayName = (template: PublicTemplate) => {
@@ -310,7 +310,7 @@ export const BeView = () => {
                         alt="Profile"
                         className="w-8 h-8 rounded-full object-cover"
                         onError={(e) => {
-                          e.currentTarget.src = '/images/default-avatar.png'
+                          e.currentTarget.src = '/images/default-avatar.webp'
                         }}
                       />
                       {userName ? (
@@ -352,7 +352,7 @@ export const BeView = () => {
                         alt="Profile"
                         className="w-8 h-8 rounded-full object-cover"
                         onError={(e) => {
-                          e.currentTarget.src = '/images/default-avatar.png'
+                          e.currentTarget.src = '/images/default-avatar.webp'
                         }}
                       />
                       {userName ? (
@@ -466,7 +466,7 @@ export const BeView = () => {
                 alt="Profile"
                 className="w-6 h-6 rounded-full object-cover shrink-0"
                 onError={(e) => {
-                  e.currentTarget.src = '/images/default-avatar.png'
+                  e.currentTarget.src = '/images/default-avatar.webp'
                 }}
               />
               {userName ? (

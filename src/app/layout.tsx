@@ -5,6 +5,7 @@ import { shadcn } from '@clerk/themes'
 
 import { GlobalContext } from "@/lib/contexts"
 import { I18nProvider } from "@/lib/contexts/i18n"
+import { NotesRefreshProvider } from "@/lib/contexts/notesRefresh"
 
 
 import { Comfortaa } from "next/font/google"
@@ -137,23 +138,24 @@ export default function RootLayout({
           <AuthWrapper isLoading={isLoading}>
             <I18nProvider locale={locale}>
               <GlobalContext.Provider value={{ ...globalContext, setGlobalContext, refreshTaskLists }}>
-
-                <SWRConfig value={{
-                  revalidateOnFocus: false,
-                  revalidateOnReconnect: false,
-                  shouldRetryOnError: false,
-                  dedupingInterval: 15000,
-                }}>
-                  <article className="">
-                    <div className="pb-[80px]">
-                      <Nav subHeader="" onThemeChange={handleThemeChange} />
-                      <AppContent>{children}</AppContent>
-                      <Footer />
-                    </div>
-                  </article>
-                  <BottomNav />
-                </SWRConfig>
-                <AuthToast />
+                <NotesRefreshProvider>
+                  <SWRConfig value={{
+                    revalidateOnFocus: false,
+                    revalidateOnReconnect: false,
+                    shouldRetryOnError: false,
+                    dedupingInterval: 15000,
+                  }}>
+                    <article className="">
+                      <div className="pb-[80px]">
+                        <Nav subHeader="" onThemeChange={handleThemeChange} />
+                        <AppContent>{children}</AppContent>
+                        <Footer />
+                      </div>
+                    </article>
+                    <BottomNav />
+                  </SWRConfig>
+                  <AuthToast />
+                </NotesRefreshProvider>
               </GlobalContext.Provider>
             </I18nProvider>
           </AuthWrapper>
