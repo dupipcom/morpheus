@@ -1,10 +1,12 @@
 'use client'
 
 import { useMemo, useContext, useEffect, useState, useCallback, useRef } from 'react'
+import Link from 'next/link'
 import { GlobalContext } from '@/lib/contexts'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { OptionsButton, OptionsMenuItem } from '@/components/OptionsButton'
+import { Button } from '@/components/ui/button'
 import { Circle, Minus } from 'lucide-react'
 import { useI18n } from '@/lib/contexts/i18n'
 
@@ -92,22 +94,44 @@ export const SteadyTasks = () => {
         : (taskList?.templateTasks || [])
       
       // Get ephemeral tasks
-      const ephemeralTasks = (taskList?.ephemeralTasks?.open || []).map((t: any) => ({ ...t, isEphemeral: true, taskListName: taskList.name || taskList.role }))
+      const ephemeralTasks = (taskList?.ephemeralTasks?.open || []).map((t: any) => ({ 
+        ...t, 
+        isEphemeral: true, 
+        taskListName: taskList.name || taskList.role,
+        taskListId: taskList.id,
+        taskListRole: taskList.role || ''
+      }))
       
       // Combine all tasks
       const tasks = [...baseTasks, ...ephemeralTasks].map((t: any) => ({
         ...t,
         taskListName: taskList.name || taskList.role,
-        taskListId: taskList.id
+        taskListId: taskList.id,
+        taskListRole: t.taskListRole || taskList.role || ''
       }))
       
       allTasks.push(...tasks)
     })
     
     // Filter for tasks with status "steady" or "in progress"
-    return allTasks.filter((task: any) => {
+    const filteredTasks = allTasks.filter((task: any) => {
       const taskStatus = (task?.taskStatus as TaskStatus) || 'open'
       return taskStatus === 'steady' || taskStatus === 'in progress'
+    })
+    
+    // Sort by role priority: daily.default > weekly.default > daily.* > weekly.* > one-off
+    const getRolePriority = (role: string): number => {
+      if (role === 'daily.default') return 1
+      if (role === 'weekly.default') return 2
+      if (role?.startsWith('daily.')) return 3
+      if (role?.startsWith('weekly.')) return 4
+      return 5 // one-off or other roles
+    }
+    
+    return filteredTasks.sort((a: any, b: any) => {
+      const priorityA = getRolePriority(a.taskListRole || '')
+      const priorityB = getRolePriority(b.taskListRole || '')
+      return priorityA - priorityB
     })
   }, [stableTaskLists])
 
@@ -133,16 +157,21 @@ export const SteadyTasks = () => {
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 w-full">
-        <Skeleton className="h-[40px] w-full" />
-        <Skeleton className="h-[40px] w-full" />
-        <Skeleton className="h-[40px] w-full" />
-        <Skeleton className="h-[40px] w-full" />
-        <Skeleton className="h-[40px] w-full" />
-        <Skeleton className="h-[40px] w-full" />
-        <Skeleton className="h-[40px] w-full" />
-        <Skeleton className="h-[40px] w-full" />
-      </div>
+      <ToggleGroup
+        value={[]}
+        onValueChange={() => {}}
+        variant="outline"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 align-center justify-center w-full m-auto"
+        type="multiple"
+        orientation="horizontal"
+      >
+        {/* Show 5 skeletons on mobile, 8 on desktop */}
+        {[...Array(8)].map((_, index) => (
+          <div key={`skeleton-${index}`} className={`flex flex-col items-center m-1 ${index >= 5 ? 'hidden md:flex' : ''}`}>
+            <Skeleton className="h-[40px] w-full rounded-md" />
+          </div>
+        ))}
+      </ToggleGroup>
     )
   }
 
@@ -153,6 +182,11 @@ export const SteadyTasks = () => {
       </div>
     )
   }
+
+  // Limit tasks: 5 on mobile, 8 on desktop
+  const mobileLimit = 5
+  const desktopLimit = 8
+  const hasMoreTasks = steadyTasks.length > mobileLimit
 
   return (
     <div className="space-y-4">
@@ -168,6 +202,22 @@ export const SteadyTasks = () => {
           const taskStatus: TaskStatus = (task?.taskStatus as TaskStatus) || 'open'
           const statusColor = getStatusColor(taskStatus, 'css')
           const iconColor = getIconColor(taskStatus)
+          
+          // Hide tasks beyond limits using CSS
+          // Tasks 0-4: always visible
+          // Tasks 5-9: hidden on mobile, visible on desktop
+          // Tasks 10+: hidden on all screens
+          const isBeyondMobileLimit = index >= mobileLimit
+          const isBeyondDesktopLimit = index >= desktopLimit
+          
+          let visibilityClass = 'flex flex-col items-center m-1'
+          if (isBeyondDesktopLimit) {
+            // Hide on all screens
+            visibilityClass += ' hidden'
+          } else if (isBeyondMobileLimit) {
+            // Hide on mobile, show on desktop
+            visibilityClass += ' hidden md:flex'
+          }
           
           const optionsMenuItems: OptionsMenuItem[] = [
             ...STATUS_OPTIONS.map((status) => ({
@@ -196,7 +246,10 @@ export const SteadyTasks = () => {
           ]
           
           return (
-            <div key={`task__item--${task.name || index}`} className="flex flex-col items-center m-1">
+            <div 
+              key={`task__item--${task.name || index}`} 
+              className={visibilityClass}
+            >
               <div className="relative w-full flex items-center gap-2">
                 <OptionsButton
                   items={optionsMenuItems}
@@ -217,6 +270,25 @@ export const SteadyTasks = () => {
             </div>
           )
         })}
+        {/* View More link */}
+        {hasMoreTasks && (
+          <div className="flex flex-col items-center m-1 md:hidden">
+            <Link href="/app/do" className="w-full">
+              <Button variant="outline" className="w-full min-h-[40px] h-auto">
+                View More
+              </Button>
+            </Link>
+          </div>
+        )}
+        {steadyTasks.length > desktopLimit && (
+          <div className="hidden md:flex flex-col items-center m-1">
+            <Link href="/app/do" className="w-full">
+              <Button variant="outline" className="w-full min-h-[40px] h-auto">
+                View More
+              </Button>
+            </Link>
+          </div>
+        )}
       </ToggleGroup>
     </div>
   )
