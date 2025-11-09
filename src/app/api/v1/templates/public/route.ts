@@ -12,12 +12,16 @@ export async function GET(request: NextRequest) {
     const { userId } = await auth()
     
     // Build where clause based on authentication and friendship status
-    // Note: NoteVisibility enum only has PRIVATE, FRIENDS, CLOSE_FRIENDS (no PUBLIC)
     let whereClause: any = {
       OR: []
     }
 
-    // If user is authenticated, include friends' and close friends' notes
+    // Always include public templates
+    whereClause.OR.push({
+      visibility: 'PUBLIC'
+    })
+
+    // If user is authenticated, include friends' and close friends' templates
     if (userId) {
       const currentUser = await prisma.user.findUnique({
         where: { userId },
@@ -32,35 +36,35 @@ export async function GET(request: NextRequest) {
         const friendIds = currentUser.friends || []
         const closeFriendIds = currentUser.closeFriends || []
 
-        // Include notes from friends with FRIENDS visibility
+        // Include templates from friends with FRIENDS visibility
         if (friendIds.length > 0) {
           whereClause.OR.push({
             AND: [
               { visibility: 'FRIENDS' },
-              { userId: { in: friendIds } }
+              { owners: { hasSome: friendIds } }
             ]
           })
         }
 
-        // Include notes from close friends with CLOSE_FRIENDS visibility
+        // Include templates from close friends with CLOSE_FRIENDS visibility
         if (closeFriendIds.length > 0) {
           whereClause.OR.push({
             AND: [
               { visibility: 'CLOSE_FRIENDS' },
-              { userId: { in: closeFriendIds } }
+              { owners: { hasSome: closeFriendIds } }
             ]
           })
         }
       }
     }
 
-    // If no OR conditions (user not authenticated or has no friends), return empty
+    // If no OR conditions (shouldn't happen, but handle edge case)
     if (whereClause.OR.length === 0) {
-      whereClause = { id: 'nonexistent' } // Return no results
+      whereClause = { visibility: 'PUBLIC' }
     }
 
-    // Fetch notes with user profile info
-    const notes = await prisma.note.findMany({
+    // Fetch templates
+    const templates = await prisma.template.findMany({
       where: whereClause,
       orderBy: {
         createdAt: 'desc'
@@ -69,11 +73,29 @@ export async function GET(request: NextRequest) {
       skip: skip,
       select: {
         id: true,
-        content: true,
+        name: true,
+        role: true,
         visibility: true,
         createdAt: true,
-        date: true,
-        user: {
+        updatedAt: true,
+        owners: true
+      }
+    })
+
+    // Get the user profiles for each template owner
+    const templatesWithUsers = await Promise.all(
+      templates.map(async (template) => {
+        // Get the first owner's profile (for now, we'll use the first owner)
+        const ownerId = template.owners[0]
+        if (!ownerId) {
+          return {
+            ...template,
+            user: null
+          }
+        }
+
+        const user = await prisma.user.findUnique({
+          where: { id: ownerId },
           select: {
             id: true,
             profile: {
@@ -85,26 +107,31 @@ export async function GET(request: NextRequest) {
               }
             }
           }
+        })
+
+        return {
+          ...template,
+          user: user || null
         }
-      }
-    })
+      })
+    )
 
     // Get total count for pagination
-    const totalCount = await prisma.note.count({
+    const totalCount = await prisma.template.count({
       where: whereClause
     })
 
-    const hasMore = skip + notes.length < totalCount
+    const hasMore = skip + templatesWithUsers.length < totalCount
 
     return NextResponse.json({ 
-      notes, 
+      templates: templatesWithUsers, 
       hasMore,
       totalCount,
       currentPage: page,
       totalPages: Math.ceil(totalCount / limit)
     })
   } catch (error) {
-    console.error('Error fetching public notes:', error)
+    console.error('Error fetching public templates:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

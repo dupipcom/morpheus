@@ -1,9 +1,13 @@
 'use client'
-import { useState, useContext, useEffect } from 'react'
+import { useState, useContext, useEffect, useMemo } from 'react'
 import useSWR from 'swr'
+import { useRouter } from 'next/navigation'
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { User, UserMinus, Loader2 } from "lucide-react"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import { Badge } from "@/components/ui/badge"
+import { User, UserMinus, Loader2, FileText } from "lucide-react"
+import { OptionsButton, OptionsMenuItem } from "@/components/OptionsButton"
 import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
 import { useEnhancedLoadingState } from "@/lib/userUtils"
@@ -40,15 +44,46 @@ interface PublicNote {
   }
 }
 
+interface PublicTemplate {
+  id: string
+  name: string | null
+  role: string | null
+  visibility: string
+  createdAt: string
+  updatedAt: string
+  owners: string[]
+  user: {
+    id: string
+    profile: {
+      userName: string | null
+      profilePicture: string | null
+      firstName: string | null
+      lastName: string | null
+    } | null
+  } | null
+}
+
+type ActivityItem = {
+  id: string
+  type: 'note' | 'template'
+  createdAt: string
+  data: PublicNote | PublicTemplate
+}
+
 export const BeView = () => {
   const { session, setGlobalContext, theme } = useContext(GlobalContext)
   const { t } = useI18n()
+  const router = useRouter()
   
   const [friends, setFriends] = useState<Friend[]>([])
   const [publicNotes, setPublicNotes] = useState<PublicNote[]>([])
+  const [publicTemplates, setPublicTemplates] = useState<PublicTemplate[]>([])
   const [notesPage, setNotesPage] = useState(1)
+  const [templatesPage, setTemplatesPage] = useState(1)
   const [hasMoreNotes, setHasMoreNotes] = useState(false)
+  const [hasMoreTemplates, setHasMoreTemplates] = useState(false)
   const [isLoadingMoreNotes, setIsLoadingMoreNotes] = useState(false)
+  const [isLoadingMoreTemplates, setIsLoadingMoreTemplates] = useState(false)
 
   const { data, mutate, error, isLoading } = useSWR(
     session?.user ? `/api/v1/friends` : null,
@@ -81,6 +116,24 @@ export const BeView = () => {
     }
   }
 
+  // Fetch public templates
+  const fetchPublicTemplates = async (page: number = 1, append: boolean = false) => {
+    try {
+      const response = await fetch(`/api/v1/templates/public?page=${page}&limit=100`)
+      if (response.ok) {
+        const data = await response.json()
+        if (append) {
+          setPublicTemplates(prev => [...prev, ...(data.templates || [])])
+        } else {
+          setPublicTemplates(data.templates || [])
+        }
+        setHasMoreTemplates(data.hasMore || false)
+      }
+    } catch (error) {
+      console.error('Error fetching public templates:', error)
+    }
+  }
+
   // Refresh friends when data changes
   useEffect(() => {
     if (data?.friends) {
@@ -88,9 +141,10 @@ export const BeView = () => {
     }
   }, [data])
 
-  // Fetch public notes on mount
+  // Fetch public notes and templates on mount
   useEffect(() => {
     fetchPublicNotes(1)
+    fetchPublicTemplates(1)
   }, [])
 
   const getDisplayName = (friend: Friend) => {
@@ -147,6 +201,34 @@ export const BeView = () => {
     setIsLoadingMoreNotes(false)
   }
 
+  const handleLoadMoreTemplates = async () => {
+    setIsLoadingMoreTemplates(true)
+    const nextPage = templatesPage + 1
+    await fetchPublicTemplates(nextPage, true)
+    setTemplatesPage(nextPage)
+    setIsLoadingMoreTemplates(false)
+  }
+
+  // Combine notes and templates into activity feed, sorted by creation date
+  const activityItems = useMemo(() => {
+    const items: ActivityItem[] = [
+      ...publicNotes.map(note => ({
+        id: `note-${note.id}`,
+        type: 'note' as const,
+        createdAt: note.createdAt,
+        data: note
+      })),
+      ...publicTemplates.map(template => ({
+        id: `template-${template.id}`,
+        type: 'template' as const,
+        createdAt: template.createdAt,
+        data: template
+      }))
+    ]
+    // Sort by creation date, most recent first
+    return items.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+  }, [publicNotes, publicTemplates])
+
   const getNoteUserDisplayName = (note: PublicNote) => {
     if (note.user.profile) {
       const { firstName, lastName, userName } = note.user.profile
@@ -162,6 +244,23 @@ export const BeView = () => {
 
   const getNoteUserName = (note: PublicNote) => {
     return note.user.profile?.userName || null
+  }
+
+  const getTemplateUserName = (template: PublicTemplate) => {
+    return template.user?.profile?.userName || null
+  }
+
+  const getTemplateUserProfilePicture = (template: PublicTemplate) => {
+    return template.user?.profile?.profilePicture || '/images/default-avatar.png'
+  }
+
+  const getTemplateUserDisplayName = (template: PublicTemplate) => {
+    if (template.user?.profile) {
+      const { firstName, lastName, userName } = template.user.profile
+      const fullName = [firstName, lastName].filter(Boolean).join(' ')
+      return fullName || userName || 'Anonymous User'
+    }
+    return 'Anonymous User'
   }
 
   const getTimeAgo = (dateString: string) => {
@@ -184,66 +283,126 @@ export const BeView = () => {
     return <SettingsSkeleton />
   }
 
-  const renderPublicNotes = () => {
-    if (publicNotes.length === 0) return null
+  const renderActivityFeed = () => {
+    if (activityItems.length === 0) {
+      return (
+        <div className="text-center text-muted-foreground py-12">
+          <p>{t('socialView.noActivity')}</p>
+        </div>
+      )
+    }
 
     return (
       <div className="mb-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {publicNotes.map((note) => {
-            const userName = getNoteUserName(note)
-            const profileUrl = userName ? `/profile/${userName}` : '#'
-            
-            return (
-              <Card key={note.id} className="hover:shadow-md transition-shadow">
-                <CardContent className="pt-1">
-                  <div className="flex items-center gap-2 mb-3">
-                    <img
-                      src={getNoteUserProfilePicture(note)}
-                      alt="Profile"
-                      className="w-8 h-8 rounded-full object-cover"
-                      onError={(e) => {
-                        e.currentTarget.src = '/images/default-avatar.png'
-                      }}
-                    />
-                    {userName ? (
-                      <Link 
-                        href={profileUrl}
-                        className="text-sm font-medium text-primary hover:underline"
-                      >
-                        @{userName}
-                      </Link>
-                    ) : (
-                      <span className="text-sm font-medium text-muted-foreground">
-                        @anonymous
+          {activityItems.map((item) => {
+            if (item.type === 'note') {
+              const note = item.data as PublicNote
+              const userName = getNoteUserName(note)
+              const profileUrl = userName ? `/profile/${userName}` : '#'
+              
+              return (
+                <Card key={item.id} className="hover:shadow-md transition-shadow">
+                  <CardContent className="pt-1">
+                    <div className="flex items-center gap-2 mb-3">
+                      <img
+                        src={getNoteUserProfilePicture(note)}
+                        alt="Profile"
+                        className="w-8 h-8 rounded-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.src = '/images/default-avatar.png'
+                        }}
+                      />
+                      {userName ? (
+                        <Link 
+                          href={profileUrl}
+                          className="text-sm font-medium text-primary hover:underline"
+                        >
+                          @{userName}
+                        </Link>
+                      ) : (
+                        <span className="text-sm font-medium text-muted-foreground">
+                          @anonymous
+                        </span>
+                      )}
+                      <span className="text-xs text-muted-foreground ml-auto">
+                        {getTimeAgo(note.createdAt)}
                       </span>
-                    )}
-                    <span className="text-xs text-muted-foreground ml-auto">
-                      {getTimeAgo(note.createdAt)}
-                    </span>
-                  </div>
-                  <p className="text-sm whitespace-pre-wrap break-words">
-                    {note.content}
-                  </p>
-                </CardContent>
-              </Card>
-            )
+                    </div>
+                    <p className="text-xs text-muted-foreground mb-2">
+                      {t('socialView.justSharedNote')}
+                    </p>
+                    <p className="text-sm whitespace-pre-wrap break-words">
+                      {note.content}
+                    </p>
+                  </CardContent>
+                </Card>
+              )
+            } else {
+              const template = item.data as PublicTemplate
+              const userName = getTemplateUserName(template)
+              const profileUrl = userName ? `/profile/${userName}` : '#'
+              
+              return (
+                <Card key={item.id} className="hover:shadow-md transition-shadow">
+                  <CardContent className="pt-1">
+                    <div className="flex items-center gap-2 mb-3">
+                      <img
+                        src={getTemplateUserProfilePicture(template)}
+                        alt="Profile"
+                        className="w-8 h-8 rounded-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.src = '/images/default-avatar.png'
+                        }}
+                      />
+                      {userName ? (
+                        <Link 
+                          href={profileUrl}
+                          className="text-sm font-medium text-primary hover:underline"
+                        >
+                          @{userName}
+                        </Link>
+                      ) : (
+                        <span className="text-sm font-medium text-muted-foreground">
+                          @anonymous
+                        </span>
+                      )}
+                      <span className="text-xs text-muted-foreground ml-auto">
+                        {getTimeAgo(template.createdAt)}
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mb-2">
+                      {t('socialView.justSharedTemplate')}
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <FileText className="w-4 h-4 text-muted-foreground" />
+                      <p className="text-sm font-medium">
+                        {template.name || template.role || 'Untitled Template'}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              )
+            }
           })}
         </div>
-        {hasMoreNotes && (
+        {(hasMoreNotes || hasMoreTemplates) && (
           <div className="flex justify-center mt-6">
             <Button 
-              onClick={handleLoadMoreNotes}
-              disabled={isLoadingMoreNotes}
+              onClick={() => {
+                if (hasMoreNotes) handleLoadMoreNotes()
+                if (hasMoreTemplates) handleLoadMoreTemplates()
+              }}
+              disabled={isLoadingMoreNotes || isLoadingMoreTemplates}
               variant="outline"
             >
-              {isLoadingMoreNotes ? (
+              {(isLoadingMoreNotes || isLoadingMoreTemplates) ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Loading...
+                  {t('common.loading')}
                 </>
               ) : (
-                'Load More'
+                t('socialView.loadMore')
               )}
             </Button>
           </div>
@@ -252,90 +411,161 @@ export const BeView = () => {
     )
   }
 
+  const renderFriends = () => {
+    if (friends.length === 0) {
+      return (
+        <Card>
+          <CardContent className="pt-6">
+            <div className="text-center py-12">
+              <User className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
+              <h3 className="text-lg font-semibold mb-2">{t('socialView.noFriendsYet')}</h3>
+              <p className="text-muted-foreground mb-4">
+                {t('socialView.startBuildingNetwork')}
+              </p>
+              <Button asChild>
+                <Link href="/app/dashboard">
+                  {t('socialView.goToDashboard')}
+                </Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )
+    }
+
+    return (
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+        {friends.map((friend) => {
+          const userName = friend.profile?.userName
+          const profileUrl = getProfileUrl(friend)
+          
+          const friendOptionsItems: OptionsMenuItem[] = [
+            {
+              label: t('socialView.viewProfile'),
+              onClick: () => {
+                router.push(profileUrl)
+              },
+              icon: null,
+            },
+            {
+              label: t('socialView.unfriend'),
+              onClick: () => handleUnfriend(friend.id),
+              icon: <UserMinus className="w-4 h-4" />,
+              separator: true,
+            },
+          ]
+
+          return (
+            <Badge
+              key={friend.id}
+              variant="outline"
+              className="flex items-center gap-2 px-2 py-1.5 h-auto bg-transparent border-border/50 hover:border-border transition-colors"
+            >
+              <img
+                src={getProfilePicture(friend)}
+                alt="Profile"
+                className="w-6 h-6 rounded-full object-cover shrink-0"
+                onError={(e) => {
+                  e.currentTarget.src = '/images/default-avatar.png'
+                }}
+              />
+              {userName ? (
+                <Link
+                  href={profileUrl}
+                  className="text-xs font-medium text-foreground hover:text-primary transition-colors truncate flex-1 min-w-0"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  @{userName}
+                </Link>
+              ) : (
+                <span className="text-xs font-medium text-muted-foreground truncate flex-1 min-w-0">
+                  {getDisplayName(friend)}
+                </span>
+              )}
+              <OptionsButton
+                items={friendOptionsItems}
+                statusColor="transparent"
+                iconColor="var(--muted-foreground)"
+                iconFilled={false}
+                align="end"
+                className="shrink-0"
+              />
+            </Badge>
+          )
+        })}
+      </div>
+    )
+  }
+
   return (
     <div className="max-w-[1200px] m-auto p-4">
-      {friends.length === 0 ? (
-        <>
-          {publicNotes.length === 0 ? (
-            <Card>
-              <CardContent className="pt-6">
-                <div className="text-center py-12">
-                  <User className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">No friends yet</h3>
-                  <p className="text-muted-foreground mb-4">
-                    Start building your network by adding friends!
-                  </p>
-                  <Button asChild>
-                    <Link href="/app/dashboard">
-                      Go to Dashboard
-                    </Link>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ) : (
-            renderPublicNotes()
-          )}
-        </>
-      ) : (
-        <>
-          {renderPublicNotes()}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {friends.map((friend) => (
-            <Card key={friend.id} className="group hover:shadow-lg transition-shadow">
-              <CardContent className="pt-6">
-                <div className="flex flex-col items-center text-center space-y-4">
-                  <div className="relative">
-                    <img
-                      src={getProfilePicture(friend)}
-                      alt="Profile"
-                      className="w-20 h-20 rounded-full object-cover border-4 border-background shadow-lg"
-                      onError={(e) => {
-                        e.currentTarget.src = '/images/default-avatar.png'
-                      }}
-                    />
-                    <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 border-2 border-background rounded-full"></div>
-        </div>
-                  
-                  <div className="space-y-1">
-                    <h3 className="font-semibold text-lg">
-                      {getDisplayName(friend)}
-                    </h3>
-                    {friend.profile?.bio && (
-                      <p className="text-sm text-muted-foreground line-clamp-2">
-                        {friend.profile.bio}
-                      </p>
-                    )}
-      </div>
+      <Card className="mb-6">
+        <CardContent className="pt-6">
+          <Tabs defaultValue="activity" className="w-full">
+            <TabsList className="grid w-full grid-cols-5">
+              <TabsTrigger 
+                value="activity"
+                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              >
+                {t('socialView.activity')}
+              </TabsTrigger>
+              <TabsTrigger 
+                value="friends"
+                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              >
+                {t('socialView.friends')}
+              </TabsTrigger>
+              <TabsTrigger 
+                value="events"
+                disabled
+                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              >
+                {t('socialView.events')}
+              </TabsTrigger>
+              <TabsTrigger 
+                value="spaces"
+                disabled
+                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              >
+                {t('socialView.spaces')}
+              </TabsTrigger>
+              <TabsTrigger 
+                value="organizations"
+                disabled
+                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              >
+                {t('socialView.organizations')}
+              </TabsTrigger>
+            </TabsList>
 
-                  <div className="flex gap-2 w-full">
-                    <Button 
-                      asChild 
-                      variant="outline" 
-                      size="sm" 
-                      className="flex-1"
-                    >
-                      <Link href={getProfileUrl(friend)}>
-                        View Profile
-                      </Link>
-                    </Button>
-                    <Button 
-                      variant="destructive" 
-                      size="sm"
-                      className="flex-1"
-                      onClick={() => handleUnfriend(friend.id)}
-                    >
-                      <UserMinus className="w-4 h-4 mr-2" />
-                      Unfriend
-                    </Button>
-                  </div>
-            </div>
-              </CardContent>
-            </Card>
-              ))}
-          </div>
-        </>
-      )}
+            <TabsContent value="activity" className="mt-4">
+              {renderActivityFeed()}
+            </TabsContent>
+
+            <TabsContent value="friends" className="mt-4">
+              {renderFriends()}
+            </TabsContent>
+
+            <TabsContent value="events" className="mt-4">
+              <div className="text-center text-muted-foreground py-12">
+                <p>{t('socialView.events')} - Coming soon</p>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="spaces" className="mt-4">
+              <div className="text-center text-muted-foreground py-12">
+                <p>{t('socialView.spaces')} - Coming soon</p>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="organizations" className="mt-4">
+              <div className="text-center text-muted-foreground py-12">
+                <p>{t('socialView.organizations')} - Coming soon</p>
+              </div>
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
     </div>
   )
 } 
