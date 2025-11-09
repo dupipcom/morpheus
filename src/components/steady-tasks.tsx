@@ -94,37 +94,113 @@ export const SteadyTasks = () => {
   const steadyTasks = useMemo(() => {
     const allTasks: any[] = []
     
+    // Get today's date in YYYY-MM-DD format (local timezone)
+    const today = new Date()
+    const dateISO = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+    const year = today.getFullYear()
+    
+    // Helper to get task key
+    const keyOf = (t: any) => (t?.id || t?.localeKey || (typeof t?.name === 'string' ? t.name.toLowerCase() : '')) as string
+    
     stableTaskLists.forEach((taskList: any) => {
-      // Get tasks from tasks array or templateTasks
+      // Get base tasks from tasks array or templateTasks
       const baseTasks = (taskList?.tasks && taskList.tasks.length > 0)
         ? taskList.tasks
         : (taskList?.templateTasks || [])
       
-      // Get ephemeral tasks
-      const ephemeralTasks = (taskList?.ephemeralTasks?.open || []).map((t: any) => ({ 
-        ...t, 
-        isEphemeral: true, 
-        taskListName: taskList.name || taskList.role,
-        taskListId: taskList.id,
-        taskListRole: taskList.role || ''
-      }))
+      // Read tasks from completedTasks[year][date].openTasks for today
+      const dateBucket = (taskList as any)?.completedTasks?.[year]?.[dateISO]
+      const openTasksFromCompleted: any[] = []
+      const openTasksByKey: Record<string, any> = {}
       
-      // Combine all tasks
-      const tasks = [...baseTasks, ...ephemeralTasks].map((t: any) => {
-        const taskKey = t?.id || t?.localeKey || t?.name
-        // Apply optimistic status and count if available
+      if (dateBucket) {
+        if (Array.isArray(dateBucket)) {
+          // Legacy structure: migrate on read
+          dateBucket.forEach((t: any) => {
+            const k = keyOf(t)
+            if (!k) return
+            if (t.status !== 'Done' && (t.count || 0) < (t.times || 1)) {
+              if (!openTasksByKey[k]) {
+                openTasksByKey[k] = t
+                openTasksFromCompleted.push(t)
+              }
+            }
+          })
+        } else {
+          // New structure: read from openTasks
+          const openTasks = Array.isArray(dateBucket.openTasks) ? dateBucket.openTasks : []
+          openTasks.forEach((t: any) => {
+            const k = keyOf(t)
+            if (!k) return
+            if (!openTasksByKey[k]) {
+              openTasksByKey[k] = t
+              openTasksFromCompleted.push(t)
+            }
+          })
+        }
+      }
+      
+      // Merge base tasks with openTasks from completedTasks
+      // Use openTasks status if available, otherwise fall back to base task status
+      const mergedBaseTasks = baseTasks.map((baseTask: any) => {
+        const k = keyOf(baseTask)
+        const openTask = k ? openTasksByKey[k] : undefined
+        
+        const taskKey = k
+        const optimisticStatus = optimisticStatuses[taskKey]
+        const optimisticCount = optimisticCounts[taskKey]
+        
+        return {
+          ...baseTask,
+          taskListName: taskList.name || taskList.role,
+          taskListId: taskList.id,
+          taskListRole: taskList.role || '',
+          // Use status from openTasks if available, otherwise from base task, with optimistic override
+          taskStatus: optimisticStatus || (openTask?.taskStatus || baseTask.taskStatus),
+          count: optimisticCount !== undefined ? optimisticCount : (openTask?.count !== undefined ? openTask.count : (baseTask.count || 0))
+        }
+      })
+      
+      // Add any openTasks that aren't in base tasks
+      const baseKeys = new Set(baseTasks.map((t: any) => keyOf(t)))
+      const additionalOpenTasks = openTasksFromCompleted
+        .filter((t: any) => {
+          const k = keyOf(t)
+          return k && !baseKeys.has(k)
+        })
+        .map((t: any) => {
+          const taskKey = keyOf(t)
+          const optimisticStatus = optimisticStatuses[taskKey]
+          const optimisticCount = optimisticCounts[taskKey]
+          return {
+            ...t,
+            taskListName: taskList.name || taskList.role,
+            taskListId: taskList.id,
+            taskListRole: taskList.role || '',
+            taskStatus: optimisticStatus || t.taskStatus,
+            count: optimisticCount !== undefined ? optimisticCount : (t.count || 0)
+          }
+        })
+      
+      // Get ephemeral tasks from ephemeralTasks.open (read status directly from there)
+      const ephemeralTasks = (taskList?.ephemeralTasks?.open || []).map((t: any) => {
+        const taskKey = keyOf(t)
         const optimisticStatus = optimisticStatuses[taskKey]
         const optimisticCount = optimisticCounts[taskKey]
         return {
           ...t,
+          isEphemeral: true,
           taskListName: taskList.name || taskList.role,
           taskListId: taskList.id,
-          taskListRole: t.taskListRole || taskList.role || '',
+          taskListRole: taskList.role || '',
+          // Use status from ephemeralTasks.open, with optimistic override
           taskStatus: optimisticStatus || t.taskStatus,
           count: optimisticCount !== undefined ? optimisticCount : (t.count || 0)
         }
       })
       
+      // Combine all tasks
+      const tasks = [...mergedBaseTasks, ...additionalOpenTasks, ...ephemeralTasks]
       allTasks.push(...tasks)
     })
     
