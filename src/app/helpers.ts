@@ -17,7 +17,11 @@ export const stripLocaleFromPath = (pathname: string) => {
 export const getLocaleFromPath= (pathname: string) => {
   if (pathHasLocale(pathname)) {
     const array = pathname.split('/')
-    return array[1]
+    const potentialLocale = array[1]
+    // Validate that the extracted value is actually a valid locale
+    if (locales.includes(potentialLocale as any)) {
+      return potentialLocale
+    }
   }
   return defaultLocale
 }

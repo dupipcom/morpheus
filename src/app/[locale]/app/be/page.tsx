@@ -14,7 +14,7 @@ export default function LocalizedSocial({ params }: { params: Promise<{ locale: 
     theme: 'light'
   })
   const { isLoaded, isSignedIn } = useAuth();
-  const { t, formatDate } = useI18n();
+  const { t } = useI18n();
 
   // Set login time when user is authenticated
   useEffect(() => {
@@ -39,9 +39,6 @@ export default function LocalizedSocial({ params }: { params: Promise<{ locale: 
   return (
     <main className="">
       <ViewMenu active="be" />
-      <h1 className="scroll-m-20 text-2xl font-semibold tracking-tight text-center mb-8">{formatDate(new Date())}</h1>
-      <h2 className="text-center scroll-m-20 text-lg font-semibold tracking-tight">Be</h2>
-
       <BeView />
     </main>
   )

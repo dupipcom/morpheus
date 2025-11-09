@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useContext, useEffect, useState, useCallback } from 'react'
+import { useMemo, useContext, useEffect, useState, useCallback, useRef } from 'react'
 import { GlobalContext } from '@/lib/contexts'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
@@ -54,6 +54,7 @@ export const SteadyTasks = () => {
   const { t } = useI18n()
   const [stableTaskLists, setStableTaskLists] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const initialFetchDone = useRef(false)
 
   // Maintain stable task lists that never clear once loaded
   useEffect(() => {
@@ -66,10 +67,19 @@ export const SteadyTasks = () => {
     }
   }, [contextTaskLists])
 
-  // Fetch task lists on mount
+  // Only fetch task lists if we don't have any data yet and haven't fetched
   useEffect(() => {
-    refreshTaskLists()
-  }, [refreshTaskLists])
+    if (!initialFetchDone.current) {
+      // If we already have data, don't fetch
+      if (Array.isArray(contextTaskLists) && contextTaskLists.length > 0) {
+        initialFetchDone.current = true
+        return
+      }
+      // Otherwise, fetch once
+      initialFetchDone.current = true
+      refreshTaskLists()
+    }
+  }, [contextTaskLists, refreshTaskLists])
 
   // Get all tasks with status "steady" or "in progress" from all lists
   const steadyTasks = useMemo(() => {
@@ -123,10 +133,15 @@ export const SteadyTasks = () => {
 
   if (isLoading) {
     return (
-      <div className="space-y-4">
-        <Skeleton className="h-12 w-full" />
-        <Skeleton className="h-12 w-full" />
-        <Skeleton className="h-12 w-full" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 w-full">
+        <Skeleton className="h-[40px] w-full" />
+        <Skeleton className="h-[40px] w-full" />
+        <Skeleton className="h-[40px] w-full" />
+        <Skeleton className="h-[40px] w-full" />
+        <Skeleton className="h-[40px] w-full" />
+        <Skeleton className="h-[40px] w-full" />
+        <Skeleton className="h-[40px] w-full" />
+        <Skeleton className="h-[40px] w-full" />
       </div>
     )
   }
