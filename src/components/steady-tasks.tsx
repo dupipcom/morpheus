@@ -7,7 +7,7 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { OptionsButton, OptionsMenuItem } from '@/components/OptionsButton'
 import { Circle, Minus, ChevronDown, ChevronUp } from 'lucide-react'
 import { useI18n } from '@/lib/contexts/i18n'
-import { prepareIncrementActions, prepareDecrementActions, handleEphemeralTaskUpdate, updateUserEntriesForTasks, calculateTaskStatus } from '@/lib/taskUtils'
+import { prepareIncrementActions, prepareDecrementActions, handleEphemeralTaskUpdate, calculateTaskStatus } from '@/lib/taskUtils'
 import { useUserData } from '@/lib/userUtils'
 import { getWeekNumber } from '@/app/helpers'
 
@@ -335,20 +335,6 @@ export const SteadyTasks = () => {
         }
       }
       
-      // Update user entries only if fully completed (count >= times)
-      if (newCount >= times) {
-        const doneTasks = nextActions.filter((a: any) => a.status === 'Done')
-        if (doneTasks.length > 0) {
-          await updateUserEntriesForTasks(
-            doneTasks,
-            date,
-            taskList.role || '',
-            [task.name],
-            []
-          )
-        }
-      }
-      
       await refreshTaskLists()
       await refreshUser()
       
@@ -444,17 +430,6 @@ export const SteadyTasks = () => {
           const isInClosed = closedEphemerals.some((t: any) => t.id === ephemeralTask.id)
           await handleEphemeralTaskUpdate(ephemeralTask, updatedAction, task.taskListId, isInClosed)
         }
-      }
-      
-      // If task was fully completed and now isn't, remove from user entries
-      if (currentCount >= times && newCount < times) {
-        await updateUserEntriesForTasks(
-          [],
-          date,
-          taskList.role || '',
-          [],
-          [task.name]
-        )
       }
       
       await refreshTaskLists()

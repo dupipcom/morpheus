@@ -164,15 +164,19 @@ export async function POST(req: Request) {
   const day = Number(date.split('-')[2])
   const weekNumber = getWeekNumber(fullDate)[1]
 
-  if (data.availableBalance) {
-    const newAvailableBalance = data.availableBalance
-    const currentStash = parseFloat(user.stash || "0")
-    const newEquity = (parseFloat(newAvailableBalance) - currentStash).toString()
+  if (data.availableBalance !== undefined && data.availableBalance !== null) {
+    const newAvailableBalance = Math.max(0, typeof data.availableBalance === 'string' 
+      ? parseFloat(data.availableBalance) 
+      : Number(data.availableBalance))
+    const currentStash = Math.max(0, typeof user.stash === 'number' 
+      ? user.stash 
+      : (typeof user.stash === 'string' ? parseFloat(user.stash || '0') : 0))
+    const newEquity = Math.max(0, newAvailableBalance - currentStash)
     
     await prisma.user.update({
       data: {
         availableBalance: newAvailableBalance,
-        equity: newEquity
+        equity: newEquity as number
       },
       where: { id: user.id },
     })
@@ -345,7 +349,7 @@ export async function POST(req: Request) {
 
   const weekMoodAverage = weekMoodValues.length > 0 ? weekMoodValues.reduce((acc, cur) => Number(acc) + Number(cur), 0) / weekMoodValues.length : 0
 
-  const userEquity = Number(user?.equity) || 0
+  const userEquity = user?.equity ?? 0
   const dayEarnings = ((5 - dayMoodAverage)) * 0.2 + ((dayProgress * 0.80)) * userEquity / 30
   const weekEarnings = ((5 - weekMoodAverage)) * 0.2 + ((weekProgress * 0.80)) * userEquity / 4
 
@@ -490,7 +494,7 @@ export async function POST(req: Request) {
     }))
 
     // Calculate ticker values for the week
-    const availW = parseFloat(user.availableBalance || "0")
+    const availW = user.availableBalance ?? 0
     const weekTickerSingle = calculateWeekTicker(entries, year, data.week, weekEarnings, availW)
     const weekTickerObj = calculateWeekTickers(entries, year, data.week, weekEarnings, availW, date)
 
@@ -525,7 +529,7 @@ export async function POST(req: Request) {
     user = await getUser()
   } else if (data.weekActions && !data.taskListKey) {
     // Calculate ticker values for the week
-    const availW2 = parseFloat(user.availableBalance || "0")
+    const availW2 = user.availableBalance ?? 0
     const weekTickerSingle2 = calculateWeekTicker(user.entries, year, data.week, weekEarnings, availW2)
     const weekTickerObj2 = calculateWeekTickers(user.entries, year, data.week, weekEarnings, availW2, date)
     
@@ -559,11 +563,64 @@ export async function POST(req: Request) {
     user = await getUser()
   }
 
+  // Helper function to aggregate completer earnings from taskList's completedTasks
+  const aggregateCompleterEarningsFromTaskList = async (taskListId: string, year: number, dateISO: string) => {
+    try {
+      const taskList = await prisma.taskList.findUnique({ where: { id: taskListId } })
+      if (!taskList) return { earnings: 0, prize: 0, profit: 0 }
+
+      const completedTasks = (taskList.completedTasks as any) || {}
+      const yearData = completedTasks[year]
+      if (!yearData) return { earnings: 0, prize: 0, profit: 0 }
+
+      const dateBucket = yearData[dateISO]
+      if (!dateBucket) return { earnings: 0, prize: 0, profit: 0 }
+
+      // Support both old structure (array) and new structure (openTasks/closedTasks)
+      let tasksForDate: any[] = []
+      if (Array.isArray(dateBucket)) {
+        tasksForDate = dateBucket
+      } else if (dateBucket.openTasks || dateBucket.closedTasks) {
+        tasksForDate = [
+          ...(Array.isArray(dateBucket.openTasks) ? dateBucket.openTasks : []),
+          ...(Array.isArray(dateBucket.closedTasks) ? dateBucket.closedTasks : [])
+        ]
+      }
+
+      let totalEarnings = 0
+      let totalPrize = 0
+      let totalProfit = 0
+
+      for (const task of tasksForDate) {
+        if (Array.isArray(task.completers)) {
+          for (const completer of task.completers) {
+            const completerEarnings = typeof completer.earnings === 'number' 
+              ? completer.earnings 
+              : (typeof completer.earnings === 'string' ? parseFloat(completer.earnings || '0') : 0)
+            const completerPrize = typeof completer.prize === 'number' 
+              ? completer.prize 
+              : (typeof completer.prize === 'string' ? parseFloat(completer.prize || '0') : 0)
+            
+            totalEarnings += completerEarnings + completerPrize
+            totalPrize += completerPrize
+            totalProfit += completerEarnings
+          }
+        }
+      }
+
+      return { earnings: totalEarnings, prize: totalPrize, profit: totalProfit }
+    } catch (error) {
+      console.error('Error aggregating completer earnings:', error)
+      return { earnings: 0, prize: 0, profit: 0 }
+    }
+  }
+
   // Append only the tasks that were just completed to week entry (without replacing others)
   if (Array.isArray(data.weekTasksAppend) && data.weekTasksAppend.length && user) {
     const entries = user.entries as any
     const week = data.week || weekNumber
     const rolePrefix = typeof data.listRole === 'string' ? String(data.listRole).split('.')[0] : 'weekly'
+    const listId = data.listId || data.taskListId
     const ensureWeek = (e: any) => {
       const copy = { ...(e || {}) }
       if (!copy[year]) copy[year] = { days: {}, weeks: {} }
@@ -573,23 +630,78 @@ export async function POST(req: Request) {
       if (!copy[year].semesters) copy[year].semesters = {}
       if (!copy[year].oneOffs) copy[year].oneOffs = {}
       if (!copy[year].year) copy[year].year = { tasks: [] }
-      if (!copy[year].weeks[week]) copy[year].weeks[week] = { year, week, tasks: [] }
-      if (!Array.isArray(copy[year].weeks[week].tasks)) copy[year].weeks[week].tasks = []
+      
+      // Support new structure with listId
+      if (listId) {
+        if (!copy[year].weeks[week]) copy[year].weeks[week] = {}
+        if (!copy[year].weeks[week][listId]) copy[year].weeks[week][listId] = { year, week, tasks: [] }
+        if (!Array.isArray(copy[year].weeks[week][listId].tasks)) copy[year].weeks[week][listId].tasks = []
+      } else {
+        // Legacy structure
+        if (!copy[year].weeks[week]) copy[year].weeks[week] = { year, week, tasks: [] }
+        if (!Array.isArray(copy[year].weeks[week].tasks)) copy[year].weeks[week].tasks = []
+      }
       return copy
     }
     const updated = ensureWeek(entries)
-    const existing = entries[year]?.weeks[week]?.tasks as any[] || []
+    
+    // Get existing tasks based on structure
+    const existing = listId
+      ? (updated[year].weeks[week][listId]?.tasks as any[] || [])
+      : (updated[year].weeks[week]?.tasks as any[] || [])
     const names = new Set(existing.map((t:any) => t.name))
     const toAppend = data.weekTasksAppend.filter((t:any) => !names.has(t.name))
     console.log({ entries: entries[year]?.weeks[week]?.tasks })
     if (toAppend.length > 0) {
+      // Aggregate earnings/prize/profit from taskList's completedTasks if listId is provided
+      let aggregatedEarnings = 0
+      let aggregatedPrize = 0
+      let aggregatedProfit = 0
+      
+      if (listId) {
+        // For weekly lists, aggregate across all dates in the week
+        const weekStart = new Date(date)
+        weekStart.setDate(weekStart.getDate() - weekStart.getDay())
+        const weekEnd = new Date(weekStart)
+        weekEnd.setDate(weekEnd.getDate() + 6)
+        
+        for (let d = new Date(weekStart); d <= weekEnd; d.setDate(d.getDate() + 1)) {
+          const dateStr = d.toISOString().split('T')[0]
+          const aggregated = await aggregateCompleterEarningsFromTaskList(listId, year, dateStr)
+          aggregatedEarnings += aggregated.earnings
+          aggregatedPrize += aggregated.prize
+          aggregatedProfit += aggregated.profit
+        }
+      }
+      
+      // Helper to convert to number (handles both string and number for backward compatibility)
+      const toNumber = (val: any): number => {
+        if (typeof val === 'number') return val
+        if (typeof val === 'string') return parseFloat(val) || 0
+        return 0
+      }
+      
       // Route based on role prefix
-      // Note: Profit, prize, and earnings are calculated and updated by the tasklists API
-      // This route only stores task references in user entries
+      // Note: Profit, prize, and earnings are now aggregated from taskList's completedTasks
       if (rolePrefix === 'weekly') {
-        updated[year].weeks[week] = {
-          ...updated[year].weeks[week],
-          tasks: [...existing, ...toAppend]
+        if (listId) {
+          const currentPrize = toNumber(updated[year].weeks[week][listId]?.prize)
+          const currentProfit = toNumber(updated[year].weeks[week][listId]?.profit)
+          const currentEarnings = toNumber(updated[year].weeks[week][listId]?.earnings)
+          
+          updated[year].weeks[week][listId] = {
+            ...updated[year].weeks[week][listId],
+            tasks: [...existing, ...toAppend],
+            prize: aggregatedPrize || currentPrize,
+            profit: aggregatedProfit || currentProfit,
+            earnings: aggregatedEarnings || currentEarnings
+          }
+        } else {
+          // Legacy structure
+          updated[year].weeks[week] = {
+            ...updated[year].weeks[week],
+            tasks: [...existing, ...toAppend]
+          }
         }
       } else if (rolePrefix === 'monthly') {
         const monthNum = Number(String(date).split('-')[1])
@@ -611,7 +723,22 @@ export async function POST(req: Request) {
       } else if (rolePrefix === 'one-off' || rolePrefix === 'oneoff' || rolePrefix === 'oneoff') {
         const key = String(date)
         const ex = (updated[year].oneOffs[key]?.tasks || [])
-        updated[year].oneOffs[key] = { year, date: key, tasks: [...ex, ...toAppend] }
+        const existingOneOff = updated[year].oneOffs[key] || {}
+        // Helper to convert to number if string, preserve number, default to 0
+        const toNumber = (val: any): number => {
+          if (typeof val === 'number') return val
+          if (typeof val === 'string') return parseFloat(val) || 0
+          return 0
+        }
+        updated[year].oneOffs[key] = { 
+          year, 
+          date: key, 
+          tasks: [...ex, ...toAppend],
+          // Preserve existing earnings, prize, and profit as numbers (they're set by tasklists route)
+          earnings: toNumber(existingOneOff.earnings),
+          prize: toNumber(existingOneOff.prize),
+          profit: toNumber(existingOneOff.profit)
+        }
       } else {
         updated[year].weeks[week] = {
           ...updated[year].weeks[week],
@@ -643,11 +770,15 @@ export async function POST(req: Request) {
   }
 
   // Append only the tasks that were just completed to day entry (without replacing others)
+  // NOTE: This is a legacy route. The tasklists route now handles entries with listId structure.
+  // This route maintains backward compatibility but should eventually be removed.
   if (Array.isArray(data.dayTasksAppend) && data.dayTasksAppend.length && user) {
     const entries = user.entries as any
     const dateISO = data.date || date
     const y = Number(String(dateISO).split('-')[0])
     const rolePrefix = typeof data.listRole === 'string' ? String(data.listRole).split('.')[0] : 'daily'
+    const listId = data.listId || data.taskListId // Support both for backward compatibility
+    
     const ensureDay = (e: any) => {
       const copy = { ...(e || {}) }
       if (!copy[y]) copy[y] = { days: {}, weeks: {} }
@@ -658,26 +789,81 @@ export async function POST(req: Request) {
       if (!copy[y].semesters) copy[y].semesters = {}
       if (!copy[y].oneOffs) copy[y].oneOffs = {}
       if (!copy[y].year) copy[y].year = { tasks: [] }
-      if (!copy[y].days[dateISO]) copy[y].days[dateISO] = { year: y, date: dateISO, tasks: [] }
-      if (!Array.isArray(copy[y].days[dateISO].tasks)) copy[y].days[dateISO].tasks = []
+      
+      // Support new structure with listId
+      if (listId) {
+        if (!copy[y].days[dateISO]) copy[y].days[dateISO] = {}
+        if (!copy[y].days[dateISO][listId]) copy[y].days[dateISO][listId] = { year: y, date: dateISO, tasks: [] }
+        if (!Array.isArray(copy[y].days[dateISO][listId].tasks)) copy[y].days[dateISO][listId].tasks = []
+      } else {
+        // Legacy structure (backward compatibility)
+        if (!copy[y].days[dateISO]) copy[y].days[dateISO] = { year: y, date: dateISO, tasks: [] }
+        if (!Array.isArray(copy[y].days[dateISO].tasks)) copy[y].days[dateISO].tasks = []
+      }
       return copy
     }
     const updated = ensureDay(entries)
-    const existing = updated[y].days[dateISO].tasks as any[]
+    
+    // Get existing tasks based on structure
+    const existing = listId 
+      ? (updated[y].days[dateISO][listId]?.tasks as any[] || [])
+      : (updated[y].days[dateISO].tasks as any[] || [])
     const names = new Set(existing.map((t:any) => t.name))
     const toAppend = data.dayTasksAppend.filter((t:any) => t.status === 'Done' && !names.has(t.name))
+    
     if (toAppend.length > 0) {
-      // Note: Profit, prize, and earnings are calculated and updated by the tasklists API
-      // This route only stores task references in user entries
+      // Aggregate earnings/prize/profit from taskList's completedTasks if listId is provided
+      let aggregatedEarnings = 0
+      let aggregatedPrize = 0
+      let aggregatedProfit = 0
+      
+      if (listId) {
+        const aggregated = await aggregateCompleterEarningsFromTaskList(listId, y, dateISO)
+        aggregatedEarnings = aggregated.earnings
+        aggregatedPrize = aggregated.prize
+        aggregatedProfit = aggregated.profit
+      }
+      
+      // Helper to convert to number (handles both string and number for backward compatibility)
+      const toNumber = (val: any): number => {
+        if (typeof val === 'number') return val
+        if (typeof val === 'string') return parseFloat(val) || 0
+        return 0
+      }
+      
+      // Note: Profit, prize, and earnings are now aggregated from taskList's completedTasks
       if (rolePrefix === 'daily') {
-        updated[y].days[dateISO] = {
-          ...updated[y].days[dateISO],
-          tasks: [...existing, ...toAppend]
+        if (listId) {
+          const currentPrize = toNumber(updated[y].days[dateISO][listId]?.prize)
+          const currentProfit = toNumber(updated[y].days[dateISO][listId]?.profit)
+          const currentEarnings = toNumber(updated[y].days[dateISO][listId]?.earnings)
+          
+          updated[y].days[dateISO][listId] = {
+            ...updated[y].days[dateISO][listId],
+            tasks: [...existing, ...toAppend],
+            prize: aggregatedPrize || currentPrize,
+            profit: aggregatedProfit || currentProfit,
+            earnings: aggregatedEarnings || currentEarnings
+          }
+        } else {
+          // Legacy structure
+          updated[y].days[dateISO] = {
+            ...updated[y].days[dateISO],
+            tasks: [...existing, ...toAppend]
+          }
         }
       } else if (rolePrefix === 'weekly') {
         const w = getWeekNumber(new Date(dateISO))[1]
-        const ex = (updated[y].weeks[w]?.tasks || [])
-        updated[y].weeks[w] = { year: y, week: w, tasks: [...ex, ...toAppend] }
+        if (listId) {
+          if (!updated[y].weeks[w]) updated[y].weeks[w] = {}
+          if (!updated[y].weeks[w][listId]) updated[y].weeks[w][listId] = { year: y, week: w, tasks: [] }
+          const ex = (updated[y].weeks[w][listId]?.tasks || [])
+          updated[y].weeks[w][listId] = { year: y, week: w, tasks: [...ex, ...toAppend] }
+        } else {
+          // Legacy structure
+          const ex = (updated[y].weeks[w]?.tasks || [])
+          updated[y].weeks[w] = { year: y, week: w, tasks: [...ex, ...toAppend] }
+        }
       } else if (rolePrefix === 'monthly') {
         const monthNum = Number(String(dateISO).split('-')[1])
         const ex = (updated[y].months[monthNum]?.tasks || [])
@@ -697,12 +883,53 @@ export async function POST(req: Request) {
         updated[y].year = { year: y, tasks: [...ex, ...toAppend] }
       } else if (rolePrefix === 'one-off' || rolePrefix === 'oneoff') {
         const key = String(dateISO)
-        const ex = (updated[y].oneOffs[key]?.tasks || [])
-        updated[y].oneOffs[key] = { year: y, date: key, tasks: [...ex, ...toAppend] }
+        if (listId) {
+          if (!updated[y].oneOffs[key]) updated[y].oneOffs[key] = {}
+          if (!updated[y].oneOffs[key][listId]) updated[y].oneOffs[key][listId] = { year: y, date: key, tasks: [] }
+          const ex = (updated[y].oneOffs[key][listId]?.tasks || [])
+          const existingOneOff = updated[y].oneOffs[key][listId] || {}
+          
+          // Use aggregated values if available, otherwise preserve existing
+          updated[y].oneOffs[key][listId] = { 
+            year: y, 
+            date: key, 
+            tasks: [...ex, ...toAppend],
+            // Use aggregated earnings/prize/profit from taskList's completedTasks, or preserve existing
+            earnings: aggregatedEarnings || toNumber(existingOneOff.earnings),
+            prize: aggregatedPrize || toNumber(existingOneOff.prize),
+            profit: aggregatedProfit || toNumber(existingOneOff.profit)
+          }
+        } else {
+          // Legacy structure
+          const ex = (updated[y].oneOffs[key]?.tasks || [])
+          const existingOneOff = updated[y].oneOffs[key] || {}
+          // Helper to convert to number if string, preserve number, default to 0
+          const toNumber = (val: any): number => {
+            if (typeof val === 'number') return val
+            if (typeof val === 'string') return parseFloat(val) || 0
+            return 0
+          }
+          updated[y].oneOffs[key] = { 
+            year: y, 
+            date: key, 
+            tasks: [...ex, ...toAppend],
+            // Preserve existing earnings, prize, and profit as numbers (they're set by tasklists route)
+            earnings: toNumber(existingOneOff.earnings),
+            prize: toNumber(existingOneOff.prize),
+            profit: toNumber(existingOneOff.profit)
+          }
+        }
       } else {
-        updated[y].days[dateISO] = {
-          ...updated[y].days[dateISO],
-          tasks: [...existing, ...toAppend]
+        if (listId) {
+          updated[y].days[dateISO][listId] = {
+            ...updated[y].days[dateISO][listId],
+            tasks: [...existing, ...toAppend]
+          }
+        } else {
+          updated[y].days[dateISO] = {
+            ...updated[y].days[dateISO],
+            tasks: [...existing, ...toAppend]
+          }
         }
       }
       
@@ -738,9 +965,11 @@ export async function POST(req: Request) {
     await prisma.user.update({ where: { id: user.id }, data: { entries: updated as any } })
   }
 
-  if (data?.availableBalance) {
+  if (data?.availableBalance !== undefined && data?.availableBalance !== null) {
     // Calculate ticker values for current day and week and multi-horizon tickers
-    const avail = parseFloat(data.availableBalance)
+    const avail = typeof data.availableBalance === 'string' 
+      ? parseFloat(data.availableBalance) 
+      : Number(data.availableBalance)
     const dayTickerSingle = calculateDayTicker(user.entries, year, date, dayEarnings, avail)
     const weekTickerSingle = calculateWeekTicker(user.entries, year, weekNumber, weekEarnings, avail)
     const dayTickerObj = calculateDayTickers(user.entries, year, date, dayEarnings, avail)
@@ -790,7 +1019,7 @@ export async function POST(req: Request) {
     }))
 
     // Calculate ticker values for the day
-    const availD = parseFloat(user.availableBalance || "0")
+    const availD = user.availableBalance ?? 0
     const dayTickerSingle = calculateDayTicker(entries, year, date, dayEarnings, availD)
     const dayTickerObj = calculateDayTickers(entries, year, date, dayEarnings, availD)
     // Also recalc week blended tickers so week horizons reflect daily changes
@@ -839,7 +1068,7 @@ export async function POST(req: Request) {
     user = await getUser()
   } else if (data.dayActions && !data.taskListKey) {
     // Calculate ticker values for the day
-    const availD2 = parseFloat(user.availableBalance || "0")
+    const availD2 = user.availableBalance ?? 0
     const dayTickerSingle2 = calculateDayTicker(user.entries, year, date, dayEarnings, availD2)
     const dayTickerObj2 = calculateDayTickers(user.entries, year, date, dayEarnings, availD2)
     // Also recalc week blended tickers so week horizons reflect daily changes
@@ -1061,16 +1290,18 @@ export async function POST(req: Request) {
       
       // Calculate earnings for this day and update stash
       const dayEarnings = parseFloat(integrityDayData.earnings) || 0
-      const currentStash = parseFloat(user.stash || "0")
-      const newStash = (currentStash + dayEarnings).toString()
-      const availableBalance = parseFloat(user.availableBalance || "0")
-      const newEquity = (availableBalance - parseFloat(newStash)).toString()
+      const currentStash = Math.max(0, typeof user.stash === 'number' 
+        ? user.stash 
+        : (typeof user.stash === 'string' ? parseFloat(user.stash || '0') : 0))
+      const newStash = Math.max(0, currentStash + dayEarnings)
+      const availableBalance = Math.max(0, user.availableBalance ?? 0)
+      const newEquity = Math.max(0, availableBalance - newStash)
       
       await prisma.user.update({
         data: {
           entries: updatedEntries,
-          stash: newStash,
-          equity: newEquity,
+          stash: newStash as number,
+          equity: newEquity as number,
         },
         where: { id: user.id },
       })
@@ -1097,16 +1328,18 @@ export async function POST(req: Request) {
       
       // Calculate earnings for this week and update stash
       const weekEarnings = parseFloat(integrityWeekData.earnings) || 0
-      const currentStash = parseFloat(user.stash || "0")
-      const newStash = (currentStash + weekEarnings).toString()
-      const availableBalance = parseFloat(user.availableBalance || "0")
-      const newEquity = (availableBalance - parseFloat(newStash)).toString()
+      const currentStash = Math.max(0, typeof user.stash === 'number' 
+        ? user.stash 
+        : (typeof user.stash === 'string' ? parseFloat(user.stash || '0') : 0))
+      const newStash = Math.max(0, currentStash + weekEarnings)
+      const availableBalance = Math.max(0, user.availableBalance ?? 0)
+      const newEquity = Math.max(0, availableBalance - newStash)
       
       await prisma.user.update({
         data: {
           entries: updatedEntries,
-          stash: newStash,
-          equity: newEquity,
+          stash: newStash as number,
+          equity: newEquity as number,
         },
         where: { id: user.id },
       })
@@ -1115,21 +1348,25 @@ export async function POST(req: Request) {
   }
 
   if (data?.withdrawStash) {
-    const currentStash = parseFloat(user.stash || "0")
-    const currentTotalEarnings = parseFloat(user.totalEarnings || "0")
-    const currentAvailableBalance = parseFloat(user.availableBalance || "0")
+    const currentStash = Math.max(0, typeof user.stash === 'number' 
+      ? user.stash 
+      : (typeof user.stash === 'string' ? parseFloat(user.stash || '0') : 0))
+    const currentTotalEarnings = Math.max(0, typeof user.totalEarnings === 'number' 
+      ? user.totalEarnings 
+      : (typeof user.totalEarnings === 'string' ? parseFloat(user.totalEarnings || '0') : 0))
+    const currentAvailableBalance = Math.max(0, user.availableBalance ?? 0)
     
     // Withdraw: subtract stash from availableBalance and add to totalEarnings
     const newAvailableBalance = Math.max(0, currentAvailableBalance - currentStash)
-    const newTotalEarnings = (currentTotalEarnings + currentStash).toString()
-    const newEquity = newAvailableBalance.toString() // Equity = availableBalance since stash is 0
+    const newTotalEarnings = Math.max(0, currentTotalEarnings + currentStash)
+    const newEquity = Math.max(0, newAvailableBalance) // Equity = availableBalance since stash is 0
     
     await prisma.user.update({
       data: {
-        availableBalance: newAvailableBalance.toString(),
-        stash: "0",
-        totalEarnings: newTotalEarnings,
-        equity: newEquity,
+        availableBalance: newAvailableBalance,
+        stash: 0 as number,
+        totalEarnings: newTotalEarnings as number,
+        equity: newEquity as number,
       },
       where: { id: user.id },
     })
