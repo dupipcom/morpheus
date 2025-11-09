@@ -359,10 +359,30 @@ export async function POST(request: NextRequest) {
       const nameSet = new Set(justCompletedNames.map((s) => typeof s === 'string' ? s.toLowerCase() : s))
 
       // Process all incoming tasks to update openTasks
+      // First pass: add any new tasks from incomingTasks that don't exist in openTasks
+      // This ensures new tasks are always saved to completedTasks, even if not being completed
       for (const incoming of incomingTasks) {
         const key = getKey(incoming)
         if (!key) continue
         const existing = byKey[key]
+        
+        // If task doesn't exist in openTasks, add it as a new task
+        if (!existing) {
+          byKey[key] = sanitizeTask({
+            ...incoming,
+            count: incoming.count || 0,
+            status: incoming.status || 'Open',
+            completers: []
+          })
+        }
+      }
+      
+      // Second pass: process tasks for completion/uncompletion logic
+      for (const incoming of incomingTasks) {
+        const key = getKey(incoming)
+        if (!key) continue
+        const existing = byKey[key]
+        if (!existing) continue // Shouldn't happen after first pass, but safety check
         const prevCompletersLen = Array.isArray(existing?.completers) ? existing.completers.length : 0
         
         // Determine new count and delta
@@ -370,13 +390,11 @@ export async function POST(request: NextRequest) {
         let delta: number
         
         if (nameSet.size > 0) {
-          // If filtering by justCompletedNames, only process those tasks
+          // If filtering by justCompletedNames, only increment completers for those tasks
           const nm = typeof incoming?.name === 'string' ? incoming.name.toLowerCase() : ''
           if (!nameSet.has(nm)) {
-            // Not in justCompletedNames, but still update the task if it exists
-            if (existing) {
-              byKey[key] = sanitizeTask({ ...existing, ...incoming })
-            }
+            // Not in justCompletedNames, but still update the task with latest data
+            byKey[key] = sanitizeTask({ ...existing, ...incoming })
             continue
           }
           newCount = prevCompletersLen + 1
@@ -387,7 +405,7 @@ export async function POST(request: NextRequest) {
           delta = Math.max(0, newCount - prevCompletersLen)
         }
         
-        if (delta <= 0 && existing) {
+        if (delta <= 0) {
           // Update task without incrementing completers
           byKey[key] = sanitizeTask({ ...existing, ...incoming })
           continue
@@ -399,7 +417,7 @@ export async function POST(request: NextRequest) {
           appended.push({ id: user.id, earnings: perTaskEarnings.toString(), time: prevCompletersLen + i + 1, completedAt: new Date() })
         }
         const taskRecord = sanitizeTask({
-          ...(existing || {}),
+          ...existing,
           ...incoming,
           // Preserve the status from incoming task (may be 'Open' for partial completions or 'Done' for full)
           status: incoming.status || 'Done',

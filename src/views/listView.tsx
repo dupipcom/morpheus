@@ -274,14 +274,28 @@ const formatDateLocal = (date: Date): string => {
       
       // Determine base tasks: use openTasks if they exist, otherwise fall back to tasklist.tasks
       let base: any[] = []
+      const blueprintTasks = (selectedTaskList?.tasks && selectedTaskList.tasks.length > 0)
+        ? selectedTaskList.tasks
+        : (selectedTaskList?.templateTasks || [])
+      
       if (allOpenTasks.length > 0) {
         // Use openTasks as base
         base = allOpenTasks
+        
+        // Check for new tasks in tasklist.tasks that aren't in openTasks
+        const openTasksKeys = new Set(allOpenTasks.map((t: any) => keyOf(t)))
+        const newTasks = blueprintTasks.filter((t: any) => {
+          const k = keyOf(t)
+          return k && !openTasksKeys.has(k)
+        })
+        
+        // Add new tasks to base (they'll be saved to completedTasks on first completion)
+        if (newTasks.length > 0) {
+          base = [...base, ...newTasks.map((t: any) => ({ ...t, count: 0, status: 'Open' }))]
+        }
       } else {
         // Fall back to tasklist.tasks or templateTasks
-        base = (selectedTaskList?.tasks && selectedTaskList.tasks.length > 0)
-          ? selectedTaskList.tasks
-          : (selectedTaskList?.templateTasks || [])
+        base = blueprintTasks
       }
 
       // Only show open ephemeral tasks from the selected task list
