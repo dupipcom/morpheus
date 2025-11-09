@@ -92,19 +92,19 @@ export const ProfileView = ({
                   value="analytics"
                   className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
                 >
-                  Analytics
+                  {(translations as any)?.publicProfile?.analytics || 'Analytics'}
                 </TabsTrigger>
                 <TabsTrigger 
                   value="notes"
                   className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
                 >
-                  Notes
+                  {(translations as any)?.publicProfile?.notes || 'Notes'}
                 </TabsTrigger>
                 <TabsTrigger 
                   value="templates"
                   className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
                 >
-                  Templates & Lists
+                  {(translations as any)?.publicProfile?.templates || 'Templates & Lists'}
                 </TabsTrigger>
               </TabsList>
               
@@ -113,7 +113,7 @@ export const ProfileView = ({
                   <PublicChartsView chartsData={profile.publicCharts} />
                 ) : (
                   <div className="text-center text-muted-foreground py-8">
-                    <p>No analytics data available yet.</p>
+                    <p>{(translations as any)?.publicProfile?.noAnalyticsData || 'No analytics data available yet.'}</p>
                   </div>
                 )}
               </TabsContent>
@@ -134,7 +134,7 @@ export const ProfileView = ({
           <Card>
             <CardContent className="pt-6">
               <div className="text-center text-muted-foreground">
-                <p>This user hasn't made their profile public yet.</p>
+                <p>{(translations as any)?.publicProfile?.profileNotPublic || 'This user hasn\'t made their profile public yet.'}</p>
               </div>
             </CardContent>
           </Card>
