@@ -155,21 +155,23 @@ export const SteadyTasks = () => {
 
   if (isLoading) {
     return (
-      <ToggleGroup
-        value={[]}
-        onValueChange={() => {}}
-        variant="outline"
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 align-center justify-center w-full m-auto"
-        type="multiple"
-        orientation="horizontal"
-      >
-        {/* Show 5 skeletons on mobile, 8 on desktop */}
-        {[...Array(8)].map((_, index) => (
-          <div key={`skeleton-${index}`} className={`flex flex-col items-center m-1 ${index >= 5 ? 'hidden md:flex' : ''}`}>
-            <Skeleton className="h-[40px] w-full rounded-md" />
-          </div>
-        ))}
-      </ToggleGroup>
+      <div className="w-full px-1 sm:px-0">
+        <ToggleGroup
+          value={[]}
+          onValueChange={() => {}}
+          variant="outline"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 align-center justify-center w-full m-auto"
+          type="multiple"
+          orientation="horizontal"
+        >
+          {/* Show 5 skeletons on mobile, 8 on desktop */}
+          {[...Array(8)].map((_, index) => (
+            <div key={`skeleton-${index}`} className={`flex flex-col items-center m-1 ${index >= 5 ? 'hidden md:flex' : ''}`}>
+              <Skeleton className="h-[40px] w-full rounded-md" />
+            </div>
+          ))}
+        </ToggleGroup>
+      </div>
     )
   }
 
@@ -187,7 +189,7 @@ export const SteadyTasks = () => {
   const hasMoreTasks = steadyTasks.length > mobileLimit
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 w-full px-1 sm:px-0">
       <ToggleGroup
         value={[]}
         onValueChange={() => {}}
