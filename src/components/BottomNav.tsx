@@ -11,7 +11,17 @@ export function BottomNav() {
   const pathname = usePathname()
   const { session } = useContext(GlobalContext)
   
-  const isActive = (path: string) => pathname === path
+  // Check if the current pathname matches the given path
+  // Matches exact path or paths that start with the given path followed by '/'
+  const isActive = (path: string) => {
+    // Exact match
+    const rootPath = pathname.split('/')[3]
+    console.log({ rootPath })
+    if (rootPath === path) return true
+    // Sub-route match (e.g., /app/do/something matches /app/do)
+    if (rootPath.startsWith(path + '/')) return true
+    return false
+  }
 
   // Check if all mood levels are zero for today
   // Default to false (non-destructive) until user data loads
@@ -32,9 +42,13 @@ export function BottomNav() {
       <div className="h-full max-w-7xl mx-auto px-4 flex items-center justify-around gap-4">
         <Link href="/app/feel" className="flex-1">
           <Button
-            variant={isActive('/app/feel') ? 'default' : 'outline'}
-            className="w-full h-14 flex items-center justify-center"
-            style={allMoodZero ? { backgroundColor: 'rgb(255, 106, 158)' } : undefined}
+            variant={isActive('feel') ? 'default' : 'outline'}
+            key={`feel--${allMoodZero ? 'destructive' : 'primary'}--${isActive('feel') ? 'active' : 'inactive'}`}
+            className={`w-full h-14 flex items-center justify-center ${
+              allMoodZero ? '!bg-destructive !text-foreground' : ''
+            } ${
+              isActive('feel') ? 'bg-primary dark:bg-foreground text-background' : ''
+            } `}
           >
             <Heart className="w-6 h-6" />
           </Button>
@@ -42,8 +56,10 @@ export function BottomNav() {
         
         <Link href="/app/do" className="flex-1">
           <Button
-            variant={isActive('/app/do') ? 'default' : 'outline'}
-            className="w-full h-14 flex items-center justify-center"
+            variant={isActive('do') ? 'default' : 'outline'}
+            className={`w-full h-14 flex items-center justify-center ${
+              isActive('do') ? 'bg-primary text-primary-foreground' : ''
+            }`}
           >
             <CheckSquare className="w-6 h-6" />
           </Button>
@@ -51,8 +67,10 @@ export function BottomNav() {
         
         <Link href="/app/be" className="flex-1">
           <Button
-            variant={isActive('/app/be') ? 'default' : 'outline'}
-            className="w-full h-14 flex items-center justify-center"
+            variant={isActive('be') ? 'default' : 'outline'}
+            className={`w-full h-14 flex items-center justify-center ${
+              isActive('be') ? 'bg-muted text-foreground dark:bg-foreground dark:text-background' : ''
+            }`}
           >
             <Users className="w-6 h-6" />
           </Button>
@@ -60,8 +78,10 @@ export function BottomNav() {
         
         <Link href="/app/invest" className="flex-1">
           <Button
-            variant={isActive('/app/invest') ? 'default' : 'outline'}
-            className="w-full h-14 flex items-center justify-center"
+            variant={isActive('invest') ? 'default' : 'outline'}
+            className={`w-full h-14 flex items-center justify-center ${
+              isActive('invest') ? 'bg-primary text-primary-foreground' : ''
+            }`}
           >
             <Coins className="w-6 h-6" />
           </Button>
