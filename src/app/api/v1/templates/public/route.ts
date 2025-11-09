@@ -21,37 +21,58 @@ export async function GET(request: NextRequest) {
       visibility: 'PUBLIC'
     })
 
-    // If user is authenticated, include friends' and close friends' templates
+    // If user is authenticated, include templates from users who have the current user in their friends/closeFriends lists
     if (userId) {
       const currentUser = await prisma.user.findUnique({
         where: { userId },
         select: {
-          id: true,
-          friends: true,
-          closeFriends: true
+          id: true
         }
       })
 
       if (currentUser) {
-        const friendIds = currentUser.friends || []
-        const closeFriendIds = currentUser.closeFriends || []
+        // Find all users who have the current user in their friends list
+        const usersWithCurrentUserAsFriend = await prisma.user.findMany({
+          where: {
+            friends: {
+              has: currentUser.id
+            }
+          },
+          select: {
+            id: true
+          }
+        })
+        const friendUserIds = usersWithCurrentUserAsFriend.map(u => u.id)
 
-        // Include templates from friends with FRIENDS visibility
-        if (friendIds.length > 0) {
+        // Find all users who have the current user in their closeFriends list
+        const usersWithCurrentUserAsCloseFriend = await prisma.user.findMany({
+          where: {
+            closeFriends: {
+              has: currentUser.id
+            }
+          },
+          select: {
+            id: true
+          }
+        })
+        const closeFriendUserIds = usersWithCurrentUserAsCloseFriend.map(u => u.id)
+
+        // Include templates from users who have current user in their friends list (FRIENDS visibility)
+        if (friendUserIds.length > 0) {
           whereClause.OR.push({
             AND: [
               { visibility: 'FRIENDS' },
-              { owners: { hasSome: friendIds } }
+              { owners: { hasSome: friendUserIds } }
             ]
           })
         }
 
-        // Include templates from close friends with CLOSE_FRIENDS visibility
-        if (closeFriendIds.length > 0) {
+        // Include templates from users who have current user in their closeFriends list (CLOSE_FRIENDS visibility)
+        if (closeFriendUserIds.length > 0) {
           whereClause.OR.push({
             AND: [
               { visibility: 'CLOSE_FRIENDS' },
-              { owners: { hasSome: closeFriendIds } }
+              { owners: { hasSome: closeFriendUserIds } }
             ]
           })
         }
