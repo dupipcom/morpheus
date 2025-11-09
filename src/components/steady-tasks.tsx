@@ -1,12 +1,10 @@
 'use client'
 
 import { useMemo, useContext, useEffect, useState, useCallback, useRef } from 'react'
-import Link from 'next/link'
 import { GlobalContext } from '@/lib/contexts'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { OptionsButton, OptionsMenuItem } from '@/components/OptionsButton'
-import { Button } from '@/components/ui/button'
 import { Circle, Minus } from 'lucide-react'
 import { useI18n } from '@/lib/contexts/i18n'
 
@@ -270,25 +268,6 @@ export const SteadyTasks = () => {
             </div>
           )
         })}
-        {/* View More link */}
-        {hasMoreTasks && (
-          <div className="flex flex-col items-center m-1 md:hidden">
-            <Link href="/app/do" className="w-full">
-              <Button variant="outline" className="w-full min-h-[40px] h-auto">
-                View More
-              </Button>
-            </Link>
-          </div>
-        )}
-        {steadyTasks.length > desktopLimit && (
-          <div className="hidden md:flex flex-col items-center m-1">
-            <Link href="/app/do" className="w-full">
-              <Button variant="outline" className="w-full min-h-[40px] h-auto">
-                View More
-              </Button>
-            </Link>
-          </div>
-        )}
       </ToggleGroup>
     </div>
   )

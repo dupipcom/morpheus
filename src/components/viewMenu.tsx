@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -8,7 +9,7 @@ import {
 } from "@/components/ui/navigation-menu"
 import { SteadyTasks } from '@/components/steady-tasks'
 
-export const ViewMenu = ({ active }: { active: string }) =>{
+export const ViewMenu = ({ active, children }: { active: string; children?: React.ReactNode }) =>{
   return <NavigationMenu className="flex flex-col center text-center w-full m-auto">
     <NavigationMenuList className="flex flex-wrap justify-center gap-2">
       <NavigationMenuItem>
@@ -33,7 +34,7 @@ export const ViewMenu = ({ active }: { active: string }) =>{
       </NavigationMenuItem>
     </NavigationMenuList>
     <div className="mt-8">
-      <SteadyTasks />
+      {children !== undefined ? children : <SteadyTasks />}
     </div>
   </NavigationMenu>
 }
