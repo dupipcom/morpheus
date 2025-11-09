@@ -12,10 +12,14 @@ export async function GET(request: NextRequest) {
     const { userId } = await auth()
     
     // Build where clause based on authentication and friendship status
-    // Note: NoteVisibility enum only has PRIVATE, FRIENDS, CLOSE_FRIENDS (no PUBLIC)
     let whereClause: any = {
       OR: []
     }
+
+    // Always include PUBLIC notes (from all users, including the authenticated user's own public notes)
+    whereClause.OR.push({
+      visibility: 'PUBLIC'
+    })
 
     // If user is authenticated, include friends' and close friends' notes
     if (userId) {
@@ -52,11 +56,6 @@ export async function GET(request: NextRequest) {
           })
         }
       }
-    }
-
-    // If no OR conditions (user not authenticated or has no friends), return empty
-    if (whereClause.OR.length === 0) {
-      whereClause = { id: 'nonexistent' } // Return no results
     }
 
     // Fetch notes with user profile info
