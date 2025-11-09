@@ -305,14 +305,14 @@ const formatDateLocal = (date: Date): string => {
         : []
 
       // Only include closed ephemeral tasks from the selected task list that were closed on the selected date (or within selected week for weekly lists)
+      // Use completedOn field (YYYY-MM-DD format) to filter by date
       const closedEphemerals = (selectedTaskList && selectedTaskList.id === selectedTaskListId && selectedTaskList?.ephemeralTasks?.closed)
         ? (selectedTaskList.ephemeralTasks.closed || [])
             .filter((t: any) => {
-              // Must have a completedAt timestamp
-              if (!t.completedAt) return false
+              // Must have a completedOn date (YYYY-MM-DD format)
+              if (!t.completedOn) return false
               
-              // Format completed date in local timezone for comparison
-              const completedDate = formatDateLocal(new Date(t.completedAt))
+              const completedDate = t.completedOn
               
               // For weekly lists, check if completed within the selected week
               if (isWeeklyList) {
@@ -325,8 +325,42 @@ const formatDateLocal = (date: Date): string => {
             .map((t: any) => ({ ...t, isEphemeral: true }))
         : []
 
+      // Get all ephemeral task IDs/keys to filter them out of base tasks
+      // Ephemeral tasks should only come from ephemeralTasks.open/closed, not from completedTasks
+      const allEphemeralKeys = new Set<string>()
+      ;[...ephemerals, ...closedEphemerals].forEach((t: any) => {
+        const k = keyOf(t)
+        if (k) allEphemeralKeys.add(k)
+      })
+      
+      // Also check if any tasks in base/allOpenTasks/allClosedTasks are ephemeral tasks
+      // by checking if they have an id that matches ephemeral task IDs
+      const ephemeralTaskIds = new Set<string>()
+      if (selectedTaskList?.ephemeralTasks?.open) {
+        (selectedTaskList.ephemeralTasks.open || []).forEach((t: any) => {
+          if (t.id) ephemeralTaskIds.add(String(t.id))
+        })
+      }
+      if (selectedTaskList?.ephemeralTasks?.closed) {
+        (selectedTaskList.ephemeralTasks.closed || []).forEach((t: any) => {
+          if (t.id) ephemeralTaskIds.add(String(t.id))
+        })
+      }
+      
+      // Filter out ephemeral tasks from base (they should only come from ephemeralTasks)
+      const baseWithoutEphemerals = base.filter((t: any) => {
+        const k = keyOf(t)
+        // If task has an id that matches an ephemeral task ID, exclude it
+        if (t.id && ephemeralTaskIds.has(String(t.id))) return false
+        // If task key is in ephemeral keys, exclude it
+        if (k && allEphemeralKeys.has(k)) return false
+        // If task is already marked as ephemeral, exclude it
+        if (t.isEphemeral) return false
+        return true
+      })
+
       // Merge base tasks with closedTasks (closedTasks take precedence for completed tasks)
-      const overlayed = base.map((t: any) => {
+      const overlayed = baseWithoutEphemerals.map((t: any) => {
         const k = keyOf(t)
         const closedTask = k ? closedTasksByKey[k] : undefined
         
@@ -352,19 +386,30 @@ const formatDateLocal = (date: Date): string => {
       })
       
       // Add any closedTasks that aren't in base (shouldn't happen, but handle edge cases)
-      const baseKeys = new Set(base.map((t: any) => keyOf(t)))
+      // Filter out ephemeral tasks from additionalClosedTasks as well
+      const baseKeys = new Set(baseWithoutEphemerals.map((t: any) => keyOf(t)))
       const additionalClosedTasks = allClosedTasks.filter((t: any) => {
         const k = keyOf(t)
-        return k && !baseKeys.has(k)
+        if (!k) return false
+        // Exclude ephemeral tasks from additionalClosedTasks
+        if (t.id && ephemeralTaskIds.has(String(t.id))) return false
+        if (t.isEphemeral) return false
+        return !baseKeys.has(k)
       })
 
       // Combine all ephemeral tasks (open + closed for current date/timeframe)
       const allEphemerals = [...ephemerals, ...closedEphemerals]
 
+      // Dedup ephemeral tasks by key against overlayed and additionalClosedTasks
+      // Use key-based deduplication (id, localeKey, or name) for more accurate matching
+      const overlayedKeys = new Set(overlayed.map((t: any) => keyOf(t)).filter(Boolean))
+      const additionalClosedKeys = new Set(additionalClosedTasks.map((t: any) => keyOf(t)).filter(Boolean))
+      const allExistingKeys = new Set([...overlayedKeys, ...additionalClosedKeys])
       
-      // Dedup ephemeral by name against base
-      const names = new Set(overlayed.map((t: any) => t.name))
-      const dedupEphemeral = allEphemerals.filter((t: any) => !names.has(t.name))
+      const dedupEphemeral = allEphemerals.filter((t: any) => {
+        const k = keyOf(t)
+        return k && !allExistingKeys.has(k)
+      })
       
       return [...overlayed, ...additionalClosedTasks, ...dedupEphemeral]
     }, [selectedTaskList, year, date, isWeeklyList, getWeekDates, selectedDate, datesToCheck])

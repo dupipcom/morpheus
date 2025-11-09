@@ -438,7 +438,9 @@ export async function POST(request: NextRequest) {
           if (unNames.has(nm)) {
             const comps: any[] = Array.isArray(t?.completers) ? [...t.completers] : []
             if (comps.length > 0) comps.pop()
-            const updatedTask = { ...t, status: 'Open', completers: comps, count: comps.length }
+            // Remove completedOn when reopening task
+            const { completedOn, ...taskWithoutCompletedOn } = t
+            const updatedTask = { ...taskWithoutCompletedOn, status: 'Open', completers: comps, count: comps.length }
             // Move from closedTasks to openTasks
             closedTasks.splice(i, 1)
             const key = getKey(updatedTask)
@@ -453,7 +455,9 @@ export async function POST(request: NextRequest) {
           if (!unNames.has(nm)) continue
           const comps: any[] = Array.isArray(t?.completers) ? [...t.completers] : []
           if (comps.length > 0) comps.pop()
-          const updatedTask = { ...t, status: 'Open', completers: comps, count: comps.length }
+          // Remove completedOn when reopening task
+          const { completedOn, ...taskWithoutCompletedOn } = t
+          const updatedTask = { ...taskWithoutCompletedOn, status: 'Open', completers: comps, count: comps.length }
           const k = getKey(updatedTask)
           if (k) byKey[k] = updatedTask
         }
@@ -462,6 +466,15 @@ export async function POST(request: NextRequest) {
       // Separate openTasks and closedTasks based on status
       const finalOpenTasks: any[] = []
       const finalClosedTasks: any[] = [...closedTasks] // Keep existing closed tasks
+      
+      // Format date as YYYY-MM-DD for completedOn
+      const formatDateForCompletedOn = (d: Date): string => {
+        const year = d.getFullYear()
+        const month = String(d.getMonth() + 1).padStart(2, '0')
+        const day = String(d.getDate()).padStart(2, '0')
+        return `${year}-${month}-${day}`
+      }
+      const completedOnDate = formatDateForCompletedOn(completionDate)
       
       for (const task of Object.values(byKey)) {
         const taskStatus = (task as any).status
@@ -474,12 +487,17 @@ export async function POST(request: NextRequest) {
           const key = getKey(task as any)
           const alreadyClosed = finalClosedTasks.some((t: any) => getKey(t) === key)
           if (!alreadyClosed) {
-            finalClosedTasks.push(task as any)
+            // Add completedOn when task is first closed
+            finalClosedTasks.push({ ...task as any, completedOn: completedOnDate })
           } else {
-            // Update existing closed task
+            // Update existing closed task, preserve completedOn if it exists, otherwise set it
             const index = finalClosedTasks.findIndex((t: any) => getKey(t) === key)
             if (index >= 0) {
-              finalClosedTasks[index] = task as any
+              const existingTask = finalClosedTasks[index]
+              finalClosedTasks[index] = { 
+                ...task as any, 
+                completedOn: existingTask.completedOn || completedOnDate 
+              }
             }
           }
         } else {
@@ -841,12 +859,31 @@ export async function POST(request: NextRequest) {
       // Support both single and batch close operations
       if (body.ephemeralTasks.close) {
         const closeOps = Array.isArray(body.ephemeralTasks.close) ? body.ephemeralTasks.close : [body.ephemeralTasks.close]
+        // Format date as YYYY-MM-DD for completedOn
+        const formatDateForCompletedOn = (d: Date): string => {
+          const year = d.getFullYear()
+          const month = String(d.getMonth() + 1).padStart(2, '0')
+          const day = String(d.getDate()).padStart(2, '0')
+          return `${year}-${month}-${day}`
+        }
+        const completedOnDate = formatDateForCompletedOn(new Date())
         closeOps.forEach((closeOp: any) => {
           const id = closeOp.id
           const count = closeOp.count
           const item = open.find((x: any) => x.id === id)
           open = open.filter((x: any) => x.id !== id)
-          if (item) closed = [ { ...item, status: 'Done', count: count || item.count, completedAt: new Date().toISOString() }, ...closed ]
+          if (item) {
+            closed = [ 
+              { 
+                ...item, 
+                status: 'Done', 
+                count: count || item.count, 
+                completedAt: new Date().toISOString(),
+                completedOn: completedOnDate
+              }, 
+              ...closed 
+            ]
+          }
         })
       }
 
@@ -877,9 +914,9 @@ export async function POST(request: NextRequest) {
           const item = closed.find((x: any) => x.id === id)
           closed = closed.filter((x: any) => x.id !== id)
           if (item) {
-            // Remove completedAt and reset status when reopening
-            const { completedAt, ...taskWithoutCompletedAt } = item
-            open = [{ ...taskWithoutCompletedAt, status: 'Open', count: count !== undefined ? count : (item.count || 0) }, ...open]
+            // Remove completedAt and completedOn, and reset status when reopening
+            const { completedAt, completedOn, ...taskWithoutCompletedFields } = item
+            open = [{ ...taskWithoutCompletedFields, status: 'Open', count: count !== undefined ? count : (item.count || 0) }, ...open]
           }
         })
       }
