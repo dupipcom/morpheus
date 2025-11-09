@@ -778,6 +778,7 @@ const formatDateLocal = (date: Date): string => {
     }, [selectedTaskList, mergedTasks, values, date, refreshTaskLists, refreshUser, taskStatuses])
 
     // Initialize task statuses from API data
+    // Reset and reinitialize when date, task list, or mergedTasks change
     useEffect(() => {
       if (!selectedTaskList) return
       const statuses: Record<string, TaskStatus> = {}
@@ -799,7 +800,7 @@ const formatDateLocal = (date: Date): string => {
       })
 
       setTaskStatuses(statuses)
-    }, [selectedTaskList?.id, mergedTasks.length])
+    }, [selectedTaskList?.id, date, year, mergedTasks])
 
     const refreshLists = useCallback(async () => { await refreshTaskLists() }, [refreshTaskLists])
 
