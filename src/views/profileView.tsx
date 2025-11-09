@@ -44,8 +44,8 @@ export const ProfileView = ({
   const displayName = fullName || profile.userName || 'Anonymous User'
 
   return (
-    <main className="p-2 flex bg-background">
-      <div className="max-w-4xl mx-auto p-4">
+    <main className="p-2 flex bg-background overflow-x-hidden">
+      <div className="max-w-4xl mx-auto p-4 w-full min-w-0">
         {/* Profile Header */}
         <Card className="mb-6">
           <CardContent>
@@ -58,15 +58,15 @@ export const ProfileView = ({
                     className="w-20 h-20 rounded-full object-cover mx-auto sm:mx-0"
                   />
                 )}
-                <div className="flex-1 text-center sm:text-left">
-                  <h1 className="text-2xl font-bold">
+                <div className="flex-1 text-center sm:text-left min-w-0">
+                  <h1 className="text-2xl font-bold break-words">
                     {displayName}
                   </h1>
                   {profile.userName && (
-                    <p className="text-muted-foreground">@{profile.userName}</p>
+                    <p className="text-muted-foreground break-words">@{profile.userName}</p>
                   )}
                   {profile.bio && (
-                    <p className="mt-2 text-sm">{profile.bio}</p>
+                    <p className="mt-2 text-sm break-words">{profile.bio}</p>
                   )}
                 </div>
               </div>
@@ -84,50 +84,52 @@ export const ProfileView = ({
         </Card>
 
         {/* Tabbed Content Section */}
-          <Card className="mb-6">
-          <CardContent className="pt-6">
-            <Tabs defaultValue="notes" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
+        <div className="mb-6 w-full min-w-0">
+          <Tabs defaultValue="notes" className="w-full">
+            <div className="overflow-x-auto mb-4 -mx-1 px-1">
+              <TabsList className="inline-flex w-full min-w-max">
                 <TabsTrigger 
                   value="analytics"
-                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground whitespace-nowrap flex-shrink-0"
                 >
                   {(translations as any)?.publicProfile?.analytics || 'Analytics'}
                 </TabsTrigger>
                 <TabsTrigger 
                   value="notes"
-                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground whitespace-nowrap flex-shrink-0"
                 >
                   {(translations as any)?.publicProfile?.notes || 'Notes'}
                 </TabsTrigger>
                 <TabsTrigger 
                   value="templates"
-                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground whitespace-nowrap flex-shrink-0"
                 >
                   {(translations as any)?.publicProfile?.templates || 'Templates & Lists'}
                 </TabsTrigger>
               </TabsList>
-              
-              <TabsContent value="analytics" className="mt-4">
-                {profile.publicCharts ? (
-              <PublicChartsView chartsData={profile.publicCharts} />
-                ) : (
-                  <div className="text-center text-muted-foreground py-8">
-                    <p>{(translations as any)?.publicProfile?.noAnalyticsData || 'No analytics data available yet.'}</p>
-                  </div>
-                )}
-              </TabsContent>
-              
-              <TabsContent value="notes" className="mt-4">
-                <PublicNotesViewer userName={userName} showCard={false} />
-              </TabsContent>
-              
-              <TabsContent value="templates" className="mt-4">
-                <PublicTemplatesViewer userName={userName} showCard={false} isLoggedIn={isLoggedIn} />
-              </TabsContent>
-            </Tabs>
-            </CardContent>
-          </Card>
+            </div>
+            
+            <TabsContent value="analytics" className="mt-4 min-w-0">
+              {profile.publicCharts ? (
+                <div className="w-full min-w-0 overflow-x-auto">
+                  <PublicChartsView chartsData={profile.publicCharts} />
+                </div>
+              ) : (
+                <div className="text-center text-muted-foreground py-8">
+                  <p>{(translations as any)?.publicProfile?.noAnalyticsData || 'No analytics data available yet.'}</p>
+                </div>
+              )}
+            </TabsContent>
+            
+            <TabsContent value="notes" className="mt-4 min-w-0">
+              <PublicNotesViewer userName={userName} showCard={false} />
+            </TabsContent>
+            
+            <TabsContent value="templates" className="mt-4 min-w-0">
+              <PublicTemplatesViewer userName={userName} showCard={false} isLoggedIn={isLoggedIn} />
+            </TabsContent>
+          </Tabs>
+        </div>
 
         {/* No public data message */}
         {!hasAnyPublicData && !profile.publicCharts && (
