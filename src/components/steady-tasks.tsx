@@ -55,6 +55,7 @@ export const SteadyTasks = () => {
   const [stableTaskLists, setStableTaskLists] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isExpanded, setIsExpanded] = useState(false)
+  const [optimisticStatuses, setOptimisticStatuses] = useState<Record<string, TaskStatus>>({})
   const initialFetchDone = useRef(false)
 
   // Maintain stable task lists that never clear once loaded
@@ -102,17 +103,23 @@ export const SteadyTasks = () => {
       }))
       
       // Combine all tasks
-      const tasks = [...baseTasks, ...ephemeralTasks].map((t: any) => ({
-        ...t,
-        taskListName: taskList.name || taskList.role,
-        taskListId: taskList.id,
-        taskListRole: t.taskListRole || taskList.role || ''
-      }))
+      const tasks = [...baseTasks, ...ephemeralTasks].map((t: any) => {
+        const taskKey = t?.id || t?.localeKey || t?.name
+        // Apply optimistic status if available
+        const optimisticStatus = optimisticStatuses[taskKey]
+        return {
+          ...t,
+          taskListName: taskList.name || taskList.role,
+          taskListId: taskList.id,
+          taskListRole: t.taskListRole || taskList.role || '',
+          taskStatus: optimisticStatus || t.taskStatus
+        }
+      })
       
       allTasks.push(...tasks)
     })
     
-    // Filter for tasks with status "steady" or "in progress"
+    // Filter for tasks with status "steady" or "in progress" (excluding "done")
     const filteredTasks = allTasks.filter((task: any) => {
       const taskStatus = (task?.taskStatus as TaskStatus) || 'open'
       return taskStatus === 'steady' || taskStatus === 'in progress'
@@ -132,10 +139,16 @@ export const SteadyTasks = () => {
       const priorityB = getRolePriority(b.taskListRole || '')
       return priorityA - priorityB
     })
-  }, [stableTaskLists])
+  }, [stableTaskLists, optimisticStatuses])
 
   const handleStatusChange = useCallback(async (task: any, taskListId: string, newStatus: TaskStatus) => {
     const key = task?.id || task?.localeKey || task?.name
+    
+    // Optimistic update - update UI immediately
+    setOptimisticStatuses(prev => ({
+      ...prev,
+      [key]: newStatus
+    }))
     
     try {
       await fetch('/api/v1/tasklists', {
@@ -148,11 +161,33 @@ export const SteadyTasks = () => {
           taskStatus: newStatus
         })
       })
+      
+      // Refresh task lists to get server state
       await refreshTaskLists()
+      
+      // Clear optimistic status after successful update
+      setOptimisticStatuses(prev => {
+        const updated = { ...prev }
+        delete updated[key]
+        return updated
+      })
     } catch (error) {
       console.error('Error updating task status:', error)
+      // Revert optimistic update on error
+      setOptimisticStatuses(prev => {
+        const updated = { ...prev }
+        delete updated[key]
+        return updated
+      })
     }
   }, [refreshTaskLists])
+  
+  const handleToggleClick = useCallback((task: any) => {
+    // When clicking the toggle item, mark as "done"
+    if (task.taskListId) {
+      handleStatusChange(task, task.taskListId, 'done')
+    }
+  }, [handleStatusChange])
 
   if (isLoading) {
     return (
@@ -261,10 +296,10 @@ export const SteadyTasks = () => {
                   align="start"
                 />
                 <ToggleGroupItem 
-                  className="rounded-md leading-7 text-sm min-h-[40px] h-auto flex-1 whitespace-normal break-words py-2" 
+                  className="rounded-md leading-7 text-sm min-h-[40px] h-auto flex-1 whitespace-normal break-words py-2 cursor-pointer" 
                   value={task.name} 
                   aria-label={task.name}
-                  disabled
+                  onClick={() => handleToggleClick(task)}
                 >
                   {task.times > 1 ? `${task.count || 0}/${task.times} ` : ''}{task.displayName || task.name}
                 </ToggleGroupItem>
