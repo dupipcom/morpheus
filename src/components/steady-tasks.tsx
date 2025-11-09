@@ -619,19 +619,33 @@ export const SteadyTasks = () => {
           )
         })}
       </ToggleGroup>
-      {/* Expand button overlay for mobile */}
+      {/* Expand button: overlay on first task when collapsed, below tasks when expanded */}
       {hasMoreTasks && (
-        <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="md:hidden absolute bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-2 bg-background/95 backdrop-blur-sm border border-border rounded-full p-2 shadow-lg hover:bg-background transition-colors z-10"
-          aria-label={isExpanded ? 'Show less tasks' : 'Show more tasks'}
-        >
-          {isExpanded ? (
-            <ChevronUp className="h-5 w-5 text-foreground" />
+        <>
+          {!isExpanded ? (
+            // When collapsed: overlay on top of first task, centered
+            <div className="md:hidden absolute top-0 left-1/2 transform -translate-x-1/2 z-10">
+              <button
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="bg-background/95 backdrop-blur-sm border border-border rounded-full p-2 shadow-lg hover:bg-background transition-colors"
+                aria-label="Show more tasks"
+              >
+                <ChevronDown className="h-5 w-5 text-foreground" />
+              </button>
+            </div>
           ) : (
-            <ChevronDown className="h-5 w-5 text-foreground" />
+            // When expanded: appear below last visible task
+            <div className="md:hidden flex justify-center mt-2">
+              <button
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="bg-background/95 backdrop-blur-sm border border-border rounded-full p-2 shadow-lg hover:bg-background transition-colors z-10"
+                aria-label="Show less tasks"
+              >
+                <ChevronUp className="h-5 w-5 text-foreground" />
+              </button>
+            </div>
           )}
-        </button>
+        </>
       )}
     </div>
   )
