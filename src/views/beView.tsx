@@ -499,73 +499,69 @@ export const BeView = () => {
 
   return (
     <div className="max-w-[1200px] m-auto p-4">
-      <Card className="mb-6">
-        <CardContent className="pt-6">
-          <Tabs defaultValue="activity" className="w-full">
-            <TabsList className="grid w-full grid-cols-5">
-              <TabsTrigger 
-                value="activity"
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-              >
-                {t('socialView.activity')}
-              </TabsTrigger>
-              <TabsTrigger 
-                value="friends"
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-              >
-                {t('socialView.friends')}
-              </TabsTrigger>
-              <TabsTrigger 
-                value="events"
-                disabled
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-              >
-                {t('socialView.events')}
-              </TabsTrigger>
-              <TabsTrigger 
-                value="spaces"
-                disabled
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-              >
-                {t('socialView.spaces')}
-              </TabsTrigger>
-              <TabsTrigger 
-                value="organizations"
-                disabled
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-              >
-                {t('socialView.organizations')}
-              </TabsTrigger>
-            </TabsList>
+      <Tabs defaultValue="activity" className="w-full">
+        <TabsList className="grid w-full grid-cols-5">
+          <TabsTrigger 
+            value="activity"
+            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+          >
+            {t('socialView.activity')}
+          </TabsTrigger>
+          <TabsTrigger 
+            value="friends"
+            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+          >
+            {t('socialView.friends')}
+          </TabsTrigger>
+          <TabsTrigger 
+            value="events"
+            disabled
+            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+          >
+            {t('socialView.events')}
+          </TabsTrigger>
+          <TabsTrigger 
+            value="spaces"
+            disabled
+            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+          >
+            {t('socialView.spaces')}
+          </TabsTrigger>
+          <TabsTrigger 
+            value="organizations"
+            disabled
+            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+          >
+            {t('socialView.organizations')}
+          </TabsTrigger>
+        </TabsList>
 
-            <TabsContent value="activity" className="mt-4">
-              {renderActivityFeed()}
-            </TabsContent>
+        <TabsContent value="activity" className="mt-4">
+          {renderActivityFeed()}
+        </TabsContent>
 
-            <TabsContent value="friends" className="mt-4">
-              {renderFriends()}
-            </TabsContent>
+        <TabsContent value="friends" className="mt-4">
+          {renderFriends()}
+        </TabsContent>
 
-            <TabsContent value="events" className="mt-4">
-              <div className="text-center text-muted-foreground py-12">
-                <p>{t('socialView.events')} - Coming soon</p>
-              </div>
-            </TabsContent>
+        <TabsContent value="events" className="mt-4">
+          <div className="text-center text-muted-foreground py-12">
+            <p>{t('socialView.events')} - Coming soon</p>
+          </div>
+        </TabsContent>
 
-            <TabsContent value="spaces" className="mt-4">
-              <div className="text-center text-muted-foreground py-12">
-                <p>{t('socialView.spaces')} - Coming soon</p>
-              </div>
-            </TabsContent>
+        <TabsContent value="spaces" className="mt-4">
+          <div className="text-center text-muted-foreground py-12">
+            <p>{t('socialView.spaces')} - Coming soon</p>
+          </div>
+        </TabsContent>
 
-            <TabsContent value="organizations" className="mt-4">
-              <div className="text-center text-muted-foreground py-12">
-                <p>{t('socialView.organizations')} - Coming soon</p>
-              </div>
-            </TabsContent>
-          </Tabs>
-        </CardContent>
-      </Card>
+        <TabsContent value="organizations" className="mt-4">
+          <div className="text-center text-muted-foreground py-12">
+            <p>{t('socialView.organizations')} - Coming soon</p>
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   )
 } 
