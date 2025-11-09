@@ -20,7 +20,7 @@ import { updateUser, isUserDataReady, useEnhancedLoadingState, useUserData } fro
 import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
 
-import { Eye, EyeOff, DollarSign } from "lucide-react"
+import { Eye, EyeOff, DollarSign, ChevronDown, ChevronUp } from "lucide-react"
 
 import { useLocalStorage } from 'usehooks-ts';
 
@@ -35,6 +35,7 @@ export const ViewMenu = ({ active }: { active: string }) =>{
   const [value, setValue, removeValue] = useLocalStorage('redacted', 0);
   const [hiddenBalance, setHiddenBalance] = useState(true)
   const [localBalance, setLocalBalance] = useState(serverBalance)
+  const [isDetailsExpanded, setIsDetailsExpanded] = useState(false)
 
   const { isLoading, refreshUser } = useUserData()
 
@@ -134,8 +135,27 @@ export const ViewMenu = ({ active }: { active: string }) =>{
       )}
     </div>
     
+    {/* Expand button - visible on all screen sizes */}
+    <Button
+      variant="ghost"
+      className="mt-2 w-full text-muted-foreground hover:text-foreground"
+      onClick={() => setIsDetailsExpanded(!isDetailsExpanded)}
+    >
+      {isDetailsExpanded ? (
+        <>
+          <ChevronUp className="h-4 w-4 mr-1" />
+          Hide Details
+        </>
+      ) : (
+        <>
+          <ChevronDown className="h-4 w-4 mr-1" />
+          Show Details
+        </>
+      )}
+    </Button>
+    
     {/* Display stash and equity values */}
-    <div className="mt-4 space-y-2">
+    <div className={`mt-4 space-y-2 ${isDetailsExpanded ? 'block' : 'hidden'}`}>
       <div className="flex justify-between text-sm">
         <span>{t('common.stash')}:</span>
         <span className={hiddenBalance ? "blur-sm" : ""}>
