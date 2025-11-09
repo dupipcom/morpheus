@@ -123,12 +123,15 @@ const getIconColor = (status: TaskStatus): string => {
       return role && typeof role === 'string' && role.startsWith('weekly.')
     }, [selectedTaskList])
 
-    // Profiles cache (userId -> userName) for collaborators and completers
+    // Profiles cache (userId -> userName) for owners, collaborators and completers
     const [collabProfiles, setCollabProfiles] = useState<Record<string, string>>({})
     useEffect(() => {
       let cancelled = false
       const run = async () => {
         try {
+          // Owners
+          const owners: string[] = Array.isArray((selectedTaskList as any)?.owners) ? (selectedTaskList as any).owners : []
+          
           // Collaborators
           const collaborators: string[] = Array.isArray((selectedTaskList as any)?.collaborators) ? (selectedTaskList as any).collaborators : []
 
@@ -143,7 +146,7 @@ const getIconColor = (status: TaskStatus): string => {
             })
           })
 
-          const ids = Array.from(new Set([...(collaborators || []), ...Array.from(completerIds)]))
+          const ids = Array.from(new Set([...(owners || []), ...(collaborators || []), ...Array.from(completerIds)]))
           if (!ids.length) { setCollabProfiles({}); return }
           const res = await fetch(`/api/v1/profiles/by-ids?ids=${encodeURIComponent(ids.join(','))}`)
           if (!cancelled && res.ok) {
@@ -160,7 +163,7 @@ const getIconColor = (status: TaskStatus): string => {
       }
       run()
       return () => { cancelled = true }
-    }, [selectedTaskList?.id, JSON.stringify((selectedTaskList as any)?.collaborators || []), isWeeklyList, getWeekDates, date, year])
+    }, [selectedTaskList?.id, JSON.stringify((selectedTaskList as any)?.owners || []), JSON.stringify((selectedTaskList as any)?.collaborators || []), isWeeklyList, getWeekDates, date, year])
 
     // Build tasks: tasks (working copy) + ephemeralTasks.open, overlay completedTasks[year][date or week]
     const mergedTasks = useMemo(() => {
@@ -953,7 +956,14 @@ const getIconColor = (status: TaskStatus): string => {
             const isDone = (task?.status === 'Done') || values.includes(task?.name)
             const lastCompleter = Array.isArray(task?.completers) && task.completers.length > 0 ? task.completers[task.completers.length - 1] : undefined
             const isCollabCompleter = lastCompleter && Array.isArray((selectedTaskList as any)?.collaborators) && (selectedTaskList as any).collaborators.includes(lastCompleter.id)
-            const completerName = lastCompleter ? (collabProfiles[String(lastCompleter.id)] || String(lastCompleter.id)) : ''
+            const isOwnerCompleter = lastCompleter && Array.isArray((selectedTaskList as any)?.owners) && (selectedTaskList as any).owners.includes(lastCompleter.id)
+            const hasCollaborators = Array.isArray((selectedTaskList as any)?.collaborators) && (selectedTaskList as any).collaborators.length > 0
+            
+            // Get the completer name: if there's a lastCompleter use them, otherwise use the owner
+            const ownerId = Array.isArray((selectedTaskList as any)?.owners) && (selectedTaskList as any).owners.length > 0 ? (selectedTaskList as any).owners[0] : undefined
+            const completerName = lastCompleter 
+              ? (collabProfiles[String(lastCompleter.id)] || String(lastCompleter.id))
+              : (ownerId ? (collabProfiles[String(ownerId)] || String(ownerId)) : '')
 
             const key = task?.id || task?.localeKey || task?.name
             // Prioritize manually set status over automatic count-based status
@@ -1035,10 +1045,7 @@ const getIconColor = (status: TaskStatus): string => {
                   </ToggleGroupItem>
                 </div>
                 {isDone
-                  && Array.isArray((selectedTaskList as any)?.collaborators)
-                  && (selectedTaskList as any).collaborators.length > 0
-                  && isCollabCompleter
-                  && lastCompleter
+                  && hasCollaborators
                   && completerName && (
                     <div className="mt-1">
                       <Badge variant="secondary" className="bg-muted text-muted-foreground border-muted">
