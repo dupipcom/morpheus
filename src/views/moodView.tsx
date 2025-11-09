@@ -358,8 +358,8 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
   return (
     <ContentLoadingWrapper>
       <div key={JSON.stringify(serverMood)} className="w-full m-auto p-4">
-      <div className="my-12">
-        <h3 className="mt-8 mb-4">{t('charts.gratitude')}</h3>
+      <div className="mb-12">
+        <h3 className="mt-0 mb-4">{t('charts.gratitude')}</h3>
         <small>{insight?.gratitudeAnalysis}</small>
       </div>
       <Slider className="mb-24" defaultValue={[serverMood.gratitude || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("gratitude", e[0])} />
@@ -387,7 +387,7 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
         <h3 className="mt-8 mb-4">{t('charts.trust')}</h3>
         <small>{insight?.trustAnalysis}</small>
       </div>
-      <Slider className="mb-24" defaultValue={[serverMood?.trust || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("trust", e[0])} />
+      <Slider className="mb-8" defaultValue={[serverMood?.trust || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("trust", e[0])} />
       </div>
 
       {/* Life Events Management for Mood */}

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { useI18n } from "@/lib/contexts/i18n"
 import { Lock, Users, UserCheck, Globe, Sparkles, Send, Loader2 } from "lucide-react"
 
@@ -72,9 +73,8 @@ export const PublishNote = ({ onNotePublished, date, defaultVisibility = 'AI_ENA
     }
   }
 
-  return (
-    <div className="p-3 sm:p-4 border rounded-lg bg-transparent border-body w-full max-w-full">
-      <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-body">{t('mood.publish.title') || 'Publish a Note'}</h3>
+  const formContent = (
+    <>
       {/* Mobile: 4-column grid (textarea 3/4, controls 1/4 stacked), Desktop: stacked */}
       <div className="grid grid-cols-4 gap-2 sm:grid-cols-1 sm:gap-0 mb-0">
         <Textarea 
@@ -140,6 +140,30 @@ export const PublishNote = ({ onNotePublished, date, defaultVisibility = 'AI_ENA
             </span>
           </Button>
         </div>
+      </div>
+    </>
+  )
+
+  return (
+    <div className="p-3 sm:p-4 border rounded-lg bg-transparent border-body w-full max-w-full">
+      {/* Mobile: Accordion, Desktop: Always visible */}
+      <div className="md:hidden">
+        <Accordion type="single" collapsible className="w-full">
+          <AccordionItem value="publish-note" className="border-none">
+            <AccordionTrigger className="py-0 px-0 hover:no-underline">
+              <h3 className="text-base font-semibold text-body">{t('mood.publish.title') || 'Publish a Note'}</h3>
+            </AccordionTrigger>
+            <AccordionContent className="pt-3 pb-0">
+              {formContent}
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      </div>
+      
+      {/* Desktop: Always visible */}
+      <div className="hidden md:block">
+        <h3 className="text-lg font-semibold mb-4 text-body">{t('mood.publish.title') || 'Publish a Note'}</h3>
+        {formContent}
       </div>
     </div>
   )
