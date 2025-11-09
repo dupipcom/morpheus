@@ -31,6 +31,14 @@ export async function GET(request: NextRequest) {
       })
 
       if (currentUser) {
+        // Include current user's own templates with FRIENDS or CLOSE_FRIENDS visibility
+        whereClause.OR.push({
+          AND: [
+            { owners: { has: currentUser.id } },
+            { visibility: { in: ['FRIENDS', 'CLOSE_FRIENDS'] } }
+          ]
+        })
+
         // Find all users who have the current user in their friends list
         const usersWithCurrentUserAsFriend = await prisma.user.findMany({
           where: {
