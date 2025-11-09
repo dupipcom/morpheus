@@ -5,7 +5,7 @@ import { GlobalContext } from '@/lib/contexts'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { OptionsButton, OptionsMenuItem } from '@/components/OptionsButton'
-import { Circle, Minus } from 'lucide-react'
+import { Circle, Minus, ChevronDown, ChevronUp } from 'lucide-react'
 import { useI18n } from '@/lib/contexts/i18n'
 
 type TaskStatus = 'in progress' | 'steady' | 'ready' | 'open' | 'done' | 'ignored'
@@ -54,6 +54,7 @@ export const SteadyTasks = () => {
   const { t } = useI18n()
   const [stableTaskLists, setStableTaskLists] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [isExpanded, setIsExpanded] = useState(false)
   const initialFetchDone = useRef(false)
 
   // Maintain stable task lists that never clear once loaded
@@ -164,9 +165,9 @@ export const SteadyTasks = () => {
           type="multiple"
           orientation="horizontal"
         >
-          {/* Show 5 skeletons on mobile, 8 on desktop */}
+          {/* Show 1 skeleton on mobile, 8 on desktop */}
           {[...Array(8)].map((_, index) => (
-            <div key={`skeleton-${index}`} className={`flex flex-col items-center m-1 ${index >= 5 ? 'hidden md:flex' : ''}`}>
+            <div key={`skeleton-${index}`} className={`flex flex-col items-center m-1 ${index >= 1 ? 'hidden md:flex' : ''}`}>
               <Skeleton className="h-[40px] w-full rounded-md" />
             </div>
           ))}
@@ -183,13 +184,15 @@ export const SteadyTasks = () => {
     )
   }
 
-  // Limit tasks: 5 on mobile, 8 on desktop
-  const mobileLimit = 5
+  // Limit tasks: 1 on mobile (expandable to 6), 8 on desktop
+  const mobileInitialLimit = 1
+  const mobileExpandedLimit = 6
   const desktopLimit = 8
-  const hasMoreTasks = steadyTasks.length > mobileLimit
+  const hasMoreTasks = steadyTasks.length > mobileInitialLimit
+  const mobileLimit = isExpanded ? mobileExpandedLimit : mobileInitialLimit
 
   return (
-    <div className="space-y-4 w-full px-1 sm:px-0">
+    <div className="space-y-4 w-full px-1 sm:px-0 relative">
       <ToggleGroup
         value={[]}
         onValueChange={() => {}}
@@ -204,9 +207,8 @@ export const SteadyTasks = () => {
           const iconColor = getIconColor(taskStatus)
           
           // Hide tasks beyond limits using CSS
-          // Tasks 0-4: always visible
-          // Tasks 5-9: hidden on mobile, visible on desktop
-          // Tasks 10+: hidden on all screens
+          // Mobile: show 1 initially, or 6 when expanded
+          // Desktop: show 8
           const isBeyondMobileLimit = index >= mobileLimit
           const isBeyondDesktopLimit = index >= desktopLimit
           
@@ -271,6 +273,20 @@ export const SteadyTasks = () => {
           )
         })}
       </ToggleGroup>
+      {/* Expand button overlay for mobile */}
+      {hasMoreTasks && (
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="md:hidden absolute bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-2 bg-background/95 backdrop-blur-sm border border-border rounded-full p-2 shadow-lg hover:bg-background transition-colors z-10"
+          aria-label={isExpanded ? 'Show less tasks' : 'Show more tasks'}
+        >
+          {isExpanded ? (
+            <ChevronUp className="h-5 w-5 text-foreground" />
+          ) : (
+            <ChevronDown className="h-5 w-5 text-foreground" />
+          )}
+        </button>
+      )}
     </div>
   )
 }
