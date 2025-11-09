@@ -243,6 +243,25 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
                 </div>
               </div>
               
+              <Separator />
+              
+              <div className="flex items-center justify-between">
+                {clerkUser?.imageUrl && (
+                  <img 
+                    src={clerkUser.imageUrl} 
+                    alt="Profile" 
+                    className="w-16 h-16 rounded-full object-cover"
+                  />
+                )}
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="profilePicture-visible"
+                    checked={profile.profilePictureVisible}
+                    onCheckedChange={(checked) => handleProfileChange('profilePictureVisible', checked)}
+                  />
+                  <Label htmlFor="profilePicture-visible">{t('profile.makePublic')}</Label>
+                </div>
+              </div>
               
             </CardContent>
           </Card>
