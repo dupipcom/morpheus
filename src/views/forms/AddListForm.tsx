@@ -158,16 +158,23 @@ export const AddListForm = ({
   const [collabResults, setCollabResults] = useState<any[]>([])
   useEffect(() => {
     let cancelled = false
-    const run = async () => {
-      if (!collabQuery) { setCollabResults([]); return }
-      const res = await fetch(`/api/v1/profiles?query=${encodeURIComponent(collabQuery)}`)
-      if (!cancelled && res.ok) {
-        const data = await res.json()
-        setCollabResults(data.profiles || [])
+    // Debounce the search by 300ms
+    const timer = setTimeout(() => {
+      const run = async () => {
+        // Fetch suggestions even when query is empty (shows top 5 close friends/friends/public)
+        const res = await fetch(`/api/v1/profiles?query=${encodeURIComponent(collabQuery)}`)
+        if (!cancelled && res.ok) {
+          const data = await res.json()
+          setCollabResults(data.profiles || [])
+        }
       }
+      run()
+    }, 300)
+    
+    return () => { 
+      cancelled = true
+      clearTimeout(timer)
     }
-    run()
-    return () => { cancelled = true }
   }, [collabQuery])
 
   const handleSubmit = async () => {
@@ -316,10 +323,10 @@ export const AddListForm = ({
                     {collabResults.map((p: any) => (
                       <CommandItem key={p.userId} value={p.userId} onSelect={() => {
                         if (!form.collaborators.find(c => c.id === p.userId)) {
-                          setForm(prev => ({ ...prev, collaborators: [...prev.collaborators, { id: p.userId, userName: [p.firstName, p.lastName].filter(Boolean).join(' ') || p.userName || p.userId }] }))
+                          setForm(prev => ({ ...prev, collaborators: [...prev.collaborators, { id: p.userId, userName: p.userName || p.userId }] }))
                         }
                       }}>
-                        @{[p.firstName, p.lastName].filter(Boolean).join(' ') || p.userName || p.userId}
+                        @{p.userName || p.userId}
                       </CommandItem>
                     ))}
                   </CommandGroup>
