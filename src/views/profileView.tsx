@@ -84,7 +84,7 @@ export const ProfileView = ({
         </Card>
 
         {/* Tabbed Content Section */}
-        <Card className="mb-6">
+          <Card className="mb-6">
           <CardContent className="pt-6">
             <Tabs defaultValue="notes" className="w-full">
               <TabsList className="grid w-full grid-cols-3">
@@ -110,7 +110,7 @@ export const ProfileView = ({
               
               <TabsContent value="analytics" className="mt-4">
                 {profile.publicCharts ? (
-                  <PublicChartsView chartsData={profile.publicCharts} />
+              <PublicChartsView chartsData={profile.publicCharts} />
                 ) : (
                   <div className="text-center text-muted-foreground py-8">
                     <p>{(translations as any)?.publicProfile?.noAnalyticsData || 'No analytics data available yet.'}</p>
@@ -126,8 +126,8 @@ export const ProfileView = ({
                 <PublicTemplatesViewer userName={userName} showCard={false} isLoggedIn={isLoggedIn} />
               </TabsContent>
             </Tabs>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
         {/* No public data message */}
         {!hasAnyPublicData && !profile.publicCharts && (

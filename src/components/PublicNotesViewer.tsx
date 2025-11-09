@@ -167,10 +167,10 @@ export function PublicNotesViewer({ userName, showCard = true }: PublicNotesView
     )
     
     if (!showCard) return content
-    
-    return (
-      <Card className="mb-6">
-        <CardHeader>
+
+  return (
+    <Card className="mb-6">
+      <CardHeader>
           <CardTitle>{t('publicProfile.notes')}</CardTitle>
         </CardHeader>
         <CardContent>
@@ -196,21 +196,21 @@ export function PublicNotesViewer({ userName, showCard = true }: PublicNotesView
           </Button>
         </div>
       )}
-      {notes.map((note) => (
-        <div key={note.id} className="border rounded-lg p-4 bg-muted/30">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs text-muted-foreground">
-              {getTimeAgo(new Date(note.createdAt))}
-              {note.date && ` • ${note.date}`}
-            </span>
-            <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
-              {note.visibility.toLowerCase().replace('_', ' ')}
-            </span>
-          </div>
-          <p className="text-sm whitespace-pre-wrap">{note.content}</p>
+          {notes.map((note) => (
+            <div key={note.id} className="border rounded-lg p-4 bg-muted/30">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs text-muted-foreground">
+                  {getTimeAgo(new Date(note.createdAt))}
+                  {note.date && ` • ${note.date}`}
+                </span>
+                <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
+                  {note.visibility.toLowerCase().replace('_', ' ')}
+                </span>
+              </div>
+              <p className="text-sm whitespace-pre-wrap">{note.content}</p>
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
   )
 
   if (!showCard) return content

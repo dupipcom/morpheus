@@ -105,7 +105,7 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
         userName={userName}
         locale={locale}
         currentUserUsername={currentUserUsername}
-        isLoggedIn={isLoggedIn}
+                    isLoggedIn={isLoggedIn}
         translations={translations}
       />
     </I18nProvider>
