@@ -77,25 +77,34 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo }
     fetchLikeStatus()
   }, [item.id, item.type])
 
-  // Fetch comment count on mount and when item changes
+  // Initialize comments and count from item data
   useEffect(() => {
-    // If we have _count from props, use it; otherwise fetch
-    if (item._count?.comments !== undefined) {
+    // Use comments from item if available
+    if (item.comments && item.comments.length > 0) {
+      setComments(item.comments)
+      setCommentCount(item.comments.length)
+      // Initialize comment likes from provided data
+      const likesMap: Record<string, { isLiked: boolean; count: number }> = {}
+      item.comments.forEach((comment: Comment) => {
+        likesMap[comment.id] = {
+          isLiked: false, // Will be fetched separately
+          count: comment._count?.likes || 0
+        }
+      })
+      setCommentLikes(likesMap)
+    } else if (item._count?.comments !== undefined) {
       setCommentCount(item._count.comments)
     } else {
       fetchCommentCount()
     }
-    // Reset comments when item changes
-    setComments([])
-    setCommentLikes({})
-  }, [item.id, item.type])
+  }, [item.id, item.type, item.comments, item._count?.comments])
 
-  // Fetch comments when expanded (if we don't have them yet)
+  // Fetch comments when expanded (only if we don't have them from item data)
   useEffect(() => {
-    if (isExpanded && comments.length === 0 && commentCount > 0) {
+    if (isExpanded && comments.length === 0 && commentCount > 0 && !item.comments) {
       fetchComments()
     }
-  }, [isExpanded, commentCount])
+  }, [isExpanded, commentCount, item.comments])
 
   const fetchCommentCount = async () => {
     try {
@@ -299,9 +308,9 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo }
     if (item.user?.profile) {
       const { firstName, lastName, userName } = item.user.profile
       const fullName = [firstName, lastName].filter(Boolean).join(' ')
-      return fullName || userName || 'Anonymous'
+      return fullName || userName || t('common.anonymous')
     }
-    return 'Anonymous'
+    return t('common.anonymous')
   }
 
   const getProfilePicture = () => {
@@ -365,7 +374,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo }
           <div className="flex items-center gap-2 mb-2">
             <FileText className="w-4 h-4 text-muted-foreground" />
             <p className="text-sm font-medium">
-              {item.name || item.role || 'Untitled Template'}
+              {item.name || item.role || t('common.untitledTemplate')}
             </p>
           </div>
           {item.content && (
@@ -381,7 +390,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo }
             onClick={handleToggleLike}
             disabled={isTogglingLike}
             className="flex items-center gap-1 hover:opacity-70 transition-opacity disabled:opacity-50"
-            aria-label={isLiked ? "Unlike" : "Like"}
+            aria-label={isLiked ? t('comments.unlike') : t('comments.like')}
           >
             <Heart 
               className={`h-3 w-3 ${isLiked ? 'fill-destructive text-destructive' : 'text-muted-foreground'}`} 
@@ -390,7 +399,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo }
           </button>
           <div className="flex items-center gap-1">
             <MessageSquare className="h-3 w-3" />
-            <span>{commentCount} {commentCount === 1 ? 'comment' : 'comments'}</span>
+            <span>{commentCount}</span>
           </div>
         </div>
           
@@ -405,7 +414,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo }
                         ? `@${comment.user.profile.userName}`
                         : comment.user.profile?.firstName 
                         ? comment.user.profile.firstName
-                        : 'Anonymous'}
+                        : t('common.anonymous')}
                     </span>
                     <span className="text-[10px]">{getTimeAgo(new Date(comment.createdAt))}</span>
                   </div>
@@ -419,7 +428,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo }
           {isExpanded && (
             <div className="space-y-2 mb-3 flex-1 min-h-0">
               {isLoadingComments ? (
-                <div className="text-xs text-muted-foreground">Loading comments...</div>
+                <div className="text-xs text-muted-foreground">{t('comments.loading')}</div>
               ) : comments.length > 0 ? (
                 <div className="space-y-2 overflow-y-auto">
                   {comments.map((comment) => {
@@ -432,13 +441,13 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo }
                             ? `@${comment.user.profile.userName}`
                             : comment.user.profile?.firstName 
                             ? comment.user.profile.firstName
-                            : 'Anonymous'}
+                            : t('common.anonymous')}
                         </span>
                         <span className="text-[10px]">{getTimeAgo(new Date(comment.createdAt))}</span>
                         <button
                           onClick={() => handleToggleCommentLike(comment.id)}
                           className="flex items-center gap-1 ml-auto hover:opacity-70 transition-opacity"
-                          aria-label={commentLike.isLiked ? "Unlike comment" : "Like comment"}
+                          aria-label={commentLike.isLiked ? t('comments.unlikeComment') : t('comments.likeComment')}
                         >
                           <Heart 
                             className={`h-3 w-3 ${commentLike.isLiked ? 'fill-destructive text-destructive' : 'text-muted-foreground'}`} 
@@ -452,7 +461,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo }
                 })}
                 </div>
               ) : (
-                <div className="text-xs text-muted-foreground">No comments yet</div>
+                <div className="text-xs text-muted-foreground">{t('comments.noComments')}</div>
               )}
             </div>
           )}
@@ -462,7 +471,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo }
             <button
               onClick={() => setIsExpanded(!isExpanded)}
               className="bg-background/95 backdrop-blur-sm border border-border rounded-full p-2 shadow-lg hover:bg-background transition-colors z-10"
-              aria-label={isExpanded ? "Show less" : "Show more"}
+              aria-label={isExpanded ? t('comments.showLess') : t('comments.showMore')}
             >
               {isExpanded ? (
                 <ChevronUp className="h-4 w-4 text-foreground" />
@@ -478,7 +487,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo }
               <div className="flex gap-2">
                 <Textarea
                   className="flex-1 min-h-[60px] text-sm"
-                  placeholder="Add a comment..."
+                  placeholder={t('comments.addComment')}
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
                   onKeyDown={(e) => {

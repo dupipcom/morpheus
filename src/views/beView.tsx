@@ -1,5 +1,5 @@
 'use client'
-import { useState, useContext, useEffect, useMemo } from 'react'
+import { useState, useContext, useEffect, useMemo, useCallback } from 'react'
 import useSWR from 'swr'
 import { useRouter } from 'next/navigation'
 import { Card, CardContent } from "@/components/ui/card"
@@ -15,6 +15,7 @@ import { useEnhancedLoadingState } from "@/lib/userUtils"
 import { SettingsSkeleton } from "@/components/ui/skeleton-loader"
 import { toast } from 'sonner'
 import Link from 'next/link'
+import { useNotesRefresh } from "@/lib/contexts/notesRefresh"
 
 interface Friend {
   id: string
@@ -38,6 +39,23 @@ interface PublicNote {
     comments?: number
     likes?: number
   }
+  comments?: Array<{
+    id: string
+    content: string
+    createdAt: string
+    user: {
+      id: string
+      profile?: {
+        userName?: string | null
+        profilePicture?: string | null
+        firstName?: string | null
+        lastName?: string | null
+      } | null
+    }
+    _count?: {
+      likes: number
+    }
+  }>
   user: {
     id: string
     profile: {
@@ -61,6 +79,23 @@ interface PublicTemplate {
     comments?: number
     likes?: number
   }
+  comments?: Array<{
+    id: string
+    content: string
+    createdAt: string
+    user: {
+      id: string
+      profile?: {
+        userName?: string | null
+        profilePicture?: string | null
+        firstName?: string | null
+        lastName?: string | null
+      } | null
+    }
+    _count?: {
+      likes: number
+    }
+  }>
   user: {
     id: string
     profile: {
@@ -83,6 +118,7 @@ export const BeView = () => {
   const { session, setGlobalContext, theme } = useContext(GlobalContext)
   const { t } = useI18n()
   const router = useRouter()
+  const { registerMutate, unregisterMutate } = useNotesRefresh()
   
   const [friends, setFriends] = useState<Friend[]>([])
   const [publicNotes, setPublicNotes] = useState<PublicNote[]>([])
@@ -150,6 +186,22 @@ export const BeView = () => {
     }
   }, [data])
 
+  // Refresh function for activity feed
+  const refreshActivityFeed = useCallback(() => {
+    fetchPublicNotes(1)
+    fetchPublicTemplates(1)
+    setNotesPage(1)
+    setTemplatesPage(1)
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Register refresh function with NotesRefreshContext
+  useEffect(() => {
+    registerMutate('beView-activity', refreshActivityFeed)
+    return () => {
+      unregisterMutate('beView-activity')
+    }
+  }, [registerMutate, unregisterMutate, refreshActivityFeed])
+
   // Fetch public notes and templates on mount
   useEffect(() => {
     fetchPublicNotes(1)
@@ -161,9 +213,9 @@ export const BeView = () => {
       const { firstName, lastName, userName } = friend.profile
       const fullName = [firstName, lastName].filter(Boolean).join(' ')
       // Display name logic: prefer fullName, then userName, then fallback
-      return fullName || userName || 'Anonymous User'
+      return fullName || userName || t('common.anonymousUser')
     }
-    return 'Anonymous User'
+    return t('common.anonymousUser')
   }
 
   const getProfilePicture = (friend: Friend) => {
@@ -242,9 +294,9 @@ export const BeView = () => {
     if (note.user.profile) {
       const { firstName, lastName, userName } = note.user.profile
       const fullName = [firstName, lastName].filter(Boolean).join(' ')
-      return fullName || userName || 'Anonymous User'
+      return fullName || userName || t('common.anonymousUser')
     }
-    return 'Anonymous User'
+    return t('common.anonymousUser')
   }
 
   const getNoteUserProfilePicture = (note: PublicNote) => {
@@ -267,9 +319,9 @@ export const BeView = () => {
     if (template.user?.profile) {
       const { firstName, lastName, userName } = template.user.profile
       const fullName = [firstName, lastName].filter(Boolean).join(' ')
-      return fullName || userName || 'Anonymous User'
+      return fullName || userName || t('common.anonymousUser')
     }
-    return 'Anonymous User'
+    return t('common.anonymousUser')
   }
 
   const getTimeAgo = (dateString: string) => {
@@ -317,6 +369,7 @@ export const BeView = () => {
               visibility: noteData?.visibility || templateData?.visibility,
               date: noteData?.date || undefined,
               user: noteData?.user || templateData?.user || undefined,
+              comments: (noteData as any)?.comments || (templateData as any)?.comments || undefined,
               _count: noteData?._count || templateData?._count
             }
             

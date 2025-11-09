@@ -40,7 +40,12 @@
     "newList": "新列表",
     "newTemplate": "新模板",
     "budget": "预算",
-    "due": "到期"
+    "due": "到期",
+    "untitledTemplate": "未命名模板",
+    "untitledList": "未命名列表",
+    "anonymousUser": "匿名用户",
+    "anonymous": "匿名",
+    "withdrawStash": "提取储蓄"
   },
   "navigation": {
     "home": "首页",
@@ -516,5 +521,18 @@
     "unfriend": "取消好友",
     "loadMore": "加载更多",
     "noActivity": "还没有活动可显示。"
+  },
+  "comments": {
+    "loading": "加载评论中...",
+    "noComments": "还没有评论",
+    "comment": "评论",
+    "comments": "评论",
+    "like": "赞",
+    "unlike": "取消赞",
+    "likeComment": "赞评论",
+    "unlikeComment": "取消赞评论",
+    "addComment": "添加评论...",
+    "showMore": "显示更多",
+    "showLess": "显示更少"
   }
 }

@@ -40,7 +40,12 @@
     "newList": "Uusi lista",
     "newTemplate": "Uusi malli",
     "budget": "Budjetti",
-    "due": "Erääntyy"
+    "due": "Erääntyy",
+    "untitledTemplate": "Nimetön malli",
+    "untitledList": "Nimetön lista",
+    "anonymousUser": "Anonyymi käyttäjä",
+    "anonymous": "Anonyymi",
+    "withdrawStash": "Nosta säästöt"
   },
   "navigation": {
     "dashboard": "Kojelauta",
@@ -520,5 +525,18 @@
     "unfriend": "Poista Ystävä",
     "loadMore": "Lataa Lisää",
     "noActivity": "Ei vielä näytettävää aktiviteettia."
+  },
+  "comments": {
+    "loading": "Ladataan kommentteja...",
+    "noComments": "Ei vielä kommentteja",
+    "comment": "kommentti",
+    "comments": "kommentit",
+    "like": "Tykkää",
+    "unlike": "Poista tykkäys",
+    "likeComment": "Tykkää kommentista",
+    "unlikeComment": "Poista kommentin tykkäys",
+    "addComment": "Lisää kommentti...",
+    "showMore": "Näytä enemmän",
+    "showLess": "Näytä vähemmän"
   }
 }

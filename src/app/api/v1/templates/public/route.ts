@@ -114,10 +114,47 @@ export async function GET(request: NextRequest) {
             comments: true,
             likes: true
           }
+        },
+        comments: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                profile: {
+                  select: {
+                    userName: true,
+                    profilePicture: true,
+                    firstName: true,
+                    lastName: true
+                  }
+                }
+              }
+            },
+            _count: {
+              select: {
+                likes: true
+              }
+            }
+          },
+          orderBy: {
+            createdAt: 'desc'
+          }
         }
       }
     })
 
+    // Sort comments by likes, then by date
+    const templatesWithSortedComments = templates.map(template => {
+      if (template.comments && Array.isArray(template.comments) && template.comments.length > 0) {
+        const sortedComments = [...template.comments].sort((a: any, b: any) => {
+          const likeDiff = (b._count?.likes || 0) - (a._count?.likes || 0)
+          if (likeDiff !== 0) return likeDiff
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        })
+        return { ...template, comments: sortedComments }
+      }
+      return template
+    })
 
     // Get current user's friends/closeFriends for relationship checking
     let currentUserFriends: string[] = []
@@ -142,7 +179,7 @@ export async function GET(request: NextRequest) {
 
     // Get the user profiles for each template owner
     const templatesWithUsers = await Promise.all(
-      templates.map(async (template) => {
+      templatesWithSortedComments.map(async (template) => {
         // Get the first owner's profile (for now, we'll use the first owner)
         const ownerId = template.owners[0]
         if (!ownerId) {

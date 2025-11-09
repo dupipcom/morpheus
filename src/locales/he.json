@@ -40,7 +40,12 @@
     "newList": "רשימה חדשה",
     "newTemplate": "תבנית חדשה",
     "budget": "תקציב",
-    "due": "תאריך יעד"
+    "due": "תאריך יעד",
+    "untitledTemplate": "תבנית ללא כותרת",
+    "untitledList": "רשימה ללא כותרת",
+    "anonymousUser": "משתמש אנונימי",
+    "anonymous": "אנונימי",
+    "withdrawStash": "משיכת חסכונות"
   },
   "navigation": {
     "home": "בית",
@@ -516,5 +521,18 @@
     "unfriend": "הסר חבר",
     "loadMore": "טען עוד",
     "noActivity": "אין עדיין פעילות להצגה."
+  },
+  "comments": {
+    "loading": "טוען תגובות...",
+    "noComments": "אין עדיין תגובות",
+    "comment": "תגובה",
+    "comments": "תגובות",
+    "like": "אהבתי",
+    "unlike": "ביטול אהבתי",
+    "likeComment": "אהבתי תגובה",
+    "unlikeComment": "ביטול אהבתי תגובה",
+    "addComment": "הוסף תגובה...",
+    "showMore": "הצג עוד",
+    "showLess": "הצג פחות"
   }
 }

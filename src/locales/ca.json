@@ -40,7 +40,12 @@
     "newList": "Nova llista",
     "newTemplate": "Nou template",
     "budget": "Pressupost",
-    "due": "Venciment"
+    "due": "Venciment",
+    "untitledTemplate": "Plantilla sense títol",
+    "untitledList": "Llista sense títol",
+    "anonymousUser": "Usuari anònim",
+    "anonymous": "Anònim",
+    "withdrawStash": "Retirar estalvis"
   },
   "navigation": {
     "home": "Inici",
@@ -516,5 +521,18 @@
     "unfriend": "Eliminar Amic",
     "loadMore": "Carregar Més",
     "noActivity": "Encara no hi ha activitat per mostrar."
+  },
+  "comments": {
+    "loading": "Carregant comentaris...",
+    "noComments": "Encara no hi ha comentaris",
+    "comment": "comentari",
+    "comments": "comentaris",
+    "like": "M'agrada",
+    "unlike": "No m'agrada",
+    "likeComment": "M'agrada el comentari",
+    "unlikeComment": "No m'agrada el comentari",
+    "addComment": "Afegeix un comentari...",
+    "showMore": "Mostrar més",
+    "showLess": "Mostrar menys"
   }
 }

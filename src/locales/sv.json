@@ -40,7 +40,12 @@
     "newList": "Ny lista",
     "newTemplate": "Ny mall",
     "budget": "Budget",
-    "due": "Förfallodag"
+    "due": "Förfallodag",
+    "untitledTemplate": "Namnlös mall",
+    "untitledList": "Namnlös lista",
+    "anonymousUser": "Anonym användare",
+    "anonymous": "Anonym",
+    "withdrawStash": "Ta ut besparingar"
   },
   "navigation": {
     "home": "Hem",
@@ -519,5 +524,18 @@
     "unfriend": "Ta Bort Vän",
     "loadMore": "Ladda Mer",
     "noActivity": "Ingen aktivitet att visa ännu."
+  },
+  "comments": {
+    "loading": "Laddar kommentarer...",
+    "noComments": "Inga kommentarer ännu",
+    "comment": "kommentar",
+    "comments": "kommentarer",
+    "like": "Gilla",
+    "unlike": "Ogilla",
+    "likeComment": "Gilla kommentar",
+    "unlikeComment": "Ogilla kommentar",
+    "addComment": "Lägg till en kommentar...",
+    "showMore": "Visa mer",
+    "showLess": "Visa mindre"
   }
 }

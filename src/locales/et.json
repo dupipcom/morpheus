@@ -40,7 +40,12 @@
     "newList": "Uus nimekiri",
     "newTemplate": "Uus mall",
     "budget": "Eelarve",
-    "due": "Tähtaeg"
+    "due": "Tähtaeg",
+    "untitledTemplate": "Pealkirjata mall",
+    "untitledList": "Pealkirjata nimekiri",
+    "anonymousUser": "Anonüümne kasutaja",
+    "anonymous": "Anonüümne",
+    "withdrawStash": "Võta säästud välja"
   },
   "navigation": {
     "home": "Avaleht",
@@ -516,5 +521,18 @@
     "unfriend": "Eemalda Sõber",
     "loadMore": "Laadi Rohkem",
     "noActivity": "Näitamiseks pole veel tegevust."
+  },
+  "comments": {
+    "loading": "Kommentaaride laadimine...",
+    "noComments": "Kommentaare pole veel",
+    "comment": "kommentaar",
+    "comments": "kommentaarid",
+    "like": "Meeldib",
+    "unlike": "Ei meeldi",
+    "likeComment": "Kommentaar meeldib",
+    "unlikeComment": "Kommentaar ei meeldi",
+    "addComment": "Lisa kommentaar...",
+    "showMore": "Näita rohkem",
+    "showLess": "Näita vähem"
   }
 }

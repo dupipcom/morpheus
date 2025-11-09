@@ -40,7 +40,12 @@
     "newList": "新しいリスト",
     "newTemplate": "新しいテンプレート",
     "budget": "予算",
-    "due": "期日"
+    "due": "期日",
+    "untitledTemplate": "タイトルなしテンプレート",
+    "untitledList": "タイトルなしリスト",
+    "anonymousUser": "匿名ユーザー",
+    "anonymous": "匿名",
+    "withdrawStash": "貯蓄を引き出す"
   },
   "navigation": {
     "home": "ホーム",
@@ -516,5 +521,18 @@
     "unfriend": "友達を削除",
     "loadMore": "さらに読み込む",
     "noActivity": "表示するアクティビティがまだありません。"
+  },
+  "comments": {
+    "loading": "コメントを読み込み中...",
+    "noComments": "まだコメントがありません",
+    "comment": "コメント",
+    "comments": "コメント",
+    "like": "いいね",
+    "unlike": "いいねを取り消す",
+    "likeComment": "コメントにいいね",
+    "unlikeComment": "コメントのいいねを取り消す",
+    "addComment": "コメントを追加...",
+    "showMore": "もっと見る",
+    "showLess": "折りたたむ"
   }
 }

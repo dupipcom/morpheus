@@ -82,9 +82,9 @@ export function FriendRequestsButton() {
       const { firstName, lastName, userName } = request.profile
       const fullName = [firstName, lastName].filter(Boolean).join(' ')
       // Display name logic: prefer fullName, then userName, then fallback
-      return fullName || userName || 'Anonymous User'
+      return fullName || userName || t('common.anonymousUser')
     }
-    return 'Anonymous User'
+    return t('common.anonymousUser')
   }
 
   const getProfilePicture = (request: FriendRequest) => {

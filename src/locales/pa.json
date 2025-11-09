@@ -40,7 +40,12 @@
     "newList": "New list",
     "newTemplate": "New template",
     "budget": "Budget",
-    "due": "Due"
+    "due": "Due",
+    "untitledTemplate": "ਸਿਰਲੇਖ ਰਹਿਤ ਟੈਂਪਲੇਟ",
+    "untitledList": "ਸਿਰਲੇਖ ਰਹਿਤ ਸੂਚੀ",
+    "anonymousUser": "ਗੁਪਤ ਉਪਭੋਗਤਾ",
+    "anonymous": "ਗੁਪਤ",
+    "withdrawStash": "ਬਚਤ ਕੱਢੋ"
   },
   "navigation": {
     "dashboard": "ਡੈਸ਼ਬੋਰਡ",
@@ -520,5 +525,18 @@
     "unfriend": "ਦੋਸਤ ਹਟਾਓ",
     "loadMore": "ਹੋਰ ਲੋਡ ਕਰੋ",
     "noActivity": "ਅਜੇ ਤੱਕ ਦਿਖਾਉਣ ਲਈ ਕੋਈ ਸਰਗਰਮੀ ਨਹੀਂ ਹੈ।"
+  },
+  "comments": {
+    "loading": "ਟਿੱਪਣੀਆਂ ਲੋਡ ਹੋ ਰਹੀਆਂ ਹਨ...",
+    "noComments": "ਅਜੇ ਤੱਕ ਕੋਈ ਟਿੱਪਣੀ ਨਹੀਂ ਹੈ",
+    "comment": "ਟਿੱਪਣੀ",
+    "comments": "ਟਿੱਪਣੀਆਂ",
+    "like": "ਪਸੰਦ ਕਰੋ",
+    "unlike": "ਪਸੰਦ ਹਟਾਓ",
+    "likeComment": "ਟਿੱਪਣੀ ਪਸੰਦ ਕਰੋ",
+    "unlikeComment": "ਟਿੱਪਣੀ ਪਸੰਦ ਹਟਾਓ",
+    "addComment": "ਟਿੱਪਣੀ ਜੋੜੋ...",
+    "showMore": "ਹੋਰ ਦਿਖਾਓ",
+    "showLess": "ਕਮ ਦਿਖਾਓ"
   }
 }

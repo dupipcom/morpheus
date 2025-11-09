@@ -40,7 +40,12 @@
     "newList": "Ny liste",
     "newTemplate": "Ny skabelon",
     "budget": "Budget",
-    "due": "Forfaldsdato"
+    "due": "Forfaldsdato",
+    "untitledTemplate": "Unavngivet skabelon",
+    "untitledList": "Unavngivet liste",
+    "anonymousUser": "Anonym bruger",
+    "anonymous": "Anonym",
+    "withdrawStash": "Hæv opsparing"
   },
   "navigation": {
     "dashboard": "Dashboard",
@@ -520,5 +525,18 @@
     "unfriend": "Fjern Ven",
     "loadMore": "Indlæs Mere",
     "noActivity": "Ingen aktivitet at vise endnu."
+  },
+  "comments": {
+    "loading": "Indlæser kommentarer...",
+    "noComments": "Ingen kommentarer endnu",
+    "comment": "kommentar",
+    "comments": "kommentarer",
+    "like": "Synes godt om",
+    "unlike": "Synes ikke godt om",
+    "likeComment": "Synes godt om kommentar",
+    "unlikeComment": "Synes ikke godt om kommentar",
+    "addComment": "Tilføj en kommentar...",
+    "showMore": "Vis mere",
+    "showLess": "Vis mindre"
   }
 }

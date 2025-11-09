@@ -40,7 +40,12 @@
     "newList": "Nieuwe lijst",
     "newTemplate": "Nieuwe sjabloon",
     "budget": "Budget",
-    "due": "Vervaldatum"
+    "due": "Vervaldatum",
+    "untitledTemplate": "Naamloze sjabloon",
+    "untitledList": "Naamloze lijst",
+    "anonymousUser": "Anonieme gebruiker",
+    "anonymous": "Anoniem",
+    "withdrawStash": "Spaargeld opnemen"
   },
   "navigation": {
     "home": "Home",
@@ -516,5 +521,18 @@
     "unfriend": "Vriend Verwijderen",
     "loadMore": "Meer Laden",
     "noActivity": "Nog geen activiteit om te tonen."
+  },
+  "comments": {
+    "loading": "Reacties laden...",
+    "noComments": "Nog geen reacties",
+    "comment": "reactie",
+    "comments": "reacties",
+    "like": "Vind ik leuk",
+    "unlike": "Vind ik niet meer leuk",
+    "likeComment": "Reactie vind ik leuk",
+    "unlikeComment": "Reactie vind ik niet meer leuk",
+    "addComment": "Reactie toevoegen...",
+    "showMore": "Meer tonen",
+    "showLess": "Minder tonen"
   }
 }

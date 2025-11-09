@@ -88,11 +88,49 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
             comments: true,
             likes: true
           }
+        },
+        comments: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                profile: {
+                  select: {
+                    userName: true,
+                    profilePicture: true,
+                    firstName: true,
+                    lastName: true
+                  }
+                }
+              }
+            },
+            _count: {
+              select: {
+                likes: true
+              }
+            }
+          },
+          orderBy: {
+            createdAt: 'desc'
+          }
         }
       }
     })
 
-    return Response.json({ notes })
+    // Sort comments by likes, then by date
+    const notesWithSortedComments = notes.map(note => {
+      if (note.comments && Array.isArray(note.comments) && note.comments.length > 0) {
+        const sortedComments = [...note.comments].sort((a: any, b: any) => {
+          const likeDiff = (b._count?.likes || 0) - (a._count?.likes || 0)
+          if (likeDiff !== 0) return likeDiff
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        })
+        return { ...note, comments: sortedComments }
+      }
+      return note
+    })
+
+    return Response.json({ notes: notesWithSortedComments })
   } catch (error) {
     console.error('Error fetching public notes:', error)
     return Response.json({ error: 'Internal server error' }, { status: 500 })

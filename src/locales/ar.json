@@ -40,7 +40,12 @@
     "newList": "قائمة جديدة",
     "newTemplate": "قالب جديد",
     "budget": "الميزانية",
-    "due": "المستحق"
+    "due": "المستحق",
+    "untitledTemplate": "قالب بدون عنوان",
+    "untitledList": "قائمة بدون عنوان",
+    "anonymousUser": "مستخدم مجهول",
+    "anonymous": "مجهول",
+    "withdrawStash": "سحب المدخرات"
   },
   "navigation": {
     "dashboard": "لوحة التحكم",
@@ -520,5 +525,18 @@
     "unfriend": "إزالة الصديق",
     "loadMore": "تحميل المزيد",
     "noActivity": "لا يوجد نشاط لعرضه بعد."
+  },
+  "comments": {
+    "loading": "جاري تحميل التعليقات...",
+    "noComments": "لا توجد تعليقات بعد",
+    "comment": "تعليق",
+    "comments": "تعليقات",
+    "like": "إعجاب",
+    "unlike": "إلغاء الإعجاب",
+    "likeComment": "إعجاب بالتعليق",
+    "unlikeComment": "إلغاء الإعجاب بالتعليق",
+    "addComment": "إضافة تعليق...",
+    "showMore": "عرض المزيد",
+    "showLess": "عرض أقل"
   }
 }

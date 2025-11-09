@@ -90,7 +90,7 @@ export function PublicTemplatesViewer({ userName, showCard = true, isLoggedIn = 
       })
       
       if (!response.ok) {
-        throw new Error('Failed to fetch templates')
+        throw new Error(t('errors.failedToFetchTemplates'))
       }
       
       const data = await response.json()
@@ -98,7 +98,7 @@ export function PublicTemplatesViewer({ userName, showCard = true, isLoggedIn = 
       setTaskLists(data.profile?.taskLists || [])
     } catch (err) {
       console.error('Error fetching templates:', err)
-      setError('Failed to load templates')
+      setError(t('errors.failedToLoadTemplates'))
     } finally {
       setLoading(false)
     }
@@ -119,7 +119,7 @@ export function PublicTemplatesViewer({ userName, showCard = true, isLoggedIn = 
       })
       
       if (!response.ok) {
-        throw new Error('Failed to clone template')
+        throw new Error(t('publicProfile.cloneTemplateFailed'))
       }
       
       const data = await response.json()
@@ -279,7 +279,7 @@ export function PublicTemplatesViewer({ userName, showCard = true, isLoggedIn = 
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex-1">
                       <h4 className="font-medium">
-                        {template.name || template.role || 'Untitled Template'}
+                        {template.name || template.role || t('common.untitledTemplate')}
                       </h4>
                       <span className="text-xs text-muted-foreground">
                         Updated {getTimeAgo(new Date(template.updatedAt))}
@@ -325,7 +325,7 @@ export function PublicTemplatesViewer({ userName, showCard = true, isLoggedIn = 
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1">
                     <h4 className="font-medium">
-                      {list.name || list.role || 'Untitled List'}
+                      {list.name || list.role || t('common.untitledList')}
                     </h4>
                     <div className="flex items-center gap-2 mt-1">
                       <span className="text-xs text-muted-foreground">

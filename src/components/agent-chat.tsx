@@ -118,7 +118,7 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], 
       })
 
       if (!response.ok) {
-        throw new Error('Failed to send message')
+        throw new Error(t('agentChat.failedToSend'))
       }
 
       // const assistantMessage: Message = {

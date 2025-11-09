@@ -40,7 +40,12 @@
     "newList": "Nova lista",
     "newTemplate": "Novo modelo",
     "budget": "Orçamento",
-    "due": "Vencimento"
+    "due": "Vencimento",
+    "untitledTemplate": "Modelo sem título",
+    "untitledList": "Lista sem título",
+    "anonymousUser": "Usuário anônimo",
+    "anonymous": "Anônimo",
+    "withdrawStash": "Retirar poupança"
   },
   "navigation": {
     "home": "Início",
@@ -516,5 +521,18 @@
     "unfriend": "Remover Amigo",
     "loadMore": "Carregar Mais",
     "noActivity": "Ainda não há atividade para mostrar."
+  },
+  "comments": {
+    "loading": "Carregando comentários...",
+    "noComments": "Ainda não há comentários",
+    "comment": "comentário",
+    "comments": "comentários",
+    "like": "Curtir",
+    "unlike": "Descurtir",
+    "likeComment": "Curtir comentário",
+    "unlikeComment": "Descurtir comentário",
+    "addComment": "Adicionar um comentário...",
+    "showMore": "Mostrar mais",
+    "showLess": "Mostrar menos"
   }
 }

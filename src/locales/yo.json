@@ -40,7 +40,12 @@
     "newList": "Àkójọ tuntun",
     "newTemplate": "Àwòwé tuntun",
     "budget": "Ìgbésẹ̀",
-    "due": "Tí ó yẹ"
+    "due": "Tí ó yẹ",
+    "untitledTemplate": "Àwòwé tí kò ní àkọlé",
+    "untitledList": "Àkójọ tí kò ní àkọlé",
+    "anonymousUser": "Oníṣe tí kò ní orúkọ",
+    "anonymous": "Tí kò ní orúkọ",
+    "withdrawStash": "Yọ ìpamọ́"
   },
   "navigation": {
     "home": "Ilé",
@@ -514,5 +519,18 @@
     "unfriend": "Yọ Ọ̀rẹ́",
     "loadMore": "Gbé Díẹ̀ Sì",
     "noActivity": "Kò sí ìgbésẹ̀ tí a lè fi hàn títí."
+  },
+  "comments": {
+    "loading": "Ṣíṣe ìfiránsẹ̀ àwọn àmìyàn...",
+    "noComments": "Kò sí àmìyàn títí",
+    "comment": "àmìyàn",
+    "comments": "àwọn àmìyàn",
+    "like": "Fẹ́ràn",
+    "unlike": "Má fẹ́ràn",
+    "likeComment": "Fẹ́ràn àmìyàn",
+    "unlikeComment": "Má fẹ́ràn àmìyàn",
+    "addComment": "Fikún àmìyàn...",
+    "showMore": "Fihàn púpọ̀",
+    "showLess": "Fihàn díẹ̀"
   }
 }

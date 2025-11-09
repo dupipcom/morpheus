@@ -26,14 +26,14 @@ export function PublicNotesViewer({ userName, showCard = true }: PublicNotesView
       })
       
       if (!response.ok) {
-        throw new Error('Failed to fetch notes')
+        throw new Error(t('errors.failedToFetchNotes'))
       }
       
       const data = await response.json()
       setNotes(data.notes || [])
     } catch (err) {
       console.error('Error fetching notes:', err)
-      setError('Failed to load notes')
+      setError(t('errors.failedToLoadNotes'))
     } finally {
       setLoading(false)
     }
@@ -98,7 +98,7 @@ export function PublicNotesViewer({ userName, showCard = true }: PublicNotesView
       loading={loading}
       onRefresh={fetchNotes}
       showHeader={!showCard}
-      emptyMessage="No public notes available yet."
+      emptyMessage={t('publicProfile.noPublicNotes')}
     />
   )
 

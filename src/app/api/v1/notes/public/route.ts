@@ -108,6 +108,31 @@ export async function GET(request: NextRequest) {
             likes: true
           }
         },
+        comments: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                profile: {
+                  select: {
+                    userName: true,
+                    profilePicture: true,
+                    firstName: true,
+                    lastName: true
+                  }
+                }
+              }
+            },
+            _count: {
+              select: {
+                likes: true
+              }
+            }
+          },
+          orderBy: {
+            createdAt: 'desc'
+          }
+        },
         user: {
           select: {
             id: true,
@@ -129,6 +154,18 @@ export async function GET(request: NextRequest) {
       }
     })
 
+    // Sort comments by likes, then by date
+    const notesWithSortedComments = notes.map(note => {
+      if (note.comments && Array.isArray(note.comments) && note.comments.length > 0) {
+        const sortedComments = [...note.comments].sort((a: any, b: any) => {
+          const likeDiff = (b._count?.likes || 0) - (a._count?.likes || 0)
+          if (likeDiff !== 0) return likeDiff
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        })
+        return { ...note, comments: sortedComments }
+      }
+      return note
+    })
 
     // Get current user's friends/closeFriends for relationship checking
     let currentUserFriends: string[] = []
@@ -152,7 +189,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Filter out fields if not visible based on relationship
-    const cleanedNotes = await Promise.all(notes.map(async (note) => {
+    const cleanedNotes = await Promise.all(notesWithSortedComments.map(async (note) => {
       if (!note.user.profile) {
         // Ensure profile object exists even if null, so component can access profile.userName
         return {

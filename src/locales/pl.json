@@ -40,7 +40,12 @@
     "newList": "Nowa lista",
     "newTemplate": "Nowy szablon",
     "budget": "Budżet",
-    "due": "Termin"
+    "due": "Termin",
+    "untitledTemplate": "Szablon bez tytułu",
+    "untitledList": "Lista bez tytułu",
+    "anonymousUser": "Anonimowy użytkownik",
+    "anonymous": "Anonimowy",
+    "withdrawStash": "Wypłać oszczędności"
   },
   "navigation": {
     "dashboard": "Panel",
@@ -520,5 +525,18 @@
     "unfriend": "Usuń Przyjaciela",
     "loadMore": "Załaduj Więcej",
     "noActivity": "Brak aktywności do wyświetlenia."
+  },
+  "comments": {
+    "loading": "Ładowanie komentarzy...",
+    "noComments": "Brak komentarzy",
+    "comment": "komentarz",
+    "comments": "komentarze",
+    "like": "Polub",
+    "unlike": "Cofnij polubienie",
+    "likeComment": "Polub komentarz",
+    "unlikeComment": "Cofnij polubienie komentarza",
+    "addComment": "Dodaj komentarz...",
+    "showMore": "Pokaż więcej",
+    "showLess": "Pokaż mniej"
   }
 }

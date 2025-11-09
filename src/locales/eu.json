@@ -40,7 +40,12 @@
     "newList": "Zerrenda berria",
     "newTemplate": "Txantiloi berria",
     "budget": "Aurrekontua",
-    "due": "Epemuga"
+    "due": "Epemuga",
+    "untitledTemplate": "Izenbururik gabeko txantiloia",
+    "untitledList": "Izenbururik gabeko zerrenda",
+    "anonymousUser": "Erabiltzaile anonimoa",
+    "anonymous": "Anonimoa",
+    "withdrawStash": "Aurrezkiak atera"
   },
   "navigation": {
     "home": "Hasiera",
@@ -519,5 +524,18 @@
     "unfriend": "Laguna Kendu",
     "loadMore": "Gehiago Kargatu",
     "noActivity": "Oraindik ez dago erakusteko jarduerak."
+  },
+  "comments": {
+    "loading": "Iruzkinak kargatzen...",
+    "noComments": "Oraindik ez dago iruzkinik",
+    "comment": "iruzkina",
+    "comments": "iruzkinak",
+    "like": "Gustatzen zait",
+    "unlike": "Ez zait gustatzen",
+    "likeComment": "Iruzkina gustatzen zait",
+    "unlikeComment": "Iruzkina ez zait gustatzen",
+    "addComment": "Gehitu iruzkina...",
+    "showMore": "Erakutsi gehiago",
+    "showLess": "Erakutsi gutxiago"
   }
 }

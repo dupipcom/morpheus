@@ -40,7 +40,12 @@
     "newList": "Nový seznam",
     "newTemplate": "Nová šablona",
     "budget": "Rozpočet",
-    "due": "Splatnosti"
+    "due": "Splatnosti",
+    "untitledTemplate": "Šablona bez názvu",
+    "untitledList": "Seznam bez názvu",
+    "anonymousUser": "Anonymní uživatel",
+    "anonymous": "Anonymní",
+    "withdrawStash": "Vybrat úspory"
   },
   "navigation": {
     "home": "Domů",
@@ -516,5 +521,18 @@
     "unfriend": "Odebrat Přítele",
     "loadMore": "Načíst Více",
     "noActivity": "Zatím není žádná aktivita k zobrazení."
+  },
+  "comments": {
+    "loading": "Načítání komentářů...",
+    "noComments": "Zatím žádné komentáře",
+    "comment": "komentář",
+    "comments": "komentáře",
+    "like": "Líbí se mi",
+    "unlike": "Nelíbí se mi",
+    "likeComment": "Líbí se mi komentář",
+    "unlikeComment": "Nelíbí se mi komentář",
+    "addComment": "Přidat komentář...",
+    "showMore": "Zobrazit více",
+    "showLess": "Zobrazit méně"
   }
 }

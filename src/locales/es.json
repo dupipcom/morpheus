@@ -40,7 +40,12 @@
     "newList": "Nueva lista",
     "newTemplate": "Nueva plantilla",
     "budget": "Presupuesto",
-    "due": "Vencimiento"
+    "due": "Vencimiento",
+    "untitledTemplate": "Plantilla sin título",
+    "untitledList": "Lista sin título",
+    "anonymousUser": "Usuario anónimo",
+    "anonymous": "Anónimo",
+    "withdrawStash": "Retirar ahorros"
   },
   "navigation": {
     "home": "Inicio",
@@ -100,6 +105,10 @@
     "weekNumber": "Semana {number}",
     "yourEarnings": "Tus ganancias {timeframe}, hasta ahora: Ð{amount}",
     "selectList": "Seleccionar lista",
+    "selectDate": "Seleccionar fecha",
+    "decrementCount": "Decrementar contador",
+    "showMore": "Mostrar más tareas",
+    "showLess": "Mostrar menos tareas",
     "status": {
       "in progress": "En Progreso",
       "steady": "Estable",
@@ -516,5 +525,18 @@
     "unfriend": "Eliminar Amigo",
     "loadMore": "Cargar Más",
     "noActivity": "Aún no hay actividad para mostrar."
+  },
+  "comments": {
+    "loading": "Cargando comentarios...",
+    "noComments": "Aún no hay comentarios",
+    "comment": "comentario",
+    "comments": "comentarios",
+    "like": "Me gusta",
+    "unlike": "No me gusta",
+    "likeComment": "Me gusta el comentario",
+    "unlikeComment": "No me gusta el comentario",
+    "addComment": "Añadir un comentario...",
+    "showMore": "Mostrar más",
+    "showLess": "Mostrar menos"
   }
 }

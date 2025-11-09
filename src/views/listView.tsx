@@ -1226,7 +1226,7 @@ const formatDateLocal = (date: Date): string => {
               ...((task.times || 1) > 1 && (task.count || 0) > 0
                 ? [
                     {
-                      label: 'Decrement count',
+                      label: t('tasks.decrementCount'),
                       onClick: () => handleDecrementCount(task),
                       icon: <Minus className="h-4 w-4" />,
                       separator: true,

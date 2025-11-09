@@ -40,7 +40,12 @@
     "newList": "নতুন তালিকা",
     "newTemplate": "নতুন টেমপ্লেট",
     "budget": "বাজেট",
-    "due": "সময়সীমা"
+    "due": "সময়সীমা",
+    "untitledTemplate": "শিরোনামহীন টেমপ্লেট",
+    "untitledList": "শিরোনামহীন তালিকা",
+    "anonymousUser": "বেনামী ব্যবহারকারী",
+    "anonymous": "বেনামী",
+    "withdrawStash": "সঞ্চয় উত্তোলন"
   },
   "navigation": {
     "home": "হোম",
@@ -516,5 +521,18 @@
     "unfriend": "বন্ধু সরান",
     "loadMore": "আরও লোড করুন",
     "noActivity": "এখনও দেখানোর জন্য কোনও কার্যক্রম নেই।"
+  },
+  "comments": {
+    "loading": "মন্তব্য লোড হচ্ছে...",
+    "noComments": "এখনও কোনও মন্তব্য নেই",
+    "comment": "মন্তব্য",
+    "comments": "মন্তব্যগুলি",
+    "like": "পছন্দ করুন",
+    "unlike": "পছন্দ সরান",
+    "likeComment": "মন্তব্য পছন্দ করুন",
+    "unlikeComment": "মন্তব্য পছন্দ সরান",
+    "addComment": "মন্তব্য যোগ করুন...",
+    "showMore": "আরও দেখান",
+    "showLess": "কম দেখান"
   }
 }

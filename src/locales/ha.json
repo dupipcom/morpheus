@@ -40,7 +40,12 @@
     "newList": "Sabon jeri",
     "newTemplate": "Sabon samfurin",
     "budget": "Kasafin kuɗi",
-    "due": "Lokacin ƙarewa"
+    "due": "Lokacin ƙarewa",
+    "untitledTemplate": "Samfurin mara take",
+    "untitledList": "Jeri mara take",
+    "anonymousUser": "Mai amfani mara suna",
+    "anonymous": "Mara suna",
+    "withdrawStash": "Cire ajiya"
   },
   "navigation": {
     "home": "Gida",
@@ -513,5 +518,18 @@
     "unfriend": "Cire Aboki",
     "loadMore": "Loda Ƙari",
     "noActivity": "Babu ayyuka da za a nuna tukuna."
+  },
+  "comments": {
+    "loading": "Ana lodawa sharhi...",
+    "noComments": "Babu sharhi tukuna",
+    "comment": "sharhi",
+    "comments": "sharhi",
+    "like": "Soyayya",
+    "unlike": "Kada soyayya",
+    "likeComment": "Soyayya sharhi",
+    "unlikeComment": "Kada soyayya sharhi",
+    "addComment": "Ƙara sharhi...",
+    "showMore": "Nuna da yawa",
+    "showLess": "Nuna kaɗan"
   }
 }

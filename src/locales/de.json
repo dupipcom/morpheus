@@ -40,7 +40,12 @@
     "newList": "Neue Liste",
     "newTemplate": "Neue Vorlage",
     "budget": "Budget",
-    "due": "Fällig"
+    "due": "Fällig",
+    "untitledTemplate": "Unbenannte Vorlage",
+    "untitledList": "Unbenannte Liste",
+    "anonymousUser": "Anonymer Benutzer",
+    "anonymous": "Anonym",
+    "withdrawStash": "Ersparnisse abheben"
   },
   "navigation": {
     "home": "Startseite",
@@ -516,5 +521,18 @@
     "unfriend": "Freund entfernen",
     "loadMore": "Mehr laden",
     "noActivity": "Noch keine Aktivität anzuzeigen."
+  },
+  "comments": {
+    "loading": "Kommentare werden geladen...",
+    "noComments": "Noch keine Kommentare",
+    "comment": "Kommentar",
+    "comments": "Kommentare",
+    "like": "Gefällt mir",
+    "unlike": "Gefällt mir nicht mehr",
+    "likeComment": "Kommentar gefällt mir",
+    "unlikeComment": "Kommentar gefällt mir nicht mehr",
+    "addComment": "Kommentar hinzufügen...",
+    "showMore": "Mehr anzeigen",
+    "showLess": "Weniger anzeigen"
   }
 }

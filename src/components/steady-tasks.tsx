@@ -584,7 +584,7 @@ export const SteadyTasks = () => {
             ...((task.times || 1) > 1 && (task.count || 0) > 0
               ? [
                   {
-                    label: 'Decrement count',
+                    label: t('tasks.decrementCount'),
                     onClick: () => handleDecrementCount(task),
                     icon: <Minus className="h-4 w-4" />,
                     separator: true,
@@ -628,7 +628,7 @@ export const SteadyTasks = () => {
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
                 className="bg-background/95 backdrop-blur-sm border border-border rounded-full p-2 shadow-lg hover:bg-background transition-colors"
-                aria-label="Show more tasks"
+                aria-label={t('tasks.showMore')}
               >
                 <ChevronDown className="h-5 w-5 text-foreground" />
               </button>
@@ -639,7 +639,7 @@ export const SteadyTasks = () => {
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
                 className="bg-background/95 backdrop-blur-sm border border-border rounded-full p-2 shadow-lg hover:bg-background transition-colors z-10"
-                aria-label="Show less tasks"
+                aria-label={t('tasks.showLess')}
               >
                 <ChevronUp className="h-5 w-5 text-foreground" />
               </button>

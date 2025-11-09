@@ -40,7 +40,12 @@
     "newList": "Orodha mpya",
     "newTemplate": "Kiolezo kipya",
     "budget": "Bajeti",
-    "due": "Inahitajika"
+    "due": "Inahitajika",
+    "untitledTemplate": "Kiolezo kisicho na kichwa",
+    "untitledList": "Orodha isiyo na kichwa",
+    "anonymousUser": "Mtumiaji asiyejulikana",
+    "anonymous": "Asiyejulikana",
+    "withdrawStash": "Toa akiba"
   },
   "navigation": {
     "home": "Nyumbani",
@@ -514,5 +519,18 @@
     "unfriend": "Ondoa Rafiki",
     "loadMore": "Pakia Zaidi",
     "noActivity": "Hakuna shughuli za kuonyesha bado."
+  },
+  "comments": {
+    "loading": "Inapakia maoni...",
+    "noComments": "Bado hakuna maoni",
+    "comment": "maoni",
+    "comments": "maoni",
+    "like": "Penda",
+    "unlike": "Usipende",
+    "likeComment": "Penda maoni",
+    "unlikeComment": "Usipende maoni",
+    "addComment": "Ongeza maoni...",
+    "showMore": "Onyesha zaidi",
+    "showLess": "Onyesha kidogo"
   }
 }

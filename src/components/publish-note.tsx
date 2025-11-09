@@ -90,7 +90,7 @@ export const PublishNote = ({ onNotePublished, date, defaultVisibility = 'AI_ENA
               )}
             </span>
             <span className="hidden md:inline">
-              {isPublishing ? t('common.loading') || 'Publishing...' : (t('mood.publish.action') || 'Publish Note')}
+              {isPublishing ? t('mood.publish.publishing') : t('mood.publish.action')}
             </span>
           </Button>
         </div>

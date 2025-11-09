@@ -40,7 +40,12 @@
     "newList": "Listă nouă",
     "newTemplate": "Șablon nou",
     "budget": "Buget",
-    "due": "Datorate"
+    "due": "Datorate",
+    "untitledTemplate": "Șablon fără titlu",
+    "untitledList": "Listă fără titlu",
+    "anonymousUser": "Utilizator anonim",
+    "anonymous": "Anonim",
+    "withdrawStash": "Retrage economii"
   },
   "navigation": {
     "home": "Acasă",
@@ -516,5 +521,18 @@
     "unfriend": "Elimină Prietenul",
     "loadMore": "Încarcă Mai Mult",
     "noActivity": "Încă nu există activitate de afișat."
+  },
+  "comments": {
+    "loading": "Se încarcă comentariile...",
+    "noComments": "Încă nu există comentarii",
+    "comment": "comentariu",
+    "comments": "comentarii",
+    "like": "Apreciere",
+    "unlike": "Anulează aprecierea",
+    "likeComment": "Apreciază comentariul",
+    "unlikeComment": "Anulează aprecierea comentariului",
+    "addComment": "Adaugă un comentariu...",
+    "showMore": "Afișează mai mult",
+    "showLess": "Afișează mai puțin"
   }
 }

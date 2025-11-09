@@ -40,7 +40,12 @@
     "newList": "Yeni liste",
     "newTemplate": "Yeni şablon",
     "budget": "Bütçe",
-    "due": "Neden"
+    "due": "Neden",
+    "untitledTemplate": "Başlıksız şablon",
+    "untitledList": "Başlıksız liste",
+    "anonymousUser": "Anonim kullanıcı",
+    "anonymous": "Anonim",
+    "withdrawStash": "Birikimleri çek"
   },
   "navigation": {
     "dashboard": "Gösterge Paneli",
@@ -520,5 +525,18 @@
     "unfriend": "Arkadaşı Kaldır",
     "loadMore": "Daha Fazla Yükle",
     "noActivity": "Henüz gösterilecek aktivite yok."
+  },
+  "comments": {
+    "loading": "Yorumlar yükleniyor...",
+    "noComments": "Henüz yorum yok",
+    "comment": "yorum",
+    "comments": "yorumlar",
+    "like": "Beğen",
+    "unlike": "Beğenmeyi geri al",
+    "likeComment": "Yorumu beğen",
+    "unlikeComment": "Yorum beğenisini geri al",
+    "addComment": "Yorum ekle...",
+    "showMore": "Daha fazla göster",
+    "showLess": "Daha az göster"
   }
 }

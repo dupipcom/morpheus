@@ -236,7 +236,7 @@ export const DoToolbar = ({
 
   // Format date for display
   const formatDate = (date: Date | undefined) => {
-    if (!date) return 'Select date'
+    if (!date) return t('tasks.selectDate')
     
     // For weekly lists, show week number
     if (selectedList?.role && selectedList.role.startsWith('weekly.')) {

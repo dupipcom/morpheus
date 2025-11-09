@@ -40,7 +40,12 @@
     "newList": "Nova lista",
     "newTemplate": "Novo modelo",
     "budget": "Orzamento",
-    "due": "Vencemento"
+    "due": "Vencemento",
+    "untitledTemplate": "Modelo sen título",
+    "untitledList": "Lista sen título",
+    "anonymousUser": "Usuario anónimo",
+    "anonymous": "Anónimo",
+    "withdrawStash": "Retirar aforros"
   },
   "navigation": {
     "home": "Inicio",
@@ -519,5 +524,18 @@
     "unfriend": "Eliminar Amigo",
     "loadMore": "Cargar Máis",
     "noActivity": "Aínda non hai actividade para mostrar."
+  },
+  "comments": {
+    "loading": "Cargando comentarios...",
+    "noComments": "Aínda non hai comentarios",
+    "comment": "comentario",
+    "comments": "comentarios",
+    "like": "Gústame",
+    "unlike": "Non me gusta",
+    "likeComment": "Gústame o comentario",
+    "unlikeComment": "Non me gusta o comentario",
+    "addComment": "Engadir un comentario...",
+    "showMore": "Mostrar máis",
+    "showLess": "Mostrar menos"
   }
 }

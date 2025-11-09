@@ -424,7 +424,7 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
               value="details"
               className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
             >
-              Details
+              {t('common.details')}
             </TabsTrigger>
           </TabsList>
 
@@ -469,7 +469,7 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
               loading={notesLoading}
               onRefresh={() => mutateNotes()}
               showHeader={false}
-              emptyMessage="No notes for this date."
+              emptyMessage={t('mood.noNotesForDate')}
             />
           </TabsContent>
 

@@ -40,7 +40,12 @@
     "newList": "Új lista",
     "newTemplate": "Új sablon",
     "budget": "Költségvetés",
-    "due": "Határidő"
+    "due": "Határidő",
+    "untitledTemplate": "Cím nélküli sablon",
+    "untitledList": "Cím nélküli lista",
+    "anonymousUser": "Névtelen felhasználó",
+    "anonymous": "Névtelen",
+    "withdrawStash": "Megtakarítás kivétele"
   },
   "navigation": {
     "home": "Kezdőlap",
@@ -516,5 +521,18 @@
     "unfriend": "Barát Eltávolítása",
     "loadMore": "Több Betöltése",
     "noActivity": "Még nincs megjeleníthető aktivitás."
+  },
+  "comments": {
+    "loading": "Hozzászólások betöltése...",
+    "noComments": "Még nincsenek hozzászólások",
+    "comment": "hozzászólás",
+    "comments": "hozzászólások",
+    "like": "Tetszik",
+    "unlike": "Nem tetszik",
+    "likeComment": "Hozzászólás tetszik",
+    "unlikeComment": "Hozzászólás nem tetszik",
+    "addComment": "Hozzászólás hozzáadása...",
+    "showMore": "Több mutatása",
+    "showLess": "Kevesebb mutatása"
   }
 }

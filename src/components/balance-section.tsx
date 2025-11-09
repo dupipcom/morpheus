@@ -93,7 +93,7 @@ export const BalanceSection = () => {
               className="ml-2 border-accent bg-input/30 text-foreground hover:text-background" 
               onClick={handleWithdrawStash}
               disabled={parseFloat(serverStash) <= 0}
-              title="Withdraw Stash"
+              title={t('common.withdrawStash')}
             >
               <DollarSign />
             </Button>

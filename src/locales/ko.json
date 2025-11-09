@@ -40,7 +40,12 @@
     "newList": "새 목록",
     "newTemplate": "새 템플릿",
     "budget": "예산",
-    "due": "기한"
+    "due": "기한",
+    "untitledTemplate": "제목 없는 템플릿",
+    "untitledList": "제목 없는 목록",
+    "anonymousUser": "익명 사용자",
+    "anonymous": "익명",
+    "withdrawStash": "저축 인출"
   },
   "navigation": {
     "home": "홈",
@@ -516,5 +521,18 @@
     "unfriend": "친구 삭제",
     "loadMore": "더 보기",
     "noActivity": "아직 표시할 활동이 없습니다."
+  },
+  "comments": {
+    "loading": "댓글 로딩 중...",
+    "noComments": "아직 댓글이 없습니다",
+    "comment": "댓글",
+    "comments": "댓글",
+    "like": "좋아요",
+    "unlike": "좋아요 취소",
+    "likeComment": "댓글 좋아요",
+    "unlikeComment": "댓글 좋아요 취소",
+    "addComment": "댓글 추가...",
+    "showMore": "더 보기",
+    "showLess": "접기"
   }
 }

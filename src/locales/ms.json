@@ -40,7 +40,12 @@
     "newList": "New list",
     "newTemplate": "New template",
     "budget": "Budget",
-    "due": "Due"
+    "due": "Due",
+    "untitledTemplate": "Templat tanpa tajuk",
+    "untitledList": "Senarai tanpa tajuk",
+    "anonymousUser": "Pengguna tanpa nama",
+    "anonymous": "Tanpa nama",
+    "withdrawStash": "Keluarkan simpanan"
   },
   "navigation": {
     "dashboard": "Papan Pemuka",
@@ -520,5 +525,18 @@
     "unfriend": "Buang Rakan",
     "loadMore": "Muat Lagi",
     "noActivity": "Tiada aktiviti untuk ditunjukkan lagi."
+  },
+  "comments": {
+    "loading": "Memuatkan komen...",
+    "noComments": "Belum ada komen",
+    "comment": "komen",
+    "comments": "komen",
+    "like": "Suka",
+    "unlike": "Tidak suka",
+    "likeComment": "Suka komen",
+    "unlikeComment": "Tidak suka komen",
+    "addComment": "Tambah komen...",
+    "showMore": "Tunjukkan lebih banyak",
+    "showLess": "Tunjukkan kurang"
   }
 }

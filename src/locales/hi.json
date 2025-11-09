@@ -40,7 +40,12 @@
     "newList": "नई सूची",
     "newTemplate": "नया टेम्प्लेट",
     "budget": "बजट",
-    "due": "देना है"
+    "due": "देना है",
+    "untitledTemplate": "बिना शीर्षक टेम्प्लेट",
+    "untitledList": "बिना शीर्षक सूची",
+    "anonymousUser": "अज्ञात उपयोगकर्ता",
+    "anonymous": "अज्ञात",
+    "withdrawStash": "बचत निकालें"
   },
   "navigation": {
     "home": "होम",
@@ -516,5 +521,18 @@
     "unfriend": "मित्र हटाएं",
     "loadMore": "और लोड करें",
     "noActivity": "अभी तक दिखाने के लिए कोई गतिविधि नहीं है।"
+  },
+  "comments": {
+    "loading": "टिप्पणियां लोड हो रही हैं...",
+    "noComments": "अभी तक कोई टिप्पणी नहीं है",
+    "comment": "टिप्पणी",
+    "comments": "टिप्पणियां",
+    "like": "पसंद करें",
+    "unlike": "पसंद हटाएं",
+    "likeComment": "टिप्पणी पसंद करें",
+    "unlikeComment": "टिप्पणी पसंद हटाएं",
+    "addComment": "टिप्पणी जोड़ें...",
+    "showMore": "और दिखाएं",
+    "showLess": "कम दिखाएं"
   }
 }
