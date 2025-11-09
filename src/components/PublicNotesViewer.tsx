@@ -8,9 +8,10 @@ import { useI18n } from '@/lib/contexts/i18n'
 interface PublicNotesViewerProps {
   userName: string
   showCard?: boolean
+  gridLayout?: boolean
 }
 
-export function PublicNotesViewer({ userName, showCard = true }: PublicNotesViewerProps) {
+export function PublicNotesViewer({ userName, showCard = true, gridLayout = false }: PublicNotesViewerProps) {
   const { t } = useI18n()
   const [notes, setNotes] = useState<Note[]>([])
   const [loading, setLoading] = useState(true)
@@ -99,6 +100,7 @@ export function PublicNotesViewer({ userName, showCard = true }: PublicNotesView
       onRefresh={fetchNotes}
       showHeader={!showCard}
       emptyMessage={t('publicProfile.noPublicNotes')}
+      gridLayout={gridLayout}
     />
   )
 

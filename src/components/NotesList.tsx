@@ -12,8 +12,10 @@ export interface Note {
   createdAt: string
   date?: string
   comments?: any[]
+  isLiked?: boolean
   _count?: {
     comments: number
+    likes?: number
   }
 }
 
@@ -23,6 +25,7 @@ interface NotesListProps {
   onRefresh?: () => void
   showHeader?: boolean
   emptyMessage?: string
+  gridLayout?: boolean
 }
 
 function getTimeAgo(date: Date): string {
@@ -67,7 +70,8 @@ export function NotesList({
   loading = false, 
   onRefresh, 
   showHeader = true,
-  emptyMessage = 'No notes available yet.'
+  emptyMessage = 'No notes available yet.',
+  gridLayout = false
 }: NotesListProps) {
   const { t } = useI18n()
 
@@ -87,8 +91,12 @@ export function NotesList({
     )
   }
 
+  const containerClass = gridLayout 
+    ? "grid grid-cols-1 md:grid-cols-3 gap-4"
+    : "space-y-4"
+
   return (
-    <div className="space-y-4">
+    <div>
       {showHeader && (
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold">{t('publicProfile.notes')}</h3>
@@ -105,26 +113,29 @@ export function NotesList({
           )}
         </div>
       )}
-      {notes.map((note) => {
-        const activityItem: ActivityItem = {
-          id: note.id,
-          type: 'note',
-          createdAt: note.createdAt,
-          content: note.content,
-          visibility: note.visibility,
-          date: note.date,
-          comments: note.comments,
-          _count: note._count
-        }
-        return (
-          <ActivityCard
-            key={note.id}
-            item={activityItem}
-            onCommentAdded={onRefresh}
-            getTimeAgo={getTimeAgo}
-          />
-        )
-      })}
+      <div className={containerClass}>
+        {notes.map((note) => {
+          const activityItem: ActivityItem = {
+            id: note.id,
+            type: 'note',
+            createdAt: note.createdAt,
+            content: note.content,
+            visibility: note.visibility,
+            date: note.date,
+            comments: note.comments,
+            isLiked: note.isLiked,
+            _count: note._count
+          }
+          return (
+            <ActivityCard
+              key={note.id}
+              item={activityItem}
+              onCommentAdded={onRefresh}
+              getTimeAgo={getTimeAgo}
+            />
+          )
+        })}
+      </div>
     </div>
   )
 }

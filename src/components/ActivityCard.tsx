@@ -35,6 +35,7 @@ export interface ActivityItem {
   role?: string // For templates
   visibility?: string
   date?: string
+  isLiked?: boolean // Whether current user has liked this item (if provided, skip fetching)
   user?: {
     id: string
     profile?: {
@@ -67,15 +68,27 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo }
   const [isLoadingComments, setIsLoadingComments] = useState(false)
   const [newComment, setNewComment] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isLiked, setIsLiked] = useState(false)
+  const [isLiked, setIsLiked] = useState(item.isLiked ?? false)
   const [likeCount, setLikeCount] = useState(item._count?.likes || 0)
   const [isTogglingLike, setIsTogglingLike] = useState(false)
   const [commentLikes, setCommentLikes] = useState<Record<string, { isLiked: boolean; count: number }>>({})
 
-  // Fetch like status on mount
+  // Update isLiked and likeCount when item changes (from props)
   useEffect(() => {
-    fetchLikeStatus()
-  }, [item.id, item.type])
+    if (item.isLiked !== undefined) {
+      setIsLiked(item.isLiked)
+    }
+    if (item._count?.likes !== undefined) {
+      setLikeCount(item._count.likes)
+    }
+  }, [item.isLiked, item._count?.likes])
+
+  // Fetch like status on mount only if not provided in item
+  useEffect(() => {
+    if (item.isLiked === undefined) {
+      fetchLikeStatus()
+    }
+  }, [item.id, item.type, item.isLiked])
 
   // Initialize comments and count from item data
   useEffect(() => {

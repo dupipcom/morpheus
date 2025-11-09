@@ -117,17 +117,39 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
       }
     })
 
-    // Sort comments by likes, then by date
+    // Get all note IDs to check if current user has liked them
+    const noteIds = notes.map(note => note.id)
+    let userLikedNoteIds: string[] = []
+    
+    if (currentUserId && noteIds.length > 0) {
+      const userLikes = await prisma.like.findMany({
+        where: {
+          userId: currentUserId,
+          entityType: 'note',
+          entityId: {
+            in: noteIds
+          }
+        },
+        select: {
+          entityId: true
+        }
+      })
+      userLikedNoteIds = userLikes.map(like => like.entityId)
+    }
+
+    // Sort comments by likes, then by date, and add isLiked status
     const notesWithSortedComments = notes.map(note => {
+      const isLiked = userLikedNoteIds.includes(note.id)
+      
       if (note.comments && Array.isArray(note.comments) && note.comments.length > 0) {
         const sortedComments = [...note.comments].sort((a: any, b: any) => {
           const likeDiff = (b._count?.likes || 0) - (a._count?.likes || 0)
           if (likeDiff !== 0) return likeDiff
           return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         })
-        return { ...note, comments: sortedComments }
+        return { ...note, comments: sortedComments, isLiked }
       }
-      return note
+      return { ...note, isLiked }
     })
 
     return Response.json({ notes: notesWithSortedComments })

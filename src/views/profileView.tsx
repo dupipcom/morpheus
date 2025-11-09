@@ -158,7 +158,7 @@ export const ProfileView = ({
             </TabsContent>
             
             <TabsContent value="notes" className="mt-4 min-w-0">
-              <PublicNotesViewer userName={userName} showCard={false} />
+              <PublicNotesViewer userName={userName} showCard={false} gridLayout={true} />
             </TabsContent>
             
             <TabsContent value="templates" className="mt-4 min-w-0">
