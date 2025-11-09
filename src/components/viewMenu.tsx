@@ -11,7 +11,7 @@ import { SteadyTasks } from '@/components/steady-tasks'
 
 export const ViewMenu = ({ active, children }: { active: string; children?: React.ReactNode }) => {
   return (
-    <div className="relative p-4 w-full max-w-[1200px] p-4 m-auto">
+    <div className="relative p-4 w-full max-w-[1200px] p-4 m-auto mb-8">
       <div className="m-auto grid grid-cols-1 md:grid-cols-4 grid-rows-auto md:grid-rows-auto gap-4 auto-rows-min">
         {/* Row 1: Navigation Links (Mobile: Row 1, Desktop: Row 1, Cols 1-4) */}
         <div className="col-span-1 md:col-span-4 row-span-1">

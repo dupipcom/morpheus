@@ -94,6 +94,20 @@ export const DoToolbar = ({
       const isWeekly = rolePrefix === 'weekly'
       const isOneOff = rolePrefix === 'one-off' || rolePrefix === 'oneoff'
 
+      // For daily/weekly lists, filter by selectedDate if provided
+      let targetDateISO: string | null = null
+      let targetWeek: number | null = null
+      let targetYear: number | null = null
+
+      if (selectedDate && !isOneOff) {
+        targetDateISO = selectedDate.toISOString().split('T')[0]
+        targetYear = selectedDate.getFullYear()
+        if (isWeekly) {
+          const [, weekNum] = getWeekNumber(selectedDate)
+          targetWeek = weekNum
+        }
+      }
+
       // Sum up earnings from entries
       for (const year in entries) {
         const yearData = entries[year]
@@ -101,6 +115,14 @@ export const DoToolbar = ({
         if (isDaily && yearData?.days) {
           // Sum daily earnings
           for (const date in yearData.days) {
+            // If selectedDate is provided, only include that specific day
+            if (targetDateISO && date !== targetDateISO) {
+              continue
+            }
+            // If filtering by year, only include entries from that year
+            if (targetYear && Number(year) !== targetYear) {
+              continue
+            }
             const day = yearData.days[date]
             if (day) {
               totalProfit += parseFloat(day.profit || '0')
@@ -111,6 +133,14 @@ export const DoToolbar = ({
         } else if (isWeekly && yearData?.weeks) {
           // Sum weekly earnings
           for (const week in yearData.weeks) {
+            // If selectedDate is provided, only include that specific week
+            if (targetWeek !== null && Number(week) !== targetWeek) {
+              continue
+            }
+            // If filtering by year, only include entries from that year
+            if (targetYear && Number(year) !== targetYear) {
+              continue
+            }
             const weekData = yearData.weeks[week]
             if (weekData) {
               totalProfit += parseFloat(weekData.profit || '0')
@@ -119,7 +149,7 @@ export const DoToolbar = ({
             }
           }
         } else if (isOneOff && yearData?.oneOffs) {
-          // Sum one-off earnings
+          // Sum one-off earnings (always show total, not filtered by date)
           for (const date in yearData.oneOffs) {
             const oneOff = yearData.oneOffs[date]
             if (oneOff) {
@@ -136,7 +166,7 @@ export const DoToolbar = ({
       console.error('Error calculating list earnings:', error)
       setListEarnings({ profit: 0, prize: 0, earnings: 0 })
     }
-  }, [selectedList?.id, (selectedList as any)?.role, session])
+  }, [selectedList?.id, (selectedList as any)?.role, session, selectedDate])
 
   const refreshTemplates = async () => {
     try {
@@ -188,6 +218,21 @@ export const DoToolbar = ({
     if (!selectedList?.role) return false
     return selectedList.role.startsWith('daily.') || selectedList.role.startsWith('weekly.')
   }, [selectedList])
+
+  // Determine if we should show the prize badge
+  const shouldShowPrizeBadge = useMemo(() => {
+    if (typeof (selectedList as any)?.budgetPercentage !== 'number' || (selectedList as any).budgetPercentage <= 0) {
+      return false
+    }
+    const listRole = (selectedList as any)?.role
+    const rolePrefix = listRole?.split('.')[0]
+    const isDaily = rolePrefix === 'daily'
+    const isWeekly = rolePrefix === 'weekly'
+    const isOneOff = rolePrefix === 'one-off' || rolePrefix === 'oneoff'
+    // For daily/weekly lists, only show prize when a date is selected
+    // For one-off lists, always show the total prize
+    return isOneOff || (selectedDate && (isDaily || isWeekly))
+  }, [selectedList, selectedDate])
 
   // Format date for display
   const formatDate = (date: Date | undefined) => {
@@ -293,7 +338,7 @@ export const DoToolbar = ({
               {(selectedList as any).budgetPercentage.toFixed(0)}% of budget
             </Badge>
           )}
-          {typeof (selectedList as any)?.budgetPercentage === 'number' && (selectedList as any).budgetPercentage > 0 && (
+          {shouldShowPrizeBadge && (
             <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 hover:bg-green-100">
               <Award className="h-3 w-3 mr-1" />
               Prize: ${listEarnings.prize.toFixed(2)}

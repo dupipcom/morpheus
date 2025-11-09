@@ -10,6 +10,7 @@ import Link from 'next/link'
 import { GlobalContext } from "@/lib/contexts"
 import { AnalyticsView } from "@/views/analyticsView"
 import { ViewMenu } from "@/components/viewMenu"
+import { PublishNote } from '@/components/publish-note'
 import { setLoginTime, getLoginTime } from '@/lib/cookieManager'
 import { useI18n } from "@/lib/contexts/i18n"
 
@@ -46,7 +47,9 @@ export default function LocalizedDashboard({ params }: { params: Promise<{ local
 
   return (
     <main className="">
-      <ViewMenu active="dashboard" />
+      <ViewMenu active="dashboard">
+        <PublishNote />
+      </ViewMenu>
       <h1 className="scroll-m-20 text-2xl font-semibold tracking-tight text-center mb-8">{formatDate(new Date())}</h1>
       <h2 className="text-center scroll-m-20 text-lg font-semibold tracking-tight">{t('dashboard.title')}</h2>
 
