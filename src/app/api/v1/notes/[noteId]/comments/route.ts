@@ -30,6 +30,11 @@ export async function GET(
               }
             }
           }
+        },
+        _count: {
+          select: {
+            likes: true
+          }
         }
       },
       orderBy: {
@@ -37,7 +42,14 @@ export async function GET(
       }
     })
 
-    return NextResponse.json({ comments })
+    // Sort by like count (descending), then by creation date (descending)
+    const sortedComments = comments.sort((a, b) => {
+      const likeDiff = (b._count?.likes || 0) - (a._count?.likes || 0)
+      if (likeDiff !== 0) return likeDiff
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    })
+
+    return NextResponse.json({ comments: sortedComments })
   } catch (error) {
     console.error('Error fetching comments:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

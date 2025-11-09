@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { ChevronDown, ChevronUp, Send, Loader2, MessageSquare, FileText } from "lucide-react"
+import { ChevronDown, ChevronUp, Send, Loader2, MessageSquare, FileText, Heart } from "lucide-react"
 import { useI18n } from '@/lib/contexts/i18n'
 import { useNotesRefresh } from "@/lib/contexts/notesRefresh"
 import Link from 'next/link'
@@ -20,6 +20,9 @@ export interface Comment {
       firstName?: string
       lastName?: string
     }
+  }
+  _count?: {
+    likes: number
   }
 }
 
@@ -44,6 +47,7 @@ export interface ActivityItem {
   comments?: Comment[]
   _count?: {
     comments: number
+    likes?: number
   }
 }
 
@@ -63,6 +67,28 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo }
   const [isLoadingComments, setIsLoadingComments] = useState(false)
   const [newComment, setNewComment] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isLiked, setIsLiked] = useState(false)
+  const [likeCount, setLikeCount] = useState(item._count?.likes || 0)
+  const [isTogglingLike, setIsTogglingLike] = useState(false)
+  const [commentLikes, setCommentLikes] = useState<Record<string, { isLiked: boolean; count: number }>>({})
+
+  // Fetch like status on mount
+  useEffect(() => {
+    fetchLikeStatus()
+  }, [item.id, item.type])
+
+  // Fetch comment count on mount and when item changes
+  useEffect(() => {
+    // If we have _count from props, use it; otherwise fetch
+    if (item._count?.comments !== undefined) {
+      setCommentCount(item._count.comments)
+    } else {
+      fetchCommentCount()
+    }
+    // Reset comments when item changes
+    setComments([])
+    setCommentLikes({})
+  }, [item.id, item.type])
 
   // Fetch comments when expanded (if we don't have them yet)
   useEffect(() => {
@@ -70,6 +96,122 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo }
       fetchComments()
     }
   }, [isExpanded, commentCount])
+
+  const fetchCommentCount = async () => {
+    try {
+      const response = await fetch(`/api/v1/comments?entityType=${item.type}&entityId=${item.id}`)
+      if (response.ok) {
+        const data = await response.json()
+        setCommentCount(data.comments?.length || 0)
+      }
+    } catch (error) {
+      console.error('Error fetching comment count:', error)
+    }
+  }
+
+  // Fetch like status for comments when they're loaded
+  useEffect(() => {
+    if (comments.length > 0) {
+      comments.forEach(comment => {
+        if (!commentLikes[comment.id]) {
+          fetchCommentLikeStatus(comment.id)
+        }
+      })
+    }
+  }, [comments])
+
+  const fetchLikeStatus = async () => {
+    try {
+      const response = await fetch(`/api/v1/likes?entityType=${item.type}&entityId=${item.id}`)
+      if (response.ok) {
+        const data = await response.json()
+        setIsLiked(data.isLiked || false)
+        setLikeCount(data.likeCount || 0)
+      }
+    } catch (error) {
+      console.error('Error fetching like status:', error)
+    }
+  }
+
+  const fetchCommentLikeStatus = async (commentId: string) => {
+    try {
+      const response = await fetch(`/api/v1/likes?entityType=comment&entityId=${commentId}`)
+      if (response.ok) {
+        const data = await response.json()
+        setCommentLikes(prev => ({
+          ...prev,
+          [commentId]: {
+            isLiked: data.isLiked || false,
+            count: data.likeCount || 0
+          }
+        }))
+      }
+    } catch (error) {
+      console.error('Error fetching comment like status:', error)
+    }
+  }
+
+  const handleToggleLike = async () => {
+    if (isTogglingLike) return
+
+    setIsTogglingLike(true)
+    try {
+      const response = await fetch('/api/v1/likes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          entityType: item.type,
+          entityId: item.id
+        }),
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setIsLiked(data.liked)
+        setLikeCount(data.likeCount)
+      }
+    } catch (error) {
+      console.error('Error toggling like:', error)
+    } finally {
+      setIsTogglingLike(false)
+    }
+  }
+
+  const handleToggleCommentLike = async (commentId: string) => {
+    try {
+      const response = await fetch('/api/v1/likes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          entityType: 'comment',
+          entityId: commentId
+        }),
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setCommentLikes(prev => ({
+          ...prev,
+          [commentId]: {
+            isLiked: data.liked,
+            count: data.likeCount
+          }
+        }))
+        // Update comment in list with new like count
+        setComments(prev => prev.map(comment => 
+          comment.id === commentId 
+            ? { ...comment, _count: { ...comment._count, likes: data.likeCount } }
+            : comment
+        ))
+      }
+    } catch (error) {
+      console.error('Error toggling comment like:', error)
+    }
+  }
 
   const fetchComments = async () => {
     setIsLoadingComments(true)
@@ -79,6 +221,15 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo }
         const data = await response.json()
         setComments(data.comments || [])
         setCommentCount(data.comments?.length || 0)
+        // Initialize comment likes from fetched data
+        const likesMap: Record<string, { isLiked: boolean; count: number }> = {}
+        data.comments?.forEach((comment: Comment) => {
+          likesMap[comment.id] = {
+            isLiked: false, // Will be fetched separately
+            count: comment._count?.likes || 0
+          }
+        })
+        setCommentLikes(likesMap)
       }
     } catch (error) {
       console.error('Error fetching comments:', error)
@@ -106,9 +257,16 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo }
 
       if (response.ok) {
         const data = await response.json()
-        setComments(prev => [data.comment, ...prev])
+        // Add the new comment with like count
+        const newCommentWithLikes = {
+          ...data.comment,
+          _count: { likes: 0 }
+        }
+        setComments(prev => [newCommentWithLikes, ...prev])
         setCommentCount(prev => prev + 1)
         setNewComment('')
+        // Refresh comments to get updated list with proper sorting
+        await fetchComments()
         if (onCommentAdded) {
           onCommentAdded()
         }
@@ -216,15 +374,25 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo }
         </div>
       )}
       
-      {/* Comment section - show if has comments or is expanded */}
-      {(commentCount > 0 || isExpanded) && (
-        <div className="mt-3 pt-3 border-t border-border/50 flex-1 flex flex-col">
-          {commentCount > 0 && (
-            <div className="flex items-center gap-1 text-xs text-muted-foreground mb-2">
-              <MessageSquare className="h-3 w-3" />
-              <span>{commentCount} {commentCount === 1 ? 'comment' : 'comments'}</span>
-            </div>
-          )}
+      {/* Comment section - always show */}
+      <div className="mt-3 pt-3 border-t border-border/50 flex-1 flex flex-col">
+        <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
+          <button
+            onClick={handleToggleLike}
+            disabled={isTogglingLike}
+            className="flex items-center gap-1 hover:opacity-70 transition-opacity disabled:opacity-50"
+            aria-label={isLiked ? "Unlike" : "Like"}
+          >
+            <Heart 
+              className={`h-3 w-3 ${isLiked ? 'fill-destructive text-destructive' : 'text-muted-foreground'}`} 
+            />
+            {likeCount > 0 && <span>{likeCount}</span>}
+          </button>
+          <div className="flex items-center gap-1">
+            <MessageSquare className="h-3 w-3" />
+            <span>{commentCount} {commentCount === 1 ? 'comment' : 'comments'}</span>
+          </div>
+        </div>
           
           {/* Show last 3 comments when not expanded */}
           {!isExpanded && last3Comments.length > 0 && (
@@ -254,7 +422,9 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo }
                 <div className="text-xs text-muted-foreground">Loading comments...</div>
               ) : comments.length > 0 ? (
                 <div className="space-y-2 overflow-y-auto">
-                  {comments.map((comment) => (
+                  {comments.map((comment) => {
+                  const commentLike = commentLikes[comment.id] || { isLiked: false, count: comment._count?.likes || 0 }
+                  return (
                     <div key={comment.id} className="text-xs text-muted-foreground bg-muted/50 rounded p-2">
                       <div className="flex items-center gap-2 mb-1">
                         <span className="font-medium">
@@ -265,10 +435,21 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo }
                             : 'Anonymous'}
                         </span>
                         <span className="text-[10px]">{getTimeAgo(new Date(comment.createdAt))}</span>
+                        <button
+                          onClick={() => handleToggleCommentLike(comment.id)}
+                          className="flex items-center gap-1 ml-auto hover:opacity-70 transition-opacity"
+                          aria-label={commentLike.isLiked ? "Unlike comment" : "Like comment"}
+                        >
+                          <Heart 
+                            className={`h-3 w-3 ${commentLike.isLiked ? 'fill-destructive text-destructive' : 'text-muted-foreground'}`} 
+                          />
+                          {commentLike.count > 0 && <span className="text-[10px] text-muted-foreground">{commentLike.count}</span>}
+                        </button>
                       </div>
                       <p className="text-xs">{comment.content}</p>
                     </div>
-                  ))}
+                  )
+                })}
                 </div>
               ) : (
                 <div className="text-xs text-muted-foreground">No comments yet</div>
@@ -322,22 +503,6 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo }
             </div>
           )}
         </div>
-      )}
-
-      {/* Show expand button when collapsed and no comments yet (to allow adding first comment) */}
-      {!isExpanded && commentCount === 0 && (
-        <div className="mt-3 pt-3 border-t border-border/50">
-          <div className="flex justify-center">
-            <button
-              onClick={() => setIsExpanded(true)}
-              className="bg-background/95 backdrop-blur-sm border border-border rounded-full p-2 shadow-lg hover:bg-background transition-colors z-10"
-              aria-label="Add comment"
-            >
-              <ChevronDown className="h-4 w-4 text-foreground" />
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   )
 }

@@ -111,7 +111,8 @@ export async function GET(request: NextRequest) {
         owners: true,
         _count: {
           select: {
-            comments: true
+            comments: true,
+            likes: true
           }
         }
       }

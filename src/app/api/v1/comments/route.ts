@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
       entityId
     }
     
-    // Fetch comments for the entity, ordered by creation date (newest first)
+    // Fetch comments for the entity with like counts
     const comments = await prisma.comment.findMany({
       where: whereClause,
       include: {
@@ -35,6 +35,11 @@ export async function GET(request: NextRequest) {
               }
             }
           }
+        },
+        _count: {
+          select: {
+            likes: true
+          }
         }
       },
       orderBy: {
@@ -42,7 +47,14 @@ export async function GET(request: NextRequest) {
       }
     })
 
-    return NextResponse.json({ comments })
+    // Sort by like count (descending), then by creation date (descending)
+    const sortedComments = comments.sort((a, b) => {
+      const likeDiff = (b._count?.likes || 0) - (a._count?.likes || 0)
+      if (likeDiff !== 0) return likeDiff
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    })
+
+    return NextResponse.json({ comments: sortedComments })
   } catch (error) {
     console.error('Error fetching comments:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

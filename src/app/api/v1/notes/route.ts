@@ -18,7 +18,8 @@ export async function GET() {
           include: {
             _count: {
               select: {
-                comments: true
+                comments: true,
+                likes: true
               }
             }
           }

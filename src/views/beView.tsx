@@ -34,6 +34,10 @@ interface PublicNote {
   visibility: string
   createdAt: string
   date: string | null
+  _count?: {
+    comments?: number
+    likes?: number
+  }
   user: {
     id: string
     profile: {
@@ -53,6 +57,10 @@ interface PublicTemplate {
   createdAt: string
   updatedAt: string
   owners: string[]
+  _count?: {
+    comments?: number
+    likes?: number
+  }
   user: {
     id: string
     profile: {
@@ -297,19 +305,19 @@ export const BeView = () => {
       <div className="mb-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
           {activityItems.map((item) => {
+            const noteData = item.type === 'note' ? (item.data as PublicNote) : null
+            const templateData = item.type === 'template' ? (item.data as PublicTemplate) : null
             const activityItem: ActivityItem = {
-              id: item.type === 'note' ? (item.data as PublicNote).id : (item.data as PublicTemplate).id,
+              id: noteData?.id || templateData?.id || '',
               type: item.type,
               createdAt: item.createdAt,
-              content: item.type === 'note' ? (item.data as PublicNote).content : undefined,
-              name: item.type === 'template' ? (item.data as PublicTemplate).name || undefined : undefined,
-              role: item.type === 'template' ? (item.data as PublicTemplate).role || undefined : undefined,
-              visibility: item.type === 'note' ? (item.data as PublicNote).visibility : (item.data as PublicTemplate).visibility,
-              date: item.type === 'note' ? (item.data as PublicNote).date || undefined : undefined,
-              user: item.type === 'note' 
-                ? (item.data as PublicNote).user 
-                : (item.data as PublicTemplate).user || undefined,
-              _count: undefined // Will be fetched when needed
+              content: noteData?.content,
+              name: templateData?.name || undefined,
+              role: templateData?.role || undefined,
+              visibility: noteData?.visibility || templateData?.visibility,
+              date: noteData?.date || undefined,
+              user: noteData?.user || templateData?.user || undefined,
+              _count: noteData?._count || templateData?._count
             }
             
             return (

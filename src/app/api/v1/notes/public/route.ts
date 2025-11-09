@@ -104,7 +104,8 @@ export async function GET(request: NextRequest) {
         date: true,
         _count: {
           select: {
-            comments: true
+            comments: true,
+            likes: true
           }
         },
         user: {

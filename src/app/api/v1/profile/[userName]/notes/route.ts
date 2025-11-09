@@ -85,7 +85,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
         date: true,
         _count: {
           select: {
-            comments: true
+            comments: true,
+            likes: true
           }
         }
       }
