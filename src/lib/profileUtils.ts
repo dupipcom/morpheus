@@ -278,3 +278,96 @@ export function sanitizeUserEntriesForPublic(
 
   return sanitized
 }
+
+/**
+ * Interface for profile data with visibility fields
+ */
+export interface ProfileWithVisibility {
+  userName?: string | null
+  firstName?: string | null
+  lastName?: string | null
+  bio?: string | null
+  profilePicture?: string | null
+  firstNameVisibility?: string | null
+  lastNameVisibility?: string | null
+  userNameVisibility?: string | null
+  bioVisibility?: string | null
+  profilePictureVisibility?: string | null
+  publicChartsVisibility?: string | null
+}
+
+/**
+ * Interface for relationship information
+ */
+export interface RelationshipInfo {
+  isOwner: boolean
+  isFriend: boolean
+  isCloseFriend: boolean
+}
+
+/**
+ * Checks if a field should be visible based on visibility setting and relationship
+ * @param visibility - The visibility enum value (PRIVATE, FRIENDS, CLOSE_FRIENDS, PUBLIC, AI_ENABLED)
+ * @param isOwner - Whether the viewer is the owner of the profile
+ * @param isFriend - Whether the viewer is a friend of the profile owner
+ * @param isCloseFriend - Whether the viewer is a close friend of the profile owner
+ * @returns Whether the field should be visible
+ */
+export function isFieldVisible(
+  visibility: string | null | undefined,
+  isOwner: boolean,
+  isFriend: boolean,
+  isCloseFriend: boolean
+): boolean {
+  if (isOwner) return true // Owner can always see their own fields
+  const vis = (visibility as string) || 'PRIVATE'
+  if (vis === 'PUBLIC' || vis === 'AI_ENABLED') return true
+  if (vis === 'CLOSE_FRIENDS' && isCloseFriend) return true
+  if (vis === 'FRIENDS' && (isFriend || isCloseFriend)) return true
+  return false
+}
+
+/**
+ * Filters profile fields based on visibility settings and relationship
+ * @param profile - The profile object with visibility fields
+ * @param relationship - Relationship information between viewer and profile owner
+ * @returns A cleaned profile object with only visible fields
+ */
+export function filterProfileFields(
+  profile: ProfileWithVisibility | null,
+  relationship: RelationshipInfo
+): any {
+  // Always return at least a minimal profile object with userName
+  // This ensures the component can always access profile.userName even if profile is null
+  if (!profile) {
+    return {
+      userName: null
+    }
+  }
+
+  // Username is always exposed
+  const filteredProfile: any = {
+    userName: profile.userName
+  }
+
+  // Only include fields if they're visible based on relationship
+  const firstNameVis = (profile.firstNameVisibility as string) || 'PRIVATE'
+  const lastNameVis = (profile.lastNameVisibility as string) || 'PRIVATE'
+  const bioVis = (profile.bioVisibility as string) || 'PRIVATE'
+  const profilePictureVis = (profile.profilePictureVisibility as string) || 'PRIVATE'
+
+  if (isFieldVisible(firstNameVis, relationship.isOwner, relationship.isFriend, relationship.isCloseFriend) && profile.firstName) {
+    filteredProfile.firstName = profile.firstName
+  }
+  if (isFieldVisible(lastNameVis, relationship.isOwner, relationship.isFriend, relationship.isCloseFriend) && profile.lastName) {
+    filteredProfile.lastName = profile.lastName
+  }
+  if (isFieldVisible(bioVis, relationship.isOwner, relationship.isFriend, relationship.isCloseFriend) && profile.bio) {
+    filteredProfile.bio = profile.bio
+  }
+  if (isFieldVisible(profilePictureVis, relationship.isOwner, relationship.isFriend, relationship.isCloseFriend) && profile.profilePicture) {
+    filteredProfile.profilePicture = profile.profilePicture
+  }
+
+  return filteredProfile
+}

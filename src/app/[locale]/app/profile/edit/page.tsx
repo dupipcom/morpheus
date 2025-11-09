@@ -12,6 +12,7 @@ import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
+import { VisibilitySelect, VisibilityOption } from "@/components/VisibilitySelect"
 import { ViewMenu } from "@/components/viewMenu"
 import { AnalyticsView } from "@/views/analyticsView"
 import { useDebounce } from "@/lib/hooks/useDebounce"
@@ -30,13 +31,23 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
     lastName: '',
     userName: '',
     bio: '',
-    firstNameVisible: false,
-    lastNameVisible: false,
-    userNameVisible: false,
-    bioVisible: false,
-    profilePictureVisible: false,
-    publicChartsVisible: false,
+    firstNameVisibility: 'PRIVATE' as VisibilityOption,
+    lastNameVisibility: 'PRIVATE' as VisibilityOption,
+    userNameVisibility: 'PRIVATE' as VisibilityOption,
+    bioVisibility: 'PRIVATE' as VisibilityOption,
+    profilePictureVisibility: 'PRIVATE' as VisibilityOption,
+    publicChartsVisibility: 'PRIVATE' as VisibilityOption,
   })
+
+  // Get visibility value for a field
+  const getFieldVisibility = (fieldName: string): VisibilityOption => {
+    return profile[`${fieldName}Visibility` as keyof typeof profile] as VisibilityOption || 'PRIVATE'
+  }
+
+  // Handle visibility change for a field
+  const handleVisibilityChange = (fieldName: string, visibility: VisibilityOption) => {
+    handleProfileChange(`${fieldName}Visibility`, visibility)
+  }
   
   const [publicCharts, setPublicCharts] = useState<{
     moodCharts?: boolean
@@ -60,17 +71,24 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
       if (response.ok) {
         const data = await response.json()
         if (data.profile) {
+          // Helper to convert old boolean format or get new visibility format
+          const getVisibility = (visible: boolean | string | undefined, visibility: string | undefined): VisibilityOption => {
+            if (visibility && typeof visibility === 'string') return visibility as VisibilityOption
+            if (typeof visible === 'boolean') return visible ? 'PUBLIC' : 'PRIVATE'
+            return 'PRIVATE'
+          }
+          
           setProfile({
             firstName: data.profile.firstName || '',
             lastName: data.profile.lastName || '',
             userName: data.profile.userName || '',
             bio: data.profile.bio || '',
-            firstNameVisible: data.profile.firstNameVisible || false,
-            lastNameVisible: data.profile.lastNameVisible || false,
-            userNameVisible: data.profile.userNameVisible || false,
-            bioVisible: data.profile.bioVisible || false,
-            profilePictureVisible: data.profile.profilePictureVisible || false,
-            publicChartsVisible: data.profile.publicChartsVisible || false,
+            firstNameVisibility: getVisibility(data.profile.firstNameVisible, data.profile.firstNameVisibility),
+            lastNameVisibility: getVisibility(data.profile.lastNameVisible, data.profile.lastNameVisibility),
+            userNameVisibility: getVisibility(data.profile.userNameVisible, data.profile.userNameVisibility),
+            bioVisibility: getVisibility(data.profile.bioVisible, data.profile.bioVisibility),
+            profilePictureVisibility: getVisibility(data.profile.profilePictureVisible, data.profile.profilePictureVisibility),
+            publicChartsVisibility: getVisibility(data.profile.publicChartsVisible, data.profile.publicChartsVisibility),
           })
           setPublicCharts(data.profile.publicCharts || {})
         }
@@ -186,8 +204,8 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
               <CardTitle>{t('profile.profileInformation')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
+              <div className="flex gap-2">
+                <div className="flex-[2]">
                   <Label htmlFor="firstName">{t('profile.firstName')}</Label>
                   <Input
                     id="firstName"
@@ -195,17 +213,19 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
                     onChange={(e) => handleProfileChange('firstName', e.target.value)}
                     placeholder={t('profile.firstNamePlaceholder')}
                   />
-                  <div className="flex items-center space-x-2 mt-2">
-                    <Switch
-                      id="firstName-visible"
-                      checked={profile.firstNameVisible}
-                      onCheckedChange={(checked) => handleProfileChange('firstNameVisible', checked)}
-                    />
-                    <Label htmlFor="firstName-visible">{t('profile.makePublic')}</Label>
-                  </div>
                 </div>
-                
-                <div>
+                <div className="flex-[1] flex items-end">
+                  <VisibilitySelect
+                    value={getFieldVisibility('firstName')}
+                    onValueChange={(value) => handleVisibilityChange('firstName', value)}
+                    iconOnly={true}
+                    className="w-full min-h-[40px] justify-center"
+                  />
+                </div>
+              </div>
+              
+              <div className="flex gap-2">
+                <div className="flex-[2]">
                   <Label htmlFor="lastName">{t('profile.lastName')}</Label>
                   <Input
                     id="lastName"
@@ -213,39 +233,41 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
                     onChange={(e) => handleProfileChange('lastName', e.target.value)}
                     placeholder={t('profile.lastNamePlaceholder')}
                   />
-                  <div className="flex items-center space-x-2 mt-2">
-                    <Switch
-                      id="lastName-visible"
-                      checked={profile.lastNameVisible}
-                      onCheckedChange={(checked) => handleProfileChange('lastNameVisible', checked)}
-                    />
-                    <Label htmlFor="lastName-visible">{t('profile.makePublic')}</Label>
-                  </div>
+                </div>
+                <div className="flex-[1] flex items-end">
+                  <VisibilitySelect
+                    value={getFieldVisibility('lastName')}
+                    onValueChange={(value) => handleVisibilityChange('lastName', value)}
+                    iconOnly={true}
+                    className="w-full min-h-[40px] justify-center"
+                  />
                 </div>
               </div>
               
-              <div>
-                <Label htmlFor="bio">{t('profile.bio')}</Label>
-                <Textarea
-                  id="bio"
-                  value={profile.bio}
-                  onChange={(e) => handleProfileChange('bio', e.target.value)}
-                  placeholder={t('profile.bioPlaceholder')}
-                  rows={3}
-                />
-                <div className="flex items-center space-x-2 mt-2">
-                  <Switch
-                    id="bio-visible"
-                    checked={profile.bioVisible}
-                    onCheckedChange={(checked) => handleProfileChange('bioVisible', checked)}
+              <div className="flex gap-2">
+                <div className="flex-[2]">
+                  <Label htmlFor="bio">{t('profile.bio')}</Label>
+                  <Textarea
+                    id="bio"
+                    value={profile.bio}
+                    onChange={(e) => handleProfileChange('bio', e.target.value)}
+                    placeholder={t('profile.bioPlaceholder')}
+                    rows={3}
                   />
-                  <Label htmlFor="bio-visible">{t('profile.makePublic')}</Label>
+                </div>
+                <div className="flex-[1] flex items-end">
+                  <VisibilitySelect
+                    value={getFieldVisibility('bio')}
+                    onValueChange={(value) => handleVisibilityChange('bio', value)}
+                    iconOnly={true}
+                    className="w-full min-h-[40px] justify-center"
+                  />
                 </div>
               </div>
               
               <Separator />
               
-              <div className="flex items-center justify-between">
+              <div className="flex gap-2 items-center">
                 {clerkUser?.imageUrl && (
                   <img 
                     src={clerkUser.imageUrl} 
@@ -253,13 +275,14 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
                     className="w-16 h-16 rounded-full object-cover"
                   />
                 )}
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    id="profilePicture-visible"
-                    checked={profile.profilePictureVisible}
-                    onCheckedChange={(checked) => handleProfileChange('profilePictureVisible', checked)}
+                <div className="flex-[2]"></div>
+                <div className="flex-[1] flex items-end">
+                  <VisibilitySelect
+                    value={getFieldVisibility('profilePicture')}
+                    onValueChange={(value) => handleVisibilityChange('profilePicture', value)}
+                    iconOnly={true}
+                    className="w-full min-h-[40px] justify-center"
                   />
-                  <Label htmlFor="profilePicture-visible">{t('profile.makePublic')}</Label>
                 </div>
               </div>
               
@@ -326,9 +349,11 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
                   <Label>{t('profile.makeAllChartsPublic')}</Label>
                   <p className="text-sm text-muted-foreground">{t('profile.makeAllChartsPublicDescription')}</p>
                 </div>
-                <Switch
-                  checked={profile.publicChartsVisible}
-                  onCheckedChange={(checked) => handleProfileChange('publicChartsVisible', checked)}
+                <VisibilitySelect
+                  value={getFieldVisibility('publicCharts')}
+                  onValueChange={(value) => handleVisibilityChange('publicCharts', value)}
+                  showIconOnMobile={false}
+                  className="w-48"
                 />
               </div>
             </CardContent>
@@ -345,7 +370,7 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
           </CardHeader>
           <CardContent>
             <div className="flex items-center space-x-4">
-              {profile.profilePictureVisible && clerkUser?.imageUrl && (
+              {getFieldVisibility('profilePicture') !== 'PRIVATE' && clerkUser?.imageUrl && (
                 <img 
                   src={clerkUser.imageUrl} 
                   alt="Profile" 
@@ -354,15 +379,15 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
               )}
               <div>
                 <h3 className="text-lg font-semibold">
-                  {profile.firstNameVisible && profile.firstName} {profile.lastNameVisible && profile.lastName}
+                  {getFieldVisibility('firstName') !== 'PRIVATE' && profile.firstName} {getFieldVisibility('lastName') !== 'PRIVATE' && profile.lastName}
                 </h3>
-                {profile.bioVisible && profile.bio && (
+                {getFieldVisibility('bio') !== 'PRIVATE' && profile.bio && (
                   <p className="text-sm mt-1">{profile.bio}</p>
                 )}
               </div>
             </div>
             
-            {profile.publicChartsVisible && (
+            {getFieldVisibility('publicCharts') !== 'PRIVATE' && (
               <div className="mt-4">
                 <h4 className="font-medium mb-2">{t('profile.publicCharts')}</h4>
                 <div className="space-y-2 mb-4">

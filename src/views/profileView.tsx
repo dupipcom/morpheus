@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { PublicChartsView } from "@/components/PublicChartsView"
@@ -27,13 +28,48 @@ interface ProfileViewProps {
 }
 
 export const ProfileView = ({ 
-  profile, 
+  profile: initialProfile, 
   userName, 
   locale, 
   currentUserUsername, 
   isLoggedIn, 
   translations 
 }: ProfileViewProps) => {
+  const [profile, setProfile] = useState<ProfileData>(initialProfile)
+  const [loading, setLoading] = useState(false)
+
+  // Requery profile endpoint on mount to get fields based on friendship status
+  // This ensures we get the most up-to-date data based on the current user's authentication
+  // and friendship status, even if the initial SSR data was fetched without auth context
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!userName) return
+      
+      setLoading(true)
+      try {
+        const response = await fetch(`/api/v1/profile/${userName}`, {
+          cache: 'no-store',
+          credentials: 'include' // Include cookies for authentication
+        })
+        
+        if (response.ok) {
+          const data = await response.json()
+          if (data.profile) {
+            setProfile(data.profile)
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching profile:', error)
+        // Keep the initial profile data on error
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    // Always fetch on mount to get fresh data based on current auth state
+    fetchProfile()
+  }, [userName])
+
   const fullName = [profile.firstName, profile.lastName].filter(Boolean).join(' ')
   const hasAnyPublicData = profile.firstName || profile.lastName || profile.userName || profile.bio || profile.profilePicture
   const isOwnProfile = currentUserUsername === userName

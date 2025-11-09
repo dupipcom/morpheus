@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { auth } from '@clerk/nextjs/server'
 import { NextRequest } from 'next/server'
+import { filterProfileFields } from "@/lib/profileUtils"
 
 export async function GET(req: NextRequest) {
   const { userId } = await auth()
@@ -43,12 +44,12 @@ export async function GET(req: NextRequest) {
           data: {
             userId: currentUser.id,
             userName: null, // No Clerk username available in this context
-            firstNameVisible: false,
-            lastNameVisible: false,
-            userNameVisible: false,
-            bioVisible: false,
-            profilePictureVisible: false,
-            publicChartsVisible: false,
+            firstNameVisibility: 'PRIVATE',
+            lastNameVisibility: 'PRIVATE',
+            userNameVisibility: 'PUBLIC',
+            bioVisibility: 'PRIVATE',
+            profilePictureVisibility: 'PRIVATE',
+            publicChartsVisibility: 'PRIVATE',
           }
         })
         // Refetch user with new profile
@@ -80,17 +81,39 @@ export async function GET(req: NextRequest) {
     })
 
     // Format the response with user details
-    const formattedRequests = friendRequests.map(user => ({
-      id: user.id,
-      userId: user.userId,
-      profile: user.profile ? {
-        firstName: user.profile.firstName,
-        lastName: user.profile.lastName,
-        userName: user.profile.userName,
-        profilePicture: user.profile.profilePicture,
-        bio: user.profile.bio
-      } : null
-    }))
+    const formattedRequests = friendRequests.map(user => {
+      if (!user.profile) {
+        return {
+          id: user.id,
+          userId: user.userId,
+          profile: null
+        }
+      }
+
+      // Check if current user is friend/close friend with this user
+      const currentUserIdStr = currentUser.id.toString()
+      const requestUserIdStr = user.id.toString()
+      const currentUserFriends = (currentUser.friends || []).map((id: any) => id.toString())
+      const currentUserCloseFriends = (currentUser.closeFriends || []).map((id: any) => id.toString())
+      const requestUserFriends = (user.friends || []).map((id: any) => id.toString())
+      const requestUserCloseFriends = (user.closeFriends || []).map((id: any) => id.toString())
+      
+      const isCloseFriend = currentUserCloseFriends.includes(requestUserIdStr) && requestUserCloseFriends.includes(currentUserIdStr)
+      const isFriend = !isCloseFriend && currentUserFriends.includes(requestUserIdStr) && requestUserFriends.includes(currentUserIdStr)
+
+      // Filter profile fields based on visibility and relationship
+      const profile = filterProfileFields(user.profile, {
+        isOwner: false,
+        isFriend,
+        isCloseFriend
+      })
+
+      return {
+        id: user.id,
+        userId: user.userId,
+        profile
+      }
+    })
 
     return Response.json({ friendRequests: formattedRequests })
   } catch (error) {

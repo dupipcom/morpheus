@@ -43,12 +43,12 @@ export async function GET(req: Request) {
         data: {
           userId: user.id,
           userName: clerkUser?.username || null, // Use Clerk username if available
-          firstNameVisible: false,
-          lastNameVisible: false,
-          userNameVisible: false,
-          bioVisible: false,
-          profilePictureVisible: false,
-          publicChartsVisible: false,
+          firstNameVisibility: 'PRIVATE',
+          lastNameVisibility: 'PRIVATE',
+          userNameVisibility: 'PUBLIC',
+          bioVisibility: 'PRIVATE',
+          profilePictureVisibility: 'PRIVATE',
+          publicChartsVisibility: 'PRIVATE',
         }
       })
       // Refetch user with new profile

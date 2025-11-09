@@ -32,12 +32,12 @@ export async function GET(req: NextRequest) {
           data: {
             userId: user.id,
             userName: clerkUser?.username || null, // Use Clerk username if available
-            firstNameVisible: false,
-            lastNameVisible: false,
-            userNameVisible: false,
-            bioVisible: false,
-            profilePictureVisible: false,
-            publicChartsVisible: false,
+            firstNameVisibility: 'PRIVATE',
+            lastNameVisibility: 'PRIVATE',
+            userNameVisibility: 'PUBLIC',
+            bioVisibility: 'PRIVATE',
+            profilePictureVisibility: 'PRIVATE',
+            publicChartsVisibility: 'PRIVATE',
           }
         })
         // Refetch user with new profile
@@ -144,6 +144,23 @@ export async function POST(req: NextRequest) {
     const clerkUsername = clerkUser?.username || null
     const clerkImageUrl = clerkUser?.imageUrl || null
 
+    // Helper function to convert boolean/string to visibility (for backward compatibility)
+    const toVisibility = (value: boolean | string | undefined, fieldName: string): string => {
+      if (typeof value === 'string' && ['PRIVATE', 'FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC', 'AI_ENABLED'].includes(value)) {
+        return value
+      }
+      // Backward compatibility: convert boolean to visibility
+      if (typeof value === 'boolean') {
+        return value ? 'PUBLIC' : 'PRIVATE'
+      }
+      // Check for new field name format (e.g., firstNameVisibility)
+      const visibilityField = `${fieldName}Visibility`
+      if (data[visibilityField] && typeof data[visibilityField] === 'string') {
+        return data[visibilityField]
+      }
+      return 'PRIVATE'
+    }
+
     // Check if profile already exists
     const existingProfile = await prisma.profile.findUnique({
       where: { userId: user.id }
@@ -161,12 +178,12 @@ export async function POST(req: NextRequest) {
           bio: data.bio,
           profilePicture: clerkImageUrl, // Always use Clerk's imageUrl
           publicCharts: data.publicCharts,
-          firstNameVisible: data.firstNameVisible ?? false,
-          lastNameVisible: data.lastNameVisible ?? false,
-          userNameVisible: data.userNameVisible ?? false,
-          bioVisible: data.bioVisible ?? false,
-          profilePictureVisible: data.profilePictureVisible ?? false,
-          publicChartsVisible: data.publicChartsVisible ?? false,
+          firstNameVisibility: toVisibility(data.firstNameVisible, 'firstName') as any,
+          lastNameVisibility: toVisibility(data.lastNameVisible, 'lastName') as any,
+          userNameVisibility: toVisibility(data.userNameVisible, 'userName') as any,
+          bioVisibility: toVisibility(data.bioVisible, 'bio') as any,
+          profilePictureVisibility: toVisibility(data.profilePictureVisible, 'profilePicture') as any,
+          publicChartsVisibility: toVisibility(data.publicChartsVisible, 'publicCharts') as any,
         }
       })
     } else {
@@ -180,12 +197,12 @@ export async function POST(req: NextRequest) {
           bio: data.bio,
           profilePicture: clerkImageUrl, // Always use Clerk's imageUrl
           publicCharts: data.publicCharts,
-          firstNameVisible: data.firstNameVisible ?? false,
-          lastNameVisible: data.lastNameVisible ?? false,
-          userNameVisible: data.userNameVisible ?? false,
-          bioVisible: data.bioVisible ?? false,
-          profilePictureVisible: data.profilePictureVisible ?? false,
-          publicChartsVisible: data.publicChartsVisible ?? false,
+          firstNameVisibility: toVisibility(data.firstNameVisible, 'firstName') as any,
+          lastNameVisibility: toVisibility(data.lastNameVisible, 'lastName') as any,
+          userNameVisibility: toVisibility(data.userNameVisible, 'userName') as any,
+          bioVisibility: toVisibility(data.bioVisible, 'bio') as any,
+          profilePictureVisibility: toVisibility(data.profilePictureVisible, 'profilePicture') as any,
+          publicChartsVisibility: toVisibility(data.publicChartsVisible, 'publicCharts') as any,
         }
       })
     }

@@ -46,12 +46,12 @@ export async function GET(req: NextRequest) {
           data: {
             userId: currentUser.id,
             userName: null, // No Clerk username available in this context
-            firstNameVisible: false,
-            lastNameVisible: false,
-            userNameVisible: false,
-            bioVisible: false,
-            profilePictureVisible: false,
-            publicChartsVisible: false,
+            firstNameVisibility: 'PRIVATE',
+            lastNameVisibility: 'PRIVATE',
+            userNameVisibility: 'PUBLIC',
+            bioVisibility: 'PRIVATE',
+            profilePictureVisibility: 'PRIVATE',
+            publicChartsVisibility: 'PRIVATE',
           }
         })
         // Refetch user with new profile

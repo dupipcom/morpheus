@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
+import { filterProfileFields } from '@/lib/profileUtils'
 
 export async function GET(request: NextRequest) {
   try {
@@ -108,8 +109,13 @@ export async function GET(request: NextRequest) {
               select: {
                 userName: true,
                 profilePicture: true,
+                profilePictureVisibility: true,
                 firstName: true,
-                lastName: true
+                firstNameVisibility: true,
+                lastName: true,
+                lastNameVisibility: true,
+                bio: true,
+                bioVisibility: true
               }
             }
           }
@@ -117,15 +123,92 @@ export async function GET(request: NextRequest) {
       }
     })
 
+
+    // Get current user's friends/closeFriends for relationship checking
+    let currentUserFriends: string[] = []
+    let currentUserCloseFriends: string[] = []
+    let currentUserIdStr = ''
+    
+    if (userId) {
+      const currentUserFull = await prisma.user.findUnique({
+        where: { userId },
+        select: {
+          id: true,
+          friends: true,
+          closeFriends: true
+        }
+      })
+      if (currentUserFull) {
+        currentUserIdStr = currentUserFull.id.toString()
+        currentUserFriends = (currentUserFull.friends || []).map((id: any) => id.toString())
+        currentUserCloseFriends = (currentUserFull.closeFriends || []).map((id: any) => id.toString())
+      }
+    }
+
+    // Filter out fields if not visible based on relationship
+    const cleanedNotes = await Promise.all(notes.map(async (note) => {
+      if (!note.user.profile) {
+        // Ensure profile object exists even if null, so component can access profile.userName
+        return {
+          ...note,
+          user: {
+            ...note.user,
+            profile: {
+              userName: null
+            }
+          }
+        }
+      }
+
+      // Check relationship between current user and note author
+      const noteAuthorIdStr = note.user.id.toString()
+      const isOwner = userId && currentUserIdStr === noteAuthorIdStr
+      
+      // Get note author's friends/closeFriends lists
+      const noteAuthor = await prisma.user.findUnique({
+        where: { id: note.user.id },
+        select: {
+          friends: true,
+          closeFriends: true
+        }
+      })
+      
+      const noteAuthorFriends = (noteAuthor?.friends || []).map((id: any) => id.toString())
+      const noteAuthorCloseFriends = (noteAuthor?.closeFriends || []).map((id: any) => id.toString())
+      
+      const isCloseFriend = !isOwner && userId && 
+        noteAuthorCloseFriends.includes(currentUserIdStr) &&
+        currentUserCloseFriends.includes(noteAuthorIdStr)
+      
+      const isFriend = !isOwner && !isCloseFriend && userId &&
+        noteAuthorFriends.includes(currentUserIdStr) &&
+        currentUserFriends.includes(noteAuthorIdStr)
+
+      // Filter profile fields based on visibility and relationship
+      const profile = filterProfileFields(note.user.profile, {
+        isOwner,
+        isFriend,
+        isCloseFriend
+      })
+
+      return {
+        ...note,
+        user: {
+          ...note.user,
+          profile
+        }
+      }
+    }))
+
     // Get total count for pagination
     const totalCount = await prisma.note.count({
       where: whereClause
     })
 
-    const hasMore = skip + notes.length < totalCount
+    const hasMore = skip + cleanedNotes.length < totalCount
 
     return NextResponse.json({ 
-      notes, 
+      notes: cleanedNotes, 
       hasMore,
       totalCount,
       currentPage: page,

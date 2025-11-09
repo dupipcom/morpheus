@@ -52,12 +52,12 @@ export async function POST(req: Request) {
                             data: {
                                 userId: user.id,
                                 userName: clerkUsername,
-                                firstNameVisible: false,
-                                lastNameVisible: false,
-                                userNameVisible: false,
-                                bioVisible: false,
-                                profilePictureVisible: false,
-                                publicChartsVisible: false,
+                                firstNameVisibility: 'PRIVATE',
+                                lastNameVisibility: 'PRIVATE',
+                                userNameVisibility: 'PUBLIC',
+                                bioVisibility: 'PRIVATE',
+                                profilePictureVisibility: 'PRIVATE',
+                                publicChartsVisibility: 'PRIVATE',
                             }
                         });
                         console.log(`Username synced from Clerk webhook on user creation: ${clerkUsername} for user ${clerkUserId}`);

@@ -3,32 +3,15 @@
 import { useState } from 'react'
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { useI18n } from "@/lib/contexts/i18n"
-import { Lock, Users, UserCheck, Globe, Sparkles, Send, Loader2 } from "lucide-react"
+import { Send, Loader2 } from "lucide-react"
+import { VisibilitySelect } from "@/components/VisibilitySelect"
 
 interface PublishNoteProps {
   onNotePublished?: () => void
   date?: string
   defaultVisibility?: string
-}
-
-const getVisibilityIcon = (visibility: string) => {
-  switch (visibility) {
-    case 'PRIVATE':
-      return <Lock className="h-4 w-4" />
-    case 'FRIENDS':
-      return <Users className="h-4 w-4" />
-    case 'CLOSE_FRIENDS':
-      return <UserCheck className="h-4 w-4" />
-    case 'PUBLIC':
-      return <Globe className="h-4 w-4" />
-    case 'AI_ENABLED':
-      return <Sparkles className="h-4 w-4" />
-    default:
-      return <Lock className="h-4 w-4" />
-  }
 }
 
 export const PublishNote = ({ onNotePublished, date, defaultVisibility = 'AI_ENABLED' }: PublishNoteProps) => {
@@ -86,48 +69,10 @@ export const PublishNote = ({ onNotePublished, date, defaultVisibility = 'AI_ENA
           }}
         />
         <div className="col-span-1 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4 min-w-0">
-          <Select value={noteVisibility} onValueChange={setNoteVisibility}>
-            <SelectTrigger className="w-full min-h-[40px] sm:w-48 sm:h-auto justify-center md:justify-between">
-              <span className="sm:hidden">
-                {getVisibilityIcon(noteVisibility)}
-              </span>
-              <span className="hidden sm:block">
-                <SelectValue />
-              </span>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="PRIVATE">
-                <div className="flex items-center gap-2">
-                  <Lock className="h-4 w-4" />
-                  <span>{t('mood.publish.visibility.PRIVATE') || 'Private'}</span>
-                </div>
-              </SelectItem>
-              <SelectItem value="FRIENDS">
-                <div className="flex items-center gap-2">
-                  <Users className="h-4 w-4" />
-                  <span>{t('mood.publish.visibility.FRIENDS') || 'Friends'}</span>
-                </div>
-              </SelectItem>
-              <SelectItem value="CLOSE_FRIENDS">
-                <div className="flex items-center gap-2">
-                  <UserCheck className="h-4 w-4" />
-                  <span>{t('mood.publish.visibility.CLOSE_FRIENDS') || 'Close Friends'}</span>
-                </div>
-              </SelectItem>
-              <SelectItem value="PUBLIC">
-                <div className="flex items-center gap-2">
-                  <Globe className="h-4 w-4" />
-                  <span>{t('mood.publish.visibility.PUBLIC') || 'Public'}</span>
-                </div>
-              </SelectItem>
-              <SelectItem value="AI_ENABLED">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="h-4 w-4" />
-                  <span>{t('mood.publish.visibility.AI_ENABLED') || 'AI Enabled'}</span>
-                </div>
-              </SelectItem>
-            </SelectContent>
-          </Select>
+          <VisibilitySelect 
+            value={noteVisibility} 
+            onValueChange={setNoteVisibility}
+          />
           <Button 
             onClick={handlePublishNote}
             disabled={!noteContent.trim() || isPublishing}

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
+import { filterProfileFields } from '@/lib/profileUtils'
 
 export async function GET(request: NextRequest) {
   try {
@@ -111,6 +112,28 @@ export async function GET(request: NextRequest) {
       }
     })
 
+
+    // Get current user's friends/closeFriends for relationship checking
+    let currentUserFriends: string[] = []
+    let currentUserCloseFriends: string[] = []
+    let currentUserIdStr = ''
+    
+    if (userId) {
+      const currentUserFull = await prisma.user.findUnique({
+        where: { userId },
+        select: {
+          id: true,
+          friends: true,
+          closeFriends: true
+        }
+      })
+      if (currentUserFull) {
+        currentUserIdStr = currentUserFull.id.toString()
+        currentUserFriends = (currentUserFull.friends || []).map((id: any) => id.toString())
+        currentUserCloseFriends = (currentUserFull.closeFriends || []).map((id: any) => id.toString())
+      }
+    }
+
     // Get the user profiles for each template owner
     const templatesWithUsers = await Promise.all(
       templates.map(async (template) => {
@@ -131,16 +154,71 @@ export async function GET(request: NextRequest) {
               select: {
                 userName: true,
                 profilePicture: true,
+                profilePictureVisibility: true,
                 firstName: true,
-                lastName: true
+                firstNameVisibility: true,
+                lastName: true,
+                lastNameVisibility: true,
+                bio: true,
+                bioVisibility: true
               }
             }
           }
         })
 
+        // Filter out fields if not visible based on relationship
+        let cleanedUser = null
+        if (user) {
+          if (!user.profile) {
+            // Ensure profile object exists even if null, so component can access profile.userName
+            cleanedUser = {
+              ...user,
+              profile: {
+                userName: null
+              }
+            }
+          } else {
+            // Check relationship between current user and template owner
+            const ownerIdStr = user.id.toString()
+            const isOwner = userId && currentUserIdStr === ownerIdStr
+            
+            // Get template owner's friends/closeFriends lists
+            const ownerUser = await prisma.user.findUnique({
+              where: { id: ownerId },
+              select: {
+                friends: true,
+                closeFriends: true
+              }
+            })
+            
+            const ownerFriends = (ownerUser?.friends || []).map((id: any) => id.toString())
+            const ownerCloseFriends = (ownerUser?.closeFriends || []).map((id: any) => id.toString())
+            
+            const isCloseFriend = !isOwner && userId && 
+              ownerCloseFriends.includes(currentUserIdStr) &&
+              currentUserCloseFriends.includes(ownerIdStr)
+            
+            const isFriend = !isOwner && !isCloseFriend && userId &&
+              ownerFriends.includes(currentUserIdStr) &&
+              currentUserFriends.includes(ownerIdStr)
+
+            // Filter profile fields based on visibility and relationship
+            const profile = filterProfileFields(user.profile, {
+              isOwner,
+              isFriend,
+              isCloseFriend
+            })
+
+            cleanedUser = {
+              ...user,
+              profile
+            }
+          }
+        }
+
         return {
           ...template,
-          user: user || null
+          user: cleanedUser
         }
       })
     )

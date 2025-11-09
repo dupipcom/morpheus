@@ -88,12 +88,12 @@ model Profile {
   profilePicture String?
   publicCharts  Json?     // Stores visibility settings for charts
   // Visibility settings for each field
-  firstNameVisible     Boolean @default(false)
-  lastNameVisible      Boolean @default(false)
-  userNameVisible      Boolean @default(false)
-  bioVisible           Boolean @default(false)
-  profilePictureVisible Boolean @default(false)
-  publicChartsVisible  Boolean @default(false)
+  firstNameVisibility     ProfileVisibility @default(PRIVATE)
+  lastNameVisibility      ProfileVisibility @default(PRIVATE)
+  userNameVisibility      ProfileVisibility @default(PUBLIC)
+  bioVisibility           ProfileVisibility @default(PRIVATE)
+  profilePictureVisibility ProfileVisibility @default(PRIVATE)
+  publicChartsVisibility  ProfileVisibility @default(PRIVATE)
 }
 
 model Note {
@@ -280,6 +280,14 @@ enum Visibility {
 }
 
 enum NoteVisibility {
+  PRIVATE
+  FRIENDS
+  CLOSE_FRIENDS
+  PUBLIC
+  AI_ENABLED
+}
+
+enum ProfileVisibility {
   PRIVATE
   FRIENDS
   CLOSE_FRIENDS

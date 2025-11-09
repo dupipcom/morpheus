@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import { NextRequest } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { generatePublicChartsData, sanitizeUserEntriesForPublic } from "@/lib/profileUtils"
+import { generatePublicChartsData, sanitizeUserEntriesForPublic, isFieldVisible, filterProfileFields } from "@/lib/profileUtils"
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ userName: string }> }) {
   try {
@@ -9,7 +9,20 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
 
     const profile = await prisma.profile.findUnique({
       where: { userName },
-      include: {
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        userName: true,
+        bio: true,
+        profilePicture: true,
+        publicCharts: true,
+        firstNameVisibility: true,
+        lastNameVisibility: true,
+        userNameVisibility: true,
+        bioVisibility: true,
+        profilePictureVisibility: true,
+        publicChartsVisibility: true,
         user: {
           select: {
             id: true,
@@ -25,24 +38,41 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
       return Response.json({ error: 'Profile not found' }, { status: 404 })
     }
 
-    // Determine viewer and visibility
+    // Determine viewer and relationship
     const { userId: viewerUserId } = await auth()
-    const viewerUser = viewerUserId ? await prisma.user.findUnique({ where: { userId: viewerUserId } }) : null
+    const viewerUser = viewerUserId ? await prisma.user.findUnique({ 
+      where: { userId: viewerUserId },
+      select: {
+        id: true,
+        friends: true,
+        closeFriends: true
+      }
+    }) : null
+    
     const isOwner = viewerUser && viewerUser.id === profile.user.id
-    const isCloseFriend = !isOwner && viewerUser && Array.isArray(profile.user.closeFriends) && profile.user.closeFriends.includes(viewerUser.id)
-    const isFriend = !isOwner && !isCloseFriend && viewerUser && Array.isArray(profile.user.friends) && profile.user.friends.includes(viewerUser.id)
+    
+    // Check bidirectional friendship - both users must have each other in their lists
+    // Convert to strings for comparison (MongoDB ObjectIds)
+    const profileUserIdStr = profile.user.id.toString()
+    const viewerUserIdStr = viewerUser?.id.toString() || ''
+    
+    const profileCloseFriends = (profile.user.closeFriends || []).map((id: any) => id.toString())
+    const viewerCloseFriends = (viewerUser?.closeFriends || []).map((id: any) => id.toString())
+    const profileFriends = (profile.user.friends || []).map((id: any) => id.toString())
+    const viewerFriends = (viewerUser?.friends || []).map((id: any) => id.toString())
+    
+    const isCloseFriend = !isOwner && viewerUser && 
+      profileCloseFriends.includes(viewerUserIdStr) &&
+      viewerCloseFriends.includes(profileUserIdStr)
+    
+    const isFriend = !isOwner && !isCloseFriend && viewerUser && 
+      profileFriends.includes(viewerUserIdStr) &&
+      viewerFriends.includes(profileUserIdStr)
 
-    const allowedVis = isOwner
-      ? ["PRIVATE", "FRIENDS", "CLOSE_FRIENDS", "PUBLIC"]
-      : isCloseFriend
-      ? ["PUBLIC", "FRIENDS", "CLOSE_FRIENDS"]
-      : isFriend
-      ? ["PUBLIC", "FRIENDS"]
-      : ["PUBLIC"]
 
     // Generate public charts data if charts are visible
     let publicChartsData = null
-    if (profile.publicChartsVisible && profile.publicCharts) {
+    if (isFieldVisible(profile.publicChartsVisibility || 'PRIVATE') && profile.publicCharts) {
       const chartVisibility = {
         moodCharts: (profile.publicCharts as any)?.moodCharts || false,
         simplifiedMoodChart: (profile.publicCharts as any)?.simplifiedMoodChart || false,
@@ -52,6 +82,15 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
       
       publicChartsData = generatePublicChartsData(profile.user.entries, chartVisibility)
     }
+
+    // Determine allowed visibility for templates/lists
+    const allowedVis = isOwner
+      ? ["PRIVATE", "FRIENDS", "CLOSE_FRIENDS", "PUBLIC"]
+      : isCloseFriend
+      ? ["PUBLIC", "FRIENDS", "CLOSE_FRIENDS"]
+      : isFriend
+      ? ["PUBLIC", "FRIENDS"]
+      : ["PUBLIC"]
 
     // Fetch visible templates and lists owned by the profile user
     let visibleTemplates: any[] = []
@@ -75,17 +114,35 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
       })
     } catch (_) {}
 
+    // Filter profile fields based on visibility and relationship
+    const filteredProfile = filterProfileFields(profile, {
+      isOwner,
+      isFriend,
+      isCloseFriend
+    })
+
     // Return only the public data based on visibility settings
-    // Username is ALWAYS public
-    const publicProfile = {
-      firstName: profile.firstNameVisible ? profile.firstName : null,
-      lastName: profile.lastNameVisible ? profile.lastName : null,
-      userName: profile.userName, // always expose username publicly
-      bio: profile.bioVisible ? profile.bio : null,
-      profilePicture: profile.profilePictureVisible ? profile.profilePicture : null,
+    const publicProfile: any = {
+      ...filteredProfile,
       publicCharts: publicChartsData,
       templates: visibleTemplates,
       taskLists: visibleTaskLists
+    }
+    
+    // Debug logging (can be removed in production)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Profile visibility check:', {
+        profileUserId: profileUserIdStr,
+        viewerUserId: viewerUserIdStr,
+        profileFriends: profileFriends,
+        viewerFriends: viewerFriends,
+        profileCloseFriends: profileCloseFriends,
+        viewerCloseFriends: viewerCloseFriends,
+        isOwner,
+        isFriend,
+        isCloseFriend,
+        filteredProfile
+      })
     }
 
     return Response.json({ profile: publicProfile })
