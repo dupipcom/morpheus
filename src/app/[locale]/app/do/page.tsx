@@ -134,7 +134,7 @@ export default function LocalizedDo({ params }: { params: Promise<{ locale: stri
 
   return (
     <main className="min-h-[100vh]">
-      <div className="w-full max-w-[1200px] m-auto sticky top-[100px] z-50 p-4">
+      <div className="w-full max-w-[1200px] m-auto sticky top-[115px] z-50 p-4">
               <DoToolbar
           locale={locale}
           selectedTaskListId={selectedTaskListId}

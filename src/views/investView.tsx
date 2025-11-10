@@ -8,7 +8,7 @@ import { Construction, FileWarningIcon, WorkflowIcon } from 'lucide-react'
 export const InvestView = () => {
   return (
     <main className="">
-      <div className="container mx-auto px-4 py-6 max-w-4xl sticky top-[100px] z-50">
+      <div className="container mx-auto px-4 py-6 max-w-4xl sticky top-[115px] z-50">
         <Construction className="h-16 w-16" />
       </div>
     </main>

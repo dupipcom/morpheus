@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic'
 
 export default function LocalizedInvest({ params }: { params: Promise<{ locale: string }> }) {
   return <main className="">
-    <div className="w-full max-w-[1200px] m-auto px-4 sticky top-[120px] z-70">
+    <div className="w-full max-w-[1200px] m-auto px-4 sticky top-[115px] z-70">
       <BalanceSection />
     </div>
   <ViewMenu active="invest" />
