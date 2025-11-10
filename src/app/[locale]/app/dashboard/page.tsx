@@ -47,8 +47,8 @@ export default function LocalizedDashboard({ params }: { params: Promise<{ local
 
   return (
     <main className="">
-      <ViewMenu active="dashboard" />
-      <div className="w-full max-w-[1200px] m-auto px-4">
+      <ViewMenu active="feel" />
+      <div className="w-full max-w-[1200px] m-auto px-4 sticky top-[120px] z-50">
         <PublishNote />
       </div>
       <h1 className="scroll-m-20 text-2xl font-semibold tracking-tight text-center mb-8">{formatDate(new Date())}</h1>
