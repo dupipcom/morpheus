@@ -120,6 +120,11 @@ export default function LocalizedDo({ params }: { params: Promise<{ locale: stri
     setIsEditingList(false)
   }, [])
 
+  // Close all forms when selected list changes
+  useEffect(() => {
+    closeAllForms()
+  }, [selectedTaskListId, closeAllForms])
+
   const fullDate = new Date()
   const date = fullDate.toISOString().split('T')[0]
   const year = Number(date.split('-')[0])
