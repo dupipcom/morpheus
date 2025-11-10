@@ -149,7 +149,6 @@ export default function LocalizedDo({ params }: { params: Promise<{ locale: stri
           hasFormOpen={showAddTask || showAddList || showAddTemplate}
             />
       </div>
-      <ViewMenu active="do">{null}</ViewMenu>
       <div className="container mx-auto px-4 py-6">
         <DoView 
           selectedTaskListId={selectedTaskListId}

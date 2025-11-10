@@ -292,7 +292,7 @@ export const DoToolbar = ({
 
   const selectedListTitle = selectedList ? (selectedList.name || selectedList.role || selectedList.id) : (t('tasks.selectList') || 'Select list')
 
-  // Control accordion to minimize when forms are open
+  // Control accordion to minimize when forms are open or when list changes
   const [accordionValue, setAccordionValue] = useState<string>('do-toolbar')
   
   useEffect(() => {
@@ -302,6 +302,11 @@ export const DoToolbar = ({
     }
     // Don't force open when forms close - let user control it manually
   }, [hasFormOpen])
+
+  useEffect(() => {
+    // Close accordion when a new list is selected
+    setAccordionValue('')
+  }, [selectedTaskListId])
 
   return (
     <div className="p-3 sm:p-4 border rounded-lg border-body w-full max-w-full bg-muted backdrop-blur-sm">
