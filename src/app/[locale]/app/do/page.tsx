@@ -69,7 +69,15 @@ export default function LocalizedDo({ params }: { params: Promise<{ locale: stri
   const [selectedTaskListId, setSelectedTaskListId] = useState<string | undefined>(allTaskLists[0]?.id)
   
   useEffect(() => {
-    if (!selectedTaskListId && allTaskLists.length > 0) setSelectedTaskListId(allTaskLists[0].id)
+    if (!selectedTaskListId && allTaskLists.length > 0) {
+      setSelectedTaskListId(allTaskLists[0].id)
+    } else if (selectedTaskListId && allTaskLists.length > 0) {
+      // Check if selected list still exists, if not select first available
+      const selectedExists = allTaskLists.find((l: any) => l.id === selectedTaskListId)
+      if (!selectedExists) {
+        setSelectedTaskListId(allTaskLists[0].id)
+      }
+    }
   }, [allTaskLists, selectedTaskListId])
 
   const selectedTaskList = useMemo(() => allTaskLists.find((l: any) => l.id === selectedTaskListId), [allTaskLists, selectedTaskListId])
@@ -138,7 +146,7 @@ export default function LocalizedDo({ params }: { params: Promise<{ locale: stri
   }, {})
 
   return (
-    <main className="min-h-[100vh]">
+    <main className="">
       <div className="w-full max-w-[1200px] m-auto sticky top-[115px] z-50 p-4">
               <DoToolbar
           locale={locale}
@@ -173,6 +181,7 @@ export default function LocalizedDo({ params }: { params: Promise<{ locale: stri
             if (newListId) {
               setSelectedTaskListId(newListId)
             }
+            // The useEffect above will handle selecting the first list if the deleted list was selected
           }}
           onTemplateCreated={refreshTaskLists}
         />
