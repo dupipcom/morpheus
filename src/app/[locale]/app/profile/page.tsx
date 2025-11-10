@@ -50,7 +50,6 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
   const [saving, setSaving] = useState(false)
   const [publicProfileData, setPublicProfileData] = useState<any>(null)
   const [profileLoading, setProfileLoading] = useState(false)
-  const [collaboratingTaskLists, setCollaboratingTaskLists] = useState<any[]>([])
 
   // Load profile data
   useEffect(() => {
@@ -85,9 +84,6 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
             publicChartsVisible: data.profile.publicChartsVisible || false,
           })
           setPublicCharts(data.profile.publicCharts || {})
-        }
-        if (Array.isArray(data.collaboratingTaskLists)) {
-          setCollaboratingTaskLists(data.collaboratingTaskLists)
         }
       }
     } catch (error) {
@@ -229,26 +225,6 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
     <main className="">
       <ViewMenu active="profile" />
       <div className="max-w-4xl mx-auto p-4">
-
-        {/* Collaborating Task Lists */}
-        {collaboratingTaskLists.length > 0 && (
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold mb-2">Task lists you collaborate on</h2>
-            <div className="flex flex-col gap-2">
-              {collaboratingTaskLists.map((l) => (
-                <div key={l.id} className="flex items-center justify-between border rounded-md px-3 py-2">
-                  <div>
-                    <div className="font-medium">{l.name || l.role || 'Task List'}</div>
-                    <div className="text-sm text-muted-foreground">Budget: {l.budget || '—'}</div>
-                  </div>
-                  <Button asChild variant="secondary" size="sm">
-                    <a href="/app/dashboard">Open</a>
-                  </Button>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
 
         {/* Public Profile View */}
         {profile.userName && (
