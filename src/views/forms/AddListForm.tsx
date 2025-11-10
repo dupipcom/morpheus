@@ -28,7 +28,7 @@ export const AddListForm = ({
   isEditing: boolean
   initialList?: any
   onCancel: () => void
-  onCreated: () => Promise<void> | void
+  onCreated: (newListId?: string) => Promise<void> | void
 }) => {
   const { t } = useI18n()
   const { session } = useContext(GlobalContext)
@@ -197,7 +197,7 @@ export const AddListForm = ({
       ? parseFloat(form.budget) 
       : undefined
     
-    await fetch('/api/v1/tasklists', {
+    const res = await fetch('/api/v1/tasklists', {
       method: 'POST',
       body: JSON.stringify({
         create: !isEditing,
@@ -212,7 +212,12 @@ export const AddListForm = ({
         tasks,
       })
     })
-    await onCreated()
+    let newListId: string | undefined
+    if (res.ok && !isEditing) {
+      const data = await res.json()
+      newListId = data.taskList?.id
+    }
+    await onCreated(newListId)
     onCancel()
   }
 

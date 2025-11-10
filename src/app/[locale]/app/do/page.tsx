@@ -168,7 +168,12 @@ export default function LocalizedDo({ params }: { params: Promise<{ locale: stri
           onCloseAddList={() => { setShowAddList(false); setIsEditingList(false) }}
           onCloseAddTemplate={() => setShowAddTemplate(false)}
           onTaskCreated={refreshTaskLists}
-          onListCreated={refreshTaskLists}
+          onListCreated={async (newListId) => {
+            await refreshTaskLists()
+            if (newListId) {
+              setSelectedTaskListId(newListId)
+            }
+          }}
           onTemplateCreated={refreshTaskLists}
         />
       </div>

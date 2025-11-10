@@ -46,7 +46,7 @@ export const DoView = ({
   onCloseAddList?: () => void
   onCloseAddTemplate?: () => void
   onTaskCreated?: () => Promise<void> | void
-  onListCreated?: () => Promise<void> | void
+  onListCreated?: (newListId?: string) => Promise<void> | void
   onTemplateCreated?: () => Promise<void> | void
 }) => {
   const { refreshTaskLists, taskLists: contextTaskLists, session } = useContext(GlobalContext)
@@ -152,8 +152,8 @@ export const DoView = ({
             isEditing={isEditingList || false}
             initialList={isEditingList ? (selectedList as any) : undefined}
             onCancel={onCloseAddList || (() => {})}
-            onCreated={async () => {
-              if (onListCreated) await onListCreated()
+            onCreated={async (newListId) => {
+              if (onListCreated) await onListCreated(newListId)
               if (onCloseAddList) onCloseAddList()
             }}
           />
