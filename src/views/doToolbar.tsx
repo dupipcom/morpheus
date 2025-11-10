@@ -404,7 +404,7 @@ export const DoToolbar = ({
             const userName = collabProfiles[id] || id
             const earnings = (selectedList as any)?.collaboratorEarnings?.[userName] || 0
             return (
-              <Badge key={`owner-${id}`} variant="default" className="bg-primary text-primary-foreground hover:bg-primary/90">
+              <Badge key={`owner-${id}`} variant="default" className="bg-primary dark:bg-accent text-background hover:bg-foreground/90">
                 <UserIcon className="h-3 w-3 mr-1" />
                 @{userName}{earnings > 0 ? `: $${earnings.toFixed(2)}` : ''}
               </Badge>
