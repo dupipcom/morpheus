@@ -11,6 +11,7 @@ export interface Note {
   visibility: string
   createdAt: string
   date?: string
+  userId?: string
   comments?: any[]
   isLiked?: boolean
   _count?: {
@@ -26,6 +27,9 @@ interface NotesListProps {
   showHeader?: boolean
   emptyMessage?: string
   gridLayout?: boolean
+  isLoggedIn?: boolean
+  currentUserId?: string | null
+  onNoteUpdated?: () => void
 }
 
 function getTimeAgo(date: Date): string {
@@ -71,7 +75,10 @@ export function NotesList({
   onRefresh, 
   showHeader = true,
   emptyMessage = 'No notes available yet.',
-  gridLayout = false
+  gridLayout = false,
+  isLoggedIn = false,
+  currentUserId,
+  onNoteUpdated
 }: NotesListProps) {
   const { t } = useI18n()
 
@@ -122,6 +129,7 @@ export function NotesList({
             content: note.content,
             visibility: note.visibility,
             date: note.date,
+            userId: note.userId,
             comments: note.comments,
             isLiked: note.isLiked,
             _count: note._count
@@ -132,6 +140,9 @@ export function NotesList({
               item={activityItem}
               onCommentAdded={onRefresh}
               getTimeAgo={getTimeAgo}
+              isLoggedIn={isLoggedIn}
+              currentUserId={currentUserId}
+              onNoteUpdated={onNoteUpdated || onRefresh}
             />
           )
         })}

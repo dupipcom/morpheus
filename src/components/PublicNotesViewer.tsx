@@ -16,6 +16,8 @@ export function PublicNotesViewer({ userName, showCard = true, gridLayout = fals
   const [notes, setNotes] = useState<Note[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   const fetchNotes = async () => {
     try {
@@ -42,6 +44,23 @@ export function PublicNotesViewer({ userName, showCard = true, gridLayout = fals
 
   useEffect(() => {
     fetchNotes()
+    // Fetch current user ID
+    const fetchCurrentUser = async () => {
+      try {
+        const response = await fetch('/api/v1/user', {
+          credentials: 'include'
+        })
+        if (response.ok) {
+          const user = await response.json()
+          setCurrentUserId(user.id)
+          setIsLoggedIn(true)
+        }
+      } catch (err) {
+        // User not logged in
+        setIsLoggedIn(false)
+      }
+    }
+    fetchCurrentUser()
   }, [userName])
 
   // Refresh notes when the component becomes visible (e.g., after friend status changes)
@@ -101,6 +120,9 @@ export function PublicNotesViewer({ userName, showCard = true, gridLayout = fals
       showHeader={!showCard}
       emptyMessage={t('publicProfile.noPublicNotes')}
       gridLayout={gridLayout}
+      isLoggedIn={isLoggedIn}
+      currentUserId={currentUserId}
+      onNoteUpdated={fetchNotes}
     />
   )
 

@@ -368,10 +368,13 @@ export const BeView = () => {
               role: templateData?.role || undefined,
               visibility: noteData?.visibility || templateData?.visibility,
               date: noteData?.date || undefined,
+              userId: (noteData as any)?.userId || noteData?.user?.id || undefined, // Add userId for notes
               user: noteData?.user || templateData?.user || undefined,
               comments: (noteData as any)?.comments || (templateData as any)?.comments || undefined,
               _count: noteData?._count || templateData?._count
             }
+            
+            const currentUserId = session?.user?.id || null
             
             return (
               <ActivityCard
@@ -379,6 +382,13 @@ export const BeView = () => {
                 item={activityItem}
                 showUserInfo={true}
                 getTimeAgo={getTimeAgo}
+                isLoggedIn={!!session?.user}
+                currentUserId={currentUserId}
+                onNoteUpdated={() => {
+                  // Refresh the activity feed when a note is updated/deleted
+                  fetchPublicNotes(1, false)
+                  fetchPublicTemplates(1, false)
+                }}
               />
             )
           })}

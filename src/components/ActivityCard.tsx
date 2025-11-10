@@ -1,14 +1,15 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { ChevronDown, ChevronUp, Send, Loader2, MessageSquare, FileText, Heart, List } from "lucide-react"
+import { ChevronDown, ChevronUp, Send, Loader2, MessageSquare, FileText, Heart, List, Edit, Trash2 } from "lucide-react"
 import { useI18n } from '@/lib/contexts/i18n'
 import { useNotesRefresh } from "@/lib/contexts/notesRefresh"
 import Link from 'next/link'
 import { OptionsButton, OptionsMenuItem } from "@/components/OptionsButton"
 import { toast } from "sonner"
+import { Popover, PopoverContent, PopoverTrigger, PopoverAnchor } from "@/components/ui/popover"
 
 export interface Comment {
   id: string
@@ -40,6 +41,7 @@ export interface ActivityItem {
   budget?: string | null // For tasklists
   dueDate?: string | null // For tasklists
   isLiked?: boolean // Whether current user has liked this item (if provided, skip fetching)
+  userId?: string // User ID who owns this item (for checking ownership)
   user?: {
     id: string
     profile?: {
@@ -62,9 +64,11 @@ interface ActivityCardProps {
   showUserInfo?: boolean
   getTimeAgo: (date: Date) => string
   isLoggedIn?: boolean
+  currentUserId?: string | null // Current user's ID to check ownership
+  onNoteUpdated?: () => void // Callback when note is updated/deleted
 }
 
-function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, isLoggedIn = false }: ActivityCardProps) {
+function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, isLoggedIn = false, currentUserId, onNoteUpdated }: ActivityCardProps) {
   const { t } = useI18n()
   const { refreshAll } = useNotesRefresh()
   const [comments, setComments] = useState<Comment[]>(item.comments || [])
@@ -78,6 +82,12 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
   const [isTogglingLike, setIsTogglingLike] = useState(false)
   const [commentLikes, setCommentLikes] = useState<Record<string, { isLiked: boolean; count: number }>>({})
   const [isCloning, setIsCloning] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
+  const [editContent, setEditContent] = useState(item.content || '')
+  const [isSaving, setIsSaving] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [isEditPopoverOpen, setIsEditPopoverOpen] = useState(false)
+  const justOpenedPopoverRef = useRef(false)
 
   // Update isLiked and likeCount when item changes (from props)
   useEffect(() => {
@@ -413,8 +423,103 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
     }
   }
 
+  // Check if current user owns this note
+  const isNoteOwner = item.type === 'note' && currentUserId && (item.userId === currentUserId || item.user?.id === currentUserId)
+
+  const handleEditNote = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault()
+      e.stopPropagation()
+    }
+    setEditContent(item.content || '')
+    // Mark that we just opened the popover to prevent immediate closing
+    justOpenedPopoverRef.current = true
+    // Use requestAnimationFrame to ensure dropdown closes before opening popover
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setIsEditPopoverOpen(true)
+        // Reset the flag after a short delay
+        setTimeout(() => {
+          justOpenedPopoverRef.current = false
+        }, 300)
+      })
+    })
+  }
+
+  const handleSaveNote = async () => {
+    if (!editContent.trim() || isSaving) return
+
+    setIsSaving(true)
+    try {
+      const response = await fetch(`/api/v1/notes/${item.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          content: editContent.trim(),
+          visibility: item.visibility,
+          date: item.date,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to update note')
+      }
+
+      const data = await response.json()
+      
+      // Update local state
+      item.content = data.note.content
+      
+      toast.success(t('notes.updated') || 'Note updated successfully')
+      setIsEditPopoverOpen(false)
+      
+      if (onNoteUpdated) {
+        onNoteUpdated()
+      }
+      refreshAll()
+    } catch (err) {
+      console.error('Error updating note:', err)
+      toast.error(t('notes.updateFailed') || 'Failed to update note')
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  const handleDeleteNote = async () => {
+    if (isDeleting || !confirm(t('notes.confirmDelete') || 'Are you sure you want to delete this note?')) {
+      return
+    }
+
+    setIsDeleting(true)
+    try {
+      const response = await fetch(`/api/v1/notes/${item.id}`, {
+        method: 'DELETE',
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to delete note')
+      }
+
+      toast.success(t('notes.deleted') || 'Note deleted successfully')
+      
+      if (onNoteUpdated) {
+        onNoteUpdated()
+      }
+      refreshAll()
+    } catch (err) {
+      console.error('Error deleting note:', err)
+      toast.error(t('notes.deleteFailed') || 'Failed to delete note')
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
   // Build options menu items
   const optionsMenuItems: OptionsMenuItem[] = []
+  
+  // Add clone option for templates and tasklists
   if (isLoggedIn && (item.type === 'template' || item.type === 'tasklist')) {
     const cloneLabel = isCloning 
       ? (t('publicProfile.cloning') || 'Cloning...')
@@ -427,6 +532,33 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
       onClick: item.type === 'template' ? handleCloneTemplate : handleCloneTaskList,
       icon: null,
     })
+  }
+
+  // Add edit and delete options for notes owned by current user
+  if (isNoteOwner) {
+    optionsMenuItems.push({
+      label: t('notes.edit') || 'Edit',
+      onClick: handleEditNote,
+      icon: <Edit className="h-4 w-4" />,
+      separator: optionsMenuItems.length > 0,
+    })
+    optionsMenuItems.push({
+      label: isDeleting 
+        ? (t('notes.deleting') || 'Deleting...')
+        : (t('notes.delete') || 'Delete'),
+      onClick: handleDeleteNote,
+      icon: <Trash2 className="h-4 w-4" />,
+    })
+  }
+
+  // Debug: Log when options should be available
+  if (process.env.NODE_ENV === 'development') {
+    if (isLoggedIn && (item.type === 'template' || item.type === 'tasklist')) {
+      console.log('ActivityCard: Should show clone option', { itemType: item.type, isLoggedIn, optionsCount: optionsMenuItems.length })
+    }
+    if (isNoteOwner) {
+      console.log('ActivityCard: Should show edit/delete options', { itemType: item.type, currentUserId, itemUserId: item.userId, userid: item.user?.id, optionsCount: optionsMenuItems.length })
+    }
   }
 
   return (
@@ -470,9 +602,9 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
               {item.visibility.toLowerCase().replace('_', ' ')}
             </span>
           )}
-          {optionsMenuItems.length > 0 && (
+          {isLoggedIn && (
             <OptionsButton
-              items={optionsMenuItems}
+              items={optionsMenuItems.length > 0 ? optionsMenuItems : []}
               statusColor="transparent"
               iconColor="var(--primary)"
               iconFilled={false}
@@ -485,6 +617,75 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
       {/* Content based on type */}
       {item.type === 'note' && item.content && (
         <p className="text-sm whitespace-pre-wrap mb-3">{item.content}</p>
+      )}
+
+      {/* Edit popover */}
+      {item.type === 'note' && isNoteOwner && (
+        <Popover 
+          open={isEditPopoverOpen} 
+          onOpenChange={(open) => {
+            // Prevent closing if we just opened (to avoid dropdown close event)
+            if (!open && justOpenedPopoverRef.current) {
+              return
+            }
+            if (!open) {
+              setIsEditPopoverOpen(false)
+              setEditContent(item.content || '')
+            }
+          }}
+          modal={true}
+        >
+          <PopoverAnchor asChild>
+            <div className="absolute top-2 right-2" />
+          </PopoverAnchor>
+          <PopoverContent 
+            className="w-[calc(100vw-2rem)] max-w-sm sm:w-96 p-4" 
+            align="end" 
+            side="bottom"
+            onInteractOutside={(e) => {
+              // Allow closing on outside click after initial open
+              if (justOpenedPopoverRef.current) {
+                e.preventDefault()
+              }
+            }}
+          >
+            <div className="space-y-3">
+              <Textarea
+                className="min-h-[120px] text-sm"
+                value={editContent}
+                onChange={(e) => setEditContent(e.target.value)}
+                placeholder={t('notes.content') || 'Note content'}
+              />
+              <div className="flex justify-end gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setIsEditPopoverOpen(false)
+                    setEditContent(item.content || '')
+                  }}
+                  disabled={isSaving}
+                >
+                  {t('common.cancel') || 'Cancel'}
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={handleSaveNote}
+                  disabled={!editContent.trim() || isSaving}
+                >
+                  {isSaving ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      {t('common.saving') || 'Saving...'}
+                    </>
+                  ) : (
+                    t('common.save') || 'Save'
+                  )}
+                </Button>
+              </div>
+            </div>
+          </PopoverContent>
+        </Popover>
       )}
       
       {(item.type === 'template' || item.type === 'tasklist') && (

@@ -83,6 +83,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
         visibility: true,
         createdAt: true,
         date: true,
+        userId: true,
         _count: {
           select: {
             comments: true,

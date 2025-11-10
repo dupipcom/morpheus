@@ -470,6 +470,9 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
               onRefresh={() => mutateNotes()}
               showHeader={false}
               emptyMessage={t('mood.noNotesForDate')}
+              isLoggedIn={!!session?.user}
+              currentUserId={session?.user?.id || null}
+              onNoteUpdated={() => mutateNotes()}
             />
           </TabsContent>
 

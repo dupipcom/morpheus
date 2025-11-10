@@ -102,6 +102,7 @@ export async function GET(request: NextRequest) {
         visibility: true,
         createdAt: true,
         date: true,
+        userId: true,
         _count: {
           select: {
             comments: true,
