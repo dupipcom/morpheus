@@ -3,7 +3,6 @@
 import React, { useMemo, useState, useEffect, useContext, useCallback, useRef } from 'react'
 
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { DoToolbar } from '@/views/doToolbar'
 import { Badge } from '@/components/ui/badge'
 import { User as UserIcon, Circle, Minus } from 'lucide-react'
 import { OptionsButton, OptionsMenuItem } from '@/components/OptionsButton'
@@ -64,7 +63,17 @@ const formatDateLocal = (date: Date): string => {
   return `${year}-${month}-${day}`
 }
 
-  export const ListView = () => {
+  export const ListView = ({
+    selectedTaskListId: propSelectedTaskListId,
+    selectedDate: propSelectedDate,
+    onDateChange: propOnDateChange,
+    onAddEphemeral: propOnAddEphemeral,
+  }: {
+    selectedTaskListId?: string
+    selectedDate?: Date
+    onDateChange?: (date: Date | undefined) => void
+    onAddEphemeral?: () => Promise<void> | void
+  } = {}) => {
     const { session, taskLists: contextTaskLists, refreshTaskLists } = useContext(GlobalContext)
     const { t, locale } = useI18n()
     const { refreshUser } = useUserData()
@@ -87,8 +96,10 @@ const formatDateLocal = (date: Date): string => {
       return new Date(d.getFullYear(), d.getMonth(), d.getDate())
     }, [])
 
-    // State for selected date (defaults to today)
-    const [selectedDate, setSelectedDate] = useState<Date>(today)
+    // Use prop selectedDate if provided, otherwise use local state
+    const [internalSelectedDate, setInternalSelectedDate] = useState<Date>(today)
+    const selectedDate = propSelectedDate !== undefined ? propSelectedDate : internalSelectedDate
+    const setSelectedDate = propOnDateChange || setInternalSelectedDate
 
     // Compute date string and year from selected date (using local timezone)
     // Memoize these so React can properly track changes
@@ -96,22 +107,20 @@ const formatDateLocal = (date: Date): string => {
     const year = useMemo(() => Number(date.split('-')[0]), [date])
     const allTaskLists = stableTaskLists.length > 0 ? stableTaskLists : (contextTaskLists || [])
 
-    const [selectedTaskListId, setSelectedTaskListId] = useState<string | undefined>(allTaskLists[0]?.id)
+    // Use prop selectedTaskListId if provided, otherwise use local state
+    const [internalSelectedTaskListId, setInternalSelectedTaskListId] = useState<string | undefined>(allTaskLists[0]?.id)
+    const selectedTaskListId = propSelectedTaskListId !== undefined ? propSelectedTaskListId : internalSelectedTaskListId
+    const setSelectedTaskListId = propSelectedTaskListId !== undefined 
+      ? (() => {}) // No-op if controlled from parent
+      : setInternalSelectedTaskListId
+
     useEffect(() => {
-      if (!selectedTaskListId && allTaskLists.length > 0) setSelectedTaskListId(allTaskLists[0].id)
-    }, [allTaskLists, selectedTaskListId])
+      if (!selectedTaskListId && allTaskLists.length > 0 && propSelectedTaskListId === undefined) {
+        setInternalSelectedTaskListId(allTaskLists[0].id)
+      }
+    }, [allTaskLists, selectedTaskListId, propSelectedTaskListId])
 
     const selectedTaskList = useMemo(() => allTaskLists.find((l: any) => l.id === selectedTaskListId), [allTaskLists, selectedTaskListId])
-
-    // Reset date to today when switching to a new task list
-    useEffect(() => {
-      const role = (selectedTaskList as any)?.role
-      if (role && (role.startsWith('daily.') || role.startsWith('weekly.'))) {
-        // Normalize to midnight in local timezone
-        const d = new Date()
-        setSelectedDate(new Date(d.getFullYear(), d.getMonth(), d.getDate()))
-      }
-    }, [selectedTaskListId])
 
     // Helper to get all dates in a week (using local timezone)
     const getWeekDates = useMemo(() => {
@@ -451,6 +460,10 @@ const formatDateLocal = (date: Date): string => {
     }, [mergedTasks, values, taskStatuses])
 
     const handleAddEphemeral = useCallback(async () => {
+      if (propOnAddEphemeral) {
+        await propOnAddEphemeral()
+        return
+      }
       if (!selectedTaskList) return
       const name = prompt('New task name?')
       if (!name) return
@@ -463,7 +476,7 @@ const formatDateLocal = (date: Date): string => {
         })
       })
       await refreshTaskLists()
-    }, [selectedTaskList, refreshTaskLists])
+    }, [selectedTaskList, refreshTaskLists, propOnAddEphemeral])
 
     const handleStatusChange = useCallback(async (task: any, newStatus: TaskStatus) => {
       const key = task?.id || task?.localeKey || task?.name
@@ -1001,12 +1014,14 @@ const formatDateLocal = (date: Date): string => {
     }
 
     const handleDateChange = useCallback((date: Date | undefined) => {
-      if (date) {
+      if (propOnDateChange) {
+        propOnDateChange(date)
+      } else if (date) {
         // Normalize date to midnight in local timezone to avoid time component issues
         const normalizedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate())
-        setSelectedDate(normalizedDate)
+        setInternalSelectedDate(normalizedDate)
       }
-    }, [])
+    }, [propOnDateChange])
 
     // Check if task lists are loading (only show skeleton on initial load, not on refreshes)
     const isTaskListsLoading = !initialLoadDone.current && (contextTaskLists === null || contextTaskLists === undefined || (Array.isArray(contextTaskLists) && contextTaskLists.length === 0))
@@ -1042,15 +1057,6 @@ const formatDateLocal = (date: Date): string => {
     if (!selectedTaskListId) return null
     return (
       <div className="space-y-4">
-        <DoToolbar
-          locale={locale}
-          selectedTaskListId={selectedTaskListId}
-          onChangeSelectedTaskListId={setSelectedTaskListId}
-          onAddEphemeral={handleAddEphemeral}
-          selectedDate={selectedDate}
-          onDateChange={handleDateChange}
-        />
-
         <ToggleGroup
           value={values}
           onValueChange={handleToggleChange}

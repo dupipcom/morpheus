@@ -74,7 +74,7 @@ export const BalanceSection = () => {
   const isDataLoading = isLoading && !session
 
   return (
-    <div className="my-8">
+    <div className="my-8 bg-muted rounded-md p-2 z-60 sticky top-[100px]">
       <div key={`menu__balance--${hiddenBalance}`} className="flex items-center gap-2">
         <Coins className="h-6 w-6" />
         { isDataLoading ? (
@@ -116,15 +116,9 @@ export const BalanceSection = () => {
         onClick={() => setIsDetailsExpanded(!isDetailsExpanded)}
       >
         {isDetailsExpanded ? (
-          <>
-            <ChevronUp className="h-4 w-4 mr-1" />
-            Hide Details
-          </>
+          <ChevronUp className="h-4 w-4" />
         ) : (
-          <>
-            <ChevronDown className="h-4 w-4 mr-1" />
-            Show Details
-          </>
+          <ChevronDown className="h-4 w-4" />
         )}
       </Button>
       

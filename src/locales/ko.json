@@ -83,7 +83,7 @@
     "closeDay": "일 닫기",
     "earnings": "수익",
     "publish": {
-      "title": "노트 게시",
+      "title": "쓰기",
       "placeholder": "여기에 노트를 작성하세요...",
       "selectVisibility": "공개 범위 선택",
       "visibility": {

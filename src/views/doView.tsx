@@ -15,7 +15,17 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion'
 
-export const DoView = () => {
+export const DoView = ({
+  selectedTaskListId,
+  selectedDate,
+  onDateChange,
+  onAddEphemeral,
+}: {
+  selectedTaskListId?: string
+  selectedDate?: Date
+  onDateChange?: (date: Date | undefined) => void
+  onAddEphemeral?: () => Promise<void> | void
+}) => {
   const { refreshTaskLists, taskLists: contextTaskLists, session } = useContext(GlobalContext)
   const [stableTaskLists, setStableTaskLists] = useState<any[]>([])
   const initialFetchDone = useRef(false)
@@ -66,12 +76,12 @@ export const DoView = () => {
   }, [session])
 
   return (
-    <main className="min-h-[100vh]">
-      <ViewMenu active="do">{null}</ViewMenu>
-      <div className="container mx-auto px-4 py-6">
-        <ListView />
-      </div>
-    </main>
+    <ListView 
+      selectedTaskListId={selectedTaskListId}
+      selectedDate={selectedDate}
+      onDateChange={onDateChange}
+      onAddEphemeral={onAddEphemeral}
+    />
   )
 }
 

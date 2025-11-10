@@ -38,10 +38,11 @@ export default function LocalizedSocial({ params }: { params: Promise<{ locale: 
   }
 
   return (
-    <main className="">
-      <ViewMenu active="be">
+    <main className="relative">
+      <div className="w-full max-w-[1200px] m-auto px-4 sticky top-[120px] z-50">
         <PublishNote defaultVisibility="FRIENDS" />
-      </ViewMenu>
+      </div>
+      <ViewMenu active="be" />
       <BeView />
     </main>
   )

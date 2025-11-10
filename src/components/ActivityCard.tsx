@@ -688,14 +688,14 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
       
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <span className="text-xs text-muted-foreground">
-            {!showUserInfo && getTimeAgo(new Date(item.createdAt))}
-            {item.date && ` • ${item.date}`}
+        <span className="text-xs text-muted-foreground">
+          {!showUserInfo && getTimeAgo(new Date(item.createdAt))}
+          {item.date && ` • ${item.date}`}
+        </span>
+        {item.visibility && (
+          <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
+            {item.visibility.toLowerCase().replace('_', ' ')}
           </span>
-          {item.visibility && (
-            <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
-              {item.visibility.toLowerCase().replace('_', ' ')}
-            </span>
           )}
         </div>
         {isLoggedIn && (
@@ -713,7 +713,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
       {item.type === 'note' && item.content && (
         <p className="text-sm whitespace-pre-wrap mb-3">{item.content}</p>
       )}
-
+      
       {/* Edit popover */}
       {item.type === 'note' && isNoteOwner && (
         <Popover 
@@ -789,7 +789,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
             {item.type === 'tasklist' ? (
               <List className="w-4 h-4 text-muted-foreground" />
             ) : (
-              <FileText className="w-4 h-4 text-muted-foreground" />
+            <FileText className="w-4 h-4 text-muted-foreground" />
             )}
             <p className="text-sm font-medium">
               {item.name || item.role || (item.type === 'tasklist' ? t('common.untitledList') : t('common.untitledTemplate'))}

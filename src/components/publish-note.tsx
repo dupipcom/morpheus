@@ -99,13 +99,13 @@ export const PublishNote = ({ onNotePublished, date, defaultVisibility = 'AI_ENA
   )
 
   return (
-    <div className="p-3 sm:p-4 border rounded-lg bg-transparent border-body w-full max-w-full">
+    <div className="p-3 sm:p-4 border rounded-lg border-body w-full max-w-full sticky top-0 z-50 bg-background/95 backdrop-blur-sm md:sticky md:top-4 md:bg-transparent md:backdrop-blur-none">
       {/* Mobile: Accordion, Desktop: Always visible */}
       <div className="md:hidden">
         <Accordion type="single" collapsible className="w-full">
           <AccordionItem value="publish-note" className="border-none">
             <AccordionTrigger className="py-0 px-0 hover:no-underline">
-              <h3 className="text-base font-semibold text-body">{t('mood.publish.title') || 'Publish a Note'}</h3>
+              <h3 className="text-base font-semibold text-body">{t('mood.publish.title') || 'Write'}</h3>
             </AccordionTrigger>
             <AccordionContent className="pt-3 pb-0">
               {formContent}
@@ -116,7 +116,7 @@ export const PublishNote = ({ onNotePublished, date, defaultVisibility = 'AI_ENA
       
       {/* Desktop: Always visible */}
       <div className="hidden md:block">
-        <h3 className="text-lg font-semibold mb-4 text-body">{t('mood.publish.title') || 'Publish a Note'}</h3>
+        <h3 className="text-lg font-semibold mb-4 text-body">{t('mood.publish.title') || 'Write'}</h3>
         {formContent}
       </div>
     </div>

@@ -47,9 +47,10 @@ export default function LocalizedDashboard({ params }: { params: Promise<{ local
 
   return (
     <main className="">
-      <ViewMenu active="dashboard">
+      <ViewMenu active="dashboard" />
+      <div className="w-full max-w-[1200px] m-auto px-4">
         <PublishNote />
-      </ViewMenu>
+      </div>
       <h1 className="scroll-m-20 text-2xl font-semibold tracking-tight text-center mb-8">{formatDate(new Date())}</h1>
       <h2 className="text-center scroll-m-20 text-lg font-semibold tracking-tight">{t('dashboard.title')}</h2>
 
