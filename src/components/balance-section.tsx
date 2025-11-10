@@ -11,6 +11,7 @@ import { useI18n } from "@/lib/contexts/i18n"
 
 import { Eye, EyeOff, DollarSign, ChevronDown, ChevronUp, Coins } from "lucide-react"
 import { useLocalStorage } from 'usehooks-ts';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
 export const BalanceSection = () => {
   const { session } = useContext(GlobalContext)
@@ -72,77 +73,80 @@ export const BalanceSection = () => {
   }
 
   const isDataLoading = isLoading && !session
+  const maskedBalance = hiddenBalance ? '••••••' : localBalance
 
   return (
-    <div className="my-8 bg-muted rounded-md p-2 z-60 sticky top-[100px]">
-      <div key={`menu__balance--${hiddenBalance}`} className="flex items-center gap-2">
-        <Coins className="h-6 w-6" />
-        { isDataLoading ? (
-          <Skeleton className="h-9 flex-1" />
-        ) : (
-          <>
-            { hiddenBalance ? <Input disabled value="••••••" className="flex-1" /> :
-              <Input 
-                type="number" 
-                step="any"
-                inputMode="decimal"
-                onBlur={handleBalanceChange} 
-                value={localBalance}
-                onChange={(e) => setLocalBalance(e.target.value)}
-                className="flex-1"
-              />
-            }
-            <Button className={`ml-2 border-accent ${ hiddenBalance ? "bg-input/80" : "bg-input/30"} text-foreground hover:text-background`} onClick={handleHideBalance}>
-              {hiddenBalance ?
-                <Eye /> : <EyeOff />
-              }
-            </Button>
-            <Button 
-              className="ml-2 border-accent bg-input/30 text-foreground hover:text-background" 
-              onClick={handleWithdrawStash}
-              disabled={serverStash <= 0}
-              title={t('common.withdrawStash')}
-            >
-              <DollarSign />
-            </Button>
-          </>
-        )}
-      </div>
-      
-      {/* Expand button - visible on all screen sizes */}
-      <Button
-        variant="ghost"
-        className="mt-2 w-full text-muted-foreground hover:text-foreground"
-        onClick={() => setIsDetailsExpanded(!isDetailsExpanded)}
-      >
-        {isDetailsExpanded ? (
-          <ChevronUp className="h-4 w-4" />
-        ) : (
-          <ChevronDown className="h-4 w-4" />
-        )}
-      </Button>
-      
-      {/* Display stash and equity values */}
-      <div className={`mt-4 space-y-2 ${isDetailsExpanded ? 'block' : 'hidden'}`}>
-        <div className="flex justify-between text-sm">
-          <span>{t('common.stash')}:</span>
-          <span className={hiddenBalance ? "blur-sm" : ""}>
-            Ð{serverStash.toFixed(2)}
-          </span>
-        </div>
-        <div className="flex justify-between text-sm">
-          <span>{t('common.equity')}:</span>
-          <span className={hiddenBalance ? "blur-sm" : ""}>
-            Ð{serverEquity.toFixed(2)}
-          </span>
-        </div>
-        <div className="flex justify-between text-sm">
-          <span>{t('common.totalEarnings')}:</span>
-          <span className={hiddenBalance ? "blur-sm" : ""}>
-            Ð{serverTotalEarnings.toFixed(2)}
-          </span>
-        </div>
-      </div>
+    <div className="p-3 sm:p-4 border rounded-lg border-body w-full max-w-full bg-muted backdrop-blur-sm">
+      <Accordion type="single" collapsible className="w-full">
+        <AccordionItem value="balance-section" className="border-none">
+          <AccordionTrigger className="py-0 px-0 hover:no-underline">
+            <div className="flex items-center gap-2">
+              <Coins className="h-5 w-5" />
+              <h3 className="text-base font-semibold text-body">
+                {isDataLoading ? '...' : `Ð${maskedBalance}`}
+              </h3>
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="pt-3 pb-0">
+            <div className="space-y-3">
+              <div key={`menu__balance--${hiddenBalance}`} className="flex items-center gap-2">
+                { isDataLoading ? (
+                  <Skeleton className="h-9 flex-1" />
+                ) : (
+                  <>
+                    { hiddenBalance ? <Input disabled value="••••••" className="flex-1" /> :
+                      <Input 
+                        type="number" 
+                        step="any"
+                        inputMode="decimal"
+                        onBlur={handleBalanceChange} 
+                        value={localBalance}
+                        onChange={(e) => setLocalBalance(e.target.value)}
+                        className="flex-1"
+                      />
+                    }
+                    <Button className={`ml-2 border-accent ${ hiddenBalance ? "bg-input/80" : "bg-input/30"} text-foreground hover:text-background`} onClick={handleHideBalance}>
+                      {hiddenBalance ?
+                        <Eye /> : <EyeOff />
+                      }
+                    </Button>
+                    <Button 
+                      className="ml-2 border-accent bg-input/30 text-foreground hover:text-background" 
+                      onClick={handleWithdrawStash}
+                      disabled={serverStash <= 0}
+                      title={t('common.withdrawStash')}
+                    >
+                      <DollarSign />
+                    </Button>
+                  </>
+                )}
+              </div>
+              
+              {/* Display stash and equity values */}
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span>{t('common.stash')}:</span>
+                  <span className={hiddenBalance ? "blur-sm" : ""}>
+                    Ð{serverStash.toFixed(2)}
+                  </span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>{t('common.equity')}:</span>
+                  <span className={hiddenBalance ? "blur-sm" : ""}>
+                    Ð{serverEquity.toFixed(2)}
+                  </span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>{t('common.totalEarnings')}:</span>
+                  <span className={hiddenBalance ? "blur-sm" : ""}>
+                    Ð{serverTotalEarnings.toFixed(2)}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </div>
   )
 }

@@ -22,6 +22,7 @@ import { AddListForm } from '@/views/forms/AddListForm'
 import { AddTemplateForm } from '@/views/forms/AddTemplateForm'
 import { Badge } from '@/components/ui/badge'
 import { Calendar } from '@/components/ui/calendar'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { cn } from '@/lib/utils'
 import { getWeekNumber } from '@/app/helpers'
 
@@ -108,7 +109,8 @@ export const DoToolbar = ({
         targetYear = selectedDate.getFullYear()
         if (isWeekly) {
           const [, weekNum] = getWeekNumber(selectedDate)
-          targetWeek = weekNum
+          const weekNumber = typeof weekNum === 'number' ? weekNum : (typeof weekNum === 'string' ? parseInt(weekNum, 10) : null)
+          targetWeek = weekNumber !== null && !isNaN(weekNumber) ? weekNumber : null
         }
       }
 
@@ -286,172 +288,185 @@ export const DoToolbar = ({
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
   }
 
+  const selectedListTitle = selectedList ? (selectedList.name || selectedList.role || selectedList.id) : (t('tasks.selectList') || 'Select list')
+
   return (
-    <div className="space-y-3">
-      <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-        <Select value={selectedTaskListId} onValueChange={onChangeSelectedTaskListId}>
-          <SelectTrigger className="w-full sm:w-[260px]">
-            <SelectValue placeholder={t('tasks.selectList') || 'Select list'} />
-          </SelectTrigger>
-          <SelectContent>
-            {allTaskLists.map((tl:any) => (
-              <SelectItem key={tl.id} value={tl.id}>
-                {tl.name || tl.role || tl.id}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+    <div className="p-3 sm:p-4 border rounded-lg border-body w-full max-w-full bg-muted backdrop-blur-sm">
+      <Accordion type="single" collapsible className="w-full">
+        <AccordionItem value="do-toolbar" className="border-none">
+          <AccordionTrigger className="py-0 px-0 hover:no-underline">
+            <h3 className="text-base font-semibold text-body">{selectedListTitle}</h3>
+          </AccordionTrigger>
+          <AccordionContent className="pt-3 pb-0">
+            <div className="space-y-3">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                <Select value={selectedTaskListId} onValueChange={onChangeSelectedTaskListId}>
+                  <SelectTrigger className="w-full sm:w-[260px]">
+                    <SelectValue placeholder={t('tasks.selectList') || 'Select list'} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {allTaskLists.map((tl:any) => (
+                      <SelectItem key={tl.id} value={tl.id}>
+                        {tl.name || tl.role || tl.id}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
 
-        {shouldShowDatePicker && onDateChange && (
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                className={cn(
-                  "w-full sm:w-[240px] justify-start text-left font-normal",
-                  !selectedDate && "text-muted-foreground"
+                {shouldShowDatePicker && onDateChange && (
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full sm:w-[240px] justify-start text-left font-normal",
+                          !selectedDate && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {formatDate(selectedDate)}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={selectedDate}
+                        onSelect={onDateChange}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
                 )}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {formatDate(selectedDate)}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                mode="single"
-                selected={selectedDate}
-                onSelect={onDateChange}
-                initialFocus
-              />
-            </PopoverContent>
-          </Popover>
-        )}
 
-        <div className="flex items-center gap-2 sm:ml-auto">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="flex items-center text-muted-foreground hover:text-foreground"
-              >
-                <Plus className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => { closeAll(); setShowAddTask(true) }}>
-                {t('common.newTask') || 'New task'}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => { closeAll(); setIsEditingList(false); setShowAddList(true) }}>
-                {t('common.newList') || 'New list'}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => { closeAll(); setShowAddTemplate(true) }}>
-                {t('common.newTemplate') || 'New template'}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                <div className="flex items-center gap-2 sm:ml-auto">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="flex items-center text-muted-foreground hover:text-foreground"
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => { closeAll(); setShowAddTask(true) }}>
+                        {t('common.newTask') || 'New task'}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => { closeAll(); setIsEditingList(false); setShowAddList(true) }}>
+                        {t('common.newList') || 'New list'}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => { closeAll(); setShowAddTemplate(true) }}>
+                        {t('common.newTemplate') || 'New template'}
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
 
-          <Button
-            variant="ghost"
-            size="sm"
-            className="flex items-center text-muted-foreground hover:text-foreground"
-            onClick={() => { if (selectedList) { closeAll(); setIsEditingList(true); setShowAddList(true) } }}
-            disabled={!selectedList}
-          >
-            <Pencil className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="flex items-center text-muted-foreground hover:text-foreground"
+                    onClick={() => { if (selectedList) { closeAll(); setIsEditingList(true); setShowAddList(true) } }}
+                    disabled={!selectedList}
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
 
-      {/* Badges row: budget, budgetPercentage, due date, collaborators, earnings */}
-      {selectedList && (
-        <div className="flex items-center gap-2 flex-wrap">
-          {/* Budget badge - show if budget is allocated (exists and > 0) */}
-          {(selectedList as any)?.budget && parseFloat(String((selectedList as any).budget || '0')) > 0 && (
-            <Badge variant="secondary" className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80">
-              <DollarSign className="h-3 w-3 mr-1" />
-              Budget: ${parseFloat(String((selectedList as any).budget)).toFixed(2)}
-            </Badge>
-          )}
-          {/* Budget percentage badge - show if budgetPercentage is allocated */}
-          {typeof (selectedList as any)?.budgetPercentage === 'number' && (selectedList as any).budgetPercentage > 0 && (
-            <Badge variant="outline" className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80">
-              {(selectedList as any).budgetPercentage.toFixed(0)}% of budget
-            </Badge>
-          )}
-          {/* Prize badge - show if budgetPercentage is allocated */}
-          {shouldShowPrizeBadge && (
-            <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 hover:bg-green-100">
-              <Award className="h-3 w-3 mr-1" />
-              Prize: ${listEarnings.prize.toFixed(2)}
-            </Badge>
-          )}
-          {/* Profit badge - show if there is a fixed budget */}
-          {(selectedList as any)?.budget && parseFloat(String((selectedList as any).budget || '0')) > 0 && (
-            <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100">
-              <TrendingUp className="h-3 w-3 mr-1" />
-              Profit: ${listEarnings.profit.toFixed(2)}
-            </Badge>
-          )}
-          {(selectedList as any)?.dueDate && (
-            <Badge variant="outline" className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80">
-              <CalendarIcon className="h-3 w-3 mr-1" />
-              {(selectedList as any).dueDate}
-            </Badge>
-          )}
-          {/* Show owner badge when there are collaborators */}
-          {Array.isArray((selectedList as any)?.collaborators) && (selectedList as any).collaborators.length > 0 && Array.isArray((selectedList as any)?.owners) && (selectedList as any).owners.map((id: string) => {
-            const userName = collabProfiles[id] || id
-            const earnings = (selectedList as any)?.collaboratorEarnings?.[userName] || 0
-            return (
-              <Badge key={`owner-${id}`} variant="default" className="bg-primary dark:bg-accent text-background hover:bg-foreground/90">
-                <UserIcon className="h-3 w-3 mr-1" />
-                @{userName}{earnings > 0 ? `: $${earnings.toFixed(2)}` : ''}
-              </Badge>
-            )
-          })}
-          {/* Show collaborator badges */}
-          {Array.isArray((selectedList as any)?.collaborators) && (selectedList as any).collaborators.map((id: string) => {
-            const userName = collabProfiles[id] || id
-            const earnings = (selectedList as any)?.collaboratorEarnings?.[userName] || 0
-            return (
-              <Badge key={`collab-${id}`} className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80">
-                <UserIcon className="h-3 w-3 mr-1" />
-                @{userName}{earnings > 0 ? `: $${earnings.toFixed(2)}` : ''}
-              </Badge>
-            )
-          })}
-        </div>
-      )}
+              {/* Badges row: budget, budgetPercentage, due date, collaborators, earnings */}
+              {selectedList && (
+                <div className="flex items-center gap-2 flex-wrap">
+                  {/* Budget badge - show if budget is allocated (exists and > 0) */}
+                  {(selectedList as any)?.budget && parseFloat(String((selectedList as any).budget || '0')) > 0 && (
+                    <Badge variant="secondary" className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80">
+                      <DollarSign className="h-3 w-3 mr-1" />
+                      Budget: ${parseFloat(String((selectedList as any).budget)).toFixed(2)}
+                    </Badge>
+                  )}
+                  {/* Budget percentage badge - show if budgetPercentage is allocated */}
+                  {typeof (selectedList as any)?.budgetPercentage === 'number' && (selectedList as any).budgetPercentage > 0 && (
+                    <Badge variant="outline" className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80">
+                      {(selectedList as any).budgetPercentage.toFixed(0)}% of budget
+                    </Badge>
+                  )}
+                  {/* Prize badge - show if budgetPercentage is allocated */}
+                  {shouldShowPrizeBadge && (
+                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 hover:bg-green-100">
+                      <Award className="h-3 w-3 mr-1" />
+                      Prize: ${listEarnings.prize.toFixed(2)}
+                    </Badge>
+                  )}
+                  {/* Profit badge - show if there is a fixed budget */}
+                  {(selectedList as any)?.budget && parseFloat(String((selectedList as any).budget || '0')) > 0 && (
+                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100">
+                      <TrendingUp className="h-3 w-3 mr-1" />
+                      Profit: ${listEarnings.profit.toFixed(2)}
+                    </Badge>
+                  )}
+                  {(selectedList as any)?.dueDate && (
+                    <Badge variant="outline" className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80">
+                      <CalendarIcon className="h-3 w-3 mr-1" />
+                      {(selectedList as any).dueDate}
+                    </Badge>
+                  )}
+                  {/* Show owner badge when there are collaborators */}
+                  {Array.isArray((selectedList as any)?.collaborators) && (selectedList as any).collaborators.length > 0 && Array.isArray((selectedList as any)?.owners) && (selectedList as any).owners.map((id: string) => {
+                    const userName = collabProfiles[id] || id
+                    const earnings = (selectedList as any)?.collaboratorEarnings?.[userName] || 0
+                    return (
+                      <Badge key={`owner-${id}`} variant="default" className="bg-primary dark:bg-accent text-background hover:bg-foreground/90">
+                        <UserIcon className="h-3 w-3 mr-1" />
+                        @{userName}{earnings > 0 ? `: $${earnings.toFixed(2)}` : ''}
+                      </Badge>
+                    )
+                  })}
+                  {/* Show collaborator badges */}
+                  {Array.isArray((selectedList as any)?.collaborators) && (selectedList as any).collaborators.map((id: string) => {
+                    const userName = collabProfiles[id] || id
+                    const earnings = (selectedList as any)?.collaboratorEarnings?.[userName] || 0
+                    return (
+                      <Badge key={`collab-${id}`} className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80">
+                        <UserIcon className="h-3 w-3 mr-1" />
+                        @{userName}{earnings > 0 ? `: $${earnings.toFixed(2)}` : ''}
+                      </Badge>
+                    )
+                  })}
+                </div>
+              )}
 
-      {showAddTask && (
-        <AddTaskForm
-          selectedTaskListId={selectedTaskListId}
-          onCancel={() => setShowAddTask(false)}
-          onCreated={refreshTaskLists}
-        />
-      )}
+              {showAddTask && (
+                <AddTaskForm
+                  selectedTaskListId={selectedTaskListId}
+                  onCancel={() => setShowAddTask(false)}
+                  onCreated={refreshTaskLists}
+                />
+              )}
 
-      {showAddList && (
-        <AddListForm
-          allTaskLists={allTaskLists}
-          userTemplates={userTemplates}
-          isEditing={isEditingList}
-          initialList={isEditingList ? (selectedList as any) : undefined}
-          onCancel={() => { setShowAddList(false); setIsEditingList(false) }}
-          onCreated={async () => {
-            await refreshTaskLists()
-          }}
-        />
-      )}
+              {showAddList && (
+                <AddListForm
+                  allTaskLists={allTaskLists}
+                  userTemplates={userTemplates}
+                  isEditing={isEditingList}
+                  initialList={isEditingList ? (selectedList as any) : undefined}
+                  onCancel={() => { setShowAddList(false); setIsEditingList(false) }}
+                  onCreated={async () => {
+                    await refreshTaskLists()
+                  }}
+                />
+              )}
 
-      {showAddTemplate && (
-        <AddTemplateForm
-          allTaskLists={allTaskLists}
-          onCancel={() => setShowAddTemplate(false)}
-          onCreated={async () => { await refreshTemplates(); await refreshTaskLists() }}
-        />
-      )}
+              {showAddTemplate && (
+                <AddTemplateForm
+                  allTaskLists={allTaskLists}
+                  onCancel={() => setShowAddTemplate(false)}
+                  onCreated={async () => { await refreshTemplates(); await refreshTaskLists() }}
+                />
+              )}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </div>
   )
 }
