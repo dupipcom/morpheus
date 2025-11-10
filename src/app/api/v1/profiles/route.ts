@@ -12,6 +12,7 @@ export async function GET(request: NextRequest) {
     
     let friendIds: string[] = []
     let closeFriendIds: string[] = []
+    let currentUserId: string | null = null
     
     if (clerkUserId) {
       const currentUser = await prisma.user.findUnique({
@@ -27,6 +28,7 @@ export async function GET(request: NextRequest) {
         // friends and closeFriends arrays contain User ObjectId strings
         friendIds = currentUser.friends || []
         closeFriendIds = currentUser.closeFriends || []
+        currentUserId = currentUser.id
       }
     }
 
@@ -55,15 +57,15 @@ export async function GET(request: NextRequest) {
       searchConditions.push({
         OR: [
           {
-            userNameVisible: true,
+            userNameVisibility: 'PUBLIC',
             userName: { contains: query, mode: 'insensitive' }
           },
           {
-            firstNameVisible: true,
+            firstNameVisibility: 'PUBLIC',
             firstName: { contains: query, mode: 'insensitive' }
           },
           {
-            lastNameVisible: true,
+            lastNameVisibility: 'PUBLIC',
             lastName: { contains: query, mode: 'insensitive' }
           },
         ]
@@ -81,9 +83,9 @@ export async function GET(request: NextRequest) {
       // Show all public profiles (no search filter)
       searchConditions.push({
         OR: [
-          { userNameVisible: true },
-          { firstNameVisible: true },
-          { lastNameVisible: true }
+          { userNameVisibility: 'PUBLIC' },
+          { firstNameVisibility: 'PUBLIC' },
+          { lastNameVisibility: 'PUBLIC' }
         ]
       })
     }
@@ -95,13 +97,17 @@ export async function GET(request: NextRequest) {
 
     const profiles = await prisma.profile.findMany({
       where: {
-        OR: searchConditions
+        OR: searchConditions,
+        // Exclude the current user's own profile
+        ...(currentUserId ? { userId: { not: currentUserId } } : {})
       },
       select: {
         userId: true,
         userName: true,
         firstName: true,
         lastName: true,
+        profilePicture: true,
+        bio: true,
       },
       take: 50 // Fetch more to ensure we have enough after sorting
     })
@@ -120,8 +126,15 @@ export async function GET(request: NextRequest) {
       return aPriority - bPriority
     })
 
+    // Add relationship flags to each profile
+    const profilesWithRelationships = sortedProfiles.map(profile => ({
+      ...profile,
+      isCloseFriend: closeFriendIds.includes(profile.userId),
+      isFriend: friendIds.includes(profile.userId)
+    }))
+
     // Return only the first 5 results
-    const topProfiles = sortedProfiles.slice(0, 5)
+    const topProfiles = profilesWithRelationships.slice(0, 5)
 
     return NextResponse.json({ profiles: topProfiles })
   } catch (error) {
