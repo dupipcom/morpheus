@@ -6,7 +6,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { PublicChartsView } from "@/components/PublicChartsView"
 import { AddFriendButtonOrSignIn } from "@/components/AddFriendButtonOrSignIn"
 import { PublicNotesViewer } from "@/components/PublicNotesViewer"
-import { PublicTemplatesViewer } from "@/components/PublicTemplatesViewer"
+import ActivityCard, { ActivityItem } from "@/components/ActivityCard"
 
 interface ProfileData {
   userId?: string
@@ -16,6 +16,8 @@ interface ProfileData {
   bio?: string
   profilePicture?: string
   publicCharts?: any
+  templates?: any[]
+  taskLists?: any[]
 }
 
 interface ProfileViewProps {
@@ -25,6 +27,43 @@ interface ProfileViewProps {
   currentUserUsername?: string | null
   isLoggedIn: boolean
   translations: any
+}
+
+function getTimeAgo(date: Date): string {
+  const now = new Date()
+  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
+  
+  if (diffInSeconds < 60) {
+    return 'just now'
+  }
+  
+  const diffInMinutes = Math.floor(diffInSeconds / 60)
+  if (diffInMinutes < 60) {
+    return `${diffInMinutes} minute${diffInMinutes === 1 ? '' : 's'} ago`
+  }
+  
+  const diffInHours = Math.floor(diffInMinutes / 60)
+  if (diffInHours < 24) {
+    return `${diffInHours} hour${diffInHours === 1 ? '' : 's'} ago`
+  }
+  
+  const diffInDays = Math.floor(diffInHours / 24)
+  if (diffInDays < 7) {
+    return `${diffInDays} day${diffInDays === 1 ? '' : 's'} ago`
+  }
+  
+  const diffInWeeks = Math.floor(diffInDays / 7)
+  if (diffInWeeks < 4) {
+    return `${diffInWeeks} week${diffInWeeks === 1 ? '' : 's'} ago`
+  }
+  
+  const diffInMonths = Math.floor(diffInDays / 30)
+  if (diffInMonths < 12) {
+    return `${diffInMonths} month${diffInMonths === 1 ? '' : 's'} ago`
+  }
+  
+  const diffInYears = Math.floor(diffInDays / 365)
+  return `${diffInYears} year${diffInYears === 1 ? '' : 's'} ago`
 }
 
 export const ProfileView = ({ 
@@ -162,7 +201,62 @@ export const ProfileView = ({
             </TabsContent>
             
             <TabsContent value="templates" className="mt-4 min-w-0">
-              <PublicTemplatesViewer userName={userName} showCard={false} isLoggedIn={isLoggedIn} />
+              {loading ? (
+                <div className="text-center text-muted-foreground py-8">
+                  <p>{(translations as any)?.publicProfile?.loadingTemplates || 'Loading templates...'}</p>
+                </div>
+              ) : (profile.templates && profile.templates.length > 0) || (profile.taskLists && profile.taskLists.length > 0) ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {profile.templates?.map((template) => {
+                    const activityItem: ActivityItem = {
+                      id: template.id,
+                      type: 'template',
+                      createdAt: template.createdAt,
+                      name: template.name,
+                      role: template.role,
+                      visibility: template.visibility,
+                      isLiked: template.isLiked,
+                      comments: template.comments,
+                      _count: template._count
+                    }
+                    return (
+                      <ActivityCard
+                        key={template.id}
+                        item={activityItem}
+                        getTimeAgo={getTimeAgo}
+                        isLoggedIn={isLoggedIn}
+                      />
+                    )
+                  })}
+                  {profile.taskLists?.map((taskList) => {
+                    const activityItem: ActivityItem = {
+                      id: taskList.id,
+                      type: 'tasklist',
+                      createdAt: taskList.createdAt,
+                      name: taskList.name,
+                      role: taskList.role,
+                      visibility: taskList.visibility,
+                      budget: taskList.budget,
+                      dueDate: taskList.dueDate,
+                      isLiked: taskList.isLiked,
+                      comments: taskList.comments,
+                      _count: taskList._count
+                    }
+                    return (
+                      <ActivityCard
+                        key={taskList.id}
+                        item={activityItem}
+                        getTimeAgo={getTimeAgo}
+                        isLoggedIn={isLoggedIn}
+                      />
+                    )
+                  })}
+                </div>
+              ) : (
+                <div className="text-center text-muted-foreground py-8">
+                  <p>No public templates or lists available yet.</p>
+                </div>
+              )}
             </TabsContent>
           </Tabs>
         </div>

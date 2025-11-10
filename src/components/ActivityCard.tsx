@@ -3,10 +3,12 @@
 import { useState, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { ChevronDown, ChevronUp, Send, Loader2, MessageSquare, FileText, Heart } from "lucide-react"
+import { ChevronDown, ChevronUp, Send, Loader2, MessageSquare, FileText, Heart, List } from "lucide-react"
 import { useI18n } from '@/lib/contexts/i18n'
 import { useNotesRefresh } from "@/lib/contexts/notesRefresh"
 import Link from 'next/link'
+import { OptionsButton, OptionsMenuItem } from "@/components/OptionsButton"
+import { toast } from "sonner"
 
 export interface Comment {
   id: string
@@ -28,13 +30,15 @@ export interface Comment {
 
 export interface ActivityItem {
   id: string
-  type: 'note' | 'template' | string
+  type: 'note' | 'template' | 'tasklist' | string
   createdAt: string
   content?: string // For notes
-  name?: string // For templates
-  role?: string // For templates
+  name?: string // For templates/tasklists
+  role?: string // For templates/tasklists
   visibility?: string
   date?: string
+  budget?: string | null // For tasklists
+  dueDate?: string | null // For tasklists
   isLiked?: boolean // Whether current user has liked this item (if provided, skip fetching)
   user?: {
     id: string
@@ -57,9 +61,10 @@ interface ActivityCardProps {
   onCommentAdded?: () => void
   showUserInfo?: boolean
   getTimeAgo: (date: Date) => string
+  isLoggedIn?: boolean
 }
 
-function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo }: ActivityCardProps) {
+function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, isLoggedIn = false }: ActivityCardProps) {
   const { t } = useI18n()
   const { refreshAll } = useNotesRefresh()
   const [comments, setComments] = useState<Comment[]>(item.comments || [])
@@ -72,6 +77,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo }
   const [likeCount, setLikeCount] = useState(item._count?.likes || 0)
   const [isTogglingLike, setIsTogglingLike] = useState(false)
   const [commentLikes, setCommentLikes] = useState<Record<string, { isLiked: boolean; count: number }>>({})
+  const [isCloning, setIsCloning] = useState(false)
 
   // Update isLiked and likeCount when item changes (from props)
   useEffect(() => {
@@ -335,6 +341,94 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo }
     return userName ? `/profile/${userName}` : '#'
   }
 
+  const handleCloneTemplate = async () => {
+    if (isCloning || item.type !== 'template') return
+    
+    setIsCloning(true)
+    try {
+      const response = await fetch(`/api/v1/templates/${item.id}/clone`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: `${item.name || item.role || 'Template'} (Cloned)`,
+        }),
+      })
+      
+      if (!response.ok) {
+        throw new Error(t('publicProfile.cloneTemplateFailed'))
+      }
+      
+      const data = await response.json()
+      
+      toast.success(t('publicProfile.cloneTemplateSuccess'), {
+        description: (
+          <span>
+            Created task list: <span className="font-semibold text-foreground">{data.taskList.name}</span>
+          </span>
+        ),
+      })
+    } catch (err) {
+      console.error('Error cloning template:', err)
+      toast.error(t('publicProfile.cloneTemplateFailed'))
+    } finally {
+      setIsCloning(false)
+    }
+  }
+
+  const handleCloneTaskList = async () => {
+    if (isCloning || item.type !== 'tasklist') return
+    
+    setIsCloning(true)
+    try {
+      const response = await fetch(`/api/v1/tasklists/${item.id}/clone`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: `${item.name || item.role || 'Task List'} (Cloned)`,
+        }),
+      })
+      
+      if (!response.ok) {
+        throw new Error(t('publicProfile.cloneTemplateFailed'))
+      }
+      
+      const data = await response.json()
+      
+      toast.success(t('publicProfile.cloneTemplateSuccess'), {
+        description: (
+          <span>
+            Created task list: <span className="font-semibold text-foreground">{data.taskList.name}</span>
+          </span>
+        ),
+      })
+    } catch (err) {
+      console.error('Error cloning tasklist:', err)
+      toast.error(t('publicProfile.cloneTemplateFailed'))
+    } finally {
+      setIsCloning(false)
+    }
+  }
+
+  // Build options menu items
+  const optionsMenuItems: OptionsMenuItem[] = []
+  if (isLoggedIn && (item.type === 'template' || item.type === 'tasklist')) {
+    const cloneLabel = isCloning 
+      ? (t('publicProfile.cloning') || 'Cloning...')
+      : item.type === 'template'
+      ? (t('publicProfile.cloneTemplate') || 'Clone Template')
+      : (t('publicProfile.cloneTemplate') || 'Clone List')
+    
+    optionsMenuItems.push({
+      label: cloneLabel,
+      onClick: item.type === 'template' ? handleCloneTemplate : handleCloneTaskList,
+      icon: null,
+    })
+  }
+
   return (
     <div className="border rounded-lg p-4 bg-muted/30 relative h-full flex flex-col">
       {showUserInfo && item.user && (
@@ -370,11 +464,22 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo }
           {!showUserInfo && getTimeAgo(new Date(item.createdAt))}
           {item.date && ` • ${item.date}`}
         </span>
-        {item.visibility && (
-          <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
-            {item.visibility.toLowerCase().replace('_', ' ')}
-          </span>
-        )}
+        <div className="flex items-center gap-2">
+          {item.visibility && (
+            <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
+              {item.visibility.toLowerCase().replace('_', ' ')}
+            </span>
+          )}
+          {optionsMenuItems.length > 0 && (
+            <OptionsButton
+              items={optionsMenuItems}
+              statusColor="transparent"
+              iconColor="var(--primary)"
+              iconFilled={false}
+              align="end"
+            />
+          )}
+        </div>
       </div>
 
       {/* Content based on type */}
@@ -382,16 +487,34 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo }
         <p className="text-sm whitespace-pre-wrap mb-3">{item.content}</p>
       )}
       
-      {item.type === 'template' && (
+      {(item.type === 'template' || item.type === 'tasklist') && (
         <div className="mb-3">
           <div className="flex items-center gap-2 mb-2">
-            <FileText className="w-4 h-4 text-muted-foreground" />
+            {item.type === 'tasklist' ? (
+              <List className="w-4 h-4 text-muted-foreground" />
+            ) : (
+              <FileText className="w-4 h-4 text-muted-foreground" />
+            )}
             <p className="text-sm font-medium">
-              {item.name || item.role || t('common.untitledTemplate')}
+              {item.name || item.role || (item.type === 'tasklist' ? t('common.untitledList') : t('common.untitledTemplate'))}
             </p>
           </div>
           {item.content && (
             <p className="text-xs text-muted-foreground">{item.content}</p>
+          )}
+          {item.type === 'tasklist' && (
+            <div className="mt-2 space-y-1">
+              {item.budget && (
+                <p className="text-xs text-muted-foreground">
+                  Budget: {item.budget}
+                </p>
+              )}
+              {item.dueDate && (
+                <p className="text-xs text-muted-foreground">
+                  Due: {item.dueDate}
+                </p>
+              )}
+            </div>
           )}
         </div>
       )}

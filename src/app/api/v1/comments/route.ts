@@ -93,6 +93,11 @@ export async function POST(request: NextRequest) {
         where: { id: entityId }
       })
       entityExists = !!template
+    } else if (entityType === 'tasklist') {
+      const taskList = await prisma.taskList.findUnique({
+        where: { id: entityId }
+      })
+      entityExists = !!taskList
     } else {
       return NextResponse.json({ error: 'Invalid entityType' }, { status: 400 })
     }
@@ -123,6 +128,8 @@ export async function POST(request: NextRequest) {
       commentData.noteId = entityId
     } else if (entityType === 'template') {
       commentData.templateId = entityId
+    } else if (entityType === 'tasklist') {
+      commentData.taskListId = entityId
     }
 
     // Create comment
