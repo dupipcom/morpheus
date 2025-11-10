@@ -107,6 +107,19 @@ export default function LocalizedDo({ params }: { params: Promise<{ locale: stri
     }
   }, [])
 
+  // Form state management
+  const [showAddTask, setShowAddTask] = useState(false)
+  const [showAddList, setShowAddList] = useState(false)
+  const [showAddTemplate, setShowAddTemplate] = useState(false)
+  const [isEditingList, setIsEditingList] = useState(false)
+
+  const closeAllForms = useCallback(() => {
+    setShowAddTask(false)
+    setShowAddList(false)
+    setShowAddTemplate(false)
+    setIsEditingList(false)
+  }, [])
+
   const fullDate = new Date()
   const date = fullDate.toISOString().split('T')[0]
   const year = Number(date.split('-')[0])
@@ -129,6 +142,11 @@ export default function LocalizedDo({ params }: { params: Promise<{ locale: stri
           onAddEphemeral={handleAddEphemeral}
           selectedDate={selectedDate}
           onDateChange={handleDateChange}
+          onShowAddTask={() => { closeAllForms(); setShowAddTask(true) }}
+          onShowAddList={() => { closeAllForms(); setIsEditingList(false); setShowAddList(true) }}
+          onShowAddTemplate={() => { closeAllForms(); setShowAddTemplate(true) }}
+          onShowEditList={() => { if (selectedTaskList) { closeAllForms(); setIsEditingList(true); setShowAddList(true) } }}
+          hasFormOpen={showAddTask || showAddList || showAddTemplate}
             />
       </div>
       <ViewMenu active="do">{null}</ViewMenu>
@@ -138,6 +156,16 @@ export default function LocalizedDo({ params }: { params: Promise<{ locale: stri
           selectedDate={selectedDate}
           onDateChange={handleDateChange}
           onAddEphemeral={handleAddEphemeral}
+          showAddTask={showAddTask}
+          showAddList={showAddList}
+          showAddTemplate={showAddTemplate}
+          isEditingList={isEditingList}
+          onCloseAddTask={() => setShowAddTask(false)}
+          onCloseAddList={() => { setShowAddList(false); setIsEditingList(false) }}
+          onCloseAddTemplate={() => setShowAddTemplate(false)}
+          onTaskCreated={refreshTaskLists}
+          onListCreated={refreshTaskLists}
+          onTemplateCreated={refreshTaskLists}
         />
       </div>
     </main>

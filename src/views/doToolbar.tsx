@@ -17,9 +17,6 @@ import {
 import { Plus, Pencil, DollarSign, Calendar as CalendarIcon, User as UserIcon, TrendingUp, Award } from 'lucide-react'
 import { GlobalContext } from '@/lib/contexts'
 import { useI18n } from '@/lib/contexts/i18n'
-import { AddTaskForm } from '@/views/forms/AddTaskForm'
-import { AddListForm } from '@/views/forms/AddListForm'
-import { AddTemplateForm } from '@/views/forms/AddTemplateForm'
 import { Badge } from '@/components/ui/badge'
 import { Calendar } from '@/components/ui/calendar'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
@@ -35,6 +32,11 @@ export const DoToolbar = ({
   onAddEphemeral: _onAddEphemeral,
   selectedDate,
   onDateChange,
+  onShowAddTask,
+  onShowAddList,
+  onShowAddTemplate,
+  onShowEditList,
+  hasFormOpen,
 }: {
   locale: string
   selectedTaskListId?: string
@@ -42,6 +44,11 @@ export const DoToolbar = ({
   onAddEphemeral: () => Promise<void> | void
   selectedDate?: Date
   onDateChange?: (date: Date | undefined) => void
+  onShowAddTask?: () => void
+  onShowAddList?: () => void
+  onShowAddTemplate?: () => void
+  onShowEditList?: () => void
+  hasFormOpen?: boolean
 }) => {
   const { t } = useI18n()
   const { session, taskLists: contextTaskLists, refreshTaskLists } = useContext(GlobalContext)
@@ -63,10 +70,6 @@ export const DoToolbar = ({
     return found
   }, [allTaskLists, selectedTaskListId])
 
-  const [showAddTask, setShowAddTask] = useState(false)
-  const [showAddList, setShowAddList] = useState(false)
-  const [showAddTemplate, setShowAddTemplate] = useState(false)
-  const [isEditingList, setIsEditingList] = useState(false)
   const [userTemplates, setUserTemplates] = useState<any[]>([])
   const [collabProfiles, setCollabProfiles] = useState<Record<string, string>>({})
   const [listEarnings, setListEarnings] = useState<{ profit: number; prize: number; earnings: number }>({ profit: 0, prize: 0, earnings: 0 })
@@ -252,7 +255,6 @@ export const DoToolbar = ({
     return () => { cancelled = true }
   }, [selectedList?.id, JSON.stringify((selectedList as any)?.owners || []), JSON.stringify((selectedList as any)?.collaborators || [])])
 
-  const closeAll = () => { setShowAddTask(false); setShowAddList(false); setShowAddTemplate(false) }
 
   // Determine if we should show the date picker (only for daily.* or weekly.* lists)
   const shouldShowDatePicker = useMemo(() => {
@@ -290,9 +292,20 @@ export const DoToolbar = ({
 
   const selectedListTitle = selectedList ? (selectedList.name || selectedList.role || selectedList.id) : (t('tasks.selectList') || 'Select list')
 
+  // Control accordion to minimize when forms are open
+  const [accordionValue, setAccordionValue] = useState<string>('do-toolbar')
+  
+  useEffect(() => {
+    if (hasFormOpen) {
+      // Close accordion when forms open
+      setAccordionValue('')
+    }
+    // Don't force open when forms close - let user control it manually
+  }, [hasFormOpen])
+
   return (
     <div className="p-3 sm:p-4 border rounded-lg border-body w-full max-w-full bg-muted backdrop-blur-sm">
-      <Accordion type="single" collapsible className="w-full">
+      <Accordion type="single" collapsible className="w-full" value={accordionValue} onValueChange={setAccordionValue}>
         <AccordionItem value="do-toolbar" className="border-none">
           <AccordionTrigger className="py-0 px-0 hover:no-underline">
             <h3 className="text-base font-semibold text-body">{selectedListTitle}</h3>
@@ -350,13 +363,13 @@ export const DoToolbar = ({
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => { closeAll(); setShowAddTask(true) }}>
+                      <DropdownMenuItem onClick={onShowAddTask}>
                         {t('common.newTask') || 'New task'}
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => { closeAll(); setIsEditingList(false); setShowAddList(true) }}>
+                      <DropdownMenuItem onClick={onShowAddList}>
                         {t('common.newList') || 'New list'}
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => { closeAll(); setShowAddTemplate(true) }}>
+                      <DropdownMenuItem onClick={onShowAddTemplate}>
                         {t('common.newTemplate') || 'New template'}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -366,7 +379,7 @@ export const DoToolbar = ({
                     variant="ghost"
                     size="sm"
                     className="flex items-center text-muted-foreground hover:text-foreground"
-                    onClick={() => { if (selectedList) { closeAll(); setIsEditingList(true); setShowAddList(true) } }}
+                    onClick={onShowEditList}
                     disabled={!selectedList}
                   >
                     <Pencil className="h-4 w-4" />
@@ -435,34 +448,6 @@ export const DoToolbar = ({
                 </div>
               )}
 
-              {showAddTask && (
-                <AddTaskForm
-                  selectedTaskListId={selectedTaskListId}
-                  onCancel={() => setShowAddTask(false)}
-                  onCreated={refreshTaskLists}
-                />
-              )}
-
-              {showAddList && (
-                <AddListForm
-                  allTaskLists={allTaskLists}
-                  userTemplates={userTemplates}
-                  isEditing={isEditingList}
-                  initialList={isEditingList ? (selectedList as any) : undefined}
-                  onCancel={() => { setShowAddList(false); setIsEditingList(false) }}
-                  onCreated={async () => {
-                    await refreshTaskLists()
-                  }}
-                />
-              )}
-
-              {showAddTemplate && (
-                <AddTemplateForm
-                  allTaskLists={allTaskLists}
-                  onCancel={() => setShowAddTemplate(false)}
-                  onCreated={async () => { await refreshTemplates(); await refreshTaskLists() }}
-                />
-              )}
             </div>
           </AccordionContent>
         </AccordionItem>

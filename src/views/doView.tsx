@@ -1,8 +1,11 @@
 'use client'
 
 import React from 'react'
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState, useMemo } from 'react'
 import { GlobalContext } from '@/lib/contexts'
+import { AddTaskForm } from '@/views/forms/AddTaskForm'
+import { AddListForm } from '@/views/forms/AddListForm'
+import { AddTemplateForm } from '@/views/forms/AddTemplateForm'
 
 import { ViewMenu } from '@/components/viewMenu'
 import { MoodView } from '@/views/moodView'
@@ -20,14 +23,35 @@ export const DoView = ({
   selectedDate,
   onDateChange,
   onAddEphemeral,
+  showAddTask,
+  showAddList,
+  showAddTemplate,
+  isEditingList,
+  onCloseAddTask,
+  onCloseAddList,
+  onCloseAddTemplate,
+  onTaskCreated,
+  onListCreated,
+  onTemplateCreated,
 }: {
   selectedTaskListId?: string
   selectedDate?: Date
   onDateChange?: (date: Date | undefined) => void
   onAddEphemeral?: () => Promise<void> | void
+  showAddTask?: boolean
+  showAddList?: boolean
+  showAddTemplate?: boolean
+  isEditingList?: boolean
+  onCloseAddTask?: () => void
+  onCloseAddList?: () => void
+  onCloseAddTemplate?: () => void
+  onTaskCreated?: () => Promise<void> | void
+  onListCreated?: () => Promise<void> | void
+  onTemplateCreated?: () => Promise<void> | void
 }) => {
   const { refreshTaskLists, taskLists: contextTaskLists, session } = useContext(GlobalContext)
   const [stableTaskLists, setStableTaskLists] = useState<any[]>([])
+  const [userTemplates, setUserTemplates] = useState<any[]>([])
   const initialFetchDone = useRef(false)
 
   // Fetch immediately on mount
@@ -53,6 +77,36 @@ export const DoView = ({
     return () => clearInterval(id)
   }, [refreshTaskLists])
 
+  // Fetch templates
+  const refreshTemplates = async () => {
+    try {
+      const res = await fetch('/api/v1/templates')
+      if (res.ok) {
+        const data = await res.json()
+        setUserTemplates(data.templates || [])
+      }
+    } catch {}
+  }
+
+  useEffect(() => {
+    let cancelled = false
+    const run = async () => {
+      if (cancelled) return
+      await refreshTemplates()
+    }
+    run()
+    return () => { cancelled = true }
+  }, [])
+
+  const allTaskLists = useMemo(() => 
+    (stableTaskLists.length > 0 ? stableTaskLists : (Array.isArray(contextTaskLists) ? contextTaskLists : [])) as any[],
+    [stableTaskLists, contextTaskLists]
+  )
+  const selectedList = useMemo(() => {
+    const found = allTaskLists.find((l:any) => l.id === selectedTaskListId)
+    return found
+  }, [allTaskLists, selectedTaskListId])
+
   // Determine if all mood sliders for today are zero (or unset)
   const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const today = new Date()
@@ -76,12 +130,57 @@ export const DoView = ({
   }, [session])
 
   return (
-    <ListView 
-      selectedTaskListId={selectedTaskListId}
-      selectedDate={selectedDate}
-      onDateChange={onDateChange}
-      onAddEphemeral={onAddEphemeral}
-    />
+    <>
+      {showAddTask && (
+        <div className="mb-4">
+          <AddTaskForm
+            selectedTaskListId={selectedTaskListId}
+            onCancel={onCloseAddTask || (() => {})}
+            onCreated={async () => {
+              if (onTaskCreated) await onTaskCreated()
+              if (onCloseAddTask) onCloseAddTask()
+            }}
+          />
+        </div>
+      )}
+
+      {showAddList && (
+        <div className="mb-4">
+          <AddListForm
+            allTaskLists={allTaskLists}
+            userTemplates={userTemplates}
+            isEditing={isEditingList || false}
+            initialList={isEditingList ? (selectedList as any) : undefined}
+            onCancel={onCloseAddList || (() => {})}
+            onCreated={async () => {
+              if (onListCreated) await onListCreated()
+              if (onCloseAddList) onCloseAddList()
+            }}
+          />
+        </div>
+      )}
+
+      {showAddTemplate && (
+        <div className="mb-4">
+          <AddTemplateForm
+            allTaskLists={allTaskLists}
+            onCancel={onCloseAddTemplate || (() => {})}
+            onCreated={async () => {
+              await refreshTemplates()
+              if (onTemplateCreated) await onTemplateCreated()
+              if (onCloseAddTemplate) onCloseAddTemplate()
+            }}
+          />
+        </div>
+      )}
+
+      <ListView 
+        selectedTaskListId={selectedTaskListId}
+        selectedDate={selectedDate}
+        onDateChange={onDateChange}
+        onAddEphemeral={onAddEphemeral}
+      />
+    </>
   )
 }
 
