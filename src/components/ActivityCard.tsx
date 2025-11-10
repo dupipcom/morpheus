@@ -687,26 +687,26 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
       )}
       
       <div className="flex items-center justify-between mb-2">
-        <span className="text-xs text-muted-foreground">
-          {!showUserInfo && getTimeAgo(new Date(item.createdAt))}
-          {item.date && ` • ${item.date}`}
-        </span>
         <div className="flex items-center gap-2">
+          <span className="text-xs text-muted-foreground">
+            {!showUserInfo && getTimeAgo(new Date(item.createdAt))}
+            {item.date && ` • ${item.date}`}
+          </span>
           {item.visibility && (
             <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
               {item.visibility.toLowerCase().replace('_', ' ')}
             </span>
           )}
-          {isLoggedIn && (
-            <OptionsButton
-              items={optionsMenuItems.length > 0 ? optionsMenuItems : []}
-              statusColor="transparent"
-              iconColor="var(--primary)"
-              iconFilled={false}
-              align="end"
-            />
-          )}
         </div>
+        {isLoggedIn && (
+          <OptionsButton
+            items={optionsMenuItems.length > 0 ? optionsMenuItems : []}
+            statusColor="transparent"
+            iconColor="var(--primary)"
+            iconFilled={false}
+            align="end"
+          />
+        )}
       </div>
 
       {/* Content based on type */}
