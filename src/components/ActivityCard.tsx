@@ -88,6 +88,12 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
   const [isDeleting, setIsDeleting] = useState(false)
   const [isEditPopoverOpen, setIsEditPopoverOpen] = useState(false)
   const justOpenedPopoverRef = useRef(false)
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null)
+  const [editCommentContent, setEditCommentContent] = useState('')
+  const [isSavingComment, setIsSavingComment] = useState(false)
+  const [isDeletingComment, setIsDeletingComment] = useState<string | null>(null)
+  const [isEditCommentPopoverOpen, setIsEditCommentPopoverOpen] = useState(false)
+  const justOpenedCommentPopoverRef = useRef(false)
 
   // Update isLiked and likeCount when item changes (from props)
   useEffect(() => {
@@ -516,6 +522,95 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
     }
   }
 
+  const handleEditComment = (comment: Comment, e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault()
+      e.stopPropagation()
+    }
+    setEditingCommentId(comment.id)
+    setEditCommentContent(comment.content)
+    // Mark that we just opened the popover to prevent immediate closing
+    justOpenedCommentPopoverRef.current = true
+    // Use requestAnimationFrame to ensure dropdown closes before opening popover
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setIsEditCommentPopoverOpen(true)
+        // Reset the flag after a short delay
+        setTimeout(() => {
+          justOpenedCommentPopoverRef.current = false
+        }, 300)
+      })
+    })
+  }
+
+  const handleSaveComment = async () => {
+    if (!editingCommentId || !editCommentContent.trim() || isSavingComment) return
+
+    setIsSavingComment(true)
+    try {
+      const response = await fetch(`/api/v1/comments/${editingCommentId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          content: editCommentContent.trim(),
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to update comment')
+      }
+
+      const data = await response.json()
+      
+      // Update comment in local state with full comment data from API
+      setComments(prev => prev.map(comment => 
+        comment.id === editingCommentId 
+          ? { ...comment, ...data.comment }
+          : comment
+      ))
+
+      toast.success(t('comments.updated') || 'Comment updated successfully')
+      setIsEditCommentPopoverOpen(false)
+      setEditingCommentId(null)
+      setEditCommentContent('')
+    } catch (err) {
+      console.error('Error updating comment:', err)
+      toast.error(t('comments.updateFailed') || 'Failed to update comment')
+    } finally {
+      setIsSavingComment(false)
+    }
+  }
+
+  const handleDeleteComment = async (commentId: string) => {
+    if (isDeletingComment === commentId || !confirm(t('comments.confirmDelete') || 'Are you sure you want to delete this comment?')) {
+      return
+    }
+
+    setIsDeletingComment(commentId)
+    try {
+      const response = await fetch(`/api/v1/comments/${commentId}`, {
+        method: 'DELETE',
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to delete comment')
+      }
+
+      // Remove comment from local state
+      setComments(prev => prev.filter(comment => comment.id !== commentId))
+      setCommentCount(prev => Math.max(0, prev - 1))
+      
+      toast.success(t('comments.deleted') || 'Comment deleted successfully')
+    } catch (err) {
+      console.error('Error deleting comment:', err)
+      toast.error(t('comments.deleteFailed') || 'Failed to delete comment')
+    } finally {
+      setIsDeletingComment(null)
+    }
+  }
+
   // Build options menu items
   const optionsMenuItems: OptionsMenuItem[] = []
   
@@ -770,8 +865,26 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
                 <div className="space-y-2 overflow-y-auto">
                   {comments.map((comment) => {
                   const commentLike = commentLikes[comment.id] || { isLiked: false, count: comment._count?.likes || 0 }
+                  const isCommentOwner = isLoggedIn && currentUserId && comment.user.id === currentUserId
+                  
+                  // Build comment options menu items
+                  const commentOptionsMenuItems: OptionsMenuItem[] = []
+                  if (isCommentOwner) {
+                    commentOptionsMenuItems.push({
+                      label: t('common.edit') || 'Edit',
+                      icon: <Edit className="h-3 w-3" />,
+                      onClick: (e) => handleEditComment(comment, e)
+                    })
+                    commentOptionsMenuItems.push({
+                      label: t('common.delete') || 'Delete',
+                      icon: <Trash2 className="h-3 w-3" />,
+                      onClick: () => handleDeleteComment(comment.id),
+                      variant: 'destructive'
+                    })
+                  }
+                  
                   return (
-                    <div key={comment.id} className="text-xs text-muted-foreground bg-muted/50 rounded p-2">
+                    <div key={comment.id} className="text-xs text-muted-foreground bg-muted/50 rounded p-2 relative">
                       <div className="flex items-center gap-2 mb-1">
                         <span className="font-medium">
                           {comment.user.profile?.userName 
@@ -781,9 +894,24 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
                             : t('common.anonymous')}
                         </span>
                         <span className="text-[10px]">{getTimeAgo(new Date(comment.createdAt))}</span>
+                        {isCommentOwner && commentOptionsMenuItems.length > 0 && (
+                          <div className="flex items-center gap-1 ml-auto">
+                            <OptionsButton
+                              items={commentOptionsMenuItems}
+                              statusColor="transparent"
+                              iconColor="var(--muted-foreground)"
+                              iconFilled={false}
+                              align="end"
+                              size="xs"
+                            />
+                          </div>
+                        )}
+                      </div>
+                      <p className="text-xs">{comment.content}</p>
+                      <div className="flex justify-end mt-1">
                         <button
                           onClick={() => handleToggleCommentLike(comment.id)}
-                          className="flex items-center gap-1 ml-auto hover:opacity-70 transition-opacity"
+                          className="flex items-center gap-1 hover:opacity-70 transition-opacity"
                           aria-label={commentLike.isLiked ? t('comments.unlikeComment') : t('comments.likeComment')}
                         >
                           <Heart 
@@ -792,7 +920,77 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
                           {commentLike.count > 0 && <span className="text-[10px] text-muted-foreground">{commentLike.count}</span>}
                         </button>
                       </div>
-                      <p className="text-xs">{comment.content}</p>
+                      
+                      {/* Edit comment popover */}
+                      {isCommentOwner && editingCommentId === comment.id && (
+                        <Popover
+                          open={isEditCommentPopoverOpen}
+                          onOpenChange={(open) => {
+                            // Prevent closing if we just opened (to avoid dropdown close event)
+                            if (!open && justOpenedCommentPopoverRef.current) {
+                              return
+                            }
+                            if (!open) {
+                              setIsEditCommentPopoverOpen(false)
+                              setEditingCommentId(null)
+                              setEditCommentContent('')
+                            }
+                          }}
+                          modal={true}
+                        >
+                          <PopoverAnchor asChild>
+                            <div className="absolute top-2 right-2" />
+                          </PopoverAnchor>
+                          <PopoverContent
+                            className="w-[calc(100vw-2rem)] max-w-sm sm:w-96 p-4"
+                            align="end"
+                            side="bottom"
+                            onInteractOutside={(e) => {
+                              // Allow closing on outside click after initial open
+                              if (justOpenedCommentPopoverRef.current) {
+                                e.preventDefault()
+                              }
+                            }}
+                          >
+                            <div className="space-y-3">
+                              <Textarea
+                                className="min-h-[100px] text-sm"
+                                value={editCommentContent}
+                                onChange={(e) => setEditCommentContent(e.target.value)}
+                                placeholder={t('comments.addComment') || 'Comment content'}
+                              />
+                              <div className="flex justify-end gap-2">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => {
+                                    setIsEditCommentPopoverOpen(false)
+                                    setEditingCommentId(null)
+                                    setEditCommentContent('')
+                                  }}
+                                  disabled={isSavingComment}
+                                >
+                                  {t('common.cancel') || 'Cancel'}
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  onClick={handleSaveComment}
+                                  disabled={!editCommentContent.trim() || isSavingComment}
+                                >
+                                  {isSavingComment ? (
+                                    <>
+                                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                      {t('common.saving') || 'Saving...'}
+                                    </>
+                                  ) : (
+                                    t('common.save') || 'Save'
+                                  )}
+                                </Button>
+                              </div>
+                            </div>
+                          </PopoverContent>
+                        </Popover>
+                      )}
                     </div>
                   )
                 })}
