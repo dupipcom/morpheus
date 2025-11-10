@@ -409,12 +409,12 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
       })
       
       if (!response.ok) {
-        throw new Error(t('publicProfile.cloneTemplateFailed'))
+        throw new Error(t('publicProfile.cloneListFailed'))
       }
       
       const data = await response.json()
       
-      toast.success(t('publicProfile.cloneTemplateSuccess'), {
+      toast.success(t('publicProfile.cloneListSuccess'), {
         description: (
           <span>
             Created task list: <span className="font-semibold text-foreground">{data.taskList.name}</span>
@@ -423,7 +423,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
       })
     } catch (err) {
       console.error('Error cloning tasklist:', err)
-      toast.error(t('publicProfile.cloneTemplateFailed'))
+      toast.error(t('publicProfile.cloneListFailed'))
     } finally {
       setIsCloning(false)
     }
@@ -620,7 +620,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
       ? (t('publicProfile.cloning') || 'Cloning...')
       : item.type === 'template'
       ? (t('publicProfile.cloneTemplate') || 'Clone Template')
-      : (t('publicProfile.cloneTemplate') || 'Clone List')
+      : (t('publicProfile.cloneList') || 'Clone List')
     
     optionsMenuItems.push({
       label: cloneLabel,
@@ -632,7 +632,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
   // Add edit and delete options for notes owned by current user
   if (isNoteOwner) {
     optionsMenuItems.push({
-      label: t('notes.edit') || 'Edit',
+      label: t('common.edit') || 'Edit',
       onClick: handleEditNote,
       icon: <Edit className="h-4 w-4" />,
       separator: optionsMenuItems.length > 0,
@@ -640,7 +640,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
     optionsMenuItems.push({
       label: isDeleting 
         ? (t('notes.deleting') || 'Deleting...')
-        : (t('notes.delete') || 'Delete'),
+        : (t('common.delete') || 'Delete'),
       onClick: handleDeleteNote,
       icon: <Trash2 className="h-4 w-4" />,
     })
