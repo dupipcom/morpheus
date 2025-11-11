@@ -7,13 +7,10 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
   try {
     const { userName } = await params
 
-    // Find profile by searching in data.username.value
-    const profile = await prisma.profile.findFirst({
+    // Find profile by username at root level (optimized query)
+    const profile = await prisma.profile.findUnique({
       where: {
-        data: {
-          path: ['username', 'value'],
-          equals: userName
-        }
+        username: userName
       },
       select: {
         id: true,
@@ -21,7 +18,6 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
         user: {
           select: {
             id: true,
-            entries: true,
             friends: true,
             closeFriends: true
           }
@@ -92,7 +88,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
         earningsCharts: (profileForFiltering.publicCharts as any)?.earningsCharts || false,
       }
       
-      publicChartsData = generatePublicChartsData(profile.user.entries, chartVisibility)
+      // Entries field no longer exists on User model, pass null to generatePublicChartsData
+      publicChartsData = generatePublicChartsData(null, chartVisibility)
     }
 
     // Determine allowed visibility for templates/lists

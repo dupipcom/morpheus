@@ -161,13 +161,14 @@ export async function GET(request: NextRequest) {
             id: { in: allCollaborators }
           },
           include: {
-            profile: true
+            profiles: true
           }
         })
         
         const userIdToUserName: Record<string, string> = {}
         userProfiles.forEach(u => {
-          userIdToUserName[u.id] = u.profile?.userName || u.id
+          const profile = Array.isArray(u.profiles) && u.profiles.length > 0 ? u.profiles[0] : null
+          userIdToUserName[u.id] = profile?.data?.username?.value || u.id
         })
         
         // Calculate profit per task using earningsUtils formula
@@ -252,6 +253,62 @@ export async function POST(request: NextRequest) {
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
+    }
+
+    // Helper function to aggregate completer earnings from taskList collection, filtering by logged-in user
+    const aggregateCompleterEarningsFromTaskList = async (taskListId: string, userId: string, year: number, dateISO: string) => {
+      try {
+        const taskList = await prisma.list.findUnique({ where: { id: taskListId } })
+        if (!taskList) return { earnings: 0, prize: 0, profit: 0 }
+
+        const completedTasks = (taskList.completedTasks as any) || {}
+        const yearData = completedTasks[year]
+        if (!yearData) return { earnings: 0, prize: 0, profit: 0 }
+
+        const dateBucket = yearData[dateISO]
+        if (!dateBucket) return { earnings: 0, prize: 0, profit: 0 }
+
+        // Support both old structure (array) and new structure (openTasks/closedTasks)
+        let tasksForDate: any[] = []
+        if (Array.isArray(dateBucket)) {
+          tasksForDate = dateBucket
+        } else if (dateBucket.openTasks || dateBucket.closedTasks) {
+          tasksForDate = [
+            ...(Array.isArray(dateBucket.openTasks) ? dateBucket.openTasks : []),
+            ...(Array.isArray(dateBucket.closedTasks) ? dateBucket.closedTasks : [])
+          ]
+        }
+
+        let totalEarnings = 0
+        let totalPrize = 0
+        let totalProfit = 0
+
+        // Filter completers by logged-in user and sum their earnings/prize/profit
+        for (const task of tasksForDate) {
+          if (Array.isArray(task.completers)) {
+            for (const completer of task.completers) {
+              // Only count completers for the logged-in user
+              if (completer.id === userId) {
+                const completerEarnings = typeof completer.earnings === 'number' 
+                  ? completer.earnings 
+                  : (typeof completer.earnings === 'string' ? parseFloat(completer.earnings || '0') : 0)
+                const completerPrize = typeof completer.prize === 'number' 
+                  ? completer.prize 
+                  : (typeof completer.prize === 'string' ? parseFloat(completer.prize || '0') : 0)
+                
+                totalEarnings += completerEarnings + completerPrize
+                totalPrize += completerPrize
+                totalProfit += completerEarnings
+              }
+            }
+          }
+        }
+
+        return { earnings: totalEarnings, prize: totalPrize, profit: totalProfit }
+      } catch (error) {
+        console.error('Error aggregating completer earnings from taskList:', error)
+        return { earnings: 0, prize: 0, profit: 0 }
+      }
     }
 
     // Get user's locale and translations
@@ -617,62 +674,6 @@ export async function POST(request: NextRequest) {
         let stashDelta = 0  // Prize only
         let totalProfitDelta = 0  // Profit only
 
-        // Helper function to aggregate completer earnings from taskList collection, filtering by logged-in user
-        const aggregateCompleterEarningsFromTaskList = async (taskListId: string, userId: string, year: number, dateISO: string) => {
-          try {
-            const taskList = await prisma.list.findUnique({ where: { id: taskListId } })
-            if (!taskList) return { earnings: 0, prize: 0, profit: 0 }
-
-            const completedTasks = (taskList.completedTasks as any) || {}
-            const yearData = completedTasks[year]
-            if (!yearData) return { earnings: 0, prize: 0, profit: 0 }
-
-            const dateBucket = yearData[dateISO]
-            if (!dateBucket) return { earnings: 0, prize: 0, profit: 0 }
-
-            // Support both old structure (array) and new structure (openTasks/closedTasks)
-            let tasksForDate: any[] = []
-            if (Array.isArray(dateBucket)) {
-              tasksForDate = dateBucket
-            } else if (dateBucket.openTasks || dateBucket.closedTasks) {
-              tasksForDate = [
-                ...(Array.isArray(dateBucket.openTasks) ? dateBucket.openTasks : []),
-                ...(Array.isArray(dateBucket.closedTasks) ? dateBucket.closedTasks : [])
-              ]
-            }
-
-            let totalEarnings = 0
-            let totalPrize = 0
-            let totalProfit = 0
-
-            // Filter completers by logged-in user and sum their earnings/prize/profit
-            for (const task of tasksForDate) {
-              if (Array.isArray(task.completers)) {
-                for (const completer of task.completers) {
-                  // Only count completers for the logged-in user
-                  if (completer.id === userId) {
-                    const completerEarnings = typeof completer.earnings === 'number' 
-                      ? completer.earnings 
-                      : (typeof completer.earnings === 'string' ? parseFloat(completer.earnings || '0') : 0)
-                    const completerPrize = typeof completer.prize === 'number' 
-                      ? completer.prize 
-                      : (typeof completer.prize === 'string' ? parseFloat(completer.prize || '0') : 0)
-                    
-                    totalEarnings += completerEarnings + completerPrize
-                    totalPrize += completerPrize
-                    totalProfit += completerEarnings
-                  }
-                }
-              }
-            }
-
-            return { earnings: totalEarnings, prize: totalPrize, profit: totalProfit }
-          } catch (error) {
-            console.error('Error aggregating completer earnings from taskList:', error)
-            return { earnings: 0, prize: 0, profit: 0 }
-          }
-        }
-
         // Calculate stash and profit deltas from completed tasks (without entries)
         if (justCompletedNames.length > 0 || justUncompletedNames.length > 0) {
           // Calculate earnings directly from completedTasks without storing in entries
@@ -825,10 +826,33 @@ export async function POST(request: NextRequest) {
             const quarter = Math.ceil(month / 3)
             const semester = month <= 6 ? 1 : 2
 
+            // Remove all ticker entries for uncompleted tasks
+            const existingTickers = Array.isArray(existingDay.ticker) ? existingDay.ticker : []
+            // Get task IDs for uncompleted tasks from the tasks that are being removed
+            const uncompletedTaskIds = new Set(
+              existingTasks
+                .filter((t: any) => {
+                  const taskName = typeof t?.name === 'string' ? t.name.toLowerCase() : ''
+                  return unNames.has(taskName)
+                })
+                .map((t: any) => t.id || t.localeKey || t.name)
+                .filter(Boolean)
+            )
+            // Remove ticker entries matching uncompleted task IDs
+            const updatedTickers = existingTickers.filter((t: any) => {
+              // If ticker has taskId, only remove if it matches an uncompleted task
+              if (t.taskId) {
+                return !uncompletedTaskIds.has(t.taskId)
+              }
+              // If no taskId in ticker, remove all entries for this listId (backward compatibility)
+              return t.listId !== taskList.id
+            })
+
             await prisma.day.update({
               where: { id: existingDay.id },
               data: {
                 tasks: updatedTasks as any,
+                ticker: updatedTickers as any,
                 week: weekNumber,
                 month: month,
                 quarter: quarter,
@@ -923,16 +947,59 @@ export async function POST(request: NextRequest) {
               }
             })
 
-            await prisma.day.update({
-              where: { id: existingDay.id },
-              data: {
-                tasks: updatedTasks as any,
-                week: weekNumber,
-                month: month,
-                quarter: quarter,
-                semester: semester
-              }
+            // Get existing ticker array or create new one
+            const existingTickers = Array.isArray(existingDay.ticker) ? existingDay.ticker : []
+            
+            // Only add ticker entries for tasks with status "done"
+            const doneTasks = tasksToCopy.filter((task: any) => {
+              const status = task.status || 'open'
+              return status === 'done'
             })
+            
+            if (doneTasks.length > 0) {
+              // Calculate profit and prize from task completions for this date
+              const aggregated = await aggregateCompleterEarningsFromTaskList(taskList.id, user.id, year, dateISO)
+              
+              // Push new ticker entries for each done task, ensuring unique taskIds
+              const newTickers = doneTasks.map((incomingTask: any) => {
+                const taskId = incomingTask.id || incomingTask.localeKey || incomingTask.name || undefined
+                return {
+                  listId: taskList.id,
+                  taskId: taskId,
+                  profit: aggregated.profit || 0,
+                  prize: aggregated.prize || 0
+                }
+              })
+              
+              // Remove existing ticker entries with the same taskIds to ensure uniqueness
+              const newTaskIds = new Set(newTickers.map((t: any) => t.taskId).filter(Boolean))
+              const filteredTickers = existingTickers.filter((t: any) => !t.taskId || !newTaskIds.has(t.taskId))
+              const updatedTickers = [...filteredTickers, ...newTickers]
+              
+              await prisma.day.update({
+                where: { id: existingDay.id },
+                data: {
+                  tasks: updatedTasks as any,
+                  ticker: updatedTickers as any,
+                  week: weekNumber,
+                  month: month,
+                  quarter: quarter,
+                  semester: semester
+                }
+              })
+            } else {
+              // No done tasks, just update tasks without ticker
+              await prisma.day.update({
+                where: { id: existingDay.id },
+                data: {
+                  tasks: updatedTasks as any,
+                  week: weekNumber,
+                  month: month,
+                  quarter: quarter,
+                  semester: semester
+                }
+              })
+            }
           } else {
             // Create new day with the tasks to copy
             // Use status field
@@ -965,11 +1032,44 @@ export async function POST(request: NextRequest) {
               }
             })
 
+            // Only add ticker entries for tasks with status "done"
+            const doneTasks = tasksForDay.filter((task: any) => task.status === 'done')
+            let ticker: any[] = []
+            
+            if (doneTasks.length > 0) {
+              // Calculate profit and prize from task completions for this date
+              const aggregated = await aggregateCompleterEarningsFromTaskList(taskList.id, user.id, year, dateISO)
+              
+              // Create ticker array with profit and prize for each done task, ensuring unique taskIds
+              const tickerEntries = doneTasks.map((task: any) => {
+                const taskId = task.id || task.localeKey || task.name || undefined
+                return {
+                  listId: taskList.id,
+                  taskId: taskId,
+                  profit: aggregated.profit || 0,
+                  prize: aggregated.prize || 0
+                }
+              })
+              
+              // Ensure unique taskIds (remove duplicates, keeping the last one)
+              const taskIdMap = new Map()
+              tickerEntries.forEach((entry: any) => {
+                if (entry.taskId) {
+                  taskIdMap.set(entry.taskId, entry)
+                } else {
+                  // If no taskId, keep it (shouldn't happen for done tasks, but for safety)
+                  taskIdMap.set(`no-id-${taskIdMap.size}`, entry)
+                }
+              })
+              ticker = Array.from(taskIdMap.values())
+            }
+
             await prisma.day.create({
               data: {
                 userId: user.id,
                 date: dateISO,
                 tasks: tasksForDay as any,
+                ticker: ticker as any,
                 week: weekNumber,
                 month: month,
                 quarter: quarter,
@@ -1209,7 +1309,7 @@ export async function POST(request: NextRequest) {
             }
           })
 
-          // If status is "open" or "ignored", remove the task from day.tasks
+          // If status is "open" or "ignored", remove the task from day.tasks and remove ticker entries
           if (newStatus === 'open' || newStatus === 'ignored') {
             if (existingDay) {
               const existingTasks = Array.isArray(existingDay.tasks) ? existingDay.tasks : []
@@ -1233,10 +1333,23 @@ export async function POST(request: NextRequest) {
               const quarter = Math.ceil(month / 3)
               const semester = month <= 6 ? 1 : 2
 
+              // Remove all ticker entries for this taskId
+              const existingTickers = Array.isArray(existingDay.ticker) ? existingDay.ticker : []
+              const taskId = baseTask.id || baseTask.localeKey || baseTask.name || undefined
+              const updatedTickers = existingTickers.filter((t: any) => {
+                // Remove if taskId matches, or if no taskId in ticker and we're removing by listId (backward compatibility)
+                if (taskId) {
+                  return t.taskId !== taskId
+                }
+                // If no taskId, remove all entries for this listId (backward compatibility)
+                return t.listId !== taskListToUpdate.id
+              })
+
               await prisma.day.update({
                 where: { id: existingDay.id },
                 data: {
                   tasks: updatedTasks as any,
+                  ticker: updatedTickers as any,
                   week: weekNumber,
                   month: month,
                   quarter: quarter,
@@ -1321,10 +1434,33 @@ export async function POST(request: NextRequest) {
                 updatedTasks = [...existingTasks, taskForDay]
               }
 
+              // Only add ticker entry if status is "done"
+              const existingTickers = Array.isArray(existingDay.ticker) ? existingDay.ticker : []
+              let updatedTickers = existingTickers
+              
+              if (currentStatus === 'done') {
+                // Calculate profit and prize from task completions for this date
+                const aggregated = await aggregateCompleterEarningsFromTaskList(taskListToUpdate.id, user.id, year, dateISO)
+                
+                // Push new ticker entry with taskId, ensuring uniqueness
+                const taskId = taskForDay.id || taskForDay.localeKey || taskForDay.name || undefined
+                const newTicker = {
+                  listId: taskListToUpdate.id,
+                  taskId: taskId,
+                  profit: aggregated.profit || 0,
+                  prize: aggregated.prize || 0
+                }
+                
+                // Remove existing ticker entry with the same taskId to ensure uniqueness
+                const filteredTickers = existingTickers.filter((t: any) => !t.taskId || t.taskId !== taskId)
+                updatedTickers = [...filteredTickers, newTicker]
+              }
+
               await prisma.day.update({
                 where: { id: existingDay.id },
                 data: {
                   tasks: updatedTasks as any,
+                  ticker: updatedTickers as any,
                   week: weekNumber,
                   month: month,
                   quarter: quarter,
@@ -1332,12 +1468,30 @@ export async function POST(request: NextRequest) {
                 }
               })
             } else {
+              // Only add ticker entry if status is "done"
+              let ticker: any[] = []
+              
+              if (currentStatus === 'done') {
+                // Calculate profit and prize from task completions for this date
+                const aggregated = await aggregateCompleterEarningsFromTaskList(taskListToUpdate.id, user.id, year, dateISO)
+                
+                // Create ticker array with profit and prize (taskId is already unique for new day)
+                const taskId = taskForDay.id || taskForDay.localeKey || taskForDay.name || undefined
+                ticker = [{
+                  listId: taskListToUpdate.id,
+                  taskId: taskId,
+                  profit: aggregated.profit || 0,
+                  prize: aggregated.prize || 0
+                }]
+              }
+
               // Create new day with the task
               await prisma.day.create({
                 data: {
                   userId: user.id,
                   date: dateISO,
                   tasks: [taskForDay] as any,
+                  ticker: ticker as any,
                   week: weekNumber,
                   month: month,
                   quarter: quarter,

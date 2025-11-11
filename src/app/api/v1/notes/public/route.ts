@@ -89,8 +89,13 @@ export async function GET(request: NextRequest) {
     }
 
     // Fetch notes with user profile info
+    // Filter out notes without users to avoid null user errors
     const notes = await prisma.note.findMany({
-      where: whereClause,
+      where: {
+        ...whereClause,
+        // Ensure userId exists (not null) - in MongoDB, we can't use { not: null }, 
+        // but we can ensure it's in the whereClause which already filters by userId
+      },
       orderBy: {
         createdAt: 'desc'
       },
@@ -115,10 +120,7 @@ export async function GET(request: NextRequest) {
               include: {
                 profiles: {
                   select: {
-                    userName: true,
-                    profilePicture: true,
-                    firstName: true,
-                    lastName: true
+                    data: true
                   }
                 }
               }
@@ -134,7 +136,10 @@ export async function GET(request: NextRequest) {
           }
         },
         user: {
-          include: {
+          select: {
+            id: true,
+            friends: true,
+            closeFriends: true,
             profiles: {
               select: {
                 data: true
@@ -180,7 +185,10 @@ export async function GET(request: NextRequest) {
     }
 
     // Filter out fields if not visible based on relationship
-    const cleanedNotes = await Promise.all(notesWithSortedComments.map(async (note) => {
+    // Also filter out notes without valid users
+    const cleanedNotes = await Promise.all(notesWithSortedComments
+      .filter((note: any) => note.user !== null) // Filter out notes without users
+      .map(async (note) => {
       // Transform profiles[0] to profile for comments
       const commentsWithProfile = note.comments?.map((comment: any) => {
         const commentProfile = comment.user.profiles?.[0]
@@ -198,15 +206,15 @@ export async function GET(request: NextRequest) {
           profilePictureVisibility: commentProfileData.profilePicture?.visibility ? 'PUBLIC' : 'PRIVATE'
         }
         return {
-          ...comment,
-          user: {
-            ...comment.user,
+        ...comment,
+        user: {
+          ...comment.user,
             profile: commentProfile ? filterProfileFields(commentProfileForFiltering, {
               isOwner: false,
               isFriend: false,
               isCloseFriend: false
             }) : null
-          }
+        }
         }
       }) || []
 

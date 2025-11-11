@@ -128,12 +128,9 @@ export async function GET(request: NextRequest) {
             user: {
               select: {
                 id: true,
-                profile: {
+                profiles: {
                   select: {
-                    userName: true,
-                    profilePicture: true,
-                    firstName: true,
-                    lastName: true
+                    data: true
                   }
                 }
               }
@@ -151,7 +148,7 @@ export async function GET(request: NextRequest) {
       }
     })
 
-    // Sort comments by likes, then by date
+    // Sort comments by likes, then by date, and transform profiles[0] to profile
     const templatesWithSortedComments = templates.map(template => {
       if (template.comments && Array.isArray(template.comments) && template.comments.length > 0) {
         const sortedComments = [...template.comments].sort((a: any, b: any) => {
@@ -159,7 +156,25 @@ export async function GET(request: NextRequest) {
           if (likeDiff !== 0) return likeDiff
           return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         })
-        return { ...template, comments: sortedComments }
+        // Transform profiles[0] to profile for comments and extract data values
+        const commentsWithProfile = sortedComments.map((comment: any) => {
+          const profileData = comment.user.profiles?.[0]?.data
+          const profile = profileData ? {
+            userName: profileData.username?.value || null,
+            profilePicture: profileData.profilePicture?.value || null,
+            firstName: profileData.firstName?.value || null,
+            lastName: profileData.lastName?.value || null
+          } : null
+          
+          return {
+            ...comment,
+            user: {
+              ...comment.user,
+              profile
+            }
+          }
+        })
+        return { ...template, comments: commentsWithProfile }
       }
       return template
     })
@@ -203,7 +218,7 @@ export async function GET(request: NextRequest) {
           where: { id: ownerId },
           select: {
             id: true,
-            profile: {
+            profiles: {
               select: {
                 data: true
               }
@@ -224,15 +239,6 @@ export async function GET(request: NextRequest) {
               }
             }
           } else {
-            const profile = user.profiles?.[0]
-            if (!profile) {
-              cleanedUser = {
-                ...user,
-                profile: {
-                  userName: null
-                }
-              }
-            } else {
             // Check relationship between current user and template owner
             const ownerIdStr = user.id.toString()
             const isOwner = userId && currentUserIdStr === ownerIdStr

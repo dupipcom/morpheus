@@ -56,7 +56,7 @@ model Day {
   semester      Int?
   tasks         Task[]
   mood          Mood?
-  ticker        Ticker?
+  ticker        Ticker[]
   analysis      Json?
   visibility    Visibility @default(PRIVATE)
   fieldVisibility DayVisibility?
@@ -205,6 +205,7 @@ model Profile {
   updatedAt     DateTime  @updatedAt
   userId        String    @unique @db.ObjectId
   user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  username      String?   @unique
   visibility    Visibility @default(PUBLIC)
   data          ProfileData?
   personIds     String[]  @default([]) @db.ObjectId
@@ -315,6 +316,10 @@ model User {
   lastLogin     DateTime?
   usedBudget    Float?    @default(0)
   remainingBudget Float?  @default(100)
+  stash         Float?    @default(0)
+  profit        Float?    @default(0)
+  equity        Float?    @default(0)
+  availableBalance Float? @default(0)
   persons       Person[]
   things        Thing[]
   events        Event[]
@@ -453,6 +458,8 @@ type ThingReference {
 }
 
 type Ticker {
+  listId String?
+  taskId String?
   profit Float?
   prize Float?
 }

@@ -18,6 +18,14 @@ interface ProfileData {
   publicCharts?: any
   templates?: any[]
   taskLists?: any[]
+  data?: {
+    firstName?: { value?: string; visibility?: boolean }
+    lastName?: { value?: string; visibility?: boolean }
+    username?: { value?: string; visibility?: boolean }
+    bio?: { value?: string; visibility?: boolean }
+    profilePicture?: { value?: string; visibility?: boolean }
+    charts?: { value?: any; visibility?: boolean }
+  }
 }
 
 interface ProfileViewProps {
@@ -109,14 +117,24 @@ export const ProfileView = ({
     fetchProfile()
   }, [userName])
 
-  const fullName = [profile.firstName, profile.lastName].filter(Boolean).join(' ')
-  const hasAnyPublicData = profile.firstName || profile.lastName || profile.userName || profile.bio || profile.profilePicture
+  // Extract profile data - API returns flat structure, but also support nested structure as fallback
+  const profileData = profile.data || {}
+  // Check flat structure first (what API returns), then nested structure as fallback
+  const firstName = profile.firstName || profileData.firstName?.value
+  const lastName = profile.lastName || profileData.lastName?.value
+  const profileUserName = profile.userName || profileData.username?.value
+  const bio = profile.bio || profileData.bio?.value
+  const profilePicture = profile.profilePicture || profileData.profilePicture?.value
+  const publicCharts = profile.publicCharts || profileData.charts?.value
+
+  const fullName = [firstName, lastName].filter(Boolean).join(' ')
+  const hasAnyPublicData = firstName || lastName || profileUserName || bio || profilePicture
   const isOwnProfile = currentUserUsername === userName
-  const canAddFriend = !isOwnProfile && profile.userName
+  const canAddFriend = !isOwnProfile && profileUserName
   const canEditProfile = isOwnProfile
 
   // Display name logic: prefer fullName, then userName (even if not visible), then fallback
-  const displayName = fullName || profile.userName || 'Anonymous User'
+  const displayName = fullName || profileUserName || 'Anonymous User'
 
   return (
     <main className="p-2 flex bg-background overflow-x-hidden">
@@ -126,9 +144,9 @@ export const ProfileView = ({
           <CardContent>
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                {profile.profilePicture && (
+                {profilePicture && (
                   <img
-                    src={profile.profilePicture}
+                    src={profilePicture}
                     alt="Profile"
                     className="w-20 h-20 rounded-full object-cover mx-auto sm:mx-0"
                   />
@@ -137,18 +155,18 @@ export const ProfileView = ({
                   <h1 className="text-2xl font-bold break-words">
                     {displayName}
                   </h1>
-                  {profile.userName && (
-                    <p className="text-muted-foreground break-words">@{profile.userName}</p>
+                  {profileUserName && (
+                    <p className="text-muted-foreground break-words">@{profileUserName}</p>
                   )}
-                  {profile.bio && (
-                    <p className="mt-2 text-sm break-words">{profile.bio}</p>
+                  {bio && (
+                    <p className="mt-2 text-sm break-words">{bio}</p>
                   )}
                 </div>
               </div>
-              {(canAddFriend || canEditProfile) && profile.userName && (
+              {(canAddFriend || canEditProfile) && profileUserName && (
                 <div className="flex justify-center md:justify-end">
                   <AddFriendButtonOrSignIn 
-                    targetUserName={profile.userName} 
+                    targetUserName={profileUserName} 
                     isLoggedIn={isLoggedIn}
                     currentUserName={currentUserUsername || undefined}
                   />
@@ -185,9 +203,9 @@ export const ProfileView = ({
             </div>
             
             <TabsContent value="analytics" className="mt-4 min-w-0">
-              {profile.publicCharts ? (
+              {publicCharts ? (
                 <div className="w-full min-w-0 overflow-x-auto">
-                  <PublicChartsView chartsData={profile.publicCharts} />
+                  <PublicChartsView chartsData={publicCharts} />
                 </div>
               ) : (
                 <div className="text-center text-muted-foreground py-8">
@@ -262,7 +280,7 @@ export const ProfileView = ({
         </div>
 
         {/* No public data message */}
-        {!hasAnyPublicData && !profile.publicCharts && (
+        {!hasAnyPublicData && !publicCharts && (
           <Card>
             <CardContent className="pt-6">
               <div className="text-center text-muted-foreground">

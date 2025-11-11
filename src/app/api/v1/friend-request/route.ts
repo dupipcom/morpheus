@@ -37,13 +37,10 @@ export async function POST(req: NextRequest) {
       })
     }
 
-    // Check if target user exists by username
-    const targetProfile = await prisma.profile.findFirst({
+    // Check if target user exists by username using root-level username field
+    const targetProfile = await prisma.profile.findUnique({
       where: {
-        data: {
-          path: ['username', 'value'],
-          equals: targetUserName
-        }
+        username: targetUserName
       }
     })
     const targetUser = targetProfile ? await prisma.user.findUnique({
@@ -55,7 +52,9 @@ export async function POST(req: NextRequest) {
     }
 
     // Check if trying to add self as friend
-    if (currentUser.profiles?.[0]?.userName === targetUserName) {
+    const currentUserProfileData = currentUser.profiles?.[0]?.data || {}
+    const currentUserName = currentUserProfileData.username?.value || currentUser.profiles?.[0]?.username
+    if (currentUserName === targetUserName) {
       return Response.json({ error: 'friendRequestSelfError' }, { status: 400 })
     }
 

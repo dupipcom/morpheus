@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
           } as any
         },
         include: {
-          profile: true
+          profiles: true
         }
       })
     }
@@ -116,8 +116,25 @@ export async function GET(req: NextRequest) {
       const isCloseFriend = currentUserCloseFriends.includes(requestUserIdStr) && requestUserCloseFriends.includes(currentUserIdStr)
       const isFriend = !isCloseFriend && currentUserFriends.includes(requestUserIdStr) && requestUserFriends.includes(currentUserIdStr)
 
+      // Extract profile data from nested structure
+      const profileData = profile.data || {}
+      const profileForFiltering = {
+        userName: profileData.username?.value || null,
+        firstName: profileData.firstName?.value || null,
+        lastName: profileData.lastName?.value || null,
+        bio: profileData.bio?.value || null,
+        profilePicture: profileData.profilePicture?.value || null,
+        publicCharts: profileData.charts?.value || null,
+        firstNameVisibility: profileData.firstName?.visibility ? 'PUBLIC' : 'PRIVATE',
+        lastNameVisibility: profileData.lastName?.visibility ? 'PUBLIC' : 'PRIVATE',
+        userNameVisibility: profileData.username?.visibility ? 'PUBLIC' : 'PRIVATE',
+        bioVisibility: profileData.bio?.visibility ? 'PUBLIC' : 'PRIVATE',
+        profilePictureVisibility: profileData.profilePicture?.visibility ? 'PUBLIC' : 'PRIVATE',
+        publicChartsVisibility: profileData.charts?.visibility ? 'PUBLIC' : 'PRIVATE'
+      }
+
       // Filter profile fields based on visibility and relationship
-      const filteredProfile = filterProfileFields(profile, {
+      const filteredProfile = filterProfileFields(profileForFiltering, {
         isOwner: false,
         isFriend,
         isCloseFriend

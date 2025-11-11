@@ -54,12 +54,9 @@ export async function PUT(
         user: {
           select: {
             id: true,
-            profile: {
+            profiles: {
               select: {
-                userName: true,
-                profilePicture: true,
-                firstName: true,
-                lastName: true
+                data: true
               }
             }
           }
@@ -72,7 +69,22 @@ export async function PUT(
       }
     })
 
-    return NextResponse.json({ comment: updatedComment })
+    // Transform profile data from nested structure
+    const profileData = updatedComment.user.profiles?.[0]?.data || {}
+    const transformedComment = {
+      ...updatedComment,
+      user: {
+        ...updatedComment.user,
+        profile: {
+          userName: profileData.username?.value || null,
+          profilePicture: profileData.profilePicture?.value || null,
+          firstName: profileData.firstName?.value || null,
+          lastName: profileData.lastName?.value || null
+        }
+      }
+    }
+
+    return NextResponse.json({ comment: transformedComment })
   } catch (error) {
     console.error('Error updating comment:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

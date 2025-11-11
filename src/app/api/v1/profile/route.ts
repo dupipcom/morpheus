@@ -31,6 +31,7 @@ export async function GET(req: NextRequest) {
         await prisma.profile.create({
           data: {
             userId: user.id,
+            username: clerkUser?.username || null, // Set root level for efficient queries
             data: {
               username: {
                 value: clerkUser?.username || null,
@@ -72,6 +73,7 @@ export async function GET(req: NextRequest) {
         await prisma.profile.update({
           where: { userId: user.id },
           data: {
+            username: clerkUser.username, // Sync to root level for efficient queries
             data: {
               ...existingData,
               username: {
@@ -192,6 +194,7 @@ export async function POST(req: NextRequest) {
       profile = await prisma.profile.update({
         where: { userId: user.id },
         data: {
+          username: clerkUsername, // Sync to root level for efficient queries
           data: {
             ...existingProfileData,
             firstName: {
@@ -226,6 +229,7 @@ export async function POST(req: NextRequest) {
       profile = await prisma.profile.create({
         data: {
           userId: user.id,
+          username: clerkUsername, // Set root level for efficient queries
           data: {
             firstName: {
               value: data.firstName,
