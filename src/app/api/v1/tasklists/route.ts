@@ -6,24 +6,6 @@ import { parseCookies } from '@/lib/localeUtils'
 import { getBestLocale } from '@/lib/i18n'
 import { recalculateUserBudget } from '@/lib/budgetUtils'
 import { calculateTaskEarnings, calculateBudgetConsumption, initializeRemainingBudget, getPerCompleterPrize, getPerCompleterProfit, getProfitPerTask, calculateStashAndProfitDeltas, calculateUpdatedUserValues } from '@/lib/earningsUtils'
-import { getWeekNumber } from '@/app/helpers'
-import { randomBytes } from 'crypto'
-import { Productivity, ListProductivity } from '@/lib/types'
-
-// Helper function to generate a unique MongoDB ObjectId
-function generateObjectId(): string {
-  // Generate a 24-character hex string (MongoDB ObjectId format)
-  return randomBytes(12).toString('hex')
-}
-
-// Helper function to ensure all tasks have unique ObjectIds
-// When copying from template, always generate new IDs to ensure uniqueness
-function ensureUniqueTaskIds(tasks: any[], fromTemplate: boolean = false): any[] {
-  return tasks.map((task: any) => ({
-    ...task,
-    id: fromTemplate ? generateObjectId() : (task.id || generateObjectId()) // Always generate new ID when from template, otherwise only if missing
-  }))
-}
 
 // Helper function to get user's locale from request
 function getUserLocale(request: NextRequest): string {
@@ -78,9 +60,9 @@ export async function GET(request: NextRequest) {
     // Build query for TaskLists where the user participates as owner, collaborator, or manager
     const membershipClause = {
       OR: [
-        { users: { some: { userId: user.id, role: 'OWNER' } } },
-        { users: { some: { userId: user.id, role: 'COLLABORATOR' } } },
-        { users: { some: { userId: user.id, role: 'MANAGER' } } }
+        { owners: { has: user.id } },
+        { collaborators: { has: user.id } },
+        { managers: { has: user.id } }
       ]
     }
 
@@ -93,7 +75,7 @@ export async function GET(request: NextRequest) {
       const translations = loadTranslationsSync(userLocale)
 
       const ensureDefault = async (r: string) => {
-        const existing = await prisma.list.findFirst({ where: { users: { some: { userId: ownerUser.id, role: 'OWNER' } }, role: r } })
+        const existing = await prisma.taskList.findFirst({ where: { owners: { has: ownerUser.id }, role: r } })
         if (!existing) {
           const tpl = await prisma.template.findFirst({ where: { role: r } })
 
@@ -111,16 +93,14 @@ export async function GET(request: NextRequest) {
           let translatedTasks = (tpl?.tasks as any) || []
           if (translatedTasks.length > 0) {
             translatedTasks = translateTemplateTasks(translatedTasks, translations)
-            // Ensure all tasks have unique ObjectIds when copying from template
-            translatedTasks = ensureUniqueTaskIds(translatedTasks, true)
           }
 
-          await prisma.list.create({
+          await prisma.taskList.create({
             data: {
               role: r,
               name: localizedName,
               visibility: 'PRIVATE',
-              users: [{ userId: ownerUser.id, role: 'OWNER' }],
+              owners: [ownerUser.id],
               templateId: tpl?.id || null,
               templateTasks: translatedTasks,
               tasks: translatedTasks,
@@ -134,7 +114,7 @@ export async function GET(request: NextRequest) {
       await ensureDefault('weekly.default')
     }
 
-    const taskLists = await prisma.list?.findMany({
+    const taskLists = await prisma.taskList?.findMany({
       where: whereClause,
       include: {
         template: true
@@ -149,12 +129,10 @@ export async function GET(request: NextRequest) {
       const collaboratorEarnings: Record<string, number> = {}
       
       // Only calculate if there are collaborators
-      const users = (taskList.users as any[]) || []
-      const collaborators = users.filter((u: any) => u.role === 'COLLABORATOR' || u.role === 'MANAGER').map((u: any) => u.userId)
-      const owners = users.filter((u: any) => u.role === 'OWNER').map((u: any) => u.userId)
-      if (collaborators.length > 0) {
+      if (Array.isArray(taskList.collaborators) && taskList.collaborators.length > 0) {
         const completedTasks = (taskList.completedTasks as any) || {}
-        const allCollaborators = [...owners, ...collaborators]
+        const allOwners = taskList.owners || []
+        const allCollaborators = [...allOwners, ...taskList.collaborators]
         
         // Get user profiles to map userId to userName
         const userProfiles = await prisma.user.findMany({
@@ -162,14 +140,13 @@ export async function GET(request: NextRequest) {
             id: { in: allCollaborators }
           },
           include: {
-            profiles: true
+            profile: true
           }
         })
         
         const userIdToUserName: Record<string, string> = {}
         userProfiles.forEach(u => {
-          const profile = Array.isArray(u.profiles) && u.profiles.length > 0 ? u.profiles[0] : null
-          userIdToUserName[u.id] = profile?.data?.username?.value || u.id
+          userIdToUserName[u.id] = u.profile?.userName || u.id
         })
         
         // Calculate profit per task using earningsUtils formula
@@ -249,153 +226,11 @@ export async function POST(request: NextRequest) {
 
     // Find user by userId
     const user = await prisma.user.findUnique({
-      where: { userId: userId },
-      select: { id: true, availableBalance: true, stash: true, equity: true }
+      where: { userId: userId }
     })
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
-    }
-
-    // Helper function to get current user balance values
-    const getUserBalanceValues = () => {
-      const userBalance = typeof user.availableBalance === 'number' 
-        ? user.availableBalance 
-        : (typeof user.availableBalance === 'string' ? parseFloat(user.availableBalance || '0') : 0)
-      const userStash = typeof user.stash === 'number' 
-        ? user.stash 
-        : (typeof user.stash === 'string' ? parseFloat(user.stash || '0') : 0)
-      const userEquity = typeof user.equity === 'number' 
-        ? user.equity 
-        : (typeof user.equity === 'string' ? parseFloat(user.equity || '0') : 0)
-      return { userBalance, userStash, userEquity }
-    }
-
-    // Helper function to calculate productivity for a list
-    // totalTasks: count from list tasks (all tasks in the list)
-    // completedTasks: count from day tasks (only tasks stored in day.tasks that are done)
-    const calculateListProductivity = (listId: string, totalTasksFromList: number, dayTasks: any[]): ListProductivity => {
-      const totalTasks = totalTasksFromList || 1
-      const completedTasks = dayTasks.filter((t: any) => t.status === 'done').length
-      const percentage = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0
-      return {
-        totalTasks,
-        completedTasks,
-        percentage
-      }
-    }
-
-    // Helper function to calculate overall progress from productivity object
-    const calculateOverallProgress = (productivity: Productivity | null | undefined): number => {
-      if (!productivity || typeof productivity !== 'object') return 0
-      
-      const listIds = Object.keys(productivity)
-      if (listIds.length === 0) return 0
-      
-      const totalPercentage = listIds.reduce((sum, listId) => {
-        const listProd = productivity[listId]
-        if (listProd && typeof listProd === 'object' && typeof listProd.percentage === 'number') {
-          return sum + listProd.percentage
-        }
-        return sum
-      }, 0)
-      
-      return totalPercentage / listIds.length
-    }
-
-    // Helper function to get task key for matching
-    const getTaskKey = (t: any) => (t?.id || t?.localeKey || (typeof t?.name === 'string' ? t.name.toLowerCase() : '')) as string
-
-    // Helper function to update productivity for a list and recalculate overall progress
-    // Uses dayTasks (tasks stored in day.tasks) filtered by matching tasks from the list
-    const updateProductivityForList = (
-      existingProductivity: Productivity | null | undefined,
-      listId: string,
-      listTasks: any[], // Tasks from the list (for total count and matching)
-      dayTasks: any[] // Tasks stored in day.tasks for this day
-    ): { productivity: Productivity; progress: number } => {
-      // Total tasks count from the list
-      const totalTasksFromList = listTasks.length || 1
-      
-      // Create a set of task keys from the list to match against day tasks
-      const listTaskKeys = new Set(
-        listTasks.map((t: any) => {
-          const key = getTaskKey(t)
-          return typeof key === 'string' ? key.toLowerCase() : key
-        })
-      )
-      
-      // Filter day tasks to only include those that match tasks from this list
-      const tasksForThisList = dayTasks.filter((dayTask: any) => {
-        const dayTaskKey = getTaskKey(dayTask)
-        const dayTaskKeyLower = typeof dayTaskKey === 'string' ? dayTaskKey.toLowerCase() : dayTaskKey
-        return listTaskKeys.has(dayTaskKeyLower)
-      })
-      
-      // Calculate productivity: totalTasks from list, completedTasks from day tasks
-      const listProductivity = calculateListProductivity(listId, totalTasksFromList, tasksForThisList)
-      const updatedProductivity: Productivity = {
-        ...(existingProductivity && typeof existingProductivity === 'object' ? existingProductivity : {}),
-        [listId]: listProductivity
-      }
-      const overallProgress = calculateOverallProgress(updatedProductivity)
-      return { productivity: updatedProductivity, progress: overallProgress }
-    }
-
-    // Helper function to aggregate completer earnings from taskList collection, filtering by logged-in user
-    const aggregateCompleterEarningsFromTaskList = async (taskListId: string, userId: string, year: number, dateISO: string) => {
-      try {
-        const taskList = await prisma.list.findUnique({ where: { id: taskListId } })
-        if (!taskList) return { earnings: 0, prize: 0, profit: 0 }
-
-        const completedTasks = (taskList.completedTasks as any) || {}
-        const yearData = completedTasks[year]
-        if (!yearData) return { earnings: 0, prize: 0, profit: 0 }
-
-        const dateBucket = yearData[dateISO]
-        if (!dateBucket) return { earnings: 0, prize: 0, profit: 0 }
-
-        // Support both old structure (array) and new structure (openTasks/closedTasks)
-        let tasksForDate: any[] = []
-        if (Array.isArray(dateBucket)) {
-          tasksForDate = dateBucket
-        } else if (dateBucket.openTasks || dateBucket.closedTasks) {
-          tasksForDate = [
-            ...(Array.isArray(dateBucket.openTasks) ? dateBucket.openTasks : []),
-            ...(Array.isArray(dateBucket.closedTasks) ? dateBucket.closedTasks : [])
-          ]
-        }
-
-        let totalEarnings = 0
-        let totalPrize = 0
-        let totalProfit = 0
-
-        // Filter completers by logged-in user and sum their earnings/prize/profit
-        for (const task of tasksForDate) {
-          if (Array.isArray(task.completers)) {
-            for (const completer of task.completers) {
-              // Only count completers for the logged-in user
-              if (completer.id === userId) {
-                const completerEarnings = typeof completer.earnings === 'number' 
-                  ? completer.earnings 
-                  : (typeof completer.earnings === 'string' ? parseFloat(completer.earnings || '0') : 0)
-                const completerPrize = typeof completer.prize === 'number' 
-                  ? completer.prize 
-                  : (typeof completer.prize === 'string' ? parseFloat(completer.prize || '0') : 0)
-                
-                totalEarnings += completerEarnings + completerPrize
-                totalPrize += completerPrize
-                totalProfit += completerEarnings
-              }
-            }
-          }
-        }
-
-        return { earnings: totalEarnings, prize: totalPrize, profit: totalProfit }
-      } catch (error) {
-        console.error('Error aggregating completer earnings from taskList:', error)
-        return { earnings: 0, prize: 0, profit: 0 }
-      }
     }
 
     // Get user's locale and translations
@@ -406,13 +241,6 @@ export async function POST(request: NextRequest) {
     let translatedTasks = tasks
     if (Array.isArray(tasks) && tasks.length > 0) {
       translatedTasks = translateTemplateTasks(tasks, translations)
-      // Ensure all tasks have unique ObjectIds when copying from template
-      if (templateId) {
-        translatedTasks = ensureUniqueTaskIds(translatedTasks, true)
-      } else {
-        // Even if not from template, ensure all tasks have IDs (generate for missing ones)
-        translatedTasks = ensureUniqueTaskIds(translatedTasks, false)
-      }
     }
 
     // Get localized name if not provided and creating a default list
@@ -427,9 +255,9 @@ export async function POST(request: NextRequest) {
 
     // Delete a specific TaskList by ID
     if (body.deleteTaskList && body.taskListId) {
-      const existing = await prisma.list.findUnique({ where: { id: body.taskListId } })
+      const existing = await prisma.taskList.findUnique({ where: { id: body.taskListId } })
       if (!existing) return NextResponse.json({ error: 'TaskList not found' }, { status: 404 })
-      await prisma.list.delete({ where: { id: body.taskListId } })
+      await prisma.taskList.delete({ where: { id: body.taskListId } })
       
       // Recalculate user's budget after deleting a list
       await recalculateUserBudget(user.id)
@@ -439,7 +267,7 @@ export async function POST(request: NextRequest) {
 
     // Lightweight path: record completions into completedTasks and Task.completers
     if (body.recordCompletions && body.taskListId && (body.dayActions?.length || body.weekActions?.length || Array.isArray(body.justUncompletedNames))) {
-      const taskList = await prisma.list.findUnique({ where: { id: body.taskListId } })
+      const taskList = await prisma.taskList.findUnique({ where: { id: body.taskListId } })
       if (!taskList) {
         return NextResponse.json({ error: 'TaskList not found' }, { status: 404 })
       }
@@ -475,7 +303,7 @@ export async function POST(request: NextRequest) {
 
 
       const allowedKeys = new Set([
-        'id', 'name', 'categories', 'area', 'status', 'cadence', 'times', 'count', 'localeKey', 'contacts', 'things', 'favorite', 'isEphemeral', 'createdAt', 'completers'
+        'id', 'name', 'categories', 'area', 'status', 'cadence', 'times', 'count', 'localeKey', 'contacts', 'things', 'favorite', 'isEphemeral', 'createdAt', 'completers', 'taskStatus'
       ])
 
       const sanitizeTask = (task: any) => {
@@ -502,8 +330,8 @@ export async function POST(request: NextRequest) {
       
       if (Array.isArray(dateBucket)) {
         // Legacy structure: migrate to new structure
-        openTasks = dateBucket.filter((t: any) => t.status !== 'done')
-        closedTasks = dateBucket.filter((t: any) => t.status === 'done')
+        openTasks = dateBucket.filter((t: any) => t.status !== 'Done')
+        closedTasks = dateBucket.filter((t: any) => t.status === 'Done')
       } else if (dateBucket.openTasks || dateBucket.closedTasks) {
         // New structure
         openTasks = Array.isArray(dateBucket.openTasks) ? [...dateBucket.openTasks] : []
@@ -516,7 +344,7 @@ export async function POST(request: NextRequest) {
       // If first completion, copy tasks from taskList.tasks to openTasks
       if (isFirstCompletion) {
         const blueprintTasks: any[] = Array.isArray(taskList.tasks) ? (taskList.tasks as any[]) : (Array.isArray((taskList as any).templateTasks) ? ((taskList as any).templateTasks as any[]) : [])
-        openTasks = blueprintTasks.map((t: any) => sanitizeTask({ ...t, count: 0, status: 'open' }))
+        openTasks = blueprintTasks.map((t: any) => sanitizeTask({ ...t, count: 0, status: 'Open' }))
       }
 
       // Helpers to match tasks reliably even with localized names
@@ -543,7 +371,7 @@ export async function POST(request: NextRequest) {
           byKey[key] = sanitizeTask({
             ...incoming,
             count: incoming.count || 0,
-            status: incoming.status || 'open',
+            status: incoming.status || 'Open',
             completers: []
           })
         }
@@ -573,7 +401,7 @@ export async function POST(request: NextRequest) {
           delta = 1
         } else {
           // Process all incoming tasks
-          newCount = Number(incoming?.count || (incoming.status === 'done' ? 1 : 0))
+          newCount = Number(incoming?.count || (incoming.status === 'Done' ? 1 : 0))
           delta = Math.max(0, newCount - prevCompletersLen)
         }
         
@@ -597,8 +425,8 @@ export async function POST(request: NextRequest) {
         const taskRecord = sanitizeTask({
           ...existing,
           ...incoming,
-          // Preserve the status from incoming task (may be 'open' for partial completions or 'done' for full)
-          status: incoming.status || 'done',
+          // Preserve the status from incoming task (may be 'Open' for partial completions or 'Done' for full)
+          status: incoming.status || 'Done',
           completers: [...baseCompleters, ...appended],
           count: newCount
         })
@@ -618,7 +446,7 @@ export async function POST(request: NextRequest) {
             if (comps.length > 0) comps.pop()
             // Remove completedOn when reopening task
             const { completedOn, ...taskWithoutCompletedOn } = t
-            const updatedTask = { ...taskWithoutCompletedOn, status: 'open', completers: comps, count: comps.length }
+            const updatedTask = { ...taskWithoutCompletedOn, status: 'Open', completers: comps, count: comps.length }
             // Move from closedTasks to openTasks
             closedTasks.splice(i, 1)
             const key = getKey(updatedTask)
@@ -635,7 +463,7 @@ export async function POST(request: NextRequest) {
           if (comps.length > 0) comps.pop()
           // Remove completedOn when reopening task
           const { completedOn, ...taskWithoutCompletedOn } = t
-          const updatedTask = { ...taskWithoutCompletedOn, status: 'open', completers: comps, count: comps.length }
+          const updatedTask = { ...taskWithoutCompletedOn, status: 'Open', completers: comps, count: comps.length }
           const k = getKey(updatedTask)
           if (k) byKey[k] = updatedTask
         }
@@ -659,8 +487,8 @@ export async function POST(request: NextRequest) {
         const taskCount = (task as any).count || 0
         const taskTimes = (task as any).times || 1
         
-        // Task is done if status is 'done' or count >= times
-        if (taskStatus === 'done' || taskCount >= taskTimes) {
+        // Task is done if status is 'Done' or count >= times
+        if (taskStatus === 'Done' || taskCount >= taskTimes) {
           // Check if already in closedTasks
           const key = getKey(task as any)
           const alreadyClosed = finalClosedTasks.some((t: any) => getKey(t) === key)
@@ -697,7 +525,7 @@ export async function POST(request: NextRequest) {
 
       // Don't update taskList.tasks - all updates go to completedTasks[year][date].openTasks/closedTasks
 
-      // Update status in ephemeral tasks to keep them in sync
+      // Update taskStatus in ephemeral tasks to keep them in sync
       let updatedEphemeralTasks = (taskList as any).ephemeralTasks || { open: [], closed: [] }
       let ephemeralOpen = Array.isArray(updatedEphemeralTasks.open) ? updatedEphemeralTasks.open : []
       let ephemeralClosed = Array.isArray(updatedEphemeralTasks.closed) ? updatedEphemeralTasks.closed : []
@@ -707,7 +535,7 @@ export async function POST(request: NextRequest) {
         const incomingTask = incomingTasks.find((t: any) => getKey(t) === key)
         if (incomingTask) {
           const updated = { ...task }
-          if (incomingTask.status) updated.status = incomingTask.status
+          if (incomingTask.taskStatus) updated.taskStatus = incomingTask.taskStatus
           if (incomingTask.count !== undefined) updated.count = incomingTask.count
           if (incomingTask.status) updated.status = incomingTask.status
           return updated
@@ -720,7 +548,7 @@ export async function POST(request: NextRequest) {
         const incomingTask = incomingTasks.find((t: any) => getKey(t) === key)
         if (incomingTask) {
           const updated = { ...task }
-          if (incomingTask.status) updated.status = incomingTask.status
+          if (incomingTask.taskStatus) updated.taskStatus = incomingTask.taskStatus
           if (incomingTask.count !== undefined) updated.count = incomingTask.count
           if (incomingTask.status) updated.status = incomingTask.status
           return updated
@@ -745,7 +573,7 @@ export async function POST(request: NextRequest) {
         newRemainingBudget = calculateBudgetConsumption(newRemainingBudget, taskListBudget != null ? String(taskListBudget) : null, totalTasks)
       }
 
-      const saved = await prisma.list.update({
+      const saved = await prisma.taskList.update({
         where: { id: taskList.id },
         data: ({ 
           completedTasks: nextCompleted,
@@ -755,508 +583,712 @@ export async function POST(request: NextRequest) {
         include: { template: true }
       })
 
-      // Entries logic removed - earnings now tracked in Day model
+      // Update user entries with earnings data (backend calculation for security)
       if (userRecord) {
-        // Calculate stash and profit deltas from task completions (without entries)
+        const entries = userRecord.entries as any
+        const rolePrefix = taskList.role?.split('.')[0] || ''
+        const isDailyRole = rolePrefix === 'daily'
+        const isWeeklyRole = rolePrefix === 'weekly'
+        const isOneOffRole = rolePrefix === 'one-off' || rolePrefix === 'oneoff'
+        const listId = taskList.id // Get the listId for grouping entries
+        
+        // Helper to get week number
+        const getWeekNumber = (date: Date): number => {
+          const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))
+          const dayNum = d.getUTCDay() || 7
+          d.setUTCDate(d.getUTCDate() + 4 - dayNum)
+          const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1))
+          return Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7)
+        }
+
+        // Initialize year structure if needed
+        const ensureStructure = (e: any, y: number) => {
+          const copy = { ...(e || {}) }
+          if (!copy[y]) copy[y] = { days: {}, weeks: {}, months: {}, quarters: {}, semesters: {}, oneOffs: {}, year: { tasks: [] } }
+          if (!copy[y].days) copy[y].days = {}
+          if (!copy[y].weeks) copy[y].weeks = {}
+          if (!copy[y].months) copy[y].months = {}
+          if (!copy[y].quarters) copy[y].quarters = {}
+          if (!copy[y].semesters) copy[y].semesters = {}
+          if (!copy[y].oneOffs) copy[y].oneOffs = {}
+          if (!copy[y].year) copy[y].year = { tasks: [] }
+          return copy
+        }
+
+        const updated = ensureStructure(entries, year)
+        let entriesModified = false
+        
+        // Helper to migrate old structure (without listId) to new structure (with listId)
+        const migrateToNewStructure = (yearData: any, listId: string, isDaily: boolean, isWeekly: boolean, isOneOff: boolean) => {
+          let migrated = false
+          
+          if (isDaily && yearData.days) {
+            for (const dateKey in yearData.days) {
+              const dateEntry = yearData.days[dateKey]
+              // Check if it's old format (has tasks directly, not an object with listId keys)
+              if (dateEntry && !dateEntry[listId] && (Array.isArray(dateEntry.tasks) || dateEntry.earnings !== undefined || dateEntry.prize !== undefined || dateEntry.profit !== undefined)) {
+                // Migrate: move old structure to new structure under listId
+                const oldData = { ...dateEntry }
+                yearData.days[dateKey] = {
+                  [listId]: oldData
+                }
+                migrated = true
+              }
+            }
+          }
+          
+          if (isWeekly && yearData.weeks) {
+            for (const weekKey in yearData.weeks) {
+              const weekEntry = yearData.weeks[weekKey]
+              // Check if it's old format
+              if (weekEntry && !weekEntry[listId] && (Array.isArray(weekEntry.tasks) || weekEntry.earnings !== undefined || weekEntry.prize !== undefined || weekEntry.profit !== undefined)) {
+                // Migrate: move old structure to new structure under listId
+                const oldData = { ...weekEntry }
+                yearData.weeks[weekKey] = {
+                  [listId]: oldData
+                }
+                migrated = true
+              }
+            }
+          }
+          
+          if (isOneOff && yearData.oneOffs) {
+            for (const dateKey in yearData.oneOffs) {
+              const oneOffEntry = yearData.oneOffs[dateKey]
+              // Check if it's old format
+              if (oneOffEntry && !oneOffEntry[listId] && (Array.isArray(oneOffEntry.tasks) || oneOffEntry.earnings !== undefined || oneOffEntry.prize !== undefined || oneOffEntry.profit !== undefined)) {
+                // Migrate: move old structure to new structure under listId
+                const oldData = { ...oneOffEntry }
+                yearData.oneOffs[dateKey] = {
+                  [listId]: oldData
+                }
+                migrated = true
+              }
+            }
+          }
+          
+          return migrated
+        }
+        
+        // Migrate any old structure entries to new structure
+        if (migrateToNewStructure(updated[year], listId, isDailyRole, isWeeklyRole, isOneOffRole)) {
+          entriesModified = true
+        }
+        
+        // Track stash and profit changes separately
+        // Stash only contains prize, profit is tracked separately in user.profit
         let stashDelta = 0  // Prize only
         let totalProfitDelta = 0  // Profit only
 
-        // Calculate stash and profit deltas from completed tasks (without entries)
-        if (justCompletedNames.length > 0 || justUncompletedNames.length > 0) {
-          // Calculate earnings directly from completedTasks without storing in entries
-          const rolePrefix = taskList.role?.split('.')[0] || ''
-          const isDailyRole = rolePrefix === 'daily'
-          const isWeeklyRole = rolePrefix === 'weekly'
-          const isOneOffRole = rolePrefix === 'one-off' || rolePrefix === 'oneoff'
-          
-          // Helper to get week number
-          const getWeekNumber = (date: Date): number => {
-            const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))
-            const dayNum = d.getUTCDay() || 7
-            d.setUTCDate(d.getUTCDate() + 4 - dayNum)
-            const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1))
-            return Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7)
-          }
-          
-          // Calculate earnings directly from completedTasks (entries removed)
-          if (justCompletedNames.length > 0) {
-            // Calculate earnings for newly completed tasks
-            if (isDailyRole) {
-              const aggregated = await aggregateCompleterEarningsFromTaskList(taskList.id, user.id, year, dateISO)
-              const deltas = calculateStashAndProfitDeltas(aggregated.prize, aggregated.profit, true)
-              stashDelta += deltas.stashDelta
-              totalProfitDelta += deltas.profitDelta
-            } else if (isWeeklyRole) {
-              const weekStart = new Date(completionDate)
-              weekStart.setDate(weekStart.getDate() - weekStart.getDay())
-              const weekEnd = new Date(weekStart)
-              weekEnd.setDate(weekEnd.getDate() + 6)
-              
-              let totalPrize = 0
-              let totalProfit = 0
-              
-              for (let d = new Date(weekStart); d <= weekEnd; d.setDate(d.getDate() + 1)) {
-                const dateStr = d.toISOString().split('T')[0]
-                const aggregated = await aggregateCompleterEarningsFromTaskList(taskList.id, user.id, year, dateStr)
-                totalPrize += aggregated.prize
-                totalProfit += aggregated.profit
-              }
-              
-              const deltas = calculateStashAndProfitDeltas(totalPrize, totalProfit, true)
-              stashDelta += deltas.stashDelta
-              totalProfitDelta += deltas.profitDelta
-            } else if (isOneOffRole) {
-              const aggregated = await aggregateCompleterEarningsFromTaskList(taskList.id, user.id, year, dateISO)
-              const deltas = calculateStashAndProfitDeltas(aggregated.prize, aggregated.profit, true)
-              stashDelta += deltas.stashDelta
-              totalProfitDelta += deltas.profitDelta
+        // Helper function to aggregate completer earnings from taskList collection, filtering by logged-in user
+        const aggregateCompleterEarningsFromTaskList = async (taskListId: string, userId: string, year: number, dateISO: string) => {
+          try {
+            const taskList = await prisma.taskList.findUnique({ where: { id: taskListId } })
+            if (!taskList) return { earnings: 0, prize: 0, profit: 0 }
+
+            const completedTasks = (taskList.completedTasks as any) || {}
+            const yearData = completedTasks[year]
+            if (!yearData) return { earnings: 0, prize: 0, profit: 0 }
+
+            const dateBucket = yearData[dateISO]
+            if (!dateBucket) return { earnings: 0, prize: 0, profit: 0 }
+
+            // Support both old structure (array) and new structure (openTasks/closedTasks)
+            let tasksForDate: any[] = []
+            if (Array.isArray(dateBucket)) {
+              tasksForDate = dateBucket
+            } else if (dateBucket.openTasks || dateBucket.closedTasks) {
+              tasksForDate = [
+                ...(Array.isArray(dateBucket.openTasks) ? dateBucket.openTasks : []),
+                ...(Array.isArray(dateBucket.closedTasks) ? dateBucket.closedTasks : [])
+              ]
             }
-          }
-          
-          if (justUncompletedNames.length > 0) {
-            // Calculate negative deltas for uncompleted tasks
-            if (isDailyRole) {
-              const aggregated = await aggregateCompleterEarningsFromTaskList(taskList.id, user.id, year, dateISO)
-              const deltas = calculateStashAndProfitDeltas(-aggregated.prize, -aggregated.profit, false)
-              stashDelta += deltas.stashDelta
-              totalProfitDelta += deltas.profitDelta
-            } else if (isWeeklyRole) {
-              const weekStart = new Date(completionDate)
-              weekStart.setDate(weekStart.getDate() - weekStart.getDay())
-              const weekEnd = new Date(weekStart)
-              weekEnd.setDate(weekEnd.getDate() + 6)
-              
-              let totalPrize = 0
-              let totalProfit = 0
-              
-              for (let d = new Date(weekStart); d <= weekEnd; d.setDate(d.getDate() + 1)) {
-                const dateStr = d.toISOString().split('T')[0]
-                const aggregated = await aggregateCompleterEarningsFromTaskList(taskList.id, user.id, year, dateStr)
-                totalPrize += aggregated.prize
-                totalProfit += aggregated.profit
+
+            let totalEarnings = 0
+            let totalPrize = 0
+            let totalProfit = 0
+
+            // Filter completers by logged-in user and sum their earnings/prize/profit
+            for (const task of tasksForDate) {
+              if (Array.isArray(task.completers)) {
+                for (const completer of task.completers) {
+                  // Only count completers for the logged-in user
+                  if (completer.id === userId) {
+                    const completerEarnings = typeof completer.earnings === 'number' 
+                      ? completer.earnings 
+                      : (typeof completer.earnings === 'string' ? parseFloat(completer.earnings || '0') : 0)
+                    const completerPrize = typeof completer.prize === 'number' 
+                      ? completer.prize 
+                      : (typeof completer.prize === 'string' ? parseFloat(completer.prize || '0') : 0)
+                    
+                    totalEarnings += completerEarnings + completerPrize
+                    totalPrize += completerPrize
+                    totalProfit += completerEarnings
+                  }
+                }
               }
-              
-              const deltas = calculateStashAndProfitDeltas(-totalPrize, -totalProfit, false)
-              stashDelta += deltas.stashDelta
-              totalProfitDelta += deltas.profitDelta
-            } else if (isOneOffRole) {
-              const aggregated = await aggregateCompleterEarningsFromTaskList(taskList.id, user.id, year, dateISO)
-              const deltas = calculateStashAndProfitDeltas(-aggregated.prize, -aggregated.profit, false)
-              stashDelta += deltas.stashDelta
-              totalProfitDelta += deltas.profitDelta
             }
-          }
-          
-          // Update stash and profit if there are any changes
-          if (stashDelta !== 0 || totalProfitDelta !== 0) {
-            // Get current values
-            const currentStash = typeof userRecord.stash === 'number' 
-              ? userRecord.stash 
-              : (typeof userRecord.stash === 'string' ? parseFloat(userRecord.stash || '0') : 0)
-            const currentProfit = typeof (userRecord as any).profit === 'number'
-              ? (userRecord as any).profit
-              : (typeof (userRecord as any).profit === 'string' ? parseFloat((userRecord as any).profit || '0') : 0)
-            const availableBalance = typeof userRecord.availableBalance === 'number' 
-              ? userRecord.availableBalance 
-              : parseFloat(String(userRecord.availableBalance || '0'))
-            
-            // Calculate updated values using utility function (ensures all values >= 0)
-            const updatedValues = calculateUpdatedUserValues({
-              currentStash,
-              currentProfit,
-              currentAvailableBalance: availableBalance,
-              stashDelta,
-              profitDelta: totalProfitDelta
-            })
-            
-            await prisma.user.update({
-              where: { id: userRecord.id },
-              data: { 
-                stash: updatedValues.newStash as number,
-                profit: updatedValues.newProfit as number,
-                equity: updatedValues.newEquity as number,
-              } as any
-            })
+
+            return { earnings: totalEarnings, prize: totalPrize, profit: totalProfit }
+          } catch (error) {
+            console.error('Error aggregating completer earnings from taskList:', error)
+            return { earnings: 0, prize: 0, profit: 0 }
           }
         }
-      }
 
-      // Update Day entry: remove uncompleted tasks, append/update completed tasks
-      // First, remove tasks that were uncompleted (they should have status "open" now)
-      if (justUncompletedNames.length > 0 && dateISO) {
-        try {
-          const existingDay = await prisma.day.findFirst({
-            where: {
-              userId: user.id,
-              date: dateISO
-            }
-          })
-
-          if (existingDay) {
-            const existingTasks = Array.isArray(existingDay.tasks) ? existingDay.tasks : []
-            const unNames = new Set(justUncompletedNames.map((s: string) => (s || '').toLowerCase()))
-            
-            // Remove uncompleted tasks from day.tasks using taskId (id, localeKey, or name)
-            const tasksToRemove = existingTasks.filter((t: any) => {
-              const taskKey = getTaskKey(t)
-              const taskKeyLower = typeof taskKey === 'string' ? taskKey.toLowerCase() : taskKey
-              // Match by taskId (id or localeKey) first, then fallback to name
-              if (t?.id || t?.localeKey) {
-                // If task has id or localeKey, match by those
-                return unNames.has(taskKeyLower)
-              } else {
-                // Fallback to name matching
-                const taskName = typeof t?.name === 'string' ? t.name.toLowerCase() : ''
-                return unNames.has(taskName)
-              }
-            })
-            const updatedTasks = existingTasks.filter((t: any) => {
-              const taskKey = getTaskKey(t)
-              const taskKeyLower = typeof taskKey === 'string' ? taskKey.toLowerCase() : taskKey
-              // Match by taskId (id or localeKey) first, then fallback to name
-              if (t?.id || t?.localeKey) {
-                // If task has id or localeKey, match by those
-                return !unNames.has(taskKeyLower)
-              } else {
-                // Fallback to name matching
-                const taskName = typeof t?.name === 'string' ? t.name.toLowerCase() : ''
-                return !unNames.has(taskName)
-              }
-            })
-
-            // Calculate week, month, quarter, semester from date
-            const dateObj = new Date(dateISO)
-            const [_, weekNumberResult] = getWeekNumber(dateObj)
-            const weekNumber = typeof weekNumberResult === 'number' ? weekNumberResult : Number(weekNumberResult) || 1
-            const month = dateObj.getMonth() + 1
-            const quarter = Math.ceil(month / 3)
-            const semester = month <= 6 ? 1 : 2
-
-            // Remove all ticker entries for uncompleted tasks
-            const existingTickers = Array.isArray(existingDay.ticker) ? existingDay.ticker : []
-            // Get task IDs for uncompleted tasks from the tasks that are being removed
-            const uncompletedTaskIds = new Set(
-              tasksToRemove
-                .map((t: any) => t.id || t.localeKey || t.name)
-                .filter(Boolean)
-            )
-            // Remove ticker entries matching uncompleted task IDs
-            const updatedTickers = existingTickers.filter((t: any) => {
-              // If ticker has taskId, only remove if it matches an uncompleted task
-              if (t.taskId) {
-                return !uncompletedTaskIds.has(t.taskId)
-              }
-              // If no taskId in ticker, remove all entries for this listId (backward compatibility)
-              return t.listId !== taskList.id
-            })
-
-            // Update productivity for this list based on tasks in day.tasks
-            const existingProductivity = (existingDay.productivity as Productivity | null) || null
-            const { productivity: updatedProductivity, progress: newProgress } = updateProductivityForList(
-              existingProductivity,
-              taskList.id,
-              taskList.tasks as any[], // List tasks for matching
-              updatedTasks // Day tasks to count from
-            )
-
-            // Get current user balance values
-            const { userBalance, userStash, userEquity } = getUserBalanceValues()
-            
-            await prisma.day.update({
-              where: { id: existingDay.id },
-              data: {
-                tasks: updatedTasks as any,
-                ticker: updatedTickers as any,
-                productivity: updatedProductivity as any,
-                progress: newProgress,
-                balance: userBalance,
-                stash: userStash,
-                equity: userEquity,
-                week: weekNumber,
-                month: month,
-                quarter: quarter,
-                semester: semester
-              }
-            })
-          }
-        } catch (dayError) {
-          // Log error but don't fail the request if Day update fails
-          console.error('Error removing uncompleted tasks from Day entry:', dayError)
+        // Helper function to get tasks without completers metadata
+        const sanitizeTaskForEntries = (task: any) => {
+          const { completers, ...taskWithoutCompleters } = task
+          return taskWithoutCompleters
         }
-      }
 
-      // Filter to only include tasks whose status is not "open" or "ignored"
-      const tasksToCopy = incomingTasks.filter((task: any) => {
-        const status = task.status || 'open'
-        return status !== 'open' && 
-               status !== 'ignored'
-      })
-      
-      if (tasksToCopy.length > 0 && dateISO) {
-        try {
-          // Find or create the day entry (ensure only one day per user per date)
-          const existingDay = await prisma.day.findFirst({
-            where: {
-              userId: user.id,
-              date: dateISO
+        // Helper function to check if there are any completed tasks (regular or ephemeral)
+        const hasAnyCompletedTasks = (tasks: any[], taskList: any, year: number, dateISO: string, isWeekly: boolean = false): boolean => {
+          // Check regular tasks
+          const hasRegularCompleted = tasks.length > 0 && tasks.some((t: any) => t.status === 'Done')
+          
+          // Check ephemeral tasks
+          const ephemeralTasks = (taskList as any)?.ephemeralTasks || { open: [], closed: [] }
+          const closedEphemerals = Array.isArray(ephemeralTasks.closed) ? ephemeralTasks.closed : []
+          
+          let hasEphemeralCompleted = false
+          
+          if (isWeekly) {
+            // For weekly lists, check all dates in the week
+            const weekStart = new Date(dateISO)
+            weekStart.setDate(weekStart.getDate() - weekStart.getDay())
+            const weekEnd = new Date(weekStart)
+            weekEnd.setDate(weekEnd.getDate() + 6)
+            
+            const weekDates = new Set<string>()
+            for (let d = new Date(weekStart); d <= weekEnd; d.setDate(d.getDate() + 1)) {
+              weekDates.add(d.toISOString().split('T')[0])
             }
-          })
-
-          // Calculate week, month, quarter, semester from date
-          const dateObj = new Date(dateISO)
-          const [_, weekNumberResult] = getWeekNumber(dateObj)
-          const weekNumber = typeof weekNumberResult === 'number' ? weekNumberResult : Number(weekNumberResult) || 1
-          const month = dateObj.getMonth() + 1
-          const quarter = Math.ceil(month / 3)
-          const semester = month <= 6 ? 1 : 2
-
-          // Helper to match tasks reliably
-          const getTaskKey = (t: any) => (t?.id || t?.localeKey || (typeof t?.name === 'string' ? t.name.toLowerCase() : '')) as string
-
-          if (existingDay) {
-            // Update existing day - append or update tasks in tasks array
-            const existingTasks = Array.isArray(existingDay.tasks) ? existingDay.tasks : []
-            const updatedTasks = [...existingTasks]
-
-            // For each task to copy, update or append to day.tasks
-            tasksToCopy.forEach((incomingTask: any) => {
-              const taskKey = getTaskKey(incomingTask)
-              const taskKeyLower = typeof taskKey === 'string' ? taskKey.toLowerCase() : taskKey
-              
-              const taskIndex = updatedTasks.findIndex((t: any) => {
-                const key = getTaskKey(t)
-                return key === taskKeyLower || key === taskKey
-              })
-
-              // Build the task object for day.tasks
-              // Use status field
-              const status = incomingTask.status || 'open'
-              const taskForDay: any = {
-                id: incomingTask.id || undefined,
-                name: incomingTask.name,
-                categories: incomingTask.categories || [],
-                area: incomingTask.area || 'self',
-                status: status,
-                cadence: incomingTask.cadence || 'daily',
-                times: incomingTask.times || 1,
-                count: incomingTask.count || 0,
-                localeKey: incomingTask.localeKey || undefined,
-                persons: incomingTask.persons || [],
-                things: incomingTask.things || [],
-                events: incomingTask.events || [],
-                notes: incomingTask.notes || [],
-                documents: incomingTask.documents || [],
-                favorite: incomingTask.favorite || false,
-                isEphemeral: incomingTask.isEphemeral || false,
-                createdAt: incomingTask.createdAt || undefined,
-                completedOn: incomingTask.completedOn || undefined,
-                completers: incomingTask.completers || [],
-                dueDate: incomingTask.dueDate || undefined,
-                budget: incomingTask.budget || undefined,
-                visibility: incomingTask.visibility || undefined,
-                quality: incomingTask.quality || undefined
-              }
-
-              if (taskIndex >= 0) {
-                // Update existing task
-                updatedTasks[taskIndex] = { ...updatedTasks[taskIndex], ...taskForDay }
-              } else {
-                // Append new task
-                updatedTasks.push(taskForDay)
-              }
+            
+            hasEphemeralCompleted = closedEphemerals.some((t: any) => {
+              // Check if task was completed within the week
+              return t.completedOn && weekDates.has(t.completedOn) ||
+                     (t.status === 'Done' && (!t.completedOn || weekDates.has(t.completedOn)))
             })
-
-            // Get existing ticker array or create new one
-            const existingTickers = Array.isArray(existingDay.ticker) ? existingDay.ticker : []
-            
-            // Only add ticker entries for tasks with status "done"
-            const doneTasks = tasksToCopy.filter((task: any) => {
-              const status = task.status || 'open'
-              return status === 'done'
-            })
-            
-            // Update productivity for this list based on tasks in day.tasks
-            const existingProductivity = (existingDay.productivity as Productivity | null) || null
-            const { productivity: updatedProductivity, progress: newProgress } = updateProductivityForList(
-              existingProductivity,
-              taskList.id,
-              taskList.tasks as any[], // List tasks for matching
-              updatedTasks // Day tasks to count from
-            )
-            
-            if (doneTasks.length > 0) {
-              // Calculate profit and prize from task completions for this date
-              const aggregated = await aggregateCompleterEarningsFromTaskList(taskList.id, user.id, year, dateISO)
-              
-              // Push new ticker entries for each done task, ensuring unique taskIds
-              const newTickers = doneTasks.map((incomingTask: any) => {
-                const taskId = incomingTask.id || incomingTask.localeKey || incomingTask.name || undefined
-                return {
-                  listId: taskList.id,
-                  taskId: taskId,
-                  profit: aggregated.profit || 0,
-                  prize: aggregated.prize || 0
-                }
-              })
-              
-              // Remove existing ticker entries with the same taskIds to ensure uniqueness
-              const newTaskIds = new Set(newTickers.map((t: any) => t.taskId).filter(Boolean))
-              const filteredTickers = existingTickers.filter((t: any) => !t.taskId || !newTaskIds.has(t.taskId))
-              const updatedTickers = [...filteredTickers, ...newTickers]
-              
-              // Get current user balance values
-              const { userBalance, userStash, userEquity } = getUserBalanceValues()
-              
-              await prisma.day.update({
-                where: { id: existingDay.id },
-                data: {
-                  tasks: updatedTasks as any,
-                  ticker: updatedTickers as any,
-                  productivity: updatedProductivity as any,
-                  progress: newProgress,
-                  balance: userBalance,
-                  stash: userStash,
-                  equity: userEquity,
-                  week: weekNumber,
-                  month: month,
-                  quarter: quarter,
-                  semester: semester
-                }
-              })
-            } else {
-              // No done tasks, but still update productivity if any tasks were added/updated
-              // Update productivity for this list based on tasks in day.tasks
-              const existingProductivity = (existingDay.productivity as Productivity | null) || null
-              const { productivity: updatedProductivity, progress: newProgress } = updateProductivityForList(
-                existingProductivity,
-                taskList.id,
-                taskList.tasks as any[], // List tasks for matching
-                updatedTasks // Day tasks to count from
-              )
-              
-              // Get current user balance values
-              const { userBalance, userStash, userEquity } = getUserBalanceValues()
-              
-              await prisma.day.update({
-                where: { id: existingDay.id },
-                data: {
-                  tasks: updatedTasks as any,
-                  productivity: updatedProductivity as any,
-                  progress: newProgress,
-                  balance: userBalance,
-                  stash: userStash,
-                  equity: userEquity,
-                  week: weekNumber,
-                  month: month,
-                  quarter: quarter,
-                  semester: semester
-                }
-              })
-            }
           } else {
-            // Create new day with the tasks to copy
-            // Use status field
-            const tasksForDay = tasksToCopy.map((incomingTask: any) => {
-              const status = incomingTask.status || 'open'
-              return {
-                id: incomingTask.id || undefined,
-                name: incomingTask.name,
-                categories: incomingTask.categories || [],
-                area: incomingTask.area || 'self',
-                status: status,
-                cadence: incomingTask.cadence || 'daily',
-                times: incomingTask.times || 1,
-                count: incomingTask.count || 0,
-                localeKey: incomingTask.localeKey || undefined,
-                persons: incomingTask.persons || [],
-                things: incomingTask.things || [],
-                events: incomingTask.events || [],
-                notes: incomingTask.notes || [],
-                documents: incomingTask.documents || [],
-                favorite: incomingTask.favorite || false,
-                isEphemeral: incomingTask.isEphemeral || false,
-                createdAt: incomingTask.createdAt || undefined,
-                completedOn: incomingTask.completedOn || undefined,
-                completers: incomingTask.completers || [],
-                dueDate: incomingTask.dueDate || undefined,
-                budget: incomingTask.budget || undefined,
-                visibility: incomingTask.visibility || undefined,
-                quality: incomingTask.quality || undefined
-              }
-            })
-
-            // Only add ticker entries for tasks with status "done"
-            const doneTasks = tasksForDay.filter((task: any) => task.status === 'done')
-            let ticker: any[] = []
-            
-            // Calculate productivity for this list based on tasks in day.tasks
-            const { productivity: newProductivity, progress: newProgress } = updateProductivityForList(
-              null,
-              taskList.id,
-              taskList.tasks as any[], // List tasks for matching
-              tasksForDay // Day tasks to count from
-            )
-            
-            if (doneTasks.length > 0) {
-              // Calculate profit and prize from task completions for this date
-              const aggregated = await aggregateCompleterEarningsFromTaskList(taskList.id, user.id, year, dateISO)
-              
-              // Create ticker array with profit and prize for each done task, ensuring unique taskIds
-              const tickerEntries = doneTasks.map((task: any) => {
-                const taskId = task.id || task.localeKey || task.name || undefined
-                return {
-                  listId: taskList.id,
-                  taskId: taskId,
-                  profit: aggregated.profit || 0,
-                  prize: aggregated.prize || 0
-                }
-              })
-              
-              // Ensure unique taskIds (remove duplicates, keeping the last one)
-              const taskIdMap = new Map()
-              tickerEntries.forEach((entry: any) => {
-                if (entry.taskId) {
-                  taskIdMap.set(entry.taskId, entry)
-                } else {
-                  // If no taskId, keep it (shouldn't happen for done tasks, but for safety)
-                  taskIdMap.set(`no-id-${taskIdMap.size}`, entry)
-                }
-              })
-              ticker = Array.from(taskIdMap.values())
-            }
-
-            // Get user's availableBalance, stash, and equity for new day
-            const userBalance = typeof user.availableBalance === 'number' 
-              ? user.availableBalance 
-              : (typeof user.availableBalance === 'string' ? parseFloat(user.availableBalance || '0') : 0)
-            const userStash = typeof user.stash === 'number' 
-              ? user.stash 
-              : (typeof user.stash === 'string' ? parseFloat(user.stash || '0') : 0)
-            const userEquity = typeof user.equity === 'number' 
-              ? user.equity 
-              : (typeof user.equity === 'string' ? parseFloat(user.equity || '0') : 0)
-            
-            await prisma.day.create({
-              data: {
-                userId: user.id,
-                date: dateISO,
-                tasks: tasksForDay as any,
-                ticker: ticker as any,
-                productivity: newProductivity as any,
-                progress: newProgress,
-                balance: userBalance,
-                stash: userStash,
-                equity: userEquity,
-                week: weekNumber,
-                month: month,
-                quarter: quarter,
-                semester: semester
-              }
+            // For daily/one-off lists, check only the specific date
+            hasEphemeralCompleted = closedEphemerals.some((t: any) => {
+              // Check if task was completed on this date (completedOn field in YYYY-MM-DD format)
+              return t.completedOn === dateISO || 
+                     (t.status === 'Done' && (!t.completedOn || t.completedOn === dateISO))
             })
           }
-        } catch (dayError) {
-          // Log error but don't fail the request if Day update fails
-          console.error('Error updating Day entry:', dayError)
+          
+          return hasRegularCompleted || hasEphemeralCompleted
+        }
+
+        // Handle completions
+        if (justCompletedNames.length > 0) {
+          // Prepare completed tasks to append (from closedTasks)
+          const completedTasks = finalClosedTasks.filter((t: any) => {
+            const nm = typeof t?.name === 'string' ? t.name.toLowerCase() : ''
+            return justCompletedNames.some(jc => typeof jc === 'string' && jc.toLowerCase() === nm)
+          })
+
+          // Calculate total earnings from all new completers in this completion
+          const numNewCompleters = justCompletedNames.length
+
+          // Update daily entries
+          if (isDailyRole && completedTasks.length > 0) {
+            // Initialize date structure if needed
+            if (!updated[year].days[dateISO]) {
+              updated[year].days[dateISO] = {}
+            }
+            // Migrate old format if exists, or initialize listId entry
+            if (!updated[year].days[dateISO][listId]) {
+              const dateEntry = updated[year].days[dateISO]
+              // Check if old format exists and migrate it
+              if (dateEntry && !dateEntry[listId] && (Array.isArray(dateEntry.tasks) || dateEntry.earnings !== undefined || dateEntry.prize !== undefined || dateEntry.profit !== undefined)) {
+                const oldData = { ...dateEntry }
+                updated[year].days[dateISO] = {
+                  [listId]: oldData
+                }
+                entriesModified = true
+              } else {
+                // Initialize new structure
+                updated[year].days[dateISO][listId] = { year, date: dateISO, tasks: [] }
+              }
+            }
+            const existing = updated[year].days[dateISO][listId].tasks || []
+            const names = new Set(existing.map((t: any) => t.name))
+            const toAppend = completedTasks.filter((t: any) => !names.has(t.name))
+
+            // Store tasks without completers metadata
+            const finalTasks = [...existing]
+            for (const newTask of toAppend) {
+              const existingIndex = finalTasks.findIndex((t: any) => t.name === newTask.name)
+              if (existingIndex >= 0) {
+                // Update existing task without completers
+                finalTasks[existingIndex] = sanitizeTaskForEntries({
+                  ...finalTasks[existingIndex],
+                  ...newTask
+                })
+              } else {
+                // Append new task without completers
+                finalTasks.push(sanitizeTaskForEntries(newTask))
+              }
+            }
+
+            // Aggregate completer earnings from taskList collection, filtering by logged-in user
+            const aggregated = await aggregateCompleterEarningsFromTaskList(taskList.id, user.id, year, dateISO)
+            // Helper to convert to number (handles both string and number for backward compatibility)
+            const toNumber = (val: any): number => {
+              if (typeof val === 'number') return val
+              if (typeof val === 'string') return parseFloat(val) || 0
+              return 0
+            }
+            const currentPrize = toNumber(updated[year].days[dateISO][listId].prize)
+            const currentProfit = toNumber(updated[year].days[dateISO][listId].profit)
+            const currentEarnings = toNumber(updated[year].days[dateISO][listId].earnings)
+
+            // Calculate deltas based on aggregated completer values
+            const prizeDelta = aggregated.prize - currentPrize
+            const profitDelta = aggregated.profit - currentProfit
+
+            // If there are no completed tasks (regular or ephemeral), set all values to 0
+            const hasCompletedTasks = hasAnyCompletedTasks(finalTasks, taskList, year, dateISO, false)
+            const newPrize = hasCompletedTasks ? aggregated.prize : 0
+            const newProfit = hasCompletedTasks ? aggregated.profit : 0
+            const newEarnings = hasCompletedTasks ? aggregated.earnings : 0
+
+            // Accumulate stash and profit deltas separately (only for new completers)
+            const deltas = calculateStashAndProfitDeltas(prizeDelta, profitDelta, true)
+            stashDelta += deltas.stashDelta
+            totalProfitDelta += deltas.profitDelta
+
+            updated[year].days[dateISO][listId] = {
+              ...updated[year].days[dateISO][listId],
+              tasks: finalTasks,
+              prize: newPrize,
+              profit: newProfit,
+              earnings: newEarnings
+            }
+            entriesModified = true
+          }
+
+          // Update weekly entries
+          if (isWeeklyRole && completedTasks.length > 0) {
+            const week = getWeekNumber(completionDate)
+            // Initialize week structure if needed
+            if (!updated[year].weeks[week]) {
+              updated[year].weeks[week] = {}
+            }
+            // Migrate old format if exists, or initialize listId entry
+            if (!updated[year].weeks[week][listId]) {
+              const weekEntry = updated[year].weeks[week]
+              // Check if old format exists and migrate it
+              if (weekEntry && !weekEntry[listId] && (Array.isArray(weekEntry.tasks) || weekEntry.earnings !== undefined || weekEntry.prize !== undefined || weekEntry.profit !== undefined)) {
+                const oldData = { ...weekEntry }
+                updated[year].weeks[week] = {
+                  [listId]: oldData
+                }
+                entriesModified = true
+              } else {
+                // Initialize new structure
+                updated[year].weeks[week][listId] = { year, week, tasks: [] }
+              }
+            }
+            const existing = updated[year].weeks[week][listId].tasks || []
+            const names = new Set(existing.map((t: any) => t.name))
+            const toAppend = completedTasks.filter((t: any) => !names.has(t.name))
+
+            // Store tasks without completers metadata
+            const finalTasks = [...existing]
+            for (const newTask of toAppend) {
+              const existingIndex = finalTasks.findIndex((t: any) => t.name === newTask.name)
+              if (existingIndex >= 0) {
+                // Update existing task without completers
+                finalTasks[existingIndex] = sanitizeTaskForEntries({
+                  ...finalTasks[existingIndex],
+                  ...newTask
+                })
+              } else {
+                // Append new task without completers
+                finalTasks.push(sanitizeTaskForEntries(newTask))
+              }
+            }
+
+            // Aggregate completer earnings from completedTasks structure
+            // For weekly, we need to aggregate all dates in that week
+            // Merge nextCompleted with priorCompleted to get complete week data (nextCompleted has current date, priorCompleted has other dates)
+            const mergedCompletedTasks = {
+              ...priorCompleted,
+              [year]: {
+                ...(priorCompleted[year] || {}),
+                ...nextCompleted[year]
+              }
+            }
+            
+            const weekStart = new Date(completionDate)
+            weekStart.setDate(weekStart.getDate() - weekStart.getDay())
+            const weekEnd = new Date(weekStart)
+            weekEnd.setDate(weekEnd.getDate() + 6)
+            
+            let totalEarnings = 0
+            let totalPrize = 0
+            let totalProfit = 0
+            
+            for (let d = new Date(weekStart); d <= weekEnd; d.setDate(d.getDate() + 1)) {
+              const dateStr = d.toISOString().split('T')[0]
+              const aggregated = await aggregateCompleterEarningsFromTaskList(taskList.id, user.id, year, dateStr)
+              totalEarnings += aggregated.earnings
+              totalPrize += aggregated.prize
+              totalProfit += aggregated.profit
+            }
+            
+            const aggregated = { earnings: totalEarnings, prize: totalPrize, profit: totalProfit }
+            // Helper to convert to number (handles both string and number for backward compatibility)
+            const toNumber = (val: any): number => {
+              if (typeof val === 'number') return val
+              if (typeof val === 'string') return parseFloat(val) || 0
+              return 0
+            }
+            const currentPrize = toNumber(updated[year].weeks[week][listId].prize)
+            const currentProfit = toNumber(updated[year].weeks[week][listId].profit)
+            const currentEarnings = toNumber(updated[year].weeks[week][listId].earnings)
+
+            // Calculate deltas based on aggregated completer values
+            const prizeDelta = aggregated.prize - currentPrize
+            const profitDelta = aggregated.profit - currentProfit
+
+            // If there are no completed tasks (regular or ephemeral), set all values to 0
+            // For weekly lists, check all dates in the week
+            const hasCompletedTasks = hasAnyCompletedTasks(finalTasks, taskList, year, dateISO, true)
+            const newPrize = hasCompletedTasks ? aggregated.prize : 0
+            const newProfit = hasCompletedTasks ? aggregated.profit : 0
+            const newEarnings = hasCompletedTasks ? aggregated.earnings : 0
+
+            // Accumulate stash and profit deltas separately (only for new completers)
+            const deltas = calculateStashAndProfitDeltas(prizeDelta, profitDelta, true)
+            stashDelta += deltas.stashDelta
+            totalProfitDelta += deltas.profitDelta
+
+            updated[year].weeks[week][listId] = {
+              ...updated[year].weeks[week][listId],
+              tasks: finalTasks,
+              prize: newPrize,
+              profit: newProfit,
+              earnings: newEarnings
+            }
+            entriesModified = true
+          }
+
+          // Update one-off entries (use full action earnings, no division)
+          if (isOneOffRole && completedTasks.length > 0) {
+            // Initialize date structure if needed
+            if (!updated[year].oneOffs[dateISO]) {
+              updated[year].oneOffs[dateISO] = {}
+            }
+            // Migrate old format if exists, or initialize listId entry
+            if (!updated[year].oneOffs[dateISO][listId]) {
+              const oneOffEntry = updated[year].oneOffs[dateISO]
+              // Check if old format exists and migrate it
+              if (oneOffEntry && !oneOffEntry[listId] && (Array.isArray(oneOffEntry.tasks) || oneOffEntry.earnings !== undefined || oneOffEntry.prize !== undefined || oneOffEntry.profit !== undefined)) {
+                const oldData = { ...oneOffEntry }
+                updated[year].oneOffs[dateISO] = {
+                  [listId]: oldData
+                }
+                entriesModified = true
+              } else {
+                // Initialize new structure
+                updated[year].oneOffs[dateISO][listId] = { year, date: dateISO, tasks: [] }
+              }
+            }
+            const existing = updated[year].oneOffs[dateISO][listId].tasks || []
+            const names = new Set(existing.map((t: any) => t.name))
+            const toAppend = completedTasks.filter((t: any) => !names.has(t.name))
+
+            // Store tasks without completers metadata
+            const finalTasks = [...existing]
+            for (const newTask of toAppend) {
+              const existingIndex = finalTasks.findIndex((t: any) => t.name === newTask.name)
+              if (existingIndex >= 0) {
+                // Update existing task without completers
+                finalTasks[existingIndex] = sanitizeTaskForEntries({
+                  ...finalTasks[existingIndex],
+                  ...newTask
+                })
+              } else {
+                // Append new task without completers
+                finalTasks.push(sanitizeTaskForEntries(newTask))
+              }
+            }
+
+            // Aggregate completer earnings from taskList collection, filtering by logged-in user
+            const aggregated = await aggregateCompleterEarningsFromTaskList(taskList.id, user.id, year, dateISO)
+
+            // Helper to convert to number (handles both string and number for backward compatibility)
+            const toNumber = (val: any): number => {
+              if (typeof val === 'number') return val
+              if (typeof val === 'string') return parseFloat(val) || 0
+              return 0
+            }
+            const currentPrize = toNumber(updated[year].oneOffs[dateISO][listId].prize)
+            const currentProfit = toNumber(updated[year].oneOffs[dateISO][listId].profit)
+            const currentEarnings = toNumber(updated[year].oneOffs[dateISO][listId].earnings)
+
+            // Calculate deltas based on aggregated completer values
+            const prizeDelta = aggregated.prize - currentPrize
+            const profitDelta = aggregated.profit - currentProfit
+
+            // If there are no completed tasks (regular or ephemeral), set all values to 0
+            const hasCompletedTasks = hasAnyCompletedTasks(finalTasks, taskList, year, dateISO, false)
+            const newPrize = hasCompletedTasks ? aggregated.prize : 0
+            const newProfit = hasCompletedTasks ? aggregated.profit : 0
+            const newEarnings = hasCompletedTasks ? aggregated.earnings : 0
+
+            // Accumulate stash and profit deltas separately (only for new completers)
+            const deltas = calculateStashAndProfitDeltas(prizeDelta, profitDelta, true)
+            stashDelta += deltas.stashDelta
+            totalProfitDelta += deltas.profitDelta
+
+            updated[year].oneOffs[dateISO][listId] = {
+              ...updated[year].oneOffs[dateISO][listId],
+              tasks: finalTasks,
+              prize: newPrize,
+              profit: newProfit,
+              earnings: newEarnings
+            }
+            entriesModified = true
+          }
+        }
+
+        // Handle uncompletion - remove tasks from user entries and recalculate earnings
+        if (justUncompletedNames.length > 0) {
+          const removeSet = new Set(justUncompletedNames.map((s: string) => typeof s === 'string' ? s.toLowerCase() : s))
+
+          // Remove from daily entries and recalculate earnings from TaskList
+          if (isDailyRole && updated[year]?.days?.[dateISO]) {
+            // Ensure new structure exists (migrate if needed)
+            if (!updated[year].days[dateISO][listId]) {
+              // Check if old format exists and migrate it
+              const dateEntry = updated[year].days[dateISO]
+              if (dateEntry && !dateEntry[listId] && (Array.isArray(dateEntry.tasks) || dateEntry.earnings !== undefined)) {
+                const oldData = { ...dateEntry }
+                updated[year].days[dateISO] = {
+                  [listId]: oldData
+                }
+                entriesModified = true
+              } else {
+                // Initialize new structure
+                updated[year].days[dateISO][listId] = { year, date: dateISO, tasks: [] }
+              }
+            }
+            
+            const existing = updated[year].days[dateISO][listId].tasks || []
+            const remainingTasks = existing.filter((t: any) => !removeSet.has((t?.name || '').toLowerCase()))
+            updated[year].days[dateISO][listId].tasks = remainingTasks
+            
+            // Recalculate earnings from taskList collection, filtering by logged-in user
+            const aggregated = await aggregateCompleterEarningsFromTaskList(taskList.id, user.id, year, dateISO)
+            // Helper to convert to number (handles both string and number for backward compatibility)
+            const toNumber = (val: any): number => {
+              if (typeof val === 'number') return val
+              if (typeof val === 'string') return parseFloat(val) || 0
+              return 0
+            }
+            const currentPrize = toNumber(updated[year].days[dateISO][listId].prize)
+            const currentProfit = toNumber(updated[year].days[dateISO][listId].profit)
+            const currentEarnings = toNumber(updated[year].days[dateISO][listId].earnings)
+
+            const prizeDelta = aggregated.prize - currentPrize
+            const profitDelta = aggregated.profit - currentProfit
+
+            // If there are no completed tasks (regular or ephemeral), set all values to 0
+            const tasksForCheck = updated[year].days[dateISO][listId].tasks || []
+            const hasCompletedTasks = hasAnyCompletedTasks(tasksForCheck, taskList, year, dateISO, false)
+            const newPrize = hasCompletedTasks ? aggregated.prize : 0
+            const newProfit = hasCompletedTasks ? aggregated.profit : 0
+            const newEarnings = hasCompletedTasks ? aggregated.earnings : 0
+
+            // Subtract from stash and profit deltas separately (only negative changes)
+            const deltas = calculateStashAndProfitDeltas(prizeDelta, profitDelta, false)
+            stashDelta += deltas.stashDelta
+            totalProfitDelta += deltas.profitDelta
+
+            updated[year].days[dateISO][listId] = {
+              ...updated[year].days[dateISO][listId],
+              prize: newPrize,
+              profit: newProfit,
+              earnings: newEarnings
+            }
+            entriesModified = true
+          }
+
+          // Remove from weekly entries and recalculate earnings from TaskList
+          if (isWeeklyRole) {
+            const week = getWeekNumber(completionDate)
+            if (updated[year]?.weeks?.[week]) {
+              // Ensure new structure exists (migrate if needed)
+              if (!updated[year].weeks[week][listId]) {
+                // Check if old format exists and migrate it
+                const weekEntry = updated[year].weeks[week]
+                if (weekEntry && !weekEntry[listId] && (Array.isArray(weekEntry.tasks) || weekEntry.earnings !== undefined)) {
+                  const oldData = { ...weekEntry }
+                  updated[year].weeks[week] = {
+                    [listId]: oldData
+                  }
+                  entriesModified = true
+                } else {
+                  // Initialize new structure
+                  updated[year].weeks[week][listId] = { year, week, tasks: [] }
+                }
+              }
+              
+              const existing = updated[year].weeks[week][listId].tasks || []
+              const remainingTasks = existing.filter((t: any) => !removeSet.has((t?.name || '').toLowerCase()))
+              updated[year].weeks[week][listId].tasks = remainingTasks
+              
+              // Recalculate earnings from saved.completedTasks for the week (after uncompletion update)
+              const weekStart = new Date(completionDate)
+              weekStart.setDate(weekStart.getDate() - weekStart.getDay())
+              const weekEnd = new Date(weekStart)
+              weekEnd.setDate(weekEnd.getDate() + 6)
+              
+              let totalEarnings = 0
+              let totalPrize = 0
+              let totalProfit = 0
+              
+              for (let d = new Date(weekStart); d <= weekEnd; d.setDate(d.getDate() + 1)) {
+                const dateStr = d.toISOString().split('T')[0]
+                const aggregated = await aggregateCompleterEarningsFromTaskList(taskList.id, user.id, year, dateStr)
+                totalEarnings += aggregated.earnings
+                totalPrize += aggregated.prize
+                totalProfit += aggregated.profit
+              }
+              
+              const aggregated = { earnings: totalEarnings, prize: totalPrize, profit: totalProfit }
+              // Helper to convert to number (handles both string and number for backward compatibility)
+              const toNumber = (val: any): number => {
+                if (typeof val === 'number') return val
+                if (typeof val === 'string') return parseFloat(val) || 0
+                return 0
+              }
+              const currentPrize = toNumber(updated[year].weeks[week][listId].prize)
+              const currentProfit = toNumber(updated[year].weeks[week][listId].profit)
+              const currentEarnings = toNumber(updated[year].weeks[week][listId].earnings)
+
+              const prizeDelta = aggregated.prize - currentPrize
+              const profitDelta = aggregated.profit - currentProfit
+
+              // If there are no completed tasks (regular or ephemeral), set all values to 0
+              // For weekly lists, check all dates in the week
+              const tasksForCheck = updated[year].weeks[week][listId].tasks || []
+              const hasCompletedTasks = hasAnyCompletedTasks(tasksForCheck, taskList, year, dateISO, true)
+              const newPrize = hasCompletedTasks ? aggregated.prize : 0
+              const newProfit = hasCompletedTasks ? aggregated.profit : 0
+              const newEarnings = hasCompletedTasks ? aggregated.earnings : 0
+
+              // Subtract from stash and profit deltas separately (only negative changes)
+              const deltas = calculateStashAndProfitDeltas(prizeDelta, profitDelta, false)
+              stashDelta += deltas.stashDelta
+              totalProfitDelta += deltas.profitDelta
+
+              updated[year].weeks[week][listId] = {
+                ...updated[year].weeks[week][listId],
+                prize: newPrize,
+                profit: newProfit,
+                earnings: newEarnings
+              }
+              entriesModified = true
+            }
+          }
+
+          // Remove from one-off entries and recalculate earnings from TaskList
+          if (isOneOffRole && updated[year]?.oneOffs?.[dateISO]) {
+            // Ensure new structure exists (migrate if needed)
+            if (!updated[year].oneOffs[dateISO][listId]) {
+              // Check if old format exists and migrate it
+              const oneOffEntry = updated[year].oneOffs[dateISO]
+              if (oneOffEntry && !oneOffEntry[listId] && (Array.isArray(oneOffEntry.tasks) || oneOffEntry.earnings !== undefined)) {
+                const oldData = { ...oneOffEntry }
+                updated[year].oneOffs[dateISO] = {
+                  [listId]: oldData
+                }
+                entriesModified = true
+              } else {
+                // Initialize new structure
+                updated[year].oneOffs[dateISO][listId] = { year, date: dateISO, tasks: [] }
+              }
+            }
+            
+            const existing = updated[year].oneOffs[dateISO][listId].tasks || []
+            const remainingTasks = existing.filter((t: any) => !removeSet.has((t?.name || '').toLowerCase()))
+            updated[year].oneOffs[dateISO][listId].tasks = remainingTasks
+            
+            // Recalculate earnings from taskList collection, filtering by logged-in user
+            const aggregated = await aggregateCompleterEarningsFromTaskList(taskList.id, user.id, year, dateISO)
+            // Helper to convert to number (handles both string and number for backward compatibility)
+            const toNumber = (val: any): number => {
+              if (typeof val === 'number') return val
+              if (typeof val === 'string') return parseFloat(val) || 0
+              return 0
+            }
+            const currentPrize = toNumber(updated[year].oneOffs[dateISO][listId].prize)
+            const currentProfit = toNumber(updated[year].oneOffs[dateISO][listId].profit)
+            const currentEarnings = toNumber(updated[year].oneOffs[dateISO][listId].earnings)
+
+            const prizeDelta = aggregated.prize - currentPrize
+            const profitDelta = aggregated.profit - currentProfit
+
+            // If there are no completed tasks (regular or ephemeral), set all values to 0
+            const tasksForCheck = updated[year].oneOffs[dateISO][listId].tasks || []
+            const hasCompletedTasks = hasAnyCompletedTasks(tasksForCheck, taskList, year, dateISO, false)
+            const newPrize = hasCompletedTasks ? aggregated.prize : 0
+            const newProfit = hasCompletedTasks ? aggregated.profit : 0
+            const newEarnings = hasCompletedTasks ? aggregated.earnings : 0
+
+            // Subtract from stash and profit deltas separately (only negative changes)
+            const deltas = calculateStashAndProfitDeltas(prizeDelta, profitDelta, false)
+            stashDelta += deltas.stashDelta
+            totalProfitDelta += deltas.profitDelta
+
+            updated[year].oneOffs[dateISO][listId] = {
+              ...updated[year].oneOffs[dateISO][listId],
+              prize: newPrize,
+              profit: newProfit,
+              earnings: newEarnings
+            }
+            entriesModified = true
+          }
+        }
+
+        // Save updated entries, stash, and profit if modified
+        if (entriesModified) {
+          // Get current values
+          const currentStash = typeof userRecord.stash === 'number' 
+            ? userRecord.stash 
+            : (typeof userRecord.stash === 'string' ? parseFloat(userRecord.stash || '0') : 0)
+          const currentProfit = typeof (userRecord as any).profit === 'number'
+            ? (userRecord as any).profit
+            : (typeof (userRecord as any).profit === 'string' ? parseFloat((userRecord as any).profit || '0') : 0)
+          const availableBalance = typeof userRecord.availableBalance === 'number' 
+            ? userRecord.availableBalance 
+            : parseFloat(String(userRecord.availableBalance || '0'))
+          
+          // Calculate updated values using utility function (ensures all values >= 0)
+          const updatedValues = calculateUpdatedUserValues({
+            currentStash,
+            currentProfit,
+            currentAvailableBalance: availableBalance,
+            stashDelta,
+            profitDelta: totalProfitDelta
+          })
+          
+          await prisma.user.update({
+            where: { id: userRecord.id },
+            data: { 
+              entries: updated as any,
+              stash: updatedValues.newStash as number,
+              profit: updatedValues.newProfit as number,
+              equity: updatedValues.newEquity as number,
+            } as any
+          })
         }
       }
 
@@ -1265,7 +1297,7 @@ export async function POST(request: NextRequest) {
 
     // Ephemeral tasks operations scoped to a task list
     if (body.ephemeralTasks && body.taskListId) {
-      const taskList = await prisma.list.findUnique({ where: { id: body.taskListId } })
+      const taskList = await prisma.taskList.findUnique({ where: { id: body.taskListId } })
       if (!taskList) return NextResponse.json({ error: 'TaskList not found' }, { status: 404 })
 
       const current = (taskList as any).ephemeralTasks || { open: [], closed: [] }
@@ -1274,7 +1306,7 @@ export async function POST(request: NextRequest) {
 
       if (body.ephemeralTasks.add) {
         const t = body.ephemeralTasks.add
-        const withId = { id: t.id || `ephemeral_${Date.now()}_${Math.random().toString(36).slice(2,9)}`, name: t.name, status: t.status || 'open', area: t.area || 'self', categories: t.categories || ['custom'], cadence: t.cadence || 'ephemeral', times: t.times || 1, count: t.count || 0, contacts: t.contacts || [], things: t.things || [], favorite: !!t.favorite, isEphemeral: true, createdAt: new Date().toISOString() }
+        const withId = { id: t.id || `ephemeral_${Date.now()}_${Math.random().toString(36).slice(2,9)}`, name: t.name, status: t.status || 'Not started', area: t.area || 'self', categories: t.categories || ['custom'], cadence: t.cadence || 'ephemeral', times: t.times || 1, count: t.count || 0, contacts: t.contacts || [], things: t.things || [], favorite: !!t.favorite, isEphemeral: true, createdAt: new Date().toISOString() }
         open = [withId, ...open]
       }
 
@@ -1298,7 +1330,7 @@ export async function POST(request: NextRequest) {
             closed = [ 
               { 
                 ...item, 
-                status: 'done', 
+                status: 'Done', 
                 count: count || item.count, 
                 completedAt: new Date().toISOString(),
                 completedOn: completedOnDate
@@ -1313,12 +1345,13 @@ export async function POST(request: NextRequest) {
       if (body.ephemeralTasks.update) {
         const updateOps = Array.isArray(body.ephemeralTasks.update) ? body.ephemeralTasks.update : [body.ephemeralTasks.update]
         updateOps.forEach((updateOp: any) => {
-          const { id, count, status } = updateOp
+          const { id, count, status, taskStatus } = updateOp
           open = open.map((x: any) => {
             if (x.id === id) {
               const updated = { ...x }
               if (count !== undefined) updated.count = count
               if (status) updated.status = status
+              if (taskStatus) updated.taskStatus = taskStatus
               return updated
             }
             return x
@@ -1337,12 +1370,12 @@ export async function POST(request: NextRequest) {
           if (item) {
             // Remove completedAt and completedOn, and reset status when reopening
             const { completedAt, completedOn, ...taskWithoutCompletedFields } = item
-            open = [{ ...taskWithoutCompletedFields, status: 'open', count: count !== undefined ? count : (item.count || 0) }, ...open]
+            open = [{ ...taskWithoutCompletedFields, status: 'Open', count: count !== undefined ? count : (item.count || 0) }, ...open]
           }
         })
       }
 
-      const saved = await prisma.list.update({
+      const saved = await prisma.taskList.update({
         where: { id: taskList.id },
         data: ({ ephemeralTasks: { open, closed } } as any)
       })
@@ -1352,11 +1385,11 @@ export async function POST(request: NextRequest) {
 
     // Update task status in completedTasks[year][date].openTasks/closedTasks (not taskList.tasks)
     if (body.updateTaskStatus && body.taskListId) {
-      const taskListToUpdate = await prisma.list.findUnique({ where: { id: body.taskListId } })
-      if (!taskListToUpdate) return NextResponse.json({ error: 'TaskList not found' }, { status: 404 })
+      const taskList = await prisma.taskList.findUnique({ where: { id: body.taskListId } })
+      if (!taskList) return NextResponse.json({ error: 'TaskList not found' }, { status: 404 })
 
       const taskKey = body.taskKey // id, localeKey, or name
-      const newStatus = body.status || body.taskStatus // Support both for backward compatibility
+      const newStatus = body.taskStatus
       const dateISO = body.date || new Date().toISOString().split('T')[0] // Use provided date or today
 
       // Helper to match tasks reliably
@@ -1365,9 +1398,9 @@ export async function POST(request: NextRequest) {
 
       // Get task from templateTasks or tasks to use as base
       let baseTask: any = null
-      const tasks = Array.isArray(taskListToUpdate.tasks) 
-        ? taskListToUpdate.tasks 
-        : (Array.isArray((taskListToUpdate as any).templateTasks) ? (taskListToUpdate as any).templateTasks : [])
+      const tasks = Array.isArray(taskList.tasks) 
+        ? taskList.tasks 
+        : (Array.isArray((taskList as any).templateTasks) ? (taskList as any).templateTasks : [])
       
       baseTask = tasks.find((task: any) => {
         const key = getKey(task)
@@ -1376,7 +1409,7 @@ export async function POST(request: NextRequest) {
 
       // If not found in tasks, check templateTasks
       if (!baseTask) {
-        const templateTasks = Array.isArray((taskListToUpdate as any).templateTasks) ? (taskListToUpdate as any).templateTasks : []
+        const templateTasks = Array.isArray((taskList as any).templateTasks) ? (taskList as any).templateTasks : []
         baseTask = templateTasks.find((task: any) => {
           const key = getKey(task)
           return key === taskKeyLower || key === taskKey
@@ -1384,7 +1417,7 @@ export async function POST(request: NextRequest) {
       }
 
       // Also check and update ephemeral tasks
-      let ephemeralTasks = (taskListToUpdate as any).ephemeralTasks || { open: [], closed: [] }
+      let ephemeralTasks = (taskList as any).ephemeralTasks || { open: [], closed: [] }
       let open = Array.isArray(ephemeralTasks.open) ? ephemeralTasks.open : []
       let closed = Array.isArray(ephemeralTasks.closed) ? ephemeralTasks.closed : []
 
@@ -1393,7 +1426,7 @@ export async function POST(request: NextRequest) {
         const key = getKey(task)
         if (key === taskKeyLower || key === taskKey) {
           if (!baseTask) baseTask = { ...task }
-          return { ...task, status: newStatus }
+          return { ...task, taskStatus: newStatus }
         }
         return task
       })
@@ -1403,7 +1436,7 @@ export async function POST(request: NextRequest) {
         const key = getKey(task)
         if (key === taskKeyLower || key === taskKey) {
           if (!baseTask) baseTask = { ...task }
-          return { ...task, status: newStatus }
+          return { ...task, taskStatus: newStatus }
         }
         return task
       })
@@ -1411,7 +1444,7 @@ export async function POST(request: NextRequest) {
       ephemeralTasks = { open, closed }
 
       // Update task in completedTasks[year][date].openTasks/closedTasks
-      let completedTasks = (taskListToUpdate as any).completedTasks || {}
+      let completedTasks = (taskList as any).completedTasks || {}
       const year = Number(dateISO.split('-')[0])
       const yearBucket = completedTasks[year] || {}
       const dateBucket = yearBucket[dateISO] || {}
@@ -1422,20 +1455,20 @@ export async function POST(request: NextRequest) {
       
       if (Array.isArray(dateBucket)) {
         // Legacy structure: migrate to new structure
-        openTasks = dateBucket.filter((t: any) => t.status !== 'done')
-        closedTasks = dateBucket.filter((t: any) => t.status === 'done')
+        openTasks = dateBucket.filter((t: any) => t.status !== 'Done')
+        closedTasks = dateBucket.filter((t: any) => t.status === 'Done')
       } else if (dateBucket.openTasks || dateBucket.closedTasks) {
         // New structure
         openTasks = Array.isArray(dateBucket.openTasks) ? [...dateBucket.openTasks] : []
         closedTasks = Array.isArray(dateBucket.closedTasks) ? [...dateBucket.closedTasks] : []
       } else if (baseTask) {
-        // First time - initialize from taskListToUpdate.tasks
-        const blueprintTasks: any[] = Array.isArray(taskListToUpdate.tasks) ? (taskListToUpdate.tasks as any[]) : (Array.isArray((taskListToUpdate as any).templateTasks) ? ((taskListToUpdate as any).templateTasks as any[]) : [])
-        openTasks = blueprintTasks.map((t: any) => ({ ...t, count: 0, status: 'open' }))
+        // First time - initialize from taskList.tasks
+        const blueprintTasks: any[] = Array.isArray(taskList.tasks) ? (taskList.tasks as any[]) : (Array.isArray((taskList as any).templateTasks) ? ((taskList as any).templateTasks as any[]) : [])
+        openTasks = blueprintTasks.map((t: any) => ({ ...t, count: 0, status: 'Open' }))
       }
       
       if (baseTask) {
-        const updatedTask = { ...baseTask, status: newStatus }
+        const updatedTask = { ...baseTask, taskStatus: newStatus }
         
         // Find task in openTasks or closedTasks
         const openIndex = openTasks.findIndex((t: any) => {
@@ -1449,10 +1482,10 @@ export async function POST(request: NextRequest) {
         
         if (openIndex >= 0) {
           // Update in openTasks
-          openTasks[openIndex] = { ...openTasks[openIndex], ...updatedTask, status: newStatus }
+          openTasks[openIndex] = { ...openTasks[openIndex], ...updatedTask, taskStatus: newStatus }
         } else if (closedIndex >= 0) {
           // Update in closedTasks
-          closedTasks[closedIndex] = { ...closedTasks[closedIndex], ...updatedTask, status: newStatus }
+          closedTasks[closedIndex] = { ...closedTasks[closedIndex], ...updatedTask, taskStatus: newStatus }
         } else {
           // Add to openTasks if not found
           openTasks.push(updatedTask)
@@ -1465,8 +1498,8 @@ export async function POST(request: NextRequest) {
         completedTasks[year] = yearBucket
       }
 
-      const updated = await prisma.list.update({
-        where: { id: taskListToUpdate.id },
+      const updated = await prisma.taskList.update({
+        where: { id: taskList.id },
         data: {
           ephemeralTasks: ephemeralTasks,
           completedTasks: completedTasks,
@@ -1475,297 +1508,20 @@ export async function POST(request: NextRequest) {
         include: { template: true }
       })
 
-      // Update Day entry to append/update or remove the task in day.tasks when status changes
-      if (baseTask && dateISO) {
-        try {
-          // Find or create the day entry (ensure only one day per user per date)
-          const existingDay = await prisma.day.findFirst({
-            where: {
-              userId: user.id,
-              date: dateISO
-            }
-          })
-
-          // If status is "open" or "ignored", remove the task from day.tasks and remove ticker entries
-          if (newStatus === 'open' || newStatus === 'ignored') {
-            if (existingDay) {
-              const existingTasks = Array.isArray(existingDay.tasks) ? existingDay.tasks : []
-              
-              // Find if task exists in day.tasks (by id, localeKey, or name)
-              const getTaskKey = (t: any) => (t?.id || t?.localeKey || (typeof t?.name === 'string' ? t.name.toLowerCase() : '')) as string
-              const taskKey = getTaskKey(baseTask)
-              const taskKeyLower = typeof taskKey === 'string' ? taskKey.toLowerCase() : taskKey
-              
-              // Find the task being removed to check if it was "done"
-              const taskBeingRemoved = existingTasks.find((t: any) => {
-                const key = getTaskKey(t)
-                return key === taskKeyLower || key === taskKey
-              })
-              
-              // Remove task from day.tasks
-              const updatedTasks = existingTasks.filter((t: any) => {
-                const key = getTaskKey(t)
-                return key !== taskKeyLower && key !== taskKey
-              })
-
-              // Calculate week, month, quarter, semester from date
-              const dateObj = new Date(dateISO)
-              const [_, weekNumberResult] = getWeekNumber(dateObj)
-              const weekNumber = typeof weekNumberResult === 'number' ? weekNumberResult : Number(weekNumberResult) || 1
-              const month = dateObj.getMonth() + 1
-              const quarter = Math.ceil(month / 3)
-              const semester = month <= 6 ? 1 : 2
-
-              // Remove all ticker entries for this taskId
-              const existingTickers = Array.isArray(existingDay.ticker) ? existingDay.ticker : []
-              const taskId = baseTask.id || baseTask.localeKey || baseTask.name || undefined
-              const updatedTickers = existingTickers.filter((t: any) => {
-                // Remove if taskId matches, or if no taskId in ticker and we're removing by listId (backward compatibility)
-                if (taskId) {
-                  return t.taskId !== taskId
-                }
-                // If no taskId, remove all entries for this listId (backward compatibility)
-                return t.listId !== taskListToUpdate.id
-              })
-
-              // Update productivity for this list based on tasks in day.tasks
-              const existingProductivity = (existingDay.productivity as Productivity | null) || null
-              const { productivity: updatedProductivity, progress: newProgress } = updateProductivityForList(
-                existingProductivity,
-                taskListToUpdate.id,
-                taskListToUpdate.tasks as any[], // List tasks for matching
-                updatedTasks // Day tasks to count from
-              )
-
-              // Get current user balance values
-              const { userBalance, userStash, userEquity } = getUserBalanceValues()
-
-              await prisma.day.update({
-                where: { id: existingDay.id },
-                data: {
-                  tasks: updatedTasks as any,
-                  ticker: updatedTickers as any,
-                  productivity: updatedProductivity as any,
-                  progress: newProgress,
-                  balance: userBalance,
-                  stash: userStash,
-                  equity: userEquity,
-                  week: weekNumber,
-                  month: month,
-                  quarter: quarter,
-                  semester: semester
-                }
-              })
-            }
-            // Exit early if we're removing the task
-            return NextResponse.json({ taskList: updated })
-          }
-
-          // Only copy tasks whose new status is not "open" or "ignored"
-          if (newStatus && newStatus !== 'open' && newStatus !== 'ignored') {
-            // Build the task object to add/update in day.tasks
-            // Get the updated task status from openTasks or closedTasks to ensure we have the latest status
-            const updatedTaskInList = openTasks.find((t: any) => {
-              const key = getKey(t)
-              return key === taskKeyLower || key === taskKey
-            }) || closedTasks.find((t: any) => {
-              const key = getKey(t)
-              return key === taskKeyLower || key === taskKey
-            })
-            
-            // Use the status from the updated task in the list, or fall back to newStatus
-            const currentStatus = updatedTaskInList?.status || newStatus || 'open'
-            
-            const taskForDay: any = {
-              id: baseTask.id || undefined,
-              name: baseTask.name,
-              categories: baseTask.categories || [],
-              area: baseTask.area || 'self',
-              status: currentStatus,
-              cadence: baseTask.cadence || 'daily',
-              times: baseTask.times || 1,
-              count: updatedTaskInList?.count ?? baseTask.count ?? 0,
-              localeKey: baseTask.localeKey || undefined,
-              persons: baseTask.persons || [],
-              things: baseTask.things || [],
-              events: baseTask.events || [],
-              notes: baseTask.notes || [],
-              documents: baseTask.documents || [],
-              favorite: baseTask.favorite || false,
-              isEphemeral: baseTask.isEphemeral || false,
-              createdAt: baseTask.createdAt || undefined,
-              completedOn: updatedTaskInList?.completedOn || baseTask.completedOn || undefined,
-              completers: updatedTaskInList?.completers || baseTask.completers || [],
-              dueDate: baseTask.dueDate || undefined,
-              budget: baseTask.budget || undefined,
-              visibility: baseTask.visibility || undefined,
-              quality: baseTask.quality || undefined
-            }
-
-            // Calculate week, month, quarter, semester from date
-            const dateObj = new Date(dateISO)
-            const [_, weekNumberResult] = getWeekNumber(dateObj)
-            const weekNumber = typeof weekNumberResult === 'number' ? weekNumberResult : Number(weekNumberResult) || 1
-            const month = dateObj.getMonth() + 1
-            const quarter = Math.ceil(month / 3)
-            const semester = month <= 6 ? 1 : 2
-
-            if (existingDay) {
-              // Update existing day - append or update task in tasks array
-              const existingTasks = Array.isArray(existingDay.tasks) ? existingDay.tasks : []
-              
-              // Find if task already exists in day.tasks (by id, localeKey, or name)
-              const getTaskKey = (t: any) => (t?.id || t?.localeKey || (typeof t?.name === 'string' ? t.name.toLowerCase() : '')) as string
-              const taskKey = getTaskKey(taskForDay)
-              const taskKeyLower = typeof taskKey === 'string' ? taskKey.toLowerCase() : taskKey
-              
-              const taskIndex = existingTasks.findIndex((t: any) => {
-                const key = getTaskKey(t)
-                return key === taskKeyLower || key === taskKey
-              })
-
-              let updatedTasks: any[]
-              if (taskIndex >= 0) {
-                // Update existing task
-                updatedTasks = [...existingTasks]
-                updatedTasks[taskIndex] = { ...existingTasks[taskIndex], ...taskForDay }
-              } else {
-                // Append new task
-                updatedTasks = [...existingTasks, taskForDay]
-              }
-
-              // Only add ticker entry if status is "done"
-              const existingTickers = Array.isArray(existingDay.ticker) ? existingDay.ticker : []
-              let updatedTickers = existingTickers
-              
-              if (currentStatus === 'done') {
-                // Calculate profit and prize from task completions for this date
-                const aggregated = await aggregateCompleterEarningsFromTaskList(taskListToUpdate.id, user.id, year, dateISO)
-                
-                // Push new ticker entry with taskId, ensuring uniqueness
-                const taskId = taskForDay.id || taskForDay.localeKey || taskForDay.name || undefined
-                const newTicker = {
-                  listId: taskListToUpdate.id,
-                  taskId: taskId,
-                  profit: aggregated.profit || 0,
-                  prize: aggregated.prize || 0
-                }
-                
-                // Remove existing ticker entry with the same taskId to ensure uniqueness
-                const filteredTickers = existingTickers.filter((t: any) => !t.taskId || t.taskId !== taskId)
-                updatedTickers = [...filteredTickers, newTicker]
-              }
-
-              // Update productivity for this list based on tasks in day.tasks
-              const existingProductivity = (existingDay.productivity as Productivity | null) || null
-              const { productivity: updatedProductivity, progress: newProgress } = updateProductivityForList(
-                existingProductivity,
-                taskListToUpdate.id,
-                taskListToUpdate.tasks as any[], // List tasks for matching
-                updatedTasks // Day tasks to count from
-              )
-
-              // Get current user balance values
-              const { userBalance, userStash, userEquity } = getUserBalanceValues()
-
-              await prisma.day.update({
-                where: { id: existingDay.id },
-                data: {
-                  tasks: updatedTasks as any,
-                  ticker: updatedTickers as any,
-                  productivity: updatedProductivity as any,
-                  progress: newProgress,
-                  balance: userBalance,
-                  stash: userStash,
-                  equity: userEquity,
-                  week: weekNumber,
-                  month: month,
-                  quarter: quarter,
-                  semester: semester
-                }
-              })
-            } else {
-              // Only add ticker entry if status is "done"
-              let ticker: any[] = []
-              
-              if (currentStatus === 'done') {
-                // Calculate profit and prize from task completions for this date
-                const aggregated = await aggregateCompleterEarningsFromTaskList(taskListToUpdate.id, user.id, year, dateISO)
-                
-                // Create ticker array with profit and prize (taskId is already unique for new day)
-                const taskId = taskForDay.id || taskForDay.localeKey || taskForDay.name || undefined
-                ticker = [{
-                  listId: taskListToUpdate.id,
-                  taskId: taskId,
-                  profit: aggregated.profit || 0,
-                  prize: aggregated.prize || 0
-                }]
-              }
-
-              // Calculate productivity for this list based on tasks in day.tasks
-              const { productivity: newProductivity, progress: newProgress } = updateProductivityForList(
-                null,
-                taskListToUpdate.id,
-                taskListToUpdate.tasks as any[], // List tasks for matching
-                [taskForDay] // Day tasks to count from (single task for new day)
-              )
-
-              // Get user's availableBalance, stash, and equity for new day
-              const userBalance = typeof user.availableBalance === 'number' 
-                ? user.availableBalance 
-                : (typeof user.availableBalance === 'string' ? parseFloat(user.availableBalance || '0') : 0)
-              const userStash = typeof user.stash === 'number' 
-                ? user.stash 
-                : (typeof user.stash === 'string' ? parseFloat(user.stash || '0') : 0)
-              const userEquity = typeof user.equity === 'number' 
-                ? user.equity 
-                : (typeof user.equity === 'string' ? parseFloat(user.equity || '0') : 0)
-              
-              // Create new day with the task
-              await prisma.day.create({
-                data: {
-                  userId: user.id,
-                  date: dateISO,
-                  tasks: [taskForDay] as any,
-                  ticker: ticker as any,
-                  productivity: newProductivity as any,
-                  progress: newProgress,
-                  balance: userBalance,
-                  stash: userStash,
-                  equity: userEquity,
-                  week: weekNumber,
-                  month: month,
-                  quarter: quarter,
-                  semester: semester
-                }
-              })
-            }
-          }
-        } catch (dayError) {
-          // Log error but don't fail the request if Day update fails
-          console.error('Error updating Day entry:', dayError)
-        }
-      }
-
       return NextResponse.json({ taskList: updated })
     }
 
     // If editing a specific TaskList by ID, update directly
     if (body.taskListId && create === false) {
-      const existingById = await prisma.list.findUnique({ where: { id: body.taskListId } })
+      const existingById = await prisma.taskList.findUnique({ where: { id: body.taskListId } })
       if (!existingById) {
         return NextResponse.json({ error: 'TaskList not found' }, { status: 404 })
       }
 
       // Translate tasks if provided
-      let updatedTasks = translatedTasks || (Array.isArray(tasks) ? tasks : existingById.tasks)
-      // Ensure all tasks have unique ObjectIds
-      if (Array.isArray(updatedTasks)) {
-        // If updating from template, always generate new IDs; otherwise only for missing ones
-        updatedTasks = ensureUniqueTaskIds(updatedTasks, !!templateId)
-      }
+      const updatedTasks = translatedTasks || (Array.isArray(tasks) ? tasks : existingById.tasks)
 
-      const updated = await prisma.list.update({
+      const updated = await prisma.taskList.update({
         where: { id: existingById.id },
         data: ({
           templateTasks: updatedTasks,
@@ -1776,12 +1532,7 @@ export async function POST(request: NextRequest) {
           budget: typeof budget === 'number' ? budget : (typeof budget !== 'undefined' ? parseFloat(String(budget)) : existingById.budget),
           budgetPercentage: typeof budgetPercentage === 'number' ? budgetPercentage : existingById.budgetPercentage,
           dueDate: typeof dueDate !== 'undefined' ? dueDate : existingById.dueDate,
-          users: Array.isArray(collaborators) 
-            ? [
-                ...((existingById.users as any[]) || []).filter((u: any) => u.role === 'OWNER'),
-                ...collaborators.map((id: string) => ({ userId: id, role: 'COLLABORATOR' as const }))
-              ]
-            : existingById.users,
+          collaborators: Array.isArray(collaborators) ? collaborators : existingById.collaborators,
           updatedAt: new Date()
         } as any),
         include: { template: true }
@@ -1796,13 +1547,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if TaskList with this role already exists for this user
-    const existingTaskList = await prisma.list?.findFirst({
+    const existingTaskList = await prisma.taskList?.findFirst({
       where: {
-        users: {
-          some: {
-            userId: user.id,
-            role: 'OWNER'
-          }
+        owners: {
+          has: user.id
         },
         role: role
       }
@@ -1813,13 +1561,13 @@ export async function POST(request: NextRequest) {
     if (create) {
       // If creating a new default list, demote existing default to custom
       if (role && role.endsWith('.default') && existingTaskList) {
-        await prisma.list.update({
+        await prisma.taskList.update({
           where: { id: existingTaskList.id },
           data: { role: 'custom' }
         })
       }
       // Create new TaskList
-      taskList = await prisma.list.create({
+      taskList = await prisma.taskList.create({
         data: ({
           role: role,
           name: localizedName,
@@ -1827,13 +1575,12 @@ export async function POST(request: NextRequest) {
           budgetPercentage: typeof budgetPercentage === 'number' ? budgetPercentage : 0,
           dueDate: dueDate,
           visibility: 'PRIVATE',
-          users: [
-            { userId: user.id, role: 'OWNER' },
-            ...(Array.isArray(collaborators) ? collaborators.map((id: string) => ({ userId: id, role: 'COLLABORATOR' as const })) : [])
-          ],
+          owners: [user.id],
           templateTasks: translatedTasks,
           tasks: translatedTasks,
-          templateId: templateId
+          templateId: templateId,
+          collaborators: Array.isArray(collaborators) ? collaborators : [],
+          managers: []
         } as any),
         include: { template: true }
       })
@@ -1844,15 +1591,8 @@ export async function POST(request: NextRequest) {
       }
     } else if (existingTaskList) {
       // Update existing TaskList
-      let updatedTasks = translatedTasks || tasks
-      // If updating from template, ensure all tasks have unique ObjectIds
-      if (templateId && updatedTasks) {
-        updatedTasks = ensureUniqueTaskIds(updatedTasks, true)
-      } else if (updatedTasks) {
-        // Even if not from template, ensure all tasks have IDs (generate for missing ones)
-        updatedTasks = ensureUniqueTaskIds(updatedTasks, false)
-      }
-      taskList = await prisma.list?.update({
+      const updatedTasks = translatedTasks || tasks
+      taskList = await prisma.taskList?.update({
         where: { id: existingTaskList.id },
         data: ({
           templateTasks: updatedTasks ?? existingTaskList.tasks,
@@ -1862,12 +1602,7 @@ export async function POST(request: NextRequest) {
           budget: typeof budget === 'number' ? budget : (budget ? parseFloat(String(budget)) : existingTaskList.budget),
           budgetPercentage: typeof budgetPercentage === 'number' ? budgetPercentage : existingTaskList.budgetPercentage,
           dueDate: dueDate ?? existingTaskList.dueDate,
-          users: Array.isArray(collaborators) 
-            ? [
-                ...((existingTaskList.users as any[]) || []).filter((u: any) => u.role === 'OWNER'),
-                ...collaborators.map((id: string) => ({ userId: id, role: 'COLLABORATOR' as const }))
-              ]
-            : existingTaskList.users,
+          collaborators: Array.isArray(collaborators) ? collaborators : existingTaskList.collaborators,
           updatedAt: new Date()
         } as any),
         include: { template: true }
@@ -1879,7 +1614,7 @@ export async function POST(request: NextRequest) {
       }
     } else {
       // Create new TaskList
-      taskList = await prisma.list.create({
+      taskList = await prisma.taskList.create({
         data: ({
           role: role,
           name: localizedName,
@@ -1887,13 +1622,12 @@ export async function POST(request: NextRequest) {
           budgetPercentage: typeof budgetPercentage === 'number' ? budgetPercentage : 0,
           dueDate: dueDate,
           visibility: 'PRIVATE',
-          users: [
-            { userId: user.id, role: 'OWNER' },
-            ...(Array.isArray(collaborators) ? collaborators.map((id: string) => ({ userId: id, role: 'COLLABORATOR' as const })) : [])
-          ],
+          owners: [user.id],
           templateTasks: translatedTasks,
           tasks: translatedTasks,
-          templateId: templateId
+          templateId: templateId,
+          collaborators: Array.isArray(collaborators) ? collaborators : [],
+          managers: []
         } as any),
         include: { template: true }
       })
@@ -1915,7 +1649,7 @@ export async function POST(request: NextRequest) {
       })
 
       // Re-fetch task list to include refreshed template relation
-      taskList = await prisma.list.findUnique({
+      taskList = await prisma.taskList.findUnique({
         where: { id: taskList.id },
         include: { template: true }
       })

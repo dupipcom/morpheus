@@ -30,11 +30,6 @@ export async function POST(request: NextRequest) {
         where: { id: entityId }
       })
       entityExists = !!template
-    } else if (entityType === 'tasklist') {
-      const taskList = await prisma.list.findUnique({
-        where: { id: entityId }
-      })
-      entityExists = !!taskList
     } else if (entityType === 'comment') {
       const comment = await prisma.comment.findUnique({
         where: { id: entityId }
@@ -99,8 +94,6 @@ export async function POST(request: NextRequest) {
         likeData.noteId = entityId
       } else if (entityType === 'template') {
         likeData.templateId = entityId
-      } else if (entityType === 'tasklist') {
-        likeData.taskListId = entityId
       } else if (entityType === 'comment') {
         likeData.commentId = entityId
       }

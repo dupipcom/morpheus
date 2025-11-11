@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     const whereClause = user
       ? {
           OR: [
-            { users: { some: { userId: user.id, role: 'OWNER' } } },
+            { owners: { has: user.id } },
             { visibility: 'PUBLIC' },
           ],
         }
@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
       data: {
         name: name || null,
         visibility: (visibility as any) || 'PRIVATE',
-        users: [{ userId: user.id, role: 'OWNER' }],
+        owners: [user.id],
         tasks: Array.isArray(tasks) ? tasks : [],
       },
     })

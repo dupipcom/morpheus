@@ -12,12 +12,12 @@ import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
-import { VisibilitySelect, VisibilityOption } from "@/components/visibilitySelect"
+import { VisibilitySelect, VisibilityOption } from "@/components/VisibilitySelect"
 import { ViewMenu } from "@/components/viewMenu"
-import { DashboardView } from "@/views/dashboardView"
+import { AnalyticsView } from "@/views/analyticsView"
 import { useDebounce } from "@/lib/hooks/useDebounce"
 import { generatePublicChartsData } from "@/lib/profileUtils"
-import { PublicChartsView } from "@/components/publicChartsView"
+import { PublicChartsView } from "@/components/PublicChartsView"
 import { Skeleton } from "@/components/ui/skeleton"
 
 export default function ProfilePage({ params }: { params: Promise<{ locale: string }> }) {
@@ -71,27 +71,26 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
       if (response.ok) {
         const data = await response.json()
         if (data.profile) {
-          // Extract data from new profile.data structure
-          const profileData = data.profile.data || {}
-          
-          // Helper to convert visibility boolean to VisibilityOption
-          const getVisibility = (visibility: boolean | undefined): VisibilityOption => {
-            return visibility ? 'PUBLIC' : 'PRIVATE'
+          // Helper to convert old boolean format or get new visibility format
+          const getVisibility = (visible: boolean | string | undefined, visibility: string | undefined): VisibilityOption => {
+            if (visibility && typeof visibility === 'string') return visibility as VisibilityOption
+            if (typeof visible === 'boolean') return visible ? 'PUBLIC' : 'PRIVATE'
+            return 'PRIVATE'
           }
           
           setProfile({
-            firstName: profileData.firstName?.value || '',
-            lastName: profileData.lastName?.value || '',
-            userName: profileData.username?.value || '',
-            bio: profileData.bio?.value || '',
-            firstNameVisibility: getVisibility(profileData.firstName?.visibility),
-            lastNameVisibility: getVisibility(profileData.lastName?.visibility),
-            userNameVisibility: getVisibility(profileData.username?.visibility),
-            bioVisibility: getVisibility(profileData.bio?.visibility),
-            profilePictureVisibility: getVisibility(profileData.profilePicture?.visibility),
-            publicChartsVisibility: getVisibility(profileData.charts?.visibility),
+            firstName: data.profile.firstName || '',
+            lastName: data.profile.lastName || '',
+            userName: data.profile.userName || '',
+            bio: data.profile.bio || '',
+            firstNameVisibility: getVisibility(data.profile.firstNameVisible, data.profile.firstNameVisibility),
+            lastNameVisibility: getVisibility(data.profile.lastNameVisible, data.profile.lastNameVisibility),
+            userNameVisibility: getVisibility(data.profile.userNameVisible, data.profile.userNameVisibility),
+            bioVisibility: getVisibility(data.profile.bioVisible, data.profile.bioVisibility),
+            profilePictureVisibility: getVisibility(data.profile.profilePictureVisible, data.profile.profilePictureVisibility),
+            publicChartsVisibility: getVisibility(data.profile.publicChartsVisible, data.profile.publicChartsVisibility),
           })
-          setPublicCharts(profileData.charts?.value || {})
+          setPublicCharts(data.profile.publicCharts || {})
         }
       }
     } catch (error) {

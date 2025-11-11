@@ -7,17 +7,26 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
   try {
     const { userName } = await params
 
-    // Find profile by username at root level (optimized query)
     const profile = await prisma.profile.findUnique({
-      where: {
-        username: userName
-      },
+      where: { userName },
       select: {
         id: true,
-        data: true,
+        firstName: true,
+        lastName: true,
+        userName: true,
+        bio: true,
+        profilePicture: true,
+        publicCharts: true,
+        firstNameVisibility: true,
+        lastNameVisibility: true,
+        userNameVisibility: true,
+        bioVisibility: true,
+        profilePictureVisibility: true,
+        publicChartsVisibility: true,
         user: {
           select: {
             id: true,
+            entries: true,
             friends: true,
             closeFriends: true
           }
@@ -27,23 +36,6 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
 
     if (!profile) {
       return Response.json({ error: 'Profile not found' }, { status: 404 })
-    }
-
-    // Extract profile data from the new structure
-    const profileData = profile.data || {}
-    const profileForFiltering = {
-      userName: profileData.username?.value || null,
-      firstName: profileData.firstName?.value || null,
-      lastName: profileData.lastName?.value || null,
-      bio: profileData.bio?.value || null,
-      profilePicture: profileData.profilePicture?.value || null,
-      publicCharts: profileData.charts?.value || null,
-      firstNameVisibility: profileData.firstName?.visibility ? 'PUBLIC' : 'PRIVATE',
-      lastNameVisibility: profileData.lastName?.visibility ? 'PUBLIC' : 'PRIVATE',
-      userNameVisibility: profileData.username?.visibility ? 'PUBLIC' : 'PRIVATE',
-      bioVisibility: profileData.bio?.visibility ? 'PUBLIC' : 'PRIVATE',
-      profilePictureVisibility: profileData.profilePicture?.visibility ? 'PUBLIC' : 'PRIVATE',
-      publicChartsVisibility: profileData.charts?.visibility ? 'PUBLIC' : 'PRIVATE'
     }
 
     // Determine viewer and relationship
@@ -80,16 +72,15 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
 
     // Generate public charts data if charts are visible
     let publicChartsData = null
-    if (isFieldVisible(profileForFiltering.publicChartsVisibility || 'PRIVATE') && profileForFiltering.publicCharts) {
+    if (isFieldVisible(profile.publicChartsVisibility || 'PRIVATE') && profile.publicCharts) {
       const chartVisibility = {
-        moodCharts: (profileForFiltering.publicCharts as any)?.moodCharts || false,
-        simplifiedMoodChart: (profileForFiltering.publicCharts as any)?.simplifiedMoodChart || false,
-        productivityCharts: (profileForFiltering.publicCharts as any)?.productivityCharts || false,
-        earningsCharts: (profileForFiltering.publicCharts as any)?.earningsCharts || false,
+        moodCharts: (profile.publicCharts as any)?.moodCharts || false,
+        simplifiedMoodChart: (profile.publicCharts as any)?.simplifiedMoodChart || false,
+        productivityCharts: (profile.publicCharts as any)?.productivityCharts || false,
+        earningsCharts: (profile.publicCharts as any)?.earningsCharts || false,
       }
       
-      // Entries field no longer exists on User model, pass null to generatePublicChartsData
-      publicChartsData = generatePublicChartsData(null, chartVisibility)
+      publicChartsData = generatePublicChartsData(profile.user.entries, chartVisibility)
     }
 
     // Determine allowed visibility for templates/lists
@@ -101,171 +92,30 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
       ? ["PUBLIC", "FRIENDS"]
       : ["PUBLIC"]
 
-    // Fetch visible templates and lists owned by the profile user with likes and comments
+    // Fetch visible templates and lists owned by the profile user
     let visibleTemplates: any[] = []
     let visibleTaskLists: any[] = []
-    
-    // Check if current user has liked templates/tasklists
-    let userLikedTemplateIds: string[] = []
-    let userLikedTaskListIds: string[] = []
-    if (viewerUser) {
-      try {
-        const templateLikes = await prisma.like.findMany({
-          where: {
-            userId: viewerUser.id,
-            entityType: 'template'
-          },
-          select: { entityId: true }
-        })
-        userLikedTemplateIds = templateLikes.map(like => like.entityId)
-      } catch (_) {}
-      
-      try {
-        const taskListLikes = await prisma.like.findMany({
-          where: {
-            userId: viewerUser.id,
-            entityType: 'tasklist'
-          },
-          select: { entityId: true }
-        })
-        userLikedTaskListIds = taskListLikes.map(like => like.entityId)
-      } catch (_) {}
-    }
-    
     try {
       visibleTemplates = await prisma.template.findMany({
         where: {
-          users: { some: { userId: profile.user.id, role: 'OWNER' } },
+          owners: { has: profile.user.id },
           visibility: { in: allowedVis as any }
         },
-        select: { 
-          id: true, 
-          name: true, 
-          role: true, 
-          visibility: true, 
-          updatedAt: true, 
-          createdAt: true,
-          _count: {
-            select: {
-              comments: true,
-              likes: true
-            }
-          },
-          comments: {
-            include: {
-              user: {
-                include: {
-                  profiles: {
-                    select: {
-                      userName: true,
-                      profilePicture: true,
-                      firstName: true,
-                      lastName: true
-                    }
-                  }
-                }
-              },
-              _count: {
-                select: {
-                  likes: true
-                }
-              }
-            },
-            orderBy: {
-              createdAt: 'desc'
-            },
-            take: 3 // Get last 3 comments for preview
-          }
-        }
-      })
-      
-      // Add isLiked flag and sort comments
-      visibleTemplates = visibleTemplates.map(template => {
-        const sortedComments = template.comments ? [...template.comments].map((comment: any) => ({
-          ...comment,
-          user: {
-            ...comment.user,
-            profile: comment.user.profiles?.[0] || null
-          }
-        })).sort((a: any, b: any) => {
-          const likeDiff = (b._count?.likes || 0) - (a._count?.likes || 0)
-          if (likeDiff !== 0) return likeDiff
-          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        }) : []
-        return {
-          ...template,
-          isLiked: userLikedTemplateIds.includes(template.id),
-          comments: sortedComments
-        }
+        select: { id: true, name: true, role: true, visibility: true, updatedAt: true, createdAt: true }
       })
     } catch (_) {}
-    
     try {
-      visibleTaskLists = await prisma.list.findMany({
+      visibleTaskLists = await prisma.taskList.findMany({
         where: {
-          users: { some: { userId: profile.user.id, role: 'OWNER' } },
+          owners: { has: profile.user.id },
           visibility: { in: allowedVis as any }
         },
-        select: { 
-          id: true, 
-          name: true, 
-          role: true, 
-          visibility: true, 
-          budget: true, 
-          dueDate: true, 
-          updatedAt: true, 
-          createdAt: true,
-          _count: {
-            select: {
-              comments: true,
-              likes: true
-            }
-          },
-          comments: {
-            include: {
-              user: {
-                include: {
-                  profiles: {
-                    select: {
-                      userName: true,
-                      profilePicture: true,
-                      firstName: true,
-                      lastName: true
-                    }
-                  }
-                }
-              },
-              _count: {
-                select: {
-                  likes: true
-                }
-              }
-            },
-            orderBy: {
-              createdAt: 'desc'
-            },
-            take: 3 // Get last 3 comments for preview
-          }
-        }
-      })
-      
-      // Add isLiked flag and sort comments
-      visibleTaskLists = visibleTaskLists.map(taskList => {
-        const sortedComments = taskList.comments ? [...taskList.comments].sort((a: any, b: any) => {
-          const likeDiff = (b._count?.likes || 0) - (a._count?.likes || 0)
-          if (likeDiff !== 0) return likeDiff
-          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        }) : []
-        return {
-          ...taskList,
-          isLiked: userLikedTaskListIds.includes(taskList.id),
-          comments: sortedComments
-        }
+        select: { id: true, name: true, role: true, visibility: true, budget: true, dueDate: true, updatedAt: true, createdAt: true }
       })
     } catch (_) {}
 
     // Filter profile fields based on visibility and relationship
-    const filteredProfile = filterProfileFields(profileForFiltering, {
+    const filteredProfile = filterProfileFields(profile, {
       isOwner,
       isFriend,
       isCloseFriend

@@ -11,13 +11,10 @@ import prisma from '@/lib/prisma'
 export async function recalculateUserBudget(userId: string): Promise<void> {
   try {
     // Get all task lists owned by the user
-    const taskLists = await prisma.list.findMany({
+    const taskLists = await prisma.taskList.findMany({
       where: {
-        users: {
-          some: {
-            userId: userId,
-            role: 'OWNER'
-          }
+        owners: {
+          has: userId
         }
       },
       select: {
@@ -83,19 +80,14 @@ export async function validateBudgetAllocation(
   try {
     // Get all task lists owned by the user, excluding the current one
     const where: any = {
-      users: {
-        some: {
-          userId: userId,
-          role: 'OWNER'
-        }
-      }
+      owners: { has: userId }
     }
     
     if (currentListId) {
       where.id = { not: currentListId }
     }
 
-    const taskLists = await prisma.list.findMany({
+    const taskLists = await prisma.taskList.findMany({
       where,
       select: {
         budgetPercentage: true

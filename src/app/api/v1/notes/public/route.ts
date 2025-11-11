@@ -89,13 +89,8 @@ export async function GET(request: NextRequest) {
     }
 
     // Fetch notes with user profile info
-    // Filter out notes without users to avoid null user errors
     const notes = await prisma.note.findMany({
-      where: {
-        ...whereClause,
-        // Ensure userId exists (not null) - in MongoDB, we can't use { not: null }, 
-        // but we can ensure it's in the whereClause which already filters by userId
-      },
+      where: whereClause,
       orderBy: {
         createdAt: 'desc'
       },
@@ -107,7 +102,6 @@ export async function GET(request: NextRequest) {
         visibility: true,
         createdAt: true,
         date: true,
-        userId: true,
         _count: {
           select: {
             comments: true,
@@ -117,10 +111,14 @@ export async function GET(request: NextRequest) {
         comments: {
           include: {
             user: {
-              include: {
-                profiles: {
+              select: {
+                id: true,
+                profile: {
                   select: {
-                    data: true
+                    userName: true,
+                    profilePicture: true,
+                    firstName: true,
+                    lastName: true
                   }
                 }
               }
@@ -138,11 +136,17 @@ export async function GET(request: NextRequest) {
         user: {
           select: {
             id: true,
-            friends: true,
-            closeFriends: true,
-            profiles: {
+            profile: {
               select: {
-                data: true
+                userName: true,
+                profilePicture: true,
+                profilePictureVisibility: true,
+                firstName: true,
+                firstNameVisibility: true,
+                lastName: true,
+                lastNameVisibility: true,
+                bio: true,
+                bioVisibility: true
               }
             }
           }
@@ -185,45 +189,11 @@ export async function GET(request: NextRequest) {
     }
 
     // Filter out fields if not visible based on relationship
-    // Also filter out notes without valid users
-    const cleanedNotes = await Promise.all(notesWithSortedComments
-      .filter((note: any) => note.user !== null) // Filter out notes without users
-      .map(async (note) => {
-      // Transform profiles[0] to profile for comments
-      const commentsWithProfile = note.comments?.map((comment: any) => {
-        const commentProfile = comment.user.profiles?.[0]
-        const commentProfileData = commentProfile?.data || {}
-        const commentProfileForFiltering = {
-          userName: commentProfileData.username?.value || null,
-          firstName: commentProfileData.firstName?.value || null,
-          lastName: commentProfileData.lastName?.value || null,
-          bio: commentProfileData.bio?.value || null,
-          profilePicture: commentProfileData.profilePicture?.value || null,
-          firstNameVisibility: commentProfileData.firstName?.visibility ? 'PUBLIC' : 'PRIVATE',
-          lastNameVisibility: commentProfileData.lastName?.visibility ? 'PUBLIC' : 'PRIVATE',
-          userNameVisibility: commentProfileData.username?.visibility ? 'PUBLIC' : 'PRIVATE',
-          bioVisibility: commentProfileData.bio?.visibility ? 'PUBLIC' : 'PRIVATE',
-          profilePictureVisibility: commentProfileData.profilePicture?.visibility ? 'PUBLIC' : 'PRIVATE'
-        }
-        return {
-        ...comment,
-        user: {
-          ...comment.user,
-            profile: commentProfile ? filterProfileFields(commentProfileForFiltering, {
-              isOwner: false,
-              isFriend: false,
-              isCloseFriend: false
-            }) : null
-        }
-        }
-      }) || []
-
-      const profile = note.user.profiles?.[0]
-      if (!profile) {
+    const cleanedNotes = await Promise.all(notesWithSortedComments.map(async (note) => {
+      if (!note.user.profile) {
         // Ensure profile object exists even if null, so component can access profile.userName
         return {
           ...note,
-          comments: commentsWithProfile,
           user: {
             ...note.user,
             profile: {
@@ -257,25 +227,8 @@ export async function GET(request: NextRequest) {
         noteAuthorFriends.includes(currentUserIdStr) &&
         currentUserFriends.includes(noteAuthorIdStr)
 
-      // Extract profile data from new structure and transform for filterProfileFields
-      const profileData = profile.data || {}
-      const profileForFiltering = {
-        userName: profileData.username?.value || null,
-        firstName: profileData.firstName?.value || null,
-        lastName: profileData.lastName?.value || null,
-        bio: profileData.bio?.value || null,
-        profilePicture: profileData.profilePicture?.value || null,
-        publicCharts: profileData.charts?.value || null,
-        firstNameVisibility: profileData.firstName?.visibility ? 'PUBLIC' : 'PRIVATE',
-        lastNameVisibility: profileData.lastName?.visibility ? 'PUBLIC' : 'PRIVATE',
-        userNameVisibility: profileData.username?.visibility ? 'PUBLIC' : 'PRIVATE',
-        bioVisibility: profileData.bio?.visibility ? 'PUBLIC' : 'PRIVATE',
-        profilePictureVisibility: profileData.profilePicture?.visibility ? 'PUBLIC' : 'PRIVATE',
-        publicChartsVisibility: profileData.charts?.visibility ? 'PUBLIC' : 'PRIVATE'
-      }
-
       // Filter profile fields based on visibility and relationship
-      const filteredProfile = filterProfileFields(profileForFiltering, {
+      const profile = filterProfileFields(note.user.profile, {
         isOwner,
         isFriend,
         isCloseFriend
@@ -283,10 +236,9 @@ export async function GET(request: NextRequest) {
 
       return {
         ...note,
-        comments: commentsWithProfile,
         user: {
           ...note.user,
-          profile: filteredProfile
+          profile
         }
       }
     }))

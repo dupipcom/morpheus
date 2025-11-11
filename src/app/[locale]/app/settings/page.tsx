@@ -12,7 +12,7 @@ import { SettingsView } from "@/views/settingsView"
 import { ViewMenu } from "@/components/viewMenu"
 import { setLoginTime, getLoginTime } from '@/lib/cookieManager'
 import { useI18n } from "@/lib/contexts/i18n"
-import { ContentLoadingWrapper } from "@/components/contentLoadingWrapper"
+import { ContentLoadingWrapper } from "@/components/ContentLoadingWrapper"
 
 export default function LocalizedSettings({ params }: { params: Promise<{ locale: string }> }) {
   const [globalContext, setGlobalContext] = useState({

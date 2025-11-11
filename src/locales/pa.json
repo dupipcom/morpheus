@@ -87,7 +87,7 @@
     "closeDay": "ਦਿਨ ਬੰਦ ਕਰੋ",
     "earnings": "ਕਮਾਈ",
     "publish": {
-      "title": "ਲਿਖੋ",
+      "title": "Publish a Note",
       "placeholder": "Write your note here...",
       "selectVisibility": "Select visibility",
       "visibility": {

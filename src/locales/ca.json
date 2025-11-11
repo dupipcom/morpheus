@@ -83,7 +83,7 @@
     "closeDay": "Tancar dia",
     "earnings": "Guanys",
     "publish": {
-      "title": "Escriu",
+      "title": "Publicar una nota",
       "placeholder": "Escriu la teva nota aquí...",
       "selectVisibility": "Seleccionar visibilitat",
       "visibility": {

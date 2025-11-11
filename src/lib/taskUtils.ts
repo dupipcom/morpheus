@@ -9,17 +9,17 @@ export function calculateTaskStatus(
   count: number,
   times: number,
   existingStatus?: TaskStatus
-): { status: TaskStatus } {
+): { status: 'Done' | 'Open'; taskStatus: TaskStatus } {
   if (count >= times) {
-    return { status: 'done' }
+    return { status: 'Done', taskStatus: 'done' }
   } else if (count > 0) {
     // Preserve manually set status (except 'open' and 'done')
     if (existingStatus && existingStatus !== 'open' && existingStatus !== 'done') {
-      return { status: existingStatus }
+      return { status: 'Open', taskStatus: existingStatus }
     }
-    return { status: 'in progress' }
+    return { status: 'Open', taskStatus: 'in progress' }
   } else {
-    return { status: 'open' }
+    return { status: 'Open', taskStatus: 'open' }
   }
 }
 
@@ -38,8 +38,9 @@ export function prepareIncrementActions(
     if (action.name === taskName) {
       // Increment count
       c.count = (c.count || 0) + 1
-      const { status } = calculateTaskStatus(c.count, times || 1, existingStatus)
+      const { status, taskStatus } = calculateTaskStatus(c.count, times || 1, existingStatus)
       c.status = status
+      c.taskStatus = taskStatus
     }
     return c
   })
@@ -60,8 +61,9 @@ export function prepareDecrementActions(
     if (action.name === taskName) {
       // Decrement count (can't go below 0)
       c.count = Math.max(0, (c.count || 0) - 1)
-      const { status } = calculateTaskStatus(c.count, times || 1, existingStatus)
+      const { status, taskStatus } = calculateTaskStatus(c.count, times || 1, existingStatus)
       c.status = status
+      c.taskStatus = taskStatus
     }
     return c
   })
@@ -99,7 +101,7 @@ export async function handleEphemeralTaskUpdate(
         ephemeralTasks: { update: { id: ephemeralTask.id, count: newCount, status: updatedAction.status } }
       })
     })
-  } else if (isInClosed && newCount >= times && updatedAction.status === 'done') {
+  } else if (isInClosed && newCount >= times && updatedAction.status === 'Done') {
     // Task is fully completed - close it if not already closed
     await fetch('/api/v1/tasklists', {
       method: 'POST',
@@ -165,8 +167,6 @@ export async function updateUserEntriesForTasks(
     }
   } catch { }
 }
-
-
 
 
 

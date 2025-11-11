@@ -15,8 +15,8 @@ import {
 } from '@clerk/nextjs'
 
 import { Nav } from '@/components/ui/nav'
-import { Footer } from '@/components/footer'
-import { BottomNav } from '@/components/bottomNav'
+import { Footer } from '@/components/Footer'
+import { BottomNav } from '@/components/BottomNav'
 
 import "./globals.css"
 
@@ -24,9 +24,9 @@ import { useLocalStorage } from 'usehooks-ts';
 
 import { Skeleton } from "@/components/ui/skeleton"
 import { Toaster } from '@/components/ui/sonner'
-import { AuthWrapper } from '@/components/authWrapper'
-import { AuthToast } from '@/components/authToast'
-import { AppContent } from '@/components/appContent'
+import { AuthWrapper } from '@/components/auth-wrapper'
+import { AuthToast } from '@/components/auth-toast'
+import { AppContent } from '@/components/app-content'
 import { getLocaleFromPath } from './helpers'
 import { defaultLocale } from './constants'
 import { getLocaleCookie } from '@/lib/localeUtils'
