@@ -172,8 +172,17 @@ export const DoToolbar = ({
     let cancelled = false
     const run = async () => {
       try {
-        const owners: string[] = Array.isArray((selectedList as any)?.owners) ? (selectedList as any).owners : []
-        const collaborators: string[] = Array.isArray((selectedList as any)?.collaborators) ? (selectedList as any).collaborators : []
+        // Extract user IDs from users array (new model) or fallback to old fields
+        const users = Array.isArray((selectedList as any)?.users) ? (selectedList as any).users : []
+        const ownersFromUsers = users.filter((u: any) => u.role === 'OWNER').map((u: any) => u.userId)
+        const collaboratorsFromUsers = users.filter((u: any) => u.role === 'COLLABORATOR' || u.role === 'MANAGER').map((u: any) => u.userId)
+        
+        // Fallback to old fields for backward compatibility
+        const ownersFromOldField = Array.isArray((selectedList as any)?.owners) ? (selectedList as any).owners : []
+        const collaboratorsFromOldField = Array.isArray((selectedList as any)?.collaborators) ? (selectedList as any).collaborators : []
+        
+        const owners = ownersFromUsers.length > 0 ? ownersFromUsers : ownersFromOldField
+        const collaborators = collaboratorsFromUsers.length > 0 ? collaboratorsFromUsers : collaboratorsFromOldField
         const allIds = [...new Set([...owners, ...collaborators])]
         
         if (!allIds.length) { setCollabProfiles({}); return }
@@ -188,7 +197,7 @@ export const DoToolbar = ({
     }
     run()
     return () => { cancelled = true }
-  }, [selectedList?.id, JSON.stringify((selectedList as any)?.owners || []), JSON.stringify((selectedList as any)?.collaborators || [])])
+  }, [selectedList?.id, JSON.stringify((selectedList as any)?.users || []), JSON.stringify((selectedList as any)?.owners || []), JSON.stringify((selectedList as any)?.collaborators || [])])
 
 
   // Determine if we should show the date picker (only for daily.* or weekly.* lists)
@@ -363,28 +372,46 @@ export const DoToolbar = ({
                       {(selectedList as any).dueDate}
                     </Badge>
                   )}
-                  {/* Show owner badge when there are collaborators */}
-                  {Array.isArray((selectedList as any)?.collaborators) && (selectedList as any).collaborators.length > 0 && Array.isArray((selectedList as any)?.owners) && (selectedList as any).owners.map((id: string) => {
-                    const userName = collabProfiles[id] || id
-                    const earnings = (selectedList as any)?.collaboratorEarnings?.[userName] || 0
+                  {/* Show owner and collaborator badges from users array */}
+                  {(() => {
+                    const users = Array.isArray((selectedList as any)?.users) ? (selectedList as any).users : []
+                    const owners = users.filter((u: any) => u.role === 'OWNER').map((u: any) => u.userId)
+                    const collaborators = users.filter((u: any) => u.role === 'COLLABORATOR' || u.role === 'MANAGER').map((u: any) => u.userId)
+                    
+                    // Fallback to old fields for backward compatibility
+                    const ownersFromOld = Array.isArray((selectedList as any)?.owners) ? (selectedList as any).owners : []
+                    const collaboratorsFromOld = Array.isArray((selectedList as any)?.collaborators) ? (selectedList as any).collaborators : []
+                    
+                    const allOwners = owners.length > 0 ? owners : ownersFromOld
+                    const allCollaborators = collaborators.length > 0 ? collaborators : collaboratorsFromOld
+                    
                     return (
-                      <Badge key={`owner-${id}`} variant="default" className="bg-primary dark:bg-accent text-background hover:bg-foreground/90">
-                        <UserIcon className="h-3 w-3 mr-1" />
-                        @{userName}{earnings > 0 ? `: $${earnings.toFixed(2)}` : ''}
-                      </Badge>
+                      <>
+                        {/* Show owner badges when there are collaborators */}
+                        {allCollaborators.length > 0 && allOwners.map((id: string) => {
+                          const userName = collabProfiles[id] || id
+                          const earnings = (selectedList as any)?.collaboratorEarnings?.[userName] || 0
+                          return (
+                            <Badge key={`owner-${id}`} variant="default" className="bg-primary dark:bg-accent text-background hover:bg-foreground/90">
+                              <UserIcon className="h-3 w-3 mr-1" />
+                              @{userName}{earnings > 0 ? `: $${earnings.toFixed(2)}` : ''}
+                            </Badge>
+                          )
+                        })}
+                        {/* Show collaborator badges */}
+                        {allCollaborators.map((id: string) => {
+                          const userName = collabProfiles[id] || id
+                          const earnings = (selectedList as any)?.collaboratorEarnings?.[userName] || 0
+                          return (
+                            <Badge key={`collab-${id}`} className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80">
+                              <UserIcon className="h-3 w-3 mr-1" />
+                              @{userName}{earnings > 0 ? `: $${earnings.toFixed(2)}` : ''}
+                            </Badge>
+                          )
+                        })}
+                      </>
                     )
-                  })}
-                  {/* Show collaborator badges */}
-                  {Array.isArray((selectedList as any)?.collaborators) && (selectedList as any).collaborators.map((id: string) => {
-                    const userName = collabProfiles[id] || id
-                    const earnings = (selectedList as any)?.collaboratorEarnings?.[userName] || 0
-                    return (
-                      <Badge key={`collab-${id}`} className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80">
-                        <UserIcon className="h-3 w-3 mr-1" />
-                        @{userName}{earnings > 0 ? `: $${earnings.toFixed(2)}` : ''}
-                      </Badge>
-                    )
-                  })}
+                  })()}
                 </div>
               )}
 

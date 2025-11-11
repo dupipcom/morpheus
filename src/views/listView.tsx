@@ -152,11 +152,17 @@ const formatDateLocal = (date: Date): string => {
       let cancelled = false
       const run = async () => {
         try {
-          // Owners
-          const owners: string[] = Array.isArray((selectedTaskList as any)?.owners) ? (selectedTaskList as any).owners : []
+          // Extract owners and collaborators from users array (new model) or fallback to old fields
+          const users = Array.isArray((selectedTaskList as any)?.users) ? (selectedTaskList as any).users : []
+          const ownersFromUsers = users.filter((u: any) => u.role === 'OWNER').map((u: any) => u.userId)
+          const collaboratorsFromUsers = users.filter((u: any) => u.role === 'COLLABORATOR' || u.role === 'MANAGER').map((u: any) => u.userId)
           
-          // Collaborators
-          const collaborators: string[] = Array.isArray((selectedTaskList as any)?.collaborators) ? (selectedTaskList as any).collaborators : []
+          // Fallback to old fields for backward compatibility
+          const ownersFromOld = Array.isArray((selectedTaskList as any)?.owners) ? (selectedTaskList as any).owners : []
+          const collaboratorsFromOld = Array.isArray((selectedTaskList as any)?.collaborators) ? (selectedTaskList as any).collaborators : []
+          
+          const owners: string[] = ownersFromUsers.length > 0 ? ownersFromUsers : ownersFromOld
+          const collaborators: string[] = collaboratorsFromUsers.length > 0 ? collaboratorsFromUsers : collaboratorsFromOld
 
           // Get completers - for weekly lists, check all dates in the week
           const completerIds = new Set<string>()
@@ -181,7 +187,14 @@ const formatDateLocal = (date: Date): string => {
             }
           })
 
-          const ids = Array.from(new Set([...(owners || []), ...(collaborators || []), ...Array.from(completerIds)]))
+          // Include current user ID to ensure their profile is always in cache
+          const currentUserId = (session?.user as any)?.id
+          const allIds = new Set([...(owners || []), ...(collaborators || []), ...Array.from(completerIds)])
+          if (currentUserId) {
+            allIds.add(String(currentUserId))
+          }
+          
+          const ids = Array.from(allIds)
           if (!ids.length) { setCollabProfiles({}); return }
           const res = await fetch(`/api/v1/profiles/by-ids?ids=${encodeURIComponent(ids.join(','))}`)
           if (!cancelled && res.ok) {
@@ -198,7 +211,7 @@ const formatDateLocal = (date: Date): string => {
       }
       run()
       return () => { cancelled = true }
-    }, [selectedTaskList?.id, JSON.stringify((selectedTaskList as any)?.owners || []), JSON.stringify((selectedTaskList as any)?.collaborators || []), isWeeklyList, getWeekDates, date, year])
+    }, [selectedTaskList?.id, JSON.stringify((selectedTaskList as any)?.users || []), JSON.stringify((selectedTaskList as any)?.owners || []), JSON.stringify((selectedTaskList as any)?.collaborators || []), isWeeklyList, getWeekDates, date, year, (session?.user as any)?.id])
 
     // Memoize datesToCheck to ensure it's reactive for both daily and weekly lists
     const datesToCheck = useMemo(() => {
@@ -1066,15 +1079,24 @@ const formatDateLocal = (date: Date): string => {
           {sortedMergedTasks.map((task: any) => {
             const isDone = (task?.status === 'done') || values.includes(task?.name)
             const lastCompleter = Array.isArray(task?.completers) && task.completers.length > 0 ? task.completers[task.completers.length - 1] : undefined
-            const isCollabCompleter = lastCompleter && Array.isArray((selectedTaskList as any)?.collaborators) && (selectedTaskList as any).collaborators.includes(lastCompleter.id)
-            const isOwnerCompleter = lastCompleter && Array.isArray((selectedTaskList as any)?.owners) && (selectedTaskList as any).owners.includes(lastCompleter.id)
-            const hasCollaborators = Array.isArray((selectedTaskList as any)?.collaborators) && (selectedTaskList as any).collaborators.length > 0
+            // Extract owners and collaborators from users array (new model) or fallback to old fields
+            const users = Array.isArray((selectedTaskList as any)?.users) ? (selectedTaskList as any).users : []
+            const ownersFromUsers = users.filter((u: any) => u.role === 'OWNER').map((u: any) => u.userId)
+            const collaboratorsFromUsers = users.filter((u: any) => u.role === 'COLLABORATOR' || u.role === 'MANAGER').map((u: any) => u.userId)
+            const ownersFromOld = Array.isArray((selectedTaskList as any)?.owners) ? (selectedTaskList as any).owners : []
+            const collaboratorsFromOld = Array.isArray((selectedTaskList as any)?.collaborators) ? (selectedTaskList as any).collaborators : []
+            const allOwners = ownersFromUsers.length > 0 ? ownersFromUsers : ownersFromOld
+            const allCollaborators = collaboratorsFromUsers.length > 0 ? collaboratorsFromUsers : collaboratorsFromOld
             
-            // Get the completer name: if there's a lastCompleter use them, otherwise use the owner
-            const ownerId = Array.isArray((selectedTaskList as any)?.owners) && (selectedTaskList as any).owners.length > 0 ? (selectedTaskList as any).owners[0] : undefined
+            const isCollabCompleter = lastCompleter && allCollaborators.includes(lastCompleter.id)
+            const isOwnerCompleter = lastCompleter && allOwners.includes(lastCompleter.id)
+            const hasCollaborators = allCollaborators.length > 0
+            
+            // Get the completer name: only show if there's actually a completer (don't fallback to owner)
+            // This prevents showing owner name before completer data is available
             const completerName = lastCompleter 
               ? (collabProfiles[String(lastCompleter.id)] || String(lastCompleter.id))
-              : (ownerId ? (collabProfiles[String(ownerId)] || String(ownerId)) : '')
+              : null
             
             // Calculate earnings for THIS specific task completion
             const listBudget = (selectedTaskList as any)?.budget
@@ -1151,7 +1173,7 @@ const formatDateLocal = (date: Date): string => {
                 </div>
                 {isDone
                   && hasCollaborators
-                  && completerName && (
+                  && completerName && lastCompleter && (
                     <div className="mt-1">
                       <Badge variant="secondary" className="bg-muted text-muted-foreground border-muted">
                         <UserIcon className="h-3 w-3 mr-1" />
