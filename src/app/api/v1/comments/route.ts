@@ -24,16 +24,15 @@ export async function GET(request: NextRequest) {
       where: whereClause,
       include: {
         user: {
-          select: {
-            id: true,
-            profile: {
-              select: {
-                userName: true,
-                profilePicture: true,
-                firstName: true,
-                lastName: true
+          include: {
+              profiles: {
+                select: {
+                  userName: true,
+                  profilePicture: true,
+                  firstName: true,
+                  lastName: true
+                }
               }
-            }
           }
         },
         _count: {
@@ -48,7 +47,13 @@ export async function GET(request: NextRequest) {
     })
 
     // Sort by like count (descending), then by creation date (descending)
-    const sortedComments = comments.sort((a, b) => {
+    const sortedComments = comments.map((comment: any) => ({
+      ...comment,
+      user: {
+        ...comment.user,
+        profile: comment.user.profiles?.[0] || null
+      }
+    })).sort((a, b) => {
       const likeDiff = (b._count?.likes || 0) - (a._count?.likes || 0)
       if (likeDiff !== 0) return likeDiff
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -94,7 +99,7 @@ export async function POST(request: NextRequest) {
       })
       entityExists = !!template
     } else if (entityType === 'tasklist') {
-      const taskList = await prisma.taskList.findUnique({
+      const taskList = await prisma.list.findUnique({
         where: { id: entityId }
       })
       entityExists = !!taskList
@@ -137,16 +142,15 @@ export async function POST(request: NextRequest) {
       data: commentData,
       include: {
         user: {
-          select: {
-            id: true,
-            profile: {
-              select: {
-                userName: true,
-                profilePicture: true,
-                firstName: true,
-                lastName: true
+          include: {
+              profiles: {
+                select: {
+                  userName: true,
+                  profilePicture: true,
+                  firstName: true,
+                  lastName: true
+                }
               }
-            }
           }
         }
       }

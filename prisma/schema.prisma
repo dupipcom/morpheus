@@ -311,6 +311,8 @@ model User {
   settings      Settings?
   userId        String?   @unique
   lastLogin     DateTime?
+  usedBudget    Float?    @default(0)
+  remainingBudget Float?  @default(100)
   persons       Person[]
   things        Thing[]
   events        Event[]
@@ -441,6 +443,7 @@ type Task {
   dueDate DateTime?
   budget Float?
   visibility Visibility?
+  quality Int? // Range: -2 to +2
 }
 
 type ThingReference {

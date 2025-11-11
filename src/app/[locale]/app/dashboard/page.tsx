@@ -8,7 +8,7 @@ import { useAuth } from '@clerk/nextjs';
 import Link from 'next/link'
 
 import { GlobalContext } from "@/lib/contexts"
-import { AnalyticsView } from "@/views/analyticsView"
+import { DashboardView } from "@/views/dashboardView"
 import { ViewMenu } from "@/components/viewMenu"
 import { PublishNote } from '@/components/publishNote'
 import { setLoginTime, getLoginTime } from '@/lib/cookieManager'
@@ -54,7 +54,7 @@ export default function LocalizedDashboard({ params }: { params: Promise<{ local
       <h1 className="scroll-m-20 text-2xl font-semibold tracking-tight text-center my-8">{formatDate(new Date())}</h1>
       <h2 className="text-center scroll-m-20 text-lg font-semibold tracking-tight">{t('dashboard.title')}</h2>
 
-      <AnalyticsView />
+      <DashboardView />
     </main>
   )
 } 

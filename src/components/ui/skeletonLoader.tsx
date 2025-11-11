@@ -144,7 +144,7 @@ export const MoodViewSkeleton = () => {
 }
 
 // Skeleton for analytics view
-export const AnalyticsViewSkeleton = () => {
+export const DashboardViewSkeleton = () => {
   return (
     <div className="max-w-[1200px] w-full m-auto p-4 md:px-32">
       {/* Analysis Text */}

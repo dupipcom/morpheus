@@ -126,7 +126,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
     try {
       visibleTemplates = await prisma.template.findMany({
         where: {
-          owners: { has: profile.user.id },
+          users: { some: { userId: profile.user.id, role: 'OWNER' } },
           visibility: { in: allowedVis as any }
         },
         select: { 
@@ -145,9 +145,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
           comments: {
             include: {
               user: {
-                select: {
-                  id: true,
-                  profile: {
+                include: {
+                  profiles: {
                     select: {
                       userName: true,
                       profilePicture: true,
@@ -173,7 +172,13 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
       
       // Add isLiked flag and sort comments
       visibleTemplates = visibleTemplates.map(template => {
-        const sortedComments = template.comments ? [...template.comments].sort((a: any, b: any) => {
+        const sortedComments = template.comments ? [...template.comments].map((comment: any) => ({
+          ...comment,
+          user: {
+            ...comment.user,
+            profile: comment.user.profiles?.[0] || null
+          }
+        })).sort((a: any, b: any) => {
           const likeDiff = (b._count?.likes || 0) - (a._count?.likes || 0)
           if (likeDiff !== 0) return likeDiff
           return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -187,9 +192,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
     } catch (_) {}
     
     try {
-      visibleTaskLists = await prisma.taskList.findMany({
+      visibleTaskLists = await prisma.list.findMany({
         where: {
-          owners: { has: profile.user.id },
+          users: { some: { userId: profile.user.id, role: 'OWNER' } },
           visibility: { in: allowedVis as any }
         },
         select: { 
@@ -210,9 +215,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
           comments: {
             include: {
               user: {
-                select: {
-                  id: true,
-                  profile: {
+                include: {
+                  profiles: {
                     select: {
                       userName: true,
                       profilePicture: true,

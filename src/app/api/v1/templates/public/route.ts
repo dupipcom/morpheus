@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
         // Include current user's own templates with FRIENDS or CLOSE_FRIENDS visibility
         whereClause.OR.push({
           AND: [
-            { owners: { has: currentUser.id } },
+            { users: { some: { userId: currentUser.id, role: 'OWNER' } } },
             { visibility: { in: ['FRIENDS', 'CLOSE_FRIENDS'] } }
           ]
         })
@@ -71,7 +71,11 @@ export async function GET(request: NextRequest) {
           whereClause.OR.push({
             AND: [
               { visibility: 'FRIENDS' },
-              { owners: { hasSome: friendUserIds } }
+              {
+                OR: friendUserIds.map(id => ({
+                  users: { some: { userId: id, role: 'OWNER' } }
+                }))
+              }
             ]
           })
         }
@@ -81,7 +85,11 @@ export async function GET(request: NextRequest) {
           whereClause.OR.push({
             AND: [
               { visibility: 'CLOSE_FRIENDS' },
-              { owners: { hasSome: closeFriendUserIds } }
+              {
+                OR: closeFriendUserIds.map(id => ({
+                  users: { some: { userId: id, role: 'OWNER' } }
+                }))
+              }
             ]
           })
         }
@@ -108,7 +116,7 @@ export async function GET(request: NextRequest) {
         visibility: true,
         createdAt: true,
         updatedAt: true,
-        owners: true,
+        users: true,
         _count: {
           select: {
             comments: true,
@@ -181,7 +189,9 @@ export async function GET(request: NextRequest) {
     const templatesWithUsers = await Promise.all(
       templatesWithSortedComments.map(async (template) => {
         // Get the first owner's profile (for now, we'll use the first owner)
-        const ownerId = template.owners[0]
+        const users = (template.users as any[]) || []
+        const owner = users.find((u: any) => u.role === 'OWNER')
+        const ownerId = owner?.userId
         if (!ownerId) {
           return {
             ...template,
@@ -212,7 +222,8 @@ export async function GET(request: NextRequest) {
         // Filter out fields if not visible based on relationship
         let cleanedUser = null
         if (user) {
-          if (!user.profile) {
+          const profile = user.profiles?.[0]
+          if (!profile) {
             // Ensure profile object exists even if null, so component can access profile.userName
             cleanedUser = {
               ...user,
@@ -246,7 +257,7 @@ export async function GET(request: NextRequest) {
               currentUserFriends.includes(ownerIdStr)
 
             // Filter profile fields based on visibility and relationship
-            const profile = filterProfileFields(user.profile, {
+            const filteredProfile = filterProfileFields(profile, {
               isOwner,
               isFriend,
               isCloseFriend
@@ -254,7 +265,7 @@ export async function GET(request: NextRequest) {
 
             cleanedUser = {
               ...user,
-              profile
+              profile: filteredProfile
             }
           }
         }

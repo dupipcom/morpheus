@@ -10,7 +10,7 @@ import Link from 'next/link'
 import { DoView } from "@/views/doView"
 import { ViewMenu } from "@/components/viewMenu"
 import { Button } from "@/components/ui/button"
-import { DoToolbar } from '@/views/doToolbar'
+import { DoToolbar } from '@/components/doToolbar'
 
 import { getWeekNumber } from "@/app/helpers"
 import { DAILY_ACTIONS, WEEKS } from "@/app/constants"

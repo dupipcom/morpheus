@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { RefreshCw } from "lucide-react"
 import { useI18n } from '@/lib/contexts/i18n'
-import ActivityCard, { ActivityItem } from './ActivityCard'
+import ActivityCard, { ActivityItem } from './activityCard'
 
 export interface Note {
   id: string

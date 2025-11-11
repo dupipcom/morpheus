@@ -112,9 +112,8 @@ export async function GET(request: NextRequest) {
         comments: {
           include: {
             user: {
-              select: {
-                id: true,
-                profile: {
+              include: {
+                profiles: {
                   select: {
                     userName: true,
                     profilePicture: true,
@@ -135,9 +134,8 @@ export async function GET(request: NextRequest) {
           }
         },
         user: {
-          select: {
-            id: true,
-            profile: {
+          include: {
+            profiles: {
               select: {
                 userName: true,
                 profilePicture: true,
@@ -191,10 +189,21 @@ export async function GET(request: NextRequest) {
 
     // Filter out fields if not visible based on relationship
     const cleanedNotes = await Promise.all(notesWithSortedComments.map(async (note) => {
-      if (!note.user.profile) {
+      // Transform profiles[0] to profile for comments
+      const commentsWithProfile = note.comments?.map((comment: any) => ({
+        ...comment,
+        user: {
+          ...comment.user,
+          profile: comment.user.profiles?.[0] || null
+        }
+      })) || []
+
+      const profile = note.user.profiles?.[0]
+      if (!profile) {
         // Ensure profile object exists even if null, so component can access profile.userName
         return {
           ...note,
+          comments: commentsWithProfile,
           user: {
             ...note.user,
             profile: {
@@ -229,7 +238,7 @@ export async function GET(request: NextRequest) {
         currentUserFriends.includes(noteAuthorIdStr)
 
       // Filter profile fields based on visibility and relationship
-      const profile = filterProfileFields(note.user.profile, {
+      const filteredProfile = filterProfileFields(profile, {
         isOwner,
         isFriend,
         isCloseFriend
@@ -237,9 +246,10 @@ export async function GET(request: NextRequest) {
 
       return {
         ...note,
+        comments: commentsWithProfile,
         user: {
           ...note.user,
-          profile
+          profile: filteredProfile
         }
       }
     }))

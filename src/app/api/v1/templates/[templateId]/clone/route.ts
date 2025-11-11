@@ -29,7 +29,8 @@ export async function POST(
     }
 
     // Check if user has access to this template (must be public, friends-only, or owned by user)
-    const isOwner = template.owners.includes(user.id)
+    const users = (template.users as any[]) || []
+    const isOwner = users.some((u: any) => u.userId === user.id && u.role === 'OWNER')
     const isPublic = template.visibility === 'PUBLIC'
     
     if (!isOwner && !isPublic) {
@@ -43,12 +44,12 @@ export async function POST(
     const customName = body.name
 
     // Create a new task list from the template
-    const taskList = await prisma.taskList.create({
+    const taskList = await prisma.list.create({
       data: {
         name: customName || `${template.name || 'Template'} (Cloned)`,
         visibility: 'PRIVATE', // Cloned lists are private by default
         role: 'custom', // Cloned lists are custom
-        owners: [user.id],
+        users: [{ userId: user.id, role: 'OWNER' }],
         templateId: template.id,
         templateTasks: template.tasks as any,
         tasks: template.tasks as any,

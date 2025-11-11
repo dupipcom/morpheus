@@ -3,7 +3,6 @@
 import prisma from '@/lib/prisma';
 import type { WebhookEvent } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
-import { WEEKLY_ACTIONS, DAILY_ACTIONS } from "@/app/constants"
 import { currentUser } from '@clerk/nextjs/server'
 import { revalidatePath } from 'next/cache'
 
@@ -28,16 +27,18 @@ export async function POST(req: Request) {
                     update: {
                         userId: clerkUserId,
                         settings: {
-                            dailyTemplate: DAILY_ACTIONS,
-                            weeklyTemplate: WEEKLY_ACTIONS
+                            set: {
+                                currency: null,
+                                speed: null
+                            } as any
                         }
                     },
                     create: {
                         userId: clerkUserId,
                         settings: {
-                            dailyTemplate: DAILY_ACTIONS,
-                            weeklyTemplate: WEEKLY_ACTIONS
-                        }
+                            currency: null,
+                            speed: null
+                        } as any
                     },
                 });
 
@@ -51,13 +52,12 @@ export async function POST(req: Request) {
                         await prisma.profile.create({
                             data: {
                                 userId: user.id,
-                                userName: clerkUsername,
-                                firstNameVisibility: 'PRIVATE',
-                                lastNameVisibility: 'PRIVATE',
-                                userNameVisibility: 'PUBLIC',
-                                bioVisibility: 'PRIVATE',
-                                profilePictureVisibility: 'PRIVATE',
-                                publicChartsVisibility: 'PRIVATE',
+                                data: {
+                                    username: {
+                                        value: clerkUsername,
+                                        visibility: true
+                                    }
+                                }
                             }
                         });
                         console.log(`Username synced from Clerk webhook on user creation: ${clerkUsername} for user ${clerkUserId}`);
@@ -88,9 +88,9 @@ export async function POST(req: Request) {
                             create: {
                                 userId: sessionUserId,
                                 settings: {
-                                    dailyTemplate: DAILY_ACTIONS,
-                                    weeklyTemplate: WEEKLY_ACTIONS
-                                },
+                                    currency: null,
+                                    speed: null
+                                } as any,
                                 // cast to any to tolerate client lag
                                 ...( { lastLogin: new Date() } as any )
                             }
@@ -105,26 +105,34 @@ export async function POST(req: Request) {
                         if (clerkUsername) {
                             const dbUser = await prisma.user.findUnique({
                                 where: { userId: sessionUserId },
-                                include: { profile: true }
+                                include: { profiles: true }
                             });
 
                             if (dbUser) {
-                                if (dbUser.profile) {
+                                if (dbUser.profiles && dbUser.profiles.length > 0) {
+                                    const existingData = dbUser.profiles[0].data || {}
                                     await prisma.profile.update({
                                         where: { userId: dbUser.id },
-                                        data: { userName: clerkUsername }
+                                        data: {
+                                            data: {
+                                                ...existingData,
+                                                username: {
+                                                    value: clerkUsername,
+                                                    visibility: existingData.username?.visibility ?? false
+                                                }
+                                            }
+                                        }
                                     });
                                 } else {
                                     await prisma.profile.create({
                                         data: {
                                             userId: dbUser.id,
-                                            userName: clerkUsername,
-                                            firstNameVisible: false,
-                                            lastNameVisible: false,
-                                            userNameVisible: false,
-                                            bioVisible: false,
-                                            profilePictureVisible: false,
-                                            publicChartsVisible: false,
+                                            data: {
+                                                username: {
+                                                    value: clerkUsername,
+                                                    visibility: false
+                                                }
+                                            }
                                         }
                                     });
                                 }
@@ -150,27 +158,35 @@ export async function POST(req: Request) {
                         // Find the user in our database
                         const dbUser = await prisma.user.findUnique({
                             where: { userId: clerkUserId },
-                            include: { profile: true }
+                            include: { profiles: true }
                         });
 
                         if (dbUser) {
                             // Always update or create profile with username from Clerk webhook (overwrites any manual username)
-                            if (dbUser.profile) {
+                            if (dbUser.profiles && dbUser.profiles.length > 0) {
+                                const existingData = dbUser.profiles[0].data || {}
                                 await prisma.profile.update({
                                     where: { userId: dbUser.id },
-                                    data: { userName: clerkUsername }
+                                    data: {
+                                        data: {
+                                            ...existingData,
+                                            username: {
+                                                value: clerkUsername,
+                                                visibility: existingData.username?.visibility ?? false
+                                            }
+                                        }
+                                    }
                                 });
                             } else {
                                 await prisma.profile.create({
                                     data: {
                                         userId: dbUser.id,
-                                        userName: clerkUsername,
-                                        firstNameVisible: false,
-                                        lastNameVisible: false,
-                                        userNameVisible: false,
-                                        bioVisible: false,
-                                        profilePictureVisible: false,
-                                        publicChartsVisible: false,
+                                        data: {
+                                            username: {
+                                                value: clerkUsername,
+                                                visibility: false
+                                            }
+                                        }
                                     }
                                 });
                             }

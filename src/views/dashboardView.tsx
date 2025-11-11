@@ -20,7 +20,7 @@ import { getWeekNumber } from "@/app/helpers"
 import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
 import { generateInsight, updateUser, handleMoodSubmit, useHint, useUserData, useEnhancedLoadingState } from "@/lib/userUtils"
-import { AnalyticsViewSkeleton } from "@/components/ui/skeletonLoader"
+import { DashboardViewSkeleton } from "@/components/ui/skeletonLoader"
 import { ContentLoadingWrapper } from '@/components/contentLoadingWrapper'
 import { AgentChat } from "@/components/agentChat"
 import { useFeatureFlag } from "@/lib/hooks/useFeatureFlag"
@@ -124,13 +124,15 @@ const ChartDimensionSelector = ({
   )
 }
 
-export const AnalyticsView = ({ timeframe = "day" }) => {
+export const DashboardView = ({ timeframe = "day" }) => {
   const fullDate = new Date()
   const date = fullDate.toISOString().split('T')[0]
   const year = Number(date.split('-')[0])
   const weekNumber = getWeekNumber(fullDate)[1]
   const [insight, setInsight] = useState({})
   const [relevantData, setRelevantData] = useState([])
+  const [days, setDays] = useState<any[]>([])
+  const [isLoadingDays, setIsLoadingDays] = useState(true)
   
   // Chart dimensions state
   const [moodChartDimensions, setMoodChartDimensions] = useState({
@@ -162,18 +164,39 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
   // Type guard to ensure session.user has the expected structure
   const user = useMemo(() => session?.user as any, [session?.user])
   
-  // Message history state (weekly agentConversation)
+  // Fetch days from Prisma Day model
+  useEffect(() => {
+    const fetchDays = async () => {
+      if (!user?.id) return
+      
+      try {
+        setIsLoadingDays(true)
+        const response = await fetch(`/api/v1/days?year=${year}`)
+        if (!response.ok) {
+          throw new Error('Failed to fetch days')
+        }
+        const data = await response.json()
+        setDays(data.days || [])
+      } catch (error) {
+        console.error('Error fetching days:', error)
+        setDays([])
+      } finally {
+        setIsLoadingDays(false)
+      }
+    }
+    
+    fetchDays()
+  }, [user?.id, year])
+  
+  // Message history state (weekly agentConversation) - TODO: migrate to separate model
   const [currentText, setCurrentText] = useState("")
-  const conversation = user?.entries && user?.entries[year] && user?.entries[year].weeks && user?.entries[year]?.weeks[weekNumber] && user?.entries[year]?.weeks[weekNumber].agentConversation
-  const reverseMessages = useMemo(() => conversation?.length ? conversation.sort((a: any, b: any) => new Date(a.timestamp).getTime() > new Date(b.timestamp).getTime() ? 1 : -1) : [], [JSON.stringify(user)])
+  const conversation = null // TODO: fetch from separate conversation model
+  const reverseMessages = useMemo(() => [], [])
   
   // Create chart configs with translations
   const moodChartConfig = createMoodChartConfig(t)
   const productivityChartConfig = createProductivityChartConfig(t)
   const moneyChartConfig = createMoneyChartConfig(t)
-  
-  // Get user entries for authentication check
-  const userEntries = user?.entries;
   
   // Use shared hint hook and update local state when data changes
   const { data: hintData } = useHint(locale, 'hint')
@@ -204,20 +227,20 @@ export const AnalyticsView = ({ timeframe = "day" }) => {
     setMoneyChartDimensions(prev => ({ ...prev, [dimension]: visible }))
   }
 
-  // Loading gate while initial user fetch populates GlobalContext
-  const isDataLoading = useEnhancedLoadingState(isLoading as any, (session as any))
+  // Loading gate while initial user fetch populates GlobalContext or days are loading
+  const isDataLoading = useEnhancedLoadingState(isLoading as any, (session as any)) || isLoadingDays
   if (isDataLoading) {
-    return <AnalyticsViewSkeleton />
+    return <DashboardViewSkeleton />
   }
 
   // Check if user is properly authenticated and session is valid
   if (!user || !user?.userId || Object.keys(user).length === 0) {
-    return <AnalyticsViewSkeleton />
+    return <DashboardViewSkeleton />
   }
 
   // Additional check to ensure user data is accessible (prevents showing data for expired sessions)
-  if (!userEntries || typeof userEntries !== 'object') {
-    return <AnalyticsViewSkeleton />
+  if (!user || !user?.userId) {
+    return <DashboardViewSkeleton />
   }
 
 
@@ -294,15 +317,16 @@ const aggregateDataByWeek = (dailyData: any[]) => {
   }).sort((a: any, b: any) => a.weekNumber - b.weekNumber)
 }
 
-  const userDays = user?.entries && user?.entries[year]?.days ? Object.values(user.entries[year].days) : [];
+  // Use days from Prisma Day model instead of user.entries
   // Determine a global balance peak to keep moodAverageScale on a consistent scale
-  const balancePeak = userDays.reduce((max: number, d: any) => {
+  const balancePeak = days.reduce((max: number, d: any) => {
     const bal = Number(d?.availableBalance || 0)
     return bal > max ? bal : max
   }, 0)
-  const userWeeks = user?.entries && user?.entries[year]?.weeks ? Object.values(user.entries[year].weeks) : [];
+  // Weekly data - TODO: migrate to separate Week model or derive from Day model
+  const userWeeks: any[] = [];
   
-  const plotData = userDays
+  const plotData = days
     .sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime()) // Sort by most recent first
     .reduce((acc: any[], cur: any) => {
       // Check if mood exists and has valid values
@@ -318,9 +342,8 @@ const aggregateDataByWeek = (dailyData: any[]) => {
         return acc
       }
       
-      // Recalculate mood average from all mood dimensions to ensure correctness
-      // Include zeros for missing dimensions; only ignore the day if all are zero (handled earlier)
-      const moodAverage = (() => {
+      // Use moodAverage from API response or recalculate
+      const moodAverage = cur.moodAverage || (() => {
         const keys = ['gratitude', 'optimism', 'restedness', 'tolerance', 'selfEsteem', 'trust'] as const
         const values = keys.map((k) => Number((cur.mood as any)?.[k]) || 0)
         const sum = values.reduce((acc: number, val: number) => acc + val, 0)
@@ -360,10 +383,10 @@ const aggregateDataByWeek = (dailyData: any[]) => {
   const plotWeeks = userWeeks
     .sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime()) // Sort by most recent first
     .reduce((acc: any[], cur: any) => {
-      // Calculate moodAverage from daily data for this week
+      // Calculate moodAverage from daily data for this week using days from Prisma
       let calculatedMoodAverage = 0
-      if (cur.week && user?.entries?.[year]?.days) {
-        const weekDays = Object.values(user.entries[year].days).filter((day: any) => {
+      if (cur.week) {
+        const weekDays = days.filter((day: any) => {
           const dayDate = new Date(day.date)
           const [_, dayWeekNumber] = getWeekNumber(dayDate)
           return dayWeekNumber === cur.week
@@ -373,11 +396,13 @@ const aggregateDataByWeek = (dailyData: any[]) => {
           const daysWithMood = weekDays.filter((day: any) => day.mood && typeof day.mood === 'object')
           if (daysWithMood.length > 0) {
             const moodValues = daysWithMood.map((day: any) => {
-              // Average across all six dimensions including zeros
-              const keys = ['gratitude', 'optimism', 'restedness', 'tolerance', 'selfEsteem', 'trust'] as const
-              const values = keys.map((k) => Number(day.mood?.[k]) || 0)
-              const sum = values.reduce((sum: number, val: number) => sum + val, 0)
-              return sum / keys.length
+              // Use moodAverage from API or calculate
+              return day.moodAverage || (() => {
+                const keys = ['gratitude', 'optimism', 'restedness', 'tolerance', 'selfEsteem', 'trust'] as const
+                const values = keys.map((k) => Number(day.mood?.[k]) || 0)
+                const sum = values.reduce((sum: number, val: number) => sum + val, 0)
+                return sum / keys.length
+              })()
             }).filter(val => val > 0)
             
             if (moodValues.length > 0) {

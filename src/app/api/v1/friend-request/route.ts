@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     // Get the current user, create if doesn't exist
     let currentUser = await prisma.user.findUnique({
       where: { userId },
-      include: { profile: true }
+      include: { profiles: true }
     })
 
     if (!currentUser) {
@@ -28,31 +28,29 @@ export async function POST(req: NextRequest) {
       currentUser = await prisma.user.create({
         data: {
           userId,
-          entries: {},
           settings: {
-            dailyTemplate: [],
-            weeklyTemplate: []
-          }
+            currency: null,
+            speed: null
+          } as any
         },
-        include: { profile: true }
+        include: { profiles: true }
       })
     }
 
     // Check if target user exists by username
-    const targetUser = await prisma.user.findFirst({
-      where: { 
-        profile: {
-          userName: targetUserName
-        }
-      }
+    const targetProfile = await prisma.profile.findUnique({
+      where: { userName: targetUserName }
     })
+    const targetUser = targetProfile ? await prisma.user.findUnique({
+      where: { id: targetProfile.userId }
+    }) : null
 
     if (!targetUser) {
       return Response.json({ error: 'Target user not found' }, { status: 404 })
     }
 
     // Check if trying to add self as friend
-    if (currentUser.profile?.userName === targetUserName) {
+    if (currentUser.profiles?.[0]?.userName === targetUserName) {
       return Response.json({ error: 'friendRequestSelfError' }, { status: 400 })
     }
 
