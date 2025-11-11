@@ -44,7 +44,7 @@ export function BottomNav() {
             className={`w-full h-14 flex items-center justify-center ${
               allMoodZero ? '!bg-destructive !text-foreground' : ''
             } ${
-              isActive('feel') ? 'bg-primary dark:bg-foreground text-background' : ''
+              isActive('feel') ? 'bg-muted text-foreground dark:bg-foreground dark:text-background' : ''
             } `}
           >
             <Heart className="w-6 h-6" />
@@ -55,7 +55,7 @@ export function BottomNav() {
           <Button
             variant={isActive('do') ? 'default' : 'outline'}
             className={`w-full h-14 flex items-center justify-center ${
-              isActive('do') ? 'bg-primary text-primary-foreground' : ''
+              isActive('do') ? 'bg-muted text-foreground dark:bg-foreground dark:text-background' : ''
             }`}
           >
             <CheckSquare className="w-6 h-6" />
@@ -77,7 +77,7 @@ export function BottomNav() {
           <Button
             variant={isActive('invest') ? 'default' : 'outline'}
             className={`w-full h-14 flex items-center justify-center ${
-              isActive('invest') ? 'bg-primary text-primary-foreground' : ''
+              isActive('invest') ? 'bg-muted text-foreground dark:bg-foreground dark:text-background' : ''
             }`}
           >
             <Coins className="w-6 h-6" />
