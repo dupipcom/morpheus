@@ -34,13 +34,13 @@ interface LifeEvent {
   id: string
   name: string
   notes?: string
-  impact?: number
+  quality?: number
 }
 
 interface LifeEventReference {
   id: string
   name: string
-  impact?: number
+  quality?: number
 }
 
 interface LifeEventComboboxProps {
@@ -66,10 +66,8 @@ export function LifeEventCombobox({
   const [newLifeEvent, setNewLifeEvent] = React.useState({
     name: '',
     notes: '',
-    impact: 3
+    quality: 3
   })
-
-  const [lifeEventImpacts, setLifeEventImpacts] = React.useState<{ [key: string]: number }>({})
 
   const handleSelect = (lifeEventId: string) => {
     if (lifeEventId === 'add-new') {
@@ -82,7 +80,7 @@ export function LifeEventCombobox({
       const lifeEventRef: LifeEventReference = {
         id: lifeEvent.id,
         name: lifeEvent.name,
-        impact: lifeEventImpacts[lifeEvent.id] || lifeEvent.impact || 3
+        quality: lifeEvent.quality || 3
       }
       onLifeEventsChange([...selectedLifeEvents, lifeEventRef])
     }
@@ -97,7 +95,7 @@ export function LifeEventCombobox({
     if (!newLifeEvent.name.trim()) return
 
     try {
-      const response = await fetch('/api/v1/life-events', {
+      const response = await fetch('/api/v1/events', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -113,7 +111,7 @@ export function LifeEventCombobox({
         const lifeEventRef: LifeEventReference = {
           id: lifeEvent.id,
           name: lifeEvent.name,
-          impact: newLifeEvent.impact
+          quality: newLifeEvent.quality
         }
         onLifeEventsChange([...selectedLifeEvents, lifeEventRef])
 
@@ -121,7 +119,7 @@ export function LifeEventCombobox({
         setNewLifeEvent({
           name: '',
           notes: '',
-          impact: 3
+          quality: 3
         })
 
         setAddLifeEventOpen(false)
@@ -219,8 +217,8 @@ export function LifeEventCombobox({
           className="flex items-center gap-1 bg-purple-100 text-purple-800 border-purple-200"
         >
           {lifeEvent.name}
-          {lifeEvent.impact && (
-            <span className="text-xs">{lifeEvent.impact}/5</span>
+          {lifeEvent.quality !== undefined && (
+            <span className="text-xs">{lifeEvent.quality}/5</span>
           )}
           <Button
             variant="ghost"

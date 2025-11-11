@@ -13,16 +13,16 @@ export async function GET() {
     // Get user from database
     const user = await prisma.user.findUnique({
       where: { userId },
-      include: { lifeEvents: true }
+      include: { events: true }
     })
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    return NextResponse.json({ lifeEvents: user.lifeEvents })
+    return NextResponse.json({ lifeEvents: user.events })
   } catch (error) {
-    console.error('Error fetching life events:', error)
+    console.error('Error fetching events:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { name, notes, impact } = body
+    const { name, notes, quality } = body
 
     if (!name) {
       return NextResponse.json({ error: 'Name is required' }, { status: 400 })
@@ -54,19 +54,19 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    // Create life event
-    const lifeEvent = await prisma.lifeEvent.create({
+    // Create event
+    const lifeEvent = await prisma.event.create({
       data: {
         name,
-        notes,
-        impact,
+        quality: quality || null,
         userId: user.id
       }
     })
 
     return NextResponse.json({ lifeEvent })
   } catch (error) {
-    console.error('Error creating life event:', error)
+    console.error('Error creating event:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
+

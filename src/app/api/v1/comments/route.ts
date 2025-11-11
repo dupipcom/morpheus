@@ -14,9 +14,20 @@ export async function GET(request: NextRequest) {
     }
     
     // Build where clause based on entity type
-    let whereClause: any = {
-      entityType,
-      entityId
+    let whereClause: any = {}
+    
+    if (entityType === 'note') {
+      whereClause.noteId = entityId
+    } else if (entityType === 'template') {
+      whereClause.templateId = entityId
+    } else if (entityType === 'tasklist' || entityType === 'list') {
+      whereClause.listId = entityId
+    } else if (entityType === 'profile') {
+      whereClause.profileId = entityId
+    } else if (entityType === 'event') {
+      whereClause.eventId = entityId
+    } else {
+      return NextResponse.json({ error: 'Invalid entityType' }, { status: 400 })
     }
     
     // Fetch comments for the entity with like counts
@@ -27,10 +38,7 @@ export async function GET(request: NextRequest) {
           include: {
               profiles: {
                 select: {
-                  userName: true,
-                  profilePicture: true,
-                  firstName: true,
-                  lastName: true
+                  data: true
                 }
               }
           }
@@ -47,13 +55,24 @@ export async function GET(request: NextRequest) {
     })
 
     // Sort by like count (descending), then by creation date (descending)
-    const sortedComments = comments.map((comment: any) => ({
-      ...comment,
-      user: {
-        ...comment.user,
-        profile: comment.user.profiles?.[0] || null
+    // Transform profiles[0] to profile and extract data values
+    const sortedComments = comments.map((comment: any) => {
+      const profileData = comment.user.profiles?.[0]?.data
+      const profile = profileData ? {
+        userName: profileData.username?.value || null,
+        profilePicture: profileData.profilePicture?.value || null,
+        firstName: profileData.firstName?.value || null,
+        lastName: profileData.lastName?.value || null
+      } : null
+
+      return {
+        ...comment,
+        user: {
+          ...comment.user,
+          profile
+        }
       }
-    })).sort((a, b) => {
+    }).sort((a, b) => {
       const likeDiff = (b._count?.likes || 0) - (a._count?.likes || 0)
       if (likeDiff !== 0) return likeDiff
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -98,11 +117,21 @@ export async function POST(request: NextRequest) {
         where: { id: entityId }
       })
       entityExists = !!template
-    } else if (entityType === 'tasklist') {
+    } else if (entityType === 'tasklist' || entityType === 'list') {
       const taskList = await prisma.list.findUnique({
         where: { id: entityId }
       })
       entityExists = !!taskList
+    } else if (entityType === 'profile') {
+      const profile = await prisma.profile.findUnique({
+        where: { id: entityId }
+      })
+      entityExists = !!profile
+    } else if (entityType === 'event') {
+      const event = await prisma.event.findUnique({
+        where: { id: entityId }
+      })
+      entityExists = !!event
     } else {
       return NextResponse.json({ error: 'Invalid entityType' }, { status: 400 })
     }
@@ -120,21 +149,25 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    // Build comment data
+    // Build comment data based on entity type
     const commentData: any = {
       content: content.trim(),
-      entityType,
-      entityId,
       userId: user.id
     }
 
-    // Set the appropriate relation field for backward compatibility
+    // Set the appropriate relation field based on entity type
     if (entityType === 'note') {
       commentData.noteId = entityId
     } else if (entityType === 'template') {
       commentData.templateId = entityId
-    } else if (entityType === 'tasklist') {
-      commentData.taskListId = entityId
+    } else if (entityType === 'tasklist' || entityType === 'list') {
+      commentData.listId = entityId
+    } else if (entityType === 'profile') {
+      commentData.profileId = entityId
+    } else if (entityType === 'event') {
+      commentData.eventId = entityId
+    } else {
+      return NextResponse.json({ error: 'Invalid entityType' }, { status: 400 })
     }
 
     // Create comment
@@ -145,10 +178,7 @@ export async function POST(request: NextRequest) {
           include: {
               profiles: {
                 select: {
-                  userName: true,
-                  profilePicture: true,
-                  firstName: true,
-                  lastName: true
+                  data: true
                 }
               }
           }
@@ -156,7 +186,24 @@ export async function POST(request: NextRequest) {
       }
     })
 
-    return NextResponse.json({ comment })
+    // Transform profiles[0] to profile and extract data values
+    const profileData = comment.user.profiles?.[0]?.data
+    const profile = profileData ? {
+      userName: profileData.username?.value || null,
+      profilePicture: profileData.profilePicture?.value || null,
+      firstName: profileData.firstName?.value || null,
+      lastName: profileData.lastName?.value || null
+    } : null
+
+    const transformedComment = {
+      ...comment,
+      user: {
+        ...comment.user,
+        profile
+      }
+    }
+
+    return NextResponse.json({ comment: transformedComment })
   } catch (error) {
     console.error('Error creating comment:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

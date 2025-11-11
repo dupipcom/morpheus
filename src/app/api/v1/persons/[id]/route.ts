@@ -4,7 +4,7 @@ import prisma from '@/lib/prisma'
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { userId } = await auth()
@@ -13,8 +13,9 @@ export async function PUT(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const { id } = await params
     const body = await request.json()
-    const { name, notes, impact } = body
+    const { name, email, phone, notes, interactionQuality } = body
 
     if (!name) {
       return NextResponse.json({ error: 'Name is required' }, { status: 400 })
@@ -29,29 +30,28 @@ export async function PUT(
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    // Update life event
-    const lifeEvent = await prisma.lifeEvent.update({
-      where: { 
-        id: params.id,
-        userId: user.id // Ensure user owns this life event
+    // Update person
+    const contact = await prisma.person.update({
+      where: {
+        id: id,
+        userId: user.id // Ensure user owns this person
       },
       data: {
         name,
-        notes,
-        impact
+        quality: interactionQuality || null
       }
     })
 
-    return NextResponse.json({ lifeEvent })
+    return NextResponse.json({ contact })
   } catch (error) {
-    console.error('Error updating life event:', error)
+    console.error('Error updating person:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { userId } = await auth()
@@ -59,6 +59,8 @@ export async function DELETE(
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
+
+    const { id } = await params
 
     // Get user from database
     const user = await prisma.user.findUnique({
@@ -69,17 +71,18 @@ export async function DELETE(
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    // Delete life event
-    await prisma.lifeEvent.delete({
-      where: { 
-        id: params.id,
-        userId: user.id // Ensure user owns this life event
+    // Delete person
+    await prisma.person.delete({
+      where: {
+        id: id,
+        userId: user.id // Ensure user owns this person
       }
     })
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error('Error deleting life event:', error)
+    console.error('Error deleting person:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
+

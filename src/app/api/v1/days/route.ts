@@ -23,6 +23,7 @@ export async function GET(req: NextRequest) {
 
     // Get query parameters
     const { searchParams } = new URL(req.url)
+    const date = searchParams.get('date')
     const year = searchParams.get('year')
     const startDate = searchParams.get('startDate')
     const endDate = searchParams.get('endDate')
@@ -30,6 +31,86 @@ export async function GET(req: NextRequest) {
     // Build where clause
     const where: any = {
       userId: user.id
+    }
+
+    // If a specific date is requested, return just that day
+    if (date) {
+      where.date = date
+      const day = await prisma.day.findFirst({
+        where,
+        select: {
+          id: true,
+          date: true,
+          mood: true,
+          personIds: true,
+          thingIds: true,
+          eventIds: true,
+          analysis: true
+        }
+      })
+
+      if (!day) {
+        return NextResponse.json({ day: null })
+      }
+
+      // Fetch related persons, things, and events
+      const [persons, things, events] = await Promise.all([
+        day.personIds.length > 0 ? prisma.person.findMany({
+          where: { id: { in: day.personIds } },
+          select: { id: true, name: true }
+        }) : [],
+        day.thingIds.length > 0 ? prisma.thing.findMany({
+          where: { id: { in: day.thingIds } },
+          select: { id: true, name: true }
+        }) : [],
+        day.eventIds.length > 0 ? prisma.event.findMany({
+          where: { id: { in: day.eventIds } },
+          select: { id: true, name: true }
+        }) : []
+      ])
+
+      // Get quality values from analysis
+      const analysis = day.analysis as any || {}
+      const personQualities = analysis.personQualities || {}
+      const thingQualities = analysis.thingQualities || {}
+      const eventQualities = analysis.eventQualities || {}
+
+      // Merge persons, things, and events with their quality values
+      const contactsWithQuality = persons.map((person: any) => ({
+        ...person,
+        quality: personQualities[person.id] || 0
+      }))
+
+      const thingsWithQuality = things.map((thing: any) => ({
+        ...thing,
+        quality: thingQualities[thing.id] || 0
+      }))
+
+      const eventsWithQuality = events.map((event: any) => ({
+        ...event,
+        quality: eventQualities[event.id] || 0
+      }))
+
+      // Transform the day to include mood and related data
+      const mood = day.mood || {}
+      return NextResponse.json({
+        day: {
+          id: day.id,
+          date: day.date,
+          mood: {
+            gratitude: mood.gratitude || 0,
+            optimism: mood.optimism || 0,
+            restedness: mood.restedness || 0,
+            tolerance: mood.tolerance || 0,
+            selfEsteem: mood.selfEsteem || 0,
+            trust: mood.trust || 0,
+            text: mood.text || []
+          },
+          contacts: contactsWithQuality,
+          things: thingsWithQuality,
+          lifeEvents: eventsWithQuality
+        }
+      })
     }
 
     if (year) {
@@ -119,6 +200,176 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ days: transformedDays })
   } catch (error) {
     console.error('Error fetching days:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    const { userId } = await auth()
+    
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // Get user from database
+    const user = await prisma.user.findUnique({
+      where: { userId },
+      select: { id: true }
+    })
+
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+    }
+
+    const body = await req.json()
+    const { date, mood, contacts, things, lifeEvents } = body
+
+    if (!date) {
+      return NextResponse.json({ error: 'Date is required' }, { status: 400 })
+    }
+
+    // Extract IDs and quality values from contacts, things, and lifeEvents arrays
+    // They might be objects with {id, quality} or just IDs
+    const personIds = contacts ? contacts.map((c: any) => typeof c === 'string' ? c : c.id).filter(Boolean) : []
+    const thingIds = things ? things.map((t: any) => typeof t === 'string' ? t : t.id).filter(Boolean) : []
+    const eventIds = lifeEvents ? lifeEvents.map((e: any) => typeof e === 'string' ? e : e.id).filter(Boolean) : []
+    
+    // Store quality values in analysis JSON field
+    // Create mappings: personId -> quality, thingId -> quality, eventId -> quality
+    const personQualities: Record<string, number> = {}
+    const thingQualities: Record<string, number> = {}
+    const eventQualities: Record<string, number> = {}
+    
+    if (contacts) {
+      contacts.forEach((c: any) => {
+        if (typeof c === 'object' && c.id && c.quality !== undefined) {
+          personQualities[c.id] = Number(c.quality) || 0
+        }
+      })
+    }
+    
+    if (things) {
+      things.forEach((t: any) => {
+        if (typeof t === 'object' && t.id && t.quality !== undefined) {
+          thingQualities[t.id] = Number(t.quality) || 0
+        }
+      })
+    }
+    
+    if (lifeEvents) {
+      lifeEvents.forEach((e: any) => {
+        if (typeof e === 'object' && e.id && e.quality !== undefined) {
+          eventQualities[e.id] = Number(e.quality) || 0
+        }
+      })
+    }
+    
+    // Build analysis object with quality mappings
+    const analysisData: any = {
+      personQualities,
+      thingQualities,
+      eventQualities
+    }
+
+    // Construct mood object with all required fields
+    // Mood type requires: gratitude, optimism, restedness, tolerance, selfEsteem, trust (all Int)
+    let moodData: any = undefined
+    if (mood !== undefined && mood !== null) {
+      moodData = {
+        gratitude: mood.gratitude !== undefined ? Number(mood.gratitude) || 0 : 0,
+        optimism: mood.optimism !== undefined ? Number(mood.optimism) || 0 : 0,
+        restedness: mood.restedness !== undefined ? Number(mood.restedness) || 0 : 0,
+        tolerance: mood.tolerance !== undefined ? Number(mood.tolerance) || 0 : 0,
+        selfEsteem: mood.selfEsteem !== undefined ? Number(mood.selfEsteem) || 0 : 0,
+        trust: mood.trust !== undefined ? Number(mood.trust) || 0 : 0
+      }
+    }
+
+    // Calculate week, month, quarter, semester from date
+    const dateObj = new Date(date)
+    const [_, weekNumber] = getWeekNumber(dateObj)
+    const month = dateObj.getMonth() + 1
+    const quarter = Math.ceil(month / 3)
+    const semester = month <= 6 ? 1 : 2
+
+    // Check if day already exists
+    const existingDay = await prisma.day.findFirst({
+      where: {
+        userId: user.id,
+        date: date
+      },
+      select: {
+        id: true,
+        mood: true,
+        analysis: true
+      }
+    })
+
+    let day
+    if (existingDay) {
+      // Update existing day - merge with existing data
+      const updateData: any = {
+        week: weekNumber,
+        month: month,
+        quarter: quarter,
+        semester: semester
+      }
+
+      if (moodData !== undefined) {
+        // Merge with existing mood data if it exists
+        const existingMood = existingDay.mood as any || {}
+        updateData.mood = {
+          gratitude: moodData.gratitude !== undefined ? moodData.gratitude : (existingMood.gratitude || 0),
+          optimism: moodData.optimism !== undefined ? moodData.optimism : (existingMood.optimism || 0),
+          restedness: moodData.restedness !== undefined ? moodData.restedness : (existingMood.restedness || 0),
+          tolerance: moodData.tolerance !== undefined ? moodData.tolerance : (existingMood.tolerance || 0),
+          selfEsteem: moodData.selfEsteem !== undefined ? moodData.selfEsteem : (existingMood.selfEsteem || 0),
+          trust: moodData.trust !== undefined ? moodData.trust : (existingMood.trust || 0)
+        }
+      }
+      if (personIds !== undefined) {
+        updateData.personIds = personIds
+      }
+      if (thingIds !== undefined) {
+        updateData.thingIds = thingIds
+      }
+      if (eventIds !== undefined) {
+        updateData.eventIds = eventIds
+      }
+      // Merge analysis data with existing analysis
+      const existingAnalysis = existingDay.analysis as any || {}
+      updateData.analysis = {
+        ...existingAnalysis,
+        ...analysisData
+      }
+
+      day = await prisma.day.update({
+        where: { id: existingDay.id },
+        data: updateData
+      })
+    } else {
+      // Create new day
+      day = await prisma.day.create({
+        data: {
+          userId: user.id,
+          date: date,
+          mood: moodData,
+          personIds: personIds,
+          thingIds: thingIds,
+          eventIds: eventIds,
+          analysis: analysisData,
+          week: weekNumber,
+          month: month,
+          quarter: quarter,
+          semester: semester
+        }
+      })
+    }
+
+    return NextResponse.json({ day })
+  } catch (error) {
+    console.error('Error creating/updating day:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
