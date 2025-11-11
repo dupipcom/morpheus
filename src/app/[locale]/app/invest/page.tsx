@@ -3,8 +3,8 @@
 import React from 'react'
 import { InvestView } from '@/views/investView'
 import { ViewMenu } from '@/components/viewMenu'
-import { PublishNote } from '@/components/publish-note'
-import { BalanceSection } from '@/components/balance-section'
+import { PublishNote } from '@/components/publishNote'
+import { BalanceSection } from '@/components/balanceSection'
 
 export const dynamic = 'force-dynamic'
 

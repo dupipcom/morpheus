@@ -3,10 +3,10 @@
 import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import { PublicChartsView } from "@/components/PublicChartsView"
-import { AddFriendButtonOrSignIn } from "@/components/AddFriendButtonOrSignIn"
-import { PublicNotesViewer } from "@/components/PublicNotesViewer"
-import ActivityCard, { ActivityItem } from "@/components/ActivityCard"
+import { PublicChartsView } from "@/components/publicChartsView"
+import { AddFriendButtonOrSignIn } from "@/components/addFriendButtonOrSignIn"
+import { PublicNotesViewer } from "@/components/publicNotesViewer"
+import ActivityCard, { ActivityItem } from "@/components/activityCard"
 
 interface ProfileData {
   userId?: string

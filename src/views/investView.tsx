@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { ViewMenu } from '@/components/viewMenu'
-import { BalanceSection } from '@/components/balance-section'
+import { BalanceSection } from '@/components/balanceSection'
 import { Construction, FileWarningIcon, WorkflowIcon } from 'lucide-react'
 
 export const InvestView = () => {

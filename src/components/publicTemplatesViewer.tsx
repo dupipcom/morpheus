@@ -7,7 +7,7 @@ import { RefreshCw, FileText, List } from "lucide-react"
 import { useI18n } from '@/lib/contexts/i18n'
 import { Badge } from "@/components/ui/badge"
 import { toast } from "sonner"
-import { OptionsButton, OptionsMenuItem } from "@/components/OptionsButton"
+import { OptionsButton, OptionsMenuItem } from "@/components/optionsButton"
 
 interface Template {
   id: string

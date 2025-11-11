@@ -7,7 +7,7 @@ import { ChevronDown, ChevronUp, Send, Loader2, MessageSquare, FileText, Heart, 
 import { useI18n } from '@/lib/contexts/i18n'
 import { useNotesRefresh } from "@/lib/contexts/notesRefresh"
 import Link from 'next/link'
-import { OptionsButton, OptionsMenuItem } from "@/components/OptionsButton"
+import { OptionsButton, OptionsMenuItem } from "@/components/optionsButton"
 import { toast } from "sonner"
 import { Popover, PopoverContent, PopoverTrigger, PopoverAnchor } from "@/components/ui/popover"
 

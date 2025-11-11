@@ -10,7 +10,7 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdownMenu"
 import { ChevronDown } from "lucide-react"
 
 import { EarningsTable } from '@/components/earningsTable'
@@ -20,9 +20,9 @@ import { getWeekNumber } from "@/app/helpers"
 import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
 import { generateInsight, updateUser, handleMoodSubmit, useHint, useUserData, useEnhancedLoadingState } from "@/lib/userUtils"
-import { AnalyticsViewSkeleton } from "@/components/ui/skeleton-loader"
-import { ContentLoadingWrapper } from '@/components/ContentLoadingWrapper'
-import { AgentChat } from "@/components/agent-chat"
+import { AnalyticsViewSkeleton } from "@/components/ui/skeletonLoader"
+import { ContentLoadingWrapper } from '@/components/contentLoadingWrapper'
+import { AgentChat } from "@/components/agentChat"
 import { useFeatureFlag } from "@/lib/hooks/useFeatureFlag"
 import { useDebounce } from "@/lib/hooks/useDebounce"
 

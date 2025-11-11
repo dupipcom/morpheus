@@ -8,7 +8,7 @@ import {
   DropdownMenuContent, 
   DropdownMenuTrigger,
   DropdownMenuSeparator
-} from '@/components/ui/dropdown-menu'
+} from '@/components/ui/dropdownMenu'
 import { Users, Check, X, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { useI18n } from '@/lib/contexts/i18n'

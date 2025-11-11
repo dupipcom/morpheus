@@ -11,9 +11,9 @@ import { Button } from '@/components/ui/button'
 import { Switch } from "@/components/ui/switch"
 
 import { SlidersVertical, Play, Square as Stop, Gauge, LogIn, DoorOpen, User, LogOut, Users } from "lucide-react"
-import { NavSkeleton } from "./skeleton-loader"
-import { FriendRequestsButton } from "@/components/FriendRequestsButton"
-import { TickerStrip } from "@/components/TickerStrip"
+import { NavSkeleton } from "./skeletonLoader"
+import { FriendRequestsButton } from "@/components/friendRequestsButton"
+import { TickerStrip } from "@/components/tickerStrip"
 
 // UserButtonMenu component to handle translations properly
 const UserButtonMenu = () => {

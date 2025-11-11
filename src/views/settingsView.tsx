@@ -34,7 +34,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdownMenu"
 
 import {
   Popover,
@@ -60,7 +60,7 @@ import { ArrowUpDown, ChevronDown, MoreHorizontal, Edit, X } from "lucide-react"
 import { GlobalContext } from "@/lib/contexts"
 import { updateUser, handleSettingsSubmit, isUserDataReady, useEnhancedLoadingState, useUserData } from "@/lib/userUtils"
 import { logger } from "@/lib/logger"
-import { SettingsSkeleton } from "@/components/ui/skeleton-loader"
+import { SettingsSkeleton } from "@/components/ui/skeletonLoader"
 import { useI18n } from "@/lib/contexts/i18n"
 
 export const SettingsView = ({ timeframe = "day" }) => {

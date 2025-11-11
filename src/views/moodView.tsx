@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import { NotesList, Note } from "@/components/NotesList"
+import { NotesList, Note } from "@/components/notesList"
 import { getWeekNumber } from "@/app/helpers"
 import {
   Carousel,
@@ -20,11 +20,11 @@ import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
 import { useNotesRefresh } from "@/lib/contexts/notesRefresh"
 import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil, handleMoodSubmit, isUserDataReady, useEnhancedLoadingState, useUserData } from "@/lib/userUtils"
-import { MoodViewSkeleton } from "@/components/ui/skeleton-loader"
-import { ContentLoadingWrapper } from '@/components/ContentLoadingWrapper'
-import { ContactCombobox } from "@/components/ui/contact-combobox"
-import { ThingCombobox } from "@/components/ui/thing-combobox"
-import { LifeEventCombobox } from "@/components/ui/life-event-combobox"
+import { MoodViewSkeleton } from "@/components/ui/skeletonLoader"
+import { ContentLoadingWrapper } from '@/components/contentLoadingWrapper'
+import { ContactCombobox } from "@/components/ui/contactCombobox"
+import { ThingCombobox } from "@/components/ui/thingCombobox"
+import { LifeEventCombobox } from "@/components/ui/lifeEventCombobox"
 import { useDebounce } from "@/lib/hooks/useDebounce"
 import { Plus } from "lucide-react"
 

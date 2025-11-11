@@ -10,7 +10,7 @@ import Link from 'next/link'
 import { GlobalContext } from "@/lib/contexts"
 import { AnalyticsView } from "@/views/analyticsView"
 import { ViewMenu } from "@/components/viewMenu"
-import { PublishNote } from '@/components/publish-note'
+import { PublishNote } from '@/components/publishNote'
 import { setLoginTime, getLoginTime } from '@/lib/cookieManager'
 import { useI18n } from "@/lib/contexts/i18n"
 

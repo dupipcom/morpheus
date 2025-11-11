@@ -2,10 +2,10 @@
 
 import React, { useMemo, useState, useEffect, useContext, useCallback, useRef } from 'react'
 
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggleGroup'
 import { Badge } from '@/components/ui/badge'
 import { User as UserIcon, Circle, Minus } from 'lucide-react'
-import { OptionsButton, OptionsMenuItem } from '@/components/OptionsButton'
+import { OptionsButton, OptionsMenuItem } from '@/components/optionsButton'
 import { Skeleton } from '@/components/ui/skeleton'
 
 import { GlobalContext } from '@/lib/contexts'

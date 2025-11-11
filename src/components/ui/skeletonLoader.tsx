@@ -1,6 +1,6 @@
 import { Skeleton } from "./skeleton"
 import { Logo } from "./nav"
-import { TickerStrip } from "@/components/TickerStrip"
+import { TickerStrip } from "@/components/tickerStrip"
 
 // Skeleton for settings view
 export const SettingsSkeleton = () => {

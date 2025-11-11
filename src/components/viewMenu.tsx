@@ -6,8 +6,8 @@ import {
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-} from "@/components/ui/navigation-menu"
-import { SteadyTasks } from '@/components/steady-tasks'
+} from "@/components/ui/navigationMenu"
+import { SteadyTasks } from '@/components/steadyTasks'
 
 export const ViewMenu = ({ active, children }: { active: string; children?: React.ReactNode }) => {
   return (
