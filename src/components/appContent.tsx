@@ -3,7 +3,7 @@
 import { ReactNode, useContext, useEffect, useState } from 'react'
 import { useAuth } from '@clerk/clerk-react'
 import { useI18n } from '@/lib/contexts/i18n'
-import { AuthTracker } from '@/components/auth-tracker'
+import { AuthTracker } from '@/components/authTracker'
 import { Skeleton } from '@/components/ui/skeleton'
 import { GlobalContext } from '@/lib/contexts'
 import { useUserData } from '@/lib/userUtils'

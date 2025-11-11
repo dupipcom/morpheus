@@ -1,6 +1,6 @@
 'use client'
 
-import { AddFriendButton } from './AddFriendButton'
+import { AddFriendButton } from './addFriendButton'
 import { Button } from '@/components/ui/button'
 import { UserPlus, LogIn, Edit } from 'lucide-react'
 import { SignInButton } from '@clerk/nextjs'

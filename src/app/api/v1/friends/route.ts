@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
     let currentUser = await prisma.user.findUnique({
       where: { userId },
       include: {
-        profile: true
+        profiles: true
       }
     })
 
@@ -25,11 +25,10 @@ export async function GET(req: NextRequest) {
       currentUser = await prisma.user.create({
         data: {
           userId,
-          entries: {},
           settings: {
-            dailyTemplate: [],
-            weeklyTemplate: []
-          }
+            currency: null,
+            speed: null
+          } as any
         },
         include: {
           profile: true
@@ -38,24 +37,39 @@ export async function GET(req: NextRequest) {
     }
 
     // Ensure current user has a profile - create one if missing
-    if (currentUser && !currentUser.profile) {
+    if (currentUser && (!currentUser.profiles || currentUser.profiles.length === 0)) {
       try {
         await prisma.profile.create({
           data: {
             userId: currentUser.id,
-            userName: null, // No Clerk username available in this context
-            firstNameVisibility: 'PRIVATE',
-            lastNameVisibility: 'PRIVATE',
-            userNameVisibility: 'PUBLIC',
-            bioVisibility: 'PRIVATE',
-            profilePictureVisibility: 'PRIVATE',
-            publicChartsVisibility: 'PRIVATE',
+            data: {
+              username: {
+                value: null,
+                visibility: true
+              },
+              firstName: {
+                value: null,
+                visibility: false
+              },
+              lastName: {
+                value: null,
+                visibility: false
+              },
+              bio: {
+                value: null,
+                visibility: false
+              },
+              profilePicture: {
+                value: null,
+                visibility: false
+              }
+            }
           }
         })
         // Refetch user with new profile
         currentUser = await prisma.user.findUnique({
           where: { userId },
-          include: { profile: true }
+          include: { profiles: true }
         })
       } catch (error) {
         console.error('Error creating profile in friends endpoint:', error)
@@ -76,13 +90,14 @@ export async function GET(req: NextRequest) {
         }
       },
       include: {
-        profile: true
+        profiles: true
       }
     })
 
     // Format the response with user details
     const formattedFriends = friends.map(user => {
-      if (!user.profile) {
+      const profile = user.profiles?.[0]
+      if (!profile) {
         return {
           id: user.id,
           userId: user.userId,
@@ -102,7 +117,7 @@ export async function GET(req: NextRequest) {
       const isFriend = !isCloseFriend && currentUserFriends.includes(friendUserIdStr) && friendUserFriends.includes(currentUserIdStr)
 
       // Filter profile fields based on visibility and relationship
-      const profile = filterProfileFields(user.profile, {
+      const filteredProfile = filterProfileFields(profile, {
         isOwner: false,
         isFriend,
         isCloseFriend
@@ -111,7 +126,7 @@ export async function GET(req: NextRequest) {
       return {
         id: user.id,
         userId: user.userId,
-        profile
+        profile: filteredProfile
       }
     })
 

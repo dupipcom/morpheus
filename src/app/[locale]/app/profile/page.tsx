@@ -13,10 +13,10 @@ import { Badge } from "@/components/ui/badge"
 import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
 import { ViewMenu } from "@/components/viewMenu"
-import { AnalyticsView } from "@/views/analyticsView"
+import { DashboardView } from "@/views/dashboardView"
 import { useDebounce } from "@/lib/hooks/useDebounce"
 import { generatePublicChartsData } from "@/lib/profileUtils"
-import { PublicChartsView } from "@/components/PublicChartsView"
+import { PublicChartsView } from "@/components/publicChartsView"
 import { Skeleton } from "@/components/ui/skeleton"
 import { ProfileView } from "@/views/profileView"
 import { loadTranslationsSync } from "@/lib/i18n"
@@ -71,19 +71,21 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
       if (response.ok) {
         const data = await response.json()
         if (data.profile) {
+          // Extract data from new profile.data structure
+          const profileData = data.profile.data || {}
           setProfile({
-            firstName: data.profile.firstName || '',
-            lastName: data.profile.lastName || '',
-            userName: data.profile.userName || '',
-            bio: data.profile.bio || '',
-            firstNameVisible: data.profile.firstNameVisible || false,
-            lastNameVisible: data.profile.lastNameVisible || false,
-            userNameVisible: data.profile.userNameVisible || false,
-            bioVisible: data.profile.bioVisible || false,
-            profilePictureVisible: data.profile.profilePictureVisible || false,
-            publicChartsVisible: data.profile.publicChartsVisible || false,
+            firstName: profileData.firstName?.value || '',
+            lastName: profileData.lastName?.value || '',
+            userName: profileData.username?.value || '',
+            bio: profileData.bio?.value || '',
+            firstNameVisible: profileData.firstName?.visibility || false,
+            lastNameVisible: profileData.lastName?.visibility || false,
+            userNameVisible: profileData.username?.visibility || false,
+            bioVisible: profileData.bio?.visibility || false,
+            profilePictureVisible: profileData.profilePicture?.visibility || false,
+            publicChartsVisible: profileData.charts?.visibility || false,
           })
-          setPublicCharts(data.profile.publicCharts || {})
+          setPublicCharts(profileData.charts?.value || {})
         }
       }
     } catch (error) {
@@ -220,6 +222,12 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
       </main>
     )
   }
+
+  console.log('profile', profile)
+  console.log('userName', profile.userName)
+  console.log('currentUserUsername', profile.userName)
+  console.log('isLoggedIn', isSignedIn)
+  console.log('translations', loadTranslationsSync(locale))
 
   return (
     <main className="">

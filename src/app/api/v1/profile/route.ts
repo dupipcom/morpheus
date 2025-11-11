@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
     let user = await prisma.user.findUnique({
       where: { userId },
       include: {
-        profile: true
+        profiles: true
       }
     })
 
@@ -25,25 +25,25 @@ export async function GET(req: NextRequest) {
     }
 
     // Ensure user has a profile - create one if missing
-    if (!user.profile) {
+    if (!user.profiles || user.profiles.length === 0) {
       try {
         const clerkUser = await currentUser()
         await prisma.profile.create({
           data: {
             userId: user.id,
-            userName: clerkUser?.username || null, // Use Clerk username if available
-            firstNameVisibility: 'PRIVATE',
-            lastNameVisibility: 'PRIVATE',
-            userNameVisibility: 'PUBLIC',
-            bioVisibility: 'PRIVATE',
-            profilePictureVisibility: 'PRIVATE',
-            publicChartsVisibility: 'PRIVATE',
+            username: clerkUser?.username || null, // Set root level for efficient queries
+            data: {
+              username: {
+                value: clerkUser?.username || null,
+                visibility: true
+              }
+            }
           }
         })
         // Refetch user with new profile
         user = await prisma.user.findUnique({
           where: { userId },
-          include: { profile: true }
+          include: { profiles: true }
         })
 
         if (!user) {
@@ -67,16 +67,26 @@ export async function GET(req: NextRequest) {
     // Always sync username from Clerk if available - Clerk takes precedence
     try {
       const clerkUser = await currentUser()
-      if (clerkUser && clerkUser.username && user && user.profile) {
+      if (clerkUser && clerkUser.username && user && user.profiles && user.profiles.length > 0) {
         // Always update profile with Clerk username (overwrites any manual username)
+        const existingData = user.profiles[0].data || {}
         await prisma.profile.update({
           where: { userId: user.id },
-          data: { userName: clerkUser.username }
+          data: {
+            username: clerkUser.username, // Sync to root level for efficient queries
+            data: {
+              ...existingData,
+              username: {
+                value: clerkUser.username,
+                visibility: existingData.username?.visibility ?? true
+              }
+            }
+          }
         })
         // Refetch user with updated profile
         user = await prisma.user.findUnique({
           where: { userId },
-          include: { profile: true }
+          include: { profiles: true }
         })
       }
     } catch (error) {
@@ -85,19 +95,30 @@ export async function GET(req: NextRequest) {
 
     // Get Clerk user data to sync imageUrl
     const clerkUser = await currentUser()
-    if (clerkUser && user && user.profile) {
+    if (clerkUser && user && user.profiles && user.profiles.length > 0) {
       // Update profile with Clerk's imageUrl if it's different
-      if (clerkUser.imageUrl && user.profile.profilePicture !== clerkUser.imageUrl) {
+      const profile = user.profiles[0]
+      const currentImageUrl = profile.data?.profilePicture?.value
+      if (clerkUser.imageUrl && currentImageUrl !== clerkUser.imageUrl) {
+        const existingData = profile.data || {}
         await prisma.profile.update({
           where: { userId: user.id },
-          data: { profilePicture: clerkUser.imageUrl }
+          data: {
+            data: {
+              ...existingData,
+              profilePicture: {
+                value: clerkUser.imageUrl,
+                visibility: existingData.profilePicture?.visibility ?? false
+              }
+            }
+          }
         })
         // Refetch user with updated profile
         const updatedUser = await prisma.user.findUnique({
           where: { userId },
-          include: { profile: true }
+          include: { profiles: true }
         })
-        return Response.json({ user: updatedUser, profile: updatedUser?.profile })
+        return Response.json({ user: updatedUser, profile: updatedUser?.profiles?.[0] })
       }
     }
 
@@ -107,12 +128,12 @@ export async function GET(req: NextRequest) {
     }
 
     // Also return lists where this user is a collaborator
-    const collaboratingTaskLists = await prisma.taskList.findMany({
-      where: { collaborators: { has: user.id } },
+    const collaboratingTaskLists = await prisma.list.findMany({
+      where: { users: { some: { userId: user.id, role: { in: ['COLLABORATOR', 'MANAGER'] } } } },
       select: { id: true, name: true, role: true, budget: true, dueDate: true, createdAt: true, updatedAt: true }
     })
 
-    return Response.json({ user, profile: user.profile, collaboratingTaskLists })
+    return Response.json({ user, profile: user.profiles?.[0], collaboratingTaskLists })
   } catch (error) {
     console.error('Error fetching profile:', error)
     return Response.json({ error: 'Internal server error' }, { status: 500 })
@@ -167,23 +188,40 @@ export async function POST(req: NextRequest) {
     })
 
     let profile
+    const existingProfileData = existingProfile?.data || {}
     if (existingProfile) {
       // Update existing profile - use Clerk username and imageUrl, ignore manual values
       profile = await prisma.profile.update({
         where: { userId: user.id },
         data: {
-          firstName: data.firstName,
-          lastName: data.lastName,
-          userName: clerkUsername, // Always use Clerk's username
-          bio: data.bio,
-          profilePicture: clerkImageUrl, // Always use Clerk's imageUrl
-          publicCharts: data.publicCharts,
-          firstNameVisibility: toVisibility(data.firstNameVisible, 'firstName') as any,
-          lastNameVisibility: toVisibility(data.lastNameVisible, 'lastName') as any,
-          userNameVisibility: toVisibility(data.userNameVisible, 'userName') as any,
-          bioVisibility: toVisibility(data.bioVisible, 'bio') as any,
-          profilePictureVisibility: toVisibility(data.profilePictureVisible, 'profilePicture') as any,
-          publicChartsVisibility: toVisibility(data.publicChartsVisible, 'publicCharts') as any,
+          username: clerkUsername, // Sync to root level for efficient queries
+          data: {
+            ...existingProfileData,
+            firstName: {
+              value: data.firstName || existingProfileData.firstName?.value,
+              visibility: toVisibility(data.firstNameVisible, 'firstName') === 'PUBLIC'
+            },
+            lastName: {
+              value: data.lastName || existingProfileData.lastName?.value,
+              visibility: toVisibility(data.lastNameVisible, 'lastName') === 'PUBLIC'
+            },
+            username: {
+              value: clerkUsername, // Always use Clerk's username
+              visibility: toVisibility(data.userNameVisible, 'userName') === 'PUBLIC'
+            },
+            bio: {
+              value: data.bio || existingProfileData.bio?.value,
+              visibility: toVisibility(data.bioVisible, 'bio') === 'PUBLIC'
+            },
+            profilePicture: {
+              value: clerkImageUrl, // Always use Clerk's imageUrl
+              visibility: toVisibility(data.profilePictureVisible, 'profilePicture') === 'PUBLIC'
+            },
+            charts: existingProfileData.charts || {
+              value: data.publicCharts,
+              visibility: toVisibility(data.publicChartsVisible, 'publicCharts') === 'PUBLIC'
+            }
+          }
         }
       })
     } else {
@@ -191,18 +229,33 @@ export async function POST(req: NextRequest) {
       profile = await prisma.profile.create({
         data: {
           userId: user.id,
-          firstName: data.firstName,
-          lastName: data.lastName,
-          userName: clerkUsername, // Always use Clerk's username
-          bio: data.bio,
-          profilePicture: clerkImageUrl, // Always use Clerk's imageUrl
-          publicCharts: data.publicCharts,
-          firstNameVisibility: toVisibility(data.firstNameVisible, 'firstName') as any,
-          lastNameVisibility: toVisibility(data.lastNameVisible, 'lastName') as any,
-          userNameVisibility: toVisibility(data.userNameVisible, 'userName') as any,
-          bioVisibility: toVisibility(data.bioVisible, 'bio') as any,
-          profilePictureVisibility: toVisibility(data.profilePictureVisible, 'profilePicture') as any,
-          publicChartsVisibility: toVisibility(data.publicChartsVisible, 'publicCharts') as any,
+          username: clerkUsername, // Set root level for efficient queries
+          data: {
+            firstName: {
+              value: data.firstName,
+              visibility: toVisibility(data.firstNameVisible, 'firstName') === 'PUBLIC'
+            },
+            lastName: {
+              value: data.lastName,
+              visibility: toVisibility(data.lastNameVisible, 'lastName') === 'PUBLIC'
+            },
+            username: {
+              value: clerkUsername, // Always use Clerk's username
+              visibility: toVisibility(data.userNameVisible, 'userName') === 'PUBLIC'
+            },
+            bio: {
+              value: data.bio,
+              visibility: toVisibility(data.bioVisible, 'bio') === 'PUBLIC'
+            },
+            profilePicture: {
+              value: clerkImageUrl, // Always use Clerk's imageUrl
+              visibility: toVisibility(data.profilePictureVisible, 'profilePicture') === 'PUBLIC'
+            },
+            charts: {
+              value: data.publicCharts,
+              visibility: toVisibility(data.publicChartsVisible, 'publicCharts') === 'PUBLIC'
+            }
+          }
         }
       })
     }

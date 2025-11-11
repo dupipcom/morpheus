@@ -3,9 +3,9 @@
 import React from 'react'
 import { useContext, useEffect, useRef, useState, useMemo } from 'react'
 import { GlobalContext } from '@/lib/contexts'
-import { AddTaskForm } from '@/views/forms/AddTaskForm'
-import { AddListForm } from '@/views/forms/AddListForm'
-import { AddTemplateForm } from '@/views/forms/AddTemplateForm'
+import { AddTaskForm } from '@/views/forms/addTaskForm'
+import { AddListForm } from '@/views/forms/addListForm'
+import { AddTemplateForm } from '@/views/forms/addTemplateForm'
 
 import { ViewMenu } from '@/components/viewMenu'
 import { MoodView } from '@/views/moodView'

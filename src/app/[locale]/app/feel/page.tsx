@@ -4,7 +4,7 @@ import React from 'react'
 
 import { ViewMenu } from '@/components/viewMenu'
 import { MoodView } from '@/views/moodView'
-import { PublishNote } from '@/components/publish-note'
+import { PublishNote } from '@/components/publishNote'
 
 export const dynamic = 'force-dynamic'
 

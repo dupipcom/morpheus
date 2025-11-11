@@ -34,13 +34,13 @@ interface Thing {
   id: string
   name: string
   notes?: string
-  interactionQuality?: number
+  quality?: number
 }
 
 interface ThingReference {
   id: string
   name: string
-  interactionQuality?: number
+  quality?: number
 }
 
 interface ThingComboboxProps {
@@ -66,10 +66,8 @@ export function ThingCombobox({
   const [newThing, setNewThing] = React.useState({
     name: '',
     notes: '',
-    interactionQuality: 3
+    quality: 3
   })
-
-  const [thingInteractionQualities, setThingInteractionQualities] = React.useState<{ [key: string]: number }>({})
 
   const handleSelect = (thingId: string) => {
     if (thingId === 'add-new') {
@@ -82,7 +80,7 @@ export function ThingCombobox({
       const thingRef: ThingReference = {
         id: thing.id,
         name: thing.name,
-        interactionQuality: thingInteractionQualities[thing.id] || thing.interactionQuality || 3
+        quality: thing.quality || 3
       }
       onThingsChange([...selectedThings, thingRef])
     }
@@ -113,7 +111,7 @@ export function ThingCombobox({
         const thingRef: ThingReference = {
           id: thing.id,
           name: thing.name,
-          interactionQuality: newThing.interactionQuality
+          quality: newThing.quality
         }
         onThingsChange([...selectedThings, thingRef])
 
@@ -121,7 +119,7 @@ export function ThingCombobox({
         setNewThing({
           name: '',
           notes: '',
-          interactionQuality: 3
+          quality: 3
         })
 
         setAddThingOpen(false)
@@ -219,8 +217,8 @@ export function ThingCombobox({
           className="flex items-center gap-1 bg-blue-100 text-blue-800 border-blue-200"
         >
           {thing.name}
-          {thing.interactionQuality && (
-            <span className="text-xs">{thing.interactionQuality}/5</span>
+          {thing.quality !== undefined && (
+            <span className="text-xs">{thing.quality}/5</span>
           )}
           <Button
             variant="ghost"

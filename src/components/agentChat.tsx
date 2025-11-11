@@ -7,7 +7,7 @@ import { Send, Bot, User, Loader2 } from "lucide-react"
 import { useI18n } from "@/lib/contexts/i18n"
 import { toast } from "@/components/ui/sonner"
 import { getWeekNumber } from "@/app/helpers"
-import { continueConversation } from "./agent-actions"
+import { continueConversation } from "./agentActions"
 import { readStreamableValue } from '@ai-sdk/rsc';
 import { GlobalContext } from "@/lib/contexts"
 

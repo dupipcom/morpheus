@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useMemo, useContext } from 'react'
+import { useState, useEffect, useMemo, useContext, useRef } from 'react'
 import useSWR from 'swr'
 
 import { Slider } from "@/components/ui/slider"
@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import { NotesList, Note } from "@/components/NotesList"
+import { NotesList, Note } from "@/components/notesList"
 import { getWeekNumber } from "@/app/helpers"
 import {
   Carousel,
@@ -19,12 +19,12 @@ import {
 import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
 import { useNotesRefresh } from "@/lib/contexts/notesRefresh"
-import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil, handleMoodSubmit, isUserDataReady, useEnhancedLoadingState, useUserData } from "@/lib/userUtils"
-import { MoodViewSkeleton } from "@/components/ui/skeleton-loader"
-import { ContentLoadingWrapper } from '@/components/ContentLoadingWrapper'
-import { ContactCombobox } from "@/components/ui/contact-combobox"
-import { ThingCombobox } from "@/components/ui/thing-combobox"
-import { LifeEventCombobox } from "@/components/ui/life-event-combobox"
+import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil, isUserDataReady, useEnhancedLoadingState, useUserData } from "@/lib/userUtils"
+import { MoodViewSkeleton } from "@/components/ui/skeletonLoader"
+import { ContentLoadingWrapper } from '@/components/contentLoadingWrapper'
+import { ContactCombobox } from "@/components/ui/contactCombobox"
+import { ThingCombobox } from "@/components/ui/thingCombobox"
+import { LifeEventCombobox } from "@/components/ui/lifeEventCombobox"
 import { useDebounce } from "@/lib/hooks/useDebounce"
 import { Plus } from "lucide-react"
 
@@ -49,22 +49,23 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
   const year = Number(date.split('-')[0])
   const [weekNumber, setWeekNumber] = useState(getWeekNumber(today)[1])
 
-  const serverMood = useMemo(() => (session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && session?.user?.entries[year].days[date] && session?.user?.entries[year].days[date].mood) || {}, [fullDay, JSON.stringify(session)])
+  // Fetch day data from Day API
+  const { data: dayData, mutate: mutateDay, isLoading: dayLoading } = useSWR(
+    session?.user ? `/api/v1/days?date=${date}` : null,
+    async () => {
+      const response = await fetch(`/api/v1/days?date=${date}`)
+      if (response.ok) {
+        const data = await response.json()
+        return data
+      }
+      return { day: null }
+    }
+  )
 
-  const serverMoodContacts = useMemo(() => {
-    const dayEntry = session?.user?.entries?.[year]?.days?.[date]
-    return dayEntry?.contacts || []
-  }, [session?.user?.entries, year, date, session?.user?.entries?.[year]?.days?.[date]?.contacts])
-
-  const serverMoodThings = useMemo(() => {
-    const dayEntry = session?.user?.entries?.[year]?.days?.[date]
-    return dayEntry?.things || []
-  }, [session?.user?.entries, year, date, session?.user?.entries?.[year]?.days?.[date]?.things])
-
-  const serverMoodLifeEvents = useMemo(() => {
-    const dayEntry = session?.user?.entries?.[year]?.days?.[date]
-    return dayEntry?.lifeEvents || []
-  }, [session?.user?.entries, year, date, session?.user?.entries?.[year]?.days?.[date]?.lifeEvents])
+  const serverMood = useMemo(() => dayData?.day?.mood || {}, [dayData?.day?.mood])
+  const serverMoodContacts = useMemo(() => dayData?.day?.contacts || [], [dayData?.day?.contacts])
+  const serverMoodThings = useMemo(() => dayData?.day?.things || [], [dayData?.day?.things])
+  const serverMoodLifeEvents = useMemo(() => dayData?.day?.lifeEvents || [], [dayData?.day?.lifeEvents])
 
   const [insight, setInsight] = useState({})
   const [contacts, setContacts] = useState<any[]>([])
@@ -105,11 +106,17 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
 
   const [mood, setMood] = useState(serverMood)
   const [pendingMoodChanges, setPendingMoodChanges] = useState({})
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null)
 
   // Update mood state when serverMood changes (due to date change)
   useEffect(() => {
     setMood(serverMood)
     setPendingMoodChanges({})
+    // Clear any pending debounce when date changes
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current)
+      debounceTimerRef.current = null
+    }
   }, [serverMood])
 
 
@@ -117,9 +124,9 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
 
   // Fetch contacts
   const { data: contactsData, mutate: mutateContacts, isLoading: contactsLoading } = useSWR(
-    session?.user ? `/api/v1/contacts` : null,
+    session?.user ? `/api/v1/persons` : null,
     async () => {
-      const response = await fetch('/api/v1/contacts')
+      const response = await fetch('/api/v1/persons')
       if (response.ok) {
         const data = await response.json()
         setContacts(data.contacts || [])
@@ -145,9 +152,9 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
 
   // Fetch life events
   const { data: lifeEventsData, mutate: mutateLifeEvents, isLoading: lifeEventsLoading } = useSWR(
-    session?.user ? `/api/v1/life-events` : null,
+    session?.user ? `/api/v1/events` : null,
     async () => {
-      const response = await fetch('/api/v1/life-events')
+      const response = await fetch('/api/v1/events')
       if (response.ok) {
         const data = await response.json()
         setLifeEvents(data.lifeEvents || [])
@@ -233,47 +240,77 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
     }
   }, [lifeEventsData])
 
+  // Helper function to save day data to Day API
+  const saveDayData = async (moodData?: any, contactsData?: any[], thingsData?: any[], lifeEventsData?: any[]) => {
+    try {
+      const payload: any = {
+        date: date,
+        mood: moodData || mood,
+        contacts: contactsData || moodContacts,
+        things: thingsData || moodThings,
+        lifeEvents: lifeEventsData || moodLifeEvents
+      }
+
+      const response = await fetch('/api/v1/days', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
+      })
+
+      if (response.ok) {
+        await mutateDay()
+      }
+    } catch (error) {
+      console.error('Error saving day data:', error)
+    }
+  }
+
   // Create debounced version of handleSubmit for sliders
   const debouncedHandleSubmit = useDebounce(async (value, field) => {
     const updatedMood = {...mood, [field]: value}
     setMood(updatedMood)
-    // Always include current mood contacts, things, life events and updated mood state when saving any mood data
-    await handleMoodSubmit(value, field, fullDay, moodContacts, moodThings, undefined, updatedMood, moodLifeEvents)
-    // Don't call updateUser immediately to avoid clearing mood contacts/things/life events
-    // The session will be updated naturally when the user navigates or refreshes
+    await saveDayData(updatedMood)
   }, 3000)
 
-  // Create a single debounced function that aggregates all mood changes
-  const debouncedMoodUpdate = useDebounce(async () => {
-    // Aggregate all pending changes with current mood state
-    const aggregatedMood = {...mood, ...pendingMoodChanges}
-    setMood(aggregatedMood)
-    setPendingMoodChanges({})
-    
-    // Send the aggregated mood data to the server
-    await handleMoodSubmit(null, 'mood', fullDay, moodContacts, moodThings, undefined, aggregatedMood, moodLifeEvents)
-    // Don't call updateUser immediately to avoid clearing mood contacts/things/life events
-    // The session will be updated naturally when the user navigates or refreshes
-  }, 3000)
-
-  // Function to handle individual slider changes
+  // Function to handle individual slider changes with debouncing
   const handleMoodSliderChange = (field, value) => {
     // Update the pending changes
     setPendingMoodChanges(prev => ({...prev, [field]: value}))
     // Update the local mood state for immediate UI feedback
     setMood(prev => ({...prev, [field]: value}))
-    // Trigger the debounced update
-    debouncedMoodUpdate()
+    
+    // Clear existing timer if any
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current)
+    }
+    
+    // Set new timer - will only execute after 3000ms of no interactions
+    debounceTimerRef.current = setTimeout(() => {
+      // Use functional updates to get the latest state values
+      setMood(currentMood => {
+        setPendingMoodChanges(currentPending => {
+          // Aggregate all pending changes with current mood state
+          const aggregatedMood = {...currentMood, ...currentPending}
+          
+          // Save to backend
+          saveDayData(aggregatedMood).then(() => {
+            debounceTimerRef.current = null
+          })
+          
+          return {}
+        })
+        return currentMood
+      })
+    }, 3000)
   }
 
 
   const handleSubmit = async (value, field) => {
     const updatedMood = {...mood, [field]: value}
     setMood(updatedMood)
-    // Always include current mood contacts, things, life events and updated mood state when saving any mood data
-    await handleMoodSubmit(value, field, fullDay, moodContacts, moodThings, undefined, updatedMood, moodLifeEvents)
-    // Don't call updateUser immediately to avoid clearing mood contacts/things/life events
-    // The session will be updated naturally when the user navigates or refreshes
+    await saveDayData(updatedMood)
   }
 
   // Create debounced version of handleMoodContactsChange for contact interaction sliders
@@ -281,20 +318,14 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
     // Update both optimistic and server state
     setOptimisticMoodContacts(newMoodContacts)
     setMoodContacts(newMoodContacts)
-    // Save mood contacts to database immediately when they change
-    await handleMoodSubmit(null, 'contacts', fullDay, newMoodContacts, moodThings, undefined, mood, moodLifeEvents)
-    // Don't call updateUser immediately to avoid race conditions
-    // The session will be updated naturally when the user navigates or refreshes
+    await saveDayData(undefined, newMoodContacts)
   }, 500)
 
   const handleMoodContactsChange = async (newMoodContacts) => {
     // Update both optimistic and server state
     setOptimisticMoodContacts(newMoodContacts)
     setMoodContacts(newMoodContacts)
-    // Save mood contacts to database immediately when they change
-    await handleMoodSubmit(null, 'contacts', fullDay, newMoodContacts, moodThings, undefined, mood, moodLifeEvents)
-    // Don't call updateUser immediately to avoid race conditions
-    // The session will be updated naturally when the user navigates or refreshes
+    await saveDayData(undefined, newMoodContacts)
   }
 
   // Create debounced version of handleMoodThingsChange for thing interaction sliders
@@ -302,51 +333,39 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
     // Update both optimistic and server state
     setOptimisticMoodThings(newMoodThings)
     setMoodThings(newMoodThings)
-    // Save mood things to database immediately when they change
-    await handleMoodSubmit(null, 'things', fullDay, moodContacts, newMoodThings, undefined, mood, moodLifeEvents)
-    // Don't call updateUser immediately to avoid race conditions
-    // The session will be updated naturally when the user navigates or refreshes
+    await saveDayData(undefined, undefined, newMoodThings)
   }, 500)
 
   const handleMoodThingsChange = async (newMoodThings) => {
     // Update both optimistic and server state
     setOptimisticMoodThings(newMoodThings)
     setMoodThings(newMoodThings)
-    // Save mood things to database immediately when they change
-    await handleMoodSubmit(null, 'things', fullDay, moodContacts, newMoodThings, undefined, mood, moodLifeEvents)
-    // Don't call updateUser immediately to avoid race conditions
-    // The session will be updated naturally when the user navigates or refreshes
+    await saveDayData(undefined, undefined, newMoodThings)
   }
 
   // Create debounced version of handleMoodLifeEventsChange for life event interaction sliders
   const debouncedHandleMoodLifeEventsChange = useDebounce(async (newMoodLifeEvents) => {
     setMoodLifeEvents(newMoodLifeEvents)
-    // Save mood life events to database immediately when they change
-    await handleMoodSubmit(null, 'lifeEvents', fullDay, moodContacts, moodThings, undefined, mood, newMoodLifeEvents)
-    // Don't call updateUser immediately to avoid race conditions
-    // The session will be updated naturally when the user navigates or refreshes
+    await saveDayData(undefined, undefined, undefined, newMoodLifeEvents)
   }, 500)
 
   const handleMoodLifeEventsChange = async (newMoodLifeEvents) => {
     setMoodLifeEvents(newMoodLifeEvents)
-    // Save mood life events to database immediately when they change
-    await handleMoodSubmit(null, 'lifeEvents', fullDay, moodContacts, moodThings, undefined, mood, newMoodLifeEvents)
-    // Don't call updateUser immediately to avoid race conditions
-    // The session will be updated naturally when the user navigates or refreshes
+    await saveDayData(undefined, undefined, undefined, newMoodLifeEvents)
   }
 
   const handleAddLifeEvent = async () => {
     if (!newLifeEventText.trim()) return
 
     try {
-      const response = await fetch('/api/v1/life-events', {
+      const response = await fetch('/api/v1/events', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           name: newLifeEventText.trim(),
-          impact: 3 // Default impact rating
+          quality: 3 // Default quality rating
         }),
       })
 
@@ -358,7 +377,7 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
         const lifeEventRef = {
           id: lifeEvent.id,
           name: lifeEvent.name,
-          impact: 3
+          quality: 3
         }
         setMoodLifeEvents([...moodLifeEvents, lifeEventRef])
 
@@ -368,8 +387,8 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
         // Refresh the life events list
         mutateLifeEvents()
 
-        // Save to mood data
-        await handleMoodSubmit(null, 'lifeEvents', fullDay, moodContacts, moodThings, undefined, mood, [...moodLifeEvents, lifeEventRef])
+        // Save to day data
+        await saveDayData(undefined, undefined, undefined, [...moodLifeEvents, lifeEventRef])
       }
     } catch (error) {
       console.error('Error adding life event:', error)
@@ -396,8 +415,8 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
     generateInsight(setInsight, 'test', locale)
   }, [locale])
 
-  // Use enhanced loading state to prevent flashing (moodView doesn't use SWR)
-  const isDataLoading = useEnhancedLoadingState(false, session)
+  // Use enhanced loading state to prevent flashing
+  const isDataLoading = useEnhancedLoadingState(dayLoading, session)
 
   if (isDataLoading) {
     return <MoodViewSkeleton />
@@ -501,14 +520,14 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
                     <div key={lifeEvent.id} className="space-y-2">
                       <div className="flex items-center justify-between">
                         <span className="text-sm font-medium">{lifeEvent.name}</span>
-                        <span className="text-xs text-muted-foreground">{lifeEvent.impact || 3}/5</span>
+                        <span className="text-xs text-muted-foreground">{lifeEvent.quality || 3}/5</span>
                       </div>
                       <Slider
-                        value={[lifeEvent.impact || 3]}
+                        value={[lifeEvent.quality || 3]}
                         onValueChange={(value) => {
                           const updatedLifeEvents = moodLifeEvents.map(le => 
                             le.id === lifeEvent.id 
-                              ? { ...le, impact: value[0] }
+                              ? { ...le, quality: value[0] }
                               : le
                           )
                           setMoodLifeEvents(updatedLifeEvents)
@@ -549,14 +568,14 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
                     <div key={contact.id} className="space-y-2">
                       <div className="flex items-center justify-between">
                         <span className="text-sm font-medium">{contact.name}</span>
-                        <span className="text-xs text-muted-foreground">{contact.interactionQuality || 3}/5</span>
+                        <span className="text-xs text-muted-foreground">{contact.quality || 3}/5</span>
                       </div>
                       <Slider
-                        value={[contact.interactionQuality || 3]}
+                        value={[contact.quality || 3]}
                         onValueChange={(value) => {
                           const updatedContacts = optimisticMoodContacts.map(c => 
                             c.id === contact.id 
-                              ? { ...c, interactionQuality: value[0] }
+                              ? { ...c, quality: value[0] }
                               : c
                           )
                           // Optimistic update for immediate UI response
@@ -600,14 +619,14 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
                     <div key={thing.id} className="space-y-2">
                       <div className="flex items-center justify-between">
                         <span className="text-sm font-medium">{thing.name}</span>
-                        <span className="text-xs text-muted-foreground">{thing.interactionQuality || 3}/5</span>
+                        <span className="text-xs text-muted-foreground">{thing.quality || 3}/5</span>
                       </div>
                       <Slider
-                        value={[thing.interactionQuality || 3]}
+                        value={[thing.quality || 3]}
                         onValueChange={(value) => {
                           const updatedThings = optimisticMoodThings.map(t => 
                             t.id === thing.id 
-                              ? { ...t, interactionQuality: value[0] }
+                              ? { ...t, quality: value[0] }
                               : t
                           )
                           // Optimistic update for immediate UI response

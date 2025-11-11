@@ -8,7 +8,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+} from '@/components/ui/dropdownMenu'
 import {
   Popover,
   PopoverContent,
@@ -73,144 +73,79 @@ export const DoToolbar = ({
   const [userTemplates, setUserTemplates] = useState<any[]>([])
   const [collabProfiles, setCollabProfiles] = useState<Record<string, string>>({})
   const [listEarnings, setListEarnings] = useState<{ profit: number; prize: number; earnings: number }>({ profit: 0, prize: 0, earnings: 0 })
+  const [dayData, setDayData] = useState<any>(null)
 
-  // Calculate earnings for the selected list from user entries
+  // Fetch day data for the selected date
   useEffect(() => {
-    if (!selectedList || !session?.user) {
+    let cancelled = false
+    const run = async () => {
+      if (!selectedDate || !session?.user) {
+        setDayData(null)
+        return
+      }
+
+      try {
+        const dateISO = selectedDate.toISOString().split('T')[0]
+        const res = await fetch(`/api/v1/days?date=${dateISO}`)
+        if (!cancelled && res.ok) {
+          const data = await res.json()
+          setDayData(data.day)
+        } else {
+          setDayData(null)
+        }
+      } catch (error) {
+        console.error('Error fetching day data:', error)
+        setDayData(null)
+      }
+    }
+    run()
+    return () => { cancelled = true }
+  }, [selectedDate, session?.user])
+
+  // Calculate earnings for the selected list from day.ticker
+  useEffect(() => {
+    if (!selectedList) {
       setListEarnings({ profit: 0, prize: 0, earnings: 0 })
       return
     }
 
     try {
-      const user = (session as any).user
-      const entries = user?.entries || {}
-      const listRole = (selectedList as any)?.role
-      const listId = selectedList.id // Get listId for new structure
-      
-      if (!listRole || !listId) {
+      const listId = selectedList.id
+      if (!listId) {
         setListEarnings({ profit: 0, prize: 0, earnings: 0 })
         return
       }
 
+      // If no dayData, set earnings to 0
+      if (!dayData) {
+        setListEarnings({ profit: 0, prize: 0, earnings: 0 })
+        return
+      }
+
+      // Get ticker array from day data
+      const tickers = Array.isArray(dayData.ticker) ? dayData.ticker : []
+      
+      // Find all ticker entries for this listId and sum them up
+      const tickerEntries = tickers.filter((t: any) => t.listId === listId)
+      
+      // Sum all profit and prize values from all ticker entries
       let totalProfit = 0
       let totalPrize = 0
-      let totalEarnings = 0
-
-      // Determine list role type
-      const rolePrefix = listRole.split('.')[0]
-      const isDaily = rolePrefix === 'daily'
-      const isWeekly = rolePrefix === 'weekly'
-      const isOneOff = rolePrefix === 'one-off' || rolePrefix === 'oneoff'
-
-      // For daily/weekly lists, filter by selectedDate if provided
-      let targetDateISO: string | null = null
-      let targetWeek: number | null = null
-      let targetYear: number | null = null
-
-      if (selectedDate && !isOneOff) {
-        targetDateISO = selectedDate.toISOString().split('T')[0]
-        targetYear = selectedDate.getFullYear()
-        if (isWeekly) {
-          const [, weekNum] = getWeekNumber(selectedDate)
-          const weekNumber = typeof weekNum === 'number' ? weekNum : (typeof weekNum === 'string' ? parseInt(weekNum, 10) : null)
-          targetWeek = weekNumber !== null && !isNaN(weekNumber) ? weekNumber : null
-        }
-      }
-
-      // Helper to convert to number (handles both string and number for backward compatibility)
-      const toNumber = (val: any): number => {
-        if (typeof val === 'number') return val
-        if (typeof val === 'string') return parseFloat(val) || 0
-        return 0
-      }
-
-      // Sum up earnings from entries using new structure with listId
-      for (const year in entries) {
-        const yearData = entries[year]
-        
-        if (isDaily && yearData?.days) {
-          // Sum daily earnings from new structure: days[date][listId]
-          for (const date in yearData.days) {
-            // If selectedDate is provided, only include that specific day
-            if (targetDateISO && date !== targetDateISO) {
-              continue
-            }
-            // If filtering by year, only include entries from that year
-            if (targetYear && Number(year) !== targetYear) {
-              continue
-            }
-            const dateEntry = yearData.days[date]
-            if (dateEntry) {
-              // Check new structure first: dateEntry[listId]
-              if (dateEntry[listId]) {
-                const listEntry = dateEntry[listId]
-                totalProfit += toNumber(listEntry.profit)
-                totalPrize += toNumber(listEntry.prize)
-                totalEarnings += toNumber(listEntry.earnings)
-              } else if (dateEntry.profit !== undefined || dateEntry.prize !== undefined || dateEntry.earnings !== undefined) {
-                // Backward compatibility: old structure (dateEntry directly)
-                totalProfit += toNumber(dateEntry.profit)
-                totalPrize += toNumber(dateEntry.prize)
-                totalEarnings += toNumber(dateEntry.earnings)
-              }
-            }
-          }
-        } else if (isWeekly && yearData?.weeks) {
-          // Sum weekly earnings from new structure: weeks[week][listId]
-          for (const week in yearData.weeks) {
-            // If selectedDate is provided, only include that specific week
-            if (targetWeek !== null && Number(week) !== targetWeek) {
-              continue
-            }
-            // If filtering by year, only include entries from that year
-            if (targetYear && Number(year) !== targetYear) {
-              continue
-            }
-            const weekEntry = yearData.weeks[week]
-            if (weekEntry) {
-              // Check new structure first: weekEntry[listId]
-              if (weekEntry[listId]) {
-                const listEntry = weekEntry[listId]
-                totalProfit += toNumber(listEntry.profit)
-                totalPrize += toNumber(listEntry.prize)
-                totalEarnings += toNumber(listEntry.earnings)
-              } else if (weekEntry.profit !== undefined || weekEntry.prize !== undefined || weekEntry.earnings !== undefined) {
-                // Backward compatibility: old structure (weekEntry directly)
-                totalProfit += toNumber(weekEntry.profit)
-                totalPrize += toNumber(weekEntry.prize)
-                totalEarnings += toNumber(weekEntry.earnings)
-              }
-            }
-          }
-        } else if (isOneOff && yearData?.oneOffs) {
-          // Sum one-off earnings from new structure: oneOffs[date][listId]
-          // Always show total, not filtered by date
-          for (const date in yearData.oneOffs) {
-            const oneOffEntry = yearData.oneOffs[date]
-            if (oneOffEntry) {
-              // Check new structure first: oneOffEntry[listId]
-              if (oneOffEntry[listId]) {
-                const listEntry = oneOffEntry[listId]
-                totalProfit += toNumber(listEntry.profit)
-                totalPrize += toNumber(listEntry.prize)
-                totalEarnings += toNumber(listEntry.earnings)
-              } else if (oneOffEntry.profit !== undefined || oneOffEntry.prize !== undefined || oneOffEntry.earnings !== undefined) {
-                // Backward compatibility: old structure (oneOffEntry directly)
-                totalProfit += toNumber(oneOffEntry.profit)
-                totalPrize += toNumber(oneOffEntry.prize)
-                totalEarnings += toNumber(oneOffEntry.earnings)
-              }
-            }
-          }
-        }
-      }
-
-      setListEarnings({ profit: totalProfit, prize: totalPrize, earnings: totalEarnings })
+      
+      tickerEntries.forEach((tickerEntry: any) => {
+        const profit = typeof tickerEntry.profit === 'number' ? tickerEntry.profit : (typeof tickerEntry.profit === 'string' ? parseFloat(tickerEntry.profit) || 0 : 0)
+        const prize = typeof tickerEntry.prize === 'number' ? tickerEntry.prize : (typeof tickerEntry.prize === 'string' ? parseFloat(tickerEntry.prize) || 0 : 0)
+        totalProfit += profit
+        totalPrize += prize
+      })
+      
+      const earnings = totalProfit + totalPrize
+      setListEarnings({ profit: totalProfit, prize: totalPrize, earnings })
     } catch (error) {
-      console.error('Error calculating list earnings:', error)
+      console.error('Error calculating list earnings from day.ticker:', error)
       setListEarnings({ profit: 0, prize: 0, earnings: 0 })
     }
-  }, [selectedList?.id, (selectedList as any)?.role, session, selectedDate])
+  }, [selectedList?.id, dayData])
 
   const refreshTemplates = async () => {
     try {
@@ -237,8 +172,17 @@ export const DoToolbar = ({
     let cancelled = false
     const run = async () => {
       try {
-        const owners: string[] = Array.isArray((selectedList as any)?.owners) ? (selectedList as any).owners : []
-        const collaborators: string[] = Array.isArray((selectedList as any)?.collaborators) ? (selectedList as any).collaborators : []
+        // Extract user IDs from users array (new model) or fallback to old fields
+        const users = Array.isArray((selectedList as any)?.users) ? (selectedList as any).users : []
+        const ownersFromUsers = users.filter((u: any) => u.role === 'OWNER').map((u: any) => u.userId)
+        const collaboratorsFromUsers = users.filter((u: any) => u.role === 'COLLABORATOR' || u.role === 'MANAGER').map((u: any) => u.userId)
+        
+        // Fallback to old fields for backward compatibility
+        const ownersFromOldField = Array.isArray((selectedList as any)?.owners) ? (selectedList as any).owners : []
+        const collaboratorsFromOldField = Array.isArray((selectedList as any)?.collaborators) ? (selectedList as any).collaborators : []
+        
+        const owners = ownersFromUsers.length > 0 ? ownersFromUsers : ownersFromOldField
+        const collaborators = collaboratorsFromUsers.length > 0 ? collaboratorsFromUsers : collaboratorsFromOldField
         const allIds = [...new Set([...owners, ...collaborators])]
         
         if (!allIds.length) { setCollabProfiles({}); return }
@@ -253,7 +197,7 @@ export const DoToolbar = ({
     }
     run()
     return () => { cancelled = true }
-  }, [selectedList?.id, JSON.stringify((selectedList as any)?.owners || []), JSON.stringify((selectedList as any)?.collaborators || [])])
+  }, [selectedList?.id, JSON.stringify((selectedList as any)?.users || []), JSON.stringify((selectedList as any)?.owners || []), JSON.stringify((selectedList as any)?.collaborators || [])])
 
 
   // Determine if we should show the date picker (only for daily.* or weekly.* lists)
@@ -415,8 +359,8 @@ export const DoToolbar = ({
                       Prize: ${listEarnings.prize.toFixed(2)}
                     </Badge>
                   )}
-                  {/* Profit badge - show if there is a fixed budget */}
-                  {(selectedList as any)?.budget && parseFloat(String((selectedList as any).budget || '0')) > 0 && (
+                  {/* Profit badge - show if there is profit from ticker */}
+                  {listEarnings.profit > 0 && (
                     <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100">
                       <TrendingUp className="h-3 w-3 mr-1" />
                       Profit: ${listEarnings.profit.toFixed(2)}
@@ -428,8 +372,23 @@ export const DoToolbar = ({
                       {(selectedList as any).dueDate}
                     </Badge>
                   )}
-                  {/* Show owner badge when there are collaborators */}
-                  {Array.isArray((selectedList as any)?.collaborators) && (selectedList as any).collaborators.length > 0 && Array.isArray((selectedList as any)?.owners) && (selectedList as any).owners.map((id: string) => {
+                  {/* Show owner and collaborator badges from users array */}
+                  {(() => {
+                    const users = Array.isArray((selectedList as any)?.users) ? (selectedList as any).users : []
+                    const owners = users.filter((u: any) => u.role === 'OWNER').map((u: any) => u.userId)
+                    const collaborators = users.filter((u: any) => u.role === 'COLLABORATOR' || u.role === 'MANAGER').map((u: any) => u.userId)
+                    
+                    // Fallback to old fields for backward compatibility
+                    const ownersFromOld = Array.isArray((selectedList as any)?.owners) ? (selectedList as any).owners : []
+                    const collaboratorsFromOld = Array.isArray((selectedList as any)?.collaborators) ? (selectedList as any).collaborators : []
+                    
+                    const allOwners = owners.length > 0 ? owners : ownersFromOld
+                    const allCollaborators = collaborators.length > 0 ? collaborators : collaboratorsFromOld
+                    
+                    return (
+                      <>
+                        {/* Show owner badges when there are collaborators */}
+                        {allCollaborators.length > 0 && allOwners.map((id: string) => {
                     const userName = collabProfiles[id] || id
                     const earnings = (selectedList as any)?.collaboratorEarnings?.[userName] || 0
                     return (
@@ -440,7 +399,7 @@ export const DoToolbar = ({
                     )
                   })}
                   {/* Show collaborator badges */}
-                  {Array.isArray((selectedList as any)?.collaborators) && (selectedList as any).collaborators.map((id: string) => {
+                        {allCollaborators.map((id: string) => {
                     const userName = collabProfiles[id] || id
                     const earnings = (selectedList as any)?.collaboratorEarnings?.[userName] || 0
                     return (
@@ -450,6 +409,9 @@ export const DoToolbar = ({
                       </Badge>
                     )
                   })}
+                      </>
+                    )
+                  })()}
                 </div>
               )}
 

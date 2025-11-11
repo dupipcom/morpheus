@@ -29,7 +29,7 @@ export const AddTaskForm = ({
       area: newTask.area,
       categories: [newTask.category],
       cadence: 'day',
-      status: 'Not started',
+      status: 'open',
       times: Math.max(1, Number(newTask.times) || 1),
       count: 0,
     }
