@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../generated/prisma"
@@ -14,16 +8,249 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Chart {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  name          String?
+  type          String?
+  data          Json?
+  config        Json?
+  visibility    Visibility @default(PRIVATE)
+  userId        String    @db.ObjectId
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  profileId     String?   @db.ObjectId
+  profile       Profile?  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  noteIds       String[]  @default([]) @db.ObjectId
+  documentIds   String[]  @default([]) @db.ObjectId
+}
+
+model Comment {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  content       String
+  userId        String    @db.ObjectId
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  visibility    Visibility @default(PRIVATE)
+  noteId        String?   @db.ObjectId
+  note          Note?     @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  templateId    String?   @db.ObjectId
+  template      Template? @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  listId        String?   @db.ObjectId
+  list          List? @relation(fields: [listId], references: [id], onDelete: Cascade)
+  profileId     String?   @db.ObjectId
+  profile       Profile?  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  eventId       String?   @db.ObjectId
+  event         Event?    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  likes         Like[]
+  noteIds       String[]  @default([]) @db.ObjectId
+}
+
+model Day {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  date          String?
+  week          Int?
+  month         Int?
+  quarter       Int?
+  semester      Int?
+  tasks         Task[]
+  mood          Mood?
+  ticker        Ticker?
+  analysis      Json?
+  visibility    Visibility @default(PRIVATE)
+  fieldVisibility DayVisibility?
+  personIds     String[]  @default([]) @db.ObjectId
+  thingIds      String[]  @default([]) @db.ObjectId
+  eventIds     String[]  @default([]) @db.ObjectId
+  userId       String    @db.ObjectId
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  profileId    String?   @db.ObjectId
+  profile      Profile? @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  chartIds     String[]  @default([]) @db.ObjectId
+  noteIds      String[]  @default([]) @db.ObjectId
+  commentIds   String[]  @default([]) @db.ObjectId
+  likeIds      String[]  @default([]) @db.ObjectId
+}
+
+model Document {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  fileUrl       String
+  fileName      String
+  fileSize      Float?
+  fileFormat    String?
+  fileDuration  Float?
+  visibility    Visibility @default(PRIVATE)
+  owners        String[]  @db.ObjectId
+  managers      String[]  @db.ObjectId
+  collaborators String[]  @db.ObjectId
+  listIds       String[]  @default([]) @db.ObjectId
+  templateIds   String[]  @default([]) @db.ObjectId
+  noteIds       String[]  @default([]) @db.ObjectId
+  thingIds      String[]  @default([]) @db.ObjectId
+  eventIds      String[]  @default([]) @db.ObjectId
+  personIds     String[]  @default([]) @db.ObjectId
+  profileIds    String[]  @default([]) @db.ObjectId
+  chartIds      String[]  @default([]) @db.ObjectId
+}
+
+model Event {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  name          String
+  userId        String    @db.ObjectId
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quality       Int?
+  visibility    Visibility @default(PRIVATE)
+  noteIds       String[]  @default([]) @db.ObjectId
+  documentIds   String[]  @default([]) @db.ObjectId
+  comments      Comment[]
+}
+
+model Like {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt     DateTime  @default(now())
+  entityType    String
+  entityId      String    @db.ObjectId
+  noteId        String?   @db.ObjectId
+  note          Note?     @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  templateId    String?   @db.ObjectId
+  template      Template? @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  commentId     String?   @db.ObjectId
+  comment       Comment?  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  userId        String    @db.ObjectId
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  visibility    Visibility @default(PRIVATE)
+  
+  @@unique([userId, entityType, entityId])
+}
+
+model Note {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  content       String
+  visibility    NoteVisibility @default(PRIVATE)
+  userId        String    @db.ObjectId
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date          String?
+  comments      Comment[]
+  likes         Like[]
+  personIds      String[]  @default([]) @db.ObjectId
+  thingIds       String[]  @default([]) @db.ObjectId
+  eventIds       String[]  @default([]) @db.ObjectId
+  profileIds     String[]  @default([]) @db.ObjectId
+  templateIds    String[]  @default([]) @db.ObjectId
+  taskListIds    String[]  @default([]) @db.ObjectId
+  documentIds    String[]  @default([]) @db.ObjectId
+  chartIds       String[]  @default([]) @db.ObjectId
+}
+
+model Person {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  name          String
+  userId        String    @db.ObjectId
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quality Int?
+  visibility    Visibility @default(PRIVATE)
+  profile       Profile?  @relation(fields: [profileId], references: [id])
+  profileId     String?   @unique @db.ObjectId
+  noteIds       String[]  @default([]) @db.ObjectId
+  documentIds   String[]  @default([]) @db.ObjectId
+}
+
+model Profile {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  userId        String    @unique @db.ObjectId
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  visibility    Visibility @default(PUBLIC)
+  data          ProfileData?
+  personIds     String[]  @default([]) @db.ObjectId
+  noteIds       String[]  @default([]) @db.ObjectId
+  documentIds   String[]  @default([]) @db.ObjectId
+  person        Person?
+  comments      Comment[]
+  charts        Chart[]
+  days          Day[]
+}
+
+model List {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  visibility    Visibility @default(PRIVATE)
+  role          String?
+  name          String?
+  budget        Float?
+  budgetPercentage Float? @default(0)
+  remainingBudget String?
+  dueDate       String?
+  owners        String[]  @db.ObjectId
+  collaborators String[]  @db.ObjectId
+  managers      String[]  @db.ObjectId
+  publicUrl     String?
+  ticker        String?
+  progress      String?
+  templateId    String?   @db.ObjectId
+  template      Template? @relation(fields: [templateId], references: [id])
+  templateTasks Task[]
+  tasks         Task[]
+  ephemeralTasks Json?
+  completedTasks Json?
+  noteIds       String[]  @default([]) @db.ObjectId
+  documentIds   String[]  @default([]) @db.ObjectId
+  comments      Comment[]
+}
+
+model Template {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  visibility    Visibility @default(PRIVATE)
+  role          String?
+  name          String?
+  owners        String[]  @db.ObjectId
+  clonedBy      String[]  @default([]) @db.ObjectId
+  tasks         Task[]
+  lists         List[]
+  comments      Comment[]
+  likes         Like[]
+  noteIds       String[]  @default([]) @db.ObjectId
+  documentIds   String[]  @default([]) @db.ObjectId
+}
+
+model Thing {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  name          String
+  userId        String    @db.ObjectId
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quality Int?
+  visibility    Visibility @default(PRIVATE)
+  noteIds       String[]  @default([]) @db.ObjectId
+  documentIds   String[]  @default([]) @db.ObjectId
+}
+
 model User {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  entries       Json?
+  entries       Entries?
   settings      Settings?
   analysis      Json?
   availableBalance  Float?
-  usedBudget    Float?    @default(0)  // Percentage of budget allocated to lists (0-100)
-  remainingBudget Float?  @default(100) // Percentage of budget remaining (0-100)
+  usedBudget    Float?    @default(0)
+  remainingBudget Float?  @default(100)
   profit        Float?    @default(0)
   stash         Float?    @default(0)
   equity        Float?   @default(0)
@@ -39,158 +266,45 @@ model User {
   likes         Like[]
   profile       Profile?
   charts        Chart[]
+  days          Day[]
   friends       String[]  @db.ObjectId
   closeFriends  String[]  @db.ObjectId
   friendRequests String[] @db.ObjectId
 }
 
-model Person {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  name          String
-  email         String?
-  phone         String?
-  userId        String    @db.ObjectId
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  interactionQuality Int? // Rating from 1-5
-  visibility    Visibility @default(PRIVATE)
-  profile       Profile?  @relation(fields: [profileId], references: [id])
-  profileId     String?   @unique @db.ObjectId
-  noteIds       String[]  @default([]) @db.ObjectId
-  documentIds   String[]  @default([]) @db.ObjectId
+type Completer {
+  id String  @db.ObjectId
+  earnings Float?
+  prize Float?
+  time Int
+  completedAt DateTime
 }
 
-model Thing {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  name          String
-  userId        String    @db.ObjectId
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  interactionQuality Int? // Rating from 1-5
-  visibility    Visibility @default(PRIVATE)
-  noteIds       String[]  @default([]) @db.ObjectId
-  documentIds   String[]  @default([]) @db.ObjectId
+type Currency {
+  code CurrencyCode?
+  symbol String?
 }
 
-model Event {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  name          String
-  userId        String    @db.ObjectId
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  impact        Int? // Rating from 1-5
-  visibility    Visibility @default(PRIVATE)
-  noteIds       String[]  @default([]) @db.ObjectId
-  documentIds   String[]  @default([]) @db.ObjectId
-  comments      Comment[]
+type DayVisibility {
+  lists Boolean
+  mood Boolean
+  ticker Boolean
+  analysis Boolean
 }
 
-model Profile {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  userId        String    @unique @db.ObjectId
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  visibility    Visibility @default(PUBLIC)
-  data          ProfileData?
-  personIds     String[]  @default([]) @db.ObjectId
-  noteIds       String[]  @default([]) @db.ObjectId
-  documentIds   String[]  @default([]) @db.ObjectId
-  // One-to-one relation
-  person        Person?
-  // One-to-many relations
-  comments      Comment[]
-  charts        Chart[]
+type DocumentReference {
+  id String
+  fileName String
+  fileUrl String
 }
 
-model Note {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  content       String
-  visibility    NoteVisibility @default(PRIVATE)
-  userId        String    @db.ObjectId
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  date          String?   // Optional date field to associate with specific day
-  comments      Comment[]
-  likes         Like[]
-  // Many-to-many relations (stored as arrays of IDs)
-  personIds      String[]  @default([]) @db.ObjectId
-  thingIds       String[]  @default([]) @db.ObjectId
-  eventIds       String[]  @default([]) @db.ObjectId
-  profileIds     String[]  @default([]) @db.ObjectId
-  templateIds    String[]  @default([]) @db.ObjectId
-  taskListIds    String[]  @default([]) @db.ObjectId
-  documentIds    String[]  @default([]) @db.ObjectId
-  chartIds       String[]  @default([]) @db.ObjectId
+type Entries {
+  data Json?
 }
 
-model Comment {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  content       String
-  userId        String    @db.ObjectId
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  visibility    Visibility @default(PRIVATE)
-  // Entity references
-  noteId        String?   @db.ObjectId
-  note          Note?     @relation(fields: [noteId], references: [id], onDelete: Cascade)
-  templateId    String?   @db.ObjectId
-  template      Template? @relation(fields: [templateId], references: [id], onDelete: Cascade)
-  listId        String?   @db.ObjectId
-  list          TaskList? @relation(fields: [listId], references: [id], onDelete: Cascade)
-  profileId     String?   @db.ObjectId
-  profile       Profile?  @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  eventId       String?   @db.ObjectId
-  event         Event?    @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  likes         Like[]
-  noteIds       String[]  @default([]) @db.ObjectId
-}
-
-model Like {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt     DateTime  @default(now())
-  entityType    String    // 'note', 'template', 'comment', etc.
-  entityId      String    @db.ObjectId
-  noteId        String?   @db.ObjectId // Keep for backward compatibility
-  note          Note?     @relation(fields: [noteId], references: [id], onDelete: Cascade)
-  templateId    String?   @db.ObjectId
-  template      Template? @relation(fields: [templateId], references: [id], onDelete: Cascade)
-  commentId     String?   @db.ObjectId
-  comment       Comment?  @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  userId        String    @db.ObjectId
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  visibility    Visibility @default(PRIVATE)
-  
-  @@unique([userId, entityType, entityId])
-}
-
-type Settings {
-  dailyTemplate String? @db.ObjectId
-  weeklyTemplate String? @db.ObjectId
-  monthsFixedIncome  String?
-  monthsVariableIncome String?
-  monthsNeedFixedExpenses String?
-  monthsNeedVariableExpenses String?
-}
-
-type ProfileField {
-  name String?
-  value String?
-  visibility Boolean
-}
-
-type ProfileData {
-  username ProfileField?
-  firstName ProfileField?
-  lastName ProfileField?
-  bio ProfileField?
-  profilePicture ProfileField?
-  charts ProfileField? // Chart ID as value
+type EventReference {
+  id String
+  name String
 }
 
 type Mood {
@@ -203,37 +317,34 @@ type Mood {
   text String[]
 }
 
-type Day {
-  tasks Task[]
-  ephemeralTasks Task[]
-  earnings String
-  prize String?
-  profit String?
-  ticker Float?
-  date String
-  status String
-  mood Mood?
-  hint String?
-  persons PersonReference[]
-  things ThingReference[]
-  events EventReference[]
-  availableBalance String?
+type NoteReference {
+  id String
+  content String
 }
 
-type Week {
-  week String
-  year  Int
-  tasks  Task[]
-  ephemeralTasks Task[]
-  earnings String
-  prize String?
-  profit String?
-  ticker Float?
-  date String
-  status String
-  days Day[]
-  hint String?
-  availableBalance String?
+type PersonReference {
+  id String
+  name String
+}
+
+type ProfileData {
+  username ProfileField?
+  firstName ProfileField?
+  lastName ProfileField?
+  bio ProfileField?
+  profilePicture ProfileField?
+  charts ProfileField?
+}
+
+type ProfileField {
+  name String?
+  value String?
+  visibility Boolean
+}
+
+type Settings {
+  currency Currency?
+  speed Float?
 }
 
 type Task {
@@ -263,38 +374,14 @@ type Task {
   visibility Visibility?
 }
 
-type Completer {
-  id String  @db.ObjectId
-  earnings Float?
-  prize Float?
-  time Int
-  completedAt DateTime
-}
-
-type PersonReference {
-  id String
-  name String
-}
-
 type ThingReference {
   id String
   name String
 }
 
-type EventReference {
-  id String
-  name String
-}
-
-type NoteReference {
-  id String
-  content String
-}
-
-type DocumentReference {
-  id String
-  fileName String
-  fileUrl String
+type Ticker {
+  profit Float?
+  prize Float?
 }
 
 enum Areas {
@@ -323,62 +410,44 @@ enum Category {
   event
 }
 
-model Template {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  visibility    Visibility @default(PRIVATE)
-  role          String?   // e.g., "default.daily", "default.weekly", "custom"
-  name          String?
-  owners        String[]  @db.ObjectId // User IDs
-  clonedBy      String[]  @default([]) @db.ObjectId // User IDs who cloned this template
-  tasks         Task[]    // Array of Task objects
-  taskLists     TaskList[] // TaskLists that use this template
-  comments      Comment[]
-  likes         Like[]
-  noteIds       String[]  @default([]) @db.ObjectId
-  documentIds   String[]  @default([]) @db.ObjectId
-}
-
-model TaskList {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  visibility    Visibility @default(PRIVATE)
-  role          String?   // e.g., "daily.default", "weekly.default", "custom"
-  name          String?
-  budget        Float?
-  budgetPercentage Float? @default(0) // Percentage of user's available budget allocated to this list (0-100)
-  remainingBudget String? // Remaining budget after task completions
-  dueDate       String?
-  owners        String[]  @db.ObjectId // User IDs
-  collaborators String[]  @db.ObjectId // User IDs
-  managers      String[]  @db.ObjectId // User IDs
-  publicUrl     String?
-  ticker        String?
-  progress      String?
-  templateId    String?   @db.ObjectId // Reference to Template
-  template      Template? @relation(fields: [templateId], references: [id])
-  // Tasks that define the template for this list
-  templateTasks Task[]
-  // Legacy tasks field kept for backward compatibility
-  tasks         Task[]
-  // Ephemeral tasks scoped to this list, separated by open/closed
-  // Structure: { open: Task[]; closed: Task[] }
-  ephemeralTasks Json?
-  // Completed tasks by year/date: { [year]: { [date]: Task[] } }
-  completedTasks Json?
-  noteIds       String[]  @default([]) @db.ObjectId
-  documentIds   String[]  @default([]) @db.ObjectId
-  comments      Comment[]
-}
-
-enum Visibility {
-  PUBLIC
-  PRIVATE
-  FRIENDS
-  CLOSE_FRIENDS
-  HIDDEN
+enum CurrencyCode {
+  USD
+  EUR
+  JPY
+  GBP
+  CNY
+  AUD
+  CAD
+  CHF
+  HKD
+  BRL
+  SEK
+  NZD
+  MXN
+  SGD
+  NOK
+  KRW
+  TRY
+  INR
+  RUB
+  ZAR
+  PLN
+  CZK
+  HUF
+  RON
+  BGN
+  DKK
+  ISK
+  RSD
+  BAM
+  MKD
+  ALL
+  MDL
+  UAH
+  BYN
+  GEL
+  AMD
+  AZN
 }
 
 enum NoteVisibility {
@@ -397,43 +466,10 @@ enum ProfileVisibility {
   AI_ENABLED
 }
 
-model Chart {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  name          String?
-  type          String?   // Chart type (e.g., 'line', 'bar', 'pie', etc.)
-  data          Json?     // Chart data
-  config        Json?     // Chart configuration
-  visibility    Visibility @default(PRIVATE)
-  userId        String    @db.ObjectId
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  profileId     String?   @db.ObjectId
-  profile       Profile?  @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  noteIds       String[]  @default([]) @db.ObjectId
-  documentIds   String[]  @default([]) @db.ObjectId
-}
-
-model Document {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  fileUrl       String
-  fileName      String
-  fileSize      Float?
-  fileFormat    String?
-  fileDuration  Float?    // Optional duration for video/audio files
-  visibility    Visibility @default(PRIVATE)
-  owners        String[]  @db.ObjectId // User IDs
-  managers      String[]  @db.ObjectId // User IDs
-  collaborators String[]  @db.ObjectId // User IDs
-  // Many-to-many relations (stored as arrays of IDs)
-  taskListIds   String[]  @default([]) @db.ObjectId
-  templateIds   String[]  @default([]) @db.ObjectId
-  noteIds       String[]  @default([]) @db.ObjectId
-  thingIds      String[]  @default([]) @db.ObjectId
-  eventIds      String[]  @default([]) @db.ObjectId
-  personIds     String[]  @default([]) @db.ObjectId
-  profileIds    String[]  @default([]) @db.ObjectId
-  chartIds      String[]  @default([]) @db.ObjectId
+enum Visibility {
+  PUBLIC
+  PRIVATE
+  FRIENDS
+  CLOSE_FRIENDS
+  HIDDEN
 }
