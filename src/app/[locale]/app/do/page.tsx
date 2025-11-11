@@ -82,14 +82,23 @@ export default function LocalizedDo({ params }: { params: Promise<{ locale: stri
 
   const selectedTaskList = useMemo(() => allTaskLists.find((l: any) => l.id === selectedTaskListId), [allTaskLists, selectedTaskListId])
 
-  // Reset date to today when switching to a new task list
+  // Track previous selectedTaskListId to detect actual list changes (not refetches)
+  const prevSelectedTaskListIdRef = useRef<string | undefined>(undefined)
+
+  // Reset date to today only when switching to a different task list (not on refetch)
   useEffect(() => {
-    const role = (selectedTaskList as any)?.role
-    if (role && (role.startsWith('daily.') || role.startsWith('weekly.'))) {
-      // Normalize to midnight in local timezone
-      const d = new Date()
-      setSelectedDate(new Date(d.getFullYear(), d.getMonth(), d.getDate()))
+    // Only reset if the list ID actually changed (not just the object reference)
+    // Skip on initial mount (when prevSelectedTaskListIdRef.current is undefined)
+    if (prevSelectedTaskListIdRef.current !== undefined && prevSelectedTaskListIdRef.current !== selectedTaskListId) {
+      const role = (selectedTaskList as any)?.role
+      if (role && (role.startsWith('daily.') || role.startsWith('weekly.'))) {
+        // Normalize to midnight in local timezone
+        const d = new Date()
+        setSelectedDate(new Date(d.getFullYear(), d.getMonth(), d.getDate()))
+      }
     }
+    // Update the ref to track the current list ID
+    prevSelectedTaskListIdRef.current = selectedTaskListId
   }, [selectedTaskListId, selectedTaskList])
 
   const handleAddEphemeral = useCallback(async () => {

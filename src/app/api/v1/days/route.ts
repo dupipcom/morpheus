@@ -167,8 +167,8 @@ export async function GET(req: NextRequest) {
       // Use day.average for moodAverage (calculated on backend)
       const moodAverage = typeof day.average === 'number' ? day.average : (() => {
         // Fallback: calculate from mood dimensions if average not set
-        const moodKeys = ['gratitude', 'optimism', 'restedness', 'tolerance', 'selfEsteem', 'trust'] as const
-        const moodValues = moodKeys.map((k) => Number(mood[k]) || 0)
+      const moodKeys = ['gratitude', 'optimism', 'restedness', 'tolerance', 'selfEsteem', 'trust'] as const
+      const moodValues = moodKeys.map((k) => Number(mood[k]) || 0)
         return moodValues.reduce((sum, val) => sum + val, 0) / moodKeys.length
       })()
       

@@ -397,9 +397,9 @@ const aggregateDataByWeek = (dailyData: any[]) => {
       
       return {
         week: week.week,
-        moodAverage: moodAverage.toFixed(2),
+          moodAverage: moodAverage.toFixed(2),
         progress: progressScaled.toFixed(2),
-      }
+        }
     })
     .filter((week: any) => week !== null)
 
