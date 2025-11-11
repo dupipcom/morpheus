@@ -58,6 +58,8 @@ model Day {
   mood          Mood?
   ticker        Ticker[]
   analysis      Json?
+  average       Float?
+  progress      Float?
   visibility    Visibility @default(PRIVATE)
   fieldVisibility DayVisibility?
   personIds     String[]  @default([]) @db.ObjectId

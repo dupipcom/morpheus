@@ -389,26 +389,26 @@ export const DoToolbar = ({
                       <>
                         {/* Show owner badges when there are collaborators */}
                         {allCollaborators.length > 0 && allOwners.map((id: string) => {
-                          const userName = collabProfiles[id] || id
-                          const earnings = (selectedList as any)?.collaboratorEarnings?.[userName] || 0
-                          return (
-                            <Badge key={`owner-${id}`} variant="default" className="bg-primary dark:bg-accent text-background hover:bg-foreground/90">
-                              <UserIcon className="h-3 w-3 mr-1" />
-                              @{userName}{earnings > 0 ? `: $${earnings.toFixed(2)}` : ''}
-                            </Badge>
-                          )
-                        })}
-                        {/* Show collaborator badges */}
+                    const userName = collabProfiles[id] || id
+                    const earnings = (selectedList as any)?.collaboratorEarnings?.[userName] || 0
+                    return (
+                      <Badge key={`owner-${id}`} variant="default" className="bg-primary dark:bg-accent text-background hover:bg-foreground/90">
+                        <UserIcon className="h-3 w-3 mr-1" />
+                        @{userName}{earnings > 0 ? `: $${earnings.toFixed(2)}` : ''}
+                      </Badge>
+                    )
+                  })}
+                  {/* Show collaborator badges */}
                         {allCollaborators.map((id: string) => {
-                          const userName = collabProfiles[id] || id
-                          const earnings = (selectedList as any)?.collaboratorEarnings?.[userName] || 0
-                          return (
-                            <Badge key={`collab-${id}`} className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80">
-                              <UserIcon className="h-3 w-3 mr-1" />
-                              @{userName}{earnings > 0 ? `: $${earnings.toFixed(2)}` : ''}
-                            </Badge>
-                          )
-                        })}
+                    const userName = collabProfiles[id] || id
+                    const earnings = (selectedList as any)?.collaboratorEarnings?.[userName] || 0
+                    return (
+                      <Badge key={`collab-${id}`} className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80">
+                        <UserIcon className="h-3 w-3 mr-1" />
+                        @{userName}{earnings > 0 ? `: $${earnings.toFixed(2)}` : ''}
+                      </Badge>
+                    )
+                  })}
                       </>
                     )
                   })()}

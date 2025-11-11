@@ -812,11 +812,40 @@ export async function POST(request: NextRequest) {
             // Helper to match tasks reliably
             const getTaskKey = (t: any) => (t?.id || t?.localeKey || (typeof t?.name === 'string' ? t.name.toLowerCase() : '')) as string
             
-            // Remove uncompleted tasks from day.tasks
-            const updatedTasks = existingTasks.filter((t: any) => {
-              const taskName = typeof t?.name === 'string' ? t.name.toLowerCase() : ''
-              return !unNames.has(taskName)
+            // Remove uncompleted tasks from day.tasks using taskId (id, localeKey, or name)
+            const tasksToRemove = existingTasks.filter((t: any) => {
+              const taskKey = getTaskKey(t)
+              const taskKeyLower = typeof taskKey === 'string' ? taskKey.toLowerCase() : taskKey
+              // Match by taskId (id or localeKey) first, then fallback to name
+              if (t?.id || t?.localeKey) {
+                // If task has id or localeKey, match by those
+                return unNames.has(taskKeyLower)
+              } else {
+                // Fallback to name matching
+                const taskName = typeof t?.name === 'string' ? t.name.toLowerCase() : ''
+                return unNames.has(taskName)
+              }
             })
+            const updatedTasks = existingTasks.filter((t: any) => {
+              const taskKey = getTaskKey(t)
+              const taskKeyLower = typeof taskKey === 'string' ? taskKey.toLowerCase() : taskKey
+              // Match by taskId (id or localeKey) first, then fallback to name
+              if (t?.id || t?.localeKey) {
+                // If task has id or localeKey, match by those
+                return !unNames.has(taskKeyLower)
+              } else {
+                // Fallback to name matching
+                const taskName = typeof t?.name === 'string' ? t.name.toLowerCase() : ''
+                return !unNames.has(taskName)
+              }
+            })
+
+            // Calculate progress reduction for removed tasks that were "done"
+            const totalTasks = (taskList.tasks as any[])?.length || (taskList.templateTasks as any[])?.length || 1
+            const doneTasksRemoved = tasksToRemove.filter((t: any) => t.status === 'done')
+            const progressReduction = doneTasksRemoved.length > 0 ? (doneTasksRemoved.length / totalTasks) : 0
+            const currentProgress = typeof existingDay.progress === 'number' ? existingDay.progress : 0
+            const newProgress = Math.max(0, currentProgress - progressReduction)
 
             // Calculate week, month, quarter, semester from date
             const dateObj = new Date(dateISO)
@@ -830,11 +859,7 @@ export async function POST(request: NextRequest) {
             const existingTickers = Array.isArray(existingDay.ticker) ? existingDay.ticker : []
             // Get task IDs for uncompleted tasks from the tasks that are being removed
             const uncompletedTaskIds = new Set(
-              existingTasks
-                .filter((t: any) => {
-                  const taskName = typeof t?.name === 'string' ? t.name.toLowerCase() : ''
-                  return unNames.has(taskName)
-                })
+              tasksToRemove
                 .map((t: any) => t.id || t.localeKey || t.name)
                 .filter(Boolean)
             )
@@ -853,6 +878,7 @@ export async function POST(request: NextRequest) {
               data: {
                 tasks: updatedTasks as any,
                 ticker: updatedTickers as any,
+                progress: newProgress,
                 week: weekNumber,
                 month: month,
                 quarter: quarter,
@@ -956,6 +982,12 @@ export async function POST(request: NextRequest) {
               return status === 'done'
             })
             
+            // Calculate progress contribution for completed tasks
+            const totalTasks = (taskList.tasks as any[])?.length || (taskList.templateTasks as any[])?.length || 1
+            const progressContribution = doneTasks.length > 0 ? (doneTasks.length / totalTasks) : 0
+            const currentProgress = typeof existingDay.progress === 'number' ? existingDay.progress : 0
+            const newProgress = currentProgress + progressContribution
+            
             if (doneTasks.length > 0) {
               // Calculate profit and prize from task completions for this date
               const aggregated = await aggregateCompleterEarningsFromTaskList(taskList.id, user.id, year, dateISO)
@@ -981,6 +1013,7 @@ export async function POST(request: NextRequest) {
                 data: {
                   tasks: updatedTasks as any,
                   ticker: updatedTickers as any,
+                  progress: newProgress,
                   week: weekNumber,
                   month: month,
                   quarter: quarter,
@@ -988,11 +1021,29 @@ export async function POST(request: NextRequest) {
                 }
               })
             } else {
-              // No done tasks, just update tasks without ticker
+              // No done tasks, but still update progress if any tasks were added/updated
+              // Calculate progress contribution for any newly added tasks with status "done" in existing tasks
+              const totalTasks = (taskList.tasks as any[])?.length || (taskList.templateTasks as any[])?.length || 1
+              const existingDoneTasks = updatedTasks.filter((t: any) => t.status === 'done')
+              const existingDoneCount = existingDoneTasks.length
+              const currentProgress = typeof existingDay.progress === 'number' ? existingDay.progress : 0
+              // Only update progress if we're adding new done tasks (not just updating existing ones)
+              const newlyAddedDoneTasks = tasksToCopy.filter((task: any) => {
+                const status = task.status || 'open'
+                return status === 'done' && !existingTasks.some((et: any) => {
+                  const etKey = getTaskKey(et)
+                  const taskKey = getTaskKey(task)
+                  return etKey === taskKey
+                })
+              })
+              const progressContribution = newlyAddedDoneTasks.length > 0 ? (newlyAddedDoneTasks.length / totalTasks) : 0
+              const newProgress = currentProgress + progressContribution
+              
               await prisma.day.update({
                 where: { id: existingDay.id },
                 data: {
                   tasks: updatedTasks as any,
+                  progress: newProgress,
                   week: weekNumber,
                   month: month,
                   quarter: quarter,
@@ -1036,6 +1087,10 @@ export async function POST(request: NextRequest) {
             const doneTasks = tasksForDay.filter((task: any) => task.status === 'done')
             let ticker: any[] = []
             
+            // Calculate progress contribution for completed tasks
+            const totalTasks = (taskList.tasks as any[])?.length || (taskList.templateTasks as any[])?.length || 1
+            const progressContribution = doneTasks.length > 0 ? (doneTasks.length / totalTasks) : 0
+            
             if (doneTasks.length > 0) {
               // Calculate profit and prize from task completions for this date
               const aggregated = await aggregateCompleterEarningsFromTaskList(taskList.id, user.id, year, dateISO)
@@ -1070,6 +1125,7 @@ export async function POST(request: NextRequest) {
                 date: dateISO,
                 tasks: tasksForDay as any,
                 ticker: ticker as any,
+                progress: progressContribution,
                 week: weekNumber,
                 month: month,
                 quarter: quarter,
@@ -1319,11 +1375,24 @@ export async function POST(request: NextRequest) {
               const taskKey = getTaskKey(baseTask)
               const taskKeyLower = typeof taskKey === 'string' ? taskKey.toLowerCase() : taskKey
               
+              // Find the task being removed to check if it was "done"
+              const taskBeingRemoved = existingTasks.find((t: any) => {
+                const key = getTaskKey(t)
+                return key === taskKeyLower || key === taskKey
+              })
+              
               // Remove task from day.tasks
               const updatedTasks = existingTasks.filter((t: any) => {
                 const key = getTaskKey(t)
                 return key !== taskKeyLower && key !== taskKey
               })
+
+              // Calculate progress reduction if the removed task was "done"
+              const totalTasks = (taskListToUpdate.tasks as any[])?.length || (taskListToUpdate.templateTasks as any[])?.length || 1
+              const wasDone = taskBeingRemoved?.status === 'done'
+              const progressReduction = wasDone ? (1 / totalTasks) : 0
+              const currentProgress = typeof existingDay.progress === 'number' ? existingDay.progress : 0
+              const newProgress = Math.max(0, currentProgress - progressReduction)
 
               // Calculate week, month, quarter, semester from date
               const dateObj = new Date(dateISO)
@@ -1350,6 +1419,7 @@ export async function POST(request: NextRequest) {
                 data: {
                   tasks: updatedTasks as any,
                   ticker: updatedTickers as any,
+                  progress: newProgress,
                   week: weekNumber,
                   month: month,
                   quarter: quarter,
@@ -1438,6 +1508,17 @@ export async function POST(request: NextRequest) {
               const existingTickers = Array.isArray(existingDay.ticker) ? existingDay.ticker : []
               let updatedTickers = existingTickers
               
+              // Calculate progress contribution if task is newly completed
+              const totalTasks = (taskListToUpdate.tasks as any[])?.length || (taskListToUpdate.templateTasks as any[])?.length || 1
+              const currentProgress = typeof existingDay.progress === 'number' ? existingDay.progress : 0
+              const wasAlreadyDone = existingTasks.some((t: any) => {
+                const key = getTaskKey(t)
+                return (key === taskKeyLower || key === taskKey) && t.status === 'done'
+              })
+              const isNewlyDone = currentStatus === 'done' && !wasAlreadyDone
+              const progressContribution = isNewlyDone ? (1 / totalTasks) : 0
+              const newProgress = currentProgress + progressContribution
+              
               if (currentStatus === 'done') {
                 // Calculate profit and prize from task completions for this date
                 const aggregated = await aggregateCompleterEarningsFromTaskList(taskListToUpdate.id, user.id, year, dateISO)
@@ -1461,6 +1542,7 @@ export async function POST(request: NextRequest) {
                 data: {
                   tasks: updatedTasks as any,
                   ticker: updatedTickers as any,
+                  progress: newProgress,
                   week: weekNumber,
                   month: month,
                   quarter: quarter,
@@ -1470,6 +1552,10 @@ export async function POST(request: NextRequest) {
             } else {
               // Only add ticker entry if status is "done"
               let ticker: any[] = []
+              
+              // Calculate progress contribution if task is completed
+              const totalTasks = (taskListToUpdate.tasks as any[])?.length || (taskListToUpdate.templateTasks as any[])?.length || 1
+              const progressContribution = currentStatus === 'done' ? (1 / totalTasks) : 0
               
               if (currentStatus === 'done') {
                 // Calculate profit and prize from task completions for this date
@@ -1492,6 +1578,7 @@ export async function POST(request: NextRequest) {
                   date: dateISO,
                   tasks: [taskForDay] as any,
                   ticker: ticker as any,
+                  progress: progressContribution,
                   week: weekNumber,
                   month: month,
                   quarter: quarter,

@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useMemo, useContext } from 'react'
+import { useState, useEffect, useMemo, useContext, useRef } from 'react'
 import useSWR from 'swr'
 
 import { Slider } from "@/components/ui/slider"
@@ -106,11 +106,17 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
 
   const [mood, setMood] = useState(serverMood)
   const [pendingMoodChanges, setPendingMoodChanges] = useState({})
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null)
 
   // Update mood state when serverMood changes (due to date change)
   useEffect(() => {
     setMood(serverMood)
     setPendingMoodChanges({})
+    // Clear any pending debounce when date changes
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current)
+      debounceTimerRef.current = null
+    }
   }, [serverMood])
 
 
@@ -268,24 +274,36 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
     await saveDayData(updatedMood)
   }, 3000)
 
-  // Create a single debounced function that aggregates all mood changes
-  const debouncedMoodUpdate = useDebounce(async () => {
-    // Aggregate all pending changes with current mood state
-    const aggregatedMood = {...mood, ...pendingMoodChanges}
-    setMood(aggregatedMood)
-    setPendingMoodChanges({})
-    
-    await saveDayData(aggregatedMood)
-  }, 3000)
-
-  // Function to handle individual slider changes
+  // Function to handle individual slider changes with debouncing
   const handleMoodSliderChange = (field, value) => {
     // Update the pending changes
     setPendingMoodChanges(prev => ({...prev, [field]: value}))
     // Update the local mood state for immediate UI feedback
     setMood(prev => ({...prev, [field]: value}))
-    // Trigger the debounced update
-    debouncedMoodUpdate()
+    
+    // Clear existing timer if any
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current)
+    }
+    
+    // Set new timer - will only execute after 3000ms of no interactions
+    debounceTimerRef.current = setTimeout(() => {
+      // Use functional updates to get the latest state values
+      setMood(currentMood => {
+        setPendingMoodChanges(currentPending => {
+          // Aggregate all pending changes with current mood state
+          const aggregatedMood = {...currentMood, ...currentPending}
+          
+          // Save to backend
+          saveDayData(aggregatedMood).then(() => {
+            debounceTimerRef.current = null
+          })
+          
+          return {}
+        })
+        return currentMood
+      })
+    }, 3000)
   }
 
 

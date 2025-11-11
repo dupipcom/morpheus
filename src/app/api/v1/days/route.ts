@@ -279,6 +279,7 @@ export async function POST(req: NextRequest) {
     // Construct mood object with all required fields
     // Mood type requires: gratitude, optimism, restedness, tolerance, selfEsteem, trust (all Int)
     let moodData: any = undefined
+    let moodAverage: number | undefined = undefined
     if (mood !== undefined && mood !== null) {
       moodData = {
         gratitude: mood.gratitude !== undefined ? Number(mood.gratitude) || 0 : 0,
@@ -288,6 +289,12 @@ export async function POST(req: NextRequest) {
         selfEsteem: mood.selfEsteem !== undefined ? Number(mood.selfEsteem) || 0 : 0,
         trust: mood.trust !== undefined ? Number(mood.trust) || 0 : 0
       }
+      
+      // Calculate mood average from all mood dimensions
+      const moodKeys = ['gratitude', 'optimism', 'restedness', 'tolerance', 'selfEsteem', 'trust'] as const
+      const moodValues = moodKeys.map((k) => Number(moodData[k]) || 0)
+      const sum = moodValues.reduce((acc, val) => acc + val, 0)
+      moodAverage = sum / moodKeys.length
     }
 
     // Calculate week, month, quarter, semester from date
@@ -324,7 +331,7 @@ export async function POST(req: NextRequest) {
       if (moodData !== undefined) {
         // Merge with existing mood data if it exists
         const existingMood = existingDay.mood as any || {}
-        updateData.mood = {
+        const mergedMood = {
           gratitude: moodData.gratitude !== undefined ? moodData.gratitude : (existingMood.gratitude || 0),
           optimism: moodData.optimism !== undefined ? moodData.optimism : (existingMood.optimism || 0),
           restedness: moodData.restedness !== undefined ? moodData.restedness : (existingMood.restedness || 0),
@@ -332,6 +339,16 @@ export async function POST(req: NextRequest) {
           selfEsteem: moodData.selfEsteem !== undefined ? moodData.selfEsteem : (existingMood.selfEsteem || 0),
           trust: moodData.trust !== undefined ? moodData.trust : (existingMood.trust || 0)
         }
+        updateData.mood = mergedMood
+        
+        // Calculate mood average from merged mood data
+        const moodKeys = ['gratitude', 'optimism', 'restedness', 'tolerance', 'selfEsteem', 'trust'] as const
+        const moodValues = moodKeys.map((k) => Number(mergedMood[k]) || 0)
+        const sum = moodValues.reduce((acc, val) => acc + val, 0)
+        updateData.average = sum / moodKeys.length
+      } else if (moodAverage !== undefined) {
+        // If moodAverage was calculated but moodData is undefined, still update average
+        updateData.average = moodAverage
       }
       if (personIds !== undefined) {
         updateData.personIds = personIds
@@ -364,6 +381,7 @@ export async function POST(req: NextRequest) {
           thingIds: thingIds,
           eventIds: eventIds,
           analysis: analysisData,
+          average: moodAverage,
           week: weekNumber,
           month: month,
           quarter: quarter,
