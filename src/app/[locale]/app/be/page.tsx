@@ -6,7 +6,7 @@ import { useAuth } from '@clerk/nextjs'
 import { GlobalContext } from "@/lib/contexts"
 import { BeView } from "@/views/beView"
 import { ViewMenu } from "@/components/viewMenu"
-import { PublishNote } from '@/components/publish-note'
+import { PublishNote } from '@/components/publishNote'
 import { setLoginTime, getLoginTime } from '@/lib/cookieManager'
 import { useI18n } from "@/lib/contexts/i18n"
 
@@ -38,10 +38,11 @@ export default function LocalizedSocial({ params }: { params: Promise<{ locale: 
   }
 
   return (
-    <main className="">
-      <ViewMenu active="be">
+    <main className="relative">
+      <div className="w-full max-w-[1200px] m-auto px-4 sticky top-[115px] z-50">
         <PublishNote defaultVisibility="FRIENDS" />
-      </ViewMenu>
+      </div>
+      <ViewMenu active="be" />
       <BeView />
     </main>
   )

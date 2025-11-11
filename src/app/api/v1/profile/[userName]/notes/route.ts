@@ -7,9 +7,11 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
     const { userName } = await params
     const { userId } = await auth()
 
-    // Find the profile to get the user ID
+    // Find the profile to get the user ID using root-level username field
     const profile = await prisma.profile.findUnique({
-      where: { userName },
+      where: {
+        username: userName
+      },
       include: {
         user: {
           select: {
@@ -83,6 +85,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
         visibility: true,
         createdAt: true,
         date: true,
+        userId: true,
         _count: {
           select: {
             comments: true,
@@ -94,12 +97,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
             user: {
               select: {
                 id: true,
-                profile: {
+                profiles: {
                   select: {
-                    userName: true,
-                    profilePicture: true,
-                    firstName: true,
-                    lastName: true
+                    data: true
                   }
                 }
               }
@@ -138,11 +138,27 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
     }
 
     // Sort comments by likes, then by date, and add isLiked status
+    // Also transform profile data from nested structure
     const notesWithSortedComments = notes.map(note => {
       const isLiked = userLikedNoteIds.includes(note.id)
       
       if (note.comments && Array.isArray(note.comments) && note.comments.length > 0) {
-        const sortedComments = [...note.comments].sort((a: any, b: any) => {
+        const sortedComments = [...note.comments].map((comment: any) => {
+          // Transform profile data from nested structure
+          const profileData = comment.user?.profiles?.[0]?.data || {}
+          return {
+            ...comment,
+            user: {
+              ...comment.user,
+              profile: {
+                userName: profileData.username?.value || null,
+                profilePicture: profileData.profilePicture?.value || null,
+                firstName: profileData.firstName?.value || null,
+                lastName: profileData.lastName?.value || null
+              }
+            }
+          }
+        }).sort((a: any, b: any) => {
           const likeDiff = (b._count?.likes || 0) - (a._count?.likes || 0)
           if (likeDiff !== 0) return likeDiff
           return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()

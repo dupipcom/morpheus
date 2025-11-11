@@ -13,11 +13,23 @@ export async function GET(request: NextRequest) {
 
     const profiles = await prisma.profile.findMany({
       where: { userId: { in: ids } },
-      select: { userId: true, userName: true },
+      select: { 
+        userId: true, 
+        data: true 
+      },
       take: 100
     })
 
-    return NextResponse.json({ profiles })
+    // Transform profiles to extract userName from data.username.value
+    const transformedProfiles = profiles.map((profile: any) => {
+      const profileData = profile.data || {}
+      return {
+        userId: profile.userId,
+        userName: profileData.username?.value || null
+      }
+    })
+
+    return NextResponse.json({ profiles: transformedProfiles })
   } catch (error) {
     console.error('Error fetching profiles by ids:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

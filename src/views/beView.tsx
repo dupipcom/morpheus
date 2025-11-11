@@ -7,12 +7,12 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { User, UserMinus, Loader2 } from "lucide-react"
-import ActivityCard, { ActivityItem } from "@/components/ActivityCard"
-import { OptionsButton, OptionsMenuItem } from "@/components/OptionsButton"
+import ActivityCard, { ActivityItem } from "@/components/activityCard"
+import { OptionsButton, OptionsMenuItem } from "@/components/optionsButton"
 import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
 import { useEnhancedLoadingState } from "@/lib/userUtils"
-import { SettingsSkeleton } from "@/components/ui/skeleton-loader"
+import { SettingsSkeleton } from "@/components/ui/skeletonLoader"
 import { toast } from 'sonner'
 import Link from 'next/link'
 import { useNotesRefresh } from "@/lib/contexts/notesRefresh"
@@ -368,10 +368,13 @@ export const BeView = () => {
               role: templateData?.role || undefined,
               visibility: noteData?.visibility || templateData?.visibility,
               date: noteData?.date || undefined,
+              userId: (noteData as any)?.userId || noteData?.user?.id || undefined, // Add userId for notes
               user: noteData?.user || templateData?.user || undefined,
               comments: (noteData as any)?.comments || (templateData as any)?.comments || undefined,
               _count: noteData?._count || templateData?._count
             }
+            
+            const currentUserId = session?.user?.id || null
             
             return (
               <ActivityCard
@@ -379,6 +382,13 @@ export const BeView = () => {
                 item={activityItem}
                 showUserInfo={true}
                 getTimeAgo={getTimeAgo}
+                isLoggedIn={!!session?.user}
+                currentUserId={currentUserId}
+                onNoteUpdated={() => {
+                  // Refresh the activity feed when a note is updated/deleted
+                  fetchPublicNotes(1, false)
+                  fetchPublicTemplates(1, false)
+                }}
               />
             )
           })}

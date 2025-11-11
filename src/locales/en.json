@@ -84,7 +84,7 @@
     "earnings": "Earnings",
     "noNotesForDate": "No notes for this date.",
     "publish": {
-      "title": "Publish a Note",
+      "title": "Write",
       "placeholder": "Write your note here...",
       "selectVisibility": "Select visibility",
       "publishing": "Publishing...",
@@ -418,9 +418,12 @@
     "loadingTemplates": "Loading templates...",
     "templatesSection": "Templates",
     "taskListsSection": "Task Lists",
-    "cloneTemplate": "Clone",
+    "cloneTemplate": "Clone Template",
+    "cloneList": "Clone List",
     "cloneTemplateSuccess": "Template cloned successfully!",
+    "cloneListSuccess": "List cloned successfully!",
     "cloneTemplateFailed": "Failed to clone template",
+    "cloneListFailed": "Failed to clone list",
     "cloning": "Cloning...",
     "noPublicNotes": "No public notes available yet."
   },

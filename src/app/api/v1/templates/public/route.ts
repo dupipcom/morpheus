@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
         // Include current user's own templates with FRIENDS or CLOSE_FRIENDS visibility
         whereClause.OR.push({
           AND: [
-            { owners: { has: currentUser.id } },
+            { users: { some: { userId: currentUser.id, role: 'OWNER' } } },
             { visibility: { in: ['FRIENDS', 'CLOSE_FRIENDS'] } }
           ]
         })
@@ -71,7 +71,11 @@ export async function GET(request: NextRequest) {
           whereClause.OR.push({
             AND: [
               { visibility: 'FRIENDS' },
-              { owners: { hasSome: friendUserIds } }
+              {
+                OR: friendUserIds.map(id => ({
+                  users: { some: { userId: id, role: 'OWNER' } }
+                }))
+              }
             ]
           })
         }
@@ -81,7 +85,11 @@ export async function GET(request: NextRequest) {
           whereClause.OR.push({
             AND: [
               { visibility: 'CLOSE_FRIENDS' },
-              { owners: { hasSome: closeFriendUserIds } }
+              {
+                OR: closeFriendUserIds.map(id => ({
+                  users: { some: { userId: id, role: 'OWNER' } }
+                }))
+              }
             ]
           })
         }
@@ -108,7 +116,7 @@ export async function GET(request: NextRequest) {
         visibility: true,
         createdAt: true,
         updatedAt: true,
-        owners: true,
+        users: true,
         _count: {
           select: {
             comments: true,
@@ -120,12 +128,9 @@ export async function GET(request: NextRequest) {
             user: {
               select: {
                 id: true,
-                profile: {
+                profiles: {
                   select: {
-                    userName: true,
-                    profilePicture: true,
-                    firstName: true,
-                    lastName: true
+                    data: true
                   }
                 }
               }
@@ -143,7 +148,7 @@ export async function GET(request: NextRequest) {
       }
     })
 
-    // Sort comments by likes, then by date
+    // Sort comments by likes, then by date, and transform profiles[0] to profile
     const templatesWithSortedComments = templates.map(template => {
       if (template.comments && Array.isArray(template.comments) && template.comments.length > 0) {
         const sortedComments = [...template.comments].sort((a: any, b: any) => {
@@ -151,7 +156,25 @@ export async function GET(request: NextRequest) {
           if (likeDiff !== 0) return likeDiff
           return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         })
-        return { ...template, comments: sortedComments }
+        // Transform profiles[0] to profile for comments and extract data values
+        const commentsWithProfile = sortedComments.map((comment: any) => {
+          const profileData = comment.user.profiles?.[0]?.data
+          const profile = profileData ? {
+            userName: profileData.username?.value || null,
+            profilePicture: profileData.profilePicture?.value || null,
+            firstName: profileData.firstName?.value || null,
+            lastName: profileData.lastName?.value || null
+          } : null
+          
+          return {
+            ...comment,
+            user: {
+              ...comment.user,
+              profile
+            }
+          }
+        })
+        return { ...template, comments: commentsWithProfile }
       }
       return template
     })
@@ -181,7 +204,9 @@ export async function GET(request: NextRequest) {
     const templatesWithUsers = await Promise.all(
       templatesWithSortedComments.map(async (template) => {
         // Get the first owner's profile (for now, we'll use the first owner)
-        const ownerId = template.owners[0]
+        const users = (template.users as any[]) || []
+        const owner = users.find((u: any) => u.role === 'OWNER')
+        const ownerId = owner?.userId
         if (!ownerId) {
           return {
             ...template,
@@ -193,17 +218,9 @@ export async function GET(request: NextRequest) {
           where: { id: ownerId },
           select: {
             id: true,
-            profile: {
+            profiles: {
               select: {
-                userName: true,
-                profilePicture: true,
-                profilePictureVisibility: true,
-                firstName: true,
-                firstNameVisibility: true,
-                lastName: true,
-                lastNameVisibility: true,
-                bio: true,
-                bioVisibility: true
+                data: true
               }
             }
           }
@@ -212,7 +229,8 @@ export async function GET(request: NextRequest) {
         // Filter out fields if not visible based on relationship
         let cleanedUser = null
         if (user) {
-          if (!user.profile) {
+          const profile = user.profiles?.[0]
+          if (!profile) {
             // Ensure profile object exists even if null, so component can access profile.userName
             cleanedUser = {
               ...user,
@@ -245,8 +263,25 @@ export async function GET(request: NextRequest) {
               ownerFriends.includes(currentUserIdStr) &&
               currentUserFriends.includes(ownerIdStr)
 
+            // Extract profile data from new structure and transform for filterProfileFields
+            const profileData = profile.data || {}
+            const profileForFiltering = {
+              userName: profileData.username?.value || null,
+              firstName: profileData.firstName?.value || null,
+              lastName: profileData.lastName?.value || null,
+              bio: profileData.bio?.value || null,
+              profilePicture: profileData.profilePicture?.value || null,
+              publicCharts: profileData.charts?.value || null,
+              firstNameVisibility: profileData.firstName?.visibility ? 'PUBLIC' : 'PRIVATE',
+              lastNameVisibility: profileData.lastName?.visibility ? 'PUBLIC' : 'PRIVATE',
+              userNameVisibility: profileData.username?.visibility ? 'PUBLIC' : 'PRIVATE',
+              bioVisibility: profileData.bio?.visibility ? 'PUBLIC' : 'PRIVATE',
+              profilePictureVisibility: profileData.profilePicture?.visibility ? 'PUBLIC' : 'PRIVATE',
+              publicChartsVisibility: profileData.charts?.visibility ? 'PUBLIC' : 'PRIVATE'
+            }
+
             // Filter profile fields based on visibility and relationship
-            const profile = filterProfileFields(user.profile, {
+            const filteredProfile = filterProfileFields(profileForFiltering, {
               isOwner,
               isFriend,
               isCloseFriend
@@ -254,7 +289,7 @@ export async function GET(request: NextRequest) {
 
             cleanedUser = {
               ...user,
-              profile
+              profile: filteredProfile
             }
           }
         }
