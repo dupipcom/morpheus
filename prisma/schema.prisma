@@ -417,7 +417,13 @@ type ProfileData {
   lastName ProfileField?
   bio ProfileField?
   profilePicture ProfileField?
-  charts ProfileField?
+  charts ProfileChartField?
+}
+
+type ProfileChartField {
+  name String?
+  value Json?
+  visibility Boolean
 }
 
 type ProfileField {
