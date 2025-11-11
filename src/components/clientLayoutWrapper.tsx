@@ -7,11 +7,11 @@ import { getLocaleCookie } from '@/lib/localeUtils'
 import { I18nProvider } from "@/lib/contexts/i18n"
 import { GlobalContext } from "@/lib/contexts"
 import { Nav } from '@/components/ui/nav'
-import { Footer } from '@/components/Footer'
+import { Footer } from '@/components/footer'
 import { Toaster } from '@/components/ui/sonner'
-import { AuthWrapper } from '@/components/auth-wrapper'
-import { AuthToast } from '@/components/auth-toast'
-import { AppContent } from '@/components/app-content'
+import { AuthWrapper } from '@/components/authWrapper'
+import { AuthToast } from '@/components/authToast'
+import { AppContent } from '@/components/appContent'
 
 interface ClientLayoutWrapperProps {
   children: ReactNode

@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
       })
       entityExists = !!template
     } else if (entityType === 'tasklist') {
-      const taskList = await prisma.taskList.findUnique({
+      const taskList = await prisma.list.findUnique({
         where: { id: entityId }
       })
       entityExists = !!taskList

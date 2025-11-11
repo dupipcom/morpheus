@@ -7,7 +7,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { useI18n } from "@/lib/contexts/i18n"
 import { useNotesRefresh } from "@/lib/contexts/notesRefresh"
 import { Send, Loader2 } from "lucide-react"
-import { VisibilitySelect } from "@/components/VisibilitySelect"
+import { VisibilitySelect } from "@/components/visibilitySelect"
 
 interface PublishNoteProps {
   onNotePublished?: () => void

@@ -7,26 +7,17 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
   try {
     const { userName } = await params
 
+    // Find profile by username at root level (optimized query)
     const profile = await prisma.profile.findUnique({
-      where: { userName },
+      where: {
+        username: userName
+      },
       select: {
         id: true,
-        firstName: true,
-        lastName: true,
-        userName: true,
-        bio: true,
-        profilePicture: true,
-        publicCharts: true,
-        firstNameVisibility: true,
-        lastNameVisibility: true,
-        userNameVisibility: true,
-        bioVisibility: true,
-        profilePictureVisibility: true,
-        publicChartsVisibility: true,
+        data: true,
         user: {
           select: {
             id: true,
-            entries: true,
             friends: true,
             closeFriends: true
           }
@@ -36,6 +27,23 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
 
     if (!profile) {
       return Response.json({ error: 'Profile not found' }, { status: 404 })
+    }
+
+    // Extract profile data from the new structure
+    const profileData = profile.data || {}
+    const profileForFiltering = {
+      userName: profileData.username?.value || null,
+      firstName: profileData.firstName?.value || null,
+      lastName: profileData.lastName?.value || null,
+      bio: profileData.bio?.value || null,
+      profilePicture: profileData.profilePicture?.value || null,
+      publicCharts: profileData.charts?.value || null,
+      firstNameVisibility: profileData.firstName?.visibility ? 'PUBLIC' : 'PRIVATE',
+      lastNameVisibility: profileData.lastName?.visibility ? 'PUBLIC' : 'PRIVATE',
+      userNameVisibility: profileData.username?.visibility ? 'PUBLIC' : 'PRIVATE',
+      bioVisibility: profileData.bio?.visibility ? 'PUBLIC' : 'PRIVATE',
+      profilePictureVisibility: profileData.profilePicture?.visibility ? 'PUBLIC' : 'PRIVATE',
+      publicChartsVisibility: profileData.charts?.visibility ? 'PUBLIC' : 'PRIVATE'
     }
 
     // Determine viewer and relationship
@@ -72,15 +80,16 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
 
     // Generate public charts data if charts are visible
     let publicChartsData = null
-    if (isFieldVisible(profile.publicChartsVisibility || 'PRIVATE') && profile.publicCharts) {
+    if (isFieldVisible(profileForFiltering.publicChartsVisibility || 'PRIVATE') && profileForFiltering.publicCharts) {
       const chartVisibility = {
-        moodCharts: (profile.publicCharts as any)?.moodCharts || false,
-        simplifiedMoodChart: (profile.publicCharts as any)?.simplifiedMoodChart || false,
-        productivityCharts: (profile.publicCharts as any)?.productivityCharts || false,
-        earningsCharts: (profile.publicCharts as any)?.earningsCharts || false,
+        moodCharts: (profileForFiltering.publicCharts as any)?.moodCharts || false,
+        simplifiedMoodChart: (profileForFiltering.publicCharts as any)?.simplifiedMoodChart || false,
+        productivityCharts: (profileForFiltering.publicCharts as any)?.productivityCharts || false,
+        earningsCharts: (profileForFiltering.publicCharts as any)?.earningsCharts || false,
       }
       
-      publicChartsData = generatePublicChartsData(profile.user.entries, chartVisibility)
+      // Entries field no longer exists on User model, pass null to generatePublicChartsData
+      publicChartsData = generatePublicChartsData(null, chartVisibility)
     }
 
     // Determine allowed visibility for templates/lists
@@ -126,7 +135,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
     try {
       visibleTemplates = await prisma.template.findMany({
         where: {
-          owners: { has: profile.user.id },
+          users: { some: { userId: profile.user.id, role: 'OWNER' } },
           visibility: { in: allowedVis as any }
         },
         select: { 
@@ -145,9 +154,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
           comments: {
             include: {
               user: {
-                select: {
-                  id: true,
-                  profile: {
+                include: {
+                  profiles: {
                     select: {
                       userName: true,
                       profilePicture: true,
@@ -173,7 +181,13 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
       
       // Add isLiked flag and sort comments
       visibleTemplates = visibleTemplates.map(template => {
-        const sortedComments = template.comments ? [...template.comments].sort((a: any, b: any) => {
+        const sortedComments = template.comments ? [...template.comments].map((comment: any) => ({
+          ...comment,
+          user: {
+            ...comment.user,
+            profile: comment.user.profiles?.[0] || null
+          }
+        })).sort((a: any, b: any) => {
           const likeDiff = (b._count?.likes || 0) - (a._count?.likes || 0)
           if (likeDiff !== 0) return likeDiff
           return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -187,9 +201,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
     } catch (_) {}
     
     try {
-      visibleTaskLists = await prisma.taskList.findMany({
+      visibleTaskLists = await prisma.list.findMany({
         where: {
-          owners: { has: profile.user.id },
+          users: { some: { userId: profile.user.id, role: 'OWNER' } },
           visibility: { in: allowedVis as any }
         },
         select: { 
@@ -210,9 +224,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
           comments: {
             include: {
               user: {
-                select: {
-                  id: true,
-                  profile: {
+                include: {
+                  profiles: {
                     select: {
                       userName: true,
                       profilePicture: true,
@@ -252,7 +265,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
     } catch (_) {}
 
     // Filter profile fields based on visibility and relationship
-    const filteredProfile = filterProfileFields(profile, {
+    const filteredProfile = filterProfileFields(profileForFiltering, {
       isOwner,
       isFriend,
       isCloseFriend

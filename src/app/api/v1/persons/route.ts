@@ -13,16 +13,16 @@ export async function GET() {
     // Get user from database
     const user = await prisma.user.findUnique({
       where: { userId },
-      include: { contacts: true }
+      include: { persons: true }
     })
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    return NextResponse.json({ contacts: user.contacts })
+    return NextResponse.json({ contacts: user.persons })
   } catch (error) {
-    console.error('Error fetching contacts:', error)
+    console.error('Error fetching persons:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
@@ -54,21 +54,19 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    // Create contact
-    const contact = await prisma.contact.create({
+    // Create person
+    const contact = await prisma.person.create({
       data: {
         name,
-        email,
-        phone,
-        notes,
-        interactionQuality,
+        quality: interactionQuality || null,
         userId: user.id
       }
     })
 
     return NextResponse.json({ contact })
   } catch (error) {
-    console.error('Error creating contact:', error)
+    console.error('Error creating person:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
-} 
+}
+

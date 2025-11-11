@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { name, notes, interactionQuality } = body
+    const { name, quality, noteIds } = body
 
     if (!name) {
       return NextResponse.json({ error: 'Name is required' }, { status: 400 })
@@ -58,8 +58,8 @@ export async function POST(request: NextRequest) {
     const thing = await prisma.thing.create({
       data: {
         name,
-        notes,
-        interactionQuality,
+        quality: quality || null,
+        noteIds: noteIds || [],
         userId: user.id
       }
     })

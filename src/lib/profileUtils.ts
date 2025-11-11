@@ -99,7 +99,7 @@ export function generatePublicChartsData(
 
       // Calculate progress from tasks
       const totalTasks = week.tasks?.length || 0
-      const completedTasks = week.tasks?.filter((task: any) => task.status === 'Done').length || 0
+      const completedTasks = week.tasks?.filter((task: any) => task.status === 'done').length || 0
       const progress = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0
 
       // Calculate earnings and balance

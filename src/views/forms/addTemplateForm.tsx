@@ -131,7 +131,7 @@ export const AddTemplateForm = ({
                 <Button size="sm" onClick={() => {
                   const name = addTaskForm.name.trim()
                   if (!name) return
-                  const newTask = { name, area: addTaskForm.area as any, categories: [addTaskForm.category], status: 'Not started', cadence: 'daily', times: addTaskForm.times, count: 0 }
+                  const newTask = { name, area: addTaskForm.area as any, categories: [addTaskForm.category], status: 'open', cadence: 'daily', times: addTaskForm.times, count: 0 }
                   setForm(prev => ({ ...prev, tasks: [...prev.tasks, newTask] }))
                   setAddTaskForm({ name: '', area: 'self', category: 'custom', times: 1 })
                   setAddTaskOpen(false)

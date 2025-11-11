@@ -6,7 +6,7 @@ import { useAuth } from '@clerk/nextjs'
 import { GlobalContext } from "@/lib/contexts"
 import { BeView } from "@/views/beView"
 import { ViewMenu } from "@/components/viewMenu"
-import { PublishNote } from '@/components/publish-note'
+import { PublishNote } from '@/components/publishNote'
 import { setLoginTime, getLoginTime } from '@/lib/cookieManager'
 import { useI18n } from "@/lib/contexts/i18n"
 

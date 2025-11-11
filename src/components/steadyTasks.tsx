@@ -3,8 +3,8 @@
 import { useMemo, useContext, useEffect, useState, useCallback, useRef } from 'react'
 import { GlobalContext } from '@/lib/contexts'
 import { Skeleton } from '@/components/ui/skeleton'
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { OptionsButton, OptionsMenuItem } from '@/components/OptionsButton'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggleGroup'
+import { OptionsButton, OptionsMenuItem } from '@/components/optionsButton'
 import { Circle, Minus, ChevronDown, ChevronUp } from 'lucide-react'
 import { useI18n } from '@/lib/contexts/i18n'
 import { prepareIncrementActions, prepareDecrementActions, handleEphemeralTaskUpdate, calculateTaskStatus } from '@/lib/taskUtils'
@@ -102,6 +102,14 @@ export const SteadyTasks = () => {
     // Helper to get task key
     const keyOf = (t: any) => (t?.id || t?.localeKey || (typeof t?.name === 'string' ? t.name.toLowerCase() : '')) as string
     
+    // Helper to get unique taskId (prefer id, then localeKey, then name)
+    const getTaskId = (t: any): string | null => {
+      if (t?.id) return String(t.id)
+      if (t?.localeKey) return String(t.localeKey)
+      if (typeof t?.name === 'string') return t.name.toLowerCase()
+      return null
+    }
+    
     stableTaskLists.forEach((taskList: any) => {
       // Get base tasks from tasks array or templateTasks
       const baseTasks = (taskList?.tasks && taskList.tasks.length > 0)
@@ -119,7 +127,7 @@ export const SteadyTasks = () => {
           dateBucket.forEach((t: any) => {
             const k = keyOf(t)
             if (!k) return
-            if (t.status !== 'Done' && (t.count || 0) < (t.times || 1)) {
+            if (t.status !== 'done' && (t.count || 0) < (t.times || 1)) {
               if (!openTasksByKey[k]) {
                 openTasksByKey[k] = t
                 openTasksFromCompleted.push(t)
@@ -156,7 +164,7 @@ export const SteadyTasks = () => {
           taskListId: taskList.id,
           taskListRole: taskList.role || '',
           // Use status from openTasks if available, otherwise from base task, with optimistic override
-          taskStatus: optimisticStatus || (openTask?.taskStatus || baseTask.taskStatus),
+          taskStatus: optimisticStatus || (openTask?.status || baseTask.status),
           count: optimisticCount !== undefined ? optimisticCount : (openTask?.count !== undefined ? openTask.count : (baseTask.count || 0))
         }
       })
@@ -177,7 +185,7 @@ export const SteadyTasks = () => {
             taskListName: taskList.name || taskList.role,
             taskListId: taskList.id,
             taskListRole: taskList.role || '',
-            taskStatus: optimisticStatus || t.taskStatus,
+            taskStatus: optimisticStatus || t.status,
             count: optimisticCount !== undefined ? optimisticCount : (t.count || 0)
           }
         })
@@ -194,7 +202,7 @@ export const SteadyTasks = () => {
           taskListId: taskList.id,
           taskListRole: taskList.role || '',
           // Use status from ephemeralTasks.open, with optimistic override
-          taskStatus: optimisticStatus || t.taskStatus,
+          taskStatus: optimisticStatus || t.status,
           count: optimisticCount !== undefined ? optimisticCount : (t.count || 0)
         }
       })
@@ -210,7 +218,25 @@ export const SteadyTasks = () => {
       return taskStatus === 'steady' || taskStatus === 'in progress'
     })
     
-    // Sort by role priority: daily.default > weekly.default > daily.* > weekly.* > one-off
+    // Deduplicate by taskId - keep the first occurrence of each unique taskId
+    const tasksById = new Map<string, any>()
+    filteredTasks.forEach((task: any) => {
+      const taskId = getTaskId(task)
+      if (taskId && !tasksById.has(taskId)) {
+        tasksById.set(taskId, task)
+      }
+    })
+    
+    // Convert map back to array
+    const uniqueTasks = Array.from(tasksById.values())
+    
+    // Sort by status first (in progress before steady), then by role priority
+    const getStatusPriority = (status: TaskStatus): number => {
+      if (status === 'in progress') return 1
+      if (status === 'steady') return 2
+      return 3 // other statuses (shouldn't happen after filtering, but safety)
+    }
+    
     const getRolePriority = (role: string): number => {
       if (role === 'daily.default') return 1
       if (role === 'weekly.default') return 2
@@ -219,7 +245,16 @@ export const SteadyTasks = () => {
       return 5 // one-off or other roles
     }
     
-    return filteredTasks.sort((a: any, b: any) => {
+    return uniqueTasks.sort((a: any, b: any) => {
+      const statusA = getStatusPriority((a?.taskStatus as TaskStatus) || 'open')
+      const statusB = getStatusPriority((b?.taskStatus as TaskStatus) || 'open')
+      
+      // First sort by status (in progress before steady)
+      if (statusA !== statusB) {
+        return statusA - statusB
+      }
+      
+      // Then sort by role priority
       const priorityA = getRolePriority(a.taskListRole || '')
       const priorityB = getRolePriority(b.taskListRole || '')
       return priorityA - priorityB
@@ -498,11 +533,7 @@ export const SteadyTasks = () => {
   }
 
   if (steadyTasks.length === 0) {
-    return (
-      <div className="text-center text-muted-foreground py-8">
-        No tasks with status "steady" or "in progress" found.
-      </div>
-    )
+    return null
   }
 
   // Limit tasks: 1 on mobile (expandable to 6), 8 on desktop

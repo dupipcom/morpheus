@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { NotesList, Note } from "@/components/NotesList"
+import { NotesList, Note } from "@/components/notesList"
 import { useI18n } from '@/lib/contexts/i18n'
 
 interface PublicNotesViewerProps {

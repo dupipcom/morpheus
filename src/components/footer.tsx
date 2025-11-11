@@ -1,7 +1,7 @@
 'use client'
 
 import { useI18n } from "@/lib/contexts/i18n"
-import { LocaleSelector } from "./locale-selector"
+import { LocaleSelector } from "./localeSelector"
 
 export function Footer() {
   const { t } = useI18n()

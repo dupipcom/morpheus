@@ -36,13 +36,13 @@ interface Contact {
   email?: string
   phone?: string
   notes?: string
-  interactionQuality?: number
+  quality?: number
 }
 
 interface ContactReference {
   id: string
   name: string
-  interactionQuality?: number
+  quality?: number
 }
 
 interface ContactComboboxProps {
@@ -68,10 +68,8 @@ export function ContactCombobox({
   const [newContact, setNewContact] = React.useState({
     name: '',
     notes: '',
-    interactionQuality: 3
+    quality: 3
   })
-
-  const [contactInteractionQualities, setContactInteractionQualities] = React.useState<{ [key: string]: number }>({})
 
   const handleSelect = (contactId: string) => {
     if (contactId === 'add-new') {
@@ -84,7 +82,7 @@ export function ContactCombobox({
       const contactRef: ContactReference = {
         id: contact.id,
         name: contact.name,
-        interactionQuality: contactInteractionQualities[contact.id] || contact.interactionQuality || 3
+        quality: contact.quality || 3
       }
       onContactsChange([...selectedContacts, contactRef])
     }
@@ -99,7 +97,7 @@ export function ContactCombobox({
     if (!newContact.name.trim()) return
 
     try {
-      const response = await fetch('/api/v1/contacts', {
+      const response = await fetch('/api/v1/persons', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -115,7 +113,7 @@ export function ContactCombobox({
         const contactRef: ContactReference = {
           id: contact.id,
           name: contact.name,
-          interactionQuality: newContact.interactionQuality
+          quality: newContact.quality
         }
         onContactsChange([...selectedContacts, contactRef])
 
@@ -123,7 +121,7 @@ export function ContactCombobox({
         setNewContact({
           name: '',
           notes: '',
-          interactionQuality: 3
+          quality: 3
         })
 
         setAddContactOpen(false)
@@ -221,8 +219,8 @@ export function ContactCombobox({
           className="flex items-center gap-1 bg-green-100 text-green-800 border-green-200"
         >
           {contact.name}
-          {contact.interactionQuality && (
-            <span className="text-xs">{contact.interactionQuality}/5</span>
+          {contact.quality !== undefined && (
+            <span className="text-xs">{contact.quality}/5</span>
           )}
           <Button
             variant="ghost"
