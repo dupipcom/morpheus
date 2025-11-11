@@ -21,8 +21,6 @@ model Chart {
   user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   profileId     String?   @db.ObjectId
   profile       Profile?  @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  noteIds       String[]  @default([]) @db.ObjectId
-  documentIds   String[]  @default([]) @db.ObjectId
 }
 
 model Comment {
@@ -85,9 +83,7 @@ model Document {
   fileFormat    String?
   fileDuration  Float?
   visibility    Visibility @default(PRIVATE)
-  owners        String[]  @db.ObjectId
-  managers      String[]  @db.ObjectId
-  collaborators String[]  @db.ObjectId
+  users         UserReference[]
   listIds       String[]  @default([]) @db.ObjectId
   templateIds   String[]  @default([]) @db.ObjectId
   noteIds       String[]  @default([]) @db.ObjectId
@@ -146,9 +142,26 @@ model Note {
   eventIds       String[]  @default([]) @db.ObjectId
   profileIds     String[]  @default([]) @db.ObjectId
   templateIds    String[]  @default([]) @db.ObjectId
-  taskListIds    String[]  @default([]) @db.ObjectId
+  listIds        String[]  @default([]) @db.ObjectId
   documentIds    String[]  @default([]) @db.ObjectId
   chartIds       String[]  @default([]) @db.ObjectId
+}
+
+model Offer {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  name          String?
+  description   String?
+  price         Float?
+  discount      Float?
+  visibility    Visibility @default(PRIVATE)
+  userId        String    @db.ObjectId
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId    String?   @db.ObjectId
+  product       Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
+  noteIds       String[]  @default([]) @db.ObjectId
+  documentIds   String[]  @default([]) @db.ObjectId
 }
 
 model Person {
@@ -162,6 +175,24 @@ model Person {
   visibility    Visibility @default(PRIVATE)
   profile       Profile?  @relation(fields: [profileId], references: [id])
   profileId     String?   @unique @db.ObjectId
+  noteIds       String[]  @default([]) @db.ObjectId
+  documentIds   String[]  @default([]) @db.ObjectId
+}
+
+model Product {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  name          String
+  description   String?
+  price         Float?
+  goal          Float?
+  raised        Float?
+  visibility    Visibility @default(PRIVATE)
+  users         UserReference[]
+  offers        Offer[]
+  transactions  Transaction[]
+  listIds       String[]  @default([]) @db.ObjectId
   noteIds       String[]  @default([]) @db.ObjectId
   documentIds   String[]  @default([]) @db.ObjectId
 }
@@ -190,13 +221,13 @@ model List {
   visibility    Visibility @default(PRIVATE)
   role          String?
   name          String?
+  categories    Category[]
+  area          Areas?
   budget        Float?
   budgetPercentage Float? @default(0)
   remainingBudget String?
   dueDate       String?
-  owners        String[]  @db.ObjectId
-  collaborators String[]  @db.ObjectId
-  managers      String[]  @db.ObjectId
+  users         UserReference[]
   publicUrl     String?
   ticker        String?
   progress      String?
@@ -218,7 +249,7 @@ model Template {
   visibility    Visibility @default(PRIVATE)
   role          String?
   name          String?
-  owners        String[]  @db.ObjectId
+  users         UserReference[]
   clonedBy      String[]  @default([]) @db.ObjectId
   tasks         Task[]
   lists         List[]
@@ -241,21 +272,43 @@ model Thing {
   documentIds   String[]  @default([]) @db.ObjectId
 }
 
+model Token {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  token         String
+  type          String?
+  expiresAt     DateTime?
+  visibility    Visibility @default(PRIVATE)
+  userId        String    @db.ObjectId
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  noteIds       String[]  @default([]) @db.ObjectId
+  documentIds   String[]  @default([]) @db.ObjectId
+}
+
+model Transaction {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  amount        Float
+  type          String?
+  status        String?
+  visibility    Visibility @default(PRIVATE)
+  userId        String    @db.ObjectId
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  walletId      String?   @db.ObjectId
+  wallet        Wallet?   @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  productId    String?   @db.ObjectId
+  product       Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
+  noteIds       String[]  @default([]) @db.ObjectId
+  documentIds   String[]  @default([]) @db.ObjectId
+}
+
 model User {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  entries       Entries?
   settings      Settings?
-  analysis      Json?
-  availableBalance  Float?
-  usedBudget    Float?    @default(0)
-  remainingBudget Float?  @default(100)
-  profit        Float?    @default(0)
-  stash         Float?    @default(0)
-  equity        Float?   @default(0)
-  totalEarnings Float?   @default(0)
-  hint String?
   userId        String?   @unique
   lastLogin     DateTime?
   persons       Person[]
@@ -264,12 +317,32 @@ model User {
   notes         Note[]
   comments      Comment[]
   likes         Like[]
-  profile       Profile?
+  profiles       Profile[]
   charts        Chart[]
   days          Day[]
   friends       String[]  @db.ObjectId
   closeFriends  String[]  @db.ObjectId
   friendRequests String[] @db.ObjectId
+  offers        Offer[]
+  tokens       Token[]
+  transactions  Transaction[]
+  wallets       Wallet[]
+}
+
+model Wallet {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  name          String?
+  address       String?
+  balance       Float?    @default(0)
+  currency      CurrencyCode?
+  visibility    Visibility @default(PRIVATE)
+  userId        String    @db.ObjectId
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions  Transaction[]
+  noteIds       String[]  @default([]) @db.ObjectId
+  documentIds   String[]  @default([]) @db.ObjectId
 }
 
 type Completer {
@@ -296,10 +369,6 @@ type DocumentReference {
   id String
   fileName String
   fileUrl String
-}
-
-type Entries {
-  data Json?
 }
 
 type EventReference {
@@ -384,6 +453,11 @@ type Ticker {
   prize Float?
 }
 
+type UserReference {
+  userId String @db.ObjectId
+  role UserRole
+}
+
 enum Areas {
   self
   home
@@ -464,6 +538,13 @@ enum ProfileVisibility {
   CLOSE_FRIENDS
   PUBLIC
   AI_ENABLED
+}
+
+enum UserRole {
+  OWNER
+  MANAGER
+  COLLABORATOR
+  FOLLOWER
 }
 
 enum Visibility {
