@@ -8,9 +8,9 @@ import { useAuth } from '@clerk/nextjs';
 import Link from 'next/link'
 
 import { GlobalContext } from "@/lib/contexts"
-import { DashboardView } from "@/views/dashboardView"
+import { AnalyticsView } from "@/views/analyticsView"
 import { ViewMenu } from "@/components/viewMenu"
-import { PublishNote } from '@/components/publishNote'
+import { PublishNote } from '@/components/publish-note'
 import { setLoginTime, getLoginTime } from '@/lib/cookieManager'
 import { useI18n } from "@/lib/contexts/i18n"
 
@@ -47,14 +47,13 @@ export default function LocalizedDashboard({ params }: { params: Promise<{ local
 
   return (
     <main className="">
-      <ViewMenu active="feel" />
-      <div className="w-full max-w-[1200px] m-auto px-4 sticky top-[115px] z-50">
+      <ViewMenu active="dashboard">
         <PublishNote />
-      </div>
-      <h1 className="scroll-m-20 text-2xl font-semibold tracking-tight text-center my-8">{formatDate(new Date())}</h1>
+      </ViewMenu>
+      <h1 className="scroll-m-20 text-2xl font-semibold tracking-tight text-center mb-8">{formatDate(new Date())}</h1>
       <h2 className="text-center scroll-m-20 text-lg font-semibold tracking-tight">{t('dashboard.title')}</h2>
 
-      <DashboardView />
+      <AnalyticsView />
     </main>
   )
 } 

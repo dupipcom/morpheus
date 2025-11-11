@@ -1,9 +1,9 @@
 import prisma from "@/lib/prisma";
 import { currentUser, auth } from '@clerk/nextjs/server'
-// Helpers and constants removed - no longer needed for entries
-// Entry utils removed - data now stored in Day model
-import { recalculateUserBudget } from "@/lib/budgetUtils"
 import { getWeekNumber } from "@/app/helpers"
+import { WEEKLY_ACTIONS, DAILY_ACTIONS } from "@/app/constants"
+import { safeUpdateWeekEntry, safeUpdateDayEntry, validateWeekData, validateDayData, logEntryData, ensureWeekDataIntegrity, ensureDayDataIntegrity, addEphemeralTaskToDay, addEphemeralTaskToWeek, updateEphemeralTaskInDay, updateEphemeralTaskInWeek, removeEphemeralTaskFromDay, removeEphemeralTaskFromWeek, calculateDayTicker, calculateWeekTicker, calculateDayTickers, calculateWeekTickers } from "@/lib/entryUtils"
+import { recalculateUserBudget } from "@/lib/budgetUtils"
 
 export async function GET(req: Request) {
   const { userId } = await auth()
@@ -15,7 +15,7 @@ export async function GET(req: Request) {
 
   const getUser = async () => await prisma.user.findUnique({
        where: { userId },
-       include: { profiles: true }
+       include: { profile: true }
     })
 
   let user = await getUser()
@@ -25,44 +25,30 @@ export async function GET(req: Request) {
     user = await prisma.user.create({
       data: {
         userId,
+        entries: {},
         settings: {
-          currency: null,
-          speed: null
-        } as any
+          dailyTemplate: [],
+          weeklyTemplate: []
+        }
       },
-      include: { profiles: true }
+      include: { profile: true }
     })
   }
 
   // Ensure user has a profile - create one if missing
-  if (user && (!user.profiles || user.profiles.length === 0)) {
+  if (user && !user.profile) {
     try {
       const clerkUser = await currentUser()
       await prisma.profile.create({
         data: {
           userId: user.id,
-          data: {
-            username: {
-              value: clerkUser?.username || null,
-              visibility: true
-            },
-            firstName: {
-              value: null,
-              visibility: false
-            },
-            lastName: {
-              value: null,
-              visibility: false
-            },
-            bio: {
-              value: null,
-              visibility: false
-            },
-            profilePicture: {
-              value: null,
-              visibility: false
-            }
-          }
+          userName: clerkUser?.username || null, // Use Clerk username if available
+          firstNameVisibility: 'PRIVATE',
+          lastNameVisibility: 'PRIVATE',
+          userNameVisibility: 'PUBLIC',
+          bioVisibility: 'PRIVATE',
+          profilePictureVisibility: 'PRIVATE',
+          publicChartsVisibility: 'PRIVATE',
         }
       })
       // Refetch user with new profile
@@ -91,20 +77,11 @@ export async function GET(req: Request) {
   try {
     const clerkUser = await currentUser()
     if (clerkUser && clerkUser.username && user) {
-      if (user.profiles && user.profiles.length > 0) {
+      if (user.profile) {
         // Always update existing profile with Clerk username (overwrites any manual username)
-        const existingData = user.profiles[0].data || {}
         await prisma.profile.update({
           where: { userId: user.id },
-          data: {
-            data: {
-              ...existingData,
-              username: {
-                value: clerkUser.username,
-                visibility: existingData.username?.visibility ?? true
-              }
-            }
-          }
+          data: { userName: clerkUser.username }
         })
       }
       // Refetch user with updated profile
@@ -146,13 +123,23 @@ export async function POST(req: Request) {
 
   // If user doesn't exist in database, create them
   if (!user) {
+    // Find the default templates
+    const dailyDefaultTemplate = await prisma.template.findFirst({
+      where: { role: 'daily.default' }
+    })
+    
+    const weeklyDefaultTemplate = await prisma.template.findFirst({
+      where: { role: 'weekly.default' }
+    })
+    
     user = await prisma.user.create({
       data: {
         userId,
+        entries: {},
         settings: {
-          currency: null,
-          speed: null
-        } as any
+          dailyTemplate: dailyDefaultTemplate?.id || null,
+          weeklyTemplate: weeklyDefaultTemplate?.id || null
+        }
       }
     })
   }
@@ -168,6 +155,14 @@ export async function POST(req: Request) {
     })
     user = await getUser()
   }
+
+  const fullDate = data?.date ? new Date(data?.date) : new Date()
+
+  const date = fullDate.toISOString().split('T')[0]
+  const year = Number(date.split('-')[0])
+  const month = Number(date.split('-')[1])
+  const day = Number(date.split('-')[2])
+  const weekNumber = getWeekNumber(fullDate)[1]
 
   if (data.availableBalance !== undefined && data.availableBalance !== null) {
     const newAvailableBalance = Math.max(0, typeof data.availableBalance === 'string' 
@@ -186,54 +181,1171 @@ export async function POST(req: Request) {
       where: { id: user.id },
     })
     user = await getUser()
+  }
+
+  if (!user.entries) {
+    await prisma.user.update({
+      data: {
+        entries: {},
+      },
+      where: { id: user.id }, 
+    })
+    user = await getUser()
+  }
+
+  // Ensure user has template references
+  if (!user.settings?.weeklyTemplate || !user.settings?.dailyTemplate) {
+    // Find the default templates
+    const dailyDefaultTemplate = await prisma.template.findFirst({
+      where: { role: 'daily.default' }
+    })
     
-    // Update current day entry with new balance, stash, and equity
-    try {
-      const today = new Date()
-      const dateISO = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
-      
-      const existingDay = await prisma.day.findFirst({
-        where: {
-          userId: user.id,
-          date: dateISO
+    const weeklyDefaultTemplate = await prisma.template.findFirst({
+      where: { role: 'weekly.default' }
+    })
+    
+    await prisma.user.update({
+      data: {
+        settings: {
+          ...user?.settings,
+          dailyTemplate: dailyDefaultTemplate?.id || null,
+          weeklyTemplate: weeklyDefaultTemplate?.id || null
         }
-      })
-      
-      if (existingDay) {
-        await prisma.day.update({
-          where: { id: existingDay.id },
-          data: {
-            balance: newAvailableBalance,
-            stash: currentStash,
-            equity: newEquity
+      },
+      where: { id: user.id }, 
+    })
+    user = await getUser()
+  }
+
+  // Helper function to get template tasks
+  const getTemplateTasks = async (templateId) => {
+    if (!templateId) return []
+    const template = await prisma.template.findUnique({
+      where: { id: templateId }
+    })
+    return template?.tasks || []
+  }
+
+  if (!user.entries[year]) {
+    await prisma.user.update({
+      data: {
+        entries: {
+            ...user.entries,
+            [year]: {
+              days: {},
+              weeks: {}
+            },
           }
-        })
-      } else {
-        // Create new day entry if it doesn't exist
-        const [_, weekNumber] = getWeekNumber(today)
-        const month = today.getMonth() + 1
-        const quarter = Math.ceil(month / 3)
-        const semester = month <= 6 ? 1 : 2
-        await prisma.day.create({
-          data: {
-            userId: user.id,
-            date: dateISO,
-            balance: newAvailableBalance,
-            stash: currentStash,
-            equity: newEquity,
-            week: typeof weekNumber === 'number' ? weekNumber : Number(weekNumber) || 1,
-            month: month,
-            quarter: quarter,
-            semester: semester
+        },
+      where: { id: user.id }, 
+    })
+    user = await getUser()
+  }
+
+  if (!user.entries[year].weeks[weekNumber]) {
+    await prisma.user.update({
+      data: {
+        entries: {
+            ...user.entries,
+            [year]: {
+              ...user.entries[year],
+              weeks: {
+                ...user.entries[year].weeks,
+                [weekNumber]: {
+                  ...user.entries[year].weeks[weekNumber],
+                  year,
+                  week: weekNumber,
+                  status: "Open"
+                }
+              }
+            },
+          },
+        },
+      where: { id: user.id }, 
+    })
+    user = await getUser()
+  }
+
+  if (!user.entries[year].days[date]) {
+    await prisma.user.update({
+      data: {
+        entries: {
+            ...user.entries,
+            [year]: {
+              ...user.entries[year],
+              days: {
+                ...user.entries[year].days,
+                [date]: {
+                  year,
+                  week: weekNumber,
+                  month,
+                  day,
+                  date,
+                  status: "Open",
+                  moodAverage: 0,
+                  mood: {
+                    gratitude: 0,
+                    optimism: 0,
+                    restedness: 0,
+                    tolerance: 0,
+                    selfEsteem: 0,
+                    trust: 0,
+                  }
+                }
+              }
+            },
           }
-        })
+      },
+      where: { id: user.id }, 
+    })
+    user = await getUser()
+  }
+
+  const dayTasks = data?.dayActions || user?.entries[year].days[date].tasks
+  const weekTasks = data?.weekActions || user?.entries[year].weeks[weekNumber].tasks
+
+  const dayDone = dayTasks?.filter((action) => action.status === "Done")
+  const weekDone = weekTasks?.filter((action) => action.status === "Done")
+
+  const dayProgress = dayTasks?.length ? dayDone.length / dayTasks.length : 0
+  const weekProgress = weekTasks?.length ? weekDone.length / weekTasks.length : 0
+
+    if(data?.mood) {
+      if(user?.entries[year].days[date].mood) {
+        user = {
+          ...user,
+          entries: {
+            ...user.entries,
+            [year]: {
+              ...user.entries[year],
+              days: {
+                ...user.entries[year].days,
+                [date]: {
+                  ...user.entries[year].days[date],
+                  mood: {
+                    ...user.entries[year].days[date].mood,
+                    ...data.mood
+                  }
+                }
+              }
+            }
+          }
+        }
       }
-    } catch (dayError) {
-      // Log error but don't fail the request if Day update fails
-      console.error('Error updating Day entry with balance:', dayError)
+    }
+
+
+  const moodValues = user?.entries[year].days[date].mood  ? Object.values(user?.entries[year].days[date].mood ).filter(val => val !== null && val !== undefined && !isNaN(val)) : [0]
+
+
+  const dayMoodAverage = moodValues.length > 0 ? moodValues.reduce((acc,cur) => acc + cur, 0) / moodValues.length : 0
+
+  const wantBudget = Number(user?.settings?.monthsFixedIncome) + Number(user?.settings?.monthsVariableIncome) - Number(user?.settings?.monthsNeedFixedExpenses) - Number(user?.settings?.monthsNeedVariableExpenses)
+
+  const weekMoodValues = Object.values(user?.entries[year].days).length ? Object.values(user?.entries[year].days).sort().splice(0, 7).map((day) => {
+    return (day?.mood && Object.values(day.mood)?.length) ? Object.values(day.mood).filter(val => val !== null && val !== undefined && !isNaN(val)) : [0].flat() 
+    }).flat()
+  : [0]
+
+  const weekMoodAverage = weekMoodValues.length > 0 ? weekMoodValues.reduce((acc, cur) => Number(acc) + Number(cur), 0) / weekMoodValues.length : 0
+
+  const userEquity = user?.equity ?? 0
+  const dayEarnings = ((5 - dayMoodAverage)) * 0.2 + ((dayProgress * 0.80)) * userEquity / 30
+  const weekEarnings = ((5 - weekMoodAverage)) * 0.2 + ((weekProgress * 0.80)) * userEquity / 4
+
+  // List-scoped task updates: when a taskListKey is provided, write under entries[year][name+id]
+  if ((data.taskListKey && (data.weekActions?.length || data.dayActions?.length)) && user) {
+    const entries = user.entries as any
+    const listKey = String(data.taskListKey)
+
+    let updatedEntries = { ...entries }
+
+    // Ensure year bucket
+    if (!updatedEntries[year]) {
+      updatedEntries[year] = { days: {}, weeks: {} }
+    }
+
+    // Ensure list bucket
+    if (!updatedEntries[year][listKey]) {
+      updatedEntries[year][listKey] = {}
+    }
+
+    // Try to resolve TaskList for earnings calculation (budget / task number)
+    let perTaskEarnings = 0
+    try {
+      const maybeListId = listKey.split("__").pop()
+      if (maybeListId) {
+        const listRecord = await prisma.taskList.findUnique({ where: { id: maybeListId } })
+        if (listRecord) {
+          const listBudget = parseFloat(listRecord.budget || "0")
+          const numTasks = (Array.isArray(listRecord.tasks) && listRecord.tasks.length) ? listRecord.tasks.length : ((data.dayActions?.length || data.weekActions?.length) || 1)
+          perTaskEarnings = numTasks > 0 ? (listBudget / numTasks) : 0
+        }
+      }
+    } catch (e) {
+      // ignore earnings calc errors; default stays 0
+    }
+
+    const addCompletionsFor = (scopeKey: string, tasksWithContacts: any[], scopeId: string | number) => {
+      // Prepare completions bucket under entries[year][listKey].completions[year][date]
+      const listScope = updatedEntries[year][listKey]
+      const completions = (listScope.completions || {})
+      const yearBucket = (completions[year] || {})
+      const dateKey = date
+      const existingCompletionsArr: any[] = Array.isArray(yearBucket[dateKey]) ? yearBucket[dateKey] : []
+
+      // Previous tasks to detect delta by name/id
+      const prevTasks: any[] = (listScope?.[scopeKey]?.tasks) || []
+
+      const toAppend: any[] = []
+      for (const task of tasksWithContacts) {
+        const identifier = task.id || task.name
+        const prev = prevTasks.find((t: any) => (t.id && task.id ? t.id === task.id : t.name === task.name))
+        const prevCount = Number(prev?.count || 0)
+        const newCount = Number(task?.count || (task.status === "Done" ? 1 : 0))
+        const delta = Math.max(0, newCount - prevCount)
+        if (delta > 0) {
+          for (let i = 0; i < delta; i++) {
+            toAppend.push({
+              ...task,
+              times: Number(task?.times || 0) + 1,
+              user: user.id,
+              earnings: perTaskEarnings.toString()
+            })
+          }
+        }
+      }
+
+      if (toAppend.length > 0) {
+        updatedEntries[year][listKey] = {
+          ...listScope,
+          completions: {
+            ...completions,
+            [year]: {
+              ...yearBucket,
+              [dateKey]: [...existingCompletionsArr, ...toAppend]
+            }
+          },
+          [scopeKey]: {
+            ...(listScope?.[scopeKey] || {}),
+            tasks: (tasksWithContacts || []).sort((a: any, b: any) => (a.status === "Done" ? 1 : -1))
+          }
+        }
+      } else {
+        updatedEntries[year][listKey] = {
+          ...listScope,
+          [scopeKey]: {
+            ...(listScope?.[scopeKey] || {}),
+            tasks: (tasksWithContacts || []).sort((a: any, b: any) => (a.status === "Done" ? 1 : -1))
+          }
+        }
+      }
+    }
+
+    // Apply week-scoped tasks under list key (name+id)
+    if (data.weekActions?.length) {
+      const tasksWithContacts = data.weekActions.map((task: any) => ({
+        ...task,
+        contacts: data.taskContacts?.[task.name] || [],
+        things: data.taskThings?.[task.name] || []
+      }))
+      const scopeId = (data.week ?? weekNumber)
+      // Ensure the scope container exists before reading prev
+      updatedEntries[year][listKey] = {
+        ...updatedEntries[year][listKey],
+        [scopeId]: {
+          ...(updatedEntries[year][listKey]?.[scopeId] || {})
+        }
+      }
+      addCompletionsFor(scopeId as any, tasksWithContacts, scopeId)
+    }
+
+    // Apply day-scoped tasks under list key (name+id)
+    if (data.dayActions?.length) {
+      const tasksWithContacts = data.dayActions.map((task: any) => ({
+        ...task,
+        contacts: data.taskContacts?.[task.name] || [],
+        things: data.taskThings?.[task.name] || []
+      }))
+      // Ensure the scope container exists before reading prev
+      updatedEntries[year][listKey] = {
+        ...updatedEntries[year][listKey],
+        [date]: {
+          ...(updatedEntries[year][listKey]?.[date] || {})
+        }
+      }
+      addCompletionsFor(date, tasksWithContacts, date)
+    }
+
+    await prisma.user.update({
+      data: { entries: updatedEntries },
+      where: { id: user.id },
+    })
+    user = await getUser()
+  }
+
+  if (data.weekActions?.length && user && !data.taskListKey) {
+    // Add contacts to tasks if provided
+    const entries = user.entries as any
+    const tasksWithContacts = data.weekActions.map((task: any) => ({
+      ...task,
+      contacts: data.taskContacts?.[task.name] || [],
+      things: data.taskThings?.[task.name] || []
+    }))
+
+    // Calculate ticker values for the week
+    const availW = user.availableBalance ?? 0
+    const weekTickerSingle = calculateWeekTicker(entries, year, data.week, weekEarnings, availW)
+    const weekTickerObj = calculateWeekTickers(entries, year, data.week, weekEarnings, availW, date)
+
+    await prisma.user.update({
+      data: {
+        entries: {
+            ...entries,
+            [year]: {
+              ...entries[year],
+              weeks: {
+                ...entries[year]?.weeks,
+                [data.week]: {
+                  ...entries[year]?.weeks?.[data.week],
+                  year,
+                  week: data.week,
+                  earnings: weekEarnings,
+                  ticker: { ...weekTickerObj },
+                  tickerLegacy: weekTickerSingle,
+                  status: "Open",
+                  progress: weekProgress,
+                  done: weekDone.length,
+                  tasksNumber: weekTasks.length,
+                  availableBalance: user.availableBalance,
+                  contacts: data.weekContacts || []
+                }
+              }
+          }
+        },
+      },
+      where: { id: user.id },
+    })
+    user = await getUser()
+  } else if (data.weekActions && !data.taskListKey) {
+    // Calculate ticker values for the week
+    const availW2 = user.availableBalance ?? 0
+    const weekTickerSingle2 = calculateWeekTicker(user.entries, year, data.week, weekEarnings, availW2)
+    const weekTickerObj2 = calculateWeekTickers(user.entries, year, data.week, weekEarnings, availW2, date)
+    
+    await prisma.user.update({
+      data: {
+        entries: {
+            ...user.entries,
+            [year]: {
+              ...user.entries[year],
+              weeks: {
+                ...user.entries[year].weeks,
+                [data.week]: {
+                  ...user.entries[year].weeks[data.week],
+                  year,
+                  week: data.week,
+                  earnings: weekEarnings,
+                  ticker: { ...weekTickerObj2 },
+                  tickerLegacy: weekTickerSingle2,
+                  status: "Open",
+                  progress: weekProgress,
+                  done: weekDone.length,
+                  tasksNumber: weekTasks.length,
+                  availableBalance: user.availableBalance
+                }
+              }
+          }
+        },
+      },
+      where: { id: user.id },
+    })
+    user = await getUser()
+  }
+
+  // Helper function to aggregate completer earnings from taskList's completedTasks
+  const aggregateCompleterEarningsFromTaskList = async (taskListId: string, year: number, dateISO: string) => {
+    try {
+      const taskList = await prisma.taskList.findUnique({ where: { id: taskListId } })
+      if (!taskList) return { earnings: 0, prize: 0, profit: 0 }
+
+      const completedTasks = (taskList.completedTasks as any) || {}
+      const yearData = completedTasks[year]
+      if (!yearData) return { earnings: 0, prize: 0, profit: 0 }
+
+      const dateBucket = yearData[dateISO]
+      if (!dateBucket) return { earnings: 0, prize: 0, profit: 0 }
+
+      // Support both old structure (array) and new structure (openTasks/closedTasks)
+      let tasksForDate: any[] = []
+      if (Array.isArray(dateBucket)) {
+        tasksForDate = dateBucket
+      } else if (dateBucket.openTasks || dateBucket.closedTasks) {
+        tasksForDate = [
+          ...(Array.isArray(dateBucket.openTasks) ? dateBucket.openTasks : []),
+          ...(Array.isArray(dateBucket.closedTasks) ? dateBucket.closedTasks : [])
+        ]
+      }
+
+      let totalEarnings = 0
+      let totalPrize = 0
+      let totalProfit = 0
+
+      for (const task of tasksForDate) {
+        if (Array.isArray(task.completers)) {
+          for (const completer of task.completers) {
+            const completerEarnings = typeof completer.earnings === 'number' 
+              ? completer.earnings 
+              : (typeof completer.earnings === 'string' ? parseFloat(completer.earnings || '0') : 0)
+            const completerPrize = typeof completer.prize === 'number' 
+              ? completer.prize 
+              : (typeof completer.prize === 'string' ? parseFloat(completer.prize || '0') : 0)
+            
+            totalEarnings += completerEarnings + completerPrize
+            totalPrize += completerPrize
+            totalProfit += completerEarnings
+          }
+        }
+      }
+
+      return { earnings: totalEarnings, prize: totalPrize, profit: totalProfit }
+    } catch (error) {
+      console.error('Error aggregating completer earnings:', error)
+      return { earnings: 0, prize: 0, profit: 0 }
     }
   }
 
+  // Append only the tasks that were just completed to week entry (without replacing others)
+  if (Array.isArray(data.weekTasksAppend) && data.weekTasksAppend.length && user) {
+    const entries = user.entries as any
+    const week = data.week || weekNumber
+    const rolePrefix = typeof data.listRole === 'string' ? String(data.listRole).split('.')[0] : 'weekly'
+    const listId = data.listId || data.taskListId
+    const ensureWeek = (e: any) => {
+      const copy = { ...(e || {}) }
+      if (!copy[year]) copy[year] = { days: {}, weeks: {} }
+      if (!copy[year].weeks) copy[year].weeks = {}
+      if (!copy[year].months) copy[year].months = {}
+      if (!copy[year].quarters) copy[year].quarters = {}
+      if (!copy[year].semesters) copy[year].semesters = {}
+      if (!copy[year].oneOffs) copy[year].oneOffs = {}
+      if (!copy[year].year) copy[year].year = { tasks: [] }
+      
+      // Support new structure with listId
+      if (listId) {
+        if (!copy[year].weeks[week]) copy[year].weeks[week] = {}
+        if (!copy[year].weeks[week][listId]) copy[year].weeks[week][listId] = { year, week, tasks: [] }
+        if (!Array.isArray(copy[year].weeks[week][listId].tasks)) copy[year].weeks[week][listId].tasks = []
+      } else {
+        // Legacy structure
+        if (!copy[year].weeks[week]) copy[year].weeks[week] = { year, week, tasks: [] }
+        if (!Array.isArray(copy[year].weeks[week].tasks)) copy[year].weeks[week].tasks = []
+      }
+      return copy
+    }
+    const updated = ensureWeek(entries)
+    
+    // Get existing tasks based on structure
+    const existing = listId
+      ? (updated[year].weeks[week][listId]?.tasks as any[] || [])
+      : (updated[year].weeks[week]?.tasks as any[] || [])
+    const names = new Set(existing.map((t:any) => t.name))
+    const toAppend = data.weekTasksAppend.filter((t:any) => !names.has(t.name))
+    console.log({ entries: entries[year]?.weeks[week]?.tasks })
+    if (toAppend.length > 0) {
+      // Aggregate earnings/prize/profit from taskList's completedTasks if listId is provided
+      let aggregatedEarnings = 0
+      let aggregatedPrize = 0
+      let aggregatedProfit = 0
+      
+      if (listId) {
+        // For weekly lists, aggregate across all dates in the week
+        const weekStart = new Date(date)
+        weekStart.setDate(weekStart.getDate() - weekStart.getDay())
+        const weekEnd = new Date(weekStart)
+        weekEnd.setDate(weekEnd.getDate() + 6)
+        
+        for (let d = new Date(weekStart); d <= weekEnd; d.setDate(d.getDate() + 1)) {
+          const dateStr = d.toISOString().split('T')[0]
+          const aggregated = await aggregateCompleterEarningsFromTaskList(listId, year, dateStr)
+          aggregatedEarnings += aggregated.earnings
+          aggregatedPrize += aggregated.prize
+          aggregatedProfit += aggregated.profit
+        }
+      }
+      
+      // Helper to convert to number (handles both string and number for backward compatibility)
+      const toNumber = (val: any): number => {
+        if (typeof val === 'number') return val
+        if (typeof val === 'string') return parseFloat(val) || 0
+        return 0
+      }
+      
+      // Route based on role prefix
+      // Note: Profit, prize, and earnings are now aggregated from taskList's completedTasks
+      if (rolePrefix === 'weekly') {
+        if (listId) {
+          const currentPrize = toNumber(updated[year].weeks[week][listId]?.prize)
+          const currentProfit = toNumber(updated[year].weeks[week][listId]?.profit)
+          const currentEarnings = toNumber(updated[year].weeks[week][listId]?.earnings)
+          
+          updated[year].weeks[week][listId] = {
+            ...updated[year].weeks[week][listId],
+            tasks: [...existing, ...toAppend],
+            prize: aggregatedPrize || currentPrize,
+            profit: aggregatedProfit || currentProfit,
+            earnings: aggregatedEarnings || currentEarnings
+          }
+        } else {
+          // Legacy structure
+          updated[year].weeks[week] = {
+            ...updated[year].weeks[week],
+            tasks: [...existing, ...toAppend]
+          }
+        }
+      } else if (rolePrefix === 'monthly') {
+        const monthNum = Number(String(date).split('-')[1])
+        const ex = (updated[year].months[monthNum]?.tasks || [])
+        updated[year].months[monthNum] = { year, month: monthNum, tasks: [...ex, ...toAppend] }
+      } else if (rolePrefix === 'quarterly') {
+        const monthNum = Number(String(date).split('-')[1])
+        const quarter = Math.ceil(monthNum / 3)
+        const ex = (updated[year].quarters[quarter]?.tasks || [])
+        updated[year].quarters[quarter] = { year, quarter, tasks: [...ex, ...toAppend] }
+      } else if (rolePrefix === 'semester') {
+        const monthNum = Number(String(date).split('-')[1])
+        const semester = monthNum <= 6 ? 1 : 2
+        const ex = (updated[year].semesters[semester]?.tasks || [])
+        updated[year].semesters[semester] = { year, semester, tasks: [...ex, ...toAppend] }
+      } else if (rolePrefix === 'yearly') {
+        const ex = (updated[year].year?.tasks || [])
+        updated[year].year = { year, tasks: [...ex, ...toAppend] }
+      } else if (rolePrefix === 'one-off' || rolePrefix === 'oneoff' || rolePrefix === 'oneoff') {
+        const key = String(date)
+        const ex = (updated[year].oneOffs[key]?.tasks || [])
+        const existingOneOff = updated[year].oneOffs[key] || {}
+        // Helper to convert to number if string, preserve number, default to 0
+        const toNumber = (val: any): number => {
+          if (typeof val === 'number') return val
+          if (typeof val === 'string') return parseFloat(val) || 0
+          return 0
+        }
+        updated[year].oneOffs[key] = { 
+          year, 
+          date: key, 
+          tasks: [...ex, ...toAppend],
+          // Preserve existing earnings, prize, and profit as numbers (they're set by tasklists route)
+          earnings: toNumber(existingOneOff.earnings),
+          prize: toNumber(existingOneOff.prize),
+          profit: toNumber(existingOneOff.profit)
+        }
+      } else {
+        updated[year].weeks[week] = {
+          ...updated[year].weeks[week],
+          tasks: [...existing, ...toAppend]
+        }
+      }
+      
+      await prisma.user.update({
+        data: { entries: updated },
+        where: { id: user.id },
+      })
+      user = await getUser()
+    }
+  }
+
+  // Remove tasks by name from week entry
+  if (Array.isArray(data.weekTasksRemoveNames) && data.weekTasksRemoveNames.length && user) {
+    const entries = user.entries as any
+    const week = data.week || weekNumber
+    const y = year
+    const removeSet = new Set((data.weekTasksRemoveNames as any[]).map((s:any) => typeof s === 'string' ? s.toLowerCase() : s))
+    const updated = { ...(entries || {}) }
+    if (!updated[y]) updated[y] = { days: {}, weeks: {} }
+    if (!updated[y].weeks) updated[y].weeks = {}
+    if (!updated[y].weeks[week]) updated[y].weeks[week] = { tasks: [], earnings: '', date: '', status: 'Open', days: [] }
+    const existing = Array.isArray(updated[y].weeks[week].tasks) ? updated[y].weeks[week].tasks : []
+    updated[y].weeks[week].tasks = existing.filter((t:any) => !removeSet.has((t?.name || '').toLowerCase()))
+    await prisma.user.update({ where: { id: user.id }, data: { entries: updated as any } })
+  }
+
+  // Append only the tasks that were just completed to day entry (without replacing others)
+  // NOTE: This is a legacy route. The tasklists route now handles entries with listId structure.
+  // This route maintains backward compatibility but should eventually be removed.
+  if (Array.isArray(data.dayTasksAppend) && data.dayTasksAppend.length && user) {
+    const entries = user.entries as any
+    const dateISO = data.date || date
+    const y = Number(String(dateISO).split('-')[0])
+    const rolePrefix = typeof data.listRole === 'string' ? String(data.listRole).split('.')[0] : 'daily'
+    const listId = data.listId || data.taskListId // Support both for backward compatibility
+    
+    const ensureDay = (e: any) => {
+      const copy = { ...(e || {}) }
+      if (!copy[y]) copy[y] = { days: {}, weeks: {} }
+      if (!copy[y].days) copy[y].days = {}
+      if (!copy[y].weeks) copy[y].weeks = {}
+      if (!copy[y].months) copy[y].months = {}
+      if (!copy[y].quarters) copy[y].quarters = {}
+      if (!copy[y].semesters) copy[y].semesters = {}
+      if (!copy[y].oneOffs) copy[y].oneOffs = {}
+      if (!copy[y].year) copy[y].year = { tasks: [] }
+      
+      // Support new structure with listId
+      if (listId) {
+        if (!copy[y].days[dateISO]) copy[y].days[dateISO] = {}
+        if (!copy[y].days[dateISO][listId]) copy[y].days[dateISO][listId] = { year: y, date: dateISO, tasks: [] }
+        if (!Array.isArray(copy[y].days[dateISO][listId].tasks)) copy[y].days[dateISO][listId].tasks = []
+      } else {
+        // Legacy structure (backward compatibility)
+        if (!copy[y].days[dateISO]) copy[y].days[dateISO] = { year: y, date: dateISO, tasks: [] }
+        if (!Array.isArray(copy[y].days[dateISO].tasks)) copy[y].days[dateISO].tasks = []
+      }
+      return copy
+    }
+    const updated = ensureDay(entries)
+    
+    // Get existing tasks based on structure
+    const existing = listId 
+      ? (updated[y].days[dateISO][listId]?.tasks as any[] || [])
+      : (updated[y].days[dateISO].tasks as any[] || [])
+    const names = new Set(existing.map((t:any) => t.name))
+    const toAppend = data.dayTasksAppend.filter((t:any) => t.status === 'Done' && !names.has(t.name))
+    
+    if (toAppend.length > 0) {
+      // Aggregate earnings/prize/profit from taskList's completedTasks if listId is provided
+      let aggregatedEarnings = 0
+      let aggregatedPrize = 0
+      let aggregatedProfit = 0
+      
+      if (listId) {
+        const aggregated = await aggregateCompleterEarningsFromTaskList(listId, y, dateISO)
+        aggregatedEarnings = aggregated.earnings
+        aggregatedPrize = aggregated.prize
+        aggregatedProfit = aggregated.profit
+      }
+      
+      // Helper to convert to number (handles both string and number for backward compatibility)
+      const toNumber = (val: any): number => {
+        if (typeof val === 'number') return val
+        if (typeof val === 'string') return parseFloat(val) || 0
+        return 0
+      }
+      
+      // Note: Profit, prize, and earnings are now aggregated from taskList's completedTasks
+      if (rolePrefix === 'daily') {
+        if (listId) {
+          const currentPrize = toNumber(updated[y].days[dateISO][listId]?.prize)
+          const currentProfit = toNumber(updated[y].days[dateISO][listId]?.profit)
+          const currentEarnings = toNumber(updated[y].days[dateISO][listId]?.earnings)
+          
+          updated[y].days[dateISO][listId] = {
+            ...updated[y].days[dateISO][listId],
+            tasks: [...existing, ...toAppend],
+            prize: aggregatedPrize || currentPrize,
+            profit: aggregatedProfit || currentProfit,
+            earnings: aggregatedEarnings || currentEarnings
+          }
+        } else {
+          // Legacy structure
+          updated[y].days[dateISO] = {
+            ...updated[y].days[dateISO],
+            tasks: [...existing, ...toAppend]
+          }
+        }
+      } else if (rolePrefix === 'weekly') {
+        const w = getWeekNumber(new Date(dateISO))[1]
+        if (listId) {
+          if (!updated[y].weeks[w]) updated[y].weeks[w] = {}
+          if (!updated[y].weeks[w][listId]) updated[y].weeks[w][listId] = { year: y, week: w, tasks: [] }
+          const ex = (updated[y].weeks[w][listId]?.tasks || [])
+          updated[y].weeks[w][listId] = { year: y, week: w, tasks: [...ex, ...toAppend] }
+        } else {
+          // Legacy structure
+          const ex = (updated[y].weeks[w]?.tasks || [])
+          updated[y].weeks[w] = { year: y, week: w, tasks: [...ex, ...toAppend] }
+        }
+      } else if (rolePrefix === 'monthly') {
+        const monthNum = Number(String(dateISO).split('-')[1])
+        const ex = (updated[y].months[monthNum]?.tasks || [])
+        updated[y].months[monthNum] = { year: y, month: monthNum, tasks: [...ex, ...toAppend] }
+      } else if (rolePrefix === 'quarterly') {
+        const monthNum = Number(String(dateISO).split('-')[1])
+        const quarter = Math.ceil(monthNum / 3)
+        const ex = (updated[y].quarters[quarter]?.tasks || [])
+        updated[y].quarters[quarter] = { year: y, quarter, tasks: [...ex, ...toAppend] }
+      } else if (rolePrefix === 'semester') {
+        const monthNum = Number(String(dateISO).split('-')[1])
+        const semester = monthNum <= 6 ? 1 : 2
+        const ex = (updated[y].semesters[semester]?.tasks || [])
+        updated[y].semesters[semester] = { year: y, semester, tasks: [...ex, ...toAppend] }
+      } else if (rolePrefix === 'yearly') {
+        const ex = (updated[y].year?.tasks || [])
+        updated[y].year = { year: y, tasks: [...ex, ...toAppend] }
+      } else if (rolePrefix === 'one-off' || rolePrefix === 'oneoff') {
+        const key = String(dateISO)
+        if (listId) {
+          if (!updated[y].oneOffs[key]) updated[y].oneOffs[key] = {}
+          if (!updated[y].oneOffs[key][listId]) updated[y].oneOffs[key][listId] = { year: y, date: key, tasks: [] }
+          const ex = (updated[y].oneOffs[key][listId]?.tasks || [])
+          const existingOneOff = updated[y].oneOffs[key][listId] || {}
+          
+          // Use aggregated values if available, otherwise preserve existing
+          updated[y].oneOffs[key][listId] = { 
+            year: y, 
+            date: key, 
+            tasks: [...ex, ...toAppend],
+            // Use aggregated earnings/prize/profit from taskList's completedTasks, or preserve existing
+            earnings: aggregatedEarnings || toNumber(existingOneOff.earnings),
+            prize: aggregatedPrize || toNumber(existingOneOff.prize),
+            profit: aggregatedProfit || toNumber(existingOneOff.profit)
+          }
+        } else {
+          // Legacy structure
+          const ex = (updated[y].oneOffs[key]?.tasks || [])
+          const existingOneOff = updated[y].oneOffs[key] || {}
+          // Helper to convert to number if string, preserve number, default to 0
+          const toNumber = (val: any): number => {
+            if (typeof val === 'number') return val
+            if (typeof val === 'string') return parseFloat(val) || 0
+            return 0
+          }
+          updated[y].oneOffs[key] = { 
+            year: y, 
+            date: key, 
+            tasks: [...ex, ...toAppend],
+            // Preserve existing earnings, prize, and profit as numbers (they're set by tasklists route)
+            earnings: toNumber(existingOneOff.earnings),
+            prize: toNumber(existingOneOff.prize),
+            profit: toNumber(existingOneOff.profit)
+          }
+        }
+      } else {
+        if (listId) {
+          updated[y].days[dateISO][listId] = {
+            ...updated[y].days[dateISO][listId],
+            tasks: [...existing, ...toAppend]
+          }
+        } else {
+          updated[y].days[dateISO] = {
+            ...updated[y].days[dateISO],
+            tasks: [...existing, ...toAppend]
+          }
+        }
+      }
+      
+      await prisma.user.update({
+        data: { entries: updated },
+        where: { id: user.id },
+      })
+      user = await getUser()
+    }
+  }
+
+  // Remove tasks by name from day entry
+  if (Array.isArray(data.dayTasksRemoveNames) && data.dayTasksRemoveNames.length && user) {
+    const entries = user.entries as any
+    const dateISO = data.date || date
+    const y = Number(String(dateISO).split('-')[0])
+    const rolePrefix = typeof data.listRole === 'string' ? String(data.listRole).split('.')[0] : 'daily'
+    const removeSet = new Set((data.dayTasksRemoveNames as any[]).map((s:any) => typeof s === 'string' ? s.toLowerCase() : s))
+    const updated = { ...(entries || {}) }
+    if (!updated[y]) updated[y] = { days: {}, weeks: {} }
+    if (rolePrefix === 'daily') {
+      if (!updated[y].days) updated[y].days = {}
+      if (!updated[y].days[dateISO]) updated[y].days[dateISO] = { tasks: [], earnings: '', date: dateISO, status: 'Open' }
+      const existing = Array.isArray(updated[y].days[dateISO].tasks) ? updated[y].days[dateISO].tasks : []
+      updated[y].days[dateISO].tasks = existing.filter((t:any) => !removeSet.has((t?.name || '').toLowerCase()))
+    } else if (rolePrefix === 'weekly') {
+      const week = data.week || getWeekNumber(new Date(dateISO))[1]
+      if (!updated[y].weeks) updated[y].weeks = {}
+      if (!updated[y].weeks[week]) updated[y].weeks[week] = { tasks: [], earnings: '', date: '', status: 'Open', days: [] }
+      const existing = Array.isArray(updated[y].weeks[week].tasks) ? updated[y].weeks[week].tasks : []
+      updated[y].weeks[week].tasks = existing.filter((t:any) => !removeSet.has((t?.name || '').toLowerCase()))
+    }
+    await prisma.user.update({ where: { id: user.id }, data: { entries: updated as any } })
+  }
+
+  if (data?.availableBalance !== undefined && data?.availableBalance !== null) {
+    // Calculate ticker values for current day and week and multi-horizon tickers
+    const avail = typeof data.availableBalance === 'string' 
+      ? parseFloat(data.availableBalance) 
+      : Number(data.availableBalance)
+    const dayTickerSingle = calculateDayTicker(user.entries, year, date, dayEarnings, avail)
+    const weekTickerSingle = calculateWeekTicker(user.entries, year, weekNumber, weekEarnings, avail)
+    const dayTickerObj = calculateDayTickers(user.entries, year, date, dayEarnings, avail)
+    const weekTickerObj = calculateWeekTickers(user.entries, year, weekNumber, weekEarnings, avail, date)
+    
+    await prisma.user.update({
+      data: {
+        entries: {
+            ...user.entries,
+            [year]: {
+              ...user.entries[year],
+              days: {
+                ...user.entries[year].days,
+                [date]: {
+                  ...user.entries[year].days[date],
+                  earnings: dayEarnings,
+                  ticker: { ...dayTickerObj },
+                  tickerLegacy: dayTickerSingle,
+                  availableBalance: data.availableBalance,
+                }
+              },
+              weeks: {
+                ...user.entries[year].weeks,
+                [weekNumber]: {
+                  ...user.entries[year].weeks[weekNumber],
+                  earnings: weekEarnings,
+                  ticker: { ...weekTickerObj },
+                  tickerLegacy: weekTickerSingle,
+                  availableBalance: data.availableBalance,
+                }
+              }
+            }
+          }
+      },
+      where: { id: user.id },
+    })
+    user = await getUser()
+  }
+
+  if (data.dayActions?.length && user && !data.taskListKey) {
+    // Add contacts to tasks if provided
+    const entries = user.entries as any
+    const tasksWithContacts = data.dayActions.map((task: any) => ({
+      ...task,
+      contacts: data.taskContacts?.[task.name] || [],
+      things: data.taskThings?.[task.name] || []
+    }))
+
+    // Calculate ticker values for the day
+    const availD = user.availableBalance ?? 0
+    const dayTickerSingle = calculateDayTicker(entries, year, date, dayEarnings, availD)
+    const dayTickerObj = calculateDayTickers(entries, year, date, dayEarnings, availD)
+    // Also recalc week blended tickers so week horizons reflect daily changes
+    const weekTickerSingleBlend = calculateWeekTicker(entries, year, weekNumber, weekEarnings, availD)
+    const weekTickerObjBlend = calculateWeekTickers(entries, year, weekNumber, weekEarnings, availD, date, { dateISO: date, earnings: dayEarnings, availableBalance: availD })
+
+    await prisma.user.update({
+      data: {
+        entries: {
+            ...entries,
+            [year]: {
+              ...entries[year],
+              days: {
+                ...entries[year]?.days,
+                [date]: {
+                  ...entries[year]?.days?.[date],
+                  year,
+                  week: weekNumber,
+                  month,
+                  day,
+                  earnings: dayEarnings,
+                  ticker: { ...dayTickerObj },
+                  tickerLegacy: dayTickerSingle,
+                  progress: dayProgress,
+                  done: dayDone.length,
+                  status: "Open",
+                  availableBalance: user.availableBalance,
+                  contacts: data.dayContacts || entries[year]?.days?.[date]?.contacts || []
+                }
+              },
+              weeks: {
+                ...entries[year]?.weeks,
+                [weekNumber]: {
+                  ...entries[year]?.weeks?.[weekNumber],
+                  earnings: weekEarnings,
+                  ticker: { ...weekTickerObjBlend },
+                  tickerLegacy: weekTickerSingleBlend,
+                  availableBalance: user.availableBalance,
+                }
+              }
+            }
+          }
+      },
+      where: { id: user.id },
+    })
+    user = await getUser()
+  } else if (data.dayActions && !data.taskListKey) {
+    // Calculate ticker values for the day
+    const availD2 = user.availableBalance ?? 0
+    const dayTickerSingle2 = calculateDayTicker(user.entries, year, date, dayEarnings, availD2)
+    const dayTickerObj2 = calculateDayTickers(user.entries, year, date, dayEarnings, availD2)
+    // Also recalc week blended tickers so week horizons reflect daily changes
+    const weekTickerSingleBlend2 = calculateWeekTicker(user.entries, year, weekNumber, weekEarnings, availD2)
+    const weekTickerObjBlend2 = calculateWeekTickers(user.entries, year, weekNumber, weekEarnings, availD2, date, { dateISO: date, earnings: dayEarnings, availableBalance: availD2 })
+    
+    await prisma.user.update({
+      data: {
+        entries: {
+            ...user.entries,
+            [year]: {
+              ...user.entries[year],
+              days: {
+                ...user.entries[year].days,
+                [date]: {
+                  ...user.entries[year].days[date],
+                  year,
+                  week: weekNumber,
+                  month,
+                  day,
+                  earnings: dayEarnings,
+                  ticker: { ...dayTickerObj2 },
+                  tickerLegacy: dayTickerSingle2,
+                  progress: dayProgress,
+                  done: dayDone.length,
+                  tasksNumber: dayTasks.length,
+                  status: "Open",
+                  availableBalance: user.availableBalance
+                }
+              },
+              weeks: {
+                ...user.entries[year].weeks,
+                [weekNumber]: {
+                  ...user.entries[year].weeks[weekNumber],
+                  earnings: weekEarnings,
+                  ticker: { ...weekTickerObjBlend2 },
+                  tickerLegacy: weekTickerSingleBlend2,
+                  availableBalance: user.availableBalance,
+                }
+              }
+            }
+          }
+      },
+      where: { id: user.id },
+    })
+    user = await getUser()
+  }
+
+  // Handle task contacts and things updates (when sent separately from actions)
+  if ((data?.taskContacts || data?.taskThings) && !data?.dayActions && !data?.weekActions && user) {
+    // Update day taskContacts and taskThings if date is provided
+    if (data.date) {
+      const entries = user.entries as any
+      const currentDayEntry = entries?.[year]?.days?.[date] || {}
+      
+      await prisma.user.update({
+        data: {
+          entries: {
+            ...entries,
+            [year]: {
+              ...entries[year],
+              days: {
+                ...entries[year]?.days,
+                [date]: {
+                  ...currentDayEntry,
+                  taskContacts: data.taskContacts || currentDayEntry.taskContacts || {},
+                  taskThings: data.taskThings || currentDayEntry.taskThings || {}
+                }
+              }
+            }
+          }
+        },
+        where: { id: user.id },
+      })
+      user = await getUser()
+    }
+    
+    // Update week taskContacts and taskThings if week is provided
+    if (data.week) {
+      const entries = user.entries as any
+      const currentWeekEntry = entries?.[year]?.weeks?.[data.week] || {}
+      
+      await prisma.user.update({
+        data: {
+          entries: {
+            ...entries,
+            [year]: {
+              ...entries[year],
+              weeks: {
+                ...entries[year]?.weeks,
+                [data.week]: {
+                  ...currentWeekEntry,
+                  taskContacts: data.taskContacts || currentWeekEntry.taskContacts || {},
+                  taskThings: data.taskThings || currentWeekEntry.taskThings || {}
+                }
+              }
+            }
+          }
+        },
+        where: { id: user.id },
+      })
+      user = await getUser()
+    }
+  }
+
+  if (data?.mood) {
+    const key = Object.keys(data.mood)[0]
+    await prisma.user.update({
+      data: {
+        entries: {
+            ...user.entries,
+            [year]: {
+              ...user.entries[year],
+              days: {
+                ...user.entries[year].days,
+                [date]: {
+                  ...user.entries[year].days[date],
+                  mood: {
+                    ...user.entries[year].days[date].mood,
+                    [key]: data.mood[key]
+                  },
+                  contacts: data.moodContacts ?? user.entries[year].days[date].contacts ?? [],
+                  things: data.moodThings ?? user.entries[year].days[date].things ?? [],
+                  lifeEvents: data.moodLifeEvents ?? user.entries[year].days[date].lifeEvents ?? [],
+                  moodAverage: dayMoodAverage
+                }
+              },
+              weeks: {
+                ...user.entries[year].weeks,
+                [weekNumber]: {
+                  ...user.entries[year].weeks[weekNumber],
+                  moodAverage: weekMoodAverage
+                }
+              }
+            }
+          }
+        },
+      where: { id: user.id },
+    })
+    user = await getUser()
+  }
+
+  if ((data?.moodContacts || data?.moodThings || data?.moodLifeEvents) && !data?.mood && !data?.text) {
+    // Handle mood contacts, things, and life events only (when field is 'contacts', 'things', or 'lifeEvents')
+    await prisma.user.update({
+      data: {
+        entries: {
+            ...user.entries,
+            [year]: {
+              ...user.entries[year],
+              days: {
+                ...user.entries[year].days,
+                [date]: {
+                  ...user.entries[year].days[date],
+                  contacts: data.moodContacts ?? user.entries[year].days[date].contacts ?? [],
+                  things: data.moodThings ?? user.entries[year].days[date].things ?? [],
+                  lifeEvents: data.moodLifeEvents ?? user.entries[year].days[date].lifeEvents ?? []
+                }
+              }
+            }
+          }
+        },
+      where: { id: user.id },
+    })
+    user = await getUser()
+  }
+
+  if (data?.text) {
+    await prisma.user.update({
+      data: {
+        entries: {
+            ...user.entries,
+            [year]: {
+              ...user.entries[year],
+              days: {
+                ...user.entries[year].days,
+                [date]: {
+                  ...user.entries[year].days[date],
+                  text: data?.text,
+                  contacts: data.moodContacts ?? user.entries[year].days[date].contacts ?? [],
+                  things: data.moodThings ?? user.entries[year].days[date].things ?? [],
+                  lifeEvents: data.moodLifeEvents ?? user.entries[year].days[date].lifeEvents ?? [],
+                  moodAverage: dayMoodAverage
+                }
+              },
+              weeks: {
+                ...user.entries[year].weeks,
+                [weekNumber]: {
+                  ...user.entries[year].weeks[weekNumber],
+                  moodAverage: weekMoodAverage
+                }
+              }
+            }
+          }
+        },
+      where: { id: user.id },
+    })
+    user = await getUser()
+  }
+
+  if (data?.daysToClose) {
+    for (const date of data?.daysToClose) {
+      const year = Number(date.split('-')[0])
+      
+      // Log current state for debugging
+      logEntryData(user.entries, year, undefined, date)
+      
+      // Get current day data
+      const currentDayData = user.entries?.[year]?.days?.[date] || {}
+      
+      // Ensure day data integrity before closing
+      const integrityDayData = ensureDayDataIntegrity(currentDayData, year, date, weekNumber)
+      
+      // Use safe update function to preserve existing data
+      const updatedEntries = safeUpdateDayEntry(user.entries, year, date, { 
+        ...integrityDayData,
+        status: "Closed" 
+      })
+      
+      // Calculate earnings for this day and update stash
+      const dayEarnings = parseFloat(integrityDayData.earnings) || 0
+      const currentStash = Math.max(0, typeof user.stash === 'number' 
+        ? user.stash 
+        : (typeof user.stash === 'string' ? parseFloat(user.stash || '0') : 0))
+      const newStash = Math.max(0, currentStash + dayEarnings)
+      const availableBalance = Math.max(0, user.availableBalance ?? 0)
+      const newEquity = Math.max(0, availableBalance - newStash)
+      
+      await prisma.user.update({
+        data: {
+          entries: updatedEntries,
+          stash: newStash as number,
+          equity: newEquity as number,
+        },
+        where: { id: user.id },
+      })
+      user = await getUser()
+    }
+  }
+
+  if (data?.weeksToClose) {
+    for (const week of data?.weeksToClose) {
+      // Log current state for debugging
+      logEntryData(user.entries, week.year, week.week)
+      
+      // Get current week data
+      const currentWeekData = user.entries?.[week.year]?.weeks?.[week.week] || {}
+      
+      // Ensure week data integrity before closing
+      const integrityWeekData = ensureWeekDataIntegrity(currentWeekData, week.year, week.week)
+      
+      // Use safe update function to preserve existing data
+      const updatedEntries = safeUpdateWeekEntry(user.entries, week.year, week.week, { 
+        ...integrityWeekData,
+        status: "Closed" 
+      })
+      
+      // Calculate earnings for this week and update stash
+      const weekEarnings = parseFloat(integrityWeekData.earnings) || 0
+      const currentStash = Math.max(0, typeof user.stash === 'number' 
+        ? user.stash 
+        : (typeof user.stash === 'string' ? parseFloat(user.stash || '0') : 0))
+      const newStash = Math.max(0, currentStash + weekEarnings)
+      const availableBalance = Math.max(0, user.availableBalance ?? 0)
+      const newEquity = Math.max(0, availableBalance - newStash)
+      
+      await prisma.user.update({
+        data: {
+          entries: updatedEntries,
+          stash: newStash as number,
+          equity: newEquity as number,
+        },
+        where: { id: user.id },
+      })
+      user = await getUser()
+    }
+  }
 
   if (data?.withdrawStash) {
     const currentStash = Math.max(0, typeof user.stash === 'number' 
@@ -248,74 +1360,25 @@ export async function POST(req: Request) {
     const newAvailableBalance = Math.max(0, currentAvailableBalance - currentStash)
     const newTotalEarnings = Math.max(0, currentTotalEarnings + currentStash)
     const newEquity = Math.max(0, newAvailableBalance) // Equity = availableBalance since stash is 0
-    const newStash = 0
     
     await prisma.user.update({
       data: {
         availableBalance: newAvailableBalance,
-        stash: newStash as number,
+        stash: 0 as number,
         totalEarnings: newTotalEarnings as number,
         equity: newEquity as number,
       },
       where: { id: user.id },
     })
     user = await getUser()
-    
-    // Update current day entry with new balance, stash, and equity
-    try {
-      const today = new Date()
-      const dateISO = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
-      
-      const existingDay = await prisma.day.findFirst({
-        where: {
-          userId: user.id,
-          date: dateISO
-        }
-      })
-      
-      if (existingDay) {
-        await prisma.day.update({
-          where: { id: existingDay.id },
-          data: {
-            balance: newAvailableBalance,
-            stash: newStash,
-            equity: newEquity
-          }
-        })
-      } else {
-        // Create new day entry if it doesn't exist
-        const [_, weekNumber] = getWeekNumber(today)
-        const month = today.getMonth() + 1
-        const quarter = Math.ceil(month / 3)
-        const semester = month <= 6 ? 1 : 2
-        await prisma.day.create({
-          data: {
-            userId: user.id,
-            date: dateISO,
-            balance: newAvailableBalance,
-            stash: newStash,
-            equity: newEquity,
-            week: typeof weekNumber === 'number' ? weekNumber : Number(weekNumber) || 1,
-            month: month,
-            quarter: quarter,
-            semester: semester
-          }
-        })
-      }
-    } catch (dayError) {
-      // Log error but don't fail the request if Day update fails
-      console.error('Error updating Day entry with balance:', dayError)
-    }
   }
 
   if (data?.settings) {
     await prisma.user.update({
       data: {
         settings: {
-          set: {
-            ...(user.settings || {}),
-            ...data.settings
-          } as any
+          ...user.settings,
+          ...data.settings
         },
       },
       where: { id: user.id },
@@ -323,7 +1386,108 @@ export async function POST(req: Request) {
     user = await getUser()
   }
 
-  // Entries logic removed - data now stored in Day model
+  // Handle ephemeral tasks for day entries
+  if (data?.dayEphemeralTasks) {
+    const entries = user.entries as any
+    let updatedEntries = entries
+
+    if (data.dayEphemeralTasks.add) {
+      const ephemeralTask = {
+        id: data.dayEphemeralTasks.add.id || `ephemeral_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        name: data.dayEphemeralTasks.add.name,
+        status: data.dayEphemeralTasks.add.status || "Not started",
+        area: data.dayEphemeralTasks.add.area || "self",
+        categories: data.dayEphemeralTasks.add.categories || ["custom"],
+        cadence: "ephemeral",
+        times: data.dayEphemeralTasks.add.times || 1,
+        count: data.dayEphemeralTasks.add.count || 0,
+        contacts: data.dayEphemeralTasks.add.contacts || [],
+        things: data.dayEphemeralTasks.add.things || [],
+        createdAt: new Date().toISOString(),
+        isEphemeral: true
+      }
+      updatedEntries = addEphemeralTaskToDay(updatedEntries, year, date, ephemeralTask)
+    }
+
+    if (data.dayEphemeralTasks.update) {
+      updatedEntries = updateEphemeralTaskInDay(
+        updatedEntries, 
+        year, 
+        date, 
+        data.dayEphemeralTasks.update.id, 
+        data.dayEphemeralTasks.update.updates
+      )
+    }
+
+    if (data.dayEphemeralTasks.remove) {
+      updatedEntries = removeEphemeralTaskFromDay(
+        updatedEntries, 
+        year, 
+        date, 
+        data.dayEphemeralTasks.remove.id
+      )
+    }
+
+    await prisma.user.update({
+      data: {
+        entries: updatedEntries,
+      },
+      where: { id: user.id },
+    })
+    user = await getUser()
+  }
+
+  // Handle ephemeral tasks for week entries
+  if (data?.weekEphemeralTasks) {
+    const entries = user.entries as any
+    let updatedEntries = entries
+
+    if (data.weekEphemeralTasks.add) {
+      const ephemeralTask = {
+        id: data.weekEphemeralTasks.add.id || `ephemeral_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        name: data.weekEphemeralTasks.add.name,
+        status: data.weekEphemeralTasks.add.status || "Not started",
+        area: data.weekEphemeralTasks.add.area || "self",
+        categories: data.weekEphemeralTasks.add.categories || ["custom"],
+        cadence: "ephemeral",
+        times: data.weekEphemeralTasks.add.times || 1,
+        count: data.weekEphemeralTasks.add.count || 0,
+        contacts: data.weekEphemeralTasks.add.contacts || [],
+        things: data.weekEphemeralTasks.add.things || [],
+        createdAt: new Date().toISOString(),
+        isEphemeral: true
+      }
+      updatedEntries = addEphemeralTaskToWeek(updatedEntries, year, weekNumber, ephemeralTask)
+    }
+
+    if (data.weekEphemeralTasks.update) {
+      updatedEntries = updateEphemeralTaskInWeek(
+        updatedEntries, 
+        year, 
+        weekNumber, 
+        data.weekEphemeralTasks.update.id, 
+        data.weekEphemeralTasks.update.updates
+      )
+    }
+
+    if (data.weekEphemeralTasks.remove) {
+      updatedEntries = removeEphemeralTaskFromWeek(
+        updatedEntries, 
+        year, 
+        weekNumber, 
+        data.weekEphemeralTasks.remove.id
+      )
+    }
+
+    await prisma.user.update({
+      data: {
+        entries: updatedEntries,
+      },
+      where: { id: user.id },
+    })
+    user = await getUser()
+  }
+
   
   return Response.json(user)
 }

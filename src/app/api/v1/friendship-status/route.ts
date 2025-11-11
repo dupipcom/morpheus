@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
     // Get the current user
     let currentUser = await prisma.user.findUnique({
       where: { userId },
-      include: { profiles: true }
+      include: { profile: true }
     })
 
     if (!currentUser) {
@@ -29,49 +29,35 @@ export async function GET(req: NextRequest) {
       currentUser = await prisma.user.create({
         data: {
           userId,
+          entries: {},
           settings: {
-            currency: null,
-            speed: null
-          } as any
+            dailyTemplate: [],
+            weeklyTemplate: []
+          }
         },
-        include: { profiles: true }
+        include: { profile: true }
       })
     }
 
     // Ensure current user has a profile - create one if missing
-    if (currentUser && (!currentUser.profiles || currentUser.profiles.length === 0)) {
+    if (currentUser && !currentUser.profile) {
       try {
         await prisma.profile.create({
           data: {
             userId: currentUser.id,
-            data: {
-              username: {
-                value: null,
-                visibility: true
-              },
-              firstName: {
-                value: null,
-                visibility: false
-              },
-              lastName: {
-                value: null,
-                visibility: false
-              },
-              bio: {
-                value: null,
-                visibility: false
-              },
-              profilePicture: {
-                value: null,
-                visibility: false
-              }
-            }
+            userName: null, // No Clerk username available in this context
+            firstNameVisibility: 'PRIVATE',
+            lastNameVisibility: 'PRIVATE',
+            userNameVisibility: 'PUBLIC',
+            bioVisibility: 'PRIVATE',
+            profilePictureVisibility: 'PRIVATE',
+            publicChartsVisibility: 'PRIVATE',
           }
         })
         // Refetch user with new profile
         currentUser = await prisma.user.findUnique({
           where: { userId },
-          include: { profiles: true }
+          include: { profile: true }
         })
       } catch (error) {
         console.error('Error creating profile in friendship-status endpoint:', error)
@@ -79,17 +65,13 @@ export async function GET(req: NextRequest) {
     }
 
     // Get target user by username
-    const targetProfile = await prisma.profile.findFirst({
-      where: {
-        data: {
-          path: ['username', 'value'],
-          equals: targetUserName
+    const targetUser = await prisma.user.findFirst({
+      where: { 
+        profile: {
+          userName: targetUserName
         }
       }
     })
-    const targetUser = targetProfile ? await prisma.user.findUnique({
-      where: { id: targetProfile.userId }
-    }) : null
 
     if (!targetUser) {
       return Response.json({ error: 'Target user not found' }, { status: 404 })

@@ -83,7 +83,7 @@
     "closeDay": "Nap bezárása",
     "earnings": "Kereset",
     "publish": {
-      "title": "Írjon",
+      "title": "Jegyzet közzététele",
       "placeholder": "Írja be jegyzetét ide...",
       "selectVisibility": "Válassza ki a láthatóságot",
       "visibility": {

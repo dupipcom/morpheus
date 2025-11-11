@@ -12,7 +12,6 @@ export async function GET(request: NextRequest) {
     
     let friendIds: string[] = []
     let closeFriendIds: string[] = []
-    let currentUserId: string | null = null
     
     if (clerkUserId) {
       const currentUser = await prisma.user.findUnique({
@@ -28,7 +27,6 @@ export async function GET(request: NextRequest) {
         // friends and closeFriends arrays contain User ObjectId strings
         friendIds = currentUser.friends || []
         closeFriendIds = currentUser.closeFriends || []
-        currentUserId = currentUser.id
       }
     }
 
@@ -38,72 +36,74 @@ export async function GET(request: NextRequest) {
     // Build search conditions based on whether there's a query or not
     const searchConditions = []
     
-    // Fetch all profiles and filter in memory since we need to search in JSON data
-    const allProfiles = await prisma.profile.findMany({
+    if (query) {
+      // With query: search friends and public profiles matching the query
+      
+      // For friends and close friends, search all fields regardless of visibility
+      if (allFriendIds.length > 0) {
+        searchConditions.push({
+          userId: { in: allFriendIds },
+          OR: [
+            { userName: { contains: query, mode: 'insensitive' } },
+            { firstName: { contains: query, mode: 'insensitive' } },
+            { lastName: { contains: query, mode: 'insensitive' } }
+          ]
+        })
+      }
+      
+      // For public profiles, only search visible fields
+      searchConditions.push({
+        OR: [
+          {
+            userNameVisible: true,
+            userName: { contains: query, mode: 'insensitive' }
+          },
+          {
+            firstNameVisible: true,
+            firstName: { contains: query, mode: 'insensitive' }
+          },
+          {
+            lastNameVisible: true,
+            lastName: { contains: query, mode: 'insensitive' }
+          },
+        ]
+      })
+    } else {
+      // Without query: show all friends and public profiles as suggestions
+      
+      // Show all friends (no search filter)
+      if (allFriendIds.length > 0) {
+        searchConditions.push({
+          userId: { in: allFriendIds }
+        })
+      }
+      
+      // Show all public profiles (no search filter)
+      searchConditions.push({
+        OR: [
+          { userNameVisible: true },
+          { firstNameVisible: true },
+          { lastNameVisible: true }
+        ]
+      })
+    }
+
+    // If no search conditions, return empty
+    if (searchConditions.length === 0) {
+      return NextResponse.json({ profiles: [] })
+    }
+
+    const profiles = await prisma.profile.findMany({
       where: {
-        // Exclude the current user's own profile
-        ...(currentUserId ? { userId: { not: currentUserId } } : {})
+        OR: searchConditions
       },
       select: {
         userId: true,
-        data: true,
+        userName: true,
+        firstName: true,
+        lastName: true,
       },
-      take: 100 // Fetch more to ensure we have enough after filtering
-    })
-
-    // Filter profiles based on query and visibility
-    let filteredProfiles = allProfiles.filter((profile: any) => {
-      const profileData = profile.data || {}
-      const userName = profileData.username?.value || ''
-      const firstName = profileData.firstName?.value || ''
-      const lastName = profileData.lastName?.value || ''
-      const userNameVisible = profileData.username?.visibility || false
-      const firstNameVisible = profileData.firstName?.visibility || false
-      const lastNameVisible = profileData.lastName?.visibility || false
-
-      // Check if user is a friend
-      const isFriend = allFriendIds.includes(profile.userId)
-
-      if (query) {
-        // With query: search friends and public profiles matching the query
-        const matchesQuery = 
-          userName.toLowerCase().includes(query.toLowerCase()) ||
-          firstName.toLowerCase().includes(query.toLowerCase()) ||
-          lastName.toLowerCase().includes(query.toLowerCase())
-
-        if (isFriend) {
-          // Friends can see all fields regardless of visibility
-          return matchesQuery
-        } else {
-          // For public profiles, only search visible fields
-          return matchesQuery && (
-            (userNameVisible && userName.toLowerCase().includes(query.toLowerCase())) ||
-            (firstNameVisible && firstName.toLowerCase().includes(query.toLowerCase())) ||
-            (lastNameVisible && lastName.toLowerCase().includes(query.toLowerCase()))
-          )
-        }
-      } else {
-        // Without query: show all friends and public profiles
-        if (isFriend) {
-          return true
-        } else {
-          // Show public profiles (at least one field is visible)
-          return userNameVisible || firstNameVisible || lastNameVisible
-        }
-      }
-    })
-
-    // Transform profiles to extract data
-    const profiles = filteredProfiles.map((profile: any) => {
-      const profileData = profile.data || {}
-      return {
-        userId: profile.userId,
-        userName: profileData.username?.value || null,
-        firstName: profileData.firstName?.value || null,
-        lastName: profileData.lastName?.value || null,
-        profilePicture: profileData.profilePicture?.value || null,
-        bio: profileData.bio?.value || null,
-      }
+      take: 50 // Fetch more to ensure we have enough after sorting
     })
 
     // Sort profiles: close friends first, then friends, then public
@@ -120,15 +120,8 @@ export async function GET(request: NextRequest) {
       return aPriority - bPriority
     })
 
-    // Add relationship flags to each profile
-    const profilesWithRelationships = sortedProfiles.map(profile => ({
-      ...profile,
-      isCloseFriend: closeFriendIds.includes(profile.userId),
-      isFriend: friendIds.includes(profile.userId)
-    }))
-
     // Return only the first 5 results
-    const topProfiles = profilesWithRelationships.slice(0, 5)
+    const topProfiles = sortedProfiles.slice(0, 5)
 
     return NextResponse.json({ profiles: topProfiles })
   } catch (error) {

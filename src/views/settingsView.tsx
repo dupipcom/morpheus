@@ -34,7 +34,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdownMenu"
+} from "@/components/ui/dropdown-menu"
 
 import {
   Popover,
@@ -60,7 +60,7 @@ import { ArrowUpDown, ChevronDown, MoreHorizontal, Edit, X } from "lucide-react"
 import { GlobalContext } from "@/lib/contexts"
 import { updateUser, handleSettingsSubmit, isUserDataReady, useEnhancedLoadingState, useUserData } from "@/lib/userUtils"
 import { logger } from "@/lib/logger"
-import { SettingsSkeleton } from "@/components/ui/skeletonLoader"
+import { SettingsSkeleton } from "@/components/ui/skeleton-loader"
 import { useI18n } from "@/lib/contexts/i18n"
 
 export const SettingsView = ({ timeframe = "day" }) => {
@@ -117,62 +117,6 @@ export const SettingsView = ({ timeframe = "day" }) => {
   const serverSettings = (session?.user?.settings) || {}
 
   const { mutate, isLoading, refreshUser } = useUserData()
-
-  // Currency mapping: code -> symbol
-  const currencyMap: Record<string, { symbol: string; name: string }> = {
-    USD: { symbol: '$', name: 'US Dollar' },
-    EUR: { symbol: '€', name: 'Euro' },
-    JPY: { symbol: '¥', name: 'Japanese Yen' },
-    GBP: { symbol: '£', name: 'British Pound' },
-    CNY: { symbol: '¥', name: 'Chinese Yuan' },
-    AUD: { symbol: 'A$', name: 'Australian Dollar' },
-    CAD: { symbol: 'C$', name: 'Canadian Dollar' },
-    CHF: { symbol: 'CHF', name: 'Swiss Franc' },
-    HKD: { symbol: 'HK$', name: 'Hong Kong Dollar' },
-    BRL: { symbol: 'R$', name: 'Brazilian Real' },
-    SEK: { symbol: 'kr', name: 'Swedish Krona' },
-    NZD: { symbol: 'NZ$', name: 'New Zealand Dollar' },
-    MXN: { symbol: 'MX$', name: 'Mexican Peso' },
-    SGD: { symbol: 'S$', name: 'Singapore Dollar' },
-    NOK: { symbol: 'kr', name: 'Norwegian Krone' },
-    KRW: { symbol: '₩', name: 'South Korean Won' },
-    TRY: { symbol: '₺', name: 'Turkish Lira' },
-    INR: { symbol: '₹', name: 'Indian Rupee' },
-    RUB: { symbol: '₽', name: 'Russian Ruble' },
-    ZAR: { symbol: 'R', name: 'South African Rand' },
-    PLN: { symbol: 'zł', name: 'Polish Zloty' },
-    CZK: { symbol: 'Kč', name: 'Czech Koruna' },
-    HUF: { symbol: 'Ft', name: 'Hungarian Forint' },
-    RON: { symbol: 'lei', name: 'Romanian Leu' },
-    BGN: { symbol: 'лв', name: 'Bulgarian Lev' },
-    DKK: { symbol: 'kr', name: 'Danish Krone' },
-    ISK: { symbol: 'kr', name: 'Icelandic Krona' },
-    RSD: { symbol: 'дин', name: 'Serbian Dinar' },
-    BAM: { symbol: 'КМ', name: 'Bosnia-Herzegovina Convertible Mark' },
-    MKD: { symbol: 'ден', name: 'Macedonian Denar' },
-    ALL: { symbol: 'L', name: 'Albanian Lek' },
-    MDL: { symbol: 'L', name: 'Moldovan Leu' },
-    UAH: { symbol: '₴', name: 'Ukrainian Hryvnia' },
-    BYN: { symbol: 'Br', name: 'Belarusian Ruble' },
-    GEL: { symbol: '₾', name: 'Georgian Lari' },
-    AMD: { symbol: '֏', name: 'Armenian Dram' },
-    AZN: { symbol: '₼', name: 'Azerbaijani Manat' },
-  }
-
-  const currentCurrency = serverSettings.currency?.code || 'USD'
-  const currencyOptions = Object.keys(currencyMap).sort()
-
-  const handleCurrencyChange = async (currencyCode: string) => {
-    const currencyInfo = currencyMap[currencyCode]
-    if (currencyInfo) {
-      const currencyValue = {
-        code: currencyCode,
-        symbol: currencyInfo.symbol
-      }
-      await handleSettingsSubmit(currencyValue, "currency")
-      await refreshUser()
-    }
-  }
 
 
 
@@ -467,22 +411,14 @@ export const SettingsView = ({ timeframe = "day" }) => {
   }
 
   return <div className="max-w-[720px] m-auto p-4">
-      <h3 className="mt-8">{t('settings.currency') || 'Currency'}</h3>
-      <Select value={currentCurrency} onValueChange={handleCurrencyChange}>
-        <SelectTrigger className="w-full">
-          <SelectValue placeholder={t('settings.selectCurrency') || 'Select currency'} />
-        </SelectTrigger>
-        <SelectContent className="z-[10000]">
-          {currencyOptions.map((code) => {
-            const currency = currencyMap[code]
-            return (
-              <SelectItem key={code} value={code}>
-                {currency.symbol} {code} - {currency.name}
-              </SelectItem>
-            )
-          })}
-        </SelectContent>
-      </Select>
+      <h3 className="mt-8">{t('settings.monthsFixedIncome')}</h3>
+      <Input defaultValue={serverSettings.monthsFixedIncome} onBlur={(e) => handleSettingsSubmit(e.currentTarget.value, "monthsFixedIncome")} />
+      <h3 className="mt-8">{t('settings.monthsVariableIncome')}</h3>
+      <Input defaultValue={serverSettings.monthsVariableIncome} onBlur={(e) => handleSettingsSubmit(e.currentTarget.value, "monthsVariableIncome")}/>
+      <h3 className="mt-8">{t('settings.fixedNeedCosts')}</h3>
+      <Input defaultValue={serverSettings.monthsNeedFixedExpenses} onBlur={(e) => handleSettingsSubmit(e.currentTarget.value, "monthsNeedFixedExpenses")}/>
+      <h3 className="mt-8">{t('settings.expectedNeedUtilities')}</h3>
+      <Input defaultValue={serverSettings.monthsNeedVariableExpenses} onBlur={(e) => handleSettingsSubmit(e.currentTarget.value, "monthsNeedVariableExpenses")}/>
       
       {/* Edit Action Popover */}
       {isEditOpen && (

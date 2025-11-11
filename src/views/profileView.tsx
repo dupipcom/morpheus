@@ -3,10 +3,10 @@
 import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import { PublicChartsView } from "@/components/publicChartsView"
-import { AddFriendButtonOrSignIn } from "@/components/addFriendButtonOrSignIn"
-import { PublicNotesViewer } from "@/components/publicNotesViewer"
-import ActivityCard, { ActivityItem } from "@/components/activityCard"
+import { PublicChartsView } from "@/components/PublicChartsView"
+import { AddFriendButtonOrSignIn } from "@/components/AddFriendButtonOrSignIn"
+import { PublicNotesViewer } from "@/components/PublicNotesViewer"
+import { PublicTemplatesViewer } from "@/components/PublicTemplatesViewer"
 
 interface ProfileData {
   userId?: string
@@ -16,16 +16,6 @@ interface ProfileData {
   bio?: string
   profilePicture?: string
   publicCharts?: any
-  templates?: any[]
-  taskLists?: any[]
-  data?: {
-    firstName?: { value?: string; visibility?: boolean }
-    lastName?: { value?: string; visibility?: boolean }
-    username?: { value?: string; visibility?: boolean }
-    bio?: { value?: string; visibility?: boolean }
-    profilePicture?: { value?: string; visibility?: boolean }
-    charts?: { value?: any; visibility?: boolean }
-  }
 }
 
 interface ProfileViewProps {
@@ -35,43 +25,6 @@ interface ProfileViewProps {
   currentUserUsername?: string | null
   isLoggedIn: boolean
   translations: any
-}
-
-function getTimeAgo(date: Date): string {
-  const now = new Date()
-  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
-  
-  if (diffInSeconds < 60) {
-    return 'just now'
-  }
-  
-  const diffInMinutes = Math.floor(diffInSeconds / 60)
-  if (diffInMinutes < 60) {
-    return `${diffInMinutes} minute${diffInMinutes === 1 ? '' : 's'} ago`
-  }
-  
-  const diffInHours = Math.floor(diffInMinutes / 60)
-  if (diffInHours < 24) {
-    return `${diffInHours} hour${diffInHours === 1 ? '' : 's'} ago`
-  }
-  
-  const diffInDays = Math.floor(diffInHours / 24)
-  if (diffInDays < 7) {
-    return `${diffInDays} day${diffInDays === 1 ? '' : 's'} ago`
-  }
-  
-  const diffInWeeks = Math.floor(diffInDays / 7)
-  if (diffInWeeks < 4) {
-    return `${diffInWeeks} week${diffInWeeks === 1 ? '' : 's'} ago`
-  }
-  
-  const diffInMonths = Math.floor(diffInDays / 30)
-  if (diffInMonths < 12) {
-    return `${diffInMonths} month${diffInMonths === 1 ? '' : 's'} ago`
-  }
-  
-  const diffInYears = Math.floor(diffInDays / 365)
-  return `${diffInYears} year${diffInYears === 1 ? '' : 's'} ago`
 }
 
 export const ProfileView = ({ 
@@ -117,24 +70,14 @@ export const ProfileView = ({
     fetchProfile()
   }, [userName])
 
-  // Extract profile data - API returns flat structure, but also support nested structure as fallback
-  const profileData = profile.data || {}
-  // Check flat structure first (what API returns), then nested structure as fallback
-  const firstName = profile.firstName || profileData.firstName?.value
-  const lastName = profile.lastName || profileData.lastName?.value
-  const profileUserName = profile.userName || profileData.username?.value
-  const bio = profile.bio || profileData.bio?.value
-  const profilePicture = profile.profilePicture || profileData.profilePicture?.value
-  const publicCharts = profile.publicCharts || profileData.charts?.value
-
-  const fullName = [firstName, lastName].filter(Boolean).join(' ')
-  const hasAnyPublicData = firstName || lastName || profileUserName || bio || profilePicture
+  const fullName = [profile.firstName, profile.lastName].filter(Boolean).join(' ')
+  const hasAnyPublicData = profile.firstName || profile.lastName || profile.userName || profile.bio || profile.profilePicture
   const isOwnProfile = currentUserUsername === userName
-  const canAddFriend = !isOwnProfile && profileUserName
+  const canAddFriend = !isOwnProfile && profile.userName
   const canEditProfile = isOwnProfile
 
   // Display name logic: prefer fullName, then userName (even if not visible), then fallback
-  const displayName = fullName || profileUserName || 'Anonymous User'
+  const displayName = fullName || profile.userName || 'Anonymous User'
 
   return (
     <main className="p-2 flex bg-background overflow-x-hidden">
@@ -144,9 +87,9 @@ export const ProfileView = ({
           <CardContent>
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                {profilePicture && (
+                {profile.profilePicture && (
                   <img
-                    src={profilePicture}
+                    src={profile.profilePicture}
                     alt="Profile"
                     className="w-20 h-20 rounded-full object-cover mx-auto sm:mx-0"
                   />
@@ -155,18 +98,18 @@ export const ProfileView = ({
                   <h1 className="text-2xl font-bold break-words">
                     {displayName}
                   </h1>
-                  {profileUserName && (
-                    <p className="text-muted-foreground break-words">@{profileUserName}</p>
+                  {profile.userName && (
+                    <p className="text-muted-foreground break-words">@{profile.userName}</p>
                   )}
-                  {bio && (
-                    <p className="mt-2 text-sm break-words">{bio}</p>
+                  {profile.bio && (
+                    <p className="mt-2 text-sm break-words">{profile.bio}</p>
                   )}
                 </div>
               </div>
-              {(canAddFriend || canEditProfile) && profileUserName && (
+              {(canAddFriend || canEditProfile) && profile.userName && (
                 <div className="flex justify-center md:justify-end">
                   <AddFriendButtonOrSignIn 
-                    targetUserName={profileUserName} 
+                    targetUserName={profile.userName} 
                     isLoggedIn={isLoggedIn}
                     currentUserName={currentUserUsername || undefined}
                   />
@@ -203,9 +146,9 @@ export const ProfileView = ({
             </div>
             
             <TabsContent value="analytics" className="mt-4 min-w-0">
-              {publicCharts ? (
+              {profile.publicCharts ? (
                 <div className="w-full min-w-0 overflow-x-auto">
-                  <PublicChartsView chartsData={publicCharts} />
+                  <PublicChartsView chartsData={profile.publicCharts} />
                 </div>
               ) : (
                 <div className="text-center text-muted-foreground py-8">
@@ -219,68 +162,13 @@ export const ProfileView = ({
             </TabsContent>
             
             <TabsContent value="templates" className="mt-4 min-w-0">
-              {loading ? (
-                <div className="text-center text-muted-foreground py-8">
-                  <p>{(translations as any)?.publicProfile?.loadingTemplates || 'Loading templates...'}</p>
-                </div>
-              ) : (profile.templates && profile.templates.length > 0) || (profile.taskLists && profile.taskLists.length > 0) ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {profile.templates?.map((template) => {
-                    const activityItem: ActivityItem = {
-                      id: template.id,
-                      type: 'template',
-                      createdAt: template.createdAt,
-                      name: template.name,
-                      role: template.role,
-                      visibility: template.visibility,
-                      isLiked: template.isLiked,
-                      comments: template.comments,
-                      _count: template._count
-                    }
-                    return (
-                      <ActivityCard
-                        key={template.id}
-                        item={activityItem}
-                        getTimeAgo={getTimeAgo}
-                        isLoggedIn={isLoggedIn}
-                      />
-                    )
-                  })}
-                  {profile.taskLists?.map((taskList) => {
-                    const activityItem: ActivityItem = {
-                      id: taskList.id,
-                      type: 'tasklist',
-                      createdAt: taskList.createdAt,
-                      name: taskList.name,
-                      role: taskList.role,
-                      visibility: taskList.visibility,
-                      budget: taskList.budget,
-                      dueDate: taskList.dueDate,
-                      isLiked: taskList.isLiked,
-                      comments: taskList.comments,
-                      _count: taskList._count
-                    }
-                    return (
-                      <ActivityCard
-                        key={taskList.id}
-                        item={activityItem}
-                        getTimeAgo={getTimeAgo}
-                        isLoggedIn={isLoggedIn}
-                      />
-                    )
-                  })}
-                </div>
-              ) : (
-                <div className="text-center text-muted-foreground py-8">
-                  <p>No public templates or lists available yet.</p>
-                </div>
-              )}
+              <PublicTemplatesViewer userName={userName} showCard={false} isLoggedIn={isLoggedIn} />
             </TabsContent>
           </Tabs>
         </div>
 
         {/* No public data message */}
-        {!hasAnyPublicData && !publicCharts && (
+        {!hasAnyPublicData && !profile.publicCharts && (
           <Card>
             <CardContent className="pt-6">
               <div className="text-center text-muted-foreground">

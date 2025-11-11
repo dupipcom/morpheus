@@ -27,9 +27,12 @@ export async function GET() {
                 user: {
                   select: {
                     id: true,
-                    profiles: {
+                    profile: {
                       select: {
-                        data: true
+                        userName: true,
+                        profilePicture: true,
+                        firstName: true,
+                        lastName: true
                       }
                     }
                   }
@@ -53,7 +56,7 @@ export async function GET() {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    // Sort comments by likes, then by date, and transform profiles[0] to profile
+    // Sort comments by likes, then by date
     const notesWithSortedComments = user.notes.map(note => {
       if (note.comments && Array.isArray(note.comments) && note.comments.length > 0) {
         const sortedComments = [...note.comments].sort((a: any, b: any) => {
@@ -61,25 +64,7 @@ export async function GET() {
           if (likeDiff !== 0) return likeDiff
           return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         })
-        // Transform profiles[0] to profile for comments and extract data values
-        const commentsWithProfile = sortedComments.map((comment: any) => {
-          const profileData = comment.user.profiles?.[0]?.data
-          const profile = profileData ? {
-            userName: profileData.username?.value || null,
-            profilePicture: profileData.profilePicture?.value || null,
-            firstName: profileData.firstName?.value || null,
-            lastName: profileData.lastName?.value || null
-          } : null
-          
-          return {
-            ...comment,
-            user: {
-              ...comment.user,
-              profile
-            }
-          }
-        })
-        return { ...note, comments: commentsWithProfile }
+        return { ...note, comments: sortedComments }
       }
       return note
     })

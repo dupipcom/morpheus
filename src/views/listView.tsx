@@ -2,10 +2,11 @@
 
 import React, { useMemo, useState, useEffect, useContext, useCallback, useRef } from 'react'
 
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggleGroup'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { DoToolbar } from '@/views/doToolbar'
 import { Badge } from '@/components/ui/badge'
 import { User as UserIcon, Circle, Minus } from 'lucide-react'
-import { OptionsButton, OptionsMenuItem } from '@/components/optionsButton'
+import { OptionsButton, OptionsMenuItem } from '@/components/OptionsButton'
 import { Skeleton } from '@/components/ui/skeleton'
 
 import { GlobalContext } from '@/lib/contexts'
@@ -63,17 +64,7 @@ const formatDateLocal = (date: Date): string => {
   return `${year}-${month}-${day}`
 }
 
-  export const ListView = ({
-    selectedTaskListId: propSelectedTaskListId,
-    selectedDate: propSelectedDate,
-    onDateChange: propOnDateChange,
-    onAddEphemeral: propOnAddEphemeral,
-  }: {
-    selectedTaskListId?: string
-    selectedDate?: Date
-    onDateChange?: (date: Date | undefined) => void
-    onAddEphemeral?: () => Promise<void> | void
-  } = {}) => {
+  export const ListView = () => {
     const { session, taskLists: contextTaskLists, refreshTaskLists } = useContext(GlobalContext)
     const { t, locale } = useI18n()
     const { refreshUser } = useUserData()
@@ -96,10 +87,8 @@ const formatDateLocal = (date: Date): string => {
       return new Date(d.getFullYear(), d.getMonth(), d.getDate())
     }, [])
 
-    // Use prop selectedDate if provided, otherwise use local state
-    const [internalSelectedDate, setInternalSelectedDate] = useState<Date>(today)
-    const selectedDate = propSelectedDate !== undefined ? propSelectedDate : internalSelectedDate
-    const setSelectedDate = propOnDateChange || setInternalSelectedDate
+    // State for selected date (defaults to today)
+    const [selectedDate, setSelectedDate] = useState<Date>(today)
 
     // Compute date string and year from selected date (using local timezone)
     // Memoize these so React can properly track changes
@@ -107,20 +96,22 @@ const formatDateLocal = (date: Date): string => {
     const year = useMemo(() => Number(date.split('-')[0]), [date])
     const allTaskLists = stableTaskLists.length > 0 ? stableTaskLists : (contextTaskLists || [])
 
-    // Use prop selectedTaskListId if provided, otherwise use local state
-    const [internalSelectedTaskListId, setInternalSelectedTaskListId] = useState<string | undefined>(allTaskLists[0]?.id)
-    const selectedTaskListId = propSelectedTaskListId !== undefined ? propSelectedTaskListId : internalSelectedTaskListId
-    const setSelectedTaskListId = propSelectedTaskListId !== undefined 
-      ? (() => {}) // No-op if controlled from parent
-      : setInternalSelectedTaskListId
-
+    const [selectedTaskListId, setSelectedTaskListId] = useState<string | undefined>(allTaskLists[0]?.id)
     useEffect(() => {
-      if (!selectedTaskListId && allTaskLists.length > 0 && propSelectedTaskListId === undefined) {
-        setInternalSelectedTaskListId(allTaskLists[0].id)
-      }
-    }, [allTaskLists, selectedTaskListId, propSelectedTaskListId])
+      if (!selectedTaskListId && allTaskLists.length > 0) setSelectedTaskListId(allTaskLists[0].id)
+    }, [allTaskLists, selectedTaskListId])
 
     const selectedTaskList = useMemo(() => allTaskLists.find((l: any) => l.id === selectedTaskListId), [allTaskLists, selectedTaskListId])
+
+    // Reset date to today when switching to a new task list
+    useEffect(() => {
+      const role = (selectedTaskList as any)?.role
+      if (role && (role.startsWith('daily.') || role.startsWith('weekly.'))) {
+        // Normalize to midnight in local timezone
+        const d = new Date()
+        setSelectedDate(new Date(d.getFullYear(), d.getMonth(), d.getDate()))
+      }
+    }, [selectedTaskListId])
 
     // Helper to get all dates in a week (using local timezone)
     const getWeekDates = useMemo(() => {
@@ -152,17 +143,11 @@ const formatDateLocal = (date: Date): string => {
       let cancelled = false
       const run = async () => {
         try {
-          // Extract owners and collaborators from users array (new model) or fallback to old fields
-          const users = Array.isArray((selectedTaskList as any)?.users) ? (selectedTaskList as any).users : []
-          const ownersFromUsers = users.filter((u: any) => u.role === 'OWNER').map((u: any) => u.userId)
-          const collaboratorsFromUsers = users.filter((u: any) => u.role === 'COLLABORATOR' || u.role === 'MANAGER').map((u: any) => u.userId)
+          // Owners
+          const owners: string[] = Array.isArray((selectedTaskList as any)?.owners) ? (selectedTaskList as any).owners : []
           
-          // Fallback to old fields for backward compatibility
-          const ownersFromOld = Array.isArray((selectedTaskList as any)?.owners) ? (selectedTaskList as any).owners : []
-          const collaboratorsFromOld = Array.isArray((selectedTaskList as any)?.collaborators) ? (selectedTaskList as any).collaborators : []
-          
-          const owners: string[] = ownersFromUsers.length > 0 ? ownersFromUsers : ownersFromOld
-          const collaborators: string[] = collaboratorsFromUsers.length > 0 ? collaboratorsFromUsers : collaboratorsFromOld
+          // Collaborators
+          const collaborators: string[] = Array.isArray((selectedTaskList as any)?.collaborators) ? (selectedTaskList as any).collaborators : []
 
           // Get completers - for weekly lists, check all dates in the week
           const completerIds = new Set<string>()
@@ -187,14 +172,7 @@ const formatDateLocal = (date: Date): string => {
             }
           })
 
-          // Include current user ID to ensure their profile is always in cache
-          const currentUserId = (session?.user as any)?.id
-          const allIds = new Set([...(owners || []), ...(collaborators || []), ...Array.from(completerIds)])
-          if (currentUserId) {
-            allIds.add(String(currentUserId))
-          }
-          
-          const ids = Array.from(allIds)
+          const ids = Array.from(new Set([...(owners || []), ...(collaborators || []), ...Array.from(completerIds)]))
           if (!ids.length) { setCollabProfiles({}); return }
           const res = await fetch(`/api/v1/profiles/by-ids?ids=${encodeURIComponent(ids.join(','))}`)
           if (!cancelled && res.ok) {
@@ -211,7 +189,7 @@ const formatDateLocal = (date: Date): string => {
       }
       run()
       return () => { cancelled = true }
-    }, [selectedTaskList?.id, JSON.stringify((selectedTaskList as any)?.users || []), JSON.stringify((selectedTaskList as any)?.owners || []), JSON.stringify((selectedTaskList as any)?.collaborators || []), isWeeklyList, getWeekDates, date, year, (session?.user as any)?.id])
+    }, [selectedTaskList?.id, JSON.stringify((selectedTaskList as any)?.owners || []), JSON.stringify((selectedTaskList as any)?.collaborators || []), isWeeklyList, getWeekDates, date, year])
 
     // Memoize datesToCheck to ensure it's reactive for both daily and weekly lists
     const datesToCheck = useMemo(() => {
@@ -239,7 +217,7 @@ const formatDateLocal = (date: Date): string => {
             dateBucket.forEach((t: any) => {
               const k = keyOf(t)
               if (!k) return
-              if (t.status === 'done' || (t.count || 0) >= (t.times || 1)) {
+              if (t.status === 'Done' || (t.count || 0) >= (t.times || 1)) {
                 if (!closedTasksByKey[k]) {
                   closedTasksByKey[k] = t
                   allClosedTasks.push(t)
@@ -314,7 +292,7 @@ const formatDateLocal = (date: Date): string => {
         
         // Add new tasks to base (they'll be saved to completedTasks on first completion)
         if (newTasks.length > 0) {
-          base = [...base, ...newTasks.map((t: any) => ({ ...t, count: 0, status: 'open' }))]
+          base = [...base, ...newTasks.map((t: any) => ({ ...t, count: 0, status: 'Open' }))]
         }
       } else {
         // Fall back to tasklist.tasks or templateTasks
@@ -391,15 +369,16 @@ const formatDateLocal = (date: Date): string => {
           // Task is completed - use closedTask data
           const times = Number(closedTask?.times || t?.times || 1)
           const completedCount = Array.isArray(closedTask?.completers) ? closedTask.completers.length : Number(closedTask?.count || 0)
-          const status = completedCount >= times ? 'done' : 'open'
-          const taskStatus = closedTask?.status || t?.status || (status === 'done' ? 'done' : (completedCount > 0 ? 'in progress' : undefined))
+          const status = completedCount >= times ? 'Done' : 'Open'
+          const taskStatus = closedTask?.taskStatus || t?.taskStatus || (status === 'Done' ? 'done' : (completedCount > 0 ? 'in progress' : undefined))
           
           return { 
             ...t, // Start with base task
             ...closedTask, // Override with closedTask data (takes precedence)
-            status: taskStatus, 
+            status, 
             count: Math.min(completedCount || 0, times || 1), 
-            completers: closedTask?.completers
+            completers: closedTask?.completers,
+            taskStatus
           }
         }
         
@@ -436,7 +415,7 @@ const formatDateLocal = (date: Date): string => {
       return [...overlayed, ...additionalClosedTasks, ...dedupEphemeral]
     }, [selectedTaskList, year, date, isWeeklyList, getWeekDates, selectedDate, datesToCheck])
 
-    const doneNames = useMemo(() => mergedTasks.filter((t: any) => t.status === 'done').map((t: any) => t.name), [mergedTasks])
+    const doneNames = useMemo(() => mergedTasks.filter((t: any) => t.status === 'Done').map((t: any) => t.name), [mergedTasks])
     const [values, setValues] = useState<string[]>(doneNames)
     const [prevValues, setPrevValues] = useState<string[]>(doneNames)
     useEffect(() => { setValues(doneNames); setPrevValues(doneNames) }, [doneNames])
@@ -446,10 +425,10 @@ const formatDateLocal = (date: Date): string => {
 
     // Sort tasks: by status order first, then incomplete before completed. Use current toggles as well.
     const sortedMergedTasks = useMemo(() => {
-      const isDone = (t: any) => (t?.status === 'done') || values.includes(t?.name)
+      const isDone = (t: any) => (t?.status === 'Done') || values.includes(t?.name)
       const getTaskStatus = (t: any): TaskStatus => {
         const key = t?.id || t?.localeKey || t?.name
-        return taskStatuses[key] || (t?.status as TaskStatus) || 'open'
+        return taskStatuses[key] || (t?.taskStatus as TaskStatus) || 'open'
       }
 
       return [...mergedTasks].sort((a: any, b: any) => {
@@ -472,10 +451,6 @@ const formatDateLocal = (date: Date): string => {
     }, [mergedTasks, values, taskStatuses])
 
     const handleAddEphemeral = useCallback(async () => {
-      if (propOnAddEphemeral) {
-        await propOnAddEphemeral()
-        return
-      }
       if (!selectedTaskList) return
       const name = prompt('New task name?')
       if (!name) return
@@ -488,7 +463,7 @@ const formatDateLocal = (date: Date): string => {
         })
       })
       await refreshTaskLists()
-    }, [selectedTaskList, refreshTaskLists, propOnAddEphemeral])
+    }, [selectedTaskList, refreshTaskLists])
 
     const handleStatusChange = useCallback(async (task: any, newStatus: TaskStatus) => {
       const key = task?.id || task?.localeKey || task?.name
@@ -513,7 +488,7 @@ const formatDateLocal = (date: Date): string => {
             updateTaskStatus: true,
             taskListId: selectedTaskList.id,
             taskKey: key,
-            status: effectiveStatus,
+            taskStatus: effectiveStatus,
             date: date // Include current date so task is copied to completedTasks
           })
         })
@@ -538,18 +513,18 @@ const formatDateLocal = (date: Date): string => {
               // This is the task being marked as done
               if ((action.times - (action.count || 0)) === 1) {
                 c.count = (c.count || 0) + 1
-                c.status = 'done'
+                c.status = 'Done'
               } else if ((action.times - (action.count || 0)) >= 1) {
                 c.count = (c.count || 0) + 1
               }
             } else if (newValues.includes(action.name) && (action.times - (action.count || 0)) === 1) {
               c.count = (c.count || 0) + 1
-              c.status = 'done'
+              c.status = 'Done'
             } else if (newValues.includes(action.name) && (action.times - (action.count || 0)) >= 1) {
               c.count = (c.count || 0) + 1
             }
-            if ((c.count || 0) > 0 && c.status !== 'done') {
-              c.status = 'open'
+            if ((c.count || 0) > 0 && c.status !== 'Done') {
+              c.status = 'Open'
             }
             return c
           })
@@ -574,7 +549,7 @@ const formatDateLocal = (date: Date): string => {
           const ephemeralTask = ephemerals.find((e: any) => e.name === taskName)
           if (ephemeralTask) {
             const updatedEph = nextActions.find((a: any) => a.name === taskName)
-            if (updatedEph && updatedEph.status === 'done') {
+            if (updatedEph && updatedEph.status === 'Done') {
               // Fully completed - close it
               await fetch('/api/v1/tasklists', {
                 method: 'POST',
@@ -613,16 +588,16 @@ const formatDateLocal = (date: Date): string => {
             if (action.name === taskName && (c.times || 1) <= (c.count || 0)) {
               if ((c.count || 0) > 0) {
                 c.count = (c.count || 0) - 1
-                c.status = 'open'
+                c.status = 'Open'
               }
             } else if (newValues.includes(action.name) && (action.times - (action.count || 0)) === 1) {
               c.count = (c.count || 0) + 1
-              c.status = 'done'
+              c.status = 'Done'
             } else if (newValues.includes(action.name) && (action.times - (action.count || 0)) >= 1) {
               c.count = (c.count || 0) + 1
             }
-            if ((c.count || 0) > 0 && c.status !== 'done') {
-              c.status = 'open'
+            if ((c.count || 0) > 0 && c.status !== 'Done') {
+              c.status = 'Open'
             }
             return c
           })
@@ -680,7 +655,7 @@ const formatDateLocal = (date: Date): string => {
       // Can't decrement below 0
       if (currentCount <= 0) return
 
-      // Optimistic UI update for status
+      // Optimistic UI update for taskStatus
       const key = task?.id || task?.localeKey || task?.name
       const newCount = currentCount - 1
       const times = task?.times || 1
@@ -710,20 +685,21 @@ const formatDateLocal = (date: Date): string => {
           const c = { ...action }
           if (action.name === taskName) {
             c.count = Math.max(0, (c.count || 0) - 1)
-            // Update status based on new count
+            // Update status and taskStatus based on new count
             if (c.count >= (c.times || 1)) {
-              c.status = 'done'
+              c.status = 'Done'
+              c.taskStatus = 'done'
             } else {
+              c.status = 'Open'
               // Preserve manually set status or default based on count
               const key = action?.id || action?.localeKey || action?.name
               const existingStatus = taskStatuses[key]
               if (c.count > 0 && (!existingStatus || existingStatus === 'done' || existingStatus === 'open')) {
-                c.status = 'in progress'
+                c.taskStatus = 'in progress'
               } else if (c.count === 0) {
-                c.status = 'open'
-              } else {
-                c.status = existingStatus || 'open'
+                c.taskStatus = 'open'
               }
+              // Otherwise preserve existing taskStatus
             }
           }
           return c
@@ -808,11 +784,11 @@ const formatDateLocal = (date: Date): string => {
       mergedTasks.forEach((task: any) => {
         const key = task?.id || task?.localeKey || task?.name
         
-        // Use status from the task object if available
-        if (task.status && STATUS_OPTIONS.includes(task.status as TaskStatus)) {
-          statuses[key] = task.status as TaskStatus
-        } else if (task.status === 'done') {
-          // If task is completed, default to 'done'
+        // Use taskStatus from the task object if available
+        if (task.taskStatus && STATUS_OPTIONS.includes(task.taskStatus as TaskStatus)) {
+          statuses[key] = task.taskStatus as TaskStatus
+        } else if (task.status === 'Done') {
+          // If task is completed but doesn't have taskStatus, default to 'done'
           statuses[key] = 'done'
         } else if ((task.count || 0) > 0 && (task.count || 0) < (task.times || 1)) {
           // If task has partial progress, mark as 'in progress'
@@ -872,7 +848,7 @@ const formatDateLocal = (date: Date): string => {
             const newCount = currentCount + 1
             
             // Check if there's a manually set status to preserve
-            const existingStatus = prev[key] || (task?.status as TaskStatus)
+            const existingStatus = prev[key] || (task?.taskStatus as TaskStatus)
             
             // Determine the appropriate status based on times and count
             let taskStatus: TaskStatus = 'done'
@@ -920,36 +896,37 @@ const formatDateLocal = (date: Date): string => {
           c.count = (c.count || 0) + 1
           // Only mark as Done if count reaches times
           if (c.count >= (c.times || 1)) {
-            c.status = 'done'
+            c.status = 'Done'
+            c.taskStatus = 'done'
           } else {
-            c.status = 'open'
+            c.status = 'Open'
             // Preserve manually set status if it exists (except 'open' and 'done')
-            const manualStatus = c.status
+            const manualStatus = c.taskStatus
             if (!manualStatus || manualStatus === 'open' || manualStatus === 'done') {
-              c.status = 'in progress'
+              c.taskStatus = 'in progress'
             }
-            // Otherwise keep the existing status
+            // Otherwise keep the existing taskStatus
           }
         } else if (isFullyCompleted) {
           // Task is in values but wasn't just clicked (was already completed)
-          // Ensure status is 'done'
-          if (c.status === 'done') {
-            c.status = 'done'
+          // Ensure taskStatus is 'done'
+          if (c.status === 'Done') {
+            c.taskStatus = 'done'
           }
         } else {
           // Task is not in values - check if it should be uncompleted
           if (!adjustedValues.includes(action.name) && (c.times || 1) <= (c.count || 0)) {
             if ((c.count || 0) > 0) {
               c.count = (c.count || 0) - 1
-              c.status = 'open'
-              c.status = 'open'
+              c.status = 'Open'
+              c.taskStatus = 'open'
             }
           }
         }
-        if ((c.count || 0) > 0 && c.status !== 'done') {
-          c.status = 'open'
-          if (!c.status || c.status === 'done') {
-            c.status = (c.count || 0) > 0 ? 'in progress' : 'open'
+        if ((c.count || 0) > 0 && c.status !== 'Done') {
+          c.status = 'Open'
+          if (!c.taskStatus || c.taskStatus === 'done') {
+            c.taskStatus = (c.count || 0) > 0 ? 'in progress' : 'open'
           }
         }
         return c
@@ -987,7 +964,7 @@ const formatDateLocal = (date: Date): string => {
         if (wasJustClicked) {
           const updatedEph = nextActions.find((a: any) => a.name === eph.name)
           
-          if (updatedEph && updatedEph.status === 'done' && isFullyCompleted && !wasDone) {
+          if (updatedEph && updatedEph.status === 'Done' && isFullyCompleted && !wasDone) {
             // Fully completed - add to close batch
             ephemeralToClose.push({ id: eph.id, count: updatedEph.count })
           } else if (updatedEph) {
@@ -1024,14 +1001,12 @@ const formatDateLocal = (date: Date): string => {
     }
 
     const handleDateChange = useCallback((date: Date | undefined) => {
-      if (propOnDateChange) {
-        propOnDateChange(date)
-      } else if (date) {
+      if (date) {
         // Normalize date to midnight in local timezone to avoid time component issues
         const normalizedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate())
-        setInternalSelectedDate(normalizedDate)
+        setSelectedDate(normalizedDate)
       }
-    }, [propOnDateChange])
+    }, [])
 
     // Check if task lists are loading (only show skeleton on initial load, not on refreshes)
     const isTaskListsLoading = !initialLoadDone.current && (contextTaskLists === null || contextTaskLists === undefined || (Array.isArray(contextTaskLists) && contextTaskLists.length === 0))
@@ -1067,6 +1042,15 @@ const formatDateLocal = (date: Date): string => {
     if (!selectedTaskListId) return null
     return (
       <div className="space-y-4">
+        <DoToolbar
+          locale={locale}
+          selectedTaskListId={selectedTaskListId}
+          onChangeSelectedTaskListId={setSelectedTaskListId}
+          onAddEphemeral={handleAddEphemeral}
+          selectedDate={selectedDate}
+          onDateChange={handleDateChange}
+        />
+
         <ToggleGroup
           value={values}
           onValueChange={handleToggleChange}
@@ -1077,26 +1061,17 @@ const formatDateLocal = (date: Date): string => {
           key={`list__selected--${selectedTaskListId}--${date}`}
         >
           {sortedMergedTasks.map((task: any) => {
-            const isDone = (task?.status === 'done') || values.includes(task?.name)
+            const isDone = (task?.status === 'Done') || values.includes(task?.name)
             const lastCompleter = Array.isArray(task?.completers) && task.completers.length > 0 ? task.completers[task.completers.length - 1] : undefined
-            // Extract owners and collaborators from users array (new model) or fallback to old fields
-            const users = Array.isArray((selectedTaskList as any)?.users) ? (selectedTaskList as any).users : []
-            const ownersFromUsers = users.filter((u: any) => u.role === 'OWNER').map((u: any) => u.userId)
-            const collaboratorsFromUsers = users.filter((u: any) => u.role === 'COLLABORATOR' || u.role === 'MANAGER').map((u: any) => u.userId)
-            const ownersFromOld = Array.isArray((selectedTaskList as any)?.owners) ? (selectedTaskList as any).owners : []
-            const collaboratorsFromOld = Array.isArray((selectedTaskList as any)?.collaborators) ? (selectedTaskList as any).collaborators : []
-            const allOwners = ownersFromUsers.length > 0 ? ownersFromUsers : ownersFromOld
-            const allCollaborators = collaboratorsFromUsers.length > 0 ? collaboratorsFromUsers : collaboratorsFromOld
+            const isCollabCompleter = lastCompleter && Array.isArray((selectedTaskList as any)?.collaborators) && (selectedTaskList as any).collaborators.includes(lastCompleter.id)
+            const isOwnerCompleter = lastCompleter && Array.isArray((selectedTaskList as any)?.owners) && (selectedTaskList as any).owners.includes(lastCompleter.id)
+            const hasCollaborators = Array.isArray((selectedTaskList as any)?.collaborators) && (selectedTaskList as any).collaborators.length > 0
             
-            const isCollabCompleter = lastCompleter && allCollaborators.includes(lastCompleter.id)
-            const isOwnerCompleter = lastCompleter && allOwners.includes(lastCompleter.id)
-            const hasCollaborators = allCollaborators.length > 0
-            
-            // Get the completer name: only show if there's actually a completer (don't fallback to owner)
-            // This prevents showing owner name before completer data is available
+            // Get the completer name: if there's a lastCompleter use them, otherwise use the owner
+            const ownerId = Array.isArray((selectedTaskList as any)?.owners) && (selectedTaskList as any).owners.length > 0 ? (selectedTaskList as any).owners[0] : undefined
             const completerName = lastCompleter 
               ? (collabProfiles[String(lastCompleter.id)] || String(lastCompleter.id))
-              : null
+              : (ownerId ? (collabProfiles[String(ownerId)] || String(ownerId)) : '')
             
             // Calculate earnings for THIS specific task completion
             const listBudget = (selectedTaskList as any)?.budget
@@ -1110,7 +1085,7 @@ const formatDateLocal = (date: Date): string => {
             let taskStatus: TaskStatus
             
             // First check if there's a manually set status
-            const storedStatus = taskStatuses[key] || (task?.status as TaskStatus)
+            const storedStatus = taskStatuses[key] || (task?.taskStatus as TaskStatus)
             
             if (values.includes(task?.name)) {
               // Task is in values (completed) - use 'done' status
@@ -1173,7 +1148,7 @@ const formatDateLocal = (date: Date): string => {
                 </div>
                 {isDone
                   && hasCollaborators
-                  && completerName && lastCompleter && (
+                  && completerName && (
                     <div className="mt-1">
                       <Badge variant="secondary" className="bg-muted text-muted-foreground border-muted">
                         <UserIcon className="h-3 w-3 mr-1" />

@@ -83,7 +83,7 @@
     "closeDay": "Cerrar día",
     "earnings": "Ganancias",
     "publish": {
-      "title": "Escribir",
+      "title": "Publicar una nota",
       "placeholder": "Escribe tu nota aquí...",
       "selectVisibility": "Seleccionar visibilidad",
       "visibility": {

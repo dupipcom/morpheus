@@ -88,22 +88,15 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
     try {
       const user = await prisma.user.findUnique({
         where: { userId },
-        include: { profiles: true }
+        include: { profile: true }
       })
-      const profileData = user?.profiles?.[0]?.data as any
-      currentUserUsername = profileData?.username?.value || null
+      currentUserUsername = user?.profile?.userName
     } catch (error) {
       console.error('Error fetching current user profile:', error)
     }
   }
 
   const isLoggedIn = !!userId
-
-  console.log('profile', profile)
-  console.log('userName', userName)
-  console.log('currentUserUsername', currentUserUsername)
-  console.log('isLoggedIn', isLoggedIn)
-  console.log('translations', translations)
 
   return (
     <I18nProvider locale={locale as any}>
