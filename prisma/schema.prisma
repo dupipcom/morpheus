@@ -60,6 +60,10 @@ model Day {
   analysis      Json?
   average       Float?
   progress      Float?
+  productivity  Json?
+  balance       Float?
+  stash         Float?
+  equity        Float?
   visibility    Visibility @default(PRIVATE)
   fieldVisibility DayVisibility?
   personIds     String[]  @default([]) @db.ObjectId
@@ -464,6 +468,12 @@ type Ticker {
   taskId String?
   profit Float?
   prize Float?
+}
+
+type ListProductivity {
+  totalTasks Int
+  completedTasks Int
+  percentage Float
 }
 
 type UserReference {

@@ -219,7 +219,7 @@ export async function POST(req: NextRequest) {
     // Get user from database
     const user = await prisma.user.findUnique({
       where: { userId },
-      select: { id: true }
+      select: { id: true, availableBalance: true, stash: true, equity: true }
     })
 
     if (!user) {
@@ -371,7 +371,17 @@ export async function POST(req: NextRequest) {
         data: updateData
       })
     } else {
-      // Create new day
+      // Create new day - store user's availableBalance, stash, and equity when first created
+      const userBalance = typeof user.availableBalance === 'number' 
+        ? user.availableBalance 
+        : (typeof user.availableBalance === 'string' ? parseFloat(user.availableBalance || '0') : 0)
+      const userStash = typeof user.stash === 'number' 
+        ? user.stash 
+        : (typeof user.stash === 'string' ? parseFloat(user.stash || '0') : 0)
+      const userEquity = typeof user.equity === 'number' 
+        ? user.equity 
+        : (typeof user.equity === 'string' ? parseFloat(user.equity || '0') : 0)
+      
       day = await prisma.day.create({
         data: {
           userId: user.id,
@@ -382,6 +392,9 @@ export async function POST(req: NextRequest) {
           eventIds: eventIds,
           analysis: analysisData,
           average: moodAverage,
+          balance: userBalance,
+          stash: userStash,
+          equity: userEquity,
           week: weekNumber,
           month: month,
           quarter: quarter,

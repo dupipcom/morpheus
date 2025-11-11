@@ -533,11 +533,7 @@ export const SteadyTasks = () => {
   }
 
   if (steadyTasks.length === 0) {
-    return (
-      <div className="text-center text-muted-foreground py-8">
-        No tasks with status "steady" or "in progress" found.
-      </div>
-    )
+    return null
   }
 
   // Limit tasks: 1 on mobile (expandable to 6), 8 on desktop

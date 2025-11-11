@@ -3,6 +3,7 @@ import { currentUser, auth } from '@clerk/nextjs/server'
 // Helpers and constants removed - no longer needed for entries
 // Entry utils removed - data now stored in Day model
 import { recalculateUserBudget } from "@/lib/budgetUtils"
+import { getWeekNumber } from "@/app/helpers"
 
 export async function GET(req: Request) {
   const { userId } = await auth()
@@ -185,6 +186,52 @@ export async function POST(req: Request) {
       where: { id: user.id },
     })
     user = await getUser()
+    
+    // Update current day entry with new balance, stash, and equity
+    try {
+      const today = new Date()
+      const dateISO = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+      
+      const existingDay = await prisma.day.findFirst({
+        where: {
+          userId: user.id,
+          date: dateISO
+        }
+      })
+      
+      if (existingDay) {
+        await prisma.day.update({
+          where: { id: existingDay.id },
+          data: {
+            balance: newAvailableBalance,
+            stash: currentStash,
+            equity: newEquity
+          }
+        })
+      } else {
+        // Create new day entry if it doesn't exist
+        const [_, weekNumber] = getWeekNumber(today)
+        const month = today.getMonth() + 1
+        const quarter = Math.ceil(month / 3)
+        const semester = month <= 6 ? 1 : 2
+        await prisma.day.create({
+          data: {
+            userId: user.id,
+            date: dateISO,
+            balance: newAvailableBalance,
+            stash: currentStash,
+            equity: newEquity,
+            week: typeof weekNumber === 'number' ? weekNumber : Number(weekNumber) || 1,
+            month: month,
+            quarter: quarter,
+            semester: semester
+          }
+        })
+      }
+    } catch (dayError) {
+      // Log error but don't fail the request if Day update fails
+      console.error('Error updating Day entry with balance:', dayError)
+    }
   }
 
 
@@ -201,17 +248,64 @@ export async function POST(req: Request) {
     const newAvailableBalance = Math.max(0, currentAvailableBalance - currentStash)
     const newTotalEarnings = Math.max(0, currentTotalEarnings + currentStash)
     const newEquity = Math.max(0, newAvailableBalance) // Equity = availableBalance since stash is 0
+    const newStash = 0
     
     await prisma.user.update({
       data: {
         availableBalance: newAvailableBalance,
-        stash: 0 as number,
+        stash: newStash as number,
         totalEarnings: newTotalEarnings as number,
         equity: newEquity as number,
       },
       where: { id: user.id },
     })
     user = await getUser()
+    
+    // Update current day entry with new balance, stash, and equity
+    try {
+      const today = new Date()
+      const dateISO = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+      
+      const existingDay = await prisma.day.findFirst({
+        where: {
+          userId: user.id,
+          date: dateISO
+        }
+      })
+      
+      if (existingDay) {
+        await prisma.day.update({
+          where: { id: existingDay.id },
+          data: {
+            balance: newAvailableBalance,
+            stash: newStash,
+            equity: newEquity
+          }
+        })
+      } else {
+        // Create new day entry if it doesn't exist
+        const [_, weekNumber] = getWeekNumber(today)
+        const month = today.getMonth() + 1
+        const quarter = Math.ceil(month / 3)
+        const semester = month <= 6 ? 1 : 2
+        await prisma.day.create({
+          data: {
+            userId: user.id,
+            date: dateISO,
+            balance: newAvailableBalance,
+            stash: newStash,
+            equity: newEquity,
+            week: typeof weekNumber === 'number' ? weekNumber : Number(weekNumber) || 1,
+            month: month,
+            quarter: quarter,
+            semester: semester
+          }
+        })
+      }
+    } catch (dayError) {
+      // Log error but don't fail the request if Day update fails
+      console.error('Error updating Day entry with balance:', dayError)
+    }
   }
 
   if (data?.settings) {

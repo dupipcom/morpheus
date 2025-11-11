@@ -8,6 +8,7 @@ import { recalculateUserBudget } from '@/lib/budgetUtils'
 import { calculateTaskEarnings, calculateBudgetConsumption, initializeRemainingBudget, getPerCompleterPrize, getPerCompleterProfit, getProfitPerTask, calculateStashAndProfitDeltas, calculateUpdatedUserValues } from '@/lib/earningsUtils'
 import { getWeekNumber } from '@/app/helpers'
 import { randomBytes } from 'crypto'
+import { Productivity, ListProductivity } from '@/lib/types'
 
 // Helper function to generate a unique MongoDB ObjectId
 function generateObjectId(): string {
@@ -248,11 +249,97 @@ export async function POST(request: NextRequest) {
 
     // Find user by userId
     const user = await prisma.user.findUnique({
-      where: { userId: userId }
+      where: { userId: userId },
+      select: { id: true, availableBalance: true, stash: true, equity: true }
     })
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
+    }
+
+    // Helper function to get current user balance values
+    const getUserBalanceValues = () => {
+      const userBalance = typeof user.availableBalance === 'number' 
+        ? user.availableBalance 
+        : (typeof user.availableBalance === 'string' ? parseFloat(user.availableBalance || '0') : 0)
+      const userStash = typeof user.stash === 'number' 
+        ? user.stash 
+        : (typeof user.stash === 'string' ? parseFloat(user.stash || '0') : 0)
+      const userEquity = typeof user.equity === 'number' 
+        ? user.equity 
+        : (typeof user.equity === 'string' ? parseFloat(user.equity || '0') : 0)
+      return { userBalance, userStash, userEquity }
+    }
+
+    // Helper function to calculate productivity for a list
+    // totalTasks: count from list tasks (all tasks in the list)
+    // completedTasks: count from day tasks (only tasks stored in day.tasks that are done)
+    const calculateListProductivity = (listId: string, totalTasksFromList: number, dayTasks: any[]): ListProductivity => {
+      const totalTasks = totalTasksFromList || 1
+      const completedTasks = dayTasks.filter((t: any) => t.status === 'done').length
+      const percentage = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0
+      return {
+        totalTasks,
+        completedTasks,
+        percentage
+      }
+    }
+
+    // Helper function to calculate overall progress from productivity object
+    const calculateOverallProgress = (productivity: Productivity | null | undefined): number => {
+      if (!productivity || typeof productivity !== 'object') return 0
+      
+      const listIds = Object.keys(productivity)
+      if (listIds.length === 0) return 0
+      
+      const totalPercentage = listIds.reduce((sum, listId) => {
+        const listProd = productivity[listId]
+        if (listProd && typeof listProd === 'object' && typeof listProd.percentage === 'number') {
+          return sum + listProd.percentage
+        }
+        return sum
+      }, 0)
+      
+      return totalPercentage / listIds.length
+    }
+
+    // Helper function to get task key for matching
+    const getTaskKey = (t: any) => (t?.id || t?.localeKey || (typeof t?.name === 'string' ? t.name.toLowerCase() : '')) as string
+
+    // Helper function to update productivity for a list and recalculate overall progress
+    // Uses dayTasks (tasks stored in day.tasks) filtered by matching tasks from the list
+    const updateProductivityForList = (
+      existingProductivity: Productivity | null | undefined,
+      listId: string,
+      listTasks: any[], // Tasks from the list (for total count and matching)
+      dayTasks: any[] // Tasks stored in day.tasks for this day
+    ): { productivity: Productivity; progress: number } => {
+      // Total tasks count from the list
+      const totalTasksFromList = listTasks.length || 1
+      
+      // Create a set of task keys from the list to match against day tasks
+      const listTaskKeys = new Set(
+        listTasks.map((t: any) => {
+          const key = getTaskKey(t)
+          return typeof key === 'string' ? key.toLowerCase() : key
+        })
+      )
+      
+      // Filter day tasks to only include those that match tasks from this list
+      const tasksForThisList = dayTasks.filter((dayTask: any) => {
+        const dayTaskKey = getTaskKey(dayTask)
+        const dayTaskKeyLower = typeof dayTaskKey === 'string' ? dayTaskKey.toLowerCase() : dayTaskKey
+        return listTaskKeys.has(dayTaskKeyLower)
+      })
+      
+      // Calculate productivity: totalTasks from list, completedTasks from day tasks
+      const listProductivity = calculateListProductivity(listId, totalTasksFromList, tasksForThisList)
+      const updatedProductivity: Productivity = {
+        ...(existingProductivity && typeof existingProductivity === 'object' ? existingProductivity : {}),
+        [listId]: listProductivity
+      }
+      const overallProgress = calculateOverallProgress(updatedProductivity)
+      return { productivity: updatedProductivity, progress: overallProgress }
     }
 
     // Helper function to aggregate completer earnings from taskList collection, filtering by logged-in user
@@ -809,9 +896,6 @@ export async function POST(request: NextRequest) {
             const existingTasks = Array.isArray(existingDay.tasks) ? existingDay.tasks : []
             const unNames = new Set(justUncompletedNames.map((s: string) => (s || '').toLowerCase()))
             
-            // Helper to match tasks reliably
-            const getTaskKey = (t: any) => (t?.id || t?.localeKey || (typeof t?.name === 'string' ? t.name.toLowerCase() : '')) as string
-            
             // Remove uncompleted tasks from day.tasks using taskId (id, localeKey, or name)
             const tasksToRemove = existingTasks.filter((t: any) => {
               const taskKey = getTaskKey(t)
@@ -840,13 +924,6 @@ export async function POST(request: NextRequest) {
               }
             })
 
-            // Calculate progress reduction for removed tasks that were "done"
-            const totalTasks = (taskList.tasks as any[])?.length || (taskList.templateTasks as any[])?.length || 1
-            const doneTasksRemoved = tasksToRemove.filter((t: any) => t.status === 'done')
-            const progressReduction = doneTasksRemoved.length > 0 ? (doneTasksRemoved.length / totalTasks) : 0
-            const currentProgress = typeof existingDay.progress === 'number' ? existingDay.progress : 0
-            const newProgress = Math.max(0, currentProgress - progressReduction)
-
             // Calculate week, month, quarter, semester from date
             const dateObj = new Date(dateISO)
             const [_, weekNumberResult] = getWeekNumber(dateObj)
@@ -873,12 +950,28 @@ export async function POST(request: NextRequest) {
               return t.listId !== taskList.id
             })
 
+            // Update productivity for this list based on tasks in day.tasks
+            const existingProductivity = (existingDay.productivity as Productivity | null) || null
+            const { productivity: updatedProductivity, progress: newProgress } = updateProductivityForList(
+              existingProductivity,
+              taskList.id,
+              taskList.tasks as any[], // List tasks for matching
+              updatedTasks // Day tasks to count from
+            )
+
+            // Get current user balance values
+            const { userBalance, userStash, userEquity } = getUserBalanceValues()
+            
             await prisma.day.update({
               where: { id: existingDay.id },
               data: {
                 tasks: updatedTasks as any,
                 ticker: updatedTickers as any,
+                productivity: updatedProductivity as any,
                 progress: newProgress,
+                balance: userBalance,
+                stash: userStash,
+                equity: userEquity,
                 week: weekNumber,
                 month: month,
                 quarter: quarter,
@@ -982,11 +1075,14 @@ export async function POST(request: NextRequest) {
               return status === 'done'
             })
             
-            // Calculate progress contribution for completed tasks
-            const totalTasks = (taskList.tasks as any[])?.length || (taskList.templateTasks as any[])?.length || 1
-            const progressContribution = doneTasks.length > 0 ? (doneTasks.length / totalTasks) : 0
-            const currentProgress = typeof existingDay.progress === 'number' ? existingDay.progress : 0
-            const newProgress = currentProgress + progressContribution
+            // Update productivity for this list based on tasks in day.tasks
+            const existingProductivity = (existingDay.productivity as Productivity | null) || null
+            const { productivity: updatedProductivity, progress: newProgress } = updateProductivityForList(
+              existingProductivity,
+              taskList.id,
+              taskList.tasks as any[], // List tasks for matching
+              updatedTasks // Day tasks to count from
+            )
             
             if (doneTasks.length > 0) {
               // Calculate profit and prize from task completions for this date
@@ -1008,12 +1104,19 @@ export async function POST(request: NextRequest) {
               const filteredTickers = existingTickers.filter((t: any) => !t.taskId || !newTaskIds.has(t.taskId))
               const updatedTickers = [...filteredTickers, ...newTickers]
               
+              // Get current user balance values
+              const { userBalance, userStash, userEquity } = getUserBalanceValues()
+              
               await prisma.day.update({
                 where: { id: existingDay.id },
                 data: {
                   tasks: updatedTasks as any,
                   ticker: updatedTickers as any,
+                  productivity: updatedProductivity as any,
                   progress: newProgress,
+                  balance: userBalance,
+                  stash: userStash,
+                  equity: userEquity,
                   week: weekNumber,
                   month: month,
                   quarter: quarter,
@@ -1021,29 +1124,28 @@ export async function POST(request: NextRequest) {
                 }
               })
             } else {
-              // No done tasks, but still update progress if any tasks were added/updated
-              // Calculate progress contribution for any newly added tasks with status "done" in existing tasks
-              const totalTasks = (taskList.tasks as any[])?.length || (taskList.templateTasks as any[])?.length || 1
-              const existingDoneTasks = updatedTasks.filter((t: any) => t.status === 'done')
-              const existingDoneCount = existingDoneTasks.length
-              const currentProgress = typeof existingDay.progress === 'number' ? existingDay.progress : 0
-              // Only update progress if we're adding new done tasks (not just updating existing ones)
-              const newlyAddedDoneTasks = tasksToCopy.filter((task: any) => {
-                const status = task.status || 'open'
-                return status === 'done' && !existingTasks.some((et: any) => {
-                  const etKey = getTaskKey(et)
-                  const taskKey = getTaskKey(task)
-                  return etKey === taskKey
-                })
-              })
-              const progressContribution = newlyAddedDoneTasks.length > 0 ? (newlyAddedDoneTasks.length / totalTasks) : 0
-              const newProgress = currentProgress + progressContribution
+              // No done tasks, but still update productivity if any tasks were added/updated
+              // Update productivity for this list based on tasks in day.tasks
+              const existingProductivity = (existingDay.productivity as Productivity | null) || null
+              const { productivity: updatedProductivity, progress: newProgress } = updateProductivityForList(
+                existingProductivity,
+                taskList.id,
+                taskList.tasks as any[], // List tasks for matching
+                updatedTasks // Day tasks to count from
+              )
+              
+              // Get current user balance values
+              const { userBalance, userStash, userEquity } = getUserBalanceValues()
               
               await prisma.day.update({
                 where: { id: existingDay.id },
                 data: {
                   tasks: updatedTasks as any,
+                  productivity: updatedProductivity as any,
                   progress: newProgress,
+                  balance: userBalance,
+                  stash: userStash,
+                  equity: userEquity,
                   week: weekNumber,
                   month: month,
                   quarter: quarter,
@@ -1087,9 +1189,13 @@ export async function POST(request: NextRequest) {
             const doneTasks = tasksForDay.filter((task: any) => task.status === 'done')
             let ticker: any[] = []
             
-            // Calculate progress contribution for completed tasks
-            const totalTasks = (taskList.tasks as any[])?.length || (taskList.templateTasks as any[])?.length || 1
-            const progressContribution = doneTasks.length > 0 ? (doneTasks.length / totalTasks) : 0
+            // Calculate productivity for this list based on tasks in day.tasks
+            const { productivity: newProductivity, progress: newProgress } = updateProductivityForList(
+              null,
+              taskList.id,
+              taskList.tasks as any[], // List tasks for matching
+              tasksForDay // Day tasks to count from
+            )
             
             if (doneTasks.length > 0) {
               // Calculate profit and prize from task completions for this date
@@ -1119,13 +1225,28 @@ export async function POST(request: NextRequest) {
               ticker = Array.from(taskIdMap.values())
             }
 
+            // Get user's availableBalance, stash, and equity for new day
+            const userBalance = typeof user.availableBalance === 'number' 
+              ? user.availableBalance 
+              : (typeof user.availableBalance === 'string' ? parseFloat(user.availableBalance || '0') : 0)
+            const userStash = typeof user.stash === 'number' 
+              ? user.stash 
+              : (typeof user.stash === 'string' ? parseFloat(user.stash || '0') : 0)
+            const userEquity = typeof user.equity === 'number' 
+              ? user.equity 
+              : (typeof user.equity === 'string' ? parseFloat(user.equity || '0') : 0)
+            
             await prisma.day.create({
               data: {
                 userId: user.id,
                 date: dateISO,
                 tasks: tasksForDay as any,
                 ticker: ticker as any,
-                progress: progressContribution,
+                productivity: newProductivity as any,
+                progress: newProgress,
+                balance: userBalance,
+                stash: userStash,
+                equity: userEquity,
                 week: weekNumber,
                 month: month,
                 quarter: quarter,
@@ -1387,13 +1508,6 @@ export async function POST(request: NextRequest) {
                 return key !== taskKeyLower && key !== taskKey
               })
 
-              // Calculate progress reduction if the removed task was "done"
-              const totalTasks = (taskListToUpdate.tasks as any[])?.length || (taskListToUpdate.templateTasks as any[])?.length || 1
-              const wasDone = taskBeingRemoved?.status === 'done'
-              const progressReduction = wasDone ? (1 / totalTasks) : 0
-              const currentProgress = typeof existingDay.progress === 'number' ? existingDay.progress : 0
-              const newProgress = Math.max(0, currentProgress - progressReduction)
-
               // Calculate week, month, quarter, semester from date
               const dateObj = new Date(dateISO)
               const [_, weekNumberResult] = getWeekNumber(dateObj)
@@ -1414,12 +1528,28 @@ export async function POST(request: NextRequest) {
                 return t.listId !== taskListToUpdate.id
               })
 
+              // Update productivity for this list based on tasks in day.tasks
+              const existingProductivity = (existingDay.productivity as Productivity | null) || null
+              const { productivity: updatedProductivity, progress: newProgress } = updateProductivityForList(
+                existingProductivity,
+                taskListToUpdate.id,
+                taskListToUpdate.tasks as any[], // List tasks for matching
+                updatedTasks // Day tasks to count from
+              )
+
+              // Get current user balance values
+              const { userBalance, userStash, userEquity } = getUserBalanceValues()
+
               await prisma.day.update({
                 where: { id: existingDay.id },
                 data: {
                   tasks: updatedTasks as any,
                   ticker: updatedTickers as any,
+                  productivity: updatedProductivity as any,
                   progress: newProgress,
+                  balance: userBalance,
+                  stash: userStash,
+                  equity: userEquity,
                   week: weekNumber,
                   month: month,
                   quarter: quarter,
@@ -1508,17 +1638,6 @@ export async function POST(request: NextRequest) {
               const existingTickers = Array.isArray(existingDay.ticker) ? existingDay.ticker : []
               let updatedTickers = existingTickers
               
-              // Calculate progress contribution if task is newly completed
-              const totalTasks = (taskListToUpdate.tasks as any[])?.length || (taskListToUpdate.templateTasks as any[])?.length || 1
-              const currentProgress = typeof existingDay.progress === 'number' ? existingDay.progress : 0
-              const wasAlreadyDone = existingTasks.some((t: any) => {
-                const key = getTaskKey(t)
-                return (key === taskKeyLower || key === taskKey) && t.status === 'done'
-              })
-              const isNewlyDone = currentStatus === 'done' && !wasAlreadyDone
-              const progressContribution = isNewlyDone ? (1 / totalTasks) : 0
-              const newProgress = currentProgress + progressContribution
-              
               if (currentStatus === 'done') {
                 // Calculate profit and prize from task completions for this date
                 const aggregated = await aggregateCompleterEarningsFromTaskList(taskListToUpdate.id, user.id, year, dateISO)
@@ -1537,12 +1656,28 @@ export async function POST(request: NextRequest) {
                 updatedTickers = [...filteredTickers, newTicker]
               }
 
+              // Update productivity for this list based on tasks in day.tasks
+              const existingProductivity = (existingDay.productivity as Productivity | null) || null
+              const { productivity: updatedProductivity, progress: newProgress } = updateProductivityForList(
+                existingProductivity,
+                taskListToUpdate.id,
+                taskListToUpdate.tasks as any[], // List tasks for matching
+                updatedTasks // Day tasks to count from
+              )
+
+              // Get current user balance values
+              const { userBalance, userStash, userEquity } = getUserBalanceValues()
+
               await prisma.day.update({
                 where: { id: existingDay.id },
                 data: {
                   tasks: updatedTasks as any,
                   ticker: updatedTickers as any,
+                  productivity: updatedProductivity as any,
                   progress: newProgress,
+                  balance: userBalance,
+                  stash: userStash,
+                  equity: userEquity,
                   week: weekNumber,
                   month: month,
                   quarter: quarter,
@@ -1552,10 +1687,6 @@ export async function POST(request: NextRequest) {
             } else {
               // Only add ticker entry if status is "done"
               let ticker: any[] = []
-              
-              // Calculate progress contribution if task is completed
-              const totalTasks = (taskListToUpdate.tasks as any[])?.length || (taskListToUpdate.templateTasks as any[])?.length || 1
-              const progressContribution = currentStatus === 'done' ? (1 / totalTasks) : 0
               
               if (currentStatus === 'done') {
                 // Calculate profit and prize from task completions for this date
@@ -1571,6 +1702,25 @@ export async function POST(request: NextRequest) {
                 }]
               }
 
+              // Calculate productivity for this list based on tasks in day.tasks
+              const { productivity: newProductivity, progress: newProgress } = updateProductivityForList(
+                null,
+                taskListToUpdate.id,
+                taskListToUpdate.tasks as any[], // List tasks for matching
+                [taskForDay] // Day tasks to count from (single task for new day)
+              )
+
+              // Get user's availableBalance, stash, and equity for new day
+              const userBalance = typeof user.availableBalance === 'number' 
+                ? user.availableBalance 
+                : (typeof user.availableBalance === 'string' ? parseFloat(user.availableBalance || '0') : 0)
+              const userStash = typeof user.stash === 'number' 
+                ? user.stash 
+                : (typeof user.stash === 'string' ? parseFloat(user.stash || '0') : 0)
+              const userEquity = typeof user.equity === 'number' 
+                ? user.equity 
+                : (typeof user.equity === 'string' ? parseFloat(user.equity || '0') : 0)
+              
               // Create new day with the task
               await prisma.day.create({
                 data: {
@@ -1578,7 +1728,11 @@ export async function POST(request: NextRequest) {
                   date: dateISO,
                   tasks: [taskForDay] as any,
                   ticker: ticker as any,
-                  progress: progressContribution,
+                  productivity: newProductivity as any,
+                  progress: newProgress,
+                  balance: userBalance,
+                  stash: userStash,
+                  equity: userEquity,
                   week: weekNumber,
                   month: month,
                   quarter: quarter,
