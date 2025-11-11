@@ -8,8 +8,13 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
     const { userId } = await auth()
 
     // Find the profile to get the user ID
-    const profile = await prisma.profile.findUnique({
-      where: { userName },
+    const profile = await prisma.profile.findFirst({
+      where: {
+        data: {
+          path: ['username', 'value'],
+          equals: userName
+        }
+      },
       include: {
         user: {
           select: {

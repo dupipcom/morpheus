@@ -71,6 +71,8 @@ model Day {
   noteIds      String[]  @default([]) @db.ObjectId
   commentIds   String[]  @default([]) @db.ObjectId
   likeIds      String[]  @default([]) @db.ObjectId
+
+  @@unique([userId, date])
 }
 
 model Document {
@@ -439,7 +441,6 @@ type Task {
   createdAt String?
   completedOn String?
   completers Completer[]
-  taskStatus String?
   dueDate DateTime?
   budget Float?
   visibility Visibility?

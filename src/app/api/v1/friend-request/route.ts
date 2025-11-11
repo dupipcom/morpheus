@@ -38,8 +38,13 @@ export async function POST(req: NextRequest) {
     }
 
     // Check if target user exists by username
-    const targetProfile = await prisma.profile.findUnique({
-      where: { userName: targetUserName }
+    const targetProfile = await prisma.profile.findFirst({
+      where: {
+        data: {
+          path: ['username', 'value'],
+          equals: targetUserName
+        }
+      }
     })
     const targetUser = targetProfile ? await prisma.user.findUnique({
       where: { id: targetProfile.userId }

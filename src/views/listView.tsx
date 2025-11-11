@@ -226,7 +226,7 @@ const formatDateLocal = (date: Date): string => {
             dateBucket.forEach((t: any) => {
               const k = keyOf(t)
               if (!k) return
-              if (t.status === 'Done' || (t.count || 0) >= (t.times || 1)) {
+              if (t.status === 'done' || (t.count || 0) >= (t.times || 1)) {
                 if (!closedTasksByKey[k]) {
                   closedTasksByKey[k] = t
                   allClosedTasks.push(t)
@@ -301,7 +301,7 @@ const formatDateLocal = (date: Date): string => {
         
         // Add new tasks to base (they'll be saved to completedTasks on first completion)
         if (newTasks.length > 0) {
-          base = [...base, ...newTasks.map((t: any) => ({ ...t, count: 0, status: 'Open' }))]
+          base = [...base, ...newTasks.map((t: any) => ({ ...t, count: 0, status: 'open' }))]
         }
       } else {
         // Fall back to tasklist.tasks or templateTasks
@@ -378,16 +378,15 @@ const formatDateLocal = (date: Date): string => {
           // Task is completed - use closedTask data
           const times = Number(closedTask?.times || t?.times || 1)
           const completedCount = Array.isArray(closedTask?.completers) ? closedTask.completers.length : Number(closedTask?.count || 0)
-          const status = completedCount >= times ? 'Done' : 'Open'
-          const taskStatus = closedTask?.taskStatus || t?.taskStatus || (status === 'Done' ? 'done' : (completedCount > 0 ? 'in progress' : undefined))
+          const status = completedCount >= times ? 'done' : 'open'
+          const taskStatus = closedTask?.status || t?.status || (status === 'done' ? 'done' : (completedCount > 0 ? 'in progress' : undefined))
           
           return { 
             ...t, // Start with base task
             ...closedTask, // Override with closedTask data (takes precedence)
-            status, 
+            status: taskStatus, 
             count: Math.min(completedCount || 0, times || 1), 
-            completers: closedTask?.completers,
-            taskStatus
+            completers: closedTask?.completers
           }
         }
         
@@ -424,7 +423,7 @@ const formatDateLocal = (date: Date): string => {
       return [...overlayed, ...additionalClosedTasks, ...dedupEphemeral]
     }, [selectedTaskList, year, date, isWeeklyList, getWeekDates, selectedDate, datesToCheck])
 
-    const doneNames = useMemo(() => mergedTasks.filter((t: any) => t.status === 'Done').map((t: any) => t.name), [mergedTasks])
+    const doneNames = useMemo(() => mergedTasks.filter((t: any) => t.status === 'done').map((t: any) => t.name), [mergedTasks])
     const [values, setValues] = useState<string[]>(doneNames)
     const [prevValues, setPrevValues] = useState<string[]>(doneNames)
     useEffect(() => { setValues(doneNames); setPrevValues(doneNames) }, [doneNames])
@@ -434,10 +433,10 @@ const formatDateLocal = (date: Date): string => {
 
     // Sort tasks: by status order first, then incomplete before completed. Use current toggles as well.
     const sortedMergedTasks = useMemo(() => {
-      const isDone = (t: any) => (t?.status === 'Done') || values.includes(t?.name)
+      const isDone = (t: any) => (t?.status === 'done') || values.includes(t?.name)
       const getTaskStatus = (t: any): TaskStatus => {
         const key = t?.id || t?.localeKey || t?.name
-        return taskStatuses[key] || (t?.taskStatus as TaskStatus) || 'open'
+        return taskStatuses[key] || (t?.status as TaskStatus) || 'open'
       }
 
       return [...mergedTasks].sort((a: any, b: any) => {
@@ -501,7 +500,7 @@ const formatDateLocal = (date: Date): string => {
             updateTaskStatus: true,
             taskListId: selectedTaskList.id,
             taskKey: key,
-            taskStatus: effectiveStatus,
+            status: effectiveStatus,
             date: date // Include current date so task is copied to completedTasks
           })
         })
@@ -526,18 +525,18 @@ const formatDateLocal = (date: Date): string => {
               // This is the task being marked as done
               if ((action.times - (action.count || 0)) === 1) {
                 c.count = (c.count || 0) + 1
-                c.status = 'Done'
+                c.status = 'done'
               } else if ((action.times - (action.count || 0)) >= 1) {
                 c.count = (c.count || 0) + 1
               }
             } else if (newValues.includes(action.name) && (action.times - (action.count || 0)) === 1) {
               c.count = (c.count || 0) + 1
-              c.status = 'Done'
+              c.status = 'done'
             } else if (newValues.includes(action.name) && (action.times - (action.count || 0)) >= 1) {
               c.count = (c.count || 0) + 1
             }
-            if ((c.count || 0) > 0 && c.status !== 'Done') {
-              c.status = 'Open'
+            if ((c.count || 0) > 0 && c.status !== 'done') {
+              c.status = 'open'
             }
             return c
           })
@@ -562,7 +561,7 @@ const formatDateLocal = (date: Date): string => {
           const ephemeralTask = ephemerals.find((e: any) => e.name === taskName)
           if (ephemeralTask) {
             const updatedEph = nextActions.find((a: any) => a.name === taskName)
-            if (updatedEph && updatedEph.status === 'Done') {
+            if (updatedEph && updatedEph.status === 'done') {
               // Fully completed - close it
               await fetch('/api/v1/tasklists', {
                 method: 'POST',
@@ -601,16 +600,16 @@ const formatDateLocal = (date: Date): string => {
             if (action.name === taskName && (c.times || 1) <= (c.count || 0)) {
               if ((c.count || 0) > 0) {
                 c.count = (c.count || 0) - 1
-                c.status = 'Open'
+                c.status = 'open'
               }
             } else if (newValues.includes(action.name) && (action.times - (action.count || 0)) === 1) {
               c.count = (c.count || 0) + 1
-              c.status = 'Done'
+              c.status = 'done'
             } else if (newValues.includes(action.name) && (action.times - (action.count || 0)) >= 1) {
               c.count = (c.count || 0) + 1
             }
-            if ((c.count || 0) > 0 && c.status !== 'Done') {
-              c.status = 'Open'
+            if ((c.count || 0) > 0 && c.status !== 'done') {
+              c.status = 'open'
             }
             return c
           })
@@ -668,7 +667,7 @@ const formatDateLocal = (date: Date): string => {
       // Can't decrement below 0
       if (currentCount <= 0) return
 
-      // Optimistic UI update for taskStatus
+      // Optimistic UI update for status
       const key = task?.id || task?.localeKey || task?.name
       const newCount = currentCount - 1
       const times = task?.times || 1
@@ -698,21 +697,20 @@ const formatDateLocal = (date: Date): string => {
           const c = { ...action }
           if (action.name === taskName) {
             c.count = Math.max(0, (c.count || 0) - 1)
-            // Update status and taskStatus based on new count
+            // Update status based on new count
             if (c.count >= (c.times || 1)) {
-              c.status = 'Done'
-              c.taskStatus = 'done'
+              c.status = 'done'
             } else {
-              c.status = 'Open'
               // Preserve manually set status or default based on count
               const key = action?.id || action?.localeKey || action?.name
               const existingStatus = taskStatuses[key]
               if (c.count > 0 && (!existingStatus || existingStatus === 'done' || existingStatus === 'open')) {
-                c.taskStatus = 'in progress'
+                c.status = 'in progress'
               } else if (c.count === 0) {
-                c.taskStatus = 'open'
+                c.status = 'open'
+              } else {
+                c.status = existingStatus || 'open'
               }
-              // Otherwise preserve existing taskStatus
             }
           }
           return c
@@ -797,11 +795,11 @@ const formatDateLocal = (date: Date): string => {
       mergedTasks.forEach((task: any) => {
         const key = task?.id || task?.localeKey || task?.name
         
-        // Use taskStatus from the task object if available
-        if (task.taskStatus && STATUS_OPTIONS.includes(task.taskStatus as TaskStatus)) {
-          statuses[key] = task.taskStatus as TaskStatus
-        } else if (task.status === 'Done') {
-          // If task is completed but doesn't have taskStatus, default to 'done'
+        // Use status from the task object if available
+        if (task.status && STATUS_OPTIONS.includes(task.status as TaskStatus)) {
+          statuses[key] = task.status as TaskStatus
+        } else if (task.status === 'done') {
+          // If task is completed, default to 'done'
           statuses[key] = 'done'
         } else if ((task.count || 0) > 0 && (task.count || 0) < (task.times || 1)) {
           // If task has partial progress, mark as 'in progress'
@@ -861,7 +859,7 @@ const formatDateLocal = (date: Date): string => {
             const newCount = currentCount + 1
             
             // Check if there's a manually set status to preserve
-            const existingStatus = prev[key] || (task?.taskStatus as TaskStatus)
+            const existingStatus = prev[key] || (task?.status as TaskStatus)
             
             // Determine the appropriate status based on times and count
             let taskStatus: TaskStatus = 'done'
@@ -909,37 +907,36 @@ const formatDateLocal = (date: Date): string => {
           c.count = (c.count || 0) + 1
           // Only mark as Done if count reaches times
           if (c.count >= (c.times || 1)) {
-            c.status = 'Done'
-            c.taskStatus = 'done'
+            c.status = 'done'
           } else {
-            c.status = 'Open'
+            c.status = 'open'
             // Preserve manually set status if it exists (except 'open' and 'done')
-            const manualStatus = c.taskStatus
+            const manualStatus = c.status
             if (!manualStatus || manualStatus === 'open' || manualStatus === 'done') {
-              c.taskStatus = 'in progress'
+              c.status = 'in progress'
             }
-            // Otherwise keep the existing taskStatus
+            // Otherwise keep the existing status
           }
         } else if (isFullyCompleted) {
           // Task is in values but wasn't just clicked (was already completed)
-          // Ensure taskStatus is 'done'
-          if (c.status === 'Done') {
-            c.taskStatus = 'done'
+          // Ensure status is 'done'
+          if (c.status === 'done') {
+            c.status = 'done'
           }
         } else {
           // Task is not in values - check if it should be uncompleted
           if (!adjustedValues.includes(action.name) && (c.times || 1) <= (c.count || 0)) {
             if ((c.count || 0) > 0) {
               c.count = (c.count || 0) - 1
-              c.status = 'Open'
-              c.taskStatus = 'open'
+              c.status = 'open'
+              c.status = 'open'
             }
           }
         }
-        if ((c.count || 0) > 0 && c.status !== 'Done') {
-          c.status = 'Open'
-          if (!c.taskStatus || c.taskStatus === 'done') {
-            c.taskStatus = (c.count || 0) > 0 ? 'in progress' : 'open'
+        if ((c.count || 0) > 0 && c.status !== 'done') {
+          c.status = 'open'
+          if (!c.status || c.status === 'done') {
+            c.status = (c.count || 0) > 0 ? 'in progress' : 'open'
           }
         }
         return c
@@ -977,7 +974,7 @@ const formatDateLocal = (date: Date): string => {
         if (wasJustClicked) {
           const updatedEph = nextActions.find((a: any) => a.name === eph.name)
           
-          if (updatedEph && updatedEph.status === 'Done' && isFullyCompleted && !wasDone) {
+          if (updatedEph && updatedEph.status === 'done' && isFullyCompleted && !wasDone) {
             // Fully completed - add to close batch
             ephemeralToClose.push({ id: eph.id, count: updatedEph.count })
           } else if (updatedEph) {
@@ -1067,7 +1064,7 @@ const formatDateLocal = (date: Date): string => {
           key={`list__selected--${selectedTaskListId}--${date}`}
         >
           {sortedMergedTasks.map((task: any) => {
-            const isDone = (task?.status === 'Done') || values.includes(task?.name)
+            const isDone = (task?.status === 'done') || values.includes(task?.name)
             const lastCompleter = Array.isArray(task?.completers) && task.completers.length > 0 ? task.completers[task.completers.length - 1] : undefined
             const isCollabCompleter = lastCompleter && Array.isArray((selectedTaskList as any)?.collaborators) && (selectedTaskList as any).collaborators.includes(lastCompleter.id)
             const isOwnerCompleter = lastCompleter && Array.isArray((selectedTaskList as any)?.owners) && (selectedTaskList as any).owners.includes(lastCompleter.id)
@@ -1091,7 +1088,7 @@ const formatDateLocal = (date: Date): string => {
             let taskStatus: TaskStatus
             
             // First check if there's a manually set status
-            const storedStatus = taskStatuses[key] || (task?.taskStatus as TaskStatus)
+            const storedStatus = taskStatuses[key] || (task?.status as TaskStatus)
             
             if (values.includes(task?.name)) {
               // Task is in values (completed) - use 'done' status

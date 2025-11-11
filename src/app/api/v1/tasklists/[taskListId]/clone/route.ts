@@ -1,6 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
+import { randomBytes } from 'crypto'
+
+// Helper function to generate a unique MongoDB ObjectId
+function generateObjectId(): string {
+  // Generate a 24-character hex string (MongoDB ObjectId format)
+  return randomBytes(12).toString('hex')
+}
+
+// Helper function to ensure all tasks have unique ObjectIds when cloning
+function ensureUniqueTaskIds(tasks: any[]): any[] {
+  return tasks.map((task: any) => ({
+    ...task,
+    id: generateObjectId() // Always generate new ID when cloning
+  }))
+}
 
 export async function POST(
   request: NextRequest,
@@ -43,6 +58,13 @@ export async function POST(
     const body = await request.json().catch(() => ({}))
     const customName = body.name
 
+    // Ensure all tasks have unique ObjectIds when cloning
+    const originalTasks = (taskList.tasks as any[]) || []
+    const tasksWithUniqueIds = ensureUniqueTaskIds(originalTasks)
+    const templateTasksWithUniqueIds = Array.isArray(taskList.templateTasks) 
+      ? ensureUniqueTaskIds(taskList.templateTasks as any[])
+      : tasksWithUniqueIds
+
     // Create a new task list from the cloned tasklist
     const clonedTaskList = await prisma.list.create({
       data: {
@@ -51,8 +73,8 @@ export async function POST(
         role: 'custom', // Cloned lists are custom
         users: [{ userId: user.id, role: 'OWNER' }],
         templateId: taskList.templateId,
-        templateTasks: taskList.templateTasks as any,
-        tasks: taskList.tasks as any,
+        templateTasks: templateTasksWithUniqueIds,
+        tasks: tasksWithUniqueIds,
         ephemeralTasks: { open: [], closed: [] },
         completedTasks: {},
         budget: taskList.budget,

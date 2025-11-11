@@ -119,7 +119,7 @@ export const SteadyTasks = () => {
           dateBucket.forEach((t: any) => {
             const k = keyOf(t)
             if (!k) return
-            if (t.status !== 'Done' && (t.count || 0) < (t.times || 1)) {
+            if (t.status !== 'done' && (t.count || 0) < (t.times || 1)) {
               if (!openTasksByKey[k]) {
                 openTasksByKey[k] = t
                 openTasksFromCompleted.push(t)

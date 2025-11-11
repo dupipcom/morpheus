@@ -35,9 +35,11 @@ export async function GET(req: NextRequest) {
 
     // If a specific date is requested, return just that day
     if (date) {
-      where.date = date
       const day = await prisma.day.findFirst({
-        where,
+        where: {
+          userId: user.id,
+          date: date
+        },
         select: {
           id: true,
           date: true,
@@ -293,7 +295,8 @@ export async function POST(req: NextRequest) {
     const quarter = Math.ceil(month / 3)
     const semester = month <= 6 ? 1 : 2
 
-    // Check if day already exists
+    // Use findFirst to ensure only one day per user per date
+    // First, try to find existing day
     const existingDay = await prisma.day.findFirst({
       where: {
         userId: user.id,

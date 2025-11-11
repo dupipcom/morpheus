@@ -66,9 +66,9 @@ export async function GET(request: NextRequest) {
       } : null
 
       return {
-        ...comment,
-        user: {
-          ...comment.user,
+      ...comment,
+      user: {
+        ...comment.user,
           profile
         }
       }

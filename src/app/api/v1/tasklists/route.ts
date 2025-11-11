@@ -6,6 +6,23 @@ import { parseCookies } from '@/lib/localeUtils'
 import { getBestLocale } from '@/lib/i18n'
 import { recalculateUserBudget } from '@/lib/budgetUtils'
 import { calculateTaskEarnings, calculateBudgetConsumption, initializeRemainingBudget, getPerCompleterPrize, getPerCompleterProfit, getProfitPerTask, calculateStashAndProfitDeltas, calculateUpdatedUserValues } from '@/lib/earningsUtils'
+import { getWeekNumber } from '@/app/helpers'
+import { randomBytes } from 'crypto'
+
+// Helper function to generate a unique MongoDB ObjectId
+function generateObjectId(): string {
+  // Generate a 24-character hex string (MongoDB ObjectId format)
+  return randomBytes(12).toString('hex')
+}
+
+// Helper function to ensure all tasks have unique ObjectIds
+// When copying from template, always generate new IDs to ensure uniqueness
+function ensureUniqueTaskIds(tasks: any[], fromTemplate: boolean = false): any[] {
+  return tasks.map((task: any) => ({
+    ...task,
+    id: fromTemplate ? generateObjectId() : (task.id || generateObjectId()) // Always generate new ID when from template, otherwise only if missing
+  }))
+}
 
 // Helper function to get user's locale from request
 function getUserLocale(request: NextRequest): string {
@@ -93,6 +110,8 @@ export async function GET(request: NextRequest) {
           let translatedTasks = (tpl?.tasks as any) || []
           if (translatedTasks.length > 0) {
             translatedTasks = translateTemplateTasks(translatedTasks, translations)
+            // Ensure all tasks have unique ObjectIds when copying from template
+            translatedTasks = ensureUniqueTaskIds(translatedTasks, true)
           }
 
           await prisma.list.create({
@@ -243,6 +262,13 @@ export async function POST(request: NextRequest) {
     let translatedTasks = tasks
     if (Array.isArray(tasks) && tasks.length > 0) {
       translatedTasks = translateTemplateTasks(tasks, translations)
+      // Ensure all tasks have unique ObjectIds when copying from template
+      if (templateId) {
+        translatedTasks = ensureUniqueTaskIds(translatedTasks, true)
+      } else {
+        // Even if not from template, ensure all tasks have IDs (generate for missing ones)
+        translatedTasks = ensureUniqueTaskIds(translatedTasks, false)
+      }
     }
 
     // Get localized name if not provided and creating a default list
@@ -305,7 +331,7 @@ export async function POST(request: NextRequest) {
 
 
       const allowedKeys = new Set([
-        'id', 'name', 'categories', 'area', 'status', 'cadence', 'times', 'count', 'localeKey', 'contacts', 'things', 'favorite', 'isEphemeral', 'createdAt', 'completers', 'taskStatus'
+        'id', 'name', 'categories', 'area', 'status', 'cadence', 'times', 'count', 'localeKey', 'contacts', 'things', 'favorite', 'isEphemeral', 'createdAt', 'completers'
       ])
 
       const sanitizeTask = (task: any) => {
@@ -332,8 +358,8 @@ export async function POST(request: NextRequest) {
       
       if (Array.isArray(dateBucket)) {
         // Legacy structure: migrate to new structure
-        openTasks = dateBucket.filter((t: any) => t.status !== 'Done')
-        closedTasks = dateBucket.filter((t: any) => t.status === 'Done')
+        openTasks = dateBucket.filter((t: any) => t.status !== 'done')
+        closedTasks = dateBucket.filter((t: any) => t.status === 'done')
       } else if (dateBucket.openTasks || dateBucket.closedTasks) {
         // New structure
         openTasks = Array.isArray(dateBucket.openTasks) ? [...dateBucket.openTasks] : []
@@ -346,7 +372,7 @@ export async function POST(request: NextRequest) {
       // If first completion, copy tasks from taskList.tasks to openTasks
       if (isFirstCompletion) {
         const blueprintTasks: any[] = Array.isArray(taskList.tasks) ? (taskList.tasks as any[]) : (Array.isArray((taskList as any).templateTasks) ? ((taskList as any).templateTasks as any[]) : [])
-        openTasks = blueprintTasks.map((t: any) => sanitizeTask({ ...t, count: 0, status: 'Open' }))
+        openTasks = blueprintTasks.map((t: any) => sanitizeTask({ ...t, count: 0, status: 'open' }))
       }
 
       // Helpers to match tasks reliably even with localized names
@@ -373,7 +399,7 @@ export async function POST(request: NextRequest) {
           byKey[key] = sanitizeTask({
             ...incoming,
             count: incoming.count || 0,
-            status: incoming.status || 'Open',
+            status: incoming.status || 'open',
             completers: []
           })
         }
@@ -403,7 +429,7 @@ export async function POST(request: NextRequest) {
           delta = 1
         } else {
           // Process all incoming tasks
-          newCount = Number(incoming?.count || (incoming.status === 'Done' ? 1 : 0))
+          newCount = Number(incoming?.count || (incoming.status === 'done' ? 1 : 0))
           delta = Math.max(0, newCount - prevCompletersLen)
         }
         
@@ -427,8 +453,8 @@ export async function POST(request: NextRequest) {
         const taskRecord = sanitizeTask({
           ...existing,
           ...incoming,
-          // Preserve the status from incoming task (may be 'Open' for partial completions or 'Done' for full)
-          status: incoming.status || 'Done',
+          // Preserve the status from incoming task (may be 'open' for partial completions or 'done' for full)
+          status: incoming.status || 'done',
           completers: [...baseCompleters, ...appended],
           count: newCount
         })
@@ -448,7 +474,7 @@ export async function POST(request: NextRequest) {
             if (comps.length > 0) comps.pop()
             // Remove completedOn when reopening task
             const { completedOn, ...taskWithoutCompletedOn } = t
-            const updatedTask = { ...taskWithoutCompletedOn, status: 'Open', completers: comps, count: comps.length }
+            const updatedTask = { ...taskWithoutCompletedOn, status: 'open', completers: comps, count: comps.length }
             // Move from closedTasks to openTasks
             closedTasks.splice(i, 1)
             const key = getKey(updatedTask)
@@ -465,7 +491,7 @@ export async function POST(request: NextRequest) {
           if (comps.length > 0) comps.pop()
           // Remove completedOn when reopening task
           const { completedOn, ...taskWithoutCompletedOn } = t
-          const updatedTask = { ...taskWithoutCompletedOn, status: 'Open', completers: comps, count: comps.length }
+          const updatedTask = { ...taskWithoutCompletedOn, status: 'open', completers: comps, count: comps.length }
           const k = getKey(updatedTask)
           if (k) byKey[k] = updatedTask
         }
@@ -489,8 +515,8 @@ export async function POST(request: NextRequest) {
         const taskCount = (task as any).count || 0
         const taskTimes = (task as any).times || 1
         
-        // Task is done if status is 'Done' or count >= times
-        if (taskStatus === 'Done' || taskCount >= taskTimes) {
+        // Task is done if status is 'done' or count >= times
+        if (taskStatus === 'done' || taskCount >= taskTimes) {
           // Check if already in closedTasks
           const key = getKey(task as any)
           const alreadyClosed = finalClosedTasks.some((t: any) => getKey(t) === key)
@@ -527,7 +553,7 @@ export async function POST(request: NextRequest) {
 
       // Don't update taskList.tasks - all updates go to completedTasks[year][date].openTasks/closedTasks
 
-      // Update taskStatus in ephemeral tasks to keep them in sync
+      // Update status in ephemeral tasks to keep them in sync
       let updatedEphemeralTasks = (taskList as any).ephemeralTasks || { open: [], closed: [] }
       let ephemeralOpen = Array.isArray(updatedEphemeralTasks.open) ? updatedEphemeralTasks.open : []
       let ephemeralClosed = Array.isArray(updatedEphemeralTasks.closed) ? updatedEphemeralTasks.closed : []
@@ -537,7 +563,7 @@ export async function POST(request: NextRequest) {
         const incomingTask = incomingTasks.find((t: any) => getKey(t) === key)
         if (incomingTask) {
           const updated = { ...task }
-          if (incomingTask.taskStatus) updated.taskStatus = incomingTask.taskStatus
+          if (incomingTask.status) updated.status = incomingTask.status
           if (incomingTask.count !== undefined) updated.count = incomingTask.count
           if (incomingTask.status) updated.status = incomingTask.status
           return updated
@@ -550,7 +576,7 @@ export async function POST(request: NextRequest) {
         const incomingTask = incomingTasks.find((t: any) => getKey(t) === key)
         if (incomingTask) {
           const updated = { ...task }
-          if (incomingTask.taskStatus) updated.taskStatus = incomingTask.taskStatus
+          if (incomingTask.status) updated.status = incomingTask.status
           if (incomingTask.count !== undefined) updated.count = incomingTask.count
           if (incomingTask.status) updated.status = incomingTask.status
           return updated
@@ -767,6 +793,196 @@ export async function POST(request: NextRequest) {
         }
       }
 
+      // Update Day entry: remove uncompleted tasks, append/update completed tasks
+      // First, remove tasks that were uncompleted (they should have status "open" now)
+      if (justUncompletedNames.length > 0 && dateISO) {
+        try {
+          const existingDay = await prisma.day.findFirst({
+            where: {
+              userId: user.id,
+              date: dateISO
+            }
+          })
+
+          if (existingDay) {
+            const existingTasks = Array.isArray(existingDay.tasks) ? existingDay.tasks : []
+            const unNames = new Set(justUncompletedNames.map((s: string) => (s || '').toLowerCase()))
+            
+            // Helper to match tasks reliably
+            const getTaskKey = (t: any) => (t?.id || t?.localeKey || (typeof t?.name === 'string' ? t.name.toLowerCase() : '')) as string
+            
+            // Remove uncompleted tasks from day.tasks
+            const updatedTasks = existingTasks.filter((t: any) => {
+              const taskName = typeof t?.name === 'string' ? t.name.toLowerCase() : ''
+              return !unNames.has(taskName)
+            })
+
+            // Calculate week, month, quarter, semester from date
+            const dateObj = new Date(dateISO)
+            const [_, weekNumberResult] = getWeekNumber(dateObj)
+            const weekNumber = typeof weekNumberResult === 'number' ? weekNumberResult : Number(weekNumberResult) || 1
+            const month = dateObj.getMonth() + 1
+            const quarter = Math.ceil(month / 3)
+            const semester = month <= 6 ? 1 : 2
+
+            await prisma.day.update({
+              where: { id: existingDay.id },
+              data: {
+                tasks: updatedTasks as any,
+                week: weekNumber,
+                month: month,
+                quarter: quarter,
+                semester: semester
+              }
+            })
+          }
+        } catch (dayError) {
+          // Log error but don't fail the request if Day update fails
+          console.error('Error removing uncompleted tasks from Day entry:', dayError)
+        }
+      }
+
+      // Filter to only include tasks whose status is not "open" or "ignored"
+      const tasksToCopy = incomingTasks.filter((task: any) => {
+        const status = task.status || 'open'
+        return status !== 'open' && 
+               status !== 'ignored'
+      })
+      
+      if (tasksToCopy.length > 0 && dateISO) {
+        try {
+          // Find or create the day entry (ensure only one day per user per date)
+          const existingDay = await prisma.day.findFirst({
+            where: {
+              userId: user.id,
+              date: dateISO
+            }
+          })
+
+          // Calculate week, month, quarter, semester from date
+          const dateObj = new Date(dateISO)
+          const [_, weekNumberResult] = getWeekNumber(dateObj)
+          const weekNumber = typeof weekNumberResult === 'number' ? weekNumberResult : Number(weekNumberResult) || 1
+          const month = dateObj.getMonth() + 1
+          const quarter = Math.ceil(month / 3)
+          const semester = month <= 6 ? 1 : 2
+
+          // Helper to match tasks reliably
+          const getTaskKey = (t: any) => (t?.id || t?.localeKey || (typeof t?.name === 'string' ? t.name.toLowerCase() : '')) as string
+
+          if (existingDay) {
+            // Update existing day - append or update tasks in tasks array
+            const existingTasks = Array.isArray(existingDay.tasks) ? existingDay.tasks : []
+            const updatedTasks = [...existingTasks]
+
+            // For each task to copy, update or append to day.tasks
+            tasksToCopy.forEach((incomingTask: any) => {
+              const taskKey = getTaskKey(incomingTask)
+              const taskKeyLower = typeof taskKey === 'string' ? taskKey.toLowerCase() : taskKey
+              
+              const taskIndex = updatedTasks.findIndex((t: any) => {
+                const key = getTaskKey(t)
+                return key === taskKeyLower || key === taskKey
+              })
+
+              // Build the task object for day.tasks
+              // Use status field
+              const status = incomingTask.status || 'open'
+              const taskForDay: any = {
+                id: incomingTask.id || undefined,
+                name: incomingTask.name,
+                categories: incomingTask.categories || [],
+                area: incomingTask.area || 'self',
+                status: status,
+                cadence: incomingTask.cadence || 'daily',
+                times: incomingTask.times || 1,
+                count: incomingTask.count || 0,
+                localeKey: incomingTask.localeKey || undefined,
+                persons: incomingTask.persons || [],
+                things: incomingTask.things || [],
+                events: incomingTask.events || [],
+                notes: incomingTask.notes || [],
+                documents: incomingTask.documents || [],
+                favorite: incomingTask.favorite || false,
+                isEphemeral: incomingTask.isEphemeral || false,
+                createdAt: incomingTask.createdAt || undefined,
+                completedOn: incomingTask.completedOn || undefined,
+                completers: incomingTask.completers || [],
+                dueDate: incomingTask.dueDate || undefined,
+                budget: incomingTask.budget || undefined,
+                visibility: incomingTask.visibility || undefined,
+                quality: incomingTask.quality || undefined
+              }
+
+              if (taskIndex >= 0) {
+                // Update existing task
+                updatedTasks[taskIndex] = { ...updatedTasks[taskIndex], ...taskForDay }
+              } else {
+                // Append new task
+                updatedTasks.push(taskForDay)
+              }
+            })
+
+            await prisma.day.update({
+              where: { id: existingDay.id },
+              data: {
+                tasks: updatedTasks as any,
+                week: weekNumber,
+                month: month,
+                quarter: quarter,
+                semester: semester
+              }
+            })
+          } else {
+            // Create new day with the tasks to copy
+            // Use status field
+            const tasksForDay = tasksToCopy.map((incomingTask: any) => {
+              const status = incomingTask.status || 'open'
+              return {
+                id: incomingTask.id || undefined,
+                name: incomingTask.name,
+                categories: incomingTask.categories || [],
+                area: incomingTask.area || 'self',
+                status: status,
+                cadence: incomingTask.cadence || 'daily',
+                times: incomingTask.times || 1,
+                count: incomingTask.count || 0,
+                localeKey: incomingTask.localeKey || undefined,
+                persons: incomingTask.persons || [],
+                things: incomingTask.things || [],
+                events: incomingTask.events || [],
+                notes: incomingTask.notes || [],
+                documents: incomingTask.documents || [],
+                favorite: incomingTask.favorite || false,
+                isEphemeral: incomingTask.isEphemeral || false,
+                createdAt: incomingTask.createdAt || undefined,
+                completedOn: incomingTask.completedOn || undefined,
+                completers: incomingTask.completers || [],
+                dueDate: incomingTask.dueDate || undefined,
+                budget: incomingTask.budget || undefined,
+                visibility: incomingTask.visibility || undefined,
+                quality: incomingTask.quality || undefined
+              }
+            })
+
+            await prisma.day.create({
+              data: {
+                userId: user.id,
+                date: dateISO,
+                tasks: tasksForDay as any,
+                week: weekNumber,
+                month: month,
+                quarter: quarter,
+                semester: semester
+              }
+            })
+          }
+        } catch (dayError) {
+          // Log error but don't fail the request if Day update fails
+          console.error('Error updating Day entry:', dayError)
+        }
+      }
+
       return NextResponse.json({ taskList: saved, earnings })
     }
 
@@ -781,7 +997,7 @@ export async function POST(request: NextRequest) {
 
       if (body.ephemeralTasks.add) {
         const t = body.ephemeralTasks.add
-        const withId = { id: t.id || `ephemeral_${Date.now()}_${Math.random().toString(36).slice(2,9)}`, name: t.name, status: t.status || 'Not started', area: t.area || 'self', categories: t.categories || ['custom'], cadence: t.cadence || 'ephemeral', times: t.times || 1, count: t.count || 0, contacts: t.contacts || [], things: t.things || [], favorite: !!t.favorite, isEphemeral: true, createdAt: new Date().toISOString() }
+        const withId = { id: t.id || `ephemeral_${Date.now()}_${Math.random().toString(36).slice(2,9)}`, name: t.name, status: t.status || 'open', area: t.area || 'self', categories: t.categories || ['custom'], cadence: t.cadence || 'ephemeral', times: t.times || 1, count: t.count || 0, contacts: t.contacts || [], things: t.things || [], favorite: !!t.favorite, isEphemeral: true, createdAt: new Date().toISOString() }
         open = [withId, ...open]
       }
 
@@ -805,7 +1021,7 @@ export async function POST(request: NextRequest) {
             closed = [ 
               { 
                 ...item, 
-                status: 'Done', 
+                status: 'done', 
                 count: count || item.count, 
                 completedAt: new Date().toISOString(),
                 completedOn: completedOnDate
@@ -820,13 +1036,12 @@ export async function POST(request: NextRequest) {
       if (body.ephemeralTasks.update) {
         const updateOps = Array.isArray(body.ephemeralTasks.update) ? body.ephemeralTasks.update : [body.ephemeralTasks.update]
         updateOps.forEach((updateOp: any) => {
-          const { id, count, status, taskStatus } = updateOp
+          const { id, count, status } = updateOp
           open = open.map((x: any) => {
             if (x.id === id) {
               const updated = { ...x }
               if (count !== undefined) updated.count = count
               if (status) updated.status = status
-              if (taskStatus) updated.taskStatus = taskStatus
               return updated
             }
             return x
@@ -845,7 +1060,7 @@ export async function POST(request: NextRequest) {
           if (item) {
             // Remove completedAt and completedOn, and reset status when reopening
             const { completedAt, completedOn, ...taskWithoutCompletedFields } = item
-            open = [{ ...taskWithoutCompletedFields, status: 'Open', count: count !== undefined ? count : (item.count || 0) }, ...open]
+            open = [{ ...taskWithoutCompletedFields, status: 'open', count: count !== undefined ? count : (item.count || 0) }, ...open]
           }
         })
       }
@@ -860,11 +1075,11 @@ export async function POST(request: NextRequest) {
 
     // Update task status in completedTasks[year][date].openTasks/closedTasks (not taskList.tasks)
     if (body.updateTaskStatus && body.taskListId) {
-      const taskList = await prisma.list.findUnique({ where: { id: body.taskListId } })
-      if (!taskList) return NextResponse.json({ error: 'TaskList not found' }, { status: 404 })
+      const taskListToUpdate = await prisma.list.findUnique({ where: { id: body.taskListId } })
+      if (!taskListToUpdate) return NextResponse.json({ error: 'TaskList not found' }, { status: 404 })
 
       const taskKey = body.taskKey // id, localeKey, or name
-      const newStatus = body.taskStatus
+      const newStatus = body.status || body.taskStatus // Support both for backward compatibility
       const dateISO = body.date || new Date().toISOString().split('T')[0] // Use provided date or today
 
       // Helper to match tasks reliably
@@ -873,9 +1088,9 @@ export async function POST(request: NextRequest) {
 
       // Get task from templateTasks or tasks to use as base
       let baseTask: any = null
-      const tasks = Array.isArray(taskList.tasks) 
-        ? taskList.tasks 
-        : (Array.isArray((taskList as any).templateTasks) ? (taskList as any).templateTasks : [])
+      const tasks = Array.isArray(taskListToUpdate.tasks) 
+        ? taskListToUpdate.tasks 
+        : (Array.isArray((taskListToUpdate as any).templateTasks) ? (taskListToUpdate as any).templateTasks : [])
       
       baseTask = tasks.find((task: any) => {
         const key = getKey(task)
@@ -884,7 +1099,7 @@ export async function POST(request: NextRequest) {
 
       // If not found in tasks, check templateTasks
       if (!baseTask) {
-        const templateTasks = Array.isArray((taskList as any).templateTasks) ? (taskList as any).templateTasks : []
+        const templateTasks = Array.isArray((taskListToUpdate as any).templateTasks) ? (taskListToUpdate as any).templateTasks : []
         baseTask = templateTasks.find((task: any) => {
           const key = getKey(task)
           return key === taskKeyLower || key === taskKey
@@ -892,7 +1107,7 @@ export async function POST(request: NextRequest) {
       }
 
       // Also check and update ephemeral tasks
-      let ephemeralTasks = (taskList as any).ephemeralTasks || { open: [], closed: [] }
+      let ephemeralTasks = (taskListToUpdate as any).ephemeralTasks || { open: [], closed: [] }
       let open = Array.isArray(ephemeralTasks.open) ? ephemeralTasks.open : []
       let closed = Array.isArray(ephemeralTasks.closed) ? ephemeralTasks.closed : []
 
@@ -901,7 +1116,7 @@ export async function POST(request: NextRequest) {
         const key = getKey(task)
         if (key === taskKeyLower || key === taskKey) {
           if (!baseTask) baseTask = { ...task }
-          return { ...task, taskStatus: newStatus }
+          return { ...task, status: newStatus }
         }
         return task
       })
@@ -911,7 +1126,7 @@ export async function POST(request: NextRequest) {
         const key = getKey(task)
         if (key === taskKeyLower || key === taskKey) {
           if (!baseTask) baseTask = { ...task }
-          return { ...task, taskStatus: newStatus }
+          return { ...task, status: newStatus }
         }
         return task
       })
@@ -919,7 +1134,7 @@ export async function POST(request: NextRequest) {
       ephemeralTasks = { open, closed }
 
       // Update task in completedTasks[year][date].openTasks/closedTasks
-      let completedTasks = (taskList as any).completedTasks || {}
+      let completedTasks = (taskListToUpdate as any).completedTasks || {}
       const year = Number(dateISO.split('-')[0])
       const yearBucket = completedTasks[year] || {}
       const dateBucket = yearBucket[dateISO] || {}
@@ -930,20 +1145,20 @@ export async function POST(request: NextRequest) {
       
       if (Array.isArray(dateBucket)) {
         // Legacy structure: migrate to new structure
-        openTasks = dateBucket.filter((t: any) => t.status !== 'Done')
-        closedTasks = dateBucket.filter((t: any) => t.status === 'Done')
+        openTasks = dateBucket.filter((t: any) => t.status !== 'done')
+        closedTasks = dateBucket.filter((t: any) => t.status === 'done')
       } else if (dateBucket.openTasks || dateBucket.closedTasks) {
         // New structure
         openTasks = Array.isArray(dateBucket.openTasks) ? [...dateBucket.openTasks] : []
         closedTasks = Array.isArray(dateBucket.closedTasks) ? [...dateBucket.closedTasks] : []
       } else if (baseTask) {
-        // First time - initialize from taskList.tasks
-        const blueprintTasks: any[] = Array.isArray(taskList.tasks) ? (taskList.tasks as any[]) : (Array.isArray((taskList as any).templateTasks) ? ((taskList as any).templateTasks as any[]) : [])
-        openTasks = blueprintTasks.map((t: any) => ({ ...t, count: 0, status: 'Open' }))
+        // First time - initialize from taskListToUpdate.tasks
+        const blueprintTasks: any[] = Array.isArray(taskListToUpdate.tasks) ? (taskListToUpdate.tasks as any[]) : (Array.isArray((taskListToUpdate as any).templateTasks) ? ((taskListToUpdate as any).templateTasks as any[]) : [])
+        openTasks = blueprintTasks.map((t: any) => ({ ...t, count: 0, status: 'open' }))
       }
       
       if (baseTask) {
-        const updatedTask = { ...baseTask, taskStatus: newStatus }
+        const updatedTask = { ...baseTask, status: newStatus }
         
         // Find task in openTasks or closedTasks
         const openIndex = openTasks.findIndex((t: any) => {
@@ -957,10 +1172,10 @@ export async function POST(request: NextRequest) {
         
         if (openIndex >= 0) {
           // Update in openTasks
-          openTasks[openIndex] = { ...openTasks[openIndex], ...updatedTask, taskStatus: newStatus }
+          openTasks[openIndex] = { ...openTasks[openIndex], ...updatedTask, status: newStatus }
         } else if (closedIndex >= 0) {
           // Update in closedTasks
-          closedTasks[closedIndex] = { ...closedTasks[closedIndex], ...updatedTask, taskStatus: newStatus }
+          closedTasks[closedIndex] = { ...closedTasks[closedIndex], ...updatedTask, status: newStatus }
         } else {
           // Add to openTasks if not found
           openTasks.push(updatedTask)
@@ -974,7 +1189,7 @@ export async function POST(request: NextRequest) {
       }
 
       const updated = await prisma.list.update({
-        where: { id: taskList.id },
+        where: { id: taskListToUpdate.id },
         data: {
           ephemeralTasks: ephemeralTasks,
           completedTasks: completedTasks,
@@ -982,6 +1197,160 @@ export async function POST(request: NextRequest) {
         } as any,
         include: { template: true }
       })
+
+      // Update Day entry to append/update or remove the task in day.tasks when status changes
+      if (baseTask && dateISO) {
+        try {
+          // Find or create the day entry (ensure only one day per user per date)
+          const existingDay = await prisma.day.findFirst({
+            where: {
+              userId: user.id,
+              date: dateISO
+            }
+          })
+
+          // If status is "open" or "ignored", remove the task from day.tasks
+          if (newStatus === 'open' || newStatus === 'ignored') {
+            if (existingDay) {
+              const existingTasks = Array.isArray(existingDay.tasks) ? existingDay.tasks : []
+              
+              // Find if task exists in day.tasks (by id, localeKey, or name)
+              const getTaskKey = (t: any) => (t?.id || t?.localeKey || (typeof t?.name === 'string' ? t.name.toLowerCase() : '')) as string
+              const taskKey = getTaskKey(baseTask)
+              const taskKeyLower = typeof taskKey === 'string' ? taskKey.toLowerCase() : taskKey
+              
+              // Remove task from day.tasks
+              const updatedTasks = existingTasks.filter((t: any) => {
+                const key = getTaskKey(t)
+                return key !== taskKeyLower && key !== taskKey
+              })
+
+              // Calculate week, month, quarter, semester from date
+              const dateObj = new Date(dateISO)
+              const [_, weekNumberResult] = getWeekNumber(dateObj)
+              const weekNumber = typeof weekNumberResult === 'number' ? weekNumberResult : Number(weekNumberResult) || 1
+              const month = dateObj.getMonth() + 1
+              const quarter = Math.ceil(month / 3)
+              const semester = month <= 6 ? 1 : 2
+
+              await prisma.day.update({
+                where: { id: existingDay.id },
+                data: {
+                  tasks: updatedTasks as any,
+                  week: weekNumber,
+                  month: month,
+                  quarter: quarter,
+                  semester: semester
+                }
+              })
+            }
+            // Exit early if we're removing the task
+            return NextResponse.json({ taskList: updated })
+          }
+
+          // Only copy tasks whose new status is not "open" or "ignored"
+          if (newStatus && newStatus !== 'open' && newStatus !== 'ignored') {
+            // Build the task object to add/update in day.tasks
+            // Get the updated task status from openTasks or closedTasks to ensure we have the latest status
+            const updatedTaskInList = openTasks.find((t: any) => {
+              const key = getKey(t)
+              return key === taskKeyLower || key === taskKey
+            }) || closedTasks.find((t: any) => {
+              const key = getKey(t)
+              return key === taskKeyLower || key === taskKey
+            })
+            
+            // Use the status from the updated task in the list, or fall back to newStatus
+            const currentStatus = updatedTaskInList?.status || newStatus || 'open'
+            
+            const taskForDay: any = {
+              id: baseTask.id || undefined,
+              name: baseTask.name,
+              categories: baseTask.categories || [],
+              area: baseTask.area || 'self',
+              status: currentStatus,
+              cadence: baseTask.cadence || 'daily',
+              times: baseTask.times || 1,
+              count: updatedTaskInList?.count ?? baseTask.count ?? 0,
+              localeKey: baseTask.localeKey || undefined,
+              persons: baseTask.persons || [],
+              things: baseTask.things || [],
+              events: baseTask.events || [],
+              notes: baseTask.notes || [],
+              documents: baseTask.documents || [],
+              favorite: baseTask.favorite || false,
+              isEphemeral: baseTask.isEphemeral || false,
+              createdAt: baseTask.createdAt || undefined,
+              completedOn: updatedTaskInList?.completedOn || baseTask.completedOn || undefined,
+              completers: updatedTaskInList?.completers || baseTask.completers || [],
+              dueDate: baseTask.dueDate || undefined,
+              budget: baseTask.budget || undefined,
+              visibility: baseTask.visibility || undefined,
+              quality: baseTask.quality || undefined
+            }
+
+            // Calculate week, month, quarter, semester from date
+            const dateObj = new Date(dateISO)
+            const [_, weekNumberResult] = getWeekNumber(dateObj)
+            const weekNumber = typeof weekNumberResult === 'number' ? weekNumberResult : Number(weekNumberResult) || 1
+            const month = dateObj.getMonth() + 1
+            const quarter = Math.ceil(month / 3)
+            const semester = month <= 6 ? 1 : 2
+
+            if (existingDay) {
+              // Update existing day - append or update task in tasks array
+              const existingTasks = Array.isArray(existingDay.tasks) ? existingDay.tasks : []
+              
+              // Find if task already exists in day.tasks (by id, localeKey, or name)
+              const getTaskKey = (t: any) => (t?.id || t?.localeKey || (typeof t?.name === 'string' ? t.name.toLowerCase() : '')) as string
+              const taskKey = getTaskKey(taskForDay)
+              const taskKeyLower = typeof taskKey === 'string' ? taskKey.toLowerCase() : taskKey
+              
+              const taskIndex = existingTasks.findIndex((t: any) => {
+                const key = getTaskKey(t)
+                return key === taskKeyLower || key === taskKey
+              })
+
+              let updatedTasks: any[]
+              if (taskIndex >= 0) {
+                // Update existing task
+                updatedTasks = [...existingTasks]
+                updatedTasks[taskIndex] = { ...existingTasks[taskIndex], ...taskForDay }
+              } else {
+                // Append new task
+                updatedTasks = [...existingTasks, taskForDay]
+              }
+
+              await prisma.day.update({
+                where: { id: existingDay.id },
+                data: {
+                  tasks: updatedTasks as any,
+                  week: weekNumber,
+                  month: month,
+                  quarter: quarter,
+                  semester: semester
+                }
+              })
+            } else {
+              // Create new day with the task
+              await prisma.day.create({
+                data: {
+                  userId: user.id,
+                  date: dateISO,
+                  tasks: [taskForDay] as any,
+                  week: weekNumber,
+                  month: month,
+                  quarter: quarter,
+                  semester: semester
+                }
+              })
+            }
+          }
+        } catch (dayError) {
+          // Log error but don't fail the request if Day update fails
+          console.error('Error updating Day entry:', dayError)
+        }
+      }
 
       return NextResponse.json({ taskList: updated })
     }
@@ -994,7 +1363,12 @@ export async function POST(request: NextRequest) {
       }
 
       // Translate tasks if provided
-      const updatedTasks = translatedTasks || (Array.isArray(tasks) ? tasks : existingById.tasks)
+      let updatedTasks = translatedTasks || (Array.isArray(tasks) ? tasks : existingById.tasks)
+      // Ensure all tasks have unique ObjectIds
+      if (Array.isArray(updatedTasks)) {
+        // If updating from template, always generate new IDs; otherwise only for missing ones
+        updatedTasks = ensureUniqueTaskIds(updatedTasks, !!templateId)
+      }
 
       const updated = await prisma.list.update({
         where: { id: existingById.id },
@@ -1075,7 +1449,14 @@ export async function POST(request: NextRequest) {
       }
     } else if (existingTaskList) {
       // Update existing TaskList
-      const updatedTasks = translatedTasks || tasks
+      let updatedTasks = translatedTasks || tasks
+      // If updating from template, ensure all tasks have unique ObjectIds
+      if (templateId && updatedTasks) {
+        updatedTasks = ensureUniqueTaskIds(updatedTasks, true)
+      } else if (updatedTasks) {
+        // Even if not from template, ensure all tasks have IDs (generate for missing ones)
+        updatedTasks = ensureUniqueTaskIds(updatedTasks, false)
+      }
       taskList = await prisma.list?.update({
         where: { id: existingTaskList.id },
         data: ({

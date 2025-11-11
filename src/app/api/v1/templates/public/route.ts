@@ -205,15 +205,7 @@ export async function GET(request: NextRequest) {
             id: true,
             profile: {
               select: {
-                userName: true,
-                profilePicture: true,
-                profilePictureVisibility: true,
-                firstName: true,
-                firstNameVisibility: true,
-                lastName: true,
-                lastNameVisibility: true,
-                bio: true,
-                bioVisibility: true
+                data: true
               }
             }
           }
@@ -232,6 +224,15 @@ export async function GET(request: NextRequest) {
               }
             }
           } else {
+            const profile = user.profiles?.[0]
+            if (!profile) {
+              cleanedUser = {
+                ...user,
+                profile: {
+                  userName: null
+                }
+              }
+            } else {
             // Check relationship between current user and template owner
             const ownerIdStr = user.id.toString()
             const isOwner = userId && currentUserIdStr === ownerIdStr
@@ -256,8 +257,25 @@ export async function GET(request: NextRequest) {
               ownerFriends.includes(currentUserIdStr) &&
               currentUserFriends.includes(ownerIdStr)
 
+            // Extract profile data from new structure and transform for filterProfileFields
+            const profileData = profile.data || {}
+            const profileForFiltering = {
+              userName: profileData.username?.value || null,
+              firstName: profileData.firstName?.value || null,
+              lastName: profileData.lastName?.value || null,
+              bio: profileData.bio?.value || null,
+              profilePicture: profileData.profilePicture?.value || null,
+              publicCharts: profileData.charts?.value || null,
+              firstNameVisibility: profileData.firstName?.visibility ? 'PUBLIC' : 'PRIVATE',
+              lastNameVisibility: profileData.lastName?.visibility ? 'PUBLIC' : 'PRIVATE',
+              userNameVisibility: profileData.username?.visibility ? 'PUBLIC' : 'PRIVATE',
+              bioVisibility: profileData.bio?.visibility ? 'PUBLIC' : 'PRIVATE',
+              profilePictureVisibility: profileData.profilePicture?.visibility ? 'PUBLIC' : 'PRIVATE',
+              publicChartsVisibility: profileData.charts?.visibility ? 'PUBLIC' : 'PRIVATE'
+            }
+
             // Filter profile fields based on visibility and relationship
-            const filteredProfile = filterProfileFields(profile, {
+            const filteredProfile = filterProfileFields(profileForFiltering, {
               isOwner,
               isFriend,
               isCloseFriend

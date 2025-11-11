@@ -42,13 +42,28 @@ export async function GET(req: NextRequest) {
         await prisma.profile.create({
           data: {
             userId: currentUser.id,
-            userName: null, // No Clerk username available in this context
-            firstNameVisibility: 'PRIVATE',
-            lastNameVisibility: 'PRIVATE',
-            userNameVisibility: 'PUBLIC',
-            bioVisibility: 'PRIVATE',
-            profilePictureVisibility: 'PRIVATE',
-            publicChartsVisibility: 'PRIVATE',
+            data: {
+              username: {
+                value: null,
+                visibility: true
+              },
+              firstName: {
+                value: null,
+                visibility: false
+              },
+              lastName: {
+                value: null,
+                visibility: false
+              },
+              bio: {
+                value: null,
+                visibility: false
+              },
+              profilePicture: {
+                value: null,
+                visibility: false
+              }
+            }
           }
         })
         // Refetch user with new profile
