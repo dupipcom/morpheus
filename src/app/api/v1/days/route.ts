@@ -143,6 +143,9 @@ export async function GET(req: NextRequest) {
         mood: true,
         ticker: true,
         analysis: true,
+        average: true,
+        progress: true,
+        balance: true,
         createdAt: true,
         updatedAt: true
       },
@@ -158,22 +161,27 @@ export async function GET(req: NextRequest) {
       
       // Extract values from mood
       const mood = day.mood || {}
-      const ticker = day.ticker || {}
+      const ticker = day.ticker || []
       const analysis = day.analysis as any || {}
       
-      // Calculate mood average from mood dimensions
-      const moodKeys = ['gratitude', 'optimism', 'restedness', 'tolerance', 'selfEsteem', 'trust'] as const
-      const moodValues = moodKeys.map((k) => Number(mood[k]) || 0)
-      const moodAverage = moodValues.reduce((sum, val) => sum + val, 0) / moodKeys.length
+      // Use day.average for moodAverage (calculated on backend)
+      const moodAverage = typeof day.average === 'number' ? day.average : (() => {
+        // Fallback: calculate from mood dimensions if average not set
+        const moodKeys = ['gratitude', 'optimism', 'restedness', 'tolerance', 'selfEsteem', 'trust'] as const
+        const moodValues = moodKeys.map((k) => Number(mood[k]) || 0)
+        return moodValues.reduce((sum, val) => sum + val, 0) / moodKeys.length
+      })()
       
-      // Extract earnings from ticker or analysis
-      const earnings = ticker.profit || analysis.earnings || 0
+      // Calculate earnings from ticker array (sum of profit values)
+      const earnings = Array.isArray(ticker) 
+        ? ticker.reduce((sum: number, t: any) => sum + (Number(t.profit) || 0), 0)
+        : (typeof ticker === 'object' && ticker !== null ? (Number((ticker as any).profit) || 0) : 0)
       
-      // Extract progress from analysis
-      const progress = analysis.progress || 0
+      // Use day.progress (calculated on backend from productivity)
+      const progress = typeof day.progress === 'number' ? day.progress : 0
       
-      // Extract availableBalance from analysis or ticker
-      const availableBalance = analysis.availableBalance || ticker.prize || 0
+      // Use day.balance for availableBalance (stored when day is created/updated)
+      const availableBalance = typeof day.balance === 'number' ? day.balance : 0
 
       return {
         id: day.id,

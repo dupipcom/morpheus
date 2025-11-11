@@ -349,11 +349,12 @@ const aggregateDataByWeek = (dailyData: any[]) => {
         const sum = values.reduce((acc: number, val: number) => acc + val, 0)
         return sum / keys.length
       })()
-      const progress = cur.progress && !isNaN(cur.progress) ? cur.progress : 0
+      // Progress from day.progress is already 0-100 (percentage), no conversion needed
+      const progress = cur.progress && !isNaN(cur.progress) ? Number(cur.progress) : 0
       const earnings = cur.earnings && !isNaN(Number(cur.earnings)) ? Number(cur.earnings) : 0
       
-      // Safe division for progress calculation (avoid division by zero)
-      const progressPercentage = progress > 0 && progress <= 20 ? (progress * 100 / 20) : 0
+      // Progress is already a percentage (0-100) from day.progress
+      const progressPercentage = progress
       
       acc = [
         ...acc,
@@ -380,60 +381,27 @@ const aggregateDataByWeek = (dailyData: any[]) => {
   // Aggregate daily data by week
   const plotDataWeekly = aggregateDataByWeek(plotData)
     
-  const plotWeeks = userWeeks
-    .sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime()) // Sort by most recent first
-    .reduce((acc: any[], cur: any) => {
-      // Calculate moodAverage from daily data for this week using days from Prisma
-      let calculatedMoodAverage = 0
-      if (cur.week) {
-        const weekDays = days.filter((day: any) => {
-          const dayDate = new Date(day.date)
-          const [_, dayWeekNumber] = getWeekNumber(dayDate)
-          return dayWeekNumber === cur.week
-        })
-        
-        if (weekDays.length > 0) {
-          const daysWithMood = weekDays.filter((day: any) => day.mood && typeof day.mood === 'object')
-          if (daysWithMood.length > 0) {
-            const moodValues = daysWithMood.map((day: any) => {
-              // Use moodAverage from API or calculate
-              return day.moodAverage || (() => {
-                const keys = ['gratitude', 'optimism', 'restedness', 'tolerance', 'selfEsteem', 'trust'] as const
-                const values = keys.map((k) => Number(day.mood?.[k]) || 0)
-                const sum = values.reduce((sum: number, val: number) => sum + val, 0)
-                return sum / keys.length
-              })()
-            }).filter(val => val > 0)
-            
-            if (moodValues.length > 0) {
-              calculatedMoodAverage = moodValues.reduce((sum: number, val: number) => sum + val, 0) / moodValues.length
-            }
-          }
-        }
-      }
-      
-      // Use calculated moodAverage or fallback to stored value
-      const moodAverage = calculatedMoodAverage > 0 ? calculatedMoodAverage : (cur.moodAverage && !isNaN(cur.moodAverage) ? cur.moodAverage : 0)
-      const progress = cur.progress && !isNaN(cur.progress) ? cur.progress : 0
+  // Create plotWeeks from plotDataWeekly for productivity chart
+  const plotWeeks = plotDataWeekly
+    .map((week: any) => {
+      const moodAverage = parseFloat(week.moodAverage) || 0
+      const progress = parseFloat(week.progress) || 0
       
       // Only include weeks with valid data
       if (moodAverage === 0 && progress === 0) {
-        return acc
+        return null
       }
       
-      // Safe division for progress calculation
-      const progressPercentage = progress > 0 && progress <= 20 ? (progress * 100 / 20) : 0
+      // Scale progress from 0-100 to 0-5 to match moodAverage scale (0-5)
+      const progressScaled = (progress / 100) * 5
       
-      acc = [
-        ...acc,
-        {
-          week: t('week.weekNumber', { number: cur.week }),
-          moodAverage: moodAverage.toFixed(2),
-          progress: progressPercentage.toFixed(2),
-        }
-      ]
-      return acc
-    }, [])
+      return {
+        week: week.week,
+        moodAverage: moodAverage.toFixed(2),
+        progress: progressScaled.toFixed(2),
+      }
+    })
+    .filter((week: any) => week !== null)
 
   return (
     <ContentLoadingWrapper>
