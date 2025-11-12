@@ -97,21 +97,6 @@ async function middleware(request: Request, auth: any) {
     return
   }
 
-  // Handle direct username routes (without @) - redirect to localized profile route
-  if (pathname.match(/^\/[^\/]+$/) && !pathname.startsWith('/app') && !pathname.startsWith('/api')) {
-    const username = pathname.substring(1) // Remove leading /
-    const cookieHeader = request.headers.get('cookie') || ''
-    const cookies = parseCookies(cookieHeader)
-    const locale = getLocale(request.headers, cookies)
-    const url = new URL(request.url)
-    url.pathname = `/${locale}/profile/${username}`
-    const res = NextResponse.redirect(url)
-    if (shouldFlagBotForEnglish(request.headers)) {
-      res.cookies.set('dpip_bot_en', '1', { path: '/', httpOnly: false })
-    }
-    return res
-  }
-
   // Parse cookies from request
   const cookieHeader = request.headers.get('cookie') || ''
   const cookies = parseCookies(cookieHeader)
