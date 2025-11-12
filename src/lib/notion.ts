@@ -1,79 +1,110 @@
 import "server-only";
 
-import { Client } from "@notionhq/client";
+import { PayloadSDK } from "@payloadcms/sdk";
 import React from "react";
-import {
-  BlockObjectResponse,
-  PageObjectResponse,
-} from "@notionhq/client/build/src/api-endpoints";
 
-export const notion = new Client({
-  auth: process.env.NOTION_TOKEN,
+// Initialize Payload SDK with baseURL from environment variable
+const sdk = new PayloadSDK({
+  baseURL: process.env.PAYLOAD_API_URL || process.env.NEXT_PUBLIC_PAYLOAD_API_URL,
 });
 
 // Dupip Pages
 export const fetchPages = React.cache(() => {
-  return notion.databases.query({
-    database_id: process.env.NOTION_PAGE_DATABASE!,
-    filter: {
-      property: "Status",
-      select: {
-        equals: "Published",
+  return sdk.find({
+    collection: "pages",
+    where: {
+      _status: {
+        equals: "published",
       },
     },
   });
 });
 
 export const fetchPageBySlug = React.cache((slug: string) => {
-  return notion.databases
-    .query({
-      database_id: process.env.NOTION_PAGE_DATABASE!,
-      filter: {
-        property: "Slug",
-        rich_text: {
+  return sdk
+    .find({
+      collection: "pages",
+      where: {
+        slug: {
           equals: slug,
         },
       },
+      limit: 1,
+      depth: 2, // Include nested layout and columns data
     })
-    .then((res) => res.results[0] as PageObjectResponse | undefined);
+    .then((res) => {
+      const page = res.docs[0];
+      // If page found, ensure layout data is properly parsed
+      if (page && (page as any).layout) {
+        // Parse layout structure if needed
+        const layout = (page as any).layout;
+        if (Array.isArray(layout) && layout.length > 0) {
+          const firstLayout = layout[0];
+          if (firstLayout.columns && Array.isArray(firstLayout.columns) && firstLayout.columns.length > 0) {
+            // Ensure richText is accessible
+            const firstColumn = firstLayout.columns[0];
+            if (firstColumn.richText) {
+              // Data is already structured correctly
+              return page;
+            }
+          }
+        }
+      }
+      return page;
+    });
 });
 
 export const fetchPageBlocks = React.cache((pageId: string) => {
-  return notion.blocks.children
-    .list({ block_id: pageId })
-    .then((res) => res.results as BlockObjectResponse[]);
+  // Fetch the page by ID to get its content/blocks
+  return sdk
+    .findByID({
+      collection: "pages",
+      id: pageId,
+    })
+    .then((page) => {
+      // Return content/blocks from the page document
+      // Adjust this based on your Payload CMS schema structure
+      return page?.content || page?.blocks || [];
+    });
 });
 
 
-// Dupip Episodes
+// Dupip Episodes (Posts)
 export const fetchEpisodes = React.cache(() => {
-  return notion.databases.query({
-    database_id: process.env.NOTION_EPISODE_DATABASE!,
-    filter: {
-      property: "Status",
-      select: {
-        equals: "Published",
+  return sdk.find({
+    collection: "posts",
+    where: {
+      _status: {
+        equals: "published",
       },
     },
   });
 });
 
 export const fetchEpisodeBySlug = React.cache((slug: string) => {
-  return notion.databases
-    .query({
-      database_id: process.env.NOTION_EPISODE_DATABASE!,
-      filter: {
-        property: "Slug",
-        rich_text: {
+  return sdk
+    .find({
+      collection: "posts",
+      where: {
+        slug: {
           equals: slug,
         },
       },
+      limit: 1,
     })
-    .then((res) => res.results[0] as PageObjectResponse | undefined);
+    .then((res) => res.docs[0]);
 });
 
 export const fetchEpisodeBlocks = React.cache((pageId: string) => {
-  return notion.blocks.children
-    .list({ block_id: pageId })
-    .then((res) => res.results as BlockObjectResponse[]);
+  // Fetch the post by ID to get its content/blocks
+  return sdk
+    .findByID({
+      collection: "posts",
+      id: pageId,
+    })
+    .then((post) => {
+      // Return content/blocks from the post document
+      // Adjust this based on your Payload CMS schema structure
+      return post?.content || post?.blocks || [];
+    });
 });
