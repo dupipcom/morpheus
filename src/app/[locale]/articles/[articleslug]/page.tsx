@@ -5,6 +5,8 @@ import { buildMetadata } from '@/app/metadata';
 import Link from 'next/link';
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 
+export const dynamic = 'force-dynamic'
+
 export async function generateStaticParams() {
   const locales = ['ar', 'bn', 'ca', 'cs', 'da', 'de', 'el', 'en', 'es', 'et', 'eu', 'fi', 'fr', 'gl', 'he', 'hi', 'hu', 'it', 'ja', 'ko', 'ms', 'nl', 'pa', 'pl', 'pt', 'ro', 'ru', 'sv', 'tr', 'zh'];
 
