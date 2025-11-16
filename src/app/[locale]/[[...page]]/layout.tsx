@@ -18,10 +18,11 @@ export default async function PageHero({
   // Strip locale to get the actual slug
   const clearSlug = stripLocaleFromPath(fullPath)
 
-  const pageData = await fetchPageBySlug(clearSlug)
+  const pageData = await fetchPageBySlug(clearSlug, locale)
 
-  const heroRichText = (pageData as any)?.hero?.richText
-  const layoutRichText = (pageData as any)?.layout?.[0]?.columns?.[0]?.richText
+  
+  const heroRichText = (pageData as any)?.hero?.hero?.richText
+  const layoutRichText = (pageData as any)?.content
 
   return (
     <>

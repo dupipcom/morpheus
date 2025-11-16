@@ -8,12 +8,11 @@ import { buildMetadata } from '@/app/metadata'
 import { stripLocaleFromPath, getLocaleFromPath } from "../../helpers"
 
 export async function generateStaticParams() {
-  const pages = await fetchPages()
-
   const locales = ['ar', 'bn', 'ca', 'cs', 'da', 'de', 'el', 'en', 'es', 'et', 'eu', 'fi', 'fr', 'gl', 'he', 'hi', 'hu', 'it', 'ja', 'ko', 'ms', 'nl', 'pa', 'pl', 'pt', 'ro', 'ru', 'sv', 'tr', 'zh']
 
   const params = []
   for (const locale of locales) {
+    const pages = await fetchPages(locale)
     // Payload CMS returns docs array instead of results
     for (const page of pages.docs || []) {
       // Payload CMS structure: direct field access instead of properties
@@ -35,7 +34,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const clearSlug = stripLocaleFromPath(fullPath)
 
   try {
-    const pageData = await fetchPageBySlug(clearSlug)
+    const pageData = await fetchPageBySlug(clearSlug, locale)
     // Payload CMS structure: direct field access instead of properties
     const title = (pageData as any)?.title || (pageData as any)?.title?.value || 'Dupip'
     const description = (pageData as any)?.description || (pageData as any)?.description?.value || undefined
@@ -58,7 +57,7 @@ export default async function Page({
   // Use the original logic: strip locale to get the actual slug for Notion
   const clearSlug = stripLocaleFromPath(fullPath)
 
-  const pageData = await fetchPageBySlug(clearSlug)
+  const pageData = await fetchPageBySlug(clearSlug, locale)
 
   if (!pageData) {
     notFound()
@@ -75,7 +74,7 @@ export default async function Page({
     ? localizedContent 
     : null
 
-  const pageContent = await fetchPageBlocks(localizedContentId || (pageData as any).id)
+  const pageContent = await fetchPageBlocks(localizedContentId || (pageData as any).id, locale)
   
 
   const data = {
