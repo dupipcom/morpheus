@@ -21,7 +21,7 @@ export default async function PageHero({
   const pageData = await fetchPageBySlug(clearSlug, locale)
 
   
-  const heroRichText = (pageData as any)?.hero?.hero?.richText
+  const heroRichText = (pageData as any)?.headerTitle
   const layoutRichText = (pageData as any)?.content
 
   return (
