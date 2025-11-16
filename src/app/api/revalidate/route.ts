@@ -6,13 +6,12 @@ export async function POST(req: NextRequest) {
   try {
     // Check if user is authenticated
     const { userId } = await auth()
+    const { paths, tags, secretKey } = await req.json()
 
-    console.log('userId', { userId, currentUser: await currentUser() })
-    if (!userId) {
-      return Response.json({ error: 'User not authenticated' }, { status: 401 })
+    if (!userId && secretKey !== process.env.REVALIDATE_SECRET_KEY) {
+      return Response.json({ error: 'Not authenticated' }, { status: 401 })
     }
 
-    const { paths, tags } = await req.json()
 
     // Revalidate specific paths
     if (paths && Array.isArray(paths)) {
