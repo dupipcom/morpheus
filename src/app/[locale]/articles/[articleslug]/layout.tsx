@@ -1,9 +1,7 @@
 import React from "react";
 import { fetchEpisodes, fetchEpisodeBySlug } from "@/lib/notion";
 import { RichText } from '@payloadcms/richtext-lexical/react';
-import { format } from 'date-fns';
-import Link from 'next/link';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import ArticleCardGrid from '@/components/articleCardGrid';
 
 import type { StaticImageData } from 'next/image'
 import NextImage from 'next/image'
@@ -63,43 +61,6 @@ const ImageMedia: React.FC<any> = (props) => {
   }
 }
 
-// Helper function to get time ago string
-function getTimeAgo(date: Date): string {
-  const now = new Date()
-  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
-  
-  if (diffInSeconds < 60) {
-    return 'just now'
-  }
-  
-  const diffInMinutes = Math.floor(diffInSeconds / 60)
-  if (diffInMinutes < 60) {
-    return `${diffInMinutes} minute${diffInMinutes === 1 ? '' : 's'} ago`
-  }
-  
-  const diffInHours = Math.floor(diffInMinutes / 60)
-  if (diffInHours < 24) {
-    return `${diffInHours} hour${diffInHours === 1 ? '' : 's'} ago`
-  }
-  
-  const diffInDays = Math.floor(diffInHours / 24)
-  if (diffInDays < 7) {
-    return `${diffInDays} day${diffInDays === 1 ? '' : 's'} ago`
-  }
-  
-  const diffInWeeks = Math.floor(diffInDays / 7)
-  if (diffInWeeks < 4) {
-    return `${diffInWeeks} week${diffInWeeks === 1 ? '' : 's'} ago`
-  }
-  
-  const diffInMonths = Math.floor(diffInDays / 30)
-  if (diffInMonths < 12) {
-    return `${diffInMonths} month${diffInMonths === 1 ? '' : 's'} ago`
-  }
-  
-  const diffInYears = Math.floor(diffInDays / 365)
-  return `${diffInYears} year${diffInYears === 1 ? '' : 's'} ago`
-}
 
 export default async function ArticleLayout({
   params,
@@ -112,8 +73,7 @@ export default async function ArticleLayout({
 
   const article = await fetchEpisodeBySlug(articleslug, locale);
   const allPosts = await fetchEpisodes(locale) || [];
-  allPosts.docs.length = 3;
-  const relatedPosts = allPosts.docs.filter((post: any) => post.id !== article.id);
+  const relatedPosts = allPosts.docs.filter((post: any) => post.id !== article.id).slice(0, 3);
 
   if (!article) {
     return <>{children}</>;
@@ -217,49 +177,11 @@ export default async function ArticleLayout({
 
       {children}
 
-      {relatedPosts?.length > 0 && (
-        <div className="article-related-posts">
-          <h2 className="text-2xl font-bold mb-4">Related Posts</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {relatedPosts?.map((post: any) => (
-              <Link key={post.id} href={`/${locale}/articles/${post.slug}`}>
-                <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer pt-0">
-                  {post.heroImage?.sizes?.large?.url && (
-                    <div className="relative w-full h-48 overflow-hidden rounded-t-xl">
-                      <img 
-                        className="w-full h-full object-cover" 
-                        src={process.env.NEXT_PAYLOAD_URL + post.heroImage.sizes.large.url}
-                        alt={post.title}
-                      />
-                    </div>
-                  )}
-                  <CardHeader>
-                    <CardTitle className="line-clamp-2">{post.title}</CardTitle>
-                    {post.description && (
-                      <CardDescription className="line-clamp-3">{post.description}</CardDescription>
-                    )}
-                  </CardHeader>
-                  <CardContent>
-                    {post.populatedAuthors && post.populatedAuthors.length > 0 && (
-                      <p className="text-sm text-muted-foreground mb-2">
-                        {post.populatedAuthors.map((author: any) => {
-                          console.log(author);
-                          return <a className="text-primary hover:underline" href={`/@${author.dupipUser}`}>@{author.name}</a>
-                        })}
-                      </p>
-                    )}
-                    {post.publishedAt && (
-                      <p className="text-sm text-muted-foreground">
-                        {getTimeAgo(new Date(post.publishedAt))} • {format(new Date(post.publishedAt), 'MMM d, yyyy')}
-                      </p>
-                    )}
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
+      <ArticleCardGrid 
+        posts={relatedPosts} 
+        locale={locale} 
+        title="Related Posts"
+      />
 </div>
   );
 }

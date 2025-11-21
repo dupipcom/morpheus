@@ -3,6 +3,8 @@ import { fetchPageBySlug } from "@/lib/notion"
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import { stripLocaleFromPath } from "../../helpers"
 
+
+
 export default async function PageHero({
   params,
   children,
@@ -27,12 +29,12 @@ export default async function PageHero({
   return (
     <>
       {heroRichText && (
-        <div className="hero-content p-8 m-8 flex items-center justify-center">
+        <div className="hero-content p-8 pb-0 m-8 mb-0 flex items-center justify-center">
           <RichText data={heroRichText} className="text-[32px] md:text-[72px]" />
         </div>
       )}
       {layoutRichText && (
-        <div className="layout-content p-8">
+        <div className="layout-content p-8 py-0 max-w-4xl m-auto">
           <RichText data={layoutRichText} className="text-[12px] md:text-[16px] leading-[2]" />
         </div>
       )}

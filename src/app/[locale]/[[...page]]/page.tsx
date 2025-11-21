@@ -1,11 +1,12 @@
 import { notFound } from "next/navigation";
-import { fetchPages, fetchPageBySlug, fetchPageBlocks } from "@/lib/notion"
+import { fetchPages, fetchPageBySlug, fetchPageBlocks, fetchEpisodes } from "@/lib/notion"
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import { NotionRenderer } from "@notion-render/client"
 import Template from "../../_template"
 import type { Metadata } from 'next'
 import { buildMetadata } from '@/app/metadata'
 import { stripLocaleFromPath, getLocaleFromPath } from "../../helpers"
+import ArticleCardGrid from '@/components/articleCardGrid'
 
 export async function generateStaticParams() {
   const locales = ['ar', 'bn', 'ca', 'cs', 'da', 'de', 'el', 'en', 'es', 'et', 'eu', 'fi', 'fr', 'gl', 'he', 'hi', 'hu', 'it', 'ja', 'ko', 'ms', 'nl', 'pa', 'pl', 'pt', 'ro', 'ru', 'sv', 'tr', 'zh']
@@ -82,9 +83,39 @@ export default async function Page({
     title: (pageData as any)?.title || (pageData as any)?.title?.value || 'Untitled',
   }
 
+  // Check if this is the homepage (when clearSlug is empty or just "/")
+  const isHomepage = !clearSlug || clearSlug === '/' || clearSlug === '';
+  
+  // Fetch recent articles for homepage
+  let recentArticles: any[] = [];
+  if (isHomepage) {
+    const episodes = await fetchEpisodes(locale);
+    // Sort by publishedAt descending and take the 3 latest
+    recentArticles = (episodes.docs || [])
+      .sort((a: any, b: any) => {
+        const dateA = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
+        const dateB = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
+        return dateB - dateA;
+      })
+      .slice(0, 3);
+  }
 
   // Note: html is no longer needed since we're using Payload CMS
   // The RichText component in @page.tsx will handle hero rendering
-  return <Template title={data.title} content={pageContent} isomorphicContent={undefined} />
+  return (
+    <>
+      <Template title={data.title} content={pageContent} isomorphicContent={undefined} />
+      {isHomepage && recentArticles.length > 0 && (
+        <div className="container mx-auto px-4 pb-8 max-w-6xl">
+          <ArticleCardGrid 
+            posts={recentArticles} 
+            locale={locale} 
+            title="Recent Articles"
+            limit={3}
+          />
+        </div>
+      )}
+    </>
+  )
 }
 
