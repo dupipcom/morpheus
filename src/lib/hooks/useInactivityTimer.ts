@@ -26,7 +26,7 @@ interface UseInactivityTimerOptions {
  * @param options - Configuration options for the inactivity timer
  */
 export const useInactivityTimer = ({
-  timeout = 6 * 60 * 1000, // 6 minutes (reduced for testing)
+  timeout = 15 * 60 * 1000, // 15 minutes (reduced for testing)
   warningTime = 5 * 60 * 1000, // 5 minutes warning (shows at 1 minute elapsed = 5 minutes remaining)
   enabled = true,
   onLogout
