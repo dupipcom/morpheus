@@ -42,8 +42,8 @@ export function ArticleShareButton({ url, title, description }: ArticleShareButt
       handleCopy()
       return
     }
-    // For WhatsApp, open without popup parameters to allow mobile app to open
-    if (platform === 'whatsapp') {
+    // For WhatsApp and Facebook, open without popup parameters to allow mobile app to open
+    if (platform === 'whatsapp' || platform === 'facebook') {
       window.open(shareLinks[platform], '_blank')
     } else {
       window.open(shareLinks[platform], '_blank', 'width=600,height=400')
