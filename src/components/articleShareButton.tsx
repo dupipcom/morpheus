@@ -42,9 +42,9 @@ export function ArticleShareButton({ url, title, description }: ArticleShareButt
       handleCopy()
       return
     }
-    // For WhatsApp, use direct navigation instead of window.open to ensure mobile app opens
+    // For WhatsApp, open without popup parameters to allow mobile app to open
     if (platform === 'whatsapp') {
-      window.location.href = shareLinks[platform]
+      window.open(shareLinks[platform], '_blank')
     } else {
       window.open(shareLinks[platform], '_blank', 'width=600,height=400')
     }
