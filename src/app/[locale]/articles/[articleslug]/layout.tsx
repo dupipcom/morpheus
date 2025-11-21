@@ -150,7 +150,7 @@ export default async function ArticleLayout({
       
       {title && (
         <div className="article-header-title mb-4">
-          <h1 className="text-4xl md:text-5xl font-bold">{title}</h1>
+          <h1 className="text-2xl md:text-4xl font-bold">{title}</h1>
         </div>
       )}
 
