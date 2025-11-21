@@ -61,10 +61,71 @@ export const DoToolbar = ({
     }
   }, [contextTaskLists])
   
-  const allTaskLists = useMemo(() => 
-    (stableTaskLists.length > 0 ? stableTaskLists : (Array.isArray(contextTaskLists) ? contextTaskLists : [])) as TaskList[],
-    [stableTaskLists, contextTaskLists]
-  )
+  // Sort task lists according to specified priority
+  const sortedTaskLists = useMemo(() => {
+    const lists = (stableTaskLists.length > 0 ? stableTaskLists : (Array.isArray(contextTaskLists) ? contextTaskLists : [])) as TaskList[]
+    
+    const getListPriority = (list: any): { priority: number; sortValue?: number } => {
+      const role = list.role || ''
+      
+      // Priority 1: default.daily
+      if (role === 'default.daily') return { priority: 1 }
+      
+      // Priority 2: default.weekly
+      if (role === 'default.weekly') return { priority: 2 }
+      
+      // Priority 3: daily.default
+      if (role === 'daily.default') return { priority: 3 }
+      
+      // Priority 4: weekly.default
+      if (role === 'weekly.default') return { priority: 4 }
+      
+      // Priority 5: dueDate less than a week (will be sorted by date within this group)
+      if (list.dueDate) {
+        try {
+          const dueDate = new Date(list.dueDate)
+          const now = new Date()
+          const oneWeekFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000)
+          
+          if (dueDate <= oneWeekFromNow && dueDate >= now) {
+            // Return priority 5 with timestamp for sorting (earlier dates first)
+            return { priority: 5, sortValue: dueDate.getTime() }
+          }
+        } catch (e) {
+          // Invalid date, ignore
+        }
+      }
+      
+      // Priority 6: daily.* (but not daily.default which is already handled)
+      if (role.startsWith('daily.') && role !== 'daily.default') return { priority: 6 }
+      
+      // Priority 7: weekly.* (but not weekly.default which is already handled)
+      if (role.startsWith('weekly.') && role !== 'weekly.default') return { priority: 7 }
+      
+      // Priority 8: everything else
+      return { priority: 8 }
+    }
+    
+    return [...lists].sort((a, b) => {
+      const priorityA = getListPriority(a)
+      const priorityB = getListPriority(b)
+      
+      // First sort by priority
+      if (priorityA.priority !== priorityB.priority) {
+        return priorityA.priority - priorityB.priority
+      }
+      
+      // Within same priority, if both have sortValue (dueDate items), sort by date
+      if (priorityA.sortValue !== undefined && priorityB.sortValue !== undefined) {
+        return priorityA.sortValue - priorityB.sortValue
+      }
+      
+      // Otherwise maintain original order
+      return 0
+    })
+  }, [stableTaskLists, contextTaskLists])
+  
+  const allTaskLists = sortedTaskLists
   const selectedList = useMemo(() => {
     const found = allTaskLists.find((l:any) => l.id === selectedTaskListId)
     return found
@@ -267,11 +328,34 @@ export const DoToolbar = ({
                     <SelectValue placeholder={t('tasks.selectList') || 'Select list'} />
                   </SelectTrigger>
                   <SelectContent>
-                    {allTaskLists.map((tl:any) => (
-                      <SelectItem key={tl.id} value={tl.id}>
-                        {tl.name || tl.role || tl.id}
-                      </SelectItem>
-                    ))}
+                    {allTaskLists.map((tl:any) => {
+                      const hasDueDate = tl.dueDate
+                      let formattedDueDate: string | null = null
+                      
+                      if (hasDueDate) {
+                        try {
+                          const dueDate = new Date(tl.dueDate)
+                          formattedDueDate = dueDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                        } catch (e) {
+                          // If date parsing fails, use the raw value
+                          formattedDueDate = tl.dueDate
+                        }
+                      }
+                      
+                      return (
+                        <SelectItem key={tl.id} value={tl.id}>
+                          <div className="flex items-center justify-between w-full gap-2">
+                            <span className="flex-1 truncate">{tl.name || tl.role || tl.id}</span>
+                            {formattedDueDate && (
+                              <Badge variant="outline" className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80 shrink-0">
+                                <CalendarIcon className="h-3 w-3 mr-1" />
+                                {formattedDueDate}
+                              </Badge>
+                            )}
+                          </div>
+                        </SelectItem>
+                      )
+                    })}
                   </SelectContent>
                 </Select>
 
