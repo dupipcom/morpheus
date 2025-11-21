@@ -143,7 +143,7 @@ export default async function ArticlePage({
 
   return (
     <>
-      <header className="mb-8">
+      <header className="mb-8 max-w-xl m-auto">
         {/* Date info with share button */}
         {publishedAt && (
           <div className="flex items-center gap-3 text-sm text-muted-foreground mb-4">
