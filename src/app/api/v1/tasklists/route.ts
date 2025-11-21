@@ -522,23 +522,34 @@ export async function POST(request: NextRequest) {
       // Helpers to match tasks reliably even with localized names
       const getKey = (t: any) => (t?.id || t?.localeKey || (typeof t?.name === 'string' ? t.name.toLowerCase() : '')) as string
       const byKey: Record<string, any> = {}
+      // Track which tasks are in closedTasks so we can handle them properly
+      const closedTaskKeys = new Set<string>()
+      
+      // Build byKey from both openTasks and closedTasks
       openTasks.forEach((t: any) => {
         const key = getKey(t)
-        byKey[key] = t
+        if (key) byKey[key] = t
+      })
+      closedTasks.forEach((t: any) => {
+        const key = getKey(t)
+        if (key) {
+          byKey[key] = t
+          closedTaskKeys.add(key)
+        }
       })
 
       // For each incoming (localized) task, merge into completed map
       const nameSet = new Set(justCompletedNames.map((s) => typeof s === 'string' ? s.toLowerCase() : s))
 
-      // Process all incoming tasks to update openTasks
-      // First pass: add any new tasks from incomingTasks that don't exist in openTasks
+      // Process all incoming tasks to update openTasks and closedTasks
+      // First pass: add any new tasks from incomingTasks that don't exist in openTasks or closedTasks
       // This ensures new tasks are always saved to completedTasks, even if not being completed
       for (const incoming of incomingTasks) {
         const key = getKey(incoming)
         if (!key) continue
         const existing = byKey[key]
         
-        // If task doesn't exist in openTasks, add it as a new task
+        // If task doesn't exist in openTasks or closedTasks, add it as a new task
         if (!existing) {
           byKey[key] = sanitizeTask({
             ...incoming,
@@ -573,13 +584,21 @@ export async function POST(request: NextRequest) {
           delta = 1
         } else {
           // Process all incoming tasks
-          newCount = Number(incoming?.count || (incoming.status === 'done' ? 1 : 0))
+          // Use incoming count if provided, otherwise use existing count from completers
+          newCount = incoming?.count !== undefined ? Number(incoming.count) : prevCompletersLen
           delta = Math.max(0, newCount - prevCompletersLen)
         }
         
         if (delta <= 0) {
           // Update task without incrementing completers
-          byKey[key] = sanitizeTask({ ...existing, ...incoming })
+          // Merge incoming data with existing, preserving completers
+          byKey[key] = sanitizeTask({ 
+            ...existing, 
+            ...incoming,
+            // Preserve completers and count from existing if not changing
+            completers: existing?.completers || [],
+            count: incoming?.count !== undefined ? Number(incoming.count) : prevCompletersLen
+          })
           continue
         }
 
@@ -643,7 +662,7 @@ export async function POST(request: NextRequest) {
 
       // Separate openTasks and closedTasks based on status
       const finalOpenTasks: any[] = []
-      const finalClosedTasks: any[] = [...closedTasks] // Keep existing closed tasks
+      const finalClosedTasks: any[] = []
       
       // Format date as YYYY-MM-DD for completedOn
       const formatDateForCompletedOn = (d: Date): string => {
@@ -654,32 +673,42 @@ export async function POST(request: NextRequest) {
       }
       const completedOnDate = formatDateForCompletedOn(completionDate)
       
+      // Track which tasks we've processed from byKey
+      const processedKeys = new Set<string>()
+      
       for (const task of Object.values(byKey)) {
+        const key = getKey(task as any)
+        if (!key || processedKeys.has(key)) continue
+        processedKeys.add(key)
+        
         const taskStatus = (task as any).status
         const taskCount = (task as any).count || 0
         const taskTimes = (task as any).times || 1
         
+        // Check if this task was originally in closedTasks to preserve completedOn
+        const wasInClosed = closedTaskKeys.has(key)
+        const existingClosedTask = wasInClosed ? closedTasks.find((t: any) => getKey(t) === key) : null
+        const existingCompletedOn = existingClosedTask?.completedOn
+        
         // Task is done if status is 'done' or count >= times
         if (taskStatus === 'done' || taskCount >= taskTimes) {
-          // Check if already in closedTasks
-          const key = getKey(task as any)
-          const alreadyClosed = finalClosedTasks.some((t: any) => getKey(t) === key)
-          if (!alreadyClosed) {
-            // Add completedOn when task is first closed
-            finalClosedTasks.push({ ...task as any, completedOn: completedOnDate })
-          } else {
-            // Update existing closed task, preserve completedOn if it exists, otherwise set it
-            const index = finalClosedTasks.findIndex((t: any) => getKey(t) === key)
-            if (index >= 0) {
-              const existingTask = finalClosedTasks[index]
-              finalClosedTasks[index] = { 
-                ...task as any, 
-                completedOn: existingTask.completedOn || completedOnDate 
-              }
-            }
-          }
+          // Add to closedTasks, preserve completedOn if it exists, otherwise set it
+          finalClosedTasks.push({ 
+            ...task as any, 
+            completedOn: existingCompletedOn || completedOnDate 
+          })
         } else {
-          finalOpenTasks.push(task as any)
+          // Task is open - remove completedOn if it exists
+          const { completedOn, ...taskWithoutCompletedOn } = task as any
+          finalOpenTasks.push(taskWithoutCompletedOn)
+        }
+      }
+      
+      // Also include any closedTasks that weren't updated (weren't in byKey)
+      for (const closedTask of closedTasks) {
+        const key = getKey(closedTask)
+        if (key && !processedKeys.has(key)) {
+          finalClosedTasks.push(closedTask)
         }
       }
 
@@ -1486,8 +1515,6 @@ export async function POST(request: NextRequest) {
       }
       
       if (baseTask) {
-        const updatedTask = { ...baseTask, status: newStatus }
-        
         // Find task in openTasks or closedTasks
         const openIndex = openTasks.findIndex((t: any) => {
           const key = getKey(t)
@@ -1499,13 +1526,14 @@ export async function POST(request: NextRequest) {
         })
         
         if (openIndex >= 0) {
-          // Update in openTasks
-          openTasks[openIndex] = { ...openTasks[openIndex], ...updatedTask, status: newStatus }
+          // Update in openTasks - only update status, preserve all other properties
+          openTasks[openIndex] = { ...openTasks[openIndex], status: newStatus }
         } else if (closedIndex >= 0) {
-          // Update in closedTasks
-          closedTasks[closedIndex] = { ...closedTasks[closedIndex], ...updatedTask, status: newStatus }
+          // Update in closedTasks - only update status, preserve all other properties
+          closedTasks[closedIndex] = { ...closedTasks[closedIndex], status: newStatus }
         } else {
-          // Add to openTasks if not found
+          // Add to openTasks if not found - use baseTask as template but preserve times if it exists in baseTask
+          const updatedTask = { ...baseTask, status: newStatus }
           openTasks.push(updatedTask)
         }
         

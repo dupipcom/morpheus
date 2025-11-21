@@ -112,6 +112,12 @@
     "weekNumber": "Hafta {number}",
     "yourEarnings": "Kazancınız",
     "selectList": "Liste seçin",
+    "selectDate": "Tarih seçin",
+    "incrementTimes": "Kere artır",
+    "decrementTimes": "Kere azalt",
+    "decrementCount": "Sayaç azalt",
+    "showMore": "Daha fazla görev göster",
+    "showLess": "Daha az görev göster",
     "status": {
       "in progress": "Devam Ediyor",
       "steady": "Sabit",

@@ -108,6 +108,12 @@
     "weekNumber": "Týden {number}",
     "yourEarnings": "Vaše příjmy {timeframe}, doposud: Ð{amount}",
     "selectList": "Vyberte seznam",
+    "selectDate": "Vyberte datum",
+    "incrementTimes": "Zvýšit počet",
+    "decrementTimes": "Snížit počet",
+    "decrementCount": "Snížit počet",
+    "showMore": "Zobrazit více úkolů",
+    "showLess": "Zobrazit méně úkolů",
     "status": {
       "in progress": "Probíhá",
       "steady": "Stabilní",

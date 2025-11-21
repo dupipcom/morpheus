@@ -112,6 +112,12 @@
     "weekNumber": "الأسبوع {number}",
     "yourEarnings": "أرباحك",
     "selectList": "اختر القائمة",
+    "selectDate": "اختر التاريخ",
+    "incrementTimes": "زيادة المرات",
+    "decrementTimes": "تقليل المرات",
+    "decrementCount": "تقليل العدد",
+    "showMore": "عرض المزيد من المهام",
+    "showLess": "عرض عدد أقل من المهام",
     "status": {
       "in progress": "قيد التنفيذ",
       "steady": "مستقر",

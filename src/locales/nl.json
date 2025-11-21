@@ -108,6 +108,12 @@
     "weekNumber": "Week {number}",
     "yourEarnings": "Uw inkomsten {timeframe}, tot nu toe: Ð{amount}",
     "selectList": "Selecteer lijst",
+    "selectDate": "Selecteer datum",
+    "incrementTimes": "Verhoog aantal keren",
+    "decrementTimes": "Verlaag aantal keren",
+    "decrementCount": "Verlaag aantal",
+    "showMore": "Meer taken tonen",
+    "showLess": "Minder taken tonen",
     "status": {
       "in progress": "Bezig",
       "steady": "Stabiel",

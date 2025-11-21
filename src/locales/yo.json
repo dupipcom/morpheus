@@ -108,6 +108,12 @@
     "weekNumber": "Ọ̀sẹ̀ {number}",
     "yourEarnings": "Owó tí o gbà {timeframe}, títí di báyìí: Ð{amount}",
     "selectList": "Yàn àkójọ",
+    "selectDate": "Yàn ọjọ́",
+    "incrementTimes": "Pọ̀ ìgbà",
+    "decrementTimes": "Dín ìgbà",
+    "decrementCount": "Dín ìkíkan",
+    "showMore": "Fihàn iṣẹ́ púpọ̀",
+    "showLess": "Fihàn iṣẹ́ díẹ̀",
     "status": {
       "in progress": "Ó Ń Lọ",
       "steady": "Dúró",

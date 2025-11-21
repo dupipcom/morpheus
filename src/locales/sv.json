@@ -111,6 +111,12 @@
     "weekNumber": "Vecka {number}",
     "yourEarnings": "Din inkomst",
     "selectList": "Välj lista",
+    "selectDate": "Välj datum",
+    "incrementTimes": "Öka antal gånger",
+    "decrementTimes": "Minska antal gånger",
+    "decrementCount": "Minska antal",
+    "showMore": "Visa fler uppgifter",
+    "showLess": "Visa färre uppgifter",
     "status": {
       "in progress": "Pågående",
       "steady": "Stabil",

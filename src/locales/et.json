@@ -108,6 +108,12 @@
     "weekNumber": "Nädal {number}",
     "yourEarnings": "Sinu sissetulek {timeframe}, seni: Ð{amount}",
     "selectList": "Vali nimekiri",
+    "selectDate": "Vali kuupäev",
+    "incrementTimes": "Suurenda kordi",
+    "decrementTimes": "Vähenda kordi",
+    "decrementCount": "Vähenda arvu",
+    "showMore": "Näita rohkem ülesandeid",
+    "showLess": "Näita vähem ülesandeid",
     "status": {
       "in progress": "Pooleli",
       "steady": "Stabiilne",

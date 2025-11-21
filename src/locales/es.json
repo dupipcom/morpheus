@@ -109,6 +109,8 @@
     "yourEarnings": "Tus ganancias {timeframe}, hasta ahora: Ð{amount}",
     "selectList": "Seleccionar lista",
     "selectDate": "Seleccionar fecha",
+    "incrementTimes": "Incrementar veces",
+    "decrementTimes": "Decrementar veces",
     "decrementCount": "Decrementar contador",
     "showMore": "Mostrar más tareas",
     "showLess": "Mostrar menos tareas",

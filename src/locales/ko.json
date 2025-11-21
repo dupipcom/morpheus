@@ -108,6 +108,12 @@
     "weekNumber": "주 {number}",
     "yourEarnings": "당신의 수익 {timeframe}, 지금까지: Ð{amount}",
     "selectList": "목록 선택",
+    "selectDate": "날짜 선택",
+    "incrementTimes": "횟수 증가",
+    "decrementTimes": "횟수 감소",
+    "decrementCount": "카운트 감소",
+    "showMore": "더 많은 작업 표시",
+    "showLess": "작업 줄이기",
     "status": {
       "in progress": "진행 중",
       "steady": "안정",

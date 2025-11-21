@@ -108,6 +108,12 @@
     "weekNumber": "Săptămâna {number}",
     "yourEarnings": "Câștigurile tale",
     "selectList": "Selectați lista",
+    "selectDate": "Selectați data",
+    "incrementTimes": "Incrementați ori",
+    "decrementTimes": "Decrementați ori",
+    "decrementCount": "Decrementați numărul",
+    "showMore": "Afișați mai multe sarcini",
+    "showLess": "Afișați mai puține sarcini",
     "status": {
       "in progress": "În Curs",
       "steady": "Constant",

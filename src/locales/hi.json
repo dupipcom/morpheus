@@ -108,6 +108,12 @@
     "weekNumber": "सप्ताह {number}",
     "yourEarnings": "आपकी कमाई {timeframe}, अब तक: Ð{amount}",
     "selectList": "सूची चुनें",
+    "selectDate": "तारीख चुनें",
+    "incrementTimes": "बार बढ़ाएं",
+    "decrementTimes": "बार घटाएं",
+    "decrementCount": "संख्या घटाएं",
+    "showMore": "अधिक कार्य दिखाएं",
+    "showLess": "कम कार्य दिखाएं",
     "status": {
       "in progress": "प्रगति में",
       "steady": "स्थिर",

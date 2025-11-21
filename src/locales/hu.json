@@ -108,6 +108,12 @@
     "weekNumber": "{number}. hét",
     "yourEarnings": "Ön keresete {timeframe}, eddig: Ð{amount}",
     "selectList": "Lista kiválasztása",
+    "selectDate": "Dátum kiválasztása",
+    "incrementTimes": "Szorzat növelése",
+    "decrementTimes": "Szorzat csökkentése",
+    "decrementCount": "Számláló csökkentése",
+    "showMore": "Több feladat megjelenítése",
+    "showLess": "Kevesebb feladat megjelenítése",
     "status": {
       "in progress": "Folyamatban",
       "steady": "Állandó",

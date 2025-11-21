@@ -108,6 +108,12 @@
     "weekNumber": "週{number}",
     "yourEarnings": "あなたの収益{timeframe}、これまで：Ð{amount}",
     "selectList": "リストを選択",
+    "selectDate": "日付を選択",
+    "incrementTimes": "回数を増やす",
+    "decrementTimes": "回数を減らす",
+    "decrementCount": "カウントを減らす",
+    "showMore": "タスクをさらに表示",
+    "showLess": "タスクを減らす",
     "status": {
       "in progress": "進行中",
       "steady": "安定",

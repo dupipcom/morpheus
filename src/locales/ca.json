@@ -108,6 +108,12 @@
     "weekNumber": "Setmana {number}",
     "yourEarnings": "Els teus ingressos {timeframe}, fins al moment: Ð{amount}",
     "selectList": "Seleccionar llista",
+    "selectDate": "Seleccionar data",
+    "incrementTimes": "Incrementar vegades",
+    "decrementTimes": "Decrementar vegades",
+    "decrementCount": "Decrementar comptador",
+    "showMore": "Mostrar més tasques",
+    "showLess": "Mostrar menys tasques",
     "status": {
       "in progress": "En Progrés",
       "steady": "Estable",

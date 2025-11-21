@@ -108,6 +108,12 @@
     "weekNumber": "সপ্তাহ {number}",
     "yourEarnings": "আপনার আয় {timeframe}، এখন পর্যন্ত: Ð{amount}",
     "selectList": "তালিকা নির্বাচন করুন",
+    "selectDate": "তারিখ নির্বাচন করুন",
+    "incrementTimes": "বার বৃদ্ধি করুন",
+    "decrementTimes": "বার হ্রাস করুন",
+    "decrementCount": "সংখ্যা হ্রাস করুন",
+    "showMore": "আরও কাজ দেখান",
+    "showLess": "কম কাজ দেখান",
     "status": {
       "in progress": "চলমান",
       "steady": "স্থিতিশীল",

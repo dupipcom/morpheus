@@ -108,6 +108,12 @@
     "weekNumber": "Εβδομάδα {number}",
     "yourEarnings": "Τα κέρδη σας {timeframe}, μέχρι τώρα: Ð{amount}",
     "selectList": "Επιλογή λίστας",
+    "selectDate": "Επιλογή ημερομηνίας",
+    "incrementTimes": "Αύξηση φορών",
+    "decrementTimes": "Μείωση φορών",
+    "decrementCount": "Μείωση αριθμού",
+    "showMore": "Εμφάνιση περισσότερων εργασιών",
+    "showLess": "Εμφάνιση λιγότερων εργασιών",
     "status": {
       "in progress": "Σε Εξέλιξη",
       "steady": "Σταθερό",

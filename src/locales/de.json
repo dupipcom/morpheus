@@ -108,6 +108,12 @@
     "weekNumber": "Woche {number}",
     "yourEarnings": "Ihre Einnahmen {timeframe}, bisher: Ð{amount}",
     "selectList": "Liste auswählen",
+    "selectDate": "Datum auswählen",
+    "incrementTimes": "Anzahl erhöhen",
+    "decrementTimes": "Anzahl verringern",
+    "decrementCount": "Zähler verringern",
+    "showMore": "Mehr Aufgaben anzeigen",
+    "showLess": "Weniger Aufgaben anzeigen",
     "status": {
       "in progress": "In Bearbeitung",
       "steady": "Beständig",

@@ -108,6 +108,12 @@
     "weekNumber": "Wiki {number}",
     "yourEarnings": "Mapato yako {timeframe}, hadi sasa: Ð{amount}",
     "selectList": "Chagua orodha",
+    "selectDate": "Chagua tarehe",
+    "incrementTimes": "Ongeza mara",
+    "decrementTimes": "Punguza mara",
+    "decrementCount": "Punguza hesabu",
+    "showMore": "Onyesha kazi zaidi",
+    "showLess": "Onyesha kazi chache",
     "status": {
       "in progress": "Inaendelea",
       "steady": "Thabiti",

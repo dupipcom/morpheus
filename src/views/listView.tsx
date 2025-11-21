@@ -4,7 +4,7 @@ import React, { useMemo, useState, useEffect, useContext, useCallback, useRef } 
 
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggleGroup'
 import { Badge } from '@/components/ui/badge'
-import { User as UserIcon, Circle, Minus } from 'lucide-react'
+import { User as UserIcon, Circle, Minus, Plus } from 'lucide-react'
 import { OptionsButton, OptionsMenuItem } from '@/components/optionsButton'
 import { Skeleton } from '@/components/ui/skeleton'
 
@@ -81,11 +81,188 @@ const formatDateLocal = (date: Date): string => {
     // Track if initial load has been done
     const initialLoadDone = useRef(false)
 
+    // Track pending completion requests and status updates to protect optimistic updates
+    // Maps task key to the optimistic state (count, status, and whether it's in closedTasks)
+    const pendingCompletionsRef = useRef<Map<string, { count: number; status: TaskStatus; inClosed: boolean }>>(new Map())
+    // Track pending status updates (for status changes via icon button)
+    const pendingStatusUpdatesRef = useRef<Map<string, TaskStatus>>(new Map())
+
     // Maintain stable task lists that never clear once loaded
     const [stableTaskLists, setStableTaskLists] = useState<any[]>([])
     useEffect(() => {
       if (Array.isArray(contextTaskLists) && contextTaskLists.length > 0) {
-        setStableTaskLists(contextTaskLists)
+        // When updating task lists, preserve optimistic state for pending completions
+        setStableTaskLists(prevTaskLists => {
+          const newTaskLists = contextTaskLists
+          
+          // If there are no pending completions, just use the new task lists
+          if (pendingCompletionsRef.current.size === 0) {
+            return newTaskLists
+          }
+          
+          // Otherwise, merge optimistic state for pending tasks
+          return newTaskLists.map((taskList: any) => {
+            const prevTaskList = prevTaskLists.find((tl: any) => tl.id === taskList.id)
+            if (!prevTaskList) return taskList
+            
+            const year = new Date().getFullYear()
+            const today = new Date()
+            const dateISO = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+            
+            const prevCompletedTasks = (prevTaskList as any)?.completedTasks || {}
+            const newCompletedTasks = (taskList as any)?.completedTasks || {}
+            
+            // Check if we need to preserve any optimistic state
+            const prevDateBucket = prevCompletedTasks[year]?.[dateISO]
+            if (!prevDateBucket) {
+              // Even if no date bucket, we might have pending status updates
+              if (pendingStatusUpdatesRef.current.size === 0) return taskList
+            }
+            
+            const keyOf = (t: any) => (t?.id || t?.localeKey || (typeof t?.name === 'string' ? t.name.toLowerCase() : '')) as string
+            
+            // Find tasks that have pending completions or status updates in this task list
+            const prevOpenTasks = prevDateBucket ? (Array.isArray(prevDateBucket.openTasks) ? prevDateBucket.openTasks : []) : []
+            const prevClosedTasks = prevDateBucket ? (Array.isArray(prevDateBucket.closedTasks) ? prevDateBucket.closedTasks : []) : []
+            
+            const allPendingKeys = new Set([
+              ...Array.from(pendingCompletionsRef.current.keys()),
+              ...Array.from(pendingStatusUpdatesRef.current.keys())
+            ])
+            
+            const hasPendingTasks = Array.from(allPendingKeys).some(taskKey => {
+              // Check if this task exists in the task list
+              const allTasks = [
+                ...(Array.isArray(taskList.tasks) ? taskList.tasks : []),
+                ...(Array.isArray(taskList.templateTasks) ? taskList.templateTasks : []),
+                ...(Array.isArray(taskList.ephemeralTasks?.open) ? taskList.ephemeralTasks.open : []),
+                ...(Array.isArray(taskList.ephemeralTasks?.closed) ? taskList.ephemeralTasks.closed : [])
+              ]
+              return allTasks.some((t: any) => keyOf(t) === taskKey) ||
+                     prevOpenTasks.some((t: any) => keyOf(t) === taskKey) || 
+                     prevClosedTasks.some((t: any) => keyOf(t) === taskKey)
+            })
+            
+            if (!hasPendingTasks) return taskList
+            
+            if (!prevDateBucket) {
+              // If no date bucket but we have pending status updates, we still need to preserve them
+              // The status will be preserved via taskStatuses state, so we can just return the new list
+              return taskList
+            }
+            
+            // Merge completedTasks, preserving optimistic state for pending tasks
+            const mergedCompletedTasks = { ...newCompletedTasks }
+            const newDateBucket = newCompletedTasks[year]?.[dateISO] || {}
+            
+            const newOpenTasks = Array.isArray(newDateBucket.openTasks) ? [...newDateBucket.openTasks] : []
+            const newClosedTasks = Array.isArray(newDateBucket.closedTasks) ? [...newDateBucket.closedTasks] : []
+            
+          // For each pending task, preserve its optimistic state
+          allPendingKeys.forEach(taskKey => {
+            const pendingCompletion = pendingCompletionsRef.current.get(taskKey)
+            const pendingStatusUpdate = pendingStatusUpdatesRef.current.get(taskKey)
+            
+            const prevOpenTask = prevOpenTasks.find((t: any) => keyOf(t) === taskKey)
+            const prevClosedTask = prevClosedTasks.find((t: any) => keyOf(t) === taskKey)
+            
+            // Remove from new data if present
+            const newOpenIndex = newOpenTasks.findIndex((t: any) => keyOf(t) === taskKey)
+            const newClosedIndex = newClosedTasks.findIndex((t: any) => keyOf(t) === taskKey)
+            
+            if (pendingCompletion) {
+              // Handle pending completion
+              if (pendingCompletion.inClosed) {
+                // Task should be in closedTasks (optimistic)
+                if (newClosedIndex >= 0) {
+                  // Update existing closed task with optimistic state
+                  newClosedTasks[newClosedIndex] = { 
+                    ...newClosedTasks[newClosedIndex], 
+                    ...prevClosedTask,
+                    count: pendingCompletion.count,
+                    status: pendingCompletion.status
+                  }
+                } else if (prevClosedTask) {
+                  // Add optimistic closed task
+                  newClosedTasks.push({ 
+                    ...prevClosedTask, 
+                    count: pendingCompletion.count,
+                    status: pendingCompletion.status
+                  })
+                }
+                // Remove from openTasks if present
+                if (newOpenIndex >= 0) {
+                  newOpenTasks.splice(newOpenIndex, 1)
+                }
+              } else {
+                // Task should be in openTasks (optimistic)
+                if (newOpenIndex >= 0) {
+                  // Update existing open task with optimistic state
+                  newOpenTasks[newOpenIndex] = { 
+                    ...newOpenTasks[newOpenIndex], 
+                    ...prevOpenTask,
+                    count: pendingCompletion.count,
+                    status: pendingCompletion.status
+                  }
+                } else if (prevOpenTask) {
+                  // Add optimistic open task
+                  newOpenTasks.push({ 
+                    ...prevOpenTask, 
+                    count: pendingCompletion.count,
+                    status: pendingCompletion.status
+                  })
+                }
+                // Remove from closedTasks if present
+                if (newClosedIndex >= 0) {
+                  newClosedTasks.splice(newClosedIndex, 1)
+                }
+              }
+            } else if (pendingStatusUpdate) {
+              // Handle pending status update (status change via icon button)
+              // Preserve the optimistic status in the task data
+              if (newOpenIndex >= 0) {
+                // Update existing open task with optimistic status
+                newOpenTasks[newOpenIndex] = { 
+                  ...newOpenTasks[newOpenIndex], 
+                  status: pendingStatusUpdate
+                }
+              } else if (newClosedIndex >= 0) {
+                // Update existing closed task with optimistic status
+                newClosedTasks[newClosedIndex] = { 
+                  ...newClosedTasks[newClosedIndex], 
+                  status: pendingStatusUpdate
+                }
+              } else if (prevOpenTask) {
+                // Task was in openTasks, preserve it with new status
+                newOpenTasks.push({ 
+                  ...prevOpenTask, 
+                  status: pendingStatusUpdate
+                })
+              } else if (prevClosedTask) {
+                // Task was in closedTasks, preserve it with new status
+                newClosedTasks.push({ 
+                  ...prevClosedTask, 
+                  status: pendingStatusUpdate
+                })
+              }
+            }
+          })
+            
+            mergedCompletedTasks[year] = {
+              ...(mergedCompletedTasks[year] || {}),
+              [dateISO]: {
+                ...newDateBucket,
+                openTasks: newOpenTasks,
+                closedTasks: newClosedTasks
+              }
+            }
+            
+            return {
+              ...taskList,
+              completedTasks: mergedCompletedTasks
+            }
+          })
+        })
         initialLoadDone.current = true
       }
     }, [contextTaskLists])
@@ -391,13 +568,16 @@ const formatDateLocal = (date: Date): string => {
           // Task is completed - use closedTask data
           const times = Number(closedTask?.times || t?.times || 1)
           const completedCount = Array.isArray(closedTask?.completers) ? closedTask.completers.length : Number(closedTask?.count || 0)
-          const status = completedCount >= times ? 'done' : 'open'
-          const taskStatus = closedTask?.status || t?.status || (status === 'done' ? 'done' : (completedCount > 0 ? 'in progress' : undefined))
+          // Always use the status from closedTask if it exists (preserves manually set statuses like "ready", "steady", etc.)
+          // Only fall back to calculated status if closedTask.status is not set
+          const taskStatus = closedTask?.status 
+            ? closedTask.status 
+            : (t?.status || (completedCount >= times ? 'done' : (completedCount > 0 ? 'in progress' : 'open')))
           
           return { 
             ...t, // Start with base task
             ...closedTask, // Override with closedTask data (takes precedence)
-            status: taskStatus, 
+            status: taskStatus, // Use the status from closedTask (preserves manual status changes)
             count: Math.min(completedCount || 0, times || 1), 
             completers: closedTask?.completers
           }
@@ -498,6 +678,9 @@ const formatDateLocal = (date: Date): string => {
       // Only auto-determine status based on count/times when clicking "done" to increment count
       const effectiveStatus = newStatus
 
+      // Track pending status update
+      pendingStatusUpdatesRef.current.set(key, effectiveStatus)
+
       // Update local state immediately (optimistic update)
       setTaskStatuses(prev => ({ ...prev, [key]: effectiveStatus }))
 
@@ -520,6 +703,21 @@ const formatDateLocal = (date: Date): string => {
 
         // If status is "done", also mark the task as completed
         if (effectiveStatus === 'done' && taskName && !values.includes(taskName)) {
+          // Track pending completion
+          const task = mergedTasks.find((t: any) => t.name === taskName)
+          if (task) {
+            const currentCount = task?.count || 0
+            const times = task?.times || 1
+            const newCount = currentCount + 1
+            const isFullyCompleted = newCount >= times
+            
+            pendingCompletionsRef.current.set(key, {
+              count: newCount,
+              status: effectiveStatus,
+              inClosed: isFullyCompleted
+            })
+          }
+          
           // If status is "done" and count >= times, mark the task as completed
           // Add to values to mark as toggled
           const newValues = [...values, taskName]
@@ -600,6 +798,10 @@ const formatDateLocal = (date: Date): string => {
           // Refresh task lists and user data
           await refreshTaskLists()
           await refreshUser()
+          
+          // Clear pending completion and status update after successful API calls
+          pendingCompletionsRef.current.delete(key)
+          pendingStatusUpdatesRef.current.delete(key)
         } else if (effectiveStatus !== 'done' && taskName && values.includes(taskName)) {
           // If status is changed away from "done", unmark the task
           const newValues = values.filter(v => v !== taskName)
@@ -661,14 +863,31 @@ const formatDateLocal = (date: Date): string => {
           // Refresh task lists and user data
           await refreshTaskLists()
           await refreshUser()
+          
+          // Clear pending completion and status update after successful API calls
+          pendingCompletionsRef.current.delete(key)
+          pendingStatusUpdatesRef.current.delete(key)
         } else if (effectiveStatus !== 'done' && taskName && !values.includes(taskName)) {
           // Task status changed to non-done and already uncompleted
           // Just refresh to ensure UI is in sync
           await refreshTaskLists()
           await refreshUser()
+          
+          // Clear pending status update after successful API calls
+          pendingStatusUpdatesRef.current.delete(key)
+        } else {
+          // Status change that doesn't affect completion
+          await refreshTaskLists()
+          await refreshUser()
+          
+          // Clear pending status update after successful API calls
+          pendingStatusUpdatesRef.current.delete(key)
         }
       } catch (error) {
         console.error('Error saving task status:', error)
+        // Clear pending completion and status update on error
+        pendingCompletionsRef.current.delete(key)
+        pendingStatusUpdatesRef.current.delete(key)
       }
     }, [selectedTaskList, values, mergedTasks, date, today, refreshTaskLists, refreshUser])
 
@@ -799,6 +1018,240 @@ const formatDateLocal = (date: Date): string => {
       }
     }, [selectedTaskList, mergedTasks, values, date, refreshTaskLists, refreshUser, taskStatuses])
 
+    const handleIncrementTimes = useCallback(async (task: any) => {
+      if (!selectedTaskList) return
+      const taskName = task?.name
+      const currentTimes = task?.times || 1
+      const newTimes = currentTimes + 1
+
+      try {
+        // Prepare next actions with incremented times
+        const regular = mergedTasks.filter((t: any) => !t.isEphemeral)
+        const ephemerals = mergedTasks.filter((t: any) => t.isEphemeral)
+        const allTasks = [...regular, ...ephemerals]
+        
+        const nextActions = allTasks.map((action: any) => {
+          const c = { ...action }
+          if (action.name === taskName) {
+            c.times = newTimes
+            // Update status based on new times vs count
+            const currentCount = c.count || 0
+            if (currentCount >= newTimes) {
+              c.status = 'done'
+            } else if (currentCount > 0) {
+              // Preserve manually set status or default based on count
+              const key = action?.id || action?.localeKey || action?.name
+              const existingStatus = taskStatuses[key]
+              if (!existingStatus || existingStatus === 'done' || existingStatus === 'open') {
+                c.status = 'in progress'
+              } else {
+                c.status = existingStatus
+              }
+            } else {
+              c.status = 'open'
+            }
+          }
+          return c
+        })
+
+        // Persist to backend
+        await fetch('/api/v1/tasklists', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            recordCompletions: true,
+            taskListId: selectedTaskList.id,
+            dayActions: nextActions,
+            date,
+            justCompletedNames: [],
+            justUncompletedNames: []
+          })
+        })
+
+        // Handle ephemeral tasks
+        const ephemeralTask = ephemerals.find((e: any) => e.name === taskName)
+        if (ephemeralTask) {
+          const updatedEph = nextActions.find((a: any) => a.name === taskName)
+          if (updatedEph) {
+            const newCount = updatedEph.count || 0
+            const newTimes = updatedEph.times || 1
+            
+            // Check if the ephemeral task is in the closed array
+            const closedEphemerals = (selectedTaskList?.ephemeralTasks?.closed || [])
+            const isInClosed = closedEphemerals.some((t: any) => t.id === ephemeralTask.id)
+            
+            if (isInClosed && newCount < newTimes) {
+              // Task is closed but count is now below times - reopen it
+              await fetch('/api/v1/tasklists', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  taskListId: selectedTaskList.id,
+                  ephemeralTasks: { reopen: { id: ephemeralTask.id, count: newCount } }
+                })
+              })
+              // Remove from values since it's no longer completed
+              setValues(values.filter(v => v !== taskName))
+              setPrevValues(values.filter(v => v !== taskName))
+            } else if (!isInClosed) {
+              // Task is in open array - just update the times
+              await fetch('/api/v1/tasklists', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  taskListId: selectedTaskList.id,
+                  ephemeralTasks: { update: { id: ephemeralTask.id, count: newCount, status: updatedEph.status, times: newTimes } }
+                })
+              })
+            }
+          }
+        }
+
+        // If task was in values and count is now less than newTimes, remove it
+        if (values.includes(taskName)) {
+          const currentCount = task?.count || 0
+          if (currentCount < newTimes) {
+            setValues(values.filter(v => v !== taskName))
+            setPrevValues(values.filter(v => v !== taskName))
+          }
+        }
+
+        await refreshTaskLists()
+        await refreshUser()
+      } catch (error) {
+        console.error('Error incrementing times:', error)
+      }
+    }, [selectedTaskList, mergedTasks, values, date, refreshTaskLists, refreshUser, taskStatuses])
+
+    const handleDecrementTimes = useCallback(async (task: any) => {
+      if (!selectedTaskList) return
+      const taskName = task?.name
+      const currentTimes = task?.times || 1
+      const currentCount = task?.count || 0
+      
+      // Can't decrement below 1
+      if (currentTimes <= 1) return
+
+      const newTimes = currentTimes - 1
+      // If times === count while decreasing, also decrease count by 1
+      const newCount = (currentTimes === currentCount) ? Math.max(0, currentCount - 1) : currentCount
+
+      // Optimistic UI update for status
+      const key = task?.id || task?.localeKey || task?.name
+      
+      setTaskStatuses(prev => {
+        const updated = { ...prev }
+        if (newCount >= newTimes) {
+          updated[key] = 'done'
+        } else if (newCount > 0) {
+          const existingStatus = prev[key]
+          if (!existingStatus || existingStatus === 'done' || existingStatus === 'open') {
+            updated[key] = 'in progress'
+          }
+        } else if (newCount === 0) {
+          updated[key] = 'open'
+        }
+        return updated
+      })
+
+      try {
+        // Prepare next actions with decremented times (and count if needed)
+        const regular = mergedTasks.filter((t: any) => !t.isEphemeral)
+        const ephemerals = mergedTasks.filter((t: any) => t.isEphemeral)
+        const allTasks = [...regular, ...ephemerals]
+        
+        const nextActions = allTasks.map((action: any) => {
+          const c = { ...action }
+          if (action.name === taskName) {
+            c.times = newTimes
+            c.count = newCount
+            // Update status based on new count vs times
+            if (c.count >= c.times) {
+              c.status = 'done'
+            } else {
+              // Preserve manually set status or default based on count
+              const key = action?.id || action?.localeKey || action?.name
+              const existingStatus = taskStatuses[key]
+              if (c.count > 0 && (!existingStatus || existingStatus === 'done' || existingStatus === 'open')) {
+                c.status = 'in progress'
+              } else if (c.count === 0) {
+                c.status = 'open'
+              } else {
+                c.status = existingStatus || 'open'
+              }
+            }
+          }
+          return c
+        })
+
+        // Persist to backend
+        await fetch('/api/v1/tasklists', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            recordCompletions: true,
+            taskListId: selectedTaskList.id,
+            dayActions: nextActions,
+            date,
+            justCompletedNames: [],
+            justUncompletedNames: []
+          })
+        })
+
+        // Handle ephemeral tasks
+        const ephemeralTask = ephemerals.find((e: any) => e.name === taskName)
+        if (ephemeralTask) {
+          const updatedEph = nextActions.find((a: any) => a.name === taskName)
+          if (updatedEph) {
+            const updatedCount = updatedEph.count || 0
+            const updatedTimes = updatedEph.times || 1
+            
+            // Check if the ephemeral task is in the closed array
+            const closedEphemerals = (selectedTaskList?.ephemeralTasks?.closed || [])
+            const isInClosed = closedEphemerals.some((t: any) => t.id === ephemeralTask.id)
+            
+            if (isInClosed && updatedCount < updatedTimes) {
+              // Task is closed but count is now below times - reopen it
+              await fetch('/api/v1/tasklists', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  taskListId: selectedTaskList.id,
+                  ephemeralTasks: { reopen: { id: ephemeralTask.id, count: updatedCount } }
+                })
+              })
+              // Remove from values since it's no longer completed
+              setValues(values.filter(v => v !== taskName))
+              setPrevValues(values.filter(v => v !== taskName))
+            } else if (!isInClosed) {
+              // Task is in open array - update the times and count
+              await fetch('/api/v1/tasklists', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  taskListId: selectedTaskList.id,
+                  ephemeralTasks: { update: { id: ephemeralTask.id, count: updatedCount, status: updatedEph.status, times: updatedTimes } }
+                })
+              })
+            }
+          }
+        }
+
+        // If task was in values and count is now less than newTimes, remove it
+        if (values.includes(taskName)) {
+          if (newCount < newTimes) {
+            setValues(values.filter(v => v !== taskName))
+            setPrevValues(values.filter(v => v !== taskName))
+          }
+        }
+
+        await refreshTaskLists()
+        await refreshUser()
+      } catch (error) {
+        console.error('Error decrementing times:', error)
+      }
+    }, [selectedTaskList, mergedTasks, values, date, refreshTaskLists, refreshUser, taskStatuses])
+
     // Initialize task statuses from API data
     // Reset and reinitialize when date, task list, or mergedTasks change
     useEffect(() => {
@@ -808,7 +1261,8 @@ const formatDateLocal = (date: Date): string => {
       mergedTasks.forEach((task: any) => {
         const key = task?.id || task?.localeKey || task?.name
         
-        // Use status from the task object if available
+        // Use status from the task object if available - this preserves manually set statuses
+        // like "ready", "steady", etc. even for completed tasks
         if (task.status && STATUS_OPTIONS.includes(task.status as TaskStatus)) {
           statuses[key] = task.status as TaskStatus
         } else if (task.status === 'done') {
@@ -858,6 +1312,42 @@ const formatDateLocal = (date: Date): string => {
       setValues(adjustedValues)
       setPrevValues(adjustedValues)
 
+      // Track pending completions before making API calls
+      const pendingTaskKeys = new Set<string>()
+      justCompleted.forEach(taskName => {
+        const task = mergedTasks.find((t: any) => t.name === taskName)
+        if (task) {
+          const key = task?.id || task?.localeKey || task?.name
+          pendingTaskKeys.add(key)
+          
+          // Store optimistic state for this pending task
+          const currentCount = task?.count || 0
+          const times = task?.times || 1
+          const newCount = currentCount + 1
+          const isFullyCompleted = newCount >= times
+          
+          // Determine if task should be in closedTasks (fully completed)
+          const inClosed = isFullyCompleted
+          
+          // Determine the appropriate status
+          let taskStatus: TaskStatus = 'done'
+          if (newCount < times) {
+            const existingStatus = taskStatuses[key] || (task?.status as TaskStatus)
+            if (existingStatus && existingStatus !== 'open' && existingStatus !== 'done') {
+              taskStatus = existingStatus
+            } else {
+              taskStatus = 'in progress'
+            }
+          }
+          
+          pendingCompletionsRef.current.set(key, {
+            count: newCount,
+            status: taskStatus,
+            inClosed
+          })
+        }
+      })
+
       // Update task statuses based on toggle state (optimistic UI update)
       setTaskStatuses(prev => {
         const updated = { ...prev }
@@ -867,27 +1357,10 @@ const formatDateLocal = (date: Date): string => {
           const task = mergedTasks.find((t: any) => t.name === taskName)
           if (task) {
             const key = task?.id || task?.localeKey || task?.name
-            const currentCount = task?.count || 0
-            const times = task?.times || 1
-            const newCount = currentCount + 1
-            
-            // Check if there's a manually set status to preserve
-            const existingStatus = prev[key] || (task?.status as TaskStatus)
-            
-            // Determine the appropriate status based on times and count
-            let taskStatus: TaskStatus = 'done'
-            if (newCount < times) {
-              // Preserve manually set status (except 'open' and 'done')
-              if (existingStatus && existingStatus !== 'open' && existingStatus !== 'done') {
-                taskStatus = existingStatus
-              } else {
-                taskStatus = 'in progress'
-              }
-            } else if (newCount >= times) {
-              taskStatus = 'done'
+            const optimisticState = pendingCompletionsRef.current.get(key)
+            if (optimisticState) {
+              updated[key] = optimisticState.status
             }
-            
-            updated[key] = taskStatus
           }
         })
 
@@ -897,6 +1370,8 @@ const formatDateLocal = (date: Date): string => {
           if (task) {
             const key = task?.id || task?.localeKey || task?.name
             updated[key] = 'open'
+            // Remove from pending completions if it was there
+            pendingCompletionsRef.current.delete(key)
           }
         })
 
@@ -1021,6 +1496,11 @@ const formatDateLocal = (date: Date): string => {
 
       await refreshTaskLists()
       await refreshUser()
+      
+      // Clear pending completions after successful API calls
+      pendingTaskKeys.forEach(key => {
+        pendingCompletionsRef.current.delete(key)
+      })
     }
 
     const handleDateChange = useCallback((date: Date | undefined) => {
@@ -1144,6 +1624,17 @@ const formatDateLocal = (date: Date): string => {
                 onClick: () => handleStatusChange(task, status),
                 icon: null,
               })),
+              {
+                label: t('tasks.incrementTimes', { defaultValue: 'Increment times' }),
+                onClick: () => handleIncrementTimes(task),
+                icon: <Plus className="h-4 w-4" />,
+                separator: true,
+              },
+              {
+                label: t('tasks.decrementTimes', { defaultValue: 'Decrement times' }),
+                onClick: () => handleDecrementTimes(task),
+                icon: <Minus className="h-4 w-4" />,
+              },
               ...((task.times || 1) > 1 && (task.count || 0) > 0
                 ? [
                     {

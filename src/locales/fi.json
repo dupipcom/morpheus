@@ -112,6 +112,12 @@
     "weekNumber": "Viikko {number}",
     "yourEarnings": "Tulosi",
     "selectList": "Valitse lista",
+    "selectDate": "Valitse päivämäärä",
+    "incrementTimes": "Lisää kertoja",
+    "decrementTimes": "Vähennä kertoja",
+    "decrementCount": "Vähennä määrää",
+    "showMore": "Näytä lisää tehtäviä",
+    "showLess": "Näytä vähemmän tehtäviä",
     "status": {
       "in progress": "Käynnissä",
       "steady": "Vakaa",

@@ -112,6 +112,12 @@
     "weekNumber": "Uge {number}",
     "yourEarnings": "Dine indtægter {timeframe}, hidtil: Ð{amount}",
     "selectList": "Vælg liste",
+    "selectDate": "Vælg dato",
+    "incrementTimes": "Forøg antal gange",
+    "decrementTimes": "Formindsk antal gange",
+    "decrementCount": "Formindsk antal",
+    "showMore": "Vis flere opgaver",
+    "showLess": "Vis færre opgaver",
     "status": {
       "in progress": "I Gang",
       "steady": "Stabil",

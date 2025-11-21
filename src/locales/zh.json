@@ -108,6 +108,12 @@
     "weekNumber": "第{number}周",
     "yourEarnings": "您的收入{timeframe}，到目前为止：Ð{amount}",
     "selectList": "选择列表",
+    "selectDate": "选择日期",
+    "incrementTimes": "增加次数",
+    "decrementTimes": "减少次数",
+    "decrementCount": "减少计数",
+    "showMore": "显示更多任务",
+    "showLess": "显示更少任务",
     "status": {
       "in progress": "进行中",
       "steady": "稳定",

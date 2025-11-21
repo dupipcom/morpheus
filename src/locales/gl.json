@@ -111,6 +111,12 @@
     "weekNumber": "Semana {number}",
     "yourEarnings": "Os teus ingresos",
     "selectList": "Seleccionar lista",
+    "selectDate": "Seleccionar data",
+    "incrementTimes": "Incrementar veces",
+    "decrementTimes": "Decrementar veces",
+    "decrementCount": "Decrementar contador",
+    "showMore": "Mostrar máis tarefas",
+    "showLess": "Mostrar menos tarefas",
     "status": {
       "in progress": "En Progreso",
       "steady": "Estable",

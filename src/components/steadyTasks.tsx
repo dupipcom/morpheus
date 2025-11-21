@@ -64,10 +64,187 @@ export const SteadyTasks = () => {
   const initialFetchDone = useRef(false)
   const initialLoadDone = useRef(false)
 
+  // Track pending completion requests and status updates to protect optimistic updates
+  // Maps task key to the optimistic state (count, status, and whether it's in closedTasks)
+  const pendingCompletionsRef = useRef<Map<string, { count: number; status: TaskStatus; inClosed: boolean }>>(new Map())
+  // Track pending status updates (for status changes via icon button)
+  const pendingStatusUpdatesRef = useRef<Map<string, TaskStatus>>(new Map())
+
   // Maintain stable task lists that never clear once loaded
   useEffect(() => {
     if (Array.isArray(contextTaskLists) && contextTaskLists.length > 0) {
-      setStableTaskLists(contextTaskLists)
+      // When updating task lists, preserve optimistic state for pending completions
+      setStableTaskLists(prevTaskLists => {
+        const newTaskLists = contextTaskLists
+        
+        // If there are no pending completions, just use the new task lists
+        if (pendingCompletionsRef.current.size === 0) {
+          return newTaskLists
+        }
+        
+          // Otherwise, merge optimistic state for pending tasks
+          return newTaskLists.map((taskList: any) => {
+            const prevTaskList = prevTaskLists.find((tl: any) => tl.id === taskList.id)
+            if (!prevTaskList) return taskList
+            
+            const year = new Date().getFullYear()
+            const today = new Date()
+            const dateISO = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+            
+            const prevCompletedTasks = (prevTaskList as any)?.completedTasks || {}
+            const newCompletedTasks = (taskList as any)?.completedTasks || {}
+            
+            // Check if we need to preserve any optimistic state
+            const prevDateBucket = prevCompletedTasks[year]?.[dateISO]
+            if (!prevDateBucket) {
+              // Even if no date bucket, we might have pending status updates
+              if (pendingStatusUpdatesRef.current.size === 0) return taskList
+            }
+            
+            const keyOf = (t: any) => (t?.id || t?.localeKey || (typeof t?.name === 'string' ? t.name.toLowerCase() : '')) as string
+            
+            // Find tasks that have pending completions or status updates in this task list
+            const prevOpenTasks = prevDateBucket ? (Array.isArray(prevDateBucket.openTasks) ? prevDateBucket.openTasks : []) : []
+            const prevClosedTasks = prevDateBucket ? (Array.isArray(prevDateBucket.closedTasks) ? prevDateBucket.closedTasks : []) : []
+            
+            const allPendingKeys = new Set([
+              ...Array.from(pendingCompletionsRef.current.keys()),
+              ...Array.from(pendingStatusUpdatesRef.current.keys())
+            ])
+            
+            const hasPendingTasks = Array.from(allPendingKeys).some(taskKey => {
+              // Check if this task exists in the task list
+              const allTasks = [
+                ...(Array.isArray(taskList.tasks) ? taskList.tasks : []),
+                ...(Array.isArray(taskList.templateTasks) ? taskList.templateTasks : []),
+                ...(Array.isArray(taskList.ephemeralTasks?.open) ? taskList.ephemeralTasks.open : []),
+                ...(Array.isArray(taskList.ephemeralTasks?.closed) ? taskList.ephemeralTasks.closed : [])
+              ]
+              return allTasks.some((t: any) => keyOf(t) === taskKey) ||
+                     prevOpenTasks.some((t: any) => keyOf(t) === taskKey) || 
+                     prevClosedTasks.some((t: any) => keyOf(t) === taskKey)
+            })
+            
+            if (!hasPendingTasks) return taskList
+            
+            if (!prevDateBucket) {
+              // If no date bucket but we have pending status updates, we still need to preserve them
+              // The status will be preserved via optimisticStatuses state, so we can just return the new list
+              return taskList
+            }
+          
+          // Merge completedTasks, preserving optimistic state for pending tasks
+          const mergedCompletedTasks = { ...newCompletedTasks }
+          const newDateBucket = newCompletedTasks[year]?.[dateISO] || {}
+          
+          const newOpenTasks = Array.isArray(newDateBucket.openTasks) ? [...newDateBucket.openTasks] : []
+          const newClosedTasks = Array.isArray(newDateBucket.closedTasks) ? [...newDateBucket.closedTasks] : []
+          
+          // For each pending task, preserve its optimistic state
+          allPendingKeys.forEach(taskKey => {
+            const pendingCompletion = pendingCompletionsRef.current.get(taskKey)
+            const pendingStatusUpdate = pendingStatusUpdatesRef.current.get(taskKey)
+            
+            const prevOpenTask = prevOpenTasks.find((t: any) => keyOf(t) === taskKey)
+            const prevClosedTask = prevClosedTasks.find((t: any) => keyOf(t) === taskKey)
+            
+            // Remove from new data if present
+            const newOpenIndex = newOpenTasks.findIndex((t: any) => keyOf(t) === taskKey)
+            const newClosedIndex = newClosedTasks.findIndex((t: any) => keyOf(t) === taskKey)
+            
+            if (pendingCompletion) {
+              // Handle pending completion
+              if (pendingCompletion.inClosed) {
+                // Task should be in closedTasks (optimistic)
+                if (newClosedIndex >= 0) {
+                  // Update existing closed task with optimistic state
+                  newClosedTasks[newClosedIndex] = { 
+                    ...newClosedTasks[newClosedIndex], 
+                    ...prevClosedTask,
+                    count: pendingCompletion.count,
+                    status: pendingCompletion.status
+                  }
+                } else if (prevClosedTask) {
+                  // Add optimistic closed task
+                  newClosedTasks.push({ 
+                    ...prevClosedTask, 
+                    count: pendingCompletion.count,
+                    status: pendingCompletion.status
+                  })
+                }
+                // Remove from openTasks if present
+                if (newOpenIndex >= 0) {
+                  newOpenTasks.splice(newOpenIndex, 1)
+                }
+              } else {
+                // Task should be in openTasks (optimistic)
+                if (newOpenIndex >= 0) {
+                  // Update existing open task with optimistic state
+                  newOpenTasks[newOpenIndex] = { 
+                    ...newOpenTasks[newOpenIndex], 
+                    ...prevOpenTask,
+                    count: pendingCompletion.count,
+                    status: pendingCompletion.status
+                  }
+                } else if (prevOpenTask) {
+                  // Add optimistic open task
+                  newOpenTasks.push({ 
+                    ...prevOpenTask, 
+                    count: pendingCompletion.count,
+                    status: pendingCompletion.status
+                  })
+                }
+                // Remove from closedTasks if present
+                if (newClosedIndex >= 0) {
+                  newClosedTasks.splice(newClosedIndex, 1)
+                }
+              }
+            } else if (pendingStatusUpdate) {
+              // Handle pending status update (status change via icon button)
+              // Preserve the optimistic status in the task data
+              if (newOpenIndex >= 0) {
+                // Update existing open task with optimistic status
+                newOpenTasks[newOpenIndex] = { 
+                  ...newOpenTasks[newOpenIndex], 
+                  status: pendingStatusUpdate
+                }
+              } else if (newClosedIndex >= 0) {
+                // Update existing closed task with optimistic status
+                newClosedTasks[newClosedIndex] = { 
+                  ...newClosedTasks[newClosedIndex], 
+                  status: pendingStatusUpdate
+                }
+              } else if (prevOpenTask) {
+                // Task was in openTasks, preserve it with new status
+                newOpenTasks.push({ 
+                  ...prevOpenTask, 
+                  status: pendingStatusUpdate
+                })
+              } else if (prevClosedTask) {
+                // Task was in closedTasks, preserve it with new status
+                newClosedTasks.push({ 
+                  ...prevClosedTask, 
+                  status: pendingStatusUpdate
+                })
+              }
+            }
+          })
+          
+          mergedCompletedTasks[year] = {
+            ...(mergedCompletedTasks[year] || {}),
+            [dateISO]: {
+              ...newDateBucket,
+              openTasks: newOpenTasks,
+              closedTasks: newClosedTasks
+            }
+          }
+          
+          return {
+            ...taskList,
+            completedTasks: mergedCompletedTasks
+          }
+        })
+      })
       setIsLoading(false)
       initialLoadDone.current = true
     } else if (contextTaskLists === null || contextTaskLists === undefined) {
@@ -264,6 +441,23 @@ export const SteadyTasks = () => {
   const handleStatusChange = useCallback(async (task: any, taskListId: string, newStatus: TaskStatus) => {
     const key = task?.id || task?.localeKey || task?.name
     
+    // Track pending status update
+    pendingStatusUpdatesRef.current.set(key, newStatus)
+    
+    // Track pending completion if status is "done"
+    if (newStatus === 'done') {
+      const currentCount = task.count || 0
+      const times = task.times || 1
+      const newCount = currentCount + 1
+      const isFullyCompleted = newCount >= times
+      
+      pendingCompletionsRef.current.set(key, {
+        count: newCount,
+        status: newStatus,
+        inClosed: isFullyCompleted
+      })
+    }
+    
     // Optimistic update - update UI immediately
     setOptimisticStatuses(prev => ({
       ...prev,
@@ -290,12 +484,14 @@ export const SteadyTasks = () => {
       // Refresh task lists to get server state
       await refreshTaskLists()
       
-      // Clear optimistic status after successful update
+      // Clear optimistic status and pending updates after successful update
       setOptimisticStatuses(prev => {
         const updated = { ...prev }
         delete updated[key]
         return updated
       })
+      pendingCompletionsRef.current.delete(key)
+      pendingStatusUpdatesRef.current.delete(key)
     } catch (error) {
       console.error('Error updating task status:', error)
       // Revert optimistic update on error
@@ -304,6 +500,8 @@ export const SteadyTasks = () => {
         delete updated[key]
         return updated
       })
+      pendingCompletionsRef.current.delete(key)
+      pendingStatusUpdatesRef.current.delete(key)
     }
   }, [refreshTaskLists])
   
@@ -315,9 +513,17 @@ export const SteadyTasks = () => {
     const times = task.times || 1
     const newCount = currentCount + 1
     
+    // Track pending completion
+    const isFullyCompleted = newCount >= times
+    const { taskStatus } = calculateTaskStatus(newCount, times, task.taskStatus as TaskStatus)
+    pendingCompletionsRef.current.set(taskKey, {
+      count: newCount,
+      status: taskStatus,
+      inClosed: isFullyCompleted
+    })
+    
     // Optimistic update
     setOptimisticCounts(prev => ({ ...prev, [taskKey]: newCount }))
-    const { taskStatus } = calculateTaskStatus(newCount, times, task.taskStatus as TaskStatus)
     setOptimisticStatuses(prev => ({ ...prev, [taskKey]: taskStatus }))
     
     try {
@@ -373,7 +579,7 @@ export const SteadyTasks = () => {
       await refreshTaskLists()
       await refreshUser()
       
-      // Clear optimistic updates
+      // Clear optimistic updates and pending completion
       setOptimisticCounts(prev => {
         const updated = { ...prev }
         delete updated[taskKey]
@@ -384,6 +590,7 @@ export const SteadyTasks = () => {
         delete updated[taskKey]
         return updated
       })
+      pendingCompletionsRef.current.delete(taskKey)
     } catch (error) {
       console.error('Error incrementing count:', error)
       // Revert optimistic updates
@@ -397,6 +604,7 @@ export const SteadyTasks = () => {
         delete updated[taskKey]
         return updated
       })
+      pendingCompletionsRef.current.delete(taskKey)
     }
   }, [stableTaskLists, refreshTaskLists, refreshUser])
   
@@ -470,7 +678,7 @@ export const SteadyTasks = () => {
       await refreshTaskLists()
       await refreshUser()
       
-      // Clear optimistic updates
+      // Clear optimistic updates and pending completion
       setOptimisticCounts(prev => {
         const updated = { ...prev }
         delete updated[taskKey]
@@ -481,6 +689,7 @@ export const SteadyTasks = () => {
         delete updated[taskKey]
         return updated
       })
+      pendingCompletionsRef.current.delete(taskKey)
     } catch (error) {
       console.error('Error decrementing count:', error)
       // Revert optimistic updates
@@ -494,6 +703,7 @@ export const SteadyTasks = () => {
         delete updated[taskKey]
         return updated
       })
+      pendingCompletionsRef.current.delete(taskKey)
     }
   }, [stableTaskLists, refreshTaskLists, refreshUser])
   

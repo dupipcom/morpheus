@@ -111,6 +111,12 @@
     "weekNumber": "Astea {number}",
     "yourEarnings": "Zure irabaziak",
     "selectList": "Zerrenda hautatu",
+    "selectDate": "Data hautatu",
+    "incrementTimes": "Aldizak handitu",
+    "decrementTimes": "Aldizak gutxitu",
+    "decrementCount": "Kopurua gutxitu",
+    "showMore": "Erakutsi zeregin gehiago",
+    "showLess": "Erakutsi zeregin gutxiago",
     "status": {
       "in progress": "Abian",
       "steady": "Egonkor",

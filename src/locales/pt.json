@@ -108,6 +108,12 @@
     "weekNumber": "Semana {number}",
     "yourEarnings": "Seus ganhos {timeframe}, até agora: Ð{amount}",
     "selectList": "Selecionar lista",
+    "selectDate": "Selecionar data",
+    "incrementTimes": "Incrementar vezes",
+    "decrementTimes": "Decrementar vezes",
+    "decrementCount": "Decrementar contagem",
+    "showMore": "Mostrar mais tarefas",
+    "showLess": "Mostrar menos tarefas",
     "status": {
       "in progress": "Em Progresso",
       "steady": "Constante",

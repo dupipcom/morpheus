@@ -111,6 +111,8 @@
     "yourEarnings": "Your earnings {timeframe}, so far: Ð{amount}",
     "selectList": "Select list",
     "selectDate": "Select date",
+    "incrementTimes": "Increment times",
+    "decrementTimes": "Decrement times",
     "decrementCount": "Decrement count",
     "showMore": "Show more tasks",
     "showLess": "Show less tasks",

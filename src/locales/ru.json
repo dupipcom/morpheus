@@ -108,6 +108,12 @@
     "weekNumber": "Неделя {number}",
     "yourEarnings": "Ваш заработок",
     "selectList": "Выберите список",
+    "selectDate": "Выберите дату",
+    "incrementTimes": "Увеличить разы",
+    "decrementTimes": "Уменьшить разы",
+    "decrementCount": "Уменьшить счетчик",
+    "showMore": "Показать больше задач",
+    "showLess": "Показать меньше задач",
     "status": {
       "in progress": "В процессе",
       "steady": "Стабильно",

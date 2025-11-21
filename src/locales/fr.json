@@ -109,6 +109,8 @@
     "yourEarnings": "Vos gains {timeframe}, jusqu'à présent : Ð{amount}",
     "selectList": "Sélectionner une liste",
     "selectDate": "Sélectionner la date",
+    "incrementTimes": "Incrémenter les fois",
+    "decrementTimes": "Décrémenter les fois",
     "decrementCount": "Décrémenter le compteur",
     "showMore": "Afficher plus de tâches",
     "showLess": "Afficher moins de tâches",

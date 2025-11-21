@@ -108,6 +108,12 @@
     "weekNumber": "שבוע {number}",
     "yourEarnings": "הרווחים שלך",
     "selectList": "בחר רשימה",
+    "selectDate": "בחר תאריך",
+    "incrementTimes": "הגדל פעמים",
+    "decrementTimes": "הקטן פעמים",
+    "decrementCount": "הקטן ספירה",
+    "showMore": "הצג משימות נוספות",
+    "showLess": "הצג פחות משימות",
     "status": {
       "in progress": "בתהליך",
       "steady": "יציב",

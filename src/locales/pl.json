@@ -112,6 +112,12 @@
     "weekNumber": "Tydzień {number}",
     "yourEarnings": "Twoje zarobki {timeframe}, do tej pory: Ð{amount}",
     "selectList": "Wybierz listę",
+    "selectDate": "Wybierz datę",
+    "incrementTimes": "Zwiększ razy",
+    "decrementTimes": "Zmniejsz razy",
+    "decrementCount": "Zmniejsz licznik",
+    "showMore": "Pokaż więcej zadań",
+    "showLess": "Pokaż mniej zadań",
     "status": {
       "in progress": "W Trakcie",
       "steady": "Stabilny",

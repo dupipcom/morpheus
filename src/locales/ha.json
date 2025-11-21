@@ -108,6 +108,12 @@
     "weekNumber": "Mako {number}",
     "yourEarnings": "Kuɗin da ka samu {timeframe}, har yanzu: Ð{amount}",
     "selectList": "Zaɓi jeri",
+    "selectDate": "Zaɓi kwanan wata",
+    "incrementTimes": "Ƙara sau",
+    "decrementTimes": "Rage sau",
+    "decrementCount": "Rage ƙidaya",
+    "showMore": "Nuna ayyuka da yawa",
+    "showLess": "Nuna ayyuka kaɗan",
     "status": {
       "in progress": "Ana Ci Gaba",
       "steady": "Tsayayye",
