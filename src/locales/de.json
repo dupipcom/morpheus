@@ -112,6 +112,8 @@
     "incrementTimes": "Anzahl erhöhen",
     "decrementTimes": "Anzahl verringern",
     "decrementCount": "Zähler verringern",
+    "markAsSensitive": "Als sensibel markieren",
+    "markAsNotSensitive": "Als nicht sensibel markieren",
     "showMore": "Mehr Aufgaben anzeigen",
     "showLess": "Weniger Aufgaben anzeigen",
     "status": {

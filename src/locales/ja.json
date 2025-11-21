@@ -112,6 +112,8 @@
     "incrementTimes": "回数を増やす",
     "decrementTimes": "回数を減らす",
     "decrementCount": "カウントを減らす",
+    "markAsSensitive": "機密としてマーク",
+    "markAsNotSensitive": "機密ではないとしてマーク",
     "showMore": "タスクをさらに表示",
     "showLess": "タスクを減らす",
     "status": {

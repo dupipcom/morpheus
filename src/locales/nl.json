@@ -112,6 +112,8 @@
     "incrementTimes": "Verhoog aantal keren",
     "decrementTimes": "Verlaag aantal keren",
     "decrementCount": "Verlaag aantal",
+    "markAsSensitive": "Markeren als gevoelig",
+    "markAsNotSensitive": "Markeren als niet gevoelig",
     "showMore": "Meer taken tonen",
     "showLess": "Minder taken tonen",
     "status": {

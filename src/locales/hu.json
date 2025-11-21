@@ -112,6 +112,8 @@
     "incrementTimes": "Szorzat növelése",
     "decrementTimes": "Szorzat csökkentése",
     "decrementCount": "Számláló csökkentése",
+    "markAsSensitive": "Jelölés érzékenyként",
+    "markAsNotSensitive": "Érzékeny jelölés eltávolítása",
     "showMore": "Több feladat megjelenítése",
     "showLess": "Kevesebb feladat megjelenítése",
     "status": {

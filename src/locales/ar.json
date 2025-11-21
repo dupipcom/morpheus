@@ -116,6 +116,8 @@
     "incrementTimes": "زيادة المرات",
     "decrementTimes": "تقليل المرات",
     "decrementCount": "تقليل العدد",
+    "markAsSensitive": "وضع علامة كحساس",
+    "markAsNotSensitive": "إزالة علامة الحساسية",
     "showMore": "عرض المزيد من المهام",
     "showLess": "عرض عدد أقل من المهام",
     "status": {

@@ -112,6 +112,8 @@
     "incrementTimes": "Αύξηση φορών",
     "decrementTimes": "Μείωση φορών",
     "decrementCount": "Μείωση αριθμού",
+    "markAsSensitive": "Σήμανση ως ευαίσθητο",
+    "markAsNotSensitive": "Σήμανση ως μη ευαίσθητο",
     "showMore": "Εμφάνιση περισσότερων εργασιών",
     "showLess": "Εμφάνιση λιγότερων εργασιών",
     "status": {

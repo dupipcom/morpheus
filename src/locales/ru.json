@@ -112,6 +112,8 @@
     "incrementTimes": "Увеличить разы",
     "decrementTimes": "Уменьшить разы",
     "decrementCount": "Уменьшить счетчик",
+    "markAsSensitive": "Пометить как конфиденциальное",
+    "markAsNotSensitive": "Снять пометку конфиденциальности",
     "showMore": "Показать больше задач",
     "showLess": "Показать меньше задач",
     "status": {

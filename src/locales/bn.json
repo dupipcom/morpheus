@@ -112,6 +112,8 @@
     "incrementTimes": "বার বৃদ্ধি করুন",
     "decrementTimes": "বার হ্রাস করুন",
     "decrementCount": "সংখ্যা হ্রাস করুন",
+    "markAsSensitive": "সংবেদনশীল হিসাবে চিহ্নিত করুন",
+    "markAsNotSensitive": "অসংবেদনশীল হিসাবে চিহ্নিত করুন",
     "showMore": "আরও কাজ দেখান",
     "showLess": "কম কাজ দেখান",
     "status": {

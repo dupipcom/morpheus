@@ -115,6 +115,8 @@
     "incrementTimes": "Incrementar veces",
     "decrementTimes": "Decrementar veces",
     "decrementCount": "Decrementar contador",
+    "markAsSensitive": "Marcar como sensible",
+    "markAsNotSensitive": "Marcar como non sensible",
     "showMore": "Mostrar máis tarefas",
     "showLess": "Mostrar menos tarefas",
     "status": {

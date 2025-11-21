@@ -114,6 +114,8 @@
     "incrementTimes": "Increment times",
     "decrementTimes": "Decrement times",
     "decrementCount": "Decrement count",
+    "markAsSensitive": "Mark as sensitive",
+    "markAsNotSensitive": "Mark as not sensitive",
     "showMore": "Show more tasks",
     "showLess": "Show less tasks",
     "status": {

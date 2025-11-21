@@ -112,6 +112,8 @@
     "incrementTimes": "增加次数",
     "decrementTimes": "减少次数",
     "decrementCount": "减少计数",
+    "markAsSensitive": "标记为敏感",
+    "markAsNotSensitive": "标记为非敏感",
     "showMore": "显示更多任务",
     "showLess": "显示更少任务",
     "status": {

@@ -112,6 +112,8 @@
     "incrementTimes": "Ongeza mara",
     "decrementTimes": "Punguza mara",
     "decrementCount": "Punguza hesabu",
+    "markAsSensitive": "Weka alama kama nyeti",
+    "markAsNotSensitive": "Weka alama kama si nyeti",
     "showMore": "Onyesha kazi zaidi",
     "showLess": "Onyesha kazi chache",
     "status": {

@@ -112,6 +112,8 @@
     "incrementTimes": "Suurenda kordi",
     "decrementTimes": "Vähenda kordi",
     "decrementCount": "Vähenda arvu",
+    "markAsSensitive": "Märgi tundlikuks",
+    "markAsNotSensitive": "Eemalda tundliku märge",
     "showMore": "Näita rohkem ülesandeid",
     "showLess": "Näita vähem ülesandeid",
     "status": {

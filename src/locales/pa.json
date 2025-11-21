@@ -116,6 +116,8 @@
     "incrementTimes": "ਵਾਰ ਵਧਾਓ",
     "decrementTimes": "ਵਾਰ ਘਟਾਓ",
     "decrementCount": "ਗਿਣਤੀ ਘਟਾਓ",
+    "markAsSensitive": "ਸੰਵੇਦਨਸ਼ੀਲ ਵਜੋਂ ਚਿੰਨ੍ਹਿਤ ਕਰੋ",
+    "markAsNotSensitive": "ਗੈਰ-ਸੰਵੇਦਨਸ਼ੀਲ ਵਜੋਂ ਚਿੰਨ੍ਹਿਤ ਕਰੋ",
     "showMore": "ਹੋਰ ਕੰਮ ਦਿਖਾਓ",
     "showLess": "ਕਮ ਕੰਮ ਦਿਖਾਓ",
     "status": {

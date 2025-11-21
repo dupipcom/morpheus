@@ -116,6 +116,8 @@
     "incrementTimes": "Zwiększ razy",
     "decrementTimes": "Zmniejsz razy",
     "decrementCount": "Zmniejsz licznik",
+    "markAsSensitive": "Oznacz jako wrażliwe",
+    "markAsNotSensitive": "Oznacz jako niewrażliwe",
     "showMore": "Pokaż więcej zadań",
     "showLess": "Pokaż mniej zadań",
     "status": {

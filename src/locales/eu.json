@@ -115,6 +115,8 @@
     "incrementTimes": "Aldizak handitu",
     "decrementTimes": "Aldizak gutxitu",
     "decrementCount": "Kopurua gutxitu",
+    "markAsSensitive": "Markatu sentikor gisa",
+    "markAsNotSensitive": "Markatu ez sentikor gisa",
     "showMore": "Erakutsi zeregin gehiago",
     "showLess": "Erakutsi zeregin gutxiago",
     "status": {

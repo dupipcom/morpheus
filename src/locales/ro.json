@@ -112,6 +112,8 @@
     "incrementTimes": "Incrementați ori",
     "decrementTimes": "Decrementați ori",
     "decrementCount": "Decrementați numărul",
+    "markAsSensitive": "Marchează ca sensibil",
+    "markAsNotSensitive": "Marchează ca nesensibil",
     "showMore": "Afișați mai multe sarcini",
     "showLess": "Afișați mai puține sarcini",
     "status": {

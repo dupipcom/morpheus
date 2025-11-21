@@ -112,6 +112,8 @@
     "incrementTimes": "הגדל פעמים",
     "decrementTimes": "הקטן פעמים",
     "decrementCount": "הקטן ספירה",
+    "markAsSensitive": "סמן כרגיש",
+    "markAsNotSensitive": "הסר סימון רגיש",
     "showMore": "הצג משימות נוספות",
     "showLess": "הצג פחות משימות",
     "status": {

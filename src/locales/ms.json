@@ -116,6 +116,8 @@
     "incrementTimes": "Tambah kali",
     "decrementTimes": "Kurangkan kali",
     "decrementCount": "Kurangkan kiraan",
+    "markAsSensitive": "Tandakan sebagai sensitif",
+    "markAsNotSensitive": "Tandakan sebagai tidak sensitif",
     "showMore": "Tunjukkan lebih banyak tugas",
     "showLess": "Tunjukkan kurang tugas",
     "status": {

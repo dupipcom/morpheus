@@ -112,6 +112,8 @@
     "incrementTimes": "Zvýšit počet",
     "decrementTimes": "Snížit počet",
     "decrementCount": "Snížit počet",
+    "markAsSensitive": "Označit jako citlivé",
+    "markAsNotSensitive": "Označit jako necitlivé",
     "showMore": "Zobrazit více úkolů",
     "showLess": "Zobrazit méně úkolů",
     "status": {

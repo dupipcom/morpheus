@@ -115,6 +115,8 @@
     "incrementTimes": "Öka antal gånger",
     "decrementTimes": "Minska antal gånger",
     "decrementCount": "Minska antal",
+    "markAsSensitive": "Markera som känslig",
+    "markAsNotSensitive": "Markera som inte känslig",
     "showMore": "Visa fler uppgifter",
     "showLess": "Visa färre uppgifter",
     "status": {

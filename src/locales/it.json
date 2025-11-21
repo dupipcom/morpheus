@@ -112,6 +112,8 @@
     "incrementTimes": "Incrementa volte",
     "decrementTimes": "Decrementa volte",
     "decrementCount": "Decrementa conteggio",
+    "markAsSensitive": "Segna come sensibile",
+    "markAsNotSensitive": "Segna come non sensibile",
     "showMore": "Mostra più attività",
     "showLess": "Mostra meno attività",
     "status": {

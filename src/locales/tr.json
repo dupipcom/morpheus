@@ -116,6 +116,8 @@
     "incrementTimes": "Kere artır",
     "decrementTimes": "Kere azalt",
     "decrementCount": "Sayaç azalt",
+    "markAsSensitive": "Hassas olarak işaretle",
+    "markAsNotSensitive": "Hassas olmayan olarak işaretle",
     "showMore": "Daha fazla görev göster",
     "showLess": "Daha az görev göster",
     "status": {

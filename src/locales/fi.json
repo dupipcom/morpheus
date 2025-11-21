@@ -116,6 +116,8 @@
     "incrementTimes": "Lisää kertoja",
     "decrementTimes": "Vähennä kertoja",
     "decrementCount": "Vähennä määrää",
+    "markAsSensitive": "Merkitse arkaluontoiseksi",
+    "markAsNotSensitive": "Poista arkaluontoinen merkintä",
     "showMore": "Näytä lisää tehtäviä",
     "showLess": "Näytä vähemmän tehtäviä",
     "status": {

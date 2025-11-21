@@ -116,6 +116,8 @@
     "incrementTimes": "Forøg antal gange",
     "decrementTimes": "Formindsk antal gange",
     "decrementCount": "Formindsk antal",
+    "markAsSensitive": "Marker som følsom",
+    "markAsNotSensitive": "Marker som ikke følsom",
     "showMore": "Vis flere opgaver",
     "showLess": "Vis færre opgaver",
     "status": {

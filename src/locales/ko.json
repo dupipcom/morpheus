@@ -112,6 +112,8 @@
     "incrementTimes": "횟수 증가",
     "decrementTimes": "횟수 감소",
     "decrementCount": "카운트 감소",
+    "markAsSensitive": "민감한 것으로 표시",
+    "markAsNotSensitive": "민감하지 않은 것으로 표시",
     "showMore": "더 많은 작업 표시",
     "showLess": "작업 줄이기",
     "status": {
