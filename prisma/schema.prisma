@@ -182,7 +182,7 @@ model Person {
   quality Int?
   visibility    Visibility @default(PRIVATE)
   profile       Profile?  @relation(fields: [profileId], references: [id])
-  profileId     String?   @unique @db.ObjectId
+  profileId     String[]   @db.ObjectId
   noteIds       String[]  @default([]) @db.ObjectId
   documentIds   String[]  @default([]) @db.ObjectId
 }
@@ -217,7 +217,7 @@ model Profile {
   personIds     String[]  @default([]) @db.ObjectId
   noteIds       String[]  @default([]) @db.ObjectId
   documentIds   String[]  @default([]) @db.ObjectId
-  person        Person?
+  person        Person[]
   comments      Comment[]
   charts        Chart[]
   days          Day[]

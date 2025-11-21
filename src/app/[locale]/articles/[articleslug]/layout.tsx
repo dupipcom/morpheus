@@ -154,6 +154,8 @@ export default async function ArticleLayout({
         </div>
       )}
 
+{children}
+
 {hasContent && (
         <div className="article-content prose prose-lg max-w-none mb-8 m-auto max-w-xl">
           <RichText 
