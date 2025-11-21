@@ -20,7 +20,7 @@ export function ArticleShareButton({ url, title, description }: ArticleShareButt
   const whatsappText = `${shareText} ${url}`
 
   const shareLinks = {
-    whatsapp: `https://wa.me/?text=${encodeURIComponent(whatsappText)}`,
+    whatsapp: `https://api.whatsapp.com/send?text=${encodeURIComponent(whatsappText)}`,
     twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(url)}`,
     facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
     linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
@@ -42,7 +42,12 @@ export function ArticleShareButton({ url, title, description }: ArticleShareButt
       handleCopy()
       return
     }
-    window.open(shareLinks[platform], '_blank', 'width=600,height=400')
+    // For WhatsApp, use direct navigation instead of window.open to ensure mobile app opens
+    if (platform === 'whatsapp') {
+      window.location.href = shareLinks[platform]
+    } else {
+      window.open(shareLinks[platform], '_blank', 'width=600,height=400')
+    }
   }
 
   return (
