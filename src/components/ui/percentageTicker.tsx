@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { ArrowUp, ArrowDown } from 'lucide-react'
+import { ChevronUp, ChevronDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface PercentageTickerProps {
@@ -28,21 +28,21 @@ export function PercentageTicker({ value, className, showZero = false }: Percent
   return (
     <div
       className={cn(
-        'inline-flex items-center gap-1 text-xs font-medium shrink-0',
+        'inline-flex items-center gap-1 text-xs font-medium shrink-0 mr-4',
         isPositive && 'text-success',
         isNegative && 'text-destructive',
         value === 0 && 'text-primary',
         className
       )}
     >
-      {isPositive && <ArrowUp className={cn(
+      {isPositive && <ChevronUp className={cn(
         'inline-flex items-center gap-1 text-xs font-medium shrink-0',
         isPositive && 'text-success',
         isNegative && 'text-destructive',
         value === 0 && 'text-muted-foreground',
         className
       )} />}
-      {isNegative && <ArrowDown className={cn(
+      {isNegative && <ChevronDown className={cn(
         'inline-flex items-center gap-1 text-xs font-medium shrink-0',
         isPositive && 'text-success',
         isNegative && 'text-destructive',

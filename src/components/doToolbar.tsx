@@ -374,7 +374,12 @@ export const DoToolbar = ({
       <Accordion type="single" collapsible className="w-full" value={accordionValue} onValueChange={setAccordionValue}>
         <AccordionItem value="do-toolbar" className="border-none">
           <AccordionTrigger className="py-0 px-0 hover:no-underline">
-            <h3 className="text-base font-semibold text-body">{selectedListTitle}</h3>
+            <div className="flex items-center justify-between w-full gap-2">
+              <h3 className="text-base font-semibold text-body">{selectedListTitle}</h3>
+              {selectedList && (
+                <PercentageTicker value={calculateCompletionChange(selectedList)} />
+              )}
+            </div>
           </AccordionTrigger>
           <AccordionContent className="pt-3 pb-0">
             <div className="space-y-3">
