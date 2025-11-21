@@ -49,6 +49,10 @@ async function middleware(request: Request, auth: any) {
     return
   }
 
+  if(pathname.includes('sitemap.xml')) {
+    return NextResponse.next()
+  }
+
   // Check if user is logged in for root and locale paths
   const { userId } = await auth()
   
@@ -136,7 +140,7 @@ export default clerkMiddleware((auth, req) => {
 export const config = {
   matcher: [
     // Skip Next.js internals and all static files, unless found in search params
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest|sitemap)).*)',
     // Always run for API routes
     '/(api|trpc)(.*)',
   ],
