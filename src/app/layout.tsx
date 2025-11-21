@@ -80,7 +80,7 @@ export default function RootLayout({
       >
         <Providers locale={locale}>
           <article className="">
-            <div className="pb-[80px]">
+            <div className="pb-[130px]">
               <Nav subHeader="" onThemeChange={handleThemeChange} />
               <AppContent>{children}</AppContent>
               <Footer />

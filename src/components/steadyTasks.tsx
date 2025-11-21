@@ -5,7 +5,7 @@ import { GlobalContext } from '@/lib/contexts'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggleGroup'
 import { OptionsButton, OptionsMenuItem } from '@/components/optionsButton'
-import { Circle, Minus, ChevronDown, ChevronUp } from 'lucide-react'
+import { Circle, Minus, ChevronDown, ChevronUp, Eye, EyeOff } from 'lucide-react'
 import { useI18n } from '@/lib/contexts/i18n'
 import { prepareIncrementActions, prepareDecrementActions, handleEphemeralTaskUpdate, calculateTaskStatus } from '@/lib/taskUtils'
 import { useUserData } from '@/lib/userUtils'
@@ -53,7 +53,7 @@ const getIconColor = (status: TaskStatus): string => {
 }
 
 export const SteadyTasks = () => {
-  const { taskLists: contextTaskLists, refreshTaskLists } = useContext(GlobalContext)
+  const { taskLists: contextTaskLists, refreshTaskLists, revealRedacted } = useContext(GlobalContext)
   const { t } = useI18n()
   const { refreshUser } = useUserData()
   const [stableTaskLists, setStableTaskLists] = useState<any[]>([])
@@ -504,6 +504,28 @@ export const SteadyTasks = () => {
       pendingStatusUpdatesRef.current.delete(key)
     }
   }, [refreshTaskLists])
+
+  const handleToggleRedacted = useCallback(async (task: any, taskListId: string) => {
+    const key = task?.id || task?.localeKey || task?.name
+    const currentRedacted = task?.redacted || false
+    const newRedacted = !currentRedacted
+
+    try {
+      await fetch('/api/v1/tasklists', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          updateTaskRedacted: true,
+          taskListId: taskListId,
+          taskKey: key,
+          redacted: newRedacted
+        })
+      })
+      await refreshTaskLists()
+    } catch (error) {
+      console.error('Error toggling task redacted status:', error)
+    }
+  }, [refreshTaskLists])
   
   const handleIncrementCount = useCallback(async (task: any) => {
     if (!task.taskListId) return
@@ -797,6 +819,12 @@ export const SteadyTasks = () => {
               onClick: () => handleStatusChange(task, task.taskListId, status),
               icon: null,
             })),
+            {
+              label: task?.redacted ? t('tasks.markAsNotSensitive', { defaultValue: 'Mark as not sensitive' }) : t('tasks.markAsSensitive', { defaultValue: 'Mark as sensitive' }),
+              onClick: () => handleToggleRedacted(task, task.taskListId),
+              icon: task?.redacted ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />,
+              separator: true,
+            },
             ...((task.times || 1) > 1 && (task.count || 0) > 0
               ? [
                   {
@@ -825,10 +853,11 @@ export const SteadyTasks = () => {
                 <ToggleGroupItem 
                   className="rounded-md leading-7 text-sm min-h-[40px] h-auto flex-1 whitespace-normal break-words py-2 cursor-pointer" 
                   value={task.name} 
-                  aria-label={task.name}
+                  aria-label={(task?.redacted === true && !revealRedacted) ? 'Redacted task' : (task.displayName || task.name)}
                   onClick={() => handleToggleClick(task)}
                 >
-                  {task.times > 1 ? `${task.count || 0}/${task.times} ` : ''}{task.displayName || task.name}
+                  {task.times > 1 ? `${task.count || 0}/${task.times} ` : ''}
+                  {(task?.redacted === true && !revealRedacted) ? '·····' : (task.displayName || task.name)}
                 </ToggleGroupItem>
               </div>
             </div>

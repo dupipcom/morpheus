@@ -14,7 +14,7 @@ import { useLocalStorage } from 'usehooks-ts';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
 export const BalanceSection = () => {
-  const { session } = useContext(GlobalContext)
+  const { session, revealRedacted, setGlobalContext } = useContext(GlobalContext)
   const { t } = useI18n()
   const serverBalance = (session?.user as any)?.availableBalance ?? null
   const serverStashRaw = (session?.user as any)?.stash
@@ -23,12 +23,17 @@ export const BalanceSection = () => {
   const serverEquity = typeof serverEquityRaw === 'number' ? serverEquityRaw : (typeof serverEquityRaw === 'string' ? parseFloat(serverEquityRaw || '0') : 0)
   const serverTotalEarningsRaw = (session?.user as any)?.totalEarnings
   const serverTotalEarnings = typeof serverTotalEarningsRaw === 'number' ? serverTotalEarningsRaw : (typeof serverTotalEarningsRaw === 'string' ? parseFloat(serverTotalEarningsRaw || '0') : 0)
-  const [value, setValue, removeValue] = useLocalStorage('redacted', 0);
-  const [hiddenBalance, setHiddenBalance] = useState(true)
+  const [value, setValue, removeValue] = useLocalStorage('dpip_redacted', 0);
+  const [hiddenBalance, setHiddenBalance] = useState(!revealRedacted)
   const [localBalance, setLocalBalance] = useState<string>(serverBalance !== null ? String(serverBalance) : '0')
   const [isDetailsExpanded, setIsDetailsExpanded] = useState(false)
 
   const { isLoading, refreshUser } = useUserData()
+
+  // Sync hiddenBalance with GlobalContext revealRedacted
+  useEffect(() => {
+    setHiddenBalance(!revealRedacted)
+  }, [revealRedacted])
 
   // Update local balance when server balance changes
   useEffect(() => {
@@ -53,8 +58,11 @@ export const BalanceSection = () => {
   }
 
   const handleHideBalance = () => {
-    setHiddenBalance(!hiddenBalance)
-    setValue(!value ? 1 : 0)
+    const newRevealState = !revealRedacted
+    const newValue = newRevealState ? 1 : 0
+    setValue(newValue)
+    setGlobalContext((prev: any) => ({ ...prev, revealRedacted: newRevealState }))
+    setHiddenBalance(!newRevealState)
   }
 
   const handleWithdrawStash = async () => {

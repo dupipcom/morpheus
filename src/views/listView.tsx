@@ -4,7 +4,7 @@ import React, { useMemo, useState, useEffect, useContext, useCallback, useRef } 
 
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggleGroup'
 import { Badge } from '@/components/ui/badge'
-import { User as UserIcon, Circle, Minus, Plus } from 'lucide-react'
+import { User as UserIcon, Circle, Minus, Plus, Eye, EyeOff } from 'lucide-react'
 import { OptionsButton, OptionsMenuItem } from '@/components/optionsButton'
 import { Skeleton } from '@/components/ui/skeleton'
 
@@ -74,7 +74,7 @@ const formatDateLocal = (date: Date): string => {
     onDateChange?: (date: Date | undefined) => void
     onAddEphemeral?: () => Promise<void> | void
   } = {}) => {
-    const { session, taskLists: contextTaskLists, refreshTaskLists } = useContext(GlobalContext)
+    const { session, taskLists: contextTaskLists, refreshTaskLists, revealRedacted } = useContext(GlobalContext)
     const { t, locale } = useI18n()
     const { refreshUser } = useUserData()
 
@@ -1123,6 +1123,29 @@ const formatDateLocal = (date: Date): string => {
       }
     }, [selectedTaskList, mergedTasks, values, date, refreshTaskLists, refreshUser, taskStatuses])
 
+    const handleToggleRedacted = useCallback(async (task: any) => {
+      if (!selectedTaskList) return
+      const key = task?.id || task?.localeKey || task?.name
+      const currentRedacted = task?.redacted || false
+      const newRedacted = !currentRedacted
+
+      try {
+        await fetch('/api/v1/tasklists', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            updateTaskRedacted: true,
+            taskListId: selectedTaskList.id,
+            taskKey: key,
+            redacted: newRedacted
+          })
+        })
+        await refreshTaskLists()
+      } catch (error) {
+        console.error('Error toggling task redacted status:', error)
+      }
+    }, [selectedTaskList, refreshTaskLists])
+
     const handleDecrementTimes = useCallback(async (task: any) => {
       if (!selectedTaskList) return
       const taskName = task?.name
@@ -1635,6 +1658,12 @@ const formatDateLocal = (date: Date): string => {
                 onClick: () => handleDecrementTimes(task),
                 icon: <Minus className="h-4 w-4" />,
               },
+              {
+                label: task?.redacted ? t('tasks.markAsNotSensitive', { defaultValue: 'Mark as not sensitive' }) : t('tasks.markAsSensitive', { defaultValue: 'Mark as sensitive' }),
+                onClick: () => handleToggleRedacted(task),
+                icon: task?.redacted ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />,
+                separator: true,
+              },
               ...((task.times || 1) > 1 && (task.count || 0) > 0
                 ? [
                     {
@@ -1658,8 +1687,9 @@ const formatDateLocal = (date: Date): string => {
                     align="start"
                   />
 
-                  <ToggleGroupItem className="rounded-md leading-7 text-sm min-h-[40px] h-auto flex-1 whitespace-normal break-words py-2" value={task.name} aria-label={task.name}>
-                    {task.times > 1 ? `${task.count || 0}/${task.times} ` : ''}{task.displayName || task.name}
+                  <ToggleGroupItem className="rounded-md leading-7 text-sm min-h-[40px] h-auto flex-1 whitespace-normal break-words py-2" value={task.name} aria-label={(task?.redacted === true && !revealRedacted) ? 'Redacted task' : (task.displayName || task.name)}>
+                    {task.times > 1 ? `${task.count || 0}/${task.times} ` : ''}
+                    {(task?.redacted === true && !revealRedacted) ? '·····' : (task.displayName || task.name)}
                   </ToggleGroupItem>
                 </div>
                 {isDone

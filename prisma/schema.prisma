@@ -463,6 +463,7 @@ type Task {
   budget Float?
   visibility Visibility?
   quality Int? // Range: -2 to +2
+  redacted Boolean? @default(false)
 }
 
 type ThingReference {

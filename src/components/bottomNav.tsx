@@ -2,14 +2,19 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Heart, CheckSquare, Users, Coins } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { Heart, CheckSquare, Users, Coins, Eye, EyeOff, Globe, Hourglass, Search } from 'lucide-react'
 import { GlobalContext } from '@/lib/contexts'
+import { useLocalStorage } from 'usehooks-ts'
 
 export function BottomNav() {
   const pathname = usePathname()
-  const { session } = useContext(GlobalContext)
+  const { session, revealRedacted, setGlobalContext } = useContext(GlobalContext)
+  const [redactedValue, setRedactedValue] = useLocalStorage('dpip_redacted', 0)
+  const [isSpace, setIsSpace] = useState(true)
+  const [searchQuery, setSearchQuery] = useState('')
   
   // Check if the current pathname matches the given path
   // Matches exact path or paths that start with the given path followed by '/'
@@ -18,6 +23,19 @@ export function BottomNav() {
     const rootPath = pathname.split('/')[3]
     if (rootPath === path) return true
     return false
+  }
+
+  const handleVisibilityToggle = () => {
+    const newRevealState = !revealRedacted
+    const newValue = newRevealState ? 1 : 0
+    setRedactedValue(newValue)
+    setGlobalContext((prev: any) => ({ ...prev, revealRedacted: newRevealState }))
+  }
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    // Handle search submission here
+    console.log('Search query:', searchQuery)
   }
 
   // Check if all mood levels are zero for today
@@ -35,8 +53,57 @@ export function BottomNav() {
     : false
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 h-[80px] bg-background border-t border-border z-50">
-      <div className="h-full max-w-7xl mx-auto px-4 flex items-center justify-around gap-4">
+    <>
+      {/* Bottom Toolbar */}
+      <div className="fixed bottom-[80px] left-0 right-0 h-[50px] bg-background border-t border-border z-50">
+        <div className="h-full max-w-7xl mx-auto px-4 flex items-center gap-2">
+          {/* Visibility Toggle */}
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-9 w-9"
+            onClick={handleVisibilityToggle}
+            aria-label={revealRedacted ? 'Hide sensitive tasks' : 'Reveal sensitive tasks'}
+          >
+            {revealRedacted ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          </Button>
+
+          {/* Space/Time Toggle */}
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-9 w-9"
+            onClick={() => setIsSpace(!isSpace)}
+            aria-label={isSpace ? 'Switch to time' : 'Switch to space'}
+          >
+            {isSpace ? <Globe className="h-4 w-4" /> : <Hourglass className="h-4 w-4" />}
+          </Button>
+
+          {/* Search Input */}
+          <form onSubmit={handleSearchSubmit} className="flex-1 flex items-center gap-2">
+            <Input
+              type="text"
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="h-9 flex-1"
+            />
+            <Button
+              type="submit"
+              variant="outline"
+              size="icon"
+              className="h-9 w-9"
+              aria-label="Submit search"
+            >
+              <Search className="h-4 w-4" />
+            </Button>
+          </form>
+        </div>
+      </div>
+
+      {/* Bottom Navigation */}
+      <nav className="fixed bottom-0 left-0 right-0 h-[80px] bg-background border-t border-border z-50">
+        <div className="h-full max-w-7xl mx-auto px-4 flex items-center justify-around gap-4">
         <Link href="/app/feel" className="flex-1">
           <Button
             variant={isActive('feel') ? 'default' : 'outline'}
@@ -85,6 +152,7 @@ export function BottomNav() {
         </Link>
       </div>
     </nav>
+    </>
   )
 }
 

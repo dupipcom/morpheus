@@ -238,7 +238,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { role, tasks, templateId, updateTemplate, name, budget: budgetRaw, budgetPercentage, dueDate, create, collaborators } = body
+    const { role, tasks, templateId, updateTemplate, name, budget: budgetRaw, budgetPercentage, dueDate, create, collaborators, updateTaskRedacted } = body
     
     // Parse budget as float, handling both string and number inputs
     const budget = typeof budgetRaw === 'number' 
@@ -1870,6 +1870,121 @@ export async function POST(request: NextRequest) {
       }
 
       return NextResponse.json({ taskList: updated })
+    }
+
+    // Handle task redacted status update
+    if (body.updateTaskRedacted && body.taskListId) {
+      const taskListToUpdate = await prisma.list.findUnique({ where: { id: body.taskListId } })
+      if (!taskListToUpdate) return NextResponse.json({ error: 'TaskList not found' }, { status: 404 })
+
+      const taskKey = body.taskKey // id, localeKey, or name
+      const redacted = body.redacted === true
+
+      // Helper to match tasks reliably
+      const getKey = (t: any) => (t?.id || t?.localeKey || (typeof t?.name === 'string' ? t.name.toLowerCase() : '')) as string
+      const taskKeyLower = typeof taskKey === 'string' ? taskKey.toLowerCase() : taskKey
+
+      // Update in tasks array
+      let tasks = Array.isArray(taskListToUpdate.tasks) 
+        ? [...taskListToUpdate.tasks] 
+        : []
+      
+      tasks = tasks.map((task: any) => {
+        const key = getKey(task)
+        if (key === taskKeyLower || key === taskKey) {
+          return { ...task, redacted }
+        }
+        return task
+      })
+
+      // Update in templateTasks if exists
+      let templateTasks = Array.isArray((taskListToUpdate as any).templateTasks) 
+        ? [...(taskListToUpdate as any).templateTasks] 
+        : []
+      
+      templateTasks = templateTasks.map((task: any) => {
+        const key = getKey(task)
+        if (key === taskKeyLower || key === taskKey) {
+          return { ...task, redacted }
+        }
+        return task
+      })
+
+      // Update in ephemeral tasks
+      let ephemeralTasks = (taskListToUpdate as any).ephemeralTasks || { open: [], closed: [] }
+      let open = Array.isArray(ephemeralTasks.open) ? [...ephemeralTasks.open] : []
+      let closed = Array.isArray(ephemeralTasks.closed) ? [...ephemeralTasks.closed] : []
+
+      open = open.map((task: any) => {
+        const key = getKey(task)
+        if (key === taskKeyLower || key === taskKey) {
+          return { ...task, redacted }
+        }
+        return task
+      })
+
+      closed = closed.map((task: any) => {
+        const key = getKey(task)
+        if (key === taskKeyLower || key === taskKey) {
+          return { ...task, redacted }
+        }
+        return task
+      })
+
+      ephemeralTasks = { open, closed }
+
+      // Update in completedTasks (all dates)
+      let completedTasks = (taskListToUpdate as any).completedTasks || {}
+      const years = Object.keys(completedTasks)
+      
+      for (const year of years) {
+        const yearBucket = completedTasks[year] || {}
+        const dates = Object.keys(yearBucket)
+        
+        for (const date of dates) {
+          const dateBucket = yearBucket[date] || {}
+          let openTasks = Array.isArray(dateBucket.openTasks) ? [...dateBucket.openTasks] : []
+          let closedTasks = Array.isArray(dateBucket.closedTasks) ? [...dateBucket.closedTasks] : []
+          
+          openTasks = openTasks.map((task: any) => {
+            const key = getKey(task)
+            if (key === taskKeyLower || key === taskKey) {
+              return { ...task, redacted }
+            }
+            return task
+          })
+          
+          closedTasks = closedTasks.map((task: any) => {
+            const key = getKey(task)
+            if (key === taskKeyLower || key === taskKey) {
+              return { ...task, redacted }
+            }
+            return task
+          })
+          
+          yearBucket[date] = {
+            ...dateBucket,
+            openTasks,
+            closedTasks
+          }
+        }
+        
+        completedTasks[year] = yearBucket
+      }
+
+      const updated = await prisma.list.update({
+        where: { id: taskListToUpdate.id },
+        data: {
+          tasks: tasks,
+          templateTasks: templateTasks,
+          ephemeralTasks: ephemeralTasks,
+          completedTasks: completedTasks,
+          updatedAt: new Date()
+        } as any,
+        include: { template: true }
+      })
+
+      return NextResponse.json({ taskLists: [updated] })
     }
 
     // If editing a specific TaskList by ID, update directly

@@ -27,11 +27,13 @@ interface ProvidersProps {
 export function Providers({ children, locale: providedLocale }: ProvidersProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [value] = useLocalStorage('theme', 'light')
+  const [redactedValue] = useLocalStorage('dpip_redacted', 0)
   const [globalContext, setGlobalContext] = useState({ 
     theme: 'light', 
     session: { user: {} }, 
     taskLists: [] as any[], 
-    refreshTaskLists: async () => {} 
+    refreshTaskLists: async () => {},
+    revealRedacted: false
   })
   const [isClient, setIsClient] = useState(false)
   const [providerKey, setProviderKey] = useState(0)
@@ -60,13 +62,17 @@ export function Providers({ children, locale: providedLocale }: ProvidersProps) 
     }
   }, [])
 
-  // Update theme from localStorage once client is ready
+  // Update theme and revealRedacted from localStorage once client is ready
   useEffect(() => {
-    if (isClient && value) {
-      setGlobalContext(prev => ({ ...prev, theme: value }))
+    if (isClient) {
+      setGlobalContext(prev => ({ 
+        ...prev, 
+        theme: value || 'light',
+        revealRedacted: redactedValue === 1
+      }))
       setIsLoading(false)
     }
-  }, [isClient, value])
+  }, [isClient, value, redactedValue])
 
   const refreshTaskLists = async () => {
     try {
