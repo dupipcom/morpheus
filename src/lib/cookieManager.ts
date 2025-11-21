@@ -8,6 +8,9 @@ export const WARNING_TIME = 5 * 60 * 1000; // 5 minutes warning (shows at 1 minu
 const LAST_ACTIVITY_KEY = 'dpip_last_activity';
 const LOGIN_TIME_KEY = 'dpip_login_time';
 
+// Flag to prevent infinite loops when signing out
+let isSigningOut = false;
+
 /**
  * Fetches the user's lastLogin time from the server
  * @returns The lastLogin timestamp in milliseconds, or null if not available
@@ -90,6 +93,9 @@ export const clearAllCookiesExceptDpip = () => {
   try {
     // Get all cookies
     const cookies = document.cookie.split(';');
+    const cookiesToDelete: string[] = [];
+    
+    logger('clear_cookies_start', `Starting to clear cookies. Found ${cookies.length} cookies`);
     
     // Find and delete all cookies except those starting with 'dpip_'
     cookies.forEach(cookie => {
@@ -98,8 +104,11 @@ export const clearAllCookiesExceptDpip = () => {
       
       // Skip cookies that start with 'dpip_'
       if (trimmedName.startsWith('dpip_')) {
+        logger('clear_cookies_skipping', `Skipping dpip cookie: ${trimmedName}`);
         return;
       }
+      
+      cookiesToDelete.push(trimmedName);
       
       // Delete cookie by setting it to expire in the past
       // Try multiple domain and path combinations to ensure deletion
@@ -108,13 +117,17 @@ export const clearAllCookiesExceptDpip = () => {
         `${trimmedName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname};`,
         `${trimmedName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${window.location.hostname};`,
         `${trimmedName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; secure; samesite=strict;`,
-        `${trimmedName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; secure; samesite=lax;`
+        `${trimmedName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; secure; samesite=lax;`,
+        `${trimmedName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname}; secure;`,
+        `${trimmedName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${window.location.hostname}; secure;`
       ];
       
       deletionOptions.forEach(option => {
         document.cookie = option;
       });
     });
+    
+    logger('clear_cookies_complete', `Cleared ${cookiesToDelete.length} cookies: ${cookiesToDelete.join(', ')}`);
     
     // Also clear activity storage when cookies are deleted
     clearActivityStorage();
@@ -153,6 +166,7 @@ export const resetGlobalWarningState = (): void => {
 export const resetGlobalTimerState = (): void => {
   globalTimerActive = false;
   globalWarningShown = false;
+  isSigningOut = false;
 };
 
 export const setupInactivityTimer = (
@@ -177,6 +191,11 @@ export const setupInactivityTimer = (
   const RESET_DEBOUNCE = 1000; // 1 second debounce
 
   const checkInactivity = async () => {
+    // Prevent multiple sign-out attempts
+    if (isSigningOut) {
+      return;
+    }
+
     const now = Date.now();
     
     // Check server lastLogin time from user data
@@ -195,11 +214,18 @@ export const setupInactivityTimer = (
     
     // If current time is greater than the timeout period, clear cookies and expire session
     if (timeSinceLogin >= timeout) {
+      if (isSigningOut) {
+        return; // Already signing out, prevent infinite loop
+      }
+      
+      isSigningOut = true;
       logger('session_timeout_expired', `Session expired. Time since login: ${Math.floor(timeSinceLogin / 60000)}min`);
       clearAllCookiesExceptDpip();
+      
       if (onLogout) {
         onLogout();
       } else {
+        // Fallback: redirect if no logout handler provided
         window.location.href = '/';
       }
       return;
@@ -542,12 +568,18 @@ export const handleSessionExpirationOnLoad = async (
     
     // If current time is greater than the timeout period, clear cookies and expire session
     if (timeSinceLogin >= timeout) {
+      if (isSigningOut) {
+        return; // Already signing out, prevent infinite loop
+      }
+      
+      isSigningOut = true;
       logger('handling_session_expiration', `Logging out due to expired session. Time since login: ${Math.floor(timeSinceLogin / 60000)}min`);
       clearAllCookiesExceptDpip();
       
       if (onLogout) {
         onLogout();
       } else {
+        // Fallback: redirect if no logout handler provided
         window.location.href = '/app/dashboard';
       }
     } else {

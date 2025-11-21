@@ -1,31 +1,54 @@
 import prisma from '@/lib/prisma';
 import type { WebhookEvent } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
+import { auth } from '@clerk/nextjs/server';
 
 /**
- * Handles Clerk webhook events for user login
- * Updates the lastLogin timestamp in the user collection when a session is created
+ * Handles Clerk webhook events for user login and direct requests to extend session
+ * Updates the lastLogin timestamp in the user collection
  */
 export async function POST(req: Request) {
   try {
-    const evt = (await req.json()) as WebhookEvent;
+    const body = await req.json();
+    
+    // Check if this is a webhook event or a direct request
+    const isWebhook = body.type && typeof body.type === 'string';
+    
+    let sessionUserId: string | undefined;
+    
+    if (isWebhook) {
+      // Handle Clerk webhook event
+      const evt = body as WebhookEvent;
+      
+      // Only handle session.created events (login events)
+      if (evt.type !== 'session.created') {
+        return NextResponse.json(
+          { message: 'Event type not handled' },
+          { status: 200 }
+        );
+      }
 
-    // Only handle session.created events (login events)
-    if (evt.type !== 'session.created') {
-      return NextResponse.json(
-        { message: 'Event type not handled' },
-        { status: 200 }
-      );
-    }
+      const sessionData: any = evt.data;
+      sessionUserId = sessionData?.user_id || sessionData?.userId;
 
-    const sessionData: any = evt.data;
-    const sessionUserId: string | undefined = sessionData?.user_id || sessionData?.userId;
-
-    if (!sessionUserId) {
-      return NextResponse.json(
-        { error: 'No user ID provided in session data' },
-        { status: 400 }
-      );
+      if (!sessionUserId) {
+        return NextResponse.json(
+          { error: 'No user ID provided in session data' },
+          { status: 400 }
+        );
+      }
+    } else {
+      // Handle direct request (extend session)
+      const { userId } = await auth();
+      
+      if (!userId) {
+        return NextResponse.json(
+          { error: 'User not authenticated' },
+          { status: 401 }
+        );
+      }
+      
+      sessionUserId = userId;
     }
 
     // Update lastLogin timestamp for the user
@@ -57,7 +80,7 @@ export async function POST(req: Request) {
       userId: sessionUserId
     });
   } catch (error) {
-    console.error('Error handling login webhook:', error);
+    console.error('Error handling login request:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

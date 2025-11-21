@@ -3,7 +3,7 @@ import { toast } from '@/components/ui/sonner';
 import { useI18n } from '@/lib/contexts/i18n';
 import { 
   setupInactivityTimer, 
-  deleteClerkCookies, 
+  clearAllCookiesExceptDpip, 
   setLoginTime, 
   getLastActivity,
   getLoginTime,
@@ -73,8 +73,8 @@ export const useInactivityTimer = ({
       toastIdRef.current = null;
     }
     
-    deleteClerkCookies();
-    clearActivityStorage();
+    // Clear all cookies except dpip_* ones
+    clearAllCookiesExceptDpip();
     if (onLogout) {
       onLogout();
     } else {
@@ -82,7 +82,7 @@ export const useInactivityTimer = ({
     }
   }, [onLogout]);
 
-  const handleExtend = useCallback(() => {
+  const handleExtend = useCallback(async () => {
     // Dismiss warning toast
     if (toastIdRef.current) {
       toast.dismiss(toastIdRef.current);
@@ -98,6 +98,26 @@ export const useInactivityTimer = ({
     // Reset warning flag
     warningShownRef.current = false;
     resetGlobalWarningState();
+    
+    // Update server lastLogin time by calling the endpoint
+    try {
+      const response = await fetch('/api/v1/user/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({}),
+        cache: 'no-store'
+      });
+      
+      if (!response.ok) {
+        logger('extend_session_error', `Failed to update lastLogin: ${response.status}`);
+      } else {
+        logger('extend_session_success', 'lastLogin updated successfully on server');
+      }
+    } catch (error) {
+      logger('extend_session_error', `Error updating lastLogin: ${error}`);
+    }
     
     // Reset login time locally to extend session
     setLoginTime();
