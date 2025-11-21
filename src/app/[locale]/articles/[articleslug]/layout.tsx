@@ -154,17 +154,6 @@ export default async function ArticleLayout({
         </div>
       )}
 
-      {metaDescription && (
-        <div className="article-header-description text-xl text-muted-foreground mb-4">
-          {typeof metaDescription === 'string' ? (
-            <p>{metaDescription}</p>
-          ) : (
-            <RichText data={metaDescription} className="text-[16px] md:text-[20px] leading-relaxed" />
-          )}
-        </div>
-      )}
-      {children}
-
 {hasContent && (
         <div className="article-content prose prose-lg max-w-none mb-8 m-auto max-w-xl">
           <RichText 
