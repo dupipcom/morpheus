@@ -5,6 +5,7 @@ import { buildMetadata } from '@/app/metadata';
 import Link from 'next/link';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import Image from 'next/image';
+import { ArticleShareButton } from '@/components/articleShareButton';
 
 export const dynamic = 'force-dynamic'
 
@@ -118,6 +119,16 @@ export default async function ArticlePage({
   const authors = (article as any)?.populatedAuthors || (article as any)?.authors || [];
   const categories = (article as any)?.categories || [];
   const relatedPosts = (article as any)?.relatedPosts || [];
+  
+  // Get article metadata for sharing
+  const metaTitle = (article as any)?.meta?.title;
+  const title = metaTitle || (article as any)?.title || 'Article';
+  const metaDescription = (article as any)?.meta?.description;
+  const description = metaDescription || (article as any)?.description || undefined;
+  
+  // Construct article URL
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
+  const articleUrl = `${baseUrl}/${locale}/articles/${articleslug}`;
 
   // Fetch profile data for all authors
   const authorProfiles = await Promise.all(
@@ -133,9 +144,9 @@ export default async function ArticlePage({
   return (
     <>
       <header className="mb-8">
-        {/* Date info */}
+        {/* Date info with share button */}
         {publishedAt && (
-          <div className="text-sm text-muted-foreground mb-4">
+          <div className="flex items-center gap-3 text-sm text-muted-foreground mb-4">
             <time dateTime={publishedAt}>
               {new Date(publishedAt).toLocaleDateString(locale, {
                 year: 'numeric',
@@ -143,6 +154,11 @@ export default async function ArticlePage({
                 day: 'numeric'
               })}
             </time>
+            <ArticleShareButton 
+              url={articleUrl}
+              title={title}
+              description={description}
+            />
           </div>
         )}
 
