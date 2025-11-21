@@ -47,7 +47,7 @@ const nextConfig: NextConfig = {
       //       {"source": "/app/:match*", "destination": "https://alpha.dupip.com/:match*"},
       {
         source: '/api/nexus/audio',
-        destination: 'https://radio.dupip.com/listen/dpipbase/live.mp3',
+        destination: 'https://radio.dreampip.com/listen/dpipbase/live.mp3',
       },
     ]
   },
