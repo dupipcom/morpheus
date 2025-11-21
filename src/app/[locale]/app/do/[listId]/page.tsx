@@ -79,12 +79,12 @@ const getDefaultListId = (allTaskLists: any[]): string | undefined => {
   return allTaskLists[0]?.id
 }
 
-export default function LocalizedDo({ params }: { params: Promise<{ locale: string }> }) {
+export default function LocalizedDoWithListId({ params }: { params: Promise<{ locale: string; listId: string }> }) {
   const { session, setGlobalContext, taskLists: contextTaskLists, refreshTaskLists } = useContext(GlobalContext)
   const { isLoaded, isSignedIn } = useAuth();
   const { t, formatDate, locale } = useI18n();
   const router = useRouter();
-  const [resolvedParams, setResolvedParams] = useState<{ locale: string } | null>(null)
+  const [resolvedParams, setResolvedParams] = useState<{ locale: string; listId: string } | null>(null)
 
   // Resolve params promise
   useEffect(() => {
@@ -101,7 +101,7 @@ export default function LocalizedDo({ params }: { params: Promise<{ locale: stri
         setLoginTime();
       }
     }
-  }, [isLoaded, isSignedIn]);
+  }, [isLoaded, isSignedIn])
 
   // Get today's date in local timezone, normalized to midnight
   const today = useMemo(() => {
@@ -122,17 +122,38 @@ export default function LocalizedDo({ params }: { params: Promise<{ locale: stri
 
   const allTaskLists = stableTaskLists.length > 0 ? stableTaskLists : (contextTaskLists || [])
   
-  // Redirect to default list (from localStorage or default.daily) if available
+  // Initialize selectedTaskListId from URL param, fallback to localStorage or default
+  const [selectedTaskListId, setSelectedTaskListId] = useState<string | undefined>(() => {
+    if (resolvedParams?.listId) {
+      return resolvedParams.listId
+    }
+    return getDefaultListId(allTaskLists)
+  })
+  
+  // Update selectedTaskListId when URL param changes
   useEffect(() => {
-    if (resolvedParams && allTaskLists.length > 0) {
+    if (resolvedParams?.listId) {
+      // Check if the listId from URL exists in available lists
+      const listExists = allTaskLists.find((l: any) => l.id === resolvedParams.listId)
+      if (listExists) {
+        setSelectedTaskListId(resolvedParams.listId)
+        // Store in localStorage when list is selected via URL
+        setLastListInStorage(resolvedParams.listId)
+      } else if (allTaskLists.length > 0) {
+        // If list doesn't exist, redirect to default list
+        const defaultListId = getDefaultListId(allTaskLists)
+        if (defaultListId) {
+          router.replace(`/${locale}/app/do/${defaultListId}`)
+        }
+      }
+    } else if (allTaskLists.length > 0 && !selectedTaskListId) {
+      // If no listId in URL but we have lists, redirect to default list
       const defaultListId = getDefaultListId(allTaskLists)
       if (defaultListId) {
-        router.replace(`/${resolvedParams.locale}/app/do/${defaultListId}`)
+        router.replace(`/${locale}/app/do/${defaultListId}`)
       }
     }
-  }, [resolvedParams, allTaskLists, router])
-  
-  const [selectedTaskListId, setSelectedTaskListId] = useState<string | undefined>(() => getDefaultListId(allTaskLists))
+  }, [resolvedParams?.listId, allTaskLists, locale, router, selectedTaskListId])
   
   useEffect(() => {
     if (!selectedTaskListId && allTaskLists.length > 0) {
@@ -147,10 +168,12 @@ export default function LocalizedDo({ params }: { params: Promise<{ locale: stri
         const defaultListId = getDefaultListId(allTaskLists)
         if (defaultListId) {
           setSelectedTaskListId(defaultListId)
+          // Update URL to reflect the new selection
+          router.replace(`/${locale}/app/do/${defaultListId}`)
         }
       }
     }
-  }, [allTaskLists, selectedTaskListId])
+  }, [allTaskLists, selectedTaskListId, locale, router])
 
   const selectedTaskList = useMemo(() => allTaskLists.find((l: any) => l.id === selectedTaskListId), [allTaskLists, selectedTaskListId])
 
@@ -172,6 +195,7 @@ export default function LocalizedDo({ params }: { params: Promise<{ locale: stri
     // Update the ref to track the current list ID
     prevSelectedTaskListIdRef.current = selectedTaskListId
   }, [selectedTaskListId, selectedTaskList])
+
 
   const handleAddEphemeral = useCallback(async () => {
     if (!selectedTaskList) return
@@ -196,15 +220,6 @@ export default function LocalizedDo({ params }: { params: Promise<{ locale: stri
     }
   }, [])
 
-  const handleListChange = useCallback((newListId: string) => {
-    setSelectedTaskListId(newListId)
-    // Store in localStorage when user selects a list
-    setLastListInStorage(newListId)
-    if (resolvedParams) {
-      router.push(`/${resolvedParams.locale}/app/do/${newListId}`)
-    }
-  }, [resolvedParams, router])
-
   // Form state management
   const [showAddTask, setShowAddTask] = useState(false)
   const [showAddList, setShowAddList] = useState(false)
@@ -222,6 +237,13 @@ export default function LocalizedDo({ params }: { params: Promise<{ locale: stri
   useEffect(() => {
     closeAllForms()
   }, [selectedTaskListId, closeAllForms])
+
+  const handleListChange = useCallback((newListId: string) => {
+    setSelectedTaskListId(newListId)
+    // Store in localStorage when user selects a list
+    setLastListInStorage(newListId)
+    router.push(`/${locale}/app/do/${newListId}`)
+  }, [locale, router])
 
   const fullDate = new Date()
   const date = fullDate.toISOString().split('T')[0]
@@ -279,5 +301,4 @@ export default function LocalizedDo({ params }: { params: Promise<{ locale: stri
     </main>
   )
 }
-
 
