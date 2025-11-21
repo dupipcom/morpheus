@@ -71,32 +71,10 @@ export async function POST(req: Request) {
                 break;
             }
             case 'session.created': {
-                // When a new session is created (actual login), update lastLogin and sync username
+                // When a new session is created (actual login), sync username
                 const sessionData: any = evt.data;
                 const sessionUserId: string | undefined = sessionData?.user_id || sessionData?.userId || clerkUserId;
                 if (sessionUserId) {
-                    try {
-                        await prisma.user.update({
-                            data: ({ lastLogin: new Date() } as any),
-                            where: { userId: sessionUserId },
-                        });
-                    } catch (e) {
-                        // If user doesn't exist yet, upsert it with lastLogin
-                        await prisma.user.upsert({
-                            where: { userId: sessionUserId },
-                            update: ({ lastLogin: new Date() } as any),
-                            create: {
-                                userId: sessionUserId,
-                                settings: {
-                                    currency: null,
-                                    speed: null
-                                } as any,
-                                // cast to any to tolerate client lag
-                                ...( { lastLogin: new Date() } as any )
-                            }
-                        })
-                    }
-
                     // Sync username from webhook data on login
                     try {
                         const webhookData: any = evt.data;

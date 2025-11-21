@@ -26,8 +26,8 @@ interface UseInactivityTimerOptions {
  * @param options - Configuration options for the inactivity timer
  */
 export const useInactivityTimer = ({
-  timeout = 15 * 60 * 1000, // 15 minutes
-  warningTime = 5 * 60 * 1000, // 5 minutes warning (shows after 10 minutes)
+  timeout = 6 * 60 * 1000, // 6 minutes (reduced for testing)
+  warningTime = 5 * 60 * 1000, // 5 minutes warning (shows at 1 minute elapsed = 5 minutes remaining)
   enabled = true,
   onLogout
 }: UseInactivityTimerOptions = {}) => {
@@ -99,16 +99,8 @@ export const useInactivityTimer = ({
     warningShownRef.current = false;
     resetGlobalWarningState();
     
-    // Reset login time locally and on server to extend session
+    // Reset login time locally to extend session
     setLoginTime();
-    // Fire-and-forget server update of lastLogin
-    try {
-      fetch('/api/v1/user', {
-        method: 'POST',
-        body: JSON.stringify({ lastLogin: true }),
-        cache: 'no-store'
-      });
-    } catch {}
     updateLastActivity();
     
     // Show success toast
@@ -197,18 +189,6 @@ export const useInactivityTimer = ({
 
     // Set login time on first initialization
     setLoginTime();
-    
-    // For fresh logins, also update server lastLogin
-    const localLoginTime = getLoginTime();
-    if (localLoginTime) {
-      try {
-        fetch('/api/v1/user', {
-          method: 'POST',
-          body: JSON.stringify({ lastLogin: true }),
-          cache: 'no-store'
-        });
-      } catch {}
-    }
     
     isInitializedRef.current = true;
     

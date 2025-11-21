@@ -3,10 +3,31 @@
  */
 import { logger } from './logger';
 
-export const INACTIVITY_TIMEOUT = 15 * 60 * 1000; // 15 minutes in milliseconds
-export const WARNING_TIME = 5 * 60 * 1000; // 5 minutes warning (shows after 10 minutes of inactivity)
+export const INACTIVITY_TIMEOUT = 6 * 60 * 1000; // 6 minutes in milliseconds (reduced for testing)
+export const WARNING_TIME = 5 * 60 * 1000; // 5 minutes warning (shows at 1 minute elapsed = 5 minutes remaining)
 const LAST_ACTIVITY_KEY = 'dpip_last_activity';
 const LOGIN_TIME_KEY = 'dpip_login_time';
+
+/**
+ * Fetches the user's lastLogin time from the server
+ * @returns The lastLogin timestamp in milliseconds, or null if not available
+ */
+const getServerLastLogin = async (): Promise<number | null> => {
+  try {
+    const response = await fetch('/api/v1/user', { method: 'GET', cache: 'no-store' });
+    if (response.ok) {
+      const user = await response.json();
+      const lastLoginIso = user?.lastLogin as string | undefined;
+      if (lastLoginIso) {
+        return new Date(lastLoginIso).getTime();
+      }
+    }
+    return null;
+  } catch (error) {
+    logger('get_server_last_login_error', `Error fetching server lastLogin: ${error}`);
+    return null;
+  }
+};
 
 /**
  * Deletes all cookies that start with '__clerk'
@@ -62,6 +83,52 @@ export const deleteClerkCookies = () => {
 };
 
 /**
+ * Clears all cookies except those that start with 'dpip_*'
+ * This is used when the session expires to preserve dpip-specific cookies
+ */
+export const clearAllCookiesExceptDpip = () => {
+  try {
+    // Get all cookies
+    const cookies = document.cookie.split(';');
+    
+    // Find and delete all cookies except those starting with 'dpip_'
+    cookies.forEach(cookie => {
+      const [name] = cookie.split('=');
+      const trimmedName = name.trim();
+      
+      // Skip cookies that start with 'dpip_'
+      if (trimmedName.startsWith('dpip_')) {
+        return;
+      }
+      
+      // Delete cookie by setting it to expire in the past
+      // Try multiple domain and path combinations to ensure deletion
+      const deletionOptions = [
+        `${trimmedName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`,
+        `${trimmedName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname};`,
+        `${trimmedName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${window.location.hostname};`,
+        `${trimmedName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; secure; samesite=strict;`,
+        `${trimmedName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; secure; samesite=lax;`
+      ];
+      
+      deletionOptions.forEach(option => {
+        document.cookie = option;
+      });
+    });
+    
+    // Also clear activity storage when cookies are deleted
+    clearActivityStorage();
+    
+    // Dispatch custom event to notify providers that cookies were cleared
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('dpip:cookiesCleared'));
+    }
+  } catch (error) {
+    logger('clear_cookies_except_dpip_error', `Error clearing cookies except dpip_*: ${error}`);
+  }
+};
+
+/**
  * Sets up a session timeout timer that deletes Clerk cookies after the specified timeout
  * Uses login time from localStorage to measure session duration
  * @param timeout - Timeout in milliseconds (defaults to 1 minute)
@@ -109,23 +176,27 @@ export const setupInactivityTimer = (
   let lastResetTime = 0;
   const RESET_DEBOUNCE = 1000; // 1 second debounce
 
-  const checkInactivity = () => {
-    const loginTime = getLoginTime();
+  const checkInactivity = async () => {
     const now = Date.now();
     
-    // If no login time is set, set it now and return
-    if (loginTime === null) {
-      setLoginTime();
+    // Check server lastLogin time from user data
+    const serverLoginTime = await getServerLastLogin();
+    
+    if (serverLoginTime === null) {
+      // If no server login time, set local login time and return
+      const localLoginTime = getLoginTime();
+      if (localLoginTime === null) {
+        setLoginTime();
+      }
       return;
     }
     
-    const timeSinceLogin = now - loginTime;
+    const timeSinceLogin = now - serverLoginTime;
     
-    // If user has been logged in for the full timeout period, logout immediately
+    // If current time is greater than the timeout period, clear cookies and expire session
     if (timeSinceLogin >= timeout) {
-      logger('session_timeout_expired', 'Session expired');
-      deleteClerkCookies();
-      clearActivityStorage();
+      logger('session_timeout_expired', `Session expired. Time since login: ${Math.floor(timeSinceLogin / 60000)}min`);
+      clearAllCookiesExceptDpip();
       if (onLogout) {
         onLogout();
       } else {
@@ -166,7 +237,11 @@ export const setupInactivityTimer = (
     }
     
     // Set up periodic checking for inactivity (check every 10 seconds for better accuracy)
-    activityCheckInterval = setInterval(checkInactivity, 10000);
+    activityCheckInterval = setInterval(() => {
+      checkInactivity().catch(err => {
+        logger('check_inactivity_error', `Error checking inactivity: ${err}`);
+      });
+    }, 10000);
     
     // Set warning timer
     logger('setting_warning_timer', 'Timer set');
@@ -180,8 +255,7 @@ export const setupInactivityTimer = (
     // Set logout timer
     inactivityTimer = setTimeout(() => {
       logger('session_timeout_expired', 'Timeout reached');
-      deleteClerkCookies();
-      clearActivityStorage();
+      clearAllCookiesExceptDpip();
       if (onLogout) {
         onLogout();
       } else {
@@ -208,21 +282,27 @@ export const setupInactivityTimer = (
     if (!document.hidden) {
       // Tab became active, check if session expired while inactive
       logger('visibility_change', 'Tab became active, checking session');
-      checkInactivity();
+      checkInactivity().catch(err => {
+        logger('check_inactivity_error', `Error checking inactivity on visibility change: ${err}`);
+      });
     }
   };
   
   // Add focus handler for better mobile support
   const handleFocus = () => {
     logger('window_focus', 'Window focused, checking session');
-    checkInactivity();
+    checkInactivity().catch(err => {
+      logger('check_inactivity_error', `Error checking inactivity on focus: ${err}`);
+    });
   };
   
   document.addEventListener('visibilitychange', handleVisibilityChange);
   window.addEventListener('focus', handleFocus);
 
   // Check for existing inactivity on startup
-  checkInactivity();
+  checkInactivity().catch(err => {
+    logger('check_inactivity_error', `Error checking inactivity on startup: ${err}`);
+  });
   
   // Start the timer
   resetTimer();
@@ -392,27 +472,27 @@ export const isAuthenticated = (): boolean => {
 };
 
 /**
- * Checks if the session has expired based on login time
+ * Checks if the session has expired based on server lastLogin time
  * This is used when the page is loaded to check if the user should be logged out
- * @param timeout - Timeout in milliseconds (defaults to 15 minutes)
- * @returns true if session has expired, false otherwise
+ * @param timeout - Timeout in milliseconds (defaults to 6 minutes)
+ * @returns Promise<boolean> - true if session has expired, false otherwise
  */
-export const isSessionExpired = (timeout: number = INACTIVITY_TIMEOUT): boolean => {
+export const isSessionExpired = async (timeout: number = INACTIVITY_TIMEOUT): Promise<boolean> => {
   try {
-    const loginTime = getLoginTime();
+    const serverLoginTime = await getServerLastLogin();
     
-    // If no login time is set, session hasn't expired
-    if (loginTime === null) {
+    // If no server login time, session hasn't expired
+    if (serverLoginTime === null) {
       return false;
     }
     
     const now = Date.now();
-    const timeSinceLogin = now - loginTime;
+    const timeSinceLogin = now - serverLoginTime;
     
     const hasExpired = timeSinceLogin >= timeout;
     
     if (hasExpired) {
-      logger('session_expired_on_load', 'Session expired on page load');
+      logger('session_expired_on_load', `Session expired on page load. Time since login: ${Math.floor(timeSinceLogin / 60000)}min`);
     }
     
     return hasExpired;
@@ -438,100 +518,32 @@ export const handleSessionExpirationOnLoad = async (
     const localLoginTime = getLoginTime();
     const isFreshLogin = localLoginTime === null;
     
-    // For fresh logins, set lastLogin immediately and be lenient
+    // For fresh logins, set login time and be lenient
     if (isFreshLogin) {
-      logger('fresh_login_detected', 'Fresh login detected, setting lastLogin and being lenient');
+      logger('fresh_login_detected', 'Fresh login detected, setting login time and being lenient');
       setLoginTime();
-      
-      // Update server lastLogin immediately for fresh logins
-      try {
-        await fetch('/api/v1/user', {
-          method: 'POST',
-          body: JSON.stringify({ lastLogin: true }),
-          cache: 'no-store'
-        });
-      } catch (e) {
-        logger('fresh_login_server_update_failed', `Failed to update server lastLogin: ${e}`);
-      }
       return; // Don't check expiration for fresh logins
     }
 
-    // For existing sessions, check server lastLogin
-    try {
-      const response = await fetch('/api/v1/user', { method: 'GET', cache: 'no-store' });
-      if (response.ok) {
-        const user = await response.json();
-        const lastLoginIso = user?.lastLogin as string | undefined;
-        if (lastLoginIso) {
-          const serverLoginTime = new Date(lastLoginIso).getTime();
-          const nowServerCheck = Date.now();
-          const expiredByServer = nowServerCheck - serverLoginTime >= timeout;
-          if (expiredByServer) {
-            logger('session_expired_server_last_login', 'Server lastLogin indicates expired session, logging out');
-            deleteClerkCookies();
-            clearActivityStorage();
-            if (onLogout) {
-              onLogout();
-            } else {
-              window.location.href = '/app/dashboard';
-            }
-            return;
-          }
-          // Sync local storage login time to server value if different
-          const localLogin = getLoginTime();
-          if (!localLogin || Math.abs(localLogin - serverLoginTime) > 1000) {
-            try {
-              localStorage.setItem('dpip_login_time', String(serverLoginTime));
-            } catch {}
-          }
-        }
-      }
-    } catch (e) {
-      logger('session_server_check_failed', `Failed to check server lastLogin: ${e}`);
-    }
-
-    const loginTime = getLoginTime();
-    const lastActivity = getLastActivity();
+    // Check server lastLogin time from user data
+    const serverLoginTime = await getServerLastLogin();
     const now = Date.now();
     
-    logger('session_expiration_check', `Checking session expiration. Login: ${loginTime ? new Date(loginTime).toISOString() : 'null'}, Last Activity: ${lastActivity ? new Date(lastActivity).toISOString() : 'null'}`);
-    
-    // If no login time, check if there's any activity data to determine if session should be expired
-    if (loginTime === null) {
-      // If there's no login time but there is activity data, it means the session was cleared
-      // Check if the last activity was too long ago
-      if (lastActivity && (now - lastActivity) >= timeout) {
-        logger('handling_session_expiration', `No login time but activity expired (${Math.floor((now - lastActivity) / 60000)}min ago), logging out`);
-        deleteClerkCookies();
-        clearActivityStorage();
-        
-        if (onLogout) {
-          onLogout();
-        } else {
-          window.location.href = '/app/dashboard';
-        }
-        return;
-      }
-      
-      // If no login time and no expired activity, set a new login time
-      logger('session_expiration_check', 'No login time found, setting new login time');
+    if (serverLoginTime === null) {
+      // If no server login time, set local login time and return
+      logger('session_expiration_check', 'No server lastLogin found, setting local login time');
       setLoginTime();
       return;
     }
     
-    const timeSinceLogin = now - loginTime;
-    const timeSinceLastActivity = now - lastActivity;
+    const timeSinceLogin = now - serverLoginTime;
     
-    logger('session_expiration_check', `Time since login: ${Math.floor(timeSinceLogin / 60000)}min, Time since activity: ${Math.floor(timeSinceLastActivity / 60000)}min`);
+    logger('session_expiration_check', `Checking session expiration. Server lastLogin: ${new Date(serverLoginTime).toISOString()}, Time since login: ${Math.floor(timeSinceLogin / 60000)}min`);
     
-    // Check if session expired based on login time OR last activity
-    const sessionExpiredByLogin = timeSinceLogin >= timeout;
-    const sessionExpiredByActivity = timeSinceLastActivity >= timeout;
-    
-    if (sessionExpiredByLogin || sessionExpiredByActivity) {
-      logger('handling_session_expiration', `Logging out due to expired session. Login: ${Math.floor(timeSinceLogin / 60000)}min, Activity: ${Math.floor(timeSinceLastActivity / 60000)}min`);
-      deleteClerkCookies();
-      clearActivityStorage();
+    // If current time is greater than the timeout period, clear cookies and expire session
+    if (timeSinceLogin >= timeout) {
+      logger('handling_session_expiration', `Logging out due to expired session. Time since login: ${Math.floor(timeSinceLogin / 60000)}min`);
+      clearAllCookiesExceptDpip();
       
       if (onLogout) {
         onLogout();
@@ -549,41 +561,27 @@ export const handleSessionExpirationOnLoad = async (
 /**
  * Immediate session expiration check for page load
  * This should be called as soon as the page loads, before any React components mount
- * @param timeout - Timeout in milliseconds (defaults to 15 minutes)
- * @returns true if session is expired and user should be logged out
+ * @param timeout - Timeout in milliseconds (defaults to 6 minutes)
+ * @returns Promise<boolean> - true if session is expired and user should be logged out
  */
-export const checkSessionExpirationImmediate = (timeout: number = INACTIVITY_TIMEOUT): boolean => {
+export const checkSessionExpirationImmediate = async (timeout: number = INACTIVITY_TIMEOUT): Promise<boolean> => {
   try {
-    const loginTime = getLoginTime();
-    const lastActivity = getLastActivity();
+    const serverLoginTime = await getServerLastLogin();
     const now = Date.now();
     
-    logger('immediate_session_check', `Immediate session check. Login: ${loginTime ? new Date(loginTime).toISOString() : 'null'}, Last Activity: ${lastActivity ? new Date(lastActivity).toISOString() : 'null'}`);
-    
-    // If no login time, check if there's any activity data to determine if session should be expired
-    if (loginTime === null) {
-      // If there's no login time but there is activity data, check if it's expired
-      if (lastActivity && (now - lastActivity) >= timeout) {
-        logger('immediate_session_check', `No login time but activity expired (${Math.floor((now - lastActivity) / 60000)}min ago), session should be expired`);
-        return true;
-      }
-      
-      // If no login time and no expired activity, session is not expired
-      logger('immediate_session_check', 'No login time found, session not expired');
+    if (serverLoginTime === null) {
+      // If no server login time, session is not expired
+      logger('immediate_session_check', 'No server lastLogin found, session not expired');
       return false;
     }
     
-    const timeSinceLogin = now - loginTime;
-    const timeSinceLastActivity = now - lastActivity;
+    const timeSinceLogin = now - serverLoginTime;
     
-    logger('immediate_session_check', `Time since login: ${Math.floor(timeSinceLogin / 60000)}min, Time since activity: ${Math.floor(timeSinceLastActivity / 60000)}min`);
+    logger('immediate_session_check', `Immediate session check. Server lastLogin: ${new Date(serverLoginTime).toISOString()}, Time since login: ${Math.floor(timeSinceLogin / 60000)}min`);
     
-    // Check if session expired based on login time OR last activity
-    const sessionExpiredByLogin = timeSinceLogin >= timeout;
-    const sessionExpiredByActivity = timeSinceLastActivity >= timeout;
-    
-    if (sessionExpiredByLogin || sessionExpiredByActivity) {
-      logger('immediate_session_check', `Session expired. Login: ${Math.floor(timeSinceLogin / 60000)}min, Activity: ${Math.floor(timeSinceLastActivity / 60000)}min`);
+    // If current time is greater than the timeout period, session is expired
+    if (timeSinceLogin >= timeout) {
+      logger('immediate_session_check', `Session expired. Time since login: ${Math.floor(timeSinceLogin / 60000)}min`);
       return true;
     }
     

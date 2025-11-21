@@ -157,17 +157,6 @@ export async function POST(req: Request) {
     })
   }
 
-  // Update lastLogin timestamp if requested
-  if (data?.lastLogin === true) {
-    await prisma.user.update({
-      // Cast to any to tolerate generated client lag before prisma generate
-      data: ({
-        lastLogin: new Date()
-      } as any),
-      where: { id: (user as any).id },
-    })
-    user = await getUser()
-  }
 
   if (data.availableBalance !== undefined && data.availableBalance !== null) {
     const newAvailableBalance = Math.max(0, typeof data.availableBalance === 'string' 
