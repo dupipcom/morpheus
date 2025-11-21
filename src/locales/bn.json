@@ -297,7 +297,9 @@
     "cloneTemplate": "ক্লোন করুন",
     "cloneTemplateSuccess": "টেমপ্লেট সফলভাবে ক্লোন করা হয়েছে!",
     "cloneTemplateFailed": "টেমপ্লেট ক্লোন করতে ব্যর্থ",
-    "cloning": "ক্লোন হচ্ছে..."
+    "cloning": "ক্লোন হচ্ছে...",
+    "noPublicNotes": "এখনও কোনও পাবলিক নোট উপলব্ধ নেই।",
+    "noPublicTemplatesOrLists": "এখনও কোনও পাবলিক টেমপ্লেট বা তালিকা উপলব্ধ নেই।"
   },
   "publicCharts": {
     "noData": "কোনও পাবলিক চার্টের ডেটা উপলব্ধ নেই।",

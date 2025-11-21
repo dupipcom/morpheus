@@ -297,7 +297,9 @@
     "cloneTemplate": "שכפל",
     "cloneTemplateSuccess": "התבנית שוכפלה בהצלחה!",
     "cloneTemplateFailed": "שכפול התבנית נכשל",
-    "cloning": "משכפל..."
+    "cloning": "משכפל...",
+    "noPublicNotes": "אין הערות ציבוריות זמינות עדיין.",
+    "noPublicTemplatesOrLists": "אין תבניות או רשימות ציבוריות זמינות עדיין."
   },
   "publicCharts": {
     "noData": "אין נתוני גרפים ציבוריים זמינים.",

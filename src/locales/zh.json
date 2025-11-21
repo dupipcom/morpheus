@@ -311,7 +311,9 @@
     "cloneTemplate": "克隆",
     "cloneTemplateSuccess": "模板克隆成功！",
     "cloneTemplateFailed": "模板克隆失败",
-    "cloning": "克隆中..."
+    "cloning": "克隆中...",
+    "noPublicNotes": "尚无公开笔记可用。",
+    "noPublicTemplatesOrLists": "尚无公开模板或列表可用。"
   },
   "publicCharts": {
     "noData": "没有可用的公共图表数据。",

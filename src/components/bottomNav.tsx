@@ -106,16 +106,16 @@ export function BottomNav() {
           {/* Ask Input */}
           <form onSubmit={handleSearchSubmit} className="flex-1 flex items-center gap-2 relative">
             <div className="flex-1 relative">
-              <Input
+            <Input
                 ref={searchInputRef}
-                type="text"
-                placeholder={`${t('common.ask')}...`}
-                value={searchQuery}
+              type="text"
+              placeholder={`${t('common.ask')}...`}
+              value={searchQuery}
                 onChange={handleSearchChange}
                 onFocus={handleSearchFocus}
                 onBlur={handleSearchBlur}
                 className="h-9 w-full"
-              />
+            />
               <SearchPopover
                 query={searchQuery}
                 open={searchOpen}

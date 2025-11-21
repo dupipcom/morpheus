@@ -315,7 +315,9 @@
     "cloneTemplate": "Klonuj",
     "cloneTemplateSuccess": "Szablon sklonowany pomyślnie!",
     "cloneTemplateFailed": "Nie udało się sklonować szablonu",
-    "cloning": "Klonowanie..."
+    "cloning": "Klonowanie...",
+    "noPublicNotes": "Brak dostępnych publicznych notatek.",
+    "noPublicTemplatesOrLists": "Brak dostępnych publicznych szablonów lub list."
   },
   "publicCharts": {
     "noData": "Brak dostępnych danych wykresów publicznych.",

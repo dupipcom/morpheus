@@ -301,7 +301,9 @@
     "cloneTemplate": "Kloonaa",
     "cloneTemplateSuccess": "Malli kloonattu onnistuneesti!",
     "cloneTemplateFailed": "Mallin kloonaaminen epäonnistui",
-    "cloning": "Kloonataan..."
+    "cloning": "Kloonataan...",
+    "noPublicNotes": "Julkisia muistiinpanoja ei ole vielä saatavilla.",
+    "noPublicTemplatesOrLists": "Julkisia malleja tai listoja ei ole vielä saatavilla."
   },
   "publicCharts": {
     "noData": "Julkisia kaaviotietoja ei ole saatavilla.",

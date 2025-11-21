@@ -297,7 +297,9 @@
     "cloneTemplate": "Clonează",
     "cloneTemplateSuccess": "Șablon clonat cu succes!",
     "cloneTemplateFailed": "Clonarea șablonului a eșuat",
-    "cloning": "Se clonează..."
+    "cloning": "Se clonează...",
+    "noPublicNotes": "Nu există notițe publice disponibile încă.",
+    "noPublicTemplatesOrLists": "Nu există șabloane sau liste publice disponibile încă."
   },
   "publicCharts": {
     "noData": "Nu sunt disponibile date pentru graficele publice.",

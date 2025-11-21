@@ -297,7 +297,9 @@
     "cloneTemplate": "Klonovat",
     "cloneTemplateSuccess": "Šablona úspěšně naklonována!",
     "cloneTemplateFailed": "Klonování šablony selhalo",
-    "cloning": "Klonování..."
+    "cloning": "Klonování...",
+    "noPublicNotes": "Zatím nejsou k dispozici žádné veřejné poznámky.",
+    "noPublicTemplatesOrLists": "Zatím nejsou k dispozici žádné veřejné šablony nebo seznamy."
   },
   "publicCharts": {
     "noData": "Žádná veřejná data grafů k dispozici.",

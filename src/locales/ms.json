@@ -301,7 +301,9 @@
     "cloneTemplate": "Klon",
     "cloneTemplateSuccess": "Templat berjaya diklon!",
     "cloneTemplateFailed": "Gagal mengklon templat",
-    "cloning": "Mengklon..."
+    "cloning": "Mengklon...",
+    "noPublicNotes": "Tiada nota awam tersedia lagi.",
+    "noPublicTemplatesOrLists": "Tiada templat atau senarai awam tersedia lagi."
   },
   "publicCharts": {
     "noData": "No public charts data available.",

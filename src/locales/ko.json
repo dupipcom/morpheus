@@ -311,7 +311,9 @@
     "cloneTemplate": "복제",
     "cloneTemplateSuccess": "템플릿이 성공적으로 복제되었습니다!",
     "cloneTemplateFailed": "템플릿 복제 실패",
-    "cloning": "복제 중..."
+    "cloning": "복제 중...",
+    "noPublicNotes": "아직 공개 메모를 사용할 수 없습니다.",
+    "noPublicTemplatesOrLists": "아직 공개 템플릿 또는 목록을 사용할 수 없습니다."
   },
   "publicCharts": {
     "noData": "공개 차트 데이터를 사용할 수 없습니다.",

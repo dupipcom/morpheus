@@ -297,7 +297,9 @@
     "cloneTemplate": "Klonen",
     "cloneTemplateSuccess": "Sjabloon succesvol gekloond!",
     "cloneTemplateFailed": "Sjabloon klonen mislukt",
-    "cloning": "Klonen..."
+    "cloning": "Klonen...",
+    "noPublicNotes": "Nog geen openbare notities beschikbaar.",
+    "noPublicTemplatesOrLists": "Nog geen openbare sjablonen of lijsten beschikbaar."
   },
   "publicCharts": {
     "noData": "Geen openbare grafiekgegevens beschikbaar.",

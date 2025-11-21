@@ -309,7 +309,9 @@
     "cloneTemplate": "Ẹ̀dà",
     "cloneTemplateSuccess": "A ti ṣe àdàkọ àpẹẹrẹ pẹ̀lú àṣeyọrí!",
     "cloneTemplateFailed": "O kuna lati ṣe àdàkọ àpẹẹrẹ",
-    "cloning": "N ṣe àdàkọ..."
+    "cloning": "N ṣe àdàkọ...",
+    "noPublicNotes": "Kò sí àwọn àkíyèsí gbangba tí ó wà títí.",
+    "noPublicTemplatesOrLists": "Kò sí àwọn àpẹẹrẹ tàbí àkójọ gbangba tí ó wà títí."
   },
   "publicCharts": {
     "noData": "Kò sí àwọn àkọsílẹ̀ àwòrán gbangba.",

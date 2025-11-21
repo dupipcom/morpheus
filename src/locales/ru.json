@@ -311,7 +311,9 @@
     "cloneTemplate": "Клонировать",
     "cloneTemplateSuccess": "Шаблон успешно клонирован!",
     "cloneTemplateFailed": "Не удалось клонировать шаблон",
-    "cloning": "Клонирование..."
+    "cloning": "Клонирование...",
+    "noPublicNotes": "Публичные заметки пока недоступны.",
+    "noPublicTemplatesOrLists": "Публичные шаблоны или списки пока недоступны."
   },
   "publicCharts": {
     "noData": "Нет доступных публичных данных диаграмм.",

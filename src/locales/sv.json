@@ -300,7 +300,9 @@
     "cloneTemplate": "Klona",
     "cloneTemplateSuccess": "Mall klonad framgångsrikt!",
     "cloneTemplateFailed": "Kunde inte klona mall",
-    "cloning": "Klonar..."
+    "cloning": "Klonar...",
+    "noPublicNotes": "Inga offentliga anteckningar tillgängliga ännu.",
+    "noPublicTemplatesOrLists": "Inga offentliga mallar eller listor tillgängliga ännu."
   },
   "publicCharts": {
     "noData": "Inga tillgängliga data för offentliga diagram.",

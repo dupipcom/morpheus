@@ -74,7 +74,9 @@ export function SearchPopover({ query, open, onOpenChange, anchorRef }: SearchPo
     if (result.type === 'list') {
       router.push(`/app/do/${result.id}`)
     } else if (result.type === 'profile') {
-      router.push(`/profile/${result.username || result.id}`)
+      if (result.username) {
+        router.push(`/@${result.username}`)
+      }
     } else if (result.type === 'note') {
       // Navigate to note - adjust path based on your routing structure
       router.push(`/app/be`)

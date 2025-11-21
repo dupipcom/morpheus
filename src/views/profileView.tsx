@@ -272,7 +272,7 @@ export const ProfileView = ({
                 </div>
               ) : (
                 <div className="text-center text-muted-foreground py-8">
-                  <p>No public templates or lists available yet.</p>
+                  <p>{(translations as any)?.publicProfile?.noPublicTemplatesOrLists || 'No public templates or lists available yet.'}</p>
                 </div>
               )}
             </TabsContent>

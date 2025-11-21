@@ -309,7 +309,9 @@
     "cloneTemplate": "Nakili",
     "cloneTemplateSuccess": "Kiolezo kimenakiliwa kwa mafanikio!",
     "cloneTemplateFailed": "Imeshindwa kunakili kiolezo",
-    "cloning": "Inanakili..."
+    "cloning": "Inanakili...",
+    "noPublicNotes": "Hakuna maelezo ya umma yanayopatikana bado.",
+    "noPublicTemplatesOrLists": "Hakuna violezo au orodha za umma zilizopo bado."
   },
   "publicCharts": {
     "noData": "Hakuna data ya chati za umma inayopatikana.",

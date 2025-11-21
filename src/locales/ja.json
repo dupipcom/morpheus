@@ -311,7 +311,9 @@
     "cloneTemplate": "複製",
     "cloneTemplateSuccess": "テンプレートの複製に成功しました！",
     "cloneTemplateFailed": "テンプレートの複製に失敗しました",
-    "cloning": "複製中..."
+    "cloning": "複製中...",
+    "noPublicNotes": "公開ノートはまだ利用できません。",
+    "noPublicTemplatesOrLists": "公開テンプレートまたはリストはまだ利用できません。"
   },
   "publicCharts": {
     "noData": "公開チャートデータが利用できません。",

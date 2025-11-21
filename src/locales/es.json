@@ -311,7 +311,9 @@
     "cloneTemplate": "Clonar",
     "cloneTemplateSuccess": "¡Plantilla clonada exitosamente!",
     "cloneTemplateFailed": "Error al clonar plantilla",
-    "cloning": "Clonando..."
+    "cloning": "Clonando...",
+    "noPublicNotes": "Aún no hay notas públicas disponibles.",
+    "noPublicTemplatesOrLists": "Aún no hay plantillas o listas públicas disponibles."
   },
   "publicCharts": {
     "noData": "No hay datos públicos de gráficos disponibles.",

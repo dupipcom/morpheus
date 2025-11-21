@@ -315,7 +315,9 @@
     "cloneTemplate": "Klonla",
     "cloneTemplateSuccess": "Şablon başarıyla klonlandı!",
     "cloneTemplateFailed": "Şablon klonlama başarısız",
-    "cloning": "Klonlanıyor..."
+    "cloning": "Klonlanıyor...",
+    "noPublicNotes": "Henüz herkese açık not mevcut değil.",
+    "noPublicTemplatesOrLists": "Henüz herkese açık şablon veya liste mevcut değil."
   },
   "publicCharts": {
     "noData": "Herkese açık grafik verisi mevcut değil.",

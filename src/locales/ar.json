@@ -315,7 +315,9 @@
     "cloneTemplate": "استنساخ",
     "cloneTemplateSuccess": "تم استنساخ القالب بنجاح!",
     "cloneTemplateFailed": "فشل استنساخ القالب",
-    "cloning": "جاري الاستنساخ..."
+    "cloning": "جاري الاستنساخ...",
+    "noPublicNotes": "لا توجد ملاحظات عامة متاحة بعد.",
+    "noPublicTemplatesOrLists": "لا توجد قوالب أو قوائم عامة متاحة بعد."
   },
   "publicCharts": {
     "noData": "لا توجد بيانات عامة متاحة للمخططات.",

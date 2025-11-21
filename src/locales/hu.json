@@ -295,7 +295,9 @@
     "cloneTemplate": "Klónozás",
     "cloneTemplateSuccess": "Sablon sikeresen klónozva!",
     "cloneTemplateFailed": "A sablon klónozása sikertelen",
-    "cloning": "Klónozás..."
+    "cloning": "Klónozás...",
+    "noPublicNotes": "Még nincsenek elérhető nyilvános jegyzetek.",
+    "noPublicTemplatesOrLists": "Még nincsenek elérhető nyilvános sablonok vagy listák."
   },
   "publicCharts": {
     "noData": "Nincs nyilvános grafikon adat.",

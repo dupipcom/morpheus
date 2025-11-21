@@ -301,7 +301,9 @@
     "cloneTemplate": "ਕਲੋਨ ਕਰੋ",
     "cloneTemplateSuccess": "ਟੈਂਪਲੇਟ ਸਫਲਤਾਪੂਰਵਕ ਕਲੋਨ ਕੀਤਾ ਗਿਆ!",
     "cloneTemplateFailed": "ਟੈਂਪਲੇਟ ਕਲੋਨ ਕਰਨ ਵਿੱਚ ਅਸਫਲ",
-    "cloning": "ਕਲੋਨ ਹੋ ਰਿਹਾ ਹੈ..."
+    "cloning": "ਕਲੋਨ ਹੋ ਰਿਹਾ ਹੈ...",
+    "noPublicNotes": "ਅਜੇ ਤੱਕ ਕੋਈ ਜਨਤਕ ਨੋਟਸ ਉਪਲਬਧ ਨਹੀਂ ਹਨ।",
+    "noPublicTemplatesOrLists": "ਅਜੇ ਤੱਕ ਕੋਈ ਜਨਤਕ ਟੈਂਪਲੇਟ ਜਾਂ ਸੂਚੀਆਂ ਉਪਲਬਧ ਨਹੀਂ ਹਨ।"
   },
   "publicCharts": {
     "noData": "ਕੋਈ ਜਨਤਕ ਚਾਰਟ ਡੇਟਾ ਉਪਲਬਧ ਨਹੀਂ।",

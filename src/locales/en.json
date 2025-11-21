@@ -433,7 +433,8 @@
     "cloneTemplateFailed": "Failed to clone template",
     "cloneListFailed": "Failed to clone list",
     "cloning": "Cloning...",
-    "noPublicNotes": "No public notes available yet."
+    "noPublicNotes": "No public notes available yet.",
+    "noPublicTemplatesOrLists": "No public templates or lists available yet."
   },
   "socialView": {
     "activity": "Activity",

@@ -297,7 +297,9 @@
     "cloneTemplate": "Kloon",
     "cloneTemplateSuccess": "Mall edukalt kloonitud!",
     "cloneTemplateFailed": "Malli kloonimine ebaõnnestus",
-    "cloning": "Kloonimine..."
+    "cloning": "Kloonimine...",
+    "noPublicNotes": "Avalikke märkmeid pole veel saadaval.",
+    "noPublicTemplatesOrLists": "Avalikke malle või nimekirju pole veel saadaval."
   },
   "publicCharts": {
     "noData": "Avalikke diagrammi andmeid pole saadaval.",

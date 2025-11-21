@@ -311,7 +311,9 @@
     "cloneTemplate": "Klonen",
     "cloneTemplateSuccess": "Vorlage erfolgreich geklont!",
     "cloneTemplateFailed": "Vorlage konnte nicht geklont werden",
-    "cloning": "Klonen..."
+    "cloning": "Klonen...",
+    "noPublicNotes": "Noch keine öffentlichen Notizen verfügbar.",
+    "noPublicTemplatesOrLists": "Noch keine öffentlichen Vorlagen oder Listen verfügbar."
   },
   "publicCharts": {
     "noData": "No public charts data available.",

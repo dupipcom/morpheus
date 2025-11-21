@@ -308,7 +308,9 @@
     "cloneTemplate": "Kwafi",
     "cloneTemplateSuccess": "An kwafi samfurin da nasara!",
     "cloneTemplateFailed": "An kasa kwafin samfurin",
-    "cloning": "Ana kwafewa..."
+    "cloning": "Ana kwafewa...",
+    "noPublicNotes": "Babu bayanan jama'a da aka samu tukuna.",
+    "noPublicTemplatesOrLists": "Babu samfuri ko jera na jama'a da aka samu tukuna."
   },
   "publicCharts": {
     "noData": "Babu bayanan ginshiƙai na jama'a.",

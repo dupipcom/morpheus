@@ -300,7 +300,9 @@
     "cloneTemplate": "Klonatu",
     "cloneTemplateSuccess": "Txantiloia ondo klonatu da!",
     "cloneTemplateFailed": "Txantiloia klonatzeak huts egin du",
-    "cloning": "Klonatzen..."
+    "cloning": "Klonatzen...",
+    "noPublicNotes": "Oraindik ez dago ohar publiko eskuragarririk.",
+    "noPublicTemplatesOrLists": "Oraindik ez dago txantiloi edo zerrenda publiko eskuragarririk."
   },
   "publicCharts": {
     "noData": "Ez dago grafik publikoen daturik eskuragarri.",

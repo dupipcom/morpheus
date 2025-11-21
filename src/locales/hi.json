@@ -297,7 +297,9 @@
     "cloneTemplate": "क्लोन करें",
     "cloneTemplateSuccess": "टेम्पलेट सफलतापूर्वक क्लोन किया गया!",
     "cloneTemplateFailed": "टेम्पलेट क्लोन करने में विफल",
-    "cloning": "क्लोन हो रहा है..."
+    "cloning": "क्लोन हो रहा है...",
+    "noPublicNotes": "अभी तक कोई सार्वजनिक नोट उपलब्ध नहीं है।",
+    "noPublicTemplatesOrLists": "अभी तक कोई सार्वजनिक टेम्पलेट या सूची उपलब्ध नहीं है।"
   },
   "publicCharts": {
     "noData": "कोई सार्वजनिक चार्ट डेटा उपलब्ध नहीं है।",

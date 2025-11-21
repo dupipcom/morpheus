@@ -301,7 +301,9 @@
     "cloneTemplate": "Klon",
     "cloneTemplateSuccess": "Skabelon klonet med succes!",
     "cloneTemplateFailed": "Kunne ikke klone skabelon",
-    "cloning": "Kloner..."
+    "cloning": "Kloner...",
+    "noPublicNotes": "Ingen offentlige noter tilgængelige endnu.",
+    "noPublicTemplatesOrLists": "Ingen offentlige skabeloner eller lister tilgængelige endnu."
   },
   "publicCharts": {
     "noData": "Ingen offentlige diagramdata tilgængelige.",
