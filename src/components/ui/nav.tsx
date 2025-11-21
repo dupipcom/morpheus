@@ -1,7 +1,7 @@
-import { useState, useRef, useEffect, useMemo } from 'react'
+import { useState, useRef, useEffect, useMemo, useCallback } from 'react'
 import Image from "next/image"
 import Link from "next/link"
-import MuxAudio from '@mux/mux-audio-react';
+import Hls from 'hls.js';
 import { logger } from '@/lib/logger';
 
 import { useAuth, useClerk } from "@clerk/clerk-react";
@@ -62,7 +62,7 @@ export const DEFAULT_TRACKS = [
     className: '',
     onPlay: () => {},
     title: 'This is the track playing',
-    url: 'https://www.dupip.com/api/nexus/audio',
+    url: 'https://radio.dreampip.com/listen/dpipbase/live.mp3',
     isPlaying: false,
   },
   {
@@ -70,7 +70,7 @@ export const DEFAULT_TRACKS = [
     className: '',
     onPlay: () => {},
     title: 'This is the track playing',
-    url: 'https://radio.dreampip.com/hls/dpip000/live.m3u8',
+    url: 'https://radio.dreampip.com/listen/dpipbase/live.mp3',
     nowPlaying: 'https://radio.dreampip.com/api/nowplaying/dpip000',
     isPlaying: false,
   },
@@ -345,7 +345,9 @@ export const Logo: TComponent = function ({
     tracks?: typeof DEFAULT_TRACKS;
     prompt?: string;
   }) => {
-	  const audioElement = useRef<HTMLAudioElement | any>(null);
+	  const audioElement = useRef<HTMLAudioElement>(null);
+	  const hlsRef = useRef<Hls | null>(null);
+	  const [audioReady, setAudioReady] = useState(false);
 	  const [status, setStatus] = useState('loading');
 	  const [title, setTitle] = useState(prompt);
 	  const [isPlaying, setIsPlaying] = useState(false);
@@ -353,72 +355,182 @@ export const Logo: TComponent = function ({
 	  const icon = useMemo(() => isPlaying ? <Stop /> : <Play />, [isPlaying]);
 	  const { t } = useI18n();
 
-	const handlePlaying = () => {
+	const handlePlaying = useCallback(() => {
     setIsPlaying(true);
     setStatus('playing');
-  };
+  }, []);
 
-  const handleStopping = () => {
+  const handleStopping = useCallback(() => {
     setIsPlaying(false);
     setStatus('stopped');
-  };
+  }, []);
 
-  const handleStalled = () => {
+  const handleStalled = useCallback(() => {
     setStatus('stalled');
-  };
+  }, []);
 
-  const handlePlay = () => {
-    if (!audioElement.current) return;
-    // Try different ways to access the audio element - MuxAudio might expose it differently
-    const audio = audioElement.current?.media?.media || 
-                  audioElement.current?.media || 
-                  audioElement.current?.audio ||
-                  audioElement.current;
-    
-    // Try to call play on the audio element
-    if (audio) {
-      if (typeof audio.play === 'function') {
-        audio.play().catch((e: any) => {
-          logger('audio_play_error', e);
-        });
-      } else if (typeof audioElement.current.play === 'function') {
-        audioElement.current.play().catch((e: any) => {
-          logger('audio_play_error', e);
-        });
-      }
+  // Check if URL is an HLS stream
+  const isHlsStream = useCallback((url: string) => {
+    return url.includes('.m3u8') || url.includes('application/vnd.apple.mpegurl');
+  }, []);
+
+  // Initialize HLS if needed
+  const initializeHls = useCallback(() => {
+    const audio = audioElement.current;
+    if (!audio || !selectedTrack.url) return;
+
+    // Clean up existing HLS instance
+    if (hlsRef.current) {
+      hlsRef.current.destroy();
+      hlsRef.current = null;
     }
-    logger('audio_play', 'Started');
-  };
 
-  const handleStop = () => {
-    if (!audioElement.current) return;
-    // Try different ways to access the audio element - MuxAudio might expose it differently
-    const audio = audioElement.current?.media?.media || 
-                  audioElement.current?.media || 
-                  audioElement.current?.audio ||
-                  audioElement.current;
-    
-    // Try to call pause on the audio element
-    if (audio) {
-      if (typeof audio.pause === 'function') {
-        audio.pause();
-      } else if (typeof audioElement.current.pause === 'function') {
-        audioElement.current.pause();
+    // Check if this is an HLS stream
+    if (isHlsStream(selectedTrack.url)) {
+      if (Hls.isSupported()) {
+        const hls = new Hls({
+          enableWorker: true,
+          lowLatencyMode: true,
+          backBufferLength: 90,
+        });
+        
+        hls.loadSource(selectedTrack.url);
+        hls.attachMedia(audio);
+        
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          logger('hls_manifest_parsed', 'HLS manifest loaded');
+        });
+        
+        hls.on(Hls.Events.ERROR, (event, data) => {
+          if (data.fatal) {
+            logger('hls_error', {
+              type: data.type,
+              details: data.details,
+              error: data.error,
+            });
+            if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
+              logger('hls_error_recover', 'Attempting to recover...');
+              hls.startLoad();
+            } else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
+              logger('hls_error_recover', 'Attempting to recover from media error...');
+              hls.recoverMediaError();
+            }
+          }
+        });
+        
+        hlsRef.current = hls;
+        logger('hls_initialized', 'HLS.js initialized');
+      } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
+        // Native HLS support (Safari)
+        audio.src = selectedTrack.url;
+        logger('hls_native', 'Using native HLS support');
+      } else {
+        logger('hls_not_supported', 'HLS not supported in this browser');
       }
+    } else {
+      // Regular audio source
+      audio.src = selectedTrack.url;
     }
-    logger('audio_stop', 'Stopped');
-  };
+  }, [selectedTrack.url, isHlsStream]);
 
-  const handleClick = () => {
+  const handlePlay = useCallback(() => {
+    const isHls = isHlsStream(selectedTrack.url);
+    const audio = audioElement.current;
+    if (!audio) {
+      logger('audio_play_error', 'Audio element not available');
+      return;
+    }
+
+    // For HLS, ensure it's initialized
+    if (isHls && !hlsRef.current && Hls.isSupported()) {
+      logger('audio_play_warning', 'HLS not initialized, initializing...');
+      initializeHls();
+    }
+
+    // Check if audio is ready (for non-HLS)
+    if (!isHls && audio.readyState === 0) {
+      logger('audio_play_warning', 'Audio not loaded, attempting to load...');
+      audio.load();
+    }
+
+    // For regular audio, ensure source is set
+    if (!isHls && !audio.src) {
+      logger('audio_play_error', 'Audio source not set');
+      return;
+    }
+
+    try {
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            logger('audio_play', 'Started successfully');
+          })
+          .catch((e: any) => {
+            // Extract meaningful error information
+            const errorInfo = {
+              name: e?.name || 'Unknown',
+              message: e?.message || 'No error message',
+              code: e?.code || 'No error code',
+              readyState: audio.readyState,
+              networkState: audio.networkState,
+              src: audio.src,
+            };
+            logger('audio_play_error', errorInfo);
+            console.error('Audio play error details:', {
+              error: e,
+              audioElement: {
+                readyState: audio.readyState,
+                networkState: audio.networkState,
+                src: audio.src,
+                paused: audio.paused,
+                currentTime: audio.currentTime,
+              }
+            });
+          });
+      } else {
+        logger('audio_play', 'Started (no promise returned)');
+      }
+    } catch (e: any) {
+      const errorInfo = {
+        name: e?.name || 'Unknown',
+        message: e?.message || 'No error message',
+        code: e?.code || 'No error code',
+      };
+      logger('audio_play_error', errorInfo);
+      console.error('Audio play exception:', e);
+    }
+  }, [selectedTrack.url, isHlsStream, initializeHls]);
+
+  const handleStop = useCallback(() => {
+    const audio = audioElement.current;
+    if (!audio) {
+      logger('audio_stop_error', 'Audio element not available');
+      return;
+    }
+    try {
+      audio.pause();
+      logger('audio_stop', 'Stopped');
+    } catch (e: any) {
+      logger('audio_stop_error', e);
+      console.error('Audio stop error:', e);
+    }
+  }, []);
+
+  const handleClick = useCallback(() => {
   	logger('audio_play_click', 'Clicked');
+    if (!audioElement.current) {
+      logger('audio_play_click_error', 'Audio element not available');
+      return;
+    }
     if (isPlaying) {
       handleStop();
     } else {
       handlePlay();
     }
-  };
+  }, [isPlaying, handlePlay, handleStop]);
 
-  const updatePrompt = async () => {
+  const updatePrompt = useCallback(async () => {
     logger('audio_player_prompt_fetching', 'Fetching');
     const url = selectedTrack.nowPlaying;
     if (url) {
@@ -436,9 +548,16 @@ export const Logo: TComponent = function ({
         logger('audio_player_prompt_error', 'Error');
       }
     }
-  };
+  }, [selectedTrack.nowPlaying]);
 
   useEffect(() => {
+    if (!audioReady) return;
+    const audio = audioElement.current;
+    if (!audio) return;
+
+    // Initialize HLS if needed
+    initializeHls();
+
     const memo = {
       clearPromptInterval: () => {},
     };
@@ -460,41 +579,17 @@ export const Logo: TComponent = function ({
       handleStopping();
     };
 
-    // Try to get the actual audio element from MuxAudio for stalled event
-    const getAudioElement = () => {
-      if (!audioElement.current) return null;
-      return audioElement.current?.media?.media || audioElement.current?.media || audioElement.current;
-    };
+    // Sync the icon with current playback state
+    if (!audio.paused) {
+      setIsPlaying(true);
+    }
 
-    // Setup event listeners as fallback (in case MuxAudio props don't work)
-    const setupEventListeners = () => {
-      const audio = getAudioElement();
-      if (audio && audio.addEventListener) {
-        // Sync the icon with current playback state
-        if (!audio.paused) {
-          setIsPlaying(true);
-        }
-        
-        audio.addEventListener('play', handlePlaying);
-        audio.addEventListener('playing', handlePlaying);
-        audio.addEventListener('pause', handleStopping);
-        audio.addEventListener('ended', handleStopping);
-        audio.addEventListener('stalled', handleStalled);
-        return () => {
-          audio.removeEventListener('play', handlePlaying);
-          audio.removeEventListener('playing', handlePlaying);
-          audio.removeEventListener('pause', handleStopping);
-          audio.removeEventListener('ended', handleStopping);
-          audio.removeEventListener('stalled', handleStalled);
-        };
-      }
-      return () => {};
-    };
-
-    // Wait a bit for MuxAudio to initialize
-    const timeoutId = setTimeout(() => {
-      setupEventListeners();
-    }, 100);
+    // Setup event listeners
+    audio.addEventListener('play', handlePlaying);
+    audio.addEventListener('playing', handlePlaying);
+    audio.addEventListener('pause', handleStopping);
+    audio.addEventListener('ended', handleStopping);
+    audio.addEventListener('stalled', handleStalled);
 
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
@@ -502,14 +597,23 @@ export const Logo: TComponent = function ({
     checkPrompt();
 
     return () => {
-      clearTimeout(timeoutId);
-      const cleanup = setupEventListeners();
-      cleanup();
+      // Clean up HLS instance
+      if (hlsRef.current) {
+        hlsRef.current.destroy();
+        hlsRef.current = null;
+      }
+      if (audio) {
+        audio.removeEventListener('play', handlePlaying);
+        audio.removeEventListener('playing', handlePlaying);
+        audio.removeEventListener('pause', handleStopping);
+        audio.removeEventListener('ended', handleStopping);
+        audio.removeEventListener('stalled', handleStalled);
+      }
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
       memo.clearPromptInterval();
     };
-  }, []);
+  }, [audioReady, handlePlaying, handleStopping, handleStalled, handlePlay, handleStop, updatePrompt, initializeHls]);
 
 
 
@@ -529,14 +633,28 @@ export const Logo: TComponent = function ({
 	          >
 	          	{icon}
 	          </Button>
-		        <MuxAudio
-		          src={selectedTrack.url}
-		          ref={audioElement}
+		        <audio
+		          ref={(el) => {
+		            audioElement.current = el;
+		            if (el) {
+		              setAudioReady(true);
+		              // Ensure audio loads when element is ready
+		              el.addEventListener('canplay', () => {
+		                logger('audio_canplay', 'Audio ready to play');
+		              });
+		              el.addEventListener('error', (e: any) => {
+		                logger('audio_element_error', {
+		                  error: e,
+		                  code: el.error?.code,
+		                  message: el.error?.message,
+		                  src: el.src,
+		                });
+		              });
+		            }
+		          }}
 		          loop
-		          preferPlayback="mse"
-		          onPlay={handlePlaying}
-		          onPause={handleStopping}
-		          onEnded={handleStopping}
+		          preload="auto"
+		          crossOrigin="anonymous"
 		        />
         </div>
   			},
