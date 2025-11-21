@@ -215,13 +215,15 @@ export default async function ArticleLayout({
         </div>
       )}
 
-      {relatedPosts && (
+      {children}
+
+      {relatedPosts?.length > 0 && (
         <div className="article-related-posts">
           <h2 className="text-2xl font-bold mb-4">Related Posts</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {relatedPosts?.map((post: any) => (
               <Link key={post.id} href={`/${locale}/articles/${post.slug}`}>
-                <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer">
+                <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer pt-0">
                   {post.heroImage?.sizes?.large?.url && (
                     <div className="relative w-full h-48 overflow-hidden rounded-t-xl">
                       <img 
@@ -240,7 +242,10 @@ export default async function ArticleLayout({
                   <CardContent>
                     {post.populatedAuthors && post.populatedAuthors.length > 0 && (
                       <p className="text-sm text-muted-foreground mb-2">
-                        {post.populatedAuthors.map((author: any) => author.name).join(', ')}
+                        {post.populatedAuthors.map((author: any) => {
+                          console.log(author);
+                          return <a className="text-primary hover:underline" href={`/@${author.dupipUser}`}>@{author.name}</a>
+                        })}
                       </p>
                     )}
                     {post.publishedAt && (

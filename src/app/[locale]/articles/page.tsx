@@ -72,7 +72,7 @@ export default async function ArticlesPage({
 
           return (
             <Link key={article.id} href={`/${locale}/articles/${slug}`}>
-              <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer">
+              <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer pt-0">
                 {heroImageUrl && (
                   <div className="relative w-full h-48 overflow-hidden rounded-t-xl">
                     <img 

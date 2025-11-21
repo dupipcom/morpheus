@@ -107,13 +107,14 @@ export default async function ArticlePage({
                   : author?.name || 'Unknown Author';
                 return (
                   <span key={index}>
-                    {authorName}
+                     <a className="text-primary hover:underline" href={`/@${author.dupipUser}`}>@{author.name}</a>
                     {index < authors.length - 1 && ', '}
                   </span>
                 );
               })}
             </div>
           )}
+
           {publishedAt && (
             <>
               {authors && authors.length > 0 && <span>•</span>}
@@ -148,73 +149,6 @@ export default async function ArticlePage({
         )}
       </header>
 
-      {/* Related posts */}
-      {relatedPosts && Array.isArray(relatedPosts) && relatedPosts.length > 0 && (
-        <aside className="mt-12 pt-8 border-t">
-          <h2 className="text-2xl font-bold mb-6">Related Articles</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {relatedPosts.map((relatedPost: any, index: number) => {
-              const post = typeof relatedPost === 'string' 
-                ? null // If it's just an ID, we'd need to fetch it
-                : relatedPost;
-              
-              if (!post) return null;
-              
-              const postTitle = post.title || 'Untitled';
-              const postSlug = post.slug;
-              const postHeroImage = post.heroImage;
-              
-              // Get hero image URL and prefix with PAYLOAD_API_URL if it's a relative path
-              const getImageUrl = (image: any): string | null => {
-                const imageUrl = typeof image === 'string' 
-                  ? image 
-                  : image?.url || null;
-                
-                if (!imageUrl) return null;
-                
-                // If it's already a full URL, return as is
-                if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
-                  return imageUrl;
-                }
-                
-                // If it's a relative path, prefix with base URL (image URL already includes /api/media/*)
-                const payloadApiUrl = process.env.PAYLOAD_API_URL || process.env.NEXT_PUBLIC_PAYLOAD_API_URL || '';
-                if (payloadApiUrl && imageUrl.startsWith('/')) {
-                  // Remove /api from PAYLOAD_API_URL and prepend to image URL (which already has /api/media/*)
-                  return `${payloadApiUrl.split('/api')[0]}${imageUrl}`;
-                }
-                
-                return imageUrl;
-              };
-
-              const postHeroImageUrl = getImageUrl(postHeroImage);
-
-              return (
-                <Link 
-                  key={index} 
-                  href={`/${locale}/articles/${postSlug}`}
-                  className="block"
-                >
-                  <Card className="h-full hover:shadow-lg transition-shadow">
-                    {postHeroImageUrl && (
-                      <div className="relative w-full h-32 overflow-hidden rounded-t-xl">
-                        <img 
-                          src={postHeroImageUrl} 
-                          alt={postTitle}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    )}
-                    <CardHeader>
-                      <CardTitle className="line-clamp-2">{postTitle}</CardTitle>
-                    </CardHeader>
-                  </Card>
-                </Link>
-              );
-            })}
-          </div>
-        </aside>
-      )}
     </>
   );
 }
