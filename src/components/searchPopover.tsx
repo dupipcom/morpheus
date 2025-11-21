@@ -128,7 +128,7 @@ export function SearchPopover({ query, open, onOpenChange, anchorRef }: SearchPo
         />
       </PopoverAnchor>
       <PopoverContent
-        className="w-[var(--radix-popover-anchor-width)] max-w-none p-0"
+        className="w-[80vw] md:w-[30vw] max-w-none p-0"
         align="start"
         side="top"
         sideOffset={4}
@@ -161,26 +161,9 @@ export function SearchPopover({ query, open, onOpenChange, anchorRef }: SearchPo
                     {getTypeIcon(result.type)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-sm font-medium truncate">
-                        {result.name}
-                      </span>
-                    </div>
-                    {result.type === 'note' && result.content && (
-                      <p className="text-xs text-muted-foreground line-clamp-2">
-                        {result.content}
-                      </p>
-                    )}
-                    {result.type === 'profile' && (result.firstName || result.lastName) && (
-                      <p className="text-xs text-muted-foreground">
-                        {[result.firstName, result.lastName].filter(Boolean).join(' ')}
-                      </p>
-                    )}
-                    {result.type === 'list' && result.role && !result.role.includes('one-off.custom') && (
-                      <p className="text-xs text-muted-foreground">
-                        {result.role}
-                      </p>
-                    )}
+                    <span className="text-sm font-medium truncate">
+                      {result.name}
+                    </span>
                   </div>
                 </button>
               ))}
