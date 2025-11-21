@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useContext, useMemo, useState, useEffect } from 'react'
+import React, { useContext, useMemo, useState, useEffect, useCallback } from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
 import {
@@ -20,6 +20,7 @@ import { useI18n } from '@/lib/contexts/i18n'
 import { Badge } from '@/components/ui/badge'
 import { Calendar } from '@/components/ui/calendar'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
+import { PercentageTicker } from '@/components/ui/percentageTicker'
 import { cn } from '@/lib/utils'
 import { getWeekNumber } from '@/app/helpers'
 
@@ -61,6 +62,61 @@ export const DoToolbar = ({
     }
   }, [contextTaskLists])
   
+  // Helper function to calculate completion percentage change
+  const calculateCompletionChange = useCallback((list: any): number => {
+    if (!list || !list.completedTasks) return 0
+    
+    const completedTasks = list.completedTasks
+    const totalTasks = (list.tasks?.length || list.templateTasks?.length || 0)
+    
+    if (totalTasks === 0) return 0
+    
+    // Get today's date
+    const today = new Date()
+    const year = today.getFullYear()
+    const todayISO = `${year}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+    
+    // Get current date's completion data
+    const yearData = completedTasks[year] || {}
+    const todayData = yearData[todayISO]
+    
+    let currentCompleted = 0
+    if (todayData) {
+      if (Array.isArray(todayData)) {
+        // Legacy structure
+        currentCompleted = todayData.filter((t: any) => t.status === 'done').length
+      } else if (todayData.closedTasks) {
+        // New structure
+        currentCompleted = Array.isArray(todayData.closedTasks) ? todayData.closedTasks.length : 0
+      }
+    }
+    
+    const currentPercentage = (currentCompleted / totalTasks) * 100
+    
+    // Find previous entry (previous date)
+    const dates = Object.keys(yearData).sort().reverse() // Sort dates descending
+    const previousDate = dates.find((date: string) => date < todayISO)
+    
+    if (!previousDate) return 0 // No previous entry
+    
+    const previousData = yearData[previousDate]
+    let previousCompleted = 0
+    if (previousData) {
+      if (Array.isArray(previousData)) {
+        // Legacy structure
+        previousCompleted = previousData.filter((t: any) => t.status === 'done').length
+      } else if (previousData.closedTasks) {
+        // New structure
+        previousCompleted = Array.isArray(previousData.closedTasks) ? previousData.closedTasks.length : 0
+      }
+    }
+    
+    const previousPercentage = (previousCompleted / totalTasks) * 100
+    
+    // Calculate percentage change
+    return currentPercentage - previousPercentage
+  }, [])
+
   // Sort task lists according to specified priority
   const sortedTaskLists = useMemo(() => {
     const lists = (stableTaskLists.length > 0 ? stableTaskLists : (Array.isArray(contextTaskLists) ? contextTaskLists : [])) as TaskList[]
@@ -342,16 +398,21 @@ export const DoToolbar = ({
                         }
                       }
                       
+                      const completionChange = calculateCompletionChange(tl)
+                      
                       return (
-                        <SelectItem key={tl.id} value={tl.id}>
+                        <SelectItem key={tl.id} value={tl.id} className="group">
                           <div className="flex items-center justify-between w-full gap-2">
                             <span className="flex-1 truncate">{tl.name || tl.role || tl.id}</span>
-                            {formattedDueDate && (
-                              <Badge variant="outline" className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80 shrink-0">
-                                <CalendarIcon className="h-3 w-3 mr-1" />
-                                {formattedDueDate}
-                              </Badge>
-                            )}
+                            <div className="flex items-center gap-2 shrink-0">
+                              <PercentageTicker value={completionChange} />
+                              {formattedDueDate && (
+                                <Badge variant="outline" className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80 shrink-0">
+                                  <CalendarIcon className="h-3 w-3 mr-1" />
+                                  {formattedDueDate}
+                                </Badge>
+                              )}
+                            </div>
                           </div>
                         </SelectItem>
                       )
