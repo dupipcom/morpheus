@@ -14,7 +14,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { Plus, Pencil, DollarSign, Calendar as CalendarIcon, User as UserIcon, TrendingUp, Award } from 'lucide-react'
+import { Plus, Pencil, DollarSign, Calendar as CalendarIcon, User as UserIcon, TrendingUp, Award, CheckCircle2 } from 'lucide-react'
 import { GlobalContext } from '@/lib/contexts'
 import { useI18n } from '@/lib/contexts/i18n'
 import { Badge } from '@/components/ui/badge'
@@ -62,12 +62,65 @@ export const DoToolbar = ({
     }
   }, [contextTaskLists])
   
+  // Helper function to get completion percentage from stored value for selected date
+  const calculateCompletionPercentage = useCallback((list: any, date?: Date): number => {
+    if (!list) return 0
+    
+    // Use the selected date or default to today
+    const targetDate = date || selectedDate || new Date()
+    const year = targetDate.getFullYear()
+    const dateISO = `${year}-${String(targetDate.getMonth() + 1).padStart(2, '0')}-${String(targetDate.getDate()).padStart(2, '0')}`
+    
+    if (list.completedTasks) {
+      const completedTasks = list.completedTasks
+      const yearData = completedTasks[year] || {}
+      const dateData = yearData[dateISO]
+      
+      if (dateData) {
+        // First check if completion is stored directly in the date bucket
+        if (typeof dateData.completion === 'number') {
+          return dateData.completion
+        }
+        
+        // Fallback: calculate from openTasks and closedTasks
+        let openTasks: any[] = []
+        let closedTasks: any[] = []
+        
+        if (Array.isArray(dateData)) {
+          // Legacy structure
+          openTasks = dateData.filter((t: any) => t.status !== 'done')
+          closedTasks = dateData.filter((t: any) => t.status === 'done')
+        } else {
+          // New structure
+          openTasks = Array.isArray(dateData.openTasks) ? dateData.openTasks : []
+          closedTasks = Array.isArray(dateData.closedTasks) ? dateData.closedTasks : []
+        }
+        
+        const totalTasks = openTasks.length + closedTasks.length
+        if (totalTasks > 0) {
+          return (closedTasks.length / totalTasks) * 100
+        }
+      }
+    }
+    
+    return 0
+  }, [selectedDate])
+
   // Helper function to calculate completion percentage change
   const calculateCompletionChange = useCallback((list: any): number => {
-    if (!list || !list.completedTasks) return 0
+    if (!list) return 0
     
-    const completedTasks = list.completedTasks
-    const totalTasks = (list.tasks?.length || list.templateTasks?.length || 0)
+    // Get base tasks count
+    const baseTasks = list.tasks?.length || list.templateTasks?.length || 0
+    
+    // Get ephemeral tasks
+    const ephemeralTasks = list.ephemeralTasks || {}
+    const openEphemeral = Array.isArray(ephemeralTasks.open) ? ephemeralTasks.open.length : 0
+    const closedEphemeral = Array.isArray(ephemeralTasks.closed) ? ephemeralTasks.closed.length : 0
+    const totalEphemeral = openEphemeral + closedEphemeral
+    
+    // Total tasks = base tasks + ephemeral tasks
+    const totalTasks = baseTasks + totalEphemeral
     
     if (totalTasks === 0) return 0
     
@@ -76,45 +129,68 @@ export const DoToolbar = ({
     const year = today.getFullYear()
     const todayISO = `${year}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
     
-    // Get current date's completion data
-    const yearData = completedTasks[year] || {}
-    const todayData = yearData[todayISO]
-    
-    let currentCompleted = 0
-    if (todayData) {
-      if (Array.isArray(todayData)) {
-        // Legacy structure
-        currentCompleted = todayData.filter((t: any) => t.status === 'done').length
-      } else if (todayData.closedTasks) {
-        // New structure
-        currentCompleted = Array.isArray(todayData.closedTasks) ? todayData.closedTasks.length : 0
+    // Get current date's completion data for base tasks
+    let currentBaseCompleted = 0
+    if (list.completedTasks) {
+      const completedTasks = list.completedTasks
+      const yearData = completedTasks[year] || {}
+      const todayData = yearData[todayISO]
+      
+      if (todayData) {
+        if (Array.isArray(todayData)) {
+          // Legacy structure
+          currentBaseCompleted = todayData.filter((t: any) => t.status === 'done').length
+        } else if (todayData.closedTasks) {
+          // New structure
+          currentBaseCompleted = Array.isArray(todayData.closedTasks) ? todayData.closedTasks.length : 0
+        }
       }
     }
     
-    const currentPercentage = (currentCompleted / totalTasks) * 100
-    
-    // Find previous entry (previous date)
-    const dates = Object.keys(yearData).sort().reverse() // Sort dates descending
-    const previousDate = dates.find((date: string) => date < todayISO)
-    
-    if (!previousDate) return 0 // No previous entry
-    
-    const previousData = yearData[previousDate]
-    let previousCompleted = 0
-    if (previousData) {
-      if (Array.isArray(previousData)) {
-        // Legacy structure
-        previousCompleted = previousData.filter((t: any) => t.status === 'done').length
-      } else if (previousData.closedTasks) {
-        // New structure
-        previousCompleted = Array.isArray(previousData.closedTasks) ? previousData.closedTasks.length : 0
+    // Find previous entry (previous date) for base tasks
+    let previousBaseCompleted = 0
+    if (list.completedTasks) {
+      const completedTasks = list.completedTasks
+      const yearData = completedTasks[year] || {}
+      const dates = Object.keys(yearData).sort().reverse() // Sort dates descending
+      const previousDate = dates.find((date: string) => date < todayISO)
+      
+      if (previousDate) {
+        const previousData = yearData[previousDate]
+        if (previousData) {
+          if (Array.isArray(previousData)) {
+            // Legacy structure
+            previousBaseCompleted = previousData.filter((t: any) => t.status === 'done').length
+          } else if (previousData.closedTasks) {
+            // New structure
+            previousBaseCompleted = Array.isArray(previousData.closedTasks) ? previousData.closedTasks.length : 0
+          }
+        }
       }
     }
     
-    const previousPercentage = (previousCompleted / totalTasks) * 100
+    // Calculate base tasks change (day-over-day comparison)
+    const baseTasksChange = totalTasks > 0 
+      ? ((currentBaseCompleted - previousBaseCompleted) / totalTasks) * 100 
+      : 0
     
-    // Calculate percentage change
-    return currentPercentage - previousPercentage
+    // Calculate ephemeral tasks change
+    // When an ephemeral task is completed, increment = 1 / (remaining open ephemeral + base tasks + 1) * 100
+    // This represents the percentage point increase when one ephemeral task is completed
+    // The +1 accounts for the task that was just completed
+    // We need to calculate the increment based on the current state (after completion)
+    let ephemeralChange = 0
+    if (closedEphemeral > 0) {
+      // The increment is calculated as: 1 / (remaining open ephemeral + base tasks + 1) * 100
+      // This gives us the percentage point increase for completing one ephemeral task
+      const denominator = openEphemeral + baseTasks + 1
+      if (denominator > 0) {
+        ephemeralChange = (1 / denominator) * 100
+      }
+    }
+    
+    // Total change = base tasks change + ephemeral tasks change
+    return baseTasksChange + ephemeralChange
   }, [])
 
   // Sort task lists according to specified priority
@@ -386,10 +462,18 @@ export const DoToolbar = ({
               <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                 <Select value={selectedTaskListId} onValueChange={onChangeSelectedTaskListId}>
                   <SelectTrigger className="w-full sm:w-[260px]">
-                    <SelectValue placeholder={t('tasks.selectList') || 'Select list'} />
+                    <SelectValue placeholder={t('tasks.selectList') || 'Select list'}>
+                      {selectedList ? (selectedList.name || selectedList.role || selectedList.id) : null}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
-                    {allTaskLists.map((tl:any) => {
+                    {allTaskLists
+                      .filter((tl: any) => {
+                        // Use today's date for filtering dropdown items
+                        const completionPercentage = calculateCompletionPercentage(tl, new Date())
+                        return completionPercentage < 100
+                      })
+                      .map((tl:any) => {
                       const hasDueDate = tl.dueDate
                       let formattedDueDate: string | null = null
                       
@@ -403,14 +487,20 @@ export const DoToolbar = ({
                         }
                       }
                       
-                      const completionChange = calculateCompletionChange(tl)
+                      // Use today's date for dropdown items
+                      const completionPercentage = calculateCompletionPercentage(tl, new Date())
                       
                       return (
-                        <SelectItem key={tl.id} value={tl.id} className="group">
+                        <SelectItem key={tl.id} value={tl.id} className="group" textValue={tl.name || tl.role || tl.id}>
                           <div className="flex items-center justify-between w-full gap-2">
                             <span className="flex-1 truncate">{tl.name || tl.role || tl.id}</span>
                             <div className="flex items-center gap-2 shrink-0">
-                              <PercentageTicker value={completionChange} />
+                              {completionPercentage > 0 && (
+                                <Badge variant="outline" className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80 shrink-0">
+                                  <CheckCircle2 className="h-3 w-3 mr-1" />
+                                  {completionPercentage.toFixed(0)}%
+                                </Badge>
+                              )}
                               {formattedDueDate && (
                                 <Badge variant="outline" className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80 shrink-0">
                                   <CalendarIcon className="h-3 w-3 mr-1" />
@@ -562,6 +652,16 @@ export const DoToolbar = ({
                       </>
                     )
                   })()}
+                  {/* Completion percentage badge with ticker */}
+                  {selectedList && (
+                    <>
+                      <Badge variant="outline" className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80">
+                        <CheckCircle2 className="h-3 w-3 mr-1" />
+                        {calculateCompletionPercentage(selectedList, selectedDate).toFixed(0)}%
+                      </Badge>
+                      <PercentageTicker value={calculateCompletionChange(selectedList)} />
+                    </>
+                  )}
                 </div>
               )}
 

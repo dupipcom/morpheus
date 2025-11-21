@@ -240,6 +240,7 @@ model List {
   publicUrl     String?
   ticker        String?
   progress      String?
+  completion    Float?
   templateId    String?   @db.ObjectId
   template      Template? @relation(fields: [templateId], references: [id])
   templateTasks Task[]

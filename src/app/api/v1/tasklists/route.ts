@@ -683,14 +683,22 @@ export async function POST(request: NextRequest) {
         }
       }
 
-      // Save new structure
+      // Calculate completion rate for this day
+      // completion = closedTasks.length / (openTasks.length + closedTasks.length)
+      const totalTasksForDay = finalOpenTasks.length + finalClosedTasks.length
+      const completionRate = totalTasksForDay > 0 
+        ? (finalClosedTasks.length / totalTasksForDay) * 100 
+        : 0
+
+      // Save new structure with completion stored per date
       const nextCompleted = {
         ...priorCompleted,
         [year]: { 
           ...yearBucket, 
           [dateISO]: {
             openTasks: finalOpenTasks,
-            closedTasks: finalClosedTasks
+            closedTasks: finalClosedTasks,
+            completion: completionRate
           }
         }
       }
@@ -1342,9 +1350,52 @@ export async function POST(request: NextRequest) {
         })
       }
 
+      // Calculate completion rate for the latest day when ephemeral tasks change
+      const today = new Date()
+      const year = today.getFullYear()
+      const todayISO = `${year}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+      
+      const completedTasks = (taskList as any).completedTasks || {}
+      const yearData = completedTasks[year] || {}
+      let todayData = yearData[todayISO] || {}
+      
+      // Calculate completion rate for today
+      let openTasks: any[] = []
+      let closedTasks: any[] = []
+      
+      if (Array.isArray(todayData)) {
+        openTasks = todayData.filter((t: any) => t.status !== 'done')
+        closedTasks = todayData.filter((t: any) => t.status === 'done')
+      } else {
+        openTasks = Array.isArray(todayData.openTasks) ? todayData.openTasks : []
+        closedTasks = Array.isArray(todayData.closedTasks) ? todayData.closedTasks : []
+      }
+      
+      const totalTasks = openTasks.length + closedTasks.length
+      const completionRate = totalTasks > 0 
+        ? (closedTasks.length / totalTasks) * 100 
+        : 0
+
+      // Update completedTasks with completion for today
+      const updatedCompletedTasks = {
+        ...completedTasks,
+        [year]: {
+          ...yearData,
+          [todayISO]: {
+            ...todayData,
+            openTasks: openTasks,
+            closedTasks: closedTasks,
+            completion: completionRate
+          }
+        }
+      }
+
       const saved = await prisma.list.update({
         where: { id: taskList.id },
-        data: ({ ephemeralTasks: { open, closed } } as any)
+        data: ({ 
+          ephemeralTasks: { open, closed },
+          completedTasks: updatedCompletedTasks
+        } as any)
       })
 
       return NextResponse.json({ taskList: saved })
@@ -1458,9 +1509,16 @@ export async function POST(request: NextRequest) {
           openTasks.push(updatedTask)
         }
         
+        // Calculate completion rate for this day
+        const totalTasksForDay = openTasks.length + closedTasks.length
+        const completionRate = totalTasksForDay > 0 
+          ? (closedTasks.length / totalTasksForDay) * 100 
+          : 0
+        
         yearBucket[dateISO] = {
           openTasks: openTasks,
-          closedTasks: closedTasks
+          closedTasks: closedTasks,
+          completion: completionRate
         }
         completedTasks[year] = yearBucket
       }
