@@ -5,17 +5,18 @@ import { useI18n } from '@/lib/contexts/i18n'
 import { Button } from '@/components/ui/button'
 import { usePathname, useRouter } from 'next/navigation'
 import { getLocaleName, setLocaleCookie } from '@/lib/localeUtils'
-import { getBestLocale } from '@/lib/i18n'
+import { getBestLocale, loadTranslations, t as translate, type Locale } from '@/lib/i18n'
 import { getLocaleFromPath, stripLocaleFromPath } from '@/app/helpers'
 import { locales } from '@/app/constants'
 
 export const LocaleSuggestionToast = () => {
-  const { t, locale: currentLocale } = useI18n()
+  const { locale: currentLocale, t: currentT } = useI18n()
   const pathname = usePathname()
   const router = useRouter()
   const [showModal, setShowModal] = useState(false)
   const [dismissed, setDismissed] = useState(false)
   const [browserLocale, setBrowserLocale] = useState<string | null>(null)
+  const [suggestedTranslations, setSuggestedTranslations] = useState<any>(null)
 
   useEffect(() => {
     // Reset dismissed state when route changes
@@ -44,12 +45,25 @@ export const LocaleSuggestionToast = () => {
 
       setBrowserLocale(preferredLocale)
       
-      // Small delay to ensure the page has loaded
-      const timer = setTimeout(() => {
-        setShowModal(true)
-      }, 2000) // 2 second delay
-
-      return () => clearTimeout(timer)
+      // Load translations for the suggested locale
+      loadTranslations(preferredLocale as Locale).then((translations) => {
+        setSuggestedTranslations(translations)
+        // Show modal after translations are loaded and a small delay
+        setTimeout(() => {
+          setShowModal(true)
+        }, 2000) // 2 second delay after translations load
+      }).catch((error) => {
+        console.error('Failed to load translations for suggested locale:', error)
+        // If loading fails, we'll use current locale translations as fallback
+        // The modal will still show but with current locale text
+        setSuggestedTranslations({}) // Empty object to allow modal to show
+        setTimeout(() => {
+          setShowModal(true)
+        }, 2000)
+      })
+    } else {
+      // Reset translations when no locale suggestion is needed
+      setSuggestedTranslations(null)
     }
   }, [currentLocale, pathname])
 
@@ -101,8 +115,22 @@ export const LocaleSuggestionToast = () => {
   }
 
   // Render modal
-  if (showModal && !dismissed && browserLocale) {
+  if (showModal && !dismissed && browserLocale && suggestedTranslations !== null) {
     const humanReadableLocale = getLocaleName(browserLocale)
+    
+    // Use translations from the suggested locale, fallback to current locale if not available
+    const t = (key: string, params?: Record<string, string | number>) => {
+      if (suggestedTranslations && Object.keys(suggestedTranslations).length > 0) {
+        const translated = translate(suggestedTranslations, key, params || {})
+        // If translation returns the key itself, it means translation wasn't found, use current locale
+        if (translated === key || !translated) {
+          return currentT(key, params || {})
+        }
+        return translated
+      }
+      // Fallback to current locale translations
+      return currentT(key, params || {})
+    }
     
     return (
       <div className="fixed bottom-4 right-4 z-50 bg-background border rounded-lg shadow-lg p-4 max-w-sm">
