@@ -70,8 +70,8 @@ export const DEFAULT_TRACKS = [
     className: '',
     onPlay: () => {},
     title: 'This is the track playing',
-    url: 'https://radio.dupip.com/hls/dpip000/live.m3u8',
-    nowPlaying: 'https://radio.dupip.com/api/nowplaying/dpip000',
+    url: 'https://radio.dreampip.com/hls/dpip000/live.m3u8',
+    nowPlaying: 'https://radio.dreampip.com/api/nowplaying/dpip000',
     isPlaying: false,
   },
 ];
@@ -345,7 +345,7 @@ export const Logo: TComponent = function ({
     tracks?: typeof DEFAULT_TRACKS;
     prompt?: string;
   }) => {
-	  const audioElement = useRef<HTMLAudioElement>(null);
+	  const audioElement = useRef<HTMLAudioElement | any>(null);
 	  const [status, setStatus] = useState('loading');
 	  const [title, setTitle] = useState(prompt);
 	  const [isPlaying, setIsPlaying] = useState(false);
@@ -354,37 +354,63 @@ export const Logo: TComponent = function ({
 	  const { t } = useI18n();
 
 	const handlePlaying = () => {
-    if (!audioElement.current) return;
     setIsPlaying(true);
     setStatus('playing');
   };
 
   const handleStopping = () => {
-    if (!audioElement.current) return;
     setIsPlaying(false);
     setStatus('stopped');
   };
 
   const handleStalled = () => {
-    if (!audioElement.current) return;
     setStatus('stalled');
   };
 
   const handlePlay = () => {
     if (!audioElement.current) return;
-    audioElement?.current?.play();
+    // Try different ways to access the audio element - MuxAudio might expose it differently
+    const audio = audioElement.current?.media?.media || 
+                  audioElement.current?.media || 
+                  audioElement.current?.audio ||
+                  audioElement.current;
+    
+    // Try to call play on the audio element
+    if (audio) {
+      if (typeof audio.play === 'function') {
+        audio.play().catch((e: any) => {
+          logger('audio_play_error', e);
+        });
+      } else if (typeof audioElement.current.play === 'function') {
+        audioElement.current.play().catch((e: any) => {
+          logger('audio_play_error', e);
+        });
+      }
+    }
     logger('audio_play', 'Started');
   };
 
   const handleStop = () => {
     if (!audioElement.current) return;
-    audioElement?.current?.pause();
+    // Try different ways to access the audio element - MuxAudio might expose it differently
+    const audio = audioElement.current?.media?.media || 
+                  audioElement.current?.media || 
+                  audioElement.current?.audio ||
+                  audioElement.current;
+    
+    // Try to call pause on the audio element
+    if (audio) {
+      if (typeof audio.pause === 'function') {
+        audio.pause();
+      } else if (typeof audioElement.current.pause === 'function') {
+        audioElement.current.pause();
+      }
+    }
     logger('audio_stop', 'Stopped');
   };
 
   const handleClick = () => {
   	logger('audio_play_click', 'Clicked');
-    if (!audioElement.current) return;
     if (isPlaying) {
       handleStop();
     } else {
@@ -413,51 +439,76 @@ export const Logo: TComponent = function ({
   };
 
   useEffect(() => {
-    if (audioElement.current) {
-      const memo = {
-        clearPromptInterval: () => {},
-      };
+    const memo = {
+      clearPromptInterval: () => {},
+    };
 
-      const checkPrompt = () => {
-        const interval = setInterval(() => {
-          updatePrompt();
-        }, 5000);
-        memo.clearPromptInterval = () => clearInterval(interval);
-      };
+    const checkPrompt = () => {
+      const interval = setInterval(() => {
+        updatePrompt();
+      }, 5000);
+      memo.clearPromptInterval = () => clearInterval(interval);
+    };
 
-      const handleOnline = () => {
-        setStatus('online');
-        setTimeout(handlePlay, 5000);
-      };
+    const handleOnline = () => {
+      setStatus('online');
+      setTimeout(handlePlay, 5000);
+    };
 
-      const handleOffline = () => {
-        setStatus('offline');
-        handleStopping();
-      };
+    const handleOffline = () => {
+      setStatus('offline');
+      handleStopping();
+    };
 
-      audioElement.current.addEventListener('play', handlePlaying);
-      audioElement.current.addEventListener('playing', handlePlaying);
-      audioElement.current.addEventListener('pause', handleStopping);
+    // Try to get the actual audio element from MuxAudio for stalled event
+    const getAudioElement = () => {
+      if (!audioElement.current) return null;
+      return audioElement.current?.media?.media || audioElement.current?.media || audioElement.current;
+    };
 
-      audioElement.current.addEventListener('ended', handleStopping);
-      audioElement.current.addEventListener('stalled', handleStalled);
+    // Setup event listeners as fallback (in case MuxAudio props don't work)
+    const setupEventListeners = () => {
+      const audio = getAudioElement();
+      if (audio && audio.addEventListener) {
+        // Sync the icon with current playback state
+        if (!audio.paused) {
+          setIsPlaying(true);
+        }
+        
+        audio.addEventListener('play', handlePlaying);
+        audio.addEventListener('playing', handlePlaying);
+        audio.addEventListener('pause', handleStopping);
+        audio.addEventListener('ended', handleStopping);
+        audio.addEventListener('stalled', handleStalled);
+        return () => {
+          audio.removeEventListener('play', handlePlaying);
+          audio.removeEventListener('playing', handlePlaying);
+          audio.removeEventListener('pause', handleStopping);
+          audio.removeEventListener('ended', handleStopping);
+          audio.removeEventListener('stalled', handleStalled);
+        };
+      }
+      return () => {};
+    };
 
-      window.addEventListener('online', handleOnline);
-      window.addEventListener('offline', handleOffline);
+    // Wait a bit for MuxAudio to initialize
+    const timeoutId = setTimeout(() => {
+      setupEventListeners();
+    }, 100);
 
-      checkPrompt();
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
 
-      return () => {
-        audioElement?.current?.removeEventListener('play', handlePlaying);
-        audioElement?.current?.removeEventListener('playing', handlePlaying);
-        audioElement?.current?.removeEventListener('ended', handleStopping);
-        audioElement?.current?.removeEventListener('stalled', handleStalled);
-        window.removeEventListener('online', handleOnline);
-        window.removeEventListener('offline', handleOffline);
-        memo.clearPromptInterval();
-      };
-    }
-    return () => {};
+    checkPrompt();
+
+    return () => {
+      clearTimeout(timeoutId);
+      const cleanup = setupEventListeners();
+      cleanup();
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+      memo.clearPromptInterval();
+    };
   }, []);
 
 
@@ -483,6 +534,9 @@ export const Logo: TComponent = function ({
 		          ref={audioElement}
 		          loop
 		          preferPlayback="mse"
+		          onPlay={handlePlaying}
+		          onPause={handleStopping}
+		          onEnded={handleStopping}
 		        />
         </div>
   			},
