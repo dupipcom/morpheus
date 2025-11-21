@@ -107,9 +107,6 @@ export default function ArticleCardGrid({
                 )}
               <CardHeader>
                 <CardTitle className="line-clamp-2">{post.title}</CardTitle>
-                {post.description && (
-                  <CardDescription className="line-clamp-3">{post.description}</CardDescription>
-                )}
               </CardHeader>
               <CardContent>
                 {post.populatedAuthors && post.populatedAuthors.length > 0 && (
