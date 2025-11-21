@@ -218,7 +218,7 @@ export function PublicTemplatesViewer({ userName, showCard = true, isLoggedIn = 
   if (templates.length === 0 && taskLists.length === 0) {
     const content = (
       <div className="text-center text-muted-foreground py-8">
-        <p>No public templates or lists available yet.</p>
+        <p>{t('publicProfile.noPublicTemplatesOrLists') || 'No public templates or lists available yet.'}</p>
       </div>
     )
     
