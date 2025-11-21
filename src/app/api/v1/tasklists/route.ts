@@ -577,7 +577,12 @@ export async function POST(request: NextRequest) {
           const nm = typeof incoming?.name === 'string' ? incoming.name.toLowerCase() : ''
           if (!nameSet.has(nm)) {
             // Not in justCompletedNames, but still update the task with latest data
-            byKey[key] = sanitizeTask({ ...existing, ...incoming })
+            // Preserve existing status when merging (status should be managed by status update endpoint, not completion recording)
+            byKey[key] = sanitizeTask({ 
+              ...existing, 
+              ...incoming,
+              status: existing?.status || 'open' // Always preserve existing status from openTasks/closedTasks
+            })
             continue
           }
           newCount = prevCompletersLen + 1
@@ -591,13 +596,15 @@ export async function POST(request: NextRequest) {
         
         if (delta <= 0) {
           // Update task without incrementing completers
-          // Merge incoming data with existing, preserving completers
+          // Merge incoming data with existing, preserving completers and status
           byKey[key] = sanitizeTask({ 
             ...existing, 
             ...incoming,
             // Preserve completers and count from existing if not changing
             completers: existing?.completers || [],
-            count: incoming?.count !== undefined ? Number(incoming.count) : prevCompletersLen
+            count: incoming?.count !== undefined ? Number(incoming.count) : prevCompletersLen,
+            // Preserve existing status when merging (status should be managed by status update endpoint, not completion recording)
+            status: existing?.status || 'open' // Always preserve existing status from openTasks/closedTasks
           })
           continue
         }
@@ -628,6 +635,13 @@ export async function POST(request: NextRequest) {
       if (justUncompletedNames.length > 0) {
         const unNames = new Set(justUncompletedNames.map((s: string) => (s || '').toLowerCase()))
         
+        // Build a map of incoming tasks by key to get status from dayActions
+        const incomingTasksByKey: Record<string, any> = {}
+        for (const incoming of incomingTasks) {
+          const key = getKey(incoming)
+          if (key) incomingTasksByKey[key] = incoming
+        }
+        
         // Check closedTasks for tasks to reopen
         for (let i = closedTasks.length - 1; i >= 0; i--) {
           const t = closedTasks[i]
@@ -637,15 +651,17 @@ export async function POST(request: NextRequest) {
             if (comps.length > 0) comps.pop()
             // Remove completedOn when reopening task
             const { completedOn, ...taskWithoutCompletedOn } = t
-            const updatedTask = { ...taskWithoutCompletedOn, status: 'open', completers: comps, count: comps.length }
+            const key = getKey(t)
+            // Preserve status from incoming dayActions if available, otherwise from existing task, otherwise default to 'open'
+            const preservedStatus = incomingTasksByKey[key]?.status || t?.status || 'open'
+            const updatedTask = { ...taskWithoutCompletedOn, status: preservedStatus, completers: comps, count: comps.length }
             // Move from closedTasks to openTasks
             closedTasks.splice(i, 1)
-            const key = getKey(updatedTask)
             if (key) byKey[key] = updatedTask
           }
         }
         
-        // Also handle tasks in openTasks
+        // Also handle tasks in openTasks (or already in byKey from dayActions processing)
         const values = Object.values(byKey) as any[]
         for (const t of values) {
           const nm = typeof t?.name === 'string' ? t.name.toLowerCase() : ''
@@ -654,7 +670,10 @@ export async function POST(request: NextRequest) {
           if (comps.length > 0) comps.pop()
           // Remove completedOn when reopening task
           const { completedOn, ...taskWithoutCompletedOn } = t
-          const updatedTask = { ...taskWithoutCompletedOn, status: 'open', completers: comps, count: comps.length }
+          const key = getKey(t)
+          // Preserve status from existing task (which may have been updated from dayActions), otherwise default to 'open'
+          const preservedStatus = t?.status || 'open'
+          const updatedTask = { ...taskWithoutCompletedOn, status: preservedStatus, completers: comps, count: comps.length }
           const k = getKey(updatedTask)
           if (k) byKey[k] = updatedTask
         }
@@ -1525,7 +1544,19 @@ export async function POST(request: NextRequest) {
           return key === taskKeyLower || key === taskKey
         })
         
-        if (openIndex >= 0) {
+        if (closedIndex >= 0 && newStatus !== 'done') {
+          // Task is in closedTasks and status is changing to something other than "done"
+          // Move from closedTasks to openTasks with new status
+          const taskToMove = { ...closedTasks[closedIndex], status: newStatus }
+          closedTasks.splice(closedIndex, 1)
+          openTasks.push(taskToMove)
+        } else if (openIndex >= 0 && newStatus === 'done') {
+          // Task is in openTasks and status is changing to "done"
+          // Move from openTasks to closedTasks with new status
+          const taskToMove = { ...openTasks[openIndex], status: newStatus }
+          openTasks.splice(openIndex, 1)
+          closedTasks.push(taskToMove)
+        } else if (openIndex >= 0) {
           // Update in openTasks - only update status, preserve all other properties
           openTasks[openIndex] = { ...openTasks[openIndex], status: newStatus }
         } else if (closedIndex >= 0) {
@@ -1534,7 +1565,12 @@ export async function POST(request: NextRequest) {
         } else {
           // Add to openTasks if not found - use baseTask as template but preserve times if it exists in baseTask
           const updatedTask = { ...baseTask, status: newStatus }
-          openTasks.push(updatedTask)
+          // If new status is "done", add to closedTasks instead
+          if (newStatus === 'done') {
+            closedTasks.push(updatedTask)
+          } else {
+            openTasks.push(updatedTask)
+          }
         }
         
         // Calculate completion rate for this day
