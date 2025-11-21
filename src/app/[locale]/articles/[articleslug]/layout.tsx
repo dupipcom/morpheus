@@ -92,7 +92,7 @@ export default async function ArticleLayout({
         return node.children.map((heading) => <span className={`${node.tag === "h2" ? "text-2xl md:text-4xl" : node.tag === "h3" ? "text-xl md:text-2xl" : node.tag === "h4" ? "text-lg md:text-xl" : node.tag === "h5" ? "text-base md:text-lg" : "text-sm md:text-base"} mb-8 block leading-10`}>{heading.text}</span>)
     },
     text: ({ node }) => {
-        return <span className="inline text-md md:text-lg leading-8 md:leading-10">{node.text}</span>
+        return <span className="inline text-md md:text-lg leading-6 md:leading-8">{node.text}</span>
     },
     blocks: {
       // Each key should match your block's slug
@@ -137,7 +137,7 @@ export default async function ArticleLayout({
   const hasContent = content && content.root && content.root.children && content.root.children.length > 0;
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <div className="container mx-auto px-4 py-8 max-w-[1200px]">
       {heroImageUrl && (
         <div className="relative w-full h-64 md:h-96 mb-8 overflow-hidden rounded-xl">
           <img 
@@ -166,11 +166,11 @@ export default async function ArticleLayout({
       {children}
 
 {hasContent && (
-        <div className="article-content prose prose-lg max-w-none mb-8">
+        <div className="article-content prose prose-lg max-w-none mb-8 m-auto max-w-xl">
           <RichText 
             data={content} 
             converters={jsxConverters}  
-            className="text-justify text-base leading-relaxed [&_p]:mb-8 [&_h1]:text-3xl [&_h1]:font-bold [&_h1]:mb-4 [&_h1]:mt-8 [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:mb-3 [&_h2]:mt-6 [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:mb-2 [&_h3]:mt-4 [&_ul]:list-disc [&_ul]:ml-6 [&_ul]:mb-4 [&_ol]:list-decimal [&_ol]:ml-6 [&_ol]:mb-4 [&_li]:mb-2 [&_a]:text-primary [&_a]:underline [&_strong]:font-bold [&_em]:italic [&_blockquote]:border-l-4 [&_blockquote]:border-muted [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:my-4 [&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-sm [&_pre]:bg-muted [&_pre]:p-4 [&_pre]:rounded-lg [&_pre]:overflow-x-auto [&_pre]:my-4 [&_img]:rounded-lg [&_img]:my-4 [&_img]:max-w-full [&_hr]:my-8 [&_hr]:border-t [&_hr]:border-muted"
+            className=" text-base leading-relaxed [&_p]:mb-8 [&_h1]:text-3xl [&_h1]:font-bold [&_h1]:mb-4 [&_h1]:mt-8 [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:mb-3 [&_h2]:mt-6 [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:mb-2 [&_h3]:mt-4 [&_ul]:list-disc [&_ul]:ml-6 [&_ul]:mb-4 [&_ol]:list-decimal [&_ol]:ml-6 [&_ol]:mb-4 [&_li]:mb-2 [&_a]:text-primary [&_a]:underline [&_strong]:font-bold [&_em]:italic [&_blockquote]:border-l-4 [&_blockquote]:border-muted [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:my-4 [&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-sm [&_pre]:bg-muted [&_pre]:p-4 [&_pre]:rounded-lg [&_pre]:overflow-x-auto [&_pre]:my-4 [&_img]:rounded-lg [&_img]:my-4 [&_img]:max-w-full [&_hr]:my-8 [&_hr]:border-t [&_hr]:border-muted"
           />
         </div>
       )}
