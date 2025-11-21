@@ -49,7 +49,8 @@
     "anonymous": "Anoniem",
     "withdrawStash": "Spaargeld opnemen",
     "details": "Details",
-    "ask": "Vragen"
+    "ask": "Vragen",
+    "noResults": "Geen resultaten."
   },
   "navigation": {
     "home": "Home",

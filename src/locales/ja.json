@@ -49,7 +49,8 @@
     "anonymous": "匿名",
     "withdrawStash": "貯蓄を引き出す",
     "details": "詳細",
-    "ask": "尋ねる"
+    "ask": "尋ねる",
+    "noResults": "結果がありません。"
   },
   "navigation": {
     "home": "ホーム",

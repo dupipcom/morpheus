@@ -49,7 +49,8 @@
     "anonymous": "אנונימי",
     "withdrawStash": "משיכת חסכונות",
     "details": "פרטים",
-    "ask": "שאל"
+    "ask": "שאל",
+    "noResults": "אין תוצאות."
   },
   "navigation": {
     "home": "בית",

@@ -49,7 +49,8 @@
     "anonymous": "Anonymous",
     "withdrawStash": "Withdraw Stash",
     "details": "Details",
-    "ask": "Ask"
+    "ask": "Ask",
+    "noResults": "No results found"
   },
   "navigation": {
     "home": "Home",

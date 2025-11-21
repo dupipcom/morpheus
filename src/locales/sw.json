@@ -49,7 +49,8 @@
     "anonymous": "Asiyejulikana",
     "withdrawStash": "Toa akiba",
     "details": "Maelezo",
-    "ask": "Uliza"
+    "ask": "Uliza",
+    "noResults": "Hakuna matokeo."
   },
   "navigation": {
     "home": "Nyumbani",

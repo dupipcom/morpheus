@@ -49,7 +49,8 @@
     "anonymous": "Tanpa nama",
     "withdrawStash": "Keluarkan simpanan",
     "details": "Butiran",
-    "ask": "Tanya"
+    "ask": "Tanya",
+    "noResults": "Tiada hasil."
   },
   "navigation": {
     "dashboard": "Papan Pemuka",

@@ -49,7 +49,8 @@
     "anonymous": "বেনামী",
     "withdrawStash": "সঞ্চয় উত্তোলন",
     "details": "বিস্তারিত",
-    "ask": "জিজ্ঞাসা করুন"
+    "ask": "জিজ্ঞাসা করুন",
+    "noResults": "কোন ফলাফল নেই।"
   },
   "navigation": {
     "home": "হোম",

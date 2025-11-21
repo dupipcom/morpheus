@@ -49,7 +49,8 @@
     "anonymous": "익명",
     "withdrawStash": "저축 인출",
     "details": "세부정보",
-    "ask": "묻기"
+    "ask": "묻기",
+    "noResults": "결과가 없습니다."
   },
   "navigation": {
     "home": "홈",

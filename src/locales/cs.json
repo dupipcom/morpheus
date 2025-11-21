@@ -49,7 +49,8 @@
     "anonymous": "Anonymní",
     "withdrawStash": "Vybrat úspory",
     "details": "Podrobnosti",
-    "ask": "Zeptat se"
+    "ask": "Zeptat se",
+    "noResults": "Žádné výsledky."
   },
   "navigation": {
     "home": "Domů",

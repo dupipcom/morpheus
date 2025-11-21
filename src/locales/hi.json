@@ -49,7 +49,8 @@
     "anonymous": "अज्ञात",
     "withdrawStash": "बचत निकालें",
     "details": "विवरण",
-    "ask": "पूछें"
+    "ask": "पूछें",
+    "noResults": "कोई परिणाम नहीं।"
   },
   "navigation": {
     "home": "होम",

@@ -49,7 +49,8 @@
     "anonymous": "Tí kò ní orúkọ",
     "withdrawStash": "Yọ ìpamọ́",
     "details": "Awọn alaye",
-    "ask": "Béèrè"
+    "ask": "Béèrè",
+    "noResults": "Kò sí èsì."
   },
   "navigation": {
     "home": "Ilé",

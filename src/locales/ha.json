@@ -49,7 +49,8 @@
     "anonymous": "Mara suna",
     "withdrawStash": "Cire ajiya",
     "details": "Cikakkun bayanai",
-    "ask": "Tambayi"
+    "ask": "Tambayi",
+    "noResults": "Babu sakamako."
   },
   "navigation": {
     "home": "Gida",

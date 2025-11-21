@@ -49,7 +49,8 @@
     "anonymous": "Anonyme",
     "withdrawStash": "Retirer l'épargne",
     "details": "Détails",
-    "ask": "Demander"
+    "ask": "Demander",
+    "noResults": "Aucun résultat."
   },
   "navigation": {
     "home": "Accueil",

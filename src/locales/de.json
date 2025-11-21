@@ -49,7 +49,8 @@
     "anonymous": "Anonym",
     "withdrawStash": "Ersparnisse abheben",
     "details": "Details",
-    "ask": "Fragen"
+    "ask": "Fragen",
+    "noResults": "Keine Ergebnisse."
   },
   "navigation": {
     "home": "Startseite",
