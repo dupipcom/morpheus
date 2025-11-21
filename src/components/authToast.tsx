@@ -27,10 +27,14 @@ export const AuthToast = ({ showToast = true }: AuthToastProps) => {
   useEffect(() => {
     // Only show auth panel if auth is loaded, user is not signed in, showToast is true, and hasn't been dismissed
     if (isLoaded && !isSignedIn && showToast && !dismissed) {
+      // Check if we're on an articles page - use 15 second delay for articles, 3 seconds for other pages
+      const isArticlesPage = pathname?.includes('/articles/')
+      const delay = isArticlesPage ? 15000 : 3000
+      
       // Small delay to ensure the page has loaded
       const timer = setTimeout(() => {
         setShowAuthButtons(true)
-      }, 3000) // 3 second delay to let the page fully load
+      }, delay)
 
       return () => clearTimeout(timer)
     } else if (isSignedIn) {
