@@ -11,6 +11,7 @@ import { I18nProvider } from "@/lib/contexts/i18n"
 import { NotesRefreshProvider } from "@/lib/contexts/notesRefresh"
 import { AuthWrapper } from '@/components/authWrapper'
 import { AuthToast } from '@/components/authToast'
+import { LocaleSuggestionToast } from '@/components/localeSuggestionToast'
 import { getLocaleFromPath } from '@/app/helpers'
 import { defaultLocale } from '@/app/constants'
 import { getLocaleCookie } from '@/lib/localeUtils'
@@ -91,6 +92,7 @@ export function Providers({ children, locale: providedLocale }: ProvidersProps) 
               }}>
                 {children}
                 <AuthToast />
+                <LocaleSuggestionToast />
               </SWRConfig>
             </NotesRefreshProvider>
           </GlobalContext.Provider>

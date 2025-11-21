@@ -23,6 +23,8 @@
     "welcome": "Karibu kwenye Dupip!",
     "signInToAccess": "Ingia ili kufikia dashibodi yako na kufuatilia maendeleo yako.",
     "dismiss": "Ondoa",
+    "accept": "Kubali",
+    "pageAvailableIn": "Ukurasa huu unapatikana katika {locale}. Je, ungependa kuuona katika lugha hiyo?",
     "selectLanguage": "Chagua lugha",
     "manageAccount": "Dhibiti Akaunti Yangu",
     "signOut": "Ondoka",

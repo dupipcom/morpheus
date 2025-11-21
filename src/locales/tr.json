@@ -20,6 +20,8 @@
     "welcome": "Dupip'e hoş geldiniz!",
     "signInToAccess": "Dashboard'unuza erişmek ve ilerlemenizi takip etmek için giriş yapın.",
     "dismiss": "Kapat",
+    "accept": "Kabul Et",
+    "pageAvailableIn": "Bu sayfa {locale} dilinde mevcuttur. Bu dilde görüntülemek ister misiniz?",
     "selectLanguage": "Dil seçin",
     "dashboard": "Gösterge Paneli",
     "settings": "Ayarlar",

@@ -20,6 +20,8 @@
     "welcome": "مرحباً بك في Dupip!",
     "signInToAccess": "سجل الدخول للوصول إلى لوحة التحكم وتتبع تقدمك.",
     "dismiss": "إغلاق",
+    "accept": "قبول",
+    "pageAvailableIn": "هذه الصفحة متاحة بـ {locale}. هل تريد عرضها بهذه اللغة؟",
     "selectLanguage": "اختر اللغة",
     "manageAccount": "إدارة حسابي",
     "signOut": "تسجيل الخروج",

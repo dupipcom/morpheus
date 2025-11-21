@@ -23,6 +23,8 @@
     "welcome": "Welkom bij Dupip!",
     "signInToAccess": "Log in om toegang te krijgen tot je dashboard en je voortgang bij te houden.",
     "dismiss": "Sluiten",
+    "accept": "Accepteren",
+    "pageAvailableIn": "Deze pagina is beschikbaar in {locale}. Wilt u deze in die taal bekijken?",
     "selectLanguage": "Taal selecteren",
     "manageAccount": "Mijn account beheren",
     "signOut": "Uitloggen",

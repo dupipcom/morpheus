@@ -23,6 +23,8 @@
     "welcome": "Tere tulemast Dupip!",
     "signInToAccess": "Logi sisse, et pääseda ligi oma armatuurlauale ja jälgida oma edusamme.",
     "dismiss": "Sulge",
+    "accept": "Nõustu",
+    "pageAvailableIn": "See leht on saadaval keeles {locale}. Kas soovite seda sellel keelel vaadata?",
     "selectLanguage": "Vali keel",
     "manageAccount": "Hallata oma kontot",
     "signOut": "Logi välja",

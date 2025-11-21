@@ -23,6 +23,8 @@
     "welcome": "Välkommen till Dupip!",
     "signInToAccess": "Logga in för att komma åt din dashboard och spåra din framsteg.",
     "dismiss": "Stäng",
+    "accept": "Acceptera",
+    "pageAvailableIn": "Denna sida är tillgänglig på {locale}. Vill du visa den på det språket?",
     "selectLanguage": "Välj språk",
     "manageAccount": "Hantera mitt konto",
     "signOut": "Logga ut",

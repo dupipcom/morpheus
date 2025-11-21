@@ -23,6 +23,8 @@
     "welcome": "Dupip에 오신 것을 환영합니다!",
     "signInToAccess": "대시보드에 액세스하고 진행 상황을 추적하려면 로그인하세요.",
     "dismiss": "닫기",
+    "accept": "수락",
+    "pageAvailableIn": "이 페이지는 {locale}로 제공됩니다. 해당 언어로 보시겠습니까?",
     "selectLanguage": "언어 선택",
     "manageAccount": "내 계정 관리",
     "signOut": "로그아웃",

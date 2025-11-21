@@ -23,6 +23,8 @@
     "welcome": "Ongi etorri Dupip-era!",
     "signInToAccess": "Saioa hasi zure panelera sarbidea lortzeko eta zure aurrerapena jarraitzeko.",
     "dismiss": "Itxi",
+    "accept": "Onartu",
+    "pageAvailableIn": "Orri hau {locale} hizkuntzan eskuragarri dago. Hizkuntza horretan ikusi nahi duzu?",
     "selectLanguage": "Hizkuntza hautatu",
     "manageAccount": "Kudeatu nire kontua",
     "signOut": "Saioa itxi",

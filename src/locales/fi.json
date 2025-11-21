@@ -20,6 +20,8 @@
     "welcome": "Tervetuloa Dupip!",
     "signInToAccess": "Kirjaudu sisään päästäksesi hallintapaneeliin ja seurataksesi edistymistäsi.",
     "dismiss": "Sulje",
+    "accept": "Hyväksy",
+    "pageAvailableIn": "Tämä sivu on saatavilla kielellä {locale}. Haluatko tarkastella sitä kyseisellä kielellä?",
     "selectLanguage": "Valitse kieli",
     "dashboard": "Kojelauta",
     "settings": "Asetukset",

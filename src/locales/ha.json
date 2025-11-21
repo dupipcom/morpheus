@@ -23,6 +23,8 @@
     "welcome": "Barka da zuwa Dupip!",
     "signInToAccess": "Shiga don samun damar dashboard ɗinka da bin diddigin ci gaban ka.",
     "dismiss": "Kore",
+    "accept": "Karɓa",
+    "pageAvailableIn": "Wannan shafin yana samuwa a cikin {locale}. Za ka so ka duba shi a cikin wannan harshe?",
     "selectLanguage": "Zaɓi harshe",
     "manageAccount": "Sarrafa Asusun Na",
     "signOut": "Fita",

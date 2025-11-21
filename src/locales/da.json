@@ -20,6 +20,8 @@
     "welcome": "Velkommen til Dupip!",
     "signInToAccess": "Log ind for at få adgang til dit dashboard og spore din fremskridt.",
     "dismiss": "Luk",
+    "accept": "Accepter",
+    "pageAvailableIn": "Denne side er tilgængelig på {locale}. Vil du se den på det sprog?",
     "selectLanguage": "Vælg sprog",
     "dashboard": "Dashboard",
     "settings": "Indstillinger",

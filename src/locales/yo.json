@@ -23,6 +23,8 @@
     "welcome": "Káàbọ̀ sí Dupip!",
     "signInToAccess": "Wọlé láti wọ dashboard rẹ̀ àti tẹ̀lé ìlọsíwájú rẹ̀.",
     "dismiss": "Kọ́",
+    "accept": "Gba",
+    "pageAvailableIn": "Ojú-ìwé yìí wà ní èdè {locale}. Ṣe o fẹ́ wo rẹ̀ ní èdè yẹn?",
     "selectLanguage": "Yàn èdè",
     "manageAccount": "Ṣàkóso Ìwé Ìfọ̀rọ̀wérọ̀ Mi",
     "signOut": "Jáde",

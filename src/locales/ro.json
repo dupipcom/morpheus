@@ -23,6 +23,8 @@
     "welcome": "Bun venit la Dupip!",
     "signInToAccess": "Conectează-te pentru a accesa panoul de control și a-ți urmări progresul.",
     "dismiss": "Închide",
+    "accept": "Acceptă",
+    "pageAvailableIn": "Această pagină este disponibilă în {locale}. Doriți să o vizualizați în acea limbă?",
     "selectLanguage": "Selectează limba",
     "manageAccount": "Gestionează contul meu",
     "signOut": "Deconectare",

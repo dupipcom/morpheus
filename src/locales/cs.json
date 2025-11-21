@@ -23,6 +23,8 @@
     "welcome": "Vítejte v Dupip!",
     "signInToAccess": "Přihlaste se pro přístup k vašemu dashboardu a sledování vašeho pokroku.",
     "dismiss": "Zavřít",
+    "accept": "Přijmout",
+    "pageAvailableIn": "Tato stránka je k dispozici v jazyce {locale}. Chcete ji zobrazit v tomto jazyce?",
     "selectLanguage": "Vybrat jazyk",
     "manageAccount": "Spravovat můj účet",
     "signOut": "Odhlásit se",

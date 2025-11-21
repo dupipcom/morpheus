@@ -20,6 +20,8 @@
     "welcome": "Selamat datang ke Dupip!",
     "signInToAccess": "Log masuk untuk mengakses papan pemuka anda dan menjejaki kemajuan anda.",
     "dismiss": "Tutup",
+    "accept": "Terima",
+    "pageAvailableIn": "Halaman ini tersedia dalam {locale}. Adakah anda ingin melihatnya dalam bahasa itu?",
     "selectLanguage": "Pilih bahasa",
     "dashboard": "Papan pemuka",
     "settings": "Tetapan",

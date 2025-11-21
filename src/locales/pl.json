@@ -20,6 +20,8 @@
     "welcome": "Witamy w Dupip!",
     "signInToAccess": "Zaloguj się, aby uzyskać dostęp do swojego panelu i śledzić postępy.",
     "dismiss": "Zamknij",
+    "accept": "Zaakceptuj",
+    "pageAvailableIn": "Ta strona jest dostępna w języku {locale}. Czy chcesz ją wyświetlić w tym języku?",
     "selectLanguage": "Wybierz język",
     "dashboard": "Panel",
     "settings": "Ustawienia",

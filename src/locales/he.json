@@ -23,6 +23,8 @@
     "welcome": "ברוכים הבאים ל-Dupip!",
     "signInToAccess": "התחבר כדי לגשת ללוח הבקרה שלך ולעקוב אחר ההתקדמות שלך.",
     "dismiss": "סגור",
+    "accept": "קבל",
+    "pageAvailableIn": "דף זה זמין ב-{locale}. האם תרצה לצפות בו בשפה זו?",
     "selectLanguage": "בחר שפה",
     "manageAccount": "נהל את החשבון שלי",
     "signOut": "התנתק",

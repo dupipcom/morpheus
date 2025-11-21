@@ -23,6 +23,8 @@
     "welcome": "Benvido a Dupip!",
     "signInToAccess": "Inicia sesión para acceder ao teu panel e seguir o teu progreso.",
     "dismiss": "Pechar",
+    "accept": "Aceptar",
+    "pageAvailableIn": "Esta páxina está dispoñible en {locale}. Queres visualizala nese idioma?",
     "selectLanguage": "Seleccionar idioma",
     "manageAccount": "Xestionar a miña conta",
     "signOut": "Pechar sesión",

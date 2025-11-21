@@ -23,6 +23,8 @@
     "welcome": "Üdvözöljük a Dupip-ben!",
     "signInToAccess": "Jelentkezzen be a dashboard eléréséhez és a fejlődés követéséhez.",
     "dismiss": "Bezárás",
+    "accept": "Elfogadás",
+    "pageAvailableIn": "Ez az oldal elérhető {locale} nyelven. Szeretné ezen a nyelven megtekinteni?",
     "selectLanguage": "Nyelv kiválasztása",
     "manageAccount": "Fiókom kezelése",
     "signOut": "Kijelentkezés",
