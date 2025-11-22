@@ -236,6 +236,20 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
     }
   }, [mutateNotes, registerMutate, unregisterMutate])
 
+  // Update selected date to match filtered note's date when filterNoteId is provided
+  useEffect(() => {
+    if (filterNoteId && notesData?.notes && !notesLoading) {
+      const filteredNote = notesData.notes.find((note: Note) => note.id === filterNoteId)
+      if (filteredNote && filteredNote.date) {
+        const noteDate = String(filteredNote.date).split('T')[0]
+        // Only update if the date is different to avoid unnecessary updates
+        if (noteDate !== date) {
+          setFullDay(noteDate)
+        }
+      }
+    }
+  }, [filterNoteId, notesData, notesLoading, date])
+
   // Update notes when date changes or notes data is loaded
   useEffect(() => {
     if (notesError) {
@@ -247,14 +261,25 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
     if (notesData?.notes) {
       // Filter notes by the selected date (date format should match YYYY-MM-DD)
       // Note: the date field in notes might be stored as a string in YYYY-MM-DD format
+      // Always include the note matching filterNoteId, even if it's from a different date
       const filteredNotes = notesData.notes
         .filter((note: Note) => {
-          // Handle both string and Date comparisons
+          // Always include the note if it matches filterNoteId
+          if (filterNoteId && note.id === filterNoteId) {
+            return true
+          }
+          // For other notes, filter by the selected date
           const noteDate = note.date ? String(note.date).split('T')[0] : null
           return noteDate === date
         })
         .sort((a: Note, b: Note) => {
-          // Sort by createdAt descending (newest first)
+          // Sort: matching filterNoteId first, then by createdAt descending (newest first)
+          if (filterNoteId) {
+            const aMatches = a.id === filterNoteId
+            const bMatches = b.id === filterNoteId
+            if (aMatches && !bMatches) return -1
+            if (!aMatches && bMatches) return 1
+          }
           return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         })
       setNotes(filteredNotes)
@@ -262,7 +287,7 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
       // If data is loaded but no notes array, set empty array
       setNotes([])
     }
-  }, [date, notesData, notesLoading, notesError])
+  }, [date, notesData, notesLoading, notesError, filterNoteId])
 
   // Ensure contacts are loaded from SWR data
   useEffect(() => {
