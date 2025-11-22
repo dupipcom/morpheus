@@ -475,7 +475,7 @@ export async function POST(request: NextRequest) {
 
 
       const allowedKeys = new Set([
-        'id', 'name', 'categories', 'area', 'status', 'cadence', 'times', 'count', 'localeKey', 'contacts', 'things', 'favorite', 'isEphemeral', 'createdAt', 'completers'
+        'id', 'name', 'categories', 'area', 'status', 'cadence', 'times', 'count', 'localeKey', 'contacts', 'things', 'favorite', 'isEphemeral', 'createdAt', 'completers', 'redacted'
       ])
 
       const sanitizeTask = (task: any) => {
@@ -577,11 +577,12 @@ export async function POST(request: NextRequest) {
           const nm = typeof incoming?.name === 'string' ? incoming.name.toLowerCase() : ''
           if (!nameSet.has(nm)) {
             // Not in justCompletedNames, but still update the task with latest data
-            // Preserve existing status when merging (status should be managed by status update endpoint, not completion recording)
+            // Preserve existing status and redacted when merging (status should be managed by status update endpoint, not completion recording)
             byKey[key] = sanitizeTask({ 
               ...existing, 
               ...incoming,
-              status: existing?.status || 'open' // Always preserve existing status from openTasks/closedTasks
+              status: existing?.status || 'open', // Always preserve existing status from openTasks/closedTasks
+              redacted: existing?.redacted !== undefined ? existing.redacted : (incoming?.redacted !== undefined ? incoming.redacted : false) // Preserve redacted from existing, fallback to incoming
             })
             continue
           }
@@ -596,7 +597,7 @@ export async function POST(request: NextRequest) {
         
         if (delta <= 0) {
           // Update task without incrementing completers
-          // Merge incoming data with existing, preserving completers and status
+          // Merge incoming data with existing, preserving completers, status, and redacted
           byKey[key] = sanitizeTask({ 
             ...existing, 
             ...incoming,
@@ -604,7 +605,8 @@ export async function POST(request: NextRequest) {
             completers: existing?.completers || [],
             count: incoming?.count !== undefined ? Number(incoming.count) : prevCompletersLen,
             // Preserve existing status when merging (status should be managed by status update endpoint, not completion recording)
-            status: existing?.status || 'open' // Always preserve existing status from openTasks/closedTasks
+            status: existing?.status || 'open', // Always preserve existing status from openTasks/closedTasks
+            redacted: existing?.redacted !== undefined ? existing.redacted : (incoming?.redacted !== undefined ? incoming.redacted : false) // Preserve redacted from existing, fallback to incoming
           })
           continue
         }
@@ -626,7 +628,9 @@ export async function POST(request: NextRequest) {
           // Preserve the status from incoming task (may be 'open' for partial completions or 'done' for full)
           status: incoming.status || 'done',
           completers: [...baseCompleters, ...appended],
-          count: newCount
+          count: newCount,
+          // Preserve redacted from existing task, fallback to incoming
+          redacted: existing?.redacted !== undefined ? existing.redacted : (incoming?.redacted !== undefined ? incoming.redacted : false)
         })
         byKey[key] = taskRecord
       }
@@ -654,7 +658,9 @@ export async function POST(request: NextRequest) {
             const key = getKey(t)
             // Preserve status from incoming dayActions if available, otherwise from existing task, otherwise default to 'open'
             const preservedStatus = incomingTasksByKey[key]?.status || t?.status || 'open'
-            const updatedTask = { ...taskWithoutCompletedOn, status: preservedStatus, completers: comps, count: comps.length }
+            // Preserve redacted from existing task
+            const preservedRedacted = t?.redacted !== undefined ? t.redacted : false
+            const updatedTask = { ...taskWithoutCompletedOn, status: preservedStatus, completers: comps, count: comps.length, redacted: preservedRedacted }
             // Move from closedTasks to openTasks
             closedTasks.splice(i, 1)
             if (key) byKey[key] = updatedTask
@@ -673,7 +679,9 @@ export async function POST(request: NextRequest) {
           const key = getKey(t)
           // Preserve status from existing task (which may have been updated from dayActions), otherwise default to 'open'
           const preservedStatus = t?.status || 'open'
-          const updatedTask = { ...taskWithoutCompletedOn, status: preservedStatus, completers: comps, count: comps.length }
+          // Preserve redacted from existing task
+          const preservedRedacted = t?.redacted !== undefined ? t.redacted : false
+          const updatedTask = { ...taskWithoutCompletedOn, status: preservedStatus, completers: comps, count: comps.length, redacted: preservedRedacted }
           const k = getKey(updatedTask)
           if (k) byKey[k] = updatedTask
         }
