@@ -141,15 +141,15 @@ export default function RootLayout({
       >
         <Providers locale={locale}>
           <NavigationSkeletonWrapper>
-            <article className="">
-              <div className="pb-[130px]">
-                <Nav subHeader="" onThemeChange={handleThemeChange} />
-                <AppContent>{children}</AppContent>
-                <Footer />
-              </div>
-            </article>
-            <BottomNav />
-            <Toaster />
+          <article className="">
+            <div className="pb-[130px]">
+              <Nav subHeader="" onThemeChange={handleThemeChange} />
+              <AppContent>{children}</AppContent>
+              <Footer />
+            </div>
+          </article>
+          <BottomNav />
+          <Toaster />
           </NavigationSkeletonWrapper>
         </Providers>
       </body>

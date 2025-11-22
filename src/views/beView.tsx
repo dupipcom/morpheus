@@ -13,6 +13,7 @@ import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
 import { useEnhancedLoadingState } from "@/lib/userUtils"
 import { SettingsSkeleton } from "@/components/ui/skeletonLoader"
+import { Skeleton } from "@/components/ui/skeleton"
 import { toast } from 'sonner'
 import Link from 'next/link'
 import { useNotesRefresh } from "@/lib/contexts/notesRefresh"
@@ -180,6 +181,8 @@ export const BeView = ({
   const [hasMoreTemplates, setHasMoreTemplates] = useState(false)
   const [isLoadingMoreNotes, setIsLoadingMoreNotes] = useState(false)
   const [isLoadingMoreTemplates, setIsLoadingMoreTemplates] = useState(false)
+  const [isLoadingNotes, setIsLoadingNotes] = useState(false)
+  const [isLoadingTemplates, setIsLoadingTemplates] = useState(false)
 
   const { data, mutate, error, isLoading } = useSWR(
     session?.user ? `/api/v1/friends` : null,
@@ -196,6 +199,9 @@ export const BeView = ({
 
   // Fetch public notes
   const fetchPublicNotes = async (page: number = 1, append: boolean = false) => {
+    if (!append) {
+      setIsLoadingNotes(true)
+    }
     try {
       const params = new URLSearchParams({
         page: page.toString(),
@@ -216,11 +222,18 @@ export const BeView = ({
       }
     } catch (error) {
       console.error('Error fetching public notes:', error)
+    } finally {
+      if (!append) {
+        setIsLoadingNotes(false)
+      }
     }
   }
 
   // Fetch public templates
   const fetchPublicTemplates = async (page: number = 1, append: boolean = false) => {
+    if (!append) {
+      setIsLoadingTemplates(true)
+    }
     try {
       const params = new URLSearchParams({
         page: page.toString(),
@@ -242,6 +255,10 @@ export const BeView = ({
       }
     } catch (error) {
       console.error('Error fetching public templates:', error)
+    } finally {
+      if (!append) {
+        setIsLoadingTemplates(false)
+      }
     }
   }
 
@@ -268,11 +285,12 @@ export const BeView = ({
     }
   }, [registerMutate, unregisterMutate, refreshActivityFeed])
 
-  // Fetch public notes and templates on mount
+  // Fetch public notes and templates on mount and when filter params change
   useEffect(() => {
     fetchPublicNotes(1)
     fetchPublicTemplates(1)
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterNoteId, filterProfileId, filterListId, filterTemplateId])
 
   const getDisplayName = (friend: Friend) => {
     if (friend.profile) {
@@ -439,6 +457,37 @@ export const BeView = ({
   }
 
   const renderActivityFeed = () => {
+    // Show skeleton while loading notes or templates
+    if (isLoadingNotes || isLoadingTemplates) {
+      return (
+        <div className="mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Card key={`skeleton-${i}`} className="flex flex-col">
+                <CardContent className="p-4 space-y-4">
+                  <div className="flex items-center gap-3">
+                    <Skeleton className="h-10 w-10 rounded-full" />
+                    <div className="flex-1 space-y-2">
+                      <Skeleton className="h-4 w-24" />
+                      <Skeleton className="h-3 w-16" />
+                    </div>
+                  </div>
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-3/4" />
+                  <Skeleton className="h-4 w-1/2" />
+                  <div className="flex items-center gap-2 pt-2">
+                    <Skeleton className="h-8 w-8 rounded" />
+                    <Skeleton className="h-8 w-8 rounded" />
+                    <Skeleton className="h-8 w-16 rounded" />
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )
+    }
+
     if (activityItems.length === 0) {
       return (
         <div className="text-center text-muted-foreground py-12">

@@ -439,7 +439,7 @@ export const SteadyTasks = () => {
       <div className="w-full px-1 sm:px-0 mt-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 align-center justify-center w-full m-auto gap-2">
           {/* Show 1 skeleton on mobile, 8 on desktop */}
-          {[...Array(10)].map((_, index) => (
+          {[...Array(2)].map((_, index) => (
             <div key={`skeleton-${index}`} className={`flex flex-col items-center ${index >= 1 ? 'hidden md:flex' : ''}`}>
               <Skeleton className="h-[40px] w-full rounded-md" />
             </div>
