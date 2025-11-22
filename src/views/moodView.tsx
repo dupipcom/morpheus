@@ -599,36 +599,36 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
 
           {/* Mood Tab */}
           <TabsContent value="mood" className="mt-4">
-            <div className="mb-12">
-              <h3 className="mt-0 mb-4">{t('charts.gratitude')}</h3>
+            <div className="mb-16">
               <small>{insight?.gratitudeAnalysis}</small>
             </div>
-            <Slider className="mb-24" defaultValue={[serverMood.gratitude || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("gratitude", e[0])} />
-            <div className="my-12">
-              <h3 className="mt-8 mb-4">{t('charts.optimism')}</h3>
+            <Slider className="mb-4" defaultValue={[serverMood.gratitude || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("gratitude", e[0])} />
+            <h3 className="mt-4 text-center">{t('charts.gratitude')}</h3>
+            <div className="my-16">
               <small>{insight?.optimismAnalysis}</small>
             </div>
-            <Slider className="mb-24" defaultValue={[serverMood.optimism || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("optimism", e[0])} />
-            <div className="my-12">
-              <h3 className="mt-8 mb-4">{t('charts.restedness')}</h3>
+            <Slider className="mb-4" defaultValue={[serverMood.optimism || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("optimism", e[0])} />
+            <h3 className="mt-4 text-center">{t('charts.optimism')}</h3>
+            <div className="my-16">
               <small>{insight?.restednessAnalysis}</small>
             </div>
-            <Slider className="mb-24" defaultValue={[serverMood.restedness || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("restedness", e[0])} />
-            <div className="my-12">
-              <h3 className="mt-8 mb-4">{t('charts.tolerance')}</h3>
+            <Slider className="mb-4" defaultValue={[serverMood.restedness || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("restedness", e[0])} />
+            <h3 className="mt-4 text-center">{t('charts.restedness')}</h3>
+            <div className="my-16">
               <small>{insight?.toleranceAnalysis}</small>
             </div>
-            <Slider className="mb-24" defaultValue={[serverMood.tolerance || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("tolerance", e[0])} />
-            <div className="my-12">
-              <h3 className="mb-4">{t('charts.selfEsteem')}</h3>
+            <Slider className="mb-4" defaultValue={[serverMood.tolerance || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("tolerance", e[0])} />
+            <h3 className="mt-4 text-center">{t('charts.tolerance')}</h3>
+            <div className="my-16">
               <small>{insight?.selfEsteemAnalysis}</small>
             </div>
-            <Slider className="mb-24" defaultValue={[serverMood.selfEsteem || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("selfEsteem", e[0])} />
-            <div className="my-12">
-              <h3 className="mt-8 mb-4">{t('charts.trust')}</h3>
+            <Slider className="mb-4" defaultValue={[serverMood.selfEsteem || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("selfEsteem", e[0])} />
+            <h3 className="mt-4 text-center">{t('charts.selfEsteem')}</h3>
+            <div className="my-16">
               <small>{insight?.trustAnalysis}</small>
             </div>
-            <Slider className="mb-8" defaultValue={[serverMood?.trust || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("trust", e[0])} />
+            <Slider className="mb-4" defaultValue={[serverMood?.trust || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("trust", e[0])} />
+            <h3 className="mt-4 text-center">{t('charts.trust')}</h3>
           </TabsContent>
 
           {/* Notes Tab */}
