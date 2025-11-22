@@ -8,6 +8,8 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar'
 import { Badge } from '@/components/ui/badge'
 import { Slider } from '@/components/ui/slider'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { Package, List as ListIcon, MoreHorizontal, ChevronDown, Calendar as CalendarIcon, Percent } from 'lucide-react'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { useI18n } from '@/lib/contexts/i18n'
@@ -228,12 +230,12 @@ export const AddListForm = ({
       </CardHeader>
       <CardContent className="space-y-3">
         <div>
-          <label className="text-sm font-medium">{t('forms.addListForm.nameLabel') || 'Name'}</label>
-          <input className="w-full p-2 border rounded-md" value={form.name} onChange={(e) => setForm(prev => ({ ...prev, name: e.target.value }))} />
+          <Label htmlFor="list-name">{t('forms.addListForm.nameLabel') || 'Name'}</Label>
+          <Input id="list-name" value={form.name} onChange={(e) => setForm(prev => ({ ...prev, name: e.target.value }))} />
         </div>
         {!isEditing && (
           <div>
-            <label className="text-sm font-medium">{t('forms.addListForm.templateOrListLabel') || 'Template or List'}</label>
+            <Label htmlFor="template-or-list">{t('forms.addListForm.templateOrListLabel') || 'Template or List'}</Label>
             <Select value={form.templateId} onValueChange={(val) => setForm(prev => ({ ...prev, templateId: val }))}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder={t('forms.addListForm.chooseTemplatePlaceholder') || 'Choose a template'} />
@@ -261,8 +263,9 @@ export const AddListForm = ({
         )}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div>
-            <label className="text-sm font-medium">{t('forms.addListForm.budgetLabel') || 'Budget'}</label>
-            <input 
+            <Label htmlFor="budget">{t('forms.addListForm.budgetLabel') || 'Budget'}</Label>
+            <Input 
+              id="budget"
               type="text" 
               inputMode="decimal"
               pattern="[0-9]*\.?[0-9]*"
@@ -274,11 +277,10 @@ export const AddListForm = ({
                   setForm(prev => ({ ...prev, budget: value }))
                 }
               }} 
-              className="w-full p-2 border rounded-md" 
             />
           </div>
           <div>
-            <label className="text-sm font-medium">{t('forms.addListForm.dueDateLabel') || 'Due date'}</label>
+            <Label htmlFor="due-date">{t('forms.addListForm.dueDateLabel') || 'Due date'}</Label>
             <Popover open={dateOpen} onOpenChange={setDateOpen}>
               <PopoverTrigger asChild>
                 <Button variant="outline" className="w-full justify-start text-left font-normal">
@@ -299,10 +301,9 @@ export const AddListForm = ({
         </div>
         {isEditing && (
           <div>
-            <label className="text-sm font-medium flex items-center gap-2">
-              <Percent className="h-4 w-4" />
-              {t('forms.addListForm.budgetPercentageLabel') || 'Budget Allocation'} ({form.budgetPercentage.toFixed(0)}%)
-            </label>
+            <Label htmlFor="budget-percentage" className="flex items-center gap-2 mb-4">
+              {t('forms.addListForm.budgetPercentageLabel') || 'Budget Allocation'}
+            </Label>
             <div className="space-y-2 mt-2">
               <Slider
                 value={[form.budgetPercentage]}
@@ -315,7 +316,7 @@ export const AddListForm = ({
               <div className="flex justify-between text-xs text-muted-foreground">
                 <span>0%</span>
                 <span className="text-sm font-medium text-center flex-1">
-                  {remainingBudget.toFixed(0)}% of budget remaining (max: {maxAllowedBudget.toFixed(0)}%)
+                  ({form.budgetPercentage.toFixed(0)}%)
                 </span>
                 <span>{maxAllowedBudget.toFixed(0)}%</span>
               </div>
@@ -323,7 +324,7 @@ export const AddListForm = ({
           </div>
         )}
         <div>
-          <label className="text-sm font-medium">{t('forms.addListForm.cadenceLabel') || 'Cadence'}</label>
+          <Label htmlFor="cadence">{t('forms.addListForm.cadenceLabel') || 'Cadence'}</Label>
           <Select value={form.cadence} onValueChange={(val) => setForm(prev => ({ ...prev, cadence: val }))}>
             <SelectTrigger className="w-full">
               <SelectValue />
@@ -340,7 +341,7 @@ export const AddListForm = ({
           </Select>
         </div>
         <div>
-          <label className="text-sm font-medium">{t('forms.addListForm.collaboratorsLabel') || 'Collaborators'}</label>
+          <Label htmlFor="collaborators">{t('forms.addListForm.collaboratorsLabel') || 'Collaborators'}</Label>
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="outline" className="w-full justify-between">
@@ -382,7 +383,7 @@ export const AddListForm = ({
           )}
         </div>
         <div>
-          <label className="text-sm font-medium">{t('forms.addListForm.roleLabel') || 'Role'}</label>
+          <Label htmlFor="role">{t('forms.addListForm.roleLabel') || 'Role'}</Label>
           <Select value={form.role} onValueChange={(val) => setForm(prev => ({ ...prev, role: val }))}>
             <SelectTrigger className="w-full">
               <SelectValue />
@@ -402,11 +403,11 @@ export const AddListForm = ({
             <PopoverContent className="w-[320px]">
               <div className="space-y-2">
                 <div>
-                  <label className="text-sm font-medium">{t('forms.addListForm.table.name') || 'Name'}</label>
-                  <input className="w-full p-2 border rounded-md" value={addTaskForm.name} onChange={(e) => setAddTaskForm(prev => ({ ...prev, name: e.target.value }))} />
+                  <Label htmlFor="task-name">{t('forms.addListForm.table.name') || 'Name'}</Label>
+                  <Input id="task-name" value={addTaskForm.name} onChange={(e) => setAddTaskForm(prev => ({ ...prev, name: e.target.value }))} />
                 </div>
                 <div>
-                  <label className="text-sm font-medium">{t('forms.addListForm.table.area') || 'Area'}</label>
+                  <Label htmlFor="task-area">{t('forms.addListForm.table.area') || 'Area'}</Label>
                   <Select value={addTaskForm.area} onValueChange={(val) => setAddTaskForm(prev => ({ ...prev, area: val }))}>
                     <SelectTrigger className="w-full">
                       <SelectValue />
@@ -420,7 +421,7 @@ export const AddListForm = ({
                   </Select>
                 </div>
                 <div>
-                  <label className="text-sm font-medium">{t('forms.addListForm.table.categories') || 'Category'}</label>
+                  <Label htmlFor="task-category">{t('forms.addListForm.table.categories') || 'Category'}</Label>
                   <Select value={addTaskForm.category} onValueChange={(val) => setAddTaskForm(prev => ({ ...prev, category: val }))}>
                     <SelectTrigger className="w-full">
                       <SelectValue />
@@ -440,8 +441,8 @@ export const AddListForm = ({
                   </Select>
                 </div>
                 <div>
-                  <label className="text-sm font-medium">{t('forms.addListForm.table.times') || '# of times'}</label>
-                  <input type="number" min={1} className="w-full p-2 border rounded-md" value={addTaskForm.times} onChange={(e) => setAddTaskForm(prev => ({ ...prev, times: Math.max(1, Number(e.target.value) || 1) }))} />
+                  <Label htmlFor="task-times">{t('forms.addListForm.table.times') || '# of times'}</Label>
+                  <Input id="task-times" type="number" min={1} value={addTaskForm.times} onChange={(e) => setAddTaskForm(prev => ({ ...prev, times: Math.max(1, Number(e.target.value) || 1) }))} />
                 </div>
                 <div className="flex justify-end gap-2 pt-2">
                   <Button variant="outline" size="sm" onClick={() => setAddTaskOpen(false)}>{t('forms.addTemplateForm.task.cancel') || 'Cancel'}</Button>

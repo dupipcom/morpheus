@@ -4,6 +4,9 @@ import React, { useState, useContext, useMemo } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { GlobalContext } from '@/lib/contexts'
 import { useI18n } from '@/lib/contexts/i18n'
 
@@ -68,60 +71,62 @@ export const AddTaskForm = ({
       </CardHeader>
       <CardContent className="space-y-3">
         <div>
-          <label className="text-sm font-medium">{t('forms.addTaskForm.taskNameLabel') || 'Task Name'}</label>
-          <input
+          <Label htmlFor="task-name">{t('forms.addTaskForm.taskNameLabel') || 'Task Name'}</Label>
+          <Input
+            id="task-name"
             type="text"
             value={newTask.name}
             onChange={(e) => setNewTask(prev => ({ ...prev, name: e.target.value }))}
             placeholder={t('forms.addTaskForm.taskNamePlaceholder') || 'Enter task name...'}
-            className="w-full p-2 border rounded-md"
           />
         </div>
         <div>
-          <label className="text-sm font-medium">{t('forms.addTaskForm.areaLabel') || 'Area'}</label>
-          <select
-            value={newTask.area}
-            onChange={(e) => setNewTask(prev => ({ ...prev, area: e.target.value }))}
-            className="w-full p-2 border rounded-md"
-          >
-            <option value="self">{t('forms.commonOptions.area.self') || 'Self'}</option>
-            <option value="social">{t('forms.commonOptions.area.social') || 'Social'}</option>
-            <option value="home">{t('forms.commonOptions.area.home') || 'Home'}</option>
-            <option value="work">{t('forms.commonOptions.area.work') || 'Work'}</option>
-          </select>
+          <Label htmlFor="task-area">{t('forms.addTaskForm.areaLabel') || 'Area'}</Label>
+          <Select value={newTask.area} onValueChange={(val) => setNewTask(prev => ({ ...prev, area: val }))}>
+            <SelectTrigger className="w-full" id="task-area">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="self">{t('forms.commonOptions.area.self') || 'Self'}</SelectItem>
+              <SelectItem value="social">{t('forms.commonOptions.area.social') || 'Social'}</SelectItem>
+              <SelectItem value="home">{t('forms.commonOptions.area.home') || 'Home'}</SelectItem>
+              <SelectItem value="work">{t('forms.commonOptions.area.work') || 'Work'}</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
         <div>
-          <label className="text-sm font-medium">{t('forms.addTaskForm.categoryLabel') || 'Category'}</label>
-          <select
-            value={newTask.category}
-            onChange={(e) => setNewTask(prev => ({ ...prev, category: e.target.value }))}
-            className="w-full p-2 border rounded-md"
-          >
-            <option value="custom">{t('forms.commonOptions.category.custom') || 'Custom'}</option>
-            <option value="body">{t('forms.commonOptions.category.body') || 'Body'}</option>
-            <option value="mind">{t('forms.commonOptions.category.mind') || 'Mind'}</option>
-            <option value="spirit">{t('forms.commonOptions.category.spirit') || 'Spirit'}</option>
-            <option value="social">{t('forms.commonOptions.category.social') || 'Social'}</option>
-            <option value="work">{t('forms.commonOptions.category.work') || 'Work'}</option>
-            <option value="home">{t('forms.commonOptions.category.home') || 'Home'}</option>
-            <option value="fun">{t('forms.commonOptions.category.fun') || 'Fun'}</option>
-            <option value="growth">{t('forms.commonOptions.category.growth') || 'Growth'}</option>
-            <option value="community">{t('forms.commonOptions.category.community') || 'Community'}</option>
-            <option value="affection">{t('forms.commonOptions.category.affection') || 'Affection'}</option>
-            <option value="clean">{t('forms.commonOptions.category.clean') || 'Clean'}</option>
-            <option value="maintenance">{t('forms.commonOptions.category.maintenance') || 'Maintenance'}</option>
-            <option value="spirituality">{t('forms.commonOptions.category.spirituality') || 'Spirituality'}</option>
-            <option value="event">{t('forms.commonOptions.category.event') || 'Event'}</option>
-          </select>
+          <Label htmlFor="task-category">{t('forms.addTaskForm.categoryLabel') || 'Category'}</Label>
+          <Select value={newTask.category} onValueChange={(val) => setNewTask(prev => ({ ...prev, category: val }))}>
+            <SelectTrigger className="w-full" id="task-category">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="custom">{t('forms.commonOptions.category.custom') || 'Custom'}</SelectItem>
+              <SelectItem value="body">{t('forms.commonOptions.category.body') || 'Body'}</SelectItem>
+              <SelectItem value="mind">{t('forms.commonOptions.category.mind') || 'Mind'}</SelectItem>
+              <SelectItem value="spirit">{t('forms.commonOptions.category.spirit') || 'Spirit'}</SelectItem>
+              <SelectItem value="social">{t('forms.commonOptions.category.social') || 'Social'}</SelectItem>
+              <SelectItem value="work">{t('forms.commonOptions.category.work') || 'Work'}</SelectItem>
+              <SelectItem value="home">{t('forms.commonOptions.category.home') || 'Home'}</SelectItem>
+              <SelectItem value="fun">{t('forms.commonOptions.category.fun') || 'Fun'}</SelectItem>
+              <SelectItem value="growth">{t('forms.commonOptions.category.growth') || 'Growth'}</SelectItem>
+              <SelectItem value="community">{t('forms.commonOptions.category.community') || 'Community'}</SelectItem>
+              <SelectItem value="affection">{t('forms.commonOptions.category.affection') || 'Affection'}</SelectItem>
+              <SelectItem value="clean">{t('forms.commonOptions.category.clean') || 'Clean'}</SelectItem>
+              <SelectItem value="maintenance">{t('forms.commonOptions.category.maintenance') || 'Maintenance'}</SelectItem>
+              <SelectItem value="spirituality">{t('forms.commonOptions.category.spirituality') || 'Spirituality'}</SelectItem>
+              <SelectItem value="event">{t('forms.commonOptions.category.event') || 'Event'}</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
         <div>
-          <label className="text-sm font-medium">{t('forms.addTaskForm.timesLabel') || '# of times'}</label>
-          <input
+          <Label htmlFor="task-times">{t('forms.addTaskForm.timesLabel') || '# of times'}</Label>
+          <Input
+            id="task-times"
             type="number"
             min={1}
             value={newTask.times}
-            onChange={(e) => setNewTask(prev => ({ ...prev, times: Math.max(1, Number(e.target.value) || 1) }))}
-            className="w-full p-2 border rounded-md"
+            onChange={(e) => setNewTask(prev => ({ ...prev, times: e.target.value }))}
           />
         </div>
         <div className="flex items-center space-x-2">
@@ -130,9 +135,9 @@ export const AddTaskForm = ({
             checked={newTask.saveToTemplate}
             onCheckedChange={(checked) => setNewTask(prev => ({ ...prev, saveToTemplate: checked }))}
           />
-          <label htmlFor="save-to-template" className="text-sm font-medium">
+          <Label htmlFor="save-to-template">
             {t('forms.addTaskForm.saveToTemplate') || 'Save task to template'}
-          </label>
+          </Label>
         </div>
         <div className="flex gap-2">
           <Button onClick={handleSubmit} disabled={!newTask.name.trim()} size="sm">{t('forms.addTaskForm.addTask') || 'Add Task'}</Button>

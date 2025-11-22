@@ -4,6 +4,8 @@ import React, { useMemo, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { useI18n } from '@/lib/contexts/i18n'
 
 export const AddTemplateForm = ({
@@ -51,12 +53,12 @@ export const AddTemplateForm = ({
       </CardHeader>
       <CardContent className="space-y-3">
         <div>
-          <label className="text-sm font-medium">{t('forms.addTemplateForm.nameLabel') || 'Name'}</label>
-          <input className="w-full p-2 border rounded-md" value={form.name} onChange={(e) => setForm(prev => ({ ...prev, name: e.target.value }))} />
+          <Label htmlFor="template-name">{t('forms.addTemplateForm.nameLabel') || 'Name'}</Label>
+          <Input id="template-name" value={form.name} onChange={(e) => setForm(prev => ({ ...prev, name: e.target.value }))} />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <div>
-            <label className="text-sm font-medium">{t('forms.addTemplateForm.createFromLabel') || 'Create from'}</label>
+            <Label htmlFor="create-from">{t('forms.addTemplateForm.createFromLabel') || 'Create from'}</Label>
             <Select value={form.createFrom} onValueChange={(val) => setForm(prev => ({ ...prev, createFrom: val, tasks: [] }))}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder={t('forms.addTemplateForm.chooseListToClonePlaceholder') || 'Choose a list to clone (optional)'} />
@@ -73,7 +75,7 @@ export const AddTemplateForm = ({
             </Select>
           </div>
           <div>
-            <label className="text-sm font-medium">{t('forms.addTemplateForm.visibilityLabel') || 'Visibility'}</label>
+            <Label htmlFor="visibility">{t('forms.addTemplateForm.visibilityLabel') || 'Visibility'}</Label>
             <Select value={form.visibility} onValueChange={(val) => setForm(prev => ({ ...prev, visibility: val }))}>
               <SelectTrigger className="w-full">
                 <SelectValue />
@@ -95,36 +97,46 @@ export const AddTemplateForm = ({
           <div className="w-[320px] border rounded-md p-3">
             <div className="space-y-2">
               <div>
-                <label className="text-sm font-medium">{t('forms.addTemplateForm.task.nameLabel') || 'Name'}</label>
-                <input className="w-full p-2 border rounded-md" value={addTaskForm.name} onChange={(e) => setAddTaskForm(prev => ({ ...prev, name: e.target.value }))} />
+                <Label htmlFor="template-task-name">{t('forms.addTemplateForm.task.nameLabel') || 'Name'}</Label>
+                <Input id="template-task-name" value={addTaskForm.name} onChange={(e) => setAddTaskForm(prev => ({ ...prev, name: e.target.value }))} />
               </div>
               <div>
-                <label className="text-sm font-medium">{t('forms.addTemplateForm.task.areaLabel') || 'Area'}</label>
-                <select className="w-full p-2 border rounded-md" value={addTaskForm.area} onChange={(e) => setAddTaskForm(prev => ({ ...prev, area: e.target.value }))}>
-                  <option value="self">{t('forms.commonOptions.area.self') || 'Self'}</option>
-                  <option value="home">{t('forms.commonOptions.area.home') || 'Home'}</option>
-                  <option value="social">{t('forms.commonOptions.area.social') || 'Social'}</option>
-                  <option value="work">{t('forms.commonOptions.area.work') || 'Work'}</option>
-                </select>
+                <Label htmlFor="template-task-area">{t('forms.addTemplateForm.task.areaLabel') || 'Area'}</Label>
+                <Select value={addTaskForm.area} onValueChange={(val) => setAddTaskForm(prev => ({ ...prev, area: val }))}>
+                  <SelectTrigger className="w-full" id="template-task-area">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="self">{t('forms.commonOptions.area.self') || 'Self'}</SelectItem>
+                    <SelectItem value="home">{t('forms.commonOptions.area.home') || 'Home'}</SelectItem>
+                    <SelectItem value="social">{t('forms.commonOptions.area.social') || 'Social'}</SelectItem>
+                    <SelectItem value="work">{t('forms.commonOptions.area.work') || 'Work'}</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div>
-                <label className="text-sm font-medium">{t('forms.addTemplateForm.task.categoryLabel') || 'Category'}</label>
-                <select className="w-full p-2 border rounded-md" value={addTaskForm.category} onChange={(e) => setAddTaskForm(prev => ({ ...prev, category: e.target.value }))}>
-                  <option value="custom">{t('forms.commonOptions.category.custom') || 'Custom'}</option>
-                  <option value="body">{t('forms.commonOptions.category.body') || 'Body'}</option>
-                  <option value="mind">{t('forms.commonOptions.category.mind') || 'Mind'}</option>
-                  <option value="spirit">{t('forms.commonOptions.category.spirit') || 'Spirit'}</option>
-                  <option value="fun">{t('forms.commonOptions.category.fun') || 'Fun'}</option>
-                  <option value="growth">{t('forms.commonOptions.category.growth') || 'Growth'}</option>
-                  <option value="community">{t('forms.commonOptions.category.community') || 'Community'}</option>
-                  <option value="affection">{t('forms.commonOptions.category.affection') || 'Affection'}</option>
-                  <option value="clean">{t('forms.commonOptions.category.clean') || 'Clean'}</option>
-                  <option value="maintenance">{t('forms.commonOptions.category.maintenance') || 'Maintenance'}</option>
-                </select>
+                <Label htmlFor="template-task-category">{t('forms.addTemplateForm.task.categoryLabel') || 'Category'}</Label>
+                <Select value={addTaskForm.category} onValueChange={(val) => setAddTaskForm(prev => ({ ...prev, category: val }))}>
+                  <SelectTrigger className="w-full" id="template-task-category">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="custom">{t('forms.commonOptions.category.custom') || 'Custom'}</SelectItem>
+                    <SelectItem value="body">{t('forms.commonOptions.category.body') || 'Body'}</SelectItem>
+                    <SelectItem value="mind">{t('forms.commonOptions.category.mind') || 'Mind'}</SelectItem>
+                    <SelectItem value="spirit">{t('forms.commonOptions.category.spirit') || 'Spirit'}</SelectItem>
+                    <SelectItem value="fun">{t('forms.commonOptions.category.fun') || 'Fun'}</SelectItem>
+                    <SelectItem value="growth">{t('forms.commonOptions.category.growth') || 'Growth'}</SelectItem>
+                    <SelectItem value="community">{t('forms.commonOptions.category.community') || 'Community'}</SelectItem>
+                    <SelectItem value="affection">{t('forms.commonOptions.category.affection') || 'Affection'}</SelectItem>
+                    <SelectItem value="clean">{t('forms.commonOptions.category.clean') || 'Clean'}</SelectItem>
+                    <SelectItem value="maintenance">{t('forms.commonOptions.category.maintenance') || 'Maintenance'}</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div>
-                <label className="text-sm font-medium">{t('forms.addTemplateForm.task.timesLabel') || '# of times'}</label>
-                <input type="number" min={1} className="w-full p-2 border rounded-md" value={addTaskForm.times} onChange={(e) => setAddTaskForm(prev => ({ ...prev, times: Math.max(1, Number(e.target.value) || 1) }))} />
+                <Label htmlFor="template-task-times">{t('forms.addTemplateForm.task.timesLabel') || '# of times'}</Label>
+                <Input id="template-task-times" type="number" min={1} value={addTaskForm.times} onChange={(e) => setAddTaskForm(prev => ({ ...prev, times: Math.max(1, Number(e.target.value) || 1) }))} />
               </div>
               <div className="flex justify-end gap-2 pt-2">
                 <Button variant="outline" size="sm" onClick={() => setAddTaskOpen(false)}>{t('forms.addTemplateForm.task.cancel') || 'Cancel'}</Button>
