@@ -94,6 +94,7 @@
     "editDay": "Günü düzenle",
     "closeDay": "Günü kapat",
     "earnings": "Kazanç",
+    "noNotesForDate": "Bu tarih için not yok.",
     "publish": {
       "title": "Yaz",
       "placeholder": "Notunuzu buraya yazın...",
