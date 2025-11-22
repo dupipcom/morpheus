@@ -301,22 +301,22 @@ export function BottomNav() {
               }`}
             >
               <div className="relative w-full min-w-[200px]">
-                <Input
-                  ref={searchInputRef}
-                  type="text"
-                  placeholder={`${t('common.ask')}...`}
-                  value={searchQuery}
-                  onChange={handleSearchChange}
-                  onFocus={handleSearchFocus}
-                  onBlur={handleSearchBlur}
-                  className="h-9 w-full"
-                />
-                <SearchPopover
-                  query={searchQuery}
-                  open={searchOpen}
-                  onOpenChange={setSearchOpen}
-                  anchorRef={searchInputRef}
-                  onClearQuery={() => setSearchQuery('')}
+            <Input
+                ref={searchInputRef}
+              type="text"
+              placeholder={`${t('common.ask')}...`}
+              value={searchQuery}
+                onChange={handleSearchChange}
+                onFocus={handleSearchFocus}
+                onBlur={handleSearchBlur}
+                className="h-9 w-full"
+            />
+              <SearchPopover
+                query={searchQuery}
+                open={searchOpen}
+                onOpenChange={setSearchOpen}
+                anchorRef={searchInputRef}
+                onClearQuery={() => setSearchQuery('')}
                   onCollapseSearch={() => setIsSearchExpanded(false)}
                 />
               </div>

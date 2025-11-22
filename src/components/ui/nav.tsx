@@ -24,19 +24,14 @@ const UserButtonMenu = () => {
         <UserButton>
           <UserButton.MenuItems>
             <UserButton.Link
-              label={t('common.settings')}
-              labelIcon={<SlidersVertical className="w-[14px] pb-2" />}
-              href="/app/settings"
-            />
-            <UserButton.Link
               label={t('common.profile')}
               labelIcon={<User className="w-[14px] pb-2" />}
               href="/app/profile"
             />
             <UserButton.Link
-              label={t('common.social')}
-              labelIcon={<Users className="w-[14px] pb-2" />}
-              href="/app/be"
+              label={t('common.settings')}
+              labelIcon={<SlidersVertical className="w-[14px] pb-2" />}
+              href="/app/settings"
             />
           </UserButton.MenuItems>
         </UserButton>
