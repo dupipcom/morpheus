@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useContext, useMemo, useState, useEffect, useCallback } from 'react'
+import React, { useContext, useMemo, useState, useEffect, useCallback, useRef } from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
 import {
@@ -9,20 +9,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdownMenu'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
 import { Plus, Pencil, DollarSign, Calendar as CalendarIcon, User as UserIcon, TrendingUp, Award, CheckCircle2 } from 'lucide-react'
 import { GlobalContext } from '@/lib/contexts'
 import { useI18n } from '@/lib/contexts/i18n'
 import { Badge } from '@/components/ui/badge'
-import { Calendar } from '@/components/ui/calendar'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { PercentageTicker } from '@/components/ui/percentageTicker'
-import { cn } from '@/lib/utils'
-import { getWeekNumber } from '@/app/helpers'
+import { DatePickerButton } from '@/components/ui/datePickerButton'
 
 type TaskList = { id: string; name?: string; role?: string }
 
@@ -52,7 +45,38 @@ export const DoToolbar = ({
   hasFormOpen?: boolean
 }) => {
   const { t } = useI18n()
-  const { session, taskLists: contextTaskLists, refreshTaskLists } = useContext(GlobalContext)
+  const { session, taskLists: contextTaskLists, refreshTaskLists, selectedDate: contextSelectedDate, setSelectedDate } = useContext(GlobalContext)
+  
+  // Helper to compare dates by value, not reference
+  const datesEqual = (date1: Date | undefined, date2: Date | undefined): boolean => {
+    if (!date1 && !date2) return true
+    if (!date1 || !date2) return false
+    return date1.getTime() === date2.getTime()
+  }
+  
+  // Sync props with GlobalContext only on initial mount or when prop changes
+  // Use a ref to track if we've initialized from props
+  const hasInitializedFromProps = useRef(false)
+  useEffect(() => {
+    if (selectedDate && !hasInitializedFromProps.current) {
+      // Only initialize once from props
+      if (!contextSelectedDate || !datesEqual(selectedDate, contextSelectedDate)) {
+        setSelectedDate(selectedDate)
+      }
+      hasInitializedFromProps.current = true
+    }
+  }, [selectedDate]) // Only depend on selectedDate prop, not context
+  
+  // Notify parent component when context date changes (for backward compatibility)
+  // Only notify if context date is different from prop date to avoid unnecessary calls
+  useEffect(() => {
+    if (onDateChange && contextSelectedDate && (!selectedDate || !datesEqual(contextSelectedDate, selectedDate))) {
+      onDateChange(contextSelectedDate)
+    }
+  }, [contextSelectedDate]) // Only depend on contextSelectedDate to avoid loops
+  
+  // Use context selectedDate as the source of truth
+  const selectedDateToUse = contextSelectedDate || selectedDate
   
   // Maintain stable task lists that never clear once loaded
   const [stableTaskLists, setStableTaskLists] = useState<TaskList[]>([])
@@ -67,7 +91,7 @@ export const DoToolbar = ({
     if (!list) return 0
     
     // Use the selected date or default to today
-    const targetDate = date || selectedDate || new Date()
+    const targetDate = date || selectedDateToUse || new Date()
     const year = targetDate.getFullYear()
     const dateISO = `${year}-${String(targetDate.getMonth() + 1).padStart(2, '0')}-${String(targetDate.getDate()).padStart(2, '0')}`
     
@@ -104,7 +128,7 @@ export const DoToolbar = ({
     }
     
     return 0
-  }, [selectedDate])
+  }, [selectedDateToUse])
 
   // Helper function to calculate completion percentage change
   const calculateCompletionChange = useCallback((list: any): number => {
@@ -272,13 +296,13 @@ export const DoToolbar = ({
   useEffect(() => {
     let cancelled = false
     const run = async () => {
-      if (!selectedDate || !session?.user) {
+      if (!selectedDateToUse || !session?.user) {
         setDayData(null)
         return
       }
 
       try {
-        const dateISO = selectedDate.toISOString().split('T')[0]
+        const dateISO = selectedDateToUse.toISOString().split('T')[0]
         const res = await fetch(`/api/v1/days?date=${dateISO}`)
         if (!cancelled && res.ok) {
           const data = await res.json()
@@ -293,7 +317,7 @@ export const DoToolbar = ({
     }
     run()
     return () => { cancelled = true }
-  }, [selectedDate, session?.user])
+  }, [selectedDateToUse, session?.user])
 
   // Calculate earnings for the selected list from day.ticker
   useEffect(() => {
@@ -411,21 +435,8 @@ export const DoToolbar = ({
     const isOneOff = rolePrefix === 'one-off' || rolePrefix === 'oneoff'
     // For daily/weekly lists, only show prize when a date is selected
     // For one-off lists, always show the total prize
-    return isOneOff || (selectedDate && (isDaily || isWeekly))
-  }, [selectedList, selectedDate])
-
-  // Format date for display
-  const formatDate = (date: Date | undefined) => {
-    if (!date) return t('tasks.selectDate')
-    
-    // For weekly lists, show week number
-    if (selectedList?.role && selectedList.role.startsWith('weekly.')) {
-      const [, weekNum] = getWeekNumber(date)
-      return `Week ${weekNum}, ${date.getFullYear()}`
-    }
-    
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-  }
+    return isOneOff || (selectedDateToUse && (isDaily || isWeekly))
+  }, [selectedList, selectedDateToUse])
 
   const selectedListTitle = selectedList ? (selectedList.name || selectedList.role || selectedList.id) : (t('tasks.selectList') || 'Select list')
 
@@ -452,32 +463,10 @@ export const DoToolbar = ({
           <AccordionTrigger className="py-0 px-0 hover:no-underline">
             <div className="flex items-center justify-between w-full gap-2">
               <h3 className="text-base font-semibold text-body">{selectedListTitle}</h3>
-              {shouldShowDatePicker && onDateChange && (
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className={cn(
-                        "justify-start text-left font-normal shrink-0 mr-2",
-                        !selectedDate && "text-muted-foreground"
-                      )}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {formatDate(selectedDate)}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="end">
-                    <Calendar
-                      mode="single"
-                      selected={selectedDate}
-                      onSelect={onDateChange}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-              )}
+              <DatePickerButton 
+                shouldShow={shouldShowDatePicker}
+                role={selectedList?.role}
+              />
             </div>
           </AccordionTrigger>
           <AccordionContent className="pt-3 pb-0">
@@ -655,7 +644,7 @@ export const DoToolbar = ({
                     <>
                       <Badge variant="outline" className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80">
                         <CheckCircle2 className="h-3 w-3 mr-1" />
-                        {calculateCompletionPercentage(selectedList, selectedDate).toFixed(0)}%
+                        {calculateCompletionPercentage(selectedList, selectedDateToUse).toFixed(0)}%
                       </Badge>
                       <PercentageTicker value={calculateCompletionChange(selectedList)} />
                     </>

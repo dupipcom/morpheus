@@ -37,7 +37,7 @@ interface MoodViewProps {
 }
 
 export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab = "mood", filterNoteId }: MoodViewProps) => {
-  const { session, setGlobalContext, theme } = useContext(GlobalContext)
+  const { session, setGlobalContext, theme, selectedDate: contextSelectedDate, setSelectedDate } = useContext(GlobalContext)
   const { t, locale } = useI18n()
   const { registerMutate, unregisterMutate } = useNotesRefresh()
   const router = useRouter()
@@ -45,7 +45,50 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
   const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const today = new Date()
   const todayDate = today.toLocaleString('en-uk', { timeZone: userTimezone }).split(',')[0].split('/').reverse().join('-')
-  const [fullDay, setFullDay] = useState(todayDate)
+  
+  // Convert Date to YYYY-MM-DD string format (using user's timezone)
+  const dateToDateString = (date: Date | undefined): string => {
+    if (!date) return todayDate
+    // Use the same timezone-aware conversion as todayDate
+    return date.toLocaleString('en-uk', { timeZone: userTimezone }).split(',')[0].split('/').reverse().join('-')
+  }
+  
+  // Convert YYYY-MM-DD string to Date (treating as local date, not UTC)
+  const dateStringToDate = (dateStr: string | null): Date | undefined => {
+    if (!dateStr) return undefined
+    try {
+      // Parse YYYY-MM-DD and create date in local timezone
+      const [year, month, day] = dateStr.split('-').map(Number)
+      return new Date(year, month - 1, day)
+    } catch {
+      return undefined
+    }
+  }
+  
+  // Initialize fullDay from context or propDate or today
+  const getInitialDate = (): string => {
+    if (contextSelectedDate) {
+      return dateToDateString(contextSelectedDate)
+    }
+    if (propDate) {
+      return propDate
+    }
+    return todayDate
+  }
+  
+  const [fullDay, setFullDay] = useState(() => {
+    // Initialize on first render
+    if (contextSelectedDate) {
+      return dateToDateString(contextSelectedDate)
+    }
+    if (propDate) {
+      return propDate
+    }
+    return todayDate
+  })
+  
+  // Use ref to track if we're updating from context to prevent loops
+  const isUpdatingFromContext = useRef(false)
   
   // Determine initial tab from URL path or defaultTab prop
   const getInitialTab = () => {
@@ -82,14 +125,46 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
   } 
 
   
-  // Update fullDay when propDate changes
+  // Sync with GlobalContext selectedDate - use context as source of truth
   useEffect(() => {
-    if (propDate) {
+    if (contextSelectedDate) {
+      const contextDateStr = dateToDateString(contextSelectedDate)
+      if (contextDateStr !== fullDay) {
+        isUpdatingFromContext.current = true
+        setFullDay(contextDateStr)
+        // Reset flag after state update
+        setTimeout(() => {
+          isUpdatingFromContext.current = false
+        }, 0)
+      }
+    }
+  }, [contextSelectedDate])
+  
+  // Update context when fullDay changes (from user interaction or propDate)
+  // Skip if we're updating from context to avoid loops
+  useEffect(() => {
+    if (!isUpdatingFromContext.current && fullDay) {
+      const fullDayDate = dateStringToDate(fullDay)
+      // Only update if the date is actually different
+      if (fullDayDate) {
+        const contextTime = contextSelectedDate?.getTime()
+        const fullDayTime = fullDayDate.getTime()
+        if (contextTime !== fullDayTime) {
+          setSelectedDate(fullDayDate)
+        }
+      }
+    }
+  }, [fullDay, contextSelectedDate, setSelectedDate]) // Include contextSelectedDate for comparison, but guard prevents loop
+  
+  // Update fullDay when propDate changes (for backward compatibility)
+  useEffect(() => {
+    if (propDate && propDate !== fullDay) {
       setFullDay(propDate)
     }
   }, [propDate])
   
-  const date = fullDay ? new Date(fullDay).toISOString().split('T')[0] : todayDate
+  // Use fullDay directly as it's already in YYYY-MM-DD format
+  const date = fullDay || todayDate
   const year = Number(date.split('-')[0])
   const [weekNumber, setWeekNumber] = useState(getWeekNumber(today)[1])
 
@@ -468,8 +543,13 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
 
 
 
-  const handleEditDay = (date) => {
+  const handleEditDay = (date: string) => {
     setFullDay(date)
+    // Also update context
+    const dateObj = dateStringToDate(date)
+    if (dateObj) {
+      setSelectedDate(dateObj)
+    }
   }
 
   const { refreshUser } = useUserData()

@@ -8,5 +8,7 @@ export const GlobalContext = createContext({
 	taskLists: [] as any[],
 	refreshTaskLists: async () => {},
 	setGlobalContext: (context: any) => {},
-	revealRedacted: false
+	revealRedacted: false,
+	selectedDate: undefined as Date | undefined,
+	setSelectedDate: (date: Date | undefined) => {}
 })

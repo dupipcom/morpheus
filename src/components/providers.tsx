@@ -28,12 +28,15 @@ export function Providers({ children, locale: providedLocale }: ProvidersProps) 
   const [isLoading, setIsLoading] = useState(true)
   const [value] = useLocalStorage('theme', 'light')
   const [redactedValue] = useLocalStorage('dpip_redacted', 0)
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
   const [globalContext, setGlobalContext] = useState({ 
     theme: 'light', 
     session: { user: {} }, 
     taskLists: [] as any[], 
     refreshTaskLists: async () => {},
-    revealRedacted: false
+    revealRedacted: false,
+    selectedDate: undefined as Date | undefined,
+    setSelectedDate: (date: Date | undefined) => {}
   })
   const [isClient, setIsClient] = useState(false)
   const [providerKey, setProviderKey] = useState(0)
@@ -102,7 +105,7 @@ export function Providers({ children, locale: providedLocale }: ProvidersProps) 
     >
       <AuthWrapper isLoading={isLoading}>
         <I18nProvider locale={locale}>
-          <GlobalContext.Provider value={{ ...globalContext, setGlobalContext, refreshTaskLists }}>
+          <GlobalContext.Provider value={{ ...globalContext, setGlobalContext, refreshTaskLists, selectedDate, setSelectedDate }}>
             <NotesRefreshProvider>
               <SWRConfig value={{
                 revalidateOnFocus: false,
