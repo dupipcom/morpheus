@@ -242,7 +242,7 @@ export const NavSkeleton = () => {
           </div>
         </div>
       </div>
-      <TickerStrip />
+      {/* <TickerStrip /> */}
     </nav>
   )
 } 

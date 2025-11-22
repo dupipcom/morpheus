@@ -58,12 +58,12 @@ export function OptionsButton({
         <Button
           variant="ghost"
           size="icon"
-          className={`${sizeClasses[size]} rounded-full shrink-0 p-0 ${className}`}
+          className={`${sizeClasses[size]} rounded-full shrink-0 p-0 group ${className}`}
           style={{ backgroundColor: statusColor }}
           onClick={(e) => e.stopPropagation()}
         >
           <Circle 
-            className={iconSizeClasses[size]} 
+            className={`${iconSizeClasses[size]} transition-colors group-hover:!text-primary`}
             style={iconFilled ? { fill: iconColor } : { color: iconColor }} 
           />
         </Button>
