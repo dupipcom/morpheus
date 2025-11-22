@@ -53,7 +53,8 @@
     "noResults": "Ingen resultater.",
     "copyLink": "Kopiér link",
     "linkCopied": "Link kopieret til udklipsholder",
-    "copyFailed": "Kunne ikke kopiere link"
+    "copyFailed": "Kunne ikke kopiere link",
+    "saving": "Gemmer..."
   },
   "navigation": {
     "dashboard": "Dashboard",
@@ -93,6 +94,7 @@
     "editDay": "Rediger dag",
     "closeDay": "Luk dag",
     "earnings": "Indtjening",
+    "noNotesForDate": "Ingen noter for denne dato.",
     "publish": {
       "title": "Skriv",
       "placeholder": "Skriv din note her...",

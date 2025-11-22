@@ -53,7 +53,8 @@
     "noResults": "結果がありません。",
     "copyLink": "リンクをコピー",
     "linkCopied": "リンクをクリップボードにコピーしました",
-    "copyFailed": "リンクのコピーに失敗しました"
+    "copyFailed": "リンクのコピーに失敗しました",
+    "saving": "保存中..."
   },
   "navigation": {
     "home": "ホーム",
@@ -89,6 +90,7 @@
     "editDay": "日を編集",
     "closeDay": "日を閉じる",
     "earnings": "収益",
+    "noNotesForDate": "この日付のメモはありません。",
     "publish": {
       "title": "書く",
       "placeholder": "ここにノートを書いてください...",

@@ -53,7 +53,8 @@
     "noResults": "Sin resultados.",
     "copyLink": "Copiar enlace",
     "linkCopied": "Enlace copiado al portapapeles",
-    "copyFailed": "Error al copiar el enlace"
+    "copyFailed": "Error al copiar el enlace",
+    "saving": "Guardando..."
   },
   "navigation": {
     "home": "Inicio",
@@ -89,6 +90,7 @@
     "editDay": "Editar día",
     "closeDay": "Cerrar día",
     "earnings": "Ganancias",
+    "noNotesForDate": "No hay notas para esta fecha.",
     "publish": {
       "title": "Escribir",
       "placeholder": "Escribe tu nota aquí...",

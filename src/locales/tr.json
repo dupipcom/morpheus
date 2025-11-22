@@ -53,7 +53,8 @@
     "noResults": "Sonuç bulunamadı.",
     "copyLink": "Bağlantıyı kopyala",
     "linkCopied": "Bağlantı panoya kopyalandı",
-    "copyFailed": "Bağlantı kopyalanamadı"
+    "copyFailed": "Bağlantı kopyalanamadı",
+    "saving": "Kaydediliyor..."
   },
   "navigation": {
     "dashboard": "Gösterge Paneli",

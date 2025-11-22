@@ -53,7 +53,8 @@
     "noResults": "Hakuna matokeo.",
     "copyLink": "Nakili kiungo",
     "linkCopied": "Kiungo kimenakiliwa kwenye ubao wa kunakili",
-    "copyFailed": "Imeshindwa kunakili kiungo"
+    "copyFailed": "Imeshindwa kunakili kiungo",
+    "saving": "Inahifadhi..."
   },
   "navigation": {
     "home": "Nyumbani",
@@ -89,6 +90,7 @@
     "editDay": "Hariri siku",
     "closeDay": "Funga siku",
     "earnings": "Mapato",
+    "noNotesForDate": "Hakuna maelezo kwa tarehe hii.",
     "publish": {
       "title": "Andika",
       "placeholder": "Andika maelezo yako hapa...",

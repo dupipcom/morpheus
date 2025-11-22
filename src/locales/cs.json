@@ -53,7 +53,8 @@
     "noResults": "Žádné výsledky.",
     "copyLink": "Kopírovat odkaz",
     "linkCopied": "Odkaz zkopírován do schránky",
-    "copyFailed": "Nepodařilo se zkopírovat odkaz"
+    "copyFailed": "Nepodařilo se zkopírovat odkaz",
+    "saving": "Ukládání..."
   },
   "navigation": {
     "home": "Domů",
@@ -89,6 +90,7 @@
     "editDay": "Upravit den",
     "closeDay": "Zavřít den",
     "earnings": "Výdělky",
+    "noNotesForDate": "Pro toto datum nejsou žádné poznámky.",
     "publish": {
       "title": "Napsat",
       "placeholder": "Napište svou poznámku zde...",

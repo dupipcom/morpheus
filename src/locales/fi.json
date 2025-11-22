@@ -53,7 +53,8 @@
     "noResults": "Ei tuloksia.",
     "copyLink": "Kopioi linkki",
     "linkCopied": "Linkki kopioitu leikepöydälle",
-    "copyFailed": "Linkin kopiointi epäonnistui"
+    "copyFailed": "Linkin kopiointi epäonnistui",
+    "saving": "Tallennetaan..."
   },
   "navigation": {
     "dashboard": "Kojelauta",
@@ -93,6 +94,7 @@
     "editDay": "Muokkaa päivää",
     "closeDay": "Sulje päivä",
     "earnings": "Tulot",
+    "noNotesForDate": "Ei muistiinpanoja tälle päivämäärälle.",
     "publish": {
       "title": "Kirjoita",
       "placeholder": "Kirjoita muistiinpanosi tähän...",

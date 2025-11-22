@@ -53,7 +53,8 @@
     "noResults": "لا توجد نتائج.",
     "copyLink": "نسخ الرابط",
     "linkCopied": "تم نسخ الرابط إلى الحافظة",
-    "copyFailed": "فشل نسخ الرابط"
+    "copyFailed": "فشل نسخ الرابط",
+    "saving": "جاري الحفظ..."
   },
   "navigation": {
     "dashboard": "لوحة التحكم",
@@ -93,6 +94,7 @@
     "editDay": "تعديل اليوم",
     "closeDay": "إغلاق اليوم",
     "earnings": "الأرباح",
+    "noNotesForDate": "لا توجد ملاحظات لهذا التاريخ.",
     "publish": {
       "title": "اكتب",
       "placeholder": "اكتب ملاحظتك هنا...",

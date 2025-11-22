@@ -53,7 +53,8 @@
     "noResults": "אין תוצאות.",
     "copyLink": "העתק קישור",
     "linkCopied": "קישור הועתק ללוח",
-    "copyFailed": "העתקת הקישור נכשלה"
+    "copyFailed": "העתקת הקישור נכשלה",
+    "saving": "שומר..."
   },
   "navigation": {
     "home": "בית",
@@ -89,6 +90,7 @@
     "editDay": "עריכת יום",
     "closeDay": "סגירת יום",
     "earnings": "רווחים",
+    "noNotesForDate": "אין הערות לתאריך זה.",
     "publish": {
       "title": "כתוב",
       "placeholder": "כתוב את ההערה שלך כאן...",

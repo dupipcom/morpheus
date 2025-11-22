@@ -53,7 +53,8 @@
     "noResults": "Kò sí èsì.",
     "copyLink": "Ṣe àkọpọ ọna asopọ",
     "linkCopied": "Ọna asopọ ti ṣe àkọpọ sí àkọlé",
-    "copyFailed": "Kò ṣe àkọpọ ọna asopọ"
+    "copyFailed": "Kò ṣe àkọpọ ọna asopọ",
+    "saving": "N fipamọ..."
   },
   "navigation": {
     "home": "Ilé",
@@ -89,6 +90,7 @@
     "editDay": "Ṣàtúnṣe ọjọ́",
     "closeDay": "Pí ọjọ́",
     "earnings": "Owó tí a gbà",
+    "noNotesForDate": "Ko si awọn akọsilẹ fun ọjọ yii.",
     "publish": {
       "title": "Kọ",
       "placeholder": "Kọ àkọsílẹ̀ rẹ níbí...",

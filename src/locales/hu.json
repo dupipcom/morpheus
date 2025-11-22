@@ -89,6 +89,7 @@
     "editDay": "Nap szerkesztése",
     "closeDay": "Nap bezárása",
     "earnings": "Kereset",
+    "noNotesForDate": "Nincsenek jegyzetek erre a dátumra.",
     "publish": {
       "title": "Írjon",
       "placeholder": "Írja be jegyzetét ide...",

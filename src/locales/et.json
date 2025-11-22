@@ -53,7 +53,8 @@
     "noResults": "Tulemusi pole.",
     "copyLink": "Kopeeri link",
     "linkCopied": "Link kopeeritud lõikelauale",
-    "copyFailed": "Linki kopeerimine ebaõnnestus"
+    "copyFailed": "Linki kopeerimine ebaõnnestus",
+    "saving": "Salvestamine..."
   },
   "navigation": {
     "home": "Avaleht",
@@ -89,6 +90,7 @@
     "editDay": "Redigeeri päeva",
     "closeDay": "Sulge päev",
     "earnings": "Sissetulek",
+    "noNotesForDate": "Selle kuupäeva kohta märkmeid pole.",
     "publish": {
       "title": "Kirjuta",
       "placeholder": "Kirjuta oma märkme siia...",

@@ -53,7 +53,8 @@
     "noResults": "Inga resultat.",
     "copyLink": "Kopiera länk",
     "linkCopied": "Länk kopierad till urklipp",
-    "copyFailed": "Kunde inte kopiera länk"
+    "copyFailed": "Kunde inte kopiera länk",
+    "saving": "Sparar..."
   },
   "navigation": {
     "home": "Hem",
@@ -92,6 +93,7 @@
     "editDay": "Redigera dag",
     "closeDay": "Stäng dag",
     "earnings": "Intäkter",
+    "noNotesForDate": "Inga anteckningar för detta datum.",
     "publish": {
       "title": "Skriv",
       "placeholder": "Skriv din anteckning här...",

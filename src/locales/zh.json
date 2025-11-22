@@ -53,7 +53,8 @@
     "noResults": "没有结果。",
     "copyLink": "复制链接",
     "linkCopied": "链接已复制到剪贴板",
-    "copyFailed": "复制链接失败"
+    "copyFailed": "复制链接失败",
+    "saving": "保存中..."
   },
   "navigation": {
     "home": "首页",
@@ -89,6 +90,7 @@
     "editDay": "编辑日期",
     "closeDay": "关闭日期",
     "earnings": "收入",
+    "noNotesForDate": "此日期没有笔记。",
     "publish": {
       "title": "写",
       "placeholder": "在这里写下您的留言...",

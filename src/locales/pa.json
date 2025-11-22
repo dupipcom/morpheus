@@ -53,7 +53,8 @@
     "noResults": "ਕੋਈ ਨਤੀਜੇ ਨਹੀਂ।",
     "copyLink": "ਲਿੰਕ ਕਾਪੀ ਕਰੋ",
     "linkCopied": "ਲਿੰਕ ਕਲਿਪਬੋਰਡ ਵਿੱਚ ਕਾਪੀ ਕੀਤਾ ਗਿਆ",
-    "copyFailed": "ਲਿੰਕ ਕਾਪੀ ਕਰਨ ਵਿੱਚ ਅਸਫਲ"
+    "copyFailed": "ਲਿੰਕ ਕਾਪੀ ਕਰਨ ਵਿੱਚ ਅਸਫਲ",
+    "saving": "ਸੇਵ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ..."
   },
   "navigation": {
     "dashboard": "ਡੈਸ਼ਬੋਰਡ",
@@ -93,6 +94,7 @@
     "editDay": "ਦਿਨ ਸੰਪਾਦਿਤ ਕਰੋ",
     "closeDay": "ਦਿਨ ਬੰਦ ਕਰੋ",
     "earnings": "ਕਮਾਈ",
+    "noNotesForDate": "ਇਸ ਤਾਰੀਖ ਲਈ ਕੋਈ ਨੋਟਸ ਨਹੀਂ ਹਨ।",
     "publish": {
       "title": "ਲਿਖੋ",
       "placeholder": "Write your note here...",

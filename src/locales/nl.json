@@ -53,7 +53,8 @@
     "noResults": "Geen resultaten.",
     "copyLink": "Link kopiëren",
     "linkCopied": "Link gekopieerd naar klembord",
-    "copyFailed": "Link kopiëren mislukt"
+    "copyFailed": "Link kopiëren mislukt",
+    "saving": "Opslaan..."
   },
   "navigation": {
     "home": "Home",
@@ -89,6 +90,7 @@
     "editDay": "Dag bewerken",
     "closeDay": "Dag sluiten",
     "earnings": "Verdiensten",
+    "noNotesForDate": "Geen notities voor deze datum.",
     "publish": {
       "title": "Schrijven",
       "placeholder": "Schrijf uw notitie hier...",

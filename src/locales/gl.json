@@ -53,7 +53,8 @@
     "noResults": "Sen resultados.",
     "copyLink": "Copiar ligazón",
     "linkCopied": "Ligazón copiada ao portapapeis",
-    "copyFailed": "Erro ao copiar a ligazón"
+    "copyFailed": "Erro ao copiar a ligazón",
+    "saving": "Gardando..."
   },
   "navigation": {
     "home": "Inicio",
@@ -92,6 +93,7 @@
     "editDay": "Editar día",
     "closeDay": "Pechar día",
     "earnings": "Ganancias",
+    "noNotesForDate": "Non hai notas para esta data.",
     "publish": {
       "title": "Escribir",
       "placeholder": "Escribe a túa nota aquí...",

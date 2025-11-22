@@ -53,7 +53,8 @@
     "noResults": "Tiada hasil.",
     "copyLink": "Salin pautan",
     "linkCopied": "Pautan disalin ke papan klip",
-    "copyFailed": "Gagal menyalin pautan"
+    "copyFailed": "Gagal menyalin pautan",
+    "saving": "Menyimpan..."
   },
   "navigation": {
     "dashboard": "Papan Pemuka",
@@ -93,6 +94,7 @@
     "editDay": "Sunting hari",
     "closeDay": "Tutup hari",
     "earnings": "Pendapatan",
+    "noNotesForDate": "Tiada nota untuk tarikh ini.",
     "publish": {
       "title": "Tulis",
       "placeholder": "Write your note here...",

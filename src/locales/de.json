@@ -53,7 +53,8 @@
     "noResults": "Keine Ergebnisse.",
     "copyLink": "Link kopieren",
     "linkCopied": "Link in die Zwischenablage kopiert",
-    "copyFailed": "Link konnte nicht kopiert werden"
+    "copyFailed": "Link konnte nicht kopiert werden",
+    "saving": "Speichern..."
   },
   "navigation": {
     "home": "Startseite",
@@ -89,6 +90,7 @@
     "editDay": "Tag bearbeiten",
     "closeDay": "Tag schließen",
     "earnings": "Verdienst",
+    "noNotesForDate": "Keine Notizen für dieses Datum.",
     "publish": {
       "title": "Schreiben",
       "placeholder": "Schreiben Sie Ihre Notiz hier...",

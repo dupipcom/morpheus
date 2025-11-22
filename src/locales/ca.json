@@ -53,7 +53,8 @@
     "noResults": "Sense resultats.",
     "copyLink": "Copia l'enllaç",
     "linkCopied": "Enllaç copiat al porta-retalls",
-    "copyFailed": "Error en copiar l'enllaç"
+    "copyFailed": "Error en copiar l'enllaç",
+    "saving": "Desant..."
   },
   "navigation": {
     "home": "Inici",
@@ -89,6 +90,7 @@
     "editDay": "Editar dia",
     "closeDay": "Tancar dia",
     "earnings": "Guanys",
+    "noNotesForDate": "No hi ha notes per a aquesta data.",
     "publish": {
       "title": "Escriu",
       "placeholder": "Escriu la teva nota aquí...",

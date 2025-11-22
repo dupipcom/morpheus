@@ -53,7 +53,8 @@
     "noResults": "Brak wyników.",
     "copyLink": "Kopiuj link",
     "linkCopied": "Link skopiowany do schowka",
-    "copyFailed": "Nie udało się skopiować linku"
+    "copyFailed": "Nie udało się skopiować linku",
+    "saving": "Zapisywanie..."
   },
   "navigation": {
     "dashboard": "Panel",
@@ -93,6 +94,7 @@
     "editDay": "Edytuj dzień",
     "closeDay": "Zamknij dzień",
     "earnings": "Zarobki",
+    "noNotesForDate": "Brak notatek dla tej daty.",
     "publish": {
       "title": "Napisz",
       "placeholder": "Napisz tutaj swoją notatkę...",
