@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useContext } from 'react'
 import { useAuth } from '@clerk/nextjs'
+import { useSearchParams } from 'next/navigation'
 
 import { GlobalContext } from "@/lib/contexts"
 import { BeView } from "@/views/beView"
@@ -16,6 +17,7 @@ export default function LocalizedSocial({ params }: { params: Promise<{ locale: 
   })
   const { isLoaded, isSignedIn } = useAuth();
   const { t } = useI18n();
+  const searchParams = useSearchParams();
 
   // Set login time when user is authenticated
   useEffect(() => {
@@ -37,13 +39,24 @@ export default function LocalizedSocial({ params }: { params: Promise<{ locale: 
     }
   }
 
+  // Extract filter query parameters
+  const profileId = searchParams.get('profileId')
+  const noteId = searchParams.get('noteId')
+  const listId = searchParams.get('listId')
+  const templateId = searchParams.get('templateId')
+
   return (
     <main className="relative">
       <div className="w-full max-w-[1200px] m-auto px-4 sticky top-[115px] z-50">
         <PublishNote defaultVisibility="FRIENDS" />
       </div>
       <ViewMenu active="be" />
-      <BeView />
+      <BeView 
+        filterProfileId={profileId || undefined}
+        filterNoteId={noteId || undefined}
+        filterListId={listId || undefined}
+        filterTemplateId={templateId || undefined}
+      />
     </main>
   )
 } 

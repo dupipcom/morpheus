@@ -223,6 +223,7 @@ export async function GET(request: NextRequest) {
             id: { $toString: '$_id' },
             content: 1,
             date: 1,
+            visibility: 1,
             type: { $literal: 'note' }
           }
         }
@@ -233,7 +234,8 @@ export async function GET(request: NextRequest) {
         name: item.content?.substring(0, 100) || 'Untitled Note',
         type: 'note',
         content: item.content,
-        date: item.date
+        date: item.date,
+        visibility: item.visibility
       })))
     } catch (error) {
       console.error('Error searching notes:', error)

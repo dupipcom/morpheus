@@ -114,7 +114,19 @@ type ActivityItem = {
   data: PublicNote | PublicTemplate
 }
 
-export const BeView = () => {
+interface BeViewProps {
+  filterProfileId?: string
+  filterNoteId?: string
+  filterListId?: string
+  filterTemplateId?: string
+}
+
+export const BeView = ({ 
+  filterProfileId,
+  filterNoteId,
+  filterListId,
+  filterTemplateId
+}: BeViewProps = {}) => {
   const { session, setGlobalContext, theme } = useContext(GlobalContext)
   const { t } = useI18n()
   const router = useRouter()
@@ -271,6 +283,7 @@ export const BeView = () => {
   }
 
   // Combine notes and templates into activity feed, sorted by creation date
+  // Items matching filter parameters are prioritized (shown first)
   const activityItems = useMemo(() => {
     const items: ActivityItem[] = [
       ...publicNotes.map(note => ({
@@ -286,9 +299,36 @@ export const BeView = () => {
         data: template
       }))
     ]
-    // Sort by creation date, most recent first
-    return items.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-  }, [publicNotes, publicTemplates])
+    
+    // Sort items: matching filters first, then by creation date (most recent first)
+    return items.sort((a, b) => {
+      const aNote = a.type === 'note' ? (a.data as PublicNote) : null
+      const aTemplate = a.type === 'template' ? (a.data as PublicTemplate) : null
+      const bNote = b.type === 'note' ? (b.data as PublicNote) : null
+      const bTemplate = b.type === 'template' ? (b.data as PublicTemplate) : null
+      
+      // Check if item a matches any filter
+      const aMatchesFilter = 
+        (filterProfileId && (aNote?.user?.id === filterProfileId || aTemplate?.user?.id === filterProfileId)) ||
+        (filterNoteId && aNote?.id === filterNoteId) ||
+        (filterTemplateId && aTemplate?.id === filterTemplateId) ||
+        (filterListId && a.type === 'tasklist' && a.id === filterListId)
+      
+      // Check if item b matches any filter
+      const bMatchesFilter = 
+        (filterProfileId && (bNote?.user?.id === filterProfileId || bTemplate?.user?.id === filterProfileId)) ||
+        (filterNoteId && bNote?.id === filterNoteId) ||
+        (filterTemplateId && bTemplate?.id === filterTemplateId) ||
+        (filterListId && b.type === 'tasklist' && b.id === filterListId)
+      
+      // If one matches and the other doesn't, prioritize the matching one
+      if (aMatchesFilter && !bMatchesFilter) return -1
+      if (!aMatchesFilter && bMatchesFilter) return 1
+      
+      // If both match or neither matches, sort by creation date (most recent first)
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    })
+  }, [publicNotes, publicTemplates, filterProfileId, filterNoteId, filterListId, filterTemplateId])
 
   const getNoteUserDisplayName = (note: PublicNote) => {
     if (note.user.profile) {
@@ -376,6 +416,16 @@ export const BeView = () => {
             
             const currentUserId = session?.user?.id || null
             
+            // Check if this item should be highlighted based on filter parameters
+            const isHighlighted = 
+              (filterNoteId && item.type === 'note' && noteData?.id === filterNoteId) ||
+              (filterTemplateId && item.type === 'template' && templateData?.id === filterTemplateId) ||
+              (filterListId && item.type === 'tasklist' && activityItem.id === filterListId) ||
+              (filterProfileId && (
+                (noteData?.user?.id === filterProfileId) ||
+                (templateData?.user?.id === filterProfileId)
+              ))
+            
             return (
               <ActivityCard
                 key={item.id}
@@ -384,6 +434,7 @@ export const BeView = () => {
                 getTimeAgo={getTimeAgo}
                 isLoggedIn={!!session?.user}
                 currentUserId={currentUserId}
+                isHighlighted={isHighlighted}
                 onNoteUpdated={() => {
                   // Refresh the activity feed when a note is updated/deleted
                   fetchPublicNotes(1, false)
@@ -462,11 +513,18 @@ export const BeView = () => {
             },
           ]
 
+          // Check if this friend should be highlighted based on profileId filter
+          const isFriendHighlighted = filterProfileId && friend.userId === filterProfileId
+          
           return (
             <Badge
               key={friend.id}
               variant="outline"
-              className="flex items-center gap-2 px-2 py-1.5 h-auto bg-transparent border-border/50 hover:border-border transition-colors"
+              className={`flex items-center gap-2 px-2 py-1.5 h-auto transition-colors ${
+                isFriendHighlighted
+                  ? 'bg-primary/10 border-primary/50 shadow-md'
+                  : 'bg-transparent border-border/50 hover:border-border'
+              }`}
             >
               <img
                 src={getProfilePicture(friend)}

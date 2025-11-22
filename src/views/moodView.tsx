@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useMemo, useContext, useRef } from 'react'
 import useSWR from 'swr'
+import { useRouter, usePathname } from 'next/navigation'
 
 import { Slider } from "@/components/ui/slider"
 import { Input } from "@/components/ui/input"
@@ -28,14 +29,57 @@ import { LifeEventCombobox } from "@/components/ui/lifeEventCombobox"
 import { useDebounce } from "@/lib/hooks/useDebounce"
 import { Plus } from "lucide-react"
 
-export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
+interface MoodViewProps {
+  timeframe?: string
+  date?: string | null
+  defaultTab?: 'mood' | 'notes' | 'details'
+  filterNoteId?: string
+}
+
+export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab = "mood", filterNoteId }: MoodViewProps) => {
   const { session, setGlobalContext, theme } = useContext(GlobalContext)
   const { t, locale } = useI18n()
   const { registerMutate, unregisterMutate } = useNotesRefresh()
+  const router = useRouter()
+  const pathname = usePathname()
   const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const today = new Date()
   const todayDate = today.toLocaleString('en-uk', { timeZone: userTimezone }).split(',')[0].split('/').reverse().join('-')
-  const [fullDay, setFullDay] = useState(todayDate) 
+  const [fullDay, setFullDay] = useState(todayDate)
+  
+  // Determine initial tab from URL path or defaultTab prop
+  const getInitialTab = () => {
+    if (pathname?.includes('/feel/mood')) return 'mood'
+    if (pathname?.includes('/feel/notes')) return 'notes'
+    if (pathname?.includes('/feel/details')) return 'details'
+    // If on base /feel route, use defaultTab prop
+    if (pathname?.endsWith('/feel') || pathname?.endsWith('/feel/')) return defaultTab
+    return defaultTab
+  }
+  
+  const [activeTab, setActiveTab] = useState<'mood' | 'notes' | 'details'>(getInitialTab())
+  
+  // Update activeTab when pathname changes
+  useEffect(() => {
+    const newTab = getInitialTab()
+    setActiveTab(newTab)
+  }, [pathname, defaultTab])
+  
+  // Handle tab change and update URL
+  const handleTabChange = (value: string) => {
+    const tab = value as 'mood' | 'notes' | 'details'
+    setActiveTab(tab)
+    
+    // Update URL to match the selected tab
+    // Extract locale and base path
+    const pathParts = pathname?.split('/') || []
+    const localeIndex = pathParts.findIndex(p => p === 'app')
+    const basePath = localeIndex >= 0 
+      ? pathParts.slice(0, localeIndex + 1).join('/')
+      : ''
+    const newPath = `${basePath}/feel/${tab}`
+    router.push(newPath)
+  } 
 
   
   // Update fullDay when propDate changes
@@ -425,7 +469,7 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
   return (
     <ContentLoadingWrapper>
       <div key={JSON.stringify(serverMood)} className="w-full m-auto p-4">
-        <Tabs defaultValue="mood" className="w-full">
+        <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger 
               value="mood"
@@ -492,6 +536,7 @@ export const MoodView = ({ timeframe = "day", date: propDate = null }) => {
               isLoggedIn={!!session?.user}
               currentUserId={session?.user?.id || null}
               onNoteUpdated={() => mutateNotes()}
+              filterNoteId={filterNoteId}
             />
           </TabsContent>
 

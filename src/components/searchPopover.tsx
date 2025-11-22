@@ -18,6 +18,7 @@ interface SearchResult {
   profilePicture?: string
   content?: string
   date?: string
+  visibility?: string
 }
 
 interface SearchPopoverProps {
@@ -78,8 +79,19 @@ export function SearchPopover({ query, open, onOpenChange, anchorRef }: SearchPo
         router.push(`/@${result.username}`)
       }
     } else if (result.type === 'note') {
-      // Navigate to note - adjust path based on your routing structure
-      router.push(`/app/be`)
+      // Check visibility - if not PUBLIC, FRIENDS, or CLOSE_FRIENDS, link to feel/notes
+      // Otherwise link to be page
+      const isPublicOrShared = result.visibility === 'PUBLIC' || 
+                               result.visibility === 'FRIENDS' || 
+                               result.visibility === 'CLOSE_FRIENDS'
+      
+      if (isPublicOrShared) {
+        // Navigate to be page with noteId query parameter to show the note first
+        router.push(`/app/be?noteId=${result.id}`)
+      } else {
+        // Navigate to feel/notes page with noteId query parameter for private notes
+        router.push(`/app/feel/notes?noteId=${result.id}`)
+      }
     }
     onOpenChange(false)
   }

@@ -8,7 +8,7 @@ import { PublishNote } from '@/components/publishNote'
 
 export const dynamic = 'force-dynamic'
 
-export default function LocalizedFeel({ params }: { params: Promise<{ locale: string }> }) {
+export default function LocalizedFeelMood({ params }: { params: Promise<{ locale: string }> }) {
   return (
     <main className="min-h-[100vh]">
       <ViewMenu active="feel" />
@@ -21,5 +21,4 @@ export default function LocalizedFeel({ params }: { params: Promise<{ locale: st
     </main>
   )
 }
-
 

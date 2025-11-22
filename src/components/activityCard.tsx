@@ -66,9 +66,10 @@ interface ActivityCardProps {
   isLoggedIn?: boolean
   currentUserId?: string | null // Current user's ID to check ownership
   onNoteUpdated?: () => void // Callback when note is updated/deleted
+  isHighlighted?: boolean // Whether this card should be highlighted/selected
 }
 
-function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, isLoggedIn = false, currentUserId, onNoteUpdated }: ActivityCardProps) {
+function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, isLoggedIn = false, currentUserId, onNoteUpdated, isHighlighted = false }: ActivityCardProps) {
   const { t } = useI18n()
   const { refreshAll } = useNotesRefresh()
   const [comments, setComments] = useState<Comment[]>(item.comments || [])
@@ -657,7 +658,11 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
   }
 
   return (
-    <div className="border rounded-lg p-4 bg-muted/30 relative h-full flex flex-col">
+    <div className={`border rounded-lg p-4 relative h-full flex flex-col transition-colors ${
+      isHighlighted 
+        ? 'bg-primary/10 border-primary/50 shadow-md' 
+        : 'bg-muted/30'
+    }`}>
       {showUserInfo && item.user && (
         <div className="flex items-center gap-2 mb-3">
           <img

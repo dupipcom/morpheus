@@ -1,5 +1,6 @@
 'use client'
 
+import { useMemo } from 'react'
 import { Button } from "@/components/ui/button"
 import { RefreshCw } from "lucide-react"
 import { useI18n } from '@/lib/contexts/i18n'
@@ -30,6 +31,7 @@ interface NotesListProps {
   isLoggedIn?: boolean
   currentUserId?: string | null
   onNoteUpdated?: () => void
+  filterNoteId?: string // Filter note ID to prioritize and highlight
 }
 
 function getTimeAgo(date: Date): string {
@@ -78,9 +80,31 @@ export function NotesList({
   gridLayout = false,
   isLoggedIn = false,
   currentUserId,
-  onNoteUpdated
+  onNoteUpdated,
+  filterNoteId
 }: NotesListProps) {
   const { t } = useI18n()
+
+  // Sort notes: matching filterNoteId first, then by creation date (newest first)
+  const sortedNotes = useMemo(() => {
+    if (!filterNoteId) {
+      return [...notes].sort((a, b) => 
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      )
+    }
+    
+    return [...notes].sort((a, b) => {
+      const aMatches = a.id === filterNoteId
+      const bMatches = b.id === filterNoteId
+      
+      // If one matches and the other doesn't, prioritize the matching one
+      if (aMatches && !bMatches) return -1
+      if (!aMatches && bMatches) return 1
+      
+      // If both match or neither matches, sort by creation date (newest first)
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    })
+  }, [notes, filterNoteId])
 
   if (loading) {
     return (
@@ -90,7 +114,7 @@ export function NotesList({
     )
   }
 
-  if (notes.length === 0) {
+  if (sortedNotes.length === 0) {
     return (
       <div className="text-center text-muted-foreground py-8">
         <p>{emptyMessage}</p>
@@ -121,7 +145,7 @@ export function NotesList({
         </div>
       )}
       <div className={containerClass}>
-        {notes.map((note) => {
+        {sortedNotes.map((note) => {
           const activityItem: ActivityItem = {
             id: note.id,
             type: 'note',
@@ -134,6 +158,10 @@ export function NotesList({
             isLiked: note.isLiked,
             _count: note._count
           }
+          
+          // Check if this note should be highlighted
+          const isHighlighted = filterNoteId && note.id === filterNoteId
+          
           return (
             <ActivityCard
               key={note.id}
@@ -143,6 +171,7 @@ export function NotesList({
               isLoggedIn={isLoggedIn}
               currentUserId={currentUserId}
               onNoteUpdated={onNoteUpdated || onRefresh}
+              isHighlighted={isHighlighted}
             />
           )
         })}
