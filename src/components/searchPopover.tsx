@@ -28,9 +28,10 @@ interface SearchPopoverProps {
   onOpenChange: (open: boolean) => void
   anchorRef: React.RefObject<HTMLInputElement>
   onClearQuery?: () => void
+  onCollapseSearch?: () => void
 }
 
-export function SearchPopover({ query, open, onOpenChange, anchorRef, onClearQuery }: SearchPopoverProps) {
+export function SearchPopover({ query, open, onOpenChange, anchorRef, onClearQuery, onCollapseSearch }: SearchPopoverProps) {
   const [results, setResults] = useState<SearchResult[]>([])
   const [loading, setLoading] = useState(false)
   const router = useRouter()
@@ -101,6 +102,7 @@ export function SearchPopover({ query, open, onOpenChange, anchorRef, onClearQue
     }
     onOpenChange(false)
     onClearQuery?.()
+    onCollapseSearch?.()
   }
 
   const getTypeIcon = (type: string) => {

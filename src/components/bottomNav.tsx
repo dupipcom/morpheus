@@ -5,11 +5,12 @@ import { usePathname } from 'next/navigation'
 import { useContext, useState, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Heart, CheckSquare, Users, Coins, Eye, EyeOff, Globe, Hourglass, Search } from 'lucide-react'
+import { Heart, CheckSquare, Users, Coins, Eye, EyeOff, Globe, Hourglass, Search, Gauge, X } from 'lucide-react'
 import { GlobalContext } from '@/lib/contexts'
 import { useLocalStorage } from 'usehooks-ts'
 import { useI18n } from '@/lib/contexts/i18n'
 import { SearchPopover } from '@/components/searchPopover'
+import { FriendRequestsButton } from '@/components/friendRequestsButton'
 import useSWR from 'swr'
 
 export function BottomNav() {
@@ -20,6 +21,7 @@ export function BottomNav() {
   const [isSpace, setIsSpace] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const [searchOpen, setSearchOpen] = useState(false)
+  const [isSearchExpanded, setIsSearchExpanded] = useState(false)
   const searchInputRef = useRef<HTMLInputElement>(null)
   
   // Check if the current pathname matches the given path
@@ -61,6 +63,20 @@ export function BottomNav() {
     setTimeout(() => {
       setSearchOpen(false)
     }, 200)
+  }
+
+  const handleSearchButtonClick = () => {
+    setIsSearchExpanded(!isSearchExpanded)
+    if (!isSearchExpanded) {
+      // Focus the input when expanding
+      setTimeout(() => {
+        searchInputRef.current?.focus()
+      }, 100)
+    } else {
+      // Clear search when collapsing
+      setSearchQuery('')
+      setSearchOpen(false)
+    }
   }
 
   const handleNavLinkClick = (href: string) => {
@@ -126,59 +142,91 @@ export function BottomNav() {
       {/* Bottom Toolbar */}
       <div className="fixed bottom-[80px] left-0 right-0 h-[50px] bg-background border-t border-border z-50">
         <div className="h-full max-w-7xl mx-auto px-4 flex items-center gap-2">
-          {/* Visibility Toggle */}
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-9 w-9"
-            onClick={handleVisibilityToggle}
-            aria-label={revealRedacted ? 'Hide sensitive tasks' : 'Reveal sensitive tasks'}
+          {/* Other Menu Buttons - Hide when search is expanded */}
+          <div 
+            className={`flex items-center gap-2 transition-all duration-300 ease-in-out ${
+              isSearchExpanded 
+                ? 'opacity-0 w-0 overflow-hidden -translate-x-4' 
+                : 'opacity-100 w-auto translate-x-0'
+            }`}
           >
-            {revealRedacted ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-          </Button>
+            {/* Dashboard Button */}
+            <Link href="/app/dashboard" onClick={() => handleNavLinkClick('/app/dashboard')}>
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-9 w-9"
+                aria-label={t('common.dashboard')}
+              >
+                <Gauge className="h-4 w-4" />
+              </Button>
+            </Link>
 
-          {/* Space/Time Toggle */}
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-9 w-9"
-            onClick={() => setIsSpace(!isSpace)}
-            aria-label={isSpace ? 'Switch to time' : 'Switch to space'}
-          >
-            {isSpace ? <Globe className="h-4 w-4" /> : <Hourglass className="h-4 w-4" />}
-          </Button>
+            {/* Friend Requests Button */}
+            <FriendRequestsButton size="icon" className="h-9 w-9" />
 
-          {/* Ask Input */}
-          <form onSubmit={handleSearchSubmit} className="flex-1 flex items-center gap-2 relative">
-            <div className="flex-1 relative">
-            <Input
-                ref={searchInputRef}
-              type="text"
-              placeholder={`${t('common.ask')}...`}
-              value={searchQuery}
-                onChange={handleSearchChange}
-                onFocus={handleSearchFocus}
-                onBlur={handleSearchBlur}
-                className="h-9 w-full"
-            />
-              <SearchPopover
-                query={searchQuery}
-                open={searchOpen}
-                onOpenChange={setSearchOpen}
-                anchorRef={searchInputRef}
-                onClearQuery={() => setSearchQuery('')}
-              />
-            </div>
+            {/* Space/Time Toggle */}
             <Button
-              type="submit"
               variant="outline"
               size="icon"
               className="h-9 w-9"
-              aria-label={`${t('common.ask')}`}
+              onClick={() => setIsSpace(!isSpace)}
+              aria-label={isSpace ? 'Switch to time' : 'Switch to space'}
             >
-              <Search className="h-4 w-4" />
+              {isSpace ? <Globe className="h-4 w-4" /> : <Hourglass className="h-4 w-4" />}
             </Button>
-          </form>
+
+            {/* Visibility Toggle */}
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-9 w-9"
+              onClick={handleVisibilityToggle}
+              aria-label={revealRedacted ? 'Hide sensitive tasks' : 'Reveal sensitive tasks'}
+            >
+              {revealRedacted ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </Button>
+          </div>
+
+          {/* Search - Collapsible */}
+          <div className="flex items-center gap-2">
+            <form 
+              onSubmit={handleSearchSubmit} 
+              className={`flex items-center gap-2 relative transition-all duration-300 ease-in-out overflow-hidden ${
+                isSearchExpanded ? 'w-[200px] opacity-100' : 'w-0 opacity-0'
+              }`}
+            >
+              <div className="relative w-full min-w-[200px]">
+                <Input
+                  ref={searchInputRef}
+                  type="text"
+                  placeholder={`${t('common.ask')}...`}
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  onFocus={handleSearchFocus}
+                  onBlur={handleSearchBlur}
+                  className="h-9 w-full"
+                />
+                <SearchPopover
+                  query={searchQuery}
+                  open={searchOpen}
+                  onOpenChange={setSearchOpen}
+                  anchorRef={searchInputRef}
+                  onClearQuery={() => setSearchQuery('')}
+                  onCollapseSearch={() => setIsSearchExpanded(false)}
+                />
+              </div>
+            </form>
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-9 w-9"
+              onClick={handleSearchButtonClick}
+              aria-label={isSearchExpanded ? 'Close search' : 'Open search'}
+            >
+              {isSearchExpanded ? <X className="h-4 w-4" /> : <Search className="h-4 w-4" />}
+            </Button>
+          </div>
         </div>
       </div>
 

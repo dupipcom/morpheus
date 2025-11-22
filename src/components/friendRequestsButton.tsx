@@ -25,7 +25,12 @@ interface FriendRequest {
   } | null
 }
 
-export function FriendRequestsButton() {
+interface FriendRequestsButtonProps {
+  className?: string
+  size?: 'default' | 'sm' | 'lg' | 'icon'
+}
+
+export function FriendRequestsButton({ className, size = 'default' }: FriendRequestsButtonProps = {}) {
   const { t } = useI18n()
   const [friendRequests, setFriendRequests] = useState<FriendRequest[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -94,7 +99,7 @@ export function FriendRequestsButton() {
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="relative">
+        <Button variant="outline" size={size} className={`relative ${className || ''}`}>
           <Users className="w-4 h-4" />
           {friendRequests.length > 0 && (
             <Badge 
