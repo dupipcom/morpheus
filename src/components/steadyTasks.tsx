@@ -468,20 +468,11 @@ export const SteadyTasks = () => {
           const statusColor = getStatusColor(taskStatus, 'css')
           const iconColor = getIconColor(taskStatus)
           
-          // Hide tasks beyond limits using CSS
+          // Hide tasks beyond limits using CSS with animation
           // Mobile: show 1 initially, or 6 when expanded
           // Desktop: show 8
           const isBeyondMobileLimit = index >= mobileLimit
           const isBeyondDesktopLimit = index >= desktopLimit
-          
-          let visibilityClass = ''
-          if (isBeyondDesktopLimit) {
-            // Hide on all screens
-            visibilityClass = 'hidden'
-          } else if (isBeyondMobileLimit) {
-            // Hide on mobile, show on desktop
-            visibilityClass = 'hidden md:flex'
-          }
           
           const optionsMenuItems: OptionsMenuItem[] = [
             ...STATUS_OPTIONS.map((status) => ({
@@ -515,19 +506,32 @@ export const SteadyTasks = () => {
               : []),
           ]
           
+          // Determine if item should be hidden (take no space)
+          const isHiddenOnMobile = isBeyondMobileLimit
+          const isHiddenOnAll = isBeyondDesktopLimit
+          
           return (
-            <TaskItem
-              key={`task__item--${task.name || index}`}
-              task={task}
-              taskStatus={taskStatus}
-              statusColor={statusColor}
-              iconColor={iconColor}
-              optionsMenuItems={optionsMenuItems}
-              onClick={() => handleToggleClick(task)}
-              revealRedacted={revealRedacted}
-              className={visibilityClass}
-              variant="outline"
-            />
+            <div
+              key={`task__wrapper--${task.name || index}`}
+              className={`transition-all duration-300 ease-in-out overflow-hidden ${
+                isHiddenOnAll
+                  ? 'opacity-0 max-h-0 m-0 p-0 md:opacity-0 md:max-h-0 md:m-0 md:p-0'
+                  : isHiddenOnMobile
+                  ? 'opacity-0 max-h-0 m-0 p-0 md:opacity-100 md:max-h-[500px] md:m-auto md:p-auto'
+                  : 'opacity-100 max-h-[500px]'
+              }`}
+            >
+              <TaskItem
+                task={task}
+                taskStatus={taskStatus}
+                statusColor={statusColor}
+                iconColor={iconColor}
+                optionsMenuItems={optionsMenuItems}
+                onClick={() => handleToggleClick(task)}
+                revealRedacted={revealRedacted}
+                variant="outline"
+              />
+            </div>
           )
         })}
       </div>
