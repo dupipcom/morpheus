@@ -459,7 +459,7 @@ export const DoToolbar = ({
                       variant="outline"
                       size="sm"
                       className={cn(
-                        "justify-start text-left font-normal shrink-0",
+                        "justify-start text-left font-normal shrink-0 mr-2",
                         !selectedDate && "text-muted-foreground"
                       )}
                       onClick={(e) => e.stopPropagation()}
