@@ -10,6 +10,7 @@ import { GlobalContext } from '@/lib/contexts'
 import { useLocalStorage } from 'usehooks-ts'
 import { useI18n } from '@/lib/contexts/i18n'
 import { SearchPopover } from '@/components/searchPopover'
+import useSWR from 'swr'
 
 export function BottomNav() {
   const pathname = usePathname()
@@ -63,16 +64,32 @@ export function BottomNav() {
   }
 
   // Check if all mood levels are zero for today
-  // Default to false (non-destructive) until user data loads
+  // Fetch current day data directly from API to ensure we have the latest mood values
   const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const today = new Date()
   const todayDate = today.toLocaleString('en-uk', { timeZone: userTimezone }).split(',')[0].split('/').reverse().join('-')
-  const year = Number(todayDate.split('-')[0])
-  const user = (session as any)?.user
-  const hasUserData = user && user.entries && user.entries[year] && user.entries[year].days
-  const todayMood = hasUserData ? (user.entries[year].days[todayDate]?.mood) : null
+  
+  // Fetch day data using SWR to get the latest mood values
+  const { data: dayData } = useSWR(
+    session?.user ? `/api/v1/days?date=${todayDate}` : null,
+    async () => {
+      const response = await fetch(`/api/v1/days?date=${todayDate}`)
+      if (response.ok) {
+        const data = await response.json()
+        return data
+      }
+      return { day: null }
+    },
+    {
+      revalidateOnFocus: true,
+      revalidateOnReconnect: true,
+      refreshInterval: 0, // Don't auto-refresh, but allow manual revalidation
+    }
+  )
+
+  const todayMood = dayData?.day?.mood || null
   const moodKeys = ['gratitude', 'optimism', 'restedness', 'tolerance', 'selfEsteem', 'trust'] as const
-  const allMoodZero = hasUserData && todayMood 
+  const allMoodZero = todayMood 
     ? moodKeys.every((k) => Number((todayMood as any)[k] ?? 0) === 0)
     : false
 
