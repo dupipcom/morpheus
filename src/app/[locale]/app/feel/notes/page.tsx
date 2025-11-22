@@ -12,6 +12,7 @@ export const dynamic = 'force-dynamic'
 export default function LocalizedFeelNotes({ params }: { params: Promise<{ locale: string }> }) {
   const searchParams = useSearchParams()
   const noteId = searchParams.get('noteId')
+  const date = searchParams.get('date')
 
   return (
     <main className="min-h-[100vh]">
@@ -24,6 +25,7 @@ export default function LocalizedFeelNotes({ params }: { params: Promise<{ local
           timeframe="day" 
           defaultTab="notes" 
           filterNoteId={noteId || undefined}
+          date={date || null}
         />
       </div>
     </main>

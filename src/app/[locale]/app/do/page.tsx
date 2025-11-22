@@ -4,7 +4,7 @@ import React, { useRef, useState, useEffect, useContext, useMemo, useCallback } 
 import ReactDOMServer from 'react-dom/server';
 import prisma from "@/lib/prisma";
 import { useAuth } from '@clerk/nextjs';
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 import Link from 'next/link'
 
@@ -85,6 +85,7 @@ export default function LocalizedDo({ params }: { params: Promise<{ locale: stri
   const { t, formatDate, locale } = useI18n();
   const router = useRouter();
   const [resolvedParams, setResolvedParams] = useState<{ locale: string } | null>(null)
+  const searchParams = useSearchParams()
 
   // Resolve params promise
   useEffect(() => {
@@ -109,8 +110,47 @@ export default function LocalizedDo({ params }: { params: Promise<{ locale: stri
     return new Date(d.getFullYear(), d.getMonth(), d.getDate())
   }, [])
 
-  // State for selected date (defaults to today)
-  const [selectedDate, setSelectedDate] = useState<Date>(today)
+  // Initialize selected date from query parameter or default to today
+  const initialDate = useMemo(() => {
+    const dateParam = searchParams?.get('date')
+    if (dateParam) {
+      // Parse YYYY-MM-DD format
+      const parsedDate = new Date(dateParam + 'T00:00:00')
+      if (!isNaN(parsedDate.getTime())) {
+        return new Date(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate())
+      }
+    }
+    return today
+  }, [searchParams, today])
+
+  // State for selected date (defaults to today or date from query param)
+  const [selectedDate, setSelectedDate] = useState<Date>(initialDate)
+
+  // Update selected date when query parameter changes
+  const dateParam = searchParams?.get('date')
+  useEffect(() => {
+    if (dateParam) {
+      const parsedDate = new Date(dateParam + 'T00:00:00')
+      if (!isNaN(parsedDate.getTime())) {
+        const normalizedDate = new Date(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate())
+        // Only update if the date is different to avoid unnecessary updates
+        setSelectedDate(prevDate => {
+          if (!prevDate || normalizedDate.getTime() !== prevDate.getTime()) {
+            return normalizedDate
+          }
+          return prevDate
+        })
+      }
+    } else {
+      // Reset to today if no date param
+      setSelectedDate(prevDate => {
+        if (!prevDate || prevDate.getTime() !== today.getTime()) {
+          return today
+        }
+        return prevDate
+      })
+    }
+  }, [dateParam, today])
 
   // Maintain stable task lists that never clear once loaded
   const [stableTaskLists, setStableTaskLists] = useState<any[]>([])
