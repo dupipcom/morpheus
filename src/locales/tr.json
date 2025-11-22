@@ -487,6 +487,7 @@
         "default": "Varsayılan"
       },
       "addTaskButton": "Görev ekle",
+      "tasks": "Görevleri yönet",
       "table": {
         "name": "İsim",
         "times": "Kez",
@@ -512,6 +513,7 @@
         "closeFriends": "Yakın arkadaşlar"
       },
       "addTaskButton": "Görev ekle",
+      "tasks": "Şablonları yönet",
       "task": {
         "nameLabel": "İsim",
         "areaLabel": "Alan",

@@ -480,6 +480,7 @@
         "default": "Àkọ́kọ́"
       },
       "addTaskButton": "Fi iṣẹ́ kún",
+      "tasks": "Ṣakoso iṣẹ́",
       "table": {
         "name": "Orúkọ",
         "times": "Ìgbà",
@@ -506,6 +507,7 @@
         "closeFriends": "Àwọn ọ̀rẹ́ tímọ́tímọ́"
       },
       "addTaskButton": "Fi iṣẹ́ kún",
+      "tasks": "Ṣakoso àwọn àpẹrẹ",
       "task": {
         "nameLabel": "Orúkọ",
         "areaLabel": "Agbègbè",

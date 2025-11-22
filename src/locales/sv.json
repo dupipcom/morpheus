@@ -472,6 +472,7 @@
         "default": "Standard"
       },
       "addTaskButton": "Lägg till uppgift",
+      "tasks": "Hantera uppgifter",
       "table": {
         "name": "Namn",
         "times": "Tider",
@@ -497,6 +498,7 @@
         "closeFriends": "Nära vänner"
       },
       "addTaskButton": "Lägg till uppgift",
+      "tasks": "Hantera mallar",
       "task": {
         "nameLabel": "Namn",
         "areaLabel": "Område",

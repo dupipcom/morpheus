@@ -469,6 +469,7 @@
         "default": "Implicit"
       },
       "addTaskButton": "Adăugați o sarcină",
+      "tasks": "Gestionați sarcini",
       "table": {
         "name": "Nume și prenume",
         "times": "Timpuri",
@@ -494,6 +495,7 @@
         "closeFriends": "Prieteni apropiați"
       },
       "addTaskButton": "Adăugați o sarcină",
+      "tasks": "Gestionați șabloane",
       "task": {
         "nameLabel": "Nume și prenume",
         "areaLabel": "Zonă",

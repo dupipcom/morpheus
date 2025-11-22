@@ -483,6 +483,7 @@
         "default": "デフォルト"
       },
       "addTaskButton": "タスクを追加",
+      "tasks": "タスクを管理",
       "table": {
         "name": "名前",
         "times": "回数",
@@ -508,6 +509,7 @@
         "closeFriends": "親しい友達"
       },
       "addTaskButton": "タスクを追加",
+      "tasks": "テンプレートを管理",
       "task": {
         "nameLabel": "名前",
         "areaLabel": "エリア",

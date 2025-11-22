@@ -483,6 +483,7 @@
         "default": "默认值"
       },
       "addTaskButton": "添加任务",
+      "tasks": "管理任务",
       "table": {
         "name": "名称",
         "times": "时代",
@@ -508,6 +509,7 @@
         "closeFriends": "亲密朋友"
       },
       "addTaskButton": "添加任务",
+      "tasks": "管理模板",
       "task": {
         "nameLabel": "名称",
         "areaLabel": "地区",

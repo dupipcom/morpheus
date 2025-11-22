@@ -487,6 +487,7 @@
         "default": "افتراضي"
       },
       "addTaskButton": "إضافة مهمة",
+      "tasks": "إدارة المهام",
       "table": {
         "name": "الاسم",
         "times": "المرات",
@@ -512,6 +513,7 @@
         "closeFriends": "الأصدقاء المقربون"
       },
       "addTaskButton": "إضافة مهمة",
+      "tasks": "إدارة القوالب",
       "task": {
         "nameLabel": "الاسم",
         "areaLabel": "المنطقة",

@@ -6,6 +6,7 @@ import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { useI18n } from '@/lib/contexts/i18n'
 
 export const AddTemplateForm = ({
@@ -90,104 +91,115 @@ export const AddTemplateForm = ({
           </div>
         </div>
 
-        <div className="flex justify-end mb-2">
-          <Button variant="default" onClick={() => setAddTaskOpen(true)}>{t('forms.addTemplateForm.addTaskButton') || 'Add task'}</Button>
-        </div>
-        {addTaskOpen && (
-          <div className="w-[320px] border rounded-md p-3">
-            <div className="space-y-2">
+        <Accordion type="single" collapsible className="w-full">
+          <AccordionItem value="tasks" className="border-none">
+            <AccordionTrigger className="py-2 px-0 hover:no-underline">
+              <span className="text-sm font-medium">{t('forms.addTemplateForm.tasks') || 'Tasks'}</span>
+            </AccordionTrigger>
+            <AccordionContent className="pt-2 pb-0">
               <div>
-                <Label htmlFor="template-task-name">{t('forms.addTemplateForm.task.nameLabel') || 'Name'}</Label>
-                <Input id="template-task-name" value={addTaskForm.name} onChange={(e) => setAddTaskForm(prev => ({ ...prev, name: e.target.value }))} />
-              </div>
-              <div>
-                <Label htmlFor="template-task-area">{t('forms.addTemplateForm.task.areaLabel') || 'Area'}</Label>
-                <Select value={addTaskForm.area} onValueChange={(val) => setAddTaskForm(prev => ({ ...prev, area: val }))}>
-                  <SelectTrigger className="w-full" id="template-task-area">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="self">{t('forms.commonOptions.area.self') || 'Self'}</SelectItem>
-                    <SelectItem value="home">{t('forms.commonOptions.area.home') || 'Home'}</SelectItem>
-                    <SelectItem value="social">{t('forms.commonOptions.area.social') || 'Social'}</SelectItem>
-                    <SelectItem value="work">{t('forms.commonOptions.area.work') || 'Work'}</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label htmlFor="template-task-category">{t('forms.addTemplateForm.task.categoryLabel') || 'Category'}</Label>
-                <Select value={addTaskForm.category} onValueChange={(val) => setAddTaskForm(prev => ({ ...prev, category: val }))}>
-                  <SelectTrigger className="w-full" id="template-task-category">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="custom">{t('forms.commonOptions.category.custom') || 'Custom'}</SelectItem>
-                    <SelectItem value="body">{t('forms.commonOptions.category.body') || 'Body'}</SelectItem>
-                    <SelectItem value="mind">{t('forms.commonOptions.category.mind') || 'Mind'}</SelectItem>
-                    <SelectItem value="spirit">{t('forms.commonOptions.category.spirit') || 'Spirit'}</SelectItem>
-                    <SelectItem value="fun">{t('forms.commonOptions.category.fun') || 'Fun'}</SelectItem>
-                    <SelectItem value="growth">{t('forms.commonOptions.category.growth') || 'Growth'}</SelectItem>
-                    <SelectItem value="community">{t('forms.commonOptions.category.community') || 'Community'}</SelectItem>
-                    <SelectItem value="affection">{t('forms.commonOptions.category.affection') || 'Affection'}</SelectItem>
-                    <SelectItem value="clean">{t('forms.commonOptions.category.clean') || 'Clean'}</SelectItem>
-                    <SelectItem value="maintenance">{t('forms.commonOptions.category.maintenance') || 'Maintenance'}</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label htmlFor="template-task-times">{t('forms.addTemplateForm.task.timesLabel') || '# of times'}</Label>
-                <Input id="template-task-times" type="number" min={1} value={addTaskForm.times} onChange={(e) => setAddTaskForm(prev => ({ ...prev, times: Math.max(1, Number(e.target.value) || 1) }))} />
-              </div>
-              <div className="flex justify-end gap-2 pt-2">
-                <Button variant="outline" size="sm" onClick={() => setAddTaskOpen(false)}>{t('forms.addTemplateForm.task.cancel') || 'Cancel'}</Button>
-                <Button size="sm" onClick={() => {
-                  const name = addTaskForm.name.trim()
-                  if (!name) return
-                  const newTask = { name, area: addTaskForm.area as any, categories: [addTaskForm.category], status: 'open', cadence: 'daily', times: addTaskForm.times, count: 0 }
-                  setForm(prev => ({ ...prev, tasks: [...prev.tasks, newTask] }))
-                  setAddTaskForm({ name: '', area: 'self', category: 'custom', times: 1 })
-                  setAddTaskOpen(false)
-                }}>{t('forms.addTemplateForm.task.add') || 'Add'}</Button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        <div className="border rounded-md overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-muted/50 text-left">
-                <th className="p-2">{t('forms.addTemplateForm.table.name') || 'Name'}</th>
-                <th className="p-2">{t('forms.addTemplateForm.table.times') || 'Times'}</th>
-                <th className="p-2">{t('forms.addTemplateForm.table.area') || 'Area'}</th>
-                <th className="p-2">{t('forms.addTemplateForm.table.categories') || 'Categories'}</th>
-                <th className="p-2 w-12 text-right"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {aggregatedTasks.map((task: any, idx: number) => (
-                <tr key={`${task.name}-${idx}`}>
-                  <td className="p-2">{task.name}</td>
-                  <td className="p-2">{task.times}</td>
-                  <td className="p-2 capitalize">{task.area}</td>
-                  <td className="p-2">{Array.isArray(task.categories) ? task.categories.join(', ') : ''}</td>
-                  <td className="p-2 text-right">
-                    <div className="inline-flex">
-                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => {
-                        const updated = aggregatedTasks.map((t: any, i: number) => i === idx ? { ...t, times: (t.times || 1) + 1 } : t)
-                        setForm(prev => ({ ...prev, tasks: updated }))
-                      }}>⋯</Button>
-                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-destructive" onClick={() => {
-                        const updated = aggregatedTasks.filter((_: any, i: number) => i !== idx)
-                        setForm(prev => ({ ...prev, tasks: updated }))
-                      }}>×</Button>
+                <div className="flex justify-end mb-2">
+                  <Button variant="default" onClick={() => setAddTaskOpen(true)}>{t('forms.addTemplateForm.addTaskButton') || 'Add task'}</Button>
+                </div>
+                {addTaskOpen && (
+                  <div className="w-[320px] border rounded-md p-3">
+                    <div className="space-y-2">
+                      <div>
+                        <Label htmlFor="template-task-name">{t('forms.addTemplateForm.task.nameLabel') || 'Name'}</Label>
+                        <Input id="template-task-name" value={addTaskForm.name} onChange={(e) => setAddTaskForm(prev => ({ ...prev, name: e.target.value }))} />
+                      </div>
+                      <div>
+                        <Label htmlFor="template-task-area">{t('forms.addTemplateForm.task.areaLabel') || 'Area'}</Label>
+                        <Select value={addTaskForm.area} onValueChange={(val) => setAddTaskForm(prev => ({ ...prev, area: val }))}>
+                          <SelectTrigger className="w-full" id="template-task-area">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="self">{t('forms.commonOptions.area.self') || 'Self'}</SelectItem>
+                            <SelectItem value="home">{t('forms.commonOptions.area.home') || 'Home'}</SelectItem>
+                            <SelectItem value="social">{t('forms.commonOptions.area.social') || 'Social'}</SelectItem>
+                            <SelectItem value="work">{t('forms.commonOptions.area.work') || 'Work'}</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label htmlFor="template-task-category">{t('forms.addTemplateForm.task.categoryLabel') || 'Category'}</Label>
+                        <Select value={addTaskForm.category} onValueChange={(val) => setAddTaskForm(prev => ({ ...prev, category: val }))}>
+                          <SelectTrigger className="w-full" id="template-task-category">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="custom">{t('forms.commonOptions.category.custom') || 'Custom'}</SelectItem>
+                            <SelectItem value="body">{t('forms.commonOptions.category.body') || 'Body'}</SelectItem>
+                            <SelectItem value="mind">{t('forms.commonOptions.category.mind') || 'Mind'}</SelectItem>
+                            <SelectItem value="spirit">{t('forms.commonOptions.category.spirit') || 'Spirit'}</SelectItem>
+                            <SelectItem value="fun">{t('forms.commonOptions.category.fun') || 'Fun'}</SelectItem>
+                            <SelectItem value="growth">{t('forms.commonOptions.category.growth') || 'Growth'}</SelectItem>
+                            <SelectItem value="community">{t('forms.commonOptions.category.community') || 'Community'}</SelectItem>
+                            <SelectItem value="affection">{t('forms.commonOptions.category.affection') || 'Affection'}</SelectItem>
+                            <SelectItem value="clean">{t('forms.commonOptions.category.clean') || 'Clean'}</SelectItem>
+                            <SelectItem value="maintenance">{t('forms.commonOptions.category.maintenance') || 'Maintenance'}</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label htmlFor="template-task-times">{t('forms.addTemplateForm.task.timesLabel') || '# of times'}</Label>
+                        <Input id="template-task-times" type="number" min={1} value={addTaskForm.times} onChange={(e) => setAddTaskForm(prev => ({ ...prev, times: Math.max(1, Number(e.target.value) || 1) }))} />
+                      </div>
+                      <div className="flex justify-end gap-2 pt-2">
+                        <Button variant="outline" size="sm" onClick={() => setAddTaskOpen(false)}>{t('forms.addTemplateForm.task.cancel') || 'Cancel'}</Button>
+                        <Button size="sm" onClick={() => {
+                          const name = addTaskForm.name.trim()
+                          if (!name) return
+                          const newTask = { name, area: addTaskForm.area as any, categories: [addTaskForm.category], status: 'open', cadence: 'daily', times: addTaskForm.times, count: 0 }
+                          setForm(prev => ({ ...prev, tasks: [...prev.tasks, newTask] }))
+                          setAddTaskForm({ name: '', area: 'self', category: 'custom', times: 1 })
+                          setAddTaskOpen(false)
+                        }}>{t('forms.addTemplateForm.task.add') || 'Add'}</Button>
+                      </div>
                     </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                  </div>
+                )}
+
+                <div className="border rounded-md overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="bg-muted/50 text-left">
+                        <th className="p-2">{t('forms.addTemplateForm.table.name') || 'Name'}</th>
+                        <th className="p-2">{t('forms.addTemplateForm.table.times') || 'Times'}</th>
+                        <th className="p-2">{t('forms.addTemplateForm.table.area') || 'Area'}</th>
+                        <th className="p-2">{t('forms.addTemplateForm.table.categories') || 'Categories'}</th>
+                        <th className="p-2 w-12 text-right"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {aggregatedTasks.map((task: any, idx: number) => (
+                        <tr key={`${task.name}-${idx}`}>
+                          <td className="p-2">{task.name}</td>
+                          <td className="p-2">{task.times}</td>
+                          <td className="p-2 capitalize">{task.area}</td>
+                          <td className="p-2">{Array.isArray(task.categories) ? task.categories.join(', ') : ''}</td>
+                          <td className="p-2 text-right">
+                            <div className="inline-flex">
+                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => {
+                                const updated = aggregatedTasks.map((t: any, i: number) => i === idx ? { ...t, times: (t.times || 1) + 1 } : t)
+                                setForm(prev => ({ ...prev, tasks: updated }))
+                              }}>⋯</Button>
+                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-destructive" onClick={() => {
+                                const updated = aggregatedTasks.filter((_: any, i: number) => i !== idx)
+                                setForm(prev => ({ ...prev, tasks: updated }))
+                              }}>×</Button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
         <div className="flex gap-2">
           <Button size="sm" onClick={handleSubmit} disabled={!form.name.trim()}>{t('forms.addTemplateForm.create') || 'Create'}</Button>
           <Button size="sm" variant="outline" onClick={onCancel}>{t('forms.addTemplateForm.cancel') || 'Cancel'}</Button>

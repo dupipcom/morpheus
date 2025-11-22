@@ -204,6 +204,7 @@
         "default": "Default"
       },
       "addTaskButton": "Add task",
+      "tasks": "Manage tasks",
       "table": {
         "name": "Name",
         "times": "Times",
@@ -229,6 +230,7 @@
         "closeFriends": "Close friends"
       },
       "addTaskButton": "Add task",
+      "tasks": "Manage templates",
       "task": {
         "nameLabel": "Name",
         "areaLabel": "Area",

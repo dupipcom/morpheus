@@ -468,6 +468,7 @@
         "default": "ডিফল্ট"
       },
       "addTaskButton": "কাজ যোগ করুন",
+      "tasks": "কাজ পরিচালনা করুন",
       "table": {
         "name": "নাম",
         "times": "বার",
@@ -494,6 +495,7 @@
         "closeFriends": "ঘনিষ্ঠ বন্ধুরা"
       },
       "addTaskButton": "কাজ যোগ করুন",
+      "tasks": "টেমপ্লেট পরিচালনা করুন",
       "task": {
         "nameLabel": "নাম",
         "areaLabel": "এলাকা",

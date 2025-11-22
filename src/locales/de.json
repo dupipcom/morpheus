@@ -483,6 +483,7 @@
         "default": "Standard"
       },
       "addTaskButton": "Aufgabe hinzufügen",
+      "tasks": "Aufgaben verwalten",
       "table": {
         "name": "Name",
         "times": "Zeiten",
@@ -508,6 +509,7 @@
         "closeFriends": "Enge Freunde"
       },
       "addTaskButton": "Aufgabe hinzufügen",
+      "tasks": "Vorlagen verwalten",
       "task": {
         "nameLabel": "Name",
         "areaLabel": "Bereich",

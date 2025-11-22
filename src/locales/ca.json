@@ -432,6 +432,7 @@
         "default": "Per defecte"
       },
       "addTaskButton": "Afegir tasca",
+      "tasks": "Gestionar tasques",
       "table": {
         "name": "Nom",
         "times": "Vegades",
@@ -458,6 +459,7 @@
         "closeFriends": "Amics propers"
       },
       "addTaskButton": "Afegir tasca",
+      "tasks": "Gestionar plantilles",
       "task": {
         "nameLabel": "Nom",
         "areaLabel": "Zona",

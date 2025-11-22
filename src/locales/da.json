@@ -473,6 +473,7 @@
         "default": "Standard"
       },
       "addTaskButton": "Tilføj opgave",
+      "tasks": "Administrer opgaver",
       "table": {
         "name": "Navn",
         "times": "Gange",
@@ -498,6 +499,7 @@
         "closeFriends": "Nære venner"
       },
       "addTaskButton": "Tilføj opgave",
+      "tasks": "Administrer skabeloner",
       "task": {
         "nameLabel": "Navn",
         "areaLabel": "Område",

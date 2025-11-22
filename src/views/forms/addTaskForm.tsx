@@ -126,7 +126,7 @@ export const AddTaskForm = ({
             type="number"
             min={1}
             value={newTask.times}
-            onChange={(e) => setNewTask(prev => ({ ...prev, times: e.target.value }))}
+            onChange={(e) => setNewTask(prev => ({ ...prev, times: Math.max(1, Number(e.target.value) || 1) }))}
           />
         </div>
         <div className="flex items-center space-x-2">

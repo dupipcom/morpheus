@@ -473,6 +473,7 @@
         "default": "Oletus"
       },
       "addTaskButton": "Lisää tehtävä",
+      "tasks": "Hallitse tehtäviä",
       "table": {
         "name": "Nimi",
         "times": "Kerrat",
@@ -498,6 +499,7 @@
         "closeFriends": "Läheiset ystävät"
       },
       "addTaskButton": "Lisää tehtävä",
+      "tasks": "Hallitse malleja",
       "task": {
         "nameLabel": "Nimi",
         "areaLabel": "Alue",

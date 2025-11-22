@@ -471,6 +471,7 @@
         "default": "Predeterminado"
       },
       "addTaskButton": "Engadir tarefa",
+      "tasks": "Xestionar tarefas",
       "table": {
         "name": "Nome",
         "times": "Veces",
@@ -497,6 +498,7 @@
         "closeFriends": "Amigos próximos"
       },
       "addTaskButton": "Engadir tarefa",
+      "tasks": "Xestionar modelos",
       "task": {
         "nameLabel": "Nome",
         "areaLabel": "Área",

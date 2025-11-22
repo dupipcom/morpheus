@@ -469,6 +469,7 @@
         "default": "Výchozí"
       },
       "addTaskButton": "Přidat úkol",
+      "tasks": "Spravovat úkoly",
       "table": {
         "name": "Název",
         "times": "Časy",
@@ -494,6 +495,7 @@
         "closeFriends": "Blízcí přátelé"
       },
       "addTaskButton": "Přidat úkol",
+      "tasks": "Spravovat šablony",
       "task": {
         "nameLabel": "Název",
         "areaLabel": "Oblast",

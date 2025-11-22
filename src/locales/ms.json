@@ -472,6 +472,7 @@
         "default": "Lalai"
       },
       "addTaskButton": "Tambah tugas",
+      "tasks": "Urus tugas",
       "table": {
         "name": "Nama",
         "times": "Kali",
@@ -498,6 +499,7 @@
         "closeFriends": "Rakan rapat"
       },
       "addTaskButton": "Tambah tugas",
+      "tasks": "Urus templat",
       "task": {
         "nameLabel": "Nama",
         "areaLabel": "Kawasan",

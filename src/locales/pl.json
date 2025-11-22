@@ -487,6 +487,7 @@
         "default": "Domyślna"
       },
       "addTaskButton": "Dodaj zadanie",
+      "tasks": "Zarządzaj zadaniami",
       "table": {
         "name": "Nazwa",
         "times": "Czasy",
@@ -512,6 +513,7 @@
         "closeFriends": "Bliscy przyjaciele"
       },
       "addTaskButton": "Dodaj zadanie",
+      "tasks": "Zarządzaj szablonami",
       "task": {
         "nameLabel": "Nazwa",
         "areaLabel": "Obszar",

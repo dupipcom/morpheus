@@ -483,6 +483,7 @@
         "default": "기본"
       },
       "addTaskButton": "작업 추가",
+      "tasks": "작업 관리",
       "table": {
         "name": "이름",
         "times": "횟수",
@@ -508,6 +509,7 @@
         "closeFriends": "가까운 친구"
       },
       "addTaskButton": "작업 추가",
+      "tasks": "템플릿 관리",
       "task": {
         "nameLabel": "이름",
         "areaLabel": "영역",

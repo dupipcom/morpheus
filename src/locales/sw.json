@@ -480,6 +480,7 @@
         "default": "Chaguo-msingi"
       },
       "addTaskButton": "Ongeza kazi",
+      "tasks": "Simamia kazi",
       "table": {
         "name": "Jina",
         "times": "Mara",
@@ -506,6 +507,7 @@
         "closeFriends": "Marafiki wa karibu"
       },
       "addTaskButton": "Ongeza kazi",
+      "tasks": "Simamia viwango",
       "task": {
         "nameLabel": "Jina",
         "areaLabel": "Eneo",

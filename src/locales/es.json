@@ -483,6 +483,7 @@
         "default": "Predeterminado"
       },
       "addTaskButton": "Agregar tarea",
+      "tasks": "Gestionar tareas",
       "table": {
         "name": "Nombre",
         "times": "Veces",
@@ -508,6 +509,7 @@
         "closeFriends": "Amigos cercanos"
       },
       "addTaskButton": "Agregar tarea",
+      "tasks": "Gestionar plantillas",
       "task": {
         "nameLabel": "Nombre",
         "areaLabel": "Área",

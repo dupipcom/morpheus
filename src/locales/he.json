@@ -469,6 +469,7 @@
         "default": "ברירת מחדל"
       },
       "addTaskButton": "הוסף משימה",
+      "tasks": "נהל משימות",
       "table": {
         "name": "שם",
         "times": "פעמים",
@@ -494,6 +495,7 @@
         "closeFriends": "חברים קרובים"
       },
       "addTaskButton": "הוסף משימה",
+      "tasks": "נהל תבניות",
       "task": {
         "nameLabel": "שם",
         "areaLabel": "תחום",

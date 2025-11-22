@@ -483,6 +483,7 @@
         "default": "По умолчанию"
       },
       "addTaskButton": "Добавить задание",
+      "tasks": "Управление задачами",
       "table": {
         "name": "Имя",
         "times": "Times",
@@ -508,6 +509,7 @@
         "closeFriends": "Близкие друзья"
       },
       "addTaskButton": "Добавить задание",
+      "tasks": "Управление шаблонами",
       "task": {
         "nameLabel": "Имя",
         "areaLabel": "Область",

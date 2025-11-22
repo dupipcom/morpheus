@@ -470,6 +470,7 @@
         "default": "Lehenetsia"
       },
       "addTaskButton": "Ataza gehitu",
+      "tasks": "Kudeatu atazak",
       "table": {
         "name": "Izena",
         "times": "Aldiz",
@@ -496,6 +497,7 @@
         "closeFriends": "Lagun hurbilak"
       },
       "addTaskButton": "Ataza gehitu",
+      "tasks": "Kudeatu txantiloiak",
       "task": {
         "nameLabel": "Izena",
         "areaLabel": "Arloa",

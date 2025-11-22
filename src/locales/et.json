@@ -468,6 +468,7 @@
         "default": "Vaikimisi"
       },
       "addTaskButton": "Lisa ülesanne",
+      "tasks": "Halda ülesandeid",
       "table": {
         "name": "Nimi",
         "times": "Korda",
@@ -494,6 +495,7 @@
         "closeFriends": "Lähedased sõbrad"
       },
       "addTaskButton": "Lisa ülesanne",
+      "tasks": "Halda malle",
       "task": {
         "nameLabel": "Nimi",
         "areaLabel": "Valdkond",

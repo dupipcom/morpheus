@@ -466,6 +466,7 @@
         "default": "Alapértelmezett"
       },
       "addTaskButton": "Feladat hozzáadása",
+      "tasks": "Feladatok kezelése",
       "table": {
         "name": "Név",
         "times": "Alkalommal",
@@ -491,6 +492,7 @@
         "closeFriends": "Közeli barátok"
       },
       "addTaskButton": "Feladat hozzáadása",
+      "tasks": "Sablonok kezelése",
       "task": {
         "nameLabel": "Név",
         "areaLabel": "Terület",

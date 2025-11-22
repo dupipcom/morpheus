@@ -483,6 +483,7 @@
         "default": "Padrão"
       },
       "addTaskButton": "Adicionar tarefa",
+      "tasks": "Gerenciar tarefas",
       "table": {
         "name": "Nome",
         "times": "Vezes",
@@ -508,6 +509,7 @@
         "closeFriends": "Amigos próximos"
       },
       "addTaskButton": "Adicionar tarefa",
+      "tasks": "Gerenciar modelos",
       "task": {
         "nameLabel": "Nome",
         "areaLabel": "Área",

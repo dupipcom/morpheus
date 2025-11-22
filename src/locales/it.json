@@ -483,6 +483,7 @@
         "default": "Predefinito"
       },
       "addTaskButton": "Aggiungi attività",
+      "tasks": "Gestisci attività",
       "table": {
         "name": "Nome",
         "times": "Volte",
@@ -508,6 +509,7 @@
         "closeFriends": "Amici stretti"
       },
       "addTaskButton": "Aggiungi attività",
+      "tasks": "Gestisci modelli",
       "task": {
         "nameLabel": "Nome",
         "areaLabel": "Area",

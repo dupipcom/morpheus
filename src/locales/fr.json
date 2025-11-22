@@ -483,6 +483,7 @@
         "default": "Par défaut"
       },
       "addTaskButton": "Ajouter une tâche",
+      "tasks": "Gérer les tâches",
       "table": {
         "name": "Nom",
         "times": "Fois",
@@ -508,6 +509,7 @@
         "closeFriends": "Amis Proches"
       },
       "addTaskButton": "Ajouter une tâche",
+      "tasks": "Gérer les modèles",
       "task": {
         "nameLabel": "Nom",
         "areaLabel": "Zone",

@@ -472,6 +472,7 @@
         "default": "ਡਿਫੌਲਟ"
       },
       "addTaskButton": "ਕੰਮ ਜੋੜੋ",
+      "tasks": "ਕੰਮ ਪ੍ਰਬੰਧਿਤ ਕਰੋ",
       "table": {
         "name": "ਨਾਮ",
         "times": "ਵਾਰੀ",
@@ -498,6 +499,7 @@
         "closeFriends": "ਨਜ਼ਦੀਕੀ ਦੋਸਤ"
       },
       "addTaskButton": "ਕੰਮ ਜੋੜੋ",
+      "tasks": "ਟੈਂਪਲੇਟ ਪ੍ਰਬੰਧਿਤ ਕਰੋ",
       "task": {
         "nameLabel": "ਨਾਮ",
         "areaLabel": "ਖੇਤਰ",

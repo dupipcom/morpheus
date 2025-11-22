@@ -469,6 +469,7 @@
         "default": "डिफ़ॉल्ट"
       },
       "addTaskButton": "कार्य जोड़ें",
+      "tasks": "कार्य प्रबंधित करें",
       "table": {
         "name": "नाम",
         "times": "बार",
@@ -494,6 +495,7 @@
         "closeFriends": "नजदीकी मित्र"
       },
       "addTaskButton": "कार्य जोड़ें",
+      "tasks": "टेम्पलेट प्रबंधित करें",
       "task": {
         "nameLabel": "नाम",
         "areaLabel": "क्षेत्र",

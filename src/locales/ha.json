@@ -478,6 +478,7 @@
         "default": "Asali"
       },
       "addTaskButton": "Ƙara aiki",
+      "tasks": "Sarrafa ayyuka",
       "table": {
         "name": "Suna",
         "times": "Sau",
@@ -504,6 +505,7 @@
         "closeFriends": "Abokai na kusa"
       },
       "addTaskButton": "Ƙara aiki",
+      "tasks": "Sarrafa samfura",
       "task": {
         "nameLabel": "Suna",
         "areaLabel": "Yanki",
