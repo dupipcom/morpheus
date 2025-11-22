@@ -1,6 +1,95 @@
 import { getWeekNumber } from '@/app/helpers'
 
-type TaskStatus = 'in progress' | 'steady' | 'ready' | 'open' | 'done' | 'ignored'
+export type TaskStatus = 'in progress' | 'steady' | 'ready' | 'open' | 'done' | 'ignored'
+
+export const STATUS_OPTIONS: TaskStatus[] = ['in progress', 'steady', 'ready', 'open', 'done', 'ignored']
+
+/**
+ * Get a unique key for a task (id > localeKey > name)
+ */
+export function getTaskKey(task: any): string {
+  return task?.id || task?.localeKey || (typeof task?.name === 'string' ? task.name.toLowerCase() : '')
+}
+
+/**
+ * Get status color for CSS or Tailwind
+ */
+export function getStatusColor(status: TaskStatus, format: 'css' | 'tailwind' = 'css'): string {
+  if (format === 'css') {
+    const colorMap: Record<TaskStatus, string> = {
+      'in progress': 'var(--status-in-progress)',
+      'steady': 'var(--status-steady)',
+      'ready': 'var(--status-ready)',
+      'open': 'var(--status-open)',
+      'done': 'var(--status-done)',
+      'ignored': 'var(--status-ignored)',
+    }
+    return colorMap[status] || 'transparent'
+  } else {
+    const colorMap: Record<TaskStatus, string> = {
+      'in progress': 'status-in-progress',
+      'steady': 'status-steady',
+      'ready': 'status-ready',
+      'open': 'status-open',
+      'done': 'status-done',
+      'ignored': 'status-ignored',
+    }
+    return colorMap[status] || 'transparent'
+  }
+}
+
+/**
+ * Get icon color for a status
+ */
+export function getIconColor(status: TaskStatus): string {
+  const colorMap: Record<TaskStatus, string> = {
+    'in progress': 'var(--accent-foreground)',
+    'steady': 'var(--accent-foreground)',
+    'ready': 'var(--accent-foreground)',
+    'open': 'var(--accent)',
+    'done': 'var(--background)',
+    'ignored': 'var(--accent)',
+  }
+  return colorMap[status] || 'transparent'
+}
+
+/**
+ * Get task status from task object, considering optimistic updates
+ */
+export function getTaskStatus(
+  task: any,
+  optimisticStatuses?: Record<string, TaskStatus>
+): TaskStatus {
+  const key = getTaskKey(task)
+  if (optimisticStatuses?.[key]) {
+    return optimisticStatuses[key]
+  }
+  if (task.status && STATUS_OPTIONS.includes(task.status as TaskStatus)) {
+    return task.status as TaskStatus
+  }
+  if (task.status === 'done') {
+    return 'done'
+  }
+  const count = task.count || 0
+  const times = task.times || 1
+  if (count > 0 && count < times) {
+    return 'in progress'
+  }
+  if (count >= times) {
+    return 'done'
+  }
+  return 'open'
+}
+
+/**
+ * Format date in local timezone (YYYY-MM-DD)
+ */
+export function formatDateLocal(date: Date): string {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
 
 /**
  * Calculate the new status based on count and times

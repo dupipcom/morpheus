@@ -3,54 +3,15 @@
 import { useMemo, useContext, useEffect, useState, useCallback, useRef } from 'react'
 import { GlobalContext } from '@/lib/contexts'
 import { Skeleton } from '@/components/ui/skeleton'
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggleGroup'
-import { OptionsButton, OptionsMenuItem } from '@/components/optionsButton'
+import { OptionsMenuItem } from '@/components/optionsButton'
 import { Circle, Minus, ChevronDown, ChevronUp, Eye, EyeOff } from 'lucide-react'
 import { useI18n } from '@/lib/contexts/i18n'
-import { prepareIncrementActions, prepareDecrementActions, handleEphemeralTaskUpdate, calculateTaskStatus } from '@/lib/taskUtils'
+import { TaskStatus, STATUS_OPTIONS, getStatusColor, getIconColor, getTaskKey, formatDateLocal } from '@/lib/taskUtils'
 import { useUserData } from '@/lib/userUtils'
 import { getWeekNumber } from '@/app/helpers'
-
-type TaskStatus = 'in progress' | 'steady' | 'ready' | 'open' | 'done' | 'ignored'
-
-const STATUS_OPTIONS: TaskStatus[] = ['in progress', 'steady', 'ready', 'open', 'done', 'ignored']
-
-const getStatusColor = (status: TaskStatus, format = "css"): string => {
-  if (format === 'css') {
-    const colorMap: Record<TaskStatus, string> = {
-      'in progress': 'var(--status-in-progress)',
-      'steady': 'var(--status-steady)',
-      'ready': 'var(--status-ready)',
-      'open': 'var(--status-open)',
-      'done': 'var(--status-done)',
-      'ignored': 'var(--status-ignored)',
-    }
-    return colorMap[status] || 'transparent'
-  } else if (format === 'tailwind') {
-    const colorMap: Record<TaskStatus, string> = {
-      'in progress': 'status-in-progress',
-      'steady': 'status-steady',
-      'ready': 'status-ready',
-      'open': 'status-open',
-      'done': 'status-done',
-      'ignored': 'status-ignored',
-    }
-    return colorMap[status] || 'transparent'
-  }
-  return 'transparent'
-}
-
-const getIconColor = (status: TaskStatus): string => {
-  const colorMap: Record<TaskStatus, string> = {
-    'in progress': 'var(--accent-foreground)',
-    'steady': 'var(--accent-foreground)',
-    'ready': 'var(--accent-foreground)',
-    'open': 'var(--accent)',
-    'done': 'var(--background)',
-    'ignored': 'var(--accent)',
-  }
-  return colorMap[status] || 'transparent'
-}
+import { TaskItem } from '@/components/taskItem'
+import { useOptimisticUpdates } from '@/lib/hooks/useOptimisticUpdates'
+import { useTaskHandlers } from '@/lib/hooks/useTaskHandlers'
 
 export const SteadyTasks = () => {
   const { taskLists: contextTaskLists, refreshTaskLists, revealRedacted } = useContext(GlobalContext)
@@ -64,11 +25,8 @@ export const SteadyTasks = () => {
   const initialFetchDone = useRef(false)
   const initialLoadDone = useRef(false)
 
-  // Track pending completion requests and status updates to protect optimistic updates
-  // Maps task key to the optimistic state (count, status, and whether it's in closedTasks)
-  const pendingCompletionsRef = useRef<Map<string, { count: number; status: TaskStatus; inClosed: boolean }>>(new Map())
-  // Track pending status updates (for status changes via icon button)
-  const pendingStatusUpdatesRef = useRef<Map<string, TaskStatus>>(new Map())
+  // Use shared hooks for optimistic updates
+  const { pendingCompletionsRef, pendingStatusUpdatesRef } = useOptimisticUpdates()
 
   // Maintain stable task lists that never clear once loaded
   useEffect(() => {
@@ -101,7 +59,7 @@ export const SteadyTasks = () => {
               if (pendingStatusUpdatesRef.current.size === 0) return taskList
             }
             
-            const keyOf = (t: any) => (t?.id || t?.localeKey || (typeof t?.name === 'string' ? t.name.toLowerCase() : '')) as string
+            const keyOf = getTaskKey
             
             // Find tasks that have pending completions or status updates in this task list
             const prevOpenTasks = prevDateBucket ? (Array.isArray(prevDateBucket.openTasks) ? prevDateBucket.openTasks : []) : []
@@ -273,18 +231,13 @@ export const SteadyTasks = () => {
     
     // Get today's date in YYYY-MM-DD format (local timezone)
     const today = new Date()
-    const dateISO = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+    const dateISO = formatDateLocal(today)
     const year = today.getFullYear()
-    
-    // Helper to get task key
-    const keyOf = (t: any) => (t?.id || t?.localeKey || (typeof t?.name === 'string' ? t.name.toLowerCase() : '')) as string
     
     // Helper to get unique taskId (prefer id, then localeKey, then name)
     const getTaskId = (t: any): string | null => {
-      if (t?.id) return String(t.id)
-      if (t?.localeKey) return String(t.localeKey)
-      if (typeof t?.name === 'string') return t.name.toLowerCase()
-      return null
+      const key = getTaskKey(t)
+      return key || null
     }
     
     stableTaskLists.forEach((taskList: any) => {
@@ -302,7 +255,7 @@ export const SteadyTasks = () => {
         if (Array.isArray(dateBucket)) {
           // Legacy structure: migrate on read
           dateBucket.forEach((t: any) => {
-            const k = keyOf(t)
+            const k = getTaskKey(t)
             if (!k) return
             if (t.status !== 'done' && (t.count || 0) < (t.times || 1)) {
               if (!openTasksByKey[k]) {
@@ -315,7 +268,7 @@ export const SteadyTasks = () => {
           // New structure: read from openTasks
           const openTasks = Array.isArray(dateBucket.openTasks) ? dateBucket.openTasks : []
           openTasks.forEach((t: any) => {
-            const k = keyOf(t)
+            const k = getTaskKey(t)
             if (!k) return
             if (!openTasksByKey[k]) {
               openTasksByKey[k] = t
@@ -328,7 +281,7 @@ export const SteadyTasks = () => {
       // Merge base tasks with openTasks from completedTasks
       // Use openTasks status if available, otherwise fall back to base task status
       const mergedBaseTasks = baseTasks.map((baseTask: any) => {
-        const k = keyOf(baseTask)
+        const k = getTaskKey(baseTask)
         const openTask = k ? openTasksByKey[k] : undefined
         
         const taskKey = k
@@ -347,14 +300,14 @@ export const SteadyTasks = () => {
       })
       
       // Add any openTasks that aren't in base tasks
-      const baseKeys = new Set(baseTasks.map((t: any) => keyOf(t)))
+      const baseKeys = new Set(baseTasks.map((t: any) => getTaskKey(t)))
       const additionalOpenTasks = openTasksFromCompleted
         .filter((t: any) => {
-          const k = keyOf(t)
+          const k = getTaskKey(t)
           return k && !baseKeys.has(k)
         })
         .map((t: any) => {
-          const taskKey = keyOf(t)
+          const taskKey = getTaskKey(t)
           const optimisticStatus = optimisticStatuses[taskKey]
           const optimisticCount = optimisticCounts[taskKey]
           return {
@@ -369,7 +322,7 @@ export const SteadyTasks = () => {
       
       // Get ephemeral tasks from ephemeralTasks.open (read status directly from there)
       const ephemeralTasks = (taskList?.ephemeralTasks?.open || []).map((t: any) => {
-        const taskKey = keyOf(t)
+        const taskKey = getTaskKey(t)
         const optimisticStatus = optimisticStatuses[taskKey]
         const optimisticCount = optimisticCounts[taskKey]
         return {
@@ -438,296 +391,35 @@ export const SteadyTasks = () => {
     })
   }, [stableTaskLists, optimisticStatuses, optimisticCounts])
 
+  // Use shared task handlers
+  const {
+    handleStatusChange: handleStatusChangeBase,
+    handleIncrementCount,
+    handleDecrementCount,
+    handleToggleRedacted: handleToggleRedactedBase,
+  } = useTaskHandlers({
+    taskListId: '', // Will be provided per-task
+    tasks: steadyTasks,
+    date: formatDateLocal(new Date()),
+    onRefresh: refreshTaskLists,
+    onRefreshUser: refreshUser,
+    pendingCompletionsRef,
+    pendingStatusUpdatesRef,
+    optimisticStatuses,
+    setOptimisticStatuses,
+    optimisticCounts,
+    setOptimisticCounts,
+    findTaskList: (id: string) => stableTaskLists.find((tl: any) => tl.id === id),
+  })
+
+  // Wrapper handlers that provide taskListId from task
   const handleStatusChange = useCallback(async (task: any, taskListId: string, newStatus: TaskStatus) => {
-    const key = task?.id || task?.localeKey || task?.name
-    
-    // Track pending status update
-    pendingStatusUpdatesRef.current.set(key, newStatus)
-    
-    // Track pending completion if status is "done"
-    if (newStatus === 'done') {
-      const currentCount = task.count || 0
-      const times = task.times || 1
-      const newCount = currentCount + 1
-      const isFullyCompleted = newCount >= times
-      
-      pendingCompletionsRef.current.set(key, {
-        count: newCount,
-        status: newStatus,
-        inClosed: isFullyCompleted
-      })
-    }
-    
-    // Optimistic update - update UI immediately
-    setOptimisticStatuses(prev => ({
-      ...prev,
-      [key]: newStatus
-    }))
-    
-    try {
-      // Get today's date in local timezone (YYYY-MM-DD format)
-      const today = new Date()
-      const dateISO = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
-      
-      await fetch('/api/v1/tasklists', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          updateTaskStatus: true,
-          taskListId: taskListId,
-          taskKey: key,
-          taskStatus: newStatus,
-          date: dateISO // Include date so task is copied to completedTasks
-        })
-      })
-      
-      // Refresh task lists to get server state
-      await refreshTaskLists()
-      
-      // Clear optimistic status and pending updates after successful update
-      setOptimisticStatuses(prev => {
-        const updated = { ...prev }
-        delete updated[key]
-        return updated
-      })
-      pendingCompletionsRef.current.delete(key)
-      pendingStatusUpdatesRef.current.delete(key)
-    } catch (error) {
-      console.error('Error updating task status:', error)
-      // Revert optimistic update on error
-      setOptimisticStatuses(prev => {
-        const updated = { ...prev }
-        delete updated[key]
-        return updated
-      })
-      pendingCompletionsRef.current.delete(key)
-      pendingStatusUpdatesRef.current.delete(key)
-    }
-  }, [refreshTaskLists])
+    await handleStatusChangeBase(task, newStatus)
+  }, [handleStatusChangeBase])
 
   const handleToggleRedacted = useCallback(async (task: any, taskListId: string) => {
-    const key = task?.id || task?.localeKey || task?.name
-    const currentRedacted = task?.redacted || false
-    const newRedacted = !currentRedacted
-
-    try {
-      await fetch('/api/v1/tasklists', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          updateTaskRedacted: true,
-          taskListId: taskListId,
-          taskKey: key,
-          redacted: newRedacted
-        })
-      })
-      await refreshTaskLists()
-    } catch (error) {
-      console.error('Error toggling task redacted status:', error)
-    }
-  }, [refreshTaskLists])
-  
-  const handleIncrementCount = useCallback(async (task: any) => {
-    if (!task.taskListId) return
-    
-    const taskKey = task?.id || task?.localeKey || task?.name
-    const currentCount = task.count || 0
-    const times = task.times || 1
-    const newCount = currentCount + 1
-    
-    // Track pending completion
-    const isFullyCompleted = newCount >= times
-    const { taskStatus } = calculateTaskStatus(newCount, times, task.taskStatus as TaskStatus)
-    pendingCompletionsRef.current.set(taskKey, {
-      count: newCount,
-      status: taskStatus,
-      inClosed: isFullyCompleted
-    })
-    
-    // Optimistic update
-    setOptimisticCounts(prev => ({ ...prev, [taskKey]: newCount }))
-    setOptimisticStatuses(prev => ({ ...prev, [taskKey]: taskStatus }))
-    
-    try {
-      // Find the task list
-      const taskList = stableTaskLists.find((tl: any) => tl.id === task.taskListId)
-      if (!taskList) return
-      
-      // Get all tasks from the task list
-      const baseTasks = (taskList?.tasks && taskList.tasks.length > 0)
-        ? taskList.tasks
-        : (taskList?.templateTasks || [])
-      const ephemerals = (taskList?.ephemeralTasks?.open || [])
-      const allTasks = [...baseTasks, ...ephemerals]
-      
-      // Prepare next actions
-      const nextActions = prepareIncrementActions(
-        allTasks,
-        task.name,
-        currentCount,
-        times,
-        task.taskStatus as TaskStatus
-      )
-      
-      // Get today's date
-      const today = new Date()
-      const date = today.toISOString().split('T')[0]
-      
-      // Persist to backend
-      await fetch('/api/v1/tasklists', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          recordCompletions: true,
-          taskListId: task.taskListId,
-          dayActions: nextActions,
-          date,
-          justCompletedNames: [task.name],
-          justUncompletedNames: []
-        })
-      })
-      
-      // Handle ephemeral tasks
-      const ephemeralTask = ephemerals.find((e: any) => e.name === task.name)
-      if (ephemeralTask) {
-        const updatedAction = nextActions.find((a: any) => a.name === task.name)
-        if (updatedAction) {
-          const closedEphemerals = (taskList?.ephemeralTasks?.closed || [])
-          const isInClosed = closedEphemerals.some((t: any) => t.id === ephemeralTask.id)
-          await handleEphemeralTaskUpdate(ephemeralTask, updatedAction, task.taskListId, isInClosed)
-        }
-      }
-      
-      await refreshTaskLists()
-      await refreshUser()
-      
-      // Clear optimistic updates and pending completion
-      setOptimisticCounts(prev => {
-        const updated = { ...prev }
-        delete updated[taskKey]
-        return updated
-      })
-      setOptimisticStatuses(prev => {
-        const updated = { ...prev }
-        delete updated[taskKey]
-        return updated
-      })
-      pendingCompletionsRef.current.delete(taskKey)
-    } catch (error) {
-      console.error('Error incrementing count:', error)
-      // Revert optimistic updates
-      setOptimisticCounts(prev => {
-        const updated = { ...prev }
-        delete updated[taskKey]
-        return updated
-      })
-      setOptimisticStatuses(prev => {
-        const updated = { ...prev }
-        delete updated[taskKey]
-        return updated
-      })
-      pendingCompletionsRef.current.delete(taskKey)
-    }
-  }, [stableTaskLists, refreshTaskLists, refreshUser])
-  
-  const handleDecrementCount = useCallback(async (task: any) => {
-    if (!task.taskListId) return
-    
-    const taskKey = task?.id || task?.localeKey || task?.name
-    const currentCount = task.count || 0
-    const times = task.times || 1
-    
-    // Can't decrement below 0
-    if (currentCount <= 0) return
-    
-    const newCount = currentCount - 1
-    
-    // Optimistic update
-    setOptimisticCounts(prev => ({ ...prev, [taskKey]: newCount }))
-    const { taskStatus } = calculateTaskStatus(newCount, times, task.taskStatus as TaskStatus)
-    setOptimisticStatuses(prev => ({ ...prev, [taskKey]: taskStatus }))
-    
-    try {
-      // Find the task list
-      const taskList = stableTaskLists.find((tl: any) => tl.id === task.taskListId)
-      if (!taskList) return
-      
-      // Get all tasks from the task list
-      const baseTasks = (taskList?.tasks && taskList.tasks.length > 0)
-        ? taskList.tasks
-        : (taskList?.templateTasks || [])
-      const ephemerals = (taskList?.ephemeralTasks?.open || [])
-      const allTasks = [...baseTasks, ...ephemerals]
-      
-      // Prepare next actions
-      const nextActions = prepareDecrementActions(
-        allTasks,
-        task.name,
-        currentCount,
-        times,
-        task.taskStatus as TaskStatus
-      )
-      
-      // Get today's date
-      const today = new Date()
-      const date = today.toISOString().split('T')[0]
-      
-      // Persist to backend
-      await fetch('/api/v1/tasklists', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          recordCompletions: true,
-          taskListId: task.taskListId,
-          dayActions: nextActions,
-          date,
-          justCompletedNames: [],
-          justUncompletedNames: []
-        })
-      })
-      
-      // Handle ephemeral tasks
-      const ephemeralTask = ephemerals.find((e: any) => e.name === task.name)
-      if (ephemeralTask) {
-        const updatedAction = nextActions.find((a: any) => a.name === task.name)
-        if (updatedAction) {
-          const closedEphemerals = (taskList?.ephemeralTasks?.closed || [])
-          const isInClosed = closedEphemerals.some((t: any) => t.id === ephemeralTask.id)
-          await handleEphemeralTaskUpdate(ephemeralTask, updatedAction, task.taskListId, isInClosed)
-        }
-      }
-      
-      await refreshTaskLists()
-      await refreshUser()
-      
-      // Clear optimistic updates and pending completion
-      setOptimisticCounts(prev => {
-        const updated = { ...prev }
-        delete updated[taskKey]
-        return updated
-      })
-      setOptimisticStatuses(prev => {
-        const updated = { ...prev }
-        delete updated[taskKey]
-        return updated
-      })
-      pendingCompletionsRef.current.delete(taskKey)
-    } catch (error) {
-      console.error('Error decrementing count:', error)
-      // Revert optimistic updates
-      setOptimisticCounts(prev => {
-        const updated = { ...prev }
-        delete updated[taskKey]
-        return updated
-      })
-      setOptimisticStatuses(prev => {
-        const updated = { ...prev }
-        delete updated[taskKey]
-        return updated
-      })
-      pendingCompletionsRef.current.delete(taskKey)
-    }
-  }, [stableTaskLists, refreshTaskLists, refreshUser])
+    await handleToggleRedactedBase(task)
+  }, [handleToggleRedactedBase])
   
   const handleToggleClick = useCallback((task: any) => {
     // For tasks with times > 1, increment count instead of immediately marking as done
@@ -745,21 +437,14 @@ export const SteadyTasks = () => {
   if (isLoading) {
     return (
       <div className="w-full px-1 sm:px-0">
-        <ToggleGroup
-          value={[]}
-          onValueChange={() => {}}
-          variant="outline"
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 align-center justify-center w-full m-auto"
-          type="multiple"
-          orientation="horizontal"
-        >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 align-center justify-center w-full m-auto gap-2">
           {/* Show 1 skeleton on mobile, 8 on desktop */}
           {[...Array(10)].map((_, index) => (
-            <div key={`skeleton-${index}`} className={`flex flex-col items-center m-1 ${index >= 1 ? 'hidden md:flex' : ''}`}>
+            <div key={`skeleton-${index}`} className={`flex flex-col items-center ${index >= 1 ? 'hidden md:flex' : ''}`}>
               <Skeleton className="h-[40px] w-full rounded-md" />
             </div>
           ))}
-        </ToggleGroup>
+        </div>
       </div>
     )
   }
@@ -776,15 +461,8 @@ export const SteadyTasks = () => {
   const mobileLimit = isExpanded ? mobileExpandedLimit : mobileInitialLimit
 
   return (
-    <div className="space-y-4 w-full px-1 sm:px-0 relative">
-      <ToggleGroup
-        value={[]}
-        onValueChange={() => {}}
-        variant="outline"
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 align-center justify-center w-full m-auto"
-        type="multiple"
-        orientation="horizontal"
-      >
+    <div className="space-y-4 w-full mt-4 px-1 sm:px-0 relative">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 align-center justify-center w-full m-auto gap-2">
         {steadyTasks.map((task: any, index: number) => {
           const taskStatus: TaskStatus = (task?.taskStatus as TaskStatus) || 'open'
           const statusColor = getStatusColor(taskStatus, 'css')
@@ -796,13 +474,13 @@ export const SteadyTasks = () => {
           const isBeyondMobileLimit = index >= mobileLimit
           const isBeyondDesktopLimit = index >= desktopLimit
           
-          let visibilityClass = 'flex flex-col items-center m-1'
+          let visibilityClass = ''
           if (isBeyondDesktopLimit) {
             // Hide on all screens
-            visibilityClass += ' hidden'
+            visibilityClass = 'hidden'
           } else if (isBeyondMobileLimit) {
             // Hide on mobile, show on desktop
-            visibilityClass += ' hidden md:flex'
+            visibilityClass = 'hidden md:flex'
           }
           
           const optionsMenuItems: OptionsMenuItem[] = [
@@ -838,32 +516,21 @@ export const SteadyTasks = () => {
           ]
           
           return (
-            <div 
-              key={`task__item--${task.name || index}`} 
+            <TaskItem
+              key={`task__item--${task.name || index}`}
+              task={task}
+              taskStatus={taskStatus}
+              statusColor={statusColor}
+              iconColor={iconColor}
+              optionsMenuItems={optionsMenuItems}
+              onClick={() => handleToggleClick(task)}
+              revealRedacted={revealRedacted}
               className={visibilityClass}
-            >
-              <ToggleGroupItem 
-                className="rounded-md leading-7 text-sm min-h-[40px] h-auto w-full whitespace-normal break-words py-2 cursor-pointer flex items-center gap-2" 
-                value={task.name} 
-                aria-label={(task?.redacted === true && !revealRedacted) ? 'Redacted task' : (task.displayName || task.name)}
-                onClick={() => handleToggleClick(task)}
-              >
-                <OptionsButton
-                  items={optionsMenuItems}
-                  statusColor={statusColor}
-                  iconColor={iconColor}
-                  iconFilled={taskStatus === "done"}
-                  align="start"
-                />
-                <span className="flex-1">
-                  {task.times > 1 ? `${task.count || 0}/${task.times} ` : ''}
-                  {(task?.redacted === true && !revealRedacted) ? '·····' : (task.displayName || task.name)}
-                </span>
-              </ToggleGroupItem>
-            </div>
+              variant="outline"
+            />
           )
         })}
-      </ToggleGroup>
+      </div>
       {/* Expand button: overlay on first task when collapsed, below tasks when expanded */}
       {hasMoreTasks && (
         <>
