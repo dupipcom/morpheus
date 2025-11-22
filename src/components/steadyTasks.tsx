@@ -24,6 +24,7 @@ export const SteadyTasks = () => {
   const [optimisticCounts, setOptimisticCounts] = useState<Record<string, number>>({})
   const initialFetchDone = useRef(false)
   const initialLoadDone = useRef(false)
+  const taskRefs = useRef<Map<number, HTMLDivElement>>(new Map())
 
   // Use shared hooks for optimistic updates
   const { pendingCompletionsRef, pendingStatusUpdatesRef } = useOptimisticUpdates()
@@ -474,6 +475,10 @@ export const SteadyTasks = () => {
           const isBeyondMobileLimit = index >= mobileLimit
           const isBeyondDesktopLimit = index >= desktopLimit
           
+          // Calculate if this item should be visible
+          const shouldShowOnMobile = !isBeyondMobileLimit || isExpanded
+          const shouldShowOnDesktop = !isBeyondDesktopLimit
+          
           const optionsMenuItems: OptionsMenuItem[] = [
             ...STATUS_OPTIONS.map((status) => ({
               label: (
@@ -506,31 +511,35 @@ export const SteadyTasks = () => {
               : []),
           ]
           
-          // Determine if item should be hidden (take no space)
-          const isHiddenOnMobile = isBeyondMobileLimit
-          const isHiddenOnAll = isBeyondDesktopLimit
-          
           return (
             <div
               key={`task__wrapper--${task.name || index}`}
-              className={`transition-all duration-300 ease-in-out overflow-hidden ${
-                isHiddenOnAll
-                  ? 'opacity-0 max-h-0 m-0 p-0 md:opacity-0 md:max-h-0 md:m-0 md:p-0'
-                  : isHiddenOnMobile
-                  ? 'opacity-0 max-h-0 m-0 p-0 md:opacity-100 md:max-h-[500px] md:m-auto md:p-auto'
-                  : 'opacity-100 max-h-[500px]'
-              }`}
+              className="contents"
             >
-              <TaskItem
-                task={task}
-                taskStatus={taskStatus}
-                statusColor={statusColor}
-                iconColor={iconColor}
-                optionsMenuItems={optionsMenuItems}
-                onClick={() => handleToggleClick(task)}
-                revealRedacted={revealRedacted}
-                variant="outline"
-              />
+              <div
+                className={`transition-all duration-300 ease-in-out overflow-hidden ${
+                  !shouldShowOnDesktop
+                    ? 'max-h-0 opacity-0 md:max-h-0 md:opacity-0'
+                    : !shouldShowOnMobile
+                    ? 'max-h-0 opacity-0 md:max-h-[1000px] md:opacity-100'
+                    : 'max-h-[1000px] opacity-100'
+                }`}
+                style={{
+                  margin: (!shouldShowOnDesktop || !shouldShowOnMobile) ? '0' : undefined,
+                  padding: (!shouldShowOnDesktop || !shouldShowOnMobile) ? '0' : undefined,
+                }}
+              >
+                <TaskItem
+                  task={task}
+                  taskStatus={taskStatus}
+                  statusColor={statusColor}
+                  iconColor={iconColor}
+                  optionsMenuItems={optionsMenuItems}
+                  onClick={() => handleToggleClick(task)}
+                  revealRedacted={revealRedacted}
+                  variant="outline"
+                />
+              </div>
             </div>
           )
         })}
