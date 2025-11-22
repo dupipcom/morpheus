@@ -2,15 +2,18 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useContext, useState, useRef } from 'react'
+import { useContext, useState, useRef, useEffect, useMemo, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Heart, CheckSquare, Users, Coins, Eye, EyeOff, Globe, Hourglass, Search, Gauge, X } from 'lucide-react'
+import { Heart, CheckSquare, Users, Coins, Eye, EyeOff, Globe, Hourglass, Search, Gauge, X, Play, Square as Stop } from 'lucide-react'
 import { GlobalContext } from '@/lib/contexts'
 import { useLocalStorage } from 'usehooks-ts'
 import { useI18n } from '@/lib/contexts/i18n'
 import { SearchPopover } from '@/components/searchPopover'
 import { NotificationsButton } from '@/components/notificationsButton'
+import { DEFAULT_TRACKS } from '@/components/ui/nav'
+import Hls from 'hls.js'
+import { logger } from '@/lib/logger'
 import useSWR from 'swr'
 
 export function BottomNav() {
@@ -107,6 +110,153 @@ export function BottomNav() {
     }
   }
 
+  // Audio player logic
+  const audioElement = useRef<HTMLAudioElement>(null)
+  const hlsRef = useRef<Hls | null>(null)
+  const [audioReady, setAudioReady] = useState(false)
+  const [isPlaying, setIsPlaying] = useState(false)
+  const selectedTrack = DEFAULT_TRACKS[1]
+  const playerIcon = useMemo(() => isPlaying ? <Stop className="h-4 w-4" /> : <Play className="h-4 w-4" />, [isPlaying])
+
+  const handlePlaying = useCallback(() => {
+    setIsPlaying(true)
+  }, [])
+
+  const handleStopping = useCallback(() => {
+    setIsPlaying(false)
+  }, [])
+
+  const handleStalled = useCallback(() => {
+    // Handle stalled state if needed
+  }, [])
+
+  const isHlsStream = useCallback((url: string) => {
+    return url.includes('.m3u8') || url.includes('application/vnd.apple.mpegurl')
+  }, [])
+
+  const initializeHls = useCallback(() => {
+    const audio = audioElement.current
+    if (!audio || !selectedTrack.url) return
+
+    if (hlsRef.current) {
+      hlsRef.current.destroy()
+      hlsRef.current = null
+    }
+
+    if (isHlsStream(selectedTrack.url)) {
+      if (Hls.isSupported()) {
+        const hls = new Hls({
+          enableWorker: true,
+          lowLatencyMode: true,
+          backBufferLength: 90,
+        })
+        
+        hls.loadSource(selectedTrack.url)
+        hls.attachMedia(audio)
+        
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          logger('hls_manifest_parsed', 'HLS manifest loaded')
+        })
+        
+        hls.on(Hls.Events.ERROR, (event, data) => {
+          if (data.fatal) {
+            if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
+              hls.startLoad()
+            } else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
+              hls.recoverMediaError()
+            }
+          }
+        })
+        
+        hlsRef.current = hls
+      } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
+        audio.src = selectedTrack.url
+      }
+    } else {
+      audio.src = selectedTrack.url
+    }
+  }, [selectedTrack.url, isHlsStream])
+
+  const handlePlay = useCallback(() => {
+    const isHls = isHlsStream(selectedTrack.url)
+    const audio = audioElement.current
+    if (!audio) return
+
+    if (isHls && !hlsRef.current && Hls.isSupported()) {
+      initializeHls()
+    }
+
+    if (!isHls && audio.readyState === 0) {
+      audio.load()
+    }
+
+    if (!isHls && !audio.src) {
+      return
+    }
+
+    try {
+      const playPromise = audio.play()
+      if (playPromise !== undefined) {
+        playPromise.catch((e: any) => {
+          console.error('Audio play error:', e)
+        })
+      }
+    } catch (e: any) {
+      console.error('Audio play exception:', e)
+    }
+  }, [selectedTrack.url, isHlsStream, initializeHls])
+
+  const handleStop = useCallback(() => {
+    const audio = audioElement.current
+    if (!audio) return
+    try {
+      audio.pause()
+    } catch (e: any) {
+      console.error('Audio stop error:', e)
+    }
+  }, [])
+
+  const handlePlayerClick = useCallback(() => {
+    if (!audioElement.current) return
+    if (isPlaying) {
+      handleStop()
+    } else {
+      handlePlay()
+    }
+  }, [isPlaying, handlePlay, handleStop])
+
+  useEffect(() => {
+    if (!audioReady) return
+    const audio = audioElement.current
+    if (!audio) return
+
+    initializeHls()
+
+    if (!audio.paused) {
+      setIsPlaying(true)
+    }
+
+    audio.addEventListener('play', handlePlaying)
+    audio.addEventListener('playing', handlePlaying)
+    audio.addEventListener('pause', handleStopping)
+    audio.addEventListener('ended', handleStopping)
+    audio.addEventListener('stalled', handleStalled)
+
+    return () => {
+      if (hlsRef.current) {
+        hlsRef.current.destroy()
+        hlsRef.current = null
+      }
+      if (audio) {
+        audio.removeEventListener('play', handlePlaying)
+        audio.removeEventListener('playing', handlePlaying)
+        audio.removeEventListener('pause', handleStopping)
+        audio.removeEventListener('ended', handleStopping)
+        audio.removeEventListener('stalled', handleStalled)
+      }
+    }
+  }, [audioReady, handlePlaying, handleStopping, handleStalled, initializeHls])
+
   // Check if all mood levels are zero for today
   // Fetch current day data directly from API to ensure we have the latest mood values
   const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
@@ -141,54 +291,8 @@ export function BottomNav() {
     <>
       {/* Bottom Toolbar */}
       <div className="fixed bottom-[80px] left-0 right-0 h-[50px] bg-background border-t border-border z-50">
-        <div className="h-full max-w-7xl mx-auto px-4 flex items-center gap-2">
-          {/* Other Menu Buttons - Hide when search is expanded */}
-          <div 
-            className={`flex items-center gap-2 transition-all duration-300 ease-in-out ${
-              isSearchExpanded 
-                ? 'opacity-0 w-0 overflow-hidden -translate-x-4' 
-                : 'opacity-100 w-auto translate-x-0'
-            }`}
-          >
-            {/* Dashboard Button */}
-            <Link href="/app/dashboard" onClick={() => handleNavLinkClick('/app/dashboard')}>
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-9 w-9"
-                aria-label={t('common.dashboard')}
-              >
-                <Gauge className="h-4 w-4" />
-              </Button>
-            </Link>
-
-            {/* Notifications Button */}
-            <NotificationsButton size="icon" className="h-9 w-9" />
-
-            {/* Space/Time Toggle */}
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-9 w-9"
-              onClick={() => setIsSpace(!isSpace)}
-              aria-label={isSpace ? 'Switch to time' : 'Switch to space'}
-            >
-              {isSpace ? <Globe className="h-4 w-4" /> : <Hourglass className="h-4 w-4" />}
-            </Button>
-
-            {/* Visibility Toggle */}
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-9 w-9"
-              onClick={handleVisibilityToggle}
-              aria-label={revealRedacted ? 'Hide sensitive tasks' : 'Reveal sensitive tasks'}
-            >
-              {revealRedacted ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-            </Button>
-          </div>
-
-          {/* Search - Collapsible */}
+        <div className="h-full max-w-7xl mx-auto px-4 flex items-center justify-center gap-2">
+          {/* Search - Collapsible (First Button) */}
           <div className="flex items-center gap-2">
             <form 
               onSubmit={handleSearchSubmit} 
@@ -225,6 +329,87 @@ export function BottomNav() {
               aria-label={isSearchExpanded ? 'Close search' : 'Open search'}
             >
               {isSearchExpanded ? <X className="h-4 w-4" /> : <Search className="h-4 w-4" />}
+            </Button>
+          </div>
+
+          {/* Other Menu Buttons - Hide when search is expanded */}
+          <div 
+            className={`flex items-center gap-2 transition-all duration-300 ease-in-out ${
+              isSearchExpanded 
+                ? 'opacity-0 w-0 overflow-hidden -translate-x-4' 
+                : 'opacity-100 w-auto translate-x-0'
+            }`}
+          >
+            {/* Dashboard Button */}
+            <Link href="/app/dashboard" onClick={() => handleNavLinkClick('/app/dashboard')}>
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-9 w-9"
+                aria-label={t('common.dashboard')}
+              >
+                <Gauge className="h-4 w-4" />
+              </Button>
+            </Link>
+
+            {/* Notifications Button */}
+            <NotificationsButton size="icon" className="h-9 w-9" />
+
+            {/* Space/Time Toggle */}
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-9 w-9"
+              onClick={() => setIsSpace(!isSpace)}
+              aria-label={isSpace ? 'Switch to time' : 'Switch to space'}
+            >
+              {isSpace ? <Globe className="h-4 w-4" /> : <Hourglass className="h-4 w-4" />}
+            </Button>
+
+            {/* Audio Player */}
+            <div>
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-9 w-9"
+                onClick={handlePlayerClick}
+                aria-label={isPlaying ? 'Stop audio' : 'Play audio'}
+              >
+                {playerIcon}
+              </Button>
+              <audio
+                ref={(el) => {
+                  audioElement.current = el
+                  if (el) {
+                    setAudioReady(true)
+                    el.addEventListener('canplay', () => {
+                      logger('audio_canplay', 'Audio ready to play')
+                    })
+                    el.addEventListener('error', (e: any) => {
+                      logger('audio_element_error', {
+                        error: e,
+                        code: el.error?.code,
+                        message: el.error?.message,
+                        src: el.src,
+                      })
+                    })
+                  }
+                }}
+                loop
+                preload="auto"
+                crossOrigin="anonymous"
+              />
+            </div>
+
+            {/* Visibility Toggle */}
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-9 w-9"
+              onClick={handleVisibilityToggle}
+              aria-label={revealRedacted ? 'Hide sensitive tasks' : 'Reveal sensitive tasks'}
+            >
+              {revealRedacted ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </Button>
           </div>
         </div>
