@@ -436,7 +436,7 @@ export const SteadyTasks = () => {
 
   if (isLoading) {
     return (
-      <div className="w-full px-1 sm:px-0">
+      <div className="w-full px-1 sm:px-0 mt-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 align-center justify-center w-full m-auto gap-2">
           {/* Show 1 skeleton on mobile, 8 on desktop */}
           {[...Array(10)].map((_, index) => (

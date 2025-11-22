@@ -10,5 +10,7 @@ export const GlobalContext = createContext({
 	setGlobalContext: (context: any) => {},
 	revealRedacted: false,
 	selectedDate: undefined as Date | undefined,
-	setSelectedDate: (date: Date | undefined) => {}
+	setSelectedDate: (date: Date | undefined) => {},
+	isNavigating: false,
+	setIsNavigating: (isNavigating: boolean) => {}
 })

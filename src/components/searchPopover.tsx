@@ -1,11 +1,12 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect, useRef, useContext } from 'react'
+import { useRouter, usePathname } from 'next/navigation'
 import { Badge } from '@/components/ui/badge'
 import { CheckSquare, User, FileText, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useI18n } from '@/lib/contexts/i18n'
+import { GlobalContext } from '@/lib/contexts'
 
 interface SearchResult {
   id: string
@@ -26,13 +27,15 @@ interface SearchPopoverProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   anchorRef: React.RefObject<HTMLInputElement>
+  onClearQuery?: () => void
 }
 
-export function SearchPopover({ query, open, onOpenChange, anchorRef }: SearchPopoverProps) {
+export function SearchPopover({ query, open, onOpenChange, anchorRef, onClearQuery }: SearchPopoverProps) {
   const [results, setResults] = useState<SearchResult[]>([])
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const { t } = useI18n()
+  const { setIsNavigating } = useContext(GlobalContext)
   const debounceTimer = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
@@ -73,6 +76,8 @@ export function SearchPopover({ query, open, onOpenChange, anchorRef }: SearchPo
   }, [query])
 
   const handleResultClick = (result: SearchResult) => {
+    setIsNavigating(true)
+    
     if (result.type === 'list') {
       router.push(`/app/do/${result.id}`)
     } else if (result.type === 'profile') {
@@ -95,6 +100,7 @@ export function SearchPopover({ query, open, onOpenChange, anchorRef }: SearchPo
       }
     }
     onOpenChange(false)
+    onClearQuery?.()
   }
 
   const getTypeIcon = (type: string) => {

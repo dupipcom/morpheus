@@ -14,7 +14,7 @@ import useSWR from 'swr'
 
 export function BottomNav() {
   const pathname = usePathname()
-  const { session, revealRedacted, setGlobalContext } = useContext(GlobalContext)
+  const { session, revealRedacted, setGlobalContext, setIsNavigating } = useContext(GlobalContext)
   const { t } = useI18n()
   const [redactedValue, setRedactedValue] = useLocalStorage('dpip_redacted', 0)
   const [isSpace, setIsSpace] = useState(true)
@@ -61,6 +61,34 @@ export function BottomNav() {
     setTimeout(() => {
       setSearchOpen(false)
     }, 200)
+  }
+
+  const handleNavLinkClick = (href: string) => {
+    // Only show skeleton if navigating to a different page
+    const currentPath = pathname || ''
+    const targetPath = href.startsWith('/') ? href : `/${href}`
+    
+    // Extract the path after locale (e.g., /en/app/feel -> /app/feel)
+    // Remove locale prefix if present (format: /locale/path)
+    const currentPathParts = currentPath.split('/').filter(Boolean)
+    
+    // If current path has locale (first part is 2-5 chars, likely locale), skip it
+    const currentPathWithoutLocale = currentPathParts.length > 0 && currentPathParts[0].length <= 5
+      ? '/' + currentPathParts.slice(1).join('/')
+      : currentPath
+    
+    // Normalize paths by removing trailing slashes for comparison
+    const normalizedCurrent = currentPathWithoutLocale.replace(/\/$/, '')
+    const normalizedTarget = targetPath.replace(/\/$/, '')
+    
+    // Check if we're already on the target page (accounting for locale)
+    const isSamePage = normalizedCurrent === normalizedTarget || 
+                      currentPath.endsWith(targetPath) ||
+                      currentPath.endsWith(targetPath + '/')
+    
+    if (!isSamePage) {
+      setIsNavigating(true)
+    }
   }
 
   // Check if all mood levels are zero for today
@@ -138,6 +166,7 @@ export function BottomNav() {
                 open={searchOpen}
                 onOpenChange={setSearchOpen}
                 anchorRef={searchInputRef}
+                onClearQuery={() => setSearchQuery('')}
               />
             </div>
             <Button
@@ -156,7 +185,7 @@ export function BottomNav() {
       {/* Bottom Navigation */}
       <nav className="fixed bottom-0 left-0 right-0 h-[80px] bg-background border-t border-border z-50">
         <div className="h-full max-w-7xl mx-auto px-4 flex items-center justify-around gap-4">
-        <Link href="/app/feel" className="flex-1">
+        <Link href="/app/feel" className="flex-1" onClick={() => handleNavLinkClick('/app/feel')}>
           <Button
             variant={isActive('feel') ? 'default' : 'outline'}
             key={`feel--${allMoodZero ? 'destructive' : 'primary'}--${isActive('feel') ? 'active' : 'inactive'}`}
@@ -170,7 +199,7 @@ export function BottomNav() {
           </Button>
         </Link>
         
-        <Link href="/app/do" className="flex-1">
+        <Link href="/app/do" className="flex-1" onClick={() => handleNavLinkClick('/app/do')}>
           <Button
             variant={isActive('do') ? 'default' : 'outline'}
             className={`w-full h-14 flex items-center justify-center ${
@@ -181,7 +210,7 @@ export function BottomNav() {
           </Button>
         </Link>
         
-        <Link href="/app/be" className="flex-1">
+        <Link href="/app/be" className="flex-1" onClick={() => handleNavLinkClick('/app/be')}>
           <Button
             variant={isActive('be') ? 'default' : 'outline'}
             className={`w-full h-14 flex items-center justify-center ${
@@ -192,7 +221,7 @@ export function BottomNav() {
           </Button>
         </Link>
         
-        <Link href="/app/invest" className="flex-1">
+        <Link href="/app/invest" className="flex-1" onClick={() => handleNavLinkClick('/app/invest')}>
           <Button
             variant={isActive('invest') ? 'default' : 'outline'}
             className={`w-full h-14 flex items-center justify-center ${
