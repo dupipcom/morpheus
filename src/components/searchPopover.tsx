@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { Popover, PopoverContent, PopoverAnchor } from '@/components/ui/popover'
 import { Badge } from '@/components/ui/badge'
 import { CheckSquare, User, FileText, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -53,7 +52,8 @@ export function SearchPopover({ query, open, onOpenChange, anchorRef }: SearchPo
         const response = await fetch(`/api/v1/search?q=${encodeURIComponent(query)}`)
         if (response.ok) {
           const data = await response.json()
-          setResults(data.results || [])
+          // Limit results to 5
+          setResults((data.results || []).slice(0, 5))
         } else {
           setResults([])
         }
@@ -159,52 +159,39 @@ export function SearchPopover({ query, open, onOpenChange, anchorRef }: SearchPo
     }
   }
 
-  if (!open || !anchorRef.current) return null
-
-  // Get input position for positioning the popover
-  const inputRect = anchorRef.current.getBoundingClientRect()
+  if (!open) return null
 
   return (
-    <Popover open={open} onOpenChange={onOpenChange}>
-      <PopoverAnchor asChild>
-        <div
-          style={{
-            position: 'fixed',
-            top: inputRect.top,
-            left: inputRect.left,
-            width: inputRect.width,
-            height: inputRect.height,
-            pointerEvents: 'none',
-          }}
-        />
-      </PopoverAnchor>
-      <PopoverContent
-        className="w-[80vw] md:w-[30vw] max-w-none p-0"
-        align="start"
-        side="top"
-        sideOffset={4}
-        onOpenAutoFocus={(e) => e.preventDefault()}
-      >
-        <div className="max-h-[400px] overflow-y-auto">
-          {loading ? (
-            <div className="flex items-center justify-center p-8">
-              <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-            </div>
-          ) : results.length === 0 ? (
-            <div className="p-8 text-center text-sm text-muted-foreground">
-              {query.length < 2
-                ? 'Type to search...'
-                : t('common.noResults') || 'No results found'}
-            </div>
-          ) : (
-            <div className="py-2">
+    <div
+      className="fixed left-0 right-0 bg-background border-t border-border shadow-lg z-40"
+      style={{
+        bottom: '130px', // Position above bottomToolbar (80px nav + 50px toolbar)
+        maxHeight: 'min(40vh, 300px)', // Never too high, especially on mobile
+        overflowY: 'auto',
+      }}
+    >
+      <div className="max-w-7xl mx-auto px-4">
+        {loading ? (
+          <div className="flex items-center justify-center p-4">
+            <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+          </div>
+        ) : results.length === 0 ? (
+          <div className="p-4 text-center text-sm text-muted-foreground">
+            {query.length < 2
+              ? 'Type to search...'
+              : t('common.noResults') || 'No results found'}
+          </div>
+        ) : (
+          <div className="py-2">
+            {/* Mobile: List layout */}
+            <div className="md:hidden space-y-1">
               {results.map((result, index) => (
                 <button
                   key={`${result.type}-${result.id}-${index}`}
                   onClick={() => handleResultClick(result)}
                   onMouseDown={(e) => e.preventDefault()}
                   className={cn(
-                    "w-full flex items-start gap-3 px-4 py-3 text-left hover:bg-muted transition-colors",
+                    "w-full flex items-start gap-3 px-4 py-3 text-left hover:bg-muted transition-colors rounded-md",
                     "focus:outline-none focus:bg-muted"
                   )}
                 >
@@ -232,10 +219,44 @@ export function SearchPopover({ query, open, onOpenChange, anchorRef }: SearchPo
                 </button>
               ))}
             </div>
-          )}
-        </div>
-      </PopoverContent>
-    </Popover>
+            {/* Desktop: Grid layout */}
+            <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2">
+              {results.map((result, index) => (
+                <button
+                  key={`${result.type}-${result.id}-${index}`}
+                  onClick={() => handleResultClick(result)}
+                  onMouseDown={(e) => e.preventDefault()}
+                  className={cn(
+                    "flex flex-col items-start gap-2 px-3 py-2 text-left hover:bg-muted transition-colors rounded-md",
+                    "focus:outline-none focus:bg-muted"
+                  )}
+                >
+                  <div className="flex items-center gap-2 w-full">
+                    <div className="flex-shrink-0 text-muted-foreground">
+                      {getTypeIcon(result.type)}
+                    </div>
+                    <span className="text-sm font-medium truncate flex-1">
+                      {result.name}
+                    </span>
+                  </div>
+                  {result.type === 'note' && result.visibility && (
+                    <Badge 
+                      variant="outline" 
+                      className={cn(
+                        "text-xs w-fit",
+                        getVisibilityBadgeClass(result.visibility)
+                      )}
+                    >
+                      {getVisibilityLabel(result.visibility)}
+                    </Badge>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
   )
 }
 
