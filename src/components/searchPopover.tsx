@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { Popover, PopoverContent, PopoverAnchor } from '@/components/ui/popover'
+import { Badge } from '@/components/ui/badge'
 import { CheckSquare, User, FileText, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useI18n } from '@/lib/contexts/i18n'
@@ -122,6 +123,42 @@ export function SearchPopover({ query, open, onOpenChange, anchorRef }: SearchPo
     }
   }
 
+  const getVisibilityLabel = (visibility?: string) => {
+    if (!visibility) return null
+    switch (visibility) {
+      case 'PUBLIC':
+        return 'Public'
+      case 'FRIENDS':
+        return 'Friends'
+      case 'CLOSE_FRIENDS':
+        return 'Close Friends'
+      case 'PRIVATE':
+        return 'Private'
+      case 'AI_ENABLED':
+        return 'AI Enabled'
+      default:
+        return visibility.toLowerCase().replace('_', ' ')
+    }
+  }
+
+  const getVisibilityBadgeClass = (visibility?: string) => {
+    if (!visibility) return ''
+    switch (visibility) {
+      case 'PUBLIC':
+        return 'bg-blue-50 text-blue-700 border-blue-200'
+      case 'FRIENDS':
+        return 'bg-green-50 text-green-700 border-green-200'
+      case 'CLOSE_FRIENDS':
+        return 'bg-purple-50 text-purple-700 border-purple-200'
+      case 'PRIVATE':
+        return 'bg-gray-50 text-gray-700 border-gray-200'
+      case 'AI_ENABLED':
+        return 'bg-orange-50 text-orange-700 border-orange-200'
+      default:
+        return 'bg-muted text-muted-foreground border-border'
+    }
+  }
+
   if (!open || !anchorRef.current) return null
 
   // Get input position for positioning the popover
@@ -174,10 +211,23 @@ export function SearchPopover({ query, open, onOpenChange, anchorRef }: SearchPo
                   <div className="mt-0.5 flex-shrink-0 text-muted-foreground">
                     {getTypeIcon(result.type)}
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <span className="text-sm font-medium truncate">
-                      {result.name}
-                    </span>
+                  <div className="flex-1 min-w-0 flex flex-col gap-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium truncate">
+                        {result.name}
+                      </span>
+                    </div>
+                    {result.type === 'note' && result.visibility && (
+                      <Badge 
+                        variant="outline" 
+                        className={cn(
+                          "text-xs w-fit",
+                          getVisibilityBadgeClass(result.visibility)
+                        )}
+                      >
+                        {getVisibilityLabel(result.visibility)}
+                      </Badge>
+                    )}
                   </div>
                 </button>
               ))}

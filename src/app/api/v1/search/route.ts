@@ -362,7 +362,8 @@ async function fallbackSearch(query: string, userId: string, friendIds: string[]
       select: {
         id: true,
         content: true,
-        date: true
+        date: true,
+        visibility: true
       }
     })
 
@@ -371,7 +372,8 @@ async function fallbackSearch(query: string, userId: string, friendIds: string[]
       name: note.content?.substring(0, 100) || 'Untitled Note',
       type: 'note',
       content: note.content,
-      date: note.date
+      date: note.date,
+      visibility: note.visibility
     })))
   } catch (error) {
     console.error('Error in fallback note search:', error)
