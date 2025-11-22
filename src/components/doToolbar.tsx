@@ -452,8 +452,31 @@ export const DoToolbar = ({
           <AccordionTrigger className="py-0 px-0 hover:no-underline">
             <div className="flex items-center justify-between w-full gap-2">
               <h3 className="text-base font-semibold text-body">{selectedListTitle}</h3>
-              {selectedList && (
-                <PercentageTicker value={calculateCompletionChange(selectedList)} />
+              {shouldShowDatePicker && onDateChange && (
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className={cn(
+                        "justify-start text-left font-normal shrink-0",
+                        !selectedDate && "text-muted-foreground"
+                      )}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {formatDate(selectedDate)}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="end">
+                    <Calendar
+                      mode="single"
+                      selected={selectedDate}
+                      onSelect={onDateChange}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
               )}
             </div>
           </AccordionTrigger>
@@ -514,31 +537,6 @@ export const DoToolbar = ({
                     })}
                   </SelectContent>
                 </Select>
-
-                {shouldShowDatePicker && onDateChange && (
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className={cn(
-                          "w-full sm:w-[240px] justify-start text-left font-normal",
-                          !selectedDate && "text-muted-foreground"
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {formatDate(selectedDate)}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={selectedDate}
-                        onSelect={onDateChange}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                )}
 
                 <div className="flex items-center gap-2 sm:ml-auto">
                   <DropdownMenu>
