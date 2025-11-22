@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import { useContext, useState, useRef, useEffect, useMemo, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Heart, CheckSquare, Users, Coins, Eye, EyeOff, Globe, Hourglass, Search, Gauge, X, Play, Square as Stop } from 'lucide-react'
+import { Heart, CheckSquare, Users, Coins, Eye, EyeOff, Globe, Hourglass, Search, Gauge, X, Play, Square as Stop, CircleUser } from 'lucide-react'
 import { GlobalContext } from '@/lib/contexts'
 import { useLocalStorage } from 'usehooks-ts'
 import { useI18n } from '@/lib/contexts/i18n'
@@ -343,9 +343,11 @@ export function BottomNav() {
             {/* Dashboard Button */}
             <Link href="/app/dashboard" onClick={() => handleNavLinkClick('/app/dashboard')}>
               <Button
-                variant="outline"
+                variant={isActive('dashboard') ? 'default' : 'outline'}
                 size="icon"
-                className="h-9 w-9"
+                className={`h-9 w-9 ${
+                  isActive('dashboard') ? 'bg-muted text-foreground dark:bg-foreground dark:text-background' : ''
+                }`}
                 aria-label={t('common.dashboard')}
               >
                 <Gauge className="h-4 w-4" />
@@ -400,6 +402,20 @@ export function BottomNav() {
                 crossOrigin="anonymous"
               />
             </div>
+
+            {/* Profile Button */}
+            <Link href="/app/profile" onClick={() => handleNavLinkClick('/app/profile')}>
+              <Button
+                variant={isActive('profile') ? 'default' : 'outline'}
+                size="icon"
+                className={`h-9 w-9 ${
+                  isActive('profile') ? 'bg-muted text-foreground dark:bg-foreground dark:text-background' : ''
+                }`}
+                aria-label={t('common.profile')}
+              >
+                <CircleUser className="h-4 w-4" />
+              </Button>
+            </Link>
 
             {/* Visibility Toggle */}
             <Button
