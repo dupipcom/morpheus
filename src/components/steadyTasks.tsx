@@ -842,7 +842,12 @@ export const SteadyTasks = () => {
               key={`task__item--${task.name || index}`} 
               className={visibilityClass}
             >
-              <div className="relative w-full flex items-center gap-2">
+              <ToggleGroupItem 
+                className="rounded-md leading-7 text-sm min-h-[40px] h-auto w-full whitespace-normal break-words py-2 cursor-pointer flex items-center gap-2" 
+                value={task.name} 
+                aria-label={(task?.redacted === true && !revealRedacted) ? 'Redacted task' : (task.displayName || task.name)}
+                onClick={() => handleToggleClick(task)}
+              >
                 <OptionsButton
                   items={optionsMenuItems}
                   statusColor={statusColor}
@@ -850,16 +855,11 @@ export const SteadyTasks = () => {
                   iconFilled={taskStatus === "done"}
                   align="start"
                 />
-                <ToggleGroupItem 
-                  className="rounded-md leading-7 text-sm min-h-[40px] h-auto flex-1 whitespace-normal break-words py-2 cursor-pointer" 
-                  value={task.name} 
-                  aria-label={(task?.redacted === true && !revealRedacted) ? 'Redacted task' : (task.displayName || task.name)}
-                  onClick={() => handleToggleClick(task)}
-                >
+                <span className="flex-1">
                   {task.times > 1 ? `${task.count || 0}/${task.times} ` : ''}
                   {(task?.redacted === true && !revealRedacted) ? '·····' : (task.displayName || task.name)}
-                </ToggleGroupItem>
-              </div>
+                </span>
+              </ToggleGroupItem>
             </div>
           )
         })}

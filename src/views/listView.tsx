@@ -1574,7 +1574,7 @@ const formatDateLocal = (date: Date): string => {
           value={values}
           onValueChange={handleToggleChange}
           variant="outline"
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 align-center justify-center w-full m-auto"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 align-center justify-center w-full m-auto gap-4"
           type="multiple"
           orientation="horizontal"
           key={`list__selected--${selectedTaskListId}--${date}`}
@@ -1677,8 +1677,8 @@ const formatDateLocal = (date: Date): string => {
             ]
 
             return (
-              <div key={`task__item--${task.name}`} className="flex flex-col items-center m-1">
-                <div className="relative w-full flex items-center gap-2">
+              <div key={`task__item--${task.name}`} className="flex flex-col items-stretch m-1 w-full">
+                <ToggleGroupItem className="rounded-md leading-7 text-sm min-h-[40px] h-auto w-full whitespace-normal break-words py-2 flex items-center gap-2" value={task.name} aria-label={(task?.redacted === true && !revealRedacted) ? 'Redacted task' : (task.displayName || task.name)}>
                   <OptionsButton
                     items={optionsMenuItems}
                     statusColor={statusColor}
@@ -1686,12 +1686,11 @@ const formatDateLocal = (date: Date): string => {
                     iconFilled={taskStatus === "done"}
                     align="start"
                   />
-
-                  <ToggleGroupItem className="rounded-md leading-7 text-sm min-h-[40px] h-auto flex-1 whitespace-normal break-words py-2" value={task.name} aria-label={(task?.redacted === true && !revealRedacted) ? 'Redacted task' : (task.displayName || task.name)}>
+                  <span className="flex-1">
                     {task.times > 1 ? `${task.count || 0}/${task.times} ` : ''}
                     {(task?.redacted === true && !revealRedacted) ? '·····' : (task.displayName || task.name)}
-                  </ToggleGroupItem>
-                </div>
+                  </span>
+                </ToggleGroupItem>
                 {isDone
                   && hasCollaborators
                   && completerName && lastCompleter && (
