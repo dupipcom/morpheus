@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useContext } from 'react'
 import { useAuth } from '@clerk/nextjs'
+import { useSearchParams } from 'next/navigation'
 
 import { GlobalContext } from "@/lib/contexts"
 import { BeView } from "@/views/beView"
@@ -10,12 +11,13 @@ import { PublishNote } from '@/components/publishNote'
 import { setLoginTime, getLoginTime } from '@/lib/cookieManager'
 import { useI18n } from "@/lib/contexts/i18n"
 
-export default function LocalizedSocial({ params }: { params: Promise<{ locale: string }> }) {
+export default function LocalizedBeSpaces({ params }: { params: Promise<{ locale: string }> }) {
   const [globalContext, setGlobalContext] = useState({
     theme: 'light'
   })
   const { isLoaded, isSignedIn } = useAuth();
   const { t } = useI18n();
+  const searchParams = useSearchParams();
 
   // Set login time when user is authenticated
   useEffect(() => {
@@ -29,13 +31,11 @@ export default function LocalizedSocial({ params }: { params: Promise<{ locale: 
     }
   }, [isLoaded, isSignedIn]);
 
-  const handleThemeChange = () => {
-    if (globalContext.theme === 'light') {
-      setGlobalContext({...globalContext, theme: 'dark'})
-    } else {
-      setGlobalContext({...globalContext, theme: 'light'})
-    }
-  }
+  // Extract filter query parameters
+  const profileId = searchParams.get('profileId')
+  const noteId = searchParams.get('noteId')
+  const listId = searchParams.get('listId')
+  const templateId = searchParams.get('templateId')
 
   return (
     <main className="relative">
@@ -43,7 +43,14 @@ export default function LocalizedSocial({ params }: { params: Promise<{ locale: 
         <PublishNote defaultVisibility="FRIENDS" />
       </div>
       <ViewMenu active="be" />
-      <BeView defaultTab="activity" />
+      <BeView 
+        defaultTab="spaces"
+        filterProfileId={profileId || undefined}
+        filterNoteId={noteId || undefined}
+        filterListId={listId || undefined}
+        filterTemplateId={templateId || undefined}
+      />
     </main>
   )
-} 
+}
+

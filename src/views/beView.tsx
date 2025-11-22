@@ -1,7 +1,7 @@
 'use client'
 import { useState, useContext, useEffect, useMemo, useCallback } from 'react'
 import useSWR from 'swr'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
@@ -119,18 +119,57 @@ interface BeViewProps {
   filterNoteId?: string
   filterListId?: string
   filterTemplateId?: string
+  defaultTab?: 'activity' | 'friends' | 'events' | 'spaces' | 'organizations'
 }
 
 export const BeView = ({ 
   filterProfileId,
   filterNoteId,
   filterListId,
-  filterTemplateId
-}: BeViewProps = {}) => {
+  filterTemplateId,
+  defaultTab = 'activity'
+}: BeViewProps) => {
   const { session, setGlobalContext, theme } = useContext(GlobalContext)
   const { t } = useI18n()
   const router = useRouter()
+  const pathname = usePathname()
   const { registerMutate, unregisterMutate } = useNotesRefresh()
+  
+  // Determine initial tab from URL path or defaultTab prop
+  const getInitialTab = () => {
+    if (pathname?.includes('/be/activity')) return 'activity'
+    if (pathname?.includes('/be/friends')) return 'friends'
+    if (pathname?.includes('/be/events')) return 'events'
+    if (pathname?.includes('/be/spaces')) return 'spaces'
+    if (pathname?.includes('/be/organizations')) return 'organizations'
+    // If on base /be route, use defaultTab prop
+    if (pathname?.endsWith('/be') || pathname?.endsWith('/be/')) return defaultTab
+    return defaultTab
+  }
+  
+  const [activeTab, setActiveTab] = useState<'activity' | 'friends' | 'events' | 'spaces' | 'organizations'>(getInitialTab())
+  
+  // Update activeTab when pathname changes
+  useEffect(() => {
+    const newTab = getInitialTab()
+    setActiveTab(newTab)
+  }, [pathname, defaultTab])
+  
+  // Handle tab change and update URL
+  const handleTabChange = (value: string) => {
+    const tab = value as 'activity' | 'friends' | 'events' | 'spaces' | 'organizations'
+    setActiveTab(tab)
+    
+    // Update URL to match the selected tab
+    // Extract locale and base path
+    const pathParts = pathname?.split('/') || []
+    const localeIndex = pathParts.findIndex(p => p === 'app')
+    const basePath = localeIndex >= 0 
+      ? pathParts.slice(0, localeIndex + 1).join('/')
+      : ''
+    const newPath = `${basePath}/be/${tab}`
+    router.push(newPath)
+  }
   
   const [friends, setFriends] = useState<Friend[]>([])
   const [publicNotes, setPublicNotes] = useState<PublicNote[]>([])
@@ -158,7 +197,14 @@ export const BeView = ({
   // Fetch public notes
   const fetchPublicNotes = async (page: number = 1, append: boolean = false) => {
     try {
-      const response = await fetch(`/api/v1/notes/public?page=${page}&limit=100`)
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: '100'
+      })
+      if (filterNoteId) params.append('noteId', filterNoteId)
+      if (filterProfileId) params.append('profileId', filterProfileId)
+      
+      const response = await fetch(`/api/v1/notes/public?${params.toString()}`)
       if (response.ok) {
         const data = await response.json()
         if (append) {
@@ -176,7 +222,15 @@ export const BeView = ({
   // Fetch public templates
   const fetchPublicTemplates = async (page: number = 1, append: boolean = false) => {
     try {
-      const response = await fetch(`/api/v1/templates/public?page=${page}&limit=100`)
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: '100'
+      })
+      if (filterTemplateId) params.append('templateId', filterTemplateId)
+      if (filterListId) params.append('listId', filterListId)
+      if (filterProfileId) params.append('profileId', filterProfileId)
+      
+      const response = await fetch(`/api/v1/templates/public?${params.toString()}`)
       if (response.ok) {
         const data = await response.json()
         if (append) {
@@ -564,7 +618,7 @@ export const BeView = ({
 
   return (
     <div className="max-w-[1200px] m-auto p-4">
-      <Tabs defaultValue="activity" className="w-full">
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
         <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger 
             value="activity"

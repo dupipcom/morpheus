@@ -9,6 +9,8 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1')
     const limit = parseInt(searchParams.get('limit') || '100')
     const skip = (page - 1) * limit
+    const filterTemplateId = searchParams.get('templateId') || searchParams.get('listId')
+    const filterProfileId = searchParams.get('profileId')
 
     const { userId } = await auth()
     
@@ -101,14 +103,110 @@ export async function GET(request: NextRequest) {
       whereClause = { visibility: 'PUBLIC' }
     }
 
+    // Build filter for matching items (templateId/listId or profileId)
+    let matchingTemplates: any[] = []
+    let matchingTemplateIds: string[] = []
+    
+    if (filterTemplateId || filterProfileId) {
+      const matchingWhereClause: any = {
+        ...whereClause
+      }
+      
+      // Add specific filters
+      if (filterTemplateId) {
+        matchingWhereClause.id = filterTemplateId
+      }
+      if (filterProfileId) {
+        // Convert profileId (userId) to user's internal ID if needed
+        const profileUser = await prisma.user.findFirst({
+          where: {
+            OR: [
+              { id: filterProfileId },
+              { userId: filterProfileId }
+            ]
+          },
+          select: { id: true }
+        })
+        if (profileUser) {
+          matchingWhereClause.users = {
+            some: {
+              userId: profileUser.id,
+              role: 'OWNER'
+            }
+          }
+        }
+      }
+      
+      // Fetch matching templates first (no pagination, get all matches)
+      const matching = await prisma.template.findMany({
+        where: matchingWhereClause,
+        orderBy: {
+          createdAt: 'desc'
+        },
+        select: {
+          id: true,
+          name: true,
+          role: true,
+          visibility: true,
+          createdAt: true,
+          updatedAt: true,
+          users: true,
+          _count: {
+            select: {
+              comments: true,
+              likes: true
+            }
+          },
+          comments: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  profiles: {
+                    select: {
+                      data: true
+                    }
+                  }
+                }
+              },
+              _count: {
+                select: {
+                  likes: true
+                }
+              }
+            },
+            orderBy: {
+              createdAt: 'desc'
+            }
+          }
+        }
+      })
+      
+      matchingTemplates = matching
+      matchingTemplateIds = matching.map(t => t.id.toString())
+    }
+    
+    // Fetch regular templates, excluding matching ones if they exist
+    const excludeIds = matchingTemplateIds.length > 0 ? matchingTemplateIds : []
+    const regularWhereClause = excludeIds.length > 0 
+      ? {
+          ...whereClause,
+          id: { notIn: excludeIds }
+        }
+      : whereClause
+    
+    // Adjust limit and skip for regular templates
+    const regularLimit = excludeIds.length > 0 ? limit - matchingTemplates.length : limit
+    const regularSkip = excludeIds.length > 0 ? skip : skip
+    
     // Fetch templates
     const templates = await prisma.template.findMany({
-      where: whereClause,
+      where: regularWhereClause,
       orderBy: {
         createdAt: 'desc'
       },
-      take: limit,
-      skip: skip,
+      take: Math.max(0, regularLimit),
+      skip: Math.max(0, regularSkip),
       select: {
         id: true,
         name: true,
@@ -148,8 +246,11 @@ export async function GET(request: NextRequest) {
       }
     })
 
+    // Combine matching templates first, then regular templates
+    const allTemplates = [...matchingTemplates, ...templates]
+    
     // Sort comments by likes, then by date, and transform profiles[0] to profile
-    const templatesWithSortedComments = templates.map(template => {
+    const templatesWithSortedComments = allTemplates.map(template => {
       if (template.comments && Array.isArray(template.comments) && template.comments.length > 0) {
         const sortedComments = [...template.comments].sort((a: any, b: any) => {
           const likeDiff = (b._count?.likes || 0) - (a._count?.likes || 0)

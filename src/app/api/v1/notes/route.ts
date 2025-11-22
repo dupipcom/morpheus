@@ -2,13 +2,16 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const { userId } = await auth()
     
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
+
+    const searchParams = request.nextUrl.searchParams
+    const filterNoteId = searchParams.get('noteId')
 
     // Get user from database
     const user = await prisma.user.findUnique({
@@ -53,8 +56,22 @@ export async function GET() {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
+    // Sort notes: matching noteId first, then by creation date
+    let sortedNotes = [...user.notes]
+    if (filterNoteId) {
+      sortedNotes.sort((a, b) => {
+        const aMatches = a.id.toString() === filterNoteId
+        const bMatches = b.id.toString() === filterNoteId
+        if (aMatches && !bMatches) return -1
+        if (!aMatches && bMatches) return 1
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      })
+    } else {
+      sortedNotes.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    }
+    
     // Sort comments by likes, then by date, and transform profiles[0] to profile
-    const notesWithSortedComments = user.notes.map(note => {
+    const notesWithSortedComments = sortedNotes.map(note => {
       if (note.comments && Array.isArray(note.comments) && note.comments.length > 0) {
         const sortedComments = [...note.comments].sort((a: any, b: any) => {
           const likeDiff = (b._count?.likes || 0) - (a._count?.likes || 0)

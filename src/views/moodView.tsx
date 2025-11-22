@@ -210,10 +210,11 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
 
   // Fetch notes for the selected date
   const { data: notesData, mutate: mutateNotes, isLoading: notesLoading, error: notesError } = useSWR(
-    session?.user ? `/api/v1/notes` : null,
+    session?.user ? `/api/v1/notes${filterNoteId ? `?noteId=${filterNoteId}` : ''}` : null,
     async () => {
       try {
-        const response = await fetch('/api/v1/notes')
+        const url = filterNoteId ? `/api/v1/notes?noteId=${filterNoteId}` : '/api/v1/notes'
+        const response = await fetch(url)
         if (!response.ok) {
           console.error('Failed to fetch notes:', response.status, response.statusText)
           return { notes: [] }

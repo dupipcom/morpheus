@@ -9,6 +9,8 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1')
     const limit = parseInt(searchParams.get('limit') || '100')
     const skip = (page - 1) * limit
+    const filterNoteId = searchParams.get('noteId')
+    const filterProfileId = searchParams.get('profileId')
 
     const { userId } = await auth()
     
@@ -88,19 +90,114 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Fetch notes with user profile info
-    // Filter out notes without users to avoid null user errors
+    // Build filter for matching items (noteId or profileId)
+    let matchingNotes: any[] = []
+    let matchingNoteIds: string[] = []
+    
+    if (filterNoteId || filterProfileId) {
+      const matchingWhereClause: any = {
+        ...whereClause
+      }
+      
+      // Add specific filters
+      if (filterNoteId) {
+        matchingWhereClause.id = filterNoteId
+      }
+      if (filterProfileId) {
+        // Convert profileId (userId) to user's internal ID if needed
+        const profileUser = await prisma.user.findFirst({
+          where: {
+            OR: [
+              { id: filterProfileId },
+              { userId: filterProfileId }
+            ]
+          },
+          select: { id: true }
+        })
+        if (profileUser) {
+          matchingWhereClause.userId = profileUser.id
+        }
+      }
+      
+      // Fetch matching notes first (no pagination, get all matches)
+      const matching = await prisma.note.findMany({
+        where: matchingWhereClause,
+        orderBy: {
+          createdAt: 'desc'
+        },
+        select: {
+          id: true,
+          content: true,
+          visibility: true,
+          createdAt: true,
+          date: true,
+          userId: true,
+          _count: {
+            select: {
+              comments: true,
+              likes: true
+            }
+          },
+          comments: {
+            include: {
+              user: {
+                include: {
+                  profiles: {
+                    select: {
+                      data: true
+                    }
+                  }
+                }
+              },
+              _count: {
+                select: {
+                  likes: true
+                }
+              }
+            },
+            orderBy: {
+              createdAt: 'desc'
+            }
+          },
+          user: {
+            select: {
+              id: true,
+              friends: true,
+              closeFriends: true,
+              profiles: {
+                select: {
+                  data: true
+                }
+              }
+            }
+          }
+        }
+      })
+      
+      matchingNotes = matching
+      matchingNoteIds = matching.map(n => n.id.toString())
+    }
+    
+    // Fetch regular notes, excluding matching ones if they exist
+    const excludeIds = matchingNoteIds.length > 0 ? matchingNoteIds : []
+    const regularWhereClause = excludeIds.length > 0 
+      ? {
+          ...whereClause,
+          id: { notIn: excludeIds }
+        }
+      : whereClause
+    
+    // Adjust limit and skip for regular notes
+    const regularLimit = excludeIds.length > 0 ? limit - matchingNotes.length : limit
+    const regularSkip = excludeIds.length > 0 ? skip : skip
+    
     const notes = await prisma.note.findMany({
-      where: {
-        ...whereClause,
-        // Ensure userId exists (not null) - in MongoDB, we can't use { not: null }, 
-        // but we can ensure it's in the whereClause which already filters by userId
-      },
+      where: regularWhereClause,
       orderBy: {
         createdAt: 'desc'
       },
-      take: limit,
-      skip: skip,
+      take: Math.max(0, regularLimit),
+      skip: Math.max(0, regularSkip),
       select: {
         id: true,
         content: true,
@@ -150,8 +247,11 @@ export async function GET(request: NextRequest) {
       }
     })
 
+    // Combine matching notes first, then regular notes
+    const allNotes = [...matchingNotes, ...notes]
+    
     // Sort comments by likes, then by date
-    const notesWithSortedComments = notes.map(note => {
+    const notesWithSortedComments = allNotes.map(note => {
       if (note.comments && Array.isArray(note.comments) && note.comments.length > 0) {
         const sortedComments = [...note.comments].sort((a: any, b: any) => {
           const likeDiff = (b._count?.likes || 0) - (a._count?.likes || 0)
