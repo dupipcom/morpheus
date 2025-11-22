@@ -1551,7 +1551,7 @@ const formatDateLocal = (date: Date): string => {
           </div>
           
           {/* Tasks grid skeleton */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
             {Array.from({ length: 8 }).map((_, i) => (
               <div key={i} className="flex flex-col items-center m-1">
                 <div className="relative w-full flex items-center gap-2">
@@ -1574,7 +1574,7 @@ const formatDateLocal = (date: Date): string => {
           value={values}
           onValueChange={handleToggleChange}
           variant="outline"
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 align-center justify-center w-full m-auto gap-4"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 align-center justify-center w-full m-auto gap-2 grid-auto-rows"
           type="multiple"
           orientation="horizontal"
           key={`list__selected--${selectedTaskListId}--${date}`}
@@ -1677,8 +1677,8 @@ const formatDateLocal = (date: Date): string => {
             ]
 
             return (
-              <div key={`task__item--${task.name}`} className="flex flex-col items-stretch m-1 w-full">
-                <ToggleGroupItem className="rounded-md leading-7 text-sm min-h-[40px] h-auto w-full whitespace-normal break-words py-2 flex items-center gap-2" value={task.name} aria-label={(task?.redacted === true && !revealRedacted) ? 'Redacted task' : (task.displayName || task.name)}>
+              <div key={`task__item--${task.name}`} className="flex flex-col h-full w-full">
+                <ToggleGroupItem className="rounded-md leading-7 text-sm min-h-[40px] h-full w-full whitespace-normal break-words py-2 flex items-center gap-2" value={task.name} aria-label={(task?.redacted === true && !revealRedacted) ? 'Redacted task' : (task.displayName || task.name)}>
                   <OptionsButton
                     items={optionsMenuItems}
                     statusColor={statusColor}

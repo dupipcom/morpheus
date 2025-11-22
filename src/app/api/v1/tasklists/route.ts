@@ -1943,29 +1943,45 @@ export async function POST(request: NextRequest) {
         
         for (const date of dates) {
           const dateBucket = yearBucket[date] || {}
-          let openTasks = Array.isArray(dateBucket.openTasks) ? [...dateBucket.openTasks] : []
-          let closedTasks = Array.isArray(dateBucket.closedTasks) ? [...dateBucket.closedTasks] : []
           
-          openTasks = openTasks.map((task: any) => {
-            const key = getKey(task)
-            if (key === taskKeyLower || key === taskKey) {
-              return { ...task, redacted }
+          // Support both old structure (array) and new structure (openTasks/closedTasks)
+          if (Array.isArray(dateBucket)) {
+            // Legacy structure: update tasks in the array
+            const updatedArray = dateBucket.map((task: any) => {
+              const key = getKey(task)
+              if (key === taskKeyLower || key === taskKey) {
+                return { ...task, redacted }
+              }
+              return task
+            })
+            
+            yearBucket[date] = updatedArray
+          } else {
+            // New structure: update openTasks and closedTasks
+            let openTasks = Array.isArray(dateBucket.openTasks) ? [...dateBucket.openTasks] : []
+            let closedTasks = Array.isArray(dateBucket.closedTasks) ? [...dateBucket.closedTasks] : []
+            
+            openTasks = openTasks.map((task: any) => {
+              const key = getKey(task)
+              if (key === taskKeyLower || key === taskKey) {
+                return { ...task, redacted }
+              }
+              return task
+            })
+            
+            closedTasks = closedTasks.map((task: any) => {
+              const key = getKey(task)
+              if (key === taskKeyLower || key === taskKey) {
+                return { ...task, redacted }
+              }
+              return task
+            })
+            
+            yearBucket[date] = {
+              ...dateBucket,
+              openTasks,
+              closedTasks
             }
-            return task
-          })
-          
-          closedTasks = closedTasks.map((task: any) => {
-            const key = getKey(task)
-            if (key === taskKeyLower || key === taskKey) {
-              return { ...task, redacted }
-            }
-            return task
-          })
-          
-          yearBucket[date] = {
-            ...dateBucket,
-            openTasks,
-            closedTasks
           }
         }
         
