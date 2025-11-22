@@ -50,7 +50,10 @@
     "withdrawStash": "Keluarkan simpanan",
     "details": "Butiran",
     "ask": "Tanya",
-    "noResults": "Tiada hasil."
+    "noResults": "Tiada hasil.",
+    "copyLink": "Salin pautan",
+    "linkCopied": "Pautan disalin ke papan klip",
+    "copyFailed": "Gagal menyalin pautan"
   },
   "navigation": {
     "dashboard": "Papan Pemuka",

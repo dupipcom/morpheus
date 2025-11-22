@@ -50,7 +50,10 @@
     "withdrawStash": "Retirar poupança",
     "details": "Detalhes",
     "ask": "Perguntar",
-    "noResults": "Nenhum resultado."
+    "noResults": "Nenhum resultado.",
+    "copyLink": "Copiar link",
+    "linkCopied": "Link copiado para a área de transferência",
+    "copyFailed": "Falha ao copiar o link"
   },
   "navigation": {
     "home": "Início",

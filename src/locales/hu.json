@@ -50,7 +50,10 @@
     "withdrawStash": "Megtakarítás kivétele",
     "details": "Részletek",
     "ask": "Kérdez",
-    "noResults": "Nincs találat."
+    "noResults": "Nincs találat.",
+    "copyLink": "Link másolása",
+    "linkCopied": "Link a vágólapra másolva",
+    "copyFailed": "A link másolása sikertelen"
   },
   "navigation": {
     "home": "Kezdőlap",

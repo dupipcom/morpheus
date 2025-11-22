@@ -50,7 +50,10 @@
     "withdrawStash": "बचत निकालें",
     "details": "विवरण",
     "ask": "पूछें",
-    "noResults": "कोई परिणाम नहीं।"
+    "noResults": "कोई परिणाम नहीं।",
+    "copyLink": "लिंक कॉपी करें",
+    "linkCopied": "लिंक क्लिपबोर्ड पर कॉपी किया गया",
+    "copyFailed": "लिंक कॉपी करने में विफल"
   },
   "navigation": {
     "home": "होम",

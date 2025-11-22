@@ -50,7 +50,10 @@
     "withdrawStash": "Retirar ahorros",
     "details": "Detalles",
     "ask": "Preguntar",
-    "noResults": "Sin resultados."
+    "noResults": "Sin resultados.",
+    "copyLink": "Copiar enlace",
+    "linkCopied": "Enlace copiado al portapapeles",
+    "copyFailed": "Error al copiar el enlace"
   },
   "navigation": {
     "home": "Inicio",

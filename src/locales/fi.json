@@ -50,7 +50,10 @@
     "withdrawStash": "Nosta säästöt",
     "details": "Yksityiskohdat",
     "ask": "Kysy",
-    "noResults": "Ei tuloksia."
+    "noResults": "Ei tuloksia.",
+    "copyLink": "Kopioi linkki",
+    "linkCopied": "Linkki kopioitu leikepöydälle",
+    "copyFailed": "Linkin kopiointi epäonnistui"
   },
   "navigation": {
     "dashboard": "Kojelauta",

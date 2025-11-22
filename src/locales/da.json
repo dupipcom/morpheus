@@ -50,7 +50,10 @@
     "withdrawStash": "Hæv opsparing",
     "details": "Detaljer",
     "ask": "Spørg",
-    "noResults": "Ingen resultater."
+    "noResults": "Ingen resultater.",
+    "copyLink": "Kopiér link",
+    "linkCopied": "Link kopieret til udklipsholder",
+    "copyFailed": "Kunne ikke kopiere link"
   },
   "navigation": {
     "dashboard": "Dashboard",

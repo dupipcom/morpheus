@@ -50,7 +50,10 @@
     "withdrawStash": "Retirer l'épargne",
     "details": "Détails",
     "ask": "Demander",
-    "noResults": "Aucun résultat."
+    "noResults": "Aucun résultat.",
+    "copyLink": "Copier le lien",
+    "linkCopied": "Lien copié dans le presse-papiers",
+    "copyFailed": "Échec de la copie du lien"
   },
   "navigation": {
     "home": "Accueil",

@@ -50,7 +50,10 @@
     "withdrawStash": "貯蓄を引き出す",
     "details": "詳細",
     "ask": "尋ねる",
-    "noResults": "結果がありません。"
+    "noResults": "結果がありません。",
+    "copyLink": "リンクをコピー",
+    "linkCopied": "リンクをクリップボードにコピーしました",
+    "copyFailed": "リンクのコピーに失敗しました"
   },
   "navigation": {
     "home": "ホーム",

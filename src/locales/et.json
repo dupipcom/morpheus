@@ -50,7 +50,10 @@
     "withdrawStash": "Võta säästud välja",
     "details": "Üksikasjad",
     "ask": "Küsi",
-    "noResults": "Tulemusi pole."
+    "noResults": "Tulemusi pole.",
+    "copyLink": "Kopeeri link",
+    "linkCopied": "Link kopeeritud lõikelauale",
+    "copyFailed": "Linki kopeerimine ebaõnnestus"
   },
   "navigation": {
     "home": "Avaleht",

@@ -50,7 +50,10 @@
     "withdrawStash": "Toa akiba",
     "details": "Maelezo",
     "ask": "Uliza",
-    "noResults": "Hakuna matokeo."
+    "noResults": "Hakuna matokeo.",
+    "copyLink": "Nakili kiungo",
+    "linkCopied": "Kiungo kimenakiliwa kwenye ubao wa kunakili",
+    "copyFailed": "Imeshindwa kunakili kiungo"
   },
   "navigation": {
     "home": "Nyumbani",

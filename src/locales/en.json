@@ -50,7 +50,10 @@
     "withdrawStash": "Withdraw Stash",
     "details": "Details",
     "ask": "Ask",
-    "noResults": "No results found"
+    "noResults": "No results found",
+    "copyLink": "Copy Link",
+    "linkCopied": "Link copied to clipboard",
+    "copyFailed": "Failed to copy link"
   },
   "navigation": {
     "home": "Home",

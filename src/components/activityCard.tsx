@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { ChevronDown, ChevronUp, Send, Loader2, MessageSquare, FileText, Heart, List, Edit, Trash2 } from "lucide-react"
+import { ChevronDown, ChevronUp, Send, Loader2, MessageSquare, FileText, Heart, List, Edit, Trash2, Link as LinkIcon } from "lucide-react"
 import { useI18n } from '@/lib/contexts/i18n'
 import { useNotesRefresh } from "@/lib/contexts/notesRefresh"
 import Link from 'next/link'
@@ -70,7 +70,7 @@ interface ActivityCardProps {
 }
 
 function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, isLoggedIn = false, currentUserId, onNoteUpdated, isHighlighted = false }: ActivityCardProps) {
-  const { t } = useI18n()
+  const { t, locale } = useI18n()
   const { refreshAll } = useNotesRefresh()
   const [comments, setComments] = useState<Comment[]>(item.comments || [])
   const [commentCount, setCommentCount] = useState(item._count?.comments || item.comments?.length || 0)
@@ -433,6 +433,45 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
   // Check if current user owns this note
   const isNoteOwner = item.type === 'note' && currentUserId && (item.userId === currentUserId || item.user?.id === currentUserId)
 
+  const handleCopyLink = async () => {
+    try {
+      // Get the base URL and current locale
+      const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
+      const currentLocale = locale || 'en' // Default to 'en' if locale is not available
+      
+      // Determine the correct URL based on item type and visibility
+      let url = ''
+      
+      if (item.type === 'note') {
+        // Check visibility - if PUBLIC, FRIENDS, or CLOSE_FRIENDS, link to be/activity
+        // Otherwise link to feel/notes
+        const isPublicOrShared = item.visibility === 'PUBLIC' || 
+                                 item.visibility === 'FRIENDS' || 
+                                 item.visibility === 'CLOSE_FRIENDS'
+        
+        if (isPublicOrShared) {
+          url = `${baseUrl}/${currentLocale}/app/be/activity?noteId=${item.id}`
+        } else {
+          url = `${baseUrl}/${currentLocale}/app/feel/notes?noteId=${item.id}`
+        }
+      } else if (item.type === 'template') {
+        url = `${baseUrl}/${currentLocale}/app/be/activity?templateId=${item.id}`
+      } else if (item.type === 'tasklist') {
+        url = `${baseUrl}/${currentLocale}/app/be/activity?listId=${item.id}`
+      } else {
+        // Fallback - just use the item ID
+        url = `${baseUrl}/${currentLocale}/app/be/activity?noteId=${item.id}`
+      }
+      
+      // Copy to clipboard
+      await navigator.clipboard.writeText(url)
+      toast(t('common.linkCopied') || 'Link copied to clipboard')
+    } catch (err) {
+      console.error('Error copying link:', err)
+      toast.error(t('common.copyFailed') || 'Failed to copy link')
+    }
+  }
+
   const handleEditNote = (e?: React.MouseEvent) => {
     if (e) {
       e.preventDefault()
@@ -615,6 +654,13 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
   // Build options menu items
   const optionsMenuItems: OptionsMenuItem[] = []
   
+  // Add copy link option for all items
+  optionsMenuItems.push({
+    label: t('common.copyLink') || 'Copy Link',
+    onClick: handleCopyLink,
+    icon: <LinkIcon className="h-4 w-4" />,
+  })
+  
   // Add clone option for templates and tasklists
   if (isLoggedIn && (item.type === 'template' || item.type === 'tasklist')) {
     const cloneLabel = isCloning 
@@ -627,6 +673,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
       label: cloneLabel,
       onClick: item.type === 'template' ? handleCloneTemplate : handleCloneTaskList,
       icon: null,
+      separator: true,
     })
   }
 

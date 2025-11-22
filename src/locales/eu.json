@@ -50,7 +50,10 @@
     "withdrawStash": "Aurrezkiak atera",
     "details": "Xehetasunak",
     "ask": "Galdetu",
-    "noResults": "Emaitzik ez."
+    "noResults": "Emaitzik ez.",
+    "copyLink": "Kopiatu esteka",
+    "linkCopied": "Esteka arbelean kopiatu da",
+    "copyFailed": "Esteka kopiatzeak huts egin du"
   },
   "navigation": {
     "home": "Hasiera",

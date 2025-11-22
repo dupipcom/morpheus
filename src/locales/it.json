@@ -50,7 +50,10 @@
     "withdrawStash": "Preleva risparmi",
     "details": "Dettagli",
     "ask": "Chiedi",
-    "noResults": "Nessun risultato."
+    "noResults": "Nessun risultato.",
+    "copyLink": "Copia link",
+    "linkCopied": "Link copiato negli appunti",
+    "copyFailed": "Impossibile copiare il link"
   },
   "navigation": {
     "home": "Inizio",

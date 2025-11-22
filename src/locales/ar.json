@@ -50,7 +50,10 @@
     "withdrawStash": "سحب المدخرات",
     "details": "التفاصيل",
     "ask": "اسأل",
-    "noResults": "لا توجد نتائج."
+    "noResults": "لا توجد نتائج.",
+    "copyLink": "نسخ الرابط",
+    "linkCopied": "تم نسخ الرابط إلى الحافظة",
+    "copyFailed": "فشل نسخ الرابط"
   },
   "navigation": {
     "dashboard": "لوحة التحكم",

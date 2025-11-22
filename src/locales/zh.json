@@ -50,7 +50,10 @@
     "withdrawStash": "提取储蓄",
     "details": "详情",
     "ask": "询问",
-    "noResults": "没有结果。"
+    "noResults": "没有结果。",
+    "copyLink": "复制链接",
+    "linkCopied": "链接已复制到剪贴板",
+    "copyFailed": "复制链接失败"
   },
   "navigation": {
     "home": "首页",

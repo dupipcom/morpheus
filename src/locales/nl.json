@@ -50,7 +50,10 @@
     "withdrawStash": "Spaargeld opnemen",
     "details": "Details",
     "ask": "Vragen",
-    "noResults": "Geen resultaten."
+    "noResults": "Geen resultaten.",
+    "copyLink": "Link kopiëren",
+    "linkCopied": "Link gekopieerd naar klembord",
+    "copyFailed": "Link kopiëren mislukt"
   },
   "navigation": {
     "home": "Home",

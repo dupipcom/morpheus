@@ -50,7 +50,10 @@
     "withdrawStash": "Ta ut besparingar",
     "details": "Detaljer",
     "ask": "Fråga",
-    "noResults": "Inga resultat."
+    "noResults": "Inga resultat.",
+    "copyLink": "Kopiera länk",
+    "linkCopied": "Länk kopierad till urklipp",
+    "copyFailed": "Kunde inte kopiera länk"
   },
   "navigation": {
     "home": "Hem",

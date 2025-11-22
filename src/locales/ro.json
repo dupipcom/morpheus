@@ -50,7 +50,10 @@
     "withdrawStash": "Retrage economii",
     "details": "Detalii",
     "ask": "Întreabă",
-    "noResults": "Nu există rezultate."
+    "noResults": "Nu există rezultate.",
+    "copyLink": "Copiază linkul",
+    "linkCopied": "Linkul a fost copiat în clipboard",
+    "copyFailed": "Nu s-a putut copia linkul"
   },
   "navigation": {
     "home": "Acasă",

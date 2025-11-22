@@ -50,7 +50,10 @@
     "withdrawStash": "Vybrat úspory",
     "details": "Podrobnosti",
     "ask": "Zeptat se",
-    "noResults": "Žádné výsledky."
+    "noResults": "Žádné výsledky.",
+    "copyLink": "Kopírovat odkaz",
+    "linkCopied": "Odkaz zkopírován do schránky",
+    "copyFailed": "Nepodařilo se zkopírovat odkaz"
   },
   "navigation": {
     "home": "Domů",

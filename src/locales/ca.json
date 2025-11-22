@@ -50,7 +50,10 @@
     "withdrawStash": "Retirar estalvis",
     "details": "Detalls",
     "ask": "Preguntar",
-    "noResults": "Sense resultats."
+    "noResults": "Sense resultats.",
+    "copyLink": "Copia l'enllaç",
+    "linkCopied": "Enllaç copiat al porta-retalls",
+    "copyFailed": "Error en copiar l'enllaç"
   },
   "navigation": {
     "home": "Inici",

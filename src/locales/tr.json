@@ -50,7 +50,10 @@
     "withdrawStash": "Birikimleri çek",
     "details": "Detaylar",
     "ask": "Sor",
-    "noResults": "Sonuç bulunamadı."
+    "noResults": "Sonuç bulunamadı.",
+    "copyLink": "Bağlantıyı kopyala",
+    "linkCopied": "Bağlantı panoya kopyalandı",
+    "copyFailed": "Bağlantı kopyalanamadı"
   },
   "navigation": {
     "dashboard": "Gösterge Paneli",
