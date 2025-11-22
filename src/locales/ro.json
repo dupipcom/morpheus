@@ -51,6 +51,8 @@
     "details": "Detalii",
     "ask": "Întreabă",
     "noResults": "Nu există rezultate.",
+    "notifications": "Notificări",
+    "noNotifications": "Nu există notificări",
     "copyLink": "Copiază linkul",
     "linkCopied": "Linkul a fost copiat în clipboard",
     "copyFailed": "Nu s-a putut copia linkul",

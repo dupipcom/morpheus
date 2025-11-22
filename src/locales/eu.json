@@ -51,6 +51,8 @@
     "details": "Xehetasunak",
     "ask": "Galdetu",
     "noResults": "Emaitzik ez.",
+    "notifications": "Jakinarazpenak",
+    "noNotifications": "Jakinarazpenik ez",
     "copyLink": "Kopiatu esteka",
     "linkCopied": "Esteka arbelean kopiatu da",
     "copyFailed": "Esteka kopiatzeak huts egin du"

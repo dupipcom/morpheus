@@ -51,6 +51,8 @@
     "details": "Részletek",
     "ask": "Kérdez",
     "noResults": "Nincs találat.",
+    "notifications": "Értesítések",
+    "noNotifications": "Nincs értesítés",
     "copyLink": "Link másolása",
     "linkCopied": "Link a vágólapra másolva",
     "copyFailed": "A link másolása sikertelen"

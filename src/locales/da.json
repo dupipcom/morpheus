@@ -51,6 +51,8 @@
     "details": "Detaljer",
     "ask": "Spørg",
     "noResults": "Ingen resultater.",
+    "notifications": "Notifikationer",
+    "noNotifications": "Ingen notifikationer",
     "copyLink": "Kopiér link",
     "linkCopied": "Link kopieret til udklipsholder",
     "copyFailed": "Kunne ikke kopiere link",

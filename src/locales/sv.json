@@ -51,6 +51,8 @@
     "details": "Detaljer",
     "ask": "Fråga",
     "noResults": "Inga resultat.",
+    "notifications": "Aviseringar",
+    "noNotifications": "Inga aviseringar",
     "copyLink": "Kopiera länk",
     "linkCopied": "Länk kopierad till urklipp",
     "copyFailed": "Kunde inte kopiera länk",

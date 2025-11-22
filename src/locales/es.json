@@ -51,6 +51,8 @@
     "details": "Detalles",
     "ask": "Preguntar",
     "noResults": "Sin resultados.",
+    "notifications": "Notificaciones",
+    "noNotifications": "No hay notificaciones",
     "copyLink": "Copiar enlace",
     "linkCopied": "Enlace copiado al portapapeles",
     "copyFailed": "Error al copiar el enlace",

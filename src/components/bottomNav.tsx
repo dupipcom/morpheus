@@ -10,7 +10,7 @@ import { GlobalContext } from '@/lib/contexts'
 import { useLocalStorage } from 'usehooks-ts'
 import { useI18n } from '@/lib/contexts/i18n'
 import { SearchPopover } from '@/components/searchPopover'
-import { FriendRequestsButton } from '@/components/friendRequestsButton'
+import { NotificationsButton } from '@/components/notificationsButton'
 import useSWR from 'swr'
 
 export function BottomNav() {
@@ -162,8 +162,8 @@ export function BottomNav() {
               </Button>
             </Link>
 
-            {/* Friend Requests Button */}
-            <FriendRequestsButton size="icon" className="h-9 w-9" />
+            {/* Notifications Button */}
+            <NotificationsButton size="icon" className="h-9 w-9" />
 
             {/* Space/Time Toggle */}
             <Button

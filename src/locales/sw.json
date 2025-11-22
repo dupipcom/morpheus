@@ -51,6 +51,8 @@
     "details": "Maelezo",
     "ask": "Uliza",
     "noResults": "Hakuna matokeo.",
+    "notifications": "Arifa",
+    "noNotifications": "Hakuna arifa",
     "copyLink": "Nakili kiungo",
     "linkCopied": "Kiungo kimenakiliwa kwenye ubao wa kunakili",
     "copyFailed": "Imeshindwa kunakili kiungo",

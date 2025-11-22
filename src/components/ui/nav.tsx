@@ -10,9 +10,8 @@ import { useI18n } from '@/lib/contexts/i18n'
 import { Button } from '@/components/ui/button'
 import { Switch } from "@/components/ui/switch"
 
-import { SlidersVertical, Play, Square as Stop, Gauge, LogIn, DoorOpen, User, LogOut, Users } from "lucide-react"
+import { SlidersVertical, Play, Square as Stop, LogIn, DoorOpen, User, LogOut, Users } from "lucide-react"
 import { NavSkeleton } from "./skeletonLoader"
-import { FriendRequestsButton } from "@/components/friendRequestsButton"
 import { TickerStrip } from "@/components/tickerStrip"
 
 // UserButtonMenu component to handle translations properly
@@ -658,25 +657,6 @@ export const Logo: TComponent = function ({
 		        />
         </div>
   			},
-    {
-      name: "dashboard",
-      href: "/app/dashboard",
-      auth: true,
-      content:
-                <a href="/app/dashboard">
-                <Button variant="outline" className="hidden lg:flex cursor-pointer">
-                  {t('common.dashboard')}
-                </Button>
-                <Button variant="outline" className="flex lg:hidden cursor-pointer">
-                  <Gauge />
-                </Button>
-                </a>
-    },
-    {
-      name: "friend-requests",
-      auth: true,
-      content: <FriendRequestsButton />
-    },
     {
       name: "login",
       href: "/login",

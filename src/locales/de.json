@@ -51,6 +51,8 @@
     "details": "Details",
     "ask": "Fragen",
     "noResults": "Keine Ergebnisse.",
+    "notifications": "Benachrichtigungen",
+    "noNotifications": "Keine Benachrichtigungen",
     "copyLink": "Link kopieren",
     "linkCopied": "Link in die Zwischenablage kopiert",
     "copyFailed": "Link konnte nicht kopiert werden",

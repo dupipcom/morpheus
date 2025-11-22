@@ -51,6 +51,8 @@
     "details": "Detalls",
     "ask": "Preguntar",
     "noResults": "Sense resultats.",
+    "notifications": "Notificacions",
+    "noNotifications": "No hi ha notificacions",
     "copyLink": "Copia l'enllaç",
     "linkCopied": "Enllaç copiat al porta-retalls",
     "copyFailed": "Error en copiar l'enllaç",

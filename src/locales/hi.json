@@ -51,6 +51,8 @@
     "details": "विवरण",
     "ask": "पूछें",
     "noResults": "कोई परिणाम नहीं।",
+    "notifications": "सूचनाएं",
+    "noNotifications": "कोई सूचना नहीं",
     "copyLink": "लिंक कॉपी करें",
     "linkCopied": "लिंक क्लिपबोर्ड पर कॉपी किया गया",
     "copyFailed": "लिंक कॉपी करने में विफल",

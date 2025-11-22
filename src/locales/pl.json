@@ -51,6 +51,8 @@
     "details": "Szczegóły",
     "ask": "Zapytaj",
     "noResults": "Brak wyników.",
+    "notifications": "Powiadomienia",
+    "noNotifications": "Brak powiadomień",
     "copyLink": "Kopiuj link",
     "linkCopied": "Link skopiowany do schowka",
     "copyFailed": "Nie udało się skopiować linku",

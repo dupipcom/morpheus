@@ -51,6 +51,8 @@
     "details": "التفاصيل",
     "ask": "اسأل",
     "noResults": "لا توجد نتائج.",
+    "notifications": "الإشعارات",
+    "noNotifications": "لا توجد إشعارات",
     "copyLink": "نسخ الرابط",
     "linkCopied": "تم نسخ الرابط إلى الحافظة",
     "copyFailed": "فشل نسخ الرابط",

@@ -51,6 +51,8 @@
     "details": "세부정보",
     "ask": "묻기",
     "noResults": "결과가 없습니다.",
+    "notifications": "알림",
+    "noNotifications": "알림 없음",
     "copyLink": "링크 복사",
     "linkCopied": "링크가 클립보드에 복사되었습니다",
     "copyFailed": "링크 복사 실패",
