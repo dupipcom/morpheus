@@ -4,7 +4,7 @@ import React, { useRef, useState, useEffect, useContext, useMemo, useCallback } 
 import ReactDOMServer from 'react-dom/server';
 import prisma from "@/lib/prisma";
 import { useAuth } from '@clerk/nextjs';
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 
 import Link from 'next/link'
 
@@ -84,6 +84,7 @@ export default function LocalizedDoWithListId({ params }: { params: Promise<{ lo
   const { isLoaded, isSignedIn } = useAuth();
   const { t, formatDate, locale } = useI18n();
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams()
   const [resolvedParams, setResolvedParams] = useState<{ locale: string; listId: string } | null>(null)
 
@@ -151,6 +152,19 @@ export default function LocalizedDoWithListId({ params }: { params: Promise<{ lo
       })
     }
   }, [dateParam, today])
+
+  // Add date query parameter on load if not present
+  useEffect(() => {
+    // Only run if we have all required values and no date param exists
+    if (!dateParam && selectedDate && pathname && resolvedParams) {
+      const dateString = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`
+      const basePath = pathname.split('?')[0]
+      // Only update if the URL doesn't already have the date parameter
+      if (!pathname.includes('date=')) {
+        router.replace(`${basePath}?date=${dateString}`, { scroll: false })
+      }
+    }
+  }, [dateParam, selectedDate, pathname, resolvedParams, router])
 
   // Maintain stable task lists that never clear once loaded
   const [stableTaskLists, setStableTaskLists] = useState<any[]>([])
@@ -257,8 +271,26 @@ export default function LocalizedDoWithListId({ params }: { params: Promise<{ lo
       // Normalize date to midnight in local timezone to avoid time component issues
       const normalizedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate())
       setSelectedDate(normalizedDate)
+      
+      // Update URL query parameter with the selected date
+      const dateString = `${normalizedDate.getFullYear()}-${String(normalizedDate.getMonth() + 1).padStart(2, '0')}-${String(normalizedDate.getDate()).padStart(2, '0')}`
+      
+      // Get the base path without query parameters
+      const basePath = pathname?.split('?')[0] || (resolvedParams ? `/${resolvedParams.locale}/app/do/${resolvedParams.listId}` : (selectedTaskListId ? `/${locale}/app/do/${selectedTaskListId}` : ''))
+      
+      if (basePath) {
+        // Use replace to update URL without adding to history
+        router.replace(`${basePath}?date=${dateString}`, { scroll: false })
+      }
+    } else {
+      // Remove date parameter if date is cleared
+      const basePath = pathname?.split('?')[0] || (resolvedParams ? `/${resolvedParams.locale}/app/do/${resolvedParams.listId}` : (selectedTaskListId ? `/${locale}/app/do/${selectedTaskListId}` : ''))
+      
+      if (basePath) {
+        router.replace(basePath, { scroll: false })
+      }
     }
-  }, [])
+  }, [pathname, resolvedParams, locale, router, selectedTaskListId])
 
   // Form state management
   const [showAddTask, setShowAddTask] = useState(false)
@@ -282,8 +314,12 @@ export default function LocalizedDoWithListId({ params }: { params: Promise<{ lo
     setSelectedTaskListId(newListId)
     // Store in localStorage when user selects a list
     setLastListInStorage(newListId)
-    router.push(`/${locale}/app/do/${newListId}`)
-  }, [locale, router])
+    
+    // Preserve date query parameter when changing lists
+    const dateParam = searchParams?.get('date')
+    const dateQuery = dateParam ? `?date=${dateParam}` : ''
+    router.push(`/${locale}/app/do/${newListId}${dateQuery}`)
+  }, [locale, router, searchParams])
 
   const fullDate = new Date()
   const date = fullDate.toISOString().split('T')[0]

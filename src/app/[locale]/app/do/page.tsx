@@ -4,7 +4,7 @@ import React, { useRef, useState, useEffect, useContext, useMemo, useCallback } 
 import ReactDOMServer from 'react-dom/server';
 import prisma from "@/lib/prisma";
 import { useAuth } from '@clerk/nextjs';
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 
 import Link from 'next/link'
 
@@ -84,6 +84,7 @@ export default function LocalizedDo({ params }: { params: Promise<{ locale: stri
   const { isLoaded, isSignedIn } = useAuth();
   const { t, formatDate, locale } = useI18n();
   const router = useRouter();
+  const pathname = usePathname();
   const [resolvedParams, setResolvedParams] = useState<{ locale: string } | null>(null)
   const searchParams = useSearchParams()
 
@@ -151,6 +152,10 @@ export default function LocalizedDo({ params }: { params: Promise<{ locale: stri
       })
     }
   }, [dateParam, today])
+
+  // Add date query parameter on load if not present (only after redirect to list page)
+  // Note: This page redirects to a list, so we don't add the date param here
+  // The date param will be added by the [listId] page after redirect
 
   // Maintain stable task lists that never clear once loaded
   const [stableTaskLists, setStableTaskLists] = useState<any[]>([])
@@ -233,8 +238,21 @@ export default function LocalizedDo({ params }: { params: Promise<{ locale: stri
       // Normalize date to midnight in local timezone to avoid time component issues
       const normalizedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate())
       setSelectedDate(normalizedDate)
+      
+      // Update URL query parameter with the selected date
+      // Note: This page redirects to a list, so we'll update the URL after redirect
+      // For now, we'll update the current URL if we have a selectedTaskListId
+      if (selectedTaskListId && resolvedParams) {
+        const dateString = `${normalizedDate.getFullYear()}-${String(normalizedDate.getMonth() + 1).padStart(2, '0')}-${String(normalizedDate.getDate()).padStart(2, '0')}`
+        router.push(`/${resolvedParams.locale}/app/do/${selectedTaskListId}?date=${dateString}`)
+      }
+    } else {
+      // Remove date parameter if date is cleared
+      if (selectedTaskListId && resolvedParams) {
+        router.push(`/${resolvedParams.locale}/app/do/${selectedTaskListId}`)
+      }
     }
-  }, [])
+  }, [selectedTaskListId, resolvedParams, router])
 
   const handleListChange = useCallback((newListId: string) => {
     setSelectedTaskListId(newListId)
