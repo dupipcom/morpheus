@@ -60,7 +60,9 @@ export const TokenTransfer = () => {
 
       if (response.ok) {
         const data = await response.json()
-        toast.success(`Transfer initiated! Transaction: ${data.transactionHash.slice(0, 10)}...`)
+        if (data.success) {
+          toast.success(`Transfer initiated!`)
+        }
         setToAddress('')
         setAmount('')
         // Refresh wallets to update balances

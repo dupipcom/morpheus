@@ -179,12 +179,13 @@ export const sendTokens = async (
     const amountWei = BigInt(Math.floor(parseFloat(amount) * 1e18)).toString();
     
     // Kaleido transfer endpoint
-    const transferUrl = `${gatewayBase}/${contractAddress}/transfer`;
+    const transferUrl = `${gatewayBase}/${contractAddress}/transfer?kld-from=${fromAddress}`;
+
+    console.log({ transferUrl })
     
     // Kaleido API might expect different field names - adjust based on actual API
     const requestBody = {
-      from: fromAddress,
-      to: toAddress,
+      recipient: toAddress,
       amount: amountWei,
       // Alternative field names the API might expect:
       // value: amountWei,
@@ -206,18 +207,10 @@ export const sendTokens = async (
     const data = await response.json();
     
     // Return transaction hash - adjust based on actual API response format
-    if (data.txHash) {
-      return data.txHash;
-    } else if (data.transactionHash) {
-      return data.transactionHash;
-    } else if (data.hash) {
-      return data.hash;
-    } else if (data.result) {
-      return data.result;
-    } else if (data.txid) {
-      return data.txid;
+    if (data.sent) {
+      return data.sent;
     } else {
-      throw new Error(`Invalid transfer response: missing transaction hash. Response: ${JSON.stringify(data)}`);
+      throw new Error(`Invalid transfer response: missing sent. Response: ${JSON.stringify(data)}`);
     }
   } catch (error) {
     console.error('Error transferring tokens:', error);
