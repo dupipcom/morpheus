@@ -46,7 +46,6 @@ export function BottomNav() {
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     // Handle search submission here
-    console.log('Search query:', searchQuery)
   }
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -290,7 +289,7 @@ export function BottomNav() {
   return (
     <>
       {/* Bottom Toolbar */}
-      <div className="fixed bottom-[80px] left-0 right-0 h-[50px] bg-background border-t border-border z-50">
+      <div className="bottom-nav-interactive fixed bottom-[80px] left-0 right-0 h-[50px] bg-background border-t border-border z-[1002]">
         <div className="h-full max-w-7xl mx-auto px-4 flex items-center justify-center gap-2">
           {/* Search - Collapsible (First Button) */}
           <div className="flex items-center gap-2">
@@ -432,7 +431,7 @@ export function BottomNav() {
       </div>
 
       {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 h-[80px] bg-background border-t border-border z-50">
+      <nav className="bottom-nav-interactive fixed bottom-0 left-0 right-0 h-[80px] bg-background border-t border-border z-[1002]">
         <div className="h-full max-w-7xl mx-auto px-4 flex items-center justify-around gap-4">
         <Link href="/app/feel" className="flex-1" onClick={() => handleNavLinkClick('/app/feel')}>
           <Button

@@ -104,7 +104,8 @@
         "PUBLIC": "Public",
         "AI_ENABLED": "Activé par IA"
       },
-      "action": "Publier la Note"
+      "action": "Publier la Note",
+      "publishing": "Publishing..."
     }
   },
   "week": {
@@ -300,7 +301,11 @@
   },
   "errors": {
     "notFound": "Oups ! Impossible de s'accorder sur cette fréquence.",
-    "genericError": "Quelque chose s'est mal passé. Veuillez réessayer."
+    "genericError": "Quelque chose s'est mal passé. Veuillez réessayer.",
+    "failedToFetchNotes": "Failed to fetch notes",
+    "failedToLoadNotes": "Failed to load notes",
+    "failedToFetchTemplates": "Failed to fetch templates",
+    "failedToLoadTemplates": "Failed to load templates"
   },
   "publicProfile": {
     "ctaTitle": "Commencez votre parcours Dupip",
@@ -320,7 +325,10 @@
     "cloneTemplateFailed": "Échec du clonage du modèle",
     "cloning": "Clonage...",
     "noPublicNotes": "Aucune note publique disponible pour le moment.",
-    "noPublicTemplatesOrLists": "Aucun modèle ou liste publique disponible pour le moment."
+    "noPublicTemplatesOrLists": "Aucun modèle ou liste publique disponible pour le moment.",
+    "cloneList": "Clone List",
+    "cloneListSuccess": "List cloned successfully!",
+    "cloneListFailed": "Failed to clone list"
   },
   "publicCharts": {
     "noData": "Aucune donnée publique disponible pour les graphiques.",
@@ -558,5 +566,49 @@
     "addComment": "Ajouter un commentaire...",
     "showMore": "Afficher plus",
     "showLess": "Afficher moins"
+  },
+  "invest": {
+    "notice": "Il n'y a actuellement aucun argent réel géré dans cette application. Dupip Invest est encore en phase de planification. Ceci est uniquement un espace de démonstration à des fins de test.",
+    "consentTitle": "Consentement de Démonstration d'Investissement",
+    "consentCheckbox": "Je reconnais que Dupip n'est pas encore une plateforme d'investissement, et qu'en utilisant cette fonctionnalité, je suis conscient que toutes mes données peuvent être supprimées avant le lancement officiel de Dupip Invest.",
+    "confirm": "Confirmer"
+  },
+  "wallet": {
+    "nftGenerationCompleted": "Génération de NFT terminée.",
+    "errorGeneratingNFT": "Erreur lors de la génération du NFT",
+    "failedToGenerateNFT": "Échec de la génération du NFT",
+    "pleaseSelectWallet": "Veuillez sélectionner un portefeuille",
+    "errorFetchingNFTs": "Erreur lors de la récupération des NFTs:",
+    "transferCompleted": "Transfert terminé.",
+    "failedToTransferTokens": "Échec du transfert de tokens",
+    "errorTransferringTokens": "Erreur lors du transfert de tokens",
+    "unnamedWallet": "Portefeuille sans nom",
+    "wallets": "Portefeuilles",
+    "transferTokens": "Transférer des Tokens",
+    "createWallet": "Créer un portefeuille",
+    "fromWallet": "Depuis le portefeuille",
+    "toAddress": "Vers l'adresse",
+    "amount": "Montant",
+    "generateNFT": "Générer un NFT",
+    "myNFTs": "Mes NFTs",
+    "balance": "Solde:",
+    "selectWallet": "Sélectionner un Portefeuille",
+    "blockchainBalance": "Solde Blockchain:",
+    "pleaseEnterWalletName": "Veuillez entrer un nom de portefeuille",
+    "walletCreatedSuccessfully": "Portefeuille créé avec succès",
+    "failedToCreateWallet": "Échec de la création du portefeuille",
+    "errorCreatingWallet": "Erreur lors de la création du portefeuille",
+    "walletDeletedSuccessfully": "Portefeuille supprimé avec succès",
+    "failedToDeleteWallet": "Échec de la suppression du portefeuille",
+    "errorDeletingWallet": "Erreur lors de la suppression du portefeuille",
+    "addressCopiedToClipboard": "Adresse copiée dans le presse-papiers",
+    "createNewWallet": "Créer un Nouveau Portefeuille",
+    "createNewWalletDescription": "Créez un nouveau portefeuille blockchain. Une nouvelle adresse sera générée.",
+    "walletNamePlaceholder": "Nom du portefeuille (ex. Épargne, Trading)",
+    "creating": "Création...",
+    "noWalletsYet": "Aucun portefeuille pour le moment. Créez votre premier portefeuille pour commencer.",
+    "deleteWallet": "Supprimer le Portefeuille",
+    "deleteWalletConfirmation": "Êtes-vous sûr de vouloir supprimer ce portefeuille ? Cette action ne peut pas être annulée. Le portefeuille sera retiré de votre compte, mais l'adresse blockchain et ses fonds resteront sur la blockchain.",
+    "delete": "Supprimer"
   }
 }

@@ -160,6 +160,51 @@ export const useUserData = (
 }
 
 /**
+ * SWR hook to fetch wallets with polling every 30 seconds
+ * Ensures deduped fetch across components and shared state
+ */
+export const useWallets = (enabled: boolean = true) => {
+  const { session } = useContext(GlobalContext)
+  
+  const fetchWallets = async () => {
+    const response = await fetch('/api/v1/wallet', { method: 'GET' })
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(`Failed to fetch wallets: ${JSON.stringify(errorData)}`)
+    }
+    const data = await response.json()
+    return data.wallets || []
+  }
+
+  const swr = useSWR(
+    enabled && session?.user ? '/api/v1/wallet' : null,
+    fetchWallets,
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      shouldRetryOnError: false,
+      dedupingInterval: 1000,
+      refreshInterval: 30000, // Poll every 30 seconds
+    }
+  )
+
+  const refreshWallets = useMemo(() => async () => {
+    try {
+      await swr.mutate()
+    } catch (e) {
+      logger('wallets_refresh_error', String(e))
+    }
+  }, [swr])
+
+  return {
+    wallets: swr.data || [],
+    isLoading: swr.isLoading,
+    error: swr.error,
+    refreshWallets,
+  }
+}
+
+/**
  * Generates insights by fetching from the hint API
  * @param setInsight - Function to set the insight state
  * @param cacheTag - Optional cache tag for the request (defaults to 'test')

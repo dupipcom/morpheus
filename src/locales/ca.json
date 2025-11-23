@@ -104,7 +104,8 @@
         "PUBLIC": "Públic",
         "AI_ENABLED": "Activat per IA"
       },
-      "action": "Publicar nota"
+      "action": "Publicar nota",
+      "publishing": "Publishing..."
     }
   },
   "week": {
@@ -221,7 +222,11 @@
   },
   "errors": {
     "notFound": "Ups! No s'ha pogut sintonitzar aquesta freqüència.",
-    "genericError": "Alguna cosa ha anat malament. Si us plau, torna-ho a intentar."
+    "genericError": "Alguna cosa ha anat malament. Si us plau, torna-ho a intentar.",
+    "failedToFetchNotes": "Failed to fetch notes",
+    "failedToLoadNotes": "Failed to load notes",
+    "failedToFetchTemplates": "Failed to fetch templates",
+    "failedToLoadTemplates": "Failed to load templates"
   },
   "social": {
     "title": "Contactes Socials",
@@ -306,7 +311,10 @@
     "cloneTemplateFailed": "Error en clonar la plantilla",
     "cloning": "Clonant...",
     "noPublicNotes": "Encara no hi ha notes públiques disponibles.",
-    "noPublicTemplatesOrLists": "Encara no hi ha plantilles o llistes públiques disponibles."
+    "noPublicTemplatesOrLists": "Encara no hi ha plantilles o llistes públiques disponibles.",
+    "cloneList": "Clone List",
+    "cloneListSuccess": "List cloned successfully!",
+    "cloneListFailed": "Failed to clone list"
   },
   "publicCharts": {
     "noData": "No public charts data available.",
@@ -558,5 +566,49 @@
     "addComment": "Afegeix un comentari...",
     "showMore": "Mostrar més",
     "showLess": "Mostrar menys"
+  },
+  "invest": {
+    "notice": "Actualment no hi ha diners reals gestionats en aquesta aplicació. Dupip Invest encara està en fase de planificació. Això és només un entorn de proves per a fins de demostració.",
+    "consentTitle": "Consentiment de Demostració d'Inversió",
+    "consentCheckbox": "Reconec que Dupip encara no és una plataforma d'inversió i que, en utilitzar aquesta funció, sóc conscient que totes les meves dades poden ser eliminades abans del llançament oficial de Dupip Invest.",
+    "confirm": "Confirmar"
+  },
+  "wallet": {
+    "nftGenerationCompleted": "Generació de NFT completada.",
+    "errorGeneratingNFT": "Error en generar NFT",
+    "failedToGenerateNFT": "Error en generar NFT",
+    "pleaseSelectWallet": "Si us plau, seleccioneu una cartera",
+    "errorFetchingNFTs": "Error en obtenir NFTs:",
+    "transferCompleted": "Transferència completada.",
+    "failedToTransferTokens": "Error en transferir tokens",
+    "errorTransferringTokens": "Error en transferir tokens",
+    "unnamedWallet": "Cartera sense nom",
+    "wallets": "Carteres",
+    "transferTokens": "Transferir Tokens",
+    "createWallet": "Crear cartera",
+    "fromWallet": "Des de cartera",
+    "toAddress": "A adreça",
+    "amount": "Quantitat",
+    "generateNFT": "Generar NFT",
+    "myNFTs": "Els meus NFTs",
+    "balance": "Saldo:",
+    "selectWallet": "Seleccionar Cartera",
+    "blockchainBalance": "Saldo de Blockchain:",
+    "pleaseEnterWalletName": "Si us plau, introduïu un nom de cartera",
+    "walletCreatedSuccessfully": "Cartera creada amb èxit",
+    "failedToCreateWallet": "Error en crear la cartera",
+    "errorCreatingWallet": "Error en crear la cartera",
+    "walletDeletedSuccessfully": "Cartera eliminada amb èxit",
+    "failedToDeleteWallet": "Error en eliminar la cartera",
+    "errorDeletingWallet": "Error en eliminar la cartera",
+    "addressCopiedToClipboard": "Adreça copiada al porta-retalls",
+    "createNewWallet": "Crear Nova Cartera",
+    "createNewWalletDescription": "Creeu una nova cartera blockchain. Es generarà una nova adreça.",
+    "walletNamePlaceholder": "Nom de la cartera (ex. Estalvis, Trading)",
+    "creating": "Creant...",
+    "noWalletsYet": "Encara no hi ha carteres. Creeu la vostra primera cartera per començar.",
+    "deleteWallet": "Eliminar Cartera",
+    "deleteWalletConfirmation": "Esteu segur que voleu eliminar aquesta cartera? Aquesta acció no es pot desfer. La cartera s'eliminarà del vostre compte, però l'adreça blockchain i els seus fons romandran a la blockchain.",
+    "delete": "Eliminar"
   }
 }

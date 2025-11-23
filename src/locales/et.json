@@ -104,7 +104,8 @@
         "PUBLIC": "Avalik",
         "AI_ENABLED": "AI lubatud"
       },
-      "action": "Avalda märkme"
+      "action": "Avalda märkme",
+      "publishing": "Publishing..."
     }
   },
   "week": {
@@ -221,7 +222,11 @@
   },
   "errors": {
     "notFound": "Ups! Ei saanud seda sagedust häälestada.",
-    "genericError": "Midagi läks valesti. Palun proovi uuesti."
+    "genericError": "Midagi läks valesti. Palun proovi uuesti.",
+    "failedToFetchNotes": "Failed to fetch notes",
+    "failedToLoadNotes": "Failed to load notes",
+    "failedToFetchTemplates": "Failed to fetch templates",
+    "failedToLoadTemplates": "Failed to load templates"
   },
   "social": {
     "title": "Sotsiaalsed kontaktid",
@@ -306,7 +311,10 @@
     "cloneTemplateFailed": "Malli kloonimine ebaõnnestus",
     "cloning": "Kloonimine...",
     "noPublicNotes": "Avalikke märkmeid pole veel saadaval.",
-    "noPublicTemplatesOrLists": "Avalikke malle või nimekirju pole veel saadaval."
+    "noPublicTemplatesOrLists": "Avalikke malle või nimekirju pole veel saadaval.",
+    "cloneList": "Clone List",
+    "cloneListSuccess": "List cloned successfully!",
+    "cloneListFailed": "Failed to clone list"
   },
   "publicCharts": {
     "noData": "Avalikke diagrammi andmeid pole saadaval.",
@@ -558,5 +566,49 @@
     "addComment": "Lisa kommentaar...",
     "showMore": "Näita rohkem",
     "showLess": "Näita vähem"
+  },
+  "invest": {
+    "notice": "Selles rakenduses ei hallata praegu tegelikke rahasid. Dupip Invest on veel planeerimisfaasis. See on ainult testimiskeskkond demonstratsioonieesmärgil.",
+    "consentTitle": "Investeeringu Demo Nõusolek",
+    "consentCheckbox": "Tunnistan, et Dupip ei ole veel investeerimisplatvorm ja et selle funktsiooni kasutades olen teadlik, et kõik minu andmed võivad enne Dupip Investi ametlikku käivitamist kustutada.",
+    "confirm": "Kinnita"
+  },
+  "wallet": {
+    "nftGenerationCompleted": "NFT genereerimine lõpetatud.",
+    "errorGeneratingNFT": "Viga NFT genereerimisel",
+    "failedToGenerateNFT": "NFT genereerimine ebaõnnestus",
+    "pleaseSelectWallet": "Palun valige rahakott",
+    "errorFetchingNFTs": "Viga NFT-de laadimisel:",
+    "transferCompleted": "Ülekanne lõpetatud.",
+    "failedToTransferTokens": "Märkide ülekanne ebaõnnestus",
+    "errorTransferringTokens": "Viga märkide ülekandmisel",
+    "unnamedWallet": "Nimetu rahakott",
+    "wallets": "Rahakotid",
+    "transferTokens": "Kanna üle Märgid",
+    "createWallet": "Loo rahakott",
+    "fromWallet": "Rahakotist",
+    "toAddress": "Aadressile",
+    "amount": "Summa",
+    "generateNFT": "Genereeri NFT",
+    "myNFTs": "Minu NFT-d",
+    "balance": "Saldo:",
+    "selectWallet": "Vali Rahakott",
+    "blockchainBalance": "Blockchain saldo:",
+    "pleaseEnterWalletName": "Palun sisestage rahakoti nimi",
+    "walletCreatedSuccessfully": "Rahakott loodud edukalt",
+    "failedToCreateWallet": "Rahakoti loomine ebaõnnestus",
+    "errorCreatingWallet": "Viga rahakoti loomisel",
+    "walletDeletedSuccessfully": "Rahakott kustutatud edukalt",
+    "failedToDeleteWallet": "Rahakoti kustutamine ebaõnnestus",
+    "errorDeletingWallet": "Viga rahakoti kustutamisel",
+    "addressCopiedToClipboard": "Aadress kopeeritud lõikelauale",
+    "createNewWallet": "Loo Uus Rahakott",
+    "createNewWalletDescription": "Loo uus blockchain rahakott. Luuakse uus aadress.",
+    "walletNamePlaceholder": "Rahakoti nimi (nt. Säästmine, Kauplemine)",
+    "creating": "Loomine...",
+    "noWalletsYet": "Veel pole rahakotte. Alustamiseks loo oma esimene rahakott.",
+    "deleteWallet": "Kustuta Rahakott",
+    "deleteWalletConfirmation": "Kas olete kindel, et soovite selle rahakoti kustutada? Seda toimingut ei saa tagasi võtta. Rahakott eemaldatakse teie kontolt, kuid blockchain aadress ja selle vahendid jäävad blockchain'i.",
+    "delete": "Kustuta"
   }
 }

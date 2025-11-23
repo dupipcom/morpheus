@@ -104,7 +104,8 @@
         "PUBLIC": "Gbogbo ènìyàn",
         "AI_ENABLED": "AI tí ó ń ṣiṣẹ́"
       },
-      "action": "Tẹ àkọsílẹ̀ jáde"
+      "action": "Tẹ àkọsílẹ̀ jáde",
+      "publishing": "Publishing..."
     }
   },
   "week": {
@@ -298,7 +299,11 @@
   },
   "errors": {
     "notFound": "Ops! Kò le tọ́ ìwọ̀n yìí.",
-    "genericError": "Nǹkan kan ṣẹlẹ̀. Jọ̀ọ́ gbìyànjú lẹ́ẹ̀kan si."
+    "genericError": "Nǹkan kan ṣẹlẹ̀. Jọ̀ọ́ gbìyànjú lẹ́ẹ̀kan si.",
+    "failedToFetchNotes": "Failed to fetch notes",
+    "failedToLoadNotes": "Failed to load notes",
+    "failedToFetchTemplates": "Failed to fetch templates",
+    "failedToLoadTemplates": "Failed to load templates"
   },
   "publicProfile": {
     "ctaTitle": "Bẹ̀rẹ̀ Ìrìn àjò Dupip tirẹ",
@@ -318,7 +323,10 @@
     "cloneTemplateFailed": "O kuna lati ṣe àdàkọ àpẹẹrẹ",
     "cloning": "N ṣe àdàkọ...",
     "noPublicNotes": "Kò sí àwọn àkíyèsí gbangba tí ó wà títí.",
-    "noPublicTemplatesOrLists": "Kò sí àwọn àpẹẹrẹ tàbí àkójọ gbangba tí ó wà títí."
+    "noPublicTemplatesOrLists": "Kò sí àwọn àpẹẹrẹ tàbí àkójọ gbangba tí ó wà títí.",
+    "cloneList": "Clone List",
+    "cloneListSuccess": "List cloned successfully!",
+    "cloneListFailed": "Failed to clone list"
   },
   "publicCharts": {
     "noData": "Kò sí àwọn àkọsílẹ̀ àwòrán gbangba.",
@@ -556,5 +564,49 @@
     "addComment": "Fikún àmìyàn...",
     "showMore": "Fihàn púpọ̀",
     "showLess": "Fihàn díẹ̀"
+  },
+  "invest": {
+    "notice": "Ko si owo ti ooto ti a n ṣakoso ni bayi ni app yii. Dupip Invest tun ti o wa ni ipolongo. Eyi jẹ ibi idanwo nikan fun awọn idi ifihan.",
+    "consentTitle": "Igbasilẹ Demo Ifowopamọ",
+    "consentCheckbox": "Mo jẹwo pe Dupip ko jẹ ibi ifowopamọ sibẹsibẹ, ati pe nipa lilo ẹya yii, mo mọ pe gbogbo data mi le jẹ pa kuro ṣaaju ifilọlẹ ofisiali ti Dupip Invest.",
+    "confirm": "Jẹrisi"
+  },
+  "wallet": {
+    "nftGenerationCompleted": "Iṣẹda NFT ti pari.",
+    "errorGeneratingNFT": "Aṣiṣe nipa ṣiṣẹda NFT",
+    "failedToGenerateNFT": "Iṣẹda NFT kuna",
+    "pleaseSelectWallet": "Jọwọ yan apamọwọ",
+    "errorFetchingNFTs": "Aṣiṣe nipa gbigba NFTs:",
+    "transferCompleted": "Gbigbe ti pari.",
+    "failedToTransferTokens": "Gbigbe tokens kuna",
+    "errorTransferringTokens": "Aṣiṣe nipa gbigbe tokens",
+    "unnamedWallet": "Apamọwọ Alailorukọ",
+    "wallets": "Awọn Apamọwọ",
+    "transferTokens": "Gbe Tokens",
+    "createWallet": "Ṣẹda apamọwọ",
+    "fromWallet": "Lati apamọwọ",
+    "toAddress": "Si adirẹsi",
+    "amount": "Iye",
+    "generateNFT": "Ṣẹda NFT",
+    "myNFTs": "NFTs mi",
+    "balance": "Iwọn:",
+    "selectWallet": "Yan Apamọwọ",
+    "blockchainBalance": "Iwọn Blockchain:",
+    "pleaseEnterWalletName": "Jọwọ tẹ orukọ apamọwọ",
+    "walletCreatedSuccessfully": "Apamọwọ ti ṣẹda ni aṣeyọri",
+    "failedToCreateWallet": "Ṣiṣẹda apamọwọ kuna",
+    "errorCreatingWallet": "Aṣiṣe nipa ṣiṣẹda apamọwọ",
+    "walletDeletedSuccessfully": "Apamọwọ ti pa run ni aṣeyọri",
+    "failedToDeleteWallet": "Pa apamọwọ run kuna",
+    "errorDeletingWallet": "Aṣiṣe nipa pa apamọwọ run",
+    "addressCopiedToClipboard": "Adirẹsi ti gba ni aaye",
+    "createNewWallet": "Ṣẹda Apamọwọ Tuntun",
+    "createNewWalletDescription": "Ṣẹda apamọwọ blockchain tuntun. Adirẹsi tuntun yoo jẹ ṣiṣẹda.",
+    "walletNamePlaceholder": "Orukọ apamọwọ (apẹrẹ: Ifipamọ, Iṣowo)",
+    "creating": "N ṣẹda...",
+    "noWalletsYet": "Ko si awọn apamọwọ sibẹsibẹ. Ṣẹda apamọwọ akọkọ rẹ lati bẹrẹ.",
+    "deleteWallet": "Pa Apamọwọ Run",
+    "deleteWalletConfirmation": "Ṣe o da ọ loju pe o fẹ pa apamọwọ yii run? Iṣẹ yii ko le ṣe pada. Apamọwọ yoo yọ kuro lori akọọlẹ rẹ, ṣugbọn adirẹsi blockchain ati awọn owo rẹ yoo duro lori blockchain.",
+    "delete": "Pa Run"
   }
 }

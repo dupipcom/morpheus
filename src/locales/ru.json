@@ -104,7 +104,8 @@
         "PUBLIC": "Общественность",
         "AI_ENABLED": "AI Enabled"
       },
-      "action": "Опубликовать заметку"
+      "action": "Опубликовать заметку",
+      "publishing": "Publishing..."
     }
   },
   "week": {
@@ -235,7 +236,11 @@
   },
   "errors": {
     "notFound": "Упс! Не удалось настроить эту частоту.",
-    "genericError": "Что-то пошло не так. Пожалуйста, попробуйте еще раз."
+    "genericError": "Что-то пошло не так. Пожалуйста, попробуйте еще раз.",
+    "failedToFetchNotes": "Failed to fetch notes",
+    "failedToLoadNotes": "Failed to load notes",
+    "failedToFetchTemplates": "Failed to fetch templates",
+    "failedToLoadTemplates": "Failed to load templates"
   },
   "social": {
     "title": "Социальные контакты",
@@ -320,7 +325,10 @@
     "cloneTemplateFailed": "Не удалось клонировать шаблон",
     "cloning": "Клонирование...",
     "noPublicNotes": "Публичные заметки пока недоступны.",
-    "noPublicTemplatesOrLists": "Публичные шаблоны или списки пока недоступны."
+    "noPublicTemplatesOrLists": "Публичные шаблоны или списки пока недоступны.",
+    "cloneList": "Clone List",
+    "cloneListSuccess": "List cloned successfully!",
+    "cloneListFailed": "Failed to clone list"
   },
   "publicCharts": {
     "noData": "Нет доступных публичных данных диаграмм.",
@@ -558,5 +566,49 @@
     "addComment": "Добавить комментарий...",
     "showMore": "Показать больше",
     "showLess": "Показать меньше"
+  },
+  "invest": {
+    "notice": "В настоящее время в этом приложении не управляются реальные деньги. Dupip Invest все еще находится в стадии планирования. Это просто тестовая среда для демонстрационных целей.",
+    "consentTitle": "Согласие на Демонстрацию Инвестиций",
+    "consentCheckbox": "Я признаю, что Dupip еще не является инвестиционной платформой, и что, используя эту функцию, я осознаю, что все мои данные могут быть удалены до официального запуска Dupip Invest.",
+    "confirm": "Подтвердить"
+  },
+  "wallet": {
+    "nftGenerationCompleted": "Генерация NFT завершена.",
+    "errorGeneratingNFT": "Ошибка при генерации NFT",
+    "failedToGenerateNFT": "Не удалось сгенерировать NFT",
+    "pleaseSelectWallet": "Пожалуйста, выберите кошелек",
+    "errorFetchingNFTs": "Ошибка при получении NFT:",
+    "transferCompleted": "Перевод завершен.",
+    "failedToTransferTokens": "Не удалось перевести токены",
+    "errorTransferringTokens": "Ошибка при переводе токенов",
+    "unnamedWallet": "Безымянный кошелек",
+    "wallets": "Кошельки",
+    "transferTokens": "Перевести Токены",
+    "createWallet": "Создать кошелек",
+    "fromWallet": "Из кошелька",
+    "toAddress": "На адрес",
+    "amount": "Сумма",
+    "generateNFT": "Сгенерировать NFT",
+    "myNFTs": "Мои NFT",
+    "balance": "Баланс:",
+    "selectWallet": "Выбрать Кошелек",
+    "blockchainBalance": "Баланс Blockchain:",
+    "pleaseEnterWalletName": "Пожалуйста, введите название кошелька",
+    "walletCreatedSuccessfully": "Кошелек успешно создан",
+    "failedToCreateWallet": "Не удалось создать кошелек",
+    "errorCreatingWallet": "Ошибка при создании кошелька",
+    "walletDeletedSuccessfully": "Кошелек успешно удален",
+    "failedToDeleteWallet": "Не удалось удалить кошелек",
+    "errorDeletingWallet": "Ошибка при удалении кошелька",
+    "addressCopiedToClipboard": "Адрес скопирован в буфер обмена",
+    "createNewWallet": "Создать Новый Кошелек",
+    "createNewWalletDescription": "Создайте новый блокчейн-кошелек. Будет сгенерирован новый адрес.",
+    "walletNamePlaceholder": "Название кошелька (например, Сбережения, Торговля)",
+    "creating": "Создание...",
+    "noWalletsYet": "Пока нет кошельков. Создайте свой первый кошелек, чтобы начать.",
+    "deleteWallet": "Удалить Кошелек",
+    "deleteWalletConfirmation": "Вы уверены, что хотите удалить этот кошелек? Это действие нельзя отменить. Кошелек будет удален из вашего аккаунта, но адрес блокчейна и его средства останутся в блокчейне.",
+    "delete": "Удалить"
   }
 }
