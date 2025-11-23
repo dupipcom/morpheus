@@ -57,6 +57,7 @@ const getRootAuthHeaders = () => {
   return {
     'Authorization': `Bearer ${apiKey}`,
     'Content-Type': 'application/json',
+    'x-kaleido-sync': 'true',
   };
 };
 
@@ -78,6 +79,7 @@ const getGatewayAuthHeaders = () => {
   return {
     'Authorization': `Basic ${credentials}`,
     'Content-Type': 'application/json',
+    'x-kaleido-sync': 'true',
   };
 };
 
@@ -241,8 +243,8 @@ export const sendTokens = async (
     const data = await response.json();
     
     // Return transaction hash - adjust based on actual API response format
-    if (data.sent) {
-      return data.sent;
+    if (data.status == 1) {
+      return "true";
     } else {
       throw new Error(`Invalid transfer response: missing sent. Response: ${JSON.stringify(data)}`);
     }

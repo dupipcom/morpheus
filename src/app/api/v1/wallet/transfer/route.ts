@@ -60,11 +60,15 @@ export async function POST(req: Request) {
       amount.toString()
     );
 
+    console.log('txHash', txHash);
+
     // Create a transaction record
     await prisma.transaction.create({
       data: {
         userId: user.id,
         walletId: fromWallet.id,
+        toAddress: toAddress,
+        fromAddress: fromWallet.address,
         amount: parseFloat(amount),
         type: 'transfer',
         status: 'pending',
