@@ -29,8 +29,11 @@ export const InvestView = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   
   const user = session?.user as any
+  const isLoggedIn = !!session?.user.userId
   const hasConsented = user?.consents?.doInvestDemo?.consentedOn != null
-  const showModal = !isLoading && !hasConsented
+  const showModal = isLoggedIn && !isLoading && !hasConsented
+
+  console.log({isLoggedIn, isLoading, hasConsented, showModal})
   
   // Override Radix UI's pointer-events: none on body to allow bottom nav interaction
   useEffect(() => {
@@ -78,12 +81,12 @@ export const InvestView = () => {
   return (
     <main className="">
       <div className={`container mx-auto px-4 py-6 max-w-4xl space-y-6 ${!hasConsented ? 'blur-sm pointer-events-none' : ''}`}>
-        <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4 flex items-start gap-3">
-          <AlertTriangle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-destructive break-words">
-            {t('invest.notice')}
-          </p>
-        </div>
+          <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4 flex items-start gap-3">
+            <AlertTriangle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
+            <p className="text-sm text-destructive break-words">
+              {t('invest.notice')}
+            </p>
+          </div>
         <div className="grid gap-6 md:grid-cols-2">
           <div className="space-y-4">
             <WalletManager />
@@ -95,7 +98,7 @@ export const InvestView = () => {
         </div>
       </div>
       
-      <AlertDialog open={showModal}>
+      { showModal && <AlertDialog open={showModal}>
         <AlertDialogContent className="max-w-lg">
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2">
@@ -132,7 +135,7 @@ export const InvestView = () => {
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
-      </AlertDialog>
+      </AlertDialog> }
     </main>
   )
 }
