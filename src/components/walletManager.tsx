@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -25,6 +25,7 @@ import {
 import { Wallet, Plus, Trash2, Copy, Check } from "lucide-react"
 import { useI18n } from "@/lib/contexts/i18n"
 import { toast } from "sonner"
+import { useWallets } from "@/lib/userUtils"
 
 interface WalletData {
   id: string
@@ -37,35 +38,12 @@ interface WalletData {
 
 export const WalletManager = () => {
   const { t } = useI18n()
-  const [wallets, setWallets] = useState<WalletData[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const { wallets, isLoading, refreshWallets } = useWallets()
   const [isCreating, setIsCreating] = useState(false)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [newWalletName, setNewWalletName] = useState('')
   const [walletToDelete, setWalletToDelete] = useState<string | null>(null)
   const [copiedAddress, setCopiedAddress] = useState<string | null>(null)
-
-  const fetchWallets = async () => {
-    try {
-      setIsLoading(true)
-      const response = await fetch('/api/v1/wallet')
-      if (response.ok) {
-        const data = await response.json()
-        setWallets(data.wallets || [])
-      } else {
-        toast.error('Failed to fetch wallets')
-      }
-    } catch (error) {
-      console.error('Error fetching wallets:', error)
-      toast.error('Error fetching wallets')
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    fetchWallets()
-  }, [])
 
   const handleCreateWallet = async () => {
     if (!newWalletName.trim()) {
@@ -85,10 +63,11 @@ export const WalletManager = () => {
 
       if (response.ok) {
         const data = await response.json()
-        setWallets([...wallets, data.wallet])
         setNewWalletName('')
         setIsDialogOpen(false)
         toast.success('Wallet created successfully')
+        // Refresh wallets to get updated list
+        await refreshWallets()
       } else {
         const error = await response.json()
         toast.error(error.error || 'Failed to create wallet')
@@ -110,9 +89,10 @@ export const WalletManager = () => {
       })
 
       if (response.ok) {
-        setWallets(wallets.filter(w => w.id !== walletToDelete))
         setWalletToDelete(null)
         toast.success('Wallet deleted successfully')
+        // Refresh wallets to get updated list
+        await refreshWallets()
       } else {
         const error = await response.json()
         toast.error(error.error || 'Failed to delete wallet')
@@ -219,7 +199,7 @@ export const WalletManager = () => {
                     <span className="text-muted-foreground">Balance: </span>
                     <span className="font-medium">
                       {wallet.blockchainBalance
-                        ? `Ð${parseFloat(wallet.blockchainBalance).toFixed(4)}`
+                        ? `Ð${parseFloat(wallet.blockchainBalance).toFixed(18)}`
                         : 'Ð0'}
                     </span>
                   </div>

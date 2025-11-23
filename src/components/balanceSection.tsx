@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-import { useUserData } from "@/lib/userUtils"
+import { useUserData, useWallets } from "@/lib/userUtils"
 import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
 
@@ -43,37 +43,17 @@ export const BalanceSection = () => {
   const [hiddenBalance, setHiddenBalance] = useState(!revealRedacted)
   const [localBalance, setLocalBalance] = useState<string>(serverBalance !== null ? String(serverBalance) : '0')
   const [isDetailsExpanded, setIsDetailsExpanded] = useState(false)
-  const [wallets, setWallets] = useState<WalletData[]>([])
+  const { wallets, isLoading: isLoadingWallets } = useWallets()
   const [selectedWalletId, setSelectedWalletId] = useLocalStorage<string | null>('dpip_selected_wallet', null)
-  const [isLoadingWallets, setIsLoadingWallets] = useState(false)
 
   const { isLoading, refreshUser } = useUserData()
 
-  // Fetch wallets
+  // Auto-select first wallet if none selected
   useEffect(() => {
-    const fetchWallets = async () => {
-      try {
-        setIsLoadingWallets(true)
-        const response = await fetch('/api/v1/wallet')
-        if (response.ok) {
-          const data = await response.json()
-          setWallets(data.wallets || [])
-          // Auto-select first wallet if none selected
-          if (!selectedWalletId && data.wallets && data.wallets.length > 0) {
-            setSelectedWalletId(data.wallets[0].id)
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching wallets:', error)
-      } finally {
-        setIsLoadingWallets(false)
-      }
+    if (!selectedWalletId && wallets && wallets.length > 0) {
+      setSelectedWalletId(wallets[0].id)
     }
-
-    if (session?.user) {
-      fetchWallets()
-    }
-  }, [session, selectedWalletId, setSelectedWalletId])
+  }, [wallets, selectedWalletId, setSelectedWalletId])
 
   // Sync hiddenBalance with GlobalContext revealRedacted
   useEffect(() => {
@@ -175,7 +155,7 @@ export const BalanceSection = () => {
                     <div className="flex justify-between">
                       <span>Blockchain Balance:</span>
                       <span className={hiddenBalance ? "blur-sm" : ""}>
-                        Ð{parseFloat(blockchainBalance).toFixed(4)}
+                        Ð{parseFloat(blockchainBalance).toFixed(18)}
                       </span>
                     </div>
                   </div>

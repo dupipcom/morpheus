@@ -30,7 +30,7 @@ export async function GET(req: Request) {
       );
     }
 
-    // Fetch blockchain balances for all wallets
+    // Fetch blockchain balances for all wallets and update database
     const walletsWithBalances = await Promise.all(
       user.wallets.map(async (wallet) => {
         if (!wallet.address) {
@@ -39,8 +39,19 @@ export async function GET(req: Request) {
         
         try {
           const blockchainBalance = await getBalance(wallet.address);
+          const balanceFloat = parseFloat(blockchainBalance) || 0;
+
+          console.log({ blockchainBalance, balanceFloat })
+          
+          // Update balance in database
+          await prisma.wallet.update({
+            where: { id: wallet.id },
+            data: { balance: balanceFloat },
+          });
+          
           return {
             ...wallet,
+            balance: balanceFloat,
             blockchainBalance,
           };
         } catch (error) {
@@ -104,17 +115,28 @@ export async function POST(req: Request) {
       },
     });
 
-    // Get the blockchain balance
+    // Get the blockchain balance and update database
     let blockchainBalance = '0';
+    let balanceFloat = 0;
     try {
       blockchainBalance = await getBalance(address);
+      balanceFloat = parseFloat(blockchainBalance) || 0;
+      
+      // Update balance in database
+      await prisma.wallet.update({
+        where: { id: wallet.id },
+        data: { balance: balanceFloat },
+      });
     } catch (error) {
       console.error('Error fetching initial balance:', error);
     }
 
+    console.log({ blockchainBalance, balanceFloat })
+
     return NextResponse.json({
       wallet: {
         ...wallet,
+        balance: balanceFloat,
         blockchainBalance,
       },
     });

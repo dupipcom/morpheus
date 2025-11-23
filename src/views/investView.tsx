@@ -11,7 +11,6 @@ export const InvestView = () => {
   return (
     <main className="">
       <div className="container mx-auto px-4 py-6 max-w-4xl space-y-6">
-        <BalanceSection />
         <div className="grid gap-6 md:grid-cols-2">
           <div className="space-y-4">
             <WalletManager />

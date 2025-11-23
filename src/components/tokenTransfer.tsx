@@ -15,46 +15,22 @@ import { Send } from "lucide-react"
 import { useI18n } from "@/lib/contexts/i18n"
 import { toast } from "sonner"
 import { useLocalStorage } from 'usehooks-ts'
-
-interface WalletData {
-  id: string
-  name: string | null
-  address: string | null
-  balance: number | null
-  blockchainBalance?: string
-  createdAt: string
-}
+import { useWallets } from "@/lib/userUtils"
 
 export const TokenTransfer = () => {
   const { t } = useI18n()
-  const [wallets, setWallets] = useState<WalletData[]>([])
+  const { wallets, isLoading, refreshWallets } = useWallets()
   const [selectedWalletId, setSelectedWalletId] = useLocalStorage<string | null>('dpip_selected_wallet', null)
   const [toAddress, setToAddress] = useState('')
   const [amount, setAmount] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
   const [isTransferring, setIsTransferring] = useState(false)
 
+  // Auto-select first wallet if none selected
   useEffect(() => {
-    const fetchWallets = async () => {
-      try {
-        setIsLoading(true)
-        const response = await fetch('/api/v1/wallet')
-        if (response.ok) {
-          const data = await response.json()
-          setWallets(data.wallets || [])
-          if (!selectedWalletId && data.wallets && data.wallets.length > 0) {
-            setSelectedWalletId(data.wallets[0].id)
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching wallets:', error)
-      } finally {
-        setIsLoading(false)
-      }
+    if (!selectedWalletId && wallets && wallets.length > 0) {
+      setSelectedWalletId(wallets[0].id)
     }
-
-    fetchWallets()
-  }, [selectedWalletId, setSelectedWalletId])
+  }, [wallets, selectedWalletId, setSelectedWalletId])
 
   const handleTransfer = async () => {
     if (!selectedWalletId || !toAddress.trim() || !amount.trim()) {
@@ -88,11 +64,7 @@ export const TokenTransfer = () => {
         setToAddress('')
         setAmount('')
         // Refresh wallets to update balances
-        const walletsResponse = await fetch('/api/v1/wallet')
-        if (walletsResponse.ok) {
-          const walletsData = await walletsResponse.json()
-          setWallets(walletsData.wallets || [])
-        }
+        await refreshWallets()
       } else {
         const error = await response.json()
         toast.error(error.error || 'Failed to transfer tokens')
@@ -138,7 +110,7 @@ export const TokenTransfer = () => {
               <SelectContent>
                 {wallets.map((wallet) => (
                   <SelectItem key={wallet.id} value={wallet.id}>
-                    {wallet.name || 'Unnamed Wallet'} - {wallet.blockchainBalance ? `Ð${parseFloat(wallet.blockchainBalance).toFixed(4)}` : 'Ð0'}
+                    {wallet.name || 'Unnamed Wallet'} - {wallet.blockchainBalance ? `Ð${parseFloat(wallet.blockchainBalance).toFixed(18)}` : 'Ð0'}
                   </SelectItem>
                 ))}
               </SelectContent>

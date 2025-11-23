@@ -15,45 +15,21 @@ import { Sparkles } from "lucide-react"
 import { useI18n } from "@/lib/contexts/i18n"
 import { toast } from "sonner"
 import { useLocalStorage } from 'usehooks-ts'
-
-interface WalletData {
-  id: string
-  name: string | null
-  address: string | null
-  balance: number | null
-  blockchainBalance?: string
-  createdAt: string
-}
+import { useWallets } from "@/lib/userUtils"
 
 export const NFTGenerator = () => {
   const { t } = useI18n()
-  const [wallets, setWallets] = useState<WalletData[]>([])
+  const { wallets, isLoading } = useWallets()
   const [selectedWalletId, setSelectedWalletId] = useLocalStorage<string | null>('dpip_selected_wallet', null)
   const [tokenUri, setTokenUri] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
   const [isGenerating, setIsGenerating] = useState(false)
 
+  // Auto-select first wallet if none selected
   useEffect(() => {
-    const fetchWallets = async () => {
-      try {
-        setIsLoading(true)
-        const response = await fetch('/api/v1/wallet')
-        if (response.ok) {
-          const data = await response.json()
-          setWallets(data.wallets || [])
-          if (!selectedWalletId && data.wallets && data.wallets.length > 0) {
-            setSelectedWalletId(data.wallets[0].id)
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching wallets:', error)
-      } finally {
-        setIsLoading(false)
-      }
+    if (!selectedWalletId && wallets && wallets.length > 0) {
+      setSelectedWalletId(wallets[0].id)
     }
-
-    fetchWallets()
-  }, [selectedWalletId, setSelectedWalletId])
+  }, [wallets, selectedWalletId, setSelectedWalletId])
 
   const handleGenerateNFT = async () => {
     if (!selectedWalletId) {
