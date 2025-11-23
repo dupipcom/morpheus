@@ -186,6 +186,11 @@ body.dark {
   .text-destructive {
     color: var(--destructive);
   }
+  
+  /* Ensure bottom nav remains interactive when alert dialog is open */
+  .bottom-nav-interactive {
+    pointer-events: auto !important;
+  }
 }
 
 /* Toast styling to match theme */

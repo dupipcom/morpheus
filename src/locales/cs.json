@@ -104,7 +104,8 @@
         "PUBLIC": "Veřejné",
         "AI_ENABLED": "Povoleno umělou inteligencí"
       },
-      "action": "Publikovat poznámku"
+      "action": "Publikovat poznámku",
+      "publishing": "Publishing..."
     }
   },
   "week": {
@@ -221,7 +222,11 @@
   },
   "errors": {
     "notFound": "Ups! Nepodařilo se naladit tuto frekvenci.",
-    "genericError": "Něco se pokazilo. Zkuste to znovu."
+    "genericError": "Něco se pokazilo. Zkuste to znovu.",
+    "failedToFetchNotes": "Failed to fetch notes",
+    "failedToLoadNotes": "Failed to load notes",
+    "failedToFetchTemplates": "Failed to fetch templates",
+    "failedToLoadTemplates": "Failed to load templates"
   },
   "social": {
     "title": "Sociální kontakty",
@@ -306,7 +311,10 @@
     "cloneTemplateFailed": "Klonování šablony selhalo",
     "cloning": "Klonování...",
     "noPublicNotes": "Zatím nejsou k dispozici žádné veřejné poznámky.",
-    "noPublicTemplatesOrLists": "Zatím nejsou k dispozici žádné veřejné šablony nebo seznamy."
+    "noPublicTemplatesOrLists": "Zatím nejsou k dispozici žádné veřejné šablony nebo seznamy.",
+    "cloneList": "Clone List",
+    "cloneListSuccess": "List cloned successfully!",
+    "cloneListFailed": "Failed to clone list"
   },
   "publicCharts": {
     "noData": "Žádná veřejná data grafů k dispozici.",
@@ -558,5 +566,49 @@
     "addComment": "Přidat komentář...",
     "showMore": "Zobrazit více",
     "showLess": "Zobrazit méně"
+  },
+  "invest": {
+    "notice": "V této aplikaci se momentálně nespravují žádné skutečné peníze. Dupip Invest je stále ve fázi plánování. Toto je pouze testovací prostředí pro demonstrační účely.",
+    "consentTitle": "Souhlas s Investiční Demo",
+    "consentCheckbox": "Uznávám, že Dupip ještě není investiční platformou a že používáním této funkce jsem si vědom, že všechna má data mohou být smazána před oficiálním spuštěním Dupip Invest.",
+    "confirm": "Potvrdit"
+  },
+  "wallet": {
+    "nftGenerationCompleted": "Generování NFT dokončeno.",
+    "errorGeneratingNFT": "Chyba při generování NFT",
+    "failedToGenerateNFT": "Generování NFT selhalo",
+    "pleaseSelectWallet": "Prosím vyberte peněženku",
+    "errorFetchingNFTs": "Chyba při načítání NFTs:",
+    "transferCompleted": "Převod dokončen.",
+    "failedToTransferTokens": "Převod tokenů selhal",
+    "errorTransferringTokens": "Chyba při převodu tokenů",
+    "unnamedWallet": "Nepojmenovaná peněženka",
+    "wallets": "Peněženky",
+    "transferTokens": "Převést Tokeny",
+    "createWallet": "Vytvořit peněženku",
+    "fromWallet": "Z peněženky",
+    "toAddress": "Na adresu",
+    "amount": "Částka",
+    "generateNFT": "Generovat NFT",
+    "myNFTs": "Moje NFTs",
+    "balance": "Zůstatek:",
+    "selectWallet": "Vybrat Peněženku",
+    "blockchainBalance": "Blockchain zůstatek:",
+    "pleaseEnterWalletName": "Prosím zadejte název peněženky",
+    "walletCreatedSuccessfully": "Peněženka úspěšně vytvořena",
+    "failedToCreateWallet": "Vytvoření peněženky selhalo",
+    "errorCreatingWallet": "Chyba při vytváření peněženky",
+    "walletDeletedSuccessfully": "Peněženka úspěšně smazána",
+    "failedToDeleteWallet": "Smazání peněženky selhalo",
+    "errorDeletingWallet": "Chyba při mazání peněženky",
+    "addressCopiedToClipboard": "Adresa zkopírována do schránky",
+    "createNewWallet": "Vytvořit Novou Peněženku",
+    "createNewWalletDescription": "Vytvořte novou blockchain peněženku. Bude vygenerována nová adresa.",
+    "walletNamePlaceholder": "Název peněženky (např. Spoření, Obchodování)",
+    "creating": "Vytváření...",
+    "noWalletsYet": "Zatím žádné peněženky. Vytvořte svou první peněženku, abyste mohli začít.",
+    "deleteWallet": "Smazat Peněženku",
+    "deleteWalletConfirmation": "Opravdu chcete smazat tuto peněženku? Tuto akci nelze vrátit zpět. Peněženka bude odstraněna z vašeho účtu, ale blockchain adresa a její prostředky zůstanou na blockchainu.",
+    "delete": "Smazat"
   }
 }

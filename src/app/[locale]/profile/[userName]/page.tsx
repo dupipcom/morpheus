@@ -99,12 +99,6 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
 
   const isLoggedIn = !!userId
 
-  console.log('profile', profile)
-  console.log('userName', userName)
-  console.log('currentUserUsername', currentUserUsername)
-  console.log('isLoggedIn', isLoggedIn)
-  console.log('translations', translations)
-
   return (
     <I18nProvider locale={locale as any}>
       <ProfileView 

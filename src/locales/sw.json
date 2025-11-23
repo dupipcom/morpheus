@@ -104,7 +104,8 @@
         "PUBLIC": "Umma",
         "AI_ENABLED": "AI Imewezeshwa"
       },
-      "action": "Chapisha Maelezo"
+      "action": "Chapisha Maelezo",
+      "publishing": "Publishing..."
     }
   },
   "week": {
@@ -298,7 +299,11 @@
   },
   "errors": {
     "notFound": "Ops! Haikuweza kufikia mzunguko huu.",
-    "genericError": "Kuna kitu kilichokwenda vibaya. Tafadhali jaribu tena."
+    "genericError": "Kuna kitu kilichokwenda vibaya. Tafadhali jaribu tena.",
+    "failedToFetchNotes": "Failed to fetch notes",
+    "failedToLoadNotes": "Failed to load notes",
+    "failedToFetchTemplates": "Failed to fetch templates",
+    "failedToLoadTemplates": "Failed to load templates"
   },
   "publicProfile": {
     "ctaTitle": "Anza Safari Yako ya Dupip",
@@ -318,7 +323,10 @@
     "cloneTemplateFailed": "Imeshindwa kunakili kiolezo",
     "cloning": "Inanakili...",
     "noPublicNotes": "Hakuna maelezo ya umma yanayopatikana bado.",
-    "noPublicTemplatesOrLists": "Hakuna violezo au orodha za umma zilizopo bado."
+    "noPublicTemplatesOrLists": "Hakuna violezo au orodha za umma zilizopo bado.",
+    "cloneList": "Clone List",
+    "cloneListSuccess": "List cloned successfully!",
+    "cloneListFailed": "Failed to clone list"
   },
   "publicCharts": {
     "noData": "Hakuna data ya chati za umma inayopatikana.",
@@ -556,5 +564,49 @@
     "addComment": "Ongeza maoni...",
     "showMore": "Onyesha zaidi",
     "showLess": "Onyesha kidogo"
+  },
+  "invest": {
+    "notice": "Hakuna pesa halisi zinazosimamiwa kwa sasa katika programu hii. Dupip Invest bado iko katika awamu ya kupanga. Hii ni mazingira ya majaribio tu kwa madhumuni ya maonyesho.",
+    "consentTitle": "Idhini ya Maonyesho ya Uwekezaji",
+    "consentCheckbox": "Ninakubali kuwa Dupip bado sio jukwaa la uwekezaji, na kwa kutumia kipengele hiki, ninafahamu kuwa data zangu zote zinaweza kufutwa kabla ya uzinduzi rasmi wa Dupip Invest.",
+    "confirm": "Thibitisha"
+  },
+  "wallet": {
+    "nftGenerationCompleted": "Uundaji wa NFT umekamilika.",
+    "errorGeneratingNFT": "Hitilafu katika kuunda NFT",
+    "failedToGenerateNFT": "Kuunda NFT kumeshindwa",
+    "pleaseSelectWallet": "Tafadhali chagua mkoba",
+    "errorFetchingNFTs": "Hitilafu katika kuchukua NFTs:",
+    "transferCompleted": "Uhamishaji umekamilika.",
+    "failedToTransferTokens": "Uhamishaji wa tokens umeshindwa",
+    "errorTransferringTokens": "Hitilafu katika kuhamisha tokens",
+    "unnamedWallet": "Mkoba Bila Jina",
+    "wallets": "Mikoba",
+    "transferTokens": "Hamisha Tokens",
+    "createWallet": "Unda mkoba",
+    "fromWallet": "Kutoka mkoba",
+    "toAddress": "Kwa anwani",
+    "amount": "Kiasi",
+    "generateNFT": "Unda NFT",
+    "myNFTs": "NFTs zangu",
+    "balance": "Salio:",
+    "selectWallet": "Chagua Mkoba",
+    "blockchainBalance": "Salio la Blockchain:",
+    "pleaseEnterWalletName": "Tafadhali ingiza jina la mkoba",
+    "walletCreatedSuccessfully": "Mkoba umeundwa kwa mafanikio",
+    "failedToCreateWallet": "Kuunda mkoba kumeshindwa",
+    "errorCreatingWallet": "Hitilafu katika kuunda mkoba",
+    "walletDeletedSuccessfully": "Mkoba umefutwa kwa mafanikio",
+    "failedToDeleteWallet": "Kufuta mkoba kumeshindwa",
+    "errorDeletingWallet": "Hitilafu katika kufuta mkoba",
+    "addressCopiedToClipboard": "Anakili anwani kwenye ubao wa kunakili",
+    "createNewWallet": "Unda Mkoba Mpya",
+    "createNewWalletDescription": "Unda mkoba mpya wa blockchain. Anwani mpya itatengenezwa.",
+    "walletNamePlaceholder": "Jina la mkoba (mf. Akiba, Biashara)",
+    "creating": "Inaundwa...",
+    "noWalletsYet": "Bado hakuna mikoba. Unda mkoba wako wa kwanza kuanza.",
+    "deleteWallet": "Futa Mkoba",
+    "deleteWalletConfirmation": "Je, una uhakika unataka kufuta mkoba huu? Kitendo hiki hakiwezi kutenduliwa. Mkoba utaondolewa kutoka kwa akaunti yako, lakini anwani ya blockchain na fedha zake zitaendelea kuwa kwenye blockchain.",
+    "delete": "Futa"
   }
 }

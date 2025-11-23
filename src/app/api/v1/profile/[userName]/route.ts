@@ -280,20 +280,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
     }
     
     // Debug logging (can be removed in production)
-    if (process.env.NODE_ENV === 'development') {
-      console.log('Profile visibility check:', {
-        profileUserId: profileUserIdStr,
-        viewerUserId: viewerUserIdStr,
-        profileFriends: profileFriends,
-        viewerFriends: viewerFriends,
-        profileCloseFriends: profileCloseFriends,
-        viewerCloseFriends: viewerCloseFriends,
-        isOwner,
-        isFriend,
-        isCloseFriend,
-        filteredProfile
-      })
-    }
+    // Removed console.log statements - use logger tool if needed
 
     return Response.json({ profile: publicProfile })
   } catch (error) {

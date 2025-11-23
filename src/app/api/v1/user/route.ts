@@ -312,6 +312,21 @@ export async function POST(req: Request) {
     user = await getUser()
   }
 
+  if (data?.consents) {
+    await prisma.user.update({
+      data: {
+        consents: {
+          set: {
+            ...(user.consents || {}),
+            ...data.consents
+          } as any
+        },
+      },
+      where: { id: user.id },
+    })
+    user = await getUser()
+  }
+
   // Entries logic removed - data now stored in Day model
   
   return Response.json(user)

@@ -104,7 +104,8 @@
         "PUBLIC": "公開",
         "AI_ENABLED": "AI有効"
       },
-      "action": "ノートを公開"
+      "action": "ノートを公開",
+      "publishing": "Publishing..."
     }
   },
   "week": {
@@ -300,7 +301,11 @@
   },
   "errors": {
     "notFound": "おっと！この周波数にチューニングできませんでした。",
-    "genericError": "何か問題が発生しました。もう一度お試しください。"
+    "genericError": "何か問題が発生しました。もう一度お試しください。",
+    "failedToFetchNotes": "Failed to fetch notes",
+    "failedToLoadNotes": "Failed to load notes",
+    "failedToFetchTemplates": "Failed to fetch templates",
+    "failedToLoadTemplates": "Failed to load templates"
   },
   "publicProfile": {
     "ctaTitle": "あなた自身の Dupip の旅を始めましょう",
@@ -320,7 +325,10 @@
     "cloneTemplateFailed": "テンプレートの複製に失敗しました",
     "cloning": "複製中...",
     "noPublicNotes": "公開ノートはまだ利用できません。",
-    "noPublicTemplatesOrLists": "公開テンプレートまたはリストはまだ利用できません。"
+    "noPublicTemplatesOrLists": "公開テンプレートまたはリストはまだ利用できません。",
+    "cloneList": "Clone List",
+    "cloneListSuccess": "List cloned successfully!",
+    "cloneListFailed": "Failed to clone list"
   },
   "publicCharts": {
     "noData": "公開チャートデータが利用できません。",
@@ -558,5 +566,49 @@
     "addComment": "コメントを追加...",
     "showMore": "もっと見る",
     "showLess": "折りたたむ"
+  },
+  "invest": {
+    "notice": "このアプリでは現在、実際の資金は管理されていません。Dupip Investはまだ計画段階にあります。これはデモンストレーション目的のテスト環境です。",
+    "consentTitle": "投資デモの同意",
+    "consentCheckbox": "Dupipはまだ投資プラットフォームではないことを認識し、この機能を使用することで、Dupip Investの正式リリース前にすべてのデータが削除される可能性があることを理解しています。",
+    "confirm": "確認"
+  },
+  "wallet": {
+    "nftGenerationCompleted": "NFT生成が完了しました。",
+    "errorGeneratingNFT": "NFT生成エラー",
+    "failedToGenerateNFT": "NFT生成に失敗しました",
+    "pleaseSelectWallet": "ウォレットを選択してください",
+    "errorFetchingNFTs": "NFT取得エラー:",
+    "transferCompleted": "転送が完了しました。",
+    "failedToTransferTokens": "トークン転送に失敗しました",
+    "errorTransferringTokens": "トークン転送エラー",
+    "unnamedWallet": "名前なしウォレット",
+    "wallets": "ウォレット",
+    "transferTokens": "トークンを転送",
+    "createWallet": "ウォレットを作成",
+    "fromWallet": "送信元ウォレット",
+    "toAddress": "送信先アドレス",
+    "amount": "数量",
+    "generateNFT": "NFTを生成",
+    "myNFTs": "マイNFT",
+    "balance": "残高:",
+    "selectWallet": "ウォレットを選択",
+    "blockchainBalance": "ブロックチェーン残高:",
+    "pleaseEnterWalletName": "ウォレット名を入力してください",
+    "walletCreatedSuccessfully": "ウォレットが正常に作成されました",
+    "failedToCreateWallet": "ウォレットの作成に失敗しました",
+    "errorCreatingWallet": "ウォレット作成エラー",
+    "walletDeletedSuccessfully": "ウォレットが正常に削除されました",
+    "failedToDeleteWallet": "ウォレットの削除に失敗しました",
+    "errorDeletingWallet": "ウォレット削除エラー",
+    "addressCopiedToClipboard": "アドレスがクリップボードにコピーされました",
+    "createNewWallet": "新しいウォレットを作成",
+    "createNewWalletDescription": "新しいブロックチェーンウォレットを作成します。新しいアドレスが生成されます。",
+    "walletNamePlaceholder": "ウォレット名（例：貯蓄、トレーディング）",
+    "creating": "作成中...",
+    "noWalletsYet": "まだウォレットがありません。最初のウォレットを作成して始めましょう。",
+    "deleteWallet": "ウォレットを削除",
+    "deleteWalletConfirmation": "このウォレットを削除してもよろしいですか？この操作は元に戻せません。ウォレットはアカウントから削除されますが、ブロックチェーンアドレスとその資金はブロックチェーン上に残ります。",
+    "delete": "削除"
   }
 }

@@ -104,7 +104,8 @@
         "PUBLIC": "Pubblico",
         "AI_ENABLED": "Abilitato IA"
       },
-      "action": "Pubblica Nota"
+      "action": "Pubblica Nota",
+      "publishing": "Publishing..."
     }
   },
   "week": {
@@ -300,7 +301,11 @@
   },
   "errors": {
     "notFound": "Ops! Non è stato possibile sintonizzarsi su questa frequenza.",
-    "genericError": "Qualcosa è andato storto. Riprova."
+    "genericError": "Qualcosa è andato storto. Riprova.",
+    "failedToFetchNotes": "Failed to fetch notes",
+    "failedToLoadNotes": "Failed to load notes",
+    "failedToFetchTemplates": "Failed to fetch templates",
+    "failedToLoadTemplates": "Failed to load templates"
   },
   "publicProfile": {
     "ctaTitle": "Inizia il tuo percorso con Dupip",
@@ -320,7 +325,10 @@
     "cloneTemplateFailed": "Impossibile clonare il modello",
     "cloning": "Clonazione...",
     "noPublicNotes": "Nessuna nota pubblica disponibile ancora.",
-    "noPublicTemplatesOrLists": "Nessun modello o lista pubblica disponibile ancora."
+    "noPublicTemplatesOrLists": "Nessun modello o lista pubblica disponibile ancora.",
+    "cloneList": "Clone List",
+    "cloneListSuccess": "List cloned successfully!",
+    "cloneListFailed": "Failed to clone list"
   },
   "publicCharts": {
     "noData": "Nessun dato pubblico disponibile per i grafici.",
@@ -558,5 +566,49 @@
     "addComment": "Aggiungi un commento...",
     "showMore": "Mostra di più",
     "showLess": "Mostra di meno"
+  },
+  "invest": {
+    "notice": "Non c'è denaro reale attualmente gestito in questa app. Dupip Invest è ancora in fase di pianificazione. Questo è solo un ambiente di prova a scopo dimostrativo.",
+    "consentTitle": "Consenso alla Demo di Investimento",
+    "consentCheckbox": "Riconosco che Dupip non è ancora una piattaforma di investimento e che utilizzando questa funzione, sono consapevole che tutti i miei dati possono essere eliminati prima del lancio ufficiale di Dupip Invest.",
+    "confirm": "Conferma"
+  },
+  "wallet": {
+    "nftGenerationCompleted": "Generazione NFT completata.",
+    "errorGeneratingNFT": "Errore nella generazione dell'NFT",
+    "failedToGenerateNFT": "Generazione NFT fallita",
+    "pleaseSelectWallet": "Seleziona un portafoglio",
+    "errorFetchingNFTs": "Errore nel recupero degli NFT:",
+    "transferCompleted": "Trasferimento completato.",
+    "failedToTransferTokens": "Trasferimento token fallito",
+    "errorTransferringTokens": "Errore nel trasferimento dei token",
+    "unnamedWallet": "Portafoglio senza nome",
+    "wallets": "Portafogli",
+    "transferTokens": "Trasferisci Token",
+    "createWallet": "Crea portafoglio",
+    "fromWallet": "Dal portafoglio",
+    "toAddress": "All'indirizzo",
+    "amount": "Importo",
+    "generateNFT": "Genera NFT",
+    "myNFTs": "I miei NFT",
+    "balance": "Saldo:",
+    "selectWallet": "Seleziona Portafoglio",
+    "blockchainBalance": "Saldo Blockchain:",
+    "pleaseEnterWalletName": "Inserisci un nome per il portafoglio",
+    "walletCreatedSuccessfully": "Portafoglio creato con successo",
+    "failedToCreateWallet": "Creazione portafoglio fallita",
+    "errorCreatingWallet": "Errore nella creazione del portafoglio",
+    "walletDeletedSuccessfully": "Portafoglio eliminato con successo",
+    "failedToDeleteWallet": "Eliminazione portafoglio fallita",
+    "errorDeletingWallet": "Errore nell'eliminazione del portafoglio",
+    "addressCopiedToClipboard": "Indirizzo copiato negli appunti",
+    "createNewWallet": "Crea Nuovo Portafoglio",
+    "createNewWalletDescription": "Crea un nuovo portafoglio blockchain. Verrà generato un nuovo indirizzo.",
+    "walletNamePlaceholder": "Nome portafoglio (es. Risparmi, Trading)",
+    "creating": "Creazione...",
+    "noWalletsYet": "Nessun portafoglio ancora. Crea il tuo primo portafoglio per iniziare.",
+    "deleteWallet": "Elimina Portafoglio",
+    "deleteWalletConfirmation": "Sei sicuro di voler eliminare questo portafoglio? Questa azione non può essere annullata. Il portafoglio verrà rimosso dal tuo account, ma l'indirizzo blockchain e i suoi fondi rimarranno sulla blockchain.",
+    "delete": "Elimina"
   }
 }

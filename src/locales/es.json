@@ -104,7 +104,8 @@
         "PUBLIC": "Público",
         "AI_ENABLED": "IA habilitada"
       },
-      "action": "Publicar nota"
+      "action": "Publicar nota",
+      "publishing": "Publishing..."
     }
   },
   "week": {
@@ -300,7 +301,11 @@
   },
   "errors": {
     "notFound": "¡Ups! No se pudo sintonizar esta frecuencia.",
-    "genericError": "Algo salió mal. Por favor, inténtalo de nuevo."
+    "genericError": "Algo salió mal. Por favor, inténtalo de nuevo.",
+    "failedToFetchNotes": "Failed to fetch notes",
+    "failedToLoadNotes": "Failed to load notes",
+    "failedToFetchTemplates": "Failed to fetch templates",
+    "failedToLoadTemplates": "Failed to load templates"
   },
   "publicProfile": {
     "ctaTitle": "Comienza tu propio viaje con Dupip",
@@ -320,7 +325,10 @@
     "cloneTemplateFailed": "Error al clonar plantilla",
     "cloning": "Clonando...",
     "noPublicNotes": "Aún no hay notas públicas disponibles.",
-    "noPublicTemplatesOrLists": "Aún no hay plantillas o listas públicas disponibles."
+    "noPublicTemplatesOrLists": "Aún no hay plantillas o listas públicas disponibles.",
+    "cloneList": "Clone List",
+    "cloneListSuccess": "List cloned successfully!",
+    "cloneListFailed": "Failed to clone list"
   },
   "publicCharts": {
     "noData": "No hay datos públicos de gráficos disponibles.",
@@ -558,5 +566,49 @@
     "addComment": "Añadir un comentario...",
     "showMore": "Mostrar más",
     "showLess": "Mostrar menos"
+  },
+  "invest": {
+    "notice": "No hay dinero real gestionado actualmente en esta aplicación. Dupip Invest todavía está en fase de planificación. Esto es solo un espacio de pruebas con fines de demostración.",
+    "consentTitle": "Consentimiento de Demostración de Inversión",
+    "consentCheckbox": "Reconozco que Dupip aún no es una plataforma de inversión, y que al usar esta función, soy consciente de que todos mis datos pueden ser eliminados antes del lanzamiento oficial de Dupip Invest.",
+    "confirm": "Confirmar"
+  },
+  "wallet": {
+    "nftGenerationCompleted": "Generación de NFT completada.",
+    "errorGeneratingNFT": "Error al generar NFT",
+    "failedToGenerateNFT": "Error al generar NFT",
+    "pleaseSelectWallet": "Por favor selecciona una billetera",
+    "errorFetchingNFTs": "Error al obtener NFTs:",
+    "transferCompleted": "Transferencia completada.",
+    "failedToTransferTokens": "Error al transferir tokens",
+    "errorTransferringTokens": "Error al transferir tokens",
+    "unnamedWallet": "Billetera sin nombre",
+    "wallets": "Billeteras",
+    "transferTokens": "Transferir Tokens",
+    "createWallet": "Crear billetera",
+    "fromWallet": "Desde billetera",
+    "toAddress": "A dirección",
+    "amount": "Cantidad",
+    "generateNFT": "Generar NFT",
+    "myNFTs": "Mis NFTs",
+    "balance": "Saldo:",
+    "selectWallet": "Seleccionar Billetera",
+    "blockchainBalance": "Saldo de Blockchain:",
+    "pleaseEnterWalletName": "Por favor ingrese un nombre de billetera",
+    "walletCreatedSuccessfully": "Billetera creada exitosamente",
+    "failedToCreateWallet": "Error al crear billetera",
+    "errorCreatingWallet": "Error al crear billetera",
+    "walletDeletedSuccessfully": "Billetera eliminada exitosamente",
+    "failedToDeleteWallet": "Error al eliminar billetera",
+    "errorDeletingWallet": "Error al eliminar billetera",
+    "addressCopiedToClipboard": "Dirección copiada al portapapeles",
+    "createNewWallet": "Crear Nueva Billetera",
+    "createNewWalletDescription": "Crea una nueva billetera blockchain. Se generará una nueva dirección.",
+    "walletNamePlaceholder": "Nombre de billetera (ej., Ahorros, Trading)",
+    "creating": "Creando...",
+    "noWalletsYet": "Aún no hay billeteras. Crea tu primera billetera para comenzar.",
+    "deleteWallet": "Eliminar Billetera",
+    "deleteWalletConfirmation": "¿Estás seguro de que deseas eliminar esta billetera? Esta acción no se puede deshacer. La billetera se eliminará de tu cuenta, pero la dirección blockchain y sus fondos permanecerán en la blockchain.",
+    "delete": "Eliminar"
   }
 }

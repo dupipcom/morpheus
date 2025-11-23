@@ -107,7 +107,8 @@
         "PUBLIC": "Público",
         "AI_ENABLED": "IA habilitada"
       },
-      "action": "Publicar nota"
+      "action": "Publicar nota",
+      "publishing": "Publishing..."
     }
   },
   "week": {
@@ -224,7 +225,11 @@
   },
   "errors": {
     "notFound": "Ups! Non se puido sintonizar esta frecuencia.",
-    "genericError": "Algo saiu mal. Por favor, inténtao de novo."
+    "genericError": "Algo saiu mal. Por favor, inténtao de novo.",
+    "failedToFetchNotes": "Failed to fetch notes",
+    "failedToLoadNotes": "Failed to load notes",
+    "failedToFetchTemplates": "Failed to fetch templates",
+    "failedToLoadTemplates": "Failed to load templates"
   },
   "social": {
     "title": "Contactos sociais",
@@ -309,7 +314,10 @@
     "cloneTemplateFailed": "Erro ao clonar modelo",
     "cloning": "Clonando...",
     "noPublicNotes": "Aínda non hai notas públicas dispoñibles.",
-    "noPublicTemplatesOrLists": "Aínda non hai modelos ou listas públicas dispoñibles."
+    "noPublicTemplatesOrLists": "Aínda non hai modelos ou listas públicas dispoñibles.",
+    "cloneList": "Clone List",
+    "cloneListSuccess": "List cloned successfully!",
+    "cloneListFailed": "Failed to clone list"
   },
   "publicCharts": {
     "noData": "Non hai datos de gráficos públicos dispoñibles.",
@@ -561,5 +569,49 @@
     "addComment": "Engadir un comentario...",
     "showMore": "Mostrar máis",
     "showLess": "Mostrar menos"
+  },
+  "invest": {
+    "notice": "Non hai diñeiro real xestionado actualmente nesta aplicación. Dupip Invest aínda está na fase de planificación. Isto é só un entorno de probas con fins de demostración.",
+    "consentTitle": "Consentimento de Demostración de Investimento",
+    "consentCheckbox": "Recoñezo que Dupip aínda non é unha plataforma de investimento e que, ao usar esta función, son consciente de que todos os meus datos poden ser eliminados antes do lanzamento oficial de Dupip Invest.",
+    "confirm": "Confirmar"
+  },
+  "wallet": {
+    "nftGenerationCompleted": "Xeración de NFT completada.",
+    "errorGeneratingNFT": "Erro ao xerar NFT",
+    "failedToGenerateNFT": "Erro ao xerar NFT",
+    "pleaseSelectWallet": "Por favor, seleccione unha carteira",
+    "errorFetchingNFTs": "Erro ao obter NFTs:",
+    "transferCompleted": "Transferencia completada.",
+    "failedToTransferTokens": "Erro ao transferir tokens",
+    "errorTransferringTokens": "Erro ao transferir tokens",
+    "unnamedWallet": "Carteira sen nome",
+    "wallets": "Carteiras",
+    "transferTokens": "Transferir Tokens",
+    "createWallet": "Crear carteira",
+    "fromWallet": "Dende carteira",
+    "toAddress": "A enderezo",
+    "amount": "Cantidade",
+    "generateNFT": "Xerar NFT",
+    "myNFTs": "Os meus NFTs",
+    "balance": "Saldo:",
+    "selectWallet": "Seleccionar Carteira",
+    "blockchainBalance": "Saldo de Blockchain:",
+    "pleaseEnterWalletName": "Por favor, introduza un nome para a carteira",
+    "walletCreatedSuccessfully": "Carteira creada con éxito",
+    "failedToCreateWallet": "Erro ao crear a carteira",
+    "errorCreatingWallet": "Erro ao crear a carteira",
+    "walletDeletedSuccessfully": "Carteira eliminada con éxito",
+    "failedToDeleteWallet": "Erro ao eliminar a carteira",
+    "errorDeletingWallet": "Erro ao eliminar a carteira",
+    "addressCopiedToClipboard": "Enderezo copiado ao portapapeis",
+    "createNewWallet": "Crear Nova Carteira",
+    "createNewWalletDescription": "Crea unha nova carteira blockchain. Xerarase un novo enderezo.",
+    "walletNamePlaceholder": "Nome da carteira (ex. Aforro, Trading)",
+    "creating": "Creando...",
+    "noWalletsYet": "Aínda non hai carteiras. Crea a túa primeira carteira para comezar.",
+    "deleteWallet": "Eliminar Carteira",
+    "deleteWalletConfirmation": "Estás seguro de que queres eliminar esta carteira? Esta acción non se pode desfacer. A carteira eliminarase da túa conta, pero o enderezo blockchain e os seus fondos permanecerán no blockchain.",
+    "delete": "Eliminar"
   }
 }
