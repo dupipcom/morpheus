@@ -555,5 +555,8 @@
     "addComment": "Hozzászólás hozzáadása...",
     "showMore": "Több mutatása",
     "showLess": "Kevesebb mutatása"
+  },
+  "invest": {
+    "notice": "Jelenleg nincs valódi pénz kezelve ebben az alkalmazásban. A Dupip Invest még a tervezési fázisban van. Ez csak egy tesztkörnyezet bemutatási célokra."
   }
 }

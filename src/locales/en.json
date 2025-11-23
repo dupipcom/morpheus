@@ -562,5 +562,8 @@
     "addComment": "Add a comment...",
     "showMore": "Show more",
     "showLess": "Show less"
+  },
+  "invest": {
+    "notice": "There is no actual money currently managed in this app. Dupip Invest is still in planning phase. This is just a playground for demonstration purposes."
   }
 }

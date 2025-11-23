@@ -558,5 +558,8 @@
     "addComment": "Přidat komentář...",
     "showMore": "Zobrazit více",
     "showLess": "Zobrazit méně"
+  },
+  "invest": {
+    "notice": "V této aplikaci se momentálně nespravují žádné skutečné peníze. Dupip Invest je stále ve fázi plánování. Toto je pouze testovací prostředí pro demonstrační účely."
   }
 }

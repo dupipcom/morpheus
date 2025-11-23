@@ -556,5 +556,8 @@
     "addComment": "Ongeza maoni...",
     "showMore": "Onyesha zaidi",
     "showLess": "Onyesha kidogo"
+  },
+  "invest": {
+    "notice": "Hakuna pesa halisi zinazosimamiwa kwa sasa katika programu hii. Dupip Invest bado iko katika awamu ya kupanga. Hii ni mazingira ya majaribio tu kwa madhumuni ya maonyesho."
   }
 }

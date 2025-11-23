@@ -562,5 +562,8 @@
     "addComment": "Dodaj komentarz...",
     "showMore": "Pokaż więcej",
     "showLess": "Pokaż mniej"
+  },
+  "invest": {
+    "notice": "W tej aplikacji nie zarządza się obecnie prawdziwymi pieniędzmi. Dupip Invest jest nadal w fazie planowania. To jest tylko środowisko testowe do celów demonstracyjnych."
   }
 }

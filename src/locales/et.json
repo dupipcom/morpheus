@@ -558,5 +558,8 @@
     "addComment": "Lisa kommentaar...",
     "showMore": "Näita rohkem",
     "showLess": "Näita vähem"
+  },
+  "invest": {
+    "notice": "Selles rakenduses ei hallata praegu tegelikke rahasid. Dupip Invest on veel planeerimisfaasis. See on ainult testimiskeskkond demonstratsioonieesmärgil."
   }
 }

@@ -558,5 +558,8 @@
     "addComment": "Aggiungi un commento...",
     "showMore": "Mostra di più",
     "showLess": "Mostra di meno"
+  },
+  "invest": {
+    "notice": "Non c'è denaro reale attualmente gestito in questa app. Dupip Invest è ancora in fase di pianificazione. Questo è solo un ambiente di prova a scopo dimostrativo."
   }
 }

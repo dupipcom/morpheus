@@ -183,8 +183,8 @@ export const NFTGenerator = () => {
                     className="border rounded-lg p-3 bg-background hover:bg-muted/50 transition-colors"
                   >
                     <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <p className="text-sm font-medium">Token ID: {nft.tokenId}</p>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium break-all">Token ID: {nft.tokenId}</p>
                         {nft.tokenURI && (
                           <p className="text-xs text-muted-foreground mt-1 break-all">
                             URI: {nft.tokenURI}

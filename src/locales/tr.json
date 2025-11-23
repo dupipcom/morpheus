@@ -562,5 +562,8 @@
     "addComment": "Yorum ekle...",
     "showMore": "Daha fazla göster",
     "showLess": "Daha az göster"
+  },
+  "invest": {
+    "notice": "Bu uygulamada şu anda gerçek para yönetilmemektedir. Dupip Invest hala planlama aşamasındadır. Bu sadece gösterim amaçlı bir test ortamıdır."
   }
 }

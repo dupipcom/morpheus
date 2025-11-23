@@ -562,5 +562,8 @@
     "addComment": "Lisää kommentti...",
     "showMore": "Näytä enemmän",
     "showLess": "Näytä vähemmän"
+  },
+  "invest": {
+    "notice": "Tässä sovelluksessa ei tällä hetkellä hallinnoida todellista rahaa. Dupip Invest on vielä suunnitteluvaiheessa. Tämä on vain testiympäristö esittelytarkoituksiin."
   }
 }

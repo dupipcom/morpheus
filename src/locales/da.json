@@ -562,5 +562,8 @@
     "addComment": "Tilføj en kommentar...",
     "showMore": "Vis mere",
     "showLess": "Vis mindre"
+  },
+  "invest": {
+    "notice": "Der administreres i øjeblikket ingen rigtige penge i denne app. Dupip Invest er stadig i planlægningsfasen. Dette er kun et testmiljø til demonstrationsformål."
   }
 }

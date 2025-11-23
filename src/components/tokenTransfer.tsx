@@ -17,6 +17,15 @@ import { toast } from "sonner"
 import { useLocalStorage } from 'usehooks-ts'
 import { useWallets } from "@/lib/userUtils"
 
+interface WalletData {
+  id: string
+  name: string | null
+  address: string | null
+  balance: number | null
+  blockchainBalance?: string
+  createdAt: string
+}
+
 export const TokenTransfer = () => {
   const { t } = useI18n()
   const { wallets, isLoading, refreshWallets } = useWallets()
@@ -79,7 +88,7 @@ export const TokenTransfer = () => {
     }
   }
 
-  const selectedWallet = wallets.find(w => w.id === selectedWalletId)
+  const selectedWallet = wallets.find((w: WalletData) => w.id === selectedWalletId)
 
   return (
     <div className="space-y-4 border rounded-lg p-4 bg-muted/50">
@@ -110,8 +119,8 @@ export const TokenTransfer = () => {
                 <SelectValue placeholder="Select wallet" />
               </SelectTrigger>
               <SelectContent>
-                {wallets.map((wallet) => (
-                  <SelectItem key={wallet.id} value={wallet.id}>
+                {wallets.map((wallet: WalletData) => (
+                  <SelectItem key={wallet.id} value={wallet.id} className="break-words max-w-full">
                     {wallet.name || 'Unnamed Wallet'} - {wallet.blockchainBalance ? `Ð${parseFloat(wallet.blockchainBalance).toFixed(18)}` : 'Ð0'}
                   </SelectItem>
                 ))}

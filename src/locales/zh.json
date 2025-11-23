@@ -558,5 +558,8 @@
     "addComment": "添加评论...",
     "showMore": "显示更多",
     "showLess": "显示更少"
+  },
+  "invest": {
+    "notice": "此应用程序目前不管理任何实际资金。Dupip Invest 仍处于规划阶段。这只是一个用于演示目的的测试环境。"
   }
 }

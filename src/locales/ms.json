@@ -562,5 +562,8 @@
     "addComment": "Tambah komen...",
     "showMore": "Tunjukkan lebih banyak",
     "showLess": "Tunjukkan kurang"
+  },
+  "invest": {
+    "notice": "Tiada wang sebenar yang dikendalikan pada masa ini dalam aplikasi ini. Dupip Invest masih dalam fasa perancangan. Ini hanyalah persekitaran ujian untuk tujuan demonstrasi."
   }
 }

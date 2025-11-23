@@ -560,5 +560,8 @@
     "addComment": "Gehitu iruzkina...",
     "showMore": "Erakutsi gehiago",
     "showLess": "Erakutsi gutxiago"
+  },
+  "invest": {
+    "notice": "Ez dago benetako dirurik kudeatzen une honetan aplikazio honetan. Dupip Invest oraindik planifikazio fasean dago. Hau erakusteko helburuetarako proba ingurune bat besterik ez da."
   }
 }

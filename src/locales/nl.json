@@ -558,5 +558,8 @@
     "addComment": "Reactie toevoegen...",
     "showMore": "Meer tonen",
     "showLess": "Minder tonen"
+  },
+  "invest": {
+    "notice": "Er wordt momenteel geen echt geld beheerd in deze app. Dupip Invest bevindt zich nog in de planningsfase. Dit is slechts een testomgeving voor demonstratiedoeleinden."
   }
 }

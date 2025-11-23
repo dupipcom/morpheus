@@ -163,7 +163,7 @@ export const WalletManager = () => {
         </div>
       ) : (
         <div className="space-y-2">
-          {wallets.map((wallet) => (
+          {wallets.map((wallet: WalletData) => (
             <div
               key={wallet.id}
               className="border rounded-lg p-4 space-y-2 bg-muted/50"
@@ -177,14 +177,14 @@ export const WalletManager = () => {
                     </h4>
                   </div>
                   {wallet.address && (
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <code className="text-xs font-mono">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground min-w-0">
+                      <code className="text-xs font-mono break-all">
                         {wallet.address.slice(0, 10)}...{wallet.address.slice(-8)}
                       </code>
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-6 w-6 p-0"
+                        className="h-6 w-6 p-0 flex-shrink-0"
                         onClick={() => handleCopyAddress(wallet.address!)}
                       >
                         {copiedAddress === wallet.address ? (
