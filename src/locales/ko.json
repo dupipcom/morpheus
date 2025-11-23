@@ -568,7 +568,10 @@
     "showLess": "접기"
   },
   "invest": {
-    "notice": "이 앱에서는 현재 실제 돈이 관리되지 않습니다. Dupip Invest는 아직 계획 단계에 있습니다. 이것은 시연 목적을 위한 테스트 환경일 뿐입니다."
+    "notice": "이 앱에서는 현재 실제 돈이 관리되지 않습니다. Dupip Invest는 아직 계획 단계에 있습니다. 이것은 시연 목적을 위한 테스트 환경일 뿐입니다.",
+    "consentTitle": "투자 데모 동의",
+    "consentCheckbox": "Dupip가 아직 투자 플랫폼이 아니며, 이 기능을 사용함으로써 Dupip Invest 공식 출시 전에 모든 데이터가 삭제될 수 있음을 인지합니다.",
+    "confirm": "확인"
   },
   "wallet": {
     "nftGenerationCompleted": "NFT 생성이 완료되었습니다.",

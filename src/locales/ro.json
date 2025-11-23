@@ -568,7 +568,10 @@
     "showLess": "Afișează mai puțin"
   },
   "invest": {
-    "notice": "Nu există bani reali gestionați în prezent în această aplicație. Dupip Invest este încă în faza de planificare. Acesta este doar un mediu de testare în scopuri de demonstrație."
+    "notice": "Nu există bani reali gestionați în prezent în această aplicație. Dupip Invest este încă în faza de planificare. Acesta este doar un mediu de testare în scopuri de demonstrație.",
+    "consentTitle": "Consimțământ pentru Demo de Investiții",
+    "consentCheckbox": "Recunosc că Dupip nu este încă o platformă de investiții și că, folosind această funcție, sunt conștient că toate datele mele pot fi șterse înainte de lansarea oficială a Dupip Invest.",
+    "confirm": "Confirmă"
   },
   "wallet": {
     "nftGenerationCompleted": "Generarea NFT finalizată.",

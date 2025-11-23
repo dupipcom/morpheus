@@ -568,7 +568,10 @@
     "showLess": "Afficher moins"
   },
   "invest": {
-    "notice": "Il n'y a actuellement aucun argent réel géré dans cette application. Dupip Invest est encore en phase de planification. Ceci est uniquement un espace de démonstration à des fins de test."
+    "notice": "Il n'y a actuellement aucun argent réel géré dans cette application. Dupip Invest est encore en phase de planification. Ceci est uniquement un espace de démonstration à des fins de test.",
+    "consentTitle": "Consentement de Démonstration d'Investissement",
+    "consentCheckbox": "Je reconnais que Dupip n'est pas encore une plateforme d'investissement, et qu'en utilisant cette fonctionnalité, je suis conscient que toutes mes données peuvent être supprimées avant le lancement officiel de Dupip Invest.",
+    "confirm": "Confirmer"
   },
   "wallet": {
     "nftGenerationCompleted": "Génération de NFT terminée.",

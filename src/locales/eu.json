@@ -570,7 +570,10 @@
     "showLess": "Erakutsi gutxiago"
   },
   "invest": {
-    "notice": "Ez dago benetako dirurik kudeatzen une honetan aplikazio honetan. Dupip Invest oraindik planifikazio fasean dago. Hau erakusteko helburuetarako proba ingurune bat besterik ez da."
+    "notice": "Ez dago benetako dirurik kudeatzen une honetan aplikazio honetan. Dupip Invest oraindik planifikazio fasean dago. Hau erakusteko helburuetarako proba ingurune bat besterik ez da.",
+    "consentTitle": "Inbertsio Demo Baimena",
+    "consentCheckbox": "Onartzen dut Dupip oraindik ez dela inbertsio plataforma, eta funtzio hau erabiliz, nire datu guztiak ezaba daitezkeela Dupip Invest-en jaurtiketa ofiziala baino lehen.",
+    "confirm": "Berretsi"
   },
   "wallet": {
     "nftGenerationCompleted": "NFT generazioa osatua.",

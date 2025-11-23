@@ -568,7 +568,10 @@
     "showLess": "Zobrazit méně"
   },
   "invest": {
-    "notice": "V této aplikaci se momentálně nespravují žádné skutečné peníze. Dupip Invest je stále ve fázi plánování. Toto je pouze testovací prostředí pro demonstrační účely."
+    "notice": "V této aplikaci se momentálně nespravují žádné skutečné peníze. Dupip Invest je stále ve fázi plánování. Toto je pouze testovací prostředí pro demonstrační účely.",
+    "consentTitle": "Souhlas s Investiční Demo",
+    "consentCheckbox": "Uznávám, že Dupip ještě není investiční platformou a že používáním této funkce jsem si vědom, že všechna má data mohou být smazána před oficiálním spuštěním Dupip Invest.",
+    "confirm": "Potvrdit"
   },
   "wallet": {
     "nftGenerationCompleted": "Generování NFT dokončeno.",

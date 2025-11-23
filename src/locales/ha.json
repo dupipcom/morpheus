@@ -564,7 +564,10 @@
     "showLess": "Nuna kaɗan"
   },
   "invest": {
-    "notice": "Babu kuɗi na gaske da ake sarrafa a halin yanzu a cikin wannan app. Dupip Invest har yanzu yana cikin lokacin tsarawa. Wannan kawai yanayin gwaji ne don dalilai na nunawa."
+    "notice": "Babu kuɗi na gaske da ake sarrafa a halin yanzu a cikin wannan app. Dupip Invest har yanzu yana cikin lokacin tsarawa. Wannan kawai yanayin gwaji ne don dalilai na nunawa.",
+    "consentTitle": "Yarda da Demo na Zuba Jari",
+    "consentCheckbox": "Na yarda cewa Dupip har yanzu ba dandamali na zuba jari ba ne, kuma ta amfani da wannan fasalin, na san cewa duk bayanana za a iya share su kafin ƙaddamarwar hukuma ta Dupip Invest.",
+    "confirm": "Tabbatar"
   },
   "wallet": {
     "nftGenerationCompleted": "Samar da NFT ya kammala.",

@@ -77,14 +77,14 @@ export const InvestView = () => {
   
   return (
     <main className="">
-      <div className="container mx-auto px-4 py-6 max-w-4xl space-y-6">
+      <div className={`container mx-auto px-4 py-6 max-w-4xl space-y-6 ${!hasConsented ? 'blur-sm pointer-events-none' : ''}`}>
         <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4 flex items-start gap-3">
           <AlertTriangle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
           <p className="text-sm text-destructive break-words">
             {t('invest.notice')}
           </p>
         </div>
-        <div className={`grid gap-6 md:grid-cols-2 ${!hasConsented ? 'blur-sm pointer-events-none' : ''}`}>
+        <div className="grid gap-6 md:grid-cols-2">
           <div className="space-y-4">
             <WalletManager />
           </div>

@@ -568,7 +568,10 @@
     "showLess": "Näita vähem"
   },
   "invest": {
-    "notice": "Selles rakenduses ei hallata praegu tegelikke rahasid. Dupip Invest on veel planeerimisfaasis. See on ainult testimiskeskkond demonstratsioonieesmärgil."
+    "notice": "Selles rakenduses ei hallata praegu tegelikke rahasid. Dupip Invest on veel planeerimisfaasis. See on ainult testimiskeskkond demonstratsioonieesmärgil.",
+    "consentTitle": "Investeeringu Demo Nõusolek",
+    "consentCheckbox": "Tunnistan, et Dupip ei ole veel investeerimisplatvorm ja et selle funktsiooni kasutades olen teadlik, et kõik minu andmed võivad enne Dupip Investi ametlikku käivitamist kustutada.",
+    "confirm": "Kinnita"
   },
   "wallet": {
     "nftGenerationCompleted": "NFT genereerimine lõpetatud.",

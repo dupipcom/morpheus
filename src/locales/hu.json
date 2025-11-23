@@ -567,7 +567,10 @@
     "showLess": "Kevesebb mutatása"
   },
   "invest": {
-    "notice": "Jelenleg nincs valódi pénz kezelve ebben az alkalmazásban. A Dupip Invest még a tervezési fázisban van. Ez csak egy tesztkörnyezet bemutatási célokra."
+    "notice": "Jelenleg nincs valódi pénz kezelve ebben az alkalmazásban. A Dupip Invest még a tervezési fázisban van. Ez csak egy tesztkörnyezet bemutatási célokra.",
+    "consentTitle": "Befektetési Demo Hozzájárulás",
+    "consentCheckbox": "Elismerem, hogy a Dupip még nem befektetési platform, és hogy ezt a funkciót használva tudomásul veszem, hogy az összes adatom törölhető a Dupip Invest hivatalos indítása előtt.",
+    "confirm": "Megerősítés"
   },
   "wallet": {
     "nftGenerationCompleted": "NFT generálás befejezve.",

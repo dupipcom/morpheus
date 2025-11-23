@@ -572,7 +572,10 @@
     "showLess": "Tunjukkan kurang"
   },
   "invest": {
-    "notice": "Tiada wang sebenar yang dikendalikan pada masa ini dalam aplikasi ini. Dupip Invest masih dalam fasa perancangan. Ini hanyalah persekitaran ujian untuk tujuan demonstrasi."
+    "notice": "Tiada wang sebenar yang dikendalikan pada masa ini dalam aplikasi ini. Dupip Invest masih dalam fasa perancangan. Ini hanyalah persekitaran ujian untuk tujuan demonstrasi.",
+    "consentTitle": "Persetujuan Demo Pelaburan",
+    "consentCheckbox": "Saya mengakui bahawa Dupip belum lagi platform pelaburan, dan dengan menggunakan ciri ini, saya sedar bahawa semua data saya mungkin dipadam sebelum pelancaran rasmi Dupip Invest.",
+    "confirm": "Sahkan"
   },
   "wallet": {
     "nftGenerationCompleted": "Penjanaan NFT selesai.",

@@ -566,7 +566,10 @@
     "showLess": "Onyesha kidogo"
   },
   "invest": {
-    "notice": "Hakuna pesa halisi zinazosimamiwa kwa sasa katika programu hii. Dupip Invest bado iko katika awamu ya kupanga. Hii ni mazingira ya majaribio tu kwa madhumuni ya maonyesho."
+    "notice": "Hakuna pesa halisi zinazosimamiwa kwa sasa katika programu hii. Dupip Invest bado iko katika awamu ya kupanga. Hii ni mazingira ya majaribio tu kwa madhumuni ya maonyesho.",
+    "consentTitle": "Idhini ya Maonyesho ya Uwekezaji",
+    "consentCheckbox": "Ninakubali kuwa Dupip bado sio jukwaa la uwekezaji, na kwa kutumia kipengele hiki, ninafahamu kuwa data zangu zote zinaweza kufutwa kabla ya uzinduzi rasmi wa Dupip Invest.",
+    "confirm": "Thibitisha"
   },
   "wallet": {
     "nftGenerationCompleted": "Uundaji wa NFT umekamilika.",

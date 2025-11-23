@@ -568,7 +568,10 @@
     "showLess": "显示更少"
   },
   "invest": {
-    "notice": "此应用程序目前不管理任何实际资金。Dupip Invest 仍处于规划阶段。这只是一个用于演示目的的测试环境。"
+    "notice": "此应用程序目前不管理任何实际资金。Dupip Invest 仍处于规划阶段。这只是一个用于演示目的的测试环境。",
+    "consentTitle": "投资演示同意",
+    "consentCheckbox": "我承认 Dupip 还不是投资平台，使用此功能时，我意识到在 Dupip Invest 正式发布之前，我的所有数据都可能被删除。",
+    "confirm": "确认"
   },
   "wallet": {
     "nftGenerationCompleted": "NFT生成已完成。",

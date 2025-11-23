@@ -568,7 +568,10 @@
     "showLess": "Minder tonen"
   },
   "invest": {
-    "notice": "Er wordt momenteel geen echt geld beheerd in deze app. Dupip Invest bevindt zich nog in de planningsfase. Dit is slechts een testomgeving voor demonstratiedoeleinden."
+    "notice": "Er wordt momenteel geen echt geld beheerd in deze app. Dupip Invest bevindt zich nog in de planningsfase. Dit is slechts een testomgeving voor demonstratiedoeleinden.",
+    "consentTitle": "Toestemming voor Investeringsdemo",
+    "consentCheckbox": "Ik erken dat Dupip nog geen investeringsplatform is en dat door deze functie te gebruiken, ik me ervan bewust ben dat al mijn gegevens kunnen worden verwijderd vóór de officiële lancering van Dupip Invest.",
+    "confirm": "Bevestigen"
   },
   "wallet": {
     "nftGenerationCompleted": "NFT-generatie voltooid.",

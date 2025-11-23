@@ -568,7 +568,10 @@
     "showLess": "折りたたむ"
   },
   "invest": {
-    "notice": "このアプリでは現在、実際の資金は管理されていません。Dupip Investはまだ計画段階にあります。これはデモンストレーション目的のテスト環境です。"
+    "notice": "このアプリでは現在、実際の資金は管理されていません。Dupip Investはまだ計画段階にあります。これはデモンストレーション目的のテスト環境です。",
+    "consentTitle": "投資デモの同意",
+    "consentCheckbox": "Dupipはまだ投資プラットフォームではないことを認識し、この機能を使用することで、Dupip Investの正式リリース前にすべてのデータが削除される可能性があることを理解しています。",
+    "confirm": "確認"
   },
   "wallet": {
     "nftGenerationCompleted": "NFT生成が完了しました。",

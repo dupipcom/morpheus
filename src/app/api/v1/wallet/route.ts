@@ -84,12 +84,21 @@ export async function POST(req: Request) {
 
     const user = await prisma.user.findUnique({
       where: { userId },
+      include: { wallets: true },
     });
 
     if (!user) {
       return NextResponse.json(
         { error: 'User not found' },
         { status: 404 }
+      );
+    }
+
+    // Check wallet limit (max 5 wallets per user)
+    if (user.wallets.length >= 5) {
+      return NextResponse.json(
+        { error: 'Maximum wallet limit reached. You can only create up to 5 wallets.' },
+        { status: 400 }
       );
     }
 

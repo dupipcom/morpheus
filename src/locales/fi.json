@@ -572,7 +572,10 @@
     "showLess": "Näytä vähemmän"
   },
   "invest": {
-    "notice": "Tässä sovelluksessa ei tällä hetkellä hallinnoida todellista rahaa. Dupip Invest on vielä suunnitteluvaiheessa. Tämä on vain testiympäristö esittelytarkoituksiin."
+    "notice": "Tässä sovelluksessa ei tällä hetkellä hallinnoida todellista rahaa. Dupip Invest on vielä suunnitteluvaiheessa. Tämä on vain testiympäristö esittelytarkoituksiin.",
+    "consentTitle": "Sijoitusdemot Suostumus",
+    "consentCheckbox": "Tunnustan, että Dupip ei ole vielä sijoitusalusta ja että tätä ominaisuutta käyttämällä olen tietoinen siitä, että kaikki tietoni voidaan poistaa ennen Dupip Investin virallista käyttöönottoa.",
+    "confirm": "Vahvista"
   },
   "wallet": {
     "nftGenerationCompleted": "NFT-generointi valmis.",

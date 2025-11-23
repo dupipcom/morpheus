@@ -566,7 +566,10 @@
     "showLess": "Fihàn díẹ̀"
   },
   "invest": {
-    "notice": "Ko si owo ti ooto ti a n ṣakoso ni bayi ni app yii. Dupip Invest tun ti o wa ni ipolongo. Eyi jẹ ibi idanwo nikan fun awọn idi ifihan."
+    "notice": "Ko si owo ti ooto ti a n ṣakoso ni bayi ni app yii. Dupip Invest tun ti o wa ni ipolongo. Eyi jẹ ibi idanwo nikan fun awọn idi ifihan.",
+    "consentTitle": "Igbasilẹ Demo Ifowopamọ",
+    "consentCheckbox": "Mo jẹwo pe Dupip ko jẹ ibi ifowopamọ sibẹsibẹ, ati pe nipa lilo ẹya yii, mo mọ pe gbogbo data mi le jẹ pa kuro ṣaaju ifilọlẹ ofisiali ti Dupip Invest.",
+    "confirm": "Jẹrisi"
   },
   "wallet": {
     "nftGenerationCompleted": "Iṣẹda NFT ti pari.",

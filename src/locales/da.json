@@ -572,7 +572,10 @@
     "showLess": "Vis mindre"
   },
   "invest": {
-    "notice": "Der administreres i øjeblikket ingen rigtige penge i denne app. Dupip Invest er stadig i planlægningsfasen. Dette er kun et testmiljø til demonstrationsformål."
+    "notice": "Der administreres i øjeblikket ingen rigtige penge i denne app. Dupip Invest er stadig i planlægningsfasen. Dette er kun et testmiljø til demonstrationsformål.",
+    "consentTitle": "Samtykke til Investeringsdemo",
+    "consentCheckbox": "Jeg anerkender, at Dupip endnu ikke er en investeringsplatform, og at ved at bruge denne funktion er jeg opmærksom på, at alle mine data kan blive slettet før den officielle lancering af Dupip Invest.",
+    "confirm": "Bekræft"
   },
   "wallet": {
     "nftGenerationCompleted": "NFT-generering fuldført.",

@@ -572,7 +572,10 @@
     "showLess": "Daha az göster"
   },
   "invest": {
-    "notice": "Bu uygulamada şu anda gerçek para yönetilmemektedir. Dupip Invest hala planlama aşamasındadır. Bu sadece gösterim amaçlı bir test ortamıdır."
+    "notice": "Bu uygulamada şu anda gerçek para yönetilmemektedir. Dupip Invest hala planlama aşamasındadır. Bu sadece gösterim amaçlı bir test ortamıdır.",
+    "consentTitle": "Yatırım Demo Onayı",
+    "consentCheckbox": "Dupip'in henüz bir yatırım platformu olmadığını ve bu özelliği kullanarak, Dupip Invest'in resmi lansmanından önce tüm verilerimin silinebileceğinin farkında olduğumu kabul ediyorum.",
+    "confirm": "Onayla"
   },
   "wallet": {
     "nftGenerationCompleted": "NFT oluşturma tamamlandı.",
