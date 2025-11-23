@@ -108,7 +108,8 @@
         "PUBLIC": "Julkinen",
         "AI_ENABLED": "AI käytössä"
       },
-      "action": "Julkaise muistiinpano"
+      "action": "Julkaise muistiinpano",
+      "publishing": "Publishing..."
     }
   },
   "week": {
@@ -225,7 +226,11 @@
   },
   "errors": {
     "notFound": "Hups! Ei voitu virittää tätä taajuutta.",
-    "genericError": "Jokin meni pieleen. Yritä uudelleen."
+    "genericError": "Jokin meni pieleen. Yritä uudelleen.",
+    "failedToFetchNotes": "Failed to fetch notes",
+    "failedToLoadNotes": "Failed to load notes",
+    "failedToFetchTemplates": "Failed to fetch templates",
+    "failedToLoadTemplates": "Failed to load templates"
   },
   "social": {
     "title": "Sosiaaliset yhteystiedot",
@@ -310,7 +315,10 @@
     "cloneTemplateFailed": "Mallin kloonaaminen epäonnistui",
     "cloning": "Kloonataan...",
     "noPublicNotes": "Julkisia muistiinpanoja ei ole vielä saatavilla.",
-    "noPublicTemplatesOrLists": "Julkisia malleja tai listoja ei ole vielä saatavilla."
+    "noPublicTemplatesOrLists": "Julkisia malleja tai listoja ei ole vielä saatavilla.",
+    "cloneList": "Clone List",
+    "cloneListSuccess": "List cloned successfully!",
+    "cloneListFailed": "Failed to clone list"
   },
   "publicCharts": {
     "noData": "Julkisia kaaviotietoja ei ole saatavilla.",
@@ -565,5 +573,27 @@
   },
   "invest": {
     "notice": "Tässä sovelluksessa ei tällä hetkellä hallinnoida todellista rahaa. Dupip Invest on vielä suunnitteluvaiheessa. Tämä on vain testiympäristö esittelytarkoituksiin."
+  },
+  "wallet": {
+    "nftGenerationCompleted": "NFT-generointi valmis.",
+    "errorGeneratingNFT": "Virhe NFT:n luonnissa",
+    "failedToGenerateNFT": "NFT:n luonti epäonnistui",
+    "pleaseSelectWallet": "Valitse lompakko",
+    "errorFetchingNFTs": "Virhe NFT:iden hakemisessa:",
+    "transferCompleted": "Siirto valmis.",
+    "failedToTransferTokens": "Tokenien siirto epäonnistui",
+    "errorTransferringTokens": "Virhe tokenien siirrossa",
+    "unnamedWallet": "Nimetön lompakko",
+    "wallets": "Lompakot",
+    "transferTokens": "Siirrä Tokeneita",
+    "createWallet": "Luo lompakko",
+    "fromWallet": "Lompakosta",
+    "toAddress": "Osoitteeseen",
+    "amount": "Määrä",
+    "generateNFT": "Luo NFT",
+    "myNFTs": "Omat NFT:t",
+    "balance": "Saldo:",
+    "selectWallet": "Valitse Lompakko",
+    "blockchainBalance": "Blockchain-saldo:"
   }
 }

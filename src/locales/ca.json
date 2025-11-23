@@ -104,7 +104,8 @@
         "PUBLIC": "Públic",
         "AI_ENABLED": "Activat per IA"
       },
-      "action": "Publicar nota"
+      "action": "Publicar nota",
+      "publishing": "Publishing..."
     }
   },
   "week": {
@@ -221,7 +222,11 @@
   },
   "errors": {
     "notFound": "Ups! No s'ha pogut sintonitzar aquesta freqüència.",
-    "genericError": "Alguna cosa ha anat malament. Si us plau, torna-ho a intentar."
+    "genericError": "Alguna cosa ha anat malament. Si us plau, torna-ho a intentar.",
+    "failedToFetchNotes": "Failed to fetch notes",
+    "failedToLoadNotes": "Failed to load notes",
+    "failedToFetchTemplates": "Failed to fetch templates",
+    "failedToLoadTemplates": "Failed to load templates"
   },
   "social": {
     "title": "Contactes Socials",
@@ -306,7 +311,10 @@
     "cloneTemplateFailed": "Error en clonar la plantilla",
     "cloning": "Clonant...",
     "noPublicNotes": "Encara no hi ha notes públiques disponibles.",
-    "noPublicTemplatesOrLists": "Encara no hi ha plantilles o llistes públiques disponibles."
+    "noPublicTemplatesOrLists": "Encara no hi ha plantilles o llistes públiques disponibles.",
+    "cloneList": "Clone List",
+    "cloneListSuccess": "List cloned successfully!",
+    "cloneListFailed": "Failed to clone list"
   },
   "publicCharts": {
     "noData": "No public charts data available.",
@@ -561,5 +569,27 @@
   },
   "invest": {
     "notice": "Actualment no hi ha diners reals gestionats en aquesta aplicació. Dupip Invest encara està en fase de planificació. Això és només un entorn de proves per a fins de demostració."
+  },
+  "wallet": {
+    "nftGenerationCompleted": "Generació de NFT completada.",
+    "errorGeneratingNFT": "Error en generar NFT",
+    "failedToGenerateNFT": "Error en generar NFT",
+    "pleaseSelectWallet": "Si us plau, seleccioneu una cartera",
+    "errorFetchingNFTs": "Error en obtenir NFTs:",
+    "transferCompleted": "Transferència completada.",
+    "failedToTransferTokens": "Error en transferir tokens",
+    "errorTransferringTokens": "Error en transferir tokens",
+    "unnamedWallet": "Cartera sense nom",
+    "wallets": "Carteres",
+    "transferTokens": "Transferir Tokens",
+    "createWallet": "Crear cartera",
+    "fromWallet": "Des de cartera",
+    "toAddress": "A adreça",
+    "amount": "Quantitat",
+    "generateNFT": "Generar NFT",
+    "myNFTs": "Els meus NFTs",
+    "balance": "Saldo:",
+    "selectWallet": "Seleccionar Cartera",
+    "blockchainBalance": "Saldo de Blockchain:"
   }
 }

@@ -108,7 +108,8 @@
         "PUBLIC": "Offentlig",
         "AI_ENABLED": "AI-aktiveret"
       },
-      "action": "Publicer note"
+      "action": "Publicer note",
+      "publishing": "Publishing..."
     }
   },
   "week": {
@@ -225,7 +226,11 @@
   },
   "errors": {
     "notFound": "Ups! Kunne ikke indstille denne frekvens.",
-    "genericError": "Noget gik galt. Prøv igen."
+    "genericError": "Noget gik galt. Prøv igen.",
+    "failedToFetchNotes": "Failed to fetch notes",
+    "failedToLoadNotes": "Failed to load notes",
+    "failedToFetchTemplates": "Failed to fetch templates",
+    "failedToLoadTemplates": "Failed to load templates"
   },
   "social": {
     "title": "Sociale kontakter",
@@ -310,7 +315,10 @@
     "cloneTemplateFailed": "Kunne ikke klone skabelon",
     "cloning": "Kloner...",
     "noPublicNotes": "Ingen offentlige noter tilgængelige endnu.",
-    "noPublicTemplatesOrLists": "Ingen offentlige skabeloner eller lister tilgængelige endnu."
+    "noPublicTemplatesOrLists": "Ingen offentlige skabeloner eller lister tilgængelige endnu.",
+    "cloneList": "Clone List",
+    "cloneListSuccess": "List cloned successfully!",
+    "cloneListFailed": "Failed to clone list"
   },
   "publicCharts": {
     "noData": "Ingen offentlige diagramdata tilgængelige.",
@@ -565,5 +573,27 @@
   },
   "invest": {
     "notice": "Der administreres i øjeblikket ingen rigtige penge i denne app. Dupip Invest er stadig i planlægningsfasen. Dette er kun et testmiljø til demonstrationsformål."
+  },
+  "wallet": {
+    "nftGenerationCompleted": "NFT-generering fuldført.",
+    "errorGeneratingNFT": "Fejl ved generering af NFT",
+    "failedToGenerateNFT": "Kunne ikke generere NFT",
+    "pleaseSelectWallet": "Vælg venligst en tegnebog",
+    "errorFetchingNFTs": "Fejl ved hentning af NFTs:",
+    "transferCompleted": "Overførsel fuldført.",
+    "failedToTransferTokens": "Kunne ikke overføre tokens",
+    "errorTransferringTokens": "Fejl ved overførsel af tokens",
+    "unnamedWallet": "Unavngivet tegnebog",
+    "wallets": "Tegnebøger",
+    "transferTokens": "Overfør Tokens",
+    "createWallet": "Opret tegnebog",
+    "fromWallet": "Fra tegnebog",
+    "toAddress": "Til adresse",
+    "amount": "Beløb",
+    "generateNFT": "Generer NFT",
+    "myNFTs": "Mine NFTs",
+    "balance": "Saldo:",
+    "selectWallet": "Vælg Tegnebog",
+    "blockchainBalance": "Blockchain-saldo:"
   }
 }

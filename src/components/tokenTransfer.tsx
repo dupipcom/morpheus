@@ -70,7 +70,7 @@ export const TokenTransfer = () => {
       if (response.ok) {
         const data = await response.json()
         if (data.success) {
-          toast.success(`Transfer initiated!`)
+          toast.success(t('wallet.transferCompleted'))
         }
         setToAddress('')
         setAmount('')
@@ -78,11 +78,11 @@ export const TokenTransfer = () => {
         await refreshWallets()
       } else {
         const error = await response.json()
-        toast.error(error.error || 'Failed to transfer tokens')
+        toast.error(error.error || t('wallet.failedToTransferTokens'))
       }
     } catch (error) {
       console.error('Error transferring tokens:', error)
-      toast.error('Error transferring tokens')
+      toast.error(t('wallet.errorTransferringTokens'))
     } finally {
       setIsTransferring(false)
     }
@@ -94,7 +94,7 @@ export const TokenTransfer = () => {
     <div className="space-y-4 border rounded-lg p-4 bg-muted/50">
       <h3 className="text-lg font-semibold flex items-center gap-2">
         <Send className="h-5 w-5" />
-        Transfer Tokens
+        {t('wallet.transferTokens')}
       </h3>
 
       {isLoading ? (
@@ -110,18 +110,18 @@ export const TokenTransfer = () => {
       ) : (
         <div className="space-y-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium">From Wallet</label>
+            <label className="text-sm font-medium">{t('wallet.fromWallet')}</label>
             <Select
               value={selectedWalletId || undefined}
               onValueChange={(value) => setSelectedWalletId(value)}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select wallet" />
+                <SelectValue placeholder={t('wallet.selectWallet')} />
               </SelectTrigger>
               <SelectContent>
                 {wallets.map((wallet: WalletData) => (
                   <SelectItem key={wallet.id} value={wallet.id} className="break-words max-w-full">
-                    {wallet.name || 'Unnamed Wallet'} - {wallet.blockchainBalance ? `Ð${parseFloat(wallet.blockchainBalance).toFixed(18)}` : 'Ð0'}
+                    {wallet.name || t('wallet.unnamedWallet')} - {wallet.blockchainBalance ? `Ð${parseFloat(wallet.blockchainBalance).toFixed(18)}` : 'Ð0'}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -129,7 +129,7 @@ export const TokenTransfer = () => {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">To Address</label>
+            <label className="text-sm font-medium">{t('wallet.toAddress')}</label>
             <Input
               placeholder="0x..."
               value={toAddress}
@@ -138,7 +138,7 @@ export const TokenTransfer = () => {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">Amount (Ð)</label>
+            <label className="text-sm font-medium">{t('wallet.amount')} (Ð)</label>
             <Input
               type="number"
               step="any"
@@ -153,7 +153,7 @@ export const TokenTransfer = () => {
             disabled={isTransferring || !selectedWalletId || !toAddress.trim() || !amount.trim()}
             className="w-full"
           >
-            {isTransferring ? 'Transferring...' : 'Transfer Tokens'}
+            {isTransferring ? 'Transferring...' : t('wallet.transferTokens')}
           </Button>
         </div>
       )}

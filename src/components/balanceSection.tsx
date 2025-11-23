@@ -67,7 +67,7 @@ export const BalanceSection = () => {
     }
   }, [serverBalance])
 
-  const selectedWallet = wallets.find(w => w.id === selectedWalletId)
+  const selectedWallet = wallets.find((w: WalletData) => w.id === selectedWalletId)
   const blockchainBalance = selectedWallet?.blockchainBalance || '0'
 
   const handleBalanceChange = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -129,7 +129,7 @@ export const BalanceSection = () => {
               <div className="space-y-2">
                 <label className="text-sm font-medium flex items-center gap-2">
                   <Wallet className="h-4 w-4" />
-                  Select Wallet
+                  {t('wallet.selectWallet')}
                 </label>
                 {isLoadingWallets ? (
                   <Skeleton className="h-9 w-full" />
@@ -139,12 +139,12 @@ export const BalanceSection = () => {
                     onValueChange={(value) => setSelectedWalletId(value)}
                   >
                     <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select a wallet" />
+                      <SelectValue placeholder={t('wallet.selectWallet')} />
                     </SelectTrigger>
                     <SelectContent>
-                      {wallets.map((wallet) => (
+                      {wallets.map((wallet: WalletData) => (
                         <SelectItem key={wallet.id} value={wallet.id}>
-                          {wallet.name || 'Unnamed Wallet'} ({wallet.address?.slice(0, 8)}...)
+                          {wallet.name || t('wallet.unnamedWallet')} ({wallet.address?.slice(0, 8)}...)
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -153,7 +153,7 @@ export const BalanceSection = () => {
                 {selectedWallet && (
                   <div className="text-sm text-muted-foreground">
                     <div className="flex justify-between">
-                      <span>Blockchain Balance:</span>
+                      <span>{t('wallet.blockchainBalance')}</span>
                       <span className={hiddenBalance ? "blur-sm" : ""}>
                         Ð{parseFloat(blockchainBalance).toFixed(18)}
                       </span>

@@ -108,7 +108,8 @@
         "PUBLIC": "عام",
         "AI_ENABLED": "تمكين الذكاء الاصطناعي"
       },
-      "action": "نشر المذكرة"
+      "action": "نشر المذكرة",
+      "publishing": "Publishing..."
     }
   },
   "week": {
@@ -304,7 +305,11 @@
   },
   "errors": {
     "notFound": "عذراً! لا يمكن ضبط هذه التردد.",
-    "genericError": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+    "genericError": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+    "failedToFetchNotes": "Failed to fetch notes",
+    "failedToLoadNotes": "Failed to load notes",
+    "failedToFetchTemplates": "Failed to fetch templates",
+    "failedToLoadTemplates": "Failed to load templates"
   },
   "publicProfile": {
     "ctaTitle": "ابدأ رحلتك مع Dupip",
@@ -324,7 +329,10 @@
     "cloneTemplateFailed": "فشل استنساخ القالب",
     "cloning": "جاري الاستنساخ...",
     "noPublicNotes": "لا توجد ملاحظات عامة متاحة بعد.",
-    "noPublicTemplatesOrLists": "لا توجد قوالب أو قوائم عامة متاحة بعد."
+    "noPublicTemplatesOrLists": "لا توجد قوالب أو قوائم عامة متاحة بعد.",
+    "cloneList": "Clone List",
+    "cloneListSuccess": "List cloned successfully!",
+    "cloneListFailed": "Failed to clone list"
   },
   "publicCharts": {
     "noData": "لا توجد بيانات عامة متاحة للمخططات.",
@@ -565,5 +573,27 @@
   },
   "invest": {
     "notice": "لا يوجد أموال حقيقية يتم إدارتها حاليًا في هذا التطبيق. Dupip Invest لا يزال في مرحلة التخطيط. هذا مجرد بيئة اختبار لأغراض العرض التوضيحي."
+  },
+  "wallet": {
+    "nftGenerationCompleted": "اكتمل إنشاء NFT.",
+    "errorGeneratingNFT": "خطأ في إنشاء NFT",
+    "failedToGenerateNFT": "فشل إنشاء NFT",
+    "pleaseSelectWallet": "يرجى اختيار محفظة",
+    "errorFetchingNFTs": "خطأ في جلب NFTs:",
+    "transferCompleted": "اكتمل التحويل.",
+    "failedToTransferTokens": "فشل تحويل الرموز",
+    "errorTransferringTokens": "خطأ في تحويل الرموز",
+    "unnamedWallet": "محفظة بدون اسم",
+    "wallets": "المحافظ",
+    "transferTokens": "تحويل الرموز",
+    "createWallet": "إنشاء محفظة",
+    "fromWallet": "من المحفظة",
+    "toAddress": "إلى العنوان",
+    "amount": "المبلغ",
+    "generateNFT": "إنشاء NFT",
+    "myNFTs": "NFTs الخاصة بي",
+    "balance": "الرصيد:",
+    "selectWallet": "اختر المحفظة",
+    "blockchainBalance": "رصيد Blockchain:"
   }
 }

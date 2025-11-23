@@ -104,7 +104,8 @@
         "PUBLIC": "공개",
         "AI_ENABLED": "AI 활성화"
       },
-      "action": "노트 게시"
+      "action": "노트 게시",
+      "publishing": "Publishing..."
     }
   },
   "week": {
@@ -300,7 +301,11 @@
   },
   "errors": {
     "notFound": "앗! 이 주파수에 맞출 수 없습니다.",
-    "genericError": "문제가 발생했습니다. 다시 시도해 주세요."
+    "genericError": "문제가 발생했습니다. 다시 시도해 주세요.",
+    "failedToFetchNotes": "Failed to fetch notes",
+    "failedToLoadNotes": "Failed to load notes",
+    "failedToFetchTemplates": "Failed to fetch templates",
+    "failedToLoadTemplates": "Failed to load templates"
   },
   "publicProfile": {
     "ctaTitle": "나만의 Dupip 여정을 시작하세요",
@@ -320,7 +325,10 @@
     "cloneTemplateFailed": "템플릿 복제 실패",
     "cloning": "복제 중...",
     "noPublicNotes": "아직 공개 메모를 사용할 수 없습니다.",
-    "noPublicTemplatesOrLists": "아직 공개 템플릿 또는 목록을 사용할 수 없습니다."
+    "noPublicTemplatesOrLists": "아직 공개 템플릿 또는 목록을 사용할 수 없습니다.",
+    "cloneList": "Clone List",
+    "cloneListSuccess": "List cloned successfully!",
+    "cloneListFailed": "Failed to clone list"
   },
   "publicCharts": {
     "noData": "공개 차트 데이터를 사용할 수 없습니다.",
@@ -561,5 +569,27 @@
   },
   "invest": {
     "notice": "이 앱에서는 현재 실제 돈이 관리되지 않습니다. Dupip Invest는 아직 계획 단계에 있습니다. 이것은 시연 목적을 위한 테스트 환경일 뿐입니다."
+  },
+  "wallet": {
+    "nftGenerationCompleted": "NFT 생성이 완료되었습니다.",
+    "errorGeneratingNFT": "NFT 생성 오류",
+    "failedToGenerateNFT": "NFT 생성 실패",
+    "pleaseSelectWallet": "지갑을 선택해주세요",
+    "errorFetchingNFTs": "NFT 가져오기 오류:",
+    "transferCompleted": "전송이 완료되었습니다.",
+    "failedToTransferTokens": "토큰 전송 실패",
+    "errorTransferringTokens": "토큰 전송 오류",
+    "unnamedWallet": "이름 없는 지갑",
+    "wallets": "지갑",
+    "transferTokens": "토큰 전송",
+    "createWallet": "지갑 만들기",
+    "fromWallet": "보내는 지갑",
+    "toAddress": "받는 주소",
+    "amount": "금액",
+    "generateNFT": "NFT 생성",
+    "myNFTs": "내 NFT",
+    "balance": "잔액:",
+    "selectWallet": "지갑 선택",
+    "blockchainBalance": "블록체인 잔액:"
   }
 }

@@ -108,7 +108,8 @@
         "PUBLIC": "Public",
         "AI_ENABLED": "AI Enabled"
       },
-      "action": "Publish Note"
+      "action": "Publish Note",
+      "publishing": "Publishing..."
     }
   },
   "week": {
@@ -225,7 +226,11 @@
   },
   "errors": {
     "notFound": "Ups! Tidak dapat menala frekuensi ini.",
-    "genericError": "Sesuatu yang salah berlaku. Sila cuba lagi."
+    "genericError": "Sesuatu yang salah berlaku. Sila cuba lagi.",
+    "failedToFetchNotes": "Failed to fetch notes",
+    "failedToLoadNotes": "Failed to load notes",
+    "failedToFetchTemplates": "Failed to fetch templates",
+    "failedToLoadTemplates": "Failed to load templates"
   },
   "social": {
     "title": "Kenalan Sosial",
@@ -310,7 +315,10 @@
     "cloneTemplateFailed": "Gagal mengklon templat",
     "cloning": "Mengklon...",
     "noPublicNotes": "Tiada nota awam tersedia lagi.",
-    "noPublicTemplatesOrLists": "Tiada templat atau senarai awam tersedia lagi."
+    "noPublicTemplatesOrLists": "Tiada templat atau senarai awam tersedia lagi.",
+    "cloneList": "Clone List",
+    "cloneListSuccess": "List cloned successfully!",
+    "cloneListFailed": "Failed to clone list"
   },
   "publicCharts": {
     "noData": "No public charts data available.",
@@ -565,5 +573,27 @@
   },
   "invest": {
     "notice": "Tiada wang sebenar yang dikendalikan pada masa ini dalam aplikasi ini. Dupip Invest masih dalam fasa perancangan. Ini hanyalah persekitaran ujian untuk tujuan demonstrasi."
+  },
+  "wallet": {
+    "nftGenerationCompleted": "Penjanaan NFT selesai.",
+    "errorGeneratingNFT": "Ralat menjana NFT",
+    "failedToGenerateNFT": "Gagal menjana NFT",
+    "pleaseSelectWallet": "Sila pilih dompet",
+    "errorFetchingNFTs": "Ralat mengambil NFT:",
+    "transferCompleted": "Pemindahan selesai.",
+    "failedToTransferTokens": "Gagal memindahkan token",
+    "errorTransferringTokens": "Ralat memindahkan token",
+    "unnamedWallet": "Dompet Tanpa Nama",
+    "wallets": "Dompet",
+    "transferTokens": "Pindahkan Token",
+    "createWallet": "Cipta dompet",
+    "fromWallet": "Dari dompet",
+    "toAddress": "Ke alamat",
+    "amount": "Jumlah",
+    "generateNFT": "Jana NFT",
+    "myNFTs": "NFT Saya",
+    "balance": "Baki:",
+    "selectWallet": "Pilih Dompet",
+    "blockchainBalance": "Baki Blockchain:"
   }
 }

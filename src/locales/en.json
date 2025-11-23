@@ -565,5 +565,27 @@
   },
   "invest": {
     "notice": "There is no actual money currently managed in this app. Dupip Invest is still in planning phase. This is just a playground for demonstration purposes."
+  },
+  "wallet": {
+    "nftGenerationCompleted": "NFT generation completed.",
+    "errorGeneratingNFT": "Error generating NFT",
+    "failedToGenerateNFT": "Failed to generate NFT",
+    "pleaseSelectWallet": "Please select a wallet",
+    "errorFetchingNFTs": "Error fetching NFTs:",
+    "transferCompleted": "Transfer completed.",
+    "failedToTransferTokens": "Failed to transfer tokens",
+    "errorTransferringTokens": "Error transferring tokens",
+    "unnamedWallet": "Unnamed Wallet",
+    "wallets": "Wallets",
+    "transferTokens": "Transfer Tokens",
+    "createWallet": "Create wallet",
+    "fromWallet": "From wallet",
+    "toAddress": "To address",
+    "amount": "Amount",
+    "generateNFT": "Generate NFT",
+    "myNFTs": "My NFTs",
+    "balance": "Balance:",
+    "selectWallet": "Select Wallet",
+    "blockchainBalance": "Blockchain Balance:"
   }
 }

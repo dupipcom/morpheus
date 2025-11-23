@@ -104,7 +104,8 @@
         "PUBLIC": "Öffentlich",
         "AI_ENABLED": "KI-aktiviert"
       },
-      "action": "Notiz veröffentlichen"
+      "action": "Notiz veröffentlichen",
+      "publishing": "Publishing..."
     }
   },
   "week": {
@@ -300,7 +301,11 @@
   },
   "errors": {
     "notFound": "Ops! Could not tune to this frequency.",
-    "genericError": "Something went wrong. Please try again."
+    "genericError": "Something went wrong. Please try again.",
+    "failedToFetchNotes": "Failed to fetch notes",
+    "failedToLoadNotes": "Failed to load notes",
+    "failedToFetchTemplates": "Failed to fetch templates",
+    "failedToLoadTemplates": "Failed to load templates"
   },
   "publicProfile": {
     "ctaTitle": "Beginnen Sie Ihre eigene Dupip-Reise",
@@ -320,7 +325,10 @@
     "cloneTemplateFailed": "Vorlage konnte nicht geklont werden",
     "cloning": "Klonen...",
     "noPublicNotes": "Noch keine öffentlichen Notizen verfügbar.",
-    "noPublicTemplatesOrLists": "Noch keine öffentlichen Vorlagen oder Listen verfügbar."
+    "noPublicTemplatesOrLists": "Noch keine öffentlichen Vorlagen oder Listen verfügbar.",
+    "cloneList": "Clone List",
+    "cloneListSuccess": "List cloned successfully!",
+    "cloneListFailed": "Failed to clone list"
   },
   "publicCharts": {
     "noData": "No public charts data available.",
@@ -561,5 +569,27 @@
   },
   "invest": {
     "notice": "In dieser App wird derzeit kein echtes Geld verwaltet. Dupip Invest befindet sich noch in der Planungsphase. Dies ist nur ein Spielplatz zu Demonstrationszwecken."
+  },
+  "wallet": {
+    "nftGenerationCompleted": "NFT-Generierung abgeschlossen.",
+    "errorGeneratingNFT": "Fehler beim Generieren des NFTs",
+    "failedToGenerateNFT": "NFT-Generierung fehlgeschlagen",
+    "pleaseSelectWallet": "Bitte wählen Sie eine Brieftasche aus",
+    "errorFetchingNFTs": "Fehler beim Abrufen der NFTs:",
+    "transferCompleted": "Übertragung abgeschlossen.",
+    "failedToTransferTokens": "Token-Übertragung fehlgeschlagen",
+    "errorTransferringTokens": "Fehler beim Übertragen von Tokens",
+    "unnamedWallet": "Unbenannte Brieftasche",
+    "wallets": "Brieftaschen",
+    "transferTokens": "Tokens übertragen",
+    "createWallet": "Brieftasche erstellen",
+    "fromWallet": "Von Brieftasche",
+    "toAddress": "An Adresse",
+    "amount": "Betrag",
+    "generateNFT": "NFT generieren",
+    "myNFTs": "Meine NFTs",
+    "balance": "Guthaben:",
+    "selectWallet": "Brieftasche auswählen",
+    "blockchainBalance": "Blockchain-Guthaben:"
   }
 }

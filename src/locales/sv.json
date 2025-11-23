@@ -107,7 +107,8 @@
         "PUBLIC": "Allmänheten",
         "AI_ENABLED": "AI aktiverad"
       },
-      "action": "Publicera anteckning"
+      "action": "Publicera anteckning",
+      "publishing": "Publishing..."
     }
   },
   "week": {
@@ -224,7 +225,11 @@
   },
   "errors": {
     "notFound": "Hoppsan! Kunde inte ställa in denna frekvens.",
-    "genericError": "Något gick fel. Vänligen försök igen."
+    "genericError": "Något gick fel. Vänligen försök igen.",
+    "failedToFetchNotes": "Failed to fetch notes",
+    "failedToLoadNotes": "Failed to load notes",
+    "failedToFetchTemplates": "Failed to fetch templates",
+    "failedToLoadTemplates": "Failed to load templates"
   },
   "social": {
     "title": "Sociala kontakter",
@@ -309,7 +314,10 @@
     "cloneTemplateFailed": "Kunde inte klona mall",
     "cloning": "Klonar...",
     "noPublicNotes": "Inga offentliga anteckningar tillgängliga ännu.",
-    "noPublicTemplatesOrLists": "Inga offentliga mallar eller listor tillgängliga ännu."
+    "noPublicTemplatesOrLists": "Inga offentliga mallar eller listor tillgängliga ännu.",
+    "cloneList": "Clone List",
+    "cloneListSuccess": "List cloned successfully!",
+    "cloneListFailed": "Failed to clone list"
   },
   "publicCharts": {
     "noData": "Inga tillgängliga data för offentliga diagram.",
@@ -564,5 +572,27 @@
   },
   "invest": {
     "notice": "Det finns för närvarande inga riktiga pengar som hanteras i denna app. Dupip Invest är fortfarande i planeringsfasen. Detta är bara en testmiljö i demonstrationssyfte."
+  },
+  "wallet": {
+    "nftGenerationCompleted": "NFT-generering slutförd.",
+    "errorGeneratingNFT": "Fel vid generering av NFT",
+    "failedToGenerateNFT": "Misslyckades med att generera NFT",
+    "pleaseSelectWallet": "Vänligen välj en plånbok",
+    "errorFetchingNFTs": "Fel vid hämtning av NFTs:",
+    "transferCompleted": "Överföring slutförd.",
+    "failedToTransferTokens": "Misslyckades med att överföra tokens",
+    "errorTransferringTokens": "Fel vid överföring av tokens",
+    "unnamedWallet": "Namnlös plånbok",
+    "wallets": "Plånböcker",
+    "transferTokens": "Överför Tokens",
+    "createWallet": "Skapa plånbok",
+    "fromWallet": "Från plånbok",
+    "toAddress": "Till adress",
+    "amount": "Belopp",
+    "generateNFT": "Generera NFT",
+    "myNFTs": "Mina NFTs",
+    "balance": "Saldo:",
+    "selectWallet": "Välj Plånbok",
+    "blockchainBalance": "Blockchain-saldo:"
   }
 }

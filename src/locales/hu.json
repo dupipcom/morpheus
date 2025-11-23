@@ -103,7 +103,8 @@
         "PUBLIC": "Nyilvános",
         "AI_ENABLED": "Mesterséges intelligencia engedélyezve"
       },
-      "action": "Jegyzet közzététele"
+      "action": "Jegyzet közzététele",
+      "publishing": "Publishing..."
     }
   },
   "week": {
@@ -129,7 +130,9 @@
       "open": "Nyitott",
       "done": "Kész",
       "ignored": "Figyelmen kívül hagyva"
-    }
+    },
+    "markAsSensitive": "Mark as sensitive",
+    "markAsNotSensitive": "Mark as not sensitive"
   },
   "actions": {
     "drankWater": "Vizet ivott",
@@ -218,7 +221,11 @@
   },
   "errors": {
     "notFound": "Hoppá! Nem sikerült beállítani ezt a frekvenciát.",
-    "genericError": "Valami elromlott. Kérjük, próbálja újra."
+    "genericError": "Valami elromlott. Kérjük, próbálja újra.",
+    "failedToFetchNotes": "Failed to fetch notes",
+    "failedToLoadNotes": "Failed to load notes",
+    "failedToFetchTemplates": "Failed to fetch templates",
+    "failedToLoadTemplates": "Failed to load templates"
   },
   "social": {
     "title": "Közösségi kapcsolatok",
@@ -303,7 +310,10 @@
     "cloneTemplateFailed": "A sablon klónozása sikertelen",
     "cloning": "Klónozás...",
     "noPublicNotes": "Még nincsenek elérhető nyilvános jegyzetek.",
-    "noPublicTemplatesOrLists": "Még nincsenek elérhető nyilvános sablonok vagy listák."
+    "noPublicTemplatesOrLists": "Még nincsenek elérhető nyilvános sablonok vagy listák.",
+    "cloneList": "Clone List",
+    "cloneListSuccess": "List cloned successfully!",
+    "cloneListFailed": "Failed to clone list"
   },
   "publicCharts": {
     "noData": "Nincs nyilvános grafikon adat.",
@@ -558,5 +568,27 @@
   },
   "invest": {
     "notice": "Jelenleg nincs valódi pénz kezelve ebben az alkalmazásban. A Dupip Invest még a tervezési fázisban van. Ez csak egy tesztkörnyezet bemutatási célokra."
+  },
+  "wallet": {
+    "nftGenerationCompleted": "NFT generálás befejezve.",
+    "errorGeneratingNFT": "Hiba az NFT generálásakor",
+    "failedToGenerateNFT": "NFT generálás sikertelen",
+    "pleaseSelectWallet": "Kérjük, válasszon pénztárcát",
+    "errorFetchingNFTs": "Hiba az NFT-k lekérésekor:",
+    "transferCompleted": "Átutalás befejezve.",
+    "failedToTransferTokens": "Tokenek átutalása sikertelen",
+    "errorTransferringTokens": "Hiba a tokenek átutalásakor",
+    "unnamedWallet": "Névtelen pénztárca",
+    "wallets": "Pénztárcák",
+    "transferTokens": "Tokenek átutalása",
+    "createWallet": "Pénztárca létrehozása",
+    "fromWallet": "Pénztárcából",
+    "toAddress": "Címre",
+    "amount": "Összeg",
+    "generateNFT": "NFT generálása",
+    "myNFTs": "NFT-jeim",
+    "balance": "Egyenleg:",
+    "selectWallet": "Pénztárca kiválasztása",
+    "blockchainBalance": "Blockchain egyenleg:"
   }
 }

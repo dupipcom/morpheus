@@ -113,12 +113,12 @@ export const WalletManager = () => {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">Wallets</h3>
+        <h3 className="text-lg font-semibold">{t('wallet.wallets')}</h3>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button size="sm" className="gap-2">
               <Plus className="h-4 w-4" />
-              Create Wallet
+              {t('wallet.createWallet')}
             </Button>
           </DialogTrigger>
           <DialogContent>
@@ -144,7 +144,7 @@ export const WalletManager = () => {
                 disabled={isCreating || !newWalletName.trim()}
                 className="w-full"
               >
-                {isCreating ? 'Creating...' : 'Create Wallet'}
+                {isCreating ? 'Creating...' : t('wallet.createWallet')}
               </Button>
             </div>
           </DialogContent>
@@ -173,7 +173,7 @@ export const WalletManager = () => {
                   <div className="flex items-center gap-2 mb-1">
                     <Wallet className="h-4 w-4 text-muted-foreground" />
                     <h4 className="font-medium">
-                      {wallet.name || 'Unnamed Wallet'}
+                      {wallet.name || t('wallet.unnamedWallet')}
                     </h4>
                   </div>
                   {wallet.address && (
@@ -196,7 +196,7 @@ export const WalletManager = () => {
                     </div>
                   )}
                   <div className="mt-2 text-sm">
-                    <span className="text-muted-foreground">Balance: </span>
+                    <span className="text-muted-foreground">{t('wallet.balance')} </span>
                     <span className="font-medium">
                       {wallet.blockchainBalance
                         ? `Ð${parseFloat(wallet.blockchainBalance).toFixed(18)}`

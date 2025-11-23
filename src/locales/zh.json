@@ -104,7 +104,8 @@
         "PUBLIC": "公众",
         "AI_ENABLED": "支持人工智能"
       },
-      "action": "出版说明"
+      "action": "出版说明",
+      "publishing": "Publishing..."
     }
   },
   "week": {
@@ -300,7 +301,11 @@
   },
   "errors": {
     "notFound": "哎呀！无法调谐到此频率。",
-    "genericError": "出现错误。请重试。"
+    "genericError": "出现错误。请重试。",
+    "failedToFetchNotes": "Failed to fetch notes",
+    "failedToLoadNotes": "Failed to load notes",
+    "failedToFetchTemplates": "Failed to fetch templates",
+    "failedToLoadTemplates": "Failed to load templates"
   },
   "publicProfile": {
     "ctaTitle": "开始您的 Dupip 之旅",
@@ -320,7 +325,10 @@
     "cloneTemplateFailed": "模板克隆失败",
     "cloning": "克隆中...",
     "noPublicNotes": "尚无公开笔记可用。",
-    "noPublicTemplatesOrLists": "尚无公开模板或列表可用。"
+    "noPublicTemplatesOrLists": "尚无公开模板或列表可用。",
+    "cloneList": "Clone List",
+    "cloneListSuccess": "List cloned successfully!",
+    "cloneListFailed": "Failed to clone list"
   },
   "publicCharts": {
     "noData": "没有可用的公共图表数据。",
@@ -561,5 +569,27 @@
   },
   "invest": {
     "notice": "此应用程序目前不管理任何实际资金。Dupip Invest 仍处于规划阶段。这只是一个用于演示目的的测试环境。"
+  },
+  "wallet": {
+    "nftGenerationCompleted": "NFT生成已完成。",
+    "errorGeneratingNFT": "生成NFT时出错",
+    "failedToGenerateNFT": "生成NFT失败",
+    "pleaseSelectWallet": "请选择一个钱包",
+    "errorFetchingNFTs": "获取NFT时出错:",
+    "transferCompleted": "转账已完成。",
+    "failedToTransferTokens": "转账失败",
+    "errorTransferringTokens": "转账时出错",
+    "unnamedWallet": "未命名钱包",
+    "wallets": "钱包",
+    "transferTokens": "转账代币",
+    "createWallet": "创建钱包",
+    "fromWallet": "从钱包",
+    "toAddress": "到地址",
+    "amount": "金额",
+    "generateNFT": "生成NFT",
+    "myNFTs": "我的NFT",
+    "balance": "余额:",
+    "selectWallet": "选择钱包",
+    "blockchainBalance": "区块链余额:"
   }
 }

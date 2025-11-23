@@ -104,7 +104,8 @@
         "PUBLIC": "Public",
         "AI_ENABLED": "AI activat"
       },
-      "action": "Publică nota"
+      "action": "Publică nota",
+      "publishing": "Publishing..."
     }
   },
   "week": {
@@ -221,7 +222,11 @@
   },
   "errors": {
     "notFound": "Ups! Nu s-a putut regla această frecvență.",
-    "genericError": "Ceva a mers greșit. Te rog încearcă din nou."
+    "genericError": "Ceva a mers greșit. Te rog încearcă din nou.",
+    "failedToFetchNotes": "Failed to fetch notes",
+    "failedToLoadNotes": "Failed to load notes",
+    "failedToFetchTemplates": "Failed to fetch templates",
+    "failedToLoadTemplates": "Failed to load templates"
   },
   "social": {
     "title": "Contacte sociale",
@@ -306,7 +311,10 @@
     "cloneTemplateFailed": "Clonarea șablonului a eșuat",
     "cloning": "Se clonează...",
     "noPublicNotes": "Nu există notițe publice disponibile încă.",
-    "noPublicTemplatesOrLists": "Nu există șabloane sau liste publice disponibile încă."
+    "noPublicTemplatesOrLists": "Nu există șabloane sau liste publice disponibile încă.",
+    "cloneList": "Clone List",
+    "cloneListSuccess": "List cloned successfully!",
+    "cloneListFailed": "Failed to clone list"
   },
   "publicCharts": {
     "noData": "Nu sunt disponibile date pentru graficele publice.",
@@ -561,5 +569,27 @@
   },
   "invest": {
     "notice": "Nu există bani reali gestionați în prezent în această aplicație. Dupip Invest este încă în faza de planificare. Acesta este doar un mediu de testare în scopuri de demonstrație."
+  },
+  "wallet": {
+    "nftGenerationCompleted": "Generarea NFT finalizată.",
+    "errorGeneratingNFT": "Eroare la generarea NFT",
+    "failedToGenerateNFT": "Generarea NFT a eșuat",
+    "pleaseSelectWallet": "Vă rugăm să selectați un portofel",
+    "errorFetchingNFTs": "Eroare la preluarea NFT-urilor:",
+    "transferCompleted": "Transferul finalizat.",
+    "failedToTransferTokens": "Transferul tokenilor a eșuat",
+    "errorTransferringTokens": "Eroare la transferul tokenilor",
+    "unnamedWallet": "Portofel fără nume",
+    "wallets": "Portofele",
+    "transferTokens": "Transferă Tokeni",
+    "createWallet": "Creează portofel",
+    "fromWallet": "Din portofel",
+    "toAddress": "Către adresă",
+    "amount": "Sumă",
+    "generateNFT": "Generează NFT",
+    "myNFTs": "NFT-urile mele",
+    "balance": "Sold:",
+    "selectWallet": "Selectează Portofel",
+    "blockchainBalance": "Sold Blockchain:"
   }
 }

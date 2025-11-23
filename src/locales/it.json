@@ -104,7 +104,8 @@
         "PUBLIC": "Pubblico",
         "AI_ENABLED": "Abilitato IA"
       },
-      "action": "Pubblica Nota"
+      "action": "Pubblica Nota",
+      "publishing": "Publishing..."
     }
   },
   "week": {
@@ -300,7 +301,11 @@
   },
   "errors": {
     "notFound": "Ops! Non è stato possibile sintonizzarsi su questa frequenza.",
-    "genericError": "Qualcosa è andato storto. Riprova."
+    "genericError": "Qualcosa è andato storto. Riprova.",
+    "failedToFetchNotes": "Failed to fetch notes",
+    "failedToLoadNotes": "Failed to load notes",
+    "failedToFetchTemplates": "Failed to fetch templates",
+    "failedToLoadTemplates": "Failed to load templates"
   },
   "publicProfile": {
     "ctaTitle": "Inizia il tuo percorso con Dupip",
@@ -320,7 +325,10 @@
     "cloneTemplateFailed": "Impossibile clonare il modello",
     "cloning": "Clonazione...",
     "noPublicNotes": "Nessuna nota pubblica disponibile ancora.",
-    "noPublicTemplatesOrLists": "Nessun modello o lista pubblica disponibile ancora."
+    "noPublicTemplatesOrLists": "Nessun modello o lista pubblica disponibile ancora.",
+    "cloneList": "Clone List",
+    "cloneListSuccess": "List cloned successfully!",
+    "cloneListFailed": "Failed to clone list"
   },
   "publicCharts": {
     "noData": "Nessun dato pubblico disponibile per i grafici.",
@@ -561,5 +569,27 @@
   },
   "invest": {
     "notice": "Non c'è denaro reale attualmente gestito in questa app. Dupip Invest è ancora in fase di pianificazione. Questo è solo un ambiente di prova a scopo dimostrativo."
+  },
+  "wallet": {
+    "nftGenerationCompleted": "Generazione NFT completata.",
+    "errorGeneratingNFT": "Errore nella generazione dell'NFT",
+    "failedToGenerateNFT": "Generazione NFT fallita",
+    "pleaseSelectWallet": "Seleziona un portafoglio",
+    "errorFetchingNFTs": "Errore nel recupero degli NFT:",
+    "transferCompleted": "Trasferimento completato.",
+    "failedToTransferTokens": "Trasferimento token fallito",
+    "errorTransferringTokens": "Errore nel trasferimento dei token",
+    "unnamedWallet": "Portafoglio senza nome",
+    "wallets": "Portafogli",
+    "transferTokens": "Trasferisci Token",
+    "createWallet": "Crea portafoglio",
+    "fromWallet": "Dal portafoglio",
+    "toAddress": "All'indirizzo",
+    "amount": "Importo",
+    "generateNFT": "Genera NFT",
+    "myNFTs": "I miei NFT",
+    "balance": "Saldo:",
+    "selectWallet": "Seleziona Portafoglio",
+    "blockchainBalance": "Saldo Blockchain:"
   }
 }

@@ -104,7 +104,8 @@
         "PUBLIC": "Openbaar",
         "AI_ENABLED": "AI-ingeschakeld"
       },
-      "action": "Publiceer notitie"
+      "action": "Publiceer notitie",
+      "publishing": "Publishing..."
     }
   },
   "week": {
@@ -221,7 +222,11 @@
   },
   "errors": {
     "notFound": "Oeps! Kon deze frequentie niet afstemmen.",
-    "genericError": "Er is iets misgegaan. Probeer het opnieuw."
+    "genericError": "Er is iets misgegaan. Probeer het opnieuw.",
+    "failedToFetchNotes": "Failed to fetch notes",
+    "failedToLoadNotes": "Failed to load notes",
+    "failedToFetchTemplates": "Failed to fetch templates",
+    "failedToLoadTemplates": "Failed to load templates"
   },
   "social": {
     "title": "Sociale contacten",
@@ -306,7 +311,10 @@
     "cloneTemplateFailed": "Sjabloon klonen mislukt",
     "cloning": "Klonen...",
     "noPublicNotes": "Nog geen openbare notities beschikbaar.",
-    "noPublicTemplatesOrLists": "Nog geen openbare sjablonen of lijsten beschikbaar."
+    "noPublicTemplatesOrLists": "Nog geen openbare sjablonen of lijsten beschikbaar.",
+    "cloneList": "Clone List",
+    "cloneListSuccess": "List cloned successfully!",
+    "cloneListFailed": "Failed to clone list"
   },
   "publicCharts": {
     "noData": "Geen openbare grafiekgegevens beschikbaar.",
@@ -561,5 +569,27 @@
   },
   "invest": {
     "notice": "Er wordt momenteel geen echt geld beheerd in deze app. Dupip Invest bevindt zich nog in de planningsfase. Dit is slechts een testomgeving voor demonstratiedoeleinden."
+  },
+  "wallet": {
+    "nftGenerationCompleted": "NFT-generatie voltooid.",
+    "errorGeneratingNFT": "Fout bij het genereren van NFT",
+    "failedToGenerateNFT": "NFT-generatie mislukt",
+    "pleaseSelectWallet": "Selecteer een portemonnee",
+    "errorFetchingNFTs": "Fout bij het ophalen van NFTs:",
+    "transferCompleted": "Overdracht voltooid.",
+    "failedToTransferTokens": "Tokenoverdracht mislukt",
+    "errorTransferringTokens": "Fout bij het overdragen van tokens",
+    "unnamedWallet": "Naamloze portemonnee",
+    "wallets": "Portemonnees",
+    "transferTokens": "Tokens overdragen",
+    "createWallet": "Portemonnee aanmaken",
+    "fromWallet": "Van portemonnee",
+    "toAddress": "Naar adres",
+    "amount": "Bedrag",
+    "generateNFT": "NFT genereren",
+    "myNFTs": "Mijn NFTs",
+    "balance": "Saldo:",
+    "selectWallet": "Selecteer Portemonnee",
+    "blockchainBalance": "Blockchain-saldo:"
   }
 }

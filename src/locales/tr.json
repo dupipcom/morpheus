@@ -108,7 +108,8 @@
         "PUBLIC": "Kamu",
         "AI_ENABLED": "Yapay Zeka Etkin"
       },
-      "action": "Not Yayınla"
+      "action": "Not Yayınla",
+      "publishing": "Publishing..."
     }
   },
   "week": {
@@ -239,7 +240,11 @@
   },
   "errors": {
     "notFound": "Hay aksi! Bu frekansa ayarlanamadı.",
-    "genericError": "Bir şeyler ters gitti. Lütfen tekrar deneyin."
+    "genericError": "Bir şeyler ters gitti. Lütfen tekrar deneyin.",
+    "failedToFetchNotes": "Failed to fetch notes",
+    "failedToLoadNotes": "Failed to load notes",
+    "failedToFetchTemplates": "Failed to fetch templates",
+    "failedToLoadTemplates": "Failed to load templates"
   },
   "social": {
     "title": "Sosyal Kişiler",
@@ -324,7 +329,10 @@
     "cloneTemplateFailed": "Şablon klonlama başarısız",
     "cloning": "Klonlanıyor...",
     "noPublicNotes": "Henüz herkese açık not mevcut değil.",
-    "noPublicTemplatesOrLists": "Henüz herkese açık şablon veya liste mevcut değil."
+    "noPublicTemplatesOrLists": "Henüz herkese açık şablon veya liste mevcut değil.",
+    "cloneList": "Clone List",
+    "cloneListSuccess": "List cloned successfully!",
+    "cloneListFailed": "Failed to clone list"
   },
   "publicCharts": {
     "noData": "Herkese açık grafik verisi mevcut değil.",
@@ -565,5 +573,27 @@
   },
   "invest": {
     "notice": "Bu uygulamada şu anda gerçek para yönetilmemektedir. Dupip Invest hala planlama aşamasındadır. Bu sadece gösterim amaçlı bir test ortamıdır."
+  },
+  "wallet": {
+    "nftGenerationCompleted": "NFT oluşturma tamamlandı.",
+    "errorGeneratingNFT": "NFT oluşturma hatası",
+    "failedToGenerateNFT": "NFT oluşturulamadı",
+    "pleaseSelectWallet": "Lütfen bir cüzdan seçin",
+    "errorFetchingNFTs": "NFT'ler alınırken hata:",
+    "transferCompleted": "Transfer tamamlandı.",
+    "failedToTransferTokens": "Token transferi başarısız",
+    "errorTransferringTokens": "Token transferi hatası",
+    "unnamedWallet": "İsimsiz Cüzdan",
+    "wallets": "Cüzdanlar",
+    "transferTokens": "Token Transfer Et",
+    "createWallet": "Cüzdan oluştur",
+    "fromWallet": "Cüzdandan",
+    "toAddress": "Adrese",
+    "amount": "Miktar",
+    "generateNFT": "NFT Oluştur",
+    "myNFTs": "NFT'lerim",
+    "balance": "Bakiye:",
+    "selectWallet": "Cüzdan Seç",
+    "blockchainBalance": "Blockchain Bakiyesi:"
   }
 }

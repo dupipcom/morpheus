@@ -104,7 +104,8 @@
         "PUBLIC": "Общественность",
         "AI_ENABLED": "AI Enabled"
       },
-      "action": "Опубликовать заметку"
+      "action": "Опубликовать заметку",
+      "publishing": "Publishing..."
     }
   },
   "week": {
@@ -235,7 +236,11 @@
   },
   "errors": {
     "notFound": "Упс! Не удалось настроить эту частоту.",
-    "genericError": "Что-то пошло не так. Пожалуйста, попробуйте еще раз."
+    "genericError": "Что-то пошло не так. Пожалуйста, попробуйте еще раз.",
+    "failedToFetchNotes": "Failed to fetch notes",
+    "failedToLoadNotes": "Failed to load notes",
+    "failedToFetchTemplates": "Failed to fetch templates",
+    "failedToLoadTemplates": "Failed to load templates"
   },
   "social": {
     "title": "Социальные контакты",
@@ -320,7 +325,10 @@
     "cloneTemplateFailed": "Не удалось клонировать шаблон",
     "cloning": "Клонирование...",
     "noPublicNotes": "Публичные заметки пока недоступны.",
-    "noPublicTemplatesOrLists": "Публичные шаблоны или списки пока недоступны."
+    "noPublicTemplatesOrLists": "Публичные шаблоны или списки пока недоступны.",
+    "cloneList": "Clone List",
+    "cloneListSuccess": "List cloned successfully!",
+    "cloneListFailed": "Failed to clone list"
   },
   "publicCharts": {
     "noData": "Нет доступных публичных данных диаграмм.",
@@ -561,5 +569,27 @@
   },
   "invest": {
     "notice": "В настоящее время в этом приложении не управляются реальные деньги. Dupip Invest все еще находится в стадии планирования. Это просто тестовая среда для демонстрационных целей."
+  },
+  "wallet": {
+    "nftGenerationCompleted": "Генерация NFT завершена.",
+    "errorGeneratingNFT": "Ошибка при генерации NFT",
+    "failedToGenerateNFT": "Не удалось сгенерировать NFT",
+    "pleaseSelectWallet": "Пожалуйста, выберите кошелек",
+    "errorFetchingNFTs": "Ошибка при получении NFT:",
+    "transferCompleted": "Перевод завершен.",
+    "failedToTransferTokens": "Не удалось перевести токены",
+    "errorTransferringTokens": "Ошибка при переводе токенов",
+    "unnamedWallet": "Безымянный кошелек",
+    "wallets": "Кошельки",
+    "transferTokens": "Перевести Токены",
+    "createWallet": "Создать кошелек",
+    "fromWallet": "Из кошелька",
+    "toAddress": "На адрес",
+    "amount": "Сумма",
+    "generateNFT": "Сгенерировать NFT",
+    "myNFTs": "Мои NFT",
+    "balance": "Баланс:",
+    "selectWallet": "Выбрать Кошелек",
+    "blockchainBalance": "Баланс Blockchain:"
   }
 }

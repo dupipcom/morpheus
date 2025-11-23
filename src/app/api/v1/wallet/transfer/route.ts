@@ -60,7 +60,6 @@ export async function POST(req: Request) {
       amount.toString()
     );
 
-    console.log('txHash', txHash);
 
     // Create a transaction record
     await prisma.transaction.create({

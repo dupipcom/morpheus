@@ -21,6 +21,14 @@ interface NFT {
   tokenURI: string
 }
 
+interface WalletData {
+  id: string
+  name: string | null
+  address: string | null
+  blockchainBalance?: string
+  createdAt: string
+}
+
 export const NFTGenerator = () => {
   const { t } = useI18n()
   const { wallets, isLoading } = useWallets()
@@ -52,11 +60,11 @@ export const NFTGenerator = () => {
         setNfts(data.nfts || [])
       } else {
         const error = await response.json()
-        console.error('Error fetching NFTs:', error)
+        console.error(t('wallet.errorFetchingNFTs'), error)
         setNfts([])
       }
     } catch (error) {
-      console.error('Error fetching NFTs:', error)
+      console.error(t('wallet.errorFetchingNFTs'), error)
       setNfts([])
     } finally {
       setIsLoadingNfts(false)
@@ -69,7 +77,7 @@ export const NFTGenerator = () => {
 
   const handleGenerateNFT = async () => {
     if (!selectedWalletId) {
-      toast.error('Please select a wallet')
+      toast.error(t('wallet.pleaseSelectWallet'))
       return
     }
 
@@ -87,16 +95,16 @@ export const NFTGenerator = () => {
 
       if (response.ok) {
         const data = await response.json()
-        toast.success(`NFT generation initiated! Transaction: ${data.transactionHash?.slice(0, 10)}...`)
+        toast.success(t('wallet.nftGenerationCompleted'))
         // Refresh NFT list after successful generation
         await fetchNFTs()
       } else {
         const error = await response.json()
-        toast.error(error.error || 'Failed to generate NFT')
+        toast.error(error.error || t('wallet.failedToGenerateNFT'))
       }
     } catch (error) {
       console.error('Error generating NFT:', error)
-      toast.error('Error generating NFT')
+      toast.error(t('wallet.errorGeneratingNFT'))
     } finally {
       setIsGenerating(false)
     }
@@ -106,7 +114,7 @@ export const NFTGenerator = () => {
     <div className="space-y-4 border rounded-lg p-4 bg-muted/50">
       <h3 className="text-lg font-semibold flex items-center gap-2">
         <Sparkles className="h-5 w-5" />
-        Generate NFT
+        {t('wallet.generateNFT')}
       </h3>
 
       {isLoading ? (
@@ -127,12 +135,12 @@ export const NFTGenerator = () => {
               onValueChange={(value) => setSelectedWalletId(value)}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select wallet" />
+                <SelectValue placeholder={t('wallet.selectWallet')} />
               </SelectTrigger>
               <SelectContent>
-                {wallets.map((wallet) => (
+                {wallets.map((wallet: WalletData) => (
                   <SelectItem key={wallet.id} value={wallet.id}>
-                    {wallet.name || 'Unnamed Wallet'}
+                    {wallet.name || t('wallet.unnamedWallet')}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -144,17 +152,13 @@ export const NFTGenerator = () => {
             disabled={isGenerating || !selectedWalletId}
             className="w-full"
           >
-            {isGenerating ? 'Generating...' : 'Generate NFT'}
+            {isGenerating ? 'Generating...' : t('wallet.generateNFT')}
           </Button>
-
-          <p className="text-xs text-muted-foreground">
-            Note: NFT generation requires an NFT contract to be deployed on your Kaleido network.
-          </p>
 
           {/* NFT List Section */}
           <div className="mt-6 pt-6 border-t">
             <div className="flex items-center justify-between mb-4">
-              <h4 className="text-sm font-semibold">My NFTs</h4>
+              <h4 className="text-sm font-semibold">{t('wallet.myNFTs')}</h4>
               <Button
                 variant="ghost"
                 size="sm"
