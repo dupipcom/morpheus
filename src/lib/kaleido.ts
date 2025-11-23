@@ -326,3 +326,131 @@ export const generateNFT = async (
     throw error;
   }
 };
+
+/**
+ * Get NFTs owned by an address
+ * Uses Kaleido smart contract gateway API for NFT queries
+ */
+export interface NFT {
+  tokenId: string;
+  tokenURI: string;
+}
+
+export const getNFTs = async (address: string): Promise<NFT[]> => {
+  try {
+    const nftBase = getKaleidoNftBase();
+    const contractAddress = getNftKrnAddress();
+    
+    // First, get the balance (number of NFTs owned)
+    const balanceUrl = `${nftBase}/${contractAddress}/balanceOf?owner=${encodeURIComponent(address)}`;
+    
+    const balanceResponse = await fetch(balanceUrl, {
+      method: 'GET',
+      headers: getNftAuthHeaders(),
+    });
+
+    if (!balanceResponse.ok) {
+      const errorText = await balanceResponse.text();
+      throw new Error(`Failed to get NFT balance: ${balanceResponse.status} ${errorText}`);
+    }
+
+    const balanceData = await balanceResponse.json();
+    
+    // Parse balance - similar to token balance parsing
+    let balanceValue: string | number;
+    if (balanceData.output !== undefined) {
+      balanceValue = balanceData.output;
+    } else {
+      throw new Error(`Invalid NFT balance response format: ${JSON.stringify(balanceData)}`);
+    }
+
+    // Convert balance to number
+    let balance: number;
+    if (typeof balanceValue === 'string') {
+      if (balanceValue.startsWith('0x')) {
+        balance = Number(BigInt(balanceValue));
+      } else {
+        balance = parseInt(balanceValue, 10);
+      }
+    } else {
+      balance = Math.floor(balanceValue);
+    }
+
+    if (balance === 0) {
+      return [];
+    }
+
+    // Get all token IDs owned by this address
+    const nfts: NFT[] = [];
+    
+    for (let i = 0; i < balance; i++) {
+      try {
+        // Get token ID at index i using tokenOfOwnerByIndex
+        const tokenIdUrl = `${nftBase}/${contractAddress}/tokenOfOwnerByIndex?owner=${encodeURIComponent(address)}&index=${i}`;
+        
+        const tokenIdResponse = await fetch(tokenIdUrl, {
+          method: 'GET',
+          headers: getNftAuthHeaders(),
+        });
+
+        if (!tokenIdResponse.ok) {
+          console.error(`Failed to get token ID at index ${i}:`, await tokenIdResponse.text());
+          continue;
+        }
+
+        const tokenIdData = await tokenIdResponse.json();
+        let tokenId: string;
+        
+        if (tokenIdData.output !== undefined) {
+          const tokenIdValue = tokenIdData.output;
+          if (typeof tokenIdValue === 'string') {
+            if (tokenIdValue.startsWith('0x')) {
+              tokenId = BigInt(tokenIdValue).toString();
+            } else {
+              tokenId = tokenIdValue;
+            }
+          } else {
+            tokenId = String(tokenIdValue);
+          }
+        } else {
+          console.error(`Invalid token ID response at index ${i}:`, tokenIdData);
+          continue;
+        }
+
+        // Get token URI for this token ID
+        let tokenURI = '';
+        try {
+          const tokenUriUrl = `${nftBase}/${contractAddress}/tokenURI?tokenId=${encodeURIComponent(tokenId)}`;
+          
+          const tokenUriResponse = await fetch(tokenUriUrl, {
+            method: 'GET',
+            headers: getNftAuthHeaders(),
+          });
+
+          if (tokenUriResponse.ok) {
+            const tokenUriData = await tokenUriResponse.json();
+            if (tokenUriData.output !== undefined) {
+              tokenURI = String(tokenUriData.output);
+            }
+          }
+        } catch (error) {
+          console.error(`Failed to get token URI for token ${tokenId}:`, error);
+          // Continue without token URI
+        }
+
+        nfts.push({
+          tokenId,
+          tokenURI,
+        });
+      } catch (error) {
+        console.error(`Error fetching NFT at index ${i}:`, error);
+        // Continue to next NFT
+      }
+    }
+
+    return nfts;
+  } catch (error) {
+    console.error('Error getting NFTs:', error);
+    throw error;
+  }
+};
