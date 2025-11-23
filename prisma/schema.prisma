@@ -321,6 +321,7 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   settings      Settings?
+  consents      Consents?
   userId        String?   @unique
   lastLogin     DateTime?
   usedBudget    Float?    @default(0)
@@ -436,6 +437,15 @@ type ProfileField {
 type Settings {
   currency Currency?
   speed Float?
+}
+
+type Consents {
+  doInvestDemo DoInvestDemoConsent?
+}
+
+type DoInvestDemoConsent {
+  consentedOn DateTime
+  consentQuestion String
 }
 
 type Task {
