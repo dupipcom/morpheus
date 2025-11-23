@@ -594,6 +594,22 @@
     "myNFTs": "Omat NFT:t",
     "balance": "Saldo:",
     "selectWallet": "Valitse Lompakko",
-    "blockchainBalance": "Blockchain-saldo:"
+    "blockchainBalance": "Blockchain-saldo:",
+    "pleaseEnterWalletName": "Anna lompakon nimi",
+    "walletCreatedSuccessfully": "Lompakko luotu onnistuneesti",
+    "failedToCreateWallet": "Lompakon luonti epäonnistui",
+    "errorCreatingWallet": "Virhe lompakon luonnissa",
+    "walletDeletedSuccessfully": "Lompakko poistettu onnistuneesti",
+    "failedToDeleteWallet": "Lompakon poisto epäonnistui",
+    "errorDeletingWallet": "Virhe lompakon poistamisessa",
+    "addressCopiedToClipboard": "Osoite kopioitu leikepöydälle",
+    "createNewWallet": "Luo Uusi Lompakko",
+    "createNewWalletDescription": "Luo uusi blockchain-lompakko. Uusi osoite luodaan.",
+    "walletNamePlaceholder": "Lompakon nimi (esim. Säästöt, Kaupankäynti)",
+    "creating": "Luodaan...",
+    "noWalletsYet": "Ei vielä lompakoita. Luo ensimmäinen lompakkosi aloittaaksesi.",
+    "deleteWallet": "Poista Lompakko",
+    "deleteWalletConfirmation": "Haluatko varmasti poistaa tämän lompakon? Tätä toimintoa ei voi perua. Lompakko poistetaan tililtäsi, mutta blockchain-osoite ja sen varat pysyvät blockchainissa.",
+    "delete": "Poista"
   }
 }

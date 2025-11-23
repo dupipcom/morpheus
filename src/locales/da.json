@@ -594,6 +594,22 @@
     "myNFTs": "Mine NFTs",
     "balance": "Saldo:",
     "selectWallet": "Vælg Tegnebog",
-    "blockchainBalance": "Blockchain-saldo:"
+    "blockchainBalance": "Blockchain-saldo:",
+    "pleaseEnterWalletName": "Indtast venligst et tegnebogsnavn",
+    "walletCreatedSuccessfully": "Tegnebog oprettet med succes",
+    "failedToCreateWallet": "Kunne ikke oprette tegnebog",
+    "errorCreatingWallet": "Fejl ved oprettelse af tegnebog",
+    "walletDeletedSuccessfully": "Tegnebog slettet med succes",
+    "failedToDeleteWallet": "Kunne ikke slette tegnebog",
+    "errorDeletingWallet": "Fejl ved sletning af tegnebog",
+    "addressCopiedToClipboard": "Adresse kopieret til udklipsholder",
+    "createNewWallet": "Opret Ny Tegnebog",
+    "createNewWalletDescription": "Opret en ny blockchain tegnebog. En ny adresse vil blive genereret.",
+    "walletNamePlaceholder": "Tegnebogsnavn (f.eks. Opsparing, Trading)",
+    "creating": "Opretter...",
+    "noWalletsYet": "Ingen tegnebøger endnu. Opret din første tegnebog for at komme i gang.",
+    "deleteWallet": "Slet Tegnebog",
+    "deleteWalletConfirmation": "Er du sikker på, at du vil slette denne tegnebog? Denne handling kan ikke fortrydes. Tegnebogen vil blive fjernet fra din konto, men blockchain-adressen og dens midler forbliver på blockchain.",
+    "delete": "Slet"
   }
 }

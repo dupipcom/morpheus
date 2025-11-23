@@ -593,6 +593,22 @@
     "myNFTs": "Mina NFTs",
     "balance": "Saldo:",
     "selectWallet": "Välj Plånbok",
-    "blockchainBalance": "Blockchain-saldo:"
+    "blockchainBalance": "Blockchain-saldo:",
+    "pleaseEnterWalletName": "Vänligen ange ett plånboksnamn",
+    "walletCreatedSuccessfully": "Plånbok skapad framgångsrikt",
+    "failedToCreateWallet": "Misslyckades med att skapa plånbok",
+    "errorCreatingWallet": "Fel vid skapande av plånbok",
+    "walletDeletedSuccessfully": "Plånbok raderad framgångsrikt",
+    "failedToDeleteWallet": "Misslyckades med att radera plånbok",
+    "errorDeletingWallet": "Fel vid radering av plånbok",
+    "addressCopiedToClipboard": "Adress kopierad till urklipp",
+    "createNewWallet": "Skapa Ny Plånbok",
+    "createNewWalletDescription": "Skapa en ny blockchain-plånbok. En ny adress kommer att genereras.",
+    "walletNamePlaceholder": "Plånboksnamn (t.ex. Sparkonto, Trading)",
+    "creating": "Skapar...",
+    "noWalletsYet": "Inga plånböcker ännu. Skapa din första plånbok för att komma igång.",
+    "deleteWallet": "Radera Plånbok",
+    "deleteWalletConfirmation": "Är du säker på att du vill radera denna plånbok? Denna åtgärd kan inte ångras. Plånboken kommer att tas bort från ditt konto, men blockchain-adressen och dess medel kommer att finnas kvar på blockchain.",
+    "delete": "Radera"
   }
 }

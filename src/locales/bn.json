@@ -590,6 +590,22 @@
     "myNFTs": "আমার NFTs",
     "balance": "ব্যালেন্স:",
     "selectWallet": "ওয়ালেট নির্বাচন করুন",
-    "blockchainBalance": "ব্লকচেইন ব্যালেন্স:"
+    "blockchainBalance": "ব্লকচেইন ব্যালেন্স:",
+    "pleaseEnterWalletName": "অনুগ্রহ করে একটি ওয়ালেট নাম লিখুন",
+    "walletCreatedSuccessfully": "ওয়ালেট সফলভাবে তৈরি হয়েছে",
+    "failedToCreateWallet": "ওয়ালেট তৈরি করতে ব্যর্থ",
+    "errorCreatingWallet": "ওয়ালেট তৈরি করতে ত্রুটি",
+    "walletDeletedSuccessfully": "ওয়ালেট সফলভাবে মুছে ফেলা হয়েছে",
+    "failedToDeleteWallet": "ওয়ালেট মুছে ফেলতে ব্যর্থ",
+    "errorDeletingWallet": "ওয়ালেট মুছে ফেলতে ত্রুটি",
+    "addressCopiedToClipboard": "ঠিকানা ক্লিপবোর্ডে কপি করা হয়েছে",
+    "createNewWallet": "নতুন ওয়ালেট তৈরি করুন",
+    "createNewWalletDescription": "একটি নতুন ব্লকচেইন ওয়ালেট তৈরি করুন। একটি নতুন ঠিকানা তৈরি করা হবে।",
+    "walletNamePlaceholder": "ওয়ালেট নাম (যেমন: সঞ্চয়, ট্রেডিং)",
+    "creating": "তৈরি করা হচ্ছে...",
+    "noWalletsYet": "এখনও কোনও ওয়ালেট নেই। শুরু করতে আপনার প্রথম ওয়ালেট তৈরি করুন।",
+    "deleteWallet": "ওয়ালেট মুছুন",
+    "deleteWalletConfirmation": "আপনি কি নিশ্চিত যে আপনি এই ওয়ালেটটি মুছতে চান? এই কাজটি পূর্বাবস্থায় ফেরানো যাবে না। ওয়ালেটটি আপনার অ্যাকাউন্ট থেকে সরানো হবে, তবে ব্লকচেইন ঠিকানা এবং এর তহবিল ব্লকচেইনে থাকবে।",
+    "delete": "মুছুন"
   }
 }

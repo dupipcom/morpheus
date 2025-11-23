@@ -590,6 +590,22 @@
     "myNFTs": "Mes NFTs",
     "balance": "Solde:",
     "selectWallet": "Sélectionner un Portefeuille",
-    "blockchainBalance": "Solde Blockchain:"
+    "blockchainBalance": "Solde Blockchain:",
+    "pleaseEnterWalletName": "Veuillez entrer un nom de portefeuille",
+    "walletCreatedSuccessfully": "Portefeuille créé avec succès",
+    "failedToCreateWallet": "Échec de la création du portefeuille",
+    "errorCreatingWallet": "Erreur lors de la création du portefeuille",
+    "walletDeletedSuccessfully": "Portefeuille supprimé avec succès",
+    "failedToDeleteWallet": "Échec de la suppression du portefeuille",
+    "errorDeletingWallet": "Erreur lors de la suppression du portefeuille",
+    "addressCopiedToClipboard": "Adresse copiée dans le presse-papiers",
+    "createNewWallet": "Créer un Nouveau Portefeuille",
+    "createNewWalletDescription": "Créez un nouveau portefeuille blockchain. Une nouvelle adresse sera générée.",
+    "walletNamePlaceholder": "Nom du portefeuille (ex. Épargne, Trading)",
+    "creating": "Création...",
+    "noWalletsYet": "Aucun portefeuille pour le moment. Créez votre premier portefeuille pour commencer.",
+    "deleteWallet": "Supprimer le Portefeuille",
+    "deleteWalletConfirmation": "Êtes-vous sûr de vouloir supprimer ce portefeuille ? Cette action ne peut pas être annulée. Le portefeuille sera retiré de votre compte, mais l'adresse blockchain et ses fonds resteront sur la blockchain.",
+    "delete": "Supprimer"
   }
 }

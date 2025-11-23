@@ -31,8 +31,7 @@ interface WalletData {
   id: string
   name: string | null
   address: string | null
-  balance: number | null
-  blockchainBalance?: string
+  blockchainBalance?: number
   createdAt: string
 }
 
@@ -47,7 +46,7 @@ export const WalletManager = () => {
 
   const handleCreateWallet = async () => {
     if (!newWalletName.trim()) {
-      toast.error('Please enter a wallet name')
+      toast.error(t('wallet.pleaseEnterWalletName'))
       return
     }
 
@@ -65,16 +64,16 @@ export const WalletManager = () => {
         const data = await response.json()
         setNewWalletName('')
         setIsDialogOpen(false)
-        toast.success('Wallet created successfully')
+        toast.success(t('wallet.walletCreatedSuccessfully'))
         // Refresh wallets to get updated list
         await refreshWallets()
       } else {
         const error = await response.json()
-        toast.error(error.error || 'Failed to create wallet')
+        toast.error(error.error || t('wallet.failedToCreateWallet'))
       }
     } catch (error) {
       console.error('Error creating wallet:', error)
-      toast.error('Error creating wallet')
+      toast.error(t('wallet.errorCreatingWallet'))
     } finally {
       setIsCreating(false)
     }
@@ -90,23 +89,23 @@ export const WalletManager = () => {
 
       if (response.ok) {
         setWalletToDelete(null)
-        toast.success('Wallet deleted successfully')
+        toast.success(t('wallet.walletDeletedSuccessfully'))
         // Refresh wallets to get updated list
         await refreshWallets()
       } else {
         const error = await response.json()
-        toast.error(error.error || 'Failed to delete wallet')
+        toast.error(error.error || t('wallet.failedToDeleteWallet'))
       }
     } catch (error) {
       console.error('Error deleting wallet:', error)
-      toast.error('Error deleting wallet')
+      toast.error(t('wallet.errorDeletingWallet'))
     }
   }
 
   const handleCopyAddress = (address: string) => {
     navigator.clipboard.writeText(address)
     setCopiedAddress(address)
-    toast.success('Address copied to clipboard')
+    toast.success(t('wallet.addressCopiedToClipboard'))
     setTimeout(() => setCopiedAddress(null), 2000)
   }
 
@@ -123,14 +122,14 @@ export const WalletManager = () => {
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Create New Wallet</DialogTitle>
+              <DialogTitle>{t('wallet.createNewWallet')}</DialogTitle>
               <DialogDescription>
-                Create a new blockchain wallet. A new address will be generated.
+                {t('wallet.createNewWalletDescription')}
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <Input
-                placeholder="Wallet name (e.g., Savings, Trading)"
+                placeholder={t('wallet.walletNamePlaceholder')}
                 value={newWalletName}
                 onChange={(e) => setNewWalletName(e.target.value)}
                 onKeyDown={(e) => {
@@ -144,7 +143,7 @@ export const WalletManager = () => {
                 disabled={isCreating || !newWalletName.trim()}
                 className="w-full"
               >
-                {isCreating ? 'Creating...' : t('wallet.createWallet')}
+                {isCreating ? t('wallet.creating') : t('wallet.createWallet')}
               </Button>
             </div>
           </DialogContent>
@@ -159,7 +158,7 @@ export const WalletManager = () => {
       ) : wallets.length === 0 ? (
         <div className="text-center py-8 text-muted-foreground">
           <Wallet className="h-12 w-12 mx-auto mb-4 opacity-50" />
-          <p>No wallets yet. Create your first wallet to get started.</p>
+          <p>{t('wallet.noWalletsYet')}</p>
         </div>
       ) : (
         <div className="space-y-2">
@@ -198,9 +197,7 @@ export const WalletManager = () => {
                   <div className="mt-2 text-sm">
                     <span className="text-muted-foreground">{t('wallet.balance')} </span>
                     <span className="font-medium">
-                      {wallet.blockchainBalance
-                        ? `Ð${parseFloat(wallet.blockchainBalance).toFixed(18)}`
-                        : 'Ð0'}
+                      Ð{(wallet.blockchainBalance ?? 0).toFixed(18)}
                     </span>
                   </div>
                 </div>
@@ -224,20 +221,18 @@ export const WalletManager = () => {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Wallet</AlertDialogTitle>
+            <AlertDialogTitle>{t('wallet.deleteWallet')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this wallet? This action cannot be undone.
-              The wallet will be removed from your account, but the blockchain address
-              and its funds will remain on the blockchain.
+              {t('wallet.deleteWalletConfirmation')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteWallet}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Delete
+              {t('wallet.delete')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

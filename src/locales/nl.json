@@ -590,6 +590,22 @@
     "myNFTs": "Mijn NFTs",
     "balance": "Saldo:",
     "selectWallet": "Selecteer Portemonnee",
-    "blockchainBalance": "Blockchain-saldo:"
+    "blockchainBalance": "Blockchain-saldo:",
+    "pleaseEnterWalletName": "Voer een portemonneenaam in",
+    "walletCreatedSuccessfully": "Portemonnee succesvol aangemaakt",
+    "failedToCreateWallet": "Portemonnee aanmaken mislukt",
+    "errorCreatingWallet": "Fout bij het aanmaken van portemonnee",
+    "walletDeletedSuccessfully": "Portemonnee succesvol verwijderd",
+    "failedToDeleteWallet": "Portemonnee verwijderen mislukt",
+    "errorDeletingWallet": "Fout bij het verwijderen van portemonnee",
+    "addressCopiedToClipboard": "Adres gekopieerd naar klembord",
+    "createNewWallet": "Nieuwe Portemonnee Aanmaken",
+    "createNewWalletDescription": "Maak een nieuwe blockchain portemonnee aan. Er wordt een nieuw adres gegenereerd.",
+    "walletNamePlaceholder": "Portemonneenaam (bijv. Sparen, Trading)",
+    "creating": "Aanmaken...",
+    "noWalletsYet": "Nog geen portemonnees. Maak je eerste portemonnee aan om te beginnen.",
+    "deleteWallet": "Portemonnee Verwijderen",
+    "deleteWalletConfirmation": "Weet je zeker dat je deze portemonnee wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt. De portemonnee wordt van je account verwijderd, maar het blockchain-adres en de fondsen blijven op de blockchain.",
+    "delete": "Verwijderen"
   }
 }

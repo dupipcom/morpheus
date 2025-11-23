@@ -34,23 +34,21 @@ export async function GET(req: Request) {
     const walletsWithBalances = await Promise.all(
       user.wallets.map(async (wallet) => {
         if (!wallet.address) {
-          return { ...wallet, blockchainBalance: '0' };
+          return { ...wallet, blockchainBalance: 0 };
         }
         
         try {
           const blockchainBalance = await getBalance(wallet.address);
-          const balanceFloat = parseFloat(blockchainBalance) || 0;
           
           return {
             ...wallet,
-            balance: balanceFloat,
             blockchainBalance,
           };
         } catch (error) {
           console.error(`Error fetching balance for wallet ${wallet.id}:`, error);
           return {
             ...wallet,
-            blockchainBalance: '0',
+            blockchainBalance: 0,
           };
         }
       })
@@ -108,10 +106,19 @@ export async function POST(req: Request) {
     });
 
 
+    // Get blockchain balance for the new wallet
+    let blockchainBalance = 0;
+    if (wallet.address) {
+      try {
+        blockchainBalance = await getBalance(wallet.address);
+      } catch (error) {
+        console.error('Error fetching balance for new wallet:', error);
+      }
+    }
+
     return NextResponse.json({
       wallet: {
         ...wallet,
-        balance: balanceFloat,
         blockchainBalance,
       },
     });

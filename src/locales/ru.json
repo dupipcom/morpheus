@@ -590,6 +590,22 @@
     "myNFTs": "Мои NFT",
     "balance": "Баланс:",
     "selectWallet": "Выбрать Кошелек",
-    "blockchainBalance": "Баланс Blockchain:"
+    "blockchainBalance": "Баланс Blockchain:",
+    "pleaseEnterWalletName": "Пожалуйста, введите название кошелька",
+    "walletCreatedSuccessfully": "Кошелек успешно создан",
+    "failedToCreateWallet": "Не удалось создать кошелек",
+    "errorCreatingWallet": "Ошибка при создании кошелька",
+    "walletDeletedSuccessfully": "Кошелек успешно удален",
+    "failedToDeleteWallet": "Не удалось удалить кошелек",
+    "errorDeletingWallet": "Ошибка при удалении кошелька",
+    "addressCopiedToClipboard": "Адрес скопирован в буфер обмена",
+    "createNewWallet": "Создать Новый Кошелек",
+    "createNewWalletDescription": "Создайте новый блокчейн-кошелек. Будет сгенерирован новый адрес.",
+    "walletNamePlaceholder": "Название кошелька (например, Сбережения, Торговля)",
+    "creating": "Создание...",
+    "noWalletsYet": "Пока нет кошельков. Создайте свой первый кошелек, чтобы начать.",
+    "deleteWallet": "Удалить Кошелек",
+    "deleteWalletConfirmation": "Вы уверены, что хотите удалить этот кошелек? Это действие нельзя отменить. Кошелек будет удален из вашего аккаунта, но адрес блокчейна и его средства останутся в блокчейне.",
+    "delete": "Удалить"
   }
 }

@@ -594,6 +594,22 @@
     "myNFTs": "NFT Saya",
     "balance": "Baki:",
     "selectWallet": "Pilih Dompet",
-    "blockchainBalance": "Baki Blockchain:"
+    "blockchainBalance": "Baki Blockchain:",
+    "pleaseEnterWalletName": "Sila masukkan nama dompet",
+    "walletCreatedSuccessfully": "Dompet berjaya dicipta",
+    "failedToCreateWallet": "Gagal mencipta dompet",
+    "errorCreatingWallet": "Ralat mencipta dompet",
+    "walletDeletedSuccessfully": "Dompet berjaya dipadam",
+    "failedToDeleteWallet": "Gagal memadam dompet",
+    "errorDeletingWallet": "Ralat memadam dompet",
+    "addressCopiedToClipboard": "Alamat disalin ke papan klip",
+    "createNewWallet": "Cipta Dompet Baru",
+    "createNewWalletDescription": "Cipta dompet blockchain baharu. Alamat baharu akan dijana.",
+    "walletNamePlaceholder": "Nama dompet (cth. Simpanan, Perdagangan)",
+    "creating": "Mencipta...",
+    "noWalletsYet": "Belum ada dompet lagi. Cipta dompet pertama anda untuk mula.",
+    "deleteWallet": "Padam Dompet",
+    "deleteWalletConfirmation": "Adakah anda pasti mahu memadam dompet ini? Tindakan ini tidak boleh dibatalkan. Dompet akan dikeluarkan daripada akaun anda, tetapi alamat blockchain dan dana akan kekal di blockchain.",
+    "delete": "Padam"
   }
 }

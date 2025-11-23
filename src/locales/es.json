@@ -590,6 +590,22 @@
     "myNFTs": "Mis NFTs",
     "balance": "Saldo:",
     "selectWallet": "Seleccionar Billetera",
-    "blockchainBalance": "Saldo de Blockchain:"
+    "blockchainBalance": "Saldo de Blockchain:",
+    "pleaseEnterWalletName": "Por favor ingrese un nombre de billetera",
+    "walletCreatedSuccessfully": "Billetera creada exitosamente",
+    "failedToCreateWallet": "Error al crear billetera",
+    "errorCreatingWallet": "Error al crear billetera",
+    "walletDeletedSuccessfully": "Billetera eliminada exitosamente",
+    "failedToDeleteWallet": "Error al eliminar billetera",
+    "errorDeletingWallet": "Error al eliminar billetera",
+    "addressCopiedToClipboard": "Dirección copiada al portapapeles",
+    "createNewWallet": "Crear Nueva Billetera",
+    "createNewWalletDescription": "Crea una nueva billetera blockchain. Se generará una nueva dirección.",
+    "walletNamePlaceholder": "Nombre de billetera (ej., Ahorros, Trading)",
+    "creating": "Creando...",
+    "noWalletsYet": "Aún no hay billeteras. Crea tu primera billetera para comenzar.",
+    "deleteWallet": "Eliminar Billetera",
+    "deleteWalletConfirmation": "¿Estás seguro de que deseas eliminar esta billetera? Esta acción no se puede deshacer. La billetera se eliminará de tu cuenta, pero la dirección blockchain y sus fondos permanecerán en la blockchain.",
+    "delete": "Eliminar"
   }
 }

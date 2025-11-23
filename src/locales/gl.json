@@ -593,6 +593,22 @@
     "myNFTs": "Os meus NFTs",
     "balance": "Saldo:",
     "selectWallet": "Seleccionar Carteira",
-    "blockchainBalance": "Saldo de Blockchain:"
+    "blockchainBalance": "Saldo de Blockchain:",
+    "pleaseEnterWalletName": "Por favor, introduza un nome para a carteira",
+    "walletCreatedSuccessfully": "Carteira creada con éxito",
+    "failedToCreateWallet": "Erro ao crear a carteira",
+    "errorCreatingWallet": "Erro ao crear a carteira",
+    "walletDeletedSuccessfully": "Carteira eliminada con éxito",
+    "failedToDeleteWallet": "Erro ao eliminar a carteira",
+    "errorDeletingWallet": "Erro ao eliminar a carteira",
+    "addressCopiedToClipboard": "Enderezo copiado ao portapapeis",
+    "createNewWallet": "Crear Nova Carteira",
+    "createNewWalletDescription": "Crea unha nova carteira blockchain. Xerarase un novo enderezo.",
+    "walletNamePlaceholder": "Nome da carteira (ex. Aforro, Trading)",
+    "creating": "Creando...",
+    "noWalletsYet": "Aínda non hai carteiras. Crea a túa primeira carteira para comezar.",
+    "deleteWallet": "Eliminar Carteira",
+    "deleteWalletConfirmation": "Estás seguro de que queres eliminar esta carteira? Esta acción non se pode desfacer. A carteira eliminarase da túa conta, pero o enderezo blockchain e os seus fondos permanecerán no blockchain.",
+    "delete": "Eliminar"
   }
 }

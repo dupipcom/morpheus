@@ -24,8 +24,7 @@ interface WalletData {
   id: string
   name: string | null
   address: string | null
-  balance: number | null
-  blockchainBalance?: string
+  blockchainBalance?: number
   createdAt: string
 }
 
@@ -68,7 +67,7 @@ export const BalanceSection = () => {
   }, [serverBalance])
 
   const selectedWallet = wallets.find((w: WalletData) => w.id === selectedWalletId)
-  const blockchainBalance = selectedWallet?.blockchainBalance || '0'
+  const blockchainBalance = selectedWallet?.blockchainBalance ?? 0
 
   const handleBalanceChange = (e: React.FocusEvent<HTMLInputElement>) => {
     const newValue = e.currentTarget.value
@@ -155,7 +154,7 @@ export const BalanceSection = () => {
                     <div className="flex justify-between">
                       <span>{t('wallet.blockchainBalance')}</span>
                       <span className={hiddenBalance ? "blur-sm" : ""}>
-                        Ð{parseFloat(blockchainBalance).toFixed(18)}
+                        Ð{blockchainBalance.toFixed(18)}
                       </span>
                     </div>
                   </div>

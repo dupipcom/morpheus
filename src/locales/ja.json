@@ -590,6 +590,22 @@
     "myNFTs": "マイNFT",
     "balance": "残高:",
     "selectWallet": "ウォレットを選択",
-    "blockchainBalance": "ブロックチェーン残高:"
+    "blockchainBalance": "ブロックチェーン残高:",
+    "pleaseEnterWalletName": "ウォレット名を入力してください",
+    "walletCreatedSuccessfully": "ウォレットが正常に作成されました",
+    "failedToCreateWallet": "ウォレットの作成に失敗しました",
+    "errorCreatingWallet": "ウォレット作成エラー",
+    "walletDeletedSuccessfully": "ウォレットが正常に削除されました",
+    "failedToDeleteWallet": "ウォレットの削除に失敗しました",
+    "errorDeletingWallet": "ウォレット削除エラー",
+    "addressCopiedToClipboard": "アドレスがクリップボードにコピーされました",
+    "createNewWallet": "新しいウォレットを作成",
+    "createNewWalletDescription": "新しいブロックチェーンウォレットを作成します。新しいアドレスが生成されます。",
+    "walletNamePlaceholder": "ウォレット名（例：貯蓄、トレーディング）",
+    "creating": "作成中...",
+    "noWalletsYet": "まだウォレットがありません。最初のウォレットを作成して始めましょう。",
+    "deleteWallet": "ウォレットを削除",
+    "deleteWalletConfirmation": "このウォレットを削除してもよろしいですか？この操作は元に戻せません。ウォレットはアカウントから削除されますが、ブロックチェーンアドレスとその資金はブロックチェーン上に残ります。",
+    "delete": "削除"
   }
 }

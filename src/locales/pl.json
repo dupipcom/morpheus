@@ -594,6 +594,22 @@
     "myNFTs": "Moje NFT",
     "balance": "Saldo:",
     "selectWallet": "Wybierz Portfel",
-    "blockchainBalance": "Saldo Blockchain:"
+    "blockchainBalance": "Saldo Blockchain:",
+    "pleaseEnterWalletName": "Proszę wprowadzić nazwę portfela",
+    "walletCreatedSuccessfully": "Portfel utworzony pomyślnie",
+    "failedToCreateWallet": "Nie udało się utworzyć portfela",
+    "errorCreatingWallet": "Błąd podczas tworzenia portfela",
+    "walletDeletedSuccessfully": "Portfel usunięty pomyślnie",
+    "failedToDeleteWallet": "Nie udało się usunąć portfela",
+    "errorDeletingWallet": "Błąd podczas usuwania portfela",
+    "addressCopiedToClipboard": "Adres skopiowany do schowka",
+    "createNewWallet": "Utwórz Nowy Portfel",
+    "createNewWalletDescription": "Utwórz nowy portfel blockchain. Zostanie wygenerowany nowy adres.",
+    "walletNamePlaceholder": "Nazwa portfela (np. Oszczędności, Trading)",
+    "creating": "Tworzenie...",
+    "noWalletsYet": "Brak portfeli. Utwórz swój pierwszy portfel, aby rozpocząć.",
+    "deleteWallet": "Usuń Portfel",
+    "deleteWalletConfirmation": "Czy na pewno chcesz usunąć ten portfel? Tej akcji nie można cofnąć. Portfel zostanie usunięty z Twojego konta, ale adres blockchain i jego środki pozostaną w blockchainie.",
+    "delete": "Usuń"
   }
 }

@@ -586,6 +586,22 @@
     "myNFTs": "My NFTs",
     "balance": "Balance:",
     "selectWallet": "Select Wallet",
-    "blockchainBalance": "Blockchain Balance:"
+    "blockchainBalance": "Blockchain Balance:",
+    "pleaseEnterWalletName": "Please enter a wallet name",
+    "walletCreatedSuccessfully": "Wallet created successfully",
+    "failedToCreateWallet": "Failed to create wallet",
+    "errorCreatingWallet": "Error creating wallet",
+    "walletDeletedSuccessfully": "Wallet deleted successfully",
+    "failedToDeleteWallet": "Failed to delete wallet",
+    "errorDeletingWallet": "Error deleting wallet",
+    "addressCopiedToClipboard": "Address copied to clipboard",
+    "createNewWallet": "Create New Wallet",
+    "createNewWalletDescription": "Create a new blockchain wallet. A new address will be generated.",
+    "walletNamePlaceholder": "Wallet name (e.g., Savings, Trading)",
+    "creating": "Creating...",
+    "noWalletsYet": "No wallets yet. Create your first wallet to get started.",
+    "deleteWallet": "Delete Wallet",
+    "deleteWalletConfirmation": "Are you sure you want to delete this wallet? This action cannot be undone. The wallet will be removed from your account, but the blockchain address and its funds will remain on the blockchain.",
+    "delete": "Delete"
   }
 }

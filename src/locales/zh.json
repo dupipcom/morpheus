@@ -590,6 +590,22 @@
     "myNFTs": "我的NFT",
     "balance": "余额:",
     "selectWallet": "选择钱包",
-    "blockchainBalance": "区块链余额:"
+    "blockchainBalance": "区块链余额:",
+    "pleaseEnterWalletName": "请输入钱包名称",
+    "walletCreatedSuccessfully": "钱包创建成功",
+    "failedToCreateWallet": "创建钱包失败",
+    "errorCreatingWallet": "创建钱包时出错",
+    "walletDeletedSuccessfully": "钱包删除成功",
+    "failedToDeleteWallet": "删除钱包失败",
+    "errorDeletingWallet": "删除钱包时出错",
+    "addressCopiedToClipboard": "地址已复制到剪贴板",
+    "createNewWallet": "创建新钱包",
+    "createNewWalletDescription": "创建一个新的区块链钱包。将生成一个新地址。",
+    "walletNamePlaceholder": "钱包名称（例如：储蓄、交易）",
+    "creating": "创建中...",
+    "noWalletsYet": "还没有钱包。创建您的第一个钱包以开始使用。",
+    "deleteWallet": "删除钱包",
+    "deleteWalletConfirmation": "您确定要删除此钱包吗？此操作无法撤销。钱包将从您的账户中移除，但区块链地址及其资金将保留在区块链上。",
+    "delete": "删除"
   }
 }

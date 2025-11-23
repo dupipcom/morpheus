@@ -590,6 +590,22 @@
     "myNFTs": "ה-NFTs שלי",
     "balance": "יתרה:",
     "selectWallet": "בחר ארנק",
-    "blockchainBalance": "יתרת Blockchain:"
+    "blockchainBalance": "יתרת Blockchain:",
+    "pleaseEnterWalletName": "אנא הזן שם ארנק",
+    "walletCreatedSuccessfully": "ארנק נוצר בהצלחה",
+    "failedToCreateWallet": "יצירת ארנק נכשלה",
+    "errorCreatingWallet": "שגיאה ביצירת ארנק",
+    "walletDeletedSuccessfully": "ארנק נמחק בהצלחה",
+    "failedToDeleteWallet": "מחיקת ארנק נכשלה",
+    "errorDeletingWallet": "שגיאה במחיקת ארנק",
+    "addressCopiedToClipboard": "כתובת הועתקה ללוח",
+    "createNewWallet": "צור ארנק חדש",
+    "createNewWalletDescription": "צור ארנק blockchain חדש. כתובת חדשה תיווצר.",
+    "walletNamePlaceholder": "שם ארנק (למשל: חיסכון, מסחר)",
+    "creating": "יוצר...",
+    "noWalletsYet": "עדיין אין ארנקים. צור את הארנק הראשון שלך כדי להתחיל.",
+    "deleteWallet": "מחק ארנק",
+    "deleteWalletConfirmation": "האם אתה בטוח שברצונך למחוק את הארנק הזה? פעולה זו לא ניתנת לביטול. הארנק יוסר מהחשבון שלך, אך כתובת ה-blockchain והכספים שלה יישארו ב-blockchain.",
+    "delete": "מחק"
   }
 }

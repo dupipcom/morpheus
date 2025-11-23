@@ -594,6 +594,22 @@
     "myNFTs": "NFTs الخاصة بي",
     "balance": "الرصيد:",
     "selectWallet": "اختر المحفظة",
-    "blockchainBalance": "رصيد Blockchain:"
+    "blockchainBalance": "رصيد Blockchain:",
+    "pleaseEnterWalletName": "يرجى إدخال اسم المحفظة",
+    "walletCreatedSuccessfully": "تم إنشاء المحفظة بنجاح",
+    "failedToCreateWallet": "فشل إنشاء المحفظة",
+    "errorCreatingWallet": "خطأ في إنشاء المحفظة",
+    "walletDeletedSuccessfully": "تم حذف المحفظة بنجاح",
+    "failedToDeleteWallet": "فشل حذف المحفظة",
+    "errorDeletingWallet": "خطأ في حذف المحفظة",
+    "addressCopiedToClipboard": "تم نسخ العنوان إلى الحافظة",
+    "createNewWallet": "إنشاء محفظة جديدة",
+    "createNewWalletDescription": "إنشاء محفظة blockchain جديدة. سيتم إنشاء عنوان جديد.",
+    "walletNamePlaceholder": "اسم المحفظة (مثل: الادخار، التداول)",
+    "creating": "جاري الإنشاء...",
+    "noWalletsYet": "لا توجد محافظ بعد. أنشئ محفظتك الأولى للبدء.",
+    "deleteWallet": "حذف المحفظة",
+    "deleteWalletConfirmation": "هل أنت متأكد من أنك تريد حذف هذه المحفظة؟ لا يمكن التراجع عن هذا الإجراء. سيتم إزالة المحفظة من حسابك، لكن عنوان blockchain وأمواله ستبقى على blockchain.",
+    "delete": "حذف"
   }
 }

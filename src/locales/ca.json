@@ -590,6 +590,22 @@
     "myNFTs": "Els meus NFTs",
     "balance": "Saldo:",
     "selectWallet": "Seleccionar Cartera",
-    "blockchainBalance": "Saldo de Blockchain:"
+    "blockchainBalance": "Saldo de Blockchain:",
+    "pleaseEnterWalletName": "Si us plau, introduïu un nom de cartera",
+    "walletCreatedSuccessfully": "Cartera creada amb èxit",
+    "failedToCreateWallet": "Error en crear la cartera",
+    "errorCreatingWallet": "Error en crear la cartera",
+    "walletDeletedSuccessfully": "Cartera eliminada amb èxit",
+    "failedToDeleteWallet": "Error en eliminar la cartera",
+    "errorDeletingWallet": "Error en eliminar la cartera",
+    "addressCopiedToClipboard": "Adreça copiada al porta-retalls",
+    "createNewWallet": "Crear Nova Cartera",
+    "createNewWalletDescription": "Creeu una nova cartera blockchain. Es generarà una nova adreça.",
+    "walletNamePlaceholder": "Nom de la cartera (ex. Estalvis, Trading)",
+    "creating": "Creant...",
+    "noWalletsYet": "Encara no hi ha carteres. Creeu la vostra primera cartera per començar.",
+    "deleteWallet": "Eliminar Cartera",
+    "deleteWalletConfirmation": "Esteu segur que voleu eliminar aquesta cartera? Aquesta acció no es pot desfer. La cartera s'eliminarà del vostre compte, però l'adreça blockchain i els seus fons romandran a la blockchain.",
+    "delete": "Eliminar"
   }
 }

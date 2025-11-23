@@ -21,8 +21,7 @@ interface WalletData {
   id: string
   name: string | null
   address: string | null
-  balance: number | null
-  blockchainBalance?: string
+  blockchainBalance?: number
   createdAt: string
 }
 
@@ -121,7 +120,7 @@ export const TokenTransfer = () => {
               <SelectContent>
                 {wallets.map((wallet: WalletData) => (
                   <SelectItem key={wallet.id} value={wallet.id} className="break-words max-w-full">
-                    {wallet.name || t('wallet.unnamedWallet')} - {wallet.blockchainBalance ? `Ð${parseFloat(wallet.blockchainBalance).toFixed(18)}` : 'Ð0'}
+                    {wallet.name || t('wallet.unnamedWallet')} - Ð{(wallet.blockchainBalance ?? 0).toFixed(18)}
                   </SelectItem>
                 ))}
               </SelectContent>

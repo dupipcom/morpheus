@@ -594,6 +594,22 @@
     "myNFTs": "NFT'lerim",
     "balance": "Bakiye:",
     "selectWallet": "Cüzdan Seç",
-    "blockchainBalance": "Blockchain Bakiyesi:"
+    "blockchainBalance": "Blockchain Bakiyesi:",
+    "pleaseEnterWalletName": "Lütfen bir cüzdan adı girin",
+    "walletCreatedSuccessfully": "Cüzdan başarıyla oluşturuldu",
+    "failedToCreateWallet": "Cüzdan oluşturulamadı",
+    "errorCreatingWallet": "Cüzdan oluşturma hatası",
+    "walletDeletedSuccessfully": "Cüzdan başarıyla silindi",
+    "failedToDeleteWallet": "Cüzdan silinemedi",
+    "errorDeletingWallet": "Cüzdan silme hatası",
+    "addressCopiedToClipboard": "Adres panoya kopyalandı",
+    "createNewWallet": "Yeni Cüzdan Oluştur",
+    "createNewWalletDescription": "Yeni bir blockchain cüzdanı oluşturun. Yeni bir adres oluşturulacaktır.",
+    "walletNamePlaceholder": "Cüzdan adı (örn. Tasarruf, Ticaret)",
+    "creating": "Oluşturuluyor...",
+    "noWalletsYet": "Henüz cüzdan yok. Başlamak için ilk cüzdanınızı oluşturun.",
+    "deleteWallet": "Cüzdanı Sil",
+    "deleteWalletConfirmation": "Bu cüzdanı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz. Cüzdan hesabınızdan kaldırılacak, ancak blockchain adresi ve fonları blockchain'de kalacaktır.",
+    "delete": "Sil"
   }
 }

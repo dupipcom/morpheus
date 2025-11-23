@@ -590,6 +590,22 @@
     "myNFTs": "Minu NFT-d",
     "balance": "Saldo:",
     "selectWallet": "Vali Rahakott",
-    "blockchainBalance": "Blockchain saldo:"
+    "blockchainBalance": "Blockchain saldo:",
+    "pleaseEnterWalletName": "Palun sisestage rahakoti nimi",
+    "walletCreatedSuccessfully": "Rahakott loodud edukalt",
+    "failedToCreateWallet": "Rahakoti loomine ebaõnnestus",
+    "errorCreatingWallet": "Viga rahakoti loomisel",
+    "walletDeletedSuccessfully": "Rahakott kustutatud edukalt",
+    "failedToDeleteWallet": "Rahakoti kustutamine ebaõnnestus",
+    "errorDeletingWallet": "Viga rahakoti kustutamisel",
+    "addressCopiedToClipboard": "Aadress kopeeritud lõikelauale",
+    "createNewWallet": "Loo Uus Rahakott",
+    "createNewWalletDescription": "Loo uus blockchain rahakott. Luuakse uus aadress.",
+    "walletNamePlaceholder": "Rahakoti nimi (nt. Säästmine, Kauplemine)",
+    "creating": "Loomine...",
+    "noWalletsYet": "Veel pole rahakotte. Alustamiseks loo oma esimene rahakott.",
+    "deleteWallet": "Kustuta Rahakott",
+    "deleteWalletConfirmation": "Kas olete kindel, et soovite selle rahakoti kustutada? Seda toimingut ei saa tagasi võtta. Rahakott eemaldatakse teie kontolt, kuid blockchain aadress ja selle vahendid jäävad blockchain'i.",
+    "delete": "Kustuta"
   }
 }

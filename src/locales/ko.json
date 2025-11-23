@@ -590,6 +590,22 @@
     "myNFTs": "내 NFT",
     "balance": "잔액:",
     "selectWallet": "지갑 선택",
-    "blockchainBalance": "블록체인 잔액:"
+    "blockchainBalance": "블록체인 잔액:",
+    "pleaseEnterWalletName": "지갑 이름을 입력해주세요",
+    "walletCreatedSuccessfully": "지갑이 성공적으로 생성되었습니다",
+    "failedToCreateWallet": "지갑 생성 실패",
+    "errorCreatingWallet": "지갑 생성 오류",
+    "walletDeletedSuccessfully": "지갑이 성공적으로 삭제되었습니다",
+    "failedToDeleteWallet": "지갑 삭제 실패",
+    "errorDeletingWallet": "지갑 삭제 오류",
+    "addressCopiedToClipboard": "주소가 클립보드에 복사되었습니다",
+    "createNewWallet": "새 지갑 만들기",
+    "createNewWalletDescription": "새 블록체인 지갑을 만듭니다. 새 주소가 생성됩니다.",
+    "walletNamePlaceholder": "지갑 이름 (예: 저축, 거래)",
+    "creating": "생성 중...",
+    "noWalletsYet": "아직 지갑이 없습니다. 첫 번째 지갑을 만들어 시작하세요.",
+    "deleteWallet": "지갑 삭제",
+    "deleteWalletConfirmation": "이 지갑을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다. 지갑은 계정에서 제거되지만 블록체인 주소와 자금은 블록체인에 남아 있습니다.",
+    "delete": "삭제"
   }
 }

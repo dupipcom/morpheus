@@ -588,6 +588,22 @@
     "myNFTs": "NFTs zangu",
     "balance": "Salio:",
     "selectWallet": "Chagua Mkoba",
-    "blockchainBalance": "Salio la Blockchain:"
+    "blockchainBalance": "Salio la Blockchain:",
+    "pleaseEnterWalletName": "Tafadhali ingiza jina la mkoba",
+    "walletCreatedSuccessfully": "Mkoba umeundwa kwa mafanikio",
+    "failedToCreateWallet": "Kuunda mkoba kumeshindwa",
+    "errorCreatingWallet": "Hitilafu katika kuunda mkoba",
+    "walletDeletedSuccessfully": "Mkoba umefutwa kwa mafanikio",
+    "failedToDeleteWallet": "Kufuta mkoba kumeshindwa",
+    "errorDeletingWallet": "Hitilafu katika kufuta mkoba",
+    "addressCopiedToClipboard": "Anakili anwani kwenye ubao wa kunakili",
+    "createNewWallet": "Unda Mkoba Mpya",
+    "createNewWalletDescription": "Unda mkoba mpya wa blockchain. Anwani mpya itatengenezwa.",
+    "walletNamePlaceholder": "Jina la mkoba (mf. Akiba, Biashara)",
+    "creating": "Inaundwa...",
+    "noWalletsYet": "Bado hakuna mikoba. Unda mkoba wako wa kwanza kuanza.",
+    "deleteWallet": "Futa Mkoba",
+    "deleteWalletConfirmation": "Je, una uhakika unataka kufuta mkoba huu? Kitendo hiki hakiwezi kutenduliwa. Mkoba utaondolewa kutoka kwa akaunti yako, lakini anwani ya blockchain na fedha zake zitaendelea kuwa kwenye blockchain.",
+    "delete": "Futa"
   }
 }

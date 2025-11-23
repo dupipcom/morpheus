@@ -146,7 +146,7 @@ export const generateWallet = async (): Promise<{
  * Get token balance for an address
  * Uses Kaleido smart contract gateway API
  */
-export const getBalance = async (address: string): Promise<string> => {
+export const getBalance = async (address: string): Promise<number> => {
   try {
     const gatewayBase = getKaleidoGatewayBase();
     const contractAddress = getDpipContractAddress();
@@ -194,7 +194,7 @@ export const getBalance = async (address: string): Promise<string> => {
 
     // Convert from wei to ether (18 decimals)
     const balanceEther = Number(balanceWei) / 1e18;
-    return balanceEther.toString();
+    return balanceEther;
   } catch (error) {
     console.error('Error getting balance:', error);
     throw error;

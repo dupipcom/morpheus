@@ -25,7 +25,7 @@ interface WalletData {
   id: string
   name: string | null
   address: string | null
-  blockchainBalance?: string
+  blockchainBalance?: number
   createdAt: string
 }
 

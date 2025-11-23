@@ -587,6 +587,22 @@
     "myNFTs": "Τα NFT μου",
     "balance": "Υπόλοιπο:",
     "selectWallet": "Επιλογή Πορτοφολιού",
-    "blockchainBalance": "Υπόλοιπο Blockchain:"
+    "blockchainBalance": "Υπόλοιπο Blockchain:",
+    "pleaseEnterWalletName": "Παρακαλώ εισάγετε όνομα πορτοφολιού",
+    "walletCreatedSuccessfully": "Το πορτοφόλι δημιουργήθηκε με επιτυχία",
+    "failedToCreateWallet": "Αποτυχία δημιουργίας πορτοφολιού",
+    "errorCreatingWallet": "Σφάλμα κατά τη δημιουργία πορτοφολιού",
+    "walletDeletedSuccessfully": "Το πορτοφόλι διαγράφηκε με επιτυχία",
+    "failedToDeleteWallet": "Αποτυχία διαγραφής πορτοφολιού",
+    "errorDeletingWallet": "Σφάλμα κατά τη διαγραφή πορτοφολιού",
+    "addressCopiedToClipboard": "Η διεύθυνση αντιγράφηκε στο πρόχειρο",
+    "createNewWallet": "Δημιουργία Νέου Πορτοφολιού",
+    "createNewWalletDescription": "Δημιουργήστε ένα νέο πορτοφόλι blockchain. Θα δημιουργηθεί μια νέα διεύθυνση.",
+    "walletNamePlaceholder": "Όνομα πορτοφολιού (π.χ. Αποταμίευση, Trading)",
+    "creating": "Δημιουργία...",
+    "noWalletsYet": "Δεν υπάρχουν ακόμα πορτοφόλια. Δημιουργήστε το πρώτο σας πορτοφόλι για να ξεκινήσετε.",
+    "deleteWallet": "Διαγραφή Πορτοφολιού",
+    "deleteWalletConfirmation": "Είστε βέβαιοι ότι θέλετε να διαγράψετε αυτό το πορτοφόλι; Αυτή η ενέργεια δεν μπορεί να αναιρεθεί. Το πορτοφόλι θα αφαιρεθεί από τον λογαριασμό σας, αλλά η διεύθυνση blockchain και τα κεφάλαιά της θα παραμείνουν στο blockchain.",
+    "delete": "Διαγραφή"
   }
 }

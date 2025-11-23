@@ -590,6 +590,22 @@
     "myNFTs": "Meine NFTs",
     "balance": "Guthaben:",
     "selectWallet": "Brieftasche auswählen",
-    "blockchainBalance": "Blockchain-Guthaben:"
+    "blockchainBalance": "Blockchain-Guthaben:",
+    "pleaseEnterWalletName": "Bitte geben Sie einen Brieftaschennamen ein",
+    "walletCreatedSuccessfully": "Brieftasche erfolgreich erstellt",
+    "failedToCreateWallet": "Brieftasche konnte nicht erstellt werden",
+    "errorCreatingWallet": "Fehler beim Erstellen der Brieftasche",
+    "walletDeletedSuccessfully": "Brieftasche erfolgreich gelöscht",
+    "failedToDeleteWallet": "Brieftasche konnte nicht gelöscht werden",
+    "errorDeletingWallet": "Fehler beim Löschen der Brieftasche",
+    "addressCopiedToClipboard": "Adresse in die Zwischenablage kopiert",
+    "createNewWallet": "Neue Brieftasche erstellen",
+    "createNewWalletDescription": "Erstellen Sie eine neue Blockchain-Brieftasche. Eine neue Adresse wird generiert.",
+    "walletNamePlaceholder": "Brieftaschenname (z.B. Sparen, Trading)",
+    "creating": "Wird erstellt...",
+    "noWalletsYet": "Noch keine Brieftaschen. Erstellen Sie Ihre erste Brieftasche, um zu beginnen.",
+    "deleteWallet": "Brieftasche löschen",
+    "deleteWalletConfirmation": "Sind Sie sicher, dass Sie diese Brieftasche löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden. Die Brieftasche wird von Ihrem Konto entfernt, aber die Blockchain-Adresse und ihre Mittel bleiben auf der Blockchain.",
+    "delete": "Löschen"
   }
 }

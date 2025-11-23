@@ -589,6 +589,22 @@
     "myNFTs": "NFT-jeim",
     "balance": "Egyenleg:",
     "selectWallet": "Pénztárca kiválasztása",
-    "blockchainBalance": "Blockchain egyenleg:"
+    "blockchainBalance": "Blockchain egyenleg:",
+    "pleaseEnterWalletName": "Kérjük, adja meg a pénztárca nevét",
+    "walletCreatedSuccessfully": "Pénztárca sikeresen létrehozva",
+    "failedToCreateWallet": "Pénztárca létrehozása sikertelen",
+    "errorCreatingWallet": "Hiba a pénztárca létrehozásakor",
+    "walletDeletedSuccessfully": "Pénztárca sikeresen törölve",
+    "failedToDeleteWallet": "Pénztárca törlése sikertelen",
+    "errorDeletingWallet": "Hiba a pénztárca törlésekor",
+    "addressCopiedToClipboard": "Cím vágólapra másolva",
+    "createNewWallet": "Új Pénztárca Létrehozása",
+    "createNewWalletDescription": "Hozzon létre egy új blockchain pénztárcát. Új cím jön létre.",
+    "walletNamePlaceholder": "Pénztárca neve (pl. Megtakarítás, Kereskedés)",
+    "creating": "Létrehozás...",
+    "noWalletsYet": "Még nincsenek pénztárcák. Hozza létre az első pénztárcáját a kezdéshez.",
+    "deleteWallet": "Pénztárca Törlése",
+    "deleteWalletConfirmation": "Biztosan törölni szeretné ezt a pénztárcát? Ez a művelet nem vonható vissza. A pénztárca el lesz távolítva a fiókjából, de a blockchain cím és annak alapjai a blockchainen maradnak.",
+    "delete": "Törlés"
   }
 }

@@ -588,6 +588,22 @@
     "myNFTs": "NFTs mi",
     "balance": "Iwọn:",
     "selectWallet": "Yan Apamọwọ",
-    "blockchainBalance": "Iwọn Blockchain:"
+    "blockchainBalance": "Iwọn Blockchain:",
+    "pleaseEnterWalletName": "Jọwọ tẹ orukọ apamọwọ",
+    "walletCreatedSuccessfully": "Apamọwọ ti ṣẹda ni aṣeyọri",
+    "failedToCreateWallet": "Ṣiṣẹda apamọwọ kuna",
+    "errorCreatingWallet": "Aṣiṣe nipa ṣiṣẹda apamọwọ",
+    "walletDeletedSuccessfully": "Apamọwọ ti pa run ni aṣeyọri",
+    "failedToDeleteWallet": "Pa apamọwọ run kuna",
+    "errorDeletingWallet": "Aṣiṣe nipa pa apamọwọ run",
+    "addressCopiedToClipboard": "Adirẹsi ti gba ni aaye",
+    "createNewWallet": "Ṣẹda Apamọwọ Tuntun",
+    "createNewWalletDescription": "Ṣẹda apamọwọ blockchain tuntun. Adirẹsi tuntun yoo jẹ ṣiṣẹda.",
+    "walletNamePlaceholder": "Orukọ apamọwọ (apẹrẹ: Ifipamọ, Iṣowo)",
+    "creating": "N ṣẹda...",
+    "noWalletsYet": "Ko si awọn apamọwọ sibẹsibẹ. Ṣẹda apamọwọ akọkọ rẹ lati bẹrẹ.",
+    "deleteWallet": "Pa Apamọwọ Run",
+    "deleteWalletConfirmation": "Ṣe o da ọ loju pe o fẹ pa apamọwọ yii run? Iṣẹ yii ko le ṣe pada. Apamọwọ yoo yọ kuro lori akọọlẹ rẹ, ṣugbọn adirẹsi blockchain ati awọn owo rẹ yoo duro lori blockchain.",
+    "delete": "Pa Run"
   }
 }

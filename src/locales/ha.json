@@ -586,6 +586,22 @@
     "myNFTs": "NFTs na",
     "balance": "Ma'auni:",
     "selectWallet": "Zaɓi Walat",
-    "blockchainBalance": "Ma'aunin Blockchain:"
+    "blockchainBalance": "Ma'aunin Blockchain:",
+    "pleaseEnterWalletName": "Da fatan shigar da sunan walat",
+    "walletCreatedSuccessfully": "An ƙirƙiri walat cikin nasara",
+    "failedToCreateWallet": "Ƙirƙirar walat ta gaza",
+    "errorCreatingWallet": "Kuskure wajen ƙirƙirar walat",
+    "walletDeletedSuccessfully": "An goge walat cikin nasara",
+    "failedToDeleteWallet": "Gogewar walat ta gaza",
+    "errorDeletingWallet": "Kuskure wajen gogewar walat",
+    "addressCopiedToClipboard": "An kwafi adireshin zuwa allon",
+    "createNewWallet": "Ƙirƙiri Walat Sabo",
+    "createNewWalletDescription": "Ƙirƙiri sabon walat blockchain. Za a samar da sabon adireshi.",
+    "walletNamePlaceholder": "Sunan walat (misali: Ajiya, Kasuwanci)",
+    "creating": "Ana ƙirƙirar...",
+    "noWalletsYet": "Ba a da walats ba tukuna. Ƙirƙiri walat ɗin ku na farko don farawa.",
+    "deleteWallet": "Goge Walat",
+    "deleteWalletConfirmation": "Ka tabbata kana son goge wannan walat? Ba za a iya juyar da wannan aikin ba. Za a cire walat daga asusunka, amma adireshin blockchain da kuɗinsa za su kasance a kan blockchain.",
+    "delete": "Goge"
   }
 }

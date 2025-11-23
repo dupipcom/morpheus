@@ -594,6 +594,22 @@
     "myNFTs": "ਮੇਰੇ NFTs",
     "balance": "ਬੈਲੇਂਸ:",
     "selectWallet": "ਵਾਲਿਟ ਚੁਣੋ",
-    "blockchainBalance": "ਬਲਾਕਚੇਨ ਬੈਲੇਂਸ:"
+    "blockchainBalance": "ਬਲਾਕਚੇਨ ਬੈਲੇਂਸ:",
+    "pleaseEnterWalletName": "ਕਿਰਪਾ ਕਰਕੇ ਇੱਕ ਵਾਲਿਟ ਨਾਮ ਦਰਜ ਕਰੋ",
+    "walletCreatedSuccessfully": "ਵਾਲਿਟ ਸਫਲਤਾਪੂਰਵਕ ਬਣਾਇਆ ਗਿਆ",
+    "failedToCreateWallet": "ਵਾਲਿਟ ਬਣਾਉਣ ਵਿੱਚ ਅਸਫਲ",
+    "errorCreatingWallet": "ਵਾਲਿਟ ਬਣਾਉਣ ਵਿੱਚ ਗਲਤੀ",
+    "walletDeletedSuccessfully": "ਵਾਲਿਟ ਸਫਲਤਾਪੂਰਵਕ ਹਟਾਇਆ ਗਿਆ",
+    "failedToDeleteWallet": "ਵਾਲਿਟ ਹਟਾਉਣ ਵਿੱਚ ਅਸਫਲ",
+    "errorDeletingWallet": "ਵਾਲਿਟ ਹਟਾਉਣ ਵਿੱਚ ਗਲਤੀ",
+    "addressCopiedToClipboard": "ਪਤਾ ਕਲਿਪਬੋਰਡ 'ਤੇ ਕਾਪੀ ਕੀਤਾ ਗਿਆ",
+    "createNewWallet": "ਨਵਾਂ ਵਾਲਿਟ ਬਣਾਓ",
+    "createNewWalletDescription": "ਇੱਕ ਨਵਾਂ ਬਲਾਕਚੇਨ ਵਾਲਿਟ ਬਣਾਓ। ਇੱਕ ਨਵਾਂ ਪਤਾ ਜਨਰੇਟ ਕੀਤਾ ਜਾਵੇਗਾ।",
+    "walletNamePlaceholder": "ਵਾਲਿਟ ਨਾਮ (ਉਦਾਹਰਣ: ਬਚਤ, ਟ੍ਰੇਡਿੰਗ)",
+    "creating": "ਬਣਾਇਆ ਜਾ ਰਿਹਾ ਹੈ...",
+    "noWalletsYet": "ਅਜੇ ਤੱਕ ਕੋਈ ਵਾਲਿਟ ਨਹੀਂ ਹੈ। ਸ਼ੁਰੂ ਕਰਨ ਲਈ ਆਪਣਾ ਪਹਿਲਾ ਵਾਲਿਟ ਬਣਾਓ।",
+    "deleteWallet": "ਵਾਲਿਟ ਹਟਾਓ",
+    "deleteWalletConfirmation": "ਕੀ ਤੁਸੀਂ ਯਕੀਨਨ ਇਸ ਵਾਲਿਟ ਨੂੰ ਹਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ? ਇਸ ਕਾਰਵਾਈ ਨੂੰ ਪੂਰਵਵਤ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ। ਵਾਲਿਟ ਤੁਹਾਡੇ ਖਾਤੇ ਤੋਂ ਹਟਾ ਦਿੱਤਾ ਜਾਵੇਗਾ, ਪਰ ਬਲਾਕਚੇਨ ਪਤਾ ਅਤੇ ਇਸਦੇ ਫੰਡ ਬਲਾਕਚੇਨ 'ਤੇ ਰਹਿਣਗੇ।",
+    "delete": "ਹਟਾਓ"
   }
 }

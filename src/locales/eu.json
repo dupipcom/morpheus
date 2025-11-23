@@ -592,6 +592,22 @@
     "myNFTs": "Nire NFT-ak",
     "balance": "Saldoa:",
     "selectWallet": "Aukeratu Diru-zorroa",
-    "blockchainBalance": "Blockchain saldoa:"
+    "blockchainBalance": "Blockchain saldoa:",
+    "pleaseEnterWalletName": "Mesedez, sartu diru-zorroaren izena",
+    "walletCreatedSuccessfully": "Diru-zorroa ongi sortu da",
+    "failedToCreateWallet": "Diru-zorroa sortzea huts egin du",
+    "errorCreatingWallet": "Errorea diru-zorroa sortzean",
+    "walletDeletedSuccessfully": "Diru-zorroa ongi ezabatu da",
+    "failedToDeleteWallet": "Diru-zorroa ezabatzea huts egin du",
+    "errorDeletingWallet": "Errorea diru-zorroa ezabatzean",
+    "addressCopiedToClipboard": "Helbidea arbelean kopiatu da",
+    "createNewWallet": "Sortu Diru-zorro Berria",
+    "createNewWalletDescription": "Sortu diru-zorro blockchain berria. Helbide berria sortuko da.",
+    "walletNamePlaceholder": "Diru-zorroaren izena (adib. Aurreztu, Merkataritza)",
+    "creating": "Sortzen...",
+    "noWalletsYet": "Oraindik ez dago diru-zorrorik. Hasi zure lehen diru-zorroa sortuz.",
+    "deleteWallet": "Ezabatu Diru-zorroa",
+    "deleteWalletConfirmation": "Ziur zaude diru-zorro hau ezabatu nahi duzula? Ekintza hau ezin da desegin. Diru-zorroa zure kontutik kenduko da, baina blockchain helbidea eta bere funtsak blockchainen geratuko dira.",
+    "delete": "Ezabatu"
   }
 }

@@ -590,6 +590,22 @@
     "myNFTs": "मेरे NFTs",
     "balance": "शेष राशि:",
     "selectWallet": "वॉलेट चुनें",
-    "blockchainBalance": "ब्लॉकचेन शेष:"
+    "blockchainBalance": "ब्लॉकचेन शेष:",
+    "pleaseEnterWalletName": "कृपया एक वॉलेट नाम दर्ज करें",
+    "walletCreatedSuccessfully": "वॉलेट सफलतापूर्वक बनाया गया",
+    "failedToCreateWallet": "वॉलेट बनाने में विफल",
+    "errorCreatingWallet": "वॉलेट बनाने में त्रुटि",
+    "walletDeletedSuccessfully": "वॉलेट सफलतापूर्वक हटाया गया",
+    "failedToDeleteWallet": "वॉलेट हटाने में विफल",
+    "errorDeletingWallet": "वॉलेट हटाने में त्रुटि",
+    "addressCopiedToClipboard": "पता क्लिपबोर्ड पर कॉपी किया गया",
+    "createNewWallet": "नया वॉलेट बनाएं",
+    "createNewWalletDescription": "एक नया ब्लॉकचेन वॉलेट बनाएं। एक नया पता जेनरेट किया जाएगा।",
+    "walletNamePlaceholder": "वॉलेट नाम (उदा., बचत, ट्रेडिंग)",
+    "creating": "बनाया जा रहा है...",
+    "noWalletsYet": "अभी तक कोई वॉलेट नहीं है। शुरू करने के लिए अपना पहला वॉलेट बनाएं।",
+    "deleteWallet": "वॉलेट हटाएं",
+    "deleteWalletConfirmation": "क्या आप वाकई इस वॉलेट को हटाना चाहते हैं? इस क्रिया को पूर्ववत नहीं किया जा सकता। वॉलेट आपके खाते से हटा दिया जाएगा, लेकिन ब्लॉकचेन पता और उसके फंड ब्लॉकचेन पर बने रहेंगे।",
+    "delete": "हटाएं"
   }
 }

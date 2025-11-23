@@ -590,6 +590,22 @@
     "myNFTs": "NFT-urile mele",
     "balance": "Sold:",
     "selectWallet": "Selectează Portofel",
-    "blockchainBalance": "Sold Blockchain:"
+    "blockchainBalance": "Sold Blockchain:",
+    "pleaseEnterWalletName": "Vă rugăm să introduceți un nume pentru portofel",
+    "walletCreatedSuccessfully": "Portofel creat cu succes",
+    "failedToCreateWallet": "Crearea portofelului a eșuat",
+    "errorCreatingWallet": "Eroare la crearea portofelului",
+    "walletDeletedSuccessfully": "Portofel șters cu succes",
+    "failedToDeleteWallet": "Ștergerea portofelului a eșuat",
+    "errorDeletingWallet": "Eroare la ștergerea portofelului",
+    "addressCopiedToClipboard": "Adresă copiată în clipboard",
+    "createNewWallet": "Creează Portofel Nou",
+    "createNewWalletDescription": "Creați un portofel blockchain nou. Va fi generată o nouă adresă.",
+    "walletNamePlaceholder": "Nume portofel (ex. Economii, Trading)",
+    "creating": "Se creează...",
+    "noWalletsYet": "Încă nu există portofele. Creați primul dvs. portofel pentru a începe.",
+    "deleteWallet": "Șterge Portofel",
+    "deleteWalletConfirmation": "Sunteți sigur că doriți să ștergeți acest portofel? Această acțiune nu poate fi anulată. Portofelul va fi eliminat din contul dvs., dar adresa blockchain și fondurile sale vor rămâne pe blockchain.",
+    "delete": "Șterge"
   }
 }

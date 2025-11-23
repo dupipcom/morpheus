@@ -590,6 +590,22 @@
     "myNFTs": "Moje NFTs",
     "balance": "Zůstatek:",
     "selectWallet": "Vybrat Peněženku",
-    "blockchainBalance": "Blockchain zůstatek:"
+    "blockchainBalance": "Blockchain zůstatek:",
+    "pleaseEnterWalletName": "Prosím zadejte název peněženky",
+    "walletCreatedSuccessfully": "Peněženka úspěšně vytvořena",
+    "failedToCreateWallet": "Vytvoření peněženky selhalo",
+    "errorCreatingWallet": "Chyba při vytváření peněženky",
+    "walletDeletedSuccessfully": "Peněženka úspěšně smazána",
+    "failedToDeleteWallet": "Smazání peněženky selhalo",
+    "errorDeletingWallet": "Chyba při mazání peněženky",
+    "addressCopiedToClipboard": "Adresa zkopírována do schránky",
+    "createNewWallet": "Vytvořit Novou Peněženku",
+    "createNewWalletDescription": "Vytvořte novou blockchain peněženku. Bude vygenerována nová adresa.",
+    "walletNamePlaceholder": "Název peněženky (např. Spoření, Obchodování)",
+    "creating": "Vytváření...",
+    "noWalletsYet": "Zatím žádné peněženky. Vytvořte svou první peněženku, abyste mohli začít.",
+    "deleteWallet": "Smazat Peněženku",
+    "deleteWalletConfirmation": "Opravdu chcete smazat tuto peněženku? Tuto akci nelze vrátit zpět. Peněženka bude odstraněna z vašeho účtu, ale blockchain adresa a její prostředky zůstanou na blockchainu.",
+    "delete": "Smazat"
   }
 }
