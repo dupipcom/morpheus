@@ -60,7 +60,6 @@ export async function POST(req: Request) {
                                 }
                             }
                         });
-                        console.log(`Username synced from Clerk webhook on user creation: ${clerkUsername} for user ${clerkUserId}`);
                         
                         // Revalidate the public profile page
                         await revalidatePath(`/@${clerkUsername}`);
@@ -114,7 +113,6 @@ export async function POST(req: Request) {
                                         }
                                     });
                                 }
-                                console.log(`Username synced from Clerk webhook on login: ${clerkUsername} for user ${sessionUserId}`);
                                 
                                 // Revalidate the public profile page
                                 await revalidateUserProfile(clerkUsername, new URL(req.url).origin);
@@ -168,13 +166,10 @@ export async function POST(req: Request) {
                                     }
                                 });
                             }
-                            console.log(`Username synced from Clerk webhook: ${clerkUsername} for user ${clerkUserId}`);
                             
                             // Revalidate the public profile page
                             await revalidateUserProfile(clerkUsername, new URL(req.url).origin);
                         }
-                    } else {
-                        console.log('No username found in Clerk webhook data');
                     }
                 } catch (error) {
                     console.error('Error syncing username from Clerk webhook:', error);

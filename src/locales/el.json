@@ -104,7 +104,8 @@
         "PUBLIC": "Δημόσιο",
         "AI_ENABLED": "AI Ενεργοποιημένο"
       },
-      "action": "Δημοσίευση Σημείωσης"
+      "action": "Δημοσίευση Σημείωσης",
+      "publishing": "Publishing..."
     }
   },
   "week": {
@@ -218,7 +219,11 @@
   },
   "errors": {
     "notFound": "Ουπς! Δεν μπόρεσε να συντονιστεί σε αυτή τη συχνότητα.",
-    "genericError": "Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά."
+    "genericError": "Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.",
+    "failedToFetchNotes": "Failed to fetch notes",
+    "failedToLoadNotes": "Failed to load notes",
+    "failedToFetchTemplates": "Failed to fetch templates",
+    "failedToLoadTemplates": "Failed to load templates"
   },
   "social": {
     "title": "Κοινωνικές επαφές",
@@ -303,7 +308,10 @@
     "cloneTemplateFailed": "Αποτυχία κλωνοποίησης προτύπου",
     "cloning": "Κλωνοποίηση...",
     "noPublicNotes": "Δεν υπάρχουν διαθέσιμες δημόσιες σημειώσεις ακόμα.",
-    "noPublicTemplatesOrLists": "Δεν υπάρχουν διαθέσιμα δημόσια πρότυπα ή λίστες ακόμα."
+    "noPublicTemplatesOrLists": "Δεν υπάρχουν διαθέσιμα δημόσια πρότυπα ή λίστες ακόμα.",
+    "cloneList": "Clone List",
+    "cloneListSuccess": "List cloned successfully!",
+    "cloneListFailed": "Failed to clone list"
   },
   "publicCharts": {
     "noData": "Δεν υπάρχουν διαθέσιμα δημόσια δεδομένα γραφημάτων.",
@@ -555,5 +563,49 @@
     "addComment": "Προσθήκη σχολίου...",
     "showMore": "Εμφάνιση περισσότερων",
     "showLess": "Εμφάνιση λιγότερων"
+  },
+  "invest": {
+    "notice": "Δεν διαχειρίζονται πραγματικά χρήματα αυτή τη στιγμή σε αυτήν την εφαρμογή. Το Dupip Invest βρίσκεται ακόμα στη φάση σχεδιασμού. Αυτό είναι μόνο ένα περιβάλλον δοκιμών για επίδειξη.",
+    "consentTitle": "Συναίνεση για Επίδειξη Επένδυσης",
+    "consentCheckbox": "Αναγνωρίζω ότι το Dupip δεν είναι ακόμα μια πλατφόρμα επενδύσεων και ότι χρησιμοποιώντας αυτή τη λειτουργία, είμαι ενήμερος ότι όλα τα δεδομένα μου μπορεί να διαγραφούν πριν από την επίσημη έναρξη του Dupip Invest.",
+    "confirm": "Επιβεβαίωση"
+  },
+  "wallet": {
+    "nftGenerationCompleted": "Η δημιουργία NFT ολοκληρώθηκε.",
+    "errorGeneratingNFT": "Σφάλμα κατά τη δημιουργία NFT",
+    "failedToGenerateNFT": "Αποτυχία δημιουργίας NFT",
+    "pleaseSelectWallet": "Παρακαλώ επιλέξτε ένα πορτοφόλι",
+    "errorFetchingNFTs": "Σφάλμα κατά την ανάκτηση NFT:",
+    "transferCompleted": "Η μεταφορά ολοκληρώθηκε.",
+    "failedToTransferTokens": "Αποτυχία μεταφοράς tokens",
+    "errorTransferringTokens": "Σφάλμα κατά τη μεταφορά tokens",
+    "unnamedWallet": "Ανώνυμο Πορτοφόλι",
+    "wallets": "Πορτοφόλια",
+    "transferTokens": "Μεταφορά Tokens",
+    "createWallet": "Δημιουργία πορτοφολιού",
+    "fromWallet": "Από πορτοφόλι",
+    "toAddress": "Σε διεύθυνση",
+    "amount": "Ποσό",
+    "generateNFT": "Δημιουργία NFT",
+    "myNFTs": "Τα NFT μου",
+    "balance": "Υπόλοιπο:",
+    "selectWallet": "Επιλογή Πορτοφολιού",
+    "blockchainBalance": "Υπόλοιπο Blockchain:",
+    "pleaseEnterWalletName": "Παρακαλώ εισάγετε όνομα πορτοφολιού",
+    "walletCreatedSuccessfully": "Το πορτοφόλι δημιουργήθηκε με επιτυχία",
+    "failedToCreateWallet": "Αποτυχία δημιουργίας πορτοφολιού",
+    "errorCreatingWallet": "Σφάλμα κατά τη δημιουργία πορτοφολιού",
+    "walletDeletedSuccessfully": "Το πορτοφόλι διαγράφηκε με επιτυχία",
+    "failedToDeleteWallet": "Αποτυχία διαγραφής πορτοφολιού",
+    "errorDeletingWallet": "Σφάλμα κατά τη διαγραφή πορτοφολιού",
+    "addressCopiedToClipboard": "Η διεύθυνση αντιγράφηκε στο πρόχειρο",
+    "createNewWallet": "Δημιουργία Νέου Πορτοφολιού",
+    "createNewWalletDescription": "Δημιουργήστε ένα νέο πορτοφόλι blockchain. Θα δημιουργηθεί μια νέα διεύθυνση.",
+    "walletNamePlaceholder": "Όνομα πορτοφολιού (π.χ. Αποταμίευση, Trading)",
+    "creating": "Δημιουργία...",
+    "noWalletsYet": "Δεν υπάρχουν ακόμα πορτοφόλια. Δημιουργήστε το πρώτο σας πορτοφόλι για να ξεκινήσετε.",
+    "deleteWallet": "Διαγραφή Πορτοφολιού",
+    "deleteWalletConfirmation": "Είστε βέβαιοι ότι θέλετε να διαγράψετε αυτό το πορτοφόλι; Αυτή η ενέργεια δεν μπορεί να αναιρεθεί. Το πορτοφόλι θα αφαιρεθεί από τον λογαριασμό σας, αλλά η διεύθυνση blockchain και τα κεφάλαιά της θα παραμείνουν στο blockchain.",
+    "delete": "Διαγραφή"
   }
 }

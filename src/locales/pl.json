@@ -108,7 +108,8 @@
         "PUBLIC": "Publiczny",
         "AI_ENABLED": "Obsługiwane przez sztuczną inteligencję"
       },
-      "action": "Opublikuj notatkę"
+      "action": "Opublikuj notatkę",
+      "publishing": "Publishing..."
     }
   },
   "week": {
@@ -239,7 +240,11 @@
   },
   "errors": {
     "notFound": "Ups! Nie można dostroić tej częstotliwości.",
-    "genericError": "Coś poszło nie tak. Spróbuj ponownie."
+    "genericError": "Coś poszło nie tak. Spróbuj ponownie.",
+    "failedToFetchNotes": "Failed to fetch notes",
+    "failedToLoadNotes": "Failed to load notes",
+    "failedToFetchTemplates": "Failed to fetch templates",
+    "failedToLoadTemplates": "Failed to load templates"
   },
   "social": {
     "title": "Kontakty społeczne",
@@ -324,7 +329,10 @@
     "cloneTemplateFailed": "Nie udało się sklonować szablonu",
     "cloning": "Klonowanie...",
     "noPublicNotes": "Brak dostępnych publicznych notatek.",
-    "noPublicTemplatesOrLists": "Brak dostępnych publicznych szablonów lub list."
+    "noPublicTemplatesOrLists": "Brak dostępnych publicznych szablonów lub list.",
+    "cloneList": "Clone List",
+    "cloneListSuccess": "List cloned successfully!",
+    "cloneListFailed": "Failed to clone list"
   },
   "publicCharts": {
     "noData": "Brak dostępnych danych wykresów publicznych.",
@@ -562,5 +570,49 @@
     "addComment": "Dodaj komentarz...",
     "showMore": "Pokaż więcej",
     "showLess": "Pokaż mniej"
+  },
+  "invest": {
+    "notice": "W tej aplikacji nie zarządza się obecnie prawdziwymi pieniędzmi. Dupip Invest jest nadal w fazie planowania. To jest tylko środowisko testowe do celów demonstracyjnych.",
+    "consentTitle": "Zgoda na Demo Inwestycji",
+    "consentCheckbox": "Przyznaję, że Dupip nie jest jeszcze platformą inwestycyjną i że korzystając z tej funkcji, jestem świadomy, że wszystkie moje dane mogą zostać usunięte przed oficjalnym uruchomieniem Dupip Invest.",
+    "confirm": "Potwierdź"
+  },
+  "wallet": {
+    "nftGenerationCompleted": "Generowanie NFT zakończone.",
+    "errorGeneratingNFT": "Błąd podczas generowania NFT",
+    "failedToGenerateNFT": "Nie udało się wygenerować NFT",
+    "pleaseSelectWallet": "Proszę wybrać portfel",
+    "errorFetchingNFTs": "Błąd podczas pobierania NFT:",
+    "transferCompleted": "Transfer zakończony.",
+    "failedToTransferTokens": "Nie udało się przetransferować tokenów",
+    "errorTransferringTokens": "Błąd podczas transferu tokenów",
+    "unnamedWallet": "Nienazwany portfel",
+    "wallets": "Portfele",
+    "transferTokens": "Przetransferuj Tokeny",
+    "createWallet": "Utwórz portfel",
+    "fromWallet": "Z portfela",
+    "toAddress": "Na adres",
+    "amount": "Kwota",
+    "generateNFT": "Wygeneruj NFT",
+    "myNFTs": "Moje NFT",
+    "balance": "Saldo:",
+    "selectWallet": "Wybierz Portfel",
+    "blockchainBalance": "Saldo Blockchain:",
+    "pleaseEnterWalletName": "Proszę wprowadzić nazwę portfela",
+    "walletCreatedSuccessfully": "Portfel utworzony pomyślnie",
+    "failedToCreateWallet": "Nie udało się utworzyć portfela",
+    "errorCreatingWallet": "Błąd podczas tworzenia portfela",
+    "walletDeletedSuccessfully": "Portfel usunięty pomyślnie",
+    "failedToDeleteWallet": "Nie udało się usunąć portfela",
+    "errorDeletingWallet": "Błąd podczas usuwania portfela",
+    "addressCopiedToClipboard": "Adres skopiowany do schowka",
+    "createNewWallet": "Utwórz Nowy Portfel",
+    "createNewWalletDescription": "Utwórz nowy portfel blockchain. Zostanie wygenerowany nowy adres.",
+    "walletNamePlaceholder": "Nazwa portfela (np. Oszczędności, Trading)",
+    "creating": "Tworzenie...",
+    "noWalletsYet": "Brak portfeli. Utwórz swój pierwszy portfel, aby rozpocząć.",
+    "deleteWallet": "Usuń Portfel",
+    "deleteWalletConfirmation": "Czy na pewno chcesz usunąć ten portfel? Tej akcji nie można cofnąć. Portfel zostanie usunięty z Twojego konta, ale adres blockchain i jego środki pozostaną w blockchainie.",
+    "delete": "Usuń"
   }
 }

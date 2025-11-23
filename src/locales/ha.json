@@ -103,7 +103,8 @@
         "PUBLIC": "Jama'a",
         "AI_ENABLED": "AI Ana Kunna"
       },
-      "action": "Buga Bayani"
+      "action": "Buga Bayani",
+      "publishing": "Publishing..."
     }
   },
   "week": {
@@ -296,7 +297,11 @@
   },
   "errors": {
     "notFound": "Ops! Ba za a iya samun wannan mitar ba.",
-    "genericError": "Wani abu ya tafi ba daidai ba. Don Allah a sake gwadawa."
+    "genericError": "Wani abu ya tafi ba daidai ba. Don Allah a sake gwadawa.",
+    "failedToFetchNotes": "Failed to fetch notes",
+    "failedToLoadNotes": "Failed to load notes",
+    "failedToFetchTemplates": "Failed to fetch templates",
+    "failedToLoadTemplates": "Failed to load templates"
   },
   "publicProfile": {
     "ctaTitle": "Fara Tafiyar Dupip Naku",
@@ -316,7 +321,10 @@
     "cloneTemplateFailed": "An kasa kwafin samfurin",
     "cloning": "Ana kwafewa...",
     "noPublicNotes": "Babu bayanan jama'a da aka samu tukuna.",
-    "noPublicTemplatesOrLists": "Babu samfuri ko jera na jama'a da aka samu tukuna."
+    "noPublicTemplatesOrLists": "Babu samfuri ko jera na jama'a da aka samu tukuna.",
+    "cloneList": "Clone List",
+    "cloneListSuccess": "List cloned successfully!",
+    "cloneListFailed": "Failed to clone list"
   },
   "publicCharts": {
     "noData": "Babu bayanan ginshiƙai na jama'a.",
@@ -554,5 +562,49 @@
     "addComment": "Ƙara sharhi...",
     "showMore": "Nuna da yawa",
     "showLess": "Nuna kaɗan"
+  },
+  "invest": {
+    "notice": "Babu kuɗi na gaske da ake sarrafa a halin yanzu a cikin wannan app. Dupip Invest har yanzu yana cikin lokacin tsarawa. Wannan kawai yanayin gwaji ne don dalilai na nunawa.",
+    "consentTitle": "Yarda da Demo na Zuba Jari",
+    "consentCheckbox": "Na yarda cewa Dupip har yanzu ba dandamali na zuba jari ba ne, kuma ta amfani da wannan fasalin, na san cewa duk bayanana za a iya share su kafin ƙaddamarwar hukuma ta Dupip Invest.",
+    "confirm": "Tabbatar"
+  },
+  "wallet": {
+    "nftGenerationCompleted": "Samar da NFT ya kammala.",
+    "errorGeneratingNFT": "Kuskure wajen samar da NFT",
+    "failedToGenerateNFT": "Samar da NFT ya gaza",
+    "pleaseSelectWallet": "Da fatan za a zaɓi walat",
+    "errorFetchingNFTs": "Kuskure wajen ɗaukar NFTs:",
+    "transferCompleted": "Canja wuri ya kammala.",
+    "failedToTransferTokens": "Canja tokens ya gaza",
+    "errorTransferringTokens": "Kuskure wajen canja tokens",
+    "unnamedWallet": "Walat mara suna",
+    "wallets": "Wallets",
+    "transferTokens": "Canja Tokens",
+    "createWallet": "Ƙirƙiri walat",
+    "fromWallet": "Daga walat",
+    "toAddress": "Zuwa adireshi",
+    "amount": "Adadin",
+    "generateNFT": "Samar da NFT",
+    "myNFTs": "NFTs na",
+    "balance": "Ma'auni:",
+    "selectWallet": "Zaɓi Walat",
+    "blockchainBalance": "Ma'aunin Blockchain:",
+    "pleaseEnterWalletName": "Da fatan shigar da sunan walat",
+    "walletCreatedSuccessfully": "An ƙirƙiri walat cikin nasara",
+    "failedToCreateWallet": "Ƙirƙirar walat ta gaza",
+    "errorCreatingWallet": "Kuskure wajen ƙirƙirar walat",
+    "walletDeletedSuccessfully": "An goge walat cikin nasara",
+    "failedToDeleteWallet": "Gogewar walat ta gaza",
+    "errorDeletingWallet": "Kuskure wajen gogewar walat",
+    "addressCopiedToClipboard": "An kwafi adireshin zuwa allon",
+    "createNewWallet": "Ƙirƙiri Walat Sabo",
+    "createNewWalletDescription": "Ƙirƙiri sabon walat blockchain. Za a samar da sabon adireshi.",
+    "walletNamePlaceholder": "Sunan walat (misali: Ajiya, Kasuwanci)",
+    "creating": "Ana ƙirƙirar...",
+    "noWalletsYet": "Ba a da walats ba tukuna. Ƙirƙiri walat ɗin ku na farko don farawa.",
+    "deleteWallet": "Goge Walat",
+    "deleteWalletConfirmation": "Ka tabbata kana son goge wannan walat? Ba za a iya juyar da wannan aikin ba. Za a cire walat daga asusunka, amma adireshin blockchain da kuɗinsa za su kasance a kan blockchain.",
+    "delete": "Goge"
   }
 }

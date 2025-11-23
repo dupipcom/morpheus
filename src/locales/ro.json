@@ -104,7 +104,8 @@
         "PUBLIC": "Public",
         "AI_ENABLED": "AI activat"
       },
-      "action": "Publică nota"
+      "action": "Publică nota",
+      "publishing": "Publishing..."
     }
   },
   "week": {
@@ -221,7 +222,11 @@
   },
   "errors": {
     "notFound": "Ups! Nu s-a putut regla această frecvență.",
-    "genericError": "Ceva a mers greșit. Te rog încearcă din nou."
+    "genericError": "Ceva a mers greșit. Te rog încearcă din nou.",
+    "failedToFetchNotes": "Failed to fetch notes",
+    "failedToLoadNotes": "Failed to load notes",
+    "failedToFetchTemplates": "Failed to fetch templates",
+    "failedToLoadTemplates": "Failed to load templates"
   },
   "social": {
     "title": "Contacte sociale",
@@ -306,7 +311,10 @@
     "cloneTemplateFailed": "Clonarea șablonului a eșuat",
     "cloning": "Se clonează...",
     "noPublicNotes": "Nu există notițe publice disponibile încă.",
-    "noPublicTemplatesOrLists": "Nu există șabloane sau liste publice disponibile încă."
+    "noPublicTemplatesOrLists": "Nu există șabloane sau liste publice disponibile încă.",
+    "cloneList": "Clone List",
+    "cloneListSuccess": "List cloned successfully!",
+    "cloneListFailed": "Failed to clone list"
   },
   "publicCharts": {
     "noData": "Nu sunt disponibile date pentru graficele publice.",
@@ -558,5 +566,49 @@
     "addComment": "Adaugă un comentariu...",
     "showMore": "Afișează mai mult",
     "showLess": "Afișează mai puțin"
+  },
+  "invest": {
+    "notice": "Nu există bani reali gestionați în prezent în această aplicație. Dupip Invest este încă în faza de planificare. Acesta este doar un mediu de testare în scopuri de demonstrație.",
+    "consentTitle": "Consimțământ pentru Demo de Investiții",
+    "consentCheckbox": "Recunosc că Dupip nu este încă o platformă de investiții și că, folosind această funcție, sunt conștient că toate datele mele pot fi șterse înainte de lansarea oficială a Dupip Invest.",
+    "confirm": "Confirmă"
+  },
+  "wallet": {
+    "nftGenerationCompleted": "Generarea NFT finalizată.",
+    "errorGeneratingNFT": "Eroare la generarea NFT",
+    "failedToGenerateNFT": "Generarea NFT a eșuat",
+    "pleaseSelectWallet": "Vă rugăm să selectați un portofel",
+    "errorFetchingNFTs": "Eroare la preluarea NFT-urilor:",
+    "transferCompleted": "Transferul finalizat.",
+    "failedToTransferTokens": "Transferul tokenilor a eșuat",
+    "errorTransferringTokens": "Eroare la transferul tokenilor",
+    "unnamedWallet": "Portofel fără nume",
+    "wallets": "Portofele",
+    "transferTokens": "Transferă Tokeni",
+    "createWallet": "Creează portofel",
+    "fromWallet": "Din portofel",
+    "toAddress": "Către adresă",
+    "amount": "Sumă",
+    "generateNFT": "Generează NFT",
+    "myNFTs": "NFT-urile mele",
+    "balance": "Sold:",
+    "selectWallet": "Selectează Portofel",
+    "blockchainBalance": "Sold Blockchain:",
+    "pleaseEnterWalletName": "Vă rugăm să introduceți un nume pentru portofel",
+    "walletCreatedSuccessfully": "Portofel creat cu succes",
+    "failedToCreateWallet": "Crearea portofelului a eșuat",
+    "errorCreatingWallet": "Eroare la crearea portofelului",
+    "walletDeletedSuccessfully": "Portofel șters cu succes",
+    "failedToDeleteWallet": "Ștergerea portofelului a eșuat",
+    "errorDeletingWallet": "Eroare la ștergerea portofelului",
+    "addressCopiedToClipboard": "Adresă copiată în clipboard",
+    "createNewWallet": "Creează Portofel Nou",
+    "createNewWalletDescription": "Creați un portofel blockchain nou. Va fi generată o nouă adresă.",
+    "walletNamePlaceholder": "Nume portofel (ex. Economii, Trading)",
+    "creating": "Se creează...",
+    "noWalletsYet": "Încă nu există portofele. Creați primul dvs. portofel pentru a începe.",
+    "deleteWallet": "Șterge Portofel",
+    "deleteWalletConfirmation": "Sunteți sigur că doriți să ștergeți acest portofel? Această acțiune nu poate fi anulată. Portofelul va fi eliminat din contul dvs., dar adresa blockchain și fondurile sale vor rămâne pe blockchain.",
+    "delete": "Șterge"
   }
 }

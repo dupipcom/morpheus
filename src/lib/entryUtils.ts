@@ -81,16 +81,8 @@ export function validateDayData(entries: any, year: number, date: string): boole
  */
 export function logEntryData(entries: any, year: number, week?: number, date?: string) {
   if (process.env.NODE_ENV === 'development') {
-    console.log('Entry data validation:', {
-      year,
-      week,
-      date,
-      yearExists: !!entries?.[year],
-      weekExists: week ? !!entries?.[year]?.weeks?.[week] : undefined,
-      dayExists: date ? !!entries?.[year]?.days?.[date] : undefined,
-      weekData: week ? entries?.[year]?.weeks?.[week] : undefined,
-      dayData: date ? entries?.[year]?.days?.[date] : undefined
-    })
+    // Removed console.log - use logger tool if needed
+    // Entry data validation logging removed
   }
 }
 

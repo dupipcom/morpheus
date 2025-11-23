@@ -104,7 +104,8 @@
         "PUBLIC": "ציבורי",
         "AI_ENABLED": "בינה מלאכותית מופעלת"
       },
-      "action": "פרסם הערה"
+      "action": "פרסם הערה",
+      "publishing": "Publishing..."
     }
   },
   "week": {
@@ -221,7 +222,11 @@
   },
   "errors": {
     "notFound": "אופס! לא ניתן לכוון לתדר זה.",
-    "genericError": "משהו השתבש. אנא נסה שוב."
+    "genericError": "משהו השתבש. אנא נסה שוב.",
+    "failedToFetchNotes": "Failed to fetch notes",
+    "failedToLoadNotes": "Failed to load notes",
+    "failedToFetchTemplates": "Failed to fetch templates",
+    "failedToLoadTemplates": "Failed to load templates"
   },
   "social": {
     "title": "אנשי קשר חברתיים",
@@ -306,7 +311,10 @@
     "cloneTemplateFailed": "שכפול התבנית נכשל",
     "cloning": "משכפל...",
     "noPublicNotes": "אין הערות ציבוריות זמינות עדיין.",
-    "noPublicTemplatesOrLists": "אין תבניות או רשימות ציבוריות זמינות עדיין."
+    "noPublicTemplatesOrLists": "אין תבניות או רשימות ציבוריות זמינות עדיין.",
+    "cloneList": "Clone List",
+    "cloneListSuccess": "List cloned successfully!",
+    "cloneListFailed": "Failed to clone list"
   },
   "publicCharts": {
     "noData": "אין נתוני גרפים ציבוריים זמינים.",
@@ -558,5 +566,49 @@
     "addComment": "הוסף תגובה...",
     "showMore": "הצג עוד",
     "showLess": "הצג פחות"
+  },
+  "invest": {
+    "notice": "כרגע אין כסף אמיתי מנוהל באפליקציה זו. Dupip Invest עדיין בשלב התכנון. זהו רק סביבת בדיקה למטרות הדגמה.",
+    "consentTitle": "הסכמה להדגמת השקעות",
+    "consentCheckbox": "אני מכיר בכך ש-Dupip עדיין אינו פלטפורמת השקעות, ובשימוש בתכונה זו, אני מודע לכך שכל הנתונים שלי עלולים להימחק לפני השקה הרשמית של Dupip Invest.",
+    "confirm": "אישור"
+  },
+  "wallet": {
+    "nftGenerationCompleted": "יצירת NFT הושלמה.",
+    "errorGeneratingNFT": "שגיאה ביצירת NFT",
+    "failedToGenerateNFT": "יצירת NFT נכשלה",
+    "pleaseSelectWallet": "אנא בחר ארנק",
+    "errorFetchingNFTs": "שגיאה בטעינת NFTs:",
+    "transferCompleted": "העברה הושלמה.",
+    "failedToTransferTokens": "העברת אסימונים נכשלה",
+    "errorTransferringTokens": "שגיאה בהעברת אסימונים",
+    "unnamedWallet": "ארנק ללא שם",
+    "wallets": "ארנקים",
+    "transferTokens": "העבר אסימונים",
+    "createWallet": "צור ארנק",
+    "fromWallet": "מארנק",
+    "toAddress": "לכתובת",
+    "amount": "סכום",
+    "generateNFT": "צור NFT",
+    "myNFTs": "ה-NFTs שלי",
+    "balance": "יתרה:",
+    "selectWallet": "בחר ארנק",
+    "blockchainBalance": "יתרת Blockchain:",
+    "pleaseEnterWalletName": "אנא הזן שם ארנק",
+    "walletCreatedSuccessfully": "ארנק נוצר בהצלחה",
+    "failedToCreateWallet": "יצירת ארנק נכשלה",
+    "errorCreatingWallet": "שגיאה ביצירת ארנק",
+    "walletDeletedSuccessfully": "ארנק נמחק בהצלחה",
+    "failedToDeleteWallet": "מחיקת ארנק נכשלה",
+    "errorDeletingWallet": "שגיאה במחיקת ארנק",
+    "addressCopiedToClipboard": "כתובת הועתקה ללוח",
+    "createNewWallet": "צור ארנק חדש",
+    "createNewWalletDescription": "צור ארנק blockchain חדש. כתובת חדשה תיווצר.",
+    "walletNamePlaceholder": "שם ארנק (למשל: חיסכון, מסחר)",
+    "creating": "יוצר...",
+    "noWalletsYet": "עדיין אין ארנקים. צור את הארנק הראשון שלך כדי להתחיל.",
+    "deleteWallet": "מחק ארנק",
+    "deleteWalletConfirmation": "האם אתה בטוח שברצונך למחוק את הארנק הזה? פעולה זו לא ניתנת לביטול. הארנק יוסר מהחשבון שלך, אך כתובת ה-blockchain והכספים שלה יישארו ב-blockchain.",
+    "delete": "מחק"
   }
 }

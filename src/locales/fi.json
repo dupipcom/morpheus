@@ -108,7 +108,8 @@
         "PUBLIC": "Julkinen",
         "AI_ENABLED": "AI käytössä"
       },
-      "action": "Julkaise muistiinpano"
+      "action": "Julkaise muistiinpano",
+      "publishing": "Publishing..."
     }
   },
   "week": {
@@ -225,7 +226,11 @@
   },
   "errors": {
     "notFound": "Hups! Ei voitu virittää tätä taajuutta.",
-    "genericError": "Jokin meni pieleen. Yritä uudelleen."
+    "genericError": "Jokin meni pieleen. Yritä uudelleen.",
+    "failedToFetchNotes": "Failed to fetch notes",
+    "failedToLoadNotes": "Failed to load notes",
+    "failedToFetchTemplates": "Failed to fetch templates",
+    "failedToLoadTemplates": "Failed to load templates"
   },
   "social": {
     "title": "Sosiaaliset yhteystiedot",
@@ -310,7 +315,10 @@
     "cloneTemplateFailed": "Mallin kloonaaminen epäonnistui",
     "cloning": "Kloonataan...",
     "noPublicNotes": "Julkisia muistiinpanoja ei ole vielä saatavilla.",
-    "noPublicTemplatesOrLists": "Julkisia malleja tai listoja ei ole vielä saatavilla."
+    "noPublicTemplatesOrLists": "Julkisia malleja tai listoja ei ole vielä saatavilla.",
+    "cloneList": "Clone List",
+    "cloneListSuccess": "List cloned successfully!",
+    "cloneListFailed": "Failed to clone list"
   },
   "publicCharts": {
     "noData": "Julkisia kaaviotietoja ei ole saatavilla.",
@@ -562,5 +570,49 @@
     "addComment": "Lisää kommentti...",
     "showMore": "Näytä enemmän",
     "showLess": "Näytä vähemmän"
+  },
+  "invest": {
+    "notice": "Tässä sovelluksessa ei tällä hetkellä hallinnoida todellista rahaa. Dupip Invest on vielä suunnitteluvaiheessa. Tämä on vain testiympäristö esittelytarkoituksiin.",
+    "consentTitle": "Sijoitusdemot Suostumus",
+    "consentCheckbox": "Tunnustan, että Dupip ei ole vielä sijoitusalusta ja että tätä ominaisuutta käyttämällä olen tietoinen siitä, että kaikki tietoni voidaan poistaa ennen Dupip Investin virallista käyttöönottoa.",
+    "confirm": "Vahvista"
+  },
+  "wallet": {
+    "nftGenerationCompleted": "NFT-generointi valmis.",
+    "errorGeneratingNFT": "Virhe NFT:n luonnissa",
+    "failedToGenerateNFT": "NFT:n luonti epäonnistui",
+    "pleaseSelectWallet": "Valitse lompakko",
+    "errorFetchingNFTs": "Virhe NFT:iden hakemisessa:",
+    "transferCompleted": "Siirto valmis.",
+    "failedToTransferTokens": "Tokenien siirto epäonnistui",
+    "errorTransferringTokens": "Virhe tokenien siirrossa",
+    "unnamedWallet": "Nimetön lompakko",
+    "wallets": "Lompakot",
+    "transferTokens": "Siirrä Tokeneita",
+    "createWallet": "Luo lompakko",
+    "fromWallet": "Lompakosta",
+    "toAddress": "Osoitteeseen",
+    "amount": "Määrä",
+    "generateNFT": "Luo NFT",
+    "myNFTs": "Omat NFT:t",
+    "balance": "Saldo:",
+    "selectWallet": "Valitse Lompakko",
+    "blockchainBalance": "Blockchain-saldo:",
+    "pleaseEnterWalletName": "Anna lompakon nimi",
+    "walletCreatedSuccessfully": "Lompakko luotu onnistuneesti",
+    "failedToCreateWallet": "Lompakon luonti epäonnistui",
+    "errorCreatingWallet": "Virhe lompakon luonnissa",
+    "walletDeletedSuccessfully": "Lompakko poistettu onnistuneesti",
+    "failedToDeleteWallet": "Lompakon poisto epäonnistui",
+    "errorDeletingWallet": "Virhe lompakon poistamisessa",
+    "addressCopiedToClipboard": "Osoite kopioitu leikepöydälle",
+    "createNewWallet": "Luo Uusi Lompakko",
+    "createNewWalletDescription": "Luo uusi blockchain-lompakko. Uusi osoite luodaan.",
+    "walletNamePlaceholder": "Lompakon nimi (esim. Säästöt, Kaupankäynti)",
+    "creating": "Luodaan...",
+    "noWalletsYet": "Ei vielä lompakoita. Luo ensimmäinen lompakkosi aloittaaksesi.",
+    "deleteWallet": "Poista Lompakko",
+    "deleteWalletConfirmation": "Haluatko varmasti poistaa tämän lompakon? Tätä toimintoa ei voi perua. Lompakko poistetaan tililtäsi, mutta blockchain-osoite ja sen varat pysyvät blockchainissa.",
+    "delete": "Poista"
   }
 }

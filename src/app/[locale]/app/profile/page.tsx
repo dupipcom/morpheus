@@ -223,12 +223,6 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
     )
   }
 
-  console.log('profile', profile)
-  console.log('userName', profile.userName)
-  console.log('currentUserUsername', profile.userName)
-  console.log('isLoggedIn', isSignedIn)
-  console.log('translations', loadTranslationsSync(locale))
-
   return (
     <main className="">
       <ViewMenu active="profile" />

@@ -2,6 +2,7 @@ import prisma from '@/lib/prisma';
 import type { WebhookEvent } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
+import { generateWallet } from '@/lib/kaleido';
 
 /**
  * Handles Clerk webhook events for user login and direct requests to extend session
@@ -52,14 +53,16 @@ export async function POST(req: Request) {
     }
 
     // Update lastLogin timestamp for the user
+    let user;
     try {
-      await prisma.user.update({
+      user = await prisma.user.update({
         data: ({ lastLogin: new Date() } as any),
         where: { userId: sessionUserId },
+        include: { wallets: true },
       });
     } catch (e) {
       // If user doesn't exist yet, upsert it with lastLogin
-      await prisma.user.upsert({
+      user = await prisma.user.upsert({
         where: { userId: sessionUserId },
         update: ({ lastLogin: new Date() } as any),
         create: {
@@ -70,8 +73,26 @@ export async function POST(req: Request) {
           } as any,
           // cast to any to tolerate client lag
           ...({ lastLogin: new Date() } as any)
-        }
+        },
+        include: { wallets: true },
       });
+    }
+
+    // Create a default wallet if user doesn't have one
+    if (user && (!user.wallets || user.wallets.length === 0)) {
+      try {
+        const { address } = await generateWallet();
+        await prisma.wallet.create({
+          data: {
+            userId: user.id,
+            name: 'Default Wallet',
+            address: address,
+          },
+        });
+      } catch (walletError) {
+        console.error('Error creating default wallet:', walletError);
+        // Don't fail the login if wallet creation fails
+      }
     }
 
     return NextResponse.json({ 

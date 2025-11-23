@@ -106,7 +106,8 @@
         "PUBLIC": "Publikoa",
         "AI_ENABLED": "AI gaituta"
       },
-      "action": "Argitaratu oharra"
+      "action": "Argitaratu oharra",
+      "publishing": "Publishing..."
     }
   },
   "week": {
@@ -223,7 +224,11 @@
   },
   "errors": {
     "notFound": "Ups! Ezin izan da maiztasun hori sintonizatu.",
-    "genericError": "Zerbait gaizki joan da. Mesedez, saiatu berriro."
+    "genericError": "Zerbait gaizki joan da. Mesedez, saiatu berriro.",
+    "failedToFetchNotes": "Failed to fetch notes",
+    "failedToLoadNotes": "Failed to load notes",
+    "failedToFetchTemplates": "Failed to fetch templates",
+    "failedToLoadTemplates": "Failed to load templates"
   },
   "social": {
     "title": "Kontaktu sozialak",
@@ -308,7 +313,10 @@
     "cloneTemplateFailed": "Txantiloia klonatzeak huts egin du",
     "cloning": "Klonatzen...",
     "noPublicNotes": "Oraindik ez dago ohar publiko eskuragarririk.",
-    "noPublicTemplatesOrLists": "Oraindik ez dago txantiloi edo zerrenda publiko eskuragarririk."
+    "noPublicTemplatesOrLists": "Oraindik ez dago txantiloi edo zerrenda publiko eskuragarririk.",
+    "cloneList": "Clone List",
+    "cloneListSuccess": "List cloned successfully!",
+    "cloneListFailed": "Failed to clone list"
   },
   "publicCharts": {
     "noData": "Ez dago grafik publikoen daturik eskuragarri.",
@@ -560,5 +568,49 @@
     "addComment": "Gehitu iruzkina...",
     "showMore": "Erakutsi gehiago",
     "showLess": "Erakutsi gutxiago"
+  },
+  "invest": {
+    "notice": "Ez dago benetako dirurik kudeatzen une honetan aplikazio honetan. Dupip Invest oraindik planifikazio fasean dago. Hau erakusteko helburuetarako proba ingurune bat besterik ez da.",
+    "consentTitle": "Inbertsio Demo Baimena",
+    "consentCheckbox": "Onartzen dut Dupip oraindik ez dela inbertsio plataforma, eta funtzio hau erabiliz, nire datu guztiak ezaba daitezkeela Dupip Invest-en jaurtiketa ofiziala baino lehen.",
+    "confirm": "Berretsi"
+  },
+  "wallet": {
+    "nftGenerationCompleted": "NFT generazioa osatua.",
+    "errorGeneratingNFT": "Errorea NFT sortzean",
+    "failedToGenerateNFT": "NFT sortzea huts egin du",
+    "pleaseSelectWallet": "Mesedez, aukeratu diru-zorro bat",
+    "errorFetchingNFTs": "Errorea NFT-ak eskuratzean:",
+    "transferCompleted": "Transferentzia osatua.",
+    "failedToTransferTokens": "Token-ak transferitzea huts egin du",
+    "errorTransferringTokens": "Errorea token-ak transferitzean",
+    "unnamedWallet": "Izenik gabeko diru-zorroa",
+    "wallets": "Diru-zorroak",
+    "transferTokens": "Transferitu Token-ak",
+    "createWallet": "Sortu diru-zorroa",
+    "fromWallet": "Diru-zorrotik",
+    "toAddress": "Helbidera",
+    "amount": "Kopurua",
+    "generateNFT": "Sortu NFT",
+    "myNFTs": "Nire NFT-ak",
+    "balance": "Saldoa:",
+    "selectWallet": "Aukeratu Diru-zorroa",
+    "blockchainBalance": "Blockchain saldoa:",
+    "pleaseEnterWalletName": "Mesedez, sartu diru-zorroaren izena",
+    "walletCreatedSuccessfully": "Diru-zorroa ongi sortu da",
+    "failedToCreateWallet": "Diru-zorroa sortzea huts egin du",
+    "errorCreatingWallet": "Errorea diru-zorroa sortzean",
+    "walletDeletedSuccessfully": "Diru-zorroa ongi ezabatu da",
+    "failedToDeleteWallet": "Diru-zorroa ezabatzea huts egin du",
+    "errorDeletingWallet": "Errorea diru-zorroa ezabatzean",
+    "addressCopiedToClipboard": "Helbidea arbelean kopiatu da",
+    "createNewWallet": "Sortu Diru-zorro Berria",
+    "createNewWalletDescription": "Sortu diru-zorro blockchain berria. Helbide berria sortuko da.",
+    "walletNamePlaceholder": "Diru-zorroaren izena (adib. Aurreztu, Merkataritza)",
+    "creating": "Sortzen...",
+    "noWalletsYet": "Oraindik ez dago diru-zorrorik. Hasi zure lehen diru-zorroa sortuz.",
+    "deleteWallet": "Ezabatu Diru-zorroa",
+    "deleteWalletConfirmation": "Ziur zaude diru-zorro hau ezabatu nahi duzula? Ekintza hau ezin da desegin. Diru-zorroa zure kontutik kenduko da, baina blockchain helbidea eta bere funtsak blockchainen geratuko dira.",
+    "delete": "Ezabatu"
   }
 }

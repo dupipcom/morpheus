@@ -104,7 +104,8 @@
         "PUBLIC": "সর্বজনীন",
         "AI_ENABLED": "এআই সক্রিয়"
       },
-      "action": "নোট প্রকাশ করুন"
+      "action": "নোট প্রকাশ করুন",
+      "publishing": "Publishing..."
     }
   },
   "week": {
@@ -221,7 +222,11 @@
   },
   "errors": {
     "notFound": "ওপস! এই ফ্রিকোয়েন্সি টিউন করতে পারেনি।",
-    "genericError": "কিছু ভুল হয়েছে। দয়া করে আবার চেষ্টা করুন।"
+    "genericError": "কিছু ভুল হয়েছে। দয়া করে আবার চেষ্টা করুন।",
+    "failedToFetchNotes": "Failed to fetch notes",
+    "failedToLoadNotes": "Failed to load notes",
+    "failedToFetchTemplates": "Failed to fetch templates",
+    "failedToLoadTemplates": "Failed to load templates"
   },
   "social": {
     "title": "সামাজিক যোগাযোগ",
@@ -306,7 +311,10 @@
     "cloneTemplateFailed": "টেমপ্লেট ক্লোন করতে ব্যর্থ",
     "cloning": "ক্লোন হচ্ছে...",
     "noPublicNotes": "এখনও কোনও পাবলিক নোট উপলব্ধ নেই।",
-    "noPublicTemplatesOrLists": "এখনও কোনও পাবলিক টেমপ্লেট বা তালিকা উপলব্ধ নেই।"
+    "noPublicTemplatesOrLists": "এখনও কোনও পাবলিক টেমপ্লেট বা তালিকা উপলব্ধ নেই।",
+    "cloneList": "Clone List",
+    "cloneListSuccess": "List cloned successfully!",
+    "cloneListFailed": "Failed to clone list"
   },
   "publicCharts": {
     "noData": "কোনও পাবলিক চার্টের ডেটা উপলব্ধ নেই।",
@@ -558,5 +566,49 @@
     "addComment": "মন্তব্য যোগ করুন...",
     "showMore": "আরও দেখান",
     "showLess": "কম দেখান"
+  },
+  "invest": {
+    "notice": "এই অ্যাপে বর্তমানে কোনও আসল অর্থ পরিচালনা করা হচ্ছে না। Dupip Invest এখনও পরিকল্পনার পর্যায়ে রয়েছে। এটি কেবল প্রদর্শনের উদ্দেশ্যে একটি পরীক্ষার পরিবেশ।",
+    "consentTitle": "বিনিয়োগ ডেমো সম্মতি",
+    "consentCheckbox": "আমি স্বীকার করি যে Dupip এখনও একটি বিনিয়োগ প্ল্যাটফর্ম নয়, এবং এই বৈশিষ্ট্যটি ব্যবহার করে, আমি সচেতন যে Dupip Invest-এর অফিসিয়াল লঞ্চের আগে আমার সমস্ত ডেটা মুছে ফেলা হতে পারে।",
+    "confirm": "নিশ্চিত করুন"
+  },
+  "wallet": {
+    "nftGenerationCompleted": "NFT জেনারেশন সম্পন্ন হয়েছে।",
+    "errorGeneratingNFT": "NFT তৈরি করতে ত্রুটি",
+    "failedToGenerateNFT": "NFT তৈরি করতে ব্যর্থ",
+    "pleaseSelectWallet": "অনুগ্রহ করে একটি ওয়ালেট নির্বাচন করুন",
+    "errorFetchingNFTs": "NFTs আনতে ত্রুটি:",
+    "transferCompleted": "স্থানান্তর সম্পন্ন হয়েছে।",
+    "failedToTransferTokens": "টোকেন স্থানান্তর করতে ব্যর্থ",
+    "errorTransferringTokens": "টোকেন স্থানান্তর করতে ত্রুটি",
+    "unnamedWallet": "নামহীন ওয়ালেট",
+    "wallets": "ওয়ালেট",
+    "transferTokens": "টোকেন স্থানান্তর করুন",
+    "createWallet": "ওয়ালেট তৈরি করুন",
+    "fromWallet": "ওয়ালেট থেকে",
+    "toAddress": "ঠিকানায়",
+    "amount": "পরিমাণ",
+    "generateNFT": "NFT তৈরি করুন",
+    "myNFTs": "আমার NFTs",
+    "balance": "ব্যালেন্স:",
+    "selectWallet": "ওয়ালেট নির্বাচন করুন",
+    "blockchainBalance": "ব্লকচেইন ব্যালেন্স:",
+    "pleaseEnterWalletName": "অনুগ্রহ করে একটি ওয়ালেট নাম লিখুন",
+    "walletCreatedSuccessfully": "ওয়ালেট সফলভাবে তৈরি হয়েছে",
+    "failedToCreateWallet": "ওয়ালেট তৈরি করতে ব্যর্থ",
+    "errorCreatingWallet": "ওয়ালেট তৈরি করতে ত্রুটি",
+    "walletDeletedSuccessfully": "ওয়ালেট সফলভাবে মুছে ফেলা হয়েছে",
+    "failedToDeleteWallet": "ওয়ালেট মুছে ফেলতে ব্যর্থ",
+    "errorDeletingWallet": "ওয়ালেট মুছে ফেলতে ত্রুটি",
+    "addressCopiedToClipboard": "ঠিকানা ক্লিপবোর্ডে কপি করা হয়েছে",
+    "createNewWallet": "নতুন ওয়ালেট তৈরি করুন",
+    "createNewWalletDescription": "একটি নতুন ব্লকচেইন ওয়ালেট তৈরি করুন। একটি নতুন ঠিকানা তৈরি করা হবে।",
+    "walletNamePlaceholder": "ওয়ালেট নাম (যেমন: সঞ্চয়, ট্রেডিং)",
+    "creating": "তৈরি করা হচ্ছে...",
+    "noWalletsYet": "এখনও কোনও ওয়ালেট নেই। শুরু করতে আপনার প্রথম ওয়ালেট তৈরি করুন।",
+    "deleteWallet": "ওয়ালেট মুছুন",
+    "deleteWalletConfirmation": "আপনি কি নিশ্চিত যে আপনি এই ওয়ালেটটি মুছতে চান? এই কাজটি পূর্বাবস্থায় ফেরানো যাবে না। ওয়ালেটটি আপনার অ্যাকাউন্ট থেকে সরানো হবে, তবে ব্লকচেইন ঠিকানা এবং এর তহবিল ব্লকচেইনে থাকবে।",
+    "delete": "মুছুন"
   }
 }
