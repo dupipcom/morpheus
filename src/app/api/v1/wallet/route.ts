@@ -40,8 +40,6 @@ export async function GET(req: Request) {
         try {
           const blockchainBalance = await getBalance(wallet.address);
           const balanceFloat = parseFloat(blockchainBalance) || 0;
-
-          console.log({ blockchainBalance, balanceFloat })
           
           // Update balance in database
           await prisma.wallet.update({
@@ -130,8 +128,6 @@ export async function POST(req: Request) {
     } catch (error) {
       console.error('Error fetching initial balance:', error);
     }
-
-    console.log({ blockchainBalance, balanceFloat })
 
     return NextResponse.json({
       wallet: {

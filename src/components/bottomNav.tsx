@@ -46,7 +46,6 @@ export function BottomNav() {
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     // Handle search submission here
-    console.log('Search query:', searchQuery)
   }
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {

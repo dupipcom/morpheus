@@ -58,8 +58,6 @@ export async function POST(req: Request) {
       wallet.address
     );
 
-    console.log({ txHash })
-
     return NextResponse.json({
       success: true,
       transactionHash: txHash,

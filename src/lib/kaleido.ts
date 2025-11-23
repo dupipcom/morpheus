@@ -123,8 +123,6 @@ export const generateWallet = async (): Promise<{
     }
 
     const data = await response.json();
-
-    console.log('Kaleido account data:', data);
     
     // Kaleido API returns account data in format:
     // { address: "0x...", privateKey: "0x..." } or similar
@@ -218,8 +216,6 @@ export const sendTokens = async (
     
     // Kaleido transfer endpoint
     const transferUrl = `${gatewayBase}/${contractAddress}/transfer?kld-from=${fromAddress}`;
-
-    console.log({ transferUrl })
     
     // Kaleido API might expect different field names - adjust based on actual API
     const requestBody = {
@@ -285,8 +281,6 @@ export const generateNFT = async (
       mintUrl += `?kld-from=${mintFromAddress}`;
     }
     
-    console.log({ mintFromAddress, mintUrl, toAddress, tokenId, tokenURI });
-    
     // Kaleido API expects only these fields: to, tokenId, tokenURI
     const requestBody = {
       to: toAddress,
@@ -300,16 +294,12 @@ export const generateNFT = async (
       body: JSON.stringify(requestBody),
     });
 
-    console.log({ response })
-
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(`Failed to mint NFT: ${response.status} ${errorText}`);
     }
 
     const data = await response.json();
-
-    console.log({ data, headers: getNftAuthHeaders() })
     
     // Return transaction hash - adjust based on actual API response format
     if (data.sent) {

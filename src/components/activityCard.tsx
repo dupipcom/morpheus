@@ -695,14 +695,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
   }
 
   // Debug: Log when options should be available
-  if (process.env.NODE_ENV === 'development') {
-    if (isLoggedIn && (item.type === 'template' || item.type === 'tasklist')) {
-      console.log('ActivityCard: Should show clone option', { itemType: item.type, isLoggedIn, optionsCount: optionsMenuItems.length })
-    }
-    if (isNoteOwner) {
-      console.log('ActivityCard: Should show edit/delete options', { itemType: item.type, currentUserId, itemUserId: item.userId, userid: item.user?.id, optionsCount: optionsMenuItems.length })
-    }
-  }
+  // Removed console.log statements - use logger tool if needed
 
   return (
     <div className={`border rounded-lg p-4 relative h-full flex flex-col transition-colors ${
