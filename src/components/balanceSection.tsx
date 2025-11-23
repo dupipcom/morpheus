@@ -4,14 +4,30 @@ import { useState, useEffect, useContext } from 'react'
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 import { useUserData } from "@/lib/userUtils"
 import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
 
-import { Eye, EyeOff, DollarSign, ChevronDown, ChevronUp, Coins } from "lucide-react"
+import { Eye, EyeOff, DollarSign, ChevronDown, ChevronUp, Coins, Wallet } from "lucide-react"
 import { useLocalStorage } from 'usehooks-ts';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+
+interface WalletData {
+  id: string
+  name: string | null
+  address: string | null
+  balance: number | null
+  blockchainBalance?: string
+  createdAt: string
+}
 
 export const BalanceSection = () => {
   const { session, revealRedacted, setGlobalContext } = useContext(GlobalContext)
@@ -27,8 +43,37 @@ export const BalanceSection = () => {
   const [hiddenBalance, setHiddenBalance] = useState(!revealRedacted)
   const [localBalance, setLocalBalance] = useState<string>(serverBalance !== null ? String(serverBalance) : '0')
   const [isDetailsExpanded, setIsDetailsExpanded] = useState(false)
+  const [wallets, setWallets] = useState<WalletData[]>([])
+  const [selectedWalletId, setSelectedWalletId] = useLocalStorage<string | null>('dpip_selected_wallet', null)
+  const [isLoadingWallets, setIsLoadingWallets] = useState(false)
 
   const { isLoading, refreshUser } = useUserData()
+
+  // Fetch wallets
+  useEffect(() => {
+    const fetchWallets = async () => {
+      try {
+        setIsLoadingWallets(true)
+        const response = await fetch('/api/v1/wallet')
+        if (response.ok) {
+          const data = await response.json()
+          setWallets(data.wallets || [])
+          // Auto-select first wallet if none selected
+          if (!selectedWalletId && data.wallets && data.wallets.length > 0) {
+            setSelectedWalletId(data.wallets[0].id)
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching wallets:', error)
+      } finally {
+        setIsLoadingWallets(false)
+      }
+    }
+
+    if (session?.user) {
+      fetchWallets()
+    }
+  }, [session, selectedWalletId, setSelectedWalletId])
 
   // Sync hiddenBalance with GlobalContext revealRedacted
   useEffect(() => {
@@ -41,6 +86,9 @@ export const BalanceSection = () => {
       setLocalBalance(String(serverBalance))
     }
   }, [serverBalance])
+
+  const selectedWallet = wallets.find(w => w.id === selectedWalletId)
+  const blockchainBalance = selectedWallet?.blockchainBalance || '0'
 
   const handleBalanceChange = (e: React.FocusEvent<HTMLInputElement>) => {
     const newValue = e.currentTarget.value
@@ -97,6 +145,43 @@ export const BalanceSection = () => {
           </AccordionTrigger>
           <AccordionContent className="pt-3 pb-0">
             <div className="space-y-3">
+              {/* Wallet Selector */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium flex items-center gap-2">
+                  <Wallet className="h-4 w-4" />
+                  Select Wallet
+                </label>
+                {isLoadingWallets ? (
+                  <Skeleton className="h-9 w-full" />
+                ) : (
+                  <Select
+                    value={selectedWalletId || undefined}
+                    onValueChange={(value) => setSelectedWalletId(value)}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select a wallet" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {wallets.map((wallet) => (
+                        <SelectItem key={wallet.id} value={wallet.id}>
+                          {wallet.name || 'Unnamed Wallet'} ({wallet.address?.slice(0, 8)}...)
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+                {selectedWallet && (
+                  <div className="text-sm text-muted-foreground">
+                    <div className="flex justify-between">
+                      <span>Blockchain Balance:</span>
+                      <span className={hiddenBalance ? "blur-sm" : ""}>
+                        Ð{parseFloat(blockchainBalance).toFixed(4)}
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
+
               <div key={`menu__balance--${hiddenBalance}`} className="flex items-center gap-2">
                 { isDataLoading ? (
                   <Skeleton className="h-9 flex-1" />

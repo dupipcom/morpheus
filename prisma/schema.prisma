@@ -351,6 +351,7 @@ model Wallet {
   updatedAt     DateTime  @updatedAt
   name          String?
   address       String?
+  privateKey    String?   // WARNING: In production, encrypt this field before storing
   balance       Float?    @default(0)
   currency      CurrencyCode?
   visibility    Visibility @default(PRIVATE)
