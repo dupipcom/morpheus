@@ -21,9 +21,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Main app routes
   const appRoutes = [
     'dashboard',
-    'day', 
-    'week',
+    'do',
+    'feel',
+    'profile',
     'be',
+    'invest',
     'settings',
   ]
 
@@ -55,76 +57,69 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })
   })
 
-  // Fetch all Payload CMS pages for all locales
-  for (const locale of locales) {
-    try {
-      const pagesResult = await fetchPages(locale)
-      const pages = pagesResult.docs || []
-      
-      for (const page of pages) {
-        const slug = (page as any).slug || (page as any).slug?.value
-        if (slug) {
-          // Build the URL path from slug
-          const slugPath = slug.startsWith('/') ? slug.slice(1) : slug
+  // Fetch all Payload CMS pages once, then create entries for all locales
+  try {
+    const pagesResult = await fetchPages()
+    const pages = pagesResult.docs || []
+    
+    for (const page of pages) {
+      const slug = (page as any).slug || (page as any).slug?.value
+      if (slug) {
+        // Build the URL path from slug
+        const slugPath = slug.startsWith('/') ? slug.slice(1) : slug
+        
+        // Get last modified date if available
+        const updatedAt = (page as any).updatedAt || (page as any).createdAt
+        const lastModified = updatedAt ? new Date(updatedAt) : new Date()
+        
+        // Create entries for all locales using the same slug
+        locales.forEach(locale => {
           const pageUrl = `${siteUrl}/${locale}/${slugPath}`
-          
-          // Get last modified date if available
-          const updatedAt = (page as any).updatedAt || (page as any).createdAt
-          const lastModified = updatedAt ? new Date(updatedAt) : new Date()
-          
           sitemapEntries.push({
             url: pageUrl,
             lastModified,
             alternates: {
               languages: Object.fromEntries(
-                locales.map(altLocale => {
-                  // For alternate locales, we'll use the same slug structure
-                  // In a real scenario, you might want to fetch the page in that locale
-                  // to get the correct localized slug
-                  return [altLocale, `${siteUrl}/${altLocale}/${slugPath}`]
-                })
+                locales.map(altLocale => [altLocale, `${siteUrl}/${altLocale}/${slugPath}`])
               ),
             },
           })
-        }
+        })
       }
-    } catch (error) {
-      console.error(`Error fetching pages for locale ${locale}:`, error)
     }
+  } catch (error) {
+    console.error('Error fetching pages:', error)
   }
 
-  // Fetch all Payload CMS posts (articles) for all locales
-  for (const locale of locales) {
-    try {
-      const episodesResult = await fetchEpisodes(locale)
-      const posts = episodesResult.docs || []
-      
-      for (const post of posts) {
-        const slug = (post as any).slug || (post as any).slug?.value
-        if (slug) {
+  // Fetch all Payload CMS posts (articles) once, then create entries for all locales
+  try {
+    const episodesResult = await fetchEpisodes()
+    const posts = episodesResult.docs || []
+    
+    for (const post of posts) {
+      const slug = (post as any).slug || (post as any).slug?.value
+      if (slug) {
+        // Get last modified date if available
+        const updatedAt = (post as any).updatedAt || (post as any).publishedAt || (post as any).createdAt
+        const lastModified = updatedAt ? new Date(updatedAt) : new Date()
+        
+        // Create entries for all locales using the same slug
+        locales.forEach(locale => {
           const postUrl = `${siteUrl}/${locale}/articles/${slug}`
-          
-          // Get last modified date if available
-          const updatedAt = (post as any).updatedAt || (post as any).publishedAt || (post as any).createdAt
-          const lastModified = updatedAt ? new Date(updatedAt) : new Date()
-          
           sitemapEntries.push({
             url: postUrl,
             lastModified,
             alternates: {
               languages: Object.fromEntries(
-                locales.map(altLocale => {
-                  // For alternate locales, we'll use the same slug structure
-                  return [altLocale, `${siteUrl}/${altLocale}/articles/${slug}`]
-                })
+                locales.map(altLocale => [altLocale, `${siteUrl}/${altLocale}/articles/${slug}`])
               ),
             },
           })
-        }
+        })
       }
-    } catch (error) {
-      console.error(`Error fetching posts for locale ${locale}:`, error)
     }
+  } catch (error) {
+    console.error('Error fetching posts:', error)
   }
   
   return sitemapEntries
