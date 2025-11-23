@@ -230,7 +230,7 @@ export const WalletManager = () => {
             <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteWallet}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className="bg-destructive text-background hover:bg-destructive/90"
             >
               {t('wallet.delete')}
             </AlertDialogAction>
