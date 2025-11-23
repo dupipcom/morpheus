@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { walletId, tokenUri } = body;
+    const { walletId } = body;
 
     if (!walletId) {
       return NextResponse.json(
@@ -53,11 +53,12 @@ export async function POST(req: Request) {
       );
     }
 
-    // Generate NFT
+    // Generate NFT (tokenURI is automatically generated)
     const txHash = await generateNFT(
-      wallet.address,
-      tokenUri
+      wallet.address
     );
+
+    console.log({ txHash })
 
     return NextResponse.json({
       success: true,

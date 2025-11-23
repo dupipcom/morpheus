@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
   Select,
@@ -21,7 +20,6 @@ export const NFTGenerator = () => {
   const { t } = useI18n()
   const { wallets, isLoading } = useWallets()
   const [selectedWalletId, setSelectedWalletId] = useLocalStorage<string | null>('dpip_selected_wallet', null)
-  const [tokenUri, setTokenUri] = useState('')
   const [isGenerating, setIsGenerating] = useState(false)
 
   // Auto-select first wallet if none selected
@@ -46,14 +44,12 @@ export const NFTGenerator = () => {
         },
         body: JSON.stringify({
           walletId: selectedWalletId,
-          tokenUri: tokenUri.trim() || undefined,
         }),
       })
 
       if (response.ok) {
         const data = await response.json()
         toast.success(`NFT generation initiated! Transaction: ${data.transactionHash?.slice(0, 10)}...`)
-        setTokenUri('')
       } else {
         const error = await response.json()
         toast.error(error.error || 'Failed to generate NFT')
@@ -101,18 +97,6 @@ export const NFTGenerator = () => {
                 ))}
               </SelectContent>
             </Select>
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Token URI (Optional)</label>
-            <Input
-              placeholder="https://..."
-              value={tokenUri}
-              onChange={(e) => setTokenUri(e.target.value)}
-            />
-            <p className="text-xs text-muted-foreground">
-              Metadata URI for the NFT (IPFS, HTTP, etc.)
-            </p>
           </div>
 
           <Button

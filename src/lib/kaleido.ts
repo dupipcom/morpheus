@@ -30,6 +30,22 @@ const getDpipContractAddress = (): string => {
   return address;
 };
 
+const getKaleidoNftBase = (): string => {
+  const base = process.env.KALEIDO_NFT_BASE;
+  if (!base) {
+    throw new Error('KALEIDO_NFT_BASE environment variable is required');
+  }
+  return base;
+};
+
+const getNftKrnAddress = (): string => {
+  const address = process.env.SYMBOL_NFT_MINT_ADDRESS;
+  if (!address) {
+    throw new Error('SYMBOL_NFT_MINT_ADDRESS environment variable is required');
+  }
+  return address;
+};
+
 /**
  * Get authentication headers for Kaleido Root API (account creation)
  */
@@ -62,6 +78,28 @@ const getGatewayAuthHeaders = () => {
   return {
     'Authorization': `Basic ${credentials}`,
     'Content-Type': 'application/json',
+  };
+};
+
+/**
+ * Get authentication headers for Kaleido NFT Gateway API
+ * Uses Base64 encoded KALEIDO_NFT_API_KEY:KALEIDO_NFT_API_SECRET
+ */
+const getNftAuthHeaders = () => {
+  const apiKey = process.env.KALEIDO_NFT_API_KEY;
+  const apiSecret = process.env.KALEIDO_NFT_API_SECRET;
+  
+  if (!apiKey || !apiSecret) {
+    throw new Error('KALEIDO_NFT_API_KEY and KALEIDO_NFT_API_SECRET environment variables are required for NFT operations');
+  }
+  
+  // Create Base64 encoded credentials
+  const credentials = Buffer.from(`${apiKey}:${apiSecret}`).toString('base64');
+  
+  return {
+    'Authorization': `Basic ${credentials}`,
+    'Content-Type': 'application/json',
+    'x-kaleido-sync': 'true',
   };
 };
 
@@ -220,13 +258,71 @@ export const sendTokens = async (
 
 /**
  * Generate an NFT (mint to an address)
- * This is a placeholder - implement based on your NFT contract API
+ * Uses Kaleido smart contract gateway API for NFT minting
  */
 export const generateNFT = async (
-  toAddress: string,
-  tokenUri?: string
+  toAddress: string
 ): Promise<string> => {
-  // Placeholder for NFT generation
-  // You'll need to implement this based on your NFT contract's API
-  throw new Error('NFT generation not yet implemented - requires NFT contract API integration');
+  try {
+    const nftBase = getKaleidoNftBase();
+    const contractAddress = getNftKrnAddress();
+    
+    // Generate a unique tokenId (using timestamp + random number for uniqueness)
+    const tokenId = `${Date.now()}${Math.floor(Math.random() * 1000000)}`;
+    
+    // Format tokenURI as specified: https://www.dupip.com?nft=${tokenId}
+    const tokenURI = `https://www.dupip.com?nft=${tokenId}`;
+    
+    // Get minting account address if available (optional)
+    // This is the account that will sign the mint transaction
+    const mintFromAddress = process.env.SYMBOL_NFT_SIGNER;
+    
+    // Kaleido NFT mint endpoint: /{address}/mintWithTokenURI
+    let mintUrl = `${nftBase}/${contractAddress}/mintWithTokenURI`;
+    
+    // Add kld-from parameter if minting account is specified (similar to transfer function)
+    if (mintFromAddress) {
+      mintUrl += `?kld-from=${mintFromAddress}`;
+    }
+    
+    console.log({ mintFromAddress, mintUrl, toAddress, tokenId, tokenURI });
+    
+    // Kaleido API expects only these fields: to, tokenId, tokenURI
+    const requestBody = {
+      to: toAddress,
+      tokenId: tokenId,
+      tokenURI: tokenURI,
+    };
+    
+    const response = await fetch(mintUrl, {
+      method: 'POST',
+      headers: getNftAuthHeaders(),
+      body: JSON.stringify(requestBody),
+    });
+
+    console.log({ response })
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to mint NFT: ${response.status} ${errorText}`);
+    }
+
+    const data = await response.json();
+
+    console.log({ data, headers: getNftAuthHeaders() })
+    
+    // Return transaction hash - adjust based on actual API response format
+    if (data.sent) {
+      return data.sent;
+    } else if (data.transactionHash) {
+      return data.transactionHash;
+    } else if (data.hash) {
+      return data.hash;
+    } else {
+      throw new Error(`Invalid mint response: missing transaction hash. Response: ${JSON.stringify(data)}`);
+    }
+  } catch (error) {
+    console.error('Error minting NFT:', error);
+    throw error;
+  }
 };
