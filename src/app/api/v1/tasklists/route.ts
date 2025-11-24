@@ -1338,6 +1338,7 @@ export async function POST(request: NextRequest) {
       const taskKey = body.taskKey // For localization matching (id, localeKey, or name) - fallback
       const newStatus = body.status || 'open'
       const newCount = body.count !== undefined ? Number(body.count) : undefined
+      const newTimes = body.times !== undefined ? Number(body.times) : undefined
       const dateISO = body.date || new Date().toISOString().split('T')[0]
       const isCompleted = body.isCompleted === true
       const isUncompleted = body.isCompleted === false && body.isUncompleted !== false
@@ -1442,7 +1443,7 @@ export async function POST(request: NextRequest) {
 
         // Update task based on completion/uncompletion
         const currentCount = existingTask.count || 0
-        const times = existingTask.times || 1
+        const times = newTimes !== undefined ? newTimes : (existingTask.times || 1)
         const updatedCount = newCount !== undefined ? newCount : (isCompleted ? currentCount + 1 : (isUncompleted ? Math.max(0, currentCount - 1) : currentCount))
         
         // Update completers if completing/uncompleting
@@ -1488,6 +1489,7 @@ export async function POST(request: NextRequest) {
           ...existingTask,
           ...taskToUse,
           count: updatedCount,
+          times: times,
           status: finalStatus,
           completers: updatedCompleters
         }
@@ -1695,6 +1697,8 @@ export async function POST(request: NextRequest) {
       const taskId = body.taskId // Actual task ID (preferred)
       const taskKey = body.taskKey // For localization matching (id, localeKey, or name) - fallback
       const newStatus = body.status || body.taskStatus // Support both for backward compatibility
+      const newCount = body.count !== undefined ? Number(body.count) : undefined
+      const newTimes = body.times !== undefined ? Number(body.times) : undefined
       const dateISO = body.date || new Date().toISOString().split('T')[0] // Use provided date or today
 
       // Helper to match tasks reliably (for localization)
@@ -1815,27 +1819,42 @@ export async function POST(request: NextRequest) {
         const openIndex = openTasks.findIndex(taskMatches)
         const closedIndex = closedTasks.findIndex(taskMatches)
         
+        // Get existing task if found
+        const existingTask = openIndex >= 0 ? openTasks[openIndex] : (closedIndex >= 0 ? closedTasks[closedIndex] : null)
+        const currentCount = existingTask?.count || 0
+        const currentTimes = existingTask?.times || baseTask?.times || 1
+        const updatedCount = newCount !== undefined ? newCount : currentCount
+        const updatedTimes = newTimes !== undefined ? newTimes : currentTimes
+        
+        // Build updated task with count and times
+        const buildUpdatedTask = (task: any) => {
+          const updated = { ...task, status: newStatus }
+          if (newCount !== undefined) updated.count = updatedCount
+          if (newTimes !== undefined) updated.times = updatedTimes
+          return updated
+        }
+        
         if (closedIndex >= 0 && newStatus !== 'done') {
           // Task is in closedTasks and status is changing to something other than "done"
-          // Move from closedTasks to openTasks with new status
-          const taskToMove = { ...closedTasks[closedIndex], status: newStatus }
+          // Move from closedTasks to openTasks with new status, count, and times
+          const taskToMove = buildUpdatedTask(closedTasks[closedIndex])
           closedTasks.splice(closedIndex, 1)
           openTasks.push(taskToMove)
         } else if (openIndex >= 0 && newStatus === 'done') {
           // Task is in openTasks and status is changing to "done"
-          // Move from openTasks to closedTasks with new status
-          const taskToMove = { ...openTasks[openIndex], status: newStatus }
+          // Move from openTasks to closedTasks with new status, count, and times
+          const taskToMove = buildUpdatedTask(openTasks[openIndex])
           openTasks.splice(openIndex, 1)
           closedTasks.push(taskToMove)
         } else if (openIndex >= 0) {
-          // Update in openTasks - only update status, preserve all other properties
-          openTasks[openIndex] = { ...openTasks[openIndex], status: newStatus }
+          // Update in openTasks - update status, count, and times if provided
+          openTasks[openIndex] = buildUpdatedTask(openTasks[openIndex])
         } else if (closedIndex >= 0) {
-          // Update in closedTasks - only update status, preserve all other properties
-          closedTasks[closedIndex] = { ...closedTasks[closedIndex], status: newStatus }
+          // Update in closedTasks - update status, count, and times if provided
+          closedTasks[closedIndex] = buildUpdatedTask(closedTasks[closedIndex])
         } else {
-          // Add to openTasks if not found - use baseTask as template but preserve times if it exists in baseTask
-          const updatedTask = { ...baseTask, status: newStatus }
+          // Add to openTasks if not found - use baseTask as template with count and times
+          const updatedTask = { ...baseTask, status: newStatus, count: updatedCount, times: updatedTimes }
           // If new status is "done", add to closedTasks instead
           if (newStatus === 'done') {
             closedTasks.push(updatedTask)

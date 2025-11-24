@@ -71,7 +71,7 @@ export function useTaskHandlers({
     try {
       const newStatus = isFullyCompleted ? 'done' : 'in progress'
       
-      // Persist to API - send only task.id and new status
+      // Persist to API - send task.id, status, count, and times
       await fetch('/api/v1/tasklists', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -81,6 +81,7 @@ export function useTaskHandlers({
           taskId: task.id || task.localeKey || task.name,
           status: newStatus,
           count: newCount,
+          times: times,
           date,
           isCompleted: true
         })
@@ -174,7 +175,12 @@ export function useTaskHandlers({
       const isCompleting = effectiveStatus === 'done'
       const isUncompleting = effectiveStatus !== 'done' && task.status === 'done'
       
-      // Persist task status to API - send only task.id and status
+      // Get current count and times from the task
+      const currentCount = foundTask?.count || 0
+      const times = foundTask?.times || 1
+      const newCount = isCompleting ? currentCount + 1 : (isUncompleting ? Math.max(0, currentCount - 1) : currentCount)
+      
+      // Persist task status to API - send task.id, status, count, and times
       await fetch('/api/v1/tasklists', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -183,6 +189,8 @@ export function useTaskHandlers({
           taskListId,
           taskId: task.id || task.localeKey || task.name,
           status: effectiveStatus,
+          count: newCount,
+          times: times,
           date: date,
           isCompleted: isCompleting,
           isUncompleted: isUncompleting
@@ -241,7 +249,7 @@ export function useTaskHandlers({
       // Get today's date
       const dateToUse = date || formatDateLocal(new Date())
       
-      // Persist to backend - send only task.id, status, and count
+      // Persist to backend - send task.id, status, count, and times
       await fetch('/api/v1/tasklists', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -251,6 +259,7 @@ export function useTaskHandlers({
           taskId: task.id || task.localeKey || task.name,
           status: status,
           count: newCount,
+          times: times,
           date: dateToUse,
           isCompleted: true
         })
@@ -340,7 +349,7 @@ export function useTaskHandlers({
       // Get today's date
       const dateToUse = date || formatDateLocal(new Date())
       
-      // Persist to backend - send only task.id, status, and count
+      // Persist to backend - send task.id, status, count, and times
       await fetch('/api/v1/tasklists', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -350,6 +359,7 @@ export function useTaskHandlers({
           taskId: task.id || task.localeKey || task.name,
           status: status,
           count: newCount,
+          times: times,
           date: dateToUse,
           isCompleted: false
         })
