@@ -287,6 +287,12 @@ export const TaskGrid = ({
         const taskStatus = taskStatuses[key] || getTaskStatus(task)
         const isDone = taskStatus === 'done'
         
+        // Get optimistic count from pending completions to ensure task object has latest count
+        const pendingCompletion = pendingCompletionsRef.current.get(key)
+        const taskWithOptimisticCount = pendingCompletion 
+          ? { ...task, count: pendingCompletion.count }
+          : task
+        
         const lastCompleter = Array.isArray(task?.completers) && task.completers.length > 0 
           ? task.completers[task.completers.length - 1] 
           : undefined
@@ -331,23 +337,23 @@ export const TaskGrid = ({
                 <span className="ml-2">{t(`tasks.status.${status}`)}</span>
               </>
             ),
-            onClick: () => handleStatusChange(task, status),
+            onClick: () => handleStatusChange(taskWithOptimisticCount, status),
             icon: null,
           })),
           {
             label: t('tasks.incrementTimes', { defaultValue: 'Increment times' }),
-            onClick: () => handleIncrementTimes(task),
+            onClick: () => handleIncrementTimes(taskWithOptimisticCount),
             icon: <Plus className="h-4 w-4" />,
             separator: true,
           },
           {
             label: t('tasks.decrementTimes', { defaultValue: 'Decrement times' }),
-            onClick: () => handleDecrementTimes(task),
+            onClick: () => handleDecrementTimes(taskWithOptimisticCount),
             icon: <Minus className="h-4 w-4" />,
           },
           {
             label: task?.redacted ? t('tasks.markAsNotSensitive', { defaultValue: 'Mark as not sensitive' }) : t('tasks.markAsSensitive', { defaultValue: 'Mark as sensitive' }),
-            onClick: () => handleToggleRedacted(task),
+            onClick: () => handleToggleRedacted(taskWithOptimisticCount),
             icon: task?.redacted ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />,
             separator: true,
           },
@@ -355,7 +361,7 @@ export const TaskGrid = ({
             ? [
                 {
                   label: t('tasks.decrementCount'),
-                  onClick: () => handleDecrementCount(task),
+                  onClick: () => handleDecrementCount(taskWithOptimisticCount),
                   icon: <Minus className="h-4 w-4" />,
                   separator: true,
                 },
@@ -366,12 +372,12 @@ export const TaskGrid = ({
         return (
           <TaskItem
             key={`task__item--${key}`}
-            task={task}
+            task={taskWithOptimisticCount}
             taskStatus={finalTaskStatus}
             statusColor={statusColor}
             iconColor={iconColor}
             optionsMenuItems={optionsMenuItems}
-            onClick={() => handleTaskClick(task)}
+            onClick={() => handleTaskClick(taskWithOptimisticCount)}
             revealRedacted={revealRedacted}
             showCompleterBadge={true}
             completerName={completerName}

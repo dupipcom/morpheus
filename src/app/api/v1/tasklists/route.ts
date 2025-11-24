@@ -1703,7 +1703,7 @@ export async function POST(request: NextRequest) {
 
       // Helper to match tasks reliably (for localization)
       const getKey = (t: any) => (t?.id || t?.localeKey || (typeof t?.name === 'string' ? t.name.toLowerCase() : '')) as string
-      
+
       // Get task from templateTasks or tasks to use as base
       let baseTask: any = null
       const tasks = Array.isArray(taskListToUpdate.tasks) 
@@ -1718,10 +1718,10 @@ export async function POST(request: NextRequest) {
       // If not found by ID, fall back to taskKey for localization matching
       if (!baseTask && taskKey) {
         const taskKeyLower = typeof taskKey === 'string' ? taskKey.toLowerCase() : taskKey
-        baseTask = tasks.find((task: any) => {
-          const key = getKey(task)
-          return key === taskKeyLower || key === taskKey
-        })
+      baseTask = tasks.find((task: any) => {
+        const key = getKey(task)
+        return key === taskKeyLower || key === taskKey
+      })
       }
 
       // If not found in tasks, check templateTasks
@@ -1732,10 +1732,10 @@ export async function POST(request: NextRequest) {
         }
         if (!baseTask && taskKey) {
           const taskKeyLower = typeof taskKey === 'string' ? taskKey.toLowerCase() : taskKey
-          baseTask = templateTasks.find((task: any) => {
-            const key = getKey(task)
-            return key === taskKeyLower || key === taskKey
-          })
+        baseTask = templateTasks.find((task: any) => {
+          const key = getKey(task)
+          return key === taskKeyLower || key === taskKey
+        })
         }
       }
 
@@ -1810,7 +1810,7 @@ export async function POST(request: NextRequest) {
           if (taskKey) {
             const key = getKey(task)
             const taskKeyLower = typeof taskKey === 'string' ? taskKey.toLowerCase() : taskKey
-            return key === taskKeyLower || key === taskKey
+          return key === taskKeyLower || key === taskKey
           }
           return false
         }

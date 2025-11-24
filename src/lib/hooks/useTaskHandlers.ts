@@ -43,7 +43,10 @@ export function useTaskHandlers({
     if (!taskListId) return
     
     const key = getTaskKey(task)
-    const currentCount = task?.count || 0
+    // Use optimistic count if available, otherwise use task count, or check pending completions
+    const optimisticCount = optimisticCounts?.[key]
+    const pendingCompletion = pendingCompletionsRef.current.get(key)
+    const currentCount = pendingCompletion?.count ?? optimisticCount ?? (task?.count || 0)
     const times = task?.times || 1
     const isCurrentlyCompleted = currentCount >= times
     
@@ -133,20 +136,9 @@ export function useTaskHandlers({
       
       if (onRefreshUser) await onRefreshUser()
       
-      // Clear pending completion
-      pendingCompletionsRef.current.delete(key)
-      if (setOptimisticStatuses && setOptimisticCounts) {
-        setOptimisticStatuses(prev => {
-          const updated = { ...prev }
-          delete updated[key]
-          return updated
-        })
-        setOptimisticCounts(prev => {
-          const updated = { ...prev }
-          delete updated[key]
-          return updated
-        })
-      }
+      // Keep pending completion in ref until next tasklists refresh (happens every 30s)
+      // This ensures subsequent clicks use the updated count
+      // The pending completion will be cleared when tasklists are refreshed and mergedTasks are updated
     } catch (error) {
       console.error('Error completing task:', error)
       pendingCompletionsRef.current.delete(key)
