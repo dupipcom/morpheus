@@ -7,8 +7,6 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import Image from 'next/image';
 import { ArticleShareButton } from '@/components/articleShareButton';
 
-export const dynamic = 'force-dynamic'
-
 // Helper function to fetch profile data
 async function getProfile(userName: string): Promise<any | null> {
   if (!userName) return null;

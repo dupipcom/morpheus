@@ -22,7 +22,6 @@ import { useI18n } from "@/lib/contexts/i18n"
 
 // Allow streaming responses up to 60 seconds
 export const maxDuration = 60;
-export const dynamic = "force-dynamic"
 
 // Helper function to format date in local timezone (YYYY-MM-DD)
 const formatDateLocal = (date: Date): string => {
