@@ -16,16 +16,30 @@ async function getProfile(userName: string): Promise<any | null> {
       ? `https://${process.env.VERCEL_URL}` 
       : process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
     
-    const response = await fetch(`${baseUrl}/api/v1/profile/${userName}`);
+    const response = await fetch(`${baseUrl}/api/v1/profile/${userName}`, {
+      headers: {
+        'Accept': 'application/json',
+      },
+    });
     
     if (!response.ok) {
+      return null;
+    }
+    
+    // Check if response is actually JSON before parsing
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      // If we got HTML (error page), return null
       return null;
     }
     
     const data = await response.json();
     return data.profile;
   } catch (error) {
-    console.error(`Error fetching profile for ${userName}:`, error);
+    // Silently fail during build - profile data is optional
+    if (process.env.NODE_ENV === 'development') {
+      console.error(`Error fetching profile for ${userName}:`, error);
+    }
     return null;
   }
 }

@@ -7,6 +7,7 @@ import { PublicChartsView } from "@/components/publicChartsView"
 import { AddFriendButtonOrSignIn } from "@/components/addFriendButtonOrSignIn"
 import { PublicNotesViewer } from "@/components/publicNotesViewer"
 import ActivityCard, { ActivityItem } from "@/components/activityCard"
+import { useProfile } from '@/lib/hooks/useProfile'
 
 interface ProfileData {
   userId?: string
@@ -87,34 +88,15 @@ export const ProfileView = ({
 
   // Requery profile endpoint on mount to get fields based on friendship status
   // This ensures we get the most up-to-date data based on the current user's authentication
-  // and friendship status, even if the initial SSR data was fetched without auth context
+  // Use SWR to fetch profile data
+  const { profile: swrProfile, isLoading: swrLoading, refreshProfile } = useProfile(userName, true)
+  
   useEffect(() => {
-    const fetchProfile = async () => {
-      if (!userName) return
-      
-      setLoading(true)
-      try {
-        const response = await fetch(`/api/v1/profile/${userName}`, {
-          credentials: 'include' // Include cookies for authentication
-        })
-        
-        if (response.ok) {
-          const data = await response.json()
-          if (data.profile) {
-            setProfile(data.profile)
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching profile:', error)
-        // Keep the initial profile data on error
-      } finally {
-        setLoading(false)
-      }
+    if (swrProfile) {
+      setProfile(swrProfile)
     }
-
-    // Always fetch on mount to get fresh data based on current auth state
-    fetchProfile()
-  }, [userName])
+    setLoading(swrLoading)
+  }, [swrProfile, swrLoading])
 
   // Extract profile data - API returns flat structure, but also support nested structure as fallback
   const profileData = profile.data || {}

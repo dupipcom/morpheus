@@ -43,7 +43,7 @@ export function useDebounce<T extends (...args: any[]) => any>(
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current)
       }
-
+      
       if (options?.batched) {
         // For batched mode, merge the first argument (expected to be an object)
         if (args.length > 0 && typeof args[0] === 'object' && args[0] !== null && !Array.isArray(args[0])) {
@@ -60,9 +60,9 @@ export function useDebounce<T extends (...args: any[]) => any>(
         }, delay)
       } else {
         // Regular debounce mode
-        timeoutRef.current = setTimeout(() => {
-          callback(...args)
-        }, delay)
+      timeoutRef.current = setTimeout(() => {
+        callback(...args)
+      }, delay)
       }
     },
     [callback, delay, options?.batched]

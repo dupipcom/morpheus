@@ -1,13 +1,13 @@
 'use client'
 
-import { useState, useEffect, useContext } from 'react'
+import { useState, useEffect, useContext, useMemo } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { Badge } from '@/components/ui/badge'
 import { CheckSquare, User, FileText, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useI18n } from '@/lib/contexts/i18n'
 import { GlobalContext } from '@/lib/contexts'
-import { useDebounce } from '@/lib/hooks/useDebounce'
+import { useSearch } from '@/lib/hooks/useSearch'
 
 interface SearchResult {
   id: string
@@ -33,47 +33,36 @@ interface SearchPopoverProps {
 }
 
 export function SearchPopover({ query, open, onOpenChange, anchorRef, onClearQuery, onCollapseSearch }: SearchPopoverProps) {
-  const [results, setResults] = useState<SearchResult[]>([])
-  const [loading, setLoading] = useState(false)
   const router = useRouter()
   const { t } = useI18n()
   const { setIsNavigating } = useContext(GlobalContext)
 
-  // Debounced search function
-  const debouncedSearch = useDebounce(async (searchQuery: string) => {
-    if (!searchQuery || searchQuery.length < 2) {
-      setResults([])
-      setLoading(false)
-      return
-    }
-
-    setLoading(true)
-    try {
-      const response = await fetch(`/api/v1/search?q=${encodeURIComponent(searchQuery)}`)
-      if (response.ok) {
-        const data = await response.json()
-        // Limit results to 5
-        setResults((data.results || []).slice(0, 5))
-      } else {
-        setResults([])
-      }
-    } catch (error) {
-      console.error('Error searching:', error)
-      setResults([])
-    } finally {
-      setLoading(false)
-    }
-  }, 300)
+  // Debounce the query for SWR
+  const [debouncedQuery, setDebouncedQuery] = useState<string>('')
 
   useEffect(() => {
     if (!query || query.length < 2) {
-      setResults([])
-      setLoading(false)
+      setDebouncedQuery('')
       return
     }
 
-    debouncedSearch(query)
-  }, [query, debouncedSearch])
+    const timeoutId = setTimeout(() => {
+      setDebouncedQuery(query)
+    }, 300)
+
+    return () => clearTimeout(timeoutId)
+  }, [query])
+
+  // Use SWR for search
+  const { results: searchResults, isLoading } = useSearch(
+    debouncedQuery && debouncedQuery.length >= 2 ? debouncedQuery : null,
+    true
+  )
+
+  // Limit results to 5 - use useMemo to avoid infinite loops
+  const results = useMemo(() => {
+    return (searchResults || []).slice(0, 5)
+  }, [searchResults])
 
   const handleResultClick = (result: SearchResult) => {
     setIsNavigating(true)
@@ -178,7 +167,7 @@ export function SearchPopover({ query, open, onOpenChange, anchorRef, onClearQue
       }}
     >
       <div className="max-w-7xl mx-auto px-4">
-        {loading ? (
+        {isLoading ? (
           <div className="flex items-center justify-center p-4">
             <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
           </div>

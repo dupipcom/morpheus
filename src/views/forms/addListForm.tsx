@@ -174,14 +174,14 @@ export const AddListForm = ({
   
   // Debounced search function
   const debouncedSearch = useDebounce(async (query: string) => {
-    // Fetch suggestions even when query is empty (shows top 5 close friends/friends/public)
+        // Fetch suggestions even when query is empty (shows top 5 close friends/friends/public)
     const res = await fetch(`/api/v1/profiles?query=${encodeURIComponent(query)}`)
     if (res.ok) {
-      const data = await res.json()
-      setCollabResults(data.profiles || [])
-    }
-  }, 300)
-
+          const data = await res.json()
+          setCollabResults(data.profiles || [])
+        }
+    }, 300)
+    
   useEffect(() => {
     debouncedSearch(collabQuery)
   }, [collabQuery, debouncedSearch])

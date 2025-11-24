@@ -19,16 +19,29 @@ interface ProfileData {
 
 async function getProfile(userName: string): Promise<ProfileData | null> {
   try {
-    const response = await fetch(`${process.env.VERCEL_URL ? "https://" + process.env.VERCEL_URL : 'http://localhost:3000'}/api/v1/profile/${userName}`)
+    const response = await fetch(`${process.env.VERCEL_URL ? "https://" + process.env.VERCEL_URL : 'http://localhost:3000'}/api/v1/profile/${userName}`, {
+      headers: {
+        'Accept': 'application/json',
+      },
+    })
     
     if (!response.ok) {
+      return null
+    }
+    
+    // Check if response is actually JSON before parsing
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
       return null
     }
     
     const data = await response.json()
     return data.profile
   } catch (error) {
-    console.error('Error fetching profile:', error)
+    // Silently fail during build - profile data is optional
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Error fetching profile:', error)
+    }
     return null
   }
 }

@@ -8,6 +8,7 @@ import { useI18n } from '@/lib/contexts/i18n'
 import { Badge } from "@/components/ui/badge"
 import { toast } from "sonner"
 import { OptionsButton, OptionsMenuItem } from "@/components/optionsButton"
+import { useProfile } from '@/lib/hooks/useProfile'
 
 interface Template {
   id: string
@@ -74,33 +75,12 @@ function getTimeAgo(date: Date): string {
 
 export function PublicTemplatesViewer({ userName, showCard = true, isLoggedIn = false }: PublicTemplatesViewerProps) {
   const { t } = useI18n()
-  const [templates, setTemplates] = useState<Template[]>([])
-  const [taskLists, setTaskLists] = useState<TaskList[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const { profile, isLoading: loading, error: profileError, refreshProfile } = useProfile(userName, true)
   const [cloningTemplateId, setCloningTemplateId] = useState<string | null>(null)
-
-  const fetchData = async () => {
-    try {
-      setLoading(true)
-      setError(null)
-      
-      const response = await fetch(`/api/v1/profile/${userName}`)
-      
-      if (!response.ok) {
-        throw new Error(t('errors.failedToFetchTemplates'))
-      }
-      
-      const data = await response.json()
-      setTemplates(data.profile?.templates || [])
-      setTaskLists(data.profile?.taskLists || [])
-    } catch (err) {
-      console.error('Error fetching templates:', err)
-      setError(t('errors.failedToLoadTemplates'))
-    } finally {
-      setLoading(false)
-    }
-  }
+  
+  const templates = (profile?.templates || []) as Template[]
+  const taskLists = (profile?.taskLists || []) as TaskList[]
+  const error = profileError ? t('errors.failedToLoadTemplates') : null
 
   const cloneTemplate = async (templateId: string, templateName: string) => {
     try {
@@ -138,25 +118,21 @@ export function PublicTemplatesViewer({ userName, showCard = true, isLoggedIn = 
     }
   }
 
-  useEffect(() => {
-    fetchData()
-  }, [userName])
-
   // Refresh when the component becomes visible (e.g., after friend status changes)
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (!document.hidden) {
-        fetchData()
+        refreshProfile()
       }
     }
 
     const handleFocus = () => {
-      fetchData()
+      refreshProfile()
     }
 
     // Listen for custom friend status change events
     const handleFriendStatusChange = () => {
-      fetchData()
+      refreshProfile()
     }
 
     document.addEventListener('visibilitychange', handleVisibilityChange)
@@ -168,7 +144,7 @@ export function PublicTemplatesViewer({ userName, showCard = true, isLoggedIn = 
       window.removeEventListener('focus', handleFocus)
       window.removeEventListener('friendStatusChanged', handleFriendStatusChange)
     }
-  }, [userName])
+  }, [userName, refreshProfile])
 
   if (loading) {
     const content = (
@@ -242,7 +218,7 @@ export function PublicTemplatesViewer({ userName, showCard = true, isLoggedIn = 
           <Button
             variant="ghost"
             size="sm"
-            onClick={fetchData}
+            onClick={refreshProfile}
             disabled={loading}
             className="h-8 w-8 p-0"
           >
@@ -368,7 +344,7 @@ export function PublicTemplatesViewer({ userName, showCard = true, isLoggedIn = 
           <Button
             variant="ghost"
             size="sm"
-            onClick={fetchData}
+            onClick={refreshProfile}
             disabled={loading}
             className="h-8 w-8 p-0"
           >
