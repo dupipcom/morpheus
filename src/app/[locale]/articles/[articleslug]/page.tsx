@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { fetchEpisodeBySlug, fetchEpisodes } from "@/lib/notion";
+import { fetchEpisodeBySlug, fetchArticles } from "@/lib/payload";
 import type { Metadata } from 'next';
 import { buildMetadata } from '@/app/metadata';
 import Link from 'next/link';
@@ -36,7 +36,7 @@ export async function generateStaticParams() {
   const params = [];
   for (const locale of locales) {
     try {
-      const episodes = await fetchEpisodes(locale);
+      const episodes = await fetchArticles(locale);
       for (const article of episodes.docs || []) {
         const slug = (article as any).slug || (article as any).slug?.value;
         if (slug) {

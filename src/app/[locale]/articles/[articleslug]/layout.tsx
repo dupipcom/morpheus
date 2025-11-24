@@ -1,5 +1,5 @@
 import React from "react";
-import { fetchEpisodes, fetchEpisodeBySlug } from "@/lib/notion";
+import { fetchArticles, fetchEpisodeBySlug } from "@/lib/payload";
 import { RichText } from '@payloadcms/richtext-lexical/react';
 import ArticleCardGrid from '@/components/articleCardGrid';
 
@@ -72,7 +72,7 @@ export default async function ArticleLayout({
   const { locale, articleslug } = await params;
 
   const article = await fetchEpisodeBySlug(articleslug, locale);
-  const allPosts = await fetchEpisodes(locale) || [];
+  const allPosts = await fetchArticles(locale) || [];
   const relatedPosts = allPosts.docs.filter((post: any) => post.id !== article.id).slice(0, 3);
 
   if (!article) {

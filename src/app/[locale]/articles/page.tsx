@@ -1,4 +1,4 @@
-import { fetchEpisodes } from "@/lib/notion";
+import { fetchArticles } from "@/lib/payload";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import Link from "next/link";
 import type { Metadata } from 'next';
@@ -20,7 +20,7 @@ export default async function ArticlesPage({
 }) {
   const { locale } = await params;
   
-  const episodes = await fetchEpisodes(locale);
+  const episodes = await fetchArticles(locale);
   const articles = episodes.docs || [];
 
   if (articles.length === 0) {

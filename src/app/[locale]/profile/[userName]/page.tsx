@@ -17,8 +17,6 @@ interface ProfileData {
   publicCharts?: any
 }
 
-export const dynamic = 'force-dynamic'
-
 async function getProfile(userName: string): Promise<ProfileData | null> {
   try {
     const response = await fetch(`${process.env.VERCEL_URL ? "https://" + process.env.VERCEL_URL : 'http://localhost:3000'}/api/v1/profile/${userName}`)

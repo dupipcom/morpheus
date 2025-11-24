@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
-import { fetchPages, fetchPageBySlug, fetchPageBlocks, fetchEpisodes } from "@/lib/notion"
+import { fetchPages, fetchPageBySlug, fetchPageBlocks, fetchArticles } from "@/lib/payload"
 import { RichText } from '@payloadcms/richtext-lexical/react'
-import { NotionRenderer } from "@notion-render/client"
 import Template from "../../_template"
 import type { Metadata } from 'next'
 import { buildMetadata } from '@/app/metadata'
@@ -89,7 +88,7 @@ export default async function Page({
   // Fetch recent articles for homepage
   let recentArticles: any[] = [];
   if (isHomepage) {
-    const episodes = await fetchEpisodes(locale);
+    const episodes = await fetchArticles(locale);
     // Sort by publishedAt descending and take the 3 latest
     recentArticles = (episodes.docs || [])
       .sort((a: any, b: any) => {

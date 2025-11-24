@@ -1,5 +1,5 @@
 import React from "react"
-import { fetchPageBySlug } from "@/lib/notion"
+import { fetchPageBySlug } from "@/lib/payload"
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import { stripLocaleFromPath } from "../../helpers"
 

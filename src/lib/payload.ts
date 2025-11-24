@@ -72,8 +72,8 @@ export const fetchPageBlocks = React.cache((pageId: string, locale?: string) => 
 });
 
 
-// Dupip Episodes (Posts)
-export const fetchEpisodes = React.cache((locale?: string) => {
+// Dupip Articles (Posts)
+export const fetchArticles = React.cache((locale?: string) => {
   return sdk.find({
     collection: "posts",
     locale,

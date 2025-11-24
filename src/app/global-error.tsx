@@ -8,7 +8,10 @@ import { defaultLocale } from './constants';
 
 export default function GlobalError({ error }: { error: Error & { digest?: string } }) {
   useEffect(() => {
-    Sentry.captureException(error);
+    // Only capture exceptions in production
+    if (process.env.NODE_ENV !== 'development') {
+      Sentry.captureException(error);
+    }
   }, [error]);
 
   return (
