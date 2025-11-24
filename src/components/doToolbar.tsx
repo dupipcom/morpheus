@@ -45,7 +45,7 @@ export const DoToolbar = ({
   hasFormOpen?: boolean
 }) => {
   const { t } = useI18n()
-  const { session, taskLists: contextTaskLists, refreshTaskLists, selectedDate: contextSelectedDate, setSelectedDate } = useContext(GlobalContext)
+  const { session, taskLists: contextTaskLists, refreshTaskLists, templates: contextTemplates, refreshTemplates, selectedDate: contextSelectedDate, setSelectedDate } = useContext(GlobalContext)
   
   // Helper to compare dates by value, not reference
   const datesEqual = (date1: Date | undefined, date2: Date | undefined): boolean => {
@@ -287,10 +287,19 @@ export const DoToolbar = ({
     return found
   }, [allTaskLists, selectedTaskListId])
 
-  const [userTemplates, setUserTemplates] = useState<any[]>([])
+  const [stableTemplates, setStableTemplates] = useState<any[]>([])
   const [collabProfiles, setCollabProfiles] = useState<Record<string, string>>({})
   const [listEarnings, setListEarnings] = useState<{ profit: number; prize: number; earnings: number }>({ profit: 0, prize: 0, earnings: 0 })
   const [dayData, setDayData] = useState<any>(null)
+
+  // Update stable templates only when context has valid data (never clear once we have data)
+  useEffect(() => {
+    if (Array.isArray(contextTemplates) && contextTemplates.length > 0) {
+      setStableTemplates(contextTemplates)
+    }
+  }, [contextTemplates])
+
+  const userTemplates = stableTemplates.length > 0 ? stableTemplates : (Array.isArray(contextTemplates) ? contextTemplates : [])
 
   // Fetch day data for the selected date
   useEffect(() => {
@@ -364,25 +373,6 @@ export const DoToolbar = ({
     }
   }, [selectedList?.id, dayData])
 
-  const refreshTemplates = async () => {
-    try {
-      const res = await fetch('/api/v1/templates')
-      if (res.ok) {
-        const data = await res.json()
-        setUserTemplates(data.templates || [])
-      }
-    } catch {}
-  }
-
-  useEffect(() => {
-    let cancelled = false
-    const run = async () => {
-      if (cancelled) return
-      await refreshTemplates()
-    }
-    run()
-    return () => { cancelled = true }
-  }, [])
 
   // Fetch owner and collaborator profiles for badges
   useEffect(() => {

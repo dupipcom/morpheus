@@ -35,6 +35,8 @@ export function Providers({ children, locale: providedLocale }: ProvidersProps) 
     session: { user: {} }, 
     taskLists: [] as any[], 
     refreshTaskLists: async () => {},
+    templates: [] as any[],
+    refreshTemplates: async () => {},
     revealRedacted: false,
     selectedDate: undefined as Date | undefined,
     setSelectedDate: (date: Date | undefined) => {},
@@ -96,12 +98,29 @@ export function Providers({ children, locale: providedLocale }: ProvidersProps) 
     }
   }, [])
 
-  // Fetch tasklists once on mount
+  const refreshTemplates = useCallback(async () => {
+    try {
+      const res = await fetch('/api/v1/templates')
+      if (!res.ok) {
+        // Don't clear existing templates on error - preserve them
+        console.warn('Failed to refresh templates:', res.status)
+        return
+      }
+      const data = await res.json()
+      setGlobalContext(prev => ({ ...prev, templates: Array.isArray(data?.templates) ? data.templates : [] }))
+    } catch (error) {
+      // Don't clear existing templates on error - preserve them
+      console.warn('Error refreshing templates:', error)
+    }
+  }, [])
+
+  // Fetch tasklists and templates once on mount
   useEffect(() => {
     if (isClient) {
       refreshTaskLists()
+      refreshTemplates()
     }
-  }, [isClient, refreshTaskLists])
+  }, [isClient, refreshTaskLists, refreshTemplates])
 
   return (
     <ClerkProvider 
@@ -115,7 +134,7 @@ export function Providers({ children, locale: providedLocale }: ProvidersProps) 
     >
       <AuthWrapper isLoading={isLoading}>
         <I18nProvider locale={locale}>
-          <GlobalContext.Provider value={{ ...globalContext, setGlobalContext, refreshTaskLists, selectedDate, setSelectedDate, isNavigating, setIsNavigating }}>
+          <GlobalContext.Provider value={{ ...globalContext, setGlobalContext, refreshTaskLists, refreshTemplates, selectedDate, setSelectedDate, isNavigating, setIsNavigating }}>
             <NotesRefreshProvider>
               <SWRConfig value={{
                 revalidateOnFocus: false,
