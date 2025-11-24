@@ -95,7 +95,6 @@ export const ProfileView = ({
       setLoading(true)
       try {
         const response = await fetch(`/api/v1/profile/${userName}`, {
-          cache: 'no-store',
           credentials: 'include' // Include cookies for authentication
         })
         

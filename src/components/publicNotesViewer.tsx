@@ -24,9 +24,7 @@ export function PublicNotesViewer({ userName, showCard = true, gridLayout = fals
       setLoading(true)
       setError(null)
       
-      const response = await fetch(`/api/v1/profile/${userName}/notes`, {
-        cache: 'no-store'
-      })
+      const response = await fetch(`/api/v1/profile/${userName}/notes`)
       
       if (!response.ok) {
         throw new Error(t('errors.failedToFetchNotes'))

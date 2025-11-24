@@ -106,8 +106,7 @@ export const useInactivityTimer = ({
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({}),
-        cache: 'no-store'
+        body: JSON.stringify({})
       });
       
       if (!response.ok) {

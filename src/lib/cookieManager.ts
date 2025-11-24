@@ -17,7 +17,7 @@ let isSigningOut = false;
  */
 const getServerLastLogin = async (): Promise<number | null> => {
   try {
-    const response = await fetch('/api/v1/user', { method: 'GET', cache: 'no-store' });
+    const response = await fetch('/api/v1/user', { method: 'GET' });
     if (response.ok) {
       const user = await response.json();
       const lastLoginIso = user?.lastLogin as string | undefined;

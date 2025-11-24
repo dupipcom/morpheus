@@ -85,9 +85,7 @@ export function PublicTemplatesViewer({ userName, showCard = true, isLoggedIn = 
       setLoading(true)
       setError(null)
       
-      const response = await fetch(`/api/v1/profile/${userName}`, {
-        cache: 'no-store'
-      })
+      const response = await fetch(`/api/v1/profile/${userName}`)
       
       if (!response.ok) {
         throw new Error(t('errors.failedToFetchTemplates'))

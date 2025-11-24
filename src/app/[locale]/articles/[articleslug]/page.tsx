@@ -16,9 +16,7 @@ async function getProfile(userName: string): Promise<any | null> {
       ? `https://${process.env.VERCEL_URL}` 
       : process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
     
-    const response = await fetch(`${baseUrl}/api/v1/profile/${userName}`, {
-      cache: 'no-store'
-    });
+    const response = await fetch(`${baseUrl}/api/v1/profile/${userName}`);
     
     if (!response.ok) {
       return null;
