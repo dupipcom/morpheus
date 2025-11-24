@@ -45,31 +45,39 @@ export function useTaskHandlers({
     const key = getTaskKey(task)
     const currentCount = task?.count || 0
     const times = task?.times || 1
-    const newCount = currentCount + 1
+    const isCurrentlyCompleted = currentCount >= times
+    
+    // Toggle completion: if completed, uncomplete; otherwise complete
+    const newCount = isCurrentlyCompleted 
+      ? Math.max(0, currentCount - 1)  // Uncomplete: decrement count
+      : currentCount + 1                // Complete: increment count
     const isFullyCompleted = newCount >= times
     
-    // Track pending completion
+    // Track pending completion/uncompletion
     pendingCompletionsRef.current.set(key, {
       count: newCount,
-      status: isFullyCompleted ? 'done' : 'in progress',
+      status: isFullyCompleted ? 'done' : (newCount > 0 ? 'in progress' : 'open'),
       inClosed: isFullyCompleted
     })
+    
+    // Calculate new status
+    const existingStatus = optimisticStatuses?.[key] || task?.status
+    const { status: calculatedStatus } = calculateTaskStatus(newCount, times, existingStatus)
     
     // Optimistic UI update
     if (setTaskStatuses) {
       setTaskStatuses(prev => ({
         ...prev,
-        [key]: isFullyCompleted ? 'done' : 'in progress'
+        [key]: calculatedStatus
       }))
     }
     if (setOptimisticStatuses && setOptimisticCounts) {
-      const { status } = calculateTaskStatus(newCount, times, optimisticStatuses?.[key])
-      setOptimisticStatuses(prev => ({ ...prev, [key]: status }))
+      setOptimisticStatuses(prev => ({ ...prev, [key]: calculatedStatus }))
       setOptimisticCounts(prev => ({ ...prev, [key]: newCount }))
     }
     
     try {
-      const newStatus = isFullyCompleted ? 'done' : 'in progress'
+      const newStatus = calculatedStatus
       
       // Persist to API - send task.id, status, count, and times
       await fetch('/api/v1/tasklists', {
@@ -83,13 +91,15 @@ export function useTaskHandlers({
           count: newCount,
           times: times,
           date,
-          isCompleted: true
+          isCompleted: !isCurrentlyCompleted,  // true if completing, false if uncompleting
+          isUncompleted: isCurrentlyCompleted  // true if uncompleting
         })
       })
       
       // Handle ephemeral tasks
       if (task.isEphemeral) {
-        if (isFullyCompleted) {
+        if (isFullyCompleted && !isCurrentlyCompleted) {
+          // Task just became fully completed - close it
           await fetch('/api/v1/tasklists', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -98,19 +108,29 @@ export function useTaskHandlers({
               ephemeralTasks: { close: { id: task.id, count: newCount } }
             })
           })
-        } else {
+        } else if (isCurrentlyCompleted && newCount < times) {
+          // Task was completed but is now being uncompleted - reopen it
           await fetch('/api/v1/tasklists', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               taskListId,
-              ephemeralTasks: { update: { id: task.id, count: newCount, status: 'in progress' } }
+              ephemeralTasks: { reopen: { id: task.id, count: newCount } }
+            })
+          })
+        } else {
+          // Update count and status
+          await fetch('/api/v1/tasklists', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              taskListId,
+              ephemeralTasks: { update: { id: task.id, count: newCount, status: newStatus } }
             })
           })
         }
       }
       
-      await onRefresh()
       if (onRefreshUser) await onRefreshUser()
       
       // Clear pending completion
@@ -197,7 +217,6 @@ export function useTaskHandlers({
         })
       })
 
-      await onRefresh()
       if (onRefreshUser) await onRefreshUser()
       
       pendingCompletionsRef.current.delete(key)
@@ -265,7 +284,6 @@ export function useTaskHandlers({
         })
       })
       
-      await onRefresh()
       if (onRefreshUser) await onRefreshUser()
       
       // Clear optimistic updates and pending completion
@@ -365,7 +383,6 @@ export function useTaskHandlers({
         })
       })
       
-      await onRefresh()
       if (onRefreshUser) await onRefreshUser()
       
       // Clear optimistic updates and pending completion
@@ -424,7 +441,6 @@ export function useTaskHandlers({
           redacted: newRedacted
         })
       })
-      await onRefresh()
     } catch (error) {
       console.error('Error toggling task redacted status:', error)
     }

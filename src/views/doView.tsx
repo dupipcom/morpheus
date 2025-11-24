@@ -69,11 +69,11 @@ export const DoView = ({
     }
   }, [contextTaskLists])
 
-  // Refresh task lists every 10 seconds
+  // Refresh task lists every 30 seconds
   useEffect(() => {
     const id = setInterval(() => {
       refreshTaskLists()
-    }, 10000)
+    }, 30000)
     return () => clearInterval(id)
   }, [refreshTaskLists])
 
