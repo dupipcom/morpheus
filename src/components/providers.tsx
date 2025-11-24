@@ -1,6 +1,6 @@
 'use client'
 
-import { ReactNode, useState, useEffect, useMemo } from 'react'
+import { ReactNode, useState, useEffect, useMemo, useCallback } from 'react'
 import { shadcn } from '@clerk/themes'
 import {
   ClerkProvider,
@@ -80,7 +80,7 @@ export function Providers({ children, locale: providedLocale }: ProvidersProps) 
     }
   }, [isClient, value, redactedValue])
 
-  const refreshTaskLists = async () => {
+  const refreshTaskLists = useCallback(async () => {
     try {
       const res = await fetch('/api/v1/tasklists')
       if (!res.ok) {
@@ -94,7 +94,14 @@ export function Providers({ children, locale: providedLocale }: ProvidersProps) 
       // Don't clear existing task lists on error - preserve them
       console.warn('Error refreshing task lists:', error)
     }
-  }
+  }, [])
+
+  // Fetch tasklists once on mount
+  useEffect(() => {
+    if (isClient) {
+      refreshTaskLists()
+    }
+  }, [isClient, refreshTaskLists])
 
   return (
     <ClerkProvider 

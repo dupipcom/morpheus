@@ -1,5 +1,5 @@
 import { useCallback, useRef } from 'react'
-import { TaskStatus, getTaskKey, calculateTaskStatus, prepareIncrementActions, prepareDecrementActions, handleEphemeralTaskUpdate, formatDateLocal } from '@/lib/taskUtils'
+import { TaskStatus, getTaskKey, calculateTaskStatus, formatDateLocal } from '@/lib/taskUtils'
 
 interface PendingCompletion {
   count: number
@@ -69,32 +69,20 @@ export function useTaskHandlers({
     }
     
     try {
-      // Prepare next actions
-      const regular = tasks.filter((t: any) => !t.isEphemeral)
-      const ephemerals = tasks.filter((t: any) => t.isEphemeral)
-      const allTasks = [...regular, ...ephemerals]
+      const newStatus = isFullyCompleted ? 'done' : 'in progress'
       
-      const nextActions = allTasks.map((action: any) => {
-        const c = { ...action }
-        const actionKey = getTaskKey(action)
-        if (actionKey === key) {
-          c.count = newCount
-          c.status = isFullyCompleted ? 'done' : 'in progress'
-        }
-        return c
-      })
-      
-      // Persist to API
+      // Persist to API - send only task.id and new status
       await fetch('/api/v1/tasklists', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          recordCompletions: true,
+          updateTaskCompletion: true,
           taskListId,
-          dayActions: nextActions,
+          taskId: task.id || task.localeKey || task.name,
+          status: newStatus,
+          count: newCount,
           date,
-          justCompletedNames: [task.name],
-          justUncompletedNames: []
+          isCompleted: true
         })
       })
       
@@ -176,172 +164,36 @@ export function useTaskHandlers({
     if (!taskListId) return
 
     try {
-      // Persist task status to API
+      const foundTask = tasks.find((t: any) => getTaskKey(t) === key)
+      if (!foundTask) {
+        pendingStatusUpdatesRef.current.delete(key)
+        return
+      }
+
+      // Determine if this is a completion or uncompletion
+      const isCompleting = effectiveStatus === 'done'
+      const isUncompleting = effectiveStatus !== 'done' && task.status === 'done'
+      
+      // Persist task status to API - send only task.id and status
       await fetch('/api/v1/tasklists', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           updateTaskStatus: true,
           taskListId,
-          taskKey: key,
+          taskId: task.id || task.localeKey || task.name,
           status: effectiveStatus,
-          date: date
+          date: date,
+          isCompleted: isCompleting,
+          isUncompleted: isUncompleting
         })
       })
 
-      // If status is "done", also mark the task as completed
-      if (effectiveStatus === 'done') {
-        const foundTask = tasks.find((t: any) => getTaskKey(t) === key)
-        if (foundTask) {
-          const currentCount = foundTask?.count || 0
-          const times = foundTask?.times || 1
-          const newCount = currentCount + 1
-          const isFullyCompleted = newCount >= times
-          
-          pendingCompletionsRef.current.set(key, {
-            count: newCount,
-            status: effectiveStatus,
-            inClosed: isFullyCompleted
-          })
-
-          // Handle completion logic
-          const regular = tasks.filter((t: any) => !t.isEphemeral)
-          const ephemerals = tasks.filter((t: any) => t.isEphemeral)
-
-          // Prepare next actions
-          const allTasks = [...regular, ...ephemerals]
-          const nextActions = allTasks.map((action: any) => {
-            const c = { ...action }
-            const actionKey = getTaskKey(action)
-            if (actionKey === key) {
-              if ((action.times - (action.count || 0)) === 1) {
-                c.count = (c.count || 0) + 1
-                c.status = 'done'
-              } else if ((action.times - (action.count || 0)) >= 1) {
-                c.count = (c.count || 0) + 1
-              }
-            }
-            if ((c.count || 0) > 0 && c.status !== 'done') {
-              c.status = 'open'
-            }
-            return c
-          })
-
-          // Persist to TaskList.completedTasks
-          if (nextActions.length > 0) {
-            await fetch('/api/v1/tasklists', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                recordCompletions: true,
-                taskListId,
-                dayActions: nextActions,
-                date,
-                justCompletedNames: [taskName],
-                justUncompletedNames: []
-              })
-            })
-          }
-
-          // Handle ephemerals
-          const ephemeralTask = ephemerals.find((e: any) => e.id === foundTask.id)
-          if (ephemeralTask) {
-            const updatedEph = nextActions.find((a: any) => getTaskKey(a) === key)
-            if (updatedEph && updatedEph.status === 'done') {
-              await fetch('/api/v1/tasklists', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  taskListId,
-                  ephemeralTasks: { close: { id: ephemeralTask.id, count: updatedEph.count } }
-                })
-              })
-            } else if (updatedEph) {
-              await fetch('/api/v1/tasklists', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  taskListId,
-                  ephemeralTasks: { update: { id: ephemeralTask.id, count: updatedEph.count, status: updatedEph.status } }
-                })
-              })
-            }
-          }
-
-          await onRefresh()
-          if (onRefreshUser) await onRefreshUser()
-          
-          pendingCompletionsRef.current.delete(key)
-          pendingStatusUpdatesRef.current.delete(key)
-        }
-      } else if (effectiveStatus !== 'done') {
-        // If status is changed away from "done", handle uncompletion
-        const foundTask = tasks.find((t: any) => getTaskKey(t) === key)
-        if (foundTask) {
-          const regular = tasks.filter((t: any) => !t.isEphemeral)
-          const nextActions = regular.map((action: any) => {
-            const c = { ...action }
-            const actionKey = getTaskKey(action)
-            if (actionKey === key && (c.times || 1) <= (c.count || 0)) {
-              if ((c.count || 0) > 0) {
-                c.count = (c.count || 0) - 1
-                c.status = 'open'
-              }
-            }
-            if ((c.count || 0) > 0 && c.status !== 'done') {
-              c.status = 'open'
-            }
-            return c
-          })
-
-          // Persist uncompletion
-          if (nextActions.length > 0) {
-            await fetch('/api/v1/tasklists', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                recordCompletions: true,
-                taskListId,
-                dayActions: nextActions,
-                date,
-                justCompletedNames: [],
-                justUncompletedNames: [taskName]
-              })
-            })
-          }
-
-          // Handle ephemeral task uncompletion
-          const ephemerals = tasks.filter((t: any) => t.isEphemeral)
-          const ephemeralTask = ephemerals.find((e: any) => e.id === foundTask.id)
-          if (ephemeralTask) {
-            const newCount = Math.max(0, (ephemeralTask.count || 1) - 1)
-            await fetch('/api/v1/tasklists', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                taskListId,
-                ephemeralTasks: { reopen: { id: ephemeralTask.id, count: newCount } }
-              })
-            })
-          }
-
-          await onRefresh()
-          if (onRefreshUser) await onRefreshUser()
-          
-          pendingCompletionsRef.current.delete(key)
-          pendingStatusUpdatesRef.current.delete(key)
-        } else {
-          // Status change that doesn't affect completion
-          await onRefresh()
-          if (onRefreshUser) await onRefreshUser()
-          pendingStatusUpdatesRef.current.delete(key)
-        }
-      } else {
-        // Status change that doesn't affect completion
-        await onRefresh()
-        if (onRefreshUser) await onRefreshUser()
-        pendingStatusUpdatesRef.current.delete(key)
-      }
+      await onRefresh()
+      if (onRefreshUser) await onRefreshUser()
+      
+      pendingCompletionsRef.current.delete(key)
+      pendingStatusUpdatesRef.current.delete(key)
     } catch (error) {
       console.error('Error saving task status:', error)
       pendingCompletionsRef.current.delete(key)
@@ -386,63 +238,23 @@ export function useTaskHandlers({
     }
     
     try {
-      // Find the task list
-      const taskList = findTaskList ? findTaskList(taskListIdToUse) : null
-      if (!taskList && findTaskList) return
-      
-      // Get all tasks from the task list
-      const baseTasks = (taskList?.tasks && taskList.tasks.length > 0)
-        ? taskList.tasks
-        : (taskList?.templateTasks || [])
-      const ephemerals = (taskList?.ephemeralTasks?.open || [])
-      const allTasks = findTaskList ? [...baseTasks, ...ephemerals] : tasks
-      
-      // Prepare next actions
-      const nextActions = findTaskList
-        ? prepareIncrementActions(
-            allTasks,
-            task.name,
-            currentCount,
-            times,
-            optimisticStatuses?.[taskKey] || task.taskStatus
-          )
-        : allTasks.map((action: any) => {
-            const c = { ...action }
-            const actionKey = getTaskKey(action)
-            if (actionKey === taskKey) {
-              c.count = newCount
-              c.status = status
-            }
-            return c
-          })
-      
       // Get today's date
       const dateToUse = date || formatDateLocal(new Date())
       
-      // Persist to backend
+      // Persist to backend - send only task.id, status, and count
       await fetch('/api/v1/tasklists', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          recordCompletions: true,
+          updateTaskCompletion: true,
           taskListId: taskListIdToUse,
-          dayActions: nextActions,
+          taskId: task.id || task.localeKey || task.name,
+          status: status,
+          count: newCount,
           date: dateToUse,
-          justCompletedNames: [task.name],
-          justUncompletedNames: []
+          isCompleted: true
         })
       })
-      
-      // Handle ephemeral tasks
-      const ephemeralTask = ephemerals.find((e: any) => e.id === task.id || e.name === task.name)
-      if (ephemeralTask) {
-        const updatedAction = nextActions.find((a: any) => getTaskKey(a) === taskKey || a.name === task.name)
-        if (updatedAction) {
-          const closedEphemerals = (taskList?.ephemeralTasks?.closed || [])
-          const isInClosed = closedEphemerals.some((t: any) => t.id === ephemeralTask.id)
-          await handleEphemeralTaskUpdate(ephemeralTask, updatedAction, taskListIdToUse, isInClosed)
-        }
-      }
       
       await onRefresh()
       if (onRefreshUser) await onRefreshUser()
@@ -525,74 +337,23 @@ export function useTaskHandlers({
     }
     
     try {
-      // Find the task list
-      const taskList = findTaskList ? findTaskList(taskListIdToUse) : null
-      if (!taskList && findTaskList) return
-      
-      // Get all tasks from the task list
-      const baseTasks = (taskList?.tasks && taskList.tasks.length > 0)
-        ? taskList.tasks
-        : (taskList?.templateTasks || [])
-      const ephemerals = (taskList?.ephemeralTasks?.open || [])
-      const allTasks = findTaskList ? [...baseTasks, ...ephemerals] : tasks
-      
-      // Prepare next actions
-      const nextActions = findTaskList
-        ? prepareDecrementActions(
-            allTasks,
-            task.name,
-            currentCount,
-            times,
-            optimisticStatuses?.[taskKey] || task.taskStatus
-          )
-        : allTasks.map((action: any) => {
-            const c = { ...action }
-            const actionKey = getTaskKey(action)
-            if (actionKey === taskKey) {
-              c.count = Math.max(0, (c.count || 0) - 1)
-              if (c.count >= (c.times || 1)) {
-                c.status = 'done'
-              } else {
-                const existingStatus = optimisticStatuses?.[actionKey]
-                if (c.count > 0 && (!existingStatus || existingStatus === 'done' || existingStatus === 'open')) {
-                  c.status = 'in progress'
-                } else if (c.count === 0) {
-                  c.status = 'open'
-                } else {
-                  c.status = existingStatus || 'open'
-                }
-              }
-            }
-            return c
-          })
-      
       // Get today's date
       const dateToUse = date || formatDateLocal(new Date())
       
-      // Persist to backend
+      // Persist to backend - send only task.id, status, and count
       await fetch('/api/v1/tasklists', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          recordCompletions: true,
+          updateTaskCompletion: true,
           taskListId: taskListIdToUse,
-          dayActions: nextActions,
+          taskId: task.id || task.localeKey || task.name,
+          status: status,
+          count: newCount,
           date: dateToUse,
-          justCompletedNames: [],
-          justUncompletedNames: []
+          isCompleted: false
         })
       })
-      
-      // Handle ephemeral tasks
-      const ephemeralTask = ephemerals.find((e: any) => e.id === task.id || e.name === task.name)
-      if (ephemeralTask) {
-        const updatedAction = nextActions.find((a: any) => getTaskKey(a) === taskKey || a.name === task.name)
-        if (updatedAction) {
-          const closedEphemerals = (taskList?.ephemeralTasks?.closed || [])
-          const isInClosed = closedEphemerals.some((t: any) => t.id === ephemeralTask.id)
-          await handleEphemeralTaskUpdate(ephemeralTask, updatedAction, taskListIdToUse, isInClosed)
-        }
-      }
       
       await onRefresh()
       if (onRefreshUser) await onRefreshUser()
