@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useMemo, useContext, useRef } from 'react'
+import { useState, useEffect, useMemo, useContext, useRef, useCallback } from 'react'
 import useSWR from 'swr'
 import { useRouter, usePathname } from 'next/navigation'
 
@@ -20,7 +20,7 @@ import {
 import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
 import { useNotesRefresh } from "@/lib/contexts/notesRefresh"
-import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil, isUserDataReady, useEnhancedLoadingState, useUserData } from "@/lib/userUtils"
+import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil, isUserDataReady, useEnhancedLoadingState, useUserData, useDayData } from "@/lib/userUtils"
 import { MoodViewSkeleton } from "@/components/ui/skeletonLoader"
 import { ContentLoadingWrapper } from '@/components/contentLoadingWrapper'
 import { ContactCombobox } from "@/components/ui/contactCombobox"
@@ -168,18 +168,8 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
   const year = Number(date.split('-')[0])
   const [weekNumber, setWeekNumber] = useState(getWeekNumber(today)[1])
 
-  // Fetch day data from Day API
-  const { data: dayData, mutate: mutateDay, isLoading: dayLoading } = useSWR(
-    session?.user ? `/api/v1/days?date=${date}` : null,
-    async () => {
-      const response = await fetch(`/api/v1/days?date=${date}`)
-      if (response.ok) {
-        const data = await response.json()
-        return data
-      }
-      return { day: null }
-    }
-  )
+  // Fetch day data from GlobalContext using useDayData hook
+  const { data: dayData, isLoading: dayLoading, mutate: mutateDay } = useDayData(date, !!session?.user)
 
   const serverMood = useMemo(() => dayData?.day?.mood || {}, [dayData?.day?.mood])
   const serverMoodContacts = useMemo(() => dayData?.day?.contacts || [], [dayData?.day?.contacts])
@@ -224,18 +214,10 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
   }, [JSON.stringify(session), date])
 
   const [mood, setMood] = useState(serverMood)
-  const [pendingMoodChanges, setPendingMoodChanges] = useState({})
-  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null)
 
   // Update mood state when serverMood changes (due to date change)
   useEffect(() => {
     setMood(serverMood)
-    setPendingMoodChanges({})
-    // Clear any pending debounce when date changes
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current)
-      debounceTimerRef.current = null
-    }
   }, [serverMood])
 
 
@@ -386,14 +368,27 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
   }, [lifeEventsData])
 
   // Helper function to save day data to Day API
-  const saveDayData = async (moodData?: any, contactsData?: any[], thingsData?: any[], lifeEventsData?: any[]) => {
+  // Now supports partial mood updates - only sends provided fields
+  const saveDayData = useCallback(async (moodUpdates?: Record<string, number>, contactsData?: any[], thingsData?: any[], lifeEventsData?: any[]) => {
     try {
       const payload: any = {
-        date: date,
-        mood: moodData || mood,
-        contacts: contactsData || moodContacts,
-        things: thingsData || moodThings,
-        lifeEvents: lifeEventsData || moodLifeEvents
+        date: date
+      }
+      
+      // Only include mood if there are updates
+      if (moodUpdates && Object.keys(moodUpdates).length > 0) {
+        payload.mood = moodUpdates
+      }
+      
+      // Include other data if provided
+      if (contactsData !== undefined) {
+        payload.contacts = contactsData
+      }
+      if (thingsData !== undefined) {
+        payload.things = thingsData
+      }
+      if (lifeEventsData !== undefined) {
+        payload.lifeEvents = lifeEventsData
       }
 
       const response = await fetch('/api/v1/days', {
@@ -404,97 +399,58 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
         body: JSON.stringify(payload)
       })
 
-      if (response.ok) {
-        await mutateDay()
+      // Don't manually refresh - rely on SWR polling every 30 seconds
+      if (!response.ok) {
+        throw new Error('Failed to save day data')
       }
     } catch (error) {
       console.error('Error saving day data:', error)
     }
-  }
+  }, [date])
 
-  // Create debounced version of handleSubmit for sliders
-  const debouncedHandleSubmit = useDebounce(async (value, field) => {
-    const updatedMood = {...mood, [field]: value}
-    setMood(updatedMood)
-    await saveDayData(updatedMood)
-  }, 3000)
+  // Create a stable function that only saves mood updates (no contacts/things/lifeEvents)
+  const saveMoodOnly = useCallback(async (moodUpdates: Record<string, number>) => {
+    // Explicitly only pass mood updates, nothing else
+    await saveDayData(moodUpdates, undefined, undefined, undefined)
+  }, [saveDayData])
 
-  // Function to handle individual slider changes with debouncing
-  const handleMoodSliderChange = (field, value) => {
-    // Update the pending changes
-    setPendingMoodChanges(prev => ({...prev, [field]: value}))
+  // Create batched debounced save function for mood updates ONLY
+  // This should only send mood data, never contacts/things/lifeEvents
+  const debouncedSaveMood = useDebounce(
+    saveMoodOnly,
+    5000,
+    { batched: true }
+  )
+
+  // Function to handle individual slider changes with 5-second batched debouncing
+  const handleMoodSliderChange = (field: string, value: number) => {
     // Update the local mood state for immediate UI feedback
     setMood(prev => ({...prev, [field]: value}))
-    
-    // Clear existing timer if any
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current)
-    }
-    
-    // Set new timer - will only execute after 3000ms of no interactions
-    debounceTimerRef.current = setTimeout(() => {
-      // Use functional updates to get the latest state values
-      setMood(currentMood => {
-        setPendingMoodChanges(currentPending => {
-          // Aggregate all pending changes with current mood state
-          const aggregatedMood = {...currentMood, ...currentPending}
-          
-          // Save to backend
-          saveDayData(aggregatedMood).then(() => {
-            debounceTimerRef.current = null
-          })
-          
-          return {}
-        })
-        return currentMood
-      })
-    }, 3000)
+    // Trigger batched debounced save (will collect all changes within 5 seconds)
+    debouncedSaveMood({ [field]: value })
   }
 
-
-  const handleSubmit = async (value, field) => {
-    const updatedMood = {...mood, [field]: value}
-    setMood(updatedMood)
+  const handleSubmit = async (value: number, field: string) => {
+    const updatedMood = {[field]: value}
+    setMood(prev => ({...prev, [field]: value}))
     await saveDayData(updatedMood)
   }
 
-  // Create debounced version of handleMoodContactsChange for contact interaction sliders
-  const debouncedHandleMoodContactsChange = useDebounce(async (newMoodContacts) => {
-    // Update both optimistic and server state
-    setOptimisticMoodContacts(newMoodContacts)
-    setMoodContacts(newMoodContacts)
-    await saveDayData(undefined, newMoodContacts)
-  }, 500)
-
-  const handleMoodContactsChange = async (newMoodContacts) => {
+  const handleMoodContactsChange = async (newMoodContacts: any[]) => {
     // Update both optimistic and server state
     setOptimisticMoodContacts(newMoodContacts)
     setMoodContacts(newMoodContacts)
     await saveDayData(undefined, newMoodContacts)
   }
 
-  // Create debounced version of handleMoodThingsChange for thing interaction sliders
-  const debouncedHandleMoodThingsChange = useDebounce(async (newMoodThings) => {
-    // Update both optimistic and server state
-    setOptimisticMoodThings(newMoodThings)
-    setMoodThings(newMoodThings)
-    await saveDayData(undefined, undefined, newMoodThings)
-  }, 500)
-
-  const handleMoodThingsChange = async (newMoodThings) => {
+  const handleMoodThingsChange = async (newMoodThings: any[]) => {
     // Update both optimistic and server state
     setOptimisticMoodThings(newMoodThings)
     setMoodThings(newMoodThings)
     await saveDayData(undefined, undefined, newMoodThings)
   }
 
-  // Create debounced version of handleMoodLifeEventsChange for life event interaction sliders
-  const debouncedHandleMoodLifeEventsChange = useDebounce(async (newMoodLifeEvents) => {
-    setMoodLifeEvents(newMoodLifeEvents)
-    await saveDayData(undefined, undefined, undefined, newMoodLifeEvents)
-  }, 500)
-
-  const handleMoodLifeEventsChange = async (newMoodLifeEvents) => {
+  const handleMoodLifeEventsChange = async (newMoodLifeEvents: any[]) => {
     setMoodLifeEvents(newMoodLifeEvents)
     await saveDayData(undefined, undefined, undefined, newMoodLifeEvents)
   }
@@ -602,32 +558,32 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
             <div className="mb-16">
               <small>{insight?.gratitudeAnalysis}</small>
             </div>
-            <Slider className="mb-4" defaultValue={[serverMood.gratitude || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("gratitude", e[0])} />
+            <Slider className="mb-4" value={[mood.gratitude || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("gratitude", e[0])} />
             <h3 className="mt-4 text-center">{t('charts.gratitude')}</h3>
             <div className="my-16">
               <small>{insight?.optimismAnalysis}</small>
             </div>
-            <Slider className="mb-4" defaultValue={[serverMood.optimism || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("optimism", e[0])} />
+            <Slider className="mb-4" value={[mood.optimism || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("optimism", e[0])} />
             <h3 className="mt-4 text-center">{t('charts.optimism')}</h3>
             <div className="my-16">
               <small>{insight?.restednessAnalysis}</small>
             </div>
-            <Slider className="mb-4" defaultValue={[serverMood.restedness || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("restedness", e[0])} />
+            <Slider className="mb-4" value={[mood.restedness || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("restedness", e[0])} />
             <h3 className="mt-4 text-center">{t('charts.restedness')}</h3>
             <div className="my-16">
               <small>{insight?.toleranceAnalysis}</small>
             </div>
-            <Slider className="mb-4" defaultValue={[serverMood.tolerance || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("tolerance", e[0])} />
+            <Slider className="mb-4" value={[mood.tolerance || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("tolerance", e[0])} />
             <h3 className="mt-4 text-center">{t('charts.tolerance')}</h3>
             <div className="my-16">
               <small>{insight?.selfEsteemAnalysis}</small>
             </div>
-            <Slider className="mb-4" defaultValue={[serverMood.selfEsteem || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("selfEsteem", e[0])} />
+            <Slider className="mb-4" value={[mood.selfEsteem || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("selfEsteem", e[0])} />
             <h3 className="mt-4 text-center">{t('charts.selfEsteem')}</h3>
             <div className="my-16">
               <small>{insight?.trustAnalysis}</small>
             </div>
-            <Slider className="mb-4" defaultValue={[serverMood?.trust || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("trust", e[0])} />
+            <Slider className="mb-4" value={[mood?.trust || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("trust", e[0])} />
             <h3 className="mt-4 text-center">{t('charts.trust')}</h3>
           </TabsContent>
 
@@ -682,8 +638,8 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
                               : le
                           )
                           setMoodLifeEvents(updatedLifeEvents)
-                          // Use debounced handler to save to database
-                          debouncedHandleMoodLifeEventsChange(updatedLifeEvents)
+                          // Save to database
+                          handleMoodLifeEventsChange(updatedLifeEvents)
                         }}
                         max={5}
                         min={0}
@@ -733,8 +689,8 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
                           setOptimisticMoodContacts(updatedContacts)
                           // Also update the server state
                           setMoodContacts(updatedContacts)
-                          // Use debounced handler to save to database
-                          debouncedHandleMoodContactsChange(updatedContacts)
+                          // Save to database
+                          handleMoodContactsChange(updatedContacts)
                         }}
                         max={5}
                         min={0}
@@ -784,8 +740,8 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
                           setOptimisticMoodThings(updatedThings)
                           // Also update the server state
                           setMoodThings(updatedThings)
-                          // Use debounced handler to save to database
-                          debouncedHandleMoodThingsChange(updatedThings)
+                          // Save to database
+                          handleMoodThingsChange(updatedThings)
                         }}
                         max={5}
                         min={0}

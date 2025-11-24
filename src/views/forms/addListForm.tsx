@@ -15,6 +15,7 @@ import { Package, List as ListIcon, MoreHorizontal, ChevronDown, Calendar as Cal
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { useI18n } from '@/lib/contexts/i18n'
 import { GlobalContext } from '@/lib/contexts'
+import { useDebounce } from '@/lib/hooks/useDebounce'
 
 type Collaborator = { id: string, userName: string }
 
@@ -170,26 +171,20 @@ export const AddListForm = ({
   }, [newListPreviewTasks, isEditing])
 
   const [collabResults, setCollabResults] = useState<any[]>([])
-  useEffect(() => {
-    let cancelled = false
-    // Debounce the search by 300ms
-    const timer = setTimeout(() => {
-      const run = async () => {
-        // Fetch suggestions even when query is empty (shows top 5 close friends/friends/public)
-        const res = await fetch(`/api/v1/profiles?query=${encodeURIComponent(collabQuery)}`)
-        if (!cancelled && res.ok) {
-          const data = await res.json()
-          setCollabResults(data.profiles || [])
-        }
-      }
-      run()
-    }, 300)
-    
-    return () => { 
-      cancelled = true
-      clearTimeout(timer)
+  
+  // Debounced search function
+  const debouncedSearch = useDebounce(async (query: string) => {
+    // Fetch suggestions even when query is empty (shows top 5 close friends/friends/public)
+    const res = await fetch(`/api/v1/profiles?query=${encodeURIComponent(query)}`)
+    if (res.ok) {
+      const data = await res.json()
+      setCollabResults(data.profiles || [])
     }
-  }, [collabQuery])
+  }, 300)
+
+  useEffect(() => {
+    debouncedSearch(collabQuery)
+  }, [collabQuery, debouncedSearch])
 
   const handleSubmit = async () => {
     const roleJoined = `${form.cadence}.${form.role}`

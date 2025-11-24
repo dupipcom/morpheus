@@ -160,6 +160,59 @@ export const useUserData = (
 }
 
 /**
+ * SWR hook to fetch day data once and expose a refresh method for post-update revalidation
+ * Ensures deduped fetch across components and shared state in GlobalContext
+ */
+export const useDayData = (date: string | null, enabled: boolean = true) => {
+  const { session, setGlobalContext, dayData, setDayData } = useContext(GlobalContext)
+  
+  const fetchDay = async () => {
+    if (!date) return { day: null }
+    const response = await fetch(`/api/v1/days?date=${date}`)
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(`Failed to fetch day: ${JSON.stringify(errorData)}`)
+    }
+    return response.json()
+  }
+
+  const swr = useSWR(
+    enabled && session?.user && date ? `/api/v1/days?date=${date}` : null,
+    fetchDay,
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      shouldRetryOnError: false,
+      dedupingInterval: 1000,
+      refreshInterval: 30000, // Poll every 30 seconds
+      onSuccess: (data: any) => {
+        if (data && date && setDayData) {
+          setDayData(date, data)
+        }
+      },
+    }
+  )
+
+  // Return cached data from context if available, otherwise use SWR data
+  const cachedData = date && dayData?.[date] ? dayData[date] : swr.data
+
+  const refreshDay = useMemo(() => async () => {
+    try {
+      await swr.mutate()
+    } catch (e) {
+      logger('day_refresh_error', String(e))
+    }
+  }, [swr])
+
+  return { 
+    data: cachedData, 
+    isLoading: swr.isLoading, 
+    error: swr.error, 
+    mutate: refreshDay 
+  }
+}
+
+/**
  * SWR hook to fetch wallets with polling every 30 seconds
  * Ensures deduped fetch across components and shared state
  */

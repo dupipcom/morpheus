@@ -106,8 +106,7 @@ export async function GET(req: NextRequest) {
             restedness: mood.restedness || 0,
             tolerance: mood.tolerance || 0,
             selfEsteem: mood.selfEsteem || 0,
-            trust: mood.trust || 0,
-            text: mood.text || []
+            trust: mood.trust || 0
           },
           contacts: contactsWithQuality,
           things: thingsWithQuality,
@@ -197,8 +196,7 @@ export async function GET(req: NextRequest) {
           restedness: mood.restedness || 0,
           tolerance: mood.tolerance || 0,
           selfEsteem: mood.selfEsteem || 0,
-          trust: mood.trust || 0,
-          text: mood.text || []
+          trust: mood.trust || 0
         },
         moodAverage: moodAverage,
         earnings: Number(earnings) || 0,
@@ -284,25 +282,21 @@ export async function POST(req: NextRequest) {
       eventQualities
     }
 
-    // Construct mood object with all required fields
-    // Mood type requires: gratitude, optimism, restedness, tolerance, selfEsteem, trust (all Int)
-    let moodData: any = undefined
-    let moodAverage: number | undefined = undefined
+    // Construct mood object with only provided fields (partial updates)
+    // Only include fields that are explicitly provided (not undefined)
+    let moodUpdates: any = undefined
     if (mood !== undefined && mood !== null) {
-      moodData = {
-        gratitude: mood.gratitude !== undefined ? Number(mood.gratitude) || 0 : 0,
-        optimism: mood.optimism !== undefined ? Number(mood.optimism) || 0 : 0,
-        restedness: mood.restedness !== undefined ? Number(mood.restedness) || 0 : 0,
-        tolerance: mood.tolerance !== undefined ? Number(mood.tolerance) || 0 : 0,
-        selfEsteem: mood.selfEsteem !== undefined ? Number(mood.selfEsteem) || 0 : 0,
-        trust: mood.trust !== undefined ? Number(mood.trust) || 0 : 0
-      }
-      
-      // Calculate mood average from all mood dimensions
+      moodUpdates = {}
       const moodKeys = ['gratitude', 'optimism', 'restedness', 'tolerance', 'selfEsteem', 'trust'] as const
-      const moodValues = moodKeys.map((k) => Number(moodData[k]) || 0)
-      const sum = moodValues.reduce((acc, val) => acc + val, 0)
-      moodAverage = sum / moodKeys.length
+      moodKeys.forEach((key) => {
+        if (mood[key] !== undefined) {
+          moodUpdates[key] = Number(mood[key]) || 0
+        }
+      })
+      // Only set moodUpdates if at least one field was provided
+      if (Object.keys(moodUpdates).length === 0) {
+        moodUpdates = undefined
+      }
     }
 
     // Calculate week, month, quarter, semester from date
@@ -336,27 +330,25 @@ export async function POST(req: NextRequest) {
         semester: semester
       }
 
-      if (moodData !== undefined) {
-        // Merge with existing mood data if it exists
+      if (moodUpdates !== undefined) {
+        // Merge only provided mood fields with existing mood data
         const existingMood = existingDay.mood as any || {}
+        // Ensure all required Mood type fields are present
         const mergedMood = {
-          gratitude: moodData.gratitude !== undefined ? moodData.gratitude : (existingMood.gratitude || 0),
-          optimism: moodData.optimism !== undefined ? moodData.optimism : (existingMood.optimism || 0),
-          restedness: moodData.restedness !== undefined ? moodData.restedness : (existingMood.restedness || 0),
-          tolerance: moodData.tolerance !== undefined ? moodData.tolerance : (existingMood.tolerance || 0),
-          selfEsteem: moodData.selfEsteem !== undefined ? moodData.selfEsteem : (existingMood.selfEsteem || 0),
-          trust: moodData.trust !== undefined ? moodData.trust : (existingMood.trust || 0)
+          gratitude: moodUpdates.gratitude !== undefined ? Number(moodUpdates.gratitude) || 0 : (Number(existingMood.gratitude) || 0),
+          optimism: moodUpdates.optimism !== undefined ? Number(moodUpdates.optimism) || 0 : (Number(existingMood.optimism) || 0),
+          restedness: moodUpdates.restedness !== undefined ? Number(moodUpdates.restedness) || 0 : (Number(existingMood.restedness) || 0),
+          tolerance: moodUpdates.tolerance !== undefined ? Number(moodUpdates.tolerance) || 0 : (Number(existingMood.tolerance) || 0),
+          selfEsteem: moodUpdates.selfEsteem !== undefined ? Number(moodUpdates.selfEsteem) || 0 : (Number(existingMood.selfEsteem) || 0),
+          trust: moodUpdates.trust !== undefined ? Number(moodUpdates.trust) || 0 : (Number(existingMood.trust) || 0)
         }
         updateData.mood = mergedMood
         
-        // Calculate mood average from merged mood data
+        // Calculate mood average from all available mood dimensions (both existing and updated)
         const moodKeys = ['gratitude', 'optimism', 'restedness', 'tolerance', 'selfEsteem', 'trust'] as const
         const moodValues = moodKeys.map((k) => Number(mergedMood[k]) || 0)
         const sum = moodValues.reduce((acc, val) => acc + val, 0)
         updateData.average = sum / moodKeys.length
-      } else if (moodAverage !== undefined) {
-        // If moodAverage was calculated but moodData is undefined, still update average
-        updateData.average = moodAverage
       }
       if (personIds !== undefined) {
         updateData.personIds = personIds
@@ -390,16 +382,39 @@ export async function POST(req: NextRequest) {
         ? user.equity 
         : (typeof user.equity === 'string' ? parseFloat(user.equity || '0') : 0)
       
+      // For new days, ensure all mood fields are present (default to 0 if not provided)
+      const initialMood = moodUpdates ? {
+        gratitude: Number(moodUpdates.gratitude) || 0,
+        optimism: Number(moodUpdates.optimism) || 0,
+        restedness: Number(moodUpdates.restedness) || 0,
+        tolerance: Number(moodUpdates.tolerance) || 0,
+        selfEsteem: Number(moodUpdates.selfEsteem) || 0,
+        trust: Number(moodUpdates.trust) || 0
+      } : {
+        gratitude: 0,
+        optimism: 0,
+        restedness: 0,
+        tolerance: 0,
+        selfEsteem: 0,
+        trust: 0
+      }
+      
+      // Calculate average for new day
+      const moodKeys = ['gratitude', 'optimism', 'restedness', 'tolerance', 'selfEsteem', 'trust'] as const
+      const moodValues = moodKeys.map((k) => Number(initialMood[k]) || 0)
+      const sum = moodValues.reduce((acc, val) => acc + val, 0)
+      const initialAverage = sum / moodKeys.length
+      
       day = await prisma.day.create({
         data: {
           userId: user.id,
           date: date,
-          mood: moodData,
+          mood: initialMood,
           personIds: personIds,
           thingIds: thingIds,
           eventIds: eventIds,
           analysis: analysisData,
-          average: moodAverage,
+          average: initialAverage,
           balance: userBalance,
           stash: userStash,
           equity: userEquity,

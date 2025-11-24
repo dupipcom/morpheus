@@ -394,13 +394,12 @@ type EventReference {
 }
 
 type Mood {
-  gratitude Int
-  optimism Int
-  restedness Int
-  tolerance Int
-  selfEsteem Int
-  trust Int
-  text String[]
+  gratitude Float
+  optimism Float
+  restedness Float
+  tolerance Float
+  selfEsteem Float
+  trust Float
 }
 
 type NoteReference {

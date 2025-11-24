@@ -30,6 +30,7 @@ export function Providers({ children, locale: providedLocale }: ProvidersProps) 
   const [redactedValue] = useLocalStorage('dpip_redacted', 0)
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
   const [isNavigating, setIsNavigating] = useState(false)
+  const [dayData, setDayDataState] = useState<Record<string, any>>({})
   const [globalContext, setGlobalContext] = useState({ 
     theme: 'light', 
     session: { user: {} }, 
@@ -41,8 +42,14 @@ export function Providers({ children, locale: providedLocale }: ProvidersProps) 
     selectedDate: undefined as Date | undefined,
     setSelectedDate: (date: Date | undefined) => {},
     isNavigating: false,
-    setIsNavigating: (isNavigating: boolean) => {}
+    setIsNavigating: (isNavigating: boolean) => {},
+    dayData: {} as Record<string, any>,
+    setDayData: (date: string, data: any) => {}
   })
+  
+  const setDayData = useCallback((date: string, data: any) => {
+    setDayDataState(prev => ({ ...prev, [date]: data }))
+  }, [])
   const [isClient, setIsClient] = useState(false)
   const [providerKey, setProviderKey] = useState(0)
 
@@ -134,7 +141,7 @@ export function Providers({ children, locale: providedLocale }: ProvidersProps) 
     >
       <AuthWrapper isLoading={isLoading}>
         <I18nProvider locale={locale}>
-          <GlobalContext.Provider value={{ ...globalContext, setGlobalContext, refreshTaskLists, refreshTemplates, selectedDate, setSelectedDate, isNavigating, setIsNavigating }}>
+          <GlobalContext.Provider value={{ ...globalContext, setGlobalContext, refreshTaskLists, refreshTemplates, selectedDate, setSelectedDate, isNavigating, setIsNavigating, dayData: dayData, setDayData }}>
             <NotesRefreshProvider>
               <SWRConfig value={{
                 revalidateOnFocus: false,

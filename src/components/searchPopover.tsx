@@ -1,12 +1,13 @@
 'use client'
 
-import { useState, useEffect, useRef, useContext } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { Badge } from '@/components/ui/badge'
 import { CheckSquare, User, FileText, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useI18n } from '@/lib/contexts/i18n'
 import { GlobalContext } from '@/lib/contexts'
+import { useDebounce } from '@/lib/hooks/useDebounce'
 
 interface SearchResult {
   id: string
@@ -37,44 +38,42 @@ export function SearchPopover({ query, open, onOpenChange, anchorRef, onClearQue
   const router = useRouter()
   const { t } = useI18n()
   const { setIsNavigating } = useContext(GlobalContext)
-  const debounceTimer = useRef<NodeJS.Timeout | null>(null)
 
-  useEffect(() => {
-    if (debounceTimer.current) {
-      clearTimeout(debounceTimer.current)
-    }
-
-    if (!query || query.length < 2) {
+  // Debounced search function
+  const debouncedSearch = useDebounce(async (searchQuery: string) => {
+    if (!searchQuery || searchQuery.length < 2) {
       setResults([])
       setLoading(false)
       return
     }
 
     setLoading(true)
-    debounceTimer.current = setTimeout(async () => {
-      try {
-        const response = await fetch(`/api/v1/search?q=${encodeURIComponent(query)}`)
-        if (response.ok) {
-          const data = await response.json()
-          // Limit results to 5
-          setResults((data.results || []).slice(0, 5))
-        } else {
-          setResults([])
-        }
-      } catch (error) {
-        console.error('Error searching:', error)
+    try {
+      const response = await fetch(`/api/v1/search?q=${encodeURIComponent(searchQuery)}`)
+      if (response.ok) {
+        const data = await response.json()
+        // Limit results to 5
+        setResults((data.results || []).slice(0, 5))
+      } else {
         setResults([])
-      } finally {
-        setLoading(false)
       }
-    }, 300)
-
-    return () => {
-      if (debounceTimer.current) {
-        clearTimeout(debounceTimer.current)
-      }
+    } catch (error) {
+      console.error('Error searching:', error)
+      setResults([])
+    } finally {
+      setLoading(false)
     }
-  }, [query])
+  }, 300)
+
+  useEffect(() => {
+    if (!query || query.length < 2) {
+      setResults([])
+      setLoading(false)
+      return
+    }
+
+    debouncedSearch(query)
+  }, [query, debouncedSearch])
 
   const handleResultClick = (result: SearchResult) => {
     setIsNavigating(true)
