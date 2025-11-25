@@ -12,17 +12,23 @@ export async function generateStaticParams() {
 
   const params = []
   for (const locale of locales) {
-    const pages = await fetchPages(locale)
-    // Payload CMS returns docs array instead of results
-    for (const page of pages.docs || []) {
-      // Payload CMS structure: direct field access instead of properties
-      const slug = (page as any).slug || (page as any).slug?.value
-      if (slug) {
-        params.push({
-          locale,
-          page: slug.split('/').filter(Boolean)
-        })
+    try {
+      const pages = await fetchPages(locale)
+      // Payload CMS returns docs array instead of results
+      for (const page of pages.docs || []) {
+        // Payload CMS structure: direct field access instead of properties
+        const slug = (page as any).slug || (page as any).slug?.value
+        if (slug) {
+          params.push({
+            locale,
+            page: slug.split('/').filter(Boolean)
+          })
+        }
       }
+    } catch (error) {
+      // Silently skip locales that fail to fetch pages during build
+      console.error(`Error fetching pages for locale ${locale}:`, error)
+      continue
     }
   }
   return params
@@ -57,7 +63,15 @@ export default async function Page({
   // Use the original logic: strip locale to get the actual slug for Notion
   const clearSlug = stripLocaleFromPath(fullPath)
 
-  const pageData = await fetchPageBySlug(clearSlug, locale)
+  let pageData
+  try {
+    pageData = await fetchPageBySlug(clearSlug, locale)
+  } catch (error) {
+    // If fetching fails, return 404
+    console.error(`Error fetching page for slug ${clearSlug} in locale ${locale}:`, error)
+    notFound()
+    return
+  }
 
   if (!pageData) {
     notFound()
@@ -74,7 +88,14 @@ export default async function Page({
     ? localizedContent 
     : null
 
-  const pageContent = await fetchPageBlocks(localizedContentId || (pageData as any).id, locale)
+  let pageContent
+  try {
+    pageContent = await fetchPageBlocks(localizedContentId || (pageData as any).id, locale)
+  } catch (error) {
+    // If fetching blocks fails, use empty array as fallback
+    console.error(`Error fetching page blocks for page ${(pageData as any).id} in locale ${locale}:`, error)
+    pageContent = []
+  }
   
 
   const data = {

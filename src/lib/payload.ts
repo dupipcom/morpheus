@@ -35,7 +35,7 @@ export const fetchPageBySlug = React.cache((slug: string, locale?: string) => {
       depth: 2, // Include nested layout and columns data
     })
     .then((res) => {
-      const page = res.docs[0];
+      const page = res.docs?.[0];
       // If page found, ensure layout data is properly parsed
       if (page && (page as any).layout) {
         // Parse layout structure if needed
@@ -53,6 +53,11 @@ export const fetchPageBySlug = React.cache((slug: string, locale?: string) => {
         }
       }
       return page;
+    })
+    .catch((error) => {
+      // Return undefined if there's an error fetching the page
+      console.error(`Error fetching page by slug ${slug} for locale ${locale}:`, error);
+      return undefined;
     });
 });
 
