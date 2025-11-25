@@ -1,121 +1,126 @@
-import "server-only";
+import type { MetadataRoute } from 'next'
+import { locales, defaultLocale } from './constants'
+import { fetchPages, fetchArticles } from '@/lib/payload'
 
-import { PayloadSDK } from "@payloadcms/sdk";
-import React from "react";
+const siteUrl = process.env.NEXT_PUBLIC_BASE_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
 
-// Initialize Payload SDK with baseURL from environment variable
-const sdk = new PayloadSDK({
-  baseURL: process.env.PAYLOAD_API_URL || process.env.NEXT_PUBLIC_PAYLOAD_API_URL || '',
-});
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const sitemapEntries: MetadataRoute.Sitemap = []
 
-// Dupip Pages
-export const fetchPages = React.cache((locale?: string) => {
-  return sdk.find({
-    collection: "pages",
-    locale,
-    where: {
-      _status: {
-        equals: "published",
-      },
+  // Root page
+  sitemapEntries.push({
+    url: siteUrl,
+    lastModified: new Date(),
+    alternates: {
+      languages: Object.fromEntries(
+        locales.map(locale => [locale, `${siteUrl}/${locale}`])
+      ),
     },
-  });
-});
+  })
 
-export const fetchPageBySlug = React.cache((slug: string, locale?: string) => {
-  return sdk
-    .find({
-      collection: "pages",
-      locale,
-      where: {
-        slug: {
-          equals: slug,
+  // Main app routes
+  const appRoutes = [
+    'dashboard',
+    'do',
+    'feel',
+    'profile',
+    'be',
+    'invest',
+    'settings',
+  ]
+
+  // Generate entries for each app route with all locales
+  appRoutes.forEach(route => {
+    locales.forEach(locale => {
+      sitemapEntries.push({
+        url: `${siteUrl}/${locale}/app/${route}`,
+        lastModified: new Date(),
+        alternates: {
+          languages: Object.fromEntries(
+            locales.map(altLocale => [altLocale, `${siteUrl}/${altLocale}/app/${route}`])
+          ),
         },
-      },
-      limit: 1,
-      depth: 2, // Include nested layout and columns data
+      })
     })
-    .then((res) => {
-      const page = res.docs?.[0];
-      // If page found, ensure layout data is properly parsed
-      if (page && (page as any).layout) {
-        // Parse layout structure if needed
-        const layout = (page as any).layout;
-        if (Array.isArray(layout) && layout.length > 0) {
-          const firstLayout = layout[0];
-          if (firstLayout.columns && Array.isArray(firstLayout.columns) && firstLayout.columns.length > 0) {
-            // Ensure richText is accessible
-            const firstColumn = firstLayout.columns[0];
-            if (firstColumn.richText) {
-              // Data is already structured correctly
-              return page;
-            }
-          }
-        }
+  })
+
+  // Articles listing page for all locales
+  locales.forEach(locale => {
+    sitemapEntries.push({
+      url: `${siteUrl}/${locale}/articles`,
+      lastModified: new Date(),
+      alternates: {
+        languages: Object.fromEntries(
+          locales.map(altLocale => [altLocale, `${siteUrl}/${altLocale}/articles`])
+        ),
+      },
+    })
+  })
+
+  // Fetch all Payload CMS pages once, then create entries for all locales
+  try {
+    const pagesResult = await fetchPages()
+    const pages = pagesResult.docs || []
+    
+    for (const page of pages) {
+      const slug = (page as any).slug || (page as any).slug?.value
+      if (slug) {
+        // Build the URL path from slug
+        const slugPath = slug.startsWith('/') ? slug.slice(1) : slug
+        
+        // Get last modified date if available
+        const updatedAt = (page as any).updatedAt || (page as any).createdAt
+        const lastModified = updatedAt ? new Date(updatedAt) : new Date()
+        
+        // Create entries for all locales using the same slug
+        locales.forEach(locale => {
+          const pageUrl = `${siteUrl}/${locale}/${slugPath}`
+          sitemapEntries.push({
+            url: pageUrl,
+            lastModified,
+            alternates: {
+              languages: Object.fromEntries(
+                locales.map(altLocale => [altLocale, `${siteUrl}/${altLocale}/${slugPath}`])
+              ),
+            },
+          })
+        })
       }
-      return page;
-    })
-    .catch((error) => {
-      // Return undefined if there's an error fetching the page
-      console.error(`Error fetching page by slug ${slug} for locale ${locale}:`, error);
-      return undefined;
-    });
-});
+    }
+  } catch (error) {
+    console.error('Error fetching pages:', error)
+  }
 
-export const fetchPageBlocks = React.cache((pageId: string, locale?: string) => {
-  // Fetch the page by ID to get its content/blocks
-  return sdk
-    .findByID({
-      collection: "pages",
-      id: pageId,
-      locale,
-    })
-    .then((page) => {
-      // Return content/blocks from the page document
-      // Adjust this based on your Payload CMS schema structure
-      return page?.content || page?.blocks || [];
-    });
-});
-
-
-// Dupip Articles (Posts)
-export const fetchArticles = React.cache((locale?: string) => {
-  return sdk.find({
-    collection: "posts",
-    locale,
-    where: {
-      _status: {
-        equals: "published",
-      },
-    },
-  });
-});
-
-export const fetchEpisodeBySlug = React.cache((slug: string, locale?: string) => {
-  return sdk
-    .find({
-      collection: "posts",
-      locale,
-      where: {
-        slug: {
-          equals: slug,
-        },
-      },
-      limit: 1,
-    })
-    .then((res) => res.docs[0]);
-});
-
-export const fetchEpisodeBlocks = React.cache((pageId: string, locale?: string) => {
-  // Fetch the post by ID to get its content/blocks
-  return sdk
-    .findByID({
-      collection: "posts",
-      id: pageId,
-      locale,
-    })
-    .then((post) => {
-      // Return content/blocks from the post document
-      // Adjust this based on your Payload CMS schema structure
-      return post?.content || post?.blocks || [];
-    });
-});
+  // Fetch all Payload CMS posts (articles) once, then create entries for all locales
+  try {
+    const episodesResult = await fetchArticles()
+    const posts = episodesResult.docs || []
+    
+    for (const post of posts) {
+      const slug = (post as any).slug || (post as any).slug?.value
+      if (slug) {
+        // Get last modified date if available
+        const updatedAt = (post as any).updatedAt || (post as any).publishedAt || (post as any).createdAt
+        const lastModified = updatedAt ? new Date(updatedAt) : new Date()
+        
+        // Create entries for all locales using the same slug
+        locales.forEach(locale => {
+          const postUrl = `${siteUrl}/${locale}/articles/${slug}`
+          sitemapEntries.push({
+            url: postUrl,
+            lastModified,
+            alternates: {
+              languages: Object.fromEntries(
+                locales.map(altLocale => [altLocale, `${siteUrl}/${altLocale}/articles/${slug}`])
+              ),
+            },
+          })
+        })
+      }
+    }
+  } catch (error) {
+    console.error('Error fetching posts:', error)
+  }
+  
+  return sitemapEntries
+}
