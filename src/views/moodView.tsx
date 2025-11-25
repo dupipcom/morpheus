@@ -436,23 +436,90 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
     await saveDayData(updatedMood)
   }
 
+  // Helper to find what changed between old and new arrays
+  const getArrayDiff = useCallback((oldArray: any[], newArray: any[]) => {
+    const oldIds = new Set(oldArray.map(item => item.id || item))
+    const newIds = new Set(newArray.map(item => item.id || item))
+    
+    // Find added items (in new but not in old)
+    const added = newArray.filter(item => {
+      const id = item.id || item
+      return !oldIds.has(id)
+    })
+    
+    // Find removed items (in old but not in new)
+    const removed = oldArray.filter(item => {
+      const id = item.id || item
+      return !newIds.has(id)
+    })
+    
+    // Find modified items (same ID but different quality)
+    const modified = newArray.filter(newItem => {
+      const newId = newItem.id || newItem
+      const oldItem = oldArray.find(oldItem => (oldItem.id || oldItem) === newId)
+      return oldItem && (oldItem.quality !== newItem.quality)
+    })
+    
+    return { added, removed, modified }
+  }, [])
+
+  // Create stable functions that only save specific field updates
+  const saveContactsOnly = useCallback(async (contactsData: any[]) => {
+    await saveDayData(undefined, contactsData, undefined, undefined)
+  }, [saveDayData])
+
+  const saveThingsOnly = useCallback(async (thingsData: any[]) => {
+    await saveDayData(undefined, undefined, thingsData, undefined)
+  }, [saveDayData])
+
+  const saveLifeEventsOnly = useCallback(async (lifeEventsData: any[]) => {
+    await saveDayData(undefined, undefined, undefined, lifeEventsData)
+  }, [saveDayData])
+
+  // Create batched debounced save functions for contacts, things, and lifeEvents
+  // These will batch multiple changes within 5 seconds and send only the final state
+  const debouncedSaveContacts = useDebounce(
+    saveContactsOnly,
+    5000,
+    { batched: false } // Send the latest full array after debounce
+  )
+
+  const debouncedSaveThings = useDebounce(
+    saveThingsOnly,
+    5000,
+    { batched: false }
+  )
+
+  const debouncedSaveLifeEvents = useDebounce(
+    saveLifeEventsOnly,
+    5000,
+    { batched: false }
+  )
+
   const handleMoodContactsChange = async (newMoodContacts: any[]) => {
-    // Update both optimistic and server state
+    // Update both optimistic and server state immediately
     setOptimisticMoodContacts(newMoodContacts)
     setMoodContacts(newMoodContacts)
-    await saveDayData(undefined, newMoodContacts)
+    // Trigger debounced save (will batch multiple changes within 5 seconds)
+    // Only the latest array will be sent after 5 seconds of inactivity
+    debouncedSaveContacts(newMoodContacts)
   }
 
   const handleMoodThingsChange = async (newMoodThings: any[]) => {
-    // Update both optimistic and server state
+    // Update both optimistic and server state immediately
     setOptimisticMoodThings(newMoodThings)
     setMoodThings(newMoodThings)
-    await saveDayData(undefined, undefined, newMoodThings)
+    // Trigger debounced save (will batch multiple changes within 5 seconds)
+    // Only the latest array will be sent after 5 seconds of inactivity
+    debouncedSaveThings(newMoodThings)
   }
 
   const handleMoodLifeEventsChange = async (newMoodLifeEvents: any[]) => {
+    // Update state immediately
     setMoodLifeEvents(newMoodLifeEvents)
-    await saveDayData(undefined, undefined, undefined, newMoodLifeEvents)
+    // Trigger debounced save (will batch multiple changes within 5 seconds)
+    // Only the latest array will be sent after 5 seconds of inactivity
+    debouncedSaveLifeEvents(newMoodLifeEvents)
   }
 
   const handleAddLifeEvent = async () => {

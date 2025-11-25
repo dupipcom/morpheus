@@ -239,11 +239,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Date is required' }, { status: 400 })
     }
 
+    // For contacts, things, and lifeEvents: if provided, they represent the full updated array
     // Extract IDs and quality values from contacts, things, and lifeEvents arrays
     // They might be objects with {id, quality} or just IDs
-    const personIds = contacts ? contacts.map((c: any) => typeof c === 'string' ? c : c.id).filter(Boolean) : []
-    const thingIds = things ? things.map((t: any) => typeof t === 'string' ? t : t.id).filter(Boolean) : []
-    const eventIds = lifeEvents ? lifeEvents.map((e: any) => typeof e === 'string' ? e : e.id).filter(Boolean) : []
+    const personIds = contacts !== undefined ? contacts.map((c: any) => typeof c === 'string' ? c : c.id).filter(Boolean) : undefined
+    const thingIds = things !== undefined ? things.map((t: any) => typeof t === 'string' ? t : t.id).filter(Boolean) : undefined
+    const eventIds = lifeEvents !== undefined ? lifeEvents.map((e: any) => typeof e === 'string' ? e : e.id).filter(Boolean) : undefined
     
     // Store quality values in analysis JSON field
     // Create mappings: personId -> quality, thingId -> quality, eventId -> quality
@@ -251,7 +252,7 @@ export async function POST(req: NextRequest) {
     const thingQualities: Record<string, number> = {}
     const eventQualities: Record<string, number> = {}
     
-    if (contacts) {
+    if (contacts !== undefined) {
       contacts.forEach((c: any) => {
         if (typeof c === 'object' && c.id && c.quality !== undefined) {
           personQualities[c.id] = Number(c.quality) || 0
@@ -259,7 +260,7 @@ export async function POST(req: NextRequest) {
       })
     }
     
-    if (things) {
+    if (things !== undefined) {
       things.forEach((t: any) => {
         if (typeof t === 'object' && t.id && t.quality !== undefined) {
           thingQualities[t.id] = Number(t.quality) || 0
@@ -267,7 +268,7 @@ export async function POST(req: NextRequest) {
       })
     }
     
-    if (lifeEvents) {
+    if (lifeEvents !== undefined) {
       lifeEvents.forEach((e: any) => {
         if (typeof e === 'object' && e.id && e.quality !== undefined) {
           eventQualities[e.id] = Number(e.quality) || 0
@@ -275,11 +276,16 @@ export async function POST(req: NextRequest) {
       })
     }
     
-    // Build analysis object with quality mappings
-    const analysisData: any = {
-      personQualities,
-      thingQualities,
-      eventQualities
+    // Build analysis object with quality mappings (only include if there are updates)
+    const analysisData: any = {}
+    if (Object.keys(personQualities).length > 0) {
+      analysisData.personQualities = personQualities
+    }
+    if (Object.keys(thingQualities).length > 0) {
+      analysisData.thingQualities = thingQualities
+    }
+    if (Object.keys(eventQualities).length > 0) {
+      analysisData.eventQualities = eventQualities
     }
 
     // Construct mood object with only provided fields (partial updates)
@@ -350,6 +356,7 @@ export async function POST(req: NextRequest) {
         const sum = moodValues.reduce((acc, val) => acc + val, 0)
         updateData.average = sum / moodKeys.length
       }
+      // Only update personIds, thingIds, eventIds if they were provided (partial update)
       if (personIds !== undefined) {
         updateData.personIds = personIds
       }
@@ -359,11 +366,13 @@ export async function POST(req: NextRequest) {
       if (eventIds !== undefined) {
         updateData.eventIds = eventIds
       }
-      // Merge analysis data with existing analysis
-      const existingAnalysis = existingDay.analysis as any || {}
-      updateData.analysis = {
-        ...existingAnalysis,
-        ...analysisData
+      // Merge analysis data with existing analysis (only if there are updates)
+      if (Object.keys(analysisData).length > 0) {
+        const existingAnalysis = existingDay.analysis as any || {}
+        updateData.analysis = {
+          ...existingAnalysis,
+          ...analysisData
+        }
       }
 
       day = await prisma.day.update({
