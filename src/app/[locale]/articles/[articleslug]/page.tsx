@@ -8,6 +8,8 @@ import Image from 'next/image';
 import { ArticleShareButton } from '@/components/articleShareButton';
 import { locales } from '@/app/constants';
 
+export const dynamic = 'force-dynamic';
+
 // Helper function to fetch profile data
 async function getProfile(userName: string): Promise<any | null> {
   if (!userName) return null;
