@@ -96,7 +96,7 @@ export default async function ArticleLayout({
       // Each key should match your block's slug
       mediaBlock: (props: any) => {
         return <div className="mb-8 px-4 md:px-8">
-          <img src={process.env.NEXT_PAYLOAD_URL + props.node.fields.media.sizes.large.url}/>
+          <img src={process.env.NEXT_PAYLOAD_URL + props.node.fields.media.url}/>
           {props.node.fields.media.caption && <RichText data={props.node.fields.media.caption} className="text-xs text-muted-foreground bg-muted p-4 rounded-lg"/>}
         </div>
         },
