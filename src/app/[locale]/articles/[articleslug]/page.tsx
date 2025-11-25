@@ -1,11 +1,12 @@
 import { notFound } from "next/navigation";
-import { fetchEpisodeBySlug, fetchArticles } from "@/lib/payload";
+import { fetchEpisodeBySlug, fetchAllArticles } from "@/lib/payload";
 import type { Metadata } from 'next';
 import { buildMetadata } from '@/app/metadata';
 import Link from 'next/link';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import Image from 'next/image';
 import { ArticleShareButton } from '@/components/articleShareButton';
+import { locales } from '@/app/constants';
 
 // Helper function to fetch profile data
 async function getProfile(userName: string): Promise<any | null> {
@@ -45,23 +46,21 @@ async function getProfile(userName: string): Promise<any | null> {
 }
 
 export async function generateStaticParams() {
-  const locales = ['ar', 'bn', 'ca', 'cs', 'da', 'de', 'el', 'en', 'es', 'et', 'eu', 'fi', 'fr', 'gl', 'he', 'hi', 'hu', 'it', 'ja', 'ko', 'ms', 'nl', 'pa', 'pl', 'pt', 'ro', 'ru', 'sv', 'tr', 'zh'];
+  // Fetch all articles once instead of per locale
+  const articlesResult = await fetchAllArticles();
+  const articles = articlesResult.docs || [];
 
   const params = [];
+  // Generate params for all locales from the single fetch
   for (const locale of locales) {
-    try {
-      const episodes = await fetchArticles(locale);
-      for (const article of episodes.docs || []) {
-        const slug = (article as any).slug || (article as any).slug?.value;
-        if (slug) {
-          params.push({
-            locale,
-            articleslug: slug,
-          });
-        }
+    for (const article of articles) {
+      const slug = (article as any).slug || (article as any).slug?.value;
+      if (slug) {
+        params.push({
+          locale,
+          articleslug: slug,
+        });
       }
-    } catch (error) {
-      console.error(`Error generating static params for locale ${locale}:`, error);
     }
   }
   return params;

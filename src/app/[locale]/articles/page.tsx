@@ -1,4 +1,4 @@
-import { fetchArticles } from "@/lib/payload";
+import { fetchAllArticles } from "@/lib/payload";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import Link from "next/link";
 import type { Metadata } from 'next';
@@ -20,7 +20,8 @@ export default async function ArticlesPage({
 }) {
   const { locale } = await params;
   
-  const episodes = await fetchArticles(locale);
+  // Fetch all articles once instead of per locale
+  const episodes = await fetchAllArticles();
   const articles = episodes.docs || [];
 
   if (articles.length === 0) {

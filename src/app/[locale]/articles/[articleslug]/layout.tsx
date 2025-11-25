@@ -1,5 +1,5 @@
 import React from "react";
-import { fetchArticles, fetchEpisodeBySlug } from "@/lib/payload";
+import { fetchEpisodeBySlug } from "@/lib/payload";
 import { RichText } from '@payloadcms/richtext-lexical/react';
 import ArticleCardGrid from '@/components/articleCardGrid';
 
@@ -72,8 +72,6 @@ export default async function ArticleLayout({
   const { locale, articleslug } = await params;
 
   const article = await fetchEpisodeBySlug(articleslug, locale);
-  const allPosts = await fetchArticles(locale) || [];
-  const relatedPosts = allPosts.docs.filter((post: any) => post.id !== article.id).slice(0, 3);
 
   if (!article) {
     return <>{children}</>;
@@ -85,18 +83,18 @@ export default async function ArticleLayout({
   const content = (article as any)?.content || null;
   const meta = (article as any)?.meta || null;
 
-  const jsxConverters = (props) => {
+  const jsxConverters = (props: any) => {
     return {
     ...props.defaultConverters,
-    heading: ({ node }) => {
-        return node.children.map((heading) => <span className={`${node.tag === "h2" ? "text-2xl md:text-4xl" : node.tag === "h3" ? "text-xl md:text-2xl" : node.tag === "h4" ? "text-lg md:text-xl" : node.tag === "h5" ? "text-base md:text-lg" : "text-sm md:text-base"} mb-8 block leading-10`}>{heading.text}</span>)
+    heading: ({ node }: { node: any }) => {
+        return node.children.map((heading: any) => <span className={`${node.tag === "h2" ? "text-2xl md:text-4xl" : node.tag === "h3" ? "text-xl md:text-2xl" : node.tag === "h4" ? "text-lg md:text-xl" : node.tag === "h5" ? "text-base md:text-lg" : "text-sm md:text-base"} mb-8 block leading-10`}>{heading.text}</span>)
     },
-    text: ({ node }) => {
+    text: ({ node }: { node: any }) => {
         return <span className="inline text-md md:text-lg leading-6 md:leading-8">{node.text}</span>
     },
     blocks: {
       // Each key should match your block's slug
-      mediaBlock: (props) => {
+      mediaBlock: (props: any) => {
         return <div className="mb-8 px-4 md:px-8">
           <img src={process.env.NEXT_PAYLOAD_URL + props.node.fields.media.sizes.large.url}/>
           {props.node.fields.media.caption && <RichText data={props.node.fields.media.caption} className="text-xs text-muted-foreground bg-muted p-4 rounded-lg"/>}
@@ -169,9 +167,9 @@ export default async function ArticleLayout({
       {children}
 
       <ArticleCardGrid 
-        posts={relatedPosts} 
         locale={locale} 
         title="Related Posts"
+        limit={3}
       />
 </div>
   );

@@ -1,4 +1,6 @@
-import React from "react";
+'use client';
+
+import React, { useEffect, useState } from "react";
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
@@ -42,7 +44,7 @@ function getTimeAgo(date: Date): string {
 }
 
 interface ArticleCardGridProps {
-  posts: any[];
+  posts?: any[];
   locale: string;
   title?: string;
   limit?: number;
@@ -80,8 +82,38 @@ export default function ArticleCardGrid({
   title = "Related Posts",
   limit 
 }: ArticleCardGridProps) {
+  const [fetchedPosts, setFetchedPosts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    // If posts are provided via props, use those instead of fetching
+    if (posts && posts.length > 0) {
+      return;
+    }
+
+    // Fetch articles from API
+    setLoading(true);
+    fetch('/api/v1/articles')
+      .then(res => res.json())
+      .then(data => {
+        setFetchedPosts(data.docs || []);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching articles:', error);
+        setLoading(false);
+      });
+  }, [posts]);
+
+  // Use provided posts or fetched posts
+  const allPosts = posts && posts.length > 0 ? posts : fetchedPosts;
+  
   // Apply limit if provided
-  const displayPosts = limit ? posts.slice(0, limit) : posts;
+  const displayPosts = limit ? allPosts.slice(0, limit) : allPosts;
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   if (!displayPosts || displayPosts.length === 0) {
     return null;

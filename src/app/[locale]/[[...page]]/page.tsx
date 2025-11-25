@@ -1,20 +1,22 @@
 import { notFound } from "next/navigation";
-import { fetchPages, fetchPageBySlug, fetchPageBlocks, fetchArticles } from "@/lib/payload"
+import { fetchAllPages, fetchPageBySlug, fetchPageBlocks, fetchAllArticles } from "@/lib/payload"
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import Template from "../../_template"
 import type { Metadata } from 'next'
 import { buildMetadata } from '@/app/metadata'
 import { stripLocaleFromPath, getLocaleFromPath } from "../../helpers"
 import ArticleCardGrid from '@/components/articleCardGrid'
+import { locales } from '@/app/constants'
 
 export async function generateStaticParams() {
-  const locales = ['ar', 'bn', 'ca', 'cs', 'da', 'de', 'el', 'en', 'es', 'et', 'eu', 'fi', 'fr', 'gl', 'he', 'hi', 'hu', 'it', 'ja', 'ko', 'ms', 'nl', 'pa', 'pl', 'pt', 'ro', 'ru', 'sv', 'tr', 'zh']
+  // Fetch all pages once instead of per locale
+  const pagesResult = await fetchAllPages()
+  const pages = pagesResult.docs || []
 
   const params = []
+  // Generate params for all locales from the single fetch
   for (const locale of locales) {
-    const pages = await fetchPages(locale)
-    // Payload CMS returns docs array instead of results
-    for (const page of pages.docs || []) {
+    for (const page of pages) {
       // Payload CMS structure: direct field access instead of properties
       const slug = (page as any).slug || (page as any).slug?.value
       if (slug) {
@@ -85,12 +87,13 @@ export default async function Page({
   // Check if this is the homepage (when clearSlug is empty or just "/")
   const isHomepage = !clearSlug || clearSlug === '/' || clearSlug === '';
   
-  // Fetch recent articles for homepage
+  // Fetch recent articles for homepage - use fetchAllArticles instead of fetchArticles(locale)
   let recentArticles: any[] = [];
   if (isHomepage) {
-    const episodes = await fetchArticles(locale);
+    const episodesResult = await fetchAllArticles();
+    const episodes = episodesResult.docs || [];
     // Sort by publishedAt descending and take the 3 latest
-    recentArticles = (episodes.docs || [])
+    recentArticles = episodes
       .sort((a: any, b: any) => {
         const dateA = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
         const dateB = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
