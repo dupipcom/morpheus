@@ -536,7 +536,10 @@
     "progress": "Vooruitgang",
     "moodAverageScale": "Gemiddelde stemming schaal",
     "balance": "Saldo",
-    "earningsScale": "Verdiensten schaal"
+    "earningsScale": "Verdiensten schaal",
+    "profit": "Winst",
+    "stash": "Reserve",
+    "withdrawn": "Opgenomen"
   },
   "socialView": {
     "activity": "Activiteit",

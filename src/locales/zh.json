@@ -289,7 +289,10 @@
     "progress": "进度",
     "moodAverageScale": "平均心情比例",
     "balance": "余额",
-    "earningsScale": "收入比例"
+    "earningsScale": "收入比例",
+    "profit": "利润",
+    "stash": "储备",
+    "withdrawn": "已提取"
   },
   "agentChat": {
     "thinking": "思考中...",

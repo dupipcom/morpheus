@@ -539,7 +539,10 @@
     "progress": "Progreso",
     "moodAverageScale": "Escala media do estado de ánimo",
     "balance": "Saldo",
-    "earningsScale": "Escala de ganancias"
+    "earningsScale": "Escala de ganancias",
+    "profit": "Beneficio",
+    "stash": "Reserva",
+    "withdrawn": "Retirado"
   },
   "socialView": {
     "activity": "Actividade",

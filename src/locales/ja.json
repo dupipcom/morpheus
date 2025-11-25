@@ -289,7 +289,10 @@
     "progress": "進歩",
     "moodAverageScale": "平均気分スケール",
     "balance": "残高",
-    "earningsScale": "収益スケール"
+    "earningsScale": "収益スケール",
+    "profit": "利益",
+    "stash": "貯蓄",
+    "withdrawn": "引き出し済み"
   },
   "agentChat": {
     "thinking": "考え中...",

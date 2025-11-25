@@ -536,7 +536,10 @@
     "progress": "অগ্রগতি",
     "moodAverageScale": "মুড গড়ের স্কেল",
     "balance": "ব্যালেন্স",
-    "earningsScale": "আয়ের স্কেল"
+    "earningsScale": "আয়ের স্কেল",
+    "profit": "লাভ",
+    "stash": "সংরক্ষণ",
+    "withdrawn": "উত্তোলন করা হয়েছে"
   },
   "socialView": {
     "activity": "কার্যক্রম",

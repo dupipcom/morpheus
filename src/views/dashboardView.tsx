@@ -70,16 +70,24 @@ const createProductivityChartConfig = (t: (key: string) => string) => ({
 }) satisfies ChartConfig
 
 const createMoneyChartConfig = (t: (key: string) => string) => ({
+  moodAverage: {
+    label: t('charts.moodAverage'),
+    color: "#cffcdf",
+  },
+  profit: {
+    label: t('charts.profit'),
+    color: "#6565cc",
+  },
+  stash: {
+    label: t('charts.stash'),
+    color: "#fbd2b0",
+  },
+  withdraw: {
+    label: t('charts.withdrawn'),
+    color: "#f7bfa5",
+  },
   balance: {
     label: t('charts.balance'),
-    color: "#2f2f8d",
-  },
-  moodAverageScale: {
-    label: t('charts.moodAverageScale'),
-    color: "#2f2f8d",
-  },
-  earningsScale: {
-    label: t('charts.earningsScale'),
     color: "#2f2f8d",
   },
 }) satisfies ChartConfig
@@ -151,9 +159,11 @@ export const DashboardView = ({ timeframe = "day" }) => {
   })
   
   const [moneyChartDimensions, setMoneyChartDimensions] = useState({
-    moodAverageScale: true,
+    moodAverage: true,
+    profit: true,
+    stash: true,
+    withdrawn: true,
     balance: true,
-    earningsScale: true,
   })
   
   const { session, setGlobalContext, ...globalContext } = useContext(GlobalContext)
@@ -265,8 +275,9 @@ const aggregateDataByWeek = (dailyData: any[]) => {
         selfEsteem: 0,
         trust: 0,
         progress: 0,
-        moodAverageScale: 0,
-        earnings: 0,
+        profit: 0,
+        stash: 0,
+        withdraw: 0,
         balance: 0,
         dates: []
       }
@@ -285,8 +296,9 @@ const aggregateDataByWeek = (dailyData: any[]) => {
     week.selfEsteem += parseFloat(day.selfEsteem) || 0
     week.trust += parseFloat(day.trust) || 0
     week.progress += parseFloat(day.progress) || 0
-    week.moodAverageScale += parseFloat(day.moodAverageScale) || 0
-    week.earnings += parseFloat(day.earnings) || 0
+    week.profit += parseFloat(day.profit) || 0
+    week.stash += parseFloat(day.stash) || 0
+    week.withdraw += parseFloat(day.withdraw) || 0
     week.balance += parseFloat(day.balance) || 0
   })
   
@@ -294,7 +306,6 @@ const aggregateDataByWeek = (dailyData: any[]) => {
   return Object.values(weeklyGroups).map((week: any) => {
     const count = week.count || 1 // Prevent division by zero
     const avgMood = week.moodAverage / count
-    const avgBalance = week.balance / count
     return {
       week: week.week,
       weekNumber: week.weekNumber,
@@ -306,11 +317,10 @@ const aggregateDataByWeek = (dailyData: any[]) => {
       selfEsteem: (week.selfEsteem / count).toFixed(2),
       trust: (week.trust / count).toFixed(2),
       progress: (week.progress / count).toFixed(2),
-      // Keep moodAverageScale consistent using the global balance peak
-      moodAverageScale: (balancePeak * (avgMood / 5)).toFixed(2),
-      earnings: (week.earnings / count).toFixed(2),
-      earningsScale: ((week.earnings / count) * 50).toFixed(2),
-      balance: avgBalance.toFixed(2),
+      profit: (week.profit / count).toFixed(2),
+      stash: (week.stash / count).toFixed(2),
+      withdraw: (week.withdraw / count).toFixed(2),
+      balance: (week.balance / count).toFixed(2),
       count: week.count,
       dates: week.dates
     }
@@ -318,11 +328,6 @@ const aggregateDataByWeek = (dailyData: any[]) => {
 }
 
   // Use days from Prisma Day model instead of user.entries
-  // Determine a global balance peak to keep moodAverageScale on a consistent scale
-  const balancePeak = days.reduce((max: number, d: any) => {
-    const bal = Number(d?.availableBalance || 0)
-    return bal > max ? bal : max
-  }, 0)
   // Weekly data - TODO: migrate to separate Week model or derive from Day model
   const userWeeks: any[] = [];
   
@@ -351,7 +356,10 @@ const aggregateDataByWeek = (dailyData: any[]) => {
       })()
       // Progress from day.progress is already 0-100 (percentage), no conversion needed
       const progress = cur.progress && !isNaN(cur.progress) ? Number(cur.progress) : 0
-      const earnings = cur.earnings && !isNaN(Number(cur.earnings)) ? Number(cur.earnings) : 0
+      const profit = cur.profit && !isNaN(Number(cur.profit)) ? Number(cur.profit) : 0
+      const stash = cur.stash && !isNaN(Number(cur.stash)) ? Number(cur.stash) : 0
+      const withdraw = cur.withdrawn && !isNaN(Number(cur.withdrawn)) ? Number(cur.withdrawn) : 0
+      const balance = cur.availableBalance && !isNaN(Number(cur.availableBalance)) ? Number(cur.availableBalance) : 0
       
       // Progress is already a percentage (0-100) from day.progress
       const progressPercentage = progress
@@ -368,11 +376,10 @@ const aggregateDataByWeek = (dailyData: any[]) => {
           selfEsteem: Number(cur.mood.selfEsteem || 0).toFixed(2),
           trust: Number(cur.mood.trust || 0).toFixed(2),
           progress: progressPercentage.toFixed(2),
-          // Use global balance peak to keep scale consistent across the entire plot
-          moodAverageScale: (balancePeak * (moodAverage / 5)).toFixed(2),
-          earnings: earnings.toFixed(2),
-          earningsScale: earnings.toFixed(2),
-          balance: cur.availableBalance || 0,
+          profit: profit.toFixed(2),
+          stash: stash.toFixed(2),
+          withdraw: withdraw.toFixed(2),
+          balance: balance.toFixed(2),
         }
       ]
       return acc
@@ -380,6 +387,27 @@ const aggregateDataByWeek = (dailyData: any[]) => {
     
   // Aggregate daily data by week
   const plotDataWeekly = aggregateDataByWeek(plotData)
+  
+  // Calculate the maximum value among profit, stash, withdraw, and balance for scaling moodAverage
+  const maxValue = plotDataWeekly.reduce((max: number, week: any) => {
+    const profit = parseFloat(week.profit) || 0
+    const stash = parseFloat(week.stash) || 0
+    const withdraw = parseFloat(week.withdraw) || 0
+    const balance = parseFloat(week.balance) || 0
+    const weekMax = Math.max(profit, stash, withdraw, balance)
+    return Math.max(max, weekMax)
+  }, 0)
+  
+  // Scale moodAverage to 50% of maxValue (so max moodAverage of 5 maps to 50% of chart height)
+  // moodAverage is on a 0-5 scale, so we scale it: (moodAverage / 5) * (maxValue * 0.5)
+  const scaledPlotDataWeekly = plotDataWeekly.map((week: any) => {
+    const moodAvg = parseFloat(week.moodAverage) || 0
+    const scaledMoodAverage = maxValue > 0 ? ((moodAvg / 5) * (maxValue * 0.5)).toFixed(2) : '0'
+    return {
+      ...week,
+      moodAverageScaled: scaledMoodAverage
+    }
+  })
     
   // Create plotWeeks from plotDataWeekly for productivity chart
   const plotWeeks = plotDataWeekly
@@ -492,23 +520,29 @@ const aggregateDataByWeek = (dailyData: any[]) => {
       </ChartContainer>
 
       <ChartDimensionSelector
-        dimensions={['moodAverageScale', 'balance', 'earningsScale']}
+        dimensions={['moodAverage', 'profit', 'stash', 'withdrawn', 'balance']}
         visibleDimensions={moneyChartDimensions}
         onDimensionToggle={handleMoneyDimensionToggle}
         title={t('dashboard.yourBalance')}
       />
 
       <ChartContainer config={moneyChartConfig}>
-        <AreaChart data={plotDataWeekly} accessibilityLayer>
+        <AreaChart data={scaledPlotDataWeekly} accessibilityLayer>
           <CartesianGrid vertical={true} horizontal={true} />
-          {moneyChartDimensions.moodAverageScale && (
-            <Area stackId="1" type="monotone" dataKey="moodAverageScale" stroke="#cffcdf" fill={"#cffcdf"} radius={4} fillOpacity={0.4} />
+          {moneyChartDimensions.moodAverage && (
+            <Area stackId="1" type="monotone" dataKey="moodAverageScaled" stroke="#cffcdf" fill={"#cffcdf"} radius={4} fillOpacity={0.4} />
+          )}
+          {moneyChartDimensions.profit && (
+            <Area stackId="2" type="monotone" dataKey="profit" stroke="#6565cc" fill="#6565cc" radius={4} fillOpacity={0.4} />
+          )}
+          {moneyChartDimensions.stash && (
+            <Area stackId="3" type="monotone" dataKey="stash" stroke="#fbd2b0" fill={"#fbd2b0"} radius={4} fillOpacity={0.4} />
+          )}
+          {moneyChartDimensions.withdrawn && (
+            <Area stackId="4" type="monotone" dataKey="withdraw" stroke="#f7bfa5" fill={"#f7bfa5"} radius={4} fillOpacity={0.4} />
           )}
           {moneyChartDimensions.balance && (
-            <Area stackId="2" type="monotone" dataKey="balance" stroke="#6565cc" fill="#6565cc" radius={4} fillOpacity={0.4} />
-          )}
-          {moneyChartDimensions.earningsScale && (
-            <Area stackId="3" type="monotone" dataKey="earningsScale" stroke="#f7bfa5" fill={"#f7bfa5"} radius={4} fillOpacity={0.4} />
+            <Area stackId="5" type="monotone" dataKey="balance" stroke="#2f2f8d" fill={"#2f2f8d"} radius={4} fillOpacity={0.4} />
           )}
           <XAxis
             dataKey="week"
@@ -516,6 +550,7 @@ const aggregateDataByWeek = (dailyData: any[]) => {
             tickMargin={5}
             axisLine={true}
           />
+          <ChartTooltip content={<ChartTooltipContent />} />
           <ChartLegend verticalAlign="top" content={<ChartLegendContent payload={[]} />}  />
         </AreaChart>
       </ChartContainer>

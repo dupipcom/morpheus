@@ -145,6 +145,8 @@ export async function GET(req: NextRequest) {
         average: true,
         progress: true,
         balance: true,
+        stash: true,
+        withdrawn: true,
         createdAt: true,
         updatedAt: true
       },
@@ -171,8 +173,8 @@ export async function GET(req: NextRequest) {
         return moodValues.reduce((sum, val) => sum + val, 0) / moodKeys.length
       })()
       
-      // Calculate earnings from ticker array (sum of profit values)
-      const earnings = Array.isArray(ticker) 
+      // Calculate profit from ticker array (sum of profit values)
+      const profit = Array.isArray(ticker) 
         ? ticker.reduce((sum: number, t: any) => sum + (Number(t.profit) || 0), 0)
         : (typeof ticker === 'object' && ticker !== null ? (Number((ticker as any).profit) || 0) : 0)
       
@@ -181,6 +183,10 @@ export async function GET(req: NextRequest) {
       
       // Use day.balance for availableBalance (stored when day is created/updated)
       const availableBalance = typeof day.balance === 'number' ? day.balance : 0
+      
+      // Use day.stash and day.withdrawn (stored when day is created/updated)
+      const stash = typeof day.stash === 'number' ? day.stash : 0
+      const withdrawn = typeof day.withdrawn === 'number' ? day.withdrawn : 0
 
       return {
         id: day.id,
@@ -199,9 +205,11 @@ export async function GET(req: NextRequest) {
           trust: mood.trust || 0
         },
         moodAverage: moodAverage,
-        earnings: Number(earnings) || 0,
+        profit: Number(profit) || 0,
         progress: Number(progress) || 0,
         availableBalance: Number(availableBalance) || 0,
+        stash: Number(stash) || 0,
+        withdrawn: Number(withdrawn) || 0,
         ticker: ticker,
         analysis: analysis
       }

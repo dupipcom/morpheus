@@ -540,7 +540,10 @@
     "progress": "Edistyminen",
     "moodAverageScale": "Mielialan keskiarvon asteikko",
     "balance": "Saldo",
-    "earningsScale": "Tulojen asteikko"
+    "earningsScale": "Tulojen asteikko",
+    "profit": "Voitto",
+    "stash": "Varasto",
+    "withdrawn": "Nostettu"
   },
   "socialView": {
     "activity": "Aktiviteetti",

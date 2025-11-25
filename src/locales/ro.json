@@ -536,7 +536,10 @@
     "progress": "Progres",
     "moodAverageScale": "Scara medie a dispoziției",
     "balance": "Sold",
-    "earningsScale": "Scara câștigurilor"
+    "earningsScale": "Scara câștigurilor",
+    "profit": "Profit",
+    "stash": "Rezervă",
+    "withdrawn": "Retras"
   },
   "socialView": {
     "activity": "Activitate",

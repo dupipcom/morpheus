@@ -289,7 +289,10 @@
     "progress": "Fortschritt",
     "moodAverageScale": "Stimmungs-Durchschnittsskala",
     "balance": "Kontostand",
-    "earningsScale": "Verdienst-Skala"
+    "earningsScale": "Verdienst-Skala",
+    "profit": "Gewinn",
+    "stash": "Reserve",
+    "withdrawn": "Abgehoben"
   },
   "agentChat": {
     "thinking": "Denke nach...",

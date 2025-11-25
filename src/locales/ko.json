@@ -232,7 +232,10 @@
     "progress": "진전",
     "moodAverageScale": "평균 기분 스케일",
     "balance": "잔액",
-    "earningsScale": "수익 스케일"
+    "earningsScale": "수익 스케일",
+    "profit": "이익",
+    "stash": "저축",
+    "withdrawn": "인출됨"
   },
   "social": {
     "title": "소셜 연락처",

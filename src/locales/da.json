@@ -540,7 +540,10 @@
     "progress": "Fremskridt",
     "moodAverageScale": "Gennemsnitlig humør skala",
     "balance": "Saldo",
-    "earningsScale": "Indtjening skala"
+    "earningsScale": "Indtjening skala",
+    "profit": "Profit",
+    "stash": "Reserve",
+    "withdrawn": "Hævet"
   },
   "socialView": {
     "activity": "Aktivitet",

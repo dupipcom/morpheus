@@ -536,7 +536,10 @@
     "progress": "התקדמות",
     "moodAverageScale": "סולם ממוצע מצב רוח",
     "balance": "יתרה",
-    "earningsScale": "סולם רווחים"
+    "earningsScale": "סולם רווחים",
+    "profit": "רווח",
+    "stash": "מאגר",
+    "withdrawn": "נמשך"
   },
   "socialView": {
     "activity": "פעילות",

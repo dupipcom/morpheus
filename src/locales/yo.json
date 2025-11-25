@@ -250,7 +250,10 @@
     "progress": "Ìlọsíwájú",
     "moodAverageScale": "Ìwọ̀n Ìwọ̀n Ìwà",
     "balance": "Ìdẹ̀",
-    "earningsScale": "Ìwọ̀n Owó tí a gbà"
+    "earningsScale": "Ìwọ̀n Owó tí a gbà",
+    "profit": "Èrè",
+    "stash": "Ìpamọ́",
+    "withdrawn": "A yọ kúrò"
   },
   "social": {
     "title": "Àwọn ìbámu ọ̀rọ̀",

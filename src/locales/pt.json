@@ -289,7 +289,10 @@
     "progress": "Progresso",
     "moodAverageScale": "Escala da Média do Humor",
     "balance": "Saldo",
-    "earningsScale": "Escala de Ganhos"
+    "earningsScale": "Escala de Ganhos",
+    "profit": "Lucro",
+    "stash": "Reserva",
+    "withdrawn": "Retirado"
   },
   "agentChat": {
     "thinking": "Pensando...",

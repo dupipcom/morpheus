@@ -539,7 +539,10 @@
     "progress": "Framsteg",
     "moodAverageScale": "Humörgenomsnittskala",
     "balance": "Saldo",
-    "earningsScale": "Inkomstskala"
+    "earningsScale": "Inkomstskala",
+    "profit": "Vinst",
+    "stash": "Reserv",
+    "withdrawn": "Uttaget"
   },
   "socialView": {
     "activity": "Aktivitet",

@@ -232,7 +232,10 @@
     "progress": "Прогресс",
     "moodAverageScale": "Шкала среднего настроения",
     "balance": "Баланс",
-    "earningsScale": "Шкала заработка"
+    "earningsScale": "Шкала заработка",
+    "profit": "Прибыль",
+    "stash": "Резерв",
+    "withdrawn": "Выведено"
   },
   "errors": {
     "notFound": "Упс! Не удалось настроить эту частоту.",

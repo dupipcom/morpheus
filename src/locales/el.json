@@ -533,7 +533,10 @@
     "progress": "Πρόοδος",
     "moodAverageScale": "Κλίμακα Μέσης Διάθεσης",
     "balance": "Υπόλοιπο",
-    "earningsScale": "Κλίμακα Κερδών"
+    "earningsScale": "Κλίμακα Κερδών",
+    "profit": "Κέρδος",
+    "stash": "Αποθήκη",
+    "withdrawn": "Αναληφθέν"
   },
   "socialView": {
     "activity": "Δραστηριότητα",

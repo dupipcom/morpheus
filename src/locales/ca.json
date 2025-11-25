@@ -500,7 +500,10 @@
     "progress": "Progress",
     "moodAverageScale": "Mood Average Scale",
     "balance": "Balance",
-    "earningsScale": "Earnings Scale"
+    "earningsScale": "Earnings Scale",
+    "profit": "Profit",
+    "stash": "Stash",
+    "withdrawn": "Withdrawn"
   },
   "profile": {
     "editProfile": "Edit Profile",

@@ -540,7 +540,10 @@
     "progress": "Kemajuan",
     "moodAverageScale": "Skala Purata Mood",
     "balance": "Baki",
-    "earningsScale": "Skala Pendapatan"
+    "earningsScale": "Skala Pendapatan",
+    "profit": "Keuntungan",
+    "stash": "Simpanan",
+    "withdrawn": "Dikeluarkan"
   },
   "socialView": {
     "activity": "Aktiviti",

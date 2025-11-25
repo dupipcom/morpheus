@@ -248,7 +248,10 @@
     "progress": "Ci gaba",
     "moodAverageScale": "Ma'aunin Matsakaicin Yanayin Zuciya",
     "balance": "Ma'auni",
-    "earningsScale": "Ma'aunin Kuɗin da aka samu"
+    "earningsScale": "Ma'aunin Kuɗin da aka samu",
+    "profit": "Ribar",
+    "stash": "Ajiya",
+    "withdrawn": "An cire"
   },
   "social": {
     "title": "Hulɗar zamantakewa",

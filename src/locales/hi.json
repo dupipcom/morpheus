@@ -536,7 +536,10 @@
     "progress": "प्रगति",
     "moodAverageScale": "मनोदशा औसत पैमाना",
     "balance": "शेष",
-    "earningsScale": "कमाई पैमाना"
+    "earningsScale": "कमाई पैमाना",
+    "profit": "लाभ",
+    "stash": "भंडार",
+    "withdrawn": "निकाला गया"
   },
   "socialView": {
     "activity": "गतिविधि",

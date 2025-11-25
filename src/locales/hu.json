@@ -535,7 +535,10 @@
     "progress": "Fejlődés",
     "moodAverageScale": "Hangulat átlag skála",
     "balance": "Egyenleg",
-    "earningsScale": "Bevétel skála"
+    "earningsScale": "Bevétel skála",
+    "profit": "Nyereség",
+    "stash": "Tartalék",
+    "withdrawn": "Kivont"
   },
   "socialView": {
     "activity": "Aktivitás",

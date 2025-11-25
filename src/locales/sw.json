@@ -250,7 +250,10 @@
     "progress": "Maendeleo",
     "moodAverageScale": "Kipimo cha Wastani wa Hali ya Moyo",
     "balance": "Salio",
-    "earningsScale": "Kipimo cha Mapato"
+    "earningsScale": "Kipimo cha Mapato",
+    "profit": "Faida",
+    "stash": "Akiba",
+    "withdrawn": "Imeondolewa"
   },
   "social": {
     "title": "Mawasiliano ya kijamii",

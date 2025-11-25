@@ -236,7 +236,10 @@
     "progress": "Postęp",
     "moodAverageScale": "Skala średniego nastroju",
     "balance": "Saldo",
-    "earningsScale": "Skala zarobków"
+    "earningsScale": "Skala zarobków",
+    "profit": "Zysk",
+    "stash": "Rezerwa",
+    "withdrawn": "Wypłacone"
   },
   "errors": {
     "notFound": "Ups! Nie można dostroić tej częstotliwości.",

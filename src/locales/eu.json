@@ -538,7 +538,10 @@
     "progress": "Aurrerapena",
     "moodAverageScale": "Humor batazbesteko eskala",
     "balance": "Saldoa",
-    "earningsScale": "Irabazi eskala"
+    "earningsScale": "Irabazi eskala",
+    "profit": "Irabazia",
+    "stash": "Erreserba",
+    "withdrawn": "Ateratua"
   },
   "socialView": {
     "activity": "Jarduera",

@@ -293,7 +293,10 @@
     "progress": "التقدم",
     "moodAverageScale": "مقياس متوسط المزاج",
     "balance": "الرصيد",
-    "earningsScale": "مقياس الأرباح"
+    "earningsScale": "مقياس الأرباح",
+    "profit": "الربح",
+    "stash": "المدخرات",
+    "withdrawn": "المسحوب"
   },
   "agentChat": {
     "thinking": "يفكر...",

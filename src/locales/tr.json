@@ -236,7 +236,10 @@
     "progress": "İlerleme",
     "moodAverageScale": "Ortalama ruh hali ölçeği",
     "balance": "Bakiye",
-    "earningsScale": "Kazanç ölçeği"
+    "earningsScale": "Kazanç ölçeği",
+    "profit": "Kâr",
+    "stash": "Rezerv",
+    "withdrawn": "Çekilmiş"
   },
   "errors": {
     "notFound": "Hay aksi! Bu frekansa ayarlanamadı.",

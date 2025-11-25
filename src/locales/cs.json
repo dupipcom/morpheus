@@ -536,7 +536,10 @@
     "progress": "Pokrok",
     "moodAverageScale": "Stupnice průměrné nálady",
     "balance": "Zůstatek",
-    "earningsScale": "Stupnice výdělků"
+    "earningsScale": "Stupnice výdělků",
+    "profit": "Zisk",
+    "stash": "Rezerva",
+    "withdrawn": "Vybráno"
   },
   "socialView": {
     "activity": "Aktivita",

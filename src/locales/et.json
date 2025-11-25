@@ -536,7 +536,10 @@
     "progress": "Edenemine",
     "moodAverageScale": "Keskmise tuju skaala",
     "balance": "Saldo",
-    "earningsScale": "Sissetulekute skaala"
+    "earningsScale": "Sissetulekute skaala",
+    "profit": "Kasum",
+    "stash": "Varu",
+    "withdrawn": "Välja võetud"
   },
   "socialView": {
     "activity": "Tegevus",

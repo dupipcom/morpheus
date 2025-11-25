@@ -540,7 +540,10 @@
     "progress": "ਤਰੱਕੀ",
     "moodAverageScale": "ਔਸਤ ਮੂਡ ਸਕੇਲ",
     "balance": "ਬਕਾਇਆ",
-    "earningsScale": "ਕਮਾਈ ਸਕੇਲ"
+    "earningsScale": "ਕਮਾਈ ਸਕੇਲ",
+    "profit": "ਲਾਭ",
+    "stash": "ਜਮ੍ਹਾ",
+    "withdrawn": "ਕੱਢਿਆ ਗਿਆ"
   },
   "socialView": {
     "activity": "ਸਰਗਰਮੀ",
