@@ -228,29 +228,29 @@ export async function POST(req: Request) {
     const currentStash = Math.max(0, typeof user.stash === 'number' 
       ? user.stash 
       : (typeof user.stash === 'string' ? parseFloat(user.stash || '0') : 0))
-    const currentTotalEarnings = Math.max(0, typeof user.totalEarnings === 'number' 
-      ? user.totalEarnings 
-      : (typeof user.totalEarnings === 'string' ? parseFloat(user.totalEarnings || '0') : 0))
     const currentAvailableBalance = Math.max(0, user.availableBalance ?? 0)
+    const currentWithdrawn = Math.max(0, typeof user.withdrawn === 'number' 
+      ? user.withdrawn 
+      : (typeof user.withdrawn === 'string' ? parseFloat(user.withdrawn || '0') : 0))
     
-    // Withdraw: subtract stash from availableBalance and add to totalEarnings
+    // Withdraw: subtract stash from availableBalance and accumulate in withdrawn
     const newAvailableBalance = Math.max(0, currentAvailableBalance - currentStash)
-    const newTotalEarnings = Math.max(0, currentTotalEarnings + currentStash)
     const newEquity = Math.max(0, newAvailableBalance) // Equity = availableBalance since stash is 0
     const newStash = 0
+    const newWithdrawn = Math.max(0, currentWithdrawn + currentStash)
     
     await prisma.user.update({
       data: {
         availableBalance: newAvailableBalance,
         stash: newStash as number,
-        totalEarnings: newTotalEarnings as number,
         equity: newEquity as number,
+        withdrawn: newWithdrawn as number,
       },
       where: { id: user.id },
     })
     user = await getUser()
     
-    // Update current day entry with new balance, stash, and equity
+    // Update current day entry with new balance, stash, equity, and withdrawn amount
     try {
       const today = new Date()
       const dateISO = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
@@ -262,13 +262,20 @@ export async function POST(req: Request) {
         }
       })
       
+      // Get existing withdrawn amount or default to 0
+      const existingWithdrawn = existingDay 
+        ? (typeof existingDay.withdrawn === 'number' ? existingDay.withdrawn : (typeof existingDay.withdrawn === 'string' ? parseFloat(existingDay.withdrawn || '0') : 0))
+        : 0
+      const newWithdrawn = existingWithdrawn + currentStash
+      
       if (existingDay) {
         await prisma.day.update({
           where: { id: existingDay.id },
           data: {
             balance: newAvailableBalance,
             stash: newStash,
-            equity: newEquity
+            equity: newEquity,
+            withdrawn: newWithdrawn
           }
         })
       } else {
@@ -284,6 +291,7 @@ export async function POST(req: Request) {
             balance: newAvailableBalance,
             stash: newStash,
             equity: newEquity,
+            withdrawn: newWithdrawn,
             week: typeof weekNumber === 'number' ? weekNumber : Number(weekNumber) || 1,
             month: month,
             quarter: quarter,

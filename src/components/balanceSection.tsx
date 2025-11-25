@@ -36,8 +36,8 @@ export const BalanceSection = () => {
   const serverStash = typeof serverStashRaw === 'number' ? serverStashRaw : (typeof serverStashRaw === 'string' ? parseFloat(serverStashRaw || '0') : 0)
   const serverEquityRaw = (session?.user as any)?.equity
   const serverEquity = typeof serverEquityRaw === 'number' ? serverEquityRaw : (typeof serverEquityRaw === 'string' ? parseFloat(serverEquityRaw || '0') : 0)
-  const serverTotalEarningsRaw = (session?.user as any)?.totalEarnings
-  const serverTotalEarnings = typeof serverTotalEarningsRaw === 'number' ? serverTotalEarningsRaw : (typeof serverTotalEarningsRaw === 'string' ? parseFloat(serverTotalEarningsRaw || '0') : 0)
+  const serverWithdrawnRaw = (session?.user as any)?.withdrawn
+  const serverWithdrawn = typeof serverWithdrawnRaw === 'number' ? serverWithdrawnRaw : (typeof serverWithdrawnRaw === 'string' ? parseFloat(serverWithdrawnRaw || '0') : 0)
   const [value, setValue, removeValue] = useLocalStorage('dpip_redacted', 0);
   const [hiddenBalance, setHiddenBalance] = useState(!revealRedacted)
   const [localBalance, setLocalBalance] = useState<string>(serverBalance !== null ? String(serverBalance) : '0')
@@ -95,12 +95,18 @@ export const BalanceSection = () => {
   const handleWithdrawStash = async () => {
     try {
       const response = await fetch('/api/v1/user', { 
-        method: 'POST', 
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ withdrawStash: true })
       })
       
       if (response.ok) {
         await refreshUser()
+      } else {
+        const errorData = await response.json().catch(() => ({}))
+        console.error('Error withdrawing stash:', errorData.error || 'Unknown error')
       }
     } catch (error) {
       console.error('Error withdrawing stash:', error)
@@ -211,7 +217,7 @@ export const BalanceSection = () => {
                 <div className="flex justify-between text-sm">
                   <span>{t('common.totalEarnings')}:</span>
                   <span className={hiddenBalance ? "blur-sm" : ""}>
-                    Ð{serverTotalEarnings.toFixed(2)}
+                    Ð{serverWithdrawn.toFixed(2)}
                   </span>
                 </div>
               </div>

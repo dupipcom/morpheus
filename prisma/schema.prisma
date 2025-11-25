@@ -64,6 +64,7 @@ model Day {
   balance       Float?
   stash         Float?
   equity        Float?
+  withdrawn     Float?
   visibility    Visibility @default(PRIVATE)
   fieldVisibility DayVisibility?
   personIds     String[]  @default([]) @db.ObjectId
@@ -330,6 +331,7 @@ model User {
   profit        Float?    @default(0)
   equity        Float?    @default(0)
   availableBalance Float? @default(0)
+  withdrawn     Float?    @default(0)
   persons       Person[]
   things        Thing[]
   events        Event[]

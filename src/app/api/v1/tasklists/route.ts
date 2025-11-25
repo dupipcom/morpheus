@@ -398,6 +398,223 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Helper function to calculate stash and profit deltas for a task list based on role and date
+    const calculateStashAndProfitDeltasForTaskList = async (
+      taskListId: string,
+      userId: string,
+      year: number,
+      dateISO: string,
+      isCompleted: boolean
+    ): Promise<{ stashDelta: number; profitDelta: number }> => {
+      const taskList = await prisma.list.findUnique({ where: { id: taskListId } })
+      if (!taskList) return { stashDelta: 0, profitDelta: 0 }
+
+      const rolePrefix = taskList.role?.split('.')[0] || ''
+      const isDailyRole = rolePrefix === 'daily'
+      const isWeeklyRole = rolePrefix === 'weekly'
+      const isOneOffRole = rolePrefix === 'one-off' || rolePrefix === 'oneoff'
+
+      let stashDelta = 0
+      let totalProfitDelta = 0
+
+      if (isDailyRole) {
+        const aggregated = await aggregateCompleterEarningsFromTaskList(taskListId, userId, year, dateISO)
+        const deltas = calculateStashAndProfitDeltas(
+          isCompleted ? aggregated.prize : -aggregated.prize,
+          isCompleted ? aggregated.profit : -aggregated.profit,
+          isCompleted
+        )
+        stashDelta += deltas.stashDelta
+        totalProfitDelta += deltas.profitDelta
+      } else if (isWeeklyRole) {
+        const weekStart = new Date(dateISO)
+        weekStart.setDate(weekStart.getDate() - weekStart.getDay())
+        const weekEnd = new Date(weekStart)
+        weekEnd.setDate(weekEnd.getDate() + 6)
+
+        let totalPrize = 0
+        let totalProfit = 0
+
+        for (let d = new Date(weekStart); d <= weekEnd; d.setDate(d.getDate() + 1)) {
+          const dateStr = d.toISOString().split('T')[0]
+          const aggregated = await aggregateCompleterEarningsFromTaskList(taskListId, userId, year, dateStr)
+          totalPrize += aggregated.prize
+          totalProfit += aggregated.profit
+        }
+
+        const deltas = calculateStashAndProfitDeltas(
+          isCompleted ? totalPrize : -totalPrize,
+          isCompleted ? totalProfit : -totalProfit,
+          isCompleted
+        )
+        stashDelta += deltas.stashDelta
+        totalProfitDelta += deltas.profitDelta
+      } else if (isOneOffRole) {
+        const aggregated = await aggregateCompleterEarningsFromTaskList(taskListId, userId, year, dateISO)
+        const deltas = calculateStashAndProfitDeltas(
+          isCompleted ? aggregated.prize : -aggregated.prize,
+          isCompleted ? aggregated.profit : -aggregated.profit,
+          isCompleted
+        )
+        stashDelta += deltas.stashDelta
+        totalProfitDelta += deltas.profitDelta
+      }
+
+      return { stashDelta, profitDelta: totalProfitDelta }
+    }
+
+    // Helper function to update user stash and profit
+    const updateUserStashAndProfit = async (
+      userId: string,
+      stashDelta: number,
+      profitDelta: number
+    ): Promise<{ availableBalance: number; stash: number; equity: number } | null> => {
+      if (stashDelta === 0 && profitDelta === 0) return null
+
+      try {
+        const refreshedUser = await prisma.user.findUnique({
+          where: { id: userId },
+          select: { id: true, availableBalance: true, stash: true, equity: true, profit: true }
+        })
+
+        if (!refreshedUser) return null
+
+        const currentStash = typeof refreshedUser.stash === 'number'
+          ? refreshedUser.stash
+          : (typeof refreshedUser.stash === 'string' ? parseFloat(refreshedUser.stash || '0') : 0)
+        const currentProfit = typeof (refreshedUser as any).profit === 'number'
+          ? (refreshedUser as any).profit
+          : (typeof (refreshedUser as any).profit === 'string' ? parseFloat((refreshedUser as any).profit || '0') : 0)
+        const availableBalance = typeof refreshedUser.availableBalance === 'number'
+          ? refreshedUser.availableBalance
+          : parseFloat(String(refreshedUser.availableBalance || '0'))
+
+        const updatedValues = calculateUpdatedUserValues({
+          currentStash,
+          currentProfit,
+          currentAvailableBalance: availableBalance,
+          stashDelta,
+          profitDelta
+        })
+
+        await prisma.user.update({
+          where: { id: refreshedUser.id },
+          data: {
+            stash: updatedValues.newStash as number,
+            profit: updatedValues.newProfit as number,
+            equity: updatedValues.newEquity as number,
+          } as any
+        })
+
+        return {
+          availableBalance: updatedValues.newAvailableBalance,
+          stash: updatedValues.newStash,
+          equity: updatedValues.newEquity
+        }
+      } catch (error) {
+        console.error('Error updating user stash and profit:', error)
+        return null
+      }
+    }
+
+    // Helper function to update Day ticker with profit and prize
+    const updateDayTicker = async (
+      userId: string,
+      dateISO: string,
+      taskListId: string,
+      doneTasks: any[],
+      userBalance?: number,
+      userStash?: number,
+      userEquity?: number
+    ): Promise<void> => {
+      try {
+        const dateObj = new Date(dateISO)
+        const [_, weekNumberResult] = getWeekNumber(dateObj)
+        const weekNumber = typeof weekNumberResult === 'number' ? weekNumberResult : Number(weekNumberResult) || 1
+        const month = dateObj.getMonth() + 1
+        const quarter = Math.ceil(month / 3)
+        const semester = month <= 6 ? 1 : 2
+        const year = Number(dateISO.split('-')[0])
+
+        let existingDay = await prisma.day.findFirst({
+          where: {
+            userId: userId,
+            date: dateISO
+          }
+        })
+
+        if (!existingDay) {
+          existingDay = await prisma.day.create({
+            data: {
+              userId: userId,
+              date: dateISO,
+              week: weekNumber,
+              month: month,
+              quarter: quarter,
+              semester: semester,
+              ticker: [],
+              tasks: []
+            }
+          })
+        }
+
+        if (doneTasks.length > 0) {
+          const aggregated = await aggregateCompleterEarningsFromTaskList(taskListId, userId, year, dateISO)
+          const existingTickers = Array.isArray(existingDay.ticker) ? existingDay.ticker : []
+          const newTickers = doneTasks.map((task: any) => {
+            const taskId = task.id || task.localeKey || task.name || undefined
+            return {
+              listId: taskListId,
+              taskId: taskId,
+              profit: aggregated.profit || 0,
+              prize: aggregated.prize || 0
+            }
+          })
+
+          const newTaskIds = new Set(newTickers.map((t: any) => t.taskId).filter(Boolean))
+          const filteredTickers = existingTickers.filter((t: any) => !t.taskId || !newTaskIds.has(t.taskId))
+          const updatedTickers = [...filteredTickers, ...newTickers]
+
+          const balance = userBalance !== undefined ? userBalance : (typeof existingDay.balance === 'number' ? existingDay.balance : 0)
+          const stash = userStash !== undefined ? userStash : (typeof existingDay.stash === 'number' ? existingDay.stash : 0)
+          const equity = userEquity !== undefined ? userEquity : (typeof existingDay.equity === 'number' ? existingDay.equity : 0)
+
+          await prisma.day.update({
+            where: { id: existingDay.id },
+            data: {
+              ticker: updatedTickers as any,
+              balance: balance,
+              stash: stash,
+              equity: equity,
+              week: weekNumber,
+              month: month,
+              quarter: quarter,
+              semester: semester
+            }
+          })
+        } else {
+          const existingTickers = Array.isArray(existingDay.ticker) ? existingDay.ticker : []
+          const filteredTickers = existingTickers.filter((t: any) => t.listId !== taskListId)
+
+          const balance = userBalance !== undefined ? userBalance : (typeof existingDay.balance === 'number' ? existingDay.balance : 0)
+          const stash = userStash !== undefined ? userStash : (typeof existingDay.stash === 'number' ? existingDay.stash : 0)
+          const equity = userEquity !== undefined ? userEquity : (typeof existingDay.equity === 'number' ? existingDay.equity : 0)
+
+          await prisma.day.update({
+            where: { id: existingDay.id },
+            data: {
+              ticker: filteredTickers as any,
+              balance: balance,
+              stash: stash,
+              equity: equity
+            }
+          })
+        }
+      } catch (error) {
+        console.error('Error updating Day ticker:', error)
+      }
+    }
+
     // Get user's locale and translations
     const userLocale = getUserLocale(request)
     const translations = loadTranslationsSync(userLocale)
@@ -822,125 +1039,29 @@ export async function POST(request: NextRequest) {
       // Entries logic removed - earnings now tracked in Day model
       if (userRecord) {
         // Calculate stash and profit deltas from task completions (without entries)
-        let stashDelta = 0  // Prize only
-        let totalProfitDelta = 0  // Profit only
+        let totalStashDelta = 0
+        let totalProfitDelta = 0
 
         // Calculate stash and profit deltas from completed tasks (without entries)
         if (justCompletedNames.length > 0 || justUncompletedNames.length > 0) {
-          // Calculate earnings directly from completedTasks without storing in entries
-          const rolePrefix = taskList.role?.split('.')[0] || ''
-          const isDailyRole = rolePrefix === 'daily'
-          const isWeeklyRole = rolePrefix === 'weekly'
-          const isOneOffRole = rolePrefix === 'one-off' || rolePrefix === 'oneoff'
-          
-          // Helper to get week number
-          const getWeekNumber = (date: Date): number => {
-            const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))
-            const dayNum = d.getUTCDay() || 7
-            d.setUTCDate(d.getUTCDate() + 4 - dayNum)
-            const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1))
-            return Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7)
-          }
-          
-          // Calculate earnings directly from completedTasks (entries removed)
           if (justCompletedNames.length > 0) {
-            // Calculate earnings for newly completed tasks
-            if (isDailyRole) {
-              const aggregated = await aggregateCompleterEarningsFromTaskList(taskList.id, user.id, year, dateISO)
-              const deltas = calculateStashAndProfitDeltas(aggregated.prize, aggregated.profit, true)
-              stashDelta += deltas.stashDelta
-              totalProfitDelta += deltas.profitDelta
-            } else if (isWeeklyRole) {
-              const weekStart = new Date(completionDate)
-              weekStart.setDate(weekStart.getDate() - weekStart.getDay())
-              const weekEnd = new Date(weekStart)
-              weekEnd.setDate(weekEnd.getDate() + 6)
-              
-              let totalPrize = 0
-              let totalProfit = 0
-              
-              for (let d = new Date(weekStart); d <= weekEnd; d.setDate(d.getDate() + 1)) {
-                const dateStr = d.toISOString().split('T')[0]
-                const aggregated = await aggregateCompleterEarningsFromTaskList(taskList.id, user.id, year, dateStr)
-                totalPrize += aggregated.prize
-                totalProfit += aggregated.profit
-              }
-              
-              const deltas = calculateStashAndProfitDeltas(totalPrize, totalProfit, true)
-              stashDelta += deltas.stashDelta
-              totalProfitDelta += deltas.profitDelta
-            } else if (isOneOffRole) {
-              const aggregated = await aggregateCompleterEarningsFromTaskList(taskList.id, user.id, year, dateISO)
-              const deltas = calculateStashAndProfitDeltas(aggregated.prize, aggregated.profit, true)
-              stashDelta += deltas.stashDelta
-              totalProfitDelta += deltas.profitDelta
-            }
+            const deltas = await calculateStashAndProfitDeltasForTaskList(taskList.id, user.id, year, dateISO, true)
+            totalStashDelta += deltas.stashDelta
+            totalProfitDelta += deltas.profitDelta
           }
           
           if (justUncompletedNames.length > 0) {
-            // Calculate negative deltas for uncompleted tasks
-            if (isDailyRole) {
-              const aggregated = await aggregateCompleterEarningsFromTaskList(taskList.id, user.id, year, dateISO)
-              const deltas = calculateStashAndProfitDeltas(-aggregated.prize, -aggregated.profit, false)
-              stashDelta += deltas.stashDelta
-              totalProfitDelta += deltas.profitDelta
-            } else if (isWeeklyRole) {
-              const weekStart = new Date(completionDate)
-              weekStart.setDate(weekStart.getDate() - weekStart.getDay())
-              const weekEnd = new Date(weekStart)
-              weekEnd.setDate(weekEnd.getDate() + 6)
-              
-              let totalPrize = 0
-              let totalProfit = 0
-              
-              for (let d = new Date(weekStart); d <= weekEnd; d.setDate(d.getDate() + 1)) {
-                const dateStr = d.toISOString().split('T')[0]
-                const aggregated = await aggregateCompleterEarningsFromTaskList(taskList.id, user.id, year, dateStr)
-                totalPrize += aggregated.prize
-                totalProfit += aggregated.profit
-              }
-              
-              const deltas = calculateStashAndProfitDeltas(-totalPrize, -totalProfit, false)
-              stashDelta += deltas.stashDelta
-              totalProfitDelta += deltas.profitDelta
-            } else if (isOneOffRole) {
-              const aggregated = await aggregateCompleterEarningsFromTaskList(taskList.id, user.id, year, dateISO)
-              const deltas = calculateStashAndProfitDeltas(-aggregated.prize, -aggregated.profit, false)
-              stashDelta += deltas.stashDelta
-              totalProfitDelta += deltas.profitDelta
-            }
+            const deltas = await calculateStashAndProfitDeltasForTaskList(taskList.id, user.id, year, dateISO, false)
+            totalStashDelta += deltas.stashDelta
+            totalProfitDelta += deltas.profitDelta
           }
           
           // Update stash and profit if there are any changes
-          if (stashDelta !== 0 || totalProfitDelta !== 0) {
-            // Get current values
-            const currentStash = typeof userRecord.stash === 'number' 
-              ? userRecord.stash 
-              : (typeof userRecord.stash === 'string' ? parseFloat(userRecord.stash || '0') : 0)
-            const currentProfit = typeof (userRecord as any).profit === 'number'
-              ? (userRecord as any).profit
-              : (typeof (userRecord as any).profit === 'string' ? parseFloat((userRecord as any).profit || '0') : 0)
-            const availableBalance = typeof userRecord.availableBalance === 'number' 
-              ? userRecord.availableBalance 
-              : parseFloat(String(userRecord.availableBalance || '0'))
-            
-            // Calculate updated values using utility function (ensures all values >= 0)
-            const updatedValues = calculateUpdatedUserValues({
-              currentStash,
-              currentProfit,
-              currentAvailableBalance: availableBalance,
-              stashDelta,
-              profitDelta: totalProfitDelta
-            })
-            
-            await prisma.user.update({
-              where: { id: userRecord.id },
-              data: { 
-                stash: updatedValues.newStash as number,
-                profit: updatedValues.newProfit as number,
-                equity: updatedValues.newEquity as number,
-              } as any
-            })
+          const updatedUser = await updateUserStashAndProfit(userRecord.id, totalStashDelta, totalProfitDelta)
+          if (updatedUser) {
+            userRecord.availableBalance = updatedUser.availableBalance
+            userRecord.stash = updatedUser.stash
+            userRecord.equity = updatedUser.equity
           }
         }
       }
@@ -1148,75 +1269,28 @@ export async function POST(request: NextRequest) {
               updatedTasks // Day tasks to count from
             )
             
-            if (doneTasks.length > 0) {
-              // Calculate profit and prize from task completions for this date
-              const aggregated = await aggregateCompleterEarningsFromTaskList(taskList.id, user.id, year, dateISO)
-              
-              // Push new ticker entries for each done task, ensuring unique taskIds
-              const newTickers = doneTasks.map((incomingTask: any) => {
-                const taskId = incomingTask.id || incomingTask.localeKey || incomingTask.name || undefined
-                return {
-                  listId: taskList.id,
-                  taskId: taskId,
-                  profit: aggregated.profit || 0,
-                  prize: aggregated.prize || 0
-                }
-              })
-              
-              // Remove existing ticker entries with the same taskIds to ensure uniqueness
-              const newTaskIds = new Set(newTickers.map((t: any) => t.taskId).filter(Boolean))
-              const filteredTickers = existingTickers.filter((t: any) => !t.taskId || !newTaskIds.has(t.taskId))
-              const updatedTickers = [...filteredTickers, ...newTickers]
-              
-              // Get current user balance values
-              const { userBalance, userStash, userEquity } = getUserBalanceValues()
-              
-              await prisma.day.update({
-                where: { id: existingDay.id },
-                data: {
-                  tasks: updatedTasks as any,
-                  ticker: updatedTickers as any,
-                  productivity: updatedProductivity as any,
-                  progress: newProgress,
-                  balance: userBalance,
-                  stash: userStash,
-                  equity: userEquity,
-                  week: weekNumber,
-                  month: month,
-                  quarter: quarter,
-                  semester: semester
-                }
-              })
-            } else {
-              // No done tasks, but still update productivity if any tasks were added/updated
-              // Update productivity for this list based on tasks in day.tasks
-              const existingProductivity = (existingDay.productivity as Productivity | null) || null
-              const { productivity: updatedProductivity, progress: newProgress } = updateProductivityForList(
-                existingProductivity,
-                taskList.id,
-                taskList.tasks as any[], // List tasks for matching
-                updatedTasks // Day tasks to count from
-              )
-              
-              // Get current user balance values
-              const { userBalance, userStash, userEquity } = getUserBalanceValues()
-              
-              await prisma.day.update({
-                where: { id: existingDay.id },
-                data: {
-                  tasks: updatedTasks as any,
-                  productivity: updatedProductivity as any,
-                  progress: newProgress,
-                  balance: userBalance,
-                  stash: userStash,
-                  equity: userEquity,
-                  week: weekNumber,
-                  month: month,
-                  quarter: quarter,
-                  semester: semester
-                }
-              })
-            }
+            // Get current user balance values
+            const { userBalance, userStash, userEquity } = getUserBalanceValues()
+            
+            // Update Day ticker using helper function
+            await updateDayTicker(user.id, dateISO, taskList.id, doneTasks, userBalance, userStash, userEquity)
+            
+            // Update Day with tasks and productivity
+            await prisma.day.update({
+              where: { id: existingDay.id },
+              data: {
+                tasks: updatedTasks as any,
+                productivity: updatedProductivity as any,
+                progress: newProgress,
+                balance: userBalance,
+                stash: userStash,
+                equity: userEquity,
+                week: weekNumber,
+                month: month,
+                quarter: quarter,
+                semester: semester
+              }
+            })
           } else {
             // Create new day with the tasks to copy
             // Use status field
@@ -1543,6 +1617,154 @@ export async function POST(request: NextRequest) {
             }
           }
           ephemeralTasks = { open, closed }
+        }
+
+        // Update user stash and profit, and Day ticker/tasks when tasks are completed/uncompleted
+        if (isCompleted || isUncompleted) {
+        try {
+          // Update user stash and profit
+          const deltas = await calculateStashAndProfitDeltasForTaskList(taskList.id, user.id, year, dateISO, isCompleted)
+          const updatedUserValues = await updateUserStashAndProfit(user.id, deltas.stashDelta, deltas.profitDelta)
+          
+          // Get user balance values (use updated values if available, otherwise from user object)
+          const userBalance = updatedUserValues?.availableBalance ?? (typeof user.availableBalance === 'number' 
+            ? user.availableBalance 
+            : (typeof user.availableBalance === 'string' ? parseFloat(user.availableBalance || '0') : 0))
+          const userStash = updatedUserValues?.stash ?? (typeof user.stash === 'number' 
+            ? user.stash 
+            : (typeof user.stash === 'string' ? parseFloat(user.stash || '0') : 0))
+          const userEquity = updatedUserValues?.equity ?? (typeof user.equity === 'number' 
+            ? user.equity 
+            : (typeof user.equity === 'string' ? parseFloat(user.equity || '0') : 0))
+
+          if (updatedUserValues) {
+            user.availableBalance = updatedUserValues.availableBalance
+            user.stash = updatedUserValues.stash
+            user.equity = updatedUserValues.equity
+          }
+
+          // Update Day ticker and tasks
+          const dateObj = new Date(dateISO)
+          const [_, weekNumberResult] = getWeekNumber(dateObj)
+          const weekNumber = typeof weekNumberResult === 'number' ? weekNumberResult : Number(weekNumberResult) || 1
+          const month = dateObj.getMonth() + 1
+          const quarter = Math.ceil(month / 3)
+          const semester = month <= 6 ? 1 : 2
+
+          let existingDay = await prisma.day.findFirst({
+            where: {
+              userId: user.id,
+              date: dateISO
+            }
+          })
+
+          if (!existingDay) {
+            existingDay = await prisma.day.create({
+              data: {
+                userId: user.id,
+                date: dateISO,
+                week: weekNumber,
+                month: month,
+                quarter: quarter,
+                semester: semester,
+                ticker: [],
+                tasks: []
+              }
+            })
+          }
+
+          // Get done tasks from closedTasks for this date
+          const yearBucket = completedTasks[year] || {}
+          const dateBucket = yearBucket[dateISO] || {}
+          const closedTasksForDate = Array.isArray(dateBucket.closedTasks) ? dateBucket.closedTasks : []
+          const doneTasks = closedTasksForDate.filter((t: any) => t.status === 'done' || (t.count || 0) >= (t.times || 1))
+
+          // Update Day ticker using helper function
+          await updateDayTicker(user.id, dateISO, taskList.id, doneTasks, userBalance, userStash, userEquity)
+
+          // Update Day.tasks array - add/update the task that was completed/uncompleted
+          const existingTasks = Array.isArray(existingDay.tasks) ? existingDay.tasks : []
+          const taskKey = getKey(updatedTask)
+          const taskKeyLower = typeof taskKey === 'string' ? taskKey.toLowerCase() : taskKey
+          
+          const taskIndex = existingTasks.findIndex((t: any) => {
+            const key = getKey(t)
+            return key === taskKeyLower || key === taskKey
+          })
+
+          const taskForDay: any = {
+            id: updatedTask.id || undefined,
+            name: updatedTask.name,
+            categories: updatedTask.categories || [],
+            area: updatedTask.area || 'self',
+            status: finalStatus,
+            cadence: updatedTask.cadence || 'daily',
+            times: times,
+            count: updatedCount,
+            localeKey: updatedTask.localeKey || undefined,
+            persons: updatedTask.persons || [],
+            things: updatedTask.things || [],
+            events: updatedTask.events || [],
+            notes: updatedTask.notes || [],
+            documents: updatedTask.documents || [],
+            favorite: updatedTask.favorite || false,
+            isEphemeral: updatedTask.isEphemeral || false,
+            createdAt: updatedTask.createdAt || undefined,
+            completedOn: (finalStatus === 'done' && updatedCount >= times) ? dateISO : undefined,
+            completers: updatedCompleters || [],
+            dueDate: updatedTask.dueDate || undefined,
+            budget: updatedTask.budget || undefined,
+            visibility: updatedTask.visibility || undefined,
+            quality: updatedTask.quality || undefined
+          }
+
+          let updatedTasksArray = [...existingTasks]
+          if (taskIndex >= 0) {
+            // Update existing task
+            updatedTasksArray[taskIndex] = { ...updatedTasksArray[taskIndex], ...taskForDay }
+          } else if (finalStatus !== 'open' && finalStatus !== 'ignored') {
+            // Only add if status is not 'open' or 'ignored'
+            updatedTasksArray.push(taskForDay)
+          }
+
+          // Remove task if it's now open or ignored
+          updatedTasksArray = updatedTasksArray.filter((t: any) => {
+            const key = getKey(t)
+            if (key === taskKeyLower || key === taskKey) {
+              return t.status !== 'open' && t.status !== 'ignored'
+            }
+            return true
+          })
+
+          // Update productivity for this list
+          const existingProductivity = (existingDay.productivity as Productivity | null) || null
+          const { productivity: updatedProductivity, progress: newProgress } = updateProductivityForList(
+            existingProductivity,
+            taskList.id,
+            taskList.tasks as any[],
+            updatedTasksArray
+          )
+
+          // Update Day with tasks, productivity, and balance
+          await prisma.day.update({
+            where: { id: existingDay.id },
+            data: {
+              tasks: updatedTasksArray as any,
+              productivity: updatedProductivity as any,
+              progress: newProgress,
+              balance: userBalance,
+              stash: userStash,
+              equity: userEquity,
+              week: weekNumber,
+              month: month,
+              quarter: quarter,
+              semester: semester
+            }
+          })
+        } catch (dayError) {
+          // Log error but don't fail the request if Day update fails
+          console.error('Error updating Day:', dayError)
+        }
         }
       }
 

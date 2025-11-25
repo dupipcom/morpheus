@@ -756,7 +756,11 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
 
       {/* Content based on type */}
       {item.type === 'note' && item.content && (
-        <p className="text-sm whitespace-pre-wrap mb-3">{item.content}</p>
+        <p className="text-sm whitespace-pre-wrap mb-3">
+          {isExpanded || item.content.length <= 150 
+            ? item.content 
+            : `${item.content.slice(0, 150)}...`}
+        </p>
       )}
       
       {/* Edit popover */}
