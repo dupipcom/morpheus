@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { TaskStatus } from '@/lib/taskUtils'
+import { TaskStatus } from '@/lib/utils/taskUtils'
 
 export interface PendingCompletion {
   count: number

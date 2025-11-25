@@ -8,7 +8,7 @@ import { GlobalContext } from "@/lib/contexts"
 import { BeView } from "@/views/beView"
 import { ViewMenu } from "@/components/viewMenu"
 import { PublishNote } from '@/components/publishNote'
-import { setLoginTime, getLoginTime } from '@/lib/cookieManager'
+import { setLoginTime, getLoginTime } from '@/lib/utils/cookieManager'
 import { useI18n } from "@/lib/contexts/i18n"
 
 export default function LocalizedBeEvents({ params }: { params: Promise<{ locale: string }> }) {

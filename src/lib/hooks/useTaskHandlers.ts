@@ -1,5 +1,5 @@
 import { useCallback, useRef } from 'react'
-import { TaskStatus, getTaskKey, calculateTaskStatus, formatDateLocal } from '@/lib/taskUtils'
+import { TaskStatus, getTaskKey, calculateTaskStatus, formatDateLocal } from '@/lib/utils/taskUtils'
 
 interface PendingCompletion {
   count: number

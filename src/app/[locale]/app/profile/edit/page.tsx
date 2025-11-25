@@ -16,7 +16,7 @@ import { VisibilitySelect, VisibilityOption } from "@/components/visibilitySelec
 import { ViewMenu } from "@/components/viewMenu"
 import { DashboardView } from "@/views/dashboardView"
 import { useDebounce } from "@/lib/hooks/useDebounce"
-import { generatePublicChartsData } from "@/lib/profileUtils"
+import { generatePublicChartsData } from "@/lib/utils/profileUtils"
 import { PublicChartsView } from "@/components/publicChartsView"
 import { Skeleton } from "@/components/ui/skeleton"
 

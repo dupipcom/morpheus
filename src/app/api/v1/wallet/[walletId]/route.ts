@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import prisma from '@/lib/prisma';
-import { getBalance } from '@/lib/kaleido';
+import { getBalance } from '@/lib/utils/kaleido';
 
 /**
  * GET /api/v1/wallet/[walletId]

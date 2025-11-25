@@ -1,5 +1,5 @@
-import { GlobalContext } from './contexts'
-import { logger } from './logger'
+import { GlobalContext } from '../contexts'
+import { logger } from '../logger'
 import { useState, useEffect, useMemo, useContext } from 'react'
 import useSWR from 'swr'
 

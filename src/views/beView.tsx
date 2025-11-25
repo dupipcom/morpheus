@@ -11,7 +11,7 @@ import ActivityCard, { ActivityItem } from "@/components/activityCard"
 import { OptionsButton, OptionsMenuItem } from "@/components/optionsButton"
 import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
-import { useEnhancedLoadingState } from "@/lib/userUtils"
+import { useEnhancedLoadingState } from "@/lib/utils/userUtils"
 import { SettingsSkeleton } from "@/components/ui/skeletonLoader"
 import { Skeleton } from "@/components/ui/skeleton"
 import { toast } from 'sonner'

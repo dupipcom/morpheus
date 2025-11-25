@@ -18,7 +18,7 @@ import { Toaster } from '@/components/ui/sonner'
 import { AppContent } from '@/components/appContent'
 import { getLocaleFromPath } from './helpers'
 import { defaultLocale } from './constants'
-import { getLocaleCookie } from '@/lib/localeUtils'
+import { getLocaleCookie } from '@/lib/utils/localeUtils'
 import { GlobalContext } from '@/lib/contexts'
 import { Skeleton } from '@/components/ui/skeleton'
 

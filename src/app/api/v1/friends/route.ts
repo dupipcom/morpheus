@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import { auth } from '@clerk/nextjs/server'
 import { NextRequest } from 'next/server'
-import { filterProfileFields } from "@/lib/profileUtils"
+import { filterProfileFields } from "@/lib/utils/profileUtils"
 
 export async function GET(req: NextRequest) {
   const { userId } = await auth()

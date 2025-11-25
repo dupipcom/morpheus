@@ -2,7 +2,7 @@ import prisma from "@/lib/prisma";
 import { currentUser, auth } from '@clerk/nextjs/server'
 // Helpers and constants removed - no longer needed for entries
 // Entry utils removed - data now stored in Day model
-import { recalculateUserBudget } from "@/lib/budgetUtils"
+import { recalculateUserBudget } from "@/lib/utils/budgetUtils"
 import { getWeekNumber } from "@/app/helpers"
 
 export async function GET(req: Request) {

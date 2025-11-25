@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import prisma from '@/lib/prisma';
-import { sendTokens } from '@/lib/kaleido';
+import { sendTokens } from '@/lib/utils/kaleido';
 
 /**
  * POST /api/v1/wallet/transfer

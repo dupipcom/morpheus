@@ -4,6 +4,7 @@ import { useI18n } from '@/lib/contexts/i18n';
 import { 
   setupInactivityTimer, 
   clearAllCookiesExceptDpip, 
+  deleteClerkCookies,
   setLoginTime, 
   getLastActivity,
   getLoginTime,
@@ -11,7 +12,7 @@ import {
   clearActivityStorage,
   resetGlobalWarningState,
   resetGlobalTimerState
-} from '../cookieManager';
+} from '../utils/cookieManager';
 import { logger } from '../logger';
 
 interface UseInactivityTimerOptions {

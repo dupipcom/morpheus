@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-import { useUserData, useWallets } from "@/lib/userUtils"
+import { useUserData, useWallets } from "@/lib/utils/userUtils"
 import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
 

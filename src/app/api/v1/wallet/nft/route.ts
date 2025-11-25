@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import prisma from '@/lib/prisma';
-import { generateNFT } from '@/lib/kaleido';
+import { generateNFT } from '@/lib/utils/kaleido';
 
 /**
  * POST /api/v1/wallet/nft

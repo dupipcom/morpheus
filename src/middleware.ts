@@ -3,7 +3,7 @@ import { locales, defaultLocale } from './app/constants'
 import { pathHasLocale } from './app/helpers'
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 import { getBestLocale } from '@/lib/i18n'
-import { parseCookies } from '@/lib/localeUtils'
+import { parseCookies } from '@/lib/utils/localeUtils'
 
 function getLocale(headers: Headers, cookies: Record<string, string>) { 
   // First check for user preference cookie

@@ -4,7 +4,7 @@ import { ReactNode, useEffect, useState } from 'react'
 import { useAuth } from '@clerk/clerk-react'
 import { useI18n } from '@/lib/contexts/i18n'
 import { AuthTracker } from '@/components/authTracker'
-import { useUserData } from '@/lib/userUtils'
+import { useUserData } from '@/lib/utils/userUtils'
 
 interface AppContentProps {
   children: ReactNode

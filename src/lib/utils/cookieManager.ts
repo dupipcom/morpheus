@@ -1,7 +1,7 @@
 /**
  * Utility functions for managing Clerk cookies and inactivity timers
  */
-import { logger } from './logger';
+import { logger } from '../logger';
 
 export const INACTIVITY_TIMEOUT = 15000 * 60 * 1000; // 15 minutes in milliseconds (reduced for testing)
 export const WARNING_TIME = 5 * 60 * 1000; // 5 minutes warning (shows at 1 minute elapsed = 5 minutes remaining)

@@ -10,7 +10,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from '@/components/ui/select'
-import { getAvailableLocales, setLocaleCookie, getLocaleCookie } from '@/lib/localeUtils'
+import { getAvailableLocales, setLocaleCookie, getLocaleCookie } from '@/lib/utils/localeUtils'
 import { locales } from '@/app/constants'
 
 interface LocaleSelectorProps {

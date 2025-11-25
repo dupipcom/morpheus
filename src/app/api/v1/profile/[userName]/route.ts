@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import { NextRequest } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { generatePublicChartsData, sanitizeUserEntriesForPublic, isFieldVisible, filterProfileFields } from "@/lib/profileUtils"
+import { generatePublicChartsData, sanitizeUserEntriesForPublic, isFieldVisible, filterProfileFields } from "@/lib/utils/profileUtils"
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ userName: string }> }) {
   try {

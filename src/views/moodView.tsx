@@ -20,7 +20,7 @@ import {
 import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
 import { useNotesRefresh } from "@/lib/contexts/notesRefresh"
-import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil, isUserDataReady, useEnhancedLoadingState, useUserData, useDayData } from "@/lib/userUtils"
+import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil, isUserDataReady, useEnhancedLoadingState, useUserData, useDayData } from "@/lib/utils/userUtils"
 import { MoodViewSkeleton } from "@/components/ui/skeletonLoader"
 import { ContentLoadingWrapper } from '@/components/contentLoadingWrapper'
 import { ContactCombobox } from "@/components/ui/contactCombobox"

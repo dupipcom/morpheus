@@ -2,7 +2,7 @@ import prisma from '@/lib/prisma';
 import type { WebhookEvent } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
-import { generateWallet } from '@/lib/kaleido';
+import { generateWallet } from '@/lib/utils/kaleido';
 
 /**
  * Handles Clerk webhook events for user login and direct requests to extend session

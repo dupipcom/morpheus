@@ -11,7 +11,7 @@ import { Calendar } from '@/components/ui/calendar'
 import { Calendar as CalendarIcon } from 'lucide-react'
 import { GlobalContext } from '@/lib/contexts'
 import { useI18n } from '@/lib/contexts/i18n'
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils/utils'
 import { getWeekNumber } from '@/app/helpers'
 
 interface DatePickerButtonProps {

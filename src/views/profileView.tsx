@@ -1,13 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { PublicChartsView } from "@/components/publicChartsView"
 import { AddFriendButtonOrSignIn } from "@/components/addFriendButtonOrSignIn"
 import { PublicNotesViewer } from "@/components/publicNotesViewer"
 import ActivityCard, { ActivityItem } from "@/components/activityCard"
-import { useProfile } from '@/lib/hooks/useProfile'
 
 interface ProfileData {
   userId?: string
@@ -83,20 +82,10 @@ export const ProfileView = ({
   isLoggedIn, 
   translations 
 }: ProfileViewProps) => {
-  const [profile, setProfile] = useState<ProfileData>(initialProfile)
-  const [loading, setLoading] = useState(false)
-
-  // Requery profile endpoint on mount to get fields based on friendship status
-  // This ensures we get the most up-to-date data based on the current user's authentication
-  // Use SWR to fetch profile data
-  const { profile: swrProfile, isLoading: swrLoading, refreshProfile } = useProfile(userName, true)
-  
-  useEffect(() => {
-    if (swrProfile) {
-      setProfile(swrProfile)
-    }
-    setLoading(swrLoading)
-  }, [swrProfile, swrLoading])
+  // Use the initial profile data from server - no need for additional client-side fetch
+  // The server-side fetch already handles friendship status and visibility filtering
+  const [profile] = useState<ProfileData>(initialProfile)
+  const loading = false
 
   // Extract profile data - API returns flat structure, but also support nested structure as fallback
   const profileData = profile.data || {}

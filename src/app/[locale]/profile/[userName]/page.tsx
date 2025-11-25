@@ -5,6 +5,7 @@ import { loadTranslations } from '@/lib/i18n'
 import { auth } from '@clerk/nextjs/server'
 import prisma from "@/lib/prisma"
 import { ProfileView } from '@/views/profileView'
+import { cache } from 'react'
 
 
 interface ProfileData {
@@ -17,7 +18,8 @@ interface ProfileData {
   publicCharts?: any
 }
 
-async function getProfile(userName: string): Promise<ProfileData | null> {
+// Cache the profile fetch to avoid duplicate requests between generateMetadata and page component
+const getProfile = cache(async (userName: string): Promise<ProfileData | null> => {
   try {
     const response = await fetch(`${process.env.VERCEL_URL ? "https://" + process.env.VERCEL_URL : 'http://localhost:3000'}/api/v1/profile/${userName}`, {
       headers: {
@@ -44,7 +46,7 @@ async function getProfile(userName: string): Promise<ProfileData | null> {
     }
     return null
   }
-}
+})
 
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string; userName: string }> }): Promise<Metadata> {

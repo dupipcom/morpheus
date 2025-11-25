@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { NotesList, Note } from "@/components/notesList"
 import { useI18n } from '@/lib/contexts/i18n'
 import { useProfileNotes } from '@/lib/hooks/useProfile'
-import { useUserData } from '@/lib/userUtils'
+import { useUserData } from '@/lib/utils/userUtils'
 
 interface PublicNotesViewerProps {
   userName: string

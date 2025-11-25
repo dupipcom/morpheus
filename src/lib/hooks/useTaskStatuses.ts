@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { TaskStatus, STATUS_OPTIONS, getTaskKey, getTaskStatus } from '@/lib/taskUtils'
+import { TaskStatus, STATUS_OPTIONS, getTaskKey, getTaskStatus } from '@/lib/utils/taskUtils'
 
 interface UseTaskStatusesOptions {
   tasks: any[]

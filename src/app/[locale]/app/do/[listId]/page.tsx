@@ -17,7 +17,7 @@ import { getWeekNumber } from "@/app/helpers"
 import { DAILY_ACTIONS, WEEKS } from "@/app/constants"
 
 import { GlobalContext } from "@/lib/contexts"
-import { setLoginTime, getLoginTime } from '@/lib/cookieManager'
+import { setLoginTime, getLoginTime } from '@/lib/utils/cookieManager'
 import { useI18n } from "@/lib/contexts/i18n"
 
 // Allow streaming responses up to 60 seconds

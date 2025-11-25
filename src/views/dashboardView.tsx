@@ -19,7 +19,7 @@ import { getWeekNumber } from "@/app/helpers"
 
 import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
-import { generateInsight, updateUser, handleMoodSubmit, useHint, useUserData, useEnhancedLoadingState } from "@/lib/userUtils"
+import { generateInsight, updateUser, handleMoodSubmit, useHint, useUserData, useEnhancedLoadingState } from "@/lib/utils/userUtils"
 import { DashboardViewSkeleton } from "@/components/ui/skeletonLoader"
 import { ContentLoadingWrapper } from '@/components/contentLoadingWrapper'
 import { AgentChat } from "@/components/agentChat"
