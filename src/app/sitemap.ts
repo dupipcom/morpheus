@@ -35,7 +35,6 @@ export const fetchPageBySlug = React.cache((slug: string, locale?: string) => {
       depth: 2, // Include nested layout and columns data
     })
     .then((res) => {
-      const page = res.docs[0];
       const page = res.docs?.[0];
       // If page found, ensure layout data is properly parsed
       if (page && (page as any).layout) {
