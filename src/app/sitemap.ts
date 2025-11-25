@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next'
 import { locales, defaultLocale } from './constants'
-import { fetchPages, fetchPosts } from '@/lib/payload'
+import { fetchPages, fetchArticles } from '@/lib/payload'
 
 const siteUrl = process.env.NEXT_PUBLIC_BASE_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
 
@@ -93,7 +93,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Fetch all Payload CMS posts (articles) once, then create entries for all locales
   try {
-    const episodesResult = await fetchPosts()
+    const episodesResult = await fetchArticles()
     const posts = episodesResult.docs || []
     
     for (const post of posts) {
