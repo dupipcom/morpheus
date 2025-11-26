@@ -53,27 +53,8 @@ interface ArticleCardGridProps {
 // Helper function to get image URL
 function getImageUrl(image: any): string | null {
   if (!image) return null;
-  
-  // Handle different image structures
-  const imageUrl = typeof image === 'string' 
-    ? image 
-    : image?.sizes?.large?.url || image?.url || null;
-  
-  if (!imageUrl) return null;
-  
-  // If it's already a full URL, return as is
-  if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
-    return imageUrl;
-  }
-  
-  // If it's a relative path, prefix with base URL (image URL already includes /api/media/*)
-  const payloadApiUrl = process.env.PAYLOAD_API_URL || process.env.NEXT_PUBLIC_PAYLOAD_API_URL || '';
-  if (payloadApiUrl && imageUrl.startsWith('/')) {
-    // Remove /api from PAYLOAD_API_URL and prepend to image URL (which already has /api/media/*)
-    return `${payloadApiUrl.split('/api')[0]}${imageUrl}`;
-  }
-  
-  return imageUrl;
+
+  return process.env.NEXT_PUBLIC_PAYLOAD_URL + image?.url;
 }
 
 export default function ArticleCardGrid({ 
