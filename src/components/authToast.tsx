@@ -9,6 +9,7 @@ import { LogIn, UserPlus } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { getBestLocale } from '@/lib/i18n'
 import { locales } from '@/app/constants'
+import { track } from '@vercel/analytics'
 
 interface AuthToastProps {
   showToast?: boolean
@@ -110,13 +111,22 @@ export const AuthToast = ({ showToast = true }: AuthToastProps) => {
           </p>
           <div className="flex gap-2">
             <SignInButton>
-              <Button size="sm" variant="outline" className="flex items-center gap-2">
+              <Button 
+                size="sm" 
+                variant="outline" 
+                className="flex items-center gap-2"
+                onClick={() => track('Login', { location: 'authToast' })}
+              >
                 <LogIn className="w-4 h-4" />
                 {t('common.login')}
               </Button>
             </SignInButton>
             <SignUpButton>
-              <Button size="sm" className="flex items-center gap-2">
+              <Button 
+                size="sm" 
+                className="flex items-center gap-2"
+                onClick={() => track('Sign Up', { location: 'authToast' })}
+              >
                 <UserPlus className="w-4 h-4" />
                 {t('common.signUp')}
               </Button>
