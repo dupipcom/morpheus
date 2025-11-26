@@ -4,6 +4,7 @@ import type { Metadata } from "next"
 import { usePathname } from 'next/navigation'
 
 import { Comfortaa } from "next/font/google"
+import { Analytics } from '@vercel/analytics/react'
 
 import { Nav } from '@/components/ui/nav'
 import { Footer } from '@/components/footer'
@@ -152,6 +153,7 @@ export default function RootLayout({
           <Toaster />
           </NavigationSkeletonWrapper>
         </Providers>
+        <Analytics />
       </body>
     </html>
   );
