@@ -44,14 +44,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })
   })
 
-  // Articles listing page for all locales
+  // Magazine listing page for all locales
   locales.forEach(locale => {
     sitemapEntries.push({
-      url: `${siteUrl}/${locale}/articles`,
+      url: `${siteUrl}/${locale}/magazine`,
       lastModified: new Date(),
       alternates: {
         languages: Object.fromEntries(
-          locales.map(altLocale => [altLocale, `${siteUrl}/${altLocale}/articles`])
+          locales.map(altLocale => [altLocale, `${siteUrl}/${altLocale}/magazine`])
         ),
       },
     })
@@ -105,13 +105,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         
         // Create entries for all locales using the same slug
         locales.forEach(locale => {
-          const postUrl = `${siteUrl}/${locale}/articles/${slug}`
+          const postUrl = `${siteUrl}/${locale}/magazine/${slug}`
           sitemapEntries.push({
             url: postUrl,
             lastModified,
             alternates: {
               languages: Object.fromEntries(
-                locales.map(altLocale => [altLocale, `${siteUrl}/${altLocale}/articles/${slug}`])
+                locales.map(altLocale => [altLocale, `${siteUrl}/${altLocale}/magazine/${slug}`])
               ),
             },
           })

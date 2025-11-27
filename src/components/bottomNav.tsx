@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import { useContext, useState, useRef, useEffect, useMemo, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Heart, CheckSquare, Users, Coins, Eye, EyeOff, Globe, Hourglass, Search, Gauge, X, Play, Square as Stop, CircleUser } from 'lucide-react'
+import { Heart, CheckSquare, Users, Coins, Eye, EyeOff, Globe, Hourglass, Search, Gauge, X, Play, Square as Stop, CircleUser, BookOpen } from 'lucide-react'
 import { GlobalContext } from '@/lib/contexts'
 import { useLocalStorage } from 'usehooks-ts'
 import { useI18n } from '@/lib/contexts/i18n'
@@ -30,9 +30,11 @@ export function BottomNav() {
   // Check if the current pathname matches the given path
   // Matches exact path or paths that start with the given path followed by '/'
   const isActive = (path: string) => {
-    // Exact match
-    const rootPath = pathname.split('/')[3]
-    if (rootPath === path) return true
+    // Check both [2] (for routes like /en/magazine) and [3] (for routes like /en/app/dashboard)
+    const pathParts = pathname.split('/')
+    const rootPath2 = pathParts[2]
+    const rootPath3 = pathParts[3]
+    if (rootPath2 === path || rootPath3 === path) return true
     return false
   }
 
@@ -290,9 +292,9 @@ export function BottomNav() {
     <>
       {/* Bottom Toolbar */}
       <div className="bottom-nav-interactive fixed bottom-[80px] left-0 right-0 h-[50px] bg-background border-t border-border z-[1002]">
-        <div className="h-full max-w-7xl mx-auto px-4 flex items-center justify-center gap-2">
+        <div className="h-full max-w-7xl mx-auto px-4 flex items-center gap-2 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] md:justify-center">
           {/* Search - Collapsible (First Button) */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-shrink-0">
             <form 
               onSubmit={handleSearchSubmit} 
               className={`flex items-center gap-2 relative transition-all duration-300 ease-in-out overflow-hidden ${
@@ -333,7 +335,7 @@ export function BottomNav() {
 
           {/* Other Menu Buttons - Hide when search is expanded */}
           <div 
-            className={`flex items-center gap-2 transition-all duration-300 ease-in-out ${
+            className={`flex items-center gap-2 transition-all duration-300 ease-in-out flex-shrink-0 ${
               isSearchExpanded 
                 ? 'opacity-0 w-0 overflow-hidden -translate-x-4' 
                 : 'opacity-100 w-auto translate-x-0'
@@ -351,6 +353,21 @@ export function BottomNav() {
             >
               <Link href="/app/dashboard" onClick={() => handleNavLinkClick('/app/dashboard')}>
                 <Gauge className="h-4 w-4" />
+              </Link>
+            </Button>
+
+            {/* Read Button */}
+            <Button
+              asChild
+              variant={isActive('magazine') ? 'default' : 'outline'}
+              size="icon"
+              className={`h-9 w-9 ${
+                isActive('magazine') ? 'bg-muted text-foreground dark:bg-foreground dark:text-background' : ''
+              }`}
+              aria-label="Read"
+            >
+              <Link href="/magazine" onClick={() => handleNavLinkClick('/magazine')}>
+                <BookOpen className="h-4 w-4" />
               </Link>
             </Button>
 

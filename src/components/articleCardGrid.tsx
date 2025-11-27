@@ -74,7 +74,7 @@ export default function ArticleCardGrid({
 
     // Fetch articles from API
     setLoading(true);
-    fetch('/api/v1/articles')
+    fetch('/api/v1/magazine')
       .then(res => res.json())
       .then(data => {
         setFetchedPosts(data.docs || []);
@@ -107,7 +107,7 @@ export default function ArticleCardGrid({
           const heroImageUrl = getImageUrl(post.heroImage);
           
           return (
-            <Link key={post.id} href={`/${locale}/articles/${post.slug}`}>
+            <Link key={post.id} href={`/${locale}/magazine/${post.slug}`}>
               <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer pt-0">
                 {heroImageUrl && (
                   <div className="relative w-full h-48 overflow-hidden rounded-t-xl">

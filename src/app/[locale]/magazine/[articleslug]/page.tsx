@@ -139,7 +139,7 @@ export default async function ArticlePage({
   
   // Construct article URL (without locale for sharing)
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
-  const articleUrl = `${baseUrl}/articles/${articleslug}`;
+  const articleUrl = `${baseUrl}/magazine/${articleslug}`;
 
   // Fetch profile data for all authors
   const authorProfiles = await Promise.all(

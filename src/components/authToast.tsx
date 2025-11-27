@@ -81,8 +81,8 @@ export const AuthToast = ({ showToast = true }: AuthToastProps) => {
     // - hasn't been dismissed
     // - locale suggestion has been handled (or doesn't need to be shown)
     if (isLoaded && !isSignedIn && showToast && !dismissed && localeSuggestionHandled) {
-      // Check if we're on an articles page - use 15 second delay for articles, 3 seconds for other pages
-      const isArticlesPage = pathname?.includes('/articles/')
+      // Check if we're on a magazine page - use 15 second delay for magazine, 3 seconds for other pages
+      const isArticlesPage = pathname?.includes('/magazine/')
       const delay = isArticlesPage ? 15000 : 3000
       
       // Small delay to ensure the page has loaded
