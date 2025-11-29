@@ -558,7 +558,23 @@
       "daily": "Ежедневно",
       "weekly": "Еженедельно",
       "monthly": "Ежемесячно",
-      "yearly": "Ежегодно"
+      "yearly": "Ежегодно",
+      "repeatOn": "Повторять в",
+      "monday": "Пн",
+      "tuesday": "Вт",
+      "wednesday": "Ср",
+      "thursday": "Чт",
+      "friday": "Пт",
+      "saturday": "Сб",
+      "sunday": "Вс",
+      "dayOfMonth": "День месяца",
+      "selectDay": "Выбрать день (1-31)",
+      "ends": "Заканчивается",
+      "never": "Никогда",
+      "onDate": "В дату",
+      "after": "После",
+      "pickDate": "Выбрать дату",
+      "occurrences": "повторений"
     }
   },
   "socialView": {

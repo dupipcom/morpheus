@@ -544,7 +544,23 @@
       "daily": "Diariamente",
       "weekly": "Semanalmente",
       "monthly": "Mensualmente",
-      "yearly": "Anualmente"
+      "yearly": "Anualmente",
+      "repeatOn": "Repetir o",
+      "monday": "Lun",
+      "tuesday": "Mar",
+      "wednesday": "Mér",
+      "thursday": "Xov",
+      "friday": "Ven",
+      "saturday": "Sáb",
+      "sunday": "Dom",
+      "dayOfMonth": "Día do mes",
+      "selectDay": "Selecciona día (1-31)",
+      "ends": "Remata",
+      "never": "Nunca",
+      "onDate": "O día",
+      "after": "Despois",
+      "pickDate": "Escolle unha data",
+      "occurrences": "ocorrencias"
     }
   },
   "charts": {

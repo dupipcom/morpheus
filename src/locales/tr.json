@@ -562,7 +562,23 @@
       "daily": "Günlük",
       "weekly": "Haftalık",
       "monthly": "Aylık",
-      "yearly": "Yıllık"
+      "yearly": "Yıllık",
+      "repeatOn": "Şu günde tekrarla",
+      "monday": "Pzt",
+      "tuesday": "Sal",
+      "wednesday": "Çar",
+      "thursday": "Per",
+      "friday": "Cum",
+      "saturday": "Cmt",
+      "sunday": "Paz",
+      "dayOfMonth": "Ayın günü",
+      "selectDay": "Gün seçin (1-31)",
+      "ends": "Bitiş",
+      "never": "Asla",
+      "onDate": "Tarihte",
+      "after": "Sonra",
+      "pickDate": "Bir tarih seçin",
+      "occurrences": "tekrar"
     }
   },
   "socialView": {

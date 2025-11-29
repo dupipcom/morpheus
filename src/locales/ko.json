@@ -558,7 +558,23 @@
       "daily": "매일",
       "weekly": "매주",
       "monthly": "매월",
-      "yearly": "매년"
+      "yearly": "매년",
+      "repeatOn": "반복 요일",
+      "monday": "월",
+      "tuesday": "화",
+      "wednesday": "수",
+      "thursday": "목",
+      "friday": "금",
+      "saturday": "토",
+      "sunday": "일",
+      "dayOfMonth": "월의 일",
+      "selectDay": "일 선택 (1-31)",
+      "ends": "종료",
+      "never": "없음",
+      "onDate": "날짜",
+      "after": "이후",
+      "pickDate": "날짜 선택",
+      "occurrences": "회"
     }
   },
   "socialView": {

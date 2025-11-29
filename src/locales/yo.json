@@ -556,7 +556,23 @@
       "daily": "Lojoojumọ",
       "weekly": "Lọsẹẹsẹ",
       "monthly": "Loṣooṣu",
-      "yearly": "Lọdọọdun"
+      "yearly": "Lọdọọdun",
+      "repeatOn": "Tún ṣe ní",
+      "monday": "Ajé",
+      "tuesday": "Ìṣẹ́",
+      "wednesday": "Ọjọ́",
+      "thursday": "Ọjọ́",
+      "friday": "Ẹtì",
+      "saturday": "Àbá",
+      "sunday": "Àìk",
+      "dayOfMonth": "Ọjọ́ oṣù",
+      "selectDay": "Yan ọjọ́ (1-31)",
+      "ends": "Ó parí",
+      "never": "Láìláì",
+      "onDate": "Ní ọjọ́",
+      "after": "Lẹ́yìn",
+      "pickDate": "Yan ọjọ́",
+      "occurrences": "ìgbà"
     }
   },
   "socialView": {

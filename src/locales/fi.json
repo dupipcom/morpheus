@@ -545,7 +545,23 @@
       "daily": "Päivittäin",
       "weekly": "Viikoittain",
       "monthly": "Kuukausittain",
-      "yearly": "Vuosittain"
+      "yearly": "Vuosittain",
+      "repeatOn": "Toista",
+      "monday": "Ma",
+      "tuesday": "Ti",
+      "wednesday": "Ke",
+      "thursday": "To",
+      "friday": "Pe",
+      "saturday": "La",
+      "sunday": "Su",
+      "dayOfMonth": "Kuukauden päivä",
+      "selectDay": "Valitse päivä (1-31)",
+      "ends": "Päättyy",
+      "never": "Ei koskaan",
+      "onDate": "Päivänä",
+      "after": "Jälkeen",
+      "pickDate": "Valitse päivämäärä",
+      "occurrences": "toistoa"
     }
   },
   "charts": {

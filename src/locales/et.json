@@ -541,7 +541,23 @@
       "daily": "Igapäevaselt",
       "weekly": "Iganädalaselt",
       "monthly": "Igakuiselt",
-      "yearly": "Igaaastaselt"
+      "yearly": "Igaaastaselt",
+      "repeatOn": "Korda",
+      "monday": "E",
+      "tuesday": "T",
+      "wednesday": "K",
+      "thursday": "N",
+      "friday": "R",
+      "saturday": "L",
+      "sunday": "P",
+      "dayOfMonth": "Kuu päev",
+      "selectDay": "Vali päev (1-31)",
+      "ends": "Lõpeb",
+      "never": "Mitte kunagi",
+      "onDate": "Kuupäeval",
+      "after": "Pärast",
+      "pickDate": "Vali kuupäev",
+      "occurrences": "korda"
     }
   },
   "charts": {

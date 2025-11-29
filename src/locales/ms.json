@@ -545,7 +545,23 @@
       "daily": "Harian",
       "weekly": "Mingguan",
       "monthly": "Bulanan",
-      "yearly": "Tahunan"
+      "yearly": "Tahunan",
+      "repeatOn": "Ulang pada",
+      "monday": "Isn",
+      "tuesday": "Sel",
+      "wednesday": "Rab",
+      "thursday": "Kha",
+      "friday": "Jum",
+      "saturday": "Sab",
+      "sunday": "Ahd",
+      "dayOfMonth": "Hari dalam bulan",
+      "selectDay": "Pilih hari (1-31)",
+      "ends": "Berakhir",
+      "never": "Tidak pernah",
+      "onDate": "Pada tarikh",
+      "after": "Selepas",
+      "pickDate": "Pilih tarikh",
+      "occurrences": "kali"
     }
   },
   "charts": {

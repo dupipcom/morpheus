@@ -562,7 +562,23 @@
       "daily": "يومياً",
       "weekly": "أسبوعياً",
       "monthly": "شهرياً",
-      "yearly": "سنوياً"
+      "yearly": "سنوياً",
+      "repeatOn": "تكرار في",
+      "monday": "الإثنين",
+      "tuesday": "الثلاثاء",
+      "wednesday": "الأربعاء",
+      "thursday": "الخميس",
+      "friday": "الجمعة",
+      "saturday": "السبت",
+      "sunday": "الأحد",
+      "dayOfMonth": "يوم من الشهر",
+      "selectDay": "اختر يوم (1-31)",
+      "ends": "ينتهي",
+      "never": "أبداً",
+      "onDate": "في تاريخ",
+      "after": "بعد",
+      "pickDate": "اختر تاريخ",
+      "occurrences": "مرات"
     }
   },
   "socialView": {

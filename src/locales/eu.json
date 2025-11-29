@@ -543,7 +543,23 @@
       "daily": "Egunero",
       "weekly": "Astero",
       "monthly": "Hilero",
-      "yearly": "Urtero"
+      "yearly": "Urtero",
+      "repeatOn": "Errepikatu",
+      "monday": "Al",
+      "tuesday": "Ar",
+      "wednesday": "Az",
+      "thursday": "Og",
+      "friday": "Or",
+      "saturday": "Lr",
+      "sunday": "Ig",
+      "dayOfMonth": "Hilabeteko eguna",
+      "selectDay": "Hautatu eguna (1-31)",
+      "ends": "Bukatzen da",
+      "never": "Inoiz ez",
+      "onDate": "Egunean",
+      "after": "Ondoren",
+      "pickDate": "Hautatu data bat",
+      "occurrences": "aldiz"
     }
   },
   "charts": {

@@ -545,7 +545,23 @@
       "daily": "Dagligt",
       "weekly": "Ugentligt",
       "monthly": "Månedligt",
-      "yearly": "Årligt"
+      "yearly": "Årligt",
+      "repeatOn": "Gentag på",
+      "monday": "Man",
+      "tuesday": "Tir",
+      "wednesday": "Ons",
+      "thursday": "Tor",
+      "friday": "Fre",
+      "saturday": "Lør",
+      "sunday": "Søn",
+      "dayOfMonth": "Dag i måneden",
+      "selectDay": "Vælg dag (1-31)",
+      "ends": "Slutter",
+      "never": "Aldrig",
+      "onDate": "På dato",
+      "after": "Efter",
+      "pickDate": "Vælg en dato",
+      "occurrences": "gentagelser"
     }
   },
   "charts": {

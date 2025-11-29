@@ -541,7 +541,23 @@
       "daily": "Denně",
       "weekly": "Týdně",
       "monthly": "Měsíčně",
-      "yearly": "Ročně"
+      "yearly": "Ročně",
+      "repeatOn": "Opakovat v",
+      "monday": "Po",
+      "tuesday": "Út",
+      "wednesday": "St",
+      "thursday": "Čt",
+      "friday": "Pá",
+      "saturday": "So",
+      "sunday": "Ne",
+      "dayOfMonth": "Den v měsíci",
+      "selectDay": "Vyberte den (1-31)",
+      "ends": "Končí",
+      "never": "Nikdy",
+      "onDate": "Dne",
+      "after": "Po",
+      "pickDate": "Vyberte datum",
+      "occurrences": "opakování"
     }
   },
   "charts": {

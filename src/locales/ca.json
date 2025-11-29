@@ -505,7 +505,23 @@
       "daily": "Diàriament",
       "weekly": "Setmanalment",
       "monthly": "Mensualment",
-      "yearly": "Anualment"
+      "yearly": "Anualment",
+      "repeatOn": "Repetir el",
+      "monday": "Dll",
+      "tuesday": "Dmt",
+      "wednesday": "Dmc",
+      "thursday": "Dij",
+      "friday": "Div",
+      "saturday": "Dis",
+      "sunday": "Diu",
+      "dayOfMonth": "Dia del mes",
+      "selectDay": "Selecciona dia (1-31)",
+      "ends": "Acaba",
+      "never": "Mai",
+      "onDate": "El dia",
+      "after": "Després",
+      "pickDate": "Trieu una data",
+      "occurrences": "ocurrències"
     }
   },
   "charts": {

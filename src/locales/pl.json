@@ -562,7 +562,23 @@
       "daily": "Codziennie",
       "weekly": "Co tydzień",
       "monthly": "Co miesiąc",
-      "yearly": "Co rok"
+      "yearly": "Co rok",
+      "repeatOn": "Powtarzaj w",
+      "monday": "Pon",
+      "tuesday": "Wt",
+      "wednesday": "Śr",
+      "thursday": "Czw",
+      "friday": "Pt",
+      "saturday": "Sob",
+      "sunday": "Nie",
+      "dayOfMonth": "Dzień miesiąca",
+      "selectDay": "Wybierz dzień (1-31)",
+      "ends": "Kończy się",
+      "never": "Nigdy",
+      "onDate": "W dniu",
+      "after": "Po",
+      "pickDate": "Wybierz datę",
+      "occurrences": "powtórzeń"
     }
   },
   "socialView": {

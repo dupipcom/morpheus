@@ -558,7 +558,23 @@
       "daily": "毎日",
       "weekly": "毎週",
       "monthly": "毎月",
-      "yearly": "毎年"
+      "yearly": "毎年",
+      "repeatOn": "繰り返す曜日",
+      "monday": "月",
+      "tuesday": "火",
+      "wednesday": "水",
+      "thursday": "木",
+      "friday": "金",
+      "saturday": "土",
+      "sunday": "日",
+      "dayOfMonth": "月の日",
+      "selectDay": "日を選択 (1-31)",
+      "ends": "終了",
+      "never": "なし",
+      "onDate": "日付",
+      "after": "後",
+      "pickDate": "日付を選択",
+      "occurrences": "回"
     }
   },
   "socialView": {

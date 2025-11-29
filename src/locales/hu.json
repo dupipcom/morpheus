@@ -540,7 +540,23 @@
       "daily": "Naponta",
       "weekly": "Hetente",
       "monthly": "Havonta",
-      "yearly": "Évente"
+      "yearly": "Évente",
+      "repeatOn": "Ismétlés napja",
+      "monday": "Hé",
+      "tuesday": "Ke",
+      "wednesday": "Sze",
+      "thursday": "Csü",
+      "friday": "Pé",
+      "saturday": "Szo",
+      "sunday": "Vas",
+      "dayOfMonth": "A hónap napja",
+      "selectDay": "Válassz napot (1-31)",
+      "ends": "Vége",
+      "never": "Soha",
+      "onDate": "Dátumon",
+      "after": "Után",
+      "pickDate": "Válassz dátumot",
+      "occurrences": "alkalom"
     }
   },
   "charts": {

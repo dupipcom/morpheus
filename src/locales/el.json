@@ -538,7 +538,23 @@
       "daily": "Καθημερινά",
       "weekly": "Εβδομαδιαίως",
       "monthly": "Μηνιαίως",
-      "yearly": "Ετησίως"
+      "yearly": "Ετησίως",
+      "repeatOn": "Επανάληψη σε",
+      "monday": "Δευ",
+      "tuesday": "Τρί",
+      "wednesday": "Τετ",
+      "thursday": "Πέμ",
+      "friday": "Παρ",
+      "saturday": "Σάβ",
+      "sunday": "Κυρ",
+      "dayOfMonth": "Ημέρα του μήνα",
+      "selectDay": "Επιλέξτε ημέρα (1-31)",
+      "ends": "Τελειώνει",
+      "never": "Ποτέ",
+      "onDate": "Στις",
+      "after": "Μετά",
+      "pickDate": "Επιλέξτε ημερομηνία",
+      "occurrences": "επαναλήψεις"
     }
   },
   "charts": {

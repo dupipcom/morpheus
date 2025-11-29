@@ -545,7 +545,23 @@
       "daily": "ਰੋਜ਼ਾਨਾ",
       "weekly": "ਹਫ਼ਤਾਵਾਰੀ",
       "monthly": "ਮਹੀਨਾਵਾਰੀ",
-      "yearly": "ਸਾਲਾਨਾ"
+      "yearly": "ਸਾਲਾਨਾ",
+      "repeatOn": "ਦੁਹਰਾਓ",
+      "monday": "ਸੋਮ",
+      "tuesday": "ਮੰਗਲ",
+      "wednesday": "ਬੁੱਧ",
+      "thursday": "ਵੀਰ",
+      "friday": "ਸ਼ੁੱਕਰ",
+      "saturday": "ਸ਼ਨਿ",
+      "sunday": "ਐਤ",
+      "dayOfMonth": "ਮਹੀਨੇ ਦਾ ਦਿਨ",
+      "selectDay": "ਦਿਨ ਚੁਣੋ (1-31)",
+      "ends": "ਸਮਾਪਤ",
+      "never": "ਕਦੇ ਨਹੀਂ",
+      "onDate": "ਤਾਰੀਖ਼ 'ਤੇ",
+      "after": "ਬਾਅਦ",
+      "pickDate": "ਇੱਕ ਤਾਰੀਖ਼ ਚੁਣੋ",
+      "occurrences": "ਵਾਰ"
     }
   },
   "charts": {

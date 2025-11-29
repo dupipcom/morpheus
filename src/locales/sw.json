@@ -556,7 +556,23 @@
       "daily": "Kila siku",
       "weekly": "Kila wiki",
       "monthly": "Kila mwezi",
-      "yearly": "Kila mwaka"
+      "yearly": "Kila mwaka",
+      "repeatOn": "Rudia kwenye",
+      "monday": "Jtt",
+      "tuesday": "Jnn",
+      "wednesday": "Jtn",
+      "thursday": "Alh",
+      "friday": "Iju",
+      "saturday": "Jsi",
+      "sunday": "Jpi",
+      "dayOfMonth": "Siku ya mwezi",
+      "selectDay": "Chagua siku (1-31)",
+      "ends": "Inaisha",
+      "never": "Kamwe",
+      "onDate": "Tarehe",
+      "after": "Baada ya",
+      "pickDate": "Chagua tarehe",
+      "occurrences": "mara"
     }
   },
   "socialView": {

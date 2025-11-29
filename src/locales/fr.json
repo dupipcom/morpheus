@@ -558,7 +558,23 @@
       "daily": "Quotidiennement",
       "weekly": "Hebdomadairement",
       "monthly": "Mensuellement",
-      "yearly": "Annuellement"
+      "yearly": "Annuellement",
+      "repeatOn": "Répéter le",
+      "monday": "Lun",
+      "tuesday": "Mar",
+      "wednesday": "Mer",
+      "thursday": "Jeu",
+      "friday": "Ven",
+      "saturday": "Sam",
+      "sunday": "Dim",
+      "dayOfMonth": "Jour du mois",
+      "selectDay": "Sélectionner le jour (1-31)",
+      "ends": "Se termine",
+      "never": "Jamais",
+      "onDate": "Le",
+      "after": "Après",
+      "pickDate": "Choisir une date",
+      "occurrences": "occurrences"
     }
   },
   "socialView": {

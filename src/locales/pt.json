@@ -558,7 +558,23 @@
       "daily": "Diariamente",
       "weekly": "Semanalmente",
       "monthly": "Mensalmente",
-      "yearly": "Anualmente"
+      "yearly": "Anualmente",
+      "repeatOn": "Repetir em",
+      "monday": "Seg",
+      "tuesday": "Ter",
+      "wednesday": "Qua",
+      "thursday": "Qui",
+      "friday": "Sex",
+      "saturday": "Sáb",
+      "sunday": "Dom",
+      "dayOfMonth": "Dia do mês",
+      "selectDay": "Selecionar dia (1-31)",
+      "ends": "Termina",
+      "never": "Nunca",
+      "onDate": "Em",
+      "after": "Após",
+      "pickDate": "Escolher data",
+      "occurrences": "ocorrências"
     }
   },
   "socialView": {

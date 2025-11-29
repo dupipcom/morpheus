@@ -541,7 +541,23 @@
       "daily": "Dagelijks",
       "weekly": "Wekelijks",
       "monthly": "Maandelijks",
-      "yearly": "Jaarlijks"
+      "yearly": "Jaarlijks",
+      "repeatOn": "Herhalen op",
+      "monday": "Ma",
+      "tuesday": "Di",
+      "wednesday": "Wo",
+      "thursday": "Do",
+      "friday": "Vr",
+      "saturday": "Za",
+      "sunday": "Zo",
+      "dayOfMonth": "Dag van de maand",
+      "selectDay": "Selecteer dag (1-31)",
+      "ends": "Eindigt",
+      "never": "Nooit",
+      "onDate": "Op",
+      "after": "Na",
+      "pickDate": "Kies een datum",
+      "occurrences": "herhalingen"
     }
   },
   "charts": {

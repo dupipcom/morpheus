@@ -541,7 +541,23 @@
       "daily": "יומי",
       "weekly": "שבועי",
       "monthly": "חודשי",
-      "yearly": "שנתי"
+      "yearly": "שנתי",
+      "repeatOn": "חזור ב",
+      "monday": "ב'",
+      "tuesday": "ג'",
+      "wednesday": "ד'",
+      "thursday": "ה'",
+      "friday": "ו'",
+      "saturday": "ש'",
+      "sunday": "א'",
+      "dayOfMonth": "יום בחודש",
+      "selectDay": "בחר יום (1-31)",
+      "ends": "מסתיים",
+      "never": "אף פעם",
+      "onDate": "בתאריך",
+      "after": "אחרי",
+      "pickDate": "בחר תאריך",
+      "occurrences": "פעמים"
     }
   },
   "charts": {

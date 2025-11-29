@@ -541,7 +541,23 @@
       "daily": "Zilnic",
       "weekly": "Săptămânal",
       "monthly": "Lunar",
-      "yearly": "Anual"
+      "yearly": "Anual",
+      "repeatOn": "Repetă în",
+      "monday": "Lun",
+      "tuesday": "Mar",
+      "wednesday": "Mie",
+      "thursday": "Joi",
+      "friday": "Vin",
+      "saturday": "Sâm",
+      "sunday": "Dum",
+      "dayOfMonth": "Ziua lunii",
+      "selectDay": "Selectează ziua (1-31)",
+      "ends": "Se termină",
+      "never": "Niciodată",
+      "onDate": "La data",
+      "after": "După",
+      "pickDate": "Alege o dată",
+      "occurrences": "apariții"
     }
   },
   "charts": {

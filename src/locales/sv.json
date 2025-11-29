@@ -544,7 +544,23 @@
       "daily": "Dagligen",
       "weekly": "Veckovis",
       "monthly": "Månadsvis",
-      "yearly": "Årligen"
+      "yearly": "Årligen",
+      "repeatOn": "Upprepa på",
+      "monday": "Mån",
+      "tuesday": "Tis",
+      "wednesday": "Ons",
+      "thursday": "Tor",
+      "friday": "Fre",
+      "saturday": "Lör",
+      "sunday": "Sön",
+      "dayOfMonth": "Dag i månaden",
+      "selectDay": "Välj dag (1-31)",
+      "ends": "Slutar",
+      "never": "Aldrig",
+      "onDate": "På datum",
+      "after": "Efter",
+      "pickDate": "Välj ett datum",
+      "occurrences": "upprepningar"
     }
   },
   "charts": {

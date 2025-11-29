@@ -554,7 +554,23 @@
       "daily": "Kowace rana",
       "weekly": "Kowane mako",
       "monthly": "Kowane wata",
-      "yearly": "Kowace shekara"
+      "yearly": "Kowace shekara",
+      "repeatOn": "Maimaita a",
+      "monday": "Lit",
+      "tuesday": "Tal",
+      "wednesday": "Lar",
+      "thursday": "Alh",
+      "friday": "Jum",
+      "saturday": "Asa",
+      "sunday": "Lah",
+      "dayOfMonth": "Ranar wata",
+      "selectDay": "Zaɓi rana (1-31)",
+      "ends": "Ya ƙare",
+      "never": "Ba za ta taɓa ba",
+      "onDate": "A ranar",
+      "after": "Bayan",
+      "pickDate": "Zaɓi kwanan wata",
+      "occurrences": "lokuta"
     }
   },
   "socialView": {

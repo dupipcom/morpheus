@@ -541,7 +541,23 @@
       "daily": "दैनिक",
       "weekly": "साप्ताहिक",
       "monthly": "मासिक",
-      "yearly": "वार्षिक"
+      "yearly": "वार्षिक",
+      "repeatOn": "दोहराएं",
+      "monday": "सोम",
+      "tuesday": "मंगल",
+      "wednesday": "बुध",
+      "thursday": "गुरु",
+      "friday": "शुक्र",
+      "saturday": "शनि",
+      "sunday": "रवि",
+      "dayOfMonth": "महीने का दिन",
+      "selectDay": "दिन चुनें (1-31)",
+      "ends": "समाप्त",
+      "never": "कभी नहीं",
+      "onDate": "तारीख पर",
+      "after": "के बाद",
+      "pickDate": "तारीख चुनें",
+      "occurrences": "बार"
     }
   },
   "charts": {
