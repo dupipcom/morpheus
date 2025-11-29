@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useContext, useMemo } from 'react'
+import React, { useState, useContext, useMemo, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
@@ -32,10 +32,53 @@ export const AddTaskForm = ({
     saveToTemplate: false,
     times: editTask?.times || 1
   })
-  const [recurrence, setRecurrence] = useState<RecurrenceRule | null>(editTask?.recurrence || null)
+  const [recurrence, setRecurrence] = useState<RecurrenceRule | null>(null)
   const { taskLists } = useContext(GlobalContext)
   const allTaskLists = useMemo(() => (Array.isArray(taskLists) ? taskLists : []), [taskLists])
   const selectedList = useMemo(() => allTaskLists.find((l:any) => l.id === selectedTaskListId), [allTaskLists, selectedTaskListId])
+
+  // Sync form state when editTask changes
+  useEffect(() => {
+    if (editTask) {
+      setNewTask({
+        name: editTask.name || '',
+        area: editTask.area || 'self',
+        category: editTask.categories?.[0] || 'custom',
+        saveToTemplate: false,
+        times: editTask.times || 1
+      })
+
+      // Normalize recurrence data - handle string dates from database
+      if (editTask.recurrence) {
+        const normalizedRecurrence: RecurrenceRule = {
+          frequency: editTask.recurrence.frequency || 'NONE',
+          interval: editTask.recurrence.interval || 1,
+          byWeekday: editTask.recurrence.byWeekday || [],
+          byMonthDay: editTask.recurrence.byMonthDay || [],
+          byMonth: editTask.recurrence.byMonth || [],
+          endDate: editTask.recurrence.endDate
+            ? (typeof editTask.recurrence.endDate === 'string'
+                ? new Date(editTask.recurrence.endDate)
+                : editTask.recurrence.endDate)
+            : null,
+          occurrenceCount: editTask.recurrence.occurrenceCount || null,
+        }
+        setRecurrence(normalizedRecurrence)
+      } else {
+        setRecurrence(null)
+      }
+    } else {
+      // Reset form for add mode
+      setNewTask({
+        name: '',
+        area: 'self',
+        category: 'custom',
+        saveToTemplate: false,
+        times: 1
+      })
+      setRecurrence(null)
+    }
+  }, [editTask])
 
   const handleSubmit = async () => {
     if (!selectedTaskListId || !newTask.name.trim()) return
@@ -69,14 +112,18 @@ export const AddTaskForm = ({
         })
       })
     } else if (isEditMode) {
-      // Update template task - need to find and replace it in the tasks array
+      // Update source task in list.tasks - need to find and replace it in the tasks array
       if (selectedList) {
         const blueprint = (Array.isArray((selectedList as any).tasks) && (selectedList as any).tasks.length > 0)
           ? (selectedList as any).tasks
           : ((selectedList as any).templateTasks || [])
-        const updatedTasks = blueprint.map((t: any) =>
-          (t.id === editTask.id || t.name === editTask.name) ? { ...t, ...baseTask } : t
-        )
+        const updatedTasks = blueprint.map((t: any) => {
+          // Match by id, localeKey, or name (same logic as in taskGrid)
+          const isMatch = t.id === editTask.id ||
+                          t.localeKey === editTask.localeKey ||
+                          (t.name && editTask.name && t.name.toLowerCase() === editTask.name.toLowerCase())
+          return isMatch ? { ...t, ...baseTask, id: t.id } : t // Preserve original id
+        })
         await fetch('/api/v1/tasklists', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

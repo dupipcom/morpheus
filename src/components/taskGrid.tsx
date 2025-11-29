@@ -356,7 +356,20 @@ export const TaskGrid = ({
           })),
           {
             label: t('tasks.edit', { defaultValue: 'Edit' }),
-            onClick: () => setEditingTask(taskWithOptimisticCount),
+            onClick: () => {
+              // Find the source task from list.tasks (the template)
+              const sourceTask = selectedTaskList?.tasks?.find((t: any) =>
+                t.id === task.id ||
+                t.localeKey === task.localeKey ||
+                (t.name && task.name && t.name.toLowerCase() === task.name.toLowerCase())
+              ) || selectedTaskList?.templateTasks?.find((t: any) =>
+                t.id === task.id ||
+                t.localeKey === task.localeKey ||
+                (t.name && task.name && t.name.toLowerCase() === task.name.toLowerCase())
+              )
+              // Use source task if found, otherwise fall back to current task for ephemeral tasks
+              setEditingTask(sourceTask || taskWithOptimisticCount)
+            },
             icon: <Edit className="h-4 w-4" />,
             separator: true,
           },

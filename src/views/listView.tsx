@@ -392,15 +392,20 @@ const formatDateLocal = (date: Date): string => {
           const completedCount = Array.isArray(closedTask?.completers) ? closedTask.completers.length : Number(closedTask?.count || 0)
           // Always use the status from closedTask if it exists (preserves manually set statuses like "ready", "steady", etc.)
           // Only fall back to calculated status if closedTask.status is not set
-          const taskStatus = closedTask?.status 
-            ? closedTask.status 
+          const taskStatus = closedTask?.status
+            ? closedTask.status
             : (t?.status || (completedCount >= times ? 'done' : (completedCount > 0 ? 'in progress' : 'open')))
-          
-          return { 
-            ...t, // Start with base task
-            ...closedTask, // Override with closedTask data (takes precedence)
+
+          return {
+            ...t, // Start with base task from list.tasks (includes recurrence metadata)
+            ...closedTask, // Override with closedTask completion data
+            // Always preserve recurrence metadata from base task (completedTasks are snapshots and don't store this)
+            recurrence: t?.recurrence,
+            nextOccurrence: t?.nextOccurrence,
+            firstOccurrence: t?.firstOccurrence,
+            lastOccurrence: t?.lastOccurrence,
             status: taskStatus, // Use the status from closedTask (preserves manual status changes)
-            count: Math.min(completedCount || 0, times || 1), 
+            count: Math.min(completedCount || 0, times || 1),
             completers: closedTask?.completers
           }
         }
