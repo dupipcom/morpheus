@@ -54,7 +54,7 @@ model Day {
   month         Int?
   quarter       Int?
   semester      Int?
-  tasks         Task[]
+  tasks         EmbeddedTask[]
   mood          Mood?
   ticker        Ticker[]
   analysis      Json?
@@ -154,6 +154,8 @@ model Note {
   listIds        String[]  @default([]) @db.ObjectId
   documentIds    String[]  @default([]) @db.ObjectId
   chartIds       String[]  @default([]) @db.ObjectId
+  reviewerJobIds String[]  @default([]) @db.ObjectId
+  reviewerJobs   Job[]     @relation("JobReviewersNotes", fields: [reviewerJobIds], references: [id])
 }
 
 model Offer {
@@ -182,8 +184,8 @@ model Person {
   user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   quality Int?
   visibility    Visibility @default(PRIVATE)
-  profile       Profile?  @relation(fields: [profileId], references: [id])
-  profileId     String[]   @db.ObjectId
+  profileIds    String[]  @default([]) @db.ObjectId
+  profiles      Profile[] @relation("PersonProfiles", fields: [profileIds], references: [id])
   noteIds       String[]  @default([]) @db.ObjectId
   documentIds   String[]  @default([]) @db.ObjectId
 }
@@ -216,9 +218,9 @@ model Profile {
   visibility    Visibility @default(PUBLIC)
   data          ProfileData?
   personIds     String[]  @default([]) @db.ObjectId
+  persons       Person[]  @relation("PersonProfiles", fields: [personIds], references: [id])
   noteIds       String[]  @default([]) @db.ObjectId
   documentIds   String[]  @default([]) @db.ObjectId
-  person        Person[]
   comments      Comment[]
   charts        Chart[]
   days          Day[]
@@ -244,14 +246,15 @@ model List {
   completion    Float?
   templateId    String?   @db.ObjectId
   template      Template? @relation(fields: [templateId], references: [id])
-  templateTasks Task[]
+  templateTasks EmbeddedTask[]
   taskIds       String[]  @default([]) @db.ObjectId
   tasks         Task[]
   jobs          Job[]
   walletId      String?   @db.ObjectId
   wallet        Wallet?   @relation(fields: [walletId], references: [id])
   history       ListHistoryEntry[]
-  raised        Transaction[] @relation("ListRaised")
+  raisedTransactionIds String[] @default([]) @db.ObjectId
+  raisedTransactions Transaction[] @relation("ListRaised", fields: [raisedTransactionIds], references: [id])
   noteIds       String[]  @default([]) @db.ObjectId
   documentIds   String[]  @default([]) @db.ObjectId
   comments      Comment[]
@@ -266,7 +269,7 @@ model Template {
   name          String?
   users         UserReference[]
   clonedBy      String[]  @default([]) @db.ObjectId
-  tasks         Task[]
+  tasks         EmbeddedTask[]
   lists         List[]
   comments      Comment[]
   likes         Like[]
@@ -319,8 +322,10 @@ model Transaction {
   product       Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
   noteIds       String[]  @default([]) @db.ObjectId
   documentIds   String[]  @default([]) @db.ObjectId
-  raisedByTasks Task[]    @relation("TaskRaised")
-  raisedByLists List[]    @relation("ListRaised")
+  raisedByTaskIds String[] @default([]) @db.ObjectId
+  raisedByTasks Task[]   @relation("TaskRaised", fields: [raisedByTaskIds], references: [id])
+  raisedByListIds String[] @default([]) @db.ObjectId
+  raisedByLists List[]   @relation("ListRaised", fields: [raisedByListIds], references: [id])
 }
 
 model User {
@@ -347,16 +352,27 @@ model User {
   profiles       Profile[]
   charts        Chart[]
   days          Day[]
-  friends       String[]  @db.ObjectId
-  closeFriends  String[]  @db.ObjectId
-  friendRequests String[] @db.ObjectId
+  friends       String[]  @default([]) @db.ObjectId
+  friendUsers   User[]    @relation("UserFriends", fields: [friends], references: [id])
+  friendOfIds  String[]  @default([]) @db.ObjectId
+  friendOf      User[]    @relation("UserFriends", fields: [friendOfIds], references: [id])
+  closeFriends  String[]  @default([]) @db.ObjectId
+  closeFriendUsers User[]  @relation("UserCloseFriends", fields: [closeFriends], references: [id])
+  closeFriendOfIds String[] @default([]) @db.ObjectId
+  closeFriendOf User[]    @relation("UserCloseFriends", fields: [closeFriendOfIds], references: [id])
+  friendRequests String[]  @default([]) @db.ObjectId
+  friendRequestUsers User[] @relation("UserFriendRequests", fields: [friendRequests], references: [id])
+  friendRequestOfIds String[] @default([]) @db.ObjectId
+  friendRequestOf User[]  @relation("UserFriendRequests", fields: [friendRequestOfIds], references: [id])
   offers        Offer[]
   tokens       Token[]
   transactions  Transaction[]
   wallets       Wallet[]
-  reviewerJobs  Job[]     @relation("JobReviewers")
   workerJobs    Job[]     @relation("JobWorker")
-  candidateTasks Task[]   @relation("TaskCandidates")
+  candidateTaskIds String[] @default([]) @db.ObjectId
+  candidateTasks Task[]   @relation("TaskCandidates", fields: [candidateTaskIds], references: [id])
+  reviewerJobIds String[] @default([]) @db.ObjectId
+  reviewerJobs  Job[]     @relation("JobReviewers", fields: [reviewerJobIds], references: [id])
 }
 
 model Wallet {
@@ -408,8 +424,10 @@ model Task {
   listId        String?   @db.ObjectId
   list          List?     @relation(fields: [listId], references: [id], onDelete: Cascade)
   jobs          Job[]
-  candidates    User[]    @relation("TaskCandidates")
-  raised        Transaction[] @relation("TaskRaised")
+  candidateIds  String[]  @default([]) @db.ObjectId
+  candidates    User[]    @relation("TaskCandidates", fields: [candidateIds], references: [id])
+  raisedTransactionIds String[] @default([]) @db.ObjectId
+  raisedTransactions Transaction[] @relation("TaskRaised", fields: [raisedTransactionIds], references: [id])
 }
 
 model Job {
@@ -426,7 +444,10 @@ model Job {
   task          Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
   listId        String    @db.ObjectId
   list          List      @relation(fields: [listId], references: [id], onDelete: Cascade)
-  reviewers     User[]    @relation("JobReviewers")
+  reviewerIds   String[]  @default([]) @db.ObjectId
+  reviewers     User[]    @relation("JobReviewers", fields: [reviewerIds], references: [id])
+  reviewersNoteIds String[] @default([]) @db.ObjectId
+  reviewersNotes Note[]   @relation("JobReviewersNotes", fields: [reviewersNoteIds], references: [id])
 }
 
 type Completer {
@@ -514,7 +535,7 @@ type DoInvestDemoConsent {
   consentQuestion String
 }
 
-type Task {
+type EmbeddedTask {
   id String?
 
   name String
