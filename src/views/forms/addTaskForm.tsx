@@ -9,35 +9,87 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { GlobalContext } from '@/lib/contexts'
 import { useI18n } from '@/lib/contexts/i18n'
+import { RecurrencePicker, RecurrenceRule } from '@/components/recurrencePicker'
+import { calculateNextOccurrence } from '@/lib/utils/recurrenceUtils'
 
 export const AddTaskForm = ({
   selectedTaskListId,
   onCancel,
-  onCreated
+  onCreated,
+  editTask
 }: {
   selectedTaskListId?: string
   onCancel: () => void
   onCreated: () => Promise<void> | void
+  editTask?: any
 }) => {
   const { t } = useI18n()
-  const [newTask, setNewTask] = useState({ name: '', area: 'self', category: 'custom', saveToTemplate: false, times: 1 })
+  const isEditMode = !!editTask
+  const [newTask, setNewTask] = useState({
+    name: editTask?.name || '',
+    area: editTask?.area || 'self',
+    category: editTask?.categories?.[0] || 'custom',
+    saveToTemplate: false,
+    times: editTask?.times || 1
+  })
+  const [recurrence, setRecurrence] = useState<RecurrenceRule | null>(editTask?.recurrence || null)
   const { taskLists } = useContext(GlobalContext)
   const allTaskLists = useMemo(() => (Array.isArray(taskLists) ? taskLists : []), [taskLists])
   const selectedList = useMemo(() => allTaskLists.find((l:any) => l.id === selectedTaskListId), [allTaskLists, selectedTaskListId])
 
   const handleSubmit = async () => {
     if (!selectedTaskListId || !newTask.name.trim()) return
+
+    const now = new Date()
     const baseTask = {
       name: newTask.name.trim(),
       area: newTask.area,
       categories: [newTask.category],
-      cadence: 'day',
-      status: 'open',
+      recurrence: recurrence,
+      nextOccurrence: recurrence ? calculateNextOccurrence({ recurrence }, now) : null,
+      firstOccurrence: recurrence ? now : null,
+      status: isEditMode ? (editTask?.status || 'open') : 'open',
       times: Math.max(1, Number(newTask.times) || 1),
-      count: 0,
+      count: isEditMode ? (editTask?.count || 0) : 0,
     }
 
-    if (newTask.saveToTemplate && selectedList) {
+    if (isEditMode && editTask?.isEphemeral) {
+      // Update ephemeral task
+      await fetch('/api/v1/tasklists', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          taskListId: selectedTaskListId,
+          ephemeralTasks: {
+            update: {
+              id: editTask.id,
+              ...baseTask
+            }
+          }
+        })
+      })
+    } else if (isEditMode) {
+      // Update template task - need to find and replace it in the tasks array
+      if (selectedList) {
+        const blueprint = (Array.isArray((selectedList as any).tasks) && (selectedList as any).tasks.length > 0)
+          ? (selectedList as any).tasks
+          : ((selectedList as any).templateTasks || [])
+        const updatedTasks = blueprint.map((t: any) =>
+          (t.id === editTask.id || t.name === editTask.name) ? { ...t, ...baseTask } : t
+        )
+        await fetch('/api/v1/tasklists', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            taskListId: selectedTaskListId,
+            create: false,
+            role: (selectedList as any).role,
+            tasks: updatedTasks
+          })
+        })
+      }
+    } else if (newTask.saveToTemplate && selectedList) {
+      // Add new template task
       const blueprint = (Array.isArray((selectedList as any).tasks) && (selectedList as any).tasks.length > 0)
         ? (selectedList as any).tasks
         : ((selectedList as any).templateTasks || [])
@@ -45,14 +97,15 @@ export const AddTaskForm = ({
       await fetch('/api/v1/tasklists', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           taskListId: selectedTaskListId,
           create: false,
-          role: (selectedList as any).role, 
-          tasks: updatedTasks 
+          role: (selectedList as any).role,
+          tasks: updatedTasks
         })
       })
     } else {
+      // Add new ephemeral task
       const ephemeralTask = { ...baseTask, isEphemeral: true, createdAt: new Date().toISOString() }
       await fetch('/api/v1/tasklists', {
         method: 'POST',
@@ -67,7 +120,11 @@ export const AddTaskForm = ({
   return (
     <Card className="mb-2 p-4">
       <CardHeader>
-        <CardTitle className="text-sm">{t('forms.addTaskForm.title') || 'Add Custom Task'}</CardTitle>
+        <CardTitle className="text-sm">
+          {isEditMode
+            ? (t('forms.addTaskForm.editTitle') || 'Edit Task')
+            : (t('forms.addTaskForm.title') || 'Add Custom Task')}
+        </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         <div>
@@ -129,6 +186,7 @@ export const AddTaskForm = ({
             onChange={(e) => setNewTask(prev => ({ ...prev, times: Math.max(1, Number(e.target.value) || 1) }))}
           />
         </div>
+        <RecurrencePicker value={recurrence} onChange={setRecurrence} />
         <div className="flex items-center space-x-2">
           <Switch
             id="save-to-template"
@@ -140,7 +198,11 @@ export const AddTaskForm = ({
           </Label>
         </div>
         <div className="flex gap-2">
-          <Button onClick={handleSubmit} disabled={!newTask.name.trim()} size="sm">{t('forms.addTaskForm.addTask') || 'Add Task'}</Button>
+          <Button onClick={handleSubmit} disabled={!newTask.name.trim()} size="sm">
+            {isEditMode
+              ? (t('forms.addTaskForm.saveTask') || 'Save Task')
+              : (t('forms.addTaskForm.addTask') || 'Add Task')}
+          </Button>
           <Button variant="outline" onClick={onCancel} size="sm">{t('forms.addTaskForm.cancel') || 'Cancel'}</Button>
         </div>
       </CardContent>

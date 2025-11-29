@@ -118,6 +118,7 @@
     "yourEarnings": "Your earnings {timeframe}, so far: Ð{amount}",
     "selectList": "Select list",
     "selectDate": "Select date",
+    "edit": "Edit",
     "incrementTimes": "Increment times",
     "decrementTimes": "Decrement times",
     "decrementCount": "Decrement count",
@@ -166,6 +167,7 @@
     },
     "addTaskForm": {
       "title": "Add Custom Task",
+      "editTitle": "Edit Task",
       "taskNameLabel": "Task Name",
       "taskNamePlaceholder": "Enter task name...",
       "areaLabel": "Area",
@@ -173,7 +175,25 @@
       "timesLabel": "# of times",
       "saveToTemplate": "Save task to template",
       "addTask": "Add Task",
+      "saveTask": "Save Task",
       "cancel": "Cancel"
+    },
+    "recurrencePicker": {
+      "frequency": "Repeat",
+      "every": "Every",
+      "day": "day",
+      "days": "days",
+      "week": "week",
+      "weeks": "weeks",
+      "month": "month",
+      "months": "months",
+      "year": "year",
+      "years": "years",
+      "noRepeat": "Does not repeat",
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "monthly": "Monthly",
+      "yearly": "Yearly"
     },
     "addListForm": {
       "titleCreate": "Create New List",

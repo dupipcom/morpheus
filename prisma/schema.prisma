@@ -456,7 +456,13 @@ type Task {
   categories Category[]
   area Areas
   status String
-  cadence String
+
+  // Recurrence fields
+  recurrence RecurrenceRule?
+  nextOccurrence DateTime?
+  lastOccurrence DateTime?
+  firstOccurrence DateTime?
+
   times Int?
   count Int?
   localeKey String?
@@ -475,6 +481,16 @@ type Task {
   visibility Visibility?
   quality Int? // Range: -2 to +2
   redacted Boolean? @default(false)
+}
+
+type RecurrenceRule {
+  frequency RecurrenceFrequency
+  interval Int @default(1)
+  byWeekday Int[]
+  byMonthDay Int[]
+  byMonth Int[]
+  endDate DateTime?
+  occurrenceCount Int?
 }
 
 type ThingReference {
@@ -524,6 +540,14 @@ enum Category {
   home
   custom
   event
+}
+
+enum RecurrenceFrequency {
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+  NONE
 }
 
 enum CurrencyCode {
