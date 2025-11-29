@@ -105,7 +105,7 @@
         "AI_ENABLED": "AI Ενεργοποιημένο"
       },
       "action": "Δημοσίευση Σημείωσης",
-      "publishing": "Publishing..."
+      "publishing": "Δημοσίευση..."
     }
   },
   "week": {
@@ -133,7 +133,8 @@
       "open": "Ανοιχτό",
       "done": "Ολοκληρώθηκε",
       "ignored": "Αγνοήθηκε"
-    }
+    },
+    "edit": "Επεξεργασία"
   },
   "actions": {
     "drankWater": "Έπινε νερό",
@@ -220,10 +221,10 @@
   "errors": {
     "notFound": "Ουπς! Δεν μπόρεσε να συντονιστεί σε αυτή τη συχνότητα.",
     "genericError": "Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "Αποτυχία φόρτωσης σημειώσεων",
+    "failedToLoadNotes": "Αποτυχία φόρτωσης σημειώσεων",
+    "failedToFetchTemplates": "Αποτυχία φόρτωσης προτύπων",
+    "failedToLoadTemplates": "Αποτυχία φόρτωσης προτύπων"
   },
   "social": {
     "title": "Κοινωνικές επαφές",
@@ -309,9 +310,9 @@
     "cloning": "Κλωνοποίηση...",
     "noPublicNotes": "Δεν υπάρχουν διαθέσιμες δημόσιες σημειώσεις ακόμα.",
     "noPublicTemplatesOrLists": "Δεν υπάρχουν διαθέσιμα δημόσια πρότυπα ή λίστες ακόμα.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "Κλωνοποίηση λίστας",
+    "cloneListSuccess": "Η λίστα κλωνοποιήθηκε επιτυχώς!",
+    "cloneListFailed": "Αποτυχία κλωνοποίησης λίστας"
   },
   "publicCharts": {
     "noData": "Δεν υπάρχουν διαθέσιμα δημόσια δεδομένα γραφημάτων.",
@@ -443,7 +444,9 @@
       "timesLabel": "# φορές",
       "saveToTemplate": "Αποθήκευση εργασίας σε πρότυπο",
       "addTask": "Προσθήκη Εργασίας",
-      "cancel": "Ακύρωση"
+      "cancel": "Ακύρωση",
+      "editTitle": "Επεξεργασία εργασίας",
+      "saveTask": "Αποθήκευση εργασίας"
     },
     "addListForm": {
       "titleCreate": "Δημιουργία Νέας Λίστας",
@@ -519,6 +522,23 @@
       },
       "create": "Δημιουργία",
       "cancel": "Ακύρωση"
+    },
+    "recurrencePicker": {
+      "frequency": "Επανάληψη",
+      "every": "Κάθε",
+      "day": "ημέρα",
+      "days": "ημέρες",
+      "week": "εβδομάδα",
+      "weeks": "εβδομάδες",
+      "month": "μήνας",
+      "months": "μήνες",
+      "year": "έτος",
+      "years": "έτη",
+      "noRepeat": "Δεν επαναλαμβάνεται",
+      "daily": "Καθημερινά",
+      "weekly": "Εβδομαδιαίως",
+      "monthly": "Μηνιαίως",
+      "yearly": "Ετησίως"
     }
   },
   "charts": {

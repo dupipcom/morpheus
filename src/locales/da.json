@@ -109,7 +109,7 @@
         "AI_ENABLED": "AI-aktiveret"
       },
       "action": "Publicer note",
-      "publishing": "Publishing..."
+      "publishing": "Udgiver..."
     }
   },
   "week": {
@@ -137,7 +137,8 @@
       "open": "Åben",
       "done": "Færdig",
       "ignored": "Ignoreret"
-    }
+    },
+    "edit": "Rediger"
   },
   "actions": {
     "drankWater": "Drak vand",
@@ -227,10 +228,10 @@
   "errors": {
     "notFound": "Ups! Kunne ikke indstille denne frekvens.",
     "genericError": "Noget gik galt. Prøv igen.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "Kunne ikke indlæse noter",
+    "failedToLoadNotes": "Kunne ikke indlæse noter",
+    "failedToFetchTemplates": "Kunne ikke indlæse skabeloner",
+    "failedToLoadTemplates": "Kunne ikke indlæse skabeloner"
   },
   "social": {
     "title": "Sociale kontakter",
@@ -316,9 +317,9 @@
     "cloning": "Kloner...",
     "noPublicNotes": "Ingen offentlige noter tilgængelige endnu.",
     "noPublicTemplatesOrLists": "Ingen offentlige skabeloner eller lister tilgængelige endnu.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "Klon liste",
+    "cloneListSuccess": "Liste klonet med succes!",
+    "cloneListFailed": "Kloning af liste mislykkedes"
   },
   "publicCharts": {
     "noData": "Ingen offentlige diagramdata tilgængelige.",
@@ -450,7 +451,9 @@
       "timesLabel": "# gange",
       "saveToTemplate": "Gem opgave til skabelon",
       "addTask": "Tilføj opgave",
-      "cancel": "Annuller"
+      "cancel": "Annuller",
+      "editTitle": "Rediger opgave",
+      "saveTask": "Gem opgave"
     },
     "addListForm": {
       "titleCreate": "Opret ny liste",
@@ -526,6 +529,23 @@
       },
       "create": "Opret",
       "cancel": "Annuller"
+    },
+    "recurrencePicker": {
+      "frequency": "Gentag",
+      "every": "Hver",
+      "day": "dag",
+      "days": "dage",
+      "week": "uge",
+      "weeks": "uger",
+      "month": "måned",
+      "months": "måneder",
+      "year": "år",
+      "years": "år",
+      "noRepeat": "Gentager ikke",
+      "daily": "Dagligt",
+      "weekly": "Ugentligt",
+      "monthly": "Månedligt",
+      "yearly": "Årligt"
     }
   },
   "charts": {

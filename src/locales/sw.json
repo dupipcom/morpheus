@@ -105,7 +105,7 @@
         "AI_ENABLED": "AI Imewezeshwa"
       },
       "action": "Chapisha Maelezo",
-      "publishing": "Publishing..."
+      "publishing": "Inachapisha..."
     }
   },
   "week": {
@@ -133,7 +133,8 @@
       "open": "Wazi",
       "done": "Imekamilika",
       "ignored": "Imepuuzwa"
-    }
+    },
+    "edit": "Hariri"
   },
   "settings": {
     "title": "Mipangilio",
@@ -303,10 +304,10 @@
   "errors": {
     "notFound": "Ops! Haikuweza kufikia mzunguko huu.",
     "genericError": "Kuna kitu kilichokwenda vibaya. Tafadhali jaribu tena.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "Imeshindwa kupakia vidokezo",
+    "failedToLoadNotes": "Imeshindwa kupakia vidokezo",
+    "failedToFetchTemplates": "Imeshindwa kupakia violezo",
+    "failedToLoadTemplates": "Imeshindwa kupakia violezo"
   },
   "publicProfile": {
     "ctaTitle": "Anza Safari Yako ya Dupip",
@@ -327,9 +328,9 @@
     "cloning": "Inanakili...",
     "noPublicNotes": "Hakuna maelezo ya umma yanayopatikana bado.",
     "noPublicTemplatesOrLists": "Hakuna violezo au orodha za umma zilizopo bado.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "Nakili orodha",
+    "cloneListSuccess": "Orodha imenakiliwa kwa mafanikio!",
+    "cloneListFailed": "Imeshindwa kunakili orodha"
   },
   "publicCharts": {
     "noData": "Hakuna data ya chati za umma inayopatikana.",
@@ -461,7 +462,9 @@
       "timesLabel": "# ya mara",
       "saveToTemplate": "Hifadhi kazi kwenye kiolezo",
       "addTask": "Ongeza Kazi",
-      "cancel": "Ghairi"
+      "cancel": "Ghairi",
+      "editTitle": "Hariri kazi",
+      "saveTask": "Hifadhi kazi"
     },
     "addListForm": {
       "titleCreate": "Unda Orodha Mpya",
@@ -537,6 +540,23 @@
       },
       "create": "Unda",
       "cancel": "Ghairi"
+    },
+    "recurrencePicker": {
+      "frequency": "Rudia",
+      "every": "Kila",
+      "day": "siku",
+      "days": "siku",
+      "week": "wiki",
+      "weeks": "wiki",
+      "month": "mwezi",
+      "months": "miezi",
+      "year": "mwaka",
+      "years": "miaka",
+      "noRepeat": "Hairudii",
+      "daily": "Kila siku",
+      "weekly": "Kila wiki",
+      "monthly": "Kila mwezi",
+      "yearly": "Kila mwaka"
     }
   },
   "socialView": {

@@ -104,7 +104,7 @@
         "AI_ENABLED": "Mesterséges intelligencia engedélyezve"
       },
       "action": "Jegyzet közzététele",
-      "publishing": "Publishing..."
+      "publishing": "Közzététel..."
     }
   },
   "week": {
@@ -132,7 +132,8 @@
       "ignored": "Figyelmen kívül hagyva"
     },
     "markAsSensitive": "Mark as sensitive",
-    "markAsNotSensitive": "Mark as not sensitive"
+    "markAsNotSensitive": "Mark as not sensitive",
+    "edit": "Szerkesztés"
   },
   "actions": {
     "drankWater": "Vizet ivott",
@@ -222,10 +223,10 @@
   "errors": {
     "notFound": "Hoppá! Nem sikerült beállítani ezt a frekvenciát.",
     "genericError": "Valami elromlott. Kérjük, próbálja újra.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "Nem sikerült betölteni a jegyzeteket",
+    "failedToLoadNotes": "Nem sikerült betölteni a jegyzeteket",
+    "failedToFetchTemplates": "Nem sikerült betölteni a sablonokat",
+    "failedToLoadTemplates": "Nem sikerült betölteni a sablonokat"
   },
   "social": {
     "title": "Közösségi kapcsolatok",
@@ -311,9 +312,9 @@
     "cloning": "Klónozás...",
     "noPublicNotes": "Még nincsenek elérhető nyilvános jegyzetek.",
     "noPublicTemplatesOrLists": "Még nincsenek elérhető nyilvános sablonok vagy listák.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "Lista klónozása",
+    "cloneListSuccess": "Lista sikeresen klónozva!",
+    "cloneListFailed": "A lista klónozása sikertelen"
   },
   "publicCharts": {
     "noData": "Nincs nyilvános grafikon adat.",
@@ -445,7 +446,9 @@
       "timesLabel": "# alkalommal",
       "saveToTemplate": "Feladat mentése sablonként",
       "addTask": "Feladat hozzáadása",
-      "cancel": "Mégse"
+      "cancel": "Mégse",
+      "editTitle": "Feladat szerkesztése",
+      "saveTask": "Feladat mentése"
     },
     "addListForm": {
       "titleCreate": "Új lista létrehozása",
@@ -521,6 +524,23 @@
       },
       "create": "Létrehozás",
       "cancel": "Mégse"
+    },
+    "recurrencePicker": {
+      "frequency": "Ismétlés",
+      "every": "Minden",
+      "day": "nap",
+      "days": "nap",
+      "week": "hét",
+      "weeks": "hét",
+      "month": "hónap",
+      "months": "hónap",
+      "year": "év",
+      "years": "év",
+      "noRepeat": "Nem ismétlődik",
+      "daily": "Naponta",
+      "weekly": "Hetente",
+      "monthly": "Havonta",
+      "yearly": "Évente"
     }
   },
   "charts": {

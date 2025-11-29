@@ -105,7 +105,7 @@
         "AI_ENABLED": "בינה מלאכותית מופעלת"
       },
       "action": "פרסם הערה",
-      "publishing": "Publishing..."
+      "publishing": "מפרסם..."
     }
   },
   "week": {
@@ -133,7 +133,8 @@
       "open": "פתוח",
       "done": "הושלם",
       "ignored": "התעלם"
-    }
+    },
+    "edit": "ערוך"
   },
   "actions": {
     "drankWater": "שתה מים",
@@ -223,10 +224,10 @@
   "errors": {
     "notFound": "אופס! לא ניתן לכוון לתדר זה.",
     "genericError": "משהו השתבש. אנא נסה שוב.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "טעינת ההערות נכשלה",
+    "failedToLoadNotes": "טעינת ההערות נכשלה",
+    "failedToFetchTemplates": "טעינת התבניות נכשלה",
+    "failedToLoadTemplates": "טעינת התבניות נכשלה"
   },
   "social": {
     "title": "אנשי קשר חברתיים",
@@ -312,9 +313,9 @@
     "cloning": "משכפל...",
     "noPublicNotes": "אין הערות ציבוריות זמינות עדיין.",
     "noPublicTemplatesOrLists": "אין תבניות או רשימות ציבוריות זמינות עדיין.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "שכפל רשימה",
+    "cloneListSuccess": "הרשימה שוכפלה בהצלחה!",
+    "cloneListFailed": "שכפול הרשימה נכשל"
   },
   "publicCharts": {
     "noData": "אין נתוני גרפים ציבוריים זמינים.",
@@ -446,7 +447,9 @@
       "timesLabel": "# פעמים",
       "saveToTemplate": "שמור משימה כתבנית",
       "addTask": "הוסף משימה",
-      "cancel": "ביטול"
+      "cancel": "ביטול",
+      "editTitle": "ערוך משימה",
+      "saveTask": "שמור משימה"
     },
     "addListForm": {
       "titleCreate": "צור רשימה חדשה",
@@ -522,6 +525,23 @@
       },
       "create": "צור",
       "cancel": "ביטול"
+    },
+    "recurrencePicker": {
+      "frequency": "חזרה",
+      "every": "כל",
+      "day": "יום",
+      "days": "ימים",
+      "week": "שבוע",
+      "weeks": "שבועות",
+      "month": "חודש",
+      "months": "חודשים",
+      "year": "שנה",
+      "years": "שנים",
+      "noRepeat": "לא חוזר",
+      "daily": "יומי",
+      "weekly": "שבועי",
+      "monthly": "חודשי",
+      "yearly": "שנתי"
     }
   },
   "charts": {

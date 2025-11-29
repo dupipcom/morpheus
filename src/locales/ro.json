@@ -105,7 +105,7 @@
         "AI_ENABLED": "AI activat"
       },
       "action": "Publică nota",
-      "publishing": "Publishing..."
+      "publishing": "Publicare..."
     }
   },
   "week": {
@@ -133,7 +133,8 @@
       "open": "Deschis",
       "done": "Finalizat",
       "ignored": "Ignorat"
-    }
+    },
+    "edit": "Editare"
   },
   "actions": {
     "drankWater": "A băut apă",
@@ -223,10 +224,10 @@
   "errors": {
     "notFound": "Ups! Nu s-a putut regla această frecvență.",
     "genericError": "Ceva a mers greșit. Te rog încearcă din nou.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "Eșec la încărcarea notițelor",
+    "failedToLoadNotes": "Eșec la încărcarea notițelor",
+    "failedToFetchTemplates": "Eșec la încărcarea șabloanelor",
+    "failedToLoadTemplates": "Eșec la încărcarea șabloanelor"
   },
   "social": {
     "title": "Contacte sociale",
@@ -312,9 +313,9 @@
     "cloning": "Se clonează...",
     "noPublicNotes": "Nu există notițe publice disponibile încă.",
     "noPublicTemplatesOrLists": "Nu există șabloane sau liste publice disponibile încă.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "Clonează lista",
+    "cloneListSuccess": "Listă clonată cu succes!",
+    "cloneListFailed": "Eșec la clonarea listei"
   },
   "publicCharts": {
     "noData": "Nu sunt disponibile date pentru graficele publice.",
@@ -446,7 +447,9 @@
       "timesLabel": "# de ori",
       "saveToTemplate": "Salvați sarcina în șablon",
       "addTask": "Adăugați o sarcină",
-      "cancel": "Anulează"
+      "cancel": "Anulează",
+      "editTitle": "Editare sarcină",
+      "saveTask": "Salvare sarcină"
     },
     "addListForm": {
       "titleCreate": "Creați o listă nouă",
@@ -522,6 +525,23 @@
       },
       "create": "Creați",
       "cancel": "Anulează"
+    },
+    "recurrencePicker": {
+      "frequency": "Repetă",
+      "every": "Fiecare",
+      "day": "zi",
+      "days": "zile",
+      "week": "săptămână",
+      "weeks": "săptămâni",
+      "month": "lună",
+      "months": "luni",
+      "year": "an",
+      "years": "ani",
+      "noRepeat": "Nu se repetă",
+      "daily": "Zilnic",
+      "weekly": "Săptămânal",
+      "monthly": "Lunar",
+      "yearly": "Anual"
     }
   },
   "charts": {

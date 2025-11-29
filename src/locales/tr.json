@@ -109,7 +109,7 @@
         "AI_ENABLED": "Yapay Zeka Etkin"
       },
       "action": "Not Yayınla",
-      "publishing": "Publishing..."
+      "publishing": "Yayınlanıyor..."
     }
   },
   "week": {
@@ -137,7 +137,8 @@
       "open": "Açık",
       "done": "Tamamlandı",
       "ignored": "Yoksayıldı"
-    }
+    },
+    "edit": "Düzenle"
   },
   "actions": {
     "drankWater": "Su içti",
@@ -244,10 +245,10 @@
   "errors": {
     "notFound": "Hay aksi! Bu frekansa ayarlanamadı.",
     "genericError": "Bir şeyler ters gitti. Lütfen tekrar deneyin.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "Notlar yüklenemedi",
+    "failedToLoadNotes": "Notlar yüklenemedi",
+    "failedToFetchTemplates": "Şablonlar yüklenemedi",
+    "failedToLoadTemplates": "Şablonlar yüklenemedi"
   },
   "social": {
     "title": "Sosyal Kişiler",
@@ -333,9 +334,9 @@
     "cloning": "Klonlanıyor...",
     "noPublicNotes": "Henüz herkese açık not mevcut değil.",
     "noPublicTemplatesOrLists": "Henüz herkese açık şablon veya liste mevcut değil.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "Listeyi kopyala",
+    "cloneListSuccess": "Liste başarıyla kopyalandı!",
+    "cloneListFailed": "Liste kopyalama başarısız"
   },
   "publicCharts": {
     "noData": "Herkese açık grafik verisi mevcut değil.",
@@ -467,7 +468,9 @@
       "timesLabel": "# Kaç kez",
       "saveToTemplate": "Görevi şablona kaydet",
       "addTask": "Görev Ekleme",
-      "cancel": "İptal"
+      "cancel": "İptal",
+      "editTitle": "Görevi düzenle",
+      "saveTask": "Görevi kaydet"
     },
     "addListForm": {
       "titleCreate": "Yeni Liste Oluştur",
@@ -543,6 +546,23 @@
       },
       "create": "Oluştur",
       "cancel": "İptal"
+    },
+    "recurrencePicker": {
+      "frequency": "Tekrarla",
+      "every": "Her",
+      "day": "gün",
+      "days": "gün",
+      "week": "hafta",
+      "weeks": "hafta",
+      "month": "ay",
+      "months": "ay",
+      "year": "yıl",
+      "years": "yıl",
+      "noRepeat": "Tekrarlanmaz",
+      "daily": "Günlük",
+      "weekly": "Haftalık",
+      "monthly": "Aylık",
+      "yearly": "Yıllık"
     }
   },
   "socialView": {

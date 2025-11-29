@@ -109,7 +109,7 @@
         "AI_ENABLED": "AI Enabled"
       },
       "action": "Publish Note",
-      "publishing": "Publishing..."
+      "publishing": "ਪ੍ਰਕਾਸ਼ਿਤ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ..."
     }
   },
   "week": {
@@ -137,7 +137,8 @@
       "open": "ਖੁੱਲ੍ਹਾ",
       "done": "ਪੂਰਾ",
       "ignored": "ਅਣਡਿੱਠ"
-    }
+    },
+    "edit": "ਸੰਪਾਦਿਤ ਕਰੋ"
   },
   "actions": {
     "drankWater": "ਪਾਣੀ ਪੀਤਾ",
@@ -227,10 +228,10 @@
   "errors": {
     "notFound": "ਓਹ! ਇਸ ਫ੍ਰੀਕੁਐਂਸੀ ਨੂੰ ਟਿਊਨ ਨਹੀਂ ਕਰ ਸਕਿਆ।",
     "genericError": "ਕੁਝ ਗਲਤ ਹੋ ਗਿਆ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "ਨੋਟਸ ਲੋਡ ਕਰਨ ਵਿੱਚ ਅਸਫਲ",
+    "failedToLoadNotes": "ਨੋਟਸ ਲੋਡ ਕਰਨ ਵਿੱਚ ਅਸਫਲ",
+    "failedToFetchTemplates": "ਟੈਂਪਲੇਟ ਲੋਡ ਕਰਨ ਵਿੱਚ ਅਸਫਲ",
+    "failedToLoadTemplates": "ਟੈਂਪਲੇਟ ਲੋਡ ਕਰਨ ਵਿੱਚ ਅਸਫਲ"
   },
   "social": {
     "title": "ਸਮਾਜਿਕ ਸੰਪਰਕ",
@@ -316,9 +317,9 @@
     "cloning": "ਕਲੋਨ ਹੋ ਰਿਹਾ ਹੈ...",
     "noPublicNotes": "ਅਜੇ ਤੱਕ ਕੋਈ ਜਨਤਕ ਨੋਟਸ ਉਪਲਬਧ ਨਹੀਂ ਹਨ।",
     "noPublicTemplatesOrLists": "ਅਜੇ ਤੱਕ ਕੋਈ ਜਨਤਕ ਟੈਂਪਲੇਟ ਜਾਂ ਸੂਚੀਆਂ ਉਪਲਬਧ ਨਹੀਂ ਹਨ।",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "ਸੂਚੀ ਕਲੋਨ ਕਰੋ",
+    "cloneListSuccess": "ਸੂਚੀ ਸਫਲਤਾਪੂਰਵਕ ਕਲੋਨ ਕੀਤੀ ਗਈ!",
+    "cloneListFailed": "ਸੂਚੀ ਕਲੋਨ ਕਰਨ ਵਿੱਚ ਅਸਫਲ"
   },
   "publicCharts": {
     "noData": "ਕੋਈ ਜਨਤਕ ਚਾਰਟ ਡੇਟਾ ਉਪਲਬਧ ਨਹੀਂ।",
@@ -450,7 +451,9 @@
       "timesLabel": "# ਵਾਰੀ",
       "saveToTemplate": "ਟੈਂਪਲੇਟ ਵਿੱਚ ਕੰਮ ਸੇਵ ਕਰੋ",
       "addTask": "ਕੰਮ ਜੋੜੋ",
-      "cancel": "ਰੱਦ ਕਰੋ"
+      "cancel": "ਰੱਦ ਕਰੋ",
+      "editTitle": "ਕੰਮ ਸੰਪਾਦਿਤ ਕਰੋ",
+      "saveTask": "ਕੰਮ ਸੁਰੱਖਿਅਤ ਕਰੋ"
     },
     "addListForm": {
       "titleCreate": "ਨਵੀਂ ਸੂਚੀ ਬਣਾਓ",
@@ -526,6 +529,23 @@
       },
       "create": "ਬਣਾਓ",
       "cancel": "ਰੱਦ ਕਰੋ"
+    },
+    "recurrencePicker": {
+      "frequency": "ਦੁਹਰਾਓ",
+      "every": "ਹਰ",
+      "day": "ਦਿਨ",
+      "days": "ਦਿਨ",
+      "week": "ਹਫ਼ਤਾ",
+      "weeks": "ਹਫ਼ਤੇ",
+      "month": "ਮਹੀਨਾ",
+      "months": "ਮਹੀਨੇ",
+      "year": "ਸਾਲ",
+      "years": "ਸਾਲ",
+      "noRepeat": "ਦੁਹਰਾਈ ਨਹੀਂ",
+      "daily": "ਰੋਜ਼ਾਨਾ",
+      "weekly": "ਹਫ਼ਤਾਵਾਰੀ",
+      "monthly": "ਮਹੀਨਾਵਾਰੀ",
+      "yearly": "ਸਾਲਾਨਾ"
     }
   },
   "charts": {

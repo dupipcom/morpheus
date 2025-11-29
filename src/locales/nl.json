@@ -105,7 +105,7 @@
         "AI_ENABLED": "AI-ingeschakeld"
       },
       "action": "Publiceer notitie",
-      "publishing": "Publishing..."
+      "publishing": "Publiceren..."
     }
   },
   "week": {
@@ -133,7 +133,8 @@
       "open": "Open",
       "done": "Voltooid",
       "ignored": "Genegeerd"
-    }
+    },
+    "edit": "Bewerken"
   },
   "actions": {
     "drankWater": "Heeft water gedronken",
@@ -223,10 +224,10 @@
   "errors": {
     "notFound": "Oeps! Kon deze frequentie niet afstemmen.",
     "genericError": "Er is iets misgegaan. Probeer het opnieuw.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "Notities laden mislukt",
+    "failedToLoadNotes": "Notities laden mislukt",
+    "failedToFetchTemplates": "Sjablonen laden mislukt",
+    "failedToLoadTemplates": "Sjablonen laden mislukt"
   },
   "social": {
     "title": "Sociale contacten",
@@ -312,9 +313,9 @@
     "cloning": "Klonen...",
     "noPublicNotes": "Nog geen openbare notities beschikbaar.",
     "noPublicTemplatesOrLists": "Nog geen openbare sjablonen of lijsten beschikbaar.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "Lijst klonen",
+    "cloneListSuccess": "Lijst succesvol gekloond!",
+    "cloneListFailed": "Lijst klonen mislukt"
   },
   "publicCharts": {
     "noData": "Geen openbare grafiekgegevens beschikbaar.",
@@ -446,7 +447,9 @@
       "timesLabel": "# keer",
       "saveToTemplate": "Taak opslaan in sjabloon",
       "addTask": "Taak toevoegen",
-      "cancel": "Annuleren"
+      "cancel": "Annuleren",
+      "editTitle": "Taak bewerken",
+      "saveTask": "Taak opslaan"
     },
     "addListForm": {
       "titleCreate": "Nieuwe lijst maken",
@@ -522,6 +525,23 @@
       },
       "create": "Maken",
       "cancel": "Annuleren"
+    },
+    "recurrencePicker": {
+      "frequency": "Herhalen",
+      "every": "Elke",
+      "day": "dag",
+      "days": "dagen",
+      "week": "week",
+      "weeks": "weken",
+      "month": "maand",
+      "months": "maanden",
+      "year": "jaar",
+      "years": "jaren",
+      "noRepeat": "Herhaalt niet",
+      "daily": "Dagelijks",
+      "weekly": "Wekelijks",
+      "monthly": "Maandelijks",
+      "yearly": "Jaarlijks"
     }
   },
   "charts": {

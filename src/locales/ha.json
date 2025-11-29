@@ -104,7 +104,7 @@
         "AI_ENABLED": "AI Ana Kunna"
       },
       "action": "Buga Bayani",
-      "publishing": "Publishing..."
+      "publishing": "Ana bugawa..."
     }
   },
   "week": {
@@ -132,7 +132,8 @@
       "open": "A Buɗe",
       "done": "An Gama",
       "ignored": "An Yi Watsi"
-    }
+    },
+    "edit": "Gyara"
   },
   "settings": {
     "title": "Saiti",
@@ -301,10 +302,10 @@
   "errors": {
     "notFound": "Ops! Ba za a iya samun wannan mitar ba.",
     "genericError": "Wani abu ya tafi ba daidai ba. Don Allah a sake gwadawa.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "Ba a sami bayanin kula ba",
+    "failedToLoadNotes": "Ba a sami bayanin kula ba",
+    "failedToFetchTemplates": "Ba a sami samfura ba",
+    "failedToLoadTemplates": "Ba a sami samfura ba"
   },
   "publicProfile": {
     "ctaTitle": "Fara Tafiyar Dupip Naku",
@@ -325,9 +326,9 @@
     "cloning": "Ana kwafewa...",
     "noPublicNotes": "Babu bayanan jama'a da aka samu tukuna.",
     "noPublicTemplatesOrLists": "Babu samfuri ko jera na jama'a da aka samu tukuna.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "Kwafi jerin",
+    "cloneListSuccess": "An sami nasarar kwafi jerin!",
+    "cloneListFailed": "An kasa kwafi jerin"
   },
   "publicCharts": {
     "noData": "Babu bayanan ginshiƙai na jama'a.",
@@ -459,7 +460,9 @@
       "timesLabel": "# sau",
       "saveToTemplate": "Ajiye aiki zuwa samfurin",
       "addTask": "Ƙara Aiki",
-      "cancel": "Soke"
+      "cancel": "Soke",
+      "editTitle": "Gyara aiki",
+      "saveTask": "Ajiye aiki"
     },
     "addListForm": {
       "titleCreate": "Ƙirƙiri Sabon Jeri",
@@ -535,6 +538,23 @@
       },
       "create": "Ƙirƙira",
       "cancel": "Soke"
+    },
+    "recurrencePicker": {
+      "frequency": "Maimaita",
+      "every": "Ko  da",
+      "day": "rana",
+      "days": "ranaku",
+      "week": "mako",
+      "weeks": "makonni",
+      "month": "wata",
+      "months": "watanni",
+      "year": "shekara",
+      "years": "shekaru",
+      "noRepeat": "Ba ya maimaituwa",
+      "daily": "Kowace rana",
+      "weekly": "Kowane mako",
+      "monthly": "Kowane wata",
+      "yearly": "Kowace shekara"
     }
   },
   "socialView": {

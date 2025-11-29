@@ -105,7 +105,7 @@
         "AI_ENABLED": "এআই সক্রিয়"
       },
       "action": "নোট প্রকাশ করুন",
-      "publishing": "Publishing..."
+      "publishing": "প্রকাশ করা হচ্ছে..."
     }
   },
   "week": {
@@ -133,7 +133,8 @@
       "open": "খোলা",
       "done": "সম্পন্ন",
       "ignored": "উপেক্ষিত"
-    }
+    },
+    "edit": "সম্পাদনা"
   },
   "actions": {
     "drankWater": "পানি পান করেছে",
@@ -223,10 +224,10 @@
   "errors": {
     "notFound": "ওপস! এই ফ্রিকোয়েন্সি টিউন করতে পারেনি।",
     "genericError": "কিছু ভুল হয়েছে। দয়া করে আবার চেষ্টা করুন।",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "নোট লোড করতে ব্যর্থ",
+    "failedToLoadNotes": "নোট লোড করতে ব্যর্থ",
+    "failedToFetchTemplates": "টেমপ্লেট লোড করতে ব্যর্থ",
+    "failedToLoadTemplates": "টেমপ্লেট লোড করতে ব্যর্থ"
   },
   "social": {
     "title": "সামাজিক যোগাযোগ",
@@ -312,9 +313,9 @@
     "cloning": "ক্লোন হচ্ছে...",
     "noPublicNotes": "এখনও কোনও পাবলিক নোট উপলব্ধ নেই।",
     "noPublicTemplatesOrLists": "এখনও কোনও পাবলিক টেমপ্লেট বা তালিকা উপলব্ধ নেই।",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "তালিকা ক্লোন করুন",
+    "cloneListSuccess": "তালিকা সফলভাবে ক্লোন করা হয়েছে!",
+    "cloneListFailed": "তালিকা ক্লোন করতে ব্যর্থ"
   },
   "publicCharts": {
     "noData": "কোনও পাবলিক চার্টের ডেটা উপলব্ধ নেই।",
@@ -446,7 +447,9 @@
       "timesLabel": "# বার",
       "saveToTemplate": "টেমপ্লেটে কাজ সংরক্ষণ করুন",
       "addTask": "কাজ যোগ করুন",
-      "cancel": "বাতিল"
+      "cancel": "বাতিল",
+      "editTitle": "টাস্ক সম্পাদনা",
+      "saveTask": "টাস্ক সংরক্ষণ করুন"
     },
     "addListForm": {
       "titleCreate": "নতুন তালিকা তৈরি করুন",
@@ -522,6 +525,23 @@
       },
       "create": "তৈরি করুন",
       "cancel": "বাতিল"
+    },
+    "recurrencePicker": {
+      "frequency": "পুনরাবৃত্তি",
+      "every": "প্রতি",
+      "day": "দিন",
+      "days": "দিন",
+      "week": "সপ্তাহ",
+      "weeks": "সপ্তাহ",
+      "month": "মাস",
+      "months": "মাস",
+      "year": "বছর",
+      "years": "বছর",
+      "noRepeat": "পুনরাবৃত্তি হয় না",
+      "daily": "প্রতিদিন",
+      "weekly": "সাপ্তাহিক",
+      "monthly": "মাসিক",
+      "yearly": "বার্ষিক"
     }
   },
   "charts": {

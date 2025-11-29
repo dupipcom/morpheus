@@ -55,8 +55,7 @@
     "noNotifications": "No hay notificaciones",
     "copyLink": "Copiar enlace",
     "linkCopied": "Enlace copiado al portapapeles",
-    "copyFailed": "Error al copiar el enlace",
-    "saving": "Guardando..."
+    "copyFailed": "Error al copiar el enlace"
   },
   "navigation": {
     "home": "Inicio",
@@ -97,6 +96,7 @@
       "title": "Escribir",
       "placeholder": "Escribe tu nota aquí...",
       "selectVisibility": "Seleccionar visibilidad",
+      "publishing": "Publicando...",
       "visibility": {
         "PRIVATE": "Privado",
         "FRIENDS": "Amigos",
@@ -104,8 +104,7 @@
         "PUBLIC": "Público",
         "AI_ENABLED": "IA habilitada"
       },
-      "action": "Publicar nota",
-      "publishing": "Publishing..."
+      "action": "Publicar nota"
     }
   },
   "week": {
@@ -119,6 +118,7 @@
     "yourEarnings": "Tus ganancias {timeframe}, hasta ahora: Ð{amount}",
     "selectList": "Seleccionar lista",
     "selectDate": "Seleccionar fecha",
+    "edit": "Editar",
     "incrementTimes": "Incrementar veces",
     "decrementTimes": "Decrementar veces",
     "decrementCount": "Decrementar contador",
@@ -305,10 +305,10 @@
   "errors": {
     "notFound": "¡Ups! No se pudo sintonizar esta frecuencia.",
     "genericError": "Algo salió mal. Por favor, inténtalo de nuevo.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "Error al cargar las notas",
+    "failedToLoadNotes": "Error al cargar las notas",
+    "failedToFetchTemplates": "Error al cargar las plantillas",
+    "failedToLoadTemplates": "Error al cargar las plantillas"
   },
   "publicProfile": {
     "ctaTitle": "Comienza tu propio viaje con Dupip",
@@ -323,15 +323,15 @@
     "loadingTemplates": "Cargando plantillas...",
     "templatesSection": "Plantillas",
     "taskListsSection": "Listas de Tareas",
-    "cloneTemplate": "Clonar",
+    "cloneTemplate": "Clonar Plantilla",
     "cloneTemplateSuccess": "¡Plantilla clonada exitosamente!",
     "cloneTemplateFailed": "Error al clonar plantilla",
     "cloning": "Clonando...",
     "noPublicNotes": "Aún no hay notas públicas disponibles.",
     "noPublicTemplatesOrLists": "Aún no hay plantillas o listas públicas disponibles.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "Clonar Lista",
+    "cloneListSuccess": "¡Lista clonada exitosamente!",
+    "cloneListFailed": "Error al clonar lista"
   },
   "publicCharts": {
     "noData": "No hay datos públicos de gráficos disponibles.",
@@ -456,6 +456,7 @@
     },
     "addTaskForm": {
       "title": "Agregar tarea personalizada",
+      "editTitle": "Editar tarea",
       "taskNameLabel": "Nombre de la tarea",
       "taskNamePlaceholder": "Introduce el nombre de la tarea...",
       "areaLabel": "Área",
@@ -463,7 +464,25 @@
       "timesLabel": "# de veces",
       "saveToTemplate": "Guardar tarea en plantilla",
       "addTask": "Agregar tarea",
+      "saveTask": "Guardar tarea",
       "cancel": "Cancelar"
+    },
+    "recurrencePicker": {
+      "frequency": "Repetir",
+      "every": "Cada",
+      "day": "día",
+      "days": "días",
+      "week": "semana",
+      "weeks": "semanas",
+      "month": "mes",
+      "months": "meses",
+      "year": "año",
+      "years": "años",
+      "noRepeat": "No se repite",
+      "daily": "Diariamente",
+      "weekly": "Semanalmente",
+      "monthly": "Mensualmente",
+      "yearly": "Anualmente"
     },
     "addListForm": {
       "titleCreate": "Crear nueva lista",

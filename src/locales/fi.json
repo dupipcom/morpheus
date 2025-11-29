@@ -109,7 +109,7 @@
         "AI_ENABLED": "AI käytössä"
       },
       "action": "Julkaise muistiinpano",
-      "publishing": "Publishing..."
+      "publishing": "Julkaistaan..."
     }
   },
   "week": {
@@ -137,7 +137,8 @@
       "open": "Avoin",
       "done": "Valmis",
       "ignored": "Sivuutettu"
-    }
+    },
+    "edit": "Muokkaa"
   },
   "actions": {
     "drankWater": "Joi vettä",
@@ -227,10 +228,10 @@
   "errors": {
     "notFound": "Hups! Ei voitu virittää tätä taajuutta.",
     "genericError": "Jokin meni pieleen. Yritä uudelleen.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "Muistiinpanojen lataaminen epäonnistui",
+    "failedToLoadNotes": "Muistiinpanojen lataaminen epäonnistui",
+    "failedToFetchTemplates": "Mallien lataaminen epäonnistui",
+    "failedToLoadTemplates": "Mallien lataaminen epäonnistui"
   },
   "social": {
     "title": "Sosiaaliset yhteystiedot",
@@ -316,9 +317,9 @@
     "cloning": "Kloonataan...",
     "noPublicNotes": "Julkisia muistiinpanoja ei ole vielä saatavilla.",
     "noPublicTemplatesOrLists": "Julkisia malleja tai listoja ei ole vielä saatavilla.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "Kloonaa luettelo",
+    "cloneListSuccess": "Luettelo kloonattu onnistuneesti!",
+    "cloneListFailed": "Luettelon kloonaus epäonnistui"
   },
   "publicCharts": {
     "noData": "Julkisia kaaviotietoja ei ole saatavilla.",
@@ -450,7 +451,9 @@
       "timesLabel": "# kertaa",
       "saveToTemplate": "Tallenna tehtävä malliksi",
       "addTask": "Lisää tehtävä",
-      "cancel": "Peruuta"
+      "cancel": "Peruuta",
+      "editTitle": "Muokkaa tehtävää",
+      "saveTask": "Tallenna tehtävä"
     },
     "addListForm": {
       "titleCreate": "Luo uusi lista",
@@ -526,6 +529,23 @@
       },
       "create": "Luo",
       "cancel": "Peruuta"
+    },
+    "recurrencePicker": {
+      "frequency": "Toista",
+      "every": "Joka",
+      "day": "päivä",
+      "days": "päivää",
+      "week": "viikko",
+      "weeks": "viikkoa",
+      "month": "kuukausi",
+      "months": "kuukautta",
+      "year": "vuosi",
+      "years": "vuotta",
+      "noRepeat": "Ei toistoa",
+      "daily": "Päivittäin",
+      "weekly": "Viikoittain",
+      "monthly": "Kuukausittain",
+      "yearly": "Vuosittain"
     }
   },
   "charts": {

@@ -105,7 +105,7 @@
         "AI_ENABLED": "AI 활성화"
       },
       "action": "노트 게시",
-      "publishing": "Publishing..."
+      "publishing": "게시 중..."
     }
   },
   "week": {
@@ -133,7 +133,8 @@
       "open": "열림",
       "done": "완료",
       "ignored": "무시됨"
-    }
+    },
+    "edit": "편집"
   },
   "actions": {
     "drankWater": "물을 마셨습니다",
@@ -305,10 +306,10 @@
   "errors": {
     "notFound": "앗! 이 주파수에 맞출 수 없습니다.",
     "genericError": "문제가 발생했습니다. 다시 시도해 주세요.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "노트 로드 실패",
+    "failedToLoadNotes": "노트 로드 실패",
+    "failedToFetchTemplates": "템플릿 로드 실패",
+    "failedToLoadTemplates": "템플릿 로드 실패"
   },
   "publicProfile": {
     "ctaTitle": "나만의 Dupip 여정을 시작하세요",
@@ -329,9 +330,9 @@
     "cloning": "복제 중...",
     "noPublicNotes": "아직 공개 메모를 사용할 수 없습니다.",
     "noPublicTemplatesOrLists": "아직 공개 템플릿 또는 목록을 사용할 수 없습니다.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "목록 복제",
+    "cloneListSuccess": "목록이 성공적으로 복제되었습니다!",
+    "cloneListFailed": "목록 복제 실패"
   },
   "publicCharts": {
     "noData": "공개 차트 데이터를 사용할 수 없습니다.",
@@ -463,7 +464,9 @@
       "timesLabel": "# 횟수",
       "saveToTemplate": "템플릿에 작업 저장",
       "addTask": "작업 추가",
-      "cancel": "취소"
+      "cancel": "취소",
+      "editTitle": "작업 편집",
+      "saveTask": "작업 저장"
     },
     "addListForm": {
       "titleCreate": "새 목록 만들기",
@@ -539,6 +542,23 @@
       },
       "create": "만들기",
       "cancel": "취소"
+    },
+    "recurrencePicker": {
+      "frequency": "반복",
+      "every": "매",
+      "day": "일",
+      "days": "일",
+      "week": "주",
+      "weeks": "주",
+      "month": "월",
+      "months": "개월",
+      "year": "년",
+      "years": "년",
+      "noRepeat": "반복 안 함",
+      "daily": "매일",
+      "weekly": "매주",
+      "monthly": "매월",
+      "yearly": "매년"
     }
   },
   "socialView": {

@@ -105,7 +105,7 @@
         "AI_ENABLED": "AI tí ó ń ṣiṣẹ́"
       },
       "action": "Tẹ àkọsílẹ̀ jáde",
-      "publishing": "Publishing..."
+      "publishing": "Nigbagbọgbọ..."
     }
   },
   "week": {
@@ -133,7 +133,8 @@
       "open": "Ṣíṣi",
       "done": "Ti Parí",
       "ignored": "Ti Kọjú"
-    }
+    },
+    "edit": "Ṣatunkọ"
   },
   "settings": {
     "title": "Ètò",
@@ -303,10 +304,10 @@
   "errors": {
     "notFound": "Ops! Kò le tọ́ ìwọ̀n yìí.",
     "genericError": "Nǹkan kan ṣẹlẹ̀. Jọ̀ọ́ gbìyànjú lẹ́ẹ̀kan si.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "Kuna lati ṣe akọsilẹ",
+    "failedToLoadNotes": "Kuna lati ṣe akọsilẹ",
+    "failedToFetchTemplates": "Kuna lati ṣe awoṣe",
+    "failedToLoadTemplates": "Kuna lati ṣe awoṣe"
   },
   "publicProfile": {
     "ctaTitle": "Bẹ̀rẹ̀ Ìrìn àjò Dupip tirẹ",
@@ -327,9 +328,9 @@
     "cloning": "N ṣe àdàkọ...",
     "noPublicNotes": "Kò sí àwọn àkíyèsí gbangba tí ó wà títí.",
     "noPublicTemplatesOrLists": "Kò sí àwọn àpẹẹrẹ tàbí àkójọ gbangba tí ó wà títí.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "Ṣẹda atokọ",
+    "cloneListSuccess": "Atokọ ti ṣẹda daadaa!",
+    "cloneListFailed": "Kuna lati ṣẹda atokọ"
   },
   "publicCharts": {
     "noData": "Kò sí àwọn àkọsílẹ̀ àwòrán gbangba.",
@@ -461,7 +462,9 @@
       "timesLabel": "# ìgbà",
       "saveToTemplate": "Fi iṣẹ́ pamọ́ sí àwòwé",
       "addTask": "Fi Iṣẹ́ kún",
-      "cancel": "Fagilé"
+      "cancel": "Fagilé",
+      "editTitle": "Ṣatunkọ iṣẹ",
+      "saveTask": "Fi iṣẹ pamọ"
     },
     "addListForm": {
       "titleCreate": "Ṣẹ̀dá Àkójọ Tuntun",
@@ -537,6 +540,23 @@
       },
       "create": "Ṣẹ̀dá",
       "cancel": "Fagilé"
+    },
+    "recurrencePicker": {
+      "frequency": "Tún ṣe",
+      "every": "Gbogbo",
+      "day": "ọjọ",
+      "days": "ọjọ",
+      "week": "ọsẹ",
+      "weeks": "ọsẹ",
+      "month": "oṣu",
+      "months": "oṣu",
+      "year": "ọdun",
+      "years": "ọdun",
+      "noRepeat": "Ko tun ṣe",
+      "daily": "Lojoojumọ",
+      "weekly": "Lọsẹẹsẹ",
+      "monthly": "Loṣooṣu",
+      "yearly": "Lọdọọdun"
     }
   },
   "socialView": {

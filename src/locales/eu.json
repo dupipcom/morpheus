@@ -107,7 +107,7 @@
         "AI_ENABLED": "AI gaituta"
       },
       "action": "Argitaratu oharra",
-      "publishing": "Publishing..."
+      "publishing": "Argitaratzen..."
     }
   },
   "week": {
@@ -135,7 +135,8 @@
       "open": "Ireki",
       "done": "Eginda",
       "ignored": "Ezikusia"
-    }
+    },
+    "edit": "Editatu"
   },
   "actions": {
     "drankWater": "Ura edan zuen",
@@ -225,10 +226,10 @@
   "errors": {
     "notFound": "Ups! Ezin izan da maiztasun hori sintonizatu.",
     "genericError": "Zerbait gaizki joan da. Mesedez, saiatu berriro.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "Oharrak kargatzeak huts egin du",
+    "failedToLoadNotes": "Oharrak kargatzeak huts egin du",
+    "failedToFetchTemplates": "Txantiloiak kargatzeak huts egin du",
+    "failedToLoadTemplates": "Txantiloiak kargatzeak huts egin du"
   },
   "social": {
     "title": "Kontaktu sozialak",
@@ -314,9 +315,9 @@
     "cloning": "Klonatzen...",
     "noPublicNotes": "Oraindik ez dago ohar publiko eskuragarririk.",
     "noPublicTemplatesOrLists": "Oraindik ez dago txantiloi edo zerrenda publiko eskuragarririk.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "Klonatu zerrenda",
+    "cloneListSuccess": "Zerrenda ondo klonatu da!",
+    "cloneListFailed": "Zerrenda klonatzeak huts egin du"
   },
   "publicCharts": {
     "noData": "Ez dago grafik publikoen daturik eskuragarri.",
@@ -448,7 +449,9 @@
       "timesLabel": "# aldiz",
       "saveToTemplate": "Gorde ataza txantiloi gisa",
       "addTask": "Ataza gehitu",
-      "cancel": "Utzi"
+      "cancel": "Utzi",
+      "editTitle": "Editatu zeregina",
+      "saveTask": "Gorde zeregina"
     },
     "addListForm": {
       "titleCreate": "Zerrenda berria sortu",
@@ -524,6 +527,23 @@
       },
       "create": "Sortu",
       "cancel": "Utzi"
+    },
+    "recurrencePicker": {
+      "frequency": "Errepikatu",
+      "every": "Guztiak",
+      "day": "eguna",
+      "days": "egunak",
+      "week": "astea",
+      "weeks": "asteak",
+      "month": "hila",
+      "months": "hilak",
+      "year": "urtea",
+      "years": "urteak",
+      "noRepeat": "Ez da errepikatzen",
+      "daily": "Egunero",
+      "weekly": "Astero",
+      "monthly": "Hilero",
+      "yearly": "Urtero"
     }
   },
   "charts": {

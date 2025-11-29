@@ -105,7 +105,7 @@
         "AI_ENABLED": "Activat per IA"
       },
       "action": "Publicar nota",
-      "publishing": "Publishing..."
+      "publishing": "Publicant..."
     }
   },
   "week": {
@@ -133,7 +133,8 @@
       "open": "Obert",
       "done": "Fet",
       "ignored": "Ignorat"
-    }
+    },
+    "edit": "Editar"
   },
   "actions": {
     "drankWater": "Ha begut aigua",
@@ -223,10 +224,10 @@
   "errors": {
     "notFound": "Ups! No s'ha pogut sintonitzar aquesta freqüència.",
     "genericError": "Alguna cosa ha anat malament. Si us plau, torna-ho a intentar.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "Error en carregar les notes",
+    "failedToLoadNotes": "Error en carregar les notes",
+    "failedToFetchTemplates": "Error en carregar les plantilles",
+    "failedToLoadTemplates": "Error en carregar les plantilles"
   },
   "social": {
     "title": "Contactes Socials",
@@ -312,9 +313,9 @@
     "cloning": "Clonant...",
     "noPublicNotes": "Encara no hi ha notes públiques disponibles.",
     "noPublicTemplatesOrLists": "Encara no hi ha plantilles o llistes públiques disponibles.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "Clonar llista",
+    "cloneListSuccess": "Llista clonada correctament!",
+    "cloneListFailed": "Error al clonar la llista"
   },
   "publicCharts": {
     "noData": "No public charts data available.",
@@ -410,7 +411,9 @@
       "timesLabel": "# de vegades",
       "saveToTemplate": "Guardar tasca al template",
       "addTask": "Afegir tasca",
-      "cancel": "Cancelar"
+      "cancel": "Cancelar",
+      "editTitle": "Editar tasca",
+      "saveTask": "Desa la tasca"
     },
     "addListForm": {
       "titleCreate": "Crear nova llista",
@@ -486,6 +489,23 @@
       },
       "create": "Crear",
       "cancel": "Cancelar"
+    },
+    "recurrencePicker": {
+      "frequency": "Repetir",
+      "every": "Cada",
+      "day": "dia",
+      "days": "dies",
+      "week": "setmana",
+      "weeks": "setmanes",
+      "month": "mes",
+      "months": "mesos",
+      "year": "any",
+      "years": "anys",
+      "noRepeat": "No es repeteix",
+      "daily": "Diàriament",
+      "weekly": "Setmanalment",
+      "monthly": "Mensualment",
+      "yearly": "Anualment"
     }
   },
   "charts": {

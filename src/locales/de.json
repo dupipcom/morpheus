@@ -105,7 +105,7 @@
         "AI_ENABLED": "KI-aktiviert"
       },
       "action": "Notiz veröffentlichen",
-      "publishing": "Publishing..."
+      "publishing": "Veröffentlichen..."
     }
   },
   "week": {
@@ -133,7 +133,8 @@
       "open": "Offen",
       "done": "Erledigt",
       "ignored": "Ignoriert"
-    }
+    },
+    "edit": "Bearbeiten"
   },
   "settings": {
     "title": "Einstellungen",
@@ -305,10 +306,10 @@
   "errors": {
     "notFound": "Ops! Could not tune to this frequency.",
     "genericError": "Something went wrong. Please try again.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "Notizen konnten nicht geladen werden",
+    "failedToLoadNotes": "Notizen konnten nicht geladen werden",
+    "failedToFetchTemplates": "Vorlagen konnten nicht geladen werden",
+    "failedToLoadTemplates": "Vorlagen konnten nicht geladen werden"
   },
   "publicProfile": {
     "ctaTitle": "Beginnen Sie Ihre eigene Dupip-Reise",
@@ -329,9 +330,9 @@
     "cloning": "Klonen...",
     "noPublicNotes": "Noch keine öffentlichen Notizen verfügbar.",
     "noPublicTemplatesOrLists": "Noch keine öffentlichen Vorlagen oder Listen verfügbar.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "Liste klonen",
+    "cloneListSuccess": "Liste erfolgreich geklont!",
+    "cloneListFailed": "Liste konnte nicht geklont werden"
   },
   "publicCharts": {
     "noData": "No public charts data available.",
@@ -463,7 +464,9 @@
       "timesLabel": "# Anzahl der Zeiten",
       "saveToTemplate": "Aufgabe in Vorlage speichern",
       "addTask": "Aufgabe hinzufügen",
-      "cancel": "Abbrechen"
+      "cancel": "Abbrechen",
+      "editTitle": "Aufgabe bearbeiten",
+      "saveTask": "Aufgabe speichern"
     },
     "addListForm": {
       "titleCreate": "Neue Liste erstellen",
@@ -539,6 +542,23 @@
       },
       "create": "Erstellen",
       "cancel": "Abbrechen"
+    },
+    "recurrencePicker": {
+      "frequency": "Wiederholen",
+      "every": "Jede",
+      "day": "Tag",
+      "days": "Tage",
+      "week": "Woche",
+      "weeks": "Wochen",
+      "month": "Monat",
+      "months": "Monate",
+      "year": "Jahr",
+      "years": "Jahre",
+      "noRepeat": "Wiederholt sich nicht",
+      "daily": "Täglich",
+      "weekly": "Wöchentlich",
+      "monthly": "Monatlich",
+      "yearly": "Jährlich"
     }
   },
   "socialView": {

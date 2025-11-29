@@ -109,7 +109,7 @@
         "AI_ENABLED": "تمكين الذكاء الاصطناعي"
       },
       "action": "نشر المذكرة",
-      "publishing": "Publishing..."
+      "publishing": "جاري النشر..."
     }
   },
   "week": {
@@ -137,7 +137,8 @@
       "open": "مفتوح",
       "done": "مكتمل",
       "ignored": "متجاهل"
-    }
+    },
+    "edit": "تعديل"
   },
   "settings": {
     "title": "الإعدادات",
@@ -309,10 +310,10 @@
   "errors": {
     "notFound": "عذراً! لا يمكن ضبط هذه التردد.",
     "genericError": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "فشل في تحميل الملاحظات",
+    "failedToLoadNotes": "فشل في تحميل الملاحظات",
+    "failedToFetchTemplates": "فشل في تحميل القوالب",
+    "failedToLoadTemplates": "فشل في تحميل القوالب"
   },
   "publicProfile": {
     "ctaTitle": "ابدأ رحلتك مع Dupip",
@@ -333,9 +334,9 @@
     "cloning": "جاري الاستنساخ...",
     "noPublicNotes": "لا توجد ملاحظات عامة متاحة بعد.",
     "noPublicTemplatesOrLists": "لا توجد قوالب أو قوائم عامة متاحة بعد.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "نسخ القائمة",
+    "cloneListSuccess": "تم نسخ القائمة بنجاح!",
+    "cloneListFailed": "فشل نسخ القائمة"
   },
   "publicCharts": {
     "noData": "لا توجد بيانات عامة متاحة للمخططات.",
@@ -467,7 +468,9 @@
       "timesLabel": "# عدد المرات",
       "saveToTemplate": "حفظ المهمة في قالب",
       "addTask": "إضافة مهمة",
-      "cancel": "إلغاء"
+      "cancel": "إلغاء",
+      "editTitle": "تعديل المهمة",
+      "saveTask": "حفظ المهمة"
     },
     "addListForm": {
       "titleCreate": "إنشاء قائمة جديدة",
@@ -543,6 +546,23 @@
       },
       "create": "إنشاء",
       "cancel": "إلغاء"
+    },
+    "recurrencePicker": {
+      "frequency": "تكرار",
+      "every": "كل",
+      "day": "يوم",
+      "days": "أيام",
+      "week": "أسبوع",
+      "weeks": "أسابيع",
+      "month": "شهر",
+      "months": "أشهر",
+      "year": "سنة",
+      "years": "سنوات",
+      "noRepeat": "لا يتكرر",
+      "daily": "يومياً",
+      "weekly": "أسبوعياً",
+      "monthly": "شهرياً",
+      "yearly": "سنوياً"
     }
   },
   "socialView": {

@@ -108,7 +108,7 @@
         "AI_ENABLED": "AI aktiverad"
       },
       "action": "Publicera anteckning",
-      "publishing": "Publishing..."
+      "publishing": "Publicerar..."
     }
   },
   "week": {
@@ -136,7 +136,8 @@
       "open": "Öppen",
       "done": "Klar",
       "ignored": "Ignorerad"
-    }
+    },
+    "edit": "Redigera"
   },
   "actions": {
     "drankWater": "Drack vatten",
@@ -226,10 +227,10 @@
   "errors": {
     "notFound": "Hoppsan! Kunde inte ställa in denna frekvens.",
     "genericError": "Något gick fel. Vänligen försök igen.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "Kunde inte ladda anteckningar",
+    "failedToLoadNotes": "Kunde inte ladda anteckningar",
+    "failedToFetchTemplates": "Kunde inte ladda mallar",
+    "failedToLoadTemplates": "Kunde inte ladda mallar"
   },
   "social": {
     "title": "Sociala kontakter",
@@ -315,9 +316,9 @@
     "cloning": "Klonar...",
     "noPublicNotes": "Inga offentliga anteckningar tillgängliga ännu.",
     "noPublicTemplatesOrLists": "Inga offentliga mallar eller listor tillgängliga ännu.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "Klona lista",
+    "cloneListSuccess": "Lista klonad framgångsrikt!",
+    "cloneListFailed": "Kunde inte klona lista"
   },
   "publicCharts": {
     "noData": "Inga tillgängliga data för offentliga diagram.",
@@ -449,7 +450,9 @@
       "timesLabel": "# Antal gånger",
       "saveToTemplate": "Spara uppgift till mall",
       "addTask": "Lägg till uppgift",
-      "cancel": "Avbryt"
+      "cancel": "Avbryt",
+      "editTitle": "Redigera uppgift",
+      "saveTask": "Spara uppgift"
     },
     "addListForm": {
       "titleCreate": "Skapa ny lista",
@@ -525,6 +528,23 @@
       },
       "create": "Skapa",
       "cancel": "Avbryt"
+    },
+    "recurrencePicker": {
+      "frequency": "Upprepa",
+      "every": "Varje",
+      "day": "dag",
+      "days": "dagar",
+      "week": "vecka",
+      "weeks": "veckor",
+      "month": "månad",
+      "months": "månader",
+      "year": "år",
+      "years": "år",
+      "noRepeat": "Upprepas inte",
+      "daily": "Dagligen",
+      "weekly": "Veckovis",
+      "monthly": "Månadsvis",
+      "yearly": "Årligen"
     }
   },
   "charts": {

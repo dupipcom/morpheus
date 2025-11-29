@@ -109,7 +109,7 @@
         "AI_ENABLED": "AI Enabled"
       },
       "action": "Publish Note",
-      "publishing": "Publishing..."
+      "publishing": "Menerbitkan..."
     }
   },
   "week": {
@@ -137,7 +137,8 @@
       "open": "Terbuka",
       "done": "Selesai",
       "ignored": "Diabaikan"
-    }
+    },
+    "edit": "Sunting"
   },
   "actions": {
     "drankWater": "Minum air",
@@ -227,10 +228,10 @@
   "errors": {
     "notFound": "Ups! Tidak dapat menala frekuensi ini.",
     "genericError": "Sesuatu yang salah berlaku. Sila cuba lagi.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "Gagal memuatkan nota",
+    "failedToLoadNotes": "Gagal memuatkan nota",
+    "failedToFetchTemplates": "Gagal memuatkan templat",
+    "failedToLoadTemplates": "Gagal memuatkan templat"
   },
   "social": {
     "title": "Kenalan Sosial",
@@ -316,9 +317,9 @@
     "cloning": "Mengklon...",
     "noPublicNotes": "Tiada nota awam tersedia lagi.",
     "noPublicTemplatesOrLists": "Tiada templat atau senarai awam tersedia lagi.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "Klon senarai",
+    "cloneListSuccess": "Senarai berjaya diklon!",
+    "cloneListFailed": "Gagal mengklon senarai"
   },
   "publicCharts": {
     "noData": "No public charts data available.",
@@ -450,7 +451,9 @@
       "timesLabel": "# kali",
       "saveToTemplate": "Simpan tugas ke templat",
       "addTask": "Tambah Tugas",
-      "cancel": "Batal"
+      "cancel": "Batal",
+      "editTitle": "Sunting tugas",
+      "saveTask": "Simpan tugas"
     },
     "addListForm": {
       "titleCreate": "Cipta Senarai Baru",
@@ -526,6 +529,23 @@
       },
       "create": "Cipta",
       "cancel": "Batal"
+    },
+    "recurrencePicker": {
+      "frequency": "Ulang",
+      "every": "Setiap",
+      "day": "hari",
+      "days": "hari",
+      "week": "minggu",
+      "weeks": "minggu",
+      "month": "bulan",
+      "months": "bulan",
+      "year": "tahun",
+      "years": "tahun",
+      "noRepeat": "Tidak berulang",
+      "daily": "Harian",
+      "weekly": "Mingguan",
+      "monthly": "Bulanan",
+      "yearly": "Tahunan"
     }
   },
   "charts": {

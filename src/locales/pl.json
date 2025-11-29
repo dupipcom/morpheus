@@ -109,7 +109,7 @@
         "AI_ENABLED": "Obsługiwane przez sztuczną inteligencję"
       },
       "action": "Opublikuj notatkę",
-      "publishing": "Publishing..."
+      "publishing": "Publikowanie..."
     }
   },
   "week": {
@@ -137,7 +137,8 @@
       "open": "Otwarty",
       "done": "Ukończony",
       "ignored": "Zignorowany"
-    }
+    },
+    "edit": "Edytuj"
   },
   "actions": {
     "drankWater": "Wypił wodę",
@@ -244,10 +245,10 @@
   "errors": {
     "notFound": "Ups! Nie można dostroić tej częstotliwości.",
     "genericError": "Coś poszło nie tak. Spróbuj ponownie.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "Nie udało się załadować notatek",
+    "failedToLoadNotes": "Nie udało się załadować notatek",
+    "failedToFetchTemplates": "Nie udało się załadować szablonów",
+    "failedToLoadTemplates": "Nie udało się załadować szablonów"
   },
   "social": {
     "title": "Kontakty społeczne",
@@ -333,9 +334,9 @@
     "cloning": "Klonowanie...",
     "noPublicNotes": "Brak dostępnych publicznych notatek.",
     "noPublicTemplatesOrLists": "Brak dostępnych publicznych szablonów lub list.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "Klonuj listę",
+    "cloneListSuccess": "Lista sklonowana pomyślnie!",
+    "cloneListFailed": "Klonowanie listy nie powiodło się"
   },
   "publicCharts": {
     "noData": "Brak dostępnych danych wykresów publicznych.",
@@ -467,7 +468,9 @@
       "timesLabel": "# razy",
       "saveToTemplate": "Zapisz zadanie do szablonu",
       "addTask": "Dodaj zadanie",
-      "cancel": "Anuluj"
+      "cancel": "Anuluj",
+      "editTitle": "Edytuj zadanie",
+      "saveTask": "Zapisz zadanie"
     },
     "addListForm": {
       "titleCreate": "Utwórz nową listę",
@@ -543,6 +546,23 @@
       },
       "create": "Utwórz",
       "cancel": "Anuluj"
+    },
+    "recurrencePicker": {
+      "frequency": "Powtarzaj",
+      "every": "Co",
+      "day": "dzień",
+      "days": "dni",
+      "week": "tydzień",
+      "weeks": "tygodnie",
+      "month": "miesiąc",
+      "months": "miesiące",
+      "year": "rok",
+      "years": "lata",
+      "noRepeat": "Nie powtarza się",
+      "daily": "Codziennie",
+      "weekly": "Co tydzień",
+      "monthly": "Co miesiąc",
+      "yearly": "Co rok"
     }
   },
   "socialView": {

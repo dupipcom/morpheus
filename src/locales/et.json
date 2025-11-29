@@ -105,7 +105,7 @@
         "AI_ENABLED": "AI lubatud"
       },
       "action": "Avalda märkme",
-      "publishing": "Publishing..."
+      "publishing": "Avaldamine..."
     }
   },
   "week": {
@@ -133,7 +133,8 @@
       "open": "Avatud",
       "done": "Tehtud",
       "ignored": "Ignoreeritud"
-    }
+    },
+    "edit": "Muuda"
   },
   "actions": {
     "drankWater": "Jõi vett",
@@ -223,10 +224,10 @@
   "errors": {
     "notFound": "Ups! Ei saanud seda sagedust häälestada.",
     "genericError": "Midagi läks valesti. Palun proovi uuesti.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "Märkmete laadimine ebaõnnestus",
+    "failedToLoadNotes": "Märkmete laadimine ebaõnnestus",
+    "failedToFetchTemplates": "Mallide laadimine ebaõnnestus",
+    "failedToLoadTemplates": "Mallide laadimine ebaõnnestus"
   },
   "social": {
     "title": "Sotsiaalsed kontaktid",
@@ -312,9 +313,9 @@
     "cloning": "Kloonimine...",
     "noPublicNotes": "Avalikke märkmeid pole veel saadaval.",
     "noPublicTemplatesOrLists": "Avalikke malle või nimekirju pole veel saadaval.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "Klooni loend",
+    "cloneListSuccess": "Loend kloonitud edukalt!",
+    "cloneListFailed": "Loendi kloonimineepäon nestus"
   },
   "publicCharts": {
     "noData": "Avalikke diagrammi andmeid pole saadaval.",
@@ -446,7 +447,9 @@
       "timesLabel": "# korda",
       "saveToTemplate": "Salvesta ülesanne mallina",
       "addTask": "Lisa ülesanne",
-      "cancel": "Tühista"
+      "cancel": "Tühista",
+      "editTitle": "Muuda ülesannet",
+      "saveTask": "Salvesta ülesanne"
     },
     "addListForm": {
       "titleCreate": "Loo uus nimekiri",
@@ -522,6 +525,23 @@
       },
       "create": "Loo",
       "cancel": "Tühista"
+    },
+    "recurrencePicker": {
+      "frequency": "Korda",
+      "every": "Iga",
+      "day": "päev",
+      "days": "päeva",
+      "week": "nädal",
+      "weeks": "nädalat",
+      "month": "kuu",
+      "months": "kuud",
+      "year": "aasta",
+      "years": "aastat",
+      "noRepeat": "Ei korda",
+      "daily": "Igapäevaselt",
+      "weekly": "Iganädalaselt",
+      "monthly": "Igakuiselt",
+      "yearly": "Igaaastaselt"
     }
   },
   "charts": {

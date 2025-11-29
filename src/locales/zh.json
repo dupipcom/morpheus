@@ -105,7 +105,7 @@
         "AI_ENABLED": "支持人工智能"
       },
       "action": "出版说明",
-      "publishing": "Publishing..."
+      "publishing": "发布中..."
     }
   },
   "week": {
@@ -133,7 +133,8 @@
       "open": "待办",
       "done": "完成",
       "ignored": "已忽略"
-    }
+    },
+    "edit": "编辑"
   },
   "settings": {
     "title": "设置",
@@ -305,10 +306,10 @@
   "errors": {
     "notFound": "哎呀！无法调谐到此频率。",
     "genericError": "出现错误。请重试。",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "加载笔记失败",
+    "failedToLoadNotes": "加载笔记失败",
+    "failedToFetchTemplates": "加载模板失败",
+    "failedToLoadTemplates": "加载模板失败"
   },
   "publicProfile": {
     "ctaTitle": "开始您的 Dupip 之旅",
@@ -329,9 +330,9 @@
     "cloning": "克隆中...",
     "noPublicNotes": "尚无公开笔记可用。",
     "noPublicTemplatesOrLists": "尚无公开模板或列表可用。",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "克隆列表",
+    "cloneListSuccess": "列表克隆成功!",
+    "cloneListFailed": "克隆列表失败"
   },
   "publicCharts": {
     "noData": "没有可用的公共图表数据。",
@@ -463,7 +464,9 @@
       "timesLabel": "# 次数",
       "saveToTemplate": "将任务保存到模板",
       "addTask": "添加任务",
-      "cancel": "取消"
+      "cancel": "取消",
+      "editTitle": "编辑任务",
+      "saveTask": "保存任务"
     },
     "addListForm": {
       "titleCreate": "创建新列表",
@@ -539,6 +542,23 @@
       },
       "create": "创建",
       "cancel": "取消"
+    },
+    "recurrencePicker": {
+      "frequency": "重复",
+      "every": "每",
+      "day": "天",
+      "days": "天",
+      "week": "周",
+      "weeks": "周",
+      "month": "月",
+      "months": "个月",
+      "year": "年",
+      "years": "年",
+      "noRepeat": "不重复",
+      "daily": "每天",
+      "weekly": "每周",
+      "monthly": "每月",
+      "yearly": "每年"
     }
   },
   "socialView": {

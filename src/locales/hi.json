@@ -105,7 +105,7 @@
         "AI_ENABLED": "एआई सक्षम"
       },
       "action": "नोट प्रकाशित करें",
-      "publishing": "Publishing..."
+      "publishing": "प्रकाशन..."
     }
   },
   "week": {
@@ -133,7 +133,8 @@
       "open": "खुला",
       "done": "पूर्ण",
       "ignored": "अनदेखा"
-    }
+    },
+    "edit": "संपादित करें"
   },
   "actions": {
     "drankWater": "पानी पिया",
@@ -223,10 +224,10 @@
   "errors": {
     "notFound": "ओह! इस आवृत्ति को ट्यून नहीं कर सका।",
     "genericError": "कुछ गलत हुआ। कृपया पुनः प्रयास करें।",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "नोट्स लोड करने में विफल",
+    "failedToLoadNotes": "नोट्स लोड करने में विफल",
+    "failedToFetchTemplates": "टेम्पलेट लोड करने में विफल",
+    "failedToLoadTemplates": "टेम्पलेट लोड करने में विफल"
   },
   "social": {
     "title": "सामाजिक संपर्क",
@@ -312,9 +313,9 @@
     "cloning": "क्लोन हो रहा है...",
     "noPublicNotes": "अभी तक कोई सार्वजनिक नोट उपलब्ध नहीं है।",
     "noPublicTemplatesOrLists": "अभी तक कोई सार्वजनिक टेम्पलेट या सूची उपलब्ध नहीं है।",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "सूची क्लोन करें",
+    "cloneListSuccess": "सूची सफलतापूर्वक क्लोन की गई!",
+    "cloneListFailed": "सूची क्लोन करने में विफल"
   },
   "publicCharts": {
     "noData": "कोई सार्वजनिक चार्ट डेटा उपलब्ध नहीं है।",
@@ -446,7 +447,9 @@
       "timesLabel": "# बार",
       "saveToTemplate": "टेम्प्लेट में कार्य सहेजें",
       "addTask": "कार्य जोड़ें",
-      "cancel": "रद्द करें"
+      "cancel": "रद्द करें",
+      "editTitle": "कार्य संपादित करें",
+      "saveTask": "कार्य सहेजें"
     },
     "addListForm": {
       "titleCreate": "नई सूची बनाएं",
@@ -522,6 +525,23 @@
       },
       "create": "बनाएं",
       "cancel": "रद्द करें"
+    },
+    "recurrencePicker": {
+      "frequency": "दोहराएं",
+      "every": "प्रत्येक",
+      "day": "दिन",
+      "days": "दिन",
+      "week": "सप्ताह",
+      "weeks": "सप्ताह",
+      "month": "महीना",
+      "months": "महीने",
+      "year": "वर्ष",
+      "years": "वर्ष",
+      "noRepeat": "दोहराता नहीं",
+      "daily": "दैनिक",
+      "weekly": "साप्ताहिक",
+      "monthly": "मासिक",
+      "yearly": "वार्षिक"
     }
   },
   "charts": {
