@@ -48,7 +48,8 @@ export async function GET(req: NextRequest) {
           thingIds: true,
           eventIds: true,
           analysis: true,
-          ticker: true
+          ticker: true,
+          tasks: true
         }
       })
 
@@ -111,7 +112,8 @@ export async function GET(req: NextRequest) {
           contacts: contactsWithQuality,
           things: thingsWithQuality,
           lifeEvents: eventsWithQuality,
-          ticker: (day as any).ticker || []
+          ticker: (day as any).ticker || [],
+          tasks: (day as any).tasks || []
         }
       })
     }

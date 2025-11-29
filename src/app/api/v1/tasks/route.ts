@@ -154,9 +154,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Forbidden: Only OWNER or MANAGER can create tasks' }, { status: 403 })
     }
 
-    // Verify list exists
+    // Verify list exists and get taskIds
     const list = await prisma.list.findUnique({
-      where: { id: listId }
+      where: { id: listId },
+      select: { id: true, taskIds: true }
     })
 
     if (!list) {
@@ -223,22 +224,15 @@ export async function POST(request: NextRequest) {
     })
 
     // Update list's taskIds array
-    const list = await prisma.list.findUnique({
+    const updatedTaskIds = [...(list.taskIds || []), task.id]
+    await prisma.list.update({
       where: { id: listId },
-      select: { taskIds: true }
-    })
-
-    if (list) {
-      const updatedTaskIds = [...(list.taskIds || []), task.id]
-      await prisma.list.update({
-        where: { id: listId },
-        data: {
-          taskIds: {
-            set: updatedTaskIds
-          }
+      data: {
+        taskIds: {
+          set: updatedTaskIds
         }
-      })
-    }
+      }
+    })
 
     return NextResponse.json({ task })
   } catch (error) {

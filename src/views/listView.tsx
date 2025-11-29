@@ -212,236 +212,183 @@ const formatDateLocal = (date: Date): string => {
       return () => { cancelled = true }
     }, [selectedTaskList?.id, JSON.stringify((selectedTaskList as any)?.users || []), JSON.stringify((selectedTaskList as any)?.owners || []), JSON.stringify((selectedTaskList as any)?.collaborators || []), isWeeklyList, getWeekDates, date, year, (session?.user as any)?.id])
 
-    // Memoize datesToCheck to ensure it's reactive for both daily and weekly lists
-    const datesToCheck = useMemo(() => {
-      return isWeeklyList ? getWeekDates : [date]
-    }, [isWeeklyList, getWeekDates, date])
+    // Simple task loading: from Day.tasks first, then fallback to Task collection or list.tasks
+    const [dayTasks, setDayTasks] = useState<any[]>([])
+    const [collectionTasks, setCollectionTasks] = useState<any[]>([])
+    const [isLoadingTasks, setIsLoadingTasks] = useState(false)
 
-    // Build tasks: read from completedTasks[year][date].openTasks if exists, otherwise from tasklist.tasks
-    // Overlay completedTasks[year][date].closedTasks for completed tasks
-    const mergedTasks = useMemo(() => {
-      const keyOf = (t: any) => (t?.id || t?.localeKey || (typeof t?.name === 'string' ? t.name.toLowerCase() : ''))
-      
-      // Collect openTasks and closedTasks from all dates in the timeframe
-      const allOpenTasks: any[] = []
-      const allClosedTasks: any[] = []
-      const openTasksByKey: Record<string, any> = {}
-      const closedTasksByKey: Record<string, any> = {}
-      
-      datesToCheck.forEach((checkDate: string) => {
-        const dateBucket = (selectedTaskList as any)?.completedTasks?.[year]?.[checkDate]
-        
-        if (dateBucket) {
-          // Support both old structure (array) and new structure (openTasks/closedTasks)
-          if (Array.isArray(dateBucket)) {
-            // Legacy structure: migrate on read
-            dateBucket.forEach((t: any) => {
-              const k = keyOf(t)
-              if (!k) return
-              if (t.status === 'done' || (t.count || 0) >= (t.times || 1)) {
-                if (!closedTasksByKey[k]) {
-                  closedTasksByKey[k] = t
-                  allClosedTasks.push(t)
-                }
-              } else {
-                if (!openTasksByKey[k]) {
-                  openTasksByKey[k] = t
-                  allOpenTasks.push(t)
-                }
+    // Load tasks from Day API for selected date
+    useEffect(() => {
+      let cancelled = false
+      const loadTasks = async () => {
+        if (!selectedTaskListId || !date) {
+          setDayTasks([])
+          setCollectionTasks([])
+          return
+        }
+
+        setIsLoadingTasks(true)
+        try {
+          // Step 1: Try loading from Day.tasks
+          const dayRes = await fetch(`/api/v1/days?date=${date}`)
+          if (!cancelled && dayRes.ok) {
+            const dayData = await dayRes.json()
+            if (dayData.day?.tasks && Array.isArray(dayData.day.tasks) && dayData.day.tasks.length > 0) {
+              // Filter tasks by listId if tasks have listId field, otherwise use all tasks
+              const filteredTasks = dayData.day.tasks.filter((t: any) => 
+                !t.listId || t.listId === selectedTaskListId
+              )
+              if (!cancelled) {
+                setDayTasks(filteredTasks)
+                setCollectionTasks([])
+                setIsLoadingTasks(false)
+                return
               }
-            })
-          } else {
-            // New structure
-            const openTasks = Array.isArray(dateBucket.openTasks) ? dateBucket.openTasks : []
-            const closedTasks = Array.isArray(dateBucket.closedTasks) ? dateBucket.closedTasks : []
-            
-            openTasks.forEach((t: any) => {
-              const k = keyOf(t)
-              if (!k) return
-              if (!openTasksByKey[k]) {
-                openTasksByKey[k] = t
-                allOpenTasks.push(t)
-              } else {
-                // Merge completers from different days for weekly lists
-                const existingCompleters = Array.isArray(openTasksByKey[k]?.completers) ? openTasksByKey[k].completers : []
-                const newCompleters = Array.isArray(t?.completers) ? t.completers : []
-                openTasksByKey[k] = {
-                  ...openTasksByKey[k],
-                  ...t,
-                  completers: [...existingCompleters, ...newCompleters]
-                }
+            }
+          }
+
+          // Step 2: Fallback to Task collection API
+          const tasksRes = await fetch(`/api/v1/tasks?listId=${selectedTaskListId}`)
+          if (!cancelled && tasksRes.ok) {
+            const tasksData = await tasksRes.json()
+            if (tasksData.tasks && Array.isArray(tasksData.tasks)) {
+              // Filter tasks by date if they have a date field
+              const filteredTasks = tasksData.tasks.filter((t: any) => {
+                if (t.date) return t.date === date
+                // If no date field, include all tasks (they'll be filtered by listId already)
+                return true
+              })
+              if (!cancelled) {
+                setDayTasks([])
+                setCollectionTasks(filteredTasks)
+                setIsLoadingTasks(false)
+                return
               }
-            })
-            
-            closedTasks.forEach((t: any) => {
-              const k = keyOf(t)
-              if (!k) return
-              if (!closedTasksByKey[k]) {
-                closedTasksByKey[k] = t
-                allClosedTasks.push(t)
-              } else {
-                // Merge completers from different days for weekly lists
-                const existingCompleters = Array.isArray(closedTasksByKey[k]?.completers) ? closedTasksByKey[k].completers : []
-                const newCompleters = Array.isArray(t?.completers) ? t.completers : []
-                closedTasksByKey[k] = {
-                  ...closedTasksByKey[k],
-                  ...t,
-                  completers: [...existingCompleters, ...newCompleters]
-                }
-              }
-            })
+            }
+          }
+
+          // Step 3: If no data, use list.tasks (master structure) without creating Day entry
+          if (!cancelled) {
+            setDayTasks([])
+            setCollectionTasks([])
+            setIsLoadingTasks(false)
+          }
+        } catch (error) {
+          console.error('Error loading tasks:', error)
+          if (!cancelled) {
+            setDayTasks([])
+            setCollectionTasks([])
+            setIsLoadingTasks(false)
           }
         }
-      })
-      
-      // Determine base tasks: use openTasks if they exist, otherwise fall back to tasklist.tasks
-      let base: any[] = []
+      }
+
+      loadTasks()
+      return () => { cancelled = true }
+    }, [selectedTaskListId, date])
+
+    // Simple merged tasks: use Day tasks if available, otherwise collection tasks, otherwise list.tasks
+    const mergedTasks = useMemo(() => {
+      const keyOf = (t: any) => (t?.id || t?.localeKey || (typeof t?.name === 'string' ? t.name.toLowerCase() : ''))
+
+      // Use Day tasks if available
+      if (dayTasks.length > 0) {
+        const tasks = dayTasks.map((t: any) => ({
+          ...t,
+          count: t.count || 0,
+          status: t.status || 'open'
+        }))
+
+        // Add ephemeral tasks
+        const ephemerals = (selectedTaskList && selectedTaskList.id === selectedTaskListId && selectedTaskList?.ephemeralTasks?.open) 
+          ? (selectedTaskList.ephemeralTasks.open || []).map((t: any) => ({ ...t, isEphemeral: true }))
+          : []
+
+        const closedEphemerals = (selectedTaskList && selectedTaskList.id === selectedTaskListId && selectedTaskList?.ephemeralTasks?.closed)
+          ? (selectedTaskList.ephemeralTasks.closed || [])
+              .filter((t: any) => {
+                if (!t.completedOn) return false
+                if (isWeeklyList) return getWeekDates.includes(t.completedOn)
+                return t.completedOn === date
+              })
+              .map((t: any) => ({ ...t, isEphemeral: true }))
+          : []
+
+        const taskKeys = new Set(tasks.map((t: any) => keyOf(t)).filter(Boolean))
+        const dedupEphemerals = [...ephemerals, ...closedEphemerals].filter((t: any) => {
+          const k = keyOf(t)
+          return k && !taskKeys.has(k)
+        })
+
+        return [...tasks, ...dedupEphemerals]
+      }
+
+      // Use collection tasks if available
+      if (collectionTasks.length > 0) {
+        const tasks = collectionTasks.map((t: any) => ({
+          ...t,
+          count: t.count || 0,
+          status: t.status || 'open'
+        }))
+
+        // Add ephemeral tasks
+        const ephemerals = (selectedTaskList && selectedTaskList.id === selectedTaskListId && selectedTaskList?.ephemeralTasks?.open) 
+          ? (selectedTaskList.ephemeralTasks.open || []).map((t: any) => ({ ...t, isEphemeral: true }))
+          : []
+
+        const closedEphemerals = (selectedTaskList && selectedTaskList.id === selectedTaskListId && selectedTaskList?.ephemeralTasks?.closed)
+          ? (selectedTaskList.ephemeralTasks.closed || [])
+              .filter((t: any) => {
+                if (!t.completedOn) return false
+                if (isWeeklyList) return getWeekDates.includes(t.completedOn)
+                return t.completedOn === date
+              })
+              .map((t: any) => ({ ...t, isEphemeral: true }))
+          : []
+
+        const taskKeys = new Set(tasks.map((t: any) => keyOf(t)).filter(Boolean))
+        const dedupEphemerals = [...ephemerals, ...closedEphemerals].filter((t: any) => {
+          const k = keyOf(t)
+          return k && !taskKeys.has(k)
+        })
+
+        return [...tasks, ...dedupEphemerals]
+      }
+
+      // Fallback to list.tasks (master structure)
       const blueprintTasks = (selectedTaskList?.tasks && selectedTaskList.tasks.length > 0)
         ? selectedTaskList.tasks
         : (selectedTaskList?.templateTasks || [])
-      
-      if (allOpenTasks.length > 0) {
-        // Use openTasks as base
-        base = allOpenTasks
-        
-        // Check for new tasks in tasklist.tasks that aren't in openTasks
-        const openTasksKeys = new Set(allOpenTasks.map((t: any) => keyOf(t)))
-        const newTasks = blueprintTasks.filter((t: any) => {
-          const k = keyOf(t)
-          return k && !openTasksKeys.has(k)
-        })
-        
-        // Add new tasks to base (they'll be saved to completedTasks on first completion)
-        if (newTasks.length > 0) {
-          base = [...base, ...newTasks.map((t: any) => ({ ...t, count: 0, status: 'open' }))]
-        }
-      } else {
-        // Fall back to tasklist.tasks or templateTasks
-        base = blueprintTasks
-      }
 
-      // Only show open ephemeral tasks from the selected task list
-      // Ensure we're using the correct task list by checking selectedTaskListId
+      const tasks = blueprintTasks.map((t: any) => ({
+        ...t,
+        count: 0,
+        status: 'open'
+      }))
+
+      // Add ephemeral tasks
       const ephemerals = (selectedTaskList && selectedTaskList.id === selectedTaskListId && selectedTaskList?.ephemeralTasks?.open) 
         ? (selectedTaskList.ephemeralTasks.open || []).map((t: any) => ({ ...t, isEphemeral: true }))
         : []
 
-      // Only include closed ephemeral tasks from the selected task list that were closed on the selected date (or within selected week for weekly lists)
-      // Use completedOn field (YYYY-MM-DD format) to filter by date
       const closedEphemerals = (selectedTaskList && selectedTaskList.id === selectedTaskListId && selectedTaskList?.ephemeralTasks?.closed)
         ? (selectedTaskList.ephemeralTasks.closed || [])
             .filter((t: any) => {
-              // Must have a completedOn date (YYYY-MM-DD format)
               if (!t.completedOn) return false
-              
-              const completedDate = t.completedOn
-              
-              // For weekly lists, check if completed within the selected week
-              if (isWeeklyList) {
-                return getWeekDates.includes(completedDate)
-              }
-              
-              // For daily lists, only show if completed on the exact selected date
-              return completedDate === date
+              if (isWeeklyList) return getWeekDates.includes(t.completedOn)
+              return t.completedOn === date
             })
             .map((t: any) => ({ ...t, isEphemeral: true }))
         : []
 
-      // Get all ephemeral task IDs/keys to filter them out of base tasks
-      // Ephemeral tasks should only come from ephemeralTasks.open/closed, not from completedTasks
-      const allEphemeralKeys = new Set<string>()
-      ;[...ephemerals, ...closedEphemerals].forEach((t: any) => {
+      const taskKeys = new Set(tasks.map((t: any) => keyOf(t)).filter(Boolean))
+      const dedupEphemerals = [...ephemerals, ...closedEphemerals].filter((t: any) => {
         const k = keyOf(t)
-        if (k) allEphemeralKeys.add(k)
-      })
-      
-      // Also check if any tasks in base/allOpenTasks/allClosedTasks are ephemeral tasks
-      // by checking if they have an id that matches ephemeral task IDs
-      const ephemeralTaskIds = new Set<string>()
-      if (selectedTaskList?.ephemeralTasks?.open) {
-        (selectedTaskList.ephemeralTasks.open || []).forEach((t: any) => {
-          if (t.id) ephemeralTaskIds.add(String(t.id))
-        })
-      }
-      if (selectedTaskList?.ephemeralTasks?.closed) {
-        (selectedTaskList.ephemeralTasks.closed || []).forEach((t: any) => {
-          if (t.id) ephemeralTaskIds.add(String(t.id))
-        })
-      }
-      
-      // Filter out ephemeral tasks from base (they should only come from ephemeralTasks)
-      const baseWithoutEphemerals = base.filter((t: any) => {
-        const k = keyOf(t)
-        // If task has an id that matches an ephemeral task ID, exclude it
-        if (t.id && ephemeralTaskIds.has(String(t.id))) return false
-        // If task key is in ephemeral keys, exclude it
-        if (k && allEphemeralKeys.has(k)) return false
-        // If task is already marked as ephemeral, exclude it
-        if (t.isEphemeral) return false
-        return true
+        return k && !taskKeys.has(k)
       })
 
-      // Merge base tasks with closedTasks (closedTasks take precedence for completed tasks)
-      const overlayed = baseWithoutEphemerals.map((t: any) => {
-        const k = keyOf(t)
-        const closedTask = k ? closedTasksByKey[k] : undefined
-        
-        if (closedTask) {
-          // Task is completed - use closedTask data
-          const times = Number(closedTask?.times || t?.times || 1)
-          const completedCount = Array.isArray(closedTask?.completers) ? closedTask.completers.length : Number(closedTask?.count || 0)
-          // Always use the status from closedTask if it exists (preserves manually set statuses like "ready", "steady", etc.)
-          // Only fall back to calculated status if closedTask.status is not set
-          const taskStatus = closedTask?.status
-            ? closedTask.status
-            : (t?.status || (completedCount >= times ? 'done' : (completedCount > 0 ? 'in progress' : 'open')))
-
-          return {
-            ...t, // Start with base task from list.tasks (includes recurrence metadata)
-            ...closedTask, // Override with closedTask completion data
-            // Always preserve recurrence metadata from base task (completedTasks are snapshots and don't store this)
-            recurrence: t?.recurrence,
-            nextOccurrence: t?.nextOccurrence,
-            firstOccurrence: t?.firstOccurrence,
-            lastOccurrence: t?.lastOccurrence,
-            status: taskStatus, // Use the status from closedTask (preserves manual status changes)
-            count: Math.min(completedCount || 0, times || 1),
-            completers: closedTask?.completers
-          }
-        }
-        
-        // Task is open - use base task data (from openTasks or tasklist.tasks)
-        return { ...t, count: t.count || 0 }
-      })
-      
-      // Add any closedTasks that aren't in base (shouldn't happen, but handle edge cases)
-      // Filter out ephemeral tasks from additionalClosedTasks as well
-      const baseKeys = new Set(baseWithoutEphemerals.map((t: any) => keyOf(t)))
-      const additionalClosedTasks = allClosedTasks.filter((t: any) => {
-        const k = keyOf(t)
-        if (!k) return false
-        // Exclude ephemeral tasks from additionalClosedTasks
-        if (t.id && ephemeralTaskIds.has(String(t.id))) return false
-        if (t.isEphemeral) return false
-        return !baseKeys.has(k)
-      })
-
-      // Combine all ephemeral tasks (open + closed for current date/timeframe)
-      const allEphemerals = [...ephemerals, ...closedEphemerals]
-
-      // Dedup ephemeral tasks by key against overlayed and additionalClosedTasks
-      // Use key-based deduplication (id, localeKey, or name) for more accurate matching
-      const overlayedKeys = new Set(overlayed.map((t: any) => keyOf(t)).filter(Boolean))
-      const additionalClosedKeys = new Set(additionalClosedTasks.map((t: any) => keyOf(t)).filter(Boolean))
-      const allExistingKeys = new Set([...overlayedKeys, ...additionalClosedKeys])
-      
-      const dedupEphemeral = allEphemerals.filter((t: any) => {
-        const k = keyOf(t)
-        return k && !allExistingKeys.has(k)
-      })
-      
-      return [...overlayed, ...additionalClosedTasks, ...dedupEphemeral]
-    }, [selectedTaskList, year, date, isWeeklyList, getWeekDates, selectedDate, datesToCheck])
+      return [...tasks, ...dedupEphemerals]
+    }, [dayTasks, collectionTasks, selectedTaskList, selectedTaskListId, date, isWeeklyList, getWeekDates])
 
 
     const handleAddEphemeral = useCallback(async () => {
@@ -475,7 +422,7 @@ const formatDateLocal = (date: Date): string => {
 
     // Check if task lists are loading (only show skeleton on initial load, not on refreshes)
     const isTaskListsLoading = !initialLoadDone.current && (contextTaskLists === null || contextTaskLists === undefined || (Array.isArray(contextTaskLists) && contextTaskLists.length === 0))
-    const isLoading = isTaskListsLoading || (!initialLoadDone.current && (!selectedTaskListId || !selectedTaskList))
+    const isLoading = isTaskListsLoading || (!initialLoadDone.current && (!selectedTaskListId || !selectedTaskList)) || isLoadingTasks
 
     if (isLoading) {
       return (

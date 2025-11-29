@@ -7,7 +7,6 @@ import { useI18n } from '@/lib/contexts/i18n'
 import { getProfitPerTask } from '@/lib/utils/earningsUtils'
 import { TaskItem } from '@/components/taskItem'
 import { TaskStatus, STATUS_OPTIONS, getStatusColor, getIconColor, getTaskKey, getTaskStatus } from '@/lib/utils/taskUtils'
-import { useOptimisticUpdates } from '@/lib/hooks/useOptimisticUpdates'
 import { useTaskStatuses } from '@/lib/hooks/useTaskStatuses'
 import { useTaskHandlers } from '@/lib/hooks/useTaskHandlers'
 import { AddTaskForm } from '@/views/forms/addTaskForm'
@@ -34,15 +33,22 @@ export const TaskGrid = ({
   const { t } = useI18n()
   const [editingTask, setEditingTask] = useState<any>(null)
 
-  // Use shared hooks for optimistic updates and task statuses
-  const { pendingCompletionsRef, pendingStatusUpdatesRef } = useOptimisticUpdates()
-  const { taskStatuses, setTaskStatuses } = useTaskStatuses({
+  // Direct optimistic state updates with useState
+  const [optimisticStatuses, setOptimisticStatuses] = useState<Record<string, TaskStatus>>({})
+  
+  // Get base task statuses from tasks prop
+  const { taskStatuses: baseTaskStatuses } = useTaskStatuses({
     tasks,
     selectedTaskListId: selectedTaskList?.id,
     date,
   })
   
-  // Use shared task handlers
+  // Merge base statuses with optimistic updates
+  const taskStatuses = useMemo(() => {
+    return { ...baseTaskStatuses, ...optimisticStatuses }
+  }, [baseTaskStatuses, optimisticStatuses])
+  
+  // Use shared task handlers with optimistic state setter
   const {
     handleTaskClick,
     handleStatusChange,
@@ -50,14 +56,12 @@ export const TaskGrid = ({
     handleDecrementCount,
     handleToggleRedacted,
   } = useTaskHandlers({
-    taskListId: selectedTaskList?.id,
+    taskListId: selectedTaskList?.id || '',
     tasks,
     date,
     onRefresh,
     onRefreshUser,
-    pendingCompletionsRef,
-    pendingStatusUpdatesRef,
-    setTaskStatuses,
+    setTaskStatuses: setOptimisticStatuses,
   })
 
   // Sort tasks: by status order first, then incomplete before completed
@@ -301,11 +305,8 @@ export const TaskGrid = ({
         const taskStatus = taskStatuses[key] || getTaskStatus(task)
         const isDone = taskStatus === 'done'
         
-        // Get optimistic count from pending completions to ensure task object has latest count
-        const pendingCompletion = pendingCompletionsRef.current.get(key)
-        const taskWithOptimisticCount = pendingCompletion 
-          ? { ...task, count: pendingCompletion.count }
-          : task
+        // Use task directly (no need for optimistic count tracking with refs)
+        const taskWithOptimisticCount = task
         
         const lastCompleter = Array.isArray(task?.completers) && task.completers.length > 0 
           ? task.completers[task.completers.length - 1] 
