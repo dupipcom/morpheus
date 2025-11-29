@@ -10,10 +10,103 @@ import { getWeekNumber } from '@/app/helpers'
 import { randomBytes } from 'crypto'
 import { Productivity, ListProductivity } from '@/lib/types'
 
+// Helper function to get embedded tasks from a list (hybrid compatibility)
+// In the new schema, tasks is a relation. We need to use templateTasks for embedded tasks.
+function getEmbeddedTasks(list: any): any[] {
+  // Priority: templateTasks (embedded) > old tasks field (if it exists)
+  return Array.isArray(list.templateTasks) && list.templateTasks.length > 0
+    ? list.templateTasks
+    : (Array.isArray(list.tasks) ? list.tasks : [])
+}
+
 // Helper function to generate a unique MongoDB ObjectId
 function generateObjectId(): string {
   // Generate a 24-character hex string (MongoDB ObjectId format)
   return randomBytes(12).toString('hex')
+}
+
+// Helper function to sync embedded tasks to Task collection
+// This creates/updates Task collection entries whenever tasks are modified
+async function syncTasksToCollection(listId: string, embeddedTasks: any[], userId: string) {
+  try {
+    // Get existing tasks for this list from collection
+    const existingTasks = await prisma.task.findMany({
+      where: { listId },
+      select: { id: true, name: true }
+    })
+
+    const existingTaskMap = new Map(existingTasks.map(t => [t.name, t.id]))
+
+    for (const embeddedTask of embeddedTasks) {
+      const taskData = {
+        name: embeddedTask.name,
+        localeKey: embeddedTask.localeKey || null,
+        categories: embeddedTask.categories || [],
+        area: embeddedTask.area || 'self',
+        status: convertStatusToEnum(embeddedTask.status),
+        budget: embeddedTask.budget || null,
+        recurrence: embeddedTask.recurrence || embeddedTask.cadence ? {
+          frequency: embeddedTask.cadence || 'daily',
+          interval: 1
+        } : null,
+        visibility: embeddedTask.visibility || 'PRIVATE',
+        quality: embeddedTask.quality || null,
+        persons: embeddedTask.persons || embeddedTask.contacts || [],
+        listId
+      }
+
+      const existingTaskId = existingTaskMap.get(embeddedTask.name)
+
+      if (existingTaskId) {
+        // Update existing task
+        await prisma.task.update({
+          where: { id: existingTaskId },
+          data: taskData
+        })
+      } else {
+        // Create new task
+        const newTask = await prisma.task.create({
+          data: taskData
+        })
+
+        // Migrate completers to Jobs if they exist
+        if (Array.isArray(embeddedTask.completers)) {
+          for (const completer of embeddedTask.completers) {
+            await prisma.job.create({
+              data: {
+                taskId: newTask.id,
+                listId,
+                operatorId: completer.id || userId,
+                status: 'ACCEPTED',
+                selfReview: completer.selfReview || null,
+                peerReview: completer.peerReview || null,
+                managerReview: completer.managerReview || null
+              }
+            })
+          }
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Error syncing tasks to collection:', error)
+    // Don't throw - this is a background sync, shouldn't break the main operation
+  }
+}
+
+// Helper function to convert legacy status strings to TaskStatus enum
+function convertStatusToEnum(status?: string): any {
+  if (!status) return 'OPEN'
+
+  const statusMap: Record<string, string> = {
+    'open': 'OPEN',
+    'in progress': 'IN_PROGRESS',
+    'steady': 'STEADY',
+    'ready': 'READY',
+    'done': 'DONE',
+    'ignored': 'IGNORED'
+  }
+
+  return statusMap[status.toLowerCase()] || 'OPEN'
 }
 
 // Helper function to ensure all tasks have unique ObjectIds
@@ -115,7 +208,7 @@ export async function GET(request: NextRequest) {
             translatedTasks = ensureUniqueTaskIds(translatedTasks, true)
           }
 
-          await prisma.list.create({
+          const newList = await prisma.list.create({
             data: {
               role: r,
               name: localizedName,
@@ -123,11 +216,15 @@ export async function GET(request: NextRequest) {
               users: [{ userId: ownerUser.id, role: 'OWNER' }],
               templateId: tpl?.id || null,
               templateTasks: translatedTasks,
-              tasks: translatedTasks,
               ephemeralTasks: { open: [], closed: [] },
               completedTasks: {}
             } as any
           })
+
+          // Sync tasks to Task collection (background sync)
+          if (translatedTasks && translatedTasks.length > 0) {
+            await syncTasksToCollection(newList.id, translatedTasks, ownerUser.id)
+          }
         }
       }
       await ensureDefault('daily.default')
@@ -175,7 +272,7 @@ export async function GET(request: NextRequest) {
         // Calculate profit per task using earningsUtils formula
         const listBudget = taskList.budget
         const listRole = taskList.role
-        const totalTasks = (taskList.tasks as any[])?.length || (taskList.templateTasks as any[])?.length || 1
+        const totalTasks = getEmbeddedTasks(taskList).length || 1
         
         // Calculate profit per task based on cadence
         const profitPerTask = getProfitPerTask(listBudget, totalTasks, listRole)
@@ -662,7 +759,7 @@ export async function POST(request: NextRequest) {
       }
 
       const incomingTasks: any[] = (body.dayActions?.length ? body.dayActions : body.weekActions) || []
-      const blueprintTasks: any[] = Array.isArray(taskList.tasks) ? (taskList.tasks as any[]) : (Array.isArray((taskList as any).templateTasks) ? ((taskList as any).templateTasks as any[]) : [])
+      const blueprintTasks: any[] = getEmbeddedTasks(taskList)
 
       const totalTasks = blueprintTasks.length || incomingTasks.length || 1
       
@@ -732,7 +829,7 @@ export async function POST(request: NextRequest) {
       
       // If first completion, copy tasks from taskList.tasks to openTasks
       if (isFirstCompletion) {
-        const blueprintTasks: any[] = Array.isArray(taskList.tasks) ? (taskList.tasks as any[]) : (Array.isArray((taskList as any).templateTasks) ? ((taskList as any).templateTasks as any[]) : [])
+        const blueprintTasks: any[] = getEmbeddedTasks(taskList)
         openTasks = blueprintTasks.map((t: any) => sanitizeTask({ ...t, count: 0, status: 'open' }))
       }
 
@@ -1140,7 +1237,7 @@ export async function POST(request: NextRequest) {
             const { productivity: updatedProductivity, progress: newProgress } = updateProductivityForList(
               existingProductivity,
               taskList.id,
-              taskList.tasks as any[], // List tasks for matching
+              getEmbeddedTasks(taskList), // List tasks for matching
               updatedTasks // Day tasks to count from
             )
 
@@ -1163,6 +1260,11 @@ export async function POST(request: NextRequest) {
                 semester: semester
               }
             })
+
+            // Sync updated tasks to Task collection (background sync)
+            if (updatedTasks && updatedTasks.length > 0) {
+              await syncTasksToCollection(taskList.id, updatedTasks, user.id)
+            }
           }
         } catch (dayError) {
           // Log error but don't fail the request if Day update fails
@@ -1265,7 +1367,7 @@ export async function POST(request: NextRequest) {
             const { productivity: updatedProductivity, progress: newProgress } = updateProductivityForList(
               existingProductivity,
               taskList.id,
-              taskList.tasks as any[], // List tasks for matching
+              getEmbeddedTasks(taskList), // List tasks for matching
               updatedTasks // Day tasks to count from
             )
             
@@ -1291,6 +1393,11 @@ export async function POST(request: NextRequest) {
                 semester: semester
               }
             })
+
+            // Sync updated tasks to Task collection (background sync)
+            if (updatedTasks && updatedTasks.length > 0) {
+              await syncTasksToCollection(taskList.id, updatedTasks, user.id)
+            }
           } else {
             // Create new day with the tasks to copy
             // Use status field
@@ -1331,7 +1438,7 @@ export async function POST(request: NextRequest) {
             const { productivity: newProductivity, progress: newProgress } = updateProductivityForList(
               null,
               taskList.id,
-              taskList.tasks as any[], // List tasks for matching
+              getEmbeddedTasks(taskList), // List tasks for matching
               tasksForDay // Day tasks to count from
             )
             
@@ -1391,6 +1498,11 @@ export async function POST(request: NextRequest) {
                 semester: semester
               }
             })
+
+            // Sync created day tasks to Task collection (background sync)
+            if (tasksForDay && tasksForDay.length > 0) {
+              await syncTasksToCollection(taskList.id, tasksForDay, user.id)
+            }
           }
         } catch (dayError) {
           // Log error but don't fail the request if Day update fails
@@ -1435,9 +1547,7 @@ export async function POST(request: NextRequest) {
 
       // Get task from templateTasks or tasks to use as base
       let baseTask: any = null
-      const tasks = Array.isArray(taskList.tasks) 
-        ? taskList.tasks 
-        : (Array.isArray((taskList as any).templateTasks) ? (taskList as any).templateTasks : [])
+      const tasks = getEmbeddedTasks(taskList)
       
       // First try to find by taskId (direct ID match)
       if (taskId) {
@@ -1494,7 +1604,7 @@ export async function POST(request: NextRequest) {
         closedTasks = Array.isArray(dateBucket.closedTasks) ? [...dateBucket.closedTasks] : []
       } else if (taskToUse) {
         // First time - initialize from taskList.tasks
-        const blueprintTasks: any[] = Array.isArray(taskList.tasks) ? (taskList.tasks as any[]) : (Array.isArray((taskList as any).templateTasks) ? ((taskList as any).templateTasks as any[]) : [])
+        const blueprintTasks: any[] = getEmbeddedTasks(taskList)
         openTasks = blueprintTasks.map((t: any) => ({ ...t, count: 0, status: 'open', completers: [] }))
       }
       
@@ -1741,7 +1851,7 @@ export async function POST(request: NextRequest) {
           const { productivity: updatedProductivity, progress: newProgress } = updateProductivityForList(
             existingProductivity,
             taskList.id,
-            taskList.tasks as any[],
+            getEmbeddedTasks(taskList),
             updatedTasksArray
           )
 
@@ -2019,7 +2129,7 @@ export async function POST(request: NextRequest) {
         closedTasks = Array.isArray(dateBucket.closedTasks) ? [...dateBucket.closedTasks] : []
       } else if (baseTask) {
         // First time - initialize from taskListToUpdate.tasks
-        const blueprintTasks: any[] = Array.isArray(taskListToUpdate.tasks) ? (taskListToUpdate.tasks as any[]) : (Array.isArray((taskListToUpdate as any).templateTasks) ? ((taskListToUpdate as any).templateTasks as any[]) : [])
+        const blueprintTasks: any[] = getEmbeddedTasks(taskListToUpdate)
         openTasks = blueprintTasks.map((t: any) => ({ ...t, count: 0, status: 'open' }))
       }
       
@@ -2167,7 +2277,7 @@ export async function POST(request: NextRequest) {
               const { productivity: updatedProductivity, progress: newProgress } = updateProductivityForList(
                 existingProductivity,
                 taskListToUpdate.id,
-                taskListToUpdate.tasks as any[], // List tasks for matching
+                getEmbeddedTasks(taskListToUpdate), // List tasks for matching
                 updatedTasks // Day tasks to count from
               )
 
@@ -2302,7 +2412,7 @@ export async function POST(request: NextRequest) {
               const { productivity: updatedProductivity, progress: newProgress } = updateProductivityForList(
                 existingProductivity,
                 taskListToUpdate.id,
-                taskListToUpdate.tasks as any[], // List tasks for matching
+                getEmbeddedTasks(taskListToUpdate), // List tasks for matching
                 updatedTasks // Day tasks to count from
               )
 
@@ -2347,7 +2457,7 @@ export async function POST(request: NextRequest) {
               const { productivity: newProductivity, progress: newProgress } = updateProductivityForList(
                 null,
                 taskListToUpdate.id,
-                taskListToUpdate.tasks as any[], // List tasks for matching
+                getEmbeddedTasks(taskListToUpdate), // List tasks for matching
                 [taskForDay] // Day tasks to count from (single task for new day)
               )
 
@@ -2510,7 +2620,6 @@ export async function POST(request: NextRequest) {
       const updated = await prisma.list.update({
         where: { id: taskListToUpdate.id },
         data: {
-          tasks: tasks,
           templateTasks: templateTasks,
           ephemeralTasks: ephemeralTasks,
           completedTasks: completedTasks,
@@ -2518,6 +2627,11 @@ export async function POST(request: NextRequest) {
         } as any,
         include: { template: true }
       })
+
+      // Sync tasks to Task collection (background sync)
+      if (templateTasks && templateTasks.length > 0) {
+        await syncTasksToCollection(updated.id, templateTasks, user.id)
+      }
 
       return NextResponse.json({ taskLists: [updated] })
     }
@@ -2541,7 +2655,6 @@ export async function POST(request: NextRequest) {
         where: { id: existingById.id },
         data: ({
           templateTasks: updatedTasks,
-          tasks: updatedTasks,
           templateId: typeof templateId !== 'undefined' ? templateId : existingById.templateId,
           role: typeof role === 'string' ? role : existingById.role,
           name: typeof name !== 'undefined' ? name : existingById.name,
@@ -2558,6 +2671,9 @@ export async function POST(request: NextRequest) {
         } as any),
         include: { template: true }
       })
+
+      // Sync tasks to Task collection (background sync)
+      await syncTasksToCollection(updated.id, updatedTasks, user.id)
 
       // Recalculate user's budget if budgetPercentage was updated
       if (typeof budgetPercentage === 'number') {
@@ -2604,12 +2720,16 @@ export async function POST(request: NextRequest) {
             ...(Array.isArray(collaborators) ? collaborators.map((id: string) => ({ userId: id, role: 'COLLABORATOR' as const })) : [])
           ],
           templateTasks: translatedTasks,
-          tasks: translatedTasks,
           templateId: templateId
         } as any),
         include: { template: true }
       })
-      
+
+      // Sync tasks to Task collection (background sync)
+      if (translatedTasks && translatedTasks.length > 0) {
+        await syncTasksToCollection(taskList.id, translatedTasks, user.id)
+      }
+
       // Recalculate user's budget after creating a new list
       if (typeof budgetPercentage === 'number') {
         await recalculateUserBudget(user.id)
@@ -2628,13 +2748,12 @@ export async function POST(request: NextRequest) {
         where: { id: existingTaskList.id },
         data: ({
           templateTasks: updatedTasks ?? existingTaskList.tasks,
-          tasks: updatedTasks,
           templateId: templateId,
           name: name ?? existingTaskList.name,
           budget: typeof budget === 'number' ? budget : (budget ? parseFloat(String(budget)) : existingTaskList.budget),
           budgetPercentage: typeof budgetPercentage === 'number' ? budgetPercentage : existingTaskList.budgetPercentage,
           dueDate: dueDate ?? existingTaskList.dueDate,
-          users: Array.isArray(collaborators) 
+          users: Array.isArray(collaborators)
             ? [
                 ...((existingTaskList.users as any[]) || []).filter((u: any) => u.role === 'OWNER'),
                 ...collaborators.map((id: string) => ({ userId: id, role: 'COLLABORATOR' as const }))
@@ -2644,7 +2763,13 @@ export async function POST(request: NextRequest) {
         } as any),
         include: { template: true }
       })
-      
+
+      // Sync tasks to Task collection (background sync)
+      const tasksToSync = updatedTasks ?? existingTaskList.tasks
+      if (tasksToSync && tasksToSync.length > 0) {
+        await syncTasksToCollection(taskList.id, tasksToSync, user.id)
+      }
+
       // Recalculate user's budget if budgetPercentage was updated
       if (typeof budgetPercentage === 'number') {
         await recalculateUserBudget(user.id)
@@ -2664,12 +2789,16 @@ export async function POST(request: NextRequest) {
             ...(Array.isArray(collaborators) ? collaborators.map((id: string) => ({ userId: id, role: 'COLLABORATOR' as const })) : [])
           ],
           templateTasks: translatedTasks,
-          tasks: translatedTasks,
           templateId: templateId
         } as any),
         include: { template: true }
       })
-      
+
+      // Sync tasks to Task collection (background sync)
+      if (translatedTasks && translatedTasks.length > 0) {
+        await syncTasksToCollection(taskList.id, translatedTasks, user.id)
+      }
+
       // Recalculate user's budget after creating a new list
       if (typeof budgetPercentage === 'number') {
         await recalculateUserBudget(user.id)
@@ -2681,7 +2810,6 @@ export async function POST(request: NextRequest) {
       await prisma.template.update({
         where: { id: taskList.templateId },
         data: {
-          tasks: translatedTasks,
           updatedAt: new Date()
         }
       })

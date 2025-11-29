@@ -251,6 +251,8 @@ model List {
   walletId      String? @db.ObjectId
   wallet        Wallet? @relation(fields: [walletId], references: [id])
   history       ListHistoryEntry[]
+  ephemeralTasks Json?
+  completedTasks Json?
   noteIds       String[]  @default([]) @db.ObjectId
   documentIds   String[]  @default([]) @db.ObjectId
   comments      Comment[]
@@ -513,6 +515,7 @@ type EmbeddedTask {
   categories Category[]
   area Areas
   status String
+  cadence String?
   recurrence RecurrenceRule?
   nextOccurrence DateTime?
   lastOccurrence DateTime?
@@ -520,6 +523,7 @@ type EmbeddedTask {
   times Int?
   count Int?
   localeKey String?
+  contacts PersonReference[]
   persons PersonReference[]
   things ThingReference[]
   events EventReference[]

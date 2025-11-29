@@ -5,7 +5,7 @@
  */
 
 import prisma from '@/lib/prisma'
-import { TaskStatus } from '@/generated/prisma'
+import { TaskStatus } from '@/lib/prisma'
 
 /**
  * Convert old status string to new TaskStatus enum

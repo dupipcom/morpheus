@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
-import { UserRole } from '@/generated/prisma'
+import { UserRole } from '@/lib/prisma'
 
 // Helper to check list membership and get user role
 async function getUserListRole(userId: string, listId: string): Promise<UserRole | null> {

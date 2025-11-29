@@ -54,6 +54,15 @@ A complete refactor of the task system with backward compatibility, introducing 
 - `GET /api/v1/migrate/tasks` - Get migration status
 - `POST /api/v1/migrate/tasks` - Migrate tasks (all or single list)
 
+#### Auto-Sync Feature
+- ✨ **Automatic Task Collection Sync** - Embedded tasks automatically sync to Task collection
+  - Triggers on list create/update in legacy API
+  - Creates/updates Task entries in background
+  - Migrates completers to Job entries
+  - Non-blocking (errors logged, not thrown)
+  - Zero user intervention required
+  - See [AUTO-SYNC-TASKS.md](./docs/AUTO-SYNC-TASKS.md)
+
 ### Frontend Hooks
 
 - ✨ **useTasksHybrid** - Smart task loading with priority:

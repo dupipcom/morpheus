@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { TaskStatus, STATUS_OPTIONS, getTaskKey, getTaskStatus } from '@/lib/utils/taskUtils'
 
 interface UseTaskStatusesOptions {
@@ -15,15 +15,17 @@ export function useTaskStatuses({
   optimisticStatuses,
 }: UseTaskStatusesOptions) {
   const [taskStatuses, setTaskStatuses] = useState<Record<string, TaskStatus>>({})
+  const isInitializedRef = useRef(false)
 
   // Initialize task statuses from API data
   useEffect(() => {
     if (!selectedTaskListId && !tasks.length) return
+
     const statuses: Record<string, TaskStatus> = {}
 
     tasks.forEach((task: any) => {
       const key = getTaskKey(task)
-      
+
       // Use status from the task object if available - this preserves manually set statuses
       if (task.status && STATUS_OPTIONS.includes(task.status as TaskStatus)) {
         statuses[key] = task.status as TaskStatus
@@ -34,7 +36,23 @@ export function useTaskStatuses({
       }
     })
 
-    setTaskStatuses(statuses)
+    // On first load, just set the statuses
+    if (!isInitializedRef.current) {
+      setTaskStatuses(statuses)
+      isInitializedRef.current = true
+    } else {
+      // On subsequent updates, preserve optimistic updates
+      setTaskStatuses(prev => {
+        const merged = { ...statuses }
+        // Keep optimistic updates that differ from API data
+        Object.keys(prev).forEach(key => {
+          if (prev[key] !== statuses[key]) {
+            merged[key] = prev[key]
+          }
+        })
+        return merged
+      })
+    }
   }, [selectedTaskListId, date, tasks])
 
   // Get effective task status (considering optimistic updates)
