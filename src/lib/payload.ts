@@ -158,10 +158,11 @@ export async function fetchAllPages() {
 }
 
 // Fetch all articles with pagination handling (for sitemap)
-export async function fetchAllArticles() {
+export async function fetchAllArticles(locale?: string) {
   // Make initial request to get first page and totalPages
   const firstResponse = await sdk.find({
     collection: "posts",
+    locale,
     where: {
       _status: {
         equals: "published",
@@ -180,6 +181,7 @@ export async function fetchAllArticles() {
       remainingPages.map((page) =>
         sdk.find({
           collection: "posts",
+          locale,
           where: {
             _status: {
               equals: "published",
