@@ -84,6 +84,19 @@ export const AddTaskForm = ({
     if (!selectedTaskListId || !newTask.name.trim()) return
 
     const now = new Date()
+
+    // Map old status format to new enum if needed
+    const statusMap: Record<string, string> = {
+      'open': 'OPEN',
+      'in progress': 'IN_PROGRESS',
+      'steady': 'STEADY',
+      'ready': 'READY',
+      'done': 'DONE',
+      'ignored': 'IGNORED',
+    }
+    const oldStatus = isEditMode ? (editTask?.status || 'open') : 'open'
+    const newStatus = statusMap[oldStatus] || oldStatus.toUpperCase() || 'OPEN'
+
     const baseTask = {
       name: newTask.name.trim(),
       area: newTask.area,
@@ -91,13 +104,22 @@ export const AddTaskForm = ({
       recurrence: recurrence,
       nextOccurrence: recurrence ? calculateNextOccurrence({ recurrence }, now) : null,
       firstOccurrence: recurrence ? now : null,
-      status: isEditMode ? (editTask?.status || 'open') : 'open',
+      status: newStatus,
       times: Math.max(1, Number(newTask.times) || 1),
       count: isEditMode ? (editTask?.count || 0) : 0,
+      listId: selectedTaskListId,
     }
 
-    if (isEditMode && editTask?.isEphemeral) {
-      // Update ephemeral task
+    // Check if task has an ID (real Task model) or is legacy/ephemeral
+    if (isEditMode && editTask?.id && !editTask?.isEphemeral) {
+      // Update existing task via new API
+      await fetch(`/api/v1/tasks/${editTask.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(baseTask)
+      })
+    } else if (isEditMode && editTask?.isEphemeral) {
+      // Update ephemeral task (legacy path - for backward compatibility)
       await fetch('/api/v1/tasklists', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -112,17 +134,16 @@ export const AddTaskForm = ({
         })
       })
     } else if (isEditMode) {
-      // Update source task in list.tasks - need to find and replace it in the tasks array
+      // Update source task in list.tasks - legacy path for old embedded tasks
       if (selectedList) {
         const blueprint = (Array.isArray((selectedList as any).tasks) && (selectedList as any).tasks.length > 0)
           ? (selectedList as any).tasks
           : ((selectedList as any).templateTasks || [])
         const updatedTasks = blueprint.map((t: any) => {
-          // Match by id, localeKey, or name (same logic as in taskGrid)
           const isMatch = t.id === editTask.id ||
                           t.localeKey === editTask.localeKey ||
                           (t.name && editTask.name && t.name.toLowerCase() === editTask.name.toLowerCase())
-          return isMatch ? { ...t, ...baseTask, id: t.id } : t // Preserve original id
+          return isMatch ? { ...t, ...baseTask, id: t.id } : t
         })
         await fetch('/api/v1/tasklists', {
           method: 'POST',
@@ -136,7 +157,7 @@ export const AddTaskForm = ({
         })
       }
     } else if (newTask.saveToTemplate && selectedList) {
-      // Add new template task
+      // Add new template task - legacy path
       const blueprint = (Array.isArray((selectedList as any).tasks) && (selectedList as any).tasks.length > 0)
         ? (selectedList as any).tasks
         : ((selectedList as any).templateTasks || [])
@@ -152,12 +173,11 @@ export const AddTaskForm = ({
         })
       })
     } else {
-      // Add new ephemeral task
-      const ephemeralTask = { ...baseTask, isEphemeral: true, createdAt: new Date().toISOString() }
-      await fetch('/api/v1/tasklists', {
+      // Create new task via new API
+      await fetch('/api/v1/tasks', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ taskListId: selectedTaskListId, ephemeralTasks: { add: ephemeralTask } })
+        body: JSON.stringify(baseTask)
       })
     }
     await onCreated()

@@ -22,6 +22,8 @@ interface TaskItemProps {
   hasCollaborators?: boolean
   className?: string
   variant?: 'default' | 'outline'
+  latestJob?: any
+  hasPendingJobs?: boolean
 }
 
 export const TaskItem = ({
@@ -38,6 +40,8 @@ export const TaskItem = ({
   hasCollaborators = false,
   className = '',
   variant = 'outline',
+  latestJob,
+  hasPendingJobs = false,
 }: TaskItemProps) => {
   const key = task?.id || task?.localeKey || task?.name
   const isDone = taskStatus === 'done' || (task?.count || 0) >= (task?.times || 1)
@@ -73,6 +77,18 @@ export const TaskItem = ({
             </Badge>
           </div>
         )}
+      {hasPendingJobs && (
+        <div className="mt-1">
+          <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900 dark:text-yellow-200 dark:border-yellow-800">
+            Pending Review
+          </Badge>
+        </div>
+      )}
+      {latestJob && latestJob.status === 'VALIDATING' && (
+        <div className="mt-1 text-xs text-yellow-600 dark:text-yellow-400">
+          Awaiting validation
+        </div>
+      )}
     </div>
   )
 }

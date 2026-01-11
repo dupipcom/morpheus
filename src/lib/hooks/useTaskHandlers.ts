@@ -11,6 +11,8 @@ interface UseTaskHandlersOptions {
   taskListId: string
   tasks: any[]
   date: string
+  userId: string
+  selectedTaskList?: any
   onRefresh: () => Promise<void>
   onRefreshUser?: () => Promise<void>
   pendingCompletionsRef: React.MutableRefObject<Map<string, PendingCompletion>>
@@ -23,10 +25,19 @@ interface UseTaskHandlersOptions {
   findTaskList?: (taskListId: string) => any
 }
 
+// Helper function to determine user's role in a list
+function getUserRole(list: any, userId: string): string {
+  if (!list?.users) return 'COLLABORATOR'
+  const userRef = list.users.find((u: any) => u.userId === userId)
+  return userRef?.role || 'COLLABORATOR'
+}
+
 export function useTaskHandlers({
   taskListId,
   tasks,
   date,
+  userId,
+  selectedTaskList,
   onRefresh,
   onRefreshUser,
   pendingCompletionsRef,
@@ -38,35 +49,34 @@ export function useTaskHandlers({
   setOptimisticCounts,
   findTaskList,
 }: UseTaskHandlersOptions) {
-  
+
   const handleTaskClick = useCallback(async (task: any) => {
-    if (!taskListId) return
-    
+    if (!taskListId || !userId) return
+
     const key = getTaskKey(task)
-    // Use optimistic count if available, otherwise use task count, or check pending completions
     const optimisticCount = optimisticCounts?.[key]
     const pendingCompletion = pendingCompletionsRef.current.get(key)
     const currentCount = pendingCompletion?.count ?? optimisticCount ?? (task?.count || 0)
     const times = task?.times || 1
     const isCurrentlyCompleted = currentCount >= times
-    
+
     // Toggle completion: if completed, uncomplete; otherwise complete
-    const newCount = isCurrentlyCompleted 
+    const newCount = isCurrentlyCompleted
       ? Math.max(0, currentCount - 1)  // Uncomplete: decrement count
       : currentCount + 1                // Complete: increment count
     const isFullyCompleted = newCount >= times
-    
-    // Track pending completion/uncompletion
-    pendingCompletionsRef.current.set(key, {
-      count: newCount,
-      status: isFullyCompleted ? 'done' : (newCount > 0 ? 'in progress' : 'open'),
-      inClosed: isFullyCompleted
-    })
-    
+
     // Calculate new status
     const existingStatus = optimisticStatuses?.[key] || task?.status
     const { status: calculatedStatus } = calculateTaskStatus(newCount, times, existingStatus)
-    
+
+    // Track pending completion/uncompletion
+    pendingCompletionsRef.current.set(key, {
+      count: newCount,
+      status: calculatedStatus,
+      inClosed: isFullyCompleted
+    })
+
     // Optimistic UI update
     if (setTaskStatuses) {
       setTaskStatuses(prev => ({
@@ -78,67 +88,50 @@ export function useTaskHandlers({
       setOptimisticStatuses(prev => ({ ...prev, [key]: calculatedStatus }))
       setOptimisticCounts(prev => ({ ...prev, [key]: newCount }))
     }
-    
+
     try {
-      const newStatus = calculatedStatus
-      
-      // Persist to API - send task.id, status, count, and times
-      await fetch('/api/v1/tasklists', {
-        method: 'POST',
+      // Determine if list is collaborative and user role
+      const isCollaborative = selectedTaskList?.users && selectedTaskList.users.length > 1
+      const userRole = getUserRole(selectedTaskList, userId)
+
+      // Determine job status based on hybrid validation
+      const jobStatus = isCollaborative && userRole === 'COLLABORATOR'
+        ? 'VALIDATING'  // Requires review
+        : 'ACCEPTED'    // Auto-accept for solo or owner/manager
+
+      // If completing (not uncompleting), create a Job record
+      if (!isCurrentlyCompleted) {
+        await fetch('/api/v1/jobs', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            taskId: task.id,
+            listId: taskListId,
+            workerId: userId,
+            status: jobStatus
+          })
+        })
+      } else {
+        // If uncompleting, delete the most recent job for this task and worker
+        // This would require fetching and deleting the most recent job
+        // For now, we'll leave this as a TODO for the migration
+      }
+
+      // Update task count and status
+      const taskStatus = isFullyCompleted ? 'DONE' : (newCount > 0 ? 'IN_PROGRESS' : 'OPEN')
+      await fetch(`/api/v1/tasks/${task.id}`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          updateTaskCompletion: true,
-          taskListId,
-          taskId: task.id || task.localeKey || task.name,
-          status: newStatus,
           count: newCount,
-          times: times,
-          date,
-          isCompleted: !isCurrentlyCompleted,  // true if completing, false if uncompleting
-          isUncompleted: isCurrentlyCompleted  // true if uncompleting
+          status: taskStatus
         })
       })
-      
-      // Handle ephemeral tasks
-      if (task.isEphemeral) {
-        if (isFullyCompleted && !isCurrentlyCompleted) {
-          // Task just became fully completed - close it
-          await fetch('/api/v1/tasklists', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              taskListId,
-              ephemeralTasks: { close: { id: task.id, count: newCount } }
-            })
-          })
-        } else if (isCurrentlyCompleted && newCount < times) {
-          // Task was completed but is now being uncompleted - reopen it
-          await fetch('/api/v1/tasklists', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              taskListId,
-              ephemeralTasks: { reopen: { id: task.id, count: newCount } }
-            })
-          })
-        } else {
-          // Update count and status
-          await fetch('/api/v1/tasklists', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              taskListId,
-              ephemeralTasks: { update: { id: task.id, count: newCount, status: newStatus } }
-            })
-          })
-        }
-      }
-      
+
       if (onRefreshUser) await onRefreshUser()
-      
-      // Keep pending completion in ref until next tasklists refresh (happens every 30s)
-      // This ensures subsequent clicks use the updated count
-      // The pending completion will be cleared when tasklists are refreshed and mergedTasks are updated
+
+      // Keep pending completion in ref until next refresh
+      // Will be cleared on next refresh
     } catch (error) {
       console.error('Error completing task:', error)
       pendingCompletionsRef.current.delete(key)
@@ -155,11 +148,10 @@ export function useTaskHandlers({
         })
       }
     }
-  }, [taskListId, tasks, date, onRefresh, onRefreshUser, pendingCompletionsRef, setTaskStatuses, optimisticStatuses, setOptimisticStatuses, setOptimisticCounts])
+  }, [taskListId, userId, selectedTaskList, tasks, date, onRefresh, onRefreshUser, pendingCompletionsRef, setTaskStatuses, optimisticStatuses, setOptimisticStatuses, setOptimisticCounts, optimisticCounts])
 
   const handleStatusChange = useCallback(async (task: any, newStatus: TaskStatus) => {
     const key = getTaskKey(task)
-    const taskName = task?.name
     const effectiveStatus = newStatus
 
     // Track pending status update
@@ -174,43 +166,20 @@ export function useTaskHandlers({
     }
 
     // Persist to API
-    if (!taskListId) return
+    if (!taskListId || !task.id) return
 
     try {
-      const foundTask = tasks.find((t: any) => getTaskKey(t) === key)
-      if (!foundTask) {
-        pendingStatusUpdatesRef.current.delete(key)
-        return
-      }
-
-      // Determine if this is a completion or uncompletion
-      const isCompleting = effectiveStatus === 'done'
-      const isUncompleting = effectiveStatus !== 'done' && task.status === 'done'
-      
-      // Get current count and times from the task
-      const currentCount = foundTask?.count || 0
-      const times = foundTask?.times || 1
-      const newCount = isCompleting ? currentCount + 1 : (isUncompleting ? Math.max(0, currentCount - 1) : currentCount)
-      
-      // Persist task status to API - send task.id, status, count, and times
-      await fetch('/api/v1/tasklists', {
-        method: 'POST',
+      // Update task status via new endpoint
+      await fetch(`/api/v1/tasks/${task.id}`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          updateTaskStatus: true,
-          taskListId,
-          taskId: task.id || task.localeKey || task.name,
-          status: effectiveStatus,
-          count: newCount,
-          times: times,
-          date: date,
-          isCompleted: isCompleting,
-          isUncompleted: isUncompleting
+          status: effectiveStatus
         })
       })
 
       if (onRefreshUser) await onRefreshUser()
-      
+
       pendingCompletionsRef.current.delete(key)
       pendingStatusUpdatesRef.current.delete(key)
     } catch (error) {
@@ -225,17 +194,17 @@ export function useTaskHandlers({
         })
       }
     }
-  }, [taskListId, tasks, date, onRefresh, onRefreshUser, pendingCompletionsRef, pendingStatusUpdatesRef, setTaskStatuses, setOptimisticStatuses])
+  }, [taskListId, tasks, onRefreshUser, pendingCompletionsRef, pendingStatusUpdatesRef, setTaskStatuses, setOptimisticStatuses])
 
   const handleIncrementCount = useCallback(async (task: any) => {
     if (!taskListId && !task.taskListId) return
-    
-    const taskListIdToUse = taskListId || task.taskListId
+    if (!task.id) return
+
     const taskKey = getTaskKey(task)
     const currentCount = task.count || 0
     const times = task.times || 1
     const newCount = currentCount + 1
-    
+
     // Track pending completion
     const isFullyCompleted = newCount >= times
     const { status } = calculateTaskStatus(newCount, times, optimisticStatuses?.[taskKey] || task.taskStatus)
@@ -244,7 +213,7 @@ export function useTaskHandlers({
       status,
       inClosed: isFullyCompleted
     })
-    
+
     // Optimistic update
     if (setOptimisticCounts) {
       setOptimisticCounts(prev => ({ ...prev, [taskKey]: newCount }))
@@ -255,29 +224,40 @@ export function useTaskHandlers({
     if (setTaskStatuses) {
       setTaskStatuses(prev => ({ ...prev, [taskKey]: status }))
     }
-    
+
     try {
-      // Get today's date
-      const dateToUse = date || formatDateLocal(new Date())
-      
-      // Persist to backend - send task.id, status, count, and times
-      await fetch('/api/v1/tasklists', {
-        method: 'POST',
+      // Create a Job record for this completion
+      if (userId) {
+        const isCollaborative = selectedTaskList?.users && selectedTaskList.users.length > 1
+        const userRole = getUserRole(selectedTaskList, userId)
+        const jobStatus = isCollaborative && userRole === 'COLLABORATOR'
+          ? 'VALIDATING'
+          : 'ACCEPTED'
+
+        await fetch('/api/v1/jobs', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            taskId: task.id,
+            listId: taskListId || task.taskListId,
+            workerId: userId,
+            status: jobStatus
+          })
+        })
+      }
+
+      // Update task count and status
+      await fetch(`/api/v1/tasks/${task.id}`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          updateTaskCompletion: true,
-          taskListId: taskListIdToUse,
-          taskId: task.id || task.localeKey || task.name,
-          status: status,
           count: newCount,
-          times: times,
-          date: dateToUse,
-          isCompleted: true
+          status: status
         })
       })
-      
+
       if (onRefreshUser) await onRefreshUser()
-      
+
       // Clear optimistic updates and pending completion
       pendingCompletionsRef.current.delete(taskKey)
       if (setOptimisticStatuses) {
@@ -313,22 +293,22 @@ export function useTaskHandlers({
         })
       }
     }
-  }, [taskListId, tasks, date, onRefresh, onRefreshUser, pendingCompletionsRef, optimisticStatuses, setTaskStatuses, setOptimisticStatuses, setOptimisticCounts, findTaskList])
+  }, [taskListId, userId, selectedTaskList, tasks, date, onRefreshUser, pendingCompletionsRef, optimisticStatuses, setTaskStatuses, setOptimisticStatuses, setOptimisticCounts])
 
   const handleDecrementCount = useCallback(async (task: any) => {
     if (!taskListId && !task.taskListId) return
-    
-    const taskListIdToUse = taskListId || task.taskListId
+    if (!task.id) return
+
     const taskKey = getTaskKey(task)
     const currentCount = task.count || 0
     const times = task.times || 1
-    
+
     // Can't decrement below 0
     if (currentCount <= 0) return
-    
+
     const newCount = currentCount - 1
     const { status } = calculateTaskStatus(newCount, times, optimisticStatuses?.[taskKey] || task.taskStatus)
-    
+
     // Optimistic update
     if (setOptimisticCounts) {
       setOptimisticCounts(prev => ({ ...prev, [taskKey]: newCount }))
@@ -354,29 +334,23 @@ export function useTaskHandlers({
         return updated
       })
     }
-    
+
     try {
-      // Get today's date
-      const dateToUse = date || formatDateLocal(new Date())
-      
-      // Persist to backend - send task.id, status, count, and times
-      await fetch('/api/v1/tasklists', {
-        method: 'POST',
+      // TODO: Delete the most recent Job for this task and worker
+      // For now, we'll just update the task count and status
+
+      // Update task count and status
+      await fetch(`/api/v1/tasks/${task.id}`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          updateTaskCompletion: true,
-          taskListId: taskListIdToUse,
-          taskId: task.id || task.localeKey || task.name,
-          status: status,
           count: newCount,
-          times: times,
-          date: dateToUse,
-          isCompleted: false
+          status: status
         })
       })
-      
+
       if (onRefreshUser) await onRefreshUser()
-      
+
       // Clear optimistic updates and pending completion
       pendingCompletionsRef.current.delete(taskKey)
       if (setOptimisticStatuses) {
@@ -412,31 +386,90 @@ export function useTaskHandlers({
         })
       }
     }
-  }, [taskListId, tasks, date, onRefresh, onRefreshUser, pendingCompletionsRef, optimisticStatuses, setTaskStatuses, setOptimisticStatuses, setOptimisticCounts, findTaskList])
+  }, [taskListId, tasks, date, onRefreshUser, pendingCompletionsRef, optimisticStatuses, setTaskStatuses, setOptimisticStatuses, setOptimisticCounts])
 
   const handleToggleRedacted = useCallback(async (task: any) => {
-    const taskListIdToUse = taskListId || task.taskListId
-    if (!taskListIdToUse) return
-    
-    const key = getTaskKey(task)
+    if (!task.id) return
+
     const currentRedacted = task?.redacted || false
     const newRedacted = !currentRedacted
 
     try {
-      await fetch('/api/v1/tasklists', {
-        method: 'POST',
+      await fetch(`/api/v1/tasks/${task.id}`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          updateTaskRedacted: true,
-          taskListId: taskListIdToUse,
-          taskKey: key,
           redacted: newRedacted
         })
       })
+
+      // Refresh to get updated task
+      if (onRefresh) await onRefresh()
     } catch (error) {
       console.error('Error toggling task redacted status:', error)
     }
-  }, [taskListId, onRefresh])
+  }, [onRefresh])
+
+  // Handler for owners/managers to validate jobs
+  const handleValidateJob = useCallback(async (
+    jobId: string,
+    accept: boolean,
+    peerReview?: number,
+    managerReview?: number
+  ) => {
+    try {
+      await fetch(`/api/v1/jobs/${jobId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          status: accept ? 'ACCEPTED' : 'REJECTED',
+          peerReview,
+          managerReview
+        })
+      })
+
+      if (onRefresh) await onRefresh()
+    } catch (error) {
+      console.error('Error validating job:', error)
+      throw error
+    }
+  }, [onRefresh])
+
+  // Handler to add peer review score
+  const handleAddPeerReview = useCallback(async (jobId: string, score: number) => {
+    try {
+      await fetch(`/api/v1/jobs/${jobId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          peerReview: score
+        })
+      })
+
+      if (onRefresh) await onRefresh()
+    } catch (error) {
+      console.error('Error adding peer review:', error)
+      throw error
+    }
+  }, [onRefresh])
+
+  // Handler to add manager review score
+  const handleAddManagerReview = useCallback(async (jobId: string, score: number) => {
+    try {
+      await fetch(`/api/v1/jobs/${jobId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          managerReview: score
+        })
+      })
+
+      if (onRefresh) await onRefresh()
+    } catch (error) {
+      console.error('Error adding manager review:', error)
+      throw error
+    }
+  }, [onRefresh])
 
   return {
     handleTaskClick,
@@ -444,6 +477,10 @@ export function useTaskHandlers({
     handleIncrementCount,
     handleDecrementCount,
     handleToggleRedacted,
+    handleValidateJob,
+    handleAddPeerReview,
+    handleAddManagerReview,
   }
 }
+
 

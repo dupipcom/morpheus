@@ -23,14 +23,35 @@ export function useTaskStatuses({
 
     tasks.forEach((task: any) => {
       const key = getTaskKey(task)
-      
-      // Use status from the task object if available - this preserves manually set statuses
-      if (task.status && STATUS_OPTIONS.includes(task.status as TaskStatus)) {
-        statuses[key] = task.status as TaskStatus
-      } else if (task.status === 'done') {
-        statuses[key] = 'done'
-      } else if ((task.count || 0) > 0 && (task.count || 0) < (task.times || 1)) {
-        statuses[key] = 'in progress'
+
+      // Read status directly from Task model (new TaskStatus enum)
+      if (task.status) {
+        // Map new enum values to old format for backward compatibility
+        const statusMap: Record<string, TaskStatus> = {
+          'OPEN': 'open',
+          'IN_PROGRESS': 'in progress',
+          'STEADY': 'steady',
+          'READY': 'ready',
+          'DONE': 'done',
+          'IGNORED': 'ignored',
+          'SKIPPED': 'ignored', // Map SKIPPED to ignored for UI
+        }
+
+        // If status is already in old format, use it; otherwise map from enum
+        const normalizedStatus = statusMap[task.status] || task.status
+
+        if (STATUS_OPTIONS.includes(normalizedStatus as TaskStatus)) {
+          statuses[key] = normalizedStatus as TaskStatus
+        }
+      } else {
+        // Fallback for tasks without status - default to open
+        if ((task.count || 0) >= (task.times || 1)) {
+          statuses[key] = 'done'
+        } else if ((task.count || 0) > 0) {
+          statuses[key] = 'in progress'
+        } else {
+          statuses[key] = 'open'
+        }
       }
     })
 

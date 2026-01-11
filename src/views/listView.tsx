@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useMemo, useState, useEffect, useContext, useCallback, useRef } from 'react'
+import useSWR from 'swr'
 
 import { Skeleton } from '@/components/ui/skeleton'
 import { TaskGrid } from '@/components/taskGrid'
@@ -10,6 +11,8 @@ import { useI18n } from '@/lib/contexts/i18n'
 import { getWeekNumber } from '@/app/helpers'
 import { useUserData } from '@/lib/utils/userUtils'
 import { getProfitPerTask } from '@/lib/utils/earningsUtils'
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 type TaskStatus = 'in progress' | 'steady' | 'ready' | 'open' | 'done' | 'ignored'
 
@@ -144,6 +147,32 @@ const formatDateLocal = (date: Date): string => {
       const role = (selectedTaskList as any)?.role
       return role && typeof role === 'string' && role.startsWith('weekly.')
     }, [selectedTaskList])
+
+    // Get current user ID
+    const userId = (session?.user as any)?.id
+
+    // Fetch tasks from new API
+    const tasksUrl = selectedTaskListId ? `/api/v1/tasks?listId=${selectedTaskListId}` : null
+    const { data: tasksData } = useSWR(tasksUrl, fetcher, {
+      revalidateOnFocus: false,
+    })
+    const tasksFromApi = tasksData?.tasks || []
+
+    // Fetch jobs from new API (for the selected date or week)
+    const jobsUrl = useMemo(() => {
+      if (!selectedTaskListId) return null
+      if (isWeeklyList) {
+        // For weekly lists, we don't filter by date in the API call
+        // We'll filter on the client side
+        return `/api/v1/jobs?listId=${selectedTaskListId}`
+      }
+      return `/api/v1/jobs?listId=${selectedTaskListId}&date=${date}`
+    }, [selectedTaskListId, date, isWeeklyList])
+
+    const { data: jobsData } = useSWR(jobsUrl, fetcher, {
+      revalidateOnFocus: false,
+    })
+    const jobsFromApi = jobsData?.jobs || []
 
     // Profiles cache (userId -> userName) for owners, collaborators and completers
     const [collabProfiles, setCollabProfiles] = useState<Record<string, string>>({})
@@ -443,6 +472,24 @@ const formatDateLocal = (date: Date): string => {
       return [...overlayed, ...additionalClosedTasks, ...dedupEphemeral]
     }, [selectedTaskList, year, date, isWeeklyList, getWeekDates, selectedDate, datesToCheck])
 
+    // New simpler tasks display using API data (with fallback to old mergedTasks)
+    const tasksToDisplay = useMemo(() => {
+      // If we have tasks from the new API, use them
+      if (tasksFromApi.length > 0) {
+        // For now, just return all tasks from the API
+        // In the future, we can add filtering by date/recurrence here
+        return tasksFromApi.map((t: any) => ({
+          ...t,
+          displayName: t.name,
+          // Ensure count and times are set
+          count: t.count || 0,
+          times: t.times || 1,
+        }))
+      }
+
+      // Fallback to old mergedTasks logic during migration
+      return mergedTasks
+    }, [tasksFromApi, mergedTasks])
 
     const handleAddEphemeral = useCallback(async () => {
       if (propOnAddEphemeral) {
@@ -506,11 +553,13 @@ const formatDateLocal = (date: Date): string => {
     return (
       <div className="space-y-4">
         <TaskGrid
-          tasks={mergedTasks}
+          tasks={tasksToDisplay}
           selectedTaskList={selectedTaskList}
           collabProfiles={collabProfiles}
           revealRedacted={revealRedacted}
           date={date}
+          userId={userId}
+          jobs={jobsFromApi}
           onRefresh={refreshTaskLists}
           onRefreshUser={refreshUser}
         />
