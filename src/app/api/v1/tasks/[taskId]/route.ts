@@ -21,7 +21,7 @@ async function getUserListRole(userId: string, listId: string): Promise<string |
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { taskId: string } }
+  { params }: { params: Promise<{ taskId: string }> }
 ) {
   try {
     const { userId } = await auth()
@@ -39,7 +39,7 @@ export async function GET(
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    const { taskId } = params
+    const { taskId } = await params
 
     // Fetch task with relations
     const task = await prisma.task.findUnique({
@@ -146,7 +146,7 @@ export async function PUT(
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    const { taskId } = params
+    const { taskId } = await params
     const body = await request.json()
 
     // Fetch existing task
@@ -284,7 +284,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    const { taskId } = params
+    const { taskId } = await params
 
     // Fetch existing task
     const existingTask = await prisma.task.findUnique({

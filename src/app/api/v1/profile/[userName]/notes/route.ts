@@ -4,7 +4,7 @@ import { auth } from '@clerk/nextjs/server'
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ userName: string }> }) {
   try {
-    const { userName } = await params
+    const { userName } = params
     const { userId } = await auth()
 
     // Find the profile to get the user ID using root-level username field

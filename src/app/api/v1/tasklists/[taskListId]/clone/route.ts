@@ -32,7 +32,7 @@ export async function POST(
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    const { taskListId } = await params
+    const { taskListId } = params
 
     // Fetch the tasklist to clone
     const taskList = await prisma.list.findUnique({

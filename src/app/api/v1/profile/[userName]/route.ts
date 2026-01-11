@@ -5,7 +5,7 @@ import { generatePublicChartsData, sanitizeUserEntriesForPublic, isFieldVisible,
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ userName: string }> }) {
   try {
-    const { userName } = await params
+    const { userName } = params
 
     // Find profile by username at root level (optimized query)
     const profile = await prisma.profile.findUnique({

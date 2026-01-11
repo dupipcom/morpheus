@@ -17,7 +17,7 @@ export async function POST(
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    const { templateId } = await params
+    const { templateId } = params
 
     // Fetch the template to clone
     const template = await prisma.template.findUnique({

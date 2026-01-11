@@ -13,7 +13,7 @@ export async function GET(
 ) {
   try {
     const { userId } = await auth();
-    const { walletId } = await params;
+    const { walletId } = params;
     
     if (!userId) {
       return NextResponse.json(
@@ -82,7 +82,7 @@ export async function DELETE(
 ) {
   try {
     const { userId } = await auth();
-    const { walletId } = await params;
+    const { walletId } = params;
     
     if (!userId) {
       return NextResponse.json(
