@@ -1,22 +1,53 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
+import { getAuthenticatedUser, getUserListRole } from '@/lib/services/auth'
 
-// Helper function to get user's role in a list
-async function getUserListRole(userId: string, listId: string): Promise<string | null> {
-  const list = await prisma.list.findUnique({
-    where: { id: listId },
+/**
+ * Shared include configuration for job queries with full relations
+ */
+const jobFullInclude = {
+  task: {
     select: {
+      id: true,
+      name: true,
+      area: true,
+      categories: true,
+      status: true,
+      budget: true
+    }
+  },
+  list: {
+    select: {
+      id: true,
+      name: true,
       users: true
     }
-  })
-
-  if (!list) {
-    return null
-  }
-
-  const userRef = list.users.find((ref: any) => ref.userId === userId)
-  return userRef?.role || null
+  },
+  worker: {
+    select: {
+      id: true,
+      userId: true,
+      profiles: {
+        select: {
+          username: true,
+          data: true
+        }
+      }
+    }
+  },
+  reviewers: {
+    select: {
+      id: true,
+      userId: true,
+      profiles: {
+        select: {
+          username: true,
+          data: true
+        }
+      }
+    }
+  },
+  reviewersNotes: true
 }
 
 export async function GET(
@@ -24,84 +55,30 @@ export async function GET(
   { params }: { params: { jobId: string } }
 ) {
   try {
-    const { userId } = await auth()
-
-    if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const authResult = await getAuthenticatedUser()
+    if (authResult.error) {
+      return NextResponse.json({ error: authResult.error }, { status: authResult.status })
     }
-
-    // Find user by Clerk userId
-    const user = await prisma.user.findUnique({
-      where: { userId }
-    })
-
-    if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 })
-    }
+    const { user } = authResult
 
     const { jobId } = params
 
-    // Fetch job with relations
     const job = await prisma.job.findUnique({
       where: { id: jobId },
-      include: {
-        task: {
-          select: {
-            id: true,
-            name: true,
-            area: true,
-            categories: true,
-            status: true,
-            budget: true
-          }
-        },
-        list: {
-          select: {
-            id: true,
-            name: true,
-            users: true
-          }
-        },
-        worker: {
-          select: {
-            id: true,
-            userId: true,
-            profiles: {
-              select: {
-                username: true,
-                data: true
-              }
-            }
-          }
-        },
-        reviewers: {
-          select: {
-            id: true,
-            userId: true,
-            profiles: {
-              select: {
-                username: true,
-                data: true
-              }
-            }
-          }
-        },
-        reviewersNotes: true
-      }
+      include: jobFullInclude
     })
 
     if (!job) {
       return NextResponse.json({ error: 'Job not found' }, { status: 404 })
     }
 
-    // Check authorization - user must be a member of the list
     if (!job.list) {
       return NextResponse.json({ error: 'Job has no associated list' }, { status: 400 })
     }
 
     const isMember = job.list.users.some(
-      (userRef: any) =>
-        userRef.userId === user.id &&
+      (userRef: { userId: string; role: string }) =>
+        userRef.userId === user!.id &&
         ['OWNER', 'MANAGER', 'COLLABORATOR', 'FOLLOWER'].includes(userRef.role)
     )
 
@@ -124,20 +101,11 @@ export async function PUT(
   { params }: { params: { jobId: string } }
 ) {
   try {
-    const { userId } = await auth()
-
-    if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const authResult = await getAuthenticatedUser()
+    if (authResult.error) {
+      return NextResponse.json({ error: authResult.error }, { status: authResult.status })
     }
-
-    // Find user by Clerk userId
-    const user = await prisma.user.findUnique({
-      where: { userId }
-    })
-
-    if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 })
-    }
+    const { user } = authResult
 
     const { jobId } = params
     const body = await request.json()
@@ -168,8 +136,7 @@ export async function PUT(
       return NextResponse.json({ error: 'Job has no associated list' }, { status: 400 })
     }
 
-    // Check list membership
-    const role = await getUserListRole(user.id, existingJob.listId)
+    const role = await getUserListRole(user!.id, existingJob.listId)
 
     if (!role || !['OWNER', 'MANAGER', 'COLLABORATOR'].includes(role)) {
       return NextResponse.json(
@@ -179,7 +146,7 @@ export async function PUT(
     }
 
     const isOwnerOrManager = ['OWNER', 'MANAGER'].includes(role)
-    const isWorker = existingJob.workerId === user.id
+    const isWorker = existingJob.workerId === user!.id
 
     // Prepare update data
     const updateData: any = {}
@@ -261,54 +228,10 @@ export async function PUT(
       updateData.reviewersNoteIds = body.reviewersNoteIds
     }
 
-    // Update job
     const updatedJob = await prisma.job.update({
       where: { id: jobId },
       data: updateData,
-      include: {
-        task: {
-          select: {
-            id: true,
-            name: true,
-            area: true,
-            categories: true,
-            status: true,
-            budget: true
-          }
-        },
-        list: {
-          select: {
-            id: true,
-            name: true,
-            users: true
-          }
-        },
-        worker: {
-          select: {
-            id: true,
-            userId: true,
-            profiles: {
-              select: {
-                username: true,
-                data: true
-              }
-            }
-          }
-        },
-        reviewers: {
-          select: {
-            id: true,
-            userId: true,
-            profiles: {
-              select: {
-                username: true,
-                data: true
-              }
-            }
-          }
-        },
-        reviewersNotes: true
-      }
+      include: jobFullInclude
     })
 
     return NextResponse.json({ job: updatedJob })
@@ -323,20 +246,11 @@ export async function DELETE(
   { params }: { params: { jobId: string } }
 ) {
   try {
-    const { userId } = await auth()
-
-    if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const authResult = await getAuthenticatedUser()
+    if (authResult.error) {
+      return NextResponse.json({ error: authResult.error }, { status: authResult.status })
     }
-
-    // Find user by Clerk userId
-    const user = await prisma.user.findUnique({
-      where: { userId }
-    })
-
-    if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 })
-    }
+    const { user } = authResult
 
     const { jobId } = params
 
@@ -361,8 +275,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Job has no associated list' }, { status: 400 })
     }
 
-    // Check authorization - user must be OWNER or MANAGER of the list
-    const role = await getUserListRole(user.id, existingJob.listId)
+    const role = await getUserListRole(user!.id, existingJob.listId)
 
     if (!role || !['OWNER', 'MANAGER'].includes(role)) {
       return NextResponse.json(

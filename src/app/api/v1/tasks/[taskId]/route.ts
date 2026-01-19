@@ -1,22 +1,60 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
+import { getAuthenticatedUser, getUserListRole } from '@/lib/services/auth'
 
-// Helper function to get user's role in a list
-async function getUserListRole(userId: string, listId: string): Promise<string | null> {
-  const list = await prisma.list.findUnique({
-    where: { id: listId },
+/**
+ * Shared include configuration for task queries with full relations
+ */
+const taskFullInclude = {
+  list: {
     select: {
+      id: true,
+      name: true,
       users: true
     }
-  })
-
-  if (!list) {
-    return null
-  }
-
-  const userRef = list.users.find((ref: any) => ref.userId === userId)
-  return userRef?.role || null
+  },
+  jobs: {
+    include: {
+      worker: {
+        select: {
+          id: true,
+          userId: true,
+          profiles: {
+            select: {
+              username: true,
+              data: true
+            }
+          }
+        }
+      },
+      reviewers: {
+        select: {
+          id: true,
+          userId: true,
+          profiles: {
+            select: {
+              username: true,
+              data: true
+            }
+          }
+        }
+      },
+      reviewersNotes: true
+    }
+  },
+  candidates: {
+    select: {
+      id: true,
+      userId: true,
+      profiles: {
+        select: {
+          username: true,
+          data: true
+        }
+      }
+    }
+  },
+  raisedTransactions: true
 }
 
 export async function GET(
@@ -24,91 +62,30 @@ export async function GET(
   { params }: { params: Promise<{ taskId: string }> }
 ) {
   try {
-    const { userId } = await auth()
-
-    if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const authResult = await getAuthenticatedUser()
+    if (authResult.error) {
+      return NextResponse.json({ error: authResult.error }, { status: authResult.status })
     }
-
-    // Find user by Clerk userId
-    const user = await prisma.user.findUnique({
-      where: { userId }
-    })
-
-    if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 })
-    }
+    const { user } = authResult
 
     const { taskId } = await params
 
-    // Fetch task with relations
     const task = await prisma.task.findUnique({
       where: { id: taskId },
-      include: {
-        list: {
-          select: {
-            id: true,
-            name: true,
-            users: true
-          }
-        },
-        jobs: {
-          include: {
-            worker: {
-              select: {
-                id: true,
-                userId: true,
-                profiles: {
-                  select: {
-                    username: true,
-                    data: true
-                  }
-                }
-              }
-            },
-            reviewers: {
-              select: {
-                id: true,
-                userId: true,
-                profiles: {
-                  select: {
-                    username: true,
-                    data: true
-                  }
-                }
-              }
-            },
-            reviewersNotes: true
-          }
-        },
-        candidates: {
-          select: {
-            id: true,
-            userId: true,
-            profiles: {
-              select: {
-                username: true,
-                data: true
-              }
-            }
-          }
-        },
-        raisedTransactions: true
-      }
+      include: taskFullInclude
     })
 
     if (!task) {
       return NextResponse.json({ error: 'Task not found' }, { status: 404 })
     }
 
-    // Check authorization - user must be a member of the list
     if (!task.list) {
       return NextResponse.json({ error: 'Task has no associated list' }, { status: 400 })
     }
 
     const isMember = task.list.users.some(
-      (userRef: any) =>
-        userRef.userId === user.id &&
+      (userRef: { userId: string; role: string }) =>
+        userRef.userId === user!.id &&
         ['OWNER', 'MANAGER', 'COLLABORATOR', 'FOLLOWER'].includes(userRef.role)
     )
 
@@ -131,20 +108,11 @@ export async function PUT(
   { params }: { params: { taskId: string } }
 ) {
   try {
-    const { userId } = await auth()
-
-    if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const authResult = await getAuthenticatedUser()
+    if (authResult.error) {
+      return NextResponse.json({ error: authResult.error }, { status: authResult.status })
     }
-
-    // Find user by Clerk userId
-    const user = await prisma.user.findUnique({
-      where: { userId }
-    })
-
-    if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 })
-    }
+    const { user } = authResult
 
     const { taskId } = await params
     const body = await request.json()
@@ -170,8 +138,7 @@ export async function PUT(
       return NextResponse.json({ error: 'Task has no associated list' }, { status: 400 })
     }
 
-    // Check authorization - user must be OWNER or MANAGER of the list
-    const role = await getUserListRole(user.id, existingTask.listId)
+    const role = await getUserListRole(user!.id, existingTask.listId)
 
     if (!role || !['OWNER', 'MANAGER'].includes(role)) {
       return NextResponse.json(
@@ -180,8 +147,7 @@ export async function PUT(
       )
     }
 
-    // Prepare update data
-    const updateData: any = {}
+    const updateData: Record<string, unknown> = {}
 
     if (body.name !== undefined) updateData.name = body.name
     if (body.categories !== undefined) updateData.categories = body.categories
@@ -213,48 +179,10 @@ export async function PUT(
     if (body.raisedTransactionIds !== undefined)
       updateData.raisedTransactionIds = body.raisedTransactionIds
 
-    // Update task
     const updatedTask = await prisma.task.update({
       where: { id: taskId },
       data: updateData,
-      include: {
-        list: {
-          select: {
-            id: true,
-            name: true,
-            users: true
-          }
-        },
-        jobs: {
-          include: {
-            worker: {
-              select: {
-                id: true,
-                userId: true,
-                profiles: {
-                  select: {
-                    username: true,
-                    data: true
-                  }
-                }
-              }
-            }
-          }
-        },
-        candidates: {
-          select: {
-            id: true,
-            userId: true,
-            profiles: {
-              select: {
-                username: true,
-                data: true
-              }
-            }
-          }
-        },
-        raisedTransactions: true
-      }
+      include: taskFullInclude
     })
 
     return NextResponse.json({ task: updatedTask })
@@ -269,20 +197,11 @@ export async function DELETE(
   { params }: { params: { taskId: string } }
 ) {
   try {
-    const { userId } = await auth()
-
-    if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const authResult = await getAuthenticatedUser()
+    if (authResult.error) {
+      return NextResponse.json({ error: authResult.error }, { status: authResult.status })
     }
-
-    // Find user by Clerk userId
-    const user = await prisma.user.findUnique({
-      where: { userId }
-    })
-
-    if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 })
-    }
+    const { user } = authResult
 
     const { taskId } = await params
 
@@ -307,8 +226,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Task has no associated list' }, { status: 400 })
     }
 
-    // Check authorization - user must be OWNER or MANAGER of the list
-    const role = await getUserListRole(user.id, existingTask.listId)
+    const role = await getUserListRole(user!.id, existingTask.listId)
 
     if (!role || !['OWNER', 'MANAGER'].includes(role)) {
       return NextResponse.json(
@@ -316,8 +234,6 @@ export async function DELETE(
         { status: 403 }
       )
     }
-
-    // Delete task (jobs will cascade delete)
     await prisma.task.delete({
       where: { id: taskId }
     })
