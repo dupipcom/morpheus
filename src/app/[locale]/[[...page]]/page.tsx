@@ -86,11 +86,11 @@ export default async function Page({
 
   // Check if this is the homepage (when clearSlug is empty or just "/")
   const isHomepage = !clearSlug || clearSlug === '/' || clearSlug === '';
-  
-  // Fetch recent articles for homepage - use fetchAllArticles instead of fetchArticles(locale)
+
+  // Fetch recent articles for homepage with locale for localized titles
   let recentArticles: any[] = [];
   if (isHomepage) {
-    const episodesResult = await fetchAllArticles();
+    const episodesResult = await fetchAllArticles(locale);
     const episodes = episodesResult.docs || [];
     // Sort by publishedAt descending and take the 3 latest
     recentArticles = episodes

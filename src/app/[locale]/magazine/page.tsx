@@ -19,9 +19,9 @@ export default async function ArticlesPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  
-  // Fetch all articles once instead of per locale
-  const episodes = await fetchAllArticles();
+
+  // Fetch all articles with locale for localized titles
+  const episodes = await fetchAllArticles(locale);
   const articles = episodes.docs || [];
 
   if (articles.length === 0) {
