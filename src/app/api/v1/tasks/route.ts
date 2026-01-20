@@ -1,43 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
-
-// Helper function to check if user has membership in a list
-async function checkListMembership(userId: string, listId: string): Promise<boolean> {
-  const list = await prisma.list.findUnique({
-    where: { id: listId },
-    select: {
-      users: true
-    }
-  })
-
-  if (!list) {
-    return false
-  }
-
-  return list.users.some(
-    (userRef: any) =>
-      userRef.userId === userId &&
-      ['OWNER', 'MANAGER', 'COLLABORATOR'].includes(userRef.role)
-  )
-}
-
-// Helper function to get user's role in a list
-async function getUserListRole(userId: string, listId: string): Promise<string | null> {
-  const list = await prisma.list.findUnique({
-    where: { id: listId },
-    select: {
-      users: true
-    }
-  })
-
-  if (!list) {
-    return null
-  }
-
-  const userRef = list.users.find((ref: any) => ref.userId === userId)
-  return userRef?.role || null
-}
+import { getUserListRole } from '@/lib/services/auth'
 
 export async function GET(request: NextRequest) {
   try {
