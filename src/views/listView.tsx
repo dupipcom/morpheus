@@ -158,9 +158,9 @@ const formatDateLocal = (date: Date): string => {
     })
     const tasksFromApi = tasksData?.tasks || []
 
-    // Track migration state
+    // Track migration state - use Set to track multiple lists
     const migrationInProgressRef = useRef(false)
-    const lastMigratedListRef = useRef<string | null>(null)
+    const migratedListsRef = useRef(new Set<string>())
 
     // Fetch jobs from new API (for the selected date or week)
     const jobsUrl = useMemo(() => {
@@ -485,9 +485,12 @@ const formatDateLocal = (date: Date): string => {
         return tasksFromApi.map((t: any) => ({
           ...t,
           displayName: t.name,
-          // Ensure count and times are set
-          count: t.count || 0,
+          // Use date-specific count when available (from date-aware API), otherwise fall back to global count
+          count: t.dateCount !== undefined ? t.dateCount : (t.count || 0),
           times: t.times || 1,
+          // Preserve dateStatus and dateCount for status determination
+          dateStatus: t.dateStatus,
+          dateCount: t.dateCount,
         }))
       }
 
@@ -497,9 +500,6 @@ const formatDateLocal = (date: Date): string => {
 
     // Detect tasks needing migration (old embedded tasks without Task collection records)
     const tasksNeedingMigration = useMemo(() => {
-      // Only check if we have templateTasks but no tasks from API
-      if (tasksFromApi.length > 0) return []
-
       const templateTasks = selectedTaskList?.templateTasks || []
       if (!templateTasks.length) return []
 
@@ -526,11 +526,11 @@ const formatDateLocal = (date: Date): string => {
       // Skip if no list selected
       if (!selectedTaskListId) return
 
-      // Skip if migration is already in progress
+      // Skip if migration is already in progress (global lock)
       if (migrationInProgressRef.current) return
 
       // Skip if we already migrated this list in this session
-      if (lastMigratedListRef.current === selectedTaskListId) return
+      if (migratedListsRef.current.has(selectedTaskListId)) return
 
       // Check if user has permission to migrate (must be owner or manager)
       const userRef = selectedTaskList?.users?.find((u: any) => u.userId === userId)
@@ -539,10 +539,12 @@ const formatDateLocal = (date: Date): string => {
 
       // Trigger migration
       migrationInProgressRef.current = true
-      lastMigratedListRef.current = selectedTaskListId
+      migratedListsRef.current.add(selectedTaskListId)
 
       const keyOf = (t: any) => t?.localeKey || t?.id || (typeof t?.name === 'string' ? t.name.toLowerCase() : '')
       const taskKeys = tasksNeedingMigration.map((t: any) => keyOf(t)).filter(Boolean)
+
+      console.log(`[Migration] Starting migration for list ${selectedTaskListId} with ${taskKeys.length} tasks`)
 
       fetch('/api/v1/tasks/migrate', {
         method: 'POST',
@@ -554,13 +556,21 @@ const formatDateLocal = (date: Date): string => {
       })
         .then(async (res) => {
           if (res.ok) {
+            const result = await res.json()
+            console.log(`[Migration] Success for list ${selectedTaskListId}:`, result)
             // Refresh tasks after successful migration
             await mutateTasks()
             await refreshTaskLists()
+          } else {
+            // Remove from migrated set on failure so it can be retried
+            console.error(`[Migration] Request failed for list ${selectedTaskListId}:`, await res.text())
+            migratedListsRef.current.delete(selectedTaskListId)
           }
         })
         .catch((err) => {
-          console.error('Migration failed:', err)
+          console.error(`[Migration] Error for list ${selectedTaskListId}:`, err)
+          // Remove from migrated set on error so it can be retried
+          migratedListsRef.current.delete(selectedTaskListId)
         })
         .finally(() => {
           migrationInProgressRef.current = false
@@ -661,6 +671,7 @@ const formatDateLocal = (date: Date): string => {
           jobs={jobsFromApi}
           onRefresh={refreshTaskLists}
           onRefreshUser={refreshUser}
+          onRefreshTasks={mutateTasks}
         />
       </div>
     )

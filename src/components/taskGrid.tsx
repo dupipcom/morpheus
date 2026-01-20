@@ -22,6 +22,7 @@ interface TaskGridProps {
   jobs?: any[]
   onRefresh: () => Promise<void>
   onRefreshUser: () => Promise<void>
+  onRefreshTasks?: () => Promise<void>
 }
 
 export const TaskGrid = ({
@@ -34,6 +35,7 @@ export const TaskGrid = ({
   jobs = [],
   onRefresh,
   onRefreshUser,
+  onRefreshTasks,
 }: TaskGridProps) => {
   const { t } = useI18n()
   const [editingTask, setEditingTask] = useState<any>(null)
@@ -64,6 +66,7 @@ export const TaskGrid = ({
     selectedTaskList,
     onRefresh,
     onRefreshUser,
+    onRefreshTasks,
     pendingCompletionsRef,
     pendingStatusUpdatesRef,
     setTaskStatuses,

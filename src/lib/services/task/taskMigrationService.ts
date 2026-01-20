@@ -303,13 +303,20 @@ export async function migrateListTasks({
     }
 
     // Check if task already exists in collection (by localeKey or name)
+    // Build OR conditions, only including localeKey if it exists
+    const orConditions: any[] = []
+
+    if (embeddedTask.localeKey) {
+      orConditions.push({ localeKey: embeddedTask.localeKey })
+    }
+
+    // Always check by name as fallback
+    orConditions.push({ name: embeddedTask.name })
+
     const existingTask = await prisma.task.findFirst({
       where: {
         listId,
-        OR: [
-          { localeKey: embeddedTask.localeKey || undefined },
-          { name: embeddedTask.name }
-        ]
+        OR: orConditions
       }
     })
 

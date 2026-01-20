@@ -52,9 +52,7 @@ export async function POST(
         users: [{ userId: user.id, role: 'OWNER' }],
         templateId: template.id,
         templateTasks: template.tasks as any,
-        tasks: template.tasks as any,
-        ephemeralTasks: { open: [], closed: [] },
-        completedTasks: {},
+        // Note: tasks relation is not set here - the migration system will create Task records from templateTasks
       },
     })
 

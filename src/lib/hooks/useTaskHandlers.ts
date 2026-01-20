@@ -81,6 +81,7 @@ interface UseTaskHandlersOptions {
   selectedTaskList?: any
   onRefresh: () => Promise<void>
   onRefreshUser?: () => Promise<void>
+  onRefreshTasks?: () => Promise<void>
   pendingCompletionsRef: React.MutableRefObject<Map<string, PendingCompletion>>
   pendingStatusUpdatesRef: React.MutableRefObject<Map<string, TaskStatus>>
   setTaskStatuses?: (updater: (prev: Record<string, TaskStatus>) => Record<string, TaskStatus>) => void
@@ -106,6 +107,7 @@ export function useTaskHandlers({
   selectedTaskList,
   onRefresh,
   onRefreshUser,
+  onRefreshTasks,
   pendingCompletionsRef,
   pendingStatusUpdatesRef,
   setTaskStatuses,
@@ -202,6 +204,11 @@ export function useTaskHandlers({
       // Count and status are now automatically calculated from Jobs
       // No need to update task directly - backend maintains occurrence dates and count
 
+      // Refresh tasks data to get updated dateStatus/dateCount
+      if (onRefreshTasks) {
+        await onRefreshTasks()
+      }
+
       if (onRefreshUser) await onRefreshUser()
 
       // If task was migrated, trigger a refresh to get updated task IDs
@@ -209,8 +216,20 @@ export function useTaskHandlers({
         await onRefresh()
       }
 
-      // Keep pending completion in ref until next refresh
-      // Will be cleared on next refresh
+      // Clear optimistic state after refresh completes
+      pendingCompletionsRef.current.delete(key)
+      if (setOptimisticStatuses && setOptimisticCounts) {
+        setOptimisticStatuses(prev => {
+          const updated = { ...prev }
+          delete updated[key]
+          return updated
+        })
+        setOptimisticCounts(prev => {
+          const updated = { ...prev }
+          delete updated[key]
+          return updated
+        })
+      }
     } catch (error) {
       console.error('Error completing task:', error)
       pendingCompletionsRef.current.delete(key)
@@ -227,7 +246,7 @@ export function useTaskHandlers({
         })
       }
     }
-  }, [taskListId, userId, selectedTaskList, tasks, date, onRefresh, onRefreshUser, pendingCompletionsRef, setTaskStatuses, optimisticStatuses, setOptimisticStatuses, setOptimisticCounts, optimisticCounts])
+  }, [taskListId, userId, selectedTaskList, tasks, date, onRefresh, onRefreshUser, onRefreshTasks, pendingCompletionsRef, setTaskStatuses, optimisticStatuses, setOptimisticStatuses, setOptimisticCounts, optimisticCounts])
 
   const handleStatusChange = useCallback(async (task: any, newStatus: TaskStatus) => {
     const key = getTaskKey(task)
@@ -252,7 +271,44 @@ export function useTaskHandlers({
       // Ensure task is migrated to Task collection before updating status
       const { id: taskId, migrated } = await ensureTaskMigrated(task, effectiveListId)
 
-      // Update task status via new endpoint
+      // IMPORTANT: When setting status to 'done', we need to create jobs to match
+      // This ensures the dateStatus is calculated from jobs, not from task.status
+      if (newStatus === 'done' && userId) {
+        const currentDateCount = task.dateCount !== undefined ? task.dateCount : (task.count || 0)
+        const times = task.times || 1
+        const jobsNeeded = times - currentDateCount
+
+        // Create jobs to fill the remaining count
+        if (jobsNeeded > 0) {
+          const isCollaborative = selectedTaskList?.users && selectedTaskList.users.length > 1
+          const userRole = getUserRole(selectedTaskList, userId)
+          const jobStatus = isCollaborative && userRole === 'COLLABORATOR'
+            ? 'VALIDATING'
+            : 'ACCEPTED'
+
+          // Create multiple jobs if times > 1
+          for (let i = 0; i < jobsNeeded; i++) {
+            await fetch('/api/v1/jobs', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                taskId,
+                listId: effectiveListId,
+                workerId: userId,
+                status: jobStatus,
+                occurrenceDate: date
+              })
+            })
+          }
+
+          // Refresh tasks to get updated dateStatus/dateCount from jobs
+          if (onRefreshTasks) {
+            await onRefreshTasks()
+          }
+        }
+      }
+
+      // Update task status via new endpoint (for manual status like 'steady', 'ready', etc.)
       await fetch(`/api/v1/tasks/${taskId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -282,7 +338,7 @@ export function useTaskHandlers({
         })
       }
     }
-  }, [taskListId, tasks, onRefresh, onRefreshUser, pendingCompletionsRef, pendingStatusUpdatesRef, setTaskStatuses, setOptimisticStatuses])
+  }, [taskListId, userId, selectedTaskList, date, tasks, onRefresh, onRefreshUser, onRefreshTasks, pendingCompletionsRef, pendingStatusUpdatesRef, setTaskStatuses, setOptimisticStatuses])
 
   const handleIncrementCount = useCallback(async (task: any) => {
     const effectiveListId = taskListId || task.taskListId
@@ -341,6 +397,11 @@ export function useTaskHandlers({
       // Count and status are now automatically calculated from Jobs
       // No need to update task directly - backend maintains occurrence dates and count
 
+      // Refresh tasks data to get updated dateStatus/dateCount
+      if (onRefreshTasks) {
+        await onRefreshTasks()
+      }
+
       if (onRefreshUser) await onRefreshUser()
 
       // If task was migrated, trigger a refresh to get updated task IDs
@@ -348,7 +409,7 @@ export function useTaskHandlers({
         await onRefresh()
       }
 
-      // Clear optimistic updates and pending completion
+      // Clear optimistic updates and pending completion after refresh completes
       pendingCompletionsRef.current.delete(taskKey)
       if (setOptimisticStatuses) {
         setOptimisticStatuses(prev => {
@@ -383,7 +444,7 @@ export function useTaskHandlers({
         })
       }
     }
-  }, [taskListId, userId, selectedTaskList, tasks, date, onRefresh, onRefreshUser, pendingCompletionsRef, optimisticStatuses, setTaskStatuses, setOptimisticStatuses, setOptimisticCounts])
+  }, [taskListId, userId, selectedTaskList, tasks, date, onRefresh, onRefreshUser, onRefreshTasks, pendingCompletionsRef, optimisticStatuses, setTaskStatuses, setOptimisticStatuses, setOptimisticCounts])
 
   const handleDecrementCount = useCallback(async (task: any) => {
     const effectiveListId = taskListId || task.taskListId
@@ -450,6 +511,11 @@ export function useTaskHandlers({
       // Count and status are now automatically calculated from Jobs
       // No need to update task directly - backend maintains occurrence dates and count
 
+      // Refresh tasks data to get updated dateStatus/dateCount
+      if (onRefreshTasks) {
+        await onRefreshTasks()
+      }
+
       if (onRefreshUser) await onRefreshUser()
 
       // If task was migrated, trigger a refresh to get updated task IDs
@@ -457,7 +523,7 @@ export function useTaskHandlers({
         await onRefresh()
       }
 
-      // Clear optimistic updates and pending completion
+      // Clear optimistic updates and pending completion after refresh completes
       pendingCompletionsRef.current.delete(taskKey)
       if (setOptimisticStatuses) {
         setOptimisticStatuses(prev => {
@@ -492,7 +558,7 @@ export function useTaskHandlers({
         })
       }
     }
-  }, [taskListId, tasks, date, onRefresh, onRefreshUser, pendingCompletionsRef, optimisticStatuses, setTaskStatuses, setOptimisticStatuses, setOptimisticCounts])
+  }, [taskListId, tasks, date, onRefresh, onRefreshUser, onRefreshTasks, pendingCompletionsRef, optimisticStatuses, setTaskStatuses, setOptimisticStatuses, setOptimisticCounts])
 
   const handleToggleRedacted = useCallback(async (task: any) => {
     const effectiveListId = taskListId || task.taskListId || task.listId

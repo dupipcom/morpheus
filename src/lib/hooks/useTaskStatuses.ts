@@ -24,8 +24,12 @@ export function useTaskStatuses({
     tasks.forEach((task: any) => {
       const key = getTaskKey(task)
 
-      // Read status directly from Task model (new TaskStatus enum)
-      if (task.status) {
+      // IMPORTANT: For date views, prefer dateStatus (job-based) over task.status (global)
+      // This ensures the UI reflects the actual job completion state for the specific date
+      const statusToUse = task.dateStatus !== undefined ? task.dateStatus : task.status
+
+      // Read status from dateStatus or Task model (new TaskStatus enum)
+      if (statusToUse) {
         // Map new enum values to old format for backward compatibility
         const statusMap: Record<string, TaskStatus> = {
           'OPEN': 'open',
@@ -38,16 +42,20 @@ export function useTaskStatuses({
         }
 
         // If status is already in old format, use it; otherwise map from enum
-        const normalizedStatus = statusMap[task.status] || task.status
+        const normalizedStatus = statusMap[statusToUse] || statusToUse
 
         if (STATUS_OPTIONS.includes(normalizedStatus as TaskStatus)) {
           statuses[key] = normalizedStatus as TaskStatus
         }
       } else {
-        // Fallback for tasks without status - default to open
-        if ((task.count || 0) >= (task.times || 1)) {
+        // Fallback for tasks without status - calculate from count
+        // Use dateCount for date views, fallback to global count
+        const count = task.dateCount !== undefined ? task.dateCount : (task.count || 0)
+        const times = task.times || 1
+
+        if (count >= times) {
           statuses[key] = 'done'
-        } else if ((task.count || 0) > 0) {
+        } else if (count > 0) {
           statuses[key] = 'in progress'
         } else {
           statuses[key] = 'open'

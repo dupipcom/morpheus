@@ -3,6 +3,35 @@ import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
 import { migrateListTasks, listNeedsMigration } from '@/lib/services/task'
 
+// In-memory mutex to prevent concurrent migrations for the same list
+const migrationLocks = new Map<string, Promise<any>>()
+
+/**
+ * Acquire a lock for a list migration
+ * Returns existing promise if migration is in progress, or creates a new one
+ */
+function acquireMigrationLock(listId: string, migrationFn: () => Promise<any>): Promise<any> {
+  const existingLock = migrationLocks.get(listId)
+
+  if (existingLock) {
+    // Migration already in progress, return existing promise
+    console.log(`[Migration Mutex] Concurrent request detected for list ${listId}, reusing existing migration promise`)
+    return existingLock
+  }
+
+  // Create new migration promise
+  console.log(`[Migration Mutex] Acquiring lock for list ${listId}`)
+  const migrationPromise = migrationFn()
+    .finally(() => {
+      // Release lock after migration completes (success or failure)
+      console.log(`[Migration Mutex] Releasing lock for list ${listId}`)
+      migrationLocks.delete(listId)
+    })
+
+  migrationLocks.set(listId, migrationPromise)
+  return migrationPromise
+}
+
 /**
  * POST /api/v1/tasks/migrate
  * Migrate old embedded tasks to the new Task collection
@@ -74,11 +103,13 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Perform migration
-    const result = await migrateListTasks({
-      listId,
-      userId: user.id,
-      taskKeys
+    // Perform migration with mutex lock to prevent concurrent migrations
+    const result = await acquireMigrationLock(listId, async () => {
+      return await migrateListTasks({
+        listId,
+        userId: user.id,
+        taskKeys
+      })
     })
 
     return NextResponse.json(result)

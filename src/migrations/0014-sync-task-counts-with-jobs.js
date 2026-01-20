@@ -128,6 +128,25 @@ async function main() {
     console.log(`  Updated: ${updated}`)
     console.log(`  Already synced: ${alreadySynced}`)
     console.log(`  Errors: ${errors}`)
+
+    // Verify job occurrence dates
+    console.log('\nVerifying job occurrence dates...')
+    const jobsWithoutDate = await prisma.job.count({
+      where: {
+        status: 'ACCEPTED',
+        occurrenceDate: null
+      }
+    })
+
+    console.log(`Jobs without occurrenceDate: ${jobsWithoutDate}`)
+
+    if (jobsWithoutDate > 0) {
+      console.log('\n⚠️  WARNING: Found jobs without occurrenceDate')
+      console.log('These jobs will not be counted in date-specific views')
+      console.log('Run migration 0015-fix-job-occurrence-dates.js to fix this')
+    } else {
+      console.log('✅ All jobs have valid occurrenceDate values')
+    }
   } catch (error) {
     console.error('Migration failed:', error)
     throw error

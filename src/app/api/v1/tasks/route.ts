@@ -72,7 +72,13 @@ export async function GET(request: NextRequest) {
       whereClause.listId = listId
     }
     if (status) {
-      whereClause.status = status
+      // Support multiple statuses separated by comma
+      const statuses = status.split(',').map(s => s.trim()).filter(Boolean)
+      if (statuses.length === 1) {
+        whereClause.status = statuses[0]
+      } else if (statuses.length > 1) {
+        whereClause.status = { in: statuses }
+      }
     }
     if (area) {
       whereClause.area = area
@@ -139,9 +145,23 @@ export async function GET(request: NextRequest) {
     // Calculate count from ACCEPTED jobs (global total across all dates)
     const enrichedTasks = authorizedTasks.map((task: any) => {
       const acceptedJobs = task.jobs?.filter((job: any) => job.status === 'ACCEPTED') || []
+      const count = acceptedJobs.length
+      const times = task.times || 1
+
+      // Calculate global status based on count
+      let status = task.status
+      if (count >= times) {
+        status = 'DONE'
+      } else if (count > 0) {
+        status = 'IN_PROGRESS'
+      } else {
+        status = 'OPEN'
+      }
+
       return {
         ...task,
-        count: acceptedJobs.length  // Calculated from accepted jobs
+        count,
+        status  // Override with calculated status
       }
     })
 

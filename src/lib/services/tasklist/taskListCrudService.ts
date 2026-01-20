@@ -173,9 +173,7 @@ export async function ensureDefaultTaskLists(params: {
           users: [{ userId: userInternalId, role: 'OWNER' }],
           templateId: tpl?.id || null,
           templateTasks: translatedTasks,
-          tasks: translatedTasks,
-          ephemeralTasks: { open: [], closed: [] },
-          completedTasks: {}
+          // Note: tasks relation is not set here - the migration system will create Task records from templateTasks
         } as Record<string, unknown>
       })
     }
@@ -251,7 +249,7 @@ export async function createTaskList(params: {
         ...(Array.isArray(collaborators) ? collaborators.map((id) => ({ userId: id, role: 'COLLABORATOR' as const })) : [])
       ],
       templateTasks: tasks,
-      tasks: tasks,
+      // Note: tasks relation is not set here - the migration system will create Task records from templateTasks
       templateId: templateId
     } as Record<string, unknown>,
     include: { template: true }
@@ -296,8 +294,8 @@ export async function updateTaskList(params: {
   const updated = await prisma.list.update({
     where: { id: existing.id },
     data: {
-      templateTasks: updatedTasks ?? existing.tasks,
-      tasks: updatedTasks ?? existing.tasks,
+      templateTasks: updatedTasks ?? existing.templateTasks,
+      // Note: We don't update the tasks relation here - use the Task API to manage Task records
       templateId: templateId !== undefined ? templateId : existing.templateId,
       role: typeof role === 'string' ? role : existing.role,
       name: name !== undefined ? name : existing.name,
