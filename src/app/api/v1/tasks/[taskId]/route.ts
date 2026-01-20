@@ -105,7 +105,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { taskId: string } }
+  { params }: { params: Promise<{ taskId: string }> }
 ) {
   try {
     const authResult = await getAuthenticatedUser()
@@ -194,7 +194,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { taskId: string } }
+  { params }: { params: Promise<{ taskId: string }> }
 ) {
   try {
     const authResult = await getAuthenticatedUser()
