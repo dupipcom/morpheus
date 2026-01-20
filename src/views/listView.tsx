@@ -151,9 +151,9 @@ const formatDateLocal = (date: Date): string => {
     // Get current user ID
     const userId = (session?.user as any)?.id
 
-    // Fetch tasks from new API
-    const tasksUrl = selectedTaskListId ? `/api/v1/tasks?listId=${selectedTaskListId}` : null
-    const { data: tasksData, mutate: mutateTasks } = useSWR(tasksUrl, fetcher, {
+    // Fetch tasks from new API with date parameter
+    const tasksUrl = selectedTaskListId ? `/api/v1/tasks?listId=${selectedTaskListId}&date=${date}` : null
+    const { data: tasksData, mutate: mutateTasks, isLoading: isLoadingTasks } = useSWR(tasksUrl, fetcher, {
       revalidateOnFocus: false,
     })
     const tasksFromApi = tasksData?.tasks || []
@@ -596,9 +596,32 @@ const formatDateLocal = (date: Date): string => {
       }
     }, [propOnDateChange])
 
+    // Check if tasks are loading for the selected date
+    const isLoadingTasksForDate = isLoadingTasks && tasksUrl !== null
+
     // Check if task lists are loading (only show skeleton on initial load, not on refreshes)
     const isTaskListsLoading = !initialLoadDone.current && (contextTaskLists === null || contextTaskLists === undefined || (Array.isArray(contextTaskLists) && contextTaskLists.length === 0))
     const isLoading = isTaskListsLoading || (!initialLoadDone.current && (!selectedTaskListId || !selectedTaskList))
+
+    // Show loading state when date changes and tasks are being fetched
+    if (isLoadingTasksForDate && initialLoadDone.current) {
+      return (
+        <div className="space-y-4">
+          {/* Toolbar skeleton */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-4">
+            <Skeleton className="h-9 w-full sm:w-[260px]" />
+            <Skeleton className="h-9 w-full sm:w-[240px]" />
+            <Skeleton className="h-9 w-20" />
+          </div>
+
+          {/* Loading message */}
+          <div className="flex items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mr-3"></div>
+            <span className="text-muted-foreground">{t('tasks.loadingForDate')}</span>
+          </div>
+        </div>
+      )
+    }
 
     if (isLoading) {
       return (
@@ -609,7 +632,7 @@ const formatDateLocal = (date: Date): string => {
             <Skeleton className="h-9 w-full sm:w-[240px]" />
             <Skeleton className="h-9 w-20" />
           </div>
-          
+
           {/* Tasks grid skeleton */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
             {Array.from({ length: 8 }).map((_, i) => (

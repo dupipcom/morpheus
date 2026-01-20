@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
+import { updateTaskOccurrenceDates } from '@/lib/services/task'
+import { formatDateLocal } from '@/lib/utils/taskUtils'
 
 // Helper function to get user's role in a list
 async function getUserListRole(userId: string, listId: string): Promise<string | null> {
@@ -41,6 +43,7 @@ export async function GET(request: NextRequest) {
     const taskId = searchParams.get('taskId')
     const workerId = searchParams.get('workerId')
     const status = searchParams.get('status')
+    const date = searchParams.get('date')
 
     // Build where clause
     const whereClause: any = {}
@@ -56,6 +59,9 @@ export async function GET(request: NextRequest) {
     }
     if (status) {
       whereClause.status = status
+    }
+    if (date) {
+      whereClause.occurrenceDate = date
     }
 
     // Fetch jobs
@@ -151,6 +157,7 @@ export async function POST(request: NextRequest) {
       listId,
       workerId,
       status,
+      occurrenceDate,
       selfReview,
       peerReview,
       managerReview,
@@ -162,6 +169,14 @@ export async function POST(request: NextRequest) {
     if (!taskId || !listId || !workerId) {
       return NextResponse.json(
         { error: 'Missing required fields: taskId, listId, and workerId are required' },
+        { status: 400 }
+      )
+    }
+
+    // Validate occurrenceDate format if provided
+    if (occurrenceDate && !/^\d{4}-\d{2}-\d{2}$/.test(occurrenceDate)) {
+      return NextResponse.json(
+        { error: 'Invalid occurrenceDate format. Use YYYY-MM-DD' },
         { status: 400 }
       )
     }
@@ -211,6 +226,7 @@ export async function POST(request: NextRequest) {
         listId,
         workerId,
         status: status || 'REQUESTED',
+        occurrenceDate: occurrenceDate || null,
         selfReview,
         peerReview,
         managerReview,
@@ -261,6 +277,12 @@ export async function POST(request: NextRequest) {
         reviewersNotes: true
       }
     })
+
+    // Update task occurrence dates if job is ACCEPTED
+    if (job.status === 'ACCEPTED') {
+      const dateToUse = job.occurrenceDate || formatDateLocal(new Date())
+      await updateTaskOccurrenceDates(taskId, 'complete', dateToUse)
+    }
 
     return NextResponse.json({ job })
   } catch (error) {

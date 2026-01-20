@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { getAuthenticatedUser, getUserListRole } from '@/lib/services/auth'
+import { updateTaskOccurrenceDates } from '@/lib/services/task'
 
 /**
  * Shared include configuration for job queries with full relations
@@ -234,6 +235,20 @@ export async function PUT(
       include: jobFullInclude
     })
 
+    // Update task occurrence dates if status changed to/from ACCEPTED
+    if (body.status !== undefined && existingJob.occurrenceDate) {
+      const wasAccepted = existingJob.status === 'ACCEPTED'
+      const isNowAccepted = updatedJob.status === 'ACCEPTED'
+
+      if (!wasAccepted && isNowAccepted) {
+        // Job was just accepted - count as completion
+        await updateTaskOccurrenceDates(existingJob.taskId, 'complete', existingJob.occurrenceDate)
+      } else if (wasAccepted && !isNowAccepted) {
+        // Job was unaccepted - remove from completion count
+        await updateTaskOccurrenceDates(existingJob.taskId, 'delete', existingJob.occurrenceDate)
+      }
+    }
+
     return NextResponse.json({ job: updatedJob })
   } catch (error) {
     console.error('Error updating job:', error)
@@ -284,10 +299,18 @@ export async function DELETE(
       )
     }
 
+    // Save job info for occurrence date update
+    const { taskId, occurrenceDate, status } = existingJob
+
     // Delete job
     await prisma.job.delete({
       where: { id: jobId }
     })
+
+    // Update task occurrence dates if job was ACCEPTED
+    if (status === 'ACCEPTED' && occurrenceDate) {
+      await updateTaskOccurrenceDates(taskId, 'delete', occurrenceDate)
+    }
 
     return NextResponse.json({ message: 'Job deleted successfully' })
   } catch (error) {

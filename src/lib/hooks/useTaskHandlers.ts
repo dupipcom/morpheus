@@ -177,25 +177,30 @@ export function useTaskHandlers({
             taskId,
             listId: taskListId,
             workerId: userId,
-            status: jobStatus
+            status: jobStatus,
+            occurrenceDate: date  // Date-specific completion tracking
           })
         })
       } else {
-        // If uncompleting, delete the most recent job for this task and worker
-        // This would require fetching and deleting the most recent job
-        // For now, we'll leave this as a TODO for the migration
+        // If uncompleting, find and delete the most recent job for this task/worker/date
+        const jobsResponse = await fetch(
+          `/api/v1/jobs?taskId=${taskId}&workerId=${userId}&date=${date}`
+        )
+
+        if (jobsResponse.ok) {
+          const jobsData = await jobsResponse.json()
+          const mostRecentJob = jobsData.jobs?.[0]
+
+          if (mostRecentJob) {
+            await fetch(`/api/v1/jobs/${mostRecentJob.id}`, {
+              method: 'DELETE'
+            })
+          }
+        }
       }
 
-      // Update task count and status
-      const taskStatus = isFullyCompleted ? 'DONE' : (newCount > 0 ? 'IN_PROGRESS' : 'OPEN')
-      await fetch(`/api/v1/tasks/${taskId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          count: newCount,
-          status: taskStatus
-        })
-      })
+      // Count and status are now automatically calculated from Jobs
+      // No need to update task directly - backend maintains occurrence dates and count
 
       if (onRefreshUser) await onRefreshUser()
 
@@ -327,20 +332,14 @@ export function useTaskHandlers({
             taskId,
             listId: effectiveListId,
             workerId: userId,
-            status: jobStatus
+            status: jobStatus,
+            occurrenceDate: date  // Date-specific completion tracking
           })
         })
       }
 
-      // Update task count and status
-      await fetch(`/api/v1/tasks/${taskId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          count: newCount,
-          status: status
-        })
-      })
+      // Count and status are now automatically calculated from Jobs
+      // No need to update task directly - backend maintains occurrence dates and count
 
       if (onRefreshUser) await onRefreshUser()
 
@@ -430,18 +429,26 @@ export function useTaskHandlers({
       // Ensure task is migrated to Task collection before decrementing
       const { id: taskId, migrated } = await ensureTaskMigrated(task, effectiveListId)
 
-      // TODO: Delete the most recent Job for this task and worker
-      // For now, we'll just update the task count and status
+      // Delete the most recent Job for this task and worker for the current date
+      if (userId) {
+        const jobsResponse = await fetch(
+          `/api/v1/jobs?taskId=${taskId}&workerId=${userId}&date=${date}`
+        )
 
-      // Update task count and status
-      await fetch(`/api/v1/tasks/${taskId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          count: newCount,
-          status: status
-        })
-      })
+        if (jobsResponse.ok) {
+          const jobsData = await jobsResponse.json()
+          const mostRecentJob = jobsData.jobs?.[0]
+
+          if (mostRecentJob) {
+            await fetch(`/api/v1/jobs/${mostRecentJob.id}`, {
+              method: 'DELETE'
+            })
+          }
+        }
+      }
+
+      // Count and status are now automatically calculated from Jobs
+      // No need to update task directly - backend maintains occurrence dates and count
 
       if (onRefreshUser) await onRefreshUser()
 

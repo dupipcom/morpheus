@@ -161,7 +161,7 @@ export async function PUT(
     if (body.firstOccurrence !== undefined)
       updateData.firstOccurrence = body.firstOccurrence ? new Date(body.firstOccurrence) : null
     if (body.times !== undefined) updateData.times = body.times
-    if (body.count !== undefined) updateData.count = body.count
+    // Count is now read-only, calculated from Jobs (removed: if (body.count !== undefined) updateData.count = body.count)
     if (body.localeKey !== undefined) updateData.localeKey = body.localeKey
     if (body.persons !== undefined) updateData.persons = body.persons
     if (body.things !== undefined) updateData.things = body.things

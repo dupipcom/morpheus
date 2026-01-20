@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
 import { getUserListRole } from '@/lib/services/auth'
+import { getTasksForDate } from '@/lib/services/task'
 
 export async function GET(request: NextRequest) {
   try {
@@ -22,9 +23,48 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url)
     const listId = searchParams.get('listId')
+    const date = searchParams.get('date')
     const status = searchParams.get('status')
     const area = searchParams.get('area')
 
+    // NEW: If date is provided with listId, use date-aware service
+    if (date && listId) {
+      // Verify user has access to this list
+      const list = await prisma.list.findUnique({
+        where: { id: listId },
+        select: { users: true }
+      })
+
+      if (!list) {
+        return NextResponse.json({ error: 'List not found' }, { status: 404 })
+      }
+
+      const hasAccess = list.users.some(
+        (userRef: any) =>
+          userRef.userId === user.id &&
+          ['OWNER', 'MANAGER', 'COLLABORATOR', 'FOLLOWER'].includes(userRef.role)
+      )
+
+      if (!hasAccess) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
+      }
+
+      // Get tasks for the specific date with recurrence filtering
+      const tasksForDate = await getTasksForDate(listId, date)
+
+      // Map to response format
+      const tasks = tasksForDate.map(({ task, dateStatus, dateCount, completers }) => ({
+        ...task,
+        dateStatus,      // Date-specific status
+        dateCount,       // Date-specific count
+        completers,      // Date-specific completers
+        taskStatus: task.status  // Keep original task status for reference
+      }))
+
+      return NextResponse.json({ tasks, date })
+    }
+
+    // EXISTING: Non-date-filtered query (for backwards compatibility)
     // Build where clause
     const whereClause: any = {}
 
@@ -96,7 +136,16 @@ export async function GET(request: NextRequest) {
       )
     })
 
-    return NextResponse.json({ tasks: authorizedTasks })
+    // Calculate count from ACCEPTED jobs (global total across all dates)
+    const enrichedTasks = authorizedTasks.map((task: any) => {
+      const acceptedJobs = task.jobs?.filter((job: any) => job.status === 'ACCEPTED') || []
+      return {
+        ...task,
+        count: acceptedJobs.length  // Calculated from accepted jobs
+      }
+    })
+
+    return NextResponse.json({ tasks: enrichedTasks })
   } catch (error) {
     console.error('Error fetching tasks:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

@@ -599,6 +599,9 @@ model Job {
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
   status           JobStatus @default(REQUESTED)
+  // The date this job applies to (YYYY-MM-DD format)
+  // Allows same task to have different completion states on different days
+  occurrenceDate   String?
   // Review fields
   selfReview       Float?
   peerReview       Float?
@@ -619,6 +622,9 @@ model Job {
   @@index([taskId])
   @@index([listId])
   @@index([status])
+  @@index([occurrenceDate])
+  @@index([taskId, occurrenceDate])
+  @@index([workerId, occurrenceDate])
 }
 
 model Person {
