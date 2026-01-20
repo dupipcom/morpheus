@@ -266,7 +266,7 @@ export function calculateStashAndProfitDeltas(
  * Returns { newStash, newProfit, newEquity, newAvailableBalance }
  * All values are guaranteed to be >= 0
  */
-export function calculateUpdatedUserValues(params: {
+export async function calculateUpdatedUserValues(params: {
   currentStash: number
   currentProfit: number
   currentAvailableBalance: number
@@ -284,7 +284,7 @@ export function calculateUpdatedUserValues(params: {
     currentAvailableBalance,
     stashDelta,
     profitDelta
-  } = params
+  } = await params
 
   // Ensure current values are never negative
   const safeStash = Math.max(0, currentStash)

@@ -71,7 +71,7 @@ export async function updateTaskStatus(params: {
   dateISO: string
   userBalanceValues: { userBalance: number; userStash: number; userEquity: number }
 }): Promise<TaskList> {
-  const { taskListId, userId, taskId, taskKey, newStatus, newCount, newTimes, dateISO, userBalanceValues } = params
+  const { taskListId, userId, taskId, taskKey, newStatus, newCount, newTimes, dateISO, userBalanceValues } = await params
 
   const taskListToUpdate = await prisma.list.findUnique({ where: { id: taskListId } })
   if (!taskListToUpdate) {
@@ -387,7 +387,7 @@ export async function updateTaskRedacted(params: {
   taskKey: string
   redacted: boolean
 }): Promise<TaskList> {
-  const { taskListId, taskKey, redacted } = params
+  const { taskListId, taskKey, redacted } = await params
 
   const taskListToUpdate = await prisma.list.findUnique({ where: { id: taskListId } })
   if (!taskListToUpdate) {

@@ -531,6 +531,8 @@ model List {
   progress             String?
   completion           Float?
   dueDate              String?
+  // Migration tracking
+  migrationMetadata    Json?
   // Relations
   templateId           String?            @db.ObjectId
   template             Template?          @relation(fields: [templateId], references: [id])

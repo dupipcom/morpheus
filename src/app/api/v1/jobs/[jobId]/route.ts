@@ -61,7 +61,7 @@ export async function GET(
     }
     const { user } = authResult
 
-    const { jobId } = params
+    const { jobId } = await params
 
     const job = await prisma.job.findUnique({
       where: { id: jobId },
@@ -107,7 +107,7 @@ export async function PUT(
     }
     const { user } = authResult
 
-    const { jobId } = params
+    const { jobId } = await params
     const body = await request.json()
 
     // Fetch existing job
@@ -252,7 +252,7 @@ export async function DELETE(
     }
     const { user } = authResult
 
-    const { jobId } = params
+    const { jobId } = await params
 
     // Fetch existing job
     const existingJob = await prisma.job.findUnique({

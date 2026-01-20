@@ -146,7 +146,7 @@ export async function recordCompletions(params: {
   justUncompletedNames: string[]
   dateISO: string
 }): Promise<{ taskList: TaskList; earnings: ReturnType<typeof calculateTaskEarnings> }> {
-  const { taskListId, user, incomingTasks, justCompletedNames, justUncompletedNames, dateISO } = params
+  const { taskListId, user, incomingTasks, justCompletedNames, justUncompletedNames, dateISO } = await params
 
   const taskList = await prisma.list.findUnique({ where: { id: taskListId } })
   if (!taskList) {

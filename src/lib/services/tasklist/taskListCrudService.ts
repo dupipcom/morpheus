@@ -21,7 +21,7 @@ export async function getTaskListsForUser(params: {
   userId: string
   role?: string | null
 }): Promise<TaskList[]> {
-  const { userId, role } = params
+  const { userId, role } = await params
 
   // Find user by userId
   const user = await prisma.user.findUnique({
@@ -147,7 +147,7 @@ export async function ensureDefaultTaskLists(params: {
   userInternalId: string
   translations: Record<string, unknown>
 }): Promise<void> {
-  const { userId, userInternalId, translations } = params
+  const { userId, userInternalId, translations } = await params
 
   const ensureDefault = async (role: string): Promise<void> => {
     const existing = await prisma.list.findFirst({
@@ -192,7 +192,7 @@ export async function deleteTaskList(params: {
   taskListId: string
   userId: string
 }): Promise<void> {
-  const { taskListId, userId } = params
+  const { taskListId, userId } = await params
 
   const existing = await prisma.list.findUnique({ where: { id: taskListId } })
   if (!existing) {
@@ -219,7 +219,7 @@ export async function createTaskList(params: {
   tasks?: Task[]
   collaborators?: string[]
 }): Promise<TaskList> {
-  const { userId, role, name, budget, budgetPercentage, dueDate, templateId, tasks, collaborators } = params
+  const { userId, role, name, budget, budgetPercentage, dueDate, templateId, tasks, collaborators } = await params
 
   // If creating a new default list, demote existing default to custom
   if (role && role.endsWith('.default')) {
@@ -280,7 +280,7 @@ export async function updateTaskList(params: {
   tasks?: Task[]
   collaborators?: string[]
 }): Promise<TaskList> {
-  const { taskListId, userId, role, name, budget, budgetPercentage, dueDate, templateId, tasks, collaborators } = params
+  const { taskListId, userId, role, name, budget, budgetPercentage, dueDate, templateId, tasks, collaborators } = await params
 
   const existing = await prisma.list.findUnique({ where: { id: taskListId } })
   if (!existing) {
@@ -330,7 +330,7 @@ export async function updateTemplateWithTasks(params: {
   templateId: string
   tasks: Task[]
 }): Promise<void> {
-  const { templateId, tasks } = params
+  const { templateId, tasks } = await params
 
   await prisma.template.update({
     where: { id: templateId },

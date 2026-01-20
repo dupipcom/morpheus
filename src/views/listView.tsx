@@ -153,10 +153,14 @@ const formatDateLocal = (date: Date): string => {
 
     // Fetch tasks from new API
     const tasksUrl = selectedTaskListId ? `/api/v1/tasks?listId=${selectedTaskListId}` : null
-    const { data: tasksData } = useSWR(tasksUrl, fetcher, {
+    const { data: tasksData, mutate: mutateTasks } = useSWR(tasksUrl, fetcher, {
       revalidateOnFocus: false,
     })
     const tasksFromApi = tasksData?.tasks || []
+
+    // Track migration state
+    const migrationInProgressRef = useRef(false)
+    const lastMigratedListRef = useRef<string | null>(null)
 
     // Fetch jobs from new API (for the selected date or week)
     const jobsUrl = useMemo(() => {
@@ -490,6 +494,78 @@ const formatDateLocal = (date: Date): string => {
       // Fallback to old mergedTasks logic during migration
       return mergedTasks
     }, [tasksFromApi, mergedTasks])
+
+    // Detect tasks needing migration (old embedded tasks without Task collection records)
+    const tasksNeedingMigration = useMemo(() => {
+      // Only check if we have templateTasks but no tasks from API
+      if (tasksFromApi.length > 0) return []
+
+      const templateTasks = selectedTaskList?.templateTasks || []
+      if (!templateTasks.length) return []
+
+      // Helper to get task key
+      const keyOf = (t: any) => t?.localeKey || t?.id || (typeof t?.name === 'string' ? t.name.toLowerCase() : '')
+
+      // Get keys of tasks already in the collection
+      const existingTaskKeys = new Set(
+        tasksFromApi.map((t: any) => keyOf(t)).filter(Boolean)
+      )
+
+      // Find templateTasks that aren't in the collection
+      return templateTasks.filter((t: any) => {
+        const key = keyOf(t)
+        return key && !existingTaskKeys.has(key)
+      })
+    }, [selectedTaskList?.templateTasks, tasksFromApi])
+
+    // Trigger migration when needed
+    useEffect(() => {
+      // Skip if no tasks need migration
+      if (tasksNeedingMigration.length === 0) return
+
+      // Skip if no list selected
+      if (!selectedTaskListId) return
+
+      // Skip if migration is already in progress
+      if (migrationInProgressRef.current) return
+
+      // Skip if we already migrated this list in this session
+      if (lastMigratedListRef.current === selectedTaskListId) return
+
+      // Check if user has permission to migrate (must be owner or manager)
+      const userRef = selectedTaskList?.users?.find((u: any) => u.userId === userId)
+      const userRole = userRef?.role
+      if (!userRole || !['OWNER', 'MANAGER'].includes(userRole)) return
+
+      // Trigger migration
+      migrationInProgressRef.current = true
+      lastMigratedListRef.current = selectedTaskListId
+
+      const keyOf = (t: any) => t?.localeKey || t?.id || (typeof t?.name === 'string' ? t.name.toLowerCase() : '')
+      const taskKeys = tasksNeedingMigration.map((t: any) => keyOf(t)).filter(Boolean)
+
+      fetch('/api/v1/tasks/migrate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          listId: selectedTaskListId,
+          taskKeys
+        })
+      })
+        .then(async (res) => {
+          if (res.ok) {
+            // Refresh tasks after successful migration
+            await mutateTasks()
+            await refreshTaskLists()
+          }
+        })
+        .catch((err) => {
+          console.error('Migration failed:', err)
+        })
+        .finally(() => {
+          migrationInProgressRef.current = false
+        })
+    }, [tasksNeedingMigration.length, selectedTaskListId, selectedTaskList?.users, userId, mutateTasks, refreshTaskLists])
 
     const handleAddEphemeral = useCallback(async () => {
       if (propOnAddEphemeral) {

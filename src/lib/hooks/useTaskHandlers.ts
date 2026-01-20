@@ -7,6 +7,72 @@ interface PendingCompletion {
   inClosed: boolean
 }
 
+/**
+ * Check if a task ID is a valid MongoDB ObjectId (24-char hex string)
+ */
+function isValidObjectId(id: string | null | undefined): boolean {
+  if (!id || typeof id !== 'string') return false
+  return id.length === 24 && /^[a-f0-9]+$/i.test(id)
+}
+
+/**
+ * Migrate a task on-the-fly if it doesn't have a valid Task collection ID
+ * Returns the migrated task's new ID, or the original ID if already valid
+ */
+async function ensureTaskMigrated(
+  task: any,
+  taskListId: string
+): Promise<{ id: string; migrated: boolean }> {
+  // If task already has a valid ObjectId, no migration needed
+  if (isValidObjectId(task.id)) {
+    return { id: task.id, migrated: false }
+  }
+
+  // Task needs migration - call the migrate endpoint
+  const taskKey = task.localeKey || task.id || (typeof task.name === 'string' ? task.name.toLowerCase() : '')
+
+  if (!taskKey) {
+    throw new Error('Task has no identifiable key for migration')
+  }
+
+  const response = await fetch('/api/v1/tasks/migrate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      listId: taskListId,
+      taskKeys: [taskKey]
+    })
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}))
+    throw new Error(errorData.error || 'Failed to migrate task')
+  }
+
+  const result = await response.json()
+
+  // Check if task was migrated
+  if (result.migratedTasks && result.migratedTasks.length > 0) {
+    return { id: result.migratedTasks[0].id, migrated: true }
+  }
+
+  // Task might already exist in collection - try to find it
+  // This can happen if the task was migrated but we didn't have the latest ID
+  const tasksResponse = await fetch(`/api/v1/tasks?listId=${taskListId}`)
+  if (tasksResponse.ok) {
+    const tasksData = await tasksResponse.json()
+    const existingTask = tasksData.tasks?.find((t: any) => {
+      const tKey = t.localeKey || t.id || (typeof t.name === 'string' ? t.name.toLowerCase() : '')
+      return tKey === taskKey
+    })
+    if (existingTask && isValidObjectId(existingTask.id)) {
+      return { id: existingTask.id, migrated: false }
+    }
+  }
+
+  throw new Error('Task migration completed but no task ID returned')
+}
+
 interface UseTaskHandlersOptions {
   taskListId: string
   tasks: any[]
@@ -90,6 +156,9 @@ export function useTaskHandlers({
     }
 
     try {
+      // Ensure task is migrated to Task collection before completing
+      const { id: taskId, migrated } = await ensureTaskMigrated(task, taskListId)
+
       // Determine if list is collaborative and user role
       const isCollaborative = selectedTaskList?.users && selectedTaskList.users.length > 1
       const userRole = getUserRole(selectedTaskList, userId)
@@ -105,7 +174,7 @@ export function useTaskHandlers({
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            taskId: task.id,
+            taskId,
             listId: taskListId,
             workerId: userId,
             status: jobStatus
@@ -119,7 +188,7 @@ export function useTaskHandlers({
 
       // Update task count and status
       const taskStatus = isFullyCompleted ? 'DONE' : (newCount > 0 ? 'IN_PROGRESS' : 'OPEN')
-      await fetch(`/api/v1/tasks/${task.id}`, {
+      await fetch(`/api/v1/tasks/${taskId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -129,6 +198,11 @@ export function useTaskHandlers({
       })
 
       if (onRefreshUser) await onRefreshUser()
+
+      // If task was migrated, trigger a refresh to get updated task IDs
+      if (migrated && onRefresh) {
+        await onRefresh()
+      }
 
       // Keep pending completion in ref until next refresh
       // Will be cleared on next refresh
@@ -153,6 +227,7 @@ export function useTaskHandlers({
   const handleStatusChange = useCallback(async (task: any, newStatus: TaskStatus) => {
     const key = getTaskKey(task)
     const effectiveStatus = newStatus
+    const effectiveListId = taskListId || task.taskListId
 
     // Track pending status update
     pendingStatusUpdatesRef.current.set(key, effectiveStatus)
@@ -166,11 +241,14 @@ export function useTaskHandlers({
     }
 
     // Persist to API
-    if (!taskListId || !task.id) return
+    if (!effectiveListId) return
 
     try {
+      // Ensure task is migrated to Task collection before updating status
+      const { id: taskId, migrated } = await ensureTaskMigrated(task, effectiveListId)
+
       // Update task status via new endpoint
-      await fetch(`/api/v1/tasks/${task.id}`, {
+      await fetch(`/api/v1/tasks/${taskId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -179,6 +257,11 @@ export function useTaskHandlers({
       })
 
       if (onRefreshUser) await onRefreshUser()
+
+      // If task was migrated, trigger a refresh to get updated task IDs
+      if (migrated && onRefresh) {
+        await onRefresh()
+      }
 
       pendingCompletionsRef.current.delete(key)
       pendingStatusUpdatesRef.current.delete(key)
@@ -194,11 +277,11 @@ export function useTaskHandlers({
         })
       }
     }
-  }, [taskListId, tasks, onRefreshUser, pendingCompletionsRef, pendingStatusUpdatesRef, setTaskStatuses, setOptimisticStatuses])
+  }, [taskListId, tasks, onRefresh, onRefreshUser, pendingCompletionsRef, pendingStatusUpdatesRef, setTaskStatuses, setOptimisticStatuses])
 
   const handleIncrementCount = useCallback(async (task: any) => {
-    if (!taskListId && !task.taskListId) return
-    if (!task.id) return
+    const effectiveListId = taskListId || task.taskListId
+    if (!effectiveListId) return
 
     const taskKey = getTaskKey(task)
     const currentCount = task.count || 0
@@ -226,6 +309,9 @@ export function useTaskHandlers({
     }
 
     try {
+      // Ensure task is migrated to Task collection before incrementing
+      const { id: taskId, migrated } = await ensureTaskMigrated(task, effectiveListId)
+
       // Create a Job record for this completion
       if (userId) {
         const isCollaborative = selectedTaskList?.users && selectedTaskList.users.length > 1
@@ -238,8 +324,8 @@ export function useTaskHandlers({
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            taskId: task.id,
-            listId: taskListId || task.taskListId,
+            taskId,
+            listId: effectiveListId,
             workerId: userId,
             status: jobStatus
           })
@@ -247,7 +333,7 @@ export function useTaskHandlers({
       }
 
       // Update task count and status
-      await fetch(`/api/v1/tasks/${task.id}`, {
+      await fetch(`/api/v1/tasks/${taskId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -257,6 +343,11 @@ export function useTaskHandlers({
       })
 
       if (onRefreshUser) await onRefreshUser()
+
+      // If task was migrated, trigger a refresh to get updated task IDs
+      if (migrated && onRefresh) {
+        await onRefresh()
+      }
 
       // Clear optimistic updates and pending completion
       pendingCompletionsRef.current.delete(taskKey)
@@ -293,11 +384,11 @@ export function useTaskHandlers({
         })
       }
     }
-  }, [taskListId, userId, selectedTaskList, tasks, date, onRefreshUser, pendingCompletionsRef, optimisticStatuses, setTaskStatuses, setOptimisticStatuses, setOptimisticCounts])
+  }, [taskListId, userId, selectedTaskList, tasks, date, onRefresh, onRefreshUser, pendingCompletionsRef, optimisticStatuses, setTaskStatuses, setOptimisticStatuses, setOptimisticCounts])
 
   const handleDecrementCount = useCallback(async (task: any) => {
-    if (!taskListId && !task.taskListId) return
-    if (!task.id) return
+    const effectiveListId = taskListId || task.taskListId
+    if (!effectiveListId) return
 
     const taskKey = getTaskKey(task)
     const currentCount = task.count || 0
@@ -336,11 +427,14 @@ export function useTaskHandlers({
     }
 
     try {
+      // Ensure task is migrated to Task collection before decrementing
+      const { id: taskId, migrated } = await ensureTaskMigrated(task, effectiveListId)
+
       // TODO: Delete the most recent Job for this task and worker
       // For now, we'll just update the task count and status
 
       // Update task count and status
-      await fetch(`/api/v1/tasks/${task.id}`, {
+      await fetch(`/api/v1/tasks/${taskId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -350,6 +444,11 @@ export function useTaskHandlers({
       })
 
       if (onRefreshUser) await onRefreshUser()
+
+      // If task was migrated, trigger a refresh to get updated task IDs
+      if (migrated && onRefresh) {
+        await onRefresh()
+      }
 
       // Clear optimistic updates and pending completion
       pendingCompletionsRef.current.delete(taskKey)
@@ -386,16 +485,20 @@ export function useTaskHandlers({
         })
       }
     }
-  }, [taskListId, tasks, date, onRefreshUser, pendingCompletionsRef, optimisticStatuses, setTaskStatuses, setOptimisticStatuses, setOptimisticCounts])
+  }, [taskListId, tasks, date, onRefresh, onRefreshUser, pendingCompletionsRef, optimisticStatuses, setTaskStatuses, setOptimisticStatuses, setOptimisticCounts])
 
   const handleToggleRedacted = useCallback(async (task: any) => {
-    if (!task.id) return
+    const effectiveListId = taskListId || task.taskListId || task.listId
+    if (!effectiveListId) return
 
     const currentRedacted = task?.redacted || false
     const newRedacted = !currentRedacted
 
     try {
-      await fetch(`/api/v1/tasks/${task.id}`, {
+      // Ensure task is migrated to Task collection before toggling redacted
+      const { id: taskId } = await ensureTaskMigrated(task, effectiveListId)
+
+      await fetch(`/api/v1/tasks/${taskId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -408,7 +511,7 @@ export function useTaskHandlers({
     } catch (error) {
       console.error('Error toggling task redacted status:', error)
     }
-  }, [onRefresh])
+  }, [taskListId, onRefresh])
 
   // Handler for owners/managers to validate jobs
   const handleValidateJob = useCallback(async (

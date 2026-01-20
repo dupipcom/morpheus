@@ -14,7 +14,7 @@ export async function PUT(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { noteId } = params
+    const { noteId } = await params
     const body = await request.json()
     const { content, visibility, date } = body
 
@@ -73,7 +73,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { noteId } = params
+    const { noteId } = await params
 
     // Get user from database
     const user = await prisma.user.findUnique({

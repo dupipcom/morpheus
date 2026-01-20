@@ -7,7 +7,7 @@ export async function GET(
   { params }: { params: Promise<{ noteId: string }> }
 ) {
   try {
-    const { noteId } = params
+    const { noteId } = await params
     
     // Fetch comments for the note, ordered by creation date (newest first)
     const comments = await prisma.comment.findMany({
@@ -67,7 +67,7 @@ export async function POST(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { noteId } = params
+    const { noteId } = await params
     const body = await request.json()
     const { content } = body
 

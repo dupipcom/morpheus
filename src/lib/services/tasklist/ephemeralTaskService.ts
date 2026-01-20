@@ -32,7 +32,7 @@ export async function processEphemeralTasks(params: {
   taskListId: string
   operations: EphemeralTasksOps
 }): Promise<TaskList> {
-  const { taskListId, operations } = params
+  const { taskListId, operations } = await params
 
   const taskList = await prisma.list.findUnique({ where: { id: taskListId } })
   if (!taskList) {
