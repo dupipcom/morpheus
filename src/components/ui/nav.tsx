@@ -3,6 +3,7 @@ import Image from "next/image"
 import Link from "next/link"
 import Hls from 'hls.js';
 import { logger } from '@/lib/logger';
+import { track } from '@vercel/analytics'
 
 import { useAuth, useClerk } from "@clerk/clerk-react";
 import { useI18n } from '@/lib/contexts/i18n'
@@ -355,10 +356,18 @@ export const Logo: TComponent = function ({
       auth: false,
       content: <SignUpButton>
       					<div>
-	                <Button variant="outline" className="hidden lg:flex cursor-pointer">
+	                <Button 
+                    variant="outline" 
+                    className="hidden lg:flex cursor-pointer"
+                    onClick={() => track('Sign Up', { location: 'nav' })}
+                  >
 	                  {t('common.signUp')}
 	                </Button>
-	                <Button variant="outline" className="flex lg:hidden">
+	                <Button 
+                    variant="outline" 
+                    className="flex lg:hidden"
+                    onClick={() => track('Sign Up', { location: 'nav' })}
+                  >
 	                	<DoorOpen />
 	                </Button>
                 </div>
@@ -370,10 +379,16 @@ export const Logo: TComponent = function ({
       auth: false,
       content: <SignInButton>
       					<div>
-	                <Button className="hidden lg:flex cursor-pointer">
+	                <Button 
+                    className="hidden lg:flex cursor-pointer"
+                    onClick={() => track('Login', { location: 'nav' })}
+                  >
 	                  {t('common.login')}
 	                </Button>
-	                <Button className="flex lg:hidden">
+	                <Button 
+                    className="flex lg:hidden"
+                    onClick={() => track('Login', { location: 'nav' })}
+                  >
 	                	<LogIn />
 	                </Button>
               	</div>

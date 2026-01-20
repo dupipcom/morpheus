@@ -105,7 +105,7 @@
         "AI_ENABLED": "AI Enabled"
       },
       "action": "Опубликовать заметку",
-      "publishing": "Publishing..."
+      "publishing": "Публикация..."
     }
   },
   "week": {
@@ -133,7 +133,8 @@
       "open": "Открыто",
       "done": "Выполнено",
       "ignored": "Игнорировано"
-    }
+    },
+    "edit": "Редактировать"
   },
   "actions": {
     "drankWater": "Пил воду",
@@ -232,15 +233,18 @@
     "progress": "Прогресс",
     "moodAverageScale": "Шкала среднего настроения",
     "balance": "Баланс",
-    "earningsScale": "Шкала заработка"
+    "earningsScale": "Шкала заработка",
+    "profit": "Прибыль",
+    "stash": "Резерв",
+    "withdrawn": "Выведено"
   },
   "errors": {
     "notFound": "Упс! Не удалось настроить эту частоту.",
     "genericError": "Что-то пошло не так. Пожалуйста, попробуйте еще раз.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "Не удалось загрузить заметки",
+    "failedToLoadNotes": "Не удалось загрузить заметки",
+    "failedToFetchTemplates": "Не удалось загрузить шаблоны",
+    "failedToLoadTemplates": "Не удалось загрузить шаблоны"
   },
   "social": {
     "title": "Социальные контакты",
@@ -326,9 +330,9 @@
     "cloning": "Клонирование...",
     "noPublicNotes": "Публичные заметки пока недоступны.",
     "noPublicTemplatesOrLists": "Публичные шаблоны или списки пока недоступны.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "Клонировать список",
+    "cloneListSuccess": "Список успешно клонирован!",
+    "cloneListFailed": "Не удалось клонировать список"
   },
   "publicCharts": {
     "noData": "Нет доступных публичных данных диаграмм.",
@@ -460,7 +464,9 @@
       "timesLabel": "# раз",
       "saveToTemplate": "Сохранить задачу в шаблоне",
       "addTask": "Добавить задачу",
-      "cancel": "Отмена"
+      "cancel": "Отмена",
+      "editTitle": "Редактировать задачу",
+      "saveTask": "Сохранить задачу"
     },
     "addListForm": {
       "titleCreate": "Создать новый список",
@@ -536,6 +542,39 @@
       },
       "create": "Создать",
       "cancel": "Отмена"
+    },
+    "recurrencePicker": {
+      "frequency": "Повтор",
+      "every": "Каждый",
+      "day": "день",
+      "days": "дни",
+      "week": "неделя",
+      "weeks": "недели",
+      "month": "месяц",
+      "months": "месяцы",
+      "year": "год",
+      "years": "годы",
+      "noRepeat": "Не повторяется",
+      "daily": "Ежедневно",
+      "weekly": "Еженедельно",
+      "monthly": "Ежемесячно",
+      "yearly": "Ежегодно",
+      "repeatOn": "Повторять в",
+      "monday": "Пн",
+      "tuesday": "Вт",
+      "wednesday": "Ср",
+      "thursday": "Чт",
+      "friday": "Пт",
+      "saturday": "Сб",
+      "sunday": "Вс",
+      "dayOfMonth": "День месяца",
+      "selectDay": "Выбрать день (1-31)",
+      "ends": "Заканчивается",
+      "never": "Никогда",
+      "onDate": "В дату",
+      "after": "После",
+      "pickDate": "Выбрать дату",
+      "occurrences": "повторений"
     }
   },
   "socialView": {

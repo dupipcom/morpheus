@@ -106,8 +106,7 @@ export async function GET(req: NextRequest) {
             restedness: mood.restedness || 0,
             tolerance: mood.tolerance || 0,
             selfEsteem: mood.selfEsteem || 0,
-            trust: mood.trust || 0,
-            text: mood.text || []
+            trust: mood.trust || 0
           },
           contacts: contactsWithQuality,
           things: thingsWithQuality,
@@ -146,6 +145,8 @@ export async function GET(req: NextRequest) {
         average: true,
         progress: true,
         balance: true,
+        stash: true,
+        withdrawn: true,
         createdAt: true,
         updatedAt: true
       },
@@ -172,8 +173,8 @@ export async function GET(req: NextRequest) {
         return moodValues.reduce((sum, val) => sum + val, 0) / moodKeys.length
       })()
       
-      // Calculate earnings from ticker array (sum of profit values)
-      const earnings = Array.isArray(ticker) 
+      // Calculate profit from ticker array (sum of profit values)
+      const profit = Array.isArray(ticker) 
         ? ticker.reduce((sum: number, t: any) => sum + (Number(t.profit) || 0), 0)
         : (typeof ticker === 'object' && ticker !== null ? (Number((ticker as any).profit) || 0) : 0)
       
@@ -182,6 +183,10 @@ export async function GET(req: NextRequest) {
       
       // Use day.balance for availableBalance (stored when day is created/updated)
       const availableBalance = typeof day.balance === 'number' ? day.balance : 0
+      
+      // Use day.stash and day.withdrawn (stored when day is created/updated)
+      const stash = typeof day.stash === 'number' ? day.stash : 0
+      const withdrawn = typeof day.withdrawn === 'number' ? day.withdrawn : 0
 
       return {
         id: day.id,
@@ -197,13 +202,14 @@ export async function GET(req: NextRequest) {
           restedness: mood.restedness || 0,
           tolerance: mood.tolerance || 0,
           selfEsteem: mood.selfEsteem || 0,
-          trust: mood.trust || 0,
-          text: mood.text || []
+          trust: mood.trust || 0
         },
         moodAverage: moodAverage,
-        earnings: Number(earnings) || 0,
+        profit: Number(profit) || 0,
         progress: Number(progress) || 0,
         availableBalance: Number(availableBalance) || 0,
+        stash: Number(stash) || 0,
+        withdrawn: Number(withdrawn) || 0,
         ticker: ticker,
         analysis: analysis
       }
@@ -241,11 +247,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Date is required' }, { status: 400 })
     }
 
+    // For contacts, things, and lifeEvents: if provided, they represent the full updated array
     // Extract IDs and quality values from contacts, things, and lifeEvents arrays
     // They might be objects with {id, quality} or just IDs
-    const personIds = contacts ? contacts.map((c: any) => typeof c === 'string' ? c : c.id).filter(Boolean) : []
-    const thingIds = things ? things.map((t: any) => typeof t === 'string' ? t : t.id).filter(Boolean) : []
-    const eventIds = lifeEvents ? lifeEvents.map((e: any) => typeof e === 'string' ? e : e.id).filter(Boolean) : []
+    const personIds = contacts !== undefined ? contacts.map((c: any) => typeof c === 'string' ? c : c.id).filter(Boolean) : undefined
+    const thingIds = things !== undefined ? things.map((t: any) => typeof t === 'string' ? t : t.id).filter(Boolean) : undefined
+    const eventIds = lifeEvents !== undefined ? lifeEvents.map((e: any) => typeof e === 'string' ? e : e.id).filter(Boolean) : undefined
     
     // Store quality values in analysis JSON field
     // Create mappings: personId -> quality, thingId -> quality, eventId -> quality
@@ -253,7 +260,7 @@ export async function POST(req: NextRequest) {
     const thingQualities: Record<string, number> = {}
     const eventQualities: Record<string, number> = {}
     
-    if (contacts) {
+    if (contacts !== undefined) {
       contacts.forEach((c: any) => {
         if (typeof c === 'object' && c.id && c.quality !== undefined) {
           personQualities[c.id] = Number(c.quality) || 0
@@ -261,7 +268,7 @@ export async function POST(req: NextRequest) {
       })
     }
     
-    if (things) {
+    if (things !== undefined) {
       things.forEach((t: any) => {
         if (typeof t === 'object' && t.id && t.quality !== undefined) {
           thingQualities[t.id] = Number(t.quality) || 0
@@ -269,7 +276,7 @@ export async function POST(req: NextRequest) {
       })
     }
     
-    if (lifeEvents) {
+    if (lifeEvents !== undefined) {
       lifeEvents.forEach((e: any) => {
         if (typeof e === 'object' && e.id && e.quality !== undefined) {
           eventQualities[e.id] = Number(e.quality) || 0
@@ -277,32 +284,33 @@ export async function POST(req: NextRequest) {
       })
     }
     
-    // Build analysis object with quality mappings
-    const analysisData: any = {
-      personQualities,
-      thingQualities,
-      eventQualities
+    // Build analysis object with quality mappings (only include if there are updates)
+    const analysisData: any = {}
+    if (Object.keys(personQualities).length > 0) {
+      analysisData.personQualities = personQualities
+    }
+    if (Object.keys(thingQualities).length > 0) {
+      analysisData.thingQualities = thingQualities
+    }
+    if (Object.keys(eventQualities).length > 0) {
+      analysisData.eventQualities = eventQualities
     }
 
-    // Construct mood object with all required fields
-    // Mood type requires: gratitude, optimism, restedness, tolerance, selfEsteem, trust (all Int)
-    let moodData: any = undefined
-    let moodAverage: number | undefined = undefined
+    // Construct mood object with only provided fields (partial updates)
+    // Only include fields that are explicitly provided (not undefined)
+    let moodUpdates: any = undefined
     if (mood !== undefined && mood !== null) {
-      moodData = {
-        gratitude: mood.gratitude !== undefined ? Number(mood.gratitude) || 0 : 0,
-        optimism: mood.optimism !== undefined ? Number(mood.optimism) || 0 : 0,
-        restedness: mood.restedness !== undefined ? Number(mood.restedness) || 0 : 0,
-        tolerance: mood.tolerance !== undefined ? Number(mood.tolerance) || 0 : 0,
-        selfEsteem: mood.selfEsteem !== undefined ? Number(mood.selfEsteem) || 0 : 0,
-        trust: mood.trust !== undefined ? Number(mood.trust) || 0 : 0
-      }
-      
-      // Calculate mood average from all mood dimensions
+      moodUpdates = {}
       const moodKeys = ['gratitude', 'optimism', 'restedness', 'tolerance', 'selfEsteem', 'trust'] as const
-      const moodValues = moodKeys.map((k) => Number(moodData[k]) || 0)
-      const sum = moodValues.reduce((acc, val) => acc + val, 0)
-      moodAverage = sum / moodKeys.length
+      moodKeys.forEach((key) => {
+        if (mood[key] !== undefined) {
+          moodUpdates[key] = Number(mood[key]) || 0
+        }
+      })
+      // Only set moodUpdates if at least one field was provided
+      if (Object.keys(moodUpdates).length === 0) {
+        moodUpdates = undefined
+      }
     }
 
     // Calculate week, month, quarter, semester from date
@@ -336,28 +344,27 @@ export async function POST(req: NextRequest) {
         semester: semester
       }
 
-      if (moodData !== undefined) {
-        // Merge with existing mood data if it exists
+      if (moodUpdates !== undefined) {
+        // Merge only provided mood fields with existing mood data
         const existingMood = existingDay.mood as any || {}
+        // Ensure all required Mood type fields are present
         const mergedMood = {
-          gratitude: moodData.gratitude !== undefined ? moodData.gratitude : (existingMood.gratitude || 0),
-          optimism: moodData.optimism !== undefined ? moodData.optimism : (existingMood.optimism || 0),
-          restedness: moodData.restedness !== undefined ? moodData.restedness : (existingMood.restedness || 0),
-          tolerance: moodData.tolerance !== undefined ? moodData.tolerance : (existingMood.tolerance || 0),
-          selfEsteem: moodData.selfEsteem !== undefined ? moodData.selfEsteem : (existingMood.selfEsteem || 0),
-          trust: moodData.trust !== undefined ? moodData.trust : (existingMood.trust || 0)
+          gratitude: moodUpdates.gratitude !== undefined ? Number(moodUpdates.gratitude) || 0 : (Number(existingMood.gratitude) || 0),
+          optimism: moodUpdates.optimism !== undefined ? Number(moodUpdates.optimism) || 0 : (Number(existingMood.optimism) || 0),
+          restedness: moodUpdates.restedness !== undefined ? Number(moodUpdates.restedness) || 0 : (Number(existingMood.restedness) || 0),
+          tolerance: moodUpdates.tolerance !== undefined ? Number(moodUpdates.tolerance) || 0 : (Number(existingMood.tolerance) || 0),
+          selfEsteem: moodUpdates.selfEsteem !== undefined ? Number(moodUpdates.selfEsteem) || 0 : (Number(existingMood.selfEsteem) || 0),
+          trust: moodUpdates.trust !== undefined ? Number(moodUpdates.trust) || 0 : (Number(existingMood.trust) || 0)
         }
         updateData.mood = mergedMood
         
-        // Calculate mood average from merged mood data
+        // Calculate mood average from all available mood dimensions (both existing and updated)
         const moodKeys = ['gratitude', 'optimism', 'restedness', 'tolerance', 'selfEsteem', 'trust'] as const
         const moodValues = moodKeys.map((k) => Number(mergedMood[k]) || 0)
         const sum = moodValues.reduce((acc, val) => acc + val, 0)
         updateData.average = sum / moodKeys.length
-      } else if (moodAverage !== undefined) {
-        // If moodAverage was calculated but moodData is undefined, still update average
-        updateData.average = moodAverage
       }
+      // Only update personIds, thingIds, eventIds if they were provided (partial update)
       if (personIds !== undefined) {
         updateData.personIds = personIds
       }
@@ -367,11 +374,13 @@ export async function POST(req: NextRequest) {
       if (eventIds !== undefined) {
         updateData.eventIds = eventIds
       }
-      // Merge analysis data with existing analysis
-      const existingAnalysis = existingDay.analysis as any || {}
-      updateData.analysis = {
-        ...existingAnalysis,
-        ...analysisData
+      // Merge analysis data with existing analysis (only if there are updates)
+      if (Object.keys(analysisData).length > 0) {
+        const existingAnalysis = existingDay.analysis as any || {}
+        updateData.analysis = {
+          ...existingAnalysis,
+          ...analysisData
+        }
       }
 
       day = await prisma.day.update({
@@ -390,16 +399,39 @@ export async function POST(req: NextRequest) {
         ? user.equity 
         : (typeof user.equity === 'string' ? parseFloat(user.equity || '0') : 0)
       
+      // For new days, ensure all mood fields are present (default to 0 if not provided)
+      const initialMood = moodUpdates ? {
+        gratitude: Number(moodUpdates.gratitude) || 0,
+        optimism: Number(moodUpdates.optimism) || 0,
+        restedness: Number(moodUpdates.restedness) || 0,
+        tolerance: Number(moodUpdates.tolerance) || 0,
+        selfEsteem: Number(moodUpdates.selfEsteem) || 0,
+        trust: Number(moodUpdates.trust) || 0
+      } : {
+        gratitude: 0,
+        optimism: 0,
+        restedness: 0,
+        tolerance: 0,
+        selfEsteem: 0,
+        trust: 0
+      }
+      
+      // Calculate average for new day
+      const moodKeys = ['gratitude', 'optimism', 'restedness', 'tolerance', 'selfEsteem', 'trust'] as const
+      const moodValues = moodKeys.map((k) => Number(initialMood[k]) || 0)
+      const sum = moodValues.reduce((acc, val) => acc + val, 0)
+      const initialAverage = sum / moodKeys.length
+      
       day = await prisma.day.create({
         data: {
           userId: user.id,
           date: date,
-          mood: moodData,
+          mood: initialMood,
           personIds: personIds,
           thingIds: thingIds,
           eventIds: eventIds,
           analysis: analysisData,
-          average: moodAverage,
+          average: initialAverage,
           balance: userBalance,
           stash: userStash,
           equity: userEquity,

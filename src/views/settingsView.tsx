@@ -58,7 +58,7 @@ import {
 import { WEEKLY_ACTIONS, DAILY_ACTIONS } from "@/app/constants"
 import { ArrowUpDown, ChevronDown, MoreHorizontal, Edit, X } from "lucide-react"
 import { GlobalContext } from "@/lib/contexts"
-import { updateUser, handleSettingsSubmit, isUserDataReady, useEnhancedLoadingState, useUserData } from "@/lib/userUtils"
+import { updateUser, handleSettingsSubmit, isUserDataReady, useEnhancedLoadingState, useUserData } from "@/lib/utils/userUtils"
 import { logger } from "@/lib/logger"
 import { SettingsSkeleton } from "@/components/ui/skeletonLoader"
 import { useI18n } from "@/lib/contexts/i18n"

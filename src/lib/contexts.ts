@@ -7,10 +7,14 @@ export const GlobalContext = createContext({
 	},
 	taskLists: [] as any[],
 	refreshTaskLists: async () => {},
+	templates: [] as any[],
+	refreshTemplates: async () => {},
 	setGlobalContext: (context: any) => {},
 	revealRedacted: false,
 	selectedDate: undefined as Date | undefined,
 	setSelectedDate: (date: Date | undefined) => {},
 	isNavigating: false,
-	setIsNavigating: (isNavigating: boolean) => {}
+	setIsNavigating: (isNavigating: boolean) => {},
+	dayData: {} as Record<string, any>,
+	setDayData: (date: string, data: any) => {}
 })

@@ -6,6 +6,7 @@ import { UserPlus, LogIn, Edit } from 'lucide-react'
 import { SignInButton } from '@clerk/nextjs'
 import { useI18n } from '@/lib/contexts/i18n'
 import Link from 'next/link'
+import { track } from '@vercel/analytics'
 
 interface AddFriendButtonOrSignInProps {
   targetUserName: string
@@ -35,7 +36,10 @@ export function AddFriendButtonOrSignIn({ targetUserName, isLoggedIn, currentUse
 
   return (
     <SignInButton>
-      <Button className={className}>
+      <Button 
+        className={className}
+        onClick={() => track('Login', { location: 'addFriend', targetUserName })}
+      >
         <LogIn className="w-4 h-4 mr-2" />
         {t('friends.signInToAdd')}
       </Button>

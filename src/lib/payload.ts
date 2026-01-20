@@ -72,8 +72,8 @@ export const fetchPageBlocks = React.cache((pageId: string, locale?: string) => 
 });
 
 
-// Dupip Episodes (Posts)
-export const fetchEpisodes = React.cache((locale?: string) => {
+// Dupip Articles (Posts)
+export const fetchArticles = React.cache((locale?: string) => {
   return sdk.find({
     collection: "posts",
     locale,
@@ -114,3 +114,89 @@ export const fetchEpisodeBlocks = React.cache((pageId: string, locale?: string) 
       return post?.content || post?.blocks || [];
     });
 });
+
+// Fetch all pages with pagination handling (for sitemap)
+export async function fetchAllPages() {
+  // Make initial request to get first page and totalPages
+  const firstResponse = await sdk.find({
+    collection: "pages",
+    where: {
+      _status: {
+        equals: "published",
+      },
+    },
+    page: 1,
+  });
+
+  const totalPages = (firstResponse as any).totalPages || 1;
+  const allDocs = [...(firstResponse.docs || [])];
+
+  // If there are more pages, fetch them all in parallel
+  if (totalPages > 1) {
+    const remainingPages = Array.from({ length: totalPages - 1 }, (_, i) => i + 2);
+    const remainingResponses = await Promise.all(
+      remainingPages.map((page) =>
+        sdk.find({
+          collection: "pages",
+          where: {
+            _status: {
+              equals: "published",
+            },
+          },
+          page,
+        })
+      )
+    );
+
+    // Combine all docs from remaining pages
+    remainingResponses.forEach((response) => {
+      allDocs.push(...(response.docs || []));
+    });
+  }
+
+  return { docs: allDocs };
+}
+
+// Fetch all articles with pagination handling (for sitemap)
+export async function fetchAllArticles(locale?: string) {
+  // Make initial request to get first page and totalPages
+  const firstResponse = await sdk.find({
+    collection: "posts",
+    locale,
+    where: {
+      _status: {
+        equals: "published",
+      },
+    },
+    page: 1,
+  });
+
+  const totalPages = (firstResponse as any).totalPages || 1;
+  const allDocs = [...(firstResponse.docs || [])];
+
+  // If there are more pages, fetch them all in parallel
+  if (totalPages > 1) {
+    const remainingPages = Array.from({ length: totalPages - 1 }, (_, i) => i + 2);
+    const remainingResponses = await Promise.all(
+      remainingPages.map((page) =>
+        sdk.find({
+          collection: "posts",
+          locale,
+          where: {
+            _status: {
+              equals: "published",
+            },
+          },
+          page,
+        })
+      )
+    );
+
+    // Combine all docs from remaining pages
+    remainingResponses.forEach((response) => {
+      allDocs.push(...(response.docs || []));
+    });
+  }
+
+  return { docs: allDocs };
+}

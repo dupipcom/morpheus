@@ -105,7 +105,7 @@
         "AI_ENABLED": "支持人工智能"
       },
       "action": "出版说明",
-      "publishing": "Publishing..."
+      "publishing": "发布中..."
     }
   },
   "week": {
@@ -133,7 +133,8 @@
       "open": "待办",
       "done": "完成",
       "ignored": "已忽略"
-    }
+    },
+    "edit": "编辑"
   },
   "settings": {
     "title": "设置",
@@ -289,7 +290,10 @@
     "progress": "进度",
     "moodAverageScale": "平均心情比例",
     "balance": "余额",
-    "earningsScale": "收入比例"
+    "earningsScale": "收入比例",
+    "profit": "利润",
+    "stash": "储备",
+    "withdrawn": "已提取"
   },
   "agentChat": {
     "thinking": "思考中...",
@@ -302,10 +306,10 @@
   "errors": {
     "notFound": "哎呀！无法调谐到此频率。",
     "genericError": "出现错误。请重试。",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "加载笔记失败",
+    "failedToLoadNotes": "加载笔记失败",
+    "failedToFetchTemplates": "加载模板失败",
+    "failedToLoadTemplates": "加载模板失败"
   },
   "publicProfile": {
     "ctaTitle": "开始您的 Dupip 之旅",
@@ -326,9 +330,9 @@
     "cloning": "克隆中...",
     "noPublicNotes": "尚无公开笔记可用。",
     "noPublicTemplatesOrLists": "尚无公开模板或列表可用。",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "克隆列表",
+    "cloneListSuccess": "列表克隆成功!",
+    "cloneListFailed": "克隆列表失败"
   },
   "publicCharts": {
     "noData": "没有可用的公共图表数据。",
@@ -460,7 +464,9 @@
       "timesLabel": "# 次数",
       "saveToTemplate": "将任务保存到模板",
       "addTask": "添加任务",
-      "cancel": "取消"
+      "cancel": "取消",
+      "editTitle": "编辑任务",
+      "saveTask": "保存任务"
     },
     "addListForm": {
       "titleCreate": "创建新列表",
@@ -536,6 +542,39 @@
       },
       "create": "创建",
       "cancel": "取消"
+    },
+    "recurrencePicker": {
+      "frequency": "重复",
+      "every": "每",
+      "day": "天",
+      "days": "天",
+      "week": "周",
+      "weeks": "周",
+      "month": "月",
+      "months": "个月",
+      "year": "年",
+      "years": "年",
+      "noRepeat": "不重复",
+      "daily": "每天",
+      "weekly": "每周",
+      "monthly": "每月",
+      "yearly": "每年",
+      "repeatOn": "重复于",
+      "monday": "周一",
+      "tuesday": "周二",
+      "wednesday": "周三",
+      "thursday": "周四",
+      "friday": "周五",
+      "saturday": "周六",
+      "sunday": "周日",
+      "dayOfMonth": "月的日期",
+      "selectDay": "选择日期 (1-31)",
+      "ends": "结束",
+      "never": "从不",
+      "onDate": "在日期",
+      "after": "之后",
+      "pickDate": "选择日期",
+      "occurrences": "次"
     }
   },
   "socialView": {

@@ -5,6 +5,7 @@ import { loadTranslations } from '@/lib/i18n'
 import { auth } from '@clerk/nextjs/server'
 import prisma from "@/lib/prisma"
 import { ProfileView } from '@/views/profileView'
+import { cache } from 'react'
 
 
 interface ProfileData {
@@ -17,24 +18,35 @@ interface ProfileData {
   publicCharts?: any
 }
 
-
-async function getProfile(userName: string): Promise<ProfileData | null> {
+// Cache the profile fetch to avoid duplicate requests between generateMetadata and page component
+const getProfile = cache(async (userName: string): Promise<ProfileData | null> => {
   try {
     const response = await fetch(`${process.env.VERCEL_URL ? "https://" + process.env.VERCEL_URL : 'http://localhost:3000'}/api/v1/profile/${userName}`, {
-      cache: 'no-store' // Ensure fresh data for SSR
+      headers: {
+        'Accept': 'application/json',
+      },
     })
     
     if (!response.ok) {
       return null
     }
     
+    // Check if response is actually JSON before parsing
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      return null
+    }
+    
     const data = await response.json()
     return data.profile
   } catch (error) {
-    console.error('Error fetching profile:', error)
+    // Silently fail during build - profile data is optional
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Error fetching profile:', error)
+    }
     return null
   }
-}
+})
 
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string; userName: string }> }): Promise<Metadata> {

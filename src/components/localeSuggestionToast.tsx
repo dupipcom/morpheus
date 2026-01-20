@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useI18n } from '@/lib/contexts/i18n'
 import { Button } from '@/components/ui/button'
 import { usePathname, useRouter } from 'next/navigation'
-import { getLocaleName, setLocaleCookie } from '@/lib/localeUtils'
+import { getLocaleName, setLocaleCookie } from '@/lib/utils/localeUtils'
 import { getBestLocale, loadTranslations, t as translate, type Locale } from '@/lib/i18n'
 import { getLocaleFromPath, stripLocaleFromPath } from '@/app/helpers'
 import { locales } from '@/app/constants'
@@ -133,7 +133,7 @@ export const LocaleSuggestionToast = () => {
     }
     
     return (
-      <div className="fixed bottom-4 right-4 z-50 bg-background border rounded-lg shadow-lg p-4 max-w-sm">
+      <div className="fixed bottom-4 right-4 z-[1004] bg-background border rounded-lg shadow-lg p-4 max-w-sm">
         <div className="flex flex-col gap-3">
           <p className="text-sm font-medium">
             {t('common.pageAvailableIn', { locale: humanReadableLocale }) || 

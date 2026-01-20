@@ -27,7 +27,6 @@ interface AgentChatProps {
 
 // Allow streaming responses up to 60 seconds
 export const maxDuration = 60;
-export const dynamic = "force-dynamic"
 
 export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], className = "" }: AgentChatProps) => {
   const { t, locale } = useI18n()

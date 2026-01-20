@@ -105,7 +105,7 @@
         "AI_ENABLED": "AI有効"
       },
       "action": "ノートを公開",
-      "publishing": "Publishing..."
+      "publishing": "公開中..."
     }
   },
   "week": {
@@ -133,7 +133,8 @@
       "open": "オープン",
       "done": "完了",
       "ignored": "無視"
-    }
+    },
+    "edit": "編集"
   },
   "settings": {
     "title": "設定",
@@ -289,7 +290,10 @@
     "progress": "進歩",
     "moodAverageScale": "平均気分スケール",
     "balance": "残高",
-    "earningsScale": "収益スケール"
+    "earningsScale": "収益スケール",
+    "profit": "利益",
+    "stash": "貯蓄",
+    "withdrawn": "引き出し済み"
   },
   "agentChat": {
     "thinking": "考え中...",
@@ -302,10 +306,10 @@
   "errors": {
     "notFound": "おっと！この周波数にチューニングできませんでした。",
     "genericError": "何か問題が発生しました。もう一度お試しください。",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "ノートの読み込みに失敗しました",
+    "failedToLoadNotes": "ノートの読み込みに失敗しました",
+    "failedToFetchTemplates": "テンプレートの読み込みに失敗しました",
+    "failedToLoadTemplates": "テンプレートの読み込みに失敗しました"
   },
   "publicProfile": {
     "ctaTitle": "あなた自身の Dupip の旅を始めましょう",
@@ -326,9 +330,9 @@
     "cloning": "複製中...",
     "noPublicNotes": "公開ノートはまだ利用できません。",
     "noPublicTemplatesOrLists": "公開テンプレートまたはリストはまだ利用できません。",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "リストをクローン",
+    "cloneListSuccess": "リストのクローンに成功しました!",
+    "cloneListFailed": "リストのクローンに失敗しました"
   },
   "publicCharts": {
     "noData": "公開チャートデータが利用できません。",
@@ -460,7 +464,9 @@
       "timesLabel": "# 回数",
       "saveToTemplate": "タスクをテンプレートに保存",
       "addTask": "タスクを追加",
-      "cancel": "キャンセル"
+      "cancel": "キャンセル",
+      "editTitle": "タスクを編集",
+      "saveTask": "タスクを保存"
     },
     "addListForm": {
       "titleCreate": "新しいリストを作成",
@@ -536,6 +542,39 @@
       },
       "create": "作成",
       "cancel": "キャンセル"
+    },
+    "recurrencePicker": {
+      "frequency": "繰り返し",
+      "every": "毎",
+      "day": "日",
+      "days": "日",
+      "week": "週",
+      "weeks": "週",
+      "month": "月",
+      "months": "ヶ月",
+      "year": "年",
+      "years": "年",
+      "noRepeat": "繰り返さない",
+      "daily": "毎日",
+      "weekly": "毎週",
+      "monthly": "毎月",
+      "yearly": "毎年",
+      "repeatOn": "繰り返す曜日",
+      "monday": "月",
+      "tuesday": "火",
+      "wednesday": "水",
+      "thursday": "木",
+      "friday": "金",
+      "saturday": "土",
+      "sunday": "日",
+      "dayOfMonth": "月の日",
+      "selectDay": "日を選択 (1-31)",
+      "ends": "終了",
+      "never": "なし",
+      "onDate": "日付",
+      "after": "後",
+      "pickDate": "日付を選択",
+      "occurrences": "回"
     }
   },
   "socialView": {

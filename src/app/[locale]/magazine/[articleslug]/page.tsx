@@ -1,13 +1,14 @@
 import { notFound } from "next/navigation";
-import { fetchEpisodeBySlug, fetchEpisodes } from "@/lib/notion";
+import { fetchEpisodeBySlug, fetchAllArticles } from "@/lib/payload";
 import type { Metadata } from 'next';
 import { buildMetadata } from '@/app/metadata';
 import Link from 'next/link';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import Image from 'next/image';
 import { ArticleShareButton } from '@/components/articleShareButton';
+import { locales } from '@/app/constants';
 
-export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic';
 
 // Helper function to fetch profile data
 async function getProfile(userName: string): Promise<any | null> {
@@ -19,39 +20,49 @@ async function getProfile(userName: string): Promise<any | null> {
       : process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
     
     const response = await fetch(`${baseUrl}/api/v1/profile/${userName}`, {
-      cache: 'no-store'
+      headers: {
+        'Accept': 'application/json',
+      },
     });
     
     if (!response.ok) {
       return null;
     }
     
+    // Check if response is actually JSON before parsing
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      // If we got HTML (error page), return null
+      return null;
+    }
+    
     const data = await response.json();
     return data.profile;
   } catch (error) {
-    console.error(`Error fetching profile for ${userName}:`, error);
+    // Silently fail during build - profile data is optional
+    if (process.env.NODE_ENV === 'development') {
+      console.error(`Error fetching profile for ${userName}:`, error);
+    }
     return null;
   }
 }
 
 export async function generateStaticParams() {
-  const locales = ['ar', 'bn', 'ca', 'cs', 'da', 'de', 'el', 'en', 'es', 'et', 'eu', 'fi', 'fr', 'gl', 'he', 'hi', 'hu', 'it', 'ja', 'ko', 'ms', 'nl', 'pa', 'pl', 'pt', 'ro', 'ru', 'sv', 'tr', 'zh'];
+  // Fetch all articles once instead of per locale
+  const articlesResult = await fetchAllArticles();
+  const articles = articlesResult.docs || [];
 
   const params = [];
+  // Generate params for all locales from the single fetch
   for (const locale of locales) {
-    try {
-      const episodes = await fetchEpisodes(locale);
-      for (const article of episodes.docs || []) {
-        const slug = (article as any).slug || (article as any).slug?.value;
-        if (slug) {
-          params.push({
-            locale,
-            articleslug: slug,
-          });
-        }
+    for (const article of articles) {
+      const slug = (article as any).slug || (article as any).slug?.value;
+      if (slug) {
+        params.push({
+          locale,
+          articleslug: slug,
+        });
       }
-    } catch (error) {
-      console.error(`Error generating static params for locale ${locale}:`, error);
     }
   }
   return params;
@@ -128,7 +139,7 @@ export default async function ArticlePage({
   
   // Construct article URL (without locale for sharing)
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
-  const articleUrl = `${baseUrl}/articles/${articleslug}`;
+  const articleUrl = `${baseUrl}/magazine/${articleslug}`;
 
   // Fetch profile data for all authors
   const authorProfiles = await Promise.all(

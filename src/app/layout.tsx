@@ -4,6 +4,7 @@ import type { Metadata } from "next"
 import { usePathname } from 'next/navigation'
 
 import { Comfortaa } from "next/font/google"
+import { Analytics } from '@vercel/analytics/react'
 
 import { Nav } from '@/components/ui/nav'
 import { Footer } from '@/components/footer'
@@ -18,7 +19,7 @@ import { Toaster } from '@/components/ui/sonner'
 import { AppContent } from '@/components/appContent'
 import { getLocaleFromPath } from './helpers'
 import { defaultLocale } from './constants'
-import { getLocaleCookie } from '@/lib/localeUtils'
+import { getLocaleCookie } from '@/lib/utils/localeUtils'
 import { GlobalContext } from '@/lib/contexts'
 import { Skeleton } from '@/components/ui/skeleton'
 
@@ -152,6 +153,7 @@ export default function RootLayout({
           <Toaster />
           </NavigationSkeletonWrapper>
         </Providers>
+        <Analytics />
       </body>
     </html>
   );

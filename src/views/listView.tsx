@@ -8,8 +8,8 @@ import { TaskGrid } from '@/components/taskGrid'
 import { GlobalContext } from '@/lib/contexts'
 import { useI18n } from '@/lib/contexts/i18n'
 import { getWeekNumber } from '@/app/helpers'
-import { useUserData } from '@/lib/userUtils'
-import { getProfitPerTask } from '@/lib/earningsUtils'
+import { useUserData } from '@/lib/utils/userUtils'
+import { getProfitPerTask } from '@/lib/utils/earningsUtils'
 
 type TaskStatus = 'in progress' | 'steady' | 'ready' | 'open' | 'done' | 'ignored'
 

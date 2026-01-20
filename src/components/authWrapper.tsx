@@ -2,7 +2,7 @@
 
 import { useAuth, useClerk } from '@clerk/clerk-react';
 import { useInactivityTimer } from '@/lib/hooks/useInactivityTimer';
-import { INACTIVITY_TIMEOUT, WARNING_TIME, handleSessionExpirationOnLoad, getSessionInfo, clearAllCookiesExceptDpip } from '@/lib/cookieManager';
+import { INACTIVITY_TIMEOUT, WARNING_TIME, handleSessionExpirationOnLoad, getSessionInfo, clearAllCookiesExceptDpip } from '@/lib/utils/cookieManager';
 import { logger } from '@/lib/logger';
 import { useEffect, useMemo, useCallback } from 'react';
 

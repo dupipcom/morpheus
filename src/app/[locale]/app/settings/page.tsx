@@ -10,7 +10,7 @@ import Link from 'next/link'
 import { GlobalContext } from "@/lib/contexts"
 import { SettingsView } from "@/views/settingsView"
 import { ViewMenu } from "@/components/viewMenu"
-import { setLoginTime, getLoginTime } from '@/lib/cookieManager'
+import { setLoginTime, getLoginTime } from '@/lib/utils/cookieManager'
 import { useI18n } from "@/lib/contexts/i18n"
 import { ContentLoadingWrapper } from "@/components/contentLoadingWrapper"
 

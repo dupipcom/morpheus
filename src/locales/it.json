@@ -105,7 +105,7 @@
         "AI_ENABLED": "Abilitato IA"
       },
       "action": "Pubblica Nota",
-      "publishing": "Publishing..."
+      "publishing": "Pubblicazione..."
     }
   },
   "week": {
@@ -133,7 +133,8 @@
       "open": "Aperto",
       "done": "Completato",
       "ignored": "Ignorato"
-    }
+    },
+    "edit": "Modifica"
   },
   "settings": {
     "title": "Impostazioni",
@@ -289,7 +290,10 @@
     "progress": "Progresso",
     "moodAverageScale": "Scala Media Umore",
     "balance": "Saldo",
-    "earningsScale": "Scala Guadagni"
+    "earningsScale": "Scala Guadagni",
+    "profit": "Profitto",
+    "stash": "Riserva",
+    "withdrawn": "Prelevato"
   },
   "agentChat": {
     "thinking": "Pensando...",
@@ -302,10 +306,10 @@
   "errors": {
     "notFound": "Ops! Non è stato possibile sintonizzarsi su questa frequenza.",
     "genericError": "Qualcosa è andato storto. Riprova.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "Caricamento note fallito",
+    "failedToLoadNotes": "Caricamento note fallito",
+    "failedToFetchTemplates": "Caricamento modelli fallito",
+    "failedToLoadTemplates": "Caricamento modelli fallito"
   },
   "publicProfile": {
     "ctaTitle": "Inizia il tuo percorso con Dupip",
@@ -326,9 +330,9 @@
     "cloning": "Clonazione...",
     "noPublicNotes": "Nessuna nota pubblica disponibile ancora.",
     "noPublicTemplatesOrLists": "Nessun modello o lista pubblica disponibile ancora.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "Clona lista",
+    "cloneListSuccess": "Lista clonata con successo!",
+    "cloneListFailed": "Clonazione lista fallita"
   },
   "publicCharts": {
     "noData": "Nessun dato pubblico disponibile per i grafici.",
@@ -460,7 +464,9 @@
       "timesLabel": "# di volte",
       "saveToTemplate": "Salva attività nel modello",
       "addTask": "Aggiungi Attività",
-      "cancel": "Annulla"
+      "cancel": "Annulla",
+      "editTitle": "Modifica attività",
+      "saveTask": "Salva attività"
     },
     "addListForm": {
       "titleCreate": "Crea Nuovo Elenco",
@@ -536,6 +542,39 @@
       },
       "create": "Crea",
       "cancel": "Annulla"
+    },
+    "recurrencePicker": {
+      "frequency": "Ripeti",
+      "every": "Ogni",
+      "day": "giorno",
+      "days": "giorni",
+      "week": "settimana",
+      "weeks": "settimane",
+      "month": "mese",
+      "months": "mesi",
+      "year": "anno",
+      "years": "anni",
+      "noRepeat": "Non si ripete",
+      "daily": "Giornalmente",
+      "weekly": "Settimanalmente",
+      "monthly": "Mensilmente",
+      "yearly": "Annualmente",
+      "repeatOn": "Ripeti il",
+      "monday": "Lun",
+      "tuesday": "Mar",
+      "wednesday": "Mer",
+      "thursday": "Gio",
+      "friday": "Ven",
+      "saturday": "Sab",
+      "sunday": "Dom",
+      "dayOfMonth": "Giorno del mese",
+      "selectDay": "Seleziona giorno (1-31)",
+      "ends": "Termina",
+      "never": "Mai",
+      "onDate": "Il",
+      "after": "Dopo",
+      "pickDate": "Scegli una data",
+      "occurrences": "occorrenze"
     }
   },
   "socialView": {

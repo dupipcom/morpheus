@@ -19,7 +19,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { GlobalContext } from '@/lib/contexts'
-import { useUserData } from '@/lib/userUtils'
+import { useUserData } from '@/lib/utils/userUtils'
 
 export const InvestView = () => {
   const { t } = useI18n()

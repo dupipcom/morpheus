@@ -91,21 +91,6 @@ const createColumns = (t: (key: string) => string): ColumnDef<Payment>[] => [
     cell: ({ row }) => <div className="lowercase">{row.getValue("date")}</div>,
   },
   {
-    accessorKey: "earnings",
-    header: () => <div className="text-right">{t('earningsTable.earnings')}</div>,
-    cell: ({ row }) => {
-      const earnings = parseFloat(row.getValue("earnings"))
-
-      // Format the earnings as USD and replace $ with Ð for display
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(earnings).replace('$', 'Ð')
-
-      return <div className="text-right font-medium">{formatted}</div>
-    },
-  },
-  {
     accessorKey: "moodAverage",
     header: () => <div className="text-right">{t('earningsTable.moodAverage')}</div>,
     cell: ({ row }) => {

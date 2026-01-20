@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { UserPlus, Check, Loader2, Heart, Users } from 'lucide-react'
 import { toast } from 'sonner'
 import { useI18n } from '@/lib/contexts/i18n'
+import { track } from '@vercel/analytics'
 
 interface AddFriendButtonProps {
   targetUserName: string
@@ -63,6 +64,7 @@ export function AddFriendButton({ targetUserName, className }: AddFriendButtonPr
       if (response.ok) {
         setIsSent(true)
         toast.success(t('friends.requestSent'))
+        track('Add Friend', { targetUserName })
       } else {
         // Check if it's a translation key or a plain error message
         const errorMessage = data.error === 'friendRequestSelfError' 

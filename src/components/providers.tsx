@@ -1,6 +1,6 @@
 'use client'
 
-import { ReactNode, useState, useEffect, useMemo } from 'react'
+import { ReactNode, useState, useEffect, useMemo, useCallback } from 'react'
 import { shadcn } from '@clerk/themes'
 import {
   ClerkProvider,
@@ -14,7 +14,7 @@ import { AuthToast } from '@/components/authToast'
 import { LocaleSuggestionToast } from '@/components/localeSuggestionToast'
 import { getLocaleFromPath } from '@/app/helpers'
 import { defaultLocale } from '@/app/constants'
-import { getLocaleCookie } from '@/lib/localeUtils'
+import { getLocaleCookie } from '@/lib/utils/localeUtils'
 import { getClerkLocalization } from '@/lib/clerkLocalization'
 import { SWRConfig } from 'swr'
 import { useLocalStorage } from 'usehooks-ts'
@@ -30,17 +30,26 @@ export function Providers({ children, locale: providedLocale }: ProvidersProps) 
   const [redactedValue] = useLocalStorage('dpip_redacted', 0)
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
   const [isNavigating, setIsNavigating] = useState(false)
+  const [dayData, setDayDataState] = useState<Record<string, any>>({})
   const [globalContext, setGlobalContext] = useState({ 
     theme: 'light', 
     session: { user: {} }, 
     taskLists: [] as any[], 
     refreshTaskLists: async () => {},
+    templates: [] as any[],
+    refreshTemplates: async () => {},
     revealRedacted: false,
     selectedDate: undefined as Date | undefined,
     setSelectedDate: (date: Date | undefined) => {},
     isNavigating: false,
-    setIsNavigating: (isNavigating: boolean) => {}
+    setIsNavigating: (isNavigating: boolean) => {},
+    dayData: {} as Record<string, any>,
+    setDayData: (date: string, data: any) => {}
   })
+  
+  const setDayData = useCallback((date: string, data: any) => {
+    setDayDataState(prev => ({ ...prev, [date]: data }))
+  }, [])
   const [isClient, setIsClient] = useState(false)
   const [providerKey, setProviderKey] = useState(0)
 
@@ -80,7 +89,7 @@ export function Providers({ children, locale: providedLocale }: ProvidersProps) 
     }
   }, [isClient, value, redactedValue])
 
-  const refreshTaskLists = async () => {
+  const refreshTaskLists = useCallback(async () => {
     try {
       const res = await fetch('/api/v1/tasklists')
       if (!res.ok) {
@@ -94,7 +103,31 @@ export function Providers({ children, locale: providedLocale }: ProvidersProps) 
       // Don't clear existing task lists on error - preserve them
       console.warn('Error refreshing task lists:', error)
     }
-  }
+  }, [])
+
+  const refreshTemplates = useCallback(async () => {
+    try {
+      const res = await fetch('/api/v1/templates')
+      if (!res.ok) {
+        // Don't clear existing templates on error - preserve them
+        console.warn('Failed to refresh templates:', res.status)
+        return
+      }
+      const data = await res.json()
+      setGlobalContext(prev => ({ ...prev, templates: Array.isArray(data?.templates) ? data.templates : [] }))
+    } catch (error) {
+      // Don't clear existing templates on error - preserve them
+      console.warn('Error refreshing templates:', error)
+    }
+  }, [])
+
+  // Fetch tasklists and templates once on mount
+  useEffect(() => {
+    if (isClient) {
+      refreshTaskLists()
+      refreshTemplates()
+    }
+  }, [isClient, refreshTaskLists, refreshTemplates])
 
   return (
     <ClerkProvider 
@@ -108,7 +141,7 @@ export function Providers({ children, locale: providedLocale }: ProvidersProps) 
     >
       <AuthWrapper isLoading={isLoading}>
         <I18nProvider locale={locale}>
-          <GlobalContext.Provider value={{ ...globalContext, setGlobalContext, refreshTaskLists, selectedDate, setSelectedDate, isNavigating, setIsNavigating }}>
+          <GlobalContext.Provider value={{ ...globalContext, setGlobalContext, refreshTaskLists, refreshTemplates, selectedDate, setSelectedDate, isNavigating, setIsNavigating, dayData: dayData, setDayData }}>
             <NotesRefreshProvider>
               <SWRConfig value={{
                 revalidateOnFocus: false,

@@ -11,12 +11,11 @@ import { GlobalContext } from "@/lib/contexts"
 import { DashboardView } from "@/views/dashboardView"
 import { ViewMenu } from "@/components/viewMenu"
 import { PublishNote } from '@/components/publishNote'
-import { setLoginTime, getLoginTime } from '@/lib/cookieManager'
+import { setLoginTime, getLoginTime } from '@/lib/utils/cookieManager'
 import { useI18n } from "@/lib/contexts/i18n"
 
 // Allow streaming responses up to 60 seconds
 export const maxDuration = 60;
-export const dynamic = "force-dynamic"
 
 export default function LocalizedDashboard({ params }: { params: Promise<{ locale: string }> }) {
   const [globalContext, setGlobalContext] = useState({

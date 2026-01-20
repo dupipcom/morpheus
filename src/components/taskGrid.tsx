@@ -1,15 +1,16 @@
 'use client'
 
-import React, { useMemo, useCallback } from 'react'
+import React, { useMemo, useCallback, useState } from 'react'
 import { OptionsMenuItem } from '@/components/optionsButton'
-import { Circle, Minus, Plus, Eye, EyeOff } from 'lucide-react'
+import { Circle, Minus, Plus, Eye, EyeOff, Edit } from 'lucide-react'
 import { useI18n } from '@/lib/contexts/i18n'
-import { getProfitPerTask } from '@/lib/earningsUtils'
+import { getProfitPerTask } from '@/lib/utils/earningsUtils'
 import { TaskItem } from '@/components/taskItem'
-import { TaskStatus, STATUS_OPTIONS, getStatusColor, getIconColor, getTaskKey, getTaskStatus } from '@/lib/taskUtils'
+import { TaskStatus, STATUS_OPTIONS, getStatusColor, getIconColor, getTaskKey, getTaskStatus } from '@/lib/utils/taskUtils'
 import { useOptimisticUpdates } from '@/lib/hooks/useOptimisticUpdates'
 import { useTaskStatuses } from '@/lib/hooks/useTaskStatuses'
 import { useTaskHandlers } from '@/lib/hooks/useTaskHandlers'
+import { AddTaskForm } from '@/views/forms/addTaskForm'
 
 interface TaskGridProps {
   tasks: any[]
@@ -31,7 +32,8 @@ export const TaskGrid = ({
   onRefreshUser,
 }: TaskGridProps) => {
   const { t } = useI18n()
-  
+  const [editingTask, setEditingTask] = useState<any>(null)
+
   // Use shared hooks for optimistic updates and task statuses
   const { pendingCompletionsRef, pendingStatusUpdatesRef } = useOptimisticUpdates()
   const { taskStatuses, setTaskStatuses } = useTaskStatuses({
@@ -281,11 +283,29 @@ export const TaskGrid = ({
   }, [selectedTaskList, tasks, date, onRefresh, onRefreshUser, taskStatuses, setTaskStatuses])
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 w-full">
-      {sortedTasks.map((task: any) => {
+    <>
+      {editingTask && (
+        <AddTaskForm
+          selectedTaskListId={selectedTaskList?.id}
+          editTask={editingTask}
+          onCancel={() => setEditingTask(null)}
+          onCreated={async () => {
+            await onRefresh()
+            setEditingTask(null)
+          }}
+        />
+      )}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 w-full">
+        {sortedTasks.map((task: any) => {
         const key = getTaskKey(task)
         const taskStatus = taskStatuses[key] || getTaskStatus(task)
         const isDone = taskStatus === 'done'
+        
+        // Get optimistic count from pending completions to ensure task object has latest count
+        const pendingCompletion = pendingCompletionsRef.current.get(key)
+        const taskWithOptimisticCount = pendingCompletion 
+          ? { ...task, count: pendingCompletion.count }
+          : task
         
         const lastCompleter = Array.isArray(task?.completers) && task.completers.length > 0 
           ? task.completers[task.completers.length - 1] 
@@ -331,23 +351,28 @@ export const TaskGrid = ({
                 <span className="ml-2">{t(`tasks.status.${status}`)}</span>
               </>
             ),
-            onClick: () => handleStatusChange(task, status),
+            onClick: () => handleStatusChange(taskWithOptimisticCount, status),
             icon: null,
           })),
           {
-            label: t('tasks.incrementTimes', { defaultValue: 'Increment times' }),
-            onClick: () => handleIncrementTimes(task),
-            icon: <Plus className="h-4 w-4" />,
+            label: t('tasks.edit', { defaultValue: 'Edit' }),
+            onClick: () => setEditingTask(taskWithOptimisticCount),
+            icon: <Edit className="h-4 w-4" />,
             separator: true,
           },
           {
+            label: t('tasks.incrementTimes', { defaultValue: 'Increment times' }),
+            onClick: () => handleIncrementTimes(taskWithOptimisticCount),
+            icon: <Plus className="h-4 w-4" />,
+          },
+          {
             label: t('tasks.decrementTimes', { defaultValue: 'Decrement times' }),
-            onClick: () => handleDecrementTimes(task),
+            onClick: () => handleDecrementTimes(taskWithOptimisticCount),
             icon: <Minus className="h-4 w-4" />,
           },
           {
             label: task?.redacted ? t('tasks.markAsNotSensitive', { defaultValue: 'Mark as not sensitive' }) : t('tasks.markAsSensitive', { defaultValue: 'Mark as sensitive' }),
-            onClick: () => handleToggleRedacted(task),
+            onClick: () => handleToggleRedacted(taskWithOptimisticCount),
             icon: task?.redacted ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />,
             separator: true,
           },
@@ -355,7 +380,7 @@ export const TaskGrid = ({
             ? [
                 {
                   label: t('tasks.decrementCount'),
-                  onClick: () => handleDecrementCount(task),
+                  onClick: () => handleDecrementCount(taskWithOptimisticCount),
                   icon: <Minus className="h-4 w-4" />,
                   separator: true,
                 },
@@ -366,12 +391,12 @@ export const TaskGrid = ({
         return (
           <TaskItem
             key={`task__item--${key}`}
-            task={task}
+            task={taskWithOptimisticCount}
             taskStatus={finalTaskStatus}
             statusColor={statusColor}
             iconColor={iconColor}
             optionsMenuItems={optionsMenuItems}
-            onClick={() => handleTaskClick(task)}
+            onClick={() => handleTaskClick(taskWithOptimisticCount)}
             revealRedacted={revealRedacted}
             showCompleterBadge={true}
             completerName={completerName}
@@ -381,7 +406,8 @@ export const TaskGrid = ({
           />
         )
       })}
-    </div>
+      </div>
+    </>
   )
 }
 

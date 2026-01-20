@@ -1,4 +1,4 @@
-import { fetchEpisodes } from "@/lib/notion";
+import { fetchAllArticles } from "@/lib/payload";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import Link from "next/link";
 import type { Metadata } from 'next';
@@ -19,8 +19,9 @@ export default async function ArticlesPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  
-  const episodes = await fetchEpisodes(locale);
+
+  // Fetch all articles with locale for localized titles
+  const episodes = await fetchAllArticles(locale);
   const articles = episodes.docs || [];
 
   if (articles.length === 0) {
@@ -71,7 +72,7 @@ export default async function ArticlesPage({
           const heroImageUrl = getImageUrl(heroImage);
 
           return (
-            <Link key={article.id} href={`/${locale}/articles/${slug}`}>
+            <Link key={article.id} href={`/${locale}/magazine/${slug}`}>
               <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer pt-0">
                 {heroImageUrl && (
                   <div className="relative w-full h-48 overflow-hidden rounded-t-xl">
