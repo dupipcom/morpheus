@@ -12,6 +12,45 @@ export interface TaskForDate {
 }
 
 /**
+ * Get the week range (Monday-Sunday) for a given date in YYYY-MM-DD format
+ */
+export function getWeekRange(dateStr: string): { weekStart: string; weekEnd: string; allDates: string[] } {
+  const date = new Date(dateStr)
+
+  // Get Monday of the week (start of week)
+  const day = date.getDay()
+  const diff = date.getDate() - day + (day === 0 ? -6 : 1) // adjust when day is sunday
+  const monday = new Date(date)
+  monday.setDate(diff)
+
+  // Get Sunday of the week (end of week)
+  const sunday = new Date(monday)
+  sunday.setDate(monday.getDate() + 6)
+
+  // Format as YYYY-MM-DD
+  const formatDate = (d: Date) => {
+    const year = d.getFullYear()
+    const month = String(d.getMonth() + 1).padStart(2, '0')
+    const day = String(d.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
+  }
+
+  // Generate all dates in the week
+  const allDates: string[] = []
+  for (let i = 0; i < 7; i++) {
+    const weekDate = new Date(monday)
+    weekDate.setDate(monday.getDate() + i)
+    allDates.push(formatDate(weekDate))
+  }
+
+  return {
+    weekStart: formatDate(monday),
+    weekEnd: formatDate(sunday),
+    allDates
+  }
+}
+
+/**
  * Check if a task should appear on a specific date based on its recurrence rule
  */
 export function shouldTaskAppearOnDate(task: Task, targetDate: Date): boolean {
@@ -88,17 +127,20 @@ export function shouldTaskAppearOnDate(task: Task, targetDate: Date): boolean {
 
 /**
  * Get tasks that should appear for a specific date with date-specific completion status
+ * For weekly tasks, aggregates job data across the entire week
  */
 export async function getTasksForDate(
   listId: string,
   targetDate: string
 ): Promise<TaskForDate[]> {
-  // 1. Fetch all tasks for the list
+  const targetDateObj = new Date(targetDate)
+  const weekRange = getWeekRange(targetDate)
+
+  // 1. Fetch all tasks for the list with all jobs (we'll filter later)
   const tasks = await prisma.task.findMany({
     where: { listId },
     include: {
       jobs: {
-        where: { occurrenceDate: targetDate },
         include: {
           worker: {
             select: { id: true }
@@ -109,7 +151,6 @@ export async function getTasksForDate(
     }
   })
 
-  const targetDateObj = new Date(targetDate)
   const result: TaskForDate[] = []
 
   for (const task of tasks) {
@@ -118,9 +159,29 @@ export async function getTasksForDate(
       continue
     }
 
-    // Calculate date-specific status based on jobs for this specific date
-    const jobsForDate = task.jobs
-    const acceptedJobs = jobsForDate.filter(j => j.status === 'ACCEPTED')
+    // Determine if this is a weekly task
+    const recurrence = task.recurrence as any
+    const isWeeklyTask = recurrence?.frequency === 'WEEKLY'
+
+    // Filter jobs based on task type
+    let relevantJobs: Job[]
+    if (isWeeklyTask) {
+      // For weekly tasks, get all jobs within the same week
+      relevantJobs = task.jobs.filter(j =>
+        j.occurrenceDate && weekRange.allDates.includes(j.occurrenceDate)
+      )
+
+      // Debug logging for weekly tasks
+      if (process.env.NODE_ENV === 'development' && relevantJobs.length > 0) {
+        console.log(`[Weekly Task] ${task.name}: Found ${relevantJobs.length} jobs in week ${weekRange.weekStart} - ${weekRange.weekEnd}`)
+      }
+    } else {
+      // For non-weekly tasks, only get jobs for the specific date
+      relevantJobs = task.jobs.filter(j => j.occurrenceDate === targetDate)
+    }
+
+    // Calculate status based on relevant jobs
+    const acceptedJobs = relevantJobs.filter(j => j.status === 'ACCEPTED')
     const count = acceptedJobs.length
     const times = task.times || 1
 
