@@ -1,24 +1,15 @@
 'use client'
 
 import React, { useRef, useState, useEffect, useContext, useMemo, useCallback } from 'react'
-import ReactDOMServer from 'react-dom/server';
-import prisma from "@/lib/prisma";
-import { useAuth } from '@clerk/nextjs';
+import { useAuth } from '@clerk/nextjs'
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 
-import Link from 'next/link'
-
-import { DoView } from "@/views/doView"
-import { ViewMenu } from "@/components/viewMenu"
-import { Button } from "@/components/ui/button"
+import { DoView } from '@/views/doView'
 import { DoToolbar } from '@/components/doToolbar'
 
-import { getWeekNumber } from "@/app/helpers"
-import { DAILY_ACTIONS, WEEKS } from "@/app/constants"
-
-import { GlobalContext } from "@/lib/contexts"
+import { GlobalContext } from '@/lib/contexts'
 import { setLoginTime, getLoginTime } from '@/lib/utils/cookieManager'
-import { useI18n } from "@/lib/contexts/i18n"
+import { useI18n } from '@/lib/contexts/i18n'
 
 // Allow streaming responses up to 60 seconds
 export const maxDuration = 60;
@@ -79,9 +70,9 @@ const getDefaultListId = (allTaskLists: any[]): string | undefined => {
 }
 
 export default function LocalizedDoWithListId({ params }: { params: Promise<{ locale: string; listId: string }> }) {
-  const { session, setGlobalContext, taskLists: contextTaskLists, refreshTaskLists } = useContext(GlobalContext)
-  const { isLoaded, isSignedIn } = useAuth();
-  const { t, formatDate, locale } = useI18n();
+  const { taskLists: contextTaskLists, refreshTaskLists } = useContext(GlobalContext)
+  const { isLoaded, isSignedIn } = useAuth()
+  const { locale } = useI18n()
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams()
@@ -250,20 +241,6 @@ export default function LocalizedDoWithListId({ params }: { params: Promise<{ lo
   }, [selectedTaskListId, selectedTaskList])
 
 
-  const handleAddEphemeral = useCallback(async () => {
-    if (!selectedTaskList) return
-    const name = prompt('New task name?')
-    if (!name) return
-    await fetch('/api/v1/tasklists', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        taskListId: selectedTaskList.id,
-        ephemeralTasks: { add: { name, cadence: 'day' } }
-      })
-    })
-    await refreshTaskLists()
-  }, [selectedTaskList, refreshTaskLists])
 
   const handleDateChange = useCallback((date: Date | undefined) => {
     if (date) {
@@ -313,33 +290,19 @@ export default function LocalizedDoWithListId({ params }: { params: Promise<{ lo
     setSelectedTaskListId(newListId)
     // Store in localStorage when user selects a list
     setLastListInStorage(newListId)
-    
+
     // Preserve date query parameter when changing lists
-    const dateParam = searchParams?.get('date')
-    const dateQuery = dateParam ? `?date=${dateParam}` : ''
+    const currentDateParam = searchParams?.get('date')
+    const dateQuery = currentDateParam ? `?date=${currentDateParam}` : ''
     router.push(`/${locale}/app/do/${newListId}${dateQuery}`)
   }, [locale, router, searchParams])
-
-  const fullDate = new Date()
-  const date = fullDate.toISOString().split('T')[0]
-  const year = Number(date.split('-')[0])
-  const weekNumber = getWeekNumber(fullDate)[1]
-
-  const actions = ((session?.user as any)?.entries && (session?.user as any)?.entries[year] && (session?.user as any)?.entries[year][weekNumber] && (session?.user as any)?.entries[year][weekNumber].days[date] && (session?.user as any)?.entries[year][weekNumber].days[date].tasks) || DAILY_ACTIONS
-
-  const flatDays = Object.values(WEEKS).flatMap((week: any) => week.days).reduce((acc: any, week: any) => {
-    acc = {...acc, ...week}
-    return acc
-  }, {})
 
   return (
     <main className="">
       <div className="w-full max-w-[1200px] m-auto sticky top-[115px] z-50 p-4">
               <DoToolbar
-          locale={locale}
           selectedTaskListId={selectedTaskListId}
           onChangeSelectedTaskListId={handleListChange}
-          onAddEphemeral={handleAddEphemeral}
           selectedDate={selectedDate}
           onDateChange={handleDateChange}
           onShowAddTask={() => { closeAllForms(); setShowAddTask(true) }}
@@ -350,11 +313,10 @@ export default function LocalizedDoWithListId({ params }: { params: Promise<{ lo
             />
       </div>
       <div className="container mx-auto px-4 py-6">
-        <DoView 
+        <DoView
           selectedTaskListId={selectedTaskListId}
           selectedDate={selectedDate}
           onDateChange={handleDateChange}
-          onAddEphemeral={handleAddEphemeral}
           showAddTask={showAddTask}
           showAddList={showAddList}
           showAddTemplate={showAddTemplate}
@@ -376,4 +338,3 @@ export default function LocalizedDoWithListId({ params }: { params: Promise<{ lo
     </main>
   )
 }
-

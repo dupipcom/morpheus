@@ -16,15 +16,8 @@ function isValidObjectId(id: string | null | undefined): boolean {
 }
 
 /**
- * Get the task key used for migration lookup
- */
-function getTaskMigrationKey(task: any): string {
-  return task.localeKey || task.id || (typeof task.name === 'string' ? task.name.toLowerCase() : '')
-}
-
-/**
- * Migrate a task on-the-fly if it doesn't have a valid Task collection ID
- * Returns the migrated task's new ID, or the original ID if already valid
+ * Ensure task has a valid Task collection ID
+ * Returns the task's ID if valid, otherwise throws an error
  */
 async function ensureTaskMigrated(
   task: any,
@@ -34,39 +27,7 @@ async function ensureTaskMigrated(
     return { id: task.id, migrated: false }
   }
 
-  const taskKey = getTaskMigrationKey(task)
-  if (!taskKey) {
-    throw new Error('Task has no identifiable key for migration')
-  }
-
-  const response = await fetch('/api/v1/tasks/migrate', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ listId: taskListId, taskKeys: [taskKey] })
-  })
-
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}))
-    throw new Error(errorData.error || 'Failed to migrate task')
-  }
-
-  const result = await response.json()
-
-  if (result.migratedTasks?.length > 0) {
-    return { id: result.migratedTasks[0].id, migrated: true }
-  }
-
-  // Task might already exist - try to find it
-  const tasksResponse = await fetch(`/api/v1/tasks?listId=${taskListId}`)
-  if (tasksResponse.ok) {
-    const tasksData = await tasksResponse.json()
-    const existingTask = tasksData.tasks?.find((t: any) => getTaskMigrationKey(t) === taskKey)
-    if (existingTask && isValidObjectId(existingTask.id)) {
-      return { id: existingTask.id, migrated: false }
-    }
-  }
-
-  throw new Error('Task migration completed but no task ID returned')
+  throw new Error(`Task "${task.name}" does not have a valid ID. Please refresh the page.`)
 }
 
 interface UseTaskHandlersOptions {

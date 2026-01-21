@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useContext, useMemo, useState, useEffect, useCallback, useRef, useImperativeHandle } from 'react'
+import React, { useContext, useMemo, useState, useEffect, useCallback, useRef } from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
 import {
@@ -54,24 +54,9 @@ function safeParseNumber(value: unknown): number {
   return 0
 }
 
-export const DoToolbar = ({
-  locale: _locale,
-  selectedTaskListId,
-  onChangeSelectedTaskListId,
-  onAddEphemeral: _onAddEphemeral,
-  selectedDate,
-  onDateChange,
-  onShowAddTask,
-  onShowAddList,
-  onShowAddTemplate,
-  onShowEditList,
-  hasFormOpen,
-  onTaskCompletionOptimistic,
-}: {
-  locale: string
+interface DoToolbarProps {
   selectedTaskListId?: string
   onChangeSelectedTaskListId: (id: string) => void
-  onAddEphemeral: () => Promise<void> | void
   selectedDate?: Date
   onDateChange?: (date: Date | undefined) => void
   onShowAddTask?: () => void
@@ -79,10 +64,21 @@ export const DoToolbar = ({
   onShowAddTemplate?: () => void
   onShowEditList?: () => void
   hasFormOpen?: boolean
-  onTaskCompletionOptimistic?: () => void
-}) => {
+}
+
+export function DoToolbar({
+  selectedTaskListId,
+  onChangeSelectedTaskListId,
+  selectedDate,
+  onDateChange,
+  onShowAddTask,
+  onShowAddList,
+  onShowAddTemplate,
+  onShowEditList,
+  hasFormOpen,
+}: DoToolbarProps): React.ReactElement {
   const { t } = useI18n()
-  const { session, taskLists: contextTaskLists, refreshTaskLists, templates: contextTemplates, refreshTemplates, selectedDate: contextSelectedDate, setSelectedDate, setGlobalContext } = useContext(GlobalContext)
+  const { session, taskLists: contextTaskLists, selectedDate: contextSelectedDate, setSelectedDate, setGlobalContext } = useContext(GlobalContext)
 
   // Track if we've initialized date from props
   const hasInitializedFromProps = useRef(false)
@@ -253,21 +249,11 @@ export const DoToolbar = ({
     return found
   }, [allTaskLists, selectedTaskListId])
 
-  const [stableTemplates, setStableTemplates] = useState<any[]>([])
   const [collabProfiles, setCollabProfiles] = useState<Record<string, string>>({})
   const [listEarnings, setListEarnings] = useState<{ profit: number; prize: number; earnings: number }>({ profit: 0, prize: 0, earnings: 0 })
   const [dayData, setDayData] = useState<any>(null)
   const [optimisticEarnings, setOptimisticEarnings] = useState<{ profit: number; prize: number }>({ profit: 0, prize: 0 })
   const [optimisticCompletionDelta, setOptimisticCompletionDelta] = useState<number>(0)
-
-  // Update stable templates only when context has valid data (never clear once we have data)
-  useEffect(() => {
-    if (Array.isArray(contextTemplates) && contextTemplates.length > 0) {
-      setStableTemplates(contextTemplates)
-    }
-  }, [contextTemplates])
-
-  const userTemplates = stableTemplates.length > 0 ? stableTemplates : (Array.isArray(contextTemplates) ? contextTemplates : [])
 
   // Fetch day data for the selected date
   useEffect(() => {
@@ -415,7 +401,6 @@ export const DoToolbar = ({
     }
   }, [contextTaskLists])
 
-
   // Fetch owner and collaborator profiles for badges
   useEffect(() => {
     let cancelled = false
@@ -447,7 +432,6 @@ export const DoToolbar = ({
     run()
     return () => { cancelled = true }
   }, [selectedList?.id, JSON.stringify((selectedList as any)?.users || []), JSON.stringify((selectedList as any)?.owners || []), JSON.stringify((selectedList as any)?.collaborators || [])])
-
 
   // Determine if we should show the date picker (only for daily.* or weekly.* lists)
   const shouldShowDatePicker = useMemo(() => {
@@ -697,5 +681,3 @@ export const DoToolbar = ({
     </div>
   )
 }
-
-
