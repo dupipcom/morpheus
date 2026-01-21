@@ -500,7 +500,7 @@ const formatDateLocal = (date: Date): string => {
 
     // Detect tasks needing migration (old embedded tasks without Task collection records)
     const tasksNeedingMigration = useMemo(() => {
-      const templateTasks = selectedTaskList?.templateTasks || []
+      const templateTasks = mergedTasks || []
       if (!templateTasks.length) return []
 
       // Helper to get task key
@@ -511,12 +511,14 @@ const formatDateLocal = (date: Date): string => {
         tasksFromApi.map((t: any) => keyOf(t)).filter(Boolean)
       )
 
-      // Find templateTasks that aren't in the collection
-      return templateTasks.filter((t: any) => {
+      const returnedTasks = templateTasks.filter((t: any) => {
         const key = keyOf(t)
         return key && !existingTaskKeys.has(key)
       })
-    }, [selectedTaskList?.templateTasks, tasksFromApi])
+
+      // Find templateTasks that aren't in the collection
+      return returnedTasks
+    }, [mergedTasks])
 
     // Trigger migration when needed
     useEffect(() => {
