@@ -606,6 +606,10 @@ model Job {
   selfReview       Float?
   peerReview       Float?
   managerReview    Float?
+  // Financial fields
+  earnings         Float?
+  prize            Float?
+  profit           Float?
   // Relations
   workerId         String    @db.ObjectId
   worker           User      @relation("JobWorker", fields: [workerId], references: [id], onDelete: Cascade)

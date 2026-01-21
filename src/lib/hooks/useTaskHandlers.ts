@@ -82,6 +82,8 @@ interface UseTaskHandlersOptions {
   onRefresh: () => Promise<void>
   onRefreshUser?: () => Promise<void>
   onRefreshTasks?: () => Promise<void>
+  onRefreshTaskLists?: () => Promise<void>
+  onTaskCompletedOptimistic?: () => void
   pendingCompletionsRef: React.MutableRefObject<Map<string, PendingCompletion>>
   pendingStatusUpdatesRef: React.MutableRefObject<Map<string, TaskStatus>>
   setTaskStatuses?: (updater: (prev: Record<string, TaskStatus>) => Record<string, TaskStatus>) => void
@@ -108,6 +110,8 @@ export function useTaskHandlers({
   onRefresh,
   onRefreshUser,
   onRefreshTasks,
+  onRefreshTaskLists,
+  onTaskCompletedOptimistic,
   pendingCompletionsRef,
   pendingStatusUpdatesRef,
   setTaskStatuses,
@@ -204,12 +208,22 @@ export function useTaskHandlers({
       // Count and status are now automatically calculated from Jobs
       // No need to update task directly - backend maintains occurrence dates and count
 
+      // Trigger optimistic UI updates BEFORE API calls for immediate feedback
+      if (!isCurrentlyCompleted && onTaskCompletedOptimistic) {
+        onTaskCompletedOptimistic()
+      }
+
       // Refresh tasks data to get updated dateStatus/dateCount
       if (onRefreshTasks) {
         await onRefreshTasks()
       }
 
       if (onRefreshUser) await onRefreshUser()
+
+      // Refresh task lists to update completion percentage in toolbar
+      if (onRefreshTaskLists) {
+        await onRefreshTaskLists()
+      }
 
       // If task was migrated, trigger a refresh to get updated task IDs
       if (migrated && onRefresh) {

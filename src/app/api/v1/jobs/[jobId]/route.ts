@@ -3,6 +3,7 @@ import prisma from '@/lib/prisma'
 import { getAuthenticatedUser, getUserListRole } from '@/lib/services/auth'
 import { updateTaskOccurrenceDates } from '@/lib/services/task'
 import { updateDayProgress } from '@/lib/services/day'
+import { calculateAndApplyJobEarnings, reverseJobEarnings } from '@/lib/services/job/earningsService'
 
 /**
  * Shared include configuration for job queries with full relations
@@ -247,12 +248,38 @@ export async function PUT(
 
         // Update Day.progress for this date
         await updateDayProgress(existingJob.workerId, existingJob.occurrenceDate)
+
+        // Calculate and apply financial earnings
+        try {
+          await calculateAndApplyJobEarnings({
+            jobId: existingJob.id,
+            taskId: existingJob.taskId,
+            listId: existingJob.listId,
+            workerId: existingJob.workerId,
+            occurrenceDate: existingJob.occurrenceDate
+          })
+        } catch (earningsError) {
+          console.error('Error calculating job earnings:', earningsError)
+          // Don't fail the job update if earnings calculation fails
+        }
       } else if (wasAccepted && !isNowAccepted) {
         // Job was unaccepted - remove from completion count
         await updateTaskOccurrenceDates(existingJob.taskId, 'delete', existingJob.occurrenceDate)
 
         // Update Day.progress for this date
         await updateDayProgress(existingJob.workerId, existingJob.occurrenceDate)
+
+        // Reverse financial earnings
+        try {
+          await reverseJobEarnings({
+            jobId: existingJob.id,
+            workerId: existingJob.workerId,
+            occurrenceDate: existingJob.occurrenceDate
+          })
+        } catch (earningsError) {
+          console.error('Error reversing job earnings:', earningsError)
+          // Don't fail the job update if earnings reversal fails
+        }
       }
     }
 
@@ -308,6 +335,20 @@ export async function DELETE(
 
     // Save job info for occurrence date update
     const { taskId, occurrenceDate, status, workerId } = existingJob
+
+    // Reverse financial earnings if job was ACCEPTED
+    if (status === 'ACCEPTED' && occurrenceDate) {
+      try {
+        await reverseJobEarnings({
+          jobId: existingJob.id,
+          workerId: existingJob.workerId,
+          occurrenceDate: existingJob.occurrenceDate
+        })
+      } catch (earningsError) {
+        console.error('Error reversing job earnings:', earningsError)
+        // Don't fail the job deletion if earnings reversal fails
+      }
+    }
 
     // Delete job
     await prisma.job.delete({

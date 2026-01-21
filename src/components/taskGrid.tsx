@@ -1,9 +1,10 @@
 'use client'
 
-import React, { useMemo, useCallback, useState } from 'react'
+import React, { useMemo, useCallback, useState, useContext } from 'react'
 import { OptionsMenuItem } from '@/components/optionsButton'
 import { Circle, Minus, Plus, Eye, EyeOff, Edit } from 'lucide-react'
 import { useI18n } from '@/lib/contexts/i18n'
+import { GlobalContext } from '@/lib/contexts'
 import { getProfitPerTask } from '@/lib/utils/earningsUtils'
 import { TaskItem } from '@/components/taskItem'
 import { TaskStatus, STATUS_OPTIONS, getStatusColor, getIconColor, getTaskKey, getTaskStatus } from '@/lib/utils/taskUtils'
@@ -38,6 +39,7 @@ export const TaskGrid = ({
   onRefreshTasks,
 }: TaskGridProps) => {
   const { t } = useI18n()
+  const { refreshTaskLists, handleTaskCompletionOptimistic } = useContext(GlobalContext)
   const [editingTask, setEditingTask] = useState<any>(null)
 
   // Use shared hooks for optimistic updates and task statuses
@@ -67,6 +69,8 @@ export const TaskGrid = ({
     onRefresh,
     onRefreshUser,
     onRefreshTasks,
+    onRefreshTaskLists: refreshTaskLists,
+    onTaskCompletedOptimistic: handleTaskCompletionOptimistic,
     pendingCompletionsRef,
     pendingStatusUpdatesRef,
     setTaskStatuses,

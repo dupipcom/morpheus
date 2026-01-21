@@ -4,6 +4,7 @@ import prisma from '@/lib/prisma'
 import { updateTaskOccurrenceDates } from '@/lib/services/task'
 import { updateDayProgress } from '@/lib/services/day'
 import { formatDateLocal } from '@/lib/utils/taskUtils'
+import { calculateAndApplyJobEarnings } from '@/lib/services/job/earningsService'
 
 // Helper function to get user's role in a list
 async function getUserListRole(userId: string, listId: string): Promise<string | null> {
@@ -286,6 +287,20 @@ export async function POST(request: NextRequest) {
 
       // Update Day.progress for this date
       await updateDayProgress(workerId, dateToUse)
+
+      // Calculate and apply financial earnings
+      try {
+        await calculateAndApplyJobEarnings({
+          jobId: job.id,
+          taskId,
+          listId,
+          workerId,
+          occurrenceDate: dateToUse
+        })
+      } catch (earningsError) {
+        console.error('Error calculating job earnings:', earningsError)
+        // Don't fail the job creation if earnings calculation fails
+      }
     }
 
     return NextResponse.json({ job })

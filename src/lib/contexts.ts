@@ -16,5 +16,9 @@ export const GlobalContext = createContext({
 	isNavigating: false,
 	setIsNavigating: (isNavigating: boolean) => {},
 	dayData: {} as Record<string, any>,
-	setDayData: (date: string, data: any) => {}
+	setDayData: (date: string, data: any) => {},
+	// Optimistic update callbacks
+	addOptimisticTaskEarnings: () => {},
+	addOptimisticCompletion: () => {},
+	handleTaskCompletionOptimistic: () => {}
 })

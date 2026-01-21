@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useContext, useMemo, useState, useEffect, useCallback, useRef } from 'react'
+import React, { useContext, useMemo, useState, useEffect, useCallback, useRef, useImperativeHandle } from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
 import {
@@ -16,6 +16,7 @@ import { Badge } from '@/components/ui/badge'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { PercentageTicker } from '@/components/ui/percentageTicker'
 import { DatePickerButton } from '@/components/ui/datePickerButton'
+import { calculateTaskEarnings, getPerCompleterPrize, getPerCompleterProfit } from '@/lib/utils/earningsUtils'
 
 type TaskList = { id: string; name?: string; role?: string }
 
@@ -31,6 +32,7 @@ export const DoToolbar = ({
   onShowAddTemplate,
   onShowEditList,
   hasFormOpen,
+  onTaskCompletionOptimistic,
 }: {
   locale: string
   selectedTaskListId?: string
@@ -43,9 +45,10 @@ export const DoToolbar = ({
   onShowAddTemplate?: () => void
   onShowEditList?: () => void
   hasFormOpen?: boolean
+  onTaskCompletionOptimistic?: () => void
 }) => {
   const { t } = useI18n()
-  const { session, taskLists: contextTaskLists, refreshTaskLists, templates: contextTemplates, refreshTemplates, selectedDate: contextSelectedDate, setSelectedDate } = useContext(GlobalContext)
+  const { session, taskLists: contextTaskLists, refreshTaskLists, templates: contextTemplates, refreshTemplates, selectedDate: contextSelectedDate, setSelectedDate, setGlobalContext } = useContext(GlobalContext)
   
   // Helper to compare dates by value, not reference
   const datesEqual = (date1: Date | undefined, date2: Date | undefined): boolean => {
@@ -302,6 +305,8 @@ export const DoToolbar = ({
   const [collabProfiles, setCollabProfiles] = useState<Record<string, string>>({})
   const [listEarnings, setListEarnings] = useState<{ profit: number; prize: number; earnings: number }>({ profit: 0, prize: 0, earnings: 0 })
   const [dayData, setDayData] = useState<any>(null)
+  const [optimisticEarnings, setOptimisticEarnings] = useState<{ profit: number; prize: number }>({ profit: 0, prize: 0 })
+  const [optimisticCompletionDelta, setOptimisticCompletionDelta] = useState<number>(0)
 
   // Update stable templates only when context has valid data (never clear once we have data)
   useEffect(() => {
@@ -343,6 +348,7 @@ export const DoToolbar = ({
   useEffect(() => {
     if (!selectedList) {
       setListEarnings({ profit: 0, prize: 0, earnings: 0 })
+      setOptimisticEarnings({ profit: 0, prize: 0 })
       return
     }
 
@@ -350,39 +356,132 @@ export const DoToolbar = ({
       const listId = selectedList.id
       if (!listId) {
         setListEarnings({ profit: 0, prize: 0, earnings: 0 })
+        setOptimisticEarnings({ profit: 0, prize: 0 })
         return
       }
 
       // If no dayData, set earnings to 0
       if (!dayData) {
         setListEarnings({ profit: 0, prize: 0, earnings: 0 })
+        setOptimisticEarnings({ profit: 0, prize: 0 })
         return
       }
 
       // Get ticker array from day data
       const tickers = Array.isArray(dayData.ticker) ? dayData.ticker : []
-      
+
       // Find all ticker entries for this listId and sum them up
       const tickerEntries = tickers.filter((t: any) => t.listId === listId)
-      
+
       // Sum all profit and prize values from all ticker entries
       let totalProfit = 0
       let totalPrize = 0
-      
+
       tickerEntries.forEach((tickerEntry: any) => {
         const profit = typeof tickerEntry.profit === 'number' ? tickerEntry.profit : (typeof tickerEntry.profit === 'string' ? parseFloat(tickerEntry.profit) || 0 : 0)
         const prize = typeof tickerEntry.prize === 'number' ? tickerEntry.prize : (typeof tickerEntry.prize === 'string' ? parseFloat(tickerEntry.prize) || 0 : 0)
         totalProfit += profit
         totalPrize += prize
       })
-      
+
       const earnings = totalProfit + totalPrize
       setListEarnings({ profit: totalProfit, prize: totalPrize, earnings })
+
+      // Clear optimistic earnings when real data arrives
+      setOptimisticEarnings({ profit: 0, prize: 0 })
     } catch (error) {
       console.error('Error calculating list earnings from day.ticker:', error)
       setListEarnings({ profit: 0, prize: 0, earnings: 0 })
+      setOptimisticEarnings({ profit: 0, prize: 0 })
     }
   }, [selectedList?.id, dayData])
+
+  // Add optimistic earnings for a task completion
+  const addOptimisticTaskEarnings = useCallback(() => {
+    if (!selectedList || !session?.user) return
+
+    try {
+      // Get user equity from session
+      const userEquity = (session.user as any).equity || '0'
+
+      // Count total tasks in the list
+      const tasksCount = (selectedList.tasks || []).length || (selectedList.templateTasks || []).length || 1
+
+      // Calculate earnings for this task completion
+      const earningsCalculation = calculateTaskEarnings({
+        listRole: selectedList.role,
+        budgetPercentage: selectedList.budgetPercentage as number | undefined,
+        listBudget: selectedList.budget,
+        userEquity: userEquity,
+        numTasks: tasksCount,
+        date: selectedDateToUse || new Date()
+      })
+
+      // Get per-completer prize and profit based on list cadence
+      const prize = getPerCompleterPrize(earningsCalculation, selectedList.role)
+      const profit = getPerCompleterProfit(earningsCalculation, selectedList.role)
+
+      // Add to optimistic earnings
+      setOptimisticEarnings(prev => ({
+        profit: prev.profit + profit,
+        prize: prev.prize + prize
+      }))
+
+      // Auto-clear after 5 seconds (safety timeout)
+      setTimeout(() => {
+        setOptimisticEarnings({ profit: 0, prize: 0 })
+      }, 5000)
+    } catch (error) {
+      console.error('Error calculating optimistic earnings:', error)
+    }
+  }, [selectedList, session?.user, selectedDateToUse])
+
+  // Add optimistic completion percentage increase
+  const addOptimisticCompletion = useCallback(() => {
+    if (!selectedList) return
+
+    // Get current task counts
+    const baseTasks = (selectedList.tasks || selectedList.templateTasks || []).length
+    const ephemeralOpen = (selectedList.ephemeralTasks?.open || []).length
+    const ephemeralClosed = (selectedList.ephemeralTasks?.closed || []).length
+    const totalTasks = baseTasks + ephemeralOpen + ephemeralClosed
+
+    if (totalTasks === 0) return
+
+    // One more task completed = increase by (1/totalTasks * 100)
+    const delta = (1 / totalTasks) * 100
+    setOptimisticCompletionDelta(prev => prev + delta)
+
+    // Clear after 5 seconds
+    setTimeout(() => {
+      setOptimisticCompletionDelta(0)
+    }, 5000)
+  }, [selectedList])
+
+  // Combined optimistic callback for both earnings and completion
+  const handleTaskCompletionOptimistic = useCallback(() => {
+    addOptimisticTaskEarnings()
+    addOptimisticCompletion()
+  }, [addOptimisticTaskEarnings, addOptimisticCompletion])
+
+  // Store functions in GlobalContext for task handlers to use
+  useEffect(() => {
+    if (setGlobalContext) {
+      setGlobalContext((prev: any) => ({
+        ...prev,
+        addOptimisticTaskEarnings,
+        addOptimisticCompletion,
+        handleTaskCompletionOptimistic
+      }))
+    }
+  }, [addOptimisticTaskEarnings, addOptimisticCompletion, handleTaskCompletionOptimistic, setGlobalContext])
+
+  // Clear optimistic deltas when task lists refresh (real data arrived)
+  useEffect(() => {
+    if (contextTaskLists && contextTaskLists.length > 0) {
+      setOptimisticCompletionDelta(0)
+    }
+  }, [contextTaskLists])
 
 
   // Fetch owner and collaborator profiles for badges
@@ -582,16 +681,16 @@ export const DoToolbar = ({
                   )}
                   {/* Prize badge - show if budgetPercentage is allocated */}
                   {shouldShowPrizeBadge && (
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 hover:bg-green-100">
+                    <Badge variant="outline" className={optimisticEarnings.prize > 0 ? "bg-green-100 text-green-800 border-green-300 hover:bg-green-200 animate-pulse" : "bg-green-50 text-green-700 border-green-200 hover:bg-green-100"}>
                       <Award className="h-3 w-3 mr-1" />
-                      Prize: ${listEarnings.prize.toFixed(2)}
+                      Prize: ${(listEarnings.prize + optimisticEarnings.prize).toFixed(2)}
                     </Badge>
                   )}
-                  {/* Profit badge - show if there is profit from ticker */}
-                  {listEarnings.profit > 0 && (
-                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100">
+                  {/* Profit badge - show if there is profit from ticker or optimistic */}
+                  {(listEarnings.profit > 0 || optimisticEarnings.profit > 0) && (
+                    <Badge variant="outline" className={optimisticEarnings.profit > 0 ? "bg-blue-100 text-blue-800 border-blue-300 hover:bg-blue-200 animate-pulse" : "bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100"}>
                       <TrendingUp className="h-3 w-3 mr-1" />
-                      Profit: ${listEarnings.profit.toFixed(2)}
+                      Profit: ${(listEarnings.profit + optimisticEarnings.profit).toFixed(2)}
                     </Badge>
                   )}
                   {(selectedList as any)?.dueDate && (
@@ -643,9 +742,15 @@ export const DoToolbar = ({
                   {/* Completion percentage badge with ticker */}
                   {selectedList && (
                     <>
-                      <Badge variant="outline" className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80">
+                      <Badge
+                        variant="outline"
+                        className={optimisticCompletionDelta > 0
+                          ? "bg-green-100 text-green-800 border-green-300 hover:bg-green-200 animate-pulse"
+                          : "bg-muted text-muted-foreground border-muted hover:bg-secondary/80"
+                        }
+                      >
                         <CheckCircle2 className="h-3 w-3 mr-1" />
-                        {calculateCompletionPercentage(selectedList, selectedDateToUse).toFixed(0)}%
+                        {Math.min(100, calculateCompletionPercentage(selectedList, selectedDateToUse) + optimisticCompletionDelta).toFixed(0)}%
                       </Badge>
                       <PercentageTicker value={calculateCompletionChange(selectedList)} />
                     </>
@@ -659,6 +764,8 @@ export const DoToolbar = ({
       </Accordion>
     </div>
   )
-}
+})
+
+DoToolbar.displayName = 'DoToolbar'
 
 
