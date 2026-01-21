@@ -126,6 +126,8 @@
     "markAsNotSensitive": "Mark as not sensitive",
     "showMore": "Show more tasks",
     "showLess": "Show less tasks",
+    "loadingForDate": "Loading tasks for selected date...",
+    "noTasksForDate": "No tasks scheduled for this date",
     "status": {
       "in progress": "In Progress",
       "steady": "Steady",

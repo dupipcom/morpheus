@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useMemo, useState, useEffect, useContext, useCallback, useRef } from 'react'
+import useSWR from 'swr'
 
 import { Skeleton } from '@/components/ui/skeleton'
 import { TaskGrid } from '@/components/taskGrid'
@@ -10,6 +11,8 @@ import { useI18n } from '@/lib/contexts/i18n'
 import { getWeekNumber } from '@/app/helpers'
 import { useUserData } from '@/lib/utils/userUtils'
 import { getProfitPerTask } from '@/lib/utils/earningsUtils'
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 type TaskStatus = 'in progress' | 'steady' | 'ready' | 'open' | 'done' | 'ignored'
 
@@ -144,6 +147,36 @@ const formatDateLocal = (date: Date): string => {
       const role = (selectedTaskList as any)?.role
       return role && typeof role === 'string' && role.startsWith('weekly.')
     }, [selectedTaskList])
+
+    // Get current user ID
+    const userId = (session?.user as any)?.id
+
+    // Fetch tasks from new API with date parameter
+    const tasksUrl = selectedTaskListId ? `/api/v1/tasks?listId=${selectedTaskListId}&date=${date}` : null
+    const { data: tasksData, mutate: mutateTasks, isLoading: isLoadingTasks } = useSWR(tasksUrl, fetcher, {
+      revalidateOnFocus: false,
+    })
+    const tasksFromApi = tasksData?.tasks || []
+
+    // Track migration state - use Set to track multiple lists
+    const migrationInProgressRef = useRef(false)
+    const migratedListsRef = useRef(new Set<string>())
+
+    // Fetch jobs from new API (for the selected date or week)
+    const jobsUrl = useMemo(() => {
+      if (!selectedTaskListId) return null
+      if (isWeeklyList) {
+        // For weekly lists, we don't filter by date in the API call
+        // We'll filter on the client side
+        return `/api/v1/jobs?listId=${selectedTaskListId}`
+      }
+      return `/api/v1/jobs?listId=${selectedTaskListId}&date=${date}`
+    }, [selectedTaskListId, date, isWeeklyList])
+
+    const { data: jobsData } = useSWR(jobsUrl, fetcher, {
+      revalidateOnFocus: false,
+    })
+    const jobsFromApi = jobsData?.jobs || []
 
     // Profiles cache (userId -> userName) for owners, collaborators and completers
     const [collabProfiles, setCollabProfiles] = useState<Record<string, string>>({})
@@ -392,15 +425,20 @@ const formatDateLocal = (date: Date): string => {
           const completedCount = Array.isArray(closedTask?.completers) ? closedTask.completers.length : Number(closedTask?.count || 0)
           // Always use the status from closedTask if it exists (preserves manually set statuses like "ready", "steady", etc.)
           // Only fall back to calculated status if closedTask.status is not set
-          const taskStatus = closedTask?.status 
-            ? closedTask.status 
+          const taskStatus = closedTask?.status
+            ? closedTask.status
             : (t?.status || (completedCount >= times ? 'done' : (completedCount > 0 ? 'in progress' : 'open')))
-          
-          return { 
-            ...t, // Start with base task
-            ...closedTask, // Override with closedTask data (takes precedence)
+
+          return {
+            ...t, // Start with base task from list.tasks (includes recurrence metadata)
+            ...closedTask, // Override with closedTask completion data
+            // Always preserve recurrence metadata from base task (completedTasks are snapshots and don't store this)
+            recurrence: t?.recurrence,
+            nextOccurrence: t?.nextOccurrence,
+            firstOccurrence: t?.firstOccurrence,
+            lastOccurrence: t?.lastOccurrence,
             status: taskStatus, // Use the status from closedTask (preserves manual status changes)
-            count: Math.min(completedCount || 0, times || 1), 
+            count: Math.min(completedCount || 0, times || 1),
             completers: closedTask?.completers
           }
         }
@@ -438,6 +476,106 @@ const formatDateLocal = (date: Date): string => {
       return [...overlayed, ...additionalClosedTasks, ...dedupEphemeral]
     }, [selectedTaskList, year, date, isWeeklyList, getWeekDates, selectedDate, datesToCheck])
 
+    // New simpler tasks display using API data (with fallback to old mergedTasks)
+    const tasksToDisplay = useMemo(() => {
+      // If we have tasks from the new API, use them
+      if (tasksFromApi.length > 0) {
+        // For now, just return all tasks from the API
+        // In the future, we can add filtering by date/recurrence here
+        return tasksFromApi.map((t: any) => ({
+          ...t,
+          displayName: t.name,
+          // Use date-specific count when available (from date-aware API), otherwise fall back to global count
+          count: t.dateCount !== undefined ? t.dateCount : (t.count || 0),
+          times: t.times || 1,
+          // Preserve dateStatus and dateCount for status determination
+          dateStatus: t.dateStatus,
+          dateCount: t.dateCount,
+        }))
+      }
+
+      // Fallback to old mergedTasks logic during migration
+      return mergedTasks
+    }, [tasksFromApi, mergedTasks])
+
+    // Detect tasks needing migration (old embedded tasks without Task collection records)
+    const tasksNeedingMigration = useMemo(() => {
+      const templateTasks = selectedTaskList?.templateTasks || []
+      if (!templateTasks.length) return []
+
+      // Helper to get task key
+      const keyOf = (t: any) => t?.localeKey || t?.id || (typeof t?.name === 'string' ? t.name.toLowerCase() : '')
+
+      // Get keys of tasks already in the collection
+      const existingTaskKeys = new Set(
+        tasksFromApi.map((t: any) => keyOf(t)).filter(Boolean)
+      )
+
+      // Find templateTasks that aren't in the collection
+      return templateTasks.filter((t: any) => {
+        const key = keyOf(t)
+        return key && !existingTaskKeys.has(key)
+      })
+    }, [selectedTaskList?.templateTasks, tasksFromApi])
+
+    // Trigger migration when needed
+    useEffect(() => {
+      // Skip if no tasks need migration
+      if (tasksNeedingMigration.length === 0) return
+
+      // Skip if no list selected
+      if (!selectedTaskListId) return
+
+      // Skip if migration is already in progress (global lock)
+      if (migrationInProgressRef.current) return
+
+      // Skip if we already migrated this list in this session
+      if (migratedListsRef.current.has(selectedTaskListId)) return
+
+      // Check if user has permission to migrate (must be owner or manager)
+      const userRef = selectedTaskList?.users?.find((u: any) => u.userId === userId)
+      const userRole = userRef?.role
+      if (!userRole || !['OWNER', 'MANAGER'].includes(userRole)) return
+
+      // Trigger migration
+      migrationInProgressRef.current = true
+      migratedListsRef.current.add(selectedTaskListId)
+
+      const keyOf = (t: any) => t?.localeKey || t?.id || (typeof t?.name === 'string' ? t.name.toLowerCase() : '')
+      const taskKeys = tasksNeedingMigration.map((t: any) => keyOf(t)).filter(Boolean)
+
+      console.log(`[Migration] Starting migration for list ${selectedTaskListId} with ${taskKeys.length} tasks`)
+
+      fetch('/api/v1/tasks/migrate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          listId: selectedTaskListId,
+          taskKeys
+        })
+      })
+        .then(async (res) => {
+          if (res.ok) {
+            const result = await res.json()
+            console.log(`[Migration] Success for list ${selectedTaskListId}:`, result)
+            // Refresh tasks after successful migration
+            await mutateTasks()
+            await refreshTaskLists()
+          } else {
+            // Remove from migrated set on failure so it can be retried
+            console.error(`[Migration] Request failed for list ${selectedTaskListId}:`, await res.text())
+            migratedListsRef.current.delete(selectedTaskListId)
+          }
+        })
+        .catch((err) => {
+          console.error(`[Migration] Error for list ${selectedTaskListId}:`, err)
+          // Remove from migrated set on error so it can be retried
+          migratedListsRef.current.delete(selectedTaskListId)
+        })
+        .finally(() => {
+          migrationInProgressRef.current = false
+        })
+    }, [tasksNeedingMigration.length, selectedTaskListId, selectedTaskList?.users, userId, mutateTasks, refreshTaskLists])
 
     const handleAddEphemeral = useCallback(async () => {
       if (propOnAddEphemeral) {
@@ -468,9 +606,32 @@ const formatDateLocal = (date: Date): string => {
       }
     }, [propOnDateChange])
 
+    // Check if tasks are loading for the selected date
+    const isLoadingTasksForDate = isLoadingTasks && tasksUrl !== null
+
     // Check if task lists are loading (only show skeleton on initial load, not on refreshes)
     const isTaskListsLoading = !initialLoadDone.current && (contextTaskLists === null || contextTaskLists === undefined || (Array.isArray(contextTaskLists) && contextTaskLists.length === 0))
     const isLoading = isTaskListsLoading || (!initialLoadDone.current && (!selectedTaskListId || !selectedTaskList))
+
+    // Show loading state when date changes and tasks are being fetched
+    if (isLoadingTasksForDate && initialLoadDone.current) {
+      return (
+        <div className="space-y-4">
+          {/* Toolbar skeleton */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-4">
+            <Skeleton className="h-9 w-full sm:w-[260px]" />
+            <Skeleton className="h-9 w-full sm:w-[240px]" />
+            <Skeleton className="h-9 w-20" />
+          </div>
+
+          {/* Loading message */}
+          <div className="flex items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mr-3"></div>
+            <span className="text-muted-foreground">{t('tasks.loadingForDate')}</span>
+          </div>
+        </div>
+      )
+    }
 
     if (isLoading) {
       return (
@@ -481,7 +642,7 @@ const formatDateLocal = (date: Date): string => {
             <Skeleton className="h-9 w-full sm:w-[240px]" />
             <Skeleton className="h-9 w-20" />
           </div>
-          
+
           {/* Tasks grid skeleton */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
             {Array.from({ length: 8 }).map((_, i) => (
@@ -501,13 +662,16 @@ const formatDateLocal = (date: Date): string => {
     return (
       <div className="space-y-4">
         <TaskGrid
-          tasks={mergedTasks}
+          tasks={tasksToDisplay}
           selectedTaskList={selectedTaskList}
           collabProfiles={collabProfiles}
           revealRedacted={revealRedacted}
           date={date}
+          userId={userId}
+          jobs={jobsFromApi}
           onRefresh={refreshTaskLists}
           onRefreshUser={refreshUser}
+          onRefreshTasks={mutateTasks}
         />
       </div>
     )

@@ -55,6 +55,7 @@ export function getIconColor(status: TaskStatus): string {
 
 /**
  * Get task status from task object, considering optimistic updates
+ * Prefers date-specific fields (dateStatus, dateCount) when available
  */
 export function getTaskStatus(
   task: any,
@@ -64,14 +65,36 @@ export function getTaskStatus(
   if (optimisticStatuses?.[key]) {
     return optimisticStatuses[key]
   }
+
+  // Prefer date-specific status when available (from date-aware API)
+  if (task.dateStatus !== undefined) {
+    // Map database enum values to UI status values
+    const statusMap: Record<string, TaskStatus> = {
+      'OPEN': 'open',
+      'IN_PROGRESS': 'in progress',
+      'DONE': 'done',
+      'STEADY': 'steady',
+      'READY': 'ready',
+      'IGNORED': 'ignored',
+    }
+    const mappedStatus = statusMap[task.dateStatus] || task.dateStatus
+    if (STATUS_OPTIONS.includes(mappedStatus as TaskStatus)) {
+      return mappedStatus as TaskStatus
+    }
+  }
+
+  // Fall back to global status
   if (task.status && STATUS_OPTIONS.includes(task.status as TaskStatus)) {
     return task.status as TaskStatus
   }
   if (task.status === 'done') {
     return 'done'
   }
-  const count = task.count || 0
+
+  // Use date-specific count if available, otherwise fall back to global count
+  const count = task.dateCount !== undefined ? task.dateCount : (task.count || 0)
   const times = task.times || 1
+
   if (count > 0 && count < times) {
     return 'in progress'
   }

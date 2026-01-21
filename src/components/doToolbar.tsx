@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useContext, useMemo, useState, useEffect, useCallback, useRef } from 'react'
+import React, { useContext, useMemo, useState, useEffect, useCallback, useRef, useImperativeHandle } from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
 import {
@@ -16,8 +16,43 @@ import { Badge } from '@/components/ui/badge'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { PercentageTicker } from '@/components/ui/percentageTicker'
 import { DatePickerButton } from '@/components/ui/datePickerButton'
+import { calculateTaskEarnings, getPerCompleterPrize, getPerCompleterProfit } from '@/lib/utils/earningsUtils'
 
 type TaskList = { id: string; name?: string; role?: string }
+
+// Helper to format date as YYYY-MM-DD
+function formatDateISO(date: Date): string {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+// Helper to compare dates by value
+function datesEqual(date1: Date | undefined, date2: Date | undefined): boolean {
+  if (!date1 && !date2) return true
+  if (!date1 || !date2) return false
+  return date1.getTime() === date2.getTime()
+}
+
+// Helper to extract completed count from completion data structure
+function getCompletedCount(dateData: any): number {
+  if (!dateData) return 0
+  if (Array.isArray(dateData)) {
+    return dateData.filter((t: any) => t.status === 'done').length
+  }
+  if (Array.isArray(dateData.closedTasks)) {
+    return dateData.closedTasks.length
+  }
+  return 0
+}
+
+// Helper to safely parse a number from various types
+function safeParseNumber(value: unknown): number {
+  if (typeof value === 'number') return value
+  if (typeof value === 'string') return parseFloat(value) || 0
+  return 0
+}
 
 export const DoToolbar = ({
   locale: _locale,
@@ -31,6 +66,7 @@ export const DoToolbar = ({
   onShowAddTemplate,
   onShowEditList,
   hasFormOpen,
+  onTaskCompletionOptimistic,
 }: {
   locale: string
   selectedTaskListId?: string
@@ -43,19 +79,12 @@ export const DoToolbar = ({
   onShowAddTemplate?: () => void
   onShowEditList?: () => void
   hasFormOpen?: boolean
+  onTaskCompletionOptimistic?: () => void
 }) => {
   const { t } = useI18n()
-  const { session, taskLists: contextTaskLists, refreshTaskLists, templates: contextTemplates, refreshTemplates, selectedDate: contextSelectedDate, setSelectedDate } = useContext(GlobalContext)
-  
-  // Helper to compare dates by value, not reference
-  const datesEqual = (date1: Date | undefined, date2: Date | undefined): boolean => {
-    if (!date1 && !date2) return true
-    if (!date1 || !date2) return false
-    return date1.getTime() === date2.getTime()
-  }
-  
-  // Sync props with GlobalContext only on initial mount or when prop changes
-  // Use a ref to track if we've initialized from props
+  const { session, taskLists: contextTaskLists, refreshTaskLists, templates: contextTemplates, refreshTemplates, selectedDate: contextSelectedDate, setSelectedDate, setGlobalContext } = useContext(GlobalContext)
+
+  // Track if we've initialized date from props
   const hasInitializedFromProps = useRef(false)
   useEffect(() => {
     if (selectedDate && !hasInitializedFromProps.current) {
@@ -89,131 +118,68 @@ export const DoToolbar = ({
   // Helper function to get completion percentage from stored value for selected date
   const calculateCompletionPercentage = useCallback((list: any, date?: Date): number => {
     if (!list) return 0
-    
-    // Use the selected date or default to today
+
     const targetDate = date || selectedDateToUse || new Date()
     const year = targetDate.getFullYear()
-    const dateISO = `${year}-${String(targetDate.getMonth() + 1).padStart(2, '0')}-${String(targetDate.getDate()).padStart(2, '0')}`
-    
-    if (list.completedTasks) {
-      const completedTasks = list.completedTasks
-      const yearData = completedTasks[year] || {}
-      const dateData = yearData[dateISO]
-      
-      if (dateData) {
-        // First check if completion is stored directly in the date bucket
-        if (typeof dateData.completion === 'number') {
-          return dateData.completion
-        }
-        
-        // Fallback: calculate from openTasks and closedTasks
-        let openTasks: any[] = []
-        let closedTasks: any[] = []
-        
-        if (Array.isArray(dateData)) {
-          // Legacy structure
-          openTasks = dateData.filter((t: any) => t.status !== 'done')
-          closedTasks = dateData.filter((t: any) => t.status === 'done')
-        } else {
-          // New structure
-          openTasks = Array.isArray(dateData.openTasks) ? dateData.openTasks : []
-          closedTasks = Array.isArray(dateData.closedTasks) ? dateData.closedTasks : []
-        }
-        
-        const totalTasks = openTasks.length + closedTasks.length
-        if (totalTasks > 0) {
-          return (closedTasks.length / totalTasks) * 100
-        }
-      }
+    const dateISO = formatDateISO(targetDate)
+
+    // Helper to get completion from date bucket
+    const getCompletionFromBucket = (bucket: any, dateKey: string): number | null => {
+      const yearData = bucket?.[year] || {}
+      const dateData = yearData[dateKey]
+      if (!dateData) return null
+
+      if (typeof dateData.completion === 'number') return dateData.completion
+
+      // Calculate from task arrays
+      const openCount = Array.isArray(dateData)
+        ? dateData.filter((t: any) => t.status !== 'done').length
+        : (Array.isArray(dateData.openTasks) ? dateData.openTasks.length : 0)
+      const closedCount = Array.isArray(dateData)
+        ? dateData.filter((t: any) => t.status === 'done').length
+        : (Array.isArray(dateData.closedTasks) ? dateData.closedTasks.length : 0)
+      const total = openCount + closedCount
+      return total > 0 ? (closedCount / total) * 100 : null
     }
-    
-    return 0
+
+    // Prefer job-based completion data, then fallback to legacy
+    const jobCompletion = getCompletionFromBucket(list.jobCompletedTasks, dateISO)
+    if (jobCompletion !== null) return jobCompletion
+
+    const legacyCompletion = getCompletionFromBucket(list.completedTasks, dateISO)
+    return legacyCompletion ?? 0
   }, [selectedDateToUse])
 
   // Helper function to calculate completion percentage change
   const calculateCompletionChange = useCallback((list: any): number => {
     if (!list) return 0
-    
-    // Get base tasks count
+
     const baseTasks = list.tasks?.length || list.templateTasks?.length || 0
-    
-    // Get ephemeral tasks
     const ephemeralTasks = list.ephemeralTasks || {}
     const openEphemeral = Array.isArray(ephemeralTasks.open) ? ephemeralTasks.open.length : 0
     const closedEphemeral = Array.isArray(ephemeralTasks.closed) ? ephemeralTasks.closed.length : 0
-    const totalEphemeral = openEphemeral + closedEphemeral
-    
-    // Total tasks = base tasks + ephemeral tasks
-    const totalTasks = baseTasks + totalEphemeral
-    
+    const totalTasks = baseTasks + openEphemeral + closedEphemeral
+
     if (totalTasks === 0) return 0
-    
-    // Get today's date
+
     const today = new Date()
     const year = today.getFullYear()
-    const todayISO = `${year}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
-    
-    // Get current date's completion data for base tasks
-    let currentBaseCompleted = 0
-    if (list.completedTasks) {
-      const completedTasks = list.completedTasks
-      const yearData = completedTasks[year] || {}
-      const todayData = yearData[todayISO]
-      
-      if (todayData) {
-        if (Array.isArray(todayData)) {
-          // Legacy structure
-          currentBaseCompleted = todayData.filter((t: any) => t.status === 'done').length
-        } else if (todayData.closedTasks) {
-          // New structure
-          currentBaseCompleted = Array.isArray(todayData.closedTasks) ? todayData.closedTasks.length : 0
-        }
-      }
-    }
-    
-    // Find previous entry (previous date) for base tasks
-    let previousBaseCompleted = 0
-    if (list.completedTasks) {
-      const completedTasks = list.completedTasks
-      const yearData = completedTasks[year] || {}
-      const dates = Object.keys(yearData).sort().reverse() // Sort dates descending
-      const previousDate = dates.find((date: string) => date < todayISO)
-      
-      if (previousDate) {
-        const previousData = yearData[previousDate]
-        if (previousData) {
-          if (Array.isArray(previousData)) {
-            // Legacy structure
-            previousBaseCompleted = previousData.filter((t: any) => t.status === 'done').length
-          } else if (previousData.closedTasks) {
-            // New structure
-            previousBaseCompleted = Array.isArray(previousData.closedTasks) ? previousData.closedTasks.length : 0
-          }
-        }
-      }
-    }
-    
-    // Calculate base tasks change (day-over-day comparison)
-    const baseTasksChange = totalTasks > 0 
-      ? ((currentBaseCompleted - previousBaseCompleted) / totalTasks) * 100 
+    const todayISO = formatDateISO(today)
+    const yearData = list.completedTasks?.[year] || {}
+
+    const currentBaseCompleted = getCompletedCount(yearData[todayISO])
+
+    // Find previous date's completion
+    const previousDate = Object.keys(yearData).sort().reverse().find(d => d < todayISO)
+    const previousBaseCompleted = previousDate ? getCompletedCount(yearData[previousDate]) : 0
+
+    const baseTasksChange = ((currentBaseCompleted - previousBaseCompleted) / totalTasks) * 100
+
+    // Ephemeral task change increment
+    const ephemeralChange = closedEphemeral > 0 && (openEphemeral + baseTasks + 1) > 0
+      ? (1 / (openEphemeral + baseTasks + 1)) * 100
       : 0
-    
-    // Calculate ephemeral tasks change
-    // When an ephemeral task is completed, increment = 1 / (remaining open ephemeral + base tasks + 1) * 100
-    // This represents the percentage point increase when one ephemeral task is completed
-    // The +1 accounts for the task that was just completed
-    // We need to calculate the increment based on the current state (after completion)
-    let ephemeralChange = 0
-    if (closedEphemeral > 0) {
-      // The increment is calculated as: 1 / (remaining open ephemeral + base tasks + 1) * 100
-      // This gives us the percentage point increase for completing one ephemeral task
-      const denominator = openEphemeral + baseTasks + 1
-      if (denominator > 0) {
-        ephemeralChange = (1 / denominator) * 100
-      }
-    }
-    
-    // Total change = base tasks change + ephemeral tasks change
+
     return baseTasksChange + ephemeralChange
   }, [])
 
@@ -291,6 +257,8 @@ export const DoToolbar = ({
   const [collabProfiles, setCollabProfiles] = useState<Record<string, string>>({})
   const [listEarnings, setListEarnings] = useState<{ profit: number; prize: number; earnings: number }>({ profit: 0, prize: 0, earnings: 0 })
   const [dayData, setDayData] = useState<any>(null)
+  const [optimisticEarnings, setOptimisticEarnings] = useState<{ profit: number; prize: number }>({ profit: 0, prize: 0 })
+  const [optimisticCompletionDelta, setOptimisticCompletionDelta] = useState<number>(0)
 
   // Update stable templates only when context has valid data (never clear once we have data)
   useEffect(() => {
@@ -330,48 +298,122 @@ export const DoToolbar = ({
 
   // Calculate earnings for the selected list from day.ticker
   useEffect(() => {
-    if (!selectedList) {
+    const resetEarnings = () => {
       setListEarnings({ profit: 0, prize: 0, earnings: 0 })
+      setOptimisticEarnings({ profit: 0, prize: 0 })
+    }
+
+    if (!selectedList?.id || !dayData) {
+      resetEarnings()
       return
     }
 
     try {
-      const listId = selectedList.id
-      if (!listId) {
-        setListEarnings({ profit: 0, prize: 0, earnings: 0 })
-        return
-      }
-
-      // If no dayData, set earnings to 0
-      if (!dayData) {
-        setListEarnings({ profit: 0, prize: 0, earnings: 0 })
-        return
-      }
-
-      // Get ticker array from day data
       const tickers = Array.isArray(dayData.ticker) ? dayData.ticker : []
-      
-      // Find all ticker entries for this listId and sum them up
-      const tickerEntries = tickers.filter((t: any) => t.listId === listId)
-      
-      // Sum all profit and prize values from all ticker entries
-      let totalProfit = 0
-      let totalPrize = 0
-      
-      tickerEntries.forEach((tickerEntry: any) => {
-        const profit = typeof tickerEntry.profit === 'number' ? tickerEntry.profit : (typeof tickerEntry.profit === 'string' ? parseFloat(tickerEntry.profit) || 0 : 0)
-        const prize = typeof tickerEntry.prize === 'number' ? tickerEntry.prize : (typeof tickerEntry.prize === 'string' ? parseFloat(tickerEntry.prize) || 0 : 0)
-        totalProfit += profit
-        totalPrize += prize
-      })
-      
-      const earnings = totalProfit + totalPrize
-      setListEarnings({ profit: totalProfit, prize: totalPrize, earnings })
+      const tickerEntries = tickers.filter((t: any) => t.listId === selectedList.id)
+
+      const totals = tickerEntries.reduce(
+        (acc: { profit: number; prize: number }, entry: any) => ({
+          profit: acc.profit + safeParseNumber(entry.profit),
+          prize: acc.prize + safeParseNumber(entry.prize)
+        }),
+        { profit: 0, prize: 0 }
+      )
+
+      setListEarnings({ ...totals, earnings: totals.profit + totals.prize })
+      setOptimisticEarnings({ profit: 0, prize: 0 })
     } catch (error) {
       console.error('Error calculating list earnings from day.ticker:', error)
-      setListEarnings({ profit: 0, prize: 0, earnings: 0 })
+      resetEarnings()
     }
   }, [selectedList?.id, dayData])
+
+  // Add optimistic earnings for a task completion
+  const addOptimisticTaskEarnings = useCallback(() => {
+    if (!selectedList || !session?.user) return
+
+    try {
+      // Get user equity from session
+      const userEquity = (session.user as any).equity || '0'
+
+      // Count total tasks in the list
+      const tasksCount = (selectedList.tasks || []).length || (selectedList.templateTasks || []).length || 1
+
+      // Calculate earnings for this task completion
+      const earningsCalculation = calculateTaskEarnings({
+        listRole: selectedList.role,
+        budgetPercentage: selectedList.budgetPercentage as number | undefined,
+        listBudget: selectedList.budget,
+        userEquity: userEquity,
+        numTasks: tasksCount,
+        date: selectedDateToUse || new Date()
+      })
+
+      // Get per-completer prize and profit based on list cadence
+      const prize = getPerCompleterPrize(earningsCalculation, selectedList.role)
+      const profit = getPerCompleterProfit(earningsCalculation, selectedList.role)
+
+      // Add to optimistic earnings
+      setOptimisticEarnings(prev => ({
+        profit: prev.profit + profit,
+        prize: prev.prize + prize
+      }))
+
+      // Auto-clear after 5 seconds (safety timeout)
+      setTimeout(() => {
+        setOptimisticEarnings({ profit: 0, prize: 0 })
+      }, 5000)
+    } catch (error) {
+      console.error('Error calculating optimistic earnings:', error)
+    }
+  }, [selectedList, session?.user, selectedDateToUse])
+
+  // Add optimistic completion percentage increase
+  const addOptimisticCompletion = useCallback(() => {
+    if (!selectedList) return
+
+    // Get current task counts
+    const baseTasks = (selectedList.tasks || selectedList.templateTasks || []).length
+    const ephemeralOpen = (selectedList.ephemeralTasks?.open || []).length
+    const ephemeralClosed = (selectedList.ephemeralTasks?.closed || []).length
+    const totalTasks = baseTasks + ephemeralOpen + ephemeralClosed
+
+    if (totalTasks === 0) return
+
+    // One more task completed = increase by (1/totalTasks * 100)
+    const delta = (1 / totalTasks) * 100
+    setOptimisticCompletionDelta(prev => prev + delta)
+
+    // Clear after 5 seconds
+    setTimeout(() => {
+      setOptimisticCompletionDelta(0)
+    }, 5000)
+  }, [selectedList])
+
+  // Combined optimistic callback for both earnings and completion
+  const handleTaskCompletionOptimistic = useCallback(() => {
+    addOptimisticTaskEarnings()
+    addOptimisticCompletion()
+  }, [addOptimisticTaskEarnings, addOptimisticCompletion])
+
+  // Store functions in GlobalContext for task handlers to use
+  useEffect(() => {
+    if (setGlobalContext) {
+      setGlobalContext((prev: any) => ({
+        ...prev,
+        addOptimisticTaskEarnings,
+        addOptimisticCompletion,
+        handleTaskCompletionOptimistic
+      }))
+    }
+  }, [addOptimisticTaskEarnings, addOptimisticCompletion, handleTaskCompletionOptimistic, setGlobalContext])
+
+  // Clear optimistic deltas when task lists refresh (real data arrived)
+  useEffect(() => {
+    if (contextTaskLists && contextTaskLists.length > 0) {
+      setOptimisticCompletionDelta(0)
+    }
+  }, [contextTaskLists])
 
 
   // Fetch owner and collaborator profiles for badges
@@ -571,16 +613,16 @@ export const DoToolbar = ({
                   )}
                   {/* Prize badge - show if budgetPercentage is allocated */}
                   {shouldShowPrizeBadge && (
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 hover:bg-green-100">
+                    <Badge variant="outline" className={optimisticEarnings.prize > 0 ? "bg-green-100 text-green-800 border-green-300 hover:bg-green-200 animate-pulse" : "bg-green-50 text-green-700 border-green-200 hover:bg-green-100"}>
                       <Award className="h-3 w-3 mr-1" />
-                      Prize: ${listEarnings.prize.toFixed(2)}
+                      Prize: ${(listEarnings.prize + optimisticEarnings.prize).toFixed(2)}
                     </Badge>
                   )}
-                  {/* Profit badge - show if there is profit from ticker */}
-                  {listEarnings.profit > 0 && (
-                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100">
+                  {/* Profit badge - show if there is profit from ticker or optimistic */}
+                  {(listEarnings.profit > 0 || optimisticEarnings.profit > 0) && (
+                    <Badge variant="outline" className={optimisticEarnings.profit > 0 ? "bg-blue-100 text-blue-800 border-blue-300 hover:bg-blue-200 animate-pulse" : "bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100"}>
                       <TrendingUp className="h-3 w-3 mr-1" />
-                      Profit: ${listEarnings.profit.toFixed(2)}
+                      Profit: ${(listEarnings.profit + optimisticEarnings.profit).toFixed(2)}
                     </Badge>
                   )}
                   {(selectedList as any)?.dueDate && (
@@ -632,9 +674,15 @@ export const DoToolbar = ({
                   {/* Completion percentage badge with ticker */}
                   {selectedList && (
                     <>
-                      <Badge variant="outline" className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80">
+                      <Badge
+                        variant="outline"
+                        className={optimisticCompletionDelta > 0
+                          ? "bg-green-100 text-green-800 border-green-300 hover:bg-green-200 animate-pulse"
+                          : "bg-muted text-muted-foreground border-muted hover:bg-secondary/80"
+                        }
+                      >
                         <CheckCircle2 className="h-3 w-3 mr-1" />
-                        {calculateCompletionPercentage(selectedList, selectedDateToUse).toFixed(0)}%
+                        {Math.min(100, calculateCompletionPercentage(selectedList, selectedDateToUse) + optimisticCompletionDelta).toFixed(0)}%
                       </Badge>
                       <PercentageTicker value={calculateCompletionChange(selectedList)} />
                     </>

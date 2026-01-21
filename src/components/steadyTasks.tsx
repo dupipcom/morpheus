@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useContext, useEffect, useState, useCallback, useRef } from 'react'
+import useSWR from 'swr'
 import { GlobalContext } from '@/lib/contexts'
 import { Skeleton } from '@/components/ui/skeleton'
 import { OptionsMenuItem } from '@/components/optionsButton'
@@ -13,8 +14,10 @@ import { TaskItem } from '@/components/taskItem'
 import { useOptimisticUpdates } from '@/lib/hooks/useOptimisticUpdates'
 import { useTaskHandlers } from '@/lib/hooks/useTaskHandlers'
 
+const fetcher = (url: string) => fetch(url).then((res) => res.json())
+
 export const SteadyTasks = () => {
-  const { taskLists: contextTaskLists, refreshTaskLists, revealRedacted } = useContext(GlobalContext)
+  const { taskLists: contextTaskLists, refreshTaskLists, revealRedacted, session } = useContext(GlobalContext)
   const { t } = useI18n()
   const { refreshUser } = useUserData()
   const [stableTaskLists, setStableTaskLists] = useState<any[]>([])
@@ -28,6 +31,17 @@ export const SteadyTasks = () => {
 
   // Use shared hooks for optimistic updates
   const { pendingCompletionsRef, pendingStatusUpdatesRef } = useOptimisticUpdates()
+
+  // Get current user ID
+  const userId = (session?.user as any)?.id
+
+  // Fetch steady/in-progress tasks from new API
+  const { data: steadyTasksData } = useSWR(
+    '/api/v1/tasks?status=IN_PROGRESS,STEADY',
+    fetcher,
+    { revalidateOnFocus: false }
+  )
+  const steadyTasksFromApi = steadyTasksData?.tasks || []
 
   // Maintain stable task lists that never clear once loaded
   useEffect(() => {
@@ -435,6 +449,24 @@ export const SteadyTasks = () => {
     }
   }, [handleStatusChange, handleIncrementCount])
 
+  // Choose between new API data and legacy data
+  const tasksToDisplay = useMemo(() => {
+    // If we have tasks from the new API, use them
+    if (steadyTasksFromApi.length > 0) {
+      return steadyTasksFromApi.map((t: any) => ({
+        ...t,
+        taskStatus: t.status,
+        taskListName: t.list?.name || '',
+        taskListId: t.listId,
+        taskListRole: t.list?.role || '',
+        displayName: t.name,
+      }))
+    }
+
+    // Fallback to legacy steadyTasks
+    return steadyTasks
+  }, [steadyTasksFromApi, steadyTasks])
+
   if (isLoading) {
     return (
       <div className="w-full px-1 sm:px-0 mt-4">
@@ -450,7 +482,7 @@ export const SteadyTasks = () => {
     )
   }
 
-  if (steadyTasks.length === 0) {
+  if (tasksToDisplay.length === 0) {
     return null
   }
 
@@ -458,13 +490,13 @@ export const SteadyTasks = () => {
   const mobileInitialLimit = 1
   const mobileExpandedLimit = 5
   const desktopLimit = 10
-  const hasMoreTasks = steadyTasks.length > mobileInitialLimit
+  const hasMoreTasks = tasksToDisplay.length > mobileInitialLimit
   const mobileLimit = isExpanded ? mobileExpandedLimit : mobileInitialLimit
 
   return (
     <div className="space-y-4 w-full mt-4 px-1 sm:px-0 relative">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 align-center justify-center w-full m-auto gap-2">
-        {steadyTasks.map((task: any, index: number) => {
+        {tasksToDisplay.map((task: any, index: number) => {
           const taskStatus: TaskStatus = (task?.taskStatus as TaskStatus) || 'open'
           const statusColor = getStatusColor(taskStatus, 'css')
           const iconColor = getIconColor(taskStatus)

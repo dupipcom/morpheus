@@ -1,9 +1,10 @@
 'use client'
 
-import React, { useMemo, useCallback, useState } from 'react'
+import React, { useMemo, useCallback, useState, useContext } from 'react'
 import { OptionsMenuItem } from '@/components/optionsButton'
 import { Circle, Minus, Plus, Eye, EyeOff, Edit } from 'lucide-react'
 import { useI18n } from '@/lib/contexts/i18n'
+import { GlobalContext } from '@/lib/contexts'
 import { getProfitPerTask } from '@/lib/utils/earningsUtils'
 import { TaskItem } from '@/components/taskItem'
 import { TaskStatus, STATUS_OPTIONS, getStatusColor, getIconColor, getTaskKey, getTaskStatus } from '@/lib/utils/taskUtils'
@@ -18,8 +19,11 @@ interface TaskGridProps {
   collabProfiles: Record<string, string>
   revealRedacted: boolean
   date: string
+  userId: string
+  jobs?: any[]
   onRefresh: () => Promise<void>
   onRefreshUser: () => Promise<void>
+  onRefreshTasks?: () => Promise<void>
 }
 
 export const TaskGrid = ({
@@ -28,10 +32,14 @@ export const TaskGrid = ({
   collabProfiles,
   revealRedacted,
   date,
+  userId,
+  jobs = [],
   onRefresh,
   onRefreshUser,
+  onRefreshTasks,
 }: TaskGridProps) => {
   const { t } = useI18n()
+  const { refreshTaskLists, handleTaskCompletionOptimistic } = useContext(GlobalContext)
   const [editingTask, setEditingTask] = useState<any>(null)
 
   // Use shared hooks for optimistic updates and task statuses
@@ -41,7 +49,7 @@ export const TaskGrid = ({
     selectedTaskListId: selectedTaskList?.id,
     date,
   })
-  
+
   // Use shared task handlers
   const {
     handleTaskClick,
@@ -49,12 +57,20 @@ export const TaskGrid = ({
     handleIncrementCount,
     handleDecrementCount,
     handleToggleRedacted,
+    handleValidateJob,
+    handleAddPeerReview,
+    handleAddManagerReview,
   } = useTaskHandlers({
     taskListId: selectedTaskList?.id,
     tasks,
     date,
+    userId,
+    selectedTaskList,
     onRefresh,
     onRefreshUser,
+    onRefreshTasks,
+    onRefreshTaskLists: refreshTaskLists,
+    onTaskCompletedOptimistic: handleTaskCompletionOptimistic,
     pendingCompletionsRef,
     pendingStatusUpdatesRef,
     setTaskStatuses,
@@ -91,84 +107,45 @@ export const TaskGrid = ({
     })
   }, [tasks, taskStatuses])
   
-  // Additional handlers for increment/decrement times (not in useTaskHandlers yet)
+  // Additional handlers for increment/decrement times
   const handleIncrementTimes = useCallback(async (task: any) => {
-    if (!selectedTaskList) return
+    if (!selectedTaskList || !task.id) return
     const key = getTaskKey(task)
     const currentTimes = task?.times || 1
     const newTimes = currentTimes + 1
+    const currentCount = task?.count || 0
+
+    // Calculate new status based on count and new times
+    let newStatus = 'OPEN'
+    if (currentCount >= newTimes) {
+      newStatus = 'DONE'
+    } else if (currentCount > 0) {
+      const existingStatus = taskStatuses[key]
+      if (!existingStatus || existingStatus === 'done' || existingStatus === 'open') {
+        newStatus = 'IN_PROGRESS'
+      } else {
+        // Map old status to new enum
+        const statusMap: Record<string, string> = {
+          'in progress': 'IN_PROGRESS',
+          'steady': 'STEADY',
+          'ready': 'READY',
+          'open': 'OPEN',
+          'done': 'DONE',
+          'ignored': 'IGNORED',
+        }
+        newStatus = statusMap[existingStatus] || 'OPEN'
+      }
+    }
 
     try {
-      const regular = tasks.filter((t: any) => !t.isEphemeral)
-      const ephemerals = tasks.filter((t: any) => t.isEphemeral)
-      const allTasks = [...regular, ...ephemerals]
-      
-      const nextActions = allTasks.map((action: any) => {
-        const c = { ...action }
-        const actionKey = getTaskKey(action)
-        if (actionKey === key) {
-          c.times = newTimes
-          const currentCount = c.count || 0
-          if (currentCount >= newTimes) {
-            c.status = 'done'
-          } else if (currentCount > 0) {
-            const existingStatus = taskStatuses[actionKey]
-            if (!existingStatus || existingStatus === 'done' || existingStatus === 'open') {
-              c.status = 'in progress'
-            } else {
-              c.status = existingStatus
-            }
-          } else {
-            c.status = 'open'
-          }
-        }
-        return c
-      })
-
-      await fetch('/api/v1/tasklists', {
-        method: 'POST',
+      await fetch(`/api/v1/tasks/${task.id}`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          recordCompletions: true,
-          taskListId: selectedTaskList.id,
-          dayActions: nextActions,
-          date,
-          justCompletedNames: [],
-          justUncompletedNames: []
+          times: newTimes,
+          status: newStatus
         })
       })
-
-      const ephemeralTask = ephemerals.find((e: any) => e.id === task.id)
-      if (ephemeralTask) {
-        const updatedEph = nextActions.find((a: any) => getTaskKey(a) === key)
-        if (updatedEph) {
-          const newCount = updatedEph.count || 0
-          const newTimes = updatedEph.times || 1
-          
-          const closedEphemerals = (selectedTaskList?.ephemeralTasks?.closed || [])
-          const isInClosed = closedEphemerals.some((t: any) => t.id === ephemeralTask.id)
-          
-          if (isInClosed && newCount < newTimes) {
-            await fetch('/api/v1/tasklists', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                taskListId: selectedTaskList.id,
-                ephemeralTasks: { reopen: { id: ephemeralTask.id, count: newCount } }
-              })
-            })
-          } else if (!isInClosed) {
-            await fetch('/api/v1/tasklists', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                taskListId: selectedTaskList.id,
-                ephemeralTasks: { update: { id: ephemeralTask.id, count: newCount, status: updatedEph.status, times: newTimes } }
-              })
-            })
-          }
-        }
-      }
 
       await onRefresh()
       await onRefreshUser()
@@ -178,16 +155,39 @@ export const TaskGrid = ({
   }, [selectedTaskList, tasks, date, onRefresh, onRefreshUser, taskStatuses])
   
   const handleDecrementTimes = useCallback(async (task: any) => {
-    if (!selectedTaskList) return
+    if (!selectedTaskList || !task.id) return
     const key = getTaskKey(task)
     const currentTimes = task?.times || 1
     const currentCount = task?.count || 0
-    
+
     if (currentTimes <= 1) return
 
     const newTimes = currentTimes - 1
     const newCount = (currentTimes === currentCount) ? Math.max(0, currentCount - 1) : currentCount
 
+    // Calculate new status
+    let newStatus = 'OPEN'
+    if (newCount >= newTimes) {
+      newStatus = 'DONE'
+    } else if (newCount > 0) {
+      const existingStatus = taskStatuses[key]
+      if (!existingStatus || existingStatus === 'done' || existingStatus === 'open') {
+        newStatus = 'IN_PROGRESS'
+      } else {
+        // Map old status to new enum
+        const statusMap: Record<string, string> = {
+          'in progress': 'IN_PROGRESS',
+          'steady': 'STEADY',
+          'ready': 'READY',
+          'open': 'OPEN',
+          'done': 'DONE',
+          'ignored': 'IGNORED',
+        }
+        newStatus = statusMap[existingStatus] || 'OPEN'
+      }
+    }
+
+    // Optimistic update
     setTaskStatuses(prev => {
       const updated = { ...prev }
       if (newCount >= newTimes) {
@@ -204,76 +204,15 @@ export const TaskGrid = ({
     })
 
     try {
-      const regular = tasks.filter((t: any) => !t.isEphemeral)
-      const ephemerals = tasks.filter((t: any) => t.isEphemeral)
-      const allTasks = [...regular, ...ephemerals]
-      
-      const nextActions = allTasks.map((action: any) => {
-        const c = { ...action }
-        const actionKey = getTaskKey(action)
-        if (actionKey === key) {
-          c.times = newTimes
-          c.count = newCount
-          if (c.count >= c.times) {
-            c.status = 'done'
-          } else {
-            const existingStatus = taskStatuses[actionKey]
-            if (c.count > 0 && (!existingStatus || existingStatus === 'done' || existingStatus === 'open')) {
-              c.status = 'in progress'
-            } else if (c.count === 0) {
-              c.status = 'open'
-            } else {
-              c.status = existingStatus || 'open'
-            }
-          }
-        }
-        return c
-      })
-
-      await fetch('/api/v1/tasklists', {
-        method: 'POST',
+      await fetch(`/api/v1/tasks/${task.id}`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          recordCompletions: true,
-          taskListId: selectedTaskList.id,
-          dayActions: nextActions,
-          date,
-          justCompletedNames: [],
-          justUncompletedNames: []
+          times: newTimes,
+          count: newCount,
+          status: newStatus
         })
       })
-
-      const ephemeralTask = ephemerals.find((e: any) => e.id === task.id)
-      if (ephemeralTask) {
-        const updatedEph = nextActions.find((a: any) => getTaskKey(a) === key)
-        if (updatedEph) {
-          const updatedCount = updatedEph.count || 0
-          const updatedTimes = updatedEph.times || 1
-          
-          const closedEphemerals = (selectedTaskList?.ephemeralTasks?.closed || [])
-          const isInClosed = closedEphemerals.some((t: any) => t.id === ephemeralTask.id)
-          
-          if (isInClosed && updatedCount < updatedTimes) {
-            await fetch('/api/v1/tasklists', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                taskListId: selectedTaskList.id,
-                ephemeralTasks: { reopen: { id: ephemeralTask.id, count: updatedCount } }
-              })
-            })
-          } else if (!isInClosed) {
-            await fetch('/api/v1/tasklists', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                taskListId: selectedTaskList.id,
-                ephemeralTasks: { update: { id: ephemeralTask.id, count: updatedCount, status: updatedEph.status, times: updatedTimes } }
-              })
-            })
-          }
-        }
-      }
 
       await onRefresh()
       await onRefreshUser()
@@ -307,10 +246,15 @@ export const TaskGrid = ({
           ? { ...task, count: pendingCompletion.count }
           : task
         
-        const lastCompleter = Array.isArray(task?.completers) && task.completers.length > 0 
-          ? task.completers[task.completers.length - 1] 
+        // Get jobs for this task (from new job system)
+        const taskJobs = jobs.filter((j: any) => j.taskId === task.id)
+        const latestJob = taskJobs.length > 0 ? taskJobs[0] : null
+
+        // For backward compatibility, check old completers array
+        const lastCompleter = Array.isArray(task?.completers) && task.completers.length > 0
+          ? task.completers[task.completers.length - 1]
           : undefined
-        
+
         // Extract owners and collaborators from users array (new model) or fallback to old fields
         const users = Array.isArray((selectedTaskList as any)?.users) ? (selectedTaskList as any).users : []
         const ownersFromUsers = users.filter((u: any) => u.role === 'OWNER').map((u: any) => u.userId)
@@ -319,13 +263,15 @@ export const TaskGrid = ({
         const collaboratorsFromOld = Array.isArray((selectedTaskList as any)?.collaborators) ? (selectedTaskList as any).collaborators : []
         const allOwners = ownersFromUsers.length > 0 ? ownersFromUsers : ownersFromOld
         const allCollaborators = collaboratorsFromUsers.length > 0 ? collaboratorsFromUsers : collaboratorsFromOld
-        
+
         const hasCollaborators = allCollaborators.length > 0
-        
-        // Get the completer name: only show if there's actually a completer (don't fallback to owner)
-        const completerName = lastCompleter 
-          ? (collabProfiles[String(lastCompleter.id)] || String(lastCompleter.id))
-          : null
+
+        // Get the completer name: prioritize latest job, fallback to old completer
+        const completerName = latestJob
+          ? (latestJob.worker?.profiles?.[0]?.username || collabProfiles[String(latestJob.workerId)] || String(latestJob.workerId))
+          : lastCompleter
+            ? (collabProfiles[String(lastCompleter.id)] || String(lastCompleter.id))
+            : null
         
         // Calculate earnings for THIS specific task completion
         const listBudget = (selectedTaskList as any)?.budget
@@ -338,6 +284,11 @@ export const TaskGrid = ({
         const finalTaskStatus = taskStatuses[key] || getTaskStatus(task)
         const statusColor = getStatusColor(finalTaskStatus, 'css')
         const iconColor = getIconColor(finalTaskStatus)
+
+        // Determine user role for job validation
+        const userRole = users.find((u: any) => u.userId === userId)?.role || 'COLLABORATOR'
+        const hasPendingJobs = taskJobs.some((j: any) => j.status === 'VALIDATING')
+        const canValidateJobs = (userRole === 'OWNER' || userRole === 'MANAGER') && hasPendingJobs
 
         // Build options menu items
         const optionsMenuItems: OptionsMenuItem[] = [
@@ -356,7 +307,20 @@ export const TaskGrid = ({
           })),
           {
             label: t('tasks.edit', { defaultValue: 'Edit' }),
-            onClick: () => setEditingTask(taskWithOptimisticCount),
+            onClick: () => {
+              // Find the source task from list.tasks (the template)
+              const sourceTask = selectedTaskList?.tasks?.find((t: any) =>
+                t.id === task.id ||
+                t.localeKey === task.localeKey ||
+                (t.name && task.name && t.name.toLowerCase() === task.name.toLowerCase())
+              ) || selectedTaskList?.templateTasks?.find((t: any) =>
+                t.id === task.id ||
+                t.localeKey === task.localeKey ||
+                (t.name && task.name && t.name.toLowerCase() === task.name.toLowerCase())
+              )
+              // Use source task if found, otherwise fall back to current task for ephemeral tasks
+              setEditingTask(sourceTask || taskWithOptimisticCount)
+            },
             icon: <Edit className="h-4 w-4" />,
             separator: true,
           },
@@ -403,6 +367,8 @@ export const TaskGrid = ({
             taskEarnings={taskEarnings}
             hasCollaborators={hasCollaborators}
             variant={isDone ? 'default' : 'outline'}
+            latestJob={latestJob}
+            hasPendingJobs={hasPendingJobs}
           />
         )
       })}
