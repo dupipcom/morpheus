@@ -30,7 +30,8 @@ import {
   createTaskList,
   updateTaskList,
   updateTemplateWithTasks,
-  getTaskListWithTemplate
+  getTaskListWithTemplate,
+  getListCompletionData
 } from '@/lib/services/tasklist'
 import { recordCompletions } from '@/lib/services/tasklist'
 import { updateTaskStatus, updateTaskRedacted } from '@/lib/services/tasklist'
@@ -81,7 +82,26 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     // Calculate collaborator earnings for each task list
     const taskListsWithEarnings = await calculateCollaboratorEarnings(taskLists)
 
-    return NextResponse.json({ taskLists: taskListsWithEarnings })
+    // Add job-based completion data to each list
+    const taskListsWithCompletion = await Promise.all(
+      taskListsWithEarnings.map(async (list: any) => {
+        try {
+          const jobCompletionData = await getListCompletionData(list.id)
+          return {
+            ...list,
+            jobCompletedTasks: jobCompletionData  // Separate field to not overwrite legacy data
+          }
+        } catch (error) {
+          console.error(`Error getting completion data for list ${list.id}:`, error)
+          return {
+            ...list,
+            jobCompletedTasks: {}
+          }
+        }
+      })
+    )
+
+    return NextResponse.json({ taskLists: taskListsWithCompletion })
   } catch (error) {
     console.error('Error fetching task lists:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

@@ -89,27 +89,38 @@ export const DoToolbar = ({
   // Helper function to get completion percentage from stored value for selected date
   const calculateCompletionPercentage = useCallback((list: any, date?: Date): number => {
     if (!list) return 0
-    
+
     // Use the selected date or default to today
     const targetDate = date || selectedDateToUse || new Date()
     const year = targetDate.getFullYear()
     const dateISO = `${year}-${String(targetDate.getMonth() + 1).padStart(2, '0')}-${String(targetDate.getDate()).padStart(2, '0')}`
-    
+
+    // Prefer job-based completion data (new system)
+    if (list.jobCompletedTasks) {
+      const yearData = list.jobCompletedTasks[year] || {}
+      const dateData = yearData[dateISO]
+
+      if (dateData && typeof dateData.completion === 'number') {
+        return dateData.completion
+      }
+    }
+
+    // Fallback to legacy completedTasks
     if (list.completedTasks) {
       const completedTasks = list.completedTasks
       const yearData = completedTasks[year] || {}
       const dateData = yearData[dateISO]
-      
+
       if (dateData) {
         // First check if completion is stored directly in the date bucket
         if (typeof dateData.completion === 'number') {
           return dateData.completion
         }
-        
+
         // Fallback: calculate from openTasks and closedTasks
         let openTasks: any[] = []
         let closedTasks: any[] = []
-        
+
         if (Array.isArray(dateData)) {
           // Legacy structure
           openTasks = dateData.filter((t: any) => t.status !== 'done')
@@ -119,14 +130,14 @@ export const DoToolbar = ({
           openTasks = Array.isArray(dateData.openTasks) ? dateData.openTasks : []
           closedTasks = Array.isArray(dateData.closedTasks) ? dateData.closedTasks : []
         }
-        
+
         const totalTasks = openTasks.length + closedTasks.length
         if (totalTasks > 0) {
           return (closedTasks.length / totalTasks) * 100
         }
       }
     }
-    
+
     return 0
   }, [selectedDateToUse])
 

@@ -113,3 +113,10 @@ export {
   updateTemplateWithTasks,
   getTaskListWithTemplate
 } from './taskListCrudService'
+
+// List completion service (Job-based)
+export {
+  calculateListCompletionFromJobs,
+  calculateYearCompletionFromJobs,
+  getListCompletionData
+} from './listCompletionService'

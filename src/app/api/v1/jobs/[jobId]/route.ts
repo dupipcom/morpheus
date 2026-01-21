@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { getAuthenticatedUser, getUserListRole } from '@/lib/services/auth'
 import { updateTaskOccurrenceDates } from '@/lib/services/task'
+import { updateDayProgress } from '@/lib/services/day'
 
 /**
  * Shared include configuration for job queries with full relations
@@ -243,9 +244,15 @@ export async function PUT(
       if (!wasAccepted && isNowAccepted) {
         // Job was just accepted - count as completion
         await updateTaskOccurrenceDates(existingJob.taskId, 'complete', existingJob.occurrenceDate)
+
+        // Update Day.progress for this date
+        await updateDayProgress(existingJob.workerId, existingJob.occurrenceDate)
       } else if (wasAccepted && !isNowAccepted) {
         // Job was unaccepted - remove from completion count
         await updateTaskOccurrenceDates(existingJob.taskId, 'delete', existingJob.occurrenceDate)
+
+        // Update Day.progress for this date
+        await updateDayProgress(existingJob.workerId, existingJob.occurrenceDate)
       }
     }
 
@@ -300,7 +307,7 @@ export async function DELETE(
     }
 
     // Save job info for occurrence date update
-    const { taskId, occurrenceDate, status } = existingJob
+    const { taskId, occurrenceDate, status, workerId } = existingJob
 
     // Delete job
     await prisma.job.delete({
@@ -310,6 +317,9 @@ export async function DELETE(
     // Update task occurrence dates if job was ACCEPTED
     if (status === 'ACCEPTED' && occurrenceDate) {
       await updateTaskOccurrenceDates(taskId, 'delete', occurrenceDate)
+
+      // Update Day.progress for this date
+      await updateDayProgress(workerId, occurrenceDate)
     }
 
     return NextResponse.json({ message: 'Job deleted successfully' })
