@@ -280,7 +280,7 @@ export async function migrateListTasks({
   const ephemeralOpenTasks = (list.ephemeralTasks?.open || []) as unknown as EmbeddedTask[]
   const ephemeralClosedTasks = (list.ephemeralTasks?.closed || []) as unknown as EmbeddedTask[]
   const tasksToMigrate = taskKeys
-    ? [...templateTasks, ephemeralOpenTasks, ephemeralClosedTasks].filter(t => {
+    ? [...templateTasks, ...ephemeralOpenTasks, ...ephemeralClosedTasks].filter(t => {
         const key = getTaskMatchKey(t)
         return key && taskKeys.includes(key)
       })
