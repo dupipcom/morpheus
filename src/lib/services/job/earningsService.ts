@@ -12,6 +12,36 @@ import {
   calculateUpdatedUserValues
 } from '@/lib/utils/earningsUtils'
 
+// Helper to safely parse a number
+function safeParseFloat(value: unknown): number {
+  return parseFloat(String(value || 0))
+}
+
+// Calculate ISO week number (ISO 8601)
+function getWeekNumber(date: Date): number {
+  const tempDate = new Date(date.valueOf())
+  const dayNum = (date.getDay() + 6) % 7
+  tempDate.setDate(tempDate.getDate() - dayNum + 3)
+  const firstThursday = tempDate.valueOf()
+  tempDate.setMonth(0, 1)
+  if (tempDate.getDay() !== 4) {
+    tempDate.setMonth(0, 1 + ((4 - tempDate.getDay()) + 7) % 7)
+  }
+  return 1 + Math.ceil((firstThursday - tempDate.valueOf()) / 604800000)
+}
+
+// Calculate date metadata for Day record creation
+function getDateMetadata(dateStr: string): { week: number; month: number; quarter: number; semester: number } {
+  const date = new Date(dateStr)
+  const month = date.getMonth() + 1
+  return {
+    week: getWeekNumber(date),
+    month,
+    quarter: Math.ceil(month / 3),
+    semester: month <= 6 ? 1 : 2
+  }
+}
+
 /**
  * Calculate total earnings from all ACCEPTED jobs for a list/date/worker
  */
@@ -21,31 +51,22 @@ async function calculateTotalEarningsFromJobs(
   occurrenceDate: string
 ): Promise<{ totalPrize: number; totalProfit: number; totalEarnings: number }> {
   const jobs = await prisma.job.findMany({
-    where: {
-      listId,
-      workerId,
-      occurrenceDate,
-      status: 'ACCEPTED'
-    },
-    select: {
-      earnings: true,
-      prize: true,
-      profit: true
-    }
+    where: { listId, workerId, occurrenceDate, status: 'ACCEPTED' },
+    select: { prize: true, profit: true }
   })
 
-  let totalPrize = 0
-  let totalProfit = 0
-
-  jobs.forEach(job => {
-    totalPrize += parseFloat(String(job.prize || 0))
-    totalProfit += parseFloat(String(job.profit || 0))
-  })
+  const totals = jobs.reduce(
+    (acc, job) => ({
+      prize: acc.prize + safeParseFloat(job.prize),
+      profit: acc.profit + safeParseFloat(job.profit)
+    }),
+    { prize: 0, profit: 0 }
+  )
 
   return {
-    totalPrize,
-    totalProfit,
-    totalEarnings: totalPrize + totalProfit
+    totalPrize: totals.prize,
+    totalProfit: totals.profit,
+    totalEarnings: totals.prize + totals.profit
   }
 }
 
@@ -58,80 +79,39 @@ async function updateDayTickerFromJobs(
   occurrenceDate: string
 ): Promise<void> {
   try {
-    // Calculate totals from all jobs
-    const { totalPrize, totalProfit } = await calculateTotalEarningsFromJobs(
-      listId,
-      workerId,
-      occurrenceDate
-    )
+    const { totalPrize, totalProfit } = await calculateTotalEarningsFromJobs(listId, workerId, occurrenceDate)
 
-    // Get or create Day record
     const day = await prisma.day.findFirst({
-      where: {
-        userId: workerId,
-        date: occurrenceDate
-      }
+      where: { userId: workerId, date: occurrenceDate }
     })
 
-    if (!day) {
-      // Create day if it doesn't exist
-      const date = new Date(occurrenceDate)
-      const dateObj = new Date(occurrenceDate)
-      const dayNum = (dateObj.getDay() + 6) % 7
-      const tempDate = new Date(dateObj.valueOf())
-      tempDate.setDate(tempDate.getDate() - dayNum + 3)
-      const firstThursday = tempDate.valueOf()
-      tempDate.setMonth(0, 1)
-      if (tempDate.getDay() !== 4) {
-        tempDate.setMonth(0, 1 + ((4 - tempDate.getDay()) + 7) % 7)
-      }
-      const week = 1 + Math.ceil((firstThursday - tempDate.valueOf()) / 604800000)
+    const newTickerEntry = { listId, profit: totalProfit, prize: totalPrize }
+    const hasEarnings = totalPrize > 0 || totalProfit > 0
 
+    if (!day) {
+      const metadata = getDateMetadata(occurrenceDate)
       await prisma.day.create({
         data: {
           userId: workerId,
           date: occurrenceDate,
-          week,
-          month: date.getMonth() + 1,
-          quarter: Math.ceil((date.getMonth() + 1) / 3),
-          semester: date.getMonth() + 1 <= 6 ? 1 : 2,
-          ticker: [{
-            listId,
-            profit: totalProfit,
-            prize: totalPrize
-          }] as any,
+          ...metadata,
+          ticker: hasEarnings ? [newTickerEntry] as any : [],
           tasks: []
         }
       })
       return
     }
 
-    // Update existing day's ticker
     const existingTickers = Array.isArray(day.ticker) ? day.ticker : []
-
-    // Remove old ticker entry for this list
-    const filteredTickers = (existingTickers as any[]).filter(
-      (t: any) => t.listId !== listId
-    )
-
-    // Add new ticker entry with totals (only if there are earnings)
-    const updatedTickers = totalPrize > 0 || totalProfit > 0
-      ? [...filteredTickers, {
-          listId,
-          profit: totalProfit,
-          prize: totalPrize
-        }]
-      : filteredTickers
+    const filteredTickers = (existingTickers as any[]).filter((t: any) => t.listId !== listId)
+    const updatedTickers = hasEarnings ? [...filteredTickers, newTickerEntry] : filteredTickers
 
     await prisma.day.update({
       where: { id: day.id },
-      data: {
-        ticker: updatedTickers as any
-      }
+      data: { ticker: updatedTickers as any }
     })
   } catch (error) {
     console.error('Error updating Day ticker from jobs:', error)
-    // Don't throw - we don't want to fail the job operation if ticker update fails
   }
 }
 
@@ -155,6 +135,61 @@ interface JobEarningsResult {
   } | null
 }
 
+// Helper to update user financial values and return updated values
+async function updateUserFinancials(
+  workerId: string,
+  stashDelta: number,
+  profitDelta: number
+): Promise<{ newAvailableBalance: number; newStash: number; newEquity: number; newProfit: number }> {
+  const worker = await prisma.user.findUnique({
+    where: { id: workerId },
+    select: { availableBalance: true, stash: true, equity: true, profit: true }
+  })
+
+  if (!worker) throw new Error('Worker not found')
+
+  const updatedValues = await calculateUpdatedUserValues({
+    currentStash: safeParseFloat(worker.stash),
+    currentProfit: safeParseFloat(worker.profit),
+    currentAvailableBalance: safeParseFloat(worker.availableBalance),
+    stashDelta,
+    profitDelta
+  })
+
+  await prisma.user.update({
+    where: { id: workerId },
+    data: {
+      stash: updatedValues.newStash as any,
+      profit: updatedValues.newProfit as any,
+      equity: updatedValues.newEquity as any
+    }
+  })
+
+  return updatedValues
+}
+
+// Helper to update Day snapshot with latest user financial values
+async function updateDaySnapshot(
+  workerId: string,
+  occurrenceDate: string,
+  values: { newAvailableBalance: number; newStash: number; newEquity: number }
+): Promise<void> {
+  const day = await prisma.day.findFirst({
+    where: { userId: workerId, date: occurrenceDate }
+  })
+
+  if (day) {
+    await prisma.day.update({
+      where: { id: day.id },
+      data: {
+        balance: values.newAvailableBalance,
+        stash: values.newStash,
+        equity: values.newEquity
+      }
+    })
+  }
+}
+
 /**
  * Calculate and apply earnings for a completed job
  * Updates user's stash, profit, equity and Day.ticker
@@ -167,46 +202,23 @@ export async function calculateAndApplyJobEarnings({
   occurrenceDate
 }: CalculateJobEarningsParams): Promise<JobEarningsResult> {
   try {
-    // Fetch list details
-    const list = await prisma.list.findUnique({
-      where: { id: listId },
-      select: {
-        id: true,
-        role: true,
-        budget: true,
-        budgetPercentage: true,
-        tasks: true,
-        templateTasks: true
-      }
-    })
+    const [list, worker] = await Promise.all([
+      prisma.list.findUnique({
+        where: { id: listId },
+        select: { role: true, budget: true, budgetPercentage: true, tasks: true, templateTasks: true }
+      }),
+      prisma.user.findUnique({
+        where: { id: workerId },
+        select: { equity: true }
+      })
+    ])
 
-    if (!list) {
-      throw new Error('List not found')
-    }
+    if (!list) throw new Error('List not found')
+    if (!worker) throw new Error('Worker not found')
 
-    // Fetch worker (user) details
-    const worker = await prisma.user.findUnique({
-      where: { id: workerId },
-      select: {
-        id: true,
-        availableBalance: true,
-        stash: true,
-        equity: true,
-        profit: true
-      }
-    })
-
-    if (!worker) {
-      throw new Error('Worker not found')
-    }
-
-    // Count total tasks in the list
     const tasksCount = (list.tasks || []).length || (list.templateTasks || []).length || 1
-
-    // Get user equity - ensure it's a string for the calculation
     const userEquity = String(worker.equity || '0')
 
-    // Calculate earnings for this task completion
     const earningsCalculation = calculateTaskEarnings({
       listRole: list.role,
       budgetPercentage: list.budgetPercentage as number | undefined,
@@ -216,72 +228,20 @@ export async function calculateAndApplyJobEarnings({
       date: new Date(occurrenceDate)
     })
 
-    // Get per-completer prize and profit based on list cadence
     const prize = getPerCompleterPrize(earningsCalculation, list.role)
     const profit = getPerCompleterProfit(earningsCalculation, list.role)
     const earnings = prize + profit
 
-    // Calculate deltas for stash and profit
-    const { stashDelta, profitDelta } = calculateStashAndProfitDeltas(
-      prize,
-      profit,
-      true // isAddition
-    )
+    const { stashDelta, profitDelta } = calculateStashAndProfitDeltas(prize, profit, true)
+    const updatedValues = await updateUserFinancials(workerId, stashDelta, profitDelta)
 
-    // Update user's financial values
-    const currentStash = parseFloat(String(worker.stash || 0))
-    const currentProfit = parseFloat(String((worker as any).profit || 0))
-    const currentAvailableBalance = parseFloat(String(worker.availableBalance || 0))
-
-    const updatedValues = await calculateUpdatedUserValues({
-      currentStash,
-      currentProfit,
-      currentAvailableBalance,
-      stashDelta,
-      profitDelta
-    })
-
-    // Update user in database
-    await prisma.user.update({
-      where: { id: workerId },
-      data: {
-        stash: updatedValues.newStash as any,
-        profit: updatedValues.newProfit as any,
-        equity: updatedValues.newEquity as any
-      }
-    })
-
-    // Store earnings in the job record for reference
     await prisma.job.update({
       where: { id: jobId },
-      data: {
-        earnings: earnings as any,
-        prize: prize as any,
-        profit: profit as any
-      }
+      data: { earnings: earnings as any, prize: prize as any, profit: profit as any }
     })
 
-    // Update Day.ticker with TOTAL earnings from ALL jobs for this list/date
     await updateDayTickerFromJobs(workerId, listId, occurrenceDate)
-
-    // Also update Day balance/stash/equity
-    const day = await prisma.day.findFirst({
-      where: {
-        userId: workerId,
-        date: occurrenceDate
-      }
-    })
-
-    if (day) {
-      await prisma.day.update({
-        where: { id: day.id },
-        data: {
-          balance: updatedValues.newAvailableBalance,
-          stash: updatedValues.newStash,
-          equity: updatedValues.newEquity
-        }
-      })
-    }
+    await updateDaySnapshot(workerId, occurrenceDate, updatedValues)
 
     return {
       prize,
@@ -314,97 +274,23 @@ export async function reverseJobEarnings({
   occurrenceDate: string
 }): Promise<void> {
   try {
-    // Fetch job to get earnings
     const job = await prisma.job.findUnique({
       where: { id: jobId },
-      select: {
-        earnings: true,
-        prize: true,
-        profit: true,
-        taskId: true,
-        listId: true
-      }
+      select: { prize: true, profit: true, listId: true }
     })
 
-    if (!job) {
-      throw new Error('Job not found')
-    }
+    if (!job) throw new Error('Job not found')
 
-    const prize = parseFloat(String(job.prize || 0))
-    const profit = parseFloat(String(job.profit || 0))
+    const prize = safeParseFloat(job.prize)
+    const profit = safeParseFloat(job.profit)
 
-    if (prize === 0 && profit === 0) {
-      // No earnings to reverse
-      return
-    }
+    if (prize === 0 && profit === 0) return
 
-    // Fetch worker (user) details
-    const worker = await prisma.user.findUnique({
-      where: { id: workerId },
-      select: {
-        id: true,
-        availableBalance: true,
-        stash: true,
-        equity: true,
-        profit: true
-      }
-    })
+    const { stashDelta, profitDelta } = calculateStashAndProfitDeltas(-prize, -profit, false)
+    const updatedValues = await updateUserFinancials(workerId, stashDelta, profitDelta)
 
-    if (!worker) {
-      throw new Error('Worker not found')
-    }
-
-    // Calculate deltas for reversal (negative)
-    const { stashDelta, profitDelta } = calculateStashAndProfitDeltas(
-      -prize,
-      -profit,
-      false // isAddition = false (this is a reversal)
-    )
-
-    // Update user's financial values
-    const currentStash = parseFloat(String(worker.stash || 0))
-    const currentProfit = parseFloat(String((worker as any).profit || 0))
-    const currentAvailableBalance = parseFloat(String(worker.availableBalance || 0))
-
-    const updatedValues = await calculateUpdatedUserValues({
-      currentStash,
-      currentProfit,
-      currentAvailableBalance,
-      stashDelta,
-      profitDelta
-    })
-
-    // Update user in database
-    await prisma.user.update({
-      where: { id: workerId },
-      data: {
-        stash: updatedValues.newStash as any,
-        profit: updatedValues.newProfit as any,
-        equity: updatedValues.newEquity as any
-      }
-    })
-
-    // Recalculate Day.ticker with TOTAL earnings from remaining jobs
     await updateDayTickerFromJobs(workerId, job.listId, occurrenceDate)
-
-    // Update Day balance/stash/equity
-    const day = await prisma.day.findFirst({
-      where: {
-        userId: workerId,
-        date: occurrenceDate
-      }
-    })
-
-    if (day) {
-      await prisma.day.update({
-        where: { id: day.id },
-        data: {
-          balance: updatedValues.newAvailableBalance,
-          stash: updatedValues.newStash,
-          equity: updatedValues.newEquity
-        }
-      })
-    }
+    await updateDaySnapshot(workerId, occurrenceDate, updatedValues)
   } catch (error) {
     console.error('Error reversing job earnings:', error)
     throw error

@@ -6,128 +6,74 @@ import { updateDayProgress } from '@/lib/services/day'
 import { formatDateLocal } from '@/lib/utils/taskUtils'
 import { calculateAndApplyJobEarnings } from '@/lib/services/job/earningsService'
 
+// Standard job include clause for consistent responses
+const JOB_INCLUDE = {
+  task: { select: { id: true, name: true, area: true, categories: true, status: true } },
+  list: { select: { id: true, name: true, users: true } },
+  worker: { select: { id: true, userId: true, profiles: { select: { username: true, data: true } } } },
+  reviewers: { select: { id: true, userId: true, profiles: { select: { username: true, data: true } } } },
+  reviewersNotes: true
+} as const
+
+// Valid roles for job creation and viewing
+const JOB_CREATION_ROLES = ['OWNER', 'MANAGER', 'COLLABORATOR']
+const JOB_VIEW_ROLES = ['OWNER', 'MANAGER', 'COLLABORATOR', 'FOLLOWER']
+
 // Helper function to get user's role in a list
 async function getUserListRole(userId: string, listId: string): Promise<string | null> {
   const list = await prisma.list.findUnique({
     where: { id: listId },
-    select: {
-      users: true
-    }
+    select: { users: true }
   })
 
-  if (!list) {
-    return null
-  }
-
+  if (!list) return null
   const userRef = list.users.find((ref: any) => ref.userId === userId)
   return userRef?.role || null
+}
+
+// Build where clause from search params
+function buildJobWhereClause(searchParams: URLSearchParams): Record<string, string> {
+  const where: Record<string, string> = {}
+  const paramMap = [
+    ['listId', 'listId'],
+    ['taskId', 'taskId'],
+    ['workerId', 'workerId'],
+    ['status', 'status'],
+    ['date', 'occurrenceDate']
+  ]
+  paramMap.forEach(([param, field]) => {
+    const value = searchParams.get(param)
+    if (value) where[field] = value
+  })
+  return where
 }
 
 export async function GET(request: NextRequest) {
   try {
     const { userId } = await auth()
-
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Find user by Clerk userId
-    const user = await prisma.user.findUnique({
-      where: { userId }
-    })
-
+    const user = await prisma.user.findUnique({ where: { userId } })
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
     const { searchParams } = new URL(request.url)
-    const listId = searchParams.get('listId')
-    const taskId = searchParams.get('taskId')
-    const workerId = searchParams.get('workerId')
-    const status = searchParams.get('status')
-    const date = searchParams.get('date')
+    const whereClause = buildJobWhereClause(searchParams)
 
-    // Build where clause
-    const whereClause: any = {}
-
-    if (listId) {
-      whereClause.listId = listId
-    }
-    if (taskId) {
-      whereClause.taskId = taskId
-    }
-    if (workerId) {
-      whereClause.workerId = workerId
-    }
-    if (status) {
-      whereClause.status = status
-    }
-    if (date) {
-      whereClause.occurrenceDate = date
-    }
-
-    // Fetch jobs
     const jobs = await prisma.job.findMany({
       where: whereClause,
-      include: {
-        task: {
-          select: {
-            id: true,
-            name: true,
-            area: true,
-            categories: true,
-            status: true
-          }
-        },
-        list: {
-          select: {
-            id: true,
-            name: true,
-            users: true
-          }
-        },
-        worker: {
-          select: {
-            id: true,
-            userId: true,
-            profiles: {
-              select: {
-                username: true,
-                data: true
-              }
-            }
-          }
-        },
-        reviewers: {
-          select: {
-            id: true,
-            userId: true,
-            profiles: {
-              select: {
-                username: true,
-                data: true
-              }
-            }
-          }
-        },
-        reviewersNotes: true
-      },
-      orderBy: {
-        createdAt: 'desc'
-      }
+      include: JOB_INCLUDE,
+      orderBy: { createdAt: 'desc' }
     })
 
-    // Filter jobs by membership - user must be a member of the list
-    const authorizedJobs = jobs.filter((job: any) => {
-      if (!job.list) {
-        return false
-      }
-      return job.list.users.some(
-        (userRef: any) =>
-          userRef.userId === user.id &&
-          ['OWNER', 'MANAGER', 'COLLABORATOR', 'FOLLOWER'].includes(userRef.role)
+    const authorizedJobs = jobs.filter((job: any) =>
+      job.list?.users?.some(
+        (ref: any) => ref.userId === user.id && JOB_VIEW_ROLES.includes(ref.role)
       )
-    })
+    )
 
     return NextResponse.json({ jobs: authorizedJobs })
   } catch (error) {
@@ -139,89 +85,50 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const { userId } = await auth()
-
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Find user by Clerk userId
-    const user = await prisma.user.findUnique({
-      where: { userId }
-    })
-
+    const user = await prisma.user.findUnique({ where: { userId } })
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
     const body = await request.json()
-    const {
-      taskId,
-      listId,
-      workerId,
-      status,
-      occurrenceDate,
-      selfReview,
-      peerReview,
-      managerReview,
-      reviewerIds,
-      reviewersNoteIds
-    } = body
+    const { taskId, listId, workerId, status, occurrenceDate, selfReview, peerReview, managerReview, reviewerIds, reviewersNoteIds } = body
 
     // Validate required fields
     if (!taskId || !listId || !workerId) {
-      return NextResponse.json(
-        { error: 'Missing required fields: taskId, listId, and workerId are required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing required fields: taskId, listId, and workerId are required' }, { status: 400 })
     }
 
-    // Validate occurrenceDate format if provided
     if (occurrenceDate && !/^\d{4}-\d{2}-\d{2}$/.test(occurrenceDate)) {
-      return NextResponse.json(
-        { error: 'Invalid occurrenceDate format. Use YYYY-MM-DD' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Invalid occurrenceDate format. Use YYYY-MM-DD' }, { status: 400 })
     }
 
-    // Check authorization - user must be OWNER, MANAGER, or COLLABORATOR of the list
+    // Authorization checks
     const role = await getUserListRole(user.id, listId)
-
-    if (!role || !['OWNER', 'MANAGER', 'COLLABORATOR'].includes(role)) {
-      return NextResponse.json(
-        { error: 'Unauthorized: You must be a member of the list to create jobs' },
-        { status: 403 }
-      )
+    if (!role || !JOB_CREATION_ROLES.includes(role)) {
+      return NextResponse.json({ error: 'Unauthorized: You must be a member of the list to create jobs' }, { status: 403 })
     }
 
-    // If user is COLLABORATOR, they can only create jobs for themselves
     if (role === 'COLLABORATOR' && workerId !== user.id) {
-      return NextResponse.json(
-        { error: 'Unauthorized: Collaborators can only create jobs for themselves' },
-        { status: 403 }
-      )
+      return NextResponse.json({ error: 'Unauthorized: Collaborators can only create jobs for themselves' }, { status: 403 })
     }
 
-    // Verify the task exists and belongs to the list
+    // Verify task belongs to list
     const task = await prisma.task.findUnique({
       where: { id: taskId },
-      select: {
-        id: true,
-        listId: true
-      }
+      select: { id: true, listId: true }
     })
 
     if (!task) {
       return NextResponse.json({ error: 'Task not found' }, { status: 404 })
     }
-
     if (task.listId !== listId) {
-      return NextResponse.json(
-        { error: 'Task does not belong to the specified list' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Task does not belong to the specified list' }, { status: 400 })
     }
 
-    // Create job
     const job = await prisma.job.create({
       data: {
         taskId,
@@ -235,71 +142,19 @@ export async function POST(request: NextRequest) {
         reviewerIds: reviewerIds || [],
         reviewersNoteIds: reviewersNoteIds || []
       },
-      include: {
-        task: {
-          select: {
-            id: true,
-            name: true,
-            area: true,
-            categories: true,
-            status: true
-          }
-        },
-        list: {
-          select: {
-            id: true,
-            name: true,
-            users: true
-          }
-        },
-        worker: {
-          select: {
-            id: true,
-            userId: true,
-            profiles: {
-              select: {
-                username: true,
-                data: true
-              }
-            }
-          }
-        },
-        reviewers: {
-          select: {
-            id: true,
-            userId: true,
-            profiles: {
-              select: {
-                username: true,
-                data: true
-              }
-            }
-          }
-        },
-        reviewersNotes: true
-      }
+      include: JOB_INCLUDE
     })
 
-    // Update task occurrence dates if job is ACCEPTED
+    // Process accepted jobs
     if (job.status === 'ACCEPTED') {
       const dateToUse = job.occurrenceDate || formatDateLocal(new Date())
       await updateTaskOccurrenceDates(taskId, 'complete', dateToUse)
-
-      // Update Day.progress for this date
       await updateDayProgress(workerId, dateToUse)
 
-      // Calculate and apply financial earnings
       try {
-        await calculateAndApplyJobEarnings({
-          jobId: job.id,
-          taskId,
-          listId,
-          workerId,
-          occurrenceDate: dateToUse
-        })
+        await calculateAndApplyJobEarnings({ jobId: job.id, taskId, listId, workerId, occurrenceDate: dateToUse })
       } catch (earningsError) {
         console.error('Error calculating job earnings:', earningsError)
-        // Don't fail the job creation if earnings calculation fails
       }
     }
 

@@ -3,7 +3,7 @@
  * Provides immediate feedback for task completions before server response
  */
 
-import { useCallback, useState, useEffect } from 'react'
+import { useCallback, useState } from 'react'
 import { calculateTaskEarnings, getPerCompleterPrize, getPerCompleterProfit } from '@/lib/utils/earningsUtils'
 
 interface OptimisticEarningsState {
@@ -26,6 +26,8 @@ interface UseOptimisticEarningsParams {
   selectedList: any
 }
 
+const AUTO_CLEAR_TIMEOUT = 5000
+
 export function useOptimisticEarnings({
   currentPrize,
   currentProfit,
@@ -35,16 +37,23 @@ export function useOptimisticEarnings({
   const [optimisticDeltas, setOptimisticDeltas] = useState<Map<string, OptimisticEarningsState>>(new Map())
   const [pendingCompletions, setPendingCompletions] = useState<Map<string, TaskCompletionEvent>>(new Map())
 
-  // Calculate total optimistic earnings
-  const optimisticPrize = currentPrize + Array.from(optimisticDeltas.values()).reduce((sum, delta) => sum + delta.prize, 0)
-  const optimisticProfit = currentProfit + Array.from(optimisticDeltas.values()).reduce((sum, delta) => sum + delta.profit, 0)
+  // Sum all optimistic deltas
+  const deltaTotals = Array.from(optimisticDeltas.values()).reduce(
+    (acc, delta) => ({ prize: acc.prize + delta.prize, profit: acc.profit + delta.profit }),
+    { prize: 0, profit: 0 }
+  )
+  const optimisticPrize = currentPrize + deltaTotals.prize
+  const optimisticProfit = currentProfit + deltaTotals.profit
   const optimisticEarnings = optimisticPrize + optimisticProfit
 
-  // Add optimistic earnings for a task completion
-  const addOptimisticEarnings = useCallback((taskId: string, listId: string) => {
-    if (!selectedList || selectedList.id !== listId) return
+  // Core function to update optimistic earnings (shared by add/remove)
+  const updateOptimisticEarnings = useCallback((
+    taskId: string,
+    listId: string,
+    isAddition: boolean
+  ): OptimisticEarningsState | undefined => {
+    if (!selectedList || selectedList.id !== listId) return undefined
 
-    // Calculate earnings for this task
     const tasksCount = (selectedList.tasks || []).length || (selectedList.templateTasks || []).length || 1
 
     const earningsCalculation = calculateTaskEarnings({
@@ -56,23 +65,22 @@ export function useOptimisticEarnings({
       date: new Date()
     })
 
-    const prize = getPerCompleterPrize(earningsCalculation, selectedList.role)
-    const profit = getPerCompleterProfit(earningsCalculation, selectedList.role)
+    const multiplier = isAddition ? 1 : -1
+    const prize = multiplier * getPerCompleterPrize(earningsCalculation, selectedList.role)
+    const profit = multiplier * getPerCompleterProfit(earningsCalculation, selectedList.role)
     const earnings = prize + profit
 
-    // Store optimistic delta
     const key = `${taskId}-${Date.now()}`
     setOptimisticDeltas(prev => new Map(prev).set(key, { prize, profit, earnings }))
 
-    // Track pending completion
     setPendingCompletions(prev => new Map(prev).set(taskId, {
       taskId,
       listId,
-      completed: true,
+      completed: isAddition,
       timestamp: Date.now()
     }))
 
-    // Auto-clear after 5 seconds (safety timeout)
+    // Auto-clear after timeout
     setTimeout(() => {
       setOptimisticDeltas(prev => {
         const updated = new Map(prev)
@@ -84,59 +92,20 @@ export function useOptimisticEarnings({
         updated.delete(taskId)
         return updated
       })
-    }, 5000)
+    }, AUTO_CLEAR_TIMEOUT)
 
     return { prize, profit, earnings }
   }, [selectedList, userEquity])
 
-  // Remove optimistic earnings for a task uncompletion
-  const removeOptimisticEarnings = useCallback((taskId: string, listId: string) => {
-    if (!selectedList || selectedList.id !== listId) return
+  const addOptimisticEarnings = useCallback(
+    (taskId: string, listId: string) => updateOptimisticEarnings(taskId, listId, true),
+    [updateOptimisticEarnings]
+  )
 
-    // Calculate earnings for this task (to subtract)
-    const tasksCount = (selectedList.tasks || []).length || (selectedList.templateTasks || []).length || 1
-
-    const earningsCalculation = calculateTaskEarnings({
-      listRole: selectedList.role,
-      budgetPercentage: selectedList.budgetPercentage as number | undefined,
-      listBudget: selectedList.budget,
-      userEquity: String(userEquity),
-      numTasks: tasksCount,
-      date: new Date()
-    })
-
-    const prize = -getPerCompleterPrize(earningsCalculation, selectedList.role)
-    const profit = -getPerCompleterProfit(earningsCalculation, selectedList.role)
-    const earnings = prize + profit
-
-    // Store optimistic delta (negative)
-    const key = `${taskId}-${Date.now()}`
-    setOptimisticDeltas(prev => new Map(prev).set(key, { prize, profit, earnings }))
-
-    // Track pending uncompletion
-    setPendingCompletions(prev => new Map(prev).set(taskId, {
-      taskId,
-      listId,
-      completed: false,
-      timestamp: Date.now()
-    }))
-
-    // Auto-clear after 5 seconds (safety timeout)
-    setTimeout(() => {
-      setOptimisticDeltas(prev => {
-        const updated = new Map(prev)
-        updated.delete(key)
-        return updated
-      })
-      setPendingCompletions(prev => {
-        const updated = new Map(prev)
-        updated.delete(taskId)
-        return updated
-      })
-    }, 5000)
-
-    return { prize, profit, earnings }
-  }, [selectedList, userEquity])
+  const removeOptimisticEarnings = useCallback(
+    (taskId: string, listId: string) => updateOptimisticEarnings(taskId, listId, false),
+    [updateOptimisticEarnings]
+  )
 
   // Clear all optimistic updates
   const clearOptimisticEarnings = useCallback(() => {
