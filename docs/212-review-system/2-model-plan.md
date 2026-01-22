@@ -13,6 +13,36 @@ This document covers all database schema changes, data model updates, and Prisma
 
 ## Schema Changes Required
 
+### 0. Task-Job Relationship (No Change Required)
+
+**Current Schema:**
+The existing schema already supports multiple Jobs per Task (1:many relationship):
+
+```prisma
+model Task {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  jobs  Job[]  // ← One task can have many jobs
+  // ... other fields
+}
+
+model Job {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  taskId  String @db.ObjectId
+  task    Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  // ... other fields
+}
+```
+
+**No migration needed** for the Task-Job relationship. The schema naturally supports:
+- Multiple workers requesting the same task
+- Multiple concurrent jobs for the same task
+- One-to-many Task:Job cardinality
+
+The business logic (in Controller layer) will handle:
+- Auto-rejecting competing jobs when one is accepted
+- Task status synchronization based on active jobs
+- Worker notifications about competing jobs
+
 ### 1. Update JobStatus Enum
 
 **File:** `prisma/schema.prisma`
@@ -159,7 +189,7 @@ model Note {
 ```
 User (Worker)
     ↓ 1:many
-  Job ←→ Task (1:1 for given occurrence)
+  Job ←→ Task (1:many per task)
     ↓ 1:many
   List
     ↓ many:many
@@ -168,6 +198,12 @@ User (Worker)
 Job → requesterNotes (1:many) → Note
 Job → reviewersNotes (1:many) → Note
 ```
+
+**Important:** A single Task can have **multiple Jobs** when multiple collaborators request to work on the same task. This enables:
+- Multiple workers competing for the same task
+- First-to-submit or quality-based selection by owner
+- Parallel work approaches for complex tasks
+- Backup worker assignments
 
 ### Job Lifecycle States
 
@@ -193,14 +229,27 @@ Job → reviewersNotes (1:many) → Note
 
 ### Task-Job Status Synchronization
 
-| Job Status    | Task Status     | Trigger                          |
-|---------------|-----------------|----------------------------------|
-| REQUESTED     | OPEN/existing   | No change until approved         |
-| IN_PROGRESS   | IN_PROGRESS     | Owner approves request           |
-| SUBMITTED     | READY           | Worker submits work              |
-| VALIDATING    | IN_PROGRESS     | Owner requests changes           |
-| ACCEPTED      | DONE            | Owner accepts work               |
-| REJECTED      | OPEN            | Owner rejects (task reopened)    |
+**With Multiple Jobs Per Task:**
+When a task has multiple jobs (multiple workers), task status is determined by the "most advanced" job:
+
+| Job Status    | Task Status     | Trigger                          | Multi-Job Behavior               |
+|---------------|-----------------|----------------------------------|----------------------------------|
+| REQUESTED     | OPEN/existing   | No change until approved         | Task stays OPEN if any job REQUESTED |
+| IN_PROGRESS   | IN_PROGRESS     | Owner approves request           | Task IN_PROGRESS if any job IN_PROGRESS |
+| SUBMITTED     | READY           | Worker submits work              | Task READY if any job SUBMITTED  |
+| VALIDATING    | IN_PROGRESS     | Owner requests changes           | Task IN_PROGRESS if validation ongoing |
+| ACCEPTED      | DONE            | Owner accepts work               | Task DONE when **first** job ACCEPTED* |
+| REJECTED      | varies          | Owner rejects (task reopened)    | See rejection rules below        |
+
+**\*Critical Rule:** When owner accepts ONE job, all other jobs for the same task should:
+1. Automatically transition to `REJECTED` status
+2. Workers notified their submission wasn't selected
+3. Task marked as `DONE`
+
+**Rejection Handling with Multiple Jobs:**
+- If ALL jobs are REJECTED → Task status: `OPEN` (fully reopened)
+- If SOME jobs are REJECTED but others are IN_PROGRESS/SUBMITTED → Task status: reflects active job(s)
+- Rejected workers can request the task again if it remains OPEN
 
 ---
 
@@ -300,7 +349,65 @@ Only certain status transitions are allowed:
 | ACCEPTED      | (optional: managerReview)                |
 | REJECTED      | (optional: reviewersNoteIds)             |
 
-### 3. Cascade Deletion Rules
+### 3. Multiple Jobs Per Task Rules
+
+**Business Logic:**
+- A task can have multiple jobs from different workers
+- Only ONE job can be ACCEPTED per task
+- When a job is ACCEPTED, all other jobs for that task must be auto-rejected
+
+**Query Pattern for Active Jobs:**
+```typescript
+// Get all active (non-rejected/accepted) jobs for a task
+const activeJobs = await prisma.job.findMany({
+  where: {
+    taskId: taskId,
+    status: { notIn: ['ACCEPTED', 'REJECTED'] }
+  }
+})
+
+// Check if task already has an accepted job
+const acceptedJob = await prisma.job.findFirst({
+  where: {
+    taskId: taskId,
+    status: 'ACCEPTED'
+  }
+})
+
+if (acceptedJob) {
+  throw new Error('Task already has an accepted job')
+}
+```
+
+**Auto-Rejection Logic:**
+```typescript
+// When accepting a job, reject all others for the same task
+await prisma.$transaction(async (tx) => {
+  // Accept the selected job
+  await tx.job.update({
+    where: { id: selectedJobId },
+    data: { status: 'ACCEPTED' }
+  })
+
+  // Reject all other jobs for this task
+  await tx.job.updateMany({
+    where: {
+      taskId: task.id,
+      id: { not: selectedJobId },
+      status: { notIn: ['ACCEPTED', 'REJECTED'] }
+    },
+    data: { status: 'REJECTED' }
+  })
+
+  // Mark task as DONE
+  await tx.task.update({
+    where: { id: task.id },
+    data: { status: 'DONE' }
+  })
+})
+```
+
+### 4. Cascade Deletion Rules
 
 Defined in Prisma schema:
 
@@ -370,6 +477,42 @@ const reviewerNote = await prisma.note.create({
 | Reviewer       | All job details + all notes           | Add review notes             |
 | Other Member   | Job status, worker name only          | None                         |
 | Non-Member     | None                                  | None                         |
+
+### Multiple Jobs Visibility & Notifications
+
+**Worker Awareness:**
+Workers should be aware when competing with others:
+
+```typescript
+// API response for task request
+{
+  task: { ... },
+  competingJobsCount: 2, // Number of other active jobs for this task
+  competingWorkers: [    // Optional: show who else is working
+    { id: 'user123', username: 'worker2' },
+    { id: 'user456', username: 'worker3' }
+  ]
+}
+```
+
+**Notification Triggers:**
+- New worker requests same task → Notify existing workers
+- Job accepted → Notify all rejected workers
+- Job submitted → Notify owner/managers of new submission
+- All jobs rejected → Notify all workers task is reopened
+
+**Query for Competing Jobs:**
+```typescript
+const competingJobs = await prisma.job.findMany({
+  where: {
+    taskId: task.id,
+    status: { in: ['REQUESTED', 'IN_PROGRESS', 'SUBMITTED'] }
+  },
+  include: {
+    worker: { select: { id: true, profiles: true } }
+  }
+})
+```
 
 ---
 
@@ -488,6 +631,80 @@ describe('Job Review Workflow', () => {
     const task = await prisma.task.findUnique({ where: { id: job.taskId } })
     expect(task?.status).toBe('OPEN')
   })
+
+  test('multiple jobs per task: accepts one, rejects others', async () => {
+    // 1. Create task with 3 different workers requesting it
+    const task = await createTask()
+    const job1 = await createJob({ taskId: task.id, workerId: worker1.id, status: 'REQUESTED' })
+    const job2 = await createJob({ taskId: task.id, workerId: worker2.id, status: 'REQUESTED' })
+    const job3 = await createJob({ taskId: task.id, workerId: worker3.id, status: 'REQUESTED' })
+
+    // 2. Owner approves all three
+    await Promise.all([
+      updateJobStatus(job1.id, 'IN_PROGRESS', { role: 'OWNER' }),
+      updateJobStatus(job2.id, 'IN_PROGRESS', { role: 'OWNER' }),
+      updateJobStatus(job3.id, 'IN_PROGRESS', { role: 'OWNER' })
+    ])
+
+    // 3. All three workers submit their work
+    await Promise.all([
+      submitJob(job1.id, { noteContent: 'Worker 1 submission' }),
+      submitJob(job2.id, { noteContent: 'Worker 2 submission' }),
+      submitJob(job3.id, { noteContent: 'Worker 3 submission' })
+    ])
+
+    // 4. Owner accepts job2 (best quality)
+    await acceptJob(job2.id, { role: 'OWNER' })
+
+    // 5. Verify job2 is ACCEPTED
+    const acceptedJob = await prisma.job.findUnique({ where: { id: job2.id } })
+    expect(acceptedJob?.status).toBe('ACCEPTED')
+
+    // 6. Verify job1 and job3 are auto-rejected
+    const otherJobs = await prisma.job.findMany({
+      where: {
+        taskId: task.id,
+        id: { not: job2.id }
+      }
+    })
+    expect(otherJobs).toHaveLength(2)
+    otherJobs.forEach(job => {
+      expect(job.status).toBe('REJECTED')
+    })
+
+    // 7. Verify task is DONE
+    const updatedTask = await prisma.task.findUnique({ where: { id: task.id } })
+    expect(updatedTask?.status).toBe('DONE')
+  })
+
+  test('multiple jobs per task: all rejected → task reopens', async () => {
+    // Setup task with 2 submitted jobs
+    const task = await createTask()
+    const job1 = await createSubmittedJob({ taskId: task.id, workerId: worker1.id })
+    const job2 = await createSubmittedJob({ taskId: task.id, workerId: worker2.id })
+
+    // Owner rejects both
+    await updateJobStatus(job1.id, 'REJECTED', { role: 'OWNER' })
+    await updateJobStatus(job2.id, 'REJECTED', { role: 'OWNER' })
+
+    // Task should be OPEN again
+    const updatedTask = await prisma.task.findUnique({ where: { id: task.id } })
+    expect(updatedTask?.status).toBe('OPEN')
+  })
+
+  test('prevents accepting job when task already has accepted job', async () => {
+    const task = await createTask()
+    const job1 = await createSubmittedJob({ taskId: task.id, workerId: worker1.id })
+    const job2 = await createSubmittedJob({ taskId: task.id, workerId: worker2.id })
+
+    // Accept first job
+    await acceptJob(job1.id, { role: 'OWNER' })
+
+    // Attempting to accept second job should fail
+    await expect(
+      acceptJob(job2.id, { role: 'OWNER' })
+    ).rejects.toThrow('Task already has an accepted job')
+  })
 })
 ```
 
@@ -540,16 +757,36 @@ npm test prisma/schema.test.ts
 
 ## Acceptance Criteria
 
+### Schema & Migration
 - [ ] `JobStatus` enum includes `SUBMITTED` status
 - [ ] `Job` model has `requesterNoteIds` and `requesterNotes` relation
 - [ ] Migration completes without errors
 - [ ] Existing jobs are unaffected by migration
-- [ ] All status transitions are valid according to state machine
 - [ ] Note relations work correctly (can create and query)
 - [ ] Cascade deletions work as expected
+
+### Business Logic
+- [ ] All status transitions are valid according to state machine
+- [ ] Multiple jobs per task are supported (1:many Task:Job)
+- [ ] Accepting one job auto-rejects all other jobs for that task
+- [ ] Task status correctly reflects most advanced job status
+- [ ] All jobs rejected → task reopens to OPEN status
+- [ ] Cannot accept job if task already has accepted job
+
+### Testing
 - [ ] Unit tests pass for Job model
-- [ ] Integration tests pass for job workflow
+- [ ] Integration tests pass for single job workflow
+- [ ] Integration tests pass for multiple jobs per task scenarios:
+  - [ ] Multiple workers request same task
+  - [ ] Accept one job, others auto-rejected
+  - [ ] All jobs rejected, task reopens
+  - [ ] Prevent accepting when already accepted
 - [ ] Documentation is complete and accurate
+
+### API Considerations (for Controller layer)
+- [ ] API returns competing jobs count when requesting task
+- [ ] Notifications sent when jobs are auto-rejected
+- [ ] Workers can see competing workers (configurable)
 
 ---
 
