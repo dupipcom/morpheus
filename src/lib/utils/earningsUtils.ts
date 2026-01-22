@@ -10,29 +10,30 @@ export function getDaysInMonth(year: number, month: number): number {
 }
 
 /**
- * Get the number of weeks in a specific month
- */
-export function getWeeksInMonth(year: number, month: number): number {
-  const firstDay = new Date(year, month - 1, 1)
-  const lastDay = new Date(year, month, 0)
-  
-  // Get the week number for first and last day
-  const firstWeek = getWeekNumber(firstDay)
-  const lastWeek = getWeekNumber(lastDay)
-  
-  // Calculate weeks in month
-  return lastWeek - firstWeek + 1
-}
-
-/**
  * Get ISO week number for a date
+ * Note: This is a local implementation to avoid circular dependencies with app/helpers
  */
-function getWeekNumber(date: Date): number {
+function getISOWeekNumber(date: Date): number {
   const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))
   const dayNum = d.getUTCDay() || 7
   d.setUTCDate(d.getUTCDate() + 4 - dayNum)
   const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1))
   return Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7)
+}
+
+/**
+ * Get the number of weeks in a specific month
+ */
+export function getWeeksInMonth(year: number, month: number): number {
+  const firstDay = new Date(year, month - 1, 1)
+  const lastDay = new Date(year, month, 0)
+
+  // Get the week number for first and last day
+  const firstWeek = getISOWeekNumber(firstDay)
+  const lastWeek = getISOWeekNumber(lastDay)
+
+  // Calculate weeks in month
+  return lastWeek - firstWeek + 1
 }
 
 export interface EarningsCalculation {
@@ -261,30 +262,34 @@ export function calculateStashAndProfitDeltas(
   }
 }
 
-/**
- * Calculate updated user values ensuring they never go below 0
- * Returns { newStash, newProfit, newEquity, newAvailableBalance }
- * All values are guaranteed to be >= 0
- */
-export async function calculateUpdatedUserValues(params: {
+interface UserValuesParams {
   currentStash: number
   currentProfit: number
   currentAvailableBalance: number
   stashDelta: number
   profitDelta: number
-}): {
+}
+
+interface UpdatedUserValues {
   newStash: number
   newProfit: number
   newEquity: number
   newAvailableBalance: number
-} {
+}
+
+/**
+ * Calculate updated user values ensuring they never go below 0
+ * Returns { newStash, newProfit, newEquity, newAvailableBalance }
+ * All values are guaranteed to be >= 0
+ */
+export function calculateUpdatedUserValues(params: UserValuesParams): UpdatedUserValues {
   const {
     currentStash,
     currentProfit,
     currentAvailableBalance,
     stashDelta,
     profitDelta
-  } = await params
+  } = params
 
   // Ensure current values are never negative
   const safeStash = Math.max(0, currentStash)
@@ -295,7 +300,7 @@ export async function calculateUpdatedUserValues(params: {
   const newStash = Math.max(0, safeStash + stashDelta)
   const newProfit = Math.max(0, safeProfit + profitDelta)
   const newAvailableBalance = Math.max(0, safeAvailableBalance)
-  
+
   // Equity = availableBalance - stash (stash only contains prize, not profit)
   const newEquity = Math.max(0, newAvailableBalance - newStash)
 

@@ -7,7 +7,18 @@ import { useI18n } from '@/lib/contexts/i18n'
 import { GlobalContext } from '@/lib/contexts'
 import { getProfitPerTask } from '@/lib/utils/earningsUtils'
 import { TaskItem } from '@/components/taskItem'
-import { TaskStatus, STATUS_OPTIONS, getStatusColor, getIconColor, getTaskKey, getTaskStatus } from '@/lib/utils/taskUtils'
+import { TaskStatus, STATUS_OPTIONS, getStatusColor, getIconColor, getTaskKey, getTaskStatus, mapStatusToEnum } from '@/lib/utils/taskUtils'
+
+function calculateNewStatus(count: number, times: number, existingStatus?: string): string {
+  if (count >= times) return 'DONE'
+  if (count > 0) {
+    if (!existingStatus || existingStatus === 'done' || existingStatus === 'open') {
+      return 'IN_PROGRESS'
+    }
+    return mapStatusToEnum(existingStatus)
+  }
+  return 'OPEN'
+}
 import { useOptimisticUpdates } from '@/lib/hooks/useOptimisticUpdates'
 import { useTaskStatuses } from '@/lib/hooks/useTaskStatuses'
 import { useTaskHandlers } from '@/lib/hooks/useTaskHandlers'
@@ -116,26 +127,7 @@ export const TaskGrid = ({
     const currentCount = task?.count || 0
 
     // Calculate new status based on count and new times
-    let newStatus = 'OPEN'
-    if (currentCount >= newTimes) {
-      newStatus = 'DONE'
-    } else if (currentCount > 0) {
-      const existingStatus = taskStatuses[key]
-      if (!existingStatus || existingStatus === 'done' || existingStatus === 'open') {
-        newStatus = 'IN_PROGRESS'
-      } else {
-        // Map old status to new enum
-        const statusMap: Record<string, string> = {
-          'in progress': 'IN_PROGRESS',
-          'steady': 'STEADY',
-          'ready': 'READY',
-          'open': 'OPEN',
-          'done': 'DONE',
-          'ignored': 'IGNORED',
-        }
-        newStatus = statusMap[existingStatus] || 'OPEN'
-      }
-    }
+    const newStatus = calculateNewStatus(currentCount, newTimes, taskStatuses[key])
 
     try {
       await fetch(`/api/v1/tasks/${task.id}`, {
@@ -166,26 +158,7 @@ export const TaskGrid = ({
     const newCount = (currentTimes === currentCount) ? Math.max(0, currentCount - 1) : currentCount
 
     // Calculate new status
-    let newStatus = 'OPEN'
-    if (newCount >= newTimes) {
-      newStatus = 'DONE'
-    } else if (newCount > 0) {
-      const existingStatus = taskStatuses[key]
-      if (!existingStatus || existingStatus === 'done' || existingStatus === 'open') {
-        newStatus = 'IN_PROGRESS'
-      } else {
-        // Map old status to new enum
-        const statusMap: Record<string, string> = {
-          'in progress': 'IN_PROGRESS',
-          'steady': 'STEADY',
-          'ready': 'READY',
-          'open': 'OPEN',
-          'done': 'DONE',
-          'ignored': 'IGNORED',
-        }
-        newStatus = statusMap[existingStatus] || 'OPEN'
-      }
-    }
+    const newStatus = calculateNewStatus(newCount, newTimes, taskStatuses[key])
 
     // Optimistic update
     setTaskStatuses(prev => {

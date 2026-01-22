@@ -2,12 +2,7 @@
 
 import React, { useState, useEffect, useContext } from 'react'
 import { AlertTriangle } from 'lucide-react'
-import { useI18n } from '@/lib/contexts/i18n'
-import { ViewMenu } from '@/components/viewMenu'
-import { BalanceSection } from '@/components/balanceSection'
-import { WalletManager } from '@/components/walletManager'
-import { NFTGenerator } from '@/components/nftGenerator'
-import { TokenTransfer } from '@/components/tokenTransfer'
+
 import {
   AlertDialog,
   AlertDialogContent,
@@ -18,22 +13,24 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
+import { WalletManager } from '@/components/walletManager'
+import { NFTGenerator } from '@/components/nftGenerator'
+import { TokenTransfer } from '@/components/tokenTransfer'
+import { useI18n } from '@/lib/contexts/i18n'
 import { GlobalContext } from '@/lib/contexts'
 import { useUserData } from '@/lib/utils/userUtils'
 
-export const InvestView = () => {
+export function InvestView(): React.ReactElement {
   const { t } = useI18n()
   const { session } = useContext(GlobalContext)
   const { refreshUser, isLoading } = useUserData()
   const [consentChecked, setConsentChecked] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  
+
   const user = session?.user as any
   const isLoggedIn = !!session?.user.userId
   const hasConsented = user?.consents?.doInvestDemo?.consentedOn != null
   const showModal = isLoggedIn && !isLoading && !hasConsented
-
-  console.log({isLoggedIn, isLoading, hasConsented, showModal})
   
   // Override Radix UI's pointer-events: none on body to allow bottom nav interaction
   useEffect(() => {
@@ -98,7 +95,7 @@ export const InvestView = () => {
         </div>
       </div>
       
-      { showModal && <AlertDialog open={showModal}>
+      {showModal && <AlertDialog open={showModal}>
         <AlertDialogContent className="max-w-lg">
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2">
@@ -135,7 +132,7 @@ export const InvestView = () => {
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
-      </AlertDialog> }
+      </AlertDialog>}
     </main>
   )
 }
