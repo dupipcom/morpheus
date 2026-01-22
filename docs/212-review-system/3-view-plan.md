@@ -493,11 +493,12 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { RichTextEditor } from '@/components/richTextEditor'
 import { useToast } from '@/hooks/use-toast'
 import { Badge } from '@/components/ui/badge'
+import type { JobWithRelations } from '@/lib/services/job/types'
 
 interface JobReviewDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  job: any // Job with relations
+  job: JobWithRelations
   onReview: (data: {
     action: 'accept' | 'validate' | 'reject'
     reviewNoteContent?: string
@@ -571,7 +572,7 @@ export function JobReviewDialog({
                 <Badge variant="secondary">Self-Review: {job.selfReview}/100</Badge>
               )}
             </div>
-            {job.requesterNotes?.map((note: any) => (
+            {job.requesterNotes?.map((note) => (
               <div
                 key={note.id}
                 className="prose prose-sm dark:prose-invert max-w-none"
@@ -788,10 +789,22 @@ export function RichTextEditor({
 import { JobDetailsCard } from '@/components/jobDetailsCard'
 import { JobSubmissionDialog } from '@/components/jobSubmissionDialog'
 import { JobReviewDialog } from '@/components/jobReviewDialog'
+import type { JobWithRelations, ListUser } from '@/lib/services/job/types'
+
+interface SubmitWorkData {
+  noteContent: string
+  selfReview: number
+}
+
+interface ReviewWorkData {
+  action: 'accept' | 'validate' | 'reject'
+  reviewNoteContent?: string
+  managerReview?: number
+}
 
 interface TaskGridProps {
   // ... existing props
-  jobs?: any[] // Add jobs prop
+  jobs?: JobWithRelations[] // Add jobs prop with proper type
 }
 
 export const TaskGrid = ({
@@ -803,11 +816,11 @@ export const TaskGrid = ({
   // Dialog state
   const [isSubmitDialogOpen, setIsSubmitDialogOpen] = useState(false)
   const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false)
-  const [selectedJob, setSelectedJob] = useState<any>(null)
+  const [selectedJob, setSelectedJob] = useState<JobWithRelations | null>(null)
 
   // Map jobs by taskId for quick lookup
   const jobsByTask = useMemo(() => {
-    const map: Record<string, any> = {}
+    const map: Record<string, JobWithRelations> = {}
     jobs.forEach((job) => {
       // Store latest job for each task
       if (!map[job.taskId] || new Date(job.createdAt) > new Date(map[job.taskId].createdAt)) {
@@ -819,15 +832,15 @@ export const TaskGrid = ({
 
   // Determine user's role in list
   const userRole = useMemo(() => {
-    return selectedTaskList?.users?.find((u: any) => u.userId === userId)?.role
+    return selectedTaskList?.users?.find((u: ListUser) => u.userId === userId)?.role
   }, [selectedTaskList, userId])
 
   // Check if user is participant in job
-  const isJobParticipant = (job: any, uid: string) => {
+  const isJobParticipant = (job: JobWithRelations, uid: string) => {
     return (
       job.workerId === uid ||
       selectedTaskList?.users?.some(
-        (u: any) => u.userId === uid && ['OWNER', 'MANAGER'].includes(u.role)
+        (u: ListUser) => u.userId === uid && ['OWNER', 'MANAGER'].includes(u.role)
       ) ||
       job.reviewerIds?.includes(uid)
     )
@@ -861,7 +874,7 @@ export const TaskGrid = ({
     await onRefresh()
   }
 
-  const handleSubmitWork = async (jobId: string, data: any) => {
+  const handleSubmitWork = async (jobId: string, data: SubmitWorkData) => {
     await fetch(`/api/v1/jobs/${jobId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -874,7 +887,7 @@ export const TaskGrid = ({
     await onRefresh()
   }
 
-  const handleReviewWork = async (jobId: string, data: any) => {
+  const handleReviewWork = async (jobId: string, data: ReviewWorkData) => {
     const statusMap = {
       accept: 'ACCEPTED',
       validate: 'VALIDATING',
@@ -895,7 +908,7 @@ export const TaskGrid = ({
 
   return (
     <div className="grid gap-4">
-      {sortedTasks.map((task: any) => {
+      {sortedTasks.map((task) => {
         const activeJob = jobsByTask[task.id]
         const isParticipant = activeJob ? isJobParticipant(activeJob, userId) : false
         const isWorker = activeJob?.workerId === userId
@@ -967,8 +980,10 @@ export const TaskGrid = ({
 
 ```tsx
 // In TaskGrid or useTaskHandlers
+import type { Task } from '@/generated/prisma'
+import type { JobWithRelations } from '@/lib/services/job/types'
 
-const getStatusMenuOptions = (task: any, userRole: string, activeJob: any) => {
+const getStatusMenuOptions = (task: Task, userRole: string, activeJob: JobWithRelations | undefined) => {
   const isOwnerOrManager = ['OWNER', 'MANAGER'].includes(userRole)
   const isTaskOwner = task.userId === userId
 

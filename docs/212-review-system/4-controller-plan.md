@@ -11,6 +11,100 @@ This document covers all API endpoint modifications, business logic, authorizati
 
 ---
 
+## TypeScript Type Definitions
+
+**File:** `src/lib/services/job/types.ts` (NEW)
+
+```typescript
+import type { Job, Task, List, Note, User, Profile } from '@/generated/prisma'
+
+// User role in a list
+export type UserRole = 'OWNER' | 'MANAGER' | 'COLLABORATOR'
+
+// Job status enum
+export type JobStatus = 'REQUESTED' | 'IN_PROGRESS' | 'SUBMITTED' | 'VALIDATING' | 'ACCEPTED' | 'REJECTED'
+
+// List user with role
+export interface ListUser {
+  userId: string
+  role: UserRole
+}
+
+// Job with relations for API responses
+export interface JobWithRelations {
+  id: string
+  status: JobStatus
+  workerId: string
+  taskId: string
+  listId: string
+  occurrenceDate: string | null
+  selfReview: number | null
+  peerReview: number | null
+  managerReview: number | null
+  reviewerIds: string[]
+  requesterNoteIds: string[]
+  reviewersNoteIds: string[]
+  createdAt: Date
+  updatedAt: Date
+  task: {
+    id: string
+    name: string
+    area: string
+    categories: string[]
+    status: string
+  }
+  list: {
+    id: string
+    name: string
+    users: ListUser[]
+  }
+  worker: {
+    id: string
+    userId: string
+    profiles: Profile[]
+  }
+  reviewers?: {
+    id: string
+    userId: string
+    profiles: Profile[]
+  }[]
+  requesterNotes: Note[]
+  reviewersNotes: (Note & {
+    user: {
+      id: string
+      profiles: Profile[]
+    }
+  })[]
+}
+
+// Request body for updating job
+export interface UpdateJobRequest {
+  status?: JobStatus
+  requesterNoteContent?: string
+  reviewerNoteContent?: string
+  selfReview?: number
+  managerReview?: number
+}
+
+// Authorization context
+export interface AuthContext {
+  userRole?: UserRole
+  isWorker: boolean
+  isReviewer: boolean
+  isOwnerOrManager: boolean
+  isListMember: boolean
+}
+```
+
+**Usage in API routes:**
+Import these types instead of using `any`:
+
+```typescript
+import type { JobWithRelations, UpdateJobRequest, AuthContext, ListUser } from '@/lib/services/job/types'
+```
+
+---
+
 ## API Endpoints
 
 ### Existing Endpoints to Modify
@@ -46,6 +140,8 @@ export async function PUT(
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
+import type { UpdateJobRequest, ListUser } from '@/lib/services/job/types'
+import { logJobStatusChange, logJobAcceptance, logAuthorizationFailure } from '@/lib/services/job/auditLogger'
 
 // Valid status transitions
 const STATUS_TRANSITIONS: Record<string, { to: string[]; roles: string[] }> = {
@@ -132,7 +228,7 @@ export async function PUT(
       }
 
       // 5. Authorization check based on transition
-      const userRole = job.list.users.find((u: any) => u.userId === user.id)?.role
+      const userRole = job.list.users.find((u: ListUser) => u.userId === user.id)?.role
       const isWorker = job.workerId === user.id
       const isReviewer = job.reviewerIds?.includes(user.id)
 
@@ -153,19 +249,50 @@ export async function PUT(
       }
 
       if (!authorized) {
+        // Audit log authorization failure
+        await logAuthorizationFailure({
+          userId: user.id,
+          action: 'job.status.update',
+          resourceType: 'Job',
+          resourceId: params.jobId,
+          reason: `Unauthorized transition from ${job.status} to ${newStatus}`,
+        })
+
         return NextResponse.json(
           { error: 'You are not authorized to perform this transition' },
           { status: 403 }
         )
       }
+
+      // 5a. Prevent duplicate acceptance - check if another job is already accepted
+      if (newStatus === 'ACCEPTED') {
+        const existingAccepted = await prisma.job.findFirst({
+          where: {
+            taskId: job.taskId,
+            status: 'ACCEPTED',
+            id: { not: params.jobId }
+          }
+        })
+        if (existingAccepted) {
+          return NextResponse.json(
+            { error: 'Task already has an accepted job' },
+            { status: 400 }
+          )
+        }
+      }
     }
 
     // 6. Create requester note if provided
+    // Note: XSS sanitization should be handled by the RichTextEditor component
+    // on the frontend. If additional server-side sanitization is needed, use
+    // DOMPurify: import DOMPurify from 'isomorphic-dompurify'
     let newRequesterNoteId: string | null = null
     if (requesterNoteContent && requesterNoteContent.trim()) {
+      // Sanitize content to prevent XSS attacks
+      // const sanitizedContent = DOMPurify.sanitize(requesterNoteContent)
       const requesterNote = await prisma.note.create({
         data: {
-          content: requesterNoteContent,
+          content: requesterNoteContent, // Use sanitizedContent if DOMPurify is added
           userId: job.workerId,
           visibility: 'PRIVATE',
           metadata: {
@@ -182,9 +309,11 @@ export async function PUT(
     // 7. Create reviewer note if provided
     let newReviewerNoteId: string | null = null
     if (reviewerNoteContent && reviewerNoteContent.trim()) {
+      // Sanitize content to prevent XSS attacks
+      // const sanitizedContent = DOMPurify.sanitize(reviewerNoteContent)
       const reviewerNote = await prisma.note.create({
         data: {
-          content: reviewerNoteContent,
+          content: reviewerNoteContent, // Use sanitizedContent if DOMPurify is added
           userId: user.id,
           visibility: 'PRIVATE',
           metadata: {
@@ -233,7 +362,7 @@ export async function PUT(
       })
 
       // 9. Sync task status based on job status
-      let taskUpdate: any = null
+      let taskUpdate: { id: string; status: string } | null = null
       if (newStatus) {
         const taskStatusMap: Record<string, string> = {
           IN_PROGRESS: 'IN_PROGRESS',
@@ -252,10 +381,34 @@ export async function PUT(
         }
       }
 
+      // 9a. Auto-reject all competing jobs when one is accepted
+      if (newStatus === 'ACCEPTED') {
+        await tx.job.updateMany({
+          where: {
+            taskId: job.taskId,
+            id: { not: params.jobId },
+            status: { notIn: ['ACCEPTED', 'REJECTED'] }
+          },
+          data: { status: 'REJECTED' }
+        })
+      }
+
       return { job: updatedJob, task: taskUpdate }
     })
 
-    // 10. Handle accepted jobs (earnings calculation)
+    // 10. Audit log status change
+    if (newStatus && newStatus !== job.status) {
+      await logJobStatusChange({
+        userId: user.id,
+        jobId: params.jobId,
+        oldStatus: job.status,
+        newStatus: newStatus,
+        taskId: job.taskId,
+        listId: job.listId,
+      })
+    }
+
+    // 11. Handle accepted jobs (earnings calculation)
     if (newStatus === 'ACCEPTED') {
       try {
         const { calculateAndApplyJobEarnings } = await import('@/lib/services/job/earningsService')
@@ -266,13 +419,23 @@ export async function PUT(
           workerId: result.job.workerId,
           occurrenceDate: result.job.occurrenceDate || undefined,
         })
+
+        // Audit log job acceptance (financial event)
+        await logJobAcceptance({
+          userId: user.id,
+          jobId: params.jobId,
+          workerId: result.job.workerId,
+          taskId: result.job.taskId,
+          listId: result.job.listId,
+          managerReview: managerReview,
+        })
       } catch (earningsError) {
         console.error('Error calculating job earnings:', earningsError)
         // Don't fail the entire request
       }
     }
 
-    // 11. TODO: Send notifications (Phase 3)
+    // 12. TODO: Send notifications (Phase 3)
     // await notifyJobStatusChange(result.job, job.status, newStatus)
 
     return NextResponse.json({
@@ -302,6 +465,7 @@ export async function PUT(
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
+import type { JobWithRelations, ListUser } from '@/lib/services/job/types'
 
 const JOB_INCLUDE = {
   task: { select: { id: true, name: true, area: true, categories: true, status: true } },
@@ -343,12 +507,20 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
 
     // Build where clause
-    const where: any = {}
-    if (searchParams.get('listId')) where.listId = searchParams.get('listId')
-    if (searchParams.get('taskId')) where.taskId = searchParams.get('taskId')
-    if (searchParams.get('workerId')) where.workerId = searchParams.get('workerId')
-    if (searchParams.get('status')) where.status = searchParams.get('status')
-    if (searchParams.get('date')) where.occurrenceDate = searchParams.get('date')
+    interface JobWhereClause {
+      listId?: string
+      taskId?: string
+      workerId?: string
+      status?: string
+      occurrenceDate?: string
+    }
+
+    const where: JobWhereClause = {}
+    if (searchParams.get('listId')) where.listId = searchParams.get('listId')!
+    if (searchParams.get('taskId')) where.taskId = searchParams.get('taskId')!
+    if (searchParams.get('workerId')) where.workerId = searchParams.get('workerId')!
+    if (searchParams.get('status')) where.status = searchParams.get('status')!
+    if (searchParams.get('date')) where.occurrenceDate = searchParams.get('date')!
 
     // Fetch jobs
     const jobs = await prisma.job.findMany({
@@ -358,12 +530,12 @@ export async function GET(request: NextRequest) {
     })
 
     // Filter and format based on access level
-    const processedJobs = jobs.map((job: any) => {
+    const processedJobs = jobs.map((job) => {
       // Check if user is participant
       const isWorker = job.workerId === user.id
-      const isListMember = job.list?.users?.some((u: any) => u.userId === user.id)
+      const isListMember = job.list?.users?.some((u: ListUser) => u.userId === user.id)
       const isOwnerOrManager = job.list?.users?.some(
-        (u: any) => u.userId === user.id && ['OWNER', 'MANAGER'].includes(u.role)
+        (u: ListUser) => u.userId === user.id && ['OWNER', 'MANAGER'].includes(u.role)
       )
       const isReviewer = job.reviewerIds?.includes(user.id)
 
@@ -403,6 +575,128 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     )
   }
+}
+```
+
+---
+
+## Audit Logging Helper
+
+**File:** `src/lib/services/job/auditLogger.ts` (NEW)
+
+```typescript
+import prisma from '@/lib/prisma'
+
+export interface AuditLogEntry {
+  userId: string
+  action: string
+  resourceType: 'Job' | 'Task' | 'Note'
+  resourceId: string
+  metadata?: Record<string, unknown>
+}
+
+/**
+ * Create structured audit log for compliance tracking
+ * Required for: ISO 27001, SOC II, DORA compliance
+ */
+export async function createAuditLog(entry: AuditLogEntry): Promise<void> {
+  try {
+    // Log to structured format for audit trail
+    const logEntry = {
+      timestamp: new Date().toISOString(),
+      userId: entry.userId,
+      action: entry.action,
+      resourceType: entry.resourceType,
+      resourceId: entry.resourceId,
+      metadata: entry.metadata,
+    }
+
+    // Log to console in structured JSON format
+    console.log(JSON.stringify({
+      type: 'AUDIT',
+      ...logEntry,
+    }))
+
+    // TODO: Store in dedicated audit log table or external service
+    // await prisma.auditLog.create({ data: logEntry })
+    // OR send to external audit service (e.g., CloudWatch, Datadog)
+  } catch (error) {
+    // Never fail the request due to audit logging failure
+    console.error('Failed to create audit log:', error)
+  }
+}
+
+/**
+ * Audit log for job status transitions
+ */
+export async function logJobStatusChange(params: {
+  userId: string
+  jobId: string
+  oldStatus: string
+  newStatus: string
+  taskId?: string
+  listId?: string
+}): Promise<void> {
+  await createAuditLog({
+    userId: params.userId,
+    action: 'job.status.update',
+    resourceType: 'Job',
+    resourceId: params.jobId,
+    metadata: {
+      oldStatus: params.oldStatus,
+      newStatus: params.newStatus,
+      taskId: params.taskId,
+      listId: params.listId,
+    },
+  })
+}
+
+/**
+ * Audit log for job acceptance (financial event)
+ */
+export async function logJobAcceptance(params: {
+  userId: string
+  jobId: string
+  workerId: string
+  taskId: string
+  listId: string
+  managerReview?: number
+}): Promise<void> {
+  await createAuditLog({
+    userId: params.userId,
+    action: 'job.accepted',
+    resourceType: 'Job',
+    resourceId: params.jobId,
+    metadata: {
+      workerId: params.workerId,
+      taskId: params.taskId,
+      listId: params.listId,
+      managerReview: params.managerReview,
+      // Don't log financial amounts in audit logs (PCI compliance)
+      event: 'earnings_calculated',
+    },
+  })
+}
+
+/**
+ * Audit log for authorization failures
+ */
+export async function logAuthorizationFailure(params: {
+  userId: string
+  action: string
+  resourceType: 'Job' | 'Task' | 'Note'
+  resourceId: string
+  reason: string
+}): Promise<void> {
+  await createAuditLog({
+    userId: params.userId,
+    action: `${params.action}.denied`,
+    resourceType: params.resourceType,
+    resourceId: params.resourceId,
+    metadata: {
+      reason: params.reason,
+    },
+  })
 }
 ```
 
@@ -566,6 +860,7 @@ export async function syncTaskStatus(
 
 ```typescript
 import prisma from '@/lib/prisma'
+// Optional: import DOMPurify from 'isomorphic-dompurify'
 
 export interface CreateJobNoteParams {
   content: string
@@ -585,10 +880,15 @@ export async function createJobNote(
     return { success: false, error: 'Note content is required' }
   }
 
+  // Sanitize content to prevent XSS attacks
+  // Note: Frontend RichTextEditor should handle initial sanitization,
+  // but server-side sanitization adds defense-in-depth
+  // const sanitizedContent = DOMPurify.sanitize(content)
+
   try {
     const note = await prisma.note.create({
       data: {
-        content,
+        content, // Use sanitizedContent if DOMPurify is added
         userId,
         visibility: 'PRIVATE',
         metadata: {
@@ -851,6 +1151,87 @@ if (selfReview !== undefined && (selfReview < 0 || selfReview > 100)) {
 }
 ```
 
+### XSS Prevention
+
+Note content should be sanitized to prevent cross-site scripting attacks:
+
+```typescript
+// Option 1: Rely on frontend RichTextEditor sanitization
+// The RichTextEditor component should handle initial sanitization
+
+// Option 2: Add server-side sanitization for defense-in-depth
+// Install: npm install isomorphic-dompurify
+import DOMPurify from 'isomorphic-dompurify'
+
+// Sanitize before storing
+const sanitizedContent = DOMPurify.sanitize(requesterNoteContent)
+
+// Store sanitized content
+const note = await prisma.note.create({
+  data: {
+    content: sanitizedContent,
+    // ... other fields
+  }
+})
+```
+
+**Recommendation**: Implement both frontend and server-side sanitization for defense-in-depth security.
+
+### Audit Logging
+
+All security-relevant events must be logged for compliance (ISO 27001, SOC II, DORA):
+
+```typescript
+import { logJobStatusChange, logJobAcceptance, logAuthorizationFailure } from '@/lib/services/job/auditLogger'
+
+// Log status changes
+await logJobStatusChange({
+  userId: user.id,
+  jobId: job.id,
+  oldStatus: 'SUBMITTED',
+  newStatus: 'ACCEPTED',
+  taskId: job.taskId,
+  listId: job.listId,
+})
+
+// Log financial events (job acceptance)
+await logJobAcceptance({
+  userId: user.id,
+  jobId: job.id,
+  workerId: job.workerId,
+  taskId: job.taskId,
+  listId: job.listId,
+  managerReview: 95,
+})
+
+// Log authorization failures
+await logAuthorizationFailure({
+  userId: user.id,
+  action: 'job.status.update',
+  resourceType: 'Job',
+  resourceId: job.id,
+  reason: 'Unauthorized transition',
+})
+```
+
+**What to log:**
+- Status transitions (all changes)
+- Authorization failures (security events)
+- Job acceptance (financial events)
+- Job rejection (task reopening)
+
+**What NOT to log:**
+- Financial amounts (PCI compliance)
+- PII like email addresses or phone numbers
+- Full note content (privacy)
+- Authentication tokens or credentials
+
+**Implementation:**
+1. Logs are written to structured JSON format
+2. Can be sent to CloudWatch, Datadog, or similar services
+3. Consider creating dedicated `AuditLog` model in Prisma for persistent storage
+4. Audit logs should NEVER cause request failures
+
 ### Rate Limiting
 
 Consider implementing rate limiting for job updates:
@@ -943,12 +1324,19 @@ curl -X PUT http://localhost:3000/api/v1/jobs/JOB_ID \
 
 - [ ] PUT endpoint validates all status transitions correctly
 - [ ] Authorization checks prevent unauthorized transitions
+- [ ] **Duplicate acceptance prevention check works correctly**
 - [ ] Worker can submit job with requester note
 - [ ] Owner/Manager can approve, reject, or request changes
 - [ ] Task status syncs automatically with job status
+- [ ] **Auto-rejection of competing jobs when one is accepted**
 - [ ] Notes are created and linked to jobs correctly
+- [ ] **XSS sanitization implemented for note content**
 - [ ] Privacy filtering works (participants see full data, others see limited)
 - [ ] Earnings calculation triggers on job acceptance
+- [ ] **Audit logging for all status transitions**
+- [ ] **Audit logging for authorization failures**
+- [ ] **Audit logging for job acceptance (financial events)**
+- [ ] **TypeScript types defined (no 'any' types)**
 - [ ] Error responses are consistent and informative
 - [ ] All unit tests pass
 - [ ] All integration tests pass
