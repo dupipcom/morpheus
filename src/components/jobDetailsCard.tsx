@@ -14,32 +14,32 @@ function WorkerStatusBanner({ status }: { status: string }) {
   const configs: Record<string, { message: string; icon: React.ReactNode; className: string }> = {
     REQUESTED: {
       message: 'Your request is being reviewed. You will be notified when approved.',
-      icon: <Hourglass className="w-4 h-4" />,
+      icon: <Hourglass className="w-6 h-6" />,
       className: 'bg-slate-50 border-slate-200 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300',
     },
     IN_PROGRESS: {
       message: 'Your request was approved! You can now work on this task.',
-      icon: <CheckCircle className="w-4 h-4 text-green-600" />,
+      icon: <CheckCircle className="w-6 h-6 text-green-600" />,
       className: 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/20 dark:border-green-800 dark:text-green-300',
     },
     SUBMITTED: {
       message: 'Your work has been submitted. Awaiting review from the owner.',
-      icon: <Send className="w-4 h-4 text-blue-600" />,
+      icon: <Send className="w-6 h-6 text-blue-600" />,
       className: 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-300',
     },
     VALIDATING: {
       message: 'Changes have been requested. Please revise and resubmit.',
-      icon: <AlertCircle className="w-4 h-4 text-orange-600" />,
+      icon: <AlertCircle className="w-6 h-6 text-orange-600" />,
       className: 'bg-orange-50 border-orange-200 text-orange-700 dark:bg-orange-900/20 dark:border-orange-800 dark:text-orange-300',
     },
     ACCEPTED: {
       message: 'Congratulations! Your work was accepted.',
-      icon: <CheckCircle className="w-4 h-4 text-green-600" />,
+      icon: <CheckCircle className="w-6 h-6 text-green-600" />,
       className: 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/20 dark:border-green-800 dark:text-green-300',
     },
     REJECTED: {
       message: 'Your submission was rejected.',
-      icon: <XCircle className="w-4 h-4 text-red-600" />,
+      icon: <XCircle className="w-6 h-6 text-red-600" />,
       className: 'bg-red-50 border-red-200 text-red-700 dark:bg-red-900/20 dark:border-red-800 dark:text-red-300',
     },
   }
@@ -60,32 +60,32 @@ function OwnerStatusBanner({ status, workerName }: { status: string; workerName:
   const configs: Record<string, { message: string; icon: React.ReactNode; className: string }> = {
     REQUESTED: {
       message: `@${workerName} has requested to work on this task. Approve or reject the request.`,
-      icon: <Hourglass className="w-4 h-4" />,
+      icon: <Hourglass className="w-6 h-6" />,
       className: 'bg-amber-50 border-amber-200 text-amber-700 dark:bg-amber-900/20 dark:border-amber-800 dark:text-amber-300',
     },
     IN_PROGRESS: {
       message: `@${workerName} is currently working on this task.`,
-      icon: <AlertCircle className="w-4 h-4 text-blue-600" />,
+      icon: <AlertCircle className="w-6 h-6 text-blue-600" />,
       className: 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-300',
     },
     SUBMITTED: {
       message: `@${workerName} has submitted their work for review.`,
-      icon: <Send className="w-4 h-4 text-yellow-600" />,
+      icon: <Send className="w-6 h-6 text-yellow-600" />,
       className: 'bg-yellow-50 border-yellow-200 text-yellow-700 dark:bg-yellow-900/20 dark:border-yellow-800 dark:text-yellow-300',
     },
     VALIDATING: {
       message: `Waiting for @${workerName} to revise and resubmit.`,
-      icon: <Hourglass className="w-4 h-4" />,
+      icon: <Hourglass className="w-6 h-6" />,
       className: 'bg-orange-50 border-orange-200 text-orange-700 dark:bg-orange-900/20 dark:border-orange-800 dark:text-orange-300',
     },
     ACCEPTED: {
       message: `@${workerName}'s work was accepted.`,
-      icon: <CheckCircle className="w-4 h-4 text-green-600" />,
+      icon: <CheckCircle className="w-6 h-6 text-green-600" />,
       className: 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/20 dark:border-green-800 dark:text-green-300',
     },
     REJECTED: {
       message: `@${workerName}'s submission was rejected.`,
-      icon: <XCircle className="w-4 h-4 text-red-600" />,
+      icon: <XCircle className="w-6 h-6 text-red-600" />,
       className: 'bg-red-50 border-red-200 text-red-700 dark:bg-red-900/20 dark:border-red-800 dark:text-red-300',
     },
   }
@@ -181,7 +181,7 @@ export function JobDetailsCard({
               </span>
             </div>
             <div className="flex items-center gap-2 text-sm">
-              <User className="w-4 h-4" />
+              <User className="w-6 h-6" />
               <span>@{job.worker?.profiles?.[0]?.username || 'Unknown'}</span>
             </div>
           </div>
