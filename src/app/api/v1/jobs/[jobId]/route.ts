@@ -217,18 +217,29 @@ export async function PUT(
         )
       }
 
-      // Prevent duplicate acceptance - check if another job is already accepted
+      // Prevent duplicate acceptance - check if another job is already accepted for this task on this date
       if (newStatus === 'ACCEPTED') {
+        const whereClause: any = {
+          taskId: existingJob.taskId,
+          status: 'ACCEPTED',
+          id: { not: jobId }
+        }
+
+        // If this job has an occurrenceDate, only check for duplicates on the same date
+        if (existingJob.occurrenceDate) {
+          whereClause.occurrenceDate = existingJob.occurrenceDate
+        }
+
         const existingAccepted = await prisma.job.findFirst({
-          where: {
-            taskId: existingJob.taskId,
-            status: 'ACCEPTED',
-            id: { not: jobId }
-          }
+          where: whereClause
         })
+
         if (existingAccepted) {
           return NextResponse.json(
-            { error: 'Task already has an accepted job' },
+            { error: existingJob.occurrenceDate
+              ? 'Task already has an accepted job for this date'
+              : 'Task already has an accepted job'
+            },
             { status: 400 }
           )
         }
@@ -350,14 +361,21 @@ export async function PUT(
         }
       }
 
-      // Auto-reject all competing jobs when one is accepted
+      // Auto-reject all competing jobs when one is accepted (for the same date)
       if (newStatus === 'ACCEPTED') {
+        const rejectWhereClause: any = {
+          taskId: existingJob.taskId,
+          id: { not: jobId },
+          status: { notIn: ['ACCEPTED', 'REJECTED'] }
+        }
+
+        // If this job has an occurrenceDate, only reject competing jobs on the same date
+        if (existingJob.occurrenceDate) {
+          rejectWhereClause.occurrenceDate = existingJob.occurrenceDate
+        }
+
         await tx.job.updateMany({
-          where: {
-            taskId: existingJob.taskId,
-            id: { not: jobId },
-            status: { notIn: ['ACCEPTED', 'REJECTED'] }
-          },
+          where: rejectWhereClause,
           data: { status: 'REJECTED' }
         })
       }

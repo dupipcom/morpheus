@@ -173,8 +173,9 @@ const formatDateLocal = (date: Date): string => {
       return `/api/v1/jobs?listId=${selectedTaskListId}&date=${date}`
     }, [selectedTaskListId, date, isWeeklyList])
 
-    const { data: jobsData } = useSWR(jobsUrl, fetcher, {
+    const { data: jobsData, mutate: mutateJobs } = useSWR(jobsUrl, fetcher, {
       revalidateOnFocus: false,
+      refreshInterval: 60000, // Refresh every 60 seconds
     })
     const jobsFromApi = jobsData?.jobs || []
 
@@ -608,6 +609,15 @@ const formatDateLocal = (date: Date): string => {
       }
     }, [propOnDateChange])
 
+    // Callback to refresh both jobs and tasks after job actions
+    const handleRefreshJobData = useCallback(async () => {
+      await Promise.all([
+        mutateJobs(),
+        mutateTasks(),
+        refreshTaskLists(),
+      ])
+    }, [mutateJobs, mutateTasks, refreshTaskLists])
+
     // Check if tasks are loading for the selected date
     const isLoadingTasksForDate = isLoadingTasks && tasksUrl !== null
 
@@ -671,7 +681,7 @@ const formatDateLocal = (date: Date): string => {
           date={date}
           userId={userId}
           jobs={jobsFromApi}
-          onRefresh={refreshTaskLists}
+          onRefresh={handleRefreshJobData}
           onRefreshUser={refreshUser}
           onRefreshTasks={mutateTasks}
         />
