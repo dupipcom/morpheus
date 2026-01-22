@@ -1,11 +1,16 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { loadTranslations, loadTranslationsSync, t, formatDate, type Locale } from '@/lib/i18n'
 
+type TranslationParams = Record<string, string | number>
+
+/**
+ * Hook for loading and using translations with locale-specific date formatting
+ */
 export function useTranslations(locale: Locale) {
   // Preload synchronously for first render so placeholders don't flash
-  const [translations, setTranslations] = useState<any>(() => loadTranslationsSync(locale))
+  const [translations, setTranslations] = useState<Record<string, unknown>>(() => loadTranslationsSync(locale))
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
@@ -24,13 +29,19 @@ export function useTranslations(locale: Locale) {
     loadTranslationsForLocale()
   }, [locale])
 
-  const translate = (key: string, params: Record<string, string | number> = {}) => {
-    return t(translations, key, params)
-  }
+  const translate = useCallback(
+    (key: string, params: TranslationParams = {}): string => {
+      return t(translations, key, params)
+    },
+    [translations]
+  )
 
-  const formatDateForLocale = (date: Date) => {
-    return formatDate(date, locale)
-  }
+  const formatDateForLocale = useCallback(
+    (date: Date): string => {
+      return formatDate(date, locale)
+    },
+    [locale]
+  )
 
   return {
     t: translate,

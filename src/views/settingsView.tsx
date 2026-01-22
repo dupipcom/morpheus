@@ -1,10 +1,8 @@
 'use client'
-import { useState, useRef, useContext, useEffect } from 'react'
-import useSWR from 'swr'
-import { Slider } from "@/components/ui/slider"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 
+import React, { useState, useRef, useContext, useEffect } from 'react'
+
+import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import {
   Select,
@@ -14,38 +12,15 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
-
-import { getWeekNumber } from "@/app/helpers"
-
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdownMenu"
-
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-
 import {
   ColumnDef,
   ColumnFiltersState,
-  flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
@@ -54,21 +29,22 @@ import {
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table"
+import { MoreHorizontal, Edit, X } from "lucide-react"
 
-import { WEEKLY_ACTIONS, DAILY_ACTIONS } from "@/app/constants"
-import { ArrowUpDown, ChevronDown, MoreHorizontal, Edit, X } from "lucide-react"
 import { GlobalContext } from "@/lib/contexts"
-import { updateUser, handleSettingsSubmit, isUserDataReady, useEnhancedLoadingState, useUserData } from "@/lib/utils/userUtils"
+import { handleSettingsSubmit, useEnhancedLoadingState, useUserData } from "@/lib/utils/userUtils"
 import { logger } from "@/lib/logger"
 import { SettingsSkeleton } from "@/components/ui/skeletonLoader"
 import { useI18n } from "@/lib/contexts/i18n"
 
-export const SettingsView = ({ timeframe = "day" }) => {
-  const fullDate = new Date()
-  const date = fullDate.toISOString().split('T')[0]
-  const year = Number(date.split('-')[0])
-  const weekNumber = getWeekNumber(fullDate)[1]
+interface Payment {
+  name: string
+  times: number
+  area: string
+  categories: string[]
+}
 
+export function SettingsView({ timeframe = "day" }): React.ReactElement {
   const dailyEntry = useRef({ times: 1, status: "Open", cadence: "daily" })
   const weeklyEntry = useRef({ times: 1, status: "Open", cadence: "weekly" })
   

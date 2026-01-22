@@ -225,6 +225,21 @@ export async function handleEphemeralTaskUpdate(
 }
 
 /**
+ * Map old status string to database enum value
+ */
+export function mapStatusToEnum(status: string): string {
+  const statusMap: Record<string, string> = {
+    'in progress': 'IN_PROGRESS',
+    'steady': 'STEADY',
+    'ready': 'READY',
+    'open': 'OPEN',
+    'done': 'DONE',
+    'ignored': 'IGNORED',
+  }
+  return statusMap[status] || status.toUpperCase() || 'OPEN'
+}
+
+/**
  * Update user entries for completed tasks
  */
 export async function updateUserEntriesForTasks(
@@ -277,8 +292,4 @@ export async function updateUserEntriesForTasks(
     }
   } catch { }
 }
-
-
-
-
 

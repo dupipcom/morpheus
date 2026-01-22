@@ -1,13 +1,28 @@
 import { useState, useEffect, useMemo } from 'react'
-import { TaskStatus, STATUS_OPTIONS, getTaskKey, getTaskStatus } from '@/lib/utils/taskUtils'
+import { getTaskKey, getTaskStatus, STATUS_OPTIONS } from '@/lib/utils/taskUtils'
+import type { TaskStatus } from '@/lib/utils/taskUtils'
+
+interface Task {
+  id?: string
+  name?: string
+  localeKey?: string
+  status?: string
+  dateStatus?: string
+  count?: number
+  dateCount?: number
+  times?: number
+}
 
 interface UseTaskStatusesOptions {
-  tasks: any[]
+  tasks: Task[]
   selectedTaskListId?: string
   date?: string
   optimisticStatuses?: Record<string, TaskStatus>
 }
 
+/**
+ * Hook for managing task statuses with optimistic update support
+ */
 export function useTaskStatuses({
   tasks,
   selectedTaskListId,
@@ -21,7 +36,7 @@ export function useTaskStatuses({
     if (!selectedTaskListId && !tasks.length) return
     const statuses: Record<string, TaskStatus> = {}
 
-    tasks.forEach((task: any) => {
+    tasks.forEach((task) => {
       const key = getTaskKey(task)
 
       // IMPORTANT: For date views, prefer dateStatus (job-based) over task.status (global)
@@ -80,4 +95,3 @@ export function useTaskStatuses({
     getEffectiveStatus,
   }
 }
-

@@ -1,21 +1,23 @@
 'use client'
-import { useState, useContext, useEffect, useMemo, useCallback } from 'react'
+
+import React, { useState, useContext, useEffect, useMemo, useCallback } from 'react'
 import useSWR from 'swr'
 import { useRouter, usePathname } from 'next/navigation'
+import Link from 'next/link'
+
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { User, UserMinus, Loader2 } from "lucide-react"
-import ActivityCard, { ActivityItem } from "@/components/activityCard"
+import { Skeleton } from "@/components/ui/skeleton"
+import { toast } from 'sonner'
+import ActivityCard, { ActivityItem as ActivityItemType } from "@/components/activityCard"
 import { OptionsButton, OptionsMenuItem } from "@/components/optionsButton"
 import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
 import { useEnhancedLoadingState } from "@/lib/utils/userUtils"
 import { SettingsSkeleton } from "@/components/ui/skeletonLoader"
-import { Skeleton } from "@/components/ui/skeleton"
-import { toast } from 'sonner'
-import Link from 'next/link'
 import { useNotesRefresh } from "@/lib/contexts/notesRefresh"
 
 interface Friend {
@@ -108,7 +110,7 @@ interface PublicTemplate {
   } | null
 }
 
-type ActivityItem = {
+interface LocalActivityItem {
   id: string
   type: 'note' | 'template'
   createdAt: string
@@ -123,13 +125,13 @@ interface BeViewProps {
   defaultTab?: 'activity' | 'friends' | 'events' | 'spaces' | 'organizations'
 }
 
-export const BeView = ({ 
+export function BeView({
   filterProfileId,
   filterNoteId,
   filterListId,
   filterTemplateId,
   defaultTab = 'activity'
-}: BeViewProps) => {
+}: BeViewProps): React.ReactElement {
   const { session, setGlobalContext, theme } = useContext(GlobalContext)
   const { t } = useI18n()
   const router = useRouter()
@@ -357,7 +359,7 @@ export const BeView = ({
   // Combine notes and templates into activity feed, sorted by creation date
   // Items matching filter parameters are prioritized (shown first)
   const activityItems = useMemo(() => {
-    const items: ActivityItem[] = [
+    const items: LocalActivityItem[] = [
       ...publicNotes.map(note => ({
         id: `note-${note.id}`,
         type: 'note' as const,
@@ -401,40 +403,6 @@ export const BeView = ({
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     })
   }, [publicNotes, publicTemplates, filterProfileId, filterNoteId, filterListId, filterTemplateId])
-
-  const getNoteUserDisplayName = (note: PublicNote) => {
-    if (note.user.profile) {
-      const { firstName, lastName, userName } = note.user.profile
-      const fullName = [firstName, lastName].filter(Boolean).join(' ')
-      return fullName || userName || t('common.anonymousUser')
-    }
-    return t('common.anonymousUser')
-  }
-
-  const getNoteUserProfilePicture = (note: PublicNote) => {
-    return note.user.profile?.profilePicture || '/images/default-avatar.webp'
-  }
-
-  const getNoteUserName = (note: PublicNote) => {
-    return note.user.profile?.userName || null
-  }
-
-  const getTemplateUserName = (template: PublicTemplate) => {
-    return template.user?.profile?.userName || null
-  }
-
-  const getTemplateUserProfilePicture = (template: PublicTemplate) => {
-    return template.user?.profile?.profilePicture || '/images/default-avatar.webp'
-  }
-
-  const getTemplateUserDisplayName = (template: PublicTemplate) => {
-    if (template.user?.profile) {
-      const { firstName, lastName, userName } = template.user.profile
-      const fullName = [firstName, lastName].filter(Boolean).join(' ')
-      return fullName || userName || t('common.anonymousUser')
-    }
-    return t('common.anonymousUser')
-  }
 
   const getTimeAgo = (dateString: string) => {
     const date = new Date(dateString)

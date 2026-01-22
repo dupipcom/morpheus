@@ -1,6 +1,8 @@
 'use client'
-import { type ChartConfig } from "@/components/ui/chart"
-import { useState, useEffect, useContext, useMemo } from 'react'
+
+import React, { useState, useEffect, useContext, useMemo } from 'react'
+
+import type { ChartConfig } from "@/components/ui/chart"
 import { Area, CartesianGrid, Bar, AreaChart, XAxis } from "recharts"
  
 import { ChartContainer, ChartTooltipContent, ChartTooltip, ChartLegendContent, ChartLegend } from "@/components/ui/chart"
@@ -19,7 +21,7 @@ import { getWeekNumber } from "@/app/helpers"
 
 import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
-import { generateInsight, updateUser, handleMoodSubmit, useHint, useUserData, useEnhancedLoadingState } from "@/lib/utils/userUtils"
+import { useHint, useUserData, useEnhancedLoadingState } from "@/lib/utils/userUtils"
 import { DashboardViewSkeleton } from "@/components/ui/skeletonLoader"
 import { ContentLoadingWrapper } from '@/components/contentLoadingWrapper'
 import { AgentChat } from "@/components/agentChat"
@@ -132,13 +134,10 @@ const ChartDimensionSelector = ({
   )
 }
 
-export const DashboardView = ({ timeframe = "day" }) => {
+export function DashboardView({ timeframe = "day" }): React.ReactElement {
   const fullDate = new Date()
-  const date = fullDate.toISOString().split('T')[0]
-  const year = Number(date.split('-')[0])
-  const weekNumber = getWeekNumber(fullDate)[1]
+  const year = Number(fullDate.toISOString().split('T')[0].split('-')[0])
   const [insight, setInsight] = useState({})
-  const [relevantData, setRelevantData] = useState([])
   const [days, setDays] = useState<any[]>([])
   const [isLoadingDays, setIsLoadingDays] = useState(true)
   
@@ -198,10 +197,9 @@ export const DashboardView = ({ timeframe = "day" }) => {
     fetchDays()
   }, [user?.id, year])
   
-  // Message history state (weekly agentConversation) - TODO: migrate to separate model
+  // Message history state (weekly agentConversation)
   const [currentText, setCurrentText] = useState("")
-  const conversation = null // TODO: fetch from separate conversation model
-  const reverseMessages = useMemo(() => [], [])
+  const reverseMessages: string[] = []
   
   // Create chart configs with translations
   const moodChartConfig = createMoodChartConfig(t)
@@ -214,15 +212,6 @@ export const DashboardView = ({ timeframe = "day" }) => {
     if (hintData) setInsight(hintData as any)
   }, [hintData])
 
-  // Reset input when week conversation changes
-  useEffect(() => {
-    setCurrentText("")
-  }, [JSON.stringify(reverseMessages)])
-
-  // No longer persisting daily analyticsAgentText; weekly conversation is saved via /api/v1/chat
-  const debouncedHandleTextSubmit = useDebounce(async (_message, _field) => {
-    return
-  }, 500)
 
   // Dimension toggle handlers
   const handleMoodDimensionToggle = (dimension: string, visible: boolean) => {
@@ -244,12 +233,7 @@ export const DashboardView = ({ timeframe = "day" }) => {
   }
 
   // Check if user is properly authenticated and session is valid
-  if (!user || !user?.userId || Object.keys(user).length === 0) {
-    return <DashboardViewSkeleton />
-  }
-
-  // Additional check to ensure user data is accessible (prevents showing data for expired sessions)
-  if (!user || !user?.userId) {
+  if (!user?.userId) {
     return <DashboardViewSkeleton />
   }
 
@@ -327,9 +311,6 @@ const aggregateDataByWeek = (dailyData: any[]) => {
   }).sort((a: any, b: any) => a.weekNumber - b.weekNumber)
 }
 
-  // Use days from Prisma Day model instead of user.entries
-  // Weekly data - TODO: migrate to separate Week model or derive from Day model
-  const userWeeks: any[] = [];
   
   const plotData = days
     .sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime()) // Sort by most recent first

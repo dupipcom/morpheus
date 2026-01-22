@@ -1,33 +1,17 @@
 import useSWR from 'swr'
-import { useMemo } from 'react'
+import { jsonFetcher } from '@/lib/utils/utils'
 
-const fetcher = async (url: string) => {
-  const response = await fetch(url, {
-    headers: {
-      'Accept': 'application/json',
-    },
-  })
-  
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({ error: 'Failed to fetch' }))
-    throw new Error(errorData.error || `Failed to fetch: ${response.statusText}`)
-  }
-  
-  const contentType = response.headers.get('content-type')
-  if (!contentType || !contentType.includes('application/json')) {
-    throw new Error('Response is not JSON')
-  }
-  
-  return response.json()
+interface SearchData {
+  results?: unknown[]
 }
 
 /**
  * SWR hook to search profiles/users
  */
 export function useSearch(query: string | null, enabled: boolean = true) {
-  const { data, error, isLoading, mutate } = useSWR(
+  const { data, error, isLoading, mutate } = useSWR<SearchData>(
     enabled && query ? `/api/v1/search?q=${encodeURIComponent(query)}` : null,
-    fetcher,
+    jsonFetcher,
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
@@ -43,4 +27,3 @@ export function useSearch(query: string | null, enabled: boolean = true) {
     mutate,
   }
 }
-
