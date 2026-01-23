@@ -16,12 +16,14 @@ export const AddTaskForm = ({
   selectedTaskListId,
   onCancel,
   onCreated,
-  editTask
+  editTask,
+  pendingTaskCreationsRef
 }: {
   selectedTaskListId?: string
   onCancel: () => void
   onCreated: () => Promise<void> | void
   editTask?: any
+  pendingTaskCreationsRef?: React.MutableRefObject<Map<string, any>>
 }) => {
   const { t } = useI18n()
   const isEditMode = !!editTask
@@ -110,41 +112,80 @@ export const AddTaskForm = ({
       listId: selectedTaskListId,
     }
 
-    // Check if task has an ID (real Task model) or is legacy/ephemeral
-    if (isEditMode && editTask?.id && !editTask?.isEphemeral) {
-      // Update existing task via new API
-      await fetch(`/api/v1/tasks/${editTask.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(baseTask)
+    // For new task creation (not edit mode), add optimistic task
+    const isNewTaskCreation = !isEditMode || (newTask.saveToTemplate && selectedList)
+    let tempId: string | null = null
+
+    if (isNewTaskCreation && pendingTaskCreationsRef) {
+      // Generate a temporary ID for the optimistic task
+      tempId = `temp-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+      
+      // Add optimistic task to the pending map
+      pendingTaskCreationsRef.current.set(tempId, {
+        tempId,
+        task: {
+          ...baseTask,
+          id: tempId,
+          createdAt: now,
+          updatedAt: now,
+        },
+        timestamp: Date.now(),
       })
-    } else if (isEditMode && editTask?.isEphemeral) {
-      // Update ephemeral task (legacy path - for backward compatibility)
-      await fetch('/api/v1/tasklists', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          taskListId: selectedTaskListId,
-          ephemeralTasks: {
-            update: {
-              id: editTask.id,
-              ...baseTask
-            }
-          }
+    }
+
+    try {
+      // Check if task has an ID (real Task model) or is legacy/ephemeral
+      if (isEditMode && editTask?.id && !editTask?.isEphemeral) {
+        // Update existing task via new API
+        await fetch(`/api/v1/tasks/${editTask.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(baseTask)
         })
-      })
-    } else if (isEditMode) {
-      // Update source task in list.tasks - legacy path for old embedded tasks
-      if (selectedList) {
+      } else if (isEditMode && editTask?.isEphemeral) {
+        // Update ephemeral task (legacy path - for backward compatibility)
+        await fetch('/api/v1/tasklists', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            taskListId: selectedTaskListId,
+            ephemeralTasks: {
+              update: {
+                id: editTask.id,
+                ...baseTask
+              }
+            }
+          })
+        })
+      } else if (isEditMode) {
+        // Update source task in list.tasks - legacy path for old embedded tasks
+        if (selectedList) {
+          const blueprint = (Array.isArray((selectedList as any).tasks) && (selectedList as any).tasks.length > 0)
+            ? (selectedList as any).tasks
+            : ((selectedList as any).templateTasks || [])
+          const updatedTasks = blueprint.map((t: any) => {
+            const isMatch = t.id === editTask.id ||
+                            t.localeKey === editTask.localeKey ||
+                            (t.name && editTask.name && t.name.toLowerCase() === editTask.name.toLowerCase())
+            return isMatch ? { ...t, ...baseTask, id: t.id } : t
+          })
+          await fetch('/api/v1/tasklists', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              taskListId: selectedTaskListId,
+              create: false,
+              role: (selectedList as any).role,
+              tasks: updatedTasks
+            })
+          })
+        }
+      } else if (newTask.saveToTemplate && selectedList) {
+        // Add new template task - legacy path
         const blueprint = (Array.isArray((selectedList as any).tasks) && (selectedList as any).tasks.length > 0)
           ? (selectedList as any).tasks
           : ((selectedList as any).templateTasks || [])
-        const updatedTasks = blueprint.map((t: any) => {
-          const isMatch = t.id === editTask.id ||
-                          t.localeKey === editTask.localeKey ||
-                          (t.name && editTask.name && t.name.toLowerCase() === editTask.name.toLowerCase())
-          return isMatch ? { ...t, ...baseTask, id: t.id } : t
-        })
+        const updatedTasks = [ { ...baseTask }, ...(blueprint || []) ]
         await fetch('/api/v1/tasklists', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -155,33 +196,27 @@ export const AddTaskForm = ({
             tasks: updatedTasks
           })
         })
-      }
-    } else if (newTask.saveToTemplate && selectedList) {
-      // Add new template task - legacy path
-      const blueprint = (Array.isArray((selectedList as any).tasks) && (selectedList as any).tasks.length > 0)
-        ? (selectedList as any).tasks
-        : ((selectedList as any).templateTasks || [])
-      const updatedTasks = [ { ...baseTask }, ...(blueprint || []) ]
-      await fetch('/api/v1/tasklists', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          taskListId: selectedTaskListId,
-          create: false,
-          role: (selectedList as any).role,
-          tasks: updatedTasks
+      } else {
+        // Create new task via new API
+        await fetch('/api/v1/tasks', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(baseTask)
         })
-      })
-    } else {
-      // Create new task via new API
-      await fetch('/api/v1/tasks', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(baseTask)
-      })
+      }
+      
+      await onCreated()
+    } catch (error) {
+      // On error, remove the optimistic task
+      if (tempId && pendingTaskCreationsRef) {
+        pendingTaskCreationsRef.current.delete(tempId)
+      }
+      console.error('Error creating task:', error)
+      // Optionally show error to user
+    } finally {
+      onCancel()
     }
-    await onCreated()
-    onCancel()
+  }
   }
 
   return (
