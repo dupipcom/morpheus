@@ -21,6 +21,7 @@
     "signInToAccess": "Dashboard'unuza erişmek ve ilerlemenizi takip etmek için giriş yapın.",
     "dismiss": "Kapat",
     "accept": "Kabul Et",
+    "all": "Tümü",
     "pageAvailableIn": "Bu sayfa {locale} dilinde mevcuttur. Bu dilde görüntülemek ister misiniz?",
     "selectLanguage": "Dil seçin",
     "dashboard": "Gösterge Paneli",
@@ -653,5 +654,18 @@
     "deleteWallet": "Cüzdanı Sil",
     "deleteWalletConfirmation": "Bu cüzdanı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz. Cüzdan hesabınızdan kaldırılacak, ancak blockchain adresi ve fonları blockchain'de kalacaktır.",
     "delete": "Sil"
+  },
+  "jobs": {
+    "history": "İş Geçmişi",
+    "filterByStatus": "Duruma Göre Filtrele:",
+    "errorLoadingHistory": "İş geçmişi yüklenirken hata",
+    "noHistoryFound": "İş geçmişi bulunamadı",
+    "status": {
+      "requested": "Talep Edildi",
+      "inProgress": "Devam Ediyor",
+      "validating": "Doğrulanıyor",
+      "accepted": "Kabul Edildi",
+      "rejected": "Reddedildi"
+    }
   }
 }

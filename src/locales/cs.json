@@ -24,6 +24,7 @@
     "signInToAccess": "Přihlaste se pro přístup k vašemu dashboardu a sledování vašeho pokroku.",
     "dismiss": "Zavřít",
     "accept": "Přijmout",
+    "all": "Vše",
     "pageAvailableIn": "Tato stránka je k dispozici v jazyce {locale}. Chcete ji zobrazit v tomto jazyce?",
     "selectLanguage": "Vybrat jazyk",
     "manageAccount": "Spravovat můj účet",
@@ -649,5 +650,18 @@
     "deleteWallet": "Smazat Peněženku",
     "deleteWalletConfirmation": "Opravdu chcete smazat tuto peněženku? Tuto akci nelze vrátit zpět. Peněženka bude odstraněna z vašeho účtu, ale blockchain adresa a její prostředky zůstanou na blockchainu.",
     "delete": "Smazat"
+  },
+  "jobs": {
+    "history": "Historie Prací",
+    "filterByStatus": "Filtrovat podle Stavu:",
+    "errorLoadingHistory": "Chyba při načítání historie prací",
+    "noHistoryFound": "Nebyla nalezena žádná historie prací",
+    "status": {
+      "requested": "Vyžádáno",
+      "inProgress": "Probíhá",
+      "validating": "Ověřování",
+      "accepted": "Přijato",
+      "rejected": "Odmítnuto"
+    }
   }
 }

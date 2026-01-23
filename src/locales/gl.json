@@ -24,6 +24,7 @@
     "signInToAccess": "Inicia sesión para acceder ao teu panel e seguir o teu progreso.",
     "dismiss": "Pechar",
     "accept": "Aceptar",
+    "all": "Todo",
     "pageAvailableIn": "Esta páxina está dispoñible en {locale}. Queres visualizala nese idioma?",
     "selectLanguage": "Seleccionar idioma",
     "manageAccount": "Xestionar a miña conta",
@@ -652,5 +653,18 @@
     "deleteWallet": "Eliminar Carteira",
     "deleteWalletConfirmation": "Estás seguro de que queres eliminar esta carteira? Esta acción non se pode desfacer. A carteira eliminarase da túa conta, pero o enderezo blockchain e os seus fondos permanecerán no blockchain.",
     "delete": "Eliminar"
+  },
+  "jobs": {
+    "history": "Historial de Traballos",
+    "filterByStatus": "Filtrar por Estado:",
+    "errorLoadingHistory": "Erro ao cargar o historial de traballos",
+    "noHistoryFound": "Non se atopou historial de traballos",
+    "status": {
+      "requested": "Solicitado",
+      "inProgress": "En Progreso",
+      "validating": "Validando",
+      "accepted": "Aceptado",
+      "rejected": "Rexeitado"
+    }
   }
 }

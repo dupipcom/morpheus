@@ -24,6 +24,7 @@
     "signInToAccess": "Faça login para acessar seu painel e acompanhar seu progresso.",
     "dismiss": "Fechar",
     "accept": "Aceitar",
+    "all": "Tudo",
     "pageAvailableIn": "Esta página está disponível em {locale}. Gostaria de visualizá-la nesse idioma?",
     "selectLanguage": "Selecionar idioma",
     "manageAccount": "Gerenciar Minha Conta",
@@ -649,5 +650,18 @@
     "deleteWallet": "Excluir Carteira",
     "deleteWalletConfirmation": "Tem certeza de que deseja excluir esta carteira? Esta ação não pode ser desfeita. A carteira será removida da sua conta, mas o endereço blockchain e seus fundos permanecerão na blockchain.",
     "delete": "Excluir"
+  },
+  "jobs": {
+    "history": "Histórico de Trabalhos",
+    "filterByStatus": "Filtrar por Status:",
+    "errorLoadingHistory": "Erro ao carregar histórico de trabalhos",
+    "noHistoryFound": "Nenhum histórico de trabalhos encontrado",
+    "status": {
+      "requested": "Solicitado",
+      "inProgress": "Em Andamento",
+      "validating": "Validando",
+      "accepted": "Aceito",
+      "rejected": "Rejeitado"
+    }
   }
 }

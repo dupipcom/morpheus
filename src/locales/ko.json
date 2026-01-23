@@ -24,6 +24,7 @@
     "signInToAccess": "대시보드에 액세스하고 진행 상황을 추적하려면 로그인하세요.",
     "dismiss": "닫기",
     "accept": "수락",
+    "all": "전체",
     "pageAvailableIn": "이 페이지는 {locale}로 제공됩니다. 해당 언어로 보시겠습니까?",
     "selectLanguage": "언어 선택",
     "manageAccount": "내 계정 관리",
@@ -649,5 +650,18 @@
     "deleteWallet": "지갑 삭제",
     "deleteWalletConfirmation": "이 지갑을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다. 지갑은 계정에서 제거되지만 블록체인 주소와 자금은 블록체인에 남아 있습니다.",
     "delete": "삭제"
+  },
+  "jobs": {
+    "history": "작업 기록",
+    "filterByStatus": "상태별 필터:",
+    "errorLoadingHistory": "작업 기록 로드 오류",
+    "noHistoryFound": "작업 기록을 찾을 수 없습니다",
+    "status": {
+      "requested": "요청됨",
+      "inProgress": "진행 중",
+      "validating": "검증 중",
+      "accepted": "승인됨",
+      "rejected": "거부됨"
+    }
   }
 }

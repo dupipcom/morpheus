@@ -24,6 +24,7 @@
     "signInToAccess": "Accedi per accedere alla tua dashboard e tracciare i tuoi progressi.",
     "dismiss": "Chiudi",
     "accept": "Accetta",
+    "all": "Tutto",
     "pageAvailableIn": "Questa pagina è disponibile in {locale}. Vuoi visualizzarla in quella lingua?",
     "selectLanguage": "Seleziona lingua",
     "manageAccount": "Gestisci il mio account",
@@ -649,5 +650,18 @@
     "deleteWallet": "Elimina Portafoglio",
     "deleteWalletConfirmation": "Sei sicuro di voler eliminare questo portafoglio? Questa azione non può essere annullata. Il portafoglio verrà rimosso dal tuo account, ma l'indirizzo blockchain e i suoi fondi rimarranno sulla blockchain.",
     "delete": "Elimina"
+  },
+  "jobs": {
+    "history": "Cronologia Lavori",
+    "filterByStatus": "Filtra per Stato:",
+    "errorLoadingHistory": "Errore nel caricamento della cronologia lavori",
+    "noHistoryFound": "Nessuna cronologia lavori trovata",
+    "status": {
+      "requested": "Richiesto",
+      "inProgress": "In Corso",
+      "validating": "In Validazione",
+      "accepted": "Accettato",
+      "rejected": "Rifiutato"
+    }
   }
 }

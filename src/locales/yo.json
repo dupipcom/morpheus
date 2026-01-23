@@ -24,6 +24,7 @@
     "signInToAccess": "Wọlé láti wọ dashboard rẹ̀ àti tẹ̀lé ìlọsíwájú rẹ̀.",
     "dismiss": "Kọ́",
     "accept": "Gba",
+    "all": "Gbogbo",
     "pageAvailableIn": "Ojú-ìwé yìí wà ní èdè {locale}. Ṣe o fẹ́ wo rẹ̀ ní èdè yẹn?",
     "selectLanguage": "Yàn èdè",
     "manageAccount": "Ṣàkóso Ìwé Ìfọ̀rọ̀wérọ̀ Mi",
@@ -647,5 +648,18 @@
     "deleteWallet": "Pa Apamọwọ Run",
     "deleteWalletConfirmation": "Ṣe o da ọ loju pe o fẹ pa apamọwọ yii run? Iṣẹ yii ko le ṣe pada. Apamọwọ yoo yọ kuro lori akọọlẹ rẹ, ṣugbọn adirẹsi blockchain ati awọn owo rẹ yoo duro lori blockchain.",
     "delete": "Pa Run"
+  },
+  "jobs": {
+    "history": "Itan Iṣẹ",
+    "filterByStatus": "Ṣe Àlàyà nípasẹ Ipo:",
+    "errorLoadingHistory": "Aṣiṣe ni kikojọpọ itan iṣẹ",
+    "noHistoryFound": "Ko si itan iṣẹ ti a ri",
+    "status": {
+      "requested": "Ti beere",
+      "inProgress": "N ṣiṣẹ",
+      "validating": "Iṣeduro",
+      "accepted": "Ti gba",
+      "rejected": "Ti kọ"
+    }
   }
 }

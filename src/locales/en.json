@@ -24,6 +24,7 @@
     "signInToAccess": "Sign in to access your dashboard and track your progress.",
     "dismiss": "Dismiss",
     "accept": "Accept",
+    "all": "All",
     "pageAvailableIn": "This page is available in {locale}. Would you like to view it in it?",
     "selectLanguage": "Select language",
     "manageAccount": "Manage My Account",
@@ -649,5 +650,18 @@
     "deleteWallet": "Delete Wallet",
     "deleteWalletConfirmation": "Are you sure you want to delete this wallet? This action cannot be undone. The wallet will be removed from your account, but the blockchain address and its funds will remain on the blockchain.",
     "delete": "Delete"
+  },
+  "jobs": {
+    "history": "Job History",
+    "filterByStatus": "Filter by Status:",
+    "errorLoadingHistory": "Error loading job history",
+    "noHistoryFound": "No job history found",
+    "status": {
+      "requested": "Requested",
+      "inProgress": "In Progress",
+      "validating": "Validating",
+      "accepted": "Accepted",
+      "rejected": "Rejected"
+    }
   }
 }

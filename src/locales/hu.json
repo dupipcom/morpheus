@@ -24,6 +24,7 @@
     "signInToAccess": "Jelentkezzen be a dashboard eléréséhez és a fejlődés követéséhez.",
     "dismiss": "Bezárás",
     "accept": "Elfogadás",
+    "all": "Minden",
     "pageAvailableIn": "Ez az oldal elérhető {locale} nyelven. Szeretné ezen a nyelven megtekinteni?",
     "selectLanguage": "Nyelv kiválasztása",
     "manageAccount": "Fiókom kezelése",
@@ -648,5 +649,18 @@
     "deleteWallet": "Pénztárca Törlése",
     "deleteWalletConfirmation": "Biztosan törölni szeretné ezt a pénztárcát? Ez a művelet nem vonható vissza. A pénztárca el lesz távolítva a fiókjából, de a blockchain cím és annak alapjai a blockchainen maradnak.",
     "delete": "Törlés"
+  },
+  "jobs": {
+    "history": "Munkák Története",
+    "filterByStatus": "Szűrés Állapot Szerint:",
+    "errorLoadingHistory": "Hiba a munkák történetének betöltésekor",
+    "noHistoryFound": "Nem található munkák története",
+    "status": {
+      "requested": "Kérelmezve",
+      "inProgress": "Folyamatban",
+      "validating": "Ellenőrzés",
+      "accepted": "Elfogadva",
+      "rejected": "Elutasítva"
+    }
   }
 }

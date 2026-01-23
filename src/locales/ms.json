@@ -21,6 +21,7 @@
     "signInToAccess": "Log masuk untuk mengakses papan pemuka anda dan menjejaki kemajuan anda.",
     "dismiss": "Tutup",
     "accept": "Terima",
+    "all": "Semua",
     "pageAvailableIn": "Halaman ini tersedia dalam {locale}. Adakah anda ingin melihatnya dalam bahasa itu?",
     "selectLanguage": "Pilih bahasa",
     "dashboard": "Papan pemuka",
@@ -653,5 +654,18 @@
     "deleteWallet": "Padam Dompet",
     "deleteWalletConfirmation": "Adakah anda pasti mahu memadam dompet ini? Tindakan ini tidak boleh dibatalkan. Dompet akan dikeluarkan daripada akaun anda, tetapi alamat blockchain dan dana akan kekal di blockchain.",
     "delete": "Padam"
+  },
+  "jobs": {
+    "history": "Sejarah Kerja",
+    "filterByStatus": "Tapis mengikut Status:",
+    "errorLoadingHistory": "Ralat memuatkan sejarah kerja",
+    "noHistoryFound": "Tiada sejarah kerja dijumpai",
+    "status": {
+      "requested": "Diminta",
+      "inProgress": "Dalam Proses",
+      "validating": "Mengesahkan",
+      "accepted": "Diterima",
+      "rejected": "Ditolak"
+    }
   }
 }

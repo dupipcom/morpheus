@@ -24,6 +24,7 @@
     "signInToAccess": "Ingia ili kufikia dashibodi yako na kufuatilia maendeleo yako.",
     "dismiss": "Ondoa",
     "accept": "Kubali",
+    "all": "Yote",
     "pageAvailableIn": "Ukurasa huu unapatikana katika {locale}. Je, ungependa kuuona katika lugha hiyo?",
     "selectLanguage": "Chagua lugha",
     "manageAccount": "Dhibiti Akaunti Yangu",
@@ -647,5 +648,18 @@
     "deleteWallet": "Futa Mkoba",
     "deleteWalletConfirmation": "Je, una uhakika unataka kufuta mkoba huu? Kitendo hiki hakiwezi kutenduliwa. Mkoba utaondolewa kutoka kwa akaunti yako, lakini anwani ya blockchain na fedha zake zitaendelea kuwa kwenye blockchain.",
     "delete": "Futa"
+  },
+  "jobs": {
+    "history": "Historia ya Kazi",
+    "filterByStatus": "Chuja kwa Hali:",
+    "errorLoadingHistory": "Hitilafu katika kupakia historia ya kazi",
+    "noHistoryFound": "Hakuna historia ya kazi iliyopatikana",
+    "status": {
+      "requested": "Imeombwa",
+      "inProgress": "Inaendelea",
+      "validating": "Inathibitisha",
+      "accepted": "Imekubaliwa",
+      "rejected": "Imekataliwa"
+    }
   }
 }

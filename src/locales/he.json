@@ -24,6 +24,7 @@
     "signInToAccess": "התחבר כדי לגשת ללוח הבקרה שלך ולעקוב אחר ההתקדמות שלך.",
     "dismiss": "סגור",
     "accept": "קבל",
+    "all": "הכל",
     "pageAvailableIn": "דף זה זמין ב-{locale}. האם תרצה לצפות בו בשפה זו?",
     "selectLanguage": "בחר שפה",
     "manageAccount": "נהל את החשבון שלי",
@@ -649,5 +650,18 @@
     "deleteWallet": "מחק ארנק",
     "deleteWalletConfirmation": "האם אתה בטוח שברצונך למחוק את הארנק הזה? פעולה זו לא ניתנת לביטול. הארנק יוסר מהחשבון שלך, אך כתובת ה-blockchain והכספים שלה יישארו ב-blockchain.",
     "delete": "מחק"
+  },
+  "jobs": {
+    "history": "היסטוריית עבודות",
+    "filterByStatus": "סנן לפי סטטוס:",
+    "errorLoadingHistory": "שגיאה בטעינת היסטוריית עבודות",
+    "noHistoryFound": "לא נמצאה היסטוריית עבודות",
+    "status": {
+      "requested": "התבקש",
+      "inProgress": "בתהליך",
+      "validating": "מאמת",
+      "accepted": "התקבל",
+      "rejected": "נדחה"
+    }
   }
 }

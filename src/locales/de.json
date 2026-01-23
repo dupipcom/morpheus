@@ -24,6 +24,7 @@
     "signInToAccess": "Melden Sie sich an, um auf Ihr Dashboard zuzugreifen und Ihren Fortschritt zu verfolgen.",
     "dismiss": "Verwerfen",
     "accept": "Akzeptieren",
+    "all": "Alle",
     "pageAvailableIn": "Diese Seite ist auf {locale} verfügbar. Möchten Sie sie in dieser Sprache anzeigen?",
     "selectLanguage": "Sprache auswählen",
     "manageAccount": "Mein Konto verwalten",
@@ -649,5 +650,18 @@
     "deleteWallet": "Brieftasche löschen",
     "deleteWalletConfirmation": "Sind Sie sicher, dass Sie diese Brieftasche löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden. Die Brieftasche wird von Ihrem Konto entfernt, aber die Blockchain-Adresse und ihre Mittel bleiben auf der Blockchain.",
     "delete": "Löschen"
+  },
+  "jobs": {
+    "history": "Auftragsverlauf",
+    "filterByStatus": "Nach Status filtern:",
+    "errorLoadingHistory": "Fehler beim Laden des Auftragsverlaufs",
+    "noHistoryFound": "Kein Auftragsverlauf gefunden",
+    "status": {
+      "requested": "Angefordert",
+      "inProgress": "In Bearbeitung",
+      "validating": "Validierung",
+      "accepted": "Akzeptiert",
+      "rejected": "Abgelehnt"
+    }
   }
 }

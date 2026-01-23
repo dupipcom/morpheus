@@ -24,6 +24,7 @@
     "signInToAccess": "Saioa hasi zure panelera sarbidea lortzeko eta zure aurrerapena jarraitzeko.",
     "dismiss": "Itxi",
     "accept": "Onartu",
+    "all": "Guztiak",
     "pageAvailableIn": "Orri hau {locale} hizkuntzan eskuragarri dago. Hizkuntza horretan ikusi nahi duzu?",
     "selectLanguage": "Hizkuntza hautatu",
     "manageAccount": "Kudeatu nire kontua",
@@ -651,5 +652,18 @@
     "deleteWallet": "Ezabatu Diru-zorroa",
     "deleteWalletConfirmation": "Ziur zaude diru-zorro hau ezabatu nahi duzula? Ekintza hau ezin da desegin. Diru-zorroa zure kontutik kenduko da, baina blockchain helbidea eta bere funtsak blockchainen geratuko dira.",
     "delete": "Ezabatu"
+  },
+  "jobs": {
+    "history": "Lanen Historia",
+    "filterByStatus": "Egoeraren Arabera Iragazi:",
+    "errorLoadingHistory": "Errorea lanen historia kargatzean",
+    "noHistoryFound": "Ez da lanen historiarik aurkitu",
+    "status": {
+      "requested": "Eskatua",
+      "inProgress": "Abian",
+      "validating": "Balioztatzen",
+      "accepted": "Onartua",
+      "rejected": "Baztertua"
+    }
   }
 }

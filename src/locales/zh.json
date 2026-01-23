@@ -24,6 +24,7 @@
     "signInToAccess": "登录以访问您的仪表板并跟踪您的进度。",
     "dismiss": "关闭",
     "accept": "接受",
+    "all": "全部",
     "pageAvailableIn": "此页面提供 {locale} 版本。您想以该语言查看吗？",
     "selectLanguage": "选择语言",
     "manageAccount": "管理我的账户",
@@ -649,5 +650,18 @@
     "deleteWallet": "删除钱包",
     "deleteWalletConfirmation": "您确定要删除此钱包吗？此操作无法撤销。钱包将从您的账户中移除，但区块链地址及其资金将保留在区块链上。",
     "delete": "删除"
+  },
+  "jobs": {
+    "history": "工作历史",
+    "filterByStatus": "按状态筛选：",
+    "errorLoadingHistory": "加载工作历史时出错",
+    "noHistoryFound": "未找到工作历史",
+    "status": {
+      "requested": "已请求",
+      "inProgress": "进行中",
+      "validating": "验证中",
+      "accepted": "已接受",
+      "rejected": "已拒绝"
+    }
   }
 }

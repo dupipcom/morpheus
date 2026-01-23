@@ -24,6 +24,7 @@
     "signInToAccess": "Shiga don samun damar dashboard ɗinka da bin diddigin ci gaban ka.",
     "dismiss": "Kore",
     "accept": "Karɓa",
+    "all": "Duka",
     "pageAvailableIn": "Wannan shafin yana samuwa a cikin {locale}. Za ka so ka duba shi a cikin wannan harshe?",
     "selectLanguage": "Zaɓi harshe",
     "manageAccount": "Sarrafa Asusun Na",
@@ -645,5 +646,18 @@
     "deleteWallet": "Goge Walat",
     "deleteWalletConfirmation": "Ka tabbata kana son goge wannan walat? Ba za a iya juyar da wannan aikin ba. Za a cire walat daga asusunka, amma adireshin blockchain da kuɗinsa za su kasance a kan blockchain.",
     "delete": "Goge"
+  },
+  "jobs": {
+    "history": "Tarihin Ayyuka",
+    "filterByStatus": "Tace ta Matsayi:",
+    "errorLoadingHistory": "Kuskure wajen loda tarihin ayyuka",
+    "noHistoryFound": "Ba a sami tarihin ayyuka ba",
+    "status": {
+      "requested": "An Nema",
+      "inProgress": "Ana Ci Gaba",
+      "validating": "Ana Tantancewa",
+      "accepted": "An Karɓa",
+      "rejected": "An Ki"
+    }
   }
 }

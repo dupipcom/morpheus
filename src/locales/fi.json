@@ -21,6 +21,7 @@
     "signInToAccess": "Kirjaudu sisään päästäksesi hallintapaneeliin ja seurataksesi edistymistäsi.",
     "dismiss": "Sulje",
     "accept": "Hyväksy",
+    "all": "Kaikki",
     "pageAvailableIn": "Tämä sivu on saatavilla kielellä {locale}. Haluatko tarkastella sitä kyseisellä kielellä?",
     "selectLanguage": "Valitse kieli",
     "dashboard": "Kojelauta",
@@ -653,5 +654,18 @@
     "deleteWallet": "Poista Lompakko",
     "deleteWalletConfirmation": "Haluatko varmasti poistaa tämän lompakon? Tätä toimintoa ei voi perua. Lompakko poistetaan tililtäsi, mutta blockchain-osoite ja sen varat pysyvät blockchainissa.",
     "delete": "Poista"
+  },
+  "jobs": {
+    "history": "Työhistoria",
+    "filterByStatus": "Suodata Tilan Mukaan:",
+    "errorLoadingHistory": "Virhe työhistorian lataamisessa",
+    "noHistoryFound": "Työhistoriaa ei löytynyt",
+    "status": {
+      "requested": "Pyydetty",
+      "inProgress": "Käynnissä",
+      "validating": "Vahvistetaan",
+      "accepted": "Hyväksytty",
+      "rejected": "Hylätty"
+    }
   }
 }

@@ -24,6 +24,7 @@
     "signInToAccess": "Logi sisse, et pääseda ligi oma armatuurlauale ja jälgida oma edusamme.",
     "dismiss": "Sulge",
     "accept": "Nõustu",
+    "all": "Kõik",
     "pageAvailableIn": "See leht on saadaval keeles {locale}. Kas soovite seda sellel keelel vaadata?",
     "selectLanguage": "Vali keel",
     "manageAccount": "Hallata oma kontot",
@@ -649,5 +650,18 @@
     "deleteWallet": "Kustuta Rahakott",
     "deleteWalletConfirmation": "Kas olete kindel, et soovite selle rahakoti kustutada? Seda toimingut ei saa tagasi võtta. Rahakott eemaldatakse teie kontolt, kuid blockchain aadress ja selle vahendid jäävad blockchain'i.",
     "delete": "Kustuta"
+  },
+  "jobs": {
+    "history": "Tööde Ajalugu",
+    "filterByStatus": "Filtreeri Oleku Järgi:",
+    "errorLoadingHistory": "Viga tööde ajaloo laadimisel",
+    "noHistoryFound": "Tööde ajalugu ei leitud",
+    "status": {
+      "requested": "Taotletud",
+      "inProgress": "Pooleli",
+      "validating": "Kontrollimine",
+      "accepted": "Vastu Võetud",
+      "rejected": "Tagasi Lükatud"
+    }
   }
 }

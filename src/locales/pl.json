@@ -21,6 +21,7 @@
     "signInToAccess": "Zaloguj się, aby uzyskać dostęp do swojego panelu i śledzić postępy.",
     "dismiss": "Zamknij",
     "accept": "Zaakceptuj",
+    "all": "Wszystko",
     "pageAvailableIn": "Ta strona jest dostępna w języku {locale}. Czy chcesz ją wyświetlić w tym języku?",
     "selectLanguage": "Wybierz język",
     "dashboard": "Panel",
@@ -653,5 +654,18 @@
     "deleteWallet": "Usuń Portfel",
     "deleteWalletConfirmation": "Czy na pewno chcesz usunąć ten portfel? Tej akcji nie można cofnąć. Portfel zostanie usunięty z Twojego konta, ale adres blockchain i jego środki pozostaną w blockchainie.",
     "delete": "Usuń"
+  },
+  "jobs": {
+    "history": "Historia Prac",
+    "filterByStatus": "Filtruj według Statusu:",
+    "errorLoadingHistory": "Błąd ładowania historii prac",
+    "noHistoryFound": "Nie znaleziono historii prac",
+    "status": {
+      "requested": "Zażądano",
+      "inProgress": "W Trakcie",
+      "validating": "Walidacja",
+      "accepted": "Zaakceptowano",
+      "rejected": "Odrzucono"
+    }
   }
 }

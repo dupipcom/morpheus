@@ -24,6 +24,7 @@
     "signInToAccess": "ダッシュボードにアクセスして進捗を追跡するにはログインしてください。",
     "dismiss": "閉じる",
     "accept": "受け入れる",
+    "all": "すべて",
     "pageAvailableIn": "このページは {locale} で利用できます。その言語で表示しますか？",
     "selectLanguage": "言語を選択",
     "manageAccount": "アカウント管理",
@@ -649,5 +650,18 @@
     "deleteWallet": "ウォレットを削除",
     "deleteWalletConfirmation": "このウォレットを削除してもよろしいですか？この操作は元に戻せません。ウォレットはアカウントから削除されますが、ブロックチェーンアドレスとその資金はブロックチェーン上に残ります。",
     "delete": "削除"
+  },
+  "jobs": {
+    "history": "ジョブ履歴",
+    "filterByStatus": "ステータスでフィルター:",
+    "errorLoadingHistory": "ジョブ履歴の読み込みエラー",
+    "noHistoryFound": "ジョブ履歴が見つかりません",
+    "status": {
+      "requested": "リクエスト済み",
+      "inProgress": "進行中",
+      "validating": "検証中",
+      "accepted": "承認済み",
+      "rejected": "却下"
+    }
   }
 }

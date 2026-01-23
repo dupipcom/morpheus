@@ -21,6 +21,7 @@
     "signInToAccess": "Log ind for at få adgang til dit dashboard og spore din fremskridt.",
     "dismiss": "Luk",
     "accept": "Accepter",
+    "all": "Alle",
     "pageAvailableIn": "Denne side er tilgængelig på {locale}. Vil du se den på det sprog?",
     "selectLanguage": "Vælg sprog",
     "dashboard": "Dashboard",
@@ -653,5 +654,18 @@
     "deleteWallet": "Slet Tegnebog",
     "deleteWalletConfirmation": "Er du sikker på, at du vil slette denne tegnebog? Denne handling kan ikke fortrydes. Tegnebogen vil blive fjernet fra din konto, men blockchain-adressen og dens midler forbliver på blockchain.",
     "delete": "Slet"
+  },
+  "jobs": {
+    "history": "Jobhistorik",
+    "filterByStatus": "Filtrer efter Status:",
+    "errorLoadingHistory": "Fejl ved indlæsning af jobhistorik",
+    "noHistoryFound": "Ingen jobhistorik fundet",
+    "status": {
+      "requested": "Anmodet",
+      "inProgress": "I Gang",
+      "validating": "Validerer",
+      "accepted": "Accepteret",
+      "rejected": "Afvist"
+    }
   }
 }

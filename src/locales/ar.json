@@ -21,6 +21,7 @@
     "signInToAccess": "سجل الدخول للوصول إلى لوحة التحكم وتتبع تقدمك.",
     "dismiss": "إغلاق",
     "accept": "قبول",
+    "all": "الكل",
     "pageAvailableIn": "هذه الصفحة متاحة بـ {locale}. هل تريد عرضها بهذه اللغة؟",
     "selectLanguage": "اختر اللغة",
     "manageAccount": "إدارة حسابي",
@@ -653,5 +654,18 @@
     "deleteWallet": "حذف المحفظة",
     "deleteWalletConfirmation": "هل أنت متأكد من أنك تريد حذف هذه المحفظة؟ لا يمكن التراجع عن هذا الإجراء. سيتم إزالة المحفظة من حسابك، لكن عنوان blockchain وأمواله ستبقى على blockchain.",
     "delete": "حذف"
+  },
+  "jobs": {
+    "history": "سجل الوظائف",
+    "filterByStatus": "تصفية حسب الحالة:",
+    "errorLoadingHistory": "خطأ في تحميل سجل الوظائف",
+    "noHistoryFound": "لم يتم العثور على سجل وظائف",
+    "status": {
+      "requested": "مطلوب",
+      "inProgress": "قيد التنفيذ",
+      "validating": "جاري التحقق",
+      "accepted": "مقبول",
+      "rejected": "مرفوض"
+    }
   }
 }

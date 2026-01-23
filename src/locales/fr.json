@@ -24,6 +24,7 @@
     "signInToAccess": "Connectez-vous pour accéder à votre tableau de bord et suivre vos progrès.",
     "dismiss": "Fermer",
     "accept": "Accepter",
+    "all": "Tout",
     "pageAvailableIn": "Cette page est disponible en {locale}. Souhaitez-vous la voir dans cette langue ?",
     "selectLanguage": "Sélectionner la langue",
     "manageAccount": "Gérer Mon Compte",
@@ -649,5 +650,18 @@
     "deleteWallet": "Supprimer le Portefeuille",
     "deleteWalletConfirmation": "Êtes-vous sûr de vouloir supprimer ce portefeuille ? Cette action ne peut pas être annulée. Le portefeuille sera retiré de votre compte, mais l'adresse blockchain et ses fonds resteront sur la blockchain.",
     "delete": "Supprimer"
+  },
+  "jobs": {
+    "history": "Historique des Travaux",
+    "filterByStatus": "Filtrer par Statut :",
+    "errorLoadingHistory": "Erreur lors du chargement de l'historique des travaux",
+    "noHistoryFound": "Aucun historique de travaux trouvé",
+    "status": {
+      "requested": "Demandé",
+      "inProgress": "En Cours",
+      "validating": "Validation",
+      "accepted": "Accepté",
+      "rejected": "Rejeté"
+    }
   }
 }

@@ -24,6 +24,7 @@
     "signInToAccess": "Inicia sesión para acceder a tu panel de control y rastrear tu progreso.",
     "dismiss": "Descartar",
     "accept": "Aceptar",
+    "all": "Todo",
     "pageAvailableIn": "Esta página está disponible en {locale}. ¿Te gustaría verla en ese idioma?",
     "selectLanguage": "Seleccionar idioma",
     "manageAccount": "Administrar Mi Cuenta",
@@ -648,5 +649,18 @@
     "deleteWallet": "Eliminar Billetera",
     "deleteWalletConfirmation": "¿Estás seguro de que deseas eliminar esta billetera? Esta acción no se puede deshacer. La billetera se eliminará de tu cuenta, pero la dirección blockchain y sus fondos permanecerán en la blockchain.",
     "delete": "Eliminar"
+  },
+  "jobs": {
+    "history": "Historial de Trabajos",
+    "filterByStatus": "Filtrar por Estado:",
+    "errorLoadingHistory": "Error al cargar el historial de trabajos",
+    "noHistoryFound": "No se encontró historial de trabajos",
+    "status": {
+      "requested": "Solicitado",
+      "inProgress": "En Progreso",
+      "validating": "Validando",
+      "accepted": "Aceptado",
+      "rejected": "Rechazado"
+    }
   }
 }
