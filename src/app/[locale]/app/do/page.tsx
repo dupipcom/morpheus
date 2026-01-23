@@ -328,7 +328,7 @@ export default function LocalizedDo({ params }: { params: Promise<{ locale: stri
             await refreshTaskLists()
             if (newListId) {
               // Wait for the new list to appear in the context
-              await waitForListInContext(newListId, contextTaskLists)
+              await waitForListInContext(newListId, () => contextTaskLists || [])
               handleListChange(newListId)
             }
             // The useEffect above will handle selecting the first list if the deleted list was selected
