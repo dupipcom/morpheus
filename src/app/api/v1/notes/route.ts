@@ -123,6 +123,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Content is required' }, { status: 400 })
     }
 
+    // Sanitize content to prevent XSS attacks
+    const sanitizedContent = sanitizeHTML(content)
+
     // Get user from database
     const user = await prisma.user.findUnique({
       where: { userId }
@@ -135,7 +138,7 @@ export async function POST(request: NextRequest) {
     // Create note
     const note = await prisma.note.create({
       data: {
-        content,
+        content: sanitizedContent,
         visibility: visibility || 'PRIVATE',
         date: date || null,
         userId: user.id

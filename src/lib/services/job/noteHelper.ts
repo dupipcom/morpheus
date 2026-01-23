@@ -1,4 +1,5 @@
 import prisma from '@/lib/prisma'
+import { sanitizeHTML } from '@/lib/utils/sanitize'
 
 export interface CreateJobNoteParams {
   content: string
@@ -19,14 +20,13 @@ export async function createJobNote(
   }
 
   // Sanitize content to prevent XSS attacks
-  // Note: Frontend RichTextEditor should handle initial sanitization,
-  // but server-side sanitization adds defense-in-depth
-  // If needed, add DOMPurify: const sanitizedContent = DOMPurify.sanitize(content)
+  // Server-side sanitization provides defense-in-depth
+  const sanitizedContent = sanitizeHTML(content)
 
   try {
     const note = await prisma.note.create({
       data: {
-        content,
+        content: sanitizedContent,
         userId,
         visibility: 'PRIVATE',
       }
