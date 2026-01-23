@@ -5,14 +5,32 @@ import { updateTaskOccurrenceDates } from '@/lib/services/task'
 import { updateDayProgress } from '@/lib/services/day'
 import { formatDateLocal } from '@/lib/utils/taskUtils'
 import { calculateAndApplyJobEarnings } from '@/lib/services/job/earningsService'
+import type { ListUser } from '@/lib/services/job/types'
 
 // Standard job include clause for consistent responses
 const JOB_INCLUDE = {
-  task: { select: { id: true, name: true, area: true, categories: true, status: true } },
-  list: { select: { id: true, name: true, users: true } },
+  task: true,
+  list: {
+    select: {
+      id: true,
+      name: true,
+      users: true,
+      visibility: true,
+      role: true,
+    }
+  },
   worker: { select: { id: true, userId: true, profiles: { select: { username: true, data: true } } } },
   reviewers: { select: { id: true, userId: true, profiles: { select: { username: true, data: true } } } },
-  reviewersNotes: true
+  requesterNotes: {
+    include: {
+      user: { select: { id: true, profiles: true } }
+    }
+  },
+  reviewersNotes: {
+    include: {
+      user: { select: { id: true, profiles: true } }
+    }
+  }
 } as const
 
 // Valid roles for job creation and viewing
@@ -69,13 +87,50 @@ export async function GET(request: NextRequest) {
       orderBy: { createdAt: 'desc' }
     })
 
-    const authorizedJobs = jobs.filter((job: any) =>
-      job.list?.users?.some(
-        (ref: any) => ref.userId === user.id && JOB_VIEW_ROLES.includes(ref.role)
-      )
-    )
+    // Filter and format based on access level (privacy filtering)
+    const processedJobs = jobs
+      .map((job: typeof jobs[0]) => {
+        // Check if user is a list member by checking if their MongoDB ObjectId is in list.users
+        const listUsers = job.list?.users || []
+        const userListRef = listUsers.find((ref: ListUser) => ref.userId === user.id)
 
-    return NextResponse.json({ jobs: authorizedJobs })
+        if (!userListRef || !JOB_VIEW_ROLES.includes(userListRef.role)) {
+          // No access if not a list member with proper role
+          return null
+        }
+
+        // Check if user is a participant (worker, owner, manager, or reviewer)
+        const isWorker = job.workerId === user.id
+        const isOwnerOrManager = ['OWNER', 'MANAGER'].includes(userListRef.role)
+        const isReviewer = job.reviewerIds?.includes(user.id)
+        const isParticipant = isWorker || isOwnerOrManager || isReviewer
+
+        if (!isParticipant) {
+          // Limited access for non-participants (e.g., collaborators who aren't assigned)
+          return {
+            id: job.id,
+            status: job.status,
+            workerId: job.workerId,
+            worker: {
+              id: job.worker?.id,
+              profiles: job.worker?.profiles
+            },
+            taskId: job.taskId,
+            task: job.task,
+            listId: job.listId,
+            occurrenceDate: job.occurrenceDate,
+            createdAt: job.createdAt,
+            updatedAt: job.updatedAt,
+            // Don't expose notes, reviews, or detailed info
+          }
+        }
+
+        // Full access for participants
+        return job
+      })
+      .filter(Boolean) // Remove null entries
+
+    return NextResponse.json({ jobs: processedJobs })
   } catch (error) {
     console.error('Error fetching jobs:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

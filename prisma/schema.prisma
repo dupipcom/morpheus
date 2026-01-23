@@ -87,6 +87,7 @@ enum CurrencyCode {
 enum JobStatus {
   REQUESTED
   IN_PROGRESS
+  SUBMITTED
   VALIDATING
   ACCEPTED
   REJECTED
@@ -428,11 +429,13 @@ model Note {
   eventIds       String[]       @default([]) @db.ObjectId
   profileIds     String[]       @default([]) @db.ObjectId
   templateIds    String[]       @default([]) @db.ObjectId
-  listIds        String[]       @default([]) @db.ObjectId
-  documentIds    String[]       @default([]) @db.ObjectId
-  chartIds       String[]       @default([]) @db.ObjectId
-  reviewerJobIds String[]       @default([]) @db.ObjectId
-  reviewerJobs   Job[]          @relation("JobReviewersNotes", fields: [reviewerJobIds], references: [id])
+  listIds         String[]       @default([]) @db.ObjectId
+  documentIds     String[]       @default([]) @db.ObjectId
+  chartIds        String[]       @default([]) @db.ObjectId
+  requesterJobIds String[]       @default([]) @db.ObjectId
+  requesterJobs   Job[]          @relation("JobRequesterNotes", fields: [requesterJobIds], references: [id])
+  reviewerJobIds  String[]       @default([]) @db.ObjectId
+  reviewerJobs    Job[]          @relation("JobReviewersNotes", fields: [reviewerJobIds], references: [id])
 
   @@index([userId])
   @@index([date])
@@ -617,6 +620,8 @@ model Job {
   task             Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
   listId           String    @db.ObjectId
   list             List      @relation(fields: [listId], references: [id], onDelete: Cascade)
+  requesterNoteIds String[]  @default([]) @db.ObjectId
+  requesterNotes   Note[]    @relation("JobRequesterNotes", fields: [requesterNoteIds], references: [id])
   reviewerIds      String[]  @default([]) @db.ObjectId
   reviewers        User[]    @relation("JobReviewers", fields: [reviewerIds], references: [id])
   reviewersNoteIds String[]  @default([]) @db.ObjectId

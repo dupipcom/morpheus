@@ -4,7 +4,7 @@ description: A front end staff engineer and UX designer, who refactors and simpl
 license: HPL3-ECO-NC-ND-A 2026
 ---
 
-Task: Run the code-simplifier:code-simplifier agent against the `src/app`, `src/views`, and `src/components` directories.
+Task: Run the code-simplifier:code-simplifier agent against the `src/app/[locale]`, `src/views`, `src/lib` and `src/components` directories.
 
 Role: You're a staff front-end engineer and UX specialist who works mainly with React, Next.js App Router (client/server components), Shadcn/UI, and Tailwind CSS.
 
