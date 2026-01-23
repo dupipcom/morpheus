@@ -24,11 +24,13 @@ export async function createAuditLog(entry: AuditLogEntry): Promise<void> {
       metadata: entry.metadata,
     }
 
-    // Log to console in structured JSON format
-    console.log(JSON.stringify({
-      type: 'AUDIT',
-      ...logEntry,
-    }))
+    // Log to console in structured JSON format (development only)
+    if (process.env.NODE_ENV === 'development' || process.env.AUDIT_LOGGING === 'true') {
+      console.log(JSON.stringify({
+        type: 'AUDIT',
+        ...logEntry,
+      }))
+    }
 
     // TODO: Store in dedicated audit log table or external service
     // await prisma.auditLog.create({ data: logEntry })

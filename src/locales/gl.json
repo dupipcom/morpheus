@@ -24,6 +24,7 @@
     "signInToAccess": "Inicia sesión para acceder ao teu panel e seguir o teu progreso.",
     "dismiss": "Pechar",
     "accept": "Aceptar",
+    "all": "Todo",
     "pageAvailableIn": "Esta páxina está dispoñible en {locale}. Queres visualizala nese idioma?",
     "selectLanguage": "Seleccionar idioma",
     "manageAccount": "Xestionar a miña conta",
@@ -652,5 +653,130 @@
     "deleteWallet": "Eliminar Carteira",
     "deleteWalletConfirmation": "Estás seguro de que queres eliminar esta carteira? Esta acción non se pode desfacer. A carteira eliminarase da túa conta, pero o enderezo blockchain e os seus fondos permanecerán no blockchain.",
     "delete": "Eliminar"
+  },
+  "jobs": {
+    "history": "Historial de Traballos",
+    "filterByStatus": "Filtrar por Estado:",
+    "errorLoadingHistory": "Erro ao cargar o historial de traballos",
+    "noHistoryFound": "Non se atopou historial de traballos",
+    "status": {
+      "requested": "Solicitado",
+      "inProgress": "En Progreso",
+      "validating": "Validando",
+      "accepted": "Aceptado",
+      "rejected": "Rexeitado"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "A súa solicitude está sendo revisada. Será notificado cando sexa aprobada.",
+        "inProgress": "A súa solicitude foi aprobada! Agora pode traballar nesta tarefa.",
+        "submitted": "O seu traballo foi enviado. Agardando revisión do propietario.",
+        "validating": "Solicitáronse cambios. Por favor, revise e volva enviar.",
+        "accepted": "Parabéns! O seu traballo foi aceptado.",
+        "rejected": "A súa presentación foi rexeitada."
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}} solicitou traballar nesta tarefa. Aprobar ou rexeitar a solicitude.",
+        "inProgress": "{{workerName}} está traballando actualmente nesta tarefa.",
+        "submitted": "{{workerName}} enviou o seu traballo para revisión.",
+        "validating": "Agardando a que {{workerName}} revise e volva enviar.",
+        "accepted": "O traballo de {{workerName}} foi aceptado.",
+        "rejected": "A presentación de {{workerName}} foi rexeitada."
+      }
+    },
+    "actions": {
+      "submitForReview": "Enviar para Revisión",
+      "withdrawSubmission": "Retirar Presentación",
+      "withdrawing": "Retirando...",
+      "reviseAndResubmit": "Revisar e Volver Enviar",
+      "approveRequest": "Aprobar Solicitude",
+      "approving": "Aprobando...",
+      "rejectRequest": "Rexeitar Solicitude",
+      "rejecting": "Rexeitando...",
+      "reviewAndAccept": "Revisar e Aceptar",
+      "requestChanges": "Solicitar Cambios",
+      "reject": "Rexeitar"
+    },
+    "review": {
+      "title": "Revisar Traballo Enviado",
+      "description": "Revisar traballo de {{workerName}}",
+      "workerSolution": "Solución do Traballador:",
+      "selfReviewScore": "Auto-Avaliación: {{score}}/100",
+      "noSubmissionNotes": "Non se proporcionaron notas de presentación",
+      "actionLabel": "Acción *",
+      "required": "*",
+      "optional": "(Opcional)",
+      "feedbackLabel": "Comentarios da Revisión {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "Explique que cambios son necesarios",
+        "other": "Proporcione comentarios ou suxestións para o traballador"
+      },
+      "editorPlaceholder": {
+        "validate": "Describa os cambios necesarios...",
+        "other": "Proporcione comentarios sobre o traballo..."
+      },
+      "managerReviewLabel": "Revisión do Xestor (Opcional)",
+      "managerReviewDescription": "Avaliar a calidade do traballo completado",
+      "scorePoor": "0 (Pobre)",
+      "scoreExcellent": "100 (Excelente)",
+      "cancel": "Cancelar",
+      "submitting": "Enviando...",
+      "acceptWork": "Aceptar Traballo",
+      "requestChangesButton": "Solicitar Cambios",
+      "rejectWork": "Rexeitar Traballo",
+      "actions": {
+        "accept": {
+          "title": "Aceptar (Marcar tarefa como Feita)",
+          "description": "Aprobar o traballo e completar a tarefa. O traballador gaña a súa recompensa."
+        },
+        "requestChanges": {
+          "title": "Solicitar Cambios",
+          "description": "Pedirlle ao traballador que revise e volva enviar o seu traballo."
+        },
+        "reject": {
+          "title": "Rexeitar (Reabrir tarefa)",
+          "description": "Rexeitar o traballo completamente e reabrir a tarefa para outros."
+        }
+      },
+      "messages": {
+        "accepted": "Traballo aceptado e tarefa marcada como completa",
+        "changesRequested": "Cambios solicitados, o traballador revisará",
+        "rejected": "Traballo rexeitado, tarefa reaberta",
+        "error": "Non se puido enviar a revisión. Por favor, ténteo de novo."
+      }
+    },
+    "submission": {
+      "title": "Enviar Traballo para Revisión",
+      "titleResubmit": "Revisar e Volver Enviar Traballo",
+      "description": "Describa a súa solución para {{taskName}} e envíe para validación.",
+      "solutionLabel": "Descrición da Solución *",
+      "solutionDescription": "Explique o que fixo para completar esta tarefa. Admite formato, ligazóns e listas.",
+      "solutionPlaceholder": "Explique o que fixo para completar esta tarefa...",
+      "selfReviewLabel": "Auto-Avaliación (Opcional)",
+      "selfReviewDescription": "Avaliar a calidade do seu traballo nunha escala de 0-100",
+      "scoreNeedsWork": "0 (Precisa traballo)",
+      "scorePerfect": "100 (Perfecto)",
+      "cancel": "Cancelar",
+      "submitting": "Enviando...",
+      "submitButton": "Enviar para Revisión",
+      "resubmitButton": "Volver Enviar para Revisión",
+      "errors": {
+        "missingDescription": "Por favor, proporcione unha descrición do seu traballo",
+        "submitError": "Non se puido enviar o seu traballo. Por favor, ténteo de novo."
+      },
+      "messages": {
+        "submitted": "Traballo enviado para revisión",
+        "resubmitted": "Traballo reenviado para revisión"
+      }
+    }
   }
 }

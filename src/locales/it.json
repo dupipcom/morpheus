@@ -24,6 +24,7 @@
     "signInToAccess": "Accedi per accedere alla tua dashboard e tracciare i tuoi progressi.",
     "dismiss": "Chiudi",
     "accept": "Accetta",
+    "all": "Tutto",
     "pageAvailableIn": "Questa pagina è disponibile in {locale}. Vuoi visualizzarla in quella lingua?",
     "selectLanguage": "Seleziona lingua",
     "manageAccount": "Gestisci il mio account",
@@ -649,5 +650,130 @@
     "deleteWallet": "Elimina Portafoglio",
     "deleteWalletConfirmation": "Sei sicuro di voler eliminare questo portafoglio? Questa azione non può essere annullata. Il portafoglio verrà rimosso dal tuo account, ma l'indirizzo blockchain e i suoi fondi rimarranno sulla blockchain.",
     "delete": "Elimina"
+  },
+  "jobs": {
+    "history": "Cronologia Lavori",
+    "filterByStatus": "Filtra per Stato:",
+    "errorLoadingHistory": "Errore nel caricamento della cronologia lavori",
+    "noHistoryFound": "Nessuna cronologia lavori trovata",
+    "status": {
+      "requested": "Richiesto",
+      "inProgress": "In Corso",
+      "validating": "In Validazione",
+      "accepted": "Accettato",
+      "rejected": "Rifiutato"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "La tua richiesta è in fase di revisione. Sarai notificato quando approvata.",
+        "inProgress": "La tua richiesta è stata approvata! Ora puoi lavorare su questa attività.",
+        "submitted": "Il tuo lavoro è stato inviato. In attesa di revisione dal proprietario.",
+        "validating": "Sono state richieste modifiche. Si prega di rivedere e inviare nuovamente.",
+        "accepted": "Congratulazioni! Il tuo lavoro è stato accettato.",
+        "rejected": "La tua presentazione è stata rifiutata."
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}} ha richiesto di lavorare su questa attività. Approva o rifiuta la richiesta.",
+        "inProgress": "{{workerName}} sta attualmente lavorando su questa attività.",
+        "submitted": "{{workerName}} ha inviato il suo lavoro per la revisione.",
+        "validating": "In attesa che {{workerName}} riveda e invii nuovamente.",
+        "accepted": "Il lavoro di {{workerName}} è stato accettato.",
+        "rejected": "La presentazione di {{workerName}} è stata rifiutata."
+      }
+    },
+    "actions": {
+      "submitForReview": "Invia per Revisione",
+      "withdrawSubmission": "Ritira Presentazione",
+      "withdrawing": "Ritiro in corso...",
+      "reviseAndResubmit": "Rivedi e Invia Nuovamente",
+      "approveRequest": "Approva Richiesta",
+      "approving": "Approvazione in corso...",
+      "rejectRequest": "Rifiuta Richiesta",
+      "rejecting": "Rifiuto in corso...",
+      "reviewAndAccept": "Rivedi e Accetta",
+      "requestChanges": "Richiedi Modifiche",
+      "reject": "Rifiuta"
+    },
+    "review": {
+      "title": "Rivedi Lavoro Inviato",
+      "description": "Rivedi il lavoro di {{workerName}}",
+      "workerSolution": "Soluzione del Lavoratore:",
+      "selfReviewScore": "Auto-revisione: {{score}}/100",
+      "noSubmissionNotes": "Nessuna nota di presentazione fornita",
+      "actionLabel": "Azione *",
+      "required": "*",
+      "optional": "(Opzionale)",
+      "feedbackLabel": "Feedback di Revisione {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "Spiega quali modifiche sono necessarie",
+        "other": "Fornisci commenti o suggerimenti per il lavoratore"
+      },
+      "editorPlaceholder": {
+        "validate": "Descrivi le modifiche necessarie...",
+        "other": "Fornisci feedback sul lavoro..."
+      },
+      "managerReviewLabel": "Revisione del Manager (Opzionale)",
+      "managerReviewDescription": "Valuta la qualità del lavoro completato",
+      "scorePoor": "0 (Scarso)",
+      "scoreExcellent": "100 (Eccellente)",
+      "cancel": "Annulla",
+      "submitting": "Invio in corso...",
+      "acceptWork": "Accetta Lavoro",
+      "requestChangesButton": "Richiedi Modifiche",
+      "rejectWork": "Rifiuta Lavoro",
+      "actions": {
+        "accept": {
+          "title": "Accetta (Segna attività come Completata)",
+          "description": "Approva il lavoro e completa l'attività. Il lavoratore guadagna la sua ricompensa."
+        },
+        "requestChanges": {
+          "title": "Richiedi Modifiche",
+          "description": "Chiedi al lavoratore di rivedere e inviare nuovamente il suo lavoro."
+        },
+        "reject": {
+          "title": "Rifiuta (Riapri attività)",
+          "description": "Rifiuta completamente il lavoro e riapri l'attività per altri."
+        }
+      },
+      "messages": {
+        "accepted": "Lavoro accettato e attività segnata come completa",
+        "changesRequested": "Modifiche richieste, il lavoratore rivedrà",
+        "rejected": "Lavoro rifiutato, attività riaperta",
+        "error": "Impossibile inviare la revisione. Riprova."
+      }
+    },
+    "submission": {
+      "title": "Invia Lavoro per Revisione",
+      "titleResubmit": "Rivedi e Invia Nuovamente Lavoro",
+      "description": "Descrivi la tua soluzione per {{taskName}} e invia per la convalida.",
+      "solutionLabel": "Descrizione della Soluzione *",
+      "solutionDescription": "Spiega cosa hai fatto per completare questa attività. Supporta formattazione, link ed elenchi.",
+      "solutionPlaceholder": "Spiega cosa hai fatto per completare questa attività...",
+      "selfReviewLabel": "Auto-revisione (Opzionale)",
+      "selfReviewDescription": "Valuta la qualità del tuo lavoro su una scala da 0-100",
+      "scoreNeedsWork": "0 (Necessita lavoro)",
+      "scorePerfect": "100 (Perfetto)",
+      "cancel": "Annulla",
+      "submitting": "Invio in corso...",
+      "submitButton": "Invia per Revisione",
+      "resubmitButton": "Invia Nuovamente per Revisione",
+      "errors": {
+        "missingDescription": "Si prega di fornire una descrizione del tuo lavoro",
+        "submitError": "Impossibile inviare il tuo lavoro. Riprova."
+      },
+      "messages": {
+        "submitted": "Lavoro inviato per revisione",
+        "resubmitted": "Lavoro inviato nuovamente per revisione"
+      }
+    }
   }
 }

@@ -24,6 +24,7 @@
     "signInToAccess": "Shiga don samun damar dashboard ɗinka da bin diddigin ci gaban ka.",
     "dismiss": "Kore",
     "accept": "Karɓa",
+    "all": "Duka",
     "pageAvailableIn": "Wannan shafin yana samuwa a cikin {locale}. Za ka so ka duba shi a cikin wannan harshe?",
     "selectLanguage": "Zaɓi harshe",
     "manageAccount": "Sarrafa Asusun Na",
@@ -645,5 +646,130 @@
     "deleteWallet": "Goge Walat",
     "deleteWalletConfirmation": "Ka tabbata kana son goge wannan walat? Ba za a iya juyar da wannan aikin ba. Za a cire walat daga asusunka, amma adireshin blockchain da kuɗinsa za su kasance a kan blockchain.",
     "delete": "Goge"
+  },
+  "jobs": {
+    "history": "Tarihin Ayyuka",
+    "filterByStatus": "Tace ta Matsayi:",
+    "errorLoadingHistory": "Kuskure wajen loda tarihin ayyuka",
+    "noHistoryFound": "Ba a sami tarihin ayyuka ba",
+    "status": {
+      "requested": "An Nema",
+      "inProgress": "Ana Ci Gaba",
+      "validating": "Ana Tantancewa",
+      "accepted": "An Karɓa",
+      "rejected": "An Ki"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "Ana bitar buƙatarku. Za a sanar da ku lokacin da aka amince.",
+        "inProgress": "An amince da buƙatarku! Yanzu kuna iya yin wannan aiki.",
+        "submitted": "An ƙaddamar da aikinku. Ana jiran bita daga mai shi.",
+        "validating": "An nemi canje-canje. Da fatan za a sake dubawa kuma a ƙaddamar da kashi.",
+        "accepted": "Barka! An karɓi aikinku.",
+        "rejected": "An ƙi buƙatarku."
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}} ya nemi yin wannan aiki. Amince ko ƙi buƙatar.",
+        "inProgress": "{{workerName}} yana aiki da wannan aiki a halin yanzu.",
+        "submitted": "{{workerName}} ya ƙaddamar da aikinsa don bita.",
+        "validating": "Jiran {{workerName}} ya sake dubawa kuma ya ƙaddamar da kashi.",
+        "accepted": "An karɓi aikin {{workerName}}.",
+        "rejected": "An ƙi buƙatar {{workerName}}."
+      }
+    },
+    "actions": {
+      "submitForReview": "Ƙaddamar don Bita",
+      "withdrawSubmission": "Janye Ƙaddamarwa",
+      "withdrawing": "Ana janyewa...",
+      "reviseAndResubmit": "Sake Dubawa da Ƙaddamar da Kashi",
+      "approveRequest": "Amince da Buƙata",
+      "approving": "Ana amincewa...",
+      "rejectRequest": "Ƙi Buƙata",
+      "rejecting": "Ana ƙi...",
+      "reviewAndAccept": "Bita da Karɓa",
+      "requestChanges": "Nemi Canje-canje",
+      "reject": "Ƙi"
+    },
+    "review": {
+      "title": "Bitar Aikin da aka Ƙaddamar",
+      "description": "Bitar aiki daga {{workerName}}",
+      "workerSolution": "Maganin Ma'aikaci:",
+      "selfReviewScore": "Bita na Kai: {{score}}/100",
+      "noSubmissionNotes": "Babu bayanan ƙaddamarwa da aka bayar",
+      "actionLabel": "Mataki *",
+      "required": "*",
+      "optional": "(Na zaɓi)",
+      "feedbackLabel": "Bayani na Bita {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "Bayyana irin canje-canjen da ake buƙata",
+        "other": "Bayar da sharhi ko shawarwari ga ma'aikaci"
+      },
+      "editorPlaceholder": {
+        "validate": "Bayyana canje-canjen da ake buƙata...",
+        "other": "Bayar da ra'ayi kan aikin..."
+      },
+      "managerReviewLabel": "Bitar Manaja (Na zaɓi)",
+      "managerReviewDescription": "Ƙimar ingancin aikin da aka kammala",
+      "scorePoor": "0 (Mara kyau)",
+      "scoreExcellent": "100 (Kyakkyawa)",
+      "cancel": "Soke",
+      "submitting": "Ana ƙaddamarwa...",
+      "acceptWork": "Karɓi Aiki",
+      "requestChangesButton": "Nemi Canje-canje",
+      "rejectWork": "Ƙi Aiki",
+      "actions": {
+        "accept": {
+          "title": "Karɓa (Alama aikin a matsayin An Gama)",
+          "description": "Amince da aikin kuma kammala aikin. Ma'aikaci yana samun ladarsa."
+        },
+        "requestChanges": {
+          "title": "Nemi Canje-canje",
+          "description": "Tambayi ma'aikaci ya sake dubawa kuma ya ƙaddamar da aikinsa."
+        },
+        "reject": {
+          "title": "Ƙi (Sake buɗe aikin)",
+          "description": "Ƙi aikin gaba ɗaya kuma sake buɗe aikin ga wasu."
+        }
+      },
+      "messages": {
+        "accepted": "An karɓi aikin kuma an alama aikin a matsayin an kammala",
+        "changesRequested": "An nemi canje-canje, ma'aikaci zai sake dubawa",
+        "rejected": "An ƙi aikin, an sake buɗe aikin",
+        "error": "Ba a iya ƙaddamar da bita. Da fatan za a sake gwadawa."
+      }
+    },
+    "submission": {
+      "title": "Ƙaddamar da Aiki don Bita",
+      "titleResubmit": "Sake Dubawa da Ƙaddamar da Aiki",
+      "description": "Bayyana mafita na {{taskName}} kuma ƙaddamar don tabbatarwa.",
+      "solutionLabel": "Bayanin Magani *",
+      "solutionDescription": "Bayyana abin da kuka yi don kammala wannan aikin. Yana goyan bayan tsarawa, hanyoyin haɗi da jerin abubuwa.",
+      "solutionPlaceholder": "Bayyana abin da kuka yi don kammala wannan aikin...",
+      "selfReviewLabel": "Bita na Kai (Na zaɓi)",
+      "selfReviewDescription": "Ƙimar ingancin aikinku akan ma'auni na 0-100",
+      "scoreNeedsWork": "0 (Ana buƙatar aiki)",
+      "scorePerfect": "100 (Cikakke)",
+      "cancel": "Soke",
+      "submitting": "Ana ƙaddamarwa...",
+      "submitButton": "Ƙaddamar don Bita",
+      "resubmitButton": "Sake Ƙaddamar don Bita",
+      "errors": {
+        "missingDescription": "Da fatan za a bayar da bayanin aikinku",
+        "submitError": "Ba a iya ƙaddamar da aikinku. Da fatan za a sake gwadawa."
+      },
+      "messages": {
+        "submitted": "An ƙaddamar da aiki don bita",
+        "resubmitted": "An sake ƙaddamar da aiki don bita"
+      }
+    }
   }
 }

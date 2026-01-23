@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { X, ChevronDown, ChevronUp } from 'lucide-react'
 import { useJobs } from '@/lib/hooks/useJobs'
+import { useI18n } from '@/lib/contexts/i18n'
 
 interface JobHistoryPanelProps {
   taskId: string
@@ -21,6 +22,7 @@ export function JobHistoryPanel({
   userRole,
   currentUserId,
 }: JobHistoryPanelProps) {
+  const { t } = useI18n()
   const [filterStatus, setFilterStatus] = useState<string | undefined>(undefined)
   const [expandedJobId, setExpandedJobId] = useState<string | null>(null)
 
@@ -56,7 +58,7 @@ export function JobHistoryPanel({
       <div className="relative w-full max-w-2xl rounded-t-lg bg-white shadow-xl dark:bg-gray-800 sm:rounded-lg">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-gray-200 p-4 dark:border-gray-700">
-          <h2 className="text-xl font-semibold">Job History</h2>
+          <h2 className="text-xl font-semibold">{t('jobs.history')}</h2>
           <button
             onClick={onClose}
             className="rounded-full p-1 hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -68,7 +70,7 @@ export function JobHistoryPanel({
         {/* Filter */}
         <div className="border-b border-gray-200 p-4 dark:border-gray-700">
           <label htmlFor="statusFilter" className="mb-2 block text-sm font-medium">
-            Filter by Status:
+            {t('jobs.filterByStatus')}
           </label>
           <select
             id="statusFilter"
@@ -76,30 +78,30 @@ export function JobHistoryPanel({
             onChange={(e) => setFilterStatus(e.target.value === 'all' ? undefined : e.target.value)}
             className="w-full rounded border border-gray-300 px-3 py-2 dark:border-gray-600 dark:bg-gray-700"
           >
-            <option value="all">All</option>
-            <option value="REQUESTED">Requested</option>
-            <option value="IN_PROGRESS">In Progress</option>
-            <option value="VALIDATING">Validating</option>
-            <option value="ACCEPTED">Accepted</option>
-            <option value="REJECTED">Rejected</option>
+            <option value="all">{t('common.all')}</option>
+            <option value="REQUESTED">{t('jobs.status.requested')}</option>
+            <option value="IN_PROGRESS">{t('jobs.status.inProgress')}</option>
+            <option value="VALIDATING">{t('jobs.status.validating')}</option>
+            <option value="ACCEPTED">{t('jobs.status.accepted')}</option>
+            <option value="REJECTED">{t('jobs.status.rejected')}</option>
           </select>
         </div>
 
         {/* Job List */}
         <div className="max-h-96 overflow-y-auto p-4">
           {isLoading && (
-            <div className="py-8 text-center text-gray-500">Loading...</div>
+            <div className="py-8 text-center text-gray-500">{t('common.loading')}</div>
           )}
 
           {error && (
             <div className="py-8 text-center text-red-600">
-              Error loading job history
+              {t('jobs.errorLoadingHistory')}
             </div>
           )}
 
           {!isLoading && !error && jobs.length === 0 && (
             <div className="py-8 text-center text-gray-500">
-              No job history found
+              {t('jobs.noHistoryFound')}
             </div>
           )}
 

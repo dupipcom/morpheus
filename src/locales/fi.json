@@ -21,6 +21,7 @@
     "signInToAccess": "Kirjaudu sisään päästäksesi hallintapaneeliin ja seurataksesi edistymistäsi.",
     "dismiss": "Sulje",
     "accept": "Hyväksy",
+    "all": "Kaikki",
     "pageAvailableIn": "Tämä sivu on saatavilla kielellä {locale}. Haluatko tarkastella sitä kyseisellä kielellä?",
     "selectLanguage": "Valitse kieli",
     "dashboard": "Kojelauta",
@@ -653,5 +654,130 @@
     "deleteWallet": "Poista Lompakko",
     "deleteWalletConfirmation": "Haluatko varmasti poistaa tämän lompakon? Tätä toimintoa ei voi perua. Lompakko poistetaan tililtäsi, mutta blockchain-osoite ja sen varat pysyvät blockchainissa.",
     "delete": "Poista"
+  },
+  "jobs": {
+    "history": "Työhistoria",
+    "filterByStatus": "Suodata Tilan Mukaan:",
+    "errorLoadingHistory": "Virhe työhistorian lataamisessa",
+    "noHistoryFound": "Työhistoriaa ei löytynyt",
+    "status": {
+      "requested": "Pyydetty",
+      "inProgress": "Käynnissä",
+      "validating": "Vahvistetaan",
+      "accepted": "Hyväksytty",
+      "rejected": "Hylätty"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "Pyyntöäsi tarkistetaan. Saat ilmoituksen, kun se hyväksytään.",
+        "inProgress": "Pyyntösi hyväksyttiin! Voit nyt työskennellä tämän tehtävän parissa.",
+        "submitted": "Työsi on lähetetty. Odotetaan omistajan tarkistusta.",
+        "validating": "Muutoksia on pyydetty. Ole hyvä ja tarkista ja lähetä uudelleen.",
+        "accepted": "Onnittelut! Työsi hyväksyttiin.",
+        "rejected": "Lähetyksesi hylättiin."
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}} on pyytänyt työskennellä tämän tehtävän parissa. Hyväksy tai hylkää pyyntö.",
+        "inProgress": "{{workerName}} työskentelee tällä hetkellä tämän tehtävän parissa.",
+        "submitted": "{{workerName}} on lähettänyt työnsä tarkistettavaksi.",
+        "validating": "Odotetaan, että {{workerName}} tarkistaa ja lähettää uudelleen.",
+        "accepted": "{{workerName}}n työ hyväksyttiin.",
+        "rejected": "{{workerName}}n lähetys hylättiin."
+      }
+    },
+    "actions": {
+      "submitForReview": "Lähetä Tarkistettavaksi",
+      "withdrawSubmission": "Peruuta Lähetys",
+      "withdrawing": "Peruutetaan...",
+      "reviseAndResubmit": "Tarkista ja Lähetä Uudelleen",
+      "approveRequest": "Hyväksy Pyyntö",
+      "approving": "Hyväksytään...",
+      "rejectRequest": "Hylkää Pyyntö",
+      "rejecting": "Hylätään...",
+      "reviewAndAccept": "Tarkista ja Hyväksy",
+      "requestChanges": "Pyydä Muutoksia",
+      "reject": "Hylkää"
+    },
+    "review": {
+      "title": "Tarkista Lähetetty Työ",
+      "description": "Tarkista työ käyttäjältä {{workerName}}",
+      "workerSolution": "Työntekijän Ratkaisu:",
+      "selfReviewScore": "Itsearviointi: {{score}}/100",
+      "noSubmissionNotes": "Lähetysmuistiinpanoja ei annettu",
+      "actionLabel": "Toiminto *",
+      "required": "*",
+      "optional": "(Valinnainen)",
+      "feedbackLabel": "Tarkistuspalaute {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "Selitä, mitä muutoksia tarvitaan",
+        "other": "Anna kommentteja tai ehdotuksia työntekijälle"
+      },
+      "editorPlaceholder": {
+        "validate": "Kuvaile tarvittavat muutokset...",
+        "other": "Anna palautetta työstä..."
+      },
+      "managerReviewLabel": "Esimiehen Arviointi (Valinnainen)",
+      "managerReviewDescription": "Arvioi valmiin työn laatu",
+      "scorePoor": "0 (Huono)",
+      "scoreExcellent": "100 (Erinomainen)",
+      "cancel": "Peruuta",
+      "submitting": "Lähetetään...",
+      "acceptWork": "Hyväksy Työ",
+      "requestChangesButton": "Pyydä Muutoksia",
+      "rejectWork": "Hylkää Työ",
+      "actions": {
+        "accept": {
+          "title": "Hyväksy (Merkitse tehtävä Valmiiksi)",
+          "description": "Hyväksy työ ja viimeistele tehtävä. Työntekijä ansaitsee palkintonsa."
+        },
+        "requestChanges": {
+          "title": "Pyydä Muutoksia",
+          "description": "Pyydä työntekijää tarkistamaan ja lähettämään työnsä uudelleen."
+        },
+        "reject": {
+          "title": "Hylkää (Avaa tehtävä uudelleen)",
+          "description": "Hylkää työ kokonaan ja avaa tehtävä uudelleen muille."
+        }
+      },
+      "messages": {
+        "accepted": "Työ hyväksytty ja tehtävä merkitty valmiiksi",
+        "changesRequested": "Muutoksia pyydetty, työntekijä tarkistaa",
+        "rejected": "Työ hylätty, tehtävä avattu uudelleen",
+        "error": "Tarkistusta ei voitu lähettää. Yritä uudelleen."
+      }
+    },
+    "submission": {
+      "title": "Lähetä Työ Tarkistettavaksi",
+      "titleResubmit": "Tarkista ja Lähetä Työ Uudelleen",
+      "description": "Kuvaile ratkaisusi tehtävään {{taskName}} ja lähetä validoitavaksi.",
+      "solutionLabel": "Ratkaisun Kuvaus *",
+      "solutionDescription": "Selitä, mitä teit tämän tehtävän suorittamiseksi. Tukee muotoilua, linkkejä ja luetteloita.",
+      "solutionPlaceholder": "Selitä, mitä teit tämän tehtävän suorittamiseksi...",
+      "selfReviewLabel": "Itsearviointi (Valinnainen)",
+      "selfReviewDescription": "Arvioi työsi laatu asteikolla 0-100",
+      "scoreNeedsWork": "0 (Vaatii työtä)",
+      "scorePerfect": "100 (Täydellinen)",
+      "cancel": "Peruuta",
+      "submitting": "Lähetetään...",
+      "submitButton": "Lähetä Tarkistettavaksi",
+      "resubmitButton": "Lähetä Uudelleen Tarkistettavaksi",
+      "errors": {
+        "missingDescription": "Anna työsi kuvaus",
+        "submitError": "Työtäsi ei voitu lähettää. Yritä uudelleen."
+      },
+      "messages": {
+        "submitted": "Työ lähetetty tarkistettavaksi",
+        "resubmitted": "Työ lähetetty uudelleen tarkistettavaksi"
+      }
+    }
   }
 }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
+import { sanitizeHTML } from '@/lib/utils/sanitize'
 
 export async function GET(request: NextRequest) {
   try {
@@ -123,6 +124,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Content is required' }, { status: 400 })
     }
 
+    // Sanitize content to prevent XSS attacks
+    const sanitizedContent = sanitizeHTML(content)
+
     // Get user from database
     const user = await prisma.user.findUnique({
       where: { userId }
@@ -135,7 +139,7 @@ export async function POST(request: NextRequest) {
     // Create note
     const note = await prisma.note.create({
       data: {
-        content,
+        content: sanitizedContent,
         visibility: visibility || 'PRIVATE',
         date: date || null,
         userId: user.id

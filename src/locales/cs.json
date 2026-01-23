@@ -24,6 +24,7 @@
     "signInToAccess": "Přihlaste se pro přístup k vašemu dashboardu a sledování vašeho pokroku.",
     "dismiss": "Zavřít",
     "accept": "Přijmout",
+    "all": "Vše",
     "pageAvailableIn": "Tato stránka je k dispozici v jazyce {locale}. Chcete ji zobrazit v tomto jazyce?",
     "selectLanguage": "Vybrat jazyk",
     "manageAccount": "Spravovat můj účet",
@@ -649,5 +650,130 @@
     "deleteWallet": "Smazat Peněženku",
     "deleteWalletConfirmation": "Opravdu chcete smazat tuto peněženku? Tuto akci nelze vrátit zpět. Peněženka bude odstraněna z vašeho účtu, ale blockchain adresa a její prostředky zůstanou na blockchainu.",
     "delete": "Smazat"
+  },
+  "jobs": {
+    "history": "Historie Prací",
+    "filterByStatus": "Filtrovat podle Stavu:",
+    "errorLoadingHistory": "Chyba při načítání historie prací",
+    "noHistoryFound": "Nebyla nalezena žádná historie prací",
+    "status": {
+      "requested": "Vyžádáno",
+      "inProgress": "Probíhá",
+      "validating": "Ověřování",
+      "accepted": "Přijato",
+      "rejected": "Odmítnuto"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "Vaše žádost se posuzuje. Budete upozorněni po schválení.",
+        "inProgress": "Vaše žádost byla schválena! Nyní můžete pracovat na tomto úkolu.",
+        "submitted": "Vaše práce byla odeslána. Čeká se na posouzení vlastníka.",
+        "validating": "Byly požadovány změny. Prosím přepracujte a znovu odešlete.",
+        "accepted": "Gratulujeme! Vaše práce byla přijata.",
+        "rejected": "Vaše podání bylo zamítnuto."
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}} požádal o práci na tomto úkolu. Schvalte nebo zamítněte žádost.",
+        "inProgress": "{{workerName}} momentálně pracuje na tomto úkolu.",
+        "submitted": "{{workerName}} odeslal svou práci k posouzení.",
+        "validating": "Čeká se na {{workerName}} na přepracování a opětovné odeslání.",
+        "accepted": "Práce uživatele {{workerName}} byla přijata.",
+        "rejected": "Podání uživatele {{workerName}} bylo zamítnuto."
+      }
+    },
+    "actions": {
+      "submitForReview": "Odeslat k Posouzení",
+      "withdrawSubmission": "Stáhnout Podání",
+      "withdrawing": "Stahování...",
+      "reviseAndResubmit": "Přepracovat a Znovu Odeslat",
+      "approveRequest": "Schválit Žádost",
+      "approving": "Schvalování...",
+      "rejectRequest": "Zamítnout Žádost",
+      "rejecting": "Zamítání...",
+      "reviewAndAccept": "Posoudit a Přijmout",
+      "requestChanges": "Požadovat Změny",
+      "reject": "Zamítnout"
+    },
+    "review": {
+      "title": "Posoudit Odeslanou Práci",
+      "description": "Posoudit práci od {{workerName}}",
+      "workerSolution": "Řešení Pracovníka:",
+      "selfReviewScore": "Sebehodnocení: {{score}}/100",
+      "noSubmissionNotes": "Nebyly poskytnuty žádné poznámky k podání",
+      "actionLabel": "Akce *",
+      "required": "*",
+      "optional": "(Volitelné)",
+      "feedbackLabel": "Zpětná Vazba z Posouzení {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "Vysvětlete, jaké změny jsou potřeba",
+        "other": "Poskytněte komentáře nebo návrhy pro pracovníka"
+      },
+      "editorPlaceholder": {
+        "validate": "Popište potřebné změny...",
+        "other": "Poskytněte zpětnou vazbu k práci..."
+      },
+      "managerReviewLabel": "Hodnocení Manažera (Volitelné)",
+      "managerReviewDescription": "Ohodnoťte kvalitu dokončené práce",
+      "scorePoor": "0 (Špatné)",
+      "scoreExcellent": "100 (Výborné)",
+      "cancel": "Zrušit",
+      "submitting": "Odesílání...",
+      "acceptWork": "Přijmout Práci",
+      "requestChangesButton": "Požadovat Změny",
+      "rejectWork": "Zamítnout Práci",
+      "actions": {
+        "accept": {
+          "title": "Přijmout (Označit úkol jako Hotový)",
+          "description": "Schvalte práci a dokončete úkol. Pracovník získá svou odměnu."
+        },
+        "requestChanges": {
+          "title": "Požadovat Změny",
+          "description": "Požádejte pracovníka o přepracování a opětovné odeslání práce."
+        },
+        "reject": {
+          "title": "Zamítnout (Znovu otevřít úkol)",
+          "description": "Zamítněte práci úplně a znovu otevřete úkol pro ostatní."
+        }
+      },
+      "messages": {
+        "accepted": "Práce přijata a úkol označen jako dokončený",
+        "changesRequested": "Změny požadovány, pracovník přepracuje",
+        "rejected": "Práce zamítnuta, úkol znovu otevřen",
+        "error": "Nelze odeslat posouzení. Zkuste to prosím znovu."
+      }
+    },
+    "submission": {
+      "title": "Odeslat Práci k Posouzení",
+      "titleResubmit": "Přepracovat a Znovu Odeslat Práci",
+      "description": "Popište své řešení pro {{taskName}} a odešlete k ověření.",
+      "solutionLabel": "Popis Řešení *",
+      "solutionDescription": "Vysvětlete, co jste udělali pro dokončení tohoto úkolu. Podporuje formátování, odkazy a seznamy.",
+      "solutionPlaceholder": "Vysvětlete, co jste udělali pro dokončení tohoto úkolu...",
+      "selfReviewLabel": "Sebehodnocení (Volitelné)",
+      "selfReviewDescription": "Ohodnoťte kvalitu své práce na stupnici od 0 do 100",
+      "scoreNeedsWork": "0 (Potřebuje práci)",
+      "scorePerfect": "100 (Perfektní)",
+      "cancel": "Zrušit",
+      "submitting": "Odesílání...",
+      "submitButton": "Odeslat k Posouzení",
+      "resubmitButton": "Znovu Odeslat k Posouzení",
+      "errors": {
+        "missingDescription": "Prosím poskytněte popis vaší práce",
+        "submitError": "Nelze odeslat vaši práci. Zkuste to prosím znovu."
+      },
+      "messages": {
+        "submitted": "Práce odeslána k posouzení",
+        "resubmitted": "Práce znovu odeslána k posouzení"
+      }
+    }
   }
 }

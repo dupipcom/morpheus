@@ -24,6 +24,7 @@
     "signInToAccess": "Inicia sessió per accedir al teu tauler de control i seguir el teu progrés.",
     "dismiss": "Tancar",
     "accept": "Acceptar",
+    "all": "Tot",
     "pageAvailableIn": "Aquesta pàgina està disponible en {locale}. Vols visualitzar-la en aquest idioma?",
     "selectLanguage": "Seleccionar idioma",
     "manageAccount": "Gestionar el meu compte",
@@ -649,5 +650,130 @@
     "deleteWallet": "Eliminar Cartera",
     "deleteWalletConfirmation": "Esteu segur que voleu eliminar aquesta cartera? Aquesta acció no es pot desfer. La cartera s'eliminarà del vostre compte, però l'adreça blockchain i els seus fons romandran a la blockchain.",
     "delete": "Eliminar"
+  },
+  "jobs": {
+    "history": "Historial de Treballs",
+    "filterByStatus": "Filtrar per Estat:",
+    "errorLoadingHistory": "Error al carregar l'historial de treballs",
+    "noHistoryFound": "No s'ha trobat cap historial de treballs",
+    "status": {
+      "requested": "Sol·licitat",
+      "inProgress": "En Progrés",
+      "validating": "Validant",
+      "accepted": "Acceptat",
+      "rejected": "Rebutjat"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "La teva sol·licitud està sent revisada. Se't notificarà quan s'aprovi.",
+        "inProgress": "La teva sol·licitud ha estat aprovada! Ara pots treballar en aquesta tasca.",
+        "submitted": "El teu treball ha estat enviat. Esperant la revisió del propietari.",
+        "validating": "S'han sol·licitat canvis. Si us plau, revisa i torna a enviar.",
+        "accepted": "Felicitats! El teu treball ha estat acceptat.",
+        "rejected": "La teva submissió ha estat rebutjada."
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}} ha sol·licitat treballar en aquesta tasca. Aprova o rebutja la sol·licitud.",
+        "inProgress": "{{workerName}} està treballant actualment en aquesta tasca.",
+        "submitted": "{{workerName}} ha enviat el seu treball per a revisió.",
+        "validating": "Esperant que {{workerName}} revisi i torni a enviar.",
+        "accepted": "El treball de {{workerName}} ha estat acceptat.",
+        "rejected": "La submissió de {{workerName}} ha estat rebutjada."
+      }
+    },
+    "actions": {
+      "submitForReview": "Enviar per a Revisió",
+      "withdrawSubmission": "Retirar Submissió",
+      "withdrawing": "Retirant...",
+      "reviseAndResubmit": "Revisar i Tornar a Enviar",
+      "approveRequest": "Aprovar Sol·licitud",
+      "approving": "Aprovant...",
+      "rejectRequest": "Rebutjar Sol·licitud",
+      "rejecting": "Rebutjant...",
+      "reviewAndAccept": "Revisar i Acceptar",
+      "requestChanges": "Sol·licitar Canvis",
+      "reject": "Rebutjar"
+    },
+    "review": {
+      "title": "Revisar Treball Enviat",
+      "description": "Revisar treball de {{workerName}}",
+      "workerSolution": "Solució del Treballador:",
+      "selfReviewScore": "Auto-revisió: {{score}}/100",
+      "noSubmissionNotes": "No s'han proporcionat notes de submissió",
+      "actionLabel": "Acció *",
+      "required": "*",
+      "optional": "(Opcional)",
+      "feedbackLabel": "Comentaris de Revisió {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "Explica quins canvis són necessaris",
+        "other": "Proporciona comentaris o suggeriments per al treballador"
+      },
+      "editorPlaceholder": {
+        "validate": "Descriu els canvis necessaris...",
+        "other": "Proporciona comentaris sobre el treball..."
+      },
+      "managerReviewLabel": "Revisió del Gestor (Opcional)",
+      "managerReviewDescription": "Valora la qualitat del treball completat",
+      "scorePoor": "0 (Pobre)",
+      "scoreExcellent": "100 (Excel·lent)",
+      "cancel": "Cancel·lar",
+      "submitting": "Enviant...",
+      "acceptWork": "Acceptar Treball",
+      "requestChangesButton": "Sol·licitar Canvis",
+      "rejectWork": "Rebutjar Treball",
+      "actions": {
+        "accept": {
+          "title": "Acceptar (Marcar tasca com a Feta)",
+          "description": "Aprovar el treball i completar la tasca. El treballador guanya la seva recompensa."
+        },
+        "requestChanges": {
+          "title": "Sol·licitar Canvis",
+          "description": "Demanar al treballador que revisi i torni a enviar el seu treball."
+        },
+        "reject": {
+          "title": "Rebutjar (Reobrir tasca)",
+          "description": "Rebutjar el treball completament i reobrir la tasca per a altres."
+        }
+      },
+      "messages": {
+        "accepted": "Treball acceptat i tasca marcada com a completa",
+        "changesRequested": "Canvis sol·licitats, el treballador revisarà",
+        "rejected": "Treball rebutjat, tasca reoberta",
+        "error": "No s'ha pogut enviar la revisió. Si us plau, torna-ho a intentar."
+      }
+    },
+    "submission": {
+      "title": "Enviar Treball per a Revisió",
+      "titleResubmit": "Revisar i Tornar a Enviar Treball",
+      "description": "Descriu la teva solució per a {{taskName}} i envia-la per a validació.",
+      "solutionLabel": "Descripció de la Solució *",
+      "solutionDescription": "Explica què has fet per completar aquesta tasca. Suporta format, enllaços i llistes.",
+      "solutionPlaceholder": "Explica què has fet per completar aquesta tasca...",
+      "selfReviewLabel": "Auto-revisió (Opcional)",
+      "selfReviewDescription": "Valora la qualitat del teu treball en una escala de 0-100",
+      "scoreNeedsWork": "0 (Necessita treball)",
+      "scorePerfect": "100 (Perfecte)",
+      "cancel": "Cancel·lar",
+      "submitting": "Enviant...",
+      "submitButton": "Enviar per a Revisió",
+      "resubmitButton": "Tornar a Enviar per a Revisió",
+      "errors": {
+        "missingDescription": "Si us plau, proporciona una descripció del teu treball",
+        "submitError": "No s'ha pogut enviar el teu treball. Si us plau, torna-ho a intentar."
+      },
+      "messages": {
+        "submitted": "Treball enviat per a revisió",
+        "resubmitted": "Treball tornat a enviar per a revisió"
+      }
+    }
   }
 }

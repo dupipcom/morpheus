@@ -8,37 +8,40 @@ import { Label } from '@/components/ui/label'
 import { Progress } from '@/components/ui/progress'
 import { Lock, User, AlertCircle, CheckCircle, Send, XCircle, Hourglass, Loader2 } from 'lucide-react'
 import type { JobWithRelations, UserRole } from '@/lib/services/job/types'
+import { useI18n } from '@/lib/contexts/i18n'
 
 // Worker-specific status banner
 function WorkerStatusBanner({ status }: { status: string }) {
+  const { t } = useI18n()
+  
   const configs: Record<string, { message: string; icon: React.ReactNode; className: string }> = {
     REQUESTED: {
-      message: 'Your request is being reviewed. You will be notified when approved.',
+      message: t('jobs.worker.statusBanner.requested'),
       icon: <Hourglass className="w-6 h-6" />,
       className: 'bg-slate-50 border-slate-200 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300',
     },
     IN_PROGRESS: {
-      message: 'Your request was approved! You can now work on this task.',
+      message: t('jobs.worker.statusBanner.inProgress'),
       icon: <CheckCircle className="w-6 h-6 text-green-600" />,
       className: 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/20 dark:border-green-800 dark:text-green-300',
     },
     SUBMITTED: {
-      message: 'Your work has been submitted. Awaiting review from the owner.',
+      message: t('jobs.worker.statusBanner.submitted'),
       icon: <Send className="w-6 h-6 text-blue-600" />,
       className: 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-300',
     },
     VALIDATING: {
-      message: 'Changes have been requested. Please revise and resubmit.',
+      message: t('jobs.worker.statusBanner.validating'),
       icon: <AlertCircle className="w-6 h-6 text-orange-600" />,
       className: 'bg-orange-50 border-orange-200 text-orange-700 dark:bg-orange-900/20 dark:border-orange-800 dark:text-orange-300',
     },
     ACCEPTED: {
-      message: 'Congratulations! Your work was accepted.',
+      message: t('jobs.worker.statusBanner.accepted'),
       icon: <CheckCircle className="w-6 h-6 text-green-600" />,
       className: 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/20 dark:border-green-800 dark:text-green-300',
     },
     REJECTED: {
-      message: 'Your submission was rejected.',
+      message: t('jobs.worker.statusBanner.rejected'),
       icon: <XCircle className="w-6 h-6 text-red-600" />,
       className: 'bg-red-50 border-red-200 text-red-700 dark:bg-red-900/20 dark:border-red-800 dark:text-red-300',
     },
@@ -57,34 +60,36 @@ function WorkerStatusBanner({ status }: { status: string }) {
 
 // Owner/Manager status banner
 function OwnerStatusBanner({ status, workerName }: { status: string; workerName: string }) {
+  const { t } = useI18n()
+  
   const configs: Record<string, { message: string; icon: React.ReactNode; className: string }> = {
     REQUESTED: {
-      message: `@${workerName} has requested to work on this task. Approve or reject the request.`,
+      message: t('jobs.owner.statusBanner.requested', { workerName: `@${workerName}` }),
       icon: <Hourglass className="w-6 h-6" />,
       className: 'bg-amber-50 border-amber-200 text-amber-700 dark:bg-amber-900/20 dark:border-amber-800 dark:text-amber-300',
     },
     IN_PROGRESS: {
-      message: `@${workerName} is currently working on this task.`,
+      message: t('jobs.owner.statusBanner.inProgress', { workerName: `@${workerName}` }),
       icon: <AlertCircle className="w-6 h-6 text-blue-600" />,
       className: 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-300',
     },
     SUBMITTED: {
-      message: `@${workerName} has submitted their work for review.`,
+      message: t('jobs.owner.statusBanner.submitted', { workerName: `@${workerName}` }),
       icon: <Send className="w-6 h-6 text-yellow-600" />,
       className: 'bg-yellow-50 border-yellow-200 text-yellow-700 dark:bg-yellow-900/20 dark:border-yellow-800 dark:text-yellow-300',
     },
     VALIDATING: {
-      message: `Waiting for @${workerName} to revise and resubmit.`,
+      message: t('jobs.owner.statusBanner.validating', { workerName: `@${workerName}` }),
       icon: <Hourglass className="w-6 h-6" />,
       className: 'bg-orange-50 border-orange-200 text-orange-700 dark:bg-orange-900/20 dark:border-orange-800 dark:text-orange-300',
     },
     ACCEPTED: {
-      message: `@${workerName}'s work was accepted.`,
+      message: t('jobs.owner.statusBanner.accepted', { workerName: `@${workerName}` }),
       icon: <CheckCircle className="w-6 h-6 text-green-600" />,
       className: 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/20 dark:border-green-800 dark:text-green-300',
     },
     REJECTED: {
-      message: `@${workerName}'s submission was rejected.`,
+      message: t('jobs.owner.statusBanner.rejected', { workerName: `@${workerName}` }),
       icon: <XCircle className="w-6 h-6 text-red-600" />,
       className: 'bg-red-50 border-red-200 text-red-700 dark:bg-red-900/20 dark:border-red-800 dark:text-red-300',
     },
@@ -130,6 +135,7 @@ export function JobDetailsCard({
   onRequestChanges,
   onSubmitWork,
 }: JobDetailsCardProps) {
+  const { t } = useI18n()
   const [isLoading, setIsLoading] = React.useState(false)
 
   // Get status badge variant
@@ -147,12 +153,12 @@ export function JobDetailsCard({
 
   const getStatusLabel = (status: string): string => {
     const labels: Record<string, string> = {
-      REQUESTED: 'Requested',
-      IN_PROGRESS: 'In Progress',
-      SUBMITTED: 'Submitted',
-      VALIDATING: 'Changes Requested',
-      ACCEPTED: 'Accepted',
-      REJECTED: 'Rejected',
+      REQUESTED: t('jobs.status.requested'),
+      IN_PROGRESS: t('jobs.status.inProgress'),
+      SUBMITTED: t('jobs.status.submitted'),
+      VALIDATING: t('jobs.status.changesRequested'),
+      ACCEPTED: t('jobs.status.accepted'),
+      REJECTED: t('jobs.status.rejected'),
     }
     return labels[status] || status
   }
@@ -177,7 +183,7 @@ export function JobDetailsCard({
                 {getStatusLabel(job.status)}
               </Badge>
               <span className="text-sm text-muted-foreground">
-                Job Status
+                {t('jobs.jobStatus')}
               </span>
             </div>
             <div className="flex items-center gap-2 text-sm">
@@ -197,7 +203,7 @@ export function JobDetailsCard({
         <div className="absolute inset-0 bg-background/80 backdrop-blur-sm rounded-lg z-10 flex items-center justify-center">
           <div className="flex items-center gap-2 text-muted-foreground">
             <Loader2 className="w-5 h-5 animate-spin" />
-            <span className="text-sm font-medium">Refreshing...</span>
+            <span className="text-sm font-medium">{t('jobs.refreshing')}</span>
           </div>
         </div>
       )}
@@ -215,7 +221,7 @@ export function JobDetailsCard({
         {/* Worker's Submission Notes */}
         {job.requesterNotes && job.requesterNotes.length > 0 && (
           <div>
-            <Label className="text-sm font-semibold">Worker&apos;s Submission:</Label>
+            <Label className="text-sm font-semibold">{t('jobs.workerSubmission')}</Label>
             {job.requesterNotes.map((note) => (
               <div
                 key={note.id}
@@ -237,7 +243,7 @@ export function JobDetailsCard({
         {/* Self-Review Score */}
         {job.selfReview !== null && job.selfReview !== undefined && (
           <div>
-            <Label className="text-sm font-semibold">Self-Review:</Label>
+            <Label className="text-sm font-semibold">{t('jobs.selfReview')}</Label>
             <div className="flex items-center gap-3 mt-2">
               <Progress value={job.selfReview} max={100} className="flex-1" />
               <span className="text-sm font-medium">{job.selfReview}/100</span>
@@ -248,7 +254,7 @@ export function JobDetailsCard({
         {/* Reviewer's Feedback */}
         {job.reviewersNotes && job.reviewersNotes.length > 0 && (
           <div>
-            <Label className="text-sm font-semibold">Reviewer&apos;s Feedback:</Label>
+            <Label className="text-sm font-semibold">{t('jobs.reviewerFeedback')}</Label>
             {job.reviewersNotes.map((note) => (
               <div
                 key={note.id}
@@ -270,7 +276,7 @@ export function JobDetailsCard({
         {/* Manager Review Score */}
         {job.managerReview !== null && job.managerReview !== undefined && (
           <div>
-            <Label className="text-sm font-semibold">Manager Review:</Label>
+            <Label className="text-sm font-semibold">{t('jobs.managerReview')}</Label>
             <div className="flex items-center gap-3 mt-2">
               <Progress value={job.managerReview} max={100} className="flex-1" />
               <span className="text-sm font-medium">{job.managerReview}/100</span>
@@ -289,7 +295,7 @@ export function JobDetailsCard({
               disabled={isLoading}
               className="flex-1"
             >
-              Submit for Review
+              {t('jobs.actions.submitForReview')}
             </Button>
           )}
 
@@ -301,7 +307,7 @@ export function JobDetailsCard({
               disabled={isLoading}
               className="flex-1"
             >
-              {isLoading ? 'Withdrawing...' : 'Withdraw Submission'}
+              {isLoading ? t('jobs.actions.withdrawing') : t('jobs.actions.withdrawSubmission')}
             </Button>
           )}
 
@@ -313,7 +319,7 @@ export function JobDetailsCard({
               disabled={isLoading}
               className="flex-1"
             >
-              Revise and Resubmit
+              {t('jobs.actions.reviseAndResubmit')}
             </Button>
           )}
 
@@ -327,7 +333,7 @@ export function JobDetailsCard({
                 disabled={isLoading}
                 className="flex-1"
               >
-                {isLoading ? 'Approving...' : 'Approve Request'}
+                {isLoading ? t('jobs.actions.approving') : t('jobs.actions.approveRequest')}
               </Button>
               <Button
                 size="sm"
@@ -336,7 +342,7 @@ export function JobDetailsCard({
                 disabled={isLoading}
                 className="flex-1"
               >
-                {isLoading ? 'Rejecting...' : 'Reject Request'}
+                {isLoading ? t('jobs.actions.rejecting') : t('jobs.actions.rejectRequest')}
               </Button>
             </>
           )}
@@ -349,7 +355,7 @@ export function JobDetailsCard({
                 onClick={onValidate}
                 disabled={isLoading}
               >
-                Review & Accept
+                {t('jobs.actions.reviewAndAccept')}
               </Button>
               <Button
                 size="sm"
@@ -357,7 +363,7 @@ export function JobDetailsCard({
                 onClick={onRequestChanges}
                 disabled={isLoading}
               >
-                Request Changes
+                {t('jobs.actions.requestChanges')}
               </Button>
               <Button
                 size="sm"
@@ -365,7 +371,7 @@ export function JobDetailsCard({
                 onClick={() => handleAsyncAction(onReject)}
                 disabled={isLoading}
               >
-                {isLoading ? 'Rejecting...' : 'Reject'}
+                {isLoading ? t('jobs.actions.rejecting') : t('jobs.actions.reject')}
               </Button>
             </>
           )}
@@ -374,7 +380,7 @@ export function JobDetailsCard({
         {/* Privacy Indicator */}
         <div className="flex items-center gap-1 text-xs text-muted-foreground pt-2 border-t">
           <Lock className="w-3 h-3" />
-          <span>Visible only to job participants</span>
+          <span>{t('jobs.visibleToParticipants')}</span>
         </div>
       </CardContent>
     </Card>

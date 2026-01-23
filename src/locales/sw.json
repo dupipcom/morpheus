@@ -24,6 +24,7 @@
     "signInToAccess": "Ingia ili kufikia dashibodi yako na kufuatilia maendeleo yako.",
     "dismiss": "Ondoa",
     "accept": "Kubali",
+    "all": "Yote",
     "pageAvailableIn": "Ukurasa huu unapatikana katika {locale}. Je, ungependa kuuona katika lugha hiyo?",
     "selectLanguage": "Chagua lugha",
     "manageAccount": "Dhibiti Akaunti Yangu",
@@ -647,5 +648,130 @@
     "deleteWallet": "Futa Mkoba",
     "deleteWalletConfirmation": "Je, una uhakika unataka kufuta mkoba huu? Kitendo hiki hakiwezi kutenduliwa. Mkoba utaondolewa kutoka kwa akaunti yako, lakini anwani ya blockchain na fedha zake zitaendelea kuwa kwenye blockchain.",
     "delete": "Futa"
+  },
+  "jobs": {
+    "history": "Historia ya Kazi",
+    "filterByStatus": "Chuja kwa Hali:",
+    "errorLoadingHistory": "Hitilafu katika kupakia historia ya kazi",
+    "noHistoryFound": "Hakuna historia ya kazi iliyopatikana",
+    "status": {
+      "requested": "Imeombwa",
+      "inProgress": "Inaendelea",
+      "validating": "Inathibitisha",
+      "accepted": "Imekubaliwa",
+      "rejected": "Imekataliwa"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "Ombi lako linakaguliwa. Utajulishwa likiidhinishwa.",
+        "inProgress": "Ombi lako limeidhinishwa! Sasa unaweza kufanya kazi hii.",
+        "submitted": "Kazi yako imewasilishwa. Inasubiri ukaguzi kutoka kwa mmiliki.",
+        "validating": "Mabadiliko yameombwa. Tafadhali kagua na uwasilishe tena.",
+        "accepted": "Hongera! Kazi yako imekubaliwa.",
+        "rejected": "Uwasilishaji wako umekataliwa."
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}} ameomba kufanya kazi hii. Idhinisha au kataa ombi.",
+        "inProgress": "{{workerName}} anafanya kazi hii kwa sasa.",
+        "submitted": "{{workerName}} amewasilisha kazi yao kwa ukaguzi.",
+        "validating": "Inasubiri {{workerName}} akagua na kuwasilisha tena.",
+        "accepted": "Kazi ya {{workerName}} imekubaliwa.",
+        "rejected": "Uwasilishaji wa {{workerName}} umekataliwa."
+      }
+    },
+    "actions": {
+      "submitForReview": "Wasilisha kwa Ukaguzi",
+      "withdrawSubmission": "Ondoa Uwasilishaji",
+      "withdrawing": "Inaondoa...",
+      "reviseAndResubmit": "Kagua na Wasilisha Tena",
+      "approveRequest": "Idhinisha Ombi",
+      "approving": "Inaidhinisha...",
+      "rejectRequest": "Kataa Ombi",
+      "rejecting": "Inakataa...",
+      "reviewAndAccept": "Kagua na Kubali",
+      "requestChanges": "Omba Mabadiliko",
+      "reject": "Kataa"
+    },
+    "review": {
+      "title": "Kagua Kazi Iliyowasilishwa",
+      "description": "Kagua kazi kutoka kwa {{workerName}}",
+      "workerSolution": "Suluhisho la Mfanyakazi:",
+      "selfReviewScore": "Ukaguzi wa Kibinafsi: {{score}}/100",
+      "noSubmissionNotes": "Hakuna maelezo ya uwasilishaji yaliyotolewa",
+      "actionLabel": "Kitendo *",
+      "required": "*",
+      "optional": "(Hiari)",
+      "feedbackLabel": "Maoni ya Ukaguzi {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "Eleza mabadiliko yanayohitajika",
+        "other": "Toa maoni au mapendekezo kwa mfanyakazi"
+      },
+      "editorPlaceholder": {
+        "validate": "Eleza mabadiliko yanayohitajika...",
+        "other": "Toa maoni kuhusu kazi..."
+      },
+      "managerReviewLabel": "Ukaguzi wa Meneja (Hiari)",
+      "managerReviewDescription": "Tathmini ubora wa kazi iliyokamilika",
+      "scorePoor": "0 (Mbaya)",
+      "scoreExcellent": "100 (Bora)",
+      "cancel": "Ghairi",
+      "submitting": "Inawasilisha...",
+      "acceptWork": "Kubali Kazi",
+      "requestChangesButton": "Omba Mabadiliko",
+      "rejectWork": "Kataa Kazi",
+      "actions": {
+        "accept": {
+          "title": "Kubali (Weka alama kazi kama Imekamilika)",
+          "description": "Idhinisha kazi na ukamilishe kazi. Mfanyakazi anapata tuzo yake."
+        },
+        "requestChanges": {
+          "title": "Omba Mabadiliko",
+          "description": "Muulize mfanyakazi akagua na kuwasilisha kazi yake tena."
+        },
+        "reject": {
+          "title": "Kataa (Fungua tena kazi)",
+          "description": "Kataa kazi kabisa na ufungue kazi tena kwa wengine."
+        }
+      },
+      "messages": {
+        "accepted": "Kazi imekubaliwa na kuwekwa alama kama imekamilika",
+        "changesRequested": "Mabadiliko yameombwa, mfanyakazi atakagua",
+        "rejected": "Kazi imekataliwa, kazi imefunguliwa tena",
+        "error": "Haikuweza kuwasilisha ukaguzi. Tafadhali jaribu tena."
+      }
+    },
+    "submission": {
+      "title": "Wasilisha Kazi kwa Ukaguzi",
+      "titleResubmit": "Kagua na Wasilisha Kazi Tena",
+      "description": "Eleza suluhisho lako kwa {{taskName}} na uwasilishe kwa uthibitishaji.",
+      "solutionLabel": "Maelezo ya Suluhisho *",
+      "solutionDescription": "Eleza ulichofanya kukamilisha kazi hii. Inasaidia uumbizaji, viungo na orodha.",
+      "solutionPlaceholder": "Eleza ulichofanya kukamilisha kazi hii...",
+      "selfReviewLabel": "Ukaguzi wa Kibinafsi (Hiari)",
+      "selfReviewDescription": "Tathmini ubora wa kazi yako kwa kiwango cha 0-100",
+      "scoreNeedsWork": "0 (Inahitaji kazi)",
+      "scorePerfect": "100 (Kamili)",
+      "cancel": "Ghairi",
+      "submitting": "Inawasilisha...",
+      "submitButton": "Wasilisha kwa Ukaguzi",
+      "resubmitButton": "Wasilisha Tena kwa Ukaguzi",
+      "errors": {
+        "missingDescription": "Tafadhali toa maelezo ya kazi yako",
+        "submitError": "Haikuweza kuwasilisha kazi yako. Tafadhali jaribu tena."
+      },
+      "messages": {
+        "submitted": "Kazi imewasilishwa kwa ukaguzi",
+        "resubmitted": "Kazi imewasilishwa tena kwa ukaguzi"
+      }
+    }
   }
 }
