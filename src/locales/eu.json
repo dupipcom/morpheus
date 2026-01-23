@@ -664,6 +664,118 @@
       "validating": "Balioztatzen",
       "accepted": "Onartua",
       "rejected": "Baztertua"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "Your request is being reviewed. You will be notified when approved.",
+        "inProgress": "Your request was approved! You can now work on this task.",
+        "submitted": "Your work has been submitted. Awaiting review from the owner.",
+        "validating": "Changes have been requested. Please revise and resubmit.",
+        "accepted": "Congratulations! Your work was accepted.",
+        "rejected": "Your submission was rejected."
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}} has requested to work on this task. Approve or reject the request.",
+        "inProgress": "{{workerName}} is currently working on this task.",
+        "submitted": "{{workerName}} has submitted their work for review.",
+        "validating": "Waiting for {{workerName}} to revise and resubmit.",
+        "accepted": "{{workerName}}'s work was accepted.",
+        "rejected": "{{workerName}}'s submission was rejected."
+      }
+    },
+    "actions": {
+      "submitForReview": "Submit for Review",
+      "withdrawSubmission": "Withdraw Submission",
+      "withdrawing": "Withdrawing...",
+      "reviseAndResubmit": "Revise and Resubmit",
+      "approveRequest": "Approve Request",
+      "approving": "Approving...",
+      "rejectRequest": "Reject Request",
+      "rejecting": "Rejecting...",
+      "reviewAndAccept": "Review & Accept",
+      "requestChanges": "Request Changes",
+      "reject": "Reject"
+    },
+    "review": {
+      "title": "Review Submitted Work",
+      "description": "Review work from {{workerName}}",
+      "workerSolution": "Worker's Solution:",
+      "selfReviewScore": "Self-Review: {{score}}/100",
+      "noSubmissionNotes": "No submission notes provided",
+      "actionLabel": "Action *",
+      "required": "*",
+      "optional": "(Optional)",
+      "feedbackLabel": "Review Feedback {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "Explain what changes are needed",
+        "other": "Provide comments or suggestions for the worker"
+      },
+      "editorPlaceholder": {
+        "validate": "Describe the changes needed...",
+        "other": "Provide feedback on the work..."
+      },
+      "managerReviewLabel": "Manager Review (Optional)",
+      "managerReviewDescription": "Rate the quality of the completed work",
+      "scorePoor": "0 (Poor)",
+      "scoreExcellent": "100 (Excellent)",
+      "cancel": "Cancel",
+      "submitting": "Submitting...",
+      "acceptWork": "Accept Work",
+      "requestChangesButton": "Request Changes",
+      "rejectWork": "Reject Work",
+      "actions": {
+        "accept": {
+          "title": "Accept (Mark task as Done)",
+          "description": "Approve the work and complete the task. Worker earns their reward."
+        },
+        "requestChanges": {
+          "title": "Request Changes",
+          "description": "Ask the worker to revise and resubmit their work."
+        },
+        "reject": {
+          "title": "Reject (Reopen task)",
+          "description": "Reject the work completely and reopen the task for others."
+        }
+      },
+      "messages": {
+        "accepted": "Work accepted and task marked as complete",
+        "changesRequested": "Changes requested, worker will revise",
+        "rejected": "Work rejected, task reopened",
+        "error": "Could not submit review. Please try again."
+      }
+    },
+    "submission": {
+      "title": "Submit Work for Review",
+      "titleResubmit": "Revise and Resubmit Work",
+      "description": "Describe your solution for {{taskName}} and submit for validation.",
+      "solutionLabel": "Solution Description *",
+      "solutionDescription": "Explain what you did to complete this task. Supports formatting, links, and lists.",
+      "solutionPlaceholder": "Explain what you did to complete this task...",
+      "selfReviewLabel": "Self-Review (Optional)",
+      "selfReviewDescription": "Rate the quality of your work on a scale of 0-100",
+      "scoreNeedsWork": "0 (Needs work)",
+      "scorePerfect": "100 (Perfect)",
+      "cancel": "Cancel",
+      "submitting": "Submitting...",
+      "submitButton": "Submit for Review",
+      "resubmitButton": "Resubmit for Review",
+      "errors": {
+        "missingDescription": "Please provide a description of your work",
+        "submitError": "Could not submit your work. Please try again."
+      },
+      "messages": {
+        "submitted": "Work submitted for review",
+        "resubmitted": "Work resubmitted for review"
+      }
     }
   }
 }

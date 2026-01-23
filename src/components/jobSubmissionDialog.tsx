@@ -15,6 +15,7 @@ import { Label } from '@/components/ui/label'
 import { Slider } from '@/components/ui/slider'
 import { Editor, lexicalToHtml, isEditorEmpty, createEmptyState } from '@/components/editor'
 import { toast } from 'sonner'
+import { useI18n } from '@/lib/contexts/i18n'
 
 interface JobSubmissionDialogProps {
   open: boolean
@@ -35,6 +36,7 @@ export function JobSubmissionDialog({
   previousNotes = '',
   onSubmit,
 }: JobSubmissionDialogProps) {
+  const { t } = useI18n()
   const initialEditorState = useMemo(() => createEmptyState(), [])
   const [editorState, setEditorState] = useState<SerializedEditorState>(initialEditorState)
   const [selfReview, setSelfReview] = useState(80)
@@ -42,7 +44,7 @@ export function JobSubmissionDialog({
 
   const handleSubmit = async () => {
     if (isEditorEmpty(editorState)) {
-      toast.error('Please provide a description of your work')
+      toast.error(t('jobs.submission.errors.missingDescription'))
       return
     }
 
@@ -51,12 +53,12 @@ export function JobSubmissionDialog({
       // Convert Lexical state to HTML for storage
       const noteContent = lexicalToHtml(editorState)
       await onSubmit({ noteContent, selfReview })
-      toast.success(isResubmit ? 'Work resubmitted for review' : 'Work submitted for review')
+      toast.success(isResubmit ? t('jobs.submission.messages.resubmitted') : t('jobs.submission.messages.submitted'))
       onOpenChange(false)
       setEditorState(createEmptyState())
       setSelfReview(80)
     } catch (error) {
-      toast.error('Could not submit your work. Please try again.')
+      toast.error(t('jobs.submission.errors.submitError'))
       console.error('Error submitting work:', error)
     } finally {
       setIsSubmitting(false)
@@ -79,10 +81,10 @@ export function JobSubmissionDialog({
       <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col z-[9999]">
         <DialogHeader>
           <DialogTitle>
-            {isResubmit ? 'Revise and Resubmit Work' : 'Submit Work for Review'}
+            {isResubmit ? t('jobs.submission.titleResubmit') : t('jobs.submission.title')}
           </DialogTitle>
           <DialogDescription>
-            Describe your solution for <strong>{taskName}</strong> and submit for validation.
+            {t('jobs.submission.description', { taskName })}
           </DialogDescription>
         </DialogHeader>
 
@@ -90,15 +92,15 @@ export function JobSubmissionDialog({
           {/* Solution Description */}
           <div>
             <Label htmlFor="solution" className="text-sm font-semibold">
-              Solution Description *
+              {t('jobs.submission.solutionLabel')}
             </Label>
             <p className="text-xs text-muted-foreground mb-2">
-              Explain what you did to complete this task. Supports formatting, links, and lists.
+              {t('jobs.submission.solutionDescription')}
             </p>
             <Editor
               editorSerializedState={editorState}
               onSerializedChange={setEditorState}
-              placeholder="Explain what you did to complete this task..."
+              placeholder={t('jobs.submission.solutionPlaceholder')}
               minHeight={200}
               disabled={isSubmitting}
             />
@@ -107,10 +109,10 @@ export function JobSubmissionDialog({
           {/* Self-Review Slider */}
           <div>
             <Label htmlFor="self-review" className="text-sm font-semibold">
-              Self-Review (Optional)
+              {t('jobs.submission.selfReviewLabel')}
             </Label>
             <p className="text-xs text-muted-foreground mb-2">
-              Rate the quality of your work on a scale of 0-100
+              {t('jobs.submission.selfReviewDescription')}
             </p>
             <div className="space-y-3">
               <Slider
@@ -123,9 +125,9 @@ export function JobSubmissionDialog({
                 disabled={isSubmitting}
               />
               <div className="flex justify-between text-xs text-muted-foreground">
-                <span>0 (Needs work)</span>
+                <span>{t('jobs.submission.scoreNeedsWork')}</span>
                 <span className="font-semibold text-foreground">{selfReview}/100</span>
-                <span>100 (Perfect)</span>
+                <span>{t('jobs.submission.scorePerfect')}</span>
               </div>
             </div>
           </div>
@@ -137,17 +139,17 @@ export function JobSubmissionDialog({
             onClick={() => handleOpenChange(false)}
             disabled={isSubmitting}
           >
-            Cancel
+            {t('jobs.submission.cancel')}
           </Button>
           <Button
             onClick={handleSubmit}
             disabled={isEditorEmpty(editorState) || isSubmitting}
           >
             {isSubmitting
-              ? 'Submitting...'
+              ? t('jobs.submission.submitting')
               : isResubmit
-                ? 'Resubmit for Review'
-                : 'Submit for Review'
+                ? t('jobs.submission.resubmitButton')
+                : t('jobs.submission.submitButton')
             }
           </Button>
         </DialogFooter>

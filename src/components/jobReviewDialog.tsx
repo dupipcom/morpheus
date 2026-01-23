@@ -18,6 +18,7 @@ import { Editor, lexicalToHtml, isEditorEmpty, createEmptyState } from '@/compon
 import { Badge } from '@/components/ui/badge'
 import { toast } from 'sonner'
 import type { JobWithRelations } from '@/lib/services/job/types'
+import { useI18n } from '@/lib/contexts/i18n'
 
 type ReviewAction = 'accept' | 'validate' | 'reject'
 
@@ -38,6 +39,7 @@ export function JobReviewDialog({
   job,
   onReview,
 }: JobReviewDialogProps) {
+  const { t } = useI18n()
   const [action, setAction] = useState<ReviewAction>('accept')
   const initialEditorState = useMemo(() => createEmptyState(), [])
   const [editorState, setEditorState] = useState<SerializedEditorState>(initialEditorState)
@@ -58,9 +60,9 @@ export function JobReviewDialog({
       })
 
       const messages: Record<ReviewAction, string> = {
-        accept: 'Work accepted and task marked as complete',
-        validate: 'Changes requested, worker will revise',
-        reject: 'Work rejected, task reopened',
+        accept: t('jobs.review.messages.accepted'),
+        validate: t('jobs.review.messages.changesRequested'),
+        reject: t('jobs.review.messages.rejected'),
       }
 
       toast.success(messages[action])
@@ -70,7 +72,7 @@ export function JobReviewDialog({
       setManagerReview(85)
       setAction('accept')
     } catch (error) {
-      toast.error('Could not submit review. Please try again.')
+      toast.error(t('jobs.review.messages.error'))
       console.error('Error submitting review:', error)
     } finally {
       setIsSubmitting(false)
@@ -95,9 +97,9 @@ export function JobReviewDialog({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="max-w-3xl max-h-[90vh] flex flex-col z-[9999]">
         <DialogHeader>
-          <DialogTitle>Review Submitted Work</DialogTitle>
+          <DialogTitle>{t('jobs.review.title')}</DialogTitle>
           <DialogDescription>
-            Review work from <strong>@{workerName}</strong>
+            {t('jobs.review.description', { workerName: `@${workerName}` })}
           </DialogDescription>
         </DialogHeader>
 
@@ -105,9 +107,9 @@ export function JobReviewDialog({
           {/* Worker's Submission */}
           <div className="p-4 bg-muted rounded-lg space-y-3">
             <div className="flex items-center justify-between">
-              <Label className="text-sm font-semibold">Worker&apos;s Solution:</Label>
+              <Label className="text-sm font-semibold">{t('jobs.review.workerSolution')}</Label>
               {job.selfReview !== null && job.selfReview !== undefined && (
-                <Badge variant="secondary">Self-Review: {job.selfReview}/100</Badge>
+                <Badge variant="secondary">{t('jobs.review.selfReviewScore', { score: job.selfReview })}</Badge>
               )}
             </div>
             {job.requesterNotes && job.requesterNotes.length > 0 ? (
@@ -120,14 +122,14 @@ export function JobReviewDialog({
               ))
             ) : (
               <p className="text-sm text-muted-foreground italic">
-                No submission notes provided
+                {t('jobs.review.noSubmissionNotes')}
               </p>
             )}
           </div>
 
           {/* Review Action */}
           <div>
-            <Label className="text-sm font-semibold mb-3 block">Action *</Label>
+            <Label className="text-sm font-semibold mb-3 block">{t('jobs.review.actionLabel')}</Label>
             <RadioGroup value={action} onValueChange={(v) => setAction(v as ReviewAction)}>
               <div className="space-y-3">
                 <div
@@ -141,10 +143,10 @@ export function JobReviewDialog({
                   <RadioGroupItem value="accept" id="accept" className="mt-0.5" />
                   <div className="flex-1">
                     <Label htmlFor="accept" className="font-medium cursor-pointer">
-                      Accept (Mark task as Done)
+                      {t('jobs.review.actions.accept.title')}
                     </Label>
                     <p className="text-xs text-muted-foreground mt-1">
-                      Approve the work and complete the task. Worker earns their reward.
+                      {t('jobs.review.actions.accept.description')}
                     </p>
                   </div>
                 </div>
@@ -160,10 +162,10 @@ export function JobReviewDialog({
                   <RadioGroupItem value="validate" id="validate" className="mt-0.5" />
                   <div className="flex-1">
                     <Label htmlFor="validate" className="font-medium cursor-pointer">
-                      Request Changes
+                      {t('jobs.review.actions.requestChanges.title')}
                     </Label>
                     <p className="text-xs text-muted-foreground mt-1">
-                      Ask the worker to revise and resubmit their work.
+                      {t('jobs.review.actions.requestChanges.description')}
                     </p>
                   </div>
                 </div>
@@ -179,10 +181,10 @@ export function JobReviewDialog({
                   <RadioGroupItem value="reject" id="reject" className="mt-0.5" />
                   <div className="flex-1">
                     <Label htmlFor="reject" className="font-medium cursor-pointer">
-                      Reject (Reopen task)
+                      {t('jobs.review.actions.reject.title')}
                     </Label>
                     <p className="text-xs text-muted-foreground mt-1">
-                      Reject the work completely and reopen the task for others.
+                      {t('jobs.review.actions.reject.description')}
                     </p>
                   </div>
                 </div>
@@ -193,20 +195,20 @@ export function JobReviewDialog({
           {/* Review Feedback */}
           <div>
             <Label htmlFor="feedback" className="text-sm font-semibold">
-              Review Feedback {action === 'validate' ? '*' : '(Optional)'}
+              {t('jobs.review.feedbackLabel', { required: action === 'validate' ? t('jobs.review.required') : t('jobs.review.optional') })}
             </Label>
             <p className="text-xs text-muted-foreground mb-2">
               {action === 'validate'
-                ? 'Explain what changes are needed'
-                : 'Provide comments or suggestions for the worker'}
+                ? t('jobs.review.feedbackPlaceholder.validate')
+                : t('jobs.review.feedbackPlaceholder.other')}
             </p>
             <Editor
               editorSerializedState={editorState}
               onSerializedChange={setEditorState}
               placeholder={
                 action === 'validate'
-                  ? 'Describe the changes needed...'
-                  : 'Provide feedback on the work...'
+                  ? t('jobs.review.editorPlaceholder.validate')
+                  : t('jobs.review.editorPlaceholder.other')
               }
               minHeight={150}
               disabled={isSubmitting}
@@ -217,10 +219,10 @@ export function JobReviewDialog({
           {action === 'accept' && (
             <div>
               <Label htmlFor="manager-review" className="text-sm font-semibold">
-                Manager Review (Optional)
+                {t('jobs.review.managerReviewLabel')}
               </Label>
               <p className="text-xs text-muted-foreground mb-2">
-                Rate the quality of the completed work
+                {t('jobs.review.managerReviewDescription')}
               </p>
               <div className="space-y-3">
                 <Slider
@@ -233,9 +235,9 @@ export function JobReviewDialog({
                   disabled={isSubmitting}
                 />
                 <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>0 (Poor)</span>
+                  <span>{t('jobs.review.scorePoor')}</span>
                   <span className="font-semibold text-foreground">{managerReview}/100</span>
-                  <span>100 (Excellent)</span>
+                  <span>{t('jobs.review.scoreExcellent')}</span>
                 </div>
               </div>
             </div>
@@ -248,7 +250,7 @@ export function JobReviewDialog({
             onClick={() => handleOpenChange(false)}
             disabled={isSubmitting}
           >
-            Cancel
+            {t('jobs.review.cancel')}
           </Button>
           <Button
             onClick={handleSubmitReview}
@@ -256,12 +258,12 @@ export function JobReviewDialog({
             variant={action === 'reject' ? 'destructive' : 'default'}
           >
             {isSubmitting
-              ? 'Submitting...'
+              ? t('jobs.review.submitting')
               : action === 'accept'
-                ? 'Accept Work'
+                ? t('jobs.review.acceptWork')
                 : action === 'validate'
-                  ? 'Request Changes'
-                  : 'Reject Work'
+                  ? t('jobs.review.requestChangesButton')
+                  : t('jobs.review.rejectWork')
             }
           </Button>
         </DialogFooter>
