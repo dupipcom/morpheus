@@ -93,6 +93,7 @@ export function lexicalToHtml(state: SerializedEditorState | null): string {
 
 /**
  * Escapes HTML entities to prevent XSS
+ * Note: Single quotes don't need escaping in HTML content (only in attributes)
  */
 function escapeHtml(text: string): string {
   return text
@@ -100,7 +101,7 @@ function escapeHtml(text: string): string {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;')
+    // Single quotes don't need to be escaped in HTML content
 }
 
 /**
