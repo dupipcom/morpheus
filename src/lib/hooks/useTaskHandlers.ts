@@ -278,12 +278,27 @@ export function useTaskHandlers({
         }
       }
 
+      // Map UI status format to database enum format
+      const statusMap: Record<TaskStatus, string> = {
+        'open': 'OPEN',
+        'in progress': 'IN_PROGRESS',
+        'steady': 'STEADY',
+        'ready': 'READY',
+        'done': 'DONE',
+        'ignored': 'IGNORED'
+      }
+      const dbStatus = statusMap[newStatus] || 'OPEN'
+
+      // Update the Task model's status field
+      // This stores the manual status globally, which is used as a fallback
+      // when calculating date-specific status (see taskRecurrenceService.ts)
       await fetch(`/api/v1/tasks/${taskId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: newStatus })
+        body: JSON.stringify({ status: dbStatus })
       })
 
+      if (onRefreshTasks) await onRefreshTasks()
       if (onRefreshUser) await onRefreshUser()
       if (migrated && onRefresh) await onRefresh()
 

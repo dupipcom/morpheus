@@ -140,9 +140,9 @@ export async function PUT(
 
     const role = await getUserListRole(user!.id, existingTask.listId)
 
-    if (!role || !['OWNER', 'MANAGER'].includes(role)) {
+    if (!role || !['OWNER', 'MANAGER', 'COLLABORATOR'].includes(role)) {
       return NextResponse.json(
-        { error: 'Unauthorized: Only list owners and managers can update tasks' },
+        { error: 'Unauthorized: Only list owners, managers, and collaborators can update tasks' },
         { status: 403 }
       )
     }
