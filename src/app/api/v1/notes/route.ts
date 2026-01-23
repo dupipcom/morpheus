@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
+import { sanitizeHTML } from '@/lib/utils/sanitize'
 
 export async function GET(request: NextRequest) {
   try {
