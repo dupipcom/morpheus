@@ -672,107 +672,107 @@
     "visibleToParticipants": "Visible only to job participants",
     "worker": {
       "statusBanner": {
-        "requested": "Your request is being reviewed. You will be notified when approved.",
-        "inProgress": "Your request was approved! You can now work on this task.",
-        "submitted": "Your work has been submitted. Awaiting review from the owner.",
-        "validating": "Changes have been requested. Please revise and resubmit.",
-        "accepted": "Congratulations! Your work was accepted.",
-        "rejected": "Your submission was rejected."
+        "requested": "リクエストは審査中です。承認されると通知されます。",
+        "inProgress": "リクエストが承認されました！このタスクに取り組むことができます。",
+        "submitted": "作業が提出されました。オーナーのレビュー待ちです。",
+        "validating": "変更がリクエストされました。修正して再提出してください。",
+        "accepted": "おめでとうございます！作業が承認されました。",
+        "rejected": "提出が却下されました。"
       }
     },
     "owner": {
       "statusBanner": {
-        "requested": "{{workerName}} has requested to work on this task. Approve or reject the request.",
-        "inProgress": "{{workerName}} is currently working on this task.",
-        "submitted": "{{workerName}} has submitted their work for review.",
-        "validating": "Waiting for {{workerName}} to revise and resubmit.",
-        "accepted": "{{workerName}}'s work was accepted.",
-        "rejected": "{{workerName}}'s submission was rejected."
+        "requested": "{{workerName}}がこのタスクに取り組むことをリクエストしました。リクエストを承認または却下してください。",
+        "inProgress": "{{workerName}}は現在このタスクに取り組んでいます。",
+        "submitted": "{{workerName}}がレビュー用に作業を提出しました。",
+        "validating": "{{workerName}}が修正して再提出するのを待っています。",
+        "accepted": "{{workerName}}の作業が承認されました。",
+        "rejected": "{{workerName}}の提出が却下されました。"
       }
     },
     "actions": {
-      "submitForReview": "Submit for Review",
-      "withdrawSubmission": "Withdraw Submission",
-      "withdrawing": "Withdrawing...",
-      "reviseAndResubmit": "Revise and Resubmit",
-      "approveRequest": "Approve Request",
-      "approving": "Approving...",
-      "rejectRequest": "Reject Request",
-      "rejecting": "Rejecting...",
-      "reviewAndAccept": "Review & Accept",
-      "requestChanges": "Request Changes",
-      "reject": "Reject"
+      "submitForReview": "レビュー用に提出",
+      "withdrawSubmission": "提出を取り下げる",
+      "withdrawing": "取り下げ中...",
+      "reviseAndResubmit": "修正して再提出",
+      "approveRequest": "リクエストを承認",
+      "approving": "承認中...",
+      "rejectRequest": "リクエストを却下",
+      "rejecting": "却下中...",
+      "reviewAndAccept": "レビューして承認",
+      "requestChanges": "変更をリクエスト",
+      "reject": "却下"
     },
     "review": {
-      "title": "Review Submitted Work",
-      "description": "Review work from {{workerName}}",
-      "workerSolution": "Worker's Solution:",
-      "selfReviewScore": "Self-Review: {{score}}/100",
-      "noSubmissionNotes": "No submission notes provided",
-      "actionLabel": "Action *",
+      "title": "提出された作業をレビュー",
+      "description": "{{workerName}}の作業をレビュー",
+      "workerSolution": "ワーカーの解決策：",
+      "selfReviewScore": "自己評価：{{score}}/100",
+      "noSubmissionNotes": "提出メモは提供されていません",
+      "actionLabel": "アクション *",
       "required": "*",
-      "optional": "(Optional)",
-      "feedbackLabel": "Review Feedback {{required}}",
+      "optional": "（オプション）",
+      "feedbackLabel": "レビューフィードバック {{required}}",
       "feedbackPlaceholder": {
-        "validate": "Explain what changes are needed",
-        "other": "Provide comments or suggestions for the worker"
+        "validate": "必要な変更を説明してください",
+        "other": "ワーカーにコメントや提案を提供してください"
       },
       "editorPlaceholder": {
-        "validate": "Describe the changes needed...",
-        "other": "Provide feedback on the work..."
+        "validate": "必要な変更を説明してください...",
+        "other": "作業についてのフィードバックを提供してください..."
       },
-      "managerReviewLabel": "Manager Review (Optional)",
-      "managerReviewDescription": "Rate the quality of the completed work",
-      "scorePoor": "0 (Poor)",
-      "scoreExcellent": "100 (Excellent)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "acceptWork": "Accept Work",
-      "requestChangesButton": "Request Changes",
-      "rejectWork": "Reject Work",
+      "managerReviewLabel": "マネージャーレビュー（オプション）",
+      "managerReviewDescription": "完成した作業の品質を評価してください",
+      "scorePoor": "0（悪い）",
+      "scoreExcellent": "100（優秀）",
+      "cancel": "キャンセル",
+      "submitting": "提出中...",
+      "acceptWork": "作業を承認",
+      "requestChangesButton": "変更をリクエスト",
+      "rejectWork": "作業を却下",
       "actions": {
         "accept": {
-          "title": "Accept (Mark task as Done)",
-          "description": "Approve the work and complete the task. Worker earns their reward."
+          "title": "承認（タスクを完了としてマーク）",
+          "description": "作業を承認してタスクを完了します。ワーカーは報酬を獲得します。"
         },
         "requestChanges": {
-          "title": "Request Changes",
-          "description": "Ask the worker to revise and resubmit their work."
+          "title": "変更をリクエスト",
+          "description": "ワーカーに作業を修正して再提出するよう依頼します。"
         },
         "reject": {
-          "title": "Reject (Reopen task)",
-          "description": "Reject the work completely and reopen the task for others."
+          "title": "却下（タスクを再オープン）",
+          "description": "作業を完全に却下し、他の人のためにタスクを再オープンします。"
         }
       },
       "messages": {
-        "accepted": "Work accepted and task marked as complete",
-        "changesRequested": "Changes requested, worker will revise",
-        "rejected": "Work rejected, task reopened",
-        "error": "Could not submit review. Please try again."
+        "accepted": "作業が承認され、タスクが完了としてマークされました",
+        "changesRequested": "変更がリクエストされました、ワーカーが修正します",
+        "rejected": "作業が却下され、タスクが再オープンされました",
+        "error": "レビューを提出できませんでした。もう一度お試しください。"
       }
     },
     "submission": {
-      "title": "Submit Work for Review",
-      "titleResubmit": "Revise and Resubmit Work",
-      "description": "Describe your solution for {{taskName}} and submit for validation.",
-      "solutionLabel": "Solution Description *",
-      "solutionDescription": "Explain what you did to complete this task. Supports formatting, links, and lists.",
-      "solutionPlaceholder": "Explain what you did to complete this task...",
-      "selfReviewLabel": "Self-Review (Optional)",
-      "selfReviewDescription": "Rate the quality of your work on a scale of 0-100",
-      "scoreNeedsWork": "0 (Needs work)",
-      "scorePerfect": "100 (Perfect)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "submitButton": "Submit for Review",
-      "resubmitButton": "Resubmit for Review",
+      "title": "レビュー用に作業を提出",
+      "titleResubmit": "作業を修正して再提出",
+      "description": "{{taskName}}の解決策を説明し、検証のために提出してください。",
+      "solutionLabel": "解決策の説明 *",
+      "solutionDescription": "このタスクを完了するために何をしたかを説明してください。書式設定、リンク、リストをサポートしています。",
+      "solutionPlaceholder": "このタスクを完了するために何をしたかを説明してください...",
+      "selfReviewLabel": "自己評価（オプション）",
+      "selfReviewDescription": "0〜100のスケールで作業の品質を評価してください",
+      "scoreNeedsWork": "0（改善が必要）",
+      "scorePerfect": "100（完璧）",
+      "cancel": "キャンセル",
+      "submitting": "提出中...",
+      "submitButton": "レビュー用に提出",
+      "resubmitButton": "レビュー用に再提出",
       "errors": {
-        "missingDescription": "Please provide a description of your work",
-        "submitError": "Could not submit your work. Please try again."
+        "missingDescription": "作業の説明を提供してください",
+        "submitError": "作業を提出できませんでした。もう一度お試しください。"
       },
       "messages": {
-        "submitted": "Work submitted for review",
-        "resubmitted": "Work resubmitted for review"
+        "submitted": "作業がレビュー用に提出されました",
+        "resubmitted": "作業がレビュー用に再提出されました"
       }
     }
   }

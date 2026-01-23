@@ -669,107 +669,107 @@
     "visibleToParticipants": "Visible only to job participants",
     "worker": {
       "statusBanner": {
-        "requested": "Your request is being reviewed. You will be notified when approved.",
-        "inProgress": "Your request was approved! You can now work on this task.",
-        "submitted": "Your work has been submitted. Awaiting review from the owner.",
-        "validating": "Changes have been requested. Please revise and resubmit.",
-        "accepted": "Congratulations! Your work was accepted.",
-        "rejected": "Your submission was rejected."
+        "requested": "Το αίτημά σας εξετάζεται. Θα ειδοποιηθείτε όταν εγκριθεί.",
+        "inProgress": "Το αίτημά σας εγκρίθηκε! Μπορείτε τώρα να εργαστείτε σε αυτήν την εργασία.",
+        "submitted": "Η εργασία σας έχει υποβληθεί. Αναμένεται έλεγχος από τον ιδιοκτήτη.",
+        "validating": "Ζητήθηκαν αλλαγές. Παρακαλώ αναθεωρήστε και υποβάλετε ξανά.",
+        "accepted": "Συγχαρητήρια! Η εργασία σας έγινε αποδεκτή.",
+        "rejected": "Η υποβολή σας απορρίφθηκε."
       }
     },
     "owner": {
       "statusBanner": {
-        "requested": "{{workerName}} has requested to work on this task. Approve or reject the request.",
-        "inProgress": "{{workerName}} is currently working on this task.",
-        "submitted": "{{workerName}} has submitted their work for review.",
-        "validating": "Waiting for {{workerName}} to revise and resubmit.",
-        "accepted": "{{workerName}}'s work was accepted.",
-        "rejected": "{{workerName}}'s submission was rejected."
+        "requested": "Ο/Η {{workerName}} ζήτησε να εργαστεί σε αυτήν την εργασία. Εγκρίνετε ή απορρίψτε το αίτημα.",
+        "inProgress": "Ο/Η {{workerName}} εργάζεται αυτή τη στιγμή σε αυτήν την εργασία.",
+        "submitted": "Ο/Η {{workerName}} υπέβαλε την εργασία του/της για έλεγχο.",
+        "validating": "Αναμένεται ο/η {{workerName}} να αναθεωρήσει και να υποβάλει ξανά.",
+        "accepted": "Η εργασία του/της {{workerName}} έγινε αποδεκτή.",
+        "rejected": "Η υποβολή του/της {{workerName}} απορρίφθηκε."
       }
     },
     "actions": {
-      "submitForReview": "Submit for Review",
-      "withdrawSubmission": "Withdraw Submission",
-      "withdrawing": "Withdrawing...",
-      "reviseAndResubmit": "Revise and Resubmit",
-      "approveRequest": "Approve Request",
-      "approving": "Approving...",
-      "rejectRequest": "Reject Request",
-      "rejecting": "Rejecting...",
-      "reviewAndAccept": "Review & Accept",
-      "requestChanges": "Request Changes",
-      "reject": "Reject"
+      "submitForReview": "Υποβολή για Έλεγχο",
+      "withdrawSubmission": "Ανάκληση Υποβολής",
+      "withdrawing": "Ανάκληση...",
+      "reviseAndResubmit": "Αναθεώρηση και Επανυποβολή",
+      "approveRequest": "Έγκριση Αιτήματος",
+      "approving": "Έγκριση...",
+      "rejectRequest": "Απόρριψη Αιτήματος",
+      "rejecting": "Απόρριψη...",
+      "reviewAndAccept": "Έλεγχος και Αποδοχή",
+      "requestChanges": "Αίτημα Αλλαγών",
+      "reject": "Απόρριψη"
     },
     "review": {
-      "title": "Review Submitted Work",
-      "description": "Review work from {{workerName}}",
-      "workerSolution": "Worker's Solution:",
-      "selfReviewScore": "Self-Review: {{score}}/100",
-      "noSubmissionNotes": "No submission notes provided",
-      "actionLabel": "Action *",
+      "title": "Έλεγχος Υποβληθείσας Εργασίας",
+      "description": "Έλεγχος εργασίας από {{workerName}}",
+      "workerSolution": "Λύση Εργαζομένου:",
+      "selfReviewScore": "Αυτοαξιολόγηση: {{score}}/100",
+      "noSubmissionNotes": "Δεν παρέχονται σημειώσεις υποβολής",
+      "actionLabel": "Ενέργεια *",
       "required": "*",
-      "optional": "(Optional)",
-      "feedbackLabel": "Review Feedback {{required}}",
+      "optional": "(Προαιρετικό)",
+      "feedbackLabel": "Σχόλια Ελέγχου {{required}}",
       "feedbackPlaceholder": {
-        "validate": "Explain what changes are needed",
-        "other": "Provide comments or suggestions for the worker"
+        "validate": "Εξηγήστε ποιες αλλαγές χρειάζονται",
+        "other": "Παρέχετε σχόλια ή προτάσεις στον εργαζόμενο"
       },
       "editorPlaceholder": {
-        "validate": "Describe the changes needed...",
-        "other": "Provide feedback on the work..."
+        "validate": "Περιγράψτε τις απαιτούμενες αλλαγές...",
+        "other": "Παρέχετε σχόλια για την εργασία..."
       },
-      "managerReviewLabel": "Manager Review (Optional)",
-      "managerReviewDescription": "Rate the quality of the completed work",
-      "scorePoor": "0 (Poor)",
-      "scoreExcellent": "100 (Excellent)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "acceptWork": "Accept Work",
-      "requestChangesButton": "Request Changes",
-      "rejectWork": "Reject Work",
+      "managerReviewLabel": "Αξιολόγηση Διαχειριστή (Προαιρετικό)",
+      "managerReviewDescription": "Βαθμολογήστε την ποιότητα της ολοκληρωμένης εργασίας",
+      "scorePoor": "0 (Κακό)",
+      "scoreExcellent": "100 (Άριστο)",
+      "cancel": "Ακύρωση",
+      "submitting": "Υποβολή...",
+      "acceptWork": "Αποδοχή Εργασίας",
+      "requestChangesButton": "Αίτημα Αλλαγών",
+      "rejectWork": "Απόρριψη Εργασίας",
       "actions": {
         "accept": {
-          "title": "Accept (Mark task as Done)",
-          "description": "Approve the work and complete the task. Worker earns their reward."
+          "title": "Αποδοχή (Σήμανση εργασίας ως Ολοκληρωμένης)",
+          "description": "Εγκρίνετε την εργασία και ολοκληρώστε την εντολή. Ο εργαζόμενος κερδίζει την ανταμοιβή του."
         },
         "requestChanges": {
-          "title": "Request Changes",
-          "description": "Ask the worker to revise and resubmit their work."
+          "title": "Αίτημα Αλλαγών",
+          "description": "Ζητήστε από τον εργαζόμενο να αναθεωρήσει και να υποβάλει ξανά την εργασία του."
         },
         "reject": {
-          "title": "Reject (Reopen task)",
-          "description": "Reject the work completely and reopen the task for others."
+          "title": "Απόρριψη (Επαν��νοιγμα εργασίας)",
+          "description": "Απορρίψτε την εργασία εντελώς και επανανοίξτε την εργασία για άλλους."
         }
       },
       "messages": {
-        "accepted": "Work accepted and task marked as complete",
-        "changesRequested": "Changes requested, worker will revise",
-        "rejected": "Work rejected, task reopened",
-        "error": "Could not submit review. Please try again."
+        "accepted": "Η εργασία έγινε αποδεκτή και η εντολή σημειώθηκε ως ολοκληρωμένη",
+        "changesRequested": "Ζητήθηκαν αλλαγές, ο εργαζόμενος θα αναθεωρήσει",
+        "rejected": "Η εργασία απορρίφθηκε, η εντολή επανανοίχτηκε",
+        "error": "Δεν ήταν δυνατή η υποβολή του ελέγχου. Παρακαλώ δοκιμάστε ξανά."
       }
     },
     "submission": {
-      "title": "Submit Work for Review",
-      "titleResubmit": "Revise and Resubmit Work",
-      "description": "Describe your solution for {{taskName}} and submit for validation.",
-      "solutionLabel": "Solution Description *",
-      "solutionDescription": "Explain what you did to complete this task. Supports formatting, links, and lists.",
-      "solutionPlaceholder": "Explain what you did to complete this task...",
-      "selfReviewLabel": "Self-Review (Optional)",
-      "selfReviewDescription": "Rate the quality of your work on a scale of 0-100",
-      "scoreNeedsWork": "0 (Needs work)",
-      "scorePerfect": "100 (Perfect)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "submitButton": "Submit for Review",
-      "resubmitButton": "Resubmit for Review",
+      "title": "Υποβολή Εργασίας για Έλεγχο",
+      "titleResubmit": "Αναθεώρηση και Επανυποβολή Εργασίας",
+      "description": "Περιγράψτε τη λύση σας για {{taskName}} και υποβάλετε για επικύρωση.",
+      "solutionLabel": "Περιγραφή Λύσης *",
+      "solutionDescription": "Εξηγήστε τι κάνατε για να ολοκληρώσετε αυτήν την εργασία. Υποστηρίζει μορφοποίηση, συνδέσμους και λίστες.",
+      "solutionPlaceholder": "Εξηγήστε τι κάνατε για να ολοκληρώσετε αυτήν την εργασία...",
+      "selfReviewLabel": "Αυτοαξιολόγηση (Προαιρετικό)",
+      "selfReviewDescription": "Βαθμολογήστε την ποιότητα της εργασίας σας σε κλίμακα 0-100",
+      "scoreNeedsWork": "0 (Χρειάζεται εργασία)",
+      "scorePerfect": "100 (Τέλειο)",
+      "cancel": "Ακύρωση",
+      "submitting": "Υποβολή...",
+      "submitButton": "Υποβολή για Έλεγχο",
+      "resubmitButton": "Επανυποβολή για Έλεγχο",
       "errors": {
-        "missingDescription": "Please provide a description of your work",
-        "submitError": "Could not submit your work. Please try again."
+        "missingDescription": "Παρακαλώ παρέχετε μια περιγραφή της εργασίας σας",
+        "submitError": "Δεν ήταν δυνατή η υποβολή της εργασίας σας. Παρακαλώ δοκιμάστε ξανά."
       },
       "messages": {
-        "submitted": "Work submitted for review",
-        "resubmitted": "Work resubmitted for review"
+        "submitted": "Η εργασία υποβλήθηκε για έλεγχο",
+        "resubmitted": "Η εργασία επανυποβλήθηκε για έλεγχο"
       }
     }
   }

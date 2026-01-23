@@ -672,107 +672,107 @@
     "visibleToParticipants": "Visible only to job participants",
     "worker": {
       "statusBanner": {
-        "requested": "Your request is being reviewed. You will be notified when approved.",
-        "inProgress": "Your request was approved! You can now work on this task.",
-        "submitted": "Your work has been submitted. Awaiting review from the owner.",
-        "validating": "Changes have been requested. Please revise and resubmit.",
-        "accepted": "Congratulations! Your work was accepted.",
-        "rejected": "Your submission was rejected."
+        "requested": "Cererea dvs. este în curs de revizuire. Veți fi notificat când va fi aprobată.",
+        "inProgress": "Cererea dvs. a fost aprobată! Acum puteți lucra la această sarcină.",
+        "submitted": "Munca dvs. a fost trimisă. Se așteaptă revizuirea de către proprietar.",
+        "validating": "Au fost solicitate modificări. Vă rugăm să revizuiți și să retrimiteți.",
+        "accepted": "Felicitări! Munca dvs. a fost acceptată.",
+        "rejected": "Trimiterea dvs. a fost respinsă."
       }
     },
     "owner": {
       "statusBanner": {
-        "requested": "{{workerName}} has requested to work on this task. Approve or reject the request.",
-        "inProgress": "{{workerName}} is currently working on this task.",
-        "submitted": "{{workerName}} has submitted their work for review.",
-        "validating": "Waiting for {{workerName}} to revise and resubmit.",
-        "accepted": "{{workerName}}'s work was accepted.",
-        "rejected": "{{workerName}}'s submission was rejected."
+        "requested": "{{workerName}} a solicitat să lucreze la această sarcină. Aprobați sau respingeți cererea.",
+        "inProgress": "{{workerName}} lucrează în prezent la această sarcină.",
+        "submitted": "{{workerName}} și-a trimis munca pentru revizuire.",
+        "validating": "Se așteaptă ca {{workerName}} să revizuiască și să retrimită.",
+        "accepted": "Munca lui {{workerName}} a fost acceptată.",
+        "rejected": "Trimiterea lui {{workerName}} a fost respinsă."
       }
     },
     "actions": {
-      "submitForReview": "Submit for Review",
-      "withdrawSubmission": "Withdraw Submission",
-      "withdrawing": "Withdrawing...",
-      "reviseAndResubmit": "Revise and Resubmit",
-      "approveRequest": "Approve Request",
-      "approving": "Approving...",
-      "rejectRequest": "Reject Request",
-      "rejecting": "Rejecting...",
-      "reviewAndAccept": "Review & Accept",
-      "requestChanges": "Request Changes",
-      "reject": "Reject"
+      "submitForReview": "Trimite pentru Revizuire",
+      "withdrawSubmission": "Retrage Trimiterea",
+      "withdrawing": "Se retrage...",
+      "reviseAndResubmit": "Revizuiește și Retrimite",
+      "approveRequest": "Aprobă Cererea",
+      "approving": "Se aprobă...",
+      "rejectRequest": "Respinge Cererea",
+      "rejecting": "Se respinge...",
+      "reviewAndAccept": "Revizuiește și Acceptă",
+      "requestChanges": "Solicită Modificări",
+      "reject": "Respinge"
     },
     "review": {
-      "title": "Review Submitted Work",
-      "description": "Review work from {{workerName}}",
-      "workerSolution": "Worker's Solution:",
-      "selfReviewScore": "Self-Review: {{score}}/100",
-      "noSubmissionNotes": "No submission notes provided",
-      "actionLabel": "Action *",
+      "title": "Revizuiește Munca Trimisă",
+      "description": "Revizuiește munca de la {{workerName}}",
+      "workerSolution": "Soluția Lucrătorului:",
+      "selfReviewScore": "Auto-Evaluare: {{score}}/100",
+      "noSubmissionNotes": "Nu au fost furnizate note de trimitere",
+      "actionLabel": "Acțiune *",
       "required": "*",
-      "optional": "(Optional)",
-      "feedbackLabel": "Review Feedback {{required}}",
+      "optional": "(Opțional)",
+      "feedbackLabel": "Feedback de Revizuire {{required}}",
       "feedbackPlaceholder": {
-        "validate": "Explain what changes are needed",
-        "other": "Provide comments or suggestions for the worker"
+        "validate": "Explicați ce modificări sunt necesare",
+        "other": "Furnizați comentarii sau sugestii pentru lucrător"
       },
       "editorPlaceholder": {
-        "validate": "Describe the changes needed...",
-        "other": "Provide feedback on the work..."
+        "validate": "Descrieți modificările necesare...",
+        "other": "Furnizați feedback despre muncă..."
       },
-      "managerReviewLabel": "Manager Review (Optional)",
-      "managerReviewDescription": "Rate the quality of the completed work",
-      "scorePoor": "0 (Poor)",
-      "scoreExcellent": "100 (Excellent)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "acceptWork": "Accept Work",
-      "requestChangesButton": "Request Changes",
-      "rejectWork": "Reject Work",
+      "managerReviewLabel": "Revizuire Manager (Opțional)",
+      "managerReviewDescription": "Evaluați calitatea muncii finalizate",
+      "scorePoor": "0 (Slab)",
+      "scoreExcellent": "100 (Excelent)",
+      "cancel": "Anulează",
+      "submitting": "Se trimite...",
+      "acceptWork": "Acceptă Munca",
+      "requestChangesButton": "Solicită Modificări",
+      "rejectWork": "Respinge Munca",
       "actions": {
         "accept": {
-          "title": "Accept (Mark task as Done)",
-          "description": "Approve the work and complete the task. Worker earns their reward."
+          "title": "Acceptă (Marchează sarcina ca Finalizată)",
+          "description": "Aprobați munca și finalizați sarcina. Lucrătorul primește recompensa."
         },
         "requestChanges": {
-          "title": "Request Changes",
-          "description": "Ask the worker to revise and resubmit their work."
+          "title": "Solicită Modificări",
+          "description": "Cereți lucrătorului să revizuiască și să retrimită munca sa."
         },
         "reject": {
-          "title": "Reject (Reopen task)",
-          "description": "Reject the work completely and reopen the task for others."
+          "title": "Respinge (Redeschide sarcina)",
+          "description": "Respingeți munca complet și redeschideți sarcina pentru alții."
         }
       },
       "messages": {
-        "accepted": "Work accepted and task marked as complete",
-        "changesRequested": "Changes requested, worker will revise",
-        "rejected": "Work rejected, task reopened",
-        "error": "Could not submit review. Please try again."
+        "accepted": "Munca acceptată și sarcina marcată ca finalizată",
+        "changesRequested": "Modificări solicitate, lucrătorul va revizui",
+        "rejected": "Munca respinsă, sarcina redeschisă",
+        "error": "Nu s-a putut trimite revizuirea. Vă rugăm să încercați din nou."
       }
     },
     "submission": {
-      "title": "Submit Work for Review",
-      "titleResubmit": "Revise and Resubmit Work",
-      "description": "Describe your solution for {{taskName}} and submit for validation.",
-      "solutionLabel": "Solution Description *",
-      "solutionDescription": "Explain what you did to complete this task. Supports formatting, links, and lists.",
-      "solutionPlaceholder": "Explain what you did to complete this task...",
-      "selfReviewLabel": "Self-Review (Optional)",
-      "selfReviewDescription": "Rate the quality of your work on a scale of 0-100",
-      "scoreNeedsWork": "0 (Needs work)",
+      "title": "Trimite Munca pentru Revizuire",
+      "titleResubmit": "Revizuiește și Retrimite Munca",
+      "description": "Descrieți soluția dvs. pentru {{taskName}} și trimiteți pentru validare.",
+      "solutionLabel": "Descrierea Soluției *",
+      "solutionDescription": "Explicați ce ați făcut pentru a finaliza această sarcină. Suportă formatare, linkuri și liste.",
+      "solutionPlaceholder": "Explicați ce ați făcut pentru a finaliza această sarcină...",
+      "selfReviewLabel": "Auto-Evaluare (Opțional)",
+      "selfReviewDescription": "Evaluați calitatea muncii dvs. pe o scară de la 0 la 100",
+      "scoreNeedsWork": "0 (Necesită îmbunătățiri)",
       "scorePerfect": "100 (Perfect)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "submitButton": "Submit for Review",
-      "resubmitButton": "Resubmit for Review",
+      "cancel": "Anulează",
+      "submitting": "Se trimite...",
+      "submitButton": "Trimite pentru Revizuire",
+      "resubmitButton": "Retrimite pentru Revizuire",
       "errors": {
-        "missingDescription": "Please provide a description of your work",
-        "submitError": "Could not submit your work. Please try again."
+        "missingDescription": "Vă rugăm să furnizați o descriere a muncii dvs.",
+        "submitError": "Nu s-a putut trimite munca dvs. Vă rugăm să încercați din nou."
       },
       "messages": {
-        "submitted": "Work submitted for review",
-        "resubmitted": "Work resubmitted for review"
+        "submitted": "Munca trimisă pentru revizuire",
+        "resubmitted": "Munca retrimisă pentru revizuire"
       }
     }
   }

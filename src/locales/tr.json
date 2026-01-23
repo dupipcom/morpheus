@@ -676,107 +676,107 @@
     "visibleToParticipants": "Visible only to job participants",
     "worker": {
       "statusBanner": {
-        "requested": "Your request is being reviewed. You will be notified when approved.",
-        "inProgress": "Your request was approved! You can now work on this task.",
-        "submitted": "Your work has been submitted. Awaiting review from the owner.",
-        "validating": "Changes have been requested. Please revise and resubmit.",
-        "accepted": "Congratulations! Your work was accepted.",
-        "rejected": "Your submission was rejected."
+        "requested": "Talebiniz inceleniyor. Onaylandığında bilgilendirileceksiniz.",
+        "inProgress": "Talebiniz onaylandı! Artık bu görev üzerinde çalışabilirsiniz.",
+        "submitted": "Çalışmanız gönderildi. Sahibin incelemesi bekleniyor.",
+        "validating": "Değişiklikler talep edildi. Lütfen gözden geçirin ve yeniden gönderin.",
+        "accepted": "Tebrikler! Çalışmanız kabul edildi.",
+        "rejected": "Gönderiminiz reddedildi."
       }
     },
     "owner": {
       "statusBanner": {
-        "requested": "{{workerName}} has requested to work on this task. Approve or reject the request.",
-        "inProgress": "{{workerName}} is currently working on this task.",
-        "submitted": "{{workerName}} has submitted their work for review.",
-        "validating": "Waiting for {{workerName}} to revise and resubmit.",
-        "accepted": "{{workerName}}'s work was accepted.",
-        "rejected": "{{workerName}}'s submission was rejected."
+        "requested": "{{workerName}} bu görev üzerinde çalışmak için talepte bulundu. Talebi onaylayın veya reddedin.",
+        "inProgress": "{{workerName}} şu anda bu görev üzerinde çalışıyor.",
+        "submitted": "{{workerName}} çalışmasını inceleme için gönderdi.",
+        "validating": "{{workerName}}'in gözden geçirip yeniden göndermesi bekleniyor.",
+        "accepted": "{{workerName}}'in çalışması kabul edildi.",
+        "rejected": "{{workerName}}'in gönderimi reddedildi."
       }
     },
     "actions": {
-      "submitForReview": "Submit for Review",
-      "withdrawSubmission": "Withdraw Submission",
-      "withdrawing": "Withdrawing...",
-      "reviseAndResubmit": "Revise and Resubmit",
-      "approveRequest": "Approve Request",
-      "approving": "Approving...",
-      "rejectRequest": "Reject Request",
-      "rejecting": "Rejecting...",
-      "reviewAndAccept": "Review & Accept",
-      "requestChanges": "Request Changes",
-      "reject": "Reject"
+      "submitForReview": "İnceleme için Gönder",
+      "withdrawSubmission": "Gönderimi Geri Çek",
+      "withdrawing": "Geri çekiliyor...",
+      "reviseAndResubmit": "Gözden Geçir ve Yeniden Gönder",
+      "approveRequest": "Talebi Onayla",
+      "approving": "Onaylanıyor...",
+      "rejectRequest": "Talebi Reddet",
+      "rejecting": "Reddediliyor...",
+      "reviewAndAccept": "İncele ve Kabul Et",
+      "requestChanges": "Değişiklik Talep Et",
+      "reject": "Reddet"
     },
     "review": {
-      "title": "Review Submitted Work",
-      "description": "Review work from {{workerName}}",
-      "workerSolution": "Worker's Solution:",
-      "selfReviewScore": "Self-Review: {{score}}/100",
-      "noSubmissionNotes": "No submission notes provided",
-      "actionLabel": "Action *",
+      "title": "Gönderilen Çalışmayı İncele",
+      "description": "{{workerName}}'in çalışmasını incele",
+      "workerSolution": "Çalışanın Çözümü:",
+      "selfReviewScore": "Öz Değerlendirme: {{score}}/100",
+      "noSubmissionNotes": "Gönderim notu sağlanmadı",
+      "actionLabel": "Eylem *",
       "required": "*",
-      "optional": "(Optional)",
-      "feedbackLabel": "Review Feedback {{required}}",
+      "optional": "(İsteğe bağlı)",
+      "feedbackLabel": "İnceleme Geri Bildirimi {{required}}",
       "feedbackPlaceholder": {
-        "validate": "Explain what changes are needed",
-        "other": "Provide comments or suggestions for the worker"
+        "validate": "Hangi değişikliklerin gerekli olduğunu açıklayın",
+        "other": "Çalışan için yorum veya önerilerde bulunun"
       },
       "editorPlaceholder": {
-        "validate": "Describe the changes needed...",
-        "other": "Provide feedback on the work..."
+        "validate": "Gerekli değişiklikleri açıklayın...",
+        "other": "Çalışma hakkında geri bildirim sağlayın..."
       },
-      "managerReviewLabel": "Manager Review (Optional)",
-      "managerReviewDescription": "Rate the quality of the completed work",
-      "scorePoor": "0 (Poor)",
-      "scoreExcellent": "100 (Excellent)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "acceptWork": "Accept Work",
-      "requestChangesButton": "Request Changes",
-      "rejectWork": "Reject Work",
+      "managerReviewLabel": "Yönetici İncelemesi (İsteğe bağlı)",
+      "managerReviewDescription": "Tamamlanan çalışmanın kalitesini değerlendirin",
+      "scorePoor": "0 (Kötü)",
+      "scoreExcellent": "100 (Mükemmel)",
+      "cancel": "İptal",
+      "submitting": "Gönderiliyor...",
+      "acceptWork": "Çalışmayı Kabul Et",
+      "requestChangesButton": "Değişiklik Talep Et",
+      "rejectWork": "Çalışmayı Reddet",
       "actions": {
         "accept": {
-          "title": "Accept (Mark task as Done)",
-          "description": "Approve the work and complete the task. Worker earns their reward."
+          "title": "Kabul Et (Görevi Tamamlandı olarak işaretle)",
+          "description": "Çalışmayı onaylayın ve görevi tamamlayın. Çalışan ödülünü kazanır."
         },
         "requestChanges": {
-          "title": "Request Changes",
-          "description": "Ask the worker to revise and resubmit their work."
+          "title": "Değişiklik Talep Et",
+          "description": "Çalışandan çalışmasını gözden geçirmesini ve yeniden göndermesini isteyin."
         },
         "reject": {
-          "title": "Reject (Reopen task)",
-          "description": "Reject the work completely and reopen the task for others."
+          "title": "Reddet (Görevi yeniden aç)",
+          "description": "Çalışmayı tamamen reddedin ve görevi başkaları için yeniden açın."
         }
       },
       "messages": {
-        "accepted": "Work accepted and task marked as complete",
-        "changesRequested": "Changes requested, worker will revise",
-        "rejected": "Work rejected, task reopened",
-        "error": "Could not submit review. Please try again."
+        "accepted": "Çalışma kabul edildi ve görev tamamlandı olarak işaretlendi",
+        "changesRequested": "Değişiklikler talep edildi, çalışan gözden geçirecek",
+        "rejected": "Çalışma reddedildi, görev yeniden açıldı",
+        "error": "İnceleme gönderilemedi. Lütfen tekrar deneyin."
       }
     },
     "submission": {
-      "title": "Submit Work for Review",
-      "titleResubmit": "Revise and Resubmit Work",
-      "description": "Describe your solution for {{taskName}} and submit for validation.",
-      "solutionLabel": "Solution Description *",
-      "solutionDescription": "Explain what you did to complete this task. Supports formatting, links, and lists.",
-      "solutionPlaceholder": "Explain what you did to complete this task...",
-      "selfReviewLabel": "Self-Review (Optional)",
-      "selfReviewDescription": "Rate the quality of your work on a scale of 0-100",
-      "scoreNeedsWork": "0 (Needs work)",
-      "scorePerfect": "100 (Perfect)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "submitButton": "Submit for Review",
-      "resubmitButton": "Resubmit for Review",
+      "title": "İnceleme için Çalışma Gönder",
+      "titleResubmit": "Çalışmayı Gözden Geçir ve Yeniden Gönder",
+      "description": "{{taskName}} için çözümünüzü açıklayın ve doğrulama için gönderin.",
+      "solutionLabel": "Çözüm Açıklaması *",
+      "solutionDescription": "Bu görevi tamamlamak için ne yaptığınızı açıklayın. Biçimlendirme, bağlantılar ve listeler desteklenir.",
+      "solutionPlaceholder": "Bu görevi tamamlamak için ne yaptığınızı açıklayın...",
+      "selfReviewLabel": "Öz Değerlendirme (İsteğe bağlı)",
+      "selfReviewDescription": "Çalışmanızın kalitesini 0-100 ölçeğinde değerlendirin",
+      "scoreNeedsWork": "0 (İyileştirme gerekli)",
+      "scorePerfect": "100 (Mükemmel)",
+      "cancel": "İptal",
+      "submitting": "Gönderiliyor...",
+      "submitButton": "İnceleme için Gönder",
+      "resubmitButton": "İnceleme için Yeniden Gönder",
       "errors": {
-        "missingDescription": "Please provide a description of your work",
-        "submitError": "Could not submit your work. Please try again."
+        "missingDescription": "Lütfen çalışmanızın bir açıklamasını sağlayın",
+        "submitError": "Çalışmanız gönderilemedi. Lütfen tekrar deneyin."
       },
       "messages": {
-        "submitted": "Work submitted for review",
-        "resubmitted": "Work resubmitted for review"
+        "submitted": "Çalışma inceleme için gönderildi",
+        "resubmitted": "Çalışma inceleme için yeniden gönderildi"
       }
     }
   }

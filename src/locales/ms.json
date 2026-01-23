@@ -676,107 +676,107 @@
     "visibleToParticipants": "Visible only to job participants",
     "worker": {
       "statusBanner": {
-        "requested": "Your request is being reviewed. You will be notified when approved.",
-        "inProgress": "Your request was approved! You can now work on this task.",
-        "submitted": "Your work has been submitted. Awaiting review from the owner.",
-        "validating": "Changes have been requested. Please revise and resubmit.",
-        "accepted": "Congratulations! Your work was accepted.",
-        "rejected": "Your submission was rejected."
+        "requested": "Permintaan anda sedang dikaji. Anda akan dimaklumkan apabila diluluskan.",
+        "inProgress": "Permintaan anda telah diluluskan! Anda kini boleh bekerja pada tugas ini.",
+        "submitted": "Kerja anda telah diserahkan. Menunggu semakan daripada pemilik.",
+        "validating": "Perubahan telah diminta. Sila semak semula dan serahkan semula.",
+        "accepted": "Tahniah! Kerja anda telah diterima.",
+        "rejected": "Penyerahan anda telah ditolak."
       }
     },
     "owner": {
       "statusBanner": {
-        "requested": "{{workerName}} has requested to work on this task. Approve or reject the request.",
-        "inProgress": "{{workerName}} is currently working on this task.",
-        "submitted": "{{workerName}} has submitted their work for review.",
-        "validating": "Waiting for {{workerName}} to revise and resubmit.",
-        "accepted": "{{workerName}}'s work was accepted.",
-        "rejected": "{{workerName}}'s submission was rejected."
+        "requested": "{{workerName}} telah meminta untuk bekerja pada tugas ini. Luluskan atau tolak permintaan.",
+        "inProgress": "{{workerName}} sedang bekerja pada tugas ini.",
+        "submitted": "{{workerName}} telah menyerahkan kerja mereka untuk semakan.",
+        "validating": "Menunggu {{workerName}} untuk semak semula dan serahkan semula.",
+        "accepted": "Kerja {{workerName}} telah diterima.",
+        "rejected": "Penyerahan {{workerName}} telah ditolak."
       }
     },
     "actions": {
-      "submitForReview": "Submit for Review",
-      "withdrawSubmission": "Withdraw Submission",
-      "withdrawing": "Withdrawing...",
-      "reviseAndResubmit": "Revise and Resubmit",
-      "approveRequest": "Approve Request",
-      "approving": "Approving...",
-      "rejectRequest": "Reject Request",
-      "rejecting": "Rejecting...",
-      "reviewAndAccept": "Review & Accept",
-      "requestChanges": "Request Changes",
-      "reject": "Reject"
+      "submitForReview": "Serahkan untuk Semakan",
+      "withdrawSubmission": "Tarik Balik Penyerahan",
+      "withdrawing": "Menarik balik...",
+      "reviseAndResubmit": "Semak Semula dan Serahkan Semula",
+      "approveRequest": "Luluskan Permintaan",
+      "approving": "Meluluskan...",
+      "rejectRequest": "Tolak Permintaan",
+      "rejecting": "Menolak...",
+      "reviewAndAccept": "Semak dan Terima",
+      "requestChanges": "Minta Perubahan",
+      "reject": "Tolak"
     },
     "review": {
-      "title": "Review Submitted Work",
-      "description": "Review work from {{workerName}}",
-      "workerSolution": "Worker's Solution:",
-      "selfReviewScore": "Self-Review: {{score}}/100",
-      "noSubmissionNotes": "No submission notes provided",
-      "actionLabel": "Action *",
+      "title": "Semak Kerja yang Diserahkan",
+      "description": "Semak kerja daripada {{workerName}}",
+      "workerSolution": "Penyelesaian Pekerja:",
+      "selfReviewScore": "Semakan Sendiri: {{score}}/100",
+      "noSubmissionNotes": "Tiada nota penyerahan disediakan",
+      "actionLabel": "Tindakan *",
       "required": "*",
-      "optional": "(Optional)",
-      "feedbackLabel": "Review Feedback {{required}}",
+      "optional": "(Pilihan)",
+      "feedbackLabel": "Maklum Balas Semakan {{required}}",
       "feedbackPlaceholder": {
-        "validate": "Explain what changes are needed",
-        "other": "Provide comments or suggestions for the worker"
+        "validate": "Jelaskan perubahan apa yang diperlukan",
+        "other": "Berikan komen atau cadangan untuk pekerja"
       },
       "editorPlaceholder": {
-        "validate": "Describe the changes needed...",
-        "other": "Provide feedback on the work..."
+        "validate": "Terangkan perubahan yang diperlukan...",
+        "other": "Berikan maklum balas tentang kerja..."
       },
-      "managerReviewLabel": "Manager Review (Optional)",
-      "managerReviewDescription": "Rate the quality of the completed work",
-      "scorePoor": "0 (Poor)",
-      "scoreExcellent": "100 (Excellent)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "acceptWork": "Accept Work",
-      "requestChangesButton": "Request Changes",
-      "rejectWork": "Reject Work",
+      "managerReviewLabel": "Semakan Pengurus (Pilihan)",
+      "managerReviewDescription": "Nilaikan kualiti kerja yang telah siap",
+      "scorePoor": "0 (Lemah)",
+      "scoreExcellent": "100 (Cemerlang)",
+      "cancel": "Batal",
+      "submitting": "Menyerahkan...",
+      "acceptWork": "Terima Kerja",
+      "requestChangesButton": "Minta Perubahan",
+      "rejectWork": "Tolak Kerja",
       "actions": {
         "accept": {
-          "title": "Accept (Mark task as Done)",
-          "description": "Approve the work and complete the task. Worker earns their reward."
+          "title": "Terima (Tanda tugas sebagai Selesai)",
+          "description": "Luluskan kerja dan selesaikan tugas. Pekerja mendapat ganjaran mereka."
         },
         "requestChanges": {
-          "title": "Request Changes",
-          "description": "Ask the worker to revise and resubmit their work."
+          "title": "Minta Perubahan",
+          "description": "Minta pekerja untuk semak semula dan serahkan semula kerja mereka."
         },
         "reject": {
-          "title": "Reject (Reopen task)",
-          "description": "Reject the work completely and reopen the task for others."
+          "title": "Tolak (Buka semula tugas)",
+          "description": "Tolak kerja sepenuhnya dan buka semula tugas untuk orang lain."
         }
       },
       "messages": {
-        "accepted": "Work accepted and task marked as complete",
-        "changesRequested": "Changes requested, worker will revise",
-        "rejected": "Work rejected, task reopened",
-        "error": "Could not submit review. Please try again."
+        "accepted": "Kerja diterima dan tugas ditanda sebagai selesai",
+        "changesRequested": "Perubahan diminta, pekerja akan semak semula",
+        "rejected": "Kerja ditolak, tugas dibuka semula",
+        "error": "Tidak dapat menyerahkan semakan. Sila cuba lagi."
       }
     },
     "submission": {
-      "title": "Submit Work for Review",
-      "titleResubmit": "Revise and Resubmit Work",
-      "description": "Describe your solution for {{taskName}} and submit for validation.",
-      "solutionLabel": "Solution Description *",
-      "solutionDescription": "Explain what you did to complete this task. Supports formatting, links, and lists.",
-      "solutionPlaceholder": "Explain what you did to complete this task...",
-      "selfReviewLabel": "Self-Review (Optional)",
-      "selfReviewDescription": "Rate the quality of your work on a scale of 0-100",
-      "scoreNeedsWork": "0 (Needs work)",
-      "scorePerfect": "100 (Perfect)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "submitButton": "Submit for Review",
-      "resubmitButton": "Resubmit for Review",
+      "title": "Serahkan Kerja untuk Semakan",
+      "titleResubmit": "Semak Semula dan Serahkan Semula Kerja",
+      "description": "Terangkan penyelesaian anda untuk {{taskName}} dan serahkan untuk pengesahan.",
+      "solutionLabel": "Keterangan Penyelesaian *",
+      "solutionDescription": "Jelaskan apa yang anda lakukan untuk menyelesaikan tugas ini. Menyokong pemformatan, pautan dan senarai.",
+      "solutionPlaceholder": "Jelaskan apa yang anda lakukan untuk menyelesaikan tugas ini...",
+      "selfReviewLabel": "Semakan Sendiri (Pilihan)",
+      "selfReviewDescription": "Nilaikan kualiti kerja anda pada skala 0-100",
+      "scoreNeedsWork": "0 (Perlu diperbaiki)",
+      "scorePerfect": "100 (Sempurna)",
+      "cancel": "Batal",
+      "submitting": "Menyerahkan...",
+      "submitButton": "Serahkan untuk Semakan",
+      "resubmitButton": "Serahkan Semula untuk Semakan",
       "errors": {
-        "missingDescription": "Please provide a description of your work",
-        "submitError": "Could not submit your work. Please try again."
+        "missingDescription": "Sila berikan keterangan kerja anda",
+        "submitError": "Tidak dapat menyerahkan kerja anda. Sila cuba lagi."
       },
       "messages": {
-        "submitted": "Work submitted for review",
-        "resubmitted": "Work resubmitted for review"
+        "submitted": "Kerja diserahkan untuk semakan",
+        "resubmitted": "Kerja diserahkan semula untuk semakan"
       }
     }
   }

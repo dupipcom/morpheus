@@ -670,107 +670,107 @@
     "visibleToParticipants": "Visible only to job participants",
     "worker": {
       "statusBanner": {
-        "requested": "Your request is being reviewed. You will be notified when approved.",
-        "inProgress": "Your request was approved! You can now work on this task.",
-        "submitted": "Your work has been submitted. Awaiting review from the owner.",
-        "validating": "Changes have been requested. Please revise and resubmit.",
-        "accepted": "Congratulations! Your work was accepted.",
-        "rejected": "Your submission was rejected."
+        "requested": "Wọ́n ń ṣe àyẹ̀wò ìbéèrè rẹ. A ó sọ fún ọ nígbà tí wọ́n bá fọwọ́sí i.",
+        "inProgress": "Wọ́n ti fọwọ́sí ìbéèrè rẹ! Báyìí o lè ṣiṣẹ́ lórí iṣẹ́ yìí.",
+        "submitted": "A ti fi iṣẹ́ rẹ ránṣẹ́. Ó ń dúró fún àyẹ̀wò láti ọ̀dọ̀ olówó.",
+        "validating": "Wọ́n ti béèrè fún àwọn àyípadà. Jọ̀wọ́ tún un wò kí o sì fi ránṣẹ́ padà.",
+        "accepted": "Ẹ kú oríire! Wọ́n ti gba iṣẹ́ rẹ.",
+        "rejected": "Wọ́n ti kọ̀ ìfọwọ́sí rẹ."
       }
     },
     "owner": {
       "statusBanner": {
-        "requested": "{{workerName}} has requested to work on this task. Approve or reject the request.",
-        "inProgress": "{{workerName}} is currently working on this task.",
-        "submitted": "{{workerName}} has submitted their work for review.",
-        "validating": "Waiting for {{workerName}} to revise and resubmit.",
-        "accepted": "{{workerName}}'s work was accepted.",
-        "rejected": "{{workerName}}'s submission was rejected."
+        "requested": "{{workerName}} ti béèrè láti ṣiṣẹ́ lórí iṣẹ́ yìí. Fọwọ́sí tàbí kọ̀ ìbéèrè náà.",
+        "inProgress": "{{workerName}} ń ṣiṣẹ́ lórí iṣẹ́ yìí lọ́wọ́lọ́wọ́.",
+        "submitted": "{{workerName}} ti fi iṣẹ́ wọn ránṣẹ́ fún àyẹ̀wò.",
+        "validating": "Ó ń dúró fún {{workerName}} láti tún un wò kí ó sì fi ránṣẹ́ padà.",
+        "accepted": "Wọ́n ti gba iṣẹ́ {{workerName}}.",
+        "rejected": "Wọ́n ti kọ̀ ìfọwọ́sí {{workerName}}."
       }
     },
     "actions": {
-      "submitForReview": "Submit for Review",
-      "withdrawSubmission": "Withdraw Submission",
-      "withdrawing": "Withdrawing...",
-      "reviseAndResubmit": "Revise and Resubmit",
-      "approveRequest": "Approve Request",
-      "approving": "Approving...",
-      "rejectRequest": "Reject Request",
-      "rejecting": "Rejecting...",
-      "reviewAndAccept": "Review & Accept",
-      "requestChanges": "Request Changes",
-      "reject": "Reject"
+      "submitForReview": "Fi Ránṣẹ́ Fún Àyẹ̀wò",
+      "withdrawSubmission": "Fà Ìfọwọ́sí Padà",
+      "withdrawing": "Ń fà padà...",
+      "reviseAndResubmit": "Tún Wò Kí O Sì Fi Ránṣẹ́ Padà",
+      "approveRequest": "Fọwọ́sí Ìbéèrè",
+      "approving": "Ń fọwọ́sí...",
+      "rejectRequest": "Kọ̀ Ìbéèrè",
+      "rejecting": "Ń kọ̀...",
+      "reviewAndAccept": "Ṣe Àyẹ̀wò Kí O Sì Gbà",
+      "requestChanges": "Béèrè Fún Àwọn Àyípadà",
+      "reject": "Kọ̀"
     },
     "review": {
-      "title": "Review Submitted Work",
-      "description": "Review work from {{workerName}}",
-      "workerSolution": "Worker's Solution:",
-      "selfReviewScore": "Self-Review: {{score}}/100",
-      "noSubmissionNotes": "No submission notes provided",
-      "actionLabel": "Action *",
+      "title": "Ṣe Àyẹ̀wò Iṣẹ́ Tí A Fi Ránṣẹ́",
+      "description": "Ṣe àyẹ̀wò iṣẹ́ láti ọ̀dọ̀ {{workerName}}",
+      "workerSolution": "Ìdáhùn Oṣìṣẹ́:",
+      "selfReviewScore": "Àyẹ̀wò Ara Ẹni: {{score}}/100",
+      "noSubmissionNotes": "Kò sí àkọsílẹ̀ ìfọwọ́sí tí a pèsè",
+      "actionLabel": "Ìgbésẹ̀ *",
       "required": "*",
-      "optional": "(Optional)",
-      "feedbackLabel": "Review Feedback {{required}}",
+      "optional": "(Àṣàyàn)",
+      "feedbackLabel": "Èsì Àyẹ̀wò {{required}}",
       "feedbackPlaceholder": {
-        "validate": "Explain what changes are needed",
-        "other": "Provide comments or suggestions for the worker"
+        "validate": "Ṣàlàyé àwọn àyípadà tó ṣe pàtàkì",
+        "other": "Fún oṣìṣẹ́ ní àwọn ọ̀rọ̀ tàbí ìmọ̀ràn"
       },
       "editorPlaceholder": {
-        "validate": "Describe the changes needed...",
-        "other": "Provide feedback on the work..."
+        "validate": "Ṣàpèjúwe àwọn àyípadà tó ṣe pàtàkì...",
+        "other": "Fún èsì lórí iṣẹ́ náà..."
       },
-      "managerReviewLabel": "Manager Review (Optional)",
-      "managerReviewDescription": "Rate the quality of the completed work",
-      "scorePoor": "0 (Poor)",
-      "scoreExcellent": "100 (Excellent)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "acceptWork": "Accept Work",
-      "requestChangesButton": "Request Changes",
-      "rejectWork": "Reject Work",
+      "managerReviewLabel": "Àyẹ̀wò Alábòójútó (Àṣàyàn)",
+      "managerReviewDescription": "Ṣe ìwọ̀n ìdára iṣẹ́ tí a parí",
+      "scorePoor": "0 (Kò dára)",
+      "scoreExcellent": "100 (Ó dára púpọ̀)",
+      "cancel": "Fagílé",
+      "submitting": "Ń fi ránṣẹ́...",
+      "acceptWork": "Gba Iṣẹ́",
+      "requestChangesButton": "Béèrè Fún Àwọn Àyípadà",
+      "rejectWork": "Kọ̀ Iṣẹ́",
       "actions": {
         "accept": {
-          "title": "Accept (Mark task as Done)",
-          "description": "Approve the work and complete the task. Worker earns their reward."
+          "title": "Gbà (Sàmì iṣẹ́ gẹ́gẹ́ bí Tí a Parí)",
+          "description": "Fọwọ́sí iṣẹ́ náà kí o sì parí iṣẹ́ náà. Oṣìṣẹ́ yóò gba ẹ̀san wọn."
         },
         "requestChanges": {
-          "title": "Request Changes",
-          "description": "Ask the worker to revise and resubmit their work."
+          "title": "Béèrè Fún Àwọn Àyípadà",
+          "description": "Béèrè lọ́wọ́ oṣìṣẹ́ láti tún iṣẹ́ wọn wò kí wọ́n sì fi ránṣẹ́ padà."
         },
         "reject": {
-          "title": "Reject (Reopen task)",
-          "description": "Reject the work completely and reopen the task for others."
+          "title": "Kọ̀ (Tún iṣẹ́ ṣí)",
+          "description": "Kọ̀ iṣẹ́ náà pátápátá kí o sì tún iṣẹ́ náà ṣí fún àwọn ẹlòmíràn."
         }
       },
       "messages": {
-        "accepted": "Work accepted and task marked as complete",
-        "changesRequested": "Changes requested, worker will revise",
-        "rejected": "Work rejected, task reopened",
-        "error": "Could not submit review. Please try again."
+        "accepted": "Wọ́n ti gba iṣẹ́ náà a sì ti sàmì iṣẹ́ náà gẹ́gẹ́ bí tí a parí",
+        "changesRequested": "Wọ́n ti béèrè fún àwọn àyípadà, oṣìṣẹ́ yóò tún un wò",
+        "rejected": "Wọ́n ti kọ̀ iṣẹ́ náà, a ti tún iṣẹ́ náà ṣí",
+        "error": "Kò lè fi àyẹ̀wò ránṣẹ́. Jọ̀wọ́ gbìyànjú lẹ́ẹ̀kan sí i."
       }
     },
     "submission": {
-      "title": "Submit Work for Review",
-      "titleResubmit": "Revise and Resubmit Work",
-      "description": "Describe your solution for {{taskName}} and submit for validation.",
-      "solutionLabel": "Solution Description *",
-      "solutionDescription": "Explain what you did to complete this task. Supports formatting, links, and lists.",
-      "solutionPlaceholder": "Explain what you did to complete this task...",
-      "selfReviewLabel": "Self-Review (Optional)",
-      "selfReviewDescription": "Rate the quality of your work on a scale of 0-100",
-      "scoreNeedsWork": "0 (Needs work)",
-      "scorePerfect": "100 (Perfect)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "submitButton": "Submit for Review",
-      "resubmitButton": "Resubmit for Review",
+      "title": "Fi Iṣẹ́ Ránṣẹ́ Fún Àyẹ̀wò",
+      "titleResubmit": "Tún Iṣẹ́ Wò Kí O Sì Fi Ránṣẹ́ Padà",
+      "description": "Ṣàpèjúwe ìdáhùn rẹ fún {{taskName}} kí o sì fi ránṣẹ́ fún ìjẹ́rìísí.",
+      "solutionLabel": "Àpèjúwe Ìdáhùn *",
+      "solutionDescription": "Ṣàlàyé ohun tí o ṣe láti parí iṣẹ́ yìí. Ó ń ṣe àtìlẹ́yìn fún fọ́mátì, àwọn ìjápọ̀ àti àwọn àkọsílẹ̀.",
+      "solutionPlaceholder": "Ṣàlàyé ohun tí o ṣe láti parí iṣẹ́ yìí...",
+      "selfReviewLabel": "Àyẹ̀wò Ara Ẹni (Àṣàyàn)",
+      "selfReviewDescription": "Ṣe ìwọ̀n ìdára iṣẹ́ rẹ lórí ìwọ̀n 0-100",
+      "scoreNeedsWork": "0 (Ó nílò iṣẹ́)",
+      "scorePerfect": "100 (Ó pé)",
+      "cancel": "Fagílé",
+      "submitting": "Ń fi ránṣẹ́...",
+      "submitButton": "Fi Ránṣẹ́ Fún Àyẹ̀wò",
+      "resubmitButton": "Fi Ránṣẹ́ Padà Fún Àyẹ̀wò",
       "errors": {
-        "missingDescription": "Please provide a description of your work",
-        "submitError": "Could not submit your work. Please try again."
+        "missingDescription": "Jọ̀wọ́ pèsè àpèjúwe iṣẹ́ rẹ",
+        "submitError": "Kò lè fi iṣẹ́ rẹ ránṣẹ́. Jọ̀wọ́ gbìyànjú lẹ́ẹ̀kan sí i."
       },
       "messages": {
-        "submitted": "Work submitted for review",
-        "resubmitted": "Work resubmitted for review"
+        "submitted": "A ti fi iṣẹ́ ránṣẹ́ fún àyẹ̀wò",
+        "resubmitted": "A ti fi iṣẹ́ ránṣẹ́ padà fún àyẹ̀wò"
       }
     }
   }

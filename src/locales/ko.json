@@ -672,107 +672,107 @@
     "visibleToParticipants": "Visible only to job participants",
     "worker": {
       "statusBanner": {
-        "requested": "Your request is being reviewed. You will be notified when approved.",
-        "inProgress": "Your request was approved! You can now work on this task.",
-        "submitted": "Your work has been submitted. Awaiting review from the owner.",
-        "validating": "Changes have been requested. Please revise and resubmit.",
-        "accepted": "Congratulations! Your work was accepted.",
-        "rejected": "Your submission was rejected."
+        "requested": "요청이 검토 중입니다. 승인되면 알림을 받게 됩니다.",
+        "inProgress": "요청이 승인되었습니다! 이제 이 작업을 수행할 수 있습니다.",
+        "submitted": "작업이 제출되었습니다. 소유자의 검토를 기다리는 중입니다.",
+        "validating": "변경 사항이 요청되었습니다. 수정하여 다시 제출해 주세요.",
+        "accepted": "축하합니다! 작업이 승인되었습니다.",
+        "rejected": "제출이 거부되었습니다."
       }
     },
     "owner": {
       "statusBanner": {
-        "requested": "{{workerName}} has requested to work on this task. Approve or reject the request.",
-        "inProgress": "{{workerName}} is currently working on this task.",
-        "submitted": "{{workerName}} has submitted their work for review.",
-        "validating": "Waiting for {{workerName}} to revise and resubmit.",
-        "accepted": "{{workerName}}'s work was accepted.",
-        "rejected": "{{workerName}}'s submission was rejected."
+        "requested": "{{workerName}}님이 이 작업을 수행하도록 요청했습니다. 요청을 승인하거나 거부하세요.",
+        "inProgress": "{{workerName}}님이 현재 이 작업을 수행 중입니다.",
+        "submitted": "{{workerName}}님이 검토를 위해 작업을 제출했습니다.",
+        "validating": "{{workerName}}님이 수정하여 다시 제출하기를 기다리는 중입니다.",
+        "accepted": "{{workerName}}님의 작업이 승인되었습니다.",
+        "rejected": "{{workerName}}님의 제출이 거부되었습니다."
       }
     },
     "actions": {
-      "submitForReview": "Submit for Review",
-      "withdrawSubmission": "Withdraw Submission",
-      "withdrawing": "Withdrawing...",
-      "reviseAndResubmit": "Revise and Resubmit",
-      "approveRequest": "Approve Request",
-      "approving": "Approving...",
-      "rejectRequest": "Reject Request",
-      "rejecting": "Rejecting...",
-      "reviewAndAccept": "Review & Accept",
-      "requestChanges": "Request Changes",
-      "reject": "Reject"
+      "submitForReview": "검토를 위해 제출",
+      "withdrawSubmission": "제출 철회",
+      "withdrawing": "철회 중...",
+      "reviseAndResubmit": "수정하여 다시 제출",
+      "approveRequest": "요청 승인",
+      "approving": "승인 중...",
+      "rejectRequest": "요청 거부",
+      "rejecting": "거부 중...",
+      "reviewAndAccept": "검토 및 승인",
+      "requestChanges": "변경 요청",
+      "reject": "거부"
     },
     "review": {
-      "title": "Review Submitted Work",
-      "description": "Review work from {{workerName}}",
-      "workerSolution": "Worker's Solution:",
-      "selfReviewScore": "Self-Review: {{score}}/100",
-      "noSubmissionNotes": "No submission notes provided",
-      "actionLabel": "Action *",
+      "title": "제출된 작업 검토",
+      "description": "{{workerName}}님의 작업 검토",
+      "workerSolution": "작업자의 솔루션:",
+      "selfReviewScore": "자체 검토: {{score}}/100",
+      "noSubmissionNotes": "제출 메모가 제공되지 않음",
+      "actionLabel": "작업 *",
       "required": "*",
-      "optional": "(Optional)",
-      "feedbackLabel": "Review Feedback {{required}}",
+      "optional": "(선택 사항)",
+      "feedbackLabel": "검토 피드백 {{required}}",
       "feedbackPlaceholder": {
-        "validate": "Explain what changes are needed",
-        "other": "Provide comments or suggestions for the worker"
+        "validate": "필요한 변경 사항을 설명하세요",
+        "other": "작업자에게 의견이나 제안을 제공하세요"
       },
       "editorPlaceholder": {
-        "validate": "Describe the changes needed...",
-        "other": "Provide feedback on the work..."
+        "validate": "필요한 변경 사항을 설명하세요...",
+        "other": "작업에 대한 피드백을 제공하세요..."
       },
-      "managerReviewLabel": "Manager Review (Optional)",
-      "managerReviewDescription": "Rate the quality of the completed work",
-      "scorePoor": "0 (Poor)",
-      "scoreExcellent": "100 (Excellent)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "acceptWork": "Accept Work",
-      "requestChangesButton": "Request Changes",
-      "rejectWork": "Reject Work",
+      "managerReviewLabel": "관리자 검토 (선택 사항)",
+      "managerReviewDescription": "완료된 작업의 품질을 평가하세요",
+      "scorePoor": "0 (나쁨)",
+      "scoreExcellent": "100 (우수)",
+      "cancel": "취소",
+      "submitting": "제출 중...",
+      "acceptWork": "작업 승인",
+      "requestChangesButton": "변경 요청",
+      "rejectWork": "작업 거부",
       "actions": {
         "accept": {
-          "title": "Accept (Mark task as Done)",
-          "description": "Approve the work and complete the task. Worker earns their reward."
+          "title": "승인 (작업을 완료로 표시)",
+          "description": "작업을 승인하고 작업을 완료하세요. 작업자가 보상을 받습니다."
         },
         "requestChanges": {
-          "title": "Request Changes",
-          "description": "Ask the worker to revise and resubmit their work."
+          "title": "변경 요청",
+          "description": "작업자에게 작업을 수정하여 다시 제출하도록 요청하세요."
         },
         "reject": {
-          "title": "Reject (Reopen task)",
-          "description": "Reject the work completely and reopen the task for others."
+          "title": "거부 (작업 다시 열기)",
+          "description": "작업을 완전히 거부하고 다른 사람을 위해 작업을 다시 여세요."
         }
       },
       "messages": {
-        "accepted": "Work accepted and task marked as complete",
-        "changesRequested": "Changes requested, worker will revise",
-        "rejected": "Work rejected, task reopened",
-        "error": "Could not submit review. Please try again."
+        "accepted": "작업이 승인되고 작업이 완료로 표시되었습니다",
+        "changesRequested": "변경 사항이 요청되었으며, 작업자가 수정할 것입니다",
+        "rejected": "작업이 거부되고 작업이 다시 열렸습니다",
+        "error": "검토를 제출할 수 없습니다. 다시 시도해 주세요."
       }
     },
     "submission": {
-      "title": "Submit Work for Review",
-      "titleResubmit": "Revise and Resubmit Work",
-      "description": "Describe your solution for {{taskName}} and submit for validation.",
-      "solutionLabel": "Solution Description *",
-      "solutionDescription": "Explain what you did to complete this task. Supports formatting, links, and lists.",
-      "solutionPlaceholder": "Explain what you did to complete this task...",
-      "selfReviewLabel": "Self-Review (Optional)",
-      "selfReviewDescription": "Rate the quality of your work on a scale of 0-100",
-      "scoreNeedsWork": "0 (Needs work)",
-      "scorePerfect": "100 (Perfect)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "submitButton": "Submit for Review",
-      "resubmitButton": "Resubmit for Review",
+      "title": "검토를 위해 작업 제출",
+      "titleResubmit": "작업 수정 및 다시 제출",
+      "description": "{{taskName}}에 대한 솔루션을 설명하고 검증을 위해 제출하세요.",
+      "solutionLabel": "솔루션 설명 *",
+      "solutionDescription": "이 작업을 완료하기 위해 수행한 작업을 설명하세요. 서식, 링크 및 목록을 지원합니다.",
+      "solutionPlaceholder": "이 작업을 완료하기 위해 수행한 작업을 설명하세요...",
+      "selfReviewLabel": "자체 검토 (선택 사항)",
+      "selfReviewDescription": "0-100 척도로 작업 품질을 평가하세요",
+      "scoreNeedsWork": "0 (개선 필요)",
+      "scorePerfect": "100 (완벽함)",
+      "cancel": "취소",
+      "submitting": "제출 중...",
+      "submitButton": "검토를 위해 제출",
+      "resubmitButton": "검토를 위해 다시 제출",
       "errors": {
-        "missingDescription": "Please provide a description of your work",
-        "submitError": "Could not submit your work. Please try again."
+        "missingDescription": "작업에 대한 설명을 제공해 주세요",
+        "submitError": "작업을 제출할 수 없습니다. 다시 시도해 주세요."
       },
       "messages": {
-        "submitted": "Work submitted for review",
-        "resubmitted": "Work resubmitted for review"
+        "submitted": "작업이 검토를 위해 제출되었습니다",
+        "resubmitted": "작업이 검토를 위해 다시 제출되었습니다"
       }
     }
   }

@@ -676,107 +676,107 @@
     "visibleToParticipants": "Visible only to job participants",
     "worker": {
       "statusBanner": {
-        "requested": "Your request is being reviewed. You will be notified when approved.",
-        "inProgress": "Your request was approved! You can now work on this task.",
-        "submitted": "Your work has been submitted. Awaiting review from the owner.",
-        "validating": "Changes have been requested. Please revise and resubmit.",
-        "accepted": "Congratulations! Your work was accepted.",
-        "rejected": "Your submission was rejected."
+        "requested": "Din anmodning bliver gennemgået. Du vil blive underrettet, når den er godkendt.",
+        "inProgress": "Din anmodning blev godkendt! Du kan nu arbejde på denne opgave.",
+        "submitted": "Dit arbejde er blevet indsendt. Afventer gennemgang fra ejeren.",
+        "validating": "Ændringer er blevet anmodet om. Venligst revider og indsend igen.",
+        "accepted": "Tillykke! Dit arbejde blev accepteret.",
+        "rejected": "Din indsendelse blev afvist."
       }
     },
     "owner": {
       "statusBanner": {
-        "requested": "{{workerName}} has requested to work on this task. Approve or reject the request.",
-        "inProgress": "{{workerName}} is currently working on this task.",
-        "submitted": "{{workerName}} has submitted their work for review.",
-        "validating": "Waiting for {{workerName}} to revise and resubmit.",
-        "accepted": "{{workerName}}'s work was accepted.",
-        "rejected": "{{workerName}}'s submission was rejected."
+        "requested": "{{workerName}} har anmodet om at arbejde på denne opgave. Godkend eller afvis anmodningen.",
+        "inProgress": "{{workerName}} arbejder i øjeblikket på denne opgave.",
+        "submitted": "{{workerName}} har indsendt sit arbejde til gennemgang.",
+        "validating": "Venter på, at {{workerName}} reviderer og indsender igen.",
+        "accepted": "{{workerName}}s arbejde blev accepteret.",
+        "rejected": "{{workerName}}s indsendelse blev afvist."
       }
     },
     "actions": {
-      "submitForReview": "Submit for Review",
-      "withdrawSubmission": "Withdraw Submission",
-      "withdrawing": "Withdrawing...",
-      "reviseAndResubmit": "Revise and Resubmit",
-      "approveRequest": "Approve Request",
-      "approving": "Approving...",
-      "rejectRequest": "Reject Request",
-      "rejecting": "Rejecting...",
-      "reviewAndAccept": "Review & Accept",
-      "requestChanges": "Request Changes",
-      "reject": "Reject"
+      "submitForReview": "Indsend til Gennemgang",
+      "withdrawSubmission": "Træk Indsendelse Tilbage",
+      "withdrawing": "Trækker tilbage...",
+      "reviseAndResubmit": "Revider og Indsend Igen",
+      "approveRequest": "Godkend Anmodning",
+      "approving": "Godkender...",
+      "rejectRequest": "Afvis Anmodning",
+      "rejecting": "Afviser...",
+      "reviewAndAccept": "Gennemgå og Accepter",
+      "requestChanges": "Anmod om Ændringer",
+      "reject": "Afvis"
     },
     "review": {
-      "title": "Review Submitted Work",
-      "description": "Review work from {{workerName}}",
-      "workerSolution": "Worker's Solution:",
-      "selfReviewScore": "Self-Review: {{score}}/100",
-      "noSubmissionNotes": "No submission notes provided",
-      "actionLabel": "Action *",
+      "title": "Gennemgå Indsendt Arbejde",
+      "description": "Gennemgå arbejde fra {{workerName}}",
+      "workerSolution": "Arbejderens Løsning:",
+      "selfReviewScore": "Selvvurdering: {{score}}/100",
+      "noSubmissionNotes": "Ingen indsendelsesnoter angivet",
+      "actionLabel": "Handling *",
       "required": "*",
-      "optional": "(Optional)",
-      "feedbackLabel": "Review Feedback {{required}}",
+      "optional": "(Valgfrit)",
+      "feedbackLabel": "Gennemgangs Feedback {{required}}",
       "feedbackPlaceholder": {
-        "validate": "Explain what changes are needed",
-        "other": "Provide comments or suggestions for the worker"
+        "validate": "Forklar hvilke ændringer der er nødvendige",
+        "other": "Giv kommentarer eller forslag til arbejderen"
       },
       "editorPlaceholder": {
-        "validate": "Describe the changes needed...",
-        "other": "Provide feedback on the work..."
+        "validate": "Beskriv de nødvendige ændringer...",
+        "other": "Giv feedback på arbejdet..."
       },
-      "managerReviewLabel": "Manager Review (Optional)",
-      "managerReviewDescription": "Rate the quality of the completed work",
-      "scorePoor": "0 (Poor)",
-      "scoreExcellent": "100 (Excellent)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "acceptWork": "Accept Work",
-      "requestChangesButton": "Request Changes",
-      "rejectWork": "Reject Work",
+      "managerReviewLabel": "Ledervurdering (Valgfrit)",
+      "managerReviewDescription": "Bedøm kvaliteten af det færdige arbejde",
+      "scorePoor": "0 (Dårligt)",
+      "scoreExcellent": "100 (Fremragende)",
+      "cancel": "Annuller",
+      "submitting": "Indsender...",
+      "acceptWork": "Accepter Arbejde",
+      "requestChangesButton": "Anmod om Ændringer",
+      "rejectWork": "Afvis Arbejde",
       "actions": {
         "accept": {
-          "title": "Accept (Mark task as Done)",
-          "description": "Approve the work and complete the task. Worker earns their reward."
+          "title": "Accepter (Marker opgave som Færdig)",
+          "description": "Godkend arbejdet og fuldfør opgaven. Arbejderen optjener deres belønning."
         },
         "requestChanges": {
-          "title": "Request Changes",
-          "description": "Ask the worker to revise and resubmit their work."
+          "title": "Anmod om Ændringer",
+          "description": "Bed arbejderen om at revidere og indsende deres arbejde igen."
         },
         "reject": {
-          "title": "Reject (Reopen task)",
-          "description": "Reject the work completely and reopen the task for others."
+          "title": "Afvis (Genåbn opgave)",
+          "description": "Afvis arbejdet fuldstændigt og genåbn opgaven for andre."
         }
       },
       "messages": {
-        "accepted": "Work accepted and task marked as complete",
-        "changesRequested": "Changes requested, worker will revise",
-        "rejected": "Work rejected, task reopened",
-        "error": "Could not submit review. Please try again."
+        "accepted": "Arbejde accepteret og opgave markeret som fuldført",
+        "changesRequested": "Ændringer anmodet om, arbejderen vil revidere",
+        "rejected": "Arbejde afvist, opgave genåbnet",
+        "error": "Kunne ikke indsende gennemgang. Prøv venligst igen."
       }
     },
     "submission": {
-      "title": "Submit Work for Review",
-      "titleResubmit": "Revise and Resubmit Work",
-      "description": "Describe your solution for {{taskName}} and submit for validation.",
-      "solutionLabel": "Solution Description *",
-      "solutionDescription": "Explain what you did to complete this task. Supports formatting, links, and lists.",
-      "solutionPlaceholder": "Explain what you did to complete this task...",
-      "selfReviewLabel": "Self-Review (Optional)",
-      "selfReviewDescription": "Rate the quality of your work on a scale of 0-100",
-      "scoreNeedsWork": "0 (Needs work)",
-      "scorePerfect": "100 (Perfect)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "submitButton": "Submit for Review",
-      "resubmitButton": "Resubmit for Review",
+      "title": "Indsend Arbejde til Gennemgang",
+      "titleResubmit": "Revider og Indsend Arbejde Igen",
+      "description": "Beskriv din løsning for {{taskName}} og indsend til validering.",
+      "solutionLabel": "Løsningsbeskrivelse *",
+      "solutionDescription": "Forklar hvad du gjorde for at fuldføre denne opgave. Understøtter formatering, links og lister.",
+      "solutionPlaceholder": "Forklar hvad du gjorde for at fuldføre denne opgave...",
+      "selfReviewLabel": "Selvvurdering (Valgfrit)",
+      "selfReviewDescription": "Bedøm kvaliteten af dit arbejde på en skala fra 0-100",
+      "scoreNeedsWork": "0 (Trænger til arbejde)",
+      "scorePerfect": "100 (Perfekt)",
+      "cancel": "Annuller",
+      "submitting": "Indsender...",
+      "submitButton": "Indsend til Gennemgang",
+      "resubmitButton": "Indsend Igen til Gennemgang",
       "errors": {
-        "missingDescription": "Please provide a description of your work",
-        "submitError": "Could not submit your work. Please try again."
+        "missingDescription": "Angiv venligst en beskrivelse af dit arbejde",
+        "submitError": "Kunne ikke indsende dit arbejde. Prøv venligst igen."
       },
       "messages": {
-        "submitted": "Work submitted for review",
-        "resubmitted": "Work resubmitted for review"
+        "submitted": "Arbejde indsendt til gennemgang",
+        "resubmitted": "Arbejde indsendt igen til gennemgang"
       }
     }
   }

@@ -668,107 +668,107 @@
     "visibleToParticipants": "Visible only to job participants",
     "worker": {
       "statusBanner": {
-        "requested": "Your request is being reviewed. You will be notified when approved.",
-        "inProgress": "Your request was approved! You can now work on this task.",
-        "submitted": "Your work has been submitted. Awaiting review from the owner.",
-        "validating": "Changes have been requested. Please revise and resubmit.",
-        "accepted": "Congratulations! Your work was accepted.",
-        "rejected": "Your submission was rejected."
+        "requested": "Ana bitar buƙatarku. Za a sanar da ku lokacin da aka amince.",
+        "inProgress": "An amince da buƙatarku! Yanzu kuna iya yin wannan aiki.",
+        "submitted": "An ƙaddamar da aikinku. Ana jiran bita daga mai shi.",
+        "validating": "An nemi canje-canje. Da fatan za a sake dubawa kuma a ƙaddamar da kashi.",
+        "accepted": "Barka! An karɓi aikinku.",
+        "rejected": "An ƙi buƙatarku."
       }
     },
     "owner": {
       "statusBanner": {
-        "requested": "{{workerName}} has requested to work on this task. Approve or reject the request.",
-        "inProgress": "{{workerName}} is currently working on this task.",
-        "submitted": "{{workerName}} has submitted their work for review.",
-        "validating": "Waiting for {{workerName}} to revise and resubmit.",
-        "accepted": "{{workerName}}'s work was accepted.",
-        "rejected": "{{workerName}}'s submission was rejected."
+        "requested": "{{workerName}} ya nemi yin wannan aiki. Amince ko ƙi buƙatar.",
+        "inProgress": "{{workerName}} yana aiki da wannan aiki a halin yanzu.",
+        "submitted": "{{workerName}} ya ƙaddamar da aikinsa don bita.",
+        "validating": "Jiran {{workerName}} ya sake dubawa kuma ya ƙaddamar da kashi.",
+        "accepted": "An karɓi aikin {{workerName}}.",
+        "rejected": "An ƙi buƙatar {{workerName}}."
       }
     },
     "actions": {
-      "submitForReview": "Submit for Review",
-      "withdrawSubmission": "Withdraw Submission",
-      "withdrawing": "Withdrawing...",
-      "reviseAndResubmit": "Revise and Resubmit",
-      "approveRequest": "Approve Request",
-      "approving": "Approving...",
-      "rejectRequest": "Reject Request",
-      "rejecting": "Rejecting...",
-      "reviewAndAccept": "Review & Accept",
-      "requestChanges": "Request Changes",
-      "reject": "Reject"
+      "submitForReview": "Ƙaddamar don Bita",
+      "withdrawSubmission": "Janye Ƙaddamarwa",
+      "withdrawing": "Ana janyewa...",
+      "reviseAndResubmit": "Sake Dubawa da Ƙaddamar da Kashi",
+      "approveRequest": "Amince da Buƙata",
+      "approving": "Ana amincewa...",
+      "rejectRequest": "Ƙi Buƙata",
+      "rejecting": "Ana ƙi...",
+      "reviewAndAccept": "Bita da Karɓa",
+      "requestChanges": "Nemi Canje-canje",
+      "reject": "Ƙi"
     },
     "review": {
-      "title": "Review Submitted Work",
-      "description": "Review work from {{workerName}}",
-      "workerSolution": "Worker's Solution:",
-      "selfReviewScore": "Self-Review: {{score}}/100",
-      "noSubmissionNotes": "No submission notes provided",
-      "actionLabel": "Action *",
+      "title": "Bitar Aikin da aka Ƙaddamar",
+      "description": "Bitar aiki daga {{workerName}}",
+      "workerSolution": "Maganin Ma'aikaci:",
+      "selfReviewScore": "Bita na Kai: {{score}}/100",
+      "noSubmissionNotes": "Babu bayanan ƙaddamarwa da aka bayar",
+      "actionLabel": "Mataki *",
       "required": "*",
-      "optional": "(Optional)",
-      "feedbackLabel": "Review Feedback {{required}}",
+      "optional": "(Na zaɓi)",
+      "feedbackLabel": "Bayani na Bita {{required}}",
       "feedbackPlaceholder": {
-        "validate": "Explain what changes are needed",
-        "other": "Provide comments or suggestions for the worker"
+        "validate": "Bayyana irin canje-canjen da ake buƙata",
+        "other": "Bayar da sharhi ko shawarwari ga ma'aikaci"
       },
       "editorPlaceholder": {
-        "validate": "Describe the changes needed...",
-        "other": "Provide feedback on the work..."
+        "validate": "Bayyana canje-canjen da ake buƙata...",
+        "other": "Bayar da ra'ayi kan aikin..."
       },
-      "managerReviewLabel": "Manager Review (Optional)",
-      "managerReviewDescription": "Rate the quality of the completed work",
-      "scorePoor": "0 (Poor)",
-      "scoreExcellent": "100 (Excellent)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "acceptWork": "Accept Work",
-      "requestChangesButton": "Request Changes",
-      "rejectWork": "Reject Work",
+      "managerReviewLabel": "Bitar Manaja (Na zaɓi)",
+      "managerReviewDescription": "Ƙimar ingancin aikin da aka kammala",
+      "scorePoor": "0 (Mara kyau)",
+      "scoreExcellent": "100 (Kyakkyawa)",
+      "cancel": "Soke",
+      "submitting": "Ana ƙaddamarwa...",
+      "acceptWork": "Karɓi Aiki",
+      "requestChangesButton": "Nemi Canje-canje",
+      "rejectWork": "Ƙi Aiki",
       "actions": {
         "accept": {
-          "title": "Accept (Mark task as Done)",
-          "description": "Approve the work and complete the task. Worker earns their reward."
+          "title": "Karɓa (Alama aikin a matsayin An Gama)",
+          "description": "Amince da aikin kuma kammala aikin. Ma'aikaci yana samun ladarsa."
         },
         "requestChanges": {
-          "title": "Request Changes",
-          "description": "Ask the worker to revise and resubmit their work."
+          "title": "Nemi Canje-canje",
+          "description": "Tambayi ma'aikaci ya sake dubawa kuma ya ƙaddamar da aikinsa."
         },
         "reject": {
-          "title": "Reject (Reopen task)",
-          "description": "Reject the work completely and reopen the task for others."
+          "title": "Ƙi (Sake buɗe aikin)",
+          "description": "Ƙi aikin gaba ɗaya kuma sake buɗe aikin ga wasu."
         }
       },
       "messages": {
-        "accepted": "Work accepted and task marked as complete",
-        "changesRequested": "Changes requested, worker will revise",
-        "rejected": "Work rejected, task reopened",
-        "error": "Could not submit review. Please try again."
+        "accepted": "An karɓi aikin kuma an alama aikin a matsayin an kammala",
+        "changesRequested": "An nemi canje-canje, ma'aikaci zai sake dubawa",
+        "rejected": "An ƙi aikin, an sake buɗe aikin",
+        "error": "Ba a iya ƙaddamar da bita. Da fatan za a sake gwadawa."
       }
     },
     "submission": {
-      "title": "Submit Work for Review",
-      "titleResubmit": "Revise and Resubmit Work",
-      "description": "Describe your solution for {{taskName}} and submit for validation.",
-      "solutionLabel": "Solution Description *",
-      "solutionDescription": "Explain what you did to complete this task. Supports formatting, links, and lists.",
-      "solutionPlaceholder": "Explain what you did to complete this task...",
-      "selfReviewLabel": "Self-Review (Optional)",
-      "selfReviewDescription": "Rate the quality of your work on a scale of 0-100",
-      "scoreNeedsWork": "0 (Needs work)",
-      "scorePerfect": "100 (Perfect)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "submitButton": "Submit for Review",
-      "resubmitButton": "Resubmit for Review",
+      "title": "Ƙaddamar da Aiki don Bita",
+      "titleResubmit": "Sake Dubawa da Ƙaddamar da Aiki",
+      "description": "Bayyana mafita na {{taskName}} kuma ƙaddamar don tabbatarwa.",
+      "solutionLabel": "Bayanin Magani *",
+      "solutionDescription": "Bayyana abin da kuka yi don kammala wannan aikin. Yana goyan bayan tsarawa, hanyoyin haɗi da jerin abubuwa.",
+      "solutionPlaceholder": "Bayyana abin da kuka yi don kammala wannan aikin...",
+      "selfReviewLabel": "Bita na Kai (Na zaɓi)",
+      "selfReviewDescription": "Ƙimar ingancin aikinku akan ma'auni na 0-100",
+      "scoreNeedsWork": "0 (Ana buƙatar aiki)",
+      "scorePerfect": "100 (Cikakke)",
+      "cancel": "Soke",
+      "submitting": "Ana ƙaddamarwa...",
+      "submitButton": "Ƙaddamar don Bita",
+      "resubmitButton": "Sake Ƙaddamar don Bita",
       "errors": {
-        "missingDescription": "Please provide a description of your work",
-        "submitError": "Could not submit your work. Please try again."
+        "missingDescription": "Da fatan za a bayar da bayanin aikinku",
+        "submitError": "Ba a iya ƙaddamar da aikinku. Da fatan za a sake gwadawa."
       },
       "messages": {
-        "submitted": "Work submitted for review",
-        "resubmitted": "Work resubmitted for review"
+        "submitted": "An ƙaddamar da aiki don bita",
+        "resubmitted": "An sake ƙaddamar da aiki don bita"
       }
     }
   }

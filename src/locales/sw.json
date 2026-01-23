@@ -670,107 +670,107 @@
     "visibleToParticipants": "Visible only to job participants",
     "worker": {
       "statusBanner": {
-        "requested": "Your request is being reviewed. You will be notified when approved.",
-        "inProgress": "Your request was approved! You can now work on this task.",
-        "submitted": "Your work has been submitted. Awaiting review from the owner.",
-        "validating": "Changes have been requested. Please revise and resubmit.",
-        "accepted": "Congratulations! Your work was accepted.",
-        "rejected": "Your submission was rejected."
+        "requested": "Ombi lako linakaguliwa. Utajulishwa likiidhinishwa.",
+        "inProgress": "Ombi lako limeidhinishwa! Sasa unaweza kufanya kazi hii.",
+        "submitted": "Kazi yako imewasilishwa. Inasubiri ukaguzi kutoka kwa mmiliki.",
+        "validating": "Mabadiliko yameombwa. Tafadhali kagua na uwasilishe tena.",
+        "accepted": "Hongera! Kazi yako imekubaliwa.",
+        "rejected": "Uwasilishaji wako umekataliwa."
       }
     },
     "owner": {
       "statusBanner": {
-        "requested": "{{workerName}} has requested to work on this task. Approve or reject the request.",
-        "inProgress": "{{workerName}} is currently working on this task.",
-        "submitted": "{{workerName}} has submitted their work for review.",
-        "validating": "Waiting for {{workerName}} to revise and resubmit.",
-        "accepted": "{{workerName}}'s work was accepted.",
-        "rejected": "{{workerName}}'s submission was rejected."
+        "requested": "{{workerName}} ameomba kufanya kazi hii. Idhinisha au kataa ombi.",
+        "inProgress": "{{workerName}} anafanya kazi hii kwa sasa.",
+        "submitted": "{{workerName}} amewasilisha kazi yao kwa ukaguzi.",
+        "validating": "Inasubiri {{workerName}} akagua na kuwasilisha tena.",
+        "accepted": "Kazi ya {{workerName}} imekubaliwa.",
+        "rejected": "Uwasilishaji wa {{workerName}} umekataliwa."
       }
     },
     "actions": {
-      "submitForReview": "Submit for Review",
-      "withdrawSubmission": "Withdraw Submission",
-      "withdrawing": "Withdrawing...",
-      "reviseAndResubmit": "Revise and Resubmit",
-      "approveRequest": "Approve Request",
-      "approving": "Approving...",
-      "rejectRequest": "Reject Request",
-      "rejecting": "Rejecting...",
-      "reviewAndAccept": "Review & Accept",
-      "requestChanges": "Request Changes",
-      "reject": "Reject"
+      "submitForReview": "Wasilisha kwa Ukaguzi",
+      "withdrawSubmission": "Ondoa Uwasilishaji",
+      "withdrawing": "Inaondoa...",
+      "reviseAndResubmit": "Kagua na Wasilisha Tena",
+      "approveRequest": "Idhinisha Ombi",
+      "approving": "Inaidhinisha...",
+      "rejectRequest": "Kataa Ombi",
+      "rejecting": "Inakataa...",
+      "reviewAndAccept": "Kagua na Kubali",
+      "requestChanges": "Omba Mabadiliko",
+      "reject": "Kataa"
     },
     "review": {
-      "title": "Review Submitted Work",
-      "description": "Review work from {{workerName}}",
-      "workerSolution": "Worker's Solution:",
-      "selfReviewScore": "Self-Review: {{score}}/100",
-      "noSubmissionNotes": "No submission notes provided",
-      "actionLabel": "Action *",
+      "title": "Kagua Kazi Iliyowasilishwa",
+      "description": "Kagua kazi kutoka kwa {{workerName}}",
+      "workerSolution": "Suluhisho la Mfanyakazi:",
+      "selfReviewScore": "Ukaguzi wa Kibinafsi: {{score}}/100",
+      "noSubmissionNotes": "Hakuna maelezo ya uwasilishaji yaliyotolewa",
+      "actionLabel": "Kitendo *",
       "required": "*",
-      "optional": "(Optional)",
-      "feedbackLabel": "Review Feedback {{required}}",
+      "optional": "(Hiari)",
+      "feedbackLabel": "Maoni ya Ukaguzi {{required}}",
       "feedbackPlaceholder": {
-        "validate": "Explain what changes are needed",
-        "other": "Provide comments or suggestions for the worker"
+        "validate": "Eleza mabadiliko yanayohitajika",
+        "other": "Toa maoni au mapendekezo kwa mfanyakazi"
       },
       "editorPlaceholder": {
-        "validate": "Describe the changes needed...",
-        "other": "Provide feedback on the work..."
+        "validate": "Eleza mabadiliko yanayohitajika...",
+        "other": "Toa maoni kuhusu kazi..."
       },
-      "managerReviewLabel": "Manager Review (Optional)",
-      "managerReviewDescription": "Rate the quality of the completed work",
-      "scorePoor": "0 (Poor)",
-      "scoreExcellent": "100 (Excellent)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "acceptWork": "Accept Work",
-      "requestChangesButton": "Request Changes",
-      "rejectWork": "Reject Work",
+      "managerReviewLabel": "Ukaguzi wa Meneja (Hiari)",
+      "managerReviewDescription": "Tathmini ubora wa kazi iliyokamilika",
+      "scorePoor": "0 (Mbaya)",
+      "scoreExcellent": "100 (Bora)",
+      "cancel": "Ghairi",
+      "submitting": "Inawasilisha...",
+      "acceptWork": "Kubali Kazi",
+      "requestChangesButton": "Omba Mabadiliko",
+      "rejectWork": "Kataa Kazi",
       "actions": {
         "accept": {
-          "title": "Accept (Mark task as Done)",
-          "description": "Approve the work and complete the task. Worker earns their reward."
+          "title": "Kubali (Weka alama kazi kama Imekamilika)",
+          "description": "Idhinisha kazi na ukamilishe kazi. Mfanyakazi anapata tuzo yake."
         },
         "requestChanges": {
-          "title": "Request Changes",
-          "description": "Ask the worker to revise and resubmit their work."
+          "title": "Omba Mabadiliko",
+          "description": "Muulize mfanyakazi akagua na kuwasilisha kazi yake tena."
         },
         "reject": {
-          "title": "Reject (Reopen task)",
-          "description": "Reject the work completely and reopen the task for others."
+          "title": "Kataa (Fungua tena kazi)",
+          "description": "Kataa kazi kabisa na ufungue kazi tena kwa wengine."
         }
       },
       "messages": {
-        "accepted": "Work accepted and task marked as complete",
-        "changesRequested": "Changes requested, worker will revise",
-        "rejected": "Work rejected, task reopened",
-        "error": "Could not submit review. Please try again."
+        "accepted": "Kazi imekubaliwa na kuwekwa alama kama imekamilika",
+        "changesRequested": "Mabadiliko yameombwa, mfanyakazi atakagua",
+        "rejected": "Kazi imekataliwa, kazi imefunguliwa tena",
+        "error": "Haikuweza kuwasilisha ukaguzi. Tafadhali jaribu tena."
       }
     },
     "submission": {
-      "title": "Submit Work for Review",
-      "titleResubmit": "Revise and Resubmit Work",
-      "description": "Describe your solution for {{taskName}} and submit for validation.",
-      "solutionLabel": "Solution Description *",
-      "solutionDescription": "Explain what you did to complete this task. Supports formatting, links, and lists.",
-      "solutionPlaceholder": "Explain what you did to complete this task...",
-      "selfReviewLabel": "Self-Review (Optional)",
-      "selfReviewDescription": "Rate the quality of your work on a scale of 0-100",
-      "scoreNeedsWork": "0 (Needs work)",
-      "scorePerfect": "100 (Perfect)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "submitButton": "Submit for Review",
-      "resubmitButton": "Resubmit for Review",
+      "title": "Wasilisha Kazi kwa Ukaguzi",
+      "titleResubmit": "Kagua na Wasilisha Kazi Tena",
+      "description": "Eleza suluhisho lako kwa {{taskName}} na uwasilishe kwa uthibitishaji.",
+      "solutionLabel": "Maelezo ya Suluhisho *",
+      "solutionDescription": "Eleza ulichofanya kukamilisha kazi hii. Inasaidia uumbizaji, viungo na orodha.",
+      "solutionPlaceholder": "Eleza ulichofanya kukamilisha kazi hii...",
+      "selfReviewLabel": "Ukaguzi wa Kibinafsi (Hiari)",
+      "selfReviewDescription": "Tathmini ubora wa kazi yako kwa kiwango cha 0-100",
+      "scoreNeedsWork": "0 (Inahitaji kazi)",
+      "scorePerfect": "100 (Kamili)",
+      "cancel": "Ghairi",
+      "submitting": "Inawasilisha...",
+      "submitButton": "Wasilisha kwa Ukaguzi",
+      "resubmitButton": "Wasilisha Tena kwa Ukaguzi",
       "errors": {
-        "missingDescription": "Please provide a description of your work",
-        "submitError": "Could not submit your work. Please try again."
+        "missingDescription": "Tafadhali toa maelezo ya kazi yako",
+        "submitError": "Haikuweza kuwasilisha kazi yako. Tafadhali jaribu tena."
       },
       "messages": {
-        "submitted": "Work submitted for review",
-        "resubmitted": "Work resubmitted for review"
+        "submitted": "Kazi imewasilishwa kwa ukaguzi",
+        "resubmitted": "Kazi imewasilishwa tena kwa ukaguzi"
       }
     }
   }

@@ -672,107 +672,107 @@
     "visibleToParticipants": "Visible only to job participants",
     "worker": {
       "statusBanner": {
-        "requested": "Your request is being reviewed. You will be notified when approved.",
-        "inProgress": "Your request was approved! You can now work on this task.",
-        "submitted": "Your work has been submitted. Awaiting review from the owner.",
-        "validating": "Changes have been requested. Please revise and resubmit.",
-        "accepted": "Congratulations! Your work was accepted.",
-        "rejected": "Your submission was rejected."
+        "requested": "Ваш запрос рассматривается. Вы будете уведомлены при утверждении.",
+        "inProgress": "Ваш запрос одобрен! Теперь вы можете работать над этой задачей.",
+        "submitted": "Ваша работа отправлена. Ожидание проверки владельца.",
+        "validating": "Запрошены изменения. Пожалуйста, пересмотрите и отправьте снова.",
+        "accepted": "Поздравляем! Ваша работа принята.",
+        "rejected": "Ваша заявка отклонена."
       }
     },
     "owner": {
       "statusBanner": {
-        "requested": "{{workerName}} has requested to work on this task. Approve or reject the request.",
-        "inProgress": "{{workerName}} is currently working on this task.",
-        "submitted": "{{workerName}} has submitted their work for review.",
-        "validating": "Waiting for {{workerName}} to revise and resubmit.",
-        "accepted": "{{workerName}}'s work was accepted.",
-        "rejected": "{{workerName}}'s submission was rejected."
+        "requested": "{{workerName}} запросил работу над этой задачей. Одобрите или отклоните запрос.",
+        "inProgress": "{{workerName}} в настоящее время работает над этой задачей.",
+        "submitted": "{{workerName}} отправил свою работу на проверку.",
+        "validating": "Ожидание {{workerName}} для пересмотра и повторной отправки.",
+        "accepted": "Работа {{workerName}} принята.",
+        "rejected": "Заявка {{workerName}} отклонена."
       }
     },
     "actions": {
-      "submitForReview": "Submit for Review",
-      "withdrawSubmission": "Withdraw Submission",
-      "withdrawing": "Withdrawing...",
-      "reviseAndResubmit": "Revise and Resubmit",
-      "approveRequest": "Approve Request",
-      "approving": "Approving...",
-      "rejectRequest": "Reject Request",
-      "rejecting": "Rejecting...",
-      "reviewAndAccept": "Review & Accept",
-      "requestChanges": "Request Changes",
-      "reject": "Reject"
+      "submitForReview": "Отправить на Проверку",
+      "withdrawSubmission": "Отозвать Заявку",
+      "withdrawing": "Отзыв...",
+      "reviseAndResubmit": "Пересмотреть и Отправить Снова",
+      "approveRequest": "Одобрить Запрос",
+      "approving": "Одобрение...",
+      "rejectRequest": "Отклонить Запрос",
+      "rejecting": "Отклонение...",
+      "reviewAndAccept": "Проверить и Принять",
+      "requestChanges": "Запросить Изменения",
+      "reject": "Отклонить"
     },
     "review": {
-      "title": "Review Submitted Work",
-      "description": "Review work from {{workerName}}",
-      "workerSolution": "Worker's Solution:",
-      "selfReviewScore": "Self-Review: {{score}}/100",
-      "noSubmissionNotes": "No submission notes provided",
-      "actionLabel": "Action *",
+      "title": "Проверить Отправленную Работу",
+      "description": "Проверить работу от {{workerName}}",
+      "workerSolution": "Решение Работника:",
+      "selfReviewScore": "Самооценка: {{score}}/100",
+      "noSubmissionNotes": "Примечания к заявке не предоставлены",
+      "actionLabel": "Действие *",
       "required": "*",
-      "optional": "(Optional)",
-      "feedbackLabel": "Review Feedback {{required}}",
+      "optional": "(Необязательно)",
+      "feedbackLabel": "Отзыв о Проверке {{required}}",
       "feedbackPlaceholder": {
-        "validate": "Explain what changes are needed",
-        "other": "Provide comments or suggestions for the worker"
+        "validate": "Объясните, какие изменения необходимы",
+        "other": "Предоставьте комментарии или предложения для работника"
       },
       "editorPlaceholder": {
-        "validate": "Describe the changes needed...",
-        "other": "Provide feedback on the work..."
+        "validate": "Опишите необходимые изменения...",
+        "other": "Предоставьте отзыв о работе..."
       },
-      "managerReviewLabel": "Manager Review (Optional)",
-      "managerReviewDescription": "Rate the quality of the completed work",
-      "scorePoor": "0 (Poor)",
-      "scoreExcellent": "100 (Excellent)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "acceptWork": "Accept Work",
-      "requestChangesButton": "Request Changes",
-      "rejectWork": "Reject Work",
+      "managerReviewLabel": "Проверка Менеджера (Необязательно)",
+      "managerReviewDescription": "Оцените качество выполненной работы",
+      "scorePoor": "0 (Плохо)",
+      "scoreExcellent": "100 (Отлично)",
+      "cancel": "Отмена",
+      "submitting": "Отправка...",
+      "acceptWork": "Принять Работу",
+      "requestChangesButton": "Запросить Изменения",
+      "rejectWork": "Отклонить Работу",
       "actions": {
         "accept": {
-          "title": "Accept (Mark task as Done)",
-          "description": "Approve the work and complete the task. Worker earns their reward."
+          "title": "Принять (Отметить задачу как Выполненную)",
+          "description": "Одобрить работу и завершить задачу. Работник получает вознаграждение."
         },
         "requestChanges": {
-          "title": "Request Changes",
-          "description": "Ask the worker to revise and resubmit their work."
+          "title": "Запросить Изменения",
+          "description": "Попросить работника пересмотреть и повторно отправить свою работу."
         },
         "reject": {
-          "title": "Reject (Reopen task)",
-          "description": "Reject the work completely and reopen the task for others."
+          "title": "Отклонить (Открыть задачу снова)",
+          "description": "Полностью отклонить работу и открыть задачу для других."
         }
       },
       "messages": {
-        "accepted": "Work accepted and task marked as complete",
-        "changesRequested": "Changes requested, worker will revise",
-        "rejected": "Work rejected, task reopened",
-        "error": "Could not submit review. Please try again."
+        "accepted": "Работа принята и задача отмечена как выполненная",
+        "changesRequested": "Запрошены изменения, работник пересмотрит",
+        "rejected": "Работа отклонена, задача открыта снова",
+        "error": "Не удалось отправить проверку. Пожалуйста, попробуйте снова."
       }
     },
     "submission": {
-      "title": "Submit Work for Review",
-      "titleResubmit": "Revise and Resubmit Work",
-      "description": "Describe your solution for {{taskName}} and submit for validation.",
-      "solutionLabel": "Solution Description *",
-      "solutionDescription": "Explain what you did to complete this task. Supports formatting, links, and lists.",
-      "solutionPlaceholder": "Explain what you did to complete this task...",
-      "selfReviewLabel": "Self-Review (Optional)",
-      "selfReviewDescription": "Rate the quality of your work on a scale of 0-100",
-      "scoreNeedsWork": "0 (Needs work)",
-      "scorePerfect": "100 (Perfect)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "submitButton": "Submit for Review",
-      "resubmitButton": "Resubmit for Review",
+      "title": "Отправить Работу на Проверку",
+      "titleResubmit": "Пересмотреть и Отправить Работу Снова",
+      "description": "Опишите ваше решение для {{taskName}} и отправьте на проверку.",
+      "solutionLabel": "Описание Решения *",
+      "solutionDescription": "Объясните, что вы сделали для выполнения этой задачи. Поддерживает форматирование, ссылки и списки.",
+      "solutionPlaceholder": "Объясните, что вы сделали для выполнения этой задачи...",
+      "selfReviewLabel": "Самооценка (Необязательно)",
+      "selfReviewDescription": "Оцените качество вашей работы по шкале от 0 до 100",
+      "scoreNeedsWork": "0 (Нужна работа)",
+      "scorePerfect": "100 (Идеально)",
+      "cancel": "Отмена",
+      "submitting": "Отправка...",
+      "submitButton": "Отправить на Проверку",
+      "resubmitButton": "Отправить Снова на Проверку",
       "errors": {
-        "missingDescription": "Please provide a description of your work",
-        "submitError": "Could not submit your work. Please try again."
+        "missingDescription": "Пожалуйста, предоставьте описание вашей работы",
+        "submitError": "Не удалось отправить вашу работу. Пожалуйста, попробуйте снова."
       },
       "messages": {
-        "submitted": "Work submitted for review",
-        "resubmitted": "Work resubmitted for review"
+        "submitted": "Работа отправлена на проверку",
+        "resubmitted": "Работа отправлена снова на проверку"
       }
     }
   }

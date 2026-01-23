@@ -672,107 +672,107 @@
     "visibleToParticipants": "Visible only to job participants",
     "worker": {
       "statusBanner": {
-        "requested": "Your request is being reviewed. You will be notified when approved.",
-        "inProgress": "Your request was approved! You can now work on this task.",
-        "submitted": "Your work has been submitted. Awaiting review from the owner.",
-        "validating": "Changes have been requested. Please revise and resubmit.",
-        "accepted": "Congratulations! Your work was accepted.",
-        "rejected": "Your submission was rejected."
+        "requested": "Uw verzoek wordt beoordeeld. U wordt op de hoogte gebracht wanneer het is goedgekeurd.",
+        "inProgress": "Uw verzoek is goedgekeurd! U kunt nu aan deze taak werken.",
+        "submitted": "Uw werk is ingediend. Wacht op beoordeling van de eigenaar.",
+        "validating": "Er zijn wijzigingen aangevraagd. Herzien en opnieuw indienen alstublieft.",
+        "accepted": "Gefeliciteerd! Uw werk is geaccepteerd.",
+        "rejected": "Uw inzending is afgewezen."
       }
     },
     "owner": {
       "statusBanner": {
-        "requested": "{{workerName}} has requested to work on this task. Approve or reject the request.",
-        "inProgress": "{{workerName}} is currently working on this task.",
-        "submitted": "{{workerName}} has submitted their work for review.",
-        "validating": "Waiting for {{workerName}} to revise and resubmit.",
-        "accepted": "{{workerName}}'s work was accepted.",
-        "rejected": "{{workerName}}'s submission was rejected."
+        "requested": "{{workerName}} heeft gevraagd om aan deze taak te werken. Keur het verzoek goed of wijs het af.",
+        "inProgress": "{{workerName}} werkt momenteel aan deze taak.",
+        "submitted": "{{workerName}} heeft zijn werk ingediend ter beoordeling.",
+        "validating": "Wachten op {{workerName}} om te herzien en opnieuw in te dienen.",
+        "accepted": "Het werk van {{workerName}} is geaccepteerd.",
+        "rejected": "De inzending van {{workerName}} is afgewezen."
       }
     },
     "actions": {
-      "submitForReview": "Submit for Review",
-      "withdrawSubmission": "Withdraw Submission",
-      "withdrawing": "Withdrawing...",
-      "reviseAndResubmit": "Revise and Resubmit",
-      "approveRequest": "Approve Request",
-      "approving": "Approving...",
-      "rejectRequest": "Reject Request",
-      "rejecting": "Rejecting...",
-      "reviewAndAccept": "Review & Accept",
-      "requestChanges": "Request Changes",
-      "reject": "Reject"
+      "submitForReview": "Indienen ter Beoordeling",
+      "withdrawSubmission": "Inzending Intrekken",
+      "withdrawing": "Intrekken...",
+      "reviseAndResubmit": "Herzien en Opnieuw Indienen",
+      "approveRequest": "Verzoek Goedkeuren",
+      "approving": "Goedkeuren...",
+      "rejectRequest": "Verzoek Afwijzen",
+      "rejecting": "Afwijzen...",
+      "reviewAndAccept": "Beoordelen en Accepteren",
+      "requestChanges": "Wijzigingen Aanvragen",
+      "reject": "Afwijzen"
     },
     "review": {
-      "title": "Review Submitted Work",
-      "description": "Review work from {{workerName}}",
-      "workerSolution": "Worker's Solution:",
-      "selfReviewScore": "Self-Review: {{score}}/100",
-      "noSubmissionNotes": "No submission notes provided",
-      "actionLabel": "Action *",
+      "title": "Ingediend Werk Beoordelen",
+      "description": "Werk beoordelen van {{workerName}}",
+      "workerSolution": "Oplossing van de Werker:",
+      "selfReviewScore": "Zelfbeoordeling: {{score}}/100",
+      "noSubmissionNotes": "Geen inzendings notities verstrekt",
+      "actionLabel": "Actie *",
       "required": "*",
-      "optional": "(Optional)",
-      "feedbackLabel": "Review Feedback {{required}}",
+      "optional": "(Optioneel)",
+      "feedbackLabel": "Beoordelings Feedback {{required}}",
       "feedbackPlaceholder": {
-        "validate": "Explain what changes are needed",
-        "other": "Provide comments or suggestions for the worker"
+        "validate": "Leg uit welke wijzigingen nodig zijn",
+        "other": "Geef opmerkingen of suggesties voor de werker"
       },
       "editorPlaceholder": {
-        "validate": "Describe the changes needed...",
-        "other": "Provide feedback on the work..."
+        "validate": "Beschrijf de benodigde wijzigingen...",
+        "other": "Geef feedback over het werk..."
       },
-      "managerReviewLabel": "Manager Review (Optional)",
-      "managerReviewDescription": "Rate the quality of the completed work",
-      "scorePoor": "0 (Poor)",
-      "scoreExcellent": "100 (Excellent)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "acceptWork": "Accept Work",
-      "requestChangesButton": "Request Changes",
-      "rejectWork": "Reject Work",
+      "managerReviewLabel": "Manager Beoordeling (Optioneel)",
+      "managerReviewDescription": "Beoordeel de kwaliteit van het voltooide werk",
+      "scorePoor": "0 (Slecht)",
+      "scoreExcellent": "100 (Uitstekend)",
+      "cancel": "Annuleren",
+      "submitting": "Indienen...",
+      "acceptWork": "Werk Accepteren",
+      "requestChangesButton": "Wijzigingen Aanvragen",
+      "rejectWork": "Werk Afwijzen",
       "actions": {
         "accept": {
-          "title": "Accept (Mark task as Done)",
-          "description": "Approve the work and complete the task. Worker earns their reward."
+          "title": "Accepteren (Taak markeren als Voltooid)",
+          "description": "Keur het werk goed en voltooi de taak. Werker verdient zijn beloning."
         },
         "requestChanges": {
-          "title": "Request Changes",
-          "description": "Ask the worker to revise and resubmit their work."
+          "title": "Wijzigingen Aanvragen",
+          "description": "Vraag de werker om zijn werk te herzien en opnieuw in te dienen."
         },
         "reject": {
-          "title": "Reject (Reopen task)",
-          "description": "Reject the work completely and reopen the task for others."
+          "title": "Afwijzen (Taak heropenen)",
+          "description": "Wijs het werk volledig af en heropen de taak voor anderen."
         }
       },
       "messages": {
-        "accepted": "Work accepted and task marked as complete",
-        "changesRequested": "Changes requested, worker will revise",
-        "rejected": "Work rejected, task reopened",
-        "error": "Could not submit review. Please try again."
+        "accepted": "Werk geaccepteerd en taak gemarkeerd als voltooid",
+        "changesRequested": "Wijzigingen aangevraagd, werker zal herzien",
+        "rejected": "Werk afgewezen, taak heropend",
+        "error": "Kon beoordeling niet indienen. Probeer het opnieuw."
       }
     },
     "submission": {
-      "title": "Submit Work for Review",
-      "titleResubmit": "Revise and Resubmit Work",
-      "description": "Describe your solution for {{taskName}} and submit for validation.",
-      "solutionLabel": "Solution Description *",
-      "solutionDescription": "Explain what you did to complete this task. Supports formatting, links, and lists.",
-      "solutionPlaceholder": "Explain what you did to complete this task...",
-      "selfReviewLabel": "Self-Review (Optional)",
-      "selfReviewDescription": "Rate the quality of your work on a scale of 0-100",
-      "scoreNeedsWork": "0 (Needs work)",
+      "title": "Werk Indienen ter Beoordeling",
+      "titleResubmit": "Herzien en Opnieuw Indienen van Werk",
+      "description": "Beschrijf uw oplossing voor {{taskName}} en dien in ter validatie.",
+      "solutionLabel": "Beschrijving van de Oplossing *",
+      "solutionDescription": "Leg uit wat u deed om deze taak te voltooien. Ondersteunt opmaak, links en lijsten.",
+      "solutionPlaceholder": "Leg uit wat u deed om deze taak te voltooien...",
+      "selfReviewLabel": "Zelfbeoordeling (Optioneel)",
+      "selfReviewDescription": "Beoordeel de kwaliteit van uw werk op een schaal van 0-100",
+      "scoreNeedsWork": "0 (Verbetering nodig)",
       "scorePerfect": "100 (Perfect)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "submitButton": "Submit for Review",
-      "resubmitButton": "Resubmit for Review",
+      "cancel": "Annuleren",
+      "submitting": "Indienen...",
+      "submitButton": "Indienen ter Beoordeling",
+      "resubmitButton": "Opnieuw Indienen ter Beoordeling",
       "errors": {
-        "missingDescription": "Please provide a description of your work",
-        "submitError": "Could not submit your work. Please try again."
+        "missingDescription": "Geef alstublieft een beschrijving van uw werk",
+        "submitError": "Kon uw werk niet indienen. Probeer het opnieuw."
       },
       "messages": {
-        "submitted": "Work submitted for review",
-        "resubmitted": "Work resubmitted for review"
+        "submitted": "Werk ingediend ter beoordeling",
+        "resubmitted": "Werk opnieuw ingediend ter beoordeling"
       }
     }
   }

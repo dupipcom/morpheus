@@ -674,107 +674,107 @@
     "visibleToParticipants": "Visible only to job participants",
     "worker": {
       "statusBanner": {
-        "requested": "Your request is being reviewed. You will be notified when approved.",
-        "inProgress": "Your request was approved! You can now work on this task.",
-        "submitted": "Your work has been submitted. Awaiting review from the owner.",
-        "validating": "Changes have been requested. Please revise and resubmit.",
-        "accepted": "Congratulations! Your work was accepted.",
-        "rejected": "Your submission was rejected."
+        "requested": "Zure eskaera aztertzen ari da. Onartzen denean jakinaraziko zaizu.",
+        "inProgress": "Zure eskaera onartu da! Orain zeregin honetan lan egin dezakezu.",
+        "submitted": "Zure lana bidali da. Jabeak berrikusteko zain.",
+        "validating": "Aldaketak eskatu dira. Mesedez, berrikusi eta birbidali.",
+        "accepted": "Zorionak! Zure lana onartu da.",
+        "rejected": "Zure bidalketa baztertu da."
       }
     },
     "owner": {
       "statusBanner": {
-        "requested": "{{workerName}} has requested to work on this task. Approve or reject the request.",
-        "inProgress": "{{workerName}} is currently working on this task.",
-        "submitted": "{{workerName}} has submitted their work for review.",
-        "validating": "Waiting for {{workerName}} to revise and resubmit.",
-        "accepted": "{{workerName}}'s work was accepted.",
-        "rejected": "{{workerName}}'s submission was rejected."
+        "requested": "{{workerName}}(e)k zeregin honetan lan egiteko eskatu du. Onartu edo baztertu eskaera.",
+        "inProgress": "{{workerName}} zeregin honetan ari da lanean.",
+        "submitted": "{{workerName}}(e)k bere lana berrikusteko bidali du.",
+        "validating": "{{workerName}}(e)k berrikusi eta birbidaltzeko zain.",
+        "accepted": "{{workerName}}(r)en lana onartu da.",
+        "rejected": "{{workerName}}(r)en bidalketa baztertu da."
       }
     },
     "actions": {
-      "submitForReview": "Submit for Review",
-      "withdrawSubmission": "Withdraw Submission",
-      "withdrawing": "Withdrawing...",
-      "reviseAndResubmit": "Revise and Resubmit",
-      "approveRequest": "Approve Request",
-      "approving": "Approving...",
-      "rejectRequest": "Reject Request",
-      "rejecting": "Rejecting...",
-      "reviewAndAccept": "Review & Accept",
-      "requestChanges": "Request Changes",
-      "reject": "Reject"
+      "submitForReview": "Berrikusteko Bidali",
+      "withdrawSubmission": "Bidalketa Atzera Egin",
+      "withdrawing": "Atzera egiten...",
+      "reviseAndResubmit": "Berrikusi eta Birbidali",
+      "approveRequest": "Eskaera Onartu",
+      "approving": "Onartzen...",
+      "rejectRequest": "Eskaera Baztertu",
+      "rejecting": "Baztertzen...",
+      "reviewAndAccept": "Berrikusi eta Onartu",
+      "requestChanges": "Aldaketak Eskatu",
+      "reject": "Baztertu"
     },
     "review": {
-      "title": "Review Submitted Work",
-      "description": "Review work from {{workerName}}",
-      "workerSolution": "Worker's Solution:",
-      "selfReviewScore": "Self-Review: {{score}}/100",
-      "noSubmissionNotes": "No submission notes provided",
-      "actionLabel": "Action *",
+      "title": "Bidalitako Lana Berrikusi",
+      "description": "{{workerName}}(r)en lana berrikusi",
+      "workerSolution": "Langilearen Irtenbidea:",
+      "selfReviewScore": "Auto-ebaluazioa: {{score}}/100",
+      "noSubmissionNotes": "Ez dira bidalketako oharrik eman",
+      "actionLabel": "Ekintza *",
       "required": "*",
-      "optional": "(Optional)",
-      "feedbackLabel": "Review Feedback {{required}}",
+      "optional": "(Aukerakoa)",
+      "feedbackLabel": "Berrikuspena Iritzia {{required}}",
       "feedbackPlaceholder": {
-        "validate": "Explain what changes are needed",
-        "other": "Provide comments or suggestions for the worker"
+        "validate": "Azaldu zer aldaketa behar diren",
+        "other": "Eman iruzkinak edo iradokizunak langilearentzat"
       },
       "editorPlaceholder": {
-        "validate": "Describe the changes needed...",
-        "other": "Provide feedback on the work..."
+        "validate": "Deskribatu behar diren aldaketak...",
+        "other": "Eman lanari buruzko iritzia..."
       },
-      "managerReviewLabel": "Manager Review (Optional)",
-      "managerReviewDescription": "Rate the quality of the completed work",
-      "scorePoor": "0 (Poor)",
-      "scoreExcellent": "100 (Excellent)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "acceptWork": "Accept Work",
-      "requestChangesButton": "Request Changes",
-      "rejectWork": "Reject Work",
+      "managerReviewLabel": "Kudeatzailearen Berrikuspena (Aukerakoa)",
+      "managerReviewDescription": "Baloratu amaitutako lanaren kalitatea",
+      "scorePoor": "0 (Txarra)",
+      "scoreExcellent": "100 (Bikaina)",
+      "cancel": "Utzi",
+      "submitting": "Bidaltzen...",
+      "acceptWork": "Lana Onartu",
+      "requestChangesButton": "Aldaketak Eskatu",
+      "rejectWork": "Lana Baztertu",
       "actions": {
         "accept": {
-          "title": "Accept (Mark task as Done)",
-          "description": "Approve the work and complete the task. Worker earns their reward."
+          "title": "Onartu (Zeregin Eginda markatuta)",
+          "description": "Onartu lana eta osatu zeregiña. Langileak saria irabazten du."
         },
         "requestChanges": {
-          "title": "Request Changes",
-          "description": "Ask the worker to revise and resubmit their work."
+          "title": "Aldaketak Eskatu",
+          "description": "Eskatu langileari bere lana berrikusi eta birbidaltzea."
         },
         "reject": {
-          "title": "Reject (Reopen task)",
-          "description": "Reject the work completely and reopen the task for others."
+          "title": "Baztertu (Zeregin berriz ireki)",
+          "description": "Baztertu lana erabat eta berriz ireki zeregin besteentzat."
         }
       },
       "messages": {
-        "accepted": "Work accepted and task marked as complete",
-        "changesRequested": "Changes requested, worker will revise",
-        "rejected": "Work rejected, task reopened",
-        "error": "Could not submit review. Please try again."
+        "accepted": "Lana onartu eta zeregin osatuta markatu da",
+        "changesRequested": "Aldaketak eskatu dira, langileak berrikustuko du",
+        "rejected": "Lana baztertu da, zeregin berriz ireki da",
+        "error": "Ezin izan da berrikuspena bidali. Mesedez, saiatu berriro."
       }
     },
     "submission": {
-      "title": "Submit Work for Review",
-      "titleResubmit": "Revise and Resubmit Work",
-      "description": "Describe your solution for {{taskName}} and submit for validation.",
-      "solutionLabel": "Solution Description *",
-      "solutionDescription": "Explain what you did to complete this task. Supports formatting, links, and lists.",
-      "solutionPlaceholder": "Explain what you did to complete this task...",
-      "selfReviewLabel": "Self-Review (Optional)",
-      "selfReviewDescription": "Rate the quality of your work on a scale of 0-100",
-      "scoreNeedsWork": "0 (Needs work)",
-      "scorePerfect": "100 (Perfect)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "submitButton": "Submit for Review",
-      "resubmitButton": "Resubmit for Review",
+      "title": "Lana Berrikusteko Bidali",
+      "titleResubmit": "Berrikusi eta Birbidali Lana",
+      "description": "Deskribatu {{taskName}} zereginari buruzko zure irtenbidea eta bidali balidatzeko.",
+      "solutionLabel": "Irtenbidearen Deskribapena *",
+      "solutionDescription": "Azaldu zeregin hau osatzeko zer egin zenuen. Formatua, estekak eta zerrendak onartzen ditu.",
+      "solutionPlaceholder": "Azaldu zeregin hau osatzeko zer egin zenuen...",
+      "selfReviewLabel": "Auto-ebaluazioa (Aukerakoa)",
+      "selfReviewDescription": "Baloratu zure lanaren kalitatea 0-100 eskalan",
+      "scoreNeedsWork": "0 (Lana behar du)",
+      "scorePerfect": "100 (Perfektua)",
+      "cancel": "Utzi",
+      "submitting": "Bidaltzen...",
+      "submitButton": "Berrikusteko Bidali",
+      "resubmitButton": "Berrikusteko Birbidali",
       "errors": {
-        "missingDescription": "Please provide a description of your work",
-        "submitError": "Could not submit your work. Please try again."
+        "missingDescription": "Mesedez, eman zure lanaren deskribapena",
+        "submitError": "Ezin izan da zure lana bidali. Mesedez, saiatu berriro."
       },
       "messages": {
-        "submitted": "Work submitted for review",
-        "resubmitted": "Work resubmitted for review"
+        "submitted": "Lana berrikusteko bidali da",
+        "resubmitted": "Lana berrikusteko birbidali da"
       }
     }
   }

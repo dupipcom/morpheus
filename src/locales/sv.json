@@ -675,107 +675,107 @@
     "visibleToParticipants": "Visible only to job participants",
     "worker": {
       "statusBanner": {
-        "requested": "Your request is being reviewed. You will be notified when approved.",
-        "inProgress": "Your request was approved! You can now work on this task.",
-        "submitted": "Your work has been submitted. Awaiting review from the owner.",
-        "validating": "Changes have been requested. Please revise and resubmit.",
-        "accepted": "Congratulations! Your work was accepted.",
-        "rejected": "Your submission was rejected."
+        "requested": "Din begäran granskas. Du kommer att meddelas när den godkänns.",
+        "inProgress": "Din begäran godkändes! Du kan nu arbeta med denna uppgift.",
+        "submitted": "Ditt arbete har skickats in. Väntar på granskning från ägaren.",
+        "validating": "Ändringar har begärts. Vänligen revidera och skicka in på nytt.",
+        "accepted": "Grattis! Ditt arbete accepterades.",
+        "rejected": "Din inlämning avvisades."
       }
     },
     "owner": {
       "statusBanner": {
-        "requested": "{{workerName}} has requested to work on this task. Approve or reject the request.",
-        "inProgress": "{{workerName}} is currently working on this task.",
-        "submitted": "{{workerName}} has submitted their work for review.",
-        "validating": "Waiting for {{workerName}} to revise and resubmit.",
-        "accepted": "{{workerName}}'s work was accepted.",
-        "rejected": "{{workerName}}'s submission was rejected."
+        "requested": "{{workerName}} har begärt att arbeta med denna uppgift. Godkänn eller avvisa begäran.",
+        "inProgress": "{{workerName}} arbetar för närvarande med denna uppgift.",
+        "submitted": "{{workerName}} har skickat in sitt arbete för granskning.",
+        "validating": "Väntar på att {{workerName}} ska revidera och skicka in på nytt.",
+        "accepted": "{{workerName}}s arbete accepterades.",
+        "rejected": "{{workerName}}s inlämning avvisades."
       }
     },
     "actions": {
-      "submitForReview": "Submit for Review",
-      "withdrawSubmission": "Withdraw Submission",
-      "withdrawing": "Withdrawing...",
-      "reviseAndResubmit": "Revise and Resubmit",
-      "approveRequest": "Approve Request",
-      "approving": "Approving...",
-      "rejectRequest": "Reject Request",
-      "rejecting": "Rejecting...",
-      "reviewAndAccept": "Review & Accept",
-      "requestChanges": "Request Changes",
-      "reject": "Reject"
+      "submitForReview": "Skicka in för Granskning",
+      "withdrawSubmission": "Dra Tillbaka Inlämning",
+      "withdrawing": "Drar tillbaka...",
+      "reviseAndResubmit": "Revidera och Skicka in Igen",
+      "approveRequest": "Godkänn Begäran",
+      "approving": "Godkänner...",
+      "rejectRequest": "Avvisa Begäran",
+      "rejecting": "Avvisar...",
+      "reviewAndAccept": "Granska och Acceptera",
+      "requestChanges": "Begär Ändringar",
+      "reject": "Avvisa"
     },
     "review": {
-      "title": "Review Submitted Work",
-      "description": "Review work from {{workerName}}",
-      "workerSolution": "Worker's Solution:",
-      "selfReviewScore": "Self-Review: {{score}}/100",
-      "noSubmissionNotes": "No submission notes provided",
-      "actionLabel": "Action *",
+      "title": "Granska Inlämnat Arbete",
+      "description": "Granska arbete från {{workerName}}",
+      "workerSolution": "Arbetarens Lösning:",
+      "selfReviewScore": "Självgranskning: {{score}}/100",
+      "noSubmissionNotes": "Inga inlämningsanteckningar tillhandahållna",
+      "actionLabel": "Åtgärd *",
       "required": "*",
-      "optional": "(Optional)",
-      "feedbackLabel": "Review Feedback {{required}}",
+      "optional": "(Valfritt)",
+      "feedbackLabel": "Gransknings Feedback {{required}}",
       "feedbackPlaceholder": {
-        "validate": "Explain what changes are needed",
-        "other": "Provide comments or suggestions for the worker"
+        "validate": "Förklara vilka ändringar som behövs",
+        "other": "Ge kommentarer eller förslag till arbetaren"
       },
       "editorPlaceholder": {
-        "validate": "Describe the changes needed...",
-        "other": "Provide feedback on the work..."
+        "validate": "Beskriv nödvändiga ändringar...",
+        "other": "Ge feedback om arbetet..."
       },
-      "managerReviewLabel": "Manager Review (Optional)",
-      "managerReviewDescription": "Rate the quality of the completed work",
-      "scorePoor": "0 (Poor)",
-      "scoreExcellent": "100 (Excellent)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "acceptWork": "Accept Work",
-      "requestChangesButton": "Request Changes",
-      "rejectWork": "Reject Work",
+      "managerReviewLabel": "Chefsgranskning (Valfritt)",
+      "managerReviewDescription": "Betygsätt kvaliteten på det slutförda arbetet",
+      "scorePoor": "0 (Dåligt)",
+      "scoreExcellent": "100 (Utmärkt)",
+      "cancel": "Avbryt",
+      "submitting": "Skickar in...",
+      "acceptWork": "Acceptera Arbete",
+      "requestChangesButton": "Begär Ändringar",
+      "rejectWork": "Avvisa Arbete",
       "actions": {
         "accept": {
-          "title": "Accept (Mark task as Done)",
-          "description": "Approve the work and complete the task. Worker earns their reward."
+          "title": "Acceptera (Markera uppgift som Klar)",
+          "description": "Godkänn arbetet och slutför uppgiften. Arbetaren tjänar sin belöning."
         },
         "requestChanges": {
-          "title": "Request Changes",
-          "description": "Ask the worker to revise and resubmit their work."
+          "title": "Begär Ändringar",
+          "description": "Be arbetaren att revidera och skicka in sitt arbete igen."
         },
         "reject": {
-          "title": "Reject (Reopen task)",
-          "description": "Reject the work completely and reopen the task for others."
+          "title": "Avvisa (Öppna uppgift igen)",
+          "description": "Avvisa arbetet helt och öppna uppgiften igen för andra."
         }
       },
       "messages": {
-        "accepted": "Work accepted and task marked as complete",
-        "changesRequested": "Changes requested, worker will revise",
-        "rejected": "Work rejected, task reopened",
-        "error": "Could not submit review. Please try again."
+        "accepted": "Arbete accepterat och uppgift markerad som slutförd",
+        "changesRequested": "Ändringar begärda, arbetaren kommer att revidera",
+        "rejected": "Arbete avvisat, uppgift öppnad igen",
+        "error": "Kunde inte skicka in granskning. Vänligen försök igen."
       }
     },
     "submission": {
-      "title": "Submit Work for Review",
-      "titleResubmit": "Revise and Resubmit Work",
-      "description": "Describe your solution for {{taskName}} and submit for validation.",
-      "solutionLabel": "Solution Description *",
-      "solutionDescription": "Explain what you did to complete this task. Supports formatting, links, and lists.",
-      "solutionPlaceholder": "Explain what you did to complete this task...",
-      "selfReviewLabel": "Self-Review (Optional)",
-      "selfReviewDescription": "Rate the quality of your work on a scale of 0-100",
-      "scoreNeedsWork": "0 (Needs work)",
-      "scorePerfect": "100 (Perfect)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "submitButton": "Submit for Review",
-      "resubmitButton": "Resubmit for Review",
+      "title": "Skicka in Arbete för Granskning",
+      "titleResubmit": "Revidera och Skicka in Arbete Igen",
+      "description": "Beskriv din lösning för {{taskName}} och skicka in för validering.",
+      "solutionLabel": "Lösningsbeskrivning *",
+      "solutionDescription": "Förklara vad du gjorde för att slutföra denna uppgift. Stöder formatering, länkar och listor.",
+      "solutionPlaceholder": "Förklara vad du gjorde för att slutföra denna uppgift...",
+      "selfReviewLabel": "Självgranskning (Valfritt)",
+      "selfReviewDescription": "Betygsätt kvaliteten på ditt arbete på en skala från 0-100",
+      "scoreNeedsWork": "0 (Behöver arbete)",
+      "scorePerfect": "100 (Perfekt)",
+      "cancel": "Avbryt",
+      "submitting": "Skickar in...",
+      "submitButton": "Skicka in för Granskning",
+      "resubmitButton": "Skicka in Igen för Granskning",
       "errors": {
-        "missingDescription": "Please provide a description of your work",
-        "submitError": "Could not submit your work. Please try again."
+        "missingDescription": "Vänligen ge en beskrivning av ditt arbete",
+        "submitError": "Kunde inte skicka in ditt arbete. Vänligen försök igen."
       },
       "messages": {
-        "submitted": "Work submitted for review",
-        "resubmitted": "Work resubmitted for review"
+        "submitted": "Arbete inskickat för granskning",
+        "resubmitted": "Arbete inskickat igen för granskning"
       }
     }
   }

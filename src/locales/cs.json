@@ -672,107 +672,107 @@
     "visibleToParticipants": "Visible only to job participants",
     "worker": {
       "statusBanner": {
-        "requested": "Your request is being reviewed. You will be notified when approved.",
-        "inProgress": "Your request was approved! You can now work on this task.",
-        "submitted": "Your work has been submitted. Awaiting review from the owner.",
-        "validating": "Changes have been requested. Please revise and resubmit.",
-        "accepted": "Congratulations! Your work was accepted.",
-        "rejected": "Your submission was rejected."
+        "requested": "Vaše žádost se posuzuje. Budete upozorněni po schválení.",
+        "inProgress": "Vaše žádost byla schválena! Nyní můžete pracovat na tomto úkolu.",
+        "submitted": "Vaše práce byla odeslána. Čeká se na posouzení vlastníka.",
+        "validating": "Byly požadovány změny. Prosím přepracujte a znovu odešlete.",
+        "accepted": "Gratulujeme! Vaše práce byla přijata.",
+        "rejected": "Vaše podání bylo zamítnuto."
       }
     },
     "owner": {
       "statusBanner": {
-        "requested": "{{workerName}} has requested to work on this task. Approve or reject the request.",
-        "inProgress": "{{workerName}} is currently working on this task.",
-        "submitted": "{{workerName}} has submitted their work for review.",
-        "validating": "Waiting for {{workerName}} to revise and resubmit.",
-        "accepted": "{{workerName}}'s work was accepted.",
-        "rejected": "{{workerName}}'s submission was rejected."
+        "requested": "{{workerName}} požádal o práci na tomto úkolu. Schvalte nebo zamítněte žádost.",
+        "inProgress": "{{workerName}} momentálně pracuje na tomto úkolu.",
+        "submitted": "{{workerName}} odeslal svou práci k posouzení.",
+        "validating": "Čeká se na {{workerName}} na přepracování a opětovné odeslání.",
+        "accepted": "Práce uživatele {{workerName}} byla přijata.",
+        "rejected": "Podání uživatele {{workerName}} bylo zamítnuto."
       }
     },
     "actions": {
-      "submitForReview": "Submit for Review",
-      "withdrawSubmission": "Withdraw Submission",
-      "withdrawing": "Withdrawing...",
-      "reviseAndResubmit": "Revise and Resubmit",
-      "approveRequest": "Approve Request",
-      "approving": "Approving...",
-      "rejectRequest": "Reject Request",
-      "rejecting": "Rejecting...",
-      "reviewAndAccept": "Review & Accept",
-      "requestChanges": "Request Changes",
-      "reject": "Reject"
+      "submitForReview": "Odeslat k Posouzení",
+      "withdrawSubmission": "Stáhnout Podání",
+      "withdrawing": "Stahování...",
+      "reviseAndResubmit": "Přepracovat a Znovu Odeslat",
+      "approveRequest": "Schválit Žádost",
+      "approving": "Schvalování...",
+      "rejectRequest": "Zamítnout Žádost",
+      "rejecting": "Zamítání...",
+      "reviewAndAccept": "Posoudit a Přijmout",
+      "requestChanges": "Požadovat Změny",
+      "reject": "Zamítnout"
     },
     "review": {
-      "title": "Review Submitted Work",
-      "description": "Review work from {{workerName}}",
-      "workerSolution": "Worker's Solution:",
-      "selfReviewScore": "Self-Review: {{score}}/100",
-      "noSubmissionNotes": "No submission notes provided",
-      "actionLabel": "Action *",
+      "title": "Posoudit Odeslanou Práci",
+      "description": "Posoudit práci od {{workerName}}",
+      "workerSolution": "Řešení Pracovníka:",
+      "selfReviewScore": "Sebehodnocení: {{score}}/100",
+      "noSubmissionNotes": "Nebyly poskytnuty žádné poznámky k podání",
+      "actionLabel": "Akce *",
       "required": "*",
-      "optional": "(Optional)",
-      "feedbackLabel": "Review Feedback {{required}}",
+      "optional": "(Volitelné)",
+      "feedbackLabel": "Zpětná Vazba z Posouzení {{required}}",
       "feedbackPlaceholder": {
-        "validate": "Explain what changes are needed",
-        "other": "Provide comments or suggestions for the worker"
+        "validate": "Vysvětlete, jaké změny jsou potřeba",
+        "other": "Poskytněte komentáře nebo návrhy pro pracovníka"
       },
       "editorPlaceholder": {
-        "validate": "Describe the changes needed...",
-        "other": "Provide feedback on the work..."
+        "validate": "Popište potřebné změny...",
+        "other": "Poskytněte zpětnou vazbu k práci..."
       },
-      "managerReviewLabel": "Manager Review (Optional)",
-      "managerReviewDescription": "Rate the quality of the completed work",
-      "scorePoor": "0 (Poor)",
-      "scoreExcellent": "100 (Excellent)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "acceptWork": "Accept Work",
-      "requestChangesButton": "Request Changes",
-      "rejectWork": "Reject Work",
+      "managerReviewLabel": "Hodnocení Manažera (Volitelné)",
+      "managerReviewDescription": "Ohodnoťte kvalitu dokončené práce",
+      "scorePoor": "0 (Špatné)",
+      "scoreExcellent": "100 (Výborné)",
+      "cancel": "Zrušit",
+      "submitting": "Odesílání...",
+      "acceptWork": "Přijmout Práci",
+      "requestChangesButton": "Požadovat Změny",
+      "rejectWork": "Zamítnout Práci",
       "actions": {
         "accept": {
-          "title": "Accept (Mark task as Done)",
-          "description": "Approve the work and complete the task. Worker earns their reward."
+          "title": "Přijmout (Označit úkol jako Hotový)",
+          "description": "Schvalte práci a dokončete úkol. Pracovník získá svou odměnu."
         },
         "requestChanges": {
-          "title": "Request Changes",
-          "description": "Ask the worker to revise and resubmit their work."
+          "title": "Požadovat Změny",
+          "description": "Požádejte pracovníka o přepracování a opětovné odeslání práce."
         },
         "reject": {
-          "title": "Reject (Reopen task)",
-          "description": "Reject the work completely and reopen the task for others."
+          "title": "Zamítnout (Znovu otevřít úkol)",
+          "description": "Zamítněte práci úplně a znovu otevřete úkol pro ostatní."
         }
       },
       "messages": {
-        "accepted": "Work accepted and task marked as complete",
-        "changesRequested": "Changes requested, worker will revise",
-        "rejected": "Work rejected, task reopened",
-        "error": "Could not submit review. Please try again."
+        "accepted": "Práce přijata a úkol označen jako dokončený",
+        "changesRequested": "Změny požadovány, pracovník přepracuje",
+        "rejected": "Práce zamítnuta, úkol znovu otevřen",
+        "error": "Nelze odeslat posouzení. Zkuste to prosím znovu."
       }
     },
     "submission": {
-      "title": "Submit Work for Review",
-      "titleResubmit": "Revise and Resubmit Work",
-      "description": "Describe your solution for {{taskName}} and submit for validation.",
-      "solutionLabel": "Solution Description *",
-      "solutionDescription": "Explain what you did to complete this task. Supports formatting, links, and lists.",
-      "solutionPlaceholder": "Explain what you did to complete this task...",
-      "selfReviewLabel": "Self-Review (Optional)",
-      "selfReviewDescription": "Rate the quality of your work on a scale of 0-100",
-      "scoreNeedsWork": "0 (Needs work)",
-      "scorePerfect": "100 (Perfect)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "submitButton": "Submit for Review",
-      "resubmitButton": "Resubmit for Review",
+      "title": "Odeslat Práci k Posouzení",
+      "titleResubmit": "Přepracovat a Znovu Odeslat Práci",
+      "description": "Popište své řešení pro {{taskName}} a odešlete k ověření.",
+      "solutionLabel": "Popis Řešení *",
+      "solutionDescription": "Vysvětlete, co jste udělali pro dokončení tohoto úkolu. Podporuje formátování, odkazy a seznamy.",
+      "solutionPlaceholder": "Vysvětlete, co jste udělali pro dokončení tohoto úkolu...",
+      "selfReviewLabel": "Sebehodnocení (Volitelné)",
+      "selfReviewDescription": "Ohodnoťte kvalitu své práce na stupnici od 0 do 100",
+      "scoreNeedsWork": "0 (Potřebuje práci)",
+      "scorePerfect": "100 (Perfektní)",
+      "cancel": "Zrušit",
+      "submitting": "Odesílání...",
+      "submitButton": "Odeslat k Posouzení",
+      "resubmitButton": "Znovu Odeslat k Posouzení",
       "errors": {
-        "missingDescription": "Please provide a description of your work",
-        "submitError": "Could not submit your work. Please try again."
+        "missingDescription": "Prosím poskytněte popis vaší práce",
+        "submitError": "Nelze odeslat vaši práci. Zkuste to prosím znovu."
       },
       "messages": {
-        "submitted": "Work submitted for review",
-        "resubmitted": "Work resubmitted for review"
+        "submitted": "Práce odeslána k posouzení",
+        "resubmitted": "Práce znovu odeslána k posouzení"
       }
     }
   }

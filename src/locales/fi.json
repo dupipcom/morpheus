@@ -676,107 +676,107 @@
     "visibleToParticipants": "Visible only to job participants",
     "worker": {
       "statusBanner": {
-        "requested": "Your request is being reviewed. You will be notified when approved.",
-        "inProgress": "Your request was approved! You can now work on this task.",
-        "submitted": "Your work has been submitted. Awaiting review from the owner.",
-        "validating": "Changes have been requested. Please revise and resubmit.",
-        "accepted": "Congratulations! Your work was accepted.",
-        "rejected": "Your submission was rejected."
+        "requested": "Pyyntöäsi tarkistetaan. Saat ilmoituksen, kun se hyväksytään.",
+        "inProgress": "Pyyntösi hyväksyttiin! Voit nyt työskennellä tämän tehtävän parissa.",
+        "submitted": "Työsi on lähetetty. Odotetaan omistajan tarkistusta.",
+        "validating": "Muutoksia on pyydetty. Ole hyvä ja tarkista ja lähetä uudelleen.",
+        "accepted": "Onnittelut! Työsi hyväksyttiin.",
+        "rejected": "Lähetyksesi hylättiin."
       }
     },
     "owner": {
       "statusBanner": {
-        "requested": "{{workerName}} has requested to work on this task. Approve or reject the request.",
-        "inProgress": "{{workerName}} is currently working on this task.",
-        "submitted": "{{workerName}} has submitted their work for review.",
-        "validating": "Waiting for {{workerName}} to revise and resubmit.",
-        "accepted": "{{workerName}}'s work was accepted.",
-        "rejected": "{{workerName}}'s submission was rejected."
+        "requested": "{{workerName}} on pyytänyt työskennellä tämän tehtävän parissa. Hyväksy tai hylkää pyyntö.",
+        "inProgress": "{{workerName}} työskentelee tällä hetkellä tämän tehtävän parissa.",
+        "submitted": "{{workerName}} on lähettänyt työnsä tarkistettavaksi.",
+        "validating": "Odotetaan, että {{workerName}} tarkistaa ja lähettää uudelleen.",
+        "accepted": "{{workerName}}n työ hyväksyttiin.",
+        "rejected": "{{workerName}}n lähetys hylättiin."
       }
     },
     "actions": {
-      "submitForReview": "Submit for Review",
-      "withdrawSubmission": "Withdraw Submission",
-      "withdrawing": "Withdrawing...",
-      "reviseAndResubmit": "Revise and Resubmit",
-      "approveRequest": "Approve Request",
-      "approving": "Approving...",
-      "rejectRequest": "Reject Request",
-      "rejecting": "Rejecting...",
-      "reviewAndAccept": "Review & Accept",
-      "requestChanges": "Request Changes",
-      "reject": "Reject"
+      "submitForReview": "Lähetä Tarkistettavaksi",
+      "withdrawSubmission": "Peruuta Lähetys",
+      "withdrawing": "Peruutetaan...",
+      "reviseAndResubmit": "Tarkista ja Lähetä Uudelleen",
+      "approveRequest": "Hyväksy Pyyntö",
+      "approving": "Hyväksytään...",
+      "rejectRequest": "Hylkää Pyyntö",
+      "rejecting": "Hylätään...",
+      "reviewAndAccept": "Tarkista ja Hyväksy",
+      "requestChanges": "Pyydä Muutoksia",
+      "reject": "Hylkää"
     },
     "review": {
-      "title": "Review Submitted Work",
-      "description": "Review work from {{workerName}}",
-      "workerSolution": "Worker's Solution:",
-      "selfReviewScore": "Self-Review: {{score}}/100",
-      "noSubmissionNotes": "No submission notes provided",
-      "actionLabel": "Action *",
+      "title": "Tarkista Lähetetty Työ",
+      "description": "Tarkista työ käyttäjältä {{workerName}}",
+      "workerSolution": "Työntekijän Ratkaisu:",
+      "selfReviewScore": "Itsearviointi: {{score}}/100",
+      "noSubmissionNotes": "Lähetysmuistiinpanoja ei annettu",
+      "actionLabel": "Toiminto *",
       "required": "*",
-      "optional": "(Optional)",
-      "feedbackLabel": "Review Feedback {{required}}",
+      "optional": "(Valinnainen)",
+      "feedbackLabel": "Tarkistuspalaute {{required}}",
       "feedbackPlaceholder": {
-        "validate": "Explain what changes are needed",
-        "other": "Provide comments or suggestions for the worker"
+        "validate": "Selitä, mitä muutoksia tarvitaan",
+        "other": "Anna kommentteja tai ehdotuksia työntekijälle"
       },
       "editorPlaceholder": {
-        "validate": "Describe the changes needed...",
-        "other": "Provide feedback on the work..."
+        "validate": "Kuvaile tarvittavat muutokset...",
+        "other": "Anna palautetta työstä..."
       },
-      "managerReviewLabel": "Manager Review (Optional)",
-      "managerReviewDescription": "Rate the quality of the completed work",
-      "scorePoor": "0 (Poor)",
-      "scoreExcellent": "100 (Excellent)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "acceptWork": "Accept Work",
-      "requestChangesButton": "Request Changes",
-      "rejectWork": "Reject Work",
+      "managerReviewLabel": "Esimiehen Arviointi (Valinnainen)",
+      "managerReviewDescription": "Arvioi valmiin työn laatu",
+      "scorePoor": "0 (Huono)",
+      "scoreExcellent": "100 (Erinomainen)",
+      "cancel": "Peruuta",
+      "submitting": "Lähetetään...",
+      "acceptWork": "Hyväksy Työ",
+      "requestChangesButton": "Pyydä Muutoksia",
+      "rejectWork": "Hylkää Työ",
       "actions": {
         "accept": {
-          "title": "Accept (Mark task as Done)",
-          "description": "Approve the work and complete the task. Worker earns their reward."
+          "title": "Hyväksy (Merkitse tehtävä Valmiiksi)",
+          "description": "Hyväksy työ ja viimeistele tehtävä. Työntekijä ansaitsee palkintonsa."
         },
         "requestChanges": {
-          "title": "Request Changes",
-          "description": "Ask the worker to revise and resubmit their work."
+          "title": "Pyydä Muutoksia",
+          "description": "Pyydä työntekijää tarkistamaan ja lähettämään työnsä uudelleen."
         },
         "reject": {
-          "title": "Reject (Reopen task)",
-          "description": "Reject the work completely and reopen the task for others."
+          "title": "Hylkää (Avaa tehtävä uudelleen)",
+          "description": "Hylkää työ kokonaan ja avaa tehtävä uudelleen muille."
         }
       },
       "messages": {
-        "accepted": "Work accepted and task marked as complete",
-        "changesRequested": "Changes requested, worker will revise",
-        "rejected": "Work rejected, task reopened",
-        "error": "Could not submit review. Please try again."
+        "accepted": "Työ hyväksytty ja tehtävä merkitty valmiiksi",
+        "changesRequested": "Muutoksia pyydetty, työntekijä tarkistaa",
+        "rejected": "Työ hylätty, tehtävä avattu uudelleen",
+        "error": "Tarkistusta ei voitu lähettää. Yritä uudelleen."
       }
     },
     "submission": {
-      "title": "Submit Work for Review",
-      "titleResubmit": "Revise and Resubmit Work",
-      "description": "Describe your solution for {{taskName}} and submit for validation.",
-      "solutionLabel": "Solution Description *",
-      "solutionDescription": "Explain what you did to complete this task. Supports formatting, links, and lists.",
-      "solutionPlaceholder": "Explain what you did to complete this task...",
-      "selfReviewLabel": "Self-Review (Optional)",
-      "selfReviewDescription": "Rate the quality of your work on a scale of 0-100",
-      "scoreNeedsWork": "0 (Needs work)",
-      "scorePerfect": "100 (Perfect)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "submitButton": "Submit for Review",
-      "resubmitButton": "Resubmit for Review",
+      "title": "Lähetä Työ Tarkistettavaksi",
+      "titleResubmit": "Tarkista ja Lähetä Työ Uudelleen",
+      "description": "Kuvaile ratkaisusi tehtävään {{taskName}} ja lähetä validoitavaksi.",
+      "solutionLabel": "Ratkaisun Kuvaus *",
+      "solutionDescription": "Selitä, mitä teit tämän tehtävän suorittamiseksi. Tukee muotoilua, linkkejä ja luetteloita.",
+      "solutionPlaceholder": "Selitä, mitä teit tämän tehtävän suorittamiseksi...",
+      "selfReviewLabel": "Itsearviointi (Valinnainen)",
+      "selfReviewDescription": "Arvioi työsi laatu asteikolla 0-100",
+      "scoreNeedsWork": "0 (Vaatii työtä)",
+      "scorePerfect": "100 (Täydellinen)",
+      "cancel": "Peruuta",
+      "submitting": "Lähetetään...",
+      "submitButton": "Lähetä Tarkistettavaksi",
+      "resubmitButton": "Lähetä Uudelleen Tarkistettavaksi",
       "errors": {
-        "missingDescription": "Please provide a description of your work",
-        "submitError": "Could not submit your work. Please try again."
+        "missingDescription": "Anna työsi kuvaus",
+        "submitError": "Työtäsi ei voitu lähettää. Yritä uudelleen."
       },
       "messages": {
-        "submitted": "Work submitted for review",
-        "resubmitted": "Work resubmitted for review"
+        "submitted": "Työ lähetetty tarkistettavaksi",
+        "resubmitted": "Työ lähetetty uudelleen tarkistettavaksi"
       }
     }
   }

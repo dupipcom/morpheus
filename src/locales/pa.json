@@ -676,107 +676,107 @@
     "visibleToParticipants": "Visible only to job participants",
     "worker": {
       "statusBanner": {
-        "requested": "Your request is being reviewed. You will be notified when approved.",
-        "inProgress": "Your request was approved! You can now work on this task.",
-        "submitted": "Your work has been submitted. Awaiting review from the owner.",
-        "validating": "Changes have been requested. Please revise and resubmit.",
-        "accepted": "Congratulations! Your work was accepted.",
-        "rejected": "Your submission was rejected."
+        "requested": "ਤੁਹਾਡੀ ਬੇਨਤੀ ਦੀ ਸਮੀਖਿਆ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ। ਮਨਜ਼ੂਰ ਹੋਣ 'ਤੇ ਤੁਹਾਨੂੰ ਸੂਚਿਤ ਕੀਤਾ ਜਾਵੇਗਾ।",
+        "inProgress": "ਤੁਹਾਡੀ ਬੇਨਤੀ ਮਨਜ਼ੂਰ ਹੋ ਗਈ! ਹੁਣ ਤੁਸੀਂ ਇਸ ਕੰਮ 'ਤੇ ਕੰਮ ਕਰ ਸਕਦੇ ਹੋ।",
+        "submitted": "ਤੁਹਾਡਾ ਕੰਮ ਜਮ੍ਹਾਂ ਹੋ ਗਿਆ ਹੈ। ਮਾਲਕ ਤੋਂ ਸਮੀਖਿਆ ਦੀ ਉਡੀਕ ਹੈ।",
+        "validating": "ਤਬਦੀਲੀਆਂ ਦੀ ਬੇਨਤੀ ਕੀਤੀ ਗਈ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਸੋਧ ਕਰੋ ਅਤੇ ਦੁਬਾਰਾ ਜਮ੍ਹਾਂ ਕਰੋ।",
+        "accepted": "ਵਧਾਈ! ਤੁਹਾਡਾ ਕੰਮ ਸਵੀਕਾਰ ਕਰ ਲਿਆ ਗਿਆ।",
+        "rejected": "ਤੁਹਾਡੀ ਜਮ੍ਹਾਂ ਨੂੰ ਰੱਦ ਕਰ ਦਿੱਤਾ ਗਿਆ।"
       }
     },
     "owner": {
       "statusBanner": {
-        "requested": "{{workerName}} has requested to work on this task. Approve or reject the request.",
-        "inProgress": "{{workerName}} is currently working on this task.",
-        "submitted": "{{workerName}} has submitted their work for review.",
-        "validating": "Waiting for {{workerName}} to revise and resubmit.",
-        "accepted": "{{workerName}}'s work was accepted.",
-        "rejected": "{{workerName}}'s submission was rejected."
+        "requested": "{{workerName}} ਨੇ ਇਸ ਕੰਮ 'ਤੇ ਕੰਮ ਕਰਨ ਦੀ ਬੇਨਤੀ ਕੀਤੀ ਹੈ। ਬੇਨਤੀ ਮਨਜ਼ੂਰ ਜਾਂ ਰੱਦ ਕਰੋ।",
+        "inProgress": "{{workerName}} ਇਸ ਸਮੇਂ ਇਸ ਕੰਮ 'ਤੇ ਕੰਮ ਕਰ ਰਿਹਾ ਹੈ।",
+        "submitted": "{{workerName}} ਨੇ ਸਮੀਖਿਆ ਲਈ ਆਪਣਾ ਕੰਮ ਜਮ੍ਹਾਂ ਕੀਤਾ ਹੈ।",
+        "validating": "{{workerName}} ਦੇ ਸੋਧ ਕਰਨ ਅਤੇ ਦੁਬਾਰਾ ਜਮ੍ਹਾਂ ਕਰਨ ਦੀ ਉਡੀਕ ਹੈ।",
+        "accepted": "{{workerName}} ਦਾ ਕੰਮ ਸਵੀਕਾਰ ਕੀਤਾ ਗਿਆ।",
+        "rejected": "{{workerName}} ਦੀ ਜਮ੍ਹਾਂ ਨੂੰ ਰੱਦ ਕਰ ਦਿੱਤਾ ਗਿਆ।"
       }
     },
     "actions": {
-      "submitForReview": "Submit for Review",
-      "withdrawSubmission": "Withdraw Submission",
-      "withdrawing": "Withdrawing...",
-      "reviseAndResubmit": "Revise and Resubmit",
-      "approveRequest": "Approve Request",
-      "approving": "Approving...",
-      "rejectRequest": "Reject Request",
-      "rejecting": "Rejecting...",
-      "reviewAndAccept": "Review & Accept",
-      "requestChanges": "Request Changes",
-      "reject": "Reject"
+      "submitForReview": "ਸਮੀਖਿਆ ਲਈ ਜਮ੍ਹਾਂ ਕਰੋ",
+      "withdrawSubmission": "ਜਮ੍ਹਾਂ ਵਾਪਸ ਲਓ",
+      "withdrawing": "ਵਾਪਸ ਲੈ ਰਿਹਾ ਹੈ...",
+      "reviseAndResubmit": "ਸੋਧ ਕਰੋ ਅਤੇ ਦੁਬਾਰਾ ਜਮ੍ਹਾਂ ਕਰੋ",
+      "approveRequest": "ਬੇਨਤੀ ਮਨਜ਼ੂਰ ਕਰੋ",
+      "approving": "ਮਨਜ਼ੂਰ ਕਰ ਰਿਹਾ ਹੈ...",
+      "rejectRequest": "ਬੇਨਤੀ ਰੱਦ ਕਰੋ",
+      "rejecting": "ਰੱਦ ਕਰ ਰਿਹਾ ਹੈ...",
+      "reviewAndAccept": "ਸਮੀਖਿਆ ਕਰੋ ਅਤੇ ਸਵੀਕਾਰ ਕਰੋ",
+      "requestChanges": "ਤਬਦੀਲੀਆਂ ਦੀ ਬੇਨਤੀ ਕਰੋ",
+      "reject": "ਰੱਦ ਕਰੋ"
     },
     "review": {
-      "title": "Review Submitted Work",
-      "description": "Review work from {{workerName}}",
-      "workerSolution": "Worker's Solution:",
-      "selfReviewScore": "Self-Review: {{score}}/100",
-      "noSubmissionNotes": "No submission notes provided",
-      "actionLabel": "Action *",
+      "title": "ਜਮ੍ਹਾਂ ਕੀਤੇ ਕੰਮ ਦੀ ਸਮੀਖਿਆ ਕਰੋ",
+      "description": "{{workerName}} ਤੋਂ ਕੰਮ ਦੀ ਸਮੀਖਿਆ ਕਰੋ",
+      "workerSolution": "ਕਰਮਚਾਰੀ ਦਾ ਹੱਲ:",
+      "selfReviewScore": "ਸਵੈ-ਸਮੀਖਿਆ: {{score}}/100",
+      "noSubmissionNotes": "ਕੋਈ ਜਮ੍ਹਾਂ ਨੋਟ ਪ੍ਰਦਾਨ ਨਹੀਂ ਕੀਤੇ ਗਏ",
+      "actionLabel": "ਕਾਰਵਾਈ *",
       "required": "*",
-      "optional": "(Optional)",
-      "feedbackLabel": "Review Feedback {{required}}",
+      "optional": "(ਵਿਕਲਪਿਕ)",
+      "feedbackLabel": "ਸਮੀਖਿਆ ਫੀਡਬੈਕ {{required}}",
       "feedbackPlaceholder": {
-        "validate": "Explain what changes are needed",
-        "other": "Provide comments or suggestions for the worker"
+        "validate": "ਸਮਝਾਓ ਕਿ ਕਿਹੜੀਆਂ ਤਬਦੀਲੀਆਂ ਦੀ ਲੋੜ ਹੈ",
+        "other": "ਕਰਮਚਾਰੀ ਨੂੰ ਟਿੱਪਣੀਆਂ ਜਾਂ ਸੁਝਾਅ ਪ੍ਰਦਾਨ ਕਰੋ"
       },
       "editorPlaceholder": {
-        "validate": "Describe the changes needed...",
-        "other": "Provide feedback on the work..."
+        "validate": "ਲੋੜੀਂਦੀਆਂ ਤਬਦੀਲੀਆਂ ਦਾ ਵਰਣਨ ਕਰੋ...",
+        "other": "ਕੰਮ 'ਤੇ ਫੀਡਬੈਕ ਪ੍ਰਦਾਨ ਕਰੋ..."
       },
-      "managerReviewLabel": "Manager Review (Optional)",
-      "managerReviewDescription": "Rate the quality of the completed work",
-      "scorePoor": "0 (Poor)",
-      "scoreExcellent": "100 (Excellent)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "acceptWork": "Accept Work",
-      "requestChangesButton": "Request Changes",
-      "rejectWork": "Reject Work",
+      "managerReviewLabel": "ਮੈਨੇਜਰ ਸਮੀਖਿਆ (ਵਿਕਲਪਿਕ)",
+      "managerReviewDescription": "ਪੂਰੇ ਕੀਤੇ ਕੰਮ ਦੀ ਗੁਣਵੱਤਾ ਦੀ ਦਰਜਾਬੰਦੀ ਕਰੋ",
+      "scorePoor": "0 (ਮਾੜਾ)",
+      "scoreExcellent": "100 (ਸ਼ਾਨਦਾਰ)",
+      "cancel": "ਰੱਦ ਕਰੋ",
+      "submitting": "ਜਮ੍ਹਾਂ ਕਰ ਰਿਹਾ ਹੈ...",
+      "acceptWork": "ਕੰਮ ਸਵੀਕਾਰ ਕਰੋ",
+      "requestChangesButton": "ਤਬਦੀਲੀਆਂ ਦੀ ਬੇਨਤੀ ਕਰੋ",
+      "rejectWork": "ਕੰਮ ਰੱਦ ਕਰੋ",
       "actions": {
         "accept": {
-          "title": "Accept (Mark task as Done)",
-          "description": "Approve the work and complete the task. Worker earns their reward."
+          "title": "ਸਵੀਕਾਰ ਕਰੋ (ਕੰਮ ਨੂੰ ਹੋ ਗਿਆ ਵਜੋਂ ਚਿੰਨ੍ਹਿਤ ਕਰੋ)",
+          "description": "ਕੰਮ ਮਨਜ਼ੂਰ ਕਰੋ ਅਤੇ ਕੰਮ ਪੂਰਾ ਕਰੋ। ਕਰਮਚਾਰੀ ਆਪਣਾ ਇਨਾਮ ਕਮਾਉਂਦਾ ਹੈ।"
         },
         "requestChanges": {
-          "title": "Request Changes",
-          "description": "Ask the worker to revise and resubmit their work."
+          "title": "ਤਬਦੀਲੀਆਂ ਦੀ ਬੇਨਤੀ ਕਰੋ",
+          "description": "ਕਰਮਚਾਰੀ ਨੂੰ ਆਪਣੇ ਕੰਮ ਵਿੱਚ ਸੋਧ ਕਰਨ ਅਤੇ ਦੁਬਾਰਾ ਜਮ੍ਹਾਂ ਕਰਨ ਲਈ ਕਹੋ।"
         },
         "reject": {
-          "title": "Reject (Reopen task)",
-          "description": "Reject the work completely and reopen the task for others."
+          "title": "ਰੱਦ ਕਰੋ (ਕੰਮ ਦੁਬਾਰਾ ਖੋਲ੍ਹੋ)",
+          "description": "ਕੰਮ ਨੂੰ ਪੂਰੀ ਤਰ੍ਹਾਂ ਰੱਦ ਕਰੋ ਅਤੇ ਦੂਜਿਆਂ ਲਈ ਕੰਮ ਦੁਬਾਰਾ ਖੋਲ੍ਹੋ।"
         }
       },
       "messages": {
-        "accepted": "Work accepted and task marked as complete",
-        "changesRequested": "Changes requested, worker will revise",
-        "rejected": "Work rejected, task reopened",
-        "error": "Could not submit review. Please try again."
+        "accepted": "ਕੰਮ ਸਵੀਕਾਰ ਕੀਤਾ ਗਿਆ ਅਤੇ ਕੰਮ ਪੂਰਾ ਵਜੋਂ ਚਿੰਨ੍ਹਿਤ ਕੀਤਾ ਗਿਆ",
+        "changesRequested": "ਤਬਦੀਲੀਆਂ ਦੀ ਬੇਨਤੀ ਕੀਤੀ ਗਈ, ਕਰਮਚਾਰੀ ਸੋਧ ਕਰੇਗਾ",
+        "rejected": "ਕੰਮ ਰੱਦ ਕੀਤਾ ਗਿਆ, ਕੰਮ ਦੁਬਾਰਾ ਖੋਲ੍ਹਿਆ ਗਿਆ",
+        "error": "ਸਮੀਖਿਆ ਜਮ੍ਹਾਂ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕੀ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
       }
     },
     "submission": {
-      "title": "Submit Work for Review",
-      "titleResubmit": "Revise and Resubmit Work",
-      "description": "Describe your solution for {{taskName}} and submit for validation.",
-      "solutionLabel": "Solution Description *",
-      "solutionDescription": "Explain what you did to complete this task. Supports formatting, links, and lists.",
-      "solutionPlaceholder": "Explain what you did to complete this task...",
-      "selfReviewLabel": "Self-Review (Optional)",
-      "selfReviewDescription": "Rate the quality of your work on a scale of 0-100",
-      "scoreNeedsWork": "0 (Needs work)",
-      "scorePerfect": "100 (Perfect)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "submitButton": "Submit for Review",
-      "resubmitButton": "Resubmit for Review",
+      "title": "ਸਮੀਖਿਆ ਲਈ ਕੰਮ ਜਮ੍ਹਾਂ ਕਰੋ",
+      "titleResubmit": "ਕੰਮ ਸੋਧੋ ਅਤੇ ਦੁਬਾਰਾ ਜਮ੍ਹਾਂ ਕਰੋ",
+      "description": "{{taskName}} ਲਈ ਆਪਣੇ ਹੱਲ ਦਾ ਵਰਣਨ ਕਰੋ ਅਤੇ ਪ੍ਰਮਾਣਿਕਤਾ ਲਈ ਜਮ੍ਹਾਂ ਕਰੋ।",
+      "solutionLabel": "ਹੱਲ ਵੇਰਵਾ *",
+      "solutionDescription": "ਦੱਸੋ ਕਿ ਤੁਸੀਂ ਇਸ ਕੰਮ ਨੂੰ ਪੂਰਾ ਕਰਨ ਲਈ ਕੀ ਕੀਤਾ। ਫਾਰਮੈਟਿੰਗ, ਲਿੰਕ ਅਤੇ ਸੂਚੀਆਂ ਦਾ ਸਮਰਥਨ ਕਰਦਾ ਹੈ।",
+      "solutionPlaceholder": "ਦੱਸੋ ਕਿ ਤੁਸੀਂ ਇਸ ਕੰਮ ਨੂੰ ਪੂਰਾ ਕਰਨ ਲਈ ਕੀ ਕੀਤਾ...",
+      "selfReviewLabel": "ਸਵੈ-ਸਮੀਖਿਆ (ਵਿਕਲਪਿਕ)",
+      "selfReviewDescription": "0-100 ਦੇ ਪੈਮਾਨੇ 'ਤੇ ਆਪਣੇ ਕੰਮ ਦੀ ਗੁਣਵੱਤਾ ਦੀ ਦਰਜਾਬੰਦੀ ਕਰੋ",
+      "scoreNeedsWork": "0 (ਕੰਮ ਦੀ ਲੋੜ ਹੈ)",
+      "scorePerfect": "100 (ਸੰਪੂਰਨ)",
+      "cancel": "ਰੱਦ ਕਰੋ",
+      "submitting": "ਜਮ੍ਹਾਂ ਕਰ ਰਿਹਾ ਹੈ...",
+      "submitButton": "ਸਮੀਖਿਆ ਲਈ ਜਮ੍ਹਾਂ ਕਰੋ",
+      "resubmitButton": "ਸਮੀਖਿਆ ਲਈ ਦੁਬਾਰਾ ਜਮ੍ਹਾਂ ਕਰੋ",
       "errors": {
-        "missingDescription": "Please provide a description of your work",
-        "submitError": "Could not submit your work. Please try again."
+        "missingDescription": "ਕਿਰਪਾ ਕਰਕੇ ਆਪਣੇ ਕੰਮ ਦਾ ਵਰਣਨ ਪ੍ਰਦਾਨ ਕਰੋ",
+        "submitError": "ਤੁਹਾਡਾ ਕੰਮ ਜਮ੍ਹਾਂ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
       },
       "messages": {
-        "submitted": "Work submitted for review",
-        "resubmitted": "Work resubmitted for review"
+        "submitted": "ਕੰਮ ਸਮੀਖਿਆ ਲਈ ਜਮ੍ਹਾਂ ਕੀਤਾ ਗਿਆ",
+        "resubmitted": "ਕੰਮ ਸਮੀਖਿਆ ਲਈ ਦੁਬਾਰਾ ਜਮ੍ਹਾਂ ਕੀਤਾ ਗਿਆ"
       }
     }
   }

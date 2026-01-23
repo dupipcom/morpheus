@@ -672,107 +672,107 @@
     "visibleToParticipants": "Visible only to job participants",
     "worker": {
       "statusBanner": {
-        "requested": "Your request is being reviewed. You will be notified when approved.",
-        "inProgress": "Your request was approved! You can now work on this task.",
-        "submitted": "Your work has been submitted. Awaiting review from the owner.",
-        "validating": "Changes have been requested. Please revise and resubmit.",
-        "accepted": "Congratulations! Your work was accepted.",
-        "rejected": "Your submission was rejected."
+        "requested": "Teie taotlust vaadatakse üle. Teid teavitatakse, kui see on heaks kiidetud.",
+        "inProgress": "Teie taotlus kiideti heaks! Nüüd saate selle ülesande kallal töötada.",
+        "submitted": "Teie töö on esitatud. Oodatakse omaniku ülevaatust.",
+        "validating": "Muudatusi on taotletud. Palun vaadake üle ja esitage uuesti.",
+        "accepted": "Palju õnne! Teie töö võeti vastu.",
+        "rejected": "Teie esitus lükati tagasi."
       }
     },
     "owner": {
       "statusBanner": {
-        "requested": "{{workerName}} has requested to work on this task. Approve or reject the request.",
-        "inProgress": "{{workerName}} is currently working on this task.",
-        "submitted": "{{workerName}} has submitted their work for review.",
-        "validating": "Waiting for {{workerName}} to revise and resubmit.",
-        "accepted": "{{workerName}}'s work was accepted.",
-        "rejected": "{{workerName}}'s submission was rejected."
+        "requested": "{{workerName}} on taotlenud võimalust töötada selle ülesande kallal. Kinnitage või lükake taotlus tagasi.",
+        "inProgress": "{{workerName}} töötab praegu selle ülesande kallal.",
+        "submitted": "{{workerName}} on esitanud oma töö ülevaatuseks.",
+        "validating": "Oodatakse, et {{workerName}} vaataks üle ja esitaks uuesti.",
+        "accepted": "{{workerName}} töö võeti vastu.",
+        "rejected": "{{workerName}} esitus lükati tagasi."
       }
     },
     "actions": {
-      "submitForReview": "Submit for Review",
-      "withdrawSubmission": "Withdraw Submission",
-      "withdrawing": "Withdrawing...",
-      "reviseAndResubmit": "Revise and Resubmit",
-      "approveRequest": "Approve Request",
-      "approving": "Approving...",
-      "rejectRequest": "Reject Request",
-      "rejecting": "Rejecting...",
-      "reviewAndAccept": "Review & Accept",
-      "requestChanges": "Request Changes",
-      "reject": "Reject"
+      "submitForReview": "Esita Ülevaatuseks",
+      "withdrawSubmission": "Võta Esitus Tagasi",
+      "withdrawing": "Tagasivõtmine...",
+      "reviseAndResubmit": "Vaata Üle ja Esita Uuesti",
+      "approveRequest": "Kinnita Taotlus",
+      "approving": "Kinnitamine...",
+      "rejectRequest": "Lükka Taotlus Tagasi",
+      "rejecting": "Tagasilükkamine...",
+      "reviewAndAccept": "Vaata Üle ja Võta Vastu",
+      "requestChanges": "Taotleja Muudatusi",
+      "reject": "Lükka Tagasi"
     },
     "review": {
-      "title": "Review Submitted Work",
-      "description": "Review work from {{workerName}}",
-      "workerSolution": "Worker's Solution:",
-      "selfReviewScore": "Self-Review: {{score}}/100",
-      "noSubmissionNotes": "No submission notes provided",
-      "actionLabel": "Action *",
+      "title": "Vaata Esitatud Tööd Üle",
+      "description": "Vaata üle töö kasutajalt {{workerName}}",
+      "workerSolution": "Töötaja Lahendus:",
+      "selfReviewScore": "Eneseanalüüs: {{score}}/100",
+      "noSubmissionNotes": "Esituse märkusi ei antud",
+      "actionLabel": "Tegevus *",
       "required": "*",
-      "optional": "(Optional)",
-      "feedbackLabel": "Review Feedback {{required}}",
+      "optional": "(Valikuline)",
+      "feedbackLabel": "Ülevaatuse Tagasiside {{required}}",
       "feedbackPlaceholder": {
-        "validate": "Explain what changes are needed",
-        "other": "Provide comments or suggestions for the worker"
+        "validate": "Selgitage, milliseid muudatusi on vaja",
+        "other": "Andke töötajale kommentaare või ettepanekuid"
       },
       "editorPlaceholder": {
-        "validate": "Describe the changes needed...",
-        "other": "Provide feedback on the work..."
+        "validate": "Kirjeldage vajalikke muudatusi...",
+        "other": "Andke tagasisidet töö kohta..."
       },
-      "managerReviewLabel": "Manager Review (Optional)",
-      "managerReviewDescription": "Rate the quality of the completed work",
-      "scorePoor": "0 (Poor)",
-      "scoreExcellent": "100 (Excellent)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "acceptWork": "Accept Work",
-      "requestChangesButton": "Request Changes",
-      "rejectWork": "Reject Work",
+      "managerReviewLabel": "Juhi Ülevaatus (Valikuline)",
+      "managerReviewDescription": "Hinnake lõpetatud töö kvaliteeti",
+      "scorePoor": "0 (Halb)",
+      "scoreExcellent": "100 (Suurepärane)",
+      "cancel": "Tühista",
+      "submitting": "Esitamine...",
+      "acceptWork": "Võta Töö Vastu",
+      "requestChangesButton": "Taotleja Muudatusi",
+      "rejectWork": "Lükka Töö Tagasi",
       "actions": {
         "accept": {
-          "title": "Accept (Mark task as Done)",
-          "description": "Approve the work and complete the task. Worker earns their reward."
+          "title": "Võta Vastu (Märgi ülesanne Tehtuks)",
+          "description": "Kinnitage töö ja lõpetage ülesanne. Töötaja teenib oma tasu."
         },
         "requestChanges": {
-          "title": "Request Changes",
-          "description": "Ask the worker to revise and resubmit their work."
+          "title": "Taotleja Muudatusi",
+          "description": "Paluge töötajal oma tööd üle vaadata ja uuesti esitada."
         },
         "reject": {
-          "title": "Reject (Reopen task)",
-          "description": "Reject the work completely and reopen the task for others."
+          "title": "Lükka Tagasi (Ava ülesanne uuesti)",
+          "description": "Lükake töö täielikult tagasi ja avage ülesanne teistele uuesti."
         }
       },
       "messages": {
-        "accepted": "Work accepted and task marked as complete",
-        "changesRequested": "Changes requested, worker will revise",
-        "rejected": "Work rejected, task reopened",
-        "error": "Could not submit review. Please try again."
+        "accepted": "Töö vastu võetud ja ülesanne märgitud tehtuks",
+        "changesRequested": "Muudatusi taotletud, töötaja vaatab üle",
+        "rejected": "Töö tagasi lükatud, ülesanne uuesti avatud",
+        "error": "Ülevaatust ei saanud esitada. Palun proovige uuesti."
       }
     },
     "submission": {
-      "title": "Submit Work for Review",
-      "titleResubmit": "Revise and Resubmit Work",
-      "description": "Describe your solution for {{taskName}} and submit for validation.",
-      "solutionLabel": "Solution Description *",
-      "solutionDescription": "Explain what you did to complete this task. Supports formatting, links, and lists.",
-      "solutionPlaceholder": "Explain what you did to complete this task...",
-      "selfReviewLabel": "Self-Review (Optional)",
-      "selfReviewDescription": "Rate the quality of your work on a scale of 0-100",
-      "scoreNeedsWork": "0 (Needs work)",
-      "scorePerfect": "100 (Perfect)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "submitButton": "Submit for Review",
-      "resubmitButton": "Resubmit for Review",
+      "title": "Esita Töö Ülevaatuseks",
+      "titleResubmit": "Vaata Üle ja Esita Töö Uuesti",
+      "description": "Kirjeldage oma lahendust ülesandele {{taskName}} ja esitage valideerimiseks.",
+      "solutionLabel": "Lahenduse Kirjeldus *",
+      "solutionDescription": "Selgitage, mida tegite selle ülesande lõpetamiseks. Toetab vormindust, linke ja loetelusid.",
+      "solutionPlaceholder": "Selgitage, mida tegite selle ülesande lõpetamiseks...",
+      "selfReviewLabel": "Eneseanalüüs (Valikuline)",
+      "selfReviewDescription": "Hinnake oma töö kvaliteeti skaalal 0-100",
+      "scoreNeedsWork": "0 (Vajab tööd)",
+      "scorePerfect": "100 (Täiuslik)",
+      "cancel": "Tühista",
+      "submitting": "Esitamine...",
+      "submitButton": "Esita Ülevaatuseks",
+      "resubmitButton": "Esita Uuesti Ülevaatuseks",
       "errors": {
-        "missingDescription": "Please provide a description of your work",
-        "submitError": "Could not submit your work. Please try again."
+        "missingDescription": "Palun andke oma töö kirjeldus",
+        "submitError": "Teie tööd ei saanud esitada. Palun proovige uuesti."
       },
       "messages": {
-        "submitted": "Work submitted for review",
-        "resubmitted": "Work resubmitted for review"
+        "submitted": "Töö esitatud ülevaatuseks",
+        "resubmitted": "Töö uuesti esitatud ülevaatuseks"
       }
     }
   }

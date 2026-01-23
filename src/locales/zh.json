@@ -672,107 +672,107 @@
     "visibleToParticipants": "Visible only to job participants",
     "worker": {
       "statusBanner": {
-        "requested": "Your request is being reviewed. You will be notified when approved.",
-        "inProgress": "Your request was approved! You can now work on this task.",
-        "submitted": "Your work has been submitted. Awaiting review from the owner.",
-        "validating": "Changes have been requested. Please revise and resubmit.",
-        "accepted": "Congratulations! Your work was accepted.",
-        "rejected": "Your submission was rejected."
+        "requested": "您的请求正在审核中。批准后您将收到通知。",
+        "inProgress": "您的请求已获批准！您现在可以处理此任务。",
+        "submitted": "您的工作已提交。等待所有者审核。",
+        "validating": "已请求更改。请修订并重新提交。",
+        "accepted": "恭喜！您的工作已被接受。",
+        "rejected": "您的提交已被拒绝。"
       }
     },
     "owner": {
       "statusBanner": {
-        "requested": "{{workerName}} has requested to work on this task. Approve or reject the request.",
-        "inProgress": "{{workerName}} is currently working on this task.",
-        "submitted": "{{workerName}} has submitted their work for review.",
-        "validating": "Waiting for {{workerName}} to revise and resubmit.",
-        "accepted": "{{workerName}}'s work was accepted.",
-        "rejected": "{{workerName}}'s submission was rejected."
+        "requested": "{{workerName}} 已请求处理此任务。批准或拒绝该请求。",
+        "inProgress": "{{workerName}} 目前正在处理此任务。",
+        "submitted": "{{workerName}} 已提交其工作以供审核。",
+        "validating": "等待 {{workerName}} 修订并重新提交。",
+        "accepted": "{{workerName}} 的工作已被接受。",
+        "rejected": "{{workerName}} 的提交已被拒绝。"
       }
     },
     "actions": {
-      "submitForReview": "Submit for Review",
-      "withdrawSubmission": "Withdraw Submission",
-      "withdrawing": "Withdrawing...",
-      "reviseAndResubmit": "Revise and Resubmit",
-      "approveRequest": "Approve Request",
-      "approving": "Approving...",
-      "rejectRequest": "Reject Request",
-      "rejecting": "Rejecting...",
-      "reviewAndAccept": "Review & Accept",
-      "requestChanges": "Request Changes",
-      "reject": "Reject"
+      "submitForReview": "提交审核",
+      "withdrawSubmission": "撤回提交",
+      "withdrawing": "撤回中...",
+      "reviseAndResubmit": "修订并重新提交",
+      "approveRequest": "批准请求",
+      "approving": "批准中...",
+      "rejectRequest": "拒绝请求",
+      "rejecting": "拒绝中...",
+      "reviewAndAccept": "审核并接受",
+      "requestChanges": "请求更改",
+      "reject": "拒绝"
     },
     "review": {
-      "title": "Review Submitted Work",
-      "description": "Review work from {{workerName}}",
-      "workerSolution": "Worker's Solution:",
-      "selfReviewScore": "Self-Review: {{score}}/100",
-      "noSubmissionNotes": "No submission notes provided",
-      "actionLabel": "Action *",
+      "title": "审核已提交的工作",
+      "description": "审核来自 {{workerName}} 的工作",
+      "workerSolution": "工作者的解决方案：",
+      "selfReviewScore": "自我评估：{{score}}/100",
+      "noSubmissionNotes": "未提供提交说明",
+      "actionLabel": "操作 *",
       "required": "*",
-      "optional": "(Optional)",
-      "feedbackLabel": "Review Feedback {{required}}",
+      "optional": "（可选）",
+      "feedbackLabel": "审核反馈 {{required}}",
       "feedbackPlaceholder": {
-        "validate": "Explain what changes are needed",
-        "other": "Provide comments or suggestions for the worker"
+        "validate": "说明需要哪些更改",
+        "other": "为工作者提供评论或建议"
       },
       "editorPlaceholder": {
-        "validate": "Describe the changes needed...",
-        "other": "Provide feedback on the work..."
+        "validate": "描述所需的更改...",
+        "other": "提供关于工作的反馈..."
       },
-      "managerReviewLabel": "Manager Review (Optional)",
-      "managerReviewDescription": "Rate the quality of the completed work",
-      "scorePoor": "0 (Poor)",
-      "scoreExcellent": "100 (Excellent)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "acceptWork": "Accept Work",
-      "requestChangesButton": "Request Changes",
-      "rejectWork": "Reject Work",
+      "managerReviewLabel": "经理审核（可选）",
+      "managerReviewDescription": "评价已完成工作的质量",
+      "scorePoor": "0（差）",
+      "scoreExcellent": "100（优秀）",
+      "cancel": "取消",
+      "submitting": "提交中...",
+      "acceptWork": "接受工作",
+      "requestChangesButton": "请求更改",
+      "rejectWork": "拒绝工作",
       "actions": {
         "accept": {
-          "title": "Accept (Mark task as Done)",
-          "description": "Approve the work and complete the task. Worker earns their reward."
+          "title": "接受（将任务标记为已完成）",
+          "description": "批准工作并完成任务。工作者获得奖励。"
         },
         "requestChanges": {
-          "title": "Request Changes",
-          "description": "Ask the worker to revise and resubmit their work."
+          "title": "请求更改",
+          "description": "要求工作者修订并重新提交其工作。"
         },
         "reject": {
-          "title": "Reject (Reopen task)",
-          "description": "Reject the work completely and reopen the task for others."
+          "title": "拒绝（重新打开任务）",
+          "description": "完全拒绝工作并为其他人重新打开任务。"
         }
       },
       "messages": {
-        "accepted": "Work accepted and task marked as complete",
-        "changesRequested": "Changes requested, worker will revise",
-        "rejected": "Work rejected, task reopened",
-        "error": "Could not submit review. Please try again."
+        "accepted": "工作已接受，任务已标记为完成",
+        "changesRequested": "已请求更改，工作者将进行修订",
+        "rejected": "工作已拒绝，任务已重新打开",
+        "error": "无法提交审核。请重试。"
       }
     },
     "submission": {
-      "title": "Submit Work for Review",
-      "titleResubmit": "Revise and Resubmit Work",
-      "description": "Describe your solution for {{taskName}} and submit for validation.",
-      "solutionLabel": "Solution Description *",
-      "solutionDescription": "Explain what you did to complete this task. Supports formatting, links, and lists.",
-      "solutionPlaceholder": "Explain what you did to complete this task...",
-      "selfReviewLabel": "Self-Review (Optional)",
-      "selfReviewDescription": "Rate the quality of your work on a scale of 0-100",
-      "scoreNeedsWork": "0 (Needs work)",
-      "scorePerfect": "100 (Perfect)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "submitButton": "Submit for Review",
-      "resubmitButton": "Resubmit for Review",
+      "title": "提交工作以供审核",
+      "titleResubmit": "修订并重新提交工作",
+      "description": "描述您对 {{taskName}} 的解决方案并提交验证。",
+      "solutionLabel": "解决方案描述 *",
+      "solutionDescription": "说明您为完成此任务所做的工作。支持格式、链接和列表。",
+      "solutionPlaceholder": "说明您为完成此任务所做的工作...",
+      "selfReviewLabel": "自我评估（可选）",
+      "selfReviewDescription": "以 0-100 的标准评价您的工作质量",
+      "scoreNeedsWork": "0（需要改进）",
+      "scorePerfect": "100（完美）",
+      "cancel": "取消",
+      "submitting": "提交中...",
+      "submitButton": "提交审核",
+      "resubmitButton": "重新提交审核",
       "errors": {
-        "missingDescription": "Please provide a description of your work",
-        "submitError": "Could not submit your work. Please try again."
+        "missingDescription": "请提供您的工作描述",
+        "submitError": "无法提交您的工作。请重试。"
       },
       "messages": {
-        "submitted": "Work submitted for review",
-        "resubmitted": "Work resubmitted for review"
+        "submitted": "工作已提交审核",
+        "resubmitted": "工作已重新提交审核"
       }
     }
   }

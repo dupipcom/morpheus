@@ -672,107 +672,107 @@
     "visibleToParticipants": "Visible only to job participants",
     "worker": {
       "statusBanner": {
-        "requested": "Your request is being reviewed. You will be notified when approved.",
-        "inProgress": "Your request was approved! You can now work on this task.",
-        "submitted": "Your work has been submitted. Awaiting review from the owner.",
-        "validating": "Changes have been requested. Please revise and resubmit.",
-        "accepted": "Congratulations! Your work was accepted.",
-        "rejected": "Your submission was rejected."
+        "requested": "הבקשה שלך נמצאת בבדיקה. תקבל הודעה כאשר תאושר.",
+        "inProgress": "הבקשה שלך אושרה! כעת אתה יכול לעבוד על משימה זו.",
+        "submitted": "העבודה שלך נשלחה. ממתין לבדיקה מהבעלים.",
+        "validating": "התבקשו שינויים. אנא בדוק ושלח מחדש.",
+        "accepted": "מזל טוב! העבודה שלך התקבלה.",
+        "rejected": "ההגשה שלך נדחתה."
       }
     },
     "owner": {
       "statusBanner": {
-        "requested": "{{workerName}} has requested to work on this task. Approve or reject the request.",
-        "inProgress": "{{workerName}} is currently working on this task.",
-        "submitted": "{{workerName}} has submitted their work for review.",
-        "validating": "Waiting for {{workerName}} to revise and resubmit.",
-        "accepted": "{{workerName}}'s work was accepted.",
-        "rejected": "{{workerName}}'s submission was rejected."
+        "requested": "{{workerName}} ביקש לעבוד על משימה זו. אשר או דחה את הבקשה.",
+        "inProgress": "{{workerName}} עובד כעת על משימה זו.",
+        "submitted": "{{workerName}} שלח את עבודתו לבדיקה.",
+        "validating": "ממתין ש-{{workerName}} יבדוק וישלח מחדש.",
+        "accepted": "העבודה של {{workerName}} התקבלה.",
+        "rejected": "ההגשה של {{workerName}} נדחתה."
       }
     },
     "actions": {
-      "submitForReview": "Submit for Review",
-      "withdrawSubmission": "Withdraw Submission",
-      "withdrawing": "Withdrawing...",
-      "reviseAndResubmit": "Revise and Resubmit",
-      "approveRequest": "Approve Request",
-      "approving": "Approving...",
-      "rejectRequest": "Reject Request",
-      "rejecting": "Rejecting...",
-      "reviewAndAccept": "Review & Accept",
-      "requestChanges": "Request Changes",
-      "reject": "Reject"
+      "submitForReview": "שלח לבדיקה",
+      "withdrawSubmission": "משוך הגשה",
+      "withdrawing": "מושך...",
+      "reviseAndResubmit": "בדוק ושלח מחדש",
+      "approveRequest": "אשר בקשה",
+      "approving": "מאשר...",
+      "rejectRequest": "דחה בקשה",
+      "rejecting": "דוחה...",
+      "reviewAndAccept": "בדוק ואשר",
+      "requestChanges": "בקש שינויים",
+      "reject": "דחה"
     },
     "review": {
-      "title": "Review Submitted Work",
-      "description": "Review work from {{workerName}}",
-      "workerSolution": "Worker's Solution:",
-      "selfReviewScore": "Self-Review: {{score}}/100",
-      "noSubmissionNotes": "No submission notes provided",
-      "actionLabel": "Action *",
+      "title": "בדוק עבודה שנשלחה",
+      "description": "בדוק עבודה מ-{{workerName}}",
+      "workerSolution": "פתרון העובד:",
+      "selfReviewScore": "סקירה עצמית: {{score}}/100",
+      "noSubmissionNotes": "לא סופקו הערות הגשה",
+      "actionLabel": "פעולה *",
       "required": "*",
-      "optional": "(Optional)",
-      "feedbackLabel": "Review Feedback {{required}}",
+      "optional": "(אופציונלי)",
+      "feedbackLabel": "משוב בדיקה {{required}}",
       "feedbackPlaceholder": {
-        "validate": "Explain what changes are needed",
-        "other": "Provide comments or suggestions for the worker"
+        "validate": "הסבר אילו שינויים נדרשים",
+        "other": "ספק הערות או הצעות לעובד"
       },
       "editorPlaceholder": {
-        "validate": "Describe the changes needed...",
-        "other": "Provide feedback on the work..."
+        "validate": "תאר את השינויים הנדרשים...",
+        "other": "ספק משוב על העבודה..."
       },
-      "managerReviewLabel": "Manager Review (Optional)",
-      "managerReviewDescription": "Rate the quality of the completed work",
-      "scorePoor": "0 (Poor)",
-      "scoreExcellent": "100 (Excellent)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "acceptWork": "Accept Work",
-      "requestChangesButton": "Request Changes",
-      "rejectWork": "Reject Work",
+      "managerReviewLabel": "סקירת מנהל (אופציונלי)",
+      "managerReviewDescription": "דרג את איכות העבודה שהושלמה",
+      "scorePoor": "0 (גרוע)",
+      "scoreExcellent": "100 (מצוין)",
+      "cancel": "ביטול",
+      "submitting": "שולח...",
+      "acceptWork": "אשר עבודה",
+      "requestChangesButton": "בקש שינויים",
+      "rejectWork": "דחה עבודה",
       "actions": {
         "accept": {
-          "title": "Accept (Mark task as Done)",
-          "description": "Approve the work and complete the task. Worker earns their reward."
+          "title": "אשר (סמן משימה כבוצעה)",
+          "description": "אשר את העבודה והשלם את המשימה. העובד מרוויח את הפרס שלו."
         },
         "requestChanges": {
-          "title": "Request Changes",
-          "description": "Ask the worker to revise and resubmit their work."
+          "title": "בקש שינויים",
+          "description": "בקש מהעובד לבדוק ולשלוח מחדש את עבודתו."
         },
         "reject": {
-          "title": "Reject (Reopen task)",
-          "description": "Reject the work completely and reopen the task for others."
+          "title": "דחה (פתח משימה מחדש)",
+          "description": "דחה את העבודה לחלוטין ופתח את המשימה מחדש לאחרים."
         }
       },
       "messages": {
-        "accepted": "Work accepted and task marked as complete",
-        "changesRequested": "Changes requested, worker will revise",
-        "rejected": "Work rejected, task reopened",
-        "error": "Could not submit review. Please try again."
+        "accepted": "העבודה התקבלה והמשימה סומנה כהושלמה",
+        "changesRequested": "נתבקשו שינויים, העובד יבדוק",
+        "rejected": "העבודה נדחתה, המשימה נפתחה מחדש",
+        "error": "לא ניתן לשלוח את הבדיקה. אנא נסה שוב."
       }
     },
     "submission": {
-      "title": "Submit Work for Review",
-      "titleResubmit": "Revise and Resubmit Work",
-      "description": "Describe your solution for {{taskName}} and submit for validation.",
-      "solutionLabel": "Solution Description *",
-      "solutionDescription": "Explain what you did to complete this task. Supports formatting, links, and lists.",
-      "solutionPlaceholder": "Explain what you did to complete this task...",
-      "selfReviewLabel": "Self-Review (Optional)",
-      "selfReviewDescription": "Rate the quality of your work on a scale of 0-100",
-      "scoreNeedsWork": "0 (Needs work)",
-      "scorePerfect": "100 (Perfect)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "submitButton": "Submit for Review",
-      "resubmitButton": "Resubmit for Review",
+      "title": "שלח עבודה לבדיקה",
+      "titleResubmit": "בדוק ושלח עבודה מחדש",
+      "description": "תאר את הפתרון שלך עבור {{taskName}} ושלח לאימות.",
+      "solutionLabel": "תיאור פתרון *",
+      "solutionDescription": "הסבר מה עשית כדי להשלים משימה זו. תומך בעיצוב, קישורים ורשימות.",
+      "solutionPlaceholder": "הסבר מה עשית כדי להשלים משימה זו...",
+      "selfReviewLabel": "סקירה עצמית (אופציונלי)",
+      "selfReviewDescription": "דרג את איכות העבודה שלך בסולם של 0-100",
+      "scoreNeedsWork": "0 (צריך עבודה)",
+      "scorePerfect": "100 (מושלם)",
+      "cancel": "ביטול",
+      "submitting": "שולח...",
+      "submitButton": "שלח לבדיקה",
+      "resubmitButton": "שלח מחדש לבדיקה",
       "errors": {
-        "missingDescription": "Please provide a description of your work",
-        "submitError": "Could not submit your work. Please try again."
+        "missingDescription": "אנא ספק תיאור של העבודה שלך",
+        "submitError": "לא ניתן לשלוח את העבודה שלך. אנא נסה שוב."
       },
       "messages": {
-        "submitted": "Work submitted for review",
-        "resubmitted": "Work resubmitted for review"
+        "submitted": "עבודה נשלחה לבדיקה",
+        "resubmitted": "עבודה נשלחה מחדש לבדיקה"
       }
     }
   }
