@@ -44,8 +44,12 @@ export function Providers({ children, locale: providedLocale }: ProvidersProps) 
     isNavigating: false,
     setIsNavigating: (isNavigating: boolean) => {},
     dayData: {} as Record<string, any>,
-    setDayData: (date: string, data: any) => {}
+    setDayData: (date: string, data: any) => {},
+    isInitializingTaskLists: true,
   })
+  
+  // Track if initial task lists fetch has completed (for new user experience)
+  const [isInitializingTaskLists, setIsInitializingTaskLists] = useState(true)
   
   const setDayData = useCallback((date: string, data: any) => {
     setDayDataState(prev => ({ ...prev, [date]: data }))
@@ -89,7 +93,7 @@ export function Providers({ children, locale: providedLocale }: ProvidersProps) 
     }
   }, [isClient, value, redactedValue])
 
-  const refreshTaskLists = useCallback(async () => {
+  const refreshTaskLists = useCallback(async (isInitialFetch: boolean = false) => {
     try {
       const res = await fetch('/api/v1/tasklists')
       if (!res.ok) {
@@ -98,10 +102,24 @@ export function Providers({ children, locale: providedLocale }: ProvidersProps) 
         return
       }
       const data = await res.json()
-      setGlobalContext(prev => ({ ...prev, taskLists: Array.isArray(data?.taskLists) ? data.taskLists : [] }))
+      setGlobalContext(prev => ({ 
+        ...prev, 
+        taskLists: Array.isArray(data?.taskLists) ? data.taskLists : [],
+        // Mark initialization as complete after first successful fetch
+        isInitializingTaskLists: false
+      }))
+      // Also update the separate state for components that don't use context
+      if (isInitialFetch) {
+        setIsInitializingTaskLists(false)
+      }
     } catch (error) {
       // Don't clear existing task lists on error - preserve them
       console.warn('Error refreshing task lists:', error)
+      // Still mark initialization as complete even on error to avoid infinite loading
+      if (isInitialFetch) {
+        setIsInitializingTaskLists(false)
+        setGlobalContext(prev => ({ ...prev, isInitializingTaskLists: false }))
+      }
     }
   }, [])
 
@@ -124,7 +142,7 @@ export function Providers({ children, locale: providedLocale }: ProvidersProps) 
   // Fetch tasklists and templates once on mount
   useEffect(() => {
     if (isClient) {
-      refreshTaskLists()
+      refreshTaskLists(true) // Pass true to indicate this is the initial fetch
       refreshTemplates()
     }
   }, [isClient, refreshTaskLists, refreshTemplates])
@@ -141,7 +159,7 @@ export function Providers({ children, locale: providedLocale }: ProvidersProps) 
     >
       <AuthWrapper isLoading={isLoading}>
         <I18nProvider locale={locale}>
-          <GlobalContext.Provider value={{ ...globalContext, setGlobalContext, refreshTaskLists, refreshTemplates, selectedDate, setSelectedDate, isNavigating, setIsNavigating, dayData: dayData, setDayData }}>
+          <GlobalContext.Provider value={{ ...globalContext, setGlobalContext, refreshTaskLists, refreshTemplates, selectedDate, setSelectedDate, isNavigating, setIsNavigating, dayData: dayData, setDayData, isInitializingTaskLists }}>
             <NotesRefreshProvider>
               <SWRConfig value={{
                 revalidateOnFocus: false,

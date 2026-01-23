@@ -20,5 +20,7 @@ export const GlobalContext = createContext({
 	// Optimistic update callbacks
 	addOptimisticTaskEarnings: () => {},
 	addOptimisticCompletion: () => {},
-	handleTaskCompletionOptimistic: () => {}
+	handleTaskCompletionOptimistic: () => {},
+	// Task list initialization state - true while initially loading task lists for new users
+	isInitializingTaskLists: true,
 })
