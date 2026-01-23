@@ -113,12 +113,12 @@ export const AddTaskForm = ({
     }
 
     // For new task creation (not edit mode), add optimistic task
-    const isNewTaskCreation = !isEditMode || (newTask.saveToTemplate && selectedList)
+    const isNewTaskCreation = !isEditMode && !newTask.saveToTemplate
     let tempId: string | null = null
 
     if (isNewTaskCreation && pendingTaskCreationsRef) {
       // Generate a temporary ID for the optimistic task
-      tempId = `temp-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+      tempId = `temp-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`
       
       // Add optimistic task to the pending map
       pendingTaskCreationsRef.current.set(tempId, {

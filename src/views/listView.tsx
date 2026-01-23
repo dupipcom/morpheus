@@ -179,25 +179,32 @@ const formatDateLocal = (date: Date): string => {
         t.listId === selectedTaskListId
       )
 
+      // Create a map of task names for efficient lookup
+      const taskNamesSet = new Set(
+        tasksFromApi.map((t: any) => t.name?.toLowerCase()).filter(Boolean)
+      )
+
       // Remove optimistic tasks that are now in the API response
-      const taskNames = new Set(tasksFromApi.map((t: any) => t.name?.toLowerCase()))
-      const stillPending = relevantTasks.filter(t => !taskNames.has(t.name?.toLowerCase()))
-
-      setOptimisticTasks(stillPending)
-
-      // Clean up confirmed tasks from the ref
-      if (stillPending.length < relevantTasks.length) {
-        relevantTasks.forEach(t => {
-          if (taskNames.has(t.name?.toLowerCase())) {
-            // Find and remove this task from pending map
-            for (const [key, value] of pendingMap.entries()) {
-              if (value.task.name === t.name) {
-                pendingMap.delete(key)
-              }
+      const keysToDelete: string[] = []
+      const stillPending = relevantTasks.filter(t => {
+        const taskName = t.name?.toLowerCase()
+        if (taskName && taskNamesSet.has(taskName)) {
+          // Find the key for this task to delete it later
+          for (const [key, value] of pendingMap.entries()) {
+            if (value.task.id === t.id) {
+              keysToDelete.push(key)
+              break
             }
           }
-        })
-      }
+          return false
+        }
+        return true
+      })
+
+      // Clean up confirmed tasks from the pending map
+      keysToDelete.forEach(key => pendingMap.delete(key))
+
+      setOptimisticTasks(stillPending)
     }, [pendingTaskCreationsRef, selectedTaskListId, tasksFromApi])
 
 
