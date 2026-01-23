@@ -672,107 +672,107 @@
     "visibleToParticipants": "Visible only to job participants",
     "worker": {
       "statusBanner": {
-        "requested": "Your request is being reviewed. You will be notified when approved.",
-        "inProgress": "Your request was approved! You can now work on this task.",
-        "submitted": "Your work has been submitted. Awaiting review from the owner.",
-        "validating": "Changes have been requested. Please revise and resubmit.",
-        "accepted": "Congratulations! Your work was accepted.",
-        "rejected": "Your submission was rejected."
+        "requested": "Votre demande est en cours d'examen. Vous serez notifié lors de l'approbation.",
+        "inProgress": "Votre demande a été approuvée ! Vous pouvez maintenant travailler sur cette tâche.",
+        "submitted": "Votre travail a été soumis. En attente de révision par le propriétaire.",
+        "validating": "Des modifications ont été demandées. Veuillez réviser et soumettre à nouveau.",
+        "accepted": "Félicitations ! Votre travail a été accepté.",
+        "rejected": "Votre soumission a été rejetée."
       }
     },
     "owner": {
       "statusBanner": {
-        "requested": "{{workerName}} has requested to work on this task. Approve or reject the request.",
-        "inProgress": "{{workerName}} is currently working on this task.",
-        "submitted": "{{workerName}} has submitted their work for review.",
-        "validating": "Waiting for {{workerName}} to revise and resubmit.",
-        "accepted": "{{workerName}}'s work was accepted.",
-        "rejected": "{{workerName}}'s submission was rejected."
+        "requested": "{{workerName}} a demandé à travailler sur cette tâche. Approuvez ou rejetez la demande.",
+        "inProgress": "{{workerName}} travaille actuellement sur cette tâche.",
+        "submitted": "{{workerName}} a soumis son travail pour révision.",
+        "validating": "En attente que {{workerName}} révise et soumette à nouveau.",
+        "accepted": "Le travail de {{workerName}} a été accepté.",
+        "rejected": "La soumission de {{workerName}} a été rejetée."
       }
     },
     "actions": {
-      "submitForReview": "Submit for Review",
-      "withdrawSubmission": "Withdraw Submission",
-      "withdrawing": "Withdrawing...",
-      "reviseAndResubmit": "Revise and Resubmit",
-      "approveRequest": "Approve Request",
-      "approving": "Approving...",
-      "rejectRequest": "Reject Request",
-      "rejecting": "Rejecting...",
-      "reviewAndAccept": "Review & Accept",
-      "requestChanges": "Request Changes",
-      "reject": "Reject"
+      "submitForReview": "Soumettre pour Révision",
+      "withdrawSubmission": "Retirer la Soumission",
+      "withdrawing": "Retrait en cours...",
+      "reviseAndResubmit": "Réviser et Resoumettre",
+      "approveRequest": "Approuver la Demande",
+      "approving": "Approbation en cours...",
+      "rejectRequest": "Rejeter la Demande",
+      "rejecting": "Rejet en cours...",
+      "reviewAndAccept": "Réviser et Accepter",
+      "requestChanges": "Demander des Modifications",
+      "reject": "Rejeter"
     },
     "review": {
-      "title": "Review Submitted Work",
-      "description": "Review work from {{workerName}}",
-      "workerSolution": "Worker's Solution:",
-      "selfReviewScore": "Self-Review: {{score}}/100",
-      "noSubmissionNotes": "No submission notes provided",
+      "title": "Réviser le Travail Soumis",
+      "description": "Réviser le travail de {{workerName}}",
+      "workerSolution": "Solution du Travailleur :",
+      "selfReviewScore": "Auto-évaluation : {{score}}/100",
+      "noSubmissionNotes": "Aucune note de soumission fournie",
       "actionLabel": "Action *",
       "required": "*",
-      "optional": "(Optional)",
-      "feedbackLabel": "Review Feedback {{required}}",
+      "optional": "(Facultatif)",
+      "feedbackLabel": "Commentaires de Révision {{required}}",
       "feedbackPlaceholder": {
-        "validate": "Explain what changes are needed",
-        "other": "Provide comments or suggestions for the worker"
+        "validate": "Expliquez quelles modifications sont nécessaires",
+        "other": "Fournissez des commentaires ou suggestions pour le travailleur"
       },
       "editorPlaceholder": {
-        "validate": "Describe the changes needed...",
-        "other": "Provide feedback on the work..."
+        "validate": "Décrivez les modifications nécessaires...",
+        "other": "Fournissez des commentaires sur le travail..."
       },
-      "managerReviewLabel": "Manager Review (Optional)",
-      "managerReviewDescription": "Rate the quality of the completed work",
-      "scorePoor": "0 (Poor)",
+      "managerReviewLabel": "Révision du Gestionnaire (Facultatif)",
+      "managerReviewDescription": "Évaluez la qualité du travail accompli",
+      "scorePoor": "0 (Médiocre)",
       "scoreExcellent": "100 (Excellent)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "acceptWork": "Accept Work",
-      "requestChangesButton": "Request Changes",
-      "rejectWork": "Reject Work",
+      "cancel": "Annuler",
+      "submitting": "Soumission en cours...",
+      "acceptWork": "Accepter le Travail",
+      "requestChangesButton": "Demander des Modifications",
+      "rejectWork": "Rejeter le Travail",
       "actions": {
         "accept": {
-          "title": "Accept (Mark task as Done)",
-          "description": "Approve the work and complete the task. Worker earns their reward."
+          "title": "Accepter (Marquer la tâche comme Terminée)",
+          "description": "Approuver le travail et terminer la tâche. Le travailleur gagne sa récompense."
         },
         "requestChanges": {
-          "title": "Request Changes",
-          "description": "Ask the worker to revise and resubmit their work."
+          "title": "Demander des Modifications",
+          "description": "Demander au travailleur de réviser et soumettre à nouveau son travail."
         },
         "reject": {
-          "title": "Reject (Reopen task)",
-          "description": "Reject the work completely and reopen the task for others."
+          "title": "Rejeter (Rouvrir la tâche)",
+          "description": "Rejeter complètement le travail et rouvrir la tâche pour d'autres."
         }
       },
       "messages": {
-        "accepted": "Work accepted and task marked as complete",
-        "changesRequested": "Changes requested, worker will revise",
-        "rejected": "Work rejected, task reopened",
-        "error": "Could not submit review. Please try again."
+        "accepted": "Travail accepté et tâche marquée comme terminée",
+        "changesRequested": "Modifications demandées, le travailleur révisera",
+        "rejected": "Travail rejeté, tâche rouverte",
+        "error": "Impossible de soumettre la révision. Veuillez réessayer."
       }
     },
     "submission": {
-      "title": "Submit Work for Review",
-      "titleResubmit": "Revise and Resubmit Work",
-      "description": "Describe your solution for {{taskName}} and submit for validation.",
-      "solutionLabel": "Solution Description *",
-      "solutionDescription": "Explain what you did to complete this task. Supports formatting, links, and lists.",
-      "solutionPlaceholder": "Explain what you did to complete this task...",
-      "selfReviewLabel": "Self-Review (Optional)",
-      "selfReviewDescription": "Rate the quality of your work on a scale of 0-100",
-      "scoreNeedsWork": "0 (Needs work)",
-      "scorePerfect": "100 (Perfect)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "submitButton": "Submit for Review",
-      "resubmitButton": "Resubmit for Review",
+      "title": "Soumettre le Travail pour Révision",
+      "titleResubmit": "Réviser et Resoumettre le Travail",
+      "description": "Décrivez votre solution pour {{taskName}} et soumettez pour validation.",
+      "solutionLabel": "Description de la Solution *",
+      "solutionDescription": "Expliquez ce que vous avez fait pour accomplir cette tâche. Prend en charge le formatage, les liens et les listes.",
+      "solutionPlaceholder": "Expliquez ce que vous avez fait pour accomplir cette tâche...",
+      "selfReviewLabel": "Auto-évaluation (Facultatif)",
+      "selfReviewDescription": "Évaluez la qualité de votre travail sur une échelle de 0-100",
+      "scoreNeedsWork": "0 (Nécessite du travail)",
+      "scorePerfect": "100 (Parfait)",
+      "cancel": "Annuler",
+      "submitting": "Soumission en cours...",
+      "submitButton": "Soumettre pour Révision",
+      "resubmitButton": "Resoumettre pour Révision",
       "errors": {
-        "missingDescription": "Please provide a description of your work",
-        "submitError": "Could not submit your work. Please try again."
+        "missingDescription": "Veuillez fournir une description de votre travail",
+        "submitError": "Impossible de soumettre votre travail. Veuillez réessayer."
       },
       "messages": {
-        "submitted": "Work submitted for review",
-        "resubmitted": "Work resubmitted for review"
+        "submitted": "Travail soumis pour révision",
+        "resubmitted": "Travail resoumis pour révision"
       }
     }
   }

@@ -676,107 +676,107 @@
     "visibleToParticipants": "Visible only to job participants",
     "worker": {
       "statusBanner": {
-        "requested": "Your request is being reviewed. You will be notified when approved.",
-        "inProgress": "Your request was approved! You can now work on this task.",
-        "submitted": "Your work has been submitted. Awaiting review from the owner.",
-        "validating": "Changes have been requested. Please revise and resubmit.",
-        "accepted": "Congratulations! Your work was accepted.",
-        "rejected": "Your submission was rejected."
+        "requested": "طلبك قيد المراجعة. سيتم إخطارك عند الموافقة.",
+        "inProgress": "تمت الموافقة على طلبك! يمكنك الآن العمل على هذه المهمة.",
+        "submitted": "تم إرسال عملك. في انتظار المراجعة من المالك.",
+        "validating": "تم طلب تغييرات. يرجى المراجعة وإعادة الإرسال.",
+        "accepted": "تهانينا! تم قبول عملك.",
+        "rejected": "تم رفض مساهمتك."
       }
     },
     "owner": {
       "statusBanner": {
-        "requested": "{{workerName}} has requested to work on this task. Approve or reject the request.",
-        "inProgress": "{{workerName}} is currently working on this task.",
-        "submitted": "{{workerName}} has submitted their work for review.",
-        "validating": "Waiting for {{workerName}} to revise and resubmit.",
-        "accepted": "{{workerName}}'s work was accepted.",
-        "rejected": "{{workerName}}'s submission was rejected."
+        "requested": "طلب {{workerName}} العمل على هذه المهمة. الموافقة أو الرفض على الطلب.",
+        "inProgress": "{{workerName}} يعمل حاليًا على هذه المهمة.",
+        "submitted": "قدم {{workerName}} عمله للمراجعة.",
+        "validating": "في انتظار {{workerName}} للمراجعة وإعادة الإرسال.",
+        "accepted": "تم قبول عمل {{workerName}}.",
+        "rejected": "تم رفض مساهمة {{workerName}}."
       }
     },
     "actions": {
-      "submitForReview": "Submit for Review",
-      "withdrawSubmission": "Withdraw Submission",
-      "withdrawing": "Withdrawing...",
-      "reviseAndResubmit": "Revise and Resubmit",
-      "approveRequest": "Approve Request",
-      "approving": "Approving...",
-      "rejectRequest": "Reject Request",
-      "rejecting": "Rejecting...",
-      "reviewAndAccept": "Review & Accept",
-      "requestChanges": "Request Changes",
-      "reject": "Reject"
+      "submitForReview": "إرسال للمراجعة",
+      "withdrawSubmission": "سحب الإرسال",
+      "withdrawing": "جارٍ السحب...",
+      "reviseAndResubmit": "المراجعة وإعادة الإرسال",
+      "approveRequest": "الموافقة على الطلب",
+      "approving": "جارٍ الموافقة...",
+      "rejectRequest": "رفض الطلب",
+      "rejecting": "جارٍ الرفض...",
+      "reviewAndAccept": "مراجعة وقبول",
+      "requestChanges": "طلب تغييرات",
+      "reject": "رفض"
     },
     "review": {
-      "title": "Review Submitted Work",
-      "description": "Review work from {{workerName}}",
-      "workerSolution": "Worker's Solution:",
-      "selfReviewScore": "Self-Review: {{score}}/100",
-      "noSubmissionNotes": "No submission notes provided",
-      "actionLabel": "Action *",
+      "title": "مراجعة العمل المقدم",
+      "description": "مراجعة العمل من {{workerName}}",
+      "workerSolution": "حل العامل:",
+      "selfReviewScore": "المراجعة الذاتية: {{score}}/100",
+      "noSubmissionNotes": "لم يتم تقديم ملاحظات الإرسال",
+      "actionLabel": "الإجراء *",
       "required": "*",
-      "optional": "(Optional)",
-      "feedbackLabel": "Review Feedback {{required}}",
+      "optional": "(اختياري)",
+      "feedbackLabel": "ملاحظات المراجعة {{required}}",
       "feedbackPlaceholder": {
-        "validate": "Explain what changes are needed",
-        "other": "Provide comments or suggestions for the worker"
+        "validate": "اشرح التغييرات المطلوبة",
+        "other": "قدم تعليقات أو اقتراحات للعامل"
       },
       "editorPlaceholder": {
-        "validate": "Describe the changes needed...",
-        "other": "Provide feedback on the work..."
+        "validate": "صف التغييرات المطلوبة...",
+        "other": "قدم ملاحظات على العمل..."
       },
-      "managerReviewLabel": "Manager Review (Optional)",
-      "managerReviewDescription": "Rate the quality of the completed work",
-      "scorePoor": "0 (Poor)",
-      "scoreExcellent": "100 (Excellent)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "acceptWork": "Accept Work",
-      "requestChangesButton": "Request Changes",
-      "rejectWork": "Reject Work",
+      "managerReviewLabel": "مراجعة المدير (اختياري)",
+      "managerReviewDescription": "قيّم جودة العمل المكتمل",
+      "scorePoor": "0 (ضعيف)",
+      "scoreExcellent": "100 (ممتاز)",
+      "cancel": "إلغاء",
+      "submitting": "جارٍ الإرسال...",
+      "acceptWork": "قبول العمل",
+      "requestChangesButton": "طلب تغييرات",
+      "rejectWork": "رفض العمل",
       "actions": {
         "accept": {
-          "title": "Accept (Mark task as Done)",
-          "description": "Approve the work and complete the task. Worker earns their reward."
+          "title": "قبول (وضع علامة كمنجز)",
+          "description": "الموافقة على العمل وإكمال المهمة. يحصل العامل على مكافأته."
         },
         "requestChanges": {
-          "title": "Request Changes",
-          "description": "Ask the worker to revise and resubmit their work."
+          "title": "طلب تغييرات",
+          "description": "اطلب من العامل المراجعة وإعادة الإرسال."
         },
         "reject": {
-          "title": "Reject (Reopen task)",
-          "description": "Reject the work completely and reopen the task for others."
+          "title": "رفض (إعادة فتح المهمة)",
+          "description": "رفض العمل بالكامل وإعادة فتح المهمة للآخرين."
         }
       },
       "messages": {
-        "accepted": "Work accepted and task marked as complete",
-        "changesRequested": "Changes requested, worker will revise",
-        "rejected": "Work rejected, task reopened",
-        "error": "Could not submit review. Please try again."
+        "accepted": "تم قبول العمل ووضع علامة على المهمة كمكتملة",
+        "changesRequested": "تم طلب تغييرات، سيقوم العامل بالمراجعة",
+        "rejected": "تم رفض العمل وإعادة فتح المهمة",
+        "error": "تعذر إرسال المراجعة. يرجى المحاولة مرة أخرى."
       }
     },
     "submission": {
-      "title": "Submit Work for Review",
-      "titleResubmit": "Revise and Resubmit Work",
-      "description": "Describe your solution for {{taskName}} and submit for validation.",
-      "solutionLabel": "Solution Description *",
-      "solutionDescription": "Explain what you did to complete this task. Supports formatting, links, and lists.",
-      "solutionPlaceholder": "Explain what you did to complete this task...",
-      "selfReviewLabel": "Self-Review (Optional)",
-      "selfReviewDescription": "Rate the quality of your work on a scale of 0-100",
-      "scoreNeedsWork": "0 (Needs work)",
-      "scorePerfect": "100 (Perfect)",
-      "cancel": "Cancel",
-      "submitting": "Submitting...",
-      "submitButton": "Submit for Review",
-      "resubmitButton": "Resubmit for Review",
+      "title": "إرسال العمل للمراجعة",
+      "titleResubmit": "المراجعة وإعادة إرسال العمل",
+      "description": "صف حلك لـ {{taskName}} وأرسله للتحقق.",
+      "solutionLabel": "وصف الحل *",
+      "solutionDescription": "اشرح ما فعلته لإكمال هذه المهمة. يدعم التنسيق والروابط والقوائم.",
+      "solutionPlaceholder": "اشرح ما فعلته لإكمال هذه المهمة...",
+      "selfReviewLabel": "المراجعة الذاتية (اختياري)",
+      "selfReviewDescription": "قيّم جودة عملك على مقياس من 0-100",
+      "scoreNeedsWork": "0 (يحتاج إلى عمل)",
+      "scorePerfect": "100 (مثالي)",
+      "cancel": "إلغاء",
+      "submitting": "جارٍ الإرسال...",
+      "submitButton": "إرسال للمراجعة",
+      "resubmitButton": "إعادة الإرسال للمراجعة",
       "errors": {
-        "missingDescription": "Please provide a description of your work",
-        "submitError": "Could not submit your work. Please try again."
+        "missingDescription": "يرجى تقديم وصف لعملك",
+        "submitError": "تعذر إرسال عملك. يرجى المحاولة مرة أخرى."
       },
       "messages": {
-        "submitted": "Work submitted for review",
-        "resubmitted": "Work resubmitted for review"
+        "submitted": "تم إرسال العمل للمراجعة",
+        "resubmitted": "تم إعادة إرسال العمل للمراجعة"
       }
     }
   }
