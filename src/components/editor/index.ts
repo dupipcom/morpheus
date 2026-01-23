@@ -6,4 +6,6 @@ export {
   lexicalToPlainText,
   isEditorEmpty,
   createEmptyState,
+  escapeHtmlStrict,
+  HTML_ENTITIES,
 } from './utils'
