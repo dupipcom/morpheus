@@ -309,13 +309,15 @@ export async function waitForListInContext(
   maxAttempts: number = 10,
   delayMs: number = 100
 ): Promise<boolean> {
-  let attempts = 0
-  while (attempts < maxAttempts) {
+  for (let attempts = 0; attempts < maxAttempts; attempts++) {
     const taskLists = getTaskLists()
     const listExists = (taskLists || []).find((l: any) => l.id === newListId)
     if (listExists) return true
-    await new Promise(resolve => setTimeout(resolve, delayMs))
-    attempts++
+    
+    // Only delay if we're going to check again
+    if (attempts < maxAttempts - 1) {
+      await new Promise(resolve => setTimeout(resolve, delayMs))
+    }
   }
   return false
 }
