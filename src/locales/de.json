@@ -24,6 +24,7 @@
     "signInToAccess": "Melden Sie sich an, um auf Ihr Dashboard zuzugreifen und Ihren Fortschritt zu verfolgen.",
     "dismiss": "Verwerfen",
     "accept": "Akzeptieren",
+    "all": "Alle",
     "pageAvailableIn": "Diese Seite ist auf {locale} verfügbar. Möchten Sie sie in dieser Sprache anzeigen?",
     "selectLanguage": "Sprache auswählen",
     "manageAccount": "Mein Konto verwalten",
@@ -649,5 +650,130 @@
     "deleteWallet": "Brieftasche löschen",
     "deleteWalletConfirmation": "Sind Sie sicher, dass Sie diese Brieftasche löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden. Die Brieftasche wird von Ihrem Konto entfernt, aber die Blockchain-Adresse und ihre Mittel bleiben auf der Blockchain.",
     "delete": "Löschen"
+  },
+  "jobs": {
+    "history": "Auftragsverlauf",
+    "filterByStatus": "Nach Status filtern:",
+    "errorLoadingHistory": "Fehler beim Laden des Auftragsverlaufs",
+    "noHistoryFound": "Kein Auftragsverlauf gefunden",
+    "status": {
+      "requested": "Angefordert",
+      "inProgress": "In Bearbeitung",
+      "validating": "Validierung",
+      "accepted": "Akzeptiert",
+      "rejected": "Abgelehnt"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "Ihr Antrag wird geprüft. Sie werden benachrichtigt, wenn er genehmigt wurde.",
+        "inProgress": "Ihr Antrag wurde genehmigt! Sie können jetzt an dieser Aufgabe arbeiten.",
+        "submitted": "Ihre Arbeit wurde eingereicht. Warten auf Überprüfung durch den Eigentümer.",
+        "validating": "Änderungen wurden angefordert. Bitte überarbeiten und erneut einreichen.",
+        "accepted": "Herzlichen Glückwunsch! Ihre Arbeit wurde akzeptiert.",
+        "rejected": "Ihre Einreichung wurde abgelehnt."
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}} hat angefragt, an dieser Aufgabe zu arbeiten. Genehmigen oder ablehnen Sie die Anfrage.",
+        "inProgress": "{{workerName}} arbeitet derzeit an dieser Aufgabe.",
+        "submitted": "{{workerName}} hat seine Arbeit zur Überprüfung eingereicht.",
+        "validating": "Warten auf {{workerName}}, um zu überarbeiten und erneut einzureichen.",
+        "accepted": "Die Arbeit von {{workerName}} wurde akzeptiert.",
+        "rejected": "Die Einreichung von {{workerName}} wurde abgelehnt."
+      }
+    },
+    "actions": {
+      "submitForReview": "Zur Überprüfung einreichen",
+      "withdrawSubmission": "Einreichung zurückziehen",
+      "withdrawing": "Wird zurückgezogen...",
+      "reviseAndResubmit": "Überarbeiten und erneut einreichen",
+      "approveRequest": "Anfrage genehmigen",
+      "approving": "Wird genehmigt...",
+      "rejectRequest": "Anfrage ablehnen",
+      "rejecting": "Wird abgelehnt...",
+      "reviewAndAccept": "Überprüfen und akzeptieren",
+      "requestChanges": "Änderungen anfordern",
+      "reject": "Ablehnen"
+    },
+    "review": {
+      "title": "Eingereichte Arbeit überprüfen",
+      "description": "Arbeit von {{workerName}} überprüfen",
+      "workerSolution": "Lösung des Mitarbeiters:",
+      "selfReviewScore": "Selbstbewertung: {{score}}/100",
+      "noSubmissionNotes": "Keine Einreichungshinweise angegeben",
+      "actionLabel": "Aktion *",
+      "required": "*",
+      "optional": "(Optional)",
+      "feedbackLabel": "Überprüfungsfeedback {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "Erklären Sie, welche Änderungen erforderlich sind",
+        "other": "Geben Sie Kommentare oder Vorschläge für den Mitarbeiter an"
+      },
+      "editorPlaceholder": {
+        "validate": "Beschreiben Sie die erforderlichen Änderungen...",
+        "other": "Geben Sie Feedback zur Arbeit..."
+      },
+      "managerReviewLabel": "Manager-Überprüfung (Optional)",
+      "managerReviewDescription": "Bewerten Sie die Qualität der abgeschlossenen Arbeit",
+      "scorePoor": "0 (Schlecht)",
+      "scoreExcellent": "100 (Ausgezeichnet)",
+      "cancel": "Abbrechen",
+      "submitting": "Wird eingereicht...",
+      "acceptWork": "Arbeit akzeptieren",
+      "requestChangesButton": "Änderungen anfordern",
+      "rejectWork": "Arbeit ablehnen",
+      "actions": {
+        "accept": {
+          "title": "Akzeptieren (Aufgabe als erledigt markieren)",
+          "description": "Arbeit genehmigen und Aufgabe abschließen. Mitarbeiter erhält seine Belohnung."
+        },
+        "requestChanges": {
+          "title": "Änderungen anfordern",
+          "description": "Mitarbeiter bitten, seine Arbeit zu überarbeiten und erneut einzureichen."
+        },
+        "reject": {
+          "title": "Ablehnen (Aufgabe erneut öffnen)",
+          "description": "Arbeit vollständig ablehnen und Aufgabe für andere erneut öffnen."
+        }
+      },
+      "messages": {
+        "accepted": "Arbeit akzeptiert und Aufgabe als abgeschlossen markiert",
+        "changesRequested": "Änderungen angefordert, Mitarbeiter wird überarbeiten",
+        "rejected": "Arbeit abgelehnt, Aufgabe erneut geöffnet",
+        "error": "Überprüfung konnte nicht eingereicht werden. Bitte versuchen Sie es erneut."
+      }
+    },
+    "submission": {
+      "title": "Arbeit zur Überprüfung einreichen",
+      "titleResubmit": "Überarbeiten und Arbeit erneut einreichen",
+      "description": "Beschreiben Sie Ihre Lösung für {{taskName}} und reichen Sie sie zur Validierung ein.",
+      "solutionLabel": "Lösungsbeschreibung *",
+      "solutionDescription": "Erklären Sie, was Sie getan haben, um diese Aufgabe abzuschließen. Unterstützt Formatierung, Links und Listen.",
+      "solutionPlaceholder": "Erklären Sie, was Sie getan haben, um diese Aufgabe abzuschließen...",
+      "selfReviewLabel": "Selbstbewertung (Optional)",
+      "selfReviewDescription": "Bewerten Sie die Qualität Ihrer Arbeit auf einer Skala von 0-100",
+      "scoreNeedsWork": "0 (Braucht Arbeit)",
+      "scorePerfect": "100 (Perfekt)",
+      "cancel": "Abbrechen",
+      "submitting": "Wird eingereicht...",
+      "submitButton": "Zur Überprüfung einreichen",
+      "resubmitButton": "Erneut zur Überprüfung einreichen",
+      "errors": {
+        "missingDescription": "Bitte geben Sie eine Beschreibung Ihrer Arbeit an",
+        "submitError": "Ihre Arbeit konnte nicht eingereicht werden. Bitte versuchen Sie es erneut."
+      },
+      "messages": {
+        "submitted": "Arbeit zur Überprüfung eingereicht",
+        "resubmitted": "Arbeit erneut zur Überprüfung eingereicht"
+      }
+    }
   }
 }

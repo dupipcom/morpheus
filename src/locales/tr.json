@@ -21,6 +21,7 @@
     "signInToAccess": "Dashboard'unuza erişmek ve ilerlemenizi takip etmek için giriş yapın.",
     "dismiss": "Kapat",
     "accept": "Kabul Et",
+    "all": "Tümü",
     "pageAvailableIn": "Bu sayfa {locale} dilinde mevcuttur. Bu dilde görüntülemek ister misiniz?",
     "selectLanguage": "Dil seçin",
     "dashboard": "Gösterge Paneli",
@@ -653,5 +654,130 @@
     "deleteWallet": "Cüzdanı Sil",
     "deleteWalletConfirmation": "Bu cüzdanı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz. Cüzdan hesabınızdan kaldırılacak, ancak blockchain adresi ve fonları blockchain'de kalacaktır.",
     "delete": "Sil"
+  },
+  "jobs": {
+    "history": "İş Geçmişi",
+    "filterByStatus": "Duruma Göre Filtrele:",
+    "errorLoadingHistory": "İş geçmişi yüklenirken hata",
+    "noHistoryFound": "İş geçmişi bulunamadı",
+    "status": {
+      "requested": "Talep Edildi",
+      "inProgress": "Devam Ediyor",
+      "validating": "Doğrulanıyor",
+      "accepted": "Kabul Edildi",
+      "rejected": "Reddedildi"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "Talebiniz inceleniyor. Onaylandığında bilgilendirileceksiniz.",
+        "inProgress": "Talebiniz onaylandı! Artık bu görev üzerinde çalışabilirsiniz.",
+        "submitted": "Çalışmanız gönderildi. Sahibin incelemesi bekleniyor.",
+        "validating": "Değişiklikler talep edildi. Lütfen gözden geçirin ve yeniden gönderin.",
+        "accepted": "Tebrikler! Çalışmanız kabul edildi.",
+        "rejected": "Gönderiminiz reddedildi."
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}} bu görev üzerinde çalışmak için talepte bulundu. Talebi onaylayın veya reddedin.",
+        "inProgress": "{{workerName}} şu anda bu görev üzerinde çalışıyor.",
+        "submitted": "{{workerName}} çalışmasını inceleme için gönderdi.",
+        "validating": "{{workerName}}'in gözden geçirip yeniden göndermesi bekleniyor.",
+        "accepted": "{{workerName}}'in çalışması kabul edildi.",
+        "rejected": "{{workerName}}'in gönderimi reddedildi."
+      }
+    },
+    "actions": {
+      "submitForReview": "İnceleme için Gönder",
+      "withdrawSubmission": "Gönderimi Geri Çek",
+      "withdrawing": "Geri çekiliyor...",
+      "reviseAndResubmit": "Gözden Geçir ve Yeniden Gönder",
+      "approveRequest": "Talebi Onayla",
+      "approving": "Onaylanıyor...",
+      "rejectRequest": "Talebi Reddet",
+      "rejecting": "Reddediliyor...",
+      "reviewAndAccept": "İncele ve Kabul Et",
+      "requestChanges": "Değişiklik Talep Et",
+      "reject": "Reddet"
+    },
+    "review": {
+      "title": "Gönderilen Çalışmayı İncele",
+      "description": "{{workerName}}'in çalışmasını incele",
+      "workerSolution": "Çalışanın Çözümü:",
+      "selfReviewScore": "Öz Değerlendirme: {{score}}/100",
+      "noSubmissionNotes": "Gönderim notu sağlanmadı",
+      "actionLabel": "Eylem *",
+      "required": "*",
+      "optional": "(İsteğe bağlı)",
+      "feedbackLabel": "İnceleme Geri Bildirimi {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "Hangi değişikliklerin gerekli olduğunu açıklayın",
+        "other": "Çalışan için yorum veya önerilerde bulunun"
+      },
+      "editorPlaceholder": {
+        "validate": "Gerekli değişiklikleri açıklayın...",
+        "other": "Çalışma hakkında geri bildirim sağlayın..."
+      },
+      "managerReviewLabel": "Yönetici İncelemesi (İsteğe bağlı)",
+      "managerReviewDescription": "Tamamlanan çalışmanın kalitesini değerlendirin",
+      "scorePoor": "0 (Kötü)",
+      "scoreExcellent": "100 (Mükemmel)",
+      "cancel": "İptal",
+      "submitting": "Gönderiliyor...",
+      "acceptWork": "Çalışmayı Kabul Et",
+      "requestChangesButton": "Değişiklik Talep Et",
+      "rejectWork": "Çalışmayı Reddet",
+      "actions": {
+        "accept": {
+          "title": "Kabul Et (Görevi Tamamlandı olarak işaretle)",
+          "description": "Çalışmayı onaylayın ve görevi tamamlayın. Çalışan ödülünü kazanır."
+        },
+        "requestChanges": {
+          "title": "Değişiklik Talep Et",
+          "description": "Çalışandan çalışmasını gözden geçirmesini ve yeniden göndermesini isteyin."
+        },
+        "reject": {
+          "title": "Reddet (Görevi yeniden aç)",
+          "description": "Çalışmayı tamamen reddedin ve görevi başkaları için yeniden açın."
+        }
+      },
+      "messages": {
+        "accepted": "Çalışma kabul edildi ve görev tamamlandı olarak işaretlendi",
+        "changesRequested": "Değişiklikler talep edildi, çalışan gözden geçirecek",
+        "rejected": "Çalışma reddedildi, görev yeniden açıldı",
+        "error": "İnceleme gönderilemedi. Lütfen tekrar deneyin."
+      }
+    },
+    "submission": {
+      "title": "İnceleme için Çalışma Gönder",
+      "titleResubmit": "Çalışmayı Gözden Geçir ve Yeniden Gönder",
+      "description": "{{taskName}} için çözümünüzü açıklayın ve doğrulama için gönderin.",
+      "solutionLabel": "Çözüm Açıklaması *",
+      "solutionDescription": "Bu görevi tamamlamak için ne yaptığınızı açıklayın. Biçimlendirme, bağlantılar ve listeler desteklenir.",
+      "solutionPlaceholder": "Bu görevi tamamlamak için ne yaptığınızı açıklayın...",
+      "selfReviewLabel": "Öz Değerlendirme (İsteğe bağlı)",
+      "selfReviewDescription": "Çalışmanızın kalitesini 0-100 ölçeğinde değerlendirin",
+      "scoreNeedsWork": "0 (İyileştirme gerekli)",
+      "scorePerfect": "100 (Mükemmel)",
+      "cancel": "İptal",
+      "submitting": "Gönderiliyor...",
+      "submitButton": "İnceleme için Gönder",
+      "resubmitButton": "İnceleme için Yeniden Gönder",
+      "errors": {
+        "missingDescription": "Lütfen çalışmanızın bir açıklamasını sağlayın",
+        "submitError": "Çalışmanız gönderilemedi. Lütfen tekrar deneyin."
+      },
+      "messages": {
+        "submitted": "Çalışma inceleme için gönderildi",
+        "resubmitted": "Çalışma inceleme için yeniden gönderildi"
+      }
+    }
   }
 }

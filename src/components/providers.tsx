@@ -44,7 +44,9 @@ export function Providers({ children, locale: providedLocale }: ProvidersProps) 
     isNavigating: false,
     setIsNavigating: (isNavigating: boolean) => {},
     dayData: {} as Record<string, any>,
-    setDayData: (date: string, data: any) => {}
+    setDayData: (date: string, data: any) => {},
+    // Task list initialization state - true until first successful task lists fetch completes
+    isInitializingTaskLists: true,
   })
   
   const setDayData = useCallback((date: string, data: any) => {
@@ -95,13 +97,22 @@ export function Providers({ children, locale: providedLocale }: ProvidersProps) 
       if (!res.ok) {
         // Don't clear existing task lists on error - preserve them
         console.warn('Failed to refresh task lists:', res.status)
+        // Still mark initialization as complete to avoid infinite loading
+        setGlobalContext(prev => ({ ...prev, isInitializingTaskLists: false }))
         return
       }
       const data = await res.json()
-      setGlobalContext(prev => ({ ...prev, taskLists: Array.isArray(data?.taskLists) ? data.taskLists : [] }))
+      setGlobalContext(prev => ({ 
+        ...prev, 
+        taskLists: Array.isArray(data?.taskLists) ? data.taskLists : [],
+        // Mark initialization as complete after first successful fetch
+        isInitializingTaskLists: false
+      }))
     } catch (error) {
       // Don't clear existing task lists on error - preserve them
       console.warn('Error refreshing task lists:', error)
+      // Still mark initialization as complete even on error to avoid infinite loading
+      setGlobalContext(prev => ({ ...prev, isInitializingTaskLists: false }))
     }
   }, [])
 

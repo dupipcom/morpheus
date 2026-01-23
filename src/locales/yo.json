@@ -24,6 +24,7 @@
     "signInToAccess": "Wọlé láti wọ dashboard rẹ̀ àti tẹ̀lé ìlọsíwájú rẹ̀.",
     "dismiss": "Kọ́",
     "accept": "Gba",
+    "all": "Gbogbo",
     "pageAvailableIn": "Ojú-ìwé yìí wà ní èdè {locale}. Ṣe o fẹ́ wo rẹ̀ ní èdè yẹn?",
     "selectLanguage": "Yàn èdè",
     "manageAccount": "Ṣàkóso Ìwé Ìfọ̀rọ̀wérọ̀ Mi",
@@ -647,5 +648,130 @@
     "deleteWallet": "Pa Apamọwọ Run",
     "deleteWalletConfirmation": "Ṣe o da ọ loju pe o fẹ pa apamọwọ yii run? Iṣẹ yii ko le ṣe pada. Apamọwọ yoo yọ kuro lori akọọlẹ rẹ, ṣugbọn adirẹsi blockchain ati awọn owo rẹ yoo duro lori blockchain.",
     "delete": "Pa Run"
+  },
+  "jobs": {
+    "history": "Itan Iṣẹ",
+    "filterByStatus": "Ṣe Àlàyà nípasẹ Ipo:",
+    "errorLoadingHistory": "Aṣiṣe ni kikojọpọ itan iṣẹ",
+    "noHistoryFound": "Ko si itan iṣẹ ti a ri",
+    "status": {
+      "requested": "Ti beere",
+      "inProgress": "N ṣiṣẹ",
+      "validating": "Iṣeduro",
+      "accepted": "Ti gba",
+      "rejected": "Ti kọ"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "Wọ́n ń ṣe àyẹ̀wò ìbéèrè rẹ. A ó sọ fún ọ nígbà tí wọ́n bá fọwọ́sí i.",
+        "inProgress": "Wọ́n ti fọwọ́sí ìbéèrè rẹ! Báyìí o lè ṣiṣẹ́ lórí iṣẹ́ yìí.",
+        "submitted": "A ti fi iṣẹ́ rẹ ránṣẹ́. Ó ń dúró fún àyẹ̀wò láti ọ̀dọ̀ olówó.",
+        "validating": "Wọ́n ti béèrè fún àwọn àyípadà. Jọ̀wọ́ tún un wò kí o sì fi ránṣẹ́ padà.",
+        "accepted": "Ẹ kú oríire! Wọ́n ti gba iṣẹ́ rẹ.",
+        "rejected": "Wọ́n ti kọ̀ ìfọwọ́sí rẹ."
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}} ti béèrè láti ṣiṣẹ́ lórí iṣẹ́ yìí. Fọwọ́sí tàbí kọ̀ ìbéèrè náà.",
+        "inProgress": "{{workerName}} ń ṣiṣẹ́ lórí iṣẹ́ yìí lọ́wọ́lọ́wọ́.",
+        "submitted": "{{workerName}} ti fi iṣẹ́ wọn ránṣẹ́ fún àyẹ̀wò.",
+        "validating": "Ó ń dúró fún {{workerName}} láti tún un wò kí ó sì fi ránṣẹ́ padà.",
+        "accepted": "Wọ́n ti gba iṣẹ́ {{workerName}}.",
+        "rejected": "Wọ́n ti kọ̀ ìfọwọ́sí {{workerName}}."
+      }
+    },
+    "actions": {
+      "submitForReview": "Fi Ránṣẹ́ Fún Àyẹ̀wò",
+      "withdrawSubmission": "Fà Ìfọwọ́sí Padà",
+      "withdrawing": "Ń fà padà...",
+      "reviseAndResubmit": "Tún Wò Kí O Sì Fi Ránṣẹ́ Padà",
+      "approveRequest": "Fọwọ́sí Ìbéèrè",
+      "approving": "Ń fọwọ́sí...",
+      "rejectRequest": "Kọ̀ Ìbéèrè",
+      "rejecting": "Ń kọ̀...",
+      "reviewAndAccept": "Ṣe Àyẹ̀wò Kí O Sì Gbà",
+      "requestChanges": "Béèrè Fún Àwọn Àyípadà",
+      "reject": "Kọ̀"
+    },
+    "review": {
+      "title": "Ṣe Àyẹ̀wò Iṣẹ́ Tí A Fi Ránṣẹ́",
+      "description": "Ṣe àyẹ̀wò iṣẹ́ láti ọ̀dọ̀ {{workerName}}",
+      "workerSolution": "Ìdáhùn Oṣìṣẹ́:",
+      "selfReviewScore": "Àyẹ̀wò Ara Ẹni: {{score}}/100",
+      "noSubmissionNotes": "Kò sí àkọsílẹ̀ ìfọwọ́sí tí a pèsè",
+      "actionLabel": "Ìgbésẹ̀ *",
+      "required": "*",
+      "optional": "(Àṣàyàn)",
+      "feedbackLabel": "Èsì Àyẹ̀wò {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "Ṣàlàyé àwọn àyípadà tó ṣe pàtàkì",
+        "other": "Fún oṣìṣẹ́ ní àwọn ọ̀rọ̀ tàbí ìmọ̀ràn"
+      },
+      "editorPlaceholder": {
+        "validate": "Ṣàpèjúwe àwọn àyípadà tó ṣe pàtàkì...",
+        "other": "Fún èsì lórí iṣẹ́ náà..."
+      },
+      "managerReviewLabel": "Àyẹ̀wò Alábòójútó (Àṣàyàn)",
+      "managerReviewDescription": "Ṣe ìwọ̀n ìdára iṣẹ́ tí a parí",
+      "scorePoor": "0 (Kò dára)",
+      "scoreExcellent": "100 (Ó dára púpọ̀)",
+      "cancel": "Fagílé",
+      "submitting": "Ń fi ránṣẹ́...",
+      "acceptWork": "Gba Iṣẹ́",
+      "requestChangesButton": "Béèrè Fún Àwọn Àyípadà",
+      "rejectWork": "Kọ̀ Iṣẹ́",
+      "actions": {
+        "accept": {
+          "title": "Gbà (Sàmì iṣẹ́ gẹ́gẹ́ bí Tí a Parí)",
+          "description": "Fọwọ́sí iṣẹ́ náà kí o sì parí iṣẹ́ náà. Oṣìṣẹ́ yóò gba ẹ̀san wọn."
+        },
+        "requestChanges": {
+          "title": "Béèrè Fún Àwọn Àyípadà",
+          "description": "Béèrè lọ́wọ́ oṣìṣẹ́ láti tún iṣẹ́ wọn wò kí wọ́n sì fi ránṣẹ́ padà."
+        },
+        "reject": {
+          "title": "Kọ̀ (Tún iṣẹ́ ṣí)",
+          "description": "Kọ̀ iṣẹ́ náà pátápátá kí o sì tún iṣẹ́ náà ṣí fún àwọn ẹlòmíràn."
+        }
+      },
+      "messages": {
+        "accepted": "Wọ́n ti gba iṣẹ́ náà a sì ti sàmì iṣẹ́ náà gẹ́gẹ́ bí tí a parí",
+        "changesRequested": "Wọ́n ti béèrè fún àwọn àyípadà, oṣìṣẹ́ yóò tún un wò",
+        "rejected": "Wọ́n ti kọ̀ iṣẹ́ náà, a ti tún iṣẹ́ náà ṣí",
+        "error": "Kò lè fi àyẹ̀wò ránṣẹ́. Jọ̀wọ́ gbìyànjú lẹ́ẹ̀kan sí i."
+      }
+    },
+    "submission": {
+      "title": "Fi Iṣẹ́ Ránṣẹ́ Fún Àyẹ̀wò",
+      "titleResubmit": "Tún Iṣẹ́ Wò Kí O Sì Fi Ránṣẹ́ Padà",
+      "description": "Ṣàpèjúwe ìdáhùn rẹ fún {{taskName}} kí o sì fi ránṣẹ́ fún ìjẹ́rìísí.",
+      "solutionLabel": "Àpèjúwe Ìdáhùn *",
+      "solutionDescription": "Ṣàlàyé ohun tí o ṣe láti parí iṣẹ́ yìí. Ó ń ṣe àtìlẹ́yìn fún fọ́mátì, àwọn ìjápọ̀ àti àwọn àkọsílẹ̀.",
+      "solutionPlaceholder": "Ṣàlàyé ohun tí o ṣe láti parí iṣẹ́ yìí...",
+      "selfReviewLabel": "Àyẹ̀wò Ara Ẹni (Àṣàyàn)",
+      "selfReviewDescription": "Ṣe ìwọ̀n ìdára iṣẹ́ rẹ lórí ìwọ̀n 0-100",
+      "scoreNeedsWork": "0 (Ó nílò iṣẹ́)",
+      "scorePerfect": "100 (Ó pé)",
+      "cancel": "Fagílé",
+      "submitting": "Ń fi ránṣẹ́...",
+      "submitButton": "Fi Ránṣẹ́ Fún Àyẹ̀wò",
+      "resubmitButton": "Fi Ránṣẹ́ Padà Fún Àyẹ̀wò",
+      "errors": {
+        "missingDescription": "Jọ̀wọ́ pèsè àpèjúwe iṣẹ́ rẹ",
+        "submitError": "Kò lè fi iṣẹ́ rẹ ránṣẹ́. Jọ̀wọ́ gbìyànjú lẹ́ẹ̀kan sí i."
+      },
+      "messages": {
+        "submitted": "A ti fi iṣẹ́ ránṣẹ́ fún àyẹ̀wò",
+        "resubmitted": "A ti fi iṣẹ́ ránṣẹ́ padà fún àyẹ̀wò"
+      }
+    }
   }
 }

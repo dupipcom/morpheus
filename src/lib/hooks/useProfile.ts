@@ -1,34 +1,22 @@
 import useSWR from 'swr'
-import { useMemo } from 'react'
+import { useCallback } from 'react'
+import { jsonFetcher } from '@/lib/utils/utils'
 
-const fetcher = async (url: string) => {
-  const response = await fetch(url, {
-    headers: {
-      'Accept': 'application/json',
-    },
-  })
-  
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({ error: 'Failed to fetch' }))
-    throw new Error(errorData.error || `Failed to fetch: ${response.statusText}`)
-  }
-  
-  // Check if response is actually JSON before parsing
-  const contentType = response.headers.get('content-type')
-  if (!contentType || !contentType.includes('application/json')) {
-    throw new Error('Response is not JSON')
-  }
-  
-  return response.json()
+interface ProfileData {
+  profile?: unknown
+}
+
+interface NotesData {
+  notes?: unknown[]
 }
 
 /**
  * SWR hook to fetch a public profile by username
  */
 export function useProfile(userName: string | null, enabled: boolean = true) {
-  const { data, error, isLoading, mutate } = useSWR(
+  const { data, error, isLoading, mutate } = useSWR<ProfileData>(
     enabled && userName ? `/api/v1/profile/${userName}` : null,
-    fetcher,
+    jsonFetcher,
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
@@ -37,7 +25,7 @@ export function useProfile(userName: string | null, enabled: boolean = true) {
     }
   )
 
-  const refreshProfile = useMemo(() => async () => {
+  const refreshProfile = useCallback(async () => {
     try {
       await mutate()
     } catch (e) {
@@ -57,9 +45,9 @@ export function useProfile(userName: string | null, enabled: boolean = true) {
  * SWR hook to fetch profile notes
  */
 export function useProfileNotes(userName: string | null, enabled: boolean = true) {
-  const { data, error, isLoading, mutate } = useSWR(
+  const { data, error, isLoading, mutate } = useSWR<NotesData>(
     enabled && userName ? `/api/v1/profile/${userName}/notes` : null,
-    fetcher,
+    jsonFetcher,
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
@@ -68,7 +56,7 @@ export function useProfileNotes(userName: string | null, enabled: boolean = true
     }
   )
 
-  const refreshNotes = useMemo(() => async () => {
+  const refreshNotes = useCallback(async () => {
     try {
       await mutate()
     } catch (e) {
@@ -83,4 +71,3 @@ export function useProfileNotes(userName: string | null, enabled: boolean = true
     refreshNotes,
   }
 }
-

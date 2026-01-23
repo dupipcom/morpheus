@@ -190,6 +190,10 @@ export async function getTasksForDate(
       dateStatus = 'DONE'
     } else if (count > 0) {
       dateStatus = 'IN_PROGRESS'
+    } else if (count === 0 && task.status && ['READY', 'STEADY', 'IN_PROGRESS'].includes(task.status)) {
+      // When no jobs exist for this date, respect manually-set task status
+      // This allows users to mark tasks as "ready" or "steady" before completion
+      dateStatus = task.status
     }
 
     result.push({

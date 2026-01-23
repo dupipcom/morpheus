@@ -24,6 +24,7 @@
     "signInToAccess": "Connectez-vous pour accéder à votre tableau de bord et suivre vos progrès.",
     "dismiss": "Fermer",
     "accept": "Accepter",
+    "all": "Tout",
     "pageAvailableIn": "Cette page est disponible en {locale}. Souhaitez-vous la voir dans cette langue ?",
     "selectLanguage": "Sélectionner la langue",
     "manageAccount": "Gérer Mon Compte",
@@ -649,5 +650,130 @@
     "deleteWallet": "Supprimer le Portefeuille",
     "deleteWalletConfirmation": "Êtes-vous sûr de vouloir supprimer ce portefeuille ? Cette action ne peut pas être annulée. Le portefeuille sera retiré de votre compte, mais l'adresse blockchain et ses fonds resteront sur la blockchain.",
     "delete": "Supprimer"
+  },
+  "jobs": {
+    "history": "Historique des Travaux",
+    "filterByStatus": "Filtrer par Statut :",
+    "errorLoadingHistory": "Erreur lors du chargement de l'historique des travaux",
+    "noHistoryFound": "Aucun historique de travaux trouvé",
+    "status": {
+      "requested": "Demandé",
+      "inProgress": "En Cours",
+      "validating": "Validation",
+      "accepted": "Accepté",
+      "rejected": "Rejeté"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "Votre demande est en cours d'examen. Vous serez notifié lors de l'approbation.",
+        "inProgress": "Votre demande a été approuvée ! Vous pouvez maintenant travailler sur cette tâche.",
+        "submitted": "Votre travail a été soumis. En attente de révision par le propriétaire.",
+        "validating": "Des modifications ont été demandées. Veuillez réviser et soumettre à nouveau.",
+        "accepted": "Félicitations ! Votre travail a été accepté.",
+        "rejected": "Votre soumission a été rejetée."
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}} a demandé à travailler sur cette tâche. Approuvez ou rejetez la demande.",
+        "inProgress": "{{workerName}} travaille actuellement sur cette tâche.",
+        "submitted": "{{workerName}} a soumis son travail pour révision.",
+        "validating": "En attente que {{workerName}} révise et soumette à nouveau.",
+        "accepted": "Le travail de {{workerName}} a été accepté.",
+        "rejected": "La soumission de {{workerName}} a été rejetée."
+      }
+    },
+    "actions": {
+      "submitForReview": "Soumettre pour Révision",
+      "withdrawSubmission": "Retirer la Soumission",
+      "withdrawing": "Retrait en cours...",
+      "reviseAndResubmit": "Réviser et Resoumettre",
+      "approveRequest": "Approuver la Demande",
+      "approving": "Approbation en cours...",
+      "rejectRequest": "Rejeter la Demande",
+      "rejecting": "Rejet en cours...",
+      "reviewAndAccept": "Réviser et Accepter",
+      "requestChanges": "Demander des Modifications",
+      "reject": "Rejeter"
+    },
+    "review": {
+      "title": "Réviser le Travail Soumis",
+      "description": "Réviser le travail de {{workerName}}",
+      "workerSolution": "Solution du Travailleur :",
+      "selfReviewScore": "Auto-évaluation : {{score}}/100",
+      "noSubmissionNotes": "Aucune note de soumission fournie",
+      "actionLabel": "Action *",
+      "required": "*",
+      "optional": "(Facultatif)",
+      "feedbackLabel": "Commentaires de Révision {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "Expliquez quelles modifications sont nécessaires",
+        "other": "Fournissez des commentaires ou suggestions pour le travailleur"
+      },
+      "editorPlaceholder": {
+        "validate": "Décrivez les modifications nécessaires...",
+        "other": "Fournissez des commentaires sur le travail..."
+      },
+      "managerReviewLabel": "Révision du Gestionnaire (Facultatif)",
+      "managerReviewDescription": "Évaluez la qualité du travail accompli",
+      "scorePoor": "0 (Médiocre)",
+      "scoreExcellent": "100 (Excellent)",
+      "cancel": "Annuler",
+      "submitting": "Soumission en cours...",
+      "acceptWork": "Accepter le Travail",
+      "requestChangesButton": "Demander des Modifications",
+      "rejectWork": "Rejeter le Travail",
+      "actions": {
+        "accept": {
+          "title": "Accepter (Marquer la tâche comme Terminée)",
+          "description": "Approuver le travail et terminer la tâche. Le travailleur gagne sa récompense."
+        },
+        "requestChanges": {
+          "title": "Demander des Modifications",
+          "description": "Demander au travailleur de réviser et soumettre à nouveau son travail."
+        },
+        "reject": {
+          "title": "Rejeter (Rouvrir la tâche)",
+          "description": "Rejeter complètement le travail et rouvrir la tâche pour d'autres."
+        }
+      },
+      "messages": {
+        "accepted": "Travail accepté et tâche marquée comme terminée",
+        "changesRequested": "Modifications demandées, le travailleur révisera",
+        "rejected": "Travail rejeté, tâche rouverte",
+        "error": "Impossible de soumettre la révision. Veuillez réessayer."
+      }
+    },
+    "submission": {
+      "title": "Soumettre le Travail pour Révision",
+      "titleResubmit": "Réviser et Resoumettre le Travail",
+      "description": "Décrivez votre solution pour {{taskName}} et soumettez pour validation.",
+      "solutionLabel": "Description de la Solution *",
+      "solutionDescription": "Expliquez ce que vous avez fait pour accomplir cette tâche. Prend en charge le formatage, les liens et les listes.",
+      "solutionPlaceholder": "Expliquez ce que vous avez fait pour accomplir cette tâche...",
+      "selfReviewLabel": "Auto-évaluation (Facultatif)",
+      "selfReviewDescription": "Évaluez la qualité de votre travail sur une échelle de 0-100",
+      "scoreNeedsWork": "0 (Nécessite du travail)",
+      "scorePerfect": "100 (Parfait)",
+      "cancel": "Annuler",
+      "submitting": "Soumission en cours...",
+      "submitButton": "Soumettre pour Révision",
+      "resubmitButton": "Resoumettre pour Révision",
+      "errors": {
+        "missingDescription": "Veuillez fournir une description de votre travail",
+        "submitError": "Impossible de soumettre votre travail. Veuillez réessayer."
+      },
+      "messages": {
+        "submitted": "Travail soumis pour révision",
+        "resubmitted": "Travail resoumis pour révision"
+      }
+    }
   }
 }

@@ -2,16 +2,31 @@
 
 import React, { useMemo, useCallback, useState, useContext } from 'react'
 import { OptionsMenuItem } from '@/components/optionsButton'
-import { Circle, Minus, Plus, Eye, EyeOff, Edit } from 'lucide-react'
+import { Circle, Minus, Plus, Eye, EyeOff, Edit, Send, Clock } from 'lucide-react'
 import { useI18n } from '@/lib/contexts/i18n'
 import { GlobalContext } from '@/lib/contexts'
 import { getProfitPerTask } from '@/lib/utils/earningsUtils'
 import { TaskItem } from '@/components/taskItem'
-import { TaskStatus, STATUS_OPTIONS, getStatusColor, getIconColor, getTaskKey, getTaskStatus } from '@/lib/utils/taskUtils'
+import { TaskStatus, STATUS_OPTIONS, getStatusColor, getIconColor, getTaskKey, getTaskStatus, mapStatusToEnum } from '@/lib/utils/taskUtils'
+
+function calculateNewStatus(count: number, times: number, existingStatus?: string): string {
+  if (count >= times) return 'DONE'
+  if (count > 0) {
+    if (!existingStatus || existingStatus === 'done' || existingStatus === 'open') {
+      return 'IN_PROGRESS'
+    }
+    return mapStatusToEnum(existingStatus)
+  }
+  return 'OPEN'
+}
 import { useOptimisticUpdates } from '@/lib/hooks/useOptimisticUpdates'
 import { useTaskStatuses } from '@/lib/hooks/useTaskStatuses'
 import { useTaskHandlers } from '@/lib/hooks/useTaskHandlers'
 import { AddTaskForm } from '@/views/forms/addTaskForm'
+import { JobDetailsCard } from '@/components/jobDetailsCard'
+import { JobSubmissionDialog } from '@/components/jobSubmissionDialog'
+import { JobReviewDialog } from '@/components/jobReviewDialog'
+import type { JobWithRelations, UserRole, ListUser } from '@/lib/services/job/types'
 
 interface TaskGridProps {
   tasks: any[]
@@ -41,6 +56,19 @@ export const TaskGrid = ({
   const { t } = useI18n()
   const { refreshTaskLists, handleTaskCompletionOptimistic } = useContext(GlobalContext)
   const [editingTask, setEditingTask] = useState<any>(null)
+
+  // Job workflow dialog state
+  const [isSubmitDialogOpen, setIsSubmitDialogOpen] = useState(false)
+  const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false)
+  const [selectedJob, setSelectedJob] = useState<JobWithRelations | null>(null)
+  const [selectedTaskForJob, setSelectedTaskForJob] = useState<any>(null)
+
+  // Track pending job requests for UI feedback
+  const [pendingJobRequests, setPendingJobRequests] = useState<Set<string>>(new Set())
+  // Track refreshing state for UI feedback
+  const [refreshingJobId, setRefreshingJobId] = useState<string | null>(null)
+  // Track optimistic job updates for instant UI feedback
+  const [optimisticJobUpdates, setOptimisticJobUpdates] = useState<Map<string, Partial<JobWithRelations>>>(new Map())
 
   // Use shared hooks for optimistic updates and task statuses
   const { pendingCompletionsRef, pendingStatusUpdatesRef } = useOptimisticUpdates()
@@ -116,26 +144,7 @@ export const TaskGrid = ({
     const currentCount = task?.count || 0
 
     // Calculate new status based on count and new times
-    let newStatus = 'OPEN'
-    if (currentCount >= newTimes) {
-      newStatus = 'DONE'
-    } else if (currentCount > 0) {
-      const existingStatus = taskStatuses[key]
-      if (!existingStatus || existingStatus === 'done' || existingStatus === 'open') {
-        newStatus = 'IN_PROGRESS'
-      } else {
-        // Map old status to new enum
-        const statusMap: Record<string, string> = {
-          'in progress': 'IN_PROGRESS',
-          'steady': 'STEADY',
-          'ready': 'READY',
-          'open': 'OPEN',
-          'done': 'DONE',
-          'ignored': 'IGNORED',
-        }
-        newStatus = statusMap[existingStatus] || 'OPEN'
-      }
-    }
+    const newStatus = calculateNewStatus(currentCount, newTimes, taskStatuses[key])
 
     try {
       await fetch(`/api/v1/tasks/${task.id}`, {
@@ -166,26 +175,7 @@ export const TaskGrid = ({
     const newCount = (currentTimes === currentCount) ? Math.max(0, currentCount - 1) : currentCount
 
     // Calculate new status
-    let newStatus = 'OPEN'
-    if (newCount >= newTimes) {
-      newStatus = 'DONE'
-    } else if (newCount > 0) {
-      const existingStatus = taskStatuses[key]
-      if (!existingStatus || existingStatus === 'done' || existingStatus === 'open') {
-        newStatus = 'IN_PROGRESS'
-      } else {
-        // Map old status to new enum
-        const statusMap: Record<string, string> = {
-          'in progress': 'IN_PROGRESS',
-          'steady': 'STEADY',
-          'ready': 'READY',
-          'open': 'OPEN',
-          'done': 'DONE',
-          'ignored': 'IGNORED',
-        }
-        newStatus = statusMap[existingStatus] || 'OPEN'
-      }
-    }
+    const newStatus = calculateNewStatus(newCount, newTimes, taskStatuses[key])
 
     // Optimistic update
     setTaskStatuses(prev => {
@@ -221,6 +211,298 @@ export const TaskGrid = ({
     }
   }, [selectedTaskList, tasks, date, onRefresh, onRefreshUser, taskStatuses, setTaskStatuses])
 
+  // Helper to apply optimistic updates to jobs
+  const applyOptimisticUpdates = useCallback((jobsList: JobWithRelations[]): JobWithRelations[] => {
+    if (optimisticJobUpdates.size === 0) return jobsList
+
+    return jobsList.map(job => {
+      const update = optimisticJobUpdates.get(job.id)
+      return update ? { ...job, ...update } : job
+    })
+  }, [optimisticJobUpdates])
+
+  // Apply optimistic updates to jobs
+  const optimisticJobs = useMemo(() => applyOptimisticUpdates(jobs), [jobs, applyOptimisticUpdates])
+
+  // Map jobs by taskId for quick lookup (using optimistic jobs)
+  const jobsByTask = useMemo(() => {
+    const map: Record<string, JobWithRelations> = {}
+    optimisticJobs.forEach((job: JobWithRelations) => {
+      // Store latest non-rejected/accepted job for each task (active jobs)
+      const isActiveJob = !['ACCEPTED', 'REJECTED'].includes(job.status)
+      if (isActiveJob && (!map[job.taskId] || new Date(job.createdAt) > new Date(map[job.taskId].createdAt))) {
+        map[job.taskId] = job
+      }
+    })
+    return map
+  }, [optimisticJobs])
+
+  // Get user's role in list
+  const getUserRole = useCallback((): UserRole => {
+    const users = Array.isArray(selectedTaskList?.users) ? selectedTaskList.users : []
+    const userEntry = users.find((u: ListUser) => u.userId === userId)
+    return userEntry?.role || 'COLLABORATOR'
+  }, [selectedTaskList, userId])
+
+  // Check if user is participant in job
+  const isJobParticipant = useCallback((job: JobWithRelations, uid: string): boolean => {
+    const users = Array.isArray(selectedTaskList?.users) ? selectedTaskList.users : []
+    const isOwnerOrManager = users.some(
+      (u: ListUser) => u.userId === uid && ['OWNER', 'MANAGER'].includes(u.role)
+    )
+    return (
+      job.workerId === uid ||
+      isOwnerOrManager ||
+      job.reviewerIds?.includes(uid)
+    )
+  }, [selectedTaskList])
+
+  // Job action handlers
+  const handleRequestWork = useCallback(async (task: any) => {
+    const taskKey = task.id || task.localeKey || task.name
+    setPendingJobRequests(prev => new Set(prev).add(taskKey))
+    try {
+      const response = await fetch('/api/v1/jobs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          taskId: task.id,
+          listId: selectedTaskList?.id,
+          workerId: userId,
+          occurrenceDate: date,
+        }),
+      })
+      if (!response.ok) {
+        const error = await response.json()
+        console.error('Error creating job:', error)
+      }
+      await onRefresh()
+    } catch (error) {
+      console.error('Error requesting work:', error)
+    } finally {
+      setPendingJobRequests(prev => {
+        const next = new Set(prev)
+        next.delete(taskKey)
+        return next
+      })
+    }
+  }, [selectedTaskList?.id, userId, date, onRefresh])
+
+  const handleApproveJobRequest = useCallback(async (jobId: string) => {
+    // Optimistic update: immediately show new status
+    setOptimisticJobUpdates(prev => new Map(prev).set(jobId, { status: 'IN_PROGRESS' }))
+    setRefreshingJobId(jobId)
+
+    try {
+      const response = await fetch(`/api/v1/jobs/${jobId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'IN_PROGRESS' }),
+      })
+
+      if (!response.ok) throw new Error('Failed to approve job')
+
+      await onRefresh()
+      // Clear optimistic update after successful refresh
+      setOptimisticJobUpdates(prev => {
+        const next = new Map(prev)
+        next.delete(jobId)
+        return next
+      })
+    } catch (error) {
+      console.error('Error approving job:', error)
+      // Rollback optimistic update on error
+      setOptimisticJobUpdates(prev => {
+        const next = new Map(prev)
+        next.delete(jobId)
+        return next
+      })
+    } finally {
+      setRefreshingJobId(null)
+    }
+  }, [onRefresh])
+
+  const handleRejectJob = useCallback(async (jobId: string) => {
+    // Optimistic update: immediately show new status
+    setOptimisticJobUpdates(prev => new Map(prev).set(jobId, { status: 'REJECTED' }))
+    setRefreshingJobId(jobId)
+
+    try {
+      const response = await fetch(`/api/v1/jobs/${jobId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'REJECTED' }),
+      })
+
+      if (!response.ok) throw new Error('Failed to reject job')
+
+      await onRefresh()
+      // Clear optimistic update after successful refresh
+      setOptimisticJobUpdates(prev => {
+        const next = new Map(prev)
+        next.delete(jobId)
+        return next
+      })
+    } catch (error) {
+      console.error('Error rejecting job:', error)
+      // Rollback optimistic update on error
+      setOptimisticJobUpdates(prev => {
+        const next = new Map(prev)
+        next.delete(jobId)
+        return next
+      })
+    } finally {
+      setRefreshingJobId(null)
+    }
+  }, [onRefresh])
+
+  const handleWithdrawSubmission = useCallback(async (jobId: string) => {
+    // Optimistic update: immediately show new status
+    setOptimisticJobUpdates(prev => new Map(prev).set(jobId, { status: 'IN_PROGRESS' }))
+    setRefreshingJobId(jobId)
+
+    try {
+      const response = await fetch(`/api/v1/jobs/${jobId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'IN_PROGRESS' }),
+      })
+
+      if (!response.ok) throw new Error('Failed to withdraw submission')
+
+      await onRefresh()
+      // Clear optimistic update after successful refresh
+      setOptimisticJobUpdates(prev => {
+        const next = new Map(prev)
+        next.delete(jobId)
+        return next
+      })
+    } catch (error) {
+      console.error('Error withdrawing submission:', error)
+      // Rollback optimistic update on error
+      setOptimisticJobUpdates(prev => {
+        const next = new Map(prev)
+        next.delete(jobId)
+        return next
+      })
+    } finally {
+      setRefreshingJobId(null)
+    }
+  }, [onRefresh])
+
+  const handleSubmitWork = useCallback(async (data: { noteContent: string; selfReview: number }) => {
+    if (!selectedJob) return
+
+    // Optimistic update: immediately show new status and self-review
+    setOptimisticJobUpdates(prev => new Map(prev).set(selectedJob.id, {
+      status: 'SUBMITTED',
+      selfReview: data.selfReview,
+    }))
+    setRefreshingJobId(selectedJob.id)
+
+    try {
+      const response = await fetch(`/api/v1/jobs/${selectedJob.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          status: 'SUBMITTED',
+          requesterNoteContent: data.noteContent,
+          selfReview: data.selfReview,
+        }),
+      })
+
+      if (!response.ok) throw new Error('Failed to submit work')
+
+      await onRefresh()
+      // Clear optimistic update after successful refresh
+      setOptimisticJobUpdates(prev => {
+        const next = new Map(prev)
+        next.delete(selectedJob.id)
+        return next
+      })
+    } catch (error) {
+      console.error('Error submitting work:', error)
+      // Rollback optimistic update on error
+      setOptimisticJobUpdates(prev => {
+        const next = new Map(prev)
+        next.delete(selectedJob.id)
+        return next
+      })
+      throw error
+    } finally {
+      setRefreshingJobId(null)
+    }
+  }, [selectedJob, onRefresh])
+
+  const handleReviewWork = useCallback(async (data: {
+    action: 'accept' | 'validate' | 'reject'
+    reviewNoteContent?: string
+    managerReview?: number
+  }) => {
+    if (!selectedJob) return
+
+    const statusMap: Record<string, string> = {
+      accept: 'ACCEPTED',
+      validate: 'VALIDATING',
+      reject: 'REJECTED',
+    }
+    const newStatus = statusMap[data.action]
+
+    // Optimistic update: immediately show new status and manager review
+    const optimisticUpdate: Partial<JobWithRelations> = { status: newStatus as any }
+    if (data.managerReview !== undefined) {
+      optimisticUpdate.managerReview = data.managerReview
+    }
+    setOptimisticJobUpdates(prev => new Map(prev).set(selectedJob.id, optimisticUpdate))
+    setRefreshingJobId(selectedJob.id)
+
+    try {
+      const response = await fetch(`/api/v1/jobs/${selectedJob.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          status: newStatus,
+          reviewerNoteContent: data.reviewNoteContent,
+          managerReview: data.managerReview,
+        }),
+      })
+
+      if (!response.ok) throw new Error('Failed to review work')
+
+      await onRefresh()
+      // Clear optimistic update after successful refresh
+      setOptimisticJobUpdates(prev => {
+        const next = new Map(prev)
+        next.delete(selectedJob.id)
+        return next
+      })
+    } catch (error) {
+      console.error('Error reviewing work:', error)
+      // Rollback optimistic update on error
+      setOptimisticJobUpdates(prev => {
+        const next = new Map(prev)
+        next.delete(selectedJob.id)
+        return next
+      })
+      throw error
+    } finally {
+      setRefreshingJobId(null)
+    }
+  }, [selectedJob, onRefresh])
+
+  // Open submission dialog
+  const openSubmissionDialog = useCallback((job: JobWithRelations, task: any) => {
+    setSelectedJob(job)
+    setSelectedTaskForJob(task)
+    setIsSubmitDialogOpen(true)
+  }, [])
+
+  // Open review dialog
+  const openReviewDialog = useCallback((job: JobWithRelations) => {
+    setSelectedJob(job)
+    setIsReviewDialogOpen(true)
+  }, [])
+
   return (
     <>
       {editingTask && (
@@ -246,8 +528,8 @@ export const TaskGrid = ({
           ? { ...task, count: pendingCompletion.count }
           : task
         
-        // Get jobs for this task (from new job system)
-        const taskJobs = jobs.filter((j: any) => j.taskId === task.id)
+        // Get jobs for this task (from new job system, using optimistic jobs)
+        const taskJobs = optimisticJobs.filter((j: any) => j.taskId === task.id)
         const latestJob = taskJobs.length > 0 ? taskJobs[0] : null
 
         // For backward compatibility, check old completers array
@@ -290,9 +572,24 @@ export const TaskGrid = ({
         const hasPendingJobs = taskJobs.some((j: any) => j.status === 'VALIDATING')
         const canValidateJobs = (userRole === 'OWNER' || userRole === 'MANAGER') && hasPendingJobs
 
+        // Get the active job for this task (moved up for early access)
+        const activeJob = jobsByTask[task.id]
+        const isWorker = activeJob?.workerId === userId
+
+        // Determine if user can change task status
+        // Collaborators can only change status if they have an approved job (IN_PROGRESS, SUBMITTED, VALIDATING)
+        const approvedJobStatuses = ['IN_PROGRESS', 'SUBMITTED', 'VALIDATING', 'ACCEPTED']
+        const hasApprovedJob = isWorker && activeJob && approvedJobStatuses.includes(activeJob.status)
+        const canChangeStatus = userRole === 'OWNER' || userRole === 'MANAGER' || hasApprovedJob
+
+        // Get list owner username for display
+        const ownerUserId = users.find((u: any) => u.role === 'OWNER')?.userId
+        const ownerUsername = ownerUserId ? collabProfiles[ownerUserId] : null
+
         // Build options menu items
         const optionsMenuItems: OptionsMenuItem[] = [
-          ...STATUS_OPTIONS.map((status) => ({
+          // Only show status options if user can change status
+          ...(canChangeStatus ? STATUS_OPTIONS.map((status) => ({
             label: (
               <>
                 <Circle
@@ -304,7 +601,7 @@ export const TaskGrid = ({
             ),
             onClick: () => handleStatusChange(taskWithOptimisticCount, status),
             icon: null,
-          })),
+          })) : []),
           {
             label: t('tasks.edit', { defaultValue: 'Edit' }),
             onClick: () => {
@@ -352,27 +649,127 @@ export const TaskGrid = ({
             : []),
         ]
 
+        // Check if user is participant in the job
+        const isParticipant = activeJob ? isJobParticipant(activeJob, userId) : false
+        const currentUserRole = getUserRole()
+
+        // Add job workflow menu items for collaborators
+        const jobMenuItems: OptionsMenuItem[] = []
+
+        // Collaborator: Request to work on task (if no active job)
+        if (userRole === 'COLLABORATOR' && !activeJob && !isDone) {
+          jobMenuItems.push({
+            label: t('tasks.requestToWork', { defaultValue: 'Request to Work' }),
+            onClick: () => handleRequestWork(taskWithOptimisticCount),
+            icon: <Send className="h-4 w-4" />,
+            separator: true,
+          })
+        }
+
+        // Worker: Submit work (if job is in progress)
+        if (isWorker && activeJob?.status === 'IN_PROGRESS') {
+          jobMenuItems.push({
+            label: t('tasks.submitForReview', { defaultValue: 'Submit for Review' }),
+            onClick: () => openSubmissionDialog(activeJob, taskWithOptimisticCount),
+            icon: <Send className="h-4 w-4" />,
+            separator: true,
+          })
+        }
+
+        // Worker: Resubmit (if job needs changes)
+        if (isWorker && activeJob?.status === 'VALIDATING') {
+          jobMenuItems.push({
+            label: t('tasks.resubmitWork', { defaultValue: 'Revise and Resubmit' }),
+            onClick: () => openSubmissionDialog(activeJob, taskWithOptimisticCount),
+            icon: <Send className="h-4 w-4" />,
+            separator: true,
+          })
+        }
+
+        // Show pending status for collaborators
+        if (isWorker && activeJob?.status === 'REQUESTED') {
+          jobMenuItems.push({
+            label: t('tasks.requestPending', { defaultValue: 'Request Pending...' }),
+            onClick: () => {},
+            icon: <Clock className="h-4 w-4" />,
+            disabled: true,
+          })
+        }
+
+        // Combine menus
+        const finalOptionsMenuItems = [...optionsMenuItems, ...jobMenuItems]
+
         return (
-          <TaskItem
-            key={`task__item--${key}`}
-            task={taskWithOptimisticCount}
-            taskStatus={finalTaskStatus}
-            statusColor={statusColor}
-            iconColor={iconColor}
-            optionsMenuItems={optionsMenuItems}
-            onClick={() => handleTaskClick(taskWithOptimisticCount)}
-            revealRedacted={revealRedacted}
-            showCompleterBadge={true}
-            completerName={completerName}
-            taskEarnings={taskEarnings}
-            hasCollaborators={hasCollaborators}
-            variant={isDone ? 'default' : 'outline'}
-            latestJob={latestJob}
-            hasPendingJobs={hasPendingJobs}
-          />
+          <div key={`task__container--${key}`} className="flex flex-col">
+            <TaskItem
+              key={`task__item--${key}`}
+              task={taskWithOptimisticCount}
+              taskStatus={finalTaskStatus}
+              statusColor={statusColor}
+              iconColor={iconColor}
+              optionsMenuItems={finalOptionsMenuItems}
+              onClick={() => {
+                // For collaborators without an active job on a non-done task, initiate job request
+                if (userRole === 'COLLABORATOR' && !activeJob && !isDone) {
+                  handleRequestWork(taskWithOptimisticCount)
+                } else {
+                  handleTaskClick(taskWithOptimisticCount)
+                }
+              }}
+              revealRedacted={revealRedacted}
+              showCompleterBadge={true}
+              completerName={completerName}
+              taskEarnings={taskEarnings}
+              hasCollaborators={hasCollaborators}
+              variant={isDone ? 'default' : 'outline'}
+              latestJob={latestJob}
+              hasPendingJobs={hasPendingJobs}
+              isOwnerOrManager={userRole === 'OWNER' || userRole === 'MANAGER'}
+              ownerUsername={ownerUsername}
+              userJobStatus={activeJob?.status || null}
+              isCurrentUserWorker={isWorker}
+              isPendingRequest={pendingJobRequests.has(key)}
+            />
+
+            {/* Job Details Card - shown for active jobs */}
+            {activeJob && (
+              <JobDetailsCard
+                job={activeJob}
+                userRole={currentUserRole}
+                isParticipant={isParticipant}
+                isWorker={isWorker}
+                userId={userId}
+                isRefreshing={refreshingJobId === activeJob.id}
+                onApprove={() => handleApproveJobRequest(activeJob.id)}
+                onReject={() => handleRejectJob(activeJob.id)}
+                onValidate={() => openReviewDialog(activeJob)}
+                onWithdraw={() => handleWithdrawSubmission(activeJob.id)}
+                onRequestChanges={() => openReviewDialog(activeJob)}
+                onSubmitWork={() => openSubmissionDialog(activeJob, taskWithOptimisticCount)}
+              />
+            )}
+          </div>
         )
       })}
       </div>
+
+      {/* Job Submission Dialog */}
+      <JobSubmissionDialog
+        open={isSubmitDialogOpen}
+        onOpenChange={setIsSubmitDialogOpen}
+        jobId={selectedJob?.id || ''}
+        taskName={selectedTaskForJob?.displayName || selectedTaskForJob?.name || ''}
+        isResubmit={selectedJob?.status === 'VALIDATING'}
+        onSubmit={handleSubmitWork}
+      />
+
+      {/* Job Review Dialog */}
+      <JobReviewDialog
+        open={isReviewDialogOpen}
+        onOpenChange={setIsReviewDialogOpen}
+        job={selectedJob}
+        onReview={handleReviewWork}
+      />
     </>
   )
 }

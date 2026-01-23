@@ -24,6 +24,7 @@
     "signInToAccess": "התחבר כדי לגשת ללוח הבקרה שלך ולעקוב אחר ההתקדמות שלך.",
     "dismiss": "סגור",
     "accept": "קבל",
+    "all": "הכל",
     "pageAvailableIn": "דף זה זמין ב-{locale}. האם תרצה לצפות בו בשפה זו?",
     "selectLanguage": "בחר שפה",
     "manageAccount": "נהל את החשבון שלי",
@@ -649,5 +650,130 @@
     "deleteWallet": "מחק ארנק",
     "deleteWalletConfirmation": "האם אתה בטוח שברצונך למחוק את הארנק הזה? פעולה זו לא ניתנת לביטול. הארנק יוסר מהחשבון שלך, אך כתובת ה-blockchain והכספים שלה יישארו ב-blockchain.",
     "delete": "מחק"
+  },
+  "jobs": {
+    "history": "היסטוריית עבודות",
+    "filterByStatus": "סנן לפי סטטוס:",
+    "errorLoadingHistory": "שגיאה בטעינת היסטוריית עבודות",
+    "noHistoryFound": "לא נמצאה היסטוריית עבודות",
+    "status": {
+      "requested": "התבקש",
+      "inProgress": "בתהליך",
+      "validating": "מאמת",
+      "accepted": "התקבל",
+      "rejected": "נדחה"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "הבקשה שלך נמצאת בבדיקה. תקבל הודעה כאשר תאושר.",
+        "inProgress": "הבקשה שלך אושרה! כעת אתה יכול לעבוד על משימה זו.",
+        "submitted": "העבודה שלך נשלחה. ממתין לבדיקה מהבעלים.",
+        "validating": "התבקשו שינויים. אנא בדוק ושלח מחדש.",
+        "accepted": "מזל טוב! העבודה שלך התקבלה.",
+        "rejected": "ההגשה שלך נדחתה."
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}} ביקש לעבוד על משימה זו. אשר או דחה את הבקשה.",
+        "inProgress": "{{workerName}} עובד כעת על משימה זו.",
+        "submitted": "{{workerName}} שלח את עבודתו לבדיקה.",
+        "validating": "ממתין ש-{{workerName}} יבדוק וישלח מחדש.",
+        "accepted": "העבודה של {{workerName}} התקבלה.",
+        "rejected": "ההגשה של {{workerName}} נדחתה."
+      }
+    },
+    "actions": {
+      "submitForReview": "שלח לבדיקה",
+      "withdrawSubmission": "משוך הגשה",
+      "withdrawing": "מושך...",
+      "reviseAndResubmit": "בדוק ושלח מחדש",
+      "approveRequest": "אשר בקשה",
+      "approving": "מאשר...",
+      "rejectRequest": "דחה בקשה",
+      "rejecting": "דוחה...",
+      "reviewAndAccept": "בדוק ואשר",
+      "requestChanges": "בקש שינויים",
+      "reject": "דחה"
+    },
+    "review": {
+      "title": "בדוק עבודה שנשלחה",
+      "description": "בדוק עבודה מ-{{workerName}}",
+      "workerSolution": "פתרון העובד:",
+      "selfReviewScore": "סקירה עצמית: {{score}}/100",
+      "noSubmissionNotes": "לא סופקו הערות הגשה",
+      "actionLabel": "פעולה *",
+      "required": "*",
+      "optional": "(אופציונלי)",
+      "feedbackLabel": "משוב בדיקה {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "הסבר אילו שינויים נדרשים",
+        "other": "ספק הערות או הצעות לעובד"
+      },
+      "editorPlaceholder": {
+        "validate": "תאר את השינויים הנדרשים...",
+        "other": "ספק משוב על העבודה..."
+      },
+      "managerReviewLabel": "סקירת מנהל (אופציונלי)",
+      "managerReviewDescription": "דרג את איכות העבודה שהושלמה",
+      "scorePoor": "0 (גרוע)",
+      "scoreExcellent": "100 (מצוין)",
+      "cancel": "ביטול",
+      "submitting": "שולח...",
+      "acceptWork": "אשר עבודה",
+      "requestChangesButton": "בקש שינויים",
+      "rejectWork": "דחה עבודה",
+      "actions": {
+        "accept": {
+          "title": "אשר (סמן משימה כבוצעה)",
+          "description": "אשר את העבודה והשלם את המשימה. העובד מרוויח את הפרס שלו."
+        },
+        "requestChanges": {
+          "title": "בקש שינויים",
+          "description": "בקש מהעובד לבדוק ולשלוח מחדש את עבודתו."
+        },
+        "reject": {
+          "title": "דחה (פתח משימה מחדש)",
+          "description": "דחה את העבודה לחלוטין ופתח את המשימה מחדש לאחרים."
+        }
+      },
+      "messages": {
+        "accepted": "העבודה התקבלה והמשימה סומנה כהושלמה",
+        "changesRequested": "נתבקשו שינויים, העובד יבדוק",
+        "rejected": "העבודה נדחתה, המשימה נפתחה מחדש",
+        "error": "לא ניתן לשלוח את הבדיקה. אנא נסה שוב."
+      }
+    },
+    "submission": {
+      "title": "שלח עבודה לבדיקה",
+      "titleResubmit": "בדוק ושלח עבודה מחדש",
+      "description": "תאר את הפתרון שלך עבור {{taskName}} ושלח לאימות.",
+      "solutionLabel": "תיאור פתרון *",
+      "solutionDescription": "הסבר מה עשית כדי להשלים משימה זו. תומך בעיצוב, קישורים ורשימות.",
+      "solutionPlaceholder": "הסבר מה עשית כדי להשלים משימה זו...",
+      "selfReviewLabel": "סקירה עצמית (אופציונלי)",
+      "selfReviewDescription": "דרג את איכות העבודה שלך בסולם של 0-100",
+      "scoreNeedsWork": "0 (צריך עבודה)",
+      "scorePerfect": "100 (מושלם)",
+      "cancel": "ביטול",
+      "submitting": "שולח...",
+      "submitButton": "שלח לבדיקה",
+      "resubmitButton": "שלח מחדש לבדיקה",
+      "errors": {
+        "missingDescription": "אנא ספק תיאור של העבודה שלך",
+        "submitError": "לא ניתן לשלוח את העבודה שלך. אנא נסה שוב."
+      },
+      "messages": {
+        "submitted": "עבודה נשלחה לבדיקה",
+        "resubmitted": "עבודה נשלחה מחדש לבדיקה"
+      }
+    }
   }
 }

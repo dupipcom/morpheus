@@ -24,6 +24,7 @@
     "signInToAccess": "ダッシュボードにアクセスして進捗を追跡するにはログインしてください。",
     "dismiss": "閉じる",
     "accept": "受け入れる",
+    "all": "すべて",
     "pageAvailableIn": "このページは {locale} で利用できます。その言語で表示しますか？",
     "selectLanguage": "言語を選択",
     "manageAccount": "アカウント管理",
@@ -649,5 +650,130 @@
     "deleteWallet": "ウォレットを削除",
     "deleteWalletConfirmation": "このウォレットを削除してもよろしいですか？この操作は元に戻せません。ウォレットはアカウントから削除されますが、ブロックチェーンアドレスとその資金はブロックチェーン上に残ります。",
     "delete": "削除"
+  },
+  "jobs": {
+    "history": "ジョブ履歴",
+    "filterByStatus": "ステータスでフィルター:",
+    "errorLoadingHistory": "ジョブ履歴の読み込みエラー",
+    "noHistoryFound": "ジョブ履歴が見つかりません",
+    "status": {
+      "requested": "リクエスト済み",
+      "inProgress": "進行中",
+      "validating": "検証中",
+      "accepted": "承認済み",
+      "rejected": "却下"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "リクエストは審査中です。承認されると通知されます。",
+        "inProgress": "リクエストが承認されました！このタスクに取り組むことができます。",
+        "submitted": "作業が提出されました。オーナーのレビュー待ちです。",
+        "validating": "変更がリクエストされました。修正して再提出してください。",
+        "accepted": "おめでとうございます！作業が承認されました。",
+        "rejected": "提出が却下されました。"
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}}がこのタスクに取り組むことをリクエストしました。リクエストを承認または却下してください。",
+        "inProgress": "{{workerName}}は現在このタスクに取り組んでいます。",
+        "submitted": "{{workerName}}がレビュー用に作業を提出しました。",
+        "validating": "{{workerName}}が修正して再提出するのを待っています。",
+        "accepted": "{{workerName}}の作業が承認されました。",
+        "rejected": "{{workerName}}の提出が却下されました。"
+      }
+    },
+    "actions": {
+      "submitForReview": "レビュー用に提出",
+      "withdrawSubmission": "提出を取り下げる",
+      "withdrawing": "取り下げ中...",
+      "reviseAndResubmit": "修正して再提出",
+      "approveRequest": "リクエストを承認",
+      "approving": "承認中...",
+      "rejectRequest": "リクエストを却下",
+      "rejecting": "却下中...",
+      "reviewAndAccept": "レビューして承認",
+      "requestChanges": "変更をリクエスト",
+      "reject": "却下"
+    },
+    "review": {
+      "title": "提出された作業をレビュー",
+      "description": "{{workerName}}の作業をレビュー",
+      "workerSolution": "ワーカーの解決策：",
+      "selfReviewScore": "自己評価：{{score}}/100",
+      "noSubmissionNotes": "提出メモは提供されていません",
+      "actionLabel": "アクション *",
+      "required": "*",
+      "optional": "（オプション）",
+      "feedbackLabel": "レビューフィードバック {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "必要な変更を説明してください",
+        "other": "ワーカーにコメントや提案を提供してください"
+      },
+      "editorPlaceholder": {
+        "validate": "必要な変更を説明してください...",
+        "other": "作業についてのフィードバックを提供してください..."
+      },
+      "managerReviewLabel": "マネージャーレビュー（オプション）",
+      "managerReviewDescription": "完成した作業の品質を評価してください",
+      "scorePoor": "0（悪い）",
+      "scoreExcellent": "100（優秀）",
+      "cancel": "キャンセル",
+      "submitting": "提出中...",
+      "acceptWork": "作業を承認",
+      "requestChangesButton": "変更をリクエスト",
+      "rejectWork": "作業を却下",
+      "actions": {
+        "accept": {
+          "title": "承認（タスクを完了としてマーク）",
+          "description": "作業を承認してタスクを完了します。ワーカーは報酬を獲得します。"
+        },
+        "requestChanges": {
+          "title": "変更をリクエスト",
+          "description": "ワーカーに作業を修正して再提出するよう依頼します。"
+        },
+        "reject": {
+          "title": "却下（タスクを再オープン）",
+          "description": "作業を完全に却下し、他の人のためにタスクを再オープンします。"
+        }
+      },
+      "messages": {
+        "accepted": "作業が承認され、タスクが完了としてマークされました",
+        "changesRequested": "変更がリクエストされました、ワーカーが修正します",
+        "rejected": "作業が却下され、タスクが再オープンされました",
+        "error": "レビューを提出できませんでした。もう一度お試しください。"
+      }
+    },
+    "submission": {
+      "title": "レビュー用に作業を提出",
+      "titleResubmit": "作業を修正して再提出",
+      "description": "{{taskName}}の解決策を説明し、検証のために提出してください。",
+      "solutionLabel": "解決策の説明 *",
+      "solutionDescription": "このタスクを完了するために何をしたかを説明してください。書式設定、リンク、リストをサポートしています。",
+      "solutionPlaceholder": "このタスクを完了するために何をしたかを説明してください...",
+      "selfReviewLabel": "自己評価（オプション）",
+      "selfReviewDescription": "0〜100のスケールで作業の品質を評価してください",
+      "scoreNeedsWork": "0（改善が必要）",
+      "scorePerfect": "100（完璧）",
+      "cancel": "キャンセル",
+      "submitting": "提出中...",
+      "submitButton": "レビュー用に提出",
+      "resubmitButton": "レビュー用に再提出",
+      "errors": {
+        "missingDescription": "作業の説明を提供してください",
+        "submitError": "作業を提出できませんでした。もう一度お試しください。"
+      },
+      "messages": {
+        "submitted": "作業がレビュー用に提出されました",
+        "resubmitted": "作業がレビュー用に再提出されました"
+      }
+    }
   }
 }

@@ -1,33 +1,22 @@
 'use client'
-import { useState, useEffect, useMemo, useContext, useRef, useCallback } from 'react'
+
+import React, { useState, useEffect, useMemo, useContext, useRef, useCallback } from 'react'
 import useSWR from 'swr'
 import { useRouter, usePathname } from 'next/navigation'
 
 import { Slider } from "@/components/ui/slider"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { NotesList, Note } from "@/components/notesList"
-import { getWeekNumber } from "@/app/helpers"
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel"
 import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
 import { useNotesRefresh } from "@/lib/contexts/notesRefresh"
-import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil, isUserDataReady, useEnhancedLoadingState, useUserData, useDayData } from "@/lib/utils/userUtils"
+import { generateInsight, useEnhancedLoadingState, useDayData } from "@/lib/utils/userUtils"
 import { MoodViewSkeleton } from "@/components/ui/skeletonLoader"
 import { ContentLoadingWrapper } from '@/components/contentLoadingWrapper'
 import { ContactCombobox } from "@/components/ui/contactCombobox"
 import { ThingCombobox } from "@/components/ui/thingCombobox"
 import { LifeEventCombobox } from "@/components/ui/lifeEventCombobox"
 import { useDebounce } from "@/lib/hooks/useDebounce"
-import { Plus } from "lucide-react"
 
 interface MoodViewProps {
   timeframe?: string
@@ -36,7 +25,7 @@ interface MoodViewProps {
   filterNoteId?: string
 }
 
-export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab = "mood", filterNoteId }: MoodViewProps) => {
+export function MoodView({ timeframe = "day", date: propDate = null, defaultTab = "mood", filterNoteId }: MoodViewProps): React.ReactElement {
   const { session, setGlobalContext, theme, selectedDate: contextSelectedDate, setSelectedDate } = useContext(GlobalContext)
   const { t, locale } = useI18n()
   const { registerMutate, unregisterMutate } = useNotesRefresh()
@@ -165,8 +154,6 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
   
   // Use fullDay directly as it's already in YYYY-MM-DD format
   const date = fullDay || todayDate
-  const year = Number(date.split('-')[0])
-  const [weekNumber, setWeekNumber] = useState(getWeekNumber(today)[1])
 
   // Fetch day data from GlobalContext using useDayData hook
   const { data: dayData, isLoading: dayLoading, mutate: mutateDay } = useDayData(date, !!session?.user)
@@ -206,12 +193,6 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
   useEffect(() => {
     setMoodLifeEvents(serverMoodLifeEvents || [])
   }, [serverMoodLifeEvents])
-
-
-  const openDays = useMemo(() => {
-    return session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && Object.values(session?.user?.entries[year].days).filter((day) => {
-   return day.status === "Open" && day.date !== date }).sort()
-  }, [JSON.stringify(session), date])
 
   const [mood, setMood] = useState(serverMood)
 
@@ -566,23 +547,6 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
 
 
 
-  const handleEditDay = (date: string) => {
-    setFullDay(date)
-    // Also update context
-    const dateObj = dateStringToDate(date)
-    if (dateObj) {
-      setSelectedDate(dateObj)
-    }
-  }
-
-  const { refreshUser } = useUserData()
-
-  const handleCloseDates = async (values) => {
-    await handleCloseDatesUtil(values, undefined, fullDay)
-    await refreshUser()
-  }
-
- 
   useEffect(() => {
     // Only fetch hint; skip user refresh here to avoid duplicate GETs
     generateInsight(setInsight, 'test', locale)

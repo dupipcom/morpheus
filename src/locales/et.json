@@ -24,6 +24,7 @@
     "signInToAccess": "Logi sisse, et pääseda ligi oma armatuurlauale ja jälgida oma edusamme.",
     "dismiss": "Sulge",
     "accept": "Nõustu",
+    "all": "Kõik",
     "pageAvailableIn": "See leht on saadaval keeles {locale}. Kas soovite seda sellel keelel vaadata?",
     "selectLanguage": "Vali keel",
     "manageAccount": "Hallata oma kontot",
@@ -649,5 +650,130 @@
     "deleteWallet": "Kustuta Rahakott",
     "deleteWalletConfirmation": "Kas olete kindel, et soovite selle rahakoti kustutada? Seda toimingut ei saa tagasi võtta. Rahakott eemaldatakse teie kontolt, kuid blockchain aadress ja selle vahendid jäävad blockchain'i.",
     "delete": "Kustuta"
+  },
+  "jobs": {
+    "history": "Tööde Ajalugu",
+    "filterByStatus": "Filtreeri Oleku Järgi:",
+    "errorLoadingHistory": "Viga tööde ajaloo laadimisel",
+    "noHistoryFound": "Tööde ajalugu ei leitud",
+    "status": {
+      "requested": "Taotletud",
+      "inProgress": "Pooleli",
+      "validating": "Kontrollimine",
+      "accepted": "Vastu Võetud",
+      "rejected": "Tagasi Lükatud"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "Teie taotlust vaadatakse üle. Teid teavitatakse, kui see on heaks kiidetud.",
+        "inProgress": "Teie taotlus kiideti heaks! Nüüd saate selle ülesande kallal töötada.",
+        "submitted": "Teie töö on esitatud. Oodatakse omaniku ülevaatust.",
+        "validating": "Muudatusi on taotletud. Palun vaadake üle ja esitage uuesti.",
+        "accepted": "Palju õnne! Teie töö võeti vastu.",
+        "rejected": "Teie esitus lükati tagasi."
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}} on taotlenud võimalust töötada selle ülesande kallal. Kinnitage või lükake taotlus tagasi.",
+        "inProgress": "{{workerName}} töötab praegu selle ülesande kallal.",
+        "submitted": "{{workerName}} on esitanud oma töö ülevaatuseks.",
+        "validating": "Oodatakse, et {{workerName}} vaataks üle ja esitaks uuesti.",
+        "accepted": "{{workerName}} töö võeti vastu.",
+        "rejected": "{{workerName}} esitus lükati tagasi."
+      }
+    },
+    "actions": {
+      "submitForReview": "Esita Ülevaatuseks",
+      "withdrawSubmission": "Võta Esitus Tagasi",
+      "withdrawing": "Tagasivõtmine...",
+      "reviseAndResubmit": "Vaata Üle ja Esita Uuesti",
+      "approveRequest": "Kinnita Taotlus",
+      "approving": "Kinnitamine...",
+      "rejectRequest": "Lükka Taotlus Tagasi",
+      "rejecting": "Tagasilükkamine...",
+      "reviewAndAccept": "Vaata Üle ja Võta Vastu",
+      "requestChanges": "Taotleja Muudatusi",
+      "reject": "Lükka Tagasi"
+    },
+    "review": {
+      "title": "Vaata Esitatud Tööd Üle",
+      "description": "Vaata üle töö kasutajalt {{workerName}}",
+      "workerSolution": "Töötaja Lahendus:",
+      "selfReviewScore": "Eneseanalüüs: {{score}}/100",
+      "noSubmissionNotes": "Esituse märkusi ei antud",
+      "actionLabel": "Tegevus *",
+      "required": "*",
+      "optional": "(Valikuline)",
+      "feedbackLabel": "Ülevaatuse Tagasiside {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "Selgitage, milliseid muudatusi on vaja",
+        "other": "Andke töötajale kommentaare või ettepanekuid"
+      },
+      "editorPlaceholder": {
+        "validate": "Kirjeldage vajalikke muudatusi...",
+        "other": "Andke tagasisidet töö kohta..."
+      },
+      "managerReviewLabel": "Juhi Ülevaatus (Valikuline)",
+      "managerReviewDescription": "Hinnake lõpetatud töö kvaliteeti",
+      "scorePoor": "0 (Halb)",
+      "scoreExcellent": "100 (Suurepärane)",
+      "cancel": "Tühista",
+      "submitting": "Esitamine...",
+      "acceptWork": "Võta Töö Vastu",
+      "requestChangesButton": "Taotleja Muudatusi",
+      "rejectWork": "Lükka Töö Tagasi",
+      "actions": {
+        "accept": {
+          "title": "Võta Vastu (Märgi ülesanne Tehtuks)",
+          "description": "Kinnitage töö ja lõpetage ülesanne. Töötaja teenib oma tasu."
+        },
+        "requestChanges": {
+          "title": "Taotleja Muudatusi",
+          "description": "Paluge töötajal oma tööd üle vaadata ja uuesti esitada."
+        },
+        "reject": {
+          "title": "Lükka Tagasi (Ava ülesanne uuesti)",
+          "description": "Lükake töö täielikult tagasi ja avage ülesanne teistele uuesti."
+        }
+      },
+      "messages": {
+        "accepted": "Töö vastu võetud ja ülesanne märgitud tehtuks",
+        "changesRequested": "Muudatusi taotletud, töötaja vaatab üle",
+        "rejected": "Töö tagasi lükatud, ülesanne uuesti avatud",
+        "error": "Ülevaatust ei saanud esitada. Palun proovige uuesti."
+      }
+    },
+    "submission": {
+      "title": "Esita Töö Ülevaatuseks",
+      "titleResubmit": "Vaata Üle ja Esita Töö Uuesti",
+      "description": "Kirjeldage oma lahendust ülesandele {{taskName}} ja esitage valideerimiseks.",
+      "solutionLabel": "Lahenduse Kirjeldus *",
+      "solutionDescription": "Selgitage, mida tegite selle ülesande lõpetamiseks. Toetab vormindust, linke ja loetelusid.",
+      "solutionPlaceholder": "Selgitage, mida tegite selle ülesande lõpetamiseks...",
+      "selfReviewLabel": "Eneseanalüüs (Valikuline)",
+      "selfReviewDescription": "Hinnake oma töö kvaliteeti skaalal 0-100",
+      "scoreNeedsWork": "0 (Vajab tööd)",
+      "scorePerfect": "100 (Täiuslik)",
+      "cancel": "Tühista",
+      "submitting": "Esitamine...",
+      "submitButton": "Esita Ülevaatuseks",
+      "resubmitButton": "Esita Uuesti Ülevaatuseks",
+      "errors": {
+        "missingDescription": "Palun andke oma töö kirjeldus",
+        "submitError": "Teie tööd ei saanud esitada. Palun proovige uuesti."
+      },
+      "messages": {
+        "submitted": "Töö esitatud ülevaatuseks",
+        "resubmitted": "Töö uuesti esitatud ülevaatuseks"
+      }
+    }
   }
 }

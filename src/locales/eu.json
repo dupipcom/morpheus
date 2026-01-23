@@ -24,6 +24,7 @@
     "signInToAccess": "Saioa hasi zure panelera sarbidea lortzeko eta zure aurrerapena jarraitzeko.",
     "dismiss": "Itxi",
     "accept": "Onartu",
+    "all": "Guztiak",
     "pageAvailableIn": "Orri hau {locale} hizkuntzan eskuragarri dago. Hizkuntza horretan ikusi nahi duzu?",
     "selectLanguage": "Hizkuntza hautatu",
     "manageAccount": "Kudeatu nire kontua",
@@ -651,5 +652,130 @@
     "deleteWallet": "Ezabatu Diru-zorroa",
     "deleteWalletConfirmation": "Ziur zaude diru-zorro hau ezabatu nahi duzula? Ekintza hau ezin da desegin. Diru-zorroa zure kontutik kenduko da, baina blockchain helbidea eta bere funtsak blockchainen geratuko dira.",
     "delete": "Ezabatu"
+  },
+  "jobs": {
+    "history": "Lanen Historia",
+    "filterByStatus": "Egoeraren Arabera Iragazi:",
+    "errorLoadingHistory": "Errorea lanen historia kargatzean",
+    "noHistoryFound": "Ez da lanen historiarik aurkitu",
+    "status": {
+      "requested": "Eskatua",
+      "inProgress": "Abian",
+      "validating": "Balioztatzen",
+      "accepted": "Onartua",
+      "rejected": "Baztertua"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "Zure eskaera aztertzen ari da. Onartzen denean jakinaraziko zaizu.",
+        "inProgress": "Zure eskaera onartu da! Orain zeregin honetan lan egin dezakezu.",
+        "submitted": "Zure lana bidali da. Jabeak berrikusteko zain.",
+        "validating": "Aldaketak eskatu dira. Mesedez, berrikusi eta birbidali.",
+        "accepted": "Zorionak! Zure lana onartu da.",
+        "rejected": "Zure bidalketa baztertu da."
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}}(e)k zeregin honetan lan egiteko eskatu du. Onartu edo baztertu eskaera.",
+        "inProgress": "{{workerName}} zeregin honetan ari da lanean.",
+        "submitted": "{{workerName}}(e)k bere lana berrikusteko bidali du.",
+        "validating": "{{workerName}}(e)k berrikusi eta birbidaltzeko zain.",
+        "accepted": "{{workerName}}(r)en lana onartu da.",
+        "rejected": "{{workerName}}(r)en bidalketa baztertu da."
+      }
+    },
+    "actions": {
+      "submitForReview": "Berrikusteko Bidali",
+      "withdrawSubmission": "Bidalketa Atzera Egin",
+      "withdrawing": "Atzera egiten...",
+      "reviseAndResubmit": "Berrikusi eta Birbidali",
+      "approveRequest": "Eskaera Onartu",
+      "approving": "Onartzen...",
+      "rejectRequest": "Eskaera Baztertu",
+      "rejecting": "Baztertzen...",
+      "reviewAndAccept": "Berrikusi eta Onartu",
+      "requestChanges": "Aldaketak Eskatu",
+      "reject": "Baztertu"
+    },
+    "review": {
+      "title": "Bidalitako Lana Berrikusi",
+      "description": "{{workerName}}(r)en lana berrikusi",
+      "workerSolution": "Langilearen Irtenbidea:",
+      "selfReviewScore": "Auto-ebaluazioa: {{score}}/100",
+      "noSubmissionNotes": "Ez dira bidalketako oharrik eman",
+      "actionLabel": "Ekintza *",
+      "required": "*",
+      "optional": "(Aukerakoa)",
+      "feedbackLabel": "Berrikuspena Iritzia {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "Azaldu zer aldaketa behar diren",
+        "other": "Eman iruzkinak edo iradokizunak langilearentzat"
+      },
+      "editorPlaceholder": {
+        "validate": "Deskribatu behar diren aldaketak...",
+        "other": "Eman lanari buruzko iritzia..."
+      },
+      "managerReviewLabel": "Kudeatzailearen Berrikuspena (Aukerakoa)",
+      "managerReviewDescription": "Baloratu amaitutako lanaren kalitatea",
+      "scorePoor": "0 (Txarra)",
+      "scoreExcellent": "100 (Bikaina)",
+      "cancel": "Utzi",
+      "submitting": "Bidaltzen...",
+      "acceptWork": "Lana Onartu",
+      "requestChangesButton": "Aldaketak Eskatu",
+      "rejectWork": "Lana Baztertu",
+      "actions": {
+        "accept": {
+          "title": "Onartu (Zeregin Eginda markatuta)",
+          "description": "Onartu lana eta osatu zeregiña. Langileak saria irabazten du."
+        },
+        "requestChanges": {
+          "title": "Aldaketak Eskatu",
+          "description": "Eskatu langileari bere lana berrikusi eta birbidaltzea."
+        },
+        "reject": {
+          "title": "Baztertu (Zeregin berriz ireki)",
+          "description": "Baztertu lana erabat eta berriz ireki zeregin besteentzat."
+        }
+      },
+      "messages": {
+        "accepted": "Lana onartu eta zeregin osatuta markatu da",
+        "changesRequested": "Aldaketak eskatu dira, langileak berrikustuko du",
+        "rejected": "Lana baztertu da, zeregin berriz ireki da",
+        "error": "Ezin izan da berrikuspena bidali. Mesedez, saiatu berriro."
+      }
+    },
+    "submission": {
+      "title": "Lana Berrikusteko Bidali",
+      "titleResubmit": "Berrikusi eta Birbidali Lana",
+      "description": "Deskribatu {{taskName}} zereginari buruzko zure irtenbidea eta bidali balidatzeko.",
+      "solutionLabel": "Irtenbidearen Deskribapena *",
+      "solutionDescription": "Azaldu zeregin hau osatzeko zer egin zenuen. Formatua, estekak eta zerrendak onartzen ditu.",
+      "solutionPlaceholder": "Azaldu zeregin hau osatzeko zer egin zenuen...",
+      "selfReviewLabel": "Auto-ebaluazioa (Aukerakoa)",
+      "selfReviewDescription": "Baloratu zure lanaren kalitatea 0-100 eskalan",
+      "scoreNeedsWork": "0 (Lana behar du)",
+      "scorePerfect": "100 (Perfektua)",
+      "cancel": "Utzi",
+      "submitting": "Bidaltzen...",
+      "submitButton": "Berrikusteko Bidali",
+      "resubmitButton": "Berrikusteko Birbidali",
+      "errors": {
+        "missingDescription": "Mesedez, eman zure lanaren deskribapena",
+        "submitError": "Ezin izan da zure lana bidali. Mesedez, saiatu berriro."
+      },
+      "messages": {
+        "submitted": "Lana berrikusteko bidali da",
+        "resubmitted": "Lana berrikusteko birbidali da"
+      }
+    }
   }
 }

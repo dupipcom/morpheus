@@ -24,6 +24,7 @@
     "signInToAccess": "Войдите, чтобы получить доступ к панели управления и отслеживать свой прогресс.",
     "dismiss": "Закрыть",
     "accept": "Принять",
+    "all": "Все",
     "pageAvailableIn": "Эта страница доступна на {locale}. Хотите просмотреть её на этом языке?",
     "selectLanguage": "Выбрать язык",
     "manageAccount": "Управление моим аккаунтом",
@@ -649,5 +650,130 @@
     "deleteWallet": "Удалить Кошелек",
     "deleteWalletConfirmation": "Вы уверены, что хотите удалить этот кошелек? Это действие нельзя отменить. Кошелек будет удален из вашего аккаунта, но адрес блокчейна и его средства останутся в блокчейне.",
     "delete": "Удалить"
+  },
+  "jobs": {
+    "history": "История Заданий",
+    "filterByStatus": "Фильтр по Статусу:",
+    "errorLoadingHistory": "Ошибка загрузки истории заданий",
+    "noHistoryFound": "История заданий не найдена",
+    "status": {
+      "requested": "Запрошено",
+      "inProgress": "В Процессе",
+      "validating": "Проверка",
+      "accepted": "Принято",
+      "rejected": "Отклонено"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "Ваш запрос рассматривается. Вы будете уведомлены при утверждении.",
+        "inProgress": "Ваш запрос одобрен! Теперь вы можете работать над этой задачей.",
+        "submitted": "Ваша работа отправлена. Ожидание проверки владельца.",
+        "validating": "Запрошены изменения. Пожалуйста, пересмотрите и отправьте снова.",
+        "accepted": "Поздравляем! Ваша работа принята.",
+        "rejected": "Ваша заявка отклонена."
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}} запросил работу над этой задачей. Одобрите или отклоните запрос.",
+        "inProgress": "{{workerName}} в настоящее время работает над этой задачей.",
+        "submitted": "{{workerName}} отправил свою работу на проверку.",
+        "validating": "Ожидание {{workerName}} для пересмотра и повторной отправки.",
+        "accepted": "Работа {{workerName}} принята.",
+        "rejected": "Заявка {{workerName}} отклонена."
+      }
+    },
+    "actions": {
+      "submitForReview": "Отправить на Проверку",
+      "withdrawSubmission": "Отозвать Заявку",
+      "withdrawing": "Отзыв...",
+      "reviseAndResubmit": "Пересмотреть и Отправить Снова",
+      "approveRequest": "Одобрить Запрос",
+      "approving": "Одобрение...",
+      "rejectRequest": "Отклонить Запрос",
+      "rejecting": "Отклонение...",
+      "reviewAndAccept": "Проверить и Принять",
+      "requestChanges": "Запросить Изменения",
+      "reject": "Отклонить"
+    },
+    "review": {
+      "title": "Проверить Отправленную Работу",
+      "description": "Проверить работу от {{workerName}}",
+      "workerSolution": "Решение Работника:",
+      "selfReviewScore": "Самооценка: {{score}}/100",
+      "noSubmissionNotes": "Примечания к заявке не предоставлены",
+      "actionLabel": "Действие *",
+      "required": "*",
+      "optional": "(Необязательно)",
+      "feedbackLabel": "Отзыв о Проверке {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "Объясните, какие изменения необходимы",
+        "other": "Предоставьте комментарии или предложения для работника"
+      },
+      "editorPlaceholder": {
+        "validate": "Опишите необходимые изменения...",
+        "other": "Предоставьте отзыв о работе..."
+      },
+      "managerReviewLabel": "Проверка Менеджера (Необязательно)",
+      "managerReviewDescription": "Оцените качество выполненной работы",
+      "scorePoor": "0 (Плохо)",
+      "scoreExcellent": "100 (Отлично)",
+      "cancel": "Отмена",
+      "submitting": "Отправка...",
+      "acceptWork": "Принять Работу",
+      "requestChangesButton": "Запросить Изменения",
+      "rejectWork": "Отклонить Работу",
+      "actions": {
+        "accept": {
+          "title": "Принять (Отметить задачу как Выполненную)",
+          "description": "Одобрить работу и завершить задачу. Работник получает вознаграждение."
+        },
+        "requestChanges": {
+          "title": "Запросить Изменения",
+          "description": "Попросить работника пересмотреть и повторно отправить свою работу."
+        },
+        "reject": {
+          "title": "Отклонить (Открыть задачу снова)",
+          "description": "Полностью отклонить работу и открыть задачу для других."
+        }
+      },
+      "messages": {
+        "accepted": "Работа принята и задача отмечена как выполненная",
+        "changesRequested": "Запрошены изменения, работник пересмотрит",
+        "rejected": "Работа отклонена, задача открыта снова",
+        "error": "Не удалось отправить проверку. Пожалуйста, попробуйте снова."
+      }
+    },
+    "submission": {
+      "title": "Отправить Работу на Проверку",
+      "titleResubmit": "Пересмотреть и Отправить Работу Снова",
+      "description": "Опишите ваше решение для {{taskName}} и отправьте на проверку.",
+      "solutionLabel": "Описание Решения *",
+      "solutionDescription": "Объясните, что вы сделали для выполнения этой задачи. Поддерживает форматирование, ссылки и списки.",
+      "solutionPlaceholder": "Объясните, что вы сделали для выполнения этой задачи...",
+      "selfReviewLabel": "Самооценка (Необязательно)",
+      "selfReviewDescription": "Оцените качество вашей работы по шкале от 0 до 100",
+      "scoreNeedsWork": "0 (Нужна работа)",
+      "scorePerfect": "100 (Идеально)",
+      "cancel": "Отмена",
+      "submitting": "Отправка...",
+      "submitButton": "Отправить на Проверку",
+      "resubmitButton": "Отправить Снова на Проверку",
+      "errors": {
+        "missingDescription": "Пожалуйста, предоставьте описание вашей работы",
+        "submitError": "Не удалось отправить вашу работу. Пожалуйста, попробуйте снова."
+      },
+      "messages": {
+        "submitted": "Работа отправлена на проверку",
+        "resubmitted": "Работа отправлена снова на проверку"
+      }
+    }
   }
 }

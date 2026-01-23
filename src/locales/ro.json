@@ -24,6 +24,7 @@
     "signInToAccess": "Conectează-te pentru a accesa panoul de control și a-ți urmări progresul.",
     "dismiss": "Închide",
     "accept": "Acceptă",
+    "all": "Toate",
     "pageAvailableIn": "Această pagină este disponibilă în {locale}. Doriți să o vizualizați în acea limbă?",
     "selectLanguage": "Selectează limba",
     "manageAccount": "Gestionează contul meu",
@@ -649,5 +650,130 @@
     "deleteWallet": "Șterge Portofel",
     "deleteWalletConfirmation": "Sunteți sigur că doriți să ștergeți acest portofel? Această acțiune nu poate fi anulată. Portofelul va fi eliminat din contul dvs., dar adresa blockchain și fondurile sale vor rămâne pe blockchain.",
     "delete": "Șterge"
+  },
+  "jobs": {
+    "history": "Istoric Lucrări",
+    "filterByStatus": "Filtrează după Status:",
+    "errorLoadingHistory": "Eroare la încărcarea istoricului lucrărilor",
+    "noHistoryFound": "Nu s-a găsit istoric de lucrări",
+    "status": {
+      "requested": "Solicitat",
+      "inProgress": "În Desfășurare",
+      "validating": "Validare",
+      "accepted": "Acceptat",
+      "rejected": "Respins"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "Cererea dvs. este în curs de revizuire. Veți fi notificat când va fi aprobată.",
+        "inProgress": "Cererea dvs. a fost aprobată! Acum puteți lucra la această sarcină.",
+        "submitted": "Munca dvs. a fost trimisă. Se așteaptă revizuirea de către proprietar.",
+        "validating": "Au fost solicitate modificări. Vă rugăm să revizuiți și să retrimiteți.",
+        "accepted": "Felicitări! Munca dvs. a fost acceptată.",
+        "rejected": "Trimiterea dvs. a fost respinsă."
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}} a solicitat să lucreze la această sarcină. Aprobați sau respingeți cererea.",
+        "inProgress": "{{workerName}} lucrează în prezent la această sarcină.",
+        "submitted": "{{workerName}} și-a trimis munca pentru revizuire.",
+        "validating": "Se așteaptă ca {{workerName}} să revizuiască și să retrimită.",
+        "accepted": "Munca lui {{workerName}} a fost acceptată.",
+        "rejected": "Trimiterea lui {{workerName}} a fost respinsă."
+      }
+    },
+    "actions": {
+      "submitForReview": "Trimite pentru Revizuire",
+      "withdrawSubmission": "Retrage Trimiterea",
+      "withdrawing": "Se retrage...",
+      "reviseAndResubmit": "Revizuiește și Retrimite",
+      "approveRequest": "Aprobă Cererea",
+      "approving": "Se aprobă...",
+      "rejectRequest": "Respinge Cererea",
+      "rejecting": "Se respinge...",
+      "reviewAndAccept": "Revizuiește și Acceptă",
+      "requestChanges": "Solicită Modificări",
+      "reject": "Respinge"
+    },
+    "review": {
+      "title": "Revizuiește Munca Trimisă",
+      "description": "Revizuiește munca de la {{workerName}}",
+      "workerSolution": "Soluția Lucrătorului:",
+      "selfReviewScore": "Auto-Evaluare: {{score}}/100",
+      "noSubmissionNotes": "Nu au fost furnizate note de trimitere",
+      "actionLabel": "Acțiune *",
+      "required": "*",
+      "optional": "(Opțional)",
+      "feedbackLabel": "Feedback de Revizuire {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "Explicați ce modificări sunt necesare",
+        "other": "Furnizați comentarii sau sugestii pentru lucrător"
+      },
+      "editorPlaceholder": {
+        "validate": "Descrieți modificările necesare...",
+        "other": "Furnizați feedback despre muncă..."
+      },
+      "managerReviewLabel": "Revizuire Manager (Opțional)",
+      "managerReviewDescription": "Evaluați calitatea muncii finalizate",
+      "scorePoor": "0 (Slab)",
+      "scoreExcellent": "100 (Excelent)",
+      "cancel": "Anulează",
+      "submitting": "Se trimite...",
+      "acceptWork": "Acceptă Munca",
+      "requestChangesButton": "Solicită Modificări",
+      "rejectWork": "Respinge Munca",
+      "actions": {
+        "accept": {
+          "title": "Acceptă (Marchează sarcina ca Finalizată)",
+          "description": "Aprobați munca și finalizați sarcina. Lucrătorul primește recompensa."
+        },
+        "requestChanges": {
+          "title": "Solicită Modificări",
+          "description": "Cereți lucrătorului să revizuiască și să retrimită munca sa."
+        },
+        "reject": {
+          "title": "Respinge (Redeschide sarcina)",
+          "description": "Respingeți munca complet și redeschideți sarcina pentru alții."
+        }
+      },
+      "messages": {
+        "accepted": "Munca acceptată și sarcina marcată ca finalizată",
+        "changesRequested": "Modificări solicitate, lucrătorul va revizui",
+        "rejected": "Munca respinsă, sarcina redeschisă",
+        "error": "Nu s-a putut trimite revizuirea. Vă rugăm să încercați din nou."
+      }
+    },
+    "submission": {
+      "title": "Trimite Munca pentru Revizuire",
+      "titleResubmit": "Revizuiește și Retrimite Munca",
+      "description": "Descrieți soluția dvs. pentru {{taskName}} și trimiteți pentru validare.",
+      "solutionLabel": "Descrierea Soluției *",
+      "solutionDescription": "Explicați ce ați făcut pentru a finaliza această sarcină. Suportă formatare, linkuri și liste.",
+      "solutionPlaceholder": "Explicați ce ați făcut pentru a finaliza această sarcină...",
+      "selfReviewLabel": "Auto-Evaluare (Opțional)",
+      "selfReviewDescription": "Evaluați calitatea muncii dvs. pe o scară de la 0 la 100",
+      "scoreNeedsWork": "0 (Necesită îmbunătățiri)",
+      "scorePerfect": "100 (Perfect)",
+      "cancel": "Anulează",
+      "submitting": "Se trimite...",
+      "submitButton": "Trimite pentru Revizuire",
+      "resubmitButton": "Retrimite pentru Revizuire",
+      "errors": {
+        "missingDescription": "Vă rugăm să furnizați o descriere a muncii dvs.",
+        "submitError": "Nu s-a putut trimite munca dvs. Vă rugăm să încercați din nou."
+      },
+      "messages": {
+        "submitted": "Munca trimisă pentru revizuire",
+        "resubmitted": "Munca retrimisă pentru revizuire"
+      }
+    }
   }
 }

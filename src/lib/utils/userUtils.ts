@@ -3,13 +3,20 @@ import { logger } from '../logger'
 import { useState, useEffect, useMemo, useContext } from 'react'
 import useSWR from 'swr'
 
+interface Session {
+  user?: {
+    entries?: Record<string, unknown>
+    settings?: Record<string, unknown>
+  }
+}
+
 /**
  * Checks if user data is fully loaded and ready to display
  * @param session - Current session object
  * @param timeframe - Optional timeframe to check specific data requirements
  * @returns true if user data is complete, false otherwise
  */
-export const isUserDataReady = (session: any, timeframe?: string): boolean => {
+export function isUserDataReady(session: Session | null, timeframe?: string): boolean {
   if (!session?.user) {
     return false
   }
@@ -40,12 +47,12 @@ export const isUserDataReady = (session: any, timeframe?: string): boolean => {
  * @param timeframe - Optional timeframe for specific data validation
  * @returns true if still loading, false if ready
  */
-export const useEnhancedLoadingState = (
-  isLoading: boolean, 
-  session: any, 
+export function useEnhancedLoadingState(
+  isLoading: boolean,
+  session: Session | null,
   delay: number = 100,
   timeframe?: string
-): boolean => {
+): boolean {
   const [shouldShowLoading, setShouldShowLoading] = useState(true)
 
   useEffect(() => {
@@ -70,15 +77,18 @@ export const useEnhancedLoadingState = (
   return shouldShowLoading
 }
 
+interface UpdateUserParams {
+  session: Session | null
+  setGlobalContext: (context: unknown) => void
+  theme: string
+}
+
 /**
  * Updates the user data by fetching from the API and updating the global context
- * @param session - Current session object
- * @param setGlobalContext - Function to update global context
- * @param globalContext - Current global context object
+ * Note: This is a utility function that should be called from within a React component
+ * that has access to the GlobalContext values
  */
-export const updateUser = async (
-) => {
-  const { session, setGlobalContext, theme } = useContext(GlobalContext)
+export async function updateUser({ session, setGlobalContext, theme }: UpdateUserParams): Promise<void> {
   // Check if session has a valid user before making API call
   if (!session?.user) {
     logger('update_user_skip', 'No valid session user found, skipping updateUser')
@@ -87,13 +97,13 @@ export const updateUser = async (
 
   try {
     const response = await fetch('/api/v1/user', { method: 'GET' })
-    
+
     if (!response.ok) {
       const errorData = await response.json()
       logger('update_user_error', `Failed to update user: ${JSON.stringify(errorData)}`)
       return
     }
-    
+
     const updatedUser = await response.json()
 
     // Only update context if we got valid user data

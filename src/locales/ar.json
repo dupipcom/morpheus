@@ -21,6 +21,7 @@
     "signInToAccess": "سجل الدخول للوصول إلى لوحة التحكم وتتبع تقدمك.",
     "dismiss": "إغلاق",
     "accept": "قبول",
+    "all": "الكل",
     "pageAvailableIn": "هذه الصفحة متاحة بـ {locale}. هل تريد عرضها بهذه اللغة؟",
     "selectLanguage": "اختر اللغة",
     "manageAccount": "إدارة حسابي",
@@ -653,5 +654,130 @@
     "deleteWallet": "حذف المحفظة",
     "deleteWalletConfirmation": "هل أنت متأكد من أنك تريد حذف هذه المحفظة؟ لا يمكن التراجع عن هذا الإجراء. سيتم إزالة المحفظة من حسابك، لكن عنوان blockchain وأمواله ستبقى على blockchain.",
     "delete": "حذف"
+  },
+  "jobs": {
+    "history": "سجل الوظائف",
+    "filterByStatus": "تصفية حسب الحالة:",
+    "errorLoadingHistory": "خطأ في تحميل سجل الوظائف",
+    "noHistoryFound": "لم يتم العثور على سجل وظائف",
+    "status": {
+      "requested": "مطلوب",
+      "inProgress": "قيد التنفيذ",
+      "validating": "جاري التحقق",
+      "accepted": "مقبول",
+      "rejected": "مرفوض"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "طلبك قيد المراجعة. سيتم إخطارك عند الموافقة.",
+        "inProgress": "تمت الموافقة على طلبك! يمكنك الآن العمل على هذه المهمة.",
+        "submitted": "تم إرسال عملك. في انتظار المراجعة من المالك.",
+        "validating": "تم طلب تغييرات. يرجى المراجعة وإعادة الإرسال.",
+        "accepted": "تهانينا! تم قبول عملك.",
+        "rejected": "تم رفض مساهمتك."
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "طلب {{workerName}} العمل على هذه المهمة. الموافقة أو الرفض على الطلب.",
+        "inProgress": "{{workerName}} يعمل حاليًا على هذه المهمة.",
+        "submitted": "قدم {{workerName}} عمله للمراجعة.",
+        "validating": "في انتظار {{workerName}} للمراجعة وإعادة الإرسال.",
+        "accepted": "تم قبول عمل {{workerName}}.",
+        "rejected": "تم رفض مساهمة {{workerName}}."
+      }
+    },
+    "actions": {
+      "submitForReview": "إرسال للمراجعة",
+      "withdrawSubmission": "سحب الإرسال",
+      "withdrawing": "جارٍ السحب...",
+      "reviseAndResubmit": "المراجعة وإعادة الإرسال",
+      "approveRequest": "الموافقة على الطلب",
+      "approving": "جارٍ الموافقة...",
+      "rejectRequest": "رفض الطلب",
+      "rejecting": "جارٍ الرفض...",
+      "reviewAndAccept": "مراجعة وقبول",
+      "requestChanges": "طلب تغييرات",
+      "reject": "رفض"
+    },
+    "review": {
+      "title": "مراجعة العمل المقدم",
+      "description": "مراجعة العمل من {{workerName}}",
+      "workerSolution": "حل العامل:",
+      "selfReviewScore": "المراجعة الذاتية: {{score}}/100",
+      "noSubmissionNotes": "لم يتم تقديم ملاحظات الإرسال",
+      "actionLabel": "الإجراء *",
+      "required": "*",
+      "optional": "(اختياري)",
+      "feedbackLabel": "ملاحظات المراجعة {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "اشرح التغييرات المطلوبة",
+        "other": "قدم تعليقات أو اقتراحات للعامل"
+      },
+      "editorPlaceholder": {
+        "validate": "صف التغييرات المطلوبة...",
+        "other": "قدم ملاحظات على العمل..."
+      },
+      "managerReviewLabel": "مراجعة المدير (اختياري)",
+      "managerReviewDescription": "قيّم جودة العمل المكتمل",
+      "scorePoor": "0 (ضعيف)",
+      "scoreExcellent": "100 (ممتاز)",
+      "cancel": "إلغاء",
+      "submitting": "جارٍ الإرسال...",
+      "acceptWork": "قبول العمل",
+      "requestChangesButton": "طلب تغييرات",
+      "rejectWork": "رفض العمل",
+      "actions": {
+        "accept": {
+          "title": "قبول (وضع علامة كمنجز)",
+          "description": "الموافقة على العمل وإكمال المهمة. يحصل العامل على مكافأته."
+        },
+        "requestChanges": {
+          "title": "طلب تغييرات",
+          "description": "اطلب من العامل المراجعة وإعادة الإرسال."
+        },
+        "reject": {
+          "title": "رفض (إعادة فتح المهمة)",
+          "description": "رفض العمل بالكامل وإعادة فتح المهمة للآخرين."
+        }
+      },
+      "messages": {
+        "accepted": "تم قبول العمل ووضع علامة على المهمة كمكتملة",
+        "changesRequested": "تم طلب تغييرات، سيقوم العامل بالمراجعة",
+        "rejected": "تم رفض العمل وإعادة فتح المهمة",
+        "error": "تعذر إرسال المراجعة. يرجى المحاولة مرة أخرى."
+      }
+    },
+    "submission": {
+      "title": "إرسال العمل للمراجعة",
+      "titleResubmit": "المراجعة وإعادة إرسال العمل",
+      "description": "صف حلك لـ {{taskName}} وأرسله للتحقق.",
+      "solutionLabel": "وصف الحل *",
+      "solutionDescription": "اشرح ما فعلته لإكمال هذه المهمة. يدعم التنسيق والروابط والقوائم.",
+      "solutionPlaceholder": "اشرح ما فعلته لإكمال هذه المهمة...",
+      "selfReviewLabel": "المراجعة الذاتية (اختياري)",
+      "selfReviewDescription": "قيّم جودة عملك على مقياس من 0-100",
+      "scoreNeedsWork": "0 (يحتاج إلى عمل)",
+      "scorePerfect": "100 (مثالي)",
+      "cancel": "إلغاء",
+      "submitting": "جارٍ الإرسال...",
+      "submitButton": "إرسال للمراجعة",
+      "resubmitButton": "إعادة الإرسال للمراجعة",
+      "errors": {
+        "missingDescription": "يرجى تقديم وصف لعملك",
+        "submitError": "تعذر إرسال عملك. يرجى المحاولة مرة أخرى."
+      },
+      "messages": {
+        "submitted": "تم إرسال العمل للمراجعة",
+        "resubmitted": "تم إعادة إرسال العمل للمراجعة"
+      }
+    }
   }
 }
