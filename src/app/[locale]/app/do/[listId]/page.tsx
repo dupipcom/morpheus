@@ -19,6 +19,7 @@ import { DAILY_ACTIONS, WEEKS } from "@/app/constants"
 import { GlobalContext } from "@/lib/contexts"
 import { setLoginTime, getLoginTime } from '@/lib/utils/cookieManager'
 import { useI18n } from "@/lib/contexts/i18n"
+import { waitForListInContext } from '@/lib/utils/taskUtils'
 
 // Allow streaming responses up to 60 seconds
 export const maxDuration = 60;
@@ -367,15 +368,7 @@ export default function LocalizedDoWithListId({ params }: { params: Promise<{ lo
             await refreshTaskLists()
             if (newListId) {
               // Wait for the new list to appear in the context
-              // Poll up to 10 times (1 second total) to ensure state has updated
-              let attempts = 0
-              const maxAttempts = 10
-              while (attempts < maxAttempts) {
-                const listExists = (contextTaskLists || []).find((l: any) => l.id === newListId)
-                if (listExists) break
-                await new Promise(resolve => setTimeout(resolve, 100))
-                attempts++
-              }
+              await waitForListInContext(newListId, contextTaskLists)
               handleListChange(newListId)
             }
             // The useEffect above will handle selecting the first list if the deleted list was selected
