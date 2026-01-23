@@ -217,7 +217,6 @@ export const AddTaskForm = ({
       onCancel()
     }
   }
-  }
 
   return (
     <Card className="mb-2 p-4">
