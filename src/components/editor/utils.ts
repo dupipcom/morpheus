@@ -53,7 +53,7 @@ export function lexicalToHtml(state: SerializedEditorState | null): string {
         const linkContent = (node.children as Record<string, unknown>[])
           ?.map(convertNode)
           .join('') || ''
-        return `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${linkContent}</a>`
+        return `<a href="${escapeHtmlAttribute(url)}" target="_blank" rel="noopener noreferrer">${linkContent}</a>`
 
       case 'code':
         const codeContent = (node.children as Record<string, unknown>[])
@@ -62,7 +62,7 @@ export function lexicalToHtml(state: SerializedEditorState | null): string {
         return `<pre><code>${codeContent}</code></pre>`
 
       case 'text':
-        let text = escapeHtml((node.text as string) || '')
+        let text = escapeHtmlContent((node.text as string) || '')
         const format = (node.format as number) || 0
 
         // Apply text formatting (format is a bitmask)
@@ -92,16 +92,29 @@ export function lexicalToHtml(state: SerializedEditorState | null): string {
 }
 
 /**
- * Escapes HTML entities to prevent XSS
- * Note: Single quotes don't need escaping in HTML content (only in attributes)
+ * Escapes HTML entities to prevent XSS in HTML content
+ * Single quotes don't need escaping in content (only in attributes)
  */
-function escapeHtml(text: string): string {
+function escapeHtmlContent(text: string): string {
   return text
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     // Single quotes don't need to be escaped in HTML content
+}
+
+/**
+ * Escapes HTML entities for use in HTML attributes
+ * More conservative - escapes single quotes for maximum safety
+ */
+function escapeHtmlAttribute(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
 }
 
 /**
