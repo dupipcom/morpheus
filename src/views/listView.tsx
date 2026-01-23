@@ -74,7 +74,7 @@ const formatDateLocal = (date: Date): string => {
     onDateChange?: (date: Date | undefined) => void
     onAddEphemeral?: () => Promise<void> | void
   } = {}) => {
-    const { session, taskLists: contextTaskLists, refreshTaskLists, revealRedacted } = useContext(GlobalContext)
+    const { session, taskLists: contextTaskLists, refreshTaskLists, revealRedacted, isInitializingTaskLists } = useContext(GlobalContext)
     const { t, locale } = useI18n()
     const { refreshUser } = useUserData()
 
@@ -523,6 +523,9 @@ const formatDateLocal = (date: Date): string => {
 
     // Trigger migration when needed
     useEffect(() => {
+      // Skip if still initializing task lists (prevents duplicate tasks during first load)
+      if (isInitializingTaskLists) return
+
       // Skip if no tasks need migration
       if (tasksNeedingMigration.length === 0) return
 
@@ -578,7 +581,7 @@ const formatDateLocal = (date: Date): string => {
         .finally(() => {
           migrationInProgressRef.current = false
         })
-    }, [tasksNeedingMigration.length, selectedTaskListId, selectedTaskList?.users, userId, mutateTasks, refreshTaskLists])
+    }, [isInitializingTaskLists, tasksNeedingMigration.length, selectedTaskListId, selectedTaskList?.users, userId, mutateTasks, refreshTaskLists])
 
     const handleAddEphemeral = useCallback(async () => {
       if (propOnAddEphemeral) {
@@ -622,8 +625,32 @@ const formatDateLocal = (date: Date): string => {
     const isLoadingTasksForDate = isLoadingTasks && tasksUrl !== null
 
     // Check if task lists are loading (only show skeleton on initial load, not on refreshes)
-    const isTaskListsLoading = !initialLoadDone.current && (contextTaskLists === null || contextTaskLists === undefined || (Array.isArray(contextTaskLists) && contextTaskLists.length === 0))
-    const isLoading = isTaskListsLoading || (!initialLoadDone.current && (!selectedTaskListId || !selectedTaskList))
+    const hasNoTaskLists = contextTaskLists === null || contextTaskLists === undefined || (Array.isArray(contextTaskLists) && contextTaskLists.length === 0)
+    const isTaskListsLoading = !initialLoadDone.current && hasNoTaskLists
+    const isWaitingForListSelection = !initialLoadDone.current && (!selectedTaskListId || !selectedTaskList)
+    const isLoading = isTaskListsLoading || isInitializingTaskLists || isWaitingForListSelection
+
+    // Show loading state during initial task list creation (new user experience)
+    if (isInitializingTaskLists) {
+      return (
+        <div className="space-y-4">
+          {/* Toolbar skeleton */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-4">
+            <Skeleton className="h-9 w-full sm:w-[260px]" />
+            <Skeleton className="h-9 w-full sm:w-[240px]" />
+            <Skeleton className="h-9 w-20" />
+          </div>
+
+          {/* Initializing message with spinner */}
+          <div className="flex flex-col items-center justify-center py-12 gap-4">
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
+            <span className="text-muted-foreground text-center">
+              {t('tasks.initializingTasks', { defaultValue: 'Setting up your tasks...' })}
+            </span>
+          </div>
+        </div>
+      )
+    }
 
     // Show loading state when date changes and tasks are being fetched
     if (isLoadingTasksForDate && initialLoadDone.current) {

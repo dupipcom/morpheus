@@ -130,6 +130,7 @@
     "showMore": "Show more tasks",
     "showLess": "Show less tasks",
     "loadingForDate": "Loading tasks for selected date...",
+    "initializingTasks": "Setting up your tasks...",
     "noTasksForDate": "No tasks scheduled for this date",
     "status": {
       "in progress": "In Progress",
