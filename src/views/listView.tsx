@@ -5,6 +5,7 @@ import useSWR from 'swr'
 
 import { Skeleton } from '@/components/ui/skeleton'
 import { TaskGrid } from '@/components/taskGrid'
+import { PendingTaskCreation } from '@/lib/hooks/useOptimisticUpdates'
 
 import { GlobalContext } from '@/lib/contexts'
 import { useI18n } from '@/lib/contexts/i18n'
@@ -74,7 +75,7 @@ const formatDateLocal = (date: Date): string => {
     selectedDate?: Date
     onDateChange?: (date: Date | undefined) => void
     onAddEphemeral?: () => Promise<void> | void
-    pendingTaskCreationsRef?: React.MutableRefObject<Map<string, any>>
+    pendingTaskCreationsRef?: React.MutableRefObject<Map<string, PendingTaskCreation>>
   } = {}) => {
     const { session, taskLists: contextTaskLists, refreshTaskLists, revealRedacted, isInitializingTaskLists } = useContext(GlobalContext)
     const { t, locale } = useI18n()

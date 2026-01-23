@@ -12,6 +12,8 @@ import { useI18n } from '@/lib/contexts/i18n'
 import { RecurrencePicker, RecurrenceRule } from '@/components/recurrencePicker'
 import { calculateNextOccurrence } from '@/lib/utils/recurrenceUtils'
 
+import { PendingTaskCreation } from '@/lib/hooks/useOptimisticUpdates'
+
 export const AddTaskForm = ({
   selectedTaskListId,
   onCancel,
@@ -23,7 +25,7 @@ export const AddTaskForm = ({
   onCancel: () => void
   onCreated: () => Promise<void> | void
   editTask?: any
-  pendingTaskCreationsRef?: React.MutableRefObject<Map<string, any>>
+  pendingTaskCreationsRef?: React.MutableRefObject<Map<string, PendingTaskCreation>>
 }) => {
   const { t } = useI18n()
   const isEditMode = !!editTask
@@ -118,7 +120,10 @@ export const AddTaskForm = ({
 
     if (isNewTaskCreation && pendingTaskCreationsRef) {
       // Generate a temporary ID for the optimistic task
-      tempId = `temp-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`
+      // Use crypto.randomUUID if available, otherwise fallback to timestamp + random string
+      tempId = typeof crypto !== 'undefined' && crypto.randomUUID 
+        ? `temp-${crypto.randomUUID()}`
+        : `temp-${Date.now()}-${Math.random().toString(36).substring(2, 15)}`
       
       // Add optimistic task to the pending map
       pendingTaskCreationsRef.current.set(tempId, {
