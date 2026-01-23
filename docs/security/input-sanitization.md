@@ -13,16 +13,12 @@ Located in: `src/lib/utils/sanitize.ts`
 #### `sanitizeText(text: string): string`
 - **Purpose**: Sanitize plain text user input
 - **Use Case**: Comments, simple text fields, names
-- **Method**: Uses DOMPurify to strip all HTML while keeping content human-readable (preserves quotes, slashes, etc.)
-- **Benefits**: Prevents XSS while maintaining readability of special characters
+- **Method**: Escapes HTML entities using validator.escape()
 
 #### `sanitizeHTML(html: string): string`
 - **Purpose**: Sanitize rich text HTML content
 - **Use Case**: Notes, rich text editor content
-- **Method**: Uses DOMPurify with allowlist of safe HTML tags and attributes
-- **Allowed Tags**: p, br, strong, em, u, s, a, ul, ol, li, blockquote, code, pre, h1-h6, span, div, img
-- **Allowed Attributes**: href, src, alt, title, class, id
-- **Security**: Automatically removes script tags, event handlers, and dangerous protocols (javascript:, data:, etc.)
+- **Method**: Removes script tags, event handlers, and javascript: protocols
 
 #### `sanitizeEmail(email: string): string`
 - **Purpose**: Validate and normalize email addresses
@@ -53,8 +49,4 @@ Located in: `src/lib/utils/sanitize.ts`
 
 ## Dependencies
 
-- `validator` - Input validation (email, URL)
-- `isomorphic-dompurify` - HTML sanitization (works in both Node.js and browser)
-  - Provides comprehensive XSS protection
-  - Maintains human-readable text (preserves quotes, slashes, etc.)
-  - Configurable allowlist for HTML tags and attributes
+- `validator` - Input validation and sanitization
