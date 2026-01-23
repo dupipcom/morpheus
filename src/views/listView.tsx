@@ -625,8 +625,10 @@ const formatDateLocal = (date: Date): string => {
     const isLoadingTasksForDate = isLoadingTasks && tasksUrl !== null
 
     // Check if task lists are loading (only show skeleton on initial load, not on refreshes)
-    const isTaskListsLoading = !initialLoadDone.current && (contextTaskLists === null || contextTaskLists === undefined || (Array.isArray(contextTaskLists) && contextTaskLists.length === 0))
-    const isLoading = isTaskListsLoading || isInitializingTaskLists || (!initialLoadDone.current && (!selectedTaskListId || !selectedTaskList))
+    const hasNoTaskLists = contextTaskLists === null || contextTaskLists === undefined || (Array.isArray(contextTaskLists) && contextTaskLists.length === 0)
+    const isTaskListsLoading = !initialLoadDone.current && hasNoTaskLists
+    const isWaitingForListSelection = !initialLoadDone.current && (!selectedTaskListId || !selectedTaskList)
+    const isLoading = isTaskListsLoading || isInitializingTaskLists || isWaitingForListSelection
 
     // Show loading state during initial task list creation (new user experience)
     if (isInitializingTaskLists) {
