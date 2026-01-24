@@ -181,6 +181,7 @@ type DocumentReference {
 type EmbeddedTask {
   id              String?
   name            String
+  cadence         String? //to-do replace with recurrence   
   categories      Category[]
   area            Areas
   status          String
