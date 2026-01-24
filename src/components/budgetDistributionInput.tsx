@@ -180,8 +180,9 @@ export const BudgetDistributionInput: React.FC<BudgetDistributionInputProps> = (
         <Input
           type="number"
           min="0"
-          step={isPercentageMode ? "1" : "0.01"}
-          value={isPercentageMode ? value.toFixed(0) : value.toFixed(2)}
+          max={isPercentageMode ? "100" : undefined}
+          step={isPercentageMode ? "0.01" : "0.01"}
+          value={value}
           onChange={(e) => handleValueChange(item, parseFloat(e.target.value) || 0)}
           className="w-24 h-8 text-xs"
           placeholder={isPercentageMode ? "0%" : "0.00"}
