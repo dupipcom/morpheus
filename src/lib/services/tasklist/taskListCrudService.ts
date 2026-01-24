@@ -292,14 +292,21 @@ export async function updateTaskList(params: {
     throw new Error('TaskList not found')
   }
 
-  // Ensure all tasks have unique ObjectIds and strip timestamp fields
+  // Ensure all tasks have unique ObjectIds and strip fields not in EmbeddedTask type
   let updatedTasks = tasks
   if (Array.isArray(updatedTasks)) {
     updatedTasks = ensureUniqueTaskIds(updatedTasks, !!templateId)
-    // Strip updatedAt and createdAt fields - these are not part of EmbeddedTask type
+    // Strip fields that aren't part of EmbeddedTask type (timestamps, prize, premium)
+    // EmbeddedTask only has: id, name, categories, area, status, recurrence, times, count, etc.
+    // It does NOT have: updatedAt, createdAt, prize, premium (these are only in Task model)
     updatedTasks = updatedTasks.map(task => {
-      const { updatedAt, createdAt, ...taskWithoutTimestamps } = task as Task & { updatedAt?: unknown; createdAt?: unknown }
-      return taskWithoutTimestamps
+      const { updatedAt, createdAt, prize, premium, ...taskWithoutExtraFields } = task as Task & { 
+        updatedAt?: unknown
+        createdAt?: unknown
+        prize?: unknown
+        premium?: unknown
+      }
+      return taskWithoutExtraFields
     })
   }
 
