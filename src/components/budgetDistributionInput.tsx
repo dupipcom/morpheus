@@ -12,11 +12,11 @@ interface BudgetDistributionInputProps {
   totalBudget: number
   distribution: Record<string, number>
   onChange: (
-    distribution: Record<string, number>, 
+    nominalValues: Record<string, number>,  // Always returns currency values for totals
     metadata?: { 
       mode: 'percentage' | 'currency'
-      nominalValues?: Record<string, number>  // Currency values when in percentage mode
-      percentages?: Record<string, number>    // Percentage values when in currency mode
+      percentages?: Record<string, number>  // Percentage values (in both modes)
+      inputValues?: Record<string, number>  // Raw input values in current mode
     }
   ) => void
   onModeChange?: (mode: 'percentage' | 'currency') => void
@@ -50,21 +50,30 @@ export const BudgetDistributionInput: React.FC<BudgetDistributionInputProps> = (
     const updated = { ...localDistribution, [item]: value }
     setLocalDistribution(updated)
     
-    // Return the actual values in the current mode, with conversions in metadata
+    // Always return nominal (currency) values as primary for total calculation
+    // Include percentages and raw input values in metadata
     if (mode === 'percentage') {
-      // In percentage mode, return percentages as primary, with nominal in metadata
+      // In percentage mode, convert to nominal for primary return
       const nominalDistribution: Record<string, number> = {}
       Object.entries(updated).forEach(([key, percentValue]) => {
         nominalDistribution[key] = (percentValue / 100) * totalBudget
       })
-      onChange(updated, { mode: 'percentage', nominalValues: nominalDistribution })
+      onChange(nominalDistribution, { 
+        mode: 'percentage', 
+        percentages: updated,  // The percentage values user entered
+        inputValues: updated   // Same as percentages in this mode
+      })
     } else {
-      // In currency mode, return currency as primary, with percentages in metadata
+      // In currency mode, nominal values are the input values
       const percentages: Record<string, number> = {}
       Object.entries(updated).forEach(([key, currencyValue]) => {
         percentages[key] = totalBudget > 0 ? (currencyValue / totalBudget) * 100 : 0
       })
-      onChange(updated, { mode: 'currency', percentages })
+      onChange(updated, { 
+        mode: 'currency', 
+        percentages,           // Calculated percentages
+        inputValues: updated   // The currency values user entered
+      })
     }
   }
 
@@ -88,12 +97,16 @@ export const BudgetDistributionInput: React.FC<BudgetDistributionInputProps> = (
     })
     setLocalDistribution(newDistribution)
     
-    // Return percentages with nominal in metadata
+    // Always return nominal values as primary
     const nominalDistribution: Record<string, number> = {}
     Object.entries(newDistribution).forEach(([key, percentValue]) => {
       nominalDistribution[key] = (percentValue / 100) * totalBudget
     })
-    onChange(newDistribution, { mode: 'percentage', nominalValues: nominalDistribution })
+    onChange(nominalDistribution, { 
+      mode: 'percentage', 
+      percentages: newDistribution,
+      inputValues: newDistribution
+    })
     
     setMode('percentage')
     onModeChange?.('percentage')
@@ -106,12 +119,16 @@ export const BudgetDistributionInput: React.FC<BudgetDistributionInputProps> = (
     })
     setLocalDistribution(newDistribution)
     
-    // Return currency with percentages in metadata
+    // Always return nominal values as primary
     const percentages: Record<string, number> = {}
     Object.entries(newDistribution).forEach(([key, currencyValue]) => {
       percentages[key] = totalBudget > 0 ? (currencyValue / totalBudget) * 100 : 0
     })
-    onChange(newDistribution, { mode: 'currency', percentages })
+    onChange(newDistribution, { 
+      mode: 'currency', 
+      percentages,
+      inputValues: newDistribution
+    })
     
     setMode('currency')
     onModeChange?.('currency')
