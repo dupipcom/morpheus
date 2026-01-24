@@ -203,6 +203,7 @@ type EmbeddedTask {
   visibility      Visibility?
   quality         Int?
   redacted        Boolean?          @default(false)
+  templateId      String?           // Optional reference to original template
 }
 
 type EventReference {
