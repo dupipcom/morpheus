@@ -261,10 +261,10 @@ export async function calculateAndApplyJobEarnings({
       remainingBudget
     })
 
-    // Use the calculated budget and prize from distribution
+    // Use the calculated budget and prize from distribution, falling back to task values
     // These are already capped by task.premium in calculateTaskBudgetFromDistribution
-    const profit = taskBudgetAllocation.budget || 0
-    const prize = taskBudgetAllocation.prize || 0
+    const profit = taskBudgetAllocation.budget ?? task.budget ?? 0
+    const prize = taskBudgetAllocation.prize ?? task.prize ?? 0
     const earnings = prize + profit
 
     // CRITICAL: Enforce that earnings can NEVER exceed task premium
