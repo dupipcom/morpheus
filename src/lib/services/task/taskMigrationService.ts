@@ -170,17 +170,19 @@ export function calculateTaskBudgetFromDistribution(params: {
   const prizePercentage = list.prizePercentage || 0
   
   // Extract task-level limits (these are strict caps if set)
-  const taskBudgetLimit = (task as any).budget != null ? Number((task as any).budget) : null
-  const taskPrizeLimit = (task as any).prize != null ? Number((task as any).prize) : null
+  // Using type assertion since both EmbeddedTask and PrismaTask can have these optional fields
+  const taskRecord = task as Record<string, unknown>
+  const taskBudgetLimit = taskRecord.budget != null ? Number(taskRecord.budget) : null
+  const taskPrizeLimit = taskRecord.prize != null ? Number(taskRecord.prize) : null
   
   let budget: number | null = null
   let prize: number | null = null
   
-  // PRIORITY 1: If task has explicit budget/prize stored, use those directly as the values
-  // These are strict limits that cannot be exceeded
-  if (taskBudgetLimit != null || taskPrizeLimit != null) {
-    budget = taskBudgetLimit ?? 0
-    prize = taskPrizeLimit ?? 0
+  // PRIORITY 1: If task has BOTH budget AND prize explicitly stored, use those directly
+  // This means the task has a complete premium definition that should not be altered
+  if (taskBudgetLimit != null && taskPrizeLimit != null) {
+    budget = taskBudgetLimit
+    prize = taskPrizeLimit
   }
   // PRIORITY 2: Check for custom per-task allocation in budgetDistribution
   else if (budgetDistribution?.tasks && task.id && budgetDistribution.tasks[task.id]) {
@@ -234,8 +236,8 @@ export function calculateTaskBudgetFromDistribution(params: {
   }
   
   // ENFORCEMENT: Apply task-level caps if they exist
-  // Even if distribution-based calculation yielded higher values,
-  // we must respect the task's explicit limits
+  // This handles partial limits (only budget or only prize set) and ensures
+  // distribution-based calculations never exceed explicit task limits
   if (taskBudgetLimit != null && budget != null) {
     budget = Math.min(budget, taskBudgetLimit)
   }
