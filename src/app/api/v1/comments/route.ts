@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
-import { sanitizeHTML } from '@/lib/utils/sanitize'
+import { sanitizeText } from '@/lib/utils/sanitize'
 
 // GET /api/v1/comments?entityType=note&entityId=xxx
 export async function GET(request: NextRequest) {
@@ -103,8 +103,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Sanitize content to prevent XSS attacks
-    // Use sanitizeHTML to allow safe HTML formatting like notes
-    const sanitizedContent = sanitizeHTML(content.trim())
+    const sanitizedContent = sanitizeText(content.trim())
 
     if (!entityType || !entityId) {
       return NextResponse.json({ error: 'entityType and entityId are required' }, { status: 400 })

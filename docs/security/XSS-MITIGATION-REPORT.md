@@ -54,8 +54,8 @@ Successfully implemented comprehensive XSS protection across the Morpheus applic
 | `/api/v1/tasks` | POST | `name` | `sanitizeText()` |
 | `/api/v1/tasks/[taskId]` | PUT | `name` | `sanitizeText()` |
 | `/api/v1/profile` | POST | `firstName`, `lastName`, `bio` | `sanitizeText()` |
-| `/api/v1/notes` | POST | `content` | `sanitizeHTML()` ✓ existing |
-| `/api/v1/comments` | POST | `content` | `sanitizeHTML()` (updated to allow HTML like notes) |
+| `/api/v1/notes` | POST | `content` | `sanitizeText()` (strips all HTML) |
+| `/api/v1/comments` | POST | `content` | `sanitizeText()` (strips all HTML) |
 | Job note helpers | - | `content` | `sanitizeHTML()` ✓ existing |
 
 **Total**: 9 endpoints protected
@@ -69,8 +69,11 @@ Successfully implemented comprehensive XSS protection across the Morpheus applic
 | `jobDetailsCard.tsx` | Display job notes | Wrapped `dangerouslySetInnerHTML` with `sanitizeHTML()` |
 | `jobReviewDialog.tsx` | Display submission notes | Wrapped `dangerouslySetInnerHTML` with `sanitizeHTML()` |
 | `_template.tsx` | Display CMS content | Wrapped `dangerouslySetInnerHTML` with `sanitizeHTML()` |
+| `activityCard.tsx` | Display notes and comments | Plain text rendering (no HTML support) |
 
-**Total**: 3 components secured (all `dangerouslySetInnerHTML` instances)
+**Total**: 4 components secured
+
+**Note**: Notes and comments are rendered as plain text without HTML formatting. Only job-related content and CMS content support safe HTML rendering.
 
 ### 4. Testing Coverage
 
