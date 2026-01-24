@@ -25,6 +25,8 @@ export interface EntityBudgetAllocation {
  */
 export interface EntityAllocationsType {
   entityId?: string
+  entityType?: string      // Entity type: "tasks", "lists", "projects"
+  entitySubtype?: string   // Entity subtype: "area", "categories", "notes", or any string
   allocation?: EntityBudgetAllocation
 }
 

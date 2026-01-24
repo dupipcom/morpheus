@@ -297,8 +297,10 @@ type EntityBudgetAllocation {
 }
 
 type EntityAllocationsType {
-  entityId   String?                 // Entity ID (taskId, areaId, categoryId)
-  allocation EntityBudgetAllocation? // Allocation for this entity
+  entityId      String?                 // Entity ID (taskId, areaId, categoryId, etc.)
+  entityType    String?                 // Entity type: "tasks", "lists", "projects"
+  entitySubtype String?                 // Entity subtype: "area", "categories", "notes", or any string
+  allocation    EntityBudgetAllocation? // Allocation for this entity
 }
 
 type BudgetDistribution {

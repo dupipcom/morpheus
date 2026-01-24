@@ -342,6 +342,8 @@ export const AddListForm = ({
         
         areaAllocations.push({
           entityId: area,
+          entityType: 'lists',
+          entitySubtype: 'area',
           allocation: { budget: budgetAlloc, prize: prizeAlloc }
         })
       })
@@ -367,6 +369,8 @@ export const AddListForm = ({
         
         categoryAllocations.push({
           entityId: category,
+          entityType: 'lists',
+          entitySubtype: 'categories',
           allocation: { budget: budgetAlloc, prize: prizeAlloc }
         })
       })
@@ -389,6 +393,8 @@ export const AddListForm = ({
         if (hasBudget || hasPrize) {
           taskAllocations.push({
             entityId: taskId,
+            entityType: 'tasks',
+            entitySubtype: 'task',
             allocation: { budget: budgetAlloc, prize: prizeAlloc }
           })
         }
