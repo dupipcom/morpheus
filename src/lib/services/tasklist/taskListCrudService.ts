@@ -296,15 +296,16 @@ export async function updateTaskList(params: {
   let updatedTasks = tasks
   if (Array.isArray(updatedTasks)) {
     updatedTasks = ensureUniqueTaskIds(updatedTasks, !!templateId)
-    // Strip fields that aren't part of EmbeddedTask type (timestamps, prize, premium)
+    // Strip fields that aren't part of EmbeddedTask type (timestamps, prize, premium, listId)
     // EmbeddedTask only has: id, name, categories, area, status, recurrence, times, count, etc.
-    // It does NOT have: updatedAt, createdAt, prize, premium (these are only in Task model)
+    // It does NOT have: updatedAt, createdAt, prize, premium, listId (these are only in Task model)
     updatedTasks = updatedTasks.map(task => {
-      const { updatedAt, createdAt, prize, premium, ...taskWithoutExtraFields } = task as Task & { 
+      const { updatedAt, createdAt, prize, premium, listId, ...taskWithoutExtraFields } = task as Task & { 
         updatedAt?: unknown
         createdAt?: unknown
         prize?: unknown
         premium?: unknown
+        listId?: unknown
       }
       return taskWithoutExtraFields
     })
