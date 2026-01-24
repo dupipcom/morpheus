@@ -25,6 +25,11 @@ enum Areas {
   work
 }
 
+enum BudgetEntryType {
+  LIST_DEFAULT  // Default budget associated with a specific list
+  EXTERNAL      // External budget that can be shared/reused
+}
+
 enum Category {
   body
   spirituality
@@ -144,12 +149,6 @@ type Completer {
   prize       Float?
   time        Int
   completedAt DateTime
-}
-
-type BudgetDistribution {
-  areas      Json? // Record<string, number> - area name to percentage
-  categories Json? // Record<string, number> - category name to percentage
-  tasks      Json? // Record<string, { budget: number; prize: number }> - task ID to allocation
 }
 
 type Consents {
@@ -327,6 +326,7 @@ model User {
   likes              Like[]
   profiles           Profile[]
   charts             Chart[]
+  budgets            Budget[]
   days               Day[]
   offers             Offer[]
   tokens             Token[]
@@ -530,12 +530,16 @@ model List {
   users                UserReference[]
   templateTasks        EmbeddedTask[]
   history              ListHistoryEntry[]
-  // Budget fields
+  // Budget fields (legacy - will be deprecated)
   budget               Float?
   budgetPercentage     Float?             @default(0)
   remainingBudget      String?
   prizePercentage      Float?             @default(0)
-  budgetDistribution   BudgetDistribution?
+  // Budget relationships (new approach)
+  listBudgetId         String?            @db.ObjectId  // 1:1 with LIST_DEFAULT budget
+  listBudget           Budget?            @relation("ListDefaultBudget", fields: [listBudgetId], references: [id])
+  relatedBudgetIds     String[]           @default([]) @db.ObjectId  // 1:Many with EXTERNAL budgets
+  relatedBudgets       Budget[]           @relation("ListRelatedBudgets", fields: [relatedBudgetIds], references: [id])
   // Status fields
   publicUrl            String?
   ticker               String?
@@ -700,6 +704,33 @@ model Event {
   @@index([userId])
 }
 
+model Budget {
+  id                String          @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  name              String
+  description       String?
+  type              BudgetEntryType
+  totalAmount       Float
+  remainingAmount   Float
+  // Task allocations - map of task IDs to allocations (percentage or nominal)
+  taskAllocations   Json?           // Record<string, { percentage?: number; amount?: number }>
+  // Relations
+  ownerId           String          @db.ObjectId
+  owner             User            @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  // Lists that use this as their default budget (1:1 inverse relation - no array needed)
+  defaultForLists   List[]          @relation("ListDefaultBudget")
+  // Lists that reference this as a related budget (many-to-many)
+  relatedToListIds  String[]        @default([]) @db.ObjectId
+  relatedToLists    List[]          @relation("ListRelatedBudgets", fields: [relatedToListIds], references: [id])
+  // Wallets that reference this budget (many-to-many)
+  walletIds         String[]        @default([]) @db.ObjectId
+  wallets           Wallet[]        @relation("BudgetWallets", fields: [walletIds], references: [id])
+
+  @@index([ownerId])
+  @@index([type])
+}
+
 model Chart {
   id         String     @id @default(auto()) @map("_id") @db.ObjectId
   createdAt  DateTime   @default(now())
@@ -843,6 +874,9 @@ model Wallet {
   user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   transactions Transaction[]
   lists        List[]
+  // Budget relationships (budgets can associate with multiple wallets)
+  budgetIds    String[]      @default([]) @db.ObjectId
+  budgets      Budget[]      @relation("BudgetWallets", fields: [budgetIds], references: [id])
   // Reference arrays
   noteIds      String[]      @default([]) @db.ObjectId
   documentIds  String[]      @default([]) @db.ObjectId
