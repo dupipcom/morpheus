@@ -344,6 +344,10 @@ export async function createTaskList(params: {
       include: { template: true, tasks: true }
     })
 
+    if (!updatedList) {
+      throw new Error('Failed to fetch created TaskList')
+    }
+
     // Recalculate user's budget if budgetPercentage was set
     if (budgetPercentage) {
       await recalculateUserBudget(userId)
@@ -502,6 +506,10 @@ export async function updateTaskList(params: {
       where: { id: taskListId },
       include: { template: true, tasks: true }
     })
+
+    if (!finalList) {
+      throw new Error('Failed to fetch updated TaskList')
+    }
 
     // Recalculate user's budget if budgetPercentage was updated
     if (budgetPercentage !== undefined) {
