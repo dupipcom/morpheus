@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useMemo, useState, useEffect, useContext } from 'react'
+import React, { useMemo, useState, useEffect, useContext, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -172,18 +172,26 @@ export const AddListForm = ({
 
   const [collabResults, setCollabResults] = useState<any[]>([])
   
-  // Debounced search function
-  const debouncedSearch = useDebounce(async (query: string) => {
-        // Fetch suggestions even when query is empty (shows top 5 close friends/friends/public)
+  // Memoize search callback to prevent re-creating the function on every render
+  const searchProfiles = useCallback(async (query: string) => {
     const res = await fetch(`/api/v1/profiles?query=${encodeURIComponent(query)}`)
     if (res.ok) {
-          const data = await res.json()
-          setCollabResults(data.profiles || [])
-        }
-    }, 300)
+      const data = await res.json()
+      setCollabResults(data.profiles || [])
+    }
+  }, [])
+  
+  // Debounced search function
+  const debouncedSearch = useDebounce(searchProfiles, 300)
     
   useEffect(() => {
-    debouncedSearch(collabQuery)
+    // Only search when user has typed something (non-empty query)
+    if (collabQuery.trim()) {
+      debouncedSearch(collabQuery)
+    } else {
+      // Clear results when query is empty
+      setCollabResults([])
+    }
   }, [collabQuery, debouncedSearch])
 
   const handleSubmit = async () => {
