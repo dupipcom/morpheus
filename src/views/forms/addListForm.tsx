@@ -18,6 +18,7 @@ import { GlobalContext } from '@/lib/contexts'
 import { useDebounce } from '@/lib/hooks/useDebounce'
 import { BudgetDistributionInput } from '@/components/budgetDistributionInput'
 import { BudgetDistribution } from '@/lib/utils/budgetDistributionUtils'
+import { calculatePrizePool, calculateBudgetPercentageFromCurrency } from '@/lib/utils/earningsUtils'
 
 type Collaborator = { id: string, userName: string }
 
@@ -62,13 +63,21 @@ export const AddListForm = ({
   const [budgetDistributionMode, setBudgetDistributionMode] = useState<'equal' | 'area' | 'category' | 'task'>('equal')
   const [areaDistribution, setAreaDistribution] = useState<Record<string, number>>({})
   const [areaDistributionMode, setAreaDistributionMode] = useState<'percentage' | 'currency'>('percentage')
+  const [areaPrizeDistribution, setAreaPrizeDistribution] = useState<Record<string, number>>({})
+  const [areaPrizeDistributionMode, setAreaPrizeDistributionMode] = useState<'percentage' | 'currency'>('percentage')
   const [categoryDistribution, setCategoryDistribution] = useState<Record<string, number>>({})
   const [categoryDistributionMode, setCategoryDistributionMode] = useState<'percentage' | 'currency'>('percentage')
+  const [categoryPrizeDistribution, setCategoryPrizeDistribution] = useState<Record<string, number>>({})
+  const [categoryPrizeDistributionMode, setCategoryPrizeDistributionMode] = useState<'percentage' | 'currency'>('percentage')
   const [taskBudgets, setTaskBudgets] = useState<Record<string, { budget: string; prize: string }>>({})
   const [budgetPercentageMode, setBudgetPercentageMode] = useState<'percentage' | 'currency'>('percentage')
 
   // Get user equity for currency calculations
   const userEquity = session?.user?.equity || 0
+
+  // Determine if budget/prize fields should be disabled
+  const isBudgetDisabled = !form.budget || parseFloat(form.budget) <= 0
+  const isPrizeDisabled = form.budgetPercentage <= 0 || userEquity <= 0
 
   // Load initial list data when editing
   useEffect(() => {
@@ -618,7 +627,7 @@ export const AddListForm = ({
                     if (budgetPercentageMode === 'percentage') {
                       setForm(prev => ({ ...prev, budgetPercentage: Math.max(0, Math.min(maxAllowedBudget, value)) }))
                     } else {
-                      const percentage = userEquity > 0 ? (value / userEquity) * 100 : 0
+                      const percentage = calculateBudgetPercentageFromCurrency(value, userEquity)
                       setForm(prev => ({ ...prev, budgetPercentage: Math.max(0, Math.min(maxAllowedBudget, percentage)) }))
                     }
                   }}
@@ -628,59 +637,83 @@ export const AddListForm = ({
                 />
 
                 {/* Budget Distribution Mode */}
-                {parseFloat(form.budget || '0') > 0 && (
-                  <>
-                    <div>
-                      <Label htmlFor="distribution-mode">{t('forms.addListForm.distributionModeLabel') || 'Distribution Mode'}</Label>
-                      <Select value={budgetDistributionMode} onValueChange={(val: any) => setBudgetDistributionMode(val)}>
-                        <SelectTrigger className="w-full">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="equal">{t('forms.addListForm.distributionMode.equal') || 'Equal (split evenly)'}</SelectItem>
-                          <SelectItem value="area">{t('forms.addListForm.distributionMode.area') || 'By Area'}</SelectItem>
-                          <SelectItem value="category">{t('forms.addListForm.distributionMode.category') || 'By Category'}</SelectItem>
-                          <SelectItem value="task">{t('forms.addListForm.distributionMode.task') || 'Per Task'}</SelectItem>
-                        </SelectContent>
-                      </Select>
+                <div>
+                  <Label htmlFor="distribution-mode">{t('forms.addListForm.distributionModeLabel') || 'Distribution Mode'}</Label>
+                  <Select value={budgetDistributionMode} onValueChange={(val: any) => setBudgetDistributionMode(val)}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="equal">{t('forms.addListForm.distributionMode.equal') || 'Equal (split evenly)'}</SelectItem>
+                      <SelectItem value="area">{t('forms.addListForm.distributionMode.area') || 'By Area'}</SelectItem>
+                      <SelectItem value="category">{t('forms.addListForm.distributionMode.category') || 'By Category'}</SelectItem>
+                      <SelectItem value="task">{t('forms.addListForm.distributionMode.task') || 'Per Task'}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Area Distribution */}
+                {budgetDistributionMode === 'area' && (() => {
+                  const taskAreas = tasks.length > 0 
+                    ? Array.from(new Set(tasks.map(t => t.area).filter(Boolean)))
+                    : ['self', 'home', 'social', 'work']
+                  
+                  return (
+                    <div className="space-y-4">
+                      <BudgetDistributionInput
+                        items={taskAreas}
+                        totalBudget={parseFloat(form.budget)}
+                        distribution={areaDistribution}
+                        onChange={setAreaDistribution}
+                        onModeChange={setAreaDistributionMode}
+                        mode={areaDistributionMode}
+                        label={t('forms.addListForm.areaDistributionLabel') || 'Area Budget Distribution (Earnings)'}
+                        disabled={isBudgetDisabled}
+                      />
+                      <BudgetDistributionInput
+                        items={taskAreas}
+                        totalBudget={calculatePrizePool(form.budgetPercentage, userEquity)}
+                        distribution={areaPrizeDistribution}
+                        onChange={setAreaPrizeDistribution}
+                        onModeChange={setAreaPrizeDistributionMode}
+                        mode={areaPrizeDistributionMode}
+                        label={t('forms.addListForm.areaPrizeDistributionLabel') || 'Area Prize Distribution'}
+                        disabled={isPrizeDisabled}
+                      />
                     </div>
+                  )
+                })()}
 
-                    {/* Area Distribution */}
-                    {budgetDistributionMode === 'area' && (() => {
-                      const taskAreas = tasks.length > 0 
-                        ? Array.from(new Set(tasks.map(t => t.area).filter(Boolean)))
-                        : ['self', 'home', 'social', 'work']
-                      
-                      return (
-                        <BudgetDistributionInput
-                          items={taskAreas}
-                          totalBudget={parseFloat(form.budget)}
-                          distribution={areaDistribution}
-                          onChange={setAreaDistribution}
-                          onModeChange={setAreaDistributionMode}
-                          mode={areaDistributionMode}
-                          label={t('forms.addListForm.areaDistributionLabel') || 'Area Distribution'}
-                        />
-                      )
-                    })()}
-
-                    {/* Category Distribution */}
-                    {budgetDistributionMode === 'category' && (() => {
-                      const allCategories = tasks.length > 0
-                        ? Array.from(new Set(tasks.flatMap(t => t.categories || []).filter(Boolean)))
-                        : ['custom', 'body', 'mind', 'spirit', 'fun', 'growth', 'community', 'affection', 'clean', 'maintenance']
-                      
-                      return (
-                        <BudgetDistributionInput
-                          items={allCategories}
-                          totalBudget={parseFloat(form.budget)}
-                          distribution={categoryDistribution}
-                          onChange={setCategoryDistribution}
-                          onModeChange={setCategoryDistributionMode}
-                          mode={categoryDistributionMode}
-                          label={t('forms.addListForm.categoryDistributionLabel') || 'Category Distribution'}
-                        />
-                      )
+                {/* Category Distribution */}
+                {budgetDistributionMode === 'category' && (() => {
+                  const allCategories = tasks.length > 0
+                    ? Array.from(new Set(tasks.flatMap(t => t.categories || []).filter(Boolean)))
+                    : ['custom', 'body', 'mind', 'spirit', 'fun', 'growth', 'community', 'affection', 'clean', 'maintenance']
+                  
+                  return (
+                    <div className="space-y-4">
+                      <BudgetDistributionInput
+                        items={allCategories}
+                        totalBudget={parseFloat(form.budget)}
+                        distribution={categoryDistribution}
+                        onChange={setCategoryDistribution}
+                        onModeChange={setCategoryDistributionMode}
+                        mode={categoryDistributionMode}
+                        label={t('forms.addListForm.categoryDistributionLabel') || 'Category Budget Distribution (Earnings)'}
+                        disabled={isBudgetDisabled}
+                      />
+                      <BudgetDistributionInput
+                        items={allCategories}
+                        totalBudget={calculatePrizePool(form.budgetPercentage, userEquity)}
+                        distribution={categoryPrizeDistribution}
+                        onChange={setCategoryPrizeDistribution}
+                        onModeChange={setCategoryPrizeDistributionMode}
+                        mode={categoryPrizeDistributionMode}
+                        label={t('forms.addListForm.categoryPrizeDistributionLabel') || 'Category Prize Distribution'}
+                        disabled={isPrizeDisabled}
+                      />
+                    </div>
+                  )
                     })()}
 
                     {/* Per-Task Distribution */}
@@ -736,7 +769,7 @@ export const AddListForm = ({
                                       <td className="p-2">
                                         <BudgetDistributionInput
                                           items={[`prize-${taskId}`]}
-                                          totalBudget={((form.budgetPercentage / 100) * userEquity)}
+                                          totalBudget={calculatePrizePool(form.budgetPercentage, userEquity)}
                                           distribution={{ [`prize-${taskId}`]: parseFloat(taskBudgets[taskId]?.prize || '0') }}
                                           onChange={(dist) => setTaskBudgets(prev => ({
                                             ...prev,
@@ -757,8 +790,6 @@ export const AddListForm = ({
                         </div>
                       )
                     })()}
-                  </>
-                )}
               </div>
             </AccordionContent>
           </AccordionItem>

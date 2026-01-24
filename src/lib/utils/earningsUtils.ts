@@ -132,6 +132,23 @@ export function calculateTaskEarnings({
 }
 
 /**
+ * Calculate the total prize pool from user equity and budget percentage
+ * Prize pool = (budgetPercentage / 100) * userEquity
+ */
+export function calculatePrizePool(budgetPercentage: number, userEquity: number): number {
+  return (budgetPercentage / 100) * userEquity
+}
+
+/**
+ * Calculate budget percentage from currency value and user equity
+ * budgetPercentage = (currencyValue / userEquity) * 100
+ */
+export function calculateBudgetPercentageFromCurrency(currencyValue: number, userEquity: number): number {
+  if (userEquity <= 0) return 0
+  return (currencyValue / userEquity) * 100
+}
+
+/**
  * Calculate budget consumption after task completion
  */
 export function calculateBudgetConsumption(

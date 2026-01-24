@@ -16,6 +16,7 @@ interface BudgetDistributionInputProps {
   label: string
   mode?: 'percentage' | 'currency'
   variant?: 'vertical' | 'horizontal'
+  disabled?: boolean
 }
 
 export const BudgetDistributionInput: React.FC<BudgetDistributionInputProps> = ({
@@ -26,7 +27,8 @@ export const BudgetDistributionInput: React.FC<BudgetDistributionInputProps> = (
   onModeChange,
   label,
   mode: initialMode = 'percentage',
-  variant = 'vertical'
+  variant = 'vertical',
+  disabled = false
 }) => {
   const [mode, setMode] = useState<'percentage' | 'currency'>(initialMode)
   const [localDistribution, setLocalDistribution] = useState<Record<string, number>>(distribution)
@@ -93,6 +95,7 @@ export const BudgetDistributionInput: React.FC<BudgetDistributionInputProps> = (
             variant={isPercentageMode ? 'default' : 'outline'}
             onClick={isPercentageMode ? undefined : convertToPercentage}
             className="h-8 px-2"
+            disabled={disabled}
           >
             <Percent className="h-3 w-3" />
           </Button>
@@ -102,6 +105,7 @@ export const BudgetDistributionInput: React.FC<BudgetDistributionInputProps> = (
             variant={!isPercentageMode ? 'default' : 'outline'}
             onClick={!isPercentageMode ? undefined : convertToCurrency}
             className="h-8 px-2"
+            disabled={disabled}
           >
             <DollarSign className="h-3 w-3" />
           </Button>
@@ -114,6 +118,7 @@ export const BudgetDistributionInput: React.FC<BudgetDistributionInputProps> = (
           onChange={(e) => handleValueChange(item, parseFloat(e.target.value) || 0)}
           className="w-24 h-8 text-xs"
           placeholder={isPercentageMode ? "0%" : "0.00"}
+          disabled={disabled}
         />
         <span className="text-xs text-muted-foreground min-w-[60px]">
           {isPercentageMode
@@ -142,6 +147,7 @@ export const BudgetDistributionInput: React.FC<BudgetDistributionInputProps> = (
             variant={isPercentageMode ? 'default' : 'outline'}
             onClick={isPercentageMode ? undefined : convertToPercentage}
             className="h-7 px-2"
+            disabled={disabled}
           >
             <Percent className="h-3 w-3" />
           </Button>
@@ -151,6 +157,7 @@ export const BudgetDistributionInput: React.FC<BudgetDistributionInputProps> = (
             variant={!isPercentageMode ? 'default' : 'outline'}
             onClick={!isPercentageMode ? undefined : convertToCurrency}
             className="h-7 px-2"
+            disabled={disabled}
           >
             <DollarSign className="h-3 w-3" />
           </Button>
@@ -176,6 +183,7 @@ export const BudgetDistributionInput: React.FC<BudgetDistributionInputProps> = (
                   max={100}
                   step={1}
                   className="w-full"
+                  disabled={disabled}
                 />
                 <div className="flex justify-between items-center text-xs text-muted-foreground">
                   <span>{value.toFixed(0)}%</span>
@@ -192,6 +200,7 @@ export const BudgetDistributionInput: React.FC<BudgetDistributionInputProps> = (
                     value={value.toFixed(2)}
                     onChange={(e) => handleValueChange(item, parseFloat(e.target.value) || 0)}
                     className="w-32 h-8 text-xs"
+                    disabled={disabled}
                   />
                   <span className="text-xs text-muted-foreground">
                     ({totalBudget > 0 ? ((value / totalBudget) * 100).toFixed(1) : 0}%)
