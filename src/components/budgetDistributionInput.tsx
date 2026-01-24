@@ -11,7 +11,7 @@ interface BudgetDistributionInputProps {
   items: string[]
   totalBudget: number
   distribution: Record<string, number>
-  onChange: (distribution: Record<string, number>) => void
+  onChange: (distribution: Record<string, number>, metadata?: { percentages?: Record<string, number>, mode: 'percentage' | 'currency' }) => void
   onModeChange?: (mode: 'percentage' | 'currency') => void
   label: string
   mode?: 'percentage' | 'currency'
@@ -40,7 +40,21 @@ export const BudgetDistributionInput: React.FC<BudgetDistributionInputProps> = (
   const handleValueChange = (item: string, value: number) => {
     const updated = { ...localDistribution, [item]: value }
     setLocalDistribution(updated)
-    onChange(updated)
+    
+    // Always return nominal (currency) values in onChange
+    if (mode === 'percentage') {
+      // Convert percentage to currency for the return value
+      const nominalDistribution: Record<string, number> = {}
+      const percentages: Record<string, number> = {}
+      Object.entries(updated).forEach(([key, percentValue]) => {
+        nominalDistribution[key] = (percentValue / 100) * totalBudget
+        percentages[key] = percentValue
+      })
+      onChange(nominalDistribution, { percentages, mode: 'percentage' })
+    } else {
+      // Already in currency mode
+      onChange(updated, { mode: 'currency' })
+    }
   }
 
   const getTotalAllocated = () => {
@@ -62,7 +76,16 @@ export const BudgetDistributionInput: React.FC<BudgetDistributionInputProps> = (
       newDistribution[item] = totalBudget > 0 ? (value / totalBudget) * 100 : 0
     })
     setLocalDistribution(newDistribution)
-    onChange(newDistribution)
+    
+    // Convert to nominal for onChange
+    const nominalDistribution: Record<string, number> = {}
+    const percentages: Record<string, number> = {}
+    Object.entries(newDistribution).forEach(([key, percentValue]) => {
+      nominalDistribution[key] = (percentValue / 100) * totalBudget
+      percentages[key] = percentValue
+    })
+    onChange(nominalDistribution, { percentages, mode: 'percentage' })
+    
     setMode('percentage')
     onModeChange?.('percentage')
   }
@@ -73,7 +96,7 @@ export const BudgetDistributionInput: React.FC<BudgetDistributionInputProps> = (
       newDistribution[item] = (value / 100) * totalBudget
     })
     setLocalDistribution(newDistribution)
-    onChange(newDistribution)
+    onChange(newDistribution, { mode: 'currency' })
     setMode('currency')
     onModeChange?.('currency')
   }
