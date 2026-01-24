@@ -528,6 +528,8 @@ model List {
   budget               Float?
   budgetPercentage     Float?             @default(0)
   remainingBudget      String?
+  prizePercentage      Float?             @default(0)
+  budgetDistribution   Json?
   // Status fields
   publicUrl            String?
   ticker               String?
@@ -575,6 +577,7 @@ model Task {
   completedOn          String?
   dueDate              DateTime?
   budget               Float?
+  prize                Float?
   visibility           Visibility?
   quality              Int?
   redacted             Boolean?            @default(false)
