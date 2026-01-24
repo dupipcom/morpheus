@@ -168,17 +168,13 @@ export function calculateTaskBudgetFromDistribution(params: {
   let budget: number | null = null
   let prize: number | null = null
   
-  // Check if task already has budget/prize stored
-  if ((task as any).budget != null || (task as any).prize != null) {
-    budget = (task as any).budget || 0
-    prize = (task as any).prize || 0
-  }
-  // Check for custom per-task allocation in budgetDistribution
-  else if (budgetDistribution?.tasks && task.id && budgetDistribution.tasks[task.id]) {
+  // PRIORITY 1: Check for custom per-task allocation in budgetDistribution
+  // This takes precedence over any stored values in the task object
+  if (budgetDistribution?.tasks && task.id && budgetDistribution.tasks[task.id]) {
     budget = budgetDistribution.tasks[task.id].budget || 0
     prize = budgetDistribution.tasks[task.id].prize || 0
   }
-  // Use area-based distribution
+  // PRIORITY 2: Use area-based distribution
   else if (budgetDistribution?.areas && task.area) {
     const areaPercentage = budgetDistribution.areas[task.area] || 0
     const areaBudget = (listBudget * areaPercentage) / 100
@@ -191,7 +187,7 @@ export function calculateTaskBudgetFromDistribution(params: {
     const areaPrizeBudget = (totalPrizeBudget * areaPercentage) / 100
     prize = areaPrizeBudget / tasksInArea
   }
-  // Use category-based distribution
+  // PRIORITY 3: Use category-based distribution
   else if (budgetDistribution?.categories && task.categories && task.categories.length > 0) {
     // Average across all categories this task belongs to
     let totalBudget = 0
@@ -215,13 +211,43 @@ export function calculateTaskBudgetFromDistribution(params: {
     budget = totalBudget / taskCategories.length
     prize = totalPrize / taskCategories.length
   }
-  // Default: equal distribution
+  // PRIORITY 4: If budgetDistribution exists but task doesn't match any mode, use equal split
+  // This ensures we always use the distribution if it's configured
+  else if (budgetDistribution && listBudget > 0) {
+    const totalTasks = (list.tasks || list.templateTasks || []).length || 1
+    const earningsBudget = listBudget * (1 - prizePercentage / 100)
+    const prizeBudget = listBudget * (prizePercentage / 100)
+    budget = earningsBudget / totalTasks
+    prize = prizeBudget / totalTasks
+  }
+  // PRIORITY 5: If task has stored budget/prize AND no budgetDistribution is configured, use stored values
+  // This is for backward compatibility with lists that don't have distribution configured yet
+  else if ((task as any).budget != null || (task as any).prize != null) {
+    budget = (task as any).budget || 0
+    prize = (task as any).prize || 0
+  }
+  // PRIORITY 6: Default equal distribution (legacy behavior)
   else if (listBudget > 0) {
     const totalTasks = (list.tasks || list.templateTasks || []).length || 1
     const earningsBudget = listBudget * (1 - prizePercentage / 100)
     const prizeBudget = listBudget * (prizePercentage / 100)
     budget = earningsBudget / totalTasks
     prize = prizeBudget / totalTasks
+  }
+  
+  // Calculate premium and apply safety caps
+  const calculatedPremium = (budget || 0) + (prize || 0)
+  
+  // If task has a stored premium value, ensure we never exceed it
+  // This is a critical safety check to prevent awarding more than allocated
+  if ((task as any).premium != null && (task as any).premium > 0) {
+    const storedPremium = (task as any).premium
+    if (calculatedPremium > storedPremium) {
+      // Scale down proportionally to fit within the stored premium
+      const scaleFactor = storedPremium / calculatedPremium
+      budget = budget ? budget * scaleFactor : null
+      prize = prize ? prize * scaleFactor : null
+    }
   }
   
   const premium = (budget || 0) + (prize || 0)
