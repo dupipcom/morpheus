@@ -20,13 +20,15 @@ export const AddTaskForm = ({
   onCancel,
   onCreated,
   editTask,
-  pendingTaskCreationsRef
+  pendingTaskCreationsRef,
+  mutateTasksRef
 }: {
   selectedTaskListId?: string
   onCancel: () => void
   onCreated: () => Promise<void> | void
   editTask?: any
   pendingTaskCreationsRef?: React.MutableRefObject<Map<string, PendingTaskCreation>>
+  mutateTasksRef?: React.MutableRefObject<(() => Promise<any>) | null>
 }) => {
   const { t } = useI18n()
   const isEditMode = !!editTask
@@ -206,6 +208,11 @@ export const AddTaskForm = ({
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(baseTask)
         })
+      }
+      
+      // Trigger SWR revalidation to fetch updated tasks list
+      if (mutateTasksRef?.current) {
+        await mutateTasksRef.current()
       }
       
       await onCreated()

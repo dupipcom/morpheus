@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { useContext, useEffect, useRef, useState, useMemo } from 'react'
+import { useContext, useEffect, useRef, useState, useMemo, useCallback } from 'react'
 import { GlobalContext } from '@/lib/contexts'
 import { AddTaskForm } from '@/views/forms/addTaskForm'
 import { AddListForm } from '@/views/forms/addListForm'
@@ -57,6 +57,12 @@ export const DoView = ({
 
   // Use optimistic updates hook for task creations
   const { pendingTaskCreationsRef } = useOptimisticUpdates()
+
+  // Store mutateTasks callback from ListView
+  const mutateTasksRef = useRef<(() => Promise<any>) | null>(null)
+  const handleMutateTasksReady = useCallback((mutateTasks: () => Promise<any>) => {
+    mutateTasksRef.current = mutateTasks
+  }, [])
 
   // Fetch immediately on mount
   useEffect(() => {
@@ -130,6 +136,7 @@ export const DoView = ({
           <AddTaskForm
             selectedTaskListId={selectedTaskListId}
             pendingTaskCreationsRef={pendingTaskCreationsRef}
+            mutateTasksRef={mutateTasksRef}
             onCancel={onCloseAddTask || (() => {})}
             onCreated={async () => {
               if (onTaskCreated) await onTaskCreated()
@@ -175,6 +182,7 @@ export const DoView = ({
         onDateChange={onDateChange}
         onAddEphemeral={onAddEphemeral}
         pendingTaskCreationsRef={pendingTaskCreationsRef}
+        onMutateTasksReady={handleMutateTasksReady}
       />
     </>
   )

@@ -70,12 +70,14 @@ const formatDateLocal = (date: Date): string => {
     onDateChange: propOnDateChange,
     onAddEphemeral: propOnAddEphemeral,
     pendingTaskCreationsRef,
+    onMutateTasksReady,
   }: {
     selectedTaskListId?: string
     selectedDate?: Date
     onDateChange?: (date: Date | undefined) => void
     onAddEphemeral?: () => Promise<void> | void
     pendingTaskCreationsRef?: React.MutableRefObject<Map<string, PendingTaskCreation>>
+    onMutateTasksReady?: (mutateTasks: () => Promise<any>) => void
   } = {}) => {
     const { session, taskLists: contextTaskLists, refreshTaskLists, revealRedacted, isInitializingTaskLists } = useContext(GlobalContext)
     const { t, locale } = useI18n()
@@ -167,6 +169,13 @@ const formatDateLocal = (date: Date): string => {
 
     // Track optimistic task creations
     const [optimisticTasks, setOptimisticTasks] = useState<any[]>([])
+
+    // Provide mutateTasks callback to parent
+    useEffect(() => {
+      if (onMutateTasksReady) {
+        onMutateTasksReady(mutateTasks)
+      }
+    }, [mutateTasks, onMutateTasksReady])
 
     // Sync optimistic tasks from ref and clean up confirmed tasks
     useEffect(() => {
