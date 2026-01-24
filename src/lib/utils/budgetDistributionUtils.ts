@@ -218,8 +218,8 @@ export function calculateTaskBudgetAllocations(
 
 /**
  * Validate that a budget distribution is valid
- * @param distribution - Budget distribution to validate
- * @param totalBudget - Total budget available
+ * @param distribution - Budget distribution object containing areas, categories, or per-task allocations
+ * @param totalBudget - Total budget amount available for distribution
  * @returns Object with isValid flag and error message if invalid
  */
 export function validateBudgetDistribution(
