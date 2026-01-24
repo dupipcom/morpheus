@@ -347,7 +347,7 @@ export const AddListForm = ({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[70vh] flex flex-col z-[9980]">
+      <DialogContent className="w-[768px] max-w-[90vw] max-h-[60vh] flex flex-col z-[9980]">
         <DialogHeader>
           <DialogTitle>{isEditing ? (t('forms.addListForm.titleEdit') || 'Edit List') : (t('forms.addListForm.titleCreate') || 'Create New List')}</DialogTitle>
         </DialogHeader>
