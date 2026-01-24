@@ -16,6 +16,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { useI18n } from '@/lib/contexts/i18n'
 import { GlobalContext } from '@/lib/contexts'
 import { useDebounce } from '@/lib/hooks/useDebounce'
+import { BudgetDistributionInput } from '@/components/budgetDistributionInput'
 
 type Collaborator = { id: string, userName: string }
 
@@ -57,7 +58,9 @@ export const AddListForm = ({
   const [prizePercentage, setPrizePercentage] = useState<number>(0) // % of budgetPercentage allocated to prize
   const [budgetDistributionMode, setBudgetDistributionMode] = useState<'equal' | 'area' | 'category' | 'task'>('equal')
   const [areaDistribution, setAreaDistribution] = useState<Record<string, number>>({})
+  const [areaDistributionMode, setAreaDistributionMode] = useState<'percentage' | 'currency'>('percentage')
   const [categoryDistribution, setCategoryDistribution] = useState<Record<string, number>>({})
+  const [categoryDistributionMode, setCategoryDistributionMode] = useState<'percentage' | 'currency'>('percentage')
   const [taskBudgets, setTaskBudgets] = useState<Record<string, { budget: string; prize: string }>>({})
 
   useEffect(() => {
@@ -231,12 +234,32 @@ export const AddListForm = ({
     // Build budget distribution object
     const budgetDistribution: any = {}
     
+    // Normalize area distribution to percentages if in currency mode
     if (budgetDistributionMode === 'area' && Object.keys(areaDistribution).length > 0) {
-      budgetDistribution.areas = areaDistribution
+      if (areaDistributionMode === 'currency' && budgetValue) {
+        // Convert currency values to percentages
+        const areaPercentages: Record<string, number> = {}
+        Object.entries(areaDistribution).forEach(([area, value]) => {
+          areaPercentages[area] = (value / budgetValue) * 100
+        })
+        budgetDistribution.areas = areaPercentages
+      } else {
+        budgetDistribution.areas = areaDistribution
+      }
     }
     
+    // Normalize category distribution to percentages if in currency mode
     if (budgetDistributionMode === 'category' && Object.keys(categoryDistribution).length > 0) {
-      budgetDistribution.categories = categoryDistribution
+      if (categoryDistributionMode === 'currency' && budgetValue) {
+        // Convert currency values to percentages
+        const categoryPercentages: Record<string, number> = {}
+        Object.entries(categoryDistribution).forEach(([category, value]) => {
+          categoryPercentages[category] = (value / budgetValue) * 100
+        })
+        budgetDistribution.categories = categoryPercentages
+      } else {
+        budgetDistribution.categories = categoryDistribution
+      }
     }
     
     if (budgetDistributionMode === 'task' && Object.keys(taskBudgets).length > 0) {
@@ -609,68 +632,34 @@ export const AddListForm = ({
                       {/* Area Distribution */}
                       {budgetDistributionMode === 'area' && (() => {
                         const taskAreas = Array.from(new Set(tasks.map(t => t.area).filter(Boolean)))
-                        const totalPct = Object.values(areaDistribution).reduce((sum, pct) => sum + pct, 0)
-                        const remainingPct = 100 - totalPct
                         
                         return (
-                          <div className="space-y-3">
-                            <div className="text-sm font-medium">
-                              {t('forms.addListForm.areaDistributionLabel') || 'Area Distribution'}
-                              <span className="ml-2 text-xs text-muted-foreground">
-                                (Remaining: {remainingPct.toFixed(0)}%)
-                              </span>
-                            </div>
-                            {taskAreas.map(area => (
-                              <div key={area} className="space-y-1">
-                                <Label className="text-xs capitalize">{area}</Label>
-                                <Slider
-                                  value={[areaDistribution[area] || 0]}
-                                  onValueChange={(values) => setAreaDistribution(prev => ({ ...prev, [area]: values[0] }))}
-                                  min={0}
-                                  max={100}
-                                  step={1}
-                                  className="w-full"
-                                />
-                                <div className="text-xs text-muted-foreground">
-                                  {(areaDistribution[area] || 0)}% = ${((parseFloat(form.budget) * (areaDistribution[area] || 0)) / 100).toFixed(2)}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
+                          <BudgetDistributionInput
+                            items={taskAreas}
+                            totalBudget={parseFloat(form.budget)}
+                            distribution={areaDistribution}
+                            onChange={setAreaDistribution}
+                            onModeChange={setAreaDistributionMode}
+                            mode={areaDistributionMode}
+                            label={t('forms.addListForm.areaDistributionLabel') || 'Area Distribution'}
+                          />
                         )
                       })()}
 
                       {/* Category Distribution */}
                       {budgetDistributionMode === 'category' && (() => {
                         const allCategories = Array.from(new Set(tasks.flatMap(t => t.categories || []).filter(Boolean)))
-                        const totalPct = Object.values(categoryDistribution).reduce((sum, pct) => sum + pct, 0)
-                        const remainingPct = 100 - totalPct
                         
                         return (
-                          <div className="space-y-3">
-                            <div className="text-sm font-medium">
-                              {t('forms.addListForm.categoryDistributionLabel') || 'Category Distribution'}
-                              <span className="ml-2 text-xs text-muted-foreground">
-                                (Remaining: {remainingPct.toFixed(0)}%)
-                              </span>
-                            </div>
-                            {allCategories.map(category => (
-                              <div key={category} className="space-y-1">
-                                <Label className="text-xs capitalize">{category}</Label>
-                                <Slider
-                                  value={[categoryDistribution[category] || 0]}
-                                  onValueChange={(values) => setCategoryDistribution(prev => ({ ...prev, [category]: values[0] }))}
-                                  min={0}
-                                  max={100}
-                                  step={1}
-                                  className="w-full"
-                                />
-                                <div className="text-xs text-muted-foreground">
-                                  {(categoryDistribution[category] || 0)}% = ${((parseFloat(form.budget) * (categoryDistribution[category] || 0)) / 100).toFixed(2)}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
+                          <BudgetDistributionInput
+                            items={allCategories}
+                            totalBudget={parseFloat(form.budget)}
+                            distribution={categoryDistribution}
+                            onChange={setCategoryDistribution}
+                            onModeChange={setCategoryDistributionMode}
+                            mode={categoryDistributionMode}
+                            label={t('forms.addListForm.categoryDistributionLabel') || 'Category Distribution'}
+                          />
                         )
                       })()}
 
