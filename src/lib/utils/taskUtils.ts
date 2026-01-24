@@ -293,3 +293,32 @@ export async function updateUserEntriesForTasks(
   } catch { }
 }
 
+/**
+ * Wait for a newly created list to appear in the task lists array
+ * Polls the array up to maxAttempts times with a delay between each attempt
+ * 
+ * @param newListId - The ID of the newly created list to wait for
+ * @param getTaskLists - Function that returns the current array of task lists
+ * @param maxAttempts - Maximum number of polling attempts (default: 10)
+ * @param delayMs - Delay between attempts in milliseconds (default: 100)
+ * @returns Promise that resolves to true if list was found, false if timed out
+ */
+export async function waitForListInContext(
+  newListId: string,
+  getTaskLists: () => any[],
+  maxAttempts: number = 10,
+  delayMs: number = 100
+): Promise<boolean> {
+  for (let attempts = 0; attempts < maxAttempts; attempts++) {
+    const taskLists = getTaskLists()
+    const listExists = (taskLists || []).find((l: any) => l.id === newListId)
+    if (listExists) return true
+    
+    // Only delay if we're going to check again
+    if (attempts < maxAttempts - 1) {
+      await new Promise(resolve => setTimeout(resolve, delayMs))
+    }
+  }
+  return false
+}
+
