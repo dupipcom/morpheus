@@ -306,6 +306,7 @@ export async function updateTaskList(params: {
     // - createdAt (DateTime @default(now())) - note: EmbeddedTask has this as String?
     // - prize, premium (budget allocation fields from Task model only)
     // - listId, list (relation to List)
+    // - templateId, template (relation to Template)
     // - jobs (relation to Job[])
     // - candidateIds, candidates (many-to-many relation to Users)
     // - raisedTransactionIds, raisedTransactions (many-to-many relation to Transactions)
@@ -317,6 +318,8 @@ export async function updateTaskList(params: {
         premium, 
         listId, 
         list,
+        templateId,
+        template,
         jobs,
         candidateIds,
         candidates,
