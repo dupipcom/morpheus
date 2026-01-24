@@ -181,6 +181,7 @@ export const AddListForm = ({
         setCollabResults(data.profiles || [])
       } else {
         // Clear results on error
+        console.error('Error fetching profiles: HTTP', res.status, res.statusText)
         setCollabResults([])
       }
     } catch (error) {
