@@ -5,7 +5,7 @@ import { OptionsMenuItem } from '@/components/optionsButton'
 import { Circle, Minus, Plus, Eye, EyeOff, Edit, Send, Clock } from 'lucide-react'
 import { useI18n } from '@/lib/contexts/i18n'
 import { GlobalContext } from '@/lib/contexts'
-import { getProfitPerTask, calculatePrizePool } from '@/lib/utils/earningsUtils'
+import { calculatePrizePool } from '@/lib/utils/earningsUtils'
 import { getTaskAllocationFromDistribution } from '@/lib/utils/budgetDistributionUtils'
 import { TaskItem } from '@/components/taskItem'
 import { TaskStatus, STATUS_OPTIONS, getStatusColor, getIconColor, getTaskKey, getTaskStatus, mapStatusToEnum } from '@/lib/utils/taskUtils'
@@ -575,19 +575,12 @@ export const TaskGrid = ({
           taskEarnings = task.budget || 0
           taskPrize = task.prize || 0
         } else {
-          // Try to get allocation from budget distribution
+          // Try to get allocation from budget distribution (server data only, no fallback)
           const allocation = getTaskAllocationFromDistribution(task.id, budgetDistribution, listBudget, prizePool)
           if (allocation) {
             taskEarnings = allocation.taskEarnings
             taskPrize = allocation.taskPrize
           }
-        }
-        
-        // Fall back to default equal distribution if no allocation found
-        if (taskEarnings === 0 && taskPrize === 0) {
-          taskEarnings = getProfitPerTask(listBudget, totalTasks, listRole)
-          // Calculate prize based on equal distribution from prize pool
-          taskPrize = totalTasks > 0 && prizePool > 0 ? prizePool / totalTasks : 0
         }
 
         // Determine task status
