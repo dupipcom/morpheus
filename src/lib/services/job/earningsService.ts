@@ -203,7 +203,7 @@ export async function calculateAndApplyJobEarnings({
   occurrenceDate
 }: CalculateJobEarningsParams): Promise<JobEarningsResult> {
   try {
-    const [list, task] = await Promise.all([
+    const [list, task, worker] = await Promise.all([
       prisma.list.findUnique({
         where: { id: listId },
         select: { 
@@ -212,6 +212,7 @@ export async function calculateAndApplyJobEarnings({
           budgetPercentage: true, 
           budgetDistribution: true,
           prizePercentage: true,
+          remainingBudget: true,
           tasks: true, 
           templateTasks: true 
         }
@@ -227,13 +228,23 @@ export async function calculateAndApplyJobEarnings({
           prize: true,
           premium: true
         }
+      }),
+      prisma.user.findUnique({
+        where: { id: workerId },
+        select: {
+          equity: true
+        }
       })
     ])
 
     if (!list) throw new Error('List not found')
     if (!task) throw new Error('Task not found')
+    if (!worker) throw new Error('Worker not found')
 
-    // Use budget distribution to calculate task-specific earnings with premium cap
+    // Parse remainingBudget (it's stored as String in DB)
+    const remainingBudget = list.remainingBudget ? parseFloat(list.remainingBudget) : list.budget
+
+    // Use budget distribution to calculate task-specific earnings with all safety checks
     const taskBudgetAllocation = calculateTaskBudgetFromDistribution({
       task,
       list: {
@@ -242,7 +253,9 @@ export async function calculateAndApplyJobEarnings({
         prizePercentage: list.prizePercentage,
         tasks: list.tasks,
         templateTasks: list.templateTasks
-      }
+      },
+      userEquity: worker.equity,
+      remainingBudget
     })
 
     // Use the calculated budget and prize from distribution

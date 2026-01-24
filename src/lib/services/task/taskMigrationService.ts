@@ -158,8 +158,10 @@ export function calculateTaskBudgetFromDistribution(params: {
   task: EmbeddedTask | PrismaTask
   list: ListForBudgetCalculation
   taskIndex?: number
+  userEquity?: number
+  remainingBudget?: number
 }): { budget: number | null; prize: number | null; premium: number | null } {
-  const { task, list, taskIndex = 0 } = params
+  const { task, list, taskIndex = 0, userEquity, remainingBudget } = params
   
   const listBudget = list.budget || 0
   const budgetDistribution = list.budgetDistribution
@@ -236,9 +238,40 @@ export function calculateTaskBudgetFromDistribution(params: {
   }
   
   // Calculate premium and apply safety caps
-  const calculatedPremium = (budget || 0) + (prize || 0)
+  let calculatedPremium = (budget || 0) + (prize || 0)
   
-  // If task has a stored premium value, ensure we never exceed it
+  // SAFETY CHECK 1: If user equity and remaining budget are provided, ensure we don't exceed available funds
+  // This ensures calculations are based on current balance, not just configured distribution
+  if (userEquity != null && remainingBudget != null && calculatedPremium > 0) {
+    // Check if the list's remaining budget can cover this task's allocation
+    if (remainingBudget < calculatedPremium) {
+      // Scale down proportionally to fit within remaining budget
+      const scaleFactor = remainingBudget / calculatedPremium
+      budget = budget ? budget * scaleFactor : null
+      prize = prize ? prize * scaleFactor : null
+      calculatedPremium = (budget || 0) + (prize || 0)
+      console.warn(`Task ${task.id}: Scaled down from calculated premium to fit remaining budget`, {
+        originalPremium: (budget || 0) / scaleFactor + (prize || 0) / scaleFactor,
+        scaledPremium: calculatedPremium,
+        remainingBudget
+      })
+    }
+    
+    // Additionally check against user's total equity (as a sanity check)
+    // The budget shouldn't exceed the user's total equity
+    if (calculatedPremium > userEquity) {
+      const equityScaleFactor = userEquity / calculatedPremium
+      budget = budget ? budget * equityScaleFactor : null
+      prize = prize ? prize * equityScaleFactor : null
+      calculatedPremium = (budget || 0) + (prize || 0)
+      console.warn(`Task ${task.id}: Scaled down to fit within user equity`, {
+        scaledPremium: calculatedPremium,
+        userEquity
+      })
+    }
+  }
+  
+  // SAFETY CHECK 2: If task has a stored premium value, ensure we never exceed it
   // This is a critical safety check to prevent awarding more than allocated
   if ((task as any).premium != null && (task as any).premium > 0) {
     const storedPremium = (task as any).premium
