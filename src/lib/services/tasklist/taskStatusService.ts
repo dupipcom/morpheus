@@ -183,8 +183,7 @@ export async function updateTaskStatus(params: {
     where: { id: taskListToUpdate.id },
     data: {
       ephemeralTasks: ephemeralTasks,
-      completedTasks: completedTasks,
-      updatedAt: new Date()
+      completedTasks: completedTasks
     } as Record<string, unknown>,
     include: { template: true }
   })
@@ -466,8 +465,7 @@ export async function updateTaskRedacted(params: {
       tasks: tasks,
       templateTasks: templateTasks,
       ephemeralTasks: ephemeralTasks,
-      completedTasks: completedTasks,
-      updatedAt: new Date()
+      completedTasks: completedTasks
     } as Record<string, unknown>,
     include: { template: true }
   })

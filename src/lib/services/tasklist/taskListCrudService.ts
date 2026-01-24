@@ -316,8 +316,7 @@ export async function updateTaskList(params: {
             ...((existing.users as TaskListMembership[]) || []).filter((u) => u.role === 'OWNER'),
             ...collaborators.map((id) => ({ userId: id, role: 'COLLABORATOR' as const }))
           ]
-        : existing.users,
-      updatedAt: new Date()
+        : existing.users
     } as Record<string, unknown>,
     include: { template: true }
   })
@@ -342,8 +341,7 @@ export async function updateTemplateWithTasks(params: {
   await prisma.template.update({
     where: { id: templateId },
     data: {
-      tasks: tasks,
-      updatedAt: new Date()
+      tasks: tasks
     }
   })
 }
