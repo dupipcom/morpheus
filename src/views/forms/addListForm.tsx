@@ -779,9 +779,12 @@ export const AddListForm = ({
                                           distribution={{ [`prize-${taskId}`]: prize }}
                                           onChange={(dist) => {
                                             const newPrize = dist[`prize-${taskId}`] || 0
+                                            // Calculate the prize value based on current prize pool
+                                            const currentPrizePool = calculatePrizePool(form.budgetPercentage, userEquity)
+                                            const calculatedPrize = currentPrizePool > 0 ? newPrize : 0
                                             setTaskBudgets(prev => ({
                                               ...prev,
-                                              [taskId]: { ...prev[taskId], prize: newPrize.toString() }
+                                              [taskId]: { ...prev[taskId], prize: calculatedPrize.toString() }
                                             }))
                                           }}
                                           label=""
