@@ -31,11 +31,33 @@ export const BudgetDistributionInput: React.FC<BudgetDistributionInputProps> = (
   disabled = false
 }) => {
   const [mode, setMode] = useState<'percentage' | 'currency'>(initialMode)
-  const [localDistribution, setLocalDistribution] = useState<Record<string, number>>(distribution)
+  const [localDistribution, setLocalDistribution] = useState<Record<string, number>>(() => {
+    // Initialize based on mode
+    if (initialMode === 'percentage') {
+      // Convert incoming currency values to percentages
+      const percentages: Record<string, number> = {}
+      Object.entries(distribution).forEach(([key, value]) => {
+        percentages[key] = totalBudget > 0 ? (value / totalBudget) * 100 : 0
+      })
+      return percentages
+    }
+    return distribution
+  })
 
+  // Only sync from parent when not actively editing
   useEffect(() => {
-    setLocalDistribution(distribution)
-  }, [distribution])
+    if (mode === 'currency') {
+      // In currency mode, directly use the distribution values
+      setLocalDistribution(distribution)
+    } else {
+      // In percentage mode, convert currency values to percentages
+      const percentages: Record<string, number> = {}
+      Object.entries(distribution).forEach(([key, value]) => {
+        percentages[key] = totalBudget > 0 ? (value / totalBudget) * 100 : 0
+      })
+      setLocalDistribution(percentages)
+    }
+  }, [distribution, mode, totalBudget])
 
   const handleValueChange = (item: string, value: number) => {
     const updated = { ...localDistribution, [item]: value }
