@@ -335,7 +335,7 @@ export async function updateTaskList(params: {
     data: {
       templateTasks: updatedTasks ?? existing.templateTasks,
       // Note: We don't update the tasks relation here - use the Task API to manage Task records
-      templateId: templateId !== undefined ? templateId : existing.templateId,
+      // Note: templateId is set at creation and should not be updated
       role: typeof role === 'string' ? role : existing.role,
       name: name !== undefined ? name : existing.name,
       budget: budget !== undefined ? budget : existing.budget,
