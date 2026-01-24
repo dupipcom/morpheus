@@ -44,7 +44,7 @@ export const AddListForm = ({
   const [form, setForm] = useState({
     name: '',
     templateId: '',
-    budget: '',
+    budget: '0',
     budgetPercentage: 0,
     dueDate: '',
     cadence: 'one-off',
@@ -764,6 +764,7 @@ export const AddListForm = ({
                                           label=""
                                           variant="horizontal"
                                           mode="currency"
+                                          disabled={isBudgetDisabled}
                                         />
                                       </td>
                                       <td className="p-2">
@@ -778,6 +779,7 @@ export const AddListForm = ({
                                           label=""
                                           variant="horizontal"
                                           mode="currency"
+                                          disabled={isPrizeDisabled}
                                         />
                                       </td>
                                       <td className="p-2 text-xs">${(budget + prize).toFixed(2)}</td>
