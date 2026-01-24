@@ -19,6 +19,7 @@ import { Badge } from '@/components/ui/badge'
 import { toast } from 'sonner'
 import type { JobWithRelations } from '@/lib/services/job/types'
 import { useI18n } from '@/lib/contexts/i18n'
+import { sanitizeHTML } from '@/lib/utils/sanitize'
 
 type ReviewAction = 'accept' | 'validate' | 'reject'
 
@@ -117,7 +118,7 @@ export function JobReviewDialog({
                 <div
                   key={note.id}
                   className="prose prose-sm dark:prose-invert max-w-none mt-2"
-                  dangerouslySetInnerHTML={{ __html: note.content }}
+                  dangerouslySetInnerHTML={{ __html: sanitizeHTML(note.content) }}
                 />
               ))
             ) : (
