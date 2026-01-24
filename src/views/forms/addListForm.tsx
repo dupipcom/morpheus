@@ -193,22 +193,31 @@ export const AddListForm = ({
         }
       }
       
-      // Load tasks from tasks (Task collection) if available, otherwise from templateTasks
+      // Load tasks from Task collection only (templateTasks is deprecated)
       const tasksToLoad = (Array.isArray(initialList.tasks) && initialList.tasks.length > 0)
         ? initialList.tasks
-        : (Array.isArray(initialList.templateTasks) ? initialList.templateTasks : [])
+        : []
       
-      // If editing and no tasks loaded yet, fetch from Task collection
-      if (isEditing && tasksToLoad.length === 0 && initialList.id) {
+      // Always fetch from Task collection when editing to get the latest data
+      if (isEditing && initialList.id) {
         // Fetch tasks from Task collection
         fetch(`/api/v1/tasks?listId=${initialList.id}`)
           .then(res => res.ok ? res.json() : null)
           .then(data => {
             if (data?.tasks && Array.isArray(data.tasks)) {
               setTasks(data.tasks)
+            } else if (tasksToLoad.length > 0) {
+              // Fallback to existing tasks if API fails
+              setTasks(tasksToLoad)
             }
           })
-          .catch(err => console.error('Error fetching tasks:', err))
+          .catch(err => {
+            console.error('Error fetching tasks:', err)
+            // Fallback to existing tasks on error
+            if (tasksToLoad.length > 0) {
+              setTasks(tasksToLoad)
+            }
+          })
       } else {
         setTasks(tasksToLoad)
       }

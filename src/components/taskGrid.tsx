@@ -559,7 +559,8 @@ export const TaskGrid = ({
         // Calculate earnings and prize for THIS specific task
         const listBudget = parseFloat((selectedTaskList as any)?.budget || '0')
         const listRole = (selectedTaskList as any)?.role
-        const totalTasks = (selectedTaskList?.tasks as any[])?.length || (selectedTaskList?.templateTasks as any[])?.length || 1
+        // Use tasks from Task collection only (templateTasks is deprecated)
+        const totalTasks = (selectedTaskList?.tasks as any[])?.length || 1
         const budgetDistribution = (selectedTaskList as any)?.budgetDistribution
         const budgetPercentage = (selectedTaskList as any)?.budgetPercentage || 0
         
@@ -626,12 +627,8 @@ export const TaskGrid = ({
           {
             label: t('tasks.edit', { defaultValue: 'Edit' }),
             onClick: () => {
-              // Find the source task from list.tasks (the template)
+              // Find the source task from list.tasks (Task collection - templateTasks is deprecated)
               const sourceTask = selectedTaskList?.tasks?.find((t: any) =>
-                t.id === task.id ||
-                t.localeKey === task.localeKey ||
-                (t.name && task.name && t.name.toLowerCase() === task.name.toLowerCase())
-              ) || selectedTaskList?.templateTasks?.find((t: any) =>
                 t.id === task.id ||
                 t.localeKey === task.localeKey ||
                 (t.name && task.name && t.name.toLowerCase() === task.name.toLowerCase())

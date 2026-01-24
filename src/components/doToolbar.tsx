@@ -154,7 +154,8 @@ export const DoToolbar = ({
   const calculateCompletionChange = useCallback((list: any): number => {
     if (!list) return 0
 
-    const baseTasks = list.tasks?.length || list.templateTasks?.length || 0
+    // Use tasks from Task collection only (templateTasks is deprecated)
+    const baseTasks = list.tasks?.length || 0
     const ephemeralTasks = list.ephemeralTasks || {}
     const openEphemeral = Array.isArray(ephemeralTasks.open) ? ephemeralTasks.open.length : 0
     const closedEphemeral = Array.isArray(ephemeralTasks.closed) ? ephemeralTasks.closed.length : 0
@@ -356,8 +357,8 @@ export const DoToolbar = ({
       // Get user equity from session
       const userEquity = (session.user as any).equity || '0'
 
-      // Count total tasks in the list
-      const tasksCount = (selectedList.tasks || []).length || (selectedList.templateTasks || []).length || 1
+      // Count total tasks in the list (templateTasks is deprecated)
+      const tasksCount = (selectedList.tasks || []).length || 1
 
       // Calculate earnings for this task completion
       const earningsCalculation = calculateTaskEarnings({
@@ -392,8 +393,8 @@ export const DoToolbar = ({
   const addOptimisticCompletion = useCallback(() => {
     if (!selectedList) return
 
-    // Get current task counts
-    const baseTasks = (selectedList.tasks || selectedList.templateTasks || []).length
+    // Get current task counts (templateTasks is deprecated)
+    const baseTasks = (selectedList.tasks || []).length
     const ephemeralOpen = (selectedList.ephemeralTasks?.open || []).length
     const ephemeralClosed = (selectedList.ephemeralTasks?.closed || []).length
     const totalTasks = baseTasks + ephemeralOpen + ephemeralClosed

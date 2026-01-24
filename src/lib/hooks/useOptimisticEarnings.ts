@@ -54,7 +54,8 @@ export function useOptimisticEarnings({
   ): OptimisticEarningsState | undefined => {
     if (!selectedList || selectedList.id !== listId) return undefined
 
-    const tasksCount = (selectedList.tasks || []).length || (selectedList.templateTasks || []).length || 1
+    // Use tasks from Task collection only (templateTasks is deprecated)
+    const tasksCount = (selectedList.tasks || []).length || 1
 
     const earningsCalculation = calculateTaskEarnings({
       listRole: selectedList.role,

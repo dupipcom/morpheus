@@ -17,6 +17,7 @@ import {
 
 /**
  * Get task lists for a user
+ * Includes tasks from the Task collection (templateTasks is deprecated)
  */
 export async function getTaskListsForUser(params: {
   userId: string
@@ -47,7 +48,8 @@ export async function getTaskListsForUser(params: {
   const taskLists = await prisma.list?.findMany({
     where: whereClause,
     include: {
-      template: true
+      template: true,
+      tasks: true  // Include tasks from Task collection
     },
     orderBy: {
       createdAt: 'asc'
@@ -92,10 +94,10 @@ export async function calculateCollaboratorEarnings(
         userIdToUserName[u.id] = (profile?.data as Record<string, { value?: string }>)?.username?.value || u.id
       })
 
-      // Calculate profit per task
+      // Calculate profit per task (templateTasks is deprecated)
       const listBudget = taskList.budget
       const listRole = taskList.role
-      const totalTasks = (taskList.tasks as Task[])?.length || (taskList.templateTasks as Task[])?.length || 1
+      const totalTasks = (taskList.tasks as Task[])?.length || 1
       const profitPerTask = getProfitPerTask(listBudget as number | string | null, totalTasks, listRole)
 
       // Iterate through all completed tasks to sum earnings per user
@@ -142,6 +144,7 @@ export async function calculateCollaboratorEarnings(
 
 /**
  * Ensure default task lists exist for a user
+ * Creates Task records in the Task collection (no longer uses templateTasks)
  */
 export async function ensureDefaultTaskLists(params: {
   userId: string
@@ -166,17 +169,53 @@ export async function ensureDefaultTaskLists(params: {
         translatedTasks = ensureUniqueTaskIds(translatedTasks, true)
       }
 
-      await prisma.list.create({
+      // Create the list first (without templateTasks - deprecated)
+      const newList = await prisma.list.create({
         data: {
           role: role,
           name: localizedName,
           visibility: 'PRIVATE',
           users: [{ userId: userInternalId, role: 'OWNER' }],
           templateId: tpl?.id || null,
-          templateTasks: translatedTasks,
-          // Note: tasks relation is not set here - the migration system will create Task records from templateTasks
+          // templateTasks is deprecated - we create Task records instead
         } as Record<string, unknown>
       })
+
+      // Build recurrence rule based on role
+      let recurrence: { frequency: string; interval: number; byWeekday: number[]; byMonthDay: number[]; byMonth: number[] } | undefined = undefined
+      if (role.startsWith('daily')) {
+        recurrence = { frequency: 'DAILY', interval: 1, byWeekday: [], byMonthDay: [], byMonth: [] }
+      } else if (role.startsWith('weekly')) {
+        recurrence = { frequency: 'WEEKLY', interval: 1, byWeekday: [], byMonthDay: [], byMonth: [] }
+      }
+
+      // Create Task records in the Task collection
+      if (translatedTasks.length > 0) {
+        const taskCreatePromises = translatedTasks.map((task) =>
+          prisma.task.create({
+            data: {
+              name: task.name,
+              categories: task.categories || [],
+              area: task.area || 'self',
+              status: 'OPEN',
+              listId: newList.id,
+              recurrence: recurrence,
+              times: task.times || 1,
+              localeKey: task.localeKey,
+              budget: task.budget,
+              visibility: task.visibility,
+              quality: task.quality,
+              redacted: task.redacted || false,
+              persons: task.persons || [],
+              things: task.things || [],
+              events: task.events || [],
+              notes: task.notes || [],
+              documents: task.documents || [],
+            }
+          })
+        )
+        await Promise.all(taskCreatePromises)
+      }
     }
   }
 
@@ -206,6 +245,7 @@ export async function deleteTaskList(params: {
 
 /**
  * Create a new task list
+ * Creates Task records in the Task collection (no longer uses templateTasks)
  */
 export async function createTaskList(params: {
   userId: string
@@ -239,6 +279,7 @@ export async function createTaskList(params: {
     }
   }
 
+  // Create the list first (without templateTasks - deprecated)
   const taskList = await prisma.list.create({
     data: {
       role: role,
@@ -253,12 +294,63 @@ export async function createTaskList(params: {
         { userId: userId, role: 'OWNER' },
         ...(Array.isArray(collaborators) ? collaborators.map((id) => ({ userId: id, role: 'COLLABORATOR' as const })) : [])
       ],
-      templateTasks: tasks,
-      // Note: tasks relation is not set here - the migration system will create Task records from templateTasks
+      // templateTasks is deprecated - we create Task records instead
       templateId: templateId
     } as Record<string, unknown>,
-    include: { template: true }
+    include: { template: true, tasks: true }
   })
+
+  // Create Task records in the Task collection
+  if (Array.isArray(tasks) && tasks.length > 0) {
+    const taskCreatePromises = tasks.map((task) => {
+      // Build recurrence rule based on list cadence
+      let recurrence: { frequency: string; interval: number; byWeekday: number[]; byMonthDay: number[]; byMonth: number[] } | undefined = undefined
+      if (role) {
+        if (role.startsWith('daily')) {
+          recurrence = { frequency: 'DAILY', interval: 1, byWeekday: [], byMonthDay: [], byMonth: [] }
+        } else if (role.startsWith('weekly')) {
+          recurrence = { frequency: 'WEEKLY', interval: 1, byWeekday: [], byMonthDay: [], byMonth: [] }
+        }
+      }
+
+      return prisma.task.create({
+        data: {
+          name: task.name,
+          categories: task.categories || [],
+          area: task.area || 'self',
+          status: 'OPEN',
+          listId: taskList.id,
+          recurrence: recurrence,
+          times: task.times || 1,
+          localeKey: task.localeKey,
+          budget: task.budget,
+          visibility: task.visibility,
+          quality: task.quality,
+          redacted: task.redacted || false,
+          persons: task.persons || [],
+          things: task.things || [],
+          events: task.events || [],
+          notes: task.notes || [],
+          documents: task.documents || [],
+        }
+      })
+    })
+
+    await Promise.all(taskCreatePromises)
+
+    // Re-fetch the list with tasks
+    const updatedList = await prisma.list.findUnique({
+      where: { id: taskList.id },
+      include: { template: true, tasks: true }
+    })
+
+    // Recalculate user's budget if budgetPercentage was set
+    if (budgetPercentage) {
+      await recalculateUserBudget(userId)
+    }
+
+    return updatedList as unknown as TaskList
+  }
 
   // Recalculate user's budget if budgetPercentage was set
   if (budgetPercentage) {
@@ -270,6 +362,7 @@ export async function createTaskList(params: {
 
 /**
  * Update an existing task list
+ * Updates Task records in the Task collection (no longer uses templateTasks)
  */
 export async function updateTaskList(params: {
   taskListId: string
@@ -285,57 +378,21 @@ export async function updateTaskList(params: {
   tasks?: Task[]
   collaborators?: string[]
 }): Promise<TaskList> {
-  const { taskListId, userId, role, name, budget, budgetPercentage, prizePercentage, budgetDistribution, dueDate, templateId, tasks, collaborators } = await params
+  const { taskListId, userId, role, name, budget, budgetPercentage, prizePercentage, budgetDistribution, dueDate, tasks, collaborators } = await params
 
-  const existing = await prisma.list.findUnique({ where: { id: taskListId } })
+  const existing = await prisma.list.findUnique({ 
+    where: { id: taskListId },
+    include: { tasks: true }
+  })
   if (!existing) {
     throw new Error('TaskList not found')
   }
 
-  // Ensure all tasks have unique ObjectIds and strip fields not in EmbeddedTask type
-  let updatedTasks = tasks
-  if (Array.isArray(updatedTasks)) {
-    updatedTasks = ensureUniqueTaskIds(updatedTasks, !!templateId)
-    // Strip ALL Task model fields that aren't part of EmbeddedTask type before saving to templateTasks
-    // EmbeddedTask type includes: id, name, categories, area, status, recurrence, times, count,
-    // localeKey, persons, things, events, notes, documents, createdAt (String?), completedOn, dueDate,
-    // budget, visibility, quality, redacted, nextOccurrence, lastOccurrence, firstOccurrence, templateId (String?)
-    // 
-    // Task model has these additional fields that must be stripped:
-    // - updatedAt (DateTime @updatedAt) - auto-managed timestamp
-    // - createdAt (DateTime @default(now())) - note: EmbeddedTask has this as String?
-    // - prize, premium (budget allocation fields from Task model only)
-    // - listId, list (relation to List)
-    // - template (relation object to Template) - NOTE: templateId (ID field) is KEPT for template reference
-    // - jobs (relation to Job[])
-    // - candidateIds, candidates (many-to-many relation to Users)
-    // - raisedTransactionIds, raisedTransactions (many-to-many relation to Transactions)
-    updatedTasks = updatedTasks.map(task => {
-      const { 
-        updatedAt, 
-        createdAt, 
-        prize, 
-        premium, 
-        listId, 
-        list,
-        template,  // Strip template relation object, but KEEP templateId
-        jobs,
-        candidateIds,
-        candidates,
-        raisedTransactionIds,
-        raisedTransactions,
-        ...embeddedTaskFields 
-      } = task as any
-      return embeddedTaskFields
-    })
-  }
-
+  // Update the list (no longer updating templateTasks - deprecated)
   const updated = await prisma.list.update({
     where: { id: existing.id },
     data: {
-      templateTasks: updatedTasks ?? existing.templateTasks,
-      // Note: We don't update the tasks relation here - use the Task API to manage Task records
-      // Note: templateId is set at creation and should not be updated
+      // templateTasks is deprecated - we use Task collection instead
       role: typeof role === 'string' ? role : existing.role,
       name: name !== undefined ? name : existing.name,
       budget: budget !== undefined ? budget : existing.budget,
@@ -350,8 +407,109 @@ export async function updateTaskList(params: {
           ]
         : existing.users
     } as Record<string, unknown>,
-    include: { template: true }
+    include: { template: true, tasks: true }
   })
+
+  // Handle Task collection updates if tasks were provided
+  if (Array.isArray(tasks)) {
+    const existingTasks = (existing as any).tasks || []
+    const existingTaskIds = new Set(existingTasks.map((t: any) => t.id))
+    const incomingTaskIds = new Set(tasks.filter(t => t.id).map(t => t.id))
+
+    // Find tasks to delete (exist in DB but not in incoming)
+    const tasksToDelete = existingTasks.filter((t: any) => !incomingTaskIds.has(t.id))
+
+    // Find tasks to create (new tasks without ID or with non-existing ID)
+    const tasksToCreate = tasks.filter(t => !t.id || !existingTaskIds.has(t.id))
+
+    // Find tasks to update (exist in both)
+    const tasksToUpdate = tasks.filter(t => t.id && existingTaskIds.has(t.id))
+
+    // Delete removed tasks
+    if (tasksToDelete.length > 0) {
+      await prisma.task.deleteMany({
+        where: { id: { in: tasksToDelete.map((t: any) => t.id) } }
+      })
+    }
+
+    // Create new tasks
+    if (tasksToCreate.length > 0) {
+      // Build recurrence rule based on list role/cadence
+      const listRole = typeof role === 'string' ? role : existing.role
+      let recurrence: { frequency: string; interval: number; byWeekday: number[]; byMonthDay: number[]; byMonth: number[] } | undefined = undefined
+      if (listRole) {
+        if (listRole.startsWith('daily')) {
+          recurrence = { frequency: 'DAILY', interval: 1, byWeekday: [], byMonthDay: [], byMonth: [] }
+        } else if (listRole.startsWith('weekly')) {
+          recurrence = { frequency: 'WEEKLY', interval: 1, byWeekday: [], byMonthDay: [], byMonth: [] }
+        }
+      }
+
+      const createPromises = tasksToCreate.map((task) =>
+        prisma.task.create({
+          data: {
+            name: task.name,
+            categories: task.categories || [],
+            area: task.area || 'self',
+            status: 'OPEN',
+            listId: taskListId,
+            recurrence: recurrence,
+            times: task.times || 1,
+            localeKey: task.localeKey,
+            budget: task.budget,
+            visibility: task.visibility,
+            quality: task.quality,
+            redacted: task.redacted || false,
+            persons: task.persons || [],
+            things: task.things || [],
+            events: task.events || [],
+            notes: task.notes || [],
+            documents: task.documents || [],
+          }
+        })
+      )
+      await Promise.all(createPromises)
+    }
+
+    // Update existing tasks
+    if (tasksToUpdate.length > 0) {
+      const updatePromises = tasksToUpdate.map((task) =>
+        prisma.task.update({
+          where: { id: task.id },
+          data: {
+            name: task.name,
+            categories: task.categories || [],
+            area: task.area || 'self',
+            times: task.times || 1,
+            localeKey: task.localeKey,
+            budget: task.budget,
+            visibility: task.visibility,
+            quality: task.quality,
+            redacted: task.redacted,
+            persons: task.persons || [],
+            things: task.things || [],
+            events: task.events || [],
+            notes: task.notes || [],
+            documents: task.documents || [],
+          }
+        })
+      )
+      await Promise.all(updatePromises)
+    }
+
+    // Re-fetch with updated tasks
+    const finalList = await prisma.list.findUnique({
+      where: { id: taskListId },
+      include: { template: true, tasks: true }
+    })
+
+    // Recalculate user's budget if budgetPercentage was updated
+    if (budgetPercentage !== undefined) {
+      await recalculateUserBudget(userId)
+    }
+
+    return finalList as unknown as TaskList
+  }
 
   // Recalculate user's budget if budgetPercentage was updated
   if (budgetPercentage !== undefined) {
@@ -379,12 +537,12 @@ export async function updateTemplateWithTasks(params: {
 }
 
 /**
- * Get a task list with its template
+ * Get a task list with its template and tasks
  */
 export async function getTaskListWithTemplate(taskListId: string): Promise<TaskList | null> {
   const taskList = await prisma.list.findUnique({
     where: { id: taskListId },
-    include: { template: true }
+    include: { template: true, tasks: true }
   })
 
   return taskList as unknown as TaskList | null
