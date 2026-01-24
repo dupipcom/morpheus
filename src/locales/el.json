@@ -491,7 +491,24 @@
       "save": "Αποθήκευση",
       "cancel": "Ακύρωση",
       "deleteListConfirm": "Διαγραφή αυτής της λίστας; Αυτό δεν μπορεί να αναιρεθεί.",
-      "deleteList": "Διαγραφή λίστας"
+      "deleteList": "Διαγραφή λίστας",
+      "manageTasks": "Διαχείριση εργασιών",
+      "manageBudgetAllocation": "Κατανομή προϋπολογισμού",
+      "distributionModeLabel": "Κατανομή",
+      "distributionMode": {
+        "equal": "Ίσος",
+        "area": "Ανά περιοχή",
+        "category": "Ανά κατηγορία",
+        "task": "Ανά εργασία"
+      },
+      "areaDistributionLabel": "Προϋπολογισμός περιοχής",
+      "areaPrizeDistributionLabel": "Βραβείο περιοχής",
+      "categoryDistributionLabel": "Προϋπολογισμός κατηγορίας",
+      "categoryPrizeDistributionLabel": "Βραβείο κατηγορίας",
+      "taskDistributionLabel": "Προϋπολογισμός",
+      "prizeLabel": "Βραβείο",
+      "totalLabel": "Σύνολο",
+      "addTaskTitle": "Προσθήκη εργασίας"
     },
     "addTemplateForm": {
       "title": "Δημιουργία Νέου Προτύπου",

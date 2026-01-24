@@ -511,7 +511,24 @@
       "save": "Salvar",
       "cancel": "Cancelar",
       "deleteListConfirm": "Excluir esta lista? Isto não pode ser desfeito.",
-      "deleteList": "Excluir lista"
+      "deleteList": "Excluir lista",
+      "manageTasks": "Gerir tarefas",
+      "manageBudgetAllocation": "Distribuição orçamental",
+      "distributionModeLabel": "Distribuição",
+      "distributionMode": {
+        "equal": "Igual",
+        "area": "Por área",
+        "category": "Por categoria",
+        "task": "Por tarefa"
+      },
+      "areaDistributionLabel": "Orçamento de área",
+      "areaPrizeDistributionLabel": "Prémio de área",
+      "categoryDistributionLabel": "Orçamento de categoria",
+      "categoryPrizeDistributionLabel": "Prémio de categoria",
+      "taskDistributionLabel": "Orçamento",
+      "prizeLabel": "Prémio",
+      "totalLabel": "Total",
+      "addTaskTitle": "Adicionar tarefa"
     },
     "addTemplateForm": {
       "title": "Criar Novo Modelo",

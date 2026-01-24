@@ -511,7 +511,24 @@
       "save": "节省",
       "cancel": "取消",
       "deleteListConfirm": "删除此列表？无法撤销。",
-      "deleteList": "删除列表"
+      "deleteList": "删除列表",
+      "manageTasks": "管理任务",
+      "manageBudgetAllocation": "预算分配",
+      "distributionModeLabel": "分配",
+      "distributionMode": {
+        "equal": "均等",
+        "area": "按区域",
+        "category": "按类别",
+        "task": "按任务"
+      },
+      "areaDistributionLabel": "区域预算",
+      "areaPrizeDistributionLabel": "区域奖金",
+      "categoryDistributionLabel": "类别预算",
+      "categoryPrizeDistributionLabel": "类别奖金",
+      "taskDistributionLabel": "预算",
+      "prizeLabel": "奖金",
+      "totalLabel": "总计",
+      "addTaskTitle": "添加任务"
     },
     "addTemplateForm": {
       "title": "创建新模板",

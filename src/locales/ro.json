@@ -494,7 +494,24 @@
       "save": "Salvați",
       "cancel": "Anulează",
       "deleteListConfirm": "Ștergeți această listă? Acest lucru nu poate fi anulat.",
-      "deleteList": "Ștergeți lista"
+      "deleteList": "Ștergeți lista",
+      "manageTasks": "Gestionează sarcini",
+      "manageBudgetAllocation": "Distribuția bugetului",
+      "distributionModeLabel": "Distribuție",
+      "distributionMode": {
+        "equal": "Egal",
+        "area": "După zonă",
+        "category": "După categorie",
+        "task": "Pe sarcină"
+      },
+      "areaDistributionLabel": "Buget zonă",
+      "areaPrizeDistributionLabel": "Premiu zonă",
+      "categoryDistributionLabel": "Buget categorie",
+      "categoryPrizeDistributionLabel": "Premiu categorie",
+      "taskDistributionLabel": "Buget",
+      "prizeLabel": "Premiu",
+      "totalLabel": "Total",
+      "addTaskTitle": "Adaugă sarcină"
     },
     "addTemplateForm": {
       "title": "Creați un șablon nou",

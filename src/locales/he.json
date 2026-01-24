@@ -494,7 +494,24 @@
       "save": "שמור",
       "cancel": "ביטול",
       "deleteListConfirm": "מחק רשימה זו? לא ניתן לבטל פעולה זו.",
-      "deleteList": "מחק רשימה"
+      "deleteList": "מחק רשימה",
+      "manageTasks": "ניהול משימות",
+      "manageBudgetAllocation": "חלוקת תקציב",
+      "distributionModeLabel": "חלוקה",
+      "distributionMode": {
+        "equal": "שווה",
+        "area": "לפי תחום",
+        "category": "לפי קטגוריה",
+        "task": "למשימה"
+      },
+      "areaDistributionLabel": "תקציב תחום",
+      "areaPrizeDistributionLabel": "פרס תחום",
+      "categoryDistributionLabel": "תקציב קטגוריה",
+      "categoryPrizeDistributionLabel": "פרס קטגוריה",
+      "taskDistributionLabel": "תקציב",
+      "prizeLabel": "פרס",
+      "totalLabel": "סה\"כ",
+      "addTaskTitle": "הוסף משימה"
     },
     "addTemplateForm": {
       "title": "צור תבנית חדשה",

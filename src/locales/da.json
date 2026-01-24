@@ -498,7 +498,24 @@
       "save": "Gem",
       "cancel": "Annuller",
       "deleteListConfirm": "Slet denne liste? Dette kan ikke fortrydes.",
-      "deleteList": "Slet liste"
+      "deleteList": "Slet liste",
+      "manageTasks": "Administrer opgaver",
+      "manageBudgetAllocation": "Budgetfordeling",
+      "distributionModeLabel": "Fordeling",
+      "distributionMode": {
+        "equal": "Lige",
+        "area": "Efter område",
+        "category": "Efter kategori",
+        "task": "Per opgave"
+      },
+      "areaDistributionLabel": "Områdebudget",
+      "areaPrizeDistributionLabel": "Områdepræmie",
+      "categoryDistributionLabel": "Kategoribudget",
+      "categoryPrizeDistributionLabel": "Kategoripræmie",
+      "taskDistributionLabel": "Budget",
+      "prizeLabel": "Præmie",
+      "totalLabel": "Total",
+      "addTaskTitle": "Tilføj opgave"
     },
     "addTemplateForm": {
       "title": "Opret ny skabelon",

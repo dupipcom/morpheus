@@ -511,7 +511,24 @@
       "save": "Salva",
       "cancel": "Annulla",
       "deleteListConfirm": "Eliminare questo elenco? Questa azione non può essere annullata.",
-      "deleteList": "Elimina elenco"
+      "deleteList": "Elimina elenco",
+      "manageTasks": "Gestisci attività",
+      "manageBudgetAllocation": "Distribuzione budget",
+      "distributionModeLabel": "Distribuzione",
+      "distributionMode": {
+        "equal": "Uguale",
+        "area": "Per area",
+        "category": "Per categoria",
+        "task": "Per attività"
+      },
+      "areaDistributionLabel": "Budget area",
+      "areaPrizeDistributionLabel": "Premio area",
+      "categoryDistributionLabel": "Budget categoria",
+      "categoryPrizeDistributionLabel": "Premio categoria",
+      "taskDistributionLabel": "Budget",
+      "prizeLabel": "Premio",
+      "totalLabel": "Totale",
+      "addTaskTitle": "Aggiungi attività"
     },
     "addTemplateForm": {
       "title": "Crea Nuovo Modello",

@@ -511,7 +511,24 @@
       "save": "Speichern",
       "cancel": "Abbrechen",
       "deleteListConfirm": "Diese Liste löschen? Das kann nicht rückgängig gemacht werden.",
-      "deleteList": "Liste löschen"
+      "deleteList": "Liste löschen",
+      "manageTasks": "Aufgaben verwalten",
+      "manageBudgetAllocation": "Budgetverteilung",
+      "distributionModeLabel": "Verteilung",
+      "distributionMode": {
+        "equal": "Gleich",
+        "area": "Nach Bereich",
+        "category": "Nach Kategorie",
+        "task": "Pro Aufgabe"
+      },
+      "areaDistributionLabel": "Bereichsbudget",
+      "areaPrizeDistributionLabel": "Bereichspreis",
+      "categoryDistributionLabel": "Kategoriebudget",
+      "categoryPrizeDistributionLabel": "Kategoriepreis",
+      "taskDistributionLabel": "Budget",
+      "prizeLabel": "Preis",
+      "totalLabel": "Gesamt",
+      "addTaskTitle": "Aufgabe hinzufügen"
     },
     "addTemplateForm": {
       "title": "Neue Vorlage erstellen",

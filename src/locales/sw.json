@@ -509,7 +509,24 @@
       "cancel": "Ghairi",
       "deleteListConfirm": "Futa orodha hii? Hii haiwezi kurejeshwa.",
       "deleteList": "Futa orodha",
-      "budgetPercentageLabel": "Personal budget allocation"
+      "budgetPercentageLabel": "Personal budget allocation",
+      "manageTasks": "Simamia kazi",
+      "manageBudgetAllocation": "Ugawaji wa bajeti",
+      "distributionModeLabel": "Ugawaji",
+      "distributionMode": {
+        "equal": "Sawa",
+        "area": "Kwa eneo",
+        "category": "Kwa kategoria",
+        "task": "Kwa kazi"
+      },
+      "areaDistributionLabel": "Bajeti ya eneo",
+      "areaPrizeDistributionLabel": "Tuzo ya eneo",
+      "categoryDistributionLabel": "Bajeti ya kategoria",
+      "categoryPrizeDistributionLabel": "Tuzo ya kategoria",
+      "taskDistributionLabel": "Bajeti",
+      "prizeLabel": "Tuzo",
+      "totalLabel": "Jumla",
+      "addTaskTitle": "Ongeza kazi"
     },
     "addTemplateForm": {
       "title": "Unda Kiolezo Kipya",
