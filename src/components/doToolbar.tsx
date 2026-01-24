@@ -16,9 +16,9 @@ import { Badge } from '@/components/ui/badge'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { PercentageTicker } from '@/components/ui/percentageTicker'
 import { DatePickerButton } from '@/components/ui/datePickerButton'
-import { calculateTaskEarnings, getPerCompleterPrize, getPerCompleterProfit } from '@/lib/utils/earningsUtils'
 
-type TaskList = { id: string; name?: string; role?: string }
+
+type TaskList = { id: string; name?: string; role?: string; tasks?: any[] }
 
 // Helper to format date as YYYY-MM-DD
 function formatDateISO(date: Date): string {
@@ -154,12 +154,8 @@ export const DoToolbar = ({
   const calculateCompletionChange = useCallback((list: any): number => {
     if (!list) return 0
 
-    // Use tasks from Task collection only (templateTasks is deprecated)
-    const baseTasks = list.tasks?.length || 0
-    const ephemeralTasks = list.ephemeralTasks || {}
-    const openEphemeral = Array.isArray(ephemeralTasks.open) ? ephemeralTasks.open.length : 0
-    const closedEphemeral = Array.isArray(ephemeralTasks.closed) ? ephemeralTasks.closed.length : 0
-    const totalTasks = baseTasks + openEphemeral + closedEphemeral
+    // Use tasks from Task collection only
+    const totalTasks = list.tasks?.length || 0
 
     if (totalTasks === 0) return 0
 
@@ -168,20 +164,13 @@ export const DoToolbar = ({
     const todayISO = formatDateISO(today)
     const yearData = list.completedTasks?.[year] || {}
 
-    const currentBaseCompleted = getCompletedCount(yearData[todayISO])
+    const currentCompleted = getCompletedCount(yearData[todayISO])
 
     // Find previous date's completion
     const previousDate = Object.keys(yearData).sort().reverse().find(d => d < todayISO)
-    const previousBaseCompleted = previousDate ? getCompletedCount(yearData[previousDate]) : 0
+    const previousCompleted = previousDate ? getCompletedCount(yearData[previousDate]) : 0
 
-    const baseTasksChange = ((currentBaseCompleted - previousBaseCompleted) / totalTasks) * 100
-
-    // Ephemeral task change increment
-    const ephemeralChange = closedEphemeral > 0 && (openEphemeral + baseTasks + 1) > 0
-      ? (1 / (openEphemeral + baseTasks + 1)) * 100
-      : 0
-
-    return baseTasksChange + ephemeralChange
+    return ((currentCompleted - previousCompleted) / totalTasks) * 100
   }, [])
 
   // Sort task lists according to specified priority
@@ -330,74 +319,35 @@ export const DoToolbar = ({
   }, [selectedList?.id, dayData])
 
   // Add optimistic earnings for a task completion
+  // Uses task's prize and budget values from budgetDistribution directly
   const addOptimisticTaskEarnings = useCallback((task?: { premium?: number; prize?: number; budget?: number }) => {
-    if (!selectedList || !session?.user) return
+    if (!selectedList) return
 
-    try {
-      // If task data is provided with premium values, use those directly
-      if (task && (task.premium != null || (task.prize != null && task.budget != null))) {
-        const prize = task.prize || 0
-        const profit = task.budget || 0
-        
-        // Add to optimistic earnings using task's actual values
-        setOptimisticEarnings(prev => ({
-          profit: prev.profit + profit,
-          prize: prev.prize + prize
-        }))
-        
-        // Auto-clear after 5 seconds (safety timeout)
-        setTimeout(() => {
-          setOptimisticEarnings({ profit: 0, prize: 0 })
-        }, 5000)
-        
-        return
-      }
-
-      // Fallback to old calculation if task data not provided (backward compatibility)
-      // Get user equity from session
-      const userEquity = (session.user as any).equity || '0'
-
-      // Count total tasks in the list (templateTasks is deprecated)
-      const tasksCount = (selectedList.tasks || []).length || 1
-
-      // Calculate earnings for this task completion
-      const earningsCalculation = calculateTaskEarnings({
-        listRole: selectedList.role,
-        budgetPercentage: selectedList.budgetPercentage as number | undefined,
-        listBudget: selectedList.budget,
-        userEquity: userEquity,
-        numTasks: tasksCount,
-        date: selectedDateToUse || new Date()
-      })
-
-      // Get per-completer prize and profit based on list cadence
-      const prize = getPerCompleterPrize(earningsCalculation, selectedList.role)
-      const profit = getPerCompleterProfit(earningsCalculation, selectedList.role)
-
-      // Add to optimistic earnings
-      setOptimisticEarnings(prev => ({
-        profit: prev.profit + profit,
-        prize: prev.prize + prize
-      }))
-
-      // Auto-clear after 5 seconds (safety timeout)
-      setTimeout(() => {
-        setOptimisticEarnings({ profit: 0, prize: 0 })
-      }, 5000)
-    } catch (error) {
-      console.error('Error calculating optimistic earnings:', error)
-    }
-  }, [selectedList, session?.user, selectedDateToUse])
+    // Use task's actual prize and budget values from budgetDistribution
+    const prize = task?.prize || 0
+    const profit = task?.budget || 0
+    
+    // Only add if there are actual values
+    if (prize === 0 && profit === 0) return
+    
+    // Add to optimistic earnings
+    setOptimisticEarnings(prev => ({
+      profit: prev.profit + profit,
+      prize: prev.prize + prize
+    }))
+    
+    // Auto-clear after 5 seconds (safety timeout)
+    setTimeout(() => {
+      setOptimisticEarnings({ profit: 0, prize: 0 })
+    }, 5000)
+  }, [selectedList])
 
   // Add optimistic completion percentage increase
   const addOptimisticCompletion = useCallback(() => {
     if (!selectedList) return
 
-    // Get current task counts (templateTasks is deprecated)
-    const baseTasks = (selectedList.tasks || []).length
-    const ephemeralOpen = (selectedList.ephemeralTasks?.open || []).length
-    const ephemeralClosed = (selectedList.ephemeralTasks?.closed || []).length
-    const totalTasks = baseTasks + ephemeralOpen + ephemeralClosed
+    // Use tasks from Task collection only
+    const totalTasks = (selectedList.tasks || []).length
 
     if (totalTasks === 0) return
 
