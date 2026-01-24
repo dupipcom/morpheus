@@ -7,6 +7,7 @@ import { calculateAndApplyJobEarnings, reverseJobEarnings } from '@/lib/services
 import { validateStatusTransition, isAuthorizedForTransition } from '@/lib/services/job/statusValidator'
 import { TASK_STATUS_MAP } from '@/lib/services/job/taskSync'
 import { logJobStatusChange, logJobAcceptance, logAuthorizationFailure } from '@/lib/services/job/auditLogger'
+import { formatDateLocal } from '@/lib/utils/taskUtils'
 import type { ListUser, UpdateJobRequest } from '@/lib/services/job/types'
 
 /**
@@ -396,9 +397,10 @@ export async function PUT(
     }
 
     // Handle accepted jobs - update occurrence dates and calculate earnings
-    if (newStatus === 'ACCEPTED' && existingJob.occurrenceDate) {
-      await updateTaskOccurrenceDates(existingJob.taskId, 'complete', existingJob.occurrenceDate)
-      await updateDayProgress(existingJob.workerId, existingJob.occurrenceDate)
+    if (newStatus === 'ACCEPTED') {
+      const dateToUse = existingJob.occurrenceDate || formatDateLocal(new Date())
+      await updateTaskOccurrenceDates(existingJob.taskId, 'complete', dateToUse)
+      await updateDayProgress(existingJob.workerId, dateToUse)
 
       try {
         await calculateAndApplyJobEarnings({
@@ -406,7 +408,7 @@ export async function PUT(
           taskId: existingJob.taskId,
           listId: existingJob.listId,
           workerId: existingJob.workerId,
-          occurrenceDate: existingJob.occurrenceDate
+          occurrenceDate: dateToUse
         })
 
         // Audit log job acceptance (financial event)
@@ -427,15 +429,16 @@ export async function PUT(
     // Handle unaccepted jobs (status changed from ACCEPTED to something else)
     const wasAccepted = existingJob.status === 'ACCEPTED'
     const isNowAccepted = result.job.status === 'ACCEPTED'
-    if (wasAccepted && !isNowAccepted && existingJob.occurrenceDate) {
-      await updateTaskOccurrenceDates(existingJob.taskId, 'delete', existingJob.occurrenceDate)
-      await updateDayProgress(existingJob.workerId, existingJob.occurrenceDate)
+    if (wasAccepted && !isNowAccepted) {
+      const dateToUse = existingJob.occurrenceDate || formatDateLocal(new Date())
+      await updateTaskOccurrenceDates(existingJob.taskId, 'delete', dateToUse)
+      await updateDayProgress(existingJob.workerId, dateToUse)
 
       try {
         await reverseJobEarnings({
           jobId: existingJob.id,
           workerId: existingJob.workerId,
-          occurrenceDate: existingJob.occurrenceDate
+          occurrenceDate: dateToUse
         })
       } catch (earningsError) {
         console.error('Error reversing job earnings:', earningsError)
