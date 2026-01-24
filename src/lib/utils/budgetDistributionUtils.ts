@@ -12,28 +12,29 @@ export interface AllocationType {
 }
 
 /**
- * Task allocation structure - matches Prisma TaskBudgetAllocation embedded type
- * Represents allocation for a single task (both budget and prize)
+ * Entity allocation structure - matches Prisma EntityBudgetAllocation embedded type
+ * Represents allocation for any entity (task, area, category) with both budget and prize
  */
-export interface TaskBudgetAllocation {
-  budget?: AllocationType  // Budget allocation for this task
-  prize?: AllocationType   // Prize allocation for this task
+export interface EntityBudgetAllocation {
+  budget?: AllocationType  // Budget allocation for this entity
+  prize?: AllocationType   // Prize allocation for this entity
 }
 
 /**
- * Tasks allocations type - matches Prisma TasksAllocationsType
+ * Entity allocations type - matches Prisma EntityAllocationsType
  */
-export interface TasksAllocationsType {
-  taskId?: string
-  allocation?: TaskBudgetAllocation
+export interface EntityAllocationsType {
+  entityId?: string
+  allocation?: EntityBudgetAllocation
 }
 
+/**
+ * BudgetDistribution using unified entity allocations
+ */
 export interface BudgetDistribution {
-  areas?: Record<string, AllocationType>
-  areasPrize?: Record<string, AllocationType>
-  categories?: Record<string, AllocationType>
-  categoriesPrize?: Record<string, AllocationType>
-  tasks?: Record<string, TaskBudgetAllocation>
+  areas?: EntityAllocationsType[]
+  categories?: EntityAllocationsType[]
+  tasks?: EntityAllocationsType[]
 }
 
 /**
@@ -43,6 +44,10 @@ export interface LegacyTaskAllocation {
   percentage?: number
   amount?: number
 }
+
+// Alias for backward compatibility
+export type TaskBudgetAllocation = EntityBudgetAllocation
+export type TasksAllocationsType = EntityAllocationsType
 
 export interface TaskBudgetAllocationResult {
   taskId: string
@@ -163,20 +168,44 @@ export function distributeBudgetByCategory(
 }
 
 /**
- * Convert AllocationType distribution to simple number distribution
- * @param distribution - Map of keys to AllocationType
- * @param totalBudget - Total budget for percentage calculation
- * @returns Map of keys to nominal values
+ * Convert EntityAllocationsType array to lookup maps for budget and prize
+ * @param allocations - Array of EntityAllocationsType
+ * @param budgetTotal - Total budget for percentage calculation
+ * @param prizeTotal - Total prize pool for percentage calculation
+ * @returns Object with budget and prize lookup maps
  */
-function convertAllocationToNominal(
-  distribution: Record<string, AllocationType>,
-  totalBudget: number
-): Record<string, number> {
-  const result: Record<string, number> = {}
-  Object.entries(distribution).forEach(([key, allocation]) => {
-    result[key] = getAllocationNominal(allocation, totalBudget)
+function convertEntityAllocationsToMaps(
+  allocations: EntityAllocationsType[] | undefined,
+  budgetTotal: number,
+  prizeTotal: number
+): { budgets: Record<string, number>; prizes: Record<string, number> } {
+  const budgets: Record<string, number> = {}
+  const prizes: Record<string, number> = {}
+  
+  if (!allocations || !Array.isArray(allocations)) {
+    return { budgets, prizes }
+  }
+  
+  allocations.forEach(item => {
+    if (item.entityId) {
+      budgets[item.entityId] = getAllocationNominal(item.allocation?.budget, budgetTotal)
+      prizes[item.entityId] = getAllocationNominal(item.allocation?.prize, prizeTotal)
+    }
   })
-  return result
+  
+  return { budgets, prizes }
+}
+
+/**
+ * Find entity allocation by ID from array
+ */
+function findEntityAllocation(
+  allocations: EntityAllocationsType[] | undefined,
+  entityId: string
+): EntityBudgetAllocation | undefined {
+  if (!allocations || !Array.isArray(allocations)) return undefined
+  const item = allocations.find(a => a.entityId === entityId)
+  return item?.allocation
 }
 
 /**
@@ -199,13 +228,13 @@ export function calculateTaskBudgetAllocations(
   
   const allocations: TaskBudgetAllocationResult[] = []
   
-  // Check if we have custom per-task allocations
-  const hasCustomTaskBudgets = budgetDistribution?.tasks && Object.keys(budgetDistribution.tasks).length > 0
+  // Check if we have custom per-task allocations (now array-based)
+  const hasCustomTaskBudgets = budgetDistribution?.tasks && Array.isArray(budgetDistribution.tasks) && budgetDistribution.tasks.length > 0
   
   if (hasCustomTaskBudgets) {
-    // Use custom per-task allocations with new AllocationType structure
+    // Use custom per-task allocations with new EntityAllocationsType structure
     tasks.forEach(task => {
-      const customAllocation = budgetDistribution.tasks?.[task.id]
+      const customAllocation = findEntityAllocation(budgetDistribution.tasks, task.id)
       
       // Extract budget and prize from AllocationType objects
       const budget = customAllocation?.budget 
@@ -223,21 +252,12 @@ export function calculateTaskBudgetAllocations(
         premium: budget + prize
       })
     })
-  } else if (budgetDistribution?.areas || budgetDistribution?.categories) {
-    // Distribute based on area or category allocations
-    const areaDistribution = budgetDistribution.areas 
-      ? convertAllocationToNominal(budgetDistribution.areas, listBudget)
-      : null
-    const categoryDistribution = budgetDistribution.categories
-      ? convertAllocationToNominal(budgetDistribution.categories, listBudget)
-      : null
-    
-    const areaPrizeDistribution = budgetDistribution.areasPrize
-      ? convertAllocationToNominal(budgetDistribution.areasPrize, prizePool)
-      : null
-    const categoryPrizeDistribution = budgetDistribution.categoriesPrize
-      ? convertAllocationToNominal(budgetDistribution.categoriesPrize, prizePool)
-      : null
+  } else if (budgetDistribution?.areas?.length || budgetDistribution?.categories?.length) {
+    // Distribute based on area or category allocations (now array-based)
+    const { budgets: areaDistribution, prizes: areaPrizeDistribution } = 
+      convertEntityAllocationsToMaps(budgetDistribution.areas, listBudget, prizePool)
+    const { budgets: categoryDistribution, prizes: categoryPrizeDistribution } = 
+      convertEntityAllocationsToMaps(budgetDistribution.categories, listBudget, prizePool)
     
     // Count tasks per area/category for fair distribution
     const tasksPerArea: Record<string, number> = {}
@@ -255,11 +275,11 @@ export function calculateTaskBudgetAllocations(
       let earningsBudget = 0
       let prizeBudget = 0
       
-      if (areaDistribution && task.area in areaDistribution) {
+      if (Object.keys(areaDistribution).length > 0 && task.area in areaDistribution) {
         const areaCount = tasksPerArea[task.area] || 1
         earningsBudget = areaDistribution[task.area] / areaCount
         prizeBudget = (areaPrizeDistribution?.[task.area] || 0) / areaCount
-      } else if (categoryDistribution && task.categories.length > 0) {
+      } else if (Object.keys(categoryDistribution).length > 0 && task.categories.length > 0) {
         // Average across all categories this task belongs to
         const categoryBudgets = task.categories
           .filter(cat => cat in categoryDistribution)
@@ -267,7 +287,7 @@ export function calculateTaskBudgetAllocations(
         earningsBudget = categoryBudgets.reduce((sum, b) => sum + b, 0) / Math.max(categoryBudgets.length, 1)
         
         const categoryPrizes = task.categories
-          .filter(cat => categoryPrizeDistribution && cat in categoryPrizeDistribution)
+          .filter(cat => cat in categoryPrizeDistribution)
           .map(cat => (categoryPrizeDistribution?.[cat] || 0) / (tasksPerCategory[cat] || 1))
         prizeBudget = categoryPrizes.reduce((sum, p) => sum + p, 0) / Math.max(categoryPrizes.length, 1)
       }
@@ -288,7 +308,7 @@ export function calculateTaskBudgetAllocations(
     tasks.forEach((task, index) => {
       // For last task, use remainder to avoid rounding errors
       const isLast = index === tasks.length - 1
-      const budget = isLast 
+      const budget = isLast
         ? listBudget - (earningsPerTask * index)
         : Math.round(earningsPerTask * 100) / 100
       const prize = isLast
@@ -320,10 +340,10 @@ export function validateBudgetDistribution(
   totalBudget: number,
   prizePool: number = 0
 ): { isValid: boolean; error?: string } {
-  // Validate area percentages (now using AllocationType)
-  if (distribution.areas) {
-    const totalPercentage = Object.values(distribution.areas).reduce((sum, alloc) => {
-      return sum + getAllocationPercent(alloc, totalBudget)
+  // Validate area percentages (now using EntityAllocationsType array)
+  if (distribution.areas && Array.isArray(distribution.areas) && distribution.areas.length > 0) {
+    const totalPercentage = distribution.areas.reduce((sum, item) => {
+      return sum + getAllocationPercent(item.allocation?.budget, totalBudget)
     }, 0)
     if (Math.abs(totalPercentage - 100) > 0.01) {
       return {
@@ -333,10 +353,10 @@ export function validateBudgetDistribution(
     }
   }
   
-  // Validate category percentages (now using AllocationType)
-  if (distribution.categories) {
-    const totalPercentage = Object.values(distribution.categories).reduce((sum, alloc) => {
-      return sum + getAllocationPercent(alloc, totalBudget)
+  // Validate category percentages (now using EntityAllocationsType array)
+  if (distribution.categories && Array.isArray(distribution.categories) && distribution.categories.length > 0) {
+    const totalPercentage = distribution.categories.reduce((sum, item) => {
+      return sum + getAllocationPercent(item.allocation?.budget, totalBudget)
     }, 0)
     if (Math.abs(totalPercentage - 100) > 0.01) {
       return {
@@ -346,12 +366,12 @@ export function validateBudgetDistribution(
     }
   }
   
-  // Validate per-task allocations don't exceed total budget
-  if (distribution.tasks) {
-    const totalTaskBudget = Object.values(distribution.tasks).reduce(
-      (sum, allocation) => {
-        const budgetNominal = getAllocationNominal(allocation.budget, totalBudget)
-        const prizeNominal = getAllocationNominal(allocation.prize, prizePool)
+  // Validate per-task allocations don't exceed total budget (now using EntityAllocationsType array)
+  if (distribution.tasks && Array.isArray(distribution.tasks) && distribution.tasks.length > 0) {
+    const totalTaskBudget = distribution.tasks.reduce(
+      (sum, item) => {
+        const budgetNominal = getAllocationNominal(item.allocation?.budget, totalBudget)
+        const prizeNominal = getAllocationNominal(item.allocation?.prize, prizePool)
         return sum + budgetNominal + prizeNominal
       },
       0

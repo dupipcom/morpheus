@@ -1,16 +1,24 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { Label } from '@/components/ui/label'
 import { Slider } from '@/components/ui/slider'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Percent, DollarSign } from 'lucide-react'
 
+// AllocationType to store both nominal and percent values
+interface AllocationType {
+  nominal?: number
+  percent?: number
+}
+
 interface BudgetDistributionInputProps {
   items: string[]
   totalBudget: number
-  distribution: Record<string, number>  // Stores input values (% in % mode, $ in $ mode)
+  // Support both legacy number distribution and new AllocationType
+  distribution?: Record<string, number>  // Legacy: Stores input values (% in % mode, $ in $ mode)
+  allocations?: Record<string, AllocationType>  // New: Stores both nominal and percent
   onChange: (
     distribution: Record<string, number>,  // Returns input values (% in % mode, $ in $ mode)
     metadata?: { 
@@ -18,6 +26,7 @@ interface BudgetDistributionInputProps {
       nominalValues?: Record<string, number>  // Always currency - use for totals
       percentages?: Record<string, number>    // Always percentages
       inputValues?: Record<string, number>    // Raw input values (same as distribution)
+      allocations?: Record<string, AllocationType>  // Full AllocationType for storage
     }
   ) => void
   onModeChange?: (mode: 'percentage' | 'currency') => void
@@ -31,6 +40,7 @@ export const BudgetDistributionInput: React.FC<BudgetDistributionInputProps> = (
   items,
   totalBudget,
   distribution,
+  allocations,
   onChange,
   onModeChange,
   label,
@@ -39,51 +49,98 @@ export const BudgetDistributionInput: React.FC<BudgetDistributionInputProps> = (
   disabled = false
 }) => {
   const [mode, setMode] = useState<'percentage' | 'currency'>(initialMode)
-  const [localDistribution, setLocalDistribution] = useState<Record<string, number>>(distribution)
-
-  // Only sync from parent when distribution changes from external source
-  // Don't convert - trust the parent is sending the right values for current mode
-  useEffect(() => {
-    setLocalDistribution(distribution)
-  }, [distribution])
-
-  const handleValueChange = (item: string, value: number) => {
-    const updated = { ...localDistribution, [item]: value }
-    setLocalDistribution(updated)
-    
-    // Calculate nominal values for total calculation
-    const nominalDistribution: Record<string, number> = {}
-    const percentages: Record<string, number> = {}
-    
-    if (mode === 'percentage') {
-      // In percentage mode: input is percentages, calculate nominals
-      Object.entries(updated).forEach(([key, percentValue]) => {
-        nominalDistribution[key] = (percentValue / 100) * totalBudget
-        percentages[key] = percentValue
-      })
-      // Return the INPUT percentages as distribution (for parent state)
-      // But include nominals in metadata for total calculation
-      onChange(updated, { 
-        mode: 'percentage', 
-        nominalValues: nominalDistribution,  // Use for totals
-        percentages: updated,                 // Same as distribution
-        inputValues: updated                  // What user typed
-      })
-    } else {
-      // In currency mode: input is currency, calculate percentages
-      Object.entries(updated).forEach(([key, currencyValue]) => {
-        nominalDistribution[key] = currencyValue
-        percentages[key] = totalBudget > 0 ? (currencyValue / totalBudget) * 100 : 0
-      })
-      // Return the INPUT currency as distribution (for parent state)
-      // Include nominals in metadata (same as distribution in this mode)
-      onChange(updated, { 
-        mode: 'currency', 
-        nominalValues: updated,  // Use for totals (same as distribution)
-        percentages,             // Calculated percentages
-        inputValues: updated     // What user typed
+  
+  // Store full AllocationType internally for proper mode switching
+  const [localAllocations, setLocalAllocations] = useState<Record<string, AllocationType>>(() => {
+    if (allocations) return allocations
+    // Convert legacy distribution to AllocationType based on initial mode
+    const result: Record<string, AllocationType> = {}
+    if (distribution) {
+      Object.entries(distribution).forEach(([key, value]) => {
+        if (initialMode === 'percentage') {
+          result[key] = { percent: value, nominal: totalBudget > 0 ? (value / 100) * totalBudget : 0 }
+        } else {
+          result[key] = { nominal: value, percent: totalBudget > 0 ? (value / totalBudget) * 100 : 0 }
+        }
       })
     }
+    return result
+  })
+
+  // Sync from parent when allocations change
+  useEffect(() => {
+    if (allocations) {
+      setLocalAllocations(allocations)
+    } else if (distribution) {
+      // Convert legacy distribution based on current mode
+      const result: Record<string, AllocationType> = {}
+      Object.entries(distribution).forEach(([key, value]) => {
+        if (mode === 'percentage') {
+          result[key] = { percent: value, nominal: totalBudget > 0 ? (value / 100) * totalBudget : 0 }
+        } else {
+          result[key] = { nominal: value, percent: totalBudget > 0 ? (value / totalBudget) * 100 : 0 }
+        }
+      })
+      setLocalAllocations(result)
+    }
+  }, [allocations, distribution, totalBudget])
+
+  // Get display value based on current mode
+  const getDisplayValue = (item: string): number => {
+    const alloc = localAllocations[item]
+    if (!alloc) return 0
+    if (mode === 'percentage') {
+      return alloc.percent ?? (alloc.nominal != null && totalBudget > 0 ? (alloc.nominal / totalBudget) * 100 : 0)
+    } else {
+      return alloc.nominal ?? (alloc.percent != null && totalBudget > 0 ? (alloc.percent / 100) * totalBudget : 0)
+    }
+  }
+
+  // Compute current distribution for display
+  const localDistribution = useMemo(() => {
+    const result: Record<string, number> = {}
+    items.forEach(item => {
+      result[item] = getDisplayValue(item)
+    })
+    return result
+  }, [localAllocations, mode, items, totalBudget])
+
+  const handleValueChange = (item: string, value: number) => {
+    // Update local allocations with both nominal and percent
+    const newAllocations = { ...localAllocations }
+    
+    if (mode === 'percentage') {
+      newAllocations[item] = {
+        percent: value,
+        nominal: totalBudget > 0 ? (value / 100) * totalBudget : 0
+      }
+    } else {
+      newAllocations[item] = {
+        nominal: value,
+        percent: totalBudget > 0 ? (value / totalBudget) * 100 : 0
+      }
+    }
+    
+    setLocalAllocations(newAllocations)
+    
+    // Build output distribution and metadata
+    const outputDistribution: Record<string, number> = {}
+    const nominalValues: Record<string, number> = {}
+    const percentages: Record<string, number> = {}
+    
+    Object.entries(newAllocations).forEach(([key, alloc]) => {
+      nominalValues[key] = alloc.nominal ?? 0
+      percentages[key] = alloc.percent ?? 0
+      outputDistribution[key] = mode === 'percentage' ? (alloc.percent ?? 0) : (alloc.nominal ?? 0)
+    })
+    
+    onChange(outputDistribution, { 
+      mode,
+      nominalValues,
+      percentages,
+      inputValues: outputDistribution,
+      allocations: newAllocations
+    })
   }
 
   const getTotalAllocated = () => {
@@ -100,49 +157,53 @@ export const BudgetDistributionInput: React.FC<BudgetDistributionInputProps> = (
   }
 
   const convertToPercentage = () => {
-    // Convert currency values to percentages
-    const newDistribution: Record<string, number> = {}
-    const nominalDistribution: Record<string, number> = {}
-    Object.entries(localDistribution).forEach(([item, currencyValue]) => {
-      const percentValue = totalBudget > 0 ? (currencyValue / totalBudget) * 100 : 0
-      newDistribution[item] = percentValue
-      nominalDistribution[item] = currencyValue
-    })
-    setLocalDistribution(newDistribution)
-    
-    // Return percentages as distribution, nominals in metadata
-    onChange(newDistribution, { 
-      mode: 'percentage',
-      nominalValues: nominalDistribution,
-      percentages: newDistribution,
-      inputValues: newDistribution
-    })
-    
+    // No need to convert values - just switch mode and display percent values
     setMode('percentage')
     onModeChange?.('percentage')
+    
+    // Emit current values in percentage mode
+    const outputDistribution: Record<string, number> = {}
+    const nominalValues: Record<string, number> = {}
+    const percentages: Record<string, number> = {}
+    
+    Object.entries(localAllocations).forEach(([key, alloc]) => {
+      nominalValues[key] = alloc.nominal ?? 0
+      percentages[key] = alloc.percent ?? 0
+      outputDistribution[key] = alloc.percent ?? 0
+    })
+    
+    onChange(outputDistribution, { 
+      mode: 'percentage',
+      nominalValues,
+      percentages,
+      inputValues: outputDistribution,
+      allocations: localAllocations
+    })
   }
 
   const convertToCurrency = () => {
-    // Convert percentage values to currency
-    const newDistribution: Record<string, number> = {}
-    const percentages: Record<string, number> = {}
-    Object.entries(localDistribution).forEach(([item, percentValue]) => {
-      const currencyValue = (percentValue / 100) * totalBudget
-      newDistribution[item] = currencyValue
-      percentages[item] = percentValue
-    })
-    setLocalDistribution(newDistribution)
-    
-    // Return currency as distribution, nominals in metadata (same as distribution)
-    onChange(newDistribution, { 
-      mode: 'currency',
-      nominalValues: newDistribution,
-      percentages,
-      inputValues: newDistribution
-    })
-    
+    // No need to convert values - just switch mode and display nominal values
     setMode('currency')
     onModeChange?.('currency')
+    
+    // Emit current values in currency mode
+    const outputDistribution: Record<string, number> = {}
+    const nominalValues: Record<string, number> = {}
+    const percentages: Record<string, number> = {}
+    
+    Object.entries(localAllocations).forEach(([key, alloc]) => {
+      nominalValues[key] = alloc.nominal ?? 0
+      percentages[key] = alloc.percent ?? 0
+      outputDistribution[key] = alloc.nominal ?? 0
+    })
+    
+    onChange(outputDistribution, { 
+      mode: 'currency',
+      nominalValues,
+      percentages,
+      inputValues: outputDistribution,
+      allocations: localAllocations
+    })
   }
 
   const remaining = getRemaining()
@@ -152,6 +213,14 @@ export const BudgetDistributionInput: React.FC<BudgetDistributionInputProps> = (
   if (variant === 'horizontal') {
     const item = items[0] // For horizontal variant, expect single item
     const value = localDistribution[item] || 0
+    
+    // Calculate the corresponding value in the other unit for display
+    const nominalValue = isPercentageMode 
+      ? (value / 100) * totalBudget 
+      : value
+    const percentValue = isPercentageMode 
+      ? value 
+      : (totalBudget > 0 ? (value / totalBudget) * 100 : 0)
 
     return (
       <div className="flex items-center gap-2">
@@ -185,13 +254,13 @@ export const BudgetDistributionInput: React.FC<BudgetDistributionInputProps> = (
           value={value}
           onChange={(e) => handleValueChange(item, parseFloat(e.target.value) || 0)}
           className="w-24 h-8 text-xs"
-          placeholder={isPercentageMode ? "0%" : "0.00"}
+          placeholder={isPercentageMode ? "0%" : "$0.00"}
           disabled={disabled}
         />
         <span className="text-xs text-muted-foreground min-w-[60px]">
           {isPercentageMode
-            ? `$${(((value || 0) / 100) * totalBudget || 0)}`
-            : `${totalBudget > 0 ? ((value / (totalBudget|| 0)) * 100).toFixed(1) : 0}%`
+            ? `$${nominalValue.toFixed(2)}`
+            : `${percentValue.toFixed(1)}%`
           }
         </span>
       </div>

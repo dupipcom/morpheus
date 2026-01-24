@@ -576,21 +576,33 @@ export const TaskGrid = ({
           taskPrize = task.prize || 0
         }
         // Then check if there's custom per-task allocation in list's budgetDistribution
-        else if (budgetDistribution?.tasks && task.id && budgetDistribution.tasks[task.id]) {
-          const taskAllocation = budgetDistribution.tasks[task.id]
-          
-          // Handle new AllocationType format or legacy format
-          if (taskAllocation.budget && typeof taskAllocation.budget === 'object') {
-            // New format: AllocationType with nominal/percent
-            taskEarnings = getAllocationNominal(taskAllocation.budget, listBudget)
-            taskPrize = getAllocationNominal(taskAllocation.prize, prizePool)
-          } else {
-            // Legacy format: direct numbers
-            taskEarnings = taskAllocation.budget || 0
-            taskPrize = taskAllocation.prize || 0
+        else if (budgetDistribution?.tasks && task.id) {
+          // Handle new array-based EntityAllocationsType format
+          if (Array.isArray(budgetDistribution.tasks)) {
+            const taskAllocation = budgetDistribution.tasks.find((t: any) => t.entityId === task.id)
+            if (taskAllocation?.allocation) {
+              taskEarnings = getAllocationNominal(taskAllocation.allocation.budget, listBudget)
+              taskPrize = getAllocationNominal(taskAllocation.allocation.prize, prizePool)
+            }
+          } else if (budgetDistribution.tasks[task.id]) {
+            // Legacy object-based format
+            const taskAllocation = budgetDistribution.tasks[task.id]
+            
+            // Handle AllocationType format or legacy format
+            if (taskAllocation.budget && typeof taskAllocation.budget === 'object') {
+              // New format: AllocationType with nominal/percent
+              taskEarnings = getAllocationNominal(taskAllocation.budget, listBudget)
+              taskPrize = getAllocationNominal(taskAllocation.prize, prizePool)
+            } else {
+              // Legacy format: direct numbers
+              taskEarnings = taskAllocation.budget || 0
+              taskPrize = taskAllocation.prize || 0
+            }
           }
-        } else {
-          // Fall back to default equal distribution
+        }
+        
+        // Fall back to default equal distribution if no allocation found
+        if (taskEarnings === 0 && taskPrize === 0) {
           taskEarnings = getProfitPerTask(listBudget, totalTasks, listRole)
           // Calculate prize based on equal distribution from prize pool
           taskPrize = totalTasks > 0 && prizePool > 0 ? prizePool / totalTasks : 0
