@@ -649,8 +649,8 @@ model Job {
   selfReview       Float?
   peerReview       Float?
   managerReview    Float?
-  // Financial fields - premium is set at job creation from task.premium as a cap
-  premium          Float?
+  // Financial fields - risk is set at job creation from task.premium as a cap
+  risk             Float?
   earnings         Float?
   prize            Float?
   profit           Float?
