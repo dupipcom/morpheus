@@ -73,43 +73,57 @@ async function calculateTotalEarningsFromJobs(
 
 /**
  * Update Day.ticker with total earnings for a list/date
+ * Also updates user balance fields on the Day record
  */
 async function updateDayTickerFromJobs(
   workerId: string,
   listId: string,
-  occurrenceDate: string
+  taskId: string,
+  occurrenceDate: string,
+  userValues: { balance: number; stash: number; equity: number }
 ): Promise<void> {
   try {
     const { totalPrize, totalProfit } = await calculateTotalEarningsFromJobs(listId, workerId, occurrenceDate)
+    const metadata = getDateMetadata(occurrenceDate)
 
     const day = await prisma.day.findFirst({
       where: { userId: workerId, date: occurrenceDate }
     })
 
-    const newTickerEntry = { listId, profit: totalProfit, prize: totalPrize }
+    // Include taskId in the ticker entry for consistency with updateDayTicker
+    const newTickerEntry = { listId, taskId, profit: totalProfit, prize: totalPrize }
     const hasEarnings = totalPrize > 0 || totalProfit > 0
 
     if (!day) {
-      const metadata = getDateMetadata(occurrenceDate)
       await prisma.day.create({
         data: {
           userId: workerId,
           date: occurrenceDate,
           ...metadata,
           ticker: hasEarnings ? [newTickerEntry] as any : [],
-          tasks: []
+          tasks: [],
+          balance: userValues.balance,
+          stash: userValues.stash,
+          equity: userValues.equity
         }
       })
       return
     }
 
     const existingTickers = Array.isArray(day.ticker) ? day.ticker : []
-    const filteredTickers = (existingTickers as any[]).filter((t: any) => t.listId !== listId)
+    // Filter out existing ticker entries for this task
+    const filteredTickers = (existingTickers as any[]).filter((t: any) => t.taskId !== taskId)
     const updatedTickers = hasEarnings ? [...filteredTickers, newTickerEntry] : filteredTickers
 
     await prisma.day.update({
       where: { id: day.id },
-      data: { ticker: updatedTickers as any }
+      data: {
+        ticker: updatedTickers as any,
+        balance: userValues.balance,
+        stash: userValues.stash,
+        equity: userValues.equity,
+        ...metadata
+      }
     })
   } catch (error) {
     console.error('Error updating Day ticker from jobs:', error)
@@ -284,7 +298,11 @@ export async function calculateAndApplyJobEarnings({
         data: { earnings: task.premium as any, prize: cappedPrize as any, profit: cappedProfit as any }
       })
 
-      await updateDayTickerFromJobs(workerId, listId, occurrenceDate)
+      await updateDayTickerFromJobs(workerId, listId, taskId, occurrenceDate, {
+        balance: updatedValues.newAvailableBalance,
+        stash: updatedValues.newStash,
+        equity: updatedValues.newEquity
+      })
       await updateDaySnapshot(workerId, occurrenceDate, updatedValues)
 
       return {
@@ -310,7 +328,11 @@ export async function calculateAndApplyJobEarnings({
       data: { earnings: earnings as any, prize: prize as any, profit: profit as any }
     })
 
-    await updateDayTickerFromJobs(workerId, listId, occurrenceDate)
+    await updateDayTickerFromJobs(workerId, listId, taskId, occurrenceDate, {
+      balance: updatedValues.newAvailableBalance,
+      stash: updatedValues.newStash,
+      equity: updatedValues.newEquity
+    })
     await updateDaySnapshot(workerId, occurrenceDate, updatedValues)
 
     return {
@@ -347,7 +369,7 @@ export async function reverseJobEarnings({
   try {
     const job = await prisma.job.findUnique({
       where: { id: jobId },
-      select: { prize: true, profit: true, listId: true }
+      select: { prize: true, profit: true, listId: true, taskId: true }
     })
 
     if (!job) throw new Error('Job not found')
@@ -360,7 +382,11 @@ export async function reverseJobEarnings({
     const { stashDelta, profitDelta } = calculateStashAndProfitDeltas(-prize, -profit, false)
     const updatedValues = await updateUserFinancials(workerId, stashDelta, profitDelta)
 
-    await updateDayTickerFromJobs(workerId, job.listId, occurrenceDate)
+    await updateDayTickerFromJobs(workerId, job.listId, job.taskId, occurrenceDate, {
+      balance: updatedValues.newAvailableBalance,
+      stash: updatedValues.newStash,
+      equity: updatedValues.newEquity
+    })
     await updateDaySnapshot(workerId, occurrenceDate, updatedValues)
   } catch (error) {
     console.error('Error reversing job earnings:', error)
