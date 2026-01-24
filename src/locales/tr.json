@@ -515,7 +515,24 @@
       "save": "Kaydet",
       "cancel": "İptal",
       "deleteListConfirm": "Bu listeyi silmek mi? Bu işlem geri alınamaz.",
-      "deleteList": "Listeyi sil"
+      "deleteList": "Listeyi sil",
+      "manageTasks": "Görevleri yönet",
+      "manageBudgetAllocation": "Bütçe dağılımı",
+      "distributionModeLabel": "Dağılım",
+      "distributionMode": {
+        "equal": "Eşit",
+        "area": "Alana göre",
+        "category": "Kategoriye göre",
+        "task": "Görev başına"
+      },
+      "areaDistributionLabel": "Alan bütçesi",
+      "areaPrizeDistributionLabel": "Alan ödülü",
+      "categoryDistributionLabel": "Kategori bütçesi",
+      "categoryPrizeDistributionLabel": "Kategori ödülü",
+      "taskDistributionLabel": "Bütçe",
+      "prizeLabel": "Ödül",
+      "totalLabel": "Toplam",
+      "addTaskTitle": "Görev ekle"
     },
     "addTemplateForm": {
       "title": "Yeni Şablon Oluştur",

@@ -497,7 +497,24 @@
       "cancel": "Cancelar",
       "deleteListConfirm": "Eliminar esta lista? Non se pode desfacer.",
       "deleteList": "Eliminar lista",
-      "budgetPercentageLabel": "Personal budget allocation"
+      "budgetPercentageLabel": "Personal budget allocation",
+      "manageTasks": "Xestionar tarefas",
+      "manageBudgetAllocation": "Distribución orzamentaria",
+      "distributionModeLabel": "Distribución",
+      "distributionMode": {
+        "equal": "Igual",
+        "area": "Por área",
+        "category": "Por categoría",
+        "task": "Por tarefa"
+      },
+      "areaDistributionLabel": "Orzamento de área",
+      "areaPrizeDistributionLabel": "Premio de área",
+      "categoryDistributionLabel": "Orzamento de categoría",
+      "categoryPrizeDistributionLabel": "Premio de categoría",
+      "taskDistributionLabel": "Orzamento",
+      "prizeLabel": "Premio",
+      "totalLabel": "Total",
+      "addTaskTitle": "Engadir tarefa"
     },
     "addTemplateForm": {
       "title": "Crear novo modelo",

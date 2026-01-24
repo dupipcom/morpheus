@@ -509,7 +509,24 @@
       "cancel": "Fagilé",
       "deleteListConfirm": "Pa àkójọ yìí rẹ́? Èyí kò ṣeé yípadà.",
       "deleteList": "Pa àkójọ rẹ́",
-      "budgetPercentageLabel": "Personal budget allocation"
+      "budgetPercentageLabel": "Personal budget allocation",
+      "manageTasks": "Ṣakoso iṣẹ",
+      "manageBudgetAllocation": "Pipin isuna",
+      "distributionModeLabel": "Pipin",
+      "distributionMode": {
+        "equal": "Dogba",
+        "area": "Nipasẹ agbegbe",
+        "category": "Nipasẹ ẹka",
+        "task": "Fun iṣẹ kọọkan"
+      },
+      "areaDistributionLabel": "Isuna agbegbe",
+      "areaPrizeDistributionLabel": "Ẹbun agbegbe",
+      "categoryDistributionLabel": "Isuna ẹka",
+      "categoryPrizeDistributionLabel": "Ẹbun ẹka",
+      "taskDistributionLabel": "Isuna",
+      "prizeLabel": "Ẹbun",
+      "totalLabel": "Lapapọ",
+      "addTaskTitle": "Fi iṣẹ kun"
     },
     "addTemplateForm": {
       "title": "Ṣẹ̀dá Àwòwé Tuntun",

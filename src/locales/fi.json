@@ -498,7 +498,24 @@
       "save": "Tallenna",
       "cancel": "Peruuta",
       "deleteListConfirm": "Poista tämä lista? Tätä ei voi peruuttaa.",
-      "deleteList": "Poista lista"
+      "deleteList": "Poista lista",
+      "manageTasks": "Hallitse tehtäviä",
+      "manageBudgetAllocation": "Budjetin jakaminen",
+      "distributionModeLabel": "Jakaminen",
+      "distributionMode": {
+        "equal": "Tasa",
+        "area": "Alueen mukaan",
+        "category": "Kategorian mukaan",
+        "task": "Tehtävää kohti"
+      },
+      "areaDistributionLabel": "Alueen budjetti",
+      "areaPrizeDistributionLabel": "Alueen palkinto",
+      "categoryDistributionLabel": "Kategorian budjetti",
+      "categoryPrizeDistributionLabel": "Kategorian palkinto",
+      "taskDistributionLabel": "Budjetti",
+      "prizeLabel": "Palkinto",
+      "totalLabel": "Yhteensä",
+      "addTaskTitle": "Lisää tehtävä"
     },
     "addTemplateForm": {
       "title": "Luo uusi malli",

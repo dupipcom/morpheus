@@ -511,7 +511,24 @@
       "save": "保存",
       "cancel": "キャンセル",
       "deleteListConfirm": "このリストを削除しますか？これは取り消せません。",
-      "deleteList": "リストを削除"
+      "deleteList": "リストを削除",
+      "manageTasks": "タスク管理",
+      "manageBudgetAllocation": "予算配分",
+      "distributionModeLabel": "配分",
+      "distributionMode": {
+        "equal": "均等",
+        "area": "エリア別",
+        "category": "カテゴリ別",
+        "task": "タスク別"
+      },
+      "areaDistributionLabel": "エリア予算",
+      "areaPrizeDistributionLabel": "エリア賞金",
+      "categoryDistributionLabel": "カテゴリ予算",
+      "categoryPrizeDistributionLabel": "カテゴリ賞金",
+      "taskDistributionLabel": "予算",
+      "prizeLabel": "賞金",
+      "totalLabel": "合計",
+      "addTaskTitle": "タスク追加"
     },
     "addTemplateForm": {
       "title": "新しいテンプレートを作成",

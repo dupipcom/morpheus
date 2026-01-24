@@ -496,7 +496,24 @@
       "cancel": "Utzi",
       "deleteListConfirm": "Zerrenda hau ezabatu? Hau ezin da desegin.",
       "deleteList": "Zerrenda ezabatu",
-      "budgetPercentageLabel": "Personal budget allocation"
+      "budgetPercentageLabel": "Personal budget allocation",
+      "manageTasks": "Kudeatu zereginak",
+      "manageBudgetAllocation": "Aurrekontuaren banaketa",
+      "distributionModeLabel": "Banaketa",
+      "distributionMode": {
+        "equal": "Berdina",
+        "area": "Eremuaren arabera",
+        "category": "Kategoriaren arabera",
+        "task": "Zeregin bakoitzeko"
+      },
+      "areaDistributionLabel": "Eremuaren aurrekontua",
+      "areaPrizeDistributionLabel": "Eremuaren saria",
+      "categoryDistributionLabel": "Kategoriaren aurrekontua",
+      "categoryPrizeDistributionLabel": "Kategoriaren saria",
+      "taskDistributionLabel": "Aurrekontua",
+      "prizeLabel": "Saria",
+      "totalLabel": "Guztira",
+      "addTaskTitle": "Gehitu zeregina"
     },
     "addTemplateForm": {
       "title": "Txantiloi berria sortu",

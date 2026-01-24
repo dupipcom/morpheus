@@ -543,7 +543,24 @@
       "save": "Guardar",
       "cancel": "Cancelar",
       "deleteListConfirm": "¿Eliminar esta lista? Esta acción no se puede deshacer.",
-      "deleteList": "Eliminar lista"
+      "deleteList": "Eliminar lista",
+      "manageTasks": "Gestionar tareas",
+      "manageBudgetAllocation": "Distribución presupuestaria",
+      "distributionModeLabel": "Distribución",
+      "distributionMode": {
+        "equal": "Igual",
+        "area": "Por área",
+        "category": "Por categoría",
+        "task": "Por tarea"
+      },
+      "areaDistributionLabel": "Presupuesto de área",
+      "areaPrizeDistributionLabel": "Premio de área",
+      "categoryDistributionLabel": "Presupuesto de categoría",
+      "categoryPrizeDistributionLabel": "Premio de categoría",
+      "taskDistributionLabel": "Presupuesto",
+      "prizeLabel": "Premio",
+      "totalLabel": "Total",
+      "addTaskTitle": "Añadir tarea"
     },
     "addTemplateForm": {
       "title": "Crear nueva plantilla",

@@ -259,7 +259,24 @@
       "save": "Save",
       "cancel": "Cancel",
       "deleteListConfirm": "Delete this list? This cannot be undone.",
-      "deleteList": "Delete list"
+      "deleteList": "Delete list",
+      "manageTasks": "Manage Tasks",
+      "manageBudgetAllocation": "Budget Allocation",
+      "distributionModeLabel": "Distribution",
+      "distributionMode": {
+        "equal": "Equal",
+        "area": "By Area",
+        "category": "By Category",
+        "task": "Per Task"
+      },
+      "areaDistributionLabel": "Area Budget",
+      "areaPrizeDistributionLabel": "Area Prize",
+      "categoryDistributionLabel": "Category Budget",
+      "categoryPrizeDistributionLabel": "Category Prize",
+      "taskDistributionLabel": "Budget",
+      "prizeLabel": "Prize",
+      "totalLabel": "Total",
+      "addTaskTitle": "Add Task"
     },
     "addTemplateForm": {
       "title": "Create New Template",
