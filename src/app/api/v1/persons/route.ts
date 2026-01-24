@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
+import { sanitizeText } from '@/lib/utils/sanitize'
 
 export async function GET() {
   try {
@@ -42,6 +43,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Name is required' }, { status: 400 })
     }
 
+    // Sanitize user input to prevent XSS attacks
+    const sanitizedName = sanitizeText(name)
+
     // Get user from database
     let user = await prisma.user.findUnique({
       where: { userId }
@@ -57,7 +61,7 @@ export async function POST(request: NextRequest) {
     // Create person
     const contact = await prisma.person.create({
       data: {
-        name,
+        name: sanitizedName,
         quality: interactionQuality || null,
         userId: user.id
       }

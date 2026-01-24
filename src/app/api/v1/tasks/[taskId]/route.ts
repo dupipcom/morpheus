@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { getAuthenticatedUser, getUserListRole } from '@/lib/services/auth'
+import { sanitizeText } from '@/lib/utils/sanitize'
 
 /**
  * Shared include configuration for task queries with full relations
@@ -149,7 +150,8 @@ export async function PUT(
 
     const updateData: Record<string, unknown> = {}
 
-    if (body.name !== undefined) updateData.name = body.name
+    // Sanitize name if it's being updated
+    if (body.name !== undefined) updateData.name = sanitizeText(body.name)
     if (body.categories !== undefined) updateData.categories = body.categories
     if (body.area !== undefined) updateData.area = body.area
     if (body.status !== undefined) updateData.status = body.status
