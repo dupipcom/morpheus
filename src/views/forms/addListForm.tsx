@@ -174,10 +174,19 @@ export const AddListForm = ({
   
   // Memoize search callback to prevent re-creating the function on every render
   const searchProfiles = useCallback(async (query: string) => {
-    const res = await fetch(`/api/v1/profiles?query=${encodeURIComponent(query)}`)
-    if (res.ok) {
-      const data = await res.json()
-      setCollabResults(data.profiles || [])
+    try {
+      const res = await fetch(`/api/v1/profiles?query=${encodeURIComponent(query)}`)
+      if (res.ok) {
+        const data = await res.json()
+        setCollabResults(data.profiles || [])
+      } else {
+        // Clear results on error
+        setCollabResults([])
+      }
+    } catch (error) {
+      // Clear results on fetch error
+      console.error('Error fetching profiles:', error)
+      setCollabResults([])
     }
   }, [])
   
