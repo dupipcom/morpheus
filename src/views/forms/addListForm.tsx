@@ -501,12 +501,14 @@ export const AddListForm = ({
             </AccordionTrigger>
             <AccordionContent className="pt-2 pb-0">
               <div>
-                <Popover open={addTaskOpen} onOpenChange={setAddTaskOpen}>
-                  <PopoverTrigger asChild>
-                    <Button variant="default">{t('forms.addListForm.addTaskButton') || 'Add task'}</Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-[320px]">
-                    <div className="space-y-2">
+                <Button variant="default" onClick={() => setAddTaskOpen(true)}>{t('forms.addListForm.addTaskButton') || 'Add task'}</Button>
+                
+                <Dialog open={addTaskOpen} onOpenChange={setAddTaskOpen}>
+                  <DialogContent className="w-[480px] max-w-[90vw] max-h-[60vh] overflow-y-auto z-[9980]">
+                    <DialogHeader>
+                      <DialogTitle>{t('forms.addListForm.addTaskTitle') || 'Add Task'}</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
                       <div>
                         <Label htmlFor="task-name">{t('forms.addListForm.table.name') || 'Name'}</Label>
                         <Input id="task-name" value={addTaskForm.name} onChange={(e) => setAddTaskForm(prev => ({ ...prev, name: e.target.value }))} />
@@ -550,8 +552,8 @@ export const AddListForm = ({
                         <Input id="task-times" type="number" min={1} value={addTaskForm.times} onChange={(e) => setAddTaskForm(prev => ({ ...prev, times: Math.max(1, Number(e.target.value) || 1) }))} />
                       </div>
                       <div className="flex justify-end gap-2 pt-2">
-                        <Button variant="outline" size="sm" onClick={() => setAddTaskOpen(false)}>{t('forms.addTemplateForm.task.cancel') || 'Cancel'}</Button>
-                        <Button size="sm" onClick={() => {
+                        <Button variant="outline" onClick={() => setAddTaskOpen(false)}>{t('forms.addTemplateForm.task.cancel') || 'Cancel'}</Button>
+                        <Button onClick={() => {
                           const name = addTaskForm.name.trim()
                           if (!name) return
                           const newTask = { name, area: addTaskForm.area as any, categories: [addTaskForm.category], status: 'Not started', cadence: form.cadence, times: addTaskForm.times, count: 0 }
@@ -561,8 +563,8 @@ export const AddListForm = ({
                         }}>{t('forms.addTemplateForm.task.add') || 'Add'}</Button>
                       </div>
                     </div>
-                  </PopoverContent>
-                </Popover>
+                  </DialogContent>
+                </Dialog>
                 <div className="border rounded-md overflow-x-auto mt-2">
                   <table className="w-full text-sm">
                     <thead>
