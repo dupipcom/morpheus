@@ -749,6 +749,7 @@ export const AddListForm = ({
                                   const taskId = task.id || task.name
                                   const budget = parseFloat(taskBudgets[taskId]?.budget || '0')
                                   const prize = parseFloat(taskBudgets[taskId]?.prize || '0')
+                                  const total = budget + prize
                                   return (
                                     <tr key={`${taskId}-${idx}`}>
                                       <td className="p-2">{task.name}</td>
@@ -756,7 +757,7 @@ export const AddListForm = ({
                                         <BudgetDistributionInput
                                           items={[`budget-${taskId}`]}
                                           totalBudget={parseFloat(form.budget) || 0}
-                                          distribution={{ [`budget-${taskId}`]: parseFloat(taskBudgets[taskId]?.budget || '0') }}
+                                          distribution={{ [`budget-${taskId}`]: budget }}
                                           onChange={(dist) => setTaskBudgets(prev => ({
                                             ...prev,
                                             [taskId]: { ...prev[taskId], budget: dist[`budget-${taskId}`]?.toString() || '' }
@@ -771,7 +772,7 @@ export const AddListForm = ({
                                         <BudgetDistributionInput
                                           items={[`prize-${taskId}`]}
                                           totalBudget={calculatePrizePool(form.budgetPercentage, userEquity)}
-                                          distribution={{ [`prize-${taskId}`]: parseFloat(taskBudgets[taskId]?.prize || '0') }}
+                                          distribution={{ [`prize-${taskId}`]: prize }}
                                           onChange={(dist) => setTaskBudgets(prev => ({
                                             ...prev,
                                             [taskId]: { ...prev[taskId], prize: dist[`prize-${taskId}`]?.toString() || '' }
@@ -782,7 +783,7 @@ export const AddListForm = ({
                                           disabled={isPrizeDisabled}
                                         />
                                       </td>
-                                      <td className="p-2 text-xs">${(budget + prize).toFixed(2)}</td>
+                                      <td className="p-2 text-xs">${total.toFixed(2)}</td>
                                     </tr>
                                   )
                                 })}
