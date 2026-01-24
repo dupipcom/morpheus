@@ -736,7 +736,7 @@ export const AddListForm = ({
                                       <td className="p-2">
                                         <BudgetDistributionInput
                                           items={[`prize-${taskId}`]}
-                                          totalBudget={parseFloat(form.budget) || 0}
+                                          totalBudget={((form.budgetPercentage / 100) * userEquity)}
                                           distribution={{ [`prize-${taskId}`]: parseFloat(taskBudgets[taskId]?.prize || '0') }}
                                           onChange={(dist) => setTaskBudgets(prev => ({
                                             ...prev,
