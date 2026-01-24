@@ -322,7 +322,7 @@ export function calculateUpdatedUserValues(params: UserValuesParams): UpdatedUse
   const newProfit = Math.max(0, safeProfit + profitDelta)
   const newAvailableBalance = Math.max(0, safeAvailableBalance)
   
-  // totalGains = stash (prize) + profit
+  // totalGains accumulates the sum of all prize (stash) and profit earnings over time
   const totalGainsDelta = stashDelta + profitDelta
   const newTotalGains = Math.max(0, safeTotalGains + totalGainsDelta)
 
