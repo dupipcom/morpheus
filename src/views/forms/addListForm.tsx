@@ -347,11 +347,11 @@ export const AddListForm = ({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl max-h-[70vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>{isEditing ? (t('forms.addListForm.titleEdit') || 'Edit List') : (t('forms.addListForm.titleCreate') || 'Create New List')}</DialogTitle>
         </DialogHeader>
-        <div className="space-y-3">
+        <div className="flex-1 overflow-y-auto space-y-3 px-1">
         <div>
           <Label htmlFor="list-name">{t('forms.addListForm.nameLabel') || 'Name'}</Label>
           <Input id="list-name" value={form.name} onChange={(e) => setForm(prev => ({ ...prev, name: e.target.value }))} />
@@ -602,87 +602,28 @@ export const AddListForm = ({
             </AccordionTrigger>
             <AccordionContent className="pt-2 pb-0">
               <div className="space-y-4">
-                {/* Personal Budget Allocation with dual-mode (% / $) */}
-                <div>
-                  <Label htmlFor="budget-percentage" className="flex items-center gap-2 mb-2">
-                    {t('forms.addListForm.budgetPercentageLabel') || 'Personal Budget Allocation'}
-                  </Label>
-                  <div className="flex gap-2 mb-2">
-                    <Button
-                      type="button"
-                      variant={budgetPercentageMode === 'percentage' ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => setBudgetPercentageMode('percentage')}
-                      className="flex-1"
-                    >
-                      <Percent className="h-4 w-4 mr-1" />
-                      %
-                    </Button>
-                    <Button
-                      type="button"
-                      variant={budgetPercentageMode === 'currency' ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => setBudgetPercentageMode('currency')}
-                      className="flex-1"
-                    >
-                      <DollarSign className="h-4 w-4 mr-1" />
-                      $
-                    </Button>
-                  </div>
-                  {budgetPercentageMode === 'percentage' ? (
-                    <>
-                      <p className="text-xs text-muted-foreground mb-2">
-                        {t('forms.addListForm.budgetPercentageHint') || `Available: ${maxAllowedBudget.toFixed(0)}%`}
-                      </p>
-                      <Input
-                        id="budget-percentage"
-                        type="number"
-                        min={0}
-                        max={maxAllowedBudget}
-                        step={0.01}
-                        value={form.budgetPercentage}
-                        onChange={(e) => {
-                          const value = parseFloat(e.target.value) || 0
-                          const clamped = Math.max(0, Math.min(maxAllowedBudget, value))
-                          setForm(prev => ({ ...prev, budgetPercentage: clamped }))
-                        }}
-                        placeholder="0.00"
-                      />
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {form.budgetPercentage > 0 
-                          ? `${form.budgetPercentage.toFixed(2)}% = $${((form.budgetPercentage / 100) * userEquity).toFixed(2)}`
-                          : 'Enter percentage'}
-                      </p>
-                    </>
-                  ) : (
-                    <>
-                      <p className="text-xs text-muted-foreground mb-2">
-                        {t('forms.addListForm.budgetCurrencyHint') || `Available: $${((maxAllowedBudget / 100) * userEquity).toFixed(2)}`}
-                      </p>
-                      <Input
-                        id="budget-currency"
-                        type="number"
-                        min={0}
-                        max={(maxAllowedBudget / 100) * userEquity}
-                        step={0.01}
-                        value={userEquity > 0 ? ((form.budgetPercentage / 100) * userEquity).toFixed(2) : '0.00'}
-                        onChange={(e) => {
-                          const currencyValue = parseFloat(e.target.value) || 0
-                          const maxCurrency = (maxAllowedBudget / 100) * userEquity
-                          const clampedCurrency = Math.max(0, Math.min(maxCurrency, currencyValue))
-                          const percentage = userEquity > 0 ? (clampedCurrency / userEquity) * 100 : 0
-                          setForm(prev => ({ ...prev, budgetPercentage: percentage }))
-                        }}
-                        placeholder="0.00"
-                      />
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {form.budgetPercentage > 0 
-                          ? `$${((form.budgetPercentage / 100) * userEquity).toFixed(2)} = ${form.budgetPercentage.toFixed(2)}%`
-                          : 'Enter amount'}
-                      </p>
-                    </>
-                  )}
-                </div>
+                {/* Personal Budget Allocation with BudgetDistributionInput */}
+                <BudgetDistributionInput
+                  items={['personal']}
+                  totalBudget={userEquity}
+                  distribution={{
+                    personal: budgetPercentageMode === 'percentage' 
+                      ? form.budgetPercentage 
+                      : (form.budgetPercentage / 100) * userEquity
+                  }}
+                  onChange={(dist) => {
+                    const value = dist.personal || 0
+                    if (budgetPercentageMode === 'percentage') {
+                      setForm(prev => ({ ...prev, budgetPercentage: Math.max(0, Math.min(maxAllowedBudget, value)) }))
+                    } else {
+                      const percentage = userEquity > 0 ? (value / userEquity) * 100 : 0
+                      setForm(prev => ({ ...prev, budgetPercentage: Math.max(0, Math.min(maxAllowedBudget, percentage)) }))
+                    }
+                  }}
+                  onModeChange={setBudgetPercentageMode}
+                  mode={budgetPercentageMode}
+                  label={t('forms.addListForm.budgetPercentageLabel') || 'Personal Budget Allocation (% of equity)'}
+                />
 
                 {/* Prize Percentage Slider */}
                 {form.budgetPercentage > 0 && (
