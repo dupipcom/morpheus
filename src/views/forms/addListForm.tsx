@@ -69,7 +69,7 @@ export const AddListForm = ({
   const [categoryDistributionMode, setCategoryDistributionMode] = useState<'percentage' | 'currency'>('percentage')
   const [categoryPrizeDistribution, setCategoryPrizeDistribution] = useState<Record<string, number>>({})
   const [categoryPrizeDistributionMode, setCategoryPrizeDistributionMode] = useState<'percentage' | 'currency'>('percentage')
-  const [taskBudgets, setTaskBudgets] = useState<Record<string, { budget: string; prize: string }>>({})
+  const [taskBudgets, setTaskBudgets] = useState<Record<string, { budget: string; prize: string; budgetNominal?: number; prizeNominal?: number }>>({})
   const [budgetPercentageMode, setBudgetPercentageMode] = useState<'percentage' | 'currency'>('percentage')
 
   // Get user equity for currency calculations
@@ -749,7 +749,10 @@ export const AddListForm = ({
                                   const taskId = task.id || task.name
                                   const budget = parseFloat(taskBudgets[taskId]?.budget || '0')
                                   const prize = parseFloat(taskBudgets[taskId]?.prize || '0')
-                                  const total = budget + prize
+                                  // Use nominal values for total calculation
+                                  const budgetNominal = taskBudgets[taskId]?.budgetNominal ?? budget
+                                  const prizeNominal = taskBudgets[taskId]?.prizeNominal ?? prize
+                                  const total = budgetNominal + prizeNominal
                                   
                                   return (
                                     <tr key={`${taskId}-${idx}`}>
@@ -760,11 +763,16 @@ export const AddListForm = ({
                                           totalBudget={parseFloat(form.budget) || 0}
                                           distribution={{ [`budget-${taskId}`]: budget }}
                                           onChange={(dist, metadata) => {
-                                            // Use nominal values for storage/calculation
-                                            const newBudget = metadata?.nominalValues?.[`budget-${taskId}`] ?? dist[`budget-${taskId}`] ?? 0
+                                            // Store input value and nominal value
+                                            const inputValue = dist[`budget-${taskId}`] ?? 0
+                                            const nominalValue = metadata?.nominalValues?.[`budget-${taskId}`] ?? inputValue
                                             setTaskBudgets(prev => ({
                                               ...prev,
-                                              [taskId]: { ...prev[taskId], budget: newBudget.toString() }
+                                              [taskId]: { 
+                                                ...prev[taskId], 
+                                                budget: inputValue.toString(),
+                                                budgetNominal: nominalValue
+                                              }
                                             }))
                                           }}
                                           label=""
@@ -779,11 +787,16 @@ export const AddListForm = ({
                                           totalBudget={calculatePrizePool(form.budgetPercentage, userEquity)}
                                           distribution={{ [`prize-${taskId}`]: prize }}
                                           onChange={(dist, metadata) => {
-                                            // Use nominal values for storage/calculation
-                                            const newPrize = metadata?.nominalValues?.[`prize-${taskId}`] ?? dist[`prize-${taskId}`] ?? 0
+                                            // Store input value and nominal value
+                                            const inputValue = dist[`prize-${taskId}`] ?? 0
+                                            const nominalValue = metadata?.nominalValues?.[`prize-${taskId}`] ?? inputValue
                                             setTaskBudgets(prev => ({
                                               ...prev,
-                                              [taskId]: { ...prev[taskId], prize: newPrize.toString() }
+                                              [taskId]: { 
+                                                ...prev[taskId], 
+                                                prize: inputValue.toString(),
+                                                prizeNominal: nominalValue
+                                              }
                                             }))
                                           }}
                                           label=""
