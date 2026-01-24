@@ -750,6 +750,7 @@ export const AddListForm = ({
                                   const budget = parseFloat(taskBudgets[taskId]?.budget || '0')
                                   const prize = parseFloat(taskBudgets[taskId]?.prize || '0')
                                   const total = budget + prize
+                                  
                                   return (
                                     <tr key={`${taskId}-${idx}`}>
                                       <td className="p-2">{task.name}</td>
@@ -758,10 +759,13 @@ export const AddListForm = ({
                                           items={[`budget-${taskId}`]}
                                           totalBudget={parseFloat(form.budget) || 0}
                                           distribution={{ [`budget-${taskId}`]: budget }}
-                                          onChange={(dist) => setTaskBudgets(prev => ({
-                                            ...prev,
-                                            [taskId]: { ...prev[taskId], budget: dist[`budget-${taskId}`]?.toString() || '' }
-                                          }))}
+                                          onChange={(dist) => {
+                                            const newBudget = dist[`budget-${taskId}`] || 0
+                                            setTaskBudgets(prev => ({
+                                              ...prev,
+                                              [taskId]: { ...prev[taskId], budget: newBudget.toString() }
+                                            }))
+                                          }}
                                           label=""
                                           variant="horizontal"
                                           mode="currency"
@@ -773,10 +777,13 @@ export const AddListForm = ({
                                           items={[`prize-${taskId}`]}
                                           totalBudget={calculatePrizePool(form.budgetPercentage, userEquity)}
                                           distribution={{ [`prize-${taskId}`]: prize }}
-                                          onChange={(dist) => setTaskBudgets(prev => ({
-                                            ...prev,
-                                            [taskId]: { ...prev[taskId], prize: dist[`prize-${taskId}`]?.toString() || '' }
-                                          }))}
+                                          onChange={(dist) => {
+                                            const newPrize = dist[`prize-${taskId}`] || 0
+                                            setTaskBudgets(prev => ({
+                                              ...prev,
+                                              [taskId]: { ...prev[taskId], prize: newPrize.toString() }
+                                            }))
+                                          }}
                                           label=""
                                           variant="horizontal"
                                           mode="currency"
