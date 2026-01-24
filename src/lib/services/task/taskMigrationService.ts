@@ -270,9 +270,6 @@ export async function migrateEmbeddedTask({
       redacted: embeddedTask.redacted || false
     }
   })
-      redacted: embeddedTask.redacted || false
-    }
-  })
 
   // Migrate completers to Job records
   const jobs: PrismaJob[] = []
