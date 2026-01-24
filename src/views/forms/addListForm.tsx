@@ -604,7 +604,10 @@ export const AddListForm = ({
                       <div className="flex justify-between text-xs text-muted-foreground mt-2">
                         <span>0%</span>
                         <span className="text-sm font-medium text-center flex-1">
-                          {prizePercentage}% of {form.budgetPercentage}% = {((prizePercentage * form.budgetPercentage) / 100).toFixed(2)}% of equity
+                          {(() => {
+                            const effectivePrizePercentage = (prizePercentage * form.budgetPercentage) / 100
+                            return `${prizePercentage}% of ${form.budgetPercentage}% = ${effectivePrizePercentage.toFixed(2)}% of equity`
+                          })()}
                         </span>
                         <span>100%</span>
                       </div>

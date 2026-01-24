@@ -40,11 +40,7 @@ export const BudgetDistributionInput: React.FC<BudgetDistributionInputProps> = (
   }
 
   const getTotalAllocated = () => {
-    if (mode === 'percentage') {
-      return Object.values(localDistribution).reduce((sum, val) => sum + val, 0)
-    } else {
-      return Object.values(localDistribution).reduce((sum, val) => sum + val, 0)
-    }
+    return Object.values(localDistribution).reduce((sum, val) => sum + val, 0)
   }
 
   const getRemaining = () => {
