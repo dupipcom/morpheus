@@ -541,6 +541,7 @@ model List {
   budgetPercentage     Float?             @default(0)
   remainingBudget      String?
   prizePercentage      Float?             @default(0)
+  budgetDistribution   Json?              // Budget allocation across areas/categories/tasks
   // Budget relationships (new approach)
   listBudgetId         String?            @db.ObjectId  // 1:1 with LIST_DEFAULT budget
   listBudget           Budget?            @relation("ListDefaultBudget", fields: [listBudgetId], references: [id])
