@@ -193,6 +193,7 @@ async function updateDaySnapshot(
 
 /**
  * Calculate and apply earnings for a completed job
+ * Uses the job's pre-stored premium (locked at job creation) as the earnings cap
  * Updates user's stash, profit, equity and Day.ticker
  */
 export async function calculateAndApplyJobEarnings({
@@ -203,7 +204,11 @@ export async function calculateAndApplyJobEarnings({
   occurrenceDate
 }: CalculateJobEarningsParams): Promise<JobEarningsResult> {
   try {
-    const [list, task, worker] = await Promise.all([
+    const [job, list, task, worker] = await Promise.all([
+      prisma.job.findUnique({
+        where: { id: jobId },
+        select: { premium: true }
+      }),
       prisma.list.findUnique({
         where: { id: listId },
         select: { 
@@ -237,9 +242,14 @@ export async function calculateAndApplyJobEarnings({
       })
     ])
 
+    if (!job) throw new Error('Job not found')
     if (!list) throw new Error('List not found')
     if (!task) throw new Error('Task not found')
     if (!worker) throw new Error('Worker not found')
+
+    // Use the job's premium (locked at creation time) as the cap
+    // Fall back to task.premium for backwards compatibility with existing jobs
+    const premiumCap = job.premium ?? task.premium
 
     // Parse remainingBudget (it's stored as String in DB)
     const remainingBudget = list.remainingBudget ? parseFloat(list.remainingBudget) : list.budget
@@ -264,21 +274,21 @@ export async function calculateAndApplyJobEarnings({
     const prize = taskBudgetAllocation.prize || 0
     const earnings = prize + profit
 
-    // CRITICAL: Enforce that earnings can NEVER exceed task premium
-    if (task.premium != null && task.premium > 0 && earnings > task.premium) {
+    // CRITICAL: Enforce that earnings can NEVER exceed job's premium cap
+    if (premiumCap != null && premiumCap > 0 && earnings > premiumCap) {
       // Scale down proportionally if somehow we exceeded (defense in depth)
-      const scaleFactor = task.premium / earnings
+      const scaleFactor = premiumCap / earnings
       const cappedProfit = profit * scaleFactor
       const cappedPrize = prize * scaleFactor
       
-      console.warn(`Job ${jobId}: Earnings ${earnings} exceeded task premium ${task.premium}. Capped to ${task.premium}`)
+      console.warn(`Job ${jobId}: Earnings ${earnings} exceeded job premium ${premiumCap}. Capped to ${premiumCap}`)
       
       const { stashDelta, profitDelta } = calculateStashAndProfitDeltas(cappedPrize, cappedProfit, true)
       const updatedValues = await updateUserFinancials(workerId, stashDelta, profitDelta)
 
       await prisma.job.update({
         where: { id: jobId },
-        data: { earnings: task.premium as any, prize: cappedPrize as any, profit: cappedProfit as any }
+        data: { earnings: premiumCap as any, prize: cappedPrize as any, profit: cappedProfit as any }
       })
 
       await updateDayTickerFromJobs(workerId, listId, occurrenceDate)
@@ -287,7 +297,7 @@ export async function calculateAndApplyJobEarnings({
       return {
         prize: cappedPrize,
         profit: cappedProfit,
-        earnings: task.premium,
+        earnings: premiumCap,
         updatedUserValues: {
           availableBalance: updatedValues.newAvailableBalance,
           stash: updatedValues.newStash,

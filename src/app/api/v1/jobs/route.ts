@@ -171,10 +171,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized: Collaborators can only create jobs for themselves' }, { status: 403 })
     }
 
-    // Verify task belongs to list
+    // Verify task belongs to list and fetch premium for job creation
     const task = await prisma.task.findUnique({
       where: { id: taskId },
-      select: { id: true, listId: true }
+      select: { id: true, listId: true, premium: true }
     })
 
     if (!task) {
@@ -184,6 +184,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Task does not belong to the specified list' }, { status: 400 })
     }
 
+    // Lock in the task's premium at job creation time (0 if not set)
+    const jobPremium = task.premium ?? 0
+
     const job = await prisma.job.create({
       data: {
         taskId,
@@ -191,6 +194,7 @@ export async function POST(request: NextRequest) {
         workerId,
         status: status || 'REQUESTED',
         occurrenceDate: occurrenceDate || null,
+        premium: jobPremium,
         selfReview,
         peerReview,
         managerReview,
