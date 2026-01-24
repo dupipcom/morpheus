@@ -119,11 +119,26 @@ export const AddListForm = ({
         }
       }
       
-      // Load tasks from tasks (working copy) if available, otherwise from templateTasks
+      // Load tasks from tasks (Task collection) if available, otherwise from templateTasks
       const tasksToLoad = (Array.isArray(initialList.tasks) && initialList.tasks.length > 0)
         ? initialList.tasks
         : (Array.isArray(initialList.templateTasks) ? initialList.templateTasks : [])
-      setTasks(tasksToLoad)
+      
+      // If editing and no tasks loaded yet, fetch from Task collection
+      if (isEditing && tasksToLoad.length === 0 && initialList.id) {
+        // Fetch tasks from Task collection
+        fetch(`/api/v1/tasks?listId=${initialList.id}`)
+          .then(res => res.ok ? res.json() : null)
+          .then(data => {
+            if (data?.tasks && Array.isArray(data.tasks)) {
+              setTasks(data.tasks)
+            }
+          })
+          .catch(err => console.error('Error fetching tasks:', err))
+      } else {
+        setTasks(tasksToLoad)
+      }
+      
       setDueDateObj(initialList.dueDate ? new Date(initialList.dueDate) : undefined)
     }
   }, [JSON.stringify(initialList), isEditing])
@@ -376,30 +391,31 @@ export const AddListForm = ({
             </Popover>
           </div>
         </div>
-        {isEditing && (
-          <div>
-            <Label htmlFor="budget-percentage" className="flex items-center gap-2 mb-4">
-              {t('forms.addListForm.budgetPercentageLabel') || 'Budget Allocation'}
-            </Label>
-            <div className="space-y-2 mt-2">
-              <Slider
-                value={[form.budgetPercentage]}
-                onValueChange={(values) => setForm(prev => ({ ...prev, budgetPercentage: values[0] }))}
-                min={0}
-                max={maxAllowedBudget}
-                step={1}
-                className="w-full"
-              />
-              <div className="flex justify-between text-xs text-muted-foreground">
-                <span>0%</span>
-                <span className="text-sm font-medium text-center flex-1">
-                  ({form.budgetPercentage.toFixed(0)}%)
-                </span>
-                <span>{maxAllowedBudget.toFixed(0)}%</span>
-              </div>
-            </div>
-          </div>
-        )}
+        <div>
+          <Label htmlFor="budget-percentage" className="flex items-center gap-2 mb-2">
+            {t('forms.addListForm.budgetPercentageLabel') || 'Personal Budget Allocation (% of equity)'}
+          </Label>
+          <p className="text-xs text-muted-foreground mb-2">
+            {t('forms.addListForm.budgetPercentageHint') || `Available: ${maxAllowedBudget.toFixed(0)}%`}
+          </p>
+          <Input
+            id="budget-percentage"
+            type="number"
+            min={0}
+            max={maxAllowedBudget}
+            step={0.01}
+            value={form.budgetPercentage}
+            onChange={(e) => {
+              const value = parseFloat(e.target.value) || 0
+              const clamped = Math.max(0, Math.min(maxAllowedBudget, value))
+              setForm(prev => ({ ...prev, budgetPercentage: clamped }))
+            }}
+            placeholder="0.00"
+          />
+          <p className="text-xs text-muted-foreground mt-1">
+            {form.budgetPercentage > 0 ? `${form.budgetPercentage.toFixed(2)}% of your equity allocated to this list` : 'Enter percentage'}
+          </p>
+        </div>
         <div>
           <Label htmlFor="cadence">{t('forms.addListForm.cadenceLabel') || 'Cadence'}</Label>
           <Select value={form.cadence} onValueChange={(val) => setForm(prev => ({ ...prev, cadence: val }))}>
@@ -616,7 +632,7 @@ export const AddListForm = ({
                   )}
 
                   {/* Budget Distribution Mode */}
-                  {parseFloat(form.budget || '0') > 0 && tasks.length > 0 && (
+                  {parseFloat(form.budget || '0') > 0 && (
                     <>
                       <div>
                         <Label htmlFor="distribution-mode">{t('forms.addListForm.distributionModeLabel') || 'Distribution Mode'}</Label>
@@ -635,7 +651,9 @@ export const AddListForm = ({
 
                       {/* Area Distribution */}
                       {budgetDistributionMode === 'area' && (() => {
-                        const taskAreas = Array.from(new Set(tasks.map(t => t.area).filter(Boolean)))
+                        const taskAreas = tasks.length > 0 
+                          ? Array.from(new Set(tasks.map(t => t.area).filter(Boolean)))
+                          : ['self', 'home', 'social', 'work']
                         
                         return (
                           <BudgetDistributionInput
@@ -652,7 +670,9 @@ export const AddListForm = ({
 
                       {/* Category Distribution */}
                       {budgetDistributionMode === 'category' && (() => {
-                        const allCategories = Array.from(new Set(tasks.flatMap(t => t.categories || []).filter(Boolean)))
+                        const allCategories = tasks.length > 0
+                          ? Array.from(new Set(tasks.flatMap(t => t.categories || []).filter(Boolean)))
+                          : ['custom', 'body', 'mind', 'spirit', 'fun', 'growth', 'community', 'affection', 'clean', 'maintenance']
                         
                         return (
                           <BudgetDistributionInput
@@ -668,7 +688,7 @@ export const AddListForm = ({
                       })()}
 
                       {/* Per-Task Distribution */}
-                      {budgetDistributionMode === 'task' && (() => {
+                      {budgetDistributionMode === 'task' && tasks.length > 0 && (() => {
                         const totalBudget = tasks.reduce((sum, task) => {
                           const taskId = task.id || task.name
                           const budget = parseFloat(taskBudgets[taskId]?.budget || '0')
