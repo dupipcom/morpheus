@@ -286,20 +286,27 @@ type ThingReference {
   name String
 }
 
-type TaskAllocation {
-  percentage Float?  // Percentage of budget allocated to this task
-  amount     Float?  // Nominal amount allocated to this task
+type AllocationType {
+  nominal Float?   // Nominal (currency) amount
+  percent Float?   // Percentage value (0-100)
 }
 
-type TaskBudgetAllocation {
-  budget Float  // Budget allocation for this task
-  prize  Float  // Prize allocation for this task
+type EntityBudgetAllocation {
+  budget AllocationType?  // Budget allocation for this entity
+  prize  AllocationType?  // Prize allocation for this entity
+}
+
+type EntityAllocationsType {
+  entityId      String?                 // Entity ID (taskId, areaId, categoryId, etc.)
+  entityType    String?                 // Entity type: "tasks", "lists", "projects"
+  entitySubtype String?                 // Entity subtype: "area", "categories", "notes", or any string
+  allocation    EntityBudgetAllocation? // Allocation for this entity
 }
 
 type BudgetDistribution {
-  areas      Json?  // Record<string, number> - Budget allocation by area
-  categories Json?  // Record<string, number> - Budget allocation by category
-  tasks      Json?  // Record<string, TaskBudgetAllocation> - Per-task allocations
+  areas      EntityAllocationsType[]  // Area allocations (budget + prize)
+  categories EntityAllocationsType[]  // Category allocations (budget + prize)
+  tasks      EntityAllocationsType[]  // Per-task allocations (budget + prize)
 }
 
 type Ticker {
@@ -732,8 +739,8 @@ model Budget {
   type              BudgetEntryType
   totalAmount       Float
   remainingAmount   Float
-  // Task allocations - map of task IDs to TaskAllocation objects
-  taskAllocations   Json?           // Record<string, TaskAllocation> - percentage or nominal amount per task
+  // Task allocations - array of entityId to EntityBudgetAllocation mappings
+  taskAllocations   EntityAllocationsType[]
   // Relations
   ownerId           String          @db.ObjectId
   owner             User            @relation(fields: [ownerId], references: [id], onDelete: Cascade)

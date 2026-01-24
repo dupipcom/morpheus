@@ -5,7 +5,8 @@ import { OptionsMenuItem } from '@/components/optionsButton'
 import { Circle, Minus, Plus, Eye, EyeOff, Edit, Send, Clock } from 'lucide-react'
 import { useI18n } from '@/lib/contexts/i18n'
 import { GlobalContext } from '@/lib/contexts'
-import { getProfitPerTask } from '@/lib/utils/earningsUtils'
+import { calculatePrizePool } from '@/lib/utils/earningsUtils'
+import { getTaskAllocationFromDistribution } from '@/lib/utils/budgetDistributionUtils'
 import { TaskItem } from '@/components/taskItem'
 import { TaskStatus, STATUS_OPTIONS, getStatusColor, getIconColor, getTaskKey, getTaskStatus, mapStatusToEnum } from '@/lib/utils/taskUtils'
 
@@ -556,11 +557,15 @@ export const TaskGrid = ({
             : null
         
         // Calculate earnings and prize for THIS specific task
-        const listBudget = (selectedTaskList as any)?.budget
+        const listBudget = parseFloat((selectedTaskList as any)?.budget || '0')
         const listRole = (selectedTaskList as any)?.role
         const totalTasks = (selectedTaskList?.tasks as any[])?.length || (selectedTaskList?.templateTasks as any[])?.length || 1
         const budgetDistribution = (selectedTaskList as any)?.budgetDistribution
-        const prizePercentage = (selectedTaskList as any)?.prizePercentage || 0
+        const budgetPercentage = (selectedTaskList as any)?.budgetPercentage || 0
+        
+        // Get user equity from session for prize pool calculation
+        const userEquity = (selectedTaskList as any)?.userEquity || 0
+        const prizePool = calculatePrizePool(budgetPercentage, userEquity)
         
         let taskEarnings = 0
         let taskPrize = 0
@@ -569,18 +574,13 @@ export const TaskGrid = ({
         if (task.budget != null || task.prize != null) {
           taskEarnings = task.budget || 0
           taskPrize = task.prize || 0
-        }
-        // Then check if there's custom per-task allocation in list's budgetDistribution
-        else if (budgetDistribution?.tasks && task.id && budgetDistribution.tasks[task.id]) {
-          taskEarnings = budgetDistribution.tasks[task.id].budget || 0
-          taskPrize = budgetDistribution.tasks[task.id].prize || 0
         } else {
-          // Fall back to default equal distribution
-          taskEarnings = getProfitPerTask(listBudget, totalTasks, listRole)
-          // Calculate prize based on prizePercentage of budgetPercentage
-          // Prize is a % of the list's equity allocation, not the budget
-          // This will be calculated based on user equity when task is completed
-          taskPrize = 0 // For now, prize display is calculated at completion time
+          // Try to get allocation from budget distribution (server data only, no fallback)
+          const allocation = getTaskAllocationFromDistribution(task.id, budgetDistribution, listBudget, prizePool)
+          if (allocation) {
+            taskEarnings = allocation.taskEarnings
+            taskPrize = allocation.taskPrize
+          }
         }
 
         // Determine task status
