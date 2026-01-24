@@ -8,8 +8,11 @@ let DOMPurify: ReturnType<typeof DOMPurifyLib>
 
 if (typeof window === 'undefined') {
   // Server-side: Create a window using jsdom
+  // Note: Using dynamic import would be ideal, but DOMPurify needs to be initialized synchronously
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { JSDOM } = require('jsdom')
   const domWindow = new JSDOM('<!DOCTYPE html>').window
+  // Type assertion needed as jsdom's DOMWindow doesn't perfectly match browser Window
   DOMPurify = DOMPurifyLib(domWindow as unknown as Window)
 } else {
   // Client-side: Use browser's window directly
