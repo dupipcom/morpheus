@@ -153,6 +153,10 @@ function mapToCategories(categories: string[] | undefined): Category[] {
 /**
  * Calculate task budget allocations from list's budget distribution
  * Returns { budget, prize, premium } for a specific task
+ * 
+ * ENFORCEMENT: If a task has explicit budget/prize fields set, those values
+ * are used as strict caps and will never be exceeded, regardless of what
+ * the distribution-based calculation would yield.
  */
 export function calculateTaskBudgetFromDistribution(params: {
   task: EmbeddedTask | PrismaTask
@@ -165,20 +169,25 @@ export function calculateTaskBudgetFromDistribution(params: {
   const budgetDistribution = list.budgetDistribution
   const prizePercentage = list.prizePercentage || 0
   
+  // Extract task-level limits (these are strict caps if set)
+  const taskBudgetLimit = (task as any).budget != null ? Number((task as any).budget) : null
+  const taskPrizeLimit = (task as any).prize != null ? Number((task as any).prize) : null
+  
   let budget: number | null = null
   let prize: number | null = null
   
-  // Check if task already has budget/prize stored
-  if ((task as any).budget != null || (task as any).prize != null) {
-    budget = (task as any).budget || 0
-    prize = (task as any).prize || 0
+  // PRIORITY 1: If task has explicit budget/prize stored, use those directly as the values
+  // These are strict limits that cannot be exceeded
+  if (taskBudgetLimit != null || taskPrizeLimit != null) {
+    budget = taskBudgetLimit ?? 0
+    prize = taskPrizeLimit ?? 0
   }
-  // Check for custom per-task allocation in budgetDistribution
+  // PRIORITY 2: Check for custom per-task allocation in budgetDistribution
   else if (budgetDistribution?.tasks && task.id && budgetDistribution.tasks[task.id]) {
     budget = budgetDistribution.tasks[task.id].budget || 0
     prize = budgetDistribution.tasks[task.id].prize || 0
   }
-  // Use area-based distribution
+  // PRIORITY 3: Use area-based distribution
   else if (budgetDistribution?.areas && task.area) {
     const areaPercentage = budgetDistribution.areas[task.area] || 0
     const areaBudget = (listBudget * areaPercentage) / 100
@@ -191,7 +200,7 @@ export function calculateTaskBudgetFromDistribution(params: {
     const areaPrizeBudget = (totalPrizeBudget * areaPercentage) / 100
     prize = areaPrizeBudget / tasksInArea
   }
-  // Use category-based distribution
+  // PRIORITY 4: Use category-based distribution
   else if (budgetDistribution?.categories && task.categories && task.categories.length > 0) {
     // Average across all categories this task belongs to
     let totalBudget = 0
@@ -215,7 +224,7 @@ export function calculateTaskBudgetFromDistribution(params: {
     budget = totalBudget / taskCategories.length
     prize = totalPrize / taskCategories.length
   }
-  // Default: equal distribution
+  // PRIORITY 5: Default equal distribution
   else if (listBudget > 0) {
     const totalTasks = (list.tasks || list.templateTasks || []).length || 1
     const earningsBudget = listBudget * (1 - prizePercentage / 100)
@@ -224,11 +233,21 @@ export function calculateTaskBudgetFromDistribution(params: {
     prize = prizeBudget / totalTasks
   }
   
+  // ENFORCEMENT: Apply task-level caps if they exist
+  // Even if distribution-based calculation yielded higher values,
+  // we must respect the task's explicit limits
+  if (taskBudgetLimit != null && budget != null) {
+    budget = Math.min(budget, taskBudgetLimit)
+  }
+  if (taskPrizeLimit != null && prize != null) {
+    prize = Math.min(prize, taskPrizeLimit)
+  }
+  
   const premium = (budget || 0) + (prize || 0)
   
   return {
-    budget: budget ? Math.round(budget * 100) / 100 : null,
-    prize: prize ? Math.round(prize * 100) / 100 : null,
+    budget: budget != null ? Math.round(budget * 100) / 100 : null,
+    prize: prize != null ? Math.round(prize * 100) / 100 : null,
     premium: premium > 0 ? Math.round(premium * 100) / 100 : null
   }
 }
