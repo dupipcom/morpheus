@@ -111,8 +111,8 @@ async function updateDayTickerFromJobs(
     }
 
     const existingTickers = Array.isArray(day.ticker) ? day.ticker : []
-    // Filter out existing ticker entries for this task
-    const filteredTickers = (existingTickers as any[]).filter((t: any) => t.taskId !== taskId)
+    // Filter out existing ticker entries for this specific task in this list
+    const filteredTickers = (existingTickers as any[]).filter((t: any) => !(t.listId === listId && t.taskId === taskId))
     const updatedTickers = hasEarnings ? [...filteredTickers, newTickerEntry] : filteredTickers
 
     await prisma.day.update({
