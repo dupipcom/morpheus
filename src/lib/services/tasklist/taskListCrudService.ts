@@ -296,18 +296,35 @@ export async function updateTaskList(params: {
   let updatedTasks = tasks
   if (Array.isArray(updatedTasks)) {
     updatedTasks = ensureUniqueTaskIds(updatedTasks, !!templateId)
-    // Strip fields that aren't part of EmbeddedTask type (timestamps, prize, premium, listId)
-    // EmbeddedTask only has: id, name, categories, area, status, recurrence, times, count, etc.
-    // It does NOT have: updatedAt, createdAt, prize, premium, listId (these are only in Task model)
+    // Strip ALL Task model fields that aren't part of EmbeddedTask type before saving to templateTasks
+    // EmbeddedTask type only includes: id, name, categories, area, status, recurrence, times, count,
+    // localeKey, persons, things, events, notes, documents, createdAt (String?), completedOn, dueDate,
+    // budget, visibility, quality, redacted, nextOccurrence, lastOccurrence, firstOccurrence
+    // 
+    // Task model has these additional fields that must be stripped:
+    // - updatedAt (DateTime @updatedAt) - auto-managed timestamp
+    // - createdAt (DateTime @default(now())) - note: EmbeddedTask has this as String?
+    // - prize, premium (budget allocation fields from Task model only)
+    // - listId, list (relation to List)
+    // - jobs (relation to Job[])
+    // - candidateIds, candidates (many-to-many relation to Users)
+    // - raisedTransactionIds, raisedTransactions (many-to-many relation to Transactions)
     updatedTasks = updatedTasks.map(task => {
-      const { updatedAt, createdAt, prize, premium, listId, ...taskWithoutExtraFields } = task as Task & { 
-        updatedAt?: unknown
-        createdAt?: unknown
-        prize?: unknown
-        premium?: unknown
-        listId?: unknown
-      }
-      return taskWithoutExtraFields
+      const { 
+        updatedAt, 
+        createdAt, 
+        prize, 
+        premium, 
+        listId, 
+        list,
+        jobs,
+        candidateIds,
+        candidates,
+        raisedTransactionIds,
+        raisedTransactions,
+        ...embeddedTaskFields 
+      } = task as any
+      return embeddedTaskFields
     })
   }
 
