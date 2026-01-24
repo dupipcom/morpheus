@@ -122,8 +122,8 @@ export const BudgetDistributionInput: React.FC<BudgetDistributionInputProps> = (
         />
         <span className="text-xs text-muted-foreground min-w-[60px]">
           {isPercentageMode
-            ? `$${((value / 100) * totalBudget).toFixed(2)}`
-            : `${totalBudget > 0 ? ((value / totalBudget) * 100).toFixed(1) : 0}%`
+            ? `$${(((value || 0) / 100) * totalBudget || 0)}`
+            : `${totalBudget > 0 ? ((value / (totalBudget|| 0)) * 100).toFixed(1) : 0}%`
           }
         </span>
       </div>
@@ -134,9 +134,9 @@ export const BudgetDistributionInput: React.FC<BudgetDistributionInputProps> = (
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <div className="text-sm font-medium">
+        <div className="text-sm font-medium basis-1/2 max-w-[50%]">
           {label}
-          <span className="ml-2 text-xs text-muted-foreground">
+          <span className="block ml-2 text-xs text-muted-foreground ">
             (Remaining: {isPercentageMode ? `${remaining.toFixed(0)}%` : `$${remaining.toFixed(2)}`})
           </span>
         </div>
@@ -182,12 +182,12 @@ export const BudgetDistributionInput: React.FC<BudgetDistributionInputProps> = (
                   min={0}
                   max={100}
                   step={1}
-                  className="w-full"
+                  className="mt-4 w-full"
                   disabled={disabled}
                 />
-                <div className="flex justify-between items-center text-xs text-muted-foreground">
+                <div className="mt-4 flex justify-between items-center text-xs text-muted-foreground">
                   <span>{value.toFixed(0)}%</span>
-                  <span>${((value / 100) * totalBudget).toFixed(2)}</span>
+                  <span>${(((value || 0) / 100) * totalBudget || 0).toFixed(2)}</span>
                 </div>
               </>
             ) : (
