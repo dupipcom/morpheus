@@ -11,7 +11,14 @@ interface BudgetDistributionInputProps {
   items: string[]
   totalBudget: number
   distribution: Record<string, number>
-  onChange: (distribution: Record<string, number>, metadata?: { percentages?: Record<string, number>, mode: 'percentage' | 'currency' }) => void
+  onChange: (
+    distribution: Record<string, number>, 
+    metadata?: { 
+      mode: 'percentage' | 'currency'
+      nominalValues?: Record<string, number>  // Currency values when in percentage mode
+      percentages?: Record<string, number>    // Percentage values when in currency mode
+    }
+  ) => void
   onModeChange?: (mode: 'percentage' | 'currency') => void
   label: string
   mode?: 'percentage' | 'currency'
@@ -31,51 +38,33 @@ export const BudgetDistributionInput: React.FC<BudgetDistributionInputProps> = (
   disabled = false
 }) => {
   const [mode, setMode] = useState<'percentage' | 'currency'>(initialMode)
-  const [localDistribution, setLocalDistribution] = useState<Record<string, number>>(() => {
-    // Initialize based on mode
-    if (initialMode === 'percentage') {
-      // Convert incoming currency values to percentages
-      const percentages: Record<string, number> = {}
-      Object.entries(distribution).forEach(([key, value]) => {
-        percentages[key] = totalBudget > 0 ? (value / totalBudget) * 100 : 0
-      })
-      return percentages
-    }
-    return distribution
-  })
+  const [localDistribution, setLocalDistribution] = useState<Record<string, number>>(distribution)
 
-  // Only sync from parent when not actively editing
+  // Only sync from parent when distribution changes from external source
+  // Don't convert - trust the parent is sending the right values for current mode
   useEffect(() => {
-    if (mode === 'currency') {
-      // In currency mode, directly use the distribution values
-      setLocalDistribution(distribution)
-    } else {
-      // In percentage mode, convert currency values to percentages
-      const percentages: Record<string, number> = {}
-      Object.entries(distribution).forEach(([key, value]) => {
-        percentages[key] = totalBudget > 0 ? (value / totalBudget) * 100 : 0
-      })
-      setLocalDistribution(percentages)
-    }
-  }, [distribution, mode, totalBudget])
+    setLocalDistribution(distribution)
+  }, [distribution])
 
   const handleValueChange = (item: string, value: number) => {
     const updated = { ...localDistribution, [item]: value }
     setLocalDistribution(updated)
     
-    // Always return nominal (currency) values in onChange
+    // Return the actual values in the current mode, with conversions in metadata
     if (mode === 'percentage') {
-      // Convert percentage to currency for the return value
+      // In percentage mode, return percentages as primary, with nominal in metadata
       const nominalDistribution: Record<string, number> = {}
-      const percentages: Record<string, number> = {}
       Object.entries(updated).forEach(([key, percentValue]) => {
         nominalDistribution[key] = (percentValue / 100) * totalBudget
-        percentages[key] = percentValue
       })
-      onChange(nominalDistribution, { percentages, mode: 'percentage' })
+      onChange(updated, { mode: 'percentage', nominalValues: nominalDistribution })
     } else {
-      // Already in currency mode
-      onChange(updated, { mode: 'currency' })
+      // In currency mode, return currency as primary, with percentages in metadata
+      const percentages: Record<string, number> = {}
+      Object.entries(updated).forEach(([key, currencyValue]) => {
+        percentages[key] = totalBudget > 0 ? (currencyValue / totalBudget) * 100 : 0
+      })
+      onChange(updated, { mode: 'currency', percentages })
     }
   }
 
@@ -99,14 +88,12 @@ export const BudgetDistributionInput: React.FC<BudgetDistributionInputProps> = (
     })
     setLocalDistribution(newDistribution)
     
-    // Convert to nominal for onChange
+    // Return percentages with nominal in metadata
     const nominalDistribution: Record<string, number> = {}
-    const percentages: Record<string, number> = {}
     Object.entries(newDistribution).forEach(([key, percentValue]) => {
       nominalDistribution[key] = (percentValue / 100) * totalBudget
-      percentages[key] = percentValue
     })
-    onChange(nominalDistribution, { percentages, mode: 'percentage' })
+    onChange(newDistribution, { mode: 'percentage', nominalValues: nominalDistribution })
     
     setMode('percentage')
     onModeChange?.('percentage')
@@ -118,7 +105,14 @@ export const BudgetDistributionInput: React.FC<BudgetDistributionInputProps> = (
       newDistribution[item] = (value / 100) * totalBudget
     })
     setLocalDistribution(newDistribution)
-    onChange(newDistribution, { mode: 'currency' })
+    
+    // Return currency with percentages in metadata
+    const percentages: Record<string, number> = {}
+    Object.entries(newDistribution).forEach(([key, currencyValue]) => {
+      percentages[key] = totalBudget > 0 ? (currencyValue / totalBudget) * 100 : 0
+    })
+    onChange(newDistribution, { mode: 'currency', percentages })
+    
     setMode('currency')
     onModeChange?.('currency')
   }
