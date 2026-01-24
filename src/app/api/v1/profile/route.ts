@@ -2,7 +2,6 @@ import prisma from "@/lib/prisma";
 import { currentUser, auth } from '@clerk/nextjs/server'
 import { NextRequest } from 'next/server'
 import { revalidatePath } from 'next/cache'
-import { sanitizeText } from '@/lib/utils/sanitize'
 // no direct revalidatePath here; we call our v1 endpoint instead
 
 export async function GET(req: NextRequest) {
@@ -199,11 +198,11 @@ export async function POST(req: NextRequest) {
           data: {
             ...existingProfileData,
             firstName: {
-              value: data.firstName ? sanitizeText(data.firstName) : existingProfileData.firstName?.value,
+              value: data.firstName || existingProfileData.firstName?.value,
               visibility: toVisibility(data.firstNameVisible, 'firstName') === 'PUBLIC'
             },
             lastName: {
-              value: data.lastName ? sanitizeText(data.lastName) : existingProfileData.lastName?.value,
+              value: data.lastName || existingProfileData.lastName?.value,
               visibility: toVisibility(data.lastNameVisible, 'lastName') === 'PUBLIC'
             },
             username: {
@@ -211,7 +210,7 @@ export async function POST(req: NextRequest) {
               visibility: toVisibility(data.userNameVisible, 'userName') === 'PUBLIC'
             },
             bio: {
-              value: data.bio ? sanitizeText(data.bio) : existingProfileData.bio?.value,
+              value: data.bio || existingProfileData.bio?.value,
               visibility: toVisibility(data.bioVisible, 'bio') === 'PUBLIC'
             },
             profilePicture: {
@@ -233,11 +232,11 @@ export async function POST(req: NextRequest) {
           username: clerkUsername, // Set root level for efficient queries
           data: {
             firstName: {
-              value: data.firstName ? sanitizeText(data.firstName) : null,
+              value: data.firstName,
               visibility: toVisibility(data.firstNameVisible, 'firstName') === 'PUBLIC'
             },
             lastName: {
-              value: data.lastName ? sanitizeText(data.lastName) : null,
+              value: data.lastName,
               visibility: toVisibility(data.lastNameVisible, 'lastName') === 'PUBLIC'
             },
             username: {
@@ -245,7 +244,7 @@ export async function POST(req: NextRequest) {
               visibility: toVisibility(data.userNameVisible, 'userName') === 'PUBLIC'
             },
             bio: {
-              value: data.bio ? sanitizeText(data.bio) : null,
+              value: data.bio,
               visibility: toVisibility(data.bioVisible, 'bio') === 'PUBLIC'
             },
             profilePicture: {

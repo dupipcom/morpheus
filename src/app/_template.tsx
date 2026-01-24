@@ -13,7 +13,6 @@ import Link from 'next/link'
 
 import Layout from './layout'
 import { GlobalContext } from "./contexts"
-import { sanitizeHTML } from '@/lib/utils/sanitize'
 
 
 export default function Template({ title, content, isomorphicContent }: any) {
@@ -72,7 +71,7 @@ export default function Template({ title, content, isomorphicContent }: any) {
             ) : undefined}
           { title && !content ? <p className="p-[32px] md:p-[64px] md:max-w-[720px] md:m-auto">{title}</p> : undefined }
           { content ? <div className="p-[32px] md:p-[64px] md:max-w-[720px] md:m-auto">
-            <div dangerouslySetInnerHTML={{ __html: sanitizeHTML(html) }} />
+            <div dangerouslySetInnerHTML={{ __html: html }} />
           </div> : undefined }
         </main>
   )

@@ -7,9 +7,6 @@ const DOMPurify = DOMPurifyLib.default || DOMPurifyLib
  * Sanitize user input to prevent XSS and injection attacks
  * Used for defense-in-depth on server-side
  * Uses DOMPurify to maintain human-readable characters while preventing XSS
- * 
- * @param text - The text to sanitize
- * @returns Sanitized text with all HTML stripped
  */
 export function sanitizeText(text: string): string {
   if (!text) return ''
@@ -26,38 +23,6 @@ export function sanitizeText(text: string): string {
   })
   
   return sanitized
-}
-
-/**
- * Sanitize an object's string properties recursively
- * Useful for sanitizing form data or API request bodies
- * 
- * @param obj - Object to sanitize
- * @param fieldsToSanitize - Array of field names to sanitize as plain text
- * @returns New object with sanitized string values
- */
-export function sanitizeObject<T extends Record<string, any>>(
-  obj: T,
-  fieldsToSanitize: string[] = []
-): T {
-  if (!obj || typeof obj !== 'object') return obj
-  
-  const sanitized: any = Array.isArray(obj) ? [] : {}
-  
-  for (const [key, value] of Object.entries(obj)) {
-    if (value === null || value === undefined) {
-      sanitized[key] = value
-    } else if (typeof value === 'string') {
-      // Sanitize if field is in the list, otherwise keep as-is
-      sanitized[key] = fieldsToSanitize.includes(key) ? sanitizeText(value) : value
-    } else if (typeof value === 'object') {
-      sanitized[key] = sanitizeObject(value, fieldsToSanitize)
-    } else {
-      sanitized[key] = value
-    }
-  }
-  
-  return sanitized as T
 }
 
 /**

@@ -9,7 +9,6 @@ import { Progress } from '@/components/ui/progress'
 import { Lock, User, AlertCircle, CheckCircle, Send, XCircle, Hourglass, Loader2 } from 'lucide-react'
 import type { JobWithRelations, UserRole } from '@/lib/services/job/types'
 import { useI18n } from '@/lib/contexts/i18n'
-import { sanitizeHTML } from '@/lib/utils/sanitize'
 
 // Worker-specific status banner
 function WorkerStatusBanner({ status }: { status: string }) {
@@ -263,7 +262,7 @@ export function JobDetailsCard({
               >
                 <div
                   className="prose prose-sm dark:prose-invert max-w-none"
-                  dangerouslySetInnerHTML={{ __html: sanitizeHTML(note.content) }}
+                  dangerouslySetInnerHTML={{ __html: note.content }}
                 />
                 <div className="text-xs text-muted-foreground">
                   By @{note.user?.profiles?.[0]?.username || 'Reviewer'} •{' '}

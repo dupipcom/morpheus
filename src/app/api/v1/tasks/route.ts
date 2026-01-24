@@ -3,7 +3,6 @@ import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
 import { getUserListRole } from '@/lib/services/auth'
 import { getTasksForDate } from '@/lib/services/task'
-import { sanitizeText } from '@/lib/utils/sanitize'
 
 export async function GET(request: NextRequest) {
   try {
@@ -227,9 +226,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Sanitize user input to prevent XSS attacks
-    const sanitizedName = sanitizeText(name)
-
     // Check authorization - user must be OWNER or MANAGER of the list
     const role = await getUserListRole(user.id, listId)
 
@@ -243,7 +239,7 @@ export async function POST(request: NextRequest) {
     // Create task
     const task = await prisma.task.create({
       data: {
-        name: sanitizedName,
+        name,
         categories: categories || [],
         area,
         status: status || 'OPEN',

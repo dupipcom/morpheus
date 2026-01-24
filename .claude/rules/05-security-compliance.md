@@ -117,45 +117,6 @@ function validateInput(body: unknown): Result {
 }
 ```
 
-### XSS Prevention with DOMPurify
-
-**ALWAYS sanitize user input** before storing or rendering to prevent XSS attacks. Use utilities from `src/lib/utils/sanitize.ts`:
-
-```typescript
-import { sanitizeText, sanitizeHTML } from '@/lib/utils/sanitize'
-
-// Server-side: Sanitize ALL user input before database storage
-const body = await request.json()
-
-// Plain text fields (strips ALL HTML)
-const sanitizedName = sanitizeText(body.name)  // For: names, titles, simple text
-
-// Rich text fields (allows safe HTML only)
-const sanitizedContent = sanitizeHTML(body.content)  // For: job notes, CMS content
-
-await prisma.note.create({
-  data: { content: sanitizedContent }
-})
-```
-
-**Client-side rendering rules:**
-```typescript
-// ❌ NEVER render unsanitized HTML
-<div dangerouslySetInnerHTML={{ __html: userContent }} />
-
-// ✅ ALWAYS sanitize, even if already sanitized server-side (defense-in-depth)
-<div dangerouslySetInnerHTML={{ __html: sanitizeHTML(userContent) }} />
-
-// ✅ BEST: Use plain text when possible
-<p>{userContent}</p>
-```
-
-**Sanitization strategy by content type:**
-- User notes/comments: Use `sanitizeText()` - strips all HTML
-- Job notes: Use `sanitizeHTML()` - allows safe formatting tags
-- CMS content: Use `sanitizeHTML()` - allows safe formatting tags
-- Names, bios, titles: Use `sanitizeText()` - strips all HTML
-
 ### Injection Prevention
 - Never interpolate user input into queries
 - Use Prisma's parameterized queries
