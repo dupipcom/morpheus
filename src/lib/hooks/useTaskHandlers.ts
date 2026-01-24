@@ -79,7 +79,7 @@ interface UseTaskHandlersOptions {
   onRefreshUser?: () => Promise<void>
   onRefreshTasks?: () => Promise<void>
   onRefreshTaskLists?: () => Promise<void>
-  onTaskCompletedOptimistic?: () => void
+  onTaskCompletedOptimistic?: (task?: { premium?: number; prize?: number; budget?: number }) => void
   pendingCompletionsRef: React.MutableRefObject<Map<string, PendingCompletion>>
   pendingStatusUpdatesRef: React.MutableRefObject<Map<string, TaskStatus>>
   setTaskStatuses?: (updater: (prev: Record<string, TaskStatus>) => Record<string, TaskStatus>) => void
@@ -226,9 +226,24 @@ export function useTaskHandlers({
 
       if (!isCurrentlyCompleted) {
         await createJob({ taskId, listId: taskListId, workerId: userId, status: jobStatus, occurrenceDate: date })
-        if (onTaskCompletedOptimistic) onTaskCompletedOptimistic()
+        // Pass task data to optimistic callback for accurate earnings display
+        if (onTaskCompletedOptimistic) {
+          onTaskCompletedOptimistic({
+            premium: task.premium,
+            prize: task.prize,
+            budget: task.budget
+          })
+        }
       } else {
         await deleteMostRecentJob(taskId, userId, date)
+        // Reverse optimistic earnings when uncompleting task
+        if (onTaskCompletedOptimistic && task.premium) {
+          onTaskCompletedOptimistic({
+            premium: -(task.premium || 0),
+            prize: -(task.prize || 0),
+            budget: -(task.budget || 0)
+          })
+        }
       }
 
       if (onRefreshTasks) await onRefreshTasks()
