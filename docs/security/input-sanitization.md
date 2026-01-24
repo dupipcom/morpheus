@@ -54,8 +54,8 @@ Located in: `src/lib/utils/sanitize.ts`
 ## Dependencies
 
 - `validator` - Input validation (email, URL)
-- `dompurify` - HTML sanitization
-- `jsdom` - DOM implementation for Node.js server-side sanitization
+- `dompurify` - HTML sanitization (works in both browser and Node.js)
+- `jsdom` - DOM implementation for Node.js server-side sanitization (dev dependency, only used server-side)
   - Provides comprehensive XSS protection
   - Maintains human-readable text (preserves quotes, slashes, etc.)
   - Configurable allowlist for HTML tags and attributes

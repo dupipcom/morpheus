@@ -1,10 +1,20 @@
 import validator from 'validator'
 import DOMPurifyLib from 'dompurify'
-import { JSDOM } from 'jsdom'
 
-// Create DOMPurify instance for server-side use
-const window = new JSDOM('').window
-const DOMPurify = DOMPurifyLib(window as unknown as Window)
+// Initialize DOMPurify based on environment
+// Client-side: Use DOMPurify directly with browser's window
+// Server-side: Use DOMPurify with jsdom window
+let DOMPurify: ReturnType<typeof DOMPurifyLib>
+
+if (typeof window === 'undefined') {
+  // Server-side: Create a window using jsdom
+  const { JSDOM } = require('jsdom')
+  const domWindow = new JSDOM('<!DOCTYPE html>').window
+  DOMPurify = DOMPurifyLib(domWindow as unknown as Window)
+} else {
+  // Client-side: Use browser's window directly
+  DOMPurify = DOMPurifyLib(window)
+}
 
 /**
  * Sanitize user input to prevent XSS and injection attacks
