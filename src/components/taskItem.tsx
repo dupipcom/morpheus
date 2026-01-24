@@ -118,8 +118,8 @@ export const TaskItem = ({
           {task.times > 1 ? `${task.count || 0}/${task.times} ` : ''}
           {(task?.redacted === true && !revealRedacted) ? '·····' : (task.displayName || task.name)}
         </span>
-        {/* Show estimated premium badge if there's budget allocated */}
-        {taskPremium > 0 && !isDone && (
+        {/* Show premium badge if there's budget allocated */}
+        {taskPremium > 0 && (
           <Badge variant="outline" className="ml-auto bg-green-50 text-green-700 border-green-200 text-xs">
             ${taskPremium.toFixed(2)}
           </Badge>
