@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState, useEffect, useContext } from 'react'
 import { Button } from '@/components/ui/button'
-import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Calendar } from '@/components/ui/calendar'
@@ -11,7 +11,7 @@ import { Slider } from '@/components/ui/slider'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
-import { Package, List as ListIcon, MoreHorizontal, ChevronDown, Calendar as CalendarIcon, Percent } from 'lucide-react'
+import { Package, List as ListIcon, MoreHorizontal, ChevronDown, Calendar as CalendarIcon, Percent, DollarSign } from 'lucide-react'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { useI18n } from '@/lib/contexts/i18n'
 import { GlobalContext } from '@/lib/contexts'
@@ -22,18 +22,20 @@ import { BudgetDistribution } from '@/lib/utils/budgetDistributionUtils'
 type Collaborator = { id: string, userName: string }
 
 export const AddListForm = ({
+  open,
+  onOpenChange,
   allTaskLists,
   userTemplates,
   isEditing,
   initialList,
-  onCancel,
   onCreated,
 }: {
+  open: boolean
+  onOpenChange: (open: boolean) => void
   allTaskLists: any[]
   userTemplates: any[]
   isEditing: boolean
   initialList?: any
-  onCancel: () => void
   onCreated: (newListId?: string) => Promise<void> | void
 }) => {
   const { t } = useI18n()
@@ -63,8 +65,10 @@ export const AddListForm = ({
   const [categoryDistribution, setCategoryDistribution] = useState<Record<string, number>>({})
   const [categoryDistributionMode, setCategoryDistributionMode] = useState<'percentage' | 'currency'>('percentage')
   const [taskBudgets, setTaskBudgets] = useState<Record<string, { budget: string; prize: string }>>({})
+  const [budgetPercentageMode, setBudgetPercentageMode] = useState<'percentage' | 'currency'>('percentage')
 
-  useEffect(() => {
+  // Get user equity for currency calculations
+  const userEquity = session?.user?.equity || 0
     if (initialList) {
       // Split role like "daily.default" into cadence and role
       const fullRole = initialList.role || 'one-off.custom'
@@ -312,15 +316,39 @@ export const AddListForm = ({
       newListId = data.taskList?.id
     }
     await onCreated(newListId)
-    onCancel()
+    onOpenChange(false)
+  }
+
+  const handleOpenChange = (newOpen: boolean) => {
+    onOpenChange(newOpen)
+    if (!newOpen) {
+      // Reset form when closing
+      setForm({
+        name: '',
+        templateId: '',
+        budget: '',
+        budgetPercentage: 0,
+        dueDate: '',
+        cadence: 'one-off',
+        role: 'custom',
+        collaborators: [],
+      })
+      setTasks([])
+      setPrizePercentage(0)
+      setBudgetDistributionMode('equal')
+      setAreaDistribution({})
+      setCategoryDistribution({})
+      setTaskBudgets({})
+    }
   }
 
   return (
-    <Card className="mb-2 p-4">
-      <CardHeader>
-        <CardTitle className="text-sm">{isEditing ? (t('forms.addListForm.titleEdit') || 'Edit List') : (t('forms.addListForm.titleCreate') || 'Create New List')}</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-3">
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>{isEditing ? (t('forms.addListForm.titleEdit') || 'Edit List') : (t('forms.addListForm.titleCreate') || 'Create New List')}</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-3">
         <div>
           <Label htmlFor="list-name">{t('forms.addListForm.nameLabel') || 'Name'}</Label>
           <Input id="list-name" value={form.name} onChange={(e) => setForm(prev => ({ ...prev, name: e.target.value }))} />
@@ -591,9 +619,8 @@ export const AddListForm = ({
           </AccordionItem>
         </Accordion>
 
-        {/* Budget Distribution Section - only show if list has budget or budgetPercentage */}
-        {(form.budget || form.budgetPercentage > 0) && (
-          <Accordion type="single" collapsible className="w-full">
+        {/* Budget Distribution Section - always show */}
+        <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="budget-distribution" className="border-none">
               <AccordionTrigger className="py-2 px-0 hover:no-underline">
                 <span className="text-sm font-medium">{t('forms.addListForm.budgetDistribution') || 'Budget Distribution'}</span>
@@ -767,11 +794,10 @@ export const AddListForm = ({
               </AccordionContent>
             </AccordionItem>
           </Accordion>
-        )}
 
         <div className="flex gap-2">
           <Button size="sm" onClick={handleSubmit} disabled={!form.name.trim()}>{isEditing ? (t('forms.addListForm.save') || 'Save') : (t('forms.addListForm.create') || 'Create')}</Button>
-          <Button size="sm" variant="outline" onClick={onCancel}>{t('forms.addListForm.cancel') || 'Cancel'}</Button>
+          <Button size="sm" variant="outline" onClick={() => handleOpenChange(false)}>{t('forms.addListForm.cancel') || 'Cancel'}</Button>
           {isEditing && (
             <Button
               size="sm"
@@ -787,16 +813,15 @@ export const AddListForm = ({
                   body: JSON.stringify({ deleteTaskList: true, taskListId: initialList.id })
                 })
                 await onCreated()
-                onCancel()
+                onOpenChange(false)
               }}
             >
               {t('forms.addListForm.deleteList') || 'Delete list'}
             </Button>
           )}
         </div>
-      </CardContent>
-    </Card>
+      </DialogContent>
+    </Dialog>
   )
 }
-
 

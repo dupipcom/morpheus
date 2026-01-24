@@ -146,21 +146,19 @@ export const DoView = ({
         </div>
       )}
 
-      {showAddList && (
-        <div className="mb-4">
-          <AddListForm
-            allTaskLists={allTaskLists}
-            userTemplates={allTemplates}
-            isEditing={isEditingList || false}
-            initialList={isEditingList ? (selectedList as any) : undefined}
-            onCancel={onCloseAddList || (() => {})}
-            onCreated={async (newListId) => {
-              if (onListCreated) await onListCreated(newListId)
-              if (onCloseAddList) onCloseAddList()
-            }}
-          />
-        </div>
-      )}
+      <AddListForm
+        open={showAddList || false}
+        onOpenChange={(open) => {
+          if (!open && onCloseAddList) onCloseAddList()
+        }}
+        allTaskLists={allTaskLists}
+        userTemplates={allTemplates}
+        isEditing={isEditingList || false}
+        initialList={isEditingList ? (selectedList as any) : undefined}
+        onCreated={async (newListId) => {
+          if (onListCreated) await onListCreated(newListId)
+        }}
+      />
 
       {showAddTemplate && (
         <div className="mb-4">
