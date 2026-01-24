@@ -16,7 +16,6 @@ import { Package, List as ListIcon, MoreHorizontal, ChevronDown, Calendar as Cal
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { useI18n } from '@/lib/contexts/i18n'
 import { GlobalContext } from '@/lib/contexts'
-import { jsonFetcher } from '@/lib/utils/utils'
 
 type Collaborator = { id: string, userName: string }
 
@@ -196,7 +195,7 @@ export const AddListForm = ({
   // Only fetches when debouncedQuery is non-empty
   const { data: profilesData } = useSWR<{ profiles: any[] }>(
     debouncedQuery ? `/api/v1/profiles?query=${encodeURIComponent(debouncedQuery)}` : null,
-    jsonFetcher,
+    (url: string) => fetch(url).then(res => res.json()),
     swrOptions
   )
   
