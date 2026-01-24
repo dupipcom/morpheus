@@ -5,6 +5,7 @@
 
 import prisma from '@/lib/prisma'
 import type { Task as PrismaTask, Job as PrismaJob, Areas, Category, TaskStatus } from '@/generated/prisma'
+import type { BudgetDistribution } from '@/lib/utils/budgetDistributionUtils'
 import type {
   MigrationMetadata,
   MigrationResult,
@@ -15,6 +16,17 @@ import type {
   MigrateEmbeddedTaskParams,
   MigrateCompletersParams
 } from './types'
+
+/**
+ * Partial list data needed for budget calculations
+ */
+interface ListForBudgetCalculation {
+  budget?: number | null
+  budgetDistribution?: BudgetDistribution | null
+  prizePercentage?: number | null
+  tasks?: any[]
+  templateTasks?: any[]
+}
 
 /**
  * Get a unique key for task matching
@@ -144,7 +156,7 @@ function mapToCategories(categories: string[] | undefined): Category[] {
  */
 export function calculateTaskBudgetFromDistribution(params: {
   task: EmbeddedTask | PrismaTask
-  list: any
+  list: ListForBudgetCalculation
   taskIndex?: number
 }): { budget: number | null; prize: number | null; premium: number | null } {
   const { task, list, taskIndex = 0 } = params

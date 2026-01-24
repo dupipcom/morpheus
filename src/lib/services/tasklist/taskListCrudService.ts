@@ -6,6 +6,7 @@
 import prisma from '@/lib/prisma'
 import { recalculateUserBudget } from '@/lib/utils/budgetUtils'
 import { getProfitPerTask } from '@/lib/utils/earningsUtils'
+import { BudgetDistribution } from '@/lib/utils/budgetDistributionUtils'
 import type { Task, TaskList, TaskListMembership, CompletedTasks } from './types'
 import {
   ensureUniqueTaskIds,
@@ -213,7 +214,7 @@ export async function createTaskList(params: {
   budget?: number
   budgetPercentage?: number
   prizePercentage?: number
-  budgetDistribution?: any
+  budgetDistribution?: BudgetDistribution
   dueDate?: string | Date
   templateId?: string | null
   tasks?: Task[]
@@ -278,7 +279,7 @@ export async function updateTaskList(params: {
   budget?: number
   budgetPercentage?: number
   prizePercentage?: number
-  budgetDistribution?: any
+  budgetDistribution?: BudgetDistribution
   dueDate?: string | Date
   templateId?: string | null
   tasks?: Task[]

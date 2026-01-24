@@ -146,6 +146,12 @@ type Completer {
   completedAt DateTime
 }
 
+type BudgetDistribution {
+  areas      Json? // Record<string, number> - area name to percentage
+  categories Json? // Record<string, number> - category name to percentage
+  tasks      Json? // Record<string, { budget: number; prize: number }> - task ID to allocation
+}
+
 type Consents {
   doInvestDemo DoInvestDemoConsent?
 }
@@ -529,7 +535,7 @@ model List {
   budgetPercentage     Float?             @default(0)
   remainingBudget      String?
   prizePercentage      Float?             @default(0)
-  budgetDistribution   Json?
+  budgetDistribution   BudgetDistribution?
   // Status fields
   publicUrl            String?
   ticker               String?
