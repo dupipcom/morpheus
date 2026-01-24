@@ -2,15 +2,23 @@
 
 ## Overview
 
-This application uses [DOMPurify](https://github.com/cure53/DOMPurify) (`isomorphic-dompurify` package) to sanitize user input and prevent Cross-Site Scripting (XSS) attacks. This document explains how to use the sanitization utilities correctly throughout the codebase.
+This application uses [DOMPurify](https://github.com/cure53/DOMPurify) (`dompurify` package) to sanitize user input and prevent Cross-Site Scripting (XSS) attacks. 
+
+For client-side rendering, DOMPurify uses the browser's native window object. For server-side rendering (Server Components, API routes), it uses `jsdom` to create a DOM environment. This document explains how to use the sanitization utilities correctly throughout the codebase.
 
 ## Why DOMPurify?
 
 DOMPurify is a DOM-only, super-fast, uber-tolerant XSS sanitizer for HTML, MathML, and SVG. It's:
 - **Battle-tested**: Used by millions of websites
-- **Isomorphic**: Works in both browser and Node.js environments
+- **Universal**: Works in browser (client-side) and Node.js (server-side with jsdom)
 - **Configurable**: Allows fine-grained control over what's allowed
 - **Actively maintained**: Regular security updates
+
+## Implementation
+
+Our implementation automatically detects the environment:
+- **Client-side** (browser): Uses DOMPurify with the native `window` object
+- **Server-side** (Node.js): Uses DOMPurify with a `jsdom`-created window for Server Components and API routes
 
 ## Available Sanitization Functions
 
@@ -309,7 +317,7 @@ We apply multiple layers of security:
 
 ### Regular Updates
 
-- Keep `isomorphic-dompurify` updated
+- Keep `dompurify` and `jsdom` updated
 - Monitor security advisories
 - Review and update allowed tags/attributes as needed
 
