@@ -347,7 +347,7 @@ export const AddListForm = ({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[70vh] flex flex-col">
+      <DialogContent className="max-w-4xl max-h-[70vh] flex flex-col z-[9980]">
         <DialogHeader>
           <DialogTitle>{isEditing ? (t('forms.addListForm.titleEdit') || 'Edit List') : (t('forms.addListForm.titleCreate') || 'Create New List')}</DialogTitle>
         </DialogHeader>
@@ -624,37 +624,6 @@ export const AddListForm = ({
                   mode={budgetPercentageMode}
                   label={t('forms.addListForm.budgetPercentageLabel') || 'Personal Budget Allocation (% of equity)'}
                 />
-
-                {/* Prize Percentage Slider */}
-                {form.budgetPercentage > 0 && (
-                  <div>
-                    <Label htmlFor="prize-percentage" className="flex items-center gap-2 mb-2">
-                      <Percent className="h-4 w-4" />
-                      {t('forms.addListForm.prizePercentageLabel') || 'Prize Allocation'}
-                    </Label>
-                    <p className="text-xs text-muted-foreground mb-3">
-                      {t('forms.addListForm.prizePercentageHint') || 'What % of this list\'s budget allocation goes to prizes?'}
-                    </p>
-                    <Slider
-                      value={[prizePercentage]}
-                      onValueChange={(values) => setPrizePercentage(values[0])}
-                      min={0}
-                      max={100}
-                      step={1}
-                      className="w-full"
-                    />
-                    <div className="flex justify-between text-xs text-muted-foreground mt-2">
-                      <span>0%</span>
-                      <span className="text-sm font-medium text-center flex-1">
-                        {(() => {
-                          const effectivePrizePercentage = (prizePercentage * form.budgetPercentage) / 100
-                          return `${prizePercentage}% of ${form.budgetPercentage}% = ${effectivePrizePercentage.toFixed(2)}% of equity`
-                        })()}
-                      </span>
-                      <span>100%</span>
-                    </div>
-                  </div>
-                )}
 
                 {/* Budget Distribution Mode */}
                 {parseFloat(form.budget || '0') > 0 && (
