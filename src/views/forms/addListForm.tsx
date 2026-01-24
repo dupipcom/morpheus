@@ -759,8 +759,9 @@ export const AddListForm = ({
                                           items={[`budget-${taskId}`]}
                                           totalBudget={parseFloat(form.budget) || 0}
                                           distribution={{ [`budget-${taskId}`]: budget }}
-                                          onChange={(dist) => {
-                                            const newBudget = dist[`budget-${taskId}`] || 0
+                                          onChange={(dist, metadata) => {
+                                            // Use nominal values if in percentage mode, otherwise use dist directly
+                                            const newBudget = metadata?.nominalValues?.[`budget-${taskId}`] ?? dist[`budget-${taskId}`] ?? 0
                                             setTaskBudgets(prev => ({
                                               ...prev,
                                               [taskId]: { ...prev[taskId], budget: newBudget.toString() }
@@ -777,8 +778,9 @@ export const AddListForm = ({
                                           items={[`prize-${taskId}`]}
                                           totalBudget={calculatePrizePool(form.budgetPercentage, userEquity)}
                                           distribution={{ [`prize-${taskId}`]: prize }}
-                                          onChange={(dist) => {
-                                            const newPrize = dist[`prize-${taskId}`] || 0
+                                          onChange={(dist, metadata) => {
+                                            // Use nominal values if in percentage mode, otherwise use dist directly
+                                            const newPrize = metadata?.nominalValues?.[`prize-${taskId}`] ?? dist[`prize-${taskId}`] ?? 0
                                             setTaskBudgets(prev => ({
                                               ...prev,
                                               [taskId]: { ...prev[taskId], prize: newPrize.toString() }
