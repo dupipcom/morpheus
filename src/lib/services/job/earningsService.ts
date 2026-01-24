@@ -247,8 +247,9 @@ export async function calculateAndApplyJobEarnings({
     if (!task) throw new Error('Task not found')
     if (!worker) throw new Error('Worker not found')
 
-    // Use the job's premium (locked at creation time) as the cap
-    // Fall back to task.premium for backwards compatibility with existing jobs
+    // Use the job's premium (locked at creation time) as the cap.
+    // Falls back to task.premium for backwards compatibility with existing jobs that don't have premium set.
+    // If both are null/undefined, premiumCap will be null and no cap will be applied (earnings pass through uncapped).
     const premiumCap = job.premium ?? task.premium
 
     // Parse remainingBudget (it's stored as String in DB)

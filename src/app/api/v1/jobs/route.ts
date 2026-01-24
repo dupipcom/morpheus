@@ -184,7 +184,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Task does not belong to the specified list' }, { status: 400 })
     }
 
-    // Lock in the task's premium at job creation time (0 if not set)
+    // Lock in the task's premium at job creation time.
+    // If task has no premium set (null/undefined), use 0 which means no earnings cap will be applied.
     const jobPremium = task.premium ?? 0
 
     const job = await prisma.job.create({
