@@ -193,7 +193,7 @@ async function updateDaySnapshot(
 
 /**
  * Calculate and apply earnings for a completed job
- * Uses the job's pre-stored risk (locked at job creation) as the earnings cap
+ * Uses the job's pre-stored exposure (locked at job creation) as the earnings cap
  * Updates user's stash, profit, equity and Day.ticker
  */
 export async function calculateAndApplyJobEarnings({
@@ -207,7 +207,7 @@ export async function calculateAndApplyJobEarnings({
     const [job, list, task, worker] = await Promise.all([
       prisma.job.findUnique({
         where: { id: jobId },
-        select: { risk: true }
+        select: { exposure: true }
       }),
       prisma.list.findUnique({
         where: { id: listId },
@@ -247,10 +247,10 @@ export async function calculateAndApplyJobEarnings({
     if (!task) throw new Error('Task not found')
     if (!worker) throw new Error('Worker not found')
 
-    // Use the job's risk (locked at creation time) as the cap.
-    // Falls back to task.premium for backwards compatibility with existing jobs that don't have risk set.
-    // If both are null/undefined, riskCap will be null and no cap will be applied (earnings pass through uncapped).
-    const riskCap = job.risk ?? task.premium
+    // Use the job's exposure (locked at creation time) as the cap.
+    // Falls back to task.premium for backwards compatibility with existing jobs that don't have exposure set.
+    // If both are null/undefined, exposureCap will be null and no cap will be applied (earnings pass through uncapped).
+    const exposureCap = job.exposure ?? task.premium
 
     // Parse remainingBudget (it's stored as String in DB)
     const remainingBudget = list.remainingBudget ? parseFloat(list.remainingBudget) : list.budget
@@ -275,21 +275,21 @@ export async function calculateAndApplyJobEarnings({
     const prize = taskBudgetAllocation.prize || 0
     const earnings = prize + profit
 
-    // CRITICAL: Enforce that earnings can NEVER exceed job's risk cap
-    if (riskCap != null && riskCap > 0 && earnings > riskCap) {
+    // CRITICAL: Enforce that earnings can NEVER exceed job's exposure cap
+    if (exposureCap != null && exposureCap > 0 && earnings > exposureCap) {
       // Scale down proportionally if somehow we exceeded (defense in depth)
-      const scaleFactor = riskCap / earnings
+      const scaleFactor = exposureCap / earnings
       const cappedProfit = profit * scaleFactor
       const cappedPrize = prize * scaleFactor
       
-      console.warn(`Job ${jobId}: Earnings ${earnings} exceeded job risk ${riskCap}. Capped to ${riskCap}`)
+      console.warn(`Job ${jobId}: Earnings ${earnings} exceeded job exposure ${exposureCap}. Capped to ${exposureCap}`)
       
       const { stashDelta, profitDelta } = calculateStashAndProfitDeltas(cappedPrize, cappedProfit, true)
       const updatedValues = await updateUserFinancials(workerId, stashDelta, profitDelta)
 
       await prisma.job.update({
         where: { id: jobId },
-        data: { earnings: riskCap as any, prize: cappedPrize as any, profit: cappedProfit as any }
+        data: { earnings: exposureCap as any, prize: cappedPrize as any, profit: cappedProfit as any }
       })
 
       await updateDayTickerFromJobs(workerId, listId, occurrenceDate)
@@ -298,7 +298,7 @@ export async function calculateAndApplyJobEarnings({
       return {
         prize: cappedPrize,
         profit: cappedProfit,
-        earnings: riskCap,
+        earnings: exposureCap,
         updatedUserValues: {
           availableBalance: updatedValues.newAvailableBalance,
           stash: updatedValues.newStash,
