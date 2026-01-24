@@ -97,6 +97,7 @@ export interface MigrateEmbeddedTaskParams {
   listId: string
   listRole: string | null
   userId: string
+  list?: any // Optional list object for budget calculations
 }
 
 /**

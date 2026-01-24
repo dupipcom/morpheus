@@ -565,8 +565,13 @@ export const TaskGrid = ({
         let taskEarnings = 0
         let taskPrize = 0
         
-        // Check if there's custom per-task allocation
-        if (budgetDistribution?.tasks && task.id && budgetDistribution.tasks[task.id]) {
+        // First, try to use stored values from the task itself
+        if (task.budget != null || task.prize != null) {
+          taskEarnings = task.budget || 0
+          taskPrize = task.prize || 0
+        }
+        // Then check if there's custom per-task allocation in list's budgetDistribution
+        else if (budgetDistribution?.tasks && task.id && budgetDistribution.tasks[task.id]) {
           taskEarnings = budgetDistribution.tasks[task.id].budget || 0
           taskPrize = budgetDistribution.tasks[task.id].prize || 0
         } else {
