@@ -334,10 +334,10 @@ export const AddListForm = ({
     if (budgetDistributionMode === 'area' && Object.keys(areaDistribution).length > 0) {
       const areaAllocs: Record<string, AllocationType> = {}
       Object.entries(areaDistribution).forEach(([area, value]) => {
-        if (areaDistributionMode === 'currency' && budgetValue) {
+        if (areaDistributionMode === 'currency' && budgetValue && budgetValue > 0) {
           areaAllocs[area] = { nominal: value, percent: (value / budgetValue) * 100 }
         } else {
-          areaAllocs[area] = { percent: value, nominal: budgetValue ? (value / 100) * budgetValue : undefined }
+          areaAllocs[area] = { percent: value, nominal: budgetValue && budgetValue > 0 ? (value / 100) * budgetValue : 0 }
         }
       })
       budgetDistribution.areas = areaAllocs
@@ -350,7 +350,7 @@ export const AddListForm = ({
           if (areaPrizeDistributionMode === 'currency' && prizePool > 0) {
             areaPrizeAllocs[area] = { nominal: value, percent: (value / prizePool) * 100 }
           } else {
-            areaPrizeAllocs[area] = { percent: value, nominal: prizePool > 0 ? (value / 100) * prizePool : undefined }
+            areaPrizeAllocs[area] = { percent: value, nominal: prizePool > 0 ? (value / 100) * prizePool : 0 }
           }
         })
         budgetDistribution.areasPrize = areaPrizeAllocs
@@ -361,10 +361,10 @@ export const AddListForm = ({
     if (budgetDistributionMode === 'category' && Object.keys(categoryDistribution).length > 0) {
       const categoryAllocs: Record<string, AllocationType> = {}
       Object.entries(categoryDistribution).forEach(([category, value]) => {
-        if (categoryDistributionMode === 'currency' && budgetValue) {
+        if (categoryDistributionMode === 'currency' && budgetValue && budgetValue > 0) {
           categoryAllocs[category] = { nominal: value, percent: (value / budgetValue) * 100 }
         } else {
-          categoryAllocs[category] = { percent: value, nominal: budgetValue ? (value / 100) * budgetValue : undefined }
+          categoryAllocs[category] = { percent: value, nominal: budgetValue && budgetValue > 0 ? (value / 100) * budgetValue : 0 }
         }
       })
       budgetDistribution.categories = categoryAllocs
@@ -377,7 +377,7 @@ export const AddListForm = ({
           if (categoryPrizeDistributionMode === 'currency' && prizePool > 0) {
             categoryPrizeAllocs[category] = { nominal: value, percent: (value / prizePool) * 100 }
           } else {
-            categoryPrizeAllocs[category] = { percent: value, nominal: prizePool > 0 ? (value / 100) * prizePool : undefined }
+            categoryPrizeAllocs[category] = { percent: value, nominal: prizePool > 0 ? (value / 100) * prizePool : 0 }
           }
         })
         budgetDistribution.categoriesPrize = categoryPrizeAllocs
@@ -856,13 +856,13 @@ export const AddListForm = ({
                                   const budgetAlloc = taskBudgets[taskId]?.budget || {}
                                   const prizeAlloc = taskBudgets[taskId]?.prize || {}
                                   
-                                  // Get display values (use percent if available, else nominal)
-                                  const budgetDisplayValue = budgetAlloc.nominal ?? budgetAlloc.percent ?? 0
-                                  const prizeDisplayValue = prizeAlloc.nominal ?? prizeAlloc.percent ?? 0
-                                  
-                                  // Calculate total using nominal values
+                                  // Calculate nominal values for display and total
                                   const budgetNominal = getAllocationNominal(budgetAlloc, listBudget)
                                   const prizeNominal = getAllocationNominal(prizeAlloc, prizePool)
+                                  
+                                  // Display values should always be nominal (currency) for the input
+                                  const budgetDisplayValue = budgetNominal
+                                  const prizeDisplayValue = prizeNominal
                                   const total = budgetNominal + prizeNominal
                                   
                                   return (
