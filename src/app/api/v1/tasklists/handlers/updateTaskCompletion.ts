@@ -34,6 +34,7 @@ import {
   updateUserStashAndProfit
 } from '@/lib/services/tasklist'
 import { calculateDateComponents, updateDayTicker, findOrCreateDay } from '@/lib/services/tasklist'
+import { calculateTaskBudgetFromDistribution } from '@/lib/services/task/taskMigrationService'
 
 interface UserData {
   id: string
@@ -158,7 +159,20 @@ export async function updateTaskCompletionHandler(
     if (isCompleted && updatedCount > currentCount) {
       const delta = updatedCount - currentCount
       for (let i = 0; i < delta; i++) {
-        const perCompleterEarnings = getPerCompleterProfit(calculateTaskEarnings({
+        // Use budget distribution to get task-specific budget and prize
+        const taskBudgetAllocation = calculateTaskBudgetFromDistribution({
+          task: taskToUse,
+          list: {
+            budget: taskList.budget ? Number(taskList.budget) : null,
+            budgetDistribution: (taskList as Record<string, unknown>).budgetDistribution as any,
+            prizePercentage: (taskList as Record<string, unknown>).prizePercentage as number | undefined,
+            tasks: tasks,
+            templateTasks: (taskList as Record<string, unknown>).templateTasks as any[]
+          }
+        })
+
+        // Use the calculated budget and prize, or fall back to equal distribution
+        const perCompleterEarnings = taskBudgetAllocation.budget || getPerCompleterProfit(calculateTaskEarnings({
           listRole: taskList.role,
           budgetPercentage: (taskList as Record<string, unknown>).budgetPercentage as number | undefined,
           listBudget: taskList.budget != null ? String(taskList.budget) : null,
@@ -167,7 +181,7 @@ export async function updateTaskCompletionHandler(
           date: new Date(dateISO)
         }), taskList.role)
 
-        const perCompleterPrize = getPerCompleterPrize(calculateTaskEarnings({
+        const perCompleterPrize = taskBudgetAllocation.prize || getPerCompleterPrize(calculateTaskEarnings({
           listRole: taskList.role,
           budgetPercentage: (taskList as Record<string, unknown>).budgetPercentage as number | undefined,
           listBudget: taskList.budget != null ? String(taskList.budget) : null,
