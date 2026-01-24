@@ -55,7 +55,7 @@ Successfully implemented comprehensive XSS protection across the Morpheus applic
 | `/api/v1/tasks/[taskId]` | PUT | `name` | `sanitizeText()` |
 | `/api/v1/profile` | POST | `firstName`, `lastName`, `bio` | `sanitizeText()` |
 | `/api/v1/notes` | POST | `content` | `sanitizeHTML()` ✓ existing |
-| `/api/v1/comments` | POST | `content` | `sanitizeText()` ✓ existing |
+| `/api/v1/comments` | POST | `content` | `sanitizeHTML()` (updated to allow HTML like notes) |
 | Job note helpers | - | `content` | `sanitizeHTML()` ✓ existing |
 
 **Total**: 9 endpoints protected

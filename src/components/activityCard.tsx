@@ -10,6 +10,7 @@ import Link from 'next/link'
 import { OptionsButton, OptionsMenuItem } from "@/components/optionsButton"
 import { toast } from "sonner"
 import { Popover, PopoverContent, PopoverTrigger, PopoverAnchor } from "@/components/ui/popover"
+import { sanitizeHTML } from '@/lib/utils/sanitize'
 
 export interface Comment {
   id: string
@@ -899,7 +900,10 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
                     </span>
                     <span className="text-[10px]">{getTimeAgo(new Date(comment.createdAt))}</span>
                   </div>
-                  <p className="text-xs">{comment.content}</p>
+                  <div 
+                    className="text-xs prose prose-sm dark:prose-invert max-w-none"
+                    dangerouslySetInnerHTML={{ __html: sanitizeHTML(comment.content) }}
+                  />
                 </div>
               ))}
             </div>
@@ -956,7 +960,10 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
                           </div>
                         )}
                       </div>
-                      <p className="text-xs">{comment.content}</p>
+                      <div 
+                        className="text-xs prose prose-sm dark:prose-invert max-w-none"
+                        dangerouslySetInnerHTML={{ __html: sanitizeHTML(comment.content) }}
+                      />
                       <div className="flex justify-end mt-1">
                         <button
                           onClick={() => handleToggleCommentLike(comment.id)}
