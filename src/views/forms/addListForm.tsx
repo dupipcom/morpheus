@@ -17,6 +17,7 @@ import { useI18n } from '@/lib/contexts/i18n'
 import { GlobalContext } from '@/lib/contexts'
 import { useDebounce } from '@/lib/hooks/useDebounce'
 import { BudgetDistributionInput } from '@/components/budgetDistributionInput'
+import { BudgetDistribution } from '@/lib/utils/budgetDistributionUtils'
 
 type Collaborator = { id: string, userName: string }
 
@@ -232,7 +233,7 @@ export const AddListForm = ({
       : undefined
     
     // Build budget distribution object
-    const budgetDistribution: any = {}
+    const budgetDistribution: BudgetDistribution = {}
     
     // Normalize area distribution to percentages if in currency mode
     if (budgetDistributionMode === 'area' && Object.keys(areaDistribution).length > 0) {
