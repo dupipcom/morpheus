@@ -292,10 +292,15 @@ export async function updateTaskList(params: {
     throw new Error('TaskList not found')
   }
 
-  // Ensure all tasks have unique ObjectIds
+  // Ensure all tasks have unique ObjectIds and strip timestamp fields
   let updatedTasks = tasks
   if (Array.isArray(updatedTasks)) {
     updatedTasks = ensureUniqueTaskIds(updatedTasks, !!templateId)
+    // Strip updatedAt and createdAt fields - these are not part of EmbeddedTask type
+    updatedTasks = updatedTasks.map(task => {
+      const { updatedAt, createdAt, ...taskWithoutTimestamps } = task as Task & { updatedAt?: unknown; createdAt?: unknown }
+      return taskWithoutTimestamps
+    })
   }
 
   const updated = await prisma.list.update({
