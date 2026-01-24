@@ -171,24 +171,10 @@ export async function updateTaskCompletionHandler(
           }
         })
 
-        // Use the calculated budget and prize, or fall back to equal distribution
-        const perCompleterEarnings = taskBudgetAllocation.budget || getPerCompleterProfit(calculateTaskEarnings({
-          listRole: taskList.role,
-          budgetPercentage: (taskList as Record<string, unknown>).budgetPercentage as number | undefined,
-          listBudget: taskList.budget != null ? String(taskList.budget) : null,
-          userEquity: user.equity != null ? String(user.equity) : null,
-          numTasks: tasks.length || 1,
-          date: new Date(dateISO)
-        }), taskList.role)
-
-        const perCompleterPrize = taskBudgetAllocation.prize || getPerCompleterPrize(calculateTaskEarnings({
-          listRole: taskList.role,
-          budgetPercentage: (taskList as Record<string, unknown>).budgetPercentage as number | undefined,
-          listBudget: taskList.budget != null ? String(taskList.budget) : null,
-          userEquity: user.equity != null ? String(user.equity) : null,
-          numTasks: tasks.length || 1,
-          date: new Date(dateISO)
-        }), taskList.role)
+        // Use the calculated budget and prize directly - they already account for distribution
+        // No fallback to old calculation to prevent using full equity pool
+        const perCompleterEarnings = taskBudgetAllocation.budget || 0
+        const perCompleterPrize = taskBudgetAllocation.prize || 0
 
         updatedCompleters.push({
           id: user.id,
