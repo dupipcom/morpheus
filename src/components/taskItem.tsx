@@ -20,6 +20,7 @@ interface TaskItemProps {
   showCompleterBadge?: boolean
   completerName?: string | null
   taskEarnings?: number
+  taskPrize?: number
   hasCollaborators?: boolean
   className?: string
   variant?: 'default' | 'outline'
@@ -81,6 +82,7 @@ export const TaskItem = ({
   showCompleterBadge = false,
   completerName,
   taskEarnings = 0,
+  taskPrize = 0,
   hasCollaborators = false,
   className = '',
   variant = 'outline',
@@ -94,6 +96,7 @@ export const TaskItem = ({
 }: TaskItemProps) => {
   const key = task?.id || task?.localeKey || task?.name
   const isDone = taskStatus === 'done' || (task?.count || 0) >= (task?.times || 1)
+  const taskPremium = taskEarnings + taskPrize
 
   return (
     <div key={`task__item--${key}`} className={`flex flex-col w-full ${className}`}>
@@ -111,10 +114,16 @@ export const TaskItem = ({
           iconFilled={taskStatus === "done"}
           align="start"
         />
-        <span className="flex text-left">
+        <span className="flex-1 text-left">
           {task.times > 1 ? `${task.count || 0}/${task.times} ` : ''}
           {(task?.redacted === true && !revealRedacted) ? '·····' : (task.displayName || task.name)}
         </span>
+        {/* Show estimated premium badge if there's budget allocated */}
+        {taskPremium > 0 && !isDone && (
+          <Badge variant="outline" className="ml-auto bg-green-50 text-green-700 border-green-200 text-xs">
+            ${taskPremium.toFixed(2)}
+          </Badge>
+        )}
       </Button>
 
       {/* Status Badges Section - appears below button */}

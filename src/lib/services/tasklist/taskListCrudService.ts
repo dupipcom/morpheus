@@ -212,12 +212,14 @@ export async function createTaskList(params: {
   name?: string
   budget?: number
   budgetPercentage?: number
+  prizePercentage?: number
+  budgetDistribution?: any
   dueDate?: string | Date
   templateId?: string | null
   tasks?: Task[]
   collaborators?: string[]
 }): Promise<TaskList> {
-  const { userId, role, name, budget, budgetPercentage, dueDate, templateId, tasks, collaborators } = await params
+  const { userId, role, name, budget, budgetPercentage, prizePercentage, budgetDistribution, dueDate, templateId, tasks, collaborators } = await params
 
   // If creating a new default list, demote existing default to custom
   if (role && role.endsWith('.default')) {
@@ -242,6 +244,8 @@ export async function createTaskList(params: {
       name: name,
       budget: budget,
       budgetPercentage: budgetPercentage || 0,
+      prizePercentage: prizePercentage || 0,
+      budgetDistribution: budgetDistribution,
       dueDate: dueDate,
       visibility: 'PRIVATE',
       users: [
@@ -273,12 +277,14 @@ export async function updateTaskList(params: {
   name?: string
   budget?: number
   budgetPercentage?: number
+  prizePercentage?: number
+  budgetDistribution?: any
   dueDate?: string | Date
   templateId?: string | null
   tasks?: Task[]
   collaborators?: string[]
 }): Promise<TaskList> {
-  const { taskListId, userId, role, name, budget, budgetPercentage, dueDate, templateId, tasks, collaborators } = await params
+  const { taskListId, userId, role, name, budget, budgetPercentage, prizePercentage, budgetDistribution, dueDate, templateId, tasks, collaborators } = await params
 
   const existing = await prisma.list.findUnique({ where: { id: taskListId } })
   if (!existing) {
@@ -301,6 +307,8 @@ export async function updateTaskList(params: {
       name: name !== undefined ? name : existing.name,
       budget: budget !== undefined ? budget : existing.budget,
       budgetPercentage: budgetPercentage !== undefined ? budgetPercentage : (existing as Record<string, unknown>).budgetPercentage,
+      prizePercentage: prizePercentage !== undefined ? prizePercentage : (existing as Record<string, unknown>).prizePercentage,
+      budgetDistribution: budgetDistribution !== undefined ? budgetDistribution : (existing as Record<string, unknown>).budgetDistribution,
       dueDate: dueDate !== undefined ? dueDate : existing.dueDate,
       users: Array.isArray(collaborators)
         ? [
