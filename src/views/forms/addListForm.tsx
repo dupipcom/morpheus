@@ -1,6 +1,7 @@
 'use client'
 
-import React, { useMemo, useState, useEffect, useContext, useCallback } from 'react'
+import React, { useMemo, useState, useEffect, useContext } from 'react'
+import useSWR from 'swr'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -15,7 +16,7 @@ import { Package, List as ListIcon, MoreHorizontal, ChevronDown, Calendar as Cal
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { useI18n } from '@/lib/contexts/i18n'
 import { GlobalContext } from '@/lib/contexts'
-import { useDebounce } from '@/lib/hooks/useDebounce'
+import { jsonFetcher } from '@/lib/utils/utils'
 
 type Collaborator = { id: string, userName: string }
 
@@ -170,39 +171,33 @@ export const AddListForm = ({
     }
   }, [newListPreviewTasks, isEditing])
 
-  const [collabResults, setCollabResults] = useState<any[]>([])
+  // Debounced query state for search
+  const [debouncedQuery, setDebouncedQuery] = useState('')
   
-  // Memoize search callback to prevent re-creating the function on every render
-  const searchProfiles = useCallback(async (query: string) => {
-    try {
-      const res = await fetch(`/api/v1/profiles?query=${encodeURIComponent(query)}`)
-      if (res.ok) {
-        const data = await res.json()
-        setCollabResults(data.profiles || [])
-      } else {
-        // Clear results on error
-        console.error('Error fetching profiles: HTTP', res.status, res.statusText)
-        setCollabResults([])
-      }
-    } catch (error) {
-      // Clear results on fetch error
-      console.error('Error fetching profiles:', error)
-      setCollabResults([])
-    }
-  }, [])
-  
-  // Debounced search function
-  const debouncedSearch = useDebounce(searchProfiles, 300)
-    
+  // Debounce the collabQuery input with 300ms delay
   useEffect(() => {
-    // Only search when user has typed something (non-empty query)
-    if (collabQuery.trim()) {
-      debouncedSearch(collabQuery)
-    } else {
-      // Clear results when query is empty
-      setCollabResults([])
+    const timer = setTimeout(() => {
+      // Only set debounced query if user has typed something
+      setDebouncedQuery(collabQuery.trim() ? collabQuery : '')
+    }, 300)
+    
+    return () => clearTimeout(timer)
+  }, [collabQuery])
+  
+  // Use SWR to fetch profiles based on debounced query
+  // Only fetches when debouncedQuery is non-empty
+  const { data: profilesData } = useSWR<{ profiles: any[] }>(
+    debouncedQuery ? `/api/v1/profiles?query=${encodeURIComponent(debouncedQuery)}` : null,
+    jsonFetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      shouldRetryOnError: false,
+      dedupingInterval: 1000,
     }
-  }, [collabQuery, debouncedSearch])
+  )
+  
+  const collabResults = profilesData?.profiles || []
 
   const handleSubmit = async () => {
     const roleJoined = `${form.cadence}.${form.role}`
