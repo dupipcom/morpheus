@@ -2,6 +2,15 @@
  * Utility functions for budget distribution across tasks, categories, and areas
  */
 
+/**
+ * Task allocation structure - matches Prisma TaskAllocation embedded type
+ * Represents allocation for a single task (percentage or nominal amount)
+ */
+export interface TaskAllocation {
+  percentage?: number  // Percentage of budget allocated to this task
+  amount?: number      // Nominal amount allocated to this task
+}
+
 export interface BudgetDistribution {
   areas?: Record<string, number>
   categories?: Record<string, number>
