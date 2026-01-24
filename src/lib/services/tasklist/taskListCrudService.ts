@@ -297,16 +297,16 @@ export async function updateTaskList(params: {
   if (Array.isArray(updatedTasks)) {
     updatedTasks = ensureUniqueTaskIds(updatedTasks, !!templateId)
     // Strip ALL Task model fields that aren't part of EmbeddedTask type before saving to templateTasks
-    // EmbeddedTask type only includes: id, name, categories, area, status, recurrence, times, count,
+    // EmbeddedTask type includes: id, name, categories, area, status, recurrence, times, count,
     // localeKey, persons, things, events, notes, documents, createdAt (String?), completedOn, dueDate,
-    // budget, visibility, quality, redacted, nextOccurrence, lastOccurrence, firstOccurrence
+    // budget, visibility, quality, redacted, nextOccurrence, lastOccurrence, firstOccurrence, templateId (String?)
     // 
     // Task model has these additional fields that must be stripped:
     // - updatedAt (DateTime @updatedAt) - auto-managed timestamp
     // - createdAt (DateTime @default(now())) - note: EmbeddedTask has this as String?
     // - prize, premium (budget allocation fields from Task model only)
     // - listId, list (relation to List)
-    // - templateId, template (relation to Template)
+    // - template (relation object to Template) - NOTE: templateId (ID field) is KEPT for template reference
     // - jobs (relation to Job[])
     // - candidateIds, candidates (many-to-many relation to Users)
     // - raisedTransactionIds, raisedTransactions (many-to-many relation to Transactions)
@@ -318,8 +318,7 @@ export async function updateTaskList(params: {
         premium, 
         listId, 
         list,
-        templateId,
-        template,
+        template,  // Strip template relation object, but KEEP templateId
         jobs,
         candidateIds,
         candidates,
