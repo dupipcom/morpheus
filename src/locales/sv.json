@@ -497,7 +497,24 @@
       "save": "Spara",
       "cancel": "Avbryt",
       "deleteListConfirm": "Radera den här listan? Detta kan inte ångras.",
-      "deleteList": "Radera lista"
+      "deleteList": "Radera lista",
+      "manageTasks": "Hantera uppgifter",
+      "manageBudgetAllocation": "Budgetfördelning",
+      "distributionModeLabel": "Fördelning",
+      "distributionMode": {
+        "equal": "Lika",
+        "area": "Per område",
+        "category": "Per kategori",
+        "task": "Per uppgift"
+      },
+      "areaDistributionLabel": "Områdesbudget",
+      "areaPrizeDistributionLabel": "Områdespris",
+      "categoryDistributionLabel": "Kategoribudget",
+      "categoryPrizeDistributionLabel": "Kategoripris",
+      "taskDistributionLabel": "Budget",
+      "prizeLabel": "Pris",
+      "totalLabel": "Totalt",
+      "addTaskTitle": "Lägg till uppgift"
     },
     "addTemplateForm": {
       "title": "Skapa ny mall",

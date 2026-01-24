@@ -493,7 +493,24 @@
       "save": "Mentés",
       "cancel": "Mégse",
       "deleteListConfirm": "Törli ezt a listát? Ez nem vonható vissza.",
-      "deleteList": "Lista törlése"
+      "deleteList": "Lista törlése",
+      "manageTasks": "Feladatok kezelése",
+      "manageBudgetAllocation": "Költségvetés elosztás",
+      "distributionModeLabel": "Elosztás",
+      "distributionMode": {
+        "equal": "Egyenlő",
+        "area": "Terület szerint",
+        "category": "Kategória szerint",
+        "task": "Feladatonként"
+      },
+      "areaDistributionLabel": "Terület költségvetés",
+      "areaPrizeDistributionLabel": "Terület díj",
+      "categoryDistributionLabel": "Kategória költségvetés",
+      "categoryPrizeDistributionLabel": "Kategória díj",
+      "taskDistributionLabel": "Költségvetés",
+      "prizeLabel": "Díj",
+      "totalLabel": "Összesen",
+      "addTaskTitle": "Feladat hozzáadása"
     },
     "addTemplateForm": {
       "title": "Új sablon létrehozása",

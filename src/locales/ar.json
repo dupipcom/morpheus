@@ -515,7 +515,24 @@
       "save": "حفظ",
       "cancel": "إلغاء",
       "deleteListConfirm": "حذف هذه القائمة؟ لا يمكن التراجع عن ذلك.",
-      "deleteList": "حذف القائمة"
+      "deleteList": "حذف القائمة",
+      "manageTasks": "إدارة المهام",
+      "manageBudgetAllocation": "توزيع الميزانية",
+      "distributionModeLabel": "التوزيع",
+      "distributionMode": {
+        "equal": "متساوي",
+        "area": "حسب المنطقة",
+        "category": "حسب الفئة",
+        "task": "لكل مهمة"
+      },
+      "areaDistributionLabel": "ميزانية المنطقة",
+      "areaPrizeDistributionLabel": "جائزة المنطقة",
+      "categoryDistributionLabel": "ميزانية الفئة",
+      "categoryPrizeDistributionLabel": "جائزة الفئة",
+      "taskDistributionLabel": "الميزانية",
+      "prizeLabel": "الجائزة",
+      "totalLabel": "الإجمالي",
+      "addTaskTitle": "إضافة مهمة"
     },
     "addTemplateForm": {
       "title": "إنشاء قالب جديد",

@@ -5,6 +5,7 @@
 
 import prisma from '@/lib/prisma'
 import type { Task as PrismaTask, Job as PrismaJob, Areas, Category, TaskStatus } from '@/generated/prisma'
+import type { BudgetDistribution } from '@/lib/utils/budgetDistributionUtils'
 import type {
   MigrationMetadata,
   MigrationResult,
@@ -15,6 +16,17 @@ import type {
   MigrateEmbeddedTaskParams,
   MigrateCompletersParams
 } from './types'
+
+/**
+ * Partial list data needed for budget calculations
+ */
+interface ListForBudgetCalculation {
+  budget?: number | null
+  budgetDistribution?: BudgetDistribution | null
+  prizePercentage?: number | null
+  tasks?: any[]
+  templateTasks?: any[]
+}
 
 /**
  * Get a unique key for task matching
@@ -139,16 +151,165 @@ function mapToCategories(categories: string[] | undefined): Category[] {
 }
 
 /**
+ * Calculate task budget allocations from list's budget distribution
+ * Returns { budget, prize, premium } for a specific task
+ */
+export function calculateTaskBudgetFromDistribution(params: {
+  task: EmbeddedTask | PrismaTask
+  list: ListForBudgetCalculation
+  taskIndex?: number
+  userEquity?: number
+  remainingBudget?: number
+}): { budget: number | null; prize: number | null; premium: number | null } {
+  const { task, list, taskIndex = 0, userEquity, remainingBudget } = params
+  
+  const listBudget = list.budget || 0
+  const budgetDistribution = list.budgetDistribution
+  const prizePercentage = list.prizePercentage || 0
+  
+  let budget: number | null = null
+  let prize: number | null = null
+  
+  // PRIORITY 1: Check for custom per-task allocation in budgetDistribution
+  // This takes precedence over any stored values in the task object
+  if (budgetDistribution?.tasks && task.id && budgetDistribution.tasks[task.id]) {
+    budget = budgetDistribution.tasks[task.id].budget || 0
+    prize = budgetDistribution.tasks[task.id].prize || 0
+  }
+  // PRIORITY 2: Use area-based distribution
+  else if (budgetDistribution?.areas && task.area) {
+    const areaPercentage = budgetDistribution.areas[task.area] || 0
+    const areaBudget = (listBudget * areaPercentage) / 100
+    // Count tasks in same area to split budget
+    const tasksInArea = (list.tasks || list.templateTasks || []).filter((t: any) => t.area === task.area).length || 1
+    budget = areaBudget / tasksInArea
+    
+    // Calculate prize for this area
+    const totalPrizeBudget = (listBudget * prizePercentage) / 100
+    const areaPrizeBudget = (totalPrizeBudget * areaPercentage) / 100
+    prize = areaPrizeBudget / tasksInArea
+  }
+  // PRIORITY 3: Use category-based distribution
+  else if (budgetDistribution?.categories && task.categories && task.categories.length > 0) {
+    // Average across all categories this task belongs to
+    let totalBudget = 0
+    let totalPrize = 0
+    const taskCategories = Array.isArray(task.categories) ? task.categories : [task.categories]
+    
+    taskCategories.forEach((category: any) => {
+      const categoryPercentage = budgetDistribution.categories[category] || 0
+      const categoryBudget = (listBudget * categoryPercentage) / 100
+      const tasksInCategory = (list.tasks || list.templateTasks || []).filter((t: any) => 
+        Array.isArray(t.categories) ? t.categories.includes(category) : t.categories === category
+      ).length || 1
+      totalBudget += categoryBudget / tasksInCategory
+      
+      // Calculate prize for this category
+      const totalPrizeBudget = (listBudget * prizePercentage) / 100
+      const categoryPrizeBudget = (totalPrizeBudget * categoryPercentage) / 100
+      totalPrize += categoryPrizeBudget / tasksInCategory
+    })
+    
+    budget = totalBudget / taskCategories.length
+    prize = totalPrize / taskCategories.length
+  }
+  // PRIORITY 4: If budgetDistribution exists but task doesn't match any mode, use equal split
+  // This ensures we always use the distribution if it's configured
+  else if (budgetDistribution && listBudget > 0) {
+    const totalTasks = (list.tasks || list.templateTasks || []).length || 1
+    const earningsBudget = listBudget * (1 - prizePercentage / 100)
+    const prizeBudget = listBudget * (prizePercentage / 100)
+    budget = earningsBudget / totalTasks
+    prize = prizeBudget / totalTasks
+  }
+  // PRIORITY 5: If task has stored budget/prize AND no budgetDistribution is configured, use stored values
+  // This is for backward compatibility with lists that don't have distribution configured yet
+  else if ((task as any).budget != null || (task as any).prize != null) {
+    budget = (task as any).budget || 0
+    prize = (task as any).prize || 0
+  }
+  // PRIORITY 6: Default equal distribution (legacy behavior)
+  else if (listBudget > 0) {
+    const totalTasks = (list.tasks || list.templateTasks || []).length || 1
+    const earningsBudget = listBudget * (1 - prizePercentage / 100)
+    const prizeBudget = listBudget * (prizePercentage / 100)
+    budget = earningsBudget / totalTasks
+    prize = prizeBudget / totalTasks
+  }
+  
+  // Calculate premium and apply safety caps
+  let calculatedPremium = (budget || 0) + (prize || 0)
+  
+  // SAFETY CHECK 1: If user equity and remaining budget are provided, ensure we don't exceed available funds
+  // This ensures calculations are based on current balance, not just configured distribution
+  if (userEquity != null && remainingBudget != null && calculatedPremium > 0) {
+    // Check if the list's remaining budget can cover this task's allocation
+    if (remainingBudget < calculatedPremium) {
+      // Scale down proportionally to fit within remaining budget
+      const scaleFactor = remainingBudget / calculatedPremium
+      budget = budget ? budget * scaleFactor : null
+      prize = prize ? prize * scaleFactor : null
+      calculatedPremium = (budget || 0) + (prize || 0)
+      console.warn(`Task ${task.id}: Scaled down from calculated premium to fit remaining budget`, {
+        originalPremium: (budget || 0) / scaleFactor + (prize || 0) / scaleFactor,
+        scaledPremium: calculatedPremium,
+        remainingBudget
+      })
+    }
+    
+    // Additionally check against user's total equity (as a sanity check)
+    // The budget shouldn't exceed the user's total equity
+    if (calculatedPremium > userEquity) {
+      const equityScaleFactor = userEquity / calculatedPremium
+      budget = budget ? budget * equityScaleFactor : null
+      prize = prize ? prize * equityScaleFactor : null
+      calculatedPremium = (budget || 0) + (prize || 0)
+      console.warn(`Task ${task.id}: Scaled down to fit within user equity`, {
+        scaledPremium: calculatedPremium,
+        userEquity
+      })
+    }
+  }
+  
+  // SAFETY CHECK 2: If task has a stored premium value, ensure we never exceed it
+  // This is a critical safety check to prevent awarding more than allocated
+  if ((task as any).premium != null && (task as any).premium > 0) {
+    const storedPremium = (task as any).premium
+    if (calculatedPremium > storedPremium) {
+      // Scale down proportionally to fit within the stored premium
+      const scaleFactor = storedPremium / calculatedPremium
+      budget = budget ? budget * scaleFactor : null
+      prize = prize ? prize * scaleFactor : null
+    }
+  }
+  
+  const premium = (budget || 0) + (prize || 0)
+  
+  return {
+    budget: budget ? Math.round(budget * 100) / 100 : null,
+    prize: prize ? Math.round(prize * 100) / 100 : null,
+    premium: premium > 0 ? Math.round(premium * 100) / 100 : null
+  }
+}
+
+/**
  * Migrate a single embedded task to the Task collection
  */
 export async function migrateEmbeddedTask({
   embeddedTask,
   listId,
   listRole,
-  userId
+  userId,
+  list
 }: MigrateEmbeddedTaskParams): Promise<{ task: PrismaTask; jobs: PrismaJob[] }> {
   // Determine recurrence based on list role
   const recurrence = embeddedTask.recurrence || getRecurrenceFromListRole(listRole)
+
+  // Calculate budget allocations from list's budget distribution
+  let budgetAllocation = { budget: null as number | null, prize: null as number | null, premium: null as number | null }
+  if (list) {
+    budgetAllocation = calculateTaskBudgetFromDistribution({ task: embeddedTask, list })
+  }
 
   // Create the Task record
   const task = await prisma.task.create({
@@ -172,7 +333,9 @@ export async function migrateEmbeddedTask({
       documents: (embeddedTask.documents || []) as any,
       completedOn: embeddedTask.completedOn || null,
       dueDate: embeddedTask.dueDate ? new Date(embeddedTask.dueDate) : null,
-      budget: embeddedTask.budget || null,
+      budget: budgetAllocation.budget ?? embeddedTask.budget ?? null,
+      prize: budgetAllocation.prize ?? (embeddedTask as any).prize ?? null,
+      premium: budgetAllocation.premium ?? null,
       visibility: embeddedTask.visibility as any || null,
       quality: embeddedTask.quality || null,
       redacted: embeddedTask.redacted || false
@@ -334,7 +497,8 @@ export async function migrateListTasks({
         embeddedTask,
         listId,
         listRole: list.role,
-        userId
+        userId,
+        list
       })
 
       result.tasksCreated++

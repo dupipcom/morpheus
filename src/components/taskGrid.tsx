@@ -555,12 +555,33 @@ export const TaskGrid = ({
             ? (collabProfiles[String(lastCompleter.id)] || String(lastCompleter.id))
             : null
         
-        // Calculate earnings for THIS specific task completion
+        // Calculate earnings and prize for THIS specific task
         const listBudget = (selectedTaskList as any)?.budget
         const listRole = (selectedTaskList as any)?.role
         const totalTasks = (selectedTaskList?.tasks as any[])?.length || (selectedTaskList?.templateTasks as any[])?.length || 1
+        const budgetDistribution = (selectedTaskList as any)?.budgetDistribution
+        const prizePercentage = (selectedTaskList as any)?.prizePercentage || 0
         
-        const taskEarnings = getProfitPerTask(listBudget, totalTasks, listRole)
+        let taskEarnings = 0
+        let taskPrize = 0
+        
+        // First, try to use stored values from the task itself
+        if (task.budget != null || task.prize != null) {
+          taskEarnings = task.budget || 0
+          taskPrize = task.prize || 0
+        }
+        // Then check if there's custom per-task allocation in list's budgetDistribution
+        else if (budgetDistribution?.tasks && task.id && budgetDistribution.tasks[task.id]) {
+          taskEarnings = budgetDistribution.tasks[task.id].budget || 0
+          taskPrize = budgetDistribution.tasks[task.id].prize || 0
+        } else {
+          // Fall back to default equal distribution
+          taskEarnings = getProfitPerTask(listBudget, totalTasks, listRole)
+          // Calculate prize based on prizePercentage of budgetPercentage
+          // Prize is a % of the list's equity allocation, not the budget
+          // This will be calculated based on user equity when task is completed
+          taskPrize = 0 // For now, prize display is calculated at completion time
+        }
 
         // Determine task status
         const finalTaskStatus = taskStatuses[key] || getTaskStatus(task)
@@ -720,6 +741,7 @@ export const TaskGrid = ({
               showCompleterBadge={true}
               completerName={completerName}
               taskEarnings={taskEarnings}
+              taskPrize={taskPrize}
               hasCollaborators={hasCollaborators}
               variant={isDone ? 'default' : 'outline'}
               latestJob={latestJob}

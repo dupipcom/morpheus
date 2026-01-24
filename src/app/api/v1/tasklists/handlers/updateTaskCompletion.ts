@@ -34,6 +34,7 @@ import {
   updateUserStashAndProfit
 } from '@/lib/services/tasklist'
 import { calculateDateComponents, updateDayTicker, findOrCreateDay } from '@/lib/services/tasklist'
+import { calculateTaskBudgetFromDistribution } from '@/lib/services/task/taskMigrationService'
 
 interface UserData {
   id: string
@@ -158,23 +159,27 @@ export async function updateTaskCompletionHandler(
     if (isCompleted && updatedCount > currentCount) {
       const delta = updatedCount - currentCount
       for (let i = 0; i < delta; i++) {
-        const perCompleterEarnings = getPerCompleterProfit(calculateTaskEarnings({
-          listRole: taskList.role,
-          budgetPercentage: (taskList as Record<string, unknown>).budgetPercentage as number | undefined,
-          listBudget: taskList.budget != null ? String(taskList.budget) : null,
-          userEquity: user.equity != null ? String(user.equity) : null,
-          numTasks: tasks.length || 1,
-          date: new Date(dateISO)
-        }), taskList.role)
+        // Parse remainingBudget (it's stored as String in DB)
+        const remainingBudget = taskList.remainingBudget ? parseFloat(taskList.remainingBudget as string) : (taskList.budget ? Number(taskList.budget) : null)
+        
+        // Use budget distribution to get task-specific budget and prize with all safety checks
+        const taskBudgetAllocation = calculateTaskBudgetFromDistribution({
+          task: taskToUse,
+          list: {
+            budget: taskList.budget ? Number(taskList.budget) : null,
+            budgetDistribution: (taskList as Record<string, unknown>).budgetDistribution as any,
+            prizePercentage: (taskList as Record<string, unknown>).prizePercentage as number | undefined,
+            tasks: tasks,
+            templateTasks: (taskList as Record<string, unknown>).templateTasks as any[]
+          },
+          userEquity: user.equity,
+          remainingBudget: remainingBudget
+        })
 
-        const perCompleterPrize = getPerCompleterPrize(calculateTaskEarnings({
-          listRole: taskList.role,
-          budgetPercentage: (taskList as Record<string, unknown>).budgetPercentage as number | undefined,
-          listBudget: taskList.budget != null ? String(taskList.budget) : null,
-          userEquity: user.equity != null ? String(user.equity) : null,
-          numTasks: tasks.length || 1,
-          date: new Date(dateISO)
-        }), taskList.role)
+        // Use the calculated budget and prize directly - they already account for distribution
+        // No fallback to old calculation to prevent using full equity pool
+        const perCompleterEarnings = taskBudgetAllocation.budget || 0
+        const perCompleterPrize = taskBudgetAllocation.prize || 0
 
         updatedCompleters.push({
           id: user.id,

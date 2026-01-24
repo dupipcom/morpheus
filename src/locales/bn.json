@@ -494,7 +494,24 @@
       "cancel": "বাতিল",
       "deleteListConfirm": "এই তালিকাটি মুছবেন? এটি ফেরত নেওয়া যাবে না।",
       "deleteList": "তালিকা মুছুন",
-      "budgetPercentageLabel": "Personal budget allocation"
+      "budgetPercentageLabel": "Personal budget allocation",
+      "manageTasks": "কাজ পরিচালনা",
+      "manageBudgetAllocation": "বাজেট বিতরণ",
+      "distributionModeLabel": "বিতরণ",
+      "distributionMode": {
+        "equal": "সমান",
+        "area": "এলাকা অনুযায়ী",
+        "category": "বিভাগ অনুযায়ী",
+        "task": "প্রতি কাজ"
+      },
+      "areaDistributionLabel": "এলাকা বাজেট",
+      "areaPrizeDistributionLabel": "এলাকা পুরস্কার",
+      "categoryDistributionLabel": "বিভাগ বাজেট",
+      "categoryPrizeDistributionLabel": "বিভাগ পুরস্কার",
+      "taskDistributionLabel": "বাজেট",
+      "prizeLabel": "পুরস্কার",
+      "totalLabel": "মোট",
+      "addTaskTitle": "কাজ যোগ করুন"
     },
     "addTemplateForm": {
       "title": "নতুন টেমপ্লেট তৈরি করুন",

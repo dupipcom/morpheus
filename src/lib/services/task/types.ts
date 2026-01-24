@@ -3,6 +3,7 @@
  */
 
 import type { Task as PrismaTask, Job as PrismaJob, RecurrenceFrequency } from '@/generated/prisma'
+import type { BudgetDistribution } from '@/lib/utils/budgetDistributionUtils'
 
 /**
  * Migration metadata stored on List model
@@ -97,6 +98,15 @@ export interface MigrateEmbeddedTaskParams {
   listId: string
   listRole: string | null
   userId: string
+  list?: ListForBudgetCalculation // Optional list object for budget calculations
+}
+
+interface ListForBudgetCalculation {
+  budget?: number | null
+  budgetDistribution?: BudgetDistribution | null
+  prizePercentage?: number | null
+  tasks?: any[]
+  templateTasks?: any[]
 }
 
 /**

@@ -494,7 +494,24 @@
       "save": "सहेजें",
       "cancel": "रद्द करें",
       "deleteListConfirm": "इस सूची को हटाएं? इसे वापस नहीं किया जा सकता।",
-      "deleteList": "सूची हटाएं"
+      "deleteList": "सूची हटाएं",
+      "manageTasks": "कार्य प्रबंधित करें",
+      "manageBudgetAllocation": "बजट वितरण",
+      "distributionModeLabel": "वितरण",
+      "distributionMode": {
+        "equal": "समान",
+        "area": "क्षेत्र के अनुसार",
+        "category": "श्रेणी के अनुसार",
+        "task": "प्रति कार्य"
+      },
+      "areaDistributionLabel": "क्षेत्र बजट",
+      "areaPrizeDistributionLabel": "क्षेत्र पुरस्कार",
+      "categoryDistributionLabel": "श्रेणी बजट",
+      "categoryPrizeDistributionLabel": "श्रेणी पुरस्कार",
+      "taskDistributionLabel": "बजट",
+      "prizeLabel": "पुरस्कार",
+      "totalLabel": "कुल",
+      "addTaskTitle": "कार्य जोड़ें"
     },
     "addTemplateForm": {
       "title": "नया टेम्प्लेट बनाएं",

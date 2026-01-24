@@ -79,7 +79,7 @@ export const DoToolbar = ({
   onShowAddTemplate?: () => void
   onShowEditList?: () => void
   hasFormOpen?: boolean
-  onTaskCompletionOptimistic?: () => void
+  onTaskCompletionOptimistic?: (task?: { premium?: number; prize?: number; budget?: number }) => void
 }) => {
   const { t } = useI18n()
   const { session, taskLists: contextTaskLists, refreshTaskLists, templates: contextTemplates, refreshTemplates, selectedDate: contextSelectedDate, setSelectedDate, setGlobalContext } = useContext(GlobalContext)
@@ -329,10 +329,30 @@ export const DoToolbar = ({
   }, [selectedList?.id, dayData])
 
   // Add optimistic earnings for a task completion
-  const addOptimisticTaskEarnings = useCallback(() => {
+  const addOptimisticTaskEarnings = useCallback((task?: { premium?: number; prize?: number; budget?: number }) => {
     if (!selectedList || !session?.user) return
 
     try {
+      // If task data is provided with premium values, use those directly
+      if (task && (task.premium != null || (task.prize != null && task.budget != null))) {
+        const prize = task.prize || 0
+        const profit = task.budget || 0
+        
+        // Add to optimistic earnings using task's actual values
+        setOptimisticEarnings(prev => ({
+          profit: prev.profit + profit,
+          prize: prev.prize + prize
+        }))
+        
+        // Auto-clear after 5 seconds (safety timeout)
+        setTimeout(() => {
+          setOptimisticEarnings({ profit: 0, prize: 0 })
+        }, 5000)
+        
+        return
+      }
+
+      // Fallback to old calculation if task data not provided (backward compatibility)
       // Get user equity from session
       const userEquity = (session.user as any).equity || '0'
 
@@ -391,8 +411,8 @@ export const DoToolbar = ({
   }, [selectedList])
 
   // Combined optimistic callback for both earnings and completion
-  const handleTaskCompletionOptimistic = useCallback(() => {
-    addOptimisticTaskEarnings()
+  const handleTaskCompletionOptimistic = useCallback((task?: { premium?: number; prize?: number; budget?: number }) => {
+    addOptimisticTaskEarnings(task)
     addOptimisticCompletion()
   }, [addOptimisticTaskEarnings, addOptimisticCompletion])
 

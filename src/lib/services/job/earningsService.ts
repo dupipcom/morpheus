@@ -11,6 +11,7 @@ import {
   calculateStashAndProfitDeltas,
   calculateUpdatedUserValues
 } from '@/lib/utils/earningsUtils'
+import { calculateTaskBudgetFromDistribution } from '@/lib/services/task/taskMigrationService'
 
 // Helper to safely parse a number
 function safeParseFloat(value: unknown): number {
@@ -202,36 +203,101 @@ export async function calculateAndApplyJobEarnings({
   occurrenceDate
 }: CalculateJobEarningsParams): Promise<JobEarningsResult> {
   try {
-    const [list, worker] = await Promise.all([
+    const [list, task, worker] = await Promise.all([
       prisma.list.findUnique({
         where: { id: listId },
-        select: { role: true, budget: true, budgetPercentage: true, tasks: true, templateTasks: true }
+        select: { 
+          role: true, 
+          budget: true, 
+          budgetPercentage: true, 
+          budgetDistribution: true,
+          prizePercentage: true,
+          remainingBudget: true,
+          tasks: true, 
+          templateTasks: true 
+        }
+      }),
+      prisma.task.findUnique({
+        where: { id: taskId },
+        select: { 
+          id: true,
+          name: true,
+          area: true,
+          categories: true,
+          budget: true,
+          prize: true,
+          premium: true
+        }
       }),
       prisma.user.findUnique({
         where: { id: workerId },
-        select: { equity: true }
+        select: {
+          equity: true
+        }
       })
     ])
 
     if (!list) throw new Error('List not found')
+    if (!task) throw new Error('Task not found')
     if (!worker) throw new Error('Worker not found')
 
-    const tasksCount = (list.tasks || []).length || (list.templateTasks || []).length || 1
-    const userEquity = String(worker.equity || '0')
+    // Parse remainingBudget (it's stored as String in DB)
+    const remainingBudget = list.remainingBudget ? parseFloat(list.remainingBudget) : list.budget
 
-    const earningsCalculation = calculateTaskEarnings({
-      listRole: list.role,
-      budgetPercentage: list.budgetPercentage as number | undefined,
-      listBudget: list.budget,
-      userEquity,
-      numTasks: tasksCount,
-      date: new Date(occurrenceDate)
+    // Use budget distribution to calculate task-specific earnings with all safety checks
+    const taskBudgetAllocation = calculateTaskBudgetFromDistribution({
+      task,
+      list: {
+        budget: list.budget,
+        budgetDistribution: list.budgetDistribution,
+        prizePercentage: list.prizePercentage,
+        tasks: list.tasks,
+        templateTasks: list.templateTasks
+      },
+      userEquity: worker.equity,
+      remainingBudget
     })
 
-    const prize = getPerCompleterPrize(earningsCalculation, list.role)
-    const profit = getPerCompleterProfit(earningsCalculation, list.role)
+    // Use the calculated budget and prize from distribution
+    // These are already capped by task.premium in calculateTaskBudgetFromDistribution
+    const profit = taskBudgetAllocation.budget || 0
+    const prize = taskBudgetAllocation.prize || 0
     const earnings = prize + profit
 
+    // CRITICAL: Enforce that earnings can NEVER exceed task premium
+    if (task.premium != null && task.premium > 0 && earnings > task.premium) {
+      // Scale down proportionally if somehow we exceeded (defense in depth)
+      const scaleFactor = task.premium / earnings
+      const cappedProfit = profit * scaleFactor
+      const cappedPrize = prize * scaleFactor
+      
+      console.warn(`Job ${jobId}: Earnings ${earnings} exceeded task premium ${task.premium}. Capped to ${task.premium}`)
+      
+      const { stashDelta, profitDelta } = calculateStashAndProfitDeltas(cappedPrize, cappedProfit, true)
+      const updatedValues = await updateUserFinancials(workerId, stashDelta, profitDelta)
+
+      await prisma.job.update({
+        where: { id: jobId },
+        data: { earnings: task.premium as any, prize: cappedPrize as any, profit: cappedProfit as any }
+      })
+
+      await updateDayTickerFromJobs(workerId, listId, occurrenceDate)
+      await updateDaySnapshot(workerId, occurrenceDate, updatedValues)
+
+      return {
+        prize: cappedPrize,
+        profit: cappedProfit,
+        earnings: task.premium,
+        updatedUserValues: {
+          availableBalance: updatedValues.newAvailableBalance,
+          stash: updatedValues.newStash,
+          equity: updatedValues.newEquity,
+          profit: updatedValues.newProfit
+        }
+      }
+    }
+
+    // Normal case: earnings within limits
     const { stashDelta, profitDelta } = calculateStashAndProfitDeltas(prize, profit, true)
     const updatedValues = await updateUserFinancials(workerId, stashDelta, profitDelta)
 

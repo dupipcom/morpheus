@@ -511,7 +511,24 @@
       "save": "저장",
       "cancel": "취소",
       "deleteListConfirm": "이 목록을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.",
-      "deleteList": "목록 삭제"
+      "deleteList": "목록 삭제",
+      "manageTasks": "작업 관리",
+      "manageBudgetAllocation": "예산 배분",
+      "distributionModeLabel": "배분",
+      "distributionMode": {
+        "equal": "균등",
+        "area": "영역별",
+        "category": "카테고리별",
+        "task": "작업별"
+      },
+      "areaDistributionLabel": "영역 예산",
+      "areaPrizeDistributionLabel": "영역 상금",
+      "categoryDistributionLabel": "카테고리 예산",
+      "categoryPrizeDistributionLabel": "카테고리 상금",
+      "taskDistributionLabel": "예산",
+      "prizeLabel": "상금",
+      "totalLabel": "합계",
+      "addTaskTitle": "작업 추가"
     },
     "addTemplateForm": {
       "title": "새 템플릿 만들기",

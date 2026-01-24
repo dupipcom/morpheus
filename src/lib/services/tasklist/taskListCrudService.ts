@@ -6,6 +6,7 @@
 import prisma from '@/lib/prisma'
 import { recalculateUserBudget } from '@/lib/utils/budgetUtils'
 import { getProfitPerTask } from '@/lib/utils/earningsUtils'
+import { BudgetDistribution } from '@/lib/utils/budgetDistributionUtils'
 import type { Task, TaskList, TaskListMembership, CompletedTasks } from './types'
 import {
   ensureUniqueTaskIds,
@@ -212,12 +213,14 @@ export async function createTaskList(params: {
   name?: string
   budget?: number
   budgetPercentage?: number
+  prizePercentage?: number
+  budgetDistribution?: BudgetDistribution
   dueDate?: string | Date
   templateId?: string | null
   tasks?: Task[]
   collaborators?: string[]
 }): Promise<TaskList> {
-  const { userId, role, name, budget, budgetPercentage, dueDate, templateId, tasks, collaborators } = await params
+  const { userId, role, name, budget, budgetPercentage, prizePercentage, budgetDistribution, dueDate, templateId, tasks, collaborators } = await params
 
   // If creating a new default list, demote existing default to custom
   if (role && role.endsWith('.default')) {
@@ -242,6 +245,8 @@ export async function createTaskList(params: {
       name: name,
       budget: budget,
       budgetPercentage: budgetPercentage || 0,
+      prizePercentage: prizePercentage || 0,
+      budgetDistribution: budgetDistribution,
       dueDate: dueDate,
       visibility: 'PRIVATE',
       users: [
@@ -273,22 +278,56 @@ export async function updateTaskList(params: {
   name?: string
   budget?: number
   budgetPercentage?: number
+  prizePercentage?: number
+  budgetDistribution?: BudgetDistribution
   dueDate?: string | Date
   templateId?: string | null
   tasks?: Task[]
   collaborators?: string[]
 }): Promise<TaskList> {
-  const { taskListId, userId, role, name, budget, budgetPercentage, dueDate, templateId, tasks, collaborators } = await params
+  const { taskListId, userId, role, name, budget, budgetPercentage, prizePercentage, budgetDistribution, dueDate, templateId, tasks, collaborators } = await params
 
   const existing = await prisma.list.findUnique({ where: { id: taskListId } })
   if (!existing) {
     throw new Error('TaskList not found')
   }
 
-  // Ensure all tasks have unique ObjectIds
+  // Ensure all tasks have unique ObjectIds and strip fields not in EmbeddedTask type
   let updatedTasks = tasks
   if (Array.isArray(updatedTasks)) {
     updatedTasks = ensureUniqueTaskIds(updatedTasks, !!templateId)
+    // Strip ALL Task model fields that aren't part of EmbeddedTask type before saving to templateTasks
+    // EmbeddedTask type includes: id, name, categories, area, status, recurrence, times, count,
+    // localeKey, persons, things, events, notes, documents, createdAt (String?), completedOn, dueDate,
+    // budget, visibility, quality, redacted, nextOccurrence, lastOccurrence, firstOccurrence, templateId (String?)
+    // 
+    // Task model has these additional fields that must be stripped:
+    // - updatedAt (DateTime @updatedAt) - auto-managed timestamp
+    // - createdAt (DateTime @default(now())) - note: EmbeddedTask has this as String?
+    // - prize, premium (budget allocation fields from Task model only)
+    // - listId, list (relation to List)
+    // - template (relation object to Template) - NOTE: templateId (ID field) is KEPT for template reference
+    // - jobs (relation to Job[])
+    // - candidateIds, candidates (many-to-many relation to Users)
+    // - raisedTransactionIds, raisedTransactions (many-to-many relation to Transactions)
+    updatedTasks = updatedTasks.map(task => {
+      const { 
+        updatedAt, 
+        createdAt, 
+        prize, 
+        premium, 
+        listId, 
+        list,
+        template,  // Strip template relation object, but KEEP templateId
+        jobs,
+        candidateIds,
+        candidates,
+        raisedTransactionIds,
+        raisedTransactions,
+        ...embeddedTaskFields 
+      } = task as any
+      return embeddedTaskFields
+    })
   }
 
   const updated = await prisma.list.update({
@@ -296,19 +335,20 @@ export async function updateTaskList(params: {
     data: {
       templateTasks: updatedTasks ?? existing.templateTasks,
       // Note: We don't update the tasks relation here - use the Task API to manage Task records
-      templateId: templateId !== undefined ? templateId : existing.templateId,
+      // Note: templateId is set at creation and should not be updated
       role: typeof role === 'string' ? role : existing.role,
       name: name !== undefined ? name : existing.name,
       budget: budget !== undefined ? budget : existing.budget,
       budgetPercentage: budgetPercentage !== undefined ? budgetPercentage : (existing as Record<string, unknown>).budgetPercentage,
+      prizePercentage: prizePercentage !== undefined ? prizePercentage : (existing as Record<string, unknown>).prizePercentage,
+      budgetDistribution: budgetDistribution !== undefined ? budgetDistribution : (existing as Record<string, unknown>).budgetDistribution,
       dueDate: dueDate !== undefined ? dueDate : existing.dueDate,
       users: Array.isArray(collaborators)
         ? [
             ...((existing.users as TaskListMembership[]) || []).filter((u) => u.role === 'OWNER'),
             ...collaborators.map((id) => ({ userId: id, role: 'COLLABORATOR' as const }))
           ]
-        : existing.users,
-      updatedAt: new Date()
+        : existing.users
     } as Record<string, unknown>,
     include: { template: true }
   })
@@ -333,8 +373,7 @@ export async function updateTemplateWithTasks(params: {
   await prisma.template.update({
     where: { id: templateId },
     data: {
-      tasks: tasks,
-      updatedAt: new Date()
+      tasks: tasks
     }
   })
 }
