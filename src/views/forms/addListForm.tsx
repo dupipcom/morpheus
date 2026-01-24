@@ -759,9 +759,9 @@ export const AddListForm = ({
                                           items={[`budget-${taskId}`]}
                                           totalBudget={parseFloat(form.budget) || 0}
                                           distribution={{ [`budget-${taskId}`]: budget }}
-                                          onChange={(nominalValues) => {
-                                            // Always receive nominal values for total calculation
-                                            const newBudget = nominalValues[`budget-${taskId}`] ?? 0
+                                          onChange={(dist, metadata) => {
+                                            // Use nominal values for storage/calculation
+                                            const newBudget = metadata?.nominalValues?.[`budget-${taskId}`] ?? dist[`budget-${taskId}`] ?? 0
                                             setTaskBudgets(prev => ({
                                               ...prev,
                                               [taskId]: { ...prev[taskId], budget: newBudget.toString() }
@@ -778,9 +778,9 @@ export const AddListForm = ({
                                           items={[`prize-${taskId}`]}
                                           totalBudget={calculatePrizePool(form.budgetPercentage, userEquity)}
                                           distribution={{ [`prize-${taskId}`]: prize }}
-                                          onChange={(nominalValues) => {
-                                            // Always receive nominal values for total calculation
-                                            const newPrize = nominalValues[`prize-${taskId}`] ?? 0
+                                          onChange={(dist, metadata) => {
+                                            // Use nominal values for storage/calculation
+                                            const newPrize = metadata?.nominalValues?.[`prize-${taskId}`] ?? dist[`prize-${taskId}`] ?? 0
                                             setTaskBudgets(prev => ({
                                               ...prev,
                                               [taskId]: { ...prev[taskId], prize: newPrize.toString() }
