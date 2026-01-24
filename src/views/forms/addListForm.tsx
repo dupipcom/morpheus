@@ -178,23 +178,26 @@ export const AddListForm = ({
   useEffect(() => {
     const timer = setTimeout(() => {
       // Only set debounced query if user has typed something
-      setDebouncedQuery(collabQuery.trim() ? collabQuery : '')
+      setDebouncedQuery(collabQuery.trim())
     }, 300)
     
     return () => clearTimeout(timer)
   }, [collabQuery])
+  
+  // Memoize SWR options to prevent re-creating object on every render
+  const swrOptions = useMemo(() => ({
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    shouldRetryOnError: false,
+    dedupingInterval: 1000,
+  }), [])
   
   // Use SWR to fetch profiles based on debounced query
   // Only fetches when debouncedQuery is non-empty
   const { data: profilesData } = useSWR<{ profiles: any[] }>(
     debouncedQuery ? `/api/v1/profiles?query=${encodeURIComponent(debouncedQuery)}` : null,
     jsonFetcher,
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      shouldRetryOnError: false,
-      dedupingInterval: 1000,
-    }
+    swrOptions
   )
   
   const collabResults = profilesData?.profiles || []
