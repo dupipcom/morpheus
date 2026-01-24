@@ -584,19 +584,22 @@ export const TaskGrid = ({
               taskEarnings = getAllocationNominal(taskAllocation.allocation.budget, listBudget)
               taskPrize = getAllocationNominal(taskAllocation.allocation.prize, prizePool)
             }
-          } else if (budgetDistribution.tasks[task.id]) {
+          } else if (typeof budgetDistribution.tasks === 'object' && budgetDistribution.tasks !== null) {
             // Legacy object-based format
-            const taskAllocation = budgetDistribution.tasks[task.id]
+            const tasksObj = budgetDistribution.tasks as Record<string, any>
+            const taskAllocation = tasksObj[task.id]
             
-            // Handle AllocationType format or legacy format
-            if (taskAllocation.budget && typeof taskAllocation.budget === 'object') {
-              // New format: AllocationType with nominal/percent
-              taskEarnings = getAllocationNominal(taskAllocation.budget, listBudget)
-              taskPrize = getAllocationNominal(taskAllocation.prize, prizePool)
-            } else {
-              // Legacy format: direct numbers
-              taskEarnings = taskAllocation.budget || 0
-              taskPrize = taskAllocation.prize || 0
+            if (taskAllocation) {
+              // Handle AllocationType format or legacy format
+              if (taskAllocation.budget && typeof taskAllocation.budget === 'object') {
+                // New format: AllocationType with nominal/percent
+                taskEarnings = getAllocationNominal(taskAllocation.budget, listBudget)
+                taskPrize = getAllocationNominal(taskAllocation.prize, prizePool)
+              } else {
+                // Legacy format: direct numbers
+                taskEarnings = taskAllocation.budget || 0
+                taskPrize = taskAllocation.prize || 0
+              }
             }
           }
         }
