@@ -133,6 +133,7 @@ interface JobEarningsResult {
     stash: number
     equity: number
     profit: number
+    totalGains: number
   } | null
 }
 
@@ -141,10 +142,10 @@ async function updateUserFinancials(
   workerId: string,
   stashDelta: number,
   profitDelta: number
-): Promise<{ newAvailableBalance: number; newStash: number; newEquity: number; newProfit: number }> {
+): Promise<{ newAvailableBalance: number; newStash: number; newEquity: number; newProfit: number; newTotalGains: number }> {
   const worker = await prisma.user.findUnique({
     where: { id: workerId },
-    select: { availableBalance: true, stash: true, equity: true, profit: true }
+    select: { availableBalance: true, stash: true, equity: true, profit: true, totalGains: true }
   })
 
   if (!worker) throw new Error('Worker not found')
@@ -153,6 +154,7 @@ async function updateUserFinancials(
     currentStash: safeParseFloat(worker.stash),
     currentProfit: safeParseFloat(worker.profit),
     currentAvailableBalance: safeParseFloat(worker.availableBalance),
+    currentTotalGains: safeParseFloat(worker.totalGains),
     stashDelta,
     profitDelta
   })
@@ -162,7 +164,8 @@ async function updateUserFinancials(
     data: {
       stash: updatedValues.newStash as any,
       profit: updatedValues.newProfit as any,
-      equity: updatedValues.newEquity as any
+      equity: updatedValues.newEquity as any,
+      totalGains: updatedValues.newTotalGains as any
     }
   })
 
@@ -292,7 +295,8 @@ export async function calculateAndApplyJobEarnings({
           availableBalance: updatedValues.newAvailableBalance,
           stash: updatedValues.newStash,
           equity: updatedValues.newEquity,
-          profit: updatedValues.newProfit
+          profit: updatedValues.newProfit,
+          totalGains: updatedValues.newTotalGains
         }
       }
     }
@@ -317,7 +321,8 @@ export async function calculateAndApplyJobEarnings({
         availableBalance: updatedValues.newAvailableBalance,
         stash: updatedValues.newStash,
         equity: updatedValues.newEquity,
-        profit: updatedValues.newProfit
+        profit: updatedValues.newProfit,
+        totalGains: updatedValues.newTotalGains
       }
     }
   } catch (error) {

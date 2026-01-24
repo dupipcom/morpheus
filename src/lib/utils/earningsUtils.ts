@@ -283,6 +283,7 @@ interface UserValuesParams {
   currentStash: number
   currentProfit: number
   currentAvailableBalance: number
+  currentTotalGains: number
   stashDelta: number
   profitDelta: number
 }
@@ -292,11 +293,12 @@ interface UpdatedUserValues {
   newProfit: number
   newEquity: number
   newAvailableBalance: number
+  newTotalGains: number
 }
 
 /**
  * Calculate updated user values ensuring they never go below 0
- * Returns { newStash, newProfit, newEquity, newAvailableBalance }
+ * Returns { newStash, newProfit, newEquity, newAvailableBalance, newTotalGains }
  * All values are guaranteed to be >= 0
  */
 export function calculateUpdatedUserValues(params: UserValuesParams): UpdatedUserValues {
@@ -304,6 +306,7 @@ export function calculateUpdatedUserValues(params: UserValuesParams): UpdatedUse
     currentStash,
     currentProfit,
     currentAvailableBalance,
+    currentTotalGains,
     stashDelta,
     profitDelta
   } = params
@@ -312,11 +315,16 @@ export function calculateUpdatedUserValues(params: UserValuesParams): UpdatedUse
   const safeStash = Math.max(0, currentStash)
   const safeProfit = Math.max(0, currentProfit)
   const safeAvailableBalance = Math.max(0, currentAvailableBalance)
+  const safeTotalGains = Math.max(0, currentTotalGains)
 
   // Calculate new values
   const newStash = Math.max(0, safeStash + stashDelta)
   const newProfit = Math.max(0, safeProfit + profitDelta)
   const newAvailableBalance = Math.max(0, safeAvailableBalance)
+  
+  // totalGains = stash (prize) + profit
+  const totalGainsDelta = stashDelta + profitDelta
+  const newTotalGains = Math.max(0, safeTotalGains + totalGainsDelta)
 
   // Equity = availableBalance - stash (stash only contains prize, not profit)
   const newEquity = Math.max(0, newAvailableBalance - newStash)
@@ -325,7 +333,8 @@ export function calculateUpdatedUserValues(params: UserValuesParams): UpdatedUse
     newStash,
     newProfit,
     newEquity,
-    newAvailableBalance
+    newAvailableBalance,
+    newTotalGains
   }
 }
 
