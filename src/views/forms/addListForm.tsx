@@ -420,31 +420,6 @@ export const AddListForm = ({
           </div>
         </div>
         <div>
-          <Label htmlFor="budget-percentage" className="flex items-center gap-2 mb-2">
-            {t('forms.addListForm.budgetPercentageLabel') || 'Personal Budget Allocation (% of equity)'}
-          </Label>
-          <p className="text-xs text-muted-foreground mb-2">
-            {t('forms.addListForm.budgetPercentageHint') || `Available: ${maxAllowedBudget.toFixed(0)}%`}
-          </p>
-          <Input
-            id="budget-percentage"
-            type="number"
-            min={0}
-            max={maxAllowedBudget}
-            step={0.01}
-            value={form.budgetPercentage}
-            onChange={(e) => {
-              const value = parseFloat(e.target.value) || 0
-              const clamped = Math.max(0, Math.min(maxAllowedBudget, value))
-              setForm(prev => ({ ...prev, budgetPercentage: clamped }))
-            }}
-            placeholder="0.00"
-          />
-          <p className="text-xs text-muted-foreground mt-1">
-            {form.budgetPercentage > 0 ? `${form.budgetPercentage.toFixed(2)}% of your equity allocated to this list` : 'Enter percentage'}
-          </p>
-        </div>
-        <div>
           <Label htmlFor="cadence">{t('forms.addListForm.cadenceLabel') || 'Cadence'}</Label>
           <Select value={form.cadence} onValueChange={(val) => setForm(prev => ({ ...prev, cadence: val }))}>
             <SelectTrigger className="w-full">
@@ -519,7 +494,7 @@ export const AddListForm = ({
         <Accordion type="single" collapsible className="w-full">
           <AccordionItem value="tasks" className="border-none">
             <AccordionTrigger className="py-2 px-0 hover:no-underline">
-              <span className="text-sm font-medium">{t('forms.addListForm.tasks') || 'Tasks'}</span>
+              <span className="text-sm font-medium">{t('forms.addListForm.manageTasks') || 'Manage Tasks'}</span>
             </AccordionTrigger>
             <AccordionContent className="pt-2 pb-0">
               <div>
@@ -617,183 +592,262 @@ export const AddListForm = ({
               </div>
             </AccordionContent>
           </AccordionItem>
-        </Accordion>
 
-        {/* Budget Distribution Section - always show */}
-        <Accordion type="single" collapsible className="w-full">
-            <AccordionItem value="budget-distribution" className="border-none">
-              <AccordionTrigger className="py-2 px-0 hover:no-underline">
-                <span className="text-sm font-medium">{t('forms.addListForm.budgetDistribution') || 'Budget Distribution'}</span>
-              </AccordionTrigger>
-              <AccordionContent className="pt-2 pb-0">
-                <div className="space-y-4">
-                  {/* Prize Percentage Slider */}
-                  {form.budgetPercentage > 0 && (
-                    <div>
-                      <Label htmlFor="prize-percentage" className="flex items-center gap-2 mb-2">
-                        <Percent className="h-4 w-4" />
-                        {t('forms.addListForm.prizePercentageLabel') || 'Prize Allocation'}
-                      </Label>
-                      <p className="text-xs text-muted-foreground mb-3">
-                        {t('forms.addListForm.prizePercentageHint') || 'What % of this list\'s budget allocation goes to prizes?'}
-                      </p>
-                      <Slider
-                        value={[prizePercentage]}
-                        onValueChange={(values) => setPrizePercentage(values[0])}
-                        min={0}
-                        max={100}
-                        step={1}
-                        className="w-full"
-                      />
-                      <div className="flex justify-between text-xs text-muted-foreground mt-2">
-                        <span>0%</span>
-                        <span className="text-sm font-medium text-center flex-1">
-                          {(() => {
-                            const effectivePrizePercentage = (prizePercentage * form.budgetPercentage) / 100
-                            return `${prizePercentage}% of ${form.budgetPercentage}% = ${effectivePrizePercentage.toFixed(2)}% of equity`
-                          })()}
-                        </span>
-                        <span>100%</span>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Budget Distribution Mode */}
-                  {parseFloat(form.budget || '0') > 0 && (
+          <AccordionItem value="budget" className="border-none">
+            <AccordionTrigger className="py-2 px-0 hover:no-underline">
+              <span className="text-sm font-medium">{t('forms.addListForm.manageBudgetAllocation') || 'Manage Budget Allocation'}</span>
+            </AccordionTrigger>
+            <AccordionContent className="pt-2 pb-0">
+              <div className="space-y-4">
+                {/* Personal Budget Allocation with dual-mode (% / $) */}
+                <div>
+                  <Label htmlFor="budget-percentage" className="flex items-center gap-2 mb-2">
+                    {t('forms.addListForm.budgetPercentageLabel') || 'Personal Budget Allocation'}
+                  </Label>
+                  <div className="flex gap-2 mb-2">
+                    <Button
+                      type="button"
+                      variant={budgetPercentageMode === 'percentage' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setBudgetPercentageMode('percentage')}
+                      className="flex-1"
+                    >
+                      <Percent className="h-4 w-4 mr-1" />
+                      %
+                    </Button>
+                    <Button
+                      type="button"
+                      variant={budgetPercentageMode === 'currency' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setBudgetPercentageMode('currency')}
+                      className="flex-1"
+                    >
+                      <DollarSign className="h-4 w-4 mr-1" />
+                      $
+                    </Button>
+                  </div>
+                  {budgetPercentageMode === 'percentage' ? (
                     <>
-                      <div>
-                        <Label htmlFor="distribution-mode">{t('forms.addListForm.distributionModeLabel') || 'Distribution Mode'}</Label>
-                        <Select value={budgetDistributionMode} onValueChange={(val: any) => setBudgetDistributionMode(val)}>
-                          <SelectTrigger className="w-full">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="equal">{t('forms.addListForm.distributionMode.equal') || 'Equal (split evenly)'}</SelectItem>
-                            <SelectItem value="area">{t('forms.addListForm.distributionMode.area') || 'By Area'}</SelectItem>
-                            <SelectItem value="category">{t('forms.addListForm.distributionMode.category') || 'By Category'}</SelectItem>
-                            <SelectItem value="task">{t('forms.addListForm.distributionMode.task') || 'Per Task'}</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      {/* Area Distribution */}
-                      {budgetDistributionMode === 'area' && (() => {
-                        const taskAreas = tasks.length > 0 
-                          ? Array.from(new Set(tasks.map(t => t.area).filter(Boolean)))
-                          : ['self', 'home', 'social', 'work']
-                        
-                        return (
-                          <BudgetDistributionInput
-                            items={taskAreas}
-                            totalBudget={parseFloat(form.budget)}
-                            distribution={areaDistribution}
-                            onChange={setAreaDistribution}
-                            onModeChange={setAreaDistributionMode}
-                            mode={areaDistributionMode}
-                            label={t('forms.addListForm.areaDistributionLabel') || 'Area Distribution'}
-                          />
-                        )
-                      })()}
-
-                      {/* Category Distribution */}
-                      {budgetDistributionMode === 'category' && (() => {
-                        const allCategories = tasks.length > 0
-                          ? Array.from(new Set(tasks.flatMap(t => t.categories || []).filter(Boolean)))
-                          : ['custom', 'body', 'mind', 'spirit', 'fun', 'growth', 'community', 'affection', 'clean', 'maintenance']
-                        
-                        return (
-                          <BudgetDistributionInput
-                            items={allCategories}
-                            totalBudget={parseFloat(form.budget)}
-                            distribution={categoryDistribution}
-                            onChange={setCategoryDistribution}
-                            onModeChange={setCategoryDistributionMode}
-                            mode={categoryDistributionMode}
-                            label={t('forms.addListForm.categoryDistributionLabel') || 'Category Distribution'}
-                          />
-                        )
-                      })()}
-
-                      {/* Per-Task Distribution */}
-                      {budgetDistributionMode === 'task' && tasks.length > 0 && (() => {
-                        const totalBudget = tasks.reduce((sum, task) => {
-                          const taskId = task.id || task.name
-                          const budget = parseFloat(taskBudgets[taskId]?.budget || '0')
-                          const prize = parseFloat(taskBudgets[taskId]?.prize || '0')
-                          return sum + budget + prize
-                        }, 0)
-                        const remainingBudget = parseFloat(form.budget) - totalBudget
-                        
-                        return (
-                          <div className="space-y-3">
-                            <div className="text-sm font-medium">
-                              {t('forms.addListForm.taskDistributionLabel') || 'Per-Task Budget & Prize'}
-                              <span className="ml-2 text-xs text-muted-foreground">
-                                (Remaining: ${remainingBudget.toFixed(2)})
-                              </span>
-                            </div>
-                            <div className="border rounded-md overflow-x-auto">
-                              <table className="w-full text-sm">
-                                <thead>
-                                  <tr className="bg-muted/50 text-left">
-                                    <th className="p-2">{t('forms.addListForm.table.name') || 'Name'}</th>
-                                    <th className="p-2">{t('forms.addListForm.budgetLabel') || 'Budget'}</th>
-                                    <th className="p-2">{t('forms.addListForm.prizeLabel') || 'Prize'}</th>
-                                    <th className="p-2">{t('forms.addListForm.totalLabel') || 'Total'}</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {tasks.map((task: any, idx: number) => {
-                                    const taskId = task.id || task.name
-                                    const budget = parseFloat(taskBudgets[taskId]?.budget || '0')
-                                    const prize = parseFloat(taskBudgets[taskId]?.prize || '0')
-                                    return (
-                                      <tr key={`${taskId}-${idx}`}>
-                                        <td className="p-2">{task.name}</td>
-                                        <td className="p-2">
-                                          <Input
-                                            type="number"
-                                            min="0"
-                                            step="0.01"
-                                            value={taskBudgets[taskId]?.budget || ''}
-                                            onChange={(e) => setTaskBudgets(prev => ({
-                                              ...prev,
-                                              [taskId]: { ...prev[taskId], budget: e.target.value }
-                                            }))}
-                                            className="w-24 h-8 text-xs"
-                                            placeholder="0.00"
-                                          />
-                                        </td>
-                                        <td className="p-2">
-                                          <Input
-                                            type="number"
-                                            min="0"
-                                            step="0.01"
-                                            value={taskBudgets[taskId]?.prize || ''}
-                                            onChange={(e) => setTaskBudgets(prev => ({
-                                              ...prev,
-                                              [taskId]: { ...prev[taskId], prize: e.target.value }
-                                            }))}
-                                            className="w-24 h-8 text-xs"
-                                            placeholder="0.00"
-                                          />
-                                        </td>
-                                        <td className="p-2 text-xs">${(budget + prize).toFixed(2)}</td>
-                                      </tr>
-                                    )
-                                  })}
-                                </tbody>
-                              </table>
-                            </div>
-                          </div>
-                        )
-                      })()}
+                      <p className="text-xs text-muted-foreground mb-2">
+                        {t('forms.addListForm.budgetPercentageHint') || `Available: ${maxAllowedBudget.toFixed(0)}%`}
+                      </p>
+                      <Input
+                        id="budget-percentage"
+                        type="number"
+                        min={0}
+                        max={maxAllowedBudget}
+                        step={0.01}
+                        value={form.budgetPercentage}
+                        onChange={(e) => {
+                          const value = parseFloat(e.target.value) || 0
+                          const clamped = Math.max(0, Math.min(maxAllowedBudget, value))
+                          setForm(prev => ({ ...prev, budgetPercentage: clamped }))
+                        }}
+                        placeholder="0.00"
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {form.budgetPercentage > 0 
+                          ? `${form.budgetPercentage.toFixed(2)}% = $${((form.budgetPercentage / 100) * userEquity).toFixed(2)}`
+                          : 'Enter percentage'}
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-xs text-muted-foreground mb-2">
+                        {t('forms.addListForm.budgetCurrencyHint') || `Available: $${((maxAllowedBudget / 100) * userEquity).toFixed(2)}`}
+                      </p>
+                      <Input
+                        id="budget-currency"
+                        type="number"
+                        min={0}
+                        max={(maxAllowedBudget / 100) * userEquity}
+                        step={0.01}
+                        value={userEquity > 0 ? ((form.budgetPercentage / 100) * userEquity).toFixed(2) : '0.00'}
+                        onChange={(e) => {
+                          const currencyValue = parseFloat(e.target.value) || 0
+                          const maxCurrency = (maxAllowedBudget / 100) * userEquity
+                          const clampedCurrency = Math.max(0, Math.min(maxCurrency, currencyValue))
+                          const percentage = userEquity > 0 ? (clampedCurrency / userEquity) * 100 : 0
+                          setForm(prev => ({ ...prev, budgetPercentage: percentage }))
+                        }}
+                        placeholder="0.00"
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {form.budgetPercentage > 0 
+                          ? `$${((form.budgetPercentage / 100) * userEquity).toFixed(2)} = ${form.budgetPercentage.toFixed(2)}%`
+                          : 'Enter amount'}
+                      </p>
                     </>
                   )}
                 </div>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+
+                {/* Prize Percentage Slider */}
+                {form.budgetPercentage > 0 && (
+                  <div>
+                    <Label htmlFor="prize-percentage" className="flex items-center gap-2 mb-2">
+                      <Percent className="h-4 w-4" />
+                      {t('forms.addListForm.prizePercentageLabel') || 'Prize Allocation'}
+                    </Label>
+                    <p className="text-xs text-muted-foreground mb-3">
+                      {t('forms.addListForm.prizePercentageHint') || 'What % of this list\'s budget allocation goes to prizes?'}
+                    </p>
+                    <Slider
+                      value={[prizePercentage]}
+                      onValueChange={(values) => setPrizePercentage(values[0])}
+                      min={0}
+                      max={100}
+                      step={1}
+                      className="w-full"
+                    />
+                    <div className="flex justify-between text-xs text-muted-foreground mt-2">
+                      <span>0%</span>
+                      <span className="text-sm font-medium text-center flex-1">
+                        {(() => {
+                          const effectivePrizePercentage = (prizePercentage * form.budgetPercentage) / 100
+                          return `${prizePercentage}% of ${form.budgetPercentage}% = ${effectivePrizePercentage.toFixed(2)}% of equity`
+                        })()}
+                      </span>
+                      <span>100%</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Budget Distribution Mode */}
+                {parseFloat(form.budget || '0') > 0 && (
+                  <>
+                    <div>
+                      <Label htmlFor="distribution-mode">{t('forms.addListForm.distributionModeLabel') || 'Distribution Mode'}</Label>
+                      <Select value={budgetDistributionMode} onValueChange={(val: any) => setBudgetDistributionMode(val)}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="equal">{t('forms.addListForm.distributionMode.equal') || 'Equal (split evenly)'}</SelectItem>
+                          <SelectItem value="area">{t('forms.addListForm.distributionMode.area') || 'By Area'}</SelectItem>
+                          <SelectItem value="category">{t('forms.addListForm.distributionMode.category') || 'By Category'}</SelectItem>
+                          <SelectItem value="task">{t('forms.addListForm.distributionMode.task') || 'Per Task'}</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Area Distribution */}
+                    {budgetDistributionMode === 'area' && (() => {
+                      const taskAreas = tasks.length > 0 
+                        ? Array.from(new Set(tasks.map(t => t.area).filter(Boolean)))
+                        : ['self', 'home', 'social', 'work']
+                      
+                      return (
+                        <BudgetDistributionInput
+                          items={taskAreas}
+                          totalBudget={parseFloat(form.budget)}
+                          distribution={areaDistribution}
+                          onChange={setAreaDistribution}
+                          onModeChange={setAreaDistributionMode}
+                          mode={areaDistributionMode}
+                          label={t('forms.addListForm.areaDistributionLabel') || 'Area Distribution'}
+                        />
+                      )
+                    })()}
+
+                    {/* Category Distribution */}
+                    {budgetDistributionMode === 'category' && (() => {
+                      const allCategories = tasks.length > 0
+                        ? Array.from(new Set(tasks.flatMap(t => t.categories || []).filter(Boolean)))
+                        : ['custom', 'body', 'mind', 'spirit', 'fun', 'growth', 'community', 'affection', 'clean', 'maintenance']
+                      
+                      return (
+                        <BudgetDistributionInput
+                          items={allCategories}
+                          totalBudget={parseFloat(form.budget)}
+                          distribution={categoryDistribution}
+                          onChange={setCategoryDistribution}
+                          onModeChange={setCategoryDistributionMode}
+                          mode={categoryDistributionMode}
+                          label={t('forms.addListForm.categoryDistributionLabel') || 'Category Distribution'}
+                        />
+                      )
+                    })()}
+
+                    {/* Per-Task Distribution */}
+                    {budgetDistributionMode === 'task' && tasks.length > 0 && (() => {
+                      const totalBudget = tasks.reduce((sum, task) => {
+                        const taskId = task.id || task.name
+                        const budget = parseFloat(taskBudgets[taskId]?.budget || '0')
+                        const prize = parseFloat(taskBudgets[taskId]?.prize || '0')
+                        return sum + budget + prize
+                      }, 0)
+                      const remainingBudget = parseFloat(form.budget) - totalBudget
+                      
+                      return (
+                        <div className="space-y-3">
+                          <div className="text-sm font-medium">
+                            {t('forms.addListForm.taskDistributionLabel') || 'Per-Task Budget & Prize'}
+                            <span className="ml-2 text-xs text-muted-foreground">
+                              (Remaining: ${remainingBudget.toFixed(2)})
+                            </span>
+                          </div>
+                          <div className="border rounded-md overflow-x-auto">
+                            <table className="w-full text-sm">
+                              <thead>
+                                <tr className="bg-muted/50 text-left">
+                                  <th className="p-2">{t('forms.addListForm.table.name') || 'Name'}</th>
+                                  <th className="p-2">{t('forms.addListForm.budgetLabel') || 'Budget'}</th>
+                                  <th className="p-2">{t('forms.addListForm.prizeLabel') || 'Prize'}</th>
+                                  <th className="p-2">{t('forms.addListForm.totalLabel') || 'Total'}</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {tasks.map((task: any, idx: number) => {
+                                  const taskId = task.id || task.name
+                                  const budget = parseFloat(taskBudgets[taskId]?.budget || '0')
+                                  const prize = parseFloat(taskBudgets[taskId]?.prize || '0')
+                                  return (
+                                    <tr key={`${taskId}-${idx}`}>
+                                      <td className="p-2">{task.name}</td>
+                                      <td className="p-2">
+                                        <Input
+                                          type="number"
+                                          min="0"
+                                          step="0.01"
+                                          value={taskBudgets[taskId]?.budget || ''}
+                                          onChange={(e) => setTaskBudgets(prev => ({
+                                            ...prev,
+                                            [taskId]: { ...prev[taskId], budget: e.target.value }
+                                          }))}
+                                          className="w-24 h-8 text-xs"
+                                          placeholder="0.00"
+                                        />
+                                      </td>
+                                      <td className="p-2">
+                                        <Input
+                                          type="number"
+                                          min="0"
+                                          step="0.01"
+                                          value={taskBudgets[taskId]?.prize || ''}
+                                          onChange={(e) => setTaskBudgets(prev => ({
+                                            ...prev,
+                                            [taskId]: { ...prev[taskId], prize: e.target.value }
+                                          }))}
+                                          className="w-24 h-8 text-xs"
+                                          placeholder="0.00"
+                                        />
+                                      </td>
+                                      <td className="p-2 text-xs">${(budget + prize).toFixed(2)}</td>
+                                    </tr>
+                                  )
+                                })}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      )
+                    })()}
+                  </>
+                )}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
 
         <div className="flex gap-2">
           <Button size="sm" onClick={handleSubmit} disabled={!form.name.trim()}>{isEditing ? (t('forms.addListForm.save') || 'Save') : (t('forms.addListForm.create') || 'Create')}</Button>
@@ -819,6 +873,7 @@ export const AddListForm = ({
               {t('forms.addListForm.deleteList') || 'Delete list'}
             </Button>
           )}
+        </div>
         </div>
       </DialogContent>
     </Dialog>
