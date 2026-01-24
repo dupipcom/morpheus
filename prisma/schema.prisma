@@ -286,20 +286,27 @@ type ThingReference {
   name String
 }
 
-type TaskAllocation {
-  percentage Float?  // Percentage of budget allocated to this task
-  amount     Float?  // Nominal amount allocated to this task
+type AllocationType {
+  nominal Float?   // Nominal (currency) amount
+  percent Float?   // Percentage value (0-100)
 }
 
 type TaskBudgetAllocation {
-  budget Float  // Budget allocation for this task
-  prize  Float  // Prize allocation for this task
+  budget AllocationType?  // Budget allocation for this task
+  prize  AllocationType?  // Prize allocation for this task
+}
+
+type TasksAllocationsType {
+  taskId     String?              // Task ID
+  allocation TaskBudgetAllocation? // Allocation for this task
 }
 
 type BudgetDistribution {
-  areas      Json?  // Record<string, number> - Budget allocation by area
-  categories Json?  // Record<string, number> - Budget allocation by category
-  tasks      Json?  // Record<string, TaskBudgetAllocation> - Per-task allocations
+  areas           Json?  // Record<string, AllocationType> - Budget allocation by area
+  areasPrize      Json?  // Record<string, AllocationType> - Prize allocation by area
+  categories      Json?  // Record<string, AllocationType> - Budget allocation by category
+  categoriesPrize Json?  // Record<string, AllocationType> - Prize allocation by category
+  tasks           Json?  // Record<string, TaskBudgetAllocation> - Per-task allocations
 }
 
 type Ticker {
@@ -732,8 +739,8 @@ model Budget {
   type              BudgetEntryType
   totalAmount       Float
   remainingAmount   Float
-  // Task allocations - map of task IDs to TaskAllocation objects
-  taskAllocations   Json?           // Record<string, TaskAllocation> - percentage or nominal amount per task
+  // Task allocations - array of taskId to TaskBudgetAllocation mappings
+  taskAllocations   TasksAllocationsType[]
   // Relations
   ownerId           String          @db.ObjectId
   owner             User            @relation(fields: [ownerId], references: [id], onDelete: Cascade)

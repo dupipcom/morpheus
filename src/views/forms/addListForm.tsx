@@ -17,10 +17,21 @@ import { useI18n } from '@/lib/contexts/i18n'
 import { GlobalContext } from '@/lib/contexts'
 import { useDebounce } from '@/lib/hooks/useDebounce'
 import { BudgetDistributionInput } from '@/components/budgetDistributionInput'
-import { BudgetDistribution } from '@/lib/utils/budgetDistributionUtils'
+import { 
+  BudgetDistribution, 
+  AllocationType, 
+  TaskBudgetAllocation,
+  getAllocationNominal 
+} from '@/lib/utils/budgetDistributionUtils'
 import { calculatePrizePool, calculateBudgetPercentageFromCurrency } from '@/lib/utils/earningsUtils'
 
 type Collaborator = { id: string, userName: string }
+
+// Extended task budget state to store both nominal and percent values
+interface TaskBudgetState {
+  budget: AllocationType
+  prize: AllocationType
+}
 
 export const AddListForm = ({
   open,
@@ -69,7 +80,7 @@ export const AddListForm = ({
   const [categoryDistributionMode, setCategoryDistributionMode] = useState<'percentage' | 'currency'>('percentage')
   const [categoryPrizeDistribution, setCategoryPrizeDistribution] = useState<Record<string, number>>({})
   const [categoryPrizeDistributionMode, setCategoryPrizeDistributionMode] = useState<'percentage' | 'currency'>('percentage')
-  const [taskBudgets, setTaskBudgets] = useState<Record<string, { budget: string; prize: string; budgetNominal?: number; prizeNominal?: number }>>({})
+  const [taskBudgets, setTaskBudgets] = useState<Record<string, TaskBudgetState>>({})
   const [budgetPercentageMode, setBudgetPercentageMode] = useState<'percentage' | 'currency'>('percentage')
 
   // Get user equity for currency calculations
@@ -117,17 +128,70 @@ export const AddListForm = ({
         const dist = initialList.budgetDistribution
         
         if (dist.areas) {
-          setAreaDistribution(dist.areas)
+          // Convert AllocationType to number for component compatibility
+          const areaNumbers: Record<string, number> = {}
+          Object.entries(dist.areas).forEach(([area, alloc]: [string, any]) => {
+            // If it's an AllocationType, extract the percent or nominal
+            if (typeof alloc === 'object' && (alloc.nominal != null || alloc.percent != null)) {
+              areaNumbers[area] = alloc.percent ?? alloc.nominal ?? 0
+            } else {
+              areaNumbers[area] = typeof alloc === 'number' ? alloc : 0
+            }
+          })
+          setAreaDistribution(areaNumbers)
+          
+          // Also load area prize distribution if available
+          if (dist.areasPrize) {
+            const areaPrizeNumbers: Record<string, number> = {}
+            Object.entries(dist.areasPrize).forEach(([area, alloc]: [string, any]) => {
+              if (typeof alloc === 'object' && (alloc.nominal != null || alloc.percent != null)) {
+                areaPrizeNumbers[area] = alloc.percent ?? alloc.nominal ?? 0
+              } else {
+                areaPrizeNumbers[area] = typeof alloc === 'number' ? alloc : 0
+              }
+            })
+            setAreaPrizeDistribution(areaPrizeNumbers)
+          }
           setBudgetDistributionMode('area')
         } else if (dist.categories) {
-          setCategoryDistribution(dist.categories)
+          // Convert AllocationType to number for component compatibility
+          const categoryNumbers: Record<string, number> = {}
+          Object.entries(dist.categories).forEach(([cat, alloc]: [string, any]) => {
+            if (typeof alloc === 'object' && (alloc.nominal != null || alloc.percent != null)) {
+              categoryNumbers[cat] = alloc.percent ?? alloc.nominal ?? 0
+            } else {
+              categoryNumbers[cat] = typeof alloc === 'number' ? alloc : 0
+            }
+          })
+          setCategoryDistribution(categoryNumbers)
+          
+          // Also load category prize distribution if available
+          if (dist.categoriesPrize) {
+            const categoryPrizeNumbers: Record<string, number> = {}
+            Object.entries(dist.categoriesPrize).forEach(([cat, alloc]: [string, any]) => {
+              if (typeof alloc === 'object' && (alloc.nominal != null || alloc.percent != null)) {
+                categoryPrizeNumbers[cat] = alloc.percent ?? alloc.nominal ?? 0
+              } else {
+                categoryPrizeNumbers[cat] = typeof alloc === 'number' ? alloc : 0
+              }
+            })
+            setCategoryPrizeDistribution(categoryPrizeNumbers)
+          }
           setBudgetDistributionMode('category')
         } else if (dist.tasks) {
-          const taskBudgetsData: Record<string, { budget: string; prize: string }> = {}
+          const taskBudgetsData: Record<string, TaskBudgetState> = {}
           Object.entries(dist.tasks).forEach(([taskId, allocation]: [string, any]) => {
+            // Handle new AllocationType format or legacy format
+            const budgetAlloc = allocation?.budget
+            const prizeAlloc = allocation?.prize
+            
             taskBudgetsData[taskId] = {
-              budget: String(allocation.budget || ''),
-              prize: String(allocation.prize || '')
+              budget: typeof budgetAlloc === 'object' 
+                ? { nominal: budgetAlloc?.nominal, percent: budgetAlloc?.percent }
+                : { nominal: typeof budgetAlloc === 'number' ? budgetAlloc : 0 },
+              prize: typeof prizeAlloc === 'object'
+                ? { nominal: prizeAlloc?.nominal, percent: prizeAlloc?.percent }
+                : { nominal: typeof prizeAlloc === 'number' ? prizeAlloc : 0 }
             }
           })
           setTaskBudgets(taskBudgetsData)
@@ -263,46 +327,82 @@ export const AddListForm = ({
       ? parseFloat(form.budget) 
       : undefined
     
-    // Build budget distribution object
+    // Build budget distribution object with AllocationType
     const budgetDistribution: BudgetDistribution = {}
     
-    // Normalize area distribution to percentages if in currency mode
+    // Build area distribution with AllocationType
     if (budgetDistributionMode === 'area' && Object.keys(areaDistribution).length > 0) {
-      if (areaDistributionMode === 'currency' && budgetValue) {
-        // Convert currency values to percentages
-        const areaPercentages: Record<string, number> = {}
-        Object.entries(areaDistribution).forEach(([area, value]) => {
-          areaPercentages[area] = (value / budgetValue) * 100
+      const areaAllocs: Record<string, AllocationType> = {}
+      Object.entries(areaDistribution).forEach(([area, value]) => {
+        if (areaDistributionMode === 'currency' && budgetValue) {
+          areaAllocs[area] = { nominal: value, percent: (value / budgetValue) * 100 }
+        } else {
+          areaAllocs[area] = { percent: value, nominal: budgetValue ? (value / 100) * budgetValue : undefined }
+        }
+      })
+      budgetDistribution.areas = areaAllocs
+      
+      // Also save area prize distribution if set
+      if (Object.keys(areaPrizeDistribution).length > 0) {
+        const areaPrizeAllocs: Record<string, AllocationType> = {}
+        const prizePool = calculatePrizePool(form.budgetPercentage, userEquity)
+        Object.entries(areaPrizeDistribution).forEach(([area, value]) => {
+          if (areaPrizeDistributionMode === 'currency' && prizePool > 0) {
+            areaPrizeAllocs[area] = { nominal: value, percent: (value / prizePool) * 100 }
+          } else {
+            areaPrizeAllocs[area] = { percent: value, nominal: prizePool > 0 ? (value / 100) * prizePool : undefined }
+          }
         })
-        budgetDistribution.areas = areaPercentages
-      } else {
-        budgetDistribution.areas = areaDistribution
+        budgetDistribution.areasPrize = areaPrizeAllocs
       }
     }
     
-    // Normalize category distribution to percentages if in currency mode
+    // Build category distribution with AllocationType
     if (budgetDistributionMode === 'category' && Object.keys(categoryDistribution).length > 0) {
-      if (categoryDistributionMode === 'currency' && budgetValue) {
-        // Convert currency values to percentages
-        const categoryPercentages: Record<string, number> = {}
-        Object.entries(categoryDistribution).forEach(([category, value]) => {
-          categoryPercentages[category] = (value / budgetValue) * 100
+      const categoryAllocs: Record<string, AllocationType> = {}
+      Object.entries(categoryDistribution).forEach(([category, value]) => {
+        if (categoryDistributionMode === 'currency' && budgetValue) {
+          categoryAllocs[category] = { nominal: value, percent: (value / budgetValue) * 100 }
+        } else {
+          categoryAllocs[category] = { percent: value, nominal: budgetValue ? (value / 100) * budgetValue : undefined }
+        }
+      })
+      budgetDistribution.categories = categoryAllocs
+      
+      // Also save category prize distribution if set
+      if (Object.keys(categoryPrizeDistribution).length > 0) {
+        const categoryPrizeAllocs: Record<string, AllocationType> = {}
+        const prizePool = calculatePrizePool(form.budgetPercentage, userEquity)
+        Object.entries(categoryPrizeDistribution).forEach(([category, value]) => {
+          if (categoryPrizeDistributionMode === 'currency' && prizePool > 0) {
+            categoryPrizeAllocs[category] = { nominal: value, percent: (value / prizePool) * 100 }
+          } else {
+            categoryPrizeAllocs[category] = { percent: value, nominal: prizePool > 0 ? (value / 100) * prizePool : undefined }
+          }
         })
-        budgetDistribution.categories = categoryPercentages
-      } else {
-        budgetDistribution.categories = categoryDistribution
+        budgetDistribution.categoriesPrize = categoryPrizeAllocs
       }
     }
     
+    // Build per-task distribution with TaskBudgetAllocation (using AllocationType)
     if (budgetDistributionMode === 'task' && Object.keys(taskBudgets).length > 0) {
+      const prizePool = calculatePrizePool(form.budgetPercentage, userEquity)
       budgetDistribution.tasks = Object.entries(taskBudgets).reduce((acc, [taskId, values]) => {
-        const budget = parseFloat(values.budget || '0')
-        const prize = parseFloat(values.prize || '0')
-        if (budget > 0 || prize > 0) {
-          acc[taskId] = { budget, prize }
+        const budgetAlloc = values.budget
+        const prizeAlloc = values.prize
+        
+        // Check if there's any meaningful allocation
+        const hasBudget = (budgetAlloc.nominal ?? 0) > 0 || (budgetAlloc.percent ?? 0) > 0
+        const hasPrize = (prizeAlloc.nominal ?? 0) > 0 || (prizeAlloc.percent ?? 0) > 0
+        
+        if (hasBudget || hasPrize) {
+          acc[taskId] = {
+            budget: budgetAlloc,
+            prize: prizeAlloc
+          }
         }
         return acc
-      }, {} as Record<string, { budget: number; prize: number }>)
+      }, {} as Record<string, TaskBudgetAllocation>)
     }
     
     const res = await fetch('/api/v1/tasklists', {
@@ -718,13 +818,19 @@ export const AddListForm = ({
 
                     {/* Per-Task Distribution */}
                     {budgetDistributionMode === 'task' && tasks.length > 0 && (() => {
+                      const listBudget = parseFloat(form.budget) || 0
+                      const prizePool = calculatePrizePool(form.budgetPercentage, userEquity)
+                      
                       const totalBudget = tasks.reduce((sum, task) => {
                         const taskId = task.id || task.name
-                        const budget = parseFloat(taskBudgets[taskId]?.budget || '0')
-                        const prize = parseFloat(taskBudgets[taskId]?.prize || '0')
-                        return sum + budget + prize
+                        const budgetAlloc = taskBudgets[taskId]?.budget
+                        const prizeAlloc = taskBudgets[taskId]?.prize
+                        // Use nominal values, falling back to percent calculation
+                        const budgetNominal = getAllocationNominal(budgetAlloc, listBudget)
+                        const prizeNominal = getAllocationNominal(prizeAlloc, prizePool)
+                        return sum + budgetNominal + prizeNominal
                       }, 0)
-                      const remainingBudget = parseFloat(form.budget) - totalBudget
+                      const remainingBudget = listBudget + prizePool - totalBudget
                       
                       return (
                         <div className="space-y-3">
@@ -747,11 +853,16 @@ export const AddListForm = ({
                               <tbody>
                                 {tasks.map((task: any, idx: number) => {
                                   const taskId = task.id || task.name
-                                  const budget = parseFloat(taskBudgets[taskId]?.budget || '0')
-                                  const prize = parseFloat(taskBudgets[taskId]?.prize || '0')
-                                  // Use nominal values for total calculation
-                                  const budgetNominal = taskBudgets[taskId]?.budgetNominal ?? budget
-                                  const prizeNominal = taskBudgets[taskId]?.prizeNominal ?? prize
+                                  const budgetAlloc = taskBudgets[taskId]?.budget || {}
+                                  const prizeAlloc = taskBudgets[taskId]?.prize || {}
+                                  
+                                  // Get display values (use percent if available, else nominal)
+                                  const budgetDisplayValue = budgetAlloc.nominal ?? budgetAlloc.percent ?? 0
+                                  const prizeDisplayValue = prizeAlloc.nominal ?? prizeAlloc.percent ?? 0
+                                  
+                                  // Calculate total using nominal values
+                                  const budgetNominal = getAllocationNominal(budgetAlloc, listBudget)
+                                  const prizeNominal = getAllocationNominal(prizeAlloc, prizePool)
                                   const total = budgetNominal + prizeNominal
                                   
                                   return (
@@ -760,18 +871,22 @@ export const AddListForm = ({
                                       <td className="p-2">
                                         <BudgetDistributionInput
                                           items={[`budget-${taskId}`]}
-                                          totalBudget={parseFloat(form.budget) || 0}
-                                          distribution={{ [`budget-${taskId}`]: budget }}
+                                          totalBudget={listBudget}
+                                          distribution={{ [`budget-${taskId}`]: budgetDisplayValue }}
                                           onChange={(dist, metadata) => {
-                                            // Store input value and nominal value
                                             const inputValue = dist[`budget-${taskId}`] ?? 0
                                             const nominalValue = metadata?.nominalValues?.[`budget-${taskId}`] ?? inputValue
+                                            const percentValue = metadata?.percentages?.[`budget-${taskId}`] ?? 
+                                              (listBudget > 0 ? (inputValue / listBudget) * 100 : 0)
+                                            const mode = metadata?.mode ?? 'currency'
+                                            
                                             setTaskBudgets(prev => ({
                                               ...prev,
                                               [taskId]: { 
-                                                ...prev[taskId], 
-                                                budget: inputValue.toString(),
-                                                budgetNominal: nominalValue
+                                                budget: mode === 'currency' 
+                                                  ? { nominal: inputValue, percent: percentValue }
+                                                  : { nominal: nominalValue, percent: inputValue },
+                                                prize: prev[taskId]?.prize || {}
                                               }
                                             }))
                                           }}
@@ -784,18 +899,22 @@ export const AddListForm = ({
                                       <td className="p-2">
                                         <BudgetDistributionInput
                                           items={[`prize-${taskId}`]}
-                                          totalBudget={calculatePrizePool(form.budgetPercentage, userEquity)}
-                                          distribution={{ [`prize-${taskId}`]: prize }}
+                                          totalBudget={prizePool}
+                                          distribution={{ [`prize-${taskId}`]: prizeDisplayValue }}
                                           onChange={(dist, metadata) => {
-                                            // Store input value and nominal value
                                             const inputValue = dist[`prize-${taskId}`] ?? 0
                                             const nominalValue = metadata?.nominalValues?.[`prize-${taskId}`] ?? inputValue
+                                            const percentValue = metadata?.percentages?.[`prize-${taskId}`] ?? 
+                                              (prizePool > 0 ? (inputValue / prizePool) * 100 : 0)
+                                            const mode = metadata?.mode ?? 'currency'
+                                            
                                             setTaskBudgets(prev => ({
                                               ...prev,
                                               [taskId]: { 
-                                                ...prev[taskId], 
-                                                prize: inputValue.toString(),
-                                                prizeNominal: nominalValue
+                                                budget: prev[taskId]?.budget || {},
+                                                prize: mode === 'currency'
+                                                  ? { nominal: inputValue, percent: percentValue }
+                                                  : { nominal: nominalValue, percent: inputValue }
                                               }
                                             }))
                                           }}
