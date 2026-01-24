@@ -2,7 +2,7 @@
 
 ## Overview
 
-This application uses [DOMPurify](https://github.com/cure53/DOMPurify) (`isomorphic-dompurify` package) to sanitize user input and prevent Cross-Site Scripting (XSS) attacks. This document explains how to use the sanitization utilities correctly throughout the codebase.
+This application uses [DOMPurify](https://github.com/cure53/DOMPurify) (`dompurify` package with `jsdom` for server-side support) to sanitize user input and prevent Cross-Site Scripting (XSS) attacks. This document explains how to use the sanitization utilities correctly throughout the codebase.
 
 ## Why DOMPurify?
 
@@ -309,7 +309,7 @@ We apply multiple layers of security:
 
 ### Regular Updates
 
-- Keep `isomorphic-dompurify` updated
+- Keep `dompurify` and `jsdom` updated
 - Monitor security advisories
 - Review and update allowed tags/attributes as needed
 

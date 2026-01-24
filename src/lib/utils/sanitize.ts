@@ -1,7 +1,10 @@
 import validator from 'validator'
-import * as DOMPurifyLib from 'isomorphic-dompurify'
+import DOMPurifyLib from 'dompurify'
+import { JSDOM } from 'jsdom'
 
-const DOMPurify = DOMPurifyLib.default || DOMPurifyLib
+// Create DOMPurify instance for server-side use
+const window = new JSDOM('').window
+const DOMPurify = DOMPurifyLib(window as unknown as Window)
 
 /**
  * Sanitize user input to prevent XSS and injection attacks
