@@ -201,13 +201,69 @@ function convertEntityAllocationsToMaps(
 /**
  * Find entity allocation by ID from array
  */
-function findEntityAllocation(
+export function findEntityAllocation(
   allocations: EntityAllocationsType[] | undefined,
   entityId: string
 ): EntityBudgetAllocation | undefined {
   if (!allocations || !Array.isArray(allocations)) return undefined
   const item = allocations.find(a => a.entityId === entityId)
   return item?.allocation
+}
+
+/**
+ * Calculate nominal value from percentage
+ * @param percent - Percentage value (0-100)
+ * @param total - Total budget to calculate from
+ * @returns The nominal value
+ */
+export function percentToNominal(percent: number, total: number): number {
+  if (total <= 0) return 0
+  return (percent / 100) * total
+}
+
+/**
+ * Calculate percentage from nominal value
+ * @param nominal - Nominal (currency) value
+ * @param total - Total budget to calculate percentage of
+ * @returns The percentage value (0-100)
+ */
+export function nominalToPercent(nominal: number, total: number): number {
+  if (total <= 0) return 0
+  return (nominal / total) * 100
+}
+
+/**
+ * Get task earnings and prize from budget distribution
+ * Extracts the budget and prize values for a specific task from the distribution
+ * 
+ * @param taskId - The task ID to look up
+ * @param budgetDistribution - The budget distribution object
+ * @param listBudget - Total list budget for percentage calculations
+ * @param prizePool - Total prize pool for percentage calculations
+ * @returns Object with taskEarnings and taskPrize, or null if not found
+ */
+export function getTaskAllocationFromDistribution(
+  taskId: string,
+  budgetDistribution: BudgetDistribution | null | undefined,
+  listBudget: number,
+  prizePool: number
+): { taskEarnings: number; taskPrize: number } | null {
+  if (!budgetDistribution?.tasks || !taskId) {
+    return null
+  }
+
+  // Handle array-based EntityAllocationsType format
+  if (Array.isArray(budgetDistribution.tasks)) {
+    const taskAllocation = budgetDistribution.tasks.find((t) => t.entityId === taskId)
+    if (taskAllocation?.allocation) {
+      return {
+        taskEarnings: getAllocationNominal(taskAllocation.allocation.budget, listBudget),
+        taskPrize: getAllocationNominal(taskAllocation.allocation.prize, prizePool)
+      }
+    }
+  }
+
+  return null
 }
 
 /**

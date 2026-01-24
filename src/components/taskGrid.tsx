@@ -6,7 +6,7 @@ import { Circle, Minus, Plus, Eye, EyeOff, Edit, Send, Clock } from 'lucide-reac
 import { useI18n } from '@/lib/contexts/i18n'
 import { GlobalContext } from '@/lib/contexts'
 import { getProfitPerTask, calculatePrizePool } from '@/lib/utils/earningsUtils'
-import { getAllocationNominal } from '@/lib/utils/budgetDistributionUtils'
+import { getTaskAllocationFromDistribution } from '@/lib/utils/budgetDistributionUtils'
 import { TaskItem } from '@/components/taskItem'
 import { TaskStatus, STATUS_OPTIONS, getStatusColor, getIconColor, getTaskKey, getTaskStatus, mapStatusToEnum } from '@/lib/utils/taskUtils'
 
@@ -574,33 +574,12 @@ export const TaskGrid = ({
         if (task.budget != null || task.prize != null) {
           taskEarnings = task.budget || 0
           taskPrize = task.prize || 0
-        }
-        // Then check if there's custom per-task allocation in list's budgetDistribution
-        else if (budgetDistribution?.tasks && task.id) {
-          // Handle new array-based EntityAllocationsType format
-          if (Array.isArray(budgetDistribution.tasks)) {
-            const taskAllocation = budgetDistribution.tasks.find((t: any) => t.entityId === task.id)
-            if (taskAllocation?.allocation) {
-              taskEarnings = getAllocationNominal(taskAllocation.allocation.budget, listBudget)
-              taskPrize = getAllocationNominal(taskAllocation.allocation.prize, prizePool)
-            }
-          } else if (typeof budgetDistribution.tasks === 'object' && budgetDistribution.tasks !== null) {
-            // Legacy object-based format
-            const tasksObj = budgetDistribution.tasks as Record<string, any>
-            const taskAllocation = tasksObj[task.id]
-            
-            if (taskAllocation) {
-              // Handle AllocationType format or legacy format
-              if (taskAllocation.budget && typeof taskAllocation.budget === 'object') {
-                // New format: AllocationType with nominal/percent
-                taskEarnings = getAllocationNominal(taskAllocation.budget, listBudget)
-                taskPrize = getAllocationNominal(taskAllocation.prize, prizePool)
-              } else {
-                // Legacy format: direct numbers
-                taskEarnings = taskAllocation.budget || 0
-                taskPrize = taskAllocation.prize || 0
-              }
-            }
+        } else {
+          // Try to get allocation from budget distribution
+          const allocation = getTaskAllocationFromDistribution(task.id, budgetDistribution, listBudget, prizePool)
+          if (allocation) {
+            taskEarnings = allocation.taskEarnings
+            taskPrize = allocation.taskPrize
           }
         }
         
