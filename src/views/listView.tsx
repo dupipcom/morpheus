@@ -385,10 +385,11 @@ const formatDateLocal = (date: Date): string => {
       })
       
       // Determine base tasks: use openTasks if they exist, otherwise fall back to tasklist.tasks
+      // Note: templateTasks is deprecated - we use Task collection only
       let base: any[] = []
       const blueprintTasks = (selectedTaskList?.tasks && selectedTaskList.tasks.length > 0)
         ? selectedTaskList.tasks
-        : (selectedTaskList?.templateTasks || [])
+        : []
       
       if (allOpenTasks.length > 0) {
         // Use openTasks as base
@@ -406,7 +407,7 @@ const formatDateLocal = (date: Date): string => {
           base = [...base, ...newTasks.map((t: any) => ({ ...t, count: 0, status: 'open' }))]
         }
       } else {
-        // Fall back to tasklist.tasks or templateTasks
+        // Fall back to tasklist.tasks (Task collection only)
         base = blueprintTasks
       }
 
@@ -566,9 +567,11 @@ const formatDateLocal = (date: Date): string => {
     }, [tasksFromApi, optimisticTasks, mergedTasks])
 
     // Detect tasks needing migration (old embedded tasks without Task collection records)
+    // Note: This is for backwards compatibility during migration from templateTasks
     const tasksNeedingMigration = useMemo(() => {
-      const templateTasks = mergedTasks || []
-      if (!templateTasks.length) return []
+      // Use mergedTasks which may contain legacy data during migration
+      const legacyTasks = mergedTasks || []
+      if (!legacyTasks.length) return []
 
       // Helper to get task key
       const keyOf = (t: any) => t?.localeKey || t?.id || (typeof t?.name === 'string' ? t.name.toLowerCase() : '')
@@ -578,12 +581,12 @@ const formatDateLocal = (date: Date): string => {
         tasksFromApi.map((t: any) => keyOf(t)).filter(Boolean)
       )
 
-      const returnedTasks = templateTasks.filter((t: any) => {
+      const returnedTasks = legacyTasks.filter((t: any) => {
         const key = keyOf(t)
         return key && !existingTaskKeys.has(key)
       })
 
-      // Find templateTasks that aren't in the collection
+      // Find legacy tasks that aren't in the Task collection
       return returnedTasks
     }, [mergedTasks])
 

@@ -86,10 +86,9 @@ export const SteadyTasks = () => {
             ])
             
             const hasPendingTasks = Array.from(allPendingKeys).some(taskKey => {
-              // Check if this task exists in the task list
+              // Check if this task exists in the task list (templateTasks is deprecated)
               const allTasks = [
                 ...(Array.isArray(taskList.tasks) ? taskList.tasks : []),
-                ...(Array.isArray(taskList.templateTasks) ? taskList.templateTasks : []),
                 ...(Array.isArray(taskList.ephemeralTasks?.open) ? taskList.ephemeralTasks.open : []),
                 ...(Array.isArray(taskList.ephemeralTasks?.closed) ? taskList.ephemeralTasks.closed : [])
               ]
@@ -256,10 +255,10 @@ export const SteadyTasks = () => {
     }
     
     stableTaskLists.forEach((taskList: any) => {
-      // Get base tasks from tasks array or templateTasks
+      // Get base tasks from tasks array (templateTasks is deprecated)
       const baseTasks = (taskList?.tasks && taskList.tasks.length > 0)
         ? taskList.tasks
-        : (taskList?.templateTasks || [])
+        : []
       
       // Read tasks from completedTasks[year][date].openTasks for today
       const dateBucket = (taskList as any)?.completedTasks?.[year]?.[dateISO]

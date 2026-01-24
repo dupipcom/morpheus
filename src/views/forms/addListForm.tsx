@@ -193,23 +193,31 @@ export const AddListForm = ({
         }
       }
       
-      // Load tasks from tasks (Task collection) if available, otherwise from templateTasks
-      const tasksToLoad = (Array.isArray(initialList.tasks) && initialList.tasks.length > 0)
-        ? initialList.tasks
-        : (Array.isArray(initialList.templateTasks) ? initialList.templateTasks : [])
-      
-      // If editing and no tasks loaded yet, fetch from Task collection
-      if (isEditing && tasksToLoad.length === 0 && initialList.id) {
-        // Fetch tasks from Task collection
+      // Always fetch from Task collection when editing to get the latest data
+      // The initialList.tasks may be stale or from a previous fetch
+      if (isEditing && initialList.id) {
+        // Fetch tasks from Task collection (primary source of truth)
         fetch(`/api/v1/tasks?listId=${initialList.id}`)
           .then(res => res.ok ? res.json() : null)
           .then(data => {
             if (data?.tasks && Array.isArray(data.tasks)) {
               setTasks(data.tasks)
             }
+            // If API returns no tasks, keep tasks empty - don't fall back to stale data
           })
-          .catch(err => console.error('Error fetching tasks:', err))
+          .catch(err => {
+            console.error('Error fetching tasks:', err)
+            // On error, use initialList.tasks as fallback (from server-side render)
+            const fallbackTasks = (Array.isArray(initialList.tasks) && initialList.tasks.length > 0)
+              ? initialList.tasks
+              : []
+            setTasks(fallbackTasks)
+          })
       } else {
+        // When creating new list: use tasks from selected template/list if available
+        const tasksToLoad = (Array.isArray(initialList.tasks) && initialList.tasks.length > 0)
+          ? initialList.tasks
+          : []
         setTasks(tasksToLoad)
       }
       
