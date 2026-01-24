@@ -718,31 +718,31 @@ export const AddListForm = ({
                                     <tr key={`${taskId}-${idx}`}>
                                       <td className="p-2">{task.name}</td>
                                       <td className="p-2">
-                                        <Input
-                                          type="number"
-                                          min="0"
-                                          step="0.01"
-                                          value={taskBudgets[taskId]?.budget || ''}
-                                          onChange={(e) => setTaskBudgets(prev => ({
+                                        <BudgetDistributionInput
+                                          items={[`budget-${taskId}`]}
+                                          totalBudget={parseFloat(form.budget) || 0}
+                                          distribution={{ [`budget-${taskId}`]: parseFloat(taskBudgets[taskId]?.budget || '0') }}
+                                          onChange={(dist) => setTaskBudgets(prev => ({
                                             ...prev,
-                                            [taskId]: { ...prev[taskId], budget: e.target.value }
+                                            [taskId]: { ...prev[taskId], budget: dist[`budget-${taskId}`]?.toString() || '' }
                                           }))}
-                                          className="w-24 h-8 text-xs"
-                                          placeholder="0.00"
+                                          label=""
+                                          variant="horizontal"
+                                          mode="currency"
                                         />
                                       </td>
                                       <td className="p-2">
-                                        <Input
-                                          type="number"
-                                          min="0"
-                                          step="0.01"
-                                          value={taskBudgets[taskId]?.prize || ''}
-                                          onChange={(e) => setTaskBudgets(prev => ({
+                                        <BudgetDistributionInput
+                                          items={[`prize-${taskId}`]}
+                                          totalBudget={parseFloat(form.budget) || 0}
+                                          distribution={{ [`prize-${taskId}`]: parseFloat(taskBudgets[taskId]?.prize || '0') }}
+                                          onChange={(dist) => setTaskBudgets(prev => ({
                                             ...prev,
-                                            [taskId]: { ...prev[taskId], prize: e.target.value }
+                                            [taskId]: { ...prev[taskId], prize: dist[`prize-${taskId}`]?.toString() || '' }
                                           }))}
-                                          className="w-24 h-8 text-xs"
-                                          placeholder="0.00"
+                                          label=""
+                                          variant="horizontal"
+                                          mode="currency"
                                         />
                                       </td>
                                       <td className="p-2 text-xs">${(budget + prize).toFixed(2)}</td>

@@ -15,6 +15,7 @@ interface BudgetDistributionInputProps {
   onModeChange?: (mode: 'percentage' | 'currency') => void
   label: string
   mode?: 'percentage' | 'currency'
+  variant?: 'vertical' | 'horizontal'
 }
 
 export const BudgetDistributionInput: React.FC<BudgetDistributionInputProps> = ({
@@ -24,7 +25,8 @@ export const BudgetDistributionInput: React.FC<BudgetDistributionInputProps> = (
   onChange,
   onModeChange,
   label,
-  mode: initialMode = 'percentage'
+  mode: initialMode = 'percentage',
+  variant = 'vertical'
 }) => {
   const [mode, setMode] = useState<'percentage' | 'currency'>(initialMode)
   const [localDistribution, setLocalDistribution] = useState<Record<string, number>>(distribution)
@@ -77,6 +79,53 @@ export const BudgetDistributionInput: React.FC<BudgetDistributionInputProps> = (
   const remaining = getRemaining()
   const isPercentageMode = mode === 'percentage'
 
+  // Horizontal variant for per-task inputs
+  if (variant === 'horizontal') {
+    const item = items[0] // For horizontal variant, expect single item
+    const value = localDistribution[item] || 0
+
+    return (
+      <div className="flex items-center gap-2">
+        <div className="flex gap-1">
+          <Button
+            type="button"
+            size="sm"
+            variant={isPercentageMode ? 'default' : 'outline'}
+            onClick={isPercentageMode ? undefined : convertToPercentage}
+            className="h-8 px-2"
+          >
+            <Percent className="h-3 w-3" />
+          </Button>
+          <Button
+            type="button"
+            size="sm"
+            variant={!isPercentageMode ? 'default' : 'outline'}
+            onClick={!isPercentageMode ? undefined : convertToCurrency}
+            className="h-8 px-2"
+          >
+            <DollarSign className="h-3 w-3" />
+          </Button>
+        </div>
+        <Input
+          type="number"
+          min="0"
+          step={isPercentageMode ? "1" : "0.01"}
+          value={isPercentageMode ? value.toFixed(0) : value.toFixed(2)}
+          onChange={(e) => handleValueChange(item, parseFloat(e.target.value) || 0)}
+          className="w-24 h-8 text-xs"
+          placeholder={isPercentageMode ? "0%" : "0.00"}
+        />
+        <span className="text-xs text-muted-foreground min-w-[60px]">
+          {isPercentageMode
+            ? `$${((value / 100) * totalBudget).toFixed(2)}`
+            : `${totalBudget > 0 ? ((value / totalBudget) * 100).toFixed(1) : 0}%`
+          }
+        </span>
+      </div>
+    )
+  }
+
+  // Vertical variant (default)
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
