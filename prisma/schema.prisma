@@ -290,6 +290,17 @@ type TaskAllocation {
   amount     Float?  // Nominal amount allocated to this task
 }
 
+type TaskBudgetAllocation {
+  budget Float  // Budget allocation for this task
+  prize  Float  // Prize allocation for this task
+}
+
+type BudgetDistribution {
+  areas      Json?  // Record<string, number> - Budget allocation by area
+  categories Json?  // Record<string, number> - Budget allocation by category
+  tasks      Json?  // Record<string, TaskBudgetAllocation> - Per-task allocations
+}
+
 type Ticker {
   listId String?
   taskId String?
@@ -541,7 +552,7 @@ model List {
   budgetPercentage     Float?             @default(0)
   remainingBudget      String?
   prizePercentage      Float?             @default(0)
-  budgetDistribution   Json?              // Budget allocation across areas/categories/tasks
+  budgetDistribution   BudgetDistribution?  // Budget allocation across areas/categories/tasks
   // Budget relationships (new approach)
   listBudgetId         String?            @db.ObjectId  // 1:1 with LIST_DEFAULT budget
   listBudget           Budget?            @relation("ListDefaultBudget", fields: [listBudgetId], references: [id])
