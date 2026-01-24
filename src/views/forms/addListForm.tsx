@@ -69,6 +69,9 @@ export const AddListForm = ({
 
   // Get user equity for currency calculations
   const userEquity = session?.user?.equity || 0
+
+  // Load initial list data when editing
+  useEffect(() => {
     if (initialList) {
       // Split role like "daily.default" into cadence and role
       const fullRole = initialList.role || 'one-off.custom'
