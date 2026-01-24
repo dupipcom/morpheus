@@ -1,11 +1,12 @@
 'use client'
 
 import React from 'react'
-import { useContext, useEffect, useRef, useState, useMemo } from 'react'
+import { useContext, useEffect, useRef, useState, useMemo, useCallback } from 'react'
 import { GlobalContext } from '@/lib/contexts'
 import { AddTaskForm } from '@/views/forms/addTaskForm'
 import { AddListForm } from '@/views/forms/addListForm'
 import { AddTemplateForm } from '@/views/forms/addTemplateForm'
+import { useOptimisticUpdates } from '@/lib/hooks/useOptimisticUpdates'
 
 import { ViewMenu } from '@/components/viewMenu'
 import { MoodView } from '@/views/moodView'
@@ -53,6 +54,15 @@ export const DoView = ({
   const [stableTaskLists, setStableTaskLists] = useState<any[]>([])
   const [stableTemplates, setStableTemplates] = useState<any[]>([])
   const initialFetchDone = useRef(false)
+
+  // Use optimistic updates hook for task creations
+  const { pendingTaskCreationsRef } = useOptimisticUpdates()
+
+  // Store mutateTasks callback from ListView
+  const mutateTasksRef = useRef<(() => Promise<any>) | null>(null)
+  const handleMutateTasksReady = useCallback((mutateTasks: () => Promise<any>) => {
+    mutateTasksRef.current = mutateTasks
+  }, [])
 
   // Fetch immediately on mount
   useEffect(() => {
@@ -125,6 +135,8 @@ export const DoView = ({
         <div className="mb-4">
           <AddTaskForm
             selectedTaskListId={selectedTaskListId}
+            pendingTaskCreationsRef={pendingTaskCreationsRef}
+            mutateTasksRef={mutateTasksRef}
             onCancel={onCloseAddTask || (() => {})}
             onCreated={async () => {
               if (onTaskCreated) await onTaskCreated()
@@ -169,6 +181,8 @@ export const DoView = ({
         selectedDate={selectedDate}
         onDateChange={onDateChange}
         onAddEphemeral={onAddEphemeral}
+        pendingTaskCreationsRef={pendingTaskCreationsRef}
+        onMutateTasksReady={handleMutateTasksReady}
       />
     </>
   )

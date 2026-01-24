@@ -5,6 +5,7 @@ import useSWR from 'swr'
 
 import { Skeleton } from '@/components/ui/skeleton'
 import { TaskGrid } from '@/components/taskGrid'
+import { PendingTaskCreation } from '@/lib/hooks/useOptimisticUpdates'
 
 import { GlobalContext } from '@/lib/contexts'
 import { useI18n } from '@/lib/contexts/i18n'
@@ -68,11 +69,15 @@ const formatDateLocal = (date: Date): string => {
     selectedDate: propSelectedDate,
     onDateChange: propOnDateChange,
     onAddEphemeral: propOnAddEphemeral,
+    pendingTaskCreationsRef,
+    onMutateTasksReady,
   }: {
     selectedTaskListId?: string
     selectedDate?: Date
     onDateChange?: (date: Date | undefined) => void
     onAddEphemeral?: () => Promise<void> | void
+    pendingTaskCreationsRef?: React.MutableRefObject<Map<string, PendingTaskCreation>>
+    onMutateTasksReady?: (mutateTasks: () => Promise<any>) => void
   } = {}) => {
     const { session, taskLists: contextTaskLists, refreshTaskLists, revealRedacted, isInitializingTaskLists } = useContext(GlobalContext)
     const { t, locale } = useI18n()
@@ -161,6 +166,57 @@ const formatDateLocal = (date: Date): string => {
     // Track migration state - use Set to track multiple lists
     const migrationInProgressRef = useRef(false)
     const migratedListsRef = useRef(new Set<string>())
+
+    // Track optimistic task creations
+    const [optimisticTasks, setOptimisticTasks] = useState<any[]>([])
+
+    // Provide mutateTasks callback to parent
+    useEffect(() => {
+      if (onMutateTasksReady) {
+        onMutateTasksReady(mutateTasks)
+      }
+    }, [mutateTasks, onMutateTasksReady])
+
+    // Sync optimistic tasks from ref and clean up confirmed tasks
+    useEffect(() => {
+      if (!pendingTaskCreationsRef) return
+
+      const pendingMap = pendingTaskCreationsRef.current
+      const pendingTasks = Array.from(pendingMap.values()).map(p => p.task)
+
+      // Filter out tasks that match the current list and date
+      const relevantTasks = pendingTasks.filter(t => 
+        t.listId === selectedTaskListId
+      )
+
+      // Create a map of task names for efficient lookup
+      const taskNamesSet = new Set(
+        tasksFromApi.map((t: any) => t.name?.toLowerCase()).filter(Boolean)
+      )
+
+      // Remove optimistic tasks that are now in the API response
+      const keysToDelete: string[] = []
+      const stillPending = relevantTasks.filter(t => {
+        const taskName = t.name?.toLowerCase()
+        if (taskName && taskNamesSet.has(taskName)) {
+          // Find the key for this task to delete it later
+          for (const [key, value] of pendingMap.entries()) {
+            if (value.task.id === t.id) {
+              keysToDelete.push(key)
+              break
+            }
+          }
+          return false
+        }
+        return true
+      })
+
+      // Clean up confirmed tasks from the pending map
+      keysToDelete.forEach(key => pendingMap.delete(key))
+
+      setOptimisticTasks(stillPending)
+    }, [pendingTaskCreationsRef, selectedTaskListId, tasksFromApi])
+
 
     // Fetch jobs from new API (for the selected date or week)
     const jobsUrl = useMemo(() => {
@@ -480,10 +536,9 @@ const formatDateLocal = (date: Date): string => {
     // New simpler tasks display using API data (with fallback to old mergedTasks)
     const tasksToDisplay = useMemo(() => {
       // If we have tasks from the new API, use them
-      if (tasksFromApi.length > 0) {
-        // For now, just return all tasks from the API
-        // In the future, we can add filtering by date/recurrence here
-        return tasksFromApi.map((t: any) => ({
+      if (tasksFromApi.length > 0 || optimisticTasks.length > 0) {
+        // Combine API tasks with optimistic tasks
+        const apiTasks = tasksFromApi.map((t: any) => ({
           ...t,
           displayName: t.name,
           // Use date-specific count when available (from date-aware API), otherwise fall back to global count
@@ -493,11 +548,22 @@ const formatDateLocal = (date: Date): string => {
           dateStatus: t.dateStatus,
           dateCount: t.dateCount,
         }))
+
+        // Add optimistic tasks at the beginning
+        const optimisticTasksMapped = optimisticTasks.map((t: any) => ({
+          ...t,
+          displayName: t.name,
+          count: 0,
+          times: t.times || 1,
+          isOptimistic: true,  // Mark as optimistic for UI feedback
+        }))
+
+        return [...optimisticTasksMapped, ...apiTasks]
       }
 
       // Fallback to old mergedTasks logic during migration
       return mergedTasks
-    }, [tasksFromApi, mergedTasks])
+    }, [tasksFromApi, optimisticTasks, mergedTasks])
 
     // Detect tasks needing migration (old embedded tasks without Task collection records)
     const tasksNeedingMigration = useMemo(() => {
