@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { User as UserIcon, Clock, Send, CheckCircle, XCircle, AlertCircle, Loader2 } from 'lucide-react'
 import { OptionsButton, OptionsMenuItem } from '@/components/optionsButton'
 
-type TaskStatus = 'in progress' | 'steady' | 'ready' | 'open' | 'done' | 'ignored'
+type TaskStatus = 'in progress' | 'steady' | 'ready' | 'open' | 'done' | 'ignored' | 'completed'
 type JobStatus = 'REQUESTED' | 'IN_PROGRESS' | 'SUBMITTED' | 'VALIDATING' | 'ACCEPTED' | 'REJECTED'
 
 interface TaskItemProps {
@@ -95,7 +95,7 @@ export const TaskItem = ({
   isPendingRequest = false,
 }: TaskItemProps) => {
   const key = task?.id || task?.localeKey || task?.name
-  const isDone = taskStatus === 'done' || (task?.count || 0) >= (task?.times || 1)
+  const isDone = taskStatus === 'done' || taskStatus === 'completed' || (task?.count || 0) >= (task?.times || 1)
   const taskPremium = taskEarnings + taskPrize
 
   return (
@@ -111,7 +111,7 @@ export const TaskItem = ({
           items={optionsMenuItems}
           statusColor={statusColor}
           iconColor={iconColor}
-          iconFilled={taskStatus === "done"}
+          iconFilled={taskStatus === "done" || taskStatus === "completed"}
           align="start"
         />
         <span className="flex-1 text-left">
