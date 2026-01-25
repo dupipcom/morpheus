@@ -31,6 +31,12 @@ import type { TaskList, Template, Task } from '@/lib/services/tasklist/types'
 
 type Collaborator = { id: string, userName: string }
 
+// Budget distribution mode type
+type BudgetDistributionMode = 'equal' | 'area' | 'category' | 'task'
+
+// Extended Template type with optional name property for display
+type TemplateWithName = Template & { name?: string }
+
 // Extended entity budget state to store both nominal and percent values
 interface EntityBudgetState {
   budget: AllocationType
@@ -82,7 +88,7 @@ export const AddListForm = ({
   const [remainingBudget, setRemainingBudget] = useState<number>(100)
   const [maxAllowedBudget, setMaxAllowedBudget] = useState<number>(100)
   const [premiumPercentage, setPremiumPercentage] = useState<number>(0) // % of budgetPercentage allocated to premium
-  const [budgetDistributionMode, setBudgetDistributionMode] = useState<'equal' | 'area' | 'category' | 'task'>('equal')
+  const [budgetDistributionMode, setBudgetDistributionMode] = useState<BudgetDistributionMode>('equal')
   const [areaDistribution, setAreaDistribution] = useState<Record<string, AllocationType>>({})
   const [areaDistributionMode, setAreaDistributionMode] = useState<'percentage' | 'currency'>('percentage')
   const [areaPremiumDistribution, setAreaPremiumDistribution] = useState<Record<string, AllocationType>>({})
@@ -466,11 +472,11 @@ export const AddListForm = ({
                 <SelectValue placeholder={t('forms.addListForm.chooseTemplatePlaceholder') || 'Choose a template'} />
               </SelectTrigger>
               <SelectContent>
-                {userTemplates.map((tpl: Template) => (
-                  <SelectItem key={`tpl-${tpl.id}`} value={`template:${tpl.id}`} textValue={(tpl as Template & { name?: string }).name || tpl.role || (t('forms.commonOptions.entities.template') || 'Template')}>
+                {userTemplates.map((tpl: TemplateWithName) => (
+                  <SelectItem key={`tpl-${tpl.id}`} value={`template:${tpl.id}`} textValue={tpl.name || tpl.role || (t('forms.commonOptions.entities.template') || 'Template')}>
                     <div className="flex items-center gap-2">
                       <Package className="h-4 w-4 opacity-70" />
-                      <span>{(tpl as Template & { name?: string }).name || tpl.role || (t('forms.commonOptions.entities.template') || 'Template')}</span>
+                      <span>{tpl.name || tpl.role || (t('forms.commonOptions.entities.template') || 'Template')}</span>
                     </div>
                   </SelectItem>
                 ))}
@@ -730,7 +736,7 @@ export const AddListForm = ({
                 {/* Budget Distribution Mode */}
                 <div>
                   <Label htmlFor="distribution-mode">{t('forms.addListForm.distributionModeLabel') || 'Distribution Mode'}</Label>
-                  <Select value={budgetDistributionMode} onValueChange={(val: 'equal' | 'area' | 'category' | 'task') => setBudgetDistributionMode(val)}>
+                  <Select value={budgetDistributionMode} onValueChange={(val: BudgetDistributionMode) => setBudgetDistributionMode(val)}>
                     <SelectTrigger className="w-full">
                       <SelectValue />
                     </SelectTrigger>
