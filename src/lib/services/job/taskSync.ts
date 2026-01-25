@@ -6,6 +6,7 @@ export const TASK_STATUS_MAP: Record<string, string> = {
   VALIDATING: 'IN_PROGRESS',
   ACCEPTED: 'DONE',
   REJECTED: 'OPEN',
+  CANCELLED: 'OPEN',
 }
 
 export async function syncTaskStatus(

@@ -140,18 +140,21 @@ export function useJobs(options: UseJobsOptions = {}) {
     }
   }, [mutate])
 
-  const deleteJob = useCallback(async (jobId: string) => {
-    // Optimistic update - remove from list
-    const jobToRemove = mergedJobs.find((job: any) => job.id === jobId)
-    setOptimisticJobs((prev) => [...prev, { ...jobToRemove, _isDeleted: true }])
+  const cancelJob = useCallback(async (jobId: string) => {
+    // Optimistic update - mark as cancelled
+    const jobToCancel = mergedJobs.find((job: any) => job.id === jobId)
+    setOptimisticJobs((prev) => [...prev, { ...jobToCancel, status: 'CANCELLED', _isCancelled: true }])
 
     try {
+      // For compliance: use PUT to update status to CANCELLED instead of DELETE
       const response = await fetch(`/api/v1/jobs/${jobId}`, {
-        method: 'DELETE',
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'CANCELLED' })
       })
 
       if (!response.ok) {
-        throw new Error('Failed to delete job')
+        throw new Error('Failed to cancel job')
       }
 
       // Clear optimistic update and refresh
@@ -159,19 +162,24 @@ export function useJobs(options: UseJobsOptions = {}) {
       await mutate()
     } catch (error) {
       // Revert optimistic update on error
-      setOptimisticJobs((prev) => prev.filter((job) => !job._isDeleted))
-      console.error('Error deleting job:', error)
+      setOptimisticJobs((prev) => prev.filter((job) => !job._isCancelled))
+      console.error('Error cancelling job:', error)
       throw error
     }
   }, [mutate, mergedJobs])
 
+  // Keep deleteJob as an alias for backwards compatibility
+  const deleteJob = cancelJob
+
   return {
-    jobs: mergedJobs.filter((job: any) => !job._isDeleted),
+    // Filter out optimistically cancelled jobs (both old _isDeleted and new _isCancelled for backward compatibility)
+    jobs: mergedJobs.filter((job: any) => !job._isCancelled),
     isLoading,
     error,
     createJob,
     updateJob,
     deleteJob,
+    cancelJob,
     mutate,
   }
 }

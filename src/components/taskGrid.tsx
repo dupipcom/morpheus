@@ -229,8 +229,9 @@ export const TaskGrid = ({
   const jobsByTask = useMemo(() => {
     const map: Record<string, JobWithRelations> = {}
     optimisticJobs.forEach((job: JobWithRelations) => {
-      // Store latest non-rejected/accepted job for each task (active jobs)
-      const isActiveJob = !['ACCEPTED', 'REJECTED'].includes(job.status)
+      // Store latest non-terminal job for each task (active jobs)
+      // Terminal states: ACCEPTED, REJECTED, CANCELLED
+      const isActiveJob = !['ACCEPTED', 'REJECTED', 'CANCELLED'].includes(job.status)
       if (isActiveJob && (!map[job.taskId] || new Date(job.createdAt) > new Date(map[job.taskId].createdAt))) {
         map[job.taskId] = job
       }
