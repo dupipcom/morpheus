@@ -9,6 +9,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
+import { sanitizeText } from '@/lib/utils/sanitize'
 import {
   getUserLocale,
   loadTranslationsForLocale,
@@ -139,6 +140,19 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // Parse budget as float
     const budget = parseBudget(budgetRaw)
 
+    // Sanitize user input to prevent XSS attacks
+    const sanitizedName = name ? sanitizeText(name) : undefined
+    
+    // Sanitize task names if tasks are provided
+    const sanitizeTasks = (taskArray: Task[] | undefined): Task[] | undefined => {
+      if (!Array.isArray(taskArray)) return taskArray
+      return taskArray.map(task => ({
+        ...task,
+        name: task.name ? sanitizeText(task.name) : task.name
+      }))
+    }
+    const sanitizedTasks = sanitizeTasks(tasks as Task[] | undefined)
+
     // Find user by userId
     const user = await prisma.user.findUnique({
       where: { userId: userId },
@@ -153,17 +167,17 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const userLocale = getUserLocale(request)
     const translations = loadTranslationsForLocale(userLocale)
 
-    // Translate tasks if provided
-    let translatedTasks = tasks
-    if (Array.isArray(tasks) && tasks.length > 0) {
-      translatedTasks = translateTemplateTasks(tasks as Task[], translations)
+    // Translate tasks if provided (use sanitized tasks)
+    let translatedTasks = sanitizedTasks
+    if (Array.isArray(sanitizedTasks) && sanitizedTasks.length > 0) {
+      translatedTasks = translateTemplateTasks(sanitizedTasks as Task[], translations)
       translatedTasks = ensureUniqueTaskIds(translatedTasks, !!templateId)
     }
 
-    // Get localized name if not provided and creating a default list
-    let localizedName = name
+    // Get localized name if not provided and creating a default list (use sanitized name)
+    let localizedName = sanitizedName
     if (!localizedName && role && role.endsWith('.default')) {
-      localizedName = getLocalizedListName(role, translations, name)
+      localizedName = getLocalizedListName(role, translations, sanitizedName)
     }
 
     // Handle delete task list
@@ -257,7 +271,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         taskListId: body.taskListId,
         userId: user.id,
         role,
-        name,
+        name: sanitizedName,
         budget,
         budgetPercentage,
         premiumPercentage,
@@ -307,7 +321,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         taskListId: existingTaskList.id,
         userId: user.id,
         role,
-        name,
+        name: sanitizedName,
         budget,
         budgetPercentage,
         premiumPercentage,

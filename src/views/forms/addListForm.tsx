@@ -16,7 +16,7 @@ import { Package, List as ListIcon, MoreHorizontal, ChevronDown, Calendar as Cal
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { useI18n } from '@/lib/contexts/i18n'
 import { GlobalContext } from '@/lib/contexts'
-import { useFriendProfiles } from '@/lib/hooks/useFriendProfiles'
+import { useFriendProfiles, FriendProfile } from '@/lib/hooks/useFriendProfiles'
 import { BudgetDistributionInput } from '@/components/budgetDistributionInput'
 import { 
   BudgetDistribution, 
@@ -27,6 +27,7 @@ import {
   nominalToPercent
 } from '@/lib/utils/budgetDistributionUtils'
 import { calculatePrizePool, calculateBudgetPercentageFromCurrency } from '@/lib/utils/earningsUtils'
+import type { TaskList, Template, Task } from '@/lib/services/tasklist/types'
 
 type Collaborator = { id: string, userName: string }
 
@@ -34,6 +35,13 @@ type Collaborator = { id: string, userName: string }
 interface EntityBudgetState {
   budget: AllocationType
   premium: AllocationType
+}
+
+// Profile type for collaborator search results
+interface UserProfile {
+  userId: string
+  userName?: string
+  data?: Record<string, { value?: string }>
 }
 
 export const AddListForm = ({
@@ -47,10 +55,10 @@ export const AddListForm = ({
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
-  allTaskLists: any[]
-  userTemplates: any[]
+  allTaskLists: TaskList[]
+  userTemplates: Template[]
   isEditing: boolean
-  initialList?: any
+  initialList?: TaskList
   onCreated: (newListId?: string) => Promise<void> | void
 }) => {
   const { t } = useI18n()
@@ -70,7 +78,7 @@ export const AddListForm = ({
   const [collabQuery, setCollabQuery] = useState('')
   const [addTaskOpen, setAddTaskOpen] = useState(false)
   const [addTaskForm, setAddTaskForm] = useState({ name: '', area: 'self', category: 'custom', times: 1 })
-  const [tasks, setTasks] = useState<any[]>([])
+  const [tasks, setTasks] = useState<Task[]>([])
   const [remainingBudget, setRemainingBudget] = useState<number>(100)
   const [maxAllowedBudget, setMaxAllowedBudget] = useState<number>(100)
   const [premiumPercentage, setPremiumPercentage] = useState<number>(0) // % of budgetPercentage allocated to premium
@@ -129,10 +137,10 @@ export const AddListForm = ({
       }
       
       if (initialList.budgetDistribution) {
-        const dist = initialList.budgetDistribution
+        const dist = initialList.budgetDistribution as BudgetDistribution
         
         // Helper to parse EntityAllocationsType array to AllocationType Records
-        const parseEntityAllocations = (allocations: any[]): { 
+        const parseEntityAllocations = (allocations: EntityAllocationsType[]): { 
           budgets: Record<string, AllocationType>
           premiums: Record<string, AllocationType> 
         } => {
@@ -140,7 +148,7 @@ export const AddListForm = ({
           const premiums: Record<string, AllocationType> = {}
           
           if (Array.isArray(allocations)) {
-            allocations.forEach((item: any) => {
+            allocations.forEach((item: EntityAllocationsType) => {
               const entityId = item.entityId
               if (entityId) {
                 const budgetAlloc = item.allocation?.budget
@@ -172,7 +180,7 @@ export const AddListForm = ({
         } else if (dist.tasks && Array.isArray(dist.tasks) && dist.tasks.length > 0) {
           const taskBudgetsData: Record<string, EntityBudgetState> = {}
           
-          dist.tasks.forEach((item: any) => {
+          dist.tasks.forEach((item: EntityAllocationsType) => {
             const taskId = item.entityId
             if (taskId) {
               const budgetAlloc = item.allocation?.budget
@@ -230,12 +238,12 @@ export const AddListForm = ({
   useEffect(() => {
     try {
       // Calculate total budget used by all lists
-      const totalUsed = allTaskLists.reduce((sum, list: any) => {
+      const totalUsed = allTaskLists.reduce((sum, list: TaskList) => {
         return sum + (list.budgetPercentage || 0)
       }, 0)
 
       // Calculate total used by OTHER lists (excluding current list if editing)
-      const totalUsedByOthers = allTaskLists.reduce((sum, list: any) => {
+      const totalUsedByOthers = allTaskLists.reduce((sum, list: TaskList) => {
         // Skip the current list if editing
         if (isEditing && initialList?.id && list.id === initialList.id) {
           return sum
@@ -272,7 +280,7 @@ export const AddListForm = ({
         if (!cancelled && res.ok) {
           const data = await res.json()
           const idToUserName: Record<string, string> = {}
-          ;(data.profiles || []).forEach((p: any) => { idToUserName[p.userId] = p.userName || p.userId })
+          ;(data.profiles || []).forEach((p: UserProfile) => { idToUserName[p.userId] = p.userName || p.userId })
           setForm((prev) => ({
             ...prev,
             collaborators: (prev.collaborators || []).map((c) => ({ ...c, userName: idToUserName[c.id] || c.userName }))
@@ -288,15 +296,15 @@ export const AddListForm = ({
     if (!form.templateId) return null // Return null instead of empty array when no template
     if (form.templateId.startsWith('template:')) {
       const tplId = form.templateId.split(':')[1]
-      const tpl = userTemplates.find((t: any) => t.id === tplId)
+      const tpl = userTemplates.find((t: Template) => t.id === tplId)
       return Array.isArray(tpl?.tasks) ? tpl.tasks : []
     }
     if (form.templateId.startsWith('list:')) {
       const lstId = form.templateId.split(':')[1]
-      const lst = allTaskLists.find((l: any) => l.id === lstId)
+      const lst = allTaskLists.find((l: TaskList) => l.id === lstId)
       return Array.isArray(lst?.tasks) ? lst.tasks : []
     }
-    return [] as any[]
+    return [] as Task[]
   }, [form.templateId, userTemplates, allTaskLists])
 
   useEffect(() => {
@@ -458,15 +466,15 @@ export const AddListForm = ({
                 <SelectValue placeholder={t('forms.addListForm.chooseTemplatePlaceholder') || 'Choose a template'} />
               </SelectTrigger>
               <SelectContent>
-                {userTemplates.map((tpl: any) => (
-                  <SelectItem key={`tpl-${tpl.id}`} value={`template:${tpl.id}`} textValue={tpl.name || tpl.role || (t('forms.commonOptions.entities.template') || 'Template')}>
+                {userTemplates.map((tpl: Template) => (
+                  <SelectItem key={`tpl-${tpl.id}`} value={`template:${tpl.id}`} textValue={(tpl as Template & { name?: string }).name || tpl.role || (t('forms.commonOptions.entities.template') || 'Template')}>
                     <div className="flex items-center gap-2">
                       <Package className="h-4 w-4 opacity-70" />
-                      <span>{tpl.name || tpl.role || (t('forms.commonOptions.entities.template') || 'Template')}</span>
+                      <span>{(tpl as Template & { name?: string }).name || tpl.role || (t('forms.commonOptions.entities.template') || 'Template')}</span>
                     </div>
                   </SelectItem>
                 ))}
-                {allTaskLists.map((lst: any) => (
+                {allTaskLists.map((lst: TaskList) => (
                   <SelectItem key={`lst-${lst.id}`} value={`list:${lst.id}`} textValue={lst.name || lst.role || (t('forms.commonOptions.entities.list') || 'List')}>
                     <div className="flex items-center gap-2">
                       <ListIcon className="h-4 w-4 opacity-70" />
@@ -548,7 +556,7 @@ export const AddListForm = ({
                 <CommandList>
                   <CommandEmpty>{t('forms.addListForm.noResults') || 'No results.'}</CommandEmpty>
                   <CommandGroup>
-                    {collabResults.map((p: any) => (
+                    {collabResults.map((p: FriendProfile) => (
                       <CommandItem key={p.userId} value={p.userId} onSelect={() => {
                         if (!form.collaborators.find(c => c.id === p.userId)) {
                           setForm(prev => ({ ...prev, collaborators: [...prev.collaborators, { id: p.userId, userName: p.userName || p.userId }] }))
@@ -650,7 +658,7 @@ export const AddListForm = ({
                         <Button onClick={() => {
                           const name = addTaskForm.name.trim()
                           if (!name) return
-                          const newTask = { name, area: addTaskForm.area as any, categories: [addTaskForm.category], status: 'Not started', cadence: form.cadence, times: addTaskForm.times, count: 0 }
+                          const newTask: Task = { name, area: addTaskForm.area, categories: [addTaskForm.category], status: 'Not started', cadence: form.cadence, times: addTaskForm.times, count: 0 }
                           setTasks(prev => [newTask, ...(prev || [])])
                           setAddTaskForm({ name: '', area: 'self', category: 'custom', times: 1 })
                           setAddTaskOpen(false)
@@ -671,7 +679,7 @@ export const AddListForm = ({
                       </tr>
                     </thead>
                     <tbody>
-                      {(tasks || []).map((task: any, idx: number) => (
+                      {(tasks || []).map((task: Task, idx: number) => (
                         <tr key={`${task.name}-${idx}`}>
                           <td className="p-2">{task.name}</td>
                           <td className="p-2">{task.times}</td>
@@ -679,8 +687,8 @@ export const AddListForm = ({
                           <td className="p-2">{Array.isArray(task.categories) ? task.categories.join(', ') : ''}</td>
                           <td className="p-2 text-right">
                             <div className="inline-flex">
-                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => setTasks(prev => (prev || []).map((t: any, i: number) => i === idx ? { ...t, times: (t.times || 1) + 1 } : t))}>⋯</Button>
-                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-destructive" onClick={() => setTasks(prev => (prev || []).filter((_: any, i: number) => i !== idx))}>×</Button>
+                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => setTasks(prev => (prev || []).map((t: Task, i: number) => i === idx ? { ...t, times: (t.times || 1) + 1 } : t))}>⋯</Button>
+                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-destructive" onClick={() => setTasks(prev => (prev || []).filter((_: Task, i: number) => i !== idx))}>×</Button>
                             </div>
                           </td>
                         </tr>
@@ -722,7 +730,7 @@ export const AddListForm = ({
                 {/* Budget Distribution Mode */}
                 <div>
                   <Label htmlFor="distribution-mode">{t('forms.addListForm.distributionModeLabel') || 'Distribution Mode'}</Label>
-                  <Select value={budgetDistributionMode} onValueChange={(val: any) => setBudgetDistributionMode(val)}>
+                  <Select value={budgetDistributionMode} onValueChange={(val: 'equal' | 'area' | 'category' | 'task') => setBudgetDistributionMode(val)}>
                     <SelectTrigger className="w-full">
                       <SelectValue />
                     </SelectTrigger>
@@ -834,7 +842,7 @@ export const AddListForm = ({
                                 </tr>
                               </thead>
                               <tbody>
-                                {tasks.map((task: any, idx: number) => {
+                                {tasks.map((task: Task, idx: number) => {
                                   const taskId = task.id || task.name
                                   const budgetAlloc = taskBudgets[taskId]?.budget || {}
                                   const premiumAlloc = taskBudgets[taskId]?.premium || {}
