@@ -6,6 +6,10 @@
 import prisma from '@/lib/prisma'
 import type { Task as PrismaTask, Job as PrismaJob, Areas, Category, TaskStatus } from '@/generated/prisma'
 import type { BudgetDistribution } from '@/lib/utils/budgetDistributionUtils'
+import {
+  getTaskAllocationFromDistribution,
+  convertEntityAllocationsToMaps
+} from '@/lib/utils/budgetDistributionUtils'
 import type {
   MigrationMetadata,
   MigrationResult,
@@ -162,67 +166,69 @@ export function calculateTaskBudgetFromDistribution(params: {
   remainingBudget?: number
 }): { budget: number | null; premium: number | null; totalGains: number | null } {
   const { task, list, taskIndex = 0, userEquity, remainingBudget } = params
-  
+  console.log('Calculating budget for task:', { userEquity, remainingBudget, taskId: task.id, taskIndex, list })
   const listBudget = list.budget || 0
   const budgetDistribution = list.budgetDistribution
   const premiumPercentage = list.premiumPercentage || 0
-  
+
   let budget: number | null = null
   let premium: number | null = null
-  
-  // PRIORITY 1: Check for custom per-task allocation in budgetDistribution
-  // This takes precedence over any stored values in the task object
-  if (budgetDistribution?.tasks && task.id && budgetDistribution.tasks[task.id]) {
-    budget = budgetDistribution.tasks[task.id].budget || 0
-    premium = budgetDistribution.tasks[task.id].premium || 0
+
+  // PRIORITY 1: Check for custom per-task allocation in budgetDistribution (array-based)
+  if (budgetDistribution && task.id) {
+    const premiumPool = listBudget * (premiumPercentage / 100)
+    const taskAlloc = getTaskAllocationFromDistribution(task.id, budgetDistribution as any, listBudget, premiumPool)
+    if (taskAlloc) {
+      budget = taskAlloc.taskEarnings
+      premium = taskAlloc.taskPrize
+    }
   }
-  // PRIORITY 2: Use area-based distribution
-  else if (budgetDistribution?.areas && task.area) {
-    const areaPercentage = budgetDistribution.areas[task.area] || 0
-    const areaBudget = (listBudget * areaPercentage) / 100
-    // Count tasks in same area to split budget (templateTasks is deprecated)
+
+  // PRIORITY 2: Use area-based distribution (array-based allocations) - only fill missing fields
+  if (budgetDistribution && task.area) {
+    const premiumPool = listBudget * (premiumPercentage / 100)
+    const { budgets: areaBudgets, premiums: areaPremiums } = convertEntityAllocationsToMaps(budgetDistribution.areas as any, listBudget, premiumPool)
+    const areaBudget = areaBudgets[task.area] || 0
     const tasksInArea = (list.tasks || []).filter((t: any) => t.area === task.area).length || 1
-    budget = areaBudget / tasksInArea
-    
-    // Calculate premium for this area
-    const totalPremiumBudget = (listBudget * premiumPercentage) / 100
-    const areaPremiumBudget = (totalPremiumBudget * areaPercentage) / 100
-    premium = areaPremiumBudget / tasksInArea
+    if (budget == null && areaBudget > 0) {
+      budget = areaBudget / tasksInArea
+    }
+    const areaPremiumBudget = areaPremiums[task.area] || 0
+    if (premium == null && areaPremiumBudget > 0) {
+      premium = areaPremiumBudget / tasksInArea
+    }
   }
-  // PRIORITY 3: Use category-based distribution
-  else if (budgetDistribution?.categories && task.categories && task.categories.length > 0) {
-    // Average across all categories this task belongs to
+
+  // PRIORITY 3: Use category-based distribution (array-based allocations) - only fill missing fields
+  if (budgetDistribution && task.categories && task.categories.length > 0) {
+    const premiumPool = listBudget * (premiumPercentage / 100)
+    const { budgets: categoryBudgets, premiums: categoryPremiums } = convertEntityAllocationsToMaps(budgetDistribution.categories as any, listBudget, premiumPool)
     let totalBudget = 0
     let totalPremium = 0
     const taskCategories = Array.isArray(task.categories) ? task.categories : [task.categories]
-    
+
     taskCategories.forEach((category: any) => {
-      const categoryPercentage = budgetDistribution.categories[category] || 0
-      const categoryBudget = (listBudget * categoryPercentage) / 100
-      // templateTasks is deprecated - using Task collection only
-      const tasksInCategory = (list.tasks || []).filter((t: any) => 
-        Array.isArray(t.categories) ? t.categories.includes(category) : t.categories === category
-      ).length || 1
+      const categoryBudget = categoryBudgets[category] || 0
+      const tasksInCategory = (list.tasks || []).filter((t: any) => Array.isArray(t.categories) ? t.categories.includes(category) : t.categories === category).length || 1
       totalBudget += categoryBudget / tasksInCategory
-      
-      // Calculate premium for this category
-      const totalPremiumBudget = (listBudget * premiumPercentage) / 100
-      const categoryPremiumBudget = (totalPremiumBudget * categoryPercentage) / 100
+
+      const categoryPremiumBudget = categoryPremiums[category] || 0
       totalPremium += categoryPremiumBudget / tasksInCategory
     })
-    
-    budget = totalBudget / taskCategories.length
-    premium = totalPremium / taskCategories.length
+
+    if (taskCategories.length > 0) {
+      if (budget == null) budget = totalBudget / taskCategories.length
+      if (premium == null) premium = totalPremium / taskCategories.length
+    }
   }
-  // PRIORITY 4: If budgetDistribution exists but task doesn't match any mode, use equal split
-  // This ensures we always use the distribution if it's configured
-  else if (budgetDistribution && listBudget > 0) {
-    // templateTasks is deprecated - using Task collection only
+
+  // PRIORITY 4: If budgetDistribution exists but task doesn't match any mode, use equal split for missing fields only
+  if (budgetDistribution && listBudget > 0) {
     const totalTasks = (list.tasks || []).length || 1
     const earningsBudget = listBudget * (1 - premiumPercentage / 100)
     const premiumBudget = listBudget * (premiumPercentage / 100)
-    budget = earningsBudget / totalTasks
-    premium = premiumBudget / totalTasks
+    if (budget == null) budget = earningsBudget / totalTasks
+    if (premium == null) premium = premiumBudget / totalTasks
   }
   // PRIORITY 5: If task has stored budget/premium/earnings AND no budgetDistribution is configured, use stored values
   // This is for backward compatibility with lists that don't have distribution configured yet

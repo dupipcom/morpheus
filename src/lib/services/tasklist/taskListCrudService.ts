@@ -15,6 +15,40 @@ import {
   parseNumericValue
 } from './helpers'
 
+// Normalize client-provided budget distribution payloads.
+// The client historically used the key `prize` but the Prisma schema
+// expects `premium`. Convert any `prize` fields to `premium`.
+function normalizeBudgetDistribution(input?: BudgetDistribution | null): BudgetDistribution | undefined {
+  if (!input) return undefined
+
+  const clone = JSON.parse(JSON.stringify(input)) as BudgetDistribution
+
+  const normalizeEntityArray = (arr?: any[]) => {
+    if (!Array.isArray(arr)) return arr
+    return arr.map((item) => {
+      if (item && item.allocation) {
+        const alloc = item.allocation
+        if (alloc.prize !== undefined) {
+          alloc.premium = alloc.prize
+          delete alloc.prize
+        }
+        // Also handle nested allocation objects where key may be 'prize'
+        if (alloc.budget && typeof alloc.budget === 'object' && alloc.budget.prize !== undefined) {
+          alloc.budget.premium = alloc.budget.prize
+          delete alloc.budget.prize
+        }
+      }
+      return item
+    })
+  }
+
+  return {
+    areas: normalizeEntityArray(clone.areas),
+    categories: normalizeEntityArray(clone.categories),
+    tasks: normalizeEntityArray(clone.tasks)
+  }
+}
+
 /**
  * Get task lists for a user
  * Includes tasks from the Task collection (templateTasks is deprecated)
@@ -287,7 +321,6 @@ export async function createTaskList(params: {
       budget: budget,
       budgetPercentage: budgetPercentage || 0,
       prizePercentage: prizePercentage || 0,
-      budgetDistribution: budgetDistribution,
       dueDate: dueDate,
       visibility: 'PRIVATE',
       users: [
@@ -295,6 +328,7 @@ export async function createTaskList(params: {
         ...(Array.isArray(collaborators) ? collaborators.map((id) => ({ userId: id, role: 'COLLABORATOR' as const })) : [])
       ],
       // templateTasks is deprecated - we create Task records instead
+      budgetDistribution: normalizeBudgetDistribution(budgetDistribution),
       templateId: templateId
     } as Record<string, unknown>,
     include: { template: true, tasks: true }
@@ -402,7 +436,7 @@ export async function updateTaskList(params: {
       budget: budget !== undefined ? budget : existing.budget,
       budgetPercentage: budgetPercentage !== undefined ? budgetPercentage : (existing as Record<string, unknown>).budgetPercentage,
       prizePercentage: prizePercentage !== undefined ? prizePercentage : (existing as Record<string, unknown>).prizePercentage,
-      budgetDistribution: budgetDistribution !== undefined ? budgetDistribution : (existing as Record<string, unknown>).budgetDistribution,
+      budgetDistribution: budgetDistribution !== undefined ? normalizeBudgetDistribution(budgetDistribution) : (existing as Record<string, unknown>).budgetDistribution,
       dueDate: dueDate !== undefined ? dueDate : existing.dueDate,
       users: Array.isArray(collaborators)
         ? [

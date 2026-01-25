@@ -176,7 +176,7 @@ export function distributeBudgetByCategory(
  * @param premiumTotal - Total premium pool for percentage calculation
  * @returns Object with budget and premium lookup maps
  */
-function convertEntityAllocationsToMaps(
+export function convertEntityAllocationsToMaps(
   allocations: EntityAllocationsType[] | undefined,
   budgetTotal: number,
   premiumTotal: number

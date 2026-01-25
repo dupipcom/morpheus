@@ -242,15 +242,72 @@ export async function initializeJobInvoice(
   taskId: string,
   listId: string
 ): Promise<void> {
-  const { earnings, premium, totalGains } = await getTaskInvoiceValues(taskId, listId)
+  // Try to calculate allocation from list budget distribution first,
+  // falling back to stored task values when distribution is not configured.
+  const [list, task, job] = await Promise.all([
+    prisma.list.findUnique({
+      where: { id: listId },
+      select: { budget: true, budgetDistribution: true, premiumPercentage: true, remainingBudget: true, tasks: true }
+    }),
+    prisma.task.findUnique({ where: { id: taskId } }),
+    prisma.job.findUnique({ where: { id: jobId }, select: { workerId: true } })
+  ])
+
+  console.log('Initializing job invoice:', { jobId, taskId, listId })
+
+  // Fallback to simple task values if list or task missing
+  if (!task) {
+    const { earnings, premium, totalGains } = await getTaskInvoiceValues(taskId, listId)
+    await prisma.job.update({
+      where: { id: jobId },
+      data: {
+        invoice: {
+          quote: earnings,
+          premium: premium,
+          exposure: totalGains
+        }
+      }
+    })
+    return
+  }
+
+  let alloc: { budget: number | null; premium: number | null; totalGains: number | null } | null = null
+
+  if (list && list.budgetDistribution) {
+    // Try to obtain worker equity if possible (safety scaling)
+    let worker: any = null
+    if (job?.workerId) {
+      worker = await prisma.user.findUnique({ where: { id: job.workerId }, select: { equity: true } })
+    }
+    const remainingBudget = list.remainingBudget ? parseFloat(list.remainingBudget) : list.budget
+
+    alloc = calculateTaskBudgetFromDistribution({
+      task: task as any,
+      list: {
+        budget: list.budget,
+        budgetDistribution: list.budgetDistribution as any,
+        premiumPercentage: list.premiumPercentage,
+        tasks: list.tasks as any
+      },
+      userEquity: worker?.equity,
+      remainingBudget
+    })
+
+    console.log('Calculated allocation from distribution:', alloc)
+  }
+
+  // Build invoice fields using allocation or fallback to stored task values
+  const quote = alloc?.budget ?? (task as any).earnings ?? (task as any).budget ?? null
+  const premium = alloc?.premium ?? (task as any).premium ?? null
+  const exposure = alloc?.totalGains ?? ((quote != null && premium != null) ? (quote + premium) : null)
 
   await prisma.job.update({
     where: { id: jobId },
     data: {
       invoice: {
-        quote: earnings,
-        premium: premium,
-        exposure: totalGains
+        quote: quote as any,
+        premium: premium as any,
+        exposure: exposure as any
       }
     }
   })
@@ -265,16 +322,35 @@ export async function updateJobWithTaskValues(
   taskId: string,
   listId: string
 ): Promise<void> {
-  const { earnings, premium, totalGains } = await getTaskInvoiceValues(taskId, listId)
+  // Use budget distribution (if available) to compute current task values,
+  // otherwise fall back to stored task values.
+  const [list, task] = await Promise.all([
+    prisma.list.findUnique({ where: { id: listId }, select: { budget: true, budgetDistribution: true, premiumPercentage: true, remainingBudget: true, tasks: true } }),
+    prisma.task.findUnique({ where: { id: taskId } })
+  ])
 
-  // Get current job to check if invoice needs to be preserved
-  const job = await prisma.job.findUnique({
-    where: { id: jobId },
-    select: { invoice: true }
-  })
+  if (!task) return
 
-  // Only update invoice values if they were already set (job was initiated)
-  // Preserve original quote/premium/exposure but update current values
+  let alloc: { budget: number | null; premium: number | null; totalGains: number | null } | null = null
+  if (list && list.budgetDistribution) {
+    const remainingBudget = list.remainingBudget ? parseFloat(list.remainingBudget) : list.budget
+    alloc = calculateTaskBudgetFromDistribution({
+      task: task as any,
+      list: {
+        budget: list.budget,
+        budgetDistribution: list.budgetDistribution as any,
+        premiumPercentage: list.premiumPercentage,
+        tasks: list.tasks as any
+      },
+      userEquity: null,
+      remainingBudget
+    })
+  }
+
+  const earnings = alloc?.budget ?? (task as any).earnings ?? (task as any).budget ?? 0
+  const premium = alloc?.premium ?? (task as any).premium ?? 0
+  const totalGains = alloc?.totalGains ?? (premium + earnings)
+
   await prisma.job.update({
     where: { id: jobId },
     data: {
