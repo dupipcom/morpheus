@@ -37,6 +37,7 @@ export function MyComponent({ prop1, prop2 }: ComponentProps) {
 ### Hooks Patterns
 - Use custom hooks from `src/lib/hooks/`
 - `useProfile()` for user profile data
+- `useFriendProfiles()` for friend/collaborator profile suggestions (SWR-based)
 - `useTaskHandlers()` for task CRUD
 - `useOptimisticUpdates()` for optimistic UI
 - `useTranslations()` for i18n
@@ -118,10 +119,44 @@ function MyComponent() {
 - Lift state only when necessary
 
 ### Server State (SWR)
+**Always use SWR hooks for fetching server data.** This provides automatic caching, deduplication, and revalidation.
+
 ```typescript
 import useSWR from 'swr'
+import { jsonFetcher } from '@/lib/utils/utils'
 
-const { data, error, isLoading, mutate } = useSWR('/api/v1/endpoint', fetcher)
+const { data, error, isLoading, mutate } = useSWR('/api/v1/endpoint', jsonFetcher, {
+  revalidateOnFocus: false,
+  revalidateOnReconnect: false,
+  shouldRetryOnError: false,
+  dedupingInterval: 5000,
+})
+```
+
+**SWR Best Practices:**
+- Create custom hooks in `src/lib/hooks/` for reusable data fetching (e.g., `useFriendProfiles`, `useProfile`)
+- Use `null` as the key to disable fetching conditionally
+- Pass query parameters in the URL to leverage SWR's caching by key
+- Use `useMemo` for computed keys to prevent unnecessary re-fetches
+
+**Example: Conditional fetching with search query**
+```typescript
+// Memoize to prevent unnecessary re-fetches
+const trimmedQuery = useMemo(() => query.trim(), [query])
+
+// Pass null to disable fetching when query is empty
+const { profiles } = useFriendProfiles(trimmedQuery || null)
+```
+
+**Anti-pattern: Manual fetch in useEffect**
+```typescript
+// ❌ BAD - manual fetch causes excessive requests and no caching
+useEffect(() => {
+  fetch('/api/v1/profiles').then(...)
+}, [dependency])
+
+// ✅ GOOD - SWR handles caching, deduplication, and revalidation
+const { data } = useSWR('/api/v1/profiles', jsonFetcher)
 ```
 
 ### Optimistic Updates

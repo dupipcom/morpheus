@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useMemo, useState, useEffect, useContext, useCallback } from 'react'
+import React, { useMemo, useState, useEffect, useContext } from 'react'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -15,7 +15,7 @@ import { Package, List as ListIcon, MoreHorizontal, ChevronDown, Calendar as Cal
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { useI18n } from '@/lib/contexts/i18n'
 import { GlobalContext } from '@/lib/contexts'
-import { useDebounce } from '@/lib/hooks/useDebounce'
+import { useFriendProfiles } from '@/lib/hooks/useFriendProfiles'
 import { BudgetDistributionInput } from '@/components/budgetDistributionInput'
 import { 
   BudgetDistribution, 
@@ -53,7 +53,7 @@ export const AddListForm = ({
   onCreated: (newListId?: string) => Promise<void> | void
 }) => {
   const { t } = useI18n()
-  const { session, friendProfiles } = useContext(GlobalContext)
+  const { session } = useContext(GlobalContext)
   const [form, setForm] = useState({
     name: '',
     templateId: '',
@@ -304,36 +304,13 @@ export const AddListForm = ({
     }
   }, [newListPreviewTasks, isEditing])
 
-  const [collabResults, setCollabResults] = useState<any[]>([])
-  
-  // Memoize trimmed query to avoid unnecessary effect re-executions
+  // Memoize trimmed query to avoid unnecessary SWR re-fetches
   const trimmedCollabQuery = useMemo(() => collabQuery.trim(), [collabQuery])
   
-  // Stable callback for searching profiles via API
-  const searchProfilesApi = useCallback(async (query: string) => {
-    // Only fetch from API if query is non-empty
-    if (!query.trim()) return
-    const res = await fetch(`/api/v1/profiles?query=${encodeURIComponent(query)}`)
-    if (res.ok) {
-      const data = await res.json()
-      setCollabResults(data.profiles || [])
-    }
-  }, [])
-  
-  // Debounced API search - only called when user types a non-empty query
-  const debouncedSearch = useDebounce(searchProfilesApi, 300)
-    
-  // When query is empty, use preloaded profiles from context
-  // When query has value, trigger API search
-  useEffect(() => {
-    if (!trimmedCollabQuery) {
-      // Use preloaded profiles from context when query is empty
-      setCollabResults(friendProfiles)
-    } else {
-      // Fetch from API when user types something
-      debouncedSearch(trimmedCollabQuery)
-    }
-  }, [trimmedCollabQuery, friendProfiles, debouncedSearch])
+  // Use SWR hook for fetching profiles - handles caching, deduplication, and revalidation
+  // When query is empty (null), fetches default profiles (close friends, friends, public)
+  // When query has value, fetches search results matching the query
+  const { profiles: collabResults } = useFriendProfiles(trimmedCollabQuery || null)
 
   const handleSubmit = async () => {
     const roleJoined = `${form.cadence}.${form.role}`

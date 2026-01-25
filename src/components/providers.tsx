@@ -6,7 +6,7 @@ import {
   ClerkProvider,
 } from '@clerk/nextjs'
 
-import { GlobalContext, FriendProfile } from "@/lib/contexts"
+import { GlobalContext } from "@/lib/contexts"
 import { I18nProvider } from "@/lib/contexts/i18n"
 import { NotesRefreshProvider } from "@/lib/contexts/notesRefresh"
 import { AuthWrapper } from '@/components/authWrapper'
@@ -47,9 +47,6 @@ export function Providers({ children, locale: providedLocale }: ProvidersProps) 
     setDayData: (date: string, data: any) => {},
     // Task list initialization state - true until first successful task lists fetch completes
     isInitializingTaskLists: true,
-    // Friend profiles - preloaded on app start
-    friendProfiles: [] as FriendProfile[],
-    refreshFriendProfiles: async () => {},
   })
   
   const setDayData = useCallback((date: string, data: any) => {
@@ -135,34 +132,13 @@ export function Providers({ children, locale: providedLocale }: ProvidersProps) 
     }
   }, [])
 
-  const refreshFriendProfiles = useCallback(async () => {
-    try {
-      // Fetch default profiles for collaborator suggestions
-      // When no query is provided, the API returns the top 5 profiles sorted by relationship priority:
-      // close friends first, then friends, then public profiles
-      const res = await fetch('/api/v1/profiles')
-      if (!res.ok) {
-        console.warn('Failed to refresh friend profiles:', res.status)
-        return
-      }
-      const data = await res.json()
-      setGlobalContext(prev => ({ 
-        ...prev, 
-        friendProfiles: Array.isArray(data?.profiles) ? data.profiles : [] 
-      }))
-    } catch (error) {
-      console.warn('Error refreshing friend profiles:', error)
-    }
-  }, [])
-
   // Fetch tasklists and templates once on mount
   useEffect(() => {
     if (isClient) {
       refreshTaskLists()
       refreshTemplates()
-      refreshFriendProfiles()
     }
-  }, [isClient, refreshTaskLists, refreshTemplates, refreshFriendProfiles])
+  }, [isClient, refreshTaskLists, refreshTemplates])
 
   return (
     <ClerkProvider 
@@ -176,7 +152,7 @@ export function Providers({ children, locale: providedLocale }: ProvidersProps) 
     >
       <AuthWrapper isLoading={isLoading}>
         <I18nProvider locale={locale}>
-          <GlobalContext.Provider value={{ ...globalContext, setGlobalContext, refreshTaskLists, refreshTemplates, refreshFriendProfiles, selectedDate, setSelectedDate, isNavigating, setIsNavigating, dayData: dayData, setDayData }}>
+          <GlobalContext.Provider value={{ ...globalContext, setGlobalContext, refreshTaskLists, refreshTemplates, selectedDate, setSelectedDate, isNavigating, setIsNavigating, dayData: dayData, setDayData }}>
             <NotesRefreshProvider>
               <SWRConfig value={{
                 revalidateOnFocus: false,
