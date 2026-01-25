@@ -50,7 +50,7 @@ export interface EarningsCalculation {
 
 interface CalculateEarningsParams {
   listRole?: string | null
-  budgetPercentage?: number
+  premiumPercentage?: number
   listBudget?: string | null
   userEquity?: string | null
   numTasks: number
@@ -63,7 +63,7 @@ interface CalculateEarningsParams {
  */
 export function calculateTaskEarnings({
   listRole,
-  budgetPercentage,
+  premiumPercentage,
   listBudget,
   userEquity,
   numTasks,
@@ -82,9 +82,9 @@ export function calculateTaskEarnings({
   const isWeekly = listRole?.startsWith('weekly.')
   const equity = parseFloat(userEquity || '0')
   const budget = parseFloat(listBudget || '0')
-  const budgetAllocation = (budgetPercentage || 0) / 100 // Convert percentage to decimal
+  const budgetAllocation = (premiumPercentage || 0) / 100 // Convert percentage to decimal
 
-  // 1. Calculate actionPremium (if budgetPercentage is set)
+  // 1. Calculate actionPremium (if premiumPercentage is set)
   // Premium is calculated from equity (availableBalance - stash)
   if (budgetAllocation > 0 && equity > 0) {
     result.actionPremium = (budgetAllocation * equity) / numTasks
@@ -96,7 +96,7 @@ export function calculateTaskEarnings({
       result.weeklyPremium = result.actionPremium / 4
     }
   } else if (budgetAllocation > 0 && equity <= 0) {
-    // If budgetPercentage is set but equity is 0 or null, still set actionPremium to 0
+    // If premiumPercentage is set but equity is 0 or null, still set actionPremium to 0
     // This ensures the structure is consistent even when equity is missing
     result.actionPremium = 0
     if (isDaily) {
@@ -133,10 +133,10 @@ export function calculateTaskEarnings({
 
 /**
  * Calculate the total premium pool from user equity and budget percentage
- * Premium pool = (budgetPercentage / 100) * userEquity
+ * Premium pool = (premiumPercentage / 100) * userEquity
  */
-export function calculatePremiumPool(budgetPercentage: number, userEquity: number): number {
-  return (budgetPercentage / 100) * userEquity
+export function calculatePremiumPool(premiumPercentage: number, userEquity: number): number {
+  return (premiumPercentage / 100) * userEquity
 }
 
 // Alias for backwards compatibility
@@ -144,9 +144,9 @@ export const calculatePrizePool = calculatePremiumPool
 
 /**
  * Calculate budget percentage from currency value and user equity
- * budgetPercentage = (currencyValue / userEquity) * 100
+ * premiumPercentage = (currencyValue / userEquity) * 100
  */
-export function calculateBudgetPercentageFromCurrency(currencyValue: number, userEquity: number): number {
+export function calculatepremiumPercentageFromCurrency(currencyValue: number, userEquity: number): number {
   if (userEquity <= 0) return 0
   return (currencyValue / userEquity) * 100
 }

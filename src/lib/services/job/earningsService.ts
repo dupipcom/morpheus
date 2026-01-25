@@ -379,7 +379,7 @@ export async function calculateAndApplyJobEarnings({
         select: { 
           role: true, 
           budget: true, 
-          budgetPercentage: true, 
+          premiumPercentage: true, 
           budgetDistribution: true,
           premiumPercentage: true,
           remainingBudget: true,

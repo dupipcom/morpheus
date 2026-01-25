@@ -497,7 +497,7 @@ export const DoToolbar = ({
 
   // Determine if we should show the prize badge
   const shouldShowPrizeBadge = useMemo(() => {
-    if (typeof (selectedList as any)?.budgetPercentage !== 'number' || (selectedList as any).budgetPercentage <= 0) {
+    if (typeof (selectedList as any)?.premiumPercentage !== 'number' || (selectedList as any).premiumPercentage <= 0) {
       return false
     }
     const listRole = (selectedList as any)?.role
@@ -635,7 +635,7 @@ export const DoToolbar = ({
                 </div>
               </div>
 
-              {/* Badges row: budget, budgetPercentage, due date, collaborators, earnings */}
+              {/* Badges row: budget, premiumPercentage, due date, collaborators, earnings */}
               {selectedList && (
                 <div className="flex items-center gap-2 flex-wrap">
                   {/* Budget badge - show if budget is allocated (exists and > 0) */}
@@ -645,13 +645,13 @@ export const DoToolbar = ({
                       Budget: ${parseFloat(String((selectedList as any).budget)).toFixed(2)}
                     </Badge>
                   )}
-                  {/* Budget percentage badge - show if budgetPercentage is allocated */}
-                  {typeof (selectedList as any)?.budgetPercentage === 'number' && (selectedList as any).budgetPercentage > 0 && (
+                  {/* Budget percentage badge - show if premiumPercentage is allocated */}
+                  {typeof (selectedList as any)?.premiumPercentage === 'number' && (selectedList as any).premiumPercentage > 0 && (
                     <Badge variant="outline" className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80">
-                      {(selectedList as any).budgetPercentage.toFixed(0)}% of budget
+                      {(selectedList as any).premiumPercentage.toFixed(0)}% of budget
                     </Badge>
                   )}
-                  {/* Premium badge - show if budgetPercentage is allocated */}
+                  {/* Premium badge - show if premiumPercentage is allocated */}
                   {shouldShowPrizeBadge && (
                     <Badge variant="outline" className={optimisticEarnings.premium > 0 ? "bg-green-100 text-green-800 border-green-300 hover:bg-green-200 animate-pulse" : "bg-green-50 text-green-700 border-green-200 hover:bg-green-100"}>
                       <Award className="h-3 w-3 mr-1" />

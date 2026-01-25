@@ -26,7 +26,7 @@ import {
   getAllocationNominal,
   nominalToPercent
 } from '@/lib/utils/budgetDistributionUtils'
-import { calculatePrizePool, calculateBudgetPercentageFromCurrency } from '@/lib/utils/earningsUtils'
+import { calculatePrizePool, calculatepremiumPercentageFromCurrency } from '@/lib/utils/earningsUtils'
 import type { TaskList, Template, Task } from '@/lib/services/tasklist/types'
 
 type Collaborator = { id: string, userName: string }
@@ -67,7 +67,7 @@ export const AddListForm = ({
     name: '',
     templateId: '',
     budget: '0',
-    budgetPercentage: 0,
+    premiumPercentage: 0,
     dueDate: '',
     cadence: 'one-off',
     role: 'custom',
@@ -81,7 +81,7 @@ export const AddListForm = ({
   const [tasks, setTasks] = useState<Task[]>([])
   const [remainingBudget, setRemainingBudget] = useState<number>(100)
   const [maxAllowedBudget, setMaxAllowedBudget] = useState<number>(100)
-  const [premiumPercentage, setPremiumPercentage] = useState<number>(0) // % of budgetPercentage allocated to premium
+  const [premiumPercentage, setPremiumPercentage] = useState<number>(0) // % of premiumPercentage allocated to premium
   const [budgetDistributionMode, setBudgetDistributionMode] = useState<'equal' | 'area' | 'category' | 'task'>('equal')
   const [areaDistribution, setAreaDistribution] = useState<Record<string, AllocationType>>({})
   const [areaDistributionMode, setAreaDistributionMode] = useState<'percentage' | 'currency'>('percentage')
@@ -92,7 +92,7 @@ export const AddListForm = ({
   const [categoryPremiumDistribution, setCategoryPremiumDistribution] = useState<Record<string, AllocationType>>({})
   const [categoryPremiumDistributionMode, setCategoryPremiumDistributionMode] = useState<'percentage' | 'currency'>('percentage')
   const [taskBudgets, setTaskBudgets] = useState<Record<string, EntityBudgetState>>({})
-  const [budgetPercentageMode, setBudgetPercentageMode] = useState<'percentage' | 'currency'>('percentage')
+  const [premiumPercentageMode, setpremiumPercentageMode] = useState<'percentage' | 'currency'>('percentage')
   const [personalBudgetAllocation, setPersonalBudgetAllocation] = useState<Record<string, AllocationType>>({})
 
   // Get user equity for currency calculations
@@ -100,7 +100,7 @@ export const AddListForm = ({
 
   // Determine if budget/prize fields should be disabled
    const isBudgetDisabled = !form.budget || parseFloat(form.budget) <= 0
-   const isPremiumDisabled = form.budgetPercentage <= 0 || userEquity <= 0
+   const isPremiumDisabled = form.premiumPercentage <= 0 || userEquity <= 0
 
   // Load initial list data when editing
   useEffect(() => {
@@ -124,7 +124,7 @@ export const AddListForm = ({
         name: initialList.name || '',
         templateId: isEditing ? '' : (initialList.templateId ? `template:${initialList.templateId}` : ''),
         budget: budgetValue,
-        budgetPercentage: initialList.budgetPercentage || 0,
+        premiumPercentage: initialList.premiumPercentage || 0,
         dueDate: initialList.dueDate || '',
         cadence: cadencePart || 'one-off',
         role: rolePart || 'custom',
@@ -239,7 +239,7 @@ export const AddListForm = ({
     try {
       // Calculate total budget used by all lists
       const totalUsed = allTaskLists.reduce((sum, list: TaskList) => {
-        return sum + (list.budgetPercentage || 0)
+        return sum + (list.premiumPercentage || 0)
       }, 0)
 
       // Calculate total used by OTHER lists (excluding current list if editing)
@@ -248,7 +248,7 @@ export const AddListForm = ({
         if (isEditing && initialList?.id && list.id === initialList.id) {
           return sum
         }
-        return sum + (list.budgetPercentage || 0)
+        return sum + (list.premiumPercentage || 0)
       }, 0)
 
       // Remaining budget is what's left after all allocations
@@ -256,7 +256,7 @@ export const AddListForm = ({
       
       // When editing: max = remaining + current list's allocation
       // When creating: max = remaining
-      const currentListBudget = initialList?.budgetPercentage || 0
+      const currentListBudget = initialList?.premiumPercentage || 0
       const maxAllowed = Math.max(0, 100 - totalUsedByOthers)
 
       setRemainingBudget(remaining)
@@ -266,7 +266,7 @@ export const AddListForm = ({
       setRemainingBudget(100)
       setMaxAllowedBudget(100)
     }
-  }, [allTaskLists, initialList?.id, initialList?.budgetPercentage, isEditing])
+  }, [allTaskLists, initialList?.id, initialList?.premiumPercentage, isEditing])
 
   // Resolve collaborator usernames for existing lists (replace id placeholders)
   useEffect(() => {
@@ -335,7 +335,7 @@ export const AddListForm = ({
     
     // Build area distribution with EntityAllocationsType array
     if (budgetDistributionMode === 'area' && Object.keys(areaDistribution).length > 0) {
-      const prizePool = calculatePrizePool(form.budgetPercentage, userEquity)
+      const prizePool = calculatePrizePool(form.premiumPercentage, userEquity)
       const areaAllocations: EntityAllocationsType[] = []
       
       Object.entries(areaDistribution).forEach(([area, budgetAlloc]) => {
@@ -355,7 +355,7 @@ export const AddListForm = ({
     
     // Build category distribution with EntityAllocationsType array
     if (budgetDistributionMode === 'category' && Object.keys(categoryDistribution).length > 0) {
-      const prizePool = calculatePrizePool(form.budgetPercentage, userEquity)
+      const premiumPool = calculatePrizePool(form.premiumPercentage, userEquity)
       const categoryAllocations: EntityAllocationsType[] = []
       
       Object.entries(categoryDistribution).forEach(([category, budgetAlloc]) => {
@@ -406,8 +406,7 @@ export const AddListForm = ({
         role: roleJoined,
         name: form.name || undefined,
         budget: budgetValue,
-        budgetPercentage: form.budgetPercentage,
-        premiumPercentage: premiumPercentage > 0 ? premiumPercentage : undefined,
+        premiumPercentage: form.premiumPercentage,
         budgetDistribution: Object.keys(budgetDistribution).length > 0 ? budgetDistribution : undefined,
         dueDate: form.dueDate || undefined,
         templateId: templateIdToLink,
@@ -432,7 +431,7 @@ export const AddListForm = ({
         name: '',
         templateId: '',
         budget: '',
-        budgetPercentage: 0,
+        premiumPercentage: 0,
         dueDate: '',
         cadence: 'one-off',
         role: 'custom',
@@ -712,19 +711,19 @@ export const AddListForm = ({
                   totalBudget={userEquity}
                   allocations={{
                     personal: {
-                      percent: form.budgetPercentage,
-                      nominal: (form.budgetPercentage / 100) * userEquity
+                      percent: form.premiumPercentage,
+                      nominal: (form.premiumPercentage / 100) * userEquity
                     }
                   }}
                   onChange={(allocs, metadata) => {
                     const alloc = allocs.personal
                     if (!alloc) return
                     const percentage = alloc.percent ?? nominalToPercent(alloc.nominal ?? 0, userEquity)
-                    setForm(prev => ({ ...prev, budgetPercentage: Math.max(0, Math.min(maxAllowedBudget, percentage)) }))
+                    setForm(prev => ({ ...prev, premiumPercentage: Math.max(0, Math.min(maxAllowedBudget, percentage)) }))
                   }}
-                  onModeChange={setBudgetPercentageMode}
-                  mode={budgetPercentageMode}
-                  label={t('forms.addListForm.budgetPercentageLabel') || 'Personal Budget Allocation (% of equity)'}
+                  onModeChange={setpremiumPercentageMode}
+                  mode={premiumPercentageMode}
+                  label={t('forms.addListForm.premiumPercentageLabel') || 'Personal Budget Allocation (% of equity)'}
                 />
 
                 {/* Budget Distribution Mode */}
@@ -763,7 +762,7 @@ export const AddListForm = ({
                       />
                       <BudgetDistributionInput
                         items={taskAreas}
-                        totalBudget={calculatePrizePool(form.budgetPercentage, userEquity)}
+                        totalBudget={calculatePrizePool(form.premiumPercentage, userEquity)}
                         allocations={areaPremiumDistribution}
                         onChange={(allocs) => setAreaPremiumDistribution(allocs)}
                         onModeChange={setAreaPremiumDistributionMode}
@@ -795,7 +794,7 @@ export const AddListForm = ({
                       />
                       <BudgetDistributionInput
                         items={allCategories}
-                        totalBudget={calculatePrizePool(form.budgetPercentage, userEquity)}
+                        totalBudget={calculatePrizePool(form.premiumPercentage, userEquity)}
                         allocations={categoryPremiumDistribution}
                         onChange={(allocs) => setCategoryPremiumDistribution(allocs)}
                         onModeChange={setCategoryPremiumDistributionMode}
@@ -810,7 +809,7 @@ export const AddListForm = ({
                     {/* Per-Task Distribution */}
                     {budgetDistributionMode === 'task' && tasks.length > 0 && (() => {
                       const listBudget = parseFloat(form.budget) || 0
-                      const premiumPool = calculatePrizePool(form.budgetPercentage, userEquity)
+                      const premiumPool = calculatePrizePool(form.premiumPercentage, userEquity)
                       
                       const totalBudget = tasks.reduce((sum, task) => {
                         const taskId = task.id || task.name

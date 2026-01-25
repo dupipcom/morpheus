@@ -566,7 +566,7 @@ model List {
   history              ListHistoryEntry[]
   // Budget fields (legacy - will be deprecated)
   budget               Float?
-  budgetPercentage     Float?             @default(0)
+  premiumPercentage     Float?             @default(0)
   remainingBudget      String?
   premiumPercentage    Float?             @default(0)
   budgetDistribution   BudgetDistribution?  // Budget allocation across areas/categories/tasks

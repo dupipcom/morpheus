@@ -59,7 +59,7 @@ export function useOptimisticEarnings({
 
     const earningsCalculation = calculateTaskEarnings({
       listRole: selectedList.role,
-      budgetPercentage: selectedList.budgetPercentage as number | undefined,
+      premiumPercentage: selectedList.premiumPercentage as number | undefined,
       listBudget: selectedList.budget,
       userEquity: String(userEquity),
       numTasks: tasksCount,

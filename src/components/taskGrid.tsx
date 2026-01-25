@@ -563,11 +563,11 @@ export const TaskGrid = ({
         // Use tasks from Task collection only (templateTasks is deprecated)
         const totalTasks = (selectedTaskList?.tasks as any[])?.length || 1
         const budgetDistribution = (selectedTaskList as any)?.budgetDistribution
-        const budgetPercentage = (selectedTaskList as any)?.budgetPercentage || 0
+        const premiumPercentage = (selectedTaskList as any)?.premiumPercentage || 0
         
         // Get user equity from session for prize pool calculation
         const userEquity = (selectedTaskList as any)?.userEquity || 0
-        const premiumPool = calculatePrizePool(budgetPercentage, userEquity)
+        const premiumPool = calculatePrizePool(premiumPercentage, userEquity)
         
         let taskEarnings = 0
         let taskPremium = 0

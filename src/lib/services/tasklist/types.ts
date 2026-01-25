@@ -127,7 +127,7 @@ export interface TaskList {
   role?: string | null
   name?: string | null
   budget?: number | string | null
-  budgetPercentage?: number | null
+  premiumPercentage?: number | null
   remainingBudget?: string | null
   dueDate?: string | Date | null
   visibility?: string
@@ -193,7 +193,7 @@ export interface TaskListPostBody {
   updateTemplate?: boolean
   name?: string
   budget?: number | string
-  budgetPercentage?: number
+  premiumPercentage?: number
   premiumPercentage?: number
   budgetDistribution?: BudgetDistribution
   dueDate?: string | Date
