@@ -400,18 +400,14 @@ export const DoToolbar = ({
   }, [selectedList?.id, selectedList?.role, selectedDateToUse, session?.user?.id])
 
   // Add optimistic earnings for a task completion
-  // Uses task's premium and budget values from budgetDistribution directly
-  const addOptimisticTaskEarnings = useCallback((task?: { premium?: number; earnings?: number; budget?: number }) => {
+  // Uses estimated totalGain displayed in taskItem badge
+  const addOptimisticTaskEarnings = useCallback((taskEarnings?: number, taskPremium?: number) => {
     if (!selectedList) return
 
-    // Use task's actual premium and earnings values from budgetDistribution
-    const rawPremium = task?.premium || 0
-    const earnings = task?.earnings || task?.budget || 0
-    
-    // Apply premium factors based on list role and user settings
-    const userSettings = (session?.user as any)?.settings as PremiumFactorSettings | null
-    const listRole = selectedList?.role
-    const premium = applyPremiumFactors(rawPremium, listRole, userSettings)
+    // Use provided taskEarnings and taskPremium (already calculated from budget distribution)
+    // These come from the taskItem badge which calculates them from budget distribution
+    const earnings = taskEarnings || 0
+    const premium = taskPremium || 0
     
     // Only add if there are actual values
     if (premium === 0 && earnings === 0) return
@@ -426,7 +422,7 @@ export const DoToolbar = ({
     setTimeout(() => {
       setOptimisticEarnings({ earnings: 0, premium: 0 })
     }, 5000)
-  }, [selectedList, session?.user])
+  }, [selectedList])
 
   // Add optimistic completion percentage increase
   const addOptimisticCompletion = useCallback(() => {
@@ -448,8 +444,8 @@ export const DoToolbar = ({
   }, [selectedList])
 
   // Combined optimistic callback for both earnings and completion
-  const handleTaskCompletionOptimistic = useCallback((task?: { premium?: number; budget?: number; earnings?: number }) => {
-    addOptimisticTaskEarnings(task)
+  const handleTaskCompletionOptimistic = useCallback((taskEarnings?: number, taskPremium?: number) => {
+    addOptimisticTaskEarnings(taskEarnings, taskPremium)
     addOptimisticCompletion()
   }, [addOptimisticTaskEarnings, addOptimisticCompletion])
 

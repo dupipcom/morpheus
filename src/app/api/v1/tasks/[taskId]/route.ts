@@ -3,6 +3,7 @@ import prisma from '@/lib/prisma'
 import { getAuthenticatedUser, getUserListRole } from '@/lib/services/auth'
 import { sanitizeText } from '@/lib/utils/sanitize'
 import { applyPremiumFactors, PremiumFactorSettings } from '@/lib/utils/earningsUtils'
+import { calculateTaskBudgetFromDistribution } from '@/lib/services/task/taskMigrationService'
 
 /**
  * Shared include configuration for task queries with full relations
@@ -13,7 +14,17 @@ const taskFullInclude = {
       id: true,
       name: true,
       role: true,
-      users: true
+      users: true,
+      budget: true,
+      budgetDistribution: true,
+      premiumPercentage: true,
+      tasks: {
+        select: {
+          id: true,
+          area: true,
+          categories: true
+        }
+      }
     }
   },
   jobs: {
@@ -105,10 +116,23 @@ export async function GET(
       select: { settings: true }
     })
     const premiumFactorSettings = userWithSettings?.settings as PremiumFactorSettings | null
+    
+    // Calculate financial values from budget distribution (not from task fields)
+    const budgetAllocation = calculateTaskBudgetFromDistribution({
+      task,
+      list: {
+        budget: (task.list as any).budget,
+        budgetDistribution: (task.list as any).budgetDistribution,
+        premiumPercentage: (task.list as any).premiumPercentage,
+        tasks: (task.list as any).tasks,
+        role: (task.list as any).role
+      }
+    })
+    
     const listRole = (task.list as any).role
-    const rawPremium = task.premium || 0
+    const rawPremium = budgetAllocation.premium || 0
     const factoredPremium = applyPremiumFactors(rawPremium, listRole, premiumFactorSettings)
-    const earnings = task.earnings || task.budget || 0
+    const earnings = budgetAllocation.budget || 0
     
     const taskWithFactoredPremium = {
       ...task,

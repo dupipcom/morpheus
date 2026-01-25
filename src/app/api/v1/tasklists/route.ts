@@ -39,6 +39,7 @@ import { updateTaskStatus, updateTaskRedacted } from '@/lib/services/tasklist'
 import { processEphemeralTasks } from '@/lib/services/tasklist'
 import { updateTaskCompletionHandler } from './handlers/updateTaskCompletion'
 import { applyPremiumFactors, PremiumFactorSettings } from '@/lib/utils/earningsUtils'
+import { calculateTaskBudgetFromDistribution } from '@/lib/services/task/taskMigrationService'
 
 /**
  * GET /api/v1/tasklists
@@ -110,17 +111,27 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       })
     )
 
-    // Apply premium factors to all tasks in each list
+    // Apply premium factors and calculate financial values from budget distribution for all tasks in each list
     const taskListsWithFactoredPremiums = taskListsWithCompletion.map((list: any) => {
       const listRole = list.role
       
-      // Factor premiums for tasks in Task collection
+      // Calculate financial values from budget distribution for tasks in Task collection
       const factoredTasks = (list.tasks || []).map((task: any) => {
-        if (task.premium == null) return task
+        // Calculate financial values from budget distribution (not from task fields)
+        const budgetAllocation = calculateTaskBudgetFromDistribution({
+          task,
+          list: {
+            budget: list.budget,
+            budgetDistribution: list.budgetDistribution,
+            premiumPercentage: list.premiumPercentage,
+            tasks: list.tasks,
+            role: list.role
+          }
+        })
         
-        const rawPremium = task.premium || 0
+        const rawPremium = budgetAllocation.premium || 0
         const factoredPremium = applyPremiumFactors(rawPremium, listRole, premiumFactorSettings)
-        const earnings = task.earnings || task.budget || 0
+        const earnings = budgetAllocation.budget || 0
         
         return {
           ...task,
