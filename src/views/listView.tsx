@@ -328,7 +328,7 @@ const formatDateLocal = (date: Date): string => {
             dateBucket.forEach((t: any) => {
               const k = keyOf(t)
               if (!k) return
-              if (t.status === 'done' || (t.count || 0) >= (t.times || 1)) {
+              if (t.status === 'done' || t.status === 'completed' || (t.count || 0) >= (t.times || 1)) {
                 if (!closedTasksByKey[k]) {
                   closedTasksByKey[k] = t
                   allClosedTasks.push(t)

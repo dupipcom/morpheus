@@ -39,7 +39,7 @@ function datesEqual(date1: Date | undefined, date2: Date | undefined): boolean {
 function getCompletedCount(dateData: any): number {
   if (!dateData) return 0
   if (Array.isArray(dateData)) {
-    return dateData.filter((t: any) => t.status === 'done').length
+    return dateData.filter((t: any) => t.status === 'done' || t.status === 'completed').length
   }
   if (Array.isArray(dateData.closedTasks)) {
     return dateData.closedTasks.length
@@ -133,10 +133,10 @@ export const DoToolbar = ({
 
       // Calculate from task arrays
       const openCount = Array.isArray(dateData)
-        ? dateData.filter((t: any) => t.status !== 'done').length
+        ? dateData.filter((t: any) => t.status !== 'done' && t.status !== 'completed').length
         : (Array.isArray(dateData.openTasks) ? dateData.openTasks.length : 0)
       const closedCount = Array.isArray(dateData)
-        ? dateData.filter((t: any) => t.status === 'done').length
+        ? dateData.filter((t: any) => t.status === 'done' || t.status === 'completed').length
         : (Array.isArray(dateData.closedTasks) ? dateData.closedTasks.length : 0)
       const total = openCount + closedCount
       return total > 0 ? (closedCount / total) * 100 : null

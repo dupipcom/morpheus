@@ -110,7 +110,7 @@ export const TaskGrid = ({
     const isDone = (t: any) => {
       const key = getTaskKey(t)
       const taskStatus = taskStatuses[key] || getTaskStatus(t)
-      return taskStatus === 'done'
+      return taskStatus === 'done' || taskStatus === 'completed'
     }
     const getTaskStatusForSort = (t: any): TaskStatus => {
       const key = getTaskKey(t)
@@ -521,7 +521,7 @@ export const TaskGrid = ({
         {sortedTasks.map((task: any) => {
         const key = getTaskKey(task)
         const taskStatus = taskStatuses[key] || getTaskStatus(task)
-        const isDone = taskStatus === 'done'
+        const isDone = taskStatus === 'done' || taskStatus === 'completed'
         
         // Get optimistic count from pending completions to ensure task object has latest count
         const pendingCompletion = pendingCompletionsRef.current.get(key)
