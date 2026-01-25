@@ -9,7 +9,7 @@ import { useNotesRefresh } from "@/lib/contexts/notesRefresh"
 import Link from 'next/link'
 import { OptionsButton, OptionsMenuItem } from "@/components/optionsButton"
 import { toast } from "sonner"
-import { Popover, PopoverContent, PopoverTrigger, PopoverAnchor } from "@/components/ui/popover"
+import { Popover, PopoverContent, PopoverAnchor } from "@/components/ui/popover"
 
 export interface Comment {
   id: string
@@ -27,6 +27,14 @@ export interface Comment {
   _count?: {
     likes: number
   }
+}
+
+// Helper to get display name for comment author
+function getCommentAuthorName(comment: Comment, fallback: string): string {
+  const profile = comment.user.profile
+  if (profile?.userName) return `@${profile.userName}`
+  if (profile?.firstName) return profile.firstName
+  return fallback
 }
 
 export interface ActivityItem {
@@ -83,7 +91,6 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
   const [isTogglingLike, setIsTogglingLike] = useState(false)
   const [commentLikes, setCommentLikes] = useState<Record<string, { isLiked: boolean; count: number }>>({})
   const [isCloning, setIsCloning] = useState(false)
-  const [isEditing, setIsEditing] = useState(false)
   const [editContent, setEditContent] = useState(item.content || '')
   const [isSaving, setIsSaving] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
@@ -328,7 +335,6 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
   // For collapsed view, show last 3 (newest 3, but display oldest first)
   // For expanded view, show all (newest first)
   const last3Comments = comments.slice(0, 3).reverse() // Show newest 3, but display oldest first
-  const hasMoreComments = commentCount > 3
 
   const getUserName = () => {
     if (item.user?.profile?.userName) {
@@ -891,11 +897,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
                 <div key={comment.id} className="text-xs text-muted-foreground bg-muted/50 rounded p-2">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="font-medium">
-                      {comment.user.profile?.userName 
-                        ? `@${comment.user.profile.userName}`
-                        : comment.user.profile?.firstName 
-                        ? comment.user.profile.firstName
-                        : t('common.anonymous')}
+                      {getCommentAuthorName(comment, t('common.anonymous'))}
                     </span>
                     <span className="text-[10px]">{getTimeAgo(new Date(comment.createdAt))}</span>
                   </div>
@@ -936,11 +938,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
                     <div key={comment.id} className="text-xs text-muted-foreground bg-muted/50 rounded p-2 relative">
                       <div className="flex items-center gap-2 mb-1">
                         <span className="font-medium">
-                          {comment.user.profile?.userName 
-                            ? `@${comment.user.profile.userName}`
-                            : comment.user.profile?.firstName 
-                            ? comment.user.profile.firstName
-                            : t('common.anonymous')}
+                          {getCommentAuthorName(comment, t('common.anonymous'))}
                         </span>
                         <span className="text-[10px]">{getTimeAgo(new Date(comment.createdAt))}</span>
                         {isCommentOwner && commentOptionsMenuItems.length > 0 && (
