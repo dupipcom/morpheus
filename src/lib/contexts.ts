@@ -1,5 +1,17 @@
 import { createContext } from 'react'
 
+// Profile type for friend/collaborator profiles
+export interface FriendProfile {
+	userId: string
+	userName: string | null
+	firstName?: string | null
+	lastName?: string | null
+	profilePicture?: string | null
+	bio?: string | null
+	isCloseFriend?: boolean
+	isFriend?: boolean
+}
+
 export const GlobalContext = createContext({
 	theme: 'light',
 	session: {
@@ -23,4 +35,7 @@ export const GlobalContext = createContext({
 	handleTaskCompletionOptimistic: () => {},
 	// Task list initialization state - true while initially loading task lists for new users
 	isInitializingTaskLists: true,
+	// Friend profiles - preloaded on app start to avoid repeated fetches
+	friendProfiles: [] as FriendProfile[],
+	refreshFriendProfiles: async () => {},
 })

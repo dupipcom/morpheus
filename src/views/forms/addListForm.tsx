@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useMemo, useState, useEffect, useContext } from 'react'
+import React, { useMemo, useState, useEffect, useContext, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -53,7 +53,7 @@ export const AddListForm = ({
   onCreated: (newListId?: string) => Promise<void> | void
 }) => {
   const { t } = useI18n()
-  const { session } = useContext(GlobalContext)
+  const { session, friendProfiles } = useContext(GlobalContext)
   const [form, setForm] = useState({
     name: '',
     templateId: '',
@@ -306,19 +306,32 @@ export const AddListForm = ({
 
   const [collabResults, setCollabResults] = useState<any[]>([])
   
-  // Debounced search function
-  const debouncedSearch = useDebounce(async (query: string) => {
-        // Fetch suggestions even when query is empty (shows top 5 close friends/friends/public)
+  // Stable callback for searching profiles via API
+  const searchProfilesApi = useCallback(async (query: string) => {
+    // Only fetch from API if query is non-empty
+    if (!query.trim()) return
     const res = await fetch(`/api/v1/profiles?query=${encodeURIComponent(query)}`)
     if (res.ok) {
-          const data = await res.json()
-          setCollabResults(data.profiles || [])
-        }
-    }, 300)
+      const data = await res.json()
+      setCollabResults(data.profiles || [])
+    }
+  }, [])
+  
+  // Debounced API search - only called when user types a non-empty query
+  const debouncedSearch = useDebounce(searchProfilesApi, 300)
     
+  // When query is empty, use preloaded profiles from context
+  // When query has value, trigger API search
   useEffect(() => {
-    debouncedSearch(collabQuery)
-  }, [collabQuery, debouncedSearch])
+    const trimmedQuery = collabQuery.trim()
+    if (!trimmedQuery) {
+      // Use preloaded profiles from context when query is empty
+      setCollabResults(friendProfiles)
+    } else {
+      // Fetch from API when user types something
+      debouncedSearch(collabQuery)
+    }
+  }, [collabQuery, friendProfiles, debouncedSearch])
 
   const handleSubmit = async () => {
     const roleJoined = `${form.cadence}.${form.role}`
