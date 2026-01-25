@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
       // Verify user has access to this list
       const list = await prisma.list.findUnique({
         where: { id: listId },
-        select: { users: true }
+        select: { users: true, role: true }
       })
 
       if (!list) {
@@ -51,7 +51,8 @@ export async function GET(request: NextRequest) {
       }
 
       // Get tasks for the specific date with recurrence filtering
-      const tasksForDate = await getTasksForDate(listId, date)
+      // Pass list.role to avoid an extra DB query in getTasksForDate
+      const tasksForDate = await getTasksForDate(listId, date, list.role)
 
       // Map to response format
       const tasks = tasksForDate.map(({ task, dateStatus, dateCount, completers }) => ({

@@ -52,10 +52,19 @@ export function getWeekRange(dateStr: string): { weekStart: string; weekEnd: str
 
 /**
  * Check if a task should appear on a specific date based on its recurrence rule
+ * @param task - The task to check
+ * @param targetDate - The date to check against
+ * @param isOneOffList - Whether the task belongs to a one-off list (if true, COMPLETED tasks still appear)
  */
-export function shouldTaskAppearOnDate(task: Task, targetDate: Date): boolean {
+export function shouldTaskAppearOnDate(task: Task, targetDate: Date, isOneOffList: boolean = false): boolean {
+  // Tasks with COMPLETED status should not appear in recurring lists
+  // But in one-off lists, COMPLETED tasks should still appear (as done)
+  if (task.status === 'COMPLETED' && !isOneOffList) {
+    return false
+  }
+
   // Tasks without recurrence rules are one-time tasks
-  // They appear on all dates (or until completed/archived)
+  // They appear on all dates (or until completed/archived for recurring lists)
   if (!task.recurrence) {
     return true
   }
@@ -128,17 +137,41 @@ export function shouldTaskAppearOnDate(task: Task, targetDate: Date): boolean {
 /**
  * Get tasks that should appear for a specific date with date-specific completion status
  * For weekly tasks, aggregates job data across the entire week
+ * @param listId - The list ID to fetch tasks for
+ * @param targetDate - The date to filter tasks for (YYYY-MM-DD format)
+ * @param listRole - Optional list role to determine if it's a one-off list (avoids extra DB query if provided)
  */
 export async function getTasksForDate(
   listId: string,
-  targetDate: string
+  targetDate: string,
+  listRole?: string | null
 ): Promise<TaskForDate[]> {
   const targetDateObj = new Date(targetDate)
   const weekRange = getWeekRange(targetDate)
 
-  // 1. Fetch all tasks for the list with all jobs (we'll filter later)
+  // Determine if this is a one-off list (should show all tasks including COMPLETED)
+  // Use provided listRole if available, otherwise fetch from DB
+  let role = listRole
+  if (role === undefined) {
+    const list = await prisma.list.findUnique({
+      where: { id: listId },
+      select: { role: true }
+    })
+    role = list?.role
+  }
+  
+  const rolePrefix = role?.split('.')[0] || ''
+  const isOneOffList = rolePrefix === 'one-off' || rolePrefix === 'oneoff'
+
+  // 1. Fetch all tasks for the list with all jobs
+  // For one-off lists, include COMPLETED tasks (they should appear as done)
+  // For recurring lists (daily/weekly), filter out COMPLETED tasks
   const tasks = await prisma.task.findMany({
-    where: { listId },
+    where: {
+      listId,
+      // Only filter out COMPLETED tasks for non-one-off lists
+      ...(isOneOffList ? {} : { status: { not: 'COMPLETED' } })
+    },
     include: {
       jobs: {
         include: {
@@ -155,7 +188,8 @@ export async function getTasksForDate(
 
   for (const task of tasks) {
     // Check if this task should appear on the target date
-    if (!shouldTaskAppearOnDate(task, targetDateObj)) {
+    // Pass isOneOffList so COMPLETED tasks still appear in one-off lists
+    if (!shouldTaskAppearOnDate(task, targetDateObj, isOneOffList)) {
       continue
     }
 
