@@ -79,7 +79,7 @@ interface UseTaskHandlersOptions {
   onRefreshUser?: () => Promise<void>
   onRefreshTasks?: () => Promise<void>
   onRefreshTaskLists?: () => Promise<void>
-  onTaskCompletedOptimistic?: (task?: { premium?: number; budget?: number; earnings?: number }) => void
+  onTaskCompletedOptimistic?: (taskEarnings?: number, taskPremium?: number) => void
   pendingCompletionsRef: React.MutableRefObject<Map<string, PendingCompletion>>
   pendingStatusUpdatesRef: React.MutableRefObject<Map<string, TaskStatus>>
   setTaskStatuses?: (updater: (prev: Record<string, TaskStatus>) => Record<string, TaskStatus>) => void
@@ -261,24 +261,12 @@ export function useTaskHandlers({
 
       if (!isCurrentlyCompleted) {
         await createJob({ taskId, listId: taskListId, workerId: userId, status: jobStatus, occurrenceDate: date })
-        // Pass task data to optimistic callback for accurate earnings display
-        if (onTaskCompletedOptimistic) {
-          onTaskCompletedOptimistic({
-            premium: task.premium,
-            earnings: task.earnings,
-            budget: task.budget
-          })
-        }
+        // Note: Optimistic earnings update should be handled by parent component
+        // which has access to calculated taskEarnings and taskPremium values
       } else {
         await cancelMostRecentJob(taskId, userId, date, task)
-        // Reverse optimistic earnings when uncompleting task
-        if (onTaskCompletedOptimistic && task.premium) {
-          onTaskCompletedOptimistic({
-            premium: -(task.premium || 0),
-            earnings: -(task.earnings || 0),
-            budget: -(task.budget || 0)
-          })
-        }
+        // Note: Optimistic earnings reversal should be handled by parent component
+        // which has access to calculated taskEarnings and taskPremium values
       }
 
       if (onRefreshTasks) await onRefreshTasks()

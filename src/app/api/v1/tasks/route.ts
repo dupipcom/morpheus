@@ -38,10 +38,23 @@ export async function GET(request: NextRequest) {
 
     // NEW: If date is provided with listId, use date-aware service
     if (date && listId) {
-      // Verify user has access to this list
+      // Verify user has access to this list and get budget info
       const list = await prisma.list.findUnique({
         where: { id: listId },
-        select: { users: true, role: true }
+        select: { 
+          users: true, 
+          role: true,
+          budget: true,
+          budgetDistribution: true,
+          premiumPercentage: true,
+          tasks: {
+            select: {
+              id: true,
+              area: true,
+              categories: true
+            }
+          }
+        }
       })
 
       if (!list) {
@@ -62,11 +75,25 @@ export async function GET(request: NextRequest) {
       // Pass list.role to avoid an extra DB query in getTasksForDate
       const tasksForDate = await getTasksForDate(listId, date, list.role)
 
-      // Map to response format and apply premium factors
+      // Map to response format and calculate financial values from budget distribution
       const tasks = tasksForDate.map(({ task, dateStatus, dateCount, completers }) => {
-        const rawPremium = task.premium || 0
+        // Calculate financial values from budget distribution (not from task fields)
+        // Import and use calculateTaskBudgetFromDistribution
+        const { calculateTaskBudgetFromDistribution } = require('@/lib/services/task/taskMigrationService')
+        const budgetAllocation = calculateTaskBudgetFromDistribution({
+          task,
+          list: {
+            budget: list.budget,
+            budgetDistribution: list.budgetDistribution,
+            premiumPercentage: list.premiumPercentage,
+            tasks: list.tasks,
+            role: list.role
+          }
+        })
+        
+        const rawPremium = budgetAllocation.premium || 0
         const factoredPremium = applyPremiumFactors(rawPremium, list.role, premiumFactorSettings)
-        const earnings = task.earnings || task.budget || 0
+        const earnings = budgetAllocation.budget || 0
         
         return {
           ...task,
@@ -110,7 +137,18 @@ export async function GET(request: NextRequest) {
           select: {
             id: true,
             name: true,
-            users: true
+            users: true,
+            role: true,
+            budget: true,
+            budgetDistribution: true,
+            premiumPercentage: true,
+            tasks: {
+              select: {
+                id: true,
+                area: true,
+                categories: true
+              }
+            }
           }
         },
         jobs: {
@@ -161,7 +199,7 @@ export async function GET(request: NextRequest) {
     })
 
     // Calculate count from ACCEPTED jobs (global total across all dates)
-    // and apply premium factors
+    // and calculate financial values from budget distribution
     const enrichedTasks = authorizedTasks.map((task: any) => {
       const acceptedJobs = task.jobs?.filter((job: any) => job.status === 'ACCEPTED') || []
       const count = acceptedJobs.length
@@ -177,11 +215,23 @@ export async function GET(request: NextRequest) {
         status = 'OPEN'
       }
       
-      // Apply premium factors
+      // Calculate financial values from budget distribution (not from task fields)
+      const { calculateTaskBudgetFromDistribution } = require('@/lib/services/task/taskMigrationService')
+      const budgetAllocation = calculateTaskBudgetFromDistribution({
+        task,
+        list: {
+          budget: task.list?.budget,
+          budgetDistribution: task.list?.budgetDistribution,
+          premiumPercentage: task.list?.premiumPercentage,
+          tasks: task.list?.tasks,
+          role: task.list?.role
+        }
+      })
+      
       const listRole = task.list?.role
-      const rawPremium = task.premium || 0
+      const rawPremium = budgetAllocation.premium || 0
       const factoredPremium = applyPremiumFactors(rawPremium, listRole, premiumFactorSettings)
-      const earnings = task.earnings || task.budget || 0
+      const earnings = budgetAllocation.budget || 0
 
       return {
         ...task,

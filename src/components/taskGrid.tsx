@@ -747,7 +747,23 @@ export const TaskGrid = ({
                 if (userRole === 'COLLABORATOR' && !activeJob && !isDone) {
                   handleRequestWork(taskWithOptimisticCount)
                 } else {
+                  // Call task click handler
                   handleTaskClick(taskWithOptimisticCount)
+                  
+                  // Call optimistic callback with calculated financial values
+                  // These are the values displayed in the task badge
+                  if (handleTaskCompletionOptimistic) {
+                    const currentCount = taskWithOptimisticCount?.count || 0
+                    const times = taskWithOptimisticCount?.times || 1
+                    const isCurrentlyCompleted = currentCount >= times
+                    
+                    // If completing, add optimistic earnings; if uncompleting, subtract
+                    const multiplier = isCurrentlyCompleted ? -1 : 1
+                    handleTaskCompletionOptimistic(
+                      taskEarnings * multiplier,
+                      taskPremium * multiplier
+                    )
+                  }
                 }
               }}
               revealRedacted={revealRedacted}
