@@ -79,7 +79,7 @@ export const DoToolbar = ({
   onShowAddTemplate?: () => void
   onShowEditList?: () => void
   hasFormOpen?: boolean
-  onTaskCompletionOptimistic?: (task?: { premium?: number; prize?: number; budget?: number }) => void
+  onTaskCompletionOptimistic?: (task?: { premium?: number; budget?: number; earnings?: number }) => void
 }) => {
   const { t } = useI18n()
   const { session, taskLists: contextTaskLists, refreshTaskLists, templates: contextTemplates, refreshTemplates, selectedDate: contextSelectedDate, setSelectedDate, setGlobalContext } = useContext(GlobalContext)
@@ -415,7 +415,7 @@ export const DoToolbar = ({
   }, [selectedList])
 
   // Combined optimistic callback for both earnings and completion
-  const handleTaskCompletionOptimistic = useCallback((task?: { premium?: number; prize?: number; budget?: number }) => {
+  const handleTaskCompletionOptimistic = useCallback((task?: { premium?: number; budget?: number; earnings?: number }) => {
     addOptimisticTaskEarnings(task)
     addOptimisticCompletion()
   }, [addOptimisticTaskEarnings, addOptimisticCompletion])

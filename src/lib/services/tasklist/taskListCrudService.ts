@@ -15,40 +15,6 @@ import {
   parseNumericValue
 } from './helpers'
 
-// Normalize client-provided budget distribution payloads.
-// The client historically used the key `prize` but the Prisma schema
-// expects `premium`. Convert any `prize` fields to `premium`.
-function normalizeBudgetDistribution(input?: BudgetDistribution | null): BudgetDistribution | undefined {
-  if (!input) return undefined
-
-  const clone = JSON.parse(JSON.stringify(input)) as BudgetDistribution
-
-  const normalizeEntityArray = (arr?: any[]) => {
-    if (!Array.isArray(arr)) return arr
-    return arr.map((item) => {
-      if (item && item.allocation) {
-        const alloc = item.allocation
-        if (alloc.prize !== undefined) {
-          alloc.premium = alloc.prize
-          delete alloc.prize
-        }
-        // Also handle nested allocation objects where key may be 'prize'
-        if (alloc.budget && typeof alloc.budget === 'object' && alloc.budget.prize !== undefined) {
-          alloc.budget.premium = alloc.budget.prize
-          delete alloc.budget.prize
-        }
-      }
-      return item
-    })
-  }
-
-  return {
-    areas: normalizeEntityArray(clone.areas),
-    categories: normalizeEntityArray(clone.categories),
-    tasks: normalizeEntityArray(clone.tasks)
-  }
-}
-
 /**
  * Get task lists for a user
  * Includes tasks from the Task collection (templateTasks is deprecated)
@@ -286,15 +252,14 @@ export async function createTaskList(params: {
   role?: string
   name?: string
   budget?: number
-  budgetPercentage?: number
-  prizePercentage?: number
+  premiumPercentage?: number
   budgetDistribution?: BudgetDistribution
   dueDate?: string | Date
   templateId?: string | null
   tasks?: Task[]
   collaborators?: string[]
 }): Promise<TaskList> {
-  const { userId, role, name, budget, budgetPercentage, prizePercentage, budgetDistribution, dueDate, templateId, tasks, collaborators } = await params
+  const { userId, role, name, budget, premiumPercentage, budgetDistribution, dueDate, templateId, tasks, collaborators } = await params
 
   // If creating a new default list, demote existing default to custom
   if (role && role.endsWith('.default')) {
@@ -319,8 +284,8 @@ export async function createTaskList(params: {
       role: role,
       name: name,
       budget: budget,
-      budgetPercentage: budgetPercentage || 0,
-      prizePercentage: prizePercentage || 0,
+      premiumPercentage: premiumPercentage || 0,
+      budgetDistribution: budgetDistribution,
       dueDate: dueDate,
       visibility: 'PRIVATE',
       users: [
@@ -328,7 +293,6 @@ export async function createTaskList(params: {
         ...(Array.isArray(collaborators) ? collaborators.map((id) => ({ userId: id, role: 'COLLABORATOR' as const })) : [])
       ],
       // templateTasks is deprecated - we create Task records instead
-      budgetDistribution: normalizeBudgetDistribution(budgetDistribution),
       templateId: templateId
     } as Record<string, unknown>,
     include: { template: true, tasks: true }
@@ -382,16 +346,16 @@ export async function createTaskList(params: {
       throw new Error('Failed to fetch created TaskList')
     }
 
-    // Recalculate user's budget if budgetPercentage was set
-    if (budgetPercentage) {
+    // Recalculate user's budget if premiumPercentage was set
+    if (premiumPercentage) {
       await recalculateUserBudget(userId)
     }
 
     return updatedList as unknown as TaskList
   }
 
-  // Recalculate user's budget if budgetPercentage was set
-  if (budgetPercentage) {
+  // Recalculate user's budget if premiumPercentage was set
+  if (premiumPercentage) {
     await recalculateUserBudget(userId)
   }
 
@@ -408,15 +372,14 @@ export async function updateTaskList(params: {
   role?: string
   name?: string
   budget?: number
-  budgetPercentage?: number
-  prizePercentage?: number
+  premiumPercentage?: number
   budgetDistribution?: BudgetDistribution
   dueDate?: string | Date
   templateId?: string | null
   tasks?: Task[]
   collaborators?: string[]
 }): Promise<TaskList> {
-  const { taskListId, userId, role, name, budget, budgetPercentage, prizePercentage, budgetDistribution, dueDate, tasks, collaborators } = await params
+  const { taskListId, userId, role, name, budget, premiumPercentage, budgetDistribution, dueDate, tasks, collaborators } = await params
 
   const existing = await prisma.list.findUnique({ 
     where: { id: taskListId },
@@ -434,9 +397,8 @@ export async function updateTaskList(params: {
       role: typeof role === 'string' ? role : existing.role,
       name: name !== undefined ? name : existing.name,
       budget: budget !== undefined ? budget : existing.budget,
-      budgetPercentage: budgetPercentage !== undefined ? budgetPercentage : (existing as Record<string, unknown>).budgetPercentage,
-      prizePercentage: prizePercentage !== undefined ? prizePercentage : (existing as Record<string, unknown>).prizePercentage,
-      budgetDistribution: budgetDistribution !== undefined ? normalizeBudgetDistribution(budgetDistribution) : (existing as Record<string, unknown>).budgetDistribution,
+      premiumPercentage: premiumPercentage !== undefined ? premiumPercentage : (existing as Record<string, unknown>).premiumPercentage,
+      budgetDistribution: budgetDistribution !== undefined ? budgetDistribution : (existing as Record<string, unknown>).budgetDistribution,
       dueDate: dueDate !== undefined ? dueDate : existing.dueDate,
       users: Array.isArray(collaborators)
         ? [
@@ -545,16 +507,16 @@ export async function updateTaskList(params: {
       throw new Error('Failed to fetch updated TaskList')
     }
 
-    // Recalculate user's budget if budgetPercentage was updated
-    if (budgetPercentage !== undefined) {
+    // Recalculate user's budget if premiumPercentage was updated
+    if (premiumPercentage !== undefined) {
       await recalculateUserBudget(userId)
     }
 
     return finalList as unknown as TaskList
   }
 
-  // Recalculate user's budget if budgetPercentage was updated
-  if (budgetPercentage !== undefined) {
+  // Recalculate user's budget if premiumPercentage was updated
+  if (premiumPercentage !== undefined) {
     await recalculateUserBudget(userId)
   }
 

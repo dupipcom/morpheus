@@ -28,6 +28,7 @@ interface ListForBudgetCalculation {
   budget?: number | null
   budgetDistribution?: BudgetDistribution | null
   premiumPercentage?: number | null
+  prizePercentage?: number | null
   tasks?: any[]
   // templateTasks is deprecated - using Task collection only
 }
@@ -169,7 +170,8 @@ export function calculateTaskBudgetFromDistribution(params: {
   console.log('Calculating budget for task:', { userEquity, remainingBudget, taskId: task.id, taskIndex, list })
   const listBudget = list.budget || 0
   const budgetDistribution = list.budgetDistribution
-  const premiumPercentage = list.premiumPercentage || 0
+  // Support both `premiumPercentage` (new) and `prizePercentage` (older/alternate name)
+  const premiumPercentage = (list.premiumPercentage ?? (list as any).prizePercentage) || 0
 
   let budget: number | null = null
   let premium: number | null = null
@@ -180,7 +182,7 @@ export function calculateTaskBudgetFromDistribution(params: {
     const taskAlloc = getTaskAllocationFromDistribution(task.id, budgetDistribution as any, listBudget, premiumPool)
     if (taskAlloc) {
       budget = taskAlloc.taskEarnings
-      premium = taskAlloc.taskPrize
+      premium = taskAlloc.taskPremium
     }
   }
 
@@ -250,6 +252,9 @@ export function calculateTaskBudgetFromDistribution(params: {
   
   // Calculate totalGains and apply safety caps
   let calculatedTotalGains = (budget || 0) + (premium || 0)
+  // Keep originals for safer logging and potential fallback when scaling produces zeros
+  const originalBudget = budget
+  const originalPremium = premium
   
   // SAFETY CHECK 1: If user equity and remaining budget are provided, ensure we don't exceed available funds
   // This ensures calculations are based on current balance, not just configured distribution
@@ -257,12 +262,24 @@ export function calculateTaskBudgetFromDistribution(params: {
     // Check if the list's remaining budget can cover this task's allocation
     if (remainingBudget < calculatedTotalGains) {
       // Scale down proportionally to fit within remaining budget
-      const scaleFactor = remainingBudget / calculatedTotalGains
-      budget = budget ? budget * scaleFactor : null
-      premium = premium ? premium * scaleFactor : null
-      calculatedTotalGains = (budget || 0) + (premium || 0)
+      const scaleFactor = calculatedTotalGains > 0 ? remainingBudget / calculatedTotalGains : 0
+      const scaledBudget = budget ? budget * scaleFactor : null
+      const scaledPremium = premium ? premium * scaleFactor : null
+      calculatedTotalGains = (scaledBudget || 0) + (scaledPremium || 0)
+
+      // If remainingBudget is zero, keep original allocation as a fallback so job invoices
+      // still carry the configured financial values instead of zeros.
+      if (remainingBudget === 0) {
+        budget = originalBudget != null ? originalBudget : (task as any).earnings ?? (task as any).budget ?? null
+        premium = originalPremium != null ? originalPremium : (task as any).premium ?? null
+        calculatedTotalGains = (budget || 0) + (premium || 0)
+      } else {
+        budget = scaledBudget
+        premium = scaledPremium
+      }
+
       console.warn(`Task ${task.id}: Scaled down from calculated totalGains to fit remaining budget`, {
-        originalTotalGains: (budget || 0) / scaleFactor + (premium || 0) / scaleFactor,
+        originalTotalGains: (originalBudget || 0) + (originalPremium || 0),
         scaledTotalGains: calculatedTotalGains,
         remainingBudget
       })

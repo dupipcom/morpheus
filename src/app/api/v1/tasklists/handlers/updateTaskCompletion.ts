@@ -149,7 +149,7 @@ export async function updateTaskCompletionHandler(
           list: {
             budget: taskList.budget ? Number(taskList.budget) : null,
             budgetDistribution: (taskList as Record<string, unknown>).budgetDistribution as any,
-            prizePercentage: (taskList as Record<string, unknown>).prizePercentage as number | undefined,
+            premiumPercentage: (taskList as Record<string, unknown>).premiumPercentage as number | undefined,
             tasks: tasks
           },
           userEquity: user.equity,

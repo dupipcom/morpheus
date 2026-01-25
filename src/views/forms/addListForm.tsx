@@ -32,7 +32,7 @@ type Collaborator = { id: string, userName: string }
 // Extended entity budget state to store both nominal and percent values
 interface EntityBudgetState {
   budget: AllocationType
-  prize: AllocationType
+  premium: AllocationType
 }
 
 export const AddListForm = ({
@@ -72,16 +72,16 @@ export const AddListForm = ({
   const [tasks, setTasks] = useState<any[]>([])
   const [remainingBudget, setRemainingBudget] = useState<number>(100)
   const [maxAllowedBudget, setMaxAllowedBudget] = useState<number>(100)
-  const [prizePercentage, setPrizePercentage] = useState<number>(0) // % of budgetPercentage allocated to prize
+  const [premiumPercentage, setPremiumPercentage] = useState<number>(0) // % of budgetPercentage allocated to premium
   const [budgetDistributionMode, setBudgetDistributionMode] = useState<'equal' | 'area' | 'category' | 'task'>('equal')
   const [areaDistribution, setAreaDistribution] = useState<Record<string, AllocationType>>({})
   const [areaDistributionMode, setAreaDistributionMode] = useState<'percentage' | 'currency'>('percentage')
-  const [areaPrizeDistribution, setAreaPrizeDistribution] = useState<Record<string, AllocationType>>({})
-  const [areaPrizeDistributionMode, setAreaPrizeDistributionMode] = useState<'percentage' | 'currency'>('percentage')
+  const [areaPremiumDistribution, setAreaPremiumDistribution] = useState<Record<string, AllocationType>>({})
+  const [areaPremiumDistributionMode, setAreaPremiumDistributionMode] = useState<'percentage' | 'currency'>('percentage')
   const [categoryDistribution, setCategoryDistribution] = useState<Record<string, AllocationType>>({})
   const [categoryDistributionMode, setCategoryDistributionMode] = useState<'percentage' | 'currency'>('percentage')
-  const [categoryPrizeDistribution, setCategoryPrizeDistribution] = useState<Record<string, AllocationType>>({})
-  const [categoryPrizeDistributionMode, setCategoryPrizeDistributionMode] = useState<'percentage' | 'currency'>('percentage')
+  const [categoryPremiumDistribution, setCategoryPremiumDistribution] = useState<Record<string, AllocationType>>({})
+  const [categoryPremiumDistributionMode, setCategoryPremiumDistributionMode] = useState<'percentage' | 'currency'>('percentage')
   const [taskBudgets, setTaskBudgets] = useState<Record<string, EntityBudgetState>>({})
   const [budgetPercentageMode, setBudgetPercentageMode] = useState<'percentage' | 'currency'>('percentage')
   const [personalBudgetAllocation, setPersonalBudgetAllocation] = useState<Record<string, AllocationType>>({})
@@ -90,8 +90,8 @@ export const AddListForm = ({
   const userEquity = session?.user?.equity || 0
 
   // Determine if budget/prize fields should be disabled
-  const isBudgetDisabled = !form.budget || parseFloat(form.budget) <= 0
-  const isPrizeDisabled = form.budgetPercentage <= 0 || userEquity <= 0
+   const isBudgetDisabled = !form.budget || parseFloat(form.budget) <= 0
+   const isPremiumDisabled = form.budgetPercentage <= 0 || userEquity <= 0
 
   // Load initial list data when editing
   useEffect(() => {
@@ -123,8 +123,8 @@ export const AddListForm = ({
       })
       
       // Load budget distribution settings
-      if (initialList.prizePercentage != null) {
-        setPrizePercentage(initialList.prizePercentage)
+      if (initialList.premiumPercentage != null) {
+        setPremiumPercentage(initialList.premiumPercentage)
       }
       
       if (initialList.budgetDistribution) {
@@ -133,40 +133,40 @@ export const AddListForm = ({
         // Helper to parse EntityAllocationsType array to AllocationType Records
         const parseEntityAllocations = (allocations: any[]): { 
           budgets: Record<string, AllocationType>
-          prizes: Record<string, AllocationType> 
+          premiums: Record<string, AllocationType> 
         } => {
           const budgets: Record<string, AllocationType> = {}
-          const prizes: Record<string, AllocationType> = {}
+          const premiums: Record<string, AllocationType> = {}
           
           if (Array.isArray(allocations)) {
             allocations.forEach((item: any) => {
               const entityId = item.entityId
               if (entityId) {
                 const budgetAlloc = item.allocation?.budget
-                const prizeAlloc = item.allocation?.prize
+                const prizeAlloc = item.allocation?.premium
                 
                 if (budgetAlloc) {
                   budgets[entityId] = { nominal: budgetAlloc.nominal, percent: budgetAlloc.percent }
                 }
                 if (prizeAlloc) {
-                  prizes[entityId] = { nominal: prizeAlloc.nominal, percent: prizeAlloc.percent }
+                  premiums[entityId] = { nominal: prizeAlloc.nominal, percent: prizeAlloc.percent }
                 }
               }
             })
           }
           
-          return { budgets, prizes }
+          return { budgets, premiums }
         }
         
         if (dist.areas && Array.isArray(dist.areas) && dist.areas.length > 0) {
-          const { budgets, prizes } = parseEntityAllocations(dist.areas)
+          const { budgets, premiums } = parseEntityAllocations(dist.areas)
           setAreaDistribution(budgets)
-          setAreaPrizeDistribution(prizes)
+          setAreaPremiumDistribution(premiums)
           setBudgetDistributionMode('area')
         } else if (dist.categories && Array.isArray(dist.categories) && dist.categories.length > 0) {
-          const { budgets, prizes } = parseEntityAllocations(dist.categories)
+          const { budgets, premiums } = parseEntityAllocations(dist.categories)
           setCategoryDistribution(budgets)
-          setCategoryPrizeDistribution(prizes)
+          setCategoryPremiumDistribution(premiums)
           setBudgetDistributionMode('category')
         } else if (dist.tasks && Array.isArray(dist.tasks) && dist.tasks.length > 0) {
           const taskBudgetsData: Record<string, EntityBudgetState> = {}
@@ -175,13 +175,13 @@ export const AddListForm = ({
             const taskId = item.entityId
             if (taskId) {
               const budgetAlloc = item.allocation?.budget
-              const prizeAlloc = item.allocation?.prize
+              const prizeAlloc = item.allocation?.premium
               
               taskBudgetsData[taskId] = {
                 budget: typeof budgetAlloc === 'object' 
                   ? { nominal: budgetAlloc?.nominal, percent: budgetAlloc?.percent }
                   : { nominal: typeof budgetAlloc === 'number' ? budgetAlloc : 0 },
-                prize: typeof prizeAlloc === 'object'
+                premium: typeof prizeAlloc === 'object'
                   ? { nominal: prizeAlloc?.nominal, percent: prizeAlloc?.percent }
                   : { nominal: typeof prizeAlloc === 'number' ? prizeAlloc : 0 }
               }
@@ -330,14 +330,14 @@ export const AddListForm = ({
       const areaAllocations: EntityAllocationsType[] = []
       
       Object.entries(areaDistribution).forEach(([area, budgetAlloc]) => {
-        // Get prize allocation for this area if it exists
-        const prizeAlloc = areaPrizeDistribution[area] || { nominal: 0, percent: 0 }
+      // Get premium allocation for this area if it exists
+      const prizeAlloc = areaPremiumDistribution[area] || { nominal: 0, percent: 0 }
         
         areaAllocations.push({
           entityId: area,
           entityType: 'lists',
           entitySubtype: 'area',
-          allocation: { budget: budgetAlloc, prize: prizeAlloc }
+          allocation: { budget: budgetAlloc, premium: prizeAlloc }
         })
       })
       
@@ -350,14 +350,14 @@ export const AddListForm = ({
       const categoryAllocations: EntityAllocationsType[] = []
       
       Object.entries(categoryDistribution).forEach(([category, budgetAlloc]) => {
-        // Get prize allocation for this category if it exists
-        const prizeAlloc = categoryPrizeDistribution[category] || { nominal: 0, percent: 0 }
+      // Get premium allocation for this category if it exists
+      const prizeAlloc = categoryPremiumDistribution[category] || { nominal: 0, percent: 0 }
         
         categoryAllocations.push({
           entityId: category,
           entityType: 'lists',
           entitySubtype: 'categories',
-          allocation: { budget: budgetAlloc, prize: prizeAlloc }
+          allocation: { budget: budgetAlloc, premium: prizeAlloc }
         })
       })
       
@@ -370,18 +370,18 @@ export const AddListForm = ({
       
       Object.entries(taskBudgets).forEach(([taskId, values]) => {
         const budgetAlloc = values.budget
-        const prizeAlloc = values.prize
+      const prizeAlloc = values.premium
         
         // Check if there's any meaningful allocation
         const hasBudget = (budgetAlloc.nominal ?? 0) > 0 || (budgetAlloc.percent ?? 0) > 0
         const hasPrize = (prizeAlloc.nominal ?? 0) > 0 || (prizeAlloc.percent ?? 0) > 0
         
-        if (hasBudget || hasPrize) {
+          if (hasBudget || hasPrize) {
           taskAllocations.push({
             entityId: taskId,
             entityType: 'tasks',
             entitySubtype: 'task',
-            allocation: { budget: budgetAlloc, prize: prizeAlloc }
+              allocation: { budget: budgetAlloc, premium: prizeAlloc }
           })
         }
       })
@@ -398,7 +398,7 @@ export const AddListForm = ({
         name: form.name || undefined,
         budget: budgetValue,
         budgetPercentage: form.budgetPercentage,
-        prizePercentage: prizePercentage > 0 ? prizePercentage : undefined,
+        premiumPercentage: premiumPercentage > 0 ? premiumPercentage : undefined,
         budgetDistribution: Object.keys(budgetDistribution).length > 0 ? budgetDistribution : undefined,
         dueDate: form.dueDate || undefined,
         templateId: templateIdToLink,
@@ -430,7 +430,7 @@ export const AddListForm = ({
         collaborators: [],
       })
       setTasks([])
-      setPrizePercentage(0)
+      setPremiumPercentage(0)
       setBudgetDistributionMode('equal')
       setAreaDistribution({})
       setCategoryDistribution({})
@@ -755,12 +755,12 @@ export const AddListForm = ({
                       <BudgetDistributionInput
                         items={taskAreas}
                         totalBudget={calculatePrizePool(form.budgetPercentage, userEquity)}
-                        allocations={areaPrizeDistribution}
-                        onChange={(allocs) => setAreaPrizeDistribution(allocs)}
-                        onModeChange={setAreaPrizeDistributionMode}
-                        mode={areaPrizeDistributionMode}
-                        label={t('forms.addListForm.areaPrizeDistributionLabel') || 'Area Prize Distribution'}
-                        disabled={isPrizeDisabled}
+                        allocations={areaPremiumDistribution}
+                        onChange={(allocs) => setAreaPremiumDistribution(allocs)}
+                        onModeChange={setAreaPremiumDistributionMode}
+                        mode={areaPremiumDistributionMode}
+                        label={t('forms.addListForm.areaPremiumDistributionLabel') || 'Area Premium Distribution'}
+                        disabled={isPremiumDisabled}
                       />
                     </div>
                   )
@@ -787,12 +787,12 @@ export const AddListForm = ({
                       <BudgetDistributionInput
                         items={allCategories}
                         totalBudget={calculatePrizePool(form.budgetPercentage, userEquity)}
-                        allocations={categoryPrizeDistribution}
-                        onChange={(allocs) => setCategoryPrizeDistribution(allocs)}
-                        onModeChange={setCategoryPrizeDistributionMode}
-                        mode={categoryPrizeDistributionMode}
-                        label={t('forms.addListForm.categoryPrizeDistributionLabel') || 'Category Prize Distribution'}
-                        disabled={isPrizeDisabled}
+                        allocations={categoryPremiumDistribution}
+                        onChange={(allocs) => setCategoryPremiumDistribution(allocs)}
+                        onModeChange={setCategoryPremiumDistributionMode}
+                        mode={categoryPremiumDistributionMode}
+                        label={t('forms.addListForm.categoryPremiumDistributionLabel') || 'Category Premium Distribution'}
+                        disabled={isPremiumDisabled}
                       />
                     </div>
                   )
@@ -801,18 +801,18 @@ export const AddListForm = ({
                     {/* Per-Task Distribution */}
                     {budgetDistributionMode === 'task' && tasks.length > 0 && (() => {
                       const listBudget = parseFloat(form.budget) || 0
-                      const prizePool = calculatePrizePool(form.budgetPercentage, userEquity)
+                      const premiumPool = calculatePrizePool(form.budgetPercentage, userEquity)
                       
                       const totalBudget = tasks.reduce((sum, task) => {
                         const taskId = task.id || task.name
                         const budgetAlloc = taskBudgets[taskId]?.budget
-                        const prizeAlloc = taskBudgets[taskId]?.prize
+                        const prizeAlloc = taskBudgets[taskId]?.premium
                         // Use nominal values, falling back to percent calculation
                         const budgetNominal = getAllocationNominal(budgetAlloc, listBudget)
-                        const prizeNominal = getAllocationNominal(prizeAlloc, prizePool)
+                        const prizeNominal = getAllocationNominal(prizeAlloc, premiumPool)
                         return sum + budgetNominal + prizeNominal
                       }, 0)
-                      const remainingBudget = listBudget + prizePool - totalBudget
+                      const remainingBudget = listBudget + premiumPool - totalBudget
                       
                       return (
                         <div className="space-y-3">
@@ -828,7 +828,7 @@ export const AddListForm = ({
                                 <tr className="bg-muted/50 text-left">
                                   <th className="p-2">{t('forms.addListForm.table.name') || 'Name'}</th>
                                   <th className="p-2">{t('forms.addListForm.budgetLabel') || 'Budget'}</th>
-                                  <th className="p-2">{t('forms.addListForm.prizeLabel') || 'Prize'}</th>
+                                    <th className="p-2">{t('forms.addListForm.premiumLabel') || 'Premium'}</th>
                                   <th className="p-2">{t('forms.addListForm.totalLabel') || 'Total'}</th>
                                 </tr>
                               </thead>
@@ -836,12 +836,12 @@ export const AddListForm = ({
                                 {tasks.map((task: any, idx: number) => {
                                   const taskId = task.id || task.name
                                   const budgetAlloc = taskBudgets[taskId]?.budget || {}
-                                  const prizeAlloc = taskBudgets[taskId]?.prize || {}
+                                  const premiumAlloc = taskBudgets[taskId]?.premium || {}
                                   
                                   // Calculate nominal values for total calculation
                                   const budgetNominal = getAllocationNominal(budgetAlloc, listBudget)
-                                  const prizeNominal = getAllocationNominal(prizeAlloc, prizePool)
-                                  const total = budgetNominal + prizeNominal
+                                  const premiumNominal = getAllocationNominal(premiumAlloc, premiumPool)
+                                  const total = budgetNominal + premiumNominal
                                   
                                   return (
                                     <tr key={`${taskId}-${idx}`}>
@@ -861,7 +861,7 @@ export const AddListForm = ({
                                               ...prev,
                                               [taskId]: { 
                                                 budget: alloc,
-                                                prize: prev[taskId]?.prize || {}
+                                                premium: prev[taskId]?.premium || {}
                                               }
                                             }))
                                           }}
@@ -873,27 +873,27 @@ export const AddListForm = ({
                                       </td>
                                       <td className="p-2">
                                         <BudgetDistributionInput
-                                          items={[`prize-${taskId}`]}
-                                          totalBudget={prizePool}
-                                          allocations={{ [`prize-${taskId}`]: prizeAlloc }}
+                                          items={[`premium-${taskId}`]}
+                                          totalBudget={premiumPool}
+                                          allocations={{ [`premium-${taskId}`]: premiumAlloc }}
                                           onChange={(allocs, metadata) => {
-                                            const alloc = allocs[`prize-${taskId}`] || {
-                                              nominal: metadata?.nominalValues?.[`prize-${taskId}`] ?? 0,
-                                              percent: metadata?.percentages?.[`prize-${taskId}`] ?? 0
+                                            const alloc = allocs[`premium-${taskId}`] || {
+                                              nominal: metadata?.nominalValues?.[`premium-${taskId}`] ?? 0,
+                                              percent: metadata?.percentages?.[`premium-${taskId}`] ?? 0
                                             }
                                             
                                             setTaskBudgets(prev => ({
                                               ...prev,
                                               [taskId]: { 
                                                 budget: prev[taskId]?.budget || {},
-                                                prize: alloc
+                                                premium: alloc
                                               }
                                             }))
                                           }}
                                           label=""
                                           variant="horizontal"
                                           mode="currency"
-                                          disabled={isPrizeDisabled}
+                                          disabled={isPremiumDisabled}
                                         />
                                       </td>
                                       <td className="p-2 text-xs">${total.toFixed(2)}</td>

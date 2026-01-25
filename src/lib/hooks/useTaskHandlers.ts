@@ -79,7 +79,7 @@ interface UseTaskHandlersOptions {
   onRefreshUser?: () => Promise<void>
   onRefreshTasks?: () => Promise<void>
   onRefreshTaskLists?: () => Promise<void>
-  onTaskCompletedOptimistic?: (task?: { premium?: number; prize?: number; budget?: number }) => void
+  onTaskCompletedOptimistic?: (task?: { premium?: number; budget?: number; earnings?: number }) => void
   pendingCompletionsRef: React.MutableRefObject<Map<string, PendingCompletion>>
   pendingStatusUpdatesRef: React.MutableRefObject<Map<string, TaskStatus>>
   setTaskStatuses?: (updater: (prev: Record<string, TaskStatus>) => Record<string, TaskStatus>) => void

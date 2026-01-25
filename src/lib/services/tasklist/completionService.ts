@@ -173,7 +173,9 @@ export async function recordCompletions(params: {
 
   const earnings = calculateTaskEarnings({
     listRole: taskList.role,
-    budgetPercentage: (taskList as Record<string, unknown>).budgetPercentage as number | undefined,
+    budgetPercentage: ((taskList as Record<string, any>).premiumPercentage !== undefined
+      ? (taskList as Record<string, any>).premiumPercentage
+      : (taskList as Record<string, any>).budgetPercentage) as number | undefined,
     listBudget: taskListBudget != null ? String(taskListBudget) : null,
     userEquity: userRecord?.equity != null ? String(userRecord.equity) : null,
     numTasks: totalTasks,

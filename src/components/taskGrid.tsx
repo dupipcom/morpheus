@@ -571,18 +571,26 @@ export const TaskGrid = ({
         
         let taskEarnings = 0
         let taskPremium = 0
+        let taskTotalGains: number | null = null
         
         // First, try to use stored values from the task itself
         if (task.budget != null || task.earnings != null || task.premium != null) {
           taskEarnings = task.earnings || task.budget || 0
           taskPremium = task.premium || 0
+          taskTotalGains = (task as any).totalGains ?? (taskEarnings + taskPremium)
         } else {
           // Try to get allocation from budget distribution (server data only, no fallback)
           const allocation = getTaskAllocationFromDistribution(task.id, budgetDistribution, listBudget, premiumPool)
           if (allocation) {
             taskEarnings = allocation.taskEarnings
-            taskPremium = allocation.taskPrize
+            taskPremium = allocation.taskPremium
+            taskTotalGains = allocation.totalGains ?? (taskEarnings + taskPremium)
           }
+        }
+
+        // Ensure we have a total gains value (prefer explicit field, fallback to earnings+premium)
+        if (taskTotalGains == null) {
+          taskTotalGains = (task as any).totalGains ?? (taskEarnings + taskPremium)
         }
 
         // Determine task status
@@ -739,7 +747,8 @@ export const TaskGrid = ({
               showCompleterBadge={true}
               completerName={completerName}
               taskEarnings={taskEarnings}
-              taskPrize={taskPremium}
+              taskPremium={taskPremium}
+              taskTotalGains={taskTotalGains}
               hasCollaborators={hasCollaborators}
               variant={isDone ? 'default' : 'outline'}
               latestJob={latestJob}
