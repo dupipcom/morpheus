@@ -136,27 +136,46 @@ const { data, error, isLoading, mutate } = useSWR('/api/v1/endpoint', jsonFetche
 **SWR Best Practices:**
 - Create custom hooks in `src/lib/hooks/` for reusable data fetching (e.g., `useFriendProfiles`, `useProfile`)
 - Use `null` as the key to disable fetching conditionally
-- Pass query parameters in the URL to leverage SWR's caching by key
-- Use `useMemo` for computed keys to prevent unnecessary re-fetches
+- For filterable data, use `refreshInterval` to periodically refresh and filter locally with `useMemo`
+- Avoid re-fetching on query changes - filter cached data locally instead
 
-**Example: Conditional fetching with search query**
+**Example: Fetch once, filter locally with useMemo**
 ```typescript
-// Memoize to prevent unnecessary re-fetches
-const trimmedQuery = useMemo(() => query.trim(), [query])
+// ✅ GOOD - Fetch data once with refresh interval, filter locally
+export function useFriendProfiles(query: string | null = null) {
+  // Fetch all profiles with a refresh interval
+  const { data } = useSWR('/api/v1/profiles', jsonFetcher, {
+    refreshInterval: 10000, // Refresh every 10 seconds
+  })
 
-// Pass null to disable fetching when query is empty
-const { profiles } = useFriendProfiles(trimmedQuery || null)
+  // Filter locally based on query - instant and no API calls
+  const filteredProfiles = useMemo(() => {
+    if (!query?.trim()) return data?.profiles || []
+    const normalizedQuery = query.trim().toLowerCase()
+    return (data?.profiles || []).filter(p => 
+      p.userName?.toLowerCase().includes(normalizedQuery)
+    )
+  }, [data?.profiles, query])
+
+  return { profiles: filteredProfiles }
+}
 ```
 
-**Anti-pattern: Manual fetch in useEffect**
+**Anti-pattern: Re-fetching on query change**
 ```typescript
+// ❌ BAD - Re-fetches on every query change
+const { data } = useSWR(
+  query ? `/api/v1/profiles?query=${query}` : '/api/v1/profiles',
+  jsonFetcher
+)
+
 // ❌ BAD - manual fetch causes excessive requests and no caching
 useEffect(() => {
   fetch('/api/v1/profiles').then(...)
 }, [dependency])
 
-// ✅ GOOD - SWR handles caching, deduplication, and revalidation
-const { data } = useSWR('/api/v1/profiles', jsonFetcher)
+// ✅ GOOD - SWR with local filtering handles caching and instant search
+const { profiles } = useFriendProfiles(query)
 ```
 
 ### Optimistic Updates
