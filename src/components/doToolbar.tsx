@@ -245,9 +245,9 @@ export const DoToolbar = ({
 
   const [stableTemplates, setStableTemplates] = useState<any[]>([])
   const [collabProfiles, setCollabProfiles] = useState<Record<string, string>>({})
-  const [listEarnings, setListEarnings] = useState<{ profit: number; prize: number; earnings: number }>({ profit: 0, prize: 0, earnings: 0 })
+  const [listEarnings, setListEarnings] = useState<{ earnings: number; premium: number; totalGains: number }>({ earnings: 0, premium: 0, totalGains: 0 })
   const [dayData, setDayData] = useState<any>(null)
-  const [optimisticEarnings, setOptimisticEarnings] = useState<{ profit: number; prize: number }>({ profit: 0, prize: 0 })
+  const [optimisticEarnings, setOptimisticEarnings] = useState<{ earnings: number; premium: number }>({ earnings: 0, premium: 0 })
   const [optimisticCompletionDelta, setOptimisticCompletionDelta] = useState<number>(0)
 
   // Update stable templates only when context has valid data (never clear once we have data)
@@ -286,59 +286,112 @@ export const DoToolbar = ({
     return () => { cancelled = true }
   }, [selectedDateToUse, session?.user])
 
-  // Calculate earnings for the selected list from day.ticker
+  // Calculate earnings for the selected list from Jobs
+  // Rules based on list recurrence:
+  // - one-off: roll up all ACCEPTED jobs for the list (regardless of occurrence date)
+  // - daily: roll up ACCEPTED jobs where occurrence date matches selected date
+  // - weekly: roll up ACCEPTED jobs where occurrence date is within current week
   useEffect(() => {
     const resetEarnings = () => {
-      setListEarnings({ profit: 0, prize: 0, earnings: 0 })
-      setOptimisticEarnings({ profit: 0, prize: 0 })
+      setListEarnings({ earnings: 0, premium: 0, totalGains: 0 })
+      setOptimisticEarnings({ earnings: 0, premium: 0 })
     }
 
-    if (!selectedList?.id || !dayData) {
+    if (!selectedList?.id || !session?.user?.id) {
       resetEarnings()
       return
     }
 
-    try {
-      const tickers = Array.isArray(dayData.ticker) ? dayData.ticker : []
-      const tickerEntries = tickers.filter((t: any) => t.listId === selectedList.id)
-
-      const totals = tickerEntries.reduce(
-        (acc: { profit: number; prize: number }, entry: any) => ({
-          profit: acc.profit + safeParseNumber(entry.profit),
-          prize: acc.prize + safeParseNumber(entry.prize)
-        }),
-        { profit: 0, prize: 0 }
-      )
-
-      setListEarnings({ ...totals, earnings: totals.profit + totals.prize })
-      setOptimisticEarnings({ profit: 0, prize: 0 })
-    } catch (error) {
-      console.error('Error calculating list earnings from day.ticker:', error)
-      resetEarnings()
+    let cancelled = false
+    const fetchJobEarnings = async () => {
+      try {
+        const listRole = selectedList.role || ''
+        const [rolePrefix] = listRole.includes('.') ? listRole.split('.') : [listRole]
+        const isDaily = listRole.startsWith('daily.')
+        const isWeekly = listRole.startsWith('weekly.')
+        const isOneOff = rolePrefix === 'one-off' || rolePrefix === 'oneoff'
+        
+        // Build query params
+        const params = new URLSearchParams()
+        params.append('listId', selectedList.id)
+        params.append('workerId', session.user.id)
+        params.append('status', 'ACCEPTED')
+        
+        if (isDaily && selectedDateToUse) {
+          // Filter by specific date
+          const dateISO = formatDateISO(selectedDateToUse)
+          params.append('date', dateISO)
+        } else if (isWeekly && selectedDateToUse) {
+          // For weekly, fetch jobs for the whole week (Sunday to Saturday)
+          const dayOfWeek = selectedDateToUse.getDay()
+          const weekStartTime = selectedDateToUse.getTime() - (dayOfWeek * 24 * 60 * 60 * 1000)
+          const weekEndTime = weekStartTime + (6 * 24 * 60 * 60 * 1000)
+          const weekStart = new Date(weekStartTime)
+          const weekEnd = new Date(weekEndTime)
+          
+          params.append('dateStart', formatDateISO(weekStart))
+          params.append('dateEnd', formatDateISO(weekEnd))
+        }
+        // For one-off lists, no date filter is applied - fetches all jobs
+        
+        const res = await fetch(`/api/v1/jobs?${params.toString()}`)
+        if (cancelled) return
+        
+        if (!res.ok) {
+          console.error('Error fetching jobs for earnings:', res.status)
+          resetEarnings()
+          return
+        }
+        
+        const data = await res.json()
+        const jobs = Array.isArray(data.jobs) ? data.jobs : []
+        
+        // Sum up earnings and premium from all accepted jobs
+        const totals = jobs.reduce(
+          (acc: { earnings: number; premium: number }, job: any) => ({
+            earnings: acc.earnings + safeParseNumber(job.earnings),
+            premium: acc.premium + safeParseNumber(job.premium)
+          }),
+          { earnings: 0, premium: 0 }
+        )
+        
+        if (!cancelled) {
+          setListEarnings({ ...totals, totalGains: totals.earnings + totals.premium })
+          setOptimisticEarnings({ earnings: 0, premium: 0 })
+        }
+      } catch (error) {
+        console.error('Error calculating list earnings from jobs:', error)
+        if (!cancelled) {
+          resetEarnings()
+        }
+      }
     }
-  }, [selectedList?.id, dayData])
+    
+    fetchJobEarnings()
+    return () => { cancelled = true }
+  }, [selectedList?.id, selectedList?.role, selectedDateToUse, session?.user?.id])
 
   // Add optimistic earnings for a task completion
-  // Uses task's prize and budget values from budgetDistribution directly
-  const addOptimisticTaskEarnings = useCallback((task?: { premium?: number; prize?: number; budget?: number }) => {
+  // Uses task's premium and budget values from budgetDistribution directly
+  const addOptimisticTaskEarnings = useCallback((task?: { premium?: number; earnings?: number; budget?: number }) => {
     if (!selectedList) return
 
-    // Use task's actual prize and budget values from budgetDistribution
-    const prize = task?.prize || 0
-    const profit = task?.budget || 0
+    // Use task's actual premium and earnings values from budgetDistribution
+    const premium = task?.premium || 0
+    const earnings = task?.earnings || task?.budget || 0
     
     // Only add if there are actual values
-    if (prize === 0 && profit === 0) return
+    if (premium === 0 && earnings === 0) return
     
     // Add to optimistic earnings
     setOptimisticEarnings(prev => ({
-      profit: prev.profit + profit,
-      prize: prev.prize + prize
+      earnings: prev.earnings + earnings,
+      premium: prev.premium + premium
     }))
     
     // Auto-clear after 5 seconds (safety timeout)
     setTimeout(() => {
-      setOptimisticEarnings({ profit: 0, prize: 0 })
+      setOptimisticEarnings({ earnings: 0, premium: 0 })
     }, 5000)
   }, [selectedList])
 
@@ -582,18 +635,18 @@ export const DoToolbar = ({
                       {(selectedList as any).budgetPercentage.toFixed(0)}% of budget
                     </Badge>
                   )}
-                  {/* Prize badge - show if budgetPercentage is allocated */}
+                  {/* Premium badge - show if budgetPercentage is allocated */}
                   {shouldShowPrizeBadge && (
-                    <Badge variant="outline" className={optimisticEarnings.prize > 0 ? "bg-green-100 text-green-800 border-green-300 hover:bg-green-200 animate-pulse" : "bg-green-50 text-green-700 border-green-200 hover:bg-green-100"}>
+                    <Badge variant="outline" className={optimisticEarnings.premium > 0 ? "bg-green-100 text-green-800 border-green-300 hover:bg-green-200 animate-pulse" : "bg-green-50 text-green-700 border-green-200 hover:bg-green-100"}>
                       <Award className="h-3 w-3 mr-1" />
-                      Prize: ${(listEarnings.prize + optimisticEarnings.prize).toFixed(2)}
+                      Premium: ${(listEarnings.premium + optimisticEarnings.premium).toFixed(2)}
                     </Badge>
                   )}
-                  {/* Profit badge - show if there is profit from ticker or optimistic */}
-                  {(listEarnings.profit > 0 || optimisticEarnings.profit > 0) && (
-                    <Badge variant="outline" className={optimisticEarnings.profit > 0 ? "bg-blue-100 text-blue-800 border-blue-300 hover:bg-blue-200 animate-pulse" : "bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100"}>
+                  {/* Earnings badge - show if there are earnings from ticker or optimistic */}
+                  {(listEarnings.earnings > 0 || optimisticEarnings.earnings > 0) && (
+                    <Badge variant="outline" className={optimisticEarnings.earnings > 0 ? "bg-blue-100 text-blue-800 border-blue-300 hover:bg-blue-200 animate-pulse" : "bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100"}>
                       <TrendingUp className="h-3 w-3 mr-1" />
-                      Profit: ${(listEarnings.profit + optimisticEarnings.profit).toFixed(2)}
+                      Earnings: ${(listEarnings.earnings + optimisticEarnings.earnings).toFixed(2)}
                     </Badge>
                   )}
                   {(selectedList as any)?.dueDate && (

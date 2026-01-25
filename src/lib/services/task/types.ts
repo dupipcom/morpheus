@@ -32,7 +32,7 @@ export interface MigrationResult {
 export interface EmbeddedCompleter {
   id: string
   earnings?: number
-  prize?: number
+  premium?: number
   time?: number
   completedAt?: Date | string
 }
@@ -62,6 +62,9 @@ export interface EmbeddedTask {
   completedOn?: string
   dueDate?: Date | string | null
   budget?: number
+  earnings?: number
+  premium?: number
+  totalGains?: number
   visibility?: string
   quality?: number
   redacted?: boolean
@@ -104,7 +107,7 @@ export interface MigrateEmbeddedTaskParams {
 interface ListForBudgetCalculation {
   budget?: number | null
   budgetDistribution?: BudgetDistribution | null
-  prizePercentage?: number | null
+  premiumPercentage?: number | null
   tasks?: any[]
   // templateTasks is deprecated - using Task collection only
 }

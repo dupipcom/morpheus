@@ -567,21 +567,21 @@ export const TaskGrid = ({
         
         // Get user equity from session for prize pool calculation
         const userEquity = (selectedTaskList as any)?.userEquity || 0
-        const prizePool = calculatePrizePool(budgetPercentage, userEquity)
+        const premiumPool = calculatePrizePool(budgetPercentage, userEquity)
         
         let taskEarnings = 0
-        let taskPrize = 0
+        let taskPremium = 0
         
         // First, try to use stored values from the task itself
-        if (task.budget != null || task.prize != null) {
-          taskEarnings = task.budget || 0
-          taskPrize = task.prize || 0
+        if (task.budget != null || task.earnings != null || task.premium != null) {
+          taskEarnings = task.earnings || task.budget || 0
+          taskPremium = task.premium || 0
         } else {
           // Try to get allocation from budget distribution (server data only, no fallback)
-          const allocation = getTaskAllocationFromDistribution(task.id, budgetDistribution, listBudget, prizePool)
+          const allocation = getTaskAllocationFromDistribution(task.id, budgetDistribution, listBudget, premiumPool)
           if (allocation) {
             taskEarnings = allocation.taskEarnings
-            taskPrize = allocation.taskPrize
+            taskPremium = allocation.taskPrize
           }
         }
 
@@ -739,7 +739,7 @@ export const TaskGrid = ({
               showCompleterBadge={true}
               completerName={completerName}
               taskEarnings={taskEarnings}
-              taskPrize={taskPrize}
+              taskPrize={taskPremium}
               hasCollaborators={hasCollaborators}
               variant={isDone ? 'default' : 'outline'}
               latestJob={latestJob}

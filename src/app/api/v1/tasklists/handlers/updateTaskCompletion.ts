@@ -156,15 +156,15 @@ export async function updateTaskCompletionHandler(
           remainingBudget: remainingBudget
         })
 
-        // Use the calculated budget and prize directly - they already account for distribution
+        // Use the calculated budget and premium directly - they already account for distribution
         // No fallback to old calculation to prevent using full equity pool
         const perCompleterEarnings = taskBudgetAllocation.budget || 0
-        const perCompleterPrize = taskBudgetAllocation.prize || 0
+        const perCompleterPremium = taskBudgetAllocation.premium || 0
 
         updatedCompleters.push({
           id: user.id,
           earnings: perCompleterEarnings,
-          prize: perCompleterPrize,
+          premium: perCompleterPremium,
           time: updatedCompleters.length + 1,
           completedAt: new Date()
         })

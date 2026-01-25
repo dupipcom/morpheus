@@ -265,7 +265,7 @@ export function useTaskHandlers({
         if (onTaskCompletedOptimistic) {
           onTaskCompletedOptimistic({
             premium: task.premium,
-            prize: task.prize,
+            earnings: task.earnings,
             budget: task.budget
           })
         }
@@ -275,7 +275,7 @@ export function useTaskHandlers({
         if (onTaskCompletedOptimistic && task.premium) {
           onTaskCompletedOptimistic({
             premium: -(task.premium || 0),
-            prize: -(task.prize || 0),
+            earnings: -(task.earnings || 0),
             budget: -(task.budget || 0)
           })
         }

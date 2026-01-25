@@ -265,8 +265,8 @@ export async function updateTaskStatus(params: {
             const newTicker = {
               listId: taskListToUpdate.id,
               taskId: tickerTaskId,
-              profit: aggregated.profit || 0,
-              prize: aggregated.prize || 0
+              earnings: aggregated.earnings || 0,
+              premium: aggregated.premium || 0
             }
             const filteredTickers = existingTickers.filter((t: Record<string, unknown>) => {
               return !(t as { taskId?: string }).taskId || (t as { taskId?: string }).taskId !== tickerTaskId
@@ -309,8 +309,8 @@ export async function updateTaskStatus(params: {
             ticker = [{
               listId: taskListToUpdate.id,
               taskId: tickerTaskId,
-              profit: aggregated.profit || 0,
-              prize: aggregated.prize || 0
+              earnings: aggregated.earnings || 0,
+              premium: aggregated.premium || 0
             }]
           }
 

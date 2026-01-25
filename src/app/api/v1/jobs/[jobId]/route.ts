@@ -3,7 +3,7 @@ import prisma from '@/lib/prisma'
 import { getAuthenticatedUser, getUserListRole } from '@/lib/services/auth'
 import { updateTaskOccurrenceDates } from '@/lib/services/task'
 import { updateDayProgress } from '@/lib/services/day'
-import { calculateAndApplyJobEarnings, reverseJobEarnings } from '@/lib/services/job/earningsService'
+import { calculateAndApplyJobEarnings, reverseJobEarnings, initializeJobInvoice, updateJobWithTaskValues } from '@/lib/services/job/earningsService'
 import { validateStatusTransition, isAuthorizedForTransition } from '@/lib/services/job/statusValidator'
 import { TASK_STATUS_MAP } from '@/lib/services/job/taskSync'
 import { logJobStatusChange, logJobAcceptance, logAuthorizationFailure } from '@/lib/services/job/auditLogger'
@@ -21,7 +21,12 @@ const jobFullInclude = {
       area: true,
       categories: true,
       status: true,
-      budget: true
+      // budget is legacy field - earnings is the new normalized field
+      // budget kept for backwards compatibility (fallback when earnings is null)
+      budget: true,
+      earnings: true,
+      premium: true,
+      totalGains: true
     }
   },
   list: {
@@ -394,11 +399,43 @@ export async function PUT(
         taskId: existingJob.taskId,
         listId: existingJob.listId,
       })
+
+      // Initialize invoice when job transitions to IN_PROGRESS (job initiation)
+      if (newStatus === 'IN_PROGRESS') {
+        try {
+          await initializeJobInvoice(jobId, existingJob.taskId, existingJob.listId)
+        } catch (invoiceError) {
+          console.error('Error initializing job invoice:', invoiceError)
+          // Don't fail the entire request
+        }
+      }
+    }
+
+    // Update job with latest task values on every update
+    try {
+      await updateJobWithTaskValues(jobId, existingJob.taskId, existingJob.listId)
+    } catch (taskValuesError) {
+      console.error('Error updating job with task values:', taskValuesError)
+      // Don't fail the entire request
     }
 
     // Handle accepted jobs - update occurrence dates and calculate earnings
     if (newStatus === 'ACCEPTED') {
       const dateToUse = existingJob.occurrenceDate || formatDateLocal(new Date())
+      
+      // Initialize invoice if not already set (for direct transitions to ACCEPTED)
+      try {
+        const jobForInvoice = await prisma.job.findUnique({
+          where: { id: jobId },
+          select: { invoice: true }
+        })
+        if (!jobForInvoice?.invoice) {
+          await initializeJobInvoice(jobId, existingJob.taskId, existingJob.listId)
+        }
+      } catch (invoiceError) {
+        console.error('Error initializing job invoice for accepted job:', invoiceError)
+      }
+      
       await updateTaskOccurrenceDates(existingJob.taskId, 'complete', dateToUse)
       await updateDayProgress(existingJob.workerId, dateToUse)
 
