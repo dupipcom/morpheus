@@ -235,6 +235,20 @@ const formatDateLocal = (date: Date): string => {
     })
     const jobsFromApi = jobsData?.jobs || []
 
+    // Filter jobs by week date range for weekly lists
+    // This ensures that only jobs from the selected week are considered for task completion
+    const filteredJobs = useMemo(() => {
+      if (!isWeeklyList) {
+        // For non-weekly lists, jobs are already filtered by date in the API call
+        return jobsFromApi
+      }
+      // For weekly lists, filter jobs to only include those from the selected week
+      return jobsFromApi.filter((job: any) => {
+        if (!job.occurrenceDate) return false
+        return getWeekDates.includes(job.occurrenceDate)
+      })
+    }, [jobsFromApi, isWeeklyList, getWeekDates])
+
     // Profiles cache (userId -> userName) for owners, collaborators and completers
     const [collabProfiles, setCollabProfiles] = useState<Record<string, string>>({})
     useEffect(() => {
@@ -776,7 +790,7 @@ const formatDateLocal = (date: Date): string => {
           revealRedacted={revealRedacted}
           date={date}
           userId={userId}
-          jobs={jobsFromApi}
+          jobs={filteredJobs}
           onRefresh={handleRefreshJobData}
           onRefreshUser={refreshUser}
           onRefreshTasks={mutateTasks}
