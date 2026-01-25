@@ -52,17 +52,19 @@ export function getWeekRange(dateStr: string): { weekStart: string; weekEnd: str
 
 /**
  * Check if a task should appear on a specific date based on its recurrence rule
+ * @param task - The task to check
+ * @param targetDate - The date to check against
+ * @param isOneOffList - Whether the task belongs to a one-off list (if true, COMPLETED tasks still appear)
  */
-export function shouldTaskAppearOnDate(task: Task, targetDate: Date): boolean {
-  // Tasks with COMPLETED status should never appear (non-recurring tasks that are done)
-  // Note: COMPLETED tasks are also filtered at the database level in getTasksForDate,
-  // but we keep this check as a safety net for other callers of this function
-  if (task.status === 'COMPLETED') {
+export function shouldTaskAppearOnDate(task: Task, targetDate: Date, isOneOffList: boolean = false): boolean {
+  // Tasks with COMPLETED status should not appear in recurring lists
+  // But in one-off lists, COMPLETED tasks should still appear (as done)
+  if (task.status === 'COMPLETED' && !isOneOffList) {
     return false
   }
 
   // Tasks without recurrence rules are one-time tasks
-  // They appear on all dates (or until completed/archived)
+  // They appear on all dates (or until completed/archived for recurring lists)
   if (!task.recurrence) {
     return true
   }
@@ -143,13 +145,23 @@ export async function getTasksForDate(
   const targetDateObj = new Date(targetDate)
   const weekRange = getWeekRange(targetDate)
 
-  // 1. Fetch all tasks for the list (excluding COMPLETED tasks) with all jobs
+  // First, check if this is a one-off list (should show all tasks including COMPLETED)
+  const list = await prisma.list.findUnique({
+    where: { id: listId },
+    select: { role: true }
+  })
+  
+  const rolePrefix = list?.role?.split('.')[0] || ''
+  const isOneOffList = rolePrefix === 'one-off' || rolePrefix === 'oneoff'
+
+  // 1. Fetch all tasks for the list with all jobs
+  // For one-off lists, include COMPLETED tasks (they should appear as done)
+  // For recurring lists (daily/weekly), filter out COMPLETED tasks
   const tasks = await prisma.task.findMany({
     where: {
       listId,
-      // Filter out COMPLETED tasks at the database level
-      // COMPLETED status indicates non-recurring tasks that are done and should not reappear
-      status: { not: 'COMPLETED' }
+      // Only filter out COMPLETED tasks for non-one-off lists
+      ...(isOneOffList ? {} : { status: { not: 'COMPLETED' } })
     },
     include: {
       jobs: {
@@ -167,7 +179,8 @@ export async function getTasksForDate(
 
   for (const task of tasks) {
     // Check if this task should appear on the target date
-    if (!shouldTaskAppearOnDate(task, targetDateObj)) {
+    // Pass isOneOffList so COMPLETED tasks still appear in one-off lists
+    if (!shouldTaskAppearOnDate(task, targetDateObj, isOneOffList)) {
       continue
     }
 
