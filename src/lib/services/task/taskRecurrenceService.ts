@@ -54,6 +54,11 @@ export function getWeekRange(dateStr: string): { weekStart: string; weekEnd: str
  * Check if a task should appear on a specific date based on its recurrence rule
  */
 export function shouldTaskAppearOnDate(task: Task, targetDate: Date): boolean {
+  // Tasks with COMPLETED status should never appear (non-recurring tasks that are done)
+  if (task.status === 'COMPLETED') {
+    return false
+  }
+
   // Tasks without recurrence rules are one-time tasks
   // They appear on all dates (or until completed/archived)
   if (!task.recurrence) {

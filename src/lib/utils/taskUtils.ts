@@ -1,8 +1,8 @@
 import { getWeekNumber } from '@/app/helpers'
 
-export type TaskStatus = 'in progress' | 'steady' | 'ready' | 'open' | 'done' | 'ignored'
+export type TaskStatus = 'in progress' | 'steady' | 'ready' | 'open' | 'done' | 'ignored' | 'completed'
 
-export const STATUS_OPTIONS: TaskStatus[] = ['in progress', 'steady', 'ready', 'open', 'done', 'ignored']
+export const STATUS_OPTIONS: TaskStatus[] = ['in progress', 'steady', 'ready', 'open', 'done', 'ignored', 'completed']
 
 /**
  * Get a unique key for a task (id > localeKey > name)
@@ -23,6 +23,7 @@ export function getStatusColor(status: TaskStatus, format: 'css' | 'tailwind' = 
       'open': 'var(--status-open)',
       'done': 'var(--status-done)',
       'ignored': 'var(--status-ignored)',
+      'completed': 'var(--status-done)',
     }
     return colorMap[status] || 'transparent'
   } else {
@@ -33,6 +34,7 @@ export function getStatusColor(status: TaskStatus, format: 'css' | 'tailwind' = 
       'open': 'status-open',
       'done': 'status-done',
       'ignored': 'status-ignored',
+      'completed': 'status-done',
     }
     return colorMap[status] || 'transparent'
   }
@@ -49,6 +51,7 @@ export function getIconColor(status: TaskStatus): string {
     'open': 'var(--accent)',
     'done': 'var(--background)',
     'ignored': 'var(--accent)',
+    'completed': 'var(--background)',
   }
   return colorMap[status] || 'transparent'
 }
@@ -76,6 +79,7 @@ export function getTaskStatus(
       'STEADY': 'steady',
       'READY': 'ready',
       'IGNORED': 'ignored',
+      'COMPLETED': 'completed',
     }
     const mappedStatus = statusMap[task.dateStatus] || task.dateStatus
     if (STATUS_OPTIONS.includes(mappedStatus as TaskStatus)) {
@@ -235,6 +239,7 @@ export function mapStatusToEnum(status: string): string {
     'open': 'OPEN',
     'done': 'DONE',
     'ignored': 'IGNORED',
+    'completed': 'COMPLETED',
   }
   return statusMap[status] || status.toUpperCase() || 'OPEN'
 }

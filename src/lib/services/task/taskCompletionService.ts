@@ -97,6 +97,7 @@ export async function updateTaskOccurrenceDates(
       firstOccurrence: true,
       lastOccurrence: true,
       recurrence: true,
+      times: true,
       jobs: {
         where: { status: 'ACCEPTED' },
         select: {
@@ -116,6 +117,7 @@ export async function updateTaskOccurrenceDates(
     firstOccurrence?: Date | null
     lastOccurrence?: Date | null
     nextOccurrence?: Date | null
+    status?: 'OPEN' | 'COMPLETED'
   } = {}
 
   if (operation === 'complete') {
@@ -137,6 +139,17 @@ export async function updateTaskOccurrenceDates(
         const nextOccurrence = calculateNextOccurrence(task as Task, updateData.lastOccurrence)
         updateData.nextOccurrence = nextOccurrence
       }
+    }
+
+    // Check if this is a non-recurring task that is now complete
+    // If so, mark it as COMPLETED so it won't appear on future days
+    const recurrence = task.recurrence as { frequency?: string } | null
+    const isNonRecurring = !recurrence || recurrence.frequency === 'NONE'
+    const requiredTimes = task.times || 1
+    const completedCount = task.jobs.length
+
+    if (isNonRecurring && completedCount >= requiredTimes) {
+      updateData.status = 'COMPLETED'
     }
   } else if (operation === 'delete') {
     // Recalculate lastOccurrence from remaining jobs
@@ -163,6 +176,16 @@ export async function updateTaskOccurrenceDates(
           updateData.nextOccurrence = nextOccurrence
         }
       }
+    }
+
+    // If this is a non-recurring task that is no longer complete, reset to OPEN
+    const recurrence = task.recurrence as { frequency?: string } | null
+    const isNonRecurring = !recurrence || recurrence.frequency === 'NONE'
+    const requiredTimes = task.times || 1
+    const remainingCount = task.jobs.length
+
+    if (isNonRecurring && remainingCount < requiredTimes) {
+      updateData.status = 'OPEN'
     }
   }
 

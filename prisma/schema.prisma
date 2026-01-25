@@ -122,6 +122,7 @@ enum TaskStatus {
   DONE
   IGNORED
   SKIPPED
+  COMPLETED
 }
 
 enum UserRole {
