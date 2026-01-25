@@ -20,7 +20,8 @@ interface TaskItemProps {
   showCompleterBadge?: boolean
   completerName?: string | null
   taskEarnings?: number
-  taskPrize?: number
+  taskPremium?: number
+  taskTotalGains?: number
   hasCollaborators?: boolean
   className?: string
   variant?: 'default' | 'outline'
@@ -81,8 +82,9 @@ export const TaskItem = ({
   revealRedacted,
   showCompleterBadge = false,
   completerName,
-  taskEarnings = 0,
-  taskPrize = 0,
+  taskEarnings: taskEarningsProp,
+  taskPremium: taskPremiumProp,
+  taskTotalGains,
   hasCollaborators = false,
   className = '',
   variant = 'outline',
@@ -96,7 +98,16 @@ export const TaskItem = ({
 }: TaskItemProps) => {
   const key = task?.id || task?.localeKey || task?.name
   const isDone = taskStatus === 'done' || taskStatus === 'completed' || (task?.count || 0) >= (task?.times || 1)
-  const taskPremium = taskEarnings + taskPrize
+  const earnings = (typeof taskEarningsProp === 'number')
+    ? taskEarningsProp
+    : (task?.earnings ?? task?.budget ?? 0)
+
+  const premium = (typeof taskPremiumProp === 'number')
+    ? taskPremiumProp
+    : (task?.premium ?? 0)
+
+  const totalGains = (earnings || 0) + (premium || 0)
+  const displayedTotalGains = typeof taskTotalGains === 'number' ? taskTotalGains : totalGains
 
   return (
     <div key={`task__item--${key}`} className={`flex flex-col w-full ${className}`}>
@@ -119,9 +130,9 @@ export const TaskItem = ({
           {(task?.redacted === true && !revealRedacted) ? '·····' : (task.displayName || task.name)}
         </span>
         {/* Show premium badge if there's budget allocated */}
-        {taskPremium > 0 && (
+        {displayedTotalGains > 0 && (
           <Badge variant="outline" className="ml-auto bg-green-50 text-green-700 border-green-200 text-xs">
-            ${taskPremium.toFixed(2)}
+            ${displayedTotalGains.toFixed(2)}
           </Badge>
         )}
       </Button>
@@ -132,7 +143,7 @@ export const TaskItem = ({
         {showCompleterBadge && isDone && hasCollaborators && completerName && (
           <Badge variant="secondary" className="w-fit bg-muted text-muted-foreground border-muted">
             <UserIcon className="h-3 w-3 mr-1" />
-            @{completerName}{taskEarnings > 0 ? `: $${taskEarnings.toFixed(2)}` : ''}
+            @{completerName}{earnings > 0 ? `: $${earnings.toFixed(2)}` : ''}
           </Badge>
         )}
 

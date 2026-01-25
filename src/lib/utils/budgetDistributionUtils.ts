@@ -240,14 +240,14 @@ export function nominalToPercent(nominal: number, total: number): number {
  * @param budgetDistribution - The budget distribution object
  * @param listBudget - Total list budget for percentage calculations
  * @param premiumPool - Total premium pool for percentage calculations
- * @returns Object with taskEarnings and taskPrize, or null if not found
+ * @returns Object with taskEarnings and taskPremium, or null if not found
  */
 export function getTaskAllocationFromDistribution(
   taskId: string,
   budgetDistribution: BudgetDistribution | null | undefined,
   listBudget: number,
   premiumPool: number
-): { taskEarnings: number; taskPrize: number } | null {
+): { taskEarnings: number; taskPremium: number } | null {
   if (!budgetDistribution?.tasks || !taskId) {
     return null
   }
@@ -258,7 +258,7 @@ export function getTaskAllocationFromDistribution(
     if (taskAllocation?.allocation) {
       return {
         taskEarnings: getAllocationNominal(taskAllocation.allocation.budget, listBudget),
-        taskPrize: getAllocationNominal(taskAllocation.allocation.premium, premiumPool)
+        taskPremium: getAllocationNominal(taskAllocation.allocation.premium, premiumPool)
       }
     }
   }

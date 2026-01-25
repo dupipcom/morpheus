@@ -214,7 +214,20 @@ const formatDateLocal = (date: Date): string => {
       // Clean up confirmed tasks from the pending map
       keysToDelete.forEach(key => pendingMap.delete(key))
 
-      setOptimisticTasks(stillPending)
+      // Avoid triggering re-render loops by only updating state when the
+      // pending tasks actually change. Compare by id (or name fallback).
+      setOptimisticTasks((prev) => {
+        const prevIds = new Set(prev.map((p: any) => p.id ?? (p.name || '')))
+        const newIds = new Set(stillPending.map((p: any) => p.id ?? (p.name || '')))
+        if (prevIds.size === newIds.size) {
+          let same = true
+          for (const id of newIds) {
+            if (!prevIds.has(id)) { same = false; break }
+          }
+          if (same) return prev
+        }
+        return stillPending
+      })
     }, [pendingTaskCreationsRef, selectedTaskListId, tasksFromApi])
 
 
