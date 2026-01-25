@@ -155,7 +155,7 @@ export async function updateUserStashAndProfit(
   try {
     const refreshedUser = await prisma.user.findUnique({
       where: { id: userId },
-      select: { id: true, availableBalance: true, stash: true, equity: true, profit: true }
+      select: { id: true, availableBalance: true, stash: true, equity: true, profit: true, totalGains: true }
     })
 
     if (!refreshedUser) return null
@@ -163,12 +163,13 @@ export async function updateUserStashAndProfit(
     const currentStash = parseNumericValue(refreshedUser.stash)
     const currentProfit = parseNumericValue((refreshedUser as Record<string, unknown>).profit)
     const availableBalance = parseNumericValue(refreshedUser.availableBalance)
+    const currentTotalGains = parseNumericValue(refreshedUser.totalGains)
 
     const updatedValues = calculateUpdatedUserValues({
       currentStash,
       currentProfit,
       currentAvailableBalance: availableBalance,
-      currentTotalGains: 0,
+      currentTotalGains,
       stashDelta,
       profitDelta
     })

@@ -224,10 +224,12 @@ export function calculateTaskBudgetFromDistribution(params: {
     budget = earningsBudget / totalTasks
     premium = premiumBudget / totalTasks
   }
-  // PRIORITY 5: If task has stored budget/premium AND no budgetDistribution is configured, use stored values
+  // PRIORITY 5: If task has stored budget/premium/earnings AND no budgetDistribution is configured, use stored values
   // This is for backward compatibility with lists that don't have distribution configured yet
+  // Fallback order: earnings (new field) -> budget (legacy field) -> 0
   else if ((task as any).budget != null || (task as any).premium != null || (task as any).earnings != null) {
-    budget = (task as any).earnings ?? (task as any).budget ?? 0
+    // Prefer earnings field if available, fall back to budget for backward compatibility
+    budget = (task as any).earnings != null ? (task as any).earnings : ((task as any).budget ?? 0)
     premium = (task as any).premium ?? 0
   }
   // PRIORITY 6: Default equal distribution (legacy behavior)
