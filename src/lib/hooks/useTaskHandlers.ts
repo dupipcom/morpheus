@@ -119,17 +119,47 @@ async function createJob(params: {
   })
 }
 
-// Helper to cancel the most recent job for a task/worker/date
-// For compliance: jobs are never deleted, they are updated to CANCELLED status via PUT
-async function cancelMostRecentJob(taskId: string, workerId: string, date: string): Promise<void> {
-  const response = await fetch(`/api/v1/jobs?taskId=${taskId}&workerId=${workerId}&date=${date}`)
+/**
+ * Check if a task is non-recurring (no recurrence rule or frequency is NONE)
+ */
+function isNonRecurringTask(task: any): boolean {
+  const recurrence = task?.recurrence
+  return !recurrence || recurrence.frequency === 'NONE'
+}
+
+/**
+ * Cancel jobs for a task/worker
+ * For non-recurring tasks: Cancels ALL ACCEPTED jobs regardless of occurrence date
+ * For recurring tasks: Cancels only jobs matching the specific occurrence date
+ * For compliance: jobs are never deleted, they are updated to CANCELLED status via PUT
+ */
+async function cancelMostRecentJob(taskId: string, workerId: string, date: string, task?: any): Promise<void> {
+  // Build query - for non-recurring tasks, don't filter by date
+  const isNonRecurring = task ? isNonRecurringTask(task) : false
+  
+  // For non-recurring tasks, get all ACCEPTED jobs for this task/worker regardless of date
+  // For recurring tasks, filter by the specific date
+  const queryParams = new URLSearchParams({
+    taskId,
+    workerId,
+    ...(isNonRecurring ? {} : { date })
+  })
+  
+  const response = await fetch(`/api/v1/jobs?${queryParams.toString()}`)
   if (!response.ok) return
 
   const data = await response.json()
-  const mostRecentJob = data.jobs?.[0]
+  const jobs = data.jobs || []
+  
+  // For non-recurring tasks, cancel ALL ACCEPTED jobs for this task/worker
+  // For recurring tasks, cancel only the most recent job for this date
+  const jobsToCancel = isNonRecurring
+    ? jobs.filter((job: any) => job.status === 'ACCEPTED')
+    : jobs.slice(0, 1) // Most recent job only
 
-  if (mostRecentJob) {
-    await fetch(`/api/v1/jobs/${mostRecentJob.id}`, {
+  // Cancel all matching jobs
+  for (const job of jobsToCancel) {
+    await fetch(`/api/v1/jobs/${job.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: 'CANCELLED' })
@@ -240,7 +270,7 @@ export function useTaskHandlers({
           })
         }
       } else {
-        await cancelMostRecentJob(taskId, userId, date)
+        await cancelMostRecentJob(taskId, userId, date, task)
         // Reverse optimistic earnings when uncompleting task
         if (onTaskCompletedOptimistic && task.premium) {
           onTaskCompletedOptimistic({
@@ -402,7 +432,7 @@ export function useTaskHandlers({
       const { id: taskId, migrated } = await ensureTaskMigrated(task, effectiveListId)
 
       if (userId) {
-        await cancelMostRecentJob(taskId, userId, date)
+        await cancelMostRecentJob(taskId, userId, date, task)
       }
 
       if (onRefreshTasks) await onRefreshTasks()
