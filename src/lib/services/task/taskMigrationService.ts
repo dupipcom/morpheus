@@ -305,29 +305,15 @@ export function calculateTaskBudgetFromDistribution(params: {
   }
   
   // SAFETY CHECK 4: Scale premium down if needed
-  // Compare rawPremium (original estimate) with newly estimated premium (based on current equity)
-  // and favor the lowest value
-  if (premium != null && premium > 0) {
-    const rawPremium = premium // This is the original estimate from budget distribution
+  // Compare original premium estimate with equity-based estimate and use the minimum
+  if (premium != null && premium > 0 && userEquity != null && userEquity > 0 && premiumPercentage > 0) {
+    const rawPremium = premium // Original estimate from budget distribution
+    const premiumPool = userEquity * (premiumPercentage / 100)
+    const totalTasks = (list.tasks || []).length || 1
+    const equityBasedPremium = premiumPool / totalTasks
     
-    // Calculate newly estimated premium based on current user equity if available
-    if (userEquity != null && userEquity > 0 && premiumPercentage > 0) {
-      const premiumPool = userEquity * (premiumPercentage / 100)
-      const totalTasks = (list.tasks || []).length || 1
-      const newlyEstimatedPremium = premiumPool / totalTasks
-      
-      // Favor the lowest value between rawPremium and newlyEstimatedPremium
-      if (newlyEstimatedPremium < rawPremium) {
-        premium = newlyEstimatedPremium
-        console.warn(`Task ${task.id}: Scaled premium down to favor lower estimate`, {
-          rawPremium,
-          newlyEstimatedPremium,
-          cappedPremium: premium,
-          userEquity,
-          premiumPercentage
-        })
-      }
-    }
+    // Use the minimum of the two estimates
+    premium = Math.min(rawPremium, equityBasedPremium)
   }
   
   const totalGains = (earnings || 0) + (premium || 0)
