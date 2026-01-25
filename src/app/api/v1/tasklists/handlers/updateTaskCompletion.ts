@@ -51,7 +51,11 @@ export async function updateTaskCompletionHandler(
   user: UserData
 ): Promise<NextResponse> {
   const taskListId = body.taskListId!
-  const taskList = await prisma.list.findUnique({ where: { id: taskListId } })
+  // Include tasks relation to get tasks from Task collection (templateTasks is deprecated)
+  const taskList = await prisma.list.findUnique({
+    where: { id: taskListId },
+    include: { tasks: true }
+  })
 
   if (!taskList) {
     return NextResponse.json({ error: 'TaskList not found' }, { status: 404 })
@@ -68,13 +72,11 @@ export async function updateTaskCompletionHandler(
 
   const taskMatcher = createTaskMatcher(taskId, taskKey)
 
-  // Get task from templateTasks or tasks to use as base
+  // Get task from tasks array (templateTasks is deprecated - using Task collection only)
   let baseTask: Task | null = null
   const tasks = Array.isArray(taskList.tasks)
     ? (taskList.tasks as Task[])
-    : (Array.isArray((taskList as Record<string, unknown>).templateTasks)
-      ? ((taskList as Record<string, unknown>).templateTasks as Task[])
-      : [])
+    : []
 
   // First try to find by taskId
   if (taskId) {
@@ -84,19 +86,6 @@ export async function updateTaskCompletionHandler(
   // Fall back to taskKey for localization matching
   if (!baseTask && taskKey) {
     baseTask = tasks.find(taskMatcher) || null
-  }
-
-  // Check templateTasks if not found
-  if (!baseTask) {
-    const templateTasks = Array.isArray((taskList as Record<string, unknown>).templateTasks)
-      ? ((taskList as Record<string, unknown>).templateTasks as Task[])
-      : []
-    if (taskId) {
-      baseTask = templateTasks.find((task) => task.id === taskId || task.localeKey === taskId) || null
-    }
-    if (!baseTask && taskKey) {
-      baseTask = templateTasks.find(taskMatcher) || null
-    }
   }
 
   // Check ephemeral tasks
@@ -122,13 +111,11 @@ export async function updateTaskCompletionHandler(
     dateBucket as Task[] | { openTasks: Task[]; closedTasks: Task[]; completion: number }
   )
 
-  // Initialize from taskList.tasks if first time
+  // Initialize from taskList.tasks if first time (templateTasks is deprecated)
   if (openTasks.length === 0 && closedTasks.length === 0 && taskToUse) {
     const blueprintTasks: Task[] = Array.isArray(taskList.tasks)
       ? (taskList.tasks as Task[])
-      : (Array.isArray((taskList as Record<string, unknown>).templateTasks)
-        ? ((taskList as Record<string, unknown>).templateTasks as Task[])
-        : [])
+      : []
     openTasks = blueprintTasks.map((t) => ({ ...t, count: 0, status: 'open', completers: [] }))
   }
 
@@ -163,14 +150,14 @@ export async function updateTaskCompletionHandler(
         const remainingBudget = taskList.remainingBudget ? parseFloat(taskList.remainingBudget as string) : (taskList.budget ? Number(taskList.budget) : null)
         
         // Use budget distribution to get task-specific budget and prize with all safety checks
+        // templateTasks is deprecated - using Task collection only
         const taskBudgetAllocation = calculateTaskBudgetFromDistribution({
           task: taskToUse,
           list: {
             budget: taskList.budget ? Number(taskList.budget) : null,
             budgetDistribution: (taskList as Record<string, unknown>).budgetDistribution as any,
             prizePercentage: (taskList as Record<string, unknown>).prizePercentage as number | undefined,
-            tasks: tasks,
-            templateTasks: (taskList as Record<string, unknown>).templateTasks as any[]
+            tasks: tasks
           },
           userEquity: user.equity,
           remainingBudget: remainingBudget

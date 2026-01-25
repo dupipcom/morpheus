@@ -106,7 +106,7 @@ interface ListForBudgetCalculation {
   budgetDistribution?: BudgetDistribution | null
   prizePercentage?: number | null
   tasks?: any[]
-  templateTasks?: any[]
+  // templateTasks is deprecated - using Task collection only
 }
 
 /**

@@ -230,8 +230,8 @@ export async function calculateAndApplyJobEarnings({
           budgetDistribution: true,
           prizePercentage: true,
           remainingBudget: true,
-          tasks: true, 
-          templateTasks: true 
+          tasks: true
+          // templateTasks is deprecated - using Task collection only
         }
       }),
       prisma.task.findUnique({
@@ -262,14 +262,14 @@ export async function calculateAndApplyJobEarnings({
     const remainingBudget = list.remainingBudget ? parseFloat(list.remainingBudget) : list.budget
 
     // Use budget distribution to calculate task-specific earnings with all safety checks
+    // templateTasks is deprecated - using Task collection only
     const taskBudgetAllocation = calculateTaskBudgetFromDistribution({
       task,
       list: {
         budget: list.budget,
         budgetDistribution: list.budgetDistribution,
         prizePercentage: list.prizePercentage,
-        tasks: list.tasks,
-        templateTasks: list.templateTasks
+        tasks: list.tasks
       },
       userEquity: worker.equity,
       remainingBudget
