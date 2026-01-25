@@ -96,6 +96,7 @@ enum JobStatus {
   VALIDATING
   ACCEPTED
   REJECTED
+  CANCELLED
 }
 
 enum NoteVisibility {

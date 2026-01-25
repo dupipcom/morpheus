@@ -6,28 +6,32 @@ export interface StatusTransitionRule {
 
 export const STATUS_TRANSITIONS: Record<string, StatusTransitionRule> = {
   REQUESTED: {
-    to: ['IN_PROGRESS', 'REJECTED'],
+    to: ['IN_PROGRESS', 'REJECTED', 'CANCELLED'],
     roles: ['OWNER', 'MANAGER'],
   },
   IN_PROGRESS: {
-    to: ['SUBMITTED'],
-    roles: ['WORKER'],
+    to: ['SUBMITTED', 'CANCELLED'],
+    roles: ['WORKER', 'OWNER', 'MANAGER'],
     requiresNote: true, // Submission must have note
   },
   SUBMITTED: {
-    to: ['IN_PROGRESS', 'VALIDATING', 'ACCEPTED', 'REJECTED'],
+    to: ['IN_PROGRESS', 'VALIDATING', 'ACCEPTED', 'REJECTED', 'CANCELLED'],
     roles: ['WORKER', 'OWNER', 'MANAGER', 'REVIEWER'],
   },
   VALIDATING: {
-    to: ['IN_PROGRESS', 'SUBMITTED'],
-    roles: ['WORKER'],
+    to: ['IN_PROGRESS', 'SUBMITTED', 'CANCELLED'],
+    roles: ['WORKER', 'OWNER', 'MANAGER'],
   },
   ACCEPTED: {
-    to: [], // Terminal state
-    roles: [],
+    to: ['CANCELLED'], // Allow cancellation for compliance (e.g., re-opening non-recurring tasks)
+    roles: ['OWNER', 'MANAGER'],
   },
   REJECTED: {
     to: [], // Terminal state
+    roles: [],
+  },
+  CANCELLED: {
+    to: [], // Terminal state - jobs are never deleted for compliance
     roles: [],
   },
 }

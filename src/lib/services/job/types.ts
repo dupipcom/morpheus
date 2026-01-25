@@ -4,7 +4,7 @@ import type { Job, Task, List, Note, User, Profile } from '@/generated/prisma'
 export type UserRole = 'OWNER' | 'MANAGER' | 'COLLABORATOR' | 'FOLLOWER'
 
 // Job status enum
-export type JobStatus = 'REQUESTED' | 'IN_PROGRESS' | 'SUBMITTED' | 'VALIDATING' | 'ACCEPTED' | 'REJECTED'
+export type JobStatus = 'REQUESTED' | 'IN_PROGRESS' | 'SUBMITTED' | 'VALIDATING' | 'ACCEPTED' | 'REJECTED' | 'CANCELLED'
 
 // List user with role
 export interface ListUser {

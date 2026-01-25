@@ -119,8 +119,9 @@ async function createJob(params: {
   })
 }
 
-// Helper to delete the most recent job for a task/worker/date
-async function deleteMostRecentJob(taskId: string, workerId: string, date: string): Promise<void> {
+// Helper to cancel the most recent job for a task/worker/date
+// For compliance: jobs are never deleted, they are updated to CANCELLED status
+async function cancelMostRecentJob(taskId: string, workerId: string, date: string): Promise<void> {
   const response = await fetch(`/api/v1/jobs?taskId=${taskId}&workerId=${workerId}&date=${date}`)
   if (!response.ok) return
 
@@ -235,7 +236,7 @@ export function useTaskHandlers({
           })
         }
       } else {
-        await deleteMostRecentJob(taskId, userId, date)
+        await cancelMostRecentJob(taskId, userId, date)
         // Reverse optimistic earnings when uncompleting task
         if (onTaskCompletedOptimistic && task.premium) {
           onTaskCompletedOptimistic({
@@ -397,7 +398,7 @@ export function useTaskHandlers({
       const { id: taskId, migrated } = await ensureTaskMigrated(task, effectiveListId)
 
       if (userId) {
-        await deleteMostRecentJob(taskId, userId, date)
+        await cancelMostRecentJob(taskId, userId, date)
       }
 
       if (onRefreshTasks) await onRefreshTasks()

@@ -472,6 +472,12 @@ export async function DELETE(
     const existingJob = await prisma.job.findUnique({
       where: { id: jobId },
       include: {
+        task: {
+          select: {
+            id: true,
+            recurrence: true
+          }
+        },
         list: {
           select: {
             id: true,
@@ -493,7 +499,7 @@ export async function DELETE(
 
     if (!role || !['OWNER', 'MANAGER'].includes(role)) {
       return NextResponse.json(
-        { error: 'Unauthorized: Only list owners and managers can delete jobs' },
+        { error: 'Unauthorized: Only list owners and managers can cancel jobs' },
         { status: 403 }
       )
     }
@@ -511,16 +517,19 @@ export async function DELETE(
         })
       } catch (earningsError) {
         console.error('Error reversing job earnings:', earningsError)
-        // Don't fail the job deletion if earnings reversal fails
+        // Don't fail the job cancellation if earnings reversal fails
       }
     }
 
-    // Delete job
-    await prisma.job.delete({
-      where: { id: jobId }
+    // For compliance: Update job status to CANCELLED instead of deleting
+    await prisma.job.update({
+      where: { id: jobId },
+      data: { status: 'CANCELLED' }
     })
 
     // Update task occurrence dates if job was ACCEPTED
+    // Note: For non-recurring tasks, this will reset the task status to OPEN,
+    // allowing the task to be re-opened from any date
     if (status === 'ACCEPTED' && occurrenceDate) {
       await updateTaskOccurrenceDates(taskId, 'delete', occurrenceDate)
 
@@ -528,9 +537,9 @@ export async function DELETE(
       await updateDayProgress(workerId, occurrenceDate)
     }
 
-    return NextResponse.json({ message: 'Job deleted successfully' })
+    return NextResponse.json({ message: 'Job cancelled successfully' })
   } catch (error) {
-    console.error('Error deleting job:', error)
+    console.error('Error cancelling job:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

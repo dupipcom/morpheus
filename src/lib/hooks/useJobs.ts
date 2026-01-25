@@ -140,10 +140,10 @@ export function useJobs(options: UseJobsOptions = {}) {
     }
   }, [mutate])
 
-  const deleteJob = useCallback(async (jobId: string) => {
-    // Optimistic update - remove from list
-    const jobToRemove = mergedJobs.find((job: any) => job.id === jobId)
-    setOptimisticJobs((prev) => [...prev, { ...jobToRemove, _isDeleted: true }])
+  const cancelJob = useCallback(async (jobId: string) => {
+    // Optimistic update - mark as cancelled
+    const jobToCancel = mergedJobs.find((job: any) => job.id === jobId)
+    setOptimisticJobs((prev) => [...prev, { ...jobToCancel, status: 'CANCELLED', _isCancelled: true }])
 
     try {
       const response = await fetch(`/api/v1/jobs/${jobId}`, {
@@ -151,7 +151,7 @@ export function useJobs(options: UseJobsOptions = {}) {
       })
 
       if (!response.ok) {
-        throw new Error('Failed to delete job')
+        throw new Error('Failed to cancel job')
       }
 
       // Clear optimistic update and refresh
@@ -159,19 +159,23 @@ export function useJobs(options: UseJobsOptions = {}) {
       await mutate()
     } catch (error) {
       // Revert optimistic update on error
-      setOptimisticJobs((prev) => prev.filter((job) => !job._isDeleted))
-      console.error('Error deleting job:', error)
+      setOptimisticJobs((prev) => prev.filter((job) => !job._isCancelled))
+      console.error('Error cancelling job:', error)
       throw error
     }
   }, [mutate, mergedJobs])
 
+  // Keep deleteJob as an alias for backwards compatibility
+  const deleteJob = cancelJob
+
   return {
-    jobs: mergedJobs.filter((job: any) => !job._isDeleted),
+    jobs: mergedJobs.filter((job: any) => !job._isDeleted && !job._isCancelled),
     isLoading,
     error,
     createJob,
     updateJob,
     deleteJob,
+    cancelJob,
     mutate,
   }
 }
