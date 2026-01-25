@@ -342,6 +342,7 @@ model User {
   equity             Float?    @default(0)
   availableBalance   Float?    @default(0)
   withdrawn          Float?    @default(0)
+  totalGains         Float?    @default(0)
   // Relations
   persons            Person[]
   things             Thing[]
