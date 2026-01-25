@@ -61,38 +61,54 @@ export async function getTaskListsForUser(params: {
 
 /**
  * Calculate collaborator earnings for task lists
+ * Optimized to batch user profile fetching to avoid N+1 queries
  */
 export async function calculateCollaboratorEarnings(
   taskLists: TaskList[]
 ): Promise<(TaskList & { collaboratorEarnings: Record<string, number> })[]> {
-  return Promise.all(taskLists.map(async (taskList) => {
+  // Batch all user IDs from all task lists to avoid N+1 queries
+  const allUserIds = new Set<string>()
+  taskLists.forEach((taskList) => {
+    const users = (taskList.users as TaskListMembership[]) || []
+    const collaborators = users
+      .filter((u) => u.role === 'COLLABORATOR' || u.role === 'MANAGER')
+      .map((u) => u.userId)
+    const owners = users.filter((u) => u.role === 'OWNER').map((u) => u.userId)
+    
+    if (collaborators.length > 0) {
+      [...owners, ...collaborators].forEach((id) => allUserIds.add(id))
+    }
+  })
+
+  // Single batched query for all user profiles
+  let userIdToUserName: Record<string, string> = {}
+  if (allUserIds.size > 0) {
+    const userProfiles = await prisma.user.findMany({
+      where: {
+        id: { in: Array.from(allUserIds) }
+      },
+      include: {
+        profiles: true
+      }
+    })
+
+    userProfiles.forEach((u) => {
+      const profile = Array.isArray(u.profiles) && u.profiles.length > 0 ? u.profiles[0] : null
+      userIdToUserName[u.id] = (profile?.data as Record<string, { value?: string }>)?.username?.value || u.id
+    })
+  }
+
+  // Now process each task list without additional database queries
+  return taskLists.map((taskList) => {
     const collaboratorEarnings: Record<string, number> = {}
 
     const users = (taskList.users as TaskListMembership[]) || []
     const collaborators = users
       .filter((u) => u.role === 'COLLABORATOR' || u.role === 'MANAGER')
       .map((u) => u.userId)
-    const owners = users.filter((u) => u.role === 'OWNER').map((u) => u.userId)
 
     if (collaborators.length > 0) {
       const completedTasks = (taskList.completedTasks as CompletedTasks) || {}
-      const allCollaborators = [...owners, ...collaborators]
-
-      // Get user profiles to map userId to userName
-      const userProfiles = await prisma.user.findMany({
-        where: {
-          id: { in: allCollaborators }
-        },
-        include: {
-          profiles: true
-        }
-      })
-
-      const userIdToUserName: Record<string, string> = {}
-      userProfiles.forEach((u) => {
-        const profile = Array.isArray(u.profiles) && u.profiles.length > 0 ? u.profiles[0] : null
-        userIdToUserName[u.id] = (profile?.data as Record<string, { value?: string }>)?.username?.value || u.id
-      })
 
       // Calculate profit per task (templateTasks is deprecated)
       const listBudget = taskList.budget
@@ -139,7 +155,7 @@ export async function calculateCollaboratorEarnings(
       ...taskList,
       collaboratorEarnings
     }
-  }))
+  })
 }
 
 /**
@@ -412,12 +428,13 @@ export async function updateTaskList(params: {
 
   // Handle Task collection updates if tasks were provided
   if (Array.isArray(tasks)) {
-    const existingTasks = (existing as any).tasks || []
-    const existingTaskIds = new Set(existingTasks.map((t: any) => t.id))
+    // existing.tasks is available from the include: { tasks: true } query
+    const existingTasks = existing.tasks || []
+    const existingTaskIds = new Set(existingTasks.map((t) => t.id))
     const incomingTaskIds = new Set(tasks.filter(t => t.id).map(t => t.id))
 
     // Find tasks to delete (exist in DB but not in incoming)
-    const tasksToDelete = existingTasks.filter((t: any) => !incomingTaskIds.has(t.id))
+    const tasksToDelete = existingTasks.filter((t) => !incomingTaskIds.has(t.id))
 
     // Find tasks to create (new tasks without ID or with non-existing ID)
     const tasksToCreate = tasks.filter(t => !t.id || !existingTaskIds.has(t.id))
@@ -428,7 +445,7 @@ export async function updateTaskList(params: {
     // Delete removed tasks
     if (tasksToDelete.length > 0) {
       await prisma.task.deleteMany({
-        where: { id: { in: tasksToDelete.map((t: any) => t.id) } }
+        where: { id: { in: tasksToDelete.map((t) => t.id) } }
       })
     }
 

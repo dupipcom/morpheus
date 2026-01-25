@@ -8,6 +8,7 @@ import { validateStatusTransition, isAuthorizedForTransition } from '@/lib/servi
 import { TASK_STATUS_MAP } from '@/lib/services/job/taskSync'
 import { logJobStatusChange, logJobAcceptance, logAuthorizationFailure } from '@/lib/services/job/auditLogger'
 import { formatDateLocal } from '@/lib/utils/taskUtils'
+import { sanitizeText } from '@/lib/utils/sanitize'
 import type { ListUser, UpdateJobRequest } from '@/lib/services/job/types'
 
 /**
@@ -290,15 +291,24 @@ export async function PUT(
     // Create requester note if provided (worker's submission note)
     let newRequesterNoteId: string | null = null
     if (requesterNoteContent && requesterNoteContent.trim()) {
+      // Type validation for note content
+      if (typeof requesterNoteContent !== 'string') {
+        return NextResponse.json(
+          { error: 'Note content must be a string' },
+          { status: 400 }
+        )
+      }
       if (requesterNoteContent.length > 50000) {
         return NextResponse.json(
           { error: 'Note content too long (max 50,000 characters)' },
           { status: 400 }
         )
       }
+      // Sanitize note content to prevent XSS
+      const sanitizedRequesterNote = sanitizeText(requesterNoteContent)
       const requesterNote = await prisma.note.create({
         data: {
-          content: requesterNoteContent,
+          content: sanitizedRequesterNote,
           userId: existingJob.workerId,
           visibility: 'PRIVATE',
         }
@@ -309,15 +319,24 @@ export async function PUT(
     // Create reviewer note if provided (reviewer's feedback note)
     let newReviewerNoteId: string | null = null
     if (reviewerNoteContent && reviewerNoteContent.trim()) {
+      // Type validation for note content
+      if (typeof reviewerNoteContent !== 'string') {
+        return NextResponse.json(
+          { error: 'Note content must be a string' },
+          { status: 400 }
+        )
+      }
       if (reviewerNoteContent.length > 50000) {
         return NextResponse.json(
           { error: 'Note content too long (max 50,000 characters)' },
           { status: 400 }
         )
       }
+      // Sanitize note content to prevent XSS
+      const sanitizedReviewerNote = sanitizeText(reviewerNoteContent)
       const reviewerNote = await prisma.note.create({
         data: {
-          content: reviewerNoteContent,
+          content: sanitizedReviewerNote,
           userId: user!.id,
           visibility: 'PRIVATE',
         }
