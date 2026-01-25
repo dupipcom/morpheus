@@ -146,8 +146,11 @@ export function useJobs(options: UseJobsOptions = {}) {
     setOptimisticJobs((prev) => [...prev, { ...jobToCancel, status: 'CANCELLED', _isCancelled: true }])
 
     try {
+      // For compliance: use PUT to update status to CANCELLED instead of DELETE
       const response = await fetch(`/api/v1/jobs/${jobId}`, {
-        method: 'DELETE',
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'CANCELLED' })
       })
 
       if (!response.ok) {

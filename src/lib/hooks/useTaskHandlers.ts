@@ -120,7 +120,7 @@ async function createJob(params: {
 }
 
 // Helper to cancel the most recent job for a task/worker/date
-// For compliance: jobs are never deleted, they are updated to CANCELLED status
+// For compliance: jobs are never deleted, they are updated to CANCELLED status via PUT
 async function cancelMostRecentJob(taskId: string, workerId: string, date: string): Promise<void> {
   const response = await fetch(`/api/v1/jobs?taskId=${taskId}&workerId=${workerId}&date=${date}`)
   if (!response.ok) return
@@ -129,7 +129,11 @@ async function cancelMostRecentJob(taskId: string, workerId: string, date: strin
   const mostRecentJob = data.jobs?.[0]
 
   if (mostRecentJob) {
-    await fetch(`/api/v1/jobs/${mostRecentJob.id}`, { method: 'DELETE' })
+    await fetch(`/api/v1/jobs/${mostRecentJob.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: 'CANCELLED' })
+    })
   }
 }
 
