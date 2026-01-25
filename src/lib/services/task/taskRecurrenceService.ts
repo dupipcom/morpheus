@@ -55,6 +55,8 @@ export function getWeekRange(dateStr: string): { weekStart: string; weekEnd: str
  */
 export function shouldTaskAppearOnDate(task: Task, targetDate: Date): boolean {
   // Tasks with COMPLETED status should never appear (non-recurring tasks that are done)
+  // Note: COMPLETED tasks are also filtered at the database level in getTasksForDate,
+  // but we keep this check as a safety net for other callers of this function
   if (task.status === 'COMPLETED') {
     return false
   }
@@ -141,9 +143,14 @@ export async function getTasksForDate(
   const targetDateObj = new Date(targetDate)
   const weekRange = getWeekRange(targetDate)
 
-  // 1. Fetch all tasks for the list with all jobs (we'll filter later)
+  // 1. Fetch all tasks for the list (excluding COMPLETED tasks) with all jobs
   const tasks = await prisma.task.findMany({
-    where: { listId },
+    where: {
+      listId,
+      // Filter out COMPLETED tasks at the database level
+      // COMPLETED status indicates non-recurring tasks that are done and should not reappear
+      status: { not: 'COMPLETED' }
+    },
     include: {
       jobs: {
         include: {
