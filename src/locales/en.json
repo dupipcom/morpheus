@@ -629,7 +629,15 @@
     "notice": "There is no actual money currently managed in this app. Dupip Invest is still in planning phase. This is just a playground for demonstration purposes.",
     "consentTitle": "Investment Demo Consent",
     "consentCheckbox": "I acknowledge that Dupip is not yet an investment platform, and that by using this feature, I'm aware that all my data may be deleted before official launch of Dupip Invest.",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "NFT generation completed.",

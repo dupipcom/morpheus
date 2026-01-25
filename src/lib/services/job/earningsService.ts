@@ -9,7 +9,9 @@ import {
   getPerCompleterPremium,
   getPerCompleterEarnings,
   calculateStashAndEarningsDeltas,
-  calculateUpdatedUserValues
+  calculateUpdatedUserValues,
+  applyPremiumFactors,
+  PremiumFactorSettings
 } from '@/lib/utils/earningsUtils'
 import { calculateTaskBudgetFromDistribution } from '@/lib/services/task/taskMigrationService'
 
@@ -316,17 +318,27 @@ export async function initializeJobInvoice(
 /**
  * Update job with latest task financial values
  * Called on each job update to keep invoice in sync
+ * NOTE: Premium values are factored based on worker's settings
  */
 export async function updateJobWithTaskValues(
   jobId: string,
   taskId: string,
   listId: string
 ): Promise<void> {
+  // Fetch job to get workerId for premium factor settings
+  const job = await prisma.job.findUnique({
+    where: { id: jobId },
+    select: { workerId: true }
+  })
+  
+  if (!job) return
+  
   // Use budget distribution (if available) to compute current task values,
   // otherwise fall back to stored task values.
-  const [list, task] = await Promise.all([
-    prisma.list.findUnique({ where: { id: listId }, select: { budget: true, budgetDistribution: true, premiumPercentage: true, remainingBudget: true, tasks: true } }),
-    prisma.task.findUnique({ where: { id: taskId } })
+  const [list, task, worker] = await Promise.all([
+    prisma.list.findUnique({ where: { id: listId }, select: { role: true, budget: true, budgetDistribution: true, premiumPercentage: true, remainingBudget: true, tasks: true } }),
+    prisma.task.findUnique({ where: { id: taskId } }),
+    prisma.user.findUnique({ where: { id: job.workerId }, select: { settings: true } })
   ])
 
   if (!task) return
@@ -348,8 +360,12 @@ export async function updateJobWithTaskValues(
   }
 
   const earnings = alloc?.budget ?? (task as any).earnings ?? (task as any).budget ?? 0
-  const premium = alloc?.premium ?? (task as any).premium ?? 0
-  const totalGains = alloc?.totalGains ?? (premium + earnings)
+  const rawPremium = alloc?.premium ?? (task as any).premium ?? 0
+  
+  // Apply premium factors based on list role and worker's settings
+  const premiumFactorSettings: PremiumFactorSettings | null = worker?.settings as PremiumFactorSettings | null
+  const premium = applyPremiumFactors(rawPremium, list?.role, premiumFactorSettings)
+  const totalGains = premium + earnings
 
   await prisma.job.update({
     where: { id: jobId },
@@ -381,7 +397,6 @@ export async function calculateAndApplyJobEarnings({
           budget: true, 
           premiumPercentage: true, 
           budgetDistribution: true,
-          premiumPercentage: true,
           remainingBudget: true,
           tasks: true
           // templateTasks is deprecated - using Task collection only
@@ -403,7 +418,8 @@ export async function calculateAndApplyJobEarnings({
       prisma.user.findUnique({
         where: { id: workerId },
         select: {
-          equity: true
+          equity: true,
+          settings: true
         }
       })
     ])
@@ -432,48 +448,26 @@ export async function calculateAndApplyJobEarnings({
     // Use the calculated budget and premium from distribution, falling back to task values
     // These are already capped by task.totalGains in calculateTaskBudgetFromDistribution
     const earnings = taskBudgetAllocation.budget ?? task.earnings ?? task.budget ?? 0
-    const premium = taskBudgetAllocation.premium ?? task.premium ?? 0
+    const rawPremium = taskBudgetAllocation.premium ?? task.premium ?? 0
+    
+    // Apply premium factors based on list role and user settings
+    // NOTE: Premium is calculated based on factors and is NOT limited by list budget or task.totalGains.
+    // The list budget only represents the amount available for earnings, not a hard limit for premium.
+    const premiumFactorSettings: PremiumFactorSettings | null = worker.settings as PremiumFactorSettings | null
+    const premium = applyPremiumFactors(rawPremium, list.role, premiumFactorSettings)
     const totalGains = premium + earnings
 
-    // CRITICAL: Enforce that totalGains can NEVER exceed task totalGains
+    // Log if factored premium results in totalGains exceeding stored task.totalGains (informational only)
     if (task.totalGains != null && task.totalGains > 0 && totalGains > task.totalGains) {
-      // Scale down proportionally if somehow we exceeded (defense in depth)
-      const scaleFactor = task.totalGains / totalGains
-      const cappedEarnings = earnings * scaleFactor
-      const cappedPremium = premium * scaleFactor
-      
-      console.warn(`Job ${jobId}: TotalGains ${totalGains} exceeded task totalGains ${task.totalGains}. Capped to ${task.totalGains}`)
-      
-      const { stashDelta, profitDelta } = calculateStashAndEarningsDeltas(cappedPremium, cappedEarnings, true)
-      const updatedValues = await updateUserFinancials(workerId, stashDelta, profitDelta)
-
-      await prisma.job.update({
-        where: { id: jobId },
-        data: { totalGains: task.totalGains as any, premium: cappedPremium as any, earnings: cappedEarnings as any }
+      console.log(`Job ${jobId}: Factored totalGains ${totalGains} exceeds stored task.totalGains ${task.totalGains}. This is expected when premium factors apply.`, {
+        earnings,
+        rawPremium,
+        factoredPremium: premium,
+        storedTaskTotalGains: task.totalGains
       })
-
-      await updateDayTickerFromJobs(workerId, listId, taskId, occurrenceDate, {
-        balance: updatedValues.newAvailableBalance,
-        stash: updatedValues.newStash,
-        equity: updatedValues.newEquity
-      })
-      await updateDaySnapshot(workerId, occurrenceDate, updatedValues)
-
-      return {
-        premium: cappedPremium,
-        earnings: cappedEarnings,
-        totalGains: task.totalGains,
-        updatedUserValues: {
-          availableBalance: updatedValues.newAvailableBalance,
-          stash: updatedValues.newStash,
-          equity: updatedValues.newEquity,
-          profit: updatedValues.newProfit,
-          totalGains: updatedValues.newTotalGains
-        }
-      }
     }
 
-    // Normal case: totalGains within limits
+    // Save the exact factored premium to the Job collection
     const { stashDelta, profitDelta } = calculateStashAndEarningsDeltas(premium, earnings, true)
     const updatedValues = await updateUserFinancials(workerId, stashDelta, profitDelta)
 

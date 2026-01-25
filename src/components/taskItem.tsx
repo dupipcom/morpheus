@@ -109,6 +109,7 @@ export const TaskItem = ({
   const totalGains = (earnings || 0) + (premium || 0)
   const displayedTotalGains = typeof taskTotalGains === 'number' ? taskTotalGains : totalGains
 
+  console.log('Task Premium', { taskPremiumProp, task, premium, totalGains, earnings, taskEarningsProp})
   return (
     <div key={`task__item--${key}`} className={`flex flex-col w-full ${className}`}>
       {/* Task Button */}

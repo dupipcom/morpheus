@@ -38,6 +38,7 @@ import { recordCompletions } from '@/lib/services/tasklist'
 import { updateTaskStatus, updateTaskRedacted } from '@/lib/services/tasklist'
 import { processEphemeralTasks } from '@/lib/services/tasklist'
 import { updateTaskCompletionHandler } from './handlers/updateTaskCompletion'
+import { applyPremiumFactors, PremiumFactorSettings } from '@/lib/utils/earningsUtils'
 
 /**
  * GET /api/v1/tasklists
@@ -54,14 +55,21 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const { searchParams } = new URL(request.url)
     const role = searchParams.get('role')
 
-    // Find user by userId
+    // Find user by userId (include settings for premium factor calculations)
     const user = await prisma.user.findUnique({
-      where: { userId: userId }
+      where: { userId: userId },
+      select: {
+        id: true,
+        settings: true
+      }
     })
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
+    
+    // Extract premium factor settings
+    const premiumFactorSettings = user.settings as PremiumFactorSettings | null
 
     // Get user's locale and translations
     const userLocale = getUserLocale(request)
@@ -102,7 +110,32 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       })
     )
 
-    return NextResponse.json({ taskLists: taskListsWithCompletion })
+    // Apply premium factors to all tasks in each list
+    const taskListsWithFactoredPremiums = taskListsWithCompletion.map((list: any) => {
+      const listRole = list.role
+      
+      // Factor premiums for tasks in Task collection
+      const factoredTasks = (list.tasks || []).map((task: any) => {
+        if (task.premium == null) return task
+        
+        const rawPremium = task.premium || 0
+        const factoredPremium = applyPremiumFactors(rawPremium, listRole, premiumFactorSettings)
+        const earnings = task.earnings || task.budget || 0
+        
+        return {
+          ...task,
+          premium: factoredPremium,
+          totalGains: earnings + factoredPremium
+        }
+      })
+      
+      return {
+        ...list,
+        tasks: factoredTasks
+      }
+    })
+
+    return NextResponse.json({ taskLists: taskListsWithFactoredPremiums })
   } catch (error) {
     console.error('Error fetching task lists:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

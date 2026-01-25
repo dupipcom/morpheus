@@ -16,6 +16,7 @@ import { Badge } from '@/components/ui/badge'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { PercentageTicker } from '@/components/ui/percentageTicker'
 import { DatePickerButton } from '@/components/ui/datePickerButton'
+import { applyPremiumFactors, PremiumFactorSettings } from '@/lib/utils/earningsUtils'
 
 
 type TaskList = { id: string; name?: string; role?: string; tasks?: any[] }
@@ -404,8 +405,13 @@ export const DoToolbar = ({
     if (!selectedList) return
 
     // Use task's actual premium and earnings values from budgetDistribution
-    const premium = task?.premium || 0
+    const rawPremium = task?.premium || 0
     const earnings = task?.earnings || task?.budget || 0
+    
+    // Apply premium factors based on list role and user settings
+    const userSettings = (session?.user as any)?.settings as PremiumFactorSettings | null
+    const listRole = selectedList?.role
+    const premium = applyPremiumFactors(rawPremium, listRole, userSettings)
     
     // Only add if there are actual values
     if (premium === 0 && earnings === 0) return
@@ -420,7 +426,7 @@ export const DoToolbar = ({
     setTimeout(() => {
       setOptimisticEarnings({ earnings: 0, premium: 0 })
     }, 5000)
-  }, [selectedList])
+  }, [selectedList, session?.user])
 
   // Add optimistic completion percentage increase
   const addOptimisticCompletion = useCallback(() => {

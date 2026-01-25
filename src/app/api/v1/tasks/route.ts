@@ -4,6 +4,7 @@ import prisma from '@/lib/prisma'
 import { getUserListRole } from '@/lib/services/auth'
 import { getTasksForDate } from '@/lib/services/task'
 import { sanitizeText } from '@/lib/utils/sanitize'
+import { applyPremiumFactors, PremiumFactorSettings } from '@/lib/utils/earningsUtils'
 
 export async function GET(request: NextRequest) {
   try {
@@ -13,14 +14,21 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Find user by Clerk userId
+    // Find user by Clerk userId (include settings for premium factor calculations)
     const user = await prisma.user.findUnique({
-      where: { userId }
+      where: { userId },
+      select: {
+        id: true,
+        settings: true
+      }
     })
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
+    
+    // Extract premium factor settings
+    const premiumFactorSettings = user.settings as PremiumFactorSettings | null
 
     const { searchParams } = new URL(request.url)
     const listId = searchParams.get('listId')
@@ -54,14 +62,22 @@ export async function GET(request: NextRequest) {
       // Pass list.role to avoid an extra DB query in getTasksForDate
       const tasksForDate = await getTasksForDate(listId, date, list.role)
 
-      // Map to response format
-      const tasks = tasksForDate.map(({ task, dateStatus, dateCount, completers }) => ({
-        ...task,
-        dateStatus,      // Date-specific status
-        dateCount,       // Date-specific count
-        completers,      // Date-specific completers
-        taskStatus: task.status  // Keep original task status for reference
-      }))
+      // Map to response format and apply premium factors
+      const tasks = tasksForDate.map(({ task, dateStatus, dateCount, completers }) => {
+        const rawPremium = task.premium || 0
+        const factoredPremium = applyPremiumFactors(rawPremium, list.role, premiumFactorSettings)
+        const earnings = task.earnings || task.budget || 0
+        
+        return {
+          ...task,
+          premium: factoredPremium,
+          totalGains: earnings + factoredPremium,
+          dateStatus,      // Date-specific status
+          dateCount,       // Date-specific count
+          completers,      // Date-specific completers
+          taskStatus: task.status  // Keep original task status for reference
+        }
+      })
 
       return NextResponse.json({ tasks, date })
     }
@@ -145,6 +161,7 @@ export async function GET(request: NextRequest) {
     })
 
     // Calculate count from ACCEPTED jobs (global total across all dates)
+    // and apply premium factors
     const enrichedTasks = authorizedTasks.map((task: any) => {
       const acceptedJobs = task.jobs?.filter((job: any) => job.status === 'ACCEPTED') || []
       const count = acceptedJobs.length
@@ -159,11 +176,19 @@ export async function GET(request: NextRequest) {
       } else {
         status = 'OPEN'
       }
+      
+      // Apply premium factors
+      const listRole = task.list?.role
+      const rawPremium = task.premium || 0
+      const factoredPremium = applyPremiumFactors(rawPremium, listRole, premiumFactorSettings)
+      const earnings = task.earnings || task.budget || 0
 
       return {
         ...task,
         count,
-        status  // Override with calculated status
+        status,  // Override with calculated status
+        premium: factoredPremium,
+        totalGains: earnings + factoredPremium
       }
     })
 
