@@ -39,6 +39,7 @@ import { updateTaskStatus, updateTaskRedacted } from '@/lib/services/tasklist'
 import { processEphemeralTasks } from '@/lib/services/tasklist'
 import { updateTaskCompletionHandler } from './handlers/updateTaskCompletion'
 import { applyPremiumFactors, PremiumFactorSettings } from '@/lib/utils/earningsUtils'
+import { calculateTaskBudgetFromDistribution } from '@/lib/services/task/taskMigrationService'
 
 /**
  * GET /api/v1/tasklists
@@ -117,7 +118,6 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       // Calculate financial values from budget distribution for tasks in Task collection
       const factoredTasks = (list.tasks || []).map((task: any) => {
         // Calculate financial values from budget distribution (not from task fields)
-        const { calculateTaskBudgetFromDistribution } = require('@/lib/services/task/taskMigrationService')
         const budgetAllocation = calculateTaskBudgetFromDistribution({
           task,
           list: {

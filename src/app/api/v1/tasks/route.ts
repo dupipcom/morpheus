@@ -5,6 +5,7 @@ import { getUserListRole } from '@/lib/services/auth'
 import { getTasksForDate } from '@/lib/services/task'
 import { sanitizeText } from '@/lib/utils/sanitize'
 import { applyPremiumFactors, PremiumFactorSettings } from '@/lib/utils/earningsUtils'
+import { calculateTaskBudgetFromDistribution } from '@/lib/services/task/taskMigrationService'
 
 export async function GET(request: NextRequest) {
   try {
@@ -78,8 +79,6 @@ export async function GET(request: NextRequest) {
       // Map to response format and calculate financial values from budget distribution
       const tasks = tasksForDate.map(({ task, dateStatus, dateCount, completers }) => {
         // Calculate financial values from budget distribution (not from task fields)
-        // Import and use calculateTaskBudgetFromDistribution
-        const { calculateTaskBudgetFromDistribution } = require('@/lib/services/task/taskMigrationService')
         const budgetAllocation = calculateTaskBudgetFromDistribution({
           task,
           list: {
@@ -216,7 +215,6 @@ export async function GET(request: NextRequest) {
       }
       
       // Calculate financial values from budget distribution (not from task fields)
-      const { calculateTaskBudgetFromDistribution } = require('@/lib/services/task/taskMigrationService')
       const budgetAllocation = calculateTaskBudgetFromDistribution({
         task,
         list: {

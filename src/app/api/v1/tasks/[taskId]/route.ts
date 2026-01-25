@@ -3,6 +3,7 @@ import prisma from '@/lib/prisma'
 import { getAuthenticatedUser, getUserListRole } from '@/lib/services/auth'
 import { sanitizeText } from '@/lib/utils/sanitize'
 import { applyPremiumFactors, PremiumFactorSettings } from '@/lib/utils/earningsUtils'
+import { calculateTaskBudgetFromDistribution } from '@/lib/services/task/taskMigrationService'
 
 /**
  * Shared include configuration for task queries with full relations
@@ -117,7 +118,6 @@ export async function GET(
     const premiumFactorSettings = userWithSettings?.settings as PremiumFactorSettings | null
     
     // Calculate financial values from budget distribution (not from task fields)
-    const { calculateTaskBudgetFromDistribution } = require('@/lib/services/task/taskMigrationService')
     const budgetAllocation = calculateTaskBudgetFromDistribution({
       task,
       list: {
