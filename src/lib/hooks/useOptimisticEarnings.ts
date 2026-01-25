@@ -4,12 +4,12 @@
  */
 
 import { useCallback, useState } from 'react'
-import { calculateTaskEarnings, getPerCompleterPrize, getPerCompleterProfit } from '@/lib/utils/earningsUtils'
+import { calculateTaskEarnings, getPerCompleterPremium, getPerCompleterEarnings } from '@/lib/utils/earningsUtils'
 
 interface OptimisticEarningsState {
-  prize: number
-  profit: number
+  premium: number
   earnings: number
+  totalGains: number
 }
 
 interface TaskCompletionEvent {
@@ -20,8 +20,8 @@ interface TaskCompletionEvent {
 }
 
 interface UseOptimisticEarningsParams {
-  currentPrize: number
-  currentProfit: number
+  currentPremium: number
+  currentEarnings: number
   userEquity: number
   selectedList: any
 }
@@ -29,8 +29,8 @@ interface UseOptimisticEarningsParams {
 const AUTO_CLEAR_TIMEOUT = 5000
 
 export function useOptimisticEarnings({
-  currentPrize,
-  currentProfit,
+  currentPremium,
+  currentEarnings,
   userEquity,
   selectedList
 }: UseOptimisticEarningsParams) {
@@ -39,12 +39,12 @@ export function useOptimisticEarnings({
 
   // Sum all optimistic deltas
   const deltaTotals = Array.from(optimisticDeltas.values()).reduce(
-    (acc, delta) => ({ prize: acc.prize + delta.prize, profit: acc.profit + delta.profit }),
-    { prize: 0, profit: 0 }
+    (acc, delta) => ({ premium: acc.premium + delta.premium, earnings: acc.earnings + delta.earnings }),
+    { premium: 0, earnings: 0 }
   )
-  const optimisticPrize = currentPrize + deltaTotals.prize
-  const optimisticProfit = currentProfit + deltaTotals.profit
-  const optimisticEarnings = optimisticPrize + optimisticProfit
+  const optimisticPremium = currentPremium + deltaTotals.premium
+  const optimisticEarnings = currentEarnings + deltaTotals.earnings
+  const optimisticTotalGains = optimisticPremium + optimisticEarnings
 
   // Core function to update optimistic earnings (shared by add/remove)
   const updateOptimisticEarnings = useCallback((
@@ -67,12 +67,12 @@ export function useOptimisticEarnings({
     })
 
     const multiplier = isAddition ? 1 : -1
-    const prize = multiplier * getPerCompleterPrize(earningsCalculation, selectedList.role)
-    const profit = multiplier * getPerCompleterProfit(earningsCalculation, selectedList.role)
-    const earnings = prize + profit
+    const premium = multiplier * getPerCompleterPremium(earningsCalculation, selectedList.role)
+    const earnings = multiplier * getPerCompleterEarnings(earningsCalculation, selectedList.role)
+    const totalGains = premium + earnings
 
     const key = `${taskId}-${Date.now()}`
-    setOptimisticDeltas(prev => new Map(prev).set(key, { prize, profit, earnings }))
+    setOptimisticDeltas(prev => new Map(prev).set(key, { premium, earnings, totalGains }))
 
     setPendingCompletions(prev => new Map(prev).set(taskId, {
       taskId,
@@ -95,7 +95,7 @@ export function useOptimisticEarnings({
       })
     }, AUTO_CLEAR_TIMEOUT)
 
-    return { prize, profit, earnings }
+    return { premium, earnings, totalGains }
   }, [selectedList, userEquity])
 
   const addOptimisticEarnings = useCallback(
@@ -134,9 +134,9 @@ export function useOptimisticEarnings({
   }, [])
 
   return {
-    optimisticPrize,
-    optimisticProfit,
+    optimisticPremium,
     optimisticEarnings,
+    optimisticTotalGains,
     hasOptimisticUpdates: optimisticDeltas.size > 0,
     pendingCompletions,
     addOptimisticEarnings,

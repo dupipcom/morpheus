@@ -1,11 +1,11 @@
 /**
  * Earnings aggregation and calculation service
- * Handles earnings, prizes, and profit calculations for task completions
+ * Handles earnings, premium, and profit calculations for task completions
  */
 
 import prisma from '@/lib/prisma'
 import {
-  calculateStashAndProfitDeltas,
+  calculateStashAndEarningsDeltas,
   calculateUpdatedUserValues
 } from '@/lib/utils/earningsUtils'
 import type {
@@ -19,7 +19,7 @@ import { getListRoleType, parseNumericValue } from './helpers'
 
 /**
  * Aggregate completer earnings from a task list for a specific user and date
- * Returns { earnings, prize, profit }
+ * Returns { earnings, premium, totalGains }
  */
 export async function aggregateCompleterEarningsFromTaskList(
   taskListId: string,
@@ -29,14 +29,14 @@ export async function aggregateCompleterEarningsFromTaskList(
 ): Promise<AggregatedEarnings> {
   try {
     const taskList = await prisma.list.findUnique({ where: { id: taskListId } })
-    if (!taskList) return { earnings: 0, prize: 0, profit: 0 }
+    if (!taskList) return { earnings: 0, premium: 0, totalGains: 0 }
 
     const completedTasks = (taskList.completedTasks as CompletedTasks) || {}
     const yearData = completedTasks[year]
-    if (!yearData) return { earnings: 0, prize: 0, profit: 0 }
+    if (!yearData) return { earnings: 0, premium: 0, totalGains: 0 }
 
     const dateBucket = yearData[dateISO]
-    if (!dateBucket) return { earnings: 0, prize: 0, profit: 0 }
+    if (!dateBucket) return { earnings: 0, premium: 0, totalGains: 0 }
 
     // Support both old structure (array) and new structure (openTasks/closedTasks)
     let tasksForDate: Task[] = []
@@ -50,35 +50,35 @@ export async function aggregateCompleterEarningsFromTaskList(
     }
 
     let totalEarnings = 0
-    let totalPrize = 0
-    let totalProfit = 0
+    let totalPremium = 0
+    let totalGains = 0
 
-    // Filter completers by logged-in user and sum their earnings/prize/profit
+    // Filter completers by logged-in user and sum their earnings/premium
     for (const task of tasksForDate) {
       if (Array.isArray(task.completers)) {
         for (const completer of task.completers) {
           // Only count completers for the logged-in user
           if (completer.id === userId) {
             const completerEarnings = parseNumericValue(completer.earnings)
-            const completerPrize = parseNumericValue(completer.prize)
+            const completerPremium = parseNumericValue(completer.premium)
 
-            totalEarnings += completerEarnings + completerPrize
-            totalPrize += completerPrize
-            totalProfit += completerEarnings
+            totalGains += completerEarnings + completerPremium
+            totalPremium += completerPremium
+            totalEarnings += completerEarnings
           }
         }
       }
     }
 
-    return { earnings: totalEarnings, prize: totalPrize, profit: totalProfit }
+    return { earnings: totalEarnings, premium: totalPremium, totalGains }
   } catch (error) {
     console.error('Error aggregating completer earnings from taskList:', error)
-    return { earnings: 0, prize: 0, profit: 0 }
+    return { earnings: 0, premium: 0, totalGains: 0 }
   }
 }
 
 /**
- * Calculate stash and profit deltas for a task list based on role and date
+ * Calculate stash and earnings deltas for a task list based on role and date
  */
 export async function calculateStashAndProfitDeltasForTaskList(
   taskListId: string,
@@ -93,56 +93,56 @@ export async function calculateStashAndProfitDeltasForTaskList(
   const { isDaily, isWeekly, isOneOff } = getListRoleType(taskList.role)
 
   let stashDelta = 0
-  let totalProfitDelta = 0
+  let totalEarningsDelta = 0
 
   if (isDaily) {
     const aggregated = await aggregateCompleterEarningsFromTaskList(taskListId, userId, year, dateISO)
-    const deltas = calculateStashAndProfitDeltas(
-      isCompleted ? aggregated.prize : -aggregated.prize,
-      isCompleted ? aggregated.profit : -aggregated.profit,
+    const deltas = calculateStashAndEarningsDeltas(
+      isCompleted ? aggregated.premium : -aggregated.premium,
+      isCompleted ? aggregated.earnings : -aggregated.earnings,
       isCompleted
     )
     stashDelta += deltas.stashDelta
-    totalProfitDelta += deltas.profitDelta
+    totalEarningsDelta += deltas.profitDelta
   } else if (isWeekly) {
     const weekStart = new Date(dateISO)
     weekStart.setDate(weekStart.getDate() - weekStart.getDay())
     const weekEnd = new Date(weekStart)
     weekEnd.setDate(weekEnd.getDate() + 6)
 
-    let totalPrize = 0
-    let totalProfit = 0
+    let totalPremium = 0
+    let totalEarnings = 0
 
     for (let d = new Date(weekStart); d <= weekEnd; d.setDate(d.getDate() + 1)) {
       const dateStr = d.toISOString().split('T')[0]
       const aggregated = await aggregateCompleterEarningsFromTaskList(taskListId, userId, year, dateStr)
-      totalPrize += aggregated.prize
-      totalProfit += aggregated.profit
+      totalPremium += aggregated.premium
+      totalEarnings += aggregated.earnings
     }
 
-    const deltas = calculateStashAndProfitDeltas(
-      isCompleted ? totalPrize : -totalPrize,
-      isCompleted ? totalProfit : -totalProfit,
+    const deltas = calculateStashAndEarningsDeltas(
+      isCompleted ? totalPremium : -totalPremium,
+      isCompleted ? totalEarnings : -totalEarnings,
       isCompleted
     )
     stashDelta += deltas.stashDelta
-    totalProfitDelta += deltas.profitDelta
+    totalEarningsDelta += deltas.profitDelta
   } else if (isOneOff) {
     const aggregated = await aggregateCompleterEarningsFromTaskList(taskListId, userId, year, dateISO)
-    const deltas = calculateStashAndProfitDeltas(
-      isCompleted ? aggregated.prize : -aggregated.prize,
-      isCompleted ? aggregated.profit : -aggregated.profit,
+    const deltas = calculateStashAndEarningsDeltas(
+      isCompleted ? aggregated.premium : -aggregated.premium,
+      isCompleted ? aggregated.earnings : -aggregated.earnings,
       isCompleted
     )
     stashDelta += deltas.stashDelta
-    totalProfitDelta += deltas.profitDelta
+    totalEarningsDelta += deltas.profitDelta
   }
 
-  return { stashDelta, profitDelta: totalProfitDelta }
+  return { stashDelta, profitDelta: totalEarningsDelta }
 }
 
 /**
- * Update user stash and profit values
+ * Update user stash and earnings values
  * Returns updated values or null if no changes
  */
 export async function updateUserStashAndProfit(
@@ -168,6 +168,7 @@ export async function updateUserStashAndProfit(
       currentStash,
       currentProfit,
       currentAvailableBalance: availableBalance,
+      currentTotalGains: 0,
       stashDelta,
       profitDelta
     })

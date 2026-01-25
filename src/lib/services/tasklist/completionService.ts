@@ -67,7 +67,7 @@ export function buildCompleters(
   delta: number,
   userId: string,
   perCompleterEarnings: number,
-  perCompleterPrize: number,
+  perCompleterPremium: number,
   startTime: number
 ): TaskCompleter[] {
   const appended: TaskCompleter[] = []
@@ -75,7 +75,7 @@ export function buildCompleters(
     appended.push({
       id: userId,
       earnings: perCompleterEarnings,
-      prize: perCompleterPrize,
+      premium: perCompleterPremium,
       time: startTime + i + 1,
       completedAt: new Date()
     })
