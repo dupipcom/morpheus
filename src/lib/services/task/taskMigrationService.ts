@@ -304,17 +304,9 @@ export function calculateTaskBudgetFromDistribution(params: {
     }
   }
   
-  // SAFETY CHECK 4: Scale premium down if needed
-  // Compare original premium estimate with equity-based estimate and use the minimum
-  if (premium != null && premium > 0 && userEquity != null && userEquity > 0 && premiumPercentage > 0) {
-    const rawPremium = premium // Original estimate from budget distribution
-    const premiumPool = userEquity * (premiumPercentage / 100)
-    const totalTasks = (list.tasks || []).length || 1
-    const equityBasedPremium = premiumPool / totalTasks
-    
-    // Use the minimum of the two estimates
-    premium = Math.min(rawPremium, equityBasedPremium)
-  }
+  // NOTE: Premium is NOT capped here. Premium factors are applied in earningsService.ts
+  // via applyPremiumFactors() when jobs are created/updated/completed. The Job collection
+  // stores the actual factored premium, not the Task model.
   
   const totalGains = (earnings || 0) + (premium || 0)
   
