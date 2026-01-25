@@ -13,11 +13,11 @@ export interface AllocationType {
 
 /**
  * Entity allocation structure - matches Prisma EntityBudgetAllocation embedded type
- * Represents allocation for any entity (task, area, category) with both budget and prize
+ * Represents allocation for any entity (task, area, category) with both budget and premium
  */
 export interface EntityBudgetAllocation {
-  budget?: AllocationType  // Budget allocation for this entity
-  prize?: AllocationType   // Prize allocation for this entity
+  budget?: AllocationType   // Budget allocation for this entity
+  premium?: AllocationType  // Premium allocation for this entity (was prize)
 }
 
 /**
