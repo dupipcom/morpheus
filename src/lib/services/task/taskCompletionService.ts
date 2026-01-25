@@ -83,6 +83,28 @@ export function calculateStatusFromCount(count: number, times: number): TaskStat
 }
 
 /**
+ * Check if a task is non-recurring (no recurrence rule or frequency is NONE)
+ */
+function isNonRecurringTask(recurrence: { frequency?: string } | null): boolean {
+  return !recurrence || recurrence.frequency === 'NONE'
+}
+
+/**
+ * Calculate the status for a non-recurring task based on completion count
+ * Returns COMPLETED if done, OPEN if not done, or null if task is recurring
+ */
+function calculateNonRecurringTaskStatus(
+  recurrence: { frequency?: string } | null,
+  completedCount: number,
+  requiredTimes: number
+): 'OPEN' | 'COMPLETED' | null {
+  if (!isNonRecurringTask(recurrence)) {
+    return null
+  }
+  return completedCount >= requiredTimes ? 'COMPLETED' : 'OPEN'
+}
+
+/**
  * Update task occurrence dates after a completion or deletion
  */
 export async function updateTaskOccurrenceDates(
@@ -144,12 +166,9 @@ export async function updateTaskOccurrenceDates(
     // Check if this is a non-recurring task that is now complete
     // If so, mark it as COMPLETED so it won't appear on future days
     const recurrence = task.recurrence as { frequency?: string } | null
-    const isNonRecurring = !recurrence || recurrence.frequency === 'NONE'
-    const requiredTimes = task.times || 1
-    const completedCount = task.jobs.length
-
-    if (isNonRecurring && completedCount >= requiredTimes) {
-      updateData.status = 'COMPLETED'
+    const newStatus = calculateNonRecurringTaskStatus(recurrence, task.jobs.length, task.times || 1)
+    if (newStatus === 'COMPLETED') {
+      updateData.status = newStatus
     }
   } else if (operation === 'delete') {
     // Recalculate lastOccurrence from remaining jobs
@@ -180,12 +199,9 @@ export async function updateTaskOccurrenceDates(
 
     // If this is a non-recurring task that is no longer complete, reset to OPEN
     const recurrence = task.recurrence as { frequency?: string } | null
-    const isNonRecurring = !recurrence || recurrence.frequency === 'NONE'
-    const requiredTimes = task.times || 1
-    const remainingCount = task.jobs.length
-
-    if (isNonRecurring && remainingCount < requiredTimes) {
-      updateData.status = 'OPEN'
+    const newStatus = calculateNonRecurringTaskStatus(recurrence, task.jobs.length, task.times || 1)
+    if (newStatus === 'OPEN') {
+      updateData.status = newStatus
     }
   }
 
