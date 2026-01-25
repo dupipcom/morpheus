@@ -25,7 +25,7 @@ interface ListForBudgetCalculation {
   budgetDistribution?: BudgetDistribution | null
   prizePercentage?: number | null
   tasks?: any[]
-  templateTasks?: any[]
+  // templateTasks is deprecated - using Task collection only
 }
 
 /**
@@ -180,8 +180,8 @@ export function calculateTaskBudgetFromDistribution(params: {
   else if (budgetDistribution?.areas && task.area) {
     const areaPercentage = budgetDistribution.areas[task.area] || 0
     const areaBudget = (listBudget * areaPercentage) / 100
-    // Count tasks in same area to split budget
-    const tasksInArea = (list.tasks || list.templateTasks || []).filter((t: any) => t.area === task.area).length || 1
+    // Count tasks in same area to split budget (templateTasks is deprecated)
+    const tasksInArea = (list.tasks || []).filter((t: any) => t.area === task.area).length || 1
     budget = areaBudget / tasksInArea
     
     // Calculate prize for this area
@@ -199,7 +199,8 @@ export function calculateTaskBudgetFromDistribution(params: {
     taskCategories.forEach((category: any) => {
       const categoryPercentage = budgetDistribution.categories[category] || 0
       const categoryBudget = (listBudget * categoryPercentage) / 100
-      const tasksInCategory = (list.tasks || list.templateTasks || []).filter((t: any) => 
+      // templateTasks is deprecated - using Task collection only
+      const tasksInCategory = (list.tasks || []).filter((t: any) => 
         Array.isArray(t.categories) ? t.categories.includes(category) : t.categories === category
       ).length || 1
       totalBudget += categoryBudget / tasksInCategory
@@ -216,7 +217,8 @@ export function calculateTaskBudgetFromDistribution(params: {
   // PRIORITY 4: If budgetDistribution exists but task doesn't match any mode, use equal split
   // This ensures we always use the distribution if it's configured
   else if (budgetDistribution && listBudget > 0) {
-    const totalTasks = (list.tasks || list.templateTasks || []).length || 1
+    // templateTasks is deprecated - using Task collection only
+    const totalTasks = (list.tasks || []).length || 1
     const earningsBudget = listBudget * (1 - prizePercentage / 100)
     const prizeBudget = listBudget * (prizePercentage / 100)
     budget = earningsBudget / totalTasks
@@ -230,7 +232,8 @@ export function calculateTaskBudgetFromDistribution(params: {
   }
   // PRIORITY 6: Default equal distribution (legacy behavior)
   else if (listBudget > 0) {
-    const totalTasks = (list.tasks || list.templateTasks || []).length || 1
+    // templateTasks is deprecated - using Task collection only
+    const totalTasks = (list.tasks || []).length || 1
     const earningsBudget = listBudget * (1 - prizePercentage / 100)
     const prizeBudget = listBudget * (prizePercentage / 100)
     budget = earningsBudget / totalTasks

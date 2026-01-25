@@ -220,7 +220,13 @@ export async function getTasksForDate(
     const times = task.times || 1
 
     let dateStatus: TaskStatus = 'OPEN'
-    if (count >= times) {
+    
+    // IMPORTANT: Tasks with COMPLETED or DONE status should always show as completed
+    // regardless of date or job records. This is for tasks that were marked as
+    // permanently completed (e.g., one-time tasks that are done)
+    if (task.status === 'COMPLETED' || task.status === 'DONE') {
+      dateStatus = task.status
+    } else if (count >= times) {
       dateStatus = 'DONE'
     } else if (count > 0) {
       dateStatus = 'IN_PROGRESS'
