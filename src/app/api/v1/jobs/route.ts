@@ -52,27 +52,35 @@ async function getUserListRole(userId: string, listId: string): Promise<string |
 // Build where clause from search params
 function buildJobWhereClause(searchParams: URLSearchParams): Record<string, any> {
   const where: Record<string, any> = {}
+  
+  // Simple field mappings
   const paramMap = [
     ['listId', 'listId'],
     ['taskId', 'taskId'],
     ['workerId', 'workerId'],
-    ['status', 'status'],
-    ['date', 'occurrenceDate']
+    ['status', 'status']
   ]
   paramMap.forEach(([param, field]) => {
     const value = searchParams.get(param)
     if (value) where[field] = value
   })
   
-  // Handle date range filtering for weekly lists
+  // Handle date filtering - date range takes precedence over single date
   const dateStart = searchParams.get('dateStart')
   const dateEnd = searchParams.get('dateEnd')
+  const singleDate = searchParams.get('date')
+  
   if (dateStart && dateEnd) {
+    // Date range filter for weekly lists
     where.occurrenceDate = {
       gte: dateStart,
       lte: dateEnd
     }
+  } else if (singleDate) {
+    // Exact date match for daily lists
+    where.occurrenceDate = singleDate
   }
+  // No date filter for one-off lists (neither date nor dateStart/dateEnd provided)
   
   return where
 }

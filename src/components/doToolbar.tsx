@@ -322,12 +322,12 @@ export const DoToolbar = ({
           const dateISO = formatDateISO(selectedDateToUse)
           params.append('date', dateISO)
         } else if (isWeekly && selectedDateToUse) {
-          // For weekly, we need to fetch jobs for the whole week
-          // Calculate week start (Sunday) and end (Saturday)
-          const weekStart = new Date(selectedDateToUse)
-          weekStart.setDate(weekStart.getDate() - weekStart.getDay())
-          const weekEnd = new Date(weekStart)
-          weekEnd.setDate(weekEnd.getDate() + 6)
+          // For weekly, fetch jobs for the whole week (Sunday to Saturday)
+          const dayOfWeek = selectedDateToUse.getDay()
+          const weekStartTime = selectedDateToUse.getTime() - (dayOfWeek * 24 * 60 * 60 * 1000)
+          const weekEndTime = weekStartTime + (6 * 24 * 60 * 60 * 1000)
+          const weekStart = new Date(weekStartTime)
+          const weekEnd = new Date(weekEndTime)
           
           params.append('dateStart', formatDateISO(weekStart))
           params.append('dateEnd', formatDateISO(weekEnd))
