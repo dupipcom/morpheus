@@ -306,6 +306,9 @@ export const AddListForm = ({
 
   const [collabResults, setCollabResults] = useState<any[]>([])
   
+  // Memoize trimmed query to avoid unnecessary effect re-executions
+  const trimmedCollabQuery = useMemo(() => collabQuery.trim(), [collabQuery])
+  
   // Stable callback for searching profiles via API
   const searchProfilesApi = useCallback(async (query: string) => {
     // Only fetch from API if query is non-empty
@@ -323,15 +326,14 @@ export const AddListForm = ({
   // When query is empty, use preloaded profiles from context
   // When query has value, trigger API search
   useEffect(() => {
-    const trimmedQuery = collabQuery.trim()
-    if (!trimmedQuery) {
+    if (!trimmedCollabQuery) {
       // Use preloaded profiles from context when query is empty
       setCollabResults(friendProfiles)
     } else {
       // Fetch from API when user types something
-      debouncedSearch(collabQuery)
+      debouncedSearch(trimmedCollabQuery)
     }
-  }, [collabQuery, friendProfiles, debouncedSearch])
+  }, [trimmedCollabQuery, friendProfiles, debouncedSearch])
 
   const handleSubmit = async () => {
     const roleJoined = `${form.cadence}.${form.role}`

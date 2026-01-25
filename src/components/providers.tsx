@@ -137,8 +137,10 @@ export function Providers({ children, locale: providedLocale }: ProvidersProps) 
 
   const refreshFriendProfiles = useCallback(async () => {
     try {
-      // Fetch profiles with empty query to get top friends/close friends/public profiles
-      const res = await fetch('/api/v1/profiles?query=')
+      // Fetch default profiles for collaborator suggestions
+      // When no query is provided, the API returns the top 5 profiles sorted by relationship priority:
+      // close friends first, then friends, then public profiles
+      const res = await fetch('/api/v1/profiles')
       if (!res.ok) {
         console.warn('Failed to refresh friend profiles:', res.status)
         return
