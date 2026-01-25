@@ -472,12 +472,6 @@ export async function DELETE(
     const existingJob = await prisma.job.findUnique({
       where: { id: jobId },
       include: {
-        task: {
-          select: {
-            id: true,
-            recurrence: true
-          }
-        },
         list: {
           select: {
             id: true,

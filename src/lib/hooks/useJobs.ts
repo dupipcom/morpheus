@@ -169,7 +169,8 @@ export function useJobs(options: UseJobsOptions = {}) {
   const deleteJob = cancelJob
 
   return {
-    jobs: mergedJobs.filter((job: any) => !job._isDeleted && !job._isCancelled),
+    // Filter out optimistically cancelled jobs (both old _isDeleted and new _isCancelled for backward compatibility)
+    jobs: mergedJobs.filter((job: any) => !job._isCancelled),
     isLoading,
     error,
     createJob,
