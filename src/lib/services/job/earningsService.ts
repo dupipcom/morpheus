@@ -6,9 +6,9 @@
 import prisma from '@/lib/prisma'
 import {
   calculateTaskEarnings,
-  getPerCompleterPrize,
-  getPerCompleterProfit,
-  calculateStashAndProfitDeltas,
+  getPerCompleterPremium,
+  getPerCompleterEarnings,
+  calculateStashAndEarningsDeltas,
   calculateUpdatedUserValues
 } from '@/lib/utils/earningsUtils'
 import { calculateTaskBudgetFromDistribution } from '@/lib/services/task/taskMigrationService'
@@ -50,24 +50,24 @@ async function calculateTotalEarningsFromJobs(
   listId: string,
   workerId: string,
   occurrenceDate: string
-): Promise<{ totalPrize: number; totalProfit: number; totalEarnings: number }> {
+): Promise<{ totalPremium: number; totalEarnings: number; totalGains: number }> {
   const jobs = await prisma.job.findMany({
     where: { listId, workerId, occurrenceDate, status: 'ACCEPTED' },
-    select: { prize: true, profit: true }
+    select: { premium: true, earnings: true }
   })
 
   const totals = jobs.reduce(
     (acc, job) => ({
-      prize: acc.prize + safeParseFloat(job.prize),
-      profit: acc.profit + safeParseFloat(job.profit)
+      premium: acc.premium + safeParseFloat(job.premium),
+      earnings: acc.earnings + safeParseFloat(job.earnings)
     }),
-    { prize: 0, profit: 0 }
+    { premium: 0, earnings: 0 }
   )
 
   return {
-    totalPrize: totals.prize,
-    totalProfit: totals.profit,
-    totalEarnings: totals.prize + totals.profit
+    totalPremium: totals.premium,
+    totalEarnings: totals.earnings,
+    totalGains: totals.premium + totals.earnings
   }
 }
 
@@ -83,7 +83,7 @@ async function updateDayTickerFromJobs(
   userValues: { balance: number; stash: number; equity: number }
 ): Promise<void> {
   try {
-    const { totalPrize, totalProfit } = await calculateTotalEarningsFromJobs(listId, workerId, occurrenceDate)
+    const { totalPremium, totalEarnings } = await calculateTotalEarningsFromJobs(listId, workerId, occurrenceDate)
     const metadata = getDateMetadata(occurrenceDate)
 
     const day = await prisma.day.findFirst({
@@ -91,8 +91,8 @@ async function updateDayTickerFromJobs(
     })
 
     // Include taskId in the ticker entry for consistency with updateDayTicker
-    const newTickerEntry = { listId, taskId, profit: totalProfit, prize: totalPrize }
-    const hasEarnings = totalPrize > 0 || totalProfit > 0
+    const newTickerEntry = { listId, taskId, earnings: totalEarnings, premium: totalPremium }
+    const hasEarnings = totalPremium > 0 || totalEarnings > 0
 
     if (!day) {
       await prisma.day.create({
@@ -139,9 +139,9 @@ interface CalculateJobEarningsParams {
 }
 
 interface JobEarningsResult {
-  prize: number
-  profit: number
+  premium: number
   earnings: number
+  totalGains: number
   updatedUserValues: {
     availableBalance: number
     stash: number
@@ -155,7 +155,7 @@ interface JobEarningsResult {
 async function updateUserFinancials(
   workerId: string,
   stashDelta: number,
-  profitDelta: number
+  earningsDelta: number
 ): Promise<{ newAvailableBalance: number; newStash: number; newEquity: number; newProfit: number; newTotalGains: number }> {
   const worker = await prisma.user.findUnique({
     where: { id: workerId },
@@ -170,7 +170,7 @@ async function updateUserFinancials(
     currentAvailableBalance: safeParseFloat(worker.availableBalance),
     currentTotalGains: safeParseFloat(worker.totalGains),
     stashDelta,
-    profitDelta
+    profitDelta: earningsDelta
   })
 
   await prisma.user.update({
@@ -209,6 +209,83 @@ async function updateDaySnapshot(
 }
 
 /**
+ * Get task financial values for invoice creation
+ */
+export async function getTaskInvoiceValues(taskId: string, listId: string): Promise<{
+  earnings: number | null
+  premium: number | null
+  totalGains: number | null
+}> {
+  const task = await prisma.task.findUnique({
+    where: { id: taskId },
+    select: { earnings: true, premium: true, totalGains: true, budget: true }
+  })
+
+  if (!task) {
+    return { earnings: null, premium: null, totalGains: null }
+  }
+
+  // earnings field or budget as fallback for backwards compatibility
+  const earnings = task.earnings ?? task.budget ?? null
+  const premium = task.premium ?? null
+  const totalGains = task.totalGains ?? (earnings != null && premium != null ? earnings + premium : null)
+
+  return { earnings, premium, totalGains }
+}
+
+/**
+ * Update job invoice with latest task values
+ * Called when job transitions to IN_PROGRESS (job initiation)
+ */
+export async function initializeJobInvoice(
+  jobId: string,
+  taskId: string,
+  listId: string
+): Promise<void> {
+  const { earnings, premium, totalGains } = await getTaskInvoiceValues(taskId, listId)
+
+  await prisma.job.update({
+    where: { id: jobId },
+    data: {
+      invoice: {
+        quote: earnings,
+        premium: premium,
+        exposure: totalGains
+      }
+    }
+  })
+}
+
+/**
+ * Update job with latest task financial values
+ * Called on each job update to keep invoice in sync
+ */
+export async function updateJobWithTaskValues(
+  jobId: string,
+  taskId: string,
+  listId: string
+): Promise<void> {
+  const { earnings, premium, totalGains } = await getTaskInvoiceValues(taskId, listId)
+
+  // Get current job to check if invoice needs to be preserved
+  const job = await prisma.job.findUnique({
+    where: { id: jobId },
+    select: { invoice: true }
+  })
+
+  // Only update invoice values if they were already set (job was initiated)
+  // Preserve original quote/premium/exposure but update current values
+  await prisma.job.update({
+    where: { id: jobId },
+    data: {
+      earnings: earnings as any,
+      premium: premium as any,
+      totalGains: totalGains as any
+    }
+  })
+}
+
+/**
  * Calculate and apply earnings for a completed job
  * Updates user's stash, profit, equity and Day.ticker
  */
@@ -228,7 +305,7 @@ export async function calculateAndApplyJobEarnings({
           budget: true, 
           budgetPercentage: true, 
           budgetDistribution: true,
-          prizePercentage: true,
+          premiumPercentage: true,
           remainingBudget: true,
           tasks: true
           // templateTasks is deprecated - using Task collection only
@@ -242,8 +319,9 @@ export async function calculateAndApplyJobEarnings({
           area: true,
           categories: true,
           budget: true,
-          prize: true,
-          premium: true
+          earnings: true,
+          premium: true,
+          totalGains: true
         }
       }),
       prisma.user.findUnique({
@@ -268,34 +346,34 @@ export async function calculateAndApplyJobEarnings({
       list: {
         budget: list.budget,
         budgetDistribution: list.budgetDistribution,
-        prizePercentage: list.prizePercentage,
+        premiumPercentage: list.premiumPercentage,
         tasks: list.tasks
       },
       userEquity: worker.equity,
       remainingBudget
     })
 
-    // Use the calculated budget and prize from distribution, falling back to task values
-    // These are already capped by task.premium in calculateTaskBudgetFromDistribution
-    const profit = taskBudgetAllocation.budget ?? task.budget ?? 0
-    const prize = taskBudgetAllocation.prize ?? task.prize ?? 0
-    const earnings = prize + profit
+    // Use the calculated budget and premium from distribution, falling back to task values
+    // These are already capped by task.totalGains in calculateTaskBudgetFromDistribution
+    const earnings = taskBudgetAllocation.budget ?? task.earnings ?? task.budget ?? 0
+    const premium = taskBudgetAllocation.premium ?? task.premium ?? 0
+    const totalGains = premium + earnings
 
-    // CRITICAL: Enforce that earnings can NEVER exceed task premium
-    if (task.premium != null && task.premium > 0 && earnings > task.premium) {
+    // CRITICAL: Enforce that totalGains can NEVER exceed task totalGains
+    if (task.totalGains != null && task.totalGains > 0 && totalGains > task.totalGains) {
       // Scale down proportionally if somehow we exceeded (defense in depth)
-      const scaleFactor = task.premium / earnings
-      const cappedProfit = profit * scaleFactor
-      const cappedPrize = prize * scaleFactor
+      const scaleFactor = task.totalGains / totalGains
+      const cappedEarnings = earnings * scaleFactor
+      const cappedPremium = premium * scaleFactor
       
-      console.warn(`Job ${jobId}: Earnings ${earnings} exceeded task premium ${task.premium}. Capped to ${task.premium}`)
+      console.warn(`Job ${jobId}: TotalGains ${totalGains} exceeded task totalGains ${task.totalGains}. Capped to ${task.totalGains}`)
       
-      const { stashDelta, profitDelta } = calculateStashAndProfitDeltas(cappedPrize, cappedProfit, true)
+      const { stashDelta, profitDelta } = calculateStashAndEarningsDeltas(cappedPremium, cappedEarnings, true)
       const updatedValues = await updateUserFinancials(workerId, stashDelta, profitDelta)
 
       await prisma.job.update({
         where: { id: jobId },
-        data: { earnings: task.premium as any, prize: cappedPrize as any, profit: cappedProfit as any }
+        data: { totalGains: task.totalGains as any, premium: cappedPremium as any, earnings: cappedEarnings as any }
       })
 
       await updateDayTickerFromJobs(workerId, listId, taskId, occurrenceDate, {
@@ -306,9 +384,9 @@ export async function calculateAndApplyJobEarnings({
       await updateDaySnapshot(workerId, occurrenceDate, updatedValues)
 
       return {
-        prize: cappedPrize,
-        profit: cappedProfit,
-        earnings: task.premium,
+        premium: cappedPremium,
+        earnings: cappedEarnings,
+        totalGains: task.totalGains,
         updatedUserValues: {
           availableBalance: updatedValues.newAvailableBalance,
           stash: updatedValues.newStash,
@@ -319,13 +397,13 @@ export async function calculateAndApplyJobEarnings({
       }
     }
 
-    // Normal case: earnings within limits
-    const { stashDelta, profitDelta } = calculateStashAndProfitDeltas(prize, profit, true)
+    // Normal case: totalGains within limits
+    const { stashDelta, profitDelta } = calculateStashAndEarningsDeltas(premium, earnings, true)
     const updatedValues = await updateUserFinancials(workerId, stashDelta, profitDelta)
 
     await prisma.job.update({
       where: { id: jobId },
-      data: { earnings: earnings as any, prize: prize as any, profit: profit as any }
+      data: { totalGains: totalGains as any, premium: premium as any, earnings: earnings as any }
     })
 
     await updateDayTickerFromJobs(workerId, listId, taskId, occurrenceDate, {
@@ -336,9 +414,9 @@ export async function calculateAndApplyJobEarnings({
     await updateDaySnapshot(workerId, occurrenceDate, updatedValues)
 
     return {
-      prize,
-      profit,
+      premium,
       earnings,
+      totalGains,
       updatedUserValues: {
         availableBalance: updatedValues.newAvailableBalance,
         stash: updatedValues.newStash,
@@ -369,17 +447,17 @@ export async function reverseJobEarnings({
   try {
     const job = await prisma.job.findUnique({
       where: { id: jobId },
-      select: { prize: true, profit: true, listId: true, taskId: true }
+      select: { premium: true, earnings: true, listId: true, taskId: true }
     })
 
     if (!job) throw new Error('Job not found')
 
-    const prize = safeParseFloat(job.prize)
-    const profit = safeParseFloat(job.profit)
+    const premium = safeParseFloat(job.premium)
+    const earnings = safeParseFloat(job.earnings)
 
-    if (prize === 0 && profit === 0) return
+    if (premium === 0 && earnings === 0) return
 
-    const { stashDelta, profitDelta } = calculateStashAndProfitDeltas(-prize, -profit, false)
+    const { stashDelta, profitDelta } = calculateStashAndEarningsDeltas(-premium, -earnings, false)
     const updatedValues = await updateUserFinancials(workerId, stashDelta, profitDelta)
 
     await updateDayTickerFromJobs(workerId, job.listId, job.taskId, occurrenceDate, {

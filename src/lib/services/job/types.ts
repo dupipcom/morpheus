@@ -12,6 +12,13 @@ export interface ListUser {
   role: UserRole
 }
 
+// Invoice captures task values at job initiation
+export interface JobInvoice {
+  quote: number | null    // Original task earnings at job initiation
+  premium: number | null  // Premium value at job initiation
+  exposure: number | null // totalGains value at job initiation
+}
+
 // Job with relations for API responses
 export interface JobWithRelations {
   id: string
@@ -27,8 +34,9 @@ export interface JobWithRelations {
   requesterNoteIds: string[]
   reviewersNoteIds: string[]
   earnings: number | null
-  prize: number | null
-  profit: number | null
+  premium: number | null
+  totalGains: number | null
+  invoice: JobInvoice | null
   createdAt: Date
   updatedAt: Date
   task: {

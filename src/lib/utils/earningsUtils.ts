@@ -37,15 +37,15 @@ export function getWeeksInMonth(year: number, month: number): number {
 }
 
 export interface EarningsCalculation {
-  actionPrize: number
-  actionProfit: number
-  actionValuation: number
-  dailyPrize?: number
-  dailyProfit?: number
-  dailyEarnings?: number
-  weeklyPrize?: number
-  weeklyProfit?: number
-  weeklyEarnings?: number
+  actionPremium: number      // Premium per action (was actionPrize)
+  actionEarnings: number     // Earnings per action (was actionProfit)
+  actionValuation: number    // Total valuation (earnings + premium)
+  dailyPremium?: number      // Daily premium
+  dailyEarnings?: number     // Daily earnings
+  dailyTotal?: number        // Daily total (earnings + premium)
+  weeklyPremium?: number     // Weekly premium
+  weeklyEarnings?: number    // Weekly earnings
+  weeklyTotal?: number       // Weekly total (earnings + premium)
 }
 
 interface CalculateEarningsParams {
@@ -59,7 +59,7 @@ interface CalculateEarningsParams {
 
 /**
  * Calculate earnings for a completed task
- * Note: Prize calculations use user.equity (not availableBalance) for security
+ * Note: Premium calculations use user.equity (not availableBalance) for security
  */
 export function calculateTaskEarnings({
   listRole,
@@ -70,8 +70,8 @@ export function calculateTaskEarnings({
   date
 }: CalculateEarningsParams): EarningsCalculation {
   const result: EarningsCalculation = {
-    actionPrize: 0,
-    actionProfit: 0,
+    actionPremium: 0,
+    actionEarnings: 0,
     actionValuation: 0
   }
 
@@ -84,60 +84,63 @@ export function calculateTaskEarnings({
   const budget = parseFloat(listBudget || '0')
   const budgetAllocation = (budgetPercentage || 0) / 100 // Convert percentage to decimal
 
-  // 1. Calculate actionPrize (if budgetPercentage is set)
-  // Prize is calculated from equity (availableBalance - stash)
+  // 1. Calculate actionPremium (if budgetPercentage is set)
+  // Premium is calculated from equity (availableBalance - stash)
   if (budgetAllocation > 0 && equity > 0) {
-    result.actionPrize = (budgetAllocation * equity) / numTasks
+    result.actionPremium = (budgetAllocation * equity) / numTasks
     
     // For daily/weekly lists, divide by 30 or 4 respectively
     if (isDaily) {
-      result.dailyPrize = result.actionPrize / 30
+      result.dailyPremium = result.actionPremium / 30
     } else if (isWeekly) {
-      result.weeklyPrize = result.actionPrize / 4
+      result.weeklyPremium = result.actionPremium / 4
     }
   } else if (budgetAllocation > 0 && equity <= 0) {
-    // If budgetPercentage is set but equity is 0 or null, still set actionPrize to 0
+    // If budgetPercentage is set but equity is 0 or null, still set actionPremium to 0
     // This ensures the structure is consistent even when equity is missing
-    result.actionPrize = 0
+    result.actionPremium = 0
     if (isDaily) {
-      result.dailyPrize = 0
+      result.dailyPremium = 0
     } else if (isWeekly) {
-      result.weeklyPrize = 0
+      result.weeklyPremium = 0
     }
   }
 
-  // 2. Calculate actionProfit (if list has budget)
+  // 2. Calculate actionEarnings (if list has budget)
   if (budget > 0) {
-    result.actionProfit = budget / numTasks
+    result.actionEarnings = budget / numTasks
     
     // For daily/weekly lists, divide by 30 or 4 respectively
     if (isDaily) {
-      result.dailyProfit = result.actionProfit / 30
+      result.dailyEarnings = result.actionEarnings / 30
     } else if (isWeekly) {
-      result.weeklyProfit = result.actionProfit / 4
+      result.weeklyEarnings = result.actionEarnings / 4
     }
   }
 
-  // 3. Calculate actionValuation (total earnings)
-  result.actionValuation = result.actionProfit + result.actionPrize
+  // 3. Calculate actionValuation (total = earnings + premium)
+  result.actionValuation = result.actionEarnings + result.actionPremium
   
-  // For daily/weekly lists, calculate daily/weekly earnings
+  // For daily/weekly lists, calculate daily/weekly totals
   if (isDaily) {
-    result.dailyEarnings = result.actionValuation / 30
+    result.dailyTotal = result.actionValuation / 30
   } else if (isWeekly) {
-    result.weeklyEarnings = result.actionValuation / 4
+    result.weeklyTotal = result.actionValuation / 4
   }
 
   return result
 }
 
 /**
- * Calculate the total prize pool from user equity and budget percentage
- * Prize pool = (budgetPercentage / 100) * userEquity
+ * Calculate the total premium pool from user equity and budget percentage
+ * Premium pool = (budgetPercentage / 100) * userEquity
  */
-export function calculatePrizePool(budgetPercentage: number, userEquity: number): number {
+export function calculatePremiumPool(budgetPercentage: number, userEquity: number): number {
   return (budgetPercentage / 100) * userEquity
 }
+
+// Alias for backwards compatibility
+export const calculatePrizePool = calculatePremiumPool
 
 /**
  * Calculate budget percentage from currency value and user equity
@@ -183,10 +186,10 @@ export function initializeRemainingBudget(
 }
 
 /**
- * Get per-completer prize based on list role (cadence)
- * Returns the appropriate prize value (dailyPrize, weeklyPrize, or actionPrize)
+ * Get per-completer premium based on list role (cadence)
+ * Returns the appropriate premium value (dailyPremium, weeklyPremium, or actionPremium)
  */
-export function getPerCompleterPrize(
+export function getPerCompleterPremium(
   earnings: EarningsCalculation,
   listRole?: string | null
 ): number {
@@ -194,21 +197,24 @@ export function getPerCompleterPrize(
   const isWeekly = listRole?.startsWith('weekly.')
   
   if (isDaily) {
-    // If dailyPrize is explicitly set, use it; otherwise fall back to actionPrize
-    return earnings.dailyPrize !== undefined ? earnings.dailyPrize : (earnings.actionPrize || 0)
+    // If dailyPremium is explicitly set, use it; otherwise fall back to actionPremium
+    return earnings.dailyPremium !== undefined ? earnings.dailyPremium : (earnings.actionPremium || 0)
   } else if (isWeekly) {
-    // If weeklyPrize is explicitly set, use it; otherwise fall back to actionPrize
-    return earnings.weeklyPrize !== undefined ? earnings.weeklyPrize : (earnings.actionPrize || 0)
+    // If weeklyPremium is explicitly set, use it; otherwise fall back to actionPremium
+    return earnings.weeklyPremium !== undefined ? earnings.weeklyPremium : (earnings.actionPremium || 0)
   } else {
-    return earnings.actionPrize || 0
+    return earnings.actionPremium || 0
   }
 }
 
+// Alias for backwards compatibility
+export const getPerCompleterPrize = getPerCompleterPremium
+
 /**
- * Get per-completer profit based on list role (cadence)
- * Returns the appropriate profit value (dailyProfit, weeklyProfit, or actionProfit)
+ * Get per-completer earnings based on list role (cadence)
+ * Returns the appropriate earnings value (dailyEarnings, weeklyEarnings, or actionEarnings)
  */
-export function getPerCompleterProfit(
+export function getPerCompleterEarnings(
   earnings: EarningsCalculation,
   listRole?: string | null
 ): number {
@@ -216,19 +222,22 @@ export function getPerCompleterProfit(
   const isWeekly = listRole?.startsWith('weekly.')
   
   if (isDaily) {
-    return earnings.dailyProfit || 0
+    return earnings.dailyEarnings || 0
   } else if (isWeekly) {
-    return earnings.weeklyProfit || 0
+    return earnings.weeklyEarnings || 0
   } else {
-    return earnings.actionProfit || 0
+    return earnings.actionEarnings || 0
   }
 }
 
+// Alias for backwards compatibility
+export const getPerCompleterProfit = getPerCompleterEarnings
+
 /**
- * Calculate profit per task based on budget, number of tasks, and cadence
- * This is a convenience function for cases where you only need profit calculation
+ * Calculate earnings per task based on budget, number of tasks, and cadence
+ * This is a convenience function for cases where you only need earnings calculation
  */
-export function getProfitPerTask(
+export function getEarningsPerTask(
   listBudget: number | string | null | undefined,
   numTasks: number,
   listRole?: string | null
@@ -241,43 +250,49 @@ export function getProfitPerTask(
   
   if (budget <= 0) return 0
   
-  const actionProfit = budget / numTasks
+  const actionEarnings = budget / numTasks
   const isDaily = listRole?.startsWith('daily.')
   const isWeekly = listRole?.startsWith('weekly.')
   
   if (isDaily) {
-    return actionProfit / 30
+    return actionEarnings / 30
   } else if (isWeekly) {
-    return actionProfit / 4
+    return actionEarnings / 4
   } else {
-    return actionProfit
+    return actionEarnings
   }
 }
 
+// Alias for backwards compatibility
+export const getProfitPerTask = getEarningsPerTask
+
 /**
- * Calculate stash delta (prize only) and profit delta separately
- * Stash should only contain prize, profit is tracked separately in user.profit
+ * Calculate stash delta (premium only) and earnings delta separately
+ * Stash should only contain premium, earnings is tracked separately in user.profit
  * Returns { stashDelta, profitDelta } where both are guaranteed to be >= 0 for additions
  */
-export function calculateStashAndProfitDeltas(
-  prizeDelta: number,
-  profitDelta: number,
+export function calculateStashAndEarningsDeltas(
+  premiumDelta: number,
+  earningsDelta: number,
   isAddition: boolean = true
 ): { stashDelta: number; profitDelta: number } {
   if (isAddition) {
-    // For additions: only positive deltas go to stash/profit
+    // For additions: only positive deltas go to stash/earnings
     return {
-      stashDelta: Math.max(0, prizeDelta),
-      profitDelta: Math.max(0, profitDelta)
+      stashDelta: Math.max(0, premiumDelta),
+      profitDelta: Math.max(0, earningsDelta)
     }
   } else {
     // For removals: only negative deltas are allowed
     return {
-      stashDelta: Math.min(0, prizeDelta),
-      profitDelta: Math.min(0, profitDelta)
+      stashDelta: Math.min(0, premiumDelta),
+      profitDelta: Math.min(0, earningsDelta)
     }
   }
 }
+
+// Alias for backwards compatibility
+export const calculateStashAndProfitDeltas = calculateStashAndEarningsDeltas
 
 interface UserValuesParams {
   currentStash: number
@@ -322,11 +337,11 @@ export function calculateUpdatedUserValues(params: UserValuesParams): UpdatedUse
   const newProfit = Math.max(0, safeProfit + profitDelta)
   const newAvailableBalance = Math.max(0, safeAvailableBalance)
   
-  // totalGains accumulates the sum of all prize (stash) and profit earnings over time
+  // totalGains accumulates the sum of all premium (stash) and earnings over time
   const totalGainsDelta = stashDelta + profitDelta
   const newTotalGains = Math.max(0, safeTotalGains + totalGainsDelta)
 
-  // Equity = availableBalance - stash (stash only contains prize, not profit)
+  // Equity = availableBalance - stash (stash only contains premium, not earnings)
   const newEquity = Math.max(0, newAvailableBalance - newStash)
 
   return {
