@@ -401,17 +401,20 @@ export async function updateTaskRedacted(params: {
   }
 
   // Update Task records in the Task collection directly
-  // Find the matching task and update its redacted status
-  for (const task of taskListToUpdate.tasks) {
-    const key = getTaskKey(task as unknown as Task)
-    if (key === taskKeyLower || key === taskKey) {
-      if (task.id) {
-        await prisma.task.update({
-          where: { id: task.id },
-          data: { redacted }
-        })
-      }
-    }
+  // Find matching task IDs to update
+  const taskIdsToUpdate = taskListToUpdate.tasks
+    .filter((task) => {
+      const key = getTaskKey(task as unknown as Task)
+      return (key === taskKeyLower || key === taskKey) && task.id
+    })
+    .map((task) => task.id)
+
+  // Batch update using updateMany for efficiency
+  if (taskIdsToUpdate.length > 0) {
+    await prisma.task.updateMany({
+      where: { id: { in: taskIdsToUpdate } },
+      data: { redacted }
+    })
   }
 
   // Update in ephemeral tasks
@@ -424,7 +427,7 @@ export async function updateTaskRedacted(params: {
   ephemeralTasks = { open, closed }
 
   // Update in completedTasks (all dates)
-  let completedTasks = ((taskListToUpdate as Record<string, unknown>).completedTasks as CompletedTasks) || {}
+  const completedTasks = ((taskListToUpdate as Record<string, unknown>).completedTasks as CompletedTasks) || {}
   const years = Object.keys(completedTasks)
 
   for (const yearStr of years) {
@@ -458,15 +461,15 @@ export async function updateTaskRedacted(params: {
     completedTasks[year] = yearBucket
   }
 
-  // Update the list - note: tasks are updated via Task collection, not embedded tasks array
+  // Update the list ephemeral tasks and completedTasks only
+  // Tasks relation is already updated via prisma.task.updateMany() above
   const updated = await prisma.list.update({
     where: { id: taskListToUpdate.id },
     data: {
-      // Note: tasks relation is updated via prisma.task.update() above
       ephemeralTasks: ephemeralTasks,
       completedTasks: completedTasks
     } as Record<string, unknown>,
-    include: { template: true, tasks: true }
+    include: { template: true }
   })
 
   return updated as unknown as TaskList
