@@ -286,37 +286,90 @@ export const DoToolbar = ({
     return () => { cancelled = true }
   }, [selectedDateToUse, session?.user])
 
-  // Calculate earnings for the selected list from day.ticker
+  // Calculate earnings for the selected list from Jobs
+  // Rules based on list recurrence:
+  // - one-off: roll up all ACCEPTED jobs for the list (regardless of occurrence date)
+  // - daily: roll up ACCEPTED jobs where occurrence date matches selected date
+  // - weekly: roll up ACCEPTED jobs where occurrence date is within current week
   useEffect(() => {
     const resetEarnings = () => {
       setListEarnings({ earnings: 0, premium: 0, totalGains: 0 })
       setOptimisticEarnings({ earnings: 0, premium: 0 })
     }
 
-    if (!selectedList?.id || !dayData) {
+    if (!selectedList?.id || !session?.user?.id) {
       resetEarnings()
       return
     }
 
-    try {
-      const tickers = Array.isArray(dayData.ticker) ? dayData.ticker : []
-      const tickerEntries = tickers.filter((t: any) => t.listId === selectedList.id)
-
-      const totals = tickerEntries.reduce(
-        (acc: { earnings: number; premium: number }, entry: any) => ({
-          earnings: acc.earnings + safeParseNumber(entry.earnings),
-          premium: acc.premium + safeParseNumber(entry.premium)
-        }),
-        { earnings: 0, premium: 0 }
-      )
-
-      setListEarnings({ ...totals, totalGains: totals.earnings + totals.premium })
-      setOptimisticEarnings({ earnings: 0, premium: 0 })
-    } catch (error) {
-      console.error('Error calculating list earnings from day.ticker:', error)
-      resetEarnings()
+    let cancelled = false
+    const fetchJobEarnings = async () => {
+      try {
+        const listRole = selectedList.role || ''
+        const [rolePrefix] = listRole.includes('.') ? listRole.split('.') : [listRole]
+        const isDaily = listRole.startsWith('daily.')
+        const isWeekly = listRole.startsWith('weekly.')
+        const isOneOff = rolePrefix === 'one-off' || rolePrefix === 'oneoff'
+        
+        // Build query params
+        const params = new URLSearchParams()
+        params.append('listId', selectedList.id)
+        params.append('workerId', session.user.id)
+        params.append('status', 'ACCEPTED')
+        
+        if (isDaily && selectedDateToUse) {
+          // Filter by specific date
+          const dateISO = formatDateISO(selectedDateToUse)
+          params.append('date', dateISO)
+        } else if (isWeekly && selectedDateToUse) {
+          // For weekly, we need to fetch jobs for the whole week
+          // Calculate week start (Sunday) and end (Saturday)
+          const weekStart = new Date(selectedDateToUse)
+          weekStart.setDate(weekStart.getDate() - weekStart.getDay())
+          const weekEnd = new Date(weekStart)
+          weekEnd.setDate(weekEnd.getDate() + 6)
+          
+          params.append('dateStart', formatDateISO(weekStart))
+          params.append('dateEnd', formatDateISO(weekEnd))
+        }
+        // For one-off lists, no date filter is applied - fetches all jobs
+        
+        const res = await fetch(`/api/v1/jobs?${params.toString()}`)
+        if (cancelled) return
+        
+        if (!res.ok) {
+          console.error('Error fetching jobs for earnings:', res.status)
+          resetEarnings()
+          return
+        }
+        
+        const data = await res.json()
+        const jobs = Array.isArray(data.jobs) ? data.jobs : []
+        
+        // Sum up earnings and premium from all accepted jobs
+        const totals = jobs.reduce(
+          (acc: { earnings: number; premium: number }, job: any) => ({
+            earnings: acc.earnings + safeParseNumber(job.earnings),
+            premium: acc.premium + safeParseNumber(job.premium)
+          }),
+          { earnings: 0, premium: 0 }
+        )
+        
+        if (!cancelled) {
+          setListEarnings({ ...totals, totalGains: totals.earnings + totals.premium })
+          setOptimisticEarnings({ earnings: 0, premium: 0 })
+        }
+      } catch (error) {
+        console.error('Error calculating list earnings from jobs:', error)
+        if (!cancelled) {
+          resetEarnings()
+        }
+      }
     }
-  }, [selectedList?.id, dayData])
+    
+    fetchJobEarnings()
+    return () => { cancelled = true }
+  }, [selectedList?.id, selectedList?.role, selectedDateToUse, session?.user?.id])
 
   // Add optimistic earnings for a task completion
   // Uses task's premium and budget values from budgetDistribution directly

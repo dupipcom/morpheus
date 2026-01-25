@@ -21,6 +21,8 @@ const jobFullInclude = {
       area: true,
       categories: true,
       status: true,
+      // budget is legacy field - earnings is the new normalized field
+      // budget kept for backwards compatibility (fallback when earnings is null)
       budget: true,
       earnings: true,
       premium: true,
@@ -420,6 +422,20 @@ export async function PUT(
     // Handle accepted jobs - update occurrence dates and calculate earnings
     if (newStatus === 'ACCEPTED') {
       const dateToUse = existingJob.occurrenceDate || formatDateLocal(new Date())
+      
+      // Initialize invoice if not already set (for direct transitions to ACCEPTED)
+      try {
+        const jobForInvoice = await prisma.job.findUnique({
+          where: { id: jobId },
+          select: { invoice: true }
+        })
+        if (!jobForInvoice?.invoice) {
+          await initializeJobInvoice(jobId, existingJob.taskId, existingJob.listId)
+        }
+      } catch (invoiceError) {
+        console.error('Error initializing job invoice for accepted job:', invoiceError)
+      }
+      
       await updateTaskOccurrenceDates(existingJob.taskId, 'complete', dateToUse)
       await updateDayProgress(existingJob.workerId, dateToUse)
 
