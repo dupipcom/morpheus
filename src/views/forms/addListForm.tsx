@@ -15,7 +15,7 @@ import { Package, List as ListIcon, MoreHorizontal, ChevronDown, Calendar as Cal
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { useI18n } from '@/lib/contexts/i18n'
 import { GlobalContext } from '@/lib/contexts'
-import { useDebounce } from '@/lib/hooks/useDebounce'
+import { useFriendProfiles } from '@/lib/hooks/useFriendProfiles'
 import { BudgetDistributionInput } from '@/components/budgetDistributionInput'
 import { 
   BudgetDistribution, 
@@ -304,21 +304,13 @@ export const AddListForm = ({
     }
   }, [newListPreviewTasks, isEditing])
 
-  const [collabResults, setCollabResults] = useState<any[]>([])
+  // Memoize trimmed query to avoid unnecessary SWR re-fetches
+  const trimmedCollabQuery = useMemo(() => collabQuery.trim(), [collabQuery])
   
-  // Debounced search function
-  const debouncedSearch = useDebounce(async (query: string) => {
-        // Fetch suggestions even when query is empty (shows top 5 close friends/friends/public)
-    const res = await fetch(`/api/v1/profiles?query=${encodeURIComponent(query)}`)
-    if (res.ok) {
-          const data = await res.json()
-          setCollabResults(data.profiles || [])
-        }
-    }, 300)
-    
-  useEffect(() => {
-    debouncedSearch(collabQuery)
-  }, [collabQuery, debouncedSearch])
+  // Use SWR hook for fetching profiles - handles caching, deduplication, and revalidation
+  // When query is empty (null), fetches default profiles (close friends, friends, public)
+  // When query has value, fetches search results matching the query
+  const { profiles: collabResults } = useFriendProfiles(trimmedCollabQuery || null)
 
   const handleSubmit = async () => {
     const roleJoined = `${form.cadence}.${form.role}`

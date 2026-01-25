@@ -37,6 +37,7 @@ export function MyComponent({ prop1, prop2 }: ComponentProps) {
 ### Hooks Patterns
 - Use custom hooks from `src/lib/hooks/`
 - `useProfile()` for user profile data
+- `useFriendProfiles()` for friend/collaborator profile suggestions (SWR-based)
 - `useTaskHandlers()` for task CRUD
 - `useOptimisticUpdates()` for optimistic UI
 - `useTranslations()` for i18n
@@ -118,10 +119,63 @@ function MyComponent() {
 - Lift state only when necessary
 
 ### Server State (SWR)
+**Always use SWR hooks for fetching server data.** This provides automatic caching, deduplication, and revalidation.
+
 ```typescript
 import useSWR from 'swr'
+import { jsonFetcher } from '@/lib/utils/utils'
 
-const { data, error, isLoading, mutate } = useSWR('/api/v1/endpoint', fetcher)
+const { data, error, isLoading, mutate } = useSWR('/api/v1/endpoint', jsonFetcher, {
+  revalidateOnFocus: false,
+  revalidateOnReconnect: false,
+  shouldRetryOnError: false,
+  dedupingInterval: 5000,
+})
+```
+
+**SWR Best Practices:**
+- Create custom hooks in `src/lib/hooks/` for reusable data fetching (e.g., `useFriendProfiles`, `useProfile`)
+- Use `null` as the key to disable fetching conditionally
+- For filterable data, use `refreshInterval` to periodically refresh and filter locally with `useMemo`
+- Avoid re-fetching on query changes - filter cached data locally instead
+
+**Example: Fetch once, filter locally with useMemo**
+```typescript
+// ✅ GOOD - Fetch data once with refresh interval, filter locally
+export function useFriendProfiles(query: string | null = null) {
+  // Fetch all profiles with a refresh interval
+  const { data } = useSWR('/api/v1/profiles', jsonFetcher, {
+    refreshInterval: 10000, // Refresh every 10 seconds
+  })
+
+  // Filter locally based on query - instant and no API calls
+  const filteredProfiles = useMemo(() => {
+    if (!query?.trim()) return data?.profiles || []
+    const normalizedQuery = query.trim().toLowerCase()
+    return (data?.profiles || []).filter(p => 
+      p.userName?.toLowerCase().includes(normalizedQuery)
+    )
+  }, [data?.profiles, query])
+
+  return { profiles: filteredProfiles }
+}
+```
+
+**Anti-pattern: Re-fetching on query change**
+```typescript
+// ❌ BAD - Re-fetches on every query change
+const { data } = useSWR(
+  query ? `/api/v1/profiles?query=${query}` : '/api/v1/profiles',
+  jsonFetcher
+)
+
+// ❌ BAD - manual fetch causes excessive requests and no caching
+useEffect(() => {
+  fetch('/api/v1/profiles').then(...)
+}, [dependency])
+
+// ✅ GOOD - SWR with local filtering handles caching and instant search
+const { profiles } = useFriendProfiles(query)
 ```
 
 ### Optimistic Updates
