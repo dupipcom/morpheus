@@ -137,21 +137,30 @@ export function shouldTaskAppearOnDate(task: Task, targetDate: Date, isOneOffLis
 /**
  * Get tasks that should appear for a specific date with date-specific completion status
  * For weekly tasks, aggregates job data across the entire week
+ * @param listId - The list ID to fetch tasks for
+ * @param targetDate - The date to filter tasks for (YYYY-MM-DD format)
+ * @param listRole - Optional list role to determine if it's a one-off list (avoids extra DB query if provided)
  */
 export async function getTasksForDate(
   listId: string,
-  targetDate: string
+  targetDate: string,
+  listRole?: string | null
 ): Promise<TaskForDate[]> {
   const targetDateObj = new Date(targetDate)
   const weekRange = getWeekRange(targetDate)
 
-  // First, check if this is a one-off list (should show all tasks including COMPLETED)
-  const list = await prisma.list.findUnique({
-    where: { id: listId },
-    select: { role: true }
-  })
+  // Determine if this is a one-off list (should show all tasks including COMPLETED)
+  // Use provided listRole if available, otherwise fetch from DB
+  let role = listRole
+  if (role === undefined) {
+    const list = await prisma.list.findUnique({
+      where: { id: listId },
+      select: { role: true }
+    })
+    role = list?.role
+  }
   
-  const rolePrefix = list?.role?.split('.')[0] || ''
+  const rolePrefix = role?.split('.')[0] || ''
   const isOneOffList = rolePrefix === 'one-off' || rolePrefix === 'oneoff'
 
   // 1. Fetch all tasks for the list with all jobs
