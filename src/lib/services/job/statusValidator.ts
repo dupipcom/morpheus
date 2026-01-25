@@ -72,8 +72,21 @@ export function isAuthorizedForTransition(
   }
 
   const { userRole, isWorker, isReviewer } = context
+  const isOwnerOrManager = userRole && ['OWNER', 'MANAGER'].includes(userRole)
 
-  // Check worker-only transitions
+  // CRITICAL: Workers can NEVER approve (ACCEPTED) or reject (REJECTED) jobs
+  // Only OWNER or MANAGER can approve/reject jobs
+  if (newStatus === 'ACCEPTED' || newStatus === 'REJECTED') {
+    if (!isOwnerOrManager) {
+      return {
+        authorized: false,
+        error: 'Only owners and managers can approve or reject jobs'
+      }
+    }
+    return { authorized: true }
+  }
+
+  // Check worker-only transitions (SUBMITTED, IN_PROGRESS from worker's own job)
   if (rule.roles.includes('WORKER')) {
     if (
       (newStatus === 'SUBMITTED' || newStatus === 'IN_PROGRESS') &&
@@ -85,14 +98,14 @@ export function isAuthorizedForTransition(
 
   // Check owner/manager transitions
   if (rule.roles.includes('OWNER') || rule.roles.includes('MANAGER')) {
-    if (userRole && ['OWNER', 'MANAGER'].includes(userRole)) {
+    if (isOwnerOrManager) {
       return { authorized: true }
     }
   }
 
-  // Check reviewer transitions
+  // Check reviewer transitions (for VALIDATING status)
   if (rule.roles.includes('REVIEWER')) {
-    if (isReviewer || (userRole && ['OWNER', 'MANAGER'].includes(userRole))) {
+    if (isReviewer || isOwnerOrManager) {
       return { authorized: true }
     }
   }
