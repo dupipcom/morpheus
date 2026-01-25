@@ -1,23 +1,12 @@
 'use client'
 
-import React from 'react'
-import { useContext, useEffect, useRef, useState, useMemo, useCallback } from 'react'
+import React, { useContext, useEffect, useRef, useState, useMemo, useCallback } from 'react'
 import { GlobalContext } from '@/lib/contexts'
 import { AddTaskForm } from '@/views/forms/addTaskForm'
 import { AddListForm } from '@/views/forms/addListForm'
 import { AddTemplateForm } from '@/views/forms/addTemplateForm'
 import { useOptimisticUpdates } from '@/lib/hooks/useOptimisticUpdates'
-
-import { ViewMenu } from '@/components/viewMenu'
-import { MoodView } from '@/views/moodView'
 import { ListView } from './listView'
-
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion'
 
 export const DoView = ({
   selectedTaskListId,
@@ -50,7 +39,7 @@ export const DoView = ({
   onListCreated?: (newListId?: string) => Promise<void> | void
   onTemplateCreated?: () => Promise<void> | void
 }) => {
-  const { refreshTaskLists, taskLists: contextTaskLists, refreshTemplates, templates: contextTemplates, session } = useContext(GlobalContext)
+  const { refreshTaskLists, taskLists: contextTaskLists, refreshTemplates, templates: contextTemplates } = useContext(GlobalContext)
   const [stableTaskLists, setStableTaskLists] = useState<any[]>([])
   const [stableTemplates, setStableTemplates] = useState<any[]>([])
   const initialFetchDone = useRef(false)
@@ -103,31 +92,8 @@ export const DoView = ({
     [stableTemplates, contextTemplates]
   )
   const selectedList = useMemo(() => {
-    const found = allTaskLists.find((l:any) => l.id === selectedTaskListId)
-    return found
+    return allTaskLists.find((l: any) => l.id === selectedTaskListId)
   }, [allTaskLists, selectedTaskListId])
-
-  // Determine if all mood sliders for today are zero (or unset)
-  const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
-  const today = new Date()
-  const todayDate = today.toLocaleString('en-uk', { timeZone: userTimezone }).split(',')[0].split('/').reverse().join('-')
-  const year = Number(todayDate.split('-')[0])
-  const todayMood = ((session as any)?.user?.entries?.[year]?.days?.[todayDate]?.mood) || {}
-  const moodKeys = ['gratitude','optimism','restedness','tolerance','selfEsteem','trust'] as const
-  const allMoodZero = moodKeys.every((k) => Number((todayMood as any)[k] ?? 0) === 0)
-
-  // Controlled accordion open state, default to opening mood if all zero
-  const [openItems, setOpenItems] = useState<string[]>(allMoodZero ? ['mood'] : ['list'])
-
-  // If session loads later and nothing is open yet, open mood once when condition is met
-  useEffect(() => {
-    if (openItems.length === 0) {
-      const currentMood = ((session as any)?.user?.entries?.[year]?.days?.[todayDate]?.mood) || {}
-      const shouldOpenMood = moodKeys.every((k) => Number((currentMood as any)[k] ?? 0) === 0)
-      setOpenItems(shouldOpenMood ? ['mood'] : ['list'])
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session])
 
   return (
     <>

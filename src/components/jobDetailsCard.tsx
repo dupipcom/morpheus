@@ -11,98 +11,86 @@ import type { JobWithRelations, UserRole } from '@/lib/services/job/types'
 import { useI18n } from '@/lib/contexts/i18n'
 import { sanitizeHTML } from '@/lib/utils/sanitize'
 
-// Worker-specific status banner
-function WorkerStatusBanner({ status }: { status: string }) {
-  const { t } = useI18n()
-  
-  const configs: Record<string, { message: string; icon: React.ReactNode; className: string }> = {
-    REQUESTED: {
-      message: t('jobs.worker.statusBanner.requested'),
-      icon: <Hourglass className="w-6 h-6" />,
-      className: 'bg-slate-50 border-slate-200 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300',
-    },
-    IN_PROGRESS: {
-      message: t('jobs.worker.statusBanner.inProgress'),
-      icon: <CheckCircle className="w-6 h-6 text-green-600" />,
-      className: 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/20 dark:border-green-800 dark:text-green-300',
-    },
-    SUBMITTED: {
-      message: t('jobs.worker.statusBanner.submitted'),
-      icon: <Send className="w-6 h-6 text-blue-600" />,
-      className: 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-300',
-    },
-    VALIDATING: {
-      message: t('jobs.worker.statusBanner.validating'),
-      icon: <AlertCircle className="w-6 h-6 text-orange-600" />,
-      className: 'bg-orange-50 border-orange-200 text-orange-700 dark:bg-orange-900/20 dark:border-orange-800 dark:text-orange-300',
-    },
-    ACCEPTED: {
-      message: t('jobs.worker.statusBanner.accepted'),
-      icon: <CheckCircle className="w-6 h-6 text-green-600" />,
-      className: 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/20 dark:border-green-800 dark:text-green-300',
-    },
-    REJECTED: {
-      message: t('jobs.worker.statusBanner.rejected'),
-      icon: <XCircle className="w-6 h-6 text-red-600" />,
-      className: 'bg-red-50 border-red-200 text-red-700 dark:bg-red-900/20 dark:border-red-800 dark:text-red-300',
-    },
-  }
+type JobStatus = 'REQUESTED' | 'IN_PROGRESS' | 'SUBMITTED' | 'VALIDATING' | 'ACCEPTED' | 'REJECTED'
 
-  const config = configs[status]
-  if (!config) return null
-
-  return (
-    <div className={`flex items-center gap-2 p-3 rounded-md border ${config.className}`}>
-      {config.icon}
-      <span className="text-sm">{config.message}</span>
-    </div>
-  )
+interface StatusConfig {
+  icon: React.ReactNode
+  className: string
 }
 
-// Owner/Manager status banner
-function OwnerStatusBanner({ status, workerName }: { status: string; workerName: string }) {
-  const { t } = useI18n()
-  
-  const configs: Record<string, { message: string; icon: React.ReactNode; className: string }> = {
-    REQUESTED: {
-      message: t('jobs.owner.statusBanner.requested', { workerName: `@${workerName}` }),
-      icon: <Hourglass className="w-6 h-6" />,
-      className: 'bg-amber-50 border-amber-200 text-amber-700 dark:bg-amber-900/20 dark:border-amber-800 dark:text-amber-300',
-    },
-    IN_PROGRESS: {
-      message: t('jobs.owner.statusBanner.inProgress', { workerName: `@${workerName}` }),
-      icon: <AlertCircle className="w-6 h-6 text-blue-600" />,
-      className: 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-300',
-    },
-    SUBMITTED: {
-      message: t('jobs.owner.statusBanner.submitted', { workerName: `@${workerName}` }),
-      icon: <Send className="w-6 h-6 text-yellow-600" />,
-      className: 'bg-yellow-50 border-yellow-200 text-yellow-700 dark:bg-yellow-900/20 dark:border-yellow-800 dark:text-yellow-300',
-    },
-    VALIDATING: {
-      message: t('jobs.owner.statusBanner.validating', { workerName: `@${workerName}` }),
-      icon: <Hourglass className="w-6 h-6" />,
-      className: 'bg-orange-50 border-orange-200 text-orange-700 dark:bg-orange-900/20 dark:border-orange-800 dark:text-orange-300',
-    },
-    ACCEPTED: {
-      message: t('jobs.owner.statusBanner.accepted', { workerName: `@${workerName}` }),
-      icon: <CheckCircle className="w-6 h-6 text-green-600" />,
-      className: 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/20 dark:border-green-800 dark:text-green-300',
-    },
-    REJECTED: {
-      message: t('jobs.owner.statusBanner.rejected', { workerName: `@${workerName}` }),
-      icon: <XCircle className="w-6 h-6 text-red-600" />,
-      className: 'bg-red-50 border-red-200 text-red-700 dark:bg-red-900/20 dark:border-red-800 dark:text-red-300',
-    },
-  }
+// Status styling configurations - shared between worker and owner views
+const STATUS_CONFIGS: Record<JobStatus, StatusConfig> = {
+  REQUESTED: {
+    icon: <Hourglass className="w-6 h-6" />,
+    className: 'bg-slate-50 border-slate-200 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300',
+  },
+  IN_PROGRESS: {
+    icon: <CheckCircle className="w-6 h-6 text-green-600" />,
+    className: 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/20 dark:border-green-800 dark:text-green-300',
+  },
+  SUBMITTED: {
+    icon: <Send className="w-6 h-6 text-blue-600" />,
+    className: 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-300',
+  },
+  VALIDATING: {
+    icon: <AlertCircle className="w-6 h-6 text-orange-600" />,
+    className: 'bg-orange-50 border-orange-200 text-orange-700 dark:bg-orange-900/20 dark:border-orange-800 dark:text-orange-300',
+  },
+  ACCEPTED: {
+    icon: <CheckCircle className="w-6 h-6 text-green-600" />,
+    className: 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/20 dark:border-green-800 dark:text-green-300',
+  },
+  REJECTED: {
+    icon: <XCircle className="w-6 h-6 text-red-600" />,
+    className: 'bg-red-50 border-red-200 text-red-700 dark:bg-red-900/20 dark:border-red-800 dark:text-red-300',
+  },
+}
 
-  const config = configs[status]
-  if (!config) return null
+// Owner-specific overrides for styling
+const OWNER_STYLE_OVERRIDES: Partial<Record<JobStatus, StatusConfig>> = {
+  REQUESTED: {
+    icon: <Hourglass className="w-6 h-6" />,
+    className: 'bg-amber-50 border-amber-200 text-amber-700 dark:bg-amber-900/20 dark:border-amber-800 dark:text-amber-300',
+  },
+  IN_PROGRESS: {
+    icon: <AlertCircle className="w-6 h-6 text-blue-600" />,
+    className: 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-300',
+  },
+  SUBMITTED: {
+    icon: <Send className="w-6 h-6 text-yellow-600" />,
+    className: 'bg-yellow-50 border-yellow-200 text-yellow-700 dark:bg-yellow-900/20 dark:border-yellow-800 dark:text-yellow-300',
+  },
+}
+
+interface StatusBannerProps {
+  status: string
+  variant: 'worker' | 'owner'
+  workerName?: string
+}
+
+function StatusBanner({ status, variant, workerName }: StatusBannerProps) {
+  const { t } = useI18n()
+
+  const jobStatus = status as JobStatus
+  if (!STATUS_CONFIGS[jobStatus]) return null
+
+  const baseConfig = STATUS_CONFIGS[jobStatus]
+  const config = variant === 'owner'
+    ? { ...baseConfig, ...OWNER_STYLE_OVERRIDES[jobStatus] }
+    : baseConfig
+
+  const translationKey = variant === 'worker'
+    ? `jobs.worker.statusBanner.${status.toLowerCase()}`
+    : `jobs.owner.statusBanner.${status.toLowerCase()}`
+
+  const message = variant === 'owner' && workerName
+    ? t(translationKey, { workerName: `@${workerName}` })
+    : t(translationKey)
 
   return (
     <div className={`flex items-center gap-2 p-3 rounded-md border ${config.className}`}>
       {config.icon}
-      <span className="text-sm">{config.message}</span>
+      <span className="text-sm">{message}</span>
     </div>
   )
 }
@@ -112,7 +100,6 @@ interface JobDetailsCardProps {
   userRole: UserRole
   isParticipant: boolean
   isWorker: boolean
-  userId: string
   isRefreshing?: boolean
   onApprove: () => Promise<void>
   onReject: () => Promise<void>
@@ -127,7 +114,6 @@ export function JobDetailsCard({
   userRole,
   isParticipant,
   isWorker,
-  userId,
   isRefreshing = false,
   onApprove,
   onReject,
@@ -139,32 +125,21 @@ export function JobDetailsCard({
   const { t } = useI18n()
   const [isLoading, setIsLoading] = React.useState(false)
 
-  // Get status badge variant
-  const getStatusVariant = (status: string): 'default' | 'secondary' | 'destructive' | 'outline' => {
-    const variants: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
-      REQUESTED: 'outline',
-      IN_PROGRESS: 'default',
-      SUBMITTED: 'secondary',
-      VALIDATING: 'outline',
-      ACCEPTED: 'default',
-      REJECTED: 'destructive',
-    }
-    return variants[status] || 'default'
+  const STATUS_BADGE_VARIANTS: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
+    REQUESTED: 'outline',
+    IN_PROGRESS: 'default',
+    SUBMITTED: 'secondary',
+    VALIDATING: 'outline',
+    ACCEPTED: 'default',
+    REJECTED: 'destructive',
   }
 
-  const getStatusLabel = (status: string): string => {
-    const labels: Record<string, string> = {
-      REQUESTED: t('jobs.status.requested'),
-      IN_PROGRESS: t('jobs.status.inProgress'),
-      SUBMITTED: t('jobs.status.submitted'),
-      VALIDATING: t('jobs.status.changesRequested'),
-      ACCEPTED: t('jobs.status.accepted'),
-      REJECTED: t('jobs.status.rejected'),
-    }
-    return labels[status] || status
+  function getStatusLabel(status: string): string {
+    const key = status === 'VALIDATING' ? 'changesRequested' : status.toLowerCase().replace('_', '')
+    return t(`jobs.status.${key}`) || status
   }
 
-  const handleAsyncAction = async (action: () => Promise<void>) => {
+  async function handleAsyncAction(action: () => Promise<void>): Promise<void> {
     setIsLoading(true)
     try {
       await action()
@@ -180,7 +155,7 @@ export function JobDetailsCard({
         <CardContent className="py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Badge variant={getStatusVariant(job.status)}>
+              <Badge variant={STATUS_BADGE_VARIANTS[job.status] || 'default'}>
                 {getStatusLabel(job.status)}
               </Badge>
               <span className="text-sm text-muted-foreground">
@@ -209,14 +184,15 @@ export function JobDetailsCard({
         </div>
       )}
       <CardContent className="py-4 space-y-4">
-        {/* Worker-specific status message banner */}
-        {isWorker && (
-          <WorkerStatusBanner status={job.status} />
-        )}
-
-        {/* Owner/Manager status message banner */}
-        {!isWorker && (userRole === 'OWNER' || userRole === 'MANAGER') && (
-          <OwnerStatusBanner status={job.status} workerName={job.worker?.profiles?.[0]?.username || 'Worker'} />
+        {/* Status message banner */}
+        {isWorker ? (
+          <StatusBanner status={job.status} variant="worker" />
+        ) : (userRole === 'OWNER' || userRole === 'MANAGER') && (
+          <StatusBanner
+            status={job.status}
+            variant="owner"
+            workerName={job.worker?.profiles?.[0]?.username || 'Worker'}
+          />
         )}
 
         {/* Worker's Submission Notes */}

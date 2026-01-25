@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useContext, useMemo, useState, useEffect, useCallback, useRef, useImperativeHandle } from 'react'
+import React, { useContext, useMemo, useState, useEffect, useCallback, useRef } from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
 import {
@@ -19,6 +19,33 @@ import { DatePickerButton } from '@/components/ui/datePickerButton'
 
 
 type TaskList = { id: string; name?: string; role?: string; tasks?: any[] }
+
+interface ListUserIds {
+  owners: string[]
+  collaborators: string[]
+  all: string[]
+}
+
+// Helper to extract owner and collaborator IDs from a task list
+// Handles both new (users array) and old (owners/collaborators fields) data models
+function extractUserIds(list: any): ListUserIds {
+  const users = Array.isArray(list?.users) ? list.users : []
+  const ownersFromUsers = users.filter((u: any) => u.role === 'OWNER').map((u: any) => u.userId)
+  const collaboratorsFromUsers = users.filter((u: any) => u.role === 'COLLABORATOR' || u.role === 'MANAGER').map((u: any) => u.userId)
+
+  // Fallback to old fields for backward compatibility
+  const ownersFromOld = Array.isArray(list?.owners) ? list.owners : []
+  const collaboratorsFromOld = Array.isArray(list?.collaborators) ? list.collaborators : []
+
+  const owners = ownersFromUsers.length > 0 ? ownersFromUsers : ownersFromOld
+  const collaborators = collaboratorsFromUsers.length > 0 ? collaboratorsFromUsers : collaboratorsFromOld
+
+  return {
+    owners,
+    collaborators,
+    all: [...new Set([...owners, ...collaborators])]
+  }
+}
 
 // Helper to format date as YYYY-MM-DD
 function formatDateISO(date: Date): string {
@@ -445,20 +472,9 @@ export const DoToolbar = ({
     let cancelled = false
     const run = async () => {
       try {
-        // Extract user IDs from users array (new model) or fallback to old fields
-        const users = Array.isArray((selectedList as any)?.users) ? (selectedList as any).users : []
-        const ownersFromUsers = users.filter((u: any) => u.role === 'OWNER').map((u: any) => u.userId)
-        const collaboratorsFromUsers = users.filter((u: any) => u.role === 'COLLABORATOR' || u.role === 'MANAGER').map((u: any) => u.userId)
-        
-        // Fallback to old fields for backward compatibility
-        const ownersFromOldField = Array.isArray((selectedList as any)?.owners) ? (selectedList as any).owners : []
-        const collaboratorsFromOldField = Array.isArray((selectedList as any)?.collaborators) ? (selectedList as any).collaborators : []
-        
-        const owners = ownersFromUsers.length > 0 ? ownersFromUsers : ownersFromOldField
-        const collaborators = collaboratorsFromUsers.length > 0 ? collaboratorsFromUsers : collaboratorsFromOldField
-        const allIds = [...new Set([...owners, ...collaborators])]
-        
+        const { all: allIds } = extractUserIds(selectedList)
         if (!allIds.length) { setCollabProfiles({}); return }
+
         const res = await fetch(`/api/v1/profiles/by-ids?ids=${encodeURIComponent(allIds.join(','))}`)
         if (!cancelled && res.ok) {
           const data = await res.json()
@@ -655,43 +671,31 @@ export const DoToolbar = ({
                       {(selectedList as any).dueDate}
                     </Badge>
                   )}
-                  {/* Show owner and collaborator badges from users array */}
+                  {/* Show owner and collaborator badges */}
                   {(() => {
-                    const users = Array.isArray((selectedList as any)?.users) ? (selectedList as any).users : []
-                    const owners = users.filter((u: any) => u.role === 'OWNER').map((u: any) => u.userId)
-                    const collaborators = users.filter((u: any) => u.role === 'COLLABORATOR' || u.role === 'MANAGER').map((u: any) => u.userId)
-                    
-                    // Fallback to old fields for backward compatibility
-                    const ownersFromOld = Array.isArray((selectedList as any)?.owners) ? (selectedList as any).owners : []
-                    const collaboratorsFromOld = Array.isArray((selectedList as any)?.collaborators) ? (selectedList as any).collaborators : []
-                    
-                    const allOwners = owners.length > 0 ? owners : ownersFromOld
-                    const allCollaborators = collaborators.length > 0 ? collaborators : collaboratorsFromOld
-                    
+                    const { owners, collaborators } = extractUserIds(selectedList)
+                    const renderUserBadge = (id: string, isOwner: boolean) => {
+                      const userName = collabProfiles[id] || id
+                      const earnings = (selectedList as any)?.collaboratorEarnings?.[userName] || 0
+                      return (
+                        <Badge
+                          key={`${isOwner ? 'owner' : 'collab'}-${id}`}
+                          variant={isOwner ? 'default' : undefined}
+                          className={isOwner
+                            ? 'bg-primary dark:bg-accent text-background hover:bg-foreground/90'
+                            : 'bg-muted text-muted-foreground border-muted hover:bg-secondary/80'
+                          }
+                        >
+                          <UserIcon className="h-3 w-3 mr-1" />
+                          @{userName}{earnings > 0 ? `: $${earnings.toFixed(2)}` : ''}
+                        </Badge>
+                      )
+                    }
+
                     return (
                       <>
-                        {/* Show owner badges when there are collaborators */}
-                        {allCollaborators.length > 0 && allOwners.map((id: string) => {
-                    const userName = collabProfiles[id] || id
-                    const earnings = (selectedList as any)?.collaboratorEarnings?.[userName] || 0
-                    return (
-                      <Badge key={`owner-${id}`} variant="default" className="bg-primary dark:bg-accent text-background hover:bg-foreground/90">
-                        <UserIcon className="h-3 w-3 mr-1" />
-                        @{userName}{earnings > 0 ? `: $${earnings.toFixed(2)}` : ''}
-                      </Badge>
-                    )
-                  })}
-                  {/* Show collaborator badges */}
-                        {allCollaborators.map((id: string) => {
-                    const userName = collabProfiles[id] || id
-                    const earnings = (selectedList as any)?.collaboratorEarnings?.[userName] || 0
-                    return (
-                      <Badge key={`collab-${id}`} className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80">
-                        <UserIcon className="h-3 w-3 mr-1" />
-                        @{userName}{earnings > 0 ? `: $${earnings.toFixed(2)}` : ''}
-                      </Badge>
-                    )
-                  })}
+                        {collaborators.length > 0 && owners.map((id: string) => renderUserBadge(id, true))}
+                        {collaborators.map((id: string) => renderUserBadge(id, false))}
                       </>
                     )
                   })()}

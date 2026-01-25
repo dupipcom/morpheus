@@ -9,12 +9,57 @@ import { Circle, Minus, ChevronDown, ChevronUp, Eye, EyeOff } from 'lucide-react
 import { useI18n } from '@/lib/contexts/i18n'
 import { TaskStatus, STATUS_OPTIONS, getStatusColor, getIconColor, getTaskKey, formatDateLocal } from '@/lib/utils/taskUtils'
 import { useUserData } from '@/lib/utils/userUtils'
-import { getWeekNumber } from '@/app/helpers'
 import { TaskItem } from '@/components/taskItem'
 import { useOptimisticUpdates } from '@/lib/hooks/useOptimisticUpdates'
 import { useTaskHandlers } from '@/lib/hooks/useTaskHandlers'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
+
+// Priority ordering for task statuses and roles
+const STATUS_PRIORITIES: Record<string, number> = {
+  'in progress': 1,
+  'steady': 2,
+}
+
+const ROLE_PRIORITIES: Record<string, number> = {
+  'daily.default': 1,
+  'weekly.default': 2,
+}
+
+function getStatusPriority(status: TaskStatus): number {
+  return STATUS_PRIORITIES[status] ?? 3
+}
+
+function getRolePriority(role: string): number {
+  if (ROLE_PRIORITIES[role]) return ROLE_PRIORITIES[role]
+  if (role?.startsWith('daily.')) return 3
+  if (role?.startsWith('weekly.')) return 4
+  return 5
+}
+
+// Enrich a task with list metadata and optimistic state
+function enrichTask(
+  task: any,
+  taskList: any,
+  optimisticStatuses: Record<string, TaskStatus>,
+  optimisticCounts: Record<string, number>,
+  statusOverride?: string,
+  countOverride?: number,
+  isEphemeral = false
+): any {
+  const taskKey = getTaskKey(task)
+  return {
+    ...task,
+    isEphemeral,
+    taskListName: taskList.name || taskList.role,
+    taskListId: taskList.id,
+    taskListRole: taskList.role || '',
+    taskStatus: optimisticStatuses[taskKey] || statusOverride || task.status,
+    count: optimisticCounts[taskKey] !== undefined
+      ? optimisticCounts[taskKey]
+      : (countOverride !== undefined ? countOverride : (task.count || 0))
+  }
+}
 
 export const SteadyTasks = () => {
   const { taskLists: contextTaskLists, refreshTaskLists, revealRedacted, session } = useContext(GlobalContext)
@@ -27,13 +72,9 @@ export const SteadyTasks = () => {
   const [optimisticCounts, setOptimisticCounts] = useState<Record<string, number>>({})
   const initialFetchDone = useRef(false)
   const initialLoadDone = useRef(false)
-  const taskRefs = useRef<Map<number, HTMLDivElement>>(new Map())
 
   // Use shared hooks for optimistic updates
   const { pendingCompletionsRef, pendingStatusUpdatesRef } = useOptimisticUpdates()
-
-  // Get current user ID
-  const userId = (session?.user as any)?.id
 
   // Fetch steady/in-progress tasks from new API
   const { data: steadyTasksData } = useSWR(
@@ -241,167 +282,73 @@ export const SteadyTasks = () => {
 
   // Get all tasks with status "steady" or "in progress" from all lists
   const steadyTasks = useMemo(() => {
-    const allTasks: any[] = []
-    
-    // Get today's date in YYYY-MM-DD format (local timezone)
     const today = new Date()
     const dateISO = formatDateLocal(today)
     const year = today.getFullYear()
-    
-    // Helper to get unique taskId (prefer id, then localeKey, then name)
-    const getTaskId = (t: any): string | null => {
-      const key = getTaskKey(t)
-      return key || null
-    }
-    
-    stableTaskLists.forEach((taskList: any) => {
-      // Get base tasks from tasks array (templateTasks is deprecated)
-      const baseTasks = (taskList?.tasks && taskList.tasks.length > 0)
-        ? taskList.tasks
-        : []
-      
-      // Read tasks from completedTasks[year][date].openTasks for today
-      const dateBucket = (taskList as any)?.completedTasks?.[year]?.[dateISO]
-      const openTasksFromCompleted: any[] = []
+
+    // Collect all tasks from all lists
+    const allTasks = stableTaskLists.flatMap((taskList: any) => {
+      const baseTasks = taskList?.tasks || []
+      const dateBucket = taskList?.completedTasks?.[year]?.[dateISO]
+
+      // Parse open tasks from completedTasks (supports legacy and new structure)
       const openTasksByKey: Record<string, any> = {}
-      
-      if (dateBucket) {
-        if (Array.isArray(dateBucket)) {
-          // Legacy structure: migrate on read
-          dateBucket.forEach((t: any) => {
-            const k = getTaskKey(t)
-            if (!k) return
-            if (t.status !== 'done' && (t.count || 0) < (t.times || 1)) {
-              if (!openTasksByKey[k]) {
-                openTasksByKey[k] = t
-                openTasksFromCompleted.push(t)
-              }
-            }
-          })
-        } else {
-          // New structure: read from openTasks
-          const openTasks = Array.isArray(dateBucket.openTasks) ? dateBucket.openTasks : []
-          openTasks.forEach((t: any) => {
-            const k = getTaskKey(t)
-            if (!k) return
-            if (!openTasksByKey[k]) {
-              openTasksByKey[k] = t
-              openTasksFromCompleted.push(t)
-            }
-          })
-        }
+      const openTasksFromCompleted: any[] = []
+      const parseOpenTasks = (tasks: any[]) => {
+        tasks.forEach((t: any) => {
+          const k = getTaskKey(t)
+          if (!k || openTasksByKey[k]) return
+          if (t.status !== 'done' && (t.count || 0) < (t.times || 1)) {
+            openTasksByKey[k] = t
+            openTasksFromCompleted.push(t)
+          }
+        })
       }
-      
-      // Merge base tasks with openTasks from completedTasks
-      // Use openTasks status if available, otherwise fall back to base task status
+
+      if (Array.isArray(dateBucket)) {
+        parseOpenTasks(dateBucket)
+      } else if (dateBucket?.openTasks) {
+        parseOpenTasks(dateBucket.openTasks)
+      }
+
+      // Merge base tasks with open tasks data
       const mergedBaseTasks = baseTasks.map((baseTask: any) => {
         const k = getTaskKey(baseTask)
         const openTask = k ? openTasksByKey[k] : undefined
-        
-        const taskKey = k
-        const optimisticStatus = optimisticStatuses[taskKey]
-        const optimisticCount = optimisticCounts[taskKey]
-        
-        return {
-          ...baseTask,
-          taskListName: taskList.name || taskList.role,
-          taskListId: taskList.id,
-          taskListRole: taskList.role || '',
-          // Use status from openTasks if available, otherwise from base task, with optimistic override
-          taskStatus: optimisticStatus || (openTask?.status || baseTask.status),
-          count: optimisticCount !== undefined ? optimisticCount : (openTask?.count !== undefined ? openTask.count : (baseTask.count || 0))
-        }
+        return enrichTask(
+          baseTask, taskList, optimisticStatuses, optimisticCounts,
+          openTask?.status || baseTask.status,
+          openTask?.count !== undefined ? openTask.count : baseTask.count
+        )
       })
-      
-      // Add any openTasks that aren't in base tasks
+
+      // Add open tasks not in base tasks
       const baseKeys = new Set(baseTasks.map((t: any) => getTaskKey(t)))
       const additionalOpenTasks = openTasksFromCompleted
-        .filter((t: any) => {
-          const k = getTaskKey(t)
-          return k && !baseKeys.has(k)
-        })
-        .map((t: any) => {
-          const taskKey = getTaskKey(t)
-          const optimisticStatus = optimisticStatuses[taskKey]
-          const optimisticCount = optimisticCounts[taskKey]
-          return {
-            ...t,
-            taskListName: taskList.name || taskList.role,
-            taskListId: taskList.id,
-            taskListRole: taskList.role || '',
-            taskStatus: optimisticStatus || t.status,
-            count: optimisticCount !== undefined ? optimisticCount : (t.count || 0)
-          }
-        })
-      
-      // Get ephemeral tasks from ephemeralTasks.open (read status directly from there)
-      const ephemeralTasks = (taskList?.ephemeralTasks?.open || []).map((t: any) => {
-        const taskKey = getTaskKey(t)
-        const optimisticStatus = optimisticStatuses[taskKey]
-        const optimisticCount = optimisticCounts[taskKey]
-        return {
-          ...t,
-          isEphemeral: true,
-          taskListName: taskList.name || taskList.role,
-          taskListId: taskList.id,
-          taskListRole: taskList.role || '',
-          // Use status from ephemeralTasks.open, with optimistic override
-          taskStatus: optimisticStatus || t.status,
-          count: optimisticCount !== undefined ? optimisticCount : (t.count || 0)
-        }
-      })
-      
-      // Combine all tasks
-      const tasks = [...mergedBaseTasks, ...additionalOpenTasks, ...ephemeralTasks]
-      allTasks.push(...tasks)
+        .filter((t: any) => !baseKeys.has(getTaskKey(t)))
+        .map((t: any) => enrichTask(t, taskList, optimisticStatuses, optimisticCounts))
+
+      // Add ephemeral tasks
+      const ephemeralTasks = (taskList?.ephemeralTasks?.open || [])
+        .map((t: any) => enrichTask(t, taskList, optimisticStatuses, optimisticCounts, undefined, undefined, true))
+
+      return [...mergedBaseTasks, ...additionalOpenTasks, ...ephemeralTasks]
     })
-    
-    // Filter for tasks with status "steady" or "in progress" (excluding "done")
-    const filteredTasks = allTasks.filter((task: any) => {
-      const taskStatus = (task?.taskStatus as TaskStatus) || 'open'
-      return taskStatus === 'steady' || taskStatus === 'in progress'
+
+    // Filter, deduplicate, and sort
+    const steadyOrInProgress = allTasks.filter((task: any) => {
+      const status = (task?.taskStatus as TaskStatus) || 'open'
+      return status === 'steady' || status === 'in progress'
     })
-    
-    // Deduplicate by taskId - keep the first occurrence of each unique taskId
-    const tasksById = new Map<string, any>()
-    filteredTasks.forEach((task: any) => {
-      const taskId = getTaskId(task)
-      if (taskId && !tasksById.has(taskId)) {
-        tasksById.set(taskId, task)
-      }
-    })
-    
-    // Convert map back to array
-    const uniqueTasks = Array.from(tasksById.values())
-    
-    // Sort by status first (in progress before steady), then by role priority
-    const getStatusPriority = (status: TaskStatus): number => {
-      if (status === 'in progress') return 1
-      if (status === 'steady') return 2
-      return 3 // other statuses (shouldn't happen after filtering, but safety)
-    }
-    
-    const getRolePriority = (role: string): number => {
-      if (role === 'daily.default') return 1
-      if (role === 'weekly.default') return 2
-      if (role?.startsWith('daily.')) return 3
-      if (role?.startsWith('weekly.')) return 4
-      return 5 // one-off or other roles
-    }
-    
+
+    const uniqueTasks = Array.from(
+      new Map(steadyOrInProgress.map(t => [getTaskKey(t), t])).values()
+    )
+
     return uniqueTasks.sort((a: any, b: any) => {
-      const statusA = getStatusPriority((a?.taskStatus as TaskStatus) || 'open')
-      const statusB = getStatusPriority((b?.taskStatus as TaskStatus) || 'open')
-      
-      // First sort by status (in progress before steady)
-      if (statusA !== statusB) {
-        return statusA - statusB
-      }
-      
-      // Then sort by role priority
-      const priorityA = getRolePriority(a.taskListRole || '')
-      const priorityB = getRolePriority(b.taskListRole || '')
-      return priorityA - priorityB
+      const statusDiff = getStatusPriority(a?.taskStatus || 'open') - getStatusPriority(b?.taskStatus || 'open')
+      if (statusDiff !== 0) return statusDiff
+      return getRolePriority(a.taskListRole || '') - getRolePriority(b.taskListRole || '')
     })
   }, [stableTaskLists, optimisticStatuses, optimisticCounts])
 
