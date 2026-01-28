@@ -2,6 +2,60 @@
  * Utility functions for calculating task earnings and budget consumption
  */
 
+// Default premium factor values (must match Prisma schema defaults)
+export const DEFAULT_DAILY_PREMIUM_FACTOR = 30
+export const DEFAULT_WEEKLY_PREMIUM_FACTOR = 4
+export const DEFAULT_GLOBAL_PREMIUM_FACTOR = 1
+
+// Minimum premium factor value (enforced at Prisma level)
+export const MIN_PREMIUM_FACTOR = 1
+
+/**
+ * Premium factor settings from user.settings
+ */
+export interface PremiumFactorSettings {
+  dailyPremiumFactor?: number | null
+  weeklyPremiumFactor?: number | null
+  globalPremiumFactor?: number | null
+}
+
+/**
+ * Apply premium factors based on list role
+ * - For daily lists: divides by dailyPremiumFactor AND globalPremiumFactor
+ * - For weekly lists: divides by weeklyPremiumFactor AND globalPremiumFactor
+ * - For all other lists: divides by globalPremiumFactor only
+ * 
+ * @param premium - The raw premium value to apply factors to
+ * @param listRole - The list role (e.g., 'daily.default', 'weekly.custom')
+ * @param settings - User settings containing premium factors
+ * @returns The premium value after applying the appropriate factors
+ */
+export function applyPremiumFactors(
+  premium: number,
+  listRole: string | null | undefined,
+  settings?: PremiumFactorSettings | null
+): number {
+  if (premium === 0) return 0
+
+  // Get factor values with defaults, ensuring minimum of 1
+  const dailyFactor = Math.max(MIN_PREMIUM_FACTOR, settings?.dailyPremiumFactor ?? DEFAULT_DAILY_PREMIUM_FACTOR)
+  const weeklyFactor = Math.max(MIN_PREMIUM_FACTOR, settings?.weeklyPremiumFactor ?? DEFAULT_WEEKLY_PREMIUM_FACTOR)
+  const globalFactor = Math.max(MIN_PREMIUM_FACTOR, settings?.globalPremiumFactor ?? DEFAULT_GLOBAL_PREMIUM_FACTOR)
+
+  const isDaily = listRole?.startsWith('daily.')
+  const isWeekly = listRole?.startsWith('weekly.')
+
+  let divisor = globalFactor // globalFactor always applies
+
+  if (isDaily) {
+    divisor = dailyFactor * globalFactor
+  } else if (isWeekly) {
+    divisor = weeklyFactor * globalFactor
+  }
+
+  return premium / divisor
+}
+
 /**
  * Get the number of days in a specific month
  */
@@ -188,11 +242,27 @@ export function initializeRemainingBudget(
 /**
  * Get per-completer premium based on list role (cadence)
  * Returns the appropriate premium value (dailyPremium, weeklyPremium, or actionPremium)
+ * 
+ * When premiumFactorSettings is provided, applies the premium factors:
+ * - For daily lists: divides by dailyPremiumFactor AND globalPremiumFactor
+ * - For weekly lists: divides by weeklyPremiumFactor AND globalPremiumFactor
+ * - For all other lists: divides by globalPremiumFactor only
+ * 
+ * Note: The raw premium values (dailyPremium, weeklyPremium) in EarningsCalculation
+ * may already have the legacy /30 or /4 division applied. When using premiumFactorSettings,
+ * use actionPremium as the base and let applyPremiumFactors handle the division.
  */
 export function getPerCompleterPremium(
   earnings: EarningsCalculation,
-  listRole?: string | null
+  listRole?: string | null,
+  premiumFactorSettings?: PremiumFactorSettings | null
 ): number {
+  // If premium factor settings are provided, use actionPremium as base and apply factors
+  if (premiumFactorSettings) {
+    return applyPremiumFactors(earnings.actionPremium || 0, listRole, premiumFactorSettings)
+  }
+  
+  // Legacy behavior: use pre-calculated dailyPremium/weeklyPremium
   const isDaily = listRole?.startsWith('daily.')
   const isWeekly = listRole?.startsWith('weekly.')
   

@@ -5,7 +5,7 @@ import { OptionsMenuItem } from '@/components/optionsButton'
 import { Circle, Minus, Plus, Eye, EyeOff, Edit, Send, Clock } from 'lucide-react'
 import { useI18n } from '@/lib/contexts/i18n'
 import { GlobalContext } from '@/lib/contexts'
-import { calculatePrizePool } from '@/lib/utils/earningsUtils'
+import { calculatePrizePool, applyPremiumFactors, PremiumFactorSettings } from '@/lib/utils/earningsUtils'
 import { getTaskAllocationFromDistribution } from '@/lib/utils/budgetDistributionUtils'
 import { TaskItem } from '@/components/taskItem'
 import { TaskStatus, STATUS_OPTIONS, getStatusColor, getIconColor, getTaskKey, getTaskStatus, mapStatusToEnum } from '@/lib/utils/taskUtils'
@@ -55,8 +55,11 @@ export const TaskGrid = ({
   onRefreshTasks,
 }: TaskGridProps) => {
   const { t } = useI18n()
-  const { refreshTaskLists, handleTaskCompletionOptimistic } = useContext(GlobalContext)
+  const { refreshTaskLists, handleTaskCompletionOptimistic, session } = useContext(GlobalContext)
   const [editingTask, setEditingTask] = useState<any>(null)
+  
+  // Get user settings for premium factor calculations
+  const userSettings = (session?.user as any)?.settings as PremiumFactorSettings | null
 
   // Job workflow dialog state
   const [isSubmitDialogOpen, setIsSubmitDialogOpen] = useState(false)
@@ -571,27 +574,31 @@ export const TaskGrid = ({
         
         let taskEarnings = 0
         let taskPremium = 0
-        let taskTotalGains: number | null = null
+        let isEstimate = true  // Flag to indicate if values are estimates (no accepted job)
         
-        // First, try to use stored values from the task itself
-        if (task.budget != null || task.earnings != null || task.premium != null) {
-          taskEarnings = task.earnings || task.budget || 0
-          taskPremium = task.premium || 0
-          taskTotalGains = (task as any).totalGains ?? (taskEarnings + taskPremium)
-        } else {
-          // Try to get allocation from budget distribution (server data only, no fallback)
+        // Find accepted job for this task (contains the factored premium/earnings)
+        const acceptedJob = taskJobs.find((j: any) => j.status === 'ACCEPTED')
+        
+        // Priority 1: Use values from accepted job (these are already factored and stored)
+        if (acceptedJob && (acceptedJob.premium != null || acceptedJob.earnings != null)) {
+          taskEarnings = acceptedJob.earnings || 0
+          taskPremium = acceptedJob.premium || 0  // Already factored when job was accepted
+          isEstimate = false
+        }
+        // Priority 2: Calculate estimate from budget distribution (no job yet)
+        // Tasks don't hold financial data - only jobs do
+        else {
           const allocation = getTaskAllocationFromDistribution(task.id, budgetDistribution, listBudget, premiumPool)
           if (allocation) {
             taskEarnings = allocation.taskEarnings
-            taskPremium = allocation.taskPremium
-            taskTotalGains = allocation.totalGains ?? (taskEarnings + taskPremium)
+            const rawPremium = allocation.taskPremium
+            taskPremium = applyPremiumFactors(rawPremium, listRole, userSettings)
           }
+          // isEstimate remains true - these are projected values
         }
-
-        // Ensure we have a total gains value (prefer explicit field, fallback to earnings+premium)
-        if (taskTotalGains == null) {
-          taskTotalGains = (task as any).totalGains ?? (taskEarnings + taskPremium)
-        }
+        
+        // Calculate totalGains using the (already factored) premium
+        const taskTotalGains = taskEarnings + taskPremium
 
         // Determine task status
         const finalTaskStatus = taskStatuses[key] || getTaskStatus(task)
@@ -740,7 +747,23 @@ export const TaskGrid = ({
                 if (userRole === 'COLLABORATOR' && !activeJob && !isDone) {
                   handleRequestWork(taskWithOptimisticCount)
                 } else {
+                  // Call task click handler
                   handleTaskClick(taskWithOptimisticCount)
+                  
+                  // Call optimistic callback with calculated financial values
+                  // These are the values displayed in the task badge
+                  if (handleTaskCompletionOptimistic) {
+                    const currentCount = taskWithOptimisticCount?.count || 0
+                    const times = taskWithOptimisticCount?.times || 1
+                    const isCurrentlyCompleted = currentCount >= times
+                    
+                    // If completing, add optimistic earnings; if uncompleting, subtract
+                    const multiplier = isCurrentlyCompleted ? -1 : 1
+                    handleTaskCompletionOptimistic(
+                      taskEarnings * multiplier,
+                      taskPremium * multiplier
+                    )
+                  }
                 }
               }}
               revealRedacted={revealRedacted}

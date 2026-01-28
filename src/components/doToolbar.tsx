@@ -16,6 +16,7 @@ import { Badge } from '@/components/ui/badge'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { PercentageTicker } from '@/components/ui/percentageTicker'
 import { DatePickerButton } from '@/components/ui/datePickerButton'
+import { applyPremiumFactors, PremiumFactorSettings } from '@/lib/utils/earningsUtils'
 
 
 type TaskList = { id: string; name?: string; role?: string; tasks?: any[] }
@@ -399,13 +400,14 @@ export const DoToolbar = ({
   }, [selectedList?.id, selectedList?.role, selectedDateToUse, session?.user?.id])
 
   // Add optimistic earnings for a task completion
-  // Uses task's premium and budget values from budgetDistribution directly
-  const addOptimisticTaskEarnings = useCallback((task?: { premium?: number; earnings?: number; budget?: number }) => {
+  // Uses estimated totalGain displayed in taskItem badge
+  const addOptimisticTaskEarnings = useCallback((taskEarnings?: number, taskPremium?: number) => {
     if (!selectedList) return
 
-    // Use task's actual premium and earnings values from budgetDistribution
-    const premium = task?.premium || 0
-    const earnings = task?.earnings || task?.budget || 0
+    // Use provided taskEarnings and taskPremium (already calculated from budget distribution)
+    // These come from the taskItem badge which calculates them from budget distribution
+    const earnings = taskEarnings || 0
+    const premium = taskPremium || 0
     
     // Only add if there are actual values
     if (premium === 0 && earnings === 0) return
@@ -442,8 +444,8 @@ export const DoToolbar = ({
   }, [selectedList])
 
   // Combined optimistic callback for both earnings and completion
-  const handleTaskCompletionOptimistic = useCallback((task?: { premium?: number; budget?: number; earnings?: number }) => {
-    addOptimisticTaskEarnings(task)
+  const handleTaskCompletionOptimistic = useCallback((taskEarnings?: number, taskPremium?: number) => {
+    addOptimisticTaskEarnings(taskEarnings, taskPremium)
     addOptimisticCompletion()
   }, [addOptimisticTaskEarnings, addOptimisticCompletion])
 

@@ -279,8 +279,11 @@ type RecurrenceRule {
 }
 
 type Settings {
-  currency Currency?
-  speed    Float?
+  currency             Currency?
+  speed                Float?
+  dailyPremiumFactor   Int?      @default(30)  // Minimum: 1. Divides premium for daily lists
+  weeklyPremiumFactor  Int?      @default(4)   // Minimum: 1. Divides premium for weekly lists
+  globalPremiumFactor  Int?      @default(1)   // Minimum: 1. Divides premium in all scenarios
 }
 
 type ThingReference {
