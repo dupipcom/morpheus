@@ -594,6 +594,14 @@ export const TaskGrid = ({
             const rawPremium = allocation.taskPremium
             taskPremium = applyPremiumFactors(rawPremium, listRole, userSettings)
           }
+          // Priority 3: If no custom allocation (Equal distribution - default), split evenly across all tasks
+          else if (listBudget > 0 || premiumPool > 0) {
+            // Equal distribution: divide budget and premium pool evenly across all tasks
+            const earningsPerTask = listBudget > 0 ? listBudget / totalTasks : 0
+            const premiumPerTask = premiumPool > 0 ? premiumPool / totalTasks : 0
+            taskEarnings = earningsPerTask
+            taskPremium = applyPremiumFactors(premiumPerTask, listRole, userSettings)
+          }
           // isEstimate remains true - these are projected values
         }
         
