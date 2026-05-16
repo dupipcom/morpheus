@@ -899,7 +899,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
                     </span>
                     <span className="text-[10px]">{getTimeAgo(new Date(comment.createdAt))}</span>
                   </div>
-                  <p className="text-xs">{comment.content}</p>
+                  <p className="text-xs whitespace-pre-wrap">{comment.content.length > 150 ? `${comment.content.slice(0, 150)}...` : comment.content}</p>
                 </div>
               ))}
             </div>
@@ -956,7 +956,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
                           </div>
                         )}
                       </div>
-                      <p className="text-xs">{comment.content}</p>
+                      <p className="text-xs whitespace-pre-wrap">{comment.content}</p>
                       <div className="flex justify-end mt-1">
                         <button
                           onClick={() => handleToggleCommentLike(comment.id)}
