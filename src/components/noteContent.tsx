@@ -10,30 +10,27 @@ interface NoteContentProps {
   maxLength?: number
 }
 
-const URL_REGEX = /https?:\/\/(?:[-\w]+\.)+[a-z]{2,}(?:\/[^\s]*)?/gi
-
 /**
  * Extract unique URLs from a string.
+ * A new regex instance is created per call to avoid shared `lastIndex` state.
  */
 export function extractUrls(text: string): string[] {
-  const matches = text.match(URL_REGEX)
+  const matches = text.match(/https?:\/\/(?:[-\w]+\.)+[a-z]{2,}(?:\/[^\s]*)?/gi)
   if (!matches) return []
-  // Deduplicate while preserving order
   return [...new Set(matches)]
 }
 
 /**
  * Render text segments, turning each URL into a styled <a> tag.
+ * Creates a new regex instance to avoid shared state issues.
  */
 function renderTextWithLinks(text: string) {
+  const urlRegex = /https?:\/\/(?:[-\w]+\.)+[a-z]{2,}(?:\/[^\s]*)?/gi
   const parts: ReactNode[] = []
   let lastIndex = 0
   let match: RegExpExecArray | null
 
-  // Reset regex state
-  URL_REGEX.lastIndex = 0
-
-  while ((match = URL_REGEX.exec(text)) !== null) {
+  while ((match = urlRegex.exec(text)) !== null) {
     if (match.index > lastIndex) {
       parts.push(text.slice(lastIndex, match.index))
     }

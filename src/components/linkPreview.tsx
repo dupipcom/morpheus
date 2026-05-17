@@ -87,7 +87,7 @@ export function LinkPreview({ url }: LinkPreviewProps) {
       {hasImage && (
         <div className="relative w-full" style={{ aspectRatio: '1200/630' }}>
           <Image
-            src={data.image!}
+            src={data.image as string}
             alt={data.title || url}
             fill
             className="object-cover"

@@ -18,7 +18,7 @@ function isPrivateIp(ip: string): boolean {
   const v4 = ip.startsWith('::ffff:') ? ip.slice(7) : ip
 
   const parts = v4.split('.').map(Number)
-  if (parts.length !== 4 || parts.some((p) => isNaN(p))) return false
+  if (parts.length !== 4 || parts.some((p) => isNaN(p) || p < 0 || p > 255)) return false
 
   const [a, b] = parts
   return (
@@ -166,13 +166,19 @@ export async function GET(request: NextRequest) {
     let html = ''
     let bytesRead = 0
     const maxBytes = 500 * 1024
+    const headTag = '</head>'
 
     while (bytesRead < maxBytes) {
       const { done, value } = await reader.read()
-      if (done) break
+      if (done) {
+        // Flush decoder on final chunk
+        html += decoder.decode(undefined, { stream: false })
+        break
+      }
       html += decoder.decode(value, { stream: true })
       bytesRead += value.length
-      if (html.includes('</head>')) break
+      // Use lastIndexOf to find the closing head tag without re-scanning the whole string each time
+      if (html.length >= headTag.length && html.lastIndexOf(headTag) !== -1) break
     }
     reader.cancel()
 
