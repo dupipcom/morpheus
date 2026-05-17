@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { lookup } from 'dns/promises'
 
+const FETCH_TIMEOUT_MS = 10_000
+const MAX_HTML_BYTES = 500 * 1024
+
 export interface LinkPreviewData {
   url: string
   title: string | null
@@ -135,7 +138,7 @@ export async function GET(request: NextRequest) {
         Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         'Accept-Language': 'en-US,en;q=0.5',
       },
-      signal: AbortSignal.timeout(10000),
+      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
       redirect: 'follow',
     })
 
@@ -158,17 +161,16 @@ export async function GET(request: NextRequest) {
       })
     }
 
-    // Read up to 500 KB; stop after </head> to avoid parsing huge pages
+    // Read up to MAX_HTML_BYTES; stop after </head> to avoid parsing huge pages
     const reader = response.body?.getReader()
     if (!reader) throw new Error('No body')
 
     const decoder = new TextDecoder()
     let html = ''
     let bytesRead = 0
-    const maxBytes = 500 * 1024
     const headTag = '</head>'
 
-    while (bytesRead < maxBytes) {
+    while (bytesRead < MAX_HTML_BYTES) {
       const { done, value } = await reader.read()
       if (done) {
         // Flush decoder on final chunk

@@ -11,21 +11,29 @@ interface NoteContentProps {
 }
 
 /**
+ * URL pattern that matches http/https URLs including IPv4 hosts and ports.
+ * Trailing punctuation characters (.,;:!?'")] ) are excluded from the URL end.
+ * A factory function is used to always return a new regex instance and avoid
+ * shared `lastIndex` state across concurrent calls.
+ */
+function createUrlRegex() {
+  return /https?:\/\/(?:(?:\d{1,3}\.){3}\d{1,3}|(?:[-\w]+\.)+[a-z]{2,})(?::\d{1,5})?(?:\/[^\s]*[^\s.,;:!?'")\]])?/gi
+}
+
+/**
  * Extract unique URLs from a string.
- * A new regex instance is created per call to avoid shared `lastIndex` state.
  */
 export function extractUrls(text: string): string[] {
-  const matches = text.match(/https?:\/\/(?:[-\w]+\.)+[a-z]{2,}(?:\/[^\s]*)?/gi)
+  const matches = text.match(createUrlRegex())
   if (!matches) return []
   return [...new Set(matches)]
 }
 
 /**
  * Render text segments, turning each URL into a styled <a> tag.
- * Creates a new regex instance to avoid shared state issues.
  */
 function renderTextWithLinks(text: string) {
-  const urlRegex = /https?:\/\/(?:[-\w]+\.)+[a-z]{2,}(?:\/[^\s]*)?/gi
+  const urlRegex = createUrlRegex()
   const parts: ReactNode[] = []
   let lastIndex = 0
   let match: RegExpExecArray | null
