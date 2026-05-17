@@ -10,6 +10,7 @@ import Link from 'next/link'
 import { OptionsButton, OptionsMenuItem } from "@/components/optionsButton"
 import { toast } from "sonner"
 import { Popover, PopoverContent, PopoverTrigger, PopoverAnchor } from "@/components/ui/popover"
+import { NoteContent } from "@/components/noteContent"
 
 export interface Comment {
   id: string
@@ -756,11 +757,13 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
 
       {/* Content based on type */}
       {item.type === 'note' && item.content && (
-        <p className="text-sm whitespace-pre-wrap mb-3">
-          {isExpanded || item.content.length <= 150 
-            ? item.content 
-            : `${item.content.slice(0, 150)}...`}
-        </p>
+        <div className="mb-3">
+          <NoteContent
+            content={item.content}
+            truncate={!isExpanded && item.content.length > 150}
+            maxLength={150}
+          />
+        </div>
       )}
       
       {/* Edit popover */}
