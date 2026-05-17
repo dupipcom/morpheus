@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { lookup } from 'dns/promises'
 
 export interface LinkPreviewData {
   url: string
@@ -9,8 +10,49 @@ export interface LinkPreviewData {
   siteName: string | null
 }
 
+/** Returns true if the IP falls within a private/loopback/link-local range. */
+function isPrivateIp(ip: string): boolean {
+  // IPv6 loopback
+  if (ip === '::1' || ip === '0:0:0:0:0:0:0:1') return true
+  // Strip IPv6-mapped IPv4 prefix
+  const v4 = ip.startsWith('::ffff:') ? ip.slice(7) : ip
+
+  const parts = v4.split('.').map(Number)
+  if (parts.length !== 4 || parts.some((p) => isNaN(p))) return false
+
+  const [a, b] = parts
+  return (
+    a === 127 || // 127.0.0.0/8 loopback
+    a === 10 || // 10.0.0.0/8 private
+    (a === 172 && b >= 16 && b <= 31) || // 172.16.0.0/12 private
+    (a === 192 && b === 168) || // 192.168.0.0/16 private
+    (a === 169 && b === 254) || // 169.254.0.0/16 link-local
+    a === 0 // 0.0.0.0/8
+  )
+}
+
+/** Resolves the hostname and rejects private/internal addresses (SSRF guard). */
+async function validateHostname(hostname: string): Promise<void> {
+  // Block obvious localhost variants before DNS lookup
+  const lower = hostname.toLowerCase()
+  if (lower === 'localhost' || lower === 'localhost.') {
+    throw new Error('Private host')
+  }
+
+  let addresses: string[]
+  try {
+    const result = await lookup(hostname, { all: true })
+    addresses = result.map((r) => r.address)
+  } catch {
+    throw new Error('DNS resolution failed')
+  }
+
+  if (addresses.some(isPrivateIp)) {
+    throw new Error('Private host')
+  }
+}
+
 function extractMeta(html: string, property: string): string | null {
-  // Match og: and twitter: meta properties, as well as name attributes
   const patterns = [
     new RegExp(`<meta[^>]+property=["']${property}["'][^>]+content=["']([^"']+)["']`, 'i'),
     new RegExp(`<meta[^>]+content=["']([^"']+)["'][^>]+property=["']${property}["']`, 'i'),
@@ -31,7 +73,6 @@ function extractTitle(html: string): string | null {
 }
 
 function extractFavicon(html: string, baseUrl: string): string | null {
-  // Try to find link[rel=icon] or link[rel="shortcut icon"]
   const patterns = [
     /<link[^>]+rel=["'](?:shortcut )?icon["'][^>]+href=["']([^"']+)["']/i,
     /<link[^>]+href=["']([^"']+)["'][^>]+rel=["'](?:shortcut )?icon["']/i,
@@ -53,7 +94,6 @@ function extractFavicon(html: string, baseUrl: string): string | null {
     }
   }
 
-  // Fallback to default /favicon.ico
   try {
     const origin = new URL(baseUrl).origin
     return `${origin}/favicon.ico`
@@ -70,7 +110,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'URL is required' }, { status: 400 })
   }
 
-  // Validate URL
+  // Validate URL structure
   let parsedUrl: URL
   try {
     parsedUrl = new URL(url)
@@ -81,14 +121,21 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid URL' }, { status: 400 })
   }
 
+  // SSRF protection: reject private/internal hosts
+  try {
+    await validateHostname(parsedUrl.hostname)
+  } catch {
+    return NextResponse.json({ error: 'URL not allowed' }, { status: 400 })
+  }
+
   try {
     const response = await fetch(parsedUrl.toString(), {
       headers: {
         'User-Agent': 'Mozilla/5.0 (compatible; DupipBot/1.0; +https://dupip.com)',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         'Accept-Language': 'en-US,en;q=0.5',
       },
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(10000),
       redirect: 'follow',
     })
 
@@ -98,7 +145,6 @@ export async function GET(request: NextRequest) {
 
     const contentType = response.headers.get('content-type') || ''
     if (!contentType.includes('text/html')) {
-      // Non-HTML resource — return basic link data
       const preview: LinkPreviewData = {
         url: parsedUrl.toString(),
         title: parsedUrl.hostname,
@@ -112,10 +158,11 @@ export async function GET(request: NextRequest) {
       })
     }
 
-    // Read up to 500KB to avoid large pages
+    // Read up to 500 KB; stop after </head> to avoid parsing huge pages
     const reader = response.body?.getReader()
     if (!reader) throw new Error('No body')
 
+    const decoder = new TextDecoder()
     let html = ''
     let bytesRead = 0
     const maxBytes = 500 * 1024
@@ -123,9 +170,8 @@ export async function GET(request: NextRequest) {
     while (bytesRead < maxBytes) {
       const { done, value } = await reader.read()
       if (done) break
-      html += new TextDecoder().decode(value)
+      html += decoder.decode(value, { stream: true })
       bytesRead += value.length
-      // Stop once we have the head section — no need to parse entire page
       if (html.includes('</head>')) break
     }
     reader.cancel()
@@ -180,3 +226,4 @@ export async function GET(request: NextRequest) {
     })
   }
 }
+

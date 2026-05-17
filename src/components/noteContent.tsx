@@ -66,7 +66,7 @@ export function NoteContent({ content, truncate = false, maxLength = 150 }: Note
     return `${content.slice(0, maxLength)}...`
   }, [content, truncate, maxLength])
 
-  const urls = useMemo(() => extractUrls(content), [content])
+  const urls = useMemo(() => extractUrls(displayContent), [displayContent])
 
   return (
     <div>
