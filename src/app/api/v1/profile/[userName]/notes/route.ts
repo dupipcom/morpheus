@@ -85,6 +85,15 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
       visibilityFilter = visibilityFilter.includes('PUBLIC') ? ['PUBLIC'] : []
     }
 
+    if (visibilityFilter.length === 0) {
+      return Response.json({
+        notes: [],
+        isOwnProfile,
+        hasVisibilityAccess: false,
+        requestedVisibility: selectedVisibility
+      })
+    }
+
     // Fetch notes based on visibility
     const notes = await prisma.note.findMany({
       where: {

@@ -177,10 +177,12 @@ export async function GET(request: NextRequest) {
     const notesWithSortedComments = allNotes.map(note => ({
       ...note,
       comments: sortAndTransformComments(note.comments),
-      relevanceScore: calculateNoteRelevanceScore(note, {
-        friendUserIds: currentUser?.friends || [],
-        closeFriendUserIds: currentUser?.closeFriends || []
-      })
+      relevanceScore: sortBy === 'most_relevant'
+        ? calculateNoteRelevanceScore(note, {
+            friendUserIds: currentUser?.friends || [],
+            closeFriendUserIds: currentUser?.closeFriends || []
+          })
+        : undefined
     }))
 
     // Collect all user IDs for batch profile fetching (fixes N+1)
