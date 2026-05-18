@@ -14,6 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { toast } from 'sonner'
 import ActivityCard, { ActivityItem as ActivityItemType } from "@/components/activityCard"
 import { OptionsButton, OptionsMenuItem } from "@/components/optionsButton"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
 import { useEnhancedLoadingState } from "@/lib/utils/userUtils"
@@ -42,6 +43,7 @@ interface PublicNote {
     comments?: number
     likes?: number
   }
+  relevanceScore?: number
   comments?: Array<{
     id: string
     content: string
@@ -185,6 +187,7 @@ export function BeView({
   const [isLoadingMoreTemplates, setIsLoadingMoreTemplates] = useState(false)
   const [isLoadingNotes, setIsLoadingNotes] = useState(false)
   const [isLoadingTemplates, setIsLoadingTemplates] = useState(false)
+  const [noteSortBy, setNoteSortBy] = useState<'date' | 'most_relevant'>('most_relevant')
 
   const { data, mutate, error, isLoading } = useSWR(
     session?.user ? `/api/v1/friends` : null,
@@ -211,6 +214,7 @@ export function BeView({
       })
       if (filterNoteId) params.append('noteId', filterNoteId)
       if (filterProfileId) params.append('profileId', filterProfileId)
+      params.append('sort', noteSortBy)
       
       const response = await fetch(`/api/v1/notes/public?${params.toString()}`)
       if (response.ok) {
@@ -292,7 +296,7 @@ export function BeView({
     fetchPublicNotes(1)
     fetchPublicTemplates(1)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterNoteId, filterProfileId, filterListId, filterTemplateId])
+  }, [filterNoteId, filterProfileId, filterListId, filterTemplateId, noteSortBy])
 
   const getDisplayName = (friend: Friend) => {
     if (friend.profile) {
@@ -399,10 +403,16 @@ export function BeView({
       if (aMatchesFilter && !bMatchesFilter) return -1
       if (!aMatchesFilter && bMatchesFilter) return 1
       
-      // If both match or neither matches, sort by creation date (most recent first)
+      // If both match or neither matches, sort notes based on selected sorting mode
+      if (a.type === 'note' && b.type === 'note' && noteSortBy === 'most_relevant') {
+        const relevanceDiff = ((bNote?.relevanceScore || 0) - (aNote?.relevanceScore || 0))
+        if (relevanceDiff !== 0) return relevanceDiff
+      }
+
+      // Otherwise, sort by creation date (most recent first)
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     })
-  }, [publicNotes, publicTemplates, filterProfileId, filterNoteId, filterListId, filterTemplateId])
+  }, [publicNotes, publicTemplates, filterProfileId, filterNoteId, filterListId, filterTemplateId, noteSortBy])
 
   const getTimeAgo = (dateString: string) => {
     const date = new Date(dateString)
@@ -466,6 +476,17 @@ export function BeView({
 
     return (
       <div className="mb-8">
+        <div className="mb-4">
+          <Select value={noteSortBy} onValueChange={(value) => setNoteSortBy(value as 'date' | 'most_relevant')}>
+            <SelectTrigger className="w-full sm:w-[220px]">
+              <SelectValue placeholder="Sort notes" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="most_relevant">Most Relevant</SelectItem>
+              <SelectItem value="date">Date</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
           {activityItems.map((item) => {
             const noteData = item.type === 'note' ? (item.data as PublicNote) : null

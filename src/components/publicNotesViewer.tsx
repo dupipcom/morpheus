@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { NotesList, Note } from "@/components/notesList"
+import { NotesList } from "@/components/notesList"
 import { useI18n } from '@/lib/contexts/i18n'
 import { useProfileNotes } from '@/lib/hooks/useProfile'
 import { useUserData } from '@/lib/utils/userUtils'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 interface PublicNotesViewerProps {
   userName: string
@@ -15,7 +16,12 @@ interface PublicNotesViewerProps {
 
 export function PublicNotesViewer({ userName, showCard = true, gridLayout = false }: PublicNotesViewerProps) {
   const { t } = useI18n()
-  const { notes, isLoading: loading, error: notesError, refreshNotes } = useProfileNotes(userName, true)
+  const [visibilityFilter, setVisibilityFilter] = useState<'PUBLIC' | 'PRIVATE'>('PUBLIC')
+  const [sortBy, setSortBy] = useState<'date' | 'most_relevant'>('date')
+  const { notes, isLoading: loading, error: notesError, refreshNotes } = useProfileNotes(userName, true, {
+    visibility: visibilityFilter,
+    sort: sortBy
+  })
   const { data: userData } = useUserData(true)
   const currentUserId = userData?.id || null
   const isLoggedIn = !!userData
@@ -72,17 +78,42 @@ export function PublicNotesViewer({ userName, showCard = true, gridLayout = fals
   }
 
   const content = (
-    <NotesList
-      notes={notes}
-      loading={loading}
-      onRefresh={refreshNotes}
-      showHeader={!showCard}
-      emptyMessage={t('publicProfile.noPublicNotes')}
-      gridLayout={gridLayout}
-      isLoggedIn={isLoggedIn}
-      currentUserId={currentUserId}
-      onNoteUpdated={refreshNotes}
-    />
+    <div className="space-y-4">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+        <Select value={visibilityFilter} onValueChange={(value) => setVisibilityFilter(value as 'PUBLIC' | 'PRIVATE')}>
+          <SelectTrigger className="w-full sm:w-[180px]">
+            <SelectValue placeholder="Visibility" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="PUBLIC">Public</SelectItem>
+            <SelectItem value="PRIVATE">Private</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Select value={sortBy} onValueChange={(value) => setSortBy(value as 'date' | 'most_relevant')}>
+          <SelectTrigger className="w-full sm:w-[220px]">
+            <SelectValue placeholder="Sort" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="date">Date</SelectItem>
+            <SelectItem value="most_relevant">Most Relevant</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <NotesList
+        notes={notes}
+        loading={loading}
+        onRefresh={refreshNotes}
+        showHeader={!showCard}
+        emptyMessage={t('publicProfile.noPublicNotes')}
+        gridLayout={gridLayout}
+        isLoggedIn={isLoggedIn}
+        currentUserId={currentUserId}
+        onNoteUpdated={refreshNotes}
+        sortBy={sortBy}
+      />
+    </div>
   )
 
   if (!showCard) return content

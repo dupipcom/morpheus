@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { RefreshCw } from "lucide-react"
 import { useI18n } from '@/lib/contexts/i18n'
 import ActivityCard, { ActivityItem } from './activityCard'
+import type { Comment } from './activityCard'
 
 export interface Note {
   id: string
@@ -13,12 +14,13 @@ export interface Note {
   createdAt: string
   date?: string
   userId?: string
-  comments?: any[]
+  comments?: Comment[]
   isLiked?: boolean
   _count?: {
     comments: number
     likes?: number
   }
+  relevanceScore?: number
 }
 
 interface NotesListProps {
@@ -32,6 +34,7 @@ interface NotesListProps {
   currentUserId?: string | null
   onNoteUpdated?: () => void
   filterNoteId?: string // Filter note ID to prioritize and highlight
+  sortBy?: 'date' | 'most_relevant'
 }
 
 function getTimeAgo(date: Date): string {
@@ -81,16 +84,23 @@ export function NotesList({
   isLoggedIn = false,
   currentUserId,
   onNoteUpdated,
-  filterNoteId
+  filterNoteId,
+  sortBy = 'date'
 }: NotesListProps) {
   const { t } = useI18n()
 
-  // Sort notes: matching filterNoteId first, then by creation date (newest first)
+   // Sort notes: matching filterNoteId first, then by selected sorting mode
   const sortedNotes = useMemo(() => {
+    const compareNotes = (a: Note, b: Note) => {
+      if (sortBy === 'most_relevant') {
+        const scoreDiff = (b.relevanceScore || 0) - (a.relevanceScore || 0)
+        if (scoreDiff !== 0) return scoreDiff
+      }
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    }
+
     if (!filterNoteId) {
-      return [...notes].sort((a, b) => 
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      )
+      return [...notes].sort(compareNotes)
     }
     
     return [...notes].sort((a, b) => {
@@ -101,10 +111,10 @@ export function NotesList({
       if (aMatches && !bMatches) return -1
       if (!aMatches && bMatches) return 1
       
-      // If both match or neither matches, sort by creation date (newest first)
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      // If both match or neither matches, sort by selected sorting mode
+      return compareNotes(a, b)
     })
-  }, [notes, filterNoteId])
+  }, [notes, filterNoteId, sortBy])
 
   if (loading) {
     return (
@@ -179,4 +189,3 @@ export function NotesList({
     </div>
   )
 }
-
