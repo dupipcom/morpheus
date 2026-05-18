@@ -38,9 +38,18 @@ interface NotesListProps {
   filterNoteId?: string // Filter note ID to prioritize and highlight
   isReversed?: boolean
   onToggleReverseOrder?: () => void
+  initialGridOption?: NotesGridOption
 }
 
 type NotesGridOption = 'tight' | 'small' | 'wide'
+
+function resolveInitialGridOption(
+  initialGridOption?: NotesGridOption,
+  gridLayout?: boolean
+): NotesGridOption {
+  if (initialGridOption) return initialGridOption
+  return gridLayout ? 'tight' : 'wide'
+}
 
 function getTimeAgo(date: Date): string {
   const now = new Date()
@@ -91,14 +100,17 @@ export function NotesList({
   onNoteUpdated,
   filterNoteId,
   isReversed = false,
-  onToggleReverseOrder
+  onToggleReverseOrder,
+  initialGridOption
 }: NotesListProps) {
-  const { t } = useI18n()
-  const [gridOption, setGridOption] = useState<NotesGridOption>(gridLayout ? 'tight' : 'wide')
+  const { t, hasTranslation } = useI18n()
+  const [gridOption, setGridOption] = useState<NotesGridOption>(
+    resolveInitialGridOption(initialGridOption, gridLayout)
+  )
 
   useEffect(() => {
-    setGridOption(gridLayout ? 'tight' : 'wide')
-  }, [gridLayout])
+    setGridOption(resolveInitialGridOption(initialGridOption, gridLayout))
+  }, [initialGridOption, gridLayout])
 
   // Preserve backend order and only prioritize a specific highlighted note when requested.
   const sortedNotes = useMemo(() => {
@@ -136,6 +148,19 @@ export function NotesList({
     gridOption === 'wide' && 'md:grid-cols-1'
   )
 
+  const gridLayoutLabel = hasTranslation('notesList.gridOption.label')
+    ? t('notesList.gridOption.label')
+    : 'Grid layout'
+  const tightLabel = hasTranslation('notesList.gridOption.tight')
+    ? t('notesList.gridOption.tight')
+    : 'Tight (3)'
+  const smallLabel = hasTranslation('notesList.gridOption.small')
+    ? t('notesList.gridOption.small')
+    : 'Small (2)'
+  const wideLabel = hasTranslation('notesList.gridOption.wide')
+    ? t('notesList.gridOption.wide')
+    : 'Wide (1)'
+
   return (
     <div>
       {showHeader && (
@@ -143,13 +168,13 @@ export function NotesList({
           <h3 className="text-lg font-semibold">{t('publicProfile.notes')}</h3>
           <div className="flex items-center gap-1">
             <Select value={gridOption} onValueChange={(value) => setGridOption(value as NotesGridOption)}>
-              <SelectTrigger className="h-8 w-[110px]" size="sm" aria-label="Note grid layout">
+              <SelectTrigger className="h-8 w-[110px]" size="sm" aria-label={gridLayoutLabel}>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="tight">Tight (3)</SelectItem>
-                <SelectItem value="small">Small (2)</SelectItem>
-                <SelectItem value="wide">Wide (1)</SelectItem>
+                <SelectItem value="tight">{tightLabel}</SelectItem>
+                <SelectItem value="small">{smallLabel}</SelectItem>
+                <SelectItem value="wide">{wideLabel}</SelectItem>
               </SelectContent>
             </Select>
             <Button
