@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { Button } from "@/components/ui/button"
 import { ArrowDown, ArrowUp, RefreshCw } from "lucide-react"
 import { useI18n } from '@/lib/contexts/i18n'
@@ -35,7 +35,8 @@ interface NotesListProps {
   currentUserId?: string | null
   onNoteUpdated?: () => void
   filterNoteId?: string // Filter note ID to prioritize and highlight
-  sortBy?: 'date' | 'most_relevant'
+  isReversed?: boolean
+  onToggleReverseOrder?: () => void
 }
 
 function getTimeAgo(date: Date): string {
@@ -86,37 +87,23 @@ export function NotesList({
   currentUserId,
   onNoteUpdated,
   filterNoteId,
-  sortBy = 'date'
+  isReversed = false,
+  onToggleReverseOrder
 }: NotesListProps) {
   const { t } = useI18n()
-  const [isReversed, setIsReversed] = useState(false)
 
-   // Sort notes: matching filterNoteId first, then by selected sorting mode
+  // Preserve backend order and only prioritize a specific highlighted note when requested.
   const sortedNotes = useMemo(() => {
-    const compareNotes = (a: Note, b: Note) => {
-      if (sortBy === 'most_relevant') {
-        const scoreDiff = (b.relevanceScore || 0) - (a.relevanceScore || 0)
-        if (scoreDiff !== 0) return scoreDiff
-      }
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    }
+    if (!filterNoteId) return notes
 
-    const sorted = !filterNoteId
-      ? [...notes].sort(compareNotes)
-      : [...notes].sort((a, b) => {
-          const aMatches = a.id === filterNoteId
-          const bMatches = b.id === filterNoteId
-          
-          // If one matches and the other doesn't, prioritize the matching one
-          if (aMatches && !bMatches) return -1
-          if (!aMatches && bMatches) return 1
-          
-          // If both match or neither matches, sort by selected sorting mode
-          return compareNotes(a, b)
-        })
-    
-    return isReversed ? [...sorted].reverse() : sorted
-  }, [notes, filterNoteId, sortBy, isReversed])
+    return [...notes].sort((a, b) => {
+      const aMatches = a.id === filterNoteId
+      const bMatches = b.id === filterNoteId
+      if (aMatches && !bMatches) return -1
+      if (!aMatches && bMatches) return 1
+      return 0
+    })
+  }, [notes, filterNoteId])
 
   if (loading) {
     return (
@@ -147,11 +134,12 @@ export function NotesList({
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setIsReversed(prev => !prev)}
+              onClick={onToggleReverseOrder}
               className={cn('h-8 w-8 p-0', isReversed && 'text-primary')}
               title={t('common.reverseOrder')}
               aria-label={t('common.reverseOrder')}
               aria-pressed={isReversed}
+              disabled={!onToggleReverseOrder}
             >
               {isReversed ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />}
             </Button>

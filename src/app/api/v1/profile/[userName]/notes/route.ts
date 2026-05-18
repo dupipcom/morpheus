@@ -18,6 +18,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
       .map(value => value.trim().toUpperCase())
       .filter((value): value is 'PUBLIC' | 'PRIVATE' => value === 'PUBLIC' || value === 'PRIVATE')
     const sortBy = normalizeNoteSortBy(searchParams.get('sort'))
+    const sortOrder = searchParams.get('order') === 'asc' ? 'asc' : 'desc'
     const selectedVisibilitySet = new Set(selectedVisibility.length > 0 ? selectedVisibility : ['PUBLIC'])
 
     // Find the profile to get the user ID using root-level username field
@@ -205,8 +206,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
     })
 
     const sortedNotes = sortNotes(notesWithSortedComments, sortBy)
+    const orderedNotes = sortOrder === 'asc' ? [...sortedNotes].reverse() : sortedNotes
 
-    return Response.json({ notes: sortedNotes, isOwnProfile })
+    return Response.json({ notes: orderedNotes, isOwnProfile })
   } catch (error) {
     console.error('Error fetching public notes:', error)
     return Response.json({ error: 'Internal server error' }, { status: 500 })

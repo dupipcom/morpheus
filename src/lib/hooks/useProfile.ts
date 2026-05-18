@@ -13,6 +13,7 @@ interface NotesData {
 interface ProfileNotesOptions {
   visibility?: Array<'PUBLIC' | 'PRIVATE'>
   sort?: 'date' | 'most_relevant'
+  order?: 'asc' | 'desc'
 }
 
 /**
@@ -59,6 +60,7 @@ export function useProfileNotes(
     params.set('visibility', options.visibility.join(','))
   }
   if (options.sort) params.set('sort', options.sort)
+  if (options.order) params.set('order', options.order)
   const notesEndpoint = enabled && userName
     ? `/api/v1/profile/${userName}/notes${params.toString() ? `?${params.toString()}` : ''}`
     : null

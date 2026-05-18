@@ -30,9 +30,11 @@ export function PublicNotesViewer({ userName, showCard = true, gridLayout = fals
   }
   const [visibilityFilter, setVisibilityFilter] = useState<Array<'PUBLIC' | 'PRIVATE'>>(['PUBLIC'])
   const [sortBy, setSortBy] = useState<'date' | 'most_relevant'>('most_relevant')
+  const [isReversed, setIsReversed] = useState(false)
   const { notes, isLoading: loading, error: notesError, refreshNotes } = useProfileNotes(userName, true, {
     visibility: visibilityFilter,
-    sort: sortBy
+    sort: sortBy,
+    order: isReversed ? 'asc' : 'desc'
   })
   const { data: userData } = useUserData(true)
   const currentUserId = userData?.id || null
@@ -162,7 +164,8 @@ export function PublicNotesViewer({ userName, showCard = true, gridLayout = fals
         isLoggedIn={isLoggedIn}
         currentUserId={currentUserId}
         onNoteUpdated={refreshNotes}
-        sortBy={sortBy}
+        isReversed={isReversed}
+        onToggleReverseOrder={() => setIsReversed(prev => !prev)}
       />
     </div>
   )
