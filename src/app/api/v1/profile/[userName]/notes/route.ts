@@ -18,7 +18,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
       .map(value => value.trim().toUpperCase())
       .filter((value): value is 'PUBLIC' | 'PRIVATE' => value === 'PUBLIC' || value === 'PRIVATE')
     const sortBy = normalizeNoteSortBy(searchParams.get('sort'))
-    const selectedVisibilitySet = new Set(selectedVisibility.length > 0 ? selectedVisibility : ['PUBLIC'])
+    const requestedVisibilityValues = selectedVisibility.length > 0 ? selectedVisibility : ['PUBLIC']
+    const selectedVisibilitySet = new Set(requestedVisibilityValues)
 
     // Find the profile to get the user ID using root-level username field
     const profile = await prisma.profile.findUnique({

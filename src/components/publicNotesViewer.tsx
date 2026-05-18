@@ -73,6 +73,7 @@ export function PublicNotesViewer({ userName, showCard = true, gridLayout = fals
 
   const toggleVisibility = (value: 'PUBLIC' | 'PRIVATE') => {
     setVisibilityFilter(prev => {
+      // Keep at least one option selected so the query always has a valid visibility filter.
       if (prev.length === 1 && prev.includes(value)) return prev
       if (prev.includes(value)) return prev.filter(item => item !== value)
       return [...prev, value]

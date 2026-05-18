@@ -150,6 +150,7 @@ export function NotesList({
               onClick={() => setIsReversed(prev => !prev)}
               className={cn('h-8 w-8 p-0', isReversed && 'text-primary')}
               title={t('common.reverseOrder')}
+              aria-label={t('common.reverseOrder')}
             >
               <ArrowUpDown className={cn('h-4 w-4', isReversed && 'rotate-180')} />
             </Button>
