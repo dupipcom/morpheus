@@ -151,6 +151,7 @@ export function NotesList({
               className={cn('h-8 w-8 p-0', isReversed && 'text-primary')}
               title={t('common.reverseOrder')}
               aria-label={t('common.reverseOrder')}
+              aria-pressed={isReversed}
             >
               {isReversed ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />}
             </Button>
