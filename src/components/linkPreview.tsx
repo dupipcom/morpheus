@@ -19,14 +19,14 @@ export function LinkPreview({ url }: LinkPreviewProps) {
   const mediaEmbed = useMemo(() => getMediaEmbedConfig(url), [url])
   const embedStyle = mediaEmbed?.aspectRatio
     ? { aspectRatio: mediaEmbed.aspectRatio }
-    : { minHeight: mediaEmbed?.minHeight }
+    : mediaEmbed?.minHeight
+      ? { minHeight: mediaEmbed.minHeight }
+      : {}
+  const translatedEmbedHint = mediaEmbed ? t('mood.publish.embedHint', { provider: mediaEmbed.providerLabel }) : null
   const embedHint = mediaEmbed
-    ? (() => {
-        const translation = t('mood.publish.embedHint', { provider: mediaEmbed.providerLabel })
-        return translation === 'mood.publish.embedHint'
-          ? `${mediaEmbed.providerLabel} embed. If playback is unavailable, open the original link below.`
-          : translation
-      })()
+    ? translatedEmbedHint === 'mood.publish.embedHint'
+      ? `${mediaEmbed.providerLabel} embed. If playback is unavailable, open the original link below.`
+      : translatedEmbedHint
     : null
 
   useEffect(() => {

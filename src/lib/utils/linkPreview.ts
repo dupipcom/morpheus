@@ -16,6 +16,11 @@ export interface MediaEmbedConfig {
   minHeight?: number
 }
 
+const URL_PROTOCOL_PATTERN = 'https?:\\/\\/'
+const URL_HOST_PATTERN = '(?:(?:\\d{1,3}\\.){3}\\d{1,3}|(?:[-\\w]+\\.)+[a-z]{2,})'
+const URL_PORT_PATTERN = '(?::\\d{1,5})?'
+const URL_PATH_PATTERN = '(?:\\/[^\\s]*[^\\s.,;:!?\'")\\]])?'
+
 /**
  * URL pattern that matches http/https URLs including IPv4 hosts and ports.
  * Sections:
@@ -28,7 +33,10 @@ export interface MediaEmbedConfig {
  * shared `lastIndex` state across concurrent calls.
  */
 export function createUrlRegex() {
-  return /https?:\/\/(?:(?:\d{1,3}\.){3}\d{1,3}|(?:[-\w]+\.)+[a-z]{2,})(?::\d{1,5})?(?:\/[^\s]*[^\s.,;:!?'")\]])?/gi
+  return new RegExp(
+    `${URL_PROTOCOL_PATTERN}${URL_HOST_PATTERN}${URL_PORT_PATTERN}${URL_PATH_PATTERN}`,
+    'gi'
+  )
 }
 
 /**
