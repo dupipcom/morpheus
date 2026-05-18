@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { ChevronDown, ChevronUp, Send, Loader2, MessageSquare, FileText, Heart, List, Edit, Trash2, Link as LinkIcon } from "lucide-react"
+import { ChevronDown, ChevronUp, Send, Loader2, MessageSquare, FileText, Heart, List, Edit, Trash2, Link as LinkIcon, Lock, Users, UserCheck, Globe, Sparkles } from "lucide-react"
 import { useI18n } from '@/lib/contexts/i18n'
 import { useNotesRefresh } from "@/lib/contexts/notesRefresh"
 import Link from 'next/link'
@@ -11,6 +11,7 @@ import { OptionsButton, OptionsMenuItem } from "@/components/optionsButton"
 import { toast } from "sonner"
 import { Popover, PopoverContent, PopoverTrigger, PopoverAnchor } from "@/components/ui/popover"
 import { NoteContent } from "@/components/noteContent"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdownMenu"
 
 export interface Comment {
   id: string
@@ -70,6 +71,25 @@ interface ActivityCardProps {
   isHighlighted?: boolean // Whether this card should be highlighted/selected
 }
 
+const getVisibilityIcon = (visibility: string) => {
+  switch (visibility) {
+    case 'PRIVATE': return <Lock className="h-3 w-3" />
+    case 'FRIENDS': return <Users className="h-3 w-3" />
+    case 'CLOSE_FRIENDS': return <UserCheck className="h-3 w-3" />
+    case 'PUBLIC': return <Globe className="h-3 w-3" />
+    case 'AI_ENABLED': return <Sparkles className="h-3 w-3" />
+    default: return <Lock className="h-3 w-3" />
+  }
+}
+
+const visibilityOptions = [
+  { value: 'PRIVATE', label: 'Private', icon: <Lock className="h-4 w-4" /> },
+  { value: 'FRIENDS', label: 'Friends', icon: <Users className="h-4 w-4" /> },
+  { value: 'CLOSE_FRIENDS', label: 'Close Friends', icon: <UserCheck className="h-4 w-4" /> },
+  { value: 'PUBLIC', label: 'Public', icon: <Globe className="h-4 w-4" /> },
+  { value: 'AI_ENABLED', label: 'AI Enabled', icon: <Sparkles className="h-4 w-4" /> },
+]
+
 function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, isLoggedIn = false, currentUserId, onNoteUpdated, isHighlighted = false }: ActivityCardProps) {
   const { t, locale } = useI18n()
   const { refreshAll } = useNotesRefresh()
@@ -96,6 +116,8 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
   const [isDeletingComment, setIsDeletingComment] = useState<string | null>(null)
   const [isEditCommentPopoverOpen, setIsEditCommentPopoverOpen] = useState(false)
   const justOpenedCommentPopoverRef = useRef(false)
+  const [currentVisibility, setCurrentVisibility] = useState(item.visibility || 'PRIVATE')
+  const [isUpdatingVisibility, setIsUpdatingVisibility] = useState(false)
 
   // Update isLiked and likeCount when item changes (from props)
   useEffect(() => {
@@ -106,6 +128,13 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
       setLikeCount(item._count.likes)
     }
   }, [item.isLiked, item._count?.likes])
+
+  // Sync currentVisibility when item.visibility changes from props
+  useEffect(() => {
+    if (item.visibility) {
+      setCurrentVisibility(item.visibility)
+    }
+  }, [item.visibility])
 
   // Fetch like status on mount only if not provided in item
   useEffect(() => {
@@ -563,6 +592,36 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
     }
   }
 
+  const handleUpdateVisibility = async (newVisibility: string) => {
+    if (isUpdatingVisibility || newVisibility === currentVisibility) return
+
+    setIsUpdatingVisibility(true)
+    try {
+      const response = await fetch(`/api/v1/notes/${item.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ visibility: newVisibility }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to update visibility')
+      }
+
+      setCurrentVisibility(newVisibility)
+      toast.success(t('notes.visibilityUpdated') || 'Visibility updated successfully')
+
+      if (onNoteUpdated) {
+        onNoteUpdated()
+      }
+      refreshAll()
+    } catch (err) {
+      console.error('Error updating note visibility:', err)
+      toast.error(t('notes.visibilityUpdateFailed') || 'Failed to update visibility')
+    } finally {
+      setIsUpdatingVisibility(false)
+    }
+  }
+
   const handleEditComment = (comment: Comment, e?: React.MouseEvent) => {
     if (e) {
       e.preventDefault()
@@ -739,9 +798,36 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
           {item.date && ` • ${item.date}`}
         </span>
         {item.visibility && (
-          <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
-            {item.visibility.toLowerCase().replace('_', ' ')}
-          </span>
+          item.type === 'note' && isNoteOwner ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors flex items-center gap-1 disabled:opacity-50"
+                  disabled={isUpdatingVisibility}
+                  aria-label={t('notes.changeVisibility') || 'Change visibility'}
+                >
+                  {getVisibilityIcon(currentVisibility)}
+                  <span>{currentVisibility.toLowerCase().replace('_', ' ')}</span>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start">
+                {visibilityOptions.map((opt) => (
+                  <DropdownMenuItem
+                    key={opt.value}
+                    onClick={() => handleUpdateVisibility(opt.value)}
+                    className={`flex items-center gap-2 ${currentVisibility === opt.value ? 'font-semibold' : ''}`}
+                  >
+                    {opt.icon}
+                    <span>{opt.label}</span>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
+              {item.visibility.toLowerCase().replace('_', ' ')}
+            </span>
+          )
           )}
         </div>
         {isLoggedIn && (
