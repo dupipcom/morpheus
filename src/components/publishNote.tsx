@@ -20,7 +20,6 @@ interface PublishNoteProps {
   defaultVisibility?: string
 }
 
-const WRITE_TOOLBAR_MAX_HEIGHT = '70vh'
 
 export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibility = 'AI_ENABLED' }: PublishNoteProps) => {
   const { t } = useI18n()
@@ -34,6 +33,7 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
   // Use ref to track if we're updating from props to prevent loops
   const isUpdatingFromProps = useRef(false)
   const hasInitializedFromProps = useRef(false)
+  const writeScrollRef = useRef<HTMLDivElement | null>(null)
 
   // Helper to compare dates by value
   const datesEqual = (date1: Date | undefined, date2: Date | undefined): boolean => {
@@ -162,7 +162,7 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
   )
 
   return (
-    <div className="p-3 sm:p-4 border rounded-lg border-body w-full max-w-full sticky top-0 z-50 bg-muted backdrop-blur-sm md:sticky md:top-4">
+    <div className="p-3 sm:p-4 border rounded-lg border-body w-full max-w-full sticky top-0 z-50 bg-muted backdrop-blur-sm mb-[calc(env(safe-area-inset-bottom)+16px)] md:mb-0 md:sticky md:top-4">
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="publish-note" className="border-none">
           <AccordionTrigger className="py-0 px-0 hover:no-underline">
@@ -171,8 +171,12 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
               <DatePickerButton />
             </div>
           </AccordionTrigger>
-          <AccordionContent className="pt-3 pb-0">
-            <div className="overflow-y-auto overscroll-contain pr-1" style={{ maxHeight: WRITE_TOOLBAR_MAX_HEIGHT }}>
+          <AccordionContent className="pt-3 pb-3">
+            <div
+              ref={writeScrollRef}
+              className="overflow-y-auto overscroll-contain pl-[max(0.25rem,env(safe-area-inset-left))] pr-[max(0.25rem,env(safe-area-inset-right))] pb-4 max-h-[320px]"
+              
+            >
               {formContent}
             </div>
           </AccordionContent>
