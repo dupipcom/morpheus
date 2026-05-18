@@ -11,12 +11,16 @@ interface LinkPreviewProps {
   url: string
 }
 
+const DEFAULT_EMBED_SANDBOX = 'allow-scripts allow-popups allow-popups-to-escape-sandbox allow-presentation'
+const YOUTUBE_EMBED_SANDBOX = 'allow-same-origin allow-scripts allow-popups allow-popups-to-escape-sandbox allow-presentation'
+
 export function LinkPreview({ url }: LinkPreviewProps) {
   const { t, hasTranslation } = useI18n()
   const [data, setData] = useState<LinkPreviewData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
   const mediaEmbed = useMemo(() => getMediaEmbedConfig(url), [url])
+  const embedSandbox = mediaEmbed?.provider === 'youtube' ? YOUTUBE_EMBED_SANDBOX : DEFAULT_EMBED_SANDBOX
   const embedStyle = mediaEmbed?.aspectRatio
     ? { aspectRatio: mediaEmbed.aspectRatio }
     : mediaEmbed?.minHeight
@@ -140,7 +144,7 @@ export function LinkPreview({ url }: LinkPreviewProps) {
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; fullscreen; gyroscope; picture-in-picture"
               allowFullScreen
               referrerPolicy="strict-origin-when-cross-origin"
-              sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox allow-presentation"
+              sandbox={embedSandbox}
             />
           </div>
           <div className="border-t border-border/60 bg-muted/30 px-3 py-2 text-[10px] text-muted-foreground">
