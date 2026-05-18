@@ -3,30 +3,12 @@
 import { useMemo } from 'react'
 import type { ReactNode } from 'react'
 import { LinkPreview } from '@/components/linkPreview'
+import { createUrlRegex, extractUrls } from '@/lib/utils/linkPreview'
 
 interface NoteContentProps {
   content: string
   truncate?: boolean
   maxLength?: number
-}
-
-/**
- * URL pattern that matches http/https URLs including IPv4 hosts and ports.
- * Trailing punctuation characters (.,;:!?'")] ) are excluded from the URL end.
- * A factory function is used to always return a new regex instance and avoid
- * shared `lastIndex` state across concurrent calls.
- */
-function createUrlRegex() {
-  return /https?:\/\/(?:(?:\d{1,3}\.){3}\d{1,3}|(?:[-\w]+\.)+[a-z]{2,})(?::\d{1,5})?(?:\/[^\s]*[^\s.,;:!?'")\]])?/gi
-}
-
-/**
- * Extract unique URLs from a string.
- */
-export function extractUrls(text: string): string[] {
-  const matches = text.match(createUrlRegex())
-  if (!matches) return []
-  return [...new Set(matches)]
 }
 
 /**
