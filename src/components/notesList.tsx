@@ -48,7 +48,7 @@ function resolveInitialGridOption(
   gridLayout?: boolean
 ): NotesGridOption {
   if (initialGridOption) return initialGridOption
-  return gridLayout ? 'tight' : 'wide'
+  return 'wide'
 }
 
 function getTimeAgo(date: Date): string {
@@ -153,13 +153,13 @@ export function NotesList({
     : 'Grid layout'
   const tightLabel = hasTranslation('notesList.gridOption.tight')
     ? t('notesList.gridOption.tight')
-    : 'Tight (3)'
+    : 'Tight'
   const smallLabel = hasTranslation('notesList.gridOption.small')
     ? t('notesList.gridOption.small')
-    : 'Small (2)'
+    : 'Small'
   const wideLabel = hasTranslation('notesList.gridOption.wide')
     ? t('notesList.gridOption.wide')
-    : 'Wide (1)'
+    : 'Wide'
 
   return (
     <div>
