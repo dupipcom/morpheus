@@ -129,6 +129,13 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
     }
   }, [item.isLiked, item._count?.likes])
 
+  // Sync currentVisibility when item.visibility changes from props
+  useEffect(() => {
+    if (item.visibility) {
+      setCurrentVisibility(item.visibility)
+    }
+  }, [item.visibility])
+
   // Fetch like status on mount only if not provided in item
   useEffect(() => {
     if (item.isLiked === undefined) {
