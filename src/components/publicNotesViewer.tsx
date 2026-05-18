@@ -7,6 +7,13 @@ import { useI18n } from '@/lib/contexts/i18n'
 import { useProfileNotes } from '@/lib/hooks/useProfile'
 import { useUserData } from '@/lib/utils/userUtils'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdownMenu'
 
 interface PublicNotesViewerProps {
   userName: string
@@ -16,7 +23,7 @@ interface PublicNotesViewerProps {
 
 export function PublicNotesViewer({ userName, showCard = true, gridLayout = false }: PublicNotesViewerProps) {
   const { t } = useI18n()
-  const [visibilityFilter, setVisibilityFilter] = useState<'PUBLIC' | 'PRIVATE'>('PUBLIC')
+  const [visibilityFilter, setVisibilityFilter] = useState<Array<'PUBLIC' | 'PRIVATE'>>(['PUBLIC'])
   const [sortBy, setSortBy] = useState<'date' | 'most_relevant'>('most_relevant')
   const { notes, isLoading: loading, error: notesError, refreshNotes } = useProfileNotes(userName, true, {
     visibility: visibilityFilter,
@@ -55,6 +62,21 @@ export function PublicNotesViewer({ userName, showCard = true, gridLayout = fals
   }, [userName, refreshNotes])
 
   const error = notesError ? t('errors.failedToLoadNotes') : null
+  const visibilityLabel = visibilityFilter.length === 2
+    ? 'Public + Private'
+    : visibilityFilter.includes('PRIVATE')
+      ? 'Private'
+      : 'Public'
+
+  const toggleVisibility = (value: 'PUBLIC' | 'PRIVATE') => {
+    setVisibilityFilter(prev => {
+      if (prev.includes(value)) {
+        if (prev.length === 1) return prev
+        return prev.filter(item => item !== value)
+      }
+      return [...prev, value]
+    })
+  }
 
   if (error) {
     const content = (
@@ -80,15 +102,27 @@ export function PublicNotesViewer({ userName, showCard = true, gridLayout = fals
   const content = (
     <div className="space-y-4">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-        <Select value={visibilityFilter} onValueChange={(value) => setVisibilityFilter(value as 'PUBLIC' | 'PRIVATE')}>
-          <SelectTrigger className="w-full sm:w-[180px]">
-            <SelectValue placeholder="Visibility" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="PUBLIC">Public</SelectItem>
-            <SelectItem value="PRIVATE">Private</SelectItem>
-          </SelectContent>
-        </Select>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="justify-start w-full sm:w-[220px]">
+              {`Visibility: ${visibilityLabel}`}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start">
+            <DropdownMenuCheckboxItem
+              checked={visibilityFilter.includes('PUBLIC')}
+              onCheckedChange={() => toggleVisibility('PUBLIC')}
+            >
+              Public
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={visibilityFilter.includes('PRIVATE')}
+              onCheckedChange={() => toggleVisibility('PRIVATE')}
+            >
+              Private
+            </DropdownMenuCheckboxItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         <Select value={sortBy} onValueChange={(value) => setSortBy(value as 'date' | 'most_relevant')}>
           <SelectTrigger className="w-full sm:w-[220px]">

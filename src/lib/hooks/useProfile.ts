@@ -11,7 +11,7 @@ interface NotesData {
 }
 
 interface ProfileNotesOptions {
-  visibility?: 'PUBLIC' | 'PRIVATE'
+  visibility?: Array<'PUBLIC' | 'PRIVATE'>
   sort?: 'date' | 'most_relevant'
 }
 
@@ -55,7 +55,7 @@ export function useProfileNotes(
   options: ProfileNotesOptions = {}
 ) {
   const params = new URLSearchParams()
-  if (options.visibility) params.set('visibility', options.visibility)
+  if (options.visibility?.length) params.set('visibility', options.visibility.join(','))
   if (options.sort) params.set('sort', options.sort)
   const notesEndpoint = enabled && userName
     ? `/api/v1/profile/${userName}/notes${params.toString() ? `?${params.toString()}` : ''}`

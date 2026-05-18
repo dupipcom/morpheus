@@ -12,8 +12,13 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
     const { userName } = await params
     const { userId } = await auth()
     const searchParams = req.nextUrl.searchParams
-    const selectedVisibility = (searchParams.get('visibility') || 'PUBLIC').toUpperCase()
+    const requestedVisibility = searchParams.get('visibility') || 'PUBLIC'
+    const selectedVisibility = requestedVisibility
+      .split(',')
+      .map(value => value.trim().toUpperCase())
+      .filter((value): value is 'PUBLIC' | 'PRIVATE' => value === 'PUBLIC' || value === 'PRIVATE')
     const sortBy = normalizeNoteSortBy(searchParams.get('sort'))
+    const selectedVisibilitySet = new Set(selectedVisibility.length > 0 ? selectedVisibility : ['PUBLIC'])
 
     // Find the profile to get the user ID using root-level username field
     const profile = await prisma.profile.findUnique({
@@ -78,19 +83,15 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
       }
     }
 
-    // Default visibility is PUBLIC; optional PRIVATE for owners
-    if (selectedVisibility === 'PRIVATE') {
-      visibilityFilter = visibilityFilter.includes('PRIVATE') ? ['PRIVATE'] : []
-    } else {
-      visibilityFilter = visibilityFilter.includes('PUBLIC') ? ['PUBLIC'] : []
-    }
+    // Apply requested visibility as OR-clause over the selected options
+    visibilityFilter = visibilityFilter.filter(value => selectedVisibilitySet.has(value as 'PUBLIC' | 'PRIVATE'))
 
     if (visibilityFilter.length === 0) {
       return Response.json({
         notes: [],
         isOwnProfile,
         hasVisibilityAccess: false,
-        requestedVisibility: selectedVisibility
+        requestedVisibility: Array.from(selectedVisibilitySet)
       })
     }
 

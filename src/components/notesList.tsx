@@ -1,8 +1,8 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { Button } from "@/components/ui/button"
-import { RefreshCw } from "lucide-react"
+import { ArrowUpDown, RefreshCw } from "lucide-react"
 import { useI18n } from '@/lib/contexts/i18n'
 import ActivityCard, { ActivityItem } from './activityCard'
 import type { Comment } from './activityCard'
@@ -88,6 +88,7 @@ export function NotesList({
   sortBy = 'date'
 }: NotesListProps) {
   const { t } = useI18n()
+  const [isReversed, setIsReversed] = useState(false)
 
    // Sort notes: matching filterNoteId first, then by selected sorting mode
   const sortedNotes = useMemo(() => {
@@ -99,22 +100,22 @@ export function NotesList({
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     }
 
-    if (!filterNoteId) {
-      return [...notes].sort(compareNotes)
-    }
+    const sorted = !filterNoteId
+      ? [...notes].sort(compareNotes)
+      : [...notes].sort((a, b) => {
+          const aMatches = a.id === filterNoteId
+          const bMatches = b.id === filterNoteId
+          
+          // If one matches and the other doesn't, prioritize the matching one
+          if (aMatches && !bMatches) return -1
+          if (!aMatches && bMatches) return 1
+          
+          // If both match or neither matches, sort by selected sorting mode
+          return compareNotes(a, b)
+        })
     
-    return [...notes].sort((a, b) => {
-      const aMatches = a.id === filterNoteId
-      const bMatches = b.id === filterNoteId
-      
-      // If one matches and the other doesn't, prioritize the matching one
-      if (aMatches && !bMatches) return -1
-      if (!aMatches && bMatches) return 1
-      
-      // If both match or neither matches, sort by selected sorting mode
-      return compareNotes(a, b)
-    })
-  }, [notes, filterNoteId, sortBy])
+    return isReversed ? [...sorted].reverse() : sorted
+  }, [notes, filterNoteId, sortBy, isReversed])
 
   if (loading) {
     return (
@@ -141,17 +142,28 @@ export function NotesList({
       {showHeader && (
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold">{t('publicProfile.notes')}</h3>
-          {onRefresh && (
+          <div className="flex items-center gap-1">
             <Button
               variant="ghost"
               size="sm"
-              onClick={onRefresh}
-              disabled={loading}
-              className="h-8 w-8 p-0"
+              onClick={() => setIsReversed(prev => !prev)}
+              className={`h-8 w-8 p-0 ${isReversed ? 'text-primary' : ''}`}
+              title="Reverse order"
             >
-              <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+              <ArrowUpDown className={`h-4 w-4 ${isReversed ? 'rotate-180' : ''}`} />
             </Button>
-          )}
+            {onRefresh && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onRefresh}
+                disabled={loading}
+                className="h-8 w-8 p-0"
+              >
+                <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+              </Button>
+            )}
+          </div>
         </div>
       )}
       <div className={containerClass}>
