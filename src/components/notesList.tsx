@@ -49,11 +49,10 @@ function isNotesGridOption(value: string | null): value is NotesGridOption {
 }
 
 function resolveInitialGridOption(
-  initialGridOption?: NotesGridOption,
-  gridLayout?: boolean
+  initialGridOption?: NotesGridOption
 ): NotesGridOption {
   if (initialGridOption) return initialGridOption
-  return gridLayout ? 'tight' : 'wide'
+  return 'wide'
 }
 
 function getTimeAgo(date: Date): string {
@@ -99,7 +98,6 @@ export function NotesList({
   onRefresh, 
   showHeader = true,
   emptyMessage = 'No notes available yet.',
-  gridLayout = false,
   isLoggedIn = false,
   currentUserId,
   onNoteUpdated,
@@ -115,7 +113,7 @@ export function NotesList({
       if (isNotesGridOption(storedGridOption)) return storedGridOption
     }
 
-    return resolveInitialGridOption(initialGridOption, gridLayout)
+    return resolveInitialGridOption(initialGridOption)
   })
 
   useEffect(() => {
