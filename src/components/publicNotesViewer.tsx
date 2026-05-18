@@ -62,11 +62,14 @@ export function PublicNotesViewer({ userName, showCard = true, gridLayout = fals
   }, [userName, refreshNotes])
 
   const error = notesError ? t('errors.failedToLoadNotes') : null
+  const publicLabel = t('forms.addTemplateForm.visibility.public')
+  const privateLabel = t('forms.addTemplateForm.visibility.private')
+  const visibilityPrefixLabel = t('notes.changeVisibility')
   const visibilityLabel = visibilityFilter.length === 2
-    ? 'Public + Private'
+    ? `${publicLabel} + ${privateLabel}`
     : visibilityFilter.includes('PRIVATE')
-      ? 'Private'
-      : 'Public'
+      ? privateLabel
+      : publicLabel
 
   const toggleVisibility = (value: 'PUBLIC' | 'PRIVATE') => {
     setVisibilityFilter(prev => {
@@ -105,7 +108,7 @@ export function PublicNotesViewer({ userName, showCard = true, gridLayout = fals
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="justify-start w-full sm:w-[220px]">
-              {`Visibility: ${visibilityLabel}`}
+              {`${visibilityPrefixLabel}: ${visibilityLabel}`}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start">
@@ -113,13 +116,13 @@ export function PublicNotesViewer({ userName, showCard = true, gridLayout = fals
               checked={visibilityFilter.includes('PUBLIC')}
               onCheckedChange={() => toggleVisibility('PUBLIC')}
             >
-              Public
+              {publicLabel}
             </DropdownMenuCheckboxItem>
             <DropdownMenuCheckboxItem
               checked={visibilityFilter.includes('PRIVATE')}
               onCheckedChange={() => toggleVisibility('PRIVATE')}
             >
-              Private
+              {privateLabel}
             </DropdownMenuCheckboxItem>
           </DropdownMenuContent>
         </DropdownMenu>

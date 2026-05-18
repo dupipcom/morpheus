@@ -148,7 +148,7 @@ export function NotesList({
               size="sm"
               onClick={() => setIsReversed(prev => !prev)}
               className={`h-8 w-8 p-0 ${isReversed ? 'text-primary' : ''}`}
-              title="Reverse order"
+              title={t('common.reverseOrder')}
             >
               <ArrowUpDown className={`h-4 w-4 ${isReversed ? 'rotate-180' : ''}`} />
             </Button>
