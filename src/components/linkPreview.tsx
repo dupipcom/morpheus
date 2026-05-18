@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react'
 import Image from 'next/image'
 import { ExternalLink } from 'lucide-react'
 import type { LinkPreviewData } from '@/app/api/v1/link-preview/route'
+import { useI18n } from '@/lib/contexts/i18n'
 import { getMediaEmbedConfig } from '@/lib/utils/linkPreview'
 
 interface LinkPreviewProps {
@@ -11,10 +12,22 @@ interface LinkPreviewProps {
 }
 
 export function LinkPreview({ url }: LinkPreviewProps) {
+  const { t } = useI18n()
   const [data, setData] = useState<LinkPreviewData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
   const mediaEmbed = useMemo(() => getMediaEmbedConfig(url), [url])
+  const embedStyle = mediaEmbed?.aspectRatio
+    ? { aspectRatio: mediaEmbed.aspectRatio }
+    : { minHeight: mediaEmbed?.minHeight }
+  const embedHint = mediaEmbed
+    ? (() => {
+        const translation = t('mood.publish.embedHint', { provider: mediaEmbed.providerLabel })
+        return translation === 'mood.publish.embedHint'
+          ? `${mediaEmbed.providerLabel} embed. If playback is unavailable, open the original link below.`
+          : translation
+      })()
+    : null
 
   useEffect(() => {
     let cancelled = false
@@ -118,7 +131,7 @@ export function LinkPreview({ url }: LinkPreviewProps) {
     <>
       {mediaEmbed && (
         <div className="mt-2 overflow-hidden rounded-lg border border-border/60 bg-card">
-          <div className="relative w-full overflow-hidden bg-black/5" style={mediaEmbed.aspectRatio ? { aspectRatio: mediaEmbed.aspectRatio } : { minHeight: mediaEmbed.minHeight }}>
+          <div className="relative w-full overflow-hidden bg-black/5" style={embedStyle}>
             <iframe
               src={mediaEmbed.embedUrl}
               title={mediaEmbed.title}
@@ -131,7 +144,7 @@ export function LinkPreview({ url }: LinkPreviewProps) {
             />
           </div>
           <div className="border-t border-border/60 bg-muted/30 px-3 py-2 text-[10px] text-muted-foreground">
-            {mediaEmbed.providerLabel} embed. If playback is unavailable, open the original link below.
+            {embedHint}
           </div>
         </div>
       )}

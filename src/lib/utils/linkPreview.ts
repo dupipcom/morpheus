@@ -18,6 +18,11 @@ export interface MediaEmbedConfig {
 
 /**
  * URL pattern that matches http/https URLs including IPv4 hosts and ports.
+ * Sections:
+ * - protocol: http:// or https://
+ * - host: IPv4 or dotted domain name
+ * - port: optional :3000 style suffix
+ * - path: optional path while trimming common trailing punctuation
  * Trailing punctuation characters (.,;:!?'")] ) are excluded from the URL end.
  * A factory function is used to always return a new regex instance and avoid
  * shared `lastIndex` state across concurrent calls.
@@ -113,7 +118,7 @@ function getMixcloudEmbed(url: URL): MediaEmbedConfig | null {
   const segments = getPathSegments(url)
   if (segments.length < 2) return null
 
-  const feed = `${url.pathname.endsWith('/') ? url.pathname : `${url.pathname}/`}`
+  const feed = url.pathname.endsWith('/') ? url.pathname : `${url.pathname}/`
 
   return {
     provider: 'mixcloud',
