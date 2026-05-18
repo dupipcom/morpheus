@@ -804,7 +804,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
                 <button
                   className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors flex items-center gap-1 disabled:opacity-50"
                   disabled={isUpdatingVisibility}
-                  aria-label={t('notes.changeVisibility') || 'Change visibility'}
+                  aria-label={t('notes.changeVisibility')}
                 >
                   {getVisibilityIcon(currentVisibility)}
                   <span>{currentVisibility.toLowerCase().replace('_', ' ')}</span>

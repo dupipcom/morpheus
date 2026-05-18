@@ -2,9 +2,11 @@
 
 import { useMemo } from 'react'
 import { Button } from "@/components/ui/button"
-import { RefreshCw } from "lucide-react"
+import { ArrowDown, ArrowUp, RefreshCw } from "lucide-react"
 import { useI18n } from '@/lib/contexts/i18n'
 import ActivityCard, { ActivityItem } from './activityCard'
+import type { Comment } from './activityCard'
+import { cn } from '@/lib/utils/utils'
 
 export interface Note {
   id: string
@@ -13,12 +15,13 @@ export interface Note {
   createdAt: string
   date?: string
   userId?: string
-  comments?: any[]
+  comments?: Comment[]
   isLiked?: boolean
   _count?: {
     comments: number
     likes?: number
   }
+  relevanceScore?: number
 }
 
 interface NotesListProps {
@@ -32,6 +35,8 @@ interface NotesListProps {
   currentUserId?: string | null
   onNoteUpdated?: () => void
   filterNoteId?: string // Filter note ID to prioritize and highlight
+  isReversed?: boolean
+  onToggleReverseOrder?: () => void
 }
 
 function getTimeAgo(date: Date): string {
@@ -81,28 +86,22 @@ export function NotesList({
   isLoggedIn = false,
   currentUserId,
   onNoteUpdated,
-  filterNoteId
+  filterNoteId,
+  isReversed = false,
+  onToggleReverseOrder
 }: NotesListProps) {
   const { t } = useI18n()
 
-  // Sort notes: matching filterNoteId first, then by creation date (newest first)
+  // Preserve backend order and only prioritize a specific highlighted note when requested.
   const sortedNotes = useMemo(() => {
-    if (!filterNoteId) {
-      return [...notes].sort((a, b) => 
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      )
-    }
-    
+    if (!filterNoteId) return notes
+
     return [...notes].sort((a, b) => {
       const aMatches = a.id === filterNoteId
       const bMatches = b.id === filterNoteId
-      
-      // If one matches and the other doesn't, prioritize the matching one
       if (aMatches && !bMatches) return -1
       if (!aMatches && bMatches) return 1
-      
-      // If both match or neither matches, sort by creation date (newest first)
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      return 0
     })
   }, [notes, filterNoteId])
 
@@ -131,17 +130,31 @@ export function NotesList({
       {showHeader && (
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold">{t('publicProfile.notes')}</h3>
-          {onRefresh && (
+          <div className="flex items-center gap-1">
             <Button
               variant="ghost"
               size="sm"
-              onClick={onRefresh}
-              disabled={loading}
-              className="h-8 w-8 p-0"
+              onClick={onToggleReverseOrder}
+              className={cn('h-8 w-8 p-0', isReversed && 'text-primary')}
+              title={t('common.reverseOrder')}
+              aria-label={t('common.reverseOrder')}
+              aria-pressed={isReversed}
+              disabled={!onToggleReverseOrder}
             >
-              <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+              {isReversed ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />}
             </Button>
-          )}
+            {onRefresh && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onRefresh}
+                disabled={loading}
+                className="h-8 w-8 p-0"
+              >
+                <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+              </Button>
+            )}
+          </div>
         </div>
       )}
       <div className={containerClass}>
@@ -179,4 +192,3 @@ export function NotesList({
     </div>
   )
 }
-

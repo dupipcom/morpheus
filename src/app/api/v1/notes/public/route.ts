@@ -4,10 +4,14 @@ import prisma from '@/lib/prisma'
 import {
   buildVisibilityWhereClause,
   getCurrentUser,
-  batchEnrichUserProfiles,
-  extractProfileData
+  batchEnrichUserProfiles
 } from '@/lib/services/visibility'
 import { filterProfileFields } from '@/lib/utils/profileUtils'
+import {
+  calculateNoteRelevanceScore,
+  normalizeNoteSortBy,
+  sortNotes
+} from '@/lib/utils/noteRelevance'
 
 /**
  * Note select configuration for queries
@@ -23,6 +27,11 @@ const noteSelect = {
     select: {
       comments: true,
       likes: true
+    }
+  },
+  likes: {
+    select: {
+      userId: true
     }
   },
   comments: {
@@ -101,6 +110,7 @@ export async function GET(request: NextRequest) {
     const skip = (page - 1) * limit
     const filterNoteId = searchParams.get('noteId')
     const filterProfileId = searchParams.get('profileId')
+    const sortBy = normalizeNoteSortBy(searchParams.get('sort'))
 
     const { userId } = await auth()
 
@@ -160,14 +170,20 @@ export async function GET(request: NextRequest) {
     // Combine matching notes first, then regular notes
     const allNotes = [...matchingNotes, ...notes]
 
-    // Sort comments
-    const notesWithSortedComments = allNotes.map(note => ({
-      ...note,
-      comments: sortAndTransformComments(note.comments)
-    }))
-
     // Get current user for relationship checking
     const currentUser = await getCurrentUser(userId || null)
+
+    // Sort comments and compute relevance
+    const notesWithSortedComments = allNotes.map(note => ({
+      ...note,
+      comments: sortAndTransformComments(note.comments),
+      relevanceScore: sortBy === 'most_relevant'
+        ? calculateNoteRelevanceScore(note, {
+            friendUserIds: currentUser?.friends || [],
+            closeFriendUserIds: currentUser?.closeFriends || []
+          })
+        : undefined
+    }))
 
     // Collect all user IDs for batch profile fetching (fixes N+1)
     const userIds = notesWithSortedComments
@@ -188,15 +204,17 @@ export async function GET(request: NextRequest) {
         }
       })
 
+    const sortedNotesWithUsers = sortNotes(notesWithUsers, sortBy)
+
     // Get total count for pagination
     const totalCount = await prisma.note.count({
       where: whereClause
     })
 
-    const hasMore = skip + notesWithUsers.length < totalCount
+    const hasMore = skip + sortedNotesWithUsers.length < totalCount
 
     return NextResponse.json({
-      notes: notesWithUsers,
+      notes: sortedNotesWithUsers,
       hasMore,
       totalCount,
       currentPage: page,
