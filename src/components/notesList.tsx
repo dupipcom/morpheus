@@ -42,13 +42,18 @@ interface NotesListProps {
 }
 
 type NotesGridOption = 'tight' | 'small' | 'wide'
+const NOTES_GRID_OPTION_STORAGE_KEY = 'notesList.gridOption'
+
+function isNotesGridOption(value: string | null): value is NotesGridOption {
+  return value === 'tight' || value === 'small' || value === 'wide'
+}
 
 function resolveInitialGridOption(
   initialGridOption?: NotesGridOption,
   gridLayout?: boolean
 ): NotesGridOption {
   if (initialGridOption) return initialGridOption
-  return 'wide'
+  return gridLayout ? 'tight' : 'wide'
 }
 
 function getTimeAgo(date: Date): string {
@@ -104,13 +109,18 @@ export function NotesList({
   initialGridOption
 }: NotesListProps) {
   const { t, hasTranslation } = useI18n()
-  const [gridOption, setGridOption] = useState<NotesGridOption>(
-    resolveInitialGridOption(initialGridOption, gridLayout)
-  )
+  const [gridOption, setGridOption] = useState<NotesGridOption>(() => {
+    if (typeof window !== 'undefined') {
+      const storedGridOption = window.localStorage.getItem(NOTES_GRID_OPTION_STORAGE_KEY)
+      if (isNotesGridOption(storedGridOption)) return storedGridOption
+    }
+
+    return resolveInitialGridOption(initialGridOption, gridLayout)
+  })
 
   useEffect(() => {
-    setGridOption(resolveInitialGridOption(initialGridOption, gridLayout))
-  }, [initialGridOption, gridLayout])
+    window.localStorage.setItem(NOTES_GRID_OPTION_STORAGE_KEY, gridOption)
+  }, [gridOption])
 
   // Preserve backend order and only prioritize a specific highlighted note when requested.
   const sortedNotes = useMemo(() => {
