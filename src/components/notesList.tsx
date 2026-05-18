@@ -1,12 +1,13 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { ArrowDown, ArrowUp, RefreshCw } from "lucide-react"
 import { useI18n } from '@/lib/contexts/i18n'
 import ActivityCard, { ActivityItem } from './activityCard'
 import type { Comment } from './activityCard'
 import { cn } from '@/lib/utils/utils'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 export interface Note {
   id: string
@@ -38,6 +39,8 @@ interface NotesListProps {
   isReversed?: boolean
   onToggleReverseOrder?: () => void
 }
+
+type NotesGridOption = 'tight' | 'small' | 'wide'
 
 function getTimeAgo(date: Date): string {
   const now = new Date()
@@ -91,6 +94,11 @@ export function NotesList({
   onToggleReverseOrder
 }: NotesListProps) {
   const { t } = useI18n()
+  const [gridOption, setGridOption] = useState<NotesGridOption>(gridLayout ? 'tight' : 'wide')
+
+  useEffect(() => {
+    setGridOption(gridLayout ? 'tight' : 'wide')
+  }, [gridLayout])
 
   // Preserve backend order and only prioritize a specific highlighted note when requested.
   const sortedNotes = useMemo(() => {
@@ -121,9 +129,12 @@ export function NotesList({
     )
   }
 
-  const containerClass = gridLayout 
-    ? "grid grid-cols-1 md:grid-cols-3 gap-4"
-    : "space-y-4"
+  const containerClass = cn(
+    'grid grid-cols-1 gap-4',
+    gridOption === 'tight' && 'md:grid-cols-3',
+    gridOption === 'small' && 'md:grid-cols-2',
+    gridOption === 'wide' && 'md:grid-cols-1'
+  )
 
   return (
     <div>
@@ -131,6 +142,16 @@ export function NotesList({
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold">{t('publicProfile.notes')}</h3>
           <div className="flex items-center gap-1">
+            <Select value={gridOption} onValueChange={(value) => setGridOption(value as NotesGridOption)}>
+              <SelectTrigger className="h-8 w-[110px]" size="sm" aria-label="Note grid layout">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="tight">Tight (3)</SelectItem>
+                <SelectItem value="small">Small (2)</SelectItem>
+                <SelectItem value="wide">Wide (1)</SelectItem>
+              </SelectContent>
+            </Select>
             <Button
               variant="ghost"
               size="sm"
