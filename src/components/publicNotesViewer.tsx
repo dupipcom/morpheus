@@ -8,6 +8,7 @@ import { useProfileNotes } from '@/lib/hooks/useProfile'
 import { useUserData } from '@/lib/utils/userUtils'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
+import { Lock } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -23,6 +24,10 @@ interface PublicNotesViewerProps {
 
 export function PublicNotesViewer({ userName, showCard = true, gridLayout = false }: PublicNotesViewerProps) {
   const { t } = useI18n()
+  const getTranslatedLabel = (key: string, fallback: string): string => {
+    const translated = t(key)
+    return translated === key ? fallback : translated
+  }
   const [visibilityFilter, setVisibilityFilter] = useState<Array<'PUBLIC' | 'PRIVATE'>>(['PUBLIC'])
   const [sortBy, setSortBy] = useState<'date' | 'most_relevant'>('most_relevant')
   const { notes, isLoading: loading, error: notesError, refreshNotes } = useProfileNotes(userName, true, {
@@ -65,10 +70,13 @@ export function PublicNotesViewer({ userName, showCard = true, gridLayout = fals
   const publicLabel = t('forms.addTemplateForm.visibility.public')
   const privateLabel = t('forms.addTemplateForm.visibility.private')
   const visibilityPrefixLabel = t('notes.changeVisibility')
+  const sortLabel = getTranslatedLabel('notes.filters.sort', 'Sort')
+  const sortByDateLabel = getTranslatedLabel('notes.filters.date', 'Date')
+  const sortByMostRelevantLabel = getTranslatedLabel('notes.filters.mostRelevant', 'Most Relevant')
   const hasPublicSelected = visibilityFilter.includes('PUBLIC')
   const hasPrivateSelected = visibilityFilter.includes('PRIVATE')
   const visibilityLabel = (() => {
-    if (hasPublicSelected && hasPrivateSelected) return `${publicLabel} + ${privateLabel}`
+    if (hasPublicSelected && hasPrivateSelected) return `${publicLabel}, ${privateLabel}`
     if (hasPrivateSelected) return privateLabel
     return publicLabel
   })()
@@ -108,8 +116,13 @@ export function PublicNotesViewer({ userName, showCard = true, gridLayout = fals
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="justify-start w-full sm:w-[220px]">
-              {`${visibilityPrefixLabel}: ${visibilityLabel}`}
+            <Button
+              variant="outline"
+              className="justify-start gap-2 w-full sm:w-[220px]"
+              aria-label={visibilityPrefixLabel}
+            >
+              <Lock className="h-4 w-4 shrink-0" aria-hidden="true" />
+              <span className="truncate">{visibilityLabel}</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start">
@@ -130,11 +143,11 @@ export function PublicNotesViewer({ userName, showCard = true, gridLayout = fals
 
         <Select value={sortBy} onValueChange={(value) => setSortBy(value as 'date' | 'most_relevant')}>
           <SelectTrigger className="w-full sm:w-[220px]">
-            <SelectValue placeholder="Sort" />
+            <SelectValue placeholder={sortLabel} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="date">Date</SelectItem>
-            <SelectItem value="most_relevant">Most Relevant</SelectItem>
+            <SelectItem value="date">{sortByDateLabel}</SelectItem>
+            <SelectItem value="most_relevant">{sortByMostRelevantLabel}</SelectItem>
           </SelectContent>
         </Select>
       </div>
