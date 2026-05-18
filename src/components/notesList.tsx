@@ -1,12 +1,13 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { ArrowDown, ArrowUp, RefreshCw } from "lucide-react"
 import { useI18n } from '@/lib/contexts/i18n'
 import ActivityCard, { ActivityItem } from './activityCard'
 import type { Comment } from './activityCard'
 import { cn } from '@/lib/utils/utils'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 export interface Note {
   id: string
@@ -37,6 +38,22 @@ interface NotesListProps {
   filterNoteId?: string // Filter note ID to prioritize and highlight
   isReversed?: boolean
   onToggleReverseOrder?: () => void
+  initialGridOption?: NotesGridOption
+}
+
+type NotesGridOption = 'tight' | 'small' | 'wide'
+const NOTES_GRID_OPTION_STORAGE_KEY = 'notesList.gridOption'
+
+function isNotesGridOption(value: string | null): value is NotesGridOption {
+  return value === 'tight' || value === 'small' || value === 'wide'
+}
+
+function resolveInitialGridOption(
+  initialGridOption?: NotesGridOption,
+  gridLayout?: boolean
+): NotesGridOption {
+  if (initialGridOption) return initialGridOption
+  return gridLayout ? 'tight' : 'wide'
 }
 
 function getTimeAgo(date: Date): string {
@@ -88,9 +105,23 @@ export function NotesList({
   onNoteUpdated,
   filterNoteId,
   isReversed = false,
-  onToggleReverseOrder
+  onToggleReverseOrder,
+  initialGridOption
 }: NotesListProps) {
-  const { t } = useI18n()
+  const { t, hasTranslation } = useI18n()
+  const [gridOption, setGridOption] = useState<NotesGridOption>(() => {
+    if (typeof window !== 'undefined') {
+      const storedGridOption = window.localStorage.getItem(NOTES_GRID_OPTION_STORAGE_KEY)
+      if (isNotesGridOption(storedGridOption)) return storedGridOption
+    }
+
+    return resolveInitialGridOption(initialGridOption, gridLayout)
+  })
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    window.localStorage.setItem(NOTES_GRID_OPTION_STORAGE_KEY, gridOption)
+  }, [gridOption])
 
   // Preserve backend order and only prioritize a specific highlighted note when requested.
   const sortedNotes = useMemo(() => {
@@ -121,9 +152,25 @@ export function NotesList({
     )
   }
 
-  const containerClass = gridLayout 
-    ? "grid grid-cols-1 md:grid-cols-3 gap-4"
-    : "space-y-4"
+  const containerClass = cn(
+    'grid grid-cols-1 gap-4',
+    gridOption === 'tight' && 'md:grid-cols-3',
+    gridOption === 'small' && 'md:grid-cols-2',
+    gridOption === 'wide' && 'md:grid-cols-1'
+  )
+
+  const gridLayoutLabel = hasTranslation('notesList.gridOption.label')
+    ? t('notesList.gridOption.label')
+    : 'Grid layout'
+  const tightLabel = hasTranslation('notesList.gridOption.tight')
+    ? t('notesList.gridOption.tight')
+    : 'Tight'
+  const smallLabel = hasTranslation('notesList.gridOption.small')
+    ? t('notesList.gridOption.small')
+    : 'Small'
+  const wideLabel = hasTranslation('notesList.gridOption.wide')
+    ? t('notesList.gridOption.wide')
+    : 'Wide'
 
   return (
     <div>
@@ -131,6 +178,16 @@ export function NotesList({
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold">{t('publicProfile.notes')}</h3>
           <div className="flex items-center gap-1">
+            <Select value={gridOption} onValueChange={(value) => setGridOption(value as NotesGridOption)}>
+              <SelectTrigger className="h-8 w-[110px]" size="sm" aria-label={gridLayoutLabel}>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="tight">{tightLabel}</SelectItem>
+                <SelectItem value="small">{smallLabel}</SelectItem>
+                <SelectItem value="wide">{wideLabel}</SelectItem>
+              </SelectContent>
+            </Select>
             <Button
               variant="ghost"
               size="sm"
