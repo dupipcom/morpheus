@@ -119,6 +119,7 @@ export function NotesList({
   })
 
   useEffect(() => {
+    if (typeof window === 'undefined') return
     window.localStorage.setItem(NOTES_GRID_OPTION_STORAGE_KEY, gridOption)
   }, [gridOption])
 
