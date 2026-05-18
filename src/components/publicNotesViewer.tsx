@@ -17,7 +17,7 @@ interface PublicNotesViewerProps {
 export function PublicNotesViewer({ userName, showCard = true, gridLayout = false }: PublicNotesViewerProps) {
   const { t } = useI18n()
   const [visibilityFilter, setVisibilityFilter] = useState<'PUBLIC' | 'PRIVATE'>('PUBLIC')
-  const [sortBy, setSortBy] = useState<'date' | 'most_relevant'>('date')
+  const [sortBy, setSortBy] = useState<'date' | 'most_relevant'>('most_relevant')
   const { notes, isLoading: loading, error: notesError, refreshNotes } = useProfileNotes(userName, true, {
     visibility: visibilityFilter,
     sort: sortBy
