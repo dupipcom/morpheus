@@ -170,7 +170,9 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
             </div>
           </AccordionTrigger>
           <AccordionContent className="pt-3 pb-0">
-            {formContent}
+            <div className="max-h-[70vh] overflow-y-auto overscroll-contain pr-1">
+              {formContent}
+            </div>
           </AccordionContent>
         </AccordionItem>
       </Accordion>
