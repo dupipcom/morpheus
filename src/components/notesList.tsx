@@ -6,6 +6,7 @@ import { ArrowUpDown, RefreshCw } from "lucide-react"
 import { useI18n } from '@/lib/contexts/i18n'
 import ActivityCard, { ActivityItem } from './activityCard'
 import type { Comment } from './activityCard'
+import { cn } from '@/lib/utils/utils'
 
 export interface Note {
   id: string
@@ -147,10 +148,10 @@ export function NotesList({
               variant="ghost"
               size="sm"
               onClick={() => setIsReversed(prev => !prev)}
-              className={`h-8 w-8 p-0 ${isReversed ? 'text-primary' : ''}`}
+              className={cn('h-8 w-8 p-0', isReversed && 'text-primary')}
               title={t('common.reverseOrder')}
             >
-              <ArrowUpDown className={`h-4 w-4 ${isReversed ? 'rotate-180' : ''}`} />
+              <ArrowUpDown className={cn('h-4 w-4', isReversed && 'rotate-180')} />
             </Button>
             {onRefresh && (
               <Button
