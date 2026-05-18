@@ -55,7 +55,9 @@ export function useProfileNotes(
   options: ProfileNotesOptions = {}
 ) {
   const params = new URLSearchParams()
-  if (options.visibility?.length) params.set('visibility', options.visibility.join(','))
+  if (options.visibility && options.visibility.length > 0) {
+    params.set('visibility', options.visibility.join(','))
+  }
   if (options.sort) params.set('sort', options.sort)
   const notesEndpoint = enabled && userName
     ? `/api/v1/profile/${userName}/notes${params.toString() ? `?${params.toString()}` : ''}`

@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { Button } from "@/components/ui/button"
-import { ArrowUpDown, RefreshCw } from "lucide-react"
+import { ArrowDown, ArrowUp, RefreshCw } from "lucide-react"
 import { useI18n } from '@/lib/contexts/i18n'
 import ActivityCard, { ActivityItem } from './activityCard'
 import type { Comment } from './activityCard'
@@ -152,7 +152,7 @@ export function NotesList({
               title={t('common.reverseOrder')}
               aria-label={t('common.reverseOrder')}
             >
-              <ArrowUpDown className={cn('h-4 w-4', isReversed && 'rotate-180')} />
+              {isReversed ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />}
             </Button>
             {onRefresh && (
               <Button

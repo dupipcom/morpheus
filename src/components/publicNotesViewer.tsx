@@ -65,9 +65,11 @@ export function PublicNotesViewer({ userName, showCard = true, gridLayout = fals
   const publicLabel = t('forms.addTemplateForm.visibility.public')
   const privateLabel = t('forms.addTemplateForm.visibility.private')
   const visibilityPrefixLabel = t('notes.changeVisibility')
+  const hasPublicSelected = visibilityFilter.includes('PUBLIC')
+  const hasPrivateSelected = visibilityFilter.includes('PRIVATE')
   const visibilityLabel = (() => {
-    if (visibilityFilter.length === 2) return `${publicLabel} + ${privateLabel}`
-    if (visibilityFilter.includes('PRIVATE')) return privateLabel
+    if (hasPublicSelected && hasPrivateSelected) return `${publicLabel} + ${privateLabel}`
+    if (hasPrivateSelected) return privateLabel
     return publicLabel
   })()
 
