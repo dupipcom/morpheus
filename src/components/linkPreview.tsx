@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Image from 'next/image'
 import { ExternalLink } from 'lucide-react'
 import type { LinkPreviewData } from '@/app/api/v1/link-preview/route'
+import { getMediaEmbedConfig } from '@/lib/utils/linkPreview'
 
 interface LinkPreviewProps {
   url: string
@@ -13,6 +14,7 @@ export function LinkPreview({ url }: LinkPreviewProps) {
   const [data, setData] = useState<LinkPreviewData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
+  const mediaEmbed = useMemo(() => getMediaEmbedConfig(url), [url])
 
   useEffect(() => {
     let cancelled = false
@@ -43,40 +45,30 @@ export function LinkPreview({ url }: LinkPreviewProps) {
     }
   }, [url])
 
-  if (loading) {
-    return (
-      <a
-        href={url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex items-center gap-2 mt-2 p-3 rounded-lg border border-border/60 bg-muted/40 text-xs text-muted-foreground hover:bg-muted/70 transition-colors no-underline"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="h-3 w-3 rounded-full bg-muted-foreground/30 animate-pulse flex-shrink-0" />
-        <span className="truncate">{url}</span>
-        <ExternalLink className="h-3 w-3 flex-shrink-0 ml-auto" />
-      </a>
-    )
-  }
-
-  if (error || !data) {
-    return (
-      <a
-        href={url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex items-center gap-2 mt-2 p-3 rounded-lg border border-border/60 bg-muted/40 text-xs text-primary hover:bg-muted/70 transition-colors no-underline"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <ExternalLink className="h-3 w-3 flex-shrink-0" />
-        <span className="truncate">{url}</span>
-      </a>
-    )
-  }
-
-  const hasImage = !!data.image
-
-  return (
+  const previewCard = loading ? (
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex items-center gap-2 mt-2 p-3 rounded-lg border border-border/60 bg-muted/40 text-xs text-muted-foreground hover:bg-muted/70 transition-colors no-underline"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className="h-3 w-3 rounded-full bg-muted-foreground/30 animate-pulse flex-shrink-0" />
+      <span className="truncate">{url}</span>
+      <ExternalLink className="h-3 w-3 flex-shrink-0 ml-auto" />
+    </a>
+  ) : error || !data ? (
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex items-center gap-2 mt-2 p-3 rounded-lg border border-border/60 bg-muted/40 text-xs text-primary hover:bg-muted/70 transition-colors no-underline"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <ExternalLink className="h-3 w-3 flex-shrink-0" />
+      <span className="truncate">{url}</span>
+    </a>
+  ) : (
     <a
       href={url}
       target="_blank"
@@ -84,10 +76,10 @@ export function LinkPreview({ url }: LinkPreviewProps) {
       className="block mt-2 rounded-lg border border-border/60 bg-muted/40 hover:bg-muted/70 transition-colors overflow-hidden no-underline"
       onClick={(e) => e.stopPropagation()}
     >
-      {hasImage && (
+      {!!data.image && (
         <div className="relative w-full" style={{ aspectRatio: '1200/630' }}>
           <Image
-            src={data.image as string}
+            src={data.image}
             alt={data.title || url}
             fill
             className="object-cover"
@@ -120,5 +112,30 @@ export function LinkPreview({ url }: LinkPreviewProps) {
         )}
       </div>
     </a>
+  )
+
+  return (
+    <>
+      {mediaEmbed && (
+        <div className="mt-2 overflow-hidden rounded-lg border border-border/60 bg-card">
+          <div className="relative w-full overflow-hidden bg-black/5" style={mediaEmbed.aspectRatio ? { aspectRatio: mediaEmbed.aspectRatio } : { minHeight: mediaEmbed.minHeight }}>
+            <iframe
+              src={mediaEmbed.embedUrl}
+              title={mediaEmbed.title}
+              className="h-full min-h-[120px] w-full border-0"
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; fullscreen; gyroscope; picture-in-picture"
+              allowFullScreen
+              referrerPolicy="strict-origin-when-cross-origin"
+              sandbox="allow-same-origin allow-scripts allow-popups allow-popups-to-escape-sandbox allow-presentation"
+            />
+          </div>
+          <div className="border-t border-border/60 bg-muted/30 px-3 py-2 text-[10px] text-muted-foreground">
+            {mediaEmbed.providerLabel} embed. If playback is unavailable, open the original link below.
+          </div>
+        </div>
+      )}
+      {previewCard}
+    </>
   )
 }

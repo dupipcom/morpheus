@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useContext, useRef } from 'react'
+import { useState, useEffect, useContext, useMemo, useRef } from 'react'
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
@@ -10,6 +10,8 @@ import { GlobalContext } from "@/lib/contexts"
 import { Send, Loader2 } from "lucide-react"
 import { VisibilitySelect } from "@/components/visibilitySelect"
 import { DatePickerButton } from "@/components/ui/datePickerButton"
+import { LinkPreview } from "@/components/linkPreview"
+import { extractUrls } from "@/lib/utils/linkPreview"
 
 interface PublishNoteProps {
   onNotePublished?: () => void
@@ -25,6 +27,7 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
   const [noteContent, setNoteContent] = useState('')
   const [noteVisibility, setNoteVisibility] = useState(defaultVisibility)
   const [isPublishing, setIsPublishing] = useState(false)
+  const previewUrls = useMemo(() => extractUrls(noteContent), [noteContent])
   
   // Use ref to track if we're updating from props to prevent loops
   const isUpdatingFromProps = useRef(false)
@@ -146,6 +149,13 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
           </Button>
         </div>
       </div>
+      {previewUrls.length > 0 && (
+        <div className="mt-3">
+          {previewUrls.map((url) => (
+            <LinkPreview key={url} url={url} />
+          ))}
+        </div>
+      )}
     </>
   )
 
@@ -167,4 +177,3 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
     </div>
   )
 }
-
