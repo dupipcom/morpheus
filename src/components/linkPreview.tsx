@@ -12,7 +12,7 @@ interface LinkPreviewProps {
 }
 
 export function LinkPreview({ url }: LinkPreviewProps) {
-  const { t } = useI18n()
+  const { t, hasTranslation } = useI18n()
   const [data, setData] = useState<LinkPreviewData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
@@ -22,11 +22,11 @@ export function LinkPreview({ url }: LinkPreviewProps) {
     : mediaEmbed?.minHeight
       ? { minHeight: mediaEmbed.minHeight }
       : {}
-  const translatedEmbedHint = mediaEmbed ? t('mood.publish.embedHint', { provider: mediaEmbed.providerLabel }) : null
+  const translatedEmbedHint = mediaEmbed && hasTranslation('mood.publish.embedHint')
+    ? t('mood.publish.embedHint', { provider: mediaEmbed.providerLabel })
+    : null
   const embedHint = mediaEmbed
-    ? translatedEmbedHint === 'mood.publish.embedHint'
-      ? `${mediaEmbed.providerLabel} embed. If playback is unavailable, open the original link below.`
-      : translatedEmbedHint
+    ? translatedEmbedHint || `${mediaEmbed.providerLabel} embed. If playback is unavailable, open the original link below.`
     : null
 
   useEffect(() => {
@@ -135,12 +135,12 @@ export function LinkPreview({ url }: LinkPreviewProps) {
             <iframe
               src={mediaEmbed.embedUrl}
               title={mediaEmbed.title}
-              className="h-full min-h-[120px] w-full border-0"
+              className="h-full w-full border-0"
               loading="lazy"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; fullscreen; gyroscope; picture-in-picture"
               allowFullScreen
               referrerPolicy="strict-origin-when-cross-origin"
-              sandbox="allow-same-origin allow-scripts allow-popups allow-popups-to-escape-sandbox allow-presentation"
+              sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox allow-presentation"
             />
           </div>
           <div className="border-t border-border/60 bg-muted/30 px-3 py-2 text-[10px] text-muted-foreground">

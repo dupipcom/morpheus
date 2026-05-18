@@ -71,7 +71,7 @@ function getYouTubeEmbed(url: URL): MediaEmbedConfig | null {
     videoId = getPathSegments(url)[0] || null
   } else if (hasHostname(url, 'youtube.com') || hasHostname(url, 'youtube-nocookie.com')) {
     const segments = getPathSegments(url)
-    if (url.pathname === '/watch') {
+    if (url.pathname.startsWith('/watch')) {
       videoId = url.searchParams.get('v')
     } else if (segments[0] === 'shorts' || segments[0] === 'embed' || segments[0] === 'live') {
       videoId = segments[1] || null
