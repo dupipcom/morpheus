@@ -61,6 +61,66 @@ export async function PUT(
   }
 }
 
+// PATCH /api/v1/notes/[noteId] - Update only visibility of a note
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ noteId: string }> }
+) {
+  try {
+    const { userId } = await auth()
+
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const { noteId } = await params
+    const body = await request.json()
+    const { visibility } = body
+
+    if (!visibility) {
+      return NextResponse.json({ error: 'Visibility is required' }, { status: 400 })
+    }
+
+    const validVisibilities = ['PRIVATE', 'FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC', 'AI_ENABLED']
+    if (!validVisibilities.includes(visibility)) {
+      return NextResponse.json({ error: 'Invalid visibility value' }, { status: 400 })
+    }
+
+    // Get user from database
+    const user = await prisma.user.findUnique({
+      where: { userId }
+    })
+
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+    }
+
+    // Verify note exists and user owns it
+    const note = await prisma.note.findUnique({
+      where: { id: noteId }
+    })
+
+    if (!note) {
+      return NextResponse.json({ error: 'Note not found' }, { status: 404 })
+    }
+
+    if (note.userId !== user.id) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    }
+
+    // Update visibility only
+    const updatedNote = await prisma.note.update({
+      where: { id: noteId },
+      data: { visibility }
+    })
+
+    return NextResponse.json({ note: updatedNote })
+  } catch (error) {
+    console.error('Error updating note visibility:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
+}
+
 // DELETE /api/v1/notes/[noteId] - Delete a note
 export async function DELETE(
   request: NextRequest,
