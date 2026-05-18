@@ -20,6 +20,8 @@ interface PublishNoteProps {
   defaultVisibility?: string
 }
 
+const WRITE_TOOLBAR_MAX_HEIGHT = '70vh'
+
 export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibility = 'AI_ENABLED' }: PublishNoteProps) => {
   const { t } = useI18n()
   const { refreshAll } = useNotesRefresh()
@@ -170,7 +172,7 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
             </div>
           </AccordionTrigger>
           <AccordionContent className="pt-3 pb-0">
-            <div className="max-h-[70vh] overflow-y-auto overscroll-contain pr-1">
+            <div className="overflow-y-auto overscroll-contain pr-1" style={{ maxHeight: WRITE_TOOLBAR_MAX_HEIGHT }}>
               {formContent}
             </div>
           </AccordionContent>
