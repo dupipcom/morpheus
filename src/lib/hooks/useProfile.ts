@@ -10,6 +10,12 @@ interface NotesData {
   notes?: unknown[]
 }
 
+interface ProfileNotesOptions {
+  visibility?: Array<'PUBLIC' | 'PRIVATE'>
+  sort?: 'date' | 'most_relevant'
+  order?: 'asc' | 'desc'
+}
+
 /**
  * SWR hook to fetch a public profile by username
  */
@@ -44,9 +50,23 @@ export function useProfile(userName: string | null, enabled: boolean = true) {
 /**
  * SWR hook to fetch profile notes
  */
-export function useProfileNotes(userName: string | null, enabled: boolean = true) {
+export function useProfileNotes(
+  userName: string | null,
+  enabled: boolean = true,
+  options: ProfileNotesOptions = {}
+) {
+  const params = new URLSearchParams()
+  if (options.visibility && options.visibility.length > 0) {
+    params.set('visibility', options.visibility.join(','))
+  }
+  if (options.sort) params.set('sort', options.sort)
+  if (options.order) params.set('order', options.order)
+  const notesEndpoint = enabled && userName
+    ? `/api/v1/profile/${userName}/notes${params.toString() ? `?${params.toString()}` : ''}`
+    : null
+
   const { data, error, isLoading, mutate } = useSWR<NotesData>(
-    enabled && userName ? `/api/v1/profile/${userName}/notes` : null,
+    notesEndpoint,
     jsonFetcher,
     {
       revalidateOnFocus: false,
