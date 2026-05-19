@@ -85,7 +85,11 @@
     "yourMood": "Your mood.",
     "yourProductivity": "Your productivity.",
     "yourData": "Your data.",
-    "yourBalance": "Your money."
+    "yourBalance": "Your money.",
+    "timeframe": {
+      "startDate": "Start date",
+      "endDate": "End date"
+    }
   },
   "mood": {
     "title": "It's {date}.",
