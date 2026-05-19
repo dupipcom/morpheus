@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { LinkPreview } from '@/components/linkPreview'
+import { useI18n } from '@/lib/contexts/i18n'
 import { extractUrls } from '@/lib/utils/linkPreview'
 
 interface ChatMessageContentProps {
@@ -10,8 +11,11 @@ interface ChatMessageContentProps {
 }
 
 export function ChatMessageContent({ content, deletedAt }: ChatMessageContentProps) {
+  const { t, hasTranslation } = useI18n()
+  const deletedMessageLabel = hasTranslation('chat.deletedMessage') ? t('chat.deletedMessage') : 'Message deleted'
+
   if (deletedAt) {
-    return <p className="text-sm italic text-muted-foreground">Message deleted</p>
+    return <p className="text-sm italic text-muted-foreground">{deletedMessageLabel}</p>
   }
 
   const urls = extractUrls(content)

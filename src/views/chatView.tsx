@@ -21,6 +21,7 @@ import {
 } from '@/lib/chat/realtime/channelNames'
 import { cn } from '@/lib/utils/utils'
 import type { ChatMessageSummary, ChatUserProfile } from '@/lib/chat/types'
+import { CHAT_POLL_INTERVAL_MS, getChatAppBaseUrl } from '@/lib/chat/constants'
 
 const fetcher = async (url: string) => {
   const response = await fetch(url)
@@ -101,7 +102,7 @@ export function ChatView() {
 
   const sidebarKey = '/api/v1/chat/sidebar'
   const { data: sidebar, error: sidebarError, isLoading: isSidebarLoading, mutate: mutateSidebar } = useSWR<SidebarResponse>(sidebarKey, fetcher, {
-    refreshInterval: 30_000,
+    refreshInterval: CHAT_POLL_INTERVAL_MS,
   })
 
   const activeRoomKey = useMemo(() => {
@@ -120,6 +121,11 @@ export function ChatView() {
 
   const chatTitle = hasTranslation('chat.title') ? t('chat.title') : 'Chat'
   const chatSubtitle = hasTranslation('chat.subtitle') ? t('chat.subtitle') : 'Organizations, channels, direct messages, and threads.'
+  const anonymousLabel = hasTranslation('chat.anonymous') ? t('chat.anonymous') : 'Anonymous'
+  const directMessageLabel = hasTranslation('chat.directMessage') ? t('chat.directMessage') : 'Direct message'
+  const deletedMessageTitle = hasTranslation('chat.deleteMessageTitle') ? t('chat.deleteMessageTitle') : 'Delete message?'
+  const deletedMessageDescription = hasTranslation('chat.deleteMessageDescription') ? t('chat.deleteMessageDescription') : 'This will soft-delete the message and keep a placeholder in the conversation history.'
+  const createInviteLabel = hasTranslation('chat.createInviteLink') ? t('chat.createInviteLink') : 'Create invite link'
 
   useEffect(() => {
     if (activeRoom || !sidebar) return
@@ -132,9 +138,9 @@ export function ChatView() {
 
     const defaultDm = sidebar.dms?.[0]
     if (defaultDm) {
-      setActiveRoom({ type: 'dm', id: defaultDm.id, name: defaultDm.participant?.displayName || 'Direct message' })
+      setActiveRoom({ type: 'dm', id: defaultDm.id, name: defaultDm.participant?.displayName || directMessageLabel })
     }
-  }, [activeRoom, sidebar])
+  }, [activeRoom, directMessageLabel, sidebar])
 
   useEffect(() => {
     if (!activeRoom || !messagesData?.messages?.length) return
@@ -313,8 +319,7 @@ export function ChatView() {
       })
       const payload = await response.json()
       if (!response.ok) throw new Error(payload.error || 'Failed to create invite')
-      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin
-      const link = `${baseUrl}/api/v1/chat/invites/${payload.invite.token}/accept`
+      const link = `${getChatAppBaseUrl()}/api/v1/chat/invites/${payload.invite.token}/accept`
       setInviteLink(link)
       if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(link)
@@ -338,7 +343,7 @@ export function ChatView() {
     <div key={message.id} className="space-y-3 rounded-xl border border-border/60 bg-card p-4 shadow-sm">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-sm font-semibold">{message.author?.displayName || 'Anonymous'}</p>
+          <p className="text-sm font-semibold">{message.author?.displayName || anonymousLabel}</p>
           <p className="text-xs text-muted-foreground">{new Date(message.createdAt).toLocaleString()}</p>
         </div>
         <div className="flex items-center gap-2">
@@ -427,7 +432,7 @@ export function ChatView() {
                     </div>
                     <Button variant="outline" className="w-full" onClick={() => void createInvite()} disabled={isCreatingInvite}>
                       <Send className="h-4 w-4" />
-                      Create invite link
+                      {createInviteLabel}
                     </Button>
                   </>
                 )}
@@ -486,7 +491,7 @@ export function ChatView() {
                       activeRoom?.type === 'dm' && activeRoom.id === dm.id && 'border-primary bg-primary/10',
                     )}
                     onClick={() => {
-                      setActiveRoom({ type: 'dm', id: dm.id, name: dm.participant?.displayName || 'Direct message' })
+                      setActiveRoom({ type: 'dm', id: dm.id, name: dm.participant?.displayName || directMessageLabel })
                       setMobileView('room')
                     }}
                   >
@@ -566,10 +571,8 @@ export function ChatView() {
       <Dialog open={Boolean(messagePendingDelete)} onOpenChange={(open) => { if (!open) setMessagePendingDelete(null) }}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Delete message?</DialogTitle>
-            <DialogDescription>
-              This will soft-delete the message and keep a placeholder in the conversation history.
-            </DialogDescription>
+            <DialogTitle>{deletedMessageTitle}</DialogTitle>
+            <DialogDescription>{deletedMessageDescription}</DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setMessagePendingDelete(null)}>Cancel</Button>

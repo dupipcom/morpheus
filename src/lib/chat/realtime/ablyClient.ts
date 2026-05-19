@@ -1,4 +1,5 @@
 import * as Ably from 'ably'
+import { logger } from '@/lib/logger'
 
 let client: Ably.Realtime | null = null
 
@@ -14,11 +15,11 @@ export function getAblyRealtimeClient() {
 
     client.connection.on((stateChange) => {
       if (stateChange.current === 'failed') {
-        console.warn('Chat realtime connection failed', stateChange.reason)
+        logger('chat_realtime_warning', stateChange.reason)
       }
     })
   } catch (error) {
-    console.warn('Unable to initialize Ably realtime client', error)
+    logger('chat_realtime_error', error)
     client = null
   }
 

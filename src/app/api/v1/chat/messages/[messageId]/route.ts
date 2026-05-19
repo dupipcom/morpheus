@@ -8,6 +8,7 @@ import { CHAT_EVENTS } from '@/lib/chat/realtime/events'
 import { publishAblyEvent } from '@/lib/chat/realtime/ablyServer'
 import { getChatDmChannelName, getChatOrgChannelName } from '@/lib/chat/realtime/channelNames'
 import { chatErrorResponse, getOrgMemberIds, jsonError, publishMessageDeleted, publishUserInvalidation } from '@/lib/chat/api'
+import { CHAT_DELETED_MESSAGE_MARKER } from '@/lib/chat/constants'
 
 const MESSAGE_ERROR_STATUS: Record<string, number> = {
   'Message not found': 404,
@@ -123,7 +124,7 @@ export async function DELETE(
       data: {
         deletedAt: new Date(),
         deletedByUserId: user.id,
-        content: 'Message deleted',
+        content: CHAT_DELETED_MESSAGE_MARKER,
       },
     })
 

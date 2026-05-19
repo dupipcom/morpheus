@@ -23,7 +23,7 @@ export async function GET() {
       orgs: memberships.map((membership) => ({
         id: membership.clerkOrgId,
         role: membership.role,
-        name: orgMap.get(membership.clerkOrgId)?.name ?? 'Organization',
+        name: orgMap.get(membership.clerkOrgId)?.name ?? membership.clerkOrgId,
         slug: orgMap.get(membership.clerkOrgId)?.slug ?? membership.clerkOrgId,
         imageUrl: orgMap.get(membership.clerkOrgId)?.imageUrl ?? null,
       })),

@@ -7,6 +7,7 @@ import { Mail } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ChatUnreadBadge } from '@/components/chat/chatUnreadBadge'
 import { getAblyRealtimeClient } from '@/lib/chat/realtime/ablyClient'
+import { CHAT_POLL_INTERVAL_MS } from '@/lib/chat/constants'
 import { getChatUserChannelName } from '@/lib/chat/realtime/channelNames'
 
 const fetcher = async (url: string) => {
@@ -27,7 +28,7 @@ interface ChatNavButtonProps {
 
 export function ChatNavButton({ isActive, onClick, className, size = 'icon' }: ChatNavButtonProps) {
   const { data, mutate } = useSWR('/api/v1/chat/unread-count', fetcher, {
-    refreshInterval: 30_000,
+    refreshInterval: CHAT_POLL_INTERVAL_MS,
   })
 
   useEffect(() => {

@@ -801,6 +801,12 @@
   },
   "chat": {
     "title": "Chat",
-    "subtitle": "Organizations, channels, direct messages, and threads."
+    "subtitle": "Organizations, channels, direct messages, and threads.",
+    "anonymous": "Anonymous",
+    "directMessage": "Direct message",
+    "deletedMessage": "Message deleted",
+    "deleteMessageTitle": "Delete message?",
+    "deleteMessageDescription": "This will soft-delete the message and keep a placeholder in the conversation history.",
+    "createInviteLink": "Create invite link"
   }
 }

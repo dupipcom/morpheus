@@ -1,6 +1,7 @@
 import prisma from '@/lib/prisma'
 import { extractUrls } from '@/lib/utils/linkPreview'
 import { getRoomKey } from './unread'
+import { CHAT_DELETED_MESSAGE_MARKER } from './constants'
 import { getClerkOrganizations } from './auth'
 import type { ChatMessageSummary, ChatUserProfile } from './types'
 
@@ -63,7 +64,7 @@ async function getProfilesForUserIds(userIds: string[]) {
       const username = profile?.username?.value ?? null
       const firstName = profile?.firstName?.value ?? null
       const lastName = profile?.lastName?.value ?? null
-      const displayName = [firstName, lastName].filter(Boolean).join(' ') || (username ? `@${username}` : 'Anonymous')
+      const displayName = [firstName, lastName].filter(Boolean).join(' ') || (username ? `@${username}` : '')
       return [
         user.id,
         {
@@ -266,7 +267,7 @@ export async function getChatSidebar(userId: string) {
       type: channel.type,
       unreadCount,
       lastMessageAt: lastMessage?.createdAt.toISOString() ?? null,
-      lastMessagePreview: lastMessage?.deletedAt ? 'Message deleted' : lastMessage?.content ?? null,
+      lastMessagePreview: lastMessage?.deletedAt ? CHAT_DELETED_MESSAGE_MARKER : lastMessage?.content ?? null,
     }
   }))
 
@@ -284,7 +285,7 @@ export async function getChatSidebar(userId: string) {
       participant: profile,
       unreadCount,
       lastMessageAt: lastMessage?.createdAt.toISOString() ?? null,
-      lastMessagePreview: lastMessage?.deletedAt ? 'Message deleted' : lastMessage?.content ?? null,
+      lastMessagePreview: lastMessage?.deletedAt ? CHAT_DELETED_MESSAGE_MARKER : lastMessage?.content ?? null,
     }
   }))
 
@@ -296,7 +297,7 @@ export async function getChatSidebar(userId: string) {
     orgs: memberships.map((membership) => ({
       id: membership.clerkOrgId,
       role: membership.role,
-      name: orgMeta.get(membership.clerkOrgId)?.name ?? 'Organization',
+      name: orgMeta.get(membership.clerkOrgId)?.name ?? membership.clerkOrgId,
       slug: orgMeta.get(membership.clerkOrgId)?.slug ?? membership.clerkOrgId,
       imageUrl: orgMeta.get(membership.clerkOrgId)?.imageUrl ?? null,
       channels: channelRoomData.filter((channel) => channel.clerkOrgId === membership.clerkOrgId),
