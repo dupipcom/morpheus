@@ -11,6 +11,7 @@ import { useLocalStorage } from 'usehooks-ts'
 import { useI18n } from '@/lib/contexts/i18n'
 import { SearchPopover } from '@/components/searchPopover'
 import { NotificationsButton } from '@/components/notificationsButton'
+import { ChatNavButton } from '@/components/chat/chatNavButton'
 import { DEFAULT_TRACKS } from '@/components/ui/nav'
 import Hls from 'hls.js'
 import { logger } from '@/lib/logger'
@@ -373,6 +374,9 @@ export function BottomNav() {
 
             {/* Notifications Button */}
             <NotificationsButton size="icon" className="h-9 w-9" />
+
+            {/* Chat Button */}
+            <ChatNavButton isActive={isActive('chat')} onClick={() => handleNavLinkClick('/app/chat')} size="icon" className="h-9 w-9" />
 
             {/* Space/Time Toggle */}
             <Button

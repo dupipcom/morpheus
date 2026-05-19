@@ -134,6 +134,33 @@ enum Visibility {
   HIDDEN
 }
 
+enum ChatRole {
+  SUPERUSER
+  ADMIN
+  MODERATOR
+  USER
+}
+
+enum ChatChannelType {
+  TEXT
+  ANNOUNCEMENT
+}
+
+enum ChatRoomType {
+  ORG_CHANNEL
+  DIRECT_MESSAGE
+}
+
+enum MessageContentFormat {
+  PLAIN_TEXT
+}
+
+enum InviteStatus {
+  ACTIVE
+  REVOKED
+  EXPIRED
+}
+
 // =============================================================================
 // EMBEDDED TYPES
 // =============================================================================
@@ -839,4 +866,102 @@ model Wallet {
 
   @@index([userId])
   @@index([address])
+}
+
+
+model ChatOrgMembership {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  clerkOrgId String
+  userId     String   @db.ObjectId
+  role       ChatRole @default(USER)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([clerkOrgId, userId])
+  @@index([userId])
+}
+
+model ChatChannel {
+  id              String          @id @default(auto()) @map("_id") @db.ObjectId
+  clerkOrgId      String
+  name            String
+  slug            String
+  description     String?
+  type            ChatChannelType @default(TEXT)
+  createdByUserId String          @db.ObjectId
+  archived        Boolean         @default(false)
+  position        Int             @default(0)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@unique([clerkOrgId, slug])
+  @@index([clerkOrgId, position])
+}
+
+model DirectMessageConversation {
+  id                 String   @id @default(auto()) @map("_id") @db.ObjectId
+  participantUserIds String[] @default([]) @db.ObjectId
+  conversationKey    String   @unique
+  createdByUserId    String   @db.ObjectId
+  lastMessageAt      DateTime?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@index([lastMessageAt])
+}
+
+model ChatMessage {
+  id                  String               @id @default(auto()) @map("_id") @db.ObjectId
+  roomType            ChatRoomType
+  channelId           String?              @db.ObjectId
+  dmConversationId    String?              @db.ObjectId
+  authorUserId        String               @db.ObjectId
+  content             String
+  contentFormat       MessageContentFormat @default(PLAIN_TEXT)
+  replyToMessageId    String?              @db.ObjectId
+  threadRootMessageId String?              @db.ObjectId
+  deletedAt           DateTime?
+  deletedByUserId     String?              @db.ObjectId
+  editedAt            DateTime?
+  metadata            Json?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+
+  @@index([channelId, createdAt])
+  @@index([dmConversationId, createdAt])
+  @@index([threadRootMessageId, createdAt])
+  @@index([authorUserId, createdAt])
+}
+
+model ChatInviteLink {
+  id               String       @id @default(auto()) @map("_id") @db.ObjectId
+  clerkOrgId       String
+  token            String       @unique
+  createdByUserId  String       @db.ObjectId
+  inviteeUserId    String?      @db.ObjectId
+  acceptedByUserId String?      @db.ObjectId
+  maxUses          Int?
+  usedCount        Int          @default(0)
+  expiresAt        DateTime?
+  status           InviteStatus @default(ACTIVE)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  @@index([clerkOrgId, status])
+  @@index([inviteeUserId, status])
+}
+
+model ChatReadState {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String   @db.ObjectId
+  roomKey           String
+  channelId         String?  @db.ObjectId
+  dmConversationId  String?  @db.ObjectId
+  lastReadMessageId String?  @db.ObjectId
+  lastReadAt        DateTime?
+  updatedAt         DateTime @updatedAt
+
+  @@unique([userId, roomKey])
+  @@index([channelId])
+  @@index([dmConversationId])
 }

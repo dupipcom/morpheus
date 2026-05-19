@@ -798,5 +798,21 @@
       "mostRelevant": "Most Relevant",
       "all": "All"
     }
+  },
+  "chat": {
+    "title": "Chat",
+    "subtitle": "Organizations, channels, direct messages, and threads.",
+    "anonymous": "Anonymous",
+    "directMessage": "Direct message",
+    "deletedMessage": "Message deleted",
+    "deleteMessageTitle": "Delete message?",
+    "deleteMessageDescription": "This will soft-delete the message and keep a placeholder in the conversation history.",
+    "createInviteLink": "Create invite link",
+    "pendingInvites": "Pending invites",
+    "acceptInvite": "Accept",
+    "inviteFriendToOrg": "Invite a friend to this org",
+    "inviteLinkCopied": "Invite link copied",
+    "inviteSent": "Invite sent",
+    "inviteAccepted": "Invite accepted"
   }
 }
