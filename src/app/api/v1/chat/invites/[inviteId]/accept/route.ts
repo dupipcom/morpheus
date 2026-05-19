@@ -6,14 +6,14 @@ import { jsonError } from '@/lib/chat/api'
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ token: string }> },
+  { params }: { params: Promise<{ inviteId: string }> },
 ) {
   try {
     const user = await getCurrentChatUser()
     if (!user) return jsonError('Unauthorized', 401)
 
-    const { token } = await params
-    const invite = await prisma.chatInviteLink.findUnique({ where: { token } })
+    const { inviteId } = await params
+    const invite = await prisma.chatInviteLink.findUnique({ where: { token: inviteId } })
     if (!invite) return jsonError('Invite not found', 404)
 
     const isExpired = invite.expiresAt ? invite.expiresAt.getTime() < Date.now() : false
