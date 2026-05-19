@@ -17,6 +17,15 @@ import { ContactCombobox } from "@/components/ui/contactCombobox"
 import { ThingCombobox } from "@/components/ui/thingCombobox"
 import { LifeEventCombobox } from "@/components/ui/lifeEventCombobox"
 import { useDebounce } from "@/lib/hooks/useDebounce"
+import { Button } from "@/components/ui/button"
+import { Lock, Users, UserCheck, Globe, Sparkles } from 'lucide-react'
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdownMenu'
+import type { NoteVisibility } from '@/lib/hooks/useProfile'
 
 interface MoodViewProps {
   timeframe?: string
@@ -174,6 +183,9 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
   const [optimisticMoodThings, setOptimisticMoodThings] = useState<any[]>([])
   const [newLifeEventText, setNewLifeEventText] = useState('')
   const [notes, setNotes] = useState<Note[]>([])
+  // Selectable visibility options for the filter UI (HIDDEN is a system-only state, not user-selectable)
+  const SELECTABLE_NOTE_VISIBILITIES: NoteVisibility[] = ['PRIVATE', 'AI_ENABLED', 'FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC']
+  const [notesVisibilityFilter, setNotesVisibilityFilter] = useState<NoteVisibility[]>(SELECTABLE_NOTE_VISIBILITIES)
 
   // Initialize mood contacts from server data
   useEffect(() => {
@@ -247,12 +259,20 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
   )
 
   // Fetch notes for the selected date
+  const notesVisibilityParam = notesVisibilityFilter.length > 0 && notesVisibilityFilter.length < SELECTABLE_NOTE_VISIBILITIES.length
+    ? `visibility=${notesVisibilityFilter.join(',')}`
+    : null
+  const notesUrlParams = [
+    filterNoteId ? `noteId=${filterNoteId}` : null,
+    notesVisibilityParam
+  ].filter(Boolean).join('&')
+  const notesUrl = `/api/v1/notes${notesUrlParams ? `?${notesUrlParams}` : ''}`
+
   const { data: notesData, mutate: mutateNotes, isLoading: notesLoading, error: notesError } = useSWR(
-    session?.user ? `/api/v1/notes${filterNoteId ? `?noteId=${filterNoteId}` : ''}` : null,
+    session?.user ? notesUrl : null,
     async () => {
       try {
-        const url = filterNoteId ? `/api/v1/notes?noteId=${filterNoteId}` : '/api/v1/notes'
-        const response = await fetch(url)
+        const response = await fetch(notesUrl)
         if (!response.ok) {
           console.error('Failed to fetch notes:', response.status, response.statusText)
           return { notes: [] }
@@ -620,6 +640,50 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
 
           {/* Notes Tab */}
           <TabsContent value="notes" className="mt-4">
+            <div className="mb-4">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="justify-start gap-2 w-full sm:w-auto" aria-label={t('notes.changeVisibility')}>
+                    <Lock className="h-4 w-4 shrink-0" aria-hidden="true" />
+                    <span className="truncate">
+                      {notesVisibilityFilter.length === SELECTABLE_NOTE_VISIBILITIES.length
+                        ? t('notes.filters.all')
+                        : notesVisibilityFilter.map(v => t(`mood.publish.visibility.${v}`) || v).join(', ')}
+                    </span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start">
+                  {SELECTABLE_NOTE_VISIBILITIES.map(v => {
+                    const icons: Record<string, React.ReactNode> = {
+                      PRIVATE: <Lock className="h-4 w-4" />,
+                      AI_ENABLED: <Sparkles className="h-4 w-4" />,
+                      FRIENDS: <Users className="h-4 w-4" />,
+                      CLOSE_FRIENDS: <UserCheck className="h-4 w-4" />,
+                      PUBLIC: <Globe className="h-4 w-4" />,
+                    }
+                    const label = t(`mood.publish.visibility.${v}`) || v
+                    return (
+                      <DropdownMenuCheckboxItem
+                        key={v}
+                        checked={notesVisibilityFilter.includes(v)}
+                        onCheckedChange={() => {
+                          setNotesVisibilityFilter(prev => {
+                            if (prev.length === 1 && prev.includes(v)) return prev
+                            if (prev.includes(v)) return prev.filter(item => item !== v)
+                            return [...prev, v]
+                          })
+                        }}
+                      >
+                        <span className="flex items-center gap-2">
+                          {icons[v]}
+                          {label}
+                        </span>
+                      </DropdownMenuCheckboxItem>
+                    )
+                  })}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
             <NotesList
               notes={notes}
               loading={notesLoading}

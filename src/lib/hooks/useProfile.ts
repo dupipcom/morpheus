@@ -6,12 +6,15 @@ interface ProfileData {
   profile?: unknown
 }
 
+export type NoteVisibility = 'PUBLIC' | 'PRIVATE' | 'FRIENDS' | 'CLOSE_FRIENDS' | 'AI_ENABLED' | 'HIDDEN'
+
 interface NotesData {
   notes?: unknown[]
+  isOwnProfile?: boolean
 }
 
 interface ProfileNotesOptions {
-  visibility?: Array<'PUBLIC' | 'PRIVATE'>
+  visibility?: Array<NoteVisibility>
   sort?: 'date' | 'most_relevant'
   order?: 'asc' | 'desc'
 }
@@ -86,6 +89,7 @@ export function useProfileNotes(
 
   return {
     notes: data?.notes || [],
+    isOwnProfile: data?.isOwnProfile ?? false,
     isLoading,
     error,
     refreshNotes,

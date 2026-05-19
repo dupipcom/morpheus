@@ -1,14 +1,14 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { NotesList } from "@/components/notesList"
 import { useI18n } from '@/lib/contexts/i18n'
-import { useProfileNotes } from '@/lib/hooks/useProfile'
+import { useProfileNotes, NoteVisibility } from '@/lib/hooks/useProfile'
 import { useUserData } from '@/lib/utils/userUtils'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
-import { Lock } from 'lucide-react'
+import { Lock, Users, UserCheck, Globe, Sparkles } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -28,10 +28,10 @@ export function PublicNotesViewer({ userName, showCard = true, gridLayout = fals
     const translated = t(key)
     return translated === key ? fallback : translated
   }
-  const [visibilityFilter, setVisibilityFilter] = useState<Array<'PUBLIC' | 'PRIVATE'>>(['PUBLIC'])
+  const [visibilityFilter, setVisibilityFilter] = useState<Array<NoteVisibility>>(['PUBLIC'])
   const [sortBy, setSortBy] = useState<'date' | 'most_relevant'>('most_relevant')
   const [isReversed, setIsReversed] = useState(false)
-  const { notes, isLoading: loading, error: notesError, refreshNotes } = useProfileNotes(userName, true, {
+  const { notes, isLoading: loading, error: notesError, refreshNotes, isOwnProfile } = useProfileNotes(userName, true, {
     visibility: visibilityFilter,
     sort: sortBy,
     order: isReversed ? 'asc' : 'desc'
@@ -69,21 +69,29 @@ export function PublicNotesViewer({ userName, showCard = true, gridLayout = fals
   }, [userName, refreshNotes])
 
   const error = notesError ? t('errors.failedToLoadNotes') : null
-  const publicLabel = t('forms.addTemplateForm.visibility.public')
-  const privateLabel = t('forms.addTemplateForm.visibility.private')
   const visibilityPrefixLabel = t('notes.changeVisibility')
   const sortLabel = getTranslatedLabel('notes.filters.sort', 'Sort')
   const sortByDateLabel = getTranslatedLabel('notes.filters.date', 'Date')
   const sortByMostRelevantLabel = getTranslatedLabel('notes.filters.mostRelevant', 'Most Relevant')
-  const hasPublicSelected = visibilityFilter.includes('PUBLIC')
-  const hasPrivateSelected = visibilityFilter.includes('PRIVATE')
+
+  // Build the list of visibility options to display based on the viewer's relationship
+  const visibilityOptions: { value: NoteVisibility; label: string; icon: React.ReactNode }[] = [
+    { value: 'PUBLIC', label: t('mood.publish.visibility.PUBLIC') || 'Public', icon: <Globe className="h-4 w-4" /> },
+    ...(isLoggedIn ? [{ value: 'FRIENDS' as NoteVisibility, label: t('mood.publish.visibility.FRIENDS') || 'Friends', icon: <Users className="h-4 w-4" /> }] : []),
+    ...(isLoggedIn ? [{ value: 'CLOSE_FRIENDS' as NoteVisibility, label: t('mood.publish.visibility.CLOSE_FRIENDS') || 'Close Friends', icon: <UserCheck className="h-4 w-4" /> }] : []),
+    ...(isOwnProfile ? [{ value: 'PRIVATE' as NoteVisibility, label: t('mood.publish.visibility.PRIVATE') || 'Private', icon: <Lock className="h-4 w-4" /> }] : []),
+    ...(isOwnProfile ? [{ value: 'AI_ENABLED' as NoteVisibility, label: t('mood.publish.visibility.AI_ENABLED') || 'AI Enabled', icon: <Sparkles className="h-4 w-4" /> }] : []),
+  ]
+
   const visibilityLabel = (() => {
-    if (hasPublicSelected && hasPrivateSelected) return `${publicLabel}, ${privateLabel}`
-    if (hasPrivateSelected) return privateLabel
-    return publicLabel
+    if (visibilityFilter.length === 0) return t('mood.publish.visibility.PUBLIC') || 'Public'
+    if (visibilityFilter.length === visibilityOptions.length) return t('notes.filters.all')
+    return visibilityFilter
+      .map(v => visibilityOptions.find(o => o.value === v)?.label || v)
+      .join(', ')
   })()
 
-  const toggleVisibility = (value: 'PUBLIC' | 'PRIVATE') => {
+  const toggleVisibility = (value: NoteVisibility) => {
     setVisibilityFilter(prev => {
       // Keep at least one option selected so the query always has a valid visibility filter.
       if (prev.length === 1 && prev.includes(value)) return prev
@@ -128,18 +136,18 @@ export function PublicNotesViewer({ userName, showCard = true, gridLayout = fals
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start">
-            <DropdownMenuCheckboxItem
-              checked={visibilityFilter.includes('PUBLIC')}
-              onCheckedChange={() => toggleVisibility('PUBLIC')}
-            >
-              {publicLabel}
-            </DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem
-              checked={visibilityFilter.includes('PRIVATE')}
-              onCheckedChange={() => toggleVisibility('PRIVATE')}
-            >
-              {privateLabel}
-            </DropdownMenuCheckboxItem>
+            {visibilityOptions.map(option => (
+              <DropdownMenuCheckboxItem
+                key={option.value}
+                checked={visibilityFilter.includes(option.value)}
+                onCheckedChange={() => toggleVisibility(option.value)}
+              >
+                <span className="flex items-center gap-2">
+                  {option.icon}
+                  {option.label}
+                </span>
+              </DropdownMenuCheckboxItem>
+            ))}
           </DropdownMenuContent>
         </DropdownMenu>
 

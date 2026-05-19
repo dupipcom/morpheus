@@ -791,6 +791,12 @@
     "content": "Note content",
     "visibilityUpdated": "Visibility updated successfully",
     "visibilityUpdateFailed": "Failed to update visibility",
-    "changeVisibility": "Change visibility"
+    "changeVisibility": "Change visibility",
+    "filters": {
+      "sort": "Sort",
+      "date": "Date",
+      "mostRelevant": "Most Relevant",
+      "all": "All"
+    }
   }
 }

@@ -82,9 +82,9 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
       const today = new Date()
       const todayDate = today.toLocaleString('en-uk', { timeZone: userTimezone }).split(',')[0].split('/').reverse().join('-')
       // Use context selectedDate if available, otherwise fall back to date prop or today
-      // Format: YYYY-MM-DD (same as todayDate format)
+      // Use locale-aware formatting (same as todayDate) to avoid UTC offset causing -1 day shift
       const selectedDateForNote = contextSelectedDate 
-        ? contextSelectedDate.toISOString().split('T')[0]
+        ? contextSelectedDate.toLocaleString('en-uk', { timeZone: userTimezone }).split(',')[0].split('/').reverse().join('-')
         : (date || todayDate)
       const noteDate = selectedDateForNote
 
