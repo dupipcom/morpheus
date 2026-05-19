@@ -798,5 +798,9 @@
       "mostRelevant": "Most Relevant",
       "all": "All"
     }
+  },
+  "chat": {
+    "title": "Chat",
+    "subtitle": "Organizations, channels, direct messages, and threads."
   }
 }
