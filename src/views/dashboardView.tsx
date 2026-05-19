@@ -13,13 +13,8 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdownMenu"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import { Calendar } from "@/components/ui/calendar"
-import { ChevronDown, CalendarIcon } from "lucide-react"
+import { ChevronDown } from "lucide-react"
+import { DateRangeSelector } from "@/components/ui/dateRangeSelector"
 
 import { EarningsTable } from '@/components/earningsTable'
 
@@ -43,62 +38,6 @@ function daysAgo(n: number): Date {
 
 /** Formats a Date as YYYY-MM-DD for API calls */
 const toISODate = (d: Date) => d.toISOString().split('T')[0]
-
-// Date range selector component – a simple start/end date picker
-const DateRangeSelector = ({
-  startDate,
-  endDate,
-  onStartChange,
-  onEndChange,
-}: {
-  startDate: Date
-  endDate: Date
-  onStartChange: (d: Date) => void
-  onEndChange: (d: Date) => void
-}) => {
-  const fmt = (d: Date) =>
-    d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })
-
-  return (
-    <div className="flex flex-wrap items-center gap-2 mb-8">
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button variant="outline" size="sm" className="justify-start text-left font-normal">
-            <CalendarIcon className="mr-2 h-4 w-4" />
-            {fmt(startDate)}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
-          <Calendar
-            mode="single"
-            selected={startDate}
-            onSelect={(d) => d && onStartChange(d)}
-            disabled={(d) => d > endDate}
-          />
-        </PopoverContent>
-      </Popover>
-
-      <span className="text-sm text-muted-foreground">—</span>
-
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button variant="outline" size="sm" className="justify-start text-left font-normal">
-            <CalendarIcon className="mr-2 h-4 w-4" />
-            {fmt(endDate)}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
-          <Calendar
-            mode="single"
-            selected={endDate}
-            onSelect={(d) => d && onEndChange(d)}
-            disabled={(d) => d < startDate || d > new Date()}
-          />
-        </PopoverContent>
-      </Popover>
-    </div>
-  )
-}
 
 // Chart config generators that use translations
 const createMoodChartConfig = (t: (key: string) => string) => ({
@@ -513,6 +452,7 @@ const aggregateDataByWeek = (dailyData: any[]) => {
         endDate={rangeEnd}
         onStartChange={setRangeStart}
         onEndChange={setRangeEnd}
+        className="mb-8"
       />
       
       <ChartDimensionSelector
