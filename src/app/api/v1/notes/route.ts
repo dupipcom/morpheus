@@ -67,7 +67,7 @@ export async function GET(request: NextRequest) {
 
     // Apply visibility filter if specified
     if (selectedVisibility && selectedVisibility.length > 0) {
-      sortedNotes = sortedNotes.filter(note => selectedVisibility.includes(note.visibility as string))
+      sortedNotes = sortedNotes.filter(note => selectedVisibility.includes(String(note.visibility)))
     }
 
     if (filterNoteId) {

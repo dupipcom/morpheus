@@ -183,8 +183,8 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
   const [optimisticMoodThings, setOptimisticMoodThings] = useState<any[]>([])
   const [newLifeEventText, setNewLifeEventText] = useState('')
   const [notes, setNotes] = useState<Note[]>([])
-  const ALL_NOTE_VISIBILITIES: NoteVisibility[] = ['PRIVATE', 'AI_ENABLED', 'FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC']
-  const [notesVisibilityFilter, setNotesVisibilityFilter] = useState<NoteVisibility[]>(ALL_NOTE_VISIBILITIES)
+  const SELECTABLE_NOTE_VISIBILITIES: NoteVisibility[] = ['PRIVATE', 'AI_ENABLED', 'FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC']
+  const [notesVisibilityFilter, setNotesVisibilityFilter] = useState<NoteVisibility[]>(SELECTABLE_NOTE_VISIBILITIES)
 
   // Initialize mood contacts from server data
   useEffect(() => {
@@ -258,7 +258,7 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
   )
 
   // Fetch notes for the selected date
-  const notesVisibilityParam = notesVisibilityFilter.length > 0 && notesVisibilityFilter.length < ALL_NOTE_VISIBILITIES.length
+  const notesVisibilityParam = notesVisibilityFilter.length > 0 && notesVisibilityFilter.length < SELECTABLE_NOTE_VISIBILITIES.length
     ? `visibility=${notesVisibilityFilter.join(',')}`
     : null
   const notesUrlParams = [
@@ -645,14 +645,14 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
                   <Button variant="outline" className="justify-start gap-2 w-full sm:w-auto" aria-label={t('notes.changeVisibility')}>
                     <Lock className="h-4 w-4 shrink-0" aria-hidden="true" />
                     <span className="truncate">
-                      {notesVisibilityFilter.length === ALL_NOTE_VISIBILITIES.length
+                      {notesVisibilityFilter.length === SELECTABLE_NOTE_VISIBILITIES.length
                         ? t('notes.filters.all')
                         : notesVisibilityFilter.map(v => t(`mood.publish.visibility.${v}`) || v).join(', ')}
                     </span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start">
-                  {ALL_NOTE_VISIBILITIES.map(v => {
+                  {SELECTABLE_NOTE_VISIBILITIES.map(v => {
                     const icons: Record<string, React.ReactNode> = {
                       PRIVATE: <Lock className="h-4 w-4" />,
                       AI_ENABLED: <Sparkles className="h-4 w-4" />,
