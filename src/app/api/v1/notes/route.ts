@@ -65,9 +65,9 @@ export async function GET(request: NextRequest) {
     // Sort notes: matching noteId first, then by creation date
     let sortedNotes = [...user.notes]
 
-    // Apply visibility filter if specified
+    // Apply visibility filter if specified (Prisma enum values are strings at runtime)
     if (selectedVisibility && selectedVisibility.length > 0) {
-      sortedNotes = sortedNotes.filter(note => selectedVisibility.includes(String(note.visibility)))
+      sortedNotes = sortedNotes.filter(note => selectedVisibility.includes(note.visibility))
     }
 
     if (filterNoteId) {
