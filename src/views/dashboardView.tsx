@@ -14,13 +14,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdownMenu"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import {
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -41,139 +34,68 @@ import { AgentChat } from "@/components/agentChat"
 import { useFeatureFlag } from "@/lib/hooks/useFeatureFlag"
 import { useDebounce } from "@/lib/hooks/useDebounce"
 
-// Supported timeframe keys for the dashboard selector
-type TimeframeKey = 'daily' | 'weekly' | 'quarterly' | 'semestrally' | 'yearly' | 'ytd' | '5year' | 'custom'
-
-/**
- * Given a timeframe key, return the corresponding [startDate, endDate] strings (YYYY-MM-DD).
- * "weekly" covers the last 360 days (T-360d) and is the default.
- */
-function getDateRangeForTimeframe(key: TimeframeKey, customStart?: Date, customEnd?: Date): { startDate: string; endDate: string } {
-  const today = new Date()
-  const fmt = (d: Date) => d.toISOString().split('T')[0]
-
-  const daysAgo = (n: number) => {
-    const d = new Date(today)
-    d.setDate(d.getDate() - n)
-    return d
-  }
-
-  switch (key) {
-    case 'daily':
-      return { startDate: fmt(daysAgo(7)), endDate: fmt(today) }
-    case 'weekly':
-      return { startDate: fmt(daysAgo(360)), endDate: fmt(today) }
-    case 'quarterly':
-      return { startDate: fmt(daysAgo(90)), endDate: fmt(today) }
-    case 'semestrally':
-      return { startDate: fmt(daysAgo(180)), endDate: fmt(today) }
-    case 'yearly':
-      return { startDate: fmt(daysAgo(365)), endDate: fmt(today) }
-    case 'ytd': {
-      const jan1 = new Date(today.getFullYear(), 0, 1)
-      return { startDate: fmt(jan1), endDate: fmt(today) }
-    }
-    case '5year': {
-      const fiveYearsAgo = new Date(today)
-      fiveYearsAgo.setFullYear(today.getFullYear() - 5)
-      return { startDate: fmt(fiveYearsAgo), endDate: fmt(today) }
-    }
-    case 'custom':
-      return {
-        startDate: customStart ? fmt(customStart) : fmt(daysAgo(360)),
-        endDate: customEnd ? fmt(customEnd) : fmt(today),
-      }
-    default:
-      return { startDate: fmt(daysAgo(360)), endDate: fmt(today) }
-  }
+/** Returns a Date that is `n` days before today */
+function daysAgo(n: number): Date {
+  const d = new Date()
+  d.setDate(d.getDate() - n)
+  return d
 }
 
-// Global timeframe selector component
-const TimeframeSelector = ({
-  value,
-  onChange,
-  customStart,
-  customEnd,
-  onCustomStartChange,
-  onCustomEndChange,
+/** Formats a Date as YYYY-MM-DD for API calls */
+const toISODate = (d: Date) => d.toISOString().split('T')[0]
+
+// Date range selector component – a simple start/end date picker
+const DateRangeSelector = ({
+  startDate,
+  endDate,
+  onStartChange,
+  onEndChange,
 }: {
-  value: TimeframeKey
-  onChange: (v: TimeframeKey) => void
-  customStart: Date | undefined
-  customEnd: Date | undefined
-  onCustomStartChange: (d: Date | undefined) => void
-  onCustomEndChange: (d: Date | undefined) => void
+  startDate: Date
+  endDate: Date
+  onStartChange: (d: Date) => void
+  onEndChange: (d: Date) => void
 }) => {
-  const { t } = useI18n()
-
-  const options: { key: TimeframeKey; label: string }[] = [
-    { key: 'daily',      label: t('dashboard.timeframe.daily') },
-    { key: 'weekly',     label: t('dashboard.timeframe.weekly') },
-    { key: 'quarterly',  label: t('dashboard.timeframe.quarterly') },
-    { key: 'semestrally',label: t('dashboard.timeframe.semestrally') },
-    { key: 'yearly',     label: t('dashboard.timeframe.yearly') },
-    { key: 'ytd',        label: t('dashboard.timeframe.ytd') },
-    { key: '5year',      label: t('dashboard.timeframe.5year') },
-    { key: 'custom',     label: t('dashboard.timeframe.custom') },
-  ]
-
-  const fmt = (d: Date | undefined) =>
-    d ? d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : ''
+  const fmt = (d: Date) =>
+    d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })
 
   return (
     <div className="flex flex-wrap items-center gap-2 mb-8">
-      <Select value={value} onValueChange={(v) => onChange(v as TimeframeKey)}>
-        <SelectTrigger size="sm" className="w-44">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          {options.map((o) => (
-            <SelectItem key={o.key} value={o.key}>
-              {o.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="outline" size="sm" className="justify-start text-left font-normal">
+            <CalendarIcon className="mr-2 h-4 w-4" />
+            {fmt(startDate)}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0" align="start">
+          <Calendar
+            mode="single"
+            selected={startDate}
+            onSelect={(d) => d && onStartChange(d)}
+            disabled={(d) => d > endDate}
+          />
+        </PopoverContent>
+      </Popover>
 
-      {value === 'custom' && (
-        <>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="outline" size="sm" className="justify-start text-left font-normal">
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {customStart ? fmt(customStart) : t('dashboard.timeframe.startDate')}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                mode="single"
-                selected={customStart}
-                onSelect={onCustomStartChange}
-                disabled={(d) => (customEnd ? d > customEnd : false)}
-              />
-            </PopoverContent>
-          </Popover>
+      <span className="text-sm text-muted-foreground">—</span>
 
-          <span className="text-sm text-muted-foreground">—</span>
-
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="outline" size="sm" className="justify-start text-left font-normal">
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {customEnd ? fmt(customEnd) : t('dashboard.timeframe.endDate')}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                mode="single"
-                selected={customEnd}
-                onSelect={onCustomEndChange}
-                disabled={(d) => (customStart ? d < customStart : false)}
-              />
-            </PopoverContent>
-          </Popover>
-        </>
-      )}
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="outline" size="sm" className="justify-start text-left font-normal">
+            <CalendarIcon className="mr-2 h-4 w-4" />
+            {fmt(endDate)}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0" align="start">
+          <Calendar
+            mode="single"
+            selected={endDate}
+            onSelect={(d) => d && onEndChange(d)}
+            disabled={(d) => d < startDate || d > new Date()}
+          />
+        </PopoverContent>
+      </Popover>
     </div>
   )
 }
@@ -289,10 +211,9 @@ export function DashboardView({ timeframe = "day" }): React.ReactElement {
   const [days, setDays] = useState<any[]>([])
   const [isLoadingDays, setIsLoadingDays] = useState(true)
 
-  // Global timeframe selector state – default is "weekly" (last 360 days, T-360d)
-  const [selectedTimeframe, setSelectedTimeframe] = useState<TimeframeKey>('weekly')
-  const [customStart, setCustomStart] = useState<Date | undefined>(undefined)
-  const [customEnd, setCustomEnd] = useState<Date | undefined>(undefined)
+  // Date range state – default to last 360 days (T-360d) through today
+  const [rangeStart, setRangeStart] = useState<Date>(() => daysAgo(360))
+  const [rangeEnd, setRangeEnd] = useState<Date>(() => new Date())
   
   // Chart dimensions state
   const [moodChartDimensions, setMoodChartDimensions] = useState({
@@ -333,7 +254,8 @@ export function DashboardView({ timeframe = "day" }): React.ReactElement {
       
       try {
         setIsLoadingDays(true)
-        const { startDate, endDate } = getDateRangeForTimeframe(selectedTimeframe, customStart, customEnd)
+        const startDate = toISODate(rangeStart)
+        const endDate = toISODate(rangeEnd)
         const response = await fetch(`/api/v1/days?startDate=${startDate}&endDate=${endDate}`)
         if (!response.ok) {
           throw new Error('Failed to fetch days')
@@ -349,7 +271,7 @@ export function DashboardView({ timeframe = "day" }): React.ReactElement {
     }
     
     fetchDays()
-  }, [user?.id, selectedTimeframe, customStart, customEnd])
+  }, [user?.id, rangeStart, rangeEnd])
   
   // Message history state (weekly agentConversation)
   const [currentText, setCurrentText] = useState("")
@@ -585,14 +507,12 @@ const aggregateDataByWeek = (dailyData: any[]) => {
         </div>
       ) : undefined}
 
-      {/* Global timeframe selector – one control for all dashboard charts */}
-      <TimeframeSelector
-        value={selectedTimeframe}
-        onChange={setSelectedTimeframe}
-        customStart={customStart}
-        customEnd={customEnd}
-        onCustomStartChange={setCustomStart}
-        onCustomEndChange={setCustomEnd}
+      {/* Global date range selector – one control for all dashboard charts */}
+      <DateRangeSelector
+        startDate={rangeStart}
+        endDate={rangeEnd}
+        onStartChange={setRangeStart}
+        onEndChange={setRangeEnd}
       />
       
       <ChartDimensionSelector
