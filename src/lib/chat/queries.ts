@@ -1,17 +1,9 @@
 import prisma from '@/lib/prisma'
 import { extractUrls } from '@/lib/utils/linkPreview'
 import { getRoomKey } from './unread'
-import { CHAT_DELETED_MESSAGE_MARKER } from './constants'
+import { CHAT_ANONYMOUS_MARKER, CHAT_DELETED_MESSAGE_MARKER } from './constants'
 import { getClerkOrganizations } from './auth'
-import type { ChatMessageSummary, ChatUserProfile } from './types'
-
-type ProfileValueField = { value?: string | null }
-type StoredProfileData = {
-  username?: ProfileValueField
-  firstName?: ProfileValueField
-  lastName?: ProfileValueField
-  profilePicture?: ProfileValueField
-}
+import type { ChatMessageSummary, ChatUserProfile, StoredProfileData } from './types'
 
 type MinimalChatMessage = {
   id: string
@@ -64,7 +56,7 @@ async function getProfilesForUserIds(userIds: string[]) {
       const username = profile?.username?.value ?? null
       const firstName = profile?.firstName?.value ?? null
       const lastName = profile?.lastName?.value ?? null
-      const displayName = [firstName, lastName].filter(Boolean).join(' ') || (username ? `@${username}` : '')
+      const displayName = [firstName, lastName].filter(Boolean).join(' ') || (username ? `@${username}` : CHAT_ANONYMOUS_MARKER)
       return [
         user.id,
         {

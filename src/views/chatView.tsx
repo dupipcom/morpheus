@@ -21,7 +21,7 @@ import {
 } from '@/lib/chat/realtime/channelNames'
 import { cn } from '@/lib/utils/utils'
 import type { ChatMessageSummary, ChatUserProfile } from '@/lib/chat/types'
-import { CHAT_POLL_INTERVAL_MS, getChatAppBaseUrl } from '@/lib/chat/constants'
+import { CHAT_ANONYMOUS_MARKER, CHAT_POLL_INTERVAL_MS, getChatAppBaseUrl } from '@/lib/chat/constants'
 
 const fetcher = async (url: string) => {
   const response = await fetch(url)
@@ -343,7 +343,7 @@ export function ChatView() {
     <div key={message.id} className="space-y-3 rounded-xl border border-border/60 bg-card p-4 shadow-sm">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-sm font-semibold">{message.author?.displayName || anonymousLabel}</p>
+          <p className="text-sm font-semibold">{!message.author?.displayName || message.author.displayName === CHAT_ANONYMOUS_MARKER ? anonymousLabel : message.author.displayName}</p>
           <p className="text-xs text-muted-foreground">{new Date(message.createdAt).toLocaleString()}</p>
         </div>
         <div className="flex items-center gap-2">
@@ -491,11 +491,11 @@ export function ChatView() {
                       activeRoom?.type === 'dm' && activeRoom.id === dm.id && 'border-primary bg-primary/10',
                     )}
                     onClick={() => {
-                      setActiveRoom({ type: 'dm', id: dm.id, name: dm.participant?.displayName || directMessageLabel })
+                      setActiveRoom({ type: 'dm', id: dm.id, name: !dm.participant?.displayName || dm.participant.displayName === CHAT_ANONYMOUS_MARKER ? directMessageLabel : dm.participant.displayName })
                       setMobileView('room')
                     }}
                   >
-                    <span>{dm.participant?.displayName || 'Direct message'}</span>
+                    <span>{!dm.participant?.displayName || dm.participant.displayName === CHAT_ANONYMOUS_MARKER ? directMessageLabel : dm.participant.displayName}</span>
                     <ChatUnreadBadge count={dm.unreadCount} />
                   </button>
                 ))}

@@ -1,6 +1,13 @@
 export type ChatRoleValue = 'SUPERUSER' | 'ADMIN' | 'MODERATOR' | 'USER'
 export type ChatRoomTypeValue = 'ORG_CHANNEL' | 'DIRECT_MESSAGE'
 
+export interface StoredProfileData {
+  username?: { value?: string | null }
+  firstName?: { value?: string | null }
+  lastName?: { value?: string | null }
+  profilePicture?: { value?: string | null }
+}
+
 export interface ChatUserProfile {
   id: string
   userId: string | null

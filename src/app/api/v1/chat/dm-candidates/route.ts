@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { getCurrentChatUser } from '@/lib/chat/auth'
 import { jsonError } from '@/lib/chat/api'
+import { CHAT_ANONYMOUS_MARKER } from '@/lib/chat/constants'
+import type { StoredProfileData } from '@/lib/chat/types'
 
 export async function GET(request: NextRequest) {
   try {
@@ -25,20 +27,13 @@ export async function GET(request: NextRequest) {
       }),
     ])
 
-    type StoredProfileData = {
-  username?: { value?: string | null }
-  firstName?: { value?: string | null }
-  lastName?: { value?: string | null }
-  profilePicture?: { value?: string | null }
-}
-
     const profileByUserId = new Map(profiles.map((profile) => [profile.userId, profile.data as StoredProfileData | null]))
     const candidates = users.map((candidate) => {
       const profile = profileByUserId.get(candidate.id)
       const username = profile?.username?.value ?? null
       const firstName = profile?.firstName?.value ?? null
       const lastName = profile?.lastName?.value ?? null
-      const displayName = [firstName, lastName].filter(Boolean).join(' ') || (username ? `@${username}` : 'Anonymous')
+      const displayName = [firstName, lastName].filter(Boolean).join(' ') || (username ? `@${username}` : CHAT_ANONYMOUS_MARKER)
 
       return {
         id: candidate.id,
