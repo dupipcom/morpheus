@@ -202,6 +202,10 @@ export async function buildMessageMetadata(content: string) {
   return urls.length > 0 ? { urls } : null
 }
 
+/**
+ * Load pending targeted org invites for a user, filter out expired/exhausted links,
+ * and enrich each invite with organization metadata for the chat sidebar.
+ */
 export async function getPendingChatInvites(userId: string) {
   const invites = await prisma.chatInviteLink.findMany({
     where: {

@@ -362,6 +362,10 @@ export function ChatView() {
     }
   }
 
+  /**
+   * Send a pending organization invitation to a friend or close friend.
+   * This requires org admin permissions and refreshes the sidebar when the invite is created.
+   */
   const inviteMemberToOrg = async (inviteeUserId: string) => {
     if (!activeOrg?.id) return
     setIsInvitingMember(true)
@@ -382,6 +386,9 @@ export function ChatView() {
     }
   }
 
+  /**
+   * Accept a pending org invitation for the current user, then refresh sidebar state and feedback.
+   */
   const acceptPendingInvite = async (invite: ChatPendingInviteSummary) => {
     setIsAcceptingInviteId(invite.id)
     try {
