@@ -8,6 +8,7 @@ import type {
   ChatMessageSummary,
   ChatPendingInviteSummary,
   ChatUserProfile,
+  ClerkOrgSummary,
   StoredProfileData,
 } from './types'
 
@@ -27,12 +28,6 @@ type MinimalChatMessage = {
   editedAt: Date | null
 }
 
-type ClerkOrgSummary = {
-  id: string
-  name?: string
-  slug?: string
-  imageUrl?: string | null
-}
 
 const NOT_DELETED_FILTER = null as Date | null
 

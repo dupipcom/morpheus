@@ -8,6 +8,13 @@ export interface StoredProfileData {
   profilePicture?: { value?: string | null }
 }
 
+export interface ClerkOrgSummary {
+  id: string
+  name?: string
+  slug?: string
+  imageUrl?: string | null
+}
+
 export interface ChatUserProfile {
   id: string
   userId: string | null

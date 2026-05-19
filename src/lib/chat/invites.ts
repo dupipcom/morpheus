@@ -12,7 +12,7 @@ export function isChatInviteActive(invite: ChatInviteStateInput, now = new Date(
   return true
 }
 
-export function buildChatInviteUrl(baseUrl: string, locale: string, inviteId: string) {
+export function buildChatInviteUrl(baseUrl: string, locale: string, inviteToken: string) {
   const normalizedBaseUrl = baseUrl.replace(/\/$/, '')
-  return `${normalizedBaseUrl}/${locale}/chat/invites/${inviteId}`
+  return `${normalizedBaseUrl}/${locale}/chat/invites/${inviteToken}`
 }

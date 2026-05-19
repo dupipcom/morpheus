@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
-export default function ChatInvitePage({ params }: { params: Promise<{ locale: string; inviteId: string }> }) {
+export default function Page({ params }: { params: Promise<{ locale: string; inviteId: string }> }) {
   const router = useRouter()
   const { isSignedIn } = useAuth()
   const [isAccepting, setIsAccepting] = useState(false)
