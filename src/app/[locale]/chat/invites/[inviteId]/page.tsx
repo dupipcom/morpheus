@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
  * Public invite acceptance page for chat org invites.
  * Users must be signed in before accepting, and successful acceptance redirects them into chat.
  */
-export default function ChatInviteAcceptPage({ params }: { params: Promise<{ locale: string; inviteId: string }> }) {
+export default function Page({ params }: { params: Promise<{ locale: string; inviteId: string }> }) {
   const router = useRouter()
   const { isSignedIn } = useAuth()
   const [isAccepting, setIsAccepting] = useState(false)

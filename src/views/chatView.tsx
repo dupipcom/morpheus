@@ -91,14 +91,14 @@ interface RelationshipCandidatesResponse {
 }
 
 function getDisplayLabel(
-  profile: ChatUserProfile | null | undefined,
+  displayName: string | null | undefined,
   fallbackLabel: string,
 ) {
-  if (!profile?.displayName || profile.displayName === CHAT_ANONYMOUS_MARKER) {
+  if (!displayName || displayName === CHAT_ANONYMOUS_MARKER) {
     return fallbackLabel
   }
 
-  return profile.displayName
+  return displayName
 }
 
 export function ChatView() {
@@ -168,7 +168,7 @@ export function ChatView() {
 
     const defaultDm = sidebar.dms?.[0]
     if (defaultDm) {
-      setActiveRoom({ type: 'dm', id: defaultDm.id, name: getDisplayLabel(defaultDm.participant, directMessageLabel) })
+      setActiveRoom({ type: 'dm', id: defaultDm.id, name: getDisplayLabel(defaultDm.participant?.displayName, directMessageLabel) })
     }
   }, [activeRoom, directMessageLabel, sidebar])
 
@@ -418,7 +418,7 @@ export function ChatView() {
     <div key={message.id} className="space-y-3 rounded-xl border border-border/60 bg-card p-4 shadow-sm">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-sm font-semibold">{getDisplayLabel(message.author, anonymousLabel)}</p>
+          <p className="text-sm font-semibold">{getDisplayLabel(message.author?.displayName, anonymousLabel)}</p>
           <p className="text-xs text-muted-foreground">{new Date(message.createdAt).toLocaleString()}</p>
         </div>
         <div className="flex items-center gap-2">
@@ -555,7 +555,7 @@ export function ChatView() {
                               onClick={() => void inviteMemberToOrg(candidate.id)}
                               disabled={isInvitingMember}
                             >
-                              <span>{candidate.displayName === CHAT_ANONYMOUS_MARKER ? anonymousLabel : candidate.displayName}</span>
+                              <span>{getDisplayLabel(candidate.displayName, anonymousLabel)}</span>
                               <UserPlus className="h-4 w-4" />
                             </button>
                           ))}
@@ -603,7 +603,7 @@ export function ChatView() {
                       onClick={() => void startDm(candidate.id)}
                       disabled={isCreatingDm}
                     >
-                      <span>{candidate.displayName === CHAT_ANONYMOUS_MARKER ? anonymousLabel : candidate.displayName}</span>
+                      <span>{getDisplayLabel(candidate.displayName, anonymousLabel)}</span>
                       <Plus className="h-4 w-4" />
                     </button>
                   ))}
@@ -619,11 +619,11 @@ export function ChatView() {
                       activeRoom?.type === 'dm' && activeRoom.id === dm.id && 'border-primary bg-primary/10',
                     )}
                     onClick={() => {
-                      setActiveRoom({ type: 'dm', id: dm.id, name: getDisplayLabel(dm.participant, directMessageLabel) })
+                      setActiveRoom({ type: 'dm', id: dm.id, name: getDisplayLabel(dm.participant?.displayName, directMessageLabel) })
                       setMobileView('room')
                     }}
                   >
-                    <span>{getDisplayLabel(dm.participant, directMessageLabel)}</span>
+                    <span>{getDisplayLabel(dm.participant?.displayName, directMessageLabel)}</span>
                     <ChatUnreadBadge count={dm.unreadCount} />
                   </button>
                 ))}

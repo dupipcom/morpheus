@@ -28,6 +28,7 @@ type MinimalChatMessage = {
   editedAt: Date | null
 }
 
+// Mongo stores active chat messages with deletedAt = null, so null is the non-deleted sentinel in these filters.
 const NOT_DELETED_FILTER = null as Date | null
 
 async function getProfilesForUserIds(userIds: string[]) {
