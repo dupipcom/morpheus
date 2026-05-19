@@ -12,14 +12,16 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
     const { userName } = await params
     const { userId } = await auth()
     const searchParams = req.nextUrl.searchParams
+    const VALID_NOTE_VISIBILITIES = ['PRIVATE', 'FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC', 'HIDDEN', 'AI_ENABLED'] as const
+    type NoteVisibility = typeof VALID_NOTE_VISIBILITIES[number]
     const requestedVisibility = searchParams.get('visibility') || 'PUBLIC'
     const selectedVisibility = requestedVisibility
       .split(',')
       .map(value => value.trim().toUpperCase())
-      .filter((value): value is 'PUBLIC' | 'PRIVATE' => value === 'PUBLIC' || value === 'PRIVATE')
+      .filter((value): value is NoteVisibility => (VALID_NOTE_VISIBILITIES as readonly string[]).includes(value))
     const sortBy = normalizeNoteSortBy(searchParams.get('sort'))
     const sortOrder = searchParams.get('order') === 'asc' ? 'asc' : 'desc'
-    const selectedVisibilitySet = new Set(selectedVisibility.length > 0 ? selectedVisibility : ['PUBLIC'])
+    const selectedVisibilitySet = new Set<NoteVisibility>(selectedVisibility.length > 0 ? selectedVisibility : ['PUBLIC'])
 
     // Find the profile to get the user ID using root-level username field
     const profile = await prisma.profile.findUnique({
@@ -85,7 +87,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
     }
 
     // Apply requested visibility as OR-clause over the selected options
-    visibilityFilter = visibilityFilter.filter(value => selectedVisibilitySet.has(value as 'PUBLIC' | 'PRIVATE'))
+    visibilityFilter = visibilityFilter.filter(value => selectedVisibilitySet.has(value as NoteVisibility))
 
     if (visibilityFilter.length === 0) {
       return Response.json({
