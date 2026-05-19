@@ -178,7 +178,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
       const isLiked = userLikedNoteIds.includes(note.id)
       const relevanceScore = calculateNoteRelevanceScore(note, {
         friendUserIds: currentUserFriends as string[],
-        closeFriendUserIds: currentUserCloseFriends as string[]
+        closeFriendUserIds: currentUserCloseFriends as string[],
+        currentUserId
       })
       
       if (note.comments && Array.isArray(note.comments) && note.comments.length > 0) {

@@ -180,7 +180,8 @@ export async function GET(request: NextRequest) {
       relevanceScore: sortBy === 'most_relevant'
         ? calculateNoteRelevanceScore(note, {
             friendUserIds: currentUser?.friends || [],
-            closeFriendUserIds: currentUser?.closeFriends || []
+            closeFriendUserIds: currentUser?.closeFriends || [],
+            currentUserId: currentUser?.id ?? null
           })
         : undefined
     }))
