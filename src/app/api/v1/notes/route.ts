@@ -13,6 +13,11 @@ export async function GET(request: NextRequest) {
 
     const searchParams = request.nextUrl.searchParams
     const filterNoteId = searchParams.get('noteId')
+    const requestedVisibility = searchParams.get('visibility')
+    const VALID_NOTE_VISIBILITIES = ['PRIVATE', 'FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC', 'HIDDEN', 'AI_ENABLED']
+    const selectedVisibility = requestedVisibility
+      ? requestedVisibility.split(',').map(v => v.trim().toUpperCase()).filter(v => VALID_NOTE_VISIBILITIES.includes(v))
+      : null
 
     // Get user from database
     const user = await prisma.user.findUnique({
@@ -59,6 +64,12 @@ export async function GET(request: NextRequest) {
 
     // Sort notes: matching noteId first, then by creation date
     let sortedNotes = [...user.notes]
+
+    // Apply visibility filter if specified
+    if (selectedVisibility && selectedVisibility.length > 0) {
+      sortedNotes = sortedNotes.filter(note => selectedVisibility.includes(note.visibility as string))
+    }
+
     if (filterNoteId) {
       sortedNotes.sort((a, b) => {
         const aMatches = a.id.toString() === filterNoteId
