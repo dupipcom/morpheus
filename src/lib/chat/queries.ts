@@ -28,7 +28,6 @@ type MinimalChatMessage = {
   editedAt: Date | null
 }
 
-
 const NOT_DELETED_FILTER = null as Date | null
 
 async function getProfilesForUserIds(userIds: string[]) {
@@ -157,7 +156,10 @@ export async function listChannelMessages(channelId: string, limit = 50) {
   const profiles = await getProfilesForUserIds(ordered.map((message) => message.authorUserId))
   const replyStats = await getReplyStats(ordered.map((message) => message.id))
 
-  return ordered.map((message) => serializeMessage(message, profiles.get(message.authorUserId) ?? null, replyStats.get(message.id)))
+  return ordered.map((message) => {
+    const stats = replyStats.get(message.id)
+    return serializeMessage(message, profiles.get(message.authorUserId) ?? null, stats)
+  })
 }
 
 export async function listDmMessages(conversationId: string, limit = 50) {
@@ -170,7 +172,10 @@ export async function listDmMessages(conversationId: string, limit = 50) {
   const profiles = await getProfilesForUserIds(ordered.map((message) => message.authorUserId))
   const replyStats = await getReplyStats(ordered.map((message) => message.id))
 
-  return ordered.map((message) => serializeMessage(message, profiles.get(message.authorUserId) ?? null, replyStats.get(message.id)))
+  return ordered.map((message) => {
+    const stats = replyStats.get(message.id)
+    return serializeMessage(message, profiles.get(message.authorUserId) ?? null, stats)
+  })
 }
 
 export async function getThread(messageId: string) {
