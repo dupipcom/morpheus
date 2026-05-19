@@ -2,7 +2,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { ensureOrgMembership, getCurrentChatUser } from '@/lib/chat/auth'
 import { canManageInvites } from '@/lib/chat/permissions'
-import { jsonError } from '@/lib/chat/api'
+import { chatErrorResponse, jsonError } from '@/lib/chat/api'
+
+const INVITE_ERROR_STATUS: Record<string, number> = {
+  'Invite not found': 404,
+  Forbidden: 403,
+}
 
 export async function DELETE(
   request: NextRequest,
@@ -27,6 +32,6 @@ export async function DELETE(
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('Error revoking invite:', error)
-    return jsonError(error instanceof Error && error.message === 'Forbidden' ? 'Forbidden' : 'Internal server error', error instanceof Error && error.message === 'Forbidden' ? 403 : 500)
+    return chatErrorResponse(error, INVITE_ERROR_STATUS)
   }
 }

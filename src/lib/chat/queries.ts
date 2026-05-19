@@ -35,6 +35,8 @@ type ClerkOrgSummary = {
   imageUrl?: string | null
 }
 
+const NOT_DELETED_FILTER = null as Date | null
+
 async function getProfilesForUserIds(userIds: string[]) {
   const uniqueUserIds = [...new Set(userIds)]
   if (uniqueUserIds.length === 0) return new Map<string, ChatUserProfile>()
@@ -185,8 +187,8 @@ async function getUnreadCountForRoom(userId: string, room: { channelId?: string;
   })
 
   const where = room.channelId
-    ? { channelId: room.channelId, authorUserId: { not: userId }, deletedAt: null as Date | null }
-    : { dmConversationId: room.dmConversationId, authorUserId: { not: userId }, deletedAt: null as Date | null }
+    ? { channelId: room.channelId, authorUserId: { not: userId }, deletedAt: NOT_DELETED_FILTER }
+    : { dmConversationId: room.dmConversationId, authorUserId: { not: userId }, deletedAt: NOT_DELETED_FILTER }
 
   if (!readState?.lastReadAt) {
     return prisma.chatMessage.count({ where })

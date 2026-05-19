@@ -5,6 +5,7 @@ import useSWR from 'swr'
 import { Hash, Inbox, Mail, MessageSquareReply, Plus, RefreshCcw, Send, Trash2, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { ChatComposer } from '@/components/chat/chatComposer'
@@ -96,6 +97,7 @@ export function ChatView() {
   const [isCreatingChannel, setIsCreatingChannel] = useState(false)
   const [isCreatingDm, setIsCreatingDm] = useState(false)
   const [isCreatingInvite, setIsCreatingInvite] = useState(false)
+  const [messagePendingDelete, setMessagePendingDelete] = useState<ChatMessageSummary | null>(null)
 
   const sidebarKey = '/api/v1/chat/sidebar'
   const { data: sidebar, error: sidebarError, isLoading: isSidebarLoading, mutate: mutateSidebar } = useSWR<SidebarResponse>(sidebarKey, fetcher, {
@@ -311,7 +313,8 @@ export function ChatView() {
       })
       const payload = await response.json()
       if (!response.ok) throw new Error(payload.error || 'Failed to create invite')
-      const link = `${window.location.origin}/api/v1/chat/invites/${payload.invite.token}/accept`
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin
+      const link = `${baseUrl}/api/v1/chat/invites/${payload.invite.token}/accept`
       setInviteLink(link)
       if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(link)
@@ -321,10 +324,13 @@ export function ChatView() {
     }
   }
 
-  const deleteMessage = async (messageId: string) => {
-    if (!window.confirm('Delete this message?')) return
-    const response = await fetch(`/api/v1/chat/messages/${messageId}`, { method: 'DELETE' })
+  const deleteMessage = async () => {
+    if (!messagePendingDelete) return
+
+    const response = await fetch(`/api/v1/chat/messages/${messagePendingDelete.id}`, { method: 'DELETE' })
     if (!response.ok) return
+
+    setMessagePendingDelete(null)
     await Promise.all([mutateMessages(), mutateThread(), mutateSidebar()])
   }
 
@@ -346,7 +352,7 @@ export function ChatView() {
             <MessageSquareReply className="h-4 w-4" />
             Thread
           </Button>
-          <Button variant="ghost" size="sm" onClick={() => void deleteMessage(message.id)}>
+          <Button variant="ghost" size="sm" onClick={() => setMessagePendingDelete(message)}>
             <Trash2 className="h-4 w-4" />
           </Button>
         </div>
@@ -557,6 +563,20 @@ export function ChatView() {
 
   return (
     <main className="mx-auto flex min-h-[calc(100vh-210px)] w-full max-w-[1400px] flex-col px-4 py-6 md:px-6">
+      <Dialog open={Boolean(messagePendingDelete)} onOpenChange={(open) => { if (!open) setMessagePendingDelete(null) }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete message?</DialogTitle>
+            <DialogDescription>
+              This will soft-delete the message and keep a placeholder in the conversation history.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setMessagePendingDelete(null)}>Cancel</Button>
+            <Button variant="destructive" onClick={() => void deleteMessage()}>Delete</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       {sidebarError ? (
         <Card>
           <CardContent className="pt-6 text-sm text-destructive">{sidebarError.message}</CardContent>
