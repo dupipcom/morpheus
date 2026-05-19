@@ -85,7 +85,19 @@
     "yourMood": "Your mood.",
     "yourProductivity": "Your productivity.",
     "yourData": "Your data.",
-    "yourBalance": "Your money."
+    "yourBalance": "Your money.",
+    "timeframe": {
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "quarterly": "Quarterly",
+      "semestrally": "Semestrally",
+      "yearly": "Yearly",
+      "ytd": "Year to Date",
+      "5year": "5-Year",
+      "custom": "Custom Range",
+      "startDate": "Start date",
+      "endDate": "End date"
+    }
   },
   "mood": {
     "title": "It's {date}.",
