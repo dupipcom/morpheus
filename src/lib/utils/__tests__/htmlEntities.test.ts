@@ -18,7 +18,10 @@ test('decodeHtmlEntities keeps unknown entities unchanged', () => {
 })
 
 test('decodeHtmlEntities leaves malformed or semicolon-less entities unchanged', () => {
-  assert.equal(decodeHtmlEntities('Bad &#xZZZZ; and &amp and &#99999999999;'), 'Bad &#xZZZZ; and &amp and &#99999999999;')
+  assert.equal(
+    decodeHtmlEntities('Bad &#xZZZZ; and &amp and &#99999999999; and &#x110000;'),
+    'Bad &#xZZZZ; and &amp and &#99999999999; and &#x110000;'
+  )
 })
 
 test('decodeHtmlEntities applies a bounded number of decode passes', () => {
