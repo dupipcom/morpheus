@@ -26,7 +26,7 @@ import { CHAT_ANONYMOUS_MARKER, CHAT_POLL_INTERVAL_MS, getChatAppBaseUrl } from 
 import { buildChatInviteUrl } from '@/lib/chat/invites'
 
 const fetcher = async (url: string) => {
-  const response = await fetch(url)
+  const response = await fetch(url, { cache: 'no-store' })
   if (!response.ok) {
     const payload = await response.json().catch(() => ({ error: 'Request failed' }))
     throw new Error(payload.error || 'Request failed')
@@ -665,7 +665,7 @@ export function ChatView() {
   )
 
   const threadPanel = (
-    <div className="flex h-full w-full max-w-[420px] flex-col border-l border-border bg-card/40">
+    <div className="flex h-full w-full min-w-0 flex-col border-l border-border bg-card/40">
       <div className="flex items-center justify-between border-b border-border px-4 py-3">
         <div>
           <p className="text-sm text-muted-foreground">Thread</p>
@@ -724,7 +724,7 @@ export function ChatView() {
           <div className={cn('h-full min-w-0 flex-1', mobileView === 'room' ? 'flex' : 'hidden md:flex')}>
             {roomPanel}
           </div>
-          <div className={cn('h-full md:flex', selectedThreadId ? 'flex' : 'hidden', mobileView === 'thread' ? 'w-full' : 'hidden xl:flex')}>
+          <div className={cn('h-full md:flex xl:w-[420px] xl:min-w-[420px] xl:flex-none', selectedThreadId ? 'flex' : 'hidden', mobileView === 'thread' ? 'w-full' : 'hidden xl:flex')}>
             {threadPanel}
           </div>
         </div>

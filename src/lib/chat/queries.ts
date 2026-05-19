@@ -22,14 +22,18 @@ type MinimalChatMessage = {
   replyToMessageId: string | null
   threadRootMessageId: string | null
   deletedAt: Date | null
-  metadata: Record<string, unknown> | null
+  metadata: unknown
   createdAt: Date
   updatedAt: Date
   editedAt: Date | null
 }
 
-// Mongo stores active chat messages with deletedAt = null, so null is the non-deleted sentinel in these filters.
-const NOT_DELETED_FILTER = null as Date | null
+const NOT_DELETED_FILTER = {
+  OR: [
+    { deletedAt: null as Date | null },
+    { deletedAt: { isSet: false } },
+  ],
+}
 
 async function getProfilesForUserIds(userIds: string[]) {
   const uniqueUserIds = [...new Set(userIds)]
@@ -103,9 +107,9 @@ async function getReplyStats(rootIds: string[]) {
 
   await Promise.all(rootIds.map(async (rootId) => {
     const [replyCount, latestReply] = await Promise.all([
-      prisma.chatMessage.count({ where: { threadRootMessageId: rootId, deletedAt: NOT_DELETED_FILTER } }),
+      prisma.chatMessage.count({ where: { threadRootMessageId: rootId, ...NOT_DELETED_FILTER } }),
       prisma.chatMessage.findFirst({
-        where: { threadRootMessageId: rootId, deletedAt: NOT_DELETED_FILTER },
+        where: { threadRootMessageId: rootId, ...NOT_DELETED_FILTER },
         orderBy: { createdAt: 'desc' },
         select: { createdAt: true },
       }),
@@ -132,8 +136,8 @@ async function getUnreadCountForRoom(
   })
 
   const where = room.channelId
-    ? { channelId: room.channelId, authorUserId: { not: userId }, deletedAt: NOT_DELETED_FILTER }
-    : { dmConversationId: room.dmConversationId, authorUserId: { not: userId }, deletedAt: NOT_DELETED_FILTER }
+    ? { channelId: room.channelId, authorUserId: { not: userId }, ...NOT_DELETED_FILTER }
+    : { dmConversationId: room.dmConversationId, authorUserId: { not: userId }, ...NOT_DELETED_FILTER }
 
   if (!readState?.lastReadAt) {
     return prisma.chatMessage.count({ where })

@@ -11,7 +11,7 @@ import { CHAT_POLL_INTERVAL_MS } from '@/lib/chat/constants'
 import { getChatUserChannelName } from '@/lib/chat/realtime/channelNames'
 
 const fetcher = async (url: string) => {
-  const response = await fetch(url)
+  const response = await fetch(url, { cache: 'no-store' })
   if (!response.ok) {
     throw new Error('Failed to load chat unread count')
   }
@@ -36,6 +36,8 @@ export function ChatNavButton({ isActive, onClick, className, size = 'icon' }: C
   const { data, mutate } = useSWR('/api/v1/chat/unread-count', fetcher, {
     refreshInterval: CHAT_POLL_INTERVAL_MS,
   })
+
+  console.log({ unreadCount: data?.unreadCount })
 
   useEffect(() => {
     const currentUserId = data?.currentUserId

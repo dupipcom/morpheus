@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import prisma from '@/lib/prisma'
 import { ensureChannelAccess, ensureDmParticipant, getCurrentChatUser } from '@/lib/chat/auth'
 import { createAblyTokenRequest } from '@/lib/chat/realtime/ablyServer'
 import {
@@ -22,8 +23,45 @@ export async function POST(request: NextRequest) {
     if (!user) return jsonError('Unauthorized', 401)
 
     const body = await request.json().catch(() => ({}))
+    const [memberships, orgChannels, directMessages] = await Promise.all([
+      prisma.chatOrgMembership.findMany({
+        where: { userId: user.id },
+        select: { clerkOrgId: true },
+      }),
+      prisma.chatChannel.findMany({
+        where: {
+          archived: false,
+          clerkOrgId: {
+            in: (
+              await prisma.chatOrgMembership.findMany({
+                where: { userId: user.id },
+                select: { clerkOrgId: true },
+              })
+            ).map((membership) => membership.clerkOrgId),
+          },
+        },
+        select: { id: true, clerkOrgId: true },
+      }),
+      prisma.directMessageConversation.findMany({
+        where: { participantUserIds: { has: user.id } },
+        select: { id: true },
+      }),
+    ])
+
     const capability: Record<string, string[]> = {
       [getChatUserChannelName(user.id)]: ['subscribe'],
+    }
+
+    for (const membership of memberships) {
+      capability[getChatOrgMetaChannelName(membership.clerkOrgId)] = ['subscribe']
+    }
+
+    for (const channel of orgChannels) {
+      capability[getChatOrgChannelName(channel.clerkOrgId, channel.id)] = ['subscribe']
+    }
+
+    for (const directMessage of directMessages) {
+      capability[getChatDmChannelName(directMessage.id)] = ['subscribe']
     }
 
     if (body?.channelId) {

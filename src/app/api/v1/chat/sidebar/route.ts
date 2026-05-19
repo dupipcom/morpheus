@@ -3,6 +3,8 @@ import { getCurrentChatUser } from '@/lib/chat/auth'
 import { jsonError } from '@/lib/chat/api'
 import { getChatSidebar } from '@/lib/chat/queries'
 
+export const revalidate = 0
+
 export async function GET() {
   try {
     const user = await getCurrentChatUser()
