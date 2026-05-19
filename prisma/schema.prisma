@@ -934,18 +934,21 @@ model ChatMessage {
 }
 
 model ChatInviteLink {
-  id              String       @id @default(auto()) @map("_id") @db.ObjectId
-  clerkOrgId      String
-  token           String       @unique
-  createdByUserId String       @db.ObjectId
-  maxUses         Int?
-  usedCount       Int          @default(0)
-  expiresAt       DateTime?
-  status          InviteStatus @default(ACTIVE)
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime     @updatedAt
+  id               String       @id @default(auto()) @map("_id") @db.ObjectId
+  clerkOrgId       String
+  token            String       @unique
+  createdByUserId  String       @db.ObjectId
+  inviteeUserId    String?      @db.ObjectId
+  acceptedByUserId String?      @db.ObjectId
+  maxUses          Int?
+  usedCount        Int          @default(0)
+  expiresAt        DateTime?
+  status           InviteStatus @default(ACTIVE)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
 
   @@index([clerkOrgId, status])
+  @@index([inviteeUserId, status])
 }
 
 model ChatReadState {

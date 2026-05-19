@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { clerkClient } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
 import { getCurrentChatUser } from '@/lib/chat/auth'
-import { jsonError } from '@/lib/chat/api'
+import { jsonError, publishUserInvalidation } from '@/lib/chat/api'
+import { isChatInviteActive } from '@/lib/chat/invites'
 
 export async function POST(
   request: NextRequest,
@@ -13,12 +14,20 @@ export async function POST(
     if (!user) return jsonError('Unauthorized', 401)
 
     const { inviteId } = await params
-    const invite = await prisma.chatInviteLink.findUnique({ where: { token: inviteId } })
-    if (!invite) return jsonError('Invite not found', 404)
+    const invite = await prisma.chatInviteLink.findFirst({
+      where: {
+        OR: [
+          { id: inviteId },
+          { token: inviteId },
+        ],
+      },
+    })
 
-    const isExpired = invite.expiresAt ? invite.expiresAt.getTime() < Date.now() : false
-    const maxUsesReached = invite.maxUses !== null && invite.maxUses !== undefined && invite.usedCount >= invite.maxUses
-    if (invite.status !== 'ACTIVE' || isExpired || maxUsesReached) {
+    if (!invite) return jsonError('Invite not found', 404)
+    if (invite.inviteeUserId && invite.inviteeUserId !== user.id) {
+      return jsonError('Forbidden', 403)
+    }
+    if (!isChatInviteActive(invite)) {
       return jsonError('Invite is no longer active', 400)
     }
 
@@ -51,13 +60,17 @@ export async function POST(
     }
 
     const nextUsedCount = invite.usedCount + 1
-    await prisma.chatInviteLink.update({
-      where: { id: invite.id },
-      data: {
-        usedCount: nextUsedCount,
-        status: invite.maxUses && nextUsedCount >= invite.maxUses ? 'EXPIRED' : invite.status,
-      },
-    })
+    await Promise.all([
+      prisma.chatInviteLink.update({
+        where: { id: invite.id },
+        data: {
+          usedCount: nextUsedCount,
+          acceptedByUserId: user.id,
+          status: invite.maxUses && nextUsedCount >= invite.maxUses ? 'EXPIRED' : invite.status,
+        },
+      }),
+      publishUserInvalidation([user.id], { inviteId: invite.id, orgId: invite.clerkOrgId }),
+    ])
 
     return NextResponse.json({ success: true, orgId: invite.clerkOrgId })
   } catch (error) {

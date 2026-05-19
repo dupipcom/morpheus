@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import useSWR from 'swr'
-import { Hash, Inbox, Mail, MessageSquareReply, Plus, RefreshCcw, Send, Trash2, Users } from 'lucide-react'
+import { SignInButton, useAuth } from '@clerk/nextjs'
+import { Hash, Inbox, Mail, MessageSquareReply, Plus, RefreshCcw, Send, Trash2, UserPlus, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
@@ -20,8 +21,9 @@ import {
   getChatUserChannelName,
 } from '@/lib/chat/realtime/channelNames'
 import { cn } from '@/lib/utils/utils'
-import type { ChatMessageSummary, ChatUserProfile } from '@/lib/chat/types'
+import type { ChatMessageSummary, ChatPendingInviteSummary, ChatUserProfile } from '@/lib/chat/types'
 import { CHAT_ANONYMOUS_MARKER, CHAT_POLL_INTERVAL_MS, getChatAppBaseUrl } from '@/lib/chat/constants'
+import { buildChatInviteUrl } from '@/lib/chat/invites'
 
 const fetcher = async (url: string) => {
   const response = await fetch(url)
@@ -62,6 +64,9 @@ interface SidebarDm {
 interface SidebarResponse {
   currentUserId: string
   totalUnreadCount: number
+  messageUnreadCount: number
+  pendingInvitesCount: number
+  pendingInvites: ChatPendingInviteSummary[]
   orgs: SidebarOrg[]
   dms: SidebarDm[]
 }
@@ -75,29 +80,45 @@ interface ThreadResponse {
   replies: ChatMessageSummary[]
 }
 
-interface DmCandidate {
+interface RelationshipCandidate {
   id: string
   displayName: string
   username: string | null
 }
 
-interface DmCandidatesResponse {
-  candidates: DmCandidate[]
+interface RelationshipCandidatesResponse {
+  candidates: RelationshipCandidate[]
+}
+
+function getDisplayLabel(
+  profile: ChatUserProfile | null | undefined,
+  fallbackLabel: string,
+) {
+  if (!profile?.displayName || profile.displayName === CHAT_ANONYMOUS_MARKER) {
+    return fallbackLabel
+  }
+
+  return profile.displayName
 }
 
 export function ChatView() {
-  const { t, hasTranslation } = useI18n()
+  const { t, hasTranslation, locale } = useI18n()
+  const { isSignedIn } = useAuth()
   const [activeRoom, setActiveRoom] = useState<ActiveRoom>(null)
   const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null)
   const [mobileView, setMobileView] = useState<MobileView>('sidebar')
   const [newOrgName, setNewOrgName] = useState('')
   const [newChannelName, setNewChannelName] = useState('')
   const [dmQuery, setDmQuery] = useState('')
+  const [memberInviteQuery, setMemberInviteQuery] = useState('')
   const [inviteLink, setInviteLink] = useState<string | null>(null)
+  const [inviteFeedback, setInviteFeedback] = useState<string | null>(null)
   const [isCreatingOrg, setIsCreatingOrg] = useState(false)
   const [isCreatingChannel, setIsCreatingChannel] = useState(false)
   const [isCreatingDm, setIsCreatingDm] = useState(false)
   const [isCreatingInvite, setIsCreatingInvite] = useState(false)
+  const [isInvitingMember, setIsInvitingMember] = useState(false)
+  const [isAcceptingInviteId, setIsAcceptingInviteId] = useState<string | null>(null)
   const [messagePendingDelete, setMessagePendingDelete] = useState<ChatMessageSummary | null>(null)
 
   const sidebarKey = '/api/v1/chat/sidebar'
@@ -117,7 +138,10 @@ export function ChatView() {
   const { data: threadData, mutate: mutateThread, isLoading: isThreadLoading } = useSWR<ThreadResponse>(threadKey, fetcher)
 
   const dmCandidatesKey = dmQuery.trim().length >= 2 ? `/api/v1/chat/dm-candidates?q=${encodeURIComponent(dmQuery.trim())}` : null
-  const { data: dmCandidatesData } = useSWR<DmCandidatesResponse>(dmCandidatesKey, fetcher)
+  const { data: dmCandidatesData } = useSWR<RelationshipCandidatesResponse>(dmCandidatesKey, fetcher)
+
+  const memberInviteCandidatesKey = memberInviteQuery.trim().length >= 2 ? `/api/v1/chat/dm-candidates?q=${encodeURIComponent(memberInviteQuery.trim())}` : null
+  const { data: memberInviteCandidatesData } = useSWR<RelationshipCandidatesResponse>(memberInviteCandidatesKey, fetcher)
 
   const chatTitle = hasTranslation('chat.title') ? t('chat.title') : 'Chat'
   const chatSubtitle = hasTranslation('chat.subtitle') ? t('chat.subtitle') : 'Organizations, channels, direct messages, and threads.'
@@ -126,6 +150,12 @@ export function ChatView() {
   const deletedMessageTitle = hasTranslation('chat.deleteMessageTitle') ? t('chat.deleteMessageTitle') : 'Delete message?'
   const deletedMessageDescription = hasTranslation('chat.deleteMessageDescription') ? t('chat.deleteMessageDescription') : 'This will soft-delete the message and keep a placeholder in the conversation history.'
   const createInviteLabel = hasTranslation('chat.createInviteLink') ? t('chat.createInviteLink') : 'Create invite link'
+  const pendingInvitesTitle = hasTranslation('chat.pendingInvites') ? t('chat.pendingInvites') : 'Pending invites'
+  const acceptInviteLabel = hasTranslation('chat.acceptInvite') ? t('chat.acceptInvite') : 'Accept'
+  const inviteFriendLabel = hasTranslation('chat.inviteFriendToOrg') ? t('chat.inviteFriendToOrg') : 'Invite a friend to this org'
+  const inviteLinkCopiedLabel = hasTranslation('chat.inviteLinkCopied') ? t('chat.inviteLinkCopied') : 'Invite link copied'
+  const inviteSentLabel = hasTranslation('chat.inviteSent') ? t('chat.inviteSent') : 'Invite sent'
+  const inviteAcceptedLabel = hasTranslation('chat.inviteAccepted') ? t('chat.inviteAccepted') : 'Invite accepted'
 
   useEffect(() => {
     if (activeRoom || !sidebar) return
@@ -138,7 +168,7 @@ export function ChatView() {
 
     const defaultDm = sidebar.dms?.[0]
     if (defaultDm) {
-      setActiveRoom({ type: 'dm', id: defaultDm.id, name: defaultDm.participant?.displayName || directMessageLabel })
+      setActiveRoom({ type: 'dm', id: defaultDm.id, name: getDisplayLabel(defaultDm.participant, directMessageLabel) })
     }
   }, [activeRoom, directMessageLabel, sidebar])
 
@@ -308,9 +338,10 @@ export function ChatView() {
     }
   }
 
-  const createInvite = async () => {
+  const createInviteLink = async () => {
     if (!activeOrg?.id) return
     setIsCreatingInvite(true)
+    setInviteFeedback(null)
     try {
       const response = await fetch(`/api/v1/chat/orgs/${activeOrg.id}/invites`, {
         method: 'POST',
@@ -319,13 +350,50 @@ export function ChatView() {
       })
       const payload = await response.json()
       if (!response.ok) throw new Error(payload.error || 'Failed to create invite')
-      const link = `${getChatAppBaseUrl()}/api/v1/chat/invites/${payload.invite.token}/accept`
+
+      const link = buildChatInviteUrl(getChatAppBaseUrl(), locale, payload.invite.token)
       setInviteLink(link)
+      setInviteFeedback(inviteLinkCopiedLabel)
       if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(link)
       }
     } finally {
       setIsCreatingInvite(false)
+    }
+  }
+
+  const inviteMemberToOrg = async (inviteeUserId: string) => {
+    if (!activeOrg?.id) return
+    setIsInvitingMember(true)
+    setInviteFeedback(null)
+    try {
+      const response = await fetch(`/api/v1/chat/orgs/${activeOrg.id}/invites`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ inviteeUserId }),
+      })
+      const payload = await response.json().catch(() => ({ error: 'Failed to send invite' }))
+      if (!response.ok) throw new Error(payload.error || 'Failed to send invite')
+      setInviteFeedback(inviteSentLabel)
+      setMemberInviteQuery('')
+      await mutateSidebar()
+    } finally {
+      setIsInvitingMember(false)
+    }
+  }
+
+  const acceptPendingInvite = async (invite: ChatPendingInviteSummary) => {
+    setIsAcceptingInviteId(invite.id)
+    try {
+      const response = await fetch(`/api/v1/chat/invites/${invite.id}/accept`, {
+        method: 'POST',
+      })
+      const payload = await response.json().catch(() => ({ error: 'Failed to accept invite' }))
+      if (!response.ok) throw new Error(payload.error || 'Failed to accept invite')
+      setInviteFeedback(inviteAcceptedLabel)
+      await mutateSidebar()
+    } finally {
+      setIsAcceptingInviteId(null)
     }
   }
 
@@ -343,7 +411,7 @@ export function ChatView() {
     <div key={message.id} className="space-y-3 rounded-xl border border-border/60 bg-card p-4 shadow-sm">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-sm font-semibold">{!message.author?.displayName || message.author.displayName === CHAT_ANONYMOUS_MARKER ? anonymousLabel : message.author.displayName}</p>
+          <p className="text-sm font-semibold">{getDisplayLabel(message.author, anonymousLabel)}</p>
           <p className="text-xs text-muted-foreground">{new Date(message.createdAt).toLocaleString()}</p>
         </div>
         <div className="flex items-center gap-2">
@@ -366,6 +434,36 @@ export function ChatView() {
     </div>
   )
 
+  const pendingInvitesCard = sidebar?.pendingInvites?.length ? (
+    <Card>
+      <CardHeader className="space-y-2">
+        <CardTitle className="flex items-center justify-between gap-2 text-base">
+          <span>{pendingInvitesTitle}</span>
+          <ChatUnreadBadge count={sidebar.pendingInvitesCount} />
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-2">
+        {sidebar.pendingInvites.map((invite) => (
+          <div key={invite.id} className="flex items-center justify-between gap-3 rounded-lg border border-border/60 p-3">
+            <div className="min-w-0">
+              <p className="truncate text-sm font-medium">{invite.orgName}</p>
+              <p className="text-xs text-muted-foreground">/{invite.orgSlug}</p>
+            </div>
+            {isSignedIn ? (
+              <Button size="sm" onClick={() => void acceptPendingInvite(invite)} disabled={isAcceptingInviteId === invite.id}>
+                {acceptInviteLabel}
+              </Button>
+            ) : (
+              <SignInButton>
+                <Button size="sm">{acceptInviteLabel}</Button>
+              </SignInButton>
+            )}
+          </div>
+        ))}
+      </CardContent>
+    </Card>
+  ) : null
+
   const sidebarPanel = (
     <div className="flex h-full flex-col gap-4 border-r border-border bg-background/95 p-4 md:min-w-[320px] md:max-w-[360px]">
       <Card>
@@ -373,6 +471,7 @@ export function ChatView() {
           <CardTitle className="flex items-center gap-2 text-lg">
             <Mail className="h-5 w-5" />
             {chatTitle}
+            <ChatUnreadBadge count={sidebar?.totalUnreadCount ?? 0} />
           </CardTitle>
           <p className="text-sm text-muted-foreground">{chatSubtitle}</p>
         </CardHeader>
@@ -383,9 +482,12 @@ export function ChatView() {
               <Plus className="h-4 w-4" />
             </Button>
           </div>
-          {inviteLink && <p className="text-xs text-muted-foreground break-all">Invite copied: {inviteLink}</p>}
+          {inviteLink && <p className="text-xs text-muted-foreground break-all">{inviteLink}</p>}
+          {inviteFeedback && <p className="text-xs text-muted-foreground">{inviteFeedback}</p>}
         </CardContent>
       </Card>
+
+      {pendingInvitesCard}
 
       <div className="grid gap-4 md:grid-cols-[72px_minmax(0,1fr)] md:flex-1">
         <div className="flex gap-2 overflow-x-auto md:flex-col md:overflow-visible">
@@ -430,10 +532,29 @@ export function ChatView() {
                         <Plus className="h-4 w-4" />
                       </Button>
                     </div>
-                    <Button variant="outline" className="w-full" onClick={() => void createInvite()} disabled={isCreatingInvite}>
+                    <Button variant="outline" className="w-full" onClick={() => void createInviteLink()} disabled={isCreatingInvite}>
                       <Send className="h-4 w-4" />
                       {createInviteLabel}
                     </Button>
+                    <div className="space-y-2">
+                      <Input value={memberInviteQuery} onChange={(event) => setMemberInviteQuery(event.target.value)} placeholder={inviteFriendLabel} />
+                      {memberInviteCandidatesData?.candidates?.length ? (
+                        <div className="space-y-2 rounded-lg border border-border/60 p-2">
+                          {memberInviteCandidatesData.candidates.map((candidate) => (
+                            <button
+                              key={candidate.id}
+                              type="button"
+                              className="flex w-full items-center justify-between rounded-md px-2 py-2 text-left text-sm hover:bg-muted/40"
+                              onClick={() => void inviteMemberToOrg(candidate.id)}
+                              disabled={isInvitingMember}
+                            >
+                              <span>{candidate.displayName === CHAT_ANONYMOUS_MARKER ? anonymousLabel : candidate.displayName}</span>
+                              <UserPlus className="h-4 w-4" />
+                            </button>
+                          ))}
+                        </div>
+                      ) : null}
+                    </div>
                   </>
                 )}
                 <div className="space-y-2">
@@ -465,7 +586,7 @@ export function ChatView() {
             </CardHeader>
             <CardContent className="space-y-3">
               <Input value={dmQuery} onChange={(event) => setDmQuery(event.target.value)} placeholder="Search friends to start a DM" />
-              {dmCandidatesData?.candidates?.length > 0 && (
+              {dmCandidatesData?.candidates?.length ? (
                 <div className="space-y-2 rounded-lg border border-border/60 p-2">
                   {dmCandidatesData.candidates.map((candidate) => (
                     <button
@@ -475,12 +596,12 @@ export function ChatView() {
                       onClick={() => void startDm(candidate.id)}
                       disabled={isCreatingDm}
                     >
-                      <span>{candidate.displayName}</span>
+                      <span>{candidate.displayName === CHAT_ANONYMOUS_MARKER ? anonymousLabel : candidate.displayName}</span>
                       <Plus className="h-4 w-4" />
                     </button>
                   ))}
                 </div>
-              )}
+              ) : null}
               <div className="space-y-2">
                 {sidebar?.dms?.map((dm) => (
                   <button
@@ -491,11 +612,11 @@ export function ChatView() {
                       activeRoom?.type === 'dm' && activeRoom.id === dm.id && 'border-primary bg-primary/10',
                     )}
                     onClick={() => {
-                      setActiveRoom({ type: 'dm', id: dm.id, name: !dm.participant?.displayName || dm.participant.displayName === CHAT_ANONYMOUS_MARKER ? directMessageLabel : dm.participant.displayName })
+                      setActiveRoom({ type: 'dm', id: dm.id, name: getDisplayLabel(dm.participant, directMessageLabel) })
                       setMobileView('room')
                     }}
                   >
-                    <span>{!dm.participant?.displayName || dm.participant.displayName === CHAT_ANONYMOUS_MARKER ? directMessageLabel : dm.participant.displayName}</span>
+                    <span>{getDisplayLabel(dm.participant, directMessageLabel)}</span>
                     <ChatUnreadBadge count={dm.unreadCount} />
                   </button>
                 ))}
@@ -511,8 +632,8 @@ export function ChatView() {
     <div className="flex h-full min-w-0 flex-1 flex-col bg-background">
       <div className="flex items-center justify-between border-b border-border px-4 py-3">
         <div>
-          <p className="text-sm text-muted-foreground">{activeRoom?.type === 'channel' ? 'Channel' : activeRoom?.type === 'dm' ? 'Direct message' : 'Select a room'}</p>
-          <h2 className="text-lg font-semibold">{activeRoom?.name || 'Chat'}</h2>
+          <p className="text-sm text-muted-foreground">{activeRoom?.type === 'channel' ? 'Channel' : activeRoom?.type === 'dm' ? directMessageLabel : 'Select a room'}</p>
+          <h2 className="text-lg font-semibold">{activeRoom?.name || chatTitle}</h2>
         </div>
         <div className="flex gap-2 md:hidden">
           <Button variant="outline" size="sm" onClick={() => setMobileView('sidebar')}>Rooms</Button>

@@ -35,6 +35,16 @@ export interface ChatMessageSummary {
   latestReplyAt?: string | null
 }
 
+export interface ChatPendingInviteSummary {
+  id: string
+  token: string
+  clerkOrgId: string
+  orgName: string
+  orgSlug: string
+  createdAt: string
+  createdByUserId: string
+}
+
 export interface ChatRoomUnreadSummary {
   roomKey: string
   unreadCount: number

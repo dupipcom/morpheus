@@ -16,7 +16,7 @@ const fetcher = async (url: string) => {
     throw new Error('Failed to load chat unread count')
   }
 
-  return response.json()
+  return response.json() as Promise<{ currentUserId: string; unreadCount: number }>
 }
 
 interface ChatNavButtonProps {
@@ -24,6 +24,12 @@ interface ChatNavButtonProps {
   onClick: () => void
   className?: string
   size?: 'default' | 'sm' | 'lg' | 'icon'
+}
+
+interface UserChannelPayload {
+  data?: {
+    unreadCount?: number
+  }
 }
 
 export function ChatNavButton({ isActive, onClick, className, size = 'icon' }: ChatNavButtonProps) {
@@ -39,7 +45,12 @@ export function ChatNavButton({ isActive, onClick, className, size = 'icon' }: C
     if (!client) return
 
     const channel = client.channels.get(getChatUserChannelName(currentUserId))
-    const handler = () => {
+    const handler = (message: UserChannelPayload) => {
+      if (typeof message.data?.unreadCount === 'number') {
+        void mutate((current) => current ? { ...current, unreadCount: message.data?.unreadCount ?? current.unreadCount } : current, false)
+        return
+      }
+
       void mutate()
     }
 
