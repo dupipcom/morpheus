@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { lookup } from 'dns/promises'
+import { decodeHtmlEntities } from '@/lib/utils/htmlEntities'
 
 const FETCH_TIMEOUT_MS = 10_000
 const MAX_HTML_BYTES = 500 * 1024
@@ -65,14 +66,14 @@ function extractMeta(html: string, property: string): string | null {
 
   for (const pattern of patterns) {
     const match = html.match(pattern)
-    if (match?.[1]) return match[1].trim()
+    if (match?.[1]) return decodeHtmlEntities(match[1].trim())
   }
   return null
 }
 
 function extractTitle(html: string): string | null {
   const match = html.match(/<title[^>]*>([^<]+)<\/title>/i)
-  return match?.[1]?.trim() || null
+  return match?.[1] ? decodeHtmlEntities(match[1].trim()) : null
 }
 
 function extractFavicon(html: string, baseUrl: string): string | null {
@@ -86,7 +87,7 @@ function extractFavicon(html: string, baseUrl: string): string | null {
   for (const pattern of patterns) {
     const match = html.match(pattern)
     if (match?.[1]) {
-      const href = match[1].trim()
+      const href = decodeHtmlEntities(match[1].trim())
       if (href.startsWith('http')) return href
       if (href.startsWith('//')) return `https:${href}`
       if (href.startsWith('/')) {
@@ -234,4 +235,3 @@ export async function GET(request: NextRequest) {
     })
   }
 }
-
