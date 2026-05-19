@@ -5,8 +5,23 @@ const NAMED_ENTITIES: Record<string, string> = {
   quot: '"',
   apos: '\'',
   nbsp: '\u00A0',
+  copy: '©',
+  reg: '®',
+  trade: '™',
+  euro: '€',
+  ndash: '–',
+  mdash: '—',
+  hellip: '…',
+  middot: '·',
+  lsquo: '‘',
+  rsquo: '’',
+  ldquo: '“',
+  rdquo: '”',
+  laquo: '«',
+  raquo: '»',
 }
 const MAX_DECODE_ITERATIONS = 3
+const HTML_ENTITY_PATTERN = /&(#x?[0-9a-fA-F]+|[a-zA-Z][a-zA-Z0-9]{1,31});/g
 
 function decodeEntity(entity: string): string {
   if (entity.startsWith('#x') || entity.startsWith('#X')) {
@@ -41,7 +56,7 @@ export function decodeHtmlEntities(value: string): string {
 
   // Decode repeatedly to handle common double-encoded metadata safely.
   for (let i = 0; i < MAX_DECODE_ITERATIONS; i += 1) {
-    const next = decoded.replace(/&(#x?[0-9a-fA-F]+|[a-zA-Z][a-zA-Z0-9]+);/g, (_, entity: string) =>
+    const next = decoded.replace(HTML_ENTITY_PATTERN, (_, entity: string) =>
       decodeEntity(entity)
     )
 

@@ -16,3 +16,11 @@ test('decodeHtmlEntities handles double-encoded entities', () => {
 test('decodeHtmlEntities keeps unknown entities unchanged', () => {
   assert.equal(decodeHtmlEntities('Example &unknown; value'), 'Example &unknown; value')
 })
+
+test('decodeHtmlEntities leaves malformed or semicolon-less entities unchanged', () => {
+  assert.equal(decodeHtmlEntities('Bad &#xZZZZ; and &amp and &#99999999999;'), 'Bad &#xZZZZ; and &amp and &#99999999999;')
+})
+
+test('decodeHtmlEntities applies a bounded number of decode passes', () => {
+  assert.equal(decodeHtmlEntities('&amp;amp;amp;amp;amp;'), '&amp;amp;')
+})
