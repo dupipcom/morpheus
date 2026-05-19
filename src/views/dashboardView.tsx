@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdownMenu"
 import { ChevronDown } from "lucide-react"
+import { DateRangeSelector } from "@/components/ui/dateRangeSelector"
 
 import { EarningsTable } from '@/components/earningsTable'
 
@@ -27,6 +28,16 @@ import { ContentLoadingWrapper } from '@/components/contentLoadingWrapper'
 import { AgentChat } from "@/components/agentChat"
 import { useFeatureFlag } from "@/lib/hooks/useFeatureFlag"
 import { useDebounce } from "@/lib/hooks/useDebounce"
+
+/** Returns a Date that is `n` days before today */
+function daysAgo(n: number): Date {
+  const d = new Date()
+  d.setDate(d.getDate() - n)
+  return d
+}
+
+/** Formats a Date as YYYY-MM-DD for API calls */
+const toISODate = (d: Date) => d.toISOString().split('T')[0]
 
 // Chart config generators that use translations
 const createMoodChartConfig = (t: (key: string) => string) => ({
@@ -135,11 +146,13 @@ const ChartDimensionSelector = ({
 }
 
 export function DashboardView({ timeframe = "day" }): React.ReactElement {
-  const fullDate = new Date()
-  const year = Number(fullDate.toISOString().split('T')[0].split('-')[0])
   const [insight, setInsight] = useState({})
   const [days, setDays] = useState<any[]>([])
   const [isLoadingDays, setIsLoadingDays] = useState(true)
+
+  // Date range state – default to last 360 days (T-360d) through today
+  const [rangeStart, setRangeStart] = useState<Date>(() => daysAgo(360))
+  const [rangeEnd, setRangeEnd] = useState<Date>(() => new Date())
   
   // Chart dimensions state
   const [moodChartDimensions, setMoodChartDimensions] = useState({
@@ -180,7 +193,9 @@ export function DashboardView({ timeframe = "day" }): React.ReactElement {
       
       try {
         setIsLoadingDays(true)
-        const response = await fetch(`/api/v1/days?year=${year}`)
+        const startDate = toISODate(rangeStart)
+        const endDate = toISODate(rangeEnd)
+        const response = await fetch(`/api/v1/days?startDate=${startDate}&endDate=${endDate}`)
         if (!response.ok) {
           throw new Error('Failed to fetch days')
         }
@@ -195,7 +210,7 @@ export function DashboardView({ timeframe = "day" }): React.ReactElement {
     }
     
     fetchDays()
-  }, [user?.id, year])
+  }, [user?.id, rangeStart, rangeEnd])
   
   // Message history state (weekly agentConversation)
   const [currentText, setCurrentText] = useState("")
@@ -430,6 +445,15 @@ const aggregateDataByWeek = (dailyData: any[]) => {
           />
         </div>
       ) : undefined}
+
+      {/* Global date range selector – one control for all dashboard charts */}
+      <DateRangeSelector
+        startDate={rangeStart}
+        endDate={rangeEnd}
+        onStartChange={setRangeStart}
+        onEndChange={setRangeEnd}
+        className="mb-8"
+      />
       
       <ChartDimensionSelector
         dimensions={['moodAverage', 'gratitude', 'optimism', 'restedness', 'tolerance', 'selfEsteem', 'trust']}
