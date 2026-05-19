@@ -1,5 +1,6 @@
 import { auth, clerkClient } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
+import type { ClerkOrgSummary } from './types'
 import type { ChatRoleValue } from './permissions'
 
 export interface CurrentChatUser {
@@ -141,7 +142,7 @@ export async function canStartDirectMessage(currentUserId: string, participantUs
   return currentConnections.has(participantUserId) || targetConnections.has(currentUserId)
 }
 
-export async function getClerkOrganizations(orgIds: string[]) {
+export async function getClerkOrganizations(orgIds: string[]): Promise<ClerkOrgSummary[]> {
   if (orgIds.length === 0) return []
   const client = await clerkClient()
   const response = await client.organizations.getOrganizationList({

@@ -220,7 +220,7 @@ export async function getPendingChatInvites(userId: string) {
 
   const orgIds = [...new Set(activeInvites.map((invite) => invite.clerkOrgId))]
   const orgs = await getClerkOrganizations(orgIds).catch(() => [])
-  const orgMap = new Map((orgs as ClerkOrgSummary[]).map((org) => [org.id, org]))
+  const orgMap = new Map(orgs.map((org) => [org.id, org]))
 
   return activeInvites.map((invite) => ({
     id: invite.id,

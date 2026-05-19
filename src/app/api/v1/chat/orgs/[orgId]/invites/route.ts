@@ -71,13 +71,14 @@ export async function POST(
       }
     }
 
+    const maxUses = inviteeUserId ? 1 : body?.maxUses ? Number(body.maxUses) : null
     const invite = await prisma.chatInviteLink.create({
       data: {
         clerkOrgId: orgId,
         token: randomBytes(24).toString('base64url'),
         createdByUserId: user.id,
         inviteeUserId,
-        maxUses: inviteeUserId ? 1 : body?.maxUses ? Number(body.maxUses) : null,
+        maxUses,
         expiresAt: body?.expiresAt ? new Date(body.expiresAt) : null,
       },
     })
