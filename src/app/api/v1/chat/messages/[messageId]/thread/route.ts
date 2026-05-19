@@ -1,8 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { ensureChannelAccess, ensureDmParticipant, getCurrentChatUser } from '@/lib/chat/auth'
-import { jsonError } from '@/lib/chat/api'
+import { chatErrorResponse, jsonError } from '@/lib/chat/api'
 import { getThread } from '@/lib/chat/queries'
+
+const THREAD_ERROR_STATUS: Record<string, number> = {
+  'Message not found': 404,
+  Forbidden: 403,
+}
 
 export async function GET(
   request: NextRequest,
@@ -28,6 +33,6 @@ export async function GET(
     return NextResponse.json(thread)
   } catch (error) {
     console.error('Error fetching thread:', error)
-    return jsonError(error instanceof Error && error.message === 'Forbidden' ? 'Forbidden' : 'Internal server error', error instanceof Error && error.message === 'Forbidden' ? 403 : 500)
+    return chatErrorResponse(error, THREAD_ERROR_STATUS)
   }
 }

@@ -14,6 +14,20 @@ export function jsonError(message: string, status = 400) {
   return NextResponse.json({ error: message }, { status })
 }
 
+
+export function chatErrorResponse(
+  error: unknown,
+  statusByMessage: Record<string, number>,
+  fallbackMessage = 'Internal server error',
+  fallbackStatus = 500,
+) {
+  if (error instanceof Error && statusByMessage[error.message]) {
+    return jsonError(error.message, statusByMessage[error.message])
+  }
+
+  return jsonError(fallbackMessage, fallbackStatus)
+}
+
 export function slugifyChatName(value: string) {
   return value
     .toLowerCase()

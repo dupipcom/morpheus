@@ -1,13 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { ensureChannelAccess, ensureDmParticipant, getCurrentChatUser } from '@/lib/chat/auth'
 import { createAblyTokenRequest } from '@/lib/chat/realtime/ablyServer'
-import { getCurrentChatUser, ensureChannelAccess, ensureDmParticipant } from '@/lib/chat/auth'
-import { jsonError } from '@/lib/chat/api'
 import {
   getChatDmChannelName,
   getChatOrgChannelName,
   getChatOrgMetaChannelName,
   getChatUserChannelName,
 } from '@/lib/chat/realtime/channelNames'
+import { chatErrorResponse, jsonError } from '@/lib/chat/api'
+
+const TOKEN_ERROR_STATUS: Record<string, number> = {
+  'Ably is not configured': 503,
+  Forbidden: 403,
+  'Channel not found': 404,
+  'Conversation not found': 404,
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -38,6 +45,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(tokenRequest)
   } catch (error) {
     console.error('Error creating Ably token request:', error)
-    return jsonError(error instanceof Error && error.message === 'Ably is not configured' ? 'Ably is not configured' : error instanceof Error && error.message === 'Forbidden' ? 'Forbidden' : 'Internal server error', error instanceof Error && error.message === 'Ably is not configured' ? 503 : error instanceof Error && error.message === 'Forbidden' ? 403 : 500)
+    return chatErrorResponse(error, TOKEN_ERROR_STATUS)
   }
 }

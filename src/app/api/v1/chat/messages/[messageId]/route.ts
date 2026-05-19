@@ -1,13 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { ensureChannelAccess, ensureDmParticipant, getCurrentChatUser, getUserChatRole } from '@/lib/chat/auth'
-import { jsonError, getOrgMemberIds, publishMessageDeleted, publishUserInvalidation } from '@/lib/chat/api'
 import { buildMessageMetadata } from '@/lib/chat/queries'
 import { canDeleteMessage } from '@/lib/chat/permissions'
 import { sanitizeText } from '@/lib/utils/sanitize'
 import { CHAT_EVENTS } from '@/lib/chat/realtime/events'
 import { publishAblyEvent } from '@/lib/chat/realtime/ablyServer'
 import { getChatDmChannelName, getChatOrgChannelName } from '@/lib/chat/realtime/channelNames'
+import { chatErrorResponse, getOrgMemberIds, jsonError, publishMessageDeleted, publishUserInvalidation } from '@/lib/chat/api'
+
+const MESSAGE_ERROR_STATUS: Record<string, number> = {
+  'Message not found': 404,
+  'Channel not found': 404,
+  'Conversation not found': 404,
+  Forbidden: 403,
+}
 
 async function getMessageContext(messageId: string, currentUserId: string) {
   const message = await prisma.chatMessage.findUnique({ where: { id: messageId } })
@@ -93,7 +100,7 @@ export async function PATCH(
     return NextResponse.json({ message: updated })
   } catch (error) {
     console.error('Error updating chat message:', error)
-    return jsonError(error instanceof Error && error.message === 'Message not found' ? 'Message not found' : error instanceof Error && error.message === 'Forbidden' ? 'Forbidden' : 'Internal server error', error instanceof Error && error.message === 'Message not found' ? 404 : error instanceof Error && error.message === 'Forbidden' ? 403 : 500)
+    return chatErrorResponse(error, MESSAGE_ERROR_STATUS)
   }
 }
 
@@ -131,6 +138,6 @@ export async function DELETE(
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('Error deleting chat message:', error)
-    return jsonError(error instanceof Error && error.message === 'Message not found' ? 'Message not found' : error instanceof Error && error.message === 'Forbidden' ? 'Forbidden' : 'Internal server error', error instanceof Error && error.message === 'Message not found' ? 404 : error instanceof Error && error.message === 'Forbidden' ? 403 : 500)
+    return chatErrorResponse(error, MESSAGE_ERROR_STATUS)
   }
 }

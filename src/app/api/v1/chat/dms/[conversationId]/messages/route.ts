@@ -1,10 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { ensureDmParticipant, getCurrentChatUser } from '@/lib/chat/auth'
-import { jsonError, publishMessageCreated } from '@/lib/chat/api'
+import { chatErrorResponse, jsonError, publishMessageCreated } from '@/lib/chat/api'
 import { listDmMessages } from '@/lib/chat/queries'
 import { createChatMessage } from '@/lib/chat/messages'
 import { getRoomKey } from '@/lib/chat/unread'
+
+const DM_MESSAGE_ERROR_STATUS: Record<string, number> = {
+  'Conversation not found': 404,
+  Forbidden: 403,
+  'Message content is required': 400,
+  'Reply target not found': 400,
+  'Thread root not found': 400,
+  'Reply and thread root do not match': 400,
+  'Message content must be 4000 characters or fewer': 400,
+}
 
 export async function GET(
   request: NextRequest,
@@ -23,7 +33,7 @@ export async function GET(
     return NextResponse.json({ messages })
   } catch (error) {
     console.error('Error listing dm messages:', error)
-    return jsonError(error instanceof Error && error.message === 'Conversation not found' ? 'Conversation not found' : error instanceof Error && error.message === 'Forbidden' ? 'Forbidden' : 'Internal server error', error instanceof Error && error.message === 'Conversation not found' ? 404 : error instanceof Error && error.message === 'Forbidden' ? 403 : 500)
+    return chatErrorResponse(error, DM_MESSAGE_ERROR_STATUS)
   }
 }
 
@@ -86,6 +96,6 @@ export async function POST(
     return NextResponse.json({ messageId: message.id }, { status: 201 })
   } catch (error) {
     console.error('Error creating dm message:', error)
-    return jsonError(error instanceof Error ? error.message : 'Internal server error', error instanceof Error && error.message === 'Conversation not found' ? 404 : error instanceof Error && error.message === 'Forbidden' ? 403 : 400)
+    return chatErrorResponse(error, DM_MESSAGE_ERROR_STATUS)
   }
 }
