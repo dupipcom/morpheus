@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import useSWR from 'swr'
 import { SignInButton, useAuth } from '@clerk/nextjs'
 import { Hash, Inbox, Mail, MessageSquareReply, Plus, RefreshCcw, Send, Trash2, UserPlus, Users } from 'lucide-react'
@@ -120,6 +120,8 @@ export function ChatView() {
   const [isInvitingMember, setIsInvitingMember] = useState(false)
   const [isAcceptingInviteId, setIsAcceptingInviteId] = useState<string | null>(null)
   const [messagePendingDelete, setMessagePendingDelete] = useState<ChatMessageSummary | null>(null)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const threadEndRef = useRef<HTMLDivElement>(null)
 
   const sidebarKey = '/api/v1/chat/sidebar'
   const { data: sidebar, error: sidebarError, isLoading: isSidebarLoading, mutate: mutateSidebar } = useSWR<SidebarResponse>(sidebarKey, fetcher, {
@@ -235,6 +237,16 @@ export function ChatView() {
   }, [activeRoom, sidebar])
 
   const messages = messagesData?.messages ?? []
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'instant' })
+  }, [messages])
+
+  useEffect(() => {
+    if (threadData) {
+      threadEndRef.current?.scrollIntoView({ behavior: 'instant' })
+    }
+  }, [threadData])
 
   const sendMessage = useCallback(async (content: string) => {
     if (!activeRoom) return
@@ -472,31 +484,10 @@ export function ChatView() {
   ) : null
 
   const sidebarPanel = (
-    <div className="flex h-full flex-col gap-4 border-r border-border bg-background/95 p-4 md:min-w-[320px] md:max-w-[360px]">
-      <Card>
-        <CardHeader className="space-y-2">
-          <CardTitle className="flex items-center gap-2 text-lg">
-            <Mail className="h-5 w-5" />
-            {chatTitle}
-            <ChatUnreadBadge count={sidebar?.totalUnreadCount ?? 0} />
-          </CardTitle>
-          <p className="text-sm text-muted-foreground">{chatSubtitle}</p>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="flex gap-2">
-            <Input value={newOrgName} onChange={(event) => setNewOrgName(event.target.value)} placeholder="Create an organization" />
-            <Button onClick={() => void createOrg()} disabled={isCreatingOrg || !newOrgName.trim()}>
-              <Plus className="h-4 w-4" />
-            </Button>
-          </div>
-          {inviteLink && <p className="text-xs text-muted-foreground break-all">{inviteLink}</p>}
-          {inviteFeedback && <p className="text-xs text-muted-foreground">{inviteFeedback}</p>}
-        </CardContent>
-      </Card>
-
+    <div className="flex h-full min-h-0 flex-col gap-4 border-r border-border bg-background/95 p-4 md:min-w-[320px] md:max-w-[360px]">
       {pendingInvitesCard}
 
-      <div className="grid gap-4 md:grid-cols-[72px_minmax(0,1fr)] md:flex-1">
+      <div className="grid min-h-0 flex-1 gap-4 md:grid-cols-[72px_minmax(0,1fr)]">
         <div className="flex gap-2 overflow-x-auto md:flex-col md:overflow-visible">
           {sidebar?.orgs?.map((org) => (
             <button
@@ -519,7 +510,51 @@ export function ChatView() {
           ))}
         </div>
 
-        <div className="space-y-4 overflow-y-auto pr-1">
+        <div className="min-h-0 flex-1 space-y-4 overflow-y-auto pr-1">
+          <Card>
+            <CardHeader className="space-y-2">
+              <CardTitle className="flex items-center gap-2 text-base"><Inbox className="h-4 w-4" />Direct messages</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <Input value={dmQuery} onChange={(event) => setDmQuery(event.target.value)} placeholder="Search friends to start a DM" />
+              {dmCandidatesData?.candidates?.length ? (
+                <div className="space-y-2 rounded-lg border border-border/60 p-2">
+                  {dmCandidatesData.candidates.map((candidate) => (
+                    <button
+                      key={candidate.id}
+                      type="button"
+                      className="flex w-full items-center justify-between rounded-md px-2 py-2 text-left text-sm hover:bg-muted/40"
+                      onClick={() => void startDm(candidate.id)}
+                      disabled={isCreatingDm}
+                    >
+                      <span>{getDisplayLabel(candidate.displayName, anonymousLabel)}</span>
+                      <Plus className="h-4 w-4" />
+                    </button>
+                  ))}
+                </div>
+              ) : null}
+              <div className="space-y-2">
+                {sidebar?.dms?.map((dm) => (
+                  <button
+                    key={dm.id}
+                    type="button"
+                    className={cn(
+                      'flex w-full items-center justify-between rounded-lg border border-transparent px-3 py-2 text-left text-sm hover:border-border hover:bg-muted/40',
+                      activeRoom?.type === 'dm' && activeRoom.id === dm.id && 'border-primary bg-primary/10',
+                    )}
+                    onClick={() => {
+                      setActiveRoom({ type: 'dm', id: dm.id, name: getDisplayLabel(dm.participant?.displayName, directMessageLabel) })
+                      setMobileView('room')
+                    }}
+                  >
+                    <span>{getDisplayLabel(dm.participant?.displayName, directMessageLabel)}</span>
+                    <ChatUnreadBadge count={dm.unreadCount} />
+                  </button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
           {activeOrg && (
             <Card>
               <CardHeader className="space-y-2">
@@ -589,45 +624,22 @@ export function ChatView() {
 
           <Card>
             <CardHeader className="space-y-2">
-              <CardTitle className="flex items-center gap-2 text-base"><Inbox className="h-4 w-4" />Direct messages</CardTitle>
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <Mail className="h-5 w-5" />
+                {chatTitle}
+                <ChatUnreadBadge count={sidebar?.totalUnreadCount ?? 0} />
+              </CardTitle>
+              <p className="text-sm text-muted-foreground">{chatSubtitle}</p>
             </CardHeader>
             <CardContent className="space-y-3">
-              <Input value={dmQuery} onChange={(event) => setDmQuery(event.target.value)} placeholder="Search friends to start a DM" />
-              {dmCandidatesData?.candidates?.length ? (
-                <div className="space-y-2 rounded-lg border border-border/60 p-2">
-                  {dmCandidatesData.candidates.map((candidate) => (
-                    <button
-                      key={candidate.id}
-                      type="button"
-                      className="flex w-full items-center justify-between rounded-md px-2 py-2 text-left text-sm hover:bg-muted/40"
-                      onClick={() => void startDm(candidate.id)}
-                      disabled={isCreatingDm}
-                    >
-                      <span>{getDisplayLabel(candidate.displayName, anonymousLabel)}</span>
-                      <Plus className="h-4 w-4" />
-                    </button>
-                  ))}
-                </div>
-              ) : null}
-              <div className="space-y-2">
-                {sidebar?.dms?.map((dm) => (
-                  <button
-                    key={dm.id}
-                    type="button"
-                    className={cn(
-                      'flex w-full items-center justify-between rounded-lg border border-transparent px-3 py-2 text-left text-sm hover:border-border hover:bg-muted/40',
-                      activeRoom?.type === 'dm' && activeRoom.id === dm.id && 'border-primary bg-primary/10',
-                    )}
-                    onClick={() => {
-                      setActiveRoom({ type: 'dm', id: dm.id, name: getDisplayLabel(dm.participant?.displayName, directMessageLabel) })
-                      setMobileView('room')
-                    }}
-                  >
-                    <span>{getDisplayLabel(dm.participant?.displayName, directMessageLabel)}</span>
-                    <ChatUnreadBadge count={dm.unreadCount} />
-                  </button>
-                ))}
+              <div className="flex gap-2">
+                <Input value={newOrgName} onChange={(event) => setNewOrgName(event.target.value)} placeholder="Create an organization" />
+                <Button onClick={() => void createOrg()} disabled={isCreatingOrg || !newOrgName.trim()}>
+                  <Plus className="h-4 w-4" />
+                </Button>
               </div>
+              {inviteLink && <p className="text-xs text-muted-foreground break-all">{inviteLink}</p>}
+              {inviteFeedback && <p className="text-xs text-muted-foreground">{inviteFeedback}</p>}
             </CardContent>
           </Card>
         </div>
@@ -658,6 +670,7 @@ export function ChatView() {
             <CardContent className="pt-6 text-sm text-muted-foreground">No messages yet. Start the conversation.</CardContent>
           </Card>
         )}
+        <div ref={messagesEndRef} />
       </div>
 
       {activeRoom && <ChatComposer placeholder="Write a message…" onSubmit={sendMessage} />}
@@ -689,13 +702,14 @@ export function ChatView() {
         ) : (
           <p className="text-sm text-muted-foreground">Select a message to view its thread.</p>
         )}
+        <div ref={threadEndRef} />
       </div>
       {threadData?.root && <ChatComposer placeholder="Reply in thread…" onSubmit={sendThreadReply} />}
     </div>
   )
 
   return (
-    <main className="mx-auto flex min-h-[calc(100vh-210px)] w-full max-w-[1400px] flex-col px-4 py-6 md:px-6">
+    <main className="mx-auto flex h-[calc(100dvh-160px)] w-full max-w-[1400px] flex-col overflow-hidden px-4 py-2 md:px-6">
       <Dialog open={Boolean(messagePendingDelete)} onOpenChange={(open) => { if (!open) setMessagePendingDelete(null) }}>
         <DialogContent>
           <DialogHeader>
@@ -717,7 +731,7 @@ export function ChatView() {
           <CardContent className="pt-6 text-sm text-muted-foreground">Loading chat…</CardContent>
         </Card>
       ) : (
-        <div className="flex min-h-[calc(100vh-240px)] overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
+        <div className="flex h-full overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
           <div className={cn('h-full w-full md:flex md:w-auto', mobileView === 'sidebar' ? 'flex' : 'hidden md:flex')}>
             {sidebarPanel}
           </div>

@@ -37,8 +37,6 @@ export function ChatNavButton({ isActive, onClick, className, size = 'icon' }: C
     refreshInterval: CHAT_POLL_INTERVAL_MS,
   })
 
-  console.log({ unreadCount: data?.unreadCount })
-
   useEffect(() => {
     const currentUserId = data?.currentUserId
     if (!currentUserId) return
