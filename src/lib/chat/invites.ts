@@ -5,6 +5,11 @@ export interface ChatInviteStateInput {
   expiresAt?: Date | null
 }
 
+export function isMongoObjectId(value: string | null | undefined) {
+  if (!value || typeof value !== 'string') return false
+  return value.length === 24 && /^[a-f0-9]+$/i.test(value)
+}
+
 /**
  * Determine whether a chat invite is still usable by checking status, expiration, and max-use limits.
  *

@@ -3,7 +3,7 @@ import { clerkClient } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
 import { getCurrentChatUser } from '@/lib/chat/auth'
 import { jsonError, publishUserInvalidation } from '@/lib/chat/api'
-import { isChatInviteActive } from '@/lib/chat/invites'
+import { isChatInviteActive, isMongoObjectId } from '@/lib/chat/invites'
 
 export async function POST(
   request: NextRequest,
@@ -16,10 +16,14 @@ export async function POST(
     const { inviteId } = await params
     const invite = await prisma.chatInviteLink.findFirst({
       where: {
-        OR: [
-          { id: inviteId },
-          { token: inviteId },
-        ],
+        ...(isMongoObjectId(inviteId)
+          ? {
+              OR: [
+                { id: inviteId },
+                { token: inviteId },
+              ],
+            }
+          : { token: inviteId }),
       },
     })
 
