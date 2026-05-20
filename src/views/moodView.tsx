@@ -42,6 +42,13 @@ interface FriendSuggestion {
   identifiers?: string[]
 }
 
+const MINIMUM_ONE_SCOPE_FALLBACK = 'At least one scope must remain selected.'
+
+/**
+ * Resolves a multi-select scope set to the broadest effective single scope expected by the API.
+ * Priority: PRIVATE > AI_ENABLED > FRIENDS > CLOSE_FRIENDS > PUBLIC.
+ * Falls back to AI_ENABLED when scope input is empty.
+ */
 function resolveDelegationScope(scopes: NoteVisibility[]): NoteVisibility {
   if (scopes.includes('PRIVATE')) return 'PRIVATE'
   if (scopes.includes('AI_ENABLED')) return 'AI_ENABLED'
@@ -323,6 +330,13 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
   const outgoingDelegations = delegationsData?.outgoingDelegations || []
   const friendSuggestions = delegationsData?.friendSuggestions || []
   const allScopesSelected = delegationScopes.length === SELECTABLE_NOTE_VISIBILITIES.length
+  const minimumOneScopeText = t('mood.thirdParty.minimumOneScope') || MINIMUM_ONE_SCOPE_FALLBACK
+
+  const formatScopeSelectionLabel = () => {
+    if (allScopesSelected) return t('mood.thirdParty.allScopes') || 'All scopes'
+    if (delegationScopes.length > 2) return `${delegationScopes.length} ${t('mood.thirdParty.scopesSelected') || 'scopes selected'}`
+    return delegationScopes.map(v => t(`mood.publish.visibility.${v}`) || v).join(', ')
+  }
 
   // Register the mutate function for notes refresh
   useEffect(() => {
@@ -478,7 +492,7 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
   const handleAddDelegation = async () => {
     if (!delegationIdentifier.trim() || isSubmittingDelegation) return
     if (delegationScopes.length === 0) {
-      setDelegationError(t('mood.thirdParty.minimumOneScope') || 'At least one scope must remain selected.')
+      setDelegationError(minimumOneScopeText)
       return
     }
     setIsSubmittingDelegation(true)
@@ -820,11 +834,7 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline" className="justify-start gap-2 w-full sm:w-auto" aria-label={t('mood.thirdParty.scope') || 'Data scope'}>
                       <span className="truncate">
-                        {allScopesSelected
-                          ? (t('mood.thirdParty.allScopes') || 'All scopes')
-                          : delegationScopes.length > 2
-                            ? `${delegationScopes.length} ${t('mood.thirdParty.scopesSelected') || 'scopes selected'}`
-                          : delegationScopes.map(v => t(`mood.publish.visibility.${v}`) || v).join(', ')}
+                        {formatScopeSelectionLabel()}
                       </span>
                     </Button>
                   </DropdownMenuTrigger>
@@ -856,7 +866,7 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
                 </p>
                 {delegationScopes.length === 1 && (
                   <p className="text-xs text-muted-foreground">
-                    {t('mood.thirdParty.minimumOneScope') || 'At least one scope must remain selected.'}
+                    {minimumOneScopeText}
                   </p>
                 )}
                 <Button onClick={handleAddDelegation} disabled={!delegationIdentifier.trim() || isSubmittingDelegation || delegationScopes.length === 0} aria-busy={isSubmittingDelegation}>
