@@ -16,11 +16,18 @@ import { ContentLoadingWrapper } from '@/components/contentLoadingWrapper'
 import { ContactCombobox } from "@/components/ui/contactCombobox"
 import { ThingCombobox } from "@/components/ui/thingCombobox"
 import { LifeEventCombobox } from "@/components/ui/lifeEventCombobox"
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command'
 import { useDebounce } from "@/lib/hooks/useDebounce"
-import { normalizeDelegationScope } from "@/lib/utils/delegation"
+import { normalizeDelegationScopes } from "@/lib/utils/delegation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Lock, Users, UserCheck, Globe, Sparkles } from 'lucide-react'
+import { Check, Lock, Users, UserCheck, Globe, Sparkles } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -43,20 +50,6 @@ interface FriendSuggestion {
 }
 
 const MINIMUM_ONE_SCOPE_FALLBACK = 'At least one scope must remain selected.'
-
-/**
- * Resolves a multi-select scope set to the broadest effective single scope expected by the API.
- * Priority: PRIVATE > AI_ENABLED > FRIENDS > CLOSE_FRIENDS > PUBLIC.
- * Falls back to AI_ENABLED when scope input is empty.
- */
-function resolveDelegationScope(scopes: NoteVisibility[]): NoteVisibility {
-  if (scopes.includes('PRIVATE')) return 'PRIVATE'
-  if (scopes.includes('AI_ENABLED')) return 'AI_ENABLED'
-  if (scopes.includes('FRIENDS')) return 'FRIENDS'
-  if (scopes.includes('CLOSE_FRIENDS')) return 'CLOSE_FRIENDS'
-  if (scopes.includes('PUBLIC')) return 'PUBLIC'
-  return 'AI_ENABLED'
-}
 
 export function MoodView({ timeframe = "day", date: propDate = null, defaultTab = "mood", filterNoteId }: MoodViewProps): React.ReactElement {
   const { session, setGlobalContext, theme, selectedDate: contextSelectedDate, setSelectedDate } = useContext(GlobalContext)
@@ -209,6 +202,7 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
   const [newLifeEventText, setNewLifeEventText] = useState('')
   const [notes, setNotes] = useState<Note[]>([])
   const [delegationIdentifier, setDelegationIdentifier] = useState('')
+  const [isDelegationSuggestionsOpen, setIsDelegationSuggestionsOpen] = useState(false)
   const [delegationError, setDelegationError] = useState('')
   const [delegationInfo, setDelegationInfo] = useState('')
   const [isSubmittingDelegation, setIsSubmittingDelegation] = useState(false)
@@ -328,9 +322,22 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
   )
 
   const outgoingDelegations = delegationsData?.outgoingDelegations || []
-  const friendSuggestions = delegationsData?.friendSuggestions || []
+  const friendSuggestions: FriendSuggestion[] = delegationsData?.friendSuggestions || []
   const allScopesSelected = delegationScopes.length === SELECTABLE_NOTE_VISIBILITIES.length
   const minimumOneScopeText = t('mood.thirdParty.minimumOneScope') || MINIMUM_ONE_SCOPE_FALLBACK
+  const filteredFriendSuggestions = useMemo(() => {
+    const query = delegationIdentifier.trim().toLowerCase()
+
+    return friendSuggestions.filter((friend) => {
+      if (!query) return true
+
+      const searchableValues = [friend.displayName, ...(friend.identifiers || [])]
+        .filter(Boolean)
+        .map((value) => value.toLowerCase())
+
+      return searchableValues.some((value) => value.includes(query))
+    })
+  }, [delegationIdentifier, friendSuggestions])
 
   const formatScopeSelectionLabel = () => {
     if (allScopesSelected) return t('mood.thirdParty.allScopes') || 'All scopes'
@@ -498,14 +505,13 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
     setIsSubmittingDelegation(true)
     setDelegationError('')
     setDelegationInfo('')
-    const resolvedScope = resolveDelegationScope(delegationScopes)
     try {
       const response = await fetch('/api/v1/delegated-users', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           identifier: delegationIdentifier.trim(),
-          scope: resolvedScope
+          scopes: delegationScopes
         })
       })
       const data = await response.json().catch(() => null)
@@ -514,10 +520,12 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
         return
       }
       if (response.status === 202) {
+        setIsDelegationSuggestionsOpen(false)
         setDelegationInfo(data?.invitation?.message || (t('mood.thirdParty.invitationDraft') || 'Invitation draft prepared for this email.'))
         return
       }
       setDelegationIdentifier('')
+      setIsDelegationSuggestionsOpen(false)
       await mutateDelegations()
     } catch (error) {
       console.error('Error creating delegation:', error)
@@ -813,20 +821,68 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
             <div className="p-4 border rounded-lg bg-transparent border-body mb-6">
               <h3 className="text-lg font-semibold mb-4">{t('mood.thirdParty.settings') || 'Delegation Settings'}</h3>
               <div className="space-y-3">
-                <Input
-                  value={delegationIdentifier}
-                  onChange={(event) => setDelegationIdentifier(event.target.value)}
-                  placeholder={t('mood.thirdParty.identifierPlaceholder') || 'Username, email, or user ID'}
-                  list="delegation-friend-suggestions"
-                />
-                <datalist id="delegation-friend-suggestions">
-                  {friendSuggestions.flatMap((friend: FriendSuggestion) => {
-                    const base = [friend.displayName, ...(friend.identifiers || [])].filter(Boolean)
-                    return base.map((identifier) => (
-                      <option key={`${friend.id}-${identifier}`} value={identifier} />
-                    ))
-                  })}
-                </datalist>
+                <div className="relative">
+                  <Input
+                    value={delegationIdentifier}
+                    onChange={(event) => {
+                      setDelegationIdentifier(event.target.value)
+                      setIsDelegationSuggestionsOpen(true)
+                    }}
+                    onFocus={() => setIsDelegationSuggestionsOpen(true)}
+                    onBlur={() => {
+                      window.setTimeout(() => setIsDelegationSuggestionsOpen(false), 150)
+                    }}
+                    placeholder={t('mood.thirdParty.identifierPlaceholder') || 'Username, email, or user ID'}
+                    autoComplete="off"
+                    role="combobox"
+                    aria-expanded={isDelegationSuggestionsOpen}
+                    aria-controls="delegation-friend-suggestions"
+                  />
+                  {isDelegationSuggestionsOpen && friendSuggestions.length > 0 && (
+                    <div className="absolute top-full z-20 mt-2 w-full overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md">
+                      <Command shouldFilter={false}>
+                        <CommandList id="delegation-friend-suggestions">
+                          <CommandEmpty>
+                            {t('mood.thirdParty.noFriendsFound') || 'No matching friendships found.'}
+                          </CommandEmpty>
+                          <CommandGroup>
+                            {filteredFriendSuggestions.map((friend) => {
+                              const primaryIdentifier = friend.identifiers?.[0]
+                              const secondaryText = (friend.identifiers || []).join(' · ')
+                              const isSelected = primaryIdentifier === delegationIdentifier.trim()
+
+                              if (!primaryIdentifier) {
+                                return null
+                              }
+
+                              return (
+                                <CommandItem
+                                  key={friend.id}
+                                  value={`${friend.displayName || ''} ${secondaryText}`.trim()}
+                                  onMouseDown={(event) => event.preventDefault()}
+                                  onSelect={() => {
+                                    setDelegationIdentifier(primaryIdentifier)
+                                    setDelegationError('')
+                                    setDelegationInfo('')
+                                    setIsDelegationSuggestionsOpen(false)
+                                  }}
+                                >
+                                  <Check className={`mr-2 h-4 w-4 ${isSelected ? 'opacity-100' : 'opacity-0'}`} />
+                                  <div className="min-w-0 flex-1">
+                                    <p className="truncate font-medium">{friend.displayName || primaryIdentifier}</p>
+                                    {secondaryText && (
+                                      <p className="truncate text-xs text-muted-foreground">{secondaryText}</p>
+                                    )}
+                                  </div>
+                                </CommandItem>
+                              )
+                            })}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </div>
+                  )}
+                </div>
                 <p className="text-xs text-muted-foreground">
                   {t('mood.thirdParty.friendsHint') || 'Suggestions include your friends. You can also enter any email address.'}
                 </p>
@@ -898,7 +954,7 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
                     <div key={delegation.id} className="flex items-center justify-between border rounded-md p-3">
                       <div>
                         <p className="font-medium">{delegation.delegatedUser?.displayName || delegation.delegatedUser?.userName || delegation.delegatedUser?.email}</p>
-                        <p className="text-xs text-muted-foreground">{normalizeDelegationScope(delegation.scope)}</p>
+                        <p className="text-xs text-muted-foreground">{normalizeDelegationScopes(delegation.scopes, delegation.scope)}</p>
                       </div>
                       <Button variant="outline" size="sm" onClick={() => handleRemoveDelegation(delegation.id)}>
                         {t('common.remove') || 'Remove'}

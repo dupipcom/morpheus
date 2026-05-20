@@ -3,11 +3,38 @@ import prisma from '@/lib/prisma'
 import { getAuthenticatedUser } from '@/lib/services/auth'
 import { DELEGATION_SCOPES } from '@/lib/constants/visibility'
 import {
+  getDelegationScopes,
+  resolveEffectiveDelegationScope
+} from '@/lib/utils/delegation'
+import {
   buildDupipInvitationDraft,
   isValidEmailIdentifier
 } from '@/lib/utils/invitations'
 
 type DelegationScope = typeof DELEGATION_SCOPES[number]
+
+function isDelegationScope(value: string): value is DelegationScope {
+  return DELEGATION_SCOPES.includes(value as DelegationScope)
+}
+
+function parseDelegationScopes(body: unknown): DelegationScope[] {
+  if (!body || typeof body !== 'object') {
+    return ['AI_ENABLED']
+  }
+
+  const record = body as Record<string, unknown>
+  const rawScopes = Array.isArray(record.scopes)
+    ? record.scopes
+    : record.scope
+      ? [record.scope]
+      : []
+
+  const scopes = rawScopes
+    .map((scope) => String(scope).trim().toUpperCase())
+    .filter(isDelegationScope)
+
+  return scopes.length > 0 ? Array.from(new Set(scopes)) : ['AI_ENABLED']
+}
 
 function buildUserSummary(user: {
   id: string
@@ -169,18 +196,28 @@ export async function GET() {
     })
 
     return NextResponse.json({
-      outgoingDelegations: outgoing.map((delegation) => ({
-        id: delegation.id,
-        scope: delegation.scope,
-        createdAt: delegation.createdAt,
-        delegatedUser: buildUserSummary(delegation.delegated)
-      })),
-      incomingDelegations: incoming.map((delegation) => ({
-        id: delegation.id,
-        scope: delegation.scope,
-        createdAt: delegation.createdAt,
-        delegatorUser: buildUserSummary(delegation.delegator)
-      })),
+      outgoingDelegations: outgoing.map((delegation) => {
+        const scopes = getDelegationScopes(delegation.scopes, delegation.scope)
+
+        return {
+          id: delegation.id,
+          scope: delegation.scope,
+          scopes,
+          createdAt: delegation.createdAt,
+          delegatedUser: buildUserSummary(delegation.delegated)
+        }
+      }),
+      incomingDelegations: incoming.map((delegation) => {
+        const scopes = getDelegationScopes(delegation.scopes, delegation.scope)
+
+        return {
+          id: delegation.id,
+          scope: delegation.scope,
+          scopes,
+          createdAt: delegation.createdAt,
+          delegatorUser: buildUserSummary(delegation.delegator)
+        }
+      }),
       friendSuggestions
     })
   } catch (error) {
@@ -199,7 +236,8 @@ export async function POST(request: NextRequest) {
     const currentUserId = authResult.user!.id
     const body = await request.json()
     const identifier = String(body?.identifier || '').trim()
-    const scope = String(body?.scope || 'AI_ENABLED').toUpperCase() as DelegationScope
+    const scopes = parseDelegationScopes(body)
+    const scope = resolveEffectiveDelegationScope(scopes) || 'AI_ENABLED'
 
     if (!identifier) {
       return NextResponse.json({ error: 'Identifier is required' }, { status: 400 })
@@ -239,12 +277,14 @@ export async function POST(request: NextRequest) {
         }
       },
       update: {
-        scope
+        scope,
+        scopes
       },
       create: {
         delegatorId: currentUserId,
         delegatedId: targetUser.id,
-        scope
+        scope,
+        scopes
       }
     })
 
@@ -252,6 +292,7 @@ export async function POST(request: NextRequest) {
       delegation: {
         id: delegation.id,
         scope: delegation.scope,
+        scopes: getDelegationScopes(delegation.scopes, delegation.scope),
         createdAt: delegation.createdAt,
         delegatedUser: buildUserSummary(targetUser)
       }

@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
 import { sanitizeText } from '@/lib/utils/sanitize'
-import { DELEGATION_SCOPES, NOTE_VISIBILITIES } from '@/lib/constants/visibility'
+import { NOTE_VISIBILITIES } from '@/lib/constants/visibility'
+import { getDelegationScopes } from '@/lib/utils/delegation'
 
 function toUserSummary(user: {
   id: string
@@ -207,14 +208,18 @@ export async function POST(request: NextRequest) {
             delegatedId: user.id
           }
         },
-        select: { id: true }
+        select: {
+          id: true,
+          scope: true,
+          scopes: true
+        }
       })
 
       if (!delegation) {
         return NextResponse.json({ error: 'Not authorized to send note to this recipient' }, { status: 403 })
       }
       // All configured delegation scopes allow analyst-to-user note sharing; validate explicit scope value.
-      if (!DELEGATION_SCOPES.includes(delegation.scope as typeof DELEGATION_SCOPES[number])) {
+      if (getDelegationScopes(delegation.scopes, delegation.scope).length === 0) {
         return NextResponse.json({ error: 'Delegation scope is invalid for note sharing' }, { status: 403 })
       }
 

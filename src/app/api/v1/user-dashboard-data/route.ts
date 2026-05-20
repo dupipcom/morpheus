@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { getAuthenticatedUser } from '@/lib/services/auth'
 import { transformDayForAnalytics } from '@/lib/services/day'
+import {
+  getDelegationScopes,
+  resolveEffectiveDelegationScope
+} from '@/lib/utils/delegation'
 import type { DayRecord } from '@/lib/services/day'
 
 const dayListSelect = {
@@ -58,6 +62,7 @@ export async function GET(req: NextRequest) {
     const targetUserId = requestedUserId || currentUserId
 
     let delegationScope: string | null = null
+    let delegationScopes: string[] = []
 
     if (targetUserId !== currentUserId) {
       const delegation = await prisma.delegation.findUnique({
@@ -68,7 +73,8 @@ export async function GET(req: NextRequest) {
           }
         },
         select: {
-          scope: true
+          scope: true,
+          scopes: true
         }
       })
 
@@ -76,7 +82,8 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ error: 'Not authorized for selected user data' }, { status: 403 })
       }
 
-      delegationScope = delegation.scope
+      delegationScopes = getDelegationScopes(delegation.scopes, delegation.scope)
+      delegationScope = resolveEffectiveDelegationScope(delegationScopes, delegation.scope)
     }
 
     const where: Record<string, unknown> = { userId: targetUserId }
@@ -108,6 +115,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       userId: targetUserId,
       delegationScope,
+      delegationScopes,
       days: transformedDays
     })
   } catch (error) {

@@ -29,7 +29,7 @@ import { ContentLoadingWrapper } from '@/components/contentLoadingWrapper'
 import { AgentChat } from "@/components/agentChat"
 import { useFeatureFlag } from "@/lib/hooks/useFeatureFlag"
 import { useDebounce } from "@/lib/hooks/useDebounce"
-import { normalizeDelegationScope } from "@/lib/utils/delegation"
+import { normalizeDelegationScopes } from "@/lib/utils/delegation"
 
 /** Returns a Date that is `n` days before today */
 function daysAgo(n: number): Date {
@@ -151,6 +151,7 @@ interface DelegatedUserOption {
   id: string
   label: string
   scope?: string
+  scopes?: string[]
   isSelf?: boolean
 }
 
@@ -216,7 +217,8 @@ export function DashboardView({ timeframe = "day", onDelegatedUserChange }: Dash
         const incoming = (data.incomingDelegations || []).map((delegation: any) => ({
           id: delegation.delegatorUser.id,
           label: delegation.delegatorUser.displayName || delegation.delegatorUser.userName || delegation.delegatorUser.email || delegation.delegatorUser.userId || delegation.delegatorUser.id,
-          scope: delegation.scope
+          scope: delegation.scope,
+          scopes: delegation.scopes || []
         }))
         const selfOption = {
           id: user.id,
@@ -510,7 +512,7 @@ const aggregateDataByWeek = (dailyData: any[]) => {
           <SelectContent>
             {delegatedUsers.map((option) => (
               <SelectItem key={option.id} value={option.id}>
-                {option.label}{option.scope ? ` (${normalizeDelegationScope(option.scope)})` : ''}
+                {option.label}{option.scope ? ` (${normalizeDelegationScopes(option.scopes, option.scope)})` : ''}
               </SelectItem>
             ))}
           </SelectContent>

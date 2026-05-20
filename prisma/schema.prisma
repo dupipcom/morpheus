@@ -486,6 +486,7 @@ model Delegation {
   delegatorId String         @db.ObjectId
   delegatedId String         @db.ObjectId
   scope       NoteVisibility @default(AI_ENABLED)
+  scopes      NoteVisibility[] @default([AI_ENABLED])
   delegator   User           @relation("Delegator", fields: [delegatorId], references: [id], onDelete: Cascade)
   delegated   User           @relation("Delegated", fields: [delegatedId], references: [id], onDelete: Cascade)
 
