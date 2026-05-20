@@ -175,12 +175,12 @@ export async function GET(req: NextRequest) {
     const delegationScope = resolveEffectiveDelegationScope(delegationScopes, delegation.scope)
 
     if (!delegationScope) {
-      return Response.json({ error: 'Delegation scope is invalid' }, { status: 403 })
+      return Response.json({ error: 'No delegation scope configured' }, { status: 403 })
     }
 
     delegationAccess = resolveDelegationVisibilityAccess(delegationScope)
     if (delegationAccess.kind === 'invalid') {
-      return Response.json({ error: 'Delegation scope is invalid' }, { status: 403 })
+      return Response.json({ error: 'Invalid delegation scope value' }, { status: 403 })
     }
   }
 
