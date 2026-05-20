@@ -6,7 +6,7 @@ import { Circle, Minus, Plus, Eye, EyeOff, Edit, Send, Clock } from 'lucide-reac
 import { useI18n } from '@/lib/contexts/i18n'
 import { GlobalContext } from '@/lib/contexts'
 import { calculatePrizePool, applyPremiumFactors, PremiumFactorSettings } from '@/lib/utils/earningsUtils'
-import { getTaskAllocationFromDistribution } from '@/lib/utils/budgetDistributionUtils'
+import { getTaskAllocationFromDistribution, convertEntityAllocationsToMaps } from '@/lib/utils/budgetDistributionUtils'
 import { TaskItem } from '@/components/taskItem'
 import { TaskStatus, STATUS_OPTIONS, getStatusColor, getIconColor, getTaskKey, getTaskStatus, mapStatusToEnum } from '@/lib/utils/taskUtils'
 
@@ -590,9 +590,49 @@ export const TaskGrid = ({
         else {
           const allocation = getTaskAllocationFromDistribution(task.id, budgetDistribution, listBudget, premiumPool)
           if (allocation) {
+            // Priority 2a: Custom per-task allocation
             taskEarnings = allocation.taskEarnings
             const rawPremium = allocation.taskPremium
             taskPremium = applyPremiumFactors(rawPremium, listRole, userSettings)
+          }
+          // Priority 2b: Area-based distribution
+          else if (budgetDistribution?.areas?.length && task.area) {
+            const { budgets: areaBudgets, premiums: areaPremiums } = convertEntityAllocationsToMaps(budgetDistribution.areas as any, listBudget, premiumPool)
+            const areaBudget = areaBudgets[task.area] || 0
+            const areaPremiumBudget = areaPremiums[task.area] || 0
+            const tasksInArea = (selectedTaskList?.tasks as any[] || []).filter((t: any) => t.area === task.area).length || 1
+            taskEarnings = areaBudget / tasksInArea
+            taskPremium = applyPremiumFactors(areaPremiumBudget / tasksInArea, listRole, userSettings)
+          }
+          // Priority 2c: Category-based distribution
+          else if (budgetDistribution?.categories?.length && task.categories?.length > 0) {
+            const { budgets: categoryBudgets, premiums: categoryPremiums } = convertEntityAllocationsToMaps(budgetDistribution.categories as any, listBudget, premiumPool)
+            let totalBudget = 0
+            let totalPremium = 0
+            const taskCategories = Array.isArray(task.categories) ? task.categories : [task.categories]
+            
+            taskCategories.forEach((category: any) => {
+              const categoryBudget = categoryBudgets[category] || 0
+              const categoryPremiumBudget = categoryPremiums[category] || 0
+              const tasksInCategory = (selectedTaskList?.tasks as any[] || []).filter((t: any) => 
+                Array.isArray(t.categories) ? t.categories.includes(category) : t.categories === category
+              ).length || 1
+              totalBudget += categoryBudget / tasksInCategory
+              totalPremium += categoryPremiumBudget / tasksInCategory
+            })
+            
+            if (taskCategories.length > 0) {
+              taskEarnings = totalBudget / taskCategories.length
+              taskPremium = applyPremiumFactors(totalPremium / taskCategories.length, listRole, userSettings)
+            }
+          }
+          // Priority 3: If no custom allocation (Equal distribution - default), split evenly across all tasks
+          else if (listBudget > 0 || premiumPool > 0) {
+            // Equal distribution: divide budget and premium pool evenly across all tasks
+            const earningsPerTask = listBudget > 0 ? listBudget / totalTasks : 0
+            const premiumPerTask = premiumPool > 0 ? premiumPool / totalTasks : 0
+            taskEarnings = earningsPerTask
+            taskPremium = applyPremiumFactors(premiumPerTask, listRole, userSettings)
           }
           // isEstimate remains true - these are projected values
         }
