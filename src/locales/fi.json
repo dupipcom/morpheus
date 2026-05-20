@@ -57,7 +57,10 @@
     "copyLink": "Kopioi linkki",
     "linkCopied": "Linkki kopioitu leikepöydälle",
     "copyFailed": "Linkin kopiointi epäonnistui",
-    "saving": "Tallennetaan..."
+    "saving": "Tallennetaan...",
+    "decline": "Hylkää",
+    "friendRequest": "Kaveripyyntö",
+    "reverseOrder": "Käänteinen järjestys"
   },
   "navigation": {
     "dashboard": "Kojelauta",
@@ -87,7 +90,11 @@
     "yourMood": "Mielialasi.",
     "yourProductivity": "Tuottavuutesi.",
     "yourData": "Tietosi.",
-    "yourBalance": "Rahasi."
+    "yourBalance": "Rahasi.",
+    "timeframe": {
+      "startDate": "Alkamispäivä",
+      "endDate": "Päättymispäivä"
+    }
   },
   "mood": {
     "title": "Kirjaa mielialasi {date} päivälle",
@@ -110,7 +117,8 @@
         "AI_ENABLED": "AI käytössä"
       },
       "action": "Julkaise muistiinpano",
-      "publishing": "Julkaistaan..."
+      "publishing": "Julkaistaan...",
+      "embedHint": "{provider}-upotus. Jos toisto ei ole käytettävissä, avaa alla oleva alkuperäinen linkki."
     }
   },
   "week": {
@@ -139,7 +147,10 @@
       "done": "Valmis",
       "ignored": "Sivuutettu"
     },
-    "edit": "Muokkaa"
+    "edit": "Muokkaa",
+    "loadingForDate": "Ladataan tehtäviä valitulle päivämäärälle...",
+    "initializingTasks": "Asetetaan tehtäviäsi...",
+    "noTasksForDate": "Tälle päivämäärälle ei ole suunniteltuja tehtäviä"
   },
   "actions": {
     "drankWater": "Joi vettä",
@@ -665,7 +676,9 @@
       "inProgress": "Käynnissä",
       "validating": "Vahvistetaan",
       "accepted": "Hyväksytty",
-      "rejected": "Hylätty"
+      "rejected": "Hylätty",
+      "submitted": "Lähetetty",
+      "changesRequested": "Muutoksia pyydetty"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -779,5 +792,39 @@
         "resubmitted": "Työ lähetetty uudelleen tarkistettavaksi"
       }
     }
+  },
+  "notes": {
+    "updated": "Muistiinpano päivitetty onnistuneesti",
+    "updateFailed": "Muistiinpanon päivittäminen epäonnistui",
+    "deleted": "Muistiinpano poistettu onnistuneesti",
+    "deleteFailed": "Muistiinpanon poistaminen epäonnistui",
+    "deleting": "Poistetaan...",
+    "confirmDelete": "Haluatko varmasti poistaa tämän muistiinpanon?",
+    "content": "Muistiinpanon sisältö",
+    "visibilityUpdated": "Näkyvyys päivitetty onnistuneesti",
+    "visibilityUpdateFailed": "Näkyvyyden päivittäminen epäonnistui",
+    "changeVisibility": "Muuta näkyvyyttä",
+    "filters": {
+      "sort": "Lajittele",
+      "date": "Päivämäärä",
+      "mostRelevant": "Relevantein",
+      "all": "Kaikki"
+    }
+  },
+  "chat": {
+    "title": "Keskustelu",
+    "subtitle": "Organisaatiot, kanavat, suorat viestit ja ketjut.",
+    "anonymous": "Anonyymi",
+    "directMessage": "Suora viesti",
+    "deletedMessage": "Viesti poistettu",
+    "deleteMessageTitle": "Poistetaanko viesti?",
+    "deleteMessageDescription": "Tämä poistaa viestin pehmeästi ja säilyttää paikkamerkin keskusteluhistoriassa.",
+    "createInviteLink": "Luo kutsulinki",
+    "pendingInvites": "Odottavat kutsut",
+    "acceptInvite": "Hyväksy",
+    "inviteFriendToOrg": "Kutsu ystävä tähän organisaatioon",
+    "inviteLinkCopied": "Kutsulinki kopioitu",
+    "inviteSent": "Kutsu lähetetty",
+    "inviteAccepted": "Kutsu hyväksytty"
   }
 }

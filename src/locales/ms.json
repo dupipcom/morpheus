@@ -57,7 +57,10 @@
     "copyLink": "Salin pautan",
     "linkCopied": "Pautan disalin ke papan klip",
     "copyFailed": "Gagal menyalin pautan",
-    "saving": "Menyimpan..."
+    "saving": "Menyimpan...",
+    "decline": "Tolak",
+    "friendRequest": "Permintaan kawan",
+    "reverseOrder": "Terbalikkan urutan"
   },
   "navigation": {
     "dashboard": "Papan Pemuka",
@@ -87,7 +90,11 @@
     "yourMood": "Mood anda.",
     "yourProductivity": "Produktiviti anda.",
     "yourData": "Data anda.",
-    "yourBalance": "Wang anda."
+    "yourBalance": "Wang anda.",
+    "timeframe": {
+      "startDate": "Tarikh mula",
+      "endDate": "Tarikh tamat"
+    }
   },
   "mood": {
     "title": "Rekod mood anda untuk {date}",
@@ -110,7 +117,8 @@
         "AI_ENABLED": "AI Enabled"
       },
       "action": "Publish Note",
-      "publishing": "Menerbitkan..."
+      "publishing": "Menerbitkan...",
+      "embedHint": "Sematan {provider}. Jika main balik tidak tersedia, buka pautan asal di bawah."
     }
   },
   "week": {
@@ -139,7 +147,10 @@
       "done": "Selesai",
       "ignored": "Diabaikan"
     },
-    "edit": "Sunting"
+    "edit": "Sunting",
+    "loadingForDate": "Memuatkan tugasan untuk tarikh yang dipilih...",
+    "initializingTasks": "Menyediakan tugasan anda...",
+    "noTasksForDate": "Tiada tugasan dijadualkan untuk tarikh ini"
   },
   "actions": {
     "drankWater": "Minum air",
@@ -665,7 +676,9 @@
       "inProgress": "Dalam Proses",
       "validating": "Mengesahkan",
       "accepted": "Diterima",
-      "rejected": "Ditolak"
+      "rejected": "Ditolak",
+      "submitted": "Dihantar",
+      "changesRequested": "Perubahan Diminta"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -779,5 +792,39 @@
         "resubmitted": "Kerja diserahkan semula untuk semakan"
       }
     }
+  },
+  "notes": {
+    "updated": "Nota berjaya dikemaskini",
+    "updateFailed": "Gagal mengemaskini nota",
+    "deleted": "Nota berjaya dipadam",
+    "deleteFailed": "Gagal memadam nota",
+    "deleting": "Memadam...",
+    "confirmDelete": "Adakah anda pasti mahu memadam nota ini?",
+    "content": "Kandungan nota",
+    "visibilityUpdated": "Keterlihatan berjaya dikemaskini",
+    "visibilityUpdateFailed": "Gagal mengemaskini keterlihatan",
+    "changeVisibility": "Tukar keterlihatan",
+    "filters": {
+      "sort": "Isih",
+      "date": "Tarikh",
+      "mostRelevant": "Paling Relevan",
+      "all": "Semua"
+    }
+  },
+  "chat": {
+    "title": "Sembang",
+    "subtitle": "Organisasi, saluran, mesej langsung, dan utas.",
+    "anonymous": "Tanpa nama",
+    "directMessage": "Mesej langsung",
+    "deletedMessage": "Mesej dipadam",
+    "deleteMessageTitle": "Padam mesej?",
+    "deleteMessageDescription": "Ini akan memadam mesej secara lembut dan menyimpan pemegang tempat dalam sejarah perbualan.",
+    "createInviteLink": "Cipta pautan jemputan",
+    "pendingInvites": "Jemputan tertunda",
+    "acceptInvite": "Terima",
+    "inviteFriendToOrg": "Jemput rakan ke organisasi ini",
+    "inviteLinkCopied": "Pautan jemputan disalin",
+    "inviteSent": "Jemputan dihantar",
+    "inviteAccepted": "Jemputan diterima"
   }
 }

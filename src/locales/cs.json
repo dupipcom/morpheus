@@ -57,7 +57,10 @@
     "copyLink": "Kopírovat odkaz",
     "linkCopied": "Odkaz zkopírován do schránky",
     "copyFailed": "Nepodařilo se zkopírovat odkaz",
-    "saving": "Ukládání..."
+    "saving": "Ukládání...",
+    "decline": "Odmítnout",
+    "friendRequest": "Žádost o přátelství",
+    "reverseOrder": "Obrátit pořadí"
   },
   "navigation": {
     "home": "Domů",
@@ -83,7 +86,11 @@
     "yourMood": "Vaše nálada.",
     "yourProductivity": "Vaše produktivita.",
     "yourData": "Vaše data.",
-    "yourBalance": "Vaše peníze."
+    "yourBalance": "Vaše peníze.",
+    "timeframe": {
+      "startDate": "Datum zahájení",
+      "endDate": "Datum ukončení"
+    }
   },
   "mood": {
     "title": "Zaznamenejte svou náladu pro {date}",
@@ -106,7 +113,8 @@
         "AI_ENABLED": "Povoleno umělou inteligencí"
       },
       "action": "Publikovat poznámku",
-      "publishing": "Zveřejňování..."
+      "publishing": "Zveřejňování...",
+      "embedHint": "Vložení {provider}. Pokud přehrávání není dostupné, otevřete původní odkaz níže."
     }
   },
   "week": {
@@ -135,7 +143,10 @@
       "done": "Hotovo",
       "ignored": "Ignorováno"
     },
-    "edit": "Upravit"
+    "edit": "Upravit",
+    "loadingForDate": "Načítání úkolů pro vybrané datum...",
+    "initializingTasks": "Nastavování vašich úkolů...",
+    "noTasksForDate": "Pro toto datum nejsou naplánované žádné úkoly"
   },
   "actions": {
     "drankWater": "Vypil vodu",
@@ -661,7 +672,9 @@
       "inProgress": "Probíhá",
       "validating": "Ověřování",
       "accepted": "Přijato",
-      "rejected": "Odmítnuto"
+      "rejected": "Odmítnuto",
+      "submitted": "Odesláno",
+      "changesRequested": "Požadovány změny"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -775,5 +788,39 @@
         "resubmitted": "Práce znovu odeslána k posouzení"
       }
     }
+  },
+  "notes": {
+    "updated": "Poznámka úspěšně aktualizována",
+    "updateFailed": "Nepodařilo se aktualizovat poznámku",
+    "deleted": "Poznámka úspěšně smazána",
+    "deleteFailed": "Nepodařilo se smazat poznámku",
+    "deleting": "Mazání...",
+    "confirmDelete": "Opravdu chcete tuto poznámku smazat?",
+    "content": "Obsah poznámky",
+    "visibilityUpdated": "Viditelnost úspěšně aktualizována",
+    "visibilityUpdateFailed": "Nepodařilo se aktualizovat viditelnost",
+    "changeVisibility": "Změnit viditelnost",
+    "filters": {
+      "sort": "Seřadit",
+      "date": "Datum",
+      "mostRelevant": "Nejrelevantnější",
+      "all": "Vše"
+    }
+  },
+  "chat": {
+    "title": "Konverzace",
+    "subtitle": "Organizace, kanály, přímé zprávy a vlákna.",
+    "anonymous": "Anonymní",
+    "directMessage": "Přímá zpráva",
+    "deletedMessage": "Zpráva smazána",
+    "deleteMessageTitle": "Smazat zprávu?",
+    "deleteMessageDescription": "Tím se zpráva dočasně smaže a v historii konverzace zůstane zástupný symbol.",
+    "createInviteLink": "Vytvořit odkaz pro pozvání",
+    "pendingInvites": "Čekající pozvánky",
+    "acceptInvite": "Přijmout",
+    "inviteFriendToOrg": "Pozvat přítele do této organizace",
+    "inviteLinkCopied": "Odkaz pro pozvání zkopírován",
+    "inviteSent": "Pozvánka odeslána",
+    "inviteAccepted": "Pozvánka přijata"
   }
 }

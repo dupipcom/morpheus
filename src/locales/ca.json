@@ -57,7 +57,10 @@
     "copyLink": "Copia l'enllaç",
     "linkCopied": "Enllaç copiat al porta-retalls",
     "copyFailed": "Error en copiar l'enllaç",
-    "saving": "Desant..."
+    "saving": "Desant...",
+    "decline": "Declinar",
+    "friendRequest": "Sol·licitud d'amistat",
+    "reverseOrder": "Invertir ordre"
   },
   "navigation": {
     "home": "Inici",
@@ -83,7 +86,11 @@
     "yourMood": "El teu estat d'ànim.",
     "yourProductivity": "La teva productivitat.",
     "yourData": "Les teves dades.",
-    "yourBalance": "Els teus diners."
+    "yourBalance": "Els teus diners.",
+    "timeframe": {
+      "startDate": "Data d'inici",
+      "endDate": "Data de fi"
+    }
   },
   "mood": {
     "title": "Registra el teu estat d'ànim per a {date}",
@@ -106,7 +113,8 @@
         "AI_ENABLED": "Activat per IA"
       },
       "action": "Publicar nota",
-      "publishing": "Publicant..."
+      "publishing": "Publicant...",
+      "embedHint": "Incrustació de {provider}. Si la reproducció no està disponible, obre l'enllaç original a continuació."
     }
   },
   "week": {
@@ -135,7 +143,10 @@
       "done": "Fet",
       "ignored": "Ignorat"
     },
-    "edit": "Editar"
+    "edit": "Editar",
+    "loadingForDate": "Carregant tasques per a la data seleccionada...",
+    "initializingTasks": "Configurant les teves tasques...",
+    "noTasksForDate": "No hi ha tasques programades per a aquesta data"
   },
   "actions": {
     "drankWater": "Ha begut aigua",
@@ -661,7 +672,9 @@
       "inProgress": "En Progrés",
       "validating": "Validant",
       "accepted": "Acceptat",
-      "rejected": "Rebutjat"
+      "rejected": "Rebutjat",
+      "submitted": "Enviat",
+      "changesRequested": "Canvis sol·licitats"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -775,5 +788,39 @@
         "resubmitted": "Treball tornat a enviar per a revisió"
       }
     }
+  },
+  "notes": {
+    "updated": "Nota actualitzada correctament",
+    "updateFailed": "No s'ha pogut actualitzar la nota",
+    "deleted": "Nota eliminada correctament",
+    "deleteFailed": "No s'ha pogut eliminar la nota",
+    "deleting": "Eliminant...",
+    "confirmDelete": "Esteu segur que voleu eliminar aquesta nota?",
+    "content": "Contingut de la nota",
+    "visibilityUpdated": "Visibilitat actualitzada correctament",
+    "visibilityUpdateFailed": "No s'ha pogut actualitzar la visibilitat",
+    "changeVisibility": "Canviar visibilitat",
+    "filters": {
+      "sort": "Ordenar",
+      "date": "Data",
+      "mostRelevant": "Més rellevant",
+      "all": "Tot"
+    }
+  },
+  "chat": {
+    "title": "Xat",
+    "subtitle": "Organitzacions, canals, missatges directes i fils.",
+    "anonymous": "Anònim",
+    "directMessage": "Missatge directe",
+    "deletedMessage": "Missatge eliminat",
+    "deleteMessageTitle": "Eliminar missatge?",
+    "deleteMessageDescription": "Això eliminarà el missatge de manera suau i mantindrà un marcador a l'historial de conversa.",
+    "createInviteLink": "Crear enllaç d'invitació",
+    "pendingInvites": "Invitacions pendents",
+    "acceptInvite": "Acceptar",
+    "inviteFriendToOrg": "Convidar un amic a aquesta organització",
+    "inviteLinkCopied": "Enllaç d'invitació copiat",
+    "inviteSent": "Invitació enviada",
+    "inviteAccepted": "Invitació acceptada"
   }
 }

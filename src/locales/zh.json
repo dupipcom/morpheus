@@ -57,7 +57,10 @@
     "copyLink": "复制链接",
     "linkCopied": "链接已复制到剪贴板",
     "copyFailed": "复制链接失败",
-    "saving": "保存中..."
+    "saving": "保存中...",
+    "decline": "拒绝",
+    "friendRequest": "好友请求",
+    "reverseOrder": "反转顺序"
   },
   "navigation": {
     "home": "首页",
@@ -83,7 +86,11 @@
     "yourMood": "您的心情。",
     "yourProductivity": "您的生产力。",
     "yourData": "您的数据。",
-    "yourBalance": "您的钱。"
+    "yourBalance": "您的钱。",
+    "timeframe": {
+      "startDate": "开始日期",
+      "endDate": "结束日期"
+    }
   },
   "mood": {
     "title": "今天是{date}。",
@@ -106,7 +113,8 @@
         "AI_ENABLED": "支持人工智能"
       },
       "action": "出版说明",
-      "publishing": "发布中..."
+      "publishing": "发布中...",
+      "embedHint": "{provider} 嵌入。如果无法播放，请点击下方原始链接。"
     }
   },
   "week": {
@@ -135,7 +143,10 @@
       "done": "完成",
       "ignored": "已忽略"
     },
-    "edit": "编辑"
+    "edit": "编辑",
+    "loadingForDate": "正在加载所选日期的任务...",
+    "initializingTasks": "正在设置您的任务...",
+    "noTasksForDate": "该日期暂无任务"
   },
   "settings": {
     "title": "设置",
@@ -661,7 +672,9 @@
       "inProgress": "进行中",
       "validating": "验证中",
       "accepted": "已接受",
-      "rejected": "已拒绝"
+      "rejected": "已拒绝",
+      "submitted": "已提交",
+      "changesRequested": "已请求更改"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -775,5 +788,39 @@
         "resubmitted": "工作已重新提交审核"
       }
     }
+  },
+  "notes": {
+    "updated": "笔记更新成功",
+    "updateFailed": "笔记更新失败",
+    "deleted": "笔记删除成功",
+    "deleteFailed": "笔记删除失败",
+    "deleting": "正在删除...",
+    "confirmDelete": "确定要删除此笔记吗？",
+    "content": "笔记内容",
+    "visibilityUpdated": "可见性更新成功",
+    "visibilityUpdateFailed": "可见性更新失败",
+    "changeVisibility": "更改可见性",
+    "filters": {
+      "sort": "排序",
+      "date": "日期",
+      "mostRelevant": "最相关",
+      "all": "全部"
+    }
+  },
+  "chat": {
+    "title": "聊天",
+    "subtitle": "组织、频道、私信和话题。",
+    "anonymous": "匿名",
+    "directMessage": "私信",
+    "deletedMessage": "消息已删除",
+    "deleteMessageTitle": "删除消息？",
+    "deleteMessageDescription": "这将软删除该消息，并在对话记录中保留占位符。",
+    "createInviteLink": "创建邀请链接",
+    "pendingInvites": "待处理邀请",
+    "acceptInvite": "接受",
+    "inviteFriendToOrg": "邀请好友加入此组织",
+    "inviteLinkCopied": "邀请链接已复制",
+    "inviteSent": "邀请已发送",
+    "inviteAccepted": "邀请已接受"
   }
 }

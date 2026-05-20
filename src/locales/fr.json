@@ -57,7 +57,10 @@
     "copyLink": "Copier le lien",
     "linkCopied": "Lien copié dans le presse-papiers",
     "copyFailed": "Échec de la copie du lien",
-    "saving": "Enregistrement..."
+    "saving": "Enregistrement...",
+    "decline": "Refuser",
+    "friendRequest": "Demande d'amitié",
+    "reverseOrder": "Ordre inversé"
   },
   "navigation": {
     "home": "Accueil",
@@ -83,7 +86,11 @@
     "yourMood": "Votre humeur.",
     "yourProductivity": "Votre productivité.",
     "yourData": "Vos données.",
-    "yourBalance": "Votre argent."
+    "yourBalance": "Votre argent.",
+    "timeframe": {
+      "startDate": "Date de début",
+      "endDate": "Date de fin"
+    }
   },
   "mood": {
     "title": "C'est {date}.",
@@ -106,7 +113,8 @@
         "AI_ENABLED": "Activé par IA"
       },
       "action": "Publier la Note",
-      "publishing": "Publication..."
+      "publishing": "Publication...",
+      "embedHint": "Intégration {provider}. Si la lecture n'est pas disponible, ouvrez le lien original ci-dessous."
     }
   },
   "week": {
@@ -135,7 +143,10 @@
       "done": "Terminé",
       "ignored": "Ignoré"
     },
-    "edit": "Modifier"
+    "edit": "Modifier",
+    "loadingForDate": "Chargement des tâches pour la date sélectionnée...",
+    "initializingTasks": "Configuration de vos tâches...",
+    "noTasksForDate": "Aucune tâche planifiée pour cette date"
   },
   "settings": {
     "title": "Paramètres",
@@ -661,7 +672,9 @@
       "inProgress": "En Cours",
       "validating": "Validation",
       "accepted": "Accepté",
-      "rejected": "Rejeté"
+      "rejected": "Rejeté",
+      "submitted": "Soumis",
+      "changesRequested": "Modifications demandées"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -775,5 +788,39 @@
         "resubmitted": "Travail resoumis pour révision"
       }
     }
+  },
+  "notes": {
+    "updated": "Note mise à jour avec succès",
+    "updateFailed": "Échec de la mise à jour de la note",
+    "deleted": "Note supprimée avec succès",
+    "deleteFailed": "Échec de la suppression de la note",
+    "deleting": "Suppression...",
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer cette note ?",
+    "content": "Contenu de la note",
+    "visibilityUpdated": "Visibilité mise à jour avec succès",
+    "visibilityUpdateFailed": "Échec de la mise à jour de la visibilité",
+    "changeVisibility": "Modifier la visibilité",
+    "filters": {
+      "sort": "Trier",
+      "date": "Par date",
+      "mostRelevant": "Plus pertinent",
+      "all": "Tout"
+    }
+  },
+  "chat": {
+    "title": "Discussion",
+    "subtitle": "Organisations, canaux, messages directs et fils de discussion.",
+    "anonymous": "Anonyme",
+    "directMessage": "Message direct",
+    "deletedMessage": "Message supprimé",
+    "deleteMessageTitle": "Supprimer le message ?",
+    "deleteMessageDescription": "Cela supprimera le message de manière douce et conservera un espace réservé dans l'historique de la conversation.",
+    "createInviteLink": "Créer un lien d'invitation",
+    "pendingInvites": "Invitations en attente",
+    "acceptInvite": "Accepter",
+    "inviteFriendToOrg": "Inviter un ami dans cette organisation",
+    "inviteLinkCopied": "Lien d'invitation copié",
+    "inviteSent": "Invitation envoyée",
+    "inviteAccepted": "Invitation acceptée"
   }
 }

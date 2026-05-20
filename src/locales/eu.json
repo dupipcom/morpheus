@@ -56,7 +56,10 @@
     "noNotifications": "Jakinarazpenik ez",
     "copyLink": "Kopiatu esteka",
     "linkCopied": "Esteka arbelean kopiatu da",
-    "copyFailed": "Esteka kopiatzeak huts egin du"
+    "copyFailed": "Esteka kopiatzeak huts egin du",
+    "decline": "Ukatu",
+    "friendRequest": "Lagun eskaera",
+    "reverseOrder": "Ordenaren alderantzizkoa"
   },
   "navigation": {
     "home": "Hasiera",
@@ -85,7 +88,11 @@
     "yourMood": "Zure humorra.",
     "yourProductivity": "Zure produktibitatea.",
     "yourData": "Zure datuak.",
-    "yourBalance": "Zure dirua."
+    "yourBalance": "Zure dirua.",
+    "timeframe": {
+      "startDate": "Hasiera data",
+      "endDate": "Amaiera data"
+    }
   },
   "mood": {
     "title": "Erregistratu zure humorra {date} egunerako",
@@ -108,7 +115,8 @@
         "AI_ENABLED": "AI gaituta"
       },
       "action": "Argitaratu oharra",
-      "publishing": "Argitaratzen..."
+      "publishing": "Argitaratzen...",
+      "embedHint": "{provider} txertaketa. Erreprodukzioa erabilgarri ez badago, ireki beheko jatorrizko esteka."
     }
   },
   "week": {
@@ -137,7 +145,10 @@
       "done": "Eginda",
       "ignored": "Ezikusia"
     },
-    "edit": "Editatu"
+    "edit": "Editatu",
+    "loadingForDate": "Hautatutako datarako zereginak kargatzen...",
+    "initializingTasks": "Zure zereginak konfiguratzen...",
+    "noTasksForDate": "Data honetarako ez dago zereginik programatuta"
   },
   "actions": {
     "drankWater": "Ura edan zuen",
@@ -663,7 +674,9 @@
       "inProgress": "Abian",
       "validating": "Balioztatzen",
       "accepted": "Onartua",
-      "rejected": "Baztertua"
+      "rejected": "Baztertua",
+      "submitted": "Bidalita",
+      "changesRequested": "Aldaketak eskatuta"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -777,5 +790,39 @@
         "resubmitted": "Lana berrikusteko birbidali da"
       }
     }
+  },
+  "notes": {
+    "updated": "Oharra eguneratuta",
+    "updateFailed": "Ezin izan da oharra eguneratu",
+    "deleted": "Oharra ezabatuta",
+    "deleteFailed": "Ezin izan da oharra ezabatu",
+    "deleting": "Ezabatzen...",
+    "confirmDelete": "Ziur zaude ohar hau ezabatu nahi duzula?",
+    "content": "Oharraren edukia",
+    "visibilityUpdated": "Ikusgarritasuna eguneratuta",
+    "visibilityUpdateFailed": "Ezin izan da ikusgarritasuna eguneratu",
+    "changeVisibility": "Aldatu ikusgarritasuna",
+    "filters": {
+      "sort": "Ordenatu",
+      "date": "Data",
+      "mostRelevant": "Garrantzitsuena",
+      "all": "Guztiak"
+    }
+  },
+  "chat": {
+    "title": "Txata",
+    "subtitle": "Erakundeak, kanalak, mezu zuzenak eta hariak.",
+    "anonymous": "Anonimoa",
+    "directMessage": "Mezu zuzena",
+    "deletedMessage": "Mezua ezabatuta",
+    "deleteMessageTitle": "Ezabatu mezua?",
+    "deleteMessageDescription": "Honek mezua modu leunean ezabatuko du eta elkarrizketaren historian leku-gordailu bat gordeko du.",
+    "createInviteLink": "Sortu gonbidapen esteka",
+    "pendingInvites": "Gonbidapen zain",
+    "acceptInvite": "Onartu",
+    "inviteFriendToOrg": "Gonbidatu lagun bat erakunde honetara",
+    "inviteLinkCopied": "Gonbidapen esteka kopiatuta",
+    "inviteSent": "Gonbidapena bidalita",
+    "inviteAccepted": "Gonbidapena onartuta"
   }
 }

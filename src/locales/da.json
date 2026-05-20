@@ -57,7 +57,10 @@
     "copyLink": "Kopiér link",
     "linkCopied": "Link kopieret til udklipsholder",
     "copyFailed": "Kunne ikke kopiere link",
-    "saving": "Gemmer..."
+    "saving": "Gemmer...",
+    "decline": "Afvis",
+    "friendRequest": "Venneanmodning",
+    "reverseOrder": "Omvendt rækkefølge"
   },
   "navigation": {
     "dashboard": "Dashboard",
@@ -87,7 +90,11 @@
     "yourMood": "Dit humør.",
     "yourProductivity": "Din produktivitet.",
     "yourData": "Dine data.",
-    "yourBalance": "Dine penge."
+    "yourBalance": "Dine penge.",
+    "timeframe": {
+      "startDate": "Startdato",
+      "endDate": "Slutdato"
+    }
   },
   "mood": {
     "title": "Registrer dit humør for {date}",
@@ -110,7 +117,8 @@
         "AI_ENABLED": "AI-aktiveret"
       },
       "action": "Publicer note",
-      "publishing": "Udgiver..."
+      "publishing": "Udgiver...",
+      "embedHint": "{provider}-indlejring. Hvis afspilning ikke er tilgængelig, åbn det originale link nedenfor."
     }
   },
   "week": {
@@ -139,7 +147,10 @@
       "done": "Færdig",
       "ignored": "Ignoreret"
     },
-    "edit": "Rediger"
+    "edit": "Rediger",
+    "loadingForDate": "Indlæser opgaver for valgt dato...",
+    "initializingTasks": "Opsætter dine opgaver...",
+    "noTasksForDate": "Ingen opgaver planlagt for denne dato"
   },
   "actions": {
     "drankWater": "Drak vand",
@@ -665,7 +676,9 @@
       "inProgress": "I Gang",
       "validating": "Validerer",
       "accepted": "Accepteret",
-      "rejected": "Afvist"
+      "rejected": "Afvist",
+      "submitted": "Indsendt",
+      "changesRequested": "Ændringer ønsket"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -779,5 +792,39 @@
         "resubmitted": "Arbejde indsendt igen til gennemgang"
       }
     }
+  },
+  "notes": {
+    "updated": "Note opdateret",
+    "updateFailed": "Kunne ikke opdatere note",
+    "deleted": "Note slettet",
+    "deleteFailed": "Kunne ikke slette note",
+    "deleting": "Sletter...",
+    "confirmDelete": "Er du sikker på, at du vil slette denne note?",
+    "content": "Noteindhold",
+    "visibilityUpdated": "Synlighed opdateret",
+    "visibilityUpdateFailed": "Kunne ikke opdatere synlighed",
+    "changeVisibility": "Skift synlighed",
+    "filters": {
+      "sort": "Sorter",
+      "date": "Dato",
+      "mostRelevant": "Mest relevant",
+      "all": "Alle"
+    }
+  },
+  "chat": {
+    "title": "Samtale",
+    "subtitle": "Organisationer, kanaler, direkte beskeder og tråde.",
+    "anonymous": "Anonym",
+    "directMessage": "Direkte besked",
+    "deletedMessage": "Besked slettet",
+    "deleteMessageTitle": "Slet besked?",
+    "deleteMessageDescription": "Dette vil blødt slette beskeden og beholde en pladsholder i samtalehistorikken.",
+    "createInviteLink": "Opret invitationslink",
+    "pendingInvites": "Afventende invitationer",
+    "acceptInvite": "Accepter",
+    "inviteFriendToOrg": "Inviter en ven til denne organisation",
+    "inviteLinkCopied": "Invitationslink kopieret",
+    "inviteSent": "Invitation sendt",
+    "inviteAccepted": "Invitation accepteret"
   }
 }

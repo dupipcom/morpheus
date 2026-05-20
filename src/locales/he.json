@@ -57,7 +57,10 @@
     "copyLink": "העתק קישור",
     "linkCopied": "קישור הועתק ללוח",
     "copyFailed": "העתקת הקישור נכשלה",
-    "saving": "שומר..."
+    "saving": "שומר...",
+    "decline": "דחה",
+    "friendRequest": "בקשת חברות",
+    "reverseOrder": "סדר הפוך"
   },
   "navigation": {
     "home": "בית",
@@ -83,7 +86,11 @@
     "yourMood": "מצב הרוח שלך.",
     "yourProductivity": "הפרודוקטיביות שלך.",
     "yourData": "הנתונים שלך.",
-    "yourBalance": "הכסף שלך."
+    "yourBalance": "הכסף שלך.",
+    "timeframe": {
+      "startDate": "תאריך התחלה",
+      "endDate": "תאריך סיום"
+    }
   },
   "mood": {
     "title": "תעד את מצב הרוח שלך עבור {date}",
@@ -106,7 +113,8 @@
         "AI_ENABLED": "בינה מלאכותית מופעלת"
       },
       "action": "פרסם הערה",
-      "publishing": "מפרסם..."
+      "publishing": "מפרסם...",
+      "embedHint": "הטמעת {provider}. אם ההפעלה אינה זמינה, פתח את הקישור המקורי למטה."
     }
   },
   "week": {
@@ -135,7 +143,10 @@
       "done": "הושלם",
       "ignored": "התעלם"
     },
-    "edit": "ערוך"
+    "edit": "ערוך",
+    "loadingForDate": "טוען משימות לתאריך שנבחר...",
+    "initializingTasks": "מגדיר את המשימות שלך...",
+    "noTasksForDate": "אין משימות מתוכננות לתאריך זה"
   },
   "actions": {
     "drankWater": "שתה מים",
@@ -661,7 +672,9 @@
       "inProgress": "בתהליך",
       "validating": "מאמת",
       "accepted": "התקבל",
-      "rejected": "נדחה"
+      "rejected": "נדחה",
+      "submitted": "הוגש",
+      "changesRequested": "התבקשו שינויים"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -775,5 +788,39 @@
         "resubmitted": "עבודה נשלחה מחדש לבדיקה"
       }
     }
+  },
+  "notes": {
+    "updated": "הפתק עודכן בהצלחה",
+    "updateFailed": "עדכון הפתק נכשל",
+    "deleted": "הפתק נמחק בהצלחה",
+    "deleteFailed": "מחיקת הפתק נכשלה",
+    "deleting": "מוחק...",
+    "confirmDelete": "האם אתה בטוח שברצונך למחוק את הפתק הזה?",
+    "content": "תוכן הפתק",
+    "visibilityUpdated": "הנראות עודכנה בהצלחה",
+    "visibilityUpdateFailed": "עדכון הנראות נכשל",
+    "changeVisibility": "שנה נראות",
+    "filters": {
+      "sort": "מיין",
+      "date": "תאריך",
+      "mostRelevant": "הרלוונטי ביותר",
+      "all": "הכל"
+    }
+  },
+  "chat": {
+    "title": "צ'אט",
+    "subtitle": "ארגונים, ערוצים, הודעות ישירות ושרשורים.",
+    "anonymous": "אנונימי",
+    "directMessage": "הודעה ישירה",
+    "deletedMessage": "ההודעה נמחקה",
+    "deleteMessageTitle": "למחוק הודעה?",
+    "deleteMessageDescription": "פעולה זו תמחק את ההודעה בצורה רכה ותשמור מציין מיקום בהיסטוריית השיחה.",
+    "createInviteLink": "צור קישור הזמנה",
+    "pendingInvites": "הזמנות ממתינות",
+    "acceptInvite": "קבל",
+    "inviteFriendToOrg": "הזמן חבר לארגון זה",
+    "inviteLinkCopied": "קישור ההזמנה הועתק",
+    "inviteSent": "ההזמנה נשלחה",
+    "inviteAccepted": "ההזמנה התקבלה"
   }
 }

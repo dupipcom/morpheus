@@ -56,7 +56,10 @@
     "noNotifications": "Babu sanarwa",
     "copyLink": "Kwafi hanyar haɗi",
     "linkCopied": "An kwafi hanyar haɗi zuwa allon kwafi",
-    "copyFailed": "An gaza kwafi hanyar haɗi"
+    "copyFailed": "An gaza kwafi hanyar haɗi",
+    "decline": "Ƙi",
+    "friendRequest": "Buƙatar abokantaka",
+    "reverseOrder": "Juya tsari"
   },
   "navigation": {
     "home": "Gida",
@@ -82,7 +85,11 @@
     "yourMood": "Yanayin zuciyarka.",
     "yourProductivity": "Ayyukanka.",
     "yourData": "Bayananka.",
-    "yourBalance": "Kuɗinka."
+    "yourBalance": "Kuɗinka.",
+    "timeframe": {
+      "startDate": "Ranar farawa",
+      "endDate": "Ranar ƙarshe"
+    }
   },
   "mood": {
     "title": "Yau {date} ne.",
@@ -105,7 +112,8 @@
         "AI_ENABLED": "AI Ana Kunna"
       },
       "action": "Buga Bayani",
-      "publishing": "Ana bugawa..."
+      "publishing": "Ana bugawa...",
+      "embedHint": "Shigar {provider}. Idan sake kunna ba shi da amfani, buɗe haɗin asali a ƙasa."
     }
   },
   "week": {
@@ -134,7 +142,10 @@
       "done": "An Gama",
       "ignored": "An Yi Watsi"
     },
-    "edit": "Gyara"
+    "edit": "Gyara",
+    "loadingForDate": "Ana loda ayyuka ga ranar da aka zaɓa...",
+    "initializingTasks": "Ana saita ayyukanku...",
+    "noTasksForDate": "Babu ayyuka da aka tsara don wannan ranar"
   },
   "settings": {
     "title": "Saiti",
@@ -657,7 +668,9 @@
       "inProgress": "Ana Ci Gaba",
       "validating": "Ana Tantancewa",
       "accepted": "An Karɓa",
-      "rejected": "An Ki"
+      "rejected": "An Ki",
+      "submitted": "An tura",
+      "changesRequested": "An nemi canje-canje"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -771,5 +784,39 @@
         "resubmitted": "An sake ƙaddamar da aiki don bita"
       }
     }
+  },
+  "notes": {
+    "updated": "An sabunta bayanin kula cikin nasara",
+    "updateFailed": "Kuskure wajen sabunta bayanin kula",
+    "deleted": "An share bayanin kula cikin nasara",
+    "deleteFailed": "Kuskure wajen share bayanin kula",
+    "deleting": "Ana share...",
+    "confirmDelete": "Shin kun tabbata kuna son share wannan bayanin kula?",
+    "content": "Abubuwan bayanin kula",
+    "visibilityUpdated": "An sabunta bayyanuwar cikin nasara",
+    "visibilityUpdateFailed": "Kuskure wajen sabunta bayyanuwar",
+    "changeVisibility": "Canza bayyanuwar",
+    "filters": {
+      "sort": "Ƙididdiga",
+      "date": "Kwanan wata",
+      "mostRelevant": "Mafi dacewa",
+      "all": "Duka"
+    }
+  },
+  "chat": {
+    "title": "Hira",
+    "subtitle": "Ƙungiyoyi, tasoshin, saƙonnin kai tsaye, da zaren tattaunawa.",
+    "anonymous": "Ba a sani ba",
+    "directMessage": "Saƙo kai tsaye",
+    "deletedMessage": "An share saƙo",
+    "deleteMessageTitle": "Share saƙo?",
+    "deleteMessageDescription": "Wannan zai share saƙo a hankali kuma zai adana alamar wurin a tarihin tattaunawar.",
+    "createInviteLink": "Ƙirƙiri haɗin gayyata",
+    "pendingInvites": "Gayyata masu jiran gado",
+    "acceptInvite": "Karɓa",
+    "inviteFriendToOrg": "Gayyaci aboki zuwa wannan ƙungiya",
+    "inviteLinkCopied": "An kwafi haɗin gayyata",
+    "inviteSent": "An aika gayyata",
+    "inviteAccepted": "An karɓi gayyata"
   }
 }
