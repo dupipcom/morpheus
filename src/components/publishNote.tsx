@@ -126,10 +126,10 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
       <div className="grid grid-cols-4 gap-2 sm:grid-cols-1 sm:gap-0 mb-0">
         {recipientId && (
           <div className="col-span-4 mb-2">
-            <label className="text-xs text-muted-foreground block mb-1">
+            <label htmlFor="publish-note-recipient" className="text-xs text-muted-foreground block mb-1">
               {t('notes.recipient') || 'Recipient'}
             </label>
-            <Input value={recipientLabel || recipientId} readOnly />
+            <Input id="publish-note-recipient" value={recipientLabel || recipientId} readOnly />
           </div>
         )}
         <Textarea 

@@ -223,7 +223,7 @@ export async function POST(request: NextRequest) {
         visibility: visibility || 'PRIVATE',
         date: date || null,
         userId: user.id,
-        senderId: validRecipientId ? user.id : null,
+        senderId: user.id,
         recipientId: validRecipientId
       }
     })

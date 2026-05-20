@@ -17,7 +17,7 @@ import { ContactCombobox } from "@/components/ui/contactCombobox"
 import { ThingCombobox } from "@/components/ui/thingCombobox"
 import { LifeEventCombobox } from "@/components/ui/lifeEventCombobox"
 import { useDebounce } from "@/lib/hooks/useDebounce"
-import { formatDelegationScope } from "@/lib/utils/delegation"
+import { normalizeDelegationScope } from "@/lib/utils/delegation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -812,7 +812,7 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
                     <div key={delegation.id} className="flex items-center justify-between border rounded-md p-3">
                       <div>
                         <p className="font-medium">{delegation.delegatedUser?.displayName || delegation.delegatedUser?.userName || delegation.delegatedUser?.email}</p>
-                        <p className="text-xs text-muted-foreground">{formatDelegationScope(delegation.scope)}</p>
+                        <p className="text-xs text-muted-foreground">{normalizeDelegationScope(delegation.scope)}</p>
                       </div>
                       <Button variant="outline" size="sm" onClick={() => handleRemoveDelegation(delegation.id)}>
                         {t('common.remove') || 'Remove'}

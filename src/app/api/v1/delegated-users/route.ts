@@ -226,17 +226,15 @@ export async function DELETE(request: NextRequest) {
     const currentUserId = authResult.user!.id
     const body = await request.json()
     const delegationId = body?.delegationId ? String(body.delegationId) : null
-    const delegatedUserId = body?.delegatedUserId ? String(body.delegatedUserId) : null
 
-    if (!delegationId && !delegatedUserId) {
-      return NextResponse.json({ error: 'delegationId or delegatedUserId is required' }, { status: 400 })
+    if (!delegationId) {
+      return NextResponse.json({ error: 'delegationId is required' }, { status: 400 })
     }
 
     const result = await prisma.delegation.deleteMany({
       where: {
         delegatorId: currentUserId,
-        ...(delegationId ? { id: delegationId } : {}),
-        ...(delegatedUserId ? { delegatedId: delegatedUserId } : {})
+        id: delegationId
       }
     })
 

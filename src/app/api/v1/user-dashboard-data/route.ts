@@ -24,11 +24,11 @@ const dayListSelect = {
   visibility: true
 }
 
-function getAllowedDayVisibilities(scope: string): Array<'PUBLIC' | 'FRIENDS' | 'CLOSE_FRIENDS'> | null {
+function getAllowedDayVisibilities(scope: string): Array<'PUBLIC' | 'FRIENDS' | 'CLOSE_FRIENDS'> | undefined {
   switch (scope) {
     case 'PRIVATE':
     case 'AI_ENABLED':
-      return null
+      return undefined
     case 'PUBLIC':
       return ['PUBLIC']
     case 'CLOSE_FRIENDS':
@@ -36,7 +36,7 @@ function getAllowedDayVisibilities(scope: string): Array<'PUBLIC' | 'FRIENDS' | 
     case 'FRIENDS':
       return ['PUBLIC', 'FRIENDS', 'CLOSE_FRIENDS']
     default:
-      return null
+      return undefined
   }
 }
 
@@ -88,7 +88,7 @@ export async function GET(req: NextRequest) {
       where.date = { gte: startDate, lte: endDate }
     }
 
-    const allowedVisibility = delegationScope ? getAllowedDayVisibilities(delegationScope) : null
+    const allowedVisibility = delegationScope ? getAllowedDayVisibilities(delegationScope) : undefined
     if (allowedVisibility) {
       where.visibility = { in: allowedVisibility }
     }
