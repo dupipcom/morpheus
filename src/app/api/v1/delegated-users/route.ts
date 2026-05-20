@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { getAuthenticatedUser } from '@/lib/services/auth'
+import { DELEGATION_SCOPES } from '@/lib/constants/visibility'
 
-const VALID_DELEGATION_SCOPES = ['PRIVATE', 'AI_ENABLED', 'FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC'] as const
-type DelegationScope = typeof VALID_DELEGATION_SCOPES[number]
+type DelegationScope = typeof DELEGATION_SCOPES[number]
 
 function buildUserSummary(user: {
   id: string
@@ -172,7 +172,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Identifier is required' }, { status: 400 })
     }
 
-    if (!VALID_DELEGATION_SCOPES.includes(scope)) {
+    if (!DELEGATION_SCOPES.includes(scope)) {
       return NextResponse.json({ error: 'Invalid scope' }, { status: 400 })
     }
 

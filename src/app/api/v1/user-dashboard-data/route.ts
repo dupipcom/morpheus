@@ -26,6 +26,9 @@ const dayListSelect = {
 
 function getAllowedDayVisibilities(scope: string): Array<'PUBLIC' | 'FRIENDS' | 'CLOSE_FRIENDS'> | null {
   switch (scope) {
+    case 'PRIVATE':
+    case 'AI_ENABLED':
+      return null
     case 'PUBLIC':
       return ['PUBLIC']
     case 'CLOSE_FRIENDS':

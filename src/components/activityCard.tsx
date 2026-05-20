@@ -855,7 +855,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
 
       {item.type === 'note' && item.sender && item.recipient && (
         <p className="text-xs text-muted-foreground mb-2">
-          {(item.sender.userName || item.sender.firstName || item.sender.id)} → {(item.recipient.userName || item.recipient.firstName || item.recipient.id)}
+          {(item.sender.userName || item.sender.firstName || item.sender.id)} to {(item.recipient.userName || item.recipient.firstName || item.recipient.id)}
         </p>
       )}
 

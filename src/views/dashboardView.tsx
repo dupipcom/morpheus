@@ -164,7 +164,7 @@ export function DashboardView({ timeframe = "day", onDelegatedUserChange }: Dash
   const [days, setDays] = useState<any[]>([])
   const [isLoadingDays, setIsLoadingDays] = useState(true)
   const [delegatedUsers, setDelegatedUsers] = useState<DelegatedUserOption[]>([])
-  const [selectedDelegatedUserId, setSelectedDelegatedUserId] = useState<string | null>(null)
+  const [selectedDelegatedUserId, setSelectedDelegatedUserId] = useState<string>('')
   const [isLoadingDelegations, setIsLoadingDelegations] = useState(false)
 
   // Date range state – default to last 360 days (T-360d) through today
@@ -501,7 +501,7 @@ const aggregateDataByWeek = (dailyData: any[]) => {
           {t('dashboard.selectDelegatedUser') || 'Select delegated user'}
         </label>
         <Select
-          value={selectedDelegatedUserId || user.id}
+          value={selectedDelegatedUserId || undefined}
           onValueChange={setSelectedDelegatedUserId}
         >
           <SelectTrigger className="w-full md:w-[360px]">
@@ -523,7 +523,7 @@ const aggregateDataByWeek = (dailyData: any[]) => {
             {[
               'How did the user progress last week?',
               'What should we focus on during therapy today?',
-              'What were the user major life events this week?'
+              "What were the user's major life events this week?"
             ].map((question) => (
               <Button key={question} variant="outline" size="sm" onClick={() => setCurrentText(question)}>
                 {question}

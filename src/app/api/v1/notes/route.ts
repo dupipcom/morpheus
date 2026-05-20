@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
 import { sanitizeText } from '@/lib/utils/sanitize'
-
-const VALID_NOTE_VISIBILITIES = ['PRIVATE', 'FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC', 'HIDDEN', 'AI_ENABLED']
+import { NOTE_VISIBILITIES } from '@/lib/constants/visibility'
 
 function toUserSummary(user: {
   id: string
@@ -32,7 +31,7 @@ export async function GET(request: NextRequest) {
     const filterNoteId = searchParams.get('noteId')
     const requestedVisibility = searchParams.get('visibility')
     const selectedVisibility = requestedVisibility
-      ? requestedVisibility.split(',').map(v => v.trim().toUpperCase()).filter(v => VALID_NOTE_VISIBILITIES.includes(v))
+      ? requestedVisibility.split(',').map(v => v.trim().toUpperCase()).filter(v => NOTE_VISIBILITIES.includes(v as typeof NOTE_VISIBILITIES[number]))
       : null
 
     const user = await prisma.user.findUnique({
