@@ -53,19 +53,24 @@ const HINT_VECTOR_STORE_ID = process.env.OPENAI_HINT_VECTOR_STORE_ID?.trim() || 
 const HINT_RAG_FILE_PATH = path.join(process.cwd(), 'src/app/api/v1/hint/rag/cognitive-psychology-archiveorg.md')
 const HINT_RAG_FILE_NAME = path.basename(HINT_RAG_FILE_PATH)
 
-function getAllowedDayVisibilities(scope: string): Array<'PUBLIC' | 'FRIENDS' | 'CLOSE_FRIENDS'> | null {
+type DelegationVisibilityAccess =
+  | { kind: 'full' }
+  | { kind: 'restricted'; visibilities: Array<'PUBLIC' | 'FRIENDS' | 'CLOSE_FRIENDS'> }
+  | { kind: 'invalid' }
+
+function resolveDelegationVisibilityAccess(scope: string): DelegationVisibilityAccess {
   switch (scope) {
     case 'PRIVATE':
     case 'AI_ENABLED':
-      return null
+      return { kind: 'full' }
     case 'PUBLIC':
-      return ['PUBLIC']
+      return { kind: 'restricted', visibilities: ['PUBLIC'] }
     case 'CLOSE_FRIENDS':
-      return ['PUBLIC', 'CLOSE_FRIENDS']
+      return { kind: 'restricted', visibilities: ['PUBLIC', 'CLOSE_FRIENDS'] }
     case 'FRIENDS':
-      return ['PUBLIC', 'FRIENDS', 'CLOSE_FRIENDS']
+      return { kind: 'restricted', visibilities: ['PUBLIC', 'FRIENDS', 'CLOSE_FRIENDS'] }
     default:
-      return []
+      return { kind: 'invalid' }
   }
 }
 
@@ -149,7 +154,7 @@ export async function GET(req: NextRequest) {
   }
 
   const targetUserId = requestedUserId || requestingUser.id
-  let allowedVisibility: Array<'PUBLIC' | 'FRIENDS' | 'CLOSE_FRIENDS'> | null = null
+  let delegationAccess: DelegationVisibilityAccess = { kind: 'full' }
 
   if (targetUserId !== requestingUser.id) {
     const delegation = await prisma.delegation.findUnique({
@@ -173,8 +178,8 @@ export async function GET(req: NextRequest) {
       return Response.json({ error: 'Delegation scope is invalid' }, { status: 403 })
     }
 
-    allowedVisibility = getAllowedDayVisibilities(delegationScope)
-    if (allowedVisibility && allowedVisibility.length === 0) {
+    delegationAccess = resolveDelegationVisibilityAccess(delegationScope)
+    if (delegationAccess.kind === 'invalid') {
       return Response.json({ error: 'Delegation scope is invalid' }, { status: 403 })
     }
   }
@@ -195,8 +200,8 @@ export async function GET(req: NextRequest) {
   const quarter = Math.floor((month - 1) / 3) + 1
   const semester = month <= 6 ? 1 : 2
   const dayWhere: Record<string, unknown> = { userId: targetUser.id }
-  if (allowedVisibility) {
-    dayWhere.visibility = { in: allowedVisibility }
+  if (delegationAccess.kind === 'restricted') {
+    dayWhere.visibility = { in: delegationAccess.visibilities }
   }
   const days = targetUser
     ? await prisma.day.findMany({
@@ -219,7 +224,7 @@ export async function GET(req: NextRequest) {
       })
     : []
   const entries = buildHistoricalEntriesByYear(days)
-  const canReadPersistedHint = !allowedVisibility
+  const canReadPersistedHint = delegationAccess.kind === 'full'
   const existingDay = canReadPersistedHint
     ? await prisma.day.findFirst({
         where: { userId: targetUser.id, date },
