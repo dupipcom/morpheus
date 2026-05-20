@@ -36,6 +36,13 @@ export function useTranslations(locale: Locale) {
     [translations]
   )
 
+  const hasTranslation = useCallback(
+    (key: string): boolean => {
+      return t(translations, key) !== key
+    },
+    [translations]
+  )
+
   const formatDateForLocale = useCallback(
     (date: Date): string => {
       return formatDate(date, locale)
@@ -45,6 +52,7 @@ export function useTranslations(locale: Locale) {
 
   return {
     t: translate,
+    hasTranslation,
     formatDate: formatDateForLocale,
     translations,
     isLoading,

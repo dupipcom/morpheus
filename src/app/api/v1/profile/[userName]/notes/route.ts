@@ -1,11 +1,27 @@
 import prisma from "@/lib/prisma";
 import { NextRequest } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
+import {
+  calculateNoteRelevanceScore,
+  normalizeNoteSortBy,
+  sortNotes
+} from '@/lib/utils/noteRelevance'
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ userName: string }> }) {
   try {
     const { userName } = await params
     const { userId } = await auth()
+    const searchParams = req.nextUrl.searchParams
+    const VALID_NOTE_VISIBILITIES = ['PRIVATE', 'FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC', 'HIDDEN', 'AI_ENABLED'] as const
+    type NoteVisibility = typeof VALID_NOTE_VISIBILITIES[number]
+    const requestedVisibility = searchParams.get('visibility') || 'PUBLIC'
+    const selectedVisibility = requestedVisibility
+      .split(',')
+      .map(value => value.trim().toUpperCase())
+      .filter((value): value is NoteVisibility => (VALID_NOTE_VISIBILITIES as readonly string[]).includes(value))
+    const sortBy = normalizeNoteSortBy(searchParams.get('sort'))
+    const sortOrder = searchParams.get('order') === 'asc' ? 'asc' : 'desc'
+    const selectedVisibilitySet = new Set<NoteVisibility>(selectedVisibility.length > 0 ? selectedVisibility : ['PUBLIC'])
 
     // Find the profile to get the user ID using root-level username field
     const profile = await prisma.profile.findUnique({
@@ -31,6 +47,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
     let currentUserId = null
     let currentUserFriends = []
     let currentUserCloseFriends = []
+    let isOwnProfile = false
+
     if (userId) {
       const currentUser = await prisma.user.findUnique({
         where: { userId },
@@ -50,7 +68,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
 
     if (currentUserId) {
       // If user is logged in, they can see more notes based on relationship
-      const isOwnProfile = profile.user.id === currentUserId
+      isOwnProfile = profile.user.id === currentUserId
       
       // Check bidirectional friendship - both users must have each other in their friends list
       const isFriend = profile.user.friends.includes(currentUserId) && currentUserFriends.includes(profile.user.id)
@@ -66,6 +84,18 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
         // Friends can see friends and public notes
         visibilityFilter = ['FRIENDS', 'PUBLIC']
       }
+    }
+
+    // Apply requested visibility as OR-clause over the selected options
+    visibilityFilter = visibilityFilter.filter(value => selectedVisibilitySet.has(value as NoteVisibility))
+
+    if (visibilityFilter.length === 0) {
+      return Response.json({
+        notes: [],
+        isOwnProfile,
+        hasVisibilityAccess: false,
+        requestedVisibility: Array.from(selectedVisibilitySet)
+      })
     }
 
     // Fetch notes based on visibility
@@ -90,6 +120,11 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
           select: {
             comments: true,
             likes: true
+          }
+        },
+        likes: {
+          select: {
+            userId: true
           }
         },
         comments: {
@@ -137,10 +172,15 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
       userLikedNoteIds = userLikes.map(like => like.entityId)
     }
 
-    // Sort comments by likes, then by date, and add isLiked status
+    // Sort comments by likes, then by date, and add isLiked and relevance score
     // Also transform profile data from nested structure
     const notesWithSortedComments = notes.map(note => {
       const isLiked = userLikedNoteIds.includes(note.id)
+      const relevanceScore = calculateNoteRelevanceScore(note, {
+        friendUserIds: currentUserFriends as string[],
+        closeFriendUserIds: currentUserCloseFriends as string[],
+        currentUserId
+      })
       
       if (note.comments && Array.isArray(note.comments) && note.comments.length > 0) {
         const sortedComments = [...note.comments].map((comment: any) => {
@@ -163,12 +203,15 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
           if (likeDiff !== 0) return likeDiff
           return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         })
-        return { ...note, comments: sortedComments, isLiked }
+        return { ...note, comments: sortedComments, isLiked, relevanceScore }
       }
-      return { ...note, isLiked }
+      return { ...note, isLiked, relevanceScore }
     })
 
-    return Response.json({ notes: notesWithSortedComments })
+    const sortedNotes = sortNotes(notesWithSortedComments, sortBy)
+    const orderedNotes = sortOrder === 'asc' ? [...sortedNotes].reverse() : sortedNotes
+
+    return Response.json({ notes: orderedNotes, isOwnProfile })
   } catch (error) {
     console.error('Error fetching public notes:', error)
     return Response.json({ error: 'Internal server error' }, { status: 500 })

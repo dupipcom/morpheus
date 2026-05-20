@@ -6,8 +6,17 @@ interface ProfileData {
   profile?: unknown
 }
 
+export type NoteVisibility = 'PUBLIC' | 'PRIVATE' | 'FRIENDS' | 'CLOSE_FRIENDS' | 'AI_ENABLED' | 'HIDDEN'
+
 interface NotesData {
   notes?: unknown[]
+  isOwnProfile?: boolean
+}
+
+interface ProfileNotesOptions {
+  visibility?: Array<NoteVisibility>
+  sort?: 'date' | 'most_relevant'
+  order?: 'asc' | 'desc'
 }
 
 /**
@@ -44,9 +53,23 @@ export function useProfile(userName: string | null, enabled: boolean = true) {
 /**
  * SWR hook to fetch profile notes
  */
-export function useProfileNotes(userName: string | null, enabled: boolean = true) {
+export function useProfileNotes(
+  userName: string | null,
+  enabled: boolean = true,
+  options: ProfileNotesOptions = {}
+) {
+  const params = new URLSearchParams()
+  if (options.visibility && options.visibility.length > 0) {
+    params.set('visibility', options.visibility.join(','))
+  }
+  if (options.sort) params.set('sort', options.sort)
+  if (options.order) params.set('order', options.order)
+  const notesEndpoint = enabled && userName
+    ? `/api/v1/profile/${userName}/notes${params.toString() ? `?${params.toString()}` : ''}`
+    : null
+
   const { data, error, isLoading, mutate } = useSWR<NotesData>(
-    enabled && userName ? `/api/v1/profile/${userName}/notes` : null,
+    notesEndpoint,
     jsonFetcher,
     {
       revalidateOnFocus: false,
@@ -66,6 +89,7 @@ export function useProfileNotes(userName: string | null, enabled: boolean = true
 
   return {
     notes: data?.notes || [],
+    isOwnProfile: data?.isOwnProfile ?? false,
     isLoading,
     error,
     refreshNotes,
