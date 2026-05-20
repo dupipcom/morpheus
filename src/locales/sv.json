@@ -93,6 +93,21 @@
     "timeframe": {
       "startDate": "Startdatum",
       "endDate": "Slutdatum"
+    },
+    "me": "Mina data",
+    "selectDelegatedUser": "Välj delegerad användare",
+    "analysis": {
+      "alltimeAnalysis": "Analys för hela perioden",
+      "dayAnalysis": "Dagens analys",
+      "last3daysAnalysis": "Analys av de senaste 3 dagarna",
+      "weekAnalysis": "Veckoanalys",
+      "yearAnalysis": "Årsanalys",
+      "gratitudeAnalysis": "Tacksamhetsanalys",
+      "optimismAnalysis": "Optimismanalys",
+      "restednessAnalysis": "Vilanalys",
+      "toleranceAnalysis": "Toleransanalys",
+      "selfEsteemAnalysis": "Självkänsloanalys",
+      "trustAnalysis": "Förtroendeanalys"
     }
   },
   "mood": {
@@ -118,6 +133,24 @@
       "action": "Publicera anteckning",
       "publishing": "Publicerar...",
       "embedHint": "{provider}-inbäddning. Om uppspelning inte är tillgänglig, öppna originallänken nedan."
+    },
+    "thirdParty": {
+      "title": "Tredjepart",
+      "settings": "Delegationsinställningar",
+      "activeDelegations": "Aktiva delegationer",
+      "empty": "Inga aktiva delegationer.",
+      "identifierPlaceholder": "Användarnamn, e-post eller användar-ID",
+      "noFriendsFound": "Inga matchande vänskaper hittades.",
+      "friendsHint": "Förslagen inkluderar dina vänner. Du kan också ange valfri e-postadress.",
+      "scope": "Dataomfång",
+      "allScopes": "Alla omfång",
+      "scopesSelected": "omfång valda",
+      "minimumOneScope": "Minst ett omfång måste förbli valt.",
+      "scopeResolutionHint": "Om flera omfång är valda används det bredaste valda omfånget.",
+      "addDelegatedAnalyst": "Lägg till delegerad analytiker",
+      "adding": "Lägger till...",
+      "addError": "Det gick inte att lägga till delegerad analytiker",
+      "invitationDraft": "Ett utkast till inbjudan har förberetts för denna e-postadress."
     }
   },
   "week": {

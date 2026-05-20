@@ -90,6 +90,21 @@
     "timeframe": {
       "startDate": "Data de început",
       "endDate": "Data de sfârșit"
+    },
+    "me": "Datele mele",
+    "selectDelegatedUser": "Selectați utilizatorul delegat",
+    "analysis": {
+      "alltimeAnalysis": "Analiză pentru tot intervalul",
+      "dayAnalysis": "Analiza de astăzi",
+      "last3daysAnalysis": "Analiza ultimelor 3 zile",
+      "weekAnalysis": "Analiza săptămânii",
+      "yearAnalysis": "Analiza anului",
+      "gratitudeAnalysis": "Analiza recunoștinței",
+      "optimismAnalysis": "Analiza optimismului",
+      "restednessAnalysis": "Analiza odihnei",
+      "toleranceAnalysis": "Analiza toleranței",
+      "selfEsteemAnalysis": "Analiza stimei de sine",
+      "trustAnalysis": "Analiza încrederii"
     }
   },
   "mood": {
@@ -115,6 +130,24 @@
       "action": "Publică nota",
       "publishing": "Publicare...",
       "embedHint": "Incorporare {provider}. Dacă redarea nu este disponibilă, deschide linkul original de mai jos."
+    },
+    "thirdParty": {
+      "title": "Terță parte",
+      "settings": "Setări de delegare",
+      "activeDelegations": "Delegări active",
+      "empty": "Nu există delegări active.",
+      "identifierPlaceholder": "Nume de utilizator, e-mail sau ID utilizator",
+      "noFriendsFound": "Nu au fost găsite prietenii corespunzătoare.",
+      "friendsHint": "Sugestiile includ prietenii tăi. De asemenea, poți introduce orice adresă de e-mail.",
+      "scope": "Domeniu de date",
+      "allScopes": "Toate domeniile",
+      "scopesSelected": "domenii selectate",
+      "minimumOneScope": "Cel puțin un domeniu trebuie să rămână selectat.",
+      "scopeResolutionHint": "Dacă sunt selectate mai multe domenii, se aplică domeniul selectat cel mai larg.",
+      "addDelegatedAnalyst": "Adaugă analist delegat",
+      "adding": "Se adaugă...",
+      "addError": "Nu s-a putut adăuga analistul delegat",
+      "invitationDraft": "A fost pregătit un draft de invitație pentru acest e-mail."
     }
   },
   "week": {

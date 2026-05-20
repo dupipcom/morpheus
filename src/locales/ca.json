@@ -90,6 +90,21 @@
     "timeframe": {
       "startDate": "Data d'inici",
       "endDate": "Data de fi"
+    },
+    "me": "Les meves dades",
+    "selectDelegatedUser": "Selecciona l'usuari delegat",
+    "analysis": {
+      "alltimeAnalysis": "Anàlisi de tot el temps",
+      "dayAnalysis": "Anàlisi d'avui",
+      "last3daysAnalysis": "Anàlisi dels últims 3 dies",
+      "weekAnalysis": "Anàlisi setmanal",
+      "yearAnalysis": "Anàlisi anual",
+      "gratitudeAnalysis": "Anàlisi de gratitud",
+      "optimismAnalysis": "Anàlisi d'optimisme",
+      "restednessAnalysis": "Anàlisi del descans",
+      "toleranceAnalysis": "Anàlisi de tolerància",
+      "selfEsteemAnalysis": "Anàlisi d'autoestima",
+      "trustAnalysis": "Anàlisi de confiança"
     }
   },
   "mood": {
@@ -115,6 +130,24 @@
       "action": "Publicar nota",
       "publishing": "Publicant...",
       "embedHint": "Incrustació de {provider}. Si la reproducció no està disponible, obre l'enllaç original a continuació."
+    },
+    "thirdParty": {
+      "title": "Tercers",
+      "settings": "Configuració de delegació",
+      "activeDelegations": "Delegacions actives",
+      "empty": "No hi ha delegacions actives.",
+      "identifierPlaceholder": "Nom d'usuari, correu electrònic o ID d'usuari",
+      "noFriendsFound": "No s'han trobat amistats coincidents.",
+      "friendsHint": "Els suggeriments inclouen els teus amics. També pots introduir qualsevol adreça de correu electrònic.",
+      "scope": "Abast de dades",
+      "allScopes": "Tots els àmbits",
+      "scopesSelected": "àmbits seleccionats",
+      "minimumOneScope": "Com a mínim, ha de continuar seleccionat un àmbit.",
+      "scopeResolutionHint": "Si se seleccionen diversos àmbits, s'aplica l'àmbit seleccionat més ampli.",
+      "addDelegatedAnalyst": "Afegeix analista delegat",
+      "adding": "Afegint...",
+      "addError": "No s'ha pogut afegir l'analista delegat",
+      "invitationDraft": "S'ha preparat un esborrany d'invitació per a aquest correu electrònic."
     }
   },
   "week": {

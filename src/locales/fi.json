@@ -94,6 +94,21 @@
     "timeframe": {
       "startDate": "Alkamispäivä",
       "endDate": "Päättymispäivä"
+    },
+    "me": "Tietoni",
+    "selectDelegatedUser": "Valitse delegoitu käyttäjä",
+    "analysis": {
+      "alltimeAnalysis": "Koko ajan analyysi",
+      "dayAnalysis": "Tämän päivän analyysi",
+      "last3daysAnalysis": "Viimeisten 3 päivän analyysi",
+      "weekAnalysis": "Viikkoanalyysi",
+      "yearAnalysis": "Vuoden analyysi",
+      "gratitudeAnalysis": "Kiitollisuusanalyysi",
+      "optimismAnalysis": "Optimismianalyysi",
+      "restednessAnalysis": "Levänneisyyden analyysi",
+      "toleranceAnalysis": "Suvaitsevaisuusanalyysi",
+      "selfEsteemAnalysis": "Itsetuntoanalyysi",
+      "trustAnalysis": "Luottamusanalyysi"
     }
   },
   "mood": {
@@ -119,6 +134,24 @@
       "action": "Julkaise muistiinpano",
       "publishing": "Julkaistaan...",
       "embedHint": "{provider}-upotus. Jos toisto ei ole käytettävissä, avaa alla oleva alkuperäinen linkki."
+    },
+    "thirdParty": {
+      "title": "Kolmas osapuoli",
+      "settings": "Delegointiasetukset",
+      "activeDelegations": "Aktiiviset delegoinnit",
+      "empty": "Ei aktiivisia delegointeja.",
+      "identifierPlaceholder": "Käyttäjänimi, sähköposti tai käyttäjätunnus",
+      "noFriendsFound": "Vastaavia ystävyyksiä ei löytynyt.",
+      "friendsHint": "Ehdotuksiin sisältyvät ystäväsi. Voit myös syöttää minkä tahansa sähköpostiosoitteen.",
+      "scope": "Tietolaajuus",
+      "allScopes": "Kaikki laajuudet",
+      "scopesSelected": "laajuutta valittu",
+      "minimumOneScope": "Vähintään yhden laajuuden on pysyttävä valittuna.",
+      "scopeResolutionHint": "Jos useita laajuuksia on valittu, käytetään laajinta valittua laajuutta.",
+      "addDelegatedAnalyst": "Lisää delegoitu analyytikko",
+      "adding": "Lisätään...",
+      "addError": "Delegoidun analyytikon lisääminen ei onnistunut",
+      "invitationDraft": "Tälle sähköpostille valmisteltiin kutsuluonnos."
     }
   },
   "week": {

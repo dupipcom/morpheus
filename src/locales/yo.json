@@ -90,6 +90,21 @@
     "timeframe": {
       "startDate": "Ọjọ ibẹrẹ",
       "endDate": "Ọjọ ipari"
+    },
+    "me": "Data mi",
+    "selectDelegatedUser": "Yan olumulo aṣojú",
+    "analysis": {
+      "alltimeAnalysis": "Ìtúpalẹ gbogbo àkókò",
+      "dayAnalysis": "Ìtúpalẹ òní",
+      "last3daysAnalysis": "Ìtúpalẹ ọjọ́ mẹ́ta tó kọjá",
+      "weekAnalysis": "Ìtúpalẹ ọ̀sẹ̀",
+      "yearAnalysis": "Ìtúpalẹ ọdún",
+      "gratitudeAnalysis": "Ìtúpalẹ ìmọ̀rírì",
+      "optimismAnalysis": "Ìtúpalẹ ìrètí rere",
+      "restednessAnalysis": "Ìtúpalẹ ìsinmi",
+      "toleranceAnalysis": "Ìtúpalẹ ìfaradà",
+      "selfEsteemAnalysis": "Ìtúpalẹ ìgboyà ara ẹni",
+      "trustAnalysis": "Ìtúpalẹ ìgbẹ́kẹ̀lé"
     }
   },
   "mood": {
@@ -115,6 +130,24 @@
       "action": "Tẹ àkọsílẹ̀ jáde",
       "publishing": "Nigbagbọgbọ...",
       "embedHint": "Ifibọ {provider}. Ti ifaworanhan ko ba ṣeeṣe, ṣii ọna asopọ atilẹba ni isalẹ."
+    },
+    "thirdParty": {
+      "title": "Ẹgbẹ́ kẹta",
+      "settings": "Ètò aṣojú",
+      "activeDelegations": "Àwọn aṣojú tó n ṣiṣẹ́",
+      "empty": "Kò sí aṣojú tó n ṣiṣẹ́.",
+      "identifierPlaceholder": "Orúkọ olumulo, ímeèlì, tàbí ID olumulo",
+      "noFriendsFound": "A kò rí ọ̀rẹ́ tó bá mu.",
+      "friendsHint": "Àwọn àbá ni àwọn ọ̀rẹ́ rẹ. O tún lè tẹ eyikeyi àdírẹ́sì ímeèlì wọlé.",
+      "scope": "Iwọn data",
+      "allScopes": "Gbogbo awọn iwọn",
+      "scopesSelected": "awọn iwọn ti a yan",
+      "minimumOneScope": "Ó yẹ kí ó kéré tán iwọn kan ṣoṣo láti wà ní yíyan.",
+      "scopeResolutionHint": "Tí a bá yan ọ̀pọ̀ iwọn, a máa lo iwọn tó gbooro jù tí a yàn.",
+      "addDelegatedAnalyst": "Ṣafikun olùtúpalẹ aṣojú",
+      "adding": "Ń ṣafikun...",
+      "addError": "Kò le ṣafikun olùtúpalẹ aṣojú",
+      "invitationDraft": "A ti pèsè àkọsílẹ ìpè fún ímeèlì yìí."
     }
   },
   "week": {

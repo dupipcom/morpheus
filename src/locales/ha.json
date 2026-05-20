@@ -89,6 +89,21 @@
     "timeframe": {
       "startDate": "Ranar farawa",
       "endDate": "Ranar ƙarshe"
+    },
+    "me": "Bayanan na",
+    "selectDelegatedUser": "Zaɓi mai amfani da aka wakilta",
+    "analysis": {
+      "alltimeAnalysis": "Binciken duk lokaci",
+      "dayAnalysis": "Binciken yau",
+      "last3daysAnalysis": "Binciken kwanaki 3 da suka gabata",
+      "weekAnalysis": "Binciken mako",
+      "yearAnalysis": "Binciken shekara",
+      "gratitudeAnalysis": "Binciken godiya",
+      "optimismAnalysis": "Binciken kyakkyawan fata",
+      "restednessAnalysis": "Binciken hutawa",
+      "toleranceAnalysis": "Binciken juriya",
+      "selfEsteemAnalysis": "Binciken kimar kai",
+      "trustAnalysis": "Binciken amana"
     }
   },
   "mood": {
@@ -114,6 +129,24 @@
       "action": "Buga Bayani",
       "publishing": "Ana bugawa...",
       "embedHint": "Shigar {provider}. Idan sake kunna ba shi da amfani, buɗe haɗin asali a ƙasa."
+    },
+    "thirdParty": {
+      "title": "Na ɓangare na uku",
+      "settings": "Saitunan wakilci",
+      "activeDelegations": "Wakilce-wakilce masu aiki",
+      "empty": "Babu wakilci mai aiki.",
+      "identifierPlaceholder": "Sunan mai amfani, imel, ko ID na mai amfani",
+      "noFriendsFound": "Ba a sami abokantaka masu dacewa ba.",
+      "friendsHint": "Shawarwari sun haɗa da abokanka. Hakanan za ka iya shigar da kowace adireshin imel.",
+      "scope": "Iyakar bayanai",
+      "allScopes": "Duk iyakoki",
+      "scopesSelected": "iyakoki da aka zaɓa",
+      "minimumOneScope": "Aƙalla iyaka ɗaya dole ne ya ci gaba da kasancewa a zaɓe.",
+      "scopeResolutionHint": "Idan an zaɓi iyakoki da yawa, za a yi amfani da mafi faɗin iyakar da aka zaɓa.",
+      "addDelegatedAnalyst": "Ƙara manazarcin da aka wakilta",
+      "adding": "Ana ƙara...",
+      "addError": "Ba a iya ƙara manazarcin da aka wakilta ba",
+      "invitationDraft": "An shirya daftarin gayyata don wannan imel."
     }
   },
   "week": {

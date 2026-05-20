@@ -90,6 +90,21 @@
     "timeframe": {
       "startDate": "Date de début",
       "endDate": "Date de fin"
+    },
+    "me": "Mes données",
+    "selectDelegatedUser": "Sélectionner un utilisateur délégué",
+    "analysis": {
+      "alltimeAnalysis": "Analyse globale",
+      "dayAnalysis": "Analyse du jour",
+      "last3daysAnalysis": "Analyse des 3 derniers jours",
+      "weekAnalysis": "Analyse hebdomadaire",
+      "yearAnalysis": "Analyse annuelle",
+      "gratitudeAnalysis": "Analyse de gratitude",
+      "optimismAnalysis": "Analyse d'optimisme",
+      "restednessAnalysis": "Analyse du repos",
+      "toleranceAnalysis": "Analyse de tolérance",
+      "selfEsteemAnalysis": "Analyse d'estime de soi",
+      "trustAnalysis": "Analyse de confiance"
     }
   },
   "mood": {
@@ -115,6 +130,24 @@
       "action": "Publier la Note",
       "publishing": "Publication...",
       "embedHint": "Intégration {provider}. Si la lecture n'est pas disponible, ouvrez le lien original ci-dessous."
+    },
+    "thirdParty": {
+      "title": "Tiers",
+      "settings": "Paramètres de délégation",
+      "activeDelegations": "Délégations actives",
+      "empty": "Aucune délégation active.",
+      "identifierPlaceholder": "Nom d'utilisateur, e-mail ou identifiant utilisateur",
+      "noFriendsFound": "Aucune relation d'amitié correspondante trouvée.",
+      "friendsHint": "Les suggestions incluent vos amis. Vous pouvez également saisir n'importe quelle adresse e-mail.",
+      "scope": "Portée des données",
+      "allScopes": "Toutes les portées",
+      "scopesSelected": "portées sélectionnées",
+      "minimumOneScope": "Au moins une portée doit rester sélectionnée.",
+      "scopeResolutionHint": "Si plusieurs portées sont sélectionnées, la portée sélectionnée la plus large est appliquée.",
+      "addDelegatedAnalyst": "Ajouter un analyste délégué",
+      "adding": "Ajout en cours...",
+      "addError": "Impossible d'ajouter l'analyste délégué",
+      "invitationDraft": "Un brouillon d'invitation a été préparé pour cet e-mail."
     }
   },
   "week": {

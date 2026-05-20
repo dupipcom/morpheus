@@ -92,6 +92,21 @@
     "timeframe": {
       "startDate": "Hasiera data",
       "endDate": "Amaiera data"
+    },
+    "me": "Nire datuak",
+    "selectDelegatedUser": "Hautatu eskuordetutako erabiltzailea",
+    "analysis": {
+      "alltimeAnalysis": "Denbora osoko analisia",
+      "dayAnalysis": "Gaurko analisia",
+      "last3daysAnalysis": "Azken 3 egunetako analisia",
+      "weekAnalysis": "Asteko analisia",
+      "yearAnalysis": "Urteko analisia",
+      "gratitudeAnalysis": "Esker onaren analisia",
+      "optimismAnalysis": "Baikortasunaren analisia",
+      "restednessAnalysis": "Atsedenaren analisia",
+      "toleranceAnalysis": "Tolerantziaren analisia",
+      "selfEsteemAnalysis": "Autoestimaren analisia",
+      "trustAnalysis": "Konfiantzaren analisia"
     }
   },
   "mood": {
@@ -117,6 +132,24 @@
       "action": "Argitaratu oharra",
       "publishing": "Argitaratzen...",
       "embedHint": "{provider} txertaketa. Erreprodukzioa erabilgarri ez badago, ireki beheko jatorrizko esteka."
+    },
+    "thirdParty": {
+      "title": "Hirugarrena",
+      "settings": "Eskuordetze ezarpenak",
+      "activeDelegations": "Eskuordetze aktiboak",
+      "empty": "Ez dago eskuordetze aktiborik.",
+      "identifierPlaceholder": "Erabiltzaile-izena, posta elektronikoa edo erabiltzaile ID-a",
+      "noFriendsFound": "Ez da bat datorren adiskidetasunik aurkitu.",
+      "friendsHint": "Iradokizunek zure lagunak barne hartzen dituzte. Edozein helbide elektroniko ere sar dezakezu.",
+      "scope": "Datuen esparrua",
+      "allScopes": "Esparru guztiak",
+      "scopesSelected": "hautatutako esparruak",
+      "minimumOneScope": "Gutxienez esparru batek hautatuta jarraitu behar du.",
+      "scopeResolutionHint": "Hainbat esparru hautatzen badira, hautatutako esparru zabalena aplikatzen da.",
+      "addDelegatedAnalyst": "Gehitu eskuordetutako analista",
+      "adding": "Gehitzen...",
+      "addError": "Ezin izan da eskuordetutako analista gehitu",
+      "invitationDraft": "Gonbidapen-zirriborroa helbide elektroniko honetarako prestatu da."
     }
   },
   "week": {

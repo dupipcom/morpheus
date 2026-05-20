@@ -94,6 +94,21 @@
     "timeframe": {
       "startDate": "Startdato",
       "endDate": "Slutdato"
+    },
+    "me": "Mine data",
+    "selectDelegatedUser": "Vælg delegeret bruger",
+    "analysis": {
+      "alltimeAnalysis": "Analyse for hele perioden",
+      "dayAnalysis": "Dagens analyse",
+      "last3daysAnalysis": "Analyse af de sidste 3 dage",
+      "weekAnalysis": "Ugeanalyse",
+      "yearAnalysis": "Årsanalyse",
+      "gratitudeAnalysis": "Taknemmelighedsanalyse",
+      "optimismAnalysis": "Optimismeanalyse",
+      "restednessAnalysis": "Hvileanalyse",
+      "toleranceAnalysis": "Toleranceanalyse",
+      "selfEsteemAnalysis": "Selvværdanalyse",
+      "trustAnalysis": "Tillidsanalyse"
     }
   },
   "mood": {
@@ -119,6 +134,24 @@
       "action": "Publicer note",
       "publishing": "Udgiver...",
       "embedHint": "{provider}-indlejring. Hvis afspilning ikke er tilgængelig, åbn det originale link nedenfor."
+    },
+    "thirdParty": {
+      "title": "Tredjepart",
+      "settings": "Delegationsindstillinger",
+      "activeDelegations": "Aktive delegationer",
+      "empty": "Ingen aktive delegationer.",
+      "identifierPlaceholder": "Brugernavn, e-mail eller bruger-id",
+      "noFriendsFound": "Ingen matchende venskaber fundet.",
+      "friendsHint": "Forslagene inkluderer dine venner. Du kan også indtaste en hvilken som helst e-mailadresse.",
+      "scope": "Dataomfang",
+      "allScopes": "Alle omfang",
+      "scopesSelected": "valgte omfang",
+      "minimumOneScope": "Mindst ét omfang skal forblive valgt.",
+      "scopeResolutionHint": "Hvis flere omfang er valgt, anvendes det bredeste valgte omfang.",
+      "addDelegatedAnalyst": "Tilføj delegeret analytiker",
+      "adding": "Tilføjer...",
+      "addError": "Kunne ikke tilføje delegeret analytiker",
+      "invitationDraft": "Invitationsudkast for denne e-mail er klargjort."
     }
   },
   "week": {

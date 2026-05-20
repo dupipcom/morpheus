@@ -93,6 +93,21 @@
     "timeframe": {
       "startDate": "Data de inicio",
       "endDate": "Data de fin"
+    },
+    "me": "Os meus datos",
+    "selectDelegatedUser": "Seleccionar usuario delegado",
+    "analysis": {
+      "alltimeAnalysis": "Análise de todo o tempo",
+      "dayAnalysis": "Análise de hoxe",
+      "last3daysAnalysis": "Análise dos últimos 3 días",
+      "weekAnalysis": "Análise semanal",
+      "yearAnalysis": "Análise anual",
+      "gratitudeAnalysis": "Análise de gratitude",
+      "optimismAnalysis": "Análise de optimismo",
+      "restednessAnalysis": "Análise de descanso",
+      "toleranceAnalysis": "Análise de tolerancia",
+      "selfEsteemAnalysis": "Análise de autoestima",
+      "trustAnalysis": "Análise de confianza"
     }
   },
   "mood": {
@@ -118,6 +133,24 @@
       "action": "Publicar nota",
       "publishing": "Publicando...",
       "embedHint": "Inserción de {provider}. Se a reprodución non está dispoñible, abre a ligazón orixinal a continuación."
+    },
+    "thirdParty": {
+      "title": "Terceiros",
+      "settings": "Configuración de delegación",
+      "activeDelegations": "Delegacións activas",
+      "empty": "Non hai delegacións activas.",
+      "identifierPlaceholder": "Nome de usuario, correo electrónico ou ID de usuario",
+      "noFriendsFound": "Non se atoparon amizades coincidentes.",
+      "friendsHint": "As suxestións inclúen os teus amigos. Tamén podes introducir calquera enderezo de correo electrónico.",
+      "scope": "Alcance de datos",
+      "allScopes": "Todos os alcances",
+      "scopesSelected": "alcances seleccionados",
+      "minimumOneScope": "Polo menos un alcance debe permanecer seleccionado.",
+      "scopeResolutionHint": "Se se seleccionan varios alcances, aplícase o alcance seleccionado máis amplo.",
+      "addDelegatedAnalyst": "Engadir analista delegado",
+      "adding": "Engadindo...",
+      "addError": "Non se puido engadir o analista delegado",
+      "invitationDraft": "Preparouse un borrador de invitación para este correo electrónico."
     }
   },
   "week": {

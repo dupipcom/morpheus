@@ -90,6 +90,21 @@
     "timeframe": {
       "startDate": "开始日期",
       "endDate": "结束日期"
+    },
+    "me": "我的数据",
+    "selectDelegatedUser": "选择委托用户",
+    "analysis": {
+      "alltimeAnalysis": "全时段分析",
+      "dayAnalysis": "今日分析",
+      "last3daysAnalysis": "最近3天分析",
+      "weekAnalysis": "周分析",
+      "yearAnalysis": "年度分析",
+      "gratitudeAnalysis": "感恩分析",
+      "optimismAnalysis": "乐观分析",
+      "restednessAnalysis": "休息状态分析",
+      "toleranceAnalysis": "包容度分析",
+      "selfEsteemAnalysis": "自尊分析",
+      "trustAnalysis": "信任分析"
     }
   },
   "mood": {
@@ -115,6 +130,24 @@
       "action": "出版说明",
       "publishing": "发布中...",
       "embedHint": "{provider} 嵌入。如果无法播放，请点击下方原始链接。"
+    },
+    "thirdParty": {
+      "title": "第三方",
+      "settings": "委托设置",
+      "activeDelegations": "有效委托",
+      "empty": "暂无有效委托。",
+      "identifierPlaceholder": "用户名、电子邮箱或用户 ID",
+      "noFriendsFound": "未找到匹配的好友关系。",
+      "friendsHint": "建议列表会包含你的好友。你也可以输入任意电子邮箱地址。",
+      "scope": "数据范围",
+      "allScopes": "所有范围",
+      "scopesSelected": "已选择范围",
+      "minimumOneScope": "至少需要保留一个已选范围。",
+      "scopeResolutionHint": "如果选择了多个范围，将应用所选范围中最广的一个。",
+      "addDelegatedAnalyst": "添加委托分析员",
+      "adding": "正在添加...",
+      "addError": "无法添加委托分析员",
+      "invitationDraft": "已为该邮箱准备邀请草稿。"
     }
   },
   "week": {
