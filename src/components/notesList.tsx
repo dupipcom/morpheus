@@ -23,6 +23,18 @@ export interface Note {
     likes?: number
   }
   relevanceScore?: number
+  sender?: {
+    id: string
+    userName?: string
+    firstName?: string
+    lastName?: string
+  } | null
+  recipient?: {
+    id: string
+    userName?: string
+    firstName?: string
+    lastName?: string
+  } | null
 }
 
 interface NotesListProps {
@@ -222,6 +234,8 @@ export function NotesList({
             visibility: note.visibility,
             date: note.date,
             userId: note.userId,
+            sender: note.sender,
+            recipient: note.recipient,
             comments: note.comments,
             isLiked: note.isLiked,
             _count: note._count

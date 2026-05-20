@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/dropdownMenu"
 import { ChevronDown } from "lucide-react"
 import { DateRangeSelector } from "@/components/ui/dateRangeSelector"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
 import { EarningsTable } from '@/components/earningsTable'
 
@@ -28,6 +30,7 @@ import { ContentLoadingWrapper } from '@/components/contentLoadingWrapper'
 import { AgentChat } from "@/components/agentChat"
 import { useFeatureFlag } from "@/lib/hooks/useFeatureFlag"
 import { useDebounce } from "@/lib/hooks/useDebounce"
+import { normalizeDelegationScopes } from "@/lib/utils/delegation"
 
 /** Returns a Date that is `n` days before today */
 function daysAgo(n: number): Date {
@@ -145,10 +148,26 @@ const ChartDimensionSelector = ({
   )
 }
 
-export function DashboardView({ timeframe = "day" }): React.ReactElement {
+interface DelegatedUserOption {
+  id: string
+  label: string
+  scope?: string
+  scopes?: string[]
+  isSelf?: boolean
+}
+
+interface DashboardViewProps {
+  timeframe?: string
+  onDelegatedUserChange?: (user: DelegatedUserOption) => void
+}
+
+export function DashboardView({ timeframe = "day", onDelegatedUserChange }: DashboardViewProps): React.ReactElement {
   const [insight, setInsight] = useState({})
   const [days, setDays] = useState<any[]>([])
   const [isLoadingDays, setIsLoadingDays] = useState(true)
+  const [delegatedUsers, setDelegatedUsers] = useState<DelegatedUserOption[]>([])
+  const [selectedDelegatedUserId, setSelectedDelegatedUserId] = useState<string | undefined>(undefined)
+  const [isLoadingDelegations, setIsLoadingDelegations] = useState(false)
 
   // Date range state – default to last 360 days (T-360d) through today
   const [rangeStart, setRangeStart] = useState<Date>(() => daysAgo(360))
@@ -185,6 +204,53 @@ export function DashboardView({ timeframe = "day" }): React.ReactElement {
   
   // Type guard to ensure session.user has the expected structure
   const user = useMemo(() => session?.user as any, [session?.user])
+
+  useEffect(() => {
+    const fetchDelegatedUsers = async () => {
+      if (!user?.id) return
+      try {
+        setIsLoadingDelegations(true)
+        const response = await fetch('/api/v1/delegated-users')
+        if (!response.ok) {
+          throw new Error('Failed to fetch delegated users')
+        }
+        const data = await response.json()
+        const incoming = (data.incomingDelegations || []).map((delegation: any) => ({
+          id: delegation.delegatorUser.id,
+          label: delegation.delegatorUser.displayName || delegation.delegatorUser.userName || delegation.delegatorUser.email || delegation.delegatorUser.userId || delegation.delegatorUser.id,
+          scope: delegation.scope,
+          scopes: delegation.scopes || []
+        }))
+        const selfOption = {
+          id: user.id,
+          label: t('dashboard.me') || 'My data',
+          isSelf: true
+        }
+        const options = [selfOption, ...incoming.filter((option: DelegatedUserOption) => option.id !== user.id)]
+        setDelegatedUsers(options)
+        setSelectedDelegatedUserId((prev) => {
+          if (prev && options.some((option: DelegatedUserOption) => option.id === prev)) return prev
+          return user.id
+        })
+      } catch (error) {
+        console.error('Error fetching delegated users:', error)
+        setDelegatedUsers([{ id: user.id, label: t('dashboard.me') || 'My data' }])
+        setSelectedDelegatedUserId(user.id)
+      } finally {
+        setIsLoadingDelegations(false)
+      }
+    }
+
+    fetchDelegatedUsers()
+  }, [user?.id, t])
+
+  useEffect(() => {
+    if (!selectedDelegatedUserId || delegatedUsers.length === 0) return
+    const selectedUser = delegatedUsers.find(option => option.id === selectedDelegatedUserId)
+    if (selectedUser && onDelegatedUserChange) {
+      onDelegatedUserChange(selectedUser)
+    }
+  }, [selectedDelegatedUserId, delegatedUsers, onDelegatedUserChange])
   
   // Fetch days from Prisma Day model
   useEffect(() => {
@@ -195,7 +261,8 @@ export function DashboardView({ timeframe = "day" }): React.ReactElement {
         setIsLoadingDays(true)
         const startDate = toISODate(rangeStart)
         const endDate = toISODate(rangeEnd)
-        const response = await fetch(`/api/v1/days?startDate=${startDate}&endDate=${endDate}`)
+        const targetUserId = selectedDelegatedUserId || user.id
+        const response = await fetch(`/api/v1/user-dashboard-data?startDate=${startDate}&endDate=${endDate}&userId=${targetUserId}`)
         if (!response.ok) {
           throw new Error('Failed to fetch days')
         }
@@ -210,7 +277,7 @@ export function DashboardView({ timeframe = "day" }): React.ReactElement {
     }
     
     fetchDays()
-  }, [user?.id, rangeStart, rangeEnd])
+  }, [user?.id, rangeStart, rangeEnd, selectedDelegatedUserId])
   
   // Message history state (weekly agentConversation)
   const [currentText, setCurrentText] = useState("")
@@ -221,11 +288,30 @@ export function DashboardView({ timeframe = "day" }): React.ReactElement {
   const productivityChartConfig = createProductivityChartConfig(t)
   const moneyChartConfig = createMoneyChartConfig(t)
   
+  const targetHintUserId = selectedDelegatedUserId || user?.id
+
   // Use shared hint hook and update local state when data changes
-  const { data: hintData } = useHint(locale, 'hint')
+  const { data: hintData } = useHint(locale, 'hint', targetHintUserId)
+
+  useEffect(() => {
+    setInsight({})
+  }, [targetHintUserId])
+
   useEffect(() => {
     if (hintData) setInsight(hintData as any)
   }, [hintData])
+
+  const analysisEntries = useMemo(() => {
+    const analysis = (insight || {}) as Record<string, unknown>
+
+    return Object.entries(analysis)
+      .filter(([, value]) => typeof value === 'string' && value.trim().length > 0)
+      .map(([key, value]) => ({
+        key,
+        title: t(`dashboard.analysis.${key}`) || key.replace(/([a-z])([A-Z])/g, '$1 $2'),
+        content: value as string
+      }))
+  }, [insight, t])
 
 
   // Dimension toggle handlers
@@ -242,7 +328,7 @@ export function DashboardView({ timeframe = "day" }): React.ReactElement {
   }
 
   // Loading gate while initial user fetch populates GlobalContext or days are loading
-  const isDataLoading = useEnhancedLoadingState(isLoading as any, (session as any)) || isLoadingDays
+  const isDataLoading = useEnhancedLoadingState(isLoading as any, (session as any)) || isLoadingDays || isLoadingDelegations
   if (isDataLoading) {
     return <DashboardViewSkeleton />
   }
@@ -430,10 +516,40 @@ const aggregateDataByWeek = (dailyData: any[]) => {
   return (
     <ContentLoadingWrapper>
       <div className="max-w-[1200px] w-full m-auto p-4 md:px-32 ">
-      <p className="mt-0 mb-8">{(insight as any)?.yearAnalysis}</p>
+      <div className="mb-6">
+        <label className="text-sm font-medium mb-2 block">
+          {t('dashboard.selectDelegatedUser') || 'Select delegated user'}
+        </label>
+        <Select
+          value={selectedDelegatedUserId || undefined}
+          onValueChange={setSelectedDelegatedUserId}
+        >
+          <SelectTrigger className="w-full md:w-[360px]">
+            <SelectValue placeholder={t('dashboard.selectDelegatedUser') || 'Select delegated user'} />
+          </SelectTrigger>
+          <SelectContent>
+            {delegatedUsers.map((option) => (
+              <SelectItem key={option.id} value={option.id}>
+                {option.label}{option.scope ? ` (${normalizeDelegationScopes(option.scopes, option.scope)})` : ''}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
       
       {isAgentChatEnabled && user?.id ? (
         <div className="mb-16">
+          <div className="flex flex-wrap gap-2 mb-4">
+            {[
+              'How did the user progress last week?',
+              'What should we focus on during therapy today?',
+              "What were the user's major life events this week?"
+            ].map((question) => (
+              <Button key={question} variant="outline" size="sm" onClick={() => setCurrentText(question)}>
+                {question}
+              </Button>
+            ))}
+          </div>
           <AgentChat 
             key={reverseMessages}
             onMessageChange={(message) => {
@@ -454,6 +570,19 @@ const aggregateDataByWeek = (dailyData: any[]) => {
         onEndChange={setRangeEnd}
         className="mb-8"
       />
+
+      {analysisEntries.length > 0 && (
+        <Accordion type="multiple" className="mb-8 rounded-md border px-4">
+          {analysisEntries.map((entry) => (
+            <AccordionItem key={entry.key} value={entry.key}>
+              <AccordionTrigger>{entry.title}</AccordionTrigger>
+              <AccordionContent>
+                <p className="whitespace-pre-wrap text-sm text-muted-foreground">{entry.content}</p>
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      )}
       
       <ChartDimensionSelector
         dimensions={['moodAverage', 'gratitude', 'optimism', 'restedness', 'tolerance', 'selfEsteem', 'trust']}
