@@ -482,18 +482,18 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
       })
       const data = await response.json().catch(() => null)
       if (!response.ok) {
-        setDelegationError(data?.error || 'Could not add delegated analyst')
+        setDelegationError(data?.error || (t('mood.thirdParty.addError') || 'Could not add delegated analyst'))
         return
       }
       if (response.status === 202) {
-        setDelegationInfo(data?.invitation?.message || 'Invitation draft prepared for this email.')
+        setDelegationInfo(data?.invitation?.message || (t('mood.thirdParty.invitationDraft') || 'Invitation draft prepared for this email.'))
         return
       }
       setDelegationIdentifier('')
       await mutateDelegations()
     } catch (error) {
       console.error('Error creating delegation:', error)
-      setDelegationError('Could not add delegated analyst')
+      setDelegationError(t('mood.thirdParty.addError') || 'Could not add delegated analyst')
     } finally {
       setIsSubmittingDelegation(false)
     }
@@ -820,10 +820,13 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
                     : (t('mood.thirdParty.addDelegatedAnalyst') || 'Add delegated analyst')}
                 </Button>
                 {delegationError && (
-                  <p className="text-sm text-red-500">{delegationError}</p>
+                  <p className="text-sm text-red-500" role="alert">{delegationError}</p>
                 )}
                 {delegationInfo && (
-                  <p className="text-sm text-blue-600">{delegationInfo}</p>
+                  <p className="text-sm text-blue-600 flex items-center gap-1" role="status">
+                    <Sparkles className="h-4 w-4" aria-hidden="true" />
+                    <span>{delegationInfo}</span>
+                  </p>
                 )}
               </div>
             </div>

@@ -18,7 +18,7 @@ export function buildDupipInvitationDraft({
   return {
     email: email.trim().toLowerCase(),
     invitedByUserId: invitedByUserId || null,
-    status: 'not_supported_yet',
+    status: 'PENDING_SUPPORT',
     message: 'This email is not registered yet. Invitation sending is not supported yet, but an invitation draft is ready for future integration.'
   }
 }
