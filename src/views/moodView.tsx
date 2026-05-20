@@ -322,6 +322,7 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
 
   const outgoingDelegations = delegationsData?.outgoingDelegations || []
   const friendSuggestions = delegationsData?.friendSuggestions || []
+  const allScopesSelected = delegationScopes.length === SELECTABLE_NOTE_VISIBILITIES.length
 
   // Register the mutate function for notes refresh
   useEffect(() => {
@@ -475,7 +476,11 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
   }
 
   const handleAddDelegation = async () => {
-    if (!delegationIdentifier.trim() || isSubmittingDelegation || delegationScopes.length === 0) return
+    if (!delegationIdentifier.trim() || isSubmittingDelegation) return
+    if (delegationScopes.length === 0) {
+      setDelegationError(t('mood.thirdParty.minimumOneScope') || 'At least one scope must remain selected.')
+      return
+    }
     setIsSubmittingDelegation(true)
     setDelegationError('')
     setDelegationInfo('')
@@ -815,8 +820,8 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline" className="justify-start gap-2 w-full sm:w-auto" aria-label={t('mood.thirdParty.scope') || 'Data scope'}>
                       <span className="truncate">
-                        {delegationScopes.length === SELECTABLE_NOTE_VISIBILITIES.length
-                          ? (t('notes.filters.all') || 'All')
+                        {allScopesSelected
+                          ? (t('mood.thirdParty.allScopes') || 'All scopes')
                           : delegationScopes.length > 2
                             ? `${delegationScopes.length} ${t('mood.thirdParty.scopesSelected') || 'scopes selected'}`
                           : delegationScopes.map(v => t(`mood.publish.visibility.${v}`) || v).join(', ')}
@@ -824,25 +829,31 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start">
-                    {SELECTABLE_NOTE_VISIBILITIES.map((visibility) => (
-                      <DropdownMenuCheckboxItem
-                        key={visibility}
-                        checked={delegationScopes.includes(visibility)}
-                        disabled={delegationScopes.length === 1 && delegationScopes.includes(visibility)}
-                        aria-disabled={delegationScopes.length === 1 && delegationScopes.includes(visibility)}
-                        onCheckedChange={() => {
-                          setDelegationScopes((prev) => {
-                            if (prev.length === 1 && prev.includes(visibility)) return prev
-                            if (prev.includes(visibility)) return prev.filter((item) => item !== visibility)
-                            return [...prev, visibility]
-                          })
-                        }}
-                      >
-                        {t(`mood.publish.visibility.${visibility}`) || visibility}
-                      </DropdownMenuCheckboxItem>
-                    ))}
+                    {SELECTABLE_NOTE_VISIBILITIES.map((visibility) => {
+                      const isSingleSelectedScope = delegationScopes.length === 1 && delegationScopes.includes(visibility)
+                      return (
+                        <DropdownMenuCheckboxItem
+                          key={visibility}
+                          checked={delegationScopes.includes(visibility)}
+                          disabled={isSingleSelectedScope}
+                          aria-disabled={isSingleSelectedScope}
+                          onCheckedChange={() => {
+                            setDelegationScopes((prev) => {
+                              if (prev.length === 1 && prev.includes(visibility)) return prev
+                              if (prev.includes(visibility)) return prev.filter((item) => item !== visibility)
+                              return [...prev, visibility]
+                            })
+                          }}
+                        >
+                          {t(`mood.publish.visibility.${visibility}`) || visibility}
+                        </DropdownMenuCheckboxItem>
+                      )
+                    })}
                   </DropdownMenuContent>
                 </DropdownMenu>
+                <p className="text-xs text-muted-foreground">
+                  {t('mood.thirdParty.scopeResolutionHint') || 'If multiple scopes are selected, the broadest selected scope is applied.'}
+                </p>
                 {delegationScopes.length === 1 && (
                   <p className="text-xs text-muted-foreground">
                     {t('mood.thirdParty.minimumOneScope') || 'At least one scope must remain selected.'}
