@@ -20,7 +20,6 @@ import { useDebounce } from "@/lib/hooks/useDebounce"
 import { normalizeDelegationScope } from "@/lib/utils/delegation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Lock, Users, UserCheck, Globe, Sparkles } from 'lucide-react'
 import {
   DropdownMenu,
@@ -194,12 +193,12 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
   const [newLifeEventText, setNewLifeEventText] = useState('')
   const [notes, setNotes] = useState<Note[]>([])
   const [delegationIdentifier, setDelegationIdentifier] = useState('')
-  const [delegationScope, setDelegationScope] = useState<NoteVisibility>('AI_ENABLED')
   const [delegationError, setDelegationError] = useState('')
   const [delegationInfo, setDelegationInfo] = useState('')
   const [isSubmittingDelegation, setIsSubmittingDelegation] = useState(false)
   // Selectable visibility options for the filter UI (HIDDEN is a system-only state, not user-selectable)
   const SELECTABLE_NOTE_VISIBILITIES: NoteVisibility[] = ['PRIVATE', 'AI_ENABLED', 'FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC']
+  const [delegationScopes, setDelegationScopes] = useState<NoteVisibility[]>(SELECTABLE_NOTE_VISIBILITIES)
   const [notesVisibilityFilter, setNotesVisibilityFilter] = useState<NoteVisibility[]>(SELECTABLE_NOTE_VISIBILITIES)
 
   // Initialize mood contacts from server data
@@ -314,6 +313,15 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
 
   const outgoingDelegations = delegationsData?.outgoingDelegations || []
   const friendSuggestions = delegationsData?.friendSuggestions || []
+
+  const resolveDelegationScope = (scopes: NoteVisibility[]): NoteVisibility => {
+    if (scopes.includes('PRIVATE')) return 'PRIVATE'
+    if (scopes.includes('AI_ENABLED')) return 'AI_ENABLED'
+    if (scopes.includes('FRIENDS')) return 'FRIENDS'
+    if (scopes.includes('CLOSE_FRIENDS')) return 'CLOSE_FRIENDS'
+    if (scopes.includes('PUBLIC')) return 'PUBLIC'
+    return 'AI_ENABLED'
+  }
 
   // Register the mutate function for notes refresh
   useEffect(() => {
@@ -467,17 +475,18 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
   }
 
   const handleAddDelegation = async () => {
-    if (!delegationIdentifier.trim() || isSubmittingDelegation) return
+    if (!delegationIdentifier.trim() || isSubmittingDelegation || delegationScopes.length === 0) return
     setIsSubmittingDelegation(true)
     setDelegationError('')
     setDelegationInfo('')
+    const resolvedScope = resolveDelegationScope(delegationScopes)
     try {
       const response = await fetch('/api/v1/delegated-users', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           identifier: delegationIdentifier.trim(),
-          scope: delegationScope
+          scope: resolvedScope
         })
       })
       const data = await response.json().catch(() => null)
@@ -802,19 +811,35 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
                 <p className="text-xs text-muted-foreground">
                   {t('mood.thirdParty.friendsHint') || 'Suggestions include your friends. You can also enter any email address.'}
                 </p>
-                <Select value={delegationScope} onValueChange={(value) => setDelegationScope(value as NoteVisibility)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder={t('mood.thirdParty.scope') || 'Data scope'} />
-                  </SelectTrigger>
-                  <SelectContent>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="justify-start gap-2 w-full sm:w-auto" aria-label={t('mood.thirdParty.scope') || 'Data scope'}>
+                      <span className="truncate">
+                        {delegationScopes.length === SELECTABLE_NOTE_VISIBILITIES.length
+                          ? (t('notes.filters.all') || 'All')
+                          : delegationScopes.map(v => t(`mood.publish.visibility.${v}`) || v).join(', ')}
+                      </span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start">
                     {SELECTABLE_NOTE_VISIBILITIES.map((visibility) => (
-                      <SelectItem key={visibility} value={visibility}>
+                      <DropdownMenuCheckboxItem
+                        key={visibility}
+                        checked={delegationScopes.includes(visibility)}
+                        onCheckedChange={() => {
+                          setDelegationScopes((prev) => {
+                            if (prev.length === 1 && prev.includes(visibility)) return prev
+                            if (prev.includes(visibility)) return prev.filter((item) => item !== visibility)
+                            return [...prev, visibility]
+                          })
+                        }}
+                      >
                         {t(`mood.publish.visibility.${visibility}`) || visibility}
-                      </SelectItem>
+                      </DropdownMenuCheckboxItem>
                     ))}
-                  </SelectContent>
-                </Select>
-                <Button onClick={handleAddDelegation} disabled={!delegationIdentifier.trim() || isSubmittingDelegation} aria-busy={isSubmittingDelegation}>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <Button onClick={handleAddDelegation} disabled={!delegationIdentifier.trim() || isSubmittingDelegation || delegationScopes.length === 0} aria-busy={isSubmittingDelegation}>
                   {isSubmittingDelegation
                     ? (t('mood.thirdParty.adding') || 'Adding...')
                     : (t('mood.thirdParty.addDelegatedAnalyst') || 'Add delegated analyst')}
