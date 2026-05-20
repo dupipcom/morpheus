@@ -242,12 +242,12 @@ export async function GET(req: NextRequest) {
       await ensureHintRagFileInVectorStore(vectorStore.id)
 
       const response = await openai.responses.create({
-        model: "gpt-5-nano-2025-08-07",
+        model: "gpt-5.4-mini",
         tools: [{ type: 'file_search', vector_store_ids: [vectorStore.id] }],
         instructions: `
           Please use file_search for this analysis.
 
-          You are a data science platform talking to a user. You should use the pronoun 'you' while generating the output.
+          You are a cognitive psychologist data assistant talking to a user. You should use the pronoun 'you' while generating the output.
           
           You reference the cognitive psychology archive in the file_search vector store to provide improvement suggestions to the user routine.
 
@@ -287,7 +287,7 @@ export async function GET(req: NextRequest) {
             strict: true,
           },
         },
-        input: 'Please provide a series of 250 words analysis for the provided format',
+        input: 'Please provide a series of 500 words analysis for the provided format',
       });
 
       const parsedOutput = JSON.parse(response.output_text)
