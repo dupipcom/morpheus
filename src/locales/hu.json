@@ -89,6 +89,21 @@
     "timeframe": {
       "startDate": "Kezdő dátum",
       "endDate": "Befejező dátum"
+    },
+    "me": "Adataim",
+    "selectDelegatedUser": "Delegált felhasználó kiválasztása",
+    "analysis": {
+      "alltimeAnalysis": "Teljes időszak elemzése",
+      "dayAnalysis": "Mai elemzés",
+      "last3daysAnalysis": "Az elmúlt 3 nap elemzése",
+      "weekAnalysis": "Heti elemzés",
+      "yearAnalysis": "Éves elemzés",
+      "gratitudeAnalysis": "Hálaelemzés",
+      "optimismAnalysis": "Optimizmuselemzés",
+      "restednessAnalysis": "Pihentség elemzése",
+      "toleranceAnalysis": "Toleranciaelemzés",
+      "selfEsteemAnalysis": "Önbecsülés-elemzés",
+      "trustAnalysis": "Bizalomelemzés"
     }
   },
   "mood": {
@@ -114,6 +129,24 @@
       "action": "Jegyzet közzététele",
       "publishing": "Közzététel...",
       "embedHint": "{provider} beágyazás. Ha a lejátszás nem elérhető, nyisd meg az eredeti linket lent."
+    },
+    "thirdParty": {
+      "title": "Harmadik fél",
+      "settings": "Delegálási beállítások",
+      "activeDelegations": "Aktív delegálások",
+      "empty": "Nincsenek aktív delegálások.",
+      "identifierPlaceholder": "Felhasználónév, e-mail vagy felhasználói azonosító",
+      "noFriendsFound": "Nem találhatók egyező barátságok.",
+      "friendsHint": "A javaslatok tartalmazzák a barátaidat. Bármilyen e-mail-címet is megadhatsz.",
+      "scope": "Adatkör",
+      "allScopes": "Minden kör",
+      "scopesSelected": "kör kiválasztva",
+      "minimumOneScope": "Legalább egy körnek kiválasztva kell maradnia.",
+      "scopeResolutionHint": "Ha több kör van kiválasztva, a legszélesebb kiválasztott kör kerül alkalmazásra.",
+      "addDelegatedAnalyst": "Delegált elemző hozzáadása",
+      "adding": "Hozzáadás...",
+      "addError": "Nem sikerült hozzáadni a delegált elemzőt",
+      "invitationDraft": "Ehhez az e-mailhez meghívóvázlat készült."
     }
   },
   "week": {

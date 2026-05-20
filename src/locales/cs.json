@@ -90,6 +90,21 @@
     "timeframe": {
       "startDate": "Datum zahájení",
       "endDate": "Datum ukončení"
+    },
+    "me": "Moje data",
+    "selectDelegatedUser": "Vybrat delegovaného uživatele",
+    "analysis": {
+      "alltimeAnalysis": "Analýza za celé období",
+      "dayAnalysis": "Dnešní analýza",
+      "last3daysAnalysis": "Analýza posledních 3 dnů",
+      "weekAnalysis": "Týdenní analýza",
+      "yearAnalysis": "Roční analýza",
+      "gratitudeAnalysis": "Analýza vděčnosti",
+      "optimismAnalysis": "Analýza optimismu",
+      "restednessAnalysis": "Analýza odpočinutí",
+      "toleranceAnalysis": "Analýza tolerance",
+      "selfEsteemAnalysis": "Analýza sebeúcty",
+      "trustAnalysis": "Analýza důvěry"
     }
   },
   "mood": {
@@ -115,6 +130,24 @@
       "action": "Publikovat poznámku",
       "publishing": "Zveřejňování...",
       "embedHint": "Vložení {provider}. Pokud přehrávání není dostupné, otevřete původní odkaz níže."
+    },
+    "thirdParty": {
+      "title": "Třetí strana",
+      "settings": "Nastavení delegování",
+      "activeDelegations": "Aktivní delegace",
+      "empty": "Žádné aktivní delegace.",
+      "identifierPlaceholder": "Uživatelské jméno, e-mail nebo ID uživatele",
+      "noFriendsFound": "Nebyla nalezena žádná odpovídající přátelství.",
+      "friendsHint": "Návrhy zahrnují vaše přátele. Můžete také zadat jakoukoli e-mailovou adresu.",
+      "scope": "Rozsah dat",
+      "allScopes": "Všechny rozsahy",
+      "scopesSelected": "vybrané rozsahy",
+      "minimumOneScope": "Musí zůstat vybrán alespoň jeden rozsah.",
+      "scopeResolutionHint": "Pokud je vybráno více rozsahů, použije se nejširší vybraný rozsah.",
+      "addDelegatedAnalyst": "Přidat delegovaného analytika",
+      "adding": "Přidávání...",
+      "addError": "Delegovaného analytika se nepodařilo přidat",
+      "invitationDraft": "Pro tento e-mail byl připraven návrh pozvánky."
     }
   },
   "week": {

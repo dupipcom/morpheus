@@ -90,6 +90,21 @@
     "timeframe": {
       "startDate": "תאריך התחלה",
       "endDate": "תאריך סיום"
+    },
+    "me": "הנתונים שלי",
+    "selectDelegatedUser": "בחר משתמש מואצל",
+    "analysis": {
+      "alltimeAnalysis": "ניתוח כולל",
+      "dayAnalysis": "הניתוח של היום",
+      "last3daysAnalysis": "ניתוח 3 הימים האחרונים",
+      "weekAnalysis": "ניתוח שבועי",
+      "yearAnalysis": "ניתוח שנתי",
+      "gratitudeAnalysis": "ניתוח הכרת תודה",
+      "optimismAnalysis": "ניתוח אופטימיות",
+      "restednessAnalysis": "ניתוח מנוחה",
+      "toleranceAnalysis": "ניתוח סובלנות",
+      "selfEsteemAnalysis": "ניתוח הערכה עצמית",
+      "trustAnalysis": "ניתוח אמון"
     }
   },
   "mood": {
@@ -115,6 +130,24 @@
       "action": "פרסם הערה",
       "publishing": "מפרסם...",
       "embedHint": "הטמעת {provider}. אם ההפעלה אינה זמינה, פתח את הקישור המקורי למטה."
+    },
+    "thirdParty": {
+      "title": "צד שלישי",
+      "settings": "הגדרות האצלה",
+      "activeDelegations": "האצלות פעילות",
+      "empty": "אין האצלות פעילות.",
+      "identifierPlaceholder": "שם משתמש, אימייל או מזהה משתמש",
+      "noFriendsFound": "לא נמצאו חברויות תואמות.",
+      "friendsHint": "ההצעות כוללות את החברים שלך. אפשר גם להזין כל כתובת אימייל.",
+      "scope": "טווח נתונים",
+      "allScopes": "כל הטווחים",
+      "scopesSelected": "טווחים נבחרו",
+      "minimumOneScope": "לפחות טווח אחד חייב להישאר נבחר.",
+      "scopeResolutionHint": "אם נבחרים כמה טווחים, יחול הטווח הרחב ביותר שנבחר.",
+      "addDelegatedAnalyst": "הוסף אנליסט מואצל",
+      "adding": "מוסיף...",
+      "addError": "לא ניתן היה להוסיף אנליסט מואצל",
+      "invitationDraft": "הוכנה טיוטת הזמנה עבור כתובת האימייל הזו."
     }
   },
   "week": {

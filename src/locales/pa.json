@@ -94,6 +94,21 @@
     "timeframe": {
       "startDate": "ਸ਼ੁਰੂਆਤੀ ਤਾਰੀਖ਼",
       "endDate": "ਅੰਤਿਮ ਤਾਰੀਖ਼"
+    },
+    "me": "ਮੇਰਾ ਡਾਟਾ",
+    "selectDelegatedUser": "ਪ੍ਰਤੀਨਿਧੀ ਯੂਜ਼ਰ ਚੁਣੋ",
+    "analysis": {
+      "alltimeAnalysis": "ਸਾਰੇ ਸਮੇਂ ਦਾ ਵਿਸ਼ਲੇਸ਼ਣ",
+      "dayAnalysis": "ਅੱਜ ਦਾ ਵਿਸ਼ਲੇਸ਼ਣ",
+      "last3daysAnalysis": "ਪਿਛਲੇ 3 ਦਿਨਾਂ ਦਾ ਵਿਸ਼ਲੇਸ਼ਣ",
+      "weekAnalysis": "ਹਫ਼ਤਾਵਾਰੀ ਵਿਸ਼ਲੇਸ਼ਣ",
+      "yearAnalysis": "ਸਾਲਾਨਾ ਵਿਸ਼ਲੇਸ਼ਣ",
+      "gratitudeAnalysis": "ਕ੍ਰਿਤਜਤਾ ਵਿਸ਼ਲੇਸ਼ਣ",
+      "optimismAnalysis": "ਆਸ਼ਾਵਾਦ ਵਿਸ਼ਲੇਸ਼ਣ",
+      "restednessAnalysis": "ਆਰਾਮ ਵਿਸ਼ਲੇਸ਼ਣ",
+      "toleranceAnalysis": "ਸਹਿਨਸ਼ੀਲਤਾ ਵਿਸ਼ਲੇਸ਼ਣ",
+      "selfEsteemAnalysis": "ਆਤਮ-ਸਨਮਾਨ ਵਿਸ਼ਲੇਸ਼ਣ",
+      "trustAnalysis": "ਭਰੋਸਾ ਵਿਸ਼ਲੇਸ਼ਣ"
     }
   },
   "mood": {
@@ -119,6 +134,24 @@
       "action": "Publish Note",
       "publishing": "ਪ੍ਰਕਾਸ਼ਿਤ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ...",
       "embedHint": "{provider} ਐਂਬੈੱਡ। ਜੇਕਰ ਪਲੇਬੈੱਕ ਉਪਲਬਧ ਨਹੀਂ ਹੈ, ਤਾਂ ਹੇਠਾਂ ਅਸਲ ਲਿੰਕ ਖੋਲ੍ਹੋ।"
+    },
+    "thirdParty": {
+      "title": "ਤੀਜਾ ਪੱਖ",
+      "settings": "ਪ੍ਰਤੀਨਿਧੀ ਸੈਟਿੰਗਾਂ",
+      "activeDelegations": "ਸਰਗਰਮ ਪ੍ਰਤੀਨਿਧੀਆਂ",
+      "empty": "ਕੋਈ ਸਰਗਰਮ ਪ੍ਰਤੀਨਿਧੀ ਨਹੀਂ ਹਨ।",
+      "identifierPlaceholder": "ਯੂਜ਼ਰਨਾਮ, ਈਮੇਲ ਜਾਂ ਯੂਜ਼ਰ ਆਈਡੀ",
+      "noFriendsFound": "ਮਿਲਦੀਆਂ ਦੋਸਤੀਆਂ ਨਹੀਂ ਮਿਲੀਆਂ।",
+      "friendsHint": "ਸੁਝਾਵਾਂ ਵਿੱਚ ਤੁਹਾਡੇ ਦੋਸਤ ਸ਼ਾਮਲ ਹਨ। ਤੁਸੀਂ ਕੋਈ ਵੀ ਈਮੇਲ ਪਤਾ ਵੀ ਦਰਜ ਕਰ ਸਕਦੇ ਹੋ।",
+      "scope": "ਡਾਟਾ ਦਾਇਰਾ",
+      "allScopes": "ਸਾਰੇ ਦਾਇਰੇ",
+      "scopesSelected": "ਦਾਇਰੇ ਚੁਣੇ ਗਏ",
+      "minimumOneScope": "ਘੱਟੋ-ਘੱਟ ਇੱਕ ਦਾਇਰਾ ਚੁਣਿਆ ਰਹਿਣਾ ਲਾਜ਼ਮੀ ਹੈ।",
+      "scopeResolutionHint": "ਜੇ ਕਈ ਦਾਇਰੇ ਚੁਣੇ ਗਏ ਹਨ, ਤਾਂ ਸਭ ਤੋਂ ਵੱਡਾ ਚੁਣਿਆ ਦਾਇਰਾ ਲਾਗੂ ਕੀਤਾ ਜਾਵੇਗਾ।",
+      "addDelegatedAnalyst": "ਪ੍ਰਤੀਨਿਧੀ ਵਿਸ਼ਲੇਸ਼ਕ ਸ਼ਾਮਲ ਕਰੋ",
+      "adding": "ਸ਼ਾਮਲ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ...",
+      "addError": "ਪ੍ਰਤੀਨਿਧੀ ਵਿਸ਼ਲੇਸ਼ਕ ਸ਼ਾਮਲ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ",
+      "invitationDraft": "ਇਸ ਈਮੇਲ ਲਈ ਨਿਮੰਤਰਣ ਦਾ ਮਸੌਦਾ ਤਿਆਰ ਕੀਤਾ ਗਿਆ ਹੈ।"
     }
   },
   "week": {

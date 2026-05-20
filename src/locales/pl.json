@@ -94,6 +94,21 @@
     "timeframe": {
       "startDate": "Data rozpoczęcia",
       "endDate": "Data zakończenia"
+    },
+    "me": "Moje dane",
+    "selectDelegatedUser": "Wybierz delegowanego użytkownika",
+    "analysis": {
+      "alltimeAnalysis": "Analiza całego okresu",
+      "dayAnalysis": "Dzisiejsza analiza",
+      "last3daysAnalysis": "Analiza ostatnich 3 dni",
+      "weekAnalysis": "Analiza tygodnia",
+      "yearAnalysis": "Analiza roku",
+      "gratitudeAnalysis": "Analiza wdzięczności",
+      "optimismAnalysis": "Analiza optymizmu",
+      "restednessAnalysis": "Analiza wypoczynku",
+      "toleranceAnalysis": "Analiza tolerancji",
+      "selfEsteemAnalysis": "Analiza samooceny",
+      "trustAnalysis": "Analiza zaufania"
     }
   },
   "mood": {
@@ -119,6 +134,24 @@
       "action": "Opublikuj notatkę",
       "publishing": "Publikowanie...",
       "embedHint": "Osadzenie {provider}. Jeśli odtwarzanie jest niedostępne, otwórz oryginalny link poniżej."
+    },
+    "thirdParty": {
+      "title": "Strona trzecia",
+      "settings": "Ustawienia delegowania",
+      "activeDelegations": "Aktywne delegacje",
+      "empty": "Brak aktywnych delegacji.",
+      "identifierPlaceholder": "Nazwa użytkownika, e-mail lub identyfikator użytkownika",
+      "noFriendsFound": "Nie znaleziono pasujących znajomości.",
+      "friendsHint": "Sugestie obejmują twoich znajomych. Możesz też wpisać dowolny adres e-mail.",
+      "scope": "Zakres danych",
+      "allScopes": "Wszystkie zakresy",
+      "scopesSelected": "wybrane zakresy",
+      "minimumOneScope": "Co najmniej jeden zakres musi pozostać wybrany.",
+      "scopeResolutionHint": "Jeśli wybrano wiele zakresów, stosowany jest najszerszy wybrany zakres.",
+      "addDelegatedAnalyst": "Dodaj delegowanego analityka",
+      "adding": "Dodawanie...",
+      "addError": "Nie udało się dodać delegowanego analityka",
+      "invitationDraft": "Przygotowano szkic zaproszenia dla tego adresu e-mail."
     }
   },
   "week": {

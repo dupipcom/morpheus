@@ -90,6 +90,21 @@
     "timeframe": {
       "startDate": "Startdatum",
       "endDate": "Einddatum"
+    },
+    "me": "Mijn gegevens",
+    "selectDelegatedUser": "Gedelegeerde gebruiker selecteren",
+    "analysis": {
+      "alltimeAnalysis": "Analyse van alle tijd",
+      "dayAnalysis": "Analyse van vandaag",
+      "last3daysAnalysis": "Analyse van de afgelopen 3 dagen",
+      "weekAnalysis": "Weekanalyse",
+      "yearAnalysis": "Jaaranalyse",
+      "gratitudeAnalysis": "Dankbaarheidsanalyse",
+      "optimismAnalysis": "Optimismeanalyse",
+      "restednessAnalysis": "Rustanalyse",
+      "toleranceAnalysis": "Tolerantieanalyse",
+      "selfEsteemAnalysis": "Zelfwaarderingsanalyse",
+      "trustAnalysis": "Vertrouwensanalyse"
     }
   },
   "mood": {
@@ -115,6 +130,24 @@
       "action": "Publiceer notitie",
       "publishing": "Publiceren...",
       "embedHint": "{provider}-insluiting. Als afspelen niet beschikbaar is, open dan de originele link hieronder."
+    },
+    "thirdParty": {
+      "title": "Derde partij",
+      "settings": "Delegatie-instellingen",
+      "activeDelegations": "Actieve delegaties",
+      "empty": "Geen actieve delegaties.",
+      "identifierPlaceholder": "Gebruikersnaam, e-mail of gebruikers-ID",
+      "noFriendsFound": "Geen overeenkomende vriendschappen gevonden.",
+      "friendsHint": "Suggesties bevatten je vrienden. Je kunt ook elk e-mailadres invoeren.",
+      "scope": "Gegevensbereik",
+      "allScopes": "Alle bereiken",
+      "scopesSelected": "bereiken geselecteerd",
+      "minimumOneScope": "Minstens één bereik moet geselecteerd blijven.",
+      "scopeResolutionHint": "Als meerdere bereiken zijn geselecteerd, wordt het breedste geselecteerde bereik toegepast.",
+      "addDelegatedAnalyst": "Gedelegeerde analist toevoegen",
+      "adding": "Toevoegen...",
+      "addError": "Gedelegeerde analist kon niet worden toegevoegd",
+      "invitationDraft": "Er is een uitnodigingsconcept voorbereid voor dit e-mailadres."
     }
   },
   "week": {

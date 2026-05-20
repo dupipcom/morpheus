@@ -90,6 +90,21 @@
     "timeframe": {
       "startDate": "Tarehe ya kuanza",
       "endDate": "Tarehe ya mwisho"
+    },
+    "me": "Data zangu",
+    "selectDelegatedUser": "Chagua mtumiaji aliyekabidhiwa",
+    "analysis": {
+      "alltimeAnalysis": "Uchambuzi wa muda wote",
+      "dayAnalysis": "Uchambuzi wa leo",
+      "last3daysAnalysis": "Uchambuzi wa siku 3 zilizopita",
+      "weekAnalysis": "Uchambuzi wa wiki",
+      "yearAnalysis": "Uchambuzi wa mwaka",
+      "gratitudeAnalysis": "Uchambuzi wa shukrani",
+      "optimismAnalysis": "Uchambuzi wa matumaini",
+      "restednessAnalysis": "Uchambuzi wa mapumziko",
+      "toleranceAnalysis": "Uchambuzi wa uvumilivu",
+      "selfEsteemAnalysis": "Uchambuzi wa kujithamini",
+      "trustAnalysis": "Uchambuzi wa uaminifu"
     }
   },
   "mood": {
@@ -115,6 +130,24 @@
       "action": "Chapisha Maelezo",
       "publishing": "Inachapisha...",
       "embedHint": "Ingizo la {provider}. Ikiwa urejeshaji hauwezekani, fungua kiungo asili hapa chini."
+    },
+    "thirdParty": {
+      "title": "Mhusika wa tatu",
+      "settings": "Mipangilio ya ukabidhi",
+      "activeDelegations": "Ukabidhi amilifu",
+      "empty": "Hakuna ukabidhi amilifu.",
+      "identifierPlaceholder": "Jina la mtumiaji, barua pepe, au kitambulisho cha mtumiaji",
+      "noFriendsFound": "Hakuna urafiki unaolingana uliopatikana.",
+      "friendsHint": "Mapendekezo yanajumuisha marafiki zako. Unaweza pia kuingiza anuani yoyote ya barua pepe.",
+      "scope": "Wigo wa data",
+      "allScopes": "Miwigo yote",
+      "scopesSelected": "miwigo iliyochaguliwa",
+      "minimumOneScope": "Angalau wigo mmoja lazima ubaki umechaguliwa.",
+      "scopeResolutionHint": "Iwapo miwigo mingi imechaguliwa, wigo mpana zaidi uliyochaguliwa ndio utatumika.",
+      "addDelegatedAnalyst": "Ongeza mchambuzi aliyekabidhiwa",
+      "adding": "Inaongezwa...",
+      "addError": "Haikuwezekana kuongeza mchambuzi aliyekabidhiwa",
+      "invitationDraft": "Rasimu ya mwaliko imeandaliwa kwa barua pepe hii."
     }
   },
   "week": {
