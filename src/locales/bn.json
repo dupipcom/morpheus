@@ -57,7 +57,10 @@
     "copyLink": "লিঙ্ক কপি করুন",
     "linkCopied": "লিঙ্ক ক্লিপবোর্ডে কপি করা হয়েছে",
     "copyFailed": "লিঙ্ক কপি করতে ব্যর্থ",
-    "saving": "সংরক্ষণ করা হচ্ছে..."
+    "saving": "সংরক্ষণ করা হচ্ছে...",
+    "decline": "Decline",
+    "friendRequest": "Friend request",
+    "reverseOrder": "Reverse order"
   },
   "navigation": {
     "home": "হোম",
@@ -83,7 +86,11 @@
     "yourMood": "আপনার মেজাজ।",
     "yourProductivity": "আপনার উৎপাদনশীলতা।",
     "yourData": "আপনার ডেটা।",
-    "yourBalance": "আপনার টাকা।"
+    "yourBalance": "আপনার টাকা।",
+    "timeframe": {
+      "startDate": "Start date",
+      "endDate": "End date"
+    }
   },
   "mood": {
     "title": "এটা {date}।",
@@ -106,7 +113,8 @@
         "AI_ENABLED": "এআই সক্রিয়"
       },
       "action": "নোট প্রকাশ করুন",
-      "publishing": "প্রকাশ করা হচ্ছে..."
+      "publishing": "প্রকাশ করা হচ্ছে...",
+      "embedHint": "{provider} embed. If playback is unavailable, open the original link below."
     }
   },
   "week": {
@@ -135,7 +143,10 @@
       "done": "সম্পন্ন",
       "ignored": "উপেক্ষিত"
     },
-    "edit": "সম্পাদনা"
+    "edit": "সম্পাদনা",
+    "loadingForDate": "Loading tasks for selected date...",
+    "initializingTasks": "Setting up your tasks...",
+    "noTasksForDate": "No tasks scheduled for this date"
   },
   "actions": {
     "drankWater": "পানি পান করেছে",
@@ -661,7 +672,9 @@
       "inProgress": "চলমান",
       "validating": "যাচাই করা হচ্ছে",
       "accepted": "গ্রহণ করা হয়েছে",
-      "rejected": "প্রত্যাখ্যান করা হয়েছে"
+      "rejected": "প্রত্যাখ্যান করা হয়েছে",
+      "submitted": "Submitted",
+      "changesRequested": "Changes Requested"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -775,5 +788,39 @@
         "resubmitted": "পর্যালোচনার জন্য কাজ পুনরায় জমা দেওয়া হয়েছে"
       }
     }
+  },
+  "notes": {
+    "updated": "Note updated successfully",
+    "updateFailed": "Failed to update note",
+    "deleted": "Note deleted successfully",
+    "deleteFailed": "Failed to delete note",
+    "deleting": "Deleting...",
+    "confirmDelete": "Are you sure you want to delete this note?",
+    "content": "Note content",
+    "visibilityUpdated": "Visibility updated successfully",
+    "visibilityUpdateFailed": "Failed to update visibility",
+    "changeVisibility": "Change visibility",
+    "filters": {
+      "sort": "Sort",
+      "date": "Date",
+      "mostRelevant": "Most Relevant",
+      "all": "All"
+    }
+  },
+  "chat": {
+    "title": "Chat",
+    "subtitle": "Organizations, channels, direct messages, and threads.",
+    "anonymous": "Anonymous",
+    "directMessage": "Direct message",
+    "deletedMessage": "Message deleted",
+    "deleteMessageTitle": "Delete message?",
+    "deleteMessageDescription": "This will soft-delete the message and keep a placeholder in the conversation history.",
+    "createInviteLink": "Create invite link",
+    "pendingInvites": "Pending invites",
+    "acceptInvite": "Accept",
+    "inviteFriendToOrg": "Invite a friend to this org",
+    "inviteLinkCopied": "Invite link copied",
+    "inviteSent": "Invite sent",
+    "inviteAccepted": "Invite accepted"
   }
 }

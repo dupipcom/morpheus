@@ -57,7 +57,10 @@
     "copyLink": "링크 복사",
     "linkCopied": "링크가 클립보드에 복사되었습니다",
     "copyFailed": "링크 복사 실패",
-    "saving": "저장 중..."
+    "saving": "저장 중...",
+    "decline": "Decline",
+    "friendRequest": "Friend request",
+    "reverseOrder": "Reverse order"
   },
   "navigation": {
     "home": "홈",
@@ -83,7 +86,11 @@
     "yourMood": "당신의 기분.",
     "yourProductivity": "당신의 생산성.",
     "yourData": "당신의 데이터.",
-    "yourBalance": "당신의 돈."
+    "yourBalance": "당신의 돈.",
+    "timeframe": {
+      "startDate": "Start date",
+      "endDate": "End date"
+    }
   },
   "mood": {
     "title": "{date}입니다.",
@@ -106,7 +113,8 @@
         "AI_ENABLED": "AI 활성화"
       },
       "action": "노트 게시",
-      "publishing": "게시 중..."
+      "publishing": "게시 중...",
+      "embedHint": "{provider} embed. If playback is unavailable, open the original link below."
     }
   },
   "week": {
@@ -135,7 +143,10 @@
       "done": "완료",
       "ignored": "무시됨"
     },
-    "edit": "편집"
+    "edit": "편집",
+    "loadingForDate": "Loading tasks for selected date...",
+    "initializingTasks": "Setting up your tasks...",
+    "noTasksForDate": "No tasks scheduled for this date"
   },
   "actions": {
     "drankWater": "물을 마셨습니다",
@@ -661,7 +672,9 @@
       "inProgress": "진행 중",
       "validating": "검증 중",
       "accepted": "승인됨",
-      "rejected": "거부됨"
+      "rejected": "거부됨",
+      "submitted": "Submitted",
+      "changesRequested": "Changes Requested"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -775,5 +788,39 @@
         "resubmitted": "작업이 검토를 위해 다시 제출되었습니다"
       }
     }
+  },
+  "notes": {
+    "updated": "Note updated successfully",
+    "updateFailed": "Failed to update note",
+    "deleted": "Note deleted successfully",
+    "deleteFailed": "Failed to delete note",
+    "deleting": "Deleting...",
+    "confirmDelete": "Are you sure you want to delete this note?",
+    "content": "Note content",
+    "visibilityUpdated": "Visibility updated successfully",
+    "visibilityUpdateFailed": "Failed to update visibility",
+    "changeVisibility": "Change visibility",
+    "filters": {
+      "sort": "Sort",
+      "date": "Date",
+      "mostRelevant": "Most Relevant",
+      "all": "All"
+    }
+  },
+  "chat": {
+    "title": "Chat",
+    "subtitle": "Organizations, channels, direct messages, and threads.",
+    "anonymous": "Anonymous",
+    "directMessage": "Direct message",
+    "deletedMessage": "Message deleted",
+    "deleteMessageTitle": "Delete message?",
+    "deleteMessageDescription": "This will soft-delete the message and keep a placeholder in the conversation history.",
+    "createInviteLink": "Create invite link",
+    "pendingInvites": "Pending invites",
+    "acceptInvite": "Accept",
+    "inviteFriendToOrg": "Invite a friend to this org",
+    "inviteLinkCopied": "Invite link copied",
+    "inviteSent": "Invite sent",
+    "inviteAccepted": "Invite accepted"
   }
 }
