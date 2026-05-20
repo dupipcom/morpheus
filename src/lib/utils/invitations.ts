@@ -1,3 +1,5 @@
+import isEmail from 'validator/lib/isEmail'
+
 interface DupipInvitationDraftParams {
   email: string
   invitedByUserId?: string
@@ -6,7 +8,7 @@ interface DupipInvitationDraftParams {
 export function isValidEmailIdentifier(value: string): boolean {
   const normalized = value.trim()
   if (!normalized) return false
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalized)
+  return isEmail(normalized)
 }
 
 export function buildDupipInvitationDraft({

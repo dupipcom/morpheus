@@ -37,6 +37,12 @@ interface MoodViewProps {
   filterNoteId?: string
 }
 
+interface FriendSuggestion {
+  id: string
+  displayName?: string
+  identifiers?: string[]
+}
+
 export function MoodView({ timeframe = "day", date: propDate = null, defaultTab = "mood", filterNoteId }: MoodViewProps): React.ReactElement {
   const { session, setGlobalContext, theme, selectedDate: contextSelectedDate, setSelectedDate } = useContext(GlobalContext)
   const { t, locale } = useI18n()
@@ -786,11 +792,7 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
                   list="delegation-friend-suggestions"
                 />
                 <datalist id="delegation-friend-suggestions">
-                  {friendSuggestions.flatMap((friend: {
-                    id: string
-                    displayName?: string
-                    identifiers?: string[]
-                  }) => {
+                  {friendSuggestions.flatMap((friend: FriendSuggestion) => {
                     const base = [friend.displayName, ...(friend.identifiers || [])].filter(Boolean)
                     return base.map((identifier) => (
                       <option key={`${friend.id}-${identifier}`} value={identifier} />

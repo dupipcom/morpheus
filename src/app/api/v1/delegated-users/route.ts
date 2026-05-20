@@ -214,7 +214,7 @@ export async function POST(request: NextRequest) {
       if (isValidEmailIdentifier(identifier)) {
         const invitation = buildDupipInvitationDraft({
           email: identifier,
-          invitedByUserId: authResult.user!.clerkUserId || undefined
+          invitedByUserId: authResult.user?.clerkUserId || undefined
         })
         return NextResponse.json(
           {
