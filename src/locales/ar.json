@@ -94,6 +94,21 @@
     "timeframe": {
       "startDate": "تاريخ البدء",
       "endDate": "تاريخ الانتهاء"
+    },
+    "me": "بياناتي",
+    "selectDelegatedUser": "اختر المستخدم المفوض",
+    "analysis": {
+      "alltimeAnalysis": "تحليل كل الأوقات",
+      "dayAnalysis": "تحليل اليوم",
+      "last3daysAnalysis": "تحليل آخر 3 أيام",
+      "weekAnalysis": "تحليل الأسبوع",
+      "yearAnalysis": "تحليل السنة",
+      "gratitudeAnalysis": "تحليل الامتنان",
+      "optimismAnalysis": "تحليل التفاؤل",
+      "restednessAnalysis": "تحليل الراحة",
+      "toleranceAnalysis": "تحليل التسامح",
+      "selfEsteemAnalysis": "تحليل تقدير الذات",
+      "trustAnalysis": "تحليل الثقة"
     }
   },
   "mood": {
@@ -119,6 +134,24 @@
       "action": "نشر المذكرة",
       "publishing": "جاري النشر...",
       "embedHint": "تضمين {provider}. إذا لم يكن التشغيل متاحًا، افتح الرابط الأصلي أدناه."
+    },
+    "thirdParty": {
+      "title": "الجهات الخارجية",
+      "settings": "إعدادات التفويض",
+      "activeDelegations": "التفويضات النشطة",
+      "empty": "لا توجد تفويضات نشطة.",
+      "identifierPlaceholder": "اسم المستخدم أو البريد الإلكتروني أو معرّف المستخدم",
+      "noFriendsFound": "لم يتم العثور على صداقات مطابقة.",
+      "friendsHint": "تتضمن الاقتراحات أصدقاءك. يمكنك أيضًا إدخال أي عنوان بريد إلكتروني.",
+      "scope": "نطاق البيانات",
+      "allScopes": "كل النطاقات",
+      "scopesSelected": "نطاقات محددة",
+      "minimumOneScope": "يجب أن يبقى نطاق واحد على الأقل محددًا.",
+      "scopeResolutionHint": "إذا تم تحديد عدة نطاقات، فسيتم تطبيق أوسع نطاق محدد.",
+      "addDelegatedAnalyst": "إضافة محلل مفوض",
+      "adding": "جارٍ الإضافة...",
+      "addError": "تعذر إضافة المحلل المفوض",
+      "invitationDraft": "تم إعداد مسودة دعوة لهذا البريد الإلكتروني."
     }
   },
   "week": {

@@ -90,6 +90,21 @@
     "timeframe": {
       "startDate": "開始日",
       "endDate": "終了日"
+    },
+    "me": "自分のデータ",
+    "selectDelegatedUser": "委任されたユーザーを選択",
+    "analysis": {
+      "alltimeAnalysis": "全期間分析",
+      "dayAnalysis": "今日の分析",
+      "last3daysAnalysis": "直近3日間の分析",
+      "weekAnalysis": "週次分析",
+      "yearAnalysis": "年次分析",
+      "gratitudeAnalysis": "感謝の分析",
+      "optimismAnalysis": "楽観性の分析",
+      "restednessAnalysis": "休息度の分析",
+      "toleranceAnalysis": "寛容さの分析",
+      "selfEsteemAnalysis": "自尊心の分析",
+      "trustAnalysis": "信頼の分析"
     }
   },
   "mood": {
@@ -115,6 +130,24 @@
       "action": "ノートを公開",
       "publishing": "公開中...",
       "embedHint": "{provider} 埋め込み。再生できない場合は、以下の元のリンクを開いてください。"
+    },
+    "thirdParty": {
+      "title": "サードパーティ",
+      "settings": "委任設定",
+      "activeDelegations": "有効な委任",
+      "empty": "有効な委任はありません。",
+      "identifierPlaceholder": "ユーザー名、メールアドレス、またはユーザーID",
+      "noFriendsFound": "一致する友達関係が見つかりませんでした。",
+      "friendsHint": "候補にはあなたの友達が含まれます。任意のメールアドレスを入力することもできます。",
+      "scope": "データ範囲",
+      "allScopes": "すべての範囲",
+      "scopesSelected": "選択された範囲",
+      "minimumOneScope": "少なくとも1つの範囲を選択したままにする必要があります。",
+      "scopeResolutionHint": "複数の範囲が選択されている場合は、最も広い選択範囲が適用されます。",
+      "addDelegatedAnalyst": "委任されたアナリストを追加",
+      "adding": "追加中...",
+      "addError": "委任されたアナリストを追加できませんでした",
+      "invitationDraft": "このメールアドレス用の招待下書きを準備しました。"
     }
   },
   "week": {

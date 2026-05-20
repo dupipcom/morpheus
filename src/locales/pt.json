@@ -90,6 +90,21 @@
     "timeframe": {
       "startDate": "Data de início",
       "endDate": "Data de fim"
+    },
+    "me": "Meus dados",
+    "selectDelegatedUser": "Selecionar usuário delegado",
+    "analysis": {
+      "alltimeAnalysis": "Análise de todo o período",
+      "dayAnalysis": "Análise de hoje",
+      "last3daysAnalysis": "Análise dos últimos 3 dias",
+      "weekAnalysis": "Análise semanal",
+      "yearAnalysis": "Análise anual",
+      "gratitudeAnalysis": "Análise de gratidão",
+      "optimismAnalysis": "Análise de otimismo",
+      "restednessAnalysis": "Análise de descanso",
+      "toleranceAnalysis": "Análise de tolerância",
+      "selfEsteemAnalysis": "Análise de autoestima",
+      "trustAnalysis": "Análise de confiança"
     }
   },
   "mood": {
@@ -115,6 +130,24 @@
       "action": "Publicar Nota",
       "publishing": "Publicando...",
       "embedHint": "Incorporação de {provider}. Se a reprodução não estiver disponível, abra o link original abaixo."
+    },
+    "thirdParty": {
+      "title": "Terceiros",
+      "settings": "Configurações de delegação",
+      "activeDelegations": "Delegações ativas",
+      "empty": "Não há delegações ativas.",
+      "identifierPlaceholder": "Nome de usuário, e-mail ou ID do usuário",
+      "noFriendsFound": "Nenhuma amizade correspondente encontrada.",
+      "friendsHint": "As sugestões incluem seus amigos. Você também pode inserir qualquer endereço de e-mail.",
+      "scope": "Escopo de dados",
+      "allScopes": "Todos os escopos",
+      "scopesSelected": "escopos selecionados",
+      "minimumOneScope": "Pelo menos um escopo deve permanecer selecionado.",
+      "scopeResolutionHint": "Se vários escopos forem selecionados, o escopo selecionado mais amplo será aplicado.",
+      "addDelegatedAnalyst": "Adicionar analista delegado",
+      "adding": "Adicionando...",
+      "addError": "Não foi possível adicionar o analista delegado",
+      "invitationDraft": "Rascunho de convite preparado para este e-mail."
     }
   },
   "week": {

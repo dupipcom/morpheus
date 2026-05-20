@@ -94,6 +94,21 @@
     "timeframe": {
       "startDate": "Başlangıç tarihi",
       "endDate": "Bitiş tarihi"
+    },
+    "me": "Verilerim",
+    "selectDelegatedUser": "Yetkilendirilen kullanıcıyı seç",
+    "analysis": {
+      "alltimeAnalysis": "Tüm zamanların analizi",
+      "dayAnalysis": "Bugünün analizi",
+      "last3daysAnalysis": "Son 3 günün analizi",
+      "weekAnalysis": "Haftalık analiz",
+      "yearAnalysis": "Yıllık analiz",
+      "gratitudeAnalysis": "Minnettarlık analizi",
+      "optimismAnalysis": "İyimserlik analizi",
+      "restednessAnalysis": "Dinlenmişlik analizi",
+      "toleranceAnalysis": "Hoşgörü analizi",
+      "selfEsteemAnalysis": "Özsaygı analizi",
+      "trustAnalysis": "Güven analizi"
     }
   },
   "mood": {
@@ -119,6 +134,24 @@
       "action": "Not Yayınla",
       "publishing": "Yayınlanıyor...",
       "embedHint": "{provider} yerleştirmesi. Oynatma kullanılamıyorsa aşağıdaki orijinal bağlantıyı açın."
+    },
+    "thirdParty": {
+      "title": "Üçüncü taraf",
+      "settings": "Yetkilendirme ayarları",
+      "activeDelegations": "Etkin yetkilendirmeler",
+      "empty": "Etkin yetkilendirme yok.",
+      "identifierPlaceholder": "Kullanıcı adı, e-posta veya kullanıcı kimliği",
+      "noFriendsFound": "Eşleşen arkadaşlık bulunamadı.",
+      "friendsHint": "Öneriler arkadaşlarınızı içerir. Ayrıca herhangi bir e-posta adresi de girebilirsiniz.",
+      "scope": "Veri kapsamı",
+      "allScopes": "Tüm kapsamlar",
+      "scopesSelected": "kapsam seçildi",
+      "minimumOneScope": "En az bir kapsam seçili kalmalıdır.",
+      "scopeResolutionHint": "Birden fazla kapsam seçilirse, seçilen en geniş kapsam uygulanır.",
+      "addDelegatedAnalyst": "Yetkilendirilmiş analist ekle",
+      "adding": "Ekleniyor...",
+      "addError": "Yetkilendirilmiş analist eklenemedi",
+      "invitationDraft": "Bu e-posta için davet taslağı hazırlandı."
     }
   },
   "week": {

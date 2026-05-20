@@ -90,6 +90,21 @@
     "timeframe": {
       "startDate": "Alguskuupäev",
       "endDate": "Lõppkuupäev"
+    },
+    "me": "Minu andmed",
+    "selectDelegatedUser": "Vali delegeeritud kasutaja",
+    "analysis": {
+      "alltimeAnalysis": "Kogu aja analüüs",
+      "dayAnalysis": "Tänane analüüs",
+      "last3daysAnalysis": "Viimase 3 päeva analüüs",
+      "weekAnalysis": "Nädala analüüs",
+      "yearAnalysis": "Aasta analüüs",
+      "gratitudeAnalysis": "Tänulikkuse analüüs",
+      "optimismAnalysis": "Optimismi analüüs",
+      "restednessAnalysis": "Väljapuhanuse analüüs",
+      "toleranceAnalysis": "Sallivuse analüüs",
+      "selfEsteemAnalysis": "Enesehinnangu analüüs",
+      "trustAnalysis": "Usalduse analüüs"
     }
   },
   "mood": {
@@ -115,6 +130,24 @@
       "action": "Avalda märkme",
       "publishing": "Avaldamine...",
       "embedHint": "{provider} manustus. Kui taasesitus pole saadaval, ava allpool olev algne link."
+    },
+    "thirdParty": {
+      "title": "Kolmas osapool",
+      "settings": "Delegeerimise seaded",
+      "activeDelegations": "Aktiivsed delegeerimised",
+      "empty": "Aktiivseid delegeerimisi pole.",
+      "identifierPlaceholder": "Kasutajanimi, e-post või kasutaja ID",
+      "noFriendsFound": "Sobivaid sõprussuhteid ei leitud.",
+      "friendsHint": "Soovitused sisaldavad sinu sõpru. Võid sisestada ka mis tahes e-posti aadressi.",
+      "scope": "Andmeulatus",
+      "allScopes": "Kõik ulatused",
+      "scopesSelected": "ulatust valitud",
+      "minimumOneScope": "Vähemalt üks ulatus peab jääma valituks.",
+      "scopeResolutionHint": "Kui valitud on mitu ulatust, rakendatakse kõige laiemat valitud ulatust.",
+      "addDelegatedAnalyst": "Lisa delegeeritud analüütik",
+      "adding": "Lisamine...",
+      "addError": "Delegeeritud analüütiku lisamine ei õnnestunud",
+      "invitationDraft": "Selle e-posti jaoks valmis kutse mustand."
     }
   },
   "week": {

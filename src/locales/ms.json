@@ -94,6 +94,21 @@
     "timeframe": {
       "startDate": "Tarikh mula",
       "endDate": "Tarikh tamat"
+    },
+    "me": "Data saya",
+    "selectDelegatedUser": "Pilih pengguna yang diwakilkan",
+    "analysis": {
+      "alltimeAnalysis": "Analisis sepanjang masa",
+      "dayAnalysis": "Analisis hari ini",
+      "last3daysAnalysis": "Analisis 3 hari lalu",
+      "weekAnalysis": "Analisis mingguan",
+      "yearAnalysis": "Analisis tahunan",
+      "gratitudeAnalysis": "Analisis kesyukuran",
+      "optimismAnalysis": "Analisis optimisme",
+      "restednessAnalysis": "Analisis tahap rehat",
+      "toleranceAnalysis": "Analisis toleransi",
+      "selfEsteemAnalysis": "Analisis harga diri",
+      "trustAnalysis": "Analisis kepercayaan"
     }
   },
   "mood": {
@@ -119,6 +134,24 @@
       "action": "Publish Note",
       "publishing": "Menerbitkan...",
       "embedHint": "Sematan {provider}. Jika main balik tidak tersedia, buka pautan asal di bawah."
+    },
+    "thirdParty": {
+      "title": "Pihak ketiga",
+      "settings": "Tetapan delegasi",
+      "activeDelegations": "Delegasi aktif",
+      "empty": "Tiada delegasi aktif.",
+      "identifierPlaceholder": "Nama pengguna, e-mel, atau ID pengguna",
+      "noFriendsFound": "Tiada persahabatan sepadan ditemui.",
+      "friendsHint": "Cadangan termasuk rakan anda. Anda juga boleh memasukkan mana-mana alamat e-mel.",
+      "scope": "Skop data",
+      "allScopes": "Semua skop",
+      "scopesSelected": "skop dipilih",
+      "minimumOneScope": "Sekurang-kurangnya satu skop mesti kekal dipilih.",
+      "scopeResolutionHint": "Jika berbilang skop dipilih, skop terluas yang dipilih akan digunakan.",
+      "addDelegatedAnalyst": "Tambah penganalisis yang diwakilkan",
+      "adding": "Menambah...",
+      "addError": "Tidak dapat menambah penganalisis yang diwakilkan",
+      "invitationDraft": "Draf jemputan disediakan untuk e-mel ini."
     }
   },
   "week": {

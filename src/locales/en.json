@@ -86,9 +86,24 @@
     "yourProductivity": "Your productivity.",
     "yourData": "Your data.",
     "yourBalance": "Your money.",
+    "me": "My data",
+    "selectDelegatedUser": "Select delegated user",
     "timeframe": {
       "startDate": "Start date",
       "endDate": "End date"
+    },
+    "analysis": {
+      "alltimeAnalysis": "All-time Analysis",
+      "dayAnalysis": "Today's Analysis",
+      "last3daysAnalysis": "Last 3 Days Analysis",
+      "weekAnalysis": "Week Analysis",
+      "yearAnalysis": "Year Analysis",
+      "gratitudeAnalysis": "Gratitude Analysis",
+      "optimismAnalysis": "Optimism Analysis",
+      "restednessAnalysis": "Restedness Analysis",
+      "toleranceAnalysis": "Tolerance Analysis",
+      "selfEsteemAnalysis": "Self-Esteem Analysis",
+      "trustAnalysis": "Trust Analysis"
     }
   },
   "mood": {
@@ -114,6 +129,24 @@
         "AI_ENABLED": "AI Enabled"
       },
       "action": "Publish Note"
+    },
+    "thirdParty": {
+      "title": "Third-Party",
+      "settings": "Delegation Settings",
+      "activeDelegations": "Active Delegations",
+      "empty": "No active delegations.",
+      "identifierPlaceholder": "Username, email, or user ID",
+      "noFriendsFound": "No matching friendships found.",
+      "friendsHint": "Suggestions include your friends. You can also enter any email address.",
+      "scope": "Data scope",
+      "allScopes": "All scopes",
+      "scopesSelected": "scopes selected",
+      "minimumOneScope": "At least one scope must remain selected.",
+      "scopeResolutionHint": "If multiple scopes are selected, the broadest selected scope is applied.",
+      "addDelegatedAnalyst": "Add delegated analyst",
+      "adding": "Adding...",
+      "addError": "Could not add delegated analyst",
+      "invitationDraft": "Invitation draft prepared for this email."
     }
   },
   "week": {

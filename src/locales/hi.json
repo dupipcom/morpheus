@@ -90,6 +90,21 @@
     "timeframe": {
       "startDate": "प्रारंभ तिथि",
       "endDate": "समाप्ति तिथि"
+    },
+    "me": "मेरा डेटा",
+    "selectDelegatedUser": "प्रतिनिधि उपयोगकर्ता चुनें",
+    "analysis": {
+      "alltimeAnalysis": "सभी समय का विश्लेषण",
+      "dayAnalysis": "आज का विश्लेषण",
+      "last3daysAnalysis": "पिछले 3 दिनों का विश्लेषण",
+      "weekAnalysis": "साप्ताहिक विश्लेषण",
+      "yearAnalysis": "वार्षिक विश्लेषण",
+      "gratitudeAnalysis": "कृतज्ञता विश्लेषण",
+      "optimismAnalysis": "आशावाद विश्लेषण",
+      "restednessAnalysis": "आराम का विश्लेषण",
+      "toleranceAnalysis": "सहनशीलता विश्लेषण",
+      "selfEsteemAnalysis": "आत्मसम्मान विश्लेषण",
+      "trustAnalysis": "विश्वास विश्लेषण"
     }
   },
   "mood": {
@@ -115,6 +130,24 @@
       "action": "नोट प्रकाशित करें",
       "publishing": "प्रकाशन...",
       "embedHint": "{provider} एम्बेड। यदि प्लेबैक उपलब्ध नहीं है, तो नीचे मूल लिंक खोलें।"
+    },
+    "thirdParty": {
+      "title": "तृतीय पक्ष",
+      "settings": "प्रतिनिधि सेटिंग्स",
+      "activeDelegations": "सक्रिय प्रतिनिधि",
+      "empty": "कोई सक्रिय प्रतिनिधि नहीं है।",
+      "identifierPlaceholder": "उपयोगकर्ता नाम, ईमेल, या उपयोगकर्ता आईडी",
+      "noFriendsFound": "मेल खाने वाली कोई मित्रता नहीं मिली।",
+      "friendsHint": "सुझावों में आपके मित्र शामिल हैं। आप कोई भी ईमेल पता भी दर्ज कर सकते हैं।",
+      "scope": "डेटा दायरा",
+      "allScopes": "सभी दायरे",
+      "scopesSelected": "दायरे चुने गए",
+      "minimumOneScope": "कम से कम एक दायरा चुना हुआ रहना चाहिए।",
+      "scopeResolutionHint": "यदि कई दायरे चुने गए हैं, तो सबसे व्यापक चुना गया दायरा लागू होगा।",
+      "addDelegatedAnalyst": "प्रतिनिधि विश्लेषक जोड़ें",
+      "adding": "जोड़ा जा रहा है...",
+      "addError": "प्रतिनिधि विश्लेषक जोड़ा नहीं जा सका",
+      "invitationDraft": "इस ईमेल के लिए निमंत्रण मसौदा तैयार किया गया है।"
     }
   },
   "week": {

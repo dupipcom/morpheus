@@ -90,6 +90,21 @@
     "timeframe": {
       "startDate": "Data di inizio",
       "endDate": "Data di fine"
+    },
+    "me": "I miei dati",
+    "selectDelegatedUser": "Seleziona utente delegato",
+    "analysis": {
+      "alltimeAnalysis": "Analisi di sempre",
+      "dayAnalysis": "Analisi di oggi",
+      "last3daysAnalysis": "Analisi degli ultimi 3 giorni",
+      "weekAnalysis": "Analisi settimanale",
+      "yearAnalysis": "Analisi annuale",
+      "gratitudeAnalysis": "Analisi della gratitudine",
+      "optimismAnalysis": "Analisi dell'ottimismo",
+      "restednessAnalysis": "Analisi del riposo",
+      "toleranceAnalysis": "Analisi della tolleranza",
+      "selfEsteemAnalysis": "Analisi dell'autostima",
+      "trustAnalysis": "Analisi della fiducia"
     }
   },
   "mood": {
@@ -115,6 +130,24 @@
       "action": "Pubblica Nota",
       "publishing": "Pubblicazione...",
       "embedHint": "Incorporamento {provider}. Se la riproduzione non è disponibile, apri il link originale in basso."
+    },
+    "thirdParty": {
+      "title": "Terze parti",
+      "settings": "Impostazioni di delega",
+      "activeDelegations": "Deleghe attive",
+      "empty": "Nessuna delega attiva.",
+      "identifierPlaceholder": "Nome utente, email o ID utente",
+      "noFriendsFound": "Nessuna amicizia corrispondente trovata.",
+      "friendsHint": "I suggerimenti includono i tuoi amici. Puoi anche inserire qualsiasi indirizzo email.",
+      "scope": "Ambito dati",
+      "allScopes": "Tutti gli ambiti",
+      "scopesSelected": "ambiti selezionati",
+      "minimumOneScope": "Almeno un ambito deve rimanere selezionato.",
+      "scopeResolutionHint": "Se sono selezionati più ambiti, viene applicato l'ambito selezionato più ampio.",
+      "addDelegatedAnalyst": "Aggiungi analista delegato",
+      "adding": "Aggiunta in corso...",
+      "addError": "Impossibile aggiungere l'analista delegato",
+      "invitationDraft": "Bozza di invito preparata per questa email."
     }
   },
   "week": {
