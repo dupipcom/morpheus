@@ -18,6 +18,8 @@ import { ThingCombobox } from "@/components/ui/thingCombobox"
 import { LifeEventCombobox } from "@/components/ui/lifeEventCombobox"
 import { useDebounce } from "@/lib/hooks/useDebounce"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Lock, Users, UserCheck, Globe, Sparkles } from 'lucide-react'
 import {
   DropdownMenu,
@@ -30,7 +32,7 @@ import type { NoteVisibility } from '@/lib/hooks/useProfile'
 interface MoodViewProps {
   timeframe?: string
   date?: string | null
-  defaultTab?: 'mood' | 'notes' | 'details'
+  defaultTab?: 'mood' | 'notes' | 'details' | 'third-party'
   filterNoteId?: string
 }
 
@@ -93,12 +95,13 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
     if (pathname?.includes('/feel/mood')) return 'mood'
     if (pathname?.includes('/feel/notes')) return 'notes'
     if (pathname?.includes('/feel/details')) return 'details'
+    if (pathname?.includes('/feel/third-party')) return 'third-party'
     // If on base /feel route, use defaultTab prop
     if (pathname?.endsWith('/feel') || pathname?.endsWith('/feel/')) return defaultTab
     return defaultTab
   }
   
-  const [activeTab, setActiveTab] = useState<'mood' | 'notes' | 'details'>(getInitialTab())
+  const [activeTab, setActiveTab] = useState<'mood' | 'notes' | 'details' | 'third-party'>(getInitialTab())
   
   // Update activeTab when pathname changes
   useEffect(() => {
@@ -108,7 +111,7 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
   
   // Handle tab change and update URL
   const handleTabChange = (value: string) => {
-    const tab = value as 'mood' | 'notes' | 'details'
+    const tab = value as 'mood' | 'notes' | 'details' | 'third-party'
     setActiveTab(tab)
     
     // Update URL to match the selected tab
@@ -183,6 +186,10 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
   const [optimisticMoodThings, setOptimisticMoodThings] = useState<any[]>([])
   const [newLifeEventText, setNewLifeEventText] = useState('')
   const [notes, setNotes] = useState<Note[]>([])
+  const [delegationIdentifier, setDelegationIdentifier] = useState('')
+  const [delegationScope, setDelegationScope] = useState<NoteVisibility>('AI_ENABLED')
+  const [delegationError, setDelegationError] = useState('')
+  const [isSubmittingDelegation, setIsSubmittingDelegation] = useState(false)
   // Selectable visibility options for the filter UI (HIDDEN is a system-only state, not user-selectable)
   const SELECTABLE_NOTE_VISIBILITIES: NoteVisibility[] = ['PRIVATE', 'AI_ENABLED', 'FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC']
   const [notesVisibilityFilter, setNotesVisibilityFilter] = useState<NoteVisibility[]>(SELECTABLE_NOTE_VISIBILITIES)
@@ -285,6 +292,19 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
       }
     }
   )
+
+  const { data: delegationsData, mutate: mutateDelegations, isLoading: delegationsLoading } = useSWR(
+    session?.user ? '/api/v1/delegated-users' : null,
+    async () => {
+      const response = await fetch('/api/v1/delegated-users')
+      if (!response.ok) {
+        return { outgoingDelegations: [] }
+      }
+      return response.json()
+    }
+  )
+
+  const outgoingDelegations = delegationsData?.outgoingDelegations || []
 
   // Register the mutate function for notes refresh
   useEffect(() => {
@@ -437,6 +457,50 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
     await saveDayData(updatedMood)
   }
 
+  const handleAddDelegation = async () => {
+    if (!delegationIdentifier.trim() || isSubmittingDelegation) return
+    setIsSubmittingDelegation(true)
+    setDelegationError('')
+    try {
+      const response = await fetch('/api/v1/delegated-users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          identifier: delegationIdentifier.trim(),
+          scope: delegationScope
+        })
+      })
+      if (!response.ok) {
+        const data = await response.json().catch(() => null)
+        setDelegationError(data?.error || 'Could not add delegated analyst')
+        return
+      }
+      setDelegationIdentifier('')
+      await mutateDelegations()
+    } catch (error) {
+      console.error('Error creating delegation:', error)
+      setDelegationError('Could not add delegated analyst')
+    } finally {
+      setIsSubmittingDelegation(false)
+    }
+  }
+
+  const handleRemoveDelegation = async (delegationId: string) => {
+    try {
+      const response = await fetch('/api/v1/delegated-users', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ delegationId })
+      })
+      if (!response.ok) {
+        return
+      }
+      await mutateDelegations()
+    } catch (error) {
+      console.error('Error removing delegation:', error)
+    }
+  }
+
   // Helper to find what changed between old and new arrays
   const getArrayDiff = useCallback((oldArray: any[], newArray: any[]) => {
     const oldIds = new Set(oldArray.map(item => item.id || item))
@@ -583,7 +647,7 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
     <ContentLoadingWrapper>
       <div key={JSON.stringify(serverMood)} className="w-full m-auto p-4">
         <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger 
               value="mood"
               className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
@@ -601,6 +665,12 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
               className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
             >
               {t('common.details')}
+            </TabsTrigger>
+            <TabsTrigger
+              value="third-party"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            >
+              {t('mood.thirdParty.title') || 'Third-Party'}
             </TabsTrigger>
           </TabsList>
 
@@ -695,6 +765,62 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
               onNoteUpdated={() => mutateNotes()}
               filterNoteId={filterNoteId}
             />
+          </TabsContent>
+
+          <TabsContent value="third-party" className="mt-4">
+            <div className="p-4 border rounded-lg bg-transparent border-body mb-6">
+              <h3 className="text-lg font-semibold mb-4">{t('mood.thirdParty.settings') || 'Delegation Settings'}</h3>
+              <div className="space-y-3">
+                <Input
+                  value={delegationIdentifier}
+                  onChange={(event) => setDelegationIdentifier(event.target.value)}
+                  placeholder={t('mood.thirdParty.identifierPlaceholder') || 'Username, email, or user ID'}
+                />
+                <Select value={delegationScope} onValueChange={(value) => setDelegationScope(value as NoteVisibility)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder={t('mood.thirdParty.scope') || 'Data scope'} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {SELECTABLE_NOTE_VISIBILITIES.map((visibility) => (
+                      <SelectItem key={visibility} value={visibility}>
+                        {t(`mood.publish.visibility.${visibility}`) || visibility}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Button onClick={handleAddDelegation} disabled={!delegationIdentifier.trim() || isSubmittingDelegation}>
+                  {isSubmittingDelegation
+                    ? (t('mood.thirdParty.adding') || 'Adding...')
+                    : (t('mood.thirdParty.addDelegatedAnalyst') || 'Add delegated analyst')}
+                </Button>
+                {delegationError && (
+                  <p className="text-sm text-red-500">{delegationError}</p>
+                )}
+              </div>
+            </div>
+
+            <div className="p-4 border rounded-lg bg-transparent border-body">
+              <h3 className="text-lg font-semibold mb-4">{t('mood.thirdParty.activeDelegations') || 'Active Delegations'}</h3>
+              {delegationsLoading ? (
+                <p className="text-sm text-muted-foreground">{t('common.loading') || 'Loading...'}</p>
+              ) : outgoingDelegations.length === 0 ? (
+                <p className="text-sm text-muted-foreground">{t('mood.thirdParty.empty') || 'No active delegations.'}</p>
+              ) : (
+                <div className="space-y-3">
+                  {outgoingDelegations.map((delegation: any) => (
+                    <div key={delegation.id} className="flex items-center justify-between border rounded-md p-3">
+                      <div>
+                        <p className="font-medium">{delegation.delegatedUser?.displayName || delegation.delegatedUser?.userName || delegation.delegatedUser?.email}</p>
+                        <p className="text-xs text-muted-foreground">{(delegation.scope || '').toLowerCase().replace('_', '-')}</p>
+                      </div>
+                      <Button variant="outline" size="sm" onClick={() => handleRemoveDelegation(delegation.id)}>
+                        {t('common.remove') || 'Remove'}
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </TabsContent>
 
           {/* Details Tab */}

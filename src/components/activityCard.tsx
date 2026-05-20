@@ -58,6 +58,18 @@ export interface ActivityItem {
     comments: number
     likes?: number
   }
+  sender?: {
+    id: string
+    userName?: string
+    firstName?: string
+    lastName?: string
+  } | null
+  recipient?: {
+    id: string
+    userName?: string
+    firstName?: string
+    lastName?: string
+  } | null
 }
 
 interface ActivityCardProps {
@@ -841,6 +853,12 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
         )}
       </div>
 
+      {item.type === 'note' && item.sender && item.recipient && (
+        <p className="text-xs text-muted-foreground mb-2">
+          {(item.sender.userName || item.sender.firstName || item.sender.id)} → {(item.recipient.userName || item.recipient.firstName || item.recipient.id)}
+        </p>
+      )}
+
       {/* Content based on type */}
       {item.type === 'note' && item.content && (
         <div className="mb-3">
@@ -1190,4 +1208,3 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
 }
 
 export default ActivityCard
-
