@@ -42,6 +42,15 @@ interface FriendSuggestion {
   identifiers?: string[]
 }
 
+function resolveDelegationScope(scopes: NoteVisibility[]): NoteVisibility {
+  if (scopes.includes('PRIVATE')) return 'PRIVATE'
+  if (scopes.includes('AI_ENABLED')) return 'AI_ENABLED'
+  if (scopes.includes('FRIENDS')) return 'FRIENDS'
+  if (scopes.includes('CLOSE_FRIENDS')) return 'CLOSE_FRIENDS'
+  if (scopes.includes('PUBLIC')) return 'PUBLIC'
+  return 'AI_ENABLED'
+}
+
 export function MoodView({ timeframe = "day", date: propDate = null, defaultTab = "mood", filterNoteId }: MoodViewProps): React.ReactElement {
   const { session, setGlobalContext, theme, selectedDate: contextSelectedDate, setSelectedDate } = useContext(GlobalContext)
   const { t, locale } = useI18n()
@@ -313,15 +322,6 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
 
   const outgoingDelegations = delegationsData?.outgoingDelegations || []
   const friendSuggestions = delegationsData?.friendSuggestions || []
-
-  const resolveDelegationScope = (scopes: NoteVisibility[]): NoteVisibility => {
-    if (scopes.includes('PRIVATE')) return 'PRIVATE'
-    if (scopes.includes('AI_ENABLED')) return 'AI_ENABLED'
-    if (scopes.includes('FRIENDS')) return 'FRIENDS'
-    if (scopes.includes('CLOSE_FRIENDS')) return 'CLOSE_FRIENDS'
-    if (scopes.includes('PUBLIC')) return 'PUBLIC'
-    return 'AI_ENABLED'
-  }
 
   // Register the mutate function for notes refresh
   useEffect(() => {
@@ -817,6 +817,8 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
                       <span className="truncate">
                         {delegationScopes.length === SELECTABLE_NOTE_VISIBILITIES.length
                           ? (t('notes.filters.all') || 'All')
+                          : delegationScopes.length > 2
+                            ? `${delegationScopes.length} ${t('mood.thirdParty.scopesSelected') || 'scopes selected'}`
                           : delegationScopes.map(v => t(`mood.publish.visibility.${v}`) || v).join(', ')}
                       </span>
                     </Button>
@@ -826,6 +828,8 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
                       <DropdownMenuCheckboxItem
                         key={visibility}
                         checked={delegationScopes.includes(visibility)}
+                        disabled={delegationScopes.length === 1 && delegationScopes.includes(visibility)}
+                        aria-disabled={delegationScopes.length === 1 && delegationScopes.includes(visibility)}
                         onCheckedChange={() => {
                           setDelegationScopes((prev) => {
                             if (prev.length === 1 && prev.includes(visibility)) return prev
@@ -839,6 +843,11 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
                     ))}
                   </DropdownMenuContent>
                 </DropdownMenu>
+                {delegationScopes.length === 1 && (
+                  <p className="text-xs text-muted-foreground">
+                    {t('mood.thirdParty.minimumOneScope') || 'At least one scope must remain selected.'}
+                  </p>
+                )}
                 <Button onClick={handleAddDelegation} disabled={!delegationIdentifier.trim() || isSubmittingDelegation || delegationScopes.length === 0} aria-busy={isSubmittingDelegation}>
                   {isSubmittingDelegation
                     ? (t('mood.thirdParty.adding') || 'Adding...')
