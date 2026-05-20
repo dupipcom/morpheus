@@ -298,12 +298,20 @@ export const generateInsight = async (
  * SWR hook to fetch insights once per locale; provides manual refresh
  * Default cache: one day via API route revalidation; no auto revalidate on focus
  */
-export const useHint = (locale: string = 'en', cacheTag: string = 'hint') => {
+export const useHint = (
+  locale: string = 'en',
+  cacheTag: string = 'hint',
+  userId?: string
+) => {
+  const query = new URLSearchParams({ locale })
+  if (userId) query.set('userId', userId)
+  const hintUrl = `/api/v1/hint?${query.toString()}`
+
   const fetchHint = async () => {
-    const response = await fetch(`/api/v1/hint?locale=${locale}`, {
+    const response = await fetch(hintUrl, {
       method: 'GET',
       cache: 'force-cache',
-      next: { revalidate: 86400, tags: [cacheTag] },
+      next: { revalidate: 86400, tags: [cacheTag, userId || 'self'] },
     })
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}))
@@ -317,7 +325,7 @@ export const useHint = (locale: string = 'en', cacheTag: string = 'hint') => {
     }
   }
 
-  const swr = useSWR(`/api/v1/hint?locale=${locale}`, fetchHint, {
+  const swr = useSWR(hintUrl, fetchHint, {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
     shouldRetryOnError: false,

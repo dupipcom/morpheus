@@ -16,6 +16,7 @@ import {
 import { ChevronDown } from "lucide-react"
 import { DateRangeSelector } from "@/components/ui/dateRangeSelector"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
 import { EarningsTable } from '@/components/earningsTable'
 
@@ -287,11 +288,30 @@ export function DashboardView({ timeframe = "day", onDelegatedUserChange }: Dash
   const productivityChartConfig = createProductivityChartConfig(t)
   const moneyChartConfig = createMoneyChartConfig(t)
   
+  const targetHintUserId = selectedDelegatedUserId || user?.id
+
   // Use shared hint hook and update local state when data changes
-  const { data: hintData } = useHint(locale, 'hint')
+  const { data: hintData } = useHint(locale, 'hint', targetHintUserId)
+
+  useEffect(() => {
+    setInsight({})
+  }, [targetHintUserId])
+
   useEffect(() => {
     if (hintData) setInsight(hintData as any)
   }, [hintData])
+
+  const analysisEntries = useMemo(() => {
+    const analysis = (insight || {}) as Record<string, unknown>
+
+    return Object.entries(analysis)
+      .filter(([, value]) => typeof value === 'string' && value.trim().length > 0)
+      .map(([key, value]) => ({
+        key,
+        title: t(`dashboard.analysis.${key}`) || key.replace(/([a-z])([A-Z])/g, '$1 $2'),
+        content: value as string
+      }))
+  }, [insight, t])
 
 
   // Dimension toggle handlers
@@ -496,8 +516,6 @@ const aggregateDataByWeek = (dailyData: any[]) => {
   return (
     <ContentLoadingWrapper>
       <div className="max-w-[1200px] w-full m-auto p-4 md:px-32 ">
-      <p className="mt-0 mb-8">{(insight as any)?.yearAnalysis}</p>
-
       <div className="mb-6">
         <label className="text-sm font-medium mb-2 block">
           {t('dashboard.selectDelegatedUser') || 'Select delegated user'}
@@ -552,6 +570,19 @@ const aggregateDataByWeek = (dailyData: any[]) => {
         onEndChange={setRangeEnd}
         className="mb-8"
       />
+
+      {analysisEntries.length > 0 && (
+        <Accordion type="multiple" className="mb-8 rounded-md border px-4">
+          {analysisEntries.map((entry) => (
+            <AccordionItem key={entry.key} value={entry.key}>
+              <AccordionTrigger>{entry.title}</AccordionTrigger>
+              <AccordionContent>
+                <p className="whitespace-pre-wrap text-sm text-muted-foreground">{entry.content}</p>
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      )}
       
       <ChartDimensionSelector
         dimensions={['moodAverage', 'gratitude', 'optimism', 'restedness', 'tolerance', 'selfEsteem', 'trust']}
