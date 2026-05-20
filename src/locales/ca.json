@@ -58,9 +58,9 @@
     "linkCopied": "Enllaç copiat al porta-retalls",
     "copyFailed": "Error en copiar l'enllaç",
     "saving": "Desant...",
-    "decline": "Decline",
-    "friendRequest": "Friend request",
-    "reverseOrder": "Reverse order"
+    "decline": "Declinar",
+    "friendRequest": "Sol·licitud d'amistat",
+    "reverseOrder": "Invertir ordre"
   },
   "navigation": {
     "home": "Inici",
@@ -88,8 +88,8 @@
     "yourData": "Les teves dades.",
     "yourBalance": "Els teus diners.",
     "timeframe": {
-      "startDate": "Start date",
-      "endDate": "End date"
+      "startDate": "Data d'inici",
+      "endDate": "Data de fi"
     }
   },
   "mood": {
@@ -114,7 +114,7 @@
       },
       "action": "Publicar nota",
       "publishing": "Publicant...",
-      "embedHint": "{provider} embed. If playback is unavailable, open the original link below."
+      "embedHint": "Incrustació de {provider}. Si la reproducció no està disponible, obre l'enllaç original a continuació."
     }
   },
   "week": {
@@ -144,9 +144,9 @@
       "ignored": "Ignorat"
     },
     "edit": "Editar",
-    "loadingForDate": "Loading tasks for selected date...",
-    "initializingTasks": "Setting up your tasks...",
-    "noTasksForDate": "No tasks scheduled for this date"
+    "loadingForDate": "Carregant tasques per a la data seleccionada...",
+    "initializingTasks": "Configurant les teves tasques...",
+    "noTasksForDate": "No hi ha tasques programades per a aquesta data"
   },
   "actions": {
     "drankWater": "Ha begut aigua",
@@ -673,8 +673,8 @@
       "validating": "Validant",
       "accepted": "Acceptat",
       "rejected": "Rebutjat",
-      "submitted": "Submitted",
-      "changesRequested": "Changes Requested"
+      "submitted": "Enviat",
+      "changesRequested": "Canvis sol·licitats"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -790,37 +790,37 @@
     }
   },
   "notes": {
-    "updated": "Note updated successfully",
-    "updateFailed": "Failed to update note",
-    "deleted": "Note deleted successfully",
-    "deleteFailed": "Failed to delete note",
-    "deleting": "Deleting...",
-    "confirmDelete": "Are you sure you want to delete this note?",
-    "content": "Note content",
-    "visibilityUpdated": "Visibility updated successfully",
-    "visibilityUpdateFailed": "Failed to update visibility",
-    "changeVisibility": "Change visibility",
+    "updated": "Nota actualitzada correctament",
+    "updateFailed": "No s'ha pogut actualitzar la nota",
+    "deleted": "Nota eliminada correctament",
+    "deleteFailed": "No s'ha pogut eliminar la nota",
+    "deleting": "Eliminant...",
+    "confirmDelete": "Esteu segur que voleu eliminar aquesta nota?",
+    "content": "Contingut de la nota",
+    "visibilityUpdated": "Visibilitat actualitzada correctament",
+    "visibilityUpdateFailed": "No s'ha pogut actualitzar la visibilitat",
+    "changeVisibility": "Canviar visibilitat",
     "filters": {
-      "sort": "Sort",
-      "date": "Date",
-      "mostRelevant": "Most Relevant",
-      "all": "All"
+      "sort": "Ordenar",
+      "date": "Data",
+      "mostRelevant": "Més rellevant",
+      "all": "Tot"
     }
   },
   "chat": {
-    "title": "Chat",
-    "subtitle": "Organizations, channels, direct messages, and threads.",
-    "anonymous": "Anonymous",
-    "directMessage": "Direct message",
-    "deletedMessage": "Message deleted",
-    "deleteMessageTitle": "Delete message?",
-    "deleteMessageDescription": "This will soft-delete the message and keep a placeholder in the conversation history.",
-    "createInviteLink": "Create invite link",
-    "pendingInvites": "Pending invites",
-    "acceptInvite": "Accept",
-    "inviteFriendToOrg": "Invite a friend to this org",
-    "inviteLinkCopied": "Invite link copied",
-    "inviteSent": "Invite sent",
-    "inviteAccepted": "Invite accepted"
+    "title": "Xat",
+    "subtitle": "Organitzacions, canals, missatges directes i fils.",
+    "anonymous": "Anònim",
+    "directMessage": "Missatge directe",
+    "deletedMessage": "Missatge eliminat",
+    "deleteMessageTitle": "Eliminar missatge?",
+    "deleteMessageDescription": "Això eliminarà el missatge de manera suau i mantindrà un marcador a l'historial de conversa.",
+    "createInviteLink": "Crear enllaç d'invitació",
+    "pendingInvites": "Invitacions pendents",
+    "acceptInvite": "Acceptar",
+    "inviteFriendToOrg": "Convidar un amic a aquesta organització",
+    "inviteLinkCopied": "Enllaç d'invitació copiat",
+    "inviteSent": "Invitació enviada",
+    "inviteAccepted": "Invitació acceptada"
   }
 }

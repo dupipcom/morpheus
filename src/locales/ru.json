@@ -58,9 +58,9 @@
     "linkCopied": "Ссылка скопирована в буфер обмена",
     "copyFailed": "Не удалось скопировать ссылку",
     "saving": "Сохранение...",
-    "decline": "Decline",
-    "friendRequest": "Friend request",
-    "reverseOrder": "Reverse order"
+    "decline": "Отклонить",
+    "friendRequest": "Запрос в друзья",
+    "reverseOrder": "Обратный порядок"
   },
   "navigation": {
     "home": "Главная",
@@ -88,8 +88,8 @@
     "yourData": "Ваши данные.",
     "yourBalance": "Ваши деньги.",
     "timeframe": {
-      "startDate": "Start date",
-      "endDate": "End date"
+      "startDate": "Дата начала",
+      "endDate": "Дата окончания"
     }
   },
   "mood": {
@@ -114,7 +114,7 @@
       },
       "action": "Опубликовать заметку",
       "publishing": "Публикация...",
-      "embedHint": "{provider} embed. If playback is unavailable, open the original link below."
+      "embedHint": "Встроенный контент {provider}. Если воспроизведение недоступно, откройте исходную ссылку ниже."
     }
   },
   "week": {
@@ -144,9 +144,9 @@
       "ignored": "Игнорировано"
     },
     "edit": "Редактировать",
-    "loadingForDate": "Loading tasks for selected date...",
-    "initializingTasks": "Setting up your tasks...",
-    "noTasksForDate": "No tasks scheduled for this date"
+    "loadingForDate": "Загрузка задач для выбранной даты...",
+    "initializingTasks": "Настройка ваших задач...",
+    "noTasksForDate": "На эту дату задач не запланировано"
   },
   "actions": {
     "drankWater": "Пил воду",
@@ -673,8 +673,8 @@
       "validating": "Проверка",
       "accepted": "Принято",
       "rejected": "Отклонено",
-      "submitted": "Submitted",
-      "changesRequested": "Changes Requested"
+      "submitted": "Отправлено",
+      "changesRequested": "Запрошены изменения"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -790,37 +790,37 @@
     }
   },
   "notes": {
-    "updated": "Note updated successfully",
-    "updateFailed": "Failed to update note",
-    "deleted": "Note deleted successfully",
-    "deleteFailed": "Failed to delete note",
-    "deleting": "Deleting...",
-    "confirmDelete": "Are you sure you want to delete this note?",
-    "content": "Note content",
-    "visibilityUpdated": "Visibility updated successfully",
-    "visibilityUpdateFailed": "Failed to update visibility",
-    "changeVisibility": "Change visibility",
+    "updated": "Заметка успешно обновлена",
+    "updateFailed": "Не удалось обновить заметку",
+    "deleted": "Заметка успешно удалена",
+    "deleteFailed": "Не удалось удалить заметку",
+    "deleting": "Удаление...",
+    "confirmDelete": "Вы уверены, что хотите удалить эту заметку?",
+    "content": "Содержимое заметки",
+    "visibilityUpdated": "Видимость успешно обновлена",
+    "visibilityUpdateFailed": "Не удалось обновить видимость",
+    "changeVisibility": "Изменить видимость",
     "filters": {
-      "sort": "Sort",
-      "date": "Date",
-      "mostRelevant": "Most Relevant",
-      "all": "All"
+      "sort": "Сортировка",
+      "date": "Дата",
+      "mostRelevant": "Наиболее релевантные",
+      "all": "Все"
     }
   },
   "chat": {
-    "title": "Chat",
-    "subtitle": "Organizations, channels, direct messages, and threads.",
-    "anonymous": "Anonymous",
-    "directMessage": "Direct message",
-    "deletedMessage": "Message deleted",
-    "deleteMessageTitle": "Delete message?",
-    "deleteMessageDescription": "This will soft-delete the message and keep a placeholder in the conversation history.",
-    "createInviteLink": "Create invite link",
-    "pendingInvites": "Pending invites",
-    "acceptInvite": "Accept",
-    "inviteFriendToOrg": "Invite a friend to this org",
-    "inviteLinkCopied": "Invite link copied",
-    "inviteSent": "Invite sent",
-    "inviteAccepted": "Invite accepted"
+    "title": "Чат",
+    "subtitle": "Организации, каналы, личные сообщения и обсуждения.",
+    "anonymous": "Анонимный",
+    "directMessage": "Личное сообщение",
+    "deletedMessage": "Сообщение удалено",
+    "deleteMessageTitle": "Удалить сообщение?",
+    "deleteMessageDescription": "Это мягко удалит сообщение и оставит заполнитель в истории переписки.",
+    "createInviteLink": "Создать ссылку-приглашение",
+    "pendingInvites": "Ожидающие приглашения",
+    "acceptInvite": "Принять",
+    "inviteFriendToOrg": "Пригласить друга в эту организацию",
+    "inviteLinkCopied": "Ссылка-приглашение скопирована",
+    "inviteSent": "Приглашение отправлено",
+    "inviteAccepted": "Приглашение принято"
   }
 }

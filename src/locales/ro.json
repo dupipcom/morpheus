@@ -58,9 +58,9 @@
     "linkCopied": "Linkul a fost copiat în clipboard",
     "copyFailed": "Nu s-a putut copia linkul",
     "saving": "Se salvează...",
-    "decline": "Decline",
-    "friendRequest": "Friend request",
-    "reverseOrder": "Reverse order"
+    "decline": "Refuză",
+    "friendRequest": "Cerere de prietenie",
+    "reverseOrder": "Ordine inversă"
   },
   "navigation": {
     "home": "Acasă",
@@ -88,8 +88,8 @@
     "yourData": "Datele tale.",
     "yourBalance": "Banii tăi.",
     "timeframe": {
-      "startDate": "Start date",
-      "endDate": "End date"
+      "startDate": "Data de început",
+      "endDate": "Data de sfârșit"
     }
   },
   "mood": {
@@ -114,7 +114,7 @@
       },
       "action": "Publică nota",
       "publishing": "Publicare...",
-      "embedHint": "{provider} embed. If playback is unavailable, open the original link below."
+      "embedHint": "Incorporare {provider}. Dacă redarea nu este disponibilă, deschide linkul original de mai jos."
     }
   },
   "week": {
@@ -144,9 +144,9 @@
       "ignored": "Ignorat"
     },
     "edit": "Editare",
-    "loadingForDate": "Loading tasks for selected date...",
-    "initializingTasks": "Setting up your tasks...",
-    "noTasksForDate": "No tasks scheduled for this date"
+    "loadingForDate": "Se încarcă sarcinile pentru data selectată...",
+    "initializingTasks": "Se configurează sarcinile tale...",
+    "noTasksForDate": "Nu există sarcini programate pentru această dată"
   },
   "actions": {
     "drankWater": "A băut apă",
@@ -673,8 +673,8 @@
       "validating": "Validare",
       "accepted": "Acceptat",
       "rejected": "Respins",
-      "submitted": "Submitted",
-      "changesRequested": "Changes Requested"
+      "submitted": "Trimis",
+      "changesRequested": "Modificări solicitate"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -790,37 +790,37 @@
     }
   },
   "notes": {
-    "updated": "Note updated successfully",
-    "updateFailed": "Failed to update note",
-    "deleted": "Note deleted successfully",
-    "deleteFailed": "Failed to delete note",
-    "deleting": "Deleting...",
-    "confirmDelete": "Are you sure you want to delete this note?",
-    "content": "Note content",
-    "visibilityUpdated": "Visibility updated successfully",
-    "visibilityUpdateFailed": "Failed to update visibility",
-    "changeVisibility": "Change visibility",
+    "updated": "Notă actualizată cu succes",
+    "updateFailed": "Actualizarea notei a eșuat",
+    "deleted": "Notă ștearsă cu succes",
+    "deleteFailed": "Ștergerea notei a eșuat",
+    "deleting": "Se șterge...",
+    "confirmDelete": "Ești sigur că dorești să ștergi această notă?",
+    "content": "Conținut notă",
+    "visibilityUpdated": "Vizibilitate actualizată cu succes",
+    "visibilityUpdateFailed": "Actualizarea vizibilității a eșuat",
+    "changeVisibility": "Schimbă vizibilitatea",
     "filters": {
-      "sort": "Sort",
-      "date": "Date",
-      "mostRelevant": "Most Relevant",
-      "all": "All"
+      "sort": "Sortare",
+      "date": "Dată",
+      "mostRelevant": "Cele mai relevante",
+      "all": "Toate"
     }
   },
   "chat": {
-    "title": "Chat",
-    "subtitle": "Organizations, channels, direct messages, and threads.",
-    "anonymous": "Anonymous",
-    "directMessage": "Direct message",
-    "deletedMessage": "Message deleted",
-    "deleteMessageTitle": "Delete message?",
-    "deleteMessageDescription": "This will soft-delete the message and keep a placeholder in the conversation history.",
-    "createInviteLink": "Create invite link",
-    "pendingInvites": "Pending invites",
-    "acceptInvite": "Accept",
-    "inviteFriendToOrg": "Invite a friend to this org",
-    "inviteLinkCopied": "Invite link copied",
-    "inviteSent": "Invite sent",
-    "inviteAccepted": "Invite accepted"
+    "title": "Conversație",
+    "subtitle": "Organizații, canale, mesaje directe și fire de discuție.",
+    "anonymous": "Anonim",
+    "directMessage": "Mesaj direct",
+    "deletedMessage": "Mesaj șters",
+    "deleteMessageTitle": "Ștergi mesajul?",
+    "deleteMessageDescription": "Aceasta va șterge mesajul în mod soft și va păstra un marcator în istoricul conversației.",
+    "createInviteLink": "Creează link de invitație",
+    "pendingInvites": "Invitații în așteptare",
+    "acceptInvite": "Acceptă",
+    "inviteFriendToOrg": "Invită un prieten în această organizație",
+    "inviteLinkCopied": "Link de invitație copiat",
+    "inviteSent": "Invitație trimisă",
+    "inviteAccepted": "Invitație acceptată"
   }
 }

@@ -58,9 +58,9 @@
     "linkCopied": "Ọna asopọ ti ṣe àkọpọ sí àkọlé",
     "copyFailed": "Kò ṣe àkọpọ ọna asopọ",
     "saving": "N fipamọ...",
-    "decline": "Decline",
-    "friendRequest": "Friend request",
-    "reverseOrder": "Reverse order"
+    "decline": "Kọ",
+    "friendRequest": "Ibeere ọrẹ",
+    "reverseOrder": "Yi ọna pada"
   },
   "navigation": {
     "home": "Ilé",
@@ -88,8 +88,8 @@
     "yourData": "Àkọsílẹ̀ rẹ̀.",
     "yourBalance": "Owó rẹ̀.",
     "timeframe": {
-      "startDate": "Start date",
-      "endDate": "End date"
+      "startDate": "Ọjọ ibẹrẹ",
+      "endDate": "Ọjọ ipari"
     }
   },
   "mood": {
@@ -114,7 +114,7 @@
       },
       "action": "Tẹ àkọsílẹ̀ jáde",
       "publishing": "Nigbagbọgbọ...",
-      "embedHint": "{provider} embed. If playback is unavailable, open the original link below."
+      "embedHint": "Ifibọ {provider}. Ti ifaworanhan ko ba ṣeeṣe, ṣii ọna asopọ atilẹba ni isalẹ."
     }
   },
   "week": {
@@ -144,9 +144,9 @@
       "ignored": "Ti Kọjú"
     },
     "edit": "Ṣatunkọ",
-    "loadingForDate": "Loading tasks for selected date...",
-    "initializingTasks": "Setting up your tasks...",
-    "noTasksForDate": "No tasks scheduled for this date"
+    "loadingForDate": "Mimu awọn iṣẹ-ṣiṣe fun ọjọ ti a yan...",
+    "initializingTasks": "Ṣiṣeto awọn iṣẹ-ṣiṣe rẹ...",
+    "noTasksForDate": "Ko si awọn iṣẹ-ṣiṣe ti a ṣeto fun ọjọ yii"
   },
   "settings": {
     "title": "Ètò",
@@ -671,8 +671,8 @@
       "validating": "Iṣeduro",
       "accepted": "Ti gba",
       "rejected": "Ti kọ",
-      "submitted": "Submitted",
-      "changesRequested": "Changes Requested"
+      "submitted": "Ti fi ranṣẹ",
+      "changesRequested": "Awọn ayipada ti beere"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -788,37 +788,37 @@
     }
   },
   "notes": {
-    "updated": "Note updated successfully",
-    "updateFailed": "Failed to update note",
-    "deleted": "Note deleted successfully",
-    "deleteFailed": "Failed to delete note",
-    "deleting": "Deleting...",
-    "confirmDelete": "Are you sure you want to delete this note?",
-    "content": "Note content",
-    "visibilityUpdated": "Visibility updated successfully",
-    "visibilityUpdateFailed": "Failed to update visibility",
-    "changeVisibility": "Change visibility",
+    "updated": "Akọsilẹ ti ni imudojuiwọn ni aṣeyọri",
+    "updateFailed": "Ko ṣe imudojuiwọn akọsilẹ",
+    "deleted": "Akọsilẹ ti paarẹ ni aṣeyọri",
+    "deleteFailed": "Ko ṣe paarẹ akọsilẹ",
+    "deleting": "Npaarẹ...",
+    "confirmDelete": "Ṣe o da ọ loju pe o fẹ paarẹ akọsilẹ yii?",
+    "content": "Akoonu akọsilẹ",
+    "visibilityUpdated": "Iranwo ti ni imudojuiwọn ni aṣeyọri",
+    "visibilityUpdateFailed": "Ko ṣe imudojuiwọn iranwo",
+    "changeVisibility": "Ṣe iyipada iranwo",
     "filters": {
-      "sort": "Sort",
-      "date": "Date",
-      "mostRelevant": "Most Relevant",
-      "all": "All"
+      "sort": "Ṣeto",
+      "date": "Ọjọ",
+      "mostRelevant": "Pẹlu ibatan julọ",
+      "all": "Gbogbo"
     }
   },
   "chat": {
-    "title": "Chat",
-    "subtitle": "Organizations, channels, direct messages, and threads.",
-    "anonymous": "Anonymous",
-    "directMessage": "Direct message",
-    "deletedMessage": "Message deleted",
-    "deleteMessageTitle": "Delete message?",
-    "deleteMessageDescription": "This will soft-delete the message and keep a placeholder in the conversation history.",
-    "createInviteLink": "Create invite link",
-    "pendingInvites": "Pending invites",
-    "acceptInvite": "Accept",
-    "inviteFriendToOrg": "Invite a friend to this org",
-    "inviteLinkCopied": "Invite link copied",
-    "inviteSent": "Invite sent",
-    "inviteAccepted": "Invite accepted"
+    "title": "Ifọrọwanilẹnuwo",
+    "subtitle": "Awọn ajo, awọn ikanni, awọn ifiranṣẹ taara, ati awọn ẹwọn.",
+    "anonymous": "Ailorukọ",
+    "directMessage": "Ifiranṣẹ taara",
+    "deletedMessage": "Ifiranṣẹ ti paarẹ",
+    "deleteMessageTitle": "Paarẹ ifiranṣẹ?",
+    "deleteMessageDescription": "Eyi yoo paarẹ ifiranṣẹ ni asọ ati tọju aaye iranlọwọ ninu itan-akọọlẹ ibaraẹnisọrọ.",
+    "createInviteLink": "Ṣẹda ọna asopọ ìdẹ",
+    "pendingInvites": "Awọn ìdẹ ti o n duro de",
+    "acceptInvite": "Gba",
+    "inviteFriendToOrg": "Pe ọrẹ wa si ajọ yii",
+    "inviteLinkCopied": "Ọna asopọ ìdẹ ti daakọ",
+    "inviteSent": "Ìdẹ ti fi ranṣẹ",
+    "inviteAccepted": "Ìdẹ ti gba"
   }
 }

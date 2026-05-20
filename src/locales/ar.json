@@ -58,9 +58,9 @@
     "linkCopied": "تم نسخ الرابط إلى الحافظة",
     "copyFailed": "فشل نسخ الرابط",
     "saving": "جاري الحفظ...",
-    "decline": "Decline",
-    "friendRequest": "Friend request",
-    "reverseOrder": "Reverse order"
+    "decline": "رفض",
+    "friendRequest": "طلب صداقة",
+    "reverseOrder": "عكس الترتيب"
   },
   "navigation": {
     "dashboard": "لوحة التحكم",
@@ -92,8 +92,8 @@
     "yourData": "بياناتك.",
     "yourBalance": "أموالك.",
     "timeframe": {
-      "startDate": "Start date",
-      "endDate": "End date"
+      "startDate": "تاريخ البدء",
+      "endDate": "تاريخ الانتهاء"
     }
   },
   "mood": {
@@ -118,7 +118,7 @@
       },
       "action": "نشر المذكرة",
       "publishing": "جاري النشر...",
-      "embedHint": "{provider} embed. If playback is unavailable, open the original link below."
+      "embedHint": "تضمين {provider}. إذا لم يكن التشغيل متاحًا، افتح الرابط الأصلي أدناه."
     }
   },
   "week": {
@@ -148,9 +148,9 @@
       "ignored": "متجاهل"
     },
     "edit": "تعديل",
-    "loadingForDate": "Loading tasks for selected date...",
-    "initializingTasks": "Setting up your tasks...",
-    "noTasksForDate": "No tasks scheduled for this date"
+    "loadingForDate": "جاري تحميل المهام للتاريخ المحدد...",
+    "initializingTasks": "جاري إعداد مهامك...",
+    "noTasksForDate": "لا توجد مهام مجدولة لهذا التاريخ"
   },
   "settings": {
     "title": "الإعدادات",
@@ -677,8 +677,8 @@
       "validating": "جاري التحقق",
       "accepted": "مقبول",
       "rejected": "مرفوض",
-      "submitted": "Submitted",
-      "changesRequested": "Changes Requested"
+      "submitted": "مُقدَّم",
+      "changesRequested": "تغييرات مطلوبة"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -794,37 +794,37 @@
     }
   },
   "notes": {
-    "updated": "Note updated successfully",
-    "updateFailed": "Failed to update note",
-    "deleted": "Note deleted successfully",
-    "deleteFailed": "Failed to delete note",
-    "deleting": "Deleting...",
-    "confirmDelete": "Are you sure you want to delete this note?",
-    "content": "Note content",
-    "visibilityUpdated": "Visibility updated successfully",
-    "visibilityUpdateFailed": "Failed to update visibility",
-    "changeVisibility": "Change visibility",
+    "updated": "تم تحديث الملاحظة بنجاح",
+    "updateFailed": "فشل تحديث الملاحظة",
+    "deleted": "تم حذف الملاحظة بنجاح",
+    "deleteFailed": "فشل حذف الملاحظة",
+    "deleting": "جاري الحذف...",
+    "confirmDelete": "هل أنت متأكد أنك تريد حذف هذه الملاحظة؟",
+    "content": "محتوى الملاحظة",
+    "visibilityUpdated": "تم تحديث الخصوصية بنجاح",
+    "visibilityUpdateFailed": "فشل تحديث الخصوصية",
+    "changeVisibility": "تغيير الخصوصية",
     "filters": {
-      "sort": "Sort",
-      "date": "Date",
-      "mostRelevant": "Most Relevant",
-      "all": "All"
+      "sort": "ترتيب",
+      "date": "التاريخ",
+      "mostRelevant": "الأكثر صلة",
+      "all": "الكل"
     }
   },
   "chat": {
-    "title": "Chat",
-    "subtitle": "Organizations, channels, direct messages, and threads.",
-    "anonymous": "Anonymous",
-    "directMessage": "Direct message",
-    "deletedMessage": "Message deleted",
-    "deleteMessageTitle": "Delete message?",
-    "deleteMessageDescription": "This will soft-delete the message and keep a placeholder in the conversation history.",
-    "createInviteLink": "Create invite link",
-    "pendingInvites": "Pending invites",
-    "acceptInvite": "Accept",
-    "inviteFriendToOrg": "Invite a friend to this org",
-    "inviteLinkCopied": "Invite link copied",
-    "inviteSent": "Invite sent",
-    "inviteAccepted": "Invite accepted"
+    "title": "المحادثة",
+    "subtitle": "المنظمات والقنوات والرسائل المباشرة والمواضيع.",
+    "anonymous": "مجهول",
+    "directMessage": "رسالة مباشرة",
+    "deletedMessage": "تم حذف الرسالة",
+    "deleteMessageTitle": "حذف الرسالة؟",
+    "deleteMessageDescription": "سيؤدي هذا إلى حذف الرسالة بشكل مؤقت والاحتفاظ بعنصر نائب في سجل المحادثة.",
+    "createInviteLink": "إنشاء رابط دعوة",
+    "pendingInvites": "الدعوات المعلقة",
+    "acceptInvite": "قبول",
+    "inviteFriendToOrg": "دعوة صديق إلى هذه المنظمة",
+    "inviteLinkCopied": "تم نسخ رابط الدعوة",
+    "inviteSent": "تم إرسال الدعوة",
+    "inviteAccepted": "تم قبول الدعوة"
   }
 }

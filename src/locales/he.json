@@ -58,9 +58,9 @@
     "linkCopied": "קישור הועתק ללוח",
     "copyFailed": "העתקת הקישור נכשלה",
     "saving": "שומר...",
-    "decline": "Decline",
-    "friendRequest": "Friend request",
-    "reverseOrder": "Reverse order"
+    "decline": "דחה",
+    "friendRequest": "בקשת חברות",
+    "reverseOrder": "סדר הפוך"
   },
   "navigation": {
     "home": "בית",
@@ -88,8 +88,8 @@
     "yourData": "הנתונים שלך.",
     "yourBalance": "הכסף שלך.",
     "timeframe": {
-      "startDate": "Start date",
-      "endDate": "End date"
+      "startDate": "תאריך התחלה",
+      "endDate": "תאריך סיום"
     }
   },
   "mood": {
@@ -114,7 +114,7 @@
       },
       "action": "פרסם הערה",
       "publishing": "מפרסם...",
-      "embedHint": "{provider} embed. If playback is unavailable, open the original link below."
+      "embedHint": "הטמעת {provider}. אם ההפעלה אינה זמינה, פתח את הקישור המקורי למטה."
     }
   },
   "week": {
@@ -144,9 +144,9 @@
       "ignored": "התעלם"
     },
     "edit": "ערוך",
-    "loadingForDate": "Loading tasks for selected date...",
-    "initializingTasks": "Setting up your tasks...",
-    "noTasksForDate": "No tasks scheduled for this date"
+    "loadingForDate": "טוען משימות לתאריך שנבחר...",
+    "initializingTasks": "מגדיר את המשימות שלך...",
+    "noTasksForDate": "אין משימות מתוכננות לתאריך זה"
   },
   "actions": {
     "drankWater": "שתה מים",
@@ -673,8 +673,8 @@
       "validating": "מאמת",
       "accepted": "התקבל",
       "rejected": "נדחה",
-      "submitted": "Submitted",
-      "changesRequested": "Changes Requested"
+      "submitted": "הוגש",
+      "changesRequested": "התבקשו שינויים"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -790,37 +790,37 @@
     }
   },
   "notes": {
-    "updated": "Note updated successfully",
-    "updateFailed": "Failed to update note",
-    "deleted": "Note deleted successfully",
-    "deleteFailed": "Failed to delete note",
-    "deleting": "Deleting...",
-    "confirmDelete": "Are you sure you want to delete this note?",
-    "content": "Note content",
-    "visibilityUpdated": "Visibility updated successfully",
-    "visibilityUpdateFailed": "Failed to update visibility",
-    "changeVisibility": "Change visibility",
+    "updated": "הפתק עודכן בהצלחה",
+    "updateFailed": "עדכון הפתק נכשל",
+    "deleted": "הפתק נמחק בהצלחה",
+    "deleteFailed": "מחיקת הפתק נכשלה",
+    "deleting": "מוחק...",
+    "confirmDelete": "האם אתה בטוח שברצונך למחוק את הפתק הזה?",
+    "content": "תוכן הפתק",
+    "visibilityUpdated": "הנראות עודכנה בהצלחה",
+    "visibilityUpdateFailed": "עדכון הנראות נכשל",
+    "changeVisibility": "שנה נראות",
     "filters": {
-      "sort": "Sort",
-      "date": "Date",
-      "mostRelevant": "Most Relevant",
-      "all": "All"
+      "sort": "מיין",
+      "date": "תאריך",
+      "mostRelevant": "הרלוונטי ביותר",
+      "all": "הכל"
     }
   },
   "chat": {
-    "title": "Chat",
-    "subtitle": "Organizations, channels, direct messages, and threads.",
-    "anonymous": "Anonymous",
-    "directMessage": "Direct message",
-    "deletedMessage": "Message deleted",
-    "deleteMessageTitle": "Delete message?",
-    "deleteMessageDescription": "This will soft-delete the message and keep a placeholder in the conversation history.",
-    "createInviteLink": "Create invite link",
-    "pendingInvites": "Pending invites",
-    "acceptInvite": "Accept",
-    "inviteFriendToOrg": "Invite a friend to this org",
-    "inviteLinkCopied": "Invite link copied",
-    "inviteSent": "Invite sent",
-    "inviteAccepted": "Invite accepted"
+    "title": "צ'אט",
+    "subtitle": "ארגונים, ערוצים, הודעות ישירות ושרשורים.",
+    "anonymous": "אנונימי",
+    "directMessage": "הודעה ישירה",
+    "deletedMessage": "ההודעה נמחקה",
+    "deleteMessageTitle": "למחוק הודעה?",
+    "deleteMessageDescription": "פעולה זו תמחק את ההודעה בצורה רכה ותשמור מציין מיקום בהיסטוריית השיחה.",
+    "createInviteLink": "צור קישור הזמנה",
+    "pendingInvites": "הזמנות ממתינות",
+    "acceptInvite": "קבל",
+    "inviteFriendToOrg": "הזמן חבר לארגון זה",
+    "inviteLinkCopied": "קישור ההזמנה הועתק",
+    "inviteSent": "ההזמנה נשלחה",
+    "inviteAccepted": "ההזמנה התקבלה"
   }
 }

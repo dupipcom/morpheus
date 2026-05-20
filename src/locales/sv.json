@@ -58,9 +58,9 @@
     "linkCopied": "Länk kopierad till urklipp",
     "copyFailed": "Kunde inte kopiera länk",
     "saving": "Sparar...",
-    "decline": "Decline",
-    "friendRequest": "Friend request",
-    "reverseOrder": "Reverse order"
+    "decline": "Avvisa",
+    "friendRequest": "Vänskapsförfrågan",
+    "reverseOrder": "Omvänd ordning"
   },
   "navigation": {
     "home": "Hem",
@@ -91,8 +91,8 @@
     "yourData": "Din data.",
     "yourBalance": "Dina pengar.",
     "timeframe": {
-      "startDate": "Start date",
-      "endDate": "End date"
+      "startDate": "Startdatum",
+      "endDate": "Slutdatum"
     }
   },
   "mood": {
@@ -117,7 +117,7 @@
       },
       "action": "Publicera anteckning",
       "publishing": "Publicerar...",
-      "embedHint": "{provider} embed. If playback is unavailable, open the original link below."
+      "embedHint": "{provider}-inbäddning. Om uppspelning inte är tillgänglig, öppna originallänken nedan."
     }
   },
   "week": {
@@ -147,9 +147,9 @@
       "ignored": "Ignorerad"
     },
     "edit": "Redigera",
-    "loadingForDate": "Loading tasks for selected date...",
-    "initializingTasks": "Setting up your tasks...",
-    "noTasksForDate": "No tasks scheduled for this date"
+    "loadingForDate": "Laddar uppgifter för valt datum...",
+    "initializingTasks": "Konfigurerar dina uppgifter...",
+    "noTasksForDate": "Inga uppgifter schemalagda för detta datum"
   },
   "actions": {
     "drankWater": "Drack vatten",
@@ -676,8 +676,8 @@
       "validating": "Validerar",
       "accepted": "Accepterad",
       "rejected": "Avvisad",
-      "submitted": "Submitted",
-      "changesRequested": "Changes Requested"
+      "submitted": "Inskickat",
+      "changesRequested": "Ändringar begärda"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -793,37 +793,37 @@
     }
   },
   "notes": {
-    "updated": "Note updated successfully",
-    "updateFailed": "Failed to update note",
-    "deleted": "Note deleted successfully",
-    "deleteFailed": "Failed to delete note",
-    "deleting": "Deleting...",
-    "confirmDelete": "Are you sure you want to delete this note?",
-    "content": "Note content",
-    "visibilityUpdated": "Visibility updated successfully",
-    "visibilityUpdateFailed": "Failed to update visibility",
-    "changeVisibility": "Change visibility",
+    "updated": "Anteckning uppdaterades",
+    "updateFailed": "Det gick inte att uppdatera anteckning",
+    "deleted": "Anteckning raderades",
+    "deleteFailed": "Det gick inte att radera anteckning",
+    "deleting": "Raderar...",
+    "confirmDelete": "Är du säker på att du vill radera denna anteckning?",
+    "content": "Anteckningsinnehåll",
+    "visibilityUpdated": "Synlighet uppdaterades",
+    "visibilityUpdateFailed": "Det gick inte att uppdatera synlighet",
+    "changeVisibility": "Ändra synlighet",
     "filters": {
-      "sort": "Sort",
-      "date": "Date",
-      "mostRelevant": "Most Relevant",
-      "all": "All"
+      "sort": "Sortera",
+      "date": "Datum",
+      "mostRelevant": "Mest relevant",
+      "all": "Alla"
     }
   },
   "chat": {
-    "title": "Chat",
-    "subtitle": "Organizations, channels, direct messages, and threads.",
-    "anonymous": "Anonymous",
-    "directMessage": "Direct message",
-    "deletedMessage": "Message deleted",
-    "deleteMessageTitle": "Delete message?",
-    "deleteMessageDescription": "This will soft-delete the message and keep a placeholder in the conversation history.",
-    "createInviteLink": "Create invite link",
-    "pendingInvites": "Pending invites",
-    "acceptInvite": "Accept",
-    "inviteFriendToOrg": "Invite a friend to this org",
-    "inviteLinkCopied": "Invite link copied",
-    "inviteSent": "Invite sent",
-    "inviteAccepted": "Invite accepted"
+    "title": "Chatt",
+    "subtitle": "Organisationer, kanaler, direktmeddelanden och trådar.",
+    "anonymous": "Anonym",
+    "directMessage": "Direktmeddelande",
+    "deletedMessage": "Meddelande raderat",
+    "deleteMessageTitle": "Radera meddelande?",
+    "deleteMessageDescription": "Detta tar bort meddelandet mjukt och behåller en platshållare i konversationshistoriken.",
+    "createInviteLink": "Skapa inbjudningslänk",
+    "pendingInvites": "Väntande inbjudningar",
+    "acceptInvite": "Acceptera",
+    "inviteFriendToOrg": "Bjud in en vän till denna organisation",
+    "inviteLinkCopied": "Inbjudningslänk kopierad",
+    "inviteSent": "Inbjudan skickad",
+    "inviteAccepted": "Inbjudan accepterad"
   }
 }

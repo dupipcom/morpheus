@@ -58,9 +58,9 @@
     "linkCopied": "链接已复制到剪贴板",
     "copyFailed": "复制链接失败",
     "saving": "保存中...",
-    "decline": "Decline",
-    "friendRequest": "Friend request",
-    "reverseOrder": "Reverse order"
+    "decline": "拒绝",
+    "friendRequest": "好友请求",
+    "reverseOrder": "反转顺序"
   },
   "navigation": {
     "home": "首页",
@@ -88,8 +88,8 @@
     "yourData": "您的数据。",
     "yourBalance": "您的钱。",
     "timeframe": {
-      "startDate": "Start date",
-      "endDate": "End date"
+      "startDate": "开始日期",
+      "endDate": "结束日期"
     }
   },
   "mood": {
@@ -114,7 +114,7 @@
       },
       "action": "出版说明",
       "publishing": "发布中...",
-      "embedHint": "{provider} embed. If playback is unavailable, open the original link below."
+      "embedHint": "{provider} 嵌入。如果无法播放，请点击下方原始链接。"
     }
   },
   "week": {
@@ -144,9 +144,9 @@
       "ignored": "已忽略"
     },
     "edit": "编辑",
-    "loadingForDate": "Loading tasks for selected date...",
-    "initializingTasks": "Setting up your tasks...",
-    "noTasksForDate": "No tasks scheduled for this date"
+    "loadingForDate": "正在加载所选日期的任务...",
+    "initializingTasks": "正在设置您的任务...",
+    "noTasksForDate": "该日期暂无任务"
   },
   "settings": {
     "title": "设置",
@@ -673,8 +673,8 @@
       "validating": "验证中",
       "accepted": "已接受",
       "rejected": "已拒绝",
-      "submitted": "Submitted",
-      "changesRequested": "Changes Requested"
+      "submitted": "已提交",
+      "changesRequested": "已请求更改"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -790,37 +790,37 @@
     }
   },
   "notes": {
-    "updated": "Note updated successfully",
-    "updateFailed": "Failed to update note",
-    "deleted": "Note deleted successfully",
-    "deleteFailed": "Failed to delete note",
-    "deleting": "Deleting...",
-    "confirmDelete": "Are you sure you want to delete this note?",
-    "content": "Note content",
-    "visibilityUpdated": "Visibility updated successfully",
-    "visibilityUpdateFailed": "Failed to update visibility",
-    "changeVisibility": "Change visibility",
+    "updated": "笔记更新成功",
+    "updateFailed": "笔记更新失败",
+    "deleted": "笔记删除成功",
+    "deleteFailed": "笔记删除失败",
+    "deleting": "正在删除...",
+    "confirmDelete": "确定要删除此笔记吗？",
+    "content": "笔记内容",
+    "visibilityUpdated": "可见性更新成功",
+    "visibilityUpdateFailed": "可见性更新失败",
+    "changeVisibility": "更改可见性",
     "filters": {
-      "sort": "Sort",
-      "date": "Date",
-      "mostRelevant": "Most Relevant",
-      "all": "All"
+      "sort": "排序",
+      "date": "日期",
+      "mostRelevant": "最相关",
+      "all": "全部"
     }
   },
   "chat": {
-    "title": "Chat",
-    "subtitle": "Organizations, channels, direct messages, and threads.",
-    "anonymous": "Anonymous",
-    "directMessage": "Direct message",
-    "deletedMessage": "Message deleted",
-    "deleteMessageTitle": "Delete message?",
-    "deleteMessageDescription": "This will soft-delete the message and keep a placeholder in the conversation history.",
-    "createInviteLink": "Create invite link",
-    "pendingInvites": "Pending invites",
-    "acceptInvite": "Accept",
-    "inviteFriendToOrg": "Invite a friend to this org",
-    "inviteLinkCopied": "Invite link copied",
-    "inviteSent": "Invite sent",
-    "inviteAccepted": "Invite accepted"
+    "title": "聊天",
+    "subtitle": "组织、频道、私信和话题。",
+    "anonymous": "匿名",
+    "directMessage": "私信",
+    "deletedMessage": "消息已删除",
+    "deleteMessageTitle": "删除消息？",
+    "deleteMessageDescription": "这将软删除该消息，并在对话记录中保留占位符。",
+    "createInviteLink": "创建邀请链接",
+    "pendingInvites": "待处理邀请",
+    "acceptInvite": "接受",
+    "inviteFriendToOrg": "邀请好友加入此组织",
+    "inviteLinkCopied": "邀请链接已复制",
+    "inviteSent": "邀请已发送",
+    "inviteAccepted": "邀请已接受"
   }
 }

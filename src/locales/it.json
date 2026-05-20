@@ -58,9 +58,9 @@
     "linkCopied": "Link copiato negli appunti",
     "copyFailed": "Impossibile copiare il link",
     "saving": "Salvataggio...",
-    "decline": "Decline",
-    "friendRequest": "Friend request",
-    "reverseOrder": "Reverse order"
+    "decline": "Rifiuta",
+    "friendRequest": "Richiesta di amicizia",
+    "reverseOrder": "Ordine inverso"
   },
   "navigation": {
     "home": "Inizio",
@@ -88,8 +88,8 @@
     "yourData": "I tuoi dati.",
     "yourBalance": "I tuoi soldi.",
     "timeframe": {
-      "startDate": "Start date",
-      "endDate": "End date"
+      "startDate": "Data di inizio",
+      "endDate": "Data di fine"
     }
   },
   "mood": {
@@ -114,7 +114,7 @@
       },
       "action": "Pubblica Nota",
       "publishing": "Pubblicazione...",
-      "embedHint": "{provider} embed. If playback is unavailable, open the original link below."
+      "embedHint": "Incorporamento {provider}. Se la riproduzione non è disponibile, apri il link originale in basso."
     }
   },
   "week": {
@@ -144,9 +144,9 @@
       "ignored": "Ignorato"
     },
     "edit": "Modifica",
-    "loadingForDate": "Loading tasks for selected date...",
-    "initializingTasks": "Setting up your tasks...",
-    "noTasksForDate": "No tasks scheduled for this date"
+    "loadingForDate": "Caricamento attività per la data selezionata...",
+    "initializingTasks": "Configurazione delle tue attività...",
+    "noTasksForDate": "Nessuna attività programmata per questa data"
   },
   "settings": {
     "title": "Impostazioni",
@@ -673,8 +673,8 @@
       "validating": "In Validazione",
       "accepted": "Accettato",
       "rejected": "Rifiutato",
-      "submitted": "Submitted",
-      "changesRequested": "Changes Requested"
+      "submitted": "Inviato",
+      "changesRequested": "Modifiche richieste"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -790,37 +790,37 @@
     }
   },
   "notes": {
-    "updated": "Note updated successfully",
-    "updateFailed": "Failed to update note",
-    "deleted": "Note deleted successfully",
-    "deleteFailed": "Failed to delete note",
-    "deleting": "Deleting...",
-    "confirmDelete": "Are you sure you want to delete this note?",
-    "content": "Note content",
-    "visibilityUpdated": "Visibility updated successfully",
-    "visibilityUpdateFailed": "Failed to update visibility",
-    "changeVisibility": "Change visibility",
+    "updated": "Nota aggiornata con successo",
+    "updateFailed": "Aggiornamento nota non riuscito",
+    "deleted": "Nota eliminata con successo",
+    "deleteFailed": "Eliminazione nota non riuscita",
+    "deleting": "Eliminazione...",
+    "confirmDelete": "Sei sicuro di voler eliminare questa nota?",
+    "content": "Contenuto della nota",
+    "visibilityUpdated": "Visibilità aggiornata con successo",
+    "visibilityUpdateFailed": "Aggiornamento visibilità non riuscito",
+    "changeVisibility": "Cambia visibilità",
     "filters": {
-      "sort": "Sort",
-      "date": "Date",
-      "mostRelevant": "Most Relevant",
-      "all": "All"
+      "sort": "Ordina",
+      "date": "Data",
+      "mostRelevant": "Più rilevante",
+      "all": "Tutti"
     }
   },
   "chat": {
-    "title": "Chat",
-    "subtitle": "Organizations, channels, direct messages, and threads.",
-    "anonymous": "Anonymous",
-    "directMessage": "Direct message",
-    "deletedMessage": "Message deleted",
-    "deleteMessageTitle": "Delete message?",
-    "deleteMessageDescription": "This will soft-delete the message and keep a placeholder in the conversation history.",
-    "createInviteLink": "Create invite link",
-    "pendingInvites": "Pending invites",
-    "acceptInvite": "Accept",
-    "inviteFriendToOrg": "Invite a friend to this org",
-    "inviteLinkCopied": "Invite link copied",
-    "inviteSent": "Invite sent",
-    "inviteAccepted": "Invite accepted"
+    "title": "Conversazione",
+    "subtitle": "Organizzazioni, canali, messaggi diretti e thread.",
+    "anonymous": "Anonimo",
+    "directMessage": "Messaggio diretto",
+    "deletedMessage": "Messaggio eliminato",
+    "deleteMessageTitle": "Eliminare il messaggio?",
+    "deleteMessageDescription": "Questo eliminerà il messaggio in modo soft e manterrà un segnaposto nella cronologia della conversazione.",
+    "createInviteLink": "Crea link di invito",
+    "pendingInvites": "Inviti in sospeso",
+    "acceptInvite": "Accetta",
+    "inviteFriendToOrg": "Invita un amico in questa organizzazione",
+    "inviteLinkCopied": "Link di invito copiato",
+    "inviteSent": "Invito inviato",
+    "inviteAccepted": "Invito accettato"
   }
 }

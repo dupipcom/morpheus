@@ -58,9 +58,9 @@
     "linkCopied": "링크가 클립보드에 복사되었습니다",
     "copyFailed": "링크 복사 실패",
     "saving": "저장 중...",
-    "decline": "Decline",
-    "friendRequest": "Friend request",
-    "reverseOrder": "Reverse order"
+    "decline": "거절",
+    "friendRequest": "친구 요청",
+    "reverseOrder": "역순"
   },
   "navigation": {
     "home": "홈",
@@ -88,8 +88,8 @@
     "yourData": "당신의 데이터.",
     "yourBalance": "당신의 돈.",
     "timeframe": {
-      "startDate": "Start date",
-      "endDate": "End date"
+      "startDate": "시작 날짜",
+      "endDate": "종료 날짜"
     }
   },
   "mood": {
@@ -114,7 +114,7 @@
       },
       "action": "노트 게시",
       "publishing": "게시 중...",
-      "embedHint": "{provider} embed. If playback is unavailable, open the original link below."
+      "embedHint": "{provider} 임베드. 재생이 불가능한 경우 아래 원본 링크를 여세요."
     }
   },
   "week": {
@@ -144,9 +144,9 @@
       "ignored": "무시됨"
     },
     "edit": "편집",
-    "loadingForDate": "Loading tasks for selected date...",
-    "initializingTasks": "Setting up your tasks...",
-    "noTasksForDate": "No tasks scheduled for this date"
+    "loadingForDate": "선택한 날짜의 작업을 불러오는 중...",
+    "initializingTasks": "작업을 설정하는 중...",
+    "noTasksForDate": "이 날짜에 예정된 작업이 없습니다"
   },
   "actions": {
     "drankWater": "물을 마셨습니다",
@@ -673,8 +673,8 @@
       "validating": "검증 중",
       "accepted": "승인됨",
       "rejected": "거부됨",
-      "submitted": "Submitted",
-      "changesRequested": "Changes Requested"
+      "submitted": "제출됨",
+      "changesRequested": "변경 요청됨"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -790,37 +790,37 @@
     }
   },
   "notes": {
-    "updated": "Note updated successfully",
-    "updateFailed": "Failed to update note",
-    "deleted": "Note deleted successfully",
-    "deleteFailed": "Failed to delete note",
-    "deleting": "Deleting...",
-    "confirmDelete": "Are you sure you want to delete this note?",
-    "content": "Note content",
-    "visibilityUpdated": "Visibility updated successfully",
-    "visibilityUpdateFailed": "Failed to update visibility",
-    "changeVisibility": "Change visibility",
+    "updated": "노트가 성공적으로 업데이트되었습니다",
+    "updateFailed": "노트 업데이트에 실패했습니다",
+    "deleted": "노트가 성공적으로 삭제되었습니다",
+    "deleteFailed": "노트 삭제에 실패했습니다",
+    "deleting": "삭제 중...",
+    "confirmDelete": "이 노트를 삭제하시겠습니까?",
+    "content": "노트 내용",
+    "visibilityUpdated": "공개 설정이 성공적으로 업데이트되었습니다",
+    "visibilityUpdateFailed": "공개 설정 업데이트에 실패했습니다",
+    "changeVisibility": "공개 설정 변경",
     "filters": {
-      "sort": "Sort",
-      "date": "Date",
-      "mostRelevant": "Most Relevant",
-      "all": "All"
+      "sort": "정렬",
+      "date": "날짜",
+      "mostRelevant": "가장 관련성 높은",
+      "all": "전체"
     }
   },
   "chat": {
-    "title": "Chat",
-    "subtitle": "Organizations, channels, direct messages, and threads.",
-    "anonymous": "Anonymous",
-    "directMessage": "Direct message",
-    "deletedMessage": "Message deleted",
-    "deleteMessageTitle": "Delete message?",
-    "deleteMessageDescription": "This will soft-delete the message and keep a placeholder in the conversation history.",
-    "createInviteLink": "Create invite link",
-    "pendingInvites": "Pending invites",
-    "acceptInvite": "Accept",
-    "inviteFriendToOrg": "Invite a friend to this org",
-    "inviteLinkCopied": "Invite link copied",
-    "inviteSent": "Invite sent",
-    "inviteAccepted": "Invite accepted"
+    "title": "채팅",
+    "subtitle": "조직, 채널, 다이렉트 메시지 및 스레드.",
+    "anonymous": "익명",
+    "directMessage": "다이렉트 메시지",
+    "deletedMessage": "메시지가 삭제되었습니다",
+    "deleteMessageTitle": "메시지를 삭제하시겠습니까?",
+    "deleteMessageDescription": "이 작업은 메시지를 소프트 삭제하고 대화 기록에 자리 표시자를 남깁니다.",
+    "createInviteLink": "초대 링크 만들기",
+    "pendingInvites": "대기 중인 초대",
+    "acceptInvite": "수락",
+    "inviteFriendToOrg": "이 조직에 친구 초대",
+    "inviteLinkCopied": "초대 링크가 복사되었습니다",
+    "inviteSent": "초대가 전송되었습니다",
+    "inviteAccepted": "초대가 수락되었습니다"
   }
 }
