@@ -789,7 +789,7 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
                     ))}
                   </SelectContent>
                 </Select>
-                <Button onClick={handleAddDelegation} disabled={!delegationIdentifier.trim() || isSubmittingDelegation}>
+                <Button onClick={handleAddDelegation} disabled={!delegationIdentifier.trim() || isSubmittingDelegation} aria-busy={isSubmittingDelegation}>
                   {isSubmittingDelegation
                     ? (t('mood.thirdParty.adding') || 'Adding...')
                     : (t('mood.thirdParty.addDelegatedAnalyst') || 'Add delegated analyst')}

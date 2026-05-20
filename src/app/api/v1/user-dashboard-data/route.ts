@@ -25,6 +25,8 @@ const dayListSelect = {
 }
 
 function getAllowedDayVisibilities(scope: string): Array<'PUBLIC' | 'FRIENDS' | 'CLOSE_FRIENDS'> | undefined {
+  // Returning undefined means "no visibility filtering" (full delegated access for PRIVATE/AI_ENABLED scopes).
+  // Returning an array applies an allow-list filter for more restrictive delegated scopes.
   switch (scope) {
     case 'PRIVATE':
     case 'AI_ENABLED':

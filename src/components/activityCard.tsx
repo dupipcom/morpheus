@@ -854,7 +854,10 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
       </div>
 
       {item.type === 'note' && item.sender && item.recipient && (
-        <p className="text-xs text-muted-foreground mb-2">
+        <p
+          className="text-xs text-muted-foreground mb-2"
+          aria-label={`Message from ${item.sender.userName || item.sender.firstName || item.sender.id} to ${item.recipient.userName || item.recipient.firstName || item.recipient.id}`}
+        >
           {(item.sender.userName || item.sender.firstName || item.sender.id)} to {(item.recipient.userName || item.recipient.firstName || item.recipient.id)}
         </p>
       )}

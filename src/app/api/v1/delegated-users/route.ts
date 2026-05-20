@@ -238,10 +238,15 @@ export async function DELETE(request: NextRequest) {
       }
     })
 
+    if (result.count === 0) {
+      return NextResponse.json({ error: 'Delegation not found' }, { status: 404 })
+    }
+
     return NextResponse.json({
-      success: result.count > 0,
+      success: true,
       deletedCount: result.count
     })
+    
   } catch (error) {
     console.error('Error deleting delegation:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

@@ -164,7 +164,7 @@ export function DashboardView({ timeframe = "day", onDelegatedUserChange }: Dash
   const [days, setDays] = useState<any[]>([])
   const [isLoadingDays, setIsLoadingDays] = useState(true)
   const [delegatedUsers, setDelegatedUsers] = useState<DelegatedUserOption[]>([])
-  const [selectedDelegatedUserId, setSelectedDelegatedUserId] = useState<string>('')
+  const [selectedDelegatedUserId, setSelectedDelegatedUserId] = useState<string | undefined>(undefined)
   const [isLoadingDelegations, setIsLoadingDelegations] = useState(false)
 
   // Date range state – default to last 360 days (T-360d) through today
