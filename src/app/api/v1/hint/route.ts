@@ -46,7 +46,7 @@ const logger = (str: string, originalMessage?: unknown) => {
 };
 
 export const revalidate = 86400;
-export const maxDuration = 30;
+export const maxDuration = 120;
 
 const HINT_VECTOR_STORE_NAME = 'morpheus-hint-rag'
 const HINT_VECTOR_STORE_ID = process.env.OPENAI_HINT_VECTOR_STORE_ID?.trim() || null
