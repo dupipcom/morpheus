@@ -57,7 +57,10 @@
     "copyLink": "Kopiuj link",
     "linkCopied": "Link skopiowany do schowka",
     "copyFailed": "Nie udało się skopiować linku",
-    "saving": "Zapisywanie..."
+    "saving": "Zapisywanie...",
+    "decline": "Odrzuć",
+    "friendRequest": "Zaproszenie do znajomych",
+    "reverseOrder": "Odwróć kolejność"
   },
   "navigation": {
     "dashboard": "Panel",
@@ -87,7 +90,11 @@
     "yourMood": "Twój nastrój.",
     "yourProductivity": "Twoja produktywność.",
     "yourData": "Twoje dane.",
-    "yourBalance": "Twoje pieniądze."
+    "yourBalance": "Twoje pieniądze.",
+    "timeframe": {
+      "startDate": "Data rozpoczęcia",
+      "endDate": "Data zakończenia"
+    }
   },
   "mood": {
     "title": "Zarejestruj swój nastrój na {date}",
@@ -110,7 +117,8 @@
         "AI_ENABLED": "Obsługiwane przez sztuczną inteligencję"
       },
       "action": "Opublikuj notatkę",
-      "publishing": "Publikowanie..."
+      "publishing": "Publikowanie...",
+      "embedHint": "Osadzenie {provider}. Jeśli odtwarzanie jest niedostępne, otwórz oryginalny link poniżej."
     }
   },
   "week": {
@@ -139,7 +147,10 @@
       "done": "Ukończony",
       "ignored": "Zignorowany"
     },
-    "edit": "Edytuj"
+    "edit": "Edytuj",
+    "loadingForDate": "Ładowanie zadań dla wybranej daty...",
+    "initializingTasks": "Konfigurowanie twoich zadań...",
+    "noTasksForDate": "Brak zadań zaplanowanych na tę datę"
   },
   "actions": {
     "drankWater": "Wypił wodę",
@@ -665,7 +676,9 @@
       "inProgress": "W Trakcie",
       "validating": "Walidacja",
       "accepted": "Zaakceptowano",
-      "rejected": "Odrzucono"
+      "rejected": "Odrzucono",
+      "submitted": "Przesłano",
+      "changesRequested": "Żądanie zmian"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -779,5 +792,39 @@
         "resubmitted": "Praca przesłana ponownie do weryfikacji"
       }
     }
+  },
+  "notes": {
+    "updated": "Notatka zaktualizowana pomyślnie",
+    "updateFailed": "Nie udało się zaktualizować notatki",
+    "deleted": "Notatka usunięta pomyślnie",
+    "deleteFailed": "Nie udało się usunąć notatki",
+    "deleting": "Usuwanie...",
+    "confirmDelete": "Czy na pewno chcesz usunąć tę notatkę?",
+    "content": "Treść notatki",
+    "visibilityUpdated": "Widoczność zaktualizowana pomyślnie",
+    "visibilityUpdateFailed": "Nie udało się zaktualizować widoczności",
+    "changeVisibility": "Zmień widoczność",
+    "filters": {
+      "sort": "Sortuj",
+      "date": "Data",
+      "mostRelevant": "Najtrafniejsze",
+      "all": "Wszystko"
+    }
+  },
+  "chat": {
+    "title": "Czat",
+    "subtitle": "Organizacje, kanały, wiadomości bezpośrednie i wątki.",
+    "anonymous": "Anonimowy",
+    "directMessage": "Wiadomość bezpośrednia",
+    "deletedMessage": "Wiadomość usunięta",
+    "deleteMessageTitle": "Usunąć wiadomość?",
+    "deleteMessageDescription": "Spowoduje to miękkie usunięcie wiadomości i zachowanie symbolu zastępczego w historii rozmowy.",
+    "createInviteLink": "Utwórz link zaproszenia",
+    "pendingInvites": "Oczekujące zaproszenia",
+    "acceptInvite": "Akceptuj",
+    "inviteFriendToOrg": "Zaproś znajomego do tej organizacji",
+    "inviteLinkCopied": "Skopiowano link zaproszenia",
+    "inviteSent": "Zaproszenie wysłane",
+    "inviteAccepted": "Zaproszenie przyjęte"
   }
 }

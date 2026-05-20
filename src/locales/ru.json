@@ -57,7 +57,10 @@
     "copyLink": "Копировать ссылку",
     "linkCopied": "Ссылка скопирована в буфер обмена",
     "copyFailed": "Не удалось скопировать ссылку",
-    "saving": "Сохранение..."
+    "saving": "Сохранение...",
+    "decline": "Отклонить",
+    "friendRequest": "Запрос в друзья",
+    "reverseOrder": "Обратный порядок"
   },
   "navigation": {
     "home": "Главная",
@@ -83,7 +86,11 @@
     "yourMood": "Ваше настроение.",
     "yourProductivity": "Ваша продуктивность.",
     "yourData": "Ваши данные.",
-    "yourBalance": "Ваши деньги."
+    "yourBalance": "Ваши деньги.",
+    "timeframe": {
+      "startDate": "Дата начала",
+      "endDate": "Дата окончания"
+    }
   },
   "mood": {
     "title": "Сегодня {date}.",
@@ -106,7 +113,8 @@
         "AI_ENABLED": "AI Enabled"
       },
       "action": "Опубликовать заметку",
-      "publishing": "Публикация..."
+      "publishing": "Публикация...",
+      "embedHint": "Встроенный контент {provider}. Если воспроизведение недоступно, откройте исходную ссылку ниже."
     }
   },
   "week": {
@@ -135,7 +143,10 @@
       "done": "Выполнено",
       "ignored": "Игнорировано"
     },
-    "edit": "Редактировать"
+    "edit": "Редактировать",
+    "loadingForDate": "Загрузка задач для выбранной даты...",
+    "initializingTasks": "Настройка ваших задач...",
+    "noTasksForDate": "На эту дату задач не запланировано"
   },
   "actions": {
     "drankWater": "Пил воду",
@@ -661,7 +672,9 @@
       "inProgress": "В Процессе",
       "validating": "Проверка",
       "accepted": "Принято",
-      "rejected": "Отклонено"
+      "rejected": "Отклонено",
+      "submitted": "Отправлено",
+      "changesRequested": "Запрошены изменения"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -775,5 +788,39 @@
         "resubmitted": "Работа отправлена снова на проверку"
       }
     }
+  },
+  "notes": {
+    "updated": "Заметка успешно обновлена",
+    "updateFailed": "Не удалось обновить заметку",
+    "deleted": "Заметка успешно удалена",
+    "deleteFailed": "Не удалось удалить заметку",
+    "deleting": "Удаление...",
+    "confirmDelete": "Вы уверены, что хотите удалить эту заметку?",
+    "content": "Содержимое заметки",
+    "visibilityUpdated": "Видимость успешно обновлена",
+    "visibilityUpdateFailed": "Не удалось обновить видимость",
+    "changeVisibility": "Изменить видимость",
+    "filters": {
+      "sort": "Сортировка",
+      "date": "Дата",
+      "mostRelevant": "Наиболее релевантные",
+      "all": "Все"
+    }
+  },
+  "chat": {
+    "title": "Чат",
+    "subtitle": "Организации, каналы, личные сообщения и обсуждения.",
+    "anonymous": "Анонимный",
+    "directMessage": "Личное сообщение",
+    "deletedMessage": "Сообщение удалено",
+    "deleteMessageTitle": "Удалить сообщение?",
+    "deleteMessageDescription": "Это мягко удалит сообщение и оставит заполнитель в истории переписки.",
+    "createInviteLink": "Создать ссылку-приглашение",
+    "pendingInvites": "Ожидающие приглашения",
+    "acceptInvite": "Принять",
+    "inviteFriendToOrg": "Пригласить друга в эту организацию",
+    "inviteLinkCopied": "Ссылка-приглашение скопирована",
+    "inviteSent": "Приглашение отправлено",
+    "inviteAccepted": "Приглашение принято"
   }
 }

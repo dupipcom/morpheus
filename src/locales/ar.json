@@ -57,7 +57,10 @@
     "copyLink": "نسخ الرابط",
     "linkCopied": "تم نسخ الرابط إلى الحافظة",
     "copyFailed": "فشل نسخ الرابط",
-    "saving": "جاري الحفظ..."
+    "saving": "جاري الحفظ...",
+    "decline": "رفض",
+    "friendRequest": "طلب صداقة",
+    "reverseOrder": "عكس الترتيب"
   },
   "navigation": {
     "dashboard": "لوحة التحكم",
@@ -87,7 +90,11 @@
     "yourMood": "مزاجك.",
     "yourProductivity": "إنتاجيتك.",
     "yourData": "بياناتك.",
-    "yourBalance": "أموالك."
+    "yourBalance": "أموالك.",
+    "timeframe": {
+      "startDate": "تاريخ البدء",
+      "endDate": "تاريخ الانتهاء"
+    }
   },
   "mood": {
     "title": "سجل مزاجك لـ {date}",
@@ -110,7 +117,8 @@
         "AI_ENABLED": "تمكين الذكاء الاصطناعي"
       },
       "action": "نشر المذكرة",
-      "publishing": "جاري النشر..."
+      "publishing": "جاري النشر...",
+      "embedHint": "تضمين {provider}. إذا لم يكن التشغيل متاحًا، افتح الرابط الأصلي أدناه."
     }
   },
   "week": {
@@ -139,7 +147,10 @@
       "done": "مكتمل",
       "ignored": "متجاهل"
     },
-    "edit": "تعديل"
+    "edit": "تعديل",
+    "loadingForDate": "جاري تحميل المهام للتاريخ المحدد...",
+    "initializingTasks": "جاري إعداد مهامك...",
+    "noTasksForDate": "لا توجد مهام مجدولة لهذا التاريخ"
   },
   "settings": {
     "title": "الإعدادات",
@@ -665,7 +676,9 @@
       "inProgress": "قيد التنفيذ",
       "validating": "جاري التحقق",
       "accepted": "مقبول",
-      "rejected": "مرفوض"
+      "rejected": "مرفوض",
+      "submitted": "مُقدَّم",
+      "changesRequested": "تغييرات مطلوبة"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -779,5 +792,39 @@
         "resubmitted": "تم إعادة إرسال العمل للمراجعة"
       }
     }
+  },
+  "notes": {
+    "updated": "تم تحديث الملاحظة بنجاح",
+    "updateFailed": "فشل تحديث الملاحظة",
+    "deleted": "تم حذف الملاحظة بنجاح",
+    "deleteFailed": "فشل حذف الملاحظة",
+    "deleting": "جاري الحذف...",
+    "confirmDelete": "هل أنت متأكد أنك تريد حذف هذه الملاحظة؟",
+    "content": "محتوى الملاحظة",
+    "visibilityUpdated": "تم تحديث الخصوصية بنجاح",
+    "visibilityUpdateFailed": "فشل تحديث الخصوصية",
+    "changeVisibility": "تغيير الخصوصية",
+    "filters": {
+      "sort": "ترتيب",
+      "date": "التاريخ",
+      "mostRelevant": "الأكثر صلة",
+      "all": "الكل"
+    }
+  },
+  "chat": {
+    "title": "المحادثة",
+    "subtitle": "المنظمات والقنوات والرسائل المباشرة والمواضيع.",
+    "anonymous": "مجهول",
+    "directMessage": "رسالة مباشرة",
+    "deletedMessage": "تم حذف الرسالة",
+    "deleteMessageTitle": "حذف الرسالة؟",
+    "deleteMessageDescription": "سيؤدي هذا إلى حذف الرسالة بشكل مؤقت والاحتفاظ بعنصر نائب في سجل المحادثة.",
+    "createInviteLink": "إنشاء رابط دعوة",
+    "pendingInvites": "الدعوات المعلقة",
+    "acceptInvite": "قبول",
+    "inviteFriendToOrg": "دعوة صديق إلى هذه المنظمة",
+    "inviteLinkCopied": "تم نسخ رابط الدعوة",
+    "inviteSent": "تم إرسال الدعوة",
+    "inviteAccepted": "تم قبول الدعوة"
   }
 }

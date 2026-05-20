@@ -57,7 +57,10 @@
     "copyLink": "Link kopieren",
     "linkCopied": "Link in die Zwischenablage kopiert",
     "copyFailed": "Link konnte nicht kopiert werden",
-    "saving": "Speichern..."
+    "saving": "Speichern...",
+    "decline": "Ablehnen",
+    "friendRequest": "Freundschaftsanfrage",
+    "reverseOrder": "Reihenfolge umkehren"
   },
   "navigation": {
     "home": "Startseite",
@@ -83,7 +86,11 @@
     "yourMood": "Ihre Stimmung.",
     "yourProductivity": "Ihre Produktivität.",
     "yourData": "Ihre Daten.",
-    "yourBalance": "Ihr Geld."
+    "yourBalance": "Ihr Geld.",
+    "timeframe": {
+      "startDate": "Startdatum",
+      "endDate": "Enddatum"
+    }
   },
   "mood": {
     "title": "Es ist {date}.",
@@ -106,7 +113,8 @@
         "AI_ENABLED": "KI-aktiviert"
       },
       "action": "Notiz veröffentlichen",
-      "publishing": "Veröffentlichen..."
+      "publishing": "Veröffentlichen...",
+      "embedHint": "{provider}-Einbettung. Falls die Wiedergabe nicht verfügbar ist, öffne den Originallink unten."
     }
   },
   "week": {
@@ -135,7 +143,10 @@
       "done": "Erledigt",
       "ignored": "Ignoriert"
     },
-    "edit": "Bearbeiten"
+    "edit": "Bearbeiten",
+    "loadingForDate": "Aufgaben für das gewählte Datum werden geladen...",
+    "initializingTasks": "Deine Aufgaben werden vorbereitet...",
+    "noTasksForDate": "Keine Aufgaben für dieses Datum geplant"
   },
   "settings": {
     "title": "Einstellungen",
@@ -661,7 +672,9 @@
       "inProgress": "In Bearbeitung",
       "validating": "Validierung",
       "accepted": "Akzeptiert",
-      "rejected": "Abgelehnt"
+      "rejected": "Abgelehnt",
+      "submitted": "Eingereicht",
+      "changesRequested": "Änderungen angefordert"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -775,5 +788,39 @@
         "resubmitted": "Arbeit erneut zur Überprüfung eingereicht"
       }
     }
+  },
+  "notes": {
+    "updated": "Notiz erfolgreich aktualisiert",
+    "updateFailed": "Notiz konnte nicht aktualisiert werden",
+    "deleted": "Notiz erfolgreich gelöscht",
+    "deleteFailed": "Notiz konnte nicht gelöscht werden",
+    "deleting": "Wird gelöscht...",
+    "confirmDelete": "Bist du sicher, dass du diese Notiz löschen möchtest?",
+    "content": "Notizinhalt",
+    "visibilityUpdated": "Sichtbarkeit erfolgreich aktualisiert",
+    "visibilityUpdateFailed": "Sichtbarkeit konnte nicht aktualisiert werden",
+    "changeVisibility": "Sichtbarkeit ändern",
+    "filters": {
+      "sort": "Sortieren",
+      "date": "Datum",
+      "mostRelevant": "Relevanteste",
+      "all": "Alle"
+    }
+  },
+  "chat": {
+    "title": "Unterhaltung",
+    "subtitle": "Organisationen, Kanäle, Direktnachrichten und Threads.",
+    "anonymous": "Anonym",
+    "directMessage": "Direktnachricht",
+    "deletedMessage": "Nachricht gelöscht",
+    "deleteMessageTitle": "Nachricht löschen?",
+    "deleteMessageDescription": "Dies löscht die Nachricht weich und behält einen Platzhalter im Gesprächsverlauf.",
+    "createInviteLink": "Einladungslink erstellen",
+    "pendingInvites": "Ausstehende Einladungen",
+    "acceptInvite": "Annehmen",
+    "inviteFriendToOrg": "Einen Freund zu dieser Organisation einladen",
+    "inviteLinkCopied": "Einladungslink kopiert",
+    "inviteSent": "Einladung gesendet",
+    "inviteAccepted": "Einladung angenommen"
   }
 }

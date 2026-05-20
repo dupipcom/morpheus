@@ -57,7 +57,10 @@
     "copyLink": "Nakili kiungo",
     "linkCopied": "Kiungo kimenakiliwa kwenye ubao wa kunakili",
     "copyFailed": "Imeshindwa kunakili kiungo",
-    "saving": "Inahifadhi..."
+    "saving": "Inahifadhi...",
+    "decline": "Kataa",
+    "friendRequest": "Ombi la urafiki",
+    "reverseOrder": "Geuza mpangilio"
   },
   "navigation": {
     "home": "Nyumbani",
@@ -83,7 +86,11 @@
     "yourMood": "Hali yako ya moyo.",
     "yourProductivity": "Uzalishaji wako.",
     "yourData": "Data yako.",
-    "yourBalance": "Pesa yako."
+    "yourBalance": "Pesa yako.",
+    "timeframe": {
+      "startDate": "Tarehe ya kuanza",
+      "endDate": "Tarehe ya mwisho"
+    }
   },
   "mood": {
     "title": "Ni {date}.",
@@ -106,7 +113,8 @@
         "AI_ENABLED": "AI Imewezeshwa"
       },
       "action": "Chapisha Maelezo",
-      "publishing": "Inachapisha..."
+      "publishing": "Inachapisha...",
+      "embedHint": "Ingizo la {provider}. Ikiwa urejeshaji hauwezekani, fungua kiungo asili hapa chini."
     }
   },
   "week": {
@@ -135,7 +143,10 @@
       "done": "Imekamilika",
       "ignored": "Imepuuzwa"
     },
-    "edit": "Hariri"
+    "edit": "Hariri",
+    "loadingForDate": "Inapakia kazi kwa tarehe iliyochaguliwa...",
+    "initializingTasks": "Inasanidi kazi zako...",
+    "noTasksForDate": "Hakuna kazi zilizopangwa kwa tarehe hii"
   },
   "settings": {
     "title": "Mipangilio",
@@ -659,7 +670,9 @@
       "inProgress": "Inaendelea",
       "validating": "Inathibitisha",
       "accepted": "Imekubaliwa",
-      "rejected": "Imekataliwa"
+      "rejected": "Imekataliwa",
+      "submitted": "Imewasilishwa",
+      "changesRequested": "Mabadiliko yameombwa"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -773,5 +786,39 @@
         "resubmitted": "Kazi imewasilishwa tena kwa ukaguzi"
       }
     }
+  },
+  "notes": {
+    "updated": "Dokezo limesasishwa kwa mafanikio",
+    "updateFailed": "Imeshindwa kusasisha dokezo",
+    "deleted": "Dokezo limefutwa kwa mafanikio",
+    "deleteFailed": "Imeshindwa kufuta dokezo",
+    "deleting": "Inafuta...",
+    "confirmDelete": "Je, una uhakika unataka kufuta dokezo hili?",
+    "content": "Maudhui ya dokezo",
+    "visibilityUpdated": "Uonekano umesasishwa kwa mafanikio",
+    "visibilityUpdateFailed": "Imeshindwa kusasisha uonekano",
+    "changeVisibility": "Badilisha uonekano",
+    "filters": {
+      "sort": "Panga",
+      "date": "Tarehe",
+      "mostRelevant": "Inayohusiana zaidi",
+      "all": "Zote"
+    }
+  },
+  "chat": {
+    "title": "Mazungumzo",
+    "subtitle": "Mashirika, njia, ujumbe wa moja kwa moja, na nyuzi.",
+    "anonymous": "Bila jina",
+    "directMessage": "Ujumbe wa moja kwa moja",
+    "deletedMessage": "Ujumbe umefutwa",
+    "deleteMessageTitle": "Futa ujumbe?",
+    "deleteMessageDescription": "Hii itafuta ujumbe kwa upole na kuhifadhi kiashiria katika historia ya mazungumzo.",
+    "createInviteLink": "Unda kiungo cha mwaliko",
+    "pendingInvites": "Mialiko inayosubiri",
+    "acceptInvite": "Kubali",
+    "inviteFriendToOrg": "Alika rafiki katika shirika hili",
+    "inviteLinkCopied": "Kiungo cha mwaliko kimenakiliwa",
+    "inviteSent": "Mwaliko umetumwa",
+    "inviteAccepted": "Mwaliko umekubaliwa"
   }
 }

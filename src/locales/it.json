@@ -57,7 +57,10 @@
     "copyLink": "Copia link",
     "linkCopied": "Link copiato negli appunti",
     "copyFailed": "Impossibile copiare il link",
-    "saving": "Salvataggio..."
+    "saving": "Salvataggio...",
+    "decline": "Rifiuta",
+    "friendRequest": "Richiesta di amicizia",
+    "reverseOrder": "Ordine inverso"
   },
   "navigation": {
     "home": "Inizio",
@@ -83,7 +86,11 @@
     "yourMood": "Il tuo umore.",
     "yourProductivity": "La tua produttività.",
     "yourData": "I tuoi dati.",
-    "yourBalance": "I tuoi soldi."
+    "yourBalance": "I tuoi soldi.",
+    "timeframe": {
+      "startDate": "Data di inizio",
+      "endDate": "Data di fine"
+    }
   },
   "mood": {
     "title": "È {date}.",
@@ -106,7 +113,8 @@
         "AI_ENABLED": "Abilitato IA"
       },
       "action": "Pubblica Nota",
-      "publishing": "Pubblicazione..."
+      "publishing": "Pubblicazione...",
+      "embedHint": "Incorporamento {provider}. Se la riproduzione non è disponibile, apri il link originale in basso."
     }
   },
   "week": {
@@ -135,7 +143,10 @@
       "done": "Completato",
       "ignored": "Ignorato"
     },
-    "edit": "Modifica"
+    "edit": "Modifica",
+    "loadingForDate": "Caricamento attività per la data selezionata...",
+    "initializingTasks": "Configurazione delle tue attività...",
+    "noTasksForDate": "Nessuna attività programmata per questa data"
   },
   "settings": {
     "title": "Impostazioni",
@@ -661,7 +672,9 @@
       "inProgress": "In Corso",
       "validating": "In Validazione",
       "accepted": "Accettato",
-      "rejected": "Rifiutato"
+      "rejected": "Rifiutato",
+      "submitted": "Inviato",
+      "changesRequested": "Modifiche richieste"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -775,5 +788,39 @@
         "resubmitted": "Lavoro inviato nuovamente per revisione"
       }
     }
+  },
+  "notes": {
+    "updated": "Nota aggiornata con successo",
+    "updateFailed": "Aggiornamento nota non riuscito",
+    "deleted": "Nota eliminata con successo",
+    "deleteFailed": "Eliminazione nota non riuscita",
+    "deleting": "Eliminazione...",
+    "confirmDelete": "Sei sicuro di voler eliminare questa nota?",
+    "content": "Contenuto della nota",
+    "visibilityUpdated": "Visibilità aggiornata con successo",
+    "visibilityUpdateFailed": "Aggiornamento visibilità non riuscito",
+    "changeVisibility": "Cambia visibilità",
+    "filters": {
+      "sort": "Ordina",
+      "date": "Data",
+      "mostRelevant": "Più rilevante",
+      "all": "Tutti"
+    }
+  },
+  "chat": {
+    "title": "Conversazione",
+    "subtitle": "Organizzazioni, canali, messaggi diretti e thread.",
+    "anonymous": "Anonimo",
+    "directMessage": "Messaggio diretto",
+    "deletedMessage": "Messaggio eliminato",
+    "deleteMessageTitle": "Eliminare il messaggio?",
+    "deleteMessageDescription": "Questo eliminerà il messaggio in modo soft e manterrà un segnaposto nella cronologia della conversazione.",
+    "createInviteLink": "Crea link di invito",
+    "pendingInvites": "Inviti in sospeso",
+    "acceptInvite": "Accetta",
+    "inviteFriendToOrg": "Invita un amico in questa organizzazione",
+    "inviteLinkCopied": "Link di invito copiato",
+    "inviteSent": "Invito inviato",
+    "inviteAccepted": "Invito accettato"
   }
 }

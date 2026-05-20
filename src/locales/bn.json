@@ -57,7 +57,10 @@
     "copyLink": "লিঙ্ক কপি করুন",
     "linkCopied": "লিঙ্ক ক্লিপবোর্ডে কপি করা হয়েছে",
     "copyFailed": "লিঙ্ক কপি করতে ব্যর্থ",
-    "saving": "সংরক্ষণ করা হচ্ছে..."
+    "saving": "সংরক্ষণ করা হচ্ছে...",
+    "decline": "প্রত্যাখ্যান",
+    "friendRequest": "বন্ধুত্বের অনুরোধ",
+    "reverseOrder": "ক্রম উল্টানো"
   },
   "navigation": {
     "home": "হোম",
@@ -83,7 +86,11 @@
     "yourMood": "আপনার মেজাজ।",
     "yourProductivity": "আপনার উৎপাদনশীলতা।",
     "yourData": "আপনার ডেটা।",
-    "yourBalance": "আপনার টাকা।"
+    "yourBalance": "আপনার টাকা।",
+    "timeframe": {
+      "startDate": "শুরুর তারিখ",
+      "endDate": "শেষের তারিখ"
+    }
   },
   "mood": {
     "title": "এটা {date}।",
@@ -106,7 +113,8 @@
         "AI_ENABLED": "এআই সক্রিয়"
       },
       "action": "নোট প্রকাশ করুন",
-      "publishing": "প্রকাশ করা হচ্ছে..."
+      "publishing": "প্রকাশ করা হচ্ছে...",
+      "embedHint": "{provider} এমবেড। প্লেব্যাক পাওয়া না গেলে নিচের মূল লিঙ্কটি খুলুন।"
     }
   },
   "week": {
@@ -135,7 +143,10 @@
       "done": "সম্পন্ন",
       "ignored": "উপেক্ষিত"
     },
-    "edit": "সম্পাদনা"
+    "edit": "সম্পাদনা",
+    "loadingForDate": "নির্বাচিত তারিখের জন্য কাজগুলি লোড হচ্ছে...",
+    "initializingTasks": "আপনার কাজগুলি সেট আপ করা হচ্ছে...",
+    "noTasksForDate": "এই তারিখের জন্য কোনো কাজ নির্ধারিত নেই"
   },
   "actions": {
     "drankWater": "পানি পান করেছে",
@@ -661,7 +672,9 @@
       "inProgress": "চলমান",
       "validating": "যাচাই করা হচ্ছে",
       "accepted": "গ্রহণ করা হয়েছে",
-      "rejected": "প্রত্যাখ্যান করা হয়েছে"
+      "rejected": "প্রত্যাখ্যান করা হয়েছে",
+      "submitted": "জমা দেওয়া হয়েছে",
+      "changesRequested": "পরিবর্তনের অনুরোধ"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -775,5 +788,39 @@
         "resubmitted": "পর্যালোচনার জন্য কাজ পুনরায় জমা দেওয়া হয়েছে"
       }
     }
+  },
+  "notes": {
+    "updated": "নোট সফলভাবে আপডেট হয়েছে",
+    "updateFailed": "নোট আপডেট করতে ব্যর্থ",
+    "deleted": "নোট সফলভাবে মুছে ফেলা হয়েছে",
+    "deleteFailed": "নোট মুছে ফেলতে ব্যর্থ",
+    "deleting": "মুছে ফেলা হচ্ছে...",
+    "confirmDelete": "আপনি কি এই নোটটি মুছে ফেলতে চান?",
+    "content": "নোটের বিষয়বস্তু",
+    "visibilityUpdated": "দৃশ্যমানতা সফলভাবে আপডেট হয়েছে",
+    "visibilityUpdateFailed": "দৃশ্যমানতা আপডেট করতে ব্যর্থ",
+    "changeVisibility": "দৃশ্যমানতা পরিবর্তন করুন",
+    "filters": {
+      "sort": "বাছাই",
+      "date": "তারিখ",
+      "mostRelevant": "সবচেয়ে প্রাসঙ্গিক",
+      "all": "সব"
+    }
+  },
+  "chat": {
+    "title": "চ্যাট",
+    "subtitle": "সংগঠন, চ্যানেল, সরাসরি বার্তা এবং থ্রেড।",
+    "anonymous": "বেনামী",
+    "directMessage": "সরাসরি বার্তা",
+    "deletedMessage": "বার্তা মুছে ফেলা হয়েছে",
+    "deleteMessageTitle": "বার্তা মুছবেন?",
+    "deleteMessageDescription": "এটি বার্তাটি নরমভাবে মুছে দেবে এবং কথোপকথনের ইতিহাসে একটি প্লেসহোল্ডার রাখবে।",
+    "createInviteLink": "আমন্ত্রণ লিঙ্ক তৈরি করুন",
+    "pendingInvites": "মুলতুবি আমন্ত্রণ",
+    "acceptInvite": "গ্রহণ করুন",
+    "inviteFriendToOrg": "এই সংগঠনে একজন বন্ধুকে আমন্ত্রণ জানান",
+    "inviteLinkCopied": "আমন্ত্রণ লিঙ্ক কপি করা হয়েছে",
+    "inviteSent": "আমন্ত্রণ পাঠানো হয়েছে",
+    "inviteAccepted": "আমন্ত্রণ গৃহীত হয়েছে"
   }
 }

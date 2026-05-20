@@ -57,7 +57,10 @@
     "copyLink": "Ṣe àkọpọ ọna asopọ",
     "linkCopied": "Ọna asopọ ti ṣe àkọpọ sí àkọlé",
     "copyFailed": "Kò ṣe àkọpọ ọna asopọ",
-    "saving": "N fipamọ..."
+    "saving": "N fipamọ...",
+    "decline": "Kọ",
+    "friendRequest": "Ibeere ọrẹ",
+    "reverseOrder": "Yi ọna pada"
   },
   "navigation": {
     "home": "Ilé",
@@ -83,7 +86,11 @@
     "yourMood": "Ìwà rẹ̀.",
     "yourProductivity": "Ìṣẹ́ rẹ̀.",
     "yourData": "Àkọsílẹ̀ rẹ̀.",
-    "yourBalance": "Owó rẹ̀."
+    "yourBalance": "Owó rẹ̀.",
+    "timeframe": {
+      "startDate": "Ọjọ ibẹrẹ",
+      "endDate": "Ọjọ ipari"
+    }
   },
   "mood": {
     "title": "Òní ni {date}.",
@@ -106,7 +113,8 @@
         "AI_ENABLED": "AI tí ó ń ṣiṣẹ́"
       },
       "action": "Tẹ àkọsílẹ̀ jáde",
-      "publishing": "Nigbagbọgbọ..."
+      "publishing": "Nigbagbọgbọ...",
+      "embedHint": "Ifibọ {provider}. Ti ifaworanhan ko ba ṣeeṣe, ṣii ọna asopọ atilẹba ni isalẹ."
     }
   },
   "week": {
@@ -135,7 +143,10 @@
       "done": "Ti Parí",
       "ignored": "Ti Kọjú"
     },
-    "edit": "Ṣatunkọ"
+    "edit": "Ṣatunkọ",
+    "loadingForDate": "Mimu awọn iṣẹ-ṣiṣe fun ọjọ ti a yan...",
+    "initializingTasks": "Ṣiṣeto awọn iṣẹ-ṣiṣe rẹ...",
+    "noTasksForDate": "Ko si awọn iṣẹ-ṣiṣe ti a ṣeto fun ọjọ yii"
   },
   "settings": {
     "title": "Ètò",
@@ -659,7 +670,9 @@
       "inProgress": "N ṣiṣẹ",
       "validating": "Iṣeduro",
       "accepted": "Ti gba",
-      "rejected": "Ti kọ"
+      "rejected": "Ti kọ",
+      "submitted": "Ti fi ranṣẹ",
+      "changesRequested": "Awọn ayipada ti beere"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -773,5 +786,39 @@
         "resubmitted": "A ti fi iṣẹ́ ránṣẹ́ padà fún àyẹ̀wò"
       }
     }
+  },
+  "notes": {
+    "updated": "Akọsilẹ ti ni imudojuiwọn ni aṣeyọri",
+    "updateFailed": "Ko ṣe imudojuiwọn akọsilẹ",
+    "deleted": "Akọsilẹ ti paarẹ ni aṣeyọri",
+    "deleteFailed": "Ko ṣe paarẹ akọsilẹ",
+    "deleting": "Npaarẹ...",
+    "confirmDelete": "Ṣe o da ọ loju pe o fẹ paarẹ akọsilẹ yii?",
+    "content": "Akoonu akọsilẹ",
+    "visibilityUpdated": "Iranwo ti ni imudojuiwọn ni aṣeyọri",
+    "visibilityUpdateFailed": "Ko ṣe imudojuiwọn iranwo",
+    "changeVisibility": "Ṣe iyipada iranwo",
+    "filters": {
+      "sort": "Ṣeto",
+      "date": "Ọjọ",
+      "mostRelevant": "Pẹlu ibatan julọ",
+      "all": "Gbogbo"
+    }
+  },
+  "chat": {
+    "title": "Ifọrọwanilẹnuwo",
+    "subtitle": "Awọn ajo, awọn ikanni, awọn ifiranṣẹ taara, ati awọn ẹwọn.",
+    "anonymous": "Ailorukọ",
+    "directMessage": "Ifiranṣẹ taara",
+    "deletedMessage": "Ifiranṣẹ ti paarẹ",
+    "deleteMessageTitle": "Paarẹ ifiranṣẹ?",
+    "deleteMessageDescription": "Eyi yoo paarẹ ifiranṣẹ ni asọ ati tọju aaye iranlọwọ ninu itan-akọọlẹ ibaraẹnisọrọ.",
+    "createInviteLink": "Ṣẹda ọna asopọ ìdẹ",
+    "pendingInvites": "Awọn ìdẹ ti o n duro de",
+    "acceptInvite": "Gba",
+    "inviteFriendToOrg": "Pe ọrẹ wa si ajọ yii",
+    "inviteLinkCopied": "Ọna asopọ ìdẹ ti daakọ",
+    "inviteSent": "Ìdẹ ti fi ranṣẹ",
+    "inviteAccepted": "Ìdẹ ti gba"
   }
 }
