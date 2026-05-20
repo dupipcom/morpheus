@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { getAuthenticatedUser } from '@/lib/services/auth'
 import { DELEGATION_SCOPES } from '@/lib/constants/visibility'
+import {
+  buildDupipInvitationDraft,
+  isValidEmailIdentifier
+} from '@/lib/utils/invitations'
 
 type DelegationScope = typeof DELEGATION_SCOPES[number]
 
@@ -136,6 +140,34 @@ export async function GET() {
       })
     ])
 
+    const currentUser = await prisma.user.findUnique({
+      where: { id: currentUserId },
+      select: {
+        friendUsers: {
+          select: {
+            id: true,
+            userId: true,
+            email: true,
+            profiles: {
+              select: {
+                username: true,
+                data: true
+              },
+              take: 1
+            }
+          }
+        }
+      }
+    })
+
+    const friendSuggestions = (currentUser?.friendUsers || []).map((friend) => {
+      const summary = buildUserSummary(friend)
+      return {
+        ...summary,
+        identifiers: [summary.userName, summary.email, summary.userId].filter(Boolean)
+      }
+    })
+
     return NextResponse.json({
       outgoingDelegations: outgoing.map((delegation) => ({
         id: delegation.id,
@@ -148,7 +180,8 @@ export async function GET() {
         scope: delegation.scope,
         createdAt: delegation.createdAt,
         delegatorUser: buildUserSummary(delegation.delegator)
-      }))
+      })),
+      friendSuggestions
     })
   } catch (error) {
     console.error('Error fetching delegations:', error)
@@ -178,6 +211,19 @@ export async function POST(request: NextRequest) {
 
     const targetUser = await findUserByIdentifier(identifier)
     if (!targetUser) {
+      if (isValidEmailIdentifier(identifier)) {
+        const invitation = buildDupipInvitationDraft({
+          email: identifier,
+          invitedByUserId: authResult.user!.clerkUserId || undefined
+        })
+        return NextResponse.json(
+          {
+            invitation,
+            delegation: null
+          },
+          { status: 202 }
+        )
+      }
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 

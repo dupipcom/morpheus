@@ -190,6 +190,7 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
   const [delegationIdentifier, setDelegationIdentifier] = useState('')
   const [delegationScope, setDelegationScope] = useState<NoteVisibility>('AI_ENABLED')
   const [delegationError, setDelegationError] = useState('')
+  const [delegationInfo, setDelegationInfo] = useState('')
   const [isSubmittingDelegation, setIsSubmittingDelegation] = useState(false)
   // Selectable visibility options for the filter UI (HIDDEN is a system-only state, not user-selectable)
   const SELECTABLE_NOTE_VISIBILITIES: NoteVisibility[] = ['PRIVATE', 'AI_ENABLED', 'FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC']
@@ -299,13 +300,14 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
     async () => {
       const response = await fetch('/api/v1/delegated-users')
       if (!response.ok) {
-        return { outgoingDelegations: [] }
+        return { outgoingDelegations: [], friendSuggestions: [] }
       }
       return response.json()
     }
   )
 
   const outgoingDelegations = delegationsData?.outgoingDelegations || []
+  const friendSuggestions = delegationsData?.friendSuggestions || []
 
   // Register the mutate function for notes refresh
   useEffect(() => {
@@ -462,6 +464,7 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
     if (!delegationIdentifier.trim() || isSubmittingDelegation) return
     setIsSubmittingDelegation(true)
     setDelegationError('')
+    setDelegationInfo('')
     try {
       const response = await fetch('/api/v1/delegated-users', {
         method: 'POST',
@@ -471,9 +474,13 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
           scope: delegationScope
         })
       })
+      const data = await response.json().catch(() => null)
       if (!response.ok) {
-        const data = await response.json().catch(() => null)
         setDelegationError(data?.error || 'Could not add delegated analyst')
+        return
+      }
+      if (response.status === 202) {
+        setDelegationInfo(data?.invitation?.message || 'Invitation draft prepared for this email.')
         return
       }
       setDelegationIdentifier('')
@@ -776,7 +783,23 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
                   value={delegationIdentifier}
                   onChange={(event) => setDelegationIdentifier(event.target.value)}
                   placeholder={t('mood.thirdParty.identifierPlaceholder') || 'Username, email, or user ID'}
+                  list="delegation-friend-suggestions"
                 />
+                <datalist id="delegation-friend-suggestions">
+                  {friendSuggestions.flatMap((friend: {
+                    id: string
+                    displayName?: string
+                    identifiers?: string[]
+                  }) => {
+                    const base = [friend.displayName, ...(friend.identifiers || [])].filter(Boolean)
+                    return base.map((identifier) => (
+                      <option key={`${friend.id}-${identifier}`} value={identifier} />
+                    ))
+                  })}
+                </datalist>
+                <p className="text-xs text-muted-foreground">
+                  {t('mood.thirdParty.friendsHint') || 'Suggestions include your friends. You can also enter any email address.'}
+                </p>
                 <Select value={delegationScope} onValueChange={(value) => setDelegationScope(value as NoteVisibility)}>
                   <SelectTrigger>
                     <SelectValue placeholder={t('mood.thirdParty.scope') || 'Data scope'} />
@@ -796,6 +819,9 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
                 </Button>
                 {delegationError && (
                   <p className="text-sm text-red-500">{delegationError}</p>
+                )}
+                {delegationInfo && (
+                  <p className="text-sm text-blue-600">{delegationInfo}</p>
                 )}
               </div>
             </div>
