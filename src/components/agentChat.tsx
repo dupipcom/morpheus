@@ -42,12 +42,17 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], 
     }
   }, [])
 
-  // Notify parent component of message changes
+  // Keep input in sync when parent updates suggestion text.
   useEffect(() => {
+    setInputMessage(initialMessage)
+  }, [initialMessage])
+
+  const handleInputChange = (value: string) => {
+    setInputMessage(value)
     if (onMessageChange) {
-      onMessageChange(inputMessage)
+      onMessageChange(value)
     }
-  }, [inputMessage, onMessageChange])
+  }
 
   const handleSendMessage = async () => {
     if (!inputMessage.trim() || isLoading) return
@@ -218,7 +223,7 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], 
         <Textarea
           ref={textareaRef}
           value={inputMessage}
-          onChange={(e) => setInputMessage(e.target.value)}
+          onChange={(e) => handleInputChange(e.target.value)}
           onKeyPress={handleKeyPress}
           placeholder={t('agentChat.placeholder')}
           className="flex-1 min-h-[60px] max-h-[120px] resize-none"
