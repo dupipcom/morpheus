@@ -16,7 +16,8 @@ function buildUserSummary(user: {
   const firstName = data.firstName?.value || null
   const lastName = data.lastName?.value || null
   const userName = profile?.username || data.username?.value || null
-  const displayName = [firstName, lastName].filter(Boolean).join(' ').trim() || userName || user.email || user.userId || user.id
+  const fullName = [firstName, lastName].filter(Boolean).join(' ').trim()
+  const displayName = fullName || userName || user.email || user.userId || user.id
 
   return {
     id: user.id,

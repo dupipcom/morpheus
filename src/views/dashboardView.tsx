@@ -29,6 +29,7 @@ import { ContentLoadingWrapper } from '@/components/contentLoadingWrapper'
 import { AgentChat } from "@/components/agentChat"
 import { useFeatureFlag } from "@/lib/hooks/useFeatureFlag"
 import { useDebounce } from "@/lib/hooks/useDebounce"
+import { formatDelegationScope } from "@/lib/utils/delegation"
 
 /** Returns a Date that is `n` days before today */
 function daysAgo(n: number): Date {
@@ -509,7 +510,7 @@ const aggregateDataByWeek = (dailyData: any[]) => {
           <SelectContent>
             {delegatedUsers.map((option) => (
               <SelectItem key={option.id} value={option.id}>
-                {option.label}{option.scope ? ` (${option.scope.toLowerCase().replace('_', '-')})` : ''}
+                {option.label}{option.scope ? ` (${formatDelegationScope(option.scope)})` : ''}
               </SelectItem>
             ))}
           </SelectContent>

@@ -77,7 +77,10 @@ export async function GET(req: NextRequest) {
     const where: Record<string, unknown> = { userId: targetUserId }
 
     if (year) {
-      where.date = { startsWith: parseInt(year).toString() }
+      if (!/^\d{4}$/.test(year)) {
+        return NextResponse.json({ error: 'Invalid year format' }, { status: 400 })
+      }
+      where.date = { gte: `${year}-01-01`, lte: `${year}-12-31` }
     } else if (startDate && endDate) {
       where.date = { gte: startDate, lte: endDate }
     }
