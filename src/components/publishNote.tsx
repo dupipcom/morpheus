@@ -12,16 +12,19 @@ import { VisibilitySelect } from "@/components/visibilitySelect"
 import { DatePickerButton } from "@/components/ui/datePickerButton"
 import { LinkPreview } from "@/components/linkPreview"
 import { extractUrls } from "@/lib/utils/linkPreview"
+import { Input } from "@/components/ui/input"
 
 interface PublishNoteProps {
   onNotePublished?: () => void
   date?: string
   onDateChange?: (date: Date | undefined) => void
   defaultVisibility?: string
+  recipientId?: string | null
+  recipientLabel?: string | null
 }
 
 
-export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibility = 'AI_ENABLED' }: PublishNoteProps) => {
+export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibility = 'AI_ENABLED', recipientId = null, recipientLabel = null }: PublishNoteProps) => {
   const { t } = useI18n()
   const { refreshAll } = useNotesRefresh()
   const { selectedDate: contextSelectedDate, setSelectedDate } = useContext(GlobalContext)
@@ -96,7 +99,8 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
         body: JSON.stringify({
           content: noteContent.trim(),
           visibility: noteVisibility,
-          date: noteDate
+          date: noteDate,
+          recipientId
         }),
       })
 
@@ -120,6 +124,14 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
     <>
       {/* Mobile: 4-column grid (textarea 3/4, controls 1/4 stacked), Desktop: stacked */}
       <div className="grid grid-cols-4 gap-2 sm:grid-cols-1 sm:gap-0 mb-0">
+        {recipientId && (
+          <div className="col-span-4 mb-2">
+            <label htmlFor="publish-note-recipient" className="text-xs text-muted-foreground block mb-1">
+              {t('notes.recipient') || 'Recipient'}
+            </label>
+            <Input id="publish-note-recipient" value={recipientLabel || recipientId} readOnly />
+          </div>
+        )}
         <Textarea 
           className="col-span-3 sm:col-span-1 mb-0 sm:mb-3 sm:mb-4 w-full" 
           placeholder={t('mood.publish.placeholder') || 'Write your note here...'}

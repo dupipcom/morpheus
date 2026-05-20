@@ -1,42 +1,16 @@
 import { NextResponse, NextRequest } from 'next/server';
-import { currentUser, auth } from '@clerk/nextjs/server'
-import { openai } from '@ai-sdk/openai';
-import { generateText } from 'ai';
-import fs from "fs";
+import { auth } from '@clerk/nextjs/server'
 import prisma from "@/lib/prisma";
 import { getWeekNumber } from "@/app/helpers"
 
-// Logger helper function for consistent console logging format
-const logger = (str: string, originalMessage?: any) => {
-  let message = str;
-  if (originalMessage !== undefined) {
-    if (typeof originalMessage === 'object') {
-      try {
-        message = `${str} - ${JSON.stringify(originalMessage, null, 2)}`;
-      } catch (error) {
-        message = `${str} - [Object - circular reference or non-serializable]`;
-      }
-    } else {
-      message = `${str} - ${String(originalMessage)}`;
-    }
-  }
-
-  const colorSettings = {
-    background: '#1f1f1f',
-    color: 'green',
-    fontWeight: 'bold',
-    padding: '2px 4px',
-    borderRadius: '3px'
-  };
-
-  console.log(
-    `%cdpip::morpheus::chat::${message}`,
-    `background: ${colorSettings.background}; color: ${colorSettings.color}; font-weight: ${colorSettings.fontWeight}; padding: ${colorSettings.padding}; border-radius: ${colorSettings.borderRadius};`
-  );
-};
+interface ChatMessage {
+  role?: string
+  content?: string
+  timestamp?: string
+}
 
 interface ChatRequest {
-  message: string;
+  message: ChatMessage[] | ChatMessage | string;
   locale?: string;
 }
 
@@ -52,7 +26,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const body: ChatRequest = await req.json();
-    const { message, locale = 'en' } = body;
+    const { message } = body;
 
     if (!message) {
       return NextResponse.json({ error: "Message is required" }, { status: 400 });
@@ -62,14 +36,19 @@ export async function POST(req: NextRequest) {
       where: { userId }
     });
 
-    let user = await getUser();
+    const user = await getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
 
     const fullDate = new Date();
     const date = fullDate.toISOString().split('T')[0];
-    const year = Number(date.split('-')[0]);
     const weekNumber = getWeekNumber(fullDate)[1];
-
-    const entries = user?.entries;
+    const month = fullDate.getMonth() + 1;
+    const quarter = Math.floor((month - 1) / 3) + 1;
+    const semester = month <= 6 ? 1 : 2;
+    const serializedMessages = Array.isArray(message) ? message : [message]
 
 
     // // Create vector store for RAG
@@ -127,57 +106,48 @@ export async function POST(req: NextRequest) {
     //   max_completion_tokens: 25000
     // });
 
-    if(!user.entries[year].weeks[weekNumber].agentConversation) {
-      await prisma.user.update({
+    const existingDay = await prisma.day.findFirst({
+      where: {
+        userId: user.id,
+        date
+      },
+      select: {
+        id: true,
+        analysis: true
+      }
+    })
+
+    const currentAnalysis = existingDay?.analysis && typeof existingDay.analysis === 'object' && !Array.isArray(existingDay.analysis)
+      ? existingDay.analysis as Record<string, unknown>
+      : {}
+
+    if (existingDay) {
+      await prisma.day.update({
+        where: { id: existingDay.id },
         data: {
-          entries: { 
-            ...user?.entries, 
-            [year]: { 
-              ...user?.entries[year], 
-              weeks:  { 
-                ...user?.entries[year].weeks, 
-                [weekNumber]: { 
-                  ...user?.entries[year].weeks[weekNumber], 
-                  agentConversation: [],
-                }
-              }
-            }
+          analysis: {
+            ...currentAnalysis,
+            agentConversation: serializedMessages
           }
-        },
-        where: { userId }, 
+        }
+      })
+    } else {
+      await prisma.day.create({
+        data: {
+          userId: user.id,
+          date,
+          week: weekNumber,
+          month,
+          quarter,
+          semester,
+          tasks: [],
+          ticker: [],
+          analysis: {
+            agentConversation: serializedMessages
+          }
+        }
       })
     }
-    // const reply = response.steps[0].content.map((c) => c.text).join(' ') 
-    // const assistantMessage = reply || "I'm sorry, I couldn't process your message right now.";
-
-    // const nextMessages = [{
-    //   content: message,
-    //   timestamp: fullDate,
-    //   role: "user"
-    // }, {
-    //   content: assistantMessage,
-    //   timestamp: fullDate,
-    //   role: "assistant"
-    // }]
-
-    await prisma.user.update({
-        data: {
-          entries: { 
-            ...user?.entries, 
-            [year]: { 
-              ...user?.entries[year], 
-              weeks:  { 
-                ...user?.entries[year].weeks, 
-                [weekNumber]: { 
-                  ...user?.entries[year].weeks[weekNumber], 
-                  agentConversation: [ ...(user?.entries[year].weeks[weekNumber].agentConversation || []), ...message ]
-                }
-              }
-            }
-          }
-        },
-        where: { userId }
-    })
 
     return NextResponse.json({
       success: true,
