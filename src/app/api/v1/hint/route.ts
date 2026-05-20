@@ -4,6 +4,7 @@ import openai from '@/lib/openai';
 import prisma from "@/lib/prisma";
 import { getWeekNumber } from '@/app/helpers'
 import { buildHistoricalEntriesByYear } from '@/lib/utils/dayHistory'
+import { getDelegationScopes, resolveEffectiveDelegationScope } from '@/lib/utils/delegation'
 import fs from 'node:fs'
 import path from 'node:path'
 
@@ -49,8 +50,24 @@ export const maxDuration = 30;
 
 const HINT_VECTOR_STORE_NAME = 'morpheus-hint-rag'
 const HINT_VECTOR_STORE_ID = process.env.OPENAI_HINT_VECTOR_STORE_ID?.trim() || null
-const HINT_RAG_FILE_PATH = '/Users/angeloreale/dpip/morpheus/src/app/api/v1/hint/rag/cognitive-psychology-archiveorg.md'
+const HINT_RAG_FILE_PATH = path.join(process.cwd(), 'src/app/api/v1/hint/rag/cognitive-psychology-archiveorg.md')
 const HINT_RAG_FILE_NAME = path.basename(HINT_RAG_FILE_PATH)
+
+function getAllowedDayVisibilities(scope: string): Array<'PUBLIC' | 'FRIENDS' | 'CLOSE_FRIENDS'> | null {
+  switch (scope) {
+    case 'PRIVATE':
+    case 'AI_ENABLED':
+      return null
+    case 'PUBLIC':
+      return ['PUBLIC']
+    case 'CLOSE_FRIENDS':
+      return ['PUBLIC', 'CLOSE_FRIENDS']
+    case 'FRIENDS':
+      return ['PUBLIC', 'FRIENDS', 'CLOSE_FRIENDS']
+    default:
+      return []
+  }
+}
 
 async function getOrCreateHintVectorStore() {
   if (HINT_VECTOR_STORE_ID) {
@@ -132,6 +149,7 @@ export async function GET(req: NextRequest) {
   }
 
   const targetUserId = requestedUserId || requestingUser.id
+  let allowedVisibility: Array<'PUBLIC' | 'FRIENDS' | 'CLOSE_FRIENDS'> | null = null
 
   if (targetUserId !== requestingUser.id) {
     const delegation = await prisma.delegation.findUnique({
@@ -141,11 +159,23 @@ export async function GET(req: NextRequest) {
           delegatedId: requestingUser.id
         }
       },
-      select: { id: true }
+      select: { id: true, scope: true, scopes: true }
     })
 
     if (!delegation) {
       return Response.json({ error: 'Not authorized for selected user data' }, { status: 403 })
+    }
+
+    const delegationScopes = getDelegationScopes(delegation.scopes, delegation.scope)
+    const delegationScope = resolveEffectiveDelegationScope(delegationScopes, delegation.scope)
+
+    if (!delegationScope) {
+      return Response.json({ error: 'Delegation scope is invalid' }, { status: 403 })
+    }
+
+    allowedVisibility = getAllowedDayVisibilities(delegationScope)
+    if (allowedVisibility && allowedVisibility.length === 0) {
+      return Response.json({ error: 'Delegation scope is invalid' }, { status: 403 })
     }
   }
 
@@ -164,9 +194,13 @@ export async function GET(req: NextRequest) {
   const month = fullDate.getMonth() + 1
   const quarter = Math.floor((month - 1) / 3) + 1
   const semester = month <= 6 ? 1 : 2
+  const dayWhere: Record<string, unknown> = { userId: targetUser.id }
+  if (allowedVisibility) {
+    dayWhere.visibility = { in: allowedVisibility }
+  }
   const days = targetUser
     ? await prisma.day.findMany({
-        where: { userId: targetUser.id },
+        where: dayWhere,
         orderBy: { date: 'asc' },
         select: {
           date: true,
@@ -185,10 +219,13 @@ export async function GET(req: NextRequest) {
       })
     : []
   const entries = buildHistoricalEntriesByYear(days)
-  const existingDay = await prisma.day.findFirst({
-    where: { userId: targetUser.id, date },
-    select: { id: true, analysis: true }
-  })
+  const canReadPersistedHint = !allowedVisibility
+  const existingDay = canReadPersistedHint
+    ? await prisma.day.findFirst({
+        where: { userId: targetUser.id, date },
+        select: { id: true, analysis: true }
+      })
+    : null
   const existingAnalysis = existingDay?.analysis && typeof existingDay.analysis === 'object' && !Array.isArray(existingDay.analysis)
     ? existingDay.analysis as Record<string, unknown>
     : {}
@@ -250,32 +287,34 @@ export async function GET(req: NextRequest) {
 
       const parsedOutput = JSON.parse(response.output_text)
 
-      if (existingDay) {
-        await prisma.day.update({
-          where: { id: existingDay.id },
-          data: {
-            analysis: {
-              ...existingAnalysis,
-              hint: parsedOutput
+      if (canReadPersistedHint) {
+        if (existingDay) {
+          await prisma.day.update({
+            where: { id: existingDay.id },
+            data: {
+              analysis: {
+                ...existingAnalysis,
+                hint: parsedOutput
+              }
             }
-          }
-        })
-      } else {
-        await prisma.day.create({
-          data: {
-            userId: targetUser.id,
-            date,
-            week,
-            month,
-            quarter,
-            semester,
-            tasks: [],
-            ticker: [],
-            analysis: {
-              hint: parsedOutput
+          })
+        } else {
+          await prisma.day.create({
+            data: {
+              userId: targetUser.id,
+              date,
+              week,
+              month,
+              quarter,
+              semester,
+              tasks: [],
+              ticker: [],
+              analysis: {
+                hint: parsedOutput
+              }
             }
-          }
-        })
+          })
+        }
       }
 
       return Response.json({ result: parsedOutput });
