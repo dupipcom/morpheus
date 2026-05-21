@@ -48,8 +48,16 @@ test('filterUnreadChatMessagesForRenotification allows sent messages again after
     filterUnreadChatMessagesForRenotification(
       sampleMessages,
       [
-        { chatMessageId: 'message-1', sentAt: new Date('2026-05-18T08:00:00.000Z') },
-        { chatMessageId: 'message-2', sentAt: new Date('2026-05-20T08:00:00.000Z') },
+        {
+          chatMessageId: 'message-1',
+          createdAt: new Date('2026-05-18T08:00:00.000Z'),
+          sentAt: new Date('2026-05-18T08:00:00.000Z'),
+        },
+        {
+          chatMessageId: 'message-2',
+          createdAt: new Date('2026-05-20T08:00:00.000Z'),
+          sentAt: new Date('2026-05-20T08:00:00.000Z'),
+        },
       ],
       new Date('2026-05-21T09:00:00.000Z'),
     ).map((message) => message.id),
@@ -57,14 +65,33 @@ test('filterUnreadChatMessagesForRenotification allows sent messages again after
   )
 })
 
-test('filterUnreadChatMessagesForRenotification keeps pending reservations excluded', () => {
+test('filterUnreadChatMessagesForRenotification keeps fresh pending reservations excluded', () => {
   assert.deepEqual(
     filterUnreadChatMessagesForRenotification(
       sampleMessages,
-      [{ chatMessageId: 'message-1', sentAt: null }],
+      [{
+        chatMessageId: 'message-1',
+        createdAt: new Date('2026-05-21T08:00:00.000Z'),
+        sentAt: null,
+      }],
       new Date('2026-05-21T09:00:00.000Z'),
     ).map((message) => message.id),
     ['message-2'],
+  )
+})
+
+test('filterUnreadChatMessagesForRenotification allows stale pending reservations again after 2 hours', () => {
+  assert.deepEqual(
+    filterUnreadChatMessagesForRenotification(
+      sampleMessages,
+      [{
+        chatMessageId: 'message-1',
+        createdAt: new Date('2026-05-21T06:30:00.000Z'),
+        sentAt: null,
+      }],
+      new Date('2026-05-21T09:00:00.000Z'),
+    ).map((message) => message.id),
+    ['message-2', 'message-1'],
   )
 })
 

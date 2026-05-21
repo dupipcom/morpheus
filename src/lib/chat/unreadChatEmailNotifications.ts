@@ -131,35 +131,41 @@ export function filterAlreadyNotifiedMessages<T extends { id: string }>(
 
 export function filterUnreadChatMessagesForRenotification<T extends { id: string }>(
   messages: T[],
-  notifications: Array<{ chatMessageId: string | null; sentAt: Date | null }>,
+  notifications: Array<{ chatMessageId: string | null; createdAt: Date; sentAt: Date | null }>,
   now = new Date(),
 ) {
-  const cutoff = new Date(now.getTime() - UNREAD_CHAT_RENOTIFY_AFTER_MS)
-  const lastSentAtByMessageId = new Map<string, Date | null>()
+  const renotifyCutoff = new Date(now.getTime() - UNREAD_CHAT_RENOTIFY_AFTER_MS)
+  const stalePendingCutoff = new Date(now.getTime() - STALE_PENDING_NOTIFICATION_MS)
+  const latestNotificationByMessageId = new Map<string, { createdAt: Date; sentAt: Date | null }>()
 
   for (const notification of notifications) {
     if (!notification.chatMessageId) {
       continue
     }
 
-    const existingSentAt = lastSentAtByMessageId.get(notification.chatMessageId)
+    const existingNotification = latestNotificationByMessageId.get(notification.chatMessageId)
+    const notificationTimestamp = notification.sentAt?.getTime() ?? notification.createdAt.getTime()
+    const existingTimestamp = existingNotification
+      ? (existingNotification.sentAt?.getTime() ?? existingNotification.createdAt.getTime())
+      : null
 
-    if (notification.sentAt === null) {
-      lastSentAtByMessageId.set(notification.chatMessageId, null)
-      continue
-    }
-
-    if (
-      existingSentAt === undefined ||
-      (existingSentAt !== null && notification.sentAt.getTime() > existingSentAt.getTime())
-    ) {
-      lastSentAtByMessageId.set(notification.chatMessageId, notification.sentAt)
+    if (existingTimestamp === null || notificationTimestamp > existingTimestamp) {
+      latestNotificationByMessageId.set(notification.chatMessageId, notification)
     }
   }
 
   return messages.filter((message) => {
-    const lastSentAt = lastSentAtByMessageId.get(message.id)
-    return lastSentAt === undefined || (lastSentAt !== null && lastSentAt <= cutoff)
+    const latestNotification = latestNotificationByMessageId.get(message.id)
+
+    if (!latestNotification) {
+      return true
+    }
+
+    if (latestNotification.sentAt === null) {
+      return latestNotification.createdAt <= stalePendingCutoff
+    }
+
+    return latestNotification.sentAt <= renotifyCutoff
   })
 }
 
@@ -361,7 +367,7 @@ async function listUnreadMessagesForUser(userId: string) {
       type: UNREAD_CHAT_MESSAGE_NOTIFICATION,
       chatMessageId: { in: candidates.map((candidate) => candidate.id) },
     },
-    select: { chatMessageId: true, sentAt: true },
+    select: { chatMessageId: true, createdAt: true, sentAt: true },
   })
 
   const pendingMessages = filterUnreadChatMessagesForRenotification(
@@ -447,7 +453,13 @@ async function reserveNotificationScope({
     where: {
       recipientUserId,
       scopeKey,
-      sentAt: { lte: new Date(Date.now() - UNREAD_CHAT_RENOTIFY_AFTER_MS) },
+      OR: [
+        { sentAt: { lte: new Date(Date.now() - UNREAD_CHAT_RENOTIFY_AFTER_MS) } },
+        {
+          sentAt: null,
+          createdAt: { lte: new Date(Date.now() - STALE_PENDING_NOTIFICATION_MS) },
+        },
+      ],
     },
     data: {
       type,
