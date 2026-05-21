@@ -581,6 +581,12 @@ export async function processUnreadChatEmailNotifications() {
       sentEmails += 1
       reservedMessages += batch.messages.length
     } catch (error) {
+      console.error('Failed to send unread chat summary email:', {
+        recipientUserId: recipient.id,
+        recipientEmail: recipient.email,
+        messageIds: batch.messages.map((message) => message.id),
+        error,
+      })
       await releaseUnreadChatBatch(batch)
       throw error
     }
