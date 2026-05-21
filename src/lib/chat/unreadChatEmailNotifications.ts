@@ -14,8 +14,9 @@ const NOT_DELETED_FILTER = {
 
 const UNREAD_CHAT_MESSAGE_NOTIFICATION = 'UNREAD_CHAT_MESSAGE'
 const UNREAD_CHAT_BATCH_NOTIFICATION = 'UNREAD_CHAT_BATCH'
-// Pending reservations older than 2 hours are treated as abandoned so future hourly runs can retry them.
+// Pending reservations older than 2 hours are treated as abandoned so future cron runs can retry them.
 const STALE_PENDING_NOTIFICATION_MS = 2 * 60 * 60 * 1000
+const UNREAD_CHAT_RENOTIFY_AFTER_MS = 3 * 24 * 60 * 60 * 1000
 
 export type UnreadChatEmailMessage = {
   id: string
@@ -126,6 +127,40 @@ export function filterAlreadyNotifiedMessages<T extends { id: string }>(
 ) {
   const notifiedIds = new Set(notifiedMessageIds)
   return messages.filter((message) => !notifiedIds.has(message.id))
+}
+
+export function filterUnreadChatMessagesForRenotification<T extends { id: string }>(
+  messages: T[],
+  notifications: Array<{ chatMessageId: string | null; sentAt: Date | null }>,
+  now = new Date(),
+) {
+  const cutoff = new Date(now.getTime() - UNREAD_CHAT_RENOTIFY_AFTER_MS)
+  const lastSentAtByMessageId = new Map<string, Date | null>()
+
+  for (const notification of notifications) {
+    if (!notification.chatMessageId) {
+      continue
+    }
+
+    const existingSentAt = lastSentAtByMessageId.get(notification.chatMessageId)
+
+    if (notification.sentAt === null) {
+      lastSentAtByMessageId.set(notification.chatMessageId, null)
+      continue
+    }
+
+    if (
+      existingSentAt === undefined ||
+      (existingSentAt !== null && notification.sentAt.getTime() > existingSentAt.getTime())
+    ) {
+      lastSentAtByMessageId.set(notification.chatMessageId, notification.sentAt)
+    }
+  }
+
+  return messages.filter((message) => {
+    const lastSentAt = lastSentAtByMessageId.get(message.id)
+    return lastSentAt === undefined || (lastSentAt !== null && lastSentAt <= cutoff)
+  })
 }
 
 export function buildUnreadChatEmailSubject(messageCount: number) {
@@ -326,12 +361,12 @@ async function listUnreadMessagesForUser(userId: string) {
       type: UNREAD_CHAT_MESSAGE_NOTIFICATION,
       chatMessageId: { in: candidates.map((candidate) => candidate.id) },
     },
-    select: { chatMessageId: true },
+    select: { chatMessageId: true, sentAt: true },
   })
 
-  const pendingMessages = filterAlreadyNotifiedMessages(
+  const pendingMessages = filterUnreadChatMessagesForRenotification(
     candidates,
-    existingNotifications.flatMap((notification) => (notification.chatMessageId ? [notification.chatMessageId] : [])),
+    existingNotifications,
   )
 
   if (pendingMessages.length === 0) return []
@@ -377,6 +412,54 @@ async function cleanupStalePendingNotifications() {
   })
 }
 
+async function reserveNotificationScope({
+  recipientUserId,
+  scopeKey,
+  type,
+  payload,
+  chatMessageId,
+}: {
+  recipientUserId: string
+  scopeKey: string
+  type: string
+  payload?: Record<string, unknown>
+  chatMessageId?: string
+}) {
+  try {
+    await prisma.emailNotification.create({
+      data: {
+        type,
+        scopeKey,
+        recipientUserId,
+        chatMessageId,
+        payload,
+      },
+    })
+
+    return true
+  } catch (error) {
+    if (!isUniqueConstraintError(error)) {
+      throw error
+    }
+  }
+
+  const reclaimedNotification = await prisma.emailNotification.updateMany({
+    where: {
+      recipientUserId,
+      scopeKey,
+      sentAt: { lte: new Date(Date.now() - UNREAD_CHAT_RENOTIFY_AFTER_MS) },
+    },
+    data: {
+      type,
+      chatMessageId,
+      payload,
+      sentAt: null,
+    },
+  })
+
+  return reclaimedNotification.count > 0
+}
+
 async function reserveUnreadChatBatch(recipient: ChatEmailRecipient, messages: UnreadChatEmailMessage[]) {
   if (messages.length === 0) {
     return null
@@ -385,23 +468,17 @@ async function reserveUnreadChatBatch(recipient: ChatEmailRecipient, messages: U
   const batchKey = createUnreadChatBatchKey(messages.map((message) => message.id))
   const batchScopeKey = createNotificationScopeKey(UNREAD_CHAT_BATCH_NOTIFICATION, batchKey)
 
-  try {
-    await prisma.emailNotification.create({
-      data: {
-        type: UNREAD_CHAT_BATCH_NOTIFICATION,
-        scopeKey: batchScopeKey,
-        recipientUserId: recipient.id,
-        payload: {
-          messageIds: messages.map((message) => message.id),
-        },
-      },
-    })
-  } catch (error) {
-    if (isUniqueConstraintError(error)) {
-      return null
-    }
+  const reservedBatch = await reserveNotificationScope({
+    recipientUserId: recipient.id,
+    scopeKey: batchScopeKey,
+    type: UNREAD_CHAT_BATCH_NOTIFICATION,
+    payload: {
+      messageIds: messages.map((message) => message.id),
+    },
+  })
 
-    throw error
+  if (!reservedBatch) {
+    return null
   }
 
   const reservedMessageScopeKeys: string[] = []
@@ -410,18 +487,20 @@ async function reserveUnreadChatBatch(recipient: ChatEmailRecipient, messages: U
     for (const message of messages) {
       const scopeKey = createNotificationScopeKey(UNREAD_CHAT_MESSAGE_NOTIFICATION, message.id)
 
-      await prisma.emailNotification.create({
-        data: {
-          type: UNREAD_CHAT_MESSAGE_NOTIFICATION,
-          scopeKey,
-          recipientUserId: recipient.id,
-          chatMessageId: message.id,
-          payload: {
-            batchKey,
-            roomLabel: message.roomLabel,
-          },
+      const reservedMessage = await reserveNotificationScope({
+        recipientUserId: recipient.id,
+        scopeKey,
+        type: UNREAD_CHAT_MESSAGE_NOTIFICATION,
+        chatMessageId: message.id,
+        payload: {
+          batchKey,
+          roomLabel: message.roomLabel,
         },
       })
+
+      if (!reservedMessage) {
+        throw new Error(`Unread chat message notification already reserved for ${message.id}`)
+      }
 
       reservedMessageScopeKeys.push(scopeKey)
     }
@@ -437,7 +516,7 @@ async function reserveUnreadChatBatch(recipient: ChatEmailRecipient, messages: U
       },
     })
 
-    if (isUniqueConstraintError(error)) {
+    if (error instanceof Error && error.message.startsWith('Unread chat message notification already reserved for ')) {
       return null
     }
 

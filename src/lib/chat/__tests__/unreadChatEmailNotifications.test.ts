@@ -6,6 +6,7 @@ import {
   buildUnreadChatEmailText,
   createUnreadChatBatchKey,
   filterAlreadyNotifiedMessages,
+  filterUnreadChatMessagesForRenotification,
   isAuthorizedCronRequest,
 } from '../unreadChatEmailNotifications'
 
@@ -38,6 +39,31 @@ test('createUnreadChatBatchKey is stable regardless of message order', () => {
 test('filterAlreadyNotifiedMessages removes already tracked message ids', () => {
   assert.deepEqual(
     filterAlreadyNotifiedMessages(sampleMessages, ['message-1']).map((message) => message.id),
+    ['message-2'],
+  )
+})
+
+test('filterUnreadChatMessagesForRenotification allows sent messages again after 3 days', () => {
+  assert.deepEqual(
+    filterUnreadChatMessagesForRenotification(
+      sampleMessages,
+      [
+        { chatMessageId: 'message-1', sentAt: new Date('2026-05-18T08:00:00.000Z') },
+        { chatMessageId: 'message-2', sentAt: new Date('2026-05-20T08:00:00.000Z') },
+      ],
+      new Date('2026-05-21T09:00:00.000Z'),
+    ).map((message) => message.id),
+    ['message-1'],
+  )
+})
+
+test('filterUnreadChatMessagesForRenotification keeps pending reservations excluded', () => {
+  assert.deepEqual(
+    filterUnreadChatMessagesForRenotification(
+      sampleMessages,
+      [{ chatMessageId: 'message-1', sentAt: null }],
+      new Date('2026-05-21T09:00:00.000Z'),
+    ).map((message) => message.id),
     ['message-2'],
   )
 })
