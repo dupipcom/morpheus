@@ -13,6 +13,14 @@ npm run dev
 
 Documentation: TBD
 
+## Unread chat email cron
+
+- Vercel cron schedule is defined in `/home/runner/work/morpheus/morpheus/vercel.json` and calls `/api/cron/unread-chat-emails` hourly.
+- Set `CRON_SECRET` so the cron route only accepts authorized requests.
+- Configure Brevo SMTP with `BREVO_SMTP_HOST`, `BREVO_SMTP_PORT`, `BREVO_SMTP_USER`, `BREVO_SMTP_PASS`, `BREVO_SMTP_FROM_EMAIL`, and optional `BREVO_SMTP_FROM_NAME`.
+- Apply the Prisma schema change before running the cron in a real environment (for example with `npx prisma db push`).
+- Unread chat summary emails intentionally omit message contents for privacy and only send when a user has new unread chat messages that have not already been emailed.
+
 Nightly Environment: https://beta.dupip.com
 
 Production Environment: https://www.dupip.com
@@ -27,5 +35,3 @@ Purizu di Angelo Reale Caldeira de Lemos and Remotelys Portais de Internet Ltda 
 P.IVA IT02925300903
 REA 572763
 CNPJ 37.553.462/0001-46
-
-
