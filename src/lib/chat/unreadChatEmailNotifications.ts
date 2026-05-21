@@ -221,6 +221,13 @@ export function buildUnreadChatEmailHtml(messages: UnreadChatEmailMessage[], cha
     })
     .join('')
 
+  const footerLines = [
+    '© 2012-2026 Dupip. All rights reserved.',
+    'IVA IT02925300903',
+    'REA 572763',
+    'CNPJ 37.553.462/0001-46',
+  ]
+
   return `
     <html>
       <body style="margin:0; padding:24px 12px; background:#f1cfff; color:#2f2f8d; font-family:Arial, sans-serif;">
@@ -228,6 +235,11 @@ export function buildUnreadChatEmailHtml(messages: UnreadChatEmailMessage[], cha
           <tr>
             <td align="center">
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px; border-collapse:collapse; background:#ffffff; border:4px solid #c4abef; border-radius:12px; overflow:hidden;">
+                <tr>
+                  <td align="center" style="padding:18px 32px; background:#ff6a9e;">
+                    <img src="https://www.dupip.com/images/logo.png" alt="Dupip logo" width="140" height="42" style="display:block; width:140px; max-width:100%; height:auto;" />
+                  </td>
+                </tr>
                 <tr>
                   <td style="padding:20px 32px; background:#563769; color:#ffe5fc;">
                     <div style="font-size:24px; font-weight:700; line-height:30px;">You&#39;ve got unread chats ✨</div>
@@ -248,7 +260,10 @@ export function buildUnreadChatEmailHtml(messages: UnreadChatEmailMessage[], cha
                 </tr>
                 <tr>
                   <td style="padding:16px 32px; background:#ffe5fc; color:#563769; font-size:13px; line-height:18px;">
-                    This is an automated message from Dupip. For privacy, message contents are not included in this email.
+                    <div>This is an automated message from Dupip. For privacy, message contents are not included in this email.</div>
+                    <div style="margin-top:12px;">
+                      ${footerLines.map((line) => `<div>${escapeHtml(line)}</div>`).join('')}
+                    </div>
                   </td>
                 </tr>
               </table>
