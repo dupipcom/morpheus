@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto'
 import nodemailer from 'nodemailer'
+import { clerkClient } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
 import { defaultLocale } from '@/app/constants'
 import { getRoomKey } from './unread'
@@ -236,7 +237,7 @@ export function buildUnreadChatEmailHtml(messages: UnreadChatEmailMessage[], cha
             <td align="center">
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px; border-collapse:collapse; background:#ffffff; border:4px solid #c4abef; border-radius:12px; overflow:hidden;">
                 <tr>
-                  <td align="center" style="padding:18px 32px; background:#ff6a9e;">
+                  <td align="center" style="padding:18px 32px; background:#ffe5fc;">
                     <img src="https://www.dupip.com/images/logo.png" alt="Dupip logo" width="140" height="42" style="display:block; width:140px; max-width:100%; height:auto;" />
                   </td>
                 </tr>
@@ -592,15 +593,48 @@ async function listChatNotificationRecipients() {
     return []
   }
 
-  return prisma.user.findMany({
-    where: {
-      id: { in: candidateUserIds },
-      email: { not: null },
-    },
-    select: { id: true, email: true },
-  }).then((users) =>
-    users.flatMap((user) => (user.email ? [{ id: user.id, email: user.email }] : [])),
-  )
+  const users = await prisma.user.findMany({
+    where: { id: { in: candidateUserIds } },
+    select: { id: true, email: true, userId: true },
+  })
+
+  const withEmail = users.filter((user) => !!user.email) as Array<{ id: string; email: string; userId: string | null }>
+  const withoutEmail = users.filter((user) => !user.email && user.userId)
+
+  let clerkEmails = new Map<string, string>()
+
+  if (withoutEmail.length > 0) {
+    try {
+      const clerk = await clerkClient()
+      const clerkUserIds = withoutEmail.map((user) => user.userId as string)
+      const clerkUsers = await clerk.users.getUserList({ userId: clerkUserIds, limit: clerkUserIds.length })
+      for (const clerkUser of clerkUsers.data) {
+        const primaryEmail = clerkUser.emailAddresses.find(
+          (addr) => addr.id === clerkUser.primaryEmailAddressId,
+        )?.emailAddress
+        if (primaryEmail) {
+          clerkEmails.set(clerkUser.id, primaryEmail)
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch emails from Clerk:', error)
+    }
+  }
+
+  const recipients: ChatEmailRecipient[] = []
+
+  for (const user of withEmail) {
+    recipients.push({ id: user.id, email: user.email })
+  }
+
+  for (const user of withoutEmail) {
+    const email = clerkEmails.get(user.userId as string)
+    if (email) {
+      recipients.push({ id: user.id, email })
+    }
+  }
+
+  return recipients
 }
 
 async function markUnreadChatBatchSent(batch: PreparedUnreadChatBatch) {
