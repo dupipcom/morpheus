@@ -15,7 +15,7 @@ Documentation: TBD
 
 ## Unread chat email cron
 
-- Vercel cron schedule is defined in `/home/runner/work/morpheus/morpheus/vercel.json` and calls `/api/cron/unread-chat-emails` hourly.
+- Vercel cron schedule is defined in `vercel.json` and calls `/api/cron/unread-chat-emails` hourly.
 - Set `CRON_SECRET` so the cron route only accepts authorized requests.
 - Configure Brevo SMTP with `BREVO_SMTP_HOST`, `BREVO_SMTP_PORT`, `BREVO_SMTP_USER`, `BREVO_SMTP_PASS`, `BREVO_SMTP_FROM_EMAIL`, and optional `BREVO_SMTP_FROM_NAME`.
 - Apply the Prisma schema change before running the cron in a real environment (for example with `npx prisma db push`).

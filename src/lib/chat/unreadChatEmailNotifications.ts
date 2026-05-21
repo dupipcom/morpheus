@@ -116,7 +116,7 @@ function formatNotificationTimestamp(sentAt: Date) {
 }
 
 export function createUnreadChatBatchKey(messageIds: string[]) {
-  return createHash('sha256').update([...messageIds].sort().join('|')).digest('hex')
+  return createHash('sha256').update(messageIds.slice().sort().join('|')).digest('hex')
 }
 
 export function filterAlreadyNotifiedMessages<T extends { id: string }>(
@@ -158,7 +158,7 @@ export function buildUnreadChatEmailHtml(messages: UnreadChatEmailMessage[], cha
       const timeLabel = escapeHtml(formatNotificationTimestamp(message.sentAt))
       const avatar = message.senderAvatarUrl
         ? `<img src="${escapeHtml(message.senderAvatarUrl)}" alt="${senderLabel} avatar" width="44" height="44" style="display:block; width:44px; height:44px; border-radius:22px; border:2px solid #ff6a9e; object-fit:cover;" />`
-        : `<div style="width:44px; height:44px; border-radius:22px; border:2px solid #ff6a9e; background:#ffe5fc; color:#563769; font-size:18px; font-weight:700; line-height:40px; text-align:center;">${escapeHtml((message.senderDisplayName[0] || '?').toUpperCase())}</div>`
+        : `<div style="width:44px; height:44px; border-radius:22px; border:2px solid #ff6a9e; background:#ffe5fc; color:#563769; font-size:18px; font-weight:700; line-height:40px; text-align:center;">${escapeHtml((message.senderDisplayName?.charAt(0) || '?').toUpperCase())}</div>`
 
       return `
         <tr>
@@ -188,7 +188,7 @@ export function buildUnreadChatEmailHtml(messages: UnreadChatEmailMessage[], cha
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px; border-collapse:collapse; background:#ffffff; border:4px solid #c4abef; border-radius:12px; overflow:hidden;">
                 <tr>
                   <td style="padding:20px 32px; background:#563769; color:#ffe5fc;">
-                    <div style="font-size:24px; font-weight:700; line-height:30px;">You&apos;ve got unread chats ✨</div>
+                    <div style="font-size:24px; font-weight:700; line-height:30px;">You&#39;ve got unread chats ✨</div>
                     <div style="font-size:14px; line-height:20px; margin-top:8px; color:#f1cfff;">Dupip collected your latest unread chat activity in one privacy-friendly summary.</div>
                   </td>
                 </tr>
