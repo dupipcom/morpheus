@@ -4,7 +4,8 @@ import { isAuthorizedCronRequest, processUnreadChatEmailNotifications } from '@/
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
-// Conservative upper bound for hourly fan-out work across many recipients.
+// Conservative upper bound for the initial hourly fan-out implementation; if recipient volume grows,
+// this flow should be split into smaller batches before increasing complexity here.
 export const maxDuration = 300
 
 export async function GET(request: NextRequest) {

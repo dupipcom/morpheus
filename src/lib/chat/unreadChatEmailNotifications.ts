@@ -14,6 +14,7 @@ const NOT_DELETED_FILTER = {
 
 const UNREAD_CHAT_MESSAGE_NOTIFICATION = 'UNREAD_CHAT_MESSAGE'
 const UNREAD_CHAT_BATCH_NOTIFICATION = 'UNREAD_CHAT_BATCH'
+// Pending reservations older than 2 hours are treated as abandoned so future hourly runs can retry them.
 const STALE_PENDING_NOTIFICATION_MS = 2 * 60 * 60 * 1000
 
 export type UnreadChatEmailMessage = {
