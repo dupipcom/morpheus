@@ -511,7 +511,9 @@ async function reserveUnreadChatBatch(recipient: ChatEmailRecipient, messages: U
       })
 
       if (!reservedMessage) {
-        throw new Error(`Unread chat message notification already reserved for ${message.id}`)
+        throw new Error(
+          `Unread chat message notification is already reserved or not yet eligible for resend: ${message.id}`,
+        )
       }
 
       reservedMessageScopeKeys.push(scopeKey)
@@ -528,7 +530,10 @@ async function reserveUnreadChatBatch(recipient: ChatEmailRecipient, messages: U
       },
     })
 
-    if (error instanceof Error && error.message.startsWith('Unread chat message notification already reserved for ')) {
+    if (
+      error instanceof Error &&
+      error.message.startsWith('Unread chat message notification is already reserved or not yet eligible for resend:')
+    ) {
       return null
     }
 
