@@ -389,7 +389,9 @@
     "closeFriend": "Nära vän",
     "friends": "Vänner",
     "signInToAdd": "Logga in för att lägga till vän",
-    "editProfile": "Redigera profil"
+    "editProfile": "Redigera profil",
+    "alreadyFriends": "Already friends",
+    "message": "Message"
   },
   "profile": {
     "editProfile": "Redigera profil",

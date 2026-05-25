@@ -403,7 +403,9 @@
     "closeFriend": "親しい友達",
     "friends": "友達",
     "signInToAdd": "友達を追加するにはサインイン",
-    "editProfile": "プロフィールを編集"
+    "editProfile": "プロフィールを編集",
+    "alreadyFriends": "Already friends",
+    "message": "Message"
   },
   "profile": {
     "editProfile": "プロフィール編集",

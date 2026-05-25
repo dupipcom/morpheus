@@ -403,7 +403,9 @@
     "closeFriend": "Amigo próximo",
     "friends": "Amigos",
     "signInToAdd": "Faça login para adicionar amigo",
-    "editProfile": "Editar perfil"
+    "editProfile": "Editar perfil",
+    "alreadyFriends": "Already friends",
+    "message": "Message"
   },
   "profile": {
     "editProfile": "Editar Perfil",

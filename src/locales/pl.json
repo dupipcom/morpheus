@@ -407,7 +407,9 @@
     "closeFriend": "Bliski przyjaciel",
     "friends": "Znajomi",
     "signInToAdd": "Zaloguj się, aby dodać znajomego",
-    "editProfile": "Edytuj profil"
+    "editProfile": "Edytuj profil",
+    "alreadyFriends": "Already friends",
+    "message": "Message"
   },
   "profile": {
     "editProfile": "Edytuj profil",

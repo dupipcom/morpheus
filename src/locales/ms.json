@@ -390,7 +390,9 @@
     "closeFriend": "Rakan rapat",
     "friends": "Rakan-rakan",
     "signInToAdd": "Log masuk untuk menambah rakan",
-    "editProfile": "Edit profil"
+    "editProfile": "Edit profil",
+    "alreadyFriends": "Already friends",
+    "message": "Message"
   },
   "profile": {
     "editProfile": "Edit profil",

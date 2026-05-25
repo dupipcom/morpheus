@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { UserPlus, Check, Loader2, Heart, Users } from 'lucide-react'
+import { UserPlus, Check, Loader2, Heart, Users, MessageSquare } from 'lucide-react'
 import { toast } from 'sonner'
 import { useI18n } from '@/lib/contexts/i18n'
 import { track } from '@vercel/analytics'
+import Link from 'next/link'
 
 interface AddFriendButtonProps {
   targetUserName: string
@@ -93,19 +94,35 @@ export function AddFriendButton({ targetUserName, className }: AddFriendButtonPr
   // Show different states based on friendship status
   if (friendshipStatus?.isCloseFriend) {
     return (
-      <Button disabled className={className} variant="outline">
-        <Heart className="w-4 h-4 mr-2" />
-        {t('friends.closeFriend')}
-      </Button>
+      <div className="flex gap-2">
+        <Button disabled className={className} variant="outline">
+          <Heart className="w-4 h-4 mr-2" />
+          {t('friends.alreadyFriends')}
+        </Button>
+        <Link href={`/app/chat/${targetUserName}`}>
+          <Button className={className} variant="outline">
+            <MessageSquare className="w-4 h-4 mr-2" />
+            {t('friends.message')}
+          </Button>
+        </Link>
+      </div>
     )
   }
 
   if (friendshipStatus?.isFriend) {
     return (
-      <Button disabled className={className} variant="outline">
-        <Users className="w-4 h-4 mr-2" />
-        {t('friends.friends')}
-      </Button>
+      <div className="flex gap-2">
+        <Button disabled className={className} variant="outline">
+          <Users className="w-4 h-4 mr-2" />
+          {t('friends.alreadyFriends')}
+        </Button>
+        <Link href={`/app/chat/${targetUserName}`}>
+          <Button className={className} variant="outline">
+            <MessageSquare className="w-4 h-4 mr-2" />
+            {t('friends.message')}
+          </Button>
+        </Link>
+      </div>
     )
   }
 

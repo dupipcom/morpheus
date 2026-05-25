@@ -386,7 +386,9 @@
     "closeFriend": "Blízký přítel",
     "friends": "Přátelé",
     "signInToAdd": "Přihlaste se pro přidání přítele",
-    "editProfile": "Upravit profil"
+    "editProfile": "Upravit profil",
+    "alreadyFriends": "Already friends",
+    "message": "Message"
   },
   "profile": {
     "editProfile": "Upravit profil",

@@ -386,7 +386,9 @@
     "closeFriend": "Lähedane sõber",
     "friends": "Sõbrad",
     "signInToAdd": "Logi sisse, et lisada sõber",
-    "editProfile": "Muuda profiili"
+    "editProfile": "Muuda profiili",
+    "alreadyFriends": "Already friends",
+    "message": "Message"
   },
   "profile": {
     "editProfile": "Redigeeri profiili",

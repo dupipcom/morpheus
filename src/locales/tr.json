@@ -407,7 +407,9 @@
     "closeFriend": "Yakın arkadaş",
     "friends": "Arkadaşlar",
     "signInToAdd": "Arkadaş eklemek için giriş yapın",
-    "editProfile": "Profili düzenle"
+    "editProfile": "Profili düzenle",
+    "alreadyFriends": "Already friends",
+    "message": "Message"
   },
   "profile": {
     "editProfile": "Profili düzenle",

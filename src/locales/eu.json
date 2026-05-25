@@ -388,7 +388,9 @@
     "closeFriend": "Lagun hurbila",
     "friends": "Lagunak",
     "signInToAdd": "Hasi saioa lagun bat gehitzeko",
-    "editProfile": "Profila editatu"
+    "editProfile": "Profila editatu",
+    "alreadyFriends": "Already friends",
+    "message": "Message"
   },
   "profile": {
     "editProfile": "Profila editatu",

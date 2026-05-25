@@ -390,7 +390,9 @@
     "closeFriend": "Nær ven",
     "friends": "Venner",
     "signInToAdd": "Log ind for at tilføje ven",
-    "editProfile": "Rediger profil"
+    "editProfile": "Rediger profil",
+    "alreadyFriends": "Already friends",
+    "message": "Message"
   },
   "profile": {
     "editProfile": "Rediger profil",

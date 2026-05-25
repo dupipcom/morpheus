@@ -386,7 +386,9 @@
     "closeFriend": "घनिष्ठ मित्र",
     "friends": "मित्र",
     "signInToAdd": "मित्र जोड़ने के लिए साइन इन करें",
-    "editProfile": "प्रोफ़ाइल संपादित करें"
+    "editProfile": "प्रोफ़ाइल संपादित करें",
+    "alreadyFriends": "Already friends",
+    "message": "Message"
   },
   "profile": {
     "editProfile": "प्रोफ़ाइल संपादित करें",

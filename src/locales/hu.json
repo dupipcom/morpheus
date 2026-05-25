@@ -385,7 +385,9 @@
     "closeFriend": "Közeli barát",
     "friends": "Barátok",
     "signInToAdd": "Jelentkezz be barát hozzáadásához",
-    "editProfile": "Profil szerkesztése"
+    "editProfile": "Profil szerkesztése",
+    "alreadyFriends": "Already friends",
+    "message": "Message"
   },
   "profile": {
     "editProfile": "Profil szerkesztése",

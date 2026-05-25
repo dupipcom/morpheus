@@ -386,7 +386,9 @@
     "closeFriend": "Dichte vriend",
     "friends": "Vrienden",
     "signInToAdd": "Log in om een vriend toe te voegen",
-    "editProfile": "Profiel bewerken"
+    "editProfile": "Profiel bewerken",
+    "alreadyFriends": "Already friends",
+    "message": "Message"
   },
   "profile": {
     "editProfile": "Profiel bewerken",

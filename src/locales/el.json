@@ -383,7 +383,9 @@
     "closeFriend": "Στενός φίλος",
     "friends": "Φίλοι",
     "signInToAdd": "Συνδεθείτε για να προσθέσετε φίλο",
-    "editProfile": "Επεξεργασία προφίλ"
+    "editProfile": "Επεξεργασία προφίλ",
+    "alreadyFriends": "Already friends",
+    "message": "Message"
   },
   "profile": {
     "editProfile": "Επεξεργασία προφίλ",
