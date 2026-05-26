@@ -695,7 +695,7 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
 
   return (
     <ContentLoadingWrapper>
-      <div key={JSON.stringify(serverMood)} className="w-full m-auto p-4">
+      <div key={JSON.stringify(serverMood)} className="w-full max-w-[720px] m-auto p-4">
         <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger 
