@@ -605,7 +605,13 @@ export const TaskGrid = ({
           {
             label: t('tasks.edit', { defaultValue: 'Edit' }),
             onClick: () => {
-              // Find the source task from list.tasks (the template)
+              // For real Task model records (with id, not ephemeral), use the task directly
+              // so that the correct Task record id is used when saving via the API.
+              if (task.id && !task.isEphemeral) {
+                setEditingTask(taskWithOptimisticCount)
+                return
+              }
+              // For ephemeral or legacy embedded tasks, find the source task from list.tasks
               const sourceTask = selectedTaskList?.tasks?.find((t: any) =>
                 t.id === task.id ||
                 t.localeKey === task.localeKey ||
@@ -615,7 +621,6 @@ export const TaskGrid = ({
                 t.localeKey === task.localeKey ||
                 (t.name && task.name && t.name.toLowerCase() === task.name.toLowerCase())
               )
-              // Use source task if found, otherwise fall back to current task for ephemeral tasks
               setEditingTask(sourceTask || taskWithOptimisticCount)
             },
             icon: <Edit className="h-4 w-4" />,
