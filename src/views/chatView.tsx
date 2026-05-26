@@ -660,7 +660,7 @@ export function ChatView() {
         </div>
       </div>
 
-      <div className="flex-1 space-y-4 overflow-y-auto p-4">
+      <div className="flex-1 space-y-4 overflow-y-auto p-4 pb-20 md:pb-4">
         {isMessagesLoading ? (
           <p className="text-sm text-muted-foreground">Loading messages…</p>
         ) : messages.length > 0 ? (
@@ -673,7 +673,7 @@ export function ChatView() {
         <div ref={messagesEndRef} />
       </div>
 
-      {activeRoom && <ChatComposer placeholder="Write a message…" onSubmit={sendMessage} />}
+      {activeRoom && <ChatComposer placeholder="Write a message…" onSubmit={sendMessage} collapsible />}
     </div>
   )
 
@@ -691,7 +691,7 @@ export function ChatView() {
           Close
         </Button>
       </div>
-      <div className="flex-1 space-y-4 overflow-y-auto p-4">
+      <div className="flex-1 space-y-4 overflow-y-auto p-4 pb-20 md:pb-4">
         {isThreadLoading ? (
           <p className="text-sm text-muted-foreground">Loading thread…</p>
         ) : threadData?.root ? (
@@ -704,7 +704,7 @@ export function ChatView() {
         )}
         <div ref={threadEndRef} />
       </div>
-      {threadData?.root && <ChatComposer placeholder="Reply in thread…" onSubmit={sendThreadReply} />}
+      {threadData?.root && <ChatComposer placeholder="Reply in thread…" onSubmit={sendThreadReply} collapsible />}
     </div>
   )
 
