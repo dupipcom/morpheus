@@ -28,7 +28,7 @@ export function PublicNotesViewer({ userName, showCard = true, gridLayout = fals
     const translated = t(key)
     return translated === key ? fallback : translated
   }
-  const [visibilityFilter, setVisibilityFilter] = useState<Array<NoteVisibility>>(['PUBLIC'])
+  const [visibilityFilter, setVisibilityFilter] = useState<Array<NoteVisibility>>(['PUBLIC', 'FRIENDS', 'CLOSE_FRIENDS', 'PRIVATE', 'AI_ENABLED'])
   const [sortBy, setSortBy] = useState<'date' | 'most_relevant'>('most_relevant')
   const [isReversed, setIsReversed] = useState(false)
   const { notes, isLoading: loading, error: notesError, refreshNotes, isOwnProfile } = useProfileNotes(userName, true, {
@@ -124,32 +124,34 @@ export function PublicNotesViewer({ userName, showCard = true, gridLayout = fals
   const content = (
     <div className="space-y-4">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              className="justify-start gap-2 w-full sm:w-[220px]"
-              aria-label={visibilityPrefixLabel}
-            >
-              <Lock className="h-4 w-4 shrink-0" aria-hidden="true" />
-              <span className="truncate">{visibilityLabel}</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start">
-            {visibilityOptions.map(option => (
-              <DropdownMenuCheckboxItem
-                key={option.value}
-                checked={visibilityFilter.includes(option.value)}
-                onCheckedChange={() => toggleVisibility(option.value)}
+        {isOwnProfile && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className="justify-start gap-2 w-full sm:w-[220px]"
+                aria-label={visibilityPrefixLabel}
               >
-                <span className="flex items-center gap-2">
-                  {option.icon}
-                  {option.label}
-                </span>
-              </DropdownMenuCheckboxItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+                <Lock className="h-4 w-4 shrink-0" aria-hidden="true" />
+                <span className="truncate">{visibilityLabel}</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              {visibilityOptions.map(option => (
+                <DropdownMenuCheckboxItem
+                  key={option.value}
+                  checked={visibilityFilter.includes(option.value)}
+                  onCheckedChange={() => toggleVisibility(option.value)}
+                >
+                  <span className="flex items-center gap-2">
+                    {option.icon}
+                    {option.label}
+                  </span>
+                </DropdownMenuCheckboxItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
 
         <Select value={sortBy} onValueChange={(value) => setSortBy(value as 'date' | 'most_relevant')}>
           <SelectTrigger className="w-full sm:w-[220px]">
