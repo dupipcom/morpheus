@@ -233,6 +233,7 @@ export interface EphemeralCloseOp {
 
 export interface EphemeralUpdateOp {
   id: string
+  name?: string
   count?: number
   status?: string
 }

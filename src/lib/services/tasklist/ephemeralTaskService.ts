@@ -90,10 +90,11 @@ export async function processEphemeralTasks(params: {
     const updateOps = Array.isArray(operations.update) ? operations.update : [operations.update]
 
     updateOps.forEach((updateOp: EphemeralUpdateOp) => {
-      const { id, count, status } = updateOp
+      const { id, name, count, status } = updateOp
       open = open.map((x) => {
         if (x.id === id) {
           const updated = { ...x }
+          if (name !== undefined) updated.name = name
           if (count !== undefined) updated.count = count
           if (status) updated.status = status
           return updated
