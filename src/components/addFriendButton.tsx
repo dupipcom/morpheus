@@ -97,7 +97,7 @@ export function AddFriendButton({ targetUserName, className }: AddFriendButtonPr
       <div className="flex gap-2">
         <Button disabled className={className} variant="outline">
           <Heart className="w-4 h-4 mr-2" />
-          {t('friends.alreadyFriends')}
+          {t('friends.closeFriend')}
         </Button>
         <Link href={`/app/chat/${targetUserName}`}>
           <Button className={className} variant="outline">
@@ -114,7 +114,7 @@ export function AddFriendButton({ targetUserName, className }: AddFriendButtonPr
       <div className="flex gap-2">
         <Button disabled className={className} variant="outline">
           <Users className="w-4 h-4 mr-2" />
-          {t('friends.alreadyFriends')}
+          {t('friends.friends')}
         </Button>
         <Link href={`/app/chat/${targetUserName}`}>
           <Button className={className} variant="outline">
