@@ -399,6 +399,17 @@ export const SteadyTasks = () => {
         return statusA - statusB
       }
       
+      // Within 'in progress', sort by most recent timestamp (most recently moved first)
+      if (((a?.taskStatus as TaskStatus) || 'open') === 'in progress') {
+        const getTimestamp = (task: any): number => {
+          const ts = task.updatedAt || task.completedAt || task.createdAt
+          return ts ? new Date(ts).getTime() : 0
+        }
+        const timeA = getTimestamp(a)
+        const timeB = getTimestamp(b)
+        if (timeA !== timeB) return timeB - timeA // most recent first
+      }
+      
       // Then sort by role priority
       const priorityA = getRolePriority(a.taskListRole || '')
       const priorityB = getRolePriority(b.taskListRole || '')
@@ -453,7 +464,7 @@ export const SteadyTasks = () => {
   const tasksToDisplay = useMemo(() => {
     // If we have tasks from the new API, use them
     if (steadyTasksFromApi.length > 0) {
-      return steadyTasksFromApi.map((t: any) => ({
+      const mapped = steadyTasksFromApi.map((t: any) => ({
         ...t,
         taskStatus: t.status,
         taskListName: t.list?.name || '',
@@ -461,6 +472,42 @@ export const SteadyTasks = () => {
         taskListRole: t.list?.role || '',
         displayName: t.name,
       }))
+
+      const getRolePriority = (role: string): number => {
+        if (role === 'daily.default') return 1
+        if (role === 'weekly.default') return 2
+        if (role?.startsWith('daily.')) return 3
+        if (role?.startsWith('weekly.')) return 4
+        return 5
+      }
+
+      const getLatestAcceptedJobTime = (task: any): number => {
+        const acceptedJobs = task.jobs?.filter((j: any) => j.status === 'ACCEPTED') || []
+        return acceptedJobs.reduce((latest: number, job: any) => {
+          const t = job.createdAt ? new Date(job.createdAt).getTime() : 0
+          return t > latest ? t : latest
+        }, 0)
+      }
+
+      return mapped.sort((a: any, b: any) => {
+        const aIsInProgress = a.taskStatus === 'IN_PROGRESS'
+        const bIsInProgress = b.taskStatus === 'IN_PROGRESS'
+
+        // IN_PROGRESS tasks come before STEADY tasks
+        if (aIsInProgress !== bIsInProgress) {
+          return aIsInProgress ? -1 : 1
+        }
+
+        if (aIsInProgress && bIsInProgress) {
+          // Within IN_PROGRESS, sort by most recently moved (latest ACCEPTED job) first
+          const timeA = getLatestAcceptedJobTime(a)
+          const timeB = getLatestAcceptedJobTime(b)
+          if (timeA !== timeB) return timeB - timeA
+        }
+
+        // For STEADY (or tie-break), sort by role priority
+        return getRolePriority(a.taskListRole || '') - getRolePriority(b.taskListRole || '')
+      })
     }
 
     // Fallback to legacy steadyTasks
