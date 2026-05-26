@@ -79,13 +79,8 @@ export async function GET(req: NextRequest) {
     }
 
     // Get target user by username
-    const targetProfile = await prisma.profile.findFirst({
-      where: {
-        data: {
-          path: ['username', 'value'],
-          equals: targetUserName
-        }
-      }
+    const targetProfile = await prisma.profile.findUnique({
+      where: { username: targetUserName }
     })
     const targetUser = targetProfile ? await prisma.user.findUnique({
       where: { id: targetProfile.userId }
@@ -98,7 +93,8 @@ export async function GET(req: NextRequest) {
     // Check if users are already friends
     const isFriend = currentUser.friends?.includes(targetUser.id) || false
     const isCloseFriend = currentUser.closeFriends?.includes(targetUser.id) || false
-    const hasPendingRequest = currentUser.friendRequests?.includes(targetUser.id) || false
+    // hasPendingRequest: current user sent a request to target — stored in target's friendRequests
+    const hasPendingRequest = targetUser.friendRequests?.includes(currentUser.id) || false
 
     return Response.json({ 
       isFriend,
