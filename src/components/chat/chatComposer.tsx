@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ChevronDown, ChevronUp, SendHorizontal } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
@@ -16,7 +16,15 @@ interface ChatComposerProps {
 export function ChatComposer({ placeholder, onSubmit, disabled = false, collapsible = false }: ChatComposerProps) {
   const [content, setContent] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isOpen, setIsOpen] = useState(true)
+  const [isOpen, setIsOpen] = useState(false)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  // Focus textarea only when the user explicitly opens the composer
+  useEffect(() => {
+    if (isOpen) {
+      textareaRef.current?.focus()
+    }
+  }, [isOpen])
 
   const submit = async () => {
     const trimmed = content.trim()
@@ -41,8 +49,8 @@ export function ChatComposer({ placeholder, onSubmit, disabled = false, collapsi
   if (collapsible) {
     return (
       <>
-        {/* Mobile: fixed overlay at viewport bottom, collapsible */}
-        <div className="fixed bottom-0 left-0 right-0 z-[1010] border-t border-border bg-background/95 backdrop-blur-sm md:hidden">
+        {/* Mobile: fixed overlay, collapsed above the bottom nav; expands to bottom-0 when open */}
+        <div className={`fixed left-0 right-0 z-[1010] border-t border-border bg-background/95 backdrop-blur-sm md:hidden ${isOpen ? 'bottom-0' : 'bottom-20'}`}>
           <div className="flex items-center justify-between px-4 py-2">
             {isOpen ? (
               <span className="sr-only">{placeholder}</span>
@@ -67,13 +75,13 @@ export function ChatComposer({ placeholder, onSubmit, disabled = false, collapsi
           {isOpen && (
             <div className="space-y-3 px-4 pb-4">
               <Textarea
+                ref={textareaRef}
                 value={content}
                 onChange={(event) => setContent(event.target.value)}
                 placeholder={placeholder}
                 className="min-h-[80px] resize-none"
                 disabled={disabled || isSubmitting}
                 onKeyDown={onKeyDown}
-                autoFocus
               />
               <div className="flex justify-end">
                 <Button onClick={() => void submit()} disabled={disabled || isSubmitting || !content.trim()}>
