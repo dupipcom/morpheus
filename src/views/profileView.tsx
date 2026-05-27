@@ -1,8 +1,11 @@
 'use client'
 
 import React from 'react'
+import Link from 'next/link'
+import { Edit } from 'lucide-react'
 
 import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { PublicChartsView } from "@/components/publicChartsView"
 import { AddFriendButtonOrSignIn } from "@/components/addFriendButtonOrSignIn"
@@ -123,13 +126,14 @@ export function ProfileView({
                   />
                 </div>
               )}
-              {showMobileEditProfileButton && profileUserName && (
+              {showMobileEditProfileButton && (
                 <div className="flex justify-center md:hidden">
-                  <AddFriendButtonOrSignIn
-                    targetUserName={profileUserName}
-                    isLoggedIn={isLoggedIn}
-                    currentUserName={currentUserUsername || undefined}
-                  />
+                  <Link href={`/${locale}/app/profile/edit`}>
+                    <Button>
+                      <Edit className="w-4 h-4 mr-2" />
+                      {(translations as any)?.profile?.editProfile || 'Edit Profile'}
+                    </Button>
+                  </Link>
                 </div>
               )}
             </div>
