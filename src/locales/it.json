@@ -403,7 +403,8 @@
     "closeFriend": "Amico stretto",
     "friends": "Amici",
     "signInToAdd": "Accedi per aggiungere un amico",
-    "editProfile": "Modifica profilo"
+    "editProfile": "Modifica profilo",
+    "message": "Messaggio"
   },
   "profile": {
     "editProfile": "Modifica Profilo",

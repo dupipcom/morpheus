@@ -390,7 +390,8 @@
     "closeFriend": "Läheinen ystävä",
     "friends": "Ystävät",
     "signInToAdd": "Kirjaudu sisään lisätäksesi ystävän",
-    "editProfile": "Muokkaa profiilia"
+    "editProfile": "Muokkaa profiilia",
+    "message": "Viesti"
   },
   "profile": {
     "editProfile": "Muokkaa profiilia",
