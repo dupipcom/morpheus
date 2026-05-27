@@ -856,5 +856,13 @@
     "inviteLinkCopied": "आमंत्रण लिंक कॉपी किया गया",
     "inviteSent": "आमंत्रण भेजा गया",
     "inviteAccepted": "आमंत्रण स्वीकार किया गया"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Grid layout",
+      "tight": "Tight",
+      "small": "Small",
+      "wide": "Wide"
+    }
   }
 }

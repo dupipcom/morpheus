@@ -859,5 +859,13 @@
     "inviteLinkCopied": "Inbjudningslänk kopierad",
     "inviteSent": "Inbjudan skickad",
     "inviteAccepted": "Inbjudan accepterad"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Grid layout",
+      "tight": "Tight",
+      "small": "Small",
+      "wide": "Wide"
+    }
   }
 }

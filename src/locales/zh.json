@@ -856,5 +856,13 @@
     "inviteLinkCopied": "邀请链接已复制",
     "inviteSent": "邀请已发送",
     "inviteAccepted": "邀请已接受"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Grid layout",
+      "tight": "Tight",
+      "small": "Small",
+      "wide": "Wide"
+    }
   }
 }

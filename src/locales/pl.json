@@ -860,5 +860,13 @@
     "inviteLinkCopied": "Skopiowano link zaproszenia",
     "inviteSent": "Zaproszenie wysłane",
     "inviteAccepted": "Zaproszenie przyjęte"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Grid layout",
+      "tight": "Tight",
+      "small": "Small",
+      "wide": "Wide"
+    }
   }
 }

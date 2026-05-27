@@ -59,7 +59,8 @@
     "copyFailed": "Error al copiar el enlace",
     "decline": "Rechazar",
     "friendRequest": "Solicitud de amistad",
-    "reverseOrder": "Invertir orden"
+    "reverseOrder": "Invertir orden",
+    "saving": "Guardando..."
   },
   "navigation": {
     "home": "Inicio",
@@ -855,5 +856,13 @@
     "inviteLinkCopied": "Enlace de invitación copiado",
     "inviteSent": "Invitación enviada",
     "inviteAccepted": "Invitación aceptada"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Grid layout",
+      "tight": "Tight",
+      "small": "Small",
+      "wide": "Wide"
+    }
   }
 }

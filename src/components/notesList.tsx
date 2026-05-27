@@ -118,7 +118,7 @@ export function NotesList({
   onToggleReverseOrder,
   initialGridOption
 }: NotesListProps) {
-  const { t, hasTranslation } = useI18n()
+  const { t } = useI18n()
   const [gridOption, setGridOption] = useState<NotesGridOption>(() => {
     if (typeof window !== 'undefined') {
       const storedGridOption = window.localStorage.getItem(NOTES_GRID_OPTION_STORAGE_KEY)
@@ -169,18 +169,10 @@ export function NotesList({
     gridOption === 'wide' && 'md:grid-cols-1'
   )
 
-  const gridLayoutLabel = hasTranslation('notesList.gridOption.label')
-    ? t('notesList.gridOption.label')
-    : 'Grid layout'
-  const tightLabel = hasTranslation('notesList.gridOption.tight')
-    ? t('notesList.gridOption.tight')
-    : 'Tight'
-  const smallLabel = hasTranslation('notesList.gridOption.small')
-    ? t('notesList.gridOption.small')
-    : 'Small'
-  const wideLabel = hasTranslation('notesList.gridOption.wide')
-    ? t('notesList.gridOption.wide')
-    : 'Wide'
+  const gridLayoutLabel = t('notesList.gridOption.label')
+  const tightLabel = t('notesList.gridOption.tight')
+  const smallLabel = t('notesList.gridOption.small')
+  const wideLabel = t('notesList.gridOption.wide')
 
   return (
     <div>
@@ -188,16 +180,18 @@ export function NotesList({
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold">{t('publicProfile.notes')}</h3>
           <div className="flex items-center gap-1">
-            <Select value={gridOption} onValueChange={(value) => setGridOption(value as NotesGridOption)}>
-              <SelectTrigger className="h-8 w-[110px]" size="sm" aria-label={gridLayoutLabel}>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="tight">{tightLabel}</SelectItem>
-                <SelectItem value="small">{smallLabel}</SelectItem>
-                <SelectItem value="wide">{wideLabel}</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="hidden md:block">
+              <Select value={gridOption} onValueChange={(value) => setGridOption(value as NotesGridOption)}>
+                <SelectTrigger className="h-8 w-[110px]" size="sm" aria-label={gridLayoutLabel}>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="tight">{tightLabel}</SelectItem>
+                  <SelectItem value="small">{smallLabel}</SelectItem>
+                  <SelectItem value="wide">{wideLabel}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
             <Button
               variant="ghost"
               size="sm"

@@ -860,5 +860,13 @@
     "inviteLinkCopied": "Pautan jemputan disalin",
     "inviteSent": "Jemputan dihantar",
     "inviteAccepted": "Jemputan diterima"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Grid layout",
+      "tight": "Tight",
+      "small": "Small",
+      "wide": "Wide"
+    }
   }
 }

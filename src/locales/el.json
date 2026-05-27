@@ -853,5 +853,13 @@
     "inviteLinkCopied": "Ο σύνδεσμος πρόσκλησης αντιγράφηκε",
     "inviteSent": "Η πρόσκληση στάλθηκε",
     "inviteAccepted": "Η πρόσκληση έγινε αποδεκτή"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Grid layout",
+      "tight": "Tight",
+      "small": "Small",
+      "wide": "Wide"
+    }
   }
 }

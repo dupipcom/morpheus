@@ -854,5 +854,13 @@
     "inviteLinkCopied": "Kiungo cha mwaliko kimenakiliwa",
     "inviteSent": "Mwaliko umetumwa",
     "inviteAccepted": "Mwaliko umekubaliwa"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Grid layout",
+      "tight": "Tight",
+      "small": "Small",
+      "wide": "Wide"
+    }
   }
 }

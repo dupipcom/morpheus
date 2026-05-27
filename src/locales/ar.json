@@ -860,5 +860,13 @@
     "inviteLinkCopied": "تم نسخ رابط الدعوة",
     "inviteSent": "تم إرسال الدعوة",
     "inviteAccepted": "تم قبول الدعوة"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Grid layout",
+      "tight": "Tight",
+      "small": "Small",
+      "wide": "Wide"
+    }
   }
 }

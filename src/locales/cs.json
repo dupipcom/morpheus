@@ -856,5 +856,13 @@
     "inviteLinkCopied": "Odkaz pro pozvání zkopírován",
     "inviteSent": "Pozvánka odeslána",
     "inviteAccepted": "Pozvánka přijata"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Grid layout",
+      "tight": "Tight",
+      "small": "Small",
+      "wide": "Wide"
+    }
   }
 }

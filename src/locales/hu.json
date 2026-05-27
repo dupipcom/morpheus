@@ -59,7 +59,8 @@
     "copyFailed": "A link másolása sikertelen",
     "decline": "Elutasítás",
     "friendRequest": "Barátkozási kérés",
-    "reverseOrder": "Fordított sorrend"
+    "reverseOrder": "Fordított sorrend",
+    "saving": "Mentés..."
   },
   "navigation": {
     "home": "Kezdőlap",
@@ -855,5 +856,13 @@
     "inviteLinkCopied": "Meghívólink másolva",
     "inviteSent": "Meghívó elküldve",
     "inviteAccepted": "Meghívó elfogadva"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Grid layout",
+      "tight": "Tight",
+      "small": "Small",
+      "wide": "Wide"
+    }
   }
 }

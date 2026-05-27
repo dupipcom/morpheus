@@ -856,5 +856,13 @@
     "inviteLinkCopied": "Link de invitație copiat",
     "inviteSent": "Invitație trimisă",
     "inviteAccepted": "Invitație acceptată"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Grid layout",
+      "tight": "Tight",
+      "small": "Small",
+      "wide": "Wide"
+    }
   }
 }
