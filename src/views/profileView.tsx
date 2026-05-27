@@ -84,6 +84,7 @@ export function ProfileView({
   const hasAnyPublicData = firstName || lastName || profileUserName || bio || profilePicture
   const isOwnProfile = currentUserUsername === userName
   const showAddFriendButton = !isOwnProfile && profileUserName
+  const showMobileEditProfileButton = isOwnProfile && profileUserName
   const displayName = fullName || profileUserName || 'Anonymous User'
 
   return (
@@ -117,6 +118,15 @@ export function ProfileView({
                 <div className="flex justify-center md:justify-end">
                   <AddFriendButtonOrSignIn 
                     targetUserName={profileUserName} 
+                    isLoggedIn={isLoggedIn}
+                    currentUserName={currentUserUsername || undefined}
+                  />
+                </div>
+              )}
+              {showMobileEditProfileButton && profileUserName && (
+                <div className="flex justify-center md:hidden">
+                  <AddFriendButtonOrSignIn
+                    targetUserName={profileUserName}
                     isLoggedIn={isLoggedIn}
                     currentUserName={currentUserUsername || undefined}
                   />
