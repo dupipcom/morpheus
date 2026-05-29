@@ -203,6 +203,9 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
 
   useEffect(() => {
     if (activeRoom || !sidebar) return
+    // Don't auto-select a default room when deep-link props are present —
+    // the dedicated deep-link effects will handle the selection instead.
+    if (initialUsername || initialOrgId || initialChannelId) return
 
     const defaultChannel = sidebar.orgs?.[0]?.channels?.[0]
     if (defaultChannel) {
@@ -218,7 +221,7 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
       setActiveRoom(room)
       navigateToRoom(room)
     }
-  }, [activeRoom, directMessageLabel, navigateToRoom, sidebar])
+  }, [activeRoom, directMessageLabel, navigateToRoom, sidebar, initialUsername, initialOrgId, initialChannelId])
 
   // Deep link: open DM for initialUsername when sidebar is ready
   useEffect(() => {
