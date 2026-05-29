@@ -407,7 +407,8 @@
     "closeFriend": "صديق مقرّب",
     "friends": "أصدقاء",
     "signInToAdd": "سجّل الدخول لإضافة صديق",
-    "editProfile": "تحرير الملف الشخصي"
+    "editProfile": "تحرير الملف الشخصي",
+    "message": "رسالة"
   },
   "profile": {
     "editProfile": "تعديل الملف الشخصي",

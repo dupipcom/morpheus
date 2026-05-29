@@ -386,7 +386,8 @@
     "closeFriend": "Amic proper",
     "friends": "Amics",
     "signInToAdd": "Inicia sessió per afegir un amic",
-    "editProfile": "Editar perfil"
+    "editProfile": "Editar perfil",
+    "message": "Missatge"
   },
   "toast": {
     "sessionExtended": "Sessió estesa amb èxit",

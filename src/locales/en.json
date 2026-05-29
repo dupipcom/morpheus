@@ -566,6 +566,7 @@
     "failedToSend": "Failed to send friend request",
     "closeFriend": "Close Friend",
     "friends": "Friends",
+    "message": "Message",
     "signInToAdd": "Sign In to Add Friend",
     "editProfile": "Edit Profile"
   },

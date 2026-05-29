@@ -102,7 +102,12 @@ function getDisplayLabel(
   return displayName
 }
 
-export function ChatView() {
+interface ChatViewProps {
+  initialUsername?: string
+  initialMessageId?: string
+}
+
+export function ChatView({ initialUsername, initialMessageId }: ChatViewProps = {}) {
   const { t, hasTranslation, locale } = useI18n()
   const { isSignedIn } = useAuth()
   const [activeRoom, setActiveRoom] = useState<ActiveRoom>(null)
@@ -121,6 +126,7 @@ export function ChatView() {
   const [isInvitingMember, setIsInvitingMember] = useState(false)
   const [isAcceptingInviteId, setIsAcceptingInviteId] = useState<string | null>(null)
   const [messagePendingDelete, setMessagePendingDelete] = useState<ChatMessageSummary | null>(null)
+  const deepLinkHandledRef = useRef(false)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
   const threadContainerRef = useRef<HTMLDivElement>(null)
 
@@ -174,6 +180,52 @@ export function ChatView() {
       setActiveRoom({ type: 'dm', id: defaultDm.id, name: getDisplayLabel(defaultDm.participant?.displayName, directMessageLabel) })
     }
   }, [activeRoom, directMessageLabel, sidebar])
+
+  // Deep link: open DM for initialUsername when sidebar is ready
+  useEffect(() => {
+    if (!initialUsername || !sidebar || deepLinkHandledRef.current) return
+
+    const existingDm = sidebar.dms?.find((dm) => dm.participant?.username === initialUsername)
+    if (existingDm) {
+      deepLinkHandledRef.current = true
+      setActiveRoom({ type: 'dm', id: existingDm.id, name: getDisplayLabel(existingDm.participant?.displayName, directMessageLabel) })
+      setMobileView('room')
+      return
+    }
+
+    // DM not found — search candidates and create it
+    void (async () => {
+      try {
+        const response = await fetch(`/api/v1/chat/dm-candidates?q=${encodeURIComponent(initialUsername)}`)
+        if (!response.ok) return
+        const data = await response.json() as { candidates: RelationshipCandidate[] }
+        const candidate = data.candidates.find((c) => c.username === initialUsername)
+        if (!candidate) return
+
+        const dmResponse = await fetch('/api/v1/chat/dms', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ participantUserId: candidate.id }),
+        })
+        if (!dmResponse.ok) return
+
+        deepLinkHandledRef.current = true
+        await mutateSidebar()
+      } catch {
+        // ignore
+      }
+    })()
+  }, [directMessageLabel, initialUsername, mutateSidebar, sidebar])
+
+  // Deep link: scroll to initialMessageId when messages are loaded
+  useEffect(() => {
+    if (!initialMessageId || !messagesData?.messages?.length) return
+    const el = document.querySelector<HTMLElement>(`[data-message-id="${initialMessageId}"]`)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      el.classList.add('ring-2', 'ring-primary')
+    }
+  }, [initialMessageId, messagesData])
 
   useEffect(() => {
     if (!activeRoom || !messagesData?.messages?.length) return
@@ -430,7 +482,7 @@ export function ChatView() {
   }
 
   const renderMessage = (message: ChatMessageSummary) => (
-    <div key={message.id} className="space-y-3 rounded-xl border border-border/60 bg-card p-4 shadow-sm">
+    <div key={message.id} data-message-id={message.id} className="space-y-3 rounded-xl border border-border/60 bg-card p-4 shadow-sm">
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="text-sm font-semibold">{getDisplayLabel(message.author?.displayName, anonymousLabel)}</p>
