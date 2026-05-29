@@ -120,8 +120,8 @@ export function ChatView() {
   const [isInvitingMember, setIsInvitingMember] = useState(false)
   const [isAcceptingInviteId, setIsAcceptingInviteId] = useState<string | null>(null)
   const [messagePendingDelete, setMessagePendingDelete] = useState<ChatMessageSummary | null>(null)
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-  const threadEndRef = useRef<HTMLDivElement>(null)
+  const messagesContainerRef = useRef<HTMLDivElement>(null)
+  const threadContainerRef = useRef<HTMLDivElement>(null)
 
   const sidebarKey = '/api/v1/chat/sidebar'
   const { data: sidebar, error: sidebarError, isLoading: isSidebarLoading, mutate: mutateSidebar } = useSWR<SidebarResponse>(sidebarKey, fetcher, {
@@ -236,15 +236,17 @@ export function ChatView() {
     return sidebar?.orgs?.find((org) => org.id === activeRoom.orgId) ?? null
   }, [activeRoom, sidebar])
 
-  const messages = messagesData?.messages ?? []
+  const messages = useMemo(() => messagesData?.messages ?? [], [messagesData?.messages])
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'instant' })
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight
+    }
   }, [messages])
 
   useEffect(() => {
-    if (threadData) {
-      threadEndRef.current?.scrollIntoView({ behavior: 'instant' })
+    if (threadData && threadContainerRef.current) {
+      threadContainerRef.current.scrollTop = threadContainerRef.current.scrollHeight
     }
   }, [threadData])
 
@@ -660,7 +662,7 @@ export function ChatView() {
         </div>
       </div>
 
-      <div className="flex-1 space-y-4 overflow-y-auto p-4 pb-20 md:pb-4">
+      <div ref={messagesContainerRef} className="flex-1 space-y-4 overflow-y-auto p-4 pb-[160px] md:pb-4">
         {isMessagesLoading ? (
           <p className="text-sm text-muted-foreground">Loading messages…</p>
         ) : messages.length > 0 ? (
@@ -670,7 +672,6 @@ export function ChatView() {
             <CardContent className="pt-6 text-sm text-muted-foreground">No messages yet. Start the conversation.</CardContent>
           </Card>
         )}
-        <div ref={messagesEndRef} />
       </div>
 
       {activeRoom && <ChatComposer placeholder="Write a message…" onSubmit={sendMessage} collapsible />}
@@ -691,7 +692,7 @@ export function ChatView() {
           Close
         </Button>
       </div>
-      <div className="flex-1 space-y-4 overflow-y-auto p-4 pb-20 md:pb-4">
+      <div ref={threadContainerRef} className="flex-1 space-y-4 overflow-y-auto p-4 pb-[160px] md:pb-4">
         {isThreadLoading ? (
           <p className="text-sm text-muted-foreground">Loading thread…</p>
         ) : threadData?.root ? (
@@ -702,7 +703,6 @@ export function ChatView() {
         ) : (
           <p className="text-sm text-muted-foreground">Select a message to view its thread.</p>
         )}
-        <div ref={threadEndRef} />
       </div>
       {threadData?.root && <ChatComposer placeholder="Reply in thread…" onSubmit={sendThreadReply} collapsible />}
     </div>

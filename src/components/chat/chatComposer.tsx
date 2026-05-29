@@ -49,8 +49,8 @@ export function ChatComposer({ placeholder, onSubmit, disabled = false, collapsi
   if (collapsible) {
     return (
       <>
-        {/* Mobile: fixed overlay, collapsed above the bottom nav; expands to bottom-0 when open */}
-        <div className={`fixed left-0 right-0 z-[1010] border-t border-border bg-background/95 backdrop-blur-sm md:hidden ${isOpen ? 'bottom-0' : 'bottom-20'}`}>
+        {/* Mobile: fixed overlay anchored above both navbars (main 80px + secondary 50px = 130px) */}
+        <div className="fixed bottom-[130px] left-0 right-0 z-[1010] border-t border-border bg-background/95 backdrop-blur-sm md:hidden">
           <div className="flex items-center justify-between px-4 py-2">
             {isOpen ? (
               <span className="sr-only">{placeholder}</span>
