@@ -13,6 +13,7 @@ import { ChatComposer } from '@/components/chat/chatComposer'
 import { ChatMessageContent } from '@/components/chat/chatMessageContent'
 import { ChatUnreadBadge } from '@/components/chat/chatUnreadBadge'
 import { useI18n } from '@/lib/contexts/i18n'
+import { MOBILE_CONTENT_BOTTOM_PADDING_CLASS } from '@/lib/constants/mobileNav'
 import { getAblyRealtimeClient } from '@/lib/chat/realtime/ablyClient'
 import {
   getChatDmChannelName,
@@ -662,7 +663,7 @@ export function ChatView() {
         </div>
       </div>
 
-      <div ref={messagesContainerRef} className="flex-1 space-y-4 overflow-y-auto p-4 pb-[160px] md:pb-4">
+      <div ref={messagesContainerRef} className={`flex-1 space-y-4 overflow-y-auto p-4 ${MOBILE_CONTENT_BOTTOM_PADDING_CLASS} md:pb-4`}>
         {isMessagesLoading ? (
           <p className="text-sm text-muted-foreground">Loading messages…</p>
         ) : messages.length > 0 ? (
@@ -692,7 +693,7 @@ export function ChatView() {
           Close
         </Button>
       </div>
-      <div ref={threadContainerRef} className="flex-1 space-y-4 overflow-y-auto p-4 pb-[160px] md:pb-4">
+      <div ref={threadContainerRef} className={`flex-1 space-y-4 overflow-y-auto p-4 ${MOBILE_CONTENT_BOTTOM_PADDING_CLASS} md:pb-4`}>
         {isThreadLoading ? (
           <p className="text-sm text-muted-foreground">Loading thread…</p>
         ) : threadData?.root ? (

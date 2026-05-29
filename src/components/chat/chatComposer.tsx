@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { ChevronDown, ChevronUp, SendHorizontal } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
+import { MOBILE_NAV_OFFSET_CLASS } from '@/lib/constants/mobileNav'
 
 interface ChatComposerProps {
   placeholder: string
@@ -50,7 +51,7 @@ export function ChatComposer({ placeholder, onSubmit, disabled = false, collapsi
     return (
       <>
         {/* Mobile: fixed overlay anchored above both navbars (main 80px + secondary 50px = 130px) */}
-        <div className="fixed bottom-[130px] left-0 right-0 z-[1010] border-t border-border bg-background/95 backdrop-blur-sm md:hidden">
+        <div className={`fixed ${MOBILE_NAV_OFFSET_CLASS} left-0 right-0 z-[1010] border-t border-border bg-background/95 backdrop-blur-sm md:hidden`}>
           <div className="flex items-center justify-between px-4 py-2">
             {isOpen ? (
               <span className="sr-only">{placeholder}</span>
