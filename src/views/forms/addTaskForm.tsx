@@ -109,11 +109,9 @@ export const AddTaskForm = ({
       area: newTask.area,
       categories: [newTask.category],
       recurrence: recurrence,
-      nextOccurrence: isEditMode
-        ? (editTask?.nextOccurrence ?? (recurrence ? calculateNextOccurrence({ recurrence }, now) : null))
-        : (recurrence ? calculateNextOccurrence({ recurrence }, now) : null),
+      nextOccurrence: recurrence ? calculateNextOccurrence({ recurrence }, now) : null,
       firstOccurrence: isEditMode
-        ? (editTask?.firstOccurrence ?? (recurrence ? now : null))
+        ? (recurrence ? (editTask?.firstOccurrence ?? now) : null)
         : (recurrence ? now : null),
       status: newStatus,
       times: Math.max(1, Number(newTask.times) || 1),

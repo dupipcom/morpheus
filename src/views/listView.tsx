@@ -112,7 +112,10 @@ const formatDateLocal = (date: Date): string => {
     // Memoize these so React can properly track changes
     const date = useMemo(() => formatDateLocal(selectedDate), [selectedDate])
     const year = useMemo(() => Number(date.split('-')[0]), [date])
-    const allTaskLists = stableTaskLists.length > 0 ? stableTaskLists : (contextTaskLists || [])
+    const allTaskLists = useMemo(() =>
+      stableTaskLists.length > 0 ? stableTaskLists : (contextTaskLists || []),
+      [stableTaskLists, contextTaskLists]
+    )
 
     // Use prop selectedTaskListId if provided, otherwise use local state
     const [internalSelectedTaskListId, setInternalSelectedTaskListId] = useState<string | undefined>(allTaskLists[0]?.id)
@@ -161,7 +164,7 @@ const formatDateLocal = (date: Date): string => {
     const { data: tasksData, mutate: mutateTasks, isLoading: isLoadingTasks } = useSWR(tasksUrl, fetcher, {
       revalidateOnFocus: false,
     })
-    const tasksFromApi = tasksData?.tasks || []
+    const tasksFromApi = useMemo(() => tasksData?.tasks || [], [tasksData])
 
     // Track migration state - use Set to track multiple lists
     const migrationInProgressRef = useRef(false)
