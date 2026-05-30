@@ -1,21 +1,24 @@
 'use client'
-import { useState, useContext, useEffect, useMemo, useCallback } from 'react'
+
+import React, { useState, useContext, useEffect, useMemo, useCallback } from 'react'
 import useSWR from 'swr'
 import { useRouter, usePathname } from 'next/navigation'
+import Link from 'next/link'
+
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { User, UserMinus, Loader2 } from "lucide-react"
-import ActivityCard, { ActivityItem } from "@/components/activityCard"
-import { OptionsButton, OptionsMenuItem } from "@/components/optionsButton"
-import { GlobalContext } from "@/lib/contexts"
-import { useI18n } from "@/lib/contexts/i18n"
-import { useEnhancedLoadingState } from "@/lib/userUtils"
-import { SettingsSkeleton } from "@/components/ui/skeletonLoader"
 import { Skeleton } from "@/components/ui/skeleton"
 import { toast } from 'sonner'
-import Link from 'next/link'
+import ActivityCard, { ActivityItem as ActivityItemType } from "@/components/activityCard"
+import { OptionsButton, OptionsMenuItem } from "@/components/optionsButton"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { GlobalContext } from "@/lib/contexts"
+import { useI18n } from "@/lib/contexts/i18n"
+import { useEnhancedLoadingState } from "@/lib/utils/userUtils"
+import { SettingsSkeleton } from "@/components/ui/skeletonLoader"
 import { useNotesRefresh } from "@/lib/contexts/notesRefresh"
 
 interface Friend {
@@ -40,6 +43,7 @@ interface PublicNote {
     comments?: number
     likes?: number
   }
+  relevanceScore?: number
   comments?: Array<{
     id: string
     content: string
@@ -108,7 +112,7 @@ interface PublicTemplate {
   } | null
 }
 
-type ActivityItem = {
+interface LocalActivityItem {
   id: string
   type: 'note' | 'template'
   createdAt: string
@@ -123,13 +127,13 @@ interface BeViewProps {
   defaultTab?: 'activity' | 'friends' | 'events' | 'spaces' | 'organizations'
 }
 
-export const BeView = ({ 
+export function BeView({
   filterProfileId,
   filterNoteId,
   filterListId,
   filterTemplateId,
   defaultTab = 'activity'
-}: BeViewProps) => {
+}: BeViewProps): React.ReactElement {
   const { session, setGlobalContext, theme } = useContext(GlobalContext)
   const { t } = useI18n()
   const router = useRouter()
@@ -183,6 +187,7 @@ export const BeView = ({
   const [isLoadingMoreTemplates, setIsLoadingMoreTemplates] = useState(false)
   const [isLoadingNotes, setIsLoadingNotes] = useState(false)
   const [isLoadingTemplates, setIsLoadingTemplates] = useState(false)
+  const [noteSortBy, setNoteSortBy] = useState<'date' | 'most_relevant'>('most_relevant')
 
   const { data, mutate, error, isLoading } = useSWR(
     session?.user ? `/api/v1/friends` : null,
@@ -209,6 +214,7 @@ export const BeView = ({
       })
       if (filterNoteId) params.append('noteId', filterNoteId)
       if (filterProfileId) params.append('profileId', filterProfileId)
+      params.append('sort', noteSortBy)
       
       const response = await fetch(`/api/v1/notes/public?${params.toString()}`)
       if (response.ok) {
@@ -290,7 +296,7 @@ export const BeView = ({
     fetchPublicNotes(1)
     fetchPublicTemplates(1)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterNoteId, filterProfileId, filterListId, filterTemplateId])
+  }, [filterNoteId, filterProfileId, filterListId, filterTemplateId, noteSortBy])
 
   const getDisplayName = (friend: Friend) => {
     if (friend.profile) {
@@ -357,7 +363,7 @@ export const BeView = ({
   // Combine notes and templates into activity feed, sorted by creation date
   // Items matching filter parameters are prioritized (shown first)
   const activityItems = useMemo(() => {
-    const items: ActivityItem[] = [
+    const items: LocalActivityItem[] = [
       ...publicNotes.map(note => ({
         id: `note-${note.id}`,
         type: 'note' as const,
@@ -397,44 +403,16 @@ export const BeView = ({
       if (aMatchesFilter && !bMatchesFilter) return -1
       if (!aMatchesFilter && bMatchesFilter) return 1
       
-      // If both match or neither matches, sort by creation date (most recent first)
+      // If both match or neither matches, sort notes based on selected sorting mode
+      if (a.type === 'note' && b.type === 'note' && noteSortBy === 'most_relevant') {
+        const relevanceDiff = ((bNote?.relevanceScore || 0) - (aNote?.relevanceScore || 0))
+        if (relevanceDiff !== 0) return relevanceDiff
+      }
+
+      // Otherwise, sort by creation date (most recent first)
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     })
-  }, [publicNotes, publicTemplates, filterProfileId, filterNoteId, filterListId, filterTemplateId])
-
-  const getNoteUserDisplayName = (note: PublicNote) => {
-    if (note.user.profile) {
-      const { firstName, lastName, userName } = note.user.profile
-      const fullName = [firstName, lastName].filter(Boolean).join(' ')
-      return fullName || userName || t('common.anonymousUser')
-    }
-    return t('common.anonymousUser')
-  }
-
-  const getNoteUserProfilePicture = (note: PublicNote) => {
-    return note.user.profile?.profilePicture || '/images/default-avatar.webp'
-  }
-
-  const getNoteUserName = (note: PublicNote) => {
-    return note.user.profile?.userName || null
-  }
-
-  const getTemplateUserName = (template: PublicTemplate) => {
-    return template.user?.profile?.userName || null
-  }
-
-  const getTemplateUserProfilePicture = (template: PublicTemplate) => {
-    return template.user?.profile?.profilePicture || '/images/default-avatar.webp'
-  }
-
-  const getTemplateUserDisplayName = (template: PublicTemplate) => {
-    if (template.user?.profile) {
-      const { firstName, lastName, userName } = template.user.profile
-      const fullName = [firstName, lastName].filter(Boolean).join(' ')
-      return fullName || userName || t('common.anonymousUser')
-    }
-    return t('common.anonymousUser')
-  }
+  }, [publicNotes, publicTemplates, filterProfileId, filterNoteId, filterListId, filterTemplateId, noteSortBy])
 
   const getTimeAgo = (dateString: string) => {
     const date = new Date(dateString)
@@ -498,6 +476,17 @@ export const BeView = ({
 
     return (
       <div className="mb-8">
+        <div className="mb-4">
+          <Select value={noteSortBy} onValueChange={(value) => setNoteSortBy(value as 'date' | 'most_relevant')}>
+            <SelectTrigger className="w-full sm:w-[220px]">
+              <SelectValue placeholder="Sort notes" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="most_relevant">Most Relevant</SelectItem>
+              <SelectItem value="date">Date</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
           {activityItems.map((item) => {
             const noteData = item.type === 'note' ? (item.data as PublicNote) : null

@@ -21,6 +21,7 @@
     "signInToAccess": "Log ind for at få adgang til dit dashboard og spore din fremskridt.",
     "dismiss": "Luk",
     "accept": "Accepter",
+    "all": "Alle",
     "pageAvailableIn": "Denne side er tilgængelig på {locale}. Vil du se den på det sprog?",
     "selectLanguage": "Vælg sprog",
     "dashboard": "Dashboard",
@@ -56,7 +57,10 @@
     "copyLink": "Kopiér link",
     "linkCopied": "Link kopieret til udklipsholder",
     "copyFailed": "Kunne ikke kopiere link",
-    "saving": "Gemmer..."
+    "saving": "Gemmer...",
+    "decline": "Afvis",
+    "friendRequest": "Venneanmodning",
+    "reverseOrder": "Omvendt rækkefølge"
   },
   "navigation": {
     "dashboard": "Dashboard",
@@ -86,7 +90,26 @@
     "yourMood": "Dit humør.",
     "yourProductivity": "Din produktivitet.",
     "yourData": "Dine data.",
-    "yourBalance": "Dine penge."
+    "yourBalance": "Dine penge.",
+    "timeframe": {
+      "startDate": "Startdato",
+      "endDate": "Slutdato"
+    },
+    "me": "Mine data",
+    "selectDelegatedUser": "Vælg delegeret bruger",
+    "analysis": {
+      "alltimeAnalysis": "Analyse for hele perioden",
+      "dayAnalysis": "Dagens analyse",
+      "last3daysAnalysis": "Analyse af de sidste 3 dage",
+      "weekAnalysis": "Ugeanalyse",
+      "yearAnalysis": "Årsanalyse",
+      "gratitudeAnalysis": "Taknemmelighedsanalyse",
+      "optimismAnalysis": "Optimismeanalyse",
+      "restednessAnalysis": "Hvileanalyse",
+      "toleranceAnalysis": "Toleranceanalyse",
+      "selfEsteemAnalysis": "Selvværdanalyse",
+      "trustAnalysis": "Tillidsanalyse"
+    }
   },
   "mood": {
     "title": "Registrer dit humør for {date}",
@@ -109,7 +132,26 @@
         "AI_ENABLED": "AI-aktiveret"
       },
       "action": "Publicer note",
-      "publishing": "Publishing..."
+      "publishing": "Udgiver...",
+      "embedHint": "{provider}-indlejring. Hvis afspilning ikke er tilgængelig, åbn det originale link nedenfor."
+    },
+    "thirdParty": {
+      "title": "Tredjepart",
+      "settings": "Delegationsindstillinger",
+      "activeDelegations": "Aktive delegationer",
+      "empty": "Ingen aktive delegationer.",
+      "identifierPlaceholder": "Brugernavn, e-mail eller bruger-id",
+      "noFriendsFound": "Ingen matchende venskaber fundet.",
+      "friendsHint": "Forslagene inkluderer dine venner. Du kan også indtaste en hvilken som helst e-mailadresse.",
+      "scope": "Dataomfang",
+      "allScopes": "Alle omfang",
+      "scopesSelected": "valgte omfang",
+      "minimumOneScope": "Mindst ét omfang skal forblive valgt.",
+      "scopeResolutionHint": "Hvis flere omfang er valgt, anvendes det bredeste valgte omfang.",
+      "addDelegatedAnalyst": "Tilføj delegeret analytiker",
+      "adding": "Tilføjer...",
+      "addError": "Kunne ikke tilføje delegeret analytiker",
+      "invitationDraft": "Invitationsudkast for denne e-mail er klargjort."
     }
   },
   "week": {
@@ -137,7 +179,11 @@
       "open": "Åben",
       "done": "Færdig",
       "ignored": "Ignoreret"
-    }
+    },
+    "edit": "Rediger",
+    "loadingForDate": "Indlæser opgaver for valgt dato...",
+    "initializingTasks": "Opsætter dine opgaver...",
+    "noTasksForDate": "Ingen opgaver planlagt for denne dato"
   },
   "actions": {
     "drankWater": "Drak vand",
@@ -227,10 +273,10 @@
   "errors": {
     "notFound": "Ups! Kunne ikke indstille denne frekvens.",
     "genericError": "Noget gik galt. Prøv igen.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "Kunne ikke indlæse noter",
+    "failedToLoadNotes": "Kunne ikke indlæse noter",
+    "failedToFetchTemplates": "Kunne ikke indlæse skabeloner",
+    "failedToLoadTemplates": "Kunne ikke indlæse skabeloner"
   },
   "social": {
     "title": "Sociale kontakter",
@@ -316,9 +362,9 @@
     "cloning": "Kloner...",
     "noPublicNotes": "Ingen offentlige noter tilgængelige endnu.",
     "noPublicTemplatesOrLists": "Ingen offentlige skabeloner eller lister tilgængelige endnu.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "Klon liste",
+    "cloneListSuccess": "Liste klonet med succes!",
+    "cloneListFailed": "Kloning af liste mislykkedes"
   },
   "publicCharts": {
     "noData": "Ingen offentlige diagramdata tilgængelige.",
@@ -344,7 +390,8 @@
     "closeFriend": "Nær ven",
     "friends": "Venner",
     "signInToAdd": "Log ind for at tilføje ven",
-    "editProfile": "Rediger profil"
+    "editProfile": "Rediger profil",
+    "message": "Besked"
   },
   "profile": {
     "editProfile": "Rediger profil",
@@ -450,7 +497,9 @@
       "timesLabel": "# gange",
       "saveToTemplate": "Gem opgave til skabelon",
       "addTask": "Tilføj opgave",
-      "cancel": "Annuller"
+      "cancel": "Annuller",
+      "editTitle": "Rediger opgave",
+      "saveTask": "Gem opgave"
     },
     "addListForm": {
       "titleCreate": "Opret ny liste",
@@ -526,6 +575,39 @@
       },
       "create": "Opret",
       "cancel": "Annuller"
+    },
+    "recurrencePicker": {
+      "frequency": "Gentag",
+      "every": "Hver",
+      "day": "dag",
+      "days": "dage",
+      "week": "uge",
+      "weeks": "uger",
+      "month": "måned",
+      "months": "måneder",
+      "year": "år",
+      "years": "år",
+      "noRepeat": "Gentager ikke",
+      "daily": "Dagligt",
+      "weekly": "Ugentligt",
+      "monthly": "Månedligt",
+      "yearly": "Årligt",
+      "repeatOn": "Gentag på",
+      "monday": "Man",
+      "tuesday": "Tir",
+      "wednesday": "Ons",
+      "thursday": "Tor",
+      "friday": "Fre",
+      "saturday": "Lør",
+      "sunday": "Søn",
+      "dayOfMonth": "Dag i måneden",
+      "selectDay": "Vælg dag (1-31)",
+      "ends": "Slutter",
+      "never": "Aldrig",
+      "onDate": "På dato",
+      "after": "Efter",
+      "pickDate": "Vælg en dato",
+      "occurrences": "gentagelser"
     }
   },
   "charts": {
@@ -540,7 +622,10 @@
     "progress": "Fremskridt",
     "moodAverageScale": "Gennemsnitlig humør skala",
     "balance": "Saldo",
-    "earningsScale": "Indtjening skala"
+    "earningsScale": "Indtjening skala",
+    "profit": "Profit",
+    "stash": "Reserve",
+    "withdrawn": "Hævet"
   },
   "socialView": {
     "activity": "Aktivitet",
@@ -614,5 +699,174 @@
     "deleteWallet": "Slet Tegnebog",
     "deleteWalletConfirmation": "Er du sikker på, at du vil slette denne tegnebog? Denne handling kan ikke fortrydes. Tegnebogen vil blive fjernet fra din konto, men blockchain-adressen og dens midler forbliver på blockchain.",
     "delete": "Slet"
+  },
+  "jobs": {
+    "history": "Jobhistorik",
+    "filterByStatus": "Filtrer efter Status:",
+    "errorLoadingHistory": "Fejl ved indlæsning af jobhistorik",
+    "noHistoryFound": "Ingen jobhistorik fundet",
+    "status": {
+      "requested": "Anmodet",
+      "inProgress": "I Gang",
+      "validating": "Validerer",
+      "accepted": "Accepteret",
+      "rejected": "Afvist",
+      "submitted": "Indsendt",
+      "changesRequested": "Ændringer ønsket"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "Din anmodning bliver gennemgået. Du vil blive underrettet, når den er godkendt.",
+        "inProgress": "Din anmodning blev godkendt! Du kan nu arbejde på denne opgave.",
+        "submitted": "Dit arbejde er blevet indsendt. Afventer gennemgang fra ejeren.",
+        "validating": "Ændringer er blevet anmodet om. Venligst revider og indsend igen.",
+        "accepted": "Tillykke! Dit arbejde blev accepteret.",
+        "rejected": "Din indsendelse blev afvist."
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}} har anmodet om at arbejde på denne opgave. Godkend eller afvis anmodningen.",
+        "inProgress": "{{workerName}} arbejder i øjeblikket på denne opgave.",
+        "submitted": "{{workerName}} har indsendt sit arbejde til gennemgang.",
+        "validating": "Venter på, at {{workerName}} reviderer og indsender igen.",
+        "accepted": "{{workerName}}s arbejde blev accepteret.",
+        "rejected": "{{workerName}}s indsendelse blev afvist."
+      }
+    },
+    "actions": {
+      "submitForReview": "Indsend til Gennemgang",
+      "withdrawSubmission": "Træk Indsendelse Tilbage",
+      "withdrawing": "Trækker tilbage...",
+      "reviseAndResubmit": "Revider og Indsend Igen",
+      "approveRequest": "Godkend Anmodning",
+      "approving": "Godkender...",
+      "rejectRequest": "Afvis Anmodning",
+      "rejecting": "Afviser...",
+      "reviewAndAccept": "Gennemgå og Accepter",
+      "requestChanges": "Anmod om Ændringer",
+      "reject": "Afvis"
+    },
+    "review": {
+      "title": "Gennemgå Indsendt Arbejde",
+      "description": "Gennemgå arbejde fra {{workerName}}",
+      "workerSolution": "Arbejderens Løsning:",
+      "selfReviewScore": "Selvvurdering: {{score}}/100",
+      "noSubmissionNotes": "Ingen indsendelsesnoter angivet",
+      "actionLabel": "Handling *",
+      "required": "*",
+      "optional": "(Valgfrit)",
+      "feedbackLabel": "Gennemgangs Feedback {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "Forklar hvilke ændringer der er nødvendige",
+        "other": "Giv kommentarer eller forslag til arbejderen"
+      },
+      "editorPlaceholder": {
+        "validate": "Beskriv de nødvendige ændringer...",
+        "other": "Giv feedback på arbejdet..."
+      },
+      "managerReviewLabel": "Ledervurdering (Valgfrit)",
+      "managerReviewDescription": "Bedøm kvaliteten af det færdige arbejde",
+      "scorePoor": "0 (Dårligt)",
+      "scoreExcellent": "100 (Fremragende)",
+      "cancel": "Annuller",
+      "submitting": "Indsender...",
+      "acceptWork": "Accepter Arbejde",
+      "requestChangesButton": "Anmod om Ændringer",
+      "rejectWork": "Afvis Arbejde",
+      "actions": {
+        "accept": {
+          "title": "Accepter (Marker opgave som Færdig)",
+          "description": "Godkend arbejdet og fuldfør opgaven. Arbejderen optjener deres belønning."
+        },
+        "requestChanges": {
+          "title": "Anmod om Ændringer",
+          "description": "Bed arbejderen om at revidere og indsende deres arbejde igen."
+        },
+        "reject": {
+          "title": "Afvis (Genåbn opgave)",
+          "description": "Afvis arbejdet fuldstændigt og genåbn opgaven for andre."
+        }
+      },
+      "messages": {
+        "accepted": "Arbejde accepteret og opgave markeret som fuldført",
+        "changesRequested": "Ændringer anmodet om, arbejderen vil revidere",
+        "rejected": "Arbejde afvist, opgave genåbnet",
+        "error": "Kunne ikke indsende gennemgang. Prøv venligst igen."
+      }
+    },
+    "submission": {
+      "title": "Indsend Arbejde til Gennemgang",
+      "titleResubmit": "Revider og Indsend Arbejde Igen",
+      "description": "Beskriv din løsning for {{taskName}} og indsend til validering.",
+      "solutionLabel": "Løsningsbeskrivelse *",
+      "solutionDescription": "Forklar hvad du gjorde for at fuldføre denne opgave. Understøtter formatering, links og lister.",
+      "solutionPlaceholder": "Forklar hvad du gjorde for at fuldføre denne opgave...",
+      "selfReviewLabel": "Selvvurdering (Valgfrit)",
+      "selfReviewDescription": "Bedøm kvaliteten af dit arbejde på en skala fra 0-100",
+      "scoreNeedsWork": "0 (Trænger til arbejde)",
+      "scorePerfect": "100 (Perfekt)",
+      "cancel": "Annuller",
+      "submitting": "Indsender...",
+      "submitButton": "Indsend til Gennemgang",
+      "resubmitButton": "Indsend Igen til Gennemgang",
+      "errors": {
+        "missingDescription": "Angiv venligst en beskrivelse af dit arbejde",
+        "submitError": "Kunne ikke indsende dit arbejde. Prøv venligst igen."
+      },
+      "messages": {
+        "submitted": "Arbejde indsendt til gennemgang",
+        "resubmitted": "Arbejde indsendt igen til gennemgang"
+      }
+    }
+  },
+  "notes": {
+    "updated": "Note opdateret",
+    "updateFailed": "Kunne ikke opdatere note",
+    "deleted": "Note slettet",
+    "deleteFailed": "Kunne ikke slette note",
+    "deleting": "Sletter...",
+    "confirmDelete": "Er du sikker på, at du vil slette denne note?",
+    "content": "Noteindhold",
+    "visibilityUpdated": "Synlighed opdateret",
+    "visibilityUpdateFailed": "Kunne ikke opdatere synlighed",
+    "changeVisibility": "Skift synlighed",
+    "filters": {
+      "sort": "Sorter",
+      "date": "Dato",
+      "mostRelevant": "Mest relevant",
+      "all": "Alle"
+    }
+  },
+  "chat": {
+    "title": "Samtale",
+    "subtitle": "Organisationer, kanaler, direkte beskeder og tråde.",
+    "anonymous": "Anonym",
+    "directMessage": "Direkte besked",
+    "deletedMessage": "Besked slettet",
+    "deleteMessageTitle": "Slet besked?",
+    "deleteMessageDescription": "Dette vil blødt slette beskeden og beholde en pladsholder i samtalehistorikken.",
+    "createInviteLink": "Opret invitationslink",
+    "pendingInvites": "Afventende invitationer",
+    "acceptInvite": "Accepter",
+    "inviteFriendToOrg": "Inviter en ven til denne organisation",
+    "inviteLinkCopied": "Invitationslink kopieret",
+    "inviteSent": "Invitation sendt",
+    "inviteAccepted": "Invitation accepteret"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Gitterlayout",
+      "tight": "Tæt",
+      "small": "Lille",
+      "wide": "Bred"
+    }
   }
 }

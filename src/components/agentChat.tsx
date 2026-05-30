@@ -1,15 +1,12 @@
 'use client'
-import { useState, useRef, useEffect, useContext } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent } from "@/components/ui/card"
 import { Send, Bot, User, Loader2 } from "lucide-react"
 import { useI18n } from "@/lib/contexts/i18n"
-import { toast } from "@/components/ui/sonner"
-import { getWeekNumber } from "@/app/helpers"
 import { continueConversation } from "./agentActions"
 import { readStreamableValue } from '@ai-sdk/rsc';
-import { GlobalContext } from "@/lib/contexts"
 
 interface Message {
   id: string;
@@ -27,11 +24,9 @@ interface AgentChatProps {
 
 // Allow streaming responses up to 60 seconds
 export const maxDuration = 60;
-export const dynamic = "force-dynamic"
 
 export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], className = "" }: AgentChatProps) => {
   const { t, locale } = useI18n()
-  const { session, setGlobalContext, theme } = useContext(GlobalContext)
   const [conversation, setConversation] = useState<Message[]>([]);
   const [messages, setMessages] = useState<Message[]>(history)
   const [inputMessage, setInputMessage] = useState(initialMessage)
@@ -47,12 +42,17 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], 
     }
   }, [])
 
-  // Notify parent component of message changes
+  // Keep input in sync when parent updates suggestion text.
   useEffect(() => {
+    setInputMessage(initialMessage)
+  }, [initialMessage])
+
+  const handleInputChange = (value: string) => {
+    setInputMessage(value)
     if (onMessageChange) {
-      onMessageChange(inputMessage)
+      onMessageChange(value)
     }
-  }, [inputMessage, onMessageChange])
+  }
 
   const handleSendMessage = async () => {
     if (!inputMessage.trim() || isLoading) return
@@ -91,7 +91,7 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], 
       const { messages, newMessage } = await continueConversation([
         ...conversation,
         userMessage,
-      ], session?.user?.entries);
+      ]);
 
       let textContent = '';
 
@@ -223,7 +223,7 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], 
         <Textarea
           ref={textareaRef}
           value={inputMessage}
-          onChange={(e) => setInputMessage(e.target.value)}
+          onChange={(e) => handleInputChange(e.target.value)}
           onKeyPress={handleKeyPress}
           placeholder={t('agentChat.placeholder')}
           className="flex-1 min-h-[60px] max-h-[120px] resize-none"

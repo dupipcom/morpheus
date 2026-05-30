@@ -1,66 +1,6 @@
 import React from "react";
-import { fetchEpisodes, fetchEpisodeBySlug } from "@/lib/notion";
+import { fetchEpisodeBySlug } from "@/lib/notion";
 import { RichText } from '@payloadcms/richtext-lexical/react';
-import ArticleCardGrid from '@/components/articleCardGrid';
-
-import type { StaticImageData } from 'next/image'
-import NextImage from 'next/image'
-
-// A base64 encoded image to use as a placeholder while the image is loading
-const placeholderBlur =
-  'data:image/png;base64,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'
-
-const ImageMedia: React.FC<any> = (props) => {
-  const {
-    alt: altFromProps,
-    fill,
-    pictureClassName,
-    imgClassName,
-    priority,
-    resource,
-    size: sizeFromProps,
-    src: srcFromProps,
-    loading: loadingFromProps,
-  } = props
-
-  let width: number | undefined
-  let height: number | undefined
-  let alt = altFromProps
-  let src: StaticImageData | string = srcFromProps || ''
-
-  if (!src && resource && typeof resource === 'object') {
-    const { alt: altFromResource, height: fullHeight, url, width: fullWidth } = resource
-
-    width = fullWidth!
-    height = fullHeight!
-    alt = altFromResource || ''
-
-    const cacheTag = resource.updatedAt
-
-    src = process.env.NEXT_PUBLIC_PAYLOAD_API_URL + url
-
-  const loading = loadingFromProps || (!priority ? 'lazy' : undefined)
-
-  return (
-    <picture className={pictureClassName}>
-      <NextImage
-        className={imgClassName}
-        alt={alt || ''}
-        fill={fill}
-        height={!fill ? height : undefined}
-        placeholder="blur"
-        blurDataURL={placeholderBlur}
-        priority={priority}
-        quality={100}
-        loading={loading}
-        src={src}
-        width={!fill ? width : undefined}
-      />
-    </picture>
-  )
-  }
-}
-
 
 export default async function ArticleLayout({
   params,
@@ -72,8 +12,6 @@ export default async function ArticleLayout({
   const { locale, articleslug } = await params;
 
   const article = await fetchEpisodeBySlug(articleslug, locale);
-  const allPosts = await fetchEpisodes(locale) || [];
-  const relatedPosts = allPosts.docs.filter((post: any) => post.id !== article.id).slice(0, 3);
 
   if (!article) {
     return <>{children}</>;
@@ -85,28 +23,7 @@ export default async function ArticleLayout({
   const content = (article as any)?.content || null;
   const meta = (article as any)?.meta || null;
 
-  const jsxConverters = (props) => {
-    return {
-    ...props.defaultConverters,
-    heading: ({ node }) => {
-        return node.children.map((heading) => <span className={`${node.tag === "h2" ? "text-2xl md:text-4xl" : node.tag === "h3" ? "text-xl md:text-2xl" : node.tag === "h4" ? "text-lg md:text-xl" : node.tag === "h5" ? "text-base md:text-lg" : "text-sm md:text-base"} mb-8 block leading-10`}>{heading.text}</span>)
-    },
-    text: ({ node }) => {
-        return <span className="inline text-md md:text-lg leading-6 md:leading-8">{node.text}</span>
-    },
-    blocks: {
-      // Each key should match your block's slug
-      mediaBlock: (props) => {
-        return <div className="mb-8 px-4 md:px-8">
-          <img src={process.env.NEXT_PAYLOAD_URL + props.node.fields.media.sizes.large.url}/>
-          {props.node.fields.media.caption && <RichText data={props.node.fields.media.caption} className="text-xs text-muted-foreground bg-muted p-4 rounded-lg"/>}
-        </div>
-        },
-      },
-    }
-  }
-
-  // Get hero image URL and prefix with PAYLOAD_API_URL if it's a relative path
+  // Get image URL and prefix with NEXT_PUBLIC_PAYLOAD_API_URL if it's a relative path
   const getImageUrl = (image: any): string | null => {
     const imageUrl = typeof image === 'string' 
       ? image 
@@ -120,7 +37,7 @@ export default async function ArticleLayout({
     }
     
     // If it's a relative path, prefix with base URL (image URL already includes /api/media/*)
-    const payloadApiUrl = process.env.PAYLOAD_API_URL || process.env.NEXT_PUBLIC_PAYLOAD_API_URL || '';
+    const payloadApiUrl = process.env.NEXT_PUBLIC_PAYLOAD_API_URL || process.env.PAYLOAD_API_URL || '';
     if (payloadApiUrl && imageUrl.startsWith('/')) {
       // Remove /api from PAYLOAD_API_URL and prepend to image URL (which already has /api/media/*)
       return `${payloadApiUrl.split('/api')[0]}${imageUrl}`;
@@ -136,8 +53,125 @@ export default async function ArticleLayout({
 
   const hasContent = content && content.root && content.root.children && content.root.children.length > 0;
 
+  // Custom converters to handle Media blocks as img tags
+  // Map nodeType "block" nodes by parsing nodePreview and accessing fields.media.sizes.large.url
+  const customConverters = ({ defaultConverters }: { defaultConverters: any }) => {
+    // Helper function to render media block from parsed nodePreview
+    const renderMediaBlock = (node: any) => {
+      // Parse nodePreview to access the fields
+      let parsedNode: any = null;
+      try {
+        // nodePreview might be a string that needs parsing, or already an object
+        if (typeof node?.nodePreview === 'string') {
+          parsedNode = JSON.parse(node.nodePreview);
+        } else if (node?.nodePreview) {
+          parsedNode = node.nodePreview;
+        }
+      } catch (e) {
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Failed to parse nodePreview:', e, 'nodePreview:', node?.nodePreview);
+        }
+        return null;
+      }
+
+      if (!parsedNode) {
+        if (process.env.NODE_ENV === 'development') {
+          console.log('No parsedNode found. node:', { 
+            nodeType: node?.nodeType, 
+            type: node?.type, 
+            hasNodePreview: !!node?.nodePreview,
+            nodePreviewType: typeof node?.nodePreview 
+          });
+        }
+        return null;
+      }
+
+      // Access fields.media.sizes.large.url from parsed nodePreview
+      // Also check if fields are directly on the node
+      const media = parsedNode?.fields?.media || node?.fields?.media || null;
+      
+      if (!media) {
+        if (process.env.NODE_ENV === 'development') {
+          console.log('No media found. parsedNode fields:', parsedNode?.fields ? Object.keys(parsedNode.fields) : 'none', 'node fields:', node?.fields ? Object.keys(node.fields) : 'none');
+        }
+        return null;
+      }
+
+      // Extract image URL from fields.media.sizes.large.url (primary path)
+      const imageUrl = parsedNode?.fields?.media?.sizes?.large?.url || node?.fields?.media?.sizes?.large?.url || media?.sizes?.large?.url || media?.sizes?.medium?.url || media?.sizes?.small?.url || media?.url || null;
+      
+      if (!imageUrl) {
+        return null;
+      }
+
+      const finalImageUrl = getImageUrl({ url: imageUrl });
+      // Get caption from fields.caption or use alt text
+      const caption = parsedNode?.fields?.caption || parsedNode?.fields?.altText || parsedNode?.fields?.alt || media?.alt || media?.altText || '';
+      const altText = caption || 'Image';
+
+      return (
+        <figure className="my-4">
+          <img 
+            src={finalImageUrl || ''} 
+            alt={altText}
+            className="rounded-lg max-w-full"
+          />
+          {caption && (
+            <figcaption className="text-sm text-muted-foreground mt-2 text-center italic">
+              {caption}
+            </figcaption>
+          )}
+        </figure>
+      );
+    };
+
+    return {
+      ...defaultConverters,
+      // Handle nodes with nodeType "block" - parse nodePreview and map fields.media.sizes.large.url to img tags
+      block: ({ node }: { node: any }) => {
+        // Check if this is a block node (nodeType === 'block' or type === 'block')
+        if ((node?.nodeType === 'block' || node?.type === 'block') && node?.nodePreview) {
+          return renderMediaBlock(node);
+        }
+        
+        // If not a media block, use default block converter
+        if (defaultConverters?.block) {
+          return defaultConverters.block({ node });
+        }
+        return null;
+      },
+      // Fallback: handle unknown nodes that might be block nodes with nodePreview
+      unknown: ({ node }: { node: any }) => {
+        // Check if this looks like a block node with nodePreview
+        if ((node?.nodeType === 'block' || node?.type === 'block') && node?.nodePreview) {
+          const result = renderMediaBlock(node);
+          if (result) {
+            return result;
+          }
+        }
+        
+        // Fall back to default unknown handler if it exists
+        if (defaultConverters?.unknown) {
+          return defaultConverters.unknown({ node });
+        }
+        
+        // In development, log unknown nodes for debugging
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Unknown node:', {
+            nodeType: node?.nodeType,
+            type: node?.type,
+            hasNodePreview: !!node?.nodePreview,
+            nodeKeys: Object.keys(node || {}),
+          });
+        }
+        
+        return null;
+      },
+    };
+  };
+
   return (
-    <div className="container mx-auto px-4 py-8 max-w-[1200px]">
+    <div className="container mx-auto px-4 py-8 max-w-4xl">
       {heroImageUrl && (
         <div className="relative w-full h-64 md:h-96 mb-8 overflow-hidden rounded-xl">
           <img 
@@ -150,29 +184,32 @@ export default async function ArticleLayout({
       
       {title && (
         <div className="article-header-title mb-4">
-          <h1 className="text-2xl md:text-4xl font-bold">{title}</h1>
+          <h1 className="text-4xl md:text-5xl font-bold">{title}</h1>
         </div>
       )}
 
-{children}
+      {metaDescription && (
+        <div className="article-header-description text-xl text-muted-foreground mb-4">
+          {typeof metaDescription === 'string' ? (
+            <p>{metaDescription}</p>
+          ) : (
+            <RichText data={metaDescription} className="text-[16px] md:text-[20px] leading-relaxed" />
+          )}
+        </div>
+      )}
 
 {hasContent && (
-        <div className="article-content prose prose-lg max-w-none mb-8 m-auto max-w-xl">
+        <div className="article-content prose prose-lg max-w-none mb-8">
           <RichText 
             data={content} 
-            converters={jsxConverters}  
-            className=" text-base leading-relaxed [&_p]:mb-8 [&_h1]:text-3xl [&_h1]:font-bold [&_h1]:mb-4 [&_h1]:mt-8 [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:mb-3 [&_h2]:mt-6 [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:mb-2 [&_h3]:mt-4 [&_ul]:list-disc [&_ul]:ml-6 [&_ul]:mb-4 [&_ol]:list-decimal [&_ol]:ml-6 [&_ol]:mb-4 [&_li]:mb-2 [&_a]:text-primary [&_a]:underline [&_strong]:font-bold [&_em]:italic [&_blockquote]:border-l-4 [&_blockquote]:border-muted [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:my-4 [&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-sm [&_pre]:bg-muted [&_pre]:p-4 [&_pre]:rounded-lg [&_pre]:overflow-x-auto [&_pre]:my-4 [&_img]:rounded-lg [&_img]:my-4 [&_img]:max-w-full [&_hr]:my-8 [&_hr]:border-t [&_hr]:border-muted"
+            converters={customConverters}
+            className="text-base leading-relaxed [&_p]:mb-4 [&_h1]:text-3xl [&_h1]:font-bold [&_h1]:mb-4 [&_h1]:mt-8 [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:mb-3 [&_h2]:mt-6 [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:mb-2 [&_h3]:mt-4 [&_ul]:list-disc [&_ul]:ml-6 [&_ul]:mb-4 [&_ol]:list-decimal [&_ol]:ml-6 [&_ol]:mb-4 [&_li]:mb-2 [&_a]:text-primary [&_a]:underline [&_strong]:font-bold [&_em]:italic [&_blockquote]:border-l-4 [&_blockquote]:border-muted [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:my-4 [&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-sm [&_pre]:bg-muted [&_pre]:p-4 [&_pre]:rounded-lg [&_pre]:overflow-x-auto [&_pre]:my-4 [&_img]:rounded-lg [&_img]:my-4 [&_img]:max-w-full [&_hr]:my-8 [&_hr]:border-t [&_hr]:border-muted"
           />
         </div>
       )}
 
       {children}
-
-      <ArticleCardGrid 
-        posts={relatedPosts} 
-        locale={locale} 
-        title="Related Posts"
-      />
-</div>
+    </div>
   );
 }
+

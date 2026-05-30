@@ -1,0 +1,23 @@
+{
+  "mcpServers": {
+    "perplexity": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "perplexity-mcp"],
+      "env": {
+        "PERPLEXITY_API_KEY": "${PERPLEXITY_API_KEY}"
+      }
+    },
+    "mongodb": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "mongodb-mcp-server@latest"
+      ],
+      "env": {
+        "MDB_MCP_CONNECTION_STRING": "${DATABASE_URL}"
+      }
+    }
+  }
+}

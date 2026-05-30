@@ -1,20 +1,23 @@
 'use client'
 
 import { useMemo, useContext, useEffect, useState, useCallback, useRef } from 'react'
+import useSWR from 'swr'
 import { GlobalContext } from '@/lib/contexts'
 import { Skeleton } from '@/components/ui/skeleton'
 import { OptionsMenuItem } from '@/components/optionsButton'
 import { Circle, Minus, ChevronDown, ChevronUp, Eye, EyeOff } from 'lucide-react'
 import { useI18n } from '@/lib/contexts/i18n'
-import { TaskStatus, STATUS_OPTIONS, getStatusColor, getIconColor, getTaskKey, formatDateLocal } from '@/lib/taskUtils'
-import { useUserData } from '@/lib/userUtils'
+import { TaskStatus, STATUS_OPTIONS, getStatusColor, getIconColor, getTaskKey, formatDateLocal } from '@/lib/utils/taskUtils'
+import { useUserData } from '@/lib/utils/userUtils'
 import { getWeekNumber } from '@/app/helpers'
 import { TaskItem } from '@/components/taskItem'
 import { useOptimisticUpdates } from '@/lib/hooks/useOptimisticUpdates'
 import { useTaskHandlers } from '@/lib/hooks/useTaskHandlers'
 
+const fetcher = (url: string) => fetch(url).then((res) => res.json())
+
 export const SteadyTasks = () => {
-  const { taskLists: contextTaskLists, refreshTaskLists, revealRedacted } = useContext(GlobalContext)
+  const { taskLists: contextTaskLists, refreshTaskLists, revealRedacted, session } = useContext(GlobalContext)
   const { t } = useI18n()
   const { refreshUser } = useUserData()
   const [stableTaskLists, setStableTaskLists] = useState<any[]>([])
@@ -28,6 +31,17 @@ export const SteadyTasks = () => {
 
   // Use shared hooks for optimistic updates
   const { pendingCompletionsRef, pendingStatusUpdatesRef } = useOptimisticUpdates()
+
+  // Get current user ID
+  const userId = (session?.user as any)?.id
+
+  // Fetch steady/in-progress tasks from new API
+  const { data: steadyTasksData } = useSWR(
+    '/api/v1/tasks?status=IN_PROGRESS,STEADY',
+    fetcher,
+    { revalidateOnFocus: false }
+  )
+  const steadyTasksFromApi = steadyTasksData?.tasks || []
 
   // Maintain stable task lists that never clear once loaded
   useEffect(() => {
@@ -385,6 +399,17 @@ export const SteadyTasks = () => {
         return statusA - statusB
       }
       
+      // Within 'in progress', sort by most recent timestamp (most recently moved first)
+      if (((a?.taskStatus as TaskStatus) || 'open') === 'in progress') {
+        const getTimestamp = (task: any): number => {
+          const ts = task.updatedAt || task.completedAt || task.createdAt
+          return ts ? new Date(ts).getTime() : 0
+        }
+        const timeA = getTimestamp(a)
+        const timeB = getTimestamp(b)
+        if (timeA !== timeB) return timeB - timeA // most recent first
+      }
+      
       // Then sort by role priority
       const priorityA = getRolePriority(a.taskListRole || '')
       const priorityB = getRolePriority(b.taskListRole || '')
@@ -435,6 +460,60 @@ export const SteadyTasks = () => {
     }
   }, [handleStatusChange, handleIncrementCount])
 
+  // Choose between new API data and legacy data
+  const tasksToDisplay = useMemo(() => {
+    // If we have tasks from the new API, use them
+    if (steadyTasksFromApi.length > 0) {
+      const mapped = steadyTasksFromApi.map((t: any) => ({
+        ...t,
+        taskStatus: t.status,
+        taskListName: t.list?.name || '',
+        taskListId: t.listId,
+        taskListRole: t.list?.role || '',
+        displayName: t.name,
+      }))
+
+      const getRolePriority = (role: string): number => {
+        if (role === 'daily.default') return 1
+        if (role === 'weekly.default') return 2
+        if (role?.startsWith('daily.')) return 3
+        if (role?.startsWith('weekly.')) return 4
+        return 5
+      }
+
+      const getLatestAcceptedJobTime = (task: any): number => {
+        const acceptedJobs = task.jobs?.filter((j: any) => j.status === 'ACCEPTED') || []
+        return acceptedJobs.reduce((latest: number, job: any) => {
+          const t = job.createdAt ? new Date(job.createdAt).getTime() : 0
+          return t > latest ? t : latest
+        }, 0)
+      }
+
+      return mapped.sort((a: any, b: any) => {
+        const aIsInProgress = a.taskStatus === 'IN_PROGRESS'
+        const bIsInProgress = b.taskStatus === 'IN_PROGRESS'
+
+        // IN_PROGRESS tasks come before STEADY tasks
+        if (aIsInProgress !== bIsInProgress) {
+          return aIsInProgress ? -1 : 1
+        }
+
+        if (aIsInProgress && bIsInProgress) {
+          // Within IN_PROGRESS, sort by most recently moved (latest ACCEPTED job) first
+          const timeA = getLatestAcceptedJobTime(a)
+          const timeB = getLatestAcceptedJobTime(b)
+          if (timeA !== timeB) return timeB - timeA
+        }
+
+        // For STEADY (or tie-break), sort by role priority
+        return getRolePriority(a.taskListRole || '') - getRolePriority(b.taskListRole || '')
+      })
+    }
+
+    // Fallback to legacy steadyTasks
+    return steadyTasks
+  }, [steadyTasksFromApi, steadyTasks])
+
   if (isLoading) {
     return (
       <div className="w-full px-1 sm:px-0 mt-4">
@@ -450,7 +529,7 @@ export const SteadyTasks = () => {
     )
   }
 
-  if (steadyTasks.length === 0) {
+  if (tasksToDisplay.length === 0) {
     return null
   }
 
@@ -458,13 +537,13 @@ export const SteadyTasks = () => {
   const mobileInitialLimit = 1
   const mobileExpandedLimit = 5
   const desktopLimit = 10
-  const hasMoreTasks = steadyTasks.length > mobileInitialLimit
+  const hasMoreTasks = tasksToDisplay.length > mobileInitialLimit
   const mobileLimit = isExpanded ? mobileExpandedLimit : mobileInitialLimit
 
   return (
     <div className="space-y-4 w-full mt-4 px-1 sm:px-0 relative">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 align-center justify-center w-full m-auto gap-2">
-        {steadyTasks.map((task: any, index: number) => {
+        {tasksToDisplay.map((task: any, index: number) => {
           const taskStatus: TaskStatus = (task?.taskStatus as TaskStatus) || 'open'
           const statusColor = getStatusColor(taskStatus, 'css')
           const iconColor = getIconColor(taskStatus)

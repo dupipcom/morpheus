@@ -24,6 +24,7 @@
     "signInToAccess": "Connectez-vous pour accéder à votre tableau de bord et suivre vos progrès.",
     "dismiss": "Fermer",
     "accept": "Accepter",
+    "all": "Tout",
     "pageAvailableIn": "Cette page est disponible en {locale}. Souhaitez-vous la voir dans cette langue ?",
     "selectLanguage": "Sélectionner la langue",
     "manageAccount": "Gérer Mon Compte",
@@ -56,7 +57,10 @@
     "copyLink": "Copier le lien",
     "linkCopied": "Lien copié dans le presse-papiers",
     "copyFailed": "Échec de la copie du lien",
-    "saving": "Enregistrement..."
+    "saving": "Enregistrement...",
+    "decline": "Refuser",
+    "friendRequest": "Demande d'amitié",
+    "reverseOrder": "Ordre inversé"
   },
   "navigation": {
     "home": "Accueil",
@@ -82,7 +86,26 @@
     "yourMood": "Votre humeur.",
     "yourProductivity": "Votre productivité.",
     "yourData": "Vos données.",
-    "yourBalance": "Votre argent."
+    "yourBalance": "Votre argent.",
+    "timeframe": {
+      "startDate": "Date de début",
+      "endDate": "Date de fin"
+    },
+    "me": "Mes données",
+    "selectDelegatedUser": "Sélectionner un utilisateur délégué",
+    "analysis": {
+      "alltimeAnalysis": "Analyse globale",
+      "dayAnalysis": "Analyse du jour",
+      "last3daysAnalysis": "Analyse des 3 derniers jours",
+      "weekAnalysis": "Analyse hebdomadaire",
+      "yearAnalysis": "Analyse annuelle",
+      "gratitudeAnalysis": "Analyse de gratitude",
+      "optimismAnalysis": "Analyse d'optimisme",
+      "restednessAnalysis": "Analyse du repos",
+      "toleranceAnalysis": "Analyse de tolérance",
+      "selfEsteemAnalysis": "Analyse d'estime de soi",
+      "trustAnalysis": "Analyse de confiance"
+    }
   },
   "mood": {
     "title": "C'est {date}.",
@@ -105,7 +128,26 @@
         "AI_ENABLED": "Activé par IA"
       },
       "action": "Publier la Note",
-      "publishing": "Publishing..."
+      "publishing": "Publication...",
+      "embedHint": "Intégration {provider}. Si la lecture n'est pas disponible, ouvrez le lien original ci-dessous."
+    },
+    "thirdParty": {
+      "title": "Tiers",
+      "settings": "Paramètres de délégation",
+      "activeDelegations": "Délégations actives",
+      "empty": "Aucune délégation active.",
+      "identifierPlaceholder": "Nom d'utilisateur, e-mail ou identifiant utilisateur",
+      "noFriendsFound": "Aucune relation d'amitié correspondante trouvée.",
+      "friendsHint": "Les suggestions incluent vos amis. Vous pouvez également saisir n'importe quelle adresse e-mail.",
+      "scope": "Portée des données",
+      "allScopes": "Toutes les portées",
+      "scopesSelected": "portées sélectionnées",
+      "minimumOneScope": "Au moins une portée doit rester sélectionnée.",
+      "scopeResolutionHint": "Si plusieurs portées sont sélectionnées, la portée sélectionnée la plus large est appliquée.",
+      "addDelegatedAnalyst": "Ajouter un analyste délégué",
+      "adding": "Ajout en cours...",
+      "addError": "Impossible d'ajouter l'analyste délégué",
+      "invitationDraft": "Un brouillon d'invitation a été préparé pour cet e-mail."
     }
   },
   "week": {
@@ -133,7 +175,11 @@
       "open": "Ouvert",
       "done": "Terminé",
       "ignored": "Ignoré"
-    }
+    },
+    "edit": "Modifier",
+    "loadingForDate": "Chargement des tâches pour la date sélectionnée...",
+    "initializingTasks": "Configuration de vos tâches...",
+    "noTasksForDate": "Aucune tâche planifiée pour cette date"
   },
   "settings": {
     "title": "Paramètres",
@@ -289,7 +335,10 @@
     "progress": "Progrès",
     "moodAverageScale": "Échelle de Moyenne d'Humeur",
     "balance": "Solde",
-    "earningsScale": "Échelle de Gains"
+    "earningsScale": "Échelle de Gains",
+    "profit": "Profit",
+    "stash": "Réserve",
+    "withdrawn": "Retiré"
   },
   "agentChat": {
     "thinking": "Réflexion...",
@@ -302,10 +351,10 @@
   "errors": {
     "notFound": "Oups ! Impossible de s'accorder sur cette fréquence.",
     "genericError": "Quelque chose s'est mal passé. Veuillez réessayer.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "Échec du chargement des notes",
+    "failedToLoadNotes": "Échec du chargement des notes",
+    "failedToFetchTemplates": "Échec du chargement des modèles",
+    "failedToLoadTemplates": "Échec du chargement des modèles"
   },
   "publicProfile": {
     "ctaTitle": "Commencez votre parcours Dupip",
@@ -326,9 +375,9 @@
     "cloning": "Clonage...",
     "noPublicNotes": "Aucune note publique disponible pour le moment.",
     "noPublicTemplatesOrLists": "Aucun modèle ou liste publique disponible pour le moment.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "Cloner la liste",
+    "cloneListSuccess": "Liste clonée avec succès!",
+    "cloneListFailed": "Échec du clonage de la liste"
   },
   "publicCharts": {
     "noData": "Aucune donnée publique disponible pour les graphiques.",
@@ -354,7 +403,8 @@
     "closeFriend": "Ami proche",
     "friends": "Amis",
     "signInToAdd": "Connectez-vous pour ajouter un ami",
-    "editProfile": "Modifier le profil"
+    "editProfile": "Modifier le profil",
+    "message": "Message"
   },
   "profile": {
     "createProfile": "Créer un Profil",
@@ -460,7 +510,9 @@
       "timesLabel": "# de fois",
       "saveToTemplate": "Enregistrer la tâche dans le modèle",
       "addTask": "Ajouter une Tâche",
-      "cancel": "Annuler"
+      "cancel": "Annuler",
+      "editTitle": "Modifier la tâche",
+      "saveTask": "Enregistrer la tâche"
     },
     "addListForm": {
       "titleCreate": "Créer une Nouvelle Liste",
@@ -536,6 +588,39 @@
       },
       "create": "Créer",
       "cancel": "Annuler"
+    },
+    "recurrencePicker": {
+      "frequency": "Répéter",
+      "every": "Tous les",
+      "day": "jour",
+      "days": "jours",
+      "week": "semaine",
+      "weeks": "semaines",
+      "month": "mois",
+      "months": "mois",
+      "year": "an",
+      "years": "ans",
+      "noRepeat": "Ne se répète pas",
+      "daily": "Quotidiennement",
+      "weekly": "Hebdomadairement",
+      "monthly": "Mensuellement",
+      "yearly": "Annuellement",
+      "repeatOn": "Répéter le",
+      "monday": "Lun",
+      "tuesday": "Mar",
+      "wednesday": "Mer",
+      "thursday": "Jeu",
+      "friday": "Ven",
+      "saturday": "Sam",
+      "sunday": "Dim",
+      "dayOfMonth": "Jour du mois",
+      "selectDay": "Sélectionner le jour (1-31)",
+      "ends": "Se termine",
+      "never": "Jamais",
+      "onDate": "Le",
+      "after": "Après",
+      "pickDate": "Choisir une date",
+      "occurrences": "occurrences"
     }
   },
   "socialView": {
@@ -610,5 +695,174 @@
     "deleteWallet": "Supprimer le Portefeuille",
     "deleteWalletConfirmation": "Êtes-vous sûr de vouloir supprimer ce portefeuille ? Cette action ne peut pas être annulée. Le portefeuille sera retiré de votre compte, mais l'adresse blockchain et ses fonds resteront sur la blockchain.",
     "delete": "Supprimer"
+  },
+  "jobs": {
+    "history": "Historique des Travaux",
+    "filterByStatus": "Filtrer par Statut :",
+    "errorLoadingHistory": "Erreur lors du chargement de l'historique des travaux",
+    "noHistoryFound": "Aucun historique de travaux trouvé",
+    "status": {
+      "requested": "Demandé",
+      "inProgress": "En Cours",
+      "validating": "Validation",
+      "accepted": "Accepté",
+      "rejected": "Rejeté",
+      "submitted": "Soumis",
+      "changesRequested": "Modifications demandées"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "Votre demande est en cours d'examen. Vous serez notifié lors de l'approbation.",
+        "inProgress": "Votre demande a été approuvée ! Vous pouvez maintenant travailler sur cette tâche.",
+        "submitted": "Votre travail a été soumis. En attente de révision par le propriétaire.",
+        "validating": "Des modifications ont été demandées. Veuillez réviser et soumettre à nouveau.",
+        "accepted": "Félicitations ! Votre travail a été accepté.",
+        "rejected": "Votre soumission a été rejetée."
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}} a demandé à travailler sur cette tâche. Approuvez ou rejetez la demande.",
+        "inProgress": "{{workerName}} travaille actuellement sur cette tâche.",
+        "submitted": "{{workerName}} a soumis son travail pour révision.",
+        "validating": "En attente que {{workerName}} révise et soumette à nouveau.",
+        "accepted": "Le travail de {{workerName}} a été accepté.",
+        "rejected": "La soumission de {{workerName}} a été rejetée."
+      }
+    },
+    "actions": {
+      "submitForReview": "Soumettre pour Révision",
+      "withdrawSubmission": "Retirer la Soumission",
+      "withdrawing": "Retrait en cours...",
+      "reviseAndResubmit": "Réviser et Resoumettre",
+      "approveRequest": "Approuver la Demande",
+      "approving": "Approbation en cours...",
+      "rejectRequest": "Rejeter la Demande",
+      "rejecting": "Rejet en cours...",
+      "reviewAndAccept": "Réviser et Accepter",
+      "requestChanges": "Demander des Modifications",
+      "reject": "Rejeter"
+    },
+    "review": {
+      "title": "Réviser le Travail Soumis",
+      "description": "Réviser le travail de {{workerName}}",
+      "workerSolution": "Solution du Travailleur :",
+      "selfReviewScore": "Auto-évaluation : {{score}}/100",
+      "noSubmissionNotes": "Aucune note de soumission fournie",
+      "actionLabel": "Action *",
+      "required": "*",
+      "optional": "(Facultatif)",
+      "feedbackLabel": "Commentaires de Révision {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "Expliquez quelles modifications sont nécessaires",
+        "other": "Fournissez des commentaires ou suggestions pour le travailleur"
+      },
+      "editorPlaceholder": {
+        "validate": "Décrivez les modifications nécessaires...",
+        "other": "Fournissez des commentaires sur le travail..."
+      },
+      "managerReviewLabel": "Révision du Gestionnaire (Facultatif)",
+      "managerReviewDescription": "Évaluez la qualité du travail accompli",
+      "scorePoor": "0 (Médiocre)",
+      "scoreExcellent": "100 (Excellent)",
+      "cancel": "Annuler",
+      "submitting": "Soumission en cours...",
+      "acceptWork": "Accepter le Travail",
+      "requestChangesButton": "Demander des Modifications",
+      "rejectWork": "Rejeter le Travail",
+      "actions": {
+        "accept": {
+          "title": "Accepter (Marquer la tâche comme Terminée)",
+          "description": "Approuver le travail et terminer la tâche. Le travailleur gagne sa récompense."
+        },
+        "requestChanges": {
+          "title": "Demander des Modifications",
+          "description": "Demander au travailleur de réviser et soumettre à nouveau son travail."
+        },
+        "reject": {
+          "title": "Rejeter (Rouvrir la tâche)",
+          "description": "Rejeter complètement le travail et rouvrir la tâche pour d'autres."
+        }
+      },
+      "messages": {
+        "accepted": "Travail accepté et tâche marquée comme terminée",
+        "changesRequested": "Modifications demandées, le travailleur révisera",
+        "rejected": "Travail rejeté, tâche rouverte",
+        "error": "Impossible de soumettre la révision. Veuillez réessayer."
+      }
+    },
+    "submission": {
+      "title": "Soumettre le Travail pour Révision",
+      "titleResubmit": "Réviser et Resoumettre le Travail",
+      "description": "Décrivez votre solution pour {{taskName}} et soumettez pour validation.",
+      "solutionLabel": "Description de la Solution *",
+      "solutionDescription": "Expliquez ce que vous avez fait pour accomplir cette tâche. Prend en charge le formatage, les liens et les listes.",
+      "solutionPlaceholder": "Expliquez ce que vous avez fait pour accomplir cette tâche...",
+      "selfReviewLabel": "Auto-évaluation (Facultatif)",
+      "selfReviewDescription": "Évaluez la qualité de votre travail sur une échelle de 0-100",
+      "scoreNeedsWork": "0 (Nécessite du travail)",
+      "scorePerfect": "100 (Parfait)",
+      "cancel": "Annuler",
+      "submitting": "Soumission en cours...",
+      "submitButton": "Soumettre pour Révision",
+      "resubmitButton": "Resoumettre pour Révision",
+      "errors": {
+        "missingDescription": "Veuillez fournir une description de votre travail",
+        "submitError": "Impossible de soumettre votre travail. Veuillez réessayer."
+      },
+      "messages": {
+        "submitted": "Travail soumis pour révision",
+        "resubmitted": "Travail resoumis pour révision"
+      }
+    }
+  },
+  "notes": {
+    "updated": "Note mise à jour avec succès",
+    "updateFailed": "Échec de la mise à jour de la note",
+    "deleted": "Note supprimée avec succès",
+    "deleteFailed": "Échec de la suppression de la note",
+    "deleting": "Suppression...",
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer cette note ?",
+    "content": "Contenu de la note",
+    "visibilityUpdated": "Visibilité mise à jour avec succès",
+    "visibilityUpdateFailed": "Échec de la mise à jour de la visibilité",
+    "changeVisibility": "Modifier la visibilité",
+    "filters": {
+      "sort": "Trier",
+      "date": "Par date",
+      "mostRelevant": "Plus pertinent",
+      "all": "Tout"
+    }
+  },
+  "chat": {
+    "title": "Discussion",
+    "subtitle": "Organisations, canaux, messages directs et fils de discussion.",
+    "anonymous": "Anonyme",
+    "directMessage": "Message direct",
+    "deletedMessage": "Message supprimé",
+    "deleteMessageTitle": "Supprimer le message ?",
+    "deleteMessageDescription": "Cela supprimera le message de manière douce et conservera un espace réservé dans l'historique de la conversation.",
+    "createInviteLink": "Créer un lien d'invitation",
+    "pendingInvites": "Invitations en attente",
+    "acceptInvite": "Accepter",
+    "inviteFriendToOrg": "Inviter un ami dans cette organisation",
+    "inviteLinkCopied": "Lien d'invitation copié",
+    "inviteSent": "Invitation envoyée",
+    "inviteAccepted": "Invitation acceptée"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Disposition de la grille",
+      "tight": "Serré",
+      "small": "Petit",
+      "wide": "Large"
+    }
   }
 }

@@ -24,6 +24,7 @@
     "signInToAccess": "Ingia ili kufikia dashibodi yako na kufuatilia maendeleo yako.",
     "dismiss": "Ondoa",
     "accept": "Kubali",
+    "all": "Yote",
     "pageAvailableIn": "Ukurasa huu unapatikana katika {locale}. Je, ungependa kuuona katika lugha hiyo?",
     "selectLanguage": "Chagua lugha",
     "manageAccount": "Dhibiti Akaunti Yangu",
@@ -56,7 +57,10 @@
     "copyLink": "Nakili kiungo",
     "linkCopied": "Kiungo kimenakiliwa kwenye ubao wa kunakili",
     "copyFailed": "Imeshindwa kunakili kiungo",
-    "saving": "Inahifadhi..."
+    "saving": "Inahifadhi...",
+    "decline": "Kataa",
+    "friendRequest": "Ombi la urafiki",
+    "reverseOrder": "Geuza mpangilio"
   },
   "navigation": {
     "home": "Nyumbani",
@@ -82,7 +86,26 @@
     "yourMood": "Hali yako ya moyo.",
     "yourProductivity": "Uzalishaji wako.",
     "yourData": "Data yako.",
-    "yourBalance": "Pesa yako."
+    "yourBalance": "Pesa yako.",
+    "timeframe": {
+      "startDate": "Tarehe ya kuanza",
+      "endDate": "Tarehe ya mwisho"
+    },
+    "me": "Data zangu",
+    "selectDelegatedUser": "Chagua mtumiaji aliyekabidhiwa",
+    "analysis": {
+      "alltimeAnalysis": "Uchambuzi wa muda wote",
+      "dayAnalysis": "Uchambuzi wa leo",
+      "last3daysAnalysis": "Uchambuzi wa siku 3 zilizopita",
+      "weekAnalysis": "Uchambuzi wa wiki",
+      "yearAnalysis": "Uchambuzi wa mwaka",
+      "gratitudeAnalysis": "Uchambuzi wa shukrani",
+      "optimismAnalysis": "Uchambuzi wa matumaini",
+      "restednessAnalysis": "Uchambuzi wa mapumziko",
+      "toleranceAnalysis": "Uchambuzi wa uvumilivu",
+      "selfEsteemAnalysis": "Uchambuzi wa kujithamini",
+      "trustAnalysis": "Uchambuzi wa uaminifu"
+    }
   },
   "mood": {
     "title": "Ni {date}.",
@@ -105,7 +128,26 @@
         "AI_ENABLED": "AI Imewezeshwa"
       },
       "action": "Chapisha Maelezo",
-      "publishing": "Publishing..."
+      "publishing": "Inachapisha...",
+      "embedHint": "Ingizo la {provider}. Ikiwa urejeshaji hauwezekani, fungua kiungo asili hapa chini."
+    },
+    "thirdParty": {
+      "title": "Mhusika wa tatu",
+      "settings": "Mipangilio ya ukabidhi",
+      "activeDelegations": "Ukabidhi amilifu",
+      "empty": "Hakuna ukabidhi amilifu.",
+      "identifierPlaceholder": "Jina la mtumiaji, barua pepe, au kitambulisho cha mtumiaji",
+      "noFriendsFound": "Hakuna urafiki unaolingana uliopatikana.",
+      "friendsHint": "Mapendekezo yanajumuisha marafiki zako. Unaweza pia kuingiza anuani yoyote ya barua pepe.",
+      "scope": "Wigo wa data",
+      "allScopes": "Miwigo yote",
+      "scopesSelected": "miwigo iliyochaguliwa",
+      "minimumOneScope": "Angalau wigo mmoja lazima ubaki umechaguliwa.",
+      "scopeResolutionHint": "Iwapo miwigo mingi imechaguliwa, wigo mpana zaidi uliyochaguliwa ndio utatumika.",
+      "addDelegatedAnalyst": "Ongeza mchambuzi aliyekabidhiwa",
+      "adding": "Inaongezwa...",
+      "addError": "Haikuwezekana kuongeza mchambuzi aliyekabidhiwa",
+      "invitationDraft": "Rasimu ya mwaliko imeandaliwa kwa barua pepe hii."
     }
   },
   "week": {
@@ -133,7 +175,11 @@
       "open": "Wazi",
       "done": "Imekamilika",
       "ignored": "Imepuuzwa"
-    }
+    },
+    "edit": "Hariri",
+    "loadingForDate": "Inapakia kazi kwa tarehe iliyochaguliwa...",
+    "initializingTasks": "Inasanidi kazi zako...",
+    "noTasksForDate": "Hakuna kazi zilizopangwa kwa tarehe hii"
   },
   "settings": {
     "title": "Mipangilio",
@@ -250,7 +296,10 @@
     "progress": "Maendeleo",
     "moodAverageScale": "Kipimo cha Wastani wa Hali ya Moyo",
     "balance": "Salio",
-    "earningsScale": "Kipimo cha Mapato"
+    "earningsScale": "Kipimo cha Mapato",
+    "profit": "Faida",
+    "stash": "Akiba",
+    "withdrawn": "Imeondolewa"
   },
   "social": {
     "title": "Mawasiliano ya kijamii",
@@ -300,10 +349,10 @@
   "errors": {
     "notFound": "Ops! Haikuweza kufikia mzunguko huu.",
     "genericError": "Kuna kitu kilichokwenda vibaya. Tafadhali jaribu tena.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "Imeshindwa kupakia vidokezo",
+    "failedToLoadNotes": "Imeshindwa kupakia vidokezo",
+    "failedToFetchTemplates": "Imeshindwa kupakia violezo",
+    "failedToLoadTemplates": "Imeshindwa kupakia violezo"
   },
   "publicProfile": {
     "ctaTitle": "Anza Safari Yako ya Dupip",
@@ -324,9 +373,9 @@
     "cloning": "Inanakili...",
     "noPublicNotes": "Hakuna maelezo ya umma yanayopatikana bado.",
     "noPublicTemplatesOrLists": "Hakuna violezo au orodha za umma zilizopo bado.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "Nakili orodha",
+    "cloneListSuccess": "Orodha imenakiliwa kwa mafanikio!",
+    "cloneListFailed": "Imeshindwa kunakili orodha"
   },
   "publicCharts": {
     "noData": "Hakuna data ya chati za umma inayopatikana.",
@@ -352,7 +401,8 @@
     "closeFriend": "Rafiki wa karibu",
     "friends": "Marafiki",
     "signInToAdd": "Ingia ili kuongeza rafiki",
-    "editProfile": "Hariri wasifu"
+    "editProfile": "Hariri wasifu",
+    "message": "Ujumbe"
   },
   "profile": {
     "editProfile": "Hariri wasifu",
@@ -458,7 +508,9 @@
       "timesLabel": "# ya mara",
       "saveToTemplate": "Hifadhi kazi kwenye kiolezo",
       "addTask": "Ongeza Kazi",
-      "cancel": "Ghairi"
+      "cancel": "Ghairi",
+      "editTitle": "Hariri kazi",
+      "saveTask": "Hifadhi kazi"
     },
     "addListForm": {
       "titleCreate": "Unda Orodha Mpya",
@@ -534,6 +586,39 @@
       },
       "create": "Unda",
       "cancel": "Ghairi"
+    },
+    "recurrencePicker": {
+      "frequency": "Rudia",
+      "every": "Kila",
+      "day": "siku",
+      "days": "siku",
+      "week": "wiki",
+      "weeks": "wiki",
+      "month": "mwezi",
+      "months": "miezi",
+      "year": "mwaka",
+      "years": "miaka",
+      "noRepeat": "Hairudii",
+      "daily": "Kila siku",
+      "weekly": "Kila wiki",
+      "monthly": "Kila mwezi",
+      "yearly": "Kila mwaka",
+      "repeatOn": "Rudia kwenye",
+      "monday": "Jtt",
+      "tuesday": "Jnn",
+      "wednesday": "Jtn",
+      "thursday": "Alh",
+      "friday": "Iju",
+      "saturday": "Jsi",
+      "sunday": "Jpi",
+      "dayOfMonth": "Siku ya mwezi",
+      "selectDay": "Chagua siku (1-31)",
+      "ends": "Inaisha",
+      "never": "Kamwe",
+      "onDate": "Tarehe",
+      "after": "Baada ya",
+      "pickDate": "Chagua tarehe",
+      "occurrences": "mara"
     }
   },
   "socialView": {
@@ -608,5 +693,174 @@
     "deleteWallet": "Futa Mkoba",
     "deleteWalletConfirmation": "Je, una uhakika unataka kufuta mkoba huu? Kitendo hiki hakiwezi kutenduliwa. Mkoba utaondolewa kutoka kwa akaunti yako, lakini anwani ya blockchain na fedha zake zitaendelea kuwa kwenye blockchain.",
     "delete": "Futa"
+  },
+  "jobs": {
+    "history": "Historia ya Kazi",
+    "filterByStatus": "Chuja kwa Hali:",
+    "errorLoadingHistory": "Hitilafu katika kupakia historia ya kazi",
+    "noHistoryFound": "Hakuna historia ya kazi iliyopatikana",
+    "status": {
+      "requested": "Imeombwa",
+      "inProgress": "Inaendelea",
+      "validating": "Inathibitisha",
+      "accepted": "Imekubaliwa",
+      "rejected": "Imekataliwa",
+      "submitted": "Imewasilishwa",
+      "changesRequested": "Mabadiliko yameombwa"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "Ombi lako linakaguliwa. Utajulishwa likiidhinishwa.",
+        "inProgress": "Ombi lako limeidhinishwa! Sasa unaweza kufanya kazi hii.",
+        "submitted": "Kazi yako imewasilishwa. Inasubiri ukaguzi kutoka kwa mmiliki.",
+        "validating": "Mabadiliko yameombwa. Tafadhali kagua na uwasilishe tena.",
+        "accepted": "Hongera! Kazi yako imekubaliwa.",
+        "rejected": "Uwasilishaji wako umekataliwa."
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}} ameomba kufanya kazi hii. Idhinisha au kataa ombi.",
+        "inProgress": "{{workerName}} anafanya kazi hii kwa sasa.",
+        "submitted": "{{workerName}} amewasilisha kazi yao kwa ukaguzi.",
+        "validating": "Inasubiri {{workerName}} akagua na kuwasilisha tena.",
+        "accepted": "Kazi ya {{workerName}} imekubaliwa.",
+        "rejected": "Uwasilishaji wa {{workerName}} umekataliwa."
+      }
+    },
+    "actions": {
+      "submitForReview": "Wasilisha kwa Ukaguzi",
+      "withdrawSubmission": "Ondoa Uwasilishaji",
+      "withdrawing": "Inaondoa...",
+      "reviseAndResubmit": "Kagua na Wasilisha Tena",
+      "approveRequest": "Idhinisha Ombi",
+      "approving": "Inaidhinisha...",
+      "rejectRequest": "Kataa Ombi",
+      "rejecting": "Inakataa...",
+      "reviewAndAccept": "Kagua na Kubali",
+      "requestChanges": "Omba Mabadiliko",
+      "reject": "Kataa"
+    },
+    "review": {
+      "title": "Kagua Kazi Iliyowasilishwa",
+      "description": "Kagua kazi kutoka kwa {{workerName}}",
+      "workerSolution": "Suluhisho la Mfanyakazi:",
+      "selfReviewScore": "Ukaguzi wa Kibinafsi: {{score}}/100",
+      "noSubmissionNotes": "Hakuna maelezo ya uwasilishaji yaliyotolewa",
+      "actionLabel": "Kitendo *",
+      "required": "*",
+      "optional": "(Hiari)",
+      "feedbackLabel": "Maoni ya Ukaguzi {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "Eleza mabadiliko yanayohitajika",
+        "other": "Toa maoni au mapendekezo kwa mfanyakazi"
+      },
+      "editorPlaceholder": {
+        "validate": "Eleza mabadiliko yanayohitajika...",
+        "other": "Toa maoni kuhusu kazi..."
+      },
+      "managerReviewLabel": "Ukaguzi wa Meneja (Hiari)",
+      "managerReviewDescription": "Tathmini ubora wa kazi iliyokamilika",
+      "scorePoor": "0 (Mbaya)",
+      "scoreExcellent": "100 (Bora)",
+      "cancel": "Ghairi",
+      "submitting": "Inawasilisha...",
+      "acceptWork": "Kubali Kazi",
+      "requestChangesButton": "Omba Mabadiliko",
+      "rejectWork": "Kataa Kazi",
+      "actions": {
+        "accept": {
+          "title": "Kubali (Weka alama kazi kama Imekamilika)",
+          "description": "Idhinisha kazi na ukamilishe kazi. Mfanyakazi anapata tuzo yake."
+        },
+        "requestChanges": {
+          "title": "Omba Mabadiliko",
+          "description": "Muulize mfanyakazi akagua na kuwasilisha kazi yake tena."
+        },
+        "reject": {
+          "title": "Kataa (Fungua tena kazi)",
+          "description": "Kataa kazi kabisa na ufungue kazi tena kwa wengine."
+        }
+      },
+      "messages": {
+        "accepted": "Kazi imekubaliwa na kuwekwa alama kama imekamilika",
+        "changesRequested": "Mabadiliko yameombwa, mfanyakazi atakagua",
+        "rejected": "Kazi imekataliwa, kazi imefunguliwa tena",
+        "error": "Haikuweza kuwasilisha ukaguzi. Tafadhali jaribu tena."
+      }
+    },
+    "submission": {
+      "title": "Wasilisha Kazi kwa Ukaguzi",
+      "titleResubmit": "Kagua na Wasilisha Kazi Tena",
+      "description": "Eleza suluhisho lako kwa {{taskName}} na uwasilishe kwa uthibitishaji.",
+      "solutionLabel": "Maelezo ya Suluhisho *",
+      "solutionDescription": "Eleza ulichofanya kukamilisha kazi hii. Inasaidia uumbizaji, viungo na orodha.",
+      "solutionPlaceholder": "Eleza ulichofanya kukamilisha kazi hii...",
+      "selfReviewLabel": "Ukaguzi wa Kibinafsi (Hiari)",
+      "selfReviewDescription": "Tathmini ubora wa kazi yako kwa kiwango cha 0-100",
+      "scoreNeedsWork": "0 (Inahitaji kazi)",
+      "scorePerfect": "100 (Kamili)",
+      "cancel": "Ghairi",
+      "submitting": "Inawasilisha...",
+      "submitButton": "Wasilisha kwa Ukaguzi",
+      "resubmitButton": "Wasilisha Tena kwa Ukaguzi",
+      "errors": {
+        "missingDescription": "Tafadhali toa maelezo ya kazi yako",
+        "submitError": "Haikuweza kuwasilisha kazi yako. Tafadhali jaribu tena."
+      },
+      "messages": {
+        "submitted": "Kazi imewasilishwa kwa ukaguzi",
+        "resubmitted": "Kazi imewasilishwa tena kwa ukaguzi"
+      }
+    }
+  },
+  "notes": {
+    "updated": "Dokezo limesasishwa kwa mafanikio",
+    "updateFailed": "Imeshindwa kusasisha dokezo",
+    "deleted": "Dokezo limefutwa kwa mafanikio",
+    "deleteFailed": "Imeshindwa kufuta dokezo",
+    "deleting": "Inafuta...",
+    "confirmDelete": "Je, una uhakika unataka kufuta dokezo hili?",
+    "content": "Maudhui ya dokezo",
+    "visibilityUpdated": "Uonekano umesasishwa kwa mafanikio",
+    "visibilityUpdateFailed": "Imeshindwa kusasisha uonekano",
+    "changeVisibility": "Badilisha uonekano",
+    "filters": {
+      "sort": "Panga",
+      "date": "Tarehe",
+      "mostRelevant": "Inayohusiana zaidi",
+      "all": "Zote"
+    }
+  },
+  "chat": {
+    "title": "Mazungumzo",
+    "subtitle": "Mashirika, njia, ujumbe wa moja kwa moja, na nyuzi.",
+    "anonymous": "Bila jina",
+    "directMessage": "Ujumbe wa moja kwa moja",
+    "deletedMessage": "Ujumbe umefutwa",
+    "deleteMessageTitle": "Futa ujumbe?",
+    "deleteMessageDescription": "Hii itafuta ujumbe kwa upole na kuhifadhi kiashiria katika historia ya mazungumzo.",
+    "createInviteLink": "Unda kiungo cha mwaliko",
+    "pendingInvites": "Mialiko inayosubiri",
+    "acceptInvite": "Kubali",
+    "inviteFriendToOrg": "Alika rafiki katika shirika hili",
+    "inviteLinkCopied": "Kiungo cha mwaliko kimenakiliwa",
+    "inviteSent": "Mwaliko umetumwa",
+    "inviteAccepted": "Mwaliko umekubaliwa"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Mpangilio wa gridi",
+      "tight": "Bana",
+      "small": "Ndogo",
+      "wide": "Pana"
+    }
   }
 }

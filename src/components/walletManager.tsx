@@ -25,7 +25,7 @@ import {
 import { Wallet, Plus, Trash2, Copy, Check } from "lucide-react"
 import { useI18n } from "@/lib/contexts/i18n"
 import { toast } from "sonner"
-import { useWallets } from "@/lib/userUtils"
+import { useWallets } from "@/lib/utils/userUtils"
 
 interface WalletData {
   id: string

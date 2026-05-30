@@ -24,6 +24,7 @@
     "signInToAccess": "Jelentkezzen be a dashboard eléréséhez és a fejlődés követéséhez.",
     "dismiss": "Bezárás",
     "accept": "Elfogadás",
+    "all": "Minden",
     "pageAvailableIn": "Ez az oldal elérhető {locale} nyelven. Szeretné ezen a nyelven megtekinteni?",
     "selectLanguage": "Nyelv kiválasztása",
     "manageAccount": "Fiókom kezelése",
@@ -55,7 +56,11 @@
     "noNotifications": "Nincs értesítés",
     "copyLink": "Link másolása",
     "linkCopied": "Link a vágólapra másolva",
-    "copyFailed": "A link másolása sikertelen"
+    "copyFailed": "A link másolása sikertelen",
+    "decline": "Elutasítás",
+    "friendRequest": "Barátkozási kérés",
+    "reverseOrder": "Fordított sorrend",
+    "saving": "Mentés..."
   },
   "navigation": {
     "home": "Kezdőlap",
@@ -81,7 +86,26 @@
     "yourMood": "A hangulatod.",
     "yourProductivity": "A termelékenységed.",
     "yourData": "Az adataid.",
-    "yourBalance": "A pénzed."
+    "yourBalance": "A pénzed.",
+    "timeframe": {
+      "startDate": "Kezdő dátum",
+      "endDate": "Befejező dátum"
+    },
+    "me": "Adataim",
+    "selectDelegatedUser": "Delegált felhasználó kiválasztása",
+    "analysis": {
+      "alltimeAnalysis": "Teljes időszak elemzése",
+      "dayAnalysis": "Mai elemzés",
+      "last3daysAnalysis": "Az elmúlt 3 nap elemzése",
+      "weekAnalysis": "Heti elemzés",
+      "yearAnalysis": "Éves elemzés",
+      "gratitudeAnalysis": "Hálaelemzés",
+      "optimismAnalysis": "Optimizmuselemzés",
+      "restednessAnalysis": "Pihentség elemzése",
+      "toleranceAnalysis": "Toleranciaelemzés",
+      "selfEsteemAnalysis": "Önbecsülés-elemzés",
+      "trustAnalysis": "Bizalomelemzés"
+    }
   },
   "mood": {
     "title": "Ma {date} van.",
@@ -104,7 +128,26 @@
         "AI_ENABLED": "Mesterséges intelligencia engedélyezve"
       },
       "action": "Jegyzet közzététele",
-      "publishing": "Publishing..."
+      "publishing": "Közzététel...",
+      "embedHint": "{provider} beágyazás. Ha a lejátszás nem elérhető, nyisd meg az eredeti linket lent."
+    },
+    "thirdParty": {
+      "title": "Harmadik fél",
+      "settings": "Delegálási beállítások",
+      "activeDelegations": "Aktív delegálások",
+      "empty": "Nincsenek aktív delegálások.",
+      "identifierPlaceholder": "Felhasználónév, e-mail vagy felhasználói azonosító",
+      "noFriendsFound": "Nem találhatók egyező barátságok.",
+      "friendsHint": "A javaslatok tartalmazzák a barátaidat. Bármilyen e-mail-címet is megadhatsz.",
+      "scope": "Adatkör",
+      "allScopes": "Minden kör",
+      "scopesSelected": "kör kiválasztva",
+      "minimumOneScope": "Legalább egy körnek kiválasztva kell maradnia.",
+      "scopeResolutionHint": "Ha több kör van kiválasztva, a legszélesebb kiválasztott kör kerül alkalmazásra.",
+      "addDelegatedAnalyst": "Delegált elemző hozzáadása",
+      "adding": "Hozzáadás...",
+      "addError": "Nem sikerült hozzáadni a delegált elemzőt",
+      "invitationDraft": "Ehhez az e-mailhez meghívóvázlat készült."
     }
   },
   "week": {
@@ -132,7 +175,11 @@
       "ignored": "Figyelmen kívül hagyva"
     },
     "markAsSensitive": "Mark as sensitive",
-    "markAsNotSensitive": "Mark as not sensitive"
+    "markAsNotSensitive": "Mark as not sensitive",
+    "edit": "Szerkesztés",
+    "loadingForDate": "Feladatok betöltése a kiválasztott dátumhoz...",
+    "initializingTasks": "Feladataid beállítása...",
+    "noTasksForDate": "Erre a dátumra nincsenek feladatok ütemezve"
   },
   "actions": {
     "drankWater": "Vizet ivott",
@@ -222,10 +269,10 @@
   "errors": {
     "notFound": "Hoppá! Nem sikerült beállítani ezt a frekvenciát.",
     "genericError": "Valami elromlott. Kérjük, próbálja újra.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "Nem sikerült betölteni a jegyzeteket",
+    "failedToLoadNotes": "Nem sikerült betölteni a jegyzeteket",
+    "failedToFetchTemplates": "Nem sikerült betölteni a sablonokat",
+    "failedToLoadTemplates": "Nem sikerült betölteni a sablonokat"
   },
   "social": {
     "title": "Közösségi kapcsolatok",
@@ -311,9 +358,9 @@
     "cloning": "Klónozás...",
     "noPublicNotes": "Még nincsenek elérhető nyilvános jegyzetek.",
     "noPublicTemplatesOrLists": "Még nincsenek elérhető nyilvános sablonok vagy listák.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "Lista klónozása",
+    "cloneListSuccess": "Lista sikeresen klónozva!",
+    "cloneListFailed": "A lista klónozása sikertelen"
   },
   "publicCharts": {
     "noData": "Nincs nyilvános grafikon adat.",
@@ -339,7 +386,8 @@
     "closeFriend": "Közeli barát",
     "friends": "Barátok",
     "signInToAdd": "Jelentkezz be barát hozzáadásához",
-    "editProfile": "Profil szerkesztése"
+    "editProfile": "Profil szerkesztése",
+    "message": "Üzenet"
   },
   "profile": {
     "editProfile": "Profil szerkesztése",
@@ -445,7 +493,9 @@
       "timesLabel": "# alkalommal",
       "saveToTemplate": "Feladat mentése sablonként",
       "addTask": "Feladat hozzáadása",
-      "cancel": "Mégse"
+      "cancel": "Mégse",
+      "editTitle": "Feladat szerkesztése",
+      "saveTask": "Feladat mentése"
     },
     "addListForm": {
       "titleCreate": "Új lista létrehozása",
@@ -521,6 +571,39 @@
       },
       "create": "Létrehozás",
       "cancel": "Mégse"
+    },
+    "recurrencePicker": {
+      "frequency": "Ismétlés",
+      "every": "Minden",
+      "day": "nap",
+      "days": "nap",
+      "week": "hét",
+      "weeks": "hét",
+      "month": "hónap",
+      "months": "hónap",
+      "year": "év",
+      "years": "év",
+      "noRepeat": "Nem ismétlődik",
+      "daily": "Naponta",
+      "weekly": "Hetente",
+      "monthly": "Havonta",
+      "yearly": "Évente",
+      "repeatOn": "Ismétlés napja",
+      "monday": "Hé",
+      "tuesday": "Ke",
+      "wednesday": "Sze",
+      "thursday": "Csü",
+      "friday": "Pé",
+      "saturday": "Szo",
+      "sunday": "Vas",
+      "dayOfMonth": "A hónap napja",
+      "selectDay": "Válassz napot (1-31)",
+      "ends": "Vége",
+      "never": "Soha",
+      "onDate": "Dátumon",
+      "after": "Után",
+      "pickDate": "Válassz dátumot",
+      "occurrences": "alkalom"
     }
   },
   "charts": {
@@ -535,7 +618,10 @@
     "progress": "Fejlődés",
     "moodAverageScale": "Hangulat átlag skála",
     "balance": "Egyenleg",
-    "earningsScale": "Bevétel skála"
+    "earningsScale": "Bevétel skála",
+    "profit": "Nyereség",
+    "stash": "Tartalék",
+    "withdrawn": "Kivont"
   },
   "socialView": {
     "activity": "Aktivitás",
@@ -609,5 +695,174 @@
     "deleteWallet": "Pénztárca Törlése",
     "deleteWalletConfirmation": "Biztosan törölni szeretné ezt a pénztárcát? Ez a művelet nem vonható vissza. A pénztárca el lesz távolítva a fiókjából, de a blockchain cím és annak alapjai a blockchainen maradnak.",
     "delete": "Törlés"
+  },
+  "jobs": {
+    "history": "Munkák Története",
+    "filterByStatus": "Szűrés Állapot Szerint:",
+    "errorLoadingHistory": "Hiba a munkák történetének betöltésekor",
+    "noHistoryFound": "Nem található munkák története",
+    "status": {
+      "requested": "Kérelmezve",
+      "inProgress": "Folyamatban",
+      "validating": "Ellenőrzés",
+      "accepted": "Elfogadva",
+      "rejected": "Elutasítva",
+      "submitted": "Beküldve",
+      "changesRequested": "Változtatások kérve"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "Kérése felülvizsgálat alatt áll. Értesítést kap, amikor jóváhagyják.",
+        "inProgress": "Kérése jóváhagyásra került! Most már dolgozhat ezen a feladaton.",
+        "submitted": "Munkája elküldve. Várakozás a tulajdonos felülvizsgálatára.",
+        "validating": "Változtatásokat kértek. Kérjük, dolgozza át és küldje el újra.",
+        "accepted": "Gratulálunk! Munkája elfogadásra került.",
+        "rejected": "Beküldése elutasításra került."
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}} kérte, hogy dolgozhasson ezen a feladaton. Hagyja jóvá vagy utasítsa el a kérést.",
+        "inProgress": "{{workerName}} jelenleg dolgozik ezen a feladaton.",
+        "submitted": "{{workerName}} elküldte munkáját felülvizsgálatra.",
+        "validating": "Várakozás arra, hogy {{workerName}} átdolgozza és újra elküldje.",
+        "accepted": "{{workerName}} munkája elfogadásra került.",
+        "rejected": "{{workerName}} beküldése elutasításra került."
+      }
+    },
+    "actions": {
+      "submitForReview": "Beküldés Felülvizsgálatra",
+      "withdrawSubmission": "Beküldés Visszavonása",
+      "withdrawing": "Visszavonás...",
+      "reviseAndResubmit": "Átdolgozás és Újraküldés",
+      "approveRequest": "Kérés Jóváhagyása",
+      "approving": "Jóváhagyás...",
+      "rejectRequest": "Kérés Elutasítása",
+      "rejecting": "Elutasítás...",
+      "reviewAndAccept": "Felülvizsgálat és Elfogadás",
+      "requestChanges": "Változtatások Kérése",
+      "reject": "Elutasítás"
+    },
+    "review": {
+      "title": "Beküldött Munka Felülvizsgálata",
+      "description": "Munka felülvizsgálata {{workerName}} részéről",
+      "workerSolution": "Munkavállaló Megoldása:",
+      "selfReviewScore": "Önértékelés: {{score}}/100",
+      "noSubmissionNotes": "Nem adtak meg beküldési megjegyzéseket",
+      "actionLabel": "Művelet *",
+      "required": "*",
+      "optional": "(Opcionális)",
+      "feedbackLabel": "Felülvizsgálati Visszajelzés {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "Magyarázza el, milyen változtatások szükségesek",
+        "other": "Adjon megjegyzéseket vagy javaslatokat a munkavállalónak"
+      },
+      "editorPlaceholder": {
+        "validate": "Írja le a szükséges változtatásokat...",
+        "other": "Adjon visszajelzést a munkáról..."
+      },
+      "managerReviewLabel": "Menedzseri Értékelés (Opcionális)",
+      "managerReviewDescription": "Értékelje a befejezett munka minőségét",
+      "scorePoor": "0 (Gyenge)",
+      "scoreExcellent": "100 (Kiváló)",
+      "cancel": "Mégse",
+      "submitting": "Beküldés...",
+      "acceptWork": "Munka Elfogadása",
+      "requestChangesButton": "Változtatások Kérése",
+      "rejectWork": "Munka Elutasítása",
+      "actions": {
+        "accept": {
+          "title": "Elfogadás (Feladat megjelölése Befejezettként)",
+          "description": "Hagyja jóvá a munkát és fejezze be a feladatot. A munkavállaló megkapja jutalmát."
+        },
+        "requestChanges": {
+          "title": "Változtatások Kérése",
+          "description": "Kérje meg a munkavállalót, hogy dolgozza át és küldje el újra munkáját."
+        },
+        "reject": {
+          "title": "Elutasítás (Feladat újranyitása)",
+          "description": "Utasítsa el teljesen a munkát és nyissa meg újra a feladatot mások számára."
+        }
+      },
+      "messages": {
+        "accepted": "Munka elfogadva és feladat befejezettként megjelölve",
+        "changesRequested": "Változtatások kérve, a munkavállaló átdolgozza",
+        "rejected": "Munka elutasítva, feladat újranyitva",
+        "error": "Nem sikerült elküldeni a felülvizsgálatot. Kérjük, próbálja újra."
+      }
+    },
+    "submission": {
+      "title": "Munka Beküldése Felülvizsgálatra",
+      "titleResubmit": "Munka Átdolgozása és Újraküldése",
+      "description": "Írja le megoldását a(z) {{taskName}} feladathoz és küldje be validálásra.",
+      "solutionLabel": "Megoldás Leírása *",
+      "solutionDescription": "Magyarázza el, mit tett a feladat befejezéséhez. Támogatja a formázást, linkeket és listákat.",
+      "solutionPlaceholder": "Magyarázza el, mit tett a feladat befejezéséhez...",
+      "selfReviewLabel": "Önértékelés (Opcionális)",
+      "selfReviewDescription": "Értékelje munkája minőségét 0-100-as skálán",
+      "scoreNeedsWork": "0 (Fejlesztésre szorul)",
+      "scorePerfect": "100 (Tökéletes)",
+      "cancel": "Mégse",
+      "submitting": "Beküldés...",
+      "submitButton": "Beküldés Felülvizsgálatra",
+      "resubmitButton": "Újraküldés Felülvizsgálatra",
+      "errors": {
+        "missingDescription": "Kérjük, adja meg munkája leírását",
+        "submitError": "Nem sikerült elküldeni munkáját. Kérjük, próbálja újra."
+      },
+      "messages": {
+        "submitted": "Munka elküldve felülvizsgálatra",
+        "resubmitted": "Munka újraküldve felülvizsgálatra"
+      }
+    }
+  },
+  "notes": {
+    "updated": "Megjegyzés sikeresen frissítve",
+    "updateFailed": "Nem sikerült frissíteni a megjegyzést",
+    "deleted": "Megjegyzés sikeresen törölve",
+    "deleteFailed": "Nem sikerült törölni a megjegyzést",
+    "deleting": "Törlés...",
+    "confirmDelete": "Biztosan törölni szeretnéd ezt a megjegyzést?",
+    "content": "Megjegyzés tartalma",
+    "visibilityUpdated": "Láthatóság sikeresen frissítve",
+    "visibilityUpdateFailed": "Nem sikerült frissíteni a láthatóságot",
+    "changeVisibility": "Láthatóság módosítása",
+    "filters": {
+      "sort": "Rendezés",
+      "date": "Dátum",
+      "mostRelevant": "Legrelevánsabb",
+      "all": "Összes"
+    }
+  },
+  "chat": {
+    "title": "Csevegés",
+    "subtitle": "Szervezetek, csatornák, közvetlen üzenetek és témák.",
+    "anonymous": "Névtelen",
+    "directMessage": "Közvetlen üzenet",
+    "deletedMessage": "Üzenet törölve",
+    "deleteMessageTitle": "Törli az üzenetet?",
+    "deleteMessageDescription": "Ez puhán törli az üzenetet, és megőriz egy helyőrzőt a beszélgetési előzményekben.",
+    "createInviteLink": "Meghívólink létrehozása",
+    "pendingInvites": "Függőben lévő meghívók",
+    "acceptInvite": "Elfogadás",
+    "inviteFriendToOrg": "Barát meghívása ebbe a szervezetbe",
+    "inviteLinkCopied": "Meghívólink másolva",
+    "inviteSent": "Meghívó elküldve",
+    "inviteAccepted": "Meghívó elfogadva"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Rácselrendezés",
+      "tight": "Sűrű",
+      "small": "Kicsi",
+      "wide": "Széles"
+    }
   }
 }

@@ -24,6 +24,7 @@
     "signInToAccess": "Conectează-te pentru a accesa panoul de control și a-ți urmări progresul.",
     "dismiss": "Închide",
     "accept": "Acceptă",
+    "all": "Toate",
     "pageAvailableIn": "Această pagină este disponibilă în {locale}. Doriți să o vizualizați în acea limbă?",
     "selectLanguage": "Selectează limba",
     "manageAccount": "Gestionează contul meu",
@@ -56,7 +57,10 @@
     "copyLink": "Copiază linkul",
     "linkCopied": "Linkul a fost copiat în clipboard",
     "copyFailed": "Nu s-a putut copia linkul",
-    "saving": "Se salvează..."
+    "saving": "Se salvează...",
+    "decline": "Refuză",
+    "friendRequest": "Cerere de prietenie",
+    "reverseOrder": "Ordine inversă"
   },
   "navigation": {
     "home": "Acasă",
@@ -82,7 +86,26 @@
     "yourMood": "Dispoziția ta.",
     "yourProductivity": "Productivitatea ta.",
     "yourData": "Datele tale.",
-    "yourBalance": "Banii tăi."
+    "yourBalance": "Banii tăi.",
+    "timeframe": {
+      "startDate": "Data de început",
+      "endDate": "Data de sfârșit"
+    },
+    "me": "Datele mele",
+    "selectDelegatedUser": "Selectați utilizatorul delegat",
+    "analysis": {
+      "alltimeAnalysis": "Analiză pentru tot intervalul",
+      "dayAnalysis": "Analiza de astăzi",
+      "last3daysAnalysis": "Analiza ultimelor 3 zile",
+      "weekAnalysis": "Analiza săptămânii",
+      "yearAnalysis": "Analiza anului",
+      "gratitudeAnalysis": "Analiza recunoștinței",
+      "optimismAnalysis": "Analiza optimismului",
+      "restednessAnalysis": "Analiza odihnei",
+      "toleranceAnalysis": "Analiza toleranței",
+      "selfEsteemAnalysis": "Analiza stimei de sine",
+      "trustAnalysis": "Analiza încrederii"
+    }
   },
   "mood": {
     "title": "Înregistrează-ți dispoziția pentru {date}",
@@ -105,7 +128,26 @@
         "AI_ENABLED": "AI activat"
       },
       "action": "Publică nota",
-      "publishing": "Publishing..."
+      "publishing": "Publicare...",
+      "embedHint": "Incorporare {provider}. Dacă redarea nu este disponibilă, deschide linkul original de mai jos."
+    },
+    "thirdParty": {
+      "title": "Terță parte",
+      "settings": "Setări de delegare",
+      "activeDelegations": "Delegări active",
+      "empty": "Nu există delegări active.",
+      "identifierPlaceholder": "Nume de utilizator, e-mail sau ID utilizator",
+      "noFriendsFound": "Nu au fost găsite prietenii corespunzătoare.",
+      "friendsHint": "Sugestiile includ prietenii tăi. De asemenea, poți introduce orice adresă de e-mail.",
+      "scope": "Domeniu de date",
+      "allScopes": "Toate domeniile",
+      "scopesSelected": "domenii selectate",
+      "minimumOneScope": "Cel puțin un domeniu trebuie să rămână selectat.",
+      "scopeResolutionHint": "Dacă sunt selectate mai multe domenii, se aplică domeniul selectat cel mai larg.",
+      "addDelegatedAnalyst": "Adaugă analist delegat",
+      "adding": "Se adaugă...",
+      "addError": "Nu s-a putut adăuga analistul delegat",
+      "invitationDraft": "A fost pregătit un draft de invitație pentru acest e-mail."
     }
   },
   "week": {
@@ -133,7 +175,11 @@
       "open": "Deschis",
       "done": "Finalizat",
       "ignored": "Ignorat"
-    }
+    },
+    "edit": "Editare",
+    "loadingForDate": "Se încarcă sarcinile pentru data selectată...",
+    "initializingTasks": "Se configurează sarcinile tale...",
+    "noTasksForDate": "Nu există sarcini programate pentru această dată"
   },
   "actions": {
     "drankWater": "A băut apă",
@@ -223,10 +269,10 @@
   "errors": {
     "notFound": "Ups! Nu s-a putut regla această frecvență.",
     "genericError": "Ceva a mers greșit. Te rog încearcă din nou.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "Eșec la încărcarea notițelor",
+    "failedToLoadNotes": "Eșec la încărcarea notițelor",
+    "failedToFetchTemplates": "Eșec la încărcarea șabloanelor",
+    "failedToLoadTemplates": "Eșec la încărcarea șabloanelor"
   },
   "social": {
     "title": "Contacte sociale",
@@ -312,9 +358,9 @@
     "cloning": "Se clonează...",
     "noPublicNotes": "Nu există notițe publice disponibile încă.",
     "noPublicTemplatesOrLists": "Nu există șabloane sau liste publice disponibile încă.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "Clonează lista",
+    "cloneListSuccess": "Listă clonată cu succes!",
+    "cloneListFailed": "Eșec la clonarea listei"
   },
   "publicCharts": {
     "noData": "Nu sunt disponibile date pentru graficele publice.",
@@ -340,7 +386,8 @@
     "closeFriend": "Prieten apropiat",
     "friends": "Prieteni",
     "signInToAdd": "Autentifică-te pentru a adăuga prieten",
-    "editProfile": "Editează profilul"
+    "editProfile": "Editează profilul",
+    "message": "Mesaj"
   },
   "profile": {
     "editProfile": "Editează profilul",
@@ -446,7 +493,9 @@
       "timesLabel": "# de ori",
       "saveToTemplate": "Salvați sarcina în șablon",
       "addTask": "Adăugați o sarcină",
-      "cancel": "Anulează"
+      "cancel": "Anulează",
+      "editTitle": "Editare sarcină",
+      "saveTask": "Salvare sarcină"
     },
     "addListForm": {
       "titleCreate": "Creați o listă nouă",
@@ -522,6 +571,39 @@
       },
       "create": "Creați",
       "cancel": "Anulează"
+    },
+    "recurrencePicker": {
+      "frequency": "Repetă",
+      "every": "Fiecare",
+      "day": "zi",
+      "days": "zile",
+      "week": "săptămână",
+      "weeks": "săptămâni",
+      "month": "lună",
+      "months": "luni",
+      "year": "an",
+      "years": "ani",
+      "noRepeat": "Nu se repetă",
+      "daily": "Zilnic",
+      "weekly": "Săptămânal",
+      "monthly": "Lunar",
+      "yearly": "Anual",
+      "repeatOn": "Repetă în",
+      "monday": "Lun",
+      "tuesday": "Mar",
+      "wednesday": "Mie",
+      "thursday": "Joi",
+      "friday": "Vin",
+      "saturday": "Sâm",
+      "sunday": "Dum",
+      "dayOfMonth": "Ziua lunii",
+      "selectDay": "Selectează ziua (1-31)",
+      "ends": "Se termină",
+      "never": "Niciodată",
+      "onDate": "La data",
+      "after": "După",
+      "pickDate": "Alege o dată",
+      "occurrences": "apariții"
     }
   },
   "charts": {
@@ -536,7 +618,10 @@
     "progress": "Progres",
     "moodAverageScale": "Scara medie a dispoziției",
     "balance": "Sold",
-    "earningsScale": "Scara câștigurilor"
+    "earningsScale": "Scara câștigurilor",
+    "profit": "Profit",
+    "stash": "Rezervă",
+    "withdrawn": "Retras"
   },
   "socialView": {
     "activity": "Activitate",
@@ -610,5 +695,174 @@
     "deleteWallet": "Șterge Portofel",
     "deleteWalletConfirmation": "Sunteți sigur că doriți să ștergeți acest portofel? Această acțiune nu poate fi anulată. Portofelul va fi eliminat din contul dvs., dar adresa blockchain și fondurile sale vor rămâne pe blockchain.",
     "delete": "Șterge"
+  },
+  "jobs": {
+    "history": "Istoric Lucrări",
+    "filterByStatus": "Filtrează după Status:",
+    "errorLoadingHistory": "Eroare la încărcarea istoricului lucrărilor",
+    "noHistoryFound": "Nu s-a găsit istoric de lucrări",
+    "status": {
+      "requested": "Solicitat",
+      "inProgress": "În Desfășurare",
+      "validating": "Validare",
+      "accepted": "Acceptat",
+      "rejected": "Respins",
+      "submitted": "Trimis",
+      "changesRequested": "Modificări solicitate"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "Cererea dvs. este în curs de revizuire. Veți fi notificat când va fi aprobată.",
+        "inProgress": "Cererea dvs. a fost aprobată! Acum puteți lucra la această sarcină.",
+        "submitted": "Munca dvs. a fost trimisă. Se așteaptă revizuirea de către proprietar.",
+        "validating": "Au fost solicitate modificări. Vă rugăm să revizuiți și să retrimiteți.",
+        "accepted": "Felicitări! Munca dvs. a fost acceptată.",
+        "rejected": "Trimiterea dvs. a fost respinsă."
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}} a solicitat să lucreze la această sarcină. Aprobați sau respingeți cererea.",
+        "inProgress": "{{workerName}} lucrează în prezent la această sarcină.",
+        "submitted": "{{workerName}} și-a trimis munca pentru revizuire.",
+        "validating": "Se așteaptă ca {{workerName}} să revizuiască și să retrimită.",
+        "accepted": "Munca lui {{workerName}} a fost acceptată.",
+        "rejected": "Trimiterea lui {{workerName}} a fost respinsă."
+      }
+    },
+    "actions": {
+      "submitForReview": "Trimite pentru Revizuire",
+      "withdrawSubmission": "Retrage Trimiterea",
+      "withdrawing": "Se retrage...",
+      "reviseAndResubmit": "Revizuiește și Retrimite",
+      "approveRequest": "Aprobă Cererea",
+      "approving": "Se aprobă...",
+      "rejectRequest": "Respinge Cererea",
+      "rejecting": "Se respinge...",
+      "reviewAndAccept": "Revizuiește și Acceptă",
+      "requestChanges": "Solicită Modificări",
+      "reject": "Respinge"
+    },
+    "review": {
+      "title": "Revizuiește Munca Trimisă",
+      "description": "Revizuiește munca de la {{workerName}}",
+      "workerSolution": "Soluția Lucrătorului:",
+      "selfReviewScore": "Auto-Evaluare: {{score}}/100",
+      "noSubmissionNotes": "Nu au fost furnizate note de trimitere",
+      "actionLabel": "Acțiune *",
+      "required": "*",
+      "optional": "(Opțional)",
+      "feedbackLabel": "Feedback de Revizuire {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "Explicați ce modificări sunt necesare",
+        "other": "Furnizați comentarii sau sugestii pentru lucrător"
+      },
+      "editorPlaceholder": {
+        "validate": "Descrieți modificările necesare...",
+        "other": "Furnizați feedback despre muncă..."
+      },
+      "managerReviewLabel": "Revizuire Manager (Opțional)",
+      "managerReviewDescription": "Evaluați calitatea muncii finalizate",
+      "scorePoor": "0 (Slab)",
+      "scoreExcellent": "100 (Excelent)",
+      "cancel": "Anulează",
+      "submitting": "Se trimite...",
+      "acceptWork": "Acceptă Munca",
+      "requestChangesButton": "Solicită Modificări",
+      "rejectWork": "Respinge Munca",
+      "actions": {
+        "accept": {
+          "title": "Acceptă (Marchează sarcina ca Finalizată)",
+          "description": "Aprobați munca și finalizați sarcina. Lucrătorul primește recompensa."
+        },
+        "requestChanges": {
+          "title": "Solicită Modificări",
+          "description": "Cereți lucrătorului să revizuiască și să retrimită munca sa."
+        },
+        "reject": {
+          "title": "Respinge (Redeschide sarcina)",
+          "description": "Respingeți munca complet și redeschideți sarcina pentru alții."
+        }
+      },
+      "messages": {
+        "accepted": "Munca acceptată și sarcina marcată ca finalizată",
+        "changesRequested": "Modificări solicitate, lucrătorul va revizui",
+        "rejected": "Munca respinsă, sarcina redeschisă",
+        "error": "Nu s-a putut trimite revizuirea. Vă rugăm să încercați din nou."
+      }
+    },
+    "submission": {
+      "title": "Trimite Munca pentru Revizuire",
+      "titleResubmit": "Revizuiește și Retrimite Munca",
+      "description": "Descrieți soluția dvs. pentru {{taskName}} și trimiteți pentru validare.",
+      "solutionLabel": "Descrierea Soluției *",
+      "solutionDescription": "Explicați ce ați făcut pentru a finaliza această sarcină. Suportă formatare, linkuri și liste.",
+      "solutionPlaceholder": "Explicați ce ați făcut pentru a finaliza această sarcină...",
+      "selfReviewLabel": "Auto-Evaluare (Opțional)",
+      "selfReviewDescription": "Evaluați calitatea muncii dvs. pe o scară de la 0 la 100",
+      "scoreNeedsWork": "0 (Necesită îmbunătățiri)",
+      "scorePerfect": "100 (Perfect)",
+      "cancel": "Anulează",
+      "submitting": "Se trimite...",
+      "submitButton": "Trimite pentru Revizuire",
+      "resubmitButton": "Retrimite pentru Revizuire",
+      "errors": {
+        "missingDescription": "Vă rugăm să furnizați o descriere a muncii dvs.",
+        "submitError": "Nu s-a putut trimite munca dvs. Vă rugăm să încercați din nou."
+      },
+      "messages": {
+        "submitted": "Munca trimisă pentru revizuire",
+        "resubmitted": "Munca retrimisă pentru revizuire"
+      }
+    }
+  },
+  "notes": {
+    "updated": "Notă actualizată cu succes",
+    "updateFailed": "Actualizarea notei a eșuat",
+    "deleted": "Notă ștearsă cu succes",
+    "deleteFailed": "Ștergerea notei a eșuat",
+    "deleting": "Se șterge...",
+    "confirmDelete": "Ești sigur că dorești să ștergi această notă?",
+    "content": "Conținut notă",
+    "visibilityUpdated": "Vizibilitate actualizată cu succes",
+    "visibilityUpdateFailed": "Actualizarea vizibilității a eșuat",
+    "changeVisibility": "Schimbă vizibilitatea",
+    "filters": {
+      "sort": "Sortare",
+      "date": "Dată",
+      "mostRelevant": "Cele mai relevante",
+      "all": "Toate"
+    }
+  },
+  "chat": {
+    "title": "Conversație",
+    "subtitle": "Organizații, canale, mesaje directe și fire de discuție.",
+    "anonymous": "Anonim",
+    "directMessage": "Mesaj direct",
+    "deletedMessage": "Mesaj șters",
+    "deleteMessageTitle": "Ștergi mesajul?",
+    "deleteMessageDescription": "Aceasta va șterge mesajul în mod soft și va păstra un marcator în istoricul conversației.",
+    "createInviteLink": "Creează link de invitație",
+    "pendingInvites": "Invitații în așteptare",
+    "acceptInvite": "Acceptă",
+    "inviteFriendToOrg": "Invită un prieten în această organizație",
+    "inviteLinkCopied": "Link de invitație copiat",
+    "inviteSent": "Invitație trimisă",
+    "inviteAccepted": "Invitație acceptată"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Aspect grilă",
+      "tight": "Compact",
+      "small": "Mic",
+      "wide": "Lat"
+    }
   }
 }

@@ -21,6 +21,7 @@
     "signInToAccess": "ਆਪਣੇ ਡੈਸ਼ਬੋਰਡ ਤੱਕ ਪਹੁੰਚਣ ਅਤੇ ਆਪਣੀ ਤਰੱਕੀ ਨੂੰ ਟਰੈਕ ਕਰਨ ਲਈ ਸਾਈਨ ਇਨ ਕਰੋ।",
     "dismiss": "ਬੰਦ ਕਰੋ",
     "accept": "ਸਵੀਕਾਰ ਕਰੋ",
+    "all": "ਸਾਰੇ",
     "pageAvailableIn": "ਇਹ ਪੰਨਾ {locale} ਵਿੱਚ ਉਪਲਬਧ ਹੈ। ਕੀ ਤੁਸੀਂ ਇਸਨੂੰ ਉਸ ਭਾਸ਼ਾ ਵਿੱਚ ਦੇਖਣਾ ਚਾਹੋਗੇ?",
     "selectLanguage": "ਭਾਸ਼ਾ ਚੁਣੋ",
     "dashboard": "ਡੈਸ਼ਬੋਰਡ",
@@ -56,7 +57,10 @@
     "copyLink": "ਲਿੰਕ ਕਾਪੀ ਕਰੋ",
     "linkCopied": "ਲਿੰਕ ਕਲਿਪਬੋਰਡ ਵਿੱਚ ਕਾਪੀ ਕੀਤਾ ਗਿਆ",
     "copyFailed": "ਲਿੰਕ ਕਾਪੀ ਕਰਨ ਵਿੱਚ ਅਸਫਲ",
-    "saving": "ਸੇਵ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ..."
+    "saving": "ਸੇਵ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ...",
+    "decline": "ਇਨਕਾਰ ਕਰੋ",
+    "friendRequest": "ਦੋਸਤੀ ਬੇਨਤੀ",
+    "reverseOrder": "ਕ੍ਰਮ ਉਲਟਾਓ"
   },
   "navigation": {
     "dashboard": "ਡੈਸ਼ਬੋਰਡ",
@@ -86,7 +90,26 @@
     "yourMood": "ਤੁਹਾਡਾ ਮੂਡ।",
     "yourProductivity": "ਤੁਹਾਡੀ ਉਤਪਾਦਕਤਾ।",
     "yourData": "ਤੁਹਾਡਾ ਡੇਟਾ।",
-    "yourBalance": "ਤੁਹਾਡੇ ਪੈਸੇ।"
+    "yourBalance": "ਤੁਹਾਡੇ ਪੈਸੇ।",
+    "timeframe": {
+      "startDate": "ਸ਼ੁਰੂਆਤੀ ਤਾਰੀਖ਼",
+      "endDate": "ਅੰਤਿਮ ਤਾਰੀਖ਼"
+    },
+    "me": "ਮੇਰਾ ਡਾਟਾ",
+    "selectDelegatedUser": "ਪ੍ਰਤੀਨਿਧੀ ਯੂਜ਼ਰ ਚੁਣੋ",
+    "analysis": {
+      "alltimeAnalysis": "ਸਾਰੇ ਸਮੇਂ ਦਾ ਵਿਸ਼ਲੇਸ਼ਣ",
+      "dayAnalysis": "ਅੱਜ ਦਾ ਵਿਸ਼ਲੇਸ਼ਣ",
+      "last3daysAnalysis": "ਪਿਛਲੇ 3 ਦਿਨਾਂ ਦਾ ਵਿਸ਼ਲੇਸ਼ਣ",
+      "weekAnalysis": "ਹਫ਼ਤਾਵਾਰੀ ਵਿਸ਼ਲੇਸ਼ਣ",
+      "yearAnalysis": "ਸਾਲਾਨਾ ਵਿਸ਼ਲੇਸ਼ਣ",
+      "gratitudeAnalysis": "ਕ੍ਰਿਤਜਤਾ ਵਿਸ਼ਲੇਸ਼ਣ",
+      "optimismAnalysis": "ਆਸ਼ਾਵਾਦ ਵਿਸ਼ਲੇਸ਼ਣ",
+      "restednessAnalysis": "ਆਰਾਮ ਵਿਸ਼ਲੇਸ਼ਣ",
+      "toleranceAnalysis": "ਸਹਿਨਸ਼ੀਲਤਾ ਵਿਸ਼ਲੇਸ਼ਣ",
+      "selfEsteemAnalysis": "ਆਤਮ-ਸਨਮਾਨ ਵਿਸ਼ਲੇਸ਼ਣ",
+      "trustAnalysis": "ਭਰੋਸਾ ਵਿਸ਼ਲੇਸ਼ਣ"
+    }
   },
   "mood": {
     "title": "{date} ਲਈ ਆਪਣਾ ਮੂਡ ਰਿਕਾਰਡ ਕਰੋ",
@@ -109,7 +132,26 @@
         "AI_ENABLED": "AI Enabled"
       },
       "action": "Publish Note",
-      "publishing": "Publishing..."
+      "publishing": "ਪ੍ਰਕਾਸ਼ਿਤ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ...",
+      "embedHint": "{provider} ਐਂਬੈੱਡ। ਜੇਕਰ ਪਲੇਬੈੱਕ ਉਪਲਬਧ ਨਹੀਂ ਹੈ, ਤਾਂ ਹੇਠਾਂ ਅਸਲ ਲਿੰਕ ਖੋਲ੍ਹੋ।"
+    },
+    "thirdParty": {
+      "title": "ਤੀਜਾ ਪੱਖ",
+      "settings": "ਪ੍ਰਤੀਨਿਧੀ ਸੈਟਿੰਗਾਂ",
+      "activeDelegations": "ਸਰਗਰਮ ਪ੍ਰਤੀਨਿਧੀਆਂ",
+      "empty": "ਕੋਈ ਸਰਗਰਮ ਪ੍ਰਤੀਨਿਧੀ ਨਹੀਂ ਹਨ।",
+      "identifierPlaceholder": "ਯੂਜ਼ਰਨਾਮ, ਈਮੇਲ ਜਾਂ ਯੂਜ਼ਰ ਆਈਡੀ",
+      "noFriendsFound": "ਮਿਲਦੀਆਂ ਦੋਸਤੀਆਂ ਨਹੀਂ ਮਿਲੀਆਂ।",
+      "friendsHint": "ਸੁਝਾਵਾਂ ਵਿੱਚ ਤੁਹਾਡੇ ਦੋਸਤ ਸ਼ਾਮਲ ਹਨ। ਤੁਸੀਂ ਕੋਈ ਵੀ ਈਮੇਲ ਪਤਾ ਵੀ ਦਰਜ ਕਰ ਸਕਦੇ ਹੋ।",
+      "scope": "ਡਾਟਾ ਦਾਇਰਾ",
+      "allScopes": "ਸਾਰੇ ਦਾਇਰੇ",
+      "scopesSelected": "ਦਾਇਰੇ ਚੁਣੇ ਗਏ",
+      "minimumOneScope": "ਘੱਟੋ-ਘੱਟ ਇੱਕ ਦਾਇਰਾ ਚੁਣਿਆ ਰਹਿਣਾ ਲਾਜ਼ਮੀ ਹੈ।",
+      "scopeResolutionHint": "ਜੇ ਕਈ ਦਾਇਰੇ ਚੁਣੇ ਗਏ ਹਨ, ਤਾਂ ਸਭ ਤੋਂ ਵੱਡਾ ਚੁਣਿਆ ਦਾਇਰਾ ਲਾਗੂ ਕੀਤਾ ਜਾਵੇਗਾ।",
+      "addDelegatedAnalyst": "ਪ੍ਰਤੀਨਿਧੀ ਵਿਸ਼ਲੇਸ਼ਕ ਸ਼ਾਮਲ ਕਰੋ",
+      "adding": "ਸ਼ਾਮਲ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ...",
+      "addError": "ਪ੍ਰਤੀਨਿਧੀ ਵਿਸ਼ਲੇਸ਼ਕ ਸ਼ਾਮਲ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ",
+      "invitationDraft": "ਇਸ ਈਮੇਲ ਲਈ ਨਿਮੰਤਰਣ ਦਾ ਮਸੌਦਾ ਤਿਆਰ ਕੀਤਾ ਗਿਆ ਹੈ।"
     }
   },
   "week": {
@@ -137,7 +179,11 @@
       "open": "ਖੁੱਲ੍ਹਾ",
       "done": "ਪੂਰਾ",
       "ignored": "ਅਣਡਿੱਠ"
-    }
+    },
+    "edit": "ਸੰਪਾਦਿਤ ਕਰੋ",
+    "loadingForDate": "ਚੁਣੀ ਗਈ ਤਾਰੀਖ਼ ਲਈ ਕੰਮ ਲੋਡ ਹੋ ਰਹੇ ਹਨ...",
+    "initializingTasks": "ਤੁਹਾਡੇ ਕੰਮ ਸੈਟ ਕੀਤੇ ਜਾ ਰਹੇ ਹਨ...",
+    "noTasksForDate": "ਇਸ ਤਾਰੀਖ਼ ਲਈ ਕੋਈ ਕੰਮ ਨਿਰਧਾਰਿਤ ਨਹੀਂ ਹੈ"
   },
   "actions": {
     "drankWater": "ਪਾਣੀ ਪੀਤਾ",
@@ -227,10 +273,10 @@
   "errors": {
     "notFound": "ਓਹ! ਇਸ ਫ੍ਰੀਕੁਐਂਸੀ ਨੂੰ ਟਿਊਨ ਨਹੀਂ ਕਰ ਸਕਿਆ।",
     "genericError": "ਕੁਝ ਗਲਤ ਹੋ ਗਿਆ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "ਨੋਟਸ ਲੋਡ ਕਰਨ ਵਿੱਚ ਅਸਫਲ",
+    "failedToLoadNotes": "ਨੋਟਸ ਲੋਡ ਕਰਨ ਵਿੱਚ ਅਸਫਲ",
+    "failedToFetchTemplates": "ਟੈਂਪਲੇਟ ਲੋਡ ਕਰਨ ਵਿੱਚ ਅਸਫਲ",
+    "failedToLoadTemplates": "ਟੈਂਪਲੇਟ ਲੋਡ ਕਰਨ ਵਿੱਚ ਅਸਫਲ"
   },
   "social": {
     "title": "ਸਮਾਜਿਕ ਸੰਪਰਕ",
@@ -316,9 +362,9 @@
     "cloning": "ਕਲੋਨ ਹੋ ਰਿਹਾ ਹੈ...",
     "noPublicNotes": "ਅਜੇ ਤੱਕ ਕੋਈ ਜਨਤਕ ਨੋਟਸ ਉਪਲਬਧ ਨਹੀਂ ਹਨ।",
     "noPublicTemplatesOrLists": "ਅਜੇ ਤੱਕ ਕੋਈ ਜਨਤਕ ਟੈਂਪਲੇਟ ਜਾਂ ਸੂਚੀਆਂ ਉਪਲਬਧ ਨਹੀਂ ਹਨ।",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "ਸੂਚੀ ਕਲੋਨ ਕਰੋ",
+    "cloneListSuccess": "ਸੂਚੀ ਸਫਲਤਾਪੂਰਵਕ ਕਲੋਨ ਕੀਤੀ ਗਈ!",
+    "cloneListFailed": "ਸੂਚੀ ਕਲੋਨ ਕਰਨ ਵਿੱਚ ਅਸਫਲ"
   },
   "publicCharts": {
     "noData": "ਕੋਈ ਜਨਤਕ ਚਾਰਟ ਡੇਟਾ ਉਪਲਬਧ ਨਹੀਂ।",
@@ -344,7 +390,8 @@
     "closeFriend": "ਨਜ਼ਦੀਕੀ ਦੋਸਤ",
     "friends": "ਦੋਸਤ",
     "signInToAdd": "ਦੋਸਤ ਜੋੜਨ ਲਈ ਸਾਈਨ ਇਨ ਕਰੋ",
-    "editProfile": "ਪ੍ਰੋਫਾਈਲ ਸੰਪਾਦਨ"
+    "editProfile": "ਪ੍ਰੋਫਾਈਲ ਸੰਪਾਦਨ",
+    "message": "ਸੁਨੇਹਾ"
   },
   "profile": {
     "editProfile": "ਪ੍ਰੋਫਾਈਲ ਸੰਪਾਦਿਤ ਕਰੋ",
@@ -450,7 +497,9 @@
       "timesLabel": "# ਵਾਰੀ",
       "saveToTemplate": "ਟੈਂਪਲੇਟ ਵਿੱਚ ਕੰਮ ਸੇਵ ਕਰੋ",
       "addTask": "ਕੰਮ ਜੋੜੋ",
-      "cancel": "ਰੱਦ ਕਰੋ"
+      "cancel": "ਰੱਦ ਕਰੋ",
+      "editTitle": "ਕੰਮ ਸੰਪਾਦਿਤ ਕਰੋ",
+      "saveTask": "ਕੰਮ ਸੁਰੱਖਿਅਤ ਕਰੋ"
     },
     "addListForm": {
       "titleCreate": "ਨਵੀਂ ਸੂਚੀ ਬਣਾਓ",
@@ -526,6 +575,39 @@
       },
       "create": "ਬਣਾਓ",
       "cancel": "ਰੱਦ ਕਰੋ"
+    },
+    "recurrencePicker": {
+      "frequency": "ਦੁਹਰਾਓ",
+      "every": "ਹਰ",
+      "day": "ਦਿਨ",
+      "days": "ਦਿਨ",
+      "week": "ਹਫ਼ਤਾ",
+      "weeks": "ਹਫ਼ਤੇ",
+      "month": "ਮਹੀਨਾ",
+      "months": "ਮਹੀਨੇ",
+      "year": "ਸਾਲ",
+      "years": "ਸਾਲ",
+      "noRepeat": "ਦੁਹਰਾਈ ਨਹੀਂ",
+      "daily": "ਰੋਜ਼ਾਨਾ",
+      "weekly": "ਹਫ਼ਤਾਵਾਰੀ",
+      "monthly": "ਮਹੀਨਾਵਾਰੀ",
+      "yearly": "ਸਾਲਾਨਾ",
+      "repeatOn": "ਦੁਹਰਾਓ",
+      "monday": "ਸੋਮ",
+      "tuesday": "ਮੰਗਲ",
+      "wednesday": "ਬੁੱਧ",
+      "thursday": "ਵੀਰ",
+      "friday": "ਸ਼ੁੱਕਰ",
+      "saturday": "ਸ਼ਨਿ",
+      "sunday": "ਐਤ",
+      "dayOfMonth": "ਮਹੀਨੇ ਦਾ ਦਿਨ",
+      "selectDay": "ਦਿਨ ਚੁਣੋ (1-31)",
+      "ends": "ਸਮਾਪਤ",
+      "never": "ਕਦੇ ਨਹੀਂ",
+      "onDate": "ਤਾਰੀਖ਼ 'ਤੇ",
+      "after": "ਬਾਅਦ",
+      "pickDate": "ਇੱਕ ਤਾਰੀਖ਼ ਚੁਣੋ",
+      "occurrences": "ਵਾਰ"
     }
   },
   "charts": {
@@ -540,7 +622,10 @@
     "progress": "ਤਰੱਕੀ",
     "moodAverageScale": "ਔਸਤ ਮੂਡ ਸਕੇਲ",
     "balance": "ਬਕਾਇਆ",
-    "earningsScale": "ਕਮਾਈ ਸਕੇਲ"
+    "earningsScale": "ਕਮਾਈ ਸਕੇਲ",
+    "profit": "ਲਾਭ",
+    "stash": "ਜਮ੍ਹਾ",
+    "withdrawn": "ਕੱਢਿਆ ਗਿਆ"
   },
   "socialView": {
     "activity": "ਸਰਗਰਮੀ",
@@ -614,5 +699,174 @@
     "deleteWallet": "ਵਾਲਿਟ ਹਟਾਓ",
     "deleteWalletConfirmation": "ਕੀ ਤੁਸੀਂ ਯਕੀਨਨ ਇਸ ਵਾਲਿਟ ਨੂੰ ਹਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ? ਇਸ ਕਾਰਵਾਈ ਨੂੰ ਪੂਰਵਵਤ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ। ਵਾਲਿਟ ਤੁਹਾਡੇ ਖਾਤੇ ਤੋਂ ਹਟਾ ਦਿੱਤਾ ਜਾਵੇਗਾ, ਪਰ ਬਲਾਕਚੇਨ ਪਤਾ ਅਤੇ ਇਸਦੇ ਫੰਡ ਬਲਾਕਚੇਨ 'ਤੇ ਰਹਿਣਗੇ।",
     "delete": "ਹਟਾਓ"
+  },
+  "jobs": {
+    "history": "ਨੌਕਰੀ ਇਤਿਹਾਸ",
+    "filterByStatus": "ਸਥਿਤੀ ਦੁਆਰਾ ਫਿਲਟਰ ਕਰੋ:",
+    "errorLoadingHistory": "ਨੌਕਰੀ ਇਤਿਹਾਸ ਲੋਡ ਕਰਨ ਵਿੱਚ ਗਲਤੀ",
+    "noHistoryFound": "ਕੋਈ ਨੌਕਰੀ ਇਤਿਹਾਸ ਨਹੀਂ ਮਿਲਿਆ",
+    "status": {
+      "requested": "ਬੇਨਤੀ ਕੀਤੀ",
+      "inProgress": "ਜਾਰੀ ਹੈ",
+      "validating": "ਪ੍ਰਮਾਣਿਤ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ",
+      "accepted": "ਸਵੀਕਾਰ ਕੀਤਾ",
+      "rejected": "ਅਸਵੀਕਾਰ ਕੀਤਾ",
+      "submitted": "ਜਮ੍ਹਾਂ ਕਰਾਇਆ ਗਿਆ",
+      "changesRequested": "ਬਦਲਾਅ ਬੇਨਤੀ ਕੀਤੀ ਗਈ"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "ਤੁਹਾਡੀ ਬੇਨਤੀ ਦੀ ਸਮੀਖਿਆ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ। ਮਨਜ਼ੂਰ ਹੋਣ 'ਤੇ ਤੁਹਾਨੂੰ ਸੂਚਿਤ ਕੀਤਾ ਜਾਵੇਗਾ।",
+        "inProgress": "ਤੁਹਾਡੀ ਬੇਨਤੀ ਮਨਜ਼ੂਰ ਹੋ ਗਈ! ਹੁਣ ਤੁਸੀਂ ਇਸ ਕੰਮ 'ਤੇ ਕੰਮ ਕਰ ਸਕਦੇ ਹੋ।",
+        "submitted": "ਤੁਹਾਡਾ ਕੰਮ ਜਮ੍ਹਾਂ ਹੋ ਗਿਆ ਹੈ। ਮਾਲਕ ਤੋਂ ਸਮੀਖਿਆ ਦੀ ਉਡੀਕ ਹੈ।",
+        "validating": "ਤਬਦੀਲੀਆਂ ਦੀ ਬੇਨਤੀ ਕੀਤੀ ਗਈ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਸੋਧ ਕਰੋ ਅਤੇ ਦੁਬਾਰਾ ਜਮ੍ਹਾਂ ਕਰੋ।",
+        "accepted": "ਵਧਾਈ! ਤੁਹਾਡਾ ਕੰਮ ਸਵੀਕਾਰ ਕਰ ਲਿਆ ਗਿਆ।",
+        "rejected": "ਤੁਹਾਡੀ ਜਮ੍ਹਾਂ ਨੂੰ ਰੱਦ ਕਰ ਦਿੱਤਾ ਗਿਆ।"
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}} ਨੇ ਇਸ ਕੰਮ 'ਤੇ ਕੰਮ ਕਰਨ ਦੀ ਬੇਨਤੀ ਕੀਤੀ ਹੈ। ਬੇਨਤੀ ਮਨਜ਼ੂਰ ਜਾਂ ਰੱਦ ਕਰੋ।",
+        "inProgress": "{{workerName}} ਇਸ ਸਮੇਂ ਇਸ ਕੰਮ 'ਤੇ ਕੰਮ ਕਰ ਰਿਹਾ ਹੈ।",
+        "submitted": "{{workerName}} ਨੇ ਸਮੀਖਿਆ ਲਈ ਆਪਣਾ ਕੰਮ ਜਮ੍ਹਾਂ ਕੀਤਾ ਹੈ।",
+        "validating": "{{workerName}} ਦੇ ਸੋਧ ਕਰਨ ਅਤੇ ਦੁਬਾਰਾ ਜਮ੍ਹਾਂ ਕਰਨ ਦੀ ਉਡੀਕ ਹੈ।",
+        "accepted": "{{workerName}} ਦਾ ਕੰਮ ਸਵੀਕਾਰ ਕੀਤਾ ਗਿਆ।",
+        "rejected": "{{workerName}} ਦੀ ਜਮ੍ਹਾਂ ਨੂੰ ਰੱਦ ਕਰ ਦਿੱਤਾ ਗਿਆ।"
+      }
+    },
+    "actions": {
+      "submitForReview": "ਸਮੀਖਿਆ ਲਈ ਜਮ੍ਹਾਂ ਕਰੋ",
+      "withdrawSubmission": "ਜਮ੍ਹਾਂ ਵਾਪਸ ਲਓ",
+      "withdrawing": "ਵਾਪਸ ਲੈ ਰਿਹਾ ਹੈ...",
+      "reviseAndResubmit": "ਸੋਧ ਕਰੋ ਅਤੇ ਦੁਬਾਰਾ ਜਮ੍ਹਾਂ ਕਰੋ",
+      "approveRequest": "ਬੇਨਤੀ ਮਨਜ਼ੂਰ ਕਰੋ",
+      "approving": "ਮਨਜ਼ੂਰ ਕਰ ਰਿਹਾ ਹੈ...",
+      "rejectRequest": "ਬੇਨਤੀ ਰੱਦ ਕਰੋ",
+      "rejecting": "ਰੱਦ ਕਰ ਰਿਹਾ ਹੈ...",
+      "reviewAndAccept": "ਸਮੀਖਿਆ ਕਰੋ ਅਤੇ ਸਵੀਕਾਰ ਕਰੋ",
+      "requestChanges": "ਤਬਦੀਲੀਆਂ ਦੀ ਬੇਨਤੀ ਕਰੋ",
+      "reject": "ਰੱਦ ਕਰੋ"
+    },
+    "review": {
+      "title": "ਜਮ੍ਹਾਂ ਕੀਤੇ ਕੰਮ ਦੀ ਸਮੀਖਿਆ ਕਰੋ",
+      "description": "{{workerName}} ਤੋਂ ਕੰਮ ਦੀ ਸਮੀਖਿਆ ਕਰੋ",
+      "workerSolution": "ਕਰਮਚਾਰੀ ਦਾ ਹੱਲ:",
+      "selfReviewScore": "ਸਵੈ-ਸਮੀਖਿਆ: {{score}}/100",
+      "noSubmissionNotes": "ਕੋਈ ਜਮ੍ਹਾਂ ਨੋਟ ਪ੍ਰਦਾਨ ਨਹੀਂ ਕੀਤੇ ਗਏ",
+      "actionLabel": "ਕਾਰਵਾਈ *",
+      "required": "*",
+      "optional": "(ਵਿਕਲਪਿਕ)",
+      "feedbackLabel": "ਸਮੀਖਿਆ ਫੀਡਬੈਕ {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "ਸਮਝਾਓ ਕਿ ਕਿਹੜੀਆਂ ਤਬਦੀਲੀਆਂ ਦੀ ਲੋੜ ਹੈ",
+        "other": "ਕਰਮਚਾਰੀ ਨੂੰ ਟਿੱਪਣੀਆਂ ਜਾਂ ਸੁਝਾਅ ਪ੍ਰਦਾਨ ਕਰੋ"
+      },
+      "editorPlaceholder": {
+        "validate": "ਲੋੜੀਂਦੀਆਂ ਤਬਦੀਲੀਆਂ ਦਾ ਵਰਣਨ ਕਰੋ...",
+        "other": "ਕੰਮ 'ਤੇ ਫੀਡਬੈਕ ਪ੍ਰਦਾਨ ਕਰੋ..."
+      },
+      "managerReviewLabel": "ਮੈਨੇਜਰ ਸਮੀਖਿਆ (ਵਿਕਲਪਿਕ)",
+      "managerReviewDescription": "ਪੂਰੇ ਕੀਤੇ ਕੰਮ ਦੀ ਗੁਣਵੱਤਾ ਦੀ ਦਰਜਾਬੰਦੀ ਕਰੋ",
+      "scorePoor": "0 (ਮਾੜਾ)",
+      "scoreExcellent": "100 (ਸ਼ਾਨਦਾਰ)",
+      "cancel": "ਰੱਦ ਕਰੋ",
+      "submitting": "ਜਮ੍ਹਾਂ ਕਰ ਰਿਹਾ ਹੈ...",
+      "acceptWork": "ਕੰਮ ਸਵੀਕਾਰ ਕਰੋ",
+      "requestChangesButton": "ਤਬਦੀਲੀਆਂ ਦੀ ਬੇਨਤੀ ਕਰੋ",
+      "rejectWork": "ਕੰਮ ਰੱਦ ਕਰੋ",
+      "actions": {
+        "accept": {
+          "title": "ਸਵੀਕਾਰ ਕਰੋ (ਕੰਮ ਨੂੰ ਹੋ ਗਿਆ ਵਜੋਂ ਚਿੰਨ੍ਹਿਤ ਕਰੋ)",
+          "description": "ਕੰਮ ਮਨਜ਼ੂਰ ਕਰੋ ਅਤੇ ਕੰਮ ਪੂਰਾ ਕਰੋ। ਕਰਮਚਾਰੀ ਆਪਣਾ ਇਨਾਮ ਕਮਾਉਂਦਾ ਹੈ।"
+        },
+        "requestChanges": {
+          "title": "ਤਬਦੀਲੀਆਂ ਦੀ ਬੇਨਤੀ ਕਰੋ",
+          "description": "ਕਰਮਚਾਰੀ ਨੂੰ ਆਪਣੇ ਕੰਮ ਵਿੱਚ ਸੋਧ ਕਰਨ ਅਤੇ ਦੁਬਾਰਾ ਜਮ੍ਹਾਂ ਕਰਨ ਲਈ ਕਹੋ।"
+        },
+        "reject": {
+          "title": "ਰੱਦ ਕਰੋ (ਕੰਮ ਦੁਬਾਰਾ ਖੋਲ੍ਹੋ)",
+          "description": "ਕੰਮ ਨੂੰ ਪੂਰੀ ਤਰ੍ਹਾਂ ਰੱਦ ਕਰੋ ਅਤੇ ਦੂਜਿਆਂ ਲਈ ਕੰਮ ਦੁਬਾਰਾ ਖੋਲ੍ਹੋ।"
+        }
+      },
+      "messages": {
+        "accepted": "ਕੰਮ ਸਵੀਕਾਰ ਕੀਤਾ ਗਿਆ ਅਤੇ ਕੰਮ ਪੂਰਾ ਵਜੋਂ ਚਿੰਨ੍ਹਿਤ ਕੀਤਾ ਗਿਆ",
+        "changesRequested": "ਤਬਦੀਲੀਆਂ ਦੀ ਬੇਨਤੀ ਕੀਤੀ ਗਈ, ਕਰਮਚਾਰੀ ਸੋਧ ਕਰੇਗਾ",
+        "rejected": "ਕੰਮ ਰੱਦ ਕੀਤਾ ਗਿਆ, ਕੰਮ ਦੁਬਾਰਾ ਖੋਲ੍ਹਿਆ ਗਿਆ",
+        "error": "ਸਮੀਖਿਆ ਜਮ੍ਹਾਂ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕੀ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
+      }
+    },
+    "submission": {
+      "title": "ਸਮੀਖਿਆ ਲਈ ਕੰਮ ਜਮ੍ਹਾਂ ਕਰੋ",
+      "titleResubmit": "ਕੰਮ ਸੋਧੋ ਅਤੇ ਦੁਬਾਰਾ ਜਮ੍ਹਾਂ ਕਰੋ",
+      "description": "{{taskName}} ਲਈ ਆਪਣੇ ਹੱਲ ਦਾ ਵਰਣਨ ਕਰੋ ਅਤੇ ਪ੍ਰਮਾਣਿਕਤਾ ਲਈ ਜਮ੍ਹਾਂ ਕਰੋ।",
+      "solutionLabel": "ਹੱਲ ਵੇਰਵਾ *",
+      "solutionDescription": "ਦੱਸੋ ਕਿ ਤੁਸੀਂ ਇਸ ਕੰਮ ਨੂੰ ਪੂਰਾ ਕਰਨ ਲਈ ਕੀ ਕੀਤਾ। ਫਾਰਮੈਟਿੰਗ, ਲਿੰਕ ਅਤੇ ਸੂਚੀਆਂ ਦਾ ਸਮਰਥਨ ਕਰਦਾ ਹੈ।",
+      "solutionPlaceholder": "ਦੱਸੋ ਕਿ ਤੁਸੀਂ ਇਸ ਕੰਮ ਨੂੰ ਪੂਰਾ ਕਰਨ ਲਈ ਕੀ ਕੀਤਾ...",
+      "selfReviewLabel": "ਸਵੈ-ਸਮੀਖਿਆ (ਵਿਕਲਪਿਕ)",
+      "selfReviewDescription": "0-100 ਦੇ ਪੈਮਾਨੇ 'ਤੇ ਆਪਣੇ ਕੰਮ ਦੀ ਗੁਣਵੱਤਾ ਦੀ ਦਰਜਾਬੰਦੀ ਕਰੋ",
+      "scoreNeedsWork": "0 (ਕੰਮ ਦੀ ਲੋੜ ਹੈ)",
+      "scorePerfect": "100 (ਸੰਪੂਰਨ)",
+      "cancel": "ਰੱਦ ਕਰੋ",
+      "submitting": "ਜਮ੍ਹਾਂ ਕਰ ਰਿਹਾ ਹੈ...",
+      "submitButton": "ਸਮੀਖਿਆ ਲਈ ਜਮ੍ਹਾਂ ਕਰੋ",
+      "resubmitButton": "ਸਮੀਖਿਆ ਲਈ ਦੁਬਾਰਾ ਜਮ੍ਹਾਂ ਕਰੋ",
+      "errors": {
+        "missingDescription": "ਕਿਰਪਾ ਕਰਕੇ ਆਪਣੇ ਕੰਮ ਦਾ ਵਰਣਨ ਪ੍ਰਦਾਨ ਕਰੋ",
+        "submitError": "ਤੁਹਾਡਾ ਕੰਮ ਜਮ੍ਹਾਂ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
+      },
+      "messages": {
+        "submitted": "ਕੰਮ ਸਮੀਖਿਆ ਲਈ ਜਮ੍ਹਾਂ ਕੀਤਾ ਗਿਆ",
+        "resubmitted": "ਕੰਮ ਸਮੀਖਿਆ ਲਈ ਦੁਬਾਰਾ ਜਮ੍ਹਾਂ ਕੀਤਾ ਗਿਆ"
+      }
+    }
+  },
+  "notes": {
+    "updated": "ਨੋਟ ਸਫਲਤਾਪੂਰਵਕ ਅੱਪਡੇਟ ਕੀਤਾ ਗਿਆ",
+    "updateFailed": "ਨੋਟ ਅੱਪਡੇਟ ਕਰਨ ਵਿੱਚ ਅਸਫਲ",
+    "deleted": "ਨੋਟ ਸਫਲਤਾਪੂਰਵਕ ਮਿਟਾਇਆ ਗਿਆ",
+    "deleteFailed": "ਨੋਟ ਮਿਟਾਉਣ ਵਿੱਚ ਅਸਫਲ",
+    "deleting": "ਮਿਟਾਇਆ ਜਾ ਰਿਹਾ ਹੈ...",
+    "confirmDelete": "ਕੀ ਤੁਸੀਂ ਸੱਚਮੁੱਚ ਇਸ ਨੋਟ ਨੂੰ ਮਿਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ?",
+    "content": "ਨੋਟ ਦੀ ਸਮੱਗਰੀ",
+    "visibilityUpdated": "ਦਿੱਖ ਸਫਲਤਾਪੂਰਵਕ ਅੱਪਡੇਟ ਕੀਤੀ ਗਈ",
+    "visibilityUpdateFailed": "ਦਿੱਖ ਅੱਪਡੇਟ ਕਰਨ ਵਿੱਚ ਅਸਫਲ",
+    "changeVisibility": "ਦਿੱਖ ਬਦਲੋ",
+    "filters": {
+      "sort": "ਕ੍ਰਮਬੱਧ ਕਰੋ",
+      "date": "ਤਾਰੀਖ਼",
+      "mostRelevant": "ਸਭ ਤੋਂ ਢੁਕਵਾਂ",
+      "all": "ਸਾਰੇ"
+    }
+  },
+  "chat": {
+    "title": "ਗੱਲਬਾਤ",
+    "subtitle": "ਸੰਗਠਨ, ਚੈਨਲ, ਸਿੱਧੇ ਸੁਨੇਹੇ ਅਤੇ ਥਰਿੱਡ।",
+    "anonymous": "ਅਗਿਆਤ",
+    "directMessage": "ਸਿੱਧਾ ਸੁਨੇਹਾ",
+    "deletedMessage": "ਸੁਨੇਹਾ ਮਿਟਾਇਆ ਗਿਆ",
+    "deleteMessageTitle": "ਸੁਨੇਹਾ ਮਿਟਾਓ?",
+    "deleteMessageDescription": "ਇਹ ਸੁਨੇਹੇ ਨੂੰ ਨਰਮ-ਮਿਟਾਉਣਾ ਕਰੇਗਾ ਅਤੇ ਗੱਲਬਾਤ ਇਤਿਹਾਸ ਵਿੱਚ ਇੱਕ ਪਲੇਸਹੋਲਡਰ ਰੱਖੇਗਾ।",
+    "createInviteLink": "ਸੱਦਾ ਲਿੰਕ ਬਣਾਓ",
+    "pendingInvites": "ਲੰਬਿਤ ਸੱਦੇ",
+    "acceptInvite": "ਸਵੀਕਾਰ ਕਰੋ",
+    "inviteFriendToOrg": "ਇਸ ਸੰਗਠਨ ਵਿੱਚ ਦੋਸਤ ਨੂੰ ਸੱਦਾ ਦਿਓ",
+    "inviteLinkCopied": "ਸੱਦਾ ਲਿੰਕ ਕਾਪੀ ਕੀਤਾ ਗਿਆ",
+    "inviteSent": "ਸੱਦਾ ਭੇਜਿਆ ਗਿਆ",
+    "inviteAccepted": "ਸੱਦਾ ਸਵੀਕਾਰ ਕੀਤਾ ਗਿਆ"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "ਗ੍ਰਿਡ ਲੇਆਉਟ",
+      "tight": "ਘਣਾ",
+      "small": "ਛੋਟਾ",
+      "wide": "ਚੌੜਾ"
+    }
   }
 }

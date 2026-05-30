@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useContext, useRef } from 'react'
+import { useState, useEffect, useContext, useMemo, useRef } from 'react'
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
@@ -10,25 +10,33 @@ import { GlobalContext } from "@/lib/contexts"
 import { Send, Loader2 } from "lucide-react"
 import { VisibilitySelect } from "@/components/visibilitySelect"
 import { DatePickerButton } from "@/components/ui/datePickerButton"
+import { LinkPreview } from "@/components/linkPreview"
+import { extractUrls } from "@/lib/utils/linkPreview"
+import { Input } from "@/components/ui/input"
 
 interface PublishNoteProps {
   onNotePublished?: () => void
   date?: string
   onDateChange?: (date: Date | undefined) => void
   defaultVisibility?: string
+  recipientId?: string | null
+  recipientLabel?: string | null
 }
 
-export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibility = 'AI_ENABLED' }: PublishNoteProps) => {
+
+export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibility = 'AI_ENABLED', recipientId = null, recipientLabel = null }: PublishNoteProps) => {
   const { t } = useI18n()
   const { refreshAll } = useNotesRefresh()
   const { selectedDate: contextSelectedDate, setSelectedDate } = useContext(GlobalContext)
   const [noteContent, setNoteContent] = useState('')
   const [noteVisibility, setNoteVisibility] = useState(defaultVisibility)
   const [isPublishing, setIsPublishing] = useState(false)
+  const previewUrls = useMemo(() => extractUrls(noteContent), [noteContent])
   
   // Use ref to track if we're updating from props to prevent loops
   const isUpdatingFromProps = useRef(false)
   const hasInitializedFromProps = useRef(false)
+  const writeScrollRef = useRef<HTMLDivElement | null>(null)
 
   // Helper to compare dates by value
   const datesEqual = (date1: Date | undefined, date2: Date | undefined): boolean => {
@@ -77,9 +85,9 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
       const today = new Date()
       const todayDate = today.toLocaleString('en-uk', { timeZone: userTimezone }).split(',')[0].split('/').reverse().join('-')
       // Use context selectedDate if available, otherwise fall back to date prop or today
-      // Format: YYYY-MM-DD (same as todayDate format)
+      // Use locale-aware formatting (same as todayDate) to avoid UTC offset causing -1 day shift
       const selectedDateForNote = contextSelectedDate 
-        ? contextSelectedDate.toISOString().split('T')[0]
+        ? contextSelectedDate.toLocaleString('en-uk', { timeZone: userTimezone }).split(',')[0].split('/').reverse().join('-')
         : (date || todayDate)
       const noteDate = selectedDateForNote
 
@@ -91,7 +99,8 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
         body: JSON.stringify({
           content: noteContent.trim(),
           visibility: noteVisibility,
-          date: noteDate
+          date: noteDate,
+          recipientId
         }),
       })
 
@@ -115,6 +124,14 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
     <>
       {/* Mobile: 4-column grid (textarea 3/4, controls 1/4 stacked), Desktop: stacked */}
       <div className="grid grid-cols-4 gap-2 sm:grid-cols-1 sm:gap-0 mb-0">
+        {recipientId && (
+          <div className="col-span-4 mb-2">
+            <label htmlFor="publish-note-recipient" className="text-xs text-muted-foreground block mb-1">
+              {t('notes.recipient') || 'Recipient'}
+            </label>
+            <Input id="publish-note-recipient" value={recipientLabel || recipientId} readOnly />
+          </div>
+        )}
         <Textarea 
           className="col-span-3 sm:col-span-1 mb-0 sm:mb-3 sm:mb-4 w-full" 
           placeholder={t('mood.publish.placeholder') || 'Write your note here...'}
@@ -146,11 +163,18 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
           </Button>
         </div>
       </div>
+      {previewUrls.length > 0 && (
+        <div className="mt-3">
+          {previewUrls.map((url) => (
+            <LinkPreview key={url} url={url} />
+          ))}
+        </div>
+      )}
     </>
   )
 
   return (
-    <div className="p-3 sm:p-4 border rounded-lg border-body w-full max-w-full sticky top-0 z-50 bg-muted backdrop-blur-sm md:sticky md:top-4">
+    <div className="p-3 sm:p-4 border rounded-lg border-body w-full max-w-full sticky top-0 z-50 bg-muted backdrop-blur-sm mb-[calc(env(safe-area-inset-bottom)+16px)] md:mb-0 md:sticky md:top-4">
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="publish-note" className="border-none">
           <AccordionTrigger className="py-0 px-0 hover:no-underline">
@@ -159,12 +183,17 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
               <DatePickerButton />
             </div>
           </AccordionTrigger>
-          <AccordionContent className="pt-3 pb-0">
-            {formContent}
+          <AccordionContent className="pt-3 pb-3">
+            <div
+              ref={writeScrollRef}
+              className="overflow-y-auto overscroll-contain pl-[max(0.25rem,env(safe-area-inset-left))] pr-[max(0.25rem,env(safe-area-inset-right))] pb-4 max-h-[320px]"
+              
+            >
+              {formContent}
+            </div>
           </AccordionContent>
         </AccordionItem>
       </Accordion>
     </div>
   )
 }
-

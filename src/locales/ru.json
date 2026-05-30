@@ -24,6 +24,7 @@
     "signInToAccess": "Войдите, чтобы получить доступ к панели управления и отслеживать свой прогресс.",
     "dismiss": "Закрыть",
     "accept": "Принять",
+    "all": "Все",
     "pageAvailableIn": "Эта страница доступна на {locale}. Хотите просмотреть её на этом языке?",
     "selectLanguage": "Выбрать язык",
     "manageAccount": "Управление моим аккаунтом",
@@ -56,7 +57,10 @@
     "copyLink": "Копировать ссылку",
     "linkCopied": "Ссылка скопирована в буфер обмена",
     "copyFailed": "Не удалось скопировать ссылку",
-    "saving": "Сохранение..."
+    "saving": "Сохранение...",
+    "decline": "Отклонить",
+    "friendRequest": "Запрос в друзья",
+    "reverseOrder": "Обратный порядок"
   },
   "navigation": {
     "home": "Главная",
@@ -82,7 +86,26 @@
     "yourMood": "Ваше настроение.",
     "yourProductivity": "Ваша продуктивность.",
     "yourData": "Ваши данные.",
-    "yourBalance": "Ваши деньги."
+    "yourBalance": "Ваши деньги.",
+    "timeframe": {
+      "startDate": "Дата начала",
+      "endDate": "Дата окончания"
+    },
+    "me": "Мои данные",
+    "selectDelegatedUser": "Выбрать делегированного пользователя",
+    "analysis": {
+      "alltimeAnalysis": "Анализ за всё время",
+      "dayAnalysis": "Анализ за сегодня",
+      "last3daysAnalysis": "Анализ за последние 3 дня",
+      "weekAnalysis": "Анализ недели",
+      "yearAnalysis": "Анализ года",
+      "gratitudeAnalysis": "Анализ благодарности",
+      "optimismAnalysis": "Анализ оптимизма",
+      "restednessAnalysis": "Анализ отдыха",
+      "toleranceAnalysis": "Анализ терпимости",
+      "selfEsteemAnalysis": "Анализ самооценки",
+      "trustAnalysis": "Анализ доверия"
+    }
   },
   "mood": {
     "title": "Сегодня {date}.",
@@ -105,7 +128,26 @@
         "AI_ENABLED": "AI Enabled"
       },
       "action": "Опубликовать заметку",
-      "publishing": "Publishing..."
+      "publishing": "Публикация...",
+      "embedHint": "Встроенный контент {provider}. Если воспроизведение недоступно, откройте исходную ссылку ниже."
+    },
+    "thirdParty": {
+      "title": "Третья сторона",
+      "settings": "Настройки делегирования",
+      "activeDelegations": "Активные делегирования",
+      "empty": "Нет активных делегирований.",
+      "identifierPlaceholder": "Имя пользователя, e-mail или ID пользователя",
+      "noFriendsFound": "Подходящих дружеских связей не найдено.",
+      "friendsHint": "В подсказках есть ваши друзья. Вы также можете ввести любой адрес электронной почты.",
+      "scope": "Область данных",
+      "allScopes": "Все области",
+      "scopesSelected": "областей выбрано",
+      "minimumOneScope": "Должна оставаться выбрана как минимум одна область.",
+      "scopeResolutionHint": "Если выбрано несколько областей, применяется самая широкая из выбранных.",
+      "addDelegatedAnalyst": "Добавить делегированного аналитика",
+      "adding": "Добавление...",
+      "addError": "Не удалось добавить делегированного аналитика",
+      "invitationDraft": "Для этого адреса электронной почты подготовлен черновик приглашения."
     }
   },
   "week": {
@@ -133,7 +175,11 @@
       "open": "Открыто",
       "done": "Выполнено",
       "ignored": "Игнорировано"
-    }
+    },
+    "edit": "Редактировать",
+    "loadingForDate": "Загрузка задач для выбранной даты...",
+    "initializingTasks": "Настройка ваших задач...",
+    "noTasksForDate": "На эту дату задач не запланировано"
   },
   "actions": {
     "drankWater": "Пил воду",
@@ -232,15 +278,18 @@
     "progress": "Прогресс",
     "moodAverageScale": "Шкала среднего настроения",
     "balance": "Баланс",
-    "earningsScale": "Шкала заработка"
+    "earningsScale": "Шкала заработка",
+    "profit": "Прибыль",
+    "stash": "Резерв",
+    "withdrawn": "Выведено"
   },
   "errors": {
     "notFound": "Упс! Не удалось настроить эту частоту.",
     "genericError": "Что-то пошло не так. Пожалуйста, попробуйте еще раз.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "Не удалось загрузить заметки",
+    "failedToLoadNotes": "Не удалось загрузить заметки",
+    "failedToFetchTemplates": "Не удалось загрузить шаблоны",
+    "failedToLoadTemplates": "Не удалось загрузить шаблоны"
   },
   "social": {
     "title": "Социальные контакты",
@@ -326,9 +375,9 @@
     "cloning": "Клонирование...",
     "noPublicNotes": "Публичные заметки пока недоступны.",
     "noPublicTemplatesOrLists": "Публичные шаблоны или списки пока недоступны.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "Клонировать список",
+    "cloneListSuccess": "Список успешно клонирован!",
+    "cloneListFailed": "Не удалось клонировать список"
   },
   "publicCharts": {
     "noData": "Нет доступных публичных данных диаграмм.",
@@ -354,7 +403,8 @@
     "closeFriend": "Близкий друг",
     "friends": "Друзья",
     "signInToAdd": "Войдите, чтобы добавить в друзья",
-    "editProfile": "Редактировать профиль"
+    "editProfile": "Редактировать профиль",
+    "message": "Сообщение"
   },
   "profile": {
     "editProfile": "Редактировать профиль",
@@ -460,7 +510,9 @@
       "timesLabel": "# раз",
       "saveToTemplate": "Сохранить задачу в шаблоне",
       "addTask": "Добавить задачу",
-      "cancel": "Отмена"
+      "cancel": "Отмена",
+      "editTitle": "Редактировать задачу",
+      "saveTask": "Сохранить задачу"
     },
     "addListForm": {
       "titleCreate": "Создать новый список",
@@ -536,6 +588,39 @@
       },
       "create": "Создать",
       "cancel": "Отмена"
+    },
+    "recurrencePicker": {
+      "frequency": "Повтор",
+      "every": "Каждый",
+      "day": "день",
+      "days": "дни",
+      "week": "неделя",
+      "weeks": "недели",
+      "month": "месяц",
+      "months": "месяцы",
+      "year": "год",
+      "years": "годы",
+      "noRepeat": "Не повторяется",
+      "daily": "Ежедневно",
+      "weekly": "Еженедельно",
+      "monthly": "Ежемесячно",
+      "yearly": "Ежегодно",
+      "repeatOn": "Повторять в",
+      "monday": "Пн",
+      "tuesday": "Вт",
+      "wednesday": "Ср",
+      "thursday": "Чт",
+      "friday": "Пт",
+      "saturday": "Сб",
+      "sunday": "Вс",
+      "dayOfMonth": "День месяца",
+      "selectDay": "Выбрать день (1-31)",
+      "ends": "Заканчивается",
+      "never": "Никогда",
+      "onDate": "В дату",
+      "after": "После",
+      "pickDate": "Выбрать дату",
+      "occurrences": "повторений"
     }
   },
   "socialView": {
@@ -610,5 +695,174 @@
     "deleteWallet": "Удалить Кошелек",
     "deleteWalletConfirmation": "Вы уверены, что хотите удалить этот кошелек? Это действие нельзя отменить. Кошелек будет удален из вашего аккаунта, но адрес блокчейна и его средства останутся в блокчейне.",
     "delete": "Удалить"
+  },
+  "jobs": {
+    "history": "История Заданий",
+    "filterByStatus": "Фильтр по Статусу:",
+    "errorLoadingHistory": "Ошибка загрузки истории заданий",
+    "noHistoryFound": "История заданий не найдена",
+    "status": {
+      "requested": "Запрошено",
+      "inProgress": "В Процессе",
+      "validating": "Проверка",
+      "accepted": "Принято",
+      "rejected": "Отклонено",
+      "submitted": "Отправлено",
+      "changesRequested": "Запрошены изменения"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "Ваш запрос рассматривается. Вы будете уведомлены при утверждении.",
+        "inProgress": "Ваш запрос одобрен! Теперь вы можете работать над этой задачей.",
+        "submitted": "Ваша работа отправлена. Ожидание проверки владельца.",
+        "validating": "Запрошены изменения. Пожалуйста, пересмотрите и отправьте снова.",
+        "accepted": "Поздравляем! Ваша работа принята.",
+        "rejected": "Ваша заявка отклонена."
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}} запросил работу над этой задачей. Одобрите или отклоните запрос.",
+        "inProgress": "{{workerName}} в настоящее время работает над этой задачей.",
+        "submitted": "{{workerName}} отправил свою работу на проверку.",
+        "validating": "Ожидание {{workerName}} для пересмотра и повторной отправки.",
+        "accepted": "Работа {{workerName}} принята.",
+        "rejected": "Заявка {{workerName}} отклонена."
+      }
+    },
+    "actions": {
+      "submitForReview": "Отправить на Проверку",
+      "withdrawSubmission": "Отозвать Заявку",
+      "withdrawing": "Отзыв...",
+      "reviseAndResubmit": "Пересмотреть и Отправить Снова",
+      "approveRequest": "Одобрить Запрос",
+      "approving": "Одобрение...",
+      "rejectRequest": "Отклонить Запрос",
+      "rejecting": "Отклонение...",
+      "reviewAndAccept": "Проверить и Принять",
+      "requestChanges": "Запросить Изменения",
+      "reject": "Отклонить"
+    },
+    "review": {
+      "title": "Проверить Отправленную Работу",
+      "description": "Проверить работу от {{workerName}}",
+      "workerSolution": "Решение Работника:",
+      "selfReviewScore": "Самооценка: {{score}}/100",
+      "noSubmissionNotes": "Примечания к заявке не предоставлены",
+      "actionLabel": "Действие *",
+      "required": "*",
+      "optional": "(Необязательно)",
+      "feedbackLabel": "Отзыв о Проверке {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "Объясните, какие изменения необходимы",
+        "other": "Предоставьте комментарии или предложения для работника"
+      },
+      "editorPlaceholder": {
+        "validate": "Опишите необходимые изменения...",
+        "other": "Предоставьте отзыв о работе..."
+      },
+      "managerReviewLabel": "Проверка Менеджера (Необязательно)",
+      "managerReviewDescription": "Оцените качество выполненной работы",
+      "scorePoor": "0 (Плохо)",
+      "scoreExcellent": "100 (Отлично)",
+      "cancel": "Отмена",
+      "submitting": "Отправка...",
+      "acceptWork": "Принять Работу",
+      "requestChangesButton": "Запросить Изменения",
+      "rejectWork": "Отклонить Работу",
+      "actions": {
+        "accept": {
+          "title": "Принять (Отметить задачу как Выполненную)",
+          "description": "Одобрить работу и завершить задачу. Работник получает вознаграждение."
+        },
+        "requestChanges": {
+          "title": "Запросить Изменения",
+          "description": "Попросить работника пересмотреть и повторно отправить свою работу."
+        },
+        "reject": {
+          "title": "Отклонить (Открыть задачу снова)",
+          "description": "Полностью отклонить работу и открыть задачу для других."
+        }
+      },
+      "messages": {
+        "accepted": "Работа принята и задача отмечена как выполненная",
+        "changesRequested": "Запрошены изменения, работник пересмотрит",
+        "rejected": "Работа отклонена, задача открыта снова",
+        "error": "Не удалось отправить проверку. Пожалуйста, попробуйте снова."
+      }
+    },
+    "submission": {
+      "title": "Отправить Работу на Проверку",
+      "titleResubmit": "Пересмотреть и Отправить Работу Снова",
+      "description": "Опишите ваше решение для {{taskName}} и отправьте на проверку.",
+      "solutionLabel": "Описание Решения *",
+      "solutionDescription": "Объясните, что вы сделали для выполнения этой задачи. Поддерживает форматирование, ссылки и списки.",
+      "solutionPlaceholder": "Объясните, что вы сделали для выполнения этой задачи...",
+      "selfReviewLabel": "Самооценка (Необязательно)",
+      "selfReviewDescription": "Оцените качество вашей работы по шкале от 0 до 100",
+      "scoreNeedsWork": "0 (Нужна работа)",
+      "scorePerfect": "100 (Идеально)",
+      "cancel": "Отмена",
+      "submitting": "Отправка...",
+      "submitButton": "Отправить на Проверку",
+      "resubmitButton": "Отправить Снова на Проверку",
+      "errors": {
+        "missingDescription": "Пожалуйста, предоставьте описание вашей работы",
+        "submitError": "Не удалось отправить вашу работу. Пожалуйста, попробуйте снова."
+      },
+      "messages": {
+        "submitted": "Работа отправлена на проверку",
+        "resubmitted": "Работа отправлена снова на проверку"
+      }
+    }
+  },
+  "notes": {
+    "updated": "Заметка успешно обновлена",
+    "updateFailed": "Не удалось обновить заметку",
+    "deleted": "Заметка успешно удалена",
+    "deleteFailed": "Не удалось удалить заметку",
+    "deleting": "Удаление...",
+    "confirmDelete": "Вы уверены, что хотите удалить эту заметку?",
+    "content": "Содержимое заметки",
+    "visibilityUpdated": "Видимость успешно обновлена",
+    "visibilityUpdateFailed": "Не удалось обновить видимость",
+    "changeVisibility": "Изменить видимость",
+    "filters": {
+      "sort": "Сортировка",
+      "date": "Дата",
+      "mostRelevant": "Наиболее релевантные",
+      "all": "Все"
+    }
+  },
+  "chat": {
+    "title": "Чат",
+    "subtitle": "Организации, каналы, личные сообщения и обсуждения.",
+    "anonymous": "Анонимный",
+    "directMessage": "Личное сообщение",
+    "deletedMessage": "Сообщение удалено",
+    "deleteMessageTitle": "Удалить сообщение?",
+    "deleteMessageDescription": "Это мягко удалит сообщение и оставит заполнитель в истории переписки.",
+    "createInviteLink": "Создать ссылку-приглашение",
+    "pendingInvites": "Ожидающие приглашения",
+    "acceptInvite": "Принять",
+    "inviteFriendToOrg": "Пригласить друга в эту организацию",
+    "inviteLinkCopied": "Ссылка-приглашение скопирована",
+    "inviteSent": "Приглашение отправлено",
+    "inviteAccepted": "Приглашение принято"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Макет сетки",
+      "tight": "Плотно",
+      "small": "Маленький",
+      "wide": "Широко"
+    }
   }
 }

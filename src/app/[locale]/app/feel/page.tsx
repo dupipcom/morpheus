@@ -7,8 +7,6 @@ import { ViewMenu } from '@/components/viewMenu'
 import { MoodView } from '@/views/moodView'
 import { PublishNote } from '@/components/publishNote'
 
-export const dynamic = 'force-dynamic'
-
 export default function LocalizedFeel({ params }: { params: Promise<{ locale: string }> }) {
   const searchParams = useSearchParams()
   const date = searchParams.get('date')

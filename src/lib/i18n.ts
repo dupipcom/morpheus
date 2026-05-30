@@ -21,6 +21,7 @@ export async function loadTranslations(locale: Locale) {
 export function loadTranslationsSync(locale: Locale) {
   try {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
+    if (locale === 'api') return {}
     const translations = require(`@/locales/${locale}.json`)
     return translations.default || translations
   } catch (error) {

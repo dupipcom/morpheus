@@ -24,6 +24,7 @@
     "signInToAccess": "ダッシュボードにアクセスして進捗を追跡するにはログインしてください。",
     "dismiss": "閉じる",
     "accept": "受け入れる",
+    "all": "すべて",
     "pageAvailableIn": "このページは {locale} で利用できます。その言語で表示しますか？",
     "selectLanguage": "言語を選択",
     "manageAccount": "アカウント管理",
@@ -56,7 +57,10 @@
     "copyLink": "リンクをコピー",
     "linkCopied": "リンクをクリップボードにコピーしました",
     "copyFailed": "リンクのコピーに失敗しました",
-    "saving": "保存中..."
+    "saving": "保存中...",
+    "decline": "拒否",
+    "friendRequest": "フレンドリクエスト",
+    "reverseOrder": "逆順"
   },
   "navigation": {
     "home": "ホーム",
@@ -82,7 +86,26 @@
     "yourMood": "あなたの気分。",
     "yourProductivity": "あなたの生産性。",
     "yourData": "あなたのデータ。",
-    "yourBalance": "あなたのお金。"
+    "yourBalance": "あなたのお金。",
+    "timeframe": {
+      "startDate": "開始日",
+      "endDate": "終了日"
+    },
+    "me": "自分のデータ",
+    "selectDelegatedUser": "委任されたユーザーを選択",
+    "analysis": {
+      "alltimeAnalysis": "全期間分析",
+      "dayAnalysis": "今日の分析",
+      "last3daysAnalysis": "直近3日間の分析",
+      "weekAnalysis": "週次分析",
+      "yearAnalysis": "年次分析",
+      "gratitudeAnalysis": "感謝の分析",
+      "optimismAnalysis": "楽観性の分析",
+      "restednessAnalysis": "休息度の分析",
+      "toleranceAnalysis": "寛容さの分析",
+      "selfEsteemAnalysis": "自尊心の分析",
+      "trustAnalysis": "信頼の分析"
+    }
   },
   "mood": {
     "title": "{date}です。",
@@ -105,7 +128,26 @@
         "AI_ENABLED": "AI有効"
       },
       "action": "ノートを公開",
-      "publishing": "Publishing..."
+      "publishing": "公開中...",
+      "embedHint": "{provider} 埋め込み。再生できない場合は、以下の元のリンクを開いてください。"
+    },
+    "thirdParty": {
+      "title": "サードパーティ",
+      "settings": "委任設定",
+      "activeDelegations": "有効な委任",
+      "empty": "有効な委任はありません。",
+      "identifierPlaceholder": "ユーザー名、メールアドレス、またはユーザーID",
+      "noFriendsFound": "一致する友達関係が見つかりませんでした。",
+      "friendsHint": "候補にはあなたの友達が含まれます。任意のメールアドレスを入力することもできます。",
+      "scope": "データ範囲",
+      "allScopes": "すべての範囲",
+      "scopesSelected": "選択された範囲",
+      "minimumOneScope": "少なくとも1つの範囲を選択したままにする必要があります。",
+      "scopeResolutionHint": "複数の範囲が選択されている場合は、最も広い選択範囲が適用されます。",
+      "addDelegatedAnalyst": "委任されたアナリストを追加",
+      "adding": "追加中...",
+      "addError": "委任されたアナリストを追加できませんでした",
+      "invitationDraft": "このメールアドレス用の招待下書きを準備しました。"
     }
   },
   "week": {
@@ -133,7 +175,11 @@
       "open": "オープン",
       "done": "完了",
       "ignored": "無視"
-    }
+    },
+    "edit": "編集",
+    "loadingForDate": "選択した日付のタスクを読み込んでいます...",
+    "initializingTasks": "タスクを設定しています...",
+    "noTasksForDate": "この日付にスケジュールされたタスクはありません"
   },
   "settings": {
     "title": "設定",
@@ -289,7 +335,10 @@
     "progress": "進歩",
     "moodAverageScale": "平均気分スケール",
     "balance": "残高",
-    "earningsScale": "収益スケール"
+    "earningsScale": "収益スケール",
+    "profit": "利益",
+    "stash": "貯蓄",
+    "withdrawn": "引き出し済み"
   },
   "agentChat": {
     "thinking": "考え中...",
@@ -302,10 +351,10 @@
   "errors": {
     "notFound": "おっと！この周波数にチューニングできませんでした。",
     "genericError": "何か問題が発生しました。もう一度お試しください。",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "ノートの読み込みに失敗しました",
+    "failedToLoadNotes": "ノートの読み込みに失敗しました",
+    "failedToFetchTemplates": "テンプレートの読み込みに失敗しました",
+    "failedToLoadTemplates": "テンプレートの読み込みに失敗しました"
   },
   "publicProfile": {
     "ctaTitle": "あなた自身の Dupip の旅を始めましょう",
@@ -326,9 +375,9 @@
     "cloning": "複製中...",
     "noPublicNotes": "公開ノートはまだ利用できません。",
     "noPublicTemplatesOrLists": "公開テンプレートまたはリストはまだ利用できません。",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "リストをクローン",
+    "cloneListSuccess": "リストのクローンに成功しました!",
+    "cloneListFailed": "リストのクローンに失敗しました"
   },
   "publicCharts": {
     "noData": "公開チャートデータが利用できません。",
@@ -354,7 +403,8 @@
     "closeFriend": "親しい友達",
     "friends": "友達",
     "signInToAdd": "友達を追加するにはサインイン",
-    "editProfile": "プロフィールを編集"
+    "editProfile": "プロフィールを編集",
+    "message": "メッセージ"
   },
   "profile": {
     "editProfile": "プロフィール編集",
@@ -460,7 +510,9 @@
       "timesLabel": "# 回数",
       "saveToTemplate": "タスクをテンプレートに保存",
       "addTask": "タスクを追加",
-      "cancel": "キャンセル"
+      "cancel": "キャンセル",
+      "editTitle": "タスクを編集",
+      "saveTask": "タスクを保存"
     },
     "addListForm": {
       "titleCreate": "新しいリストを作成",
@@ -536,6 +588,39 @@
       },
       "create": "作成",
       "cancel": "キャンセル"
+    },
+    "recurrencePicker": {
+      "frequency": "繰り返し",
+      "every": "毎",
+      "day": "日",
+      "days": "日",
+      "week": "週",
+      "weeks": "週",
+      "month": "月",
+      "months": "ヶ月",
+      "year": "年",
+      "years": "年",
+      "noRepeat": "繰り返さない",
+      "daily": "毎日",
+      "weekly": "毎週",
+      "monthly": "毎月",
+      "yearly": "毎年",
+      "repeatOn": "繰り返す曜日",
+      "monday": "月",
+      "tuesday": "火",
+      "wednesday": "水",
+      "thursday": "木",
+      "friday": "金",
+      "saturday": "土",
+      "sunday": "日",
+      "dayOfMonth": "月の日",
+      "selectDay": "日を選択 (1-31)",
+      "ends": "終了",
+      "never": "なし",
+      "onDate": "日付",
+      "after": "後",
+      "pickDate": "日付を選択",
+      "occurrences": "回"
     }
   },
   "socialView": {
@@ -610,5 +695,174 @@
     "deleteWallet": "ウォレットを削除",
     "deleteWalletConfirmation": "このウォレットを削除してもよろしいですか？この操作は元に戻せません。ウォレットはアカウントから削除されますが、ブロックチェーンアドレスとその資金はブロックチェーン上に残ります。",
     "delete": "削除"
+  },
+  "jobs": {
+    "history": "ジョブ履歴",
+    "filterByStatus": "ステータスでフィルター:",
+    "errorLoadingHistory": "ジョブ履歴の読み込みエラー",
+    "noHistoryFound": "ジョブ履歴が見つかりません",
+    "status": {
+      "requested": "リクエスト済み",
+      "inProgress": "進行中",
+      "validating": "検証中",
+      "accepted": "承認済み",
+      "rejected": "却下",
+      "submitted": "送信済み",
+      "changesRequested": "変更が要求されました"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "リクエストは審査中です。承認されると通知されます。",
+        "inProgress": "リクエストが承認されました！このタスクに取り組むことができます。",
+        "submitted": "作業が提出されました。オーナーのレビュー待ちです。",
+        "validating": "変更がリクエストされました。修正して再提出してください。",
+        "accepted": "おめでとうございます！作業が承認されました。",
+        "rejected": "提出が却下されました。"
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}}がこのタスクに取り組むことをリクエストしました。リクエストを承認または却下してください。",
+        "inProgress": "{{workerName}}は現在このタスクに取り組んでいます。",
+        "submitted": "{{workerName}}がレビュー用に作業を提出しました。",
+        "validating": "{{workerName}}が修正して再提出するのを待っています。",
+        "accepted": "{{workerName}}の作業が承認されました。",
+        "rejected": "{{workerName}}の提出が却下されました。"
+      }
+    },
+    "actions": {
+      "submitForReview": "レビュー用に提出",
+      "withdrawSubmission": "提出を取り下げる",
+      "withdrawing": "取り下げ中...",
+      "reviseAndResubmit": "修正して再提出",
+      "approveRequest": "リクエストを承認",
+      "approving": "承認中...",
+      "rejectRequest": "リクエストを却下",
+      "rejecting": "却下中...",
+      "reviewAndAccept": "レビューして承認",
+      "requestChanges": "変更をリクエスト",
+      "reject": "却下"
+    },
+    "review": {
+      "title": "提出された作業をレビュー",
+      "description": "{{workerName}}の作業をレビュー",
+      "workerSolution": "ワーカーの解決策：",
+      "selfReviewScore": "自己評価：{{score}}/100",
+      "noSubmissionNotes": "提出メモは提供されていません",
+      "actionLabel": "アクション *",
+      "required": "*",
+      "optional": "（オプション）",
+      "feedbackLabel": "レビューフィードバック {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "必要な変更を説明してください",
+        "other": "ワーカーにコメントや提案を提供してください"
+      },
+      "editorPlaceholder": {
+        "validate": "必要な変更を説明してください...",
+        "other": "作業についてのフィードバックを提供してください..."
+      },
+      "managerReviewLabel": "マネージャーレビュー（オプション）",
+      "managerReviewDescription": "完成した作業の品質を評価してください",
+      "scorePoor": "0（悪い）",
+      "scoreExcellent": "100（優秀）",
+      "cancel": "キャンセル",
+      "submitting": "提出中...",
+      "acceptWork": "作業を承認",
+      "requestChangesButton": "変更をリクエスト",
+      "rejectWork": "作業を却下",
+      "actions": {
+        "accept": {
+          "title": "承認（タスクを完了としてマーク）",
+          "description": "作業を承認してタスクを完了します。ワーカーは報酬を獲得します。"
+        },
+        "requestChanges": {
+          "title": "変更をリクエスト",
+          "description": "ワーカーに作業を修正して再提出するよう依頼します。"
+        },
+        "reject": {
+          "title": "却下（タスクを再オープン）",
+          "description": "作業を完全に却下し、他の人のためにタスクを再オープンします。"
+        }
+      },
+      "messages": {
+        "accepted": "作業が承認され、タスクが完了としてマークされました",
+        "changesRequested": "変更がリクエストされました、ワーカーが修正します",
+        "rejected": "作業が却下され、タスクが再オープンされました",
+        "error": "レビューを提出できませんでした。もう一度お試しください。"
+      }
+    },
+    "submission": {
+      "title": "レビュー用に作業を提出",
+      "titleResubmit": "作業を修正して再提出",
+      "description": "{{taskName}}の解決策を説明し、検証のために提出してください。",
+      "solutionLabel": "解決策の説明 *",
+      "solutionDescription": "このタスクを完了するために何をしたかを説明してください。書式設定、リンク、リストをサポートしています。",
+      "solutionPlaceholder": "このタスクを完了するために何をしたかを説明してください...",
+      "selfReviewLabel": "自己評価（オプション）",
+      "selfReviewDescription": "0〜100のスケールで作業の品質を評価してください",
+      "scoreNeedsWork": "0（改善が必要）",
+      "scorePerfect": "100（完璧）",
+      "cancel": "キャンセル",
+      "submitting": "提出中...",
+      "submitButton": "レビュー用に提出",
+      "resubmitButton": "レビュー用に再提出",
+      "errors": {
+        "missingDescription": "作業の説明を提供してください",
+        "submitError": "作業を提出できませんでした。もう一度お試しください。"
+      },
+      "messages": {
+        "submitted": "作業がレビュー用に提出されました",
+        "resubmitted": "作業がレビュー用に再提出されました"
+      }
+    }
+  },
+  "notes": {
+    "updated": "メモが正常に更新されました",
+    "updateFailed": "メモの更新に失敗しました",
+    "deleted": "メモが正常に削除されました",
+    "deleteFailed": "メモの削除に失敗しました",
+    "deleting": "削除中...",
+    "confirmDelete": "このメモを削除してもよろしいですか？",
+    "content": "メモの内容",
+    "visibilityUpdated": "表示設定が正常に更新されました",
+    "visibilityUpdateFailed": "表示設定の更新に失敗しました",
+    "changeVisibility": "表示設定を変更",
+    "filters": {
+      "sort": "並び替え",
+      "date": "日付",
+      "mostRelevant": "最も関連性が高い",
+      "all": "すべて"
+    }
+  },
+  "chat": {
+    "title": "チャット",
+    "subtitle": "組織、チャンネル、ダイレクトメッセージ、スレッド。",
+    "anonymous": "匿名",
+    "directMessage": "ダイレクトメッセージ",
+    "deletedMessage": "メッセージが削除されました",
+    "deleteMessageTitle": "メッセージを削除しますか？",
+    "deleteMessageDescription": "これはメッセージをソフト削除し、会話履歴にプレースホルダーを残します。",
+    "createInviteLink": "招待リンクを作成",
+    "pendingInvites": "保留中の招待",
+    "acceptInvite": "承認",
+    "inviteFriendToOrg": "この組織に友達を招待",
+    "inviteLinkCopied": "招待リンクをコピーしました",
+    "inviteSent": "招待を送信しました",
+    "inviteAccepted": "招待を承認しました"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "グリッドレイアウト",
+      "tight": "高密度",
+      "small": "小",
+      "wide": "広い"
+    }
   }
 }

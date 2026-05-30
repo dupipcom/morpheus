@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { ChevronUp, ChevronDown } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils/utils'
 
 interface PercentageTickerProps {
   value: number // Percentage change value (can be positive or negative)

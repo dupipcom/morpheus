@@ -1,4 +1,6 @@
-import React from "react";
+'use client';
+
+import React, { useEffect, useState } from "react";
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
@@ -42,7 +44,7 @@ function getTimeAgo(date: Date): string {
 }
 
 interface ArticleCardGridProps {
-  posts: any[];
+  posts?: any[];
   locale: string;
   title?: string;
   limit?: number;
@@ -51,27 +53,8 @@ interface ArticleCardGridProps {
 // Helper function to get image URL
 function getImageUrl(image: any): string | null {
   if (!image) return null;
-  
-  // Handle different image structures
-  const imageUrl = typeof image === 'string' 
-    ? image 
-    : image?.sizes?.large?.url || image?.url || null;
-  
-  if (!imageUrl) return null;
-  
-  // If it's already a full URL, return as is
-  if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
-    return imageUrl;
-  }
-  
-  // If it's a relative path, prefix with base URL (image URL already includes /api/media/*)
-  const payloadApiUrl = process.env.PAYLOAD_API_URL || process.env.NEXT_PUBLIC_PAYLOAD_API_URL || '';
-  if (payloadApiUrl && imageUrl.startsWith('/')) {
-    // Remove /api from PAYLOAD_API_URL and prepend to image URL (which already has /api/media/*)
-    return `${payloadApiUrl.split('/api')[0]}${imageUrl}`;
-  }
-  
-  return imageUrl;
+
+  return process.env.NEXT_PUBLIC_PAYLOAD_URL + image?.url;
 }
 
 export default function ArticleCardGrid({ 
@@ -80,8 +63,38 @@ export default function ArticleCardGrid({
   title = "Related Posts",
   limit 
 }: ArticleCardGridProps) {
+  const [fetchedPosts, setFetchedPosts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    // If posts are provided via props, use those instead of fetching
+    if (posts && posts.length > 0) {
+      return;
+    }
+
+    // Fetch articles from API
+    setLoading(true);
+    fetch('/api/v1/magazine')
+      .then(res => res.json())
+      .then(data => {
+        setFetchedPosts(data.docs || []);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching articles:', error);
+        setLoading(false);
+      });
+  }, [posts]);
+
+  // Use provided posts or fetched posts
+  const allPosts = posts && posts.length > 0 ? posts : fetchedPosts;
+  
   // Apply limit if provided
-  const displayPosts = limit ? posts.slice(0, limit) : posts;
+  const displayPosts = limit ? allPosts.slice(0, limit) : allPosts;
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   if (!displayPosts || displayPosts.length === 0) {
     return null;
@@ -94,7 +107,7 @@ export default function ArticleCardGrid({
           const heroImageUrl = getImageUrl(post.heroImage);
           
           return (
-            <Link key={post.id} href={`/${locale}/articles/${post.slug}`}>
+            <Link key={post.id} href={`/${locale}/magazine/${post.slug}`}>
               <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer pt-0">
                 {heroImageUrl && (
                   <div className="relative w-full h-48 overflow-hidden rounded-t-xl">

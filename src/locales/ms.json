@@ -21,6 +21,7 @@
     "signInToAccess": "Log masuk untuk mengakses papan pemuka anda dan menjejaki kemajuan anda.",
     "dismiss": "Tutup",
     "accept": "Terima",
+    "all": "Semua",
     "pageAvailableIn": "Halaman ini tersedia dalam {locale}. Adakah anda ingin melihatnya dalam bahasa itu?",
     "selectLanguage": "Pilih bahasa",
     "dashboard": "Papan pemuka",
@@ -56,7 +57,10 @@
     "copyLink": "Salin pautan",
     "linkCopied": "Pautan disalin ke papan klip",
     "copyFailed": "Gagal menyalin pautan",
-    "saving": "Menyimpan..."
+    "saving": "Menyimpan...",
+    "decline": "Tolak",
+    "friendRequest": "Permintaan kawan",
+    "reverseOrder": "Terbalikkan urutan"
   },
   "navigation": {
     "dashboard": "Papan Pemuka",
@@ -86,7 +90,26 @@
     "yourMood": "Mood anda.",
     "yourProductivity": "Produktiviti anda.",
     "yourData": "Data anda.",
-    "yourBalance": "Wang anda."
+    "yourBalance": "Wang anda.",
+    "timeframe": {
+      "startDate": "Tarikh mula",
+      "endDate": "Tarikh tamat"
+    },
+    "me": "Data saya",
+    "selectDelegatedUser": "Pilih pengguna yang diwakilkan",
+    "analysis": {
+      "alltimeAnalysis": "Analisis sepanjang masa",
+      "dayAnalysis": "Analisis hari ini",
+      "last3daysAnalysis": "Analisis 3 hari lalu",
+      "weekAnalysis": "Analisis mingguan",
+      "yearAnalysis": "Analisis tahunan",
+      "gratitudeAnalysis": "Analisis kesyukuran",
+      "optimismAnalysis": "Analisis optimisme",
+      "restednessAnalysis": "Analisis tahap rehat",
+      "toleranceAnalysis": "Analisis toleransi",
+      "selfEsteemAnalysis": "Analisis harga diri",
+      "trustAnalysis": "Analisis kepercayaan"
+    }
   },
   "mood": {
     "title": "Rekod mood anda untuk {date}",
@@ -109,7 +132,26 @@
         "AI_ENABLED": "AI Enabled"
       },
       "action": "Publish Note",
-      "publishing": "Publishing..."
+      "publishing": "Menerbitkan...",
+      "embedHint": "Sematan {provider}. Jika main balik tidak tersedia, buka pautan asal di bawah."
+    },
+    "thirdParty": {
+      "title": "Pihak ketiga",
+      "settings": "Tetapan delegasi",
+      "activeDelegations": "Delegasi aktif",
+      "empty": "Tiada delegasi aktif.",
+      "identifierPlaceholder": "Nama pengguna, e-mel, atau ID pengguna",
+      "noFriendsFound": "Tiada persahabatan sepadan ditemui.",
+      "friendsHint": "Cadangan termasuk rakan anda. Anda juga boleh memasukkan mana-mana alamat e-mel.",
+      "scope": "Skop data",
+      "allScopes": "Semua skop",
+      "scopesSelected": "skop dipilih",
+      "minimumOneScope": "Sekurang-kurangnya satu skop mesti kekal dipilih.",
+      "scopeResolutionHint": "Jika berbilang skop dipilih, skop terluas yang dipilih akan digunakan.",
+      "addDelegatedAnalyst": "Tambah penganalisis yang diwakilkan",
+      "adding": "Menambah...",
+      "addError": "Tidak dapat menambah penganalisis yang diwakilkan",
+      "invitationDraft": "Draf jemputan disediakan untuk e-mel ini."
     }
   },
   "week": {
@@ -137,7 +179,11 @@
       "open": "Terbuka",
       "done": "Selesai",
       "ignored": "Diabaikan"
-    }
+    },
+    "edit": "Sunting",
+    "loadingForDate": "Memuatkan tugasan untuk tarikh yang dipilih...",
+    "initializingTasks": "Menyediakan tugasan anda...",
+    "noTasksForDate": "Tiada tugasan dijadualkan untuk tarikh ini"
   },
   "actions": {
     "drankWater": "Minum air",
@@ -227,10 +273,10 @@
   "errors": {
     "notFound": "Ups! Tidak dapat menala frekuensi ini.",
     "genericError": "Sesuatu yang salah berlaku. Sila cuba lagi.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "Gagal memuatkan nota",
+    "failedToLoadNotes": "Gagal memuatkan nota",
+    "failedToFetchTemplates": "Gagal memuatkan templat",
+    "failedToLoadTemplates": "Gagal memuatkan templat"
   },
   "social": {
     "title": "Kenalan Sosial",
@@ -316,9 +362,9 @@
     "cloning": "Mengklon...",
     "noPublicNotes": "Tiada nota awam tersedia lagi.",
     "noPublicTemplatesOrLists": "Tiada templat atau senarai awam tersedia lagi.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "Klon senarai",
+    "cloneListSuccess": "Senarai berjaya diklon!",
+    "cloneListFailed": "Gagal mengklon senarai"
   },
   "publicCharts": {
     "noData": "No public charts data available.",
@@ -344,7 +390,8 @@
     "closeFriend": "Rakan rapat",
     "friends": "Rakan-rakan",
     "signInToAdd": "Log masuk untuk menambah rakan",
-    "editProfile": "Edit profil"
+    "editProfile": "Edit profil",
+    "message": "Mesej"
   },
   "profile": {
     "editProfile": "Edit profil",
@@ -450,7 +497,9 @@
       "timesLabel": "# kali",
       "saveToTemplate": "Simpan tugas ke templat",
       "addTask": "Tambah Tugas",
-      "cancel": "Batal"
+      "cancel": "Batal",
+      "editTitle": "Sunting tugas",
+      "saveTask": "Simpan tugas"
     },
     "addListForm": {
       "titleCreate": "Cipta Senarai Baru",
@@ -526,6 +575,39 @@
       },
       "create": "Cipta",
       "cancel": "Batal"
+    },
+    "recurrencePicker": {
+      "frequency": "Ulang",
+      "every": "Setiap",
+      "day": "hari",
+      "days": "hari",
+      "week": "minggu",
+      "weeks": "minggu",
+      "month": "bulan",
+      "months": "bulan",
+      "year": "tahun",
+      "years": "tahun",
+      "noRepeat": "Tidak berulang",
+      "daily": "Harian",
+      "weekly": "Mingguan",
+      "monthly": "Bulanan",
+      "yearly": "Tahunan",
+      "repeatOn": "Ulang pada",
+      "monday": "Isn",
+      "tuesday": "Sel",
+      "wednesday": "Rab",
+      "thursday": "Kha",
+      "friday": "Jum",
+      "saturday": "Sab",
+      "sunday": "Ahd",
+      "dayOfMonth": "Hari dalam bulan",
+      "selectDay": "Pilih hari (1-31)",
+      "ends": "Berakhir",
+      "never": "Tidak pernah",
+      "onDate": "Pada tarikh",
+      "after": "Selepas",
+      "pickDate": "Pilih tarikh",
+      "occurrences": "kali"
     }
   },
   "charts": {
@@ -540,7 +622,10 @@
     "progress": "Kemajuan",
     "moodAverageScale": "Skala Purata Mood",
     "balance": "Baki",
-    "earningsScale": "Skala Pendapatan"
+    "earningsScale": "Skala Pendapatan",
+    "profit": "Keuntungan",
+    "stash": "Simpanan",
+    "withdrawn": "Dikeluarkan"
   },
   "socialView": {
     "activity": "Aktiviti",
@@ -614,5 +699,174 @@
     "deleteWallet": "Padam Dompet",
     "deleteWalletConfirmation": "Adakah anda pasti mahu memadam dompet ini? Tindakan ini tidak boleh dibatalkan. Dompet akan dikeluarkan daripada akaun anda, tetapi alamat blockchain dan dana akan kekal di blockchain.",
     "delete": "Padam"
+  },
+  "jobs": {
+    "history": "Sejarah Kerja",
+    "filterByStatus": "Tapis mengikut Status:",
+    "errorLoadingHistory": "Ralat memuatkan sejarah kerja",
+    "noHistoryFound": "Tiada sejarah kerja dijumpai",
+    "status": {
+      "requested": "Diminta",
+      "inProgress": "Dalam Proses",
+      "validating": "Mengesahkan",
+      "accepted": "Diterima",
+      "rejected": "Ditolak",
+      "submitted": "Dihantar",
+      "changesRequested": "Perubahan Diminta"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "Permintaan anda sedang dikaji. Anda akan dimaklumkan apabila diluluskan.",
+        "inProgress": "Permintaan anda telah diluluskan! Anda kini boleh bekerja pada tugas ini.",
+        "submitted": "Kerja anda telah diserahkan. Menunggu semakan daripada pemilik.",
+        "validating": "Perubahan telah diminta. Sila semak semula dan serahkan semula.",
+        "accepted": "Tahniah! Kerja anda telah diterima.",
+        "rejected": "Penyerahan anda telah ditolak."
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}} telah meminta untuk bekerja pada tugas ini. Luluskan atau tolak permintaan.",
+        "inProgress": "{{workerName}} sedang bekerja pada tugas ini.",
+        "submitted": "{{workerName}} telah menyerahkan kerja mereka untuk semakan.",
+        "validating": "Menunggu {{workerName}} untuk semak semula dan serahkan semula.",
+        "accepted": "Kerja {{workerName}} telah diterima.",
+        "rejected": "Penyerahan {{workerName}} telah ditolak."
+      }
+    },
+    "actions": {
+      "submitForReview": "Serahkan untuk Semakan",
+      "withdrawSubmission": "Tarik Balik Penyerahan",
+      "withdrawing": "Menarik balik...",
+      "reviseAndResubmit": "Semak Semula dan Serahkan Semula",
+      "approveRequest": "Luluskan Permintaan",
+      "approving": "Meluluskan...",
+      "rejectRequest": "Tolak Permintaan",
+      "rejecting": "Menolak...",
+      "reviewAndAccept": "Semak dan Terima",
+      "requestChanges": "Minta Perubahan",
+      "reject": "Tolak"
+    },
+    "review": {
+      "title": "Semak Kerja yang Diserahkan",
+      "description": "Semak kerja daripada {{workerName}}",
+      "workerSolution": "Penyelesaian Pekerja:",
+      "selfReviewScore": "Semakan Sendiri: {{score}}/100",
+      "noSubmissionNotes": "Tiada nota penyerahan disediakan",
+      "actionLabel": "Tindakan *",
+      "required": "*",
+      "optional": "(Pilihan)",
+      "feedbackLabel": "Maklum Balas Semakan {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "Jelaskan perubahan apa yang diperlukan",
+        "other": "Berikan komen atau cadangan untuk pekerja"
+      },
+      "editorPlaceholder": {
+        "validate": "Terangkan perubahan yang diperlukan...",
+        "other": "Berikan maklum balas tentang kerja..."
+      },
+      "managerReviewLabel": "Semakan Pengurus (Pilihan)",
+      "managerReviewDescription": "Nilaikan kualiti kerja yang telah siap",
+      "scorePoor": "0 (Lemah)",
+      "scoreExcellent": "100 (Cemerlang)",
+      "cancel": "Batal",
+      "submitting": "Menyerahkan...",
+      "acceptWork": "Terima Kerja",
+      "requestChangesButton": "Minta Perubahan",
+      "rejectWork": "Tolak Kerja",
+      "actions": {
+        "accept": {
+          "title": "Terima (Tanda tugas sebagai Selesai)",
+          "description": "Luluskan kerja dan selesaikan tugas. Pekerja mendapat ganjaran mereka."
+        },
+        "requestChanges": {
+          "title": "Minta Perubahan",
+          "description": "Minta pekerja untuk semak semula dan serahkan semula kerja mereka."
+        },
+        "reject": {
+          "title": "Tolak (Buka semula tugas)",
+          "description": "Tolak kerja sepenuhnya dan buka semula tugas untuk orang lain."
+        }
+      },
+      "messages": {
+        "accepted": "Kerja diterima dan tugas ditanda sebagai selesai",
+        "changesRequested": "Perubahan diminta, pekerja akan semak semula",
+        "rejected": "Kerja ditolak, tugas dibuka semula",
+        "error": "Tidak dapat menyerahkan semakan. Sila cuba lagi."
+      }
+    },
+    "submission": {
+      "title": "Serahkan Kerja untuk Semakan",
+      "titleResubmit": "Semak Semula dan Serahkan Semula Kerja",
+      "description": "Terangkan penyelesaian anda untuk {{taskName}} dan serahkan untuk pengesahan.",
+      "solutionLabel": "Keterangan Penyelesaian *",
+      "solutionDescription": "Jelaskan apa yang anda lakukan untuk menyelesaikan tugas ini. Menyokong pemformatan, pautan dan senarai.",
+      "solutionPlaceholder": "Jelaskan apa yang anda lakukan untuk menyelesaikan tugas ini...",
+      "selfReviewLabel": "Semakan Sendiri (Pilihan)",
+      "selfReviewDescription": "Nilaikan kualiti kerja anda pada skala 0-100",
+      "scoreNeedsWork": "0 (Perlu diperbaiki)",
+      "scorePerfect": "100 (Sempurna)",
+      "cancel": "Batal",
+      "submitting": "Menyerahkan...",
+      "submitButton": "Serahkan untuk Semakan",
+      "resubmitButton": "Serahkan Semula untuk Semakan",
+      "errors": {
+        "missingDescription": "Sila berikan keterangan kerja anda",
+        "submitError": "Tidak dapat menyerahkan kerja anda. Sila cuba lagi."
+      },
+      "messages": {
+        "submitted": "Kerja diserahkan untuk semakan",
+        "resubmitted": "Kerja diserahkan semula untuk semakan"
+      }
+    }
+  },
+  "notes": {
+    "updated": "Nota berjaya dikemaskini",
+    "updateFailed": "Gagal mengemaskini nota",
+    "deleted": "Nota berjaya dipadam",
+    "deleteFailed": "Gagal memadam nota",
+    "deleting": "Memadam...",
+    "confirmDelete": "Adakah anda pasti mahu memadam nota ini?",
+    "content": "Kandungan nota",
+    "visibilityUpdated": "Keterlihatan berjaya dikemaskini",
+    "visibilityUpdateFailed": "Gagal mengemaskini keterlihatan",
+    "changeVisibility": "Tukar keterlihatan",
+    "filters": {
+      "sort": "Isih",
+      "date": "Tarikh",
+      "mostRelevant": "Paling Relevan",
+      "all": "Semua"
+    }
+  },
+  "chat": {
+    "title": "Sembang",
+    "subtitle": "Organisasi, saluran, mesej langsung, dan utas.",
+    "anonymous": "Tanpa nama",
+    "directMessage": "Mesej langsung",
+    "deletedMessage": "Mesej dipadam",
+    "deleteMessageTitle": "Padam mesej?",
+    "deleteMessageDescription": "Ini akan memadam mesej secara lembut dan menyimpan pemegang tempat dalam sejarah perbualan.",
+    "createInviteLink": "Cipta pautan jemputan",
+    "pendingInvites": "Jemputan tertunda",
+    "acceptInvite": "Terima",
+    "inviteFriendToOrg": "Jemput rakan ke organisasi ini",
+    "inviteLinkCopied": "Pautan jemputan disalin",
+    "inviteSent": "Jemputan dihantar",
+    "inviteAccepted": "Jemputan diterima"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Susun atur grid",
+      "tight": "Padat",
+      "small": "Kecil",
+      "wide": "Luas"
+    }
   }
 }

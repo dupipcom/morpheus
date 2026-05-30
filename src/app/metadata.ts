@@ -81,6 +81,7 @@ export async function buildMetadata({
   const baseTitle = title || (defaultMetadata.title as any)?.default || localizedSiteName
   const resolvedTitle = baseTitle.includes(`· ${localizedSiteName}`) ? baseTitle : `${baseTitle} · ${localizedSiteName}`
   const resolvedDescription = description || localizedSiteDescription
+  const resolvedImage = image ? [image] : defaultImage
   const images = image ? [image] : ['/images/logo-social.jpg']
 
   return {

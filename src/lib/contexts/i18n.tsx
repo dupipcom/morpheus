@@ -6,6 +6,7 @@ import { type Locale } from '@/lib/i18n'
 
 interface I18nContextType {
   t: (key: string, params?: Record<string, string | number>) => string
+  hasTranslation: (key: string) => boolean
   formatDate: (date: Date) => string
   locale: Locale
   isLoading: boolean
@@ -19,10 +20,10 @@ interface I18nProviderProps {
 }
 
 export function I18nProvider({ children, locale }: I18nProviderProps) {
-  const { t, formatDate, isLoading } = useTranslations(locale)
+  const { t, hasTranslation, formatDate, isLoading } = useTranslations(locale)
 
   return (
-    <I18nContext.Provider value={{ t, formatDate, locale, isLoading }}>
+    <I18nContext.Provider value={{ t, hasTranslation, formatDate, locale, isLoading }}>
       {children}
     </I18nContext.Provider>
   )

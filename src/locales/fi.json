@@ -21,6 +21,7 @@
     "signInToAccess": "Kirjaudu sisään päästäksesi hallintapaneeliin ja seurataksesi edistymistäsi.",
     "dismiss": "Sulje",
     "accept": "Hyväksy",
+    "all": "Kaikki",
     "pageAvailableIn": "Tämä sivu on saatavilla kielellä {locale}. Haluatko tarkastella sitä kyseisellä kielellä?",
     "selectLanguage": "Valitse kieli",
     "dashboard": "Kojelauta",
@@ -56,7 +57,10 @@
     "copyLink": "Kopioi linkki",
     "linkCopied": "Linkki kopioitu leikepöydälle",
     "copyFailed": "Linkin kopiointi epäonnistui",
-    "saving": "Tallennetaan..."
+    "saving": "Tallennetaan...",
+    "decline": "Hylkää",
+    "friendRequest": "Kaveripyyntö",
+    "reverseOrder": "Käänteinen järjestys"
   },
   "navigation": {
     "dashboard": "Kojelauta",
@@ -86,7 +90,26 @@
     "yourMood": "Mielialasi.",
     "yourProductivity": "Tuottavuutesi.",
     "yourData": "Tietosi.",
-    "yourBalance": "Rahasi."
+    "yourBalance": "Rahasi.",
+    "timeframe": {
+      "startDate": "Alkamispäivä",
+      "endDate": "Päättymispäivä"
+    },
+    "me": "Tietoni",
+    "selectDelegatedUser": "Valitse delegoitu käyttäjä",
+    "analysis": {
+      "alltimeAnalysis": "Koko ajan analyysi",
+      "dayAnalysis": "Tämän päivän analyysi",
+      "last3daysAnalysis": "Viimeisten 3 päivän analyysi",
+      "weekAnalysis": "Viikkoanalyysi",
+      "yearAnalysis": "Vuoden analyysi",
+      "gratitudeAnalysis": "Kiitollisuusanalyysi",
+      "optimismAnalysis": "Optimismianalyysi",
+      "restednessAnalysis": "Levänneisyyden analyysi",
+      "toleranceAnalysis": "Suvaitsevaisuusanalyysi",
+      "selfEsteemAnalysis": "Itsetuntoanalyysi",
+      "trustAnalysis": "Luottamusanalyysi"
+    }
   },
   "mood": {
     "title": "Kirjaa mielialasi {date} päivälle",
@@ -109,7 +132,26 @@
         "AI_ENABLED": "AI käytössä"
       },
       "action": "Julkaise muistiinpano",
-      "publishing": "Publishing..."
+      "publishing": "Julkaistaan...",
+      "embedHint": "{provider}-upotus. Jos toisto ei ole käytettävissä, avaa alla oleva alkuperäinen linkki."
+    },
+    "thirdParty": {
+      "title": "Kolmas osapuoli",
+      "settings": "Delegointiasetukset",
+      "activeDelegations": "Aktiiviset delegoinnit",
+      "empty": "Ei aktiivisia delegointeja.",
+      "identifierPlaceholder": "Käyttäjänimi, sähköposti tai käyttäjätunnus",
+      "noFriendsFound": "Vastaavia ystävyyksiä ei löytynyt.",
+      "friendsHint": "Ehdotuksiin sisältyvät ystäväsi. Voit myös syöttää minkä tahansa sähköpostiosoitteen.",
+      "scope": "Tietolaajuus",
+      "allScopes": "Kaikki laajuudet",
+      "scopesSelected": "laajuutta valittu",
+      "minimumOneScope": "Vähintään yhden laajuuden on pysyttävä valittuna.",
+      "scopeResolutionHint": "Jos useita laajuuksia on valittu, käytetään laajinta valittua laajuutta.",
+      "addDelegatedAnalyst": "Lisää delegoitu analyytikko",
+      "adding": "Lisätään...",
+      "addError": "Delegoidun analyytikon lisääminen ei onnistunut",
+      "invitationDraft": "Tälle sähköpostille valmisteltiin kutsuluonnos."
     }
   },
   "week": {
@@ -137,7 +179,11 @@
       "open": "Avoin",
       "done": "Valmis",
       "ignored": "Sivuutettu"
-    }
+    },
+    "edit": "Muokkaa",
+    "loadingForDate": "Ladataan tehtäviä valitulle päivämäärälle...",
+    "initializingTasks": "Asetetaan tehtäviäsi...",
+    "noTasksForDate": "Tälle päivämäärälle ei ole suunniteltuja tehtäviä"
   },
   "actions": {
     "drankWater": "Joi vettä",
@@ -227,10 +273,10 @@
   "errors": {
     "notFound": "Hups! Ei voitu virittää tätä taajuutta.",
     "genericError": "Jokin meni pieleen. Yritä uudelleen.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "Muistiinpanojen lataaminen epäonnistui",
+    "failedToLoadNotes": "Muistiinpanojen lataaminen epäonnistui",
+    "failedToFetchTemplates": "Mallien lataaminen epäonnistui",
+    "failedToLoadTemplates": "Mallien lataaminen epäonnistui"
   },
   "social": {
     "title": "Sosiaaliset yhteystiedot",
@@ -316,9 +362,9 @@
     "cloning": "Kloonataan...",
     "noPublicNotes": "Julkisia muistiinpanoja ei ole vielä saatavilla.",
     "noPublicTemplatesOrLists": "Julkisia malleja tai listoja ei ole vielä saatavilla.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "Kloonaa luettelo",
+    "cloneListSuccess": "Luettelo kloonattu onnistuneesti!",
+    "cloneListFailed": "Luettelon kloonaus epäonnistui"
   },
   "publicCharts": {
     "noData": "Julkisia kaaviotietoja ei ole saatavilla.",
@@ -344,7 +390,8 @@
     "closeFriend": "Läheinen ystävä",
     "friends": "Ystävät",
     "signInToAdd": "Kirjaudu sisään lisätäksesi ystävän",
-    "editProfile": "Muokkaa profiilia"
+    "editProfile": "Muokkaa profiilia",
+    "message": "Viesti"
   },
   "profile": {
     "editProfile": "Muokkaa profiilia",
@@ -450,7 +497,9 @@
       "timesLabel": "# kertaa",
       "saveToTemplate": "Tallenna tehtävä malliksi",
       "addTask": "Lisää tehtävä",
-      "cancel": "Peruuta"
+      "cancel": "Peruuta",
+      "editTitle": "Muokkaa tehtävää",
+      "saveTask": "Tallenna tehtävä"
     },
     "addListForm": {
       "titleCreate": "Luo uusi lista",
@@ -526,6 +575,39 @@
       },
       "create": "Luo",
       "cancel": "Peruuta"
+    },
+    "recurrencePicker": {
+      "frequency": "Toista",
+      "every": "Joka",
+      "day": "päivä",
+      "days": "päivää",
+      "week": "viikko",
+      "weeks": "viikkoa",
+      "month": "kuukausi",
+      "months": "kuukautta",
+      "year": "vuosi",
+      "years": "vuotta",
+      "noRepeat": "Ei toistoa",
+      "daily": "Päivittäin",
+      "weekly": "Viikoittain",
+      "monthly": "Kuukausittain",
+      "yearly": "Vuosittain",
+      "repeatOn": "Toista",
+      "monday": "Ma",
+      "tuesday": "Ti",
+      "wednesday": "Ke",
+      "thursday": "To",
+      "friday": "Pe",
+      "saturday": "La",
+      "sunday": "Su",
+      "dayOfMonth": "Kuukauden päivä",
+      "selectDay": "Valitse päivä (1-31)",
+      "ends": "Päättyy",
+      "never": "Ei koskaan",
+      "onDate": "Päivänä",
+      "after": "Jälkeen",
+      "pickDate": "Valitse päivämäärä",
+      "occurrences": "toistoa"
     }
   },
   "charts": {
@@ -540,7 +622,10 @@
     "progress": "Edistyminen",
     "moodAverageScale": "Mielialan keskiarvon asteikko",
     "balance": "Saldo",
-    "earningsScale": "Tulojen asteikko"
+    "earningsScale": "Tulojen asteikko",
+    "profit": "Voitto",
+    "stash": "Varasto",
+    "withdrawn": "Nostettu"
   },
   "socialView": {
     "activity": "Aktiviteetti",
@@ -614,5 +699,174 @@
     "deleteWallet": "Poista Lompakko",
     "deleteWalletConfirmation": "Haluatko varmasti poistaa tämän lompakon? Tätä toimintoa ei voi perua. Lompakko poistetaan tililtäsi, mutta blockchain-osoite ja sen varat pysyvät blockchainissa.",
     "delete": "Poista"
+  },
+  "jobs": {
+    "history": "Työhistoria",
+    "filterByStatus": "Suodata Tilan Mukaan:",
+    "errorLoadingHistory": "Virhe työhistorian lataamisessa",
+    "noHistoryFound": "Työhistoriaa ei löytynyt",
+    "status": {
+      "requested": "Pyydetty",
+      "inProgress": "Käynnissä",
+      "validating": "Vahvistetaan",
+      "accepted": "Hyväksytty",
+      "rejected": "Hylätty",
+      "submitted": "Lähetetty",
+      "changesRequested": "Muutoksia pyydetty"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "Pyyntöäsi tarkistetaan. Saat ilmoituksen, kun se hyväksytään.",
+        "inProgress": "Pyyntösi hyväksyttiin! Voit nyt työskennellä tämän tehtävän parissa.",
+        "submitted": "Työsi on lähetetty. Odotetaan omistajan tarkistusta.",
+        "validating": "Muutoksia on pyydetty. Ole hyvä ja tarkista ja lähetä uudelleen.",
+        "accepted": "Onnittelut! Työsi hyväksyttiin.",
+        "rejected": "Lähetyksesi hylättiin."
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}} on pyytänyt työskennellä tämän tehtävän parissa. Hyväksy tai hylkää pyyntö.",
+        "inProgress": "{{workerName}} työskentelee tällä hetkellä tämän tehtävän parissa.",
+        "submitted": "{{workerName}} on lähettänyt työnsä tarkistettavaksi.",
+        "validating": "Odotetaan, että {{workerName}} tarkistaa ja lähettää uudelleen.",
+        "accepted": "{{workerName}}n työ hyväksyttiin.",
+        "rejected": "{{workerName}}n lähetys hylättiin."
+      }
+    },
+    "actions": {
+      "submitForReview": "Lähetä Tarkistettavaksi",
+      "withdrawSubmission": "Peruuta Lähetys",
+      "withdrawing": "Peruutetaan...",
+      "reviseAndResubmit": "Tarkista ja Lähetä Uudelleen",
+      "approveRequest": "Hyväksy Pyyntö",
+      "approving": "Hyväksytään...",
+      "rejectRequest": "Hylkää Pyyntö",
+      "rejecting": "Hylätään...",
+      "reviewAndAccept": "Tarkista ja Hyväksy",
+      "requestChanges": "Pyydä Muutoksia",
+      "reject": "Hylkää"
+    },
+    "review": {
+      "title": "Tarkista Lähetetty Työ",
+      "description": "Tarkista työ käyttäjältä {{workerName}}",
+      "workerSolution": "Työntekijän Ratkaisu:",
+      "selfReviewScore": "Itsearviointi: {{score}}/100",
+      "noSubmissionNotes": "Lähetysmuistiinpanoja ei annettu",
+      "actionLabel": "Toiminto *",
+      "required": "*",
+      "optional": "(Valinnainen)",
+      "feedbackLabel": "Tarkistuspalaute {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "Selitä, mitä muutoksia tarvitaan",
+        "other": "Anna kommentteja tai ehdotuksia työntekijälle"
+      },
+      "editorPlaceholder": {
+        "validate": "Kuvaile tarvittavat muutokset...",
+        "other": "Anna palautetta työstä..."
+      },
+      "managerReviewLabel": "Esimiehen Arviointi (Valinnainen)",
+      "managerReviewDescription": "Arvioi valmiin työn laatu",
+      "scorePoor": "0 (Huono)",
+      "scoreExcellent": "100 (Erinomainen)",
+      "cancel": "Peruuta",
+      "submitting": "Lähetetään...",
+      "acceptWork": "Hyväksy Työ",
+      "requestChangesButton": "Pyydä Muutoksia",
+      "rejectWork": "Hylkää Työ",
+      "actions": {
+        "accept": {
+          "title": "Hyväksy (Merkitse tehtävä Valmiiksi)",
+          "description": "Hyväksy työ ja viimeistele tehtävä. Työntekijä ansaitsee palkintonsa."
+        },
+        "requestChanges": {
+          "title": "Pyydä Muutoksia",
+          "description": "Pyydä työntekijää tarkistamaan ja lähettämään työnsä uudelleen."
+        },
+        "reject": {
+          "title": "Hylkää (Avaa tehtävä uudelleen)",
+          "description": "Hylkää työ kokonaan ja avaa tehtävä uudelleen muille."
+        }
+      },
+      "messages": {
+        "accepted": "Työ hyväksytty ja tehtävä merkitty valmiiksi",
+        "changesRequested": "Muutoksia pyydetty, työntekijä tarkistaa",
+        "rejected": "Työ hylätty, tehtävä avattu uudelleen",
+        "error": "Tarkistusta ei voitu lähettää. Yritä uudelleen."
+      }
+    },
+    "submission": {
+      "title": "Lähetä Työ Tarkistettavaksi",
+      "titleResubmit": "Tarkista ja Lähetä Työ Uudelleen",
+      "description": "Kuvaile ratkaisusi tehtävään {{taskName}} ja lähetä validoitavaksi.",
+      "solutionLabel": "Ratkaisun Kuvaus *",
+      "solutionDescription": "Selitä, mitä teit tämän tehtävän suorittamiseksi. Tukee muotoilua, linkkejä ja luetteloita.",
+      "solutionPlaceholder": "Selitä, mitä teit tämän tehtävän suorittamiseksi...",
+      "selfReviewLabel": "Itsearviointi (Valinnainen)",
+      "selfReviewDescription": "Arvioi työsi laatu asteikolla 0-100",
+      "scoreNeedsWork": "0 (Vaatii työtä)",
+      "scorePerfect": "100 (Täydellinen)",
+      "cancel": "Peruuta",
+      "submitting": "Lähetetään...",
+      "submitButton": "Lähetä Tarkistettavaksi",
+      "resubmitButton": "Lähetä Uudelleen Tarkistettavaksi",
+      "errors": {
+        "missingDescription": "Anna työsi kuvaus",
+        "submitError": "Työtäsi ei voitu lähettää. Yritä uudelleen."
+      },
+      "messages": {
+        "submitted": "Työ lähetetty tarkistettavaksi",
+        "resubmitted": "Työ lähetetty uudelleen tarkistettavaksi"
+      }
+    }
+  },
+  "notes": {
+    "updated": "Muistiinpano päivitetty onnistuneesti",
+    "updateFailed": "Muistiinpanon päivittäminen epäonnistui",
+    "deleted": "Muistiinpano poistettu onnistuneesti",
+    "deleteFailed": "Muistiinpanon poistaminen epäonnistui",
+    "deleting": "Poistetaan...",
+    "confirmDelete": "Haluatko varmasti poistaa tämän muistiinpanon?",
+    "content": "Muistiinpanon sisältö",
+    "visibilityUpdated": "Näkyvyys päivitetty onnistuneesti",
+    "visibilityUpdateFailed": "Näkyvyyden päivittäminen epäonnistui",
+    "changeVisibility": "Muuta näkyvyyttä",
+    "filters": {
+      "sort": "Lajittele",
+      "date": "Päivämäärä",
+      "mostRelevant": "Relevantein",
+      "all": "Kaikki"
+    }
+  },
+  "chat": {
+    "title": "Keskustelu",
+    "subtitle": "Organisaatiot, kanavat, suorat viestit ja ketjut.",
+    "anonymous": "Anonyymi",
+    "directMessage": "Suora viesti",
+    "deletedMessage": "Viesti poistettu",
+    "deleteMessageTitle": "Poistetaanko viesti?",
+    "deleteMessageDescription": "Tämä poistaa viestin pehmeästi ja säilyttää paikkamerkin keskusteluhistoriassa.",
+    "createInviteLink": "Luo kutsulinki",
+    "pendingInvites": "Odottavat kutsut",
+    "acceptInvite": "Hyväksy",
+    "inviteFriendToOrg": "Kutsu ystävä tähän organisaatioon",
+    "inviteLinkCopied": "Kutsulinki kopioitu",
+    "inviteSent": "Kutsu lähetetty",
+    "inviteAccepted": "Kutsu hyväksytty"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Ruudukkoasettelu",
+      "tight": "Tiivis",
+      "small": "Pieni",
+      "wide": "Leveä"
+    }
   }
 }

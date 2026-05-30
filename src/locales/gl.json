@@ -24,6 +24,7 @@
     "signInToAccess": "Inicia sesión para acceder ao teu panel e seguir o teu progreso.",
     "dismiss": "Pechar",
     "accept": "Aceptar",
+    "all": "Todo",
     "pageAvailableIn": "Esta páxina está dispoñible en {locale}. Queres visualizala nese idioma?",
     "selectLanguage": "Seleccionar idioma",
     "manageAccount": "Xestionar a miña conta",
@@ -56,7 +57,10 @@
     "copyLink": "Copiar ligazón",
     "linkCopied": "Ligazón copiada ao portapapeis",
     "copyFailed": "Erro ao copiar a ligazón",
-    "saving": "Gardando..."
+    "saving": "Gardando...",
+    "decline": "Rexeitar",
+    "friendRequest": "Solicitude de amizade",
+    "reverseOrder": "Orde inversa"
   },
   "navigation": {
     "home": "Inicio",
@@ -85,7 +89,26 @@
     "yourMood": "O teu estado de ánimo.",
     "yourProductivity": "A túa produtividade.",
     "yourData": "Os teus datos.",
-    "yourBalance": "O teu diñeiro."
+    "yourBalance": "O teu diñeiro.",
+    "timeframe": {
+      "startDate": "Data de inicio",
+      "endDate": "Data de fin"
+    },
+    "me": "Os meus datos",
+    "selectDelegatedUser": "Seleccionar usuario delegado",
+    "analysis": {
+      "alltimeAnalysis": "Análise de todo o tempo",
+      "dayAnalysis": "Análise de hoxe",
+      "last3daysAnalysis": "Análise dos últimos 3 días",
+      "weekAnalysis": "Análise semanal",
+      "yearAnalysis": "Análise anual",
+      "gratitudeAnalysis": "Análise de gratitude",
+      "optimismAnalysis": "Análise de optimismo",
+      "restednessAnalysis": "Análise de descanso",
+      "toleranceAnalysis": "Análise de tolerancia",
+      "selfEsteemAnalysis": "Análise de autoestima",
+      "trustAnalysis": "Análise de confianza"
+    }
   },
   "mood": {
     "title": "Rexistra o teu estado de ánimo para {date}",
@@ -108,7 +131,26 @@
         "AI_ENABLED": "IA habilitada"
       },
       "action": "Publicar nota",
-      "publishing": "Publishing..."
+      "publishing": "Publicando...",
+      "embedHint": "Inserción de {provider}. Se a reprodución non está dispoñible, abre a ligazón orixinal a continuación."
+    },
+    "thirdParty": {
+      "title": "Terceiros",
+      "settings": "Configuración de delegación",
+      "activeDelegations": "Delegacións activas",
+      "empty": "Non hai delegacións activas.",
+      "identifierPlaceholder": "Nome de usuario, correo electrónico ou ID de usuario",
+      "noFriendsFound": "Non se atoparon amizades coincidentes.",
+      "friendsHint": "As suxestións inclúen os teus amigos. Tamén podes introducir calquera enderezo de correo electrónico.",
+      "scope": "Alcance de datos",
+      "allScopes": "Todos os alcances",
+      "scopesSelected": "alcances seleccionados",
+      "minimumOneScope": "Polo menos un alcance debe permanecer seleccionado.",
+      "scopeResolutionHint": "Se se seleccionan varios alcances, aplícase o alcance seleccionado máis amplo.",
+      "addDelegatedAnalyst": "Engadir analista delegado",
+      "adding": "Engadindo...",
+      "addError": "Non se puido engadir o analista delegado",
+      "invitationDraft": "Preparouse un borrador de invitación para este correo electrónico."
     }
   },
   "week": {
@@ -136,7 +178,11 @@
       "open": "Aberto",
       "done": "Feito",
       "ignored": "Ignorado"
-    }
+    },
+    "edit": "Editar",
+    "loadingForDate": "Cargando tarefas para a data seleccionada...",
+    "initializingTasks": "Configurando as túas tarefas...",
+    "noTasksForDate": "Non hai tarefas programadas para esta data"
   },
   "actions": {
     "drankWater": "Bebeu auga",
@@ -226,10 +272,10 @@
   "errors": {
     "notFound": "Ups! Non se puido sintonizar esta frecuencia.",
     "genericError": "Algo saiu mal. Por favor, inténtao de novo.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "Erro ao cargar as notas",
+    "failedToLoadNotes": "Erro ao cargar as notas",
+    "failedToFetchTemplates": "Erro ao cargar os modelos",
+    "failedToLoadTemplates": "Erro ao cargar os modelos"
   },
   "social": {
     "title": "Contactos sociais",
@@ -315,9 +361,9 @@
     "cloning": "Clonando...",
     "noPublicNotes": "Aínda non hai notas públicas dispoñibles.",
     "noPublicTemplatesOrLists": "Aínda non hai modelos ou listas públicas dispoñibles.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "Clonar lista",
+    "cloneListSuccess": "Lista clonada correctamente!",
+    "cloneListFailed": "Erro ao clonar a lista"
   },
   "publicCharts": {
     "noData": "Non hai datos de gráficos públicos dispoñibles.",
@@ -343,7 +389,8 @@
     "closeFriend": "Amigo próximo",
     "friends": "Amigos",
     "signInToAdd": "Inicia sesión para engadir un amigo",
-    "editProfile": "Editar perfil"
+    "editProfile": "Editar perfil",
+    "message": "Mensaxe"
   },
   "profile": {
     "editProfile": "Editar perfil",
@@ -449,7 +496,9 @@
       "timesLabel": "# veces",
       "saveToTemplate": "Gardar tarefa como modelo",
       "addTask": "Engadir tarefa",
-      "cancel": "Cancelar"
+      "cancel": "Cancelar",
+      "editTitle": "Editar tarefa",
+      "saveTask": "Gardar tarefa"
     },
     "addListForm": {
       "titleCreate": "Crear nova lista",
@@ -525,6 +574,39 @@
       },
       "create": "Crear",
       "cancel": "Cancelar"
+    },
+    "recurrencePicker": {
+      "frequency": "Repetir",
+      "every": "Cada",
+      "day": "día",
+      "days": "días",
+      "week": "semana",
+      "weeks": "semanas",
+      "month": "mes",
+      "months": "meses",
+      "year": "ano",
+      "years": "anos",
+      "noRepeat": "Non se repite",
+      "daily": "Diariamente",
+      "weekly": "Semanalmente",
+      "monthly": "Mensualmente",
+      "yearly": "Anualmente",
+      "repeatOn": "Repetir o",
+      "monday": "Lun",
+      "tuesday": "Mar",
+      "wednesday": "Mér",
+      "thursday": "Xov",
+      "friday": "Ven",
+      "saturday": "Sáb",
+      "sunday": "Dom",
+      "dayOfMonth": "Día do mes",
+      "selectDay": "Selecciona día (1-31)",
+      "ends": "Remata",
+      "never": "Nunca",
+      "onDate": "O día",
+      "after": "Despois",
+      "pickDate": "Escolle unha data",
+      "occurrences": "ocorrencias"
     }
   },
   "charts": {
@@ -539,7 +621,10 @@
     "progress": "Progreso",
     "moodAverageScale": "Escala media do estado de ánimo",
     "balance": "Saldo",
-    "earningsScale": "Escala de ganancias"
+    "earningsScale": "Escala de ganancias",
+    "profit": "Beneficio",
+    "stash": "Reserva",
+    "withdrawn": "Retirado"
   },
   "socialView": {
     "activity": "Actividade",
@@ -613,5 +698,174 @@
     "deleteWallet": "Eliminar Carteira",
     "deleteWalletConfirmation": "Estás seguro de que queres eliminar esta carteira? Esta acción non se pode desfacer. A carteira eliminarase da túa conta, pero o enderezo blockchain e os seus fondos permanecerán no blockchain.",
     "delete": "Eliminar"
+  },
+  "jobs": {
+    "history": "Historial de Traballos",
+    "filterByStatus": "Filtrar por Estado:",
+    "errorLoadingHistory": "Erro ao cargar o historial de traballos",
+    "noHistoryFound": "Non se atopou historial de traballos",
+    "status": {
+      "requested": "Solicitado",
+      "inProgress": "En Progreso",
+      "validating": "Validando",
+      "accepted": "Aceptado",
+      "rejected": "Rexeitado",
+      "submitted": "Enviado",
+      "changesRequested": "Cambios solicitados"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "A súa solicitude está sendo revisada. Será notificado cando sexa aprobada.",
+        "inProgress": "A súa solicitude foi aprobada! Agora pode traballar nesta tarefa.",
+        "submitted": "O seu traballo foi enviado. Agardando revisión do propietario.",
+        "validating": "Solicitáronse cambios. Por favor, revise e volva enviar.",
+        "accepted": "Parabéns! O seu traballo foi aceptado.",
+        "rejected": "A súa presentación foi rexeitada."
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}} solicitou traballar nesta tarefa. Aprobar ou rexeitar a solicitude.",
+        "inProgress": "{{workerName}} está traballando actualmente nesta tarefa.",
+        "submitted": "{{workerName}} enviou o seu traballo para revisión.",
+        "validating": "Agardando a que {{workerName}} revise e volva enviar.",
+        "accepted": "O traballo de {{workerName}} foi aceptado.",
+        "rejected": "A presentación de {{workerName}} foi rexeitada."
+      }
+    },
+    "actions": {
+      "submitForReview": "Enviar para Revisión",
+      "withdrawSubmission": "Retirar Presentación",
+      "withdrawing": "Retirando...",
+      "reviseAndResubmit": "Revisar e Volver Enviar",
+      "approveRequest": "Aprobar Solicitude",
+      "approving": "Aprobando...",
+      "rejectRequest": "Rexeitar Solicitude",
+      "rejecting": "Rexeitando...",
+      "reviewAndAccept": "Revisar e Aceptar",
+      "requestChanges": "Solicitar Cambios",
+      "reject": "Rexeitar"
+    },
+    "review": {
+      "title": "Revisar Traballo Enviado",
+      "description": "Revisar traballo de {{workerName}}",
+      "workerSolution": "Solución do Traballador:",
+      "selfReviewScore": "Auto-Avaliación: {{score}}/100",
+      "noSubmissionNotes": "Non se proporcionaron notas de presentación",
+      "actionLabel": "Acción *",
+      "required": "*",
+      "optional": "(Opcional)",
+      "feedbackLabel": "Comentarios da Revisión {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "Explique que cambios son necesarios",
+        "other": "Proporcione comentarios ou suxestións para o traballador"
+      },
+      "editorPlaceholder": {
+        "validate": "Describa os cambios necesarios...",
+        "other": "Proporcione comentarios sobre o traballo..."
+      },
+      "managerReviewLabel": "Revisión do Xestor (Opcional)",
+      "managerReviewDescription": "Avaliar a calidade do traballo completado",
+      "scorePoor": "0 (Pobre)",
+      "scoreExcellent": "100 (Excelente)",
+      "cancel": "Cancelar",
+      "submitting": "Enviando...",
+      "acceptWork": "Aceptar Traballo",
+      "requestChangesButton": "Solicitar Cambios",
+      "rejectWork": "Rexeitar Traballo",
+      "actions": {
+        "accept": {
+          "title": "Aceptar (Marcar tarefa como Feita)",
+          "description": "Aprobar o traballo e completar a tarefa. O traballador gaña a súa recompensa."
+        },
+        "requestChanges": {
+          "title": "Solicitar Cambios",
+          "description": "Pedirlle ao traballador que revise e volva enviar o seu traballo."
+        },
+        "reject": {
+          "title": "Rexeitar (Reabrir tarefa)",
+          "description": "Rexeitar o traballo completamente e reabrir a tarefa para outros."
+        }
+      },
+      "messages": {
+        "accepted": "Traballo aceptado e tarefa marcada como completa",
+        "changesRequested": "Cambios solicitados, o traballador revisará",
+        "rejected": "Traballo rexeitado, tarefa reaberta",
+        "error": "Non se puido enviar a revisión. Por favor, ténteo de novo."
+      }
+    },
+    "submission": {
+      "title": "Enviar Traballo para Revisión",
+      "titleResubmit": "Revisar e Volver Enviar Traballo",
+      "description": "Describa a súa solución para {{taskName}} e envíe para validación.",
+      "solutionLabel": "Descrición da Solución *",
+      "solutionDescription": "Explique o que fixo para completar esta tarefa. Admite formato, ligazóns e listas.",
+      "solutionPlaceholder": "Explique o que fixo para completar esta tarefa...",
+      "selfReviewLabel": "Auto-Avaliación (Opcional)",
+      "selfReviewDescription": "Avaliar a calidade do seu traballo nunha escala de 0-100",
+      "scoreNeedsWork": "0 (Precisa traballo)",
+      "scorePerfect": "100 (Perfecto)",
+      "cancel": "Cancelar",
+      "submitting": "Enviando...",
+      "submitButton": "Enviar para Revisión",
+      "resubmitButton": "Volver Enviar para Revisión",
+      "errors": {
+        "missingDescription": "Por favor, proporcione unha descrición do seu traballo",
+        "submitError": "Non se puido enviar o seu traballo. Por favor, ténteo de novo."
+      },
+      "messages": {
+        "submitted": "Traballo enviado para revisión",
+        "resubmitted": "Traballo reenviado para revisión"
+      }
+    }
+  },
+  "notes": {
+    "updated": "Nota actualizada correctamente",
+    "updateFailed": "Non se puido actualizar a nota",
+    "deleted": "Nota eliminada correctamente",
+    "deleteFailed": "Non se puido eliminar a nota",
+    "deleting": "Eliminando...",
+    "confirmDelete": "Tes a certeza de que queres eliminar esta nota?",
+    "content": "Contido da nota",
+    "visibilityUpdated": "Visibilidade actualizada correctamente",
+    "visibilityUpdateFailed": "Non se puido actualizar a visibilidade",
+    "changeVisibility": "Cambiar visibilidade",
+    "filters": {
+      "sort": "Ordenar",
+      "date": "Data",
+      "mostRelevant": "Máis relevante",
+      "all": "Todo"
+    }
+  },
+  "chat": {
+    "title": "Conversa",
+    "subtitle": "Organizacións, canles, mensaxes directas e fíos.",
+    "anonymous": "Anónimo",
+    "directMessage": "Mensaxe directa",
+    "deletedMessage": "Mensaxe eliminada",
+    "deleteMessageTitle": "Eliminar mensaxe?",
+    "deleteMessageDescription": "Isto eliminará a mensaxe de forma suave e manterá un marcador no historial de conversación.",
+    "createInviteLink": "Crear ligazón de convite",
+    "pendingInvites": "Convites pendentes",
+    "acceptInvite": "Aceptar",
+    "inviteFriendToOrg": "Convidar un amigo a esta organización",
+    "inviteLinkCopied": "Ligazón de convite copiada",
+    "inviteSent": "Convite enviado",
+    "inviteAccepted": "Convite aceptado"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Deseño de grella",
+      "tight": "Axustado",
+      "small": "Pequeno",
+      "wide": "Amplo"
+    }
   }
 }

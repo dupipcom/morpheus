@@ -17,12 +17,12 @@ import { getWeekNumber } from "@/app/helpers"
 import { DAILY_ACTIONS, WEEKS } from "@/app/constants"
 
 import { GlobalContext } from "@/lib/contexts"
-import { setLoginTime, getLoginTime } from '@/lib/cookieManager'
+import { setLoginTime, getLoginTime } from '@/lib/utils/cookieManager'
 import { useI18n } from "@/lib/contexts/i18n"
+import { waitForListInContext } from '@/lib/utils/taskUtils'
 
 // Allow streaming responses up to 60 seconds
 export const maxDuration = 60;
-export const dynamic = "force-dynamic"
 
 // Helper function to format date in local timezone (YYYY-MM-DD)
 const formatDateLocal = (date: Date): string => {
@@ -367,6 +367,8 @@ export default function LocalizedDoWithListId({ params }: { params: Promise<{ lo
           onListCreated={async (newListId) => {
             await refreshTaskLists()
             if (newListId) {
+              // Wait for the new list to appear in the context
+              await waitForListInContext(newListId, () => contextTaskLists || [])
               handleListChange(newListId)
             }
             // The useEffect above will handle selecting the first list if the deleted list was selected

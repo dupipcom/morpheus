@@ -1,11 +1,12 @@
 'use client'
 
 import React from 'react'
-import { useContext, useEffect, useRef, useState, useMemo } from 'react'
+import { useContext, useEffect, useRef, useState, useMemo, useCallback } from 'react'
 import { GlobalContext } from '@/lib/contexts'
 import { AddTaskForm } from '@/views/forms/addTaskForm'
 import { AddListForm } from '@/views/forms/addListForm'
 import { AddTemplateForm } from '@/views/forms/addTemplateForm'
+import { useOptimisticUpdates } from '@/lib/hooks/useOptimisticUpdates'
 
 import { ViewMenu } from '@/components/viewMenu'
 import { MoodView } from '@/views/moodView'
@@ -49,18 +50,28 @@ export const DoView = ({
   onListCreated?: (newListId?: string) => Promise<void> | void
   onTemplateCreated?: () => Promise<void> | void
 }) => {
-  const { refreshTaskLists, taskLists: contextTaskLists, session } = useContext(GlobalContext)
+  const { refreshTaskLists, taskLists: contextTaskLists, refreshTemplates, templates: contextTemplates, session } = useContext(GlobalContext)
   const [stableTaskLists, setStableTaskLists] = useState<any[]>([])
-  const [userTemplates, setUserTemplates] = useState<any[]>([])
+  const [stableTemplates, setStableTemplates] = useState<any[]>([])
   const initialFetchDone = useRef(false)
+
+  // Use optimistic updates hook for task creations
+  const { pendingTaskCreationsRef } = useOptimisticUpdates()
+
+  // Store mutateTasks callback from ListView
+  const mutateTasksRef = useRef<(() => Promise<any>) | null>(null)
+  const handleMutateTasksReady = useCallback((mutateTasks: () => Promise<any>) => {
+    mutateTasksRef.current = mutateTasks
+  }, [])
 
   // Fetch immediately on mount
   useEffect(() => {
     if (!initialFetchDone.current) {
       initialFetchDone.current = true
       refreshTaskLists()
+      refreshTemplates()
     }
-  }, [refreshTaskLists])
+  }, [refreshTaskLists, refreshTemplates])
 
   // Update stable state only when context has valid data (never clear once we have data)
   useEffect(() => {
@@ -69,38 +80,27 @@ export const DoView = ({
     }
   }, [contextTaskLists])
 
-  // Refresh task lists every 10 seconds
+  useEffect(() => {
+    if (Array.isArray(contextTemplates) && contextTemplates.length > 0) {
+      setStableTemplates(contextTemplates)
+    }
+  }, [contextTemplates])
+
+  // Refresh task lists every 30 seconds
   useEffect(() => {
     const id = setInterval(() => {
       refreshTaskLists()
-    }, 10000)
+    }, 30000)
     return () => clearInterval(id)
   }, [refreshTaskLists])
-
-  // Fetch templates
-  const refreshTemplates = async () => {
-    try {
-      const res = await fetch('/api/v1/templates')
-      if (res.ok) {
-        const data = await res.json()
-        setUserTemplates(data.templates || [])
-      }
-    } catch {}
-  }
-
-  useEffect(() => {
-    let cancelled = false
-    const run = async () => {
-      if (cancelled) return
-      await refreshTemplates()
-    }
-    run()
-    return () => { cancelled = true }
-  }, [])
 
   const allTaskLists = useMemo(() => 
     (stableTaskLists.length > 0 ? stableTaskLists : (Array.isArray(contextTaskLists) ? contextTaskLists : [])) as any[],
     [stableTaskLists, contextTaskLists]
+  )
+  const allTemplates = useMemo(() => 
+    (stableTemplates.length > 0 ? stableTemplates : (Array.isArray(contextTemplates) ? contextTemplates : [])) as any[],
+    [stableTemplates, contextTemplates]
   )
   const selectedList = useMemo(() => {
     const found = allTaskLists.find((l:any) => l.id === selectedTaskListId)
@@ -135,6 +135,8 @@ export const DoView = ({
         <div className="mb-4">
           <AddTaskForm
             selectedTaskListId={selectedTaskListId}
+            pendingTaskCreationsRef={pendingTaskCreationsRef}
+            mutateTasksRef={mutateTasksRef}
             onCancel={onCloseAddTask || (() => {})}
             onCreated={async () => {
               if (onTaskCreated) await onTaskCreated()
@@ -148,7 +150,7 @@ export const DoView = ({
         <div className="mb-4">
           <AddListForm
             allTaskLists={allTaskLists}
-            userTemplates={userTemplates}
+            userTemplates={allTemplates}
             isEditing={isEditingList || false}
             initialList={isEditingList ? (selectedList as any) : undefined}
             onCancel={onCloseAddList || (() => {})}
@@ -179,6 +181,8 @@ export const DoView = ({
         selectedDate={selectedDate}
         onDateChange={onDateChange}
         onAddEphemeral={onAddEphemeral}
+        pendingTaskCreationsRef={pendingTaskCreationsRef}
+        onMutateTasksReady={handleMutateTasksReady}
       />
     </>
   )

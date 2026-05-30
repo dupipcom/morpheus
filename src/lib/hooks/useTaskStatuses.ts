@@ -1,13 +1,28 @@
 import { useState, useEffect, useMemo } from 'react'
-import { TaskStatus, STATUS_OPTIONS, getTaskKey, getTaskStatus } from '@/lib/taskUtils'
+import { getTaskKey, getTaskStatus, STATUS_OPTIONS } from '@/lib/utils/taskUtils'
+import type { TaskStatus } from '@/lib/utils/taskUtils'
+
+interface Task {
+  id?: string
+  name?: string
+  localeKey?: string
+  status?: string
+  dateStatus?: string
+  count?: number
+  dateCount?: number
+  times?: number
+}
 
 interface UseTaskStatusesOptions {
-  tasks: any[]
+  tasks: Task[]
   selectedTaskListId?: string
   date?: string
   optimisticStatuses?: Record<string, TaskStatus>
 }
 
+/**
+ * Hook for managing task statuses with optimistic update support
+ */
 export function useTaskStatuses({
   tasks,
   selectedTaskListId,
@@ -21,16 +36,45 @@ export function useTaskStatuses({
     if (!selectedTaskListId && !tasks.length) return
     const statuses: Record<string, TaskStatus> = {}
 
-    tasks.forEach((task: any) => {
+    tasks.forEach((task) => {
       const key = getTaskKey(task)
-      
-      // Use status from the task object if available - this preserves manually set statuses
-      if (task.status && STATUS_OPTIONS.includes(task.status as TaskStatus)) {
-        statuses[key] = task.status as TaskStatus
-      } else if (task.status === 'done') {
-        statuses[key] = 'done'
-      } else if ((task.count || 0) > 0 && (task.count || 0) < (task.times || 1)) {
-        statuses[key] = 'in progress'
+
+      // IMPORTANT: For date views, prefer dateStatus (job-based) over task.status (global)
+      // This ensures the UI reflects the actual job completion state for the specific date
+      const statusToUse = task.dateStatus !== undefined ? task.dateStatus : task.status
+
+      // Read status from dateStatus or Task model (new TaskStatus enum)
+      if (statusToUse) {
+        // Map new enum values to old format for backward compatibility
+        const statusMap: Record<string, TaskStatus> = {
+          'OPEN': 'open',
+          'IN_PROGRESS': 'in progress',
+          'STEADY': 'steady',
+          'READY': 'ready',
+          'DONE': 'done',
+          'IGNORED': 'ignored',
+          'SKIPPED': 'ignored', // Map SKIPPED to ignored for UI
+        }
+
+        // If status is already in old format, use it; otherwise map from enum
+        const normalizedStatus = statusMap[statusToUse] || statusToUse
+
+        if (STATUS_OPTIONS.includes(normalizedStatus as TaskStatus)) {
+          statuses[key] = normalizedStatus as TaskStatus
+        }
+      } else {
+        // Fallback for tasks without status - calculate from count
+        // Use dateCount for date views, fallback to global count
+        const count = task.dateCount !== undefined ? task.dateCount : (task.count || 0)
+        const times = task.times || 1
+
+        if (count >= times) {
+          statuses[key] = 'done'
+        } else if (count > 0) {
+          statuses[key] = 'in progress'
+        } else {
+          statuses[key] = 'open'
+        }
       }
     })
 
@@ -51,4 +95,3 @@ export function useTaskStatuses({
     getEffectiveStatus,
   }
 }
-

@@ -12,6 +12,7 @@ interface PublicChartsViewProps {
     moodCharts?: {
       weeksData: Array<{
         week: number
+        dateRange: string
         moodAverage: number
         gratitude: number
         optimism: number
@@ -24,12 +25,14 @@ interface PublicChartsViewProps {
     simplifiedMoodChart?: {
       weeksData: Array<{
         week: number
+        dateRange: string
         moodAverage: number
       }>
     }
     productivityCharts?: {
       weeksData: Array<{
         week: number
+        dateRange: string
         progress: number
         moodAverage: number
       }>
@@ -37,6 +40,7 @@ interface PublicChartsViewProps {
     earningsCharts?: {
       weeksData: Array<{
         week: number
+        dateRange: string
         earnings: number
         balance: number
         moodAverage: number
@@ -201,7 +205,7 @@ export function PublicChartsView({ chartsData }: PublicChartsViewProps) {
                 fillOpacity={0.4} 
               />
               <XAxis
-                dataKey="week"
+                dataKey="dateRange"
                 tickLine={false}
                 tickMargin={5}
                 axisLine={true}
@@ -238,7 +242,7 @@ export function PublicChartsView({ chartsData }: PublicChartsViewProps) {
                 fillOpacity={0.4} 
               />
               <XAxis
-                dataKey="week"
+                dataKey="dateRange"
                 tickLine={false}
                 tickMargin={5}
                 axisLine={true}
@@ -285,7 +289,7 @@ export function PublicChartsView({ chartsData }: PublicChartsViewProps) {
                 fillOpacity={0.4} 
               />
               <XAxis
-                dataKey="week"
+                dataKey="dateRange"
                 tickLine={false}
                 tickMargin={5}
                 axisLine={true}
@@ -341,7 +345,7 @@ export function PublicChartsView({ chartsData }: PublicChartsViewProps) {
                 fillOpacity={0.4} 
               />
               <XAxis
-                dataKey="week"
+                dataKey="dateRange"
                 tickLine={false}
                 tickMargin={5}
                 axisLine={true}

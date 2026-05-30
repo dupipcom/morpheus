@@ -24,6 +24,7 @@
     "signInToAccess": "Inicia sessió per accedir al teu tauler de control i seguir el teu progrés.",
     "dismiss": "Tancar",
     "accept": "Acceptar",
+    "all": "Tot",
     "pageAvailableIn": "Aquesta pàgina està disponible en {locale}. Vols visualitzar-la en aquest idioma?",
     "selectLanguage": "Seleccionar idioma",
     "manageAccount": "Gestionar el meu compte",
@@ -56,7 +57,10 @@
     "copyLink": "Copia l'enllaç",
     "linkCopied": "Enllaç copiat al porta-retalls",
     "copyFailed": "Error en copiar l'enllaç",
-    "saving": "Desant..."
+    "saving": "Desant...",
+    "decline": "Declinar",
+    "friendRequest": "Sol·licitud d'amistat",
+    "reverseOrder": "Invertir ordre"
   },
   "navigation": {
     "home": "Inici",
@@ -82,7 +86,26 @@
     "yourMood": "El teu estat d'ànim.",
     "yourProductivity": "La teva productivitat.",
     "yourData": "Les teves dades.",
-    "yourBalance": "Els teus diners."
+    "yourBalance": "Els teus diners.",
+    "timeframe": {
+      "startDate": "Data d'inici",
+      "endDate": "Data de fi"
+    },
+    "me": "Les meves dades",
+    "selectDelegatedUser": "Selecciona l'usuari delegat",
+    "analysis": {
+      "alltimeAnalysis": "Anàlisi de tot el temps",
+      "dayAnalysis": "Anàlisi d'avui",
+      "last3daysAnalysis": "Anàlisi dels últims 3 dies",
+      "weekAnalysis": "Anàlisi setmanal",
+      "yearAnalysis": "Anàlisi anual",
+      "gratitudeAnalysis": "Anàlisi de gratitud",
+      "optimismAnalysis": "Anàlisi d'optimisme",
+      "restednessAnalysis": "Anàlisi del descans",
+      "toleranceAnalysis": "Anàlisi de tolerància",
+      "selfEsteemAnalysis": "Anàlisi d'autoestima",
+      "trustAnalysis": "Anàlisi de confiança"
+    }
   },
   "mood": {
     "title": "Registra el teu estat d'ànim per a {date}",
@@ -105,7 +128,26 @@
         "AI_ENABLED": "Activat per IA"
       },
       "action": "Publicar nota",
-      "publishing": "Publishing..."
+      "publishing": "Publicant...",
+      "embedHint": "Incrustació de {provider}. Si la reproducció no està disponible, obre l'enllaç original a continuació."
+    },
+    "thirdParty": {
+      "title": "Tercers",
+      "settings": "Configuració de delegació",
+      "activeDelegations": "Delegacions actives",
+      "empty": "No hi ha delegacions actives.",
+      "identifierPlaceholder": "Nom d'usuari, correu electrònic o ID d'usuari",
+      "noFriendsFound": "No s'han trobat amistats coincidents.",
+      "friendsHint": "Els suggeriments inclouen els teus amics. També pots introduir qualsevol adreça de correu electrònic.",
+      "scope": "Abast de dades",
+      "allScopes": "Tots els àmbits",
+      "scopesSelected": "àmbits seleccionats",
+      "minimumOneScope": "Com a mínim, ha de continuar seleccionat un àmbit.",
+      "scopeResolutionHint": "Si se seleccionen diversos àmbits, s'aplica l'àmbit seleccionat més ampli.",
+      "addDelegatedAnalyst": "Afegeix analista delegat",
+      "adding": "Afegint...",
+      "addError": "No s'ha pogut afegir l'analista delegat",
+      "invitationDraft": "S'ha preparat un esborrany d'invitació per a aquest correu electrònic."
     }
   },
   "week": {
@@ -133,7 +175,11 @@
       "open": "Obert",
       "done": "Fet",
       "ignored": "Ignorat"
-    }
+    },
+    "edit": "Editar",
+    "loadingForDate": "Carregant tasques per a la data seleccionada...",
+    "initializingTasks": "Configurant les teves tasques...",
+    "noTasksForDate": "No hi ha tasques programades per a aquesta data"
   },
   "actions": {
     "drankWater": "Ha begut aigua",
@@ -223,10 +269,10 @@
   "errors": {
     "notFound": "Ups! No s'ha pogut sintonitzar aquesta freqüència.",
     "genericError": "Alguna cosa ha anat malament. Si us plau, torna-ho a intentar.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "Error en carregar les notes",
+    "failedToLoadNotes": "Error en carregar les notes",
+    "failedToFetchTemplates": "Error en carregar les plantilles",
+    "failedToLoadTemplates": "Error en carregar les plantilles"
   },
   "social": {
     "title": "Contactes Socials",
@@ -312,9 +358,9 @@
     "cloning": "Clonant...",
     "noPublicNotes": "Encara no hi ha notes públiques disponibles.",
     "noPublicTemplatesOrLists": "Encara no hi ha plantilles o llistes públiques disponibles.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "Clonar llista",
+    "cloneListSuccess": "Llista clonada correctament!",
+    "cloneListFailed": "Error al clonar la llista"
   },
   "publicCharts": {
     "noData": "No public charts data available.",
@@ -340,7 +386,8 @@
     "closeFriend": "Amic proper",
     "friends": "Amics",
     "signInToAdd": "Inicia sessió per afegir un amic",
-    "editProfile": "Editar perfil"
+    "editProfile": "Editar perfil",
+    "message": "Missatge"
   },
   "toast": {
     "sessionExtended": "Sessió estesa amb èxit",
@@ -410,7 +457,9 @@
       "timesLabel": "# de vegades",
       "saveToTemplate": "Guardar tasca al template",
       "addTask": "Afegir tasca",
-      "cancel": "Cancelar"
+      "cancel": "Cancelar",
+      "editTitle": "Editar tasca",
+      "saveTask": "Desa la tasca"
     },
     "addListForm": {
       "titleCreate": "Crear nova llista",
@@ -486,6 +535,39 @@
       },
       "create": "Crear",
       "cancel": "Cancelar"
+    },
+    "recurrencePicker": {
+      "frequency": "Repetir",
+      "every": "Cada",
+      "day": "dia",
+      "days": "dies",
+      "week": "setmana",
+      "weeks": "setmanes",
+      "month": "mes",
+      "months": "mesos",
+      "year": "any",
+      "years": "anys",
+      "noRepeat": "No es repeteix",
+      "daily": "Diàriament",
+      "weekly": "Setmanalment",
+      "monthly": "Mensualment",
+      "yearly": "Anualment",
+      "repeatOn": "Repetir el",
+      "monday": "Dll",
+      "tuesday": "Dmt",
+      "wednesday": "Dmc",
+      "thursday": "Dij",
+      "friday": "Div",
+      "saturday": "Dis",
+      "sunday": "Diu",
+      "dayOfMonth": "Dia del mes",
+      "selectDay": "Selecciona dia (1-31)",
+      "ends": "Acaba",
+      "never": "Mai",
+      "onDate": "El dia",
+      "after": "Després",
+      "pickDate": "Trieu una data",
+      "occurrences": "ocurrències"
     }
   },
   "charts": {
@@ -500,7 +582,10 @@
     "progress": "Progress",
     "moodAverageScale": "Mood Average Scale",
     "balance": "Balance",
-    "earningsScale": "Earnings Scale"
+    "earningsScale": "Earnings Scale",
+    "profit": "Profit",
+    "stash": "Stash",
+    "withdrawn": "Withdrawn"
   },
   "profile": {
     "editProfile": "Edit Profile",
@@ -610,5 +695,174 @@
     "deleteWallet": "Eliminar Cartera",
     "deleteWalletConfirmation": "Esteu segur que voleu eliminar aquesta cartera? Aquesta acció no es pot desfer. La cartera s'eliminarà del vostre compte, però l'adreça blockchain i els seus fons romandran a la blockchain.",
     "delete": "Eliminar"
+  },
+  "jobs": {
+    "history": "Historial de Treballs",
+    "filterByStatus": "Filtrar per Estat:",
+    "errorLoadingHistory": "Error al carregar l'historial de treballs",
+    "noHistoryFound": "No s'ha trobat cap historial de treballs",
+    "status": {
+      "requested": "Sol·licitat",
+      "inProgress": "En Progrés",
+      "validating": "Validant",
+      "accepted": "Acceptat",
+      "rejected": "Rebutjat",
+      "submitted": "Enviat",
+      "changesRequested": "Canvis sol·licitats"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "La teva sol·licitud està sent revisada. Se't notificarà quan s'aprovi.",
+        "inProgress": "La teva sol·licitud ha estat aprovada! Ara pots treballar en aquesta tasca.",
+        "submitted": "El teu treball ha estat enviat. Esperant la revisió del propietari.",
+        "validating": "S'han sol·licitat canvis. Si us plau, revisa i torna a enviar.",
+        "accepted": "Felicitats! El teu treball ha estat acceptat.",
+        "rejected": "La teva submissió ha estat rebutjada."
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}} ha sol·licitat treballar en aquesta tasca. Aprova o rebutja la sol·licitud.",
+        "inProgress": "{{workerName}} està treballant actualment en aquesta tasca.",
+        "submitted": "{{workerName}} ha enviat el seu treball per a revisió.",
+        "validating": "Esperant que {{workerName}} revisi i torni a enviar.",
+        "accepted": "El treball de {{workerName}} ha estat acceptat.",
+        "rejected": "La submissió de {{workerName}} ha estat rebutjada."
+      }
+    },
+    "actions": {
+      "submitForReview": "Enviar per a Revisió",
+      "withdrawSubmission": "Retirar Submissió",
+      "withdrawing": "Retirant...",
+      "reviseAndResubmit": "Revisar i Tornar a Enviar",
+      "approveRequest": "Aprovar Sol·licitud",
+      "approving": "Aprovant...",
+      "rejectRequest": "Rebutjar Sol·licitud",
+      "rejecting": "Rebutjant...",
+      "reviewAndAccept": "Revisar i Acceptar",
+      "requestChanges": "Sol·licitar Canvis",
+      "reject": "Rebutjar"
+    },
+    "review": {
+      "title": "Revisar Treball Enviat",
+      "description": "Revisar treball de {{workerName}}",
+      "workerSolution": "Solució del Treballador:",
+      "selfReviewScore": "Auto-revisió: {{score}}/100",
+      "noSubmissionNotes": "No s'han proporcionat notes de submissió",
+      "actionLabel": "Acció *",
+      "required": "*",
+      "optional": "(Opcional)",
+      "feedbackLabel": "Comentaris de Revisió {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "Explica quins canvis són necessaris",
+        "other": "Proporciona comentaris o suggeriments per al treballador"
+      },
+      "editorPlaceholder": {
+        "validate": "Descriu els canvis necessaris...",
+        "other": "Proporciona comentaris sobre el treball..."
+      },
+      "managerReviewLabel": "Revisió del Gestor (Opcional)",
+      "managerReviewDescription": "Valora la qualitat del treball completat",
+      "scorePoor": "0 (Pobre)",
+      "scoreExcellent": "100 (Excel·lent)",
+      "cancel": "Cancel·lar",
+      "submitting": "Enviant...",
+      "acceptWork": "Acceptar Treball",
+      "requestChangesButton": "Sol·licitar Canvis",
+      "rejectWork": "Rebutjar Treball",
+      "actions": {
+        "accept": {
+          "title": "Acceptar (Marcar tasca com a Feta)",
+          "description": "Aprovar el treball i completar la tasca. El treballador guanya la seva recompensa."
+        },
+        "requestChanges": {
+          "title": "Sol·licitar Canvis",
+          "description": "Demanar al treballador que revisi i torni a enviar el seu treball."
+        },
+        "reject": {
+          "title": "Rebutjar (Reobrir tasca)",
+          "description": "Rebutjar el treball completament i reobrir la tasca per a altres."
+        }
+      },
+      "messages": {
+        "accepted": "Treball acceptat i tasca marcada com a completa",
+        "changesRequested": "Canvis sol·licitats, el treballador revisarà",
+        "rejected": "Treball rebutjat, tasca reoberta",
+        "error": "No s'ha pogut enviar la revisió. Si us plau, torna-ho a intentar."
+      }
+    },
+    "submission": {
+      "title": "Enviar Treball per a Revisió",
+      "titleResubmit": "Revisar i Tornar a Enviar Treball",
+      "description": "Descriu la teva solució per a {{taskName}} i envia-la per a validació.",
+      "solutionLabel": "Descripció de la Solució *",
+      "solutionDescription": "Explica què has fet per completar aquesta tasca. Suporta format, enllaços i llistes.",
+      "solutionPlaceholder": "Explica què has fet per completar aquesta tasca...",
+      "selfReviewLabel": "Auto-revisió (Opcional)",
+      "selfReviewDescription": "Valora la qualitat del teu treball en una escala de 0-100",
+      "scoreNeedsWork": "0 (Necessita treball)",
+      "scorePerfect": "100 (Perfecte)",
+      "cancel": "Cancel·lar",
+      "submitting": "Enviant...",
+      "submitButton": "Enviar per a Revisió",
+      "resubmitButton": "Tornar a Enviar per a Revisió",
+      "errors": {
+        "missingDescription": "Si us plau, proporciona una descripció del teu treball",
+        "submitError": "No s'ha pogut enviar el teu treball. Si us plau, torna-ho a intentar."
+      },
+      "messages": {
+        "submitted": "Treball enviat per a revisió",
+        "resubmitted": "Treball tornat a enviar per a revisió"
+      }
+    }
+  },
+  "notes": {
+    "updated": "Nota actualitzada correctament",
+    "updateFailed": "No s'ha pogut actualitzar la nota",
+    "deleted": "Nota eliminada correctament",
+    "deleteFailed": "No s'ha pogut eliminar la nota",
+    "deleting": "Eliminant...",
+    "confirmDelete": "Esteu segur que voleu eliminar aquesta nota?",
+    "content": "Contingut de la nota",
+    "visibilityUpdated": "Visibilitat actualitzada correctament",
+    "visibilityUpdateFailed": "No s'ha pogut actualitzar la visibilitat",
+    "changeVisibility": "Canviar visibilitat",
+    "filters": {
+      "sort": "Ordenar",
+      "date": "Data",
+      "mostRelevant": "Més rellevant",
+      "all": "Tot"
+    }
+  },
+  "chat": {
+    "title": "Xat",
+    "subtitle": "Organitzacions, canals, missatges directes i fils.",
+    "anonymous": "Anònim",
+    "directMessage": "Missatge directe",
+    "deletedMessage": "Missatge eliminat",
+    "deleteMessageTitle": "Eliminar missatge?",
+    "deleteMessageDescription": "Això eliminarà el missatge de manera suau i mantindrà un marcador a l'historial de conversa.",
+    "createInviteLink": "Crear enllaç d'invitació",
+    "pendingInvites": "Invitacions pendents",
+    "acceptInvite": "Acceptar",
+    "inviteFriendToOrg": "Convidar un amic a aquesta organització",
+    "inviteLinkCopied": "Enllaç d'invitació copiat",
+    "inviteSent": "Invitació enviada",
+    "inviteAccepted": "Invitació acceptada"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Disposició de la graella",
+      "tight": "Atapeït",
+      "small": "Petit",
+      "wide": "Ample"
+    }
   }
 }

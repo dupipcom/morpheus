@@ -1,7 +1,106 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
-import { filterProfileFields } from '@/lib/profileUtils'
+import {
+  buildVisibilityWhereClause,
+  getCurrentUser,
+  batchEnrichUserProfiles
+} from '@/lib/services/visibility'
+import { filterProfileFields } from '@/lib/utils/profileUtils'
+import {
+  calculateNoteRelevanceScore,
+  normalizeNoteSortBy,
+  sortNotes
+} from '@/lib/utils/noteRelevance'
+
+/**
+ * Note select configuration for queries
+ */
+const noteSelect = {
+  id: true,
+  content: true,
+  visibility: true,
+  createdAt: true,
+  date: true,
+  userId: true,
+  _count: {
+    select: {
+      comments: true,
+      likes: true
+    }
+  },
+  likes: {
+    select: {
+      userId: true
+    }
+  },
+  comments: {
+    include: {
+      user: {
+        select: {
+          id: true,
+          profiles: {
+            select: {
+              data: true
+            }
+          }
+        }
+      },
+      _count: {
+        select: {
+          likes: true
+        }
+      }
+    },
+    orderBy: {
+      createdAt: 'desc' as const
+    }
+  }
+}
+
+/**
+ * Sort comments by likes then by date and transform profiles
+ */
+function sortAndTransformComments(comments: any[]): any[] {
+  if (!comments?.length) return []
+
+  return [...comments]
+    .sort((a, b) => {
+      const likeDiff = (b._count?.likes || 0) - (a._count?.likes || 0)
+      if (likeDiff !== 0) return likeDiff
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    })
+    .map((comment) => {
+      const commentProfile = comment.user.profiles?.[0]
+      const commentProfileData = commentProfile?.data || {}
+      const profileForFiltering = {
+        userName: commentProfileData.username?.value || null,
+        firstName: commentProfileData.firstName?.value || null,
+        lastName: commentProfileData.lastName?.value || null,
+        bio: commentProfileData.bio?.value || null,
+        profilePicture: commentProfileData.profilePicture?.value || null,
+        firstNameVisibility: commentProfileData.firstName?.visibility ? 'PUBLIC' : 'PRIVATE',
+        lastNameVisibility: commentProfileData.lastName?.visibility ? 'PUBLIC' : 'PRIVATE',
+        userNameVisibility: commentProfileData.username?.visibility ? 'PUBLIC' : 'PRIVATE',
+        bioVisibility: commentProfileData.bio?.visibility ? 'PUBLIC' : 'PRIVATE',
+        profilePictureVisibility: commentProfileData.profilePicture?.visibility ? 'PUBLIC' : 'PRIVATE'
+      }
+
+      return {
+        ...comment,
+        user: {
+          ...comment.user,
+          profile: commentProfile
+            ? filterProfileFields(profileForFiltering, {
+                isOwner: false,
+                isFriend: false,
+                isCloseFriend: false
+              })
+            : null
+        }
+      }
+    })
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -11,106 +110,28 @@ export async function GET(request: NextRequest) {
     const skip = (page - 1) * limit
     const filterNoteId = searchParams.get('noteId')
     const filterProfileId = searchParams.get('profileId')
+    const sortBy = normalizeNoteSortBy(searchParams.get('sort'))
 
     const { userId } = await auth()
-    
-    // Build where clause based on authentication and friendship status
-    let whereClause: any = {
-      OR: []
-    }
 
-    // Always include PUBLIC notes (from all users, including the authenticated user's own public notes)
-    whereClause.OR.push({
-      visibility: 'PUBLIC'
-    })
+    // Build visibility-aware where clause using shared service
+    const whereClause = await buildVisibilityWhereClause(userId || null, 'userId')
 
-    // If user is authenticated, include notes from users who have the current user in their friends/closeFriends lists
-    if (userId) {
-      const currentUser = await prisma.user.findUnique({
-        where: { userId },
-        select: {
-          id: true
-        }
-      })
-
-      if (currentUser) {
-        // Include current user's own notes with FRIENDS or CLOSE_FRIENDS visibility
-        whereClause.OR.push({
-          AND: [
-            { userId: currentUser.id },
-            { visibility: { in: ['FRIENDS', 'CLOSE_FRIENDS'] } }
-          ]
-        })
-
-        // Find all users who have the current user in their friends list
-        const usersWithCurrentUserAsFriend = await prisma.user.findMany({
-          where: {
-            friends: {
-              has: currentUser.id
-            }
-          },
-          select: {
-            id: true
-          }
-        })
-        const friendUserIds = usersWithCurrentUserAsFriend.map(u => u.id)
-
-        // Find all users who have the current user in their closeFriends list
-        const usersWithCurrentUserAsCloseFriend = await prisma.user.findMany({
-          where: {
-            closeFriends: {
-              has: currentUser.id
-            }
-          },
-          select: {
-            id: true
-          }
-        })
-        const closeFriendUserIds = usersWithCurrentUserAsCloseFriend.map(u => u.id)
-
-        // Include notes from users who have current user in their friends list (FRIENDS visibility)
-        if (friendUserIds.length > 0) {
-          whereClause.OR.push({
-            AND: [
-              { visibility: 'FRIENDS' },
-              { userId: { in: friendUserIds } }
-            ]
-          })
-        }
-
-        // Include notes from users who have current user in their closeFriends list (CLOSE_FRIENDS visibility)
-        if (closeFriendUserIds.length > 0) {
-          whereClause.OR.push({
-            AND: [
-              { visibility: 'CLOSE_FRIENDS' },
-              { userId: { in: closeFriendUserIds } }
-            ]
-          })
-        }
-      }
-    }
-
-    // Build filter for matching items (noteId or profileId)
+    // Fetch matching notes first if filter is provided
     let matchingNotes: any[] = []
     let matchingNoteIds: string[] = []
-    
+
     if (filterNoteId || filterProfileId) {
-      const matchingWhereClause: any = {
-        ...whereClause
-      }
-      
-      // Add specific filters
+      const matchingWhereClause: any = { ...whereClause }
+
       if (filterNoteId) {
         matchingWhereClause.id = filterNoteId
       }
+
       if (filterProfileId) {
-        // Convert profileId (userId) to user's internal ID if needed
         const profileUser = await prisma.user.findFirst({
           where: {
-            OR: [
-              { id: filterProfileId },
-              { userId: filterProfileId }
-            ]
+            OR: [{ id: filterProfileId }, { userId: filterProfileId }]
           },
           select: { id: true }
         })
@@ -118,288 +139,83 @@ export async function GET(request: NextRequest) {
           matchingWhereClause.userId = profileUser.id
         }
       }
-      
-      // Fetch matching notes first (no pagination, get all matches)
+
       const matching = await prisma.note.findMany({
         where: matchingWhereClause,
-        orderBy: {
-          createdAt: 'desc'
-        },
-        select: {
-          id: true,
-          content: true,
-          visibility: true,
-          createdAt: true,
-          date: true,
-          userId: true,
-          _count: {
-            select: {
-              comments: true,
-              likes: true
-            }
-          },
-          comments: {
-            include: {
-              user: {
-                include: {
-                  profiles: {
-                    select: {
-                      data: true
-                    }
-                  }
-                }
-              },
-              _count: {
-                select: {
-                  likes: true
-                }
-              }
-            },
-            orderBy: {
-              createdAt: 'desc'
-            }
-          },
-          user: {
-            select: {
-              id: true,
-              friends: true,
-              closeFriends: true,
-              profiles: {
-                select: {
-                  data: true
-                }
-              }
-            }
-          }
-        }
+        orderBy: { createdAt: 'desc' },
+        select: noteSelect
       })
-      
+
       matchingNotes = matching
       matchingNoteIds = matching.map(n => n.id.toString())
     }
-    
-    // Fetch regular notes, excluding matching ones if they exist
-    const excludeIds = matchingNoteIds.length > 0 ? matchingNoteIds : []
-    const regularWhereClause = excludeIds.length > 0 
-      ? {
-          ...whereClause,
-          id: { notIn: excludeIds }
-        }
+
+    // Fetch regular notes, excluding matching ones
+    const regularWhereClause = matchingNoteIds.length > 0
+      ? { ...whereClause, id: { notIn: matchingNoteIds } }
       : whereClause
-    
-    // Adjust limit and skip for regular notes
-    const regularLimit = excludeIds.length > 0 ? limit - matchingNotes.length : limit
-    const regularSkip = excludeIds.length > 0 ? skip : skip
-    
+
+    const regularLimit = matchingNoteIds.length > 0
+      ? limit - matchingNotes.length
+      : limit
+
     const notes = await prisma.note.findMany({
       where: regularWhereClause,
-      orderBy: {
-        createdAt: 'desc'
-      },
+      orderBy: { createdAt: 'desc' },
       take: Math.max(0, regularLimit),
-      skip: Math.max(0, regularSkip),
-      select: {
-        id: true,
-        content: true,
-        visibility: true,
-        createdAt: true,
-        date: true,
-        userId: true,
-        _count: {
-          select: {
-            comments: true,
-            likes: true
-          }
-        },
-        comments: {
-          include: {
-            user: {
-              include: {
-                profiles: {
-                  select: {
-                    data: true
-                  }
-                }
-              }
-            },
-            _count: {
-              select: {
-                likes: true
-              }
-            }
-          },
-          orderBy: {
-            createdAt: 'desc'
-          }
-        },
-        user: {
-          select: {
-            id: true,
-            friends: true,
-            closeFriends: true,
-            profiles: {
-              select: {
-                data: true
-              }
-            }
-          }
-        }
-      }
+      skip: Math.max(0, skip),
+      select: noteSelect
     })
 
     // Combine matching notes first, then regular notes
     const allNotes = [...matchingNotes, ...notes]
-    
-    // Sort comments by likes, then by date
-    const notesWithSortedComments = allNotes.map(note => {
-      if (note.comments && Array.isArray(note.comments) && note.comments.length > 0) {
-        const sortedComments = [...note.comments].sort((a: any, b: any) => {
-          const likeDiff = (b._count?.likes || 0) - (a._count?.likes || 0)
-          if (likeDiff !== 0) return likeDiff
-          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        })
-        return { ...note, comments: sortedComments }
-      }
-      return note
-    })
 
-    // Get current user's friends/closeFriends for relationship checking
-    let currentUserFriends: string[] = []
-    let currentUserCloseFriends: string[] = []
-    let currentUserIdStr = ''
-    
-    if (userId) {
-      const currentUserFull = await prisma.user.findUnique({
-        where: { userId },
-        select: {
-          id: true,
-          friends: true,
-          closeFriends: true
-        }
-      })
-      if (currentUserFull) {
-        currentUserIdStr = currentUserFull.id.toString()
-        currentUserFriends = (currentUserFull.friends || []).map((id: any) => id.toString())
-        currentUserCloseFriends = (currentUserFull.closeFriends || []).map((id: any) => id.toString())
-      }
-    }
+    // Get current user for relationship checking
+    const currentUser = await getCurrentUser(userId || null)
 
-    // Filter out fields if not visible based on relationship
-    // Also filter out notes without valid users
-    const cleanedNotes = await Promise.all(notesWithSortedComments
-      .filter((note: any) => note.user !== null) // Filter out notes without users
-      .map(async (note) => {
-      // Transform profiles[0] to profile for comments
-      const commentsWithProfile = note.comments?.map((comment: any) => {
-        const commentProfile = comment.user.profiles?.[0]
-        const commentProfileData = commentProfile?.data || {}
-        const commentProfileForFiltering = {
-          userName: commentProfileData.username?.value || null,
-          firstName: commentProfileData.firstName?.value || null,
-          lastName: commentProfileData.lastName?.value || null,
-          bio: commentProfileData.bio?.value || null,
-          profilePicture: commentProfileData.profilePicture?.value || null,
-          firstNameVisibility: commentProfileData.firstName?.visibility ? 'PUBLIC' : 'PRIVATE',
-          lastNameVisibility: commentProfileData.lastName?.visibility ? 'PUBLIC' : 'PRIVATE',
-          userNameVisibility: commentProfileData.username?.visibility ? 'PUBLIC' : 'PRIVATE',
-          bioVisibility: commentProfileData.bio?.visibility ? 'PUBLIC' : 'PRIVATE',
-          profilePictureVisibility: commentProfileData.profilePicture?.visibility ? 'PUBLIC' : 'PRIVATE'
-        }
-        return {
-        ...comment,
-        user: {
-          ...comment.user,
-            profile: commentProfile ? filterProfileFields(commentProfileForFiltering, {
-              isOwner: false,
-              isFriend: false,
-              isCloseFriend: false
-            }) : null
-        }
-        }
-      }) || []
+    // Sort comments and compute relevance
+    const notesWithSortedComments = allNotes.map(note => ({
+      ...note,
+      comments: sortAndTransformComments(note.comments),
+      relevanceScore: sortBy === 'most_relevant'
+        ? calculateNoteRelevanceScore(note, {
+            friendUserIds: currentUser?.friends || [],
+            closeFriendUserIds: currentUser?.closeFriends || [],
+            currentUserId: currentUser?.id ?? null
+          })
+        : undefined
+    }))
 
-      const profile = note.user.profiles?.[0]
-      if (!profile) {
-        // Ensure profile object exists even if null, so component can access profile.userName
+    // Collect all user IDs for batch profile fetching (fixes N+1)
+    const userIds = notesWithSortedComments
+      .map(note => note.userId)
+      .filter((id): id is string => !!id)
+
+    // Batch fetch all user profiles
+    const profilesMap = await batchEnrichUserProfiles(userIds, currentUser)
+
+    // Enrich notes with user profiles
+    const notesWithUsers = notesWithSortedComments
+      .filter(note => note.userId) // Filter out notes without users
+      .map(note => {
+        const userProfile = profilesMap.get(note.userId)
         return {
           ...note,
-          comments: commentsWithProfile,
-          user: {
-            ...note.user,
-            profile: {
-              userName: null
-            }
-          }
-        }
-      }
-
-      // Check relationship between current user and note author
-      const noteAuthorIdStr = note.user.id.toString()
-      const isOwner = userId && currentUserIdStr === noteAuthorIdStr
-      
-      // Get note author's friends/closeFriends lists
-      const noteAuthor = await prisma.user.findUnique({
-        where: { id: note.user.id },
-        select: {
-          friends: true,
-          closeFriends: true
+          user: userProfile || { id: note.userId, profile: { userName: null } }
         }
       })
-      
-      const noteAuthorFriends = (noteAuthor?.friends || []).map((id: any) => id.toString())
-      const noteAuthorCloseFriends = (noteAuthor?.closeFriends || []).map((id: any) => id.toString())
-      
-      const isCloseFriend = !isOwner && userId && 
-        noteAuthorCloseFriends.includes(currentUserIdStr) &&
-        currentUserCloseFriends.includes(noteAuthorIdStr)
-      
-      const isFriend = !isOwner && !isCloseFriend && userId &&
-        noteAuthorFriends.includes(currentUserIdStr) &&
-        currentUserFriends.includes(noteAuthorIdStr)
 
-      // Extract profile data from new structure and transform for filterProfileFields
-      const profileData = profile.data || {}
-      const profileForFiltering = {
-        userName: profileData.username?.value || null,
-        firstName: profileData.firstName?.value || null,
-        lastName: profileData.lastName?.value || null,
-        bio: profileData.bio?.value || null,
-        profilePicture: profileData.profilePicture?.value || null,
-        publicCharts: profileData.charts?.value || null,
-        firstNameVisibility: profileData.firstName?.visibility ? 'PUBLIC' : 'PRIVATE',
-        lastNameVisibility: profileData.lastName?.visibility ? 'PUBLIC' : 'PRIVATE',
-        userNameVisibility: profileData.username?.visibility ? 'PUBLIC' : 'PRIVATE',
-        bioVisibility: profileData.bio?.visibility ? 'PUBLIC' : 'PRIVATE',
-        profilePictureVisibility: profileData.profilePicture?.visibility ? 'PUBLIC' : 'PRIVATE',
-        publicChartsVisibility: profileData.charts?.visibility ? 'PUBLIC' : 'PRIVATE'
-      }
-
-      // Filter profile fields based on visibility and relationship
-      const filteredProfile = filterProfileFields(profileForFiltering, {
-        isOwner,
-        isFriend,
-        isCloseFriend
-      })
-
-      return {
-        ...note,
-        comments: commentsWithProfile,
-        user: {
-          ...note.user,
-          profile: filteredProfile
-        }
-      }
-    }))
+    const sortedNotesWithUsers = sortNotes(notesWithUsers, sortBy)
 
     // Get total count for pagination
     const totalCount = await prisma.note.count({
       where: whereClause
     })
 
-    const hasMore = skip + cleanedNotes.length < totalCount
+    const hasMore = skip + sortedNotesWithUsers.length < totalCount
 
-    return NextResponse.json({ 
-      notes: cleanedNotes, 
+    return NextResponse.json({
+      notes: sortedNotesWithUsers,
       hasMore,
       totalCount,
       currentPage: page,
@@ -410,4 +226,3 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
-

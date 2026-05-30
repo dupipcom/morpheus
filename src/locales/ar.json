@@ -21,6 +21,7 @@
     "signInToAccess": "سجل الدخول للوصول إلى لوحة التحكم وتتبع تقدمك.",
     "dismiss": "إغلاق",
     "accept": "قبول",
+    "all": "الكل",
     "pageAvailableIn": "هذه الصفحة متاحة بـ {locale}. هل تريد عرضها بهذه اللغة؟",
     "selectLanguage": "اختر اللغة",
     "manageAccount": "إدارة حسابي",
@@ -56,7 +57,10 @@
     "copyLink": "نسخ الرابط",
     "linkCopied": "تم نسخ الرابط إلى الحافظة",
     "copyFailed": "فشل نسخ الرابط",
-    "saving": "جاري الحفظ..."
+    "saving": "جاري الحفظ...",
+    "decline": "رفض",
+    "friendRequest": "طلب صداقة",
+    "reverseOrder": "عكس الترتيب"
   },
   "navigation": {
     "dashboard": "لوحة التحكم",
@@ -86,7 +90,26 @@
     "yourMood": "مزاجك.",
     "yourProductivity": "إنتاجيتك.",
     "yourData": "بياناتك.",
-    "yourBalance": "أموالك."
+    "yourBalance": "أموالك.",
+    "timeframe": {
+      "startDate": "تاريخ البدء",
+      "endDate": "تاريخ الانتهاء"
+    },
+    "me": "بياناتي",
+    "selectDelegatedUser": "اختر المستخدم المفوض",
+    "analysis": {
+      "alltimeAnalysis": "تحليل كل الأوقات",
+      "dayAnalysis": "تحليل اليوم",
+      "last3daysAnalysis": "تحليل آخر 3 أيام",
+      "weekAnalysis": "تحليل الأسبوع",
+      "yearAnalysis": "تحليل السنة",
+      "gratitudeAnalysis": "تحليل الامتنان",
+      "optimismAnalysis": "تحليل التفاؤل",
+      "restednessAnalysis": "تحليل الراحة",
+      "toleranceAnalysis": "تحليل التسامح",
+      "selfEsteemAnalysis": "تحليل تقدير الذات",
+      "trustAnalysis": "تحليل الثقة"
+    }
   },
   "mood": {
     "title": "سجل مزاجك لـ {date}",
@@ -109,7 +132,26 @@
         "AI_ENABLED": "تمكين الذكاء الاصطناعي"
       },
       "action": "نشر المذكرة",
-      "publishing": "Publishing..."
+      "publishing": "جاري النشر...",
+      "embedHint": "تضمين {provider}. إذا لم يكن التشغيل متاحًا، افتح الرابط الأصلي أدناه."
+    },
+    "thirdParty": {
+      "title": "الجهات الخارجية",
+      "settings": "إعدادات التفويض",
+      "activeDelegations": "التفويضات النشطة",
+      "empty": "لا توجد تفويضات نشطة.",
+      "identifierPlaceholder": "اسم المستخدم أو البريد الإلكتروني أو معرّف المستخدم",
+      "noFriendsFound": "لم يتم العثور على صداقات مطابقة.",
+      "friendsHint": "تتضمن الاقتراحات أصدقاءك. يمكنك أيضًا إدخال أي عنوان بريد إلكتروني.",
+      "scope": "نطاق البيانات",
+      "allScopes": "كل النطاقات",
+      "scopesSelected": "نطاقات محددة",
+      "minimumOneScope": "يجب أن يبقى نطاق واحد على الأقل محددًا.",
+      "scopeResolutionHint": "إذا تم تحديد عدة نطاقات، فسيتم تطبيق أوسع نطاق محدد.",
+      "addDelegatedAnalyst": "إضافة محلل مفوض",
+      "adding": "جارٍ الإضافة...",
+      "addError": "تعذر إضافة المحلل المفوض",
+      "invitationDraft": "تم إعداد مسودة دعوة لهذا البريد الإلكتروني."
     }
   },
   "week": {
@@ -137,7 +179,11 @@
       "open": "مفتوح",
       "done": "مكتمل",
       "ignored": "متجاهل"
-    }
+    },
+    "edit": "تعديل",
+    "loadingForDate": "جاري تحميل المهام للتاريخ المحدد...",
+    "initializingTasks": "جاري إعداد مهامك...",
+    "noTasksForDate": "لا توجد مهام مجدولة لهذا التاريخ"
   },
   "settings": {
     "title": "الإعدادات",
@@ -293,7 +339,10 @@
     "progress": "التقدم",
     "moodAverageScale": "مقياس متوسط المزاج",
     "balance": "الرصيد",
-    "earningsScale": "مقياس الأرباح"
+    "earningsScale": "مقياس الأرباح",
+    "profit": "الربح",
+    "stash": "المدخرات",
+    "withdrawn": "المسحوب"
   },
   "agentChat": {
     "thinking": "يفكر...",
@@ -306,10 +355,10 @@
   "errors": {
     "notFound": "عذراً! لا يمكن ضبط هذه التردد.",
     "genericError": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "فشل في تحميل الملاحظات",
+    "failedToLoadNotes": "فشل في تحميل الملاحظات",
+    "failedToFetchTemplates": "فشل في تحميل القوالب",
+    "failedToLoadTemplates": "فشل في تحميل القوالب"
   },
   "publicProfile": {
     "ctaTitle": "ابدأ رحلتك مع Dupip",
@@ -330,9 +379,9 @@
     "cloning": "جاري الاستنساخ...",
     "noPublicNotes": "لا توجد ملاحظات عامة متاحة بعد.",
     "noPublicTemplatesOrLists": "لا توجد قوالب أو قوائم عامة متاحة بعد.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "نسخ القائمة",
+    "cloneListSuccess": "تم نسخ القائمة بنجاح!",
+    "cloneListFailed": "فشل نسخ القائمة"
   },
   "publicCharts": {
     "noData": "لا توجد بيانات عامة متاحة للمخططات.",
@@ -358,7 +407,8 @@
     "closeFriend": "صديق مقرّب",
     "friends": "أصدقاء",
     "signInToAdd": "سجّل الدخول لإضافة صديق",
-    "editProfile": "تحرير الملف الشخصي"
+    "editProfile": "تحرير الملف الشخصي",
+    "message": "رسالة"
   },
   "profile": {
     "editProfile": "تعديل الملف الشخصي",
@@ -464,7 +514,9 @@
       "timesLabel": "# عدد المرات",
       "saveToTemplate": "حفظ المهمة في قالب",
       "addTask": "إضافة مهمة",
-      "cancel": "إلغاء"
+      "cancel": "إلغاء",
+      "editTitle": "تعديل المهمة",
+      "saveTask": "حفظ المهمة"
     },
     "addListForm": {
       "titleCreate": "إنشاء قائمة جديدة",
@@ -540,6 +592,39 @@
       },
       "create": "إنشاء",
       "cancel": "إلغاء"
+    },
+    "recurrencePicker": {
+      "frequency": "تكرار",
+      "every": "كل",
+      "day": "يوم",
+      "days": "أيام",
+      "week": "أسبوع",
+      "weeks": "أسابيع",
+      "month": "شهر",
+      "months": "أشهر",
+      "year": "سنة",
+      "years": "سنوات",
+      "noRepeat": "لا يتكرر",
+      "daily": "يومياً",
+      "weekly": "أسبوعياً",
+      "monthly": "شهرياً",
+      "yearly": "سنوياً",
+      "repeatOn": "تكرار في",
+      "monday": "الإثنين",
+      "tuesday": "الثلاثاء",
+      "wednesday": "الأربعاء",
+      "thursday": "الخميس",
+      "friday": "الجمعة",
+      "saturday": "السبت",
+      "sunday": "الأحد",
+      "dayOfMonth": "يوم من الشهر",
+      "selectDay": "اختر يوم (1-31)",
+      "ends": "ينتهي",
+      "never": "أبداً",
+      "onDate": "في تاريخ",
+      "after": "بعد",
+      "pickDate": "اختر تاريخ",
+      "occurrences": "مرات"
     }
   },
   "socialView": {
@@ -614,5 +699,174 @@
     "deleteWallet": "حذف المحفظة",
     "deleteWalletConfirmation": "هل أنت متأكد من أنك تريد حذف هذه المحفظة؟ لا يمكن التراجع عن هذا الإجراء. سيتم إزالة المحفظة من حسابك، لكن عنوان blockchain وأمواله ستبقى على blockchain.",
     "delete": "حذف"
+  },
+  "jobs": {
+    "history": "سجل الوظائف",
+    "filterByStatus": "تصفية حسب الحالة:",
+    "errorLoadingHistory": "خطأ في تحميل سجل الوظائف",
+    "noHistoryFound": "لم يتم العثور على سجل وظائف",
+    "status": {
+      "requested": "مطلوب",
+      "inProgress": "قيد التنفيذ",
+      "validating": "جاري التحقق",
+      "accepted": "مقبول",
+      "rejected": "مرفوض",
+      "submitted": "مُقدَّم",
+      "changesRequested": "تغييرات مطلوبة"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "طلبك قيد المراجعة. سيتم إخطارك عند الموافقة.",
+        "inProgress": "تمت الموافقة على طلبك! يمكنك الآن العمل على هذه المهمة.",
+        "submitted": "تم إرسال عملك. في انتظار المراجعة من المالك.",
+        "validating": "تم طلب تغييرات. يرجى المراجعة وإعادة الإرسال.",
+        "accepted": "تهانينا! تم قبول عملك.",
+        "rejected": "تم رفض مساهمتك."
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "طلب {{workerName}} العمل على هذه المهمة. الموافقة أو الرفض على الطلب.",
+        "inProgress": "{{workerName}} يعمل حاليًا على هذه المهمة.",
+        "submitted": "قدم {{workerName}} عمله للمراجعة.",
+        "validating": "في انتظار {{workerName}} للمراجعة وإعادة الإرسال.",
+        "accepted": "تم قبول عمل {{workerName}}.",
+        "rejected": "تم رفض مساهمة {{workerName}}."
+      }
+    },
+    "actions": {
+      "submitForReview": "إرسال للمراجعة",
+      "withdrawSubmission": "سحب الإرسال",
+      "withdrawing": "جارٍ السحب...",
+      "reviseAndResubmit": "المراجعة وإعادة الإرسال",
+      "approveRequest": "الموافقة على الطلب",
+      "approving": "جارٍ الموافقة...",
+      "rejectRequest": "رفض الطلب",
+      "rejecting": "جارٍ الرفض...",
+      "reviewAndAccept": "مراجعة وقبول",
+      "requestChanges": "طلب تغييرات",
+      "reject": "رفض"
+    },
+    "review": {
+      "title": "مراجعة العمل المقدم",
+      "description": "مراجعة العمل من {{workerName}}",
+      "workerSolution": "حل العامل:",
+      "selfReviewScore": "المراجعة الذاتية: {{score}}/100",
+      "noSubmissionNotes": "لم يتم تقديم ملاحظات الإرسال",
+      "actionLabel": "الإجراء *",
+      "required": "*",
+      "optional": "(اختياري)",
+      "feedbackLabel": "ملاحظات المراجعة {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "اشرح التغييرات المطلوبة",
+        "other": "قدم تعليقات أو اقتراحات للعامل"
+      },
+      "editorPlaceholder": {
+        "validate": "صف التغييرات المطلوبة...",
+        "other": "قدم ملاحظات على العمل..."
+      },
+      "managerReviewLabel": "مراجعة المدير (اختياري)",
+      "managerReviewDescription": "قيّم جودة العمل المكتمل",
+      "scorePoor": "0 (ضعيف)",
+      "scoreExcellent": "100 (ممتاز)",
+      "cancel": "إلغاء",
+      "submitting": "جارٍ الإرسال...",
+      "acceptWork": "قبول العمل",
+      "requestChangesButton": "طلب تغييرات",
+      "rejectWork": "رفض العمل",
+      "actions": {
+        "accept": {
+          "title": "قبول (وضع علامة كمنجز)",
+          "description": "الموافقة على العمل وإكمال المهمة. يحصل العامل على مكافأته."
+        },
+        "requestChanges": {
+          "title": "طلب تغييرات",
+          "description": "اطلب من العامل المراجعة وإعادة الإرسال."
+        },
+        "reject": {
+          "title": "رفض (إعادة فتح المهمة)",
+          "description": "رفض العمل بالكامل وإعادة فتح المهمة للآخرين."
+        }
+      },
+      "messages": {
+        "accepted": "تم قبول العمل ووضع علامة على المهمة كمكتملة",
+        "changesRequested": "تم طلب تغييرات، سيقوم العامل بالمراجعة",
+        "rejected": "تم رفض العمل وإعادة فتح المهمة",
+        "error": "تعذر إرسال المراجعة. يرجى المحاولة مرة أخرى."
+      }
+    },
+    "submission": {
+      "title": "إرسال العمل للمراجعة",
+      "titleResubmit": "المراجعة وإعادة إرسال العمل",
+      "description": "صف حلك لـ {{taskName}} وأرسله للتحقق.",
+      "solutionLabel": "وصف الحل *",
+      "solutionDescription": "اشرح ما فعلته لإكمال هذه المهمة. يدعم التنسيق والروابط والقوائم.",
+      "solutionPlaceholder": "اشرح ما فعلته لإكمال هذه المهمة...",
+      "selfReviewLabel": "المراجعة الذاتية (اختياري)",
+      "selfReviewDescription": "قيّم جودة عملك على مقياس من 0-100",
+      "scoreNeedsWork": "0 (يحتاج إلى عمل)",
+      "scorePerfect": "100 (مثالي)",
+      "cancel": "إلغاء",
+      "submitting": "جارٍ الإرسال...",
+      "submitButton": "إرسال للمراجعة",
+      "resubmitButton": "إعادة الإرسال للمراجعة",
+      "errors": {
+        "missingDescription": "يرجى تقديم وصف لعملك",
+        "submitError": "تعذر إرسال عملك. يرجى المحاولة مرة أخرى."
+      },
+      "messages": {
+        "submitted": "تم إرسال العمل للمراجعة",
+        "resubmitted": "تم إعادة إرسال العمل للمراجعة"
+      }
+    }
+  },
+  "notes": {
+    "updated": "تم تحديث الملاحظة بنجاح",
+    "updateFailed": "فشل تحديث الملاحظة",
+    "deleted": "تم حذف الملاحظة بنجاح",
+    "deleteFailed": "فشل حذف الملاحظة",
+    "deleting": "جاري الحذف...",
+    "confirmDelete": "هل أنت متأكد أنك تريد حذف هذه الملاحظة؟",
+    "content": "محتوى الملاحظة",
+    "visibilityUpdated": "تم تحديث الخصوصية بنجاح",
+    "visibilityUpdateFailed": "فشل تحديث الخصوصية",
+    "changeVisibility": "تغيير الخصوصية",
+    "filters": {
+      "sort": "ترتيب",
+      "date": "التاريخ",
+      "mostRelevant": "الأكثر صلة",
+      "all": "الكل"
+    }
+  },
+  "chat": {
+    "title": "المحادثة",
+    "subtitle": "المنظمات والقنوات والرسائل المباشرة والمواضيع.",
+    "anonymous": "مجهول",
+    "directMessage": "رسالة مباشرة",
+    "deletedMessage": "تم حذف الرسالة",
+    "deleteMessageTitle": "حذف الرسالة؟",
+    "deleteMessageDescription": "سيؤدي هذا إلى حذف الرسالة بشكل مؤقت والاحتفاظ بعنصر نائب في سجل المحادثة.",
+    "createInviteLink": "إنشاء رابط دعوة",
+    "pendingInvites": "الدعوات المعلقة",
+    "acceptInvite": "قبول",
+    "inviteFriendToOrg": "دعوة صديق إلى هذه المنظمة",
+    "inviteLinkCopied": "تم نسخ رابط الدعوة",
+    "inviteSent": "تم إرسال الدعوة",
+    "inviteAccepted": "تم قبول الدعوة"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "تخطيط الشبكة",
+      "tight": "محكم",
+      "small": "صغير",
+      "wide": "واسع"
+    }
   }
 }

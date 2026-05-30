@@ -21,6 +21,7 @@
     "signInToAccess": "Zaloguj się, aby uzyskać dostęp do swojego panelu i śledzić postępy.",
     "dismiss": "Zamknij",
     "accept": "Zaakceptuj",
+    "all": "Wszystko",
     "pageAvailableIn": "Ta strona jest dostępna w języku {locale}. Czy chcesz ją wyświetlić w tym języku?",
     "selectLanguage": "Wybierz język",
     "dashboard": "Panel",
@@ -56,7 +57,10 @@
     "copyLink": "Kopiuj link",
     "linkCopied": "Link skopiowany do schowka",
     "copyFailed": "Nie udało się skopiować linku",
-    "saving": "Zapisywanie..."
+    "saving": "Zapisywanie...",
+    "decline": "Odrzuć",
+    "friendRequest": "Zaproszenie do znajomych",
+    "reverseOrder": "Odwróć kolejność"
   },
   "navigation": {
     "dashboard": "Panel",
@@ -86,7 +90,26 @@
     "yourMood": "Twój nastrój.",
     "yourProductivity": "Twoja produktywność.",
     "yourData": "Twoje dane.",
-    "yourBalance": "Twoje pieniądze."
+    "yourBalance": "Twoje pieniądze.",
+    "timeframe": {
+      "startDate": "Data rozpoczęcia",
+      "endDate": "Data zakończenia"
+    },
+    "me": "Moje dane",
+    "selectDelegatedUser": "Wybierz delegowanego użytkownika",
+    "analysis": {
+      "alltimeAnalysis": "Analiza całego okresu",
+      "dayAnalysis": "Dzisiejsza analiza",
+      "last3daysAnalysis": "Analiza ostatnich 3 dni",
+      "weekAnalysis": "Analiza tygodnia",
+      "yearAnalysis": "Analiza roku",
+      "gratitudeAnalysis": "Analiza wdzięczności",
+      "optimismAnalysis": "Analiza optymizmu",
+      "restednessAnalysis": "Analiza wypoczynku",
+      "toleranceAnalysis": "Analiza tolerancji",
+      "selfEsteemAnalysis": "Analiza samooceny",
+      "trustAnalysis": "Analiza zaufania"
+    }
   },
   "mood": {
     "title": "Zarejestruj swój nastrój na {date}",
@@ -109,7 +132,26 @@
         "AI_ENABLED": "Obsługiwane przez sztuczną inteligencję"
       },
       "action": "Opublikuj notatkę",
-      "publishing": "Publishing..."
+      "publishing": "Publikowanie...",
+      "embedHint": "Osadzenie {provider}. Jeśli odtwarzanie jest niedostępne, otwórz oryginalny link poniżej."
+    },
+    "thirdParty": {
+      "title": "Strona trzecia",
+      "settings": "Ustawienia delegowania",
+      "activeDelegations": "Aktywne delegacje",
+      "empty": "Brak aktywnych delegacji.",
+      "identifierPlaceholder": "Nazwa użytkownika, e-mail lub identyfikator użytkownika",
+      "noFriendsFound": "Nie znaleziono pasujących znajomości.",
+      "friendsHint": "Sugestie obejmują twoich znajomych. Możesz też wpisać dowolny adres e-mail.",
+      "scope": "Zakres danych",
+      "allScopes": "Wszystkie zakresy",
+      "scopesSelected": "wybrane zakresy",
+      "minimumOneScope": "Co najmniej jeden zakres musi pozostać wybrany.",
+      "scopeResolutionHint": "Jeśli wybrano wiele zakresów, stosowany jest najszerszy wybrany zakres.",
+      "addDelegatedAnalyst": "Dodaj delegowanego analityka",
+      "adding": "Dodawanie...",
+      "addError": "Nie udało się dodać delegowanego analityka",
+      "invitationDraft": "Przygotowano szkic zaproszenia dla tego adresu e-mail."
     }
   },
   "week": {
@@ -137,7 +179,11 @@
       "open": "Otwarty",
       "done": "Ukończony",
       "ignored": "Zignorowany"
-    }
+    },
+    "edit": "Edytuj",
+    "loadingForDate": "Ładowanie zadań dla wybranej daty...",
+    "initializingTasks": "Konfigurowanie twoich zadań...",
+    "noTasksForDate": "Brak zadań zaplanowanych na tę datę"
   },
   "actions": {
     "drankWater": "Wypił wodę",
@@ -236,15 +282,18 @@
     "progress": "Postęp",
     "moodAverageScale": "Skala średniego nastroju",
     "balance": "Saldo",
-    "earningsScale": "Skala zarobków"
+    "earningsScale": "Skala zarobków",
+    "profit": "Zysk",
+    "stash": "Rezerwa",
+    "withdrawn": "Wypłacone"
   },
   "errors": {
     "notFound": "Ups! Nie można dostroić tej częstotliwości.",
     "genericError": "Coś poszło nie tak. Spróbuj ponownie.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "Nie udało się załadować notatek",
+    "failedToLoadNotes": "Nie udało się załadować notatek",
+    "failedToFetchTemplates": "Nie udało się załadować szablonów",
+    "failedToLoadTemplates": "Nie udało się załadować szablonów"
   },
   "social": {
     "title": "Kontakty społeczne",
@@ -330,9 +379,9 @@
     "cloning": "Klonowanie...",
     "noPublicNotes": "Brak dostępnych publicznych notatek.",
     "noPublicTemplatesOrLists": "Brak dostępnych publicznych szablonów lub list.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "Klonuj listę",
+    "cloneListSuccess": "Lista sklonowana pomyślnie!",
+    "cloneListFailed": "Klonowanie listy nie powiodło się"
   },
   "publicCharts": {
     "noData": "Brak dostępnych danych wykresów publicznych.",
@@ -358,7 +407,8 @@
     "closeFriend": "Bliski przyjaciel",
     "friends": "Znajomi",
     "signInToAdd": "Zaloguj się, aby dodać znajomego",
-    "editProfile": "Edytuj profil"
+    "editProfile": "Edytuj profil",
+    "message": "Wiadomość"
   },
   "profile": {
     "editProfile": "Edytuj profil",
@@ -464,7 +514,9 @@
       "timesLabel": "# razy",
       "saveToTemplate": "Zapisz zadanie do szablonu",
       "addTask": "Dodaj zadanie",
-      "cancel": "Anuluj"
+      "cancel": "Anuluj",
+      "editTitle": "Edytuj zadanie",
+      "saveTask": "Zapisz zadanie"
     },
     "addListForm": {
       "titleCreate": "Utwórz nową listę",
@@ -540,6 +592,39 @@
       },
       "create": "Utwórz",
       "cancel": "Anuluj"
+    },
+    "recurrencePicker": {
+      "frequency": "Powtarzaj",
+      "every": "Co",
+      "day": "dzień",
+      "days": "dni",
+      "week": "tydzień",
+      "weeks": "tygodnie",
+      "month": "miesiąc",
+      "months": "miesiące",
+      "year": "rok",
+      "years": "lata",
+      "noRepeat": "Nie powtarza się",
+      "daily": "Codziennie",
+      "weekly": "Co tydzień",
+      "monthly": "Co miesiąc",
+      "yearly": "Co rok",
+      "repeatOn": "Powtarzaj w",
+      "monday": "Pon",
+      "tuesday": "Wt",
+      "wednesday": "Śr",
+      "thursday": "Czw",
+      "friday": "Pt",
+      "saturday": "Sob",
+      "sunday": "Nie",
+      "dayOfMonth": "Dzień miesiąca",
+      "selectDay": "Wybierz dzień (1-31)",
+      "ends": "Kończy się",
+      "never": "Nigdy",
+      "onDate": "W dniu",
+      "after": "Po",
+      "pickDate": "Wybierz datę",
+      "occurrences": "powtórzeń"
     }
   },
   "socialView": {
@@ -614,5 +699,174 @@
     "deleteWallet": "Usuń Portfel",
     "deleteWalletConfirmation": "Czy na pewno chcesz usunąć ten portfel? Tej akcji nie można cofnąć. Portfel zostanie usunięty z Twojego konta, ale adres blockchain i jego środki pozostaną w blockchainie.",
     "delete": "Usuń"
+  },
+  "jobs": {
+    "history": "Historia Prac",
+    "filterByStatus": "Filtruj według Statusu:",
+    "errorLoadingHistory": "Błąd ładowania historii prac",
+    "noHistoryFound": "Nie znaleziono historii prac",
+    "status": {
+      "requested": "Zażądano",
+      "inProgress": "W Trakcie",
+      "validating": "Walidacja",
+      "accepted": "Zaakceptowano",
+      "rejected": "Odrzucono",
+      "submitted": "Przesłano",
+      "changesRequested": "Żądanie zmian"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "Twoje zgłoszenie jest weryfikowane. Otrzymasz powiadomienie po zatwierdzeniu.",
+        "inProgress": "Twoje zgłoszenie zostało zatwierdzone! Możesz teraz pracować nad tym zadaniem.",
+        "submitted": "Twoja praca została przesłana. Oczekiwanie na weryfikację właściciela.",
+        "validating": "Zażądano zmian. Proszę zweryfikować i przesłać ponownie.",
+        "accepted": "Gratulacje! Twoja praca została zaakceptowana.",
+        "rejected": "Twoje zgłoszenie zostało odrzucone."
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}} poprosił o pracę nad tym zadaniem. Zatwierdź lub odrzuć zgłoszenie.",
+        "inProgress": "{{workerName}} obecnie pracuje nad tym zadaniem.",
+        "submitted": "{{workerName}} przesłał swoją pracę do weryfikacji.",
+        "validating": "Oczekiwanie na {{workerName}} na zweryfikowanie i ponowne przesłanie.",
+        "accepted": "Praca użytkownika {{workerName}} została zaakceptowana.",
+        "rejected": "Zgłoszenie użytkownika {{workerName}} zostało odrzucone."
+      }
+    },
+    "actions": {
+      "submitForReview": "Prześlij do Weryfikacji",
+      "withdrawSubmission": "Wycofaj Zgłoszenie",
+      "withdrawing": "Wycofywanie...",
+      "reviseAndResubmit": "Zweryfikuj i Prześlij Ponownie",
+      "approveRequest": "Zatwierdź Zgłoszenie",
+      "approving": "Zatwierdzanie...",
+      "rejectRequest": "Odrzuć Zgłoszenie",
+      "rejecting": "Odrzucanie...",
+      "reviewAndAccept": "Zweryfikuj i Zaakceptuj",
+      "requestChanges": "Poproś o Zmiany",
+      "reject": "Odrzuć"
+    },
+    "review": {
+      "title": "Zweryfikuj Przesłaną Pracę",
+      "description": "Zweryfikuj pracę od {{workerName}}",
+      "workerSolution": "Rozwiązanie Pracownika:",
+      "selfReviewScore": "Samoocena: {{score}}/100",
+      "noSubmissionNotes": "Nie podano notatek o zgłoszeniu",
+      "actionLabel": "Działanie *",
+      "required": "*",
+      "optional": "(Opcjonalne)",
+      "feedbackLabel": "Opinia z Weryfikacji {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "Wyjaśnij, jakie zmiany są potrzebne",
+        "other": "Podaj komentarze lub sugestie dla pracownika"
+      },
+      "editorPlaceholder": {
+        "validate": "Opisz potrzebne zmiany...",
+        "other": "Przekaż opinię na temat pracy..."
+      },
+      "managerReviewLabel": "Ocena Menedżera (Opcjonalne)",
+      "managerReviewDescription": "Oceń jakość wykonanej pracy",
+      "scorePoor": "0 (Słabe)",
+      "scoreExcellent": "100 (Doskonałe)",
+      "cancel": "Anuluj",
+      "submitting": "Przesyłanie...",
+      "acceptWork": "Zaakceptuj Pracę",
+      "requestChangesButton": "Poproś o Zmiany",
+      "rejectWork": "Odrzuć Pracę",
+      "actions": {
+        "accept": {
+          "title": "Zaakceptuj (Oznacz zadanie jako Wykonane)",
+          "description": "Zatwierdź pracę i ukończ zadanie. Pracownik otrzymuje swoją nagrodę."
+        },
+        "requestChanges": {
+          "title": "Poproś o Zmiany",
+          "description": "Poproś pracownika o zweryfikowanie i ponowne przesłanie pracy."
+        },
+        "reject": {
+          "title": "Odrzuć (Otwórz zadanie ponownie)",
+          "description": "Odrzuć pracę całkowicie i otwórz zadanie ponownie dla innych."
+        }
+      },
+      "messages": {
+        "accepted": "Praca zaakceptowana i zadanie oznaczone jako ukończone",
+        "changesRequested": "Zażądano zmian, pracownik zweryfikuje",
+        "rejected": "Praca odrzucona, zadanie otwarte ponownie",
+        "error": "Nie można przesłać weryfikacji. Spróbuj ponownie."
+      }
+    },
+    "submission": {
+      "title": "Prześlij Pracę do Weryfikacji",
+      "titleResubmit": "Zweryfikuj i Prześlij Pracę Ponownie",
+      "description": "Opisz swoje rozwiązanie dla {{taskName}} i prześlij do walidacji.",
+      "solutionLabel": "Opis Rozwiązania *",
+      "solutionDescription": "Wyjaśnij, co zrobiłeś, aby ukończyć to zadanie. Obsługuje formatowanie, linki i listy.",
+      "solutionPlaceholder": "Wyjaśnij, co zrobiłeś, aby ukończyć to zadanie...",
+      "selfReviewLabel": "Samoocena (Opcjonalne)",
+      "selfReviewDescription": "Oceń jakość swojej pracy w skali od 0 do 100",
+      "scoreNeedsWork": "0 (Wymaga pracy)",
+      "scorePerfect": "100 (Doskonałe)",
+      "cancel": "Anuluj",
+      "submitting": "Przesyłanie...",
+      "submitButton": "Prześlij do Weryfikacji",
+      "resubmitButton": "Prześlij Ponownie do Weryfikacji",
+      "errors": {
+        "missingDescription": "Podaj opis swojej pracy",
+        "submitError": "Nie można przesłać twojej pracy. Spróbuj ponownie."
+      },
+      "messages": {
+        "submitted": "Praca przesłana do weryfikacji",
+        "resubmitted": "Praca przesłana ponownie do weryfikacji"
+      }
+    }
+  },
+  "notes": {
+    "updated": "Notatka zaktualizowana pomyślnie",
+    "updateFailed": "Nie udało się zaktualizować notatki",
+    "deleted": "Notatka usunięta pomyślnie",
+    "deleteFailed": "Nie udało się usunąć notatki",
+    "deleting": "Usuwanie...",
+    "confirmDelete": "Czy na pewno chcesz usunąć tę notatkę?",
+    "content": "Treść notatki",
+    "visibilityUpdated": "Widoczność zaktualizowana pomyślnie",
+    "visibilityUpdateFailed": "Nie udało się zaktualizować widoczności",
+    "changeVisibility": "Zmień widoczność",
+    "filters": {
+      "sort": "Sortuj",
+      "date": "Data",
+      "mostRelevant": "Najtrafniejsze",
+      "all": "Wszystko"
+    }
+  },
+  "chat": {
+    "title": "Czat",
+    "subtitle": "Organizacje, kanały, wiadomości bezpośrednie i wątki.",
+    "anonymous": "Anonimowy",
+    "directMessage": "Wiadomość bezpośrednia",
+    "deletedMessage": "Wiadomość usunięta",
+    "deleteMessageTitle": "Usunąć wiadomość?",
+    "deleteMessageDescription": "Spowoduje to miękkie usunięcie wiadomości i zachowanie symbolu zastępczego w historii rozmowy.",
+    "createInviteLink": "Utwórz link zaproszenia",
+    "pendingInvites": "Oczekujące zaproszenia",
+    "acceptInvite": "Akceptuj",
+    "inviteFriendToOrg": "Zaproś znajomego do tej organizacji",
+    "inviteLinkCopied": "Skopiowano link zaproszenia",
+    "inviteSent": "Zaproszenie wysłane",
+    "inviteAccepted": "Zaproszenie przyjęte"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Układ siatki",
+      "tight": "Ścisły",
+      "small": "Mały",
+      "wide": "Szeroki"
+    }
   }
 }

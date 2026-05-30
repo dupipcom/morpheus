@@ -1,7 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import React from 'react'
+import Link from 'next/link'
+import { Edit } from 'lucide-react'
+
+import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { PublicChartsView } from "@/components/publicChartsView"
 import { AddFriendButtonOrSignIn } from "@/components/addFriendButtonOrSignIn"
@@ -40,86 +44,38 @@ interface ProfileViewProps {
 function getTimeAgo(date: Date): string {
   const now = new Date()
   const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
-  
-  if (diffInSeconds < 60) {
-    return 'just now'
-  }
-  
+
+  if (diffInSeconds < 60) return 'just now'
+
   const diffInMinutes = Math.floor(diffInSeconds / 60)
-  if (diffInMinutes < 60) {
-    return `${diffInMinutes} minute${diffInMinutes === 1 ? '' : 's'} ago`
-  }
-  
+  if (diffInMinutes < 60) return `${diffInMinutes} minute${diffInMinutes === 1 ? '' : 's'} ago`
+
   const diffInHours = Math.floor(diffInMinutes / 60)
-  if (diffInHours < 24) {
-    return `${diffInHours} hour${diffInHours === 1 ? '' : 's'} ago`
-  }
-  
+  if (diffInHours < 24) return `${diffInHours} hour${diffInHours === 1 ? '' : 's'} ago`
+
   const diffInDays = Math.floor(diffInHours / 24)
-  if (diffInDays < 7) {
-    return `${diffInDays} day${diffInDays === 1 ? '' : 's'} ago`
-  }
-  
+  if (diffInDays < 7) return `${diffInDays} day${diffInDays === 1 ? '' : 's'} ago`
+
   const diffInWeeks = Math.floor(diffInDays / 7)
-  if (diffInWeeks < 4) {
-    return `${diffInWeeks} week${diffInWeeks === 1 ? '' : 's'} ago`
-  }
-  
+  if (diffInWeeks < 4) return `${diffInWeeks} week${diffInWeeks === 1 ? '' : 's'} ago`
+
   const diffInMonths = Math.floor(diffInDays / 30)
-  if (diffInMonths < 12) {
-    return `${diffInMonths} month${diffInMonths === 1 ? '' : 's'} ago`
-  }
-  
+  if (diffInMonths < 12) return `${diffInMonths} month${diffInMonths === 1 ? '' : 's'} ago`
+
   const diffInYears = Math.floor(diffInDays / 365)
   return `${diffInYears} year${diffInYears === 1 ? '' : 's'} ago`
 }
 
-export const ProfileView = ({ 
-  profile: initialProfile, 
-  userName, 
-  locale, 
-  currentUserUsername, 
-  isLoggedIn, 
-  translations 
-}: ProfileViewProps) => {
-  const [profile, setProfile] = useState<ProfileData>(initialProfile)
-  const [loading, setLoading] = useState(false)
-
-  // Requery profile endpoint on mount to get fields based on friendship status
-  // This ensures we get the most up-to-date data based on the current user's authentication
-  // and friendship status, even if the initial SSR data was fetched without auth context
-  useEffect(() => {
-    const fetchProfile = async () => {
-      if (!userName) return
-      
-      setLoading(true)
-      try {
-        const response = await fetch(`/api/v1/profile/${userName}`, {
-          cache: 'no-store',
-          credentials: 'include' // Include cookies for authentication
-        })
-        
-        if (response.ok) {
-          const data = await response.json()
-          if (data.profile) {
-            setProfile(data.profile)
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching profile:', error)
-        // Keep the initial profile data on error
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    // Always fetch on mount to get fresh data based on current auth state
-    fetchProfile()
-  }, [userName])
-
+export function ProfileView({
+  profile,
+  userName,
+  locale,
+  currentUserUsername,
+  isLoggedIn,
+  translations
+}: ProfileViewProps): React.ReactElement {
   // Extract profile data - API returns flat structure, but also support nested structure as fallback
   const profileData = profile.data || {}
-  // Check flat structure first (what API returns), then nested structure as fallback
   const firstName = profile.firstName || profileData.firstName?.value
   const lastName = profile.lastName || profileData.lastName?.value
   const profileUserName = profile.userName || profileData.username?.value
@@ -130,10 +86,8 @@ export const ProfileView = ({
   const fullName = [firstName, lastName].filter(Boolean).join(' ')
   const hasAnyPublicData = firstName || lastName || profileUserName || bio || profilePicture
   const isOwnProfile = currentUserUsername === userName
-  const canAddFriend = !isOwnProfile && profileUserName
-  const canEditProfile = isOwnProfile
-
-  // Display name logic: prefer fullName, then userName (even if not visible), then fallback
+  const showAddFriendButton = !isOwnProfile && profileUserName
+  const showMobileEditProfileButton = isOwnProfile && profileUserName
   const displayName = fullName || profileUserName || 'Anonymous User'
 
   return (
@@ -163,13 +117,23 @@ export const ProfileView = ({
                   )}
                 </div>
               </div>
-              {(canAddFriend || canEditProfile) && profileUserName && (
+              {showAddFriendButton && profileUserName && (
                 <div className="flex justify-center md:justify-end">
                   <AddFriendButtonOrSignIn 
                     targetUserName={profileUserName} 
                     isLoggedIn={isLoggedIn}
                     currentUserName={currentUserUsername || undefined}
                   />
+                </div>
+              )}
+              {showMobileEditProfileButton && (
+                <div className="flex justify-center">
+                  <Link href={`/${locale}/app/profile/edit`}>
+                    <Button>
+                      <Edit className="w-4 h-4 mr-2" />
+                      {(translations as any)?.profile?.editProfile || 'Edit Profile'}
+                    </Button>
+                  </Link>
                 </div>
               )}
             </div>
@@ -219,11 +183,7 @@ export const ProfileView = ({
             </TabsContent>
             
             <TabsContent value="templates" className="mt-4 min-w-0">
-              {loading ? (
-                <div className="text-center text-muted-foreground py-8">
-                  <p>{(translations as any)?.publicProfile?.loadingTemplates || 'Loading templates...'}</p>
-                </div>
-              ) : (profile.templates && profile.templates.length > 0) || (profile.taskLists && profile.taskLists.length > 0) ? (
+              {(profile.templates && profile.templates.length > 0) || (profile.taskLists && profile.taskLists.length > 0) ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {profile.templates?.map((template) => {
                     const activityItem: ActivityItem = {

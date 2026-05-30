@@ -24,6 +24,7 @@
     "signInToAccess": "Saioa hasi zure panelera sarbidea lortzeko eta zure aurrerapena jarraitzeko.",
     "dismiss": "Itxi",
     "accept": "Onartu",
+    "all": "Guztiak",
     "pageAvailableIn": "Orri hau {locale} hizkuntzan eskuragarri dago. Hizkuntza horretan ikusi nahi duzu?",
     "selectLanguage": "Hizkuntza hautatu",
     "manageAccount": "Kudeatu nire kontua",
@@ -55,7 +56,11 @@
     "noNotifications": "Jakinarazpenik ez",
     "copyLink": "Kopiatu esteka",
     "linkCopied": "Esteka arbelean kopiatu da",
-    "copyFailed": "Esteka kopiatzeak huts egin du"
+    "copyFailed": "Esteka kopiatzeak huts egin du",
+    "decline": "Ukatu",
+    "friendRequest": "Lagun eskaera",
+    "reverseOrder": "Ordenaren alderantzizkoa",
+    "saving": "Gordetzen..."
   },
   "navigation": {
     "home": "Hasiera",
@@ -84,7 +89,26 @@
     "yourMood": "Zure humorra.",
     "yourProductivity": "Zure produktibitatea.",
     "yourData": "Zure datuak.",
-    "yourBalance": "Zure dirua."
+    "yourBalance": "Zure dirua.",
+    "timeframe": {
+      "startDate": "Hasiera data",
+      "endDate": "Amaiera data"
+    },
+    "me": "Nire datuak",
+    "selectDelegatedUser": "Hautatu eskuordetutako erabiltzailea",
+    "analysis": {
+      "alltimeAnalysis": "Denbora osoko analisia",
+      "dayAnalysis": "Gaurko analisia",
+      "last3daysAnalysis": "Azken 3 egunetako analisia",
+      "weekAnalysis": "Asteko analisia",
+      "yearAnalysis": "Urteko analisia",
+      "gratitudeAnalysis": "Esker onaren analisia",
+      "optimismAnalysis": "Baikortasunaren analisia",
+      "restednessAnalysis": "Atsedenaren analisia",
+      "toleranceAnalysis": "Tolerantziaren analisia",
+      "selfEsteemAnalysis": "Autoestimaren analisia",
+      "trustAnalysis": "Konfiantzaren analisia"
+    }
   },
   "mood": {
     "title": "Erregistratu zure humorra {date} egunerako",
@@ -107,7 +131,26 @@
         "AI_ENABLED": "AI gaituta"
       },
       "action": "Argitaratu oharra",
-      "publishing": "Publishing..."
+      "publishing": "Argitaratzen...",
+      "embedHint": "{provider} txertaketa. Erreprodukzioa erabilgarri ez badago, ireki beheko jatorrizko esteka."
+    },
+    "thirdParty": {
+      "title": "Hirugarrena",
+      "settings": "Eskuordetze ezarpenak",
+      "activeDelegations": "Eskuordetze aktiboak",
+      "empty": "Ez dago eskuordetze aktiborik.",
+      "identifierPlaceholder": "Erabiltzaile-izena, posta elektronikoa edo erabiltzaile ID-a",
+      "noFriendsFound": "Ez da bat datorren adiskidetasunik aurkitu.",
+      "friendsHint": "Iradokizunek zure lagunak barne hartzen dituzte. Edozein helbide elektroniko ere sar dezakezu.",
+      "scope": "Datuen esparrua",
+      "allScopes": "Esparru guztiak",
+      "scopesSelected": "hautatutako esparruak",
+      "minimumOneScope": "Gutxienez esparru batek hautatuta jarraitu behar du.",
+      "scopeResolutionHint": "Hainbat esparru hautatzen badira, hautatutako esparru zabalena aplikatzen da.",
+      "addDelegatedAnalyst": "Gehitu eskuordetutako analista",
+      "adding": "Gehitzen...",
+      "addError": "Ezin izan da eskuordetutako analista gehitu",
+      "invitationDraft": "Gonbidapen-zirriborroa helbide elektroniko honetarako prestatu da."
     }
   },
   "week": {
@@ -135,7 +178,11 @@
       "open": "Ireki",
       "done": "Eginda",
       "ignored": "Ezikusia"
-    }
+    },
+    "edit": "Editatu",
+    "loadingForDate": "Hautatutako datarako zereginak kargatzen...",
+    "initializingTasks": "Zure zereginak konfiguratzen...",
+    "noTasksForDate": "Data honetarako ez dago zereginik programatuta"
   },
   "actions": {
     "drankWater": "Ura edan zuen",
@@ -225,10 +272,10 @@
   "errors": {
     "notFound": "Ups! Ezin izan da maiztasun hori sintonizatu.",
     "genericError": "Zerbait gaizki joan da. Mesedez, saiatu berriro.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "Oharrak kargatzeak huts egin du",
+    "failedToLoadNotes": "Oharrak kargatzeak huts egin du",
+    "failedToFetchTemplates": "Txantiloiak kargatzeak huts egin du",
+    "failedToLoadTemplates": "Txantiloiak kargatzeak huts egin du"
   },
   "social": {
     "title": "Kontaktu sozialak",
@@ -314,9 +361,9 @@
     "cloning": "Klonatzen...",
     "noPublicNotes": "Oraindik ez dago ohar publiko eskuragarririk.",
     "noPublicTemplatesOrLists": "Oraindik ez dago txantiloi edo zerrenda publiko eskuragarririk.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "Klonatu zerrenda",
+    "cloneListSuccess": "Zerrenda ondo klonatu da!",
+    "cloneListFailed": "Zerrenda klonatzeak huts egin du"
   },
   "publicCharts": {
     "noData": "Ez dago grafik publikoen daturik eskuragarri.",
@@ -342,7 +389,8 @@
     "closeFriend": "Lagun hurbila",
     "friends": "Lagunak",
     "signInToAdd": "Hasi saioa lagun bat gehitzeko",
-    "editProfile": "Profila editatu"
+    "editProfile": "Profila editatu",
+    "message": "Mezua"
   },
   "profile": {
     "editProfile": "Profila editatu",
@@ -448,7 +496,9 @@
       "timesLabel": "# aldiz",
       "saveToTemplate": "Gorde ataza txantiloi gisa",
       "addTask": "Ataza gehitu",
-      "cancel": "Utzi"
+      "cancel": "Utzi",
+      "editTitle": "Editatu zeregina",
+      "saveTask": "Gorde zeregina"
     },
     "addListForm": {
       "titleCreate": "Zerrenda berria sortu",
@@ -524,6 +574,39 @@
       },
       "create": "Sortu",
       "cancel": "Utzi"
+    },
+    "recurrencePicker": {
+      "frequency": "Errepikatu",
+      "every": "Guztiak",
+      "day": "eguna",
+      "days": "egunak",
+      "week": "astea",
+      "weeks": "asteak",
+      "month": "hila",
+      "months": "hilak",
+      "year": "urtea",
+      "years": "urteak",
+      "noRepeat": "Ez da errepikatzen",
+      "daily": "Egunero",
+      "weekly": "Astero",
+      "monthly": "Hilero",
+      "yearly": "Urtero",
+      "repeatOn": "Errepikatu",
+      "monday": "Al",
+      "tuesday": "Ar",
+      "wednesday": "Az",
+      "thursday": "Og",
+      "friday": "Or",
+      "saturday": "Lr",
+      "sunday": "Ig",
+      "dayOfMonth": "Hilabeteko eguna",
+      "selectDay": "Hautatu eguna (1-31)",
+      "ends": "Bukatzen da",
+      "never": "Inoiz ez",
+      "onDate": "Egunean",
+      "after": "Ondoren",
+      "pickDate": "Hautatu data bat",
+      "occurrences": "aldiz"
     }
   },
   "charts": {
@@ -538,7 +621,10 @@
     "progress": "Aurrerapena",
     "moodAverageScale": "Humor batazbesteko eskala",
     "balance": "Saldoa",
-    "earningsScale": "Irabazi eskala"
+    "earningsScale": "Irabazi eskala",
+    "profit": "Irabazia",
+    "stash": "Erreserba",
+    "withdrawn": "Ateratua"
   },
   "socialView": {
     "activity": "Jarduera",
@@ -612,5 +698,174 @@
     "deleteWallet": "Ezabatu Diru-zorroa",
     "deleteWalletConfirmation": "Ziur zaude diru-zorro hau ezabatu nahi duzula? Ekintza hau ezin da desegin. Diru-zorroa zure kontutik kenduko da, baina blockchain helbidea eta bere funtsak blockchainen geratuko dira.",
     "delete": "Ezabatu"
+  },
+  "jobs": {
+    "history": "Lanen Historia",
+    "filterByStatus": "Egoeraren Arabera Iragazi:",
+    "errorLoadingHistory": "Errorea lanen historia kargatzean",
+    "noHistoryFound": "Ez da lanen historiarik aurkitu",
+    "status": {
+      "requested": "Eskatua",
+      "inProgress": "Abian",
+      "validating": "Balioztatzen",
+      "accepted": "Onartua",
+      "rejected": "Baztertua",
+      "submitted": "Bidalita",
+      "changesRequested": "Aldaketak eskatuta"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "Zure eskaera aztertzen ari da. Onartzen denean jakinaraziko zaizu.",
+        "inProgress": "Zure eskaera onartu da! Orain zeregin honetan lan egin dezakezu.",
+        "submitted": "Zure lana bidali da. Jabeak berrikusteko zain.",
+        "validating": "Aldaketak eskatu dira. Mesedez, berrikusi eta birbidali.",
+        "accepted": "Zorionak! Zure lana onartu da.",
+        "rejected": "Zure bidalketa baztertu da."
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}}(e)k zeregin honetan lan egiteko eskatu du. Onartu edo baztertu eskaera.",
+        "inProgress": "{{workerName}} zeregin honetan ari da lanean.",
+        "submitted": "{{workerName}}(e)k bere lana berrikusteko bidali du.",
+        "validating": "{{workerName}}(e)k berrikusi eta birbidaltzeko zain.",
+        "accepted": "{{workerName}}(r)en lana onartu da.",
+        "rejected": "{{workerName}}(r)en bidalketa baztertu da."
+      }
+    },
+    "actions": {
+      "submitForReview": "Berrikusteko Bidali",
+      "withdrawSubmission": "Bidalketa Atzera Egin",
+      "withdrawing": "Atzera egiten...",
+      "reviseAndResubmit": "Berrikusi eta Birbidali",
+      "approveRequest": "Eskaera Onartu",
+      "approving": "Onartzen...",
+      "rejectRequest": "Eskaera Baztertu",
+      "rejecting": "Baztertzen...",
+      "reviewAndAccept": "Berrikusi eta Onartu",
+      "requestChanges": "Aldaketak Eskatu",
+      "reject": "Baztertu"
+    },
+    "review": {
+      "title": "Bidalitako Lana Berrikusi",
+      "description": "{{workerName}}(r)en lana berrikusi",
+      "workerSolution": "Langilearen Irtenbidea:",
+      "selfReviewScore": "Auto-ebaluazioa: {{score}}/100",
+      "noSubmissionNotes": "Ez dira bidalketako oharrik eman",
+      "actionLabel": "Ekintza *",
+      "required": "*",
+      "optional": "(Aukerakoa)",
+      "feedbackLabel": "Berrikuspena Iritzia {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "Azaldu zer aldaketa behar diren",
+        "other": "Eman iruzkinak edo iradokizunak langilearentzat"
+      },
+      "editorPlaceholder": {
+        "validate": "Deskribatu behar diren aldaketak...",
+        "other": "Eman lanari buruzko iritzia..."
+      },
+      "managerReviewLabel": "Kudeatzailearen Berrikuspena (Aukerakoa)",
+      "managerReviewDescription": "Baloratu amaitutako lanaren kalitatea",
+      "scorePoor": "0 (Txarra)",
+      "scoreExcellent": "100 (Bikaina)",
+      "cancel": "Utzi",
+      "submitting": "Bidaltzen...",
+      "acceptWork": "Lana Onartu",
+      "requestChangesButton": "Aldaketak Eskatu",
+      "rejectWork": "Lana Baztertu",
+      "actions": {
+        "accept": {
+          "title": "Onartu (Zeregin Eginda markatuta)",
+          "description": "Onartu lana eta osatu zeregiña. Langileak saria irabazten du."
+        },
+        "requestChanges": {
+          "title": "Aldaketak Eskatu",
+          "description": "Eskatu langileari bere lana berrikusi eta birbidaltzea."
+        },
+        "reject": {
+          "title": "Baztertu (Zeregin berriz ireki)",
+          "description": "Baztertu lana erabat eta berriz ireki zeregin besteentzat."
+        }
+      },
+      "messages": {
+        "accepted": "Lana onartu eta zeregin osatuta markatu da",
+        "changesRequested": "Aldaketak eskatu dira, langileak berrikustuko du",
+        "rejected": "Lana baztertu da, zeregin berriz ireki da",
+        "error": "Ezin izan da berrikuspena bidali. Mesedez, saiatu berriro."
+      }
+    },
+    "submission": {
+      "title": "Lana Berrikusteko Bidali",
+      "titleResubmit": "Berrikusi eta Birbidali Lana",
+      "description": "Deskribatu {{taskName}} zereginari buruzko zure irtenbidea eta bidali balidatzeko.",
+      "solutionLabel": "Irtenbidearen Deskribapena *",
+      "solutionDescription": "Azaldu zeregin hau osatzeko zer egin zenuen. Formatua, estekak eta zerrendak onartzen ditu.",
+      "solutionPlaceholder": "Azaldu zeregin hau osatzeko zer egin zenuen...",
+      "selfReviewLabel": "Auto-ebaluazioa (Aukerakoa)",
+      "selfReviewDescription": "Baloratu zure lanaren kalitatea 0-100 eskalan",
+      "scoreNeedsWork": "0 (Lana behar du)",
+      "scorePerfect": "100 (Perfektua)",
+      "cancel": "Utzi",
+      "submitting": "Bidaltzen...",
+      "submitButton": "Berrikusteko Bidali",
+      "resubmitButton": "Berrikusteko Birbidali",
+      "errors": {
+        "missingDescription": "Mesedez, eman zure lanaren deskribapena",
+        "submitError": "Ezin izan da zure lana bidali. Mesedez, saiatu berriro."
+      },
+      "messages": {
+        "submitted": "Lana berrikusteko bidali da",
+        "resubmitted": "Lana berrikusteko birbidali da"
+      }
+    }
+  },
+  "notes": {
+    "updated": "Oharra eguneratuta",
+    "updateFailed": "Ezin izan da oharra eguneratu",
+    "deleted": "Oharra ezabatuta",
+    "deleteFailed": "Ezin izan da oharra ezabatu",
+    "deleting": "Ezabatzen...",
+    "confirmDelete": "Ziur zaude ohar hau ezabatu nahi duzula?",
+    "content": "Oharraren edukia",
+    "visibilityUpdated": "Ikusgarritasuna eguneratuta",
+    "visibilityUpdateFailed": "Ezin izan da ikusgarritasuna eguneratu",
+    "changeVisibility": "Aldatu ikusgarritasuna",
+    "filters": {
+      "sort": "Ordenatu",
+      "date": "Data",
+      "mostRelevant": "Garrantzitsuena",
+      "all": "Guztiak"
+    }
+  },
+  "chat": {
+    "title": "Txata",
+    "subtitle": "Erakundeak, kanalak, mezu zuzenak eta hariak.",
+    "anonymous": "Anonimoa",
+    "directMessage": "Mezu zuzena",
+    "deletedMessage": "Mezua ezabatuta",
+    "deleteMessageTitle": "Ezabatu mezua?",
+    "deleteMessageDescription": "Honek mezua modu leunean ezabatuko du eta elkarrizketaren historian leku-gordailu bat gordeko du.",
+    "createInviteLink": "Sortu gonbidapen esteka",
+    "pendingInvites": "Gonbidapen zain",
+    "acceptInvite": "Onartu",
+    "inviteFriendToOrg": "Gonbidatu lagun bat erakunde honetara",
+    "inviteLinkCopied": "Gonbidapen esteka kopiatuta",
+    "inviteSent": "Gonbidapena bidalita",
+    "inviteAccepted": "Gonbidapena onartuta"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Sareta diseinua",
+      "tight": "Trinkoa",
+      "small": "Txikia",
+      "wide": "Zabala"
+    }
   }
 }

@@ -24,6 +24,7 @@
     "signInToAccess": "আপনার ড্যাশবোর্ডে অ্যাক্সেস করতে এবং আপনার অগ্রগতি ট্র্যাক করতে সাইন ইন করুন।",
     "dismiss": "বন্ধ করুন",
     "accept": "গ্রহণ করুন",
+    "all": "সমস্ত",
     "pageAvailableIn": "এই পৃষ্ঠাটি {locale} ভাষায় উপলব্ধ। আপনি কি এটি সেই ভাষায় দেখতে চান?",
     "selectLanguage": "ভাষা নির্বাচন করুন",
     "manageAccount": "আমার অ্যাকাউন্ট পরিচালনা করুন",
@@ -56,7 +57,10 @@
     "copyLink": "লিঙ্ক কপি করুন",
     "linkCopied": "লিঙ্ক ক্লিপবোর্ডে কপি করা হয়েছে",
     "copyFailed": "লিঙ্ক কপি করতে ব্যর্থ",
-    "saving": "সংরক্ষণ করা হচ্ছে..."
+    "saving": "সংরক্ষণ করা হচ্ছে...",
+    "decline": "প্রত্যাখ্যান",
+    "friendRequest": "বন্ধুত্বের অনুরোধ",
+    "reverseOrder": "ক্রম উল্টানো"
   },
   "navigation": {
     "home": "হোম",
@@ -82,7 +86,26 @@
     "yourMood": "আপনার মেজাজ।",
     "yourProductivity": "আপনার উৎপাদনশীলতা।",
     "yourData": "আপনার ডেটা।",
-    "yourBalance": "আপনার টাকা।"
+    "yourBalance": "আপনার টাকা।",
+    "timeframe": {
+      "startDate": "শুরুর তারিখ",
+      "endDate": "শেষের তারিখ"
+    },
+    "me": "আমার ডেটা",
+    "selectDelegatedUser": "প্রতিনিধি ব্যবহারকারী নির্বাচন করুন",
+    "analysis": {
+      "alltimeAnalysis": "সর্বকালের বিশ্লেষণ",
+      "dayAnalysis": "আজকের বিশ্লেষণ",
+      "last3daysAnalysis": "গত ৩ দিনের বিশ্লেষণ",
+      "weekAnalysis": "সাপ্তাহিক বিশ্লেষণ",
+      "yearAnalysis": "বার্ষিক বিশ্লেষণ",
+      "gratitudeAnalysis": "কৃতজ্ঞতা বিশ্লেষণ",
+      "optimismAnalysis": "আশাবাদ বিশ্লেষণ",
+      "restednessAnalysis": "বিশ্রামের বিশ্লেষণ",
+      "toleranceAnalysis": "সহনশীলতার বিশ্লেষণ",
+      "selfEsteemAnalysis": "আত্মসম্মান বিশ্লেষণ",
+      "trustAnalysis": "বিশ্বাসের বিশ্লেষণ"
+    }
   },
   "mood": {
     "title": "এটা {date}।",
@@ -105,7 +128,26 @@
         "AI_ENABLED": "এআই সক্রিয়"
       },
       "action": "নোট প্রকাশ করুন",
-      "publishing": "Publishing..."
+      "publishing": "প্রকাশ করা হচ্ছে...",
+      "embedHint": "{provider} এমবেড। প্লেব্যাক পাওয়া না গেলে নিচের মূল লিঙ্কটি খুলুন।"
+    },
+    "thirdParty": {
+      "title": "তৃতীয় পক্ষ",
+      "settings": "প্রতিনিধিত্ব সেটিংস",
+      "activeDelegations": "সক্রিয় প্রতিনিধিত্ব",
+      "empty": "কোনও সক্রিয় প্রতিনিধিত্ব নেই।",
+      "identifierPlaceholder": "ব্যবহারকারীর নাম, ইমেল, বা ব্যবহারকারী আইডি",
+      "noFriendsFound": "মিল থাকা বন্ধুত্ব পাওয়া যায়নি।",
+      "friendsHint": "পরামর্শগুলিতে আপনার বন্ধুরা অন্তর্ভুক্ত আছে। আপনি চাইলে যেকোনও ইমেল ঠিকানাও লিখতে পারেন।",
+      "scope": "ডেটার পরিসর",
+      "allScopes": "সব পরিসর",
+      "scopesSelected": "পরিসর নির্বাচিত",
+      "minimumOneScope": "অন্তত একটি পরিসর নির্বাচিত থাকতে হবে।",
+      "scopeResolutionHint": "একাধিক পরিসর নির্বাচিত হলে, নির্বাচিতগুলোর মধ্যে সবচেয়ে বিস্তৃত পরিসর প্রয়োগ করা হবে।",
+      "addDelegatedAnalyst": "প্রতিনিধি বিশ্লেষক যোগ করুন",
+      "adding": "যোগ করা হচ্ছে...",
+      "addError": "প্রতিনিধি বিশ্লেষক যোগ করা যায়নি",
+      "invitationDraft": "এই ইমেলটির জন্য আমন্ত্রণের খসড়া প্রস্তুত করা হয়েছে।"
     }
   },
   "week": {
@@ -133,7 +175,11 @@
       "open": "খোলা",
       "done": "সম্পন্ন",
       "ignored": "উপেক্ষিত"
-    }
+    },
+    "edit": "সম্পাদনা",
+    "loadingForDate": "নির্বাচিত তারিখের জন্য কাজগুলি লোড হচ্ছে...",
+    "initializingTasks": "আপনার কাজগুলি সেট আপ করা হচ্ছে...",
+    "noTasksForDate": "এই তারিখের জন্য কোনো কাজ নির্ধারিত নেই"
   },
   "actions": {
     "drankWater": "পানি পান করেছে",
@@ -223,10 +269,10 @@
   "errors": {
     "notFound": "ওপস! এই ফ্রিকোয়েন্সি টিউন করতে পারেনি।",
     "genericError": "কিছু ভুল হয়েছে। দয়া করে আবার চেষ্টা করুন।",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "নোট লোড করতে ব্যর্থ",
+    "failedToLoadNotes": "নোট লোড করতে ব্যর্থ",
+    "failedToFetchTemplates": "টেমপ্লেট লোড করতে ব্যর্থ",
+    "failedToLoadTemplates": "টেমপ্লেট লোড করতে ব্যর্থ"
   },
   "social": {
     "title": "সামাজিক যোগাযোগ",
@@ -312,9 +358,9 @@
     "cloning": "ক্লোন হচ্ছে...",
     "noPublicNotes": "এখনও কোনও পাবলিক নোট উপলব্ধ নেই।",
     "noPublicTemplatesOrLists": "এখনও কোনও পাবলিক টেমপ্লেট বা তালিকা উপলব্ধ নেই।",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "তালিকা ক্লোন করুন",
+    "cloneListSuccess": "তালিকা সফলভাবে ক্লোন করা হয়েছে!",
+    "cloneListFailed": "তালিকা ক্লোন করতে ব্যর্থ"
   },
   "publicCharts": {
     "noData": "কোনও পাবলিক চার্টের ডেটা উপলব্ধ নেই।",
@@ -340,7 +386,8 @@
     "closeFriend": "ঘনিষ্ঠ বন্ধু",
     "friends": "বন্ধুরা",
     "signInToAdd": "বন্ধু যোগ করতে সাইন ইন করুন",
-    "editProfile": "প্রোফাইল সম্পাদনা"
+    "editProfile": "প্রোফাইল সম্পাদনা",
+    "message": "বার্তা"
   },
   "profile": {
     "editProfile": "প্রোফাইল সম্পাদনা",
@@ -446,7 +493,9 @@
       "timesLabel": "# বার",
       "saveToTemplate": "টেমপ্লেটে কাজ সংরক্ষণ করুন",
       "addTask": "কাজ যোগ করুন",
-      "cancel": "বাতিল"
+      "cancel": "বাতিল",
+      "editTitle": "টাস্ক সম্পাদনা",
+      "saveTask": "টাস্ক সংরক্ষণ করুন"
     },
     "addListForm": {
       "titleCreate": "নতুন তালিকা তৈরি করুন",
@@ -522,6 +571,39 @@
       },
       "create": "তৈরি করুন",
       "cancel": "বাতিল"
+    },
+    "recurrencePicker": {
+      "frequency": "পুনরাবৃত্তি",
+      "every": "প্রতি",
+      "day": "দিন",
+      "days": "দিন",
+      "week": "সপ্তাহ",
+      "weeks": "সপ্তাহ",
+      "month": "মাস",
+      "months": "মাস",
+      "year": "বছর",
+      "years": "বছর",
+      "noRepeat": "পুনরাবৃত্তি হয় না",
+      "daily": "প্রতিদিন",
+      "weekly": "সাপ্তাহিক",
+      "monthly": "মাসিক",
+      "yearly": "বার্ষিক",
+      "repeatOn": "পুনরাবৃত্তি করুন",
+      "monday": "সোম",
+      "tuesday": "মঙ্গল",
+      "wednesday": "বুধ",
+      "thursday": "বৃহ",
+      "friday": "শুক্র",
+      "saturday": "শনি",
+      "sunday": "রবি",
+      "dayOfMonth": "মাসের দিন",
+      "selectDay": "দিন নির্বাচন করুন (1-31)",
+      "ends": "শেষ হয়",
+      "never": "কখনো না",
+      "onDate": "তারিখে",
+      "after": "পরে",
+      "pickDate": "একটি তারিখ নির্বাচন করুন",
+      "occurrences": "বার"
     }
   },
   "charts": {
@@ -536,7 +618,10 @@
     "progress": "অগ্রগতি",
     "moodAverageScale": "মুড গড়ের স্কেল",
     "balance": "ব্যালেন্স",
-    "earningsScale": "আয়ের স্কেল"
+    "earningsScale": "আয়ের স্কেল",
+    "profit": "লাভ",
+    "stash": "সংরক্ষণ",
+    "withdrawn": "উত্তোলন করা হয়েছে"
   },
   "socialView": {
     "activity": "কার্যক্রম",
@@ -610,5 +695,174 @@
     "deleteWallet": "ওয়ালেট মুছুন",
     "deleteWalletConfirmation": "আপনি কি নিশ্চিত যে আপনি এই ওয়ালেটটি মুছতে চান? এই কাজটি পূর্বাবস্থায় ফেরানো যাবে না। ওয়ালেটটি আপনার অ্যাকাউন্ট থেকে সরানো হবে, তবে ব্লকচেইন ঠিকানা এবং এর তহবিল ব্লকচেইনে থাকবে।",
     "delete": "মুছুন"
+  },
+  "jobs": {
+    "history": "কাজের ইতিহাস",
+    "filterByStatus": "স্ট্যাটাস অনুযায়ী ফিল্টার করুন:",
+    "errorLoadingHistory": "কাজের ইতিহাস লোড করতে ত্রুটি",
+    "noHistoryFound": "কোন কাজের ইতিহাস পাওয়া যায়নি",
+    "status": {
+      "requested": "অনুরোধ করা হয়েছে",
+      "inProgress": "চলমান",
+      "validating": "যাচাই করা হচ্ছে",
+      "accepted": "গ্রহণ করা হয়েছে",
+      "rejected": "প্রত্যাখ্যান করা হয়েছে",
+      "submitted": "জমা দেওয়া হয়েছে",
+      "changesRequested": "পরিবর্তনের অনুরোধ"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "আপনার অনুরোধ পর্যালোচনা করা হচ্ছে। অনুমোদিত হলে আপনাকে জানানো হবে।",
+        "inProgress": "আপনার অনুরোধ অনুমোদিত হয়েছে! আপনি এখন এই কাজে কাজ করতে পারেন।",
+        "submitted": "আপনার কাজ জমা দেওয়া হয়েছে। মালিকের পর্যালোচনার অপেক্ষায়।",
+        "validating": "পরিবর্তন অনুরোধ করা হয়েছে। অনুগ্রহ করে সংশোধন করে পুনরায় জমা দিন।",
+        "accepted": "অভিনন্দন! আপনার কাজ গৃহীত হয়েছে।",
+        "rejected": "আপনার জমা প্রত্যাখ্যান করা হয়েছে।"
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}} এই কাজে কাজ করার জন্য অনুরোধ করেছেন। অনুরোধ অনুমোদন বা প্রত্যাখ্যান করুন।",
+        "inProgress": "{{workerName}} বর্তমানে এই কাজে কাজ করছেন।",
+        "submitted": "{{workerName}} তাদের কাজ পর্যালোচনার জন্য জমা দিয়েছেন।",
+        "validating": "{{workerName}} এর সংশোধন এবং পুনরায় জমা দেওয়ার অপেক্ষায়।",
+        "accepted": "{{workerName}} এর কাজ গৃহীত হয়েছে।",
+        "rejected": "{{workerName}} এর জমা প্রত্যাখ্যান করা হয়েছে।"
+      }
+    },
+    "actions": {
+      "submitForReview": "পর্যালোচনার জন্য জমা দিন",
+      "withdrawSubmission": "জমা প্রত্যাহার করুন",
+      "withdrawing": "প্রত্যাহার করা হচ্ছে...",
+      "reviseAndResubmit": "সংশোধন এবং পুনরায় জমা দিন",
+      "approveRequest": "অনুরোধ অনুমোদন করুন",
+      "approving": "অনুমোদন করা হচ্ছে...",
+      "rejectRequest": "অনুরোধ প্রত্যাখ্যান করুন",
+      "rejecting": "প্রত্যাখ্যান করা হচ্ছে...",
+      "reviewAndAccept": "পর্যালোচনা এবং গ্রহণ করুন",
+      "requestChanges": "পরিবর্তন অনুরোধ করুন",
+      "reject": "প্রত্যাখ্যান করুন"
+    },
+    "review": {
+      "title": "জমা দেওয়া কাজ পর্যালোচনা করুন",
+      "description": "{{workerName}} এর কাজ পর্যালোচনা করুন",
+      "workerSolution": "কর্মীর সমাধান:",
+      "selfReviewScore": "স্ব-পর্যালোচনা: {{score}}/100",
+      "noSubmissionNotes": "কোনো জমা নোট প্রদান করা হয়নি",
+      "actionLabel": "পদক্ষেপ *",
+      "required": "*",
+      "optional": "(ঐচ্ছিক)",
+      "feedbackLabel": "পর্যালোচনা প্রতিক্রিয়া {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "কী পরিবর্তন প্রয়োজন তা ব্যাখ্যা করুন",
+        "other": "কর্মীর জন্য মন্তব্য বা পরামর্শ প্রদান করুন"
+      },
+      "editorPlaceholder": {
+        "validate": "প্রয়োজনীয় পরিবর্তনগুলি বর্ণনা করুন...",
+        "other": "কাজের বিষয়ে প্রতিক্রিয়া প্রদান করুন..."
+      },
+      "managerReviewLabel": "পরিচালক পর্যালোচনা (ঐচ্ছিক)",
+      "managerReviewDescription": "সম্পন্ন কাজের মান মূল্যায়ন করুন",
+      "scorePoor": "0 (দুর্বল)",
+      "scoreExcellent": "100 (চমৎকার)",
+      "cancel": "বাতিল করুন",
+      "submitting": "জমা দেওয়া হচ্ছে...",
+      "acceptWork": "কাজ গ্রহণ করুন",
+      "requestChangesButton": "পরিবর্তন অনুরোধ করুন",
+      "rejectWork": "কাজ প্রত্যাখ্যান করুন",
+      "actions": {
+        "accept": {
+          "title": "গ্রহণ করুন (কাজ সম্পন্ন হিসাবে চিহ্নিত করুন)",
+          "description": "কাজ অনুমোদন করুন এবং কাজ সম্পন্ন করুন। কর্মী তাদের পুরস্কার পান।"
+        },
+        "requestChanges": {
+          "title": "পরিবর্তন অনুরোধ করুন",
+          "description": "কর্মীকে তাদের কাজ সংশোধন এবং পুনরায় জমা দিতে বলুন।"
+        },
+        "reject": {
+          "title": "প্রত্যাখ্যান করুন (কাজ পুনরায় খুলুন)",
+          "description": "কাজ সম্পূর্ণভাবে প্রত্যাখ্যান করুন এবং অন্যদের জন্য কাজ পুনরায় খুলুন।"
+        }
+      },
+      "messages": {
+        "accepted": "কাজ গৃহীত হয়েছে এবং কাজ সম্পন্ন হিসাবে চিহ্নিত করা হয়েছে",
+        "changesRequested": "পরিবর্তন অনুরোধ করা হয়েছে, কর্মী সংশোধন করবেন",
+        "rejected": "কাজ প্রত্যাখ্যান করা হয়েছে, কাজ পুনরায় খোলা হয়েছে",
+        "error": "পর্যালোচনা জমা দিতে পারেনি। অনুগ্রহ করে আবার চেষ্টা করুন।"
+      }
+    },
+    "submission": {
+      "title": "পর্যালোচনার জন্য কাজ জমা দিন",
+      "titleResubmit": "সংশোধন এবং পুনরায় কাজ জমা দিন",
+      "description": "{{taskName}} এর জন্য আপনার সমাধান বর্ণনা করুন এবং যাচাইয়ের জন্য জমা দিন।",
+      "solutionLabel": "সমাধান বর্ণনা *",
+      "solutionDescription": "এই কাজ সম্পন্ন করতে আপনি কী করেছিলেন তা ব্যাখ্যা করুন। ফর্ম্যাটিং, লিঙ্ক এবং তালিকা সমর্থন করে।",
+      "solutionPlaceholder": "এই কাজ সম্পন্ন করতে আপনি কী করেছিলেন তা ব্যাখ্যা করুন...",
+      "selfReviewLabel": "স্ব-পর্যালোচনা (ঐচ্ছিক)",
+      "selfReviewDescription": "0-100 স্কেলে আপনার কাজের মান মূল্যায়ন করুন",
+      "scoreNeedsWork": "0 (কাজ প্রয়োজন)",
+      "scorePerfect": "100 (নিখুঁত)",
+      "cancel": "বাতিল করুন",
+      "submitting": "জমা দেওয়া হচ্ছে...",
+      "submitButton": "পর্যালোচনার জন্য জমা দিন",
+      "resubmitButton": "পর্যালোচনার জন্য পুনরায় জমা দিন",
+      "errors": {
+        "missingDescription": "অনুগ্রহ করে আপনার কাজের একটি বর্ণনা প্রদান করুন",
+        "submitError": "আপনার কাজ জমা দিতে পারেনি। অনুগ্রহ করে আবার চেষ্টা করুন।"
+      },
+      "messages": {
+        "submitted": "পর্যালোচনার জন্য কাজ জমা দেওয়া হয়েছে",
+        "resubmitted": "পর্যালোচনার জন্য কাজ পুনরায় জমা দেওয়া হয়েছে"
+      }
+    }
+  },
+  "notes": {
+    "updated": "নোট সফলভাবে আপডেট হয়েছে",
+    "updateFailed": "নোট আপডেট করতে ব্যর্থ",
+    "deleted": "নোট সফলভাবে মুছে ফেলা হয়েছে",
+    "deleteFailed": "নোট মুছে ফেলতে ব্যর্থ",
+    "deleting": "মুছে ফেলা হচ্ছে...",
+    "confirmDelete": "আপনি কি এই নোটটি মুছে ফেলতে চান?",
+    "content": "নোটের বিষয়বস্তু",
+    "visibilityUpdated": "দৃশ্যমানতা সফলভাবে আপডেট হয়েছে",
+    "visibilityUpdateFailed": "দৃশ্যমানতা আপডেট করতে ব্যর্থ",
+    "changeVisibility": "দৃশ্যমানতা পরিবর্তন করুন",
+    "filters": {
+      "sort": "বাছাই",
+      "date": "তারিখ",
+      "mostRelevant": "সবচেয়ে প্রাসঙ্গিক",
+      "all": "সব"
+    }
+  },
+  "chat": {
+    "title": "চ্যাট",
+    "subtitle": "সংগঠন, চ্যানেল, সরাসরি বার্তা এবং থ্রেড।",
+    "anonymous": "বেনামী",
+    "directMessage": "সরাসরি বার্তা",
+    "deletedMessage": "বার্তা মুছে ফেলা হয়েছে",
+    "deleteMessageTitle": "বার্তা মুছবেন?",
+    "deleteMessageDescription": "এটি বার্তাটি নরমভাবে মুছে দেবে এবং কথোপকথনের ইতিহাসে একটি প্লেসহোল্ডার রাখবে।",
+    "createInviteLink": "আমন্ত্রণ লিঙ্ক তৈরি করুন",
+    "pendingInvites": "মুলতুবি আমন্ত্রণ",
+    "acceptInvite": "গ্রহণ করুন",
+    "inviteFriendToOrg": "এই সংগঠনে একজন বন্ধুকে আমন্ত্রণ জানান",
+    "inviteLinkCopied": "আমন্ত্রণ লিঙ্ক কপি করা হয়েছে",
+    "inviteSent": "আমন্ত্রণ পাঠানো হয়েছে",
+    "inviteAccepted": "আমন্ত্রণ গৃহীত হয়েছে"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "গ্রিড বিন্যাস",
+      "tight": "ঘন",
+      "small": "ছোট",
+      "wide": "প্রশস্ত"
+    }
   }
 }

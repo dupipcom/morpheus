@@ -3,13 +3,15 @@
 import { useState, useEffect, useRef } from 'react'
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { ChevronDown, ChevronUp, Send, Loader2, MessageSquare, FileText, Heart, List, Edit, Trash2, Link as LinkIcon } from "lucide-react"
+import { ChevronDown, ChevronUp, Send, Loader2, MessageSquare, FileText, Heart, List, Edit, Trash2, Link as LinkIcon, Lock, Users, UserCheck, Globe, Sparkles } from "lucide-react"
 import { useI18n } from '@/lib/contexts/i18n'
 import { useNotesRefresh } from "@/lib/contexts/notesRefresh"
 import Link from 'next/link'
 import { OptionsButton, OptionsMenuItem } from "@/components/optionsButton"
 import { toast } from "sonner"
 import { Popover, PopoverContent, PopoverTrigger, PopoverAnchor } from "@/components/ui/popover"
+import { NoteContent } from "@/components/noteContent"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdownMenu"
 
 export interface Comment {
   id: string
@@ -56,6 +58,18 @@ export interface ActivityItem {
     comments: number
     likes?: number
   }
+  sender?: {
+    id: string
+    userName?: string
+    firstName?: string
+    lastName?: string
+  } | null
+  recipient?: {
+    id: string
+    userName?: string
+    firstName?: string
+    lastName?: string
+  } | null
 }
 
 interface ActivityCardProps {
@@ -68,6 +82,25 @@ interface ActivityCardProps {
   onNoteUpdated?: () => void // Callback when note is updated/deleted
   isHighlighted?: boolean // Whether this card should be highlighted/selected
 }
+
+const getVisibilityIcon = (visibility: string) => {
+  switch (visibility) {
+    case 'PRIVATE': return <Lock className="h-3 w-3" />
+    case 'FRIENDS': return <Users className="h-3 w-3" />
+    case 'CLOSE_FRIENDS': return <UserCheck className="h-3 w-3" />
+    case 'PUBLIC': return <Globe className="h-3 w-3" />
+    case 'AI_ENABLED': return <Sparkles className="h-3 w-3" />
+    default: return <Lock className="h-3 w-3" />
+  }
+}
+
+const visibilityOptions = [
+  { value: 'PRIVATE', label: 'Private', icon: <Lock className="h-4 w-4" /> },
+  { value: 'FRIENDS', label: 'Friends', icon: <Users className="h-4 w-4" /> },
+  { value: 'CLOSE_FRIENDS', label: 'Close Friends', icon: <UserCheck className="h-4 w-4" /> },
+  { value: 'PUBLIC', label: 'Public', icon: <Globe className="h-4 w-4" /> },
+  { value: 'AI_ENABLED', label: 'AI Enabled', icon: <Sparkles className="h-4 w-4" /> },
+]
 
 function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, isLoggedIn = false, currentUserId, onNoteUpdated, isHighlighted = false }: ActivityCardProps) {
   const { t, locale } = useI18n()
@@ -87,6 +120,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
   const [editContent, setEditContent] = useState(item.content || '')
   const [isSaving, setIsSaving] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [noteContent, setNoteContent] = useState(item.content || '')
   const [isEditPopoverOpen, setIsEditPopoverOpen] = useState(false)
   const justOpenedPopoverRef = useRef(false)
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null)
@@ -95,6 +129,8 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
   const [isDeletingComment, setIsDeletingComment] = useState<string | null>(null)
   const [isEditCommentPopoverOpen, setIsEditCommentPopoverOpen] = useState(false)
   const justOpenedCommentPopoverRef = useRef(false)
+  const [currentVisibility, setCurrentVisibility] = useState(item.visibility || 'PRIVATE')
+  const [isUpdatingVisibility, setIsUpdatingVisibility] = useState(false)
 
   // Update isLiked and likeCount when item changes (from props)
   useEffect(() => {
@@ -105,6 +141,18 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
       setLikeCount(item._count.likes)
     }
   }, [item.isLiked, item._count?.likes])
+
+  // Sync currentVisibility when item.visibility changes from props
+  useEffect(() => {
+    if (item.visibility) {
+      setCurrentVisibility(item.visibility)
+    }
+  }, [item.visibility])
+
+  // Sync noteContent when item.content changes from parent refresh
+  useEffect(() => {
+    setNoteContent(item.content || '')
+  }, [item.content])
 
   // Fetch like status on mount only if not provided in item
   useEffect(() => {
@@ -477,7 +525,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
       e.preventDefault()
       e.stopPropagation()
     }
-    setEditContent(item.content || '')
+    setEditContent(noteContent)
     // Mark that we just opened the popover to prevent immediate closing
     justOpenedPopoverRef.current = true
     // Use requestAnimationFrame to ensure dropdown closes before opening popover
@@ -515,8 +563,8 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
 
       const data = await response.json()
       
-      // Update local state
-      item.content = data.note.content
+      // Update local content state so link previews regenerate immediately
+      setNoteContent(data.note.content)
       
       toast.success(t('notes.updated') || 'Note updated successfully')
       setIsEditPopoverOpen(false)
@@ -559,6 +607,36 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
       toast.error(t('notes.deleteFailed') || 'Failed to delete note')
     } finally {
       setIsDeleting(false)
+    }
+  }
+
+  const handleUpdateVisibility = async (newVisibility: string) => {
+    if (isUpdatingVisibility || newVisibility === currentVisibility) return
+
+    setIsUpdatingVisibility(true)
+    try {
+      const response = await fetch(`/api/v1/notes/${item.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ visibility: newVisibility }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to update visibility')
+      }
+
+      setCurrentVisibility(newVisibility)
+      toast.success(t('notes.visibilityUpdated') || 'Visibility updated successfully')
+
+      if (onNoteUpdated) {
+        onNoteUpdated()
+      }
+      refreshAll()
+    } catch (err) {
+      console.error('Error updating note visibility:', err)
+      toast.error(t('notes.visibilityUpdateFailed') || 'Failed to update visibility')
+    } finally {
+      setIsUpdatingVisibility(false)
     }
   }
 
@@ -738,9 +816,36 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
           {item.date && ` • ${item.date}`}
         </span>
         {item.visibility && (
-          <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
-            {item.visibility.toLowerCase().replace('_', ' ')}
-          </span>
+          item.type === 'note' && isNoteOwner ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors flex items-center gap-1 disabled:opacity-50"
+                  disabled={isUpdatingVisibility}
+                  aria-label={t('notes.changeVisibility')}
+                >
+                  {getVisibilityIcon(currentVisibility)}
+                  <span>{currentVisibility.toLowerCase().replace('_', ' ')}</span>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start">
+                {visibilityOptions.map((opt) => (
+                  <DropdownMenuItem
+                    key={opt.value}
+                    onClick={() => handleUpdateVisibility(opt.value)}
+                    className={`flex items-center gap-2 ${currentVisibility === opt.value ? 'font-semibold' : ''}`}
+                  >
+                    {opt.icon}
+                    <span>{opt.label}</span>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
+              {item.visibility.toLowerCase().replace('_', ' ')}
+            </span>
+          )
           )}
         </div>
         {isLoggedIn && (
@@ -754,9 +859,41 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
         )}
       </div>
 
+      {item.type === 'note' && item.sender && item.recipient && (
+        <p
+          className="text-xs text-muted-foreground mb-2"
+          aria-label={`Message from ${item.sender.userName || item.sender.firstName || item.sender.id} to ${item.recipient.userName || item.recipient.firstName || item.recipient.id}`}
+        >
+          {(item.sender.userName || item.sender.firstName || item.sender.id)} to {(item.recipient.userName || item.recipient.firstName || item.recipient.id)}
+        </p>
+      )}
+
       {/* Content based on type */}
-      {item.type === 'note' && item.content && (
-        <p className="text-sm whitespace-pre-wrap mb-3">{item.content}</p>
+      {item.type === 'note' && noteContent && (
+        <div className="mb-3">
+          <NoteContent
+            content={noteContent}
+            truncate={!isExpanded && noteContent.length > 150}
+            maxLength={150}
+          >
+            {/* Expand button – centred horizontally below the text, above link previews */}
+            {(noteContent.length > 150 || commentCount > 0) && (
+              <div className="flex justify-center mt-2 mb-2">
+                <button
+                  onClick={() => setIsExpanded(!isExpanded)}
+                  className="bg-background/95 backdrop-blur-sm border border-border rounded-full p-2 shadow-lg hover:bg-background transition-colors"
+                  aria-label={isExpanded ? t('comments.showLess') : t('comments.showMore')}
+                >
+                  {isExpanded ? (
+                    <ChevronUp className="h-4 w-4 text-foreground" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4 text-foreground" />
+                  )}
+                </button>
+              </div>
+            )}
+          </NoteContent>
+        </div>
       )}
       
       {/* Edit popover */}
@@ -770,7 +907,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
             }
             if (!open) {
               setIsEditPopoverOpen(false)
-              setEditContent(item.content || '')
+              setEditContent(noteContent)
             }
           }}
           modal={true}
@@ -802,7 +939,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
                   size="sm"
                   onClick={() => {
                     setIsEditPopoverOpen(false)
-                    setEditContent(item.content || '')
+                    setEditContent(noteContent)
                   }}
                   disabled={isSaving}
                 >
@@ -895,7 +1032,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
                     </span>
                     <span className="text-[10px]">{getTimeAgo(new Date(comment.createdAt))}</span>
                   </div>
-                  <p className="text-xs">{comment.content}</p>
+                  <p className="text-xs whitespace-pre-wrap">{comment.content.length > 150 ? `${comment.content.slice(0, 150)}...` : comment.content}</p>
                 </div>
               ))}
             </div>
@@ -952,7 +1089,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
                           </div>
                         )}
                       </div>
-                      <p className="text-xs">{comment.content}</p>
+                      <p className="text-xs whitespace-pre-wrap">{comment.content}</p>
                       <div className="flex justify-end mt-1">
                         <button
                           onClick={() => handleToggleCommentLike(comment.id)}
@@ -1046,21 +1183,6 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
             </div>
           )}
 
-          {/* Expand button */}
-          <div className="flex justify-center mt-2">
-            <button
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="bg-background/95 backdrop-blur-sm border border-border rounded-full p-2 shadow-lg hover:bg-background transition-colors z-10"
-              aria-label={isExpanded ? t('comments.showLess') : t('comments.showMore')}
-            >
-              {isExpanded ? (
-                <ChevronUp className="h-4 w-4 text-foreground" />
-              ) : (
-                <ChevronDown className="h-4 w-4 text-foreground" />
-              )}
-            </button>
-          </div>
-
           {/* Condensed publish note field when expanded */}
           {isExpanded && (
             <div className="mt-3 pt-3 border-t border-border/50">
@@ -1097,4 +1219,3 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
 }
 
 export default ActivityCard
-

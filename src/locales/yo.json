@@ -24,6 +24,7 @@
     "signInToAccess": "Wọlé láti wọ dashboard rẹ̀ àti tẹ̀lé ìlọsíwájú rẹ̀.",
     "dismiss": "Kọ́",
     "accept": "Gba",
+    "all": "Gbogbo",
     "pageAvailableIn": "Ojú-ìwé yìí wà ní èdè {locale}. Ṣe o fẹ́ wo rẹ̀ ní èdè yẹn?",
     "selectLanguage": "Yàn èdè",
     "manageAccount": "Ṣàkóso Ìwé Ìfọ̀rọ̀wérọ̀ Mi",
@@ -56,7 +57,10 @@
     "copyLink": "Ṣe àkọpọ ọna asopọ",
     "linkCopied": "Ọna asopọ ti ṣe àkọpọ sí àkọlé",
     "copyFailed": "Kò ṣe àkọpọ ọna asopọ",
-    "saving": "N fipamọ..."
+    "saving": "N fipamọ...",
+    "decline": "Kọ",
+    "friendRequest": "Ibeere ọrẹ",
+    "reverseOrder": "Yi ọna pada"
   },
   "navigation": {
     "home": "Ilé",
@@ -82,7 +86,26 @@
     "yourMood": "Ìwà rẹ̀.",
     "yourProductivity": "Ìṣẹ́ rẹ̀.",
     "yourData": "Àkọsílẹ̀ rẹ̀.",
-    "yourBalance": "Owó rẹ̀."
+    "yourBalance": "Owó rẹ̀.",
+    "timeframe": {
+      "startDate": "Ọjọ ibẹrẹ",
+      "endDate": "Ọjọ ipari"
+    },
+    "me": "Data mi",
+    "selectDelegatedUser": "Yan olumulo aṣojú",
+    "analysis": {
+      "alltimeAnalysis": "Ìtúpalẹ gbogbo àkókò",
+      "dayAnalysis": "Ìtúpalẹ òní",
+      "last3daysAnalysis": "Ìtúpalẹ ọjọ́ mẹ́ta tó kọjá",
+      "weekAnalysis": "Ìtúpalẹ ọ̀sẹ̀",
+      "yearAnalysis": "Ìtúpalẹ ọdún",
+      "gratitudeAnalysis": "Ìtúpalẹ ìmọ̀rírì",
+      "optimismAnalysis": "Ìtúpalẹ ìrètí rere",
+      "restednessAnalysis": "Ìtúpalẹ ìsinmi",
+      "toleranceAnalysis": "Ìtúpalẹ ìfaradà",
+      "selfEsteemAnalysis": "Ìtúpalẹ ìgboyà ara ẹni",
+      "trustAnalysis": "Ìtúpalẹ ìgbẹ́kẹ̀lé"
+    }
   },
   "mood": {
     "title": "Òní ni {date}.",
@@ -105,7 +128,26 @@
         "AI_ENABLED": "AI tí ó ń ṣiṣẹ́"
       },
       "action": "Tẹ àkọsílẹ̀ jáde",
-      "publishing": "Publishing..."
+      "publishing": "Nigbagbọgbọ...",
+      "embedHint": "Ifibọ {provider}. Ti ifaworanhan ko ba ṣeeṣe, ṣii ọna asopọ atilẹba ni isalẹ."
+    },
+    "thirdParty": {
+      "title": "Ẹgbẹ́ kẹta",
+      "settings": "Ètò aṣojú",
+      "activeDelegations": "Àwọn aṣojú tó n ṣiṣẹ́",
+      "empty": "Kò sí aṣojú tó n ṣiṣẹ́.",
+      "identifierPlaceholder": "Orúkọ olumulo, ímeèlì, tàbí ID olumulo",
+      "noFriendsFound": "A kò rí ọ̀rẹ́ tó bá mu.",
+      "friendsHint": "Àwọn àbá ni àwọn ọ̀rẹ́ rẹ. O tún lè tẹ eyikeyi àdírẹ́sì ímeèlì wọlé.",
+      "scope": "Iwọn data",
+      "allScopes": "Gbogbo awọn iwọn",
+      "scopesSelected": "awọn iwọn ti a yan",
+      "minimumOneScope": "Ó yẹ kí ó kéré tán iwọn kan ṣoṣo láti wà ní yíyan.",
+      "scopeResolutionHint": "Tí a bá yan ọ̀pọ̀ iwọn, a máa lo iwọn tó gbooro jù tí a yàn.",
+      "addDelegatedAnalyst": "Ṣafikun olùtúpalẹ aṣojú",
+      "adding": "Ń ṣafikun...",
+      "addError": "Kò le ṣafikun olùtúpalẹ aṣojú",
+      "invitationDraft": "A ti pèsè àkọsílẹ ìpè fún ímeèlì yìí."
     }
   },
   "week": {
@@ -133,7 +175,11 @@
       "open": "Ṣíṣi",
       "done": "Ti Parí",
       "ignored": "Ti Kọjú"
-    }
+    },
+    "edit": "Ṣatunkọ",
+    "loadingForDate": "Mimu awọn iṣẹ-ṣiṣe fun ọjọ ti a yan...",
+    "initializingTasks": "Ṣiṣeto awọn iṣẹ-ṣiṣe rẹ...",
+    "noTasksForDate": "Ko si awọn iṣẹ-ṣiṣe ti a ṣeto fun ọjọ yii"
   },
   "settings": {
     "title": "Ètò",
@@ -250,7 +296,10 @@
     "progress": "Ìlọsíwájú",
     "moodAverageScale": "Ìwọ̀n Ìwọ̀n Ìwà",
     "balance": "Ìdẹ̀",
-    "earningsScale": "Ìwọ̀n Owó tí a gbà"
+    "earningsScale": "Ìwọ̀n Owó tí a gbà",
+    "profit": "Èrè",
+    "stash": "Ìpamọ́",
+    "withdrawn": "A yọ kúrò"
   },
   "social": {
     "title": "Àwọn ìbámu ọ̀rọ̀",
@@ -300,10 +349,10 @@
   "errors": {
     "notFound": "Ops! Kò le tọ́ ìwọ̀n yìí.",
     "genericError": "Nǹkan kan ṣẹlẹ̀. Jọ̀ọ́ gbìyànjú lẹ́ẹ̀kan si.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "Kuna lati ṣe akọsilẹ",
+    "failedToLoadNotes": "Kuna lati ṣe akọsilẹ",
+    "failedToFetchTemplates": "Kuna lati ṣe awoṣe",
+    "failedToLoadTemplates": "Kuna lati ṣe awoṣe"
   },
   "publicProfile": {
     "ctaTitle": "Bẹ̀rẹ̀ Ìrìn àjò Dupip tirẹ",
@@ -324,9 +373,9 @@
     "cloning": "N ṣe àdàkọ...",
     "noPublicNotes": "Kò sí àwọn àkíyèsí gbangba tí ó wà títí.",
     "noPublicTemplatesOrLists": "Kò sí àwọn àpẹẹrẹ tàbí àkójọ gbangba tí ó wà títí.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "Ṣẹda atokọ",
+    "cloneListSuccess": "Atokọ ti ṣẹda daadaa!",
+    "cloneListFailed": "Kuna lati ṣẹda atokọ"
   },
   "publicCharts": {
     "noData": "Kò sí àwọn àkọsílẹ̀ àwòrán gbangba.",
@@ -352,7 +401,8 @@
     "closeFriend": "Ọrẹ́ pẹ̀lú",
     "friends": "Àwọn ọ̀rẹ́",
     "signInToAdd": "Wọlé láti fi ọrẹ kun",
-    "editProfile": "Ṣatunkọ profaili"
+    "editProfile": "Ṣatunkọ profaili",
+    "message": "Ifiranṣẹ"
   },
   "profile": {
     "editProfile": "Ṣatunkọ profaili",
@@ -458,7 +508,9 @@
       "timesLabel": "# ìgbà",
       "saveToTemplate": "Fi iṣẹ́ pamọ́ sí àwòwé",
       "addTask": "Fi Iṣẹ́ kún",
-      "cancel": "Fagilé"
+      "cancel": "Fagilé",
+      "editTitle": "Ṣatunkọ iṣẹ",
+      "saveTask": "Fi iṣẹ pamọ"
     },
     "addListForm": {
       "titleCreate": "Ṣẹ̀dá Àkójọ Tuntun",
@@ -534,6 +586,39 @@
       },
       "create": "Ṣẹ̀dá",
       "cancel": "Fagilé"
+    },
+    "recurrencePicker": {
+      "frequency": "Tún ṣe",
+      "every": "Gbogbo",
+      "day": "ọjọ",
+      "days": "ọjọ",
+      "week": "ọsẹ",
+      "weeks": "ọsẹ",
+      "month": "oṣu",
+      "months": "oṣu",
+      "year": "ọdun",
+      "years": "ọdun",
+      "noRepeat": "Ko tun ṣe",
+      "daily": "Lojoojumọ",
+      "weekly": "Lọsẹẹsẹ",
+      "monthly": "Loṣooṣu",
+      "yearly": "Lọdọọdun",
+      "repeatOn": "Tún ṣe ní",
+      "monday": "Ajé",
+      "tuesday": "Ìṣẹ́",
+      "wednesday": "Ọjọ́",
+      "thursday": "Ọjọ́",
+      "friday": "Ẹtì",
+      "saturday": "Àbá",
+      "sunday": "Àìk",
+      "dayOfMonth": "Ọjọ́ oṣù",
+      "selectDay": "Yan ọjọ́ (1-31)",
+      "ends": "Ó parí",
+      "never": "Láìláì",
+      "onDate": "Ní ọjọ́",
+      "after": "Lẹ́yìn",
+      "pickDate": "Yan ọjọ́",
+      "occurrences": "ìgbà"
     }
   },
   "socialView": {
@@ -608,5 +693,174 @@
     "deleteWallet": "Pa Apamọwọ Run",
     "deleteWalletConfirmation": "Ṣe o da ọ loju pe o fẹ pa apamọwọ yii run? Iṣẹ yii ko le ṣe pada. Apamọwọ yoo yọ kuro lori akọọlẹ rẹ, ṣugbọn adirẹsi blockchain ati awọn owo rẹ yoo duro lori blockchain.",
     "delete": "Pa Run"
+  },
+  "jobs": {
+    "history": "Itan Iṣẹ",
+    "filterByStatus": "Ṣe Àlàyà nípasẹ Ipo:",
+    "errorLoadingHistory": "Aṣiṣe ni kikojọpọ itan iṣẹ",
+    "noHistoryFound": "Ko si itan iṣẹ ti a ri",
+    "status": {
+      "requested": "Ti beere",
+      "inProgress": "N ṣiṣẹ",
+      "validating": "Iṣeduro",
+      "accepted": "Ti gba",
+      "rejected": "Ti kọ",
+      "submitted": "Ti fi ranṣẹ",
+      "changesRequested": "Awọn ayipada ti beere"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "Wọ́n ń ṣe àyẹ̀wò ìbéèrè rẹ. A ó sọ fún ọ nígbà tí wọ́n bá fọwọ́sí i.",
+        "inProgress": "Wọ́n ti fọwọ́sí ìbéèrè rẹ! Báyìí o lè ṣiṣẹ́ lórí iṣẹ́ yìí.",
+        "submitted": "A ti fi iṣẹ́ rẹ ránṣẹ́. Ó ń dúró fún àyẹ̀wò láti ọ̀dọ̀ olówó.",
+        "validating": "Wọ́n ti béèrè fún àwọn àyípadà. Jọ̀wọ́ tún un wò kí o sì fi ránṣẹ́ padà.",
+        "accepted": "Ẹ kú oríire! Wọ́n ti gba iṣẹ́ rẹ.",
+        "rejected": "Wọ́n ti kọ̀ ìfọwọ́sí rẹ."
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}} ti béèrè láti ṣiṣẹ́ lórí iṣẹ́ yìí. Fọwọ́sí tàbí kọ̀ ìbéèrè náà.",
+        "inProgress": "{{workerName}} ń ṣiṣẹ́ lórí iṣẹ́ yìí lọ́wọ́lọ́wọ́.",
+        "submitted": "{{workerName}} ti fi iṣẹ́ wọn ránṣẹ́ fún àyẹ̀wò.",
+        "validating": "Ó ń dúró fún {{workerName}} láti tún un wò kí ó sì fi ránṣẹ́ padà.",
+        "accepted": "Wọ́n ti gba iṣẹ́ {{workerName}}.",
+        "rejected": "Wọ́n ti kọ̀ ìfọwọ́sí {{workerName}}."
+      }
+    },
+    "actions": {
+      "submitForReview": "Fi Ránṣẹ́ Fún Àyẹ̀wò",
+      "withdrawSubmission": "Fà Ìfọwọ́sí Padà",
+      "withdrawing": "Ń fà padà...",
+      "reviseAndResubmit": "Tún Wò Kí O Sì Fi Ránṣẹ́ Padà",
+      "approveRequest": "Fọwọ́sí Ìbéèrè",
+      "approving": "Ń fọwọ́sí...",
+      "rejectRequest": "Kọ̀ Ìbéèrè",
+      "rejecting": "Ń kọ̀...",
+      "reviewAndAccept": "Ṣe Àyẹ̀wò Kí O Sì Gbà",
+      "requestChanges": "Béèrè Fún Àwọn Àyípadà",
+      "reject": "Kọ̀"
+    },
+    "review": {
+      "title": "Ṣe Àyẹ̀wò Iṣẹ́ Tí A Fi Ránṣẹ́",
+      "description": "Ṣe àyẹ̀wò iṣẹ́ láti ọ̀dọ̀ {{workerName}}",
+      "workerSolution": "Ìdáhùn Oṣìṣẹ́:",
+      "selfReviewScore": "Àyẹ̀wò Ara Ẹni: {{score}}/100",
+      "noSubmissionNotes": "Kò sí àkọsílẹ̀ ìfọwọ́sí tí a pèsè",
+      "actionLabel": "Ìgbésẹ̀ *",
+      "required": "*",
+      "optional": "(Àṣàyàn)",
+      "feedbackLabel": "Èsì Àyẹ̀wò {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "Ṣàlàyé àwọn àyípadà tó ṣe pàtàkì",
+        "other": "Fún oṣìṣẹ́ ní àwọn ọ̀rọ̀ tàbí ìmọ̀ràn"
+      },
+      "editorPlaceholder": {
+        "validate": "Ṣàpèjúwe àwọn àyípadà tó ṣe pàtàkì...",
+        "other": "Fún èsì lórí iṣẹ́ náà..."
+      },
+      "managerReviewLabel": "Àyẹ̀wò Alábòójútó (Àṣàyàn)",
+      "managerReviewDescription": "Ṣe ìwọ̀n ìdára iṣẹ́ tí a parí",
+      "scorePoor": "0 (Kò dára)",
+      "scoreExcellent": "100 (Ó dára púpọ̀)",
+      "cancel": "Fagílé",
+      "submitting": "Ń fi ránṣẹ́...",
+      "acceptWork": "Gba Iṣẹ́",
+      "requestChangesButton": "Béèrè Fún Àwọn Àyípadà",
+      "rejectWork": "Kọ̀ Iṣẹ́",
+      "actions": {
+        "accept": {
+          "title": "Gbà (Sàmì iṣẹ́ gẹ́gẹ́ bí Tí a Parí)",
+          "description": "Fọwọ́sí iṣẹ́ náà kí o sì parí iṣẹ́ náà. Oṣìṣẹ́ yóò gba ẹ̀san wọn."
+        },
+        "requestChanges": {
+          "title": "Béèrè Fún Àwọn Àyípadà",
+          "description": "Béèrè lọ́wọ́ oṣìṣẹ́ láti tún iṣẹ́ wọn wò kí wọ́n sì fi ránṣẹ́ padà."
+        },
+        "reject": {
+          "title": "Kọ̀ (Tún iṣẹ́ ṣí)",
+          "description": "Kọ̀ iṣẹ́ náà pátápátá kí o sì tún iṣẹ́ náà ṣí fún àwọn ẹlòmíràn."
+        }
+      },
+      "messages": {
+        "accepted": "Wọ́n ti gba iṣẹ́ náà a sì ti sàmì iṣẹ́ náà gẹ́gẹ́ bí tí a parí",
+        "changesRequested": "Wọ́n ti béèrè fún àwọn àyípadà, oṣìṣẹ́ yóò tún un wò",
+        "rejected": "Wọ́n ti kọ̀ iṣẹ́ náà, a ti tún iṣẹ́ náà ṣí",
+        "error": "Kò lè fi àyẹ̀wò ránṣẹ́. Jọ̀wọ́ gbìyànjú lẹ́ẹ̀kan sí i."
+      }
+    },
+    "submission": {
+      "title": "Fi Iṣẹ́ Ránṣẹ́ Fún Àyẹ̀wò",
+      "titleResubmit": "Tún Iṣẹ́ Wò Kí O Sì Fi Ránṣẹ́ Padà",
+      "description": "Ṣàpèjúwe ìdáhùn rẹ fún {{taskName}} kí o sì fi ránṣẹ́ fún ìjẹ́rìísí.",
+      "solutionLabel": "Àpèjúwe Ìdáhùn *",
+      "solutionDescription": "Ṣàlàyé ohun tí o ṣe láti parí iṣẹ́ yìí. Ó ń ṣe àtìlẹ́yìn fún fọ́mátì, àwọn ìjápọ̀ àti àwọn àkọsílẹ̀.",
+      "solutionPlaceholder": "Ṣàlàyé ohun tí o ṣe láti parí iṣẹ́ yìí...",
+      "selfReviewLabel": "Àyẹ̀wò Ara Ẹni (Àṣàyàn)",
+      "selfReviewDescription": "Ṣe ìwọ̀n ìdára iṣẹ́ rẹ lórí ìwọ̀n 0-100",
+      "scoreNeedsWork": "0 (Ó nílò iṣẹ́)",
+      "scorePerfect": "100 (Ó pé)",
+      "cancel": "Fagílé",
+      "submitting": "Ń fi ránṣẹ́...",
+      "submitButton": "Fi Ránṣẹ́ Fún Àyẹ̀wò",
+      "resubmitButton": "Fi Ránṣẹ́ Padà Fún Àyẹ̀wò",
+      "errors": {
+        "missingDescription": "Jọ̀wọ́ pèsè àpèjúwe iṣẹ́ rẹ",
+        "submitError": "Kò lè fi iṣẹ́ rẹ ránṣẹ́. Jọ̀wọ́ gbìyànjú lẹ́ẹ̀kan sí i."
+      },
+      "messages": {
+        "submitted": "A ti fi iṣẹ́ ránṣẹ́ fún àyẹ̀wò",
+        "resubmitted": "A ti fi iṣẹ́ ránṣẹ́ padà fún àyẹ̀wò"
+      }
+    }
+  },
+  "notes": {
+    "updated": "Akọsilẹ ti ni imudojuiwọn ni aṣeyọri",
+    "updateFailed": "Ko ṣe imudojuiwọn akọsilẹ",
+    "deleted": "Akọsilẹ ti paarẹ ni aṣeyọri",
+    "deleteFailed": "Ko ṣe paarẹ akọsilẹ",
+    "deleting": "Npaarẹ...",
+    "confirmDelete": "Ṣe o da ọ loju pe o fẹ paarẹ akọsilẹ yii?",
+    "content": "Akoonu akọsilẹ",
+    "visibilityUpdated": "Iranwo ti ni imudojuiwọn ni aṣeyọri",
+    "visibilityUpdateFailed": "Ko ṣe imudojuiwọn iranwo",
+    "changeVisibility": "Ṣe iyipada iranwo",
+    "filters": {
+      "sort": "Ṣeto",
+      "date": "Ọjọ",
+      "mostRelevant": "Pẹlu ibatan julọ",
+      "all": "Gbogbo"
+    }
+  },
+  "chat": {
+    "title": "Ifọrọwanilẹnuwo",
+    "subtitle": "Awọn ajo, awọn ikanni, awọn ifiranṣẹ taara, ati awọn ẹwọn.",
+    "anonymous": "Ailorukọ",
+    "directMessage": "Ifiranṣẹ taara",
+    "deletedMessage": "Ifiranṣẹ ti paarẹ",
+    "deleteMessageTitle": "Paarẹ ifiranṣẹ?",
+    "deleteMessageDescription": "Eyi yoo paarẹ ifiranṣẹ ni asọ ati tọju aaye iranlọwọ ninu itan-akọọlẹ ibaraẹnisọrọ.",
+    "createInviteLink": "Ṣẹda ọna asopọ ìdẹ",
+    "pendingInvites": "Awọn ìdẹ ti o n duro de",
+    "acceptInvite": "Gba",
+    "inviteFriendToOrg": "Pe ọrẹ wa si ajọ yii",
+    "inviteLinkCopied": "Ọna asopọ ìdẹ ti daakọ",
+    "inviteSent": "Ìdẹ ti fi ranṣẹ",
+    "inviteAccepted": "Ìdẹ ti gba"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Ìtọ́kasí gridi",
+      "tight": "Dín",
+      "small": "Kékèké",
+      "wide": "Fẹ́"
+    }
   }
 }

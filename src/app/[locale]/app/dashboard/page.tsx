@@ -11,17 +11,17 @@ import { GlobalContext } from "@/lib/contexts"
 import { DashboardView } from "@/views/dashboardView"
 import { ViewMenu } from "@/components/viewMenu"
 import { PublishNote } from '@/components/publishNote'
-import { setLoginTime, getLoginTime } from '@/lib/cookieManager'
+import { setLoginTime, getLoginTime } from '@/lib/utils/cookieManager'
 import { useI18n } from "@/lib/contexts/i18n"
 
 // Allow streaming responses up to 60 seconds
 export const maxDuration = 60;
-export const dynamic = "force-dynamic"
 
 export default function LocalizedDashboard({ params }: { params: Promise<{ locale: string }> }) {
   const [globalContext, setGlobalContext] = useState({
     theme: 'light'
   })
+  const [selectedDelegatedUser, setSelectedDelegatedUser] = useState<{ id: string; label: string; isSelf?: boolean } | null>(null)
   const { isLoaded, isSignedIn } = useAuth();
   const { t, formatDate } = useI18n();
 
@@ -49,12 +49,15 @@ export default function LocalizedDashboard({ params }: { params: Promise<{ local
     <main className="">
       <ViewMenu active="feel" />
       <div className="w-full max-w-[1200px] m-auto px-4 sticky top-[115px] z-50">
-        <PublishNote />
+        <PublishNote
+          recipientId={selectedDelegatedUser && !selectedDelegatedUser.isSelf ? selectedDelegatedUser.id : null}
+          recipientLabel={selectedDelegatedUser && !selectedDelegatedUser.isSelf ? selectedDelegatedUser.label : null}
+        />
       </div>
       <h1 className="scroll-m-20 text-2xl font-semibold tracking-tight text-center my-8">{formatDate(new Date())}</h1>
       <h2 className="text-center scroll-m-20 text-lg font-semibold tracking-tight">{t('dashboard.title')}</h2>
 
-      <DashboardView />
+      <DashboardView onDelegatedUserChange={setSelectedDelegatedUser} />
     </main>
   )
 } 

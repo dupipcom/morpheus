@@ -1,38 +1,89 @@
 import prisma from "@/lib/prisma";
 import { currentUser, auth } from '@clerk/nextjs/server'
-// Helpers and constants removed - no longer needed for entries
-// Entry utils removed - data now stored in Day model
-import { recalculateUserBudget } from "@/lib/budgetUtils"
-import { getWeekNumber } from "@/app/helpers"
+import { recalculateUserBudget } from "@/lib/utils/budgetUtils"
+import { calculateDatePeriods, parseNumericValue } from "@/lib/services/day"
 
-export async function GET(req: Request) {
-  const { userId } = await auth()
+/**
+ * Helper to get or create user
+ */
+async function getOrCreateUser(clerkUserId: string) {
+  let user = await prisma.user.findUnique({
+    where: { userId: clerkUserId },
+    include: { profiles: true }
+  })
 
-  // Check if user is authenticated
-  if (!userId) {
-    return Response.json({ error: 'User not authenticated' }, { status: 401 })
-  }
-
-  const getUser = async () => await prisma.user.findUnique({
-       where: { userId },
-       include: { profiles: true }
-    })
-
-  let user = await getUser()
-
-  // If user doesn't exist in database, create them
   if (!user) {
     user = await prisma.user.create({
       data: {
-        userId,
-        settings: {
-          currency: null,
-          speed: null
-        } as any
+        userId: clerkUserId,
+        settings: { currency: null, speed: null }
       },
       include: { profiles: true }
     })
   }
+
+  return user
+}
+
+/**
+ * Helper to get today's ISO date string
+ */
+function getTodayISO(): string {
+  const today = new Date()
+  return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+}
+
+/**
+ * Helper to ensure day entry exists and update balance fields
+ */
+async function updateDayWithBalance(
+  userId: string,
+  dateISO: string,
+  balance: number,
+  stash: number,
+  equity: number,
+  withdrawn?: number
+): Promise<void> {
+  const existingDay = await prisma.day.findFirst({
+    where: { userId, date: dateISO }
+  })
+
+  const periods = calculateDatePeriods(dateISO)
+  const updateData: Record<string, unknown> = {
+    balance,
+    stash,
+    equity,
+    ...periods
+  }
+
+  if (withdrawn !== undefined) {
+    updateData.withdrawn = withdrawn
+  }
+
+  if (existingDay) {
+    await prisma.day.update({
+      where: { id: existingDay.id },
+      data: updateData
+    })
+  } else {
+    await prisma.day.create({
+      data: {
+        userId,
+        date: dateISO,
+        ...updateData
+      }
+    })
+  }
+}
+
+export async function GET(req: Request) {
+  const { userId } = await auth()
+
+  if (!userId) {
+    return Response.json({ error: 'User not authenticated' }, { status: 401 })
+  }
+
+  let user = await getOrCreateUser(userId)
 
   // Ensure user has a profile - create one if missing
   if (user && (!user.profiles || user.profiles.length === 0)) {
@@ -42,33 +93,17 @@ export async function GET(req: Request) {
         data: {
           userId: user.id,
           data: {
-            username: {
-              value: clerkUser?.username || null,
-              visibility: true
-            },
-            firstName: {
-              value: null,
-              visibility: false
-            },
-            lastName: {
-              value: null,
-              visibility: false
-            },
-            bio: {
-              value: null,
-              visibility: false
-            },
-            profilePicture: {
-              value: null,
-              visibility: false
-            }
+            username: { value: clerkUser?.username || null, visibility: true },
+            firstName: { value: null, visibility: false },
+            lastName: { value: null, visibility: false },
+            bio: { value: null, visibility: false },
+            profilePicture: { value: null, visibility: false }
           }
         }
       })
-      // Refetch user with new profile
-      user = await getUser()
+      user = await getOrCreateUser(userId)
 
-      // Revalidate the public profile path for this user via v1 revalidate endpoint
+      // Revalidate public profile path
       try {
         const username = clerkUser?.username
         if (username) {
@@ -87,40 +122,34 @@ export async function GET(req: Request) {
     }
   }
 
-  // Always sync username from Clerk if available - Clerk takes precedence
+  // Sync username from Clerk
   try {
     const clerkUser = await currentUser()
-    if (clerkUser && clerkUser.username && user) {
-      if (user.profiles && user.profiles.length > 0) {
-        // Always update existing profile with Clerk username (overwrites any manual username)
-        const existingData = user.profiles[0].data || {}
-        await prisma.profile.update({
-          where: { userId: user.id },
+    if (clerkUser?.username && user?.profiles?.length) {
+      const existingData = (user.profiles[0].data || {}) as Record<string, unknown>
+      await prisma.profile.update({
+        where: { userId: user.id },
+        data: {
           data: {
-            data: {
-              ...existingData,
-              username: {
-                value: clerkUser.username,
-                visibility: existingData.username?.visibility ?? true
-              }
+            ...existingData,
+            username: {
+              value: clerkUser.username,
+              visibility: (existingData.username as Record<string, unknown>)?.visibility ?? true
             }
           }
-        })
-      }
-      // Refetch user with updated profile
-      user = await getUser()
+        }
+      })
+      user = await getOrCreateUser(userId)
     }
   } catch (error) {
     console.error('Error syncing username from Clerk:', error)
   }
 
-  // Ensure budget fields are initialized for existing users
+  // Initialize budget fields if needed
   if (user && (user.usedBudget === null || user.usedBudget === undefined)) {
     try {
-      // Recalculate budget based on existing task lists
       await recalculateUserBudget(user.id)
-      // Refetch user with updated budget fields
-      user = await getUser()
+      user = await getOrCreateUser(userId)
     } catch (error) {
       console.error('Error initializing budget fields:', error)
     }
@@ -133,201 +162,98 @@ export async function POST(req: Request) {
   const { userId } = await auth()
   const data = await req.json()
 
-  // Check if user is authenticated
   if (!userId) {
     return Response.json({ error: 'User not authenticated' }, { status: 401 })
   }
 
-  const getUser = async () => await prisma.user.findUnique({
-       where: { userId }
-    })
+  let user = await prisma.user.findUnique({ where: { userId } })
 
-  let user = await getUser()
-
-  // If user doesn't exist in database, create them
   if (!user) {
     user = await prisma.user.create({
       data: {
         userId,
-        settings: {
-          currency: null,
-          speed: null
-        } as any
+        settings: { currency: null, speed: null }
       }
     })
   }
 
-
+  // Handle availableBalance update
   if (data.availableBalance !== undefined && data.availableBalance !== null) {
-    const newAvailableBalance = Math.max(0, typeof data.availableBalance === 'string' 
-      ? parseFloat(data.availableBalance) 
-      : Number(data.availableBalance))
-    const currentStash = Math.max(0, typeof user.stash === 'number' 
-      ? user.stash 
-      : (typeof user.stash === 'string' ? parseFloat(user.stash || '0') : 0))
+    const newAvailableBalance = Math.max(0, parseNumericValue(data.availableBalance))
+    const currentStash = Math.max(0, parseNumericValue(user.stash))
     const newEquity = Math.max(0, newAvailableBalance - currentStash)
-    
+
     await prisma.user.update({
-      data: {
-        availableBalance: newAvailableBalance,
-        equity: newEquity as number
-      },
       where: { id: user.id },
+      data: { availableBalance: newAvailableBalance, equity: newEquity }
     })
-    user = await getUser()
-    
-    // Update current day entry with new balance, stash, and equity
+    user = await prisma.user.findUnique({ where: { userId } })
+
     try {
-      const today = new Date()
-      const dateISO = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
-      
-      const existingDay = await prisma.day.findFirst({
-        where: {
-          userId: user.id,
-          date: dateISO
-        }
-      })
-      
-      if (existingDay) {
-        await prisma.day.update({
-          where: { id: existingDay.id },
-          data: {
-            balance: newAvailableBalance,
-            stash: currentStash,
-            equity: newEquity
-          }
-        })
-      } else {
-        // Create new day entry if it doesn't exist
-        const [_, weekNumber] = getWeekNumber(today)
-        const month = today.getMonth() + 1
-        const quarter = Math.ceil(month / 3)
-        const semester = month <= 6 ? 1 : 2
-        await prisma.day.create({
-          data: {
-            userId: user.id,
-            date: dateISO,
-            balance: newAvailableBalance,
-            stash: currentStash,
-            equity: newEquity,
-            week: typeof weekNumber === 'number' ? weekNumber : Number(weekNumber) || 1,
-            month: month,
-            quarter: quarter,
-            semester: semester
-          }
-        })
-      }
+      await updateDayWithBalance(user!.id, getTodayISO(), newAvailableBalance, currentStash, newEquity)
     } catch (dayError) {
-      // Log error but don't fail the request if Day update fails
       console.error('Error updating Day entry with balance:', dayError)
     }
   }
 
-
-  if (data?.withdrawStash) {
-    const currentStash = Math.max(0, typeof user.stash === 'number' 
-      ? user.stash 
-      : (typeof user.stash === 'string' ? parseFloat(user.stash || '0') : 0))
-    const currentTotalEarnings = Math.max(0, typeof user.totalEarnings === 'number' 
-      ? user.totalEarnings 
-      : (typeof user.totalEarnings === 'string' ? parseFloat(user.totalEarnings || '0') : 0))
+  // Handle stash withdrawal
+  if (data?.withdrawStash && user) {
+    const currentStash = Math.max(0, parseNumericValue(user.stash))
     const currentAvailableBalance = Math.max(0, user.availableBalance ?? 0)
-    
-    // Withdraw: subtract stash from availableBalance and add to totalEarnings
+    const currentWithdrawn = Math.max(0, parseNumericValue(user.withdrawn))
+
     const newAvailableBalance = Math.max(0, currentAvailableBalance - currentStash)
-    const newTotalEarnings = Math.max(0, currentTotalEarnings + currentStash)
-    const newEquity = Math.max(0, newAvailableBalance) // Equity = availableBalance since stash is 0
+    const newEquity = Math.max(0, newAvailableBalance)
     const newStash = 0
-    
+    const newWithdrawn = Math.max(0, currentWithdrawn + currentStash)
+
     await prisma.user.update({
+      where: { id: user.id },
       data: {
         availableBalance: newAvailableBalance,
-        stash: newStash as number,
-        totalEarnings: newTotalEarnings as number,
-        equity: newEquity as number,
-      },
-      where: { id: user.id },
-    })
-    user = await getUser()
-    
-    // Update current day entry with new balance, stash, and equity
-    try {
-      const today = new Date()
-      const dateISO = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
-      
-      const existingDay = await prisma.day.findFirst({
-        where: {
-          userId: user.id,
-          date: dateISO
-        }
-      })
-      
-      if (existingDay) {
-        await prisma.day.update({
-          where: { id: existingDay.id },
-          data: {
-            balance: newAvailableBalance,
-            stash: newStash,
-            equity: newEquity
-          }
-        })
-      } else {
-        // Create new day entry if it doesn't exist
-        const [_, weekNumber] = getWeekNumber(today)
-        const month = today.getMonth() + 1
-        const quarter = Math.ceil(month / 3)
-        const semester = month <= 6 ? 1 : 2
-        await prisma.day.create({
-          data: {
-            userId: user.id,
-            date: dateISO,
-            balance: newAvailableBalance,
-            stash: newStash,
-            equity: newEquity,
-            week: typeof weekNumber === 'number' ? weekNumber : Number(weekNumber) || 1,
-            month: month,
-            quarter: quarter,
-            semester: semester
-          }
-        })
+        stash: newStash,
+        equity: newEquity,
+        withdrawn: newWithdrawn
       }
+    })
+    user = await prisma.user.findUnique({ where: { userId } })
+
+    try {
+      const dateISO = getTodayISO()
+      const existingDay = await prisma.day.findFirst({
+        where: { userId: user!.id, date: dateISO }
+      })
+
+      const existingWithdrawn = parseNumericValue(existingDay?.withdrawn)
+      const dayWithdrawn = existingWithdrawn + currentStash
+
+      await updateDayWithBalance(user!.id, dateISO, newAvailableBalance, newStash, newEquity, dayWithdrawn)
     } catch (dayError) {
-      // Log error but don't fail the request if Day update fails
       console.error('Error updating Day entry with balance:', dayError)
     }
   }
 
-  if (data?.settings) {
+  // Handle settings update
+  if (data?.settings && user) {
     await prisma.user.update({
-      data: {
-        settings: {
-          set: {
-            ...(user.settings || {}),
-            ...data.settings
-          } as any
-        },
-      },
       where: { id: user.id },
+      data: {
+        settings: { set: { ...(user.settings || {}), ...data.settings } }
+      }
     })
-    user = await getUser()
+    user = await prisma.user.findUnique({ where: { userId } })
   }
 
-  if (data?.consents) {
+  // Handle consents update
+  if (data?.consents && user) {
     await prisma.user.update({
-      data: {
-        consents: {
-          set: {
-            ...(user.consents || {}),
-            ...data.consents
-          } as any
-        },
-      },
       where: { id: user.id },
+      data: {
+        consents: { set: { ...(user.consents || {}), ...data.consents } }
+      }
     })
-    user = await getUser()
+    user = await prisma.user.findUnique({ where: { userId } })
   }
 
-  // Entries logic removed - data now stored in Day model
-  
   return Response.json(user)
 }

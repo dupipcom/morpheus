@@ -24,6 +24,7 @@
     "signInToAccess": "התחבר כדי לגשת ללוח הבקרה שלך ולעקוב אחר ההתקדמות שלך.",
     "dismiss": "סגור",
     "accept": "קבל",
+    "all": "הכל",
     "pageAvailableIn": "דף זה זמין ב-{locale}. האם תרצה לצפות בו בשפה זו?",
     "selectLanguage": "בחר שפה",
     "manageAccount": "נהל את החשבון שלי",
@@ -56,7 +57,10 @@
     "copyLink": "העתק קישור",
     "linkCopied": "קישור הועתק ללוח",
     "copyFailed": "העתקת הקישור נכשלה",
-    "saving": "שומר..."
+    "saving": "שומר...",
+    "decline": "דחה",
+    "friendRequest": "בקשת חברות",
+    "reverseOrder": "סדר הפוך"
   },
   "navigation": {
     "home": "בית",
@@ -82,7 +86,26 @@
     "yourMood": "מצב הרוח שלך.",
     "yourProductivity": "הפרודוקטיביות שלך.",
     "yourData": "הנתונים שלך.",
-    "yourBalance": "הכסף שלך."
+    "yourBalance": "הכסף שלך.",
+    "timeframe": {
+      "startDate": "תאריך התחלה",
+      "endDate": "תאריך סיום"
+    },
+    "me": "הנתונים שלי",
+    "selectDelegatedUser": "בחר משתמש מואצל",
+    "analysis": {
+      "alltimeAnalysis": "ניתוח כולל",
+      "dayAnalysis": "הניתוח של היום",
+      "last3daysAnalysis": "ניתוח 3 הימים האחרונים",
+      "weekAnalysis": "ניתוח שבועי",
+      "yearAnalysis": "ניתוח שנתי",
+      "gratitudeAnalysis": "ניתוח הכרת תודה",
+      "optimismAnalysis": "ניתוח אופטימיות",
+      "restednessAnalysis": "ניתוח מנוחה",
+      "toleranceAnalysis": "ניתוח סובלנות",
+      "selfEsteemAnalysis": "ניתוח הערכה עצמית",
+      "trustAnalysis": "ניתוח אמון"
+    }
   },
   "mood": {
     "title": "תעד את מצב הרוח שלך עבור {date}",
@@ -105,7 +128,26 @@
         "AI_ENABLED": "בינה מלאכותית מופעלת"
       },
       "action": "פרסם הערה",
-      "publishing": "Publishing..."
+      "publishing": "מפרסם...",
+      "embedHint": "הטמעת {provider}. אם ההפעלה אינה זמינה, פתח את הקישור המקורי למטה."
+    },
+    "thirdParty": {
+      "title": "צד שלישי",
+      "settings": "הגדרות האצלה",
+      "activeDelegations": "האצלות פעילות",
+      "empty": "אין האצלות פעילות.",
+      "identifierPlaceholder": "שם משתמש, אימייל או מזהה משתמש",
+      "noFriendsFound": "לא נמצאו חברויות תואמות.",
+      "friendsHint": "ההצעות כוללות את החברים שלך. אפשר גם להזין כל כתובת אימייל.",
+      "scope": "טווח נתונים",
+      "allScopes": "כל הטווחים",
+      "scopesSelected": "טווחים נבחרו",
+      "minimumOneScope": "לפחות טווח אחד חייב להישאר נבחר.",
+      "scopeResolutionHint": "אם נבחרים כמה טווחים, יחול הטווח הרחב ביותר שנבחר.",
+      "addDelegatedAnalyst": "הוסף אנליסט מואצל",
+      "adding": "מוסיף...",
+      "addError": "לא ניתן היה להוסיף אנליסט מואצל",
+      "invitationDraft": "הוכנה טיוטת הזמנה עבור כתובת האימייל הזו."
     }
   },
   "week": {
@@ -133,7 +175,11 @@
       "open": "פתוח",
       "done": "הושלם",
       "ignored": "התעלם"
-    }
+    },
+    "edit": "ערוך",
+    "loadingForDate": "טוען משימות לתאריך שנבחר...",
+    "initializingTasks": "מגדיר את המשימות שלך...",
+    "noTasksForDate": "אין משימות מתוכננות לתאריך זה"
   },
   "actions": {
     "drankWater": "שתה מים",
@@ -223,10 +269,10 @@
   "errors": {
     "notFound": "אופס! לא ניתן לכוון לתדר זה.",
     "genericError": "משהו השתבש. אנא נסה שוב.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "טעינת ההערות נכשלה",
+    "failedToLoadNotes": "טעינת ההערות נכשלה",
+    "failedToFetchTemplates": "טעינת התבניות נכשלה",
+    "failedToLoadTemplates": "טעינת התבניות נכשלה"
   },
   "social": {
     "title": "אנשי קשר חברתיים",
@@ -312,9 +358,9 @@
     "cloning": "משכפל...",
     "noPublicNotes": "אין הערות ציבוריות זמינות עדיין.",
     "noPublicTemplatesOrLists": "אין תבניות או רשימות ציבוריות זמינות עדיין.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "שכפל רשימה",
+    "cloneListSuccess": "הרשימה שוכפלה בהצלחה!",
+    "cloneListFailed": "שכפול הרשימה נכשל"
   },
   "publicCharts": {
     "noData": "אין נתוני גרפים ציבוריים זמינים.",
@@ -340,7 +386,8 @@
     "closeFriend": "חבר קרוב",
     "friends": "חברים",
     "signInToAdd": "התחבר כדי להוסיף חבר",
-    "editProfile": "ערוך פרופיל"
+    "editProfile": "ערוך פרופיל",
+    "message": "הודעה"
   },
   "profile": {
     "editProfile": "ערוך פרופיל",
@@ -446,7 +493,9 @@
       "timesLabel": "# פעמים",
       "saveToTemplate": "שמור משימה כתבנית",
       "addTask": "הוסף משימה",
-      "cancel": "ביטול"
+      "cancel": "ביטול",
+      "editTitle": "ערוך משימה",
+      "saveTask": "שמור משימה"
     },
     "addListForm": {
       "titleCreate": "צור רשימה חדשה",
@@ -522,6 +571,39 @@
       },
       "create": "צור",
       "cancel": "ביטול"
+    },
+    "recurrencePicker": {
+      "frequency": "חזרה",
+      "every": "כל",
+      "day": "יום",
+      "days": "ימים",
+      "week": "שבוע",
+      "weeks": "שבועות",
+      "month": "חודש",
+      "months": "חודשים",
+      "year": "שנה",
+      "years": "שנים",
+      "noRepeat": "לא חוזר",
+      "daily": "יומי",
+      "weekly": "שבועי",
+      "monthly": "חודשי",
+      "yearly": "שנתי",
+      "repeatOn": "חזור ב",
+      "monday": "ב'",
+      "tuesday": "ג'",
+      "wednesday": "ד'",
+      "thursday": "ה'",
+      "friday": "ו'",
+      "saturday": "ש'",
+      "sunday": "א'",
+      "dayOfMonth": "יום בחודש",
+      "selectDay": "בחר יום (1-31)",
+      "ends": "מסתיים",
+      "never": "אף פעם",
+      "onDate": "בתאריך",
+      "after": "אחרי",
+      "pickDate": "בחר תאריך",
+      "occurrences": "פעמים"
     }
   },
   "charts": {
@@ -536,7 +618,10 @@
     "progress": "התקדמות",
     "moodAverageScale": "סולם ממוצע מצב רוח",
     "balance": "יתרה",
-    "earningsScale": "סולם רווחים"
+    "earningsScale": "סולם רווחים",
+    "profit": "רווח",
+    "stash": "מאגר",
+    "withdrawn": "נמשך"
   },
   "socialView": {
     "activity": "פעילות",
@@ -610,5 +695,174 @@
     "deleteWallet": "מחק ארנק",
     "deleteWalletConfirmation": "האם אתה בטוח שברצונך למחוק את הארנק הזה? פעולה זו לא ניתנת לביטול. הארנק יוסר מהחשבון שלך, אך כתובת ה-blockchain והכספים שלה יישארו ב-blockchain.",
     "delete": "מחק"
+  },
+  "jobs": {
+    "history": "היסטוריית עבודות",
+    "filterByStatus": "סנן לפי סטטוס:",
+    "errorLoadingHistory": "שגיאה בטעינת היסטוריית עבודות",
+    "noHistoryFound": "לא נמצאה היסטוריית עבודות",
+    "status": {
+      "requested": "התבקש",
+      "inProgress": "בתהליך",
+      "validating": "מאמת",
+      "accepted": "התקבל",
+      "rejected": "נדחה",
+      "submitted": "הוגש",
+      "changesRequested": "התבקשו שינויים"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "הבקשה שלך נמצאת בבדיקה. תקבל הודעה כאשר תאושר.",
+        "inProgress": "הבקשה שלך אושרה! כעת אתה יכול לעבוד על משימה זו.",
+        "submitted": "העבודה שלך נשלחה. ממתין לבדיקה מהבעלים.",
+        "validating": "התבקשו שינויים. אנא בדוק ושלח מחדש.",
+        "accepted": "מזל טוב! העבודה שלך התקבלה.",
+        "rejected": "ההגשה שלך נדחתה."
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}} ביקש לעבוד על משימה זו. אשר או דחה את הבקשה.",
+        "inProgress": "{{workerName}} עובד כעת על משימה זו.",
+        "submitted": "{{workerName}} שלח את עבודתו לבדיקה.",
+        "validating": "ממתין ש-{{workerName}} יבדוק וישלח מחדש.",
+        "accepted": "העבודה של {{workerName}} התקבלה.",
+        "rejected": "ההגשה של {{workerName}} נדחתה."
+      }
+    },
+    "actions": {
+      "submitForReview": "שלח לבדיקה",
+      "withdrawSubmission": "משוך הגשה",
+      "withdrawing": "מושך...",
+      "reviseAndResubmit": "בדוק ושלח מחדש",
+      "approveRequest": "אשר בקשה",
+      "approving": "מאשר...",
+      "rejectRequest": "דחה בקשה",
+      "rejecting": "דוחה...",
+      "reviewAndAccept": "בדוק ואשר",
+      "requestChanges": "בקש שינויים",
+      "reject": "דחה"
+    },
+    "review": {
+      "title": "בדוק עבודה שנשלחה",
+      "description": "בדוק עבודה מ-{{workerName}}",
+      "workerSolution": "פתרון העובד:",
+      "selfReviewScore": "סקירה עצמית: {{score}}/100",
+      "noSubmissionNotes": "לא סופקו הערות הגשה",
+      "actionLabel": "פעולה *",
+      "required": "*",
+      "optional": "(אופציונלי)",
+      "feedbackLabel": "משוב בדיקה {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "הסבר אילו שינויים נדרשים",
+        "other": "ספק הערות או הצעות לעובד"
+      },
+      "editorPlaceholder": {
+        "validate": "תאר את השינויים הנדרשים...",
+        "other": "ספק משוב על העבודה..."
+      },
+      "managerReviewLabel": "סקירת מנהל (אופציונלי)",
+      "managerReviewDescription": "דרג את איכות העבודה שהושלמה",
+      "scorePoor": "0 (גרוע)",
+      "scoreExcellent": "100 (מצוין)",
+      "cancel": "ביטול",
+      "submitting": "שולח...",
+      "acceptWork": "אשר עבודה",
+      "requestChangesButton": "בקש שינויים",
+      "rejectWork": "דחה עבודה",
+      "actions": {
+        "accept": {
+          "title": "אשר (סמן משימה כבוצעה)",
+          "description": "אשר את העבודה והשלם את המשימה. העובד מרוויח את הפרס שלו."
+        },
+        "requestChanges": {
+          "title": "בקש שינויים",
+          "description": "בקש מהעובד לבדוק ולשלוח מחדש את עבודתו."
+        },
+        "reject": {
+          "title": "דחה (פתח משימה מחדש)",
+          "description": "דחה את העבודה לחלוטין ופתח את המשימה מחדש לאחרים."
+        }
+      },
+      "messages": {
+        "accepted": "העבודה התקבלה והמשימה סומנה כהושלמה",
+        "changesRequested": "נתבקשו שינויים, העובד יבדוק",
+        "rejected": "העבודה נדחתה, המשימה נפתחה מחדש",
+        "error": "לא ניתן לשלוח את הבדיקה. אנא נסה שוב."
+      }
+    },
+    "submission": {
+      "title": "שלח עבודה לבדיקה",
+      "titleResubmit": "בדוק ושלח עבודה מחדש",
+      "description": "תאר את הפתרון שלך עבור {{taskName}} ושלח לאימות.",
+      "solutionLabel": "תיאור פתרון *",
+      "solutionDescription": "הסבר מה עשית כדי להשלים משימה זו. תומך בעיצוב, קישורים ורשימות.",
+      "solutionPlaceholder": "הסבר מה עשית כדי להשלים משימה זו...",
+      "selfReviewLabel": "סקירה עצמית (אופציונלי)",
+      "selfReviewDescription": "דרג את איכות העבודה שלך בסולם של 0-100",
+      "scoreNeedsWork": "0 (צריך עבודה)",
+      "scorePerfect": "100 (מושלם)",
+      "cancel": "ביטול",
+      "submitting": "שולח...",
+      "submitButton": "שלח לבדיקה",
+      "resubmitButton": "שלח מחדש לבדיקה",
+      "errors": {
+        "missingDescription": "אנא ספק תיאור של העבודה שלך",
+        "submitError": "לא ניתן לשלוח את העבודה שלך. אנא נסה שוב."
+      },
+      "messages": {
+        "submitted": "עבודה נשלחה לבדיקה",
+        "resubmitted": "עבודה נשלחה מחדש לבדיקה"
+      }
+    }
+  },
+  "notes": {
+    "updated": "הפתק עודכן בהצלחה",
+    "updateFailed": "עדכון הפתק נכשל",
+    "deleted": "הפתק נמחק בהצלחה",
+    "deleteFailed": "מחיקת הפתק נכשלה",
+    "deleting": "מוחק...",
+    "confirmDelete": "האם אתה בטוח שברצונך למחוק את הפתק הזה?",
+    "content": "תוכן הפתק",
+    "visibilityUpdated": "הנראות עודכנה בהצלחה",
+    "visibilityUpdateFailed": "עדכון הנראות נכשל",
+    "changeVisibility": "שנה נראות",
+    "filters": {
+      "sort": "מיין",
+      "date": "תאריך",
+      "mostRelevant": "הרלוונטי ביותר",
+      "all": "הכל"
+    }
+  },
+  "chat": {
+    "title": "צ'אט",
+    "subtitle": "ארגונים, ערוצים, הודעות ישירות ושרשורים.",
+    "anonymous": "אנונימי",
+    "directMessage": "הודעה ישירה",
+    "deletedMessage": "ההודעה נמחקה",
+    "deleteMessageTitle": "למחוק הודעה?",
+    "deleteMessageDescription": "פעולה זו תמחק את ההודעה בצורה רכה ותשמור מציין מיקום בהיסטוריית השיחה.",
+    "createInviteLink": "צור קישור הזמנה",
+    "pendingInvites": "הזמנות ממתינות",
+    "acceptInvite": "קבל",
+    "inviteFriendToOrg": "הזמן חבר לארגון זה",
+    "inviteLinkCopied": "קישור ההזמנה הועתק",
+    "inviteSent": "ההזמנה נשלחה",
+    "inviteAccepted": "ההזמנה התקבלה"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "פריסת רשת",
+      "tight": "צפוף",
+      "small": "קטן",
+      "wide": "רחב"
+    }
   }
 }

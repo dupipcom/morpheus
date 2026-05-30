@@ -1,42 +1,57 @@
 'use client'
-import { useState, useEffect, useMemo, useContext, useRef } from 'react'
+
+import React, { useState, useEffect, useMemo, useContext, useRef, useCallback } from 'react'
 import useSWR from 'swr'
 import { useRouter, usePathname } from 'next/navigation'
 
 import { Slider } from "@/components/ui/slider"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { NotesList, Note } from "@/components/notesList"
-import { getWeekNumber } from "@/app/helpers"
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel"
 import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
 import { useNotesRefresh } from "@/lib/contexts/notesRefresh"
-import { updateUser, generateInsight, handleCloseDates as handleCloseDatesUtil, isUserDataReady, useEnhancedLoadingState, useUserData } from "@/lib/userUtils"
+import { generateInsight, useEnhancedLoadingState, useDayData } from "@/lib/utils/userUtils"
 import { MoodViewSkeleton } from "@/components/ui/skeletonLoader"
 import { ContentLoadingWrapper } from '@/components/contentLoadingWrapper'
 import { ContactCombobox } from "@/components/ui/contactCombobox"
 import { ThingCombobox } from "@/components/ui/thingCombobox"
 import { LifeEventCombobox } from "@/components/ui/lifeEventCombobox"
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command'
 import { useDebounce } from "@/lib/hooks/useDebounce"
-import { Plus } from "lucide-react"
+import { normalizeDelegationScopes } from "@/lib/utils/delegation"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Check, Lock, Users, UserCheck, Globe, Sparkles } from 'lucide-react'
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdownMenu'
+import type { NoteVisibility } from '@/lib/hooks/useProfile'
 
 interface MoodViewProps {
   timeframe?: string
   date?: string | null
-  defaultTab?: 'mood' | 'notes' | 'details'
+  defaultTab?: 'mood' | 'notes' | 'details' | 'third-party'
   filterNoteId?: string
 }
 
-export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab = "mood", filterNoteId }: MoodViewProps) => {
+interface FriendSuggestion {
+  id: string
+  displayName?: string
+  identifiers?: string[]
+}
+
+const MINIMUM_ONE_SCOPE_FALLBACK = 'At least one scope must remain selected.'
+
+export function MoodView({ timeframe = "day", date: propDate = null, defaultTab = "mood", filterNoteId }: MoodViewProps): React.ReactElement {
   const { session, setGlobalContext, theme, selectedDate: contextSelectedDate, setSelectedDate } = useContext(GlobalContext)
   const { t, locale } = useI18n()
   const { registerMutate, unregisterMutate } = useNotesRefresh()
@@ -95,12 +110,13 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
     if (pathname?.includes('/feel/mood')) return 'mood'
     if (pathname?.includes('/feel/notes')) return 'notes'
     if (pathname?.includes('/feel/details')) return 'details'
+    if (pathname?.includes('/feel/third-party')) return 'third-party'
     // If on base /feel route, use defaultTab prop
     if (pathname?.endsWith('/feel') || pathname?.endsWith('/feel/')) return defaultTab
     return defaultTab
   }
   
-  const [activeTab, setActiveTab] = useState<'mood' | 'notes' | 'details'>(getInitialTab())
+  const [activeTab, setActiveTab] = useState<'mood' | 'notes' | 'details' | 'third-party'>(getInitialTab())
   
   // Update activeTab when pathname changes
   useEffect(() => {
@@ -110,7 +126,7 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
   
   // Handle tab change and update URL
   const handleTabChange = (value: string) => {
-    const tab = value as 'mood' | 'notes' | 'details'
+    const tab = value as 'mood' | 'notes' | 'details' | 'third-party'
     setActiveTab(tab)
     
     // Update URL to match the selected tab
@@ -165,21 +181,9 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
   
   // Use fullDay directly as it's already in YYYY-MM-DD format
   const date = fullDay || todayDate
-  const year = Number(date.split('-')[0])
-  const [weekNumber, setWeekNumber] = useState(getWeekNumber(today)[1])
 
-  // Fetch day data from Day API
-  const { data: dayData, mutate: mutateDay, isLoading: dayLoading } = useSWR(
-    session?.user ? `/api/v1/days?date=${date}` : null,
-    async () => {
-      const response = await fetch(`/api/v1/days?date=${date}`)
-      if (response.ok) {
-        const data = await response.json()
-        return data
-      }
-      return { day: null }
-    }
-  )
+  // Fetch day data from GlobalContext using useDayData hook
+  const { data: dayData, isLoading: dayLoading, mutate: mutateDay } = useDayData(date, !!session?.user)
 
   const serverMood = useMemo(() => dayData?.day?.mood || {}, [dayData?.day?.mood])
   const serverMoodContacts = useMemo(() => dayData?.day?.contacts || [], [dayData?.day?.contacts])
@@ -197,6 +201,15 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
   const [optimisticMoodThings, setOptimisticMoodThings] = useState<any[]>([])
   const [newLifeEventText, setNewLifeEventText] = useState('')
   const [notes, setNotes] = useState<Note[]>([])
+  const [delegationIdentifier, setDelegationIdentifier] = useState('')
+  const [isDelegationSuggestionsOpen, setIsDelegationSuggestionsOpen] = useState(false)
+  const [delegationError, setDelegationError] = useState('')
+  const [delegationInfo, setDelegationInfo] = useState('')
+  const [isSubmittingDelegation, setIsSubmittingDelegation] = useState(false)
+  // Selectable visibility options for the filter UI (HIDDEN is a system-only state, not user-selectable)
+  const SELECTABLE_NOTE_VISIBILITIES: NoteVisibility[] = ['PRIVATE', 'AI_ENABLED', 'FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC']
+  const [delegationScopes, setDelegationScopes] = useState<NoteVisibility[]>(SELECTABLE_NOTE_VISIBILITIES)
+  const [notesVisibilityFilter, setNotesVisibilityFilter] = useState<NoteVisibility[]>(SELECTABLE_NOTE_VISIBILITIES)
 
   // Initialize mood contacts from server data
   useEffect(() => {
@@ -217,25 +230,11 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
     setMoodLifeEvents(serverMoodLifeEvents || [])
   }, [serverMoodLifeEvents])
 
-
-  const openDays = useMemo(() => {
-    return session?.user?.entries && session?.user?.entries[year] && session?.user?.entries[year].days && Object.values(session?.user?.entries[year].days).filter((day) => {
-   return day.status === "Open" && day.date !== date }).sort()
-  }, [JSON.stringify(session), date])
-
   const [mood, setMood] = useState(serverMood)
-  const [pendingMoodChanges, setPendingMoodChanges] = useState({})
-  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null)
 
   // Update mood state when serverMood changes (due to date change)
   useEffect(() => {
     setMood(serverMood)
-    setPendingMoodChanges({})
-    // Clear any pending debounce when date changes
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current)
-      debounceTimerRef.current = null
-    }
   }, [serverMood])
 
 
@@ -284,12 +283,20 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
   )
 
   // Fetch notes for the selected date
+  const notesVisibilityParam = notesVisibilityFilter.length > 0 && notesVisibilityFilter.length < SELECTABLE_NOTE_VISIBILITIES.length
+    ? `visibility=${notesVisibilityFilter.join(',')}`
+    : null
+  const notesUrlParams = [
+    filterNoteId ? `noteId=${filterNoteId}` : null,
+    notesVisibilityParam
+  ].filter(Boolean).join('&')
+  const notesUrl = `/api/v1/notes${notesUrlParams ? `?${notesUrlParams}` : ''}`
+
   const { data: notesData, mutate: mutateNotes, isLoading: notesLoading, error: notesError } = useSWR(
-    session?.user ? `/api/v1/notes${filterNoteId ? `?noteId=${filterNoteId}` : ''}` : null,
+    session?.user ? notesUrl : null,
     async () => {
       try {
-        const url = filterNoteId ? `/api/v1/notes?noteId=${filterNoteId}` : '/api/v1/notes'
-        const response = await fetch(url)
+        const response = await fetch(notesUrl)
         if (!response.ok) {
           console.error('Failed to fetch notes:', response.status, response.statusText)
           return { notes: [] }
@@ -302,6 +309,41 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
       }
     }
   )
+
+  const { data: delegationsData, mutate: mutateDelegations, isLoading: delegationsLoading } = useSWR(
+    session?.user ? '/api/v1/delegated-users' : null,
+    async () => {
+      const response = await fetch('/api/v1/delegated-users')
+      if (!response.ok) {
+        return { outgoingDelegations: [], friendSuggestions: [] }
+      }
+      return response.json()
+    }
+  )
+
+  const outgoingDelegations = delegationsData?.outgoingDelegations || []
+  const friendSuggestions: FriendSuggestion[] = delegationsData?.friendSuggestions || []
+  const allScopesSelected = delegationScopes.length === SELECTABLE_NOTE_VISIBILITIES.length
+  const minimumOneScopeText = t('mood.thirdParty.minimumOneScope') || MINIMUM_ONE_SCOPE_FALLBACK
+  const filteredFriendSuggestions = useMemo(() => {
+    const query = delegationIdentifier.trim().toLowerCase()
+
+    return friendSuggestions.filter((friend) => {
+      if (!query) return true
+
+      const searchableValues = [friend.displayName, ...(friend.identifiers || [])]
+        .filter(Boolean)
+        .map((value) => value.toLowerCase())
+
+      return searchableValues.some((value) => value.includes(query))
+    })
+  }, [delegationIdentifier, friendSuggestions])
+
+  const formatScopeSelectionLabel = () => {
+    if (allScopesSelected) return t('mood.thirdParty.allScopes') || 'All scopes'
+    if (delegationScopes.length > 2) return `${delegationScopes.length} ${t('mood.thirdParty.scopesSelected') || 'scopes selected'}`
+    return delegationScopes.map(v => t(`mood.publish.visibility.${v}`) || v).join(', ')
+  }
 
   // Register the mutate function for notes refresh
   useEffect(() => {
@@ -386,14 +428,27 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
   }, [lifeEventsData])
 
   // Helper function to save day data to Day API
-  const saveDayData = async (moodData?: any, contactsData?: any[], thingsData?: any[], lifeEventsData?: any[]) => {
+  // Now supports partial mood updates - only sends provided fields
+  const saveDayData = useCallback(async (moodUpdates?: Record<string, number>, contactsData?: any[], thingsData?: any[], lifeEventsData?: any[]) => {
     try {
       const payload: any = {
-        date: date,
-        mood: moodData || mood,
-        contacts: contactsData || moodContacts,
-        things: thingsData || moodThings,
-        lifeEvents: lifeEventsData || moodLifeEvents
+        date: date
+      }
+      
+      // Only include mood if there are updates
+      if (moodUpdates && Object.keys(moodUpdates).length > 0) {
+        payload.mood = moodUpdates
+      }
+      
+      // Include other data if provided
+      if (contactsData !== undefined) {
+        payload.contacts = contactsData
+      }
+      if (thingsData !== undefined) {
+        payload.things = thingsData
+      }
+      if (lifeEventsData !== undefined) {
+        payload.lifeEvents = lifeEventsData
       }
 
       const response = await fetch('/api/v1/days', {
@@ -404,99 +459,182 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
         body: JSON.stringify(payload)
       })
 
-      if (response.ok) {
-        await mutateDay()
+      // Don't manually refresh - rely on SWR polling every 30 seconds
+      if (!response.ok) {
+        throw new Error('Failed to save day data')
       }
     } catch (error) {
       console.error('Error saving day data:', error)
     }
-  }
+  }, [date])
 
-  // Create debounced version of handleSubmit for sliders
-  const debouncedHandleSubmit = useDebounce(async (value, field) => {
-    const updatedMood = {...mood, [field]: value}
-    setMood(updatedMood)
-    await saveDayData(updatedMood)
-  }, 3000)
+  // Create a stable function that only saves mood updates (no contacts/things/lifeEvents)
+  const saveMoodOnly = useCallback(async (moodUpdates: Record<string, number>) => {
+    // Explicitly only pass mood updates, nothing else
+    await saveDayData(moodUpdates, undefined, undefined, undefined)
+  }, [saveDayData])
 
-  // Function to handle individual slider changes with debouncing
-  const handleMoodSliderChange = (field, value) => {
-    // Update the pending changes
-    setPendingMoodChanges(prev => ({...prev, [field]: value}))
+  // Create batched debounced save function for mood updates ONLY
+  // This should only send mood data, never contacts/things/lifeEvents
+  const debouncedSaveMood = useDebounce(
+    saveMoodOnly,
+    5000,
+    { batched: true }
+  )
+
+  // Function to handle individual slider changes with 5-second batched debouncing
+  const handleMoodSliderChange = (field: string, value: number) => {
     // Update the local mood state for immediate UI feedback
     setMood(prev => ({...prev, [field]: value}))
-    
-    // Clear existing timer if any
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current)
-    }
-    
-    // Set new timer - will only execute after 3000ms of no interactions
-    debounceTimerRef.current = setTimeout(() => {
-      // Use functional updates to get the latest state values
-      setMood(currentMood => {
-        setPendingMoodChanges(currentPending => {
-          // Aggregate all pending changes with current mood state
-          const aggregatedMood = {...currentMood, ...currentPending}
-          
-          // Save to backend
-          saveDayData(aggregatedMood).then(() => {
-            debounceTimerRef.current = null
-          })
-          
-          return {}
-        })
-        return currentMood
-      })
-    }, 3000)
+    // Trigger batched debounced save (will collect all changes within 5 seconds)
+    debouncedSaveMood({ [field]: value })
   }
 
-
-  const handleSubmit = async (value, field) => {
-    const updatedMood = {...mood, [field]: value}
-    setMood(updatedMood)
+  const handleSubmit = async (value: number, field: string) => {
+    const updatedMood = {[field]: value}
+    setMood(prev => ({...prev, [field]: value}))
     await saveDayData(updatedMood)
   }
 
-  // Create debounced version of handleMoodContactsChange for contact interaction sliders
-  const debouncedHandleMoodContactsChange = useDebounce(async (newMoodContacts) => {
-    // Update both optimistic and server state
-    setOptimisticMoodContacts(newMoodContacts)
-    setMoodContacts(newMoodContacts)
-    await saveDayData(undefined, newMoodContacts)
-  }, 500)
-
-  const handleMoodContactsChange = async (newMoodContacts) => {
-    // Update both optimistic and server state
-    setOptimisticMoodContacts(newMoodContacts)
-    setMoodContacts(newMoodContacts)
-    await saveDayData(undefined, newMoodContacts)
+  const handleAddDelegation = async () => {
+    if (!delegationIdentifier.trim() || isSubmittingDelegation) return
+    if (delegationScopes.length === 0) {
+      setDelegationError(minimumOneScopeText)
+      return
+    }
+    setIsSubmittingDelegation(true)
+    setDelegationError('')
+    setDelegationInfo('')
+    try {
+      const response = await fetch('/api/v1/delegated-users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          identifier: delegationIdentifier.trim(),
+          scopes: delegationScopes
+        })
+      })
+      const data = await response.json().catch(() => null)
+      if (!response.ok) {
+        setDelegationError(data?.error || (t('mood.thirdParty.addError') || 'Could not add delegated analyst'))
+        return
+      }
+      if (response.status === 202) {
+        setIsDelegationSuggestionsOpen(false)
+        setDelegationInfo(data?.invitation?.message || (t('mood.thirdParty.invitationDraft') || 'Invitation draft prepared for this email.'))
+        return
+      }
+      setDelegationIdentifier('')
+      setIsDelegationSuggestionsOpen(false)
+      await mutateDelegations()
+    } catch (error) {
+      console.error('Error creating delegation:', error)
+      setDelegationError(t('mood.thirdParty.addError') || 'Could not add delegated analyst')
+    } finally {
+      setIsSubmittingDelegation(false)
+    }
   }
 
-  // Create debounced version of handleMoodThingsChange for thing interaction sliders
-  const debouncedHandleMoodThingsChange = useDebounce(async (newMoodThings) => {
-    // Update both optimistic and server state
-    setOptimisticMoodThings(newMoodThings)
-    setMoodThings(newMoodThings)
-    await saveDayData(undefined, undefined, newMoodThings)
-  }, 500)
-
-  const handleMoodThingsChange = async (newMoodThings) => {
-    // Update both optimistic and server state
-    setOptimisticMoodThings(newMoodThings)
-    setMoodThings(newMoodThings)
-    await saveDayData(undefined, undefined, newMoodThings)
+  const handleRemoveDelegation = async (delegationId: string) => {
+    try {
+      const response = await fetch('/api/v1/delegated-users', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ delegationId })
+      })
+      if (!response.ok) {
+        return
+      }
+      await mutateDelegations()
+    } catch (error) {
+      console.error('Error removing delegation:', error)
+    }
   }
 
-  // Create debounced version of handleMoodLifeEventsChange for life event interaction sliders
-  const debouncedHandleMoodLifeEventsChange = useDebounce(async (newMoodLifeEvents) => {
-    setMoodLifeEvents(newMoodLifeEvents)
-    await saveDayData(undefined, undefined, undefined, newMoodLifeEvents)
-  }, 500)
+  // Helper to find what changed between old and new arrays
+  const getArrayDiff = useCallback((oldArray: any[], newArray: any[]) => {
+    const oldIds = new Set(oldArray.map(item => item.id || item))
+    const newIds = new Set(newArray.map(item => item.id || item))
+    
+    // Find added items (in new but not in old)
+    const added = newArray.filter(item => {
+      const id = item.id || item
+      return !oldIds.has(id)
+    })
+    
+    // Find removed items (in old but not in new)
+    const removed = oldArray.filter(item => {
+      const id = item.id || item
+      return !newIds.has(id)
+    })
+    
+    // Find modified items (same ID but different quality)
+    const modified = newArray.filter(newItem => {
+      const newId = newItem.id || newItem
+      const oldItem = oldArray.find(oldItem => (oldItem.id || oldItem) === newId)
+      return oldItem && (oldItem.quality !== newItem.quality)
+    })
+    
+    return { added, removed, modified }
+  }, [])
 
-  const handleMoodLifeEventsChange = async (newMoodLifeEvents) => {
+  // Create stable functions that only save specific field updates
+  const saveContactsOnly = useCallback(async (contactsData: any[]) => {
+    await saveDayData(undefined, contactsData, undefined, undefined)
+  }, [saveDayData])
+
+  const saveThingsOnly = useCallback(async (thingsData: any[]) => {
+    await saveDayData(undefined, undefined, thingsData, undefined)
+  }, [saveDayData])
+
+  const saveLifeEventsOnly = useCallback(async (lifeEventsData: any[]) => {
+    await saveDayData(undefined, undefined, undefined, lifeEventsData)
+  }, [saveDayData])
+
+  // Create batched debounced save functions for contacts, things, and lifeEvents
+  // These will batch multiple changes within 5 seconds and send only the final state
+  const debouncedSaveContacts = useDebounce(
+    saveContactsOnly,
+    5000,
+    { batched: false } // Send the latest full array after debounce
+  )
+
+  const debouncedSaveThings = useDebounce(
+    saveThingsOnly,
+    5000,
+    { batched: false }
+  )
+
+  const debouncedSaveLifeEvents = useDebounce(
+    saveLifeEventsOnly,
+    5000,
+    { batched: false }
+  )
+
+  const handleMoodContactsChange = async (newMoodContacts: any[]) => {
+    // Update both optimistic and server state immediately
+    setOptimisticMoodContacts(newMoodContacts)
+    setMoodContacts(newMoodContacts)
+    // Trigger debounced save (will batch multiple changes within 5 seconds)
+    // Only the latest array will be sent after 5 seconds of inactivity
+    debouncedSaveContacts(newMoodContacts)
+  }
+
+  const handleMoodThingsChange = async (newMoodThings: any[]) => {
+    // Update both optimistic and server state immediately
+    setOptimisticMoodThings(newMoodThings)
+    setMoodThings(newMoodThings)
+    // Trigger debounced save (will batch multiple changes within 5 seconds)
+    // Only the latest array will be sent after 5 seconds of inactivity
+    debouncedSaveThings(newMoodThings)
+  }
+
+  const handleMoodLifeEventsChange = async (newMoodLifeEvents: any[]) => {
+    // Update state immediately
     setMoodLifeEvents(newMoodLifeEvents)
-    await saveDayData(undefined, undefined, undefined, newMoodLifeEvents)
+    // Trigger debounced save (will batch multiple changes within 5 seconds)
+    // Only the latest array will be sent after 5 seconds of inactivity
+    debouncedSaveLifeEvents(newMoodLifeEvents)
   }
 
   const handleAddLifeEvent = async () => {
@@ -543,23 +681,6 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
 
 
 
-  const handleEditDay = (date: string) => {
-    setFullDay(date)
-    // Also update context
-    const dateObj = dateStringToDate(date)
-    if (dateObj) {
-      setSelectedDate(dateObj)
-    }
-  }
-
-  const { refreshUser } = useUserData()
-
-  const handleCloseDates = async (values) => {
-    await handleCloseDatesUtil(values, undefined, fullDay)
-    await refreshUser()
-  }
-
- 
   useEffect(() => {
     // Only fetch hint; skip user refresh here to avoid duplicate GETs
     generateInsight(setInsight, 'test', locale)
@@ -574,9 +695,9 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
 
   return (
     <ContentLoadingWrapper>
-      <div key={JSON.stringify(serverMood)} className="w-full m-auto p-4">
+      <div key={JSON.stringify(serverMood)} className="w-full max-w-[720px] m-auto p-4">
         <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger 
               value="mood"
               className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
@@ -595,6 +716,12 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
             >
               {t('common.details')}
             </TabsTrigger>
+            <TabsTrigger
+              value="third-party"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            >
+              {t('mood.thirdParty.title') || 'Third-Party'}
+            </TabsTrigger>
           </TabsList>
 
           {/* Mood Tab */}
@@ -602,37 +729,81 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
             <div className="mb-16">
               <small>{insight?.gratitudeAnalysis}</small>
             </div>
-            <Slider className="mb-4" defaultValue={[serverMood.gratitude || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("gratitude", e[0])} />
+            <Slider className="mb-4" value={[mood.gratitude || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("gratitude", e[0])} />
             <h3 className="mt-4 text-center">{t('charts.gratitude')}</h3>
             <div className="my-16">
               <small>{insight?.optimismAnalysis}</small>
             </div>
-            <Slider className="mb-4" defaultValue={[serverMood.optimism || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("optimism", e[0])} />
+            <Slider className="mb-4" value={[mood.optimism || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("optimism", e[0])} />
             <h3 className="mt-4 text-center">{t('charts.optimism')}</h3>
             <div className="my-16">
               <small>{insight?.restednessAnalysis}</small>
             </div>
-            <Slider className="mb-4" defaultValue={[serverMood.restedness || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("restedness", e[0])} />
+            <Slider className="mb-4" value={[mood.restedness || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("restedness", e[0])} />
             <h3 className="mt-4 text-center">{t('charts.restedness')}</h3>
             <div className="my-16">
               <small>{insight?.toleranceAnalysis}</small>
             </div>
-            <Slider className="mb-4" defaultValue={[serverMood.tolerance || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("tolerance", e[0])} />
+            <Slider className="mb-4" value={[mood.tolerance || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("tolerance", e[0])} />
             <h3 className="mt-4 text-center">{t('charts.tolerance')}</h3>
             <div className="my-16">
               <small>{insight?.selfEsteemAnalysis}</small>
             </div>
-            <Slider className="mb-4" defaultValue={[serverMood.selfEsteem || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("selfEsteem", e[0])} />
+            <Slider className="mb-4" value={[mood.selfEsteem || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("selfEsteem", e[0])} />
             <h3 className="mt-4 text-center">{t('charts.selfEsteem')}</h3>
             <div className="my-16">
               <small>{insight?.trustAnalysis}</small>
             </div>
-            <Slider className="mb-4" defaultValue={[serverMood?.trust || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("trust", e[0])} />
+            <Slider className="mb-4" value={[mood?.trust || 0]} max={5} step={0.5} onValueChange={(e) => handleMoodSliderChange("trust", e[0])} />
             <h3 className="mt-4 text-center">{t('charts.trust')}</h3>
           </TabsContent>
 
           {/* Notes Tab */}
           <TabsContent value="notes" className="mt-4">
+            <div className="mb-4">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="justify-start gap-2 w-full sm:w-auto" aria-label={t('notes.changeVisibility')}>
+                    <Lock className="h-4 w-4 shrink-0" aria-hidden="true" />
+                    <span className="truncate">
+                      {notesVisibilityFilter.length === SELECTABLE_NOTE_VISIBILITIES.length
+                        ? t('notes.filters.all')
+                        : notesVisibilityFilter.map(v => t(`mood.publish.visibility.${v}`) || v).join(', ')}
+                    </span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start">
+                  {SELECTABLE_NOTE_VISIBILITIES.map(v => {
+                    const icons: Record<string, React.ReactNode> = {
+                      PRIVATE: <Lock className="h-4 w-4" />,
+                      AI_ENABLED: <Sparkles className="h-4 w-4" />,
+                      FRIENDS: <Users className="h-4 w-4" />,
+                      CLOSE_FRIENDS: <UserCheck className="h-4 w-4" />,
+                      PUBLIC: <Globe className="h-4 w-4" />,
+                    }
+                    const label = t(`mood.publish.visibility.${v}`) || v
+                    return (
+                      <DropdownMenuCheckboxItem
+                        key={v}
+                        checked={notesVisibilityFilter.includes(v)}
+                        onCheckedChange={() => {
+                          setNotesVisibilityFilter(prev => {
+                            if (prev.length === 1 && prev.includes(v)) return prev
+                            if (prev.includes(v)) return prev.filter(item => item !== v)
+                            return [...prev, v]
+                          })
+                        }}
+                      >
+                        <span className="flex items-center gap-2">
+                          {icons[v]}
+                          {label}
+                        </span>
+                      </DropdownMenuCheckboxItem>
+                    )
+                  })}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
             <NotesList
               notes={notes}
               loading={notesLoading}
@@ -644,6 +815,155 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
               onNoteUpdated={() => mutateNotes()}
               filterNoteId={filterNoteId}
             />
+          </TabsContent>
+
+          <TabsContent value="third-party" className="mt-4">
+            <div className="p-4 border rounded-lg bg-transparent border-body mb-6">
+              <h3 className="text-lg font-semibold mb-4">{t('mood.thirdParty.settings') || 'Delegation Settings'}</h3>
+              <div className="space-y-3">
+                <div className="relative">
+                  <Input
+                    value={delegationIdentifier}
+                    onChange={(event) => {
+                      setDelegationIdentifier(event.target.value)
+                      setIsDelegationSuggestionsOpen(true)
+                    }}
+                    onFocus={() => setIsDelegationSuggestionsOpen(true)}
+                    onBlur={() => {
+                      window.setTimeout(() => setIsDelegationSuggestionsOpen(false), 150)
+                    }}
+                    placeholder={t('mood.thirdParty.identifierPlaceholder') || 'Username, email, or user ID'}
+                    autoComplete="off"
+                    role="combobox"
+                    aria-expanded={isDelegationSuggestionsOpen}
+                    aria-controls="delegation-friend-suggestions"
+                  />
+                  {isDelegationSuggestionsOpen && friendSuggestions.length > 0 && (
+                    <div className="absolute top-full z-20 mt-2 w-full overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md">
+                      <Command shouldFilter={false}>
+                        <CommandList id="delegation-friend-suggestions">
+                          <CommandEmpty>
+                            {t('mood.thirdParty.noFriendsFound') || 'No matching friendships found.'}
+                          </CommandEmpty>
+                          <CommandGroup>
+                            {filteredFriendSuggestions.map((friend) => {
+                              const primaryIdentifier = friend.identifiers?.[0]
+                              const secondaryText = (friend.identifiers || []).join(' · ')
+                              const isSelected = primaryIdentifier === delegationIdentifier.trim()
+
+                              if (!primaryIdentifier) {
+                                return null
+                              }
+
+                              return (
+                                <CommandItem
+                                  key={friend.id}
+                                  value={`${friend.displayName || ''} ${secondaryText}`.trim()}
+                                  onMouseDown={(event) => event.preventDefault()}
+                                  onSelect={() => {
+                                    setDelegationIdentifier(primaryIdentifier)
+                                    setDelegationError('')
+                                    setDelegationInfo('')
+                                    setIsDelegationSuggestionsOpen(false)
+                                  }}
+                                >
+                                  <Check className={`mr-2 h-4 w-4 ${isSelected ? 'opacity-100' : 'opacity-0'}`} />
+                                  <div className="min-w-0 flex-1">
+                                    <p className="truncate font-medium">{friend.displayName || primaryIdentifier}</p>
+                                    {secondaryText && (
+                                      <p className="truncate text-xs text-muted-foreground">{secondaryText}</p>
+                                    )}
+                                  </div>
+                                </CommandItem>
+                              )
+                            })}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </div>
+                  )}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {t('mood.thirdParty.friendsHint') || 'Suggestions include your friends. You can also enter any email address.'}
+                </p>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="justify-start gap-2 w-full sm:w-auto" aria-label={t('mood.thirdParty.scope') || 'Data scope'}>
+                      <span className="truncate">
+                        {formatScopeSelectionLabel()}
+                      </span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start">
+                    {SELECTABLE_NOTE_VISIBILITIES.map((visibility) => {
+                      const isSingleSelectedScope = delegationScopes.length === 1 && delegationScopes.includes(visibility)
+                      return (
+                        <DropdownMenuCheckboxItem
+                          key={visibility}
+                          checked={delegationScopes.includes(visibility)}
+                          disabled={isSingleSelectedScope}
+                          aria-disabled={isSingleSelectedScope}
+                          onCheckedChange={() => {
+                            setDelegationScopes((prev) => {
+                              if (prev.length === 1 && prev.includes(visibility)) return prev
+                              if (prev.includes(visibility)) return prev.filter((item) => item !== visibility)
+                              return [...prev, visibility]
+                            })
+                          }}
+                        >
+                          {t(`mood.publish.visibility.${visibility}`) || visibility}
+                        </DropdownMenuCheckboxItem>
+                      )
+                    })}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <p className="text-xs text-muted-foreground">
+                  {t('mood.thirdParty.scopeResolutionHint') || 'If multiple scopes are selected, the broadest selected scope is applied.'}
+                </p>
+                {delegationScopes.length === 1 && (
+                  <p className="text-xs text-muted-foreground">
+                    {minimumOneScopeText}
+                  </p>
+                )}
+                <Button onClick={handleAddDelegation} disabled={!delegationIdentifier.trim() || isSubmittingDelegation || delegationScopes.length === 0} aria-busy={isSubmittingDelegation}>
+                  {isSubmittingDelegation
+                    ? (t('mood.thirdParty.adding') || 'Adding...')
+                    : (t('mood.thirdParty.addDelegatedAnalyst') || 'Add delegated analyst')}
+                </Button>
+                {delegationError && (
+                  <p className="text-sm text-red-500" role="alert">{delegationError}</p>
+                )}
+                {delegationInfo && (
+                  <p className="text-sm text-blue-600 flex items-center gap-1" role="status">
+                    <Sparkles className="h-4 w-4" aria-hidden="true" />
+                    <span>{delegationInfo}</span>
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div className="p-4 border rounded-lg bg-transparent border-body">
+              <h3 className="text-lg font-semibold mb-4">{t('mood.thirdParty.activeDelegations') || 'Active Delegations'}</h3>
+              {delegationsLoading ? (
+                <p className="text-sm text-muted-foreground">{t('common.loading') || 'Loading...'}</p>
+              ) : outgoingDelegations.length === 0 ? (
+                <p className="text-sm text-muted-foreground">{t('mood.thirdParty.empty') || 'No active delegations.'}</p>
+              ) : (
+                <div className="space-y-3">
+                  {outgoingDelegations.map((delegation: any) => (
+                    <div key={delegation.id} className="flex items-center justify-between border rounded-md p-3">
+                      <div>
+                        <p className="font-medium">{delegation.delegatedUser?.displayName || delegation.delegatedUser?.userName || delegation.delegatedUser?.email}</p>
+                        <p className="text-xs text-muted-foreground">{normalizeDelegationScopes(delegation.scopes, delegation.scope)}</p>
+                      </div>
+                      <Button variant="outline" size="sm" onClick={() => handleRemoveDelegation(delegation.id)}>
+                        {t('common.remove') || 'Remove'}
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </TabsContent>
 
           {/* Details Tab */}
@@ -682,8 +1002,8 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
                               : le
                           )
                           setMoodLifeEvents(updatedLifeEvents)
-                          // Use debounced handler to save to database
-                          debouncedHandleMoodLifeEventsChange(updatedLifeEvents)
+                          // Save to database
+                          handleMoodLifeEventsChange(updatedLifeEvents)
                         }}
                         max={5}
                         min={0}
@@ -733,8 +1053,8 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
                           setOptimisticMoodContacts(updatedContacts)
                           // Also update the server state
                           setMoodContacts(updatedContacts)
-                          // Use debounced handler to save to database
-                          debouncedHandleMoodContactsChange(updatedContacts)
+                          // Save to database
+                          handleMoodContactsChange(updatedContacts)
                         }}
                         max={5}
                         min={0}
@@ -784,8 +1104,8 @@ export const MoodView = ({ timeframe = "day", date: propDate = null, defaultTab 
                           setOptimisticMoodThings(updatedThings)
                           // Also update the server state
                           setMoodThings(updatedThings)
-                          // Use debounced handler to save to database
-                          debouncedHandleMoodThingsChange(updatedThings)
+                          // Save to database
+                          handleMoodThingsChange(updatedThings)
                         }}
                         max={5}
                         min={0}

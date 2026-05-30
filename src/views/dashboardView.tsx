@@ -1,6 +1,8 @@
 'use client'
-import { type ChartConfig } from "@/components/ui/chart"
-import { useState, useEffect, useContext, useMemo } from 'react'
+
+import React, { useState, useEffect, useContext, useMemo } from 'react'
+
+import type { ChartConfig } from "@/components/ui/chart"
 import { Area, CartesianGrid, Bar, AreaChart, XAxis } from "recharts"
  
 import { ChartContainer, ChartTooltipContent, ChartTooltip, ChartLegendContent, ChartLegend } from "@/components/ui/chart"
@@ -12,19 +14,33 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdownMenu"
 import { ChevronDown } from "lucide-react"
+import { DateRangeSelector } from "@/components/ui/dateRangeSelector"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
 import { EarningsTable } from '@/components/earningsTable'
 
-import { getWeekNumber } from "@/app/helpers"
+import { getWeekNumber, formatDateRange } from "@/app/helpers"
 
 import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
-import { generateInsight, updateUser, handleMoodSubmit, useHint, useUserData, useEnhancedLoadingState } from "@/lib/userUtils"
+import { useHint, useUserData, useEnhancedLoadingState } from "@/lib/utils/userUtils"
 import { DashboardViewSkeleton } from "@/components/ui/skeletonLoader"
 import { ContentLoadingWrapper } from '@/components/contentLoadingWrapper'
 import { AgentChat } from "@/components/agentChat"
 import { useFeatureFlag } from "@/lib/hooks/useFeatureFlag"
 import { useDebounce } from "@/lib/hooks/useDebounce"
+import { normalizeDelegationScopes } from "@/lib/utils/delegation"
+
+/** Returns a Date that is `n` days before today */
+function daysAgo(n: number): Date {
+  const d = new Date()
+  d.setDate(d.getDate() - n)
+  return d
+}
+
+/** Formats a Date as YYYY-MM-DD for API calls */
+const toISODate = (d: Date) => d.toISOString().split('T')[0]
 
 // Chart config generators that use translations
 const createMoodChartConfig = (t: (key: string) => string) => ({
@@ -70,16 +86,24 @@ const createProductivityChartConfig = (t: (key: string) => string) => ({
 }) satisfies ChartConfig
 
 const createMoneyChartConfig = (t: (key: string) => string) => ({
+  moodAverage: {
+    label: t('charts.moodAverage'),
+    color: "#cffcdf",
+  },
+  profit: {
+    label: t('charts.profit'),
+    color: "#6565cc",
+  },
+  stash: {
+    label: t('charts.stash'),
+    color: "#fbd2b0",
+  },
+  withdraw: {
+    label: t('charts.withdrawn'),
+    color: "#f7bfa5",
+  },
   balance: {
     label: t('charts.balance'),
-    color: "#2f2f8d",
-  },
-  moodAverageScale: {
-    label: t('charts.moodAverageScale'),
-    color: "#2f2f8d",
-  },
-  earningsScale: {
-    label: t('charts.earningsScale'),
     color: "#2f2f8d",
   },
 }) satisfies ChartConfig
@@ -124,15 +148,30 @@ const ChartDimensionSelector = ({
   )
 }
 
-export const DashboardView = ({ timeframe = "day" }) => {
-  const fullDate = new Date()
-  const date = fullDate.toISOString().split('T')[0]
-  const year = Number(date.split('-')[0])
-  const weekNumber = getWeekNumber(fullDate)[1]
+interface DelegatedUserOption {
+  id: string
+  label: string
+  scope?: string
+  scopes?: string[]
+  isSelf?: boolean
+}
+
+interface DashboardViewProps {
+  timeframe?: string
+  onDelegatedUserChange?: (user: DelegatedUserOption) => void
+}
+
+export function DashboardView({ timeframe = "day", onDelegatedUserChange }: DashboardViewProps): React.ReactElement {
   const [insight, setInsight] = useState({})
-  const [relevantData, setRelevantData] = useState([])
   const [days, setDays] = useState<any[]>([])
   const [isLoadingDays, setIsLoadingDays] = useState(true)
+  const [delegatedUsers, setDelegatedUsers] = useState<DelegatedUserOption[]>([])
+  const [selectedDelegatedUserId, setSelectedDelegatedUserId] = useState<string | undefined>(undefined)
+  const [isLoadingDelegations, setIsLoadingDelegations] = useState(false)
+
+  // Date range state – default to last 360 days (T-360d) through today
+  const [rangeStart, setRangeStart] = useState<Date>(() => daysAgo(360))
+  const [rangeEnd, setRangeEnd] = useState<Date>(() => new Date())
   
   // Chart dimensions state
   const [moodChartDimensions, setMoodChartDimensions] = useState({
@@ -151,9 +190,11 @@ export const DashboardView = ({ timeframe = "day" }) => {
   })
   
   const [moneyChartDimensions, setMoneyChartDimensions] = useState({
-    moodAverageScale: true,
+    moodAverage: true,
+    profit: true,
+    stash: true,
+    withdrawn: true,
     balance: true,
-    earningsScale: true,
   })
   
   const { session, setGlobalContext, ...globalContext } = useContext(GlobalContext)
@@ -163,6 +204,53 @@ export const DashboardView = ({ timeframe = "day" }) => {
   
   // Type guard to ensure session.user has the expected structure
   const user = useMemo(() => session?.user as any, [session?.user])
+
+  useEffect(() => {
+    const fetchDelegatedUsers = async () => {
+      if (!user?.id) return
+      try {
+        setIsLoadingDelegations(true)
+        const response = await fetch('/api/v1/delegated-users')
+        if (!response.ok) {
+          throw new Error('Failed to fetch delegated users')
+        }
+        const data = await response.json()
+        const incoming = (data.incomingDelegations || []).map((delegation: any) => ({
+          id: delegation.delegatorUser.id,
+          label: delegation.delegatorUser.displayName || delegation.delegatorUser.userName || delegation.delegatorUser.email || delegation.delegatorUser.userId || delegation.delegatorUser.id,
+          scope: delegation.scope,
+          scopes: delegation.scopes || []
+        }))
+        const selfOption = {
+          id: user.id,
+          label: t('dashboard.me') || 'My data',
+          isSelf: true
+        }
+        const options = [selfOption, ...incoming.filter((option: DelegatedUserOption) => option.id !== user.id)]
+        setDelegatedUsers(options)
+        setSelectedDelegatedUserId((prev) => {
+          if (prev && options.some((option: DelegatedUserOption) => option.id === prev)) return prev
+          return user.id
+        })
+      } catch (error) {
+        console.error('Error fetching delegated users:', error)
+        setDelegatedUsers([{ id: user.id, label: t('dashboard.me') || 'My data' }])
+        setSelectedDelegatedUserId(user.id)
+      } finally {
+        setIsLoadingDelegations(false)
+      }
+    }
+
+    fetchDelegatedUsers()
+  }, [user?.id, t])
+
+  useEffect(() => {
+    if (!selectedDelegatedUserId || delegatedUsers.length === 0) return
+    const selectedUser = delegatedUsers.find(option => option.id === selectedDelegatedUserId)
+    if (selectedUser && onDelegatedUserChange) {
+      onDelegatedUserChange(selectedUser)
+    }
+  }, [selectedDelegatedUserId, delegatedUsers, onDelegatedUserChange])
   
   // Fetch days from Prisma Day model
   useEffect(() => {
@@ -171,7 +259,10 @@ export const DashboardView = ({ timeframe = "day" }) => {
       
       try {
         setIsLoadingDays(true)
-        const response = await fetch(`/api/v1/days?year=${year}`)
+        const startDate = toISODate(rangeStart)
+        const endDate = toISODate(rangeEnd)
+        const targetUserId = selectedDelegatedUserId || user.id
+        const response = await fetch(`/api/v1/user-dashboard-data?startDate=${startDate}&endDate=${endDate}&userId=${targetUserId}`)
         if (!response.ok) {
           throw new Error('Failed to fetch days')
         }
@@ -186,33 +277,42 @@ export const DashboardView = ({ timeframe = "day" }) => {
     }
     
     fetchDays()
-  }, [user?.id, year])
+  }, [user?.id, rangeStart, rangeEnd, selectedDelegatedUserId])
   
-  // Message history state (weekly agentConversation) - TODO: migrate to separate model
+  // Message history state (weekly agentConversation)
   const [currentText, setCurrentText] = useState("")
-  const conversation = null // TODO: fetch from separate conversation model
-  const reverseMessages = useMemo(() => [], [])
+  const reverseMessages: string[] = []
   
   // Create chart configs with translations
   const moodChartConfig = createMoodChartConfig(t)
   const productivityChartConfig = createProductivityChartConfig(t)
   const moneyChartConfig = createMoneyChartConfig(t)
   
+  const targetHintUserId = selectedDelegatedUserId || user?.id
+
   // Use shared hint hook and update local state when data changes
-  const { data: hintData } = useHint(locale, 'hint')
+  const { data: hintData } = useHint(locale, 'hint', targetHintUserId)
+
+  useEffect(() => {
+    setInsight({})
+  }, [targetHintUserId])
+
   useEffect(() => {
     if (hintData) setInsight(hintData as any)
   }, [hintData])
 
-  // Reset input when week conversation changes
-  useEffect(() => {
-    setCurrentText("")
-  }, [JSON.stringify(reverseMessages)])
+  const analysisEntries = useMemo(() => {
+    const analysis = (insight || {}) as Record<string, unknown>
 
-  // No longer persisting daily analyticsAgentText; weekly conversation is saved via /api/v1/chat
-  const debouncedHandleTextSubmit = useDebounce(async (_message, _field) => {
-    return
-  }, 500)
+    return Object.entries(analysis)
+      .filter(([, value]) => typeof value === 'string' && value.trim().length > 0)
+      .map(([key, value]) => ({
+        key,
+        title: t(`dashboard.analysis.${key}`) || key.replace(/([a-z])([A-Z])/g, '$1 $2'),
+        content: value as string
+      }))
+  }, [insight, t])
+
 
   // Dimension toggle handlers
   const handleMoodDimensionToggle = (dimension: string, visible: boolean) => {
@@ -228,18 +328,13 @@ export const DashboardView = ({ timeframe = "day" }) => {
   }
 
   // Loading gate while initial user fetch populates GlobalContext or days are loading
-  const isDataLoading = useEnhancedLoadingState(isLoading as any, (session as any)) || isLoadingDays
+  const isDataLoading = useEnhancedLoadingState(isLoading as any, (session as any)) || isLoadingDays || isLoadingDelegations
   if (isDataLoading) {
     return <DashboardViewSkeleton />
   }
 
   // Check if user is properly authenticated and session is valid
-  if (!user || !user?.userId || Object.keys(user).length === 0) {
-    return <DashboardViewSkeleton />
-  }
-
-  // Additional check to ensure user data is accessible (prevents showing data for expired sessions)
-  if (!user || !user?.userId) {
+  if (!user?.userId) {
     return <DashboardViewSkeleton />
   }
 
@@ -265,8 +360,9 @@ const aggregateDataByWeek = (dailyData: any[]) => {
         selfEsteem: 0,
         trust: 0,
         progress: 0,
-        moodAverageScale: 0,
-        earnings: 0,
+        profit: 0,
+        stash: 0,
+        withdraw: 0,
         balance: 0,
         dates: []
       }
@@ -285,8 +381,9 @@ const aggregateDataByWeek = (dailyData: any[]) => {
     week.selfEsteem += parseFloat(day.selfEsteem) || 0
     week.trust += parseFloat(day.trust) || 0
     week.progress += parseFloat(day.progress) || 0
-    week.moodAverageScale += parseFloat(day.moodAverageScale) || 0
-    week.earnings += parseFloat(day.earnings) || 0
+    week.profit += parseFloat(day.profit) || 0
+    week.stash += parseFloat(day.stash) || 0
+    week.withdraw += parseFloat(day.withdraw) || 0
     week.balance += parseFloat(day.balance) || 0
   })
   
@@ -294,10 +391,14 @@ const aggregateDataByWeek = (dailyData: any[]) => {
   return Object.values(weeklyGroups).map((week: any) => {
     const count = week.count || 1 // Prevent division by zero
     const avgMood = week.moodAverage / count
-    const avgBalance = week.balance / count
+    const sortedDates = [...week.dates].sort()
+    const dateRange = sortedDates.length > 0
+      ? formatDateRange(sortedDates[0], sortedDates[sortedDates.length - 1])
+      : week.week
     return {
       week: week.week,
       weekNumber: week.weekNumber,
+      dateRange,
       moodAverage: avgMood.toFixed(2),
       gratitude: (week.gratitude / count).toFixed(2),
       optimism: (week.optimism / count).toFixed(2),
@@ -306,25 +407,16 @@ const aggregateDataByWeek = (dailyData: any[]) => {
       selfEsteem: (week.selfEsteem / count).toFixed(2),
       trust: (week.trust / count).toFixed(2),
       progress: (week.progress / count).toFixed(2),
-      // Keep moodAverageScale consistent using the global balance peak
-      moodAverageScale: (balancePeak * (avgMood / 5)).toFixed(2),
-      earnings: (week.earnings / count).toFixed(2),
-      earningsScale: ((week.earnings / count) * 50).toFixed(2),
-      balance: avgBalance.toFixed(2),
+      profit: (week.profit / count).toFixed(2),
+      stash: (week.stash / count).toFixed(2),
+      withdraw: (week.withdraw / count).toFixed(2),
+      balance: (week.balance / count).toFixed(2),
       count: week.count,
       dates: week.dates
     }
   }).sort((a: any, b: any) => a.weekNumber - b.weekNumber)
 }
 
-  // Use days from Prisma Day model instead of user.entries
-  // Determine a global balance peak to keep moodAverageScale on a consistent scale
-  const balancePeak = days.reduce((max: number, d: any) => {
-    const bal = Number(d?.availableBalance || 0)
-    return bal > max ? bal : max
-  }, 0)
-  // Weekly data - TODO: migrate to separate Week model or derive from Day model
-  const userWeeks: any[] = [];
   
   const plotData = days
     .sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime()) // Sort by most recent first
@@ -351,7 +443,10 @@ const aggregateDataByWeek = (dailyData: any[]) => {
       })()
       // Progress from day.progress is already 0-100 (percentage), no conversion needed
       const progress = cur.progress && !isNaN(cur.progress) ? Number(cur.progress) : 0
-      const earnings = cur.earnings && !isNaN(Number(cur.earnings)) ? Number(cur.earnings) : 0
+      const profit = cur.profit && !isNaN(Number(cur.profit)) ? Number(cur.profit) : 0
+      const stash = cur.stash && !isNaN(Number(cur.stash)) ? Number(cur.stash) : 0
+      const withdraw = cur.withdrawn && !isNaN(Number(cur.withdrawn)) ? Number(cur.withdrawn) : 0
+      const balance = cur.availableBalance && !isNaN(Number(cur.availableBalance)) ? Number(cur.availableBalance) : 0
       
       // Progress is already a percentage (0-100) from day.progress
       const progressPercentage = progress
@@ -368,11 +463,10 @@ const aggregateDataByWeek = (dailyData: any[]) => {
           selfEsteem: Number(cur.mood.selfEsteem || 0).toFixed(2),
           trust: Number(cur.mood.trust || 0).toFixed(2),
           progress: progressPercentage.toFixed(2),
-          // Use global balance peak to keep scale consistent across the entire plot
-          moodAverageScale: (balancePeak * (moodAverage / 5)).toFixed(2),
-          earnings: earnings.toFixed(2),
-          earningsScale: earnings.toFixed(2),
-          balance: cur.availableBalance || 0,
+          profit: profit.toFixed(2),
+          stash: stash.toFixed(2),
+          withdraw: withdraw.toFixed(2),
+          balance: balance.toFixed(2),
         }
       ]
       return acc
@@ -380,6 +474,27 @@ const aggregateDataByWeek = (dailyData: any[]) => {
     
   // Aggregate daily data by week
   const plotDataWeekly = aggregateDataByWeek(plotData)
+  
+  // Calculate the maximum value among profit, stash, withdraw, and balance for scaling moodAverage
+  const maxValue = plotDataWeekly.reduce((max: number, week: any) => {
+    const profit = parseFloat(week.profit) || 0
+    const stash = parseFloat(week.stash) || 0
+    const withdraw = parseFloat(week.withdraw) || 0
+    const balance = parseFloat(week.balance) || 0
+    const weekMax = Math.max(profit, stash, withdraw, balance)
+    return Math.max(max, weekMax)
+  }, 0)
+  
+  // Scale moodAverage to 50% of maxValue (so max moodAverage of 5 maps to 50% of chart height)
+  // moodAverage is on a 0-5 scale, so we scale it: (moodAverage / 5) * (maxValue * 0.5)
+  const scaledPlotDataWeekly = plotDataWeekly.map((week: any) => {
+    const moodAvg = parseFloat(week.moodAverage) || 0
+    const scaledMoodAverage = maxValue > 0 ? ((moodAvg / 5) * (maxValue * 0.5)).toFixed(2) : '0'
+    return {
+      ...week,
+      moodAverageScaled: scaledMoodAverage
+    }
+  })
     
   // Create plotWeeks from plotDataWeekly for productivity chart
   const plotWeeks = plotDataWeekly
@@ -397,6 +512,7 @@ const aggregateDataByWeek = (dailyData: any[]) => {
       
       return {
         week: week.week,
+        dateRange: week.dateRange,
           moodAverage: moodAverage.toFixed(2),
         progress: progressScaled.toFixed(2),
         }
@@ -406,10 +522,40 @@ const aggregateDataByWeek = (dailyData: any[]) => {
   return (
     <ContentLoadingWrapper>
       <div className="max-w-[1200px] w-full m-auto p-4 md:px-32 ">
-      <p className="mt-0 mb-8">{(insight as any)?.yearAnalysis}</p>
+      <div className="mb-6">
+        <label className="text-sm font-medium mb-2 block">
+          {t('dashboard.selectDelegatedUser') || 'Select delegated user'}
+        </label>
+        <Select
+          value={selectedDelegatedUserId || undefined}
+          onValueChange={setSelectedDelegatedUserId}
+        >
+          <SelectTrigger className="w-full md:w-[360px]">
+            <SelectValue placeholder={t('dashboard.selectDelegatedUser') || 'Select delegated user'} />
+          </SelectTrigger>
+          <SelectContent>
+            {delegatedUsers.map((option) => (
+              <SelectItem key={option.id} value={option.id}>
+                {option.label}{option.scope ? ` (${normalizeDelegationScopes(option.scopes, option.scope)})` : ''}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
       
       {isAgentChatEnabled && user?.id ? (
         <div className="mb-16">
+          <div className="flex flex-wrap gap-2 mb-4">
+            {[
+              'How did the user progress last week?',
+              'What should we focus on during therapy today?',
+              "What were the user's major life events this week?"
+            ].map((question) => (
+              <Button key={question} variant="outline" size="sm" onClick={() => setCurrentText(question)}>
+                {question}
+              </Button>
+            ))}
+          </div>
           <AgentChat 
             key={reverseMessages}
             onMessageChange={(message) => {
@@ -421,6 +567,28 @@ const aggregateDataByWeek = (dailyData: any[]) => {
           />
         </div>
       ) : undefined}
+
+      {/* Global date range selector – one control for all dashboard charts */}
+      <DateRangeSelector
+        startDate={rangeStart}
+        endDate={rangeEnd}
+        onStartChange={setRangeStart}
+        onEndChange={setRangeEnd}
+        className="mb-8"
+      />
+
+      {analysisEntries.length > 0 && (
+        <Accordion type="multiple" className="mb-8 rounded-md border px-4">
+          {analysisEntries.map((entry) => (
+            <AccordionItem key={entry.key} value={entry.key}>
+              <AccordionTrigger>{entry.title}</AccordionTrigger>
+              <AccordionContent>
+                <p className="whitespace-pre-wrap text-sm text-muted-foreground">{entry.content}</p>
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      )}
       
       <ChartDimensionSelector
         dimensions={['moodAverage', 'gratitude', 'optimism', 'restedness', 'tolerance', 'selfEsteem', 'trust']}
@@ -454,7 +622,7 @@ const aggregateDataByWeek = (dailyData: any[]) => {
             <Area stackId="1" type="monotone" dataKey="trust" stroke="#f7bfa5" fill={"#f7bfa5"} radius={4} fillOpacity={0.4} />
           )}
           <XAxis
-            dataKey="week"
+            dataKey="dateRange"
             tickLine={false}
             tickMargin={5}
             axisLine={true}
@@ -482,7 +650,7 @@ const aggregateDataByWeek = (dailyData: any[]) => {
           )}
 
           <XAxis
-            dataKey="week"
+            dataKey="dateRange"
             tickLine={false}
             tickMargin={5}
             axisLine={true}
@@ -492,30 +660,37 @@ const aggregateDataByWeek = (dailyData: any[]) => {
       </ChartContainer>
 
       <ChartDimensionSelector
-        dimensions={['moodAverageScale', 'balance', 'earningsScale']}
+        dimensions={['moodAverage', 'profit', 'stash', 'withdrawn', 'balance']}
         visibleDimensions={moneyChartDimensions}
         onDimensionToggle={handleMoneyDimensionToggle}
         title={t('dashboard.yourBalance')}
       />
 
       <ChartContainer config={moneyChartConfig}>
-        <AreaChart data={plotDataWeekly} accessibilityLayer>
+        <AreaChart data={scaledPlotDataWeekly} accessibilityLayer>
           <CartesianGrid vertical={true} horizontal={true} />
-          {moneyChartDimensions.moodAverageScale && (
-            <Area stackId="1" type="monotone" dataKey="moodAverageScale" stroke="#cffcdf" fill={"#cffcdf"} radius={4} fillOpacity={0.4} />
+          {moneyChartDimensions.moodAverage && (
+            <Area stackId="1" type="monotone" dataKey="moodAverageScaled" stroke="#cffcdf" fill={"#cffcdf"} radius={4} fillOpacity={0.4} />
+          )}
+          {moneyChartDimensions.profit && (
+            <Area stackId="2" type="monotone" dataKey="profit" stroke="#6565cc" fill="#6565cc" radius={4} fillOpacity={0.4} />
+          )}
+          {moneyChartDimensions.stash && (
+            <Area stackId="3" type="monotone" dataKey="stash" stroke="#fbd2b0" fill={"#fbd2b0"} radius={4} fillOpacity={0.4} />
+          )}
+          {moneyChartDimensions.withdrawn && (
+            <Area stackId="4" type="monotone" dataKey="withdraw" stroke="#f7bfa5" fill={"#f7bfa5"} radius={4} fillOpacity={0.4} />
           )}
           {moneyChartDimensions.balance && (
-            <Area stackId="2" type="monotone" dataKey="balance" stroke="#6565cc" fill="#6565cc" radius={4} fillOpacity={0.4} />
-          )}
-          {moneyChartDimensions.earningsScale && (
-            <Area stackId="3" type="monotone" dataKey="earningsScale" stroke="#f7bfa5" fill={"#f7bfa5"} radius={4} fillOpacity={0.4} />
+            <Area stackId="5" type="monotone" dataKey="balance" stroke="#2f2f8d" fill={"#2f2f8d"} radius={4} fillOpacity={0.4} />
           )}
           <XAxis
-            dataKey="week"
+            dataKey="dateRange"
             tickLine={false}
             tickMargin={5}
             axisLine={true}
           />
+          <ChartTooltip content={<ChartTooltipContent />} />
           <ChartLegend verticalAlign="top" content={<ChartLegendContent payload={[]} />}  />
         </AreaChart>
       </ChartContainer>

@@ -1,50 +1,100 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
+import { sanitizeText } from '@/lib/utils/sanitize'
+import { NOTE_VISIBILITIES } from '@/lib/constants/visibility'
+import { getDelegationScopes } from '@/lib/utils/delegation'
+
+function toUserSummary(user: {
+  id: string
+  profiles?: Array<{ data?: Record<string, unknown> | null }>
+} | null) {
+  if (!user) return null
+
+  const profileData = user.profiles?.[0]?.data as Record<string, { value?: string | null }> | undefined
+  return {
+    id: user.id,
+    userName: profileData?.username?.value || null,
+    firstName: profileData?.firstName?.value || null,
+    lastName: profileData?.lastName?.value || null
+  }
+}
 
 export async function GET(request: NextRequest) {
   try {
     const { userId } = await auth()
-    
+
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     const searchParams = request.nextUrl.searchParams
     const filterNoteId = searchParams.get('noteId')
+    const requestedVisibility = searchParams.get('visibility')
+    const selectedVisibility = requestedVisibility
+      ? requestedVisibility.split(',').map(v => v.trim().toUpperCase()).filter(v => NOTE_VISIBILITIES.includes(v as typeof NOTE_VISIBILITIES[number]))
+      : null
 
-    // Get user from database
     const user = await prisma.user.findUnique({
-      where: { userId },
-      include: { 
-        notes: {
+      where: { userId }
+    })
+
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+    }
+
+    let sortedNotes = await prisma.note.findMany({
+      where: {
+        OR: [
+          { userId: user.id },
+          { recipientId: user.id }
+        ]
+      },
+      include: {
+        _count: {
+          select: {
+            comments: true,
+            likes: true
+          }
+        },
+        comments: {
           include: {
-            _count: {
+            user: {
               select: {
-                comments: true,
-                likes: true
-              }
-            },
-            comments: {
-              include: {
-                user: {
+                id: true,
+                profiles: {
                   select: {
-                    id: true,
-                    profiles: {
-                      select: {
-                        data: true
-                      }
-                    }
-                  }
-                },
-                _count: {
-                  select: {
-                    likes: true
+                    data: true
                   }
                 }
-              },
-              orderBy: {
-                createdAt: 'desc'
+              }
+            },
+            _count: {
+              select: {
+                likes: true
+              }
+            }
+          },
+          orderBy: {
+            createdAt: 'desc'
+          }
+        },
+        sender: {
+          select: {
+            id: true,
+            profiles: {
+              select: {
+                data: true
+              }
+            }
+          }
+        },
+        recipient: {
+          select: {
+            id: true,
+            profiles: {
+              select: {
+                data: true
               }
             }
           }
@@ -52,12 +102,10 @@ export async function GET(request: NextRequest) {
       }
     })
 
-    if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+    if (selectedVisibility && selectedVisibility.length > 0) {
+      sortedNotes = sortedNotes.filter(note => selectedVisibility.includes(note.visibility))
     }
 
-    // Sort notes: matching noteId first, then by creation date
-    let sortedNotes = [...user.notes]
     if (filterNoteId) {
       sortedNotes.sort((a, b) => {
         const aMatches = a.id.toString() === filterNoteId
@@ -69,36 +117,44 @@ export async function GET(request: NextRequest) {
     } else {
       sortedNotes.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     }
-    
-    // Sort comments by likes, then by date, and transform profiles[0] to profile
+
     const notesWithSortedComments = sortedNotes.map(note => {
-      if (note.comments && Array.isArray(note.comments) && note.comments.length > 0) {
-        const sortedComments = [...note.comments].sort((a: any, b: any) => {
-          const likeDiff = (b._count?.likes || 0) - (a._count?.likes || 0)
-          if (likeDiff !== 0) return likeDiff
-          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        })
-        // Transform profiles[0] to profile for comments and extract data values
-        const commentsWithProfile = sortedComments.map((comment: any) => {
-          const profileData = comment.user.profiles?.[0]?.data
-          const profile = profileData ? {
-            userName: profileData.username?.value || null,
-            profilePicture: profileData.profilePicture?.value || null,
-            firstName: profileData.firstName?.value || null,
-            lastName: profileData.lastName?.value || null
-          } : null
-          
-          return {
-            ...comment,
-            user: {
-              ...comment.user,
-              profile
-            }
-          }
-        })
-        return { ...note, comments: commentsWithProfile }
+      type NoteComment = {
+        _count?: { likes?: number }
+        createdAt: Date
+        user: { id: string; profiles?: Array<{ data?: Record<string, { value?: string | null }> | null }> }
       }
-      return note
+
+      const sortedComments = (note.comments || []).sort((a: NoteComment, b: NoteComment) => {
+        const likeDiff = (b._count?.likes || 0) - (a._count?.likes || 0)
+        if (likeDiff !== 0) return likeDiff
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      })
+
+      const commentsWithProfile = sortedComments.map((comment: NoteComment) => {
+        const profileData = comment.user.profiles?.[0]?.data
+        const profile = profileData ? {
+          userName: profileData.username?.value || null,
+          profilePicture: profileData.profilePicture?.value || null,
+          firstName: profileData.firstName?.value || null,
+          lastName: profileData.lastName?.value || null
+        } : null
+
+        return {
+          ...comment,
+          user: {
+            ...comment.user,
+            profile
+          }
+        }
+      })
+
+      return {
+        ...note,
+        sender: toUserSummary(note.sender),
+        recipient: toUserSummary(note.recipient),
+        comments: commentsWithProfile
+      }
     })
 
     return NextResponse.json({ notes: notesWithSortedComments })
@@ -111,19 +167,20 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const { userId } = await auth()
-    
+
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     const body = await request.json()
-    const { content, visibility, date } = body
+    const { content, visibility, date, recipientId } = body
 
     if (!content) {
       return NextResponse.json({ error: 'Content is required' }, { status: 400 })
     }
 
-    // Get user from database
+    const sanitizedContent = sanitizeText(content)
+
     const user = await prisma.user.findUnique({
       where: { userId }
     })
@@ -132,13 +189,51 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    // Create note
+    let validRecipientId: string | null = null
+
+    if (recipientId) {
+      const recipientUser = await prisma.user.findUnique({
+        where: { id: String(recipientId) },
+        select: { id: true }
+      })
+
+      if (!recipientUser) {
+        return NextResponse.json({ error: 'Recipient not found' }, { status: 404 })
+      }
+
+      const delegation = await prisma.delegation.findUnique({
+        where: {
+          delegatorId_delegatedId: {
+            delegatorId: recipientUser.id,
+            delegatedId: user.id
+          }
+        },
+        select: {
+          id: true,
+          scope: true,
+          scopes: true
+        }
+      })
+
+      if (!delegation) {
+        return NextResponse.json({ error: 'Not authorized to send note to this recipient' }, { status: 403 })
+      }
+      // All configured delegation scopes allow analyst-to-user note sharing; validate explicit scope value.
+      if (getDelegationScopes(delegation.scopes, delegation.scope).length === 0) {
+        return NextResponse.json({ error: 'Delegation scope is invalid for note sharing' }, { status: 403 })
+      }
+
+      validRecipientId = recipientUser.id
+    }
+
     const note = await prisma.note.create({
       data: {
-        content,
+        content: sanitizedContent,
         visibility: visibility || 'PRIVATE',
         date: date || null,
-        userId: user.id
+        userId: user.id,
+        senderId: user.id,
+        recipientId: validRecipientId
       }
     })
 

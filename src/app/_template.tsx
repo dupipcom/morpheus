@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useRef, useState, useEffect, useContext } from 'react'
-import ReactDOMServer from 'react-dom/server';
 
 import '@mux/mux-video';
 
@@ -11,10 +10,10 @@ import { useAuth } from "@clerk/clerk-react";
 
 
 import Link from 'next/link'
-import { NotionRenderer, createBlockRenderer } from "@notion-render/client"
 
 import Layout from './layout'
 import { GlobalContext } from "./contexts"
+import { sanitizeHTML } from '@/lib/utils/sanitize'
 
 
 export default function Template({ title, content, isomorphicContent }: any) {
@@ -33,13 +32,10 @@ export default function Template({ title, content, isomorphicContent }: any) {
 
 
   useEffect(() => {
-    if (Array.isArray(content)) {
-      const renderer = new NotionRenderer({
-        renderers: [paragraphRenderer, headingRenderer]
-      })
-      renderer.render(...content).then((_html) => {
-        setHtml(_html)
-      })
+    // Content is now handled by Payload CMS RichText component
+    // Set HTML from isomorphicContent if provided
+    if (isomorphicContent) {
+      setHtml(isomorphicContent)
     }
 
     const checkLive = async () => {
@@ -55,26 +51,7 @@ export default function Template({ title, content, isomorphicContent }: any) {
     checkLive()
     setInterval(checkLive, 5000)
 
-  }, [])
-
-  // try not to lazy around for long and actually update Oneiros components to include the right margins, Angelo. I'll let this one pass since we're using a single renderer parser for the whole hydration engine and we need some more content live (minimalism is good, but SEO is important).
-
-  const paragraphRenderer = createBlockRenderer<ParagraphBlockObjectResponse>(
-    'paragraph',
-    (data, renderer) => {
-      
-      if (data.paragraph.rich_text.length === 0) return
-      return ReactDOMServer.renderToStaticMarkup(<p className="!mb-[12px]" >{data.paragraph.rich_text[0].plain_text}</p>);
-    }
-  );
-
-  const headingRenderer = createBlockRenderer<HeadingBlockObjectResponse>(
-    'heading_1',
-    (data, renderer) => {
-      if (data.heading_1.length === 0) return
-      return ReactDOMServer.renderToStaticMarkup(<p>{data.heading_1.rich_text[0].plain_text}</p>);
-    }
-  );
+  }, [isomorphicContent])
 
 
   return (
@@ -95,7 +72,7 @@ export default function Template({ title, content, isomorphicContent }: any) {
             ) : undefined}
           { title && !content ? <p className="p-[32px] md:p-[64px] md:max-w-[720px] md:m-auto">{title}</p> : undefined }
           { content ? <div className="p-[32px] md:p-[64px] md:max-w-[720px] md:m-auto">
-            <div dangerouslySetInnerHTML={{ __html: html }} />
+            <div dangerouslySetInnerHTML={{ __html: sanitizeHTML(html) }} />
           </div> : undefined }
         </main>
   )

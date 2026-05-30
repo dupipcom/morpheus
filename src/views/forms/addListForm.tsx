@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useMemo, useState, useEffect, useContext } from 'react'
+import useSWR from 'swr'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -169,27 +170,36 @@ export const AddListForm = ({
     }
   }, [newListPreviewTasks, isEditing])
 
-  const [collabResults, setCollabResults] = useState<any[]>([])
+  // Debounced query state for search
+  const [debouncedQuery, setDebouncedQuery] = useState('')
+  
+  // Debounce the collabQuery input with 300ms delay
   useEffect(() => {
-    let cancelled = false
-    // Debounce the search by 300ms
     const timer = setTimeout(() => {
-      const run = async () => {
-        // Fetch suggestions even when query is empty (shows top 5 close friends/friends/public)
-        const res = await fetch(`/api/v1/profiles?query=${encodeURIComponent(collabQuery)}`)
-        if (!cancelled && res.ok) {
-          const data = await res.json()
-          setCollabResults(data.profiles || [])
-        }
-      }
-      run()
+      // Only set debounced query if user has typed something
+      setDebouncedQuery(collabQuery.trim())
     }, 300)
     
-    return () => { 
-      cancelled = true
-      clearTimeout(timer)
-    }
+    return () => clearTimeout(timer)
   }, [collabQuery])
+  
+  // Memoize SWR options to prevent re-creating object on every render
+  const swrOptions = useMemo(() => ({
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    shouldRetryOnError: false,
+    dedupingInterval: 1000,
+  }), [])
+  
+  // Use SWR to fetch profiles based on debounced query
+  // Only fetches when debouncedQuery is non-empty
+  const { data: profilesData } = useSWR<{ profiles: any[] }>(
+    debouncedQuery ? `/api/v1/profiles?query=${encodeURIComponent(debouncedQuery)}` : null,
+    (url: string) => fetch(url).then(res => res.json()),
+    swrOptions
+  )
+  
+  const collabResults = profilesData?.profiles || []
 
   const handleSubmit = async () => {
     const roleJoined = `${form.cadence}.${form.role}`

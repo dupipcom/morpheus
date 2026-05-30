@@ -24,6 +24,7 @@
     "signInToAccess": "Logi sisse, et pääseda ligi oma armatuurlauale ja jälgida oma edusamme.",
     "dismiss": "Sulge",
     "accept": "Nõustu",
+    "all": "Kõik",
     "pageAvailableIn": "See leht on saadaval keeles {locale}. Kas soovite seda sellel keelel vaadata?",
     "selectLanguage": "Vali keel",
     "manageAccount": "Hallata oma kontot",
@@ -56,7 +57,10 @@
     "copyLink": "Kopeeri link",
     "linkCopied": "Link kopeeritud lõikelauale",
     "copyFailed": "Linki kopeerimine ebaõnnestus",
-    "saving": "Salvestamine..."
+    "saving": "Salvestamine...",
+    "decline": "Lükka tagasi",
+    "friendRequest": "Sõbrakutse",
+    "reverseOrder": "Pööratud järjekord"
   },
   "navigation": {
     "home": "Avaleht",
@@ -82,7 +86,26 @@
     "yourMood": "Sinu tuju.",
     "yourProductivity": "Sinu produktiivsus.",
     "yourData": "Sinu andmed.",
-    "yourBalance": "Sinu raha."
+    "yourBalance": "Sinu raha.",
+    "timeframe": {
+      "startDate": "Alguskuupäev",
+      "endDate": "Lõppkuupäev"
+    },
+    "me": "Minu andmed",
+    "selectDelegatedUser": "Vali delegeeritud kasutaja",
+    "analysis": {
+      "alltimeAnalysis": "Kogu aja analüüs",
+      "dayAnalysis": "Tänane analüüs",
+      "last3daysAnalysis": "Viimase 3 päeva analüüs",
+      "weekAnalysis": "Nädala analüüs",
+      "yearAnalysis": "Aasta analüüs",
+      "gratitudeAnalysis": "Tänulikkuse analüüs",
+      "optimismAnalysis": "Optimismi analüüs",
+      "restednessAnalysis": "Väljapuhanuse analüüs",
+      "toleranceAnalysis": "Sallivuse analüüs",
+      "selfEsteemAnalysis": "Enesehinnangu analüüs",
+      "trustAnalysis": "Usalduse analüüs"
+    }
   },
   "mood": {
     "title": "Täna on {date}.",
@@ -105,7 +128,26 @@
         "AI_ENABLED": "AI lubatud"
       },
       "action": "Avalda märkme",
-      "publishing": "Publishing..."
+      "publishing": "Avaldamine...",
+      "embedHint": "{provider} manustus. Kui taasesitus pole saadaval, ava allpool olev algne link."
+    },
+    "thirdParty": {
+      "title": "Kolmas osapool",
+      "settings": "Delegeerimise seaded",
+      "activeDelegations": "Aktiivsed delegeerimised",
+      "empty": "Aktiivseid delegeerimisi pole.",
+      "identifierPlaceholder": "Kasutajanimi, e-post või kasutaja ID",
+      "noFriendsFound": "Sobivaid sõprussuhteid ei leitud.",
+      "friendsHint": "Soovitused sisaldavad sinu sõpru. Võid sisestada ka mis tahes e-posti aadressi.",
+      "scope": "Andmeulatus",
+      "allScopes": "Kõik ulatused",
+      "scopesSelected": "ulatust valitud",
+      "minimumOneScope": "Vähemalt üks ulatus peab jääma valituks.",
+      "scopeResolutionHint": "Kui valitud on mitu ulatust, rakendatakse kõige laiemat valitud ulatust.",
+      "addDelegatedAnalyst": "Lisa delegeeritud analüütik",
+      "adding": "Lisamine...",
+      "addError": "Delegeeritud analüütiku lisamine ei õnnestunud",
+      "invitationDraft": "Selle e-posti jaoks valmis kutse mustand."
     }
   },
   "week": {
@@ -133,7 +175,11 @@
       "open": "Avatud",
       "done": "Tehtud",
       "ignored": "Ignoreeritud"
-    }
+    },
+    "edit": "Muuda",
+    "loadingForDate": "Ülesannete laadimine valitud kuupäevale...",
+    "initializingTasks": "Ülesannete seadistamine...",
+    "noTasksForDate": "Sellel kuupäeval pole ülesandeid planeeritud"
   },
   "actions": {
     "drankWater": "Jõi vett",
@@ -223,10 +269,10 @@
   "errors": {
     "notFound": "Ups! Ei saanud seda sagedust häälestada.",
     "genericError": "Midagi läks valesti. Palun proovi uuesti.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "Märkmete laadimine ebaõnnestus",
+    "failedToLoadNotes": "Märkmete laadimine ebaõnnestus",
+    "failedToFetchTemplates": "Mallide laadimine ebaõnnestus",
+    "failedToLoadTemplates": "Mallide laadimine ebaõnnestus"
   },
   "social": {
     "title": "Sotsiaalsed kontaktid",
@@ -312,9 +358,9 @@
     "cloning": "Kloonimine...",
     "noPublicNotes": "Avalikke märkmeid pole veel saadaval.",
     "noPublicTemplatesOrLists": "Avalikke malle või nimekirju pole veel saadaval.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "Klooni loend",
+    "cloneListSuccess": "Loend kloonitud edukalt!",
+    "cloneListFailed": "Loendi kloonimineepäon nestus"
   },
   "publicCharts": {
     "noData": "Avalikke diagrammi andmeid pole saadaval.",
@@ -340,7 +386,8 @@
     "closeFriend": "Lähedane sõber",
     "friends": "Sõbrad",
     "signInToAdd": "Logi sisse, et lisada sõber",
-    "editProfile": "Muuda profiili"
+    "editProfile": "Muuda profiili",
+    "message": "Sõnum"
   },
   "profile": {
     "editProfile": "Redigeeri profiili",
@@ -446,7 +493,9 @@
       "timesLabel": "# korda",
       "saveToTemplate": "Salvesta ülesanne mallina",
       "addTask": "Lisa ülesanne",
-      "cancel": "Tühista"
+      "cancel": "Tühista",
+      "editTitle": "Muuda ülesannet",
+      "saveTask": "Salvesta ülesanne"
     },
     "addListForm": {
       "titleCreate": "Loo uus nimekiri",
@@ -522,6 +571,39 @@
       },
       "create": "Loo",
       "cancel": "Tühista"
+    },
+    "recurrencePicker": {
+      "frequency": "Korda",
+      "every": "Iga",
+      "day": "päev",
+      "days": "päeva",
+      "week": "nädal",
+      "weeks": "nädalat",
+      "month": "kuu",
+      "months": "kuud",
+      "year": "aasta",
+      "years": "aastat",
+      "noRepeat": "Ei korda",
+      "daily": "Igapäevaselt",
+      "weekly": "Iganädalaselt",
+      "monthly": "Igakuiselt",
+      "yearly": "Igaaastaselt",
+      "repeatOn": "Korda",
+      "monday": "E",
+      "tuesday": "T",
+      "wednesday": "K",
+      "thursday": "N",
+      "friday": "R",
+      "saturday": "L",
+      "sunday": "P",
+      "dayOfMonth": "Kuu päev",
+      "selectDay": "Vali päev (1-31)",
+      "ends": "Lõpeb",
+      "never": "Mitte kunagi",
+      "onDate": "Kuupäeval",
+      "after": "Pärast",
+      "pickDate": "Vali kuupäev",
+      "occurrences": "korda"
     }
   },
   "charts": {
@@ -536,7 +618,10 @@
     "progress": "Edenemine",
     "moodAverageScale": "Keskmise tuju skaala",
     "balance": "Saldo",
-    "earningsScale": "Sissetulekute skaala"
+    "earningsScale": "Sissetulekute skaala",
+    "profit": "Kasum",
+    "stash": "Varu",
+    "withdrawn": "Välja võetud"
   },
   "socialView": {
     "activity": "Tegevus",
@@ -610,5 +695,174 @@
     "deleteWallet": "Kustuta Rahakott",
     "deleteWalletConfirmation": "Kas olete kindel, et soovite selle rahakoti kustutada? Seda toimingut ei saa tagasi võtta. Rahakott eemaldatakse teie kontolt, kuid blockchain aadress ja selle vahendid jäävad blockchain'i.",
     "delete": "Kustuta"
+  },
+  "jobs": {
+    "history": "Tööde Ajalugu",
+    "filterByStatus": "Filtreeri Oleku Järgi:",
+    "errorLoadingHistory": "Viga tööde ajaloo laadimisel",
+    "noHistoryFound": "Tööde ajalugu ei leitud",
+    "status": {
+      "requested": "Taotletud",
+      "inProgress": "Pooleli",
+      "validating": "Kontrollimine",
+      "accepted": "Vastu Võetud",
+      "rejected": "Tagasi Lükatud",
+      "submitted": "Esitatud",
+      "changesRequested": "Muudatusi soovitakse"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "Teie taotlust vaadatakse üle. Teid teavitatakse, kui see on heaks kiidetud.",
+        "inProgress": "Teie taotlus kiideti heaks! Nüüd saate selle ülesande kallal töötada.",
+        "submitted": "Teie töö on esitatud. Oodatakse omaniku ülevaatust.",
+        "validating": "Muudatusi on taotletud. Palun vaadake üle ja esitage uuesti.",
+        "accepted": "Palju õnne! Teie töö võeti vastu.",
+        "rejected": "Teie esitus lükati tagasi."
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}} on taotlenud võimalust töötada selle ülesande kallal. Kinnitage või lükake taotlus tagasi.",
+        "inProgress": "{{workerName}} töötab praegu selle ülesande kallal.",
+        "submitted": "{{workerName}} on esitanud oma töö ülevaatuseks.",
+        "validating": "Oodatakse, et {{workerName}} vaataks üle ja esitaks uuesti.",
+        "accepted": "{{workerName}} töö võeti vastu.",
+        "rejected": "{{workerName}} esitus lükati tagasi."
+      }
+    },
+    "actions": {
+      "submitForReview": "Esita Ülevaatuseks",
+      "withdrawSubmission": "Võta Esitus Tagasi",
+      "withdrawing": "Tagasivõtmine...",
+      "reviseAndResubmit": "Vaata Üle ja Esita Uuesti",
+      "approveRequest": "Kinnita Taotlus",
+      "approving": "Kinnitamine...",
+      "rejectRequest": "Lükka Taotlus Tagasi",
+      "rejecting": "Tagasilükkamine...",
+      "reviewAndAccept": "Vaata Üle ja Võta Vastu",
+      "requestChanges": "Taotleja Muudatusi",
+      "reject": "Lükka Tagasi"
+    },
+    "review": {
+      "title": "Vaata Esitatud Tööd Üle",
+      "description": "Vaata üle töö kasutajalt {{workerName}}",
+      "workerSolution": "Töötaja Lahendus:",
+      "selfReviewScore": "Eneseanalüüs: {{score}}/100",
+      "noSubmissionNotes": "Esituse märkusi ei antud",
+      "actionLabel": "Tegevus *",
+      "required": "*",
+      "optional": "(Valikuline)",
+      "feedbackLabel": "Ülevaatuse Tagasiside {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "Selgitage, milliseid muudatusi on vaja",
+        "other": "Andke töötajale kommentaare või ettepanekuid"
+      },
+      "editorPlaceholder": {
+        "validate": "Kirjeldage vajalikke muudatusi...",
+        "other": "Andke tagasisidet töö kohta..."
+      },
+      "managerReviewLabel": "Juhi Ülevaatus (Valikuline)",
+      "managerReviewDescription": "Hinnake lõpetatud töö kvaliteeti",
+      "scorePoor": "0 (Halb)",
+      "scoreExcellent": "100 (Suurepärane)",
+      "cancel": "Tühista",
+      "submitting": "Esitamine...",
+      "acceptWork": "Võta Töö Vastu",
+      "requestChangesButton": "Taotleja Muudatusi",
+      "rejectWork": "Lükka Töö Tagasi",
+      "actions": {
+        "accept": {
+          "title": "Võta Vastu (Märgi ülesanne Tehtuks)",
+          "description": "Kinnitage töö ja lõpetage ülesanne. Töötaja teenib oma tasu."
+        },
+        "requestChanges": {
+          "title": "Taotleja Muudatusi",
+          "description": "Paluge töötajal oma tööd üle vaadata ja uuesti esitada."
+        },
+        "reject": {
+          "title": "Lükka Tagasi (Ava ülesanne uuesti)",
+          "description": "Lükake töö täielikult tagasi ja avage ülesanne teistele uuesti."
+        }
+      },
+      "messages": {
+        "accepted": "Töö vastu võetud ja ülesanne märgitud tehtuks",
+        "changesRequested": "Muudatusi taotletud, töötaja vaatab üle",
+        "rejected": "Töö tagasi lükatud, ülesanne uuesti avatud",
+        "error": "Ülevaatust ei saanud esitada. Palun proovige uuesti."
+      }
+    },
+    "submission": {
+      "title": "Esita Töö Ülevaatuseks",
+      "titleResubmit": "Vaata Üle ja Esita Töö Uuesti",
+      "description": "Kirjeldage oma lahendust ülesandele {{taskName}} ja esitage valideerimiseks.",
+      "solutionLabel": "Lahenduse Kirjeldus *",
+      "solutionDescription": "Selgitage, mida tegite selle ülesande lõpetamiseks. Toetab vormindust, linke ja loetelusid.",
+      "solutionPlaceholder": "Selgitage, mida tegite selle ülesande lõpetamiseks...",
+      "selfReviewLabel": "Eneseanalüüs (Valikuline)",
+      "selfReviewDescription": "Hinnake oma töö kvaliteeti skaalal 0-100",
+      "scoreNeedsWork": "0 (Vajab tööd)",
+      "scorePerfect": "100 (Täiuslik)",
+      "cancel": "Tühista",
+      "submitting": "Esitamine...",
+      "submitButton": "Esita Ülevaatuseks",
+      "resubmitButton": "Esita Uuesti Ülevaatuseks",
+      "errors": {
+        "missingDescription": "Palun andke oma töö kirjeldus",
+        "submitError": "Teie tööd ei saanud esitada. Palun proovige uuesti."
+      },
+      "messages": {
+        "submitted": "Töö esitatud ülevaatuseks",
+        "resubmitted": "Töö uuesti esitatud ülevaatuseks"
+      }
+    }
+  },
+  "notes": {
+    "updated": "Märkus edukalt uuendatud",
+    "updateFailed": "Märkuse uuendamine ebaõnnestus",
+    "deleted": "Märkus edukalt kustutatud",
+    "deleteFailed": "Märkuse kustutamine ebaõnnestus",
+    "deleting": "Kustutamine...",
+    "confirmDelete": "Kas olete kindel, et soovite selle märkuse kustutada?",
+    "content": "Märkuse sisu",
+    "visibilityUpdated": "Nähtavus edukalt uuendatud",
+    "visibilityUpdateFailed": "Nähtavuse uuendamine ebaõnnestus",
+    "changeVisibility": "Muuda nähtavust",
+    "filters": {
+      "sort": "Sorteeri",
+      "date": "Kuupäev",
+      "mostRelevant": "Asjakohaseimad",
+      "all": "Kõik"
+    }
+  },
+  "chat": {
+    "title": "Vestlus",
+    "subtitle": "Organisatsioonid, kanalid, otsesõnumid ja lõimed.",
+    "anonymous": "Anonüümne",
+    "directMessage": "Otsesõnum",
+    "deletedMessage": "Sõnum kustutatud",
+    "deleteMessageTitle": "Kustuta sõnum?",
+    "deleteMessageDescription": "See kustutab sõnumi pehmelt ja jätab vestlusajalukku kohatäite.",
+    "createInviteLink": "Loo kutselink",
+    "pendingInvites": "Ootel kutsed",
+    "acceptInvite": "Võta vastu",
+    "inviteFriendToOrg": "Kutsu sõber sellesse organisatsiooni",
+    "inviteLinkCopied": "Kutselink kopeeritud",
+    "inviteSent": "Kutse saadetud",
+    "inviteAccepted": "Kutse vastu võetud"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Ruudustiku paigutus",
+      "tight": "Tihe",
+      "small": "Väike",
+      "wide": "Lai"
+    }
   }
 }

@@ -24,6 +24,7 @@
     "signInToAccess": "अपने डैशबोर्ड तक पहुंचने और अपनी प्रगति को ट्रैक करने के लिए साइन इन करें।",
     "dismiss": "बंद करें",
     "accept": "स्वीकार करें",
+    "all": "सभी",
     "pageAvailableIn": "यह पृष्ठ {locale} में उपलब्ध है। क्या आप इसे उस भाषा में देखना चाहेंगे?",
     "selectLanguage": "भाषा चुनें",
     "manageAccount": "मेरा खाता प्रबंधित करें",
@@ -56,7 +57,10 @@
     "copyLink": "लिंक कॉपी करें",
     "linkCopied": "लिंक क्लिपबोर्ड पर कॉपी किया गया",
     "copyFailed": "लिंक कॉपी करने में विफल",
-    "saving": "सहेजा जा रहा है..."
+    "saving": "सहेजा जा रहा है...",
+    "decline": "अस्वीकार करें",
+    "friendRequest": "मित्र अनुरोध",
+    "reverseOrder": "क्रम उल्टा करें"
   },
   "navigation": {
     "home": "होम",
@@ -82,7 +86,26 @@
     "yourMood": "आपकी मनोदशा।",
     "yourProductivity": "आपकी उत्पादकता।",
     "yourData": "आपका डेटा।",
-    "yourBalance": "आपका पैसा।"
+    "yourBalance": "आपका पैसा।",
+    "timeframe": {
+      "startDate": "प्रारंभ तिथि",
+      "endDate": "समाप्ति तिथि"
+    },
+    "me": "मेरा डेटा",
+    "selectDelegatedUser": "प्रतिनिधि उपयोगकर्ता चुनें",
+    "analysis": {
+      "alltimeAnalysis": "सभी समय का विश्लेषण",
+      "dayAnalysis": "आज का विश्लेषण",
+      "last3daysAnalysis": "पिछले 3 दिनों का विश्लेषण",
+      "weekAnalysis": "साप्ताहिक विश्लेषण",
+      "yearAnalysis": "वार्षिक विश्लेषण",
+      "gratitudeAnalysis": "कृतज्ञता विश्लेषण",
+      "optimismAnalysis": "आशावाद विश्लेषण",
+      "restednessAnalysis": "आराम का विश्लेषण",
+      "toleranceAnalysis": "सहनशीलता विश्लेषण",
+      "selfEsteemAnalysis": "आत्मसम्मान विश्लेषण",
+      "trustAnalysis": "विश्वास विश्लेषण"
+    }
   },
   "mood": {
     "title": "यह {date} है।",
@@ -105,7 +128,26 @@
         "AI_ENABLED": "एआई सक्षम"
       },
       "action": "नोट प्रकाशित करें",
-      "publishing": "Publishing..."
+      "publishing": "प्रकाशन...",
+      "embedHint": "{provider} एम्बेड। यदि प्लेबैक उपलब्ध नहीं है, तो नीचे मूल लिंक खोलें।"
+    },
+    "thirdParty": {
+      "title": "तृतीय पक्ष",
+      "settings": "प्रतिनिधि सेटिंग्स",
+      "activeDelegations": "सक्रिय प्रतिनिधि",
+      "empty": "कोई सक्रिय प्रतिनिधि नहीं है।",
+      "identifierPlaceholder": "उपयोगकर्ता नाम, ईमेल, या उपयोगकर्ता आईडी",
+      "noFriendsFound": "मेल खाने वाली कोई मित्रता नहीं मिली।",
+      "friendsHint": "सुझावों में आपके मित्र शामिल हैं। आप कोई भी ईमेल पता भी दर्ज कर सकते हैं।",
+      "scope": "डेटा दायरा",
+      "allScopes": "सभी दायरे",
+      "scopesSelected": "दायरे चुने गए",
+      "minimumOneScope": "कम से कम एक दायरा चुना हुआ रहना चाहिए।",
+      "scopeResolutionHint": "यदि कई दायरे चुने गए हैं, तो सबसे व्यापक चुना गया दायरा लागू होगा।",
+      "addDelegatedAnalyst": "प्रतिनिधि विश्लेषक जोड़ें",
+      "adding": "जोड़ा जा रहा है...",
+      "addError": "प्रतिनिधि विश्लेषक जोड़ा नहीं जा सका",
+      "invitationDraft": "इस ईमेल के लिए निमंत्रण मसौदा तैयार किया गया है।"
     }
   },
   "week": {
@@ -133,7 +175,11 @@
       "open": "खुला",
       "done": "पूर्ण",
       "ignored": "अनदेखा"
-    }
+    },
+    "edit": "संपादित करें",
+    "loadingForDate": "चयनित तिथि के लिए कार्य लोड हो रहे हैं...",
+    "initializingTasks": "आपके कार्य सेट किए जा रहे हैं...",
+    "noTasksForDate": "इस तिथि के लिए कोई कार्य निर्धारित नहीं है"
   },
   "actions": {
     "drankWater": "पानी पिया",
@@ -223,10 +269,10 @@
   "errors": {
     "notFound": "ओह! इस आवृत्ति को ट्यून नहीं कर सका।",
     "genericError": "कुछ गलत हुआ। कृपया पुनः प्रयास करें।",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "नोट्स लोड करने में विफल",
+    "failedToLoadNotes": "नोट्स लोड करने में विफल",
+    "failedToFetchTemplates": "टेम्पलेट लोड करने में विफल",
+    "failedToLoadTemplates": "टेम्पलेट लोड करने में विफल"
   },
   "social": {
     "title": "सामाजिक संपर्क",
@@ -312,9 +358,9 @@
     "cloning": "क्लोन हो रहा है...",
     "noPublicNotes": "अभी तक कोई सार्वजनिक नोट उपलब्ध नहीं है।",
     "noPublicTemplatesOrLists": "अभी तक कोई सार्वजनिक टेम्पलेट या सूची उपलब्ध नहीं है।",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "सूची क्लोन करें",
+    "cloneListSuccess": "सूची सफलतापूर्वक क्लोन की गई!",
+    "cloneListFailed": "सूची क्लोन करने में विफल"
   },
   "publicCharts": {
     "noData": "कोई सार्वजनिक चार्ट डेटा उपलब्ध नहीं है।",
@@ -340,7 +386,8 @@
     "closeFriend": "घनिष्ठ मित्र",
     "friends": "मित्र",
     "signInToAdd": "मित्र जोड़ने के लिए साइन इन करें",
-    "editProfile": "प्रोफ़ाइल संपादित करें"
+    "editProfile": "प्रोफ़ाइल संपादित करें",
+    "message": "संदेश"
   },
   "profile": {
     "editProfile": "प्रोफ़ाइल संपादित करें",
@@ -446,7 +493,9 @@
       "timesLabel": "# बार",
       "saveToTemplate": "टेम्प्लेट में कार्य सहेजें",
       "addTask": "कार्य जोड़ें",
-      "cancel": "रद्द करें"
+      "cancel": "रद्द करें",
+      "editTitle": "कार्य संपादित करें",
+      "saveTask": "कार्य सहेजें"
     },
     "addListForm": {
       "titleCreate": "नई सूची बनाएं",
@@ -522,6 +571,39 @@
       },
       "create": "बनाएं",
       "cancel": "रद्द करें"
+    },
+    "recurrencePicker": {
+      "frequency": "दोहराएं",
+      "every": "प्रत्येक",
+      "day": "दिन",
+      "days": "दिन",
+      "week": "सप्ताह",
+      "weeks": "सप्ताह",
+      "month": "महीना",
+      "months": "महीने",
+      "year": "वर्ष",
+      "years": "वर्ष",
+      "noRepeat": "दोहराता नहीं",
+      "daily": "दैनिक",
+      "weekly": "साप्ताहिक",
+      "monthly": "मासिक",
+      "yearly": "वार्षिक",
+      "repeatOn": "दोहराएं",
+      "monday": "सोम",
+      "tuesday": "मंगल",
+      "wednesday": "बुध",
+      "thursday": "गुरु",
+      "friday": "शुक्र",
+      "saturday": "शनि",
+      "sunday": "रवि",
+      "dayOfMonth": "महीने का दिन",
+      "selectDay": "दिन चुनें (1-31)",
+      "ends": "समाप्त",
+      "never": "कभी नहीं",
+      "onDate": "तारीख पर",
+      "after": "के बाद",
+      "pickDate": "तारीख चुनें",
+      "occurrences": "बार"
     }
   },
   "charts": {
@@ -536,7 +618,10 @@
     "progress": "प्रगति",
     "moodAverageScale": "मनोदशा औसत पैमाना",
     "balance": "शेष",
-    "earningsScale": "कमाई पैमाना"
+    "earningsScale": "कमाई पैमाना",
+    "profit": "लाभ",
+    "stash": "भंडार",
+    "withdrawn": "निकाला गया"
   },
   "socialView": {
     "activity": "गतिविधि",
@@ -610,5 +695,174 @@
     "deleteWallet": "वॉलेट हटाएं",
     "deleteWalletConfirmation": "क्या आप वाकई इस वॉलेट को हटाना चाहते हैं? इस क्रिया को पूर्ववत नहीं किया जा सकता। वॉलेट आपके खाते से हटा दिया जाएगा, लेकिन ब्लॉकचेन पता और उसके फंड ब्लॉकचेन पर बने रहेंगे।",
     "delete": "हटाएं"
+  },
+  "jobs": {
+    "history": "नौकरी का इतिहास",
+    "filterByStatus": "स्थिति के आधार पर फ़िल्टर करें:",
+    "errorLoadingHistory": "नौकरी का इतिहास लोड करने में त्रुटि",
+    "noHistoryFound": "कोई नौकरी का इतिहास नहीं मिला",
+    "status": {
+      "requested": "अनुरोधित",
+      "inProgress": "प्रगति में",
+      "validating": "सत्यापन हो रहा है",
+      "accepted": "स्वीकृत",
+      "rejected": "अस्वीकृत",
+      "submitted": "सबमिट किया गया",
+      "changesRequested": "बदलाव अनुरोधित"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "आपके अनुरोध की समीक्षा की जा रही है। स्वीकृत होने पर आपको सूचित किया जाएगा।",
+        "inProgress": "आपका अनुरोध स्वीकृत हो गया! अब आप इस कार्य पर काम कर सकते हैं।",
+        "submitted": "आपका काम जमा कर दिया गया है। स्वामी से समीक्षा की प्रतीक्षा है।",
+        "validating": "परिवर्तन अनुरोध किए गए हैं। कृपया संशोधित करें और पुनः जमा करें।",
+        "accepted": "बधाई हो! आपका काम स्वीकार कर लिया गया।",
+        "rejected": "आपका प्रस्तुतीकरण अस्वीकार कर दिया गया।"
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}} ने इस कार्य पर काम करने का अनुरोध किया है। अनुरोध को स्वीकृत या अस्वीकार करें।",
+        "inProgress": "{{workerName}} वर्तमान में इस कार्य पर काम कर रहे हैं।",
+        "submitted": "{{workerName}} ने समीक्षा के लिए अपना काम जमा किया है।",
+        "validating": "{{workerName}} के संशोधित करने और पुनः जमा करने की प्रतीक्षा है।",
+        "accepted": "{{workerName}} का काम स्वीकार कर लिया गया।",
+        "rejected": "{{workerName}} का प्रस्तुतीकरण अस्वीकार कर दिया गया।"
+      }
+    },
+    "actions": {
+      "submitForReview": "समीक्षा के लिए जमा करें",
+      "withdrawSubmission": "प्रस्तुतीकरण वापस लें",
+      "withdrawing": "वापस ले रहे हैं...",
+      "reviseAndResubmit": "संशोधित करें और पुनः जमा करें",
+      "approveRequest": "अनुरोध स्वीकृत करें",
+      "approving": "स्वीकृत कर रहे हैं...",
+      "rejectRequest": "अनुरोध अस्वीकार करें",
+      "rejecting": "अस्वीकार कर रहे हैं...",
+      "reviewAndAccept": "समीक्षा करें और स्वीकार करें",
+      "requestChanges": "परिवर्तन अनुरोध करें",
+      "reject": "अस्वीकार करें"
+    },
+    "review": {
+      "title": "जमा किए गए काम की समीक्षा करें",
+      "description": "{{workerName}} से काम की समीक्षा करें",
+      "workerSolution": "कार्यकर्ता का समाधान:",
+      "selfReviewScore": "स्व-समीक्षा: {{score}}/100",
+      "noSubmissionNotes": "कोई प्रस्तुतीकरण नोट प्रदान नहीं किया गया",
+      "actionLabel": "कार्रवाई *",
+      "required": "*",
+      "optional": "(वैकल्पिक)",
+      "feedbackLabel": "समीक्षा प्रतिक्रिया {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "समझाएं कि कौन से परिवर्तन आवश्यक हैं",
+        "other": "कार्यकर्ता को टिप्पणियाँ या सुझाव प्रदान करें"
+      },
+      "editorPlaceholder": {
+        "validate": "आवश्यक परिवर्तनों का वर्णन करें...",
+        "other": "काम पर प्रतिक्रिया प्रदान करें..."
+      },
+      "managerReviewLabel": "प्रबंधक समीक्षा (वैकल्पिक)",
+      "managerReviewDescription": "पूर्ण किए गए काम की गुणवत्ता का मूल्यांकन करें",
+      "scorePoor": "0 (खराब)",
+      "scoreExcellent": "100 (उत्कृष्ट)",
+      "cancel": "रद्द करें",
+      "submitting": "जमा कर रहे हैं...",
+      "acceptWork": "काम स्वीकार करें",
+      "requestChangesButton": "परिवर्तन अनुरोध करें",
+      "rejectWork": "काम अस्वीकार करें",
+      "actions": {
+        "accept": {
+          "title": "स्वीकार करें (कार्य को पूर्ण के रूप में चिह्नित करें)",
+          "description": "काम को स्वीकृत करें और कार्य को पूर्ण करें। कार्यकर्ता अपना पुरस्कार अर्जित करता है।"
+        },
+        "requestChanges": {
+          "title": "परिवर्तन अनुरोध करें",
+          "description": "कार्यकर्ता से अपने काम को संशोधित करने और पुनः जमा करने के लिए कहें।"
+        },
+        "reject": {
+          "title": "अस्वीकार करें (कार्य को फिर से खोलें)",
+          "description": "काम को पूरी तरह से अस्वीकार करें और दूसरों के लिए कार्य को फिर से खोलें।"
+        }
+      },
+      "messages": {
+        "accepted": "काम स्वीकार किया गया और कार्य को पूर्ण के रूप में चिह्नित किया गया",
+        "changesRequested": "परिवर्तन अनुरोध किए गए, कार्यकर्ता संशोधित करेगा",
+        "rejected": "काम अस्वीकार किया गया, कार्य फिर से खोला गया",
+        "error": "समीक्षा जमा नहीं की जा सकी। कृपया पुनः प्रयास करें।"
+      }
+    },
+    "submission": {
+      "title": "समीक्षा के लिए काम जमा करें",
+      "titleResubmit": "काम को संशोधित करें और पुनः जमा करें",
+      "description": "{{taskName}} के लिए अपने समाधान का वर्णन करें और सत्यापन के लिए जमा करें।",
+      "solutionLabel": "समाधान विवरण *",
+      "solutionDescription": "समझाएं कि आपने इस कार्य को पूरा करने के लिए क्या किया। स्वरूपण, लिंक और सूचियों का समर्थन करता है।",
+      "solutionPlaceholder": "समझाएं कि आपने इस कार्य को पूरा करने के लिए क्या किया...",
+      "selfReviewLabel": "स्व-समीक्षा (वैकल्पिक)",
+      "selfReviewDescription": "0-100 के पैमाने पर अपने काम की गुणवत्ता का मूल्यांकन करें",
+      "scoreNeedsWork": "0 (काम की जरूरत है)",
+      "scorePerfect": "100 (पूर्ण)",
+      "cancel": "रद्द करें",
+      "submitting": "जमा कर रहे हैं...",
+      "submitButton": "समीक्षा के लिए जमा करें",
+      "resubmitButton": "समीक्षा के लिए पुनः जमा करें",
+      "errors": {
+        "missingDescription": "कृपया अपने काम का विवरण प्रदान करें",
+        "submitError": "आपका काम जमा नहीं किया जा सका। कृपया पुनः प्रयास करें।"
+      },
+      "messages": {
+        "submitted": "काम समीक्षा के लिए जमा किया गया",
+        "resubmitted": "काम समीक्षा के लिए पुनः जमा किया गया"
+      }
+    }
+  },
+  "notes": {
+    "updated": "नोट सफलतापूर्वक अपडेट किया गया",
+    "updateFailed": "नोट अपडेट करने में विफल",
+    "deleted": "नोट सफलतापूर्वक हटाया गया",
+    "deleteFailed": "नोट हटाने में विफल",
+    "deleting": "हटाया जा रहा है...",
+    "confirmDelete": "क्या आप वाकई इस नोट को हटाना चाहते हैं?",
+    "content": "नोट सामग्री",
+    "visibilityUpdated": "दृश्यता सफलतापूर्वक अपडेट की गई",
+    "visibilityUpdateFailed": "दृश्यता अपडेट करने में विफल",
+    "changeVisibility": "दृश्यता बदलें",
+    "filters": {
+      "sort": "क्रमबद्ध करें",
+      "date": "तिथि",
+      "mostRelevant": "सबसे प्रासंगिक",
+      "all": "सभी"
+    }
+  },
+  "chat": {
+    "title": "चैट",
+    "subtitle": "संगठन, चैनल, सीधे संदेश और थ्रेड।",
+    "anonymous": "अज्ञात",
+    "directMessage": "सीधा संदेश",
+    "deletedMessage": "संदेश हटाया गया",
+    "deleteMessageTitle": "संदेश हटाएं?",
+    "deleteMessageDescription": "यह संदेश को सॉफ्ट-डिलीट करेगा और वार्तालाप इतिहास में एक प्लेसहोल्डर रखेगा।",
+    "createInviteLink": "आमंत्रण लिंक बनाएं",
+    "pendingInvites": "लंबित आमंत्रण",
+    "acceptInvite": "स्वीकार करें",
+    "inviteFriendToOrg": "इस संगठन में एक मित्र को आमंत्रित करें",
+    "inviteLinkCopied": "आमंत्रण लिंक कॉपी किया गया",
+    "inviteSent": "आमंत्रण भेजा गया",
+    "inviteAccepted": "आमंत्रण स्वीकार किया गया"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "ग्रिड लेआउट",
+      "tight": "सघन",
+      "small": "छोटा",
+      "wide": "चौड़ा"
+    }
   }
 }

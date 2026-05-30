@@ -21,6 +21,7 @@
     "signInToAccess": "Dashboard'unuza erişmek ve ilerlemenizi takip etmek için giriş yapın.",
     "dismiss": "Kapat",
     "accept": "Kabul Et",
+    "all": "Tümü",
     "pageAvailableIn": "Bu sayfa {locale} dilinde mevcuttur. Bu dilde görüntülemek ister misiniz?",
     "selectLanguage": "Dil seçin",
     "dashboard": "Gösterge Paneli",
@@ -56,7 +57,10 @@
     "copyLink": "Bağlantıyı kopyala",
     "linkCopied": "Bağlantı panoya kopyalandı",
     "copyFailed": "Bağlantı kopyalanamadı",
-    "saving": "Kaydediliyor..."
+    "saving": "Kaydediliyor...",
+    "decline": "Reddet",
+    "friendRequest": "Arkadaşlık isteği",
+    "reverseOrder": "Sırayı tersine çevir"
   },
   "navigation": {
     "dashboard": "Gösterge Paneli",
@@ -86,7 +90,26 @@
     "yourMood": "Ruh haliniz.",
     "yourProductivity": "Verimliliğiniz.",
     "yourData": "Verileriniz.",
-    "yourBalance": "Paranız."
+    "yourBalance": "Paranız.",
+    "timeframe": {
+      "startDate": "Başlangıç tarihi",
+      "endDate": "Bitiş tarihi"
+    },
+    "me": "Verilerim",
+    "selectDelegatedUser": "Yetkilendirilen kullanıcıyı seç",
+    "analysis": {
+      "alltimeAnalysis": "Tüm zamanların analizi",
+      "dayAnalysis": "Bugünün analizi",
+      "last3daysAnalysis": "Son 3 günün analizi",
+      "weekAnalysis": "Haftalık analiz",
+      "yearAnalysis": "Yıllık analiz",
+      "gratitudeAnalysis": "Minnettarlık analizi",
+      "optimismAnalysis": "İyimserlik analizi",
+      "restednessAnalysis": "Dinlenmişlik analizi",
+      "toleranceAnalysis": "Hoşgörü analizi",
+      "selfEsteemAnalysis": "Özsaygı analizi",
+      "trustAnalysis": "Güven analizi"
+    }
   },
   "mood": {
     "title": "{date} için ruh halinizi kaydedin",
@@ -109,7 +132,26 @@
         "AI_ENABLED": "Yapay Zeka Etkin"
       },
       "action": "Not Yayınla",
-      "publishing": "Publishing..."
+      "publishing": "Yayınlanıyor...",
+      "embedHint": "{provider} yerleştirmesi. Oynatma kullanılamıyorsa aşağıdaki orijinal bağlantıyı açın."
+    },
+    "thirdParty": {
+      "title": "Üçüncü taraf",
+      "settings": "Yetkilendirme ayarları",
+      "activeDelegations": "Etkin yetkilendirmeler",
+      "empty": "Etkin yetkilendirme yok.",
+      "identifierPlaceholder": "Kullanıcı adı, e-posta veya kullanıcı kimliği",
+      "noFriendsFound": "Eşleşen arkadaşlık bulunamadı.",
+      "friendsHint": "Öneriler arkadaşlarınızı içerir. Ayrıca herhangi bir e-posta adresi de girebilirsiniz.",
+      "scope": "Veri kapsamı",
+      "allScopes": "Tüm kapsamlar",
+      "scopesSelected": "kapsam seçildi",
+      "minimumOneScope": "En az bir kapsam seçili kalmalıdır.",
+      "scopeResolutionHint": "Birden fazla kapsam seçilirse, seçilen en geniş kapsam uygulanır.",
+      "addDelegatedAnalyst": "Yetkilendirilmiş analist ekle",
+      "adding": "Ekleniyor...",
+      "addError": "Yetkilendirilmiş analist eklenemedi",
+      "invitationDraft": "Bu e-posta için davet taslağı hazırlandı."
     }
   },
   "week": {
@@ -137,7 +179,11 @@
       "open": "Açık",
       "done": "Tamamlandı",
       "ignored": "Yoksayıldı"
-    }
+    },
+    "edit": "Düzenle",
+    "loadingForDate": "Seçilen tarih için görevler yükleniyor...",
+    "initializingTasks": "Görevleriniz ayarlanıyor...",
+    "noTasksForDate": "Bu tarih için planlanmış görev yok"
   },
   "actions": {
     "drankWater": "Su içti",
@@ -236,15 +282,18 @@
     "progress": "İlerleme",
     "moodAverageScale": "Ortalama ruh hali ölçeği",
     "balance": "Bakiye",
-    "earningsScale": "Kazanç ölçeği"
+    "earningsScale": "Kazanç ölçeği",
+    "profit": "Kâr",
+    "stash": "Rezerv",
+    "withdrawn": "Çekilmiş"
   },
   "errors": {
     "notFound": "Hay aksi! Bu frekansa ayarlanamadı.",
     "genericError": "Bir şeyler ters gitti. Lütfen tekrar deneyin.",
-    "failedToFetchNotes": "Failed to fetch notes",
-    "failedToLoadNotes": "Failed to load notes",
-    "failedToFetchTemplates": "Failed to fetch templates",
-    "failedToLoadTemplates": "Failed to load templates"
+    "failedToFetchNotes": "Notlar yüklenemedi",
+    "failedToLoadNotes": "Notlar yüklenemedi",
+    "failedToFetchTemplates": "Şablonlar yüklenemedi",
+    "failedToLoadTemplates": "Şablonlar yüklenemedi"
   },
   "social": {
     "title": "Sosyal Kişiler",
@@ -330,9 +379,9 @@
     "cloning": "Klonlanıyor...",
     "noPublicNotes": "Henüz herkese açık not mevcut değil.",
     "noPublicTemplatesOrLists": "Henüz herkese açık şablon veya liste mevcut değil.",
-    "cloneList": "Clone List",
-    "cloneListSuccess": "List cloned successfully!",
-    "cloneListFailed": "Failed to clone list"
+    "cloneList": "Listeyi kopyala",
+    "cloneListSuccess": "Liste başarıyla kopyalandı!",
+    "cloneListFailed": "Liste kopyalama başarısız"
   },
   "publicCharts": {
     "noData": "Herkese açık grafik verisi mevcut değil.",
@@ -358,7 +407,8 @@
     "closeFriend": "Yakın arkadaş",
     "friends": "Arkadaşlar",
     "signInToAdd": "Arkadaş eklemek için giriş yapın",
-    "editProfile": "Profili düzenle"
+    "editProfile": "Profili düzenle",
+    "message": "Mesaj"
   },
   "profile": {
     "editProfile": "Profili düzenle",
@@ -464,7 +514,9 @@
       "timesLabel": "# Kaç kez",
       "saveToTemplate": "Görevi şablona kaydet",
       "addTask": "Görev Ekleme",
-      "cancel": "İptal"
+      "cancel": "İptal",
+      "editTitle": "Görevi düzenle",
+      "saveTask": "Görevi kaydet"
     },
     "addListForm": {
       "titleCreate": "Yeni Liste Oluştur",
@@ -540,6 +592,39 @@
       },
       "create": "Oluştur",
       "cancel": "İptal"
+    },
+    "recurrencePicker": {
+      "frequency": "Tekrarla",
+      "every": "Her",
+      "day": "gün",
+      "days": "gün",
+      "week": "hafta",
+      "weeks": "hafta",
+      "month": "ay",
+      "months": "ay",
+      "year": "yıl",
+      "years": "yıl",
+      "noRepeat": "Tekrarlanmaz",
+      "daily": "Günlük",
+      "weekly": "Haftalık",
+      "monthly": "Aylık",
+      "yearly": "Yıllık",
+      "repeatOn": "Şu günde tekrarla",
+      "monday": "Pzt",
+      "tuesday": "Sal",
+      "wednesday": "Çar",
+      "thursday": "Per",
+      "friday": "Cum",
+      "saturday": "Cmt",
+      "sunday": "Paz",
+      "dayOfMonth": "Ayın günü",
+      "selectDay": "Gün seçin (1-31)",
+      "ends": "Bitiş",
+      "never": "Asla",
+      "onDate": "Tarihte",
+      "after": "Sonra",
+      "pickDate": "Bir tarih seçin",
+      "occurrences": "tekrar"
     }
   },
   "socialView": {
@@ -614,5 +699,174 @@
     "deleteWallet": "Cüzdanı Sil",
     "deleteWalletConfirmation": "Bu cüzdanı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz. Cüzdan hesabınızdan kaldırılacak, ancak blockchain adresi ve fonları blockchain'de kalacaktır.",
     "delete": "Sil"
+  },
+  "jobs": {
+    "history": "İş Geçmişi",
+    "filterByStatus": "Duruma Göre Filtrele:",
+    "errorLoadingHistory": "İş geçmişi yüklenirken hata",
+    "noHistoryFound": "İş geçmişi bulunamadı",
+    "status": {
+      "requested": "Talep Edildi",
+      "inProgress": "Devam Ediyor",
+      "validating": "Doğrulanıyor",
+      "accepted": "Kabul Edildi",
+      "rejected": "Reddedildi",
+      "submitted": "Gönderildi",
+      "changesRequested": "Değişiklikler talep edildi"
+    },
+    "jobStatus": "Job Status",
+    "refreshing": "Refreshing...",
+    "workerSubmission": "Worker's Submission:",
+    "selfReview": "Self-Review:",
+    "reviewerFeedback": "Reviewer's Feedback:",
+    "managerReview": "Manager Review:",
+    "visibleToParticipants": "Visible only to job participants",
+    "worker": {
+      "statusBanner": {
+        "requested": "Talebiniz inceleniyor. Onaylandığında bilgilendirileceksiniz.",
+        "inProgress": "Talebiniz onaylandı! Artık bu görev üzerinde çalışabilirsiniz.",
+        "submitted": "Çalışmanız gönderildi. Sahibin incelemesi bekleniyor.",
+        "validating": "Değişiklikler talep edildi. Lütfen gözden geçirin ve yeniden gönderin.",
+        "accepted": "Tebrikler! Çalışmanız kabul edildi.",
+        "rejected": "Gönderiminiz reddedildi."
+      }
+    },
+    "owner": {
+      "statusBanner": {
+        "requested": "{{workerName}} bu görev üzerinde çalışmak için talepte bulundu. Talebi onaylayın veya reddedin.",
+        "inProgress": "{{workerName}} şu anda bu görev üzerinde çalışıyor.",
+        "submitted": "{{workerName}} çalışmasını inceleme için gönderdi.",
+        "validating": "{{workerName}}'in gözden geçirip yeniden göndermesi bekleniyor.",
+        "accepted": "{{workerName}}'in çalışması kabul edildi.",
+        "rejected": "{{workerName}}'in gönderimi reddedildi."
+      }
+    },
+    "actions": {
+      "submitForReview": "İnceleme için Gönder",
+      "withdrawSubmission": "Gönderimi Geri Çek",
+      "withdrawing": "Geri çekiliyor...",
+      "reviseAndResubmit": "Gözden Geçir ve Yeniden Gönder",
+      "approveRequest": "Talebi Onayla",
+      "approving": "Onaylanıyor...",
+      "rejectRequest": "Talebi Reddet",
+      "rejecting": "Reddediliyor...",
+      "reviewAndAccept": "İncele ve Kabul Et",
+      "requestChanges": "Değişiklik Talep Et",
+      "reject": "Reddet"
+    },
+    "review": {
+      "title": "Gönderilen Çalışmayı İncele",
+      "description": "{{workerName}}'in çalışmasını incele",
+      "workerSolution": "Çalışanın Çözümü:",
+      "selfReviewScore": "Öz Değerlendirme: {{score}}/100",
+      "noSubmissionNotes": "Gönderim notu sağlanmadı",
+      "actionLabel": "Eylem *",
+      "required": "*",
+      "optional": "(İsteğe bağlı)",
+      "feedbackLabel": "İnceleme Geri Bildirimi {{required}}",
+      "feedbackPlaceholder": {
+        "validate": "Hangi değişikliklerin gerekli olduğunu açıklayın",
+        "other": "Çalışan için yorum veya önerilerde bulunun"
+      },
+      "editorPlaceholder": {
+        "validate": "Gerekli değişiklikleri açıklayın...",
+        "other": "Çalışma hakkında geri bildirim sağlayın..."
+      },
+      "managerReviewLabel": "Yönetici İncelemesi (İsteğe bağlı)",
+      "managerReviewDescription": "Tamamlanan çalışmanın kalitesini değerlendirin",
+      "scorePoor": "0 (Kötü)",
+      "scoreExcellent": "100 (Mükemmel)",
+      "cancel": "İptal",
+      "submitting": "Gönderiliyor...",
+      "acceptWork": "Çalışmayı Kabul Et",
+      "requestChangesButton": "Değişiklik Talep Et",
+      "rejectWork": "Çalışmayı Reddet",
+      "actions": {
+        "accept": {
+          "title": "Kabul Et (Görevi Tamamlandı olarak işaretle)",
+          "description": "Çalışmayı onaylayın ve görevi tamamlayın. Çalışan ödülünü kazanır."
+        },
+        "requestChanges": {
+          "title": "Değişiklik Talep Et",
+          "description": "Çalışandan çalışmasını gözden geçirmesini ve yeniden göndermesini isteyin."
+        },
+        "reject": {
+          "title": "Reddet (Görevi yeniden aç)",
+          "description": "Çalışmayı tamamen reddedin ve görevi başkaları için yeniden açın."
+        }
+      },
+      "messages": {
+        "accepted": "Çalışma kabul edildi ve görev tamamlandı olarak işaretlendi",
+        "changesRequested": "Değişiklikler talep edildi, çalışan gözden geçirecek",
+        "rejected": "Çalışma reddedildi, görev yeniden açıldı",
+        "error": "İnceleme gönderilemedi. Lütfen tekrar deneyin."
+      }
+    },
+    "submission": {
+      "title": "İnceleme için Çalışma Gönder",
+      "titleResubmit": "Çalışmayı Gözden Geçir ve Yeniden Gönder",
+      "description": "{{taskName}} için çözümünüzü açıklayın ve doğrulama için gönderin.",
+      "solutionLabel": "Çözüm Açıklaması *",
+      "solutionDescription": "Bu görevi tamamlamak için ne yaptığınızı açıklayın. Biçimlendirme, bağlantılar ve listeler desteklenir.",
+      "solutionPlaceholder": "Bu görevi tamamlamak için ne yaptığınızı açıklayın...",
+      "selfReviewLabel": "Öz Değerlendirme (İsteğe bağlı)",
+      "selfReviewDescription": "Çalışmanızın kalitesini 0-100 ölçeğinde değerlendirin",
+      "scoreNeedsWork": "0 (İyileştirme gerekli)",
+      "scorePerfect": "100 (Mükemmel)",
+      "cancel": "İptal",
+      "submitting": "Gönderiliyor...",
+      "submitButton": "İnceleme için Gönder",
+      "resubmitButton": "İnceleme için Yeniden Gönder",
+      "errors": {
+        "missingDescription": "Lütfen çalışmanızın bir açıklamasını sağlayın",
+        "submitError": "Çalışmanız gönderilemedi. Lütfen tekrar deneyin."
+      },
+      "messages": {
+        "submitted": "Çalışma inceleme için gönderildi",
+        "resubmitted": "Çalışma inceleme için yeniden gönderildi"
+      }
+    }
+  },
+  "notes": {
+    "updated": "Not başarıyla güncellendi",
+    "updateFailed": "Not güncellenemedi",
+    "deleted": "Not başarıyla silindi",
+    "deleteFailed": "Not silinemedi",
+    "deleting": "Siliniyor...",
+    "confirmDelete": "Bu notu silmek istediğinizden emin misiniz?",
+    "content": "Not içeriği",
+    "visibilityUpdated": "Görünürlük başarıyla güncellendi",
+    "visibilityUpdateFailed": "Görünürlük güncellenemedi",
+    "changeVisibility": "Görünürlüğü değiştir",
+    "filters": {
+      "sort": "Sırala",
+      "date": "Tarih",
+      "mostRelevant": "En ilgili",
+      "all": "Tümü"
+    }
+  },
+  "chat": {
+    "title": "Sohbet",
+    "subtitle": "Organizasyonlar, kanallar, doğrudan mesajlar ve konular.",
+    "anonymous": "Anonim",
+    "directMessage": "Doğrudan mesaj",
+    "deletedMessage": "Mesaj silindi",
+    "deleteMessageTitle": "Mesajı sil?",
+    "deleteMessageDescription": "Bu, mesajı geçici olarak siler ve konuşma geçmişinde bir yer tutucu bırakır.",
+    "createInviteLink": "Davet bağlantısı oluştur",
+    "pendingInvites": "Bekleyen davetler",
+    "acceptInvite": "Kabul et",
+    "inviteFriendToOrg": "Bu organizasyona bir arkadaş davet et",
+    "inviteLinkCopied": "Davet bağlantısı kopyalandı",
+    "inviteSent": "Davet gönderildi",
+    "inviteAccepted": "Davet kabul edildi"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Izgara düzeni",
+      "tight": "Sıkı",
+      "small": "Küçük",
+      "wide": "Geniş"
+    }
   }
 }
