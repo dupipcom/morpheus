@@ -53,7 +53,9 @@ export function NoteContent({ content, truncate = false, maxLength = 150 }: Note
     return `${content.slice(0, maxLength)}...`
   }, [content, truncate, maxLength])
 
-  const urls = useMemo(() => extractUrls(displayContent), [displayContent])
+  // Always extract URLs from full content (not truncated) and limit to 3,
+  // so preview badges are visible regardless of fold/expand state.
+  const urls = useMemo(() => extractUrls(content).slice(0, 3), [content])
 
   return (
     <div>

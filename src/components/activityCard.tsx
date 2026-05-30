@@ -870,12 +870,30 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
 
       {/* Content based on type */}
       {item.type === 'note' && noteContent && (
-        <div className="mb-3">
-          <NoteContent
-            content={noteContent}
-            truncate={!isExpanded && noteContent.length > 150}
-            maxLength={150}
-          />
+        <div className="mb-3 flex items-center gap-2">
+          <div className="flex-1 min-w-0">
+            <NoteContent
+              content={noteContent}
+              truncate={!isExpanded && noteContent.length > 150}
+              maxLength={150}
+            />
+          </div>
+          {/* Expand button – shown when note is long or has comments; vertically centered next to the text block */}
+          {(noteContent.length > 150 || commentCount > 0) && (
+            <div className="flex-shrink-0">
+              <button
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="bg-background/95 backdrop-blur-sm border border-border rounded-full p-2 shadow-lg hover:bg-background transition-colors"
+                aria-label={isExpanded ? t('comments.showLess') : t('comments.showMore')}
+              >
+                {isExpanded ? (
+                  <ChevronUp className="h-4 w-4 text-foreground" />
+                ) : (
+                  <ChevronDown className="h-4 w-4 text-foreground" />
+                )}
+              </button>
+            </div>
+          )}
         </div>
       )}
       
@@ -1165,21 +1183,6 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
               )}
             </div>
           )}
-
-          {/* Expand button */}
-          <div className="flex justify-center mt-2">
-            <button
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="bg-background/95 backdrop-blur-sm border border-border rounded-full p-2 shadow-lg hover:bg-background transition-colors z-10"
-              aria-label={isExpanded ? t('comments.showLess') : t('comments.showMore')}
-            >
-              {isExpanded ? (
-                <ChevronUp className="h-4 w-4 text-foreground" />
-              ) : (
-                <ChevronDown className="h-4 w-4 text-foreground" />
-              )}
-            </button>
-          </div>
 
           {/* Condensed publish note field when expanded */}
           {isExpanded && (
