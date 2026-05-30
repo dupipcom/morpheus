@@ -136,7 +136,8 @@ export function MeetMeRow({
         const data = await response.json()
         setBookingResult({ error: data.error || 'Failed to book meeting' })
       }
-    } catch {
+    } catch (error) {
+      console.error('Failed to book meeting:', error)
       setBookingResult({ error: 'Network error' })
     } finally {
       setBookingLoading(false)

@@ -181,7 +181,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Build names
-    const profileData = targetProfile.data as Record<string, any> || {}
+    const profileData = (targetProfile.data || {}) as Record<string, { value?: string; visibility?: boolean }>
     const targetName = [profileData.firstName?.value, profileData.lastName?.value]
       .filter(Boolean)
       .join(' ') || profileUsername
