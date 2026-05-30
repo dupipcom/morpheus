@@ -19,6 +19,7 @@ import { useDebounce } from "@/lib/hooks/useDebounce"
 import { generatePublicChartsData } from "@/lib/utils/profileUtils"
 import { PublicChartsView } from "@/components/publicChartsView"
 import { Skeleton } from "@/components/ui/skeleton"
+import { MeetMeRow } from "@/components/meetMeRow"
 
 export default function ProfilePage({ params }: { params: Promise<{ locale: string }> }) {
   const { isLoaded, isSignedIn } = useAuth()
@@ -55,6 +56,13 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
     productivityCharts?: boolean
     earningsCharts?: boolean
   }>({})
+  const [meetMe, setMeetMe] = useState({
+    preferredTime: '',
+    duration: '',
+    availability: '',
+    startDate: undefined as Date | undefined,
+    endDate: undefined as Date | undefined,
+  })
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
 
@@ -92,6 +100,17 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
             publicChartsVisibility: getVisibility(profileData.charts?.visibility),
           })
           setPublicCharts(profileData.charts?.value || {})
+          
+          // Load meetMe settings
+          if (profileData.meetMe) {
+            setMeetMe({
+              preferredTime: profileData.meetMe.preferredTime || '',
+              duration: profileData.meetMe.duration || '',
+              availability: profileData.meetMe.availability || '',
+              startDate: profileData.meetMe.startDate ? new Date(profileData.meetMe.startDate) : undefined,
+              endDate: profileData.meetMe.endDate ? new Date(profileData.meetMe.endDate) : undefined,
+            })
+          }
         }
       }
     } catch (error) {
@@ -102,7 +121,7 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
   }
 
   // Create debounced save function
-  const debouncedSave = useDebounce(async (profileData, chartsData) => {
+  const debouncedSave = useDebounce(async (profileData: Record<string, any>, chartsData: Record<string, any>, meetMeData?: { preferredTime: string; duration: string; availability: string; startDate?: Date; endDate?: Date }) => {
     setSaving(true)
     try {
       const response = await fetch('/api/v1/profile', {
@@ -112,7 +131,14 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
         },
         body: JSON.stringify({
           ...profileData,
-          publicCharts: chartsData
+          publicCharts: chartsData,
+          ...(meetMeData ? { meetMe: {
+            preferredTime: meetMeData.preferredTime,
+            duration: meetMeData.duration,
+            availability: meetMeData.availability,
+            startDate: meetMeData.startDate?.toISOString() || null,
+            endDate: meetMeData.endDate?.toISOString() || null,
+          } } : {})
         })
       })
       
@@ -136,6 +162,12 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
     const newPublicCharts = { ...publicCharts, [chartType]: visible }
     setPublicCharts(newPublicCharts)
     debouncedSave(profile, newPublicCharts)
+  }
+
+  const handleMeetMeChange = (field: string, value: any) => {
+    const newMeetMe = { ...meetMe, [field]: value }
+    setMeetMe(newMeetMe)
+    debouncedSave(profile, publicCharts, newMeetMe)
   }
 
   // Generate public charts data from user entries
@@ -360,6 +392,33 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
             </CardContent>
           </Card>
         </div>
+
+        {/* Meet Me */}
+        <Card className="mt-6">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base">{t('profile.meetMe.title')}</CardTitle>
+            <p className="text-sm text-muted-foreground">
+              {t('profile.meetMe.description')}
+            </p>
+          </CardHeader>
+          <CardContent>
+            <MeetMeRow
+              preferredTime={meetMe.preferredTime}
+              duration={meetMe.duration}
+              availability={meetMe.availability}
+              startDate={meetMe.startDate}
+              endDate={meetMe.endDate}
+              onPreferredTimeChange={(value) => handleMeetMeChange('preferredTime', value)}
+              onDurationChange={(value) => handleMeetMeChange('duration', value)}
+              onAvailabilityChange={(value) => handleMeetMeChange('availability', value)}
+              onDateRangeChange={(start, end) => {
+                const newMeetMe = { ...meetMe, startDate: start, endDate: end }
+                setMeetMe(newMeetMe)
+                debouncedSave(profile, publicCharts, newMeetMe)
+              }}
+            />
+          </CardContent>
+        </Card>
 
         {/* Preview Section */}
         <Card className="mt-6">
