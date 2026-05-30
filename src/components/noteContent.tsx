@@ -9,6 +9,8 @@ interface NoteContentProps {
   content: string
   truncate?: boolean
   maxLength?: number
+  /** Optional slot rendered between text and link previews (e.g. expand button) */
+  children?: ReactNode
 }
 
 /**
@@ -47,7 +49,7 @@ function renderTextWithLinks(text: string) {
   return parts
 }
 
-export function NoteContent({ content, truncate = false, maxLength = 150 }: NoteContentProps) {
+export function NoteContent({ content, truncate = false, maxLength = 150, children }: NoteContentProps) {
   const displayContent = useMemo(() => {
     if (!truncate || content.length <= maxLength) return content
     return `${content.slice(0, maxLength)}...`
@@ -62,6 +64,7 @@ export function NoteContent({ content, truncate = false, maxLength = 150 }: Note
       <p className="text-sm whitespace-pre-wrap mb-1">
         {renderTextWithLinks(displayContent)}
       </p>
+      {children}
       {urls.map((url) => (
         <LinkPreview key={url} url={url} />
       ))}
