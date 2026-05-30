@@ -456,7 +456,9 @@
       "calendarAvailability": "ਉਪਲਬਧਤਾ",
       "calendarUnavailable": "ਕੈਲੰਡਰ ਉਪਲਬਧ ਨਹੀਂ",
       "dayFree": "ਕੋਈ ਪ੍ਰੋਗਰਾਮ ਨਹੀਂ — ਦਿਨ ਖਾਲੀ ਹੈ",
-      "busySlot": "ਰੁੱਝਿਆ {start} – {end}"
+      "busySlot": "ਰੁੱਝਿਆ {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
     }
   },
   "toast": {

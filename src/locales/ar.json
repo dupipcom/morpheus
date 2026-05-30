@@ -473,7 +473,9 @@
       "calendarAvailability": "التوفر",
       "calendarUnavailable": "التقويم غير متاح",
       "dayFree": "لا أحداث — اليوم متاح",
-      "busySlot": "مشغول {start} – {end}"
+      "busySlot": "مشغول {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
     }
   },
   "toast": {

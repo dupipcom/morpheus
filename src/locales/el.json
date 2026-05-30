@@ -449,7 +449,9 @@
       "calendarAvailability": "Διαθεσιμότητα",
       "calendarUnavailable": "Το ημερολόγιο δεν είναι διαθέσιμο",
       "dayFree": "Χωρίς γεγονότα — η μέρα είναι ελεύθερη",
-      "busySlot": "Κατειλημμένο {start} – {end}"
+      "busySlot": "Κατειλημμένο {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
     }
   },
   "toast": {

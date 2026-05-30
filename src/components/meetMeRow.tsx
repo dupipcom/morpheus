@@ -78,6 +78,61 @@ function getTimeRangeForSlot(slot: string, date: Date): { start: Date; end: Date
   return { start, end }
 }
 
+/** Returns the hour range for a preferred time slot */
+function getSlotHourRange(slot: string): { startHour: number; endHour: number } {
+  switch (slot) {
+    case 'morning':
+      return { startHour: 8, endHour: 12 }
+    case 'afternoon':
+      return { startHour: 12, endHour: 17 }
+    case 'evening':
+      return { startHour: 17, endHour: 21 }
+    default:
+      return { startHour: 9, endHour: 17 }
+  }
+}
+
+interface TimeSlot {
+  start: Date
+  end: Date
+  available: boolean
+}
+
+/** Generate time slots for a given date based on preferred time and duration, marking busy ones */
+function generateTimeSlots(
+  date: Date,
+  preferredTime: string,
+  durationMinutes: number,
+  busySlots: BusySlot[]
+): TimeSlot[] {
+  const { startHour, endHour } = getSlotHourRange(preferredTime)
+  const slots: TimeSlot[] = []
+  const slotDate = new Date(date)
+
+  for (let hour = startHour; hour < endHour; hour++) {
+    for (let min = 0; min < 60; min += durationMinutes) {
+      const start = new Date(slotDate)
+      start.setHours(hour, min, 0, 0)
+      const end = new Date(start.getTime() + durationMinutes * 60 * 1000)
+
+      // Don't generate slots that go past the end of the time range
+      const rangeEnd = new Date(slotDate)
+      rangeEnd.setHours(endHour, 0, 0, 0)
+      if (end > rangeEnd) break
+
+      // Check if this slot overlaps with any busy period
+      const available = !busySlots.some((busy) => {
+        const busyStart = new Date(busy.start)
+        const busyEnd = new Date(busy.end)
+        return start < busyEnd && end > busyStart
+      })
+
+      slots.push({ start, end, available })
+    }
+  }
+  return slots
+}
+
 export function MeetMeRow({
   preferredTime,
   duration,
@@ -102,6 +157,7 @@ export function MeetMeRow({
   const [busySlots, setBusySlots] = useState<BusySlot[]>([])
   const [availabilityLoading, setAvailabilityLoading] = useState(false)
   const [availabilityWarning, setAvailabilityWarning] = useState<string | null>(null)
+  const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null)
 
   const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
@@ -147,9 +203,11 @@ export function MeetMeRow({
   useEffect(() => {
     if (bookingDate && bookingTargetUsername) {
       fetchAvailability(bookingDate)
+      setSelectedSlot(null)
     } else {
       setBusySlots([])
       setAvailabilityWarning(null)
+      setSelectedSlot(null)
     }
   }, [bookingDate, bookingTargetUsername, fetchAvailability])
 
@@ -167,14 +225,10 @@ export function MeetMeRow({
   }
 
   const handleBookMeeting = async () => {
-    if (!bookingTargetUsername || !bookingDate || !preferredTime) return
+    if (!bookingTargetUsername || !bookingDate || !selectedSlot) return
 
     setBookingLoading(true)
     setBookingResult(null)
-
-    const durationMinutes = parseInt(duration || '30', 10)
-    const { start, end } = getTimeRangeForSlot(preferredTime, bookingDate)
-    end.setTime(start.getTime() + durationMinutes * 60 * 1000)
 
     try {
       const response = await fetch('/api/v1/meet-me', {
@@ -182,8 +236,8 @@ export function MeetMeRow({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           profileUsername: bookingTargetUsername,
-          startTime: start.toISOString(),
-          endTime: end.toISOString(),
+          startTime: selectedSlot.start.toISOString(),
+          endTime: selectedSlot.end.toISOString(),
           message: bookingMessage,
         }),
       })
@@ -192,6 +246,7 @@ export function MeetMeRow({
         setBookingResult({ success: true })
         setBookingMessage('')
         setBookingDate(undefined)
+        setSelectedSlot(null)
       } else {
         const data = await response.json()
         setBookingResult({ error: data.error || 'Failed to book meeting' })
@@ -203,6 +258,12 @@ export function MeetMeRow({
       setBookingLoading(false)
     }
   }
+
+  // Compute available time slots for the selected date
+  const durationMinutes = parseInt(duration || '30', 10)
+  const timeSlots = bookingDate && !availabilityLoading
+    ? generateTimeSlots(bookingDate, preferredTime, durationMinutes, busySlots)
+    : []
 
   return (
     <div
@@ -329,7 +390,7 @@ export function MeetMeRow({
               {bookingDate && (
                 <div className="space-y-1">
                   <Label className="text-xs flex items-center gap-1">
-                    {t('profile.meetMe.calendarAvailability')}
+                    {t('profile.meetMe.availableSlots')}
                     {availabilityLoading && (
                       <span className="text-muted-foreground animate-pulse">…</span>
                     )}
@@ -340,35 +401,38 @@ export function MeetMeRow({
                       {availabilityWarning}
                     </p>
                   )}
-                  {!availabilityLoading && busySlots.length === 0 && !availabilityWarning && (
-                    <p className="text-[10px] text-green-600 dark:text-green-400">
-                      {t('profile.meetMe.dayFree')}
-                    </p>
-                  )}
-                  {!availabilityLoading && busySlots.length > 0 && (
-                    <div className="space-y-0.5 max-h-24 overflow-y-auto">
-                      {busySlots.map((slot, idx) => {
-                        const startTime = new Date(slot.start).toLocaleTimeString(undefined, {
+                  {!availabilityLoading && timeSlots.length > 0 && (
+                    <div className="grid grid-cols-3 gap-1 max-h-32 overflow-y-auto">
+                      {timeSlots.map((slot, idx) => {
+                        const timeLabel = slot.start.toLocaleTimeString(undefined, {
                           hour: '2-digit',
                           minute: '2-digit',
                           timeZone: userTimezone,
                         })
-                        const endTime = new Date(slot.end).toLocaleTimeString(undefined, {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                          timeZone: userTimezone,
-                        })
+                        const isSelected = selectedSlot?.start.getTime() === slot.start.getTime()
                         return (
-                          <div
+                          <button
                             key={idx}
-                            className="flex items-center gap-1.5 text-[11px] text-muted-foreground"
+                            type="button"
+                            disabled={!slot.available}
+                            onClick={() => setSelectedSlot(slot)}
+                            className={cn(
+                              'rounded-md px-2 py-1 text-[11px] font-medium transition-colors border',
+                              slot.available && !isSelected && 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950 text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-900 cursor-pointer',
+                              slot.available && isSelected && 'border-primary bg-primary text-primary-foreground cursor-pointer',
+                              !slot.available && 'border-muted bg-muted/40 text-muted-foreground line-through cursor-not-allowed opacity-50'
+                            )}
                           >
-                            <span className="w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
-                            <span>{t('profile.meetMe.busySlot', { start: startTime, end: endTime })}</span>
-                          </div>
+                            {timeLabel}
+                          </button>
                         )
                       })}
                     </div>
+                  )}
+                  {!availabilityLoading && timeSlots.length === 0 && !availabilityWarning && (
+                    <p className="text-[10px] text-muted-foreground">
+                      {t('profile.meetMe.noSlotsAvailable')}
+                    </p>
                   )}
                 </div>
               )}
@@ -393,7 +457,7 @@ export function MeetMeRow({
               <Button
                 size="sm"
                 className="w-full"
-                disabled={!bookingDate || bookingLoading}
+                disabled={!bookingDate || !selectedSlot || bookingLoading}
                 onClick={handleBookMeeting}
               >
                 {bookingLoading ? t('profile.meetMe.booking') : t('profile.meetMe.confirmBooking')}

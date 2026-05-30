@@ -455,7 +455,9 @@
       "calendarAvailability": "Erabilgarritasuna",
       "calendarUnavailable": "Egutegia ez dago erabilgarri",
       "dayFree": "Ekitaldirik ez — eguna libre dago",
-      "busySlot": "Okupatuta {start} – {end}"
+      "busySlot": "Okupatuta {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
     }
   },
   "toast": {

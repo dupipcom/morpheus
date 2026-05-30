@@ -469,7 +469,9 @@
       "calendarAvailability": "可用性",
       "calendarUnavailable": "日历不可用",
       "dayFree": "无日程 — 全天空闲",
-      "busySlot": "忙碌 {start} – {end}"
+      "busySlot": "忙碌 {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
     }
   },
   "toast": {

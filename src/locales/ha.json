@@ -466,7 +466,9 @@
       "calendarAvailability": "Samuwa",
       "calendarUnavailable": "Kalanda ba ya samuwa",
       "dayFree": "Babu taron — ranar yana da kyauta",
-      "busySlot": "Mai aiki {start} – {end}"
+      "busySlot": "Mai aiki {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
     }
   },
   "toast": {

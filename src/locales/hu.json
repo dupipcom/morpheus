@@ -452,7 +452,9 @@
       "calendarAvailability": "Elérhetőség",
       "calendarUnavailable": "Naptár nem elérhető",
       "dayFree": "Nincsenek események — a nap szabad",
-      "busySlot": "Foglalt {start} – {end}"
+      "busySlot": "Foglalt {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
     }
   },
   "toast": {

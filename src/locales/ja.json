@@ -469,7 +469,9 @@
       "calendarAvailability": "空き状況",
       "calendarUnavailable": "カレンダーは利用できません",
       "dayFree": "予定なし — 終日空き",
-      "busySlot": "予定あり {start} – {end}"
+      "busySlot": "予定あり {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
     }
   },
   "toast": {

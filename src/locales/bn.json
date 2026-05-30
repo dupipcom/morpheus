@@ -452,7 +452,9 @@
       "calendarAvailability": "উপলব্ধতা",
       "calendarUnavailable": "ক্যালেন্ডার উপলব্ধ নয়",
       "dayFree": "কোনো ইভেন্ট নেই — দিনটি ফাঁকা",
-      "busySlot": "ব্যস্ত {start} – {end}"
+      "busySlot": "ব্যস্ত {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
     }
   },
   "toast": {

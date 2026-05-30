@@ -456,7 +456,9 @@
       "calendarAvailability": "Tilgængelighed",
       "calendarUnavailable": "Kalender ikke tilgængelig",
       "dayFree": "Ingen begivenheder — dagen er fri",
-      "busySlot": "Optaget {start} – {end}"
+      "busySlot": "Optaget {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
     }
   },
   "toast": {

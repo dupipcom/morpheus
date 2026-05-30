@@ -456,7 +456,9 @@
       "calendarAvailability": "Ketersediaan",
       "calendarUnavailable": "Kalendar tidak tersedia",
       "dayFree": "Tiada acara — hari kosong",
-      "busySlot": "Sibuk {start} – {end}"
+      "busySlot": "Sibuk {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
     }
   },
   "toast": {

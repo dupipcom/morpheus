@@ -467,7 +467,9 @@
       "calendarAvailability": "Wiwa",
       "calendarUnavailable": "Kalẹnda ko si",
       "dayFree": "Ko si iṣẹlẹ — ọjọ wa lọfẹ",
-      "busySlot": "O n ṣiṣẹ {start} – {end}"
+      "busySlot": "O n ṣiṣẹ {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
     }
   },
   "toast": {

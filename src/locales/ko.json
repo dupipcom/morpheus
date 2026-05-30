@@ -469,7 +469,9 @@
       "calendarAvailability": "가용성",
       "calendarUnavailable": "캘린더를 사용할 수 없습니다",
       "dayFree": "일정 없음 — 하루 종일 비어있음",
-      "busySlot": "바쁨 {start} – {end}"
+      "busySlot": "바쁨 {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
     }
   },
   "toast": {

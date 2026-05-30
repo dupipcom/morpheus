@@ -650,7 +650,9 @@
       "calendarAvailability": "Disponibilitat",
       "calendarUnavailable": "Calendari no disponible",
       "dayFree": "Sense esdeveniments — dia lliure",
-      "busySlot": "Ocupat {start} – {end}"
+      "busySlot": "Ocupat {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
     }
   },
   "socialView": {

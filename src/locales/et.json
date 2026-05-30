@@ -452,7 +452,9 @@
       "calendarAvailability": "Saadavus",
       "calendarUnavailable": "Kalender pole saadaval",
       "dayFree": "Sündmusi pole — päev on vaba",
-      "busySlot": "Hõivatud {start} – {end}"
+      "busySlot": "Hõivatud {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
     }
   },
   "toast": {

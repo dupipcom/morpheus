@@ -456,7 +456,9 @@
       "calendarAvailability": "Saatavuus",
       "calendarUnavailable": "Kalenteri ei ole käytettävissä",
       "dayFree": "Ei tapahtumia — päivä on vapaa",
-      "busySlot": "Varattu {start} – {end}"
+      "busySlot": "Varattu {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
     }
   },
   "toast": {

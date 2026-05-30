@@ -469,7 +469,9 @@
       "calendarAvailability": "Доступность",
       "calendarUnavailable": "Календарь недоступен",
       "dayFree": "Нет событий — день свободен",
-      "busySlot": "Занято {start} – {end}"
+      "busySlot": "Занято {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
     }
   },
   "toast": {

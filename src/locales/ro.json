@@ -452,7 +452,9 @@
       "calendarAvailability": "Disponibilitate",
       "calendarUnavailable": "Calendar indisponibil",
       "dayFree": "Fără evenimente — ziua este liberă",
-      "busySlot": "Ocupat {start} – {end}"
+      "busySlot": "Ocupat {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
     }
   },
   "toast": {

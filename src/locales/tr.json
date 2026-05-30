@@ -473,7 +473,9 @@
       "calendarAvailability": "Uygunluk",
       "calendarUnavailable": "Takvim kullanılamıyor",
       "dayFree": "Etkinlik yok — gün boş",
-      "busySlot": "Meşgul {start} – {end}"
+      "busySlot": "Meşgul {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
     }
   },
   "toast": {

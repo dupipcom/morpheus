@@ -452,7 +452,9 @@
       "calendarAvailability": "Beschikbaarheid",
       "calendarUnavailable": "Agenda niet beschikbaar",
       "dayFree": "Geen afspraken — dag is vrij",
-      "busySlot": "Bezet {start} – {end}"
+      "busySlot": "Bezet {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
     }
   },
   "toast": {

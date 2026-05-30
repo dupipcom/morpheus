@@ -452,7 +452,9 @@
       "calendarAvailability": "Dostupnost",
       "calendarUnavailable": "Kalendář není dostupný",
       "dayFree": "Žádné události — den je volný",
-      "busySlot": "Obsazeno {start} – {end}"
+      "busySlot": "Obsazeno {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
     }
   },
   "toast": {

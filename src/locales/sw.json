@@ -467,7 +467,9 @@
       "calendarAvailability": "Upatikanaji",
       "calendarUnavailable": "Kalenda haipatikani",
       "dayFree": "Hakuna matukio — siku ni huru",
-      "busySlot": "Shughuli {start} – {end}"
+      "busySlot": "Shughuli {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
     }
   },
   "toast": {

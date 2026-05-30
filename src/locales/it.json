@@ -469,7 +469,9 @@
       "calendarAvailability": "Disponibilità",
       "calendarUnavailable": "Calendario non disponibile",
       "dayFree": "Nessun evento — giornata libera",
-      "busySlot": "Occupato {start} – {end}"
+      "busySlot": "Occupato {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
     }
   },
   "toast": {

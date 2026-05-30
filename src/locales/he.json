@@ -452,7 +452,9 @@
       "calendarAvailability": "זמינות",
       "calendarUnavailable": "היומן אינו זמין",
       "dayFree": "אין אירועים — היום פנוי",
-      "busySlot": "תפוס {start} – {end}"
+      "busySlot": "תפוס {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
     }
   },
   "toast": {
