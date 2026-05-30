@@ -870,17 +870,15 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
 
       {/* Content based on type */}
       {item.type === 'note' && noteContent && (
-        <div className="mb-3 flex items-center gap-2">
-          <div className="flex-1 min-w-0">
-            <NoteContent
-              content={noteContent}
-              truncate={!isExpanded && noteContent.length > 150}
-              maxLength={150}
-            />
-          </div>
-          {/* Expand button – shown when note is long or has comments; vertically centered next to the text block */}
+        <div className="mb-3">
+          <NoteContent
+            content={noteContent}
+            truncate={!isExpanded && noteContent.length > 150}
+            maxLength={150}
+          />
+          {/* Expand button – centred horizontally below the text, near the ellipsis */}
           {(noteContent.length > 150 || commentCount > 0) && (
-            <div className="flex-shrink-0">
+            <div className="flex justify-center mt-2">
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
                 className="bg-background/95 backdrop-blur-sm border border-border rounded-full p-2 shadow-lg hover:bg-background transition-colors"
