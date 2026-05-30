@@ -856,5 +856,13 @@
     "inviteLinkCopied": "Link di invito copiato",
     "inviteSent": "Invito inviato",
     "inviteAccepted": "Invito accettato"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Layout griglia",
+      "tight": "Compatto",
+      "small": "Piccolo",
+      "wide": "Ampio"
+    }
   }
 }

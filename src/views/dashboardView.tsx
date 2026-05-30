@@ -20,7 +20,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 
 import { EarningsTable } from '@/components/earningsTable'
 
-import { getWeekNumber } from "@/app/helpers"
+import { getWeekNumber, formatDateRange } from "@/app/helpers"
 
 import { GlobalContext } from "@/lib/contexts"
 import { useI18n } from "@/lib/contexts/i18n"
@@ -391,9 +391,14 @@ const aggregateDataByWeek = (dailyData: any[]) => {
   return Object.values(weeklyGroups).map((week: any) => {
     const count = week.count || 1 // Prevent division by zero
     const avgMood = week.moodAverage / count
+    const sortedDates = [...week.dates].sort()
+    const dateRange = sortedDates.length > 0
+      ? formatDateRange(sortedDates[0], sortedDates[sortedDates.length - 1])
+      : week.week
     return {
       week: week.week,
       weekNumber: week.weekNumber,
+      dateRange,
       moodAverage: avgMood.toFixed(2),
       gratitude: (week.gratitude / count).toFixed(2),
       optimism: (week.optimism / count).toFixed(2),
@@ -507,6 +512,7 @@ const aggregateDataByWeek = (dailyData: any[]) => {
       
       return {
         week: week.week,
+        dateRange: week.dateRange,
           moodAverage: moodAverage.toFixed(2),
         progress: progressScaled.toFixed(2),
         }
@@ -616,7 +622,7 @@ const aggregateDataByWeek = (dailyData: any[]) => {
             <Area stackId="1" type="monotone" dataKey="trust" stroke="#f7bfa5" fill={"#f7bfa5"} radius={4} fillOpacity={0.4} />
           )}
           <XAxis
-            dataKey="week"
+            dataKey="dateRange"
             tickLine={false}
             tickMargin={5}
             axisLine={true}
@@ -644,7 +650,7 @@ const aggregateDataByWeek = (dailyData: any[]) => {
           )}
 
           <XAxis
-            dataKey="week"
+            dataKey="dateRange"
             tickLine={false}
             tickMargin={5}
             axisLine={true}
@@ -679,7 +685,7 @@ const aggregateDataByWeek = (dailyData: any[]) => {
             <Area stackId="5" type="monotone" dataKey="balance" stroke="#2f2f8d" fill={"#2f2f8d"} radius={4} fillOpacity={0.4} />
           )}
           <XAxis
-            dataKey="week"
+            dataKey="dateRange"
             tickLine={false}
             tickMargin={5}
             axisLine={true}

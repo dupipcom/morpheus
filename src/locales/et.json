@@ -856,5 +856,13 @@
     "inviteLinkCopied": "Kutselink kopeeritud",
     "inviteSent": "Kutse saadetud",
     "inviteAccepted": "Kutse vastu võetud"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Ruudustiku paigutus",
+      "tight": "Tihe",
+      "small": "Väike",
+      "wide": "Lai"
+    }
   }
 }

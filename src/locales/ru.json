@@ -856,5 +856,13 @@
     "inviteLinkCopied": "Ссылка-приглашение скопирована",
     "inviteSent": "Приглашение отправлено",
     "inviteAccepted": "Приглашение принято"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Макет сетки",
+      "tight": "Плотно",
+      "small": "Маленький",
+      "wide": "Широко"
+    }
   }
 }

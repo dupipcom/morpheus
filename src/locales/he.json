@@ -856,5 +856,13 @@
     "inviteLinkCopied": "קישור ההזמנה הועתק",
     "inviteSent": "ההזמנה נשלחה",
     "inviteAccepted": "ההזמנה התקבלה"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "פריסת רשת",
+      "tight": "צפוף",
+      "small": "קטן",
+      "wide": "רחב"
+    }
   }
 }

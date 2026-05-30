@@ -860,5 +860,13 @@
     "inviteLinkCopied": "Davet bağlantısı kopyalandı",
     "inviteSent": "Davet gönderildi",
     "inviteAccepted": "Davet kabul edildi"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Izgara düzeni",
+      "tight": "Sıkı",
+      "small": "Küçük",
+      "wide": "Geniş"
+    }
   }
 }

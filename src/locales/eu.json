@@ -59,7 +59,8 @@
     "copyFailed": "Esteka kopiatzeak huts egin du",
     "decline": "Ukatu",
     "friendRequest": "Lagun eskaera",
-    "reverseOrder": "Ordenaren alderantzizkoa"
+    "reverseOrder": "Ordenaren alderantzizkoa",
+    "saving": "Gordetzen..."
   },
   "navigation": {
     "home": "Hasiera",
@@ -858,5 +859,13 @@
     "inviteLinkCopied": "Gonbidapen esteka kopiatuta",
     "inviteSent": "Gonbidapena bidalita",
     "inviteAccepted": "Gonbidapena onartuta"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Sareta diseinua",
+      "tight": "Trinkoa",
+      "small": "Txikia",
+      "wide": "Zabala"
+    }
   }
 }

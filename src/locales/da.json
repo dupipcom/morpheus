@@ -860,5 +860,13 @@
     "inviteLinkCopied": "Invitationslink kopieret",
     "inviteSent": "Invitation sendt",
     "inviteAccepted": "Invitation accepteret"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Gitterlayout",
+      "tight": "Tæt",
+      "small": "Lille",
+      "wide": "Bred"
+    }
   }
 }

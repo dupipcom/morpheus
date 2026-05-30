@@ -59,7 +59,8 @@
     "copyFailed": "An gaza kwafi hanyar haɗi",
     "decline": "Ƙi",
     "friendRequest": "Buƙatar abokantaka",
-    "reverseOrder": "Juya tsari"
+    "reverseOrder": "Juya tsari",
+    "saving": "Ana adanawa..."
   },
   "navigation": {
     "home": "Gida",
@@ -852,5 +853,13 @@
     "inviteLinkCopied": "An kwafi haɗin gayyata",
     "inviteSent": "An aika gayyata",
     "inviteAccepted": "An karɓi gayyata"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Tsarin grid",
+      "tight": "Matse",
+      "small": "Ƙarami",
+      "wide": "Fadi"
+    }
   }
 }
