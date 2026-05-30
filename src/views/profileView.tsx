@@ -127,7 +127,7 @@ export function ProfileView({
                 </div>
               )}
               {showMobileEditProfileButton && (
-                <div className="flex justify-center md:hidden">
+                <div className="flex justify-center">
                   <Link href={`/${locale}/app/profile/edit`}>
                     <Button>
                       <Edit className="w-4 h-4 mr-2" />
