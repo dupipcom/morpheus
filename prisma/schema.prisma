@@ -271,6 +271,14 @@ type ProfileChartField {
   visibility Boolean
 }
 
+type ProfileMeetMe {
+  preferredTime String?
+  duration      String?
+  availability  String?
+  startDate     String?
+  endDate       String?
+}
+
 type ProfileData {
   username       ProfileField?
   firstName      ProfileField?
@@ -278,6 +286,7 @@ type ProfileData {
   bio            ProfileField?
   profilePicture ProfileField?
   charts         ProfileChartField?
+  meetMe         ProfileMeetMe?
 }
 
 type ProfileField {

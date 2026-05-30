@@ -276,7 +276,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
       ...filteredProfile,
       publicCharts: publicChartsData,
       templates: visibleTemplates,
-      taskLists: visibleTaskLists
+      taskLists: visibleTaskLists,
+      meetMe: profileData.meetMe || null
     }
     
     // Debug logging (can be removed in production)
