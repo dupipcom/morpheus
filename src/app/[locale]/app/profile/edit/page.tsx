@@ -100,6 +100,17 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
             publicChartsVisibility: getVisibility(profileData.charts?.visibility),
           })
           setPublicCharts(profileData.charts?.value || {})
+          
+          // Load meetMe settings
+          if (profileData.meetMe) {
+            setMeetMe({
+              preferredTime: profileData.meetMe.preferredTime || '',
+              duration: profileData.meetMe.duration || '',
+              availability: profileData.meetMe.availability || '',
+              startDate: profileData.meetMe.startDate ? new Date(profileData.meetMe.startDate) : undefined,
+              endDate: profileData.meetMe.endDate ? new Date(profileData.meetMe.endDate) : undefined,
+            })
+          }
         }
       }
     } catch (error) {
@@ -110,7 +121,7 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
   }
 
   // Create debounced save function
-  const debouncedSave = useDebounce(async (profileData, chartsData) => {
+  const debouncedSave = useDebounce(async (profileData, chartsData, meetMeData?) => {
     setSaving(true)
     try {
       const response = await fetch('/api/v1/profile', {
@@ -120,7 +131,14 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
         },
         body: JSON.stringify({
           ...profileData,
-          publicCharts: chartsData
+          publicCharts: chartsData,
+          ...(meetMeData ? { meetMe: {
+            preferredTime: meetMeData.preferredTime,
+            duration: meetMeData.duration,
+            availability: meetMeData.availability,
+            startDate: meetMeData.startDate?.toISOString() || null,
+            endDate: meetMeData.endDate?.toISOString() || null,
+          } } : {})
         })
       })
       
@@ -149,7 +167,7 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
   const handleMeetMeChange = (field: string, value: any) => {
     const newMeetMe = { ...meetMe, [field]: value }
     setMeetMe(newMeetMe)
-    debouncedSave(profile, publicCharts)
+    debouncedSave(profile, publicCharts, newMeetMe)
   }
 
   // Generate public charts data from user entries
@@ -394,8 +412,9 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
               onDurationChange={(value) => handleMeetMeChange('duration', value)}
               onAvailabilityChange={(value) => handleMeetMeChange('availability', value)}
               onDateRangeChange={(start, end) => {
-                setMeetMe(prev => ({ ...prev, startDate: start, endDate: end }))
-                debouncedSave(profile, publicCharts)
+                const newMeetMe = { ...meetMe, startDate: start, endDate: end }
+                setMeetMe(newMeetMe)
+                debouncedSave(profile, publicCharts, newMeetMe)
               }}
             />
           </CardContent>

@@ -221,7 +221,8 @@ export async function POST(req: NextRequest) {
             charts: existingProfileData.charts || {
               value: data.publicCharts,
               visibility: toVisibility(data.publicChartsVisible, 'publicCharts') === 'PUBLIC'
-            }
+            },
+            ...(data.meetMe ? { meetMe: data.meetMe } : {})
           }
         }
       })
@@ -255,7 +256,8 @@ export async function POST(req: NextRequest) {
             charts: {
               value: data.publicCharts,
               visibility: toVisibility(data.publicChartsVisible, 'publicCharts') === 'PUBLIC'
-            }
+            },
+            ...(data.meetMe ? { meetMe: data.meetMe } : {})
           }
         }
       })

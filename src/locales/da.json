@@ -452,7 +452,11 @@
       "messagePlaceholder": "Add a note for the meeting...",
       "bookingSuccess": "Meeting booked! Calendar invite sent.",
       "booking": "Booking...",
-      "confirmBooking": "Confirm booking"
+      "confirmBooking": "Confirm booking",
+      "calendarAvailability": "Availability",
+      "calendarUnavailable": "Calendar not available",
+      "dayFree": "No events — day is free",
+      "busySlot": "Busy {start} – {end}"
     }
   },
   "toast": {

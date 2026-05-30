@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useState } from 'react'
-import { Clock, CalendarCheck } from 'lucide-react'
+import React, { useState, useEffect, useCallback } from 'react'
+import { Clock, CalendarCheck, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Popover,
@@ -21,6 +21,11 @@ import {
 import { cn } from '@/lib/utils/utils'
 import { useI18n } from '@/lib/contexts/i18n'
 import { DateRange } from 'react-day-picker'
+
+interface BusySlot {
+  start: string
+  end: string
+}
 
 interface MeetMeRowProps {
   preferredTime: string
@@ -90,8 +95,59 @@ export function MeetMeRow({
   const [bookingMessage, setBookingMessage] = useState('')
   const [bookingLoading, setBookingLoading] = useState(false)
   const [bookingResult, setBookingResult] = useState<{ success?: boolean; error?: string } | null>(null)
+  const [busySlots, setBusySlots] = useState<BusySlot[]>([])
+  const [availabilityLoading, setAvailabilityLoading] = useState(false)
+  const [availabilityWarning, setAvailabilityWarning] = useState<string | null>(null)
 
   const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+
+  // Fetch calendar availability when a booking date is selected
+  const fetchAvailability = useCallback(async (date: Date) => {
+    if (!bookingTargetUsername) return
+
+    setAvailabilityLoading(true)
+    setAvailabilityWarning(null)
+
+    // Query the full day in UTC
+    const dayStart = new Date(date)
+    dayStart.setHours(0, 0, 0, 0)
+    const dayEnd = new Date(date)
+    dayEnd.setHours(23, 59, 59, 999)
+
+    try {
+      const params = new URLSearchParams({
+        username: bookingTargetUsername,
+        start: dayStart.toISOString(),
+        end: dayEnd.toISOString(),
+      })
+      const response = await fetch(`/api/v1/meet-me/availability?${params}`)
+      if (response.ok) {
+        const data = await response.json()
+        setBusySlots(data.busy || [])
+        if (data.warning) {
+          setAvailabilityWarning(data.warning)
+        }
+      } else {
+        setBusySlots([])
+        setAvailabilityWarning(t('profile.meetMe.calendarUnavailable'))
+      }
+    } catch {
+      setBusySlots([])
+      setAvailabilityWarning(t('profile.meetMe.calendarUnavailable'))
+    } finally {
+      setAvailabilityLoading(false)
+    }
+  }, [bookingTargetUsername, t])
+
+  // Re-fetch availability when the booking date changes
+  useEffect(() => {
+    if (bookingDate && bookingTargetUsername) {
+      fetchAvailability(bookingDate)
+    } else {
+      setBusySlots([])
+      setAvailabilityWarning(null)
+    }
+  }, [bookingDate, bookingTargetUsername, fetchAvailability])
 
   const handleRangeSelect = (range: DateRange | undefined) => {
     onDateRangeChange(range?.from, range?.to)
@@ -264,6 +320,54 @@ export function MeetMeRow({
                   numberOfMonths={1}
                 />
               </div>
+
+              {/* Calendar availability display */}
+              {bookingDate && (
+                <div className="space-y-1">
+                  <Label className="text-xs flex items-center gap-1">
+                    {t('profile.meetMe.calendarAvailability')}
+                    {availabilityLoading && (
+                      <span className="text-muted-foreground animate-pulse">…</span>
+                    )}
+                  </Label>
+                  {availabilityWarning && (
+                    <p className="text-[10px] text-amber-600 dark:text-amber-400 flex items-center gap-1">
+                      <AlertCircle className="h-3 w-3 shrink-0" />
+                      {availabilityWarning}
+                    </p>
+                  )}
+                  {!availabilityLoading && busySlots.length === 0 && !availabilityWarning && (
+                    <p className="text-[10px] text-green-600 dark:text-green-400">
+                      {t('profile.meetMe.dayFree')}
+                    </p>
+                  )}
+                  {!availabilityLoading && busySlots.length > 0 && (
+                    <div className="space-y-0.5 max-h-24 overflow-y-auto">
+                      {busySlots.map((slot, idx) => {
+                        const startTime = new Date(slot.start).toLocaleTimeString(undefined, {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          timeZone: userTimezone,
+                        })
+                        const endTime = new Date(slot.end).toLocaleTimeString(undefined, {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          timeZone: userTimezone,
+                        })
+                        return (
+                          <div
+                            key={idx}
+                            className="flex items-center gap-1.5 text-[11px] text-muted-foreground"
+                          >
+                            <span className="w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
+                            <span>{t('profile.meetMe.busySlot', { start: startTime, end: endTime })}</span>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  )}
+                </div>
+              )}
 
               <div className="space-y-1">
                 <Label className="text-xs">{t('profile.meetMe.message')}</Label>
