@@ -121,7 +121,7 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
   }
 
   // Create debounced save function
-  const debouncedSave = useDebounce(async (profileData, chartsData, meetMeData?) => {
+  const debouncedSave = useDebounce(async (profileData: Record<string, any>, chartsData: Record<string, any>, meetMeData?: { preferredTime: string; duration: string; availability: string; startDate?: Date; endDate?: Date }) => {
     setSaving(true)
     try {
       const response = await fetch('/api/v1/profile', {
