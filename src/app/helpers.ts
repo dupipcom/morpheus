@@ -43,6 +43,7 @@ export function getWeekNumber(d: Date) {
 /**
  * Formats two ISO date strings (YYYY-MM-DD) as a human-readable date range.
  * Examples: "Apr 8–14", "Mar 31–Apr 6"
+ * Assumes startStr is chronologically before or equal to endStr.
  */
 export function formatDateRange(startStr: string, endStr: string): string {
   const start = new Date(startStr + 'T00:00:00Z')

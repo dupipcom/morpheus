@@ -23,9 +23,14 @@ test('getWeekDateRange returns correct range for ISO week', () => {
   assert.equal(getWeekDateRange(2024, 15), 'Apr 8–14')
 })
 
-test('getWeekDateRange handles cross-month week', () => {
-  // Week 13 of 2024 runs Mon Mar 25 – Sun Mar 31
+test('getWeekDateRange handles week ending at month boundary', () => {
+  // Week 13 of 2024 runs Mon Mar 25 – Sun Mar 31 (ends exactly at month boundary)
   assert.equal(getWeekDateRange(2024, 13), 'Mar 25–31')
+})
+
+test('getWeekDateRange handles week spanning two months', () => {
+  // Week 9 of 2024 runs Mon Feb 26 – Sun Mar 3
+  assert.equal(getWeekDateRange(2024, 9), 'Feb 26–Mar 3')
 })
 
 test('getWeekDateRange handles week 1 of year', () => {
