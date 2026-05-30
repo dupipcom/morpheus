@@ -875,7 +875,24 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
             content={noteContent}
             truncate={!isExpanded && noteContent.length > 150}
             maxLength={150}
-          />
+          >
+            {/* Expand button – centred horizontally below the text, above link previews */}
+            {(noteContent.length > 150 || commentCount > 0) && (
+              <div className="flex justify-center mt-2 mb-2">
+                <button
+                  onClick={() => setIsExpanded(!isExpanded)}
+                  className="bg-background/95 backdrop-blur-sm border border-border rounded-full p-2 shadow-lg hover:bg-background transition-colors"
+                  aria-label={isExpanded ? t('comments.showLess') : t('comments.showMore')}
+                >
+                  {isExpanded ? (
+                    <ChevronUp className="h-4 w-4 text-foreground" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4 text-foreground" />
+                  )}
+                </button>
+              </div>
+            )}
+          </NoteContent>
         </div>
       )}
       
@@ -1165,21 +1182,6 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
               )}
             </div>
           )}
-
-          {/* Expand button */}
-          <div className="flex justify-center mt-2">
-            <button
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="bg-background/95 backdrop-blur-sm border border-border rounded-full p-2 shadow-lg hover:bg-background transition-colors z-10"
-              aria-label={isExpanded ? t('comments.showLess') : t('comments.showMore')}
-            >
-              {isExpanded ? (
-                <ChevronUp className="h-4 w-4 text-foreground" />
-              ) : (
-                <ChevronDown className="h-4 w-4 text-foreground" />
-              )}
-            </button>
-          </div>
 
           {/* Condensed publish note field when expanded */}
           {isExpanded && (
