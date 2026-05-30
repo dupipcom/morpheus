@@ -856,5 +856,13 @@
     "inviteLinkCopied": "আমন্ত্রণ লিঙ্ক কপি করা হয়েছে",
     "inviteSent": "আমন্ত্রণ পাঠানো হয়েছে",
     "inviteAccepted": "আমন্ত্রণ গৃহীত হয়েছে"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "গ্রিড বিন্যাস",
+      "tight": "ঘন",
+      "small": "ছোট",
+      "wide": "প্রশস্ত"
+    }
   }
 }

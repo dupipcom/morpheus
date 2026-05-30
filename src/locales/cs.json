@@ -856,5 +856,13 @@
     "inviteLinkCopied": "Odkaz pro pozvání zkopírován",
     "inviteSent": "Pozvánka odeslána",
     "inviteAccepted": "Pozvánka přijata"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Rozložení mřížky",
+      "tight": "Těsné",
+      "small": "Malé",
+      "wide": "Široké"
+    }
   }
 }

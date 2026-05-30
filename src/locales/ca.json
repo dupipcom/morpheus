@@ -856,5 +856,13 @@
     "inviteLinkCopied": "Enllaç d'invitació copiat",
     "inviteSent": "Invitació enviada",
     "inviteAccepted": "Invitació acceptada"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Disposició de la graella",
+      "tight": "Atapeït",
+      "small": "Petit",
+      "wide": "Ample"
+    }
   }
 }

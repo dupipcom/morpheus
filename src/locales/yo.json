@@ -854,5 +854,13 @@
     "inviteLinkCopied": "Ọna asopọ ìdẹ ti daakọ",
     "inviteSent": "Ìdẹ ti fi ranṣẹ",
     "inviteAccepted": "Ìdẹ ti gba"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Ìtọ́kasí gridi",
+      "tight": "Dín",
+      "small": "Kékèké",
+      "wide": "Fẹ́"
+    }
   }
 }

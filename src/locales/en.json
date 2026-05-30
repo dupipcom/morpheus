@@ -59,7 +59,8 @@
     "copyFailed": "Failed to copy link",
     "decline": "Decline",
     "friendRequest": "Friend request",
-    "reverseOrder": "Reverse order"
+    "reverseOrder": "Reverse order",
+    "saving": "Saving..."
   },
   "navigation": {
     "home": "Home",
@@ -852,5 +853,13 @@
     "inviteLinkCopied": "Invite link copied",
     "inviteSent": "Invite sent",
     "inviteAccepted": "Invite accepted"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Grid layout",
+      "tight": "Tight",
+      "small": "Small",
+      "wide": "Wide"
+    }
   }
 }

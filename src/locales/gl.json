@@ -859,5 +859,13 @@
     "inviteLinkCopied": "Ligazón de convite copiada",
     "inviteSent": "Convite enviado",
     "inviteAccepted": "Convite aceptado"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Deseño de grella",
+      "tight": "Axustado",
+      "small": "Pequeno",
+      "wide": "Amplo"
+    }
   }
 }

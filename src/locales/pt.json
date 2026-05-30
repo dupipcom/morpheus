@@ -856,5 +856,13 @@
     "inviteLinkCopied": "Link de convite copiado",
     "inviteSent": "Convite enviado",
     "inviteAccepted": "Convite aceite"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Layout da grade",
+      "tight": "Compacto",
+      "small": "Pequeno",
+      "wide": "Amplo"
+    }
   }
 }

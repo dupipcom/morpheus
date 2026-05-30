@@ -856,5 +856,13 @@
     "inviteLinkCopied": "Uitnodigingslink gekopieerd",
     "inviteSent": "Uitnodiging verzonden",
     "inviteAccepted": "Uitnodiging geaccepteerd"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Rasterindeling",
+      "tight": "Compact",
+      "small": "Klein",
+      "wide": "Breed"
+    }
   }
 }

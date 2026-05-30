@@ -856,5 +856,13 @@
     "inviteLinkCopied": "招待リンクをコピーしました",
     "inviteSent": "招待を送信しました",
     "inviteAccepted": "招待を承認しました"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "グリッドレイアウト",
+      "tight": "高密度",
+      "small": "小",
+      "wide": "広い"
+    }
   }
 }

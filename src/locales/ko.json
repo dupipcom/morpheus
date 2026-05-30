@@ -856,5 +856,13 @@
     "inviteLinkCopied": "초대 링크가 복사되었습니다",
     "inviteSent": "초대가 전송되었습니다",
     "inviteAccepted": "초대가 수락되었습니다"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "그리드 레이아웃",
+      "tight": "촘촘하게",
+      "small": "작게",
+      "wide": "넓게"
+    }
   }
 }

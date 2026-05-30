@@ -856,5 +856,13 @@
     "inviteLinkCopied": "Einladungslink kopiert",
     "inviteSent": "Einladung gesendet",
     "inviteAccepted": "Einladung angenommen"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Rasterlayout",
+      "tight": "Dicht",
+      "small": "Klein",
+      "wide": "Breit"
+    }
   }
 }
