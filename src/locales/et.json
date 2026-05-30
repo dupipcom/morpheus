@@ -859,10 +859,10 @@
   },
   "notesList": {
     "gridOption": {
-      "label": "Grid layout",
-      "tight": "Tight",
-      "small": "Small",
-      "wide": "Wide"
+      "label": "Ruudustiku paigutus",
+      "tight": "Tihe",
+      "small": "Väike",
+      "wide": "Lai"
     }
   }
 }

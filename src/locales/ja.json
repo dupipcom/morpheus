@@ -859,10 +859,10 @@
   },
   "notesList": {
     "gridOption": {
-      "label": "Grid layout",
-      "tight": "Tight",
-      "small": "Small",
-      "wide": "Wide"
+      "label": "グリッドレイアウト",
+      "tight": "高密度",
+      "small": "小",
+      "wide": "広い"
     }
   }
 }

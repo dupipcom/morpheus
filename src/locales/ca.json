@@ -859,10 +859,10 @@
   },
   "notesList": {
     "gridOption": {
-      "label": "Grid layout",
-      "tight": "Tight",
-      "small": "Small",
-      "wide": "Wide"
+      "label": "Disposició de la graella",
+      "tight": "Atapeït",
+      "small": "Petit",
+      "wide": "Ample"
     }
   }
 }

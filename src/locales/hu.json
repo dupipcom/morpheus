@@ -859,10 +859,10 @@
   },
   "notesList": {
     "gridOption": {
-      "label": "Grid layout",
-      "tight": "Tight",
-      "small": "Small",
-      "wide": "Wide"
+      "label": "Rácselrendezés",
+      "tight": "Sűrű",
+      "small": "Kicsi",
+      "wide": "Széles"
     }
   }
 }

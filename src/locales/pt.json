@@ -859,10 +859,10 @@
   },
   "notesList": {
     "gridOption": {
-      "label": "Grid layout",
-      "tight": "Tight",
-      "small": "Small",
-      "wide": "Wide"
+      "label": "Layout da grade",
+      "tight": "Compacto",
+      "small": "Pequeno",
+      "wide": "Amplo"
     }
   }
 }

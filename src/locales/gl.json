@@ -862,10 +862,10 @@
   },
   "notesList": {
     "gridOption": {
-      "label": "Grid layout",
-      "tight": "Tight",
-      "small": "Small",
-      "wide": "Wide"
+      "label": "Deseño de grella",
+      "tight": "Axustado",
+      "small": "Pequeno",
+      "wide": "Amplo"
     }
   }
 }

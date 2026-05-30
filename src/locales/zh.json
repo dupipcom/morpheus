@@ -859,10 +859,10 @@
   },
   "notesList": {
     "gridOption": {
-      "label": "Grid layout",
-      "tight": "Tight",
-      "small": "Small",
-      "wide": "Wide"
+      "label": "网格布局",
+      "tight": "紧凑",
+      "small": "小",
+      "wide": "宽"
     }
   }
 }

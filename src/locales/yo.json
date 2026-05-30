@@ -857,10 +857,10 @@
   },
   "notesList": {
     "gridOption": {
-      "label": "Grid layout",
-      "tight": "Tight",
-      "small": "Small",
-      "wide": "Wide"
+      "label": "Ìtọ́kasí gridi",
+      "tight": "Dín",
+      "small": "Kékèké",
+      "wide": "Fẹ́"
     }
   }
 }

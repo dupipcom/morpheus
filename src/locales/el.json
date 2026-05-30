@@ -856,10 +856,10 @@
   },
   "notesList": {
     "gridOption": {
-      "label": "Grid layout",
-      "tight": "Tight",
-      "small": "Small",
-      "wide": "Wide"
+      "label": "Διάταξη πλέγματος",
+      "tight": "Σφιχτό",
+      "small": "Μικρό",
+      "wide": "Ευρύ"
     }
   }
 }

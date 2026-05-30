@@ -857,10 +857,10 @@
   },
   "notesList": {
     "gridOption": {
-      "label": "Grid layout",
-      "tight": "Tight",
-      "small": "Small",
-      "wide": "Wide"
+      "label": "Mpangilio wa gridi",
+      "tight": "Bana",
+      "small": "Ndogo",
+      "wide": "Pana"
     }
   }
 }

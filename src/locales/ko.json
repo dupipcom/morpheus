@@ -859,10 +859,10 @@
   },
   "notesList": {
     "gridOption": {
-      "label": "Grid layout",
-      "tight": "Tight",
-      "small": "Small",
-      "wide": "Wide"
+      "label": "그리드 레이아웃",
+      "tight": "촘촘하게",
+      "small": "작게",
+      "wide": "넓게"
     }
   }
 }

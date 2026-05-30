@@ -859,10 +859,10 @@
   },
   "notesList": {
     "gridOption": {
-      "label": "Grid layout",
-      "tight": "Tight",
-      "small": "Small",
-      "wide": "Wide"
+      "label": "গ্রিড বিন্যাস",
+      "tight": "ঘন",
+      "small": "ছোট",
+      "wide": "প্রশস্ত"
     }
   }
 }

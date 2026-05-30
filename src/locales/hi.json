@@ -859,10 +859,10 @@
   },
   "notesList": {
     "gridOption": {
-      "label": "Grid layout",
-      "tight": "Tight",
-      "small": "Small",
-      "wide": "Wide"
+      "label": "ग्रिड लेआउट",
+      "tight": "सघन",
+      "small": "छोटा",
+      "wide": "चौड़ा"
     }
   }
 }

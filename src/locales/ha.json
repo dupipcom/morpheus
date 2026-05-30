@@ -856,10 +856,10 @@
   },
   "notesList": {
     "gridOption": {
-      "label": "Grid layout",
-      "tight": "Tight",
-      "small": "Small",
-      "wide": "Wide"
+      "label": "Tsarin grid",
+      "tight": "Matse",
+      "small": "Ƙarami",
+      "wide": "Fadi"
     }
   }
 }

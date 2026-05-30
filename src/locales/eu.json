@@ -862,10 +862,10 @@
   },
   "notesList": {
     "gridOption": {
-      "label": "Grid layout",
-      "tight": "Tight",
-      "small": "Small",
-      "wide": "Wide"
+      "label": "Sareta diseinua",
+      "tight": "Trinkoa",
+      "small": "Txikia",
+      "wide": "Zabala"
     }
   }
 }

@@ -859,10 +859,10 @@
   },
   "notesList": {
     "gridOption": {
-      "label": "Grid layout",
-      "tight": "Tight",
-      "small": "Small",
-      "wide": "Wide"
+      "label": "Макет сетки",
+      "tight": "Плотно",
+      "small": "Маленький",
+      "wide": "Широко"
     }
   }
 }
