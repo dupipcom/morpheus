@@ -21,6 +21,7 @@ import {
 import { cn } from '@/lib/utils/utils'
 import { useI18n } from '@/lib/contexts/i18n'
 import { DateRange } from 'react-day-picker'
+import { SignUpButton } from '@clerk/nextjs'
 
 interface BusySlot {
   start: string
@@ -40,6 +41,8 @@ interface MeetMeRowProps {
   className?: string
   /** When set, enables booking mode for viewing another user's profile */
   bookingTargetUsername?: string
+  /** Whether the current viewer is logged in */
+  isLoggedIn?: boolean
 }
 
 const TIME_SLOTS = ['morning', 'afternoon', 'evening'] as const
@@ -87,6 +90,7 @@ export function MeetMeRow({
   onDateRangeChange,
   className,
   bookingTargetUsername,
+  isLoggedIn = true,
 }: MeetMeRowProps) {
   const { t } = useI18n()
   const [popoverOpen, setPopoverOpen] = useState(false)
@@ -300,7 +304,7 @@ export function MeetMeRow({
       )}
 
       {/* Book meeting button (booking mode - viewing another user's profile) */}
-      {bookingTargetUsername && (
+      {bookingTargetUsername && isLoggedIn && (
         <Popover open={bookingOpen} onOpenChange={setBookingOpen}>
           <PopoverTrigger asChild>
             <Button variant="outline" size="sm" className="shrink-0">
@@ -401,6 +405,15 @@ export function MeetMeRow({
             </div>
           </PopoverContent>
         </Popover>
+      )}
+      {/* Sign-up CTA for non-logged-in users in booking mode */}
+      {bookingTargetUsername && !isLoggedIn && (
+        <SignUpButton>
+          <Button variant="outline" size="sm" className="shrink-0">
+            <Clock className="mr-1.5 h-3.5 w-3.5" />
+            {t('profile.meetMe.pickTime')}
+          </Button>
+        </SignUpButton>
       )}
     </div>
   )

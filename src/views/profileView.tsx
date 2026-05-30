@@ -99,8 +99,8 @@ export function ProfileView({
   const showMobileEditProfileButton = isOwnProfile && profileUserName
   const displayName = fullName || profileUserName || 'Anonymous User'
 
-  // Show MeetMe booking row when: not own profile, user is logged in, and meetMe is configured
-  const showMeetMe = !isOwnProfile && isLoggedIn && meetMe && meetMe.preferredTime
+  // Show MeetMe booking row when: not own profile, and meetMe is configured (logged in or not)
+  const showMeetMe = !isOwnProfile && meetMe && meetMe.preferredTime
 
   // MeetMe state for the read-only booking row (settings come from profile owner)
   const [meetMePreferredTime, setMeetMePreferredTime] = useState(meetMe?.preferredTime || '')
@@ -169,6 +169,7 @@ export function ProfileView({
               onAvailabilityChange={() => {}}
               onDateRangeChange={() => {}}
               bookingTargetUsername={userName}
+              isLoggedIn={isLoggedIn}
             />
           </div>
         )}
