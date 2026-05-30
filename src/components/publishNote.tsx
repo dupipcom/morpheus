@@ -158,7 +158,7 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
               )}
             </span>
             <span className="hidden md:inline">
-              {isPublishing ? t('common.saving') : t('mood.publish.action')}
+              {isPublishing ? t('mood.publish.publishing') : t('mood.publish.action')}
             </span>
           </Button>
         </div>
