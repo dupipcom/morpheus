@@ -1,9 +1,10 @@
-import { getWeekNumber } from "@/app/helpers"
+import { getWeekNumber, getWeekDateRange, formatDateRange } from "@/app/helpers"
 
 export interface PublicChartsData {
   moodCharts?: {
     weeksData: Array<{
       week: number
+      dateRange: string
       moodAverage: number
       gratitude: number
       optimism: number
@@ -16,12 +17,14 @@ export interface PublicChartsData {
   simplifiedMoodChart?: {
     weeksData: Array<{
       week: number
+      dateRange: string
       moodAverage: number
     }>
   }
   productivityCharts?: {
     weeksData: Array<{
       week: number
+      dateRange: string
       progress: number
       moodAverage: number
     }>
@@ -29,6 +32,7 @@ export interface PublicChartsData {
   earningsCharts?: {
     weeksData: Array<{
       week: number
+      dateRange: string
       earnings: number
       balance: number
       moodAverage: number
@@ -106,8 +110,15 @@ export function generatePublicChartsData(
       const earnings = parseFloat(week.earnings) || 0
       const balance = parseFloat(week.availableBalance) || 0
 
+      // Compute human-readable date range for this week
+      const weekDates = weekDays.map((d: any) => d.date).filter(Boolean).sort()
+      const dateRange = weekDates.length > 0
+        ? formatDateRange(weekDates[0], weekDates[weekDates.length - 1])
+        : getWeekDateRange(currentYear, week.week)
+
       return {
         week: week.week,
+        dateRange,
         moodAverage: Math.round(moodAverage * 10) / 10,
         gratitude: Math.round(gratitude * 10) / 10,
         optimism: Math.round(optimism * 10) / 10,
@@ -171,6 +182,7 @@ export function generatePublicChartsData(
     result.moodCharts = {
       weeksData: weeksData.map(week => ({
         week: week.week,
+        dateRange: week.dateRange,
         moodAverage: week.moodAverage,
         gratitude: week.gratitude,
         optimism: week.optimism,
@@ -186,6 +198,7 @@ export function generatePublicChartsData(
     result.simplifiedMoodChart = {
       weeksData: weeksData.map(week => ({
         week: week.week,
+        dateRange: week.dateRange,
         moodAverage: week.moodAverage
       }))
     }
@@ -195,6 +208,7 @@ export function generatePublicChartsData(
     result.productivityCharts = {
       weeksData: weeksData.map(week => ({
         week: week.week,
+        dateRange: week.dateRange,
         progress: week.progress,
         moodAverage: week.moodAverage
       }))
@@ -205,6 +219,7 @@ export function generatePublicChartsData(
     result.earningsCharts = {
       weeksData: weeksData.map(week => ({
         week: week.week,
+        dateRange: week.dateRange,
         earnings: week.earnings,
         balance: week.balance,
         moodAverage: week.moodAverage
