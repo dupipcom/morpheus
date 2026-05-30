@@ -3,7 +3,7 @@
 import { useEffect } from 'react'
 import Link from 'next/link'
 import useSWR from 'swr'
-import { Mail } from 'lucide-react'
+import { MessageSquare } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ChatUnreadBadge } from '@/components/chat/chatUnreadBadge'
 import { getAblyRealtimeClient } from '@/lib/chat/realtime/ablyClient'
@@ -72,7 +72,7 @@ export function ChatNavButton({ isActive, onClick, className, size = 'icon' }: C
       aria-label="Chat"
     >
       <Link href="/app/chat" onClick={onClick}>
-        <Mail className="w-4 h-4" />
+        <MessageSquare className="w-4 h-4" />
         <ChatUnreadBadge count={data?.unreadCount ?? 0} className="absolute -right-2 -top-2 min-w-5 justify-center px-1.5 py-0.5 text-[10px]" />
       </Link>
     </Button>
