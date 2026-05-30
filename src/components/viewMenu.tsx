@@ -9,6 +9,9 @@ import {
 } from "@/components/ui/navigationMenu"
 import { SteadyTasks } from '@/components/steadyTasks'
 
+// TODO: Restore to `true` to re-enable the Steady tasks toolbar when ready.
+const SHOW_STEADY_TASKS = false
+
 export const ViewMenu = ({ active, children }: { active: string; children?: React.ReactNode }) => {
   const [hasSteadyTasks, setHasSteadyTasks] = useState(true)
   const steadyTasksRef = useRef<HTMLDivElement>(null)
@@ -41,7 +44,7 @@ export const ViewMenu = ({ active, children }: { active: string; children?: Reac
 
 
         {/* Row 2: Steady Tasks (Mobile: Row 2, Desktop: Row 2, Cols 1-4) */}
-        {children !== null && hasSteadyTasks && (
+        {SHOW_STEADY_TASKS && children !== null && hasSteadyTasks && (
           <div ref={steadyTasksRef} className="col-span-1 md:col-span-4 row-span-1">
             <SteadyTasks />
           </div>
