@@ -120,6 +120,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
   const [editContent, setEditContent] = useState(item.content || '')
   const [isSaving, setIsSaving] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [noteContent, setNoteContent] = useState(item.content || '')
   const [isEditPopoverOpen, setIsEditPopoverOpen] = useState(false)
   const justOpenedPopoverRef = useRef(false)
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null)
@@ -147,6 +148,11 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
       setCurrentVisibility(item.visibility)
     }
   }, [item.visibility])
+
+  // Sync noteContent when item.content changes from parent refresh
+  useEffect(() => {
+    setNoteContent(item.content || '')
+  }, [item.content])
 
   // Fetch like status on mount only if not provided in item
   useEffect(() => {
@@ -519,7 +525,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
       e.preventDefault()
       e.stopPropagation()
     }
-    setEditContent(item.content || '')
+    setEditContent(noteContent)
     // Mark that we just opened the popover to prevent immediate closing
     justOpenedPopoverRef.current = true
     // Use requestAnimationFrame to ensure dropdown closes before opening popover
@@ -557,8 +563,8 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
 
       const data = await response.json()
       
-      // Update local state
-      item.content = data.note.content
+      // Update local content state so link previews regenerate immediately
+      setNoteContent(data.note.content)
       
       toast.success(t('notes.updated') || 'Note updated successfully')
       setIsEditPopoverOpen(false)
@@ -863,11 +869,11 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
       )}
 
       {/* Content based on type */}
-      {item.type === 'note' && item.content && (
+      {item.type === 'note' && noteContent && (
         <div className="mb-3">
           <NoteContent
-            content={item.content}
-            truncate={!isExpanded && item.content.length > 150}
+            content={noteContent}
+            truncate={!isExpanded && noteContent.length > 150}
             maxLength={150}
           />
         </div>
@@ -884,7 +890,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
             }
             if (!open) {
               setIsEditPopoverOpen(false)
-              setEditContent(item.content || '')
+              setEditContent(noteContent)
             }
           }}
           modal={true}
@@ -916,7 +922,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
                   size="sm"
                   onClick={() => {
                     setIsEditPopoverOpen(false)
-                    setEditContent(item.content || '')
+                    setEditContent(noteContent)
                   }}
                   disabled={isSaving}
                 >
