@@ -7,5 +7,5 @@ test('defaults own profile notes visibility to public only', () => {
 })
 
 test('defaults non-own profile notes visibility to broad visibility set', () => {
-  assert.deepEqual(getDefaultProfileNotesVisibility(false), ['PUBLIC', 'FRIENDS', 'CLOSE_FRIENDS', 'PRIVATE', 'AI_ENABLED'])
+  assert.deepEqual(getDefaultProfileNotesVisibility(false), ['PUBLIC', 'FRIENDS', 'CLOSE_FRIENDS'])
 })
