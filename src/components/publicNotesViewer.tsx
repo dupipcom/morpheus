@@ -42,6 +42,10 @@ export function PublicNotesViewer({ userName, showCard = true, gridLayout = fals
   const currentUserId = userData?.id || null
   const isLoggedIn = !!userData
 
+  useEffect(() => {
+    setVisibilityFilter(getDefaultProfileNotesVisibility(isOwnProfileHint))
+  }, [isOwnProfileHint, userName])
+
   // Refresh notes when the component becomes visible (e.g., after friend status changes)
   useEffect(() => {
     const handleVisibilityChange = () => {
