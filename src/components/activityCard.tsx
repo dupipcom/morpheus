@@ -1183,6 +1183,21 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
             </div>
           )}
 
+          {/* Always-visible expand/collapse button below comment section */}
+          <div className="flex justify-center my-2">
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="bg-background/95 backdrop-blur-sm border border-border rounded-full p-2 shadow-lg hover:bg-background transition-colors"
+              aria-label={isExpanded ? t('comments.showLess') : t('comments.showMore')}
+            >
+              {isExpanded ? (
+                <ChevronUp className="h-4 w-4 text-foreground" />
+              ) : (
+                <ChevronDown className="h-4 w-4 text-foreground" />
+              )}
+            </button>
+          </div>
+
           {/* Condensed publish note field when expanded */}
           {isExpanded && (
             <div className="mt-3 pt-3 border-t border-border/50">
