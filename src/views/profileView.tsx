@@ -213,7 +213,7 @@ export function ProfileView({
             </TabsContent>
             
             <TabsContent value="notes" className="mt-4 min-w-0">
-              <PublicNotesViewer userName={userName} showCard={false} gridLayout={true} />
+              <PublicNotesViewer userName={userName} showCard={false} gridLayout={true} isOwnProfileHint={isOwnProfile} />
             </TabsContent>
             
             <TabsContent value="templates" className="mt-4 min-w-0">

@@ -6,6 +6,7 @@ import { NotesList } from "@/components/notesList"
 import { useI18n } from '@/lib/contexts/i18n'
 import { useProfileNotes, NoteVisibility } from '@/lib/hooks/useProfile'
 import { useUserData } from '@/lib/utils/userUtils'
+import { getDefaultProfileNotesVisibility } from '@/lib/utils/profileNotesVisibility'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
 import { Lock, Users, UserCheck, Globe, Sparkles } from 'lucide-react'
@@ -20,15 +21,16 @@ interface PublicNotesViewerProps {
   userName: string
   showCard?: boolean
   gridLayout?: boolean
+  isOwnProfileHint?: boolean
 }
 
-export function PublicNotesViewer({ userName, showCard = true, gridLayout = false }: PublicNotesViewerProps) {
+export function PublicNotesViewer({ userName, showCard = true, gridLayout = false, isOwnProfileHint = false }: PublicNotesViewerProps) {
   const { t } = useI18n()
   const getTranslatedLabel = (key: string, fallback: string): string => {
     const translated = t(key)
     return translated === key ? fallback : translated
   }
-  const [visibilityFilter, setVisibilityFilter] = useState<Array<NoteVisibility>>(['PUBLIC', 'FRIENDS', 'CLOSE_FRIENDS', 'PRIVATE', 'AI_ENABLED'])
+  const [visibilityFilter, setVisibilityFilter] = useState<Array<NoteVisibility>>(() => getDefaultProfileNotesVisibility(isOwnProfileHint))
   const [sortBy, setSortBy] = useState<'date' | 'most_relevant'>('most_relevant')
   const [isReversed, setIsReversed] = useState(false)
   const { notes, isLoading: loading, error: notesError, refreshNotes, isOwnProfile } = useProfileNotes(userName, true, {
@@ -39,6 +41,10 @@ export function PublicNotesViewer({ userName, showCard = true, gridLayout = fals
   const { data: userData } = useUserData(true)
   const currentUserId = userData?.id || null
   const isLoggedIn = !!userData
+
+  useEffect(() => {
+    setVisibilityFilter(getDefaultProfileNotesVisibility(isOwnProfileHint))
+  }, [isOwnProfileHint, userName])
 
   // Refresh notes when the component becomes visible (e.g., after friend status changes)
   useEffect(() => {
