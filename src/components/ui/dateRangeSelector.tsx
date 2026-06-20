@@ -24,10 +24,10 @@ const fmt = (d: Date) =>
   d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })
 
 const PRESETS = [
-  { label: 'T-1M', days: 30 },
-  { label: 'T-3M', days: 90 },
-  { label: 'T-6M', days: 180 },
-  { label: 'T-1Y', days: 365 },
+  { label: '1m', days: 30 },
+  { label: '3m', days: 90 },
+  { label: '6m', days: 180 },
+  { label: '1y', days: 365 },
 ] as const
 
 export function DateRangeSelector({

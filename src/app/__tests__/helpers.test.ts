@@ -55,3 +55,15 @@ test('getWeekNumber returns correct ISO year for late-December date in next year
   assert.equal(year, 2025)
   assert.equal(week, 1)
 })
+
+test('formatDateRange with forceYear appends year to same-month range', () => {
+  assert.equal(formatDateRange('2024-04-08', '2024-04-14', true), 'Apr 8–14, 2024')
+})
+
+test('formatDateRange with forceYear appends year to cross-month range', () => {
+  assert.equal(formatDateRange('2024-03-25', '2024-04-01', true), 'Mar 25–Apr 1, 2024')
+})
+
+test('formatDateRange with forceYear still uses cross-year format for cross-year range', () => {
+  assert.equal(formatDateRange('2024-12-30', '2025-01-05', true), 'Dec 30, 2024–Jan 5, 2025')
+})

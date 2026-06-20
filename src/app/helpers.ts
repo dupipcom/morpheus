@@ -44,9 +44,10 @@ export function getWeekNumber(d: Date): [number, number] {
 /**
  * Formats two ISO date strings (YYYY-MM-DD) as a human-readable date range.
  * Examples: "Apr 8–14", "Mar 31–Apr 6", "Dec 30, 2024–Jan 5, 2025" (cross-year)
+ * Pass `forceYear: true` to always append the year (useful for chart labels spanning multiple years).
  * Assumes startStr is chronologically before or equal to endStr.
  */
-export function formatDateRange(startStr: string, endStr: string): string {
+export function formatDateRange(startStr: string, endStr: string, forceYear = false): string {
   const start = new Date(startStr + 'T00:00:00Z')
   const end = new Date(endStr + 'T00:00:00Z')
   const startMonth = start.toLocaleString('en-US', { month: 'short', timeZone: 'UTC' })
@@ -58,6 +59,12 @@ export function formatDateRange(startStr: string, endStr: string): string {
 
   if (startYear !== endYear) {
     return `${startMonth} ${startDay}, ${startYear}–${endMonth} ${endDay}, ${endYear}`
+  }
+  if (forceYear) {
+    if (startMonth === endMonth) {
+      return `${startMonth} ${startDay}–${endDay}, ${startYear}`
+    }
+    return `${startMonth} ${startDay}–${endMonth} ${endDay}, ${startYear}`
   }
   if (startMonth === endMonth) {
     return `${startMonth} ${startDay}–${endDay}`

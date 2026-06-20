@@ -395,7 +395,7 @@ const aggregateDataByWeek = (dailyData: any[]) => {
     const avgMood = week.moodAverage / count
     const sortedDates = [...week.dates].sort()
     const dateRange = sortedDates.length > 0
-      ? formatDateRange(sortedDates[0], sortedDates[sortedDates.length - 1])
+      ? formatDateRange(sortedDates[0], sortedDates[sortedDates.length - 1], true)
       : week.week
     return {
       week: week.week,
