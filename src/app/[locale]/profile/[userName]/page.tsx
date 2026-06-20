@@ -21,10 +21,15 @@ interface ProfileData {
 // Cache the profile fetch to avoid duplicate requests between generateMetadata and page component
 const getProfile = cache(async (userName: string): Promise<ProfileData | null> => {
   try {
+    const fetchHeaders: Record<string, string> = {
+      'Accept': 'application/json',
+    }
+    if (process.env.INTERNAL_FETCH_SECRET) {
+      fetchHeaders['x-internal-fetch-secret'] = process.env.INTERNAL_FETCH_SECRET
+    }
+
     const response = await fetch(`${process.env.VERCEL_URL ? "https://" + process.env.VERCEL_URL : 'http://localhost:3000'}/api/v1/profile/${userName}`, {
-      headers: {
-        'Accept': 'application/json',
-      },
+      headers: fetchHeaders,
     })
     
     if (!response.ok) {
