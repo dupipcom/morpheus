@@ -26,23 +26,24 @@ export const getLocaleFromPath= (pathname: string) => {
   return defaultLocale
 }
 
-export function getWeekNumber(d: Date) {
+export function getWeekNumber(d: Date): [number, number] {
     // Copy date so don't modify original
     d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
     // Set to nearest Thursday: current date + 4 - current day number
     // Make Sunday's day number 7
     d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
-    // Get first day of year
-    var yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+    // Get first day of year (ISO year = year of the Thursday)
+    const isoYear = d.getUTCFullYear();
+    const yearStart = new Date(Date.UTC(isoYear,0,1));
     // Calculate full weeks to nearest Thursday
-    var weekNo = Math.ceil(( ( (d.getTime() - yearStart.getTime()) / 86400000) + 1)/7);
-    // Return array of year and week number
-    return ['Week ', weekNo];
+    const weekNo = Math.ceil(( ( (d.getTime() - yearStart.getTime()) / 86400000) + 1)/7);
+    // Return array of [ISO year, week number]
+    return [isoYear, weekNo];
 }
 
 /**
  * Formats two ISO date strings (YYYY-MM-DD) as a human-readable date range.
- * Examples: "Apr 8–14", "Mar 31–Apr 6"
+ * Examples: "Apr 8–14", "Mar 31–Apr 6", "Dec 30, 2024–Jan 5, 2025" (cross-year)
  * Assumes startStr is chronologically before or equal to endStr.
  */
 export function formatDateRange(startStr: string, endStr: string): string {
@@ -52,7 +53,12 @@ export function formatDateRange(startStr: string, endStr: string): string {
   const endMonth = end.toLocaleString('en-US', { month: 'short', timeZone: 'UTC' })
   const startDay = start.getUTCDate()
   const endDay = end.getUTCDate()
+  const startYear = start.getUTCFullYear()
+  const endYear = end.getUTCFullYear()
 
+  if (startYear !== endYear) {
+    return `${startMonth} ${startDay}, ${startYear}–${endMonth} ${endDay}, ${endYear}`
+  }
   if (startMonth === endMonth) {
     return `${startMonth} ${startDay}–${endDay}`
   }
