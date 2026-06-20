@@ -169,8 +169,8 @@ export function DashboardView({ timeframe = "day", onDelegatedUserChange }: Dash
   const [selectedDelegatedUserId, setSelectedDelegatedUserId] = useState<string | undefined>(undefined)
   const [isLoadingDelegations, setIsLoadingDelegations] = useState(false)
 
-  // Date range state – default to last 360 days (T-360d) through today
-  const [rangeStart, setRangeStart] = useState<Date>(() => daysAgo(360))
+  // Date range state – default to last 365 days (T-1Y) through today
+  const [rangeStart, setRangeStart] = useState<Date>(() => daysAgo(365))
   const [rangeEnd, setRangeEnd] = useState<Date>(() => new Date())
   
   // Chart dimensions state
@@ -345,12 +345,14 @@ const aggregateDataByWeek = (dailyData: any[]) => {
   
   dailyData.forEach((day: any) => {
     const date = new Date(day.date)
-    const [_, weekNumber] = getWeekNumber(date)
-    const weekKey = t('week.weekNumber', { number: weekNumber })
+    const [isoYear, weekNumber] = getWeekNumber(date)
+    // Use year-aware key to prevent merging weeks from different years (e.g. week 1 of 2024 vs 2025)
+    const weekKey = `${isoYear}-W${weekNumber}`
     if (!weeklyGroups[weekKey]) {
       weeklyGroups[weekKey] = {
-        week: weekKey,
+        week: t('week.weekNumber', { number: weekNumber }),
         weekNumber: weekNumber,
+        isoYear: isoYear,
         count: 0,
         moodAverage: 0,
         gratitude: 0,
@@ -393,11 +395,12 @@ const aggregateDataByWeek = (dailyData: any[]) => {
     const avgMood = week.moodAverage / count
     const sortedDates = [...week.dates].sort()
     const dateRange = sortedDates.length > 0
-      ? formatDateRange(sortedDates[0], sortedDates[sortedDates.length - 1])
+      ? formatDateRange(sortedDates[0], sortedDates[sortedDates.length - 1], true)
       : week.week
     return {
       week: week.week,
       weekNumber: week.weekNumber,
+      isoYear: week.isoYear,
       dateRange,
       moodAverage: avgMood.toFixed(2),
       gratitude: (week.gratitude / count).toFixed(2),
@@ -414,7 +417,8 @@ const aggregateDataByWeek = (dailyData: any[]) => {
       count: week.count,
       dates: week.dates
     }
-  }).sort((a: any, b: any) => a.weekNumber - b.weekNumber)
+  // Sort chronologically by ISO year first, then by week number within the year
+  }).sort((a: any, b: any) => a.isoYear !== b.isoYear ? a.isoYear - b.isoYear : a.weekNumber - b.weekNumber)
 }
 
   
