@@ -310,6 +310,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     // Handle update existing task list by ID
     if (body.taskListId && create === false) {
+      console.log('[DEBUG] Updating task list, budgetDistribution:', JSON.stringify(budgetDistribution, null, 2))
       const taskList = await updateTaskList({
         taskListId: body.taskListId,
         userId: user.id,

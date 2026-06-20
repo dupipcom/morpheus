@@ -167,38 +167,79 @@ export const AddListForm = ({
           return { budgets, premiums }
         }
         
-        if (dist.areas && Array.isArray(dist.areas) && dist.areas.length > 0) {
-          const { budgets, premiums } = parseEntityAllocations(dist.areas)
-          setAreaDistribution(budgets)
-          setAreaPremiumDistribution(premiums)
-          setBudgetDistributionMode('area')
-        } else if (dist.categories && Array.isArray(dist.categories) && dist.categories.length > 0) {
-          const { budgets, premiums } = parseEntityAllocations(dist.categories)
-          setCategoryDistribution(budgets)
-          setCategoryPremiumDistribution(premiums)
-          setBudgetDistributionMode('category')
-        } else if (dist.tasks && Array.isArray(dist.tasks) && dist.tasks.length > 0) {
-          const taskBudgetsData: Record<string, EntityBudgetState> = {}
+        // Use the mode field if available (new behavior), otherwise infer from arrays (backward compatibility)
+        const savedMode = dist.mode
+        
+        if (savedMode) {
+          // New: Use the explicitly saved mode
+          setBudgetDistributionMode(savedMode)
           
-          dist.tasks.forEach((item: EntityAllocationsType) => {
-            const taskId = item.entityId
-            if (taskId) {
-              const budgetAlloc = item.allocation?.budget
-              const prizeAlloc = item.allocation?.premium
-              
-              taskBudgetsData[taskId] = {
-                budget: typeof budgetAlloc === 'object' 
-                  ? { nominal: budgetAlloc?.nominal, percent: budgetAlloc?.percent }
-                  : { nominal: typeof budgetAlloc === 'number' ? budgetAlloc : 0 },
-                premium: typeof prizeAlloc === 'object'
-                  ? { nominal: prizeAlloc?.nominal, percent: prizeAlloc?.percent }
-                  : { nominal: typeof prizeAlloc === 'number' ? prizeAlloc : 0 }
+          if (savedMode === 'area' && dist.areas && Array.isArray(dist.areas)) {
+            const { budgets, premiums } = parseEntityAllocations(dist.areas)
+            setAreaDistribution(budgets)
+            setAreaPremiumDistribution(premiums)
+          } else if (savedMode === 'category' && dist.categories && Array.isArray(dist.categories)) {
+            const { budgets, premiums } = parseEntityAllocations(dist.categories)
+            setCategoryDistribution(budgets)
+            setCategoryPremiumDistribution(premiums)
+          } else if (savedMode === 'task' && dist.tasks && Array.isArray(dist.tasks)) {
+            const taskBudgetsData: Record<string, EntityBudgetState> = {}
+            
+            dist.tasks.forEach((item: EntityAllocationsType) => {
+              const taskId = item.entityId
+              if (taskId) {
+                const budgetAlloc = item.allocation?.budget
+                const prizeAlloc = item.allocation?.premium
+                
+                taskBudgetsData[taskId] = {
+                  budget: typeof budgetAlloc === 'object' 
+                    ? { nominal: budgetAlloc?.nominal, percent: budgetAlloc?.percent }
+                    : { nominal: typeof budgetAlloc === 'number' ? budgetAlloc : 0 },
+                  premium: typeof prizeAlloc === 'object'
+                    ? { nominal: prizeAlloc?.nominal, percent: prizeAlloc?.percent }
+                    : { nominal: typeof prizeAlloc === 'number' ? prizeAlloc : 0 }
+                }
               }
-            }
-          })
-          
-          setTaskBudgets(taskBudgetsData)
-          setBudgetDistributionMode('task')
+            })
+            
+            setTaskBudgets(taskBudgetsData)
+          }
+          // For 'equal' mode, no special allocations to load
+        } else {
+          // Legacy: Infer mode from which arrays have data (backward compatibility)
+          if (dist.areas && Array.isArray(dist.areas) && dist.areas.length > 0) {
+            const { budgets, premiums } = parseEntityAllocations(dist.areas)
+            setAreaDistribution(budgets)
+            setAreaPremiumDistribution(premiums)
+            setBudgetDistributionMode('area')
+          } else if (dist.categories && Array.isArray(dist.categories) && dist.categories.length > 0) {
+            const { budgets, premiums } = parseEntityAllocations(dist.categories)
+            setCategoryDistribution(budgets)
+            setCategoryPremiumDistribution(premiums)
+            setBudgetDistributionMode('category')
+          } else if (dist.tasks && Array.isArray(dist.tasks) && dist.tasks.length > 0) {
+            const taskBudgetsData: Record<string, EntityBudgetState> = {}
+            
+            dist.tasks.forEach((item: EntityAllocationsType) => {
+              const taskId = item.entityId
+              if (taskId) {
+                const budgetAlloc = item.allocation?.budget
+                const prizeAlloc = item.allocation?.premium
+                
+                taskBudgetsData[taskId] = {
+                  budget: typeof budgetAlloc === 'object' 
+                    ? { nominal: budgetAlloc?.nominal, percent: budgetAlloc?.percent }
+                    : { nominal: typeof budgetAlloc === 'number' ? budgetAlloc : 0 },
+                  premium: typeof prizeAlloc === 'object'
+                    ? { nominal: prizeAlloc?.nominal, percent: prizeAlloc?.percent }
+                    : { nominal: typeof prizeAlloc === 'number' ? prizeAlloc : 0 }
+                }
+              }
+            })
+            
+            setTaskBudgets(taskBudgetsData)
+            setBudgetDistributionMode('task')
+          }
         }
       }
       
@@ -331,7 +372,10 @@ export const AddListForm = ({
       : undefined
     
     // Build budget distribution object with EntityAllocationsType arrays
-    const budgetDistribution: BudgetDistribution = {}
+    // Always include the mode so we know which distribution model is selected
+    const budgetDistribution: BudgetDistribution = {
+      mode: budgetDistributionMode
+    }
     
     // Build area distribution with EntityAllocationsType array
     if (budgetDistributionMode === 'area' && Object.keys(areaDistribution).length > 0) {
@@ -407,7 +451,8 @@ export const AddListForm = ({
         name: form.name || undefined,
         budget: budgetValue,
         premiumPercentage: form.premiumPercentage,
-        budgetDistribution: Object.keys(budgetDistribution).length > 0 ? budgetDistribution : undefined,
+        // Always save budgetDistribution when editing (to persist mode changes) or when there's a budget
+        budgetDistribution: isEditing || (budgetValue != null && budgetValue > 0) ? budgetDistribution : undefined,
         dueDate: form.dueDate || undefined,
         templateId: templateIdToLink,
         collaborators: form.collaborators.map(c => c.id),

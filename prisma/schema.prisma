@@ -309,6 +309,7 @@ type EntityAllocationsType {
 }
 
 type BudgetDistribution {
+  mode       String?                  // Distribution mode: "equal", "area", "category", "task"
   areas      EntityAllocationsType[]  // Area allocations (budget + premium)
   categories EntityAllocationsType[]  // Category allocations (budget + premium)
   tasks      EntityAllocationsType[]  // Per-task allocations (budget + premium)

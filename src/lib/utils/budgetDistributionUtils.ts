@@ -31,9 +31,15 @@ export interface EntityAllocationsType {
 }
 
 /**
+ * Distribution mode type
+ */
+export type DistributionMode = 'equal' | 'area' | 'category' | 'task'
+
+/**
  * BudgetDistribution using unified entity allocations
  */
 export interface BudgetDistribution {
+  mode?: DistributionMode           // Distribution mode: "equal", "area", "category", "task"
   areas?: EntityAllocationsType[]
   categories?: EntityAllocationsType[]
   tasks?: EntityAllocationsType[]
@@ -286,11 +292,11 @@ export function calculateTaskBudgetAllocations(
   
   const allocations: TaskBudgetAllocationResult[] = []
   
-  // Check if we have custom per-task allocations (now array-based)
-  const hasCustomTaskBudgets = budgetDistribution?.tasks && Array.isArray(budgetDistribution.tasks) && budgetDistribution.tasks.length > 0
+  // Get distribution mode - defaults to 'equal' for backward compatibility
+  const distributionMode = budgetDistribution?.mode || 'equal'
   
-  if (hasCustomTaskBudgets) {
-    // Use custom per-task allocations with new EntityAllocationsType structure
+  if (distributionMode === 'task' && budgetDistribution?.tasks?.length) {
+    // Task-based distribution: use custom per-task allocations
     tasks.forEach(task => {
       const customAllocation = findEntityAllocation(budgetDistribution.tasks, task.id)
       
@@ -310,34 +316,55 @@ export function calculateTaskBudgetAllocations(
         totalGains: budget + premium
       })
     })
-  } else if (budgetDistribution?.areas?.length || budgetDistribution?.categories?.length) {
-    // Distribute based on area or category allocations (now array-based)
+  } else if (distributionMode === 'area' && budgetDistribution?.areas?.length) {
+    // Area-based distribution
     const { budgets: areaDistribution, premiums: areaPremiumDistribution } = 
       convertEntityAllocationsToMaps(budgetDistribution.areas, listBudget, premiumPool)
+    
+    // Count tasks per area for fair distribution
+    const tasksPerArea: Record<string, number> = {}
+    tasks.forEach(task => {
+      tasksPerArea[task.area] = (tasksPerArea[task.area] || 0) + 1
+    })
+    
+    // Allocate to each task based on area
+    tasks.forEach(task => {
+      let earningsBudget = 0
+      let premiumBudget = 0
+      
+      if (task.area in areaDistribution) {
+        const areaCount = tasksPerArea[task.area] || 1
+        earningsBudget = areaDistribution[task.area] / areaCount
+        premiumBudget = (areaPremiumDistribution?.[task.area] || 0) / areaCount
+      }
+      
+      allocations.push({
+        taskId: task.id,
+        budget: Math.round(earningsBudget * 100) / 100,
+        premium: Math.round(premiumBudget * 100) / 100,
+        earnings: Math.round(earningsBudget * 100) / 100,
+        totalGains: Math.round((earningsBudget + premiumBudget) * 100) / 100
+      })
+    })
+  } else if (distributionMode === 'category' && budgetDistribution?.categories?.length) {
+    // Category-based distribution
     const { budgets: categoryDistribution, premiums: categoryPremiumDistribution } = 
       convertEntityAllocationsToMaps(budgetDistribution.categories, listBudget, premiumPool)
     
-    // Count tasks per area/category for fair distribution
-    const tasksPerArea: Record<string, number> = {}
+    // Count tasks per category for fair distribution
     const tasksPerCategory: Record<string, number> = {}
-    
     tasks.forEach(task => {
-      tasksPerArea[task.area] = (tasksPerArea[task.area] || 0) + 1
       task.categories.forEach(cat => {
         tasksPerCategory[cat] = (tasksPerCategory[cat] || 0) + 1
       })
     })
     
-    // Allocate to each task
+    // Allocate to each task based on categories
     tasks.forEach(task => {
       let earningsBudget = 0
       let premiumBudget = 0
       
-      if (Object.keys(areaDistribution).length > 0 && task.area in areaDistribution) {
-        const areaCount = tasksPerArea[task.area] || 1
-        earningsBudget = areaDistribution[task.area] / areaCount
-        premiumBudget = (areaPremiumDistribution?.[task.area] || 0) / areaCount
-      } else if (Object.keys(categoryDistribution).length > 0 && task.categories.length > 0) {
+      if (task.categories.length > 0) {
         // Average across all categories this task belongs to
         const categoryBudgets = task.categories
           .filter(cat => cat in categoryDistribution)
@@ -359,7 +386,7 @@ export function calculateTaskBudgetAllocations(
       })
     })
   } else {
-    // Default: Equal distribution across all tasks
+    // Equal distribution (default): split evenly across all tasks
     const earningsPerTask = listBudget > 0 ? listBudget / tasks.length : 0
     const premiumPerTask = premiumPool > 0 ? premiumPool / tasks.length : 0
     

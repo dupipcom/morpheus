@@ -585,50 +585,59 @@ export const TaskGrid = ({
           taskPremium = acceptedJob.premium || 0  // Already factored when job was accepted
           isEstimate = false
         }
-        // Priority 2: Calculate estimate from budget distribution (no job yet)
-        // Tasks don't hold financial data - only jobs do
+        // Priority 2: Calculate estimate from budget distribution based on MODE
+        // The mode field determines which distribution model to use
         else {
-          const allocation = getTaskAllocationFromDistribution(task.id, budgetDistribution, listBudget, premiumPool)
-          if (allocation) {
-            // Priority 2a: Custom per-task allocation
-            taskEarnings = allocation.taskEarnings
-            const rawPremium = allocation.taskPremium
-            taskPremium = applyPremiumFactors(rawPremium, listRole, userSettings)
-          }
-          // Priority 2b: Area-based distribution
-          else if (budgetDistribution?.areas?.length && task.area) {
-            const { budgets: areaBudgets, premiums: areaPremiums } = convertEntityAllocationsToMaps(budgetDistribution.areas as any, listBudget, premiumPool)
+          const distributionMode = budgetDistribution?.mode || 'equal'
+
+          if (distributionMode === 'equal') {
+            // Always split budget and premium evenly among all tasks
+            const earningsPerTask = listBudget > 0 ? listBudget / totalTasks : 0
+            const premiumPerTask = premiumPool > 0 ? premiumPool / totalTasks : 0
+            taskEarnings = earningsPerTask
+            taskPremium = applyPremiumFactors(premiumPerTask, listRole, userSettings)
+          } else if (distributionMode === 'task' && budgetDistribution?.tasks?.length) {
+            const allocation = getTaskAllocationFromDistribution(task.id, budgetDistribution, listBudget, premiumPool)
+            if (allocation) {
+              taskEarnings = allocation.taskEarnings
+              const rawPremium = allocation.taskPremium
+              taskPremium = applyPremiumFactors(rawPremium, listRole, userSettings)
+            } else {
+              // Fallback to equal distribution if task not found in allocations
+              const earningsPerTask = listBudget > 0 ? listBudget / totalTasks : 0
+              const premiumPerTask = premiumPool > 0 ? premiumPool / totalTasks : 0
+              taskEarnings = earningsPerTask
+              taskPremium = applyPremiumFactors(premiumPerTask, listRole, userSettings)
+            }
+          } else if (distributionMode === 'area' && task.area) {
+            const { budgets: areaBudgets, premiums: areaPremiums } = convertEntityAllocationsToMaps(budgetDistribution?.areas as any, listBudget, premiumPool)
             const areaBudget = areaBudgets[task.area] || 0
             const areaPremiumBudget = areaPremiums[task.area] || 0
             const tasksInArea = (selectedTaskList?.tasks as any[] || []).filter((t: any) => t.area === task.area).length || 1
             taskEarnings = areaBudget / tasksInArea
             taskPremium = applyPremiumFactors(areaPremiumBudget / tasksInArea, listRole, userSettings)
-          }
-          // Priority 2c: Category-based distribution
-          else if (budgetDistribution?.categories?.length && task.categories?.length > 0) {
-            const { budgets: categoryBudgets, premiums: categoryPremiums } = convertEntityAllocationsToMaps(budgetDistribution.categories as any, listBudget, premiumPool)
+          } else if (distributionMode === 'category' && task.categories?.length > 0) {
+            const { budgets: categoryBudgets, premiums: categoryPremiums } = convertEntityAllocationsToMaps(budgetDistribution?.categories as any, listBudget, premiumPool)
             let totalBudget = 0
             let totalPremium = 0
             const taskCategories = Array.isArray(task.categories) ? task.categories : [task.categories]
-            
+
             taskCategories.forEach((category: any) => {
               const categoryBudget = categoryBudgets[category] || 0
               const categoryPremiumBudget = categoryPremiums[category] || 0
-              const tasksInCategory = (selectedTaskList?.tasks as any[] || []).filter((t: any) => 
+              const tasksInCategory = (selectedTaskList?.tasks as any[] || []).filter((t: any) =>
                 Array.isArray(t.categories) ? t.categories.includes(category) : t.categories === category
               ).length || 1
               totalBudget += categoryBudget / tasksInCategory
               totalPremium += categoryPremiumBudget / tasksInCategory
             })
-            
+
             if (taskCategories.length > 0) {
               taskEarnings = totalBudget / taskCategories.length
               taskPremium = applyPremiumFactors(totalPremium / taskCategories.length, listRole, userSettings)
             }
-          }
-          // Priority 3: If no custom allocation (Equal distribution - default), split evenly across all tasks
-          else if (listBudget > 0 || premiumPool > 0) {
-            // Equal distribution: divide budget and premium pool evenly across all tasks
+          } else if (listBudget > 0 || premiumPool > 0) {
+            // Fallback: split evenly
             const earningsPerTask = listBudget > 0 ? listBudget / totalTasks : 0
             const premiumPerTask = premiumPool > 0 ? premiumPool / totalTasks : 0
             taskEarnings = earningsPerTask

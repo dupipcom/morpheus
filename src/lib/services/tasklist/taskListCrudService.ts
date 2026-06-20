@@ -7,6 +7,7 @@ import prisma from '@/lib/prisma'
 import { recalculateUserBudget } from '@/lib/utils/budgetUtils'
 import { getProfitPerTask } from '@/lib/utils/earningsUtils'
 import { BudgetDistribution } from '@/lib/utils/budgetDistributionUtils'
+import { refreshListTaskValues } from '@/lib/services/task/taskValueRefreshService'
 import type { Task, TaskList, TaskListMembership, CompletedTasks } from './types'
 import {
   ensureUniqueTaskIds,
@@ -352,6 +353,9 @@ export async function createTaskList(params: {
 
     await Promise.all(taskCreatePromises)
 
+    // Refresh all task values based on budget distribution
+    await refreshListTaskValues(taskList.id)
+
     // Re-fetch the list with tasks
     const updatedList = await prisma.list.findUnique({
       where: { id: taskList.id },
@@ -404,6 +408,9 @@ export async function updateTaskList(params: {
   if (!existing) {
     throw new Error('TaskList not found')
   }
+
+  console.log('[DEBUG] updateTaskList - incoming budgetDistribution:', JSON.stringify(budgetDistribution, null, 2))
+  console.log('[DEBUG] updateTaskList - budgetDistribution !== undefined:', budgetDistribution !== undefined)
 
   // Update the list (no longer updating templateTasks - deprecated)
   const updated = await prisma.list.update({
@@ -514,6 +521,9 @@ export async function updateTaskList(params: {
       await Promise.all(updatePromises)
     }
 
+    // Refresh all task values (task list structure changed)
+    await refreshListTaskValues(taskListId)
+
     // Re-fetch with updated tasks
     const finalList = await prisma.list.findUnique({
       where: { id: taskListId },
@@ -532,9 +542,24 @@ export async function updateTaskList(params: {
     return finalList as unknown as TaskList
   }
 
+  // Refresh task values if budget-related fields changed (no task structure changes)
+  const budgetFieldsChanged = budget !== undefined || premiumPercentage !== undefined || budgetDistribution !== undefined
+  if (budgetFieldsChanged) {
+    await refreshListTaskValues(taskListId)
+  }
+
   // Recalculate user's budget if premiumPercentage was updated
   if (premiumPercentage !== undefined) {
     await recalculateUserBudget(userId)
+  }
+
+  // Re-fetch to get updated task values
+  if (budgetFieldsChanged) {
+    const refreshedList = await prisma.list.findUnique({
+      where: { id: taskListId },
+      include: { template: true, tasks: true }
+    })
+    return refreshedList as unknown as TaskList
   }
 
   return updated as unknown as TaskList

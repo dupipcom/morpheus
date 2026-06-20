@@ -172,38 +172,41 @@ export function calculateTaskBudgetFromDistribution(params: {
   const budgetDistribution = list.budgetDistribution
   // Support both `premiumPercentage` (new) and `prizePercentage` (older/alternate name)
   const premiumPercentage = (list.premiumPercentage ?? (list as any).prizePercentage) || 0
+  const premiumPool = listBudget * (premiumPercentage / 100)
+  const totalTasks = (list.tasks || []).length || 1
 
   let earnings: number | null = null
   let premium: number | null = null
 
-  // PRIORITY 1: Check for custom per-task allocation in budgetDistribution (array-based)
-  if (budgetDistribution && task.id) {
-    const premiumPool = listBudget * (premiumPercentage / 100)
+  // Get distribution mode - defaults to 'equal' for backward compatibility
+  const distributionMode = (budgetDistribution as any)?.mode || 'equal'
+
+  // MODE-BASED DISTRIBUTION: Use the selected mode to determine allocation
+  if (distributionMode === 'task' && budgetDistribution && task.id) {
+    // Task-based distribution: use custom per-task allocations
     const taskAlloc = getTaskAllocationFromDistribution(task.id, budgetDistribution as any, listBudget, premiumPool)
     if (taskAlloc) {
       earnings = taskAlloc.taskEarnings
       premium = taskAlloc.taskPremium
+    } else {
+      // Fallback to equal distribution if task not found in allocations
+      const earningsBudget = listBudget * (1 - premiumPercentage / 100)
+      const premiumBudget = listBudget * (premiumPercentage / 100)
+      earnings = earningsBudget / totalTasks
+      premium = premiumBudget / totalTasks
     }
   }
-
-  // PRIORITY 2: Use area-based distribution (array-based allocations) - only fill missing fields
-  if (budgetDistribution && task.area) {
-    const premiumPool = listBudget * (premiumPercentage / 100)
+  else if (distributionMode === 'area' && budgetDistribution && task.area) {
+    // Area-based distribution
     const { budgets: areaBudgets, premiums: areaPremiums } = convertEntityAllocationsToMaps(budgetDistribution.areas as any, listBudget, premiumPool)
     const areaBudget = areaBudgets[task.area] || 0
     const tasksInArea = (list.tasks || []).filter((t: any) => t.area === task.area).length || 1
-    if (earnings == null && areaBudget > 0) {
-      earnings = areaBudget / tasksInArea
-    }
+    earnings = areaBudget / tasksInArea
     const areaPremiumBudget = areaPremiums[task.area] || 0
-    if (premium == null && areaPremiumBudget > 0) {
-      premium = areaPremiumBudget / tasksInArea
-    }
+    premium = areaPremiumBudget / tasksInArea
   }
-
-  // PRIORITY 3: Use category-based distribution (array-based allocations) - only fill missing fields
-  if (budgetDistribution && task.categories && task.categories.length > 0) {
-    const premiumPool = listBudget * (premiumPercentage / 100)
+  else if (distributionMode === 'category' && budgetDistribution && task.categories && task.categories.length > 0) {
+    // Category-based distribution
     const { budgets: categoryBudgets, premiums: categoryPremiums } = convertEntityAllocationsToMaps(budgetDistribution.categories as any, listBudget, premiumPool)
     let totalBudget = 0
     let totalPremium = 0
@@ -219,35 +222,23 @@ export function calculateTaskBudgetFromDistribution(params: {
     })
 
     if (taskCategories.length > 0) {
-      if (earnings == null) earnings = totalBudget / taskCategories.length
-      if (premium == null) premium = totalPremium / taskCategories.length
+      earnings = totalBudget / taskCategories.length
+      premium = totalPremium / taskCategories.length
     }
   }
-
-  // PRIORITY 4: If budgetDistribution exists but task doesn't match any mode, use equal split for missing fields only
-  if (budgetDistribution && listBudget > 0) {
-    const totalTasks = (list.tasks || []).length || 1
-    const earningsBudget = listBudget * (1 - premiumPercentage / 100)
-    const premiumBudget = listBudget * (premiumPercentage / 100)
-    if (earnings == null) earnings = earningsBudget / totalTasks
-    if (premium == null) premium = premiumBudget / totalTasks
-  }
-  // PRIORITY 5: If task has stored budget/premium/earnings AND no budgetDistribution is configured, use stored values
-  // This is for backward compatibility with lists that don't have distribution configured yet
-  // Fallback order: earnings (new field) -> budget (legacy field) -> 0
-  else if ((task as any).budget != null || (task as any).premium != null || (task as any).earnings != null) {
-    // Prefer earnings field if available, fall back to budget for backward compatibility
-    earnings = (task as any).earnings != null ? (task as any).earnings : ((task as any).budget ?? 0)
-    premium = (task as any).premium ?? 0
-  }
-  // PRIORITY 6: Default equal distribution (legacy behavior)
+  // Equal distribution (default) or fallback
   else if (listBudget > 0) {
-    // templateTasks is deprecated - using Task collection only
-    const totalTasks = (list.tasks || []).length || 1
     const earningsBudget = listBudget * (1 - premiumPercentage / 100)
     const premiumBudget = listBudget * (premiumPercentage / 100)
     earnings = earningsBudget / totalTasks
     premium = premiumBudget / totalTasks
+  }
+  // LEGACY FALLBACK: If task has stored budget/premium/earnings AND no distribution is configured
+  // This is for backward compatibility with lists that don't have distribution configured yet
+  else if ((task as any).budget != null || (task as any).premium != null || (task as any).earnings != null) {
+    // Prefer earnings field if available, fall back to budget for backward compatibility
+    earnings = (task as any).earnings != null ? (task as any).earnings : ((task as any).budget ?? 0)
+    premium = (task as any).premium ?? 0
   }
   
   // Calculate totalGains
@@ -290,20 +281,12 @@ export function calculateTaskBudgetFromDistribution(params: {
       userEquity
     })
   }
-  
-  // SAFETY CHECK 3: If task has a stored earnings value, ensure we don't exceed it for earnings only
-  // Premium is not capped by stored values - it's calculated dynamically based on factors
-  if ((task as any).earnings != null && (task as any).earnings > 0 && earnings != null) {
-    const storedEarnings = (task as any).earnings
-    if (earnings > storedEarnings) {
-      earnings = storedEarnings
-      console.warn(`Task ${task.id}: Capped earnings to stored value`, {
-        cappedEarnings: earnings,
-        storedEarnings
-      })
-    }
-  }
-  
+
+  // NOTE: SAFETY CHECK 3 (capping to stored task.earnings) has been removed.
+  // Task values are now kept fresh via refreshListTaskValues() whenever list structure changes.
+  // Stored task.earnings always reflects the current distribution calculation, so this check
+  // was redundant and could cause issues with stale values.
+
   // NOTE: Premium is NOT capped here. Premium factors are applied in earningsService.ts
   // via applyPremiumFactors() when jobs are created/updated/completed. The Job collection
   // stores the actual factored premium, not the Task model.

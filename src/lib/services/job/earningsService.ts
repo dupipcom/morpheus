@@ -380,6 +380,11 @@ export async function updateJobWithTaskValues(
 /**
  * Calculate and apply earnings for a completed job
  * Updates user's stash, profit, equity and Day.ticker
+ *
+ * IMPORTANT: Earnings are locked at job start via job.invoice.quote
+ * This ensures users receive the amount they were shown when starting the job,
+ * even if the list structure changes (tasks added/removed) before completion.
+ * Premium is calculated dynamically based on current factors.
  */
 export async function calculateAndApplyJobEarnings({
   jobId,
@@ -389,13 +394,17 @@ export async function calculateAndApplyJobEarnings({
   occurrenceDate
 }: CalculateJobEarningsParams): Promise<JobEarningsResult> {
   try {
-    const [list, task, worker] = await Promise.all([
+    const [job, list, task, worker] = await Promise.all([
+      prisma.job.findUnique({
+        where: { id: jobId },
+        select: { invoice: true }
+      }),
       prisma.list.findUnique({
         where: { id: listId },
-        select: { 
-          role: true, 
-          budget: true, 
-          premiumPercentage: true, 
+        select: {
+          role: true,
+          budget: true,
+          premiumPercentage: true,
           budgetDistribution: true,
           remainingBudget: true,
           tasks: true
@@ -404,7 +413,7 @@ export async function calculateAndApplyJobEarnings({
       }),
       prisma.task.findUnique({
         where: { id: taskId },
-        select: { 
+        select: {
           id: true,
           name: true,
           area: true,
@@ -424,15 +433,17 @@ export async function calculateAndApplyJobEarnings({
       })
     ])
 
+    if (!job) throw new Error('Job not found')
     if (!list) throw new Error('List not found')
     if (!task) throw new Error('Task not found')
     if (!worker) throw new Error('Worker not found')
 
-    // Parse remainingBudget (it's stored as String in DB)
-    const remainingBudget = list.remainingBudget ? parseFloat(list.remainingBudget) : list.budget
+    // Get locked earnings from invoice (set at job start)
+    // This ensures users get the amount they were shown, even if list structure changed
+    const invoice = job.invoice as { quote?: number; premium?: number; exposure?: number } | null
+    const lockedEarnings = invoice?.quote
 
-    // Use budget distribution to calculate task-specific earnings with all safety checks
-    // templateTasks is deprecated - using Task collection only
+    // Calculate current allocation for premium (premium is dynamic, not locked)
     const taskBudgetAllocation = calculateTaskBudgetFromDistribution({
       task,
       list: {
@@ -440,16 +451,15 @@ export async function calculateAndApplyJobEarnings({
         budgetDistribution: list.budgetDistribution,
         premiumPercentage: list.premiumPercentage,
         tasks: list.tasks
-      },
-      userEquity: worker.equity,
-      remainingBudget
+      }
     })
 
-    // Use the calculated budget and premium from distribution, falling back to task values
-    // These are already capped by task.totalGains in calculateTaskBudgetFromDistribution
-    const earnings = taskBudgetAllocation.budget ?? task.earnings ?? task.budget ?? 0
+    // Use locked earnings from invoice, fall back to current calculation or task values
+    const earnings = lockedEarnings ?? taskBudgetAllocation.budget ?? task.earnings ?? task.budget ?? 0
+
+    // Premium is calculated dynamically (not locked) and factors are applied
     const rawPremium = taskBudgetAllocation.premium ?? task.premium ?? 0
-    
+
     // Apply premium factors based on list role and user settings
     // NOTE: Premium is calculated based on factors and is NOT limited by list budget or task.totalGains.
     // The list budget only represents the amount available for earnings, not a hard limit for premium.
@@ -457,13 +467,12 @@ export async function calculateAndApplyJobEarnings({
     const premium = applyPremiumFactors(rawPremium, list.role, premiumFactorSettings)
     const totalGains = premium + earnings
 
-    // Log if factored premium results in totalGains exceeding stored task.totalGains (informational only)
-    if (task.totalGains != null && task.totalGains > 0 && totalGains > task.totalGains) {
-      console.log(`Job ${jobId}: Factored totalGains ${totalGains} exceeds stored task.totalGains ${task.totalGains}. This is expected when premium factors apply.`, {
-        earnings,
-        rawPremium,
-        factoredPremium: premium,
-        storedTaskTotalGains: task.totalGains
+    // Log if using locked earnings from invoice
+    if (lockedEarnings != null) {
+      console.log(`Job ${jobId}: Using locked earnings from invoice`, {
+        lockedEarnings,
+        currentCalculation: taskBudgetAllocation.budget,
+        difference: lockedEarnings - (taskBudgetAllocation.budget ?? 0)
       })
     }
 

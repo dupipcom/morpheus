@@ -6,6 +6,7 @@ import { getTasksForDate } from '@/lib/services/task'
 import { sanitizeText } from '@/lib/utils/sanitize'
 import { applyPremiumFactors, PremiumFactorSettings } from '@/lib/utils/earningsUtils'
 import { calculateTaskBudgetFromDistribution } from '@/lib/services/task/taskMigrationService'
+import { refreshListTaskValues } from '@/lib/services/task/taskValueRefreshService'
 
 export async function GET(request: NextRequest) {
   try {
@@ -368,7 +369,38 @@ export async function POST(request: NextRequest) {
       }
     })
 
-    return NextResponse.json({ task })
+    // Refresh all task values in the list (adding a task changes equal/area/category distribution)
+    await refreshListTaskValues(listId)
+
+    // Re-fetch the task with updated values
+    const refreshedTask = await prisma.task.findUnique({
+      where: { id: task.id },
+      include: {
+        list: {
+          select: {
+            id: true,
+            name: true,
+            users: true
+          }
+        },
+        jobs: true,
+        candidates: {
+          select: {
+            id: true,
+            userId: true,
+            profiles: {
+              select: {
+                username: true,
+                data: true
+              }
+            }
+          }
+        },
+        raisedTransactions: true
+      }
+    })
+
+    return NextResponse.json({ task: refreshedTask })
   } catch (error) {
     console.error('Error creating task:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

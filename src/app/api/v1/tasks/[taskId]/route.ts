@@ -4,6 +4,7 @@ import { getAuthenticatedUser, getUserListRole } from '@/lib/services/auth'
 import { sanitizeText } from '@/lib/utils/sanitize'
 import { applyPremiumFactors, PremiumFactorSettings } from '@/lib/utils/earningsUtils'
 import { calculateTaskBudgetFromDistribution } from '@/lib/services/task/taskMigrationService'
+import { refreshListTaskValues } from '@/lib/services/task/taskValueRefreshService'
 
 /**
  * Shared include configuration for task queries with full relations
@@ -279,9 +280,15 @@ export async function DELETE(
         { status: 403 }
       )
     }
+
+    const listIdToRefresh = existingTask.listId
+
     await prisma.task.delete({
       where: { id: taskId }
     })
+
+    // Refresh all remaining task values (removing a task changes equal/area/category distribution)
+    await refreshListTaskValues(listIdToRefresh)
 
     return NextResponse.json({ message: 'Task deleted successfully' })
   } catch (error) {
