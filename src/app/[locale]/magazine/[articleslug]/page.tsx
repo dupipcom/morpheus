@@ -19,10 +19,15 @@ async function getProfile(userName: string): Promise<any | null> {
       ? `https://${process.env.VERCEL_URL}` 
       : process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
     
+    const fetchHeaders: Record<string, string> = {
+      'Accept': 'application/json',
+    };
+    if (process.env.INTERNAL_FETCH_SECRET) {
+      fetchHeaders['x-internal-fetch-secret'] = process.env.INTERNAL_FETCH_SECRET;
+    }
+
     const response = await fetch(`${baseUrl}/api/v1/profile/${userName}`, {
-      headers: {
-        'Accept': 'application/json',
-      },
+      headers: fetchHeaders,
     });
     
     if (!response.ok) {
