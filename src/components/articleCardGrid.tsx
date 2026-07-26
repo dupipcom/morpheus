@@ -50,11 +50,34 @@ interface ArticleCardGridProps {
   limit?: number;
 }
 
-// Helper function to get image URL
+// Helper function to get image URL, replacing any stored domain with the correct Payload base URL
 function getImageUrl(image: any): string | null {
   if (!image) return null;
 
-  return process.env.NEXT_PUBLIC_PAYLOAD_URL + image?.url;
+  const imageUrl = typeof image === 'string' ? image : image?.url || null;
+  if (!imageUrl) return null;
+
+  const payloadUrl = process.env.NEXT_PUBLIC_PAYLOAD_URL || process.env.NEXT_PUBLIC_PAYLOAD_API_URL || '';
+  const payloadBaseUrl = payloadUrl ? payloadUrl.split('/api')[0] : '';
+
+  // If it's an absolute URL, extract the path and rebuild with the correct base URL
+  // This handles cases where the URL was stored with the wrong domain (e.g. a Vercel preview URL)
+  if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+    if (!payloadBaseUrl) return imageUrl;
+    try {
+      const parsedUrl = new URL(imageUrl);
+      return `${payloadBaseUrl}${parsedUrl.pathname}`;
+    } catch {
+      return imageUrl;
+    }
+  }
+
+  // If it's a relative path, prefix with base URL
+  if (payloadBaseUrl && imageUrl.startsWith('/')) {
+    return `${payloadBaseUrl}${imageUrl}`;
+  }
+
+  return imageUrl;
 }
 
 export default function ArticleCardGrid({ 
