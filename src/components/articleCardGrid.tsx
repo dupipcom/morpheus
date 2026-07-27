@@ -97,7 +97,8 @@ export default function ArticleCardGrid({
 
     // Fetch articles from API
     setLoading(true);
-    fetch('/api/v1/magazine')
+    const query = locale ? `?locale=${encodeURIComponent(locale)}` : '';
+    fetch(`/api/v1/magazine${query}`)
       .then(res => res.json())
       .then(data => {
         setFetchedPosts(data.docs || []);
@@ -107,7 +108,7 @@ export default function ArticleCardGrid({
         console.error('Error fetching articles:', error);
         setLoading(false);
       });
-  }, [posts]);
+  }, [locale, posts]);
 
   // Use provided posts or fetched posts
   const allPosts = posts && posts.length > 0 ? posts : fetchedPosts;
@@ -169,4 +170,3 @@ export default function ArticleCardGrid({
     </div>
   );
 }
-
