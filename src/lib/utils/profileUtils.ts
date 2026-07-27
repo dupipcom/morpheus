@@ -295,10 +295,15 @@ export function sanitizeUserEntriesForPublic(
 }
 
 /**
+ * Supported social platform types for profile links
+ */
+export type SocialPlatform = 'instagram' | 'facebook' | 'twitter' | 'tiktok' | 'linkedin' | 'youtube' | 'discord' | 'telegram' | 'custom'
+
+/**
  * Represents a single social or custom link on a profile
  */
 export interface ProfileLink {
-  type: string   // 'instagram' | 'facebook' | 'twitter' | 'tiktok' | 'linkedin' | 'youtube' | 'discord' | 'telegram' | 'custom'
+  type: SocialPlatform
   url: string
   label?: string // used for custom links
 }

@@ -17,6 +17,7 @@ import { ViewMenu } from "@/components/viewMenu"
 import { DashboardView } from "@/views/dashboardView"
 import { useDebounce } from "@/lib/hooks/useDebounce"
 import { generatePublicChartsData } from "@/lib/utils/profileUtils"
+import type { ProfileLink } from "@/lib/utils/profileUtils"
 import { PublicChartsView } from "@/components/publicChartsView"
 import { Skeleton } from "@/components/ui/skeleton"
 import { MeetMeRow } from "@/components/meetMeRow"
@@ -55,7 +56,7 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
     linksVisibility: 'PRIVATE' as VisibilityOption,
   })
 
-  const [links, setLinks] = useState<Array<{ type: string; url: string; label?: string }>>([])
+  const [links, setLinks] = useState<ProfileLink[]>([])
 
   // Get visibility value for a field
   const getFieldVisibility = (fieldName: string): VisibilityOption => {
@@ -140,7 +141,7 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
   }
 
   // Create debounced save function
-  const debouncedSave = useDebounce(async (profileData: Record<string, any>, chartsData: Record<string, any>, linksData: Array<{ type: string; url: string; label?: string }>, meetMeData?: { preferredTime: string; duration: string; availability: string; startDate?: Date; endDate?: Date }) => {
+  const debouncedSave = useDebounce(async (profileData: Record<string, any>, chartsData: Record<string, any>, linksData: ProfileLink[], meetMeData?: { preferredTime: string; duration: string; availability: string; startDate?: Date; endDate?: Date }) => {
     setSaving(true)
     try {
       const response = await fetch('/api/v1/profile', {
@@ -190,13 +191,17 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
     debouncedSave(profile, publicCharts, links, newMeetMe)
   }
 
-  const handleLinksChange = (newLinks: Array<{ type: string; url: string; label?: string }>) => {
+  const handleLinksChange = (newLinks: ProfileLink[]) => {
     setLinks(newLinks)
-    debouncedSave(profile, publicCharts, newLinks)
+    // Filter out links with empty URLs before saving
+    const linksToSave = newLinks.filter(l => l.url.trim() !== '')
+    debouncedSave(profile, publicCharts, linksToSave)
   }
 
   const addLink = () => {
-    handleLinksChange([...links, { type: 'custom', url: '', label: '' }])
+    const newLinks: ProfileLink[] = [...links, { type: 'custom', url: '', label: '' }]
+    setLinks(newLinks)
+    // Don't save yet — the new entry is empty
   }
 
   const removeLink = (index: number) => {
@@ -204,7 +209,7 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
   }
 
   const updateLink = (index: number, field: string, value: string) => {
-    const newLinks = links.map((link, i) => i === index ? { ...link, [field]: value } : link)
+    const newLinks = links.map((link, i) => i === index ? { ...link, [field]: value } : link) as ProfileLink[]
     handleLinksChange(newLinks)
   }
 

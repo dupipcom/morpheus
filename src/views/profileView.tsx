@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
-import { Edit, Instagram, Facebook, Twitter, Youtube, Linkedin, MessageCircle, Send, Link as LinkIcon } from 'lucide-react'
+import { Edit } from 'lucide-react'
 
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -12,12 +12,8 @@ import { AddFriendButtonOrSignIn } from "@/components/addFriendButtonOrSignIn"
 import { PublicNotesViewer } from "@/components/publicNotesViewer"
 import { MeetMeRow } from "@/components/meetMeRow"
 import ActivityCard, { ActivityItem } from "@/components/activityCard"
-
-interface ProfileLink {
-  type: string
-  url: string
-  label?: string
-}
+import { SocialLinkIcon, getSocialLabel } from "@/components/socialLinkIcon"
+import type { ProfileLink } from "@/lib/utils/profileUtils"
 
 interface ProfileData {
   userId?: string
@@ -46,35 +42,6 @@ interface ProfileData {
     charts?: { value?: any; visibility?: boolean }
     links?: { value?: ProfileLink[]; visibility?: boolean }
   }
-}
-
-function SocialLinkIcon({ type }: { type: string }) {
-  const iconClass = "w-4 h-4"
-  switch (type) {
-    case 'instagram': return <Instagram className={iconClass} />
-    case 'facebook': return <Facebook className={iconClass} />
-    case 'twitter': return <Twitter className={iconClass} />
-    case 'youtube': return <Youtube className={iconClass} />
-    case 'linkedin': return <Linkedin className={iconClass} />
-    case 'discord': return <MessageCircle className={iconClass} />
-    case 'telegram': return <Send className={iconClass} />
-    case 'tiktok': return <span className={`${iconClass} font-bold text-xs flex items-center justify-center`}>TK</span>
-    default: return <LinkIcon className={iconClass} />
-  }
-}
-
-function getSocialLabel(type: string): string {
-  const labels: Record<string, string> = {
-    instagram: 'Instagram',
-    facebook: 'Facebook',
-    twitter: 'X',
-    tiktok: 'TikTok',
-    linkedin: 'LinkedIn',
-    youtube: 'YouTube',
-    discord: 'Discord',
-    telegram: 'Telegram',
-  }
-  return labels[type] || 'Link'
 }
 
 interface ProfileViewProps {
