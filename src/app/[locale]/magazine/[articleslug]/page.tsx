@@ -7,8 +7,33 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import Image from 'next/image';
 import { ArticleShareButton } from '@/components/articleShareButton';
 import { locales } from '@/app/constants';
+import { Instagram, Facebook, Twitter, Youtube, Linkedin, MessageCircle, Send, Link as LinkIcon } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
+
+// Social link icon helper (server component compatible)
+function SocialLinkIcon({ type, className }: { type: string; className?: string }) {
+  const cls = className || "w-4 h-4"
+  switch (type) {
+    case 'instagram': return <Instagram className={cls} />
+    case 'facebook': return <Facebook className={cls} />
+    case 'twitter': return <Twitter className={cls} />
+    case 'youtube': return <Youtube className={cls} />
+    case 'linkedin': return <Linkedin className={cls} />
+    case 'discord': return <MessageCircle className={cls} />
+    case 'telegram': return <Send className={cls} />
+    default: return <LinkIcon className={cls} />
+  }
+}
+
+function getSocialLabel(type: string): string {
+  const labels: Record<string, string> = {
+    instagram: 'Instagram', facebook: 'Facebook', twitter: 'X',
+    tiktok: 'TikTok', linkedin: 'LinkedIn', youtube: 'YouTube',
+    discord: 'Discord', telegram: 'Telegram',
+  }
+  return labels[type] || 'Link'
+}
 
 // Helper function to fetch profile data
 async function getProfile(userName: string): Promise<any | null> {
@@ -188,6 +213,7 @@ export default async function ArticlePage({
               const dupipUser = author?.dupipUser;
               const profilePicture = profile?.profilePicture;
               const bio = profile?.bio;
+              const authorLinks: Array<{ type: string; url: string; label?: string }> = Array.isArray(profile?.links) ? profile.links : [];
               
               if (!dupipUser) {
                 // Fallback for authors without dupipUser
@@ -243,6 +269,24 @@ export default async function ArticlePage({
                           <p className="text-sm text-muted-foreground mt-2">
                             {bio}
                           </p>
+                        )}
+
+                        {/* Social Links */}
+                        {authorLinks.length > 0 && (
+                          <div className="mt-2 flex flex-wrap gap-3">
+                            {authorLinks.map((link, linkIdx) => (
+                              <a
+                                key={linkIdx}
+                                href={link.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
+                              >
+                                <SocialLinkIcon type={link.type} />
+                                <span>{link.type === 'custom' ? (link.label || link.url) : getSocialLabel(link.type)}</span>
+                              </a>
+                            ))}
+                          </div>
                         )}
                       </div>
                     </div>

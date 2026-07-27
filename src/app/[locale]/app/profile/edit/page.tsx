@@ -20,12 +20,26 @@ import { generatePublicChartsData } from "@/lib/utils/profileUtils"
 import { PublicChartsView } from "@/components/publicChartsView"
 import { Skeleton } from "@/components/ui/skeleton"
 import { MeetMeRow } from "@/components/meetMeRow"
+import { Plus, Trash2 } from "lucide-react"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 export default function ProfilePage({ params }: { params: Promise<{ locale: string }> }) {
   const { isLoaded, isSignedIn } = useAuth()
   const { user: clerkUser } = useUser()
   const { t } = useI18n()
   const { session, setGlobalContext, theme } = useContext(GlobalContext)
+
+  const SOCIAL_PLATFORMS = [
+    { value: 'instagram', label: 'Instagram' },
+    { value: 'facebook', label: 'Facebook' },
+    { value: 'twitter', label: 'X (Twitter)' },
+    { value: 'tiktok', label: 'TikTok' },
+    { value: 'linkedin', label: 'LinkedIn' },
+    { value: 'youtube', label: 'YouTube' },
+    { value: 'discord', label: 'Discord' },
+    { value: 'telegram', label: 'Telegram' },
+    { value: 'custom', label: t('profile.links.customLink') },
+  ]
   
   const [profile, setProfile] = useState({
     firstName: '',
@@ -38,7 +52,10 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
     bioVisibility: 'PRIVATE' as VisibilityOption,
     profilePictureVisibility: 'PRIVATE' as VisibilityOption,
     publicChartsVisibility: 'PRIVATE' as VisibilityOption,
+    linksVisibility: 'PRIVATE' as VisibilityOption,
   })
+
+  const [links, setLinks] = useState<Array<{ type: string; url: string; label?: string }>>([])
 
   // Get visibility value for a field
   const getFieldVisibility = (fieldName: string): VisibilityOption => {
@@ -98,8 +115,10 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
             bioVisibility: getVisibility(profileData.bio?.visibility),
             profilePictureVisibility: getVisibility(profileData.profilePicture?.visibility),
             publicChartsVisibility: getVisibility(profileData.charts?.visibility),
+            linksVisibility: getVisibility(profileData.links?.visibility),
           })
           setPublicCharts(profileData.charts?.value || {})
+          setLinks(Array.isArray(profileData.links?.value) ? profileData.links.value : [])
           
           // Load meetMe settings
           if (profileData.meetMe) {
@@ -121,7 +140,7 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
   }
 
   // Create debounced save function
-  const debouncedSave = useDebounce(async (profileData: Record<string, any>, chartsData: Record<string, any>, meetMeData?: { preferredTime: string; duration: string; availability: string; startDate?: Date; endDate?: Date }) => {
+  const debouncedSave = useDebounce(async (profileData: Record<string, any>, chartsData: Record<string, any>, linksData: Array<{ type: string; url: string; label?: string }>, meetMeData?: { preferredTime: string; duration: string; availability: string; startDate?: Date; endDate?: Date }) => {
     setSaving(true)
     try {
       const response = await fetch('/api/v1/profile', {
@@ -132,6 +151,7 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
         body: JSON.stringify({
           ...profileData,
           publicCharts: chartsData,
+          links: linksData,
           ...(meetMeData ? { meetMe: {
             preferredTime: meetMeData.preferredTime,
             duration: meetMeData.duration,
@@ -155,19 +175,37 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
   const handleProfileChange = (field: string, value: any) => {
     const newProfile = { ...profile, [field]: value }
     setProfile(newProfile)
-    debouncedSave(newProfile, publicCharts)
+    debouncedSave(newProfile, publicCharts, links)
   }
 
   const handleChartsVisibilityChange = (chartType: string, visible: boolean) => {
     const newPublicCharts = { ...publicCharts, [chartType]: visible }
     setPublicCharts(newPublicCharts)
-    debouncedSave(profile, newPublicCharts)
+    debouncedSave(profile, newPublicCharts, links)
   }
 
   const handleMeetMeChange = (field: string, value: any) => {
     const newMeetMe = { ...meetMe, [field]: value }
     setMeetMe(newMeetMe)
-    debouncedSave(profile, publicCharts, newMeetMe)
+    debouncedSave(profile, publicCharts, links, newMeetMe)
+  }
+
+  const handleLinksChange = (newLinks: Array<{ type: string; url: string; label?: string }>) => {
+    setLinks(newLinks)
+    debouncedSave(profile, publicCharts, newLinks)
+  }
+
+  const addLink = () => {
+    handleLinksChange([...links, { type: 'custom', url: '', label: '' }])
+  }
+
+  const removeLink = (index: number) => {
+    handleLinksChange(links.filter((_, i) => i !== index))
+  }
+
+  const updateLink = (index: number, field: string, value: string) => {
+    const newLinks = links.map((link, i) => i === index ? { ...link, [field]: value } : link)
+    handleLinksChange(newLinks)
   }
 
   // Generate public charts data from user entries
@@ -393,6 +431,74 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
           </Card>
         </div>
 
+        {/* Social & Custom Links */}
+        <Card className="mt-6">
+          <CardHeader>
+            <CardTitle>{t('profile.links.title')}</CardTitle>
+            <p className="text-sm text-muted-foreground">
+              {t('profile.links.description')}
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between">
+              <Label>{t('profile.links.visibility')}</Label>
+              <VisibilitySelect
+                value={getFieldVisibility('links')}
+                onValueChange={(value) => handleVisibilityChange('links', value)}
+                showIconOnMobile={false}
+                className="w-48"
+              />
+            </div>
+
+            <Separator />
+
+            {links.map((link, index) => (
+              <div key={index} className="flex gap-2 items-start">
+                <div className="flex flex-col gap-2 flex-1">
+                  <Select
+                    value={link.type}
+                    onValueChange={(value) => updateLink(index, 'type', value)}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {SOCIAL_PLATFORMS.map((p) => (
+                        <SelectItem key={p.value} value={p.value}>{p.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {link.type === 'custom' && (
+                    <Input
+                      placeholder={t('profile.links.labelPlaceholder')}
+                      value={link.label || ''}
+                      onChange={(e) => updateLink(index, 'label', e.target.value)}
+                    />
+                  )}
+                  <Input
+                    placeholder={t('profile.links.urlPlaceholder')}
+                    value={link.url}
+                    onChange={(e) => updateLink(index, 'url', e.target.value)}
+                  />
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => removeLink(index)}
+                  className="mt-1 shrink-0"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </div>
+            ))}
+
+            <Button variant="outline" onClick={addLink} className="w-full">
+              <Plus className="w-4 h-4 mr-2" />
+              {t('profile.links.addLink')}
+            </Button>
+          </CardContent>
+        </Card>
+
         {/* Meet Me */}
         <Card className="mt-6">
           <CardHeader className="pb-2">
@@ -414,7 +520,7 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
               onDateRangeChange={(start, end) => {
                 const newMeetMe = { ...meetMe, startDate: start, endDate: end }
                 setMeetMe(newMeetMe)
-                debouncedSave(profile, publicCharts, newMeetMe)
+                debouncedSave(profile, publicCharts, links, newMeetMe)
               }}
             />
           </CardContent>

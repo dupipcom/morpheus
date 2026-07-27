@@ -295,6 +295,15 @@ export function sanitizeUserEntriesForPublic(
 }
 
 /**
+ * Represents a single social or custom link on a profile
+ */
+export interface ProfileLink {
+  type: string   // 'instagram' | 'facebook' | 'twitter' | 'tiktok' | 'linkedin' | 'youtube' | 'discord' | 'telegram' | 'custom'
+  url: string
+  label?: string // used for custom links
+}
+
+/**
  * Interface for profile data with visibility fields
  */
 export interface ProfileWithVisibility {
@@ -303,12 +312,14 @@ export interface ProfileWithVisibility {
   lastName?: string | null
   bio?: string | null
   profilePicture?: string | null
+  links?: ProfileLink[] | null
   firstNameVisibility?: string | null
   lastNameVisibility?: string | null
   userNameVisibility?: string | null
   bioVisibility?: string | null
   profilePictureVisibility?: string | null
   publicChartsVisibility?: string | null
+  linksVisibility?: string | null
 }
 
 /**
@@ -382,6 +393,11 @@ export function filterProfileFields(
   }
   if (isFieldVisible(profilePictureVis, relationship.isOwner, relationship.isFriend, relationship.isCloseFriend) && profile.profilePicture) {
     filteredProfile.profilePicture = profile.profilePicture
+  }
+
+  const linksVis = (profile.linksVisibility as string) || 'PRIVATE'
+  if (isFieldVisible(linksVis, relationship.isOwner, relationship.isFriend, relationship.isCloseFriend) && profile.links && profile.links.length > 0) {
+    filteredProfile.links = profile.links
   }
 
   return filteredProfile

@@ -38,12 +38,14 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
       bio: profileData.bio?.value || null,
       profilePicture: profileData.profilePicture?.value || null,
       publicCharts: profileData.charts?.value || null,
+      links: Array.isArray(profileData.links?.value) ? profileData.links.value : null,
       firstNameVisibility: profileData.firstName?.visibility ? 'PUBLIC' : 'PRIVATE',
       lastNameVisibility: profileData.lastName?.visibility ? 'PUBLIC' : 'PRIVATE',
       userNameVisibility: profileData.username?.visibility ? 'PUBLIC' : 'PRIVATE',
       bioVisibility: profileData.bio?.visibility ? 'PUBLIC' : 'PRIVATE',
       profilePictureVisibility: profileData.profilePicture?.visibility ? 'PUBLIC' : 'PRIVATE',
-      publicChartsVisibility: profileData.charts?.visibility ? 'PUBLIC' : 'PRIVATE'
+      publicChartsVisibility: profileData.charts?.visibility ? 'PUBLIC' : 'PRIVATE',
+      linksVisibility: profileData.links?.visibility ? 'PUBLIC' : 'PRIVATE'
     }
 
     // Determine viewer and relationship

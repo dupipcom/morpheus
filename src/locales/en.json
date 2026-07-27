@@ -637,6 +637,15 @@
       "busySlot": "Busy {start} – {end}",
       "availableSlots": "Available times",
       "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "Social & Custom Links",
+      "description": "Add your social media profiles and custom links to display on your public profile",
+      "visibility": "Links Visibility",
+      "addLink": "Add Link",
+      "customLink": "Custom Link",
+      "labelPlaceholder": "Link label (e.g. My Blog)",
+      "urlPlaceholder": "https://"
     }
   },
   "toast": {

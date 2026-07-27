@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
-import { Edit } from 'lucide-react'
+import { Edit, Instagram, Facebook, Twitter, Youtube, Linkedin, MessageCircle, Send, Link as LinkIcon } from 'lucide-react'
 
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -13,6 +13,12 @@ import { PublicNotesViewer } from "@/components/publicNotesViewer"
 import { MeetMeRow } from "@/components/meetMeRow"
 import ActivityCard, { ActivityItem } from "@/components/activityCard"
 
+interface ProfileLink {
+  type: string
+  url: string
+  label?: string
+}
+
 interface ProfileData {
   userId?: string
   firstName?: string
@@ -21,6 +27,7 @@ interface ProfileData {
   bio?: string
   profilePicture?: string
   publicCharts?: any
+  links?: ProfileLink[]
   templates?: any[]
   taskLists?: any[]
   meetMe?: {
@@ -37,7 +44,37 @@ interface ProfileData {
     bio?: { value?: string; visibility?: boolean }
     profilePicture?: { value?: string; visibility?: boolean }
     charts?: { value?: any; visibility?: boolean }
+    links?: { value?: ProfileLink[]; visibility?: boolean }
   }
+}
+
+function SocialLinkIcon({ type }: { type: string }) {
+  const iconClass = "w-4 h-4"
+  switch (type) {
+    case 'instagram': return <Instagram className={iconClass} />
+    case 'facebook': return <Facebook className={iconClass} />
+    case 'twitter': return <Twitter className={iconClass} />
+    case 'youtube': return <Youtube className={iconClass} />
+    case 'linkedin': return <Linkedin className={iconClass} />
+    case 'discord': return <MessageCircle className={iconClass} />
+    case 'telegram': return <Send className={iconClass} />
+    case 'tiktok': return <span className={`${iconClass} font-bold text-xs flex items-center justify-center`}>TK</span>
+    default: return <LinkIcon className={iconClass} />
+  }
+}
+
+function getSocialLabel(type: string): string {
+  const labels: Record<string, string> = {
+    instagram: 'Instagram',
+    facebook: 'Facebook',
+    twitter: 'X',
+    tiktok: 'TikTok',
+    linkedin: 'LinkedIn',
+    youtube: 'YouTube',
+    discord: 'Discord',
+    telegram: 'Telegram',
+  }
+  return labels[type] || 'Link'
 }
 
 interface ProfileViewProps {
@@ -90,6 +127,7 @@ export function ProfileView({
   const bio = profile.bio || profileData.bio?.value
   const profilePicture = profile.profilePicture || profileData.profilePicture?.value
   const publicCharts = profile.publicCharts || profileData.charts?.value
+  const links = profile.links || (Array.isArray(profileData.links?.value) ? profileData.links.value : null)
   const meetMe = profile.meetMe
 
   const fullName = [firstName, lastName].filter(Boolean).join(' ')
@@ -129,6 +167,22 @@ export function ProfileView({
                   )}
                   {bio && (
                     <p className="mt-2 text-sm break-words">{bio}</p>
+                  )}
+                  {links && links.length > 0 && (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {links.map((link, idx) => (
+                        <a
+                          key={idx}
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
+                        >
+                          <SocialLinkIcon type={link.type} />
+                          <span>{link.type === 'custom' ? (link.label || link.url) : getSocialLabel(link.type)}</span>
+                        </a>
+                      ))}
+                    </div>
                   )}
                 </div>
               </div>
