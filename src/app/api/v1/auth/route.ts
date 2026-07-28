@@ -3,11 +3,25 @@
 import prisma from '@/lib/prisma';
 import type { WebhookEvent } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
-import { currentUser } from '@clerk/nextjs/server'
 import { revalidatePath } from 'next/cache'
 
 export async function POST(req: Request) {
     try {
+        // Verify the request using the same INTERNAL_FETCH_SECRET that bypasses the Vercel bot firewall.
+        // Configure the Clerk webhook in the Clerk Dashboard to send the custom header:
+        //   x-internal-fetch-secret: <value of INTERNAL_FETCH_SECRET>
+        // This lets Vercel's firewall trust Clerk's server-to-server requests.
+        const internalSecret = process.env.INTERNAL_FETCH_SECRET;
+        if (internalSecret) {
+            const providedSecret = req.headers.get('x-internal-fetch-secret');
+            if (providedSecret !== internalSecret) {
+                return NextResponse.json(
+                    { error: 'Unauthorized' },
+                    { status: 401 },
+                );
+            }
+        }
+
         const evt = (await req.json()) as WebhookEvent;
 
         const { id: clerkUserId } = evt.data;
@@ -42,84 +56,73 @@ export async function POST(req: Request) {
                     },
                 });
 
-                // Sync username from webhook data when user is created
+                // Always create a public profile for every new user
                 try {
                     const webhookData: any = evt.data;
-                    const clerkUsername = webhookData?.username;
-                    
-                    if (clerkUsername && user) {
-                        // Create profile with username from Clerk webhook
+                    const clerkUsername: string | null = webhookData?.username ?? null;
+                    const clerkImageUrl: string | null = webhookData?.image_url ?? webhookData?.imageUrl ?? null;
+
+                    // Check if a profile already exists (upsert may have found existing user)
+                    const existingProfile = await prisma.profile.findUnique({
+                        where: { userId: user.id }
+                    });
+
+                    if (!existingProfile) {
                         await prisma.profile.create({
                             data: {
                                 userId: user.id,
+                                // Only set root-level username when available; null would violate the @unique constraint
+                                // for multiple email-only users (preserves old clerk+db username constraints)
+                                ...(clerkUsername ? { username: clerkUsername } : {}),
                                 data: {
                                     username: {
                                         value: clerkUsername,
                                         visibility: true
-                                    }
+                                    },
+                                    profilePicture: clerkImageUrl ? {
+                                        value: clerkImageUrl,
+                                        visibility: false
+                                    } : undefined
                                 }
                             }
                         });
-                        
-                        // Revalidate the public profile page
-                        await revalidatePath(`/@${clerkUsername}`);
+
+                        if (clerkUsername) {
+                            revalidatePath(`/@${clerkUsername}`);
+                        }
                     }
                 } catch (error) {
-                    console.error('Error syncing username from Clerk webhook on user creation:', error);
+                    console.error('Error creating profile on user creation:', error);
                 }
                 break;
             }
             case 'session.created': {
-                // When a new session is created (actual login), sync username
+                // When a new session is created (actual login), ensure profile exists
                 const sessionData: any = evt.data;
                 const sessionUserId: string | undefined = sessionData?.user_id || sessionData?.userId || clerkUserId;
                 if (sessionUserId) {
-                    // Sync username from webhook data on login
                     try {
-                        const webhookData: any = evt.data;
-                        const clerkUsername = webhookData?.username;
-                        
-                        if (clerkUsername) {
-                            const dbUser = await prisma.user.findUnique({
-                                where: { userId: sessionUserId },
-                                include: { profiles: true }
-                            });
+                        const dbUser = await prisma.user.findUnique({
+                            where: { userId: sessionUserId },
+                            include: { profiles: true }
+                        });
 
-                            if (dbUser) {
-                                if (dbUser.profiles && dbUser.profiles.length > 0) {
-                                    const existingData = dbUser.profiles[0].data || {}
-                                    await prisma.profile.update({
-                                        where: { userId: dbUser.id },
-                                        data: {
-                                            data: {
-                                                ...existingData,
-                                                username: {
-                                                    value: clerkUsername,
-                                                    visibility: existingData.username?.visibility ?? false
-                                                }
-                                            }
+                        if (dbUser && (!dbUser.profiles || dbUser.profiles.length === 0)) {
+                            // Profile missing — create a basic one so the user is never profileless
+                            await prisma.profile.create({
+                                data: {
+                                    userId: dbUser.id,
+                                    data: {
+                                        username: {
+                                            value: null,
+                                            visibility: true
                                         }
-                                    });
-                                } else {
-                                    await prisma.profile.create({
-                                        data: {
-                                            userId: dbUser.id,
-                                            data: {
-                                                username: {
-                                                    value: clerkUsername,
-                                                    visibility: false
-                                                }
-                                            }
-                                        }
-                                    });
+                                    }
                                 }
-                                
-                                // Revalidate the public profile page
-                                await revalidateUserProfile(clerkUsername, new URL(req.url).origin);
-                            }
+                            });
                         }
                     } catch (usernameError) {
-                        console.error('Error syncing username from Clerk webhook on login:', usernameError);
+                        console.error('Error ensuring profile on session creation:', usernameError);
                     }
                 }
                 break;
@@ -128,27 +131,26 @@ export async function POST(req: Request) {
                 // Sync username from Clerk webhook data to Prisma database
                 try {
                     const webhookData: any = evt.data;
-                    const clerkUsername = webhookData?.username;
-                    
+                    const clerkUsername: string | null = webhookData?.username ?? null;
+
                     if (clerkUsername) {
-                        // Find the user in our database
                         const dbUser = await prisma.user.findUnique({
                             where: { userId: clerkUserId },
                             include: { profiles: true }
                         });
 
                         if (dbUser) {
-                            // Always update or create profile with username from Clerk webhook (overwrites any manual username)
                             if (dbUser.profiles && dbUser.profiles.length > 0) {
                                 const existingData = dbUser.profiles[0].data || {}
                                 await prisma.profile.update({
                                     where: { userId: dbUser.id },
                                     data: {
+                                        username: clerkUsername,
                                         data: {
                                             ...existingData,
                                             username: {
                                                 value: clerkUsername,
-                                                visibility: existingData.username?.visibility ?? false
+                                                visibility: existingData.username?.visibility ?? true
                                             }
                                         }
                                     }
@@ -157,18 +159,18 @@ export async function POST(req: Request) {
                                 await prisma.profile.create({
                                     data: {
                                         userId: dbUser.id,
+                                        username: clerkUsername,
                                         data: {
                                             username: {
                                                 value: clerkUsername,
-                                                visibility: false
+                                                visibility: true
                                             }
                                         }
                                     }
                                 });
                             }
-                            
-                            // Revalidate the public profile page
-                            await revalidateUserProfile(clerkUsername, new URL(req.url).origin);
+
+                            revalidatePath(`/@${clerkUsername}`);
                         }
                     }
                 } catch (error) {
