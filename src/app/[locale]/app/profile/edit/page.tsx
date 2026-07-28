@@ -16,7 +16,7 @@ import { VisibilitySelect, VisibilityOption } from "@/components/visibilitySelec
 import { ViewMenu } from "@/components/viewMenu"
 import { DashboardView } from "@/views/dashboardView"
 import { useDebounce } from "@/lib/hooks/useDebounce"
-import { generatePublicChartsData } from "@/lib/utils/profileUtils"
+import { generatePublicChartsData, DEFAULT_LINK_VISIBILITY } from "@/lib/utils/profileUtils"
 import type { ProfileLink } from "@/lib/utils/profileUtils"
 import { PublicChartsView } from "@/components/publicChartsView"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -199,7 +199,7 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
   }
 
   const addLink = () => {
-    const newLinks: ProfileLink[] = [...links, { type: 'custom', url: '', label: '' }]
+    const newLinks: ProfileLink[] = [...links, { type: 'custom', url: '', label: '', visibility: DEFAULT_LINK_VISIBILITY }]
     setLinks(newLinks)
     // Don't save yet — the new entry is empty
   }
@@ -491,9 +491,17 @@ export default function ProfilePage({ params }: { params: Promise<{ locale: stri
                   size="icon"
                   onClick={() => removeLink(index)}
                   className="mt-1 shrink-0"
+                  aria-label="Remove link"
                 >
                   <Trash2 className="w-4 h-4" />
                 </Button>
+                <VisibilitySelect
+                  value={(link.visibility as VisibilityOption) || DEFAULT_LINK_VISIBILITY}
+                  onValueChange={(value) => updateLink(index, 'visibility', value)}
+                  iconOnly
+                  className="mt-1 shrink-0 w-10 h-10"
+                  availableOptions={['PRIVATE', 'FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC']}
+                />
               </div>
             ))}
 

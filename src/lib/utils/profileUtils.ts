@@ -300,12 +300,19 @@ export function sanitizeUserEntriesForPublic(
 export type SocialPlatform = 'instagram' | 'facebook' | 'twitter' | 'tiktok' | 'linkedin' | 'youtube' | 'discord' | 'telegram' | 'custom'
 
 /**
+ * Default visibility used for newly added links and as a backward-compatible
+ * fallback when a stored link has no visibility field.
+ */
+export const DEFAULT_LINK_VISIBILITY = 'PUBLIC' as const
+
+/**
  * Represents a single social or custom link on a profile
  */
 export interface ProfileLink {
   type: SocialPlatform
   url: string
   label?: string // used for custom links
+  visibility?: string // per-link visibility; see DEFAULT_LINK_VISIBILITY for the fallback
 }
 
 /**
@@ -402,7 +409,14 @@ export function filterProfileFields(
 
   const linksVis = (profile.linksVisibility as string) || 'PRIVATE'
   if (isFieldVisible(linksVis, relationship.isOwner, relationship.isFriend, relationship.isCloseFriend) && profile.links && profile.links.length > 0) {
-    filteredProfile.links = profile.links
+    // Additionally filter each link by its own per-link visibility (defaults to 'PUBLIC' for backward compatibility)
+    const visibleLinks = profile.links.filter(link => {
+      const linkVis = link.visibility || DEFAULT_LINK_VISIBILITY
+      return isFieldVisible(linkVis, relationship.isOwner, relationship.isFriend, relationship.isCloseFriend)
+    })
+    if (visibleLinks.length > 0) {
+      filteredProfile.links = visibleLinks
+    }
   }
 
   return filteredProfile
