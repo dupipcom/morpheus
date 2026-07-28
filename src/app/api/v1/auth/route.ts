@@ -32,7 +32,8 @@ export async function POST(req: Request) {
                     'svix-timestamp': svix_timestamp,
                     'svix-signature': svix_signature,
                 });
-            } catch {
+            } catch (err) {
+                console.error('Clerk webhook signature verification failed:', err);
                 return NextResponse.json(
                     { error: 'Invalid webhook signature' },
                     { status: 401 },
@@ -107,7 +108,7 @@ async function handleWebhookEvent(evt: WebhookEvent): Promise<NextResponse> {
                                 },
                                 profilePicture: clerkImageUrl ? {
                                     value: clerkImageUrl,
-                                    visibility: true
+                                    visibility: false
                                 } : undefined
                             }
                         }
