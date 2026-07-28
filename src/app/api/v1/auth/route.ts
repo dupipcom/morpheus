@@ -71,7 +71,9 @@ export async function POST(req: Request) {
                         await prisma.profile.create({
                             data: {
                                 userId: user.id,
-                                username: clerkUsername,
+                                // Only set root-level username when available; null would violate the @unique constraint
+                                // for multiple email-only users (preserves old clerk+db username constraints)
+                                ...(clerkUsername ? { username: clerkUsername } : {}),
                                 data: {
                                     username: {
                                         value: clerkUsername,
