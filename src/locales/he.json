@@ -455,6 +455,15 @@
       "busySlot": "תפוס {start} – {end}",
       "availableSlots": "Available times",
       "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "קישורים לרשתות חברתיות ומותאמים אישית",
+      "description": "הוסף את פרופילי הרשתות החברתיות שלך וקישורים מותאמים אישית להצגה בפרופיל הציבורי שלך",
+      "visibility": "נראות קישורים",
+      "addLink": "הוסף קישור",
+      "customLink": "קישור מותאם אישית",
+      "labelPlaceholder": "תווית הקישור (לדוגמה: הבלוג שלי)",
+      "urlPlaceholder": "https://"
     }
   },
   "toast": {

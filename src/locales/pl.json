@@ -476,6 +476,15 @@
       "busySlot": "Zajęty {start} – {end}",
       "availableSlots": "Available times",
       "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "Linki społecznościowe i niestandardowe",
+      "description": "Dodaj swoje profile w mediach społecznościowych i niestandardowe linki, aby wyświetlić je w swoim publicznym profilu",
+      "visibility": "Widoczność linków",
+      "addLink": "Dodaj link",
+      "customLink": "Niestandardowy link",
+      "labelPlaceholder": "Etykieta linku (np. Mój blog)",
+      "urlPlaceholder": "https://"
     }
   },
   "toast": {

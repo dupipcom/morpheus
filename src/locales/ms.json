@@ -459,6 +459,15 @@
       "busySlot": "Sibuk {start} – {end}",
       "availableSlots": "Available times",
       "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "Pautan Media Sosial & Tersuai",
+      "description": "Tambah profil media sosial dan pautan tersuai anda untuk dipaparkan pada profil awam anda",
+      "visibility": "Keterlihatan Pautan",
+      "addLink": "Tambah Pautan",
+      "customLink": "Pautan Tersuai",
+      "labelPlaceholder": "Label pautan (cth. Blog saya)",
+      "urlPlaceholder": "https://"
     }
   },
   "toast": {

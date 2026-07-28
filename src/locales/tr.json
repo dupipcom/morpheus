@@ -476,6 +476,15 @@
       "busySlot": "Meşgul {start} – {end}",
       "availableSlots": "Available times",
       "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "Sosyal ve Özel Bağlantılar",
+      "description": "Sosyal medya profillerinizi ve özel bağlantılarınızı herkese açık profilinizde görüntülemek için ekleyin",
+      "visibility": "Bağlantı Görünürlüğü",
+      "addLink": "Bağlantı Ekle",
+      "customLink": "Özel Bağlantı",
+      "labelPlaceholder": "Bağlantı etiketi (ör. Blogum)",
+      "urlPlaceholder": "https://"
     }
   },
   "toast": {

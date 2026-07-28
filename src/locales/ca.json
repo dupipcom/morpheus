@@ -653,6 +653,15 @@
       "busySlot": "Ocupat {start} – {end}",
       "availableSlots": "Available times",
       "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "Enllaços socials i personalitzats",
+      "description": "Afegiu els vostres perfils de xarxes socials i enllaços personalitzats per mostrar-los al vostre perfil públic",
+      "visibility": "Visibilitat dels enllaços",
+      "addLink": "Afegir enllaç",
+      "customLink": "Enllaç personalitzat",
+      "labelPlaceholder": "Etiqueta de l'enllaç (p. ex. El meu bloc)",
+      "urlPlaceholder": "https://"
     }
   },
   "socialView": {

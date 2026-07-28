@@ -472,6 +472,15 @@
       "busySlot": "바쁨 {start} – {end}",
       "availableSlots": "Available times",
       "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "소셜 및 커스텀 링크",
+      "description": "소셜 미디어 프로필과 커스텀 링크를 추가하여 공개 프로필에 표시하세요",
+      "visibility": "링크 공개 설정",
+      "addLink": "링크 추가",
+      "customLink": "커스텀 링크",
+      "labelPlaceholder": "링크 라벨 (예: 내 블로그)",
+      "urlPlaceholder": "https://"
     }
   },
   "toast": {

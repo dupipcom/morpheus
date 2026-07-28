@@ -279,6 +279,11 @@ type ProfileMeetMe {
   endDate       String?
 }
 
+type ProfileLinksField {
+  value      Json?
+  visibility Boolean
+}
+
 type ProfileData {
   username       ProfileField?
   firstName      ProfileField?
@@ -287,6 +292,7 @@ type ProfileData {
   profilePicture ProfileField?
   charts         ProfileChartField?
   meetMe         ProfileMeetMe?
+  links          ProfileLinksField?
 }
 
 type ProfileField {

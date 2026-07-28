@@ -472,6 +472,15 @@
       "busySlot": "Занято {start} – {end}",
       "availableSlots": "Available times",
       "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "Социальные и пользовательские ссылки",
+      "description": "Добавьте свои профили в социальных сетях и пользовательские ссылки для отображения в вашем публичном профиле",
+      "visibility": "Видимость ссылок",
+      "addLink": "Добавить ссылку",
+      "customLink": "Пользовательская ссылка",
+      "labelPlaceholder": "Метка ссылки (напр. Мой блог)",
+      "urlPlaceholder": "https://"
     }
   },
   "toast": {

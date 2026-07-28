@@ -459,6 +459,15 @@
       "busySlot": "ਰੁੱਝਿਆ {start} – {end}",
       "availableSlots": "Available times",
       "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "ਸੋਸ਼ਲ ਅਤੇ ਕਸਟਮ ਲਿੰਕ",
+      "description": "ਆਪਣੇ ਸੋਸ਼ਲ ਮੀਡੀਆ ਪ੍ਰੋਫਾਈਲ ਅਤੇ ਕਸਟਮ ਲਿੰਕ ਆਪਣੇ ਜਨਤਕ ਪ੍ਰੋਫਾਈਲ 'ਤੇ ਦਿਖਾਉਣ ਲਈ ਜੋੜੋ",
+      "visibility": "ਲਿੰਕ ਦਿੱਖ",
+      "addLink": "ਲਿੰਕ ਜੋੜੋ",
+      "customLink": "ਕਸਟਮ ਲਿੰਕ",
+      "labelPlaceholder": "ਲਿੰਕ ਲੇਬਲ (ਜਿਵੇਂ: ਮੇਰਾ ਬਲੌਗ)",
+      "urlPlaceholder": "https://"
     }
   },
   "toast": {

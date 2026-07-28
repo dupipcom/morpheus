@@ -12,6 +12,8 @@ import { AddFriendButtonOrSignIn } from "@/components/addFriendButtonOrSignIn"
 import { PublicNotesViewer } from "@/components/publicNotesViewer"
 import { MeetMeRow } from "@/components/meetMeRow"
 import ActivityCard, { ActivityItem } from "@/components/activityCard"
+import { SocialLinkIcon, getSocialLabel } from "@/components/socialLinkIcon"
+import type { ProfileLink } from "@/lib/utils/profileUtils"
 
 interface ProfileData {
   userId?: string
@@ -21,6 +23,7 @@ interface ProfileData {
   bio?: string
   profilePicture?: string
   publicCharts?: any
+  links?: ProfileLink[]
   templates?: any[]
   taskLists?: any[]
   meetMe?: {
@@ -37,6 +40,7 @@ interface ProfileData {
     bio?: { value?: string; visibility?: boolean }
     profilePicture?: { value?: string; visibility?: boolean }
     charts?: { value?: any; visibility?: boolean }
+    links?: { value?: ProfileLink[]; visibility?: boolean }
   }
 }
 
@@ -90,6 +94,7 @@ export function ProfileView({
   const bio = profile.bio || profileData.bio?.value
   const profilePicture = profile.profilePicture || profileData.profilePicture?.value
   const publicCharts = profile.publicCharts || profileData.charts?.value
+  const links = profile.links || (Array.isArray(profileData.links?.value) ? profileData.links.value : null)
   const meetMe = profile.meetMe
 
   const fullName = [firstName, lastName].filter(Boolean).join(' ')
@@ -129,6 +134,22 @@ export function ProfileView({
                   )}
                   {bio && (
                     <p className="mt-2 text-sm break-words">{bio}</p>
+                  )}
+                  {links && links.length > 0 && (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {links.map((link, idx) => (
+                        <a
+                          key={idx}
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
+                        >
+                          <SocialLinkIcon type={link.type} />
+                          <span>{link.type === 'custom' ? (link.label || link.url) : getSocialLabel(link.type)}</span>
+                        </a>
+                      ))}
+                    </div>
                   )}
                 </div>
               </div>

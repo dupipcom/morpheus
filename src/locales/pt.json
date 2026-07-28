@@ -472,6 +472,15 @@
       "busySlot": "Ocupado {start} – {end}",
       "availableSlots": "Available times",
       "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "Links sociais e personalizados",
+      "description": "Adicione seus perfis de redes sociais e links personalizados para exibir no seu perfil público",
+      "visibility": "Visibilidade dos links",
+      "addLink": "Adicionar link",
+      "customLink": "Link personalizado",
+      "labelPlaceholder": "Rótulo do link (ex. Meu blog)",
+      "urlPlaceholder": "https://"
     }
   },
   "toast": {

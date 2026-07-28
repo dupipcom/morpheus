@@ -459,6 +459,15 @@
       "busySlot": "Optaget {start} – {end}",
       "availableSlots": "Available times",
       "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "Sociale og tilpassede links",
+      "description": "Tilføj dine sociale medieprofiler og tilpassede links til visning på din offentlige profil",
+      "visibility": "Links synlighed",
+      "addLink": "Tilføj link",
+      "customLink": "Tilpasset link",
+      "labelPlaceholder": "Link-etiket (f.eks. Min blog)",
+      "urlPlaceholder": "https://"
     }
   },
   "toast": {

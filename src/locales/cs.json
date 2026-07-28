@@ -455,6 +455,15 @@
       "busySlot": "Obsazeno {start} – {end}",
       "availableSlots": "Available times",
       "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "Sociální a vlastní odkazy",
+      "description": "Přidejte své profily na sociálních sítích a vlastní odkazy, které se zobrazí na vašem veřejném profilu",
+      "visibility": "Viditelnost odkazů",
+      "addLink": "Přidat odkaz",
+      "customLink": "Vlastní odkaz",
+      "labelPlaceholder": "Popisek odkazu (např. Můj blog)",
+      "urlPlaceholder": "https://"
     }
   },
   "toast": {

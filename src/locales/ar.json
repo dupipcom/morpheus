@@ -476,6 +476,15 @@
       "busySlot": "مشغول {start} – {end}",
       "availableSlots": "Available times",
       "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "روابط التواصل الاجتماعي والمخصصة",
+      "description": "أضف ملفات وسائل التواصل الاجتماعي الخاصة بك والروابط المخصصة لعرضها على ملفك الشخصي العام",
+      "visibility": "رؤية الروابط",
+      "addLink": "إضافة رابط",
+      "customLink": "رابط مخصص",
+      "labelPlaceholder": "تسمية الرابط (مثل: مدونتي)",
+      "urlPlaceholder": "https://"
     }
   },
   "toast": {

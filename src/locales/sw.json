@@ -470,6 +470,15 @@
       "busySlot": "Shughuli {start} – {end}",
       "availableSlots": "Available times",
       "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "Viungo vya Mitandao ya Kijamii na Maalum",
+      "description": "Ongeza wasifu wako wa mitandao ya kijamii na viungo maalum ili kuonyesha kwenye wasifu wako wa umma",
+      "visibility": "Mwonekano wa Viungo",
+      "addLink": "Ongeza Kiungo",
+      "customLink": "Kiungo Maalum",
+      "labelPlaceholder": "Lebo ya kiungo (mf. Blogu yangu)",
+      "urlPlaceholder": "https://"
     }
   },
   "toast": {

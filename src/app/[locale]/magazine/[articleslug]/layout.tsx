@@ -104,7 +104,7 @@ export default async function ArticleLayout({
     }
   }
 
-  // Get hero image URL and prefix with PAYLOAD_API_URL if it's a relative path
+  // Get hero image URL, replacing any stored domain with the correct Payload base URL
   const getImageUrl = (image: any): string | null => {
     const imageUrl = typeof image === 'string' 
       ? image 
@@ -112,16 +112,24 @@ export default async function ArticleLayout({
     
     if (!imageUrl) return null;
     
-    // If it's already a full URL, return as is
+    const payloadApiUrl = process.env.PAYLOAD_API_URL || process.env.NEXT_PUBLIC_PAYLOAD_API_URL || '';
+    const payloadBaseUrl = payloadApiUrl ? payloadApiUrl.split('/api')[0] : '';
+    
+    // If it's an absolute URL, extract the path and rebuild with the correct base URL
+    // This handles cases where the URL was stored with the wrong domain (e.g. a Vercel preview URL)
     if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
-      return imageUrl;
+      if (!payloadBaseUrl) return imageUrl;
+      try {
+        const parsedUrl = new URL(imageUrl);
+        return `${payloadBaseUrl}${parsedUrl.pathname}`;
+      } catch {
+        return imageUrl;
+      }
     }
     
     // If it's a relative path, prefix with base URL (image URL already includes /api/media/*)
-    const payloadApiUrl = process.env.PAYLOAD_API_URL || process.env.NEXT_PUBLIC_PAYLOAD_API_URL || '';
-    if (payloadApiUrl && imageUrl.startsWith('/')) {
-      // Remove /api from PAYLOAD_API_URL and prepend to image URL (which already has /api/media/*)
-      return `${payloadApiUrl.split('/api')[0]}${imageUrl}`;
+    if (payloadBaseUrl && imageUrl.startsWith('/')) {
+      return `${payloadBaseUrl}${imageUrl}`;
     }
     
     return imageUrl;
