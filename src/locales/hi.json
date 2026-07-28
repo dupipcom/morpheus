@@ -455,6 +455,15 @@
       "busySlot": "व्यस्त {start} – {end}",
       "availableSlots": "Available times",
       "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "सोशल और कस्टम लिंक",
+      "description": "अपने सोशल मीडिया प्रोफाइल और कस्टम लिंक अपने पब्लिक प्रोफाइल पर दिखाने के लिए जोड़ें",
+      "visibility": "लिंक दृश्यता",
+      "addLink": "लिंक जोड़ें",
+      "customLink": "कस्टम लिंक",
+      "labelPlaceholder": "लिंक लेबल (जैसे: मेरा ब्लॉग)",
+      "urlPlaceholder": "https://"
     }
   },
   "toast": {

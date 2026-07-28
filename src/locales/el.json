@@ -452,6 +452,15 @@
       "busySlot": "Κατειλημμένο {start} – {end}",
       "availableSlots": "Available times",
       "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "Κοινωνικοί και προσαρμοσμένοι σύνδεσμοι",
+      "description": "Προσθέστε τα προφίλ σας στα μέσα κοινωνικής δικτύωσης και προσαρμοσμένους συνδέσμους για εμφάνιση στο δημόσιο προφίλ σας",
+      "visibility": "Ορατότητα συνδέσμων",
+      "addLink": "Προσθήκη συνδέσμου",
+      "customLink": "Προσαρμοσμένος σύνδεσμος",
+      "labelPlaceholder": "Ετικέτα συνδέσμου (π.χ. Το blog μου)",
+      "urlPlaceholder": "https://"
     }
   },
   "toast": {

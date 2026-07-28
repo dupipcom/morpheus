@@ -472,6 +472,15 @@
       "busySlot": "忙碌 {start} – {end}",
       "availableSlots": "Available times",
       "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "社交与自定义链接",
+      "description": "添加您的社交媒体资料和自定义链接，以在您的公开资料中显示",
+      "visibility": "链接可见性",
+      "addLink": "添加链接",
+      "customLink": "自定义链接",
+      "labelPlaceholder": "链接标签（如：我的博客）",
+      "urlPlaceholder": "https://"
     }
   },
   "toast": {

@@ -455,6 +455,15 @@
       "busySlot": "Foglalt {start} – {end}",
       "availableSlots": "Available times",
       "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "Közösségi és egyéni hivatkozások",
+      "description": "Adja hozzá közösségi médiás profiljait és egyéni hivatkozásait, hogy megjelenjenek a nyilvános profilján",
+      "visibility": "Hivatkozások láthatósága",
+      "addLink": "Hivatkozás hozzáadása",
+      "customLink": "Egyéni hivatkozás",
+      "labelPlaceholder": "Hivatkozás felirata (pl. Blogom)",
+      "urlPlaceholder": "https://"
     }
   },
   "toast": {

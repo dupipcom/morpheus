@@ -455,6 +455,15 @@
       "busySlot": "Hõivatud {start} – {end}",
       "availableSlots": "Available times",
       "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "Sotsiaalmeedia ja kohandatud lingid",
+      "description": "Lisa oma sotsiaalmeedia profiilid ja kohandatud lingid, mida kuvatakse sinu avalikul profiilil",
+      "visibility": "Linkide nähtavus",
+      "addLink": "Lisa link",
+      "customLink": "Kohandatud link",
+      "labelPlaceholder": "Lingi silt (nt Minu blogi)",
+      "urlPlaceholder": "https://"
     }
   },
   "toast": {

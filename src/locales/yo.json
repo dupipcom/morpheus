@@ -470,6 +470,15 @@
       "busySlot": "O n ṣiṣẹ {start} – {end}",
       "availableSlots": "Available times",
       "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "Awọn ọna asopọ ti Awujọ ati Aṣalaye",
+      "description": "Ṣafikun awọn profaili media awujọ rẹ ati awọn ọna asopọ aṣalaye lati ṣafihan lori profaili gbangba rẹ",
+      "visibility": "Iwọle Awọn Ọna Asopọ",
+      "addLink": "Ṣafikun Ọna Asopọ",
+      "customLink": "Ọna Asopọ Aṣalaye",
+      "labelPlaceholder": "Aami ọna asopọ (fun apẹẹrẹ Bulọọgi mi)",
+      "urlPlaceholder": "https://"
     }
   },
   "toast": {

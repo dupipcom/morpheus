@@ -458,6 +458,15 @@
       "busySlot": "Okupatuta {start} – {end}",
       "availableSlots": "Available times",
       "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "Sare sozialak eta esteka pertsonalizatuak",
+      "description": "Gehitu zure sare sozialen profilak eta esteka pertsonalizatuak zure profil publikoan erakusteko",
+      "visibility": "Esteken ikusgarritasuna",
+      "addLink": "Esteka gehitu",
+      "customLink": "Esteka pertsonalizatua",
+      "labelPlaceholder": "Estekaren etiketa (adib. Nire bloga)",
+      "urlPlaceholder": "https://"
     }
   },
   "toast": {
