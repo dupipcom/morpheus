@@ -472,6 +472,15 @@
       "busySlot": "予定あり {start} – {end}",
       "availableSlots": "Available times",
       "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "ソーシャル・カスタムリンク",
+      "description": "ソーシャルメディアのプロフィールやカスタムリンクを追加して、公開プロフィールに表示します",
+      "visibility": "リンクの公開設定",
+      "addLink": "リンクを追加",
+      "customLink": "カスタムリンク",
+      "labelPlaceholder": "リンクのラベル（例：マイブログ）",
+      "urlPlaceholder": "https://"
     }
   },
   "toast": {

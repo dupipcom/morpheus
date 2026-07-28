@@ -455,6 +455,15 @@
       "busySlot": "Ocupat {start} – {end}",
       "availableSlots": "Available times",
       "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "Linkuri sociale și personalizate",
+      "description": "Adăugați profilele dvs. de social media și linkuri personalizate pentru a fi afișate în profilul dvs. public",
+      "visibility": "Vizibilitate linkuri",
+      "addLink": "Adaugă link",
+      "customLink": "Link personalizat",
+      "labelPlaceholder": "Etichetă link (ex. Blogul meu)",
+      "urlPlaceholder": "https://"
     }
   },
   "toast": {

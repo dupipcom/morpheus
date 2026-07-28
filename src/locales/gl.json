@@ -458,6 +458,15 @@
       "busySlot": "Ocupado {start} – {end}",
       "availableSlots": "Available times",
       "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "Redes sociais e ligazóns personalizadas",
+      "description": "Engade os teus perfís de redes sociais e ligazóns personalizadas para mostrar no teu perfil público",
+      "visibility": "Visibilidade das ligazóns",
+      "addLink": "Engadir ligazón",
+      "customLink": "Ligazón personalizada",
+      "labelPlaceholder": "Etiqueta da ligazón (p. ex. O meu blog)",
+      "urlPlaceholder": "https://"
     }
   },
   "toast": {

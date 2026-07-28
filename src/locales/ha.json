@@ -469,6 +469,15 @@
       "busySlot": "Mai aiki {start} – {end}",
       "availableSlots": "Available times",
       "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "Hanyoyin Sadarwar Jama'a da Na Musamman",
+      "description": "Ƙara bayanan bayanin ku na kafar sada zumunta da hanyoyin haɗi na musamman don nuna su akan bayanin ku na jama'a",
+      "visibility": "Nuna Hanyoyin Haɗi",
+      "addLink": "Ƙara Hanyar Haɗi",
+      "customLink": "Hanyar Haɗi ta Musamman",
+      "labelPlaceholder": "Taken hanyar haɗi (misali: Blog na)",
+      "urlPlaceholder": "https://"
     }
   },
   "toast": {

@@ -459,6 +459,15 @@
       "busySlot": "Varattu {start} – {end}",
       "availableSlots": "Available times",
       "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "Sosiaalisen median ja mukautetut linkit",
+      "description": "Lisää sosiaalisen median profiilisi ja mukautetut linkit näkyviin julkisella profiilillasi",
+      "visibility": "Linkkien näkyvyys",
+      "addLink": "Lisää linkki",
+      "customLink": "Mukautettu linkki",
+      "labelPlaceholder": "Linkin otsikko (esim. Blogini)",
+      "urlPlaceholder": "https://"
     }
   },
   "toast": {

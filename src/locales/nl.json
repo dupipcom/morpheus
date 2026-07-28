@@ -455,6 +455,15 @@
       "busySlot": "Bezet {start} – {end}",
       "availableSlots": "Available times",
       "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "Sociale en aangepaste links",
+      "description": "Voeg uw sociale mediaprofielen en aangepaste links toe om weer te geven op uw openbaar profiel",
+      "visibility": "Zichtbaarheid van links",
+      "addLink": "Link toevoegen",
+      "customLink": "Aangepaste link",
+      "labelPlaceholder": "Linkbeschrijving (bijv. Mijn blog)",
+      "urlPlaceholder": "https://"
     }
   },
   "toast": {
