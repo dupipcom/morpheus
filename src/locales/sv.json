@@ -548,7 +548,7 @@
       "templateOrListLabel": "Mall eller lista",
       "chooseTemplatePlaceholder": "Välj en mall",
       "budgetLabel": "Budget",
-      "budgetPercentageLabel": "Personlig budgetfördelning",
+      "premiumPercentageLabel": "Personlig budgetfördelning",
       "dueDateLabel": "Förfallodag",
       "pickDatePlaceholder": "Välj ett datum",
       "cadenceLabel": "Kadens",
@@ -583,7 +583,24 @@
       "save": "Spara",
       "cancel": "Avbryt",
       "deleteListConfirm": "Radera den här listan? Detta kan inte ångras.",
-      "deleteList": "Radera lista"
+      "deleteList": "Radera lista",
+      "manageTasks": "Hantera uppgifter",
+      "manageBudgetAllocation": "Budgetfördelning",
+      "distributionModeLabel": "Fördelning",
+      "distributionMode": {
+        "equal": "Lika",
+        "area": "Per område",
+        "category": "Per kategori",
+        "task": "Per uppgift"
+      },
+      "areaDistributionLabel": "Områdesbudget",
+      "areaPrizeDistributionLabel": "Områdespris",
+      "categoryDistributionLabel": "Kategoribudget",
+      "categoryPrizeDistributionLabel": "Kategoripris",
+      "taskDistributionLabel": "Budget",
+      "premiumLabel": "Pris",
+      "totalLabel": "Totalt",
+      "addTaskTitle": "Lägg till uppgift"
     },
     "addTemplateForm": {
       "title": "Skapa ny mall",

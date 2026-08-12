@@ -62,33 +62,39 @@ export async function POST(req: Request) {
                     const clerkUsername: string | null = webhookData?.username ?? null;
                     const clerkImageUrl: string | null = webhookData?.image_url ?? webhookData?.imageUrl ?? null;
 
-                    // Check if a profile already exists (upsert may have found existing user)
                     const existingProfile = await prisma.profile.findUnique({
                         where: { userId: user.id }
                     });
-
                     if (!existingProfile) {
-                        await prisma.profile.create({
+                        const createData: any = {
+                            userId: user.id,
                             data: {
-                                userId: user.id,
-                                // Only set root-level username when available; null would violate the @unique constraint
-                                // for multiple email-only users (preserves old clerk+db username constraints)
-                                ...(clerkUsername ? { username: clerkUsername } : {}),
-                                data: {
-                                    username: {
-                                        value: clerkUsername,
-                                        visibility: true
-                                    },
-                                    profilePicture: clerkImageUrl ? {
-                                        value: clerkImageUrl,
-                                        visibility: false
-                                    } : undefined
+                                username: {
+                                    value: clerkUsername,
+                                    visibility: true
                                 }
                             }
-                        });
-
+                        };
+                        // Only set root-level username when available — null violates MongoDB unique index
                         if (clerkUsername) {
-                            revalidatePath(`/@${clerkUsername}`);
+                            createData.username = clerkUsername;
+                        }
+                        if (clerkImageUrl) {
+                            createData.data.profilePicture = {
+                                value: clerkImageUrl,
+                                visibility: false
+                            };
+                        }
+                        try {
+                            await prisma.profile.create({ data: createData });
+                            if (clerkUsername) {
+                                revalidatePath(`/@${clerkUsername}`);
+                            }
+                        } catch (createError: any) {
+                            if (createError?.code !== 'P2002') {
+                                throw createError;
+                            }
+                            // P2002: profile was just created by a concurrent handler — that's fine
                         }
                     }
                 } catch (error) {
@@ -108,18 +114,30 @@ export async function POST(req: Request) {
                         });
 
                         if (dbUser && (!dbUser.profiles || dbUser.profiles.length === 0)) {
-                            // Profile missing — create a basic one so the user is never profileless
-                            await prisma.profile.create({
-                                data: {
-                                    userId: dbUser.id,
-                                    data: {
-                                        username: {
-                                            value: null,
-                                            visibility: true
-                                        }
-                                    }
-                                }
+                            // Profile missing — create if still missing, handle race gracefully
+                            const existingProfile = await prisma.profile.findUnique({
+                                where: { userId: dbUser.id }
                             });
+                            if (!existingProfile) {
+                                try {
+                                    await prisma.profile.create({
+                                        data: {
+                                            userId: dbUser.id,
+                                            data: {
+                                                username: {
+                                                    value: null,
+                                                    visibility: true
+                                                }
+                                            }
+                                        }
+                                    });
+                                } catch (createError: any) {
+                                    if (createError?.code !== 'P2002') {
+                                        throw createError;
+                                    }
+                                    // P2002: profile was just created by another handler
+                                }
+                            }
                         }
                     } catch (usernameError) {
                         console.error('Error ensuring profile on session creation:', usernameError);
@@ -140,35 +158,29 @@ export async function POST(req: Request) {
                         });
 
                         if (dbUser) {
-                            if (dbUser.profiles && dbUser.profiles.length > 0) {
-                                const existingData = dbUser.profiles[0].data || {}
-                                await prisma.profile.update({
-                                    where: { userId: dbUser.id },
+                            // Use upsert to atomically create or update, avoiding race conditions
+                            await prisma.profile.upsert({
+                                where: { userId: dbUser.id },
+                                update: {
+                                    username: clerkUsername,
                                     data: {
-                                        username: clerkUsername,
-                                        data: {
-                                            ...existingData,
-                                            username: {
-                                                value: clerkUsername,
-                                                visibility: existingData.username?.visibility ?? true
-                                            }
+                                        username: {
+                                            value: clerkUsername,
+                                            visibility: true
                                         }
                                     }
-                                });
-                            } else {
-                                await prisma.profile.create({
+                                },
+                                create: {
+                                    userId: dbUser.id,
+                                    username: clerkUsername,
                                     data: {
-                                        userId: dbUser.id,
-                                        username: clerkUsername,
-                                        data: {
-                                            username: {
-                                                value: clerkUsername,
-                                                visibility: true
-                                            }
+                                        username: {
+                                            value: clerkUsername,
+                                            visibility: true
                                         }
                                     }
-                                });
-                            }
+                                }
+                            });
 
                             revalidatePath(`/@${clerkUsername}`);
                         }

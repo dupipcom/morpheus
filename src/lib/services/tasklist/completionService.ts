@@ -67,7 +67,7 @@ export function buildCompleters(
   delta: number,
   userId: string,
   perCompleterEarnings: number,
-  perCompleterPrize: number,
+  perCompleterPremium: number,
   startTime: number
 ): TaskCompleter[] {
   const appended: TaskCompleter[] = []
@@ -75,7 +75,7 @@ export function buildCompleters(
     appended.push({
       id: userId,
       earnings: perCompleterEarnings,
-      prize: perCompleterPrize,
+      premium: perCompleterPremium,
       time: startTime + i + 1,
       completedAt: new Date()
     })
@@ -148,16 +148,19 @@ export async function recordCompletions(params: {
 }): Promise<{ taskList: TaskList; earnings: ReturnType<typeof calculateTaskEarnings> }> {
   const { taskListId, user, incomingTasks, justCompletedNames, justUncompletedNames, dateISO } = await params
 
-  const taskList = await prisma.list.findUnique({ where: { id: taskListId } })
+  // Include tasks relation to get tasks from Task collection (templateTasks is deprecated)
+  const taskList = await prisma.list.findUnique({
+    where: { id: taskListId },
+    include: { tasks: true }
+  })
   if (!taskList) {
     throw new Error('TaskList not found')
   }
 
+  // Use tasks array only - templateTasks is deprecated
   const blueprintTasks: Task[] = Array.isArray(taskList.tasks)
     ? (taskList.tasks as Task[])
-    : (Array.isArray((taskList as Record<string, unknown>).templateTasks)
-      ? ((taskList as Record<string, unknown>).templateTasks as Task[])
-      : [])
+    : []
 
   const totalTasks = blueprintTasks.length || incomingTasks.length || 1
 
@@ -170,7 +173,9 @@ export async function recordCompletions(params: {
 
   const earnings = calculateTaskEarnings({
     listRole: taskList.role,
-    budgetPercentage: (taskList as Record<string, unknown>).budgetPercentage as number | undefined,
+    premiumPercentage: ((taskList as Record<string, any>).premiumPercentage !== undefined
+      ? (taskList as Record<string, any>).premiumPercentage
+      : (taskList as Record<string, any>).premiumPercentage) as number | undefined,
     listBudget: taskListBudget != null ? String(taskListBudget) : null,
     userEquity: userRecord?.equity != null ? String(userRecord.equity) : null,
     numTasks: totalTasks,

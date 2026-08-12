@@ -4,7 +4,7 @@ import React from 'react'
 import { useSearchParams } from 'next/navigation'
 
 import { ViewMenu } from '@/components/viewMenu'
-import { MoodView } from '@/views/moodView'
+import { MoodView } from '@/views/mood/moodView'
 import { PublishNote } from '@/components/publishNote'
 
 export default function LocalizedFeelMood({ params }: { params: Promise<{ locale: string }> }) {

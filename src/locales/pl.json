@@ -566,7 +566,7 @@
       "templateOrListLabel": "Szablon lub Lista",
       "chooseTemplatePlaceholder": "Wybierz szablon",
       "budgetLabel": "Budżet",
-      "budgetPercentageLabel": "Przydział budżetu osobistego",
+      "premiumPercentageLabel": "Przydział budżetu osobistego",
       "dueDateLabel": "Data wykonania",
       "pickDatePlaceholder": "Wybierz datę",
       "cadenceLabel": "Częstotliwość",
@@ -601,7 +601,24 @@
       "save": "Zapisz",
       "cancel": "Anuluj",
       "deleteListConfirm": "Usunąć tę listę? Nie można tego cofnąć.",
-      "deleteList": "Usuń listę"
+      "deleteList": "Usuń listę",
+      "manageTasks": "Zarządzaj zadaniami",
+      "manageBudgetAllocation": "Dystrybucja budżetu",
+      "distributionModeLabel": "Dystrybucja",
+      "distributionMode": {
+        "equal": "Równo",
+        "area": "Wg obszaru",
+        "category": "Wg kategorii",
+        "task": "Na zadanie"
+      },
+      "areaDistributionLabel": "Budżet obszaru",
+      "areaPrizeDistributionLabel": "Nagroda obszaru",
+      "categoryDistributionLabel": "Budżet kategorii",
+      "categoryPrizeDistributionLabel": "Nagroda kategorii",
+      "taskDistributionLabel": "Budżet",
+      "premiumLabel": "Nagroda",
+      "totalLabel": "Łącznie",
+      "addTaskTitle": "Dodaj zadanie"
     },
     "addTemplateForm": {
       "title": "Utwórz nowy szablon",

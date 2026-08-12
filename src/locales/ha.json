@@ -594,7 +594,24 @@
       "cancel": "Soke",
       "deleteListConfirm": "Share wannan jerin? Ba za a iya soke wannan ba.",
       "deleteList": "Share jeri",
-      "budgetPercentageLabel": "Personal budget allocation"
+      "premiumPercentageLabel": "Personal budget allocation",
+      "manageTasks": "Gudanar da ayyuka",
+      "manageBudgetAllocation": "Rarraba kasafin kuɗi",
+      "distributionModeLabel": "Rarraba",
+      "distributionMode": {
+        "equal": "Daidai",
+        "area": "Ta yanki",
+        "category": "Ta nau'i",
+        "task": "Kowane aiki"
+      },
+      "areaDistributionLabel": "Kasafin yanki",
+      "areaPrizeDistributionLabel": "Kyautar yanki",
+      "categoryDistributionLabel": "Kasafin nau'i",
+      "categoryPrizeDistributionLabel": "Kyautar nau'i",
+      "taskDistributionLabel": "Kasafin kuɗi",
+      "premiumLabel": "Kyauta",
+      "totalLabel": "Jimla",
+      "addTaskTitle": "Ƙara aiki"
     },
     "addTemplateForm": {
       "title": "Ƙirƙiri Sabon Samfurin",

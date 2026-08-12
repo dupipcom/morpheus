@@ -14,7 +14,6 @@ import {
   Task,
   TaskList,
   TaskListPostBody,
-  EphemeralTasks,
   CompletedTasks,
   Productivity
 } from '@/lib/services/tasklist'
@@ -34,6 +33,7 @@ import {
   updateUserStashAndProfit
 } from '@/lib/services/tasklist'
 import { calculateDateComponents, updateDayTicker, findOrCreateDay } from '@/lib/services/tasklist'
+import { calculateTaskBudgetFromDistribution } from '@/lib/services/task/taskMigrationService'
 
 interface UserData {
   id: string
@@ -50,7 +50,11 @@ export async function updateTaskCompletionHandler(
   user: UserData
 ): Promise<NextResponse> {
   const taskListId = body.taskListId!
-  const taskList = await prisma.list.findUnique({ where: { id: taskListId } })
+  // Include tasks relation to get tasks from Task collection (templateTasks is deprecated)
+  const taskList = await prisma.list.findUnique({
+    where: { id: taskListId },
+    include: { tasks: true }
+  })
 
   if (!taskList) {
     return NextResponse.json({ error: 'TaskList not found' }, { status: 404 })
@@ -67,13 +71,11 @@ export async function updateTaskCompletionHandler(
 
   const taskMatcher = createTaskMatcher(taskId, taskKey)
 
-  // Get task from templateTasks or tasks to use as base
+  // Get task from tasks array (templateTasks is deprecated - using Task collection only)
   let baseTask: Task | null = null
   const tasks = Array.isArray(taskList.tasks)
     ? (taskList.tasks as Task[])
-    : (Array.isArray((taskList as Record<string, unknown>).templateTasks)
-      ? ((taskList as Record<string, unknown>).templateTasks as Task[])
-      : [])
+    : []
 
   // First try to find by taskId
   if (taskId) {
@@ -85,31 +87,12 @@ export async function updateTaskCompletionHandler(
     baseTask = tasks.find(taskMatcher) || null
   }
 
-  // Check templateTasks if not found
+  // ephemeralTasks is deprecated - non-recurring tasks are now in the Task collection
   if (!baseTask) {
-    const templateTasks = Array.isArray((taskList as Record<string, unknown>).templateTasks)
-      ? ((taskList as Record<string, unknown>).templateTasks as Task[])
-      : []
-    if (taskId) {
-      baseTask = templateTasks.find((task) => task.id === taskId || task.localeKey === taskId) || null
-    }
-    if (!baseTask && taskKey) {
-      baseTask = templateTasks.find(taskMatcher) || null
-    }
-  }
-
-  // Check ephemeral tasks
-  let ephemeralTasks = ((taskList as Record<string, unknown>).ephemeralTasks as EphemeralTasks) || { open: [], closed: [] }
-  let open = Array.isArray(ephemeralTasks.open) ? ephemeralTasks.open : []
-  let closed = Array.isArray(ephemeralTasks.closed) ? ephemeralTasks.closed : []
-
-  const ephemeralTask = [...open, ...closed].find(taskMatcher)
-
-  if (!baseTask && !ephemeralTask) {
     return NextResponse.json({ error: 'Task not found' }, { status: 404 })
   }
 
-  const taskToUse = ephemeralTask || baseTask!
+  const taskToUse = baseTask
 
   // Update completedTasks structure
   let completedTasks = ((taskList as Record<string, unknown>).completedTasks as CompletedTasks) || {}
@@ -121,13 +104,11 @@ export async function updateTaskCompletionHandler(
     dateBucket as Task[] | { openTasks: Task[]; closedTasks: Task[]; completion: number }
   )
 
-  // Initialize from taskList.tasks if first time
+  // Initialize from taskList.tasks if first time (templateTasks is deprecated)
   if (openTasks.length === 0 && closedTasks.length === 0 && taskToUse) {
     const blueprintTasks: Task[] = Array.isArray(taskList.tasks)
       ? (taskList.tasks as Task[])
-      : (Array.isArray((taskList as Record<string, unknown>).templateTasks)
-        ? ((taskList as Record<string, unknown>).templateTasks as Task[])
-        : [])
+      : []
     openTasks = blueprintTasks.map((t) => ({ ...t, count: 0, status: 'open', completers: [] }))
   }
 
@@ -158,28 +139,32 @@ export async function updateTaskCompletionHandler(
     if (isCompleted && updatedCount > currentCount) {
       const delta = updatedCount - currentCount
       for (let i = 0; i < delta; i++) {
-        const perCompleterEarnings = getPerCompleterProfit(calculateTaskEarnings({
-          listRole: taskList.role,
-          budgetPercentage: (taskList as Record<string, unknown>).budgetPercentage as number | undefined,
-          listBudget: taskList.budget != null ? String(taskList.budget) : null,
-          userEquity: user.equity != null ? String(user.equity) : null,
-          numTasks: tasks.length || 1,
-          date: new Date(dateISO)
-        }), taskList.role)
+        // Parse remainingBudget (it's stored as String in DB)
+        const remainingBudget = taskList.remainingBudget ? parseFloat(taskList.remainingBudget as string) : (taskList.budget ? Number(taskList.budget) : null)
+        
+        // Use budget distribution to get task-specific budget and prize with all safety checks
+        // templateTasks is deprecated - using Task collection only
+        const taskBudgetAllocation = calculateTaskBudgetFromDistribution({
+          task: taskToUse,
+          list: {
+            budget: taskList.budget ? Number(taskList.budget) : null,
+            budgetDistribution: (taskList as Record<string, unknown>).budgetDistribution as any,
+            premiumPercentage: (taskList as Record<string, unknown>).premiumPercentage as number | undefined,
+            tasks: tasks
+          },
+          userEquity: user.equity,
+          remainingBudget: remainingBudget
+        })
 
-        const perCompleterPrize = getPerCompleterPrize(calculateTaskEarnings({
-          listRole: taskList.role,
-          budgetPercentage: (taskList as Record<string, unknown>).budgetPercentage as number | undefined,
-          listBudget: taskList.budget != null ? String(taskList.budget) : null,
-          userEquity: user.equity != null ? String(user.equity) : null,
-          numTasks: tasks.length || 1,
-          date: new Date(dateISO)
-        }), taskList.role)
+        // Use the calculated budget and premium directly - they already account for distribution
+        // No fallback to old calculation to prevent using full equity pool
+        const perCompleterEarnings = taskBudgetAllocation.budget || 0
+        const perCompleterPremium = taskBudgetAllocation.premium || 0
 
         updatedCompleters.push({
           id: user.id,
           earnings: perCompleterEarnings,
-          prize: perCompleterPrize,
+          premium: perCompleterPremium,
           time: updatedCompleters.length + 1,
           completedAt: new Date()
         })
@@ -225,26 +210,7 @@ export async function updateTaskCompletionHandler(
     }
     completedTasks[year] = yearBucket
 
-    // Update ephemeral tasks if needed
-    if (ephemeralTask) {
-      if (finalStatus === 'done' && updatedCount >= times) {
-        open = open.filter((t) => !taskMatcher(t))
-        closed = closed.filter((t) => !taskMatcher(t))
-        closed.push({ ...ephemeralTask, status: 'done', count: updatedCount })
-      } else {
-        open = open.map((t) => {
-          if (taskMatcher(t)) {
-            return { ...t, status: finalStatus, count: updatedCount }
-          }
-          return t
-        })
-        closed = closed.filter((t) => !taskMatcher(t))
-        if (!open.find(taskMatcher)) {
-          open.push({ ...ephemeralTask, status: finalStatus, count: updatedCount })
-        }
-      }
-      ephemeralTasks = { open, closed }
-    }
+    // ephemeralTasks is deprecated - non-recurring tasks are now in the Task collection
 
     // Update user stash and profit, and Day when tasks are completed/uncompleted
     if (isCompleted || isUncompleted) {
@@ -354,10 +320,10 @@ export async function updateTaskCompletionHandler(
     }
   }
 
+  // ephemeralTasks is deprecated - non-recurring tasks are now in the Task collection
   const updated = await prisma.list.update({
     where: { id: taskList.id },
     data: {
-      ephemeralTasks: ephemeralTasks,
       completedTasks: completedTasks,
       updatedAt: new Date()
     } as Record<string, unknown>,

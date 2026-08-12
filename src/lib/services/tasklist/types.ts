@@ -4,9 +4,10 @@
  */
 
 import { Productivity, ListProductivity } from '@/lib/types'
+import { BudgetDistribution } from '@/lib/utils/budgetDistributionUtils'
 
 // Re-export for convenience
-export type { Productivity, ListProductivity }
+export type { Productivity, ListProductivity, BudgetDistribution }
 
 /**
  * User balance values extracted from database
@@ -51,7 +52,7 @@ export interface TaskListMembership {
 export interface TaskCompleter {
   id: string
   earnings: number
-  prize: number
+  premium: number
   time: number
   completedAt: Date | string
 }
@@ -83,6 +84,9 @@ export interface Task {
   completers?: TaskCompleter[]
   dueDate?: string | Date
   budget?: number | string
+  earnings?: number | string
+  premium?: number | string
+  totalGains?: number | string
   visibility?: string
   quality?: number
   redacted?: boolean
@@ -123,7 +127,7 @@ export interface TaskList {
   role?: string | null
   name?: string | null
   budget?: number | string | null
-  budgetPercentage?: number | null
+  premiumPercentage?: number | null
   remainingBudget?: string | null
   dueDate?: string | Date | null
   visibility?: string
@@ -175,8 +179,8 @@ export interface Day {
 export interface TickerEntry {
   listId: string
   taskId?: string
-  profit: number
-  prize: number
+  earnings: number
+  premium: number
 }
 
 /**
@@ -189,7 +193,9 @@ export interface TaskListPostBody {
   updateTemplate?: boolean
   name?: string
   budget?: number | string
-  budgetPercentage?: number
+  premiumPercentage?: number
+  premiumPercentage?: number
+  budgetDistribution?: BudgetDistribution
   dueDate?: string | Date
   create?: boolean
   collaborators?: string[]
@@ -247,12 +253,12 @@ export interface EphemeralReopenOp {
  */
 export interface AggregatedEarnings {
   earnings: number
-  prize: number
-  profit: number
+  premium: number
+  totalGains: number
 }
 
 /**
- * Stash and profit deltas
+ * Stash and earnings deltas
  */
 export interface StashProfitDeltas {
   stashDelta: number

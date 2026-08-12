@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { InvestView } from '@/views/investView'
+import { InvestView } from '@/views/invest/investView'
 import { ViewMenu } from '@/components/viewMenu'
 import { PublishNote } from '@/components/publishNote'
 import { BalanceSection } from '@/components/balanceSection'

@@ -111,8 +111,8 @@ export async function updateDayTicker(
         return {
           listId: taskListId,
           taskId: taskId,
-          profit: aggregated.profit || 0,
-          prize: aggregated.prize || 0
+          earnings: aggregated.earnings || 0,
+          premium: aggregated.premium || 0
         }
       })
 
@@ -406,8 +406,8 @@ export async function updateDayWithTasks(
         const tickerEntries = doneTasks.map((task) => ({
           listId: taskListId,
           taskId: task.id || task.localeKey || task.name || undefined,
-          profit: aggregated.profit || 0,
-          prize: aggregated.prize || 0
+          earnings: aggregated.earnings || 0,
+          premium: aggregated.premium || 0
         }))
 
         const taskIdMap = new Map<string, TickerEntry>()

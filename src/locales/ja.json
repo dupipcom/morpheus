@@ -562,7 +562,7 @@
       "templateOrListLabel": "テンプレートまたはリスト",
       "chooseTemplatePlaceholder": "テンプレートを選択",
       "budgetLabel": "予算",
-      "budgetPercentageLabel": "個人予算の配分",
+      "premiumPercentageLabel": "個人予算の配分",
       "dueDateLabel": "期日",
       "pickDatePlaceholder": "日付を選択",
       "cadenceLabel": "頻度",
@@ -597,7 +597,24 @@
       "save": "保存",
       "cancel": "キャンセル",
       "deleteListConfirm": "このリストを削除しますか？これは取り消せません。",
-      "deleteList": "リストを削除"
+      "deleteList": "リストを削除",
+      "manageTasks": "タスク管理",
+      "manageBudgetAllocation": "予算配分",
+      "distributionModeLabel": "配分",
+      "distributionMode": {
+        "equal": "均等",
+        "area": "エリア別",
+        "category": "カテゴリ別",
+        "task": "タスク別"
+      },
+      "areaDistributionLabel": "エリア予算",
+      "areaPrizeDistributionLabel": "エリア賞金",
+      "categoryDistributionLabel": "カテゴリ予算",
+      "categoryPrizeDistributionLabel": "カテゴリ賞金",
+      "taskDistributionLabel": "予算",
+      "premiumLabel": "賞金",
+      "totalLabel": "合計",
+      "addTaskTitle": "タスク追加"
     },
     "addTemplateForm": {
       "title": "新しいテンプレートを作成",

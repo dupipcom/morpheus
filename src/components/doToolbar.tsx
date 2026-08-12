@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useContext, useMemo, useState, useEffect, useCallback, useRef, useImperativeHandle } from 'react'
+import React, { useContext, useMemo, useState, useEffect, useCallback, useRef } from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
 import {
@@ -16,9 +16,37 @@ import { Badge } from '@/components/ui/badge'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { PercentageTicker } from '@/components/ui/percentageTicker'
 import { DatePickerButton } from '@/components/ui/datePickerButton'
-import { calculateTaskEarnings, getPerCompleterPrize, getPerCompleterProfit } from '@/lib/utils/earningsUtils'
+import { applyPremiumFactors, PremiumFactorSettings } from '@/lib/utils/earningsUtils'
 
-type TaskList = { id: string; name?: string; role?: string }
+
+type TaskList = { id: string; name?: string; role?: string; tasks?: any[] }
+
+interface ListUserIds {
+  owners: string[]
+  collaborators: string[]
+  all: string[]
+}
+
+// Helper to extract owner and collaborator IDs from a task list
+// Handles both new (users array) and old (owners/collaborators fields) data models
+function extractUserIds(list: any): ListUserIds {
+  const users = Array.isArray(list?.users) ? list.users : []
+  const ownersFromUsers = users.filter((u: any) => u.role === 'OWNER').map((u: any) => u.userId)
+  const collaboratorsFromUsers = users.filter((u: any) => u.role === 'COLLABORATOR' || u.role === 'MANAGER').map((u: any) => u.userId)
+
+  // Fallback to old fields for backward compatibility
+  const ownersFromOld = Array.isArray(list?.owners) ? list.owners : []
+  const collaboratorsFromOld = Array.isArray(list?.collaborators) ? list.collaborators : []
+
+  const owners = ownersFromUsers.length > 0 ? ownersFromUsers : ownersFromOld
+  const collaborators = collaboratorsFromUsers.length > 0 ? collaboratorsFromUsers : collaboratorsFromOld
+
+  return {
+    owners,
+    collaborators,
+    all: [...new Set([...owners, ...collaborators])]
+  }
+}
 
 // Helper to format date as YYYY-MM-DD
 function formatDateISO(date: Date): string {
@@ -39,7 +67,7 @@ function datesEqual(date1: Date | undefined, date2: Date | undefined): boolean {
 function getCompletedCount(dateData: any): number {
   if (!dateData) return 0
   if (Array.isArray(dateData)) {
-    return dateData.filter((t: any) => t.status === 'done').length
+    return dateData.filter((t: any) => t.status === 'done' || t.status === 'completed').length
   }
   if (Array.isArray(dateData.closedTasks)) {
     return dateData.closedTasks.length
@@ -79,7 +107,7 @@ export const DoToolbar = ({
   onShowAddTemplate?: () => void
   onShowEditList?: () => void
   hasFormOpen?: boolean
-  onTaskCompletionOptimistic?: () => void
+  onTaskCompletionOptimistic?: (task?: { premium?: number; budget?: number; earnings?: number }) => void
 }) => {
   const { t } = useI18n()
   const { session, taskLists: contextTaskLists, refreshTaskLists, templates: contextTemplates, refreshTemplates, selectedDate: contextSelectedDate, setSelectedDate, setGlobalContext } = useContext(GlobalContext)
@@ -133,10 +161,10 @@ export const DoToolbar = ({
 
       // Calculate from task arrays
       const openCount = Array.isArray(dateData)
-        ? dateData.filter((t: any) => t.status !== 'done').length
+        ? dateData.filter((t: any) => t.status !== 'done' && t.status !== 'completed').length
         : (Array.isArray(dateData.openTasks) ? dateData.openTasks.length : 0)
       const closedCount = Array.isArray(dateData)
-        ? dateData.filter((t: any) => t.status === 'done').length
+        ? dateData.filter((t: any) => t.status === 'done' || t.status === 'completed').length
         : (Array.isArray(dateData.closedTasks) ? dateData.closedTasks.length : 0)
       const total = openCount + closedCount
       return total > 0 ? (closedCount / total) * 100 : null
@@ -154,11 +182,8 @@ export const DoToolbar = ({
   const calculateCompletionChange = useCallback((list: any): number => {
     if (!list) return 0
 
-    const baseTasks = list.tasks?.length || list.templateTasks?.length || 0
-    const ephemeralTasks = list.ephemeralTasks || {}
-    const openEphemeral = Array.isArray(ephemeralTasks.open) ? ephemeralTasks.open.length : 0
-    const closedEphemeral = Array.isArray(ephemeralTasks.closed) ? ephemeralTasks.closed.length : 0
-    const totalTasks = baseTasks + openEphemeral + closedEphemeral
+    // Use tasks from Task collection only
+    const totalTasks = list.tasks?.length || 0
 
     if (totalTasks === 0) return 0
 
@@ -167,20 +192,13 @@ export const DoToolbar = ({
     const todayISO = formatDateISO(today)
     const yearData = list.completedTasks?.[year] || {}
 
-    const currentBaseCompleted = getCompletedCount(yearData[todayISO])
+    const currentCompleted = getCompletedCount(yearData[todayISO])
 
     // Find previous date's completion
     const previousDate = Object.keys(yearData).sort().reverse().find(d => d < todayISO)
-    const previousBaseCompleted = previousDate ? getCompletedCount(yearData[previousDate]) : 0
+    const previousCompleted = previousDate ? getCompletedCount(yearData[previousDate]) : 0
 
-    const baseTasksChange = ((currentBaseCompleted - previousBaseCompleted) / totalTasks) * 100
-
-    // Ephemeral task change increment
-    const ephemeralChange = closedEphemeral > 0 && (openEphemeral + baseTasks + 1) > 0
-      ? (1 / (openEphemeral + baseTasks + 1)) * 100
-      : 0
-
-    return baseTasksChange + ephemeralChange
+    return ((currentCompleted - previousCompleted) / totalTasks) * 100
   }, [])
 
   // Sort task lists according to specified priority
@@ -255,9 +273,9 @@ export const DoToolbar = ({
 
   const [stableTemplates, setStableTemplates] = useState<any[]>([])
   const [collabProfiles, setCollabProfiles] = useState<Record<string, string>>({})
-  const [listEarnings, setListEarnings] = useState<{ profit: number; prize: number; earnings: number }>({ profit: 0, prize: 0, earnings: 0 })
+  const [listEarnings, setListEarnings] = useState<{ earnings: number; premium: number; totalGains: number }>({ earnings: 0, premium: 0, totalGains: 0 })
   const [dayData, setDayData] = useState<any>(null)
-  const [optimisticEarnings, setOptimisticEarnings] = useState<{ profit: number; prize: number }>({ profit: 0, prize: 0 })
+  const [optimisticEarnings, setOptimisticEarnings] = useState<{ earnings: number; premium: number }>({ earnings: 0, premium: 0 })
   const [optimisticCompletionDelta, setOptimisticCompletionDelta] = useState<number>(0)
 
   // Update stable templates only when context has valid data (never clear once we have data)
@@ -296,87 +314,122 @@ export const DoToolbar = ({
     return () => { cancelled = true }
   }, [selectedDateToUse, session?.user])
 
-  // Calculate earnings for the selected list from day.ticker
+  // Calculate earnings for the selected list from Jobs
+  // Rules based on list recurrence:
+  // - one-off: roll up all ACCEPTED jobs for the list (regardless of occurrence date)
+  // - daily: roll up ACCEPTED jobs where occurrence date matches selected date
+  // - weekly: roll up ACCEPTED jobs where occurrence date is within current week
   useEffect(() => {
     const resetEarnings = () => {
-      setListEarnings({ profit: 0, prize: 0, earnings: 0 })
-      setOptimisticEarnings({ profit: 0, prize: 0 })
+      setListEarnings({ earnings: 0, premium: 0, totalGains: 0 })
+      setOptimisticEarnings({ earnings: 0, premium: 0 })
     }
 
-    if (!selectedList?.id || !dayData) {
+    if (!selectedList?.id || !session?.user?.id) {
       resetEarnings()
       return
     }
 
-    try {
-      const tickers = Array.isArray(dayData.ticker) ? dayData.ticker : []
-      const tickerEntries = tickers.filter((t: any) => t.listId === selectedList.id)
-
-      const totals = tickerEntries.reduce(
-        (acc: { profit: number; prize: number }, entry: any) => ({
-          profit: acc.profit + safeParseNumber(entry.profit),
-          prize: acc.prize + safeParseNumber(entry.prize)
-        }),
-        { profit: 0, prize: 0 }
-      )
-
-      setListEarnings({ ...totals, earnings: totals.profit + totals.prize })
-      setOptimisticEarnings({ profit: 0, prize: 0 })
-    } catch (error) {
-      console.error('Error calculating list earnings from day.ticker:', error)
-      resetEarnings()
+    let cancelled = false
+    const fetchJobEarnings = async () => {
+      try {
+        const listRole = selectedList.role || ''
+        const [rolePrefix] = listRole.includes('.') ? listRole.split('.') : [listRole]
+        const isDaily = listRole.startsWith('daily.')
+        const isWeekly = listRole.startsWith('weekly.')
+        const isOneOff = rolePrefix === 'one-off' || rolePrefix === 'oneoff'
+        
+        // Build query params
+        const params = new URLSearchParams()
+        params.append('listId', selectedList.id)
+        params.append('workerId', session.user.id)
+        params.append('status', 'ACCEPTED')
+        
+        if (isDaily && selectedDateToUse) {
+          // Filter by specific date
+          const dateISO = formatDateISO(selectedDateToUse)
+          params.append('date', dateISO)
+        } else if (isWeekly && selectedDateToUse) {
+          // For weekly, fetch jobs for the whole week (Sunday to Saturday)
+          const dayOfWeek = selectedDateToUse.getDay()
+          const weekStartTime = selectedDateToUse.getTime() - (dayOfWeek * 24 * 60 * 60 * 1000)
+          const weekEndTime = weekStartTime + (6 * 24 * 60 * 60 * 1000)
+          const weekStart = new Date(weekStartTime)
+          const weekEnd = new Date(weekEndTime)
+          
+          params.append('dateStart', formatDateISO(weekStart))
+          params.append('dateEnd', formatDateISO(weekEnd))
+        }
+        // For one-off lists, no date filter is applied - fetches all jobs
+        
+        const res = await fetch(`/api/v1/jobs?${params.toString()}`)
+        if (cancelled) return
+        
+        if (!res.ok) {
+          console.error('Error fetching jobs for earnings:', res.status)
+          resetEarnings()
+          return
+        }
+        
+        const data = await res.json()
+        const jobs = Array.isArray(data.jobs) ? data.jobs : []
+        
+        // Sum up earnings and premium from all accepted jobs
+        const totals = jobs.reduce(
+          (acc: { earnings: number; premium: number }, job: any) => ({
+            earnings: acc.earnings + safeParseNumber(job.earnings),
+            premium: acc.premium + safeParseNumber(job.premium)
+          }),
+          { earnings: 0, premium: 0 }
+        )
+        
+        if (!cancelled) {
+          setListEarnings({ ...totals, totalGains: totals.earnings + totals.premium })
+          setOptimisticEarnings({ earnings: 0, premium: 0 })
+        }
+      } catch (error) {
+        console.error('Error calculating list earnings from jobs:', error)
+        if (!cancelled) {
+          resetEarnings()
+        }
+      }
     }
-  }, [selectedList?.id, dayData])
+    
+    fetchJobEarnings()
+    return () => { cancelled = true }
+  }, [selectedList?.id, selectedList?.role, selectedDateToUse, session?.user?.id])
 
   // Add optimistic earnings for a task completion
-  const addOptimisticTaskEarnings = useCallback(() => {
-    if (!selectedList || !session?.user) return
+  // Uses estimated totalGain displayed in taskItem badge
+  const addOptimisticTaskEarnings = useCallback((taskEarnings?: number, taskPremium?: number) => {
+    if (!selectedList) return
 
-    try {
-      // Get user equity from session
-      const userEquity = (session.user as any).equity || '0'
-
-      // Count total tasks in the list
-      const tasksCount = (selectedList.tasks || []).length || (selectedList.templateTasks || []).length || 1
-
-      // Calculate earnings for this task completion
-      const earningsCalculation = calculateTaskEarnings({
-        listRole: selectedList.role,
-        budgetPercentage: selectedList.budgetPercentage as number | undefined,
-        listBudget: selectedList.budget,
-        userEquity: userEquity,
-        numTasks: tasksCount,
-        date: selectedDateToUse || new Date()
-      })
-
-      // Get per-completer prize and profit based on list cadence
-      const prize = getPerCompleterPrize(earningsCalculation, selectedList.role)
-      const profit = getPerCompleterProfit(earningsCalculation, selectedList.role)
-
-      // Add to optimistic earnings
-      setOptimisticEarnings(prev => ({
-        profit: prev.profit + profit,
-        prize: prev.prize + prize
-      }))
-
-      // Auto-clear after 5 seconds (safety timeout)
-      setTimeout(() => {
-        setOptimisticEarnings({ profit: 0, prize: 0 })
-      }, 5000)
-    } catch (error) {
-      console.error('Error calculating optimistic earnings:', error)
-    }
-  }, [selectedList, session?.user, selectedDateToUse])
+    // Use provided taskEarnings and taskPremium (already calculated from budget distribution)
+    // These come from the taskItem badge which calculates them from budget distribution
+    const earnings = taskEarnings || 0
+    const premium = taskPremium || 0
+    
+    // Only add if there are actual values
+    if (premium === 0 && earnings === 0) return
+    
+    // Add to optimistic earnings
+    setOptimisticEarnings(prev => ({
+      earnings: prev.earnings + earnings,
+      premium: prev.premium + premium
+    }))
+    
+    // Auto-clear after 5 seconds (safety timeout)
+    setTimeout(() => {
+      setOptimisticEarnings({ earnings: 0, premium: 0 })
+    }, 5000)
+  }, [selectedList])
 
   // Add optimistic completion percentage increase
   const addOptimisticCompletion = useCallback(() => {
     if (!selectedList) return
 
-    // Get current task counts
-    const baseTasks = (selectedList.tasks || selectedList.templateTasks || []).length
-    const ephemeralOpen = (selectedList.ephemeralTasks?.open || []).length
-    const ephemeralClosed = (selectedList.ephemeralTasks?.closed || []).length
-    const totalTasks = baseTasks + ephemeralOpen + ephemeralClosed
+    // Use tasks from Task collection only
+    const totalTasks = (selectedList.tasks || []).length
 
     if (totalTasks === 0) return
 
@@ -391,8 +444,8 @@ export const DoToolbar = ({
   }, [selectedList])
 
   // Combined optimistic callback for both earnings and completion
-  const handleTaskCompletionOptimistic = useCallback(() => {
-    addOptimisticTaskEarnings()
+  const handleTaskCompletionOptimistic = useCallback((taskEarnings?: number, taskPremium?: number) => {
+    addOptimisticTaskEarnings(taskEarnings, taskPremium)
     addOptimisticCompletion()
   }, [addOptimisticTaskEarnings, addOptimisticCompletion])
 
@@ -421,20 +474,9 @@ export const DoToolbar = ({
     let cancelled = false
     const run = async () => {
       try {
-        // Extract user IDs from users array (new model) or fallback to old fields
-        const users = Array.isArray((selectedList as any)?.users) ? (selectedList as any).users : []
-        const ownersFromUsers = users.filter((u: any) => u.role === 'OWNER').map((u: any) => u.userId)
-        const collaboratorsFromUsers = users.filter((u: any) => u.role === 'COLLABORATOR' || u.role === 'MANAGER').map((u: any) => u.userId)
-        
-        // Fallback to old fields for backward compatibility
-        const ownersFromOldField = Array.isArray((selectedList as any)?.owners) ? (selectedList as any).owners : []
-        const collaboratorsFromOldField = Array.isArray((selectedList as any)?.collaborators) ? (selectedList as any).collaborators : []
-        
-        const owners = ownersFromUsers.length > 0 ? ownersFromUsers : ownersFromOldField
-        const collaborators = collaboratorsFromUsers.length > 0 ? collaboratorsFromUsers : collaboratorsFromOldField
-        const allIds = [...new Set([...owners, ...collaborators])]
-        
+        const { all: allIds } = extractUserIds(selectedList)
         if (!allIds.length) { setCollabProfiles({}); return }
+
         const res = await fetch(`/api/v1/profiles/by-ids?ids=${encodeURIComponent(allIds.join(','))}`)
         if (!cancelled && res.ok) {
           const data = await res.json()
@@ -457,7 +499,7 @@ export const DoToolbar = ({
 
   // Determine if we should show the prize badge
   const shouldShowPrizeBadge = useMemo(() => {
-    if (typeof (selectedList as any)?.budgetPercentage !== 'number' || (selectedList as any).budgetPercentage <= 0) {
+    if (typeof (selectedList as any)?.premiumPercentage !== 'number' || (selectedList as any).premiumPercentage <= 0) {
       return false
     }
     const listRole = (selectedList as any)?.role
@@ -595,7 +637,7 @@ export const DoToolbar = ({
                 </div>
               </div>
 
-              {/* Badges row: budget, budgetPercentage, due date, collaborators, earnings */}
+              {/* Badges row: budget, premiumPercentage, due date, collaborators, earnings */}
               {selectedList && (
                 <div className="flex items-center gap-2 flex-wrap">
                   {/* Budget badge - show if budget is allocated (exists and > 0) */}
@@ -605,24 +647,24 @@ export const DoToolbar = ({
                       Budget: ${parseFloat(String((selectedList as any).budget)).toFixed(2)}
                     </Badge>
                   )}
-                  {/* Budget percentage badge - show if budgetPercentage is allocated */}
-                  {typeof (selectedList as any)?.budgetPercentage === 'number' && (selectedList as any).budgetPercentage > 0 && (
+                  {/* Budget percentage badge - show if premiumPercentage is allocated */}
+                  {typeof (selectedList as any)?.premiumPercentage === 'number' && (selectedList as any).premiumPercentage > 0 && (
                     <Badge variant="outline" className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80">
-                      {(selectedList as any).budgetPercentage.toFixed(0)}% of budget
+                      {(selectedList as any).premiumPercentage.toFixed(0)}% of budget
                     </Badge>
                   )}
-                  {/* Prize badge - show if budgetPercentage is allocated */}
+                  {/* Premium badge - show if premiumPercentage is allocated */}
                   {shouldShowPrizeBadge && (
-                    <Badge variant="outline" className={optimisticEarnings.prize > 0 ? "bg-green-100 text-green-800 border-green-300 hover:bg-green-200 animate-pulse" : "bg-green-50 text-green-700 border-green-200 hover:bg-green-100"}>
+                    <Badge variant="outline" className={optimisticEarnings.premium > 0 ? "bg-green-100 text-green-800 border-green-300 hover:bg-green-200 animate-pulse" : "bg-green-50 text-green-700 border-green-200 hover:bg-green-100"}>
                       <Award className="h-3 w-3 mr-1" />
-                      Prize: ${(listEarnings.prize + optimisticEarnings.prize).toFixed(2)}
+                      Premium: ${(listEarnings.premium + optimisticEarnings.premium).toFixed(2)}
                     </Badge>
                   )}
-                  {/* Profit badge - show if there is profit from ticker or optimistic */}
-                  {(listEarnings.profit > 0 || optimisticEarnings.profit > 0) && (
-                    <Badge variant="outline" className={optimisticEarnings.profit > 0 ? "bg-blue-100 text-blue-800 border-blue-300 hover:bg-blue-200 animate-pulse" : "bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100"}>
+                  {/* Earnings badge - show if there are earnings from ticker or optimistic */}
+                  {(listEarnings.earnings > 0 || optimisticEarnings.earnings > 0) && (
+                    <Badge variant="outline" className={optimisticEarnings.earnings > 0 ? "bg-blue-100 text-blue-800 border-blue-300 hover:bg-blue-200 animate-pulse" : "bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100"}>
                       <TrendingUp className="h-3 w-3 mr-1" />
-                      Profit: ${(listEarnings.profit + optimisticEarnings.profit).toFixed(2)}
+                      Earnings: ${(listEarnings.earnings + optimisticEarnings.earnings).toFixed(2)}
                     </Badge>
                   )}
                   {(selectedList as any)?.dueDate && (
@@ -631,43 +673,31 @@ export const DoToolbar = ({
                       {(selectedList as any).dueDate}
                     </Badge>
                   )}
-                  {/* Show owner and collaborator badges from users array */}
+                  {/* Show owner and collaborator badges */}
                   {(() => {
-                    const users = Array.isArray((selectedList as any)?.users) ? (selectedList as any).users : []
-                    const owners = users.filter((u: any) => u.role === 'OWNER').map((u: any) => u.userId)
-                    const collaborators = users.filter((u: any) => u.role === 'COLLABORATOR' || u.role === 'MANAGER').map((u: any) => u.userId)
-                    
-                    // Fallback to old fields for backward compatibility
-                    const ownersFromOld = Array.isArray((selectedList as any)?.owners) ? (selectedList as any).owners : []
-                    const collaboratorsFromOld = Array.isArray((selectedList as any)?.collaborators) ? (selectedList as any).collaborators : []
-                    
-                    const allOwners = owners.length > 0 ? owners : ownersFromOld
-                    const allCollaborators = collaborators.length > 0 ? collaborators : collaboratorsFromOld
-                    
+                    const { owners, collaborators } = extractUserIds(selectedList)
+                    const renderUserBadge = (id: string, isOwner: boolean) => {
+                      const userName = collabProfiles[id] || id
+                      const earnings = (selectedList as any)?.collaboratorEarnings?.[userName] || 0
+                      return (
+                        <Badge
+                          key={`${isOwner ? 'owner' : 'collab'}-${id}`}
+                          variant={isOwner ? 'default' : undefined}
+                          className={isOwner
+                            ? 'bg-primary dark:bg-accent text-background hover:bg-foreground/90'
+                            : 'bg-muted text-muted-foreground border-muted hover:bg-secondary/80'
+                          }
+                        >
+                          <UserIcon className="h-3 w-3 mr-1" />
+                          @{userName}{earnings > 0 ? `: $${earnings.toFixed(2)}` : ''}
+                        </Badge>
+                      )
+                    }
+
                     return (
                       <>
-                        {/* Show owner badges when there are collaborators */}
-                        {allCollaborators.length > 0 && allOwners.map((id: string) => {
-                    const userName = collabProfiles[id] || id
-                    const earnings = (selectedList as any)?.collaboratorEarnings?.[userName] || 0
-                    return (
-                      <Badge key={`owner-${id}`} variant="default" className="bg-primary dark:bg-accent text-background hover:bg-foreground/90">
-                        <UserIcon className="h-3 w-3 mr-1" />
-                        @{userName}{earnings > 0 ? `: $${earnings.toFixed(2)}` : ''}
-                      </Badge>
-                    )
-                  })}
-                  {/* Show collaborator badges */}
-                        {allCollaborators.map((id: string) => {
-                    const userName = collabProfiles[id] || id
-                    const earnings = (selectedList as any)?.collaboratorEarnings?.[userName] || 0
-                    return (
-                      <Badge key={`collab-${id}`} className="bg-muted text-muted-foreground border-muted hover:bg-secondary/80">
-                        <UserIcon className="h-3 w-3 mr-1" />
-                        @{userName}{earnings > 0 ? `: $${earnings.toFixed(2)}` : ''}
-                      </Badge>
-                    )
-                  })}
+                        {collaborators.length > 0 && owners.map((id: string) => renderUserBadge(id, true))}
+                        {collaborators.map((id: string) => renderUserBadge(id, false))}
                       </>
                     )
                   })()}

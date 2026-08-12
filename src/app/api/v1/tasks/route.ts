@@ -4,6 +4,8 @@ import prisma from '@/lib/prisma'
 import { getUserListRole } from '@/lib/services/auth'
 import { getTasksForDate } from '@/lib/services/task'
 import { sanitizeText } from '@/lib/utils/sanitize'
+import { applyPremiumFactors, PremiumFactorSettings } from '@/lib/utils/earningsUtils'
+import { calculateTaskBudgetFromDistribution } from '@/lib/services/task/taskMigrationService'
 
 export async function GET(request: NextRequest) {
   try {
@@ -13,14 +15,21 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Find user by Clerk userId
+    // Find user by Clerk userId (include settings for premium factor calculations)
     const user = await prisma.user.findUnique({
-      where: { userId }
+      where: { userId },
+      select: {
+        id: true,
+        settings: true
+      }
     })
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
+    
+    // Extract premium factor settings
+    const premiumFactorSettings = user.settings as PremiumFactorSettings | null
 
     const { searchParams } = new URL(request.url)
     const listId = searchParams.get('listId')
@@ -30,10 +39,23 @@ export async function GET(request: NextRequest) {
 
     // NEW: If date is provided with listId, use date-aware service
     if (date && listId) {
-      // Verify user has access to this list
+      // Verify user has access to this list and get budget info
       const list = await prisma.list.findUnique({
         where: { id: listId },
-        select: { users: true }
+        select: { 
+          users: true, 
+          role: true,
+          budget: true,
+          budgetDistribution: true,
+          premiumPercentage: true,
+          tasks: {
+            select: {
+              id: true,
+              area: true,
+              categories: true
+            }
+          }
+        }
       })
 
       if (!list) {
@@ -51,16 +73,37 @@ export async function GET(request: NextRequest) {
       }
 
       // Get tasks for the specific date with recurrence filtering
-      const tasksForDate = await getTasksForDate(listId, date)
+      // Pass list.role to avoid an extra DB query in getTasksForDate
+      const tasksForDate = await getTasksForDate(listId, date, list.role)
 
-      // Map to response format
-      const tasks = tasksForDate.map(({ task, dateStatus, dateCount, completers }) => ({
-        ...task,
-        dateStatus,      // Date-specific status
-        dateCount,       // Date-specific count
-        completers,      // Date-specific completers
-        taskStatus: task.status  // Keep original task status for reference
-      }))
+      // Map to response format and calculate financial values from budget distribution
+      const tasks = tasksForDate.map(({ task, dateStatus, dateCount, completers }) => {
+        // Calculate financial values from budget distribution (not from task fields)
+        const budgetAllocation = calculateTaskBudgetFromDistribution({
+          task,
+          list: {
+            budget: list.budget,
+            budgetDistribution: list.budgetDistribution,
+            premiumPercentage: list.premiumPercentage,
+            tasks: list.tasks,
+            role: list.role
+          }
+        })
+        
+        const rawPremium = budgetAllocation.premium || 0
+        const factoredPremium = applyPremiumFactors(rawPremium, list.role, premiumFactorSettings)
+        const earnings = budgetAllocation.budget || 0
+        
+        return {
+          ...task,
+          premium: factoredPremium,
+          totalGains: earnings + factoredPremium,
+          dateStatus,      // Date-specific status
+          dateCount,       // Date-specific count
+          completers,      // Date-specific completers
+          taskStatus: task.status  // Keep original task status for reference
+        }
+      })
 
       return NextResponse.json({ tasks, date })
     }
@@ -93,7 +136,18 @@ export async function GET(request: NextRequest) {
           select: {
             id: true,
             name: true,
-            users: true
+            users: true,
+            role: true,
+            budget: true,
+            budgetDistribution: true,
+            premiumPercentage: true,
+            tasks: {
+              select: {
+                id: true,
+                area: true,
+                categories: true
+              }
+            }
           }
         },
         jobs: {
@@ -144,6 +198,7 @@ export async function GET(request: NextRequest) {
     })
 
     // Calculate count from ACCEPTED jobs (global total across all dates)
+    // and calculate financial values from budget distribution
     const enrichedTasks = authorizedTasks.map((task: any) => {
       const acceptedJobs = task.jobs?.filter((job: any) => job.status === 'ACCEPTED') || []
       const count = acceptedJobs.length
@@ -158,11 +213,30 @@ export async function GET(request: NextRequest) {
       } else {
         status = 'OPEN'
       }
+      
+      // Calculate financial values from budget distribution (not from task fields)
+      const budgetAllocation = calculateTaskBudgetFromDistribution({
+        task,
+        list: {
+          budget: task.list?.budget,
+          budgetDistribution: task.list?.budgetDistribution,
+          premiumPercentage: task.list?.premiumPercentage,
+          tasks: task.list?.tasks,
+          role: task.list?.role
+        }
+      })
+      
+      const listRole = task.list?.role
+      const rawPremium = budgetAllocation.premium || 0
+      const factoredPremium = applyPremiumFactors(rawPremium, listRole, premiumFactorSettings)
+      const earnings = budgetAllocation.budget || 0
 
       return {
         ...task,
         count,
-        status  // Override with calculated status
+        status,  // Override with calculated status
+        premium: factoredPremium,
+        totalGains: earnings + factoredPremium
       }
     })
 

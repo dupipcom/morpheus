@@ -15,16 +15,13 @@ function acquireMigrationLock(listId: string, migrationFn: () => Promise<any>): 
 
   if (existingLock) {
     // Migration already in progress, return existing promise
-    console.log(`[Migration Mutex] Concurrent request detected for list ${listId}, reusing existing migration promise`)
     return existingLock
   }
 
   // Create new migration promise
-  console.log(`[Migration Mutex] Acquiring lock for list ${listId}`)
   const migrationPromise = migrationFn()
     .finally(() => {
       // Release lock after migration completes (success or failure)
-      console.log(`[Migration Mutex] Releasing lock for list ${listId}`)
       migrationLocks.delete(listId)
     })
 

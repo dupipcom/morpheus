@@ -5,7 +5,8 @@ import { OptionsMenuItem } from '@/components/optionsButton'
 import { Circle, Minus, Plus, Eye, EyeOff, Edit, Send, Clock } from 'lucide-react'
 import { useI18n } from '@/lib/contexts/i18n'
 import { GlobalContext } from '@/lib/contexts'
-import { getProfitPerTask } from '@/lib/utils/earningsUtils'
+import { calculatePrizePool, applyPremiumFactors, PremiumFactorSettings } from '@/lib/utils/earningsUtils'
+import { getTaskAllocationFromDistribution, convertEntityAllocationsToMaps } from '@/lib/utils/budgetDistributionUtils'
 import { TaskItem } from '@/components/taskItem'
 import { TaskStatus, STATUS_OPTIONS, getStatusColor, getIconColor, getTaskKey, getTaskStatus, mapStatusToEnum } from '@/lib/utils/taskUtils'
 
@@ -54,8 +55,11 @@ export const TaskGrid = ({
   onRefreshTasks,
 }: TaskGridProps) => {
   const { t } = useI18n()
-  const { refreshTaskLists, handleTaskCompletionOptimistic } = useContext(GlobalContext)
+  const { refreshTaskLists, handleTaskCompletionOptimistic, session } = useContext(GlobalContext)
   const [editingTask, setEditingTask] = useState<any>(null)
+  
+  // Get user settings for premium factor calculations
+  const userSettings = (session?.user as any)?.settings as PremiumFactorSettings | null
 
   // Job workflow dialog state
   const [isSubmitDialogOpen, setIsSubmitDialogOpen] = useState(false)
@@ -109,7 +113,7 @@ export const TaskGrid = ({
     const isDone = (t: any) => {
       const key = getTaskKey(t)
       const taskStatus = taskStatuses[key] || getTaskStatus(t)
-      return taskStatus === 'done'
+      return taskStatus === 'done' || taskStatus === 'completed'
     }
     const getTaskStatusForSort = (t: any): TaskStatus => {
       const key = getTaskKey(t)
@@ -228,8 +232,9 @@ export const TaskGrid = ({
   const jobsByTask = useMemo(() => {
     const map: Record<string, JobWithRelations> = {}
     optimisticJobs.forEach((job: JobWithRelations) => {
-      // Store latest non-rejected/accepted job for each task (active jobs)
-      const isActiveJob = !['ACCEPTED', 'REJECTED'].includes(job.status)
+      // Store latest non-terminal job for each task (active jobs)
+      // Terminal states: ACCEPTED, REJECTED, CANCELLED
+      const isActiveJob = !['ACCEPTED', 'REJECTED', 'CANCELLED'].includes(job.status)
       if (isActiveJob && (!map[job.taskId] || new Date(job.createdAt) > new Date(map[job.taskId].createdAt))) {
         map[job.taskId] = job
       }
@@ -520,7 +525,7 @@ export const TaskGrid = ({
         {sortedTasks.map((task: any) => {
         const key = getTaskKey(task)
         const taskStatus = taskStatuses[key] || getTaskStatus(task)
-        const isDone = taskStatus === 'done'
+        const isDone = taskStatus === 'done' || taskStatus === 'completed'
         
         // Get optimistic count from pending completions to ensure task object has latest count
         const pendingCompletion = pendingCompletionsRef.current.get(key)
@@ -555,12 +560,85 @@ export const TaskGrid = ({
             ? (collabProfiles[String(lastCompleter.id)] || String(lastCompleter.id))
             : null
         
-        // Calculate earnings for THIS specific task completion
-        const listBudget = (selectedTaskList as any)?.budget
+        // Calculate earnings and prize for THIS specific task
+        const listBudget = parseFloat((selectedTaskList as any)?.budget || '0')
         const listRole = (selectedTaskList as any)?.role
-        const totalTasks = (selectedTaskList?.tasks as any[])?.length || (selectedTaskList?.templateTasks as any[])?.length || 1
+        // Use tasks from Task collection only (templateTasks is deprecated)
+        const totalTasks = (selectedTaskList?.tasks as any[])?.length || 1
+        const budgetDistribution = (selectedTaskList as any)?.budgetDistribution
+        const premiumPercentage = (selectedTaskList as any)?.premiumPercentage || 0
         
-        const taskEarnings = getProfitPerTask(listBudget, totalTasks, listRole)
+        // Get user equity from session for prize pool calculation
+        const userEquity = (selectedTaskList as any)?.userEquity || 0
+        const premiumPool = calculatePrizePool(premiumPercentage, userEquity)
+        
+        let taskEarnings = 0
+        let taskPremium = 0
+        let isEstimate = true  // Flag to indicate if values are estimates (no accepted job)
+        
+        // Find accepted job for this task (contains the factored premium/earnings)
+        const acceptedJob = taskJobs.find((j: any) => j.status === 'ACCEPTED')
+        
+        // Priority 1: Use values from accepted job (these are already factored and stored)
+        if (acceptedJob && (acceptedJob.premium != null || acceptedJob.earnings != null)) {
+          taskEarnings = acceptedJob.earnings || 0
+          taskPremium = acceptedJob.premium || 0  // Already factored when job was accepted
+          isEstimate = false
+        }
+        // Priority 2: Calculate estimate from budget distribution (no job yet)
+        // Tasks don't hold financial data - only jobs do
+        else {
+          const allocation = getTaskAllocationFromDistribution(task.id, budgetDistribution, listBudget, premiumPool)
+          if (allocation) {
+            // Priority 2a: Custom per-task allocation
+            taskEarnings = allocation.taskEarnings
+            const rawPremium = allocation.taskPremium
+            taskPremium = applyPremiumFactors(rawPremium, listRole, userSettings)
+          }
+          // Priority 2b: Area-based distribution
+          else if (budgetDistribution?.areas?.length && task.area) {
+            const { budgets: areaBudgets, premiums: areaPremiums } = convertEntityAllocationsToMaps(budgetDistribution.areas as any, listBudget, premiumPool)
+            const areaBudget = areaBudgets[task.area] || 0
+            const areaPremiumBudget = areaPremiums[task.area] || 0
+            const tasksInArea = (selectedTaskList?.tasks as any[] || []).filter((t: any) => t.area === task.area).length || 1
+            taskEarnings = areaBudget / tasksInArea
+            taskPremium = applyPremiumFactors(areaPremiumBudget / tasksInArea, listRole, userSettings)
+          }
+          // Priority 2c: Category-based distribution
+          else if (budgetDistribution?.categories?.length && task.categories?.length > 0) {
+            const { budgets: categoryBudgets, premiums: categoryPremiums } = convertEntityAllocationsToMaps(budgetDistribution.categories as any, listBudget, premiumPool)
+            let totalBudget = 0
+            let totalPremium = 0
+            const taskCategories = Array.isArray(task.categories) ? task.categories : [task.categories]
+            
+            taskCategories.forEach((category: any) => {
+              const categoryBudget = categoryBudgets[category] || 0
+              const categoryPremiumBudget = categoryPremiums[category] || 0
+              const tasksInCategory = (selectedTaskList?.tasks as any[] || []).filter((t: any) => 
+                Array.isArray(t.categories) ? t.categories.includes(category) : t.categories === category
+              ).length || 1
+              totalBudget += categoryBudget / tasksInCategory
+              totalPremium += categoryPremiumBudget / tasksInCategory
+            })
+            
+            if (taskCategories.length > 0) {
+              taskEarnings = totalBudget / taskCategories.length
+              taskPremium = applyPremiumFactors(totalPremium / taskCategories.length, listRole, userSettings)
+            }
+          }
+          // Priority 3: If no custom allocation (Equal distribution - default), split evenly across all tasks
+          else if (listBudget > 0 || premiumPool > 0) {
+            // Equal distribution: divide budget and premium pool evenly across all tasks
+            const earningsPerTask = listBudget > 0 ? listBudget / totalTasks : 0
+            const premiumPerTask = premiumPool > 0 ? premiumPool / totalTasks : 0
+            taskEarnings = earningsPerTask
+            taskPremium = applyPremiumFactors(premiumPerTask, listRole, userSettings)
+          }
+          // isEstimate remains true - these are projected values
+        }
+        
+        // Calculate totalGains using the (already factored) premium
+        const taskTotalGains = taskEarnings + taskPremium
 
         // Determine task status
         const finalTaskStatus = taskStatuses[key] || getTaskStatus(task)
@@ -605,12 +683,8 @@ export const TaskGrid = ({
           {
             label: t('tasks.edit', { defaultValue: 'Edit' }),
             onClick: () => {
-              // Find the source task from list.tasks (the template)
+              // Find the source task from list.tasks (Task collection - templateTasks is deprecated)
               const sourceTask = selectedTaskList?.tasks?.find((t: any) =>
-                t.id === task.id ||
-                t.localeKey === task.localeKey ||
-                (t.name && task.name && t.name.toLowerCase() === task.name.toLowerCase())
-              ) || selectedTaskList?.templateTasks?.find((t: any) =>
                 t.id === task.id ||
                 t.localeKey === task.localeKey ||
                 (t.name && task.name && t.name.toLowerCase() === task.name.toLowerCase())
@@ -713,13 +787,31 @@ export const TaskGrid = ({
                 if (userRole === 'COLLABORATOR' && !activeJob && !isDone) {
                   handleRequestWork(taskWithOptimisticCount)
                 } else {
+                  // Call task click handler
                   handleTaskClick(taskWithOptimisticCount)
+                  
+                  // Call optimistic callback with calculated financial values
+                  // These are the values displayed in the task badge
+                  if (handleTaskCompletionOptimistic) {
+                    const currentCount = taskWithOptimisticCount?.count || 0
+                    const times = taskWithOptimisticCount?.times || 1
+                    const isCurrentlyCompleted = currentCount >= times
+                    
+                    // If completing, add optimistic earnings; if uncompleting, subtract
+                    const multiplier = isCurrentlyCompleted ? -1 : 1
+                    handleTaskCompletionOptimistic(
+                      taskEarnings * multiplier,
+                      taskPremium * multiplier
+                    )
+                  }
                 }
               }}
               revealRedacted={revealRedacted}
               showCompleterBadge={true}
               completerName={completerName}
               taskEarnings={taskEarnings}
+              taskPremium={taskPremium}
+              taskTotalGains={taskTotalGains}
               hasCollaborators={hasCollaborators}
               variant={isDone ? 'default' : 'outline'}
               latestJob={latestJob}

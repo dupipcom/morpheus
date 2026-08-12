@@ -3,10 +3,12 @@ import prisma from '@/lib/prisma'
 import { getAuthenticatedUser, getUserListRole } from '@/lib/services/auth'
 import { updateTaskOccurrenceDates } from '@/lib/services/task'
 import { updateDayProgress } from '@/lib/services/day'
-import { calculateAndApplyJobEarnings, reverseJobEarnings } from '@/lib/services/job/earningsService'
+import { calculateAndApplyJobEarnings, reverseJobEarnings, initializeJobInvoice, updateJobWithTaskValues } from '@/lib/services/job/earningsService'
 import { validateStatusTransition, isAuthorizedForTransition } from '@/lib/services/job/statusValidator'
 import { TASK_STATUS_MAP } from '@/lib/services/job/taskSync'
 import { logJobStatusChange, logJobAcceptance, logAuthorizationFailure } from '@/lib/services/job/auditLogger'
+import { formatDateLocal } from '@/lib/utils/taskUtils'
+import { sanitizeText } from '@/lib/utils/sanitize'
 import type { ListUser, UpdateJobRequest } from '@/lib/services/job/types'
 
 /**
@@ -20,7 +22,12 @@ const jobFullInclude = {
       area: true,
       categories: true,
       status: true,
-      budget: true
+      // budget is legacy field - earnings is the new normalized field
+      // budget kept for backwards compatibility (fallback when earnings is null)
+      budget: true,
+      earnings: true,
+      premium: true,
+      totalGains: true
     }
   },
   list: {
@@ -64,6 +71,112 @@ const jobFullInclude = {
       user: { select: { id: true, profiles: true } }
     }
   }
+}
+
+const MAX_TRANSACTION_RETRIES = 3
+const TRANSACTION_RETRY_BASE_DELAY_MS = 200
+
+interface JobUpdateTransactionParams {
+  jobId: string
+  existingJob: {
+    taskId: string
+    status: string
+    occurrenceDate?: string | null
+  }
+  updateData: Record<string, unknown>
+  newRequesterNoteId: string | null
+  newReviewerNoteId: string | null
+  newStatus?: string
+}
+
+/**
+ * Run the job update transaction with retries for transient MongoDB write
+ * conflicts/deadlocks (Prisma error code P2034). The callback only performs
+ * writes, so it is safe to retry without duplicating data.
+ */
+async function updateJobWithRetry({
+  jobId,
+  existingJob,
+  updateData,
+  newRequesterNoteId,
+  newReviewerNoteId,
+  newStatus,
+}: JobUpdateTransactionParams) {
+  // Build note ID updates once outside the retry loop to avoid duplicate pushes
+  // if a transaction attempt is retried.
+  const jobUpdateData: Record<string, unknown> = { ...updateData }
+  if (newRequesterNoteId) {
+    jobUpdateData.requesterNoteIds = { push: newRequesterNoteId }
+  }
+  if (newReviewerNoteId) {
+    jobUpdateData.reviewersNoteIds = { push: newReviewerNoteId }
+  }
+
+  let lastError: unknown = null
+
+  for (let attempt = 1; attempt <= MAX_TRANSACTION_RETRIES; attempt++) {
+    try {
+      return await prisma.$transaction(async (tx) => {
+        // Update job
+        const updatedJob = await tx.job.update({
+          where: { id: jobId },
+          data: jobUpdateData,
+          include: {
+            ...jobFullInclude,
+            requesterNotes: true,
+            reviewersNotes: {
+              include: {
+                user: { select: { id: true, profiles: true } }
+              }
+            },
+          }
+        })
+
+        // Sync task status based on job status
+        let taskUpdate: { id: string; status: string } | null = null
+        if (newStatus && newStatus !== existingJob.status) {
+          const newTaskStatus = TASK_STATUS_MAP[newStatus]
+          if (newTaskStatus) {
+            taskUpdate = await tx.task.update({
+              where: { id: existingJob.taskId },
+              data: { status: newTaskStatus as 'OPEN' | 'IN_PROGRESS' | 'READY' | 'DONE' },
+              select: { id: true, status: true }
+            })
+          }
+        }
+
+        // Auto-reject all competing jobs when one is accepted (for the same date)
+        if (newStatus === 'ACCEPTED') {
+          const rejectWhereClause: any = {
+            taskId: existingJob.taskId,
+            id: { not: jobId },
+            status: { notIn: ['ACCEPTED', 'REJECTED'] }
+          }
+
+          // If this job has an occurrenceDate, only reject competing jobs on the same date
+          if (existingJob.occurrenceDate) {
+            rejectWhereClause.occurrenceDate = existingJob.occurrenceDate
+          }
+
+          await tx.job.updateMany({
+            where: rejectWhereClause,
+            data: { status: 'REJECTED' }
+          })
+        }
+
+        return { job: updatedJob, task: taskUpdate }
+      })
+    } catch (error) {
+      lastError = error
+      const code = (error as { code?: string })?.code
+      if (code !== 'P2034' || attempt === MAX_TRANSACTION_RETRIES) {
+        throw error
+      }
+      await new Promise(resolve => setTimeout(resolve, TRANSACTION_RETRY_BASE_DELAY_MS * attempt))
+    }
+  }
+
+  throw lastError instanceof Error ? lastError : new Error('Job update transaction failed')
 }
 
 export async function GET(
@@ -284,15 +397,24 @@ export async function PUT(
     // Create requester note if provided (worker's submission note)
     let newRequesterNoteId: string | null = null
     if (requesterNoteContent && requesterNoteContent.trim()) {
+      // Type validation for note content
+      if (typeof requesterNoteContent !== 'string') {
+        return NextResponse.json(
+          { error: 'Note content must be a string' },
+          { status: 400 }
+        )
+      }
       if (requesterNoteContent.length > 50000) {
         return NextResponse.json(
           { error: 'Note content too long (max 50,000 characters)' },
           { status: 400 }
         )
       }
+      // Sanitize note content to prevent XSS
+      const sanitizedRequesterNote = sanitizeText(requesterNoteContent)
       const requesterNote = await prisma.note.create({
         data: {
-          content: requesterNoteContent,
+          content: sanitizedRequesterNote,
           userId: existingJob.workerId,
           visibility: 'PRIVATE',
         }
@@ -303,15 +425,24 @@ export async function PUT(
     // Create reviewer note if provided (reviewer's feedback note)
     let newReviewerNoteId: string | null = null
     if (reviewerNoteContent && reviewerNoteContent.trim()) {
+      // Type validation for note content
+      if (typeof reviewerNoteContent !== 'string') {
+        return NextResponse.json(
+          { error: 'Note content must be a string' },
+          { status: 400 }
+        )
+      }
       if (reviewerNoteContent.length > 50000) {
         return NextResponse.json(
           { error: 'Note content too long (max 50,000 characters)' },
           { status: 400 }
         )
       }
+      // Sanitize note content to prevent XSS
+      const sanitizedReviewerNote = sanitizeText(reviewerNoteContent)
       const reviewerNote = await prisma.note.create({
         data: {
-          content: reviewerNoteContent,
+          content: sanitizedReviewerNote,
           userId: user!.id,
           visibility: 'PRIVATE',
         }
@@ -319,68 +450,14 @@ export async function PUT(
       newReviewerNoteId = reviewerNote.id
     }
 
-    // Update job with transaction for atomicity
-    const result = await prisma.$transaction(async (tx) => {
-      // Build note ID updates
-      if (newRequesterNoteId) {
-        updateData.requesterNoteIds = {
-          push: newRequesterNoteId
-        }
-      }
-      if (newReviewerNoteId) {
-        updateData.reviewersNoteIds = {
-          push: newReviewerNoteId
-        }
-      }
-
-      // Update job
-      const updatedJob = await tx.job.update({
-        where: { id: jobId },
-        data: updateData,
-        include: {
-          ...jobFullInclude,
-          requesterNotes: true,
-          reviewersNotes: {
-            include: {
-              user: { select: { id: true, profiles: true } }
-            }
-          },
-        }
-      })
-
-      // Sync task status based on job status
-      let taskUpdate: { id: string; status: string } | null = null
-      if (newStatus && newStatus !== existingJob.status) {
-        const newTaskStatus = TASK_STATUS_MAP[newStatus]
-        if (newTaskStatus) {
-          taskUpdate = await tx.task.update({
-            where: { id: existingJob.taskId },
-            data: { status: newTaskStatus as 'OPEN' | 'IN_PROGRESS' | 'READY' | 'DONE' },
-            select: { id: true, status: true }
-          })
-        }
-      }
-
-      // Auto-reject all competing jobs when one is accepted (for the same date)
-      if (newStatus === 'ACCEPTED') {
-        const rejectWhereClause: any = {
-          taskId: existingJob.taskId,
-          id: { not: jobId },
-          status: { notIn: ['ACCEPTED', 'REJECTED'] }
-        }
-
-        // If this job has an occurrenceDate, only reject competing jobs on the same date
-        if (existingJob.occurrenceDate) {
-          rejectWhereClause.occurrenceDate = existingJob.occurrenceDate
-        }
-
-        await tx.job.updateMany({
-          where: rejectWhereClause,
-          data: { status: 'REJECTED' }
-        })
-      }
-
-      return { job: updatedJob, task: taskUpdate }
+    // Update job with transaction for atomicity, retrying transient write conflicts
+    const result = await updateJobWithRetry({
+      jobId,
+      existingJob,
+      updateData,
+      newRequesterNoteId,
+      newReviewerNoteId,
+      newStatus,
     })
 
     // Audit log status change
@@ -393,12 +470,45 @@ export async function PUT(
         taskId: existingJob.taskId,
         listId: existingJob.listId,
       })
+
+      // Initialize invoice when job transitions to IN_PROGRESS (job initiation)
+      if (newStatus === 'IN_PROGRESS') {
+        try {
+          await initializeJobInvoice(jobId, existingJob.taskId, existingJob.listId)
+        } catch (invoiceError) {
+          console.error('Error initializing job invoice:', invoiceError)
+          // Don't fail the entire request
+        }
+      }
+    }
+
+    // Update job with latest task values on every update
+    try {
+      await updateJobWithTaskValues(jobId, existingJob.taskId, existingJob.listId)
+    } catch (taskValuesError) {
+      console.error('Error updating job with task values:', taskValuesError)
+      // Don't fail the entire request
     }
 
     // Handle accepted jobs - update occurrence dates and calculate earnings
-    if (newStatus === 'ACCEPTED' && existingJob.occurrenceDate) {
-      await updateTaskOccurrenceDates(existingJob.taskId, 'complete', existingJob.occurrenceDate)
-      await updateDayProgress(existingJob.workerId, existingJob.occurrenceDate)
+    if (newStatus === 'ACCEPTED') {
+      const dateToUse = existingJob.occurrenceDate || formatDateLocal(new Date())
+      
+      // Initialize invoice if not already set (for direct transitions to ACCEPTED)
+      try {
+        const jobForInvoice = await prisma.job.findUnique({
+          where: { id: jobId },
+          select: { invoice: true }
+        })
+        if (!jobForInvoice?.invoice) {
+          await initializeJobInvoice(jobId, existingJob.taskId, existingJob.listId)
+        }
+      } catch (invoiceError) {
+        console.error('Error initializing job invoice for accepted job:', invoiceError)
+      }
+      
+      await updateTaskOccurrenceDates(existingJob.taskId, 'complete', dateToUse)
+      await updateDayProgress(existingJob.workerId, dateToUse)
 
       try {
         await calculateAndApplyJobEarnings({
@@ -406,7 +516,7 @@ export async function PUT(
           taskId: existingJob.taskId,
           listId: existingJob.listId,
           workerId: existingJob.workerId,
-          occurrenceDate: existingJob.occurrenceDate
+          occurrenceDate: dateToUse
         })
 
         // Audit log job acceptance (financial event)
@@ -427,15 +537,16 @@ export async function PUT(
     // Handle unaccepted jobs (status changed from ACCEPTED to something else)
     const wasAccepted = existingJob.status === 'ACCEPTED'
     const isNowAccepted = result.job.status === 'ACCEPTED'
-    if (wasAccepted && !isNowAccepted && existingJob.occurrenceDate) {
-      await updateTaskOccurrenceDates(existingJob.taskId, 'delete', existingJob.occurrenceDate)
-      await updateDayProgress(existingJob.workerId, existingJob.occurrenceDate)
+    if (wasAccepted && !isNowAccepted) {
+      const dateToUse = existingJob.occurrenceDate || formatDateLocal(new Date())
+      await updateTaskOccurrenceDates(existingJob.taskId, 'delete', dateToUse)
+      await updateDayProgress(existingJob.workerId, dateToUse)
 
       try {
         await reverseJobEarnings({
           jobId: existingJob.id,
           workerId: existingJob.workerId,
-          occurrenceDate: existingJob.occurrenceDate
+          occurrenceDate: dateToUse
         })
       } catch (earningsError) {
         console.error('Error reversing job earnings:', earningsError)
@@ -490,7 +601,7 @@ export async function DELETE(
 
     if (!role || !['OWNER', 'MANAGER'].includes(role)) {
       return NextResponse.json(
-        { error: 'Unauthorized: Only list owners and managers can delete jobs' },
+        { error: 'Unauthorized: Only list owners and managers can cancel jobs' },
         { status: 403 }
       )
     }
@@ -508,16 +619,19 @@ export async function DELETE(
         })
       } catch (earningsError) {
         console.error('Error reversing job earnings:', earningsError)
-        // Don't fail the job deletion if earnings reversal fails
+        // Don't fail the job cancellation if earnings reversal fails
       }
     }
 
-    // Delete job
-    await prisma.job.delete({
-      where: { id: jobId }
+    // For compliance: Update job status to CANCELLED instead of deleting
+    await prisma.job.update({
+      where: { id: jobId },
+      data: { status: 'CANCELLED' }
     })
 
     // Update task occurrence dates if job was ACCEPTED
+    // Note: For non-recurring tasks, this will reset the task status to OPEN,
+    // allowing the task to be re-opened from any date
     if (status === 'ACCEPTED' && occurrenceDate) {
       await updateTaskOccurrenceDates(taskId, 'delete', occurrenceDate)
 
@@ -525,9 +639,9 @@ export async function DELETE(
       await updateDayProgress(workerId, occurrenceDate)
     }
 
-    return NextResponse.json({ message: 'Job deleted successfully' })
+    return NextResponse.json({ message: 'Job cancelled successfully' })
   } catch (error) {
-    console.error('Error deleting job:', error)
+    console.error('Error cancelling job:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

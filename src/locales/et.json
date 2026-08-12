@@ -580,7 +580,24 @@
       "cancel": "Tühista",
       "deleteListConfirm": "Kustuta see nimekiri? Seda ei saa tagasi võtta.",
       "deleteList": "Kustuta nimekiri",
-      "budgetPercentageLabel": "Personal budget allocation"
+      "premiumPercentageLabel": "Personal budget allocation",
+      "manageTasks": "Halda ülesandeid",
+      "manageBudgetAllocation": "Eelarve jaotus",
+      "distributionModeLabel": "Jaotus",
+      "distributionMode": {
+        "equal": "Võrdne",
+        "area": "Valdkonna järgi",
+        "category": "Kategooria järgi",
+        "task": "Ülesande kohta"
+      },
+      "areaDistributionLabel": "Valdkonna eelarve",
+      "areaPrizeDistributionLabel": "Valdkonna auhind",
+      "categoryDistributionLabel": "Kategooria eelarve",
+      "categoryPrizeDistributionLabel": "Kategooria auhind",
+      "taskDistributionLabel": "Eelarve",
+      "premiumLabel": "Auhind",
+      "totalLabel": "Kokku",
+      "addTaskTitle": "Lisa ülesanne"
     },
     "addTemplateForm": {
       "title": "Loo uus mall",

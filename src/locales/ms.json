@@ -584,7 +584,24 @@
       "cancel": "Batal",
       "deleteListConfirm": "Padam senarai ini? Tindakan ini tidak boleh dibatalkan.",
       "deleteList": "Padam senarai",
-      "budgetPercentageLabel": "Personal budget allocation"
+      "premiumPercentageLabel": "Personal budget allocation",
+      "manageTasks": "Urus tugasan",
+      "manageBudgetAllocation": "Agihan bajet",
+      "distributionModeLabel": "Agihan",
+      "distributionMode": {
+        "equal": "Sama",
+        "area": "Mengikut kawasan",
+        "category": "Mengikut kategori",
+        "task": "Setiap tugasan"
+      },
+      "areaDistributionLabel": "Bajet kawasan",
+      "areaPrizeDistributionLabel": "Hadiah kawasan",
+      "categoryDistributionLabel": "Bajet kategori",
+      "categoryPrizeDistributionLabel": "Hadiah kategori",
+      "taskDistributionLabel": "Bajet",
+      "premiumLabel": "Hadiah",
+      "totalLabel": "Jumlah",
+      "addTaskTitle": "Tambah tugasan"
     },
     "addTemplateForm": {
       "title": "Cipta Templat Baru",

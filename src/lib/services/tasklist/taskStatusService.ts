@@ -4,7 +4,7 @@
  */
 
 import prisma from '@/lib/prisma'
-import type { Task, TaskList, EphemeralTasks, CompletedTasks, Productivity } from './types'
+import type { Task, TaskList, CompletedTasks, Productivity } from './types'
 import {
   getTaskKey,
   createTaskMatcher,
@@ -18,16 +18,17 @@ import { aggregateCompleterEarningsFromTaskList } from './earningsService'
 import { calculateDateComponents } from './dayService'
 
 /**
- * Find a task in the task list (tasks or templateTasks)
+ * Find a task in the task list (tasks array only - templateTasks is deprecated)
  */
 export function findTaskInList(
   taskList: TaskList,
   taskId?: string,
   taskKey?: string
 ): Task | null {
+  // Use tasks array only - templateTasks is deprecated
   const tasks = Array.isArray(taskList.tasks)
     ? taskList.tasks
-    : (Array.isArray(taskList.templateTasks) ? taskList.templateTasks : [])
+    : []
 
   const taskMatcher = createTaskMatcher(taskId, taskKey)
 
@@ -40,17 +41,6 @@ export function findTaskInList(
   // Fall back to taskKey for localization matching
   if (taskKey) {
     const found = tasks.find(taskMatcher)
-    if (found) return found
-  }
-
-  // Check templateTasks if not found in tasks
-  const templateTasks = Array.isArray(taskList.templateTasks) ? taskList.templateTasks : []
-  if (taskId) {
-    const found = templateTasks.find((task) => task.id === taskId || task.localeKey === taskId)
-    if (found) return found
-  }
-  if (taskKey) {
-    const found = templateTasks.find(taskMatcher)
     if (found) return found
   }
 
@@ -73,7 +63,11 @@ export async function updateTaskStatus(params: {
 }): Promise<TaskList> {
   const { taskListId, userId, taskId, taskKey, newStatus, newCount, newTimes, dateISO, userBalanceValues } = await params
 
-  const taskListToUpdate = await prisma.list.findUnique({ where: { id: taskListId } })
+  // Include tasks relation to get tasks from Task collection (templateTasks is deprecated)
+  const taskListToUpdate = await prisma.list.findUnique({
+    where: { id: taskListId },
+    include: { tasks: true }
+  })
   if (!taskListToUpdate) {
     throw new Error('TaskList not found')
   }
@@ -83,33 +77,10 @@ export async function updateTaskStatus(params: {
   // Find base task
   let baseTask = findTaskInList(taskListToUpdate as unknown as TaskList, taskId, taskKey)
 
-  // Also check and update ephemeral tasks
-  let ephemeralTasks = ((taskListToUpdate as Record<string, unknown>).ephemeralTasks as EphemeralTasks) || { open: [], closed: [] }
-  let open = Array.isArray(ephemeralTasks.open) ? ephemeralTasks.open : []
-  let closed = Array.isArray(ephemeralTasks.closed) ? ephemeralTasks.closed : []
-
-  // Update status in open ephemeral tasks
-  open = open.map((task) => {
-    if (taskMatcher(task)) {
-      if (!baseTask) baseTask = { ...task }
-      return { ...task, status: newStatus }
-    }
-    return task
-  })
-
-  // Also update status in closed ephemeral tasks
-  closed = closed.map((task) => {
-    if (taskMatcher(task)) {
-      if (!baseTask) baseTask = { ...task }
-      return { ...task, status: newStatus }
-    }
-    return task
-  })
-
-  ephemeralTasks = { open, closed }
+  // ephemeralTasks is deprecated - non-recurring tasks are now in the Task collection
 
   // Update task in completedTasks
-  let completedTasks = ((taskListToUpdate as Record<string, unknown>).completedTasks as CompletedTasks) || {}
+  const completedTasks = ((taskListToUpdate as Record<string, unknown>).completedTasks as CompletedTasks) || {}
   const year = getYearFromISO(dateISO)
   const yearBucket = completedTasks[year] || {}
   const dateBucket = yearBucket[dateISO]
@@ -117,12 +88,11 @@ export async function updateTaskStatus(params: {
   let { openTasks, closedTasks } = parseCompletedTasksBucket(dateBucket as Task[] | { openTasks: Task[]; closedTasks: Task[]; completion: number })
 
   // If no data exists for this date but we have a baseTask, initialize from tasks
+  // templateTasks is deprecated - using Task collection only
   if (openTasks.length === 0 && closedTasks.length === 0 && baseTask) {
     const blueprintTasks: Task[] = Array.isArray(taskListToUpdate.tasks)
       ? (taskListToUpdate.tasks as Task[])
-      : (Array.isArray((taskListToUpdate as Record<string, unknown>).templateTasks)
-        ? ((taskListToUpdate as Record<string, unknown>).templateTasks as Task[])
-        : [])
+      : []
     openTasks = blueprintTasks.map((t) => ({ ...t, count: 0, status: 'open' }))
   }
 
@@ -179,12 +149,11 @@ export async function updateTaskStatus(params: {
     completedTasks[year] = yearBucket
   }
 
+  // ephemeralTasks is deprecated - non-recurring tasks are now in the Task collection
   const updated = await prisma.list.update({
     where: { id: taskListToUpdate.id },
     data: {
-      ephemeralTasks: ephemeralTasks,
-      completedTasks: completedTasks,
-      updatedAt: new Date()
+      completedTasks: completedTasks
     } as Record<string, unknown>,
     include: { template: true }
   })
@@ -296,8 +265,8 @@ export async function updateTaskStatus(params: {
             const newTicker = {
               listId: taskListToUpdate.id,
               taskId: tickerTaskId,
-              profit: aggregated.profit || 0,
-              prize: aggregated.prize || 0
+              earnings: aggregated.earnings || 0,
+              premium: aggregated.premium || 0
             }
             const filteredTickers = existingTickers.filter((t: Record<string, unknown>) => {
               return !(t as { taskId?: string }).taskId || (t as { taskId?: string }).taskId !== tickerTaskId
@@ -340,8 +309,8 @@ export async function updateTaskStatus(params: {
             ticker = [{
               listId: taskListToUpdate.id,
               taskId: tickerTaskId,
-              profit: aggregated.profit || 0,
-              prize: aggregated.prize || 0
+              earnings: aggregated.earnings || 0,
+              premium: aggregated.premium || 0
             }]
           }
 
@@ -389,7 +358,11 @@ export async function updateTaskRedacted(params: {
 }): Promise<TaskList> {
   const { taskListId, taskKey, redacted } = await params
 
-  const taskListToUpdate = await prisma.list.findUnique({ where: { id: taskListId } })
+  // Include tasks relation to get tasks from Task collection (templateTasks is deprecated)
+  const taskListToUpdate = await prisma.list.findUnique({
+    where: { id: taskListId },
+    include: { tasks: true }
+  })
   if (!taskListToUpdate) {
     throw new Error('TaskList not found')
   }
@@ -404,29 +377,27 @@ export async function updateTaskRedacted(params: {
     return task
   }
 
-  // Update in tasks array
-  let tasks = Array.isArray(taskListToUpdate.tasks)
-    ? [...(taskListToUpdate.tasks as Task[])]
-    : []
-  tasks = tasks.map(updateRedactedStatus)
+  // Update Task records in the Task collection directly
+  // Find matching task IDs to update
+  const taskIdsToUpdate = taskListToUpdate.tasks
+    .filter((task) => {
+      const key = getTaskKey(task as unknown as Task)
+      return (key === taskKeyLower || key === taskKey) && task.id
+    })
+    .map((task) => task.id)
 
-  // Update in templateTasks
-  let templateTasks = Array.isArray((taskListToUpdate as Record<string, unknown>).templateTasks)
-    ? [...((taskListToUpdate as Record<string, unknown>).templateTasks as Task[])]
-    : []
-  templateTasks = templateTasks.map(updateRedactedStatus)
+  // Batch update using updateMany for efficiency
+  if (taskIdsToUpdate.length > 0) {
+    await prisma.task.updateMany({
+      where: { id: { in: taskIdsToUpdate } },
+      data: { redacted }
+    })
+  }
 
-  // Update in ephemeral tasks
-  let ephemeralTasks = ((taskListToUpdate as Record<string, unknown>).ephemeralTasks as EphemeralTasks) || { open: [], closed: [] }
-  let open = Array.isArray(ephemeralTasks.open) ? [...ephemeralTasks.open] : []
-  let closed = Array.isArray(ephemeralTasks.closed) ? [...ephemeralTasks.closed] : []
-
-  open = open.map(updateRedactedStatus)
-  closed = closed.map(updateRedactedStatus)
-  ephemeralTasks = { open, closed }
+  // ephemeralTasks is deprecated - non-recurring tasks are now in the Task collection
 
   // Update in completedTasks (all dates)
-  let completedTasks = ((taskListToUpdate as Record<string, unknown>).completedTasks as CompletedTasks) || {}
+  const completedTasks = ((taskListToUpdate as Record<string, unknown>).completedTasks as CompletedTasks) || {}
   const years = Object.keys(completedTasks)
 
   for (const yearStr of years) {
@@ -460,14 +431,13 @@ export async function updateTaskRedacted(params: {
     completedTasks[year] = yearBucket
   }
 
+  // Update the list completedTasks only
+  // Tasks relation is already updated via prisma.task.updateMany() above
+  // ephemeralTasks is deprecated - non-recurring tasks are now in the Task collection
   const updated = await prisma.list.update({
     where: { id: taskListToUpdate.id },
     data: {
-      tasks: tasks,
-      templateTasks: templateTasks,
-      ephemeralTasks: ephemeralTasks,
-      completedTasks: completedTasks,
-      updatedAt: new Date()
+      completedTasks: completedTasks
     } as Record<string, unknown>,
     include: { template: true }
   })

@@ -76,7 +76,7 @@ export async function POST(
         templateTasks: templateTasksWithUniqueIds,
         // Note: tasks relation is not set here - the migration system will create Task records from templateTasks
         budget: taskList.budget,
-        budgetPercentage: taskList.budgetPercentage,
+        premiumPercentage: taskList.premiumPercentage,
         dueDate: taskList.dueDate,
       },
     })

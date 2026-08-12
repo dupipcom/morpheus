@@ -21,13 +21,13 @@ export async function recalculateUserBudget(userId: string): Promise<void> {
         }
       },
       select: {
-        budgetPercentage: true
+        premiumPercentage: true
       }
     })
 
-    // Calculate total used budget (sum of all budgetPercentage values)
+    // Calculate total used budget (sum of all premiumPercentage values)
     const usedBudget = taskLists.reduce((sum, list) => {
-      return sum + (list.budgetPercentage || 0)
+      return sum + (list.premiumPercentage || 0)
     }, 0)
 
     // Calculate remaining budget
@@ -98,13 +98,13 @@ export async function validateBudgetAllocation(
     const taskLists = await prisma.list.findMany({
       where,
       select: {
-        budgetPercentage: true
+        premiumPercentage: true
       }
     })
 
     // Calculate total used budget (excluding current list)
     const usedBudget = taskLists.reduce((sum, list) => {
-      return sum + (list.budgetPercentage || 0)
+      return sum + (list.premiumPercentage || 0)
     }, 0)
 
     // Check if new allocation would exceed 100%

@@ -562,7 +562,7 @@
       "templateOrListLabel": "Modello o Elenco",
       "chooseTemplatePlaceholder": "Scegli un modello",
       "budgetLabel": "Budget",
-      "budgetPercentageLabel": "Allocazione del budget personale",
+      "premiumPercentageLabel": "Allocazione del budget personale",
       "dueDateLabel": "Data di scadenza",
       "pickDatePlaceholder": "Scegli una data",
       "cadenceLabel": "Cadenza",
@@ -597,7 +597,24 @@
       "save": "Salva",
       "cancel": "Annulla",
       "deleteListConfirm": "Eliminare questo elenco? Questa azione non può essere annullata.",
-      "deleteList": "Elimina elenco"
+      "deleteList": "Elimina elenco",
+      "manageTasks": "Gestisci attività",
+      "manageBudgetAllocation": "Distribuzione budget",
+      "distributionModeLabel": "Distribuzione",
+      "distributionMode": {
+        "equal": "Uguale",
+        "area": "Per area",
+        "category": "Per categoria",
+        "task": "Per attività"
+      },
+      "areaDistributionLabel": "Budget area",
+      "areaPrizeDistributionLabel": "Premio area",
+      "categoryDistributionLabel": "Budget categoria",
+      "categoryPrizeDistributionLabel": "Premio categoria",
+      "taskDistributionLabel": "Budget",
+      "premiumLabel": "Premio",
+      "totalLabel": "Totale",
+      "addTaskTitle": "Aggiungi attività"
     },
     "addTemplateForm": {
       "title": "Crea Nuovo Modello",

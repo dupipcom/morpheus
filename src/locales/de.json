@@ -562,7 +562,7 @@
       "templateOrListLabel": "Vorlage oder Liste",
       "chooseTemplatePlaceholder": "Vorlage wählen",
       "budgetLabel": "Budget",
-      "budgetPercentageLabel": "Persönliche Budgetzuteilung",
+      "premiumPercentageLabel": "Persönliche Budgetzuteilung",
       "dueDateLabel": "Fälligkeitsdatum",
       "pickDatePlaceholder": "Datum wählen",
       "cadenceLabel": "Rhythmus",
@@ -597,7 +597,24 @@
       "save": "Speichern",
       "cancel": "Abbrechen",
       "deleteListConfirm": "Diese Liste löschen? Das kann nicht rückgängig gemacht werden.",
-      "deleteList": "Liste löschen"
+      "deleteList": "Liste löschen",
+      "manageTasks": "Aufgaben verwalten",
+      "manageBudgetAllocation": "Budgetverteilung",
+      "distributionModeLabel": "Verteilung",
+      "distributionMode": {
+        "equal": "Gleich",
+        "area": "Nach Bereich",
+        "category": "Nach Kategorie",
+        "task": "Pro Aufgabe"
+      },
+      "areaDistributionLabel": "Bereichsbudget",
+      "areaPrizeDistributionLabel": "Bereichspreis",
+      "categoryDistributionLabel": "Kategoriebudget",
+      "categoryPrizeDistributionLabel": "Kategoriepreis",
+      "taskDistributionLabel": "Budget",
+      "premiumLabel": "Preis",
+      "totalLabel": "Gesamt",
+      "addTaskTitle": "Aufgabe hinzufügen"
     },
     "addTemplateForm": {
       "title": "Neue Vorlage erstellen",

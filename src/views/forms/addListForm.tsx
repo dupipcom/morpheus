@@ -3,7 +3,7 @@
 import React, { useMemo, useState, useEffect, useContext } from 'react'
 import useSWR from 'swr'
 import { Button } from '@/components/ui/button'
-import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Calendar } from '@/components/ui/calendar'
@@ -12,26 +12,53 @@ import { Slider } from '@/components/ui/slider'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
-import { Package, List as ListIcon, MoreHorizontal, ChevronDown, Calendar as CalendarIcon, Percent } from 'lucide-react'
+import { Package, List as ListIcon, MoreHorizontal, ChevronDown, Calendar as CalendarIcon, Percent, DollarSign } from 'lucide-react'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { useI18n } from '@/lib/contexts/i18n'
 import { GlobalContext } from '@/lib/contexts'
+import { useFriendProfiles, FriendProfile } from '@/lib/hooks/useFriendProfiles'
+import { BudgetDistributionInput } from '@/components/budgetDistributionInput'
+import { 
+  BudgetDistribution, 
+  AllocationType, 
+  EntityBudgetAllocation,
+  EntityAllocationsType,
+  getAllocationNominal,
+  nominalToPercent
+} from '@/lib/utils/budgetDistributionUtils'
+import { calculatePrizePool, calculatepremiumPercentageFromCurrency } from '@/lib/utils/earningsUtils'
+import type { TaskList, Template, Task } from '@/lib/services/tasklist/types'
 
 type Collaborator = { id: string, userName: string }
 
+// Extended entity budget state to store both nominal and percent values
+interface EntityBudgetState {
+  budget: AllocationType
+  premium: AllocationType
+}
+
+// Profile type for collaborator search results
+interface UserProfile {
+  userId: string
+  userName?: string
+  data?: Record<string, { value?: string }>
+}
+
 export const AddListForm = ({
+  open,
+  onOpenChange,
   allTaskLists,
   userTemplates,
   isEditing,
   initialList,
-  onCancel,
   onCreated,
 }: {
-  allTaskLists: any[]
-  userTemplates: any[]
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  allTaskLists: TaskList[]
+  userTemplates: Template[]
   isEditing: boolean
-  initialList?: any
-  onCancel: () => void
+  initialList?: TaskList
   onCreated: (newListId?: string) => Promise<void> | void
 }) => {
   const { t } = useI18n()
@@ -39,8 +66,8 @@ export const AddListForm = ({
   const [form, setForm] = useState({
     name: '',
     templateId: '',
-    budget: '',
-    budgetPercentage: 0,
+    budget: '0',
+    premiumPercentage: 0,
     dueDate: '',
     cadence: 'one-off',
     role: 'custom',
@@ -51,10 +78,31 @@ export const AddListForm = ({
   const [collabQuery, setCollabQuery] = useState('')
   const [addTaskOpen, setAddTaskOpen] = useState(false)
   const [addTaskForm, setAddTaskForm] = useState({ name: '', area: 'self', category: 'custom', times: 1 })
-  const [tasks, setTasks] = useState<any[]>([])
+  const [tasks, setTasks] = useState<Task[]>([])
   const [remainingBudget, setRemainingBudget] = useState<number>(100)
   const [maxAllowedBudget, setMaxAllowedBudget] = useState<number>(100)
+  const [premiumPercentage, setPremiumPercentage] = useState<number>(0) // % of premiumPercentage allocated to premium
+  const [budgetDistributionMode, setBudgetDistributionMode] = useState<'equal' | 'area' | 'category' | 'task'>('equal')
+  const [areaDistribution, setAreaDistribution] = useState<Record<string, AllocationType>>({})
+  const [areaDistributionMode, setAreaDistributionMode] = useState<'percentage' | 'currency'>('percentage')
+  const [areaPremiumDistribution, setAreaPremiumDistribution] = useState<Record<string, AllocationType>>({})
+  const [areaPremiumDistributionMode, setAreaPremiumDistributionMode] = useState<'percentage' | 'currency'>('percentage')
+  const [categoryDistribution, setCategoryDistribution] = useState<Record<string, AllocationType>>({})
+  const [categoryDistributionMode, setCategoryDistributionMode] = useState<'percentage' | 'currency'>('percentage')
+  const [categoryPremiumDistribution, setCategoryPremiumDistribution] = useState<Record<string, AllocationType>>({})
+  const [categoryPremiumDistributionMode, setCategoryPremiumDistributionMode] = useState<'percentage' | 'currency'>('percentage')
+  const [taskBudgets, setTaskBudgets] = useState<Record<string, EntityBudgetState>>({})
+  const [premiumPercentageMode, setpremiumPercentageMode] = useState<'percentage' | 'currency'>('percentage')
+  const [personalBudgetAllocation, setPersonalBudgetAllocation] = useState<Record<string, AllocationType>>({})
 
+  // Get user equity for currency calculations
+  const userEquity = session?.user?.equity || 0
+
+  // Determine if budget/prize fields should be disabled
+   const isBudgetDisabled = !form.budget || parseFloat(form.budget) <= 0
+   const isPremiumDisabled = form.premiumPercentage <= 0 || userEquity <= 0
+
+  // Load initial list data when editing
   useEffect(() => {
     if (initialList) {
       // Split role like "daily.default" into cadence and role
@@ -76,17 +124,112 @@ export const AddListForm = ({
         name: initialList.name || '',
         templateId: isEditing ? '' : (initialList.templateId ? `template:${initialList.templateId}` : ''),
         budget: budgetValue,
-        budgetPercentage: initialList.budgetPercentage || 0,
+        premiumPercentage: initialList.premiumPercentage || 0,
         dueDate: initialList.dueDate || '',
         cadence: cadencePart || 'one-off',
         role: rolePart || 'custom',
         collaborators: (initialList.collaborators || []).map((id: string) => ({ id, userName: id }))
       })
-      // Load tasks from tasks (working copy) if available, otherwise from templateTasks
-      const tasksToLoad = (Array.isArray(initialList.tasks) && initialList.tasks.length > 0)
-        ? initialList.tasks
-        : (Array.isArray(initialList.templateTasks) ? initialList.templateTasks : [])
-      setTasks(tasksToLoad)
+      
+      // Load budget distribution settings
+      if (initialList.premiumPercentage != null) {
+        setPremiumPercentage(initialList.premiumPercentage)
+      }
+      
+      if (initialList.budgetDistribution) {
+        const dist = initialList.budgetDistribution as BudgetDistribution
+        
+        // Helper to parse EntityAllocationsType array to AllocationType Records
+        const parseEntityAllocations = (allocations: EntityAllocationsType[]): { 
+          budgets: Record<string, AllocationType>
+          premiums: Record<string, AllocationType> 
+        } => {
+          const budgets: Record<string, AllocationType> = {}
+          const premiums: Record<string, AllocationType> = {}
+          
+          if (Array.isArray(allocations)) {
+            allocations.forEach((item: EntityAllocationsType) => {
+              const entityId = item.entityId
+              if (entityId) {
+                const budgetAlloc = item.allocation?.budget
+                const prizeAlloc = item.allocation?.premium
+                
+                if (budgetAlloc) {
+                  budgets[entityId] = { nominal: budgetAlloc.nominal, percent: budgetAlloc.percent }
+                }
+                if (prizeAlloc) {
+                  premiums[entityId] = { nominal: prizeAlloc.nominal, percent: prizeAlloc.percent }
+                }
+              }
+            })
+          }
+          
+          return { budgets, premiums }
+        }
+        
+        if (dist.areas && Array.isArray(dist.areas) && dist.areas.length > 0) {
+          const { budgets, premiums } = parseEntityAllocations(dist.areas)
+          setAreaDistribution(budgets)
+          setAreaPremiumDistribution(premiums)
+          setBudgetDistributionMode('area')
+        } else if (dist.categories && Array.isArray(dist.categories) && dist.categories.length > 0) {
+          const { budgets, premiums } = parseEntityAllocations(dist.categories)
+          setCategoryDistribution(budgets)
+          setCategoryPremiumDistribution(premiums)
+          setBudgetDistributionMode('category')
+        } else if (dist.tasks && Array.isArray(dist.tasks) && dist.tasks.length > 0) {
+          const taskBudgetsData: Record<string, EntityBudgetState> = {}
+          
+          dist.tasks.forEach((item: EntityAllocationsType) => {
+            const taskId = item.entityId
+            if (taskId) {
+              const budgetAlloc = item.allocation?.budget
+              const prizeAlloc = item.allocation?.premium
+              
+              taskBudgetsData[taskId] = {
+                budget: typeof budgetAlloc === 'object' 
+                  ? { nominal: budgetAlloc?.nominal, percent: budgetAlloc?.percent }
+                  : { nominal: typeof budgetAlloc === 'number' ? budgetAlloc : 0 },
+                premium: typeof prizeAlloc === 'object'
+                  ? { nominal: prizeAlloc?.nominal, percent: prizeAlloc?.percent }
+                  : { nominal: typeof prizeAlloc === 'number' ? prizeAlloc : 0 }
+              }
+            }
+          })
+          
+          setTaskBudgets(taskBudgetsData)
+          setBudgetDistributionMode('task')
+        }
+      }
+      
+      // Always fetch from Task collection when editing to get the latest data
+      // The initialList.tasks may be stale or from a previous fetch
+      if (isEditing && initialList.id) {
+        // Fetch tasks from Task collection (primary source of truth)
+        fetch(`/api/v1/tasks?listId=${initialList.id}`)
+          .then(res => res.ok ? res.json() : null)
+          .then(data => {
+            if (data?.tasks && Array.isArray(data.tasks)) {
+              setTasks(data.tasks)
+            }
+            // If API returns no tasks, keep tasks empty - don't fall back to stale data
+          })
+          .catch(err => {
+            console.error('Error fetching tasks:', err)
+            // On error, use initialList.tasks as fallback (from server-side render)
+            const fallbackTasks = (Array.isArray(initialList.tasks) && initialList.tasks.length > 0)
+              ? initialList.tasks
+              : []
+            setTasks(fallbackTasks)
+          })
+      } else {
+        // When creating new list: use tasks from selected template/list if available
+        const tasksToLoad = (Array.isArray(initialList.tasks) && initialList.tasks.length > 0)
+          ? initialList.tasks
+          : []
+        setTasks(tasksToLoad)
+      }
+      
       setDueDateObj(initialList.dueDate ? new Date(initialList.dueDate) : undefined)
     }
   }, [JSON.stringify(initialList), isEditing])
@@ -95,17 +238,17 @@ export const AddListForm = ({
   useEffect(() => {
     try {
       // Calculate total budget used by all lists
-      const totalUsed = allTaskLists.reduce((sum, list: any) => {
-        return sum + (list.budgetPercentage || 0)
+      const totalUsed = allTaskLists.reduce((sum, list: TaskList) => {
+        return sum + (list.premiumPercentage || 0)
       }, 0)
 
       // Calculate total used by OTHER lists (excluding current list if editing)
-      const totalUsedByOthers = allTaskLists.reduce((sum, list: any) => {
+      const totalUsedByOthers = allTaskLists.reduce((sum, list: TaskList) => {
         // Skip the current list if editing
         if (isEditing && initialList?.id && list.id === initialList.id) {
           return sum
         }
-        return sum + (list.budgetPercentage || 0)
+        return sum + (list.premiumPercentage || 0)
       }, 0)
 
       // Remaining budget is what's left after all allocations
@@ -113,17 +256,16 @@ export const AddListForm = ({
       
       // When editing: max = remaining + current list's allocation
       // When creating: max = remaining
-      const currentListBudget = initialList?.budgetPercentage || 0
+      const currentListBudget = initialList?.premiumPercentage || 0
       const maxAllowed = Math.max(0, 100 - totalUsedByOthers)
 
       setRemainingBudget(remaining)
       setMaxAllowedBudget(maxAllowed)
     } catch (error) {
-      console.error('Error calculating budget info:', error)
       setRemainingBudget(100)
       setMaxAllowedBudget(100)
     }
-  }, [allTaskLists, initialList?.id, initialList?.budgetPercentage, isEditing])
+  }, [allTaskLists, initialList?.id, initialList?.premiumPercentage, isEditing])
 
   // Resolve collaborator usernames for existing lists (replace id placeholders)
   useEffect(() => {
@@ -137,7 +279,7 @@ export const AddListForm = ({
         if (!cancelled && res.ok) {
           const data = await res.json()
           const idToUserName: Record<string, string> = {}
-          ;(data.profiles || []).forEach((p: any) => { idToUserName[p.userId] = p.userName || p.userId })
+          ;(data.profiles || []).forEach((p: UserProfile) => { idToUserName[p.userId] = p.userName || p.userId })
           setForm((prev) => ({
             ...prev,
             collaborators: (prev.collaborators || []).map((c) => ({ ...c, userName: idToUserName[c.id] || c.userName }))
@@ -153,15 +295,15 @@ export const AddListForm = ({
     if (!form.templateId) return null // Return null instead of empty array when no template
     if (form.templateId.startsWith('template:')) {
       const tplId = form.templateId.split(':')[1]
-      const tpl = userTemplates.find((t: any) => t.id === tplId)
+      const tpl = userTemplates.find((t: Template) => t.id === tplId)
       return Array.isArray(tpl?.tasks) ? tpl.tasks : []
     }
     if (form.templateId.startsWith('list:')) {
       const lstId = form.templateId.split(':')[1]
-      const lst = allTaskLists.find((l: any) => l.id === lstId)
+      const lst = allTaskLists.find((l: TaskList) => l.id === lstId)
       return Array.isArray(lst?.tasks) ? lst.tasks : []
     }
-    return [] as any[]
+    return [] as Task[]
   }, [form.templateId, userTemplates, allTaskLists])
 
   useEffect(() => {
@@ -170,36 +312,13 @@ export const AddListForm = ({
     }
   }, [newListPreviewTasks, isEditing])
 
-  // Debounced query state for search
-  const [debouncedQuery, setDebouncedQuery] = useState('')
+  // Memoize trimmed query to avoid unnecessary SWR re-fetches
+  const trimmedCollabQuery = useMemo(() => collabQuery.trim(), [collabQuery])
   
-  // Debounce the collabQuery input with 300ms delay
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      // Only set debounced query if user has typed something
-      setDebouncedQuery(collabQuery.trim())
-    }, 300)
-    
-    return () => clearTimeout(timer)
-  }, [collabQuery])
-  
-  // Memoize SWR options to prevent re-creating object on every render
-  const swrOptions = useMemo(() => ({
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-    shouldRetryOnError: false,
-    dedupingInterval: 1000,
-  }), [])
-  
-  // Use SWR to fetch profiles based on debounced query
-  // Only fetches when debouncedQuery is non-empty
-  const { data: profilesData } = useSWR<{ profiles: any[] }>(
-    debouncedQuery ? `/api/v1/profiles?query=${encodeURIComponent(debouncedQuery)}` : null,
-    (url: string) => fetch(url).then(res => res.json()),
-    swrOptions
-  )
-  
-  const collabResults = profilesData?.profiles || []
+  // Use SWR hook for fetching profiles - handles caching, deduplication, and revalidation
+  // When query is empty (null), fetches default profiles (close friends, friends, public)
+  // When query has value, fetches search results matching the query
+  const { profiles: collabResults } = useFriendProfiles(trimmedCollabQuery || null)
 
   const handleSubmit = async () => {
     const roleJoined = `${form.cadence}.${form.role}`
@@ -210,6 +329,74 @@ export const AddListForm = ({
       ? parseFloat(form.budget) 
       : undefined
     
+    // Build budget distribution object with EntityAllocationsType arrays
+    const budgetDistribution: BudgetDistribution = {}
+    
+    // Build area distribution with EntityAllocationsType array
+    if (budgetDistributionMode === 'area' && Object.keys(areaDistribution).length > 0) {
+      const prizePool = calculatePrizePool(form.premiumPercentage, userEquity)
+      const areaAllocations: EntityAllocationsType[] = []
+      
+      Object.entries(areaDistribution).forEach(([area, budgetAlloc]) => {
+      // Get premium allocation for this area if it exists
+      const prizeAlloc = areaPremiumDistribution[area] || { nominal: 0, percent: 0 }
+        
+        areaAllocations.push({
+          entityId: area,
+          entityType: 'lists',
+          entitySubtype: 'area',
+          allocation: { budget: budgetAlloc, premium: prizeAlloc }
+        })
+      })
+      
+      budgetDistribution.areas = areaAllocations
+    }
+    
+    // Build category distribution with EntityAllocationsType array
+    if (budgetDistributionMode === 'category' && Object.keys(categoryDistribution).length > 0) {
+      const premiumPool = calculatePrizePool(form.premiumPercentage, userEquity)
+      const categoryAllocations: EntityAllocationsType[] = []
+      
+      Object.entries(categoryDistribution).forEach(([category, budgetAlloc]) => {
+      // Get premium allocation for this category if it exists
+      const prizeAlloc = categoryPremiumDistribution[category] || { nominal: 0, percent: 0 }
+        
+        categoryAllocations.push({
+          entityId: category,
+          entityType: 'lists',
+          entitySubtype: 'categories',
+          allocation: { budget: budgetAlloc, premium: prizeAlloc }
+        })
+      })
+      
+      budgetDistribution.categories = categoryAllocations
+    }
+    
+    // Build per-task distribution with EntityAllocationsType array
+    if (budgetDistributionMode === 'task' && Object.keys(taskBudgets).length > 0) {
+      const taskAllocations: EntityAllocationsType[] = []
+      
+      Object.entries(taskBudgets).forEach(([taskId, values]) => {
+        const budgetAlloc = values.budget
+      const prizeAlloc = values.premium
+        
+        // Check if there's any meaningful allocation
+        const hasBudget = (budgetAlloc.nominal ?? 0) > 0 || (budgetAlloc.percent ?? 0) > 0
+        const hasPrize = (prizeAlloc.nominal ?? 0) > 0 || (prizeAlloc.percent ?? 0) > 0
+        
+          if (hasBudget || hasPrize) {
+          taskAllocations.push({
+            entityId: taskId,
+            entityType: 'tasks',
+            entitySubtype: 'task',
+              allocation: { budget: budgetAlloc, premium: prizeAlloc }
+          })
+        }
+      })
+      
+      budgetDistribution.tasks = taskAllocations
+    }
+    
     const res = await fetch('/api/v1/tasklists', {
       method: 'POST',
       body: JSON.stringify({
@@ -218,7 +405,8 @@ export const AddListForm = ({
         role: roleJoined,
         name: form.name || undefined,
         budget: budgetValue,
-        budgetPercentage: form.budgetPercentage,
+        premiumPercentage: form.premiumPercentage,
+        budgetDistribution: Object.keys(budgetDistribution).length > 0 ? budgetDistribution : undefined,
         dueDate: form.dueDate || undefined,
         templateId: templateIdToLink,
         collaborators: form.collaborators.map(c => c.id),
@@ -231,15 +419,39 @@ export const AddListForm = ({
       newListId = data.taskList?.id
     }
     await onCreated(newListId)
-    onCancel()
+    onOpenChange(false)
+  }
+
+  const handleOpenChange = (newOpen: boolean) => {
+    onOpenChange(newOpen)
+    if (!newOpen) {
+      // Reset form when closing
+      setForm({
+        name: '',
+        templateId: '',
+        budget: '',
+        premiumPercentage: 0,
+        dueDate: '',
+        cadence: 'one-off',
+        role: 'custom',
+        collaborators: [],
+      })
+      setTasks([])
+      setPremiumPercentage(0)
+      setBudgetDistributionMode('equal')
+      setAreaDistribution({})
+      setCategoryDistribution({})
+      setTaskBudgets({})
+    }
   }
 
   return (
-    <Card className="mb-2 p-4">
-      <CardHeader>
-        <CardTitle className="text-sm">{isEditing ? (t('forms.addListForm.titleEdit') || 'Edit List') : (t('forms.addListForm.titleCreate') || 'Create New List')}</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-3">
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogContent className="w-[768px] max-w-[90vw] max-h-[60vh] flex flex-col z-[9980]">
+        <DialogHeader>
+          <DialogTitle>{isEditing ? (t('forms.addListForm.titleEdit') || 'Edit List') : (t('forms.addListForm.titleCreate') || 'Create New List')}</DialogTitle>
+        </DialogHeader>
+        <div className="flex-1 overflow-y-auto space-y-3 px-1">
         <div>
           <Label htmlFor="list-name">{t('forms.addListForm.nameLabel') || 'Name'}</Label>
           <Input id="list-name" value={form.name} onChange={(e) => setForm(prev => ({ ...prev, name: e.target.value }))} />
@@ -252,15 +464,15 @@ export const AddListForm = ({
                 <SelectValue placeholder={t('forms.addListForm.chooseTemplatePlaceholder') || 'Choose a template'} />
               </SelectTrigger>
               <SelectContent>
-                {userTemplates.map((tpl: any) => (
-                  <SelectItem key={`tpl-${tpl.id}`} value={`template:${tpl.id}`} textValue={tpl.name || tpl.role || (t('forms.commonOptions.entities.template') || 'Template')}>
+                {userTemplates.map((tpl: Template) => (
+                  <SelectItem key={`tpl-${tpl.id}`} value={`template:${tpl.id}`} textValue={(tpl as Template & { name?: string }).name || tpl.role || (t('forms.commonOptions.entities.template') || 'Template')}>
                     <div className="flex items-center gap-2">
                       <Package className="h-4 w-4 opacity-70" />
-                      <span>{tpl.name || tpl.role || (t('forms.commonOptions.entities.template') || 'Template')}</span>
+                      <span>{(tpl as Template & { name?: string }).name || tpl.role || (t('forms.commonOptions.entities.template') || 'Template')}</span>
                     </div>
                   </SelectItem>
                 ))}
-                {allTaskLists.map((lst: any) => (
+                {allTaskLists.map((lst: TaskList) => (
                   <SelectItem key={`lst-${lst.id}`} value={`list:${lst.id}`} textValue={lst.name || lst.role || (t('forms.commonOptions.entities.list') || 'List')}>
                     <div className="flex items-center gap-2">
                       <ListIcon className="h-4 w-4 opacity-70" />
@@ -310,30 +522,6 @@ export const AddListForm = ({
             </Popover>
           </div>
         </div>
-        {isEditing && (
-          <div>
-            <Label htmlFor="budget-percentage" className="flex items-center gap-2 mb-4">
-              {t('forms.addListForm.budgetPercentageLabel') || 'Budget Allocation'}
-            </Label>
-            <div className="space-y-2 mt-2">
-              <Slider
-                value={[form.budgetPercentage]}
-                onValueChange={(values) => setForm(prev => ({ ...prev, budgetPercentage: values[0] }))}
-                min={0}
-                max={maxAllowedBudget}
-                step={1}
-                className="w-full"
-              />
-              <div className="flex justify-between text-xs text-muted-foreground">
-                <span>0%</span>
-                <span className="text-sm font-medium text-center flex-1">
-                  ({form.budgetPercentage.toFixed(0)}%)
-                </span>
-                <span>{maxAllowedBudget.toFixed(0)}%</span>
-              </div>
-            </div>
-          </div>
-        )}
         <div>
           <Label htmlFor="cadence">{t('forms.addListForm.cadenceLabel') || 'Cadence'}</Label>
           <Select value={form.cadence} onValueChange={(val) => setForm(prev => ({ ...prev, cadence: val }))}>
@@ -366,7 +554,7 @@ export const AddListForm = ({
                 <CommandList>
                   <CommandEmpty>{t('forms.addListForm.noResults') || 'No results.'}</CommandEmpty>
                   <CommandGroup>
-                    {collabResults.map((p: any) => (
+                    {collabResults.map((p: FriendProfile) => (
                       <CommandItem key={p.userId} value={p.userId} onSelect={() => {
                         if (!form.collaborators.find(c => c.id === p.userId)) {
                           setForm(prev => ({ ...prev, collaborators: [...prev.collaborators, { id: p.userId, userName: p.userName || p.userId }] }))
@@ -409,16 +597,18 @@ export const AddListForm = ({
         <Accordion type="single" collapsible className="w-full">
           <AccordionItem value="tasks" className="border-none">
             <AccordionTrigger className="py-2 px-0 hover:no-underline">
-              <span className="text-sm font-medium">{t('forms.addListForm.tasks') || 'Tasks'}</span>
+              <span className="text-sm font-medium">{t('forms.addListForm.manageTasks') || 'Manage Tasks'}</span>
             </AccordionTrigger>
             <AccordionContent className="pt-2 pb-0">
               <div>
-                <Popover open={addTaskOpen} onOpenChange={setAddTaskOpen}>
-                  <PopoverTrigger asChild>
-                    <Button variant="default">{t('forms.addListForm.addTaskButton') || 'Add task'}</Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-[320px]">
-                    <div className="space-y-2">
+                <Button variant="default" onClick={() => setAddTaskOpen(true)}>{t('forms.addListForm.addTaskButton') || 'Add task'}</Button>
+                
+                <Dialog open={addTaskOpen} onOpenChange={setAddTaskOpen}>
+                  <DialogContent className="w-[480px] max-w-[90vw] max-h-[60vh] overflow-y-auto z-[9980]">
+                    <DialogHeader>
+                      <DialogTitle>{t('forms.addListForm.addTaskTitle') || 'Add Task'}</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
                       <div>
                         <Label htmlFor="task-name">{t('forms.addListForm.table.name') || 'Name'}</Label>
                         <Input id="task-name" value={addTaskForm.name} onChange={(e) => setAddTaskForm(prev => ({ ...prev, name: e.target.value }))} />
@@ -462,19 +652,19 @@ export const AddListForm = ({
                         <Input id="task-times" type="number" min={1} value={addTaskForm.times} onChange={(e) => setAddTaskForm(prev => ({ ...prev, times: Math.max(1, Number(e.target.value) || 1) }))} />
                       </div>
                       <div className="flex justify-end gap-2 pt-2">
-                        <Button variant="outline" size="sm" onClick={() => setAddTaskOpen(false)}>{t('forms.addTemplateForm.task.cancel') || 'Cancel'}</Button>
-                        <Button size="sm" onClick={() => {
+                        <Button variant="outline" onClick={() => setAddTaskOpen(false)}>{t('forms.addTemplateForm.task.cancel') || 'Cancel'}</Button>
+                        <Button onClick={() => {
                           const name = addTaskForm.name.trim()
                           if (!name) return
-                          const newTask = { name, area: addTaskForm.area as any, categories: [addTaskForm.category], status: 'Not started', cadence: form.cadence, times: addTaskForm.times, count: 0 }
+                          const newTask: Task = { name, area: addTaskForm.area, categories: [addTaskForm.category], status: 'Not started', cadence: form.cadence, times: addTaskForm.times, count: 0 }
                           setTasks(prev => [newTask, ...(prev || [])])
                           setAddTaskForm({ name: '', area: 'self', category: 'custom', times: 1 })
                           setAddTaskOpen(false)
                         }}>{t('forms.addTemplateForm.task.add') || 'Add'}</Button>
                       </div>
                     </div>
-                  </PopoverContent>
-                </Popover>
+                  </DialogContent>
+                </Dialog>
                 <div className="border rounded-md overflow-x-auto mt-2">
                   <table className="w-full text-sm">
                     <thead>
@@ -487,7 +677,7 @@ export const AddListForm = ({
                       </tr>
                     </thead>
                     <tbody>
-                      {(tasks || []).map((task: any, idx: number) => (
+                      {(tasks || []).map((task: Task, idx: number) => (
                         <tr key={`${task.name}-${idx}`}>
                           <td className="p-2">{task.name}</td>
                           <td className="p-2">{task.times}</td>
@@ -495,8 +685,8 @@ export const AddListForm = ({
                           <td className="p-2">{Array.isArray(task.categories) ? task.categories.join(', ') : ''}</td>
                           <td className="p-2 text-right">
                             <div className="inline-flex">
-                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => setTasks(prev => (prev || []).map((t: any, i: number) => i === idx ? { ...t, times: (t.times || 1) + 1 } : t))}>⋯</Button>
-                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-destructive" onClick={() => setTasks(prev => (prev || []).filter((_: any, i: number) => i !== idx))}>×</Button>
+                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => setTasks(prev => (prev || []).map((t: Task, i: number) => i === idx ? { ...t, times: (t.times || 1) + 1 } : t))}>⋯</Button>
+                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-destructive" onClick={() => setTasks(prev => (prev || []).filter((_: Task, i: number) => i !== idx))}>×</Button>
                             </div>
                           </td>
                         </tr>
@@ -507,11 +697,230 @@ export const AddListForm = ({
               </div>
             </AccordionContent>
           </AccordionItem>
+
+          <AccordionItem value="budget" className="border-none">
+            <AccordionTrigger className="py-2 px-0 hover:no-underline">
+              <span className="text-sm font-medium">{t('forms.addListForm.manageBudgetAllocation') || 'Manage Budget Allocation'}</span>
+            </AccordionTrigger>
+            <AccordionContent className="pt-2 pb-0">
+              <div className="space-y-4">
+                {/* Personal Budget Allocation with BudgetDistributionInput */}
+                <BudgetDistributionInput
+                  items={['personal']}
+                  totalBudget={userEquity}
+                  allocations={{
+                    personal: {
+                      percent: form.premiumPercentage,
+                      nominal: (form.premiumPercentage / 100) * userEquity
+                    }
+                  }}
+                  onChange={(allocs, metadata) => {
+                    const alloc = allocs.personal
+                    if (!alloc) return
+                    const percentage = alloc.percent ?? nominalToPercent(alloc.nominal ?? 0, userEquity)
+                    setForm(prev => ({ ...prev, premiumPercentage: Math.max(0, Math.min(maxAllowedBudget, percentage)) }))
+                  }}
+                  onModeChange={setpremiumPercentageMode}
+                  mode={premiumPercentageMode}
+                  label={t('forms.addListForm.premiumPercentageLabel') || 'Personal Budget Allocation (% of equity)'}
+                />
+
+                {/* Budget Distribution Mode */}
+                <div>
+                  <Label htmlFor="distribution-mode">{t('forms.addListForm.distributionModeLabel') || 'Distribution Mode'}</Label>
+                  <Select value={budgetDistributionMode} onValueChange={(val: 'equal' | 'area' | 'category' | 'task') => setBudgetDistributionMode(val)}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="equal">{t('forms.addListForm.distributionMode.equal') || 'Equal (split evenly)'}</SelectItem>
+                      <SelectItem value="area">{t('forms.addListForm.distributionMode.area') || 'By Area'}</SelectItem>
+                      <SelectItem value="category">{t('forms.addListForm.distributionMode.category') || 'By Category'}</SelectItem>
+                      <SelectItem value="task">{t('forms.addListForm.distributionMode.task') || 'Per Task'}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Area Distribution */}
+                {budgetDistributionMode === 'area' && (() => {
+                  const taskAreas = tasks.length > 0 
+                    ? Array.from(new Set(tasks.map(t => t.area).filter(Boolean)))
+                    : ['self', 'home', 'social', 'work']
+                  
+                  return (
+                    <div className="space-y-4">
+                      <BudgetDistributionInput
+                        items={taskAreas}
+                        totalBudget={parseFloat(form.budget)}
+                        allocations={areaDistribution}
+                        onChange={(allocs) => setAreaDistribution(allocs)}
+                        onModeChange={setAreaDistributionMode}
+                        mode={areaDistributionMode}
+                        label={t('forms.addListForm.areaDistributionLabel') || 'Area Budget Distribution (Earnings)'}
+                        disabled={isBudgetDisabled}
+                      />
+                      <BudgetDistributionInput
+                        items={taskAreas}
+                        totalBudget={calculatePrizePool(form.premiumPercentage, userEquity)}
+                        allocations={areaPremiumDistribution}
+                        onChange={(allocs) => setAreaPremiumDistribution(allocs)}
+                        onModeChange={setAreaPremiumDistributionMode}
+                        mode={areaPremiumDistributionMode}
+                        label={t('forms.addListForm.areaPremiumDistributionLabel') || 'Area Premium Distribution'}
+                        disabled={isPremiumDisabled}
+                      />
+                    </div>
+                  )
+                })()}
+
+                {/* Category Distribution */}
+                {budgetDistributionMode === 'category' && (() => {
+                  const allCategories = tasks.length > 0
+                    ? Array.from(new Set(tasks.flatMap(t => t.categories || []).filter(Boolean)))
+                    : ['custom', 'body', 'mind', 'spirit', 'fun', 'growth', 'community', 'affection', 'clean', 'maintenance']
+                  
+                  return (
+                    <div className="space-y-4">
+                      <BudgetDistributionInput
+                        items={allCategories}
+                        totalBudget={parseFloat(form.budget)}
+                        allocations={categoryDistribution}
+                        onChange={(allocs) => setCategoryDistribution(allocs)}
+                        onModeChange={setCategoryDistributionMode}
+                        mode={categoryDistributionMode}
+                        label={t('forms.addListForm.categoryDistributionLabel') || 'Category Budget Distribution (Earnings)'}
+                        disabled={isBudgetDisabled}
+                      />
+                      <BudgetDistributionInput
+                        items={allCategories}
+                        totalBudget={calculatePrizePool(form.premiumPercentage, userEquity)}
+                        allocations={categoryPremiumDistribution}
+                        onChange={(allocs) => setCategoryPremiumDistribution(allocs)}
+                        onModeChange={setCategoryPremiumDistributionMode}
+                        mode={categoryPremiumDistributionMode}
+                        label={t('forms.addListForm.categoryPremiumDistributionLabel') || 'Category Premium Distribution'}
+                        disabled={isPremiumDisabled}
+                      />
+                    </div>
+                  )
+                    })()}
+
+                    {/* Per-Task Distribution */}
+                    {budgetDistributionMode === 'task' && tasks.length > 0 && (() => {
+                      const listBudget = parseFloat(form.budget) || 0
+                      const premiumPool = calculatePrizePool(form.premiumPercentage, userEquity)
+                      
+                      const totalBudget = tasks.reduce((sum, task) => {
+                        const taskId = task.id || task.name
+                        const budgetAlloc = taskBudgets[taskId]?.budget
+                        const prizeAlloc = taskBudgets[taskId]?.premium
+                        // Use nominal values, falling back to percent calculation
+                        const budgetNominal = getAllocationNominal(budgetAlloc, listBudget)
+                        const prizeNominal = getAllocationNominal(prizeAlloc, premiumPool)
+                        return sum + budgetNominal + prizeNominal
+                      }, 0)
+                      const remainingBudget = listBudget + premiumPool - totalBudget
+                      
+                      return (
+                        <div className="space-y-3">
+                          <div className="text-sm font-medium">
+                            {t('forms.addListForm.taskDistributionLabel') || 'Per-Task Budget & Prize'}
+                            <span className="ml-2 text-xs text-muted-foreground">
+                              (Remaining: ${remainingBudget.toFixed(2)})
+                            </span>
+                          </div>
+                          <div className="border rounded-md overflow-x-auto">
+                            <table className="w-full text-sm">
+                              <thead>
+                                <tr className="bg-muted/50 text-left">
+                                  <th className="p-2">{t('forms.addListForm.table.name') || 'Name'}</th>
+                                  <th className="p-2">{t('forms.addListForm.budgetLabel') || 'Budget'}</th>
+                                    <th className="p-2">{t('forms.addListForm.premiumLabel') || 'Premium'}</th>
+                                  <th className="p-2">{t('forms.addListForm.totalLabel') || 'Total'}</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {tasks.map((task: Task, idx: number) => {
+                                  const taskId = task.id || task.name
+                                  const budgetAlloc = taskBudgets[taskId]?.budget || {}
+                                  const premiumAlloc = taskBudgets[taskId]?.premium || {}
+                                  
+                                  // Calculate nominal values for total calculation
+                                  const budgetNominal = getAllocationNominal(budgetAlloc, listBudget)
+                                  const premiumNominal = getAllocationNominal(premiumAlloc, premiumPool)
+                                  const total = budgetNominal + premiumNominal
+                                  
+                                  return (
+                                    <tr key={`${taskId}-${idx}`}>
+                                      <td className="p-2">{task.name}</td>
+                                      <td className="p-2">
+                                        <BudgetDistributionInput
+                                          items={[`budget-${taskId}`]}
+                                          totalBudget={listBudget}
+                                          allocations={{ [`budget-${taskId}`]: budgetAlloc }}
+                                          onChange={(allocs, metadata) => {
+                                            const alloc = allocs[`budget-${taskId}`] || {
+                                              nominal: metadata?.nominalValues?.[`budget-${taskId}`] ?? 0,
+                                              percent: metadata?.percentages?.[`budget-${taskId}`] ?? 0
+                                            }
+                                            
+                                            setTaskBudgets(prev => ({
+                                              ...prev,
+                                              [taskId]: { 
+                                                budget: alloc,
+                                                premium: prev[taskId]?.premium || {}
+                                              }
+                                            }))
+                                          }}
+                                          label=""
+                                          variant="horizontal"
+                                          mode="currency"
+                                          disabled={isBudgetDisabled}
+                                        />
+                                      </td>
+                                      <td className="p-2">
+                                        <BudgetDistributionInput
+                                          items={[`premium-${taskId}`]}
+                                          totalBudget={premiumPool}
+                                          allocations={{ [`premium-${taskId}`]: premiumAlloc }}
+                                          onChange={(allocs, metadata) => {
+                                            const alloc = allocs[`premium-${taskId}`] || {
+                                              nominal: metadata?.nominalValues?.[`premium-${taskId}`] ?? 0,
+                                              percent: metadata?.percentages?.[`premium-${taskId}`] ?? 0
+                                            }
+                                            
+                                            setTaskBudgets(prev => ({
+                                              ...prev,
+                                              [taskId]: { 
+                                                budget: prev[taskId]?.budget || {},
+                                                premium: alloc
+                                              }
+                                            }))
+                                          }}
+                                          label=""
+                                          variant="horizontal"
+                                          mode="currency"
+                                          disabled={isPremiumDisabled}
+                                        />
+                                      </td>
+                                      <td className="p-2 text-xs">${total.toFixed(2)}</td>
+                                    </tr>
+                                  )
+                                })}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      )
+                    })()}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
         </Accordion>
 
         <div className="flex gap-2">
           <Button size="sm" onClick={handleSubmit} disabled={!form.name.trim()}>{isEditing ? (t('forms.addListForm.save') || 'Save') : (t('forms.addListForm.create') || 'Create')}</Button>
-          <Button size="sm" variant="outline" onClick={onCancel}>{t('forms.addListForm.cancel') || 'Cancel'}</Button>
+          <Button size="sm" variant="outline" onClick={() => handleOpenChange(false)}>{t('forms.addListForm.cancel') || 'Cancel'}</Button>
           {isEditing && (
             <Button
               size="sm"
@@ -527,16 +936,16 @@ export const AddListForm = ({
                   body: JSON.stringify({ deleteTaskList: true, taskListId: initialList.id })
                 })
                 await onCreated()
-                onCancel()
+                onOpenChange(false)
               }}
             >
               {t('forms.addListForm.deleteList') || 'Delete list'}
             </Button>
           )}
         </div>
-      </CardContent>
-    </Card>
+        </div>
+      </DialogContent>
+    </Dialog>
   )
 }
-
 
