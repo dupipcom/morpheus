@@ -36,8 +36,8 @@ Main REST API for the Dupip application. All routes are prefixed with `/api/v1`.
 | Profile | `profile/CLAUDE.md` | `GET/POST /profile`, `GET /profile/{userName}`, `GET /profile/{userName}/notes` |
 | Profiles | `profiles/CLAUDE.md` | `GET /profiles`, `GET /profiles/by-ids` |
 | Search | `search/CLAUDE.md` | `GET /search` |
-| Task lists | `tasklists/CLAUDE.md` | `GET/POST /tasklists`, `POST /tasklists/{taskListId}/clone` |
-| Tasks | `tasks/CLAUDE.md` | `GET/POST /tasks`, `GET/PUT/DELETE /tasks/{taskId}`, `GET/POST /tasks/migrate` |
+| Task lists | `tasklists/CLAUDE.md` | `GET/POST /tasklists`, `GET/PUT/DELETE /tasklists/{taskListId}`, `POST /tasklists/{taskListId}/clone` |
+| Tasks | `tasks/CLAUDE.md` | `GET/POST /tasks`, `GET/PUT/DELETE /tasks/{taskId}` (DELETE with scope), `GET/POST /tasks/migrate` (deprecated no-op) |
 | Templates | `templates/CLAUDE.md` | `GET/POST /templates`, `POST /templates/{templateId}/clone`, `GET /templates/public` |
 | Things | `things/CLAUDE.md` | `GET/POST /things` |
 | User | `user/CLAUDE.md` | `GET/POST /user`, `POST /user/login` |

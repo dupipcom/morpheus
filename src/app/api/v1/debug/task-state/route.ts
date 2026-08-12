@@ -35,10 +35,11 @@ export async function GET(request: NextRequest) {
       id: task.id,
       name: task.name,
       status: task.status,
-      count: task.count,
       times: task.times,
-      firstOccurrence: task.firstOccurrence,
-      lastOccurrence: task.lastOccurrence
+      rrule: task.rrule,
+      dtstart: task.dtstart,
+      premium: task.premium,
+      premiumType: task.premiumType
     },
     jobs: {
       total: task.jobs.length,

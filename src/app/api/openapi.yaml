@@ -489,7 +489,7 @@ paths:
         '200': { description: Jobs }
     post:
       tags: [jobs]
-      summary: Create a job
+      summary: Create a job (justification required for collaborators)
       responses:
         '200': { description: Job }
 
@@ -503,7 +503,7 @@ paths:
         '200': { description: Job }
     put:
       tags: [jobs]
-      summary: Update a job (status transitions, reviews, notes)
+      summary: Update a job (status transitions, reviews, notes, justification, evidence documentIds, location)
       parameters:
         - { name: jobId, in: path, required: true, schema: { type: string } }
       responses:
@@ -719,19 +719,44 @@ paths:
   /api/v1/tasklists:
     get:
       tags: [tasklists]
-      summary: List current user task lists
+      summary: List current user task lists (ensures default lists exist)
+      parameters:
+        - { name: role, in: query, schema: { type: string } }
       responses:
         '200': { description: Task lists }
     post:
       tags: [tasklists]
-      summary: Task list operations (create/update/delete/completions/ephemeral/status/redacted)
+      summary: Create a task list (name, visibility, collaborators, budget, budgetType, budgetPercent, budgetSourceIds, bio, profilePhoto, links, tasks)
       responses:
-        '200': { description: Result }
+        '200': { description: Created task list }
+
+  /api/v1/tasklists/{taskListId}:
+    get:
+      tags: [tasklists]
+      summary: Get a task list (members; owners/managers also get pending join requests)
+      parameters:
+        - { name: taskListId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Task list }
+    put:
+      tags: [tasklists]
+      summary: Update a task list (OWNER/MANAGER)
+      parameters:
+        - { name: taskListId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Updated }
+    delete:
+      tags: [tasklists]
+      summary: Delete a task list (OWNER)
+      parameters:
+        - { name: taskListId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Deleted }
 
   /api/v1/tasklists/{taskListId}/clone:
     post:
       tags: [tasklists]
-      summary: Clone a task list
+      summary: Clone a task list (public or owned; clones Task collection records)
       parameters:
         - { name: taskListId, in: path, required: true, schema: { type: string } }
       responses:
@@ -740,54 +765,54 @@ paths:
   /api/v1/tasks:
     get:
       tags: [tasks]
-      summary: List tasks (date-aware or legacy filters)
+      summary: List tasks for a date (date-aware, RRULE-based)
       parameters:
-        - { name: listId, in: query, schema: { type: string } }
-        - { name: date, in: query, schema: { type: string } }
-        - { name: status, in: query, schema: { type: string } }
-        - { name: area, in: query, schema: { type: string } }
+        - { name: listId, in: query, required: true, schema: { type: string } }
+        - { name: date, in: query, required: true, schema: { type: string } }
       responses:
         '200': { description: Tasks }
     post:
       tags: [tasks]
-      summary: Create a task
+      summary: Create a task (name, listId, rrule, dtstart, times, premium, premiumType, location)
       responses:
         '200': { description: Task }
 
   /api/v1/tasks/{taskId}:
     get:
       tags: [tasks]
-      summary: Get a task
+      summary: Get a task (members)
       parameters:
         - { name: taskId, in: path, required: true, schema: { type: string } }
       responses:
         '200': { description: Task }
     put:
       tags: [tasks]
-      summary: Update a task
+      summary: Update a task (OWNER/MANAGER/COLLABORATOR; status COMPLETED completes the task)
       parameters:
         - { name: taskId, in: path, required: true, schema: { type: string } }
       responses:
         '200': { description: Updated }
     delete:
       tags: [tasks]
-      summary: Delete a task
+      summary: Delete a task with scope (OWNER/MANAGER)
       parameters:
         - { name: taskId, in: path, required: true, schema: { type: string } }
+        - { name: scope, in: query, schema: { type: string, enum: [all, onwards, today] } }
+        - { name: date, in: query, schema: { type: string } }
       responses:
         '200': { description: Deleted }
 
   /api/v1/tasks/migrate:
     get:
       tags: [tasks]
-      summary: Check if a list needs task migration
+      summary: Check migration status (deprecated - always complete after migrations 0017-0019)
       parameters:
         - { name: listId, in: query, required: true, schema: { type: string } }
       responses:
         '200': { description: Migration status }
     post:
       tags: [tasks]
-      summary: Migrate legacy embedded tasks to Task collection
+      summary: Migrate legacy embedded tasks (deprecated no-op)
       responses:
         '200': { description: Migration result }
 

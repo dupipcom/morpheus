@@ -1,21 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
-import { randomBytes } from 'crypto'
-
-// Helper function to generate a unique MongoDB ObjectId
-function generateObjectId(): string {
-  // Generate a 24-character hex string (MongoDB ObjectId format)
-  return randomBytes(12).toString('hex')
-}
-
-// Helper function to ensure all tasks have unique ObjectIds when cloning
-function ensureUniqueTaskIds(tasks: any[]): any[] {
-  return tasks.map((task: any) => ({
-    ...task,
-    id: generateObjectId() // Always generate new ID when cloning
-  }))
-}
+import { sanitizeText } from '@/lib/utils/sanitize'
+import { generatePublicUrl } from '@/lib/services/tasklist/taskListCrudService'
 
 export async function POST(
   request: NextRequest,
@@ -34,54 +21,76 @@ export async function POST(
 
     const { taskListId } = await params
 
-    // Fetch the tasklist to clone
+    // Fetch the tasklist to clone (with Task collection records)
     const taskList = await prisma.list.findUnique({
       where: { id: taskListId },
+      include: { tasks: true }
     })
 
     if (!taskList) {
       return NextResponse.json({ error: 'Task list not found' }, { status: 404 })
     }
 
-    // Check if user has access to this tasklist (must be public, friends-only, or owned by user)
-    const users = (taskList.users as any[]) || []
-    const isOwner = users.some((u: any) => u.userId === user.id && u.role === 'OWNER')
+    // Access: owner, or public list
+    const users = taskList.users || []
+    const isOwner = users.some((u) => u.userId === user.id && u.role === 'OWNER')
     const isPublic = taskList.visibility === 'PUBLIC'
-    
+
     if (!isOwner && !isPublic) {
-      // For FRIENDS visibility, we'd need to check friendship status
-      // For now, we'll allow only public or owned tasklists to be cloned
       return NextResponse.json({ error: 'Access denied' }, { status: 403 })
     }
 
     // Get optional custom name from request body
     const body = await request.json().catch(() => ({}))
-    const customName = body.name
+    const customName = typeof body?.name === 'string' ? sanitizeText(body.name) : null
 
-    // Ensure all tasks have unique ObjectIds when cloning
-    const originalTasks = (taskList.tasks as any[]) || []
-    const tasksWithUniqueIds = ensureUniqueTaskIds(originalTasks)
-    const templateTasksWithUniqueIds = Array.isArray(taskList.templateTasks) 
-      ? ensureUniqueTaskIds(taskList.templateTasks as any[])
-      : tasksWithUniqueIds
-
-    // Create a new task list from the cloned tasklist
+    // Create the cloned list
     const clonedTaskList = await prisma.list.create({
       data: {
         name: customName || `${taskList.name || 'Task List'} (Cloned)`,
         visibility: 'PRIVATE', // Cloned lists are private by default
         role: 'custom', // Cloned lists are custom
         users: [{ userId: user.id, role: 'OWNER' }],
-        templateId: taskList.templateId,
-        templateTasks: templateTasksWithUniqueIds,
-        // Note: tasks relation is not set here - the migration system will create Task records from templateTasks
         budget: taskList.budget,
-        premiumPercentage: taskList.premiumPercentage,
-        dueDate: taskList.dueDate,
-      },
+        budgetType: taskList.budgetType,
+        budgetPercent: taskList.budgetPercent,
+        bio: taskList.bio,
+        profilePhoto: taskList.profilePhoto,
+        links: taskList.links
+      }
     })
 
-    return NextResponse.json({ 
+    // Assign a unique public slug
+    const publicUrl = await generatePublicUrl(clonedTaskList.name, clonedTaskList.id)
+    await prisma.list.update({ where: { id: clonedTaskList.id }, data: { publicUrl } })
+
+    // Clone Task collection records (fresh ids, reset to OPEN)
+    const originalTasks = taskList.tasks || []
+    if (originalTasks.length > 0) {
+      const taskCreatePromises = originalTasks.map((task) =>
+        prisma.task.create({
+          data: {
+            name: task.name,
+            categories: task.categories,
+            area: task.area,
+            status: 'OPEN',
+            listId: clonedTaskList.id,
+            rrule: task.rrule,
+            dtstart: task.dtstart,
+            times: task.times,
+            premium: task.premium,
+            premiumType: task.premiumType,
+            localeKey: task.localeKey,
+            visibility: task.visibility,
+            quality: task.quality,
+            redacted: task.redacted || false
+          }
+        })
+      )
+      await Promise.all(taskCreatePromises)
+    }
+
+    return NextResponse.json({
       taskList: clonedTaskList,
       message: 'Task list cloned successfully'
     })
@@ -90,4 +99,3 @@ export async function POST(
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
-

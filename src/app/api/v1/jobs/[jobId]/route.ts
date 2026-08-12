@@ -22,12 +22,9 @@ const jobFullInclude = {
       area: true,
       categories: true,
       status: true,
-      // budget is legacy field - earnings is the new normalized field
-      // budget kept for backwards compatibility (fallback when earnings is null)
-      budget: true,
-      earnings: true,
       premium: true,
-      totalGains: true
+      premiumType: true,
+      rrule: true
     }
   },
   list: {
@@ -240,6 +237,9 @@ export async function PUT(
     const body: UpdateJobRequest = await request.json()
     const {
       status: newStatus,
+      justification,
+      location,
+      documentIds,
       requesterNoteContent,
       reviewerNoteContent,
       selfReview,
@@ -392,6 +392,45 @@ export async function PUT(
         )
       }
       updateData.managerReview = managerReview
+    }
+
+    // Justification for the job request (only the worker may set it)
+    if (justification !== undefined) {
+      if (!isWorker) {
+        return NextResponse.json(
+          { error: 'Unauthorized: Only the worker can update the justification' },
+          { status: 403 }
+        )
+      }
+      updateData.justification = justification ? sanitizeText(String(justification)) : null
+    }
+
+    // Evidence attachments (worker, owner, or manager)
+    if (documentIds !== undefined) {
+      if (!isWorker && !isOwnerOrManager) {
+        return NextResponse.json(
+          { error: 'Unauthorized: Only the worker, owners, and managers can attach evidence' },
+          { status: 403 }
+        )
+      }
+      if (!Array.isArray(documentIds) || !documentIds.every((v) => typeof v === 'string' && /^[a-f0-9]{24}$/i.test(v))) {
+        return NextResponse.json(
+          { error: 'documentIds must be an array of document IDs' },
+          { status: 400 }
+        )
+      }
+      updateData.documentIds = documentIds
+    }
+
+    // Geolocation (auto-extracted from evidence EXIF; worker/owner/manager)
+    if (location !== undefined) {
+      if (!isWorker && !isOwnerOrManager) {
+        return NextResponse.json(
+          { error: 'Unauthorized: Only the worker, owners, and managers can set the location' },
+          { status: 403 }
+        )
+      }
+      updateData.location = location && typeof location === 'object' ? location : null
     }
 
     // Create requester note if provided (worker's submission note)
@@ -615,7 +654,7 @@ export async function DELETE(
         await reverseJobEarnings({
           jobId: existingJob.id,
           workerId: existingJob.workerId,
-          occurrenceDate: existingJob.occurrenceDate
+          occurrenceDate
         })
       } catch (earningsError) {
         console.error('Error reversing job earnings:', earningsError)

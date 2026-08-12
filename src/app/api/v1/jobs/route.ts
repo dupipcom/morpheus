@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
+import { getUserListRole } from '@/lib/services/auth'
 import { updateTaskOccurrenceDates } from '@/lib/services/task'
 import { updateDayProgress } from '@/lib/services/day'
 import { formatDateLocal } from '@/lib/utils/taskUtils'
+import { sanitizeText } from '@/lib/utils/sanitize'
 import { calculateAndApplyJobEarnings, initializeJobInvoice, updateJobWithTaskValues } from '@/lib/services/job/earningsService'
 import type { ListUser } from '@/lib/services/job/types'
 
@@ -36,18 +38,6 @@ const JOB_INCLUDE = {
 // Valid roles for job creation and viewing
 const JOB_CREATION_ROLES = ['OWNER', 'MANAGER', 'COLLABORATOR']
 const JOB_VIEW_ROLES = ['OWNER', 'MANAGER', 'COLLABORATOR', 'FOLLOWER']
-
-// Helper function to get user's role in a list
-async function getUserListRole(userId: string, listId: string): Promise<string | null> {
-  const list = await prisma.list.findUnique({
-    where: { id: listId },
-    select: { users: true }
-  })
-
-  if (!list) return null
-  const userRef = list.users.find((ref: any) => ref.userId === userId)
-  return userRef?.role || null
-}
 
 // Build where clause from search params
 function buildJobWhereClause(searchParams: URLSearchParams): Record<string, any> {
@@ -169,7 +159,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { taskId, listId, workerId, status, occurrenceDate, selfReview, peerReview, managerReview, reviewerIds, reviewersNoteIds } = body
+    const { taskId, listId, workerId, status, occurrenceDate, justification, location, selfReview, peerReview, managerReview, reviewerIds, reviewersNoteIds } = body
 
     // Validate required fields
     if (!taskId || !listId || !workerId) {
@@ -188,6 +178,11 @@ export async function POST(request: NextRequest) {
 
     if (role === 'COLLABORATOR' && workerId !== user.id) {
       return NextResponse.json({ error: 'Unauthorized: Collaborators can only create jobs for themselves' }, { status: 403 })
+    }
+
+    // Collaborators must justify their job request (owners/managers don't have to)
+    if (role === 'COLLABORATOR' && (!justification || !String(justification).trim())) {
+      return NextResponse.json({ error: 'A justification is required to request a job' }, { status: 400 })
     }
 
     // Verify task belongs to list
@@ -210,6 +205,8 @@ export async function POST(request: NextRequest) {
         workerId,
         status: status || 'REQUESTED',
         occurrenceDate: occurrenceDate || null,
+        justification: justification !== undefined ? sanitizeText(String(justification)) : null,
+        location: location && typeof location === 'object' ? location : null,
         selfReview,
         peerReview,
         managerReview,

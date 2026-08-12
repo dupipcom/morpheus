@@ -18,11 +18,12 @@ Privacy filtering:
 - Non-participants (collaborators who are not worker/owner/manager/reviewer) get a reduced payload without notes/reviews/detailed info.
 
 ## POST `/jobs`
-Creates a job. Body: `{ taskId, listId, workerId, status?, occurrenceDate?, selfReview?, peerReview?, managerReview?, reviewerIds?, reviewersNoteIds? }`.
+Creates a job. Body: `{ taskId, listId, workerId, status?, occurrenceDate?, justification?, location?, selfReview?, peerReview?, managerReview?, reviewerIds?, reviewersNoteIds? }`.
 - `occurrenceDate` must be `YYYY-MM-DD`.
 - Requires list membership with role OWNER/MANAGER/COLLABORATOR; collaborators can only create jobs for themselves.
+- **Collaborators must provide a `justification`** for the job request (owners/managers don't have to). Sanitized before storage.
 - Verifies task belongs to list.
-- If `status === 'ACCEPTED'`, initializes invoice, syncs task values, updates task occurrence dates and `Day.progress`, and applies earnings.
+- If `status === 'ACCEPTED'`, initializes invoice (simplified premium service), syncs task values, updates task occurrence dates and `Day.progress`, and applies earnings.
 
 ## GET `[jobId]`
 Returns a job if the current user is a list member (any of OWNER/MANAGER/COLLABORATOR/FOLLOWER).
@@ -35,6 +36,8 @@ Updates a job with full authorization and audit logging:
 - Own/manager review fields have role and range checks.
 - Creates requester/reviewer notes (sanitized) when provided.
 - Runs the update in a retrying transaction (`P2034` retries).
+- Evidence: `documentIds` (ObjectId array) and `location` (JSON `{lat, lng, placeId?, name?, address?}`) can be attached by the worker/owner/manager.
+- `justification` can only be updated by the worker.
 - On `ACCEPTED`: initializes invoice, updates occurrence dates/day progress, calculates/apply earnings, logs acceptance.
 - On un-accept (was ACCEPTED, now not): reverses earnings and updates progress.
 - On `IN_PROGRESS`: initializes invoice.

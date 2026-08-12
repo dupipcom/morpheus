@@ -1,45 +1,49 @@
 /**
  * TaskList API Route Handler
- * Refactored to use service layer for business logic
  *
- * GET: Fetch task lists for authenticated user
- * POST: Handle various task list operations (create, update, delete, completions, etc.)
+ * GET: Fetch task lists for the authenticated user (ensures default lists)
+ * POST: Create a task list (with optional initial tasks)
  */
 
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
 import { sanitizeText } from '@/lib/utils/sanitize'
-import {
-  getUserLocale,
-  loadTranslationsForLocale,
-  translateTemplateTasks,
-  ensureUniqueTaskIds,
-  parseBudget,
-  getUserBalanceValues,
-  getYearFromISO,
-  getTodayISO,
-  getLocalizedListName,
-  Task,
-  TaskListPostBody
-} from '@/lib/services/tasklist'
+import { Visibility } from '@/generated/prisma'
 import {
   getTaskListsForUser,
-  calculateCollaboratorEarnings,
   ensureDefaultTaskLists,
-  deleteTaskList,
   createTaskList,
-  updateTaskList,
-  updateTemplateWithTasks,
-  getTaskListWithTemplate,
-  getListCompletionData
+  getListCompletionData,
+  getUserLocale,
+  loadTranslationsForLocale,
+  type NewTaskInput
 } from '@/lib/services/tasklist'
-import { recordCompletions } from '@/lib/services/tasklist'
-import { updateTaskStatus, updateTaskRedacted } from '@/lib/services/tasklist'
-import { processEphemeralTasks } from '@/lib/services/tasklist'
-import { updateTaskCompletionHandler } from './handlers/updateTaskCompletion'
-import { applyPremiumFactors, PremiumFactorSettings } from '@/lib/utils/earningsUtils'
-import { calculateTaskBudgetFromDistribution } from '@/lib/services/task/taskMigrationService'
+
+const ALLOWED_VISIBILITIES: Visibility[] = ['PUBLIC', 'PRIVATE', 'FRIENDS', 'CLOSE_FRIENDS', 'HIDDEN']
+
+const OBJECT_ID_PATTERN = /^[a-f0-9]{24}$/i
+
+function parseVisibility(value: unknown): Visibility | null {
+  if (typeof value !== 'string') return null
+  return ALLOWED_VISIBILITIES.includes(value as Visibility) ? (value as Visibility) : null
+}
+
+function parseObjectIds(value: unknown): string[] | null {
+  if (!Array.isArray(value)) return null
+  if (!value.every((v) => typeof v === 'string' && OBJECT_ID_PATTERN.test(v))) return null
+  return value as string[]
+}
+
+function parseNumber(value: unknown): number | null | undefined {
+  if (value === null || value === undefined) return undefined
+  if (typeof value === 'number' && !isNaN(value)) return value
+  if (typeof value === 'string' && value.trim() !== '') {
+    const parsed = parseFloat(value)
+    return isNaN(parsed) ? undefined : parsed
+  }
+  return undefined
+}
 
 /**
  * GET /api/v1/tasklists
@@ -56,29 +60,20 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const { searchParams } = new URL(request.url)
     const role = searchParams.get('role')
 
-    // Find user by userId (include settings for premium factor calculations)
+    // Find user by userId
     const user = await prisma.user.findUnique({
       where: { userId: userId },
-      select: {
-        id: true,
-        settings: true
-      }
+      select: { id: true }
     })
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
-    
-    // Extract premium factor settings
-    const premiumFactorSettings = user.settings as PremiumFactorSettings | null
 
-    // Get user's locale and translations
+    // Ensure default daily/weekly lists exist for the owner (localized)
     const userLocale = getUserLocale(request)
     const translations = loadTranslationsForLocale(userLocale)
-
-    // Ensure default daily/weekly lists exist for the owner
     await ensureDefaultTaskLists({
-      userId: userId,
       userInternalId: user.id,
       translations
     })
@@ -89,73 +84,29 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       role: role
     })
 
-    // Calculate collaborator earnings for each task list
-    const taskListsWithEarnings = await calculateCollaboratorEarnings(taskLists)
-
     // Add job-based completion data to each list
     const taskListsWithCompletion = await Promise.all(
-      taskListsWithEarnings.map(async (list: any) => {
+      taskLists.map(async (list) => {
         try {
           const jobCompletionData = await getListCompletionData(list.id)
-          return {
-            ...list,
-            jobCompletedTasks: jobCompletionData  // Separate field to not overwrite legacy data
-          }
+          return { ...list, jobCompletedTasks: jobCompletionData }
         } catch (error) {
           console.error(`Error getting completion data for list ${list.id}:`, error)
-          return {
-            ...list,
-            jobCompletedTasks: {}
-          }
+          return { ...list, jobCompletedTasks: {} }
         }
       })
     )
 
-    // Apply premium factors and calculate financial values from budget distribution for all tasks in each list
-    const taskListsWithFactoredPremiums = taskListsWithCompletion.map((list: any) => {
-      const listRole = list.role
-      
-      // Calculate financial values from budget distribution for tasks in Task collection
-      const factoredTasks = (list.tasks || []).map((task: any) => {
-        // Calculate financial values from budget distribution (not from task fields)
-        const budgetAllocation = calculateTaskBudgetFromDistribution({
-          task,
-          list: {
-            budget: list.budget,
-            budgetDistribution: list.budgetDistribution,
-            premiumPercentage: list.premiumPercentage,
-            tasks: list.tasks,
-            role: list.role
-          }
-        })
-        
-        const rawPremium = budgetAllocation.premium || 0
-        const factoredPremium = applyPremiumFactors(rawPremium, listRole, premiumFactorSettings)
-        const earnings = budgetAllocation.budget || 0
-        
-        return {
-          ...task,
-          premium: factoredPremium,
-          totalGains: earnings + factoredPremium
-        }
-      })
-      
-      return {
-        ...list,
-        tasks: factoredTasks
-      }
-    })
-
-    return NextResponse.json({ taskLists: taskListsWithFactoredPremiums })
+    return NextResponse.json({ taskLists: taskListsWithCompletion })
   } catch (error) {
-    console.error('Error fetching task lists:', error)
+    console.error('Error in GET /api/v1/tasklists:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
 /**
  * POST /api/v1/tasklists
- * Handle various task list operations
+ * Create a task list (create-only; updates go through /api/v1/tasklists/[taskListId])
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
@@ -165,242 +116,134 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const body: TaskListPostBody = await request.json()
-    const {
-      role,
-      tasks,
-      templateId,
-      updateTemplate,
-      name,
-      budget: budgetRaw,
-      premiumPercentage,
-      budgetDistribution,
-      dueDate,
-      create,
-      collaborators
-    } = body
-
-    // Parse budget as float
-    const budget = parseBudget(budgetRaw)
-
-    // Sanitize user input to prevent XSS attacks
-    const sanitizedName = name ? sanitizeText(name) : undefined
-    
-    // Sanitize task names if tasks are provided
-    const sanitizeTasks = (taskArray: Task[] | undefined): Task[] | undefined => {
-      if (!Array.isArray(taskArray)) return taskArray
-      return taskArray.map(task => ({
-        ...task,
-        name: task.name ? sanitizeText(task.name) : task.name
-      }))
-    }
-    const sanitizedTasks = sanitizeTasks(tasks as Task[] | undefined)
-
-    // Find user by userId
     const user = await prisma.user.findUnique({
       where: { userId: userId },
-      select: { id: true, availableBalance: true, stash: true, equity: true }
+      select: { id: true }
     })
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    // Get user's locale and translations
-    const userLocale = getUserLocale(request)
-    const translations = loadTranslationsForLocale(userLocale)
-
-    // Translate tasks if provided (use sanitized tasks)
-    let translatedTasks = sanitizedTasks
-    if (Array.isArray(sanitizedTasks) && sanitizedTasks.length > 0) {
-      translatedTasks = translateTemplateTasks(sanitizedTasks as Task[], translations)
-      translatedTasks = ensureUniqueTaskIds(translatedTasks, !!templateId)
+    const body = await request.json().catch(() => null)
+    if (!body || typeof body !== 'object') {
+      return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
     }
 
-    // Get localized name if not provided and creating a default list (use sanitized name)
-    let localizedName = sanitizedName
-    if (!localizedName && role && role.endsWith('.default')) {
-      localizedName = getLocalizedListName(role, translations, sanitizedName)
+    const {
+      name, role, visibility, categories, area, collaborators,
+      budget, budgetType, budgetPercent, budgetSourceIds,
+      bio, profilePhoto, links, tasks
+    } = body as Record<string, unknown>
+
+    // Validate name
+    if (name !== undefined && typeof name !== 'string') {
+      return NextResponse.json({ error: 'Name must be a string' }, { status: 400 })
     }
+    const sanitizedName = name !== undefined ? sanitizeText(name) : null
 
-    // Handle delete task list
-    if (body.deleteTaskList && body.taskListId) {
-      await deleteTaskList({
-        taskListId: body.taskListId,
-        userId: user.id
-      })
-      return NextResponse.json({ ok: true })
-    }
-
-    // Handle record completions
-    if (body.recordCompletions && body.taskListId && (body.dayActions?.length || body.weekActions?.length || Array.isArray(body.justUncompletedNames))) {
-      const incomingTasks: Task[] = (body.dayActions?.length ? body.dayActions : body.weekActions) || []
-      const justCompletedNames: string[] = Array.isArray(body.justCompletedNames) ? body.justCompletedNames : []
-      const justUncompletedNames: string[] = Array.isArray(body.justUncompletedNames) ? body.justUncompletedNames : []
-      const dateISO = (body.date || getTodayISO()) as string
-
-      const result = await recordCompletions({
-        taskListId: body.taskListId,
-        user: user,
-        incomingTasks,
-        justCompletedNames,
-        justUncompletedNames,
-        dateISO
-      })
-
-      return NextResponse.json({ taskList: result.taskList, earnings: result.earnings })
-    }
-
-    // Handle update task completion
-    if (body.updateTaskCompletion && body.taskListId && body.taskId) {
-      return updateTaskCompletionHandler(body, user)
-    }
-
-    // Handle ephemeral tasks operations
-    if (body.ephemeralTasks && body.taskListId) {
-      const taskList = await processEphemeralTasks({
-        taskListId: body.taskListId,
-        operations: body.ephemeralTasks
-      })
-      return NextResponse.json({ taskList })
-    }
-
-    // Handle update task status
-    if (body.updateTaskStatus && body.taskListId) {
-      const taskId = body.taskId
-      const taskKey = body.taskKey
-      const newStatus = body.status || body.taskStatus || 'open'
-      const newCount = body.count !== undefined ? Number(body.count) : undefined
-      const newTimes = body.times !== undefined ? Number(body.times) : undefined
-      const dateISO = body.date || getTodayISO()
-      const userBalanceValues = getUserBalanceValues(user)
-
-      const taskList = await updateTaskStatus({
-        taskListId: body.taskListId,
-        userId: user.id,
-        taskId,
-        taskKey,
-        newStatus,
-        newCount,
-        newTimes,
-        dateISO,
-        userBalanceValues
-      })
-
-      return NextResponse.json({ taskList })
-    }
-
-    // Handle update task redacted status
-    if (body.updateTaskRedacted && body.taskListId) {
-      const taskKey = body.taskKey
-      const redacted = body.redacted === true
-
-      if (!taskKey) {
-        return NextResponse.json({ error: 'taskKey is required' }, { status: 400 })
+    // Validate visibility
+    let parsedVisibility: Visibility | null = null
+    if (visibility !== undefined) {
+      parsedVisibility = parseVisibility(visibility)
+      if (!parsedVisibility) {
+        return NextResponse.json({ error: 'Invalid visibility' }, { status: 400 })
       }
-
-      const taskList = await updateTaskRedacted({
-        taskListId: body.taskListId,
-        taskKey,
-        redacted
-      })
-
-      return NextResponse.json({ taskLists: [taskList] })
     }
 
-    // Handle update existing task list by ID
-    if (body.taskListId && create === false) {
-      const taskList = await updateTaskList({
-        taskListId: body.taskListId,
-        userId: user.id,
-        role,
-        name: sanitizedName,
-        budget,
-        premiumPercentage,
-        budgetDistribution,
-        dueDate,
-        templateId,
-        tasks: translatedTasks as Task[],
-        collaborators
-      })
-
-      return NextResponse.json({ taskList })
-    }
-
-    // Handle create or update task list by role
-    const existingTaskList = await prisma.list?.findFirst({
-      where: {
-        users: {
-          some: {
-            userId: user.id,
-            role: 'OWNER'
-          }
-        },
-        role: role
+    // Validate collaborators (internal user ObjectIds)
+    let parsedCollaborators: string[] | undefined
+    if (collaborators !== undefined) {
+      const parsed = parseObjectIds(collaborators)
+      if (!parsed) {
+        return NextResponse.json({ error: 'Collaborators must be an array of user IDs' }, { status: 400 })
       }
+      parsedCollaborators = parsed
+    }
+
+    // Validate budget fields
+    if (budgetType !== undefined && budgetType !== null && !['FIAT', 'PERCENT'].includes(String(budgetType))) {
+      return NextResponse.json({ error: 'Invalid budgetType' }, { status: 400 })
+    }
+    const parsedBudget = parseNumber(budget)
+    const parsedBudgetPercent = parseNumber(budgetPercent)
+    if (parsedBudgetPercent != null && (parsedBudgetPercent < 0 || parsedBudgetPercent > 100)) {
+      return NextResponse.json({ error: 'budgetPercent must be between 0 and 100' }, { status: 400 })
+    }
+
+    // Validate budget sources
+    let parsedBudgetSourceIds: string[] | undefined
+    if (budgetSourceIds !== undefined) {
+      const parsed = parseObjectIds(budgetSourceIds)
+      if (!parsed) {
+        return NextResponse.json({ error: 'budgetSourceIds must be an array of budget IDs' }, { status: 400 })
+      }
+      parsedBudgetSourceIds = parsed
+    }
+
+    // Validate initial tasks
+    let parsedTasks: NewTaskInput[] | undefined
+    if (tasks !== undefined) {
+      if (!Array.isArray(tasks)) {
+        return NextResponse.json({ error: 'Tasks must be an array' }, { status: 400 })
+      }
+      parsedTasks = tasks.map((t: unknown) => {
+        if (!t || typeof t !== 'object') {
+          throw new Error('INVALID_TASK')
+        }
+        const task = t as Record<string, unknown>
+        if (typeof task.name !== 'string' || !task.name.trim()) {
+          throw new Error('INVALID_TASK')
+        }
+        return {
+          name: sanitizeText(task.name),
+          rrule: typeof task.rrule === 'string' ? task.rrule : null,
+          dtstart: typeof task.dtstart === 'string' ? task.dtstart : null,
+          times: typeof task.times === 'number' && task.times > 0 ? task.times : null,
+          premium: typeof task.premium === 'number' ? task.premium : null,
+          premiumType: typeof task.premiumType === 'string' && ['FIAT', 'PERCENT'].includes(task.premiumType) ? task.premiumType : null,
+          localeKey: typeof task.localeKey === 'string' ? task.localeKey : null,
+          categories: Array.isArray(task.categories) ? task.categories.filter((c): c is string => typeof c === 'string') : [],
+          area: typeof task.area === 'string' ? task.area : null,
+          visibility: parseVisibility(task.visibility),
+          quality: typeof task.quality === 'number' ? task.quality : null,
+          redacted: typeof task.redacted === 'boolean' ? task.redacted : false
+        }
+      }) as NewTaskInput[]
+    }
+
+    let categoriesParsed: string[] | undefined
+    if (categories !== undefined) {
+      if (!Array.isArray(categories) || !categories.every((c) => typeof c === 'string')) {
+        return NextResponse.json({ error: 'Categories must be an array of strings' }, { status: 400 })
+      }
+      categoriesParsed = categories as string[]
+    }
+
+    const taskList = await createTaskList({
+      userInternalId: user.id,
+      role: typeof role === 'string' ? role : null,
+      name: sanitizedName,
+      visibility: parsedVisibility || undefined,
+      categories: categoriesParsed,
+      area: typeof area === 'string' ? area : null,
+      collaborators: parsedCollaborators,
+      budget: parsedBudget ?? null,
+      budgetType: typeof budgetType === 'string' ? budgetType : null,
+      budgetPercent: parsedBudgetPercent ?? null,
+      budgetSourceIds: parsedBudgetSourceIds,
+      bio: typeof bio === 'string' ? sanitizeText(bio) : null,
+      profilePhoto: typeof profilePhoto === 'string' ? sanitizeText(profilePhoto) : null,
+      links: links && typeof links === 'object' ? links : null,
+      tasks: parsedTasks
     })
-
-    let taskList
-
-    if (create) {
-      // Create new TaskList
-      taskList = await createTaskList({
-        userId: user.id,
-        role,
-        name: localizedName,
-        budget,
-        premiumPercentage,
-        budgetDistribution,
-        dueDate,
-        templateId,
-        tasks: translatedTasks as Task[],
-        collaborators
-      })
-    } else if (existingTaskList) {
-      // Update existing TaskList
-      taskList = await updateTaskList({
-        taskListId: existingTaskList.id,
-        userId: user.id,
-        role,
-        name: sanitizedName,
-        budget,
-        premiumPercentage,
-        budgetDistribution,
-        dueDate,
-        templateId,
-        tasks: translatedTasks as Task[],
-        collaborators
-      })
-    } else {
-      // Create new TaskList
-      taskList = await createTaskList({
-        userId: user.id,
-        role,
-        name: localizedName,
-        budget,
-        premiumPercentage,
-        budgetDistribution,
-        dueDate,
-        templateId,
-        tasks: translatedTasks as Task[],
-        collaborators
-      })
-    }
-
-    // Optionally update the linked Template
-    if (updateTemplate && taskList?.templateId && translatedTasks) {
-      await updateTemplateWithTasks({
-        templateId: taskList.templateId,
-        tasks: translatedTasks as Task[]
-      })
-
-      // Re-fetch task list to include refreshed template relation
-      taskList = await getTaskListWithTemplate(taskList.id)
-    }
 
     return NextResponse.json({ taskList })
   } catch (error) {
-    console.error('Error updating task list:', error)
+    if (error instanceof Error && error.message === 'INVALID_TASK') {
+      return NextResponse.json({ error: 'Each task must include a non-empty name' }, { status: 400 })
+    }
+    console.error('Error in POST /api/v1/tasklists:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
