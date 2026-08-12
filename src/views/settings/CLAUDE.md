@@ -79,9 +79,15 @@ SettingsView
 
 ## API Endpoints
 
-| Endpoint | Method | Purpose |
+| Endpoint | Method | Why / How |
 |---|---|---|
-| Settings are saved through `handleSettingsSubmit()` utility — delegates to settings storage | | |
+| `/api/v1/user` | GET | `useUserData()` loads the current user (including `settings.currency`, `settings.dailyTemplate`, `settings.weeklyTemplate`) on mount. |
+| `/api/v1/user` | POST | `handleSettingsSubmit()` → `submitUserData()` posts `{ settings: { [field]: value } }` for currency and daily/weekly template changes. |
+
+Integration details:
+- `handleSettingsSubmit(currencyValue, "currency")` updates `settings.currency`.
+- `handleSettingsSubmit(payload, "dailyTemplate")` / `"weeklyTemplate"` update the task-template arrays.
+- After a successful POST, `refreshUser()` re-fetches `/api/v1/user` to sync the `session` and tables.
 
 ## Loading States
 

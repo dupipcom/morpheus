@@ -1,0 +1,921 @@
+openapi: 3.0.3
+info:
+  title: Dupip Morpheus API
+  version: 1.0.0
+  description: >
+    HTTP API for the Dupip application. Authentication uses Clerk session
+    cookies; most routes require an authenticated user. Errors use the shape
+    `{ "error": "message" }`.
+servers:
+  - url: https://www.dupip.com
+    description: Production
+  - url: https://beta.dupip.com
+    description: Nightly
+  - url: http://localhost:3000
+    description: Local development
+security:
+  - cookieAuth: []
+
+tags:
+  - name: auth
+  - name: chat
+  - name: comments
+  - name: days
+  - name: delegation
+  - name: events
+  - name: friends
+  - name: jobs
+  - name: likes
+  - name: notes
+  - name: profile
+  - name: search
+  - name: tasklists
+  - name: tasks
+  - name: templates
+  - name: user
+  - name: wallet
+
+paths:
+  /api/v1/auth:
+    post:
+      tags: [auth]
+      summary: Clerk webhook receiver
+      description: Handles Clerk user.created, session.created, user.updated, and user.deleted events; syncs users and public profiles.
+      responses:
+        '200': { description: Processed }
+        '401': { description: Invalid internal secret }
+        '400': { description: Missing Clerk user ID }
+
+  /api/v1/revalidate:
+    post:
+      tags: [user]
+      summary: Revalidate Next.js cache paths/tags
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                paths: { type: array, items: { type: string } }
+                tags: { type: array, items: { type: string } }
+                secretKey: { type: string }
+      responses:
+        '200': { description: Revalidated }
+        '401': { description: Not authenticated }
+
+  /api/v1/cron/unread-chat-emails:
+    get:
+      tags: [chat]
+      summary: Send unread chat email notifications
+      description: Authorized cron endpoint; fans out unread chat email notifications.
+      responses:
+        '200': { description: Fan-out result }
+        '401': { description: Unauthorized cron request }
+
+  /api/v1/chat:
+    post:
+      tags: [chat]
+      summary: Save agent conversation to a day
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message: {}
+      responses:
+        '200': { description: Saved }
+        '401': { description: Unauthorized }
+
+  /api/v1/chat/sidebar:
+    get:
+      tags: [chat]
+      summary: Fetch chat sidebar
+      responses:
+        '200': { description: Sidebar data }
+        '401': { description: Unauthorized }
+
+  /api/v1/chat/token:
+    post:
+      tags: [chat]
+      summary: Create Ably token request for realtime channels
+      responses:
+        '200': { description: Ably token request }
+        '401': { description: Unauthorized }
+
+  /api/v1/chat/unread-count:
+    get:
+      tags: [chat]
+      summary: Get current user unread message count
+      responses:
+        '200': { description: Unread count }
+        '401': { description: Unauthorized }
+
+  /api/v1/chat/read-state:
+    post:
+      tags: [chat]
+      summary: Mark a channel or DM as read
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                channelId: { type: string }
+                dmConversationId: { type: string }
+                lastReadMessageId: { type: string }
+      responses:
+        '200': { description: Read state }
+        '401': { description: Unauthorized }
+
+  /api/v1/chat/dm-candidates:
+    get:
+      tags: [chat]
+      summary: Search friend/close-friend DM candidates
+      parameters:
+        - { name: q, in: query, schema: { type: string } }
+      responses:
+        '200': { description: Candidates }
+        '401': { description: Unauthorized }
+
+  /api/v1/chat/dms:
+    get:
+      tags: [chat]
+      summary: List current user DMs
+      responses:
+        '200': { description: Conversations }
+        '401': { description: Unauthorized }
+    post:
+      tags: [chat]
+      summary: Create or open a direct message
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [participantUserId]
+              properties:
+                participantUserId: { type: string }
+      responses:
+        '200': { description: Conversation }
+        '403': { description: Not friends }
+
+  /api/v1/chat/dms/{conversationId}/messages:
+    get:
+      tags: [chat]
+      summary: List DM messages
+      parameters:
+        - { name: conversationId, in: path, required: true, schema: { type: string } }
+        - { name: limit, in: query, schema: { type: integer } }
+      responses:
+        '200': { description: Messages }
+    post:
+      tags: [chat]
+      summary: Send DM message
+      parameters:
+        - { name: conversationId, in: path, required: true, schema: { type: string } }
+      responses:
+        '201': { description: Created }
+
+  /api/v1/chat/channels/{channelId}:
+    patch:
+      tags: [chat]
+      summary: Update a channel
+      parameters:
+        - { name: channelId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Updated channel }
+    delete:
+      tags: [chat]
+      summary: Archive a channel
+      parameters:
+        - { name: channelId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Archived }
+
+  /api/v1/chat/channels/{channelId}/messages:
+    get:
+      tags: [chat]
+      summary: List channel messages
+      parameters:
+        - { name: channelId, in: path, required: true, schema: { type: string } }
+        - { name: limit, in: query, schema: { type: integer } }
+      responses:
+        '200': { description: Messages }
+    post:
+      tags: [chat]
+      summary: Send channel message
+      parameters:
+        - { name: channelId, in: path, required: true, schema: { type: string } }
+      responses:
+        '201': { description: Created }
+
+  /api/v1/chat/messages/{messageId}:
+    patch:
+      tags: [chat]
+      summary: Edit own message
+      parameters:
+        - { name: messageId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Updated }
+    delete:
+      tags: [chat]
+      summary: Soft-delete a message
+      parameters:
+        - { name: messageId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Deleted }
+
+  /api/v1/chat/messages/{messageId}/thread:
+    get:
+      tags: [chat]
+      summary: Fetch message thread
+      parameters:
+        - { name: messageId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Thread }
+
+  /api/v1/chat/orgs:
+    get:
+      tags: [chat]
+      summary: List current user organizations
+      responses:
+        '200': { description: Organizations }
+    post:
+      tags: [chat]
+      summary: Create an organization
+      responses:
+        '200': { description: Organization }
+
+  /api/v1/chat/orgs/{orgId}/channels:
+    get:
+      tags: [chat]
+      summary: List organization channels
+      parameters:
+        - { name: orgId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Channels }
+    post:
+      tags: [chat]
+      summary: Create an organization channel
+      parameters:
+        - { name: orgId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Channel }
+
+  /api/v1/chat/orgs/{orgId}/invites:
+    get:
+      tags: [chat]
+      summary: List organization invite links
+      parameters:
+        - { name: orgId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Invites }
+    post:
+      tags: [chat]
+      summary: Create an organization invite
+      parameters:
+        - { name: orgId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Invite }
+
+  /api/v1/chat/orgs/{orgId}/roles:
+    post:
+      tags: [chat]
+      summary: Assign a chat role to a user
+      parameters:
+        - { name: orgId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Membership }
+
+  /api/v1/chat/invites/{inviteId}:
+    delete:
+      tags: [chat]
+      summary: Revoke an invite
+      parameters:
+        - { name: inviteId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Revoked }
+
+  /api/v1/chat/invites/{inviteId}/accept:
+    post:
+      tags: [chat]
+      summary: Accept an organization invite
+      parameters:
+        - { name: inviteId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Accepted }
+
+  /api/v1/comments:
+    get:
+      tags: [comments]
+      summary: List comments for an entity
+      parameters:
+        - { name: entityType, in: query, required: true, schema: { type: string } }
+        - { name: entityId, in: query, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Comments }
+    post:
+      tags: [comments]
+      summary: Create a comment
+      responses:
+        '200': { description: Comment }
+
+  /api/v1/comments/{commentId}:
+    put:
+      tags: [comments]
+      summary: Update own comment
+      parameters:
+        - { name: commentId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Updated }
+    delete:
+      tags: [comments]
+      summary: Delete own comment
+      parameters:
+        - { name: commentId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Deleted }
+
+  /api/v1/contacts/{id}:
+    put:
+      tags: [user]
+      summary: Update contact (legacy model)
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Updated }
+    delete:
+      tags: [user]
+      summary: Delete contact (legacy model)
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Deleted }
+
+  /api/v1/days:
+    get:
+      tags: [days]
+      summary: Fetch day(s) for current user
+      parameters:
+        - { name: date, in: query, schema: { type: string } }
+        - { name: year, in: query, schema: { type: string } }
+        - { name: startDate, in: query, schema: { type: string } }
+        - { name: endDate, in: query, schema: { type: string } }
+      responses:
+        '200': { description: Days }
+    post:
+      tags: [days]
+      summary: Create or update a day (mood, contacts, things, life events)
+      responses:
+        '200': { description: Day }
+
+  /api/v1/debug/task-state:
+    get:
+      tags: [tasks]
+      summary: Debug task/job completion state
+      parameters:
+        - { name: taskId, in: query, required: true, schema: { type: string } }
+        - { name: date, in: query, schema: { type: string } }
+      responses:
+        '200': { description: Task state }
+
+  /api/v1/delegated-users:
+    get:
+      tags: [delegation]
+      summary: List outgoing/incoming delegations and friend suggestions
+      responses:
+        '200': { description: Delegations }
+    post:
+      tags: [delegation]
+      summary: Create or update a delegation
+      responses:
+        '200': { description: Delegation }
+        '202': { description: Invitation draft for non-user email }
+    delete:
+      tags: [delegation]
+      summary: Remove an outgoing delegation
+      responses:
+        '200': { description: Deleted }
+
+  /api/v1/events:
+    get:
+      tags: [events]
+      summary: List current user life events
+      responses:
+        '200': { description: Life events }
+    post:
+      tags: [events]
+      summary: Create a life event
+      responses:
+        '200': { description: Life event }
+
+  /api/v1/events/{id}:
+    put:
+      tags: [events]
+      summary: Update own life event
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Updated }
+    delete:
+      tags: [events]
+      summary: Delete own life event
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Deleted }
+
+  /api/v1/friend-request:
+    post:
+      tags: [friends]
+      summary: Send a friend request by username
+      responses:
+        '200': { description: Sent }
+
+  /api/v1/friend-request/action:
+    post:
+      tags: [friends]
+      summary: Accept or decline a friend request
+      responses:
+        '200': { description: Action applied }
+
+  /api/v1/friend-requests:
+    get:
+      tags: [friends]
+      summary: List incoming friend requests
+      responses:
+        '200': { description: Friend requests }
+
+  /api/v1/friends:
+    get:
+      tags: [friends]
+      summary: List current user friends
+      responses:
+        '200': { description: Friends }
+
+  /api/v1/friends/unfriend:
+    post:
+      tags: [friends]
+      summary: Remove a friend
+      responses:
+        '200': { description: Removed }
+
+  /api/v1/friendship-status:
+    get:
+      tags: [friends]
+      summary: Check friendship status with a username
+      parameters:
+        - { name: targetUserName, in: query, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Status }
+
+  /api/v1/hint:
+    get:
+      tags: [user]
+      summary: Generate or fetch AI mood/task insight
+      parameters:
+        - { name: locale, in: query, schema: { type: string } }
+        - { name: userId, in: query, schema: { type: string } }
+      responses:
+        '200': { description: Hint }
+        '403': { description: Not authorized }
+
+  /api/v1/jobs:
+    get:
+      tags: [jobs]
+      summary: List jobs (filtered by list/task/worker/status/date)
+      responses:
+        '200': { description: Jobs }
+    post:
+      tags: [jobs]
+      summary: Create a job
+      responses:
+        '200': { description: Job }
+
+  /api/v1/jobs/{jobId}:
+    get:
+      tags: [jobs]
+      summary: Get a job
+      parameters:
+        - { name: jobId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Job }
+    put:
+      tags: [jobs]
+      summary: Update a job (status transitions, reviews, notes)
+      parameters:
+        - { name: jobId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Updated }
+    delete:
+      tags: [jobs]
+      summary: Cancel a job
+      parameters:
+        - { name: jobId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Cancelled }
+
+  /api/v1/likes:
+    get:
+      tags: [likes]
+      summary: Get like status and count
+      parameters:
+        - { name: entityType, in: query, required: true, schema: { type: string } }
+        - { name: entityId, in: query, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Like status }
+    post:
+      tags: [likes]
+      summary: Toggle like/unlike
+      responses:
+        '200': { description: Toggled }
+
+  /api/v1/link-preview:
+    get:
+      tags: [user]
+      summary: Fetch link preview metadata for a URL
+      parameters:
+        - { name: url, in: query, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Link preview }
+        '400': { description: Invalid/private URL }
+
+  /api/v1/magazine:
+    get:
+      tags: [user]
+      summary: Fetch CMS articles
+      parameters:
+        - { name: locale, in: query, schema: { type: string } }
+      responses:
+        '200': { description: Articles }
+
+  /api/v1/meet-me:
+    post:
+      tags: [user]
+      summary: Book a meeting and email calendar invites
+      responses:
+        '200': { description: Booked }
+
+  /api/v1/meet-me/availability:
+    get:
+      tags: [user]
+      summary: Fetch CalDAV busy slots for a username
+      parameters:
+        - { name: username, in: query, required: true, schema: { type: string } }
+        - { name: start, in: query, required: true, schema: { type: string } }
+        - { name: end, in: query, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Busy slots }
+
+  /api/v1/notes:
+    get:
+      tags: [notes]
+      summary: List current user notes (and received notes)
+      responses:
+        '200': { description: Notes }
+    post:
+      tags: [notes]
+      summary: Create a note
+      responses:
+        '200': { description: Note }
+
+  /api/v1/notes/{noteId}:
+    put:
+      tags: [notes]
+      summary: Update own note
+      parameters:
+        - { name: noteId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Updated }
+    patch:
+      tags: [notes]
+      summary: Update note visibility only
+      parameters:
+        - { name: noteId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Updated }
+    delete:
+      tags: [notes]
+      summary: Delete own note
+      parameters:
+        - { name: noteId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Deleted }
+
+  /api/v1/notes/{noteId}/comments:
+    get:
+      tags: [notes]
+      summary: List note comments
+      parameters:
+        - { name: noteId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Comments }
+    post:
+      tags: [notes]
+      summary: Add a comment to a note
+      parameters:
+        - { name: noteId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Comment }
+
+  /api/v1/notes/public:
+    get:
+      tags: [notes]
+      summary: List visibility-filtered public notes (paginated)
+      parameters:
+        - { name: page, in: query, schema: { type: integer } }
+        - { name: limit, in: query, schema: { type: integer } }
+        - { name: sort, in: query, schema: { type: string } }
+      responses:
+        '200': { description: Notes }
+
+  /api/v1/persons:
+    get:
+      tags: [profile]
+      summary: List current user persons/contacts
+      responses:
+        '200': { description: Contacts }
+    post:
+      tags: [profile]
+      summary: Create a person
+      responses:
+        '200': { description: Contact }
+
+  /api/v1/persons/{id}:
+    put:
+      tags: [profile]
+      summary: Update own person
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Updated }
+    delete:
+      tags: [profile]
+      summary: Delete own person
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Deleted }
+
+  /api/v1/profile:
+    get:
+      tags: [profile]
+      summary: Get current user profile + collaborating lists
+      responses:
+        '200': { description: Profile }
+    post:
+      tags: [profile]
+      summary: Create/update current user profile
+      responses:
+        '200': { description: Profile }
+
+  /api/v1/profile/{userName}:
+    get:
+      tags: [profile]
+      summary: Get public profile by username
+      parameters:
+        - { name: userName, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Profile }
+
+  /api/v1/profile/{userName}/notes:
+    get:
+      tags: [profile]
+      summary: Get public/relationship-filtered notes for a profile
+      parameters:
+        - { name: userName, in: path, required: true, schema: { type: string } }
+        - { name: visibility, in: query, schema: { type: string } }
+      responses:
+        '200': { description: Notes }
+
+  /api/v1/profiles:
+    get:
+      tags: [profile]
+      summary: Search profiles
+      parameters:
+        - { name: query, in: query, schema: { type: string } }
+      responses:
+        '200': { description: Profiles }
+
+  /api/v1/profiles/by-ids:
+    get:
+      tags: [profile]
+      summary: Fetch profiles by comma-separated user IDs
+      parameters:
+        - { name: ids, in: query, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Profiles }
+
+  /api/v1/search:
+    get:
+      tags: [search]
+      summary: Search lists, profiles, and notes
+      parameters:
+        - { name: q, in: query, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Results }
+
+  /api/v1/tasklists:
+    get:
+      tags: [tasklists]
+      summary: List current user task lists
+      responses:
+        '200': { description: Task lists }
+    post:
+      tags: [tasklists]
+      summary: Task list operations (create/update/delete/completions/ephemeral/status/redacted)
+      responses:
+        '200': { description: Result }
+
+  /api/v1/tasklists/{taskListId}/clone:
+    post:
+      tags: [tasklists]
+      summary: Clone a task list
+      parameters:
+        - { name: taskListId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Cloned }
+
+  /api/v1/tasks:
+    get:
+      tags: [tasks]
+      summary: List tasks (date-aware or legacy filters)
+      parameters:
+        - { name: listId, in: query, schema: { type: string } }
+        - { name: date, in: query, schema: { type: string } }
+        - { name: status, in: query, schema: { type: string } }
+        - { name: area, in: query, schema: { type: string } }
+      responses:
+        '200': { description: Tasks }
+    post:
+      tags: [tasks]
+      summary: Create a task
+      responses:
+        '200': { description: Task }
+
+  /api/v1/tasks/{taskId}:
+    get:
+      tags: [tasks]
+      summary: Get a task
+      parameters:
+        - { name: taskId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Task }
+    put:
+      tags: [tasks]
+      summary: Update a task
+      parameters:
+        - { name: taskId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Updated }
+    delete:
+      tags: [tasks]
+      summary: Delete a task
+      parameters:
+        - { name: taskId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Deleted }
+
+  /api/v1/tasks/migrate:
+    get:
+      tags: [tasks]
+      summary: Check if a list needs task migration
+      parameters:
+        - { name: listId, in: query, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Migration status }
+    post:
+      tags: [tasks]
+      summary: Migrate legacy embedded tasks to Task collection
+      responses:
+        '200': { description: Migration result }
+
+  /api/v1/templates:
+    get:
+      tags: [templates]
+      summary: List current user/public templates
+      responses:
+        '200': { description: Templates }
+    post:
+      tags: [templates]
+      summary: Create a template
+      responses:
+        '200': { description: Template }
+
+  /api/v1/templates/{templateId}/clone:
+    post:
+      tags: [templates]
+      summary: Clone a template into a task list
+      parameters:
+        - { name: templateId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Cloned task list }
+
+  /api/v1/templates/public:
+    get:
+      tags: [templates]
+      summary: List visibility-filtered public templates (paginated)
+      responses:
+        '200': { description: Templates }
+
+  /api/v1/things:
+    get:
+      tags: [profile]
+      summary: List current user things
+      responses:
+        '200': { description: Things }
+    post:
+      tags: [profile]
+      summary: Create a thing
+      responses:
+        '200': { description: Thing }
+
+  /api/v1/user:
+    get:
+      tags: [user]
+      summary: Get/create current user and sync Clerk profile
+      responses:
+        '200': { description: User }
+    post:
+      tags: [user]
+      summary: Update user balance, settings, or consents
+      responses:
+        '200': { description: User }
+
+  /api/v1/user/login:
+    post:
+      tags: [user]
+      summary: Update lastLogin (webhook or direct) and create default wallet
+      responses:
+        '200': { description: Updated }
+
+  /api/v1/user-dashboard-data:
+    get:
+      tags: [user]
+      summary: Fetch analytics day data for current or delegated user
+      parameters:
+        - { name: userId, in: query, schema: { type: string } }
+        - { name: year, in: query, schema: { type: string } }
+        - { name: startDate, in: query, schema: { type: string } }
+        - { name: endDate, in: query, schema: { type: string } }
+      responses:
+        '200': { description: Day data }
+
+  /api/v1/wallet:
+    get:
+      tags: [wallet]
+      summary: List current user wallets with balances
+      responses:
+        '200': { description: Wallets }
+    post:
+      tags: [wallet]
+      summary: Create a wallet (max 5)
+      responses:
+        '200': { description: Wallet }
+
+  /api/v1/wallet/{walletId}:
+    get:
+      tags: [wallet]
+      summary: Get a wallet
+      parameters:
+        - { name: walletId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Wallet }
+    delete:
+      tags: [wallet]
+      summary: Delete a wallet
+      parameters:
+        - { name: walletId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Deleted }
+
+  /api/v1/wallet/nft:
+    post:
+      tags: [wallet]
+      summary: Mint an NFT to a wallet
+      responses:
+        '200': { description: Transaction hash }
+
+  /api/v1/wallet/nft/list:
+    get:
+      tags: [wallet]
+      summary: List NFTs for a wallet
+      parameters:
+        - { name: walletId, in: query, required: true, schema: { type: string } }
+      responses:
+        '200': { description: NFTs }
+
+  /api/v1/wallet/transfer:
+    post:
+      tags: [wallet]
+      summary: Transfer tokens from a wallet
+      responses:
+        '200': { description: Transaction hash }
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: __session

@@ -60,9 +60,18 @@ InvestView
 
 ## API Endpoints
 
-| Endpoint | Method | Purpose |
+| Endpoint | Method | Why / How |
 |---|---|---|
-| `/api/v1/user` | POST | Update user settings (premium factors) and consents |
+| `/api/v1/user` | POST | InvestView directly posts premium factor settings and `consents.doInvestDemo` (see `savePremiumFactors` and consent flow). |
+| `/api/v1/user` | GET | `useUserData()` reads the current user's settings/consents on mount. |
+| `/api/v1/wallet` | GET/POST | `WalletManager` child component lists/creates wallets. |
+| `/api/v1/wallet/{walletId}` | GET/DELETE | `WalletManager` reads/deletes a selected wallet. |
+| `/api/v1/wallet/nft` | POST | `NFTGenerator` child component mints an NFT. |
+| `/api/v1/wallet/nft/list?walletId=` | GET | `NFTGenerator` lists NFTs for a wallet. |
+| `/api/v1/wallet/transfer` | POST | `TokenTransfer` child component sends tokens. |
+
+Integration details:
+- InvestView itself is consent-gated and only writes `/api/v1/user`; the wallet/NFT/transfer endpoints are consumed by the child components it renders (`WalletManager`, `NFTGenerator`, `TokenTransfer`).
 
 ## Loading States
 
