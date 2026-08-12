@@ -304,21 +304,45 @@ export async function GET(req: NextRequest) {
             }
           })
         } else {
-          await prisma.day.create({
-            data: {
-              userId: targetUser.id,
-              date,
-              week,
-              month,
-              quarter,
-              semester,
-              tasks: [],
-              ticker: [],
-              analysis: {
-                hint: parsedOutput
+          try {
+            await prisma.day.create({
+              data: {
+                userId: targetUser.id,
+                date,
+                week,
+                month,
+                quarter,
+                semester,
+                tasks: [],
+                ticker: [],
+                analysis: {
+                  hint: parsedOutput
+                }
               }
+            })
+          } catch (createError: any) {
+            if (createError?.code === 'P2002') {
+              // Day was just created by a concurrent request — merge the hint into it
+              const createdDay = await prisma.day.findFirst({
+                where: { userId: targetUser.id, date }
+              })
+              if (createdDay) {
+                await prisma.day.update({
+                  where: { id: createdDay.id },
+                  data: {
+                    analysis: {
+                      ...(createdDay.analysis && typeof createdDay.analysis === 'object' && !Array.isArray(createdDay.analysis)
+                        ? createdDay.analysis as Record<string, unknown>
+                        : {}),
+                      hint: parsedOutput
+                    }
+                  }
+                })
+              }
+            } else {
+              throw createError
             }
-          })
+          }
         }
       }
 

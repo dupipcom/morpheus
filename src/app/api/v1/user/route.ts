@@ -56,10 +56,6 @@ async function updateDayWithBalance(
   equity: number,
   withdrawn?: number
 ): Promise<void> {
-  const existingDay = await prisma.day.findFirst({
-    where: { userId, date: dateISO }
-  })
-
   const periods = calculateDatePeriods(dateISO)
   const updateData: Record<string, unknown> = {
     balance,
@@ -72,20 +68,15 @@ async function updateDayWithBalance(
     updateData.withdrawn = withdrawn
   }
 
-  if (existingDay) {
-    await prisma.day.update({
-      where: { id: existingDay.id },
-      data: updateData
-    })
-  } else {
-    await prisma.day.create({
-      data: {
-        userId,
-        date: dateISO,
-        ...updateData
-      }
-    })
-  }
+  await prisma.day.upsert({
+    where: { userId_date: { userId, date: dateISO } },
+    update: updateData,
+    create: {
+      userId,
+      date: dateISO,
+      ...updateData
+    }
+  })
 }
 
 export async function GET(req: Request) {
@@ -147,19 +138,29 @@ export async function GET(req: Request) {
     const clerkUser = await currentUser()
     if (clerkUser?.username && user?.profiles?.length) {
       const existingData = (user.profiles[0].data || {}) as Record<string, unknown>
-      await prisma.profile.update({
-        where: { userId: user.id },
-        data: {
-          data: {
-            ...existingData,
-            username: {
-              value: clerkUser.username,
-              visibility: (existingData.username as Record<string, unknown>)?.visibility ?? true
+      const currentUsername = (existingData.username as Record<string, unknown>)?.value
+      if (currentUsername !== clerkUser.username) {
+        try {
+          await prisma.profile.update({
+            where: { userId: user.id },
+            data: {
+              data: {
+                ...existingData,
+                username: {
+                  value: clerkUser.username,
+                  visibility: (existingData.username as Record<string, unknown>)?.visibility ?? true
+                }
+              }
             }
+          })
+          user = await getOrCreateUser(userId)
+        } catch (updateError: any) {
+          // P2034 = write conflict/deadlock: another concurrent request already synced
+          if (updateError?.code !== 'P2034') {
+            throw updateError
           }
         }
-      })
-      user = await getOrCreateUser(userId)
+      }
     }
   } catch (error) {
     console.error('Error syncing username from Clerk:', error)

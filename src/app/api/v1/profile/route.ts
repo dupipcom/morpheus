@@ -71,21 +71,30 @@ export async function GET(req: NextRequest) {
     try {
       const clerkUser = await currentUser()
       if (clerkUser && clerkUser.username && user && user.profiles && user.profiles.length > 0) {
-        // Always update profile with Clerk username (overwrites any manual username)
         const existingData = user.profiles[0].data || {}
-        await prisma.profile.update({
-          where: { userId: user.id },
-          data: {
-            username: clerkUser.username, // Sync to root level for efficient queries
-            data: {
-              ...existingData,
-              username: {
-                value: clerkUser.username,
-                visibility: existingData.username?.visibility ?? true
+        const currentUsername = existingData.username?.value
+        if (currentUsername !== clerkUser.username) {
+          try {
+            await prisma.profile.update({
+              where: { userId: user.id },
+              data: {
+                username: clerkUser.username, // Sync to root level for efficient queries
+                data: {
+                  ...existingData,
+                  username: {
+                    value: clerkUser.username,
+                    visibility: existingData.username?.visibility ?? true
+                  }
+                }
               }
+            })
+          } catch (updateError: any) {
+            // P2034 = write conflict/deadlock: another concurrent request already synced
+            if (updateError?.code !== 'P2034') {
+              throw updateError
             }
           }
-        })
+        }
         // Refetch user with updated profile
         user = await prisma.user.findUnique({
           where: { userId },
@@ -104,18 +113,25 @@ export async function GET(req: NextRequest) {
       const currentImageUrl = profile.data?.profilePicture?.value
       if (clerkUser.imageUrl && currentImageUrl !== clerkUser.imageUrl) {
         const existingData = profile.data || {}
-        await prisma.profile.update({
-          where: { userId: user.id },
-          data: {
+        try {
+          await prisma.profile.update({
+            where: { userId: user.id },
             data: {
-              ...existingData,
-              profilePicture: {
-                value: clerkUser.imageUrl,
-                visibility: existingData.profilePicture?.visibility ?? false
+              data: {
+                ...existingData,
+                profilePicture: {
+                  value: clerkUser.imageUrl,
+                  visibility: existingData.profilePicture?.visibility ?? false
+                }
               }
             }
+          })
+        } catch (updateError: any) {
+          // P2034 = write conflict/deadlock: another concurrent request already synced
+          if (updateError?.code !== 'P2034') {
+            throw updateError
           }
-        })
+        }
         // Refetch user with updated profile
         const updatedUser = await prisma.user.findUnique({
           where: { userId },
