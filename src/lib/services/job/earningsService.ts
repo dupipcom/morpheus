@@ -255,7 +255,6 @@ export async function initializeJobInvoice(
     prisma.job.findUnique({ where: { id: jobId }, select: { workerId: true } })
   ])
 
-  console.log('Initializing job invoice:', { jobId, taskId, listId })
 
   // Fallback to simple task values if list or task missing
   if (!task) {
@@ -295,7 +294,7 @@ export async function initializeJobInvoice(
       remainingBudget
     })
 
-    console.log('Calculated allocation from distribution:', alloc)
+    // Allocation calculated from budget distribution
   }
 
   // Build invoice fields using allocation or fallback to stored task values
@@ -457,15 +456,7 @@ export async function calculateAndApplyJobEarnings({
     const premium = applyPremiumFactors(rawPremium, list.role, premiumFactorSettings)
     const totalGains = premium + earnings
 
-    // Log if factored premium results in totalGains exceeding stored task.totalGains (informational only)
-    if (task.totalGains != null && task.totalGains > 0 && totalGains > task.totalGains) {
-      console.log(`Job ${jobId}: Factored totalGains ${totalGains} exceeds stored task.totalGains ${task.totalGains}. This is expected when premium factors apply.`, {
-        earnings,
-        rawPremium,
-        factoredPremium: premium,
-        storedTaskTotalGains: task.totalGains
-      })
-    }
+    // Premium factors may increase totalGains above stored task.totalGains — this is expected
 
     // Save the exact factored premium to the Job collection
     const { stashDelta, profitDelta } = calculateStashAndEarningsDeltas(premium, earnings, true)

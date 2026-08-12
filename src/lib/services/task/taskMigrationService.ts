@@ -167,7 +167,6 @@ export function calculateTaskBudgetFromDistribution(params: {
   remainingBudget?: number
 }): { budget: number | null; premium: number | null; totalGains: number | null } {
   const { task, list, taskIndex = 0, userEquity, remainingBudget } = params
-  console.log('Calculating budget for task:', { userEquity, remainingBudget, taskId: task.id, taskIndex, list })
   const listBudget = list.budget || 0
   const budgetDistribution = list.budgetDistribution
   // Support both `premiumPercentage` (new) and `prizePercentage` (older/alternate name)
@@ -271,12 +270,6 @@ export function calculateTaskBudgetFromDistribution(params: {
         // Scale down earnings to fit within remaining budget
         earnings = remainingBudget
       }
-
-      console.warn(`Task ${task.id}: Capped earnings to fit remaining budget`, {
-        originalEarnings: originalEarnings,
-        cappedEarnings: earnings,
-        remainingBudget
-      })
     }
   }
   
@@ -285,10 +278,6 @@ export function calculateTaskBudgetFromDistribution(params: {
   // NOTE: Premium is NOT capped here - it depends on factors applied later
   if (userEquity != null && earnings != null && earnings > userEquity) {
     earnings = userEquity
-    console.warn(`Task ${task.id}: Capped earnings to fit within user equity`, {
-      cappedEarnings: earnings,
-      userEquity
-    })
   }
   
   // SAFETY CHECK 3: If task has a stored earnings value, ensure we don't exceed it for earnings only
@@ -297,10 +286,6 @@ export function calculateTaskBudgetFromDistribution(params: {
     const storedEarnings = (task as any).earnings
     if (earnings > storedEarnings) {
       earnings = storedEarnings
-      console.warn(`Task ${task.id}: Capped earnings to stored value`, {
-        cappedEarnings: earnings,
-        storedEarnings
-      })
     }
   }
   

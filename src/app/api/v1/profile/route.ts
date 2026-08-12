@@ -27,41 +27,43 @@ export async function GET(req: NextRequest) {
 
     // Ensure user has a profile - create one if missing
     if (!user.profiles || user.profiles.length === 0) {
-      try {
-        const clerkUser = await currentUser()
-        await prisma.profile.create({
-          data: {
-            userId: user.id,
-            username: clerkUser?.username || null, // Set root level for efficient queries
+      const clerkUser = await currentUser()
+      const existing = await prisma.profile.findUnique({ where: { userId: user.id } })
+      if (!existing) {
+        try {
+          await prisma.profile.create({
             data: {
-              username: {
-                value: clerkUser?.username || null,
-                visibility: true
+              userId: user.id,
+              // Only set root-level username when available — null violates MongoDB unique index
+              ...(clerkUser?.username ? { username: clerkUser.username } : {}),
+              data: {
+                username: {
+                  value: clerkUser?.username || null,
+                  visibility: true
+                }
               }
             }
-          }
-        })
-        // Refetch user with new profile
-        user = await prisma.user.findUnique({
-          where: { userId },
-          include: { profiles: true }
-        })
-
-        if (!user) {
-          return Response.json({ error: 'User not found after profile creation' }, { status: 404 })
-        }
-
-        // Revalidate the public profile path for this user via v1 revalidate endpoint
-        try {
+          })
           const username = clerkUser?.username
           if (username) {
+            // Revalidate the public profile path for this user
             revalidatePath(`/@${username}`);
           }
-        } catch (revalidateError) {
-          console.error('Error calling v1 revalidate for profile path:', revalidateError)
+        } catch (error: any) {
+          if (error?.code === 'P2002') {
+            // Profile was just created by another concurrent request
+          } else {
+            console.error('Error creating profile:', error)
+          }
         }
-      } catch (error) {
-        console.error('Error creating profile:', error)
+      }
+      // Refetch user with new profile
+      user = await prisma.user.findUnique({
+        where: { userId },
+        include: { profiles: true }
+      })
+      if (!user) {
+        return Response.json({ error: 'User not found after profile creation' }, { status: 404 })
       }
     }
 
@@ -235,7 +237,8 @@ export async function POST(req: NextRequest) {
       profile = await prisma.profile.create({
         data: {
           userId: user.id,
-          username: clerkUsername, // Set root level for efficient queries
+          // Only set root-level username when available — null violates MongoDB unique index
+          ...(clerkUsername ? { username: clerkUsername } : {}),
           data: {
             firstName: {
               value: data.firstName ? sanitizeText(data.firstName) : null,

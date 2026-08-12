@@ -113,9 +113,9 @@ export function distributeBudgetByArea(
   // Validate percentages sum to 100 (with small tolerance for rounding)
   const totalPercentage = Object.values(areaPercentages).reduce((sum, pct) => sum + pct, 0)
   if (Math.abs(totalPercentage - 100) > 0.01) {
-    console.warn(`Area percentages sum to ${totalPercentage}%, expected 100%`)
+    // Percentages don't sum to 100, will be normalized
   }
-  
+
   // Calculate allocation for each area
   let allocated = 0
   areas.forEach((area, index) => {
@@ -150,7 +150,7 @@ export function distributeBudgetByCategory(
   // Validate percentages sum to 100 (with small tolerance for rounding)
   const totalPercentage = Object.values(categoryPercentages).reduce((sum, pct) => sum + pct, 0)
   if (Math.abs(totalPercentage - 100) > 0.01) {
-    console.warn(`Category percentages sum to ${totalPercentage}%, expected 100%`)
+    // Percentages don't sum to 100, will be normalized
   }
   
   // Calculate allocation for each category

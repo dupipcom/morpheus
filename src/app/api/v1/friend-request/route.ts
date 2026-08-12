@@ -25,16 +25,27 @@ export async function POST(req: NextRequest) {
 
     if (!currentUser) {
       // Create user if they don't exist in database
-      currentUser = await prisma.user.create({
-        data: {
-          userId,
-          settings: {
-            currency: null,
-            speed: null
-          } as any
-        },
-        include: { profiles: true }
-      })
+      try {
+        currentUser = await prisma.user.create({
+          data: {
+            userId,
+            settings: {
+              currency: null,
+              speed: null
+            } as any
+          },
+          include: { profiles: true }
+        })
+      } catch (error: any) {
+        if (error?.code === 'P2002') {
+          currentUser = await prisma.user.findUnique({
+            where: { userId },
+            include: { profiles: true }
+          })
+        } else {
+          throw error
+        }
+      }
     }
 
     // Check if target user exists by username using root-level username field

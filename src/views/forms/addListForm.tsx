@@ -262,7 +262,6 @@ export const AddListForm = ({
       setRemainingBudget(remaining)
       setMaxAllowedBudget(maxAllowed)
     } catch (error) {
-      console.error('Error calculating budget info:', error)
       setRemainingBudget(100)
       setMaxAllowedBudget(100)
     }

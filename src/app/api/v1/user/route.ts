@@ -13,13 +13,25 @@ async function getOrCreateUser(clerkUserId: string) {
   })
 
   if (!user) {
-    user = await prisma.user.create({
-      data: {
-        userId: clerkUserId,
-        settings: { currency: null, speed: null }
-      },
-      include: { profiles: true }
-    })
+    try {
+      user = await prisma.user.create({
+        data: {
+          userId: clerkUserId,
+          settings: { currency: null, speed: null }
+        },
+        include: { profiles: true }
+      })
+    } catch (error: any) {
+      if (error?.code === 'P2002') {
+        // User was just created by another concurrent request
+        user = await prisma.user.findUnique({
+          where: { userId: clerkUserId },
+          include: { profiles: true }
+        })
+      } else {
+        throw error
+      }
+    }
   }
 
   return user
@@ -87,39 +99,47 @@ export async function GET(req: Request) {
 
   // Ensure user has a profile - create one if missing
   if (user && (!user.profiles || user.profiles.length === 0)) {
-    try {
-      const clerkUser = await currentUser()
-      await prisma.profile.create({
-        data: {
-          userId: user.id,
-          data: {
-            username: { value: clerkUser?.username || null, visibility: true },
-            firstName: { value: null, visibility: false },
-            lastName: { value: null, visibility: false },
-            bio: { value: null, visibility: false },
-            profilePicture: { value: null, visibility: false }
-          }
-        }
-      })
-      user = await getOrCreateUser(userId)
-
-      // Revalidate public profile path
+    const clerkUser = await currentUser()
+    const existing = await prisma.profile.findUnique({ where: { userId: user.id } })
+    if (!existing) {
       try {
+        await prisma.profile.create({
+          data: {
+            userId: user.id,
+            // Only set root-level username when available — null violates MongoDB unique index
+            ...(clerkUser?.username ? { username: clerkUser.username } : {}),
+            data: {
+              username: { value: clerkUser?.username || null, visibility: true },
+              firstName: { value: null, visibility: false },
+              lastName: { value: null, visibility: false },
+              bio: { value: null, visibility: false },
+              profilePicture: { value: null, visibility: false }
+            }
+          }
+        })
+        // Revalidate public profile path
         const username = clerkUser?.username
         if (username) {
-          const origin = new URL(req.url).origin
-          await fetch(`${origin}/api/v1/revalidate`, {
-            method: 'POST',
-            headers: { 'content-type': 'application/json' },
-            body: JSON.stringify({ paths: [`/@${username}`] })
-          })
+          try {
+            const origin = new URL(req.url).origin
+            await fetch(`${origin}/api/v1/revalidate`, {
+              method: 'POST',
+              headers: { 'content-type': 'application/json' },
+              body: JSON.stringify({ paths: [`/@${username}`] })
+            })
+          } catch (revalidateError) {
+            console.error('Error calling v1 revalidate for profile path:', revalidateError)
+          }
         }
-      } catch (revalidateError) {
-        console.error('Error calling v1 revalidate for profile path:', revalidateError)
+      } catch (error: any) {
+        if (error?.code === 'P2002') {
+          // Profile was just created by another concurrent request
+        } else {
+          console.error('Error creating profile:', error)
+        }
       }
-    } catch (error) {
-      console.error('Error creating profile:', error)
     }
+    user = await getOrCreateUser(userId)
   }
 
   // Sync username from Clerk
@@ -169,12 +189,20 @@ export async function POST(req: Request) {
   let user = await prisma.user.findUnique({ where: { userId } })
 
   if (!user) {
-    user = await prisma.user.create({
-      data: {
-        userId,
-        settings: { currency: null, speed: null }
+    try {
+      user = await prisma.user.create({
+        data: {
+          userId,
+          settings: { currency: null, speed: null }
+        }
+      })
+    } catch (error: any) {
+      if (error?.code === 'P2002') {
+        user = await prisma.user.findUnique({ where: { userId } })
+      } else {
+        throw error
       }
-    })
+    }
   }
 
   // Handle availableBalance update
