@@ -57,7 +57,10 @@
     "copyLink": "Kopírovat odkaz",
     "linkCopied": "Odkaz zkopírován do schránky",
     "copyFailed": "Nepodařilo se zkopírovat odkaz",
-    "saving": "Ukládání..."
+    "saving": "Ukládání...",
+    "decline": "Odmítnout",
+    "friendRequest": "Žádost o přátelství",
+    "reverseOrder": "Obrátit pořadí"
   },
   "navigation": {
     "home": "Domů",
@@ -83,7 +86,26 @@
     "yourMood": "Vaše nálada.",
     "yourProductivity": "Vaše produktivita.",
     "yourData": "Vaše data.",
-    "yourBalance": "Vaše peníze."
+    "yourBalance": "Vaše peníze.",
+    "timeframe": {
+      "startDate": "Datum zahájení",
+      "endDate": "Datum ukončení"
+    },
+    "me": "Moje data",
+    "selectDelegatedUser": "Vybrat delegovaného uživatele",
+    "analysis": {
+      "alltimeAnalysis": "Analýza za celé období",
+      "dayAnalysis": "Dnešní analýza",
+      "last3daysAnalysis": "Analýza posledních 3 dnů",
+      "weekAnalysis": "Týdenní analýza",
+      "yearAnalysis": "Roční analýza",
+      "gratitudeAnalysis": "Analýza vděčnosti",
+      "optimismAnalysis": "Analýza optimismu",
+      "restednessAnalysis": "Analýza odpočinutí",
+      "toleranceAnalysis": "Analýza tolerance",
+      "selfEsteemAnalysis": "Analýza sebeúcty",
+      "trustAnalysis": "Analýza důvěry"
+    }
   },
   "mood": {
     "title": "Zaznamenejte svou náladu pro {date}",
@@ -106,7 +128,26 @@
         "AI_ENABLED": "Povoleno umělou inteligencí"
       },
       "action": "Publikovat poznámku",
-      "publishing": "Zveřejňování..."
+      "publishing": "Zveřejňování...",
+      "embedHint": "Vložení {provider}. Pokud přehrávání není dostupné, otevřete původní odkaz níže."
+    },
+    "thirdParty": {
+      "title": "Třetí strana",
+      "settings": "Nastavení delegování",
+      "activeDelegations": "Aktivní delegace",
+      "empty": "Žádné aktivní delegace.",
+      "identifierPlaceholder": "Uživatelské jméno, e-mail nebo ID uživatele",
+      "noFriendsFound": "Nebyla nalezena žádná odpovídající přátelství.",
+      "friendsHint": "Návrhy zahrnují vaše přátele. Můžete také zadat jakoukoli e-mailovou adresu.",
+      "scope": "Rozsah dat",
+      "allScopes": "Všechny rozsahy",
+      "scopesSelected": "vybrané rozsahy",
+      "minimumOneScope": "Musí zůstat vybrán alespoň jeden rozsah.",
+      "scopeResolutionHint": "Pokud je vybráno více rozsahů, použije se nejširší vybraný rozsah.",
+      "addDelegatedAnalyst": "Přidat delegovaného analytika",
+      "adding": "Přidávání...",
+      "addError": "Delegovaného analytika se nepodařilo přidat",
+      "invitationDraft": "Pro tento e-mail byl připraven návrh pozvánky."
     }
   },
   "week": {
@@ -135,7 +176,10 @@
       "done": "Hotovo",
       "ignored": "Ignorováno"
     },
-    "edit": "Upravit"
+    "edit": "Upravit",
+    "loadingForDate": "Načítání úkolů pro vybrané datum...",
+    "initializingTasks": "Nastavování vašich úkolů...",
+    "noTasksForDate": "Pro toto datum nejsou naplánované žádné úkoly"
   },
   "actions": {
     "drankWater": "Vypil vodu",
@@ -342,7 +386,8 @@
     "closeFriend": "Blízký přítel",
     "friends": "Přátelé",
     "signInToAdd": "Přihlaste se pro přidání přítele",
-    "editProfile": "Upravit profil"
+    "editProfile": "Upravit profil",
+    "message": "Zpráva"
   },
   "profile": {
     "editProfile": "Upravit profil",
@@ -378,7 +423,48 @@
     "saving": "Ukládání...",
     "pleaseSignIn": "Přihlaste se prosím pro úpravu vašeho profilu",
     "goToDashboard": "Přejít na dashboard",
-    "createProfile": "Create Profile"
+    "createProfile": "Create Profile",
+    "meetMe": {
+      "title": "Setkej se se mnou",
+      "description": "Nastavte preferované časy schůzek",
+      "morning": "Ráno",
+      "afternoon": "Odpoledne",
+      "evening": "Večer",
+      "pickTime": "Vybrat čas",
+      "duration": "Délka",
+      "selectDuration": "Vybrat délku",
+      "minutes": "min",
+      "availability": "Dostupnost",
+      "selectAvailability": "Vybrat dostupnost",
+      "weekdays": "Pracovní dny",
+      "weekends": "Víkendy",
+      "everyday": "Každý den",
+      "window": "Dostupné okno",
+      "noWindowSet": "Žádné okno nastaveno",
+      "timezoneNote": "Časy zobrazeny v {timezone}",
+      "bookMeeting": "Rezervovat schůzku",
+      "selectDate": "Vyberte datum",
+      "message": "Zpráva (volitelné)",
+      "messagePlaceholder": "Přidejte poznámku ke schůzce...",
+      "bookingSuccess": "Schůzka rezervována! Pozvánka odeslána.",
+      "booking": "Rezervace...",
+      "confirmBooking": "Potvrdit rezervaci",
+      "calendarAvailability": "Dostupnost",
+      "calendarUnavailable": "Kalendář není dostupný",
+      "dayFree": "Žádné události — den je volný",
+      "busySlot": "Obsazeno {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "Sociální a vlastní odkazy",
+      "description": "Přidejte své profily na sociálních sítích a vlastní odkazy, které se zobrazí na vašem veřejném profilu",
+      "visibility": "Viditelnost odkazů",
+      "addLink": "Přidat odkaz",
+      "customLink": "Vlastní odkaz",
+      "labelPlaceholder": "Popisek odkazu (např. Můj blog)",
+      "urlPlaceholder": "https://"
+    }
   },
   "toast": {
     "sessionExtended": "Relace úspěšně prodloužena",
@@ -678,7 +764,9 @@
       "inProgress": "Probíhá",
       "validating": "Ověřování",
       "accepted": "Přijato",
-      "rejected": "Odmítnuto"
+      "rejected": "Odmítnuto",
+      "submitted": "Odesláno",
+      "changesRequested": "Požadovány změny"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -791,6 +879,48 @@
         "submitted": "Práce odeslána k posouzení",
         "resubmitted": "Práce znovu odeslána k posouzení"
       }
+    }
+  },
+  "notes": {
+    "updated": "Poznámka úspěšně aktualizována",
+    "updateFailed": "Nepodařilo se aktualizovat poznámku",
+    "deleted": "Poznámka úspěšně smazána",
+    "deleteFailed": "Nepodařilo se smazat poznámku",
+    "deleting": "Mazání...",
+    "confirmDelete": "Opravdu chcete tuto poznámku smazat?",
+    "content": "Obsah poznámky",
+    "visibilityUpdated": "Viditelnost úspěšně aktualizována",
+    "visibilityUpdateFailed": "Nepodařilo se aktualizovat viditelnost",
+    "changeVisibility": "Změnit viditelnost",
+    "filters": {
+      "sort": "Seřadit",
+      "date": "Datum",
+      "mostRelevant": "Nejrelevantnější",
+      "all": "Vše"
+    }
+  },
+  "chat": {
+    "title": "Konverzace",
+    "subtitle": "Organizace, kanály, přímé zprávy a vlákna.",
+    "anonymous": "Anonymní",
+    "directMessage": "Přímá zpráva",
+    "deletedMessage": "Zpráva smazána",
+    "deleteMessageTitle": "Smazat zprávu?",
+    "deleteMessageDescription": "Tím se zpráva dočasně smaže a v historii konverzace zůstane zástupný symbol.",
+    "createInviteLink": "Vytvořit odkaz pro pozvání",
+    "pendingInvites": "Čekající pozvánky",
+    "acceptInvite": "Přijmout",
+    "inviteFriendToOrg": "Pozvat přítele do této organizace",
+    "inviteLinkCopied": "Odkaz pro pozvání zkopírován",
+    "inviteSent": "Pozvánka odeslána",
+    "inviteAccepted": "Pozvánka přijata"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Rozložení mřížky",
+      "tight": "Těsné",
+      "small": "Malé",
+      "wide": "Široké"
     }
   }
 }

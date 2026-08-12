@@ -57,7 +57,10 @@
     "copyLink": "复制链接",
     "linkCopied": "链接已复制到剪贴板",
     "copyFailed": "复制链接失败",
-    "saving": "保存中..."
+    "saving": "保存中...",
+    "decline": "拒绝",
+    "friendRequest": "好友请求",
+    "reverseOrder": "反转顺序"
   },
   "navigation": {
     "home": "首页",
@@ -83,7 +86,26 @@
     "yourMood": "您的心情。",
     "yourProductivity": "您的生产力。",
     "yourData": "您的数据。",
-    "yourBalance": "您的钱。"
+    "yourBalance": "您的钱。",
+    "timeframe": {
+      "startDate": "开始日期",
+      "endDate": "结束日期"
+    },
+    "me": "我的数据",
+    "selectDelegatedUser": "选择委托用户",
+    "analysis": {
+      "alltimeAnalysis": "全时段分析",
+      "dayAnalysis": "今日分析",
+      "last3daysAnalysis": "最近3天分析",
+      "weekAnalysis": "周分析",
+      "yearAnalysis": "年度分析",
+      "gratitudeAnalysis": "感恩分析",
+      "optimismAnalysis": "乐观分析",
+      "restednessAnalysis": "休息状态分析",
+      "toleranceAnalysis": "包容度分析",
+      "selfEsteemAnalysis": "自尊分析",
+      "trustAnalysis": "信任分析"
+    }
   },
   "mood": {
     "title": "今天是{date}。",
@@ -106,7 +128,26 @@
         "AI_ENABLED": "支持人工智能"
       },
       "action": "出版说明",
-      "publishing": "发布中..."
+      "publishing": "发布中...",
+      "embedHint": "{provider} 嵌入。如果无法播放，请点击下方原始链接。"
+    },
+    "thirdParty": {
+      "title": "第三方",
+      "settings": "委托设置",
+      "activeDelegations": "有效委托",
+      "empty": "暂无有效委托。",
+      "identifierPlaceholder": "用户名、电子邮箱或用户 ID",
+      "noFriendsFound": "未找到匹配的好友关系。",
+      "friendsHint": "建议列表会包含你的好友。你也可以输入任意电子邮箱地址。",
+      "scope": "数据范围",
+      "allScopes": "所有范围",
+      "scopesSelected": "已选择范围",
+      "minimumOneScope": "至少需要保留一个已选范围。",
+      "scopeResolutionHint": "如果选择了多个范围，将应用所选范围中最广的一个。",
+      "addDelegatedAnalyst": "添加委托分析员",
+      "adding": "正在添加...",
+      "addError": "无法添加委托分析员",
+      "invitationDraft": "已为该邮箱准备邀请草稿。"
     }
   },
   "week": {
@@ -135,7 +176,10 @@
       "done": "完成",
       "ignored": "已忽略"
     },
-    "edit": "编辑"
+    "edit": "编辑",
+    "loadingForDate": "正在加载所选日期的任务...",
+    "initializingTasks": "正在设置您的任务...",
+    "noTasksForDate": "该日期暂无任务"
   },
   "settings": {
     "title": "设置",
@@ -359,7 +403,8 @@
     "closeFriend": "挚友",
     "friends": "好友",
     "signInToAdd": "登录以添加好友",
-    "editProfile": "编辑个人资料"
+    "editProfile": "编辑个人资料",
+    "message": "消息"
   },
   "profile": {
     "editProfile": "编辑个人资料",
@@ -395,7 +440,48 @@
     "saving": "保存中...",
     "pleaseSignIn": "请登录以编辑您的个人资料",
     "goToDashboard": "前往仪表板",
-    "createProfile": "Create Profile"
+    "createProfile": "Create Profile",
+    "meetMe": {
+      "title": "预约会议",
+      "description": "设置您偏好的会议时间",
+      "morning": "上午",
+      "afternoon": "下午",
+      "evening": "晚上",
+      "pickTime": "选择时间",
+      "duration": "时长",
+      "selectDuration": "选择时长",
+      "minutes": "分钟",
+      "availability": "可用性",
+      "selectAvailability": "选择可用性",
+      "weekdays": "工作日",
+      "weekends": "周末",
+      "everyday": "每天",
+      "window": "可用时间窗",
+      "noWindowSet": "未设置时间窗",
+      "timezoneNote": "时间以{timezone}显示",
+      "bookMeeting": "预约会议",
+      "selectDate": "选择日期",
+      "message": "留言（可选）",
+      "messagePlaceholder": "为会议添加备注...",
+      "bookingSuccess": "会议已预约！日历邀请已发送。",
+      "booking": "预约中...",
+      "confirmBooking": "确认预约",
+      "calendarAvailability": "可用性",
+      "calendarUnavailable": "日历不可用",
+      "dayFree": "无日程 — 全天空闲",
+      "busySlot": "忙碌 {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "社交与自定义链接",
+      "description": "添加您的社交媒体资料和自定义链接，以在您的公开资料中显示",
+      "visibility": "链接可见性",
+      "addLink": "添加链接",
+      "customLink": "自定义链接",
+      "labelPlaceholder": "链接标签（如：我的博客）",
+      "urlPlaceholder": "https://"
+    }
   },
   "toast": {
     "sessionExtended": "会话已成功延长",
@@ -678,7 +764,9 @@
       "inProgress": "进行中",
       "validating": "验证中",
       "accepted": "已接受",
-      "rejected": "已拒绝"
+      "rejected": "已拒绝",
+      "submitted": "已提交",
+      "changesRequested": "已请求更改"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -791,6 +879,48 @@
         "submitted": "工作已提交审核",
         "resubmitted": "工作已重新提交审核"
       }
+    }
+  },
+  "notes": {
+    "updated": "笔记更新成功",
+    "updateFailed": "笔记更新失败",
+    "deleted": "笔记删除成功",
+    "deleteFailed": "笔记删除失败",
+    "deleting": "正在删除...",
+    "confirmDelete": "确定要删除此笔记吗？",
+    "content": "笔记内容",
+    "visibilityUpdated": "可见性更新成功",
+    "visibilityUpdateFailed": "可见性更新失败",
+    "changeVisibility": "更改可见性",
+    "filters": {
+      "sort": "排序",
+      "date": "日期",
+      "mostRelevant": "最相关",
+      "all": "全部"
+    }
+  },
+  "chat": {
+    "title": "聊天",
+    "subtitle": "组织、频道、私信和话题。",
+    "anonymous": "匿名",
+    "directMessage": "私信",
+    "deletedMessage": "消息已删除",
+    "deleteMessageTitle": "删除消息？",
+    "deleteMessageDescription": "这将软删除该消息，并在对话记录中保留占位符。",
+    "createInviteLink": "创建邀请链接",
+    "pendingInvites": "待处理邀请",
+    "acceptInvite": "接受",
+    "inviteFriendToOrg": "邀请好友加入此组织",
+    "inviteLinkCopied": "邀请链接已复制",
+    "inviteSent": "邀请已发送",
+    "inviteAccepted": "邀请已接受"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "网格布局",
+      "tight": "紧凑",
+      "small": "小",
+      "wide": "宽"
     }
   }
 }

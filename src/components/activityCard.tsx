@@ -127,6 +127,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
   const [editContent, setEditContent] = useState(item.content || '')
   const [isSaving, setIsSaving] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [noteContent, setNoteContent] = useState(item.content || '')
   const [isEditPopoverOpen, setIsEditPopoverOpen] = useState(false)
   const justOpenedPopoverRef = useRef(false)
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null)
@@ -154,6 +155,11 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
       setCurrentVisibility(item.visibility)
     }
   }, [item.visibility])
+
+  // Sync noteContent when item.content changes from parent refresh
+  useEffect(() => {
+    setNoteContent(item.content || '')
+  }, [item.content])
 
   // Fetch like status on mount only if not provided in item
   useEffect(() => {
@@ -525,7 +531,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
       e.preventDefault()
       e.stopPropagation()
     }
-    setEditContent(item.content || '')
+    setEditContent(noteContent)
     // Mark that we just opened the popover to prevent immediate closing
     justOpenedPopoverRef.current = true
     // Use requestAnimationFrame to ensure dropdown closes before opening popover
@@ -563,8 +569,8 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
 
       const data = await response.json()
       
-      // Update local state
-      item.content = data.note.content
+      // Update local content state so link previews regenerate immediately
+      setNoteContent(data.note.content)
       
       toast.success(t('notes.updated') || 'Note updated successfully')
       setIsEditPopoverOpen(false)
@@ -869,13 +875,30 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
       )}
 
       {/* Content based on type */}
-      {item.type === 'note' && item.content && (
+      {item.type === 'note' && noteContent && (
         <div className="mb-3">
           <NoteContent
-            content={item.content}
-            truncate={!isExpanded && item.content.length > 150}
+            content={noteContent}
+            truncate={!isExpanded && noteContent.length > 150}
             maxLength={150}
-          />
+          >
+            {/* Expand button – centred horizontally below the text, above link previews */}
+            {(noteContent.length > 150 || commentCount > 0) && (
+              <div className="flex justify-center mt-2 mb-2">
+                <button
+                  onClick={() => setIsExpanded(!isExpanded)}
+                  className="bg-background/95 backdrop-blur-sm border border-border rounded-full p-2 shadow-lg hover:bg-background transition-colors"
+                  aria-label={isExpanded ? t('comments.showLess') : t('comments.showMore')}
+                >
+                  {isExpanded ? (
+                    <ChevronUp className="h-4 w-4 text-foreground" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4 text-foreground" />
+                  )}
+                </button>
+              </div>
+            )}
+          </NoteContent>
         </div>
       )}
       
@@ -890,7 +913,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
             }
             if (!open) {
               setIsEditPopoverOpen(false)
-              setEditContent(item.content || '')
+              setEditContent(noteContent)
             }
           }}
           modal={true}
@@ -922,7 +945,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
                   size="sm"
                   onClick={() => {
                     setIsEditPopoverOpen(false)
-                    setEditContent(item.content || '')
+                    setEditContent(noteContent)
                   }}
                   disabled={isSaving}
                 >
@@ -1158,11 +1181,11 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
             </div>
           )}
 
-          {/* Expand button */}
-          <div className="flex justify-center mt-2">
+          {/* Always-visible expand/collapse button below comment section */}
+          <div className="flex justify-center my-2">
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="bg-background/95 backdrop-blur-sm border border-border rounded-full p-2 shadow-lg hover:bg-background transition-colors z-10"
+              className="bg-background/95 backdrop-blur-sm border border-border rounded-full p-2 shadow-lg hover:bg-background transition-colors"
               aria-label={isExpanded ? t('comments.showLess') : t('comments.showMore')}
             >
               {isExpanded ? (

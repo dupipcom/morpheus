@@ -57,7 +57,10 @@
     "copyLink": "লিঙ্ক কপি করুন",
     "linkCopied": "লিঙ্ক ক্লিপবোর্ডে কপি করা হয়েছে",
     "copyFailed": "লিঙ্ক কপি করতে ব্যর্থ",
-    "saving": "সংরক্ষণ করা হচ্ছে..."
+    "saving": "সংরক্ষণ করা হচ্ছে...",
+    "decline": "প্রত্যাখ্যান",
+    "friendRequest": "বন্ধুত্বের অনুরোধ",
+    "reverseOrder": "ক্রম উল্টানো"
   },
   "navigation": {
     "home": "হোম",
@@ -83,7 +86,26 @@
     "yourMood": "আপনার মেজাজ।",
     "yourProductivity": "আপনার উৎপাদনশীলতা।",
     "yourData": "আপনার ডেটা।",
-    "yourBalance": "আপনার টাকা।"
+    "yourBalance": "আপনার টাকা।",
+    "timeframe": {
+      "startDate": "শুরুর তারিখ",
+      "endDate": "শেষের তারিখ"
+    },
+    "me": "আমার ডেটা",
+    "selectDelegatedUser": "প্রতিনিধি ব্যবহারকারী নির্বাচন করুন",
+    "analysis": {
+      "alltimeAnalysis": "সর্বকালের বিশ্লেষণ",
+      "dayAnalysis": "আজকের বিশ্লেষণ",
+      "last3daysAnalysis": "গত ৩ দিনের বিশ্লেষণ",
+      "weekAnalysis": "সাপ্তাহিক বিশ্লেষণ",
+      "yearAnalysis": "বার্ষিক বিশ্লেষণ",
+      "gratitudeAnalysis": "কৃতজ্ঞতা বিশ্লেষণ",
+      "optimismAnalysis": "আশাবাদ বিশ্লেষণ",
+      "restednessAnalysis": "বিশ্রামের বিশ্লেষণ",
+      "toleranceAnalysis": "সহনশীলতার বিশ্লেষণ",
+      "selfEsteemAnalysis": "আত্মসম্মান বিশ্লেষণ",
+      "trustAnalysis": "বিশ্বাসের বিশ্লেষণ"
+    }
   },
   "mood": {
     "title": "এটা {date}।",
@@ -106,7 +128,26 @@
         "AI_ENABLED": "এআই সক্রিয়"
       },
       "action": "নোট প্রকাশ করুন",
-      "publishing": "প্রকাশ করা হচ্ছে..."
+      "publishing": "প্রকাশ করা হচ্ছে...",
+      "embedHint": "{provider} এমবেড। প্লেব্যাক পাওয়া না গেলে নিচের মূল লিঙ্কটি খুলুন।"
+    },
+    "thirdParty": {
+      "title": "তৃতীয় পক্ষ",
+      "settings": "প্রতিনিধিত্ব সেটিংস",
+      "activeDelegations": "সক্রিয় প্রতিনিধিত্ব",
+      "empty": "কোনও সক্রিয় প্রতিনিধিত্ব নেই।",
+      "identifierPlaceholder": "ব্যবহারকারীর নাম, ইমেল, বা ব্যবহারকারী আইডি",
+      "noFriendsFound": "মিল থাকা বন্ধুত্ব পাওয়া যায়নি।",
+      "friendsHint": "পরামর্শগুলিতে আপনার বন্ধুরা অন্তর্ভুক্ত আছে। আপনি চাইলে যেকোনও ইমেল ঠিকানাও লিখতে পারেন।",
+      "scope": "ডেটার পরিসর",
+      "allScopes": "সব পরিসর",
+      "scopesSelected": "পরিসর নির্বাচিত",
+      "minimumOneScope": "অন্তত একটি পরিসর নির্বাচিত থাকতে হবে।",
+      "scopeResolutionHint": "একাধিক পরিসর নির্বাচিত হলে, নির্বাচিতগুলোর মধ্যে সবচেয়ে বিস্তৃত পরিসর প্রয়োগ করা হবে।",
+      "addDelegatedAnalyst": "প্রতিনিধি বিশ্লেষক যোগ করুন",
+      "adding": "যোগ করা হচ্ছে...",
+      "addError": "প্রতিনিধি বিশ্লেষক যোগ করা যায়নি",
+      "invitationDraft": "এই ইমেলটির জন্য আমন্ত্রণের খসড়া প্রস্তুত করা হয়েছে।"
     }
   },
   "week": {
@@ -135,7 +176,10 @@
       "done": "সম্পন্ন",
       "ignored": "উপেক্ষিত"
     },
-    "edit": "সম্পাদনা"
+    "edit": "সম্পাদনা",
+    "loadingForDate": "নির্বাচিত তারিখের জন্য কাজগুলি লোড হচ্ছে...",
+    "initializingTasks": "আপনার কাজগুলি সেট আপ করা হচ্ছে...",
+    "noTasksForDate": "এই তারিখের জন্য কোনো কাজ নির্ধারিত নেই"
   },
   "actions": {
     "drankWater": "পানি পান করেছে",
@@ -342,7 +386,8 @@
     "closeFriend": "ঘনিষ্ঠ বন্ধু",
     "friends": "বন্ধুরা",
     "signInToAdd": "বন্ধু যোগ করতে সাইন ইন করুন",
-    "editProfile": "প্রোফাইল সম্পাদনা"
+    "editProfile": "প্রোফাইল সম্পাদনা",
+    "message": "বার্তা"
   },
   "profile": {
     "editProfile": "প্রোফাইল সম্পাদনা",
@@ -378,7 +423,48 @@
     "saving": "সংরক্ষণ করা হচ্ছে...",
     "pleaseSignIn": "আপনার প্রোফাইল সম্পাদনা করতে দয়া করে সাইন ইন করুন",
     "goToDashboard": "ড্যাশবোর্ডে যান",
-    "createProfile": "Create Profile"
+    "createProfile": "Create Profile",
+    "meetMe": {
+      "title": "আমার সাথে দেখা করুন",
+      "description": "আপনার পছন্দের মিটিং সময় নির্ধারণ করুন",
+      "morning": "সকাল",
+      "afternoon": "বিকেল",
+      "evening": "সন্ধ্যা",
+      "pickTime": "সময় বাছুন",
+      "duration": "সময়কাল",
+      "selectDuration": "সময়কাল নির্বাচন করুন",
+      "minutes": "মিনিট",
+      "availability": "উপলব্ধতা",
+      "selectAvailability": "উপলব্ধতা নির্বাচন করুন",
+      "weekdays": "কর্মদিবস",
+      "weekends": "সপ্তাহান্ত",
+      "everyday": "প্রতিদিন",
+      "window": "উপলব্ধ সময়সীমা",
+      "noWindowSet": "কোনো সময়সীমা নির্ধারিত নেই",
+      "timezoneNote": "{timezone} সময় অনুযায়ী দেখানো হচ্ছে",
+      "bookMeeting": "মিটিং বুক করুন",
+      "selectDate": "একটি তারিখ নির্বাচন করুন",
+      "message": "বার্তা (ঐচ্ছিক)",
+      "messagePlaceholder": "মিটিংয়ের জন্য একটি নোট যোগ করুন...",
+      "bookingSuccess": "মিটিং বুক হয়েছে! ক্যালেন্ডার আমন্ত্রণ পাঠানো হয়েছে।",
+      "booking": "বুকিং হচ্ছে...",
+      "confirmBooking": "বুকিং নিশ্চিত করুন",
+      "calendarAvailability": "উপলব্ধতা",
+      "calendarUnavailable": "ক্যালেন্ডার উপলব্ধ নয়",
+      "dayFree": "কোনো ইভেন্ট নেই — দিনটি ফাঁকা",
+      "busySlot": "ব্যস্ত {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "সোশ্যাল ও কাস্টম লিংক",
+      "description": "আপনার সোশ্যাল মিডিয়া প্রোফাইল এবং কাস্টম লিংক যোগ করুন যা আপনার পাবলিক প্রোফাইলে প্রদর্শিত হবে",
+      "visibility": "লিংক দৃশ্যমানতা",
+      "addLink": "লিংক যোগ করুন",
+      "customLink": "কাস্টম লিংক",
+      "labelPlaceholder": "লিংকের লেবেল (যেমন: আমার ব্লগ)",
+      "urlPlaceholder": "https://"
+    }
   },
   "toast": {
     "sessionExtended": "সেশন সফলভাবে বাড়ানো হয়েছে",
@@ -678,7 +764,9 @@
       "inProgress": "চলমান",
       "validating": "যাচাই করা হচ্ছে",
       "accepted": "গ্রহণ করা হয়েছে",
-      "rejected": "প্রত্যাখ্যান করা হয়েছে"
+      "rejected": "প্রত্যাখ্যান করা হয়েছে",
+      "submitted": "জমা দেওয়া হয়েছে",
+      "changesRequested": "পরিবর্তনের অনুরোধ"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -791,6 +879,48 @@
         "submitted": "পর্যালোচনার জন্য কাজ জমা দেওয়া হয়েছে",
         "resubmitted": "পর্যালোচনার জন্য কাজ পুনরায় জমা দেওয়া হয়েছে"
       }
+    }
+  },
+  "notes": {
+    "updated": "নোট সফলভাবে আপডেট হয়েছে",
+    "updateFailed": "নোট আপডেট করতে ব্যর্থ",
+    "deleted": "নোট সফলভাবে মুছে ফেলা হয়েছে",
+    "deleteFailed": "নোট মুছে ফেলতে ব্যর্থ",
+    "deleting": "মুছে ফেলা হচ্ছে...",
+    "confirmDelete": "আপনি কি এই নোটটি মুছে ফেলতে চান?",
+    "content": "নোটের বিষয়বস্তু",
+    "visibilityUpdated": "দৃশ্যমানতা সফলভাবে আপডেট হয়েছে",
+    "visibilityUpdateFailed": "দৃশ্যমানতা আপডেট করতে ব্যর্থ",
+    "changeVisibility": "দৃশ্যমানতা পরিবর্তন করুন",
+    "filters": {
+      "sort": "বাছাই",
+      "date": "তারিখ",
+      "mostRelevant": "সবচেয়ে প্রাসঙ্গিক",
+      "all": "সব"
+    }
+  },
+  "chat": {
+    "title": "চ্যাট",
+    "subtitle": "সংগঠন, চ্যানেল, সরাসরি বার্তা এবং থ্রেড।",
+    "anonymous": "বেনামী",
+    "directMessage": "সরাসরি বার্তা",
+    "deletedMessage": "বার্তা মুছে ফেলা হয়েছে",
+    "deleteMessageTitle": "বার্তা মুছবেন?",
+    "deleteMessageDescription": "এটি বার্তাটি নরমভাবে মুছে দেবে এবং কথোপকথনের ইতিহাসে একটি প্লেসহোল্ডার রাখবে।",
+    "createInviteLink": "আমন্ত্রণ লিঙ্ক তৈরি করুন",
+    "pendingInvites": "মুলতুবি আমন্ত্রণ",
+    "acceptInvite": "গ্রহণ করুন",
+    "inviteFriendToOrg": "এই সংগঠনে একজন বন্ধুকে আমন্ত্রণ জানান",
+    "inviteLinkCopied": "আমন্ত্রণ লিঙ্ক কপি করা হয়েছে",
+    "inviteSent": "আমন্ত্রণ পাঠানো হয়েছে",
+    "inviteAccepted": "আমন্ত্রণ গৃহীত হয়েছে"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "গ্রিড বিন্যাস",
+      "tight": "ঘন",
+      "small": "ছোট",
+      "wide": "প্রশস্ত"
     }
   }
 }

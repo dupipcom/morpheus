@@ -57,7 +57,10 @@
     "copyLink": "Copiar link",
     "linkCopied": "Link copiado para a área de transferência",
     "copyFailed": "Falha ao copiar o link",
-    "saving": "Salvando..."
+    "saving": "Salvando...",
+    "decline": "Recusar",
+    "friendRequest": "Pedido de amizade",
+    "reverseOrder": "Inverter ordem"
   },
   "navigation": {
     "home": "Início",
@@ -83,7 +86,26 @@
     "yourMood": "Seu humor.",
     "yourProductivity": "Sua produtividade.",
     "yourData": "Seus dados.",
-    "yourBalance": "Seu dinheiro."
+    "yourBalance": "Seu dinheiro.",
+    "timeframe": {
+      "startDate": "Data de início",
+      "endDate": "Data de fim"
+    },
+    "me": "Meus dados",
+    "selectDelegatedUser": "Selecionar usuário delegado",
+    "analysis": {
+      "alltimeAnalysis": "Análise de todo o período",
+      "dayAnalysis": "Análise de hoje",
+      "last3daysAnalysis": "Análise dos últimos 3 dias",
+      "weekAnalysis": "Análise semanal",
+      "yearAnalysis": "Análise anual",
+      "gratitudeAnalysis": "Análise de gratidão",
+      "optimismAnalysis": "Análise de otimismo",
+      "restednessAnalysis": "Análise de descanso",
+      "toleranceAnalysis": "Análise de tolerância",
+      "selfEsteemAnalysis": "Análise de autoestima",
+      "trustAnalysis": "Análise de confiança"
+    }
   },
   "mood": {
     "title": "É {date}.",
@@ -106,7 +128,26 @@
         "AI_ENABLED": "Habilitado para IA"
       },
       "action": "Publicar Nota",
-      "publishing": "Publicando..."
+      "publishing": "Publicando...",
+      "embedHint": "Incorporação de {provider}. Se a reprodução não estiver disponível, abra o link original abaixo."
+    },
+    "thirdParty": {
+      "title": "Terceiros",
+      "settings": "Configurações de delegação",
+      "activeDelegations": "Delegações ativas",
+      "empty": "Não há delegações ativas.",
+      "identifierPlaceholder": "Nome de usuário, e-mail ou ID do usuário",
+      "noFriendsFound": "Nenhuma amizade correspondente encontrada.",
+      "friendsHint": "As sugestões incluem seus amigos. Você também pode inserir qualquer endereço de e-mail.",
+      "scope": "Escopo de dados",
+      "allScopes": "Todos os escopos",
+      "scopesSelected": "escopos selecionados",
+      "minimumOneScope": "Pelo menos um escopo deve permanecer selecionado.",
+      "scopeResolutionHint": "Se vários escopos forem selecionados, o escopo selecionado mais amplo será aplicado.",
+      "addDelegatedAnalyst": "Adicionar analista delegado",
+      "adding": "Adicionando...",
+      "addError": "Não foi possível adicionar o analista delegado",
+      "invitationDraft": "Rascunho de convite preparado para este e-mail."
     }
   },
   "week": {
@@ -135,7 +176,10 @@
       "done": "Concluído",
       "ignored": "Ignorado"
     },
-    "edit": "Editar"
+    "edit": "Editar",
+    "loadingForDate": "A carregar tarefas para a data selecionada...",
+    "initializingTasks": "A configurar as suas tarefas...",
+    "noTasksForDate": "Sem tarefas agendadas para esta data"
   },
   "settings": {
     "title": "Configurações",
@@ -359,7 +403,8 @@
     "closeFriend": "Amigo próximo",
     "friends": "Amigos",
     "signInToAdd": "Faça login para adicionar amigo",
-    "editProfile": "Editar perfil"
+    "editProfile": "Editar perfil",
+    "message": "Mensagem"
   },
   "profile": {
     "editProfile": "Editar Perfil",
@@ -395,7 +440,48 @@
     "saving": "Salvando...",
     "pleaseSignIn": "Por favor, faça login para editar seu perfil",
     "goToDashboard": "Ir para o Dashboard",
-    "createProfile": "Create Profile"
+    "createProfile": "Create Profile",
+    "meetMe": {
+      "title": "Encontre-me",
+      "description": "Defina seus horários de reunião preferidos",
+      "morning": "Manhã",
+      "afternoon": "Tarde",
+      "evening": "Noite",
+      "pickTime": "Escolher horário",
+      "duration": "Duração",
+      "selectDuration": "Selecionar duração",
+      "minutes": "min",
+      "availability": "Disponibilidade",
+      "selectAvailability": "Selecionar disponibilidade",
+      "weekdays": "Dias úteis",
+      "weekends": "Fins de semana",
+      "everyday": "Todos os dias",
+      "window": "Janela disponível",
+      "noWindowSet": "Nenhuma janela definida",
+      "timezoneNote": "Horários exibidos em {timezone}",
+      "bookMeeting": "Agendar reunião",
+      "selectDate": "Selecione uma data",
+      "message": "Mensagem (opcional)",
+      "messagePlaceholder": "Adicione uma nota para a reunião...",
+      "bookingSuccess": "Reunião agendada! Convite de calendário enviado.",
+      "booking": "Agendando...",
+      "confirmBooking": "Confirmar agendamento",
+      "calendarAvailability": "Disponibilidade",
+      "calendarUnavailable": "Calendário não disponível",
+      "dayFree": "Sem eventos — dia livre",
+      "busySlot": "Ocupado {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "Links sociais e personalizados",
+      "description": "Adicione seus perfis de redes sociais e links personalizados para exibir no seu perfil público",
+      "visibility": "Visibilidade dos links",
+      "addLink": "Adicionar link",
+      "customLink": "Link personalizado",
+      "labelPlaceholder": "Rótulo do link (ex. Meu blog)",
+      "urlPlaceholder": "https://"
+    }
   },
   "toast": {
     "sessionExtended": "Sessão estendida com sucesso",
@@ -678,7 +764,9 @@
       "inProgress": "Em Andamento",
       "validating": "Validando",
       "accepted": "Aceito",
-      "rejected": "Rejeitado"
+      "rejected": "Rejeitado",
+      "submitted": "Enviado",
+      "changesRequested": "Alterações solicitadas"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -791,6 +879,48 @@
         "submitted": "Trabalho submetido para revisão",
         "resubmitted": "Trabalho reenviado para revisão"
       }
+    }
+  },
+  "notes": {
+    "updated": "Nota atualizada com sucesso",
+    "updateFailed": "Falha ao atualizar nota",
+    "deleted": "Nota eliminada com sucesso",
+    "deleteFailed": "Falha ao eliminar nota",
+    "deleting": "A eliminar...",
+    "confirmDelete": "Tem a certeza de que deseja eliminar esta nota?",
+    "content": "Conteúdo da nota",
+    "visibilityUpdated": "Visibilidade atualizada com sucesso",
+    "visibilityUpdateFailed": "Falha ao atualizar visibilidade",
+    "changeVisibility": "Alterar visibilidade",
+    "filters": {
+      "sort": "Ordenar",
+      "date": "Data",
+      "mostRelevant": "Mais relevante",
+      "all": "Tudo"
+    }
+  },
+  "chat": {
+    "title": "Conversa",
+    "subtitle": "Organizações, canais, mensagens diretas e tópicos.",
+    "anonymous": "Anónimo",
+    "directMessage": "Mensagem direta",
+    "deletedMessage": "Mensagem eliminada",
+    "deleteMessageTitle": "Eliminar mensagem?",
+    "deleteMessageDescription": "Isto eliminará a mensagem de forma suave e manterá um marcador no histórico da conversa.",
+    "createInviteLink": "Criar link de convite",
+    "pendingInvites": "Convites pendentes",
+    "acceptInvite": "Aceitar",
+    "inviteFriendToOrg": "Convidar um amigo para esta organização",
+    "inviteLinkCopied": "Link de convite copiado",
+    "inviteSent": "Convite enviado",
+    "inviteAccepted": "Convite aceite"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Layout da grade",
+      "tight": "Compacto",
+      "small": "Pequeno",
+      "wide": "Amplo"
     }
   }
 }

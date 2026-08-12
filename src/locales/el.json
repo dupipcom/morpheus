@@ -57,7 +57,10 @@
     "copyLink": "Αντιγραφή συνδέσμου",
     "linkCopied": "Ο σύνδεσμος αντιγράφηκε στο πρόχειρο",
     "copyFailed": "Αποτυχία αντιγραφής συνδέσμου",
-    "saving": "Αποθήκευση..."
+    "saving": "Αποθήκευση...",
+    "decline": "Απόρριψη",
+    "friendRequest": "Αίτημα φιλίας",
+    "reverseOrder": "Αντίστροφη σειρά"
   },
   "navigation": {
     "home": "Αρχική",
@@ -83,7 +86,26 @@
     "yourMood": "Η συγκίνησή σας.",
     "yourProductivity": "Η παραγωγικότητά σας.",
     "yourData": "Τα δεδομένα σας.",
-    "yourBalance": "Τα χρήματά σας."
+    "yourBalance": "Τα χρήματά σας.",
+    "timeframe": {
+      "startDate": "Ημερομηνία έναρξης",
+      "endDate": "Ημερομηνία λήξης"
+    },
+    "me": "Τα δεδομένα μου",
+    "selectDelegatedUser": "Επιλέξτε εξουσιοδοτημένο χρήστη",
+    "analysis": {
+      "alltimeAnalysis": "Ανάλυση όλης της περιόδου",
+      "dayAnalysis": "Σημερινή ανάλυση",
+      "last3daysAnalysis": "Ανάλυση τελευταίων 3 ημερών",
+      "weekAnalysis": "Εβδομαδιαία ανάλυση",
+      "yearAnalysis": "Ετήσια ανάλυση",
+      "gratitudeAnalysis": "Ανάλυση ευγνωμοσύνης",
+      "optimismAnalysis": "Ανάλυση αισιοδοξίας",
+      "restednessAnalysis": "Ανάλυση ξεκούρασης",
+      "toleranceAnalysis": "Ανάλυση ανεκτικότητας",
+      "selfEsteemAnalysis": "Ανάλυση αυτοεκτίμησης",
+      "trustAnalysis": "Ανάλυση εμπιστοσύνης"
+    }
   },
   "mood": {
     "title": "Καταγράψτε τη συγκίνησή σας για {date}",
@@ -106,7 +128,26 @@
         "AI_ENABLED": "AI Ενεργοποιημένο"
       },
       "action": "Δημοσίευση Σημείωσης",
-      "publishing": "Δημοσίευση..."
+      "publishing": "Δημοσίευση...",
+      "embedHint": "Ενσωμάτωση {provider}. Εάν η αναπαραγωγή δεν είναι διαθέσιμη, ανοίξτε τον αρχικό σύνδεσμο παρακάτω."
+    },
+    "thirdParty": {
+      "title": "Τρίτο μέρος",
+      "settings": "Ρυθμίσεις ανάθεσης",
+      "activeDelegations": "Ενεργές αναθέσεις",
+      "empty": "Δεν υπάρχουν ενεργές αναθέσεις.",
+      "identifierPlaceholder": "Όνομα χρήστη, email ή αναγνωριστικό χρήστη",
+      "noFriendsFound": "Δεν βρέθηκαν αντίστοιχες φιλίες.",
+      "friendsHint": "Οι προτάσεις περιλαμβάνουν τους φίλους σας. Μπορείτε επίσης να εισαγάγετε οποιαδήποτε διεύθυνση email.",
+      "scope": "Εύρος δεδομένων",
+      "allScopes": "Όλα τα εύρη",
+      "scopesSelected": "εύρη επιλεγμένα",
+      "minimumOneScope": "Τουλάχιστον ένα εύρος πρέπει να παραμείνει επιλεγμένο.",
+      "scopeResolutionHint": "Αν επιλεγούν πολλά εύρη, εφαρμόζεται το ευρύτερο επιλεγμένο εύρος.",
+      "addDelegatedAnalyst": "Προσθήκη εξουσιοδοτημένου αναλυτή",
+      "adding": "Προσθήκη...",
+      "addError": "Δεν ήταν δυνατή η προσθήκη εξουσιοδοτημένου αναλυτή",
+      "invitationDraft": "Ετοιμάστηκε πρόχειρο πρόσκλησης για αυτό το email."
     }
   },
   "week": {
@@ -135,7 +176,10 @@
       "done": "Ολοκληρώθηκε",
       "ignored": "Αγνοήθηκε"
     },
-    "edit": "Επεξεργασία"
+    "edit": "Επεξεργασία",
+    "loadingForDate": "Φόρτωση εργασιών για την επιλεγμένη ημερομηνία...",
+    "initializingTasks": "Ρύθμιση των εργασιών σας...",
+    "noTasksForDate": "Δεν υπάρχουν εργασίες προγραμματισμένες για αυτήν την ημερομηνία"
   },
   "actions": {
     "drankWater": "Έπινε νερό",
@@ -339,7 +383,8 @@
     "closeFriend": "Στενός φίλος",
     "friends": "Φίλοι",
     "signInToAdd": "Συνδεθείτε για να προσθέσετε φίλο",
-    "editProfile": "Επεξεργασία προφίλ"
+    "editProfile": "Επεξεργασία προφίλ",
+    "message": "Μήνυμα"
   },
   "profile": {
     "editProfile": "Επεξεργασία προφίλ",
@@ -375,7 +420,48 @@
     "saving": "Αποθήκευση...",
     "pleaseSignIn": "Παρακαλώ συνδεθείτε για να επεξεργαστείτε το προφίλ σας",
     "goToDashboard": "Μετάβαση στον πίνακα ελέγχου",
-    "createProfile": "Create Profile"
+    "createProfile": "Create Profile",
+    "meetMe": {
+      "title": "Συνάντησέ με",
+      "description": "Ορίστε τις προτιμώμενες ώρες συνάντησης",
+      "morning": "Πρωί",
+      "afternoon": "Απόγευμα",
+      "evening": "Βράδυ",
+      "pickTime": "Επιλέξτε ώρα",
+      "duration": "Διάρκεια",
+      "selectDuration": "Επιλέξτε διάρκεια",
+      "minutes": "λεπτά",
+      "availability": "Διαθεσιμότητα",
+      "selectAvailability": "Επιλέξτε διαθεσιμότητα",
+      "weekdays": "Καθημερινές",
+      "weekends": "Σαββατοκύριακα",
+      "everyday": "Κάθε μέρα",
+      "window": "Διαθέσιμο παράθυρο",
+      "noWindowSet": "Δεν ορίστηκε παράθυρο",
+      "timezoneNote": "Ώρες σε {timezone}",
+      "bookMeeting": "Κράτηση συνάντησης",
+      "selectDate": "Επιλέξτε ημερομηνία",
+      "message": "Μήνυμα (προαιρετικό)",
+      "messagePlaceholder": "Προσθέστε σημείωση για τη συνάντηση...",
+      "bookingSuccess": "Η συνάντηση κρατήθηκε! Στάλθηκε πρόσκληση ημερολογίου.",
+      "booking": "Κράτηση...",
+      "confirmBooking": "Επιβεβαίωση κράτησης",
+      "calendarAvailability": "Διαθεσιμότητα",
+      "calendarUnavailable": "Το ημερολόγιο δεν είναι διαθέσιμο",
+      "dayFree": "Χωρίς γεγονότα — η μέρα είναι ελεύθερη",
+      "busySlot": "Κατειλημμένο {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "Κοινωνικοί και προσαρμοσμένοι σύνδεσμοι",
+      "description": "Προσθέστε τα προφίλ σας στα μέσα κοινωνικής δικτύωσης και προσαρμοσμένους συνδέσμους για εμφάνιση στο δημόσιο προφίλ σας",
+      "visibility": "Ορατότητα συνδέσμων",
+      "addLink": "Προσθήκη συνδέσμου",
+      "customLink": "Προσαρμοσμένος σύνδεσμος",
+      "labelPlaceholder": "Ετικέτα συνδέσμου (π.χ. Το blog μου)",
+      "urlPlaceholder": "https://"
+    }
   },
   "toast": {
     "sessionExtended": "Η συνεδρία επεκτάθηκε επιτυχώς",
@@ -675,7 +761,9 @@
       "inProgress": "Σε Εξέλιξη",
       "validating": "Επικύρωση",
       "accepted": "Αποδεκτό",
-      "rejected": "Απορρίφθηκε"
+      "rejected": "Απορρίφθηκε",
+      "submitted": "Υποβλήθηκε",
+      "changesRequested": "Ζητήθηκαν αλλαγές"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -788,6 +876,48 @@
         "submitted": "Η εργασία υποβλήθηκε για έλεγχο",
         "resubmitted": "Η εργασία επανυποβλήθηκε για έλεγχο"
       }
+    }
+  },
+  "notes": {
+    "updated": "Η σημείωση ενημερώθηκε επιτυχώς",
+    "updateFailed": "Αποτυχία ενημέρωσης σημείωσης",
+    "deleted": "Η σημείωση διαγράφηκε επιτυχώς",
+    "deleteFailed": "Αποτυχία διαγραφής σημείωσης",
+    "deleting": "Διαγραφή...",
+    "confirmDelete": "Είστε σίγουροι ότι θέλετε να διαγράψετε αυτή τη σημείωση;",
+    "content": "Περιεχόμενο σημείωσης",
+    "visibilityUpdated": "Η ορατότητα ενημερώθηκε επιτυχώς",
+    "visibilityUpdateFailed": "Αποτυχία ενημέρωσης ορατότητας",
+    "changeVisibility": "Αλλαγή ορατότητας",
+    "filters": {
+      "sort": "Ταξινόμηση",
+      "date": "Ημερομηνία",
+      "mostRelevant": "Πιο σχετικό",
+      "all": "Όλα"
+    }
+  },
+  "chat": {
+    "title": "Συνομιλία",
+    "subtitle": "Οργανισμοί, κανάλια, άμεσα μηνύματα και νήματα.",
+    "anonymous": "Ανώνυμος",
+    "directMessage": "Άμεσο μήνυμα",
+    "deletedMessage": "Το μήνυμα διαγράφηκε",
+    "deleteMessageTitle": "Διαγραφή μηνύματος;",
+    "deleteMessageDescription": "Αυτό θα διαγράψει ήπια το μήνυμα και θα διατηρήσει ένα σύμβολο κράτησης θέσης στο ιστορικό συνομιλίας.",
+    "createInviteLink": "Δημιουργία συνδέσμου πρόσκλησης",
+    "pendingInvites": "Εκκρεμείς προσκλήσεις",
+    "acceptInvite": "Αποδοχή",
+    "inviteFriendToOrg": "Πρόσκληση φίλου σε αυτόν τον οργανισμό",
+    "inviteLinkCopied": "Ο σύνδεσμος πρόσκλησης αντιγράφηκε",
+    "inviteSent": "Η πρόσκληση στάλθηκε",
+    "inviteAccepted": "Η πρόσκληση έγινε αποδεκτή"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Διάταξη πλέγματος",
+      "tight": "Σφιχτό",
+      "small": "Μικρό",
+      "wide": "Ευρύ"
     }
   }
 }

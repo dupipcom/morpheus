@@ -7,6 +7,8 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import Image from 'next/image';
 import { ArticleShareButton } from '@/components/articleShareButton';
 import { locales } from '@/app/constants';
+import { SocialLinkIcon, getSocialLabel } from '@/components/socialLinkIcon';
+import type { ProfileLink } from '@/lib/utils/profileUtils';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,10 +21,15 @@ async function getProfile(userName: string): Promise<any | null> {
       ? `https://${process.env.VERCEL_URL}` 
       : process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
     
+    const fetchHeaders: Record<string, string> = {
+      'Accept': 'application/json',
+    };
+    if (process.env.INTERNAL_FETCH_SECRET) {
+      fetchHeaders['x-internal-fetch-secret'] = process.env.INTERNAL_FETCH_SECRET;
+    }
+
     const response = await fetch(`${baseUrl}/api/v1/profile/${userName}`, {
-      headers: {
-        'Accept': 'application/json',
-      },
+      headers: fetchHeaders,
     });
     
     if (!response.ok) {
@@ -183,6 +190,7 @@ export default async function ArticlePage({
               const dupipUser = author?.dupipUser;
               const profilePicture = profile?.profilePicture;
               const bio = profile?.bio;
+              const authorLinks: ProfileLink[] = Array.isArray(profile?.links) ? profile.links : [];
               
               if (!dupipUser) {
                 // Fallback for authors without dupipUser
@@ -238,6 +246,24 @@ export default async function ArticlePage({
                           <p className="text-sm text-muted-foreground mt-2">
                             {bio}
                           </p>
+                        )}
+
+                        {/* Social Links */}
+                        {authorLinks.length > 0 && (
+                          <div className="mt-2 flex flex-wrap gap-3">
+                            {authorLinks.map((link, linkIdx) => (
+                              <a
+                                key={linkIdx}
+                                href={link.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
+                              >
+                                <SocialLinkIcon type={link.type} />
+                                <span>{link.type === 'custom' ? (link.label || link.url) : getSocialLabel(link.type)}</span>
+                              </a>
+                            ))}
+                          </div>
                         )}
                       </div>
                     </div>

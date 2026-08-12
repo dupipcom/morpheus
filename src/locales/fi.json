@@ -57,7 +57,10 @@
     "copyLink": "Kopioi linkki",
     "linkCopied": "Linkki kopioitu leikepöydälle",
     "copyFailed": "Linkin kopiointi epäonnistui",
-    "saving": "Tallennetaan..."
+    "saving": "Tallennetaan...",
+    "decline": "Hylkää",
+    "friendRequest": "Kaveripyyntö",
+    "reverseOrder": "Käänteinen järjestys"
   },
   "navigation": {
     "dashboard": "Kojelauta",
@@ -87,7 +90,26 @@
     "yourMood": "Mielialasi.",
     "yourProductivity": "Tuottavuutesi.",
     "yourData": "Tietosi.",
-    "yourBalance": "Rahasi."
+    "yourBalance": "Rahasi.",
+    "timeframe": {
+      "startDate": "Alkamispäivä",
+      "endDate": "Päättymispäivä"
+    },
+    "me": "Tietoni",
+    "selectDelegatedUser": "Valitse delegoitu käyttäjä",
+    "analysis": {
+      "alltimeAnalysis": "Koko ajan analyysi",
+      "dayAnalysis": "Tämän päivän analyysi",
+      "last3daysAnalysis": "Viimeisten 3 päivän analyysi",
+      "weekAnalysis": "Viikkoanalyysi",
+      "yearAnalysis": "Vuoden analyysi",
+      "gratitudeAnalysis": "Kiitollisuusanalyysi",
+      "optimismAnalysis": "Optimismianalyysi",
+      "restednessAnalysis": "Levänneisyyden analyysi",
+      "toleranceAnalysis": "Suvaitsevaisuusanalyysi",
+      "selfEsteemAnalysis": "Itsetuntoanalyysi",
+      "trustAnalysis": "Luottamusanalyysi"
+    }
   },
   "mood": {
     "title": "Kirjaa mielialasi {date} päivälle",
@@ -110,7 +132,26 @@
         "AI_ENABLED": "AI käytössä"
       },
       "action": "Julkaise muistiinpano",
-      "publishing": "Julkaistaan..."
+      "publishing": "Julkaistaan...",
+      "embedHint": "{provider}-upotus. Jos toisto ei ole käytettävissä, avaa alla oleva alkuperäinen linkki."
+    },
+    "thirdParty": {
+      "title": "Kolmas osapuoli",
+      "settings": "Delegointiasetukset",
+      "activeDelegations": "Aktiiviset delegoinnit",
+      "empty": "Ei aktiivisia delegointeja.",
+      "identifierPlaceholder": "Käyttäjänimi, sähköposti tai käyttäjätunnus",
+      "noFriendsFound": "Vastaavia ystävyyksiä ei löytynyt.",
+      "friendsHint": "Ehdotuksiin sisältyvät ystäväsi. Voit myös syöttää minkä tahansa sähköpostiosoitteen.",
+      "scope": "Tietolaajuus",
+      "allScopes": "Kaikki laajuudet",
+      "scopesSelected": "laajuutta valittu",
+      "minimumOneScope": "Vähintään yhden laajuuden on pysyttävä valittuna.",
+      "scopeResolutionHint": "Jos useita laajuuksia on valittu, käytetään laajinta valittua laajuutta.",
+      "addDelegatedAnalyst": "Lisää delegoitu analyytikko",
+      "adding": "Lisätään...",
+      "addError": "Delegoidun analyytikon lisääminen ei onnistunut",
+      "invitationDraft": "Tälle sähköpostille valmisteltiin kutsuluonnos."
     }
   },
   "week": {
@@ -139,7 +180,10 @@
       "done": "Valmis",
       "ignored": "Sivuutettu"
     },
-    "edit": "Muokkaa"
+    "edit": "Muokkaa",
+    "loadingForDate": "Ladataan tehtäviä valitulle päivämäärälle...",
+    "initializingTasks": "Asetetaan tehtäviäsi...",
+    "noTasksForDate": "Tälle päivämäärälle ei ole suunniteltuja tehtäviä"
   },
   "actions": {
     "drankWater": "Joi vettä",
@@ -346,7 +390,8 @@
     "closeFriend": "Läheinen ystävä",
     "friends": "Ystävät",
     "signInToAdd": "Kirjaudu sisään lisätäksesi ystävän",
-    "editProfile": "Muokkaa profiilia"
+    "editProfile": "Muokkaa profiilia",
+    "message": "Viesti"
   },
   "profile": {
     "editProfile": "Muokkaa profiilia",
@@ -382,7 +427,48 @@
     "saving": "Tallentaa...",
     "pleaseSignIn": "Ole hyvä ja kirjaudu sisään muokataksesi profiiliasi",
     "goToDashboard": "Siirry hallintapaneeliin",
-    "createProfile": "Create Profile"
+    "createProfile": "Create Profile",
+    "meetMe": {
+      "title": "Tapaa minut",
+      "description": "Aseta suositut kokousaikasi",
+      "morning": "Aamu",
+      "afternoon": "Iltapäivä",
+      "evening": "Ilta",
+      "pickTime": "Valitse aika",
+      "duration": "Kesto",
+      "selectDuration": "Valitse kesto",
+      "minutes": "min",
+      "availability": "Saatavuus",
+      "selectAvailability": "Valitse saatavuus",
+      "weekdays": "Arkipäivät",
+      "weekends": "Viikonloput",
+      "everyday": "Joka päivä",
+      "window": "Saatavilla oleva aikaikkuna",
+      "noWindowSet": "Ei aikaikkunaa asetettu",
+      "timezoneNote": "Ajat näytetään aikavyöhykkeellä {timezone}",
+      "bookMeeting": "Varaa tapaaminen",
+      "selectDate": "Valitse päivämäärä",
+      "message": "Viesti (valinnainen)",
+      "messagePlaceholder": "Lisää huomautus tapaamiseen...",
+      "bookingSuccess": "Tapaaminen varattu! Kalenterikutsu lähetetty.",
+      "booking": "Varataan...",
+      "confirmBooking": "Vahvista varaus",
+      "calendarAvailability": "Saatavuus",
+      "calendarUnavailable": "Kalenteri ei ole käytettävissä",
+      "dayFree": "Ei tapahtumia — päivä on vapaa",
+      "busySlot": "Varattu {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "Sosiaalisen median ja mukautetut linkit",
+      "description": "Lisää sosiaalisen median profiilisi ja mukautetut linkit näkyviin julkisella profiilillasi",
+      "visibility": "Linkkien näkyvyys",
+      "addLink": "Lisää linkki",
+      "customLink": "Mukautettu linkki",
+      "labelPlaceholder": "Linkin otsikko (esim. Blogini)",
+      "urlPlaceholder": "https://"
+    }
   },
   "toast": {
     "sessionExtended": "Istunto jatkettu onnistuneesti",
@@ -682,7 +768,9 @@
       "inProgress": "Käynnissä",
       "validating": "Vahvistetaan",
       "accepted": "Hyväksytty",
-      "rejected": "Hylätty"
+      "rejected": "Hylätty",
+      "submitted": "Lähetetty",
+      "changesRequested": "Muutoksia pyydetty"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -795,6 +883,48 @@
         "submitted": "Työ lähetetty tarkistettavaksi",
         "resubmitted": "Työ lähetetty uudelleen tarkistettavaksi"
       }
+    }
+  },
+  "notes": {
+    "updated": "Muistiinpano päivitetty onnistuneesti",
+    "updateFailed": "Muistiinpanon päivittäminen epäonnistui",
+    "deleted": "Muistiinpano poistettu onnistuneesti",
+    "deleteFailed": "Muistiinpanon poistaminen epäonnistui",
+    "deleting": "Poistetaan...",
+    "confirmDelete": "Haluatko varmasti poistaa tämän muistiinpanon?",
+    "content": "Muistiinpanon sisältö",
+    "visibilityUpdated": "Näkyvyys päivitetty onnistuneesti",
+    "visibilityUpdateFailed": "Näkyvyyden päivittäminen epäonnistui",
+    "changeVisibility": "Muuta näkyvyyttä",
+    "filters": {
+      "sort": "Lajittele",
+      "date": "Päivämäärä",
+      "mostRelevant": "Relevantein",
+      "all": "Kaikki"
+    }
+  },
+  "chat": {
+    "title": "Keskustelu",
+    "subtitle": "Organisaatiot, kanavat, suorat viestit ja ketjut.",
+    "anonymous": "Anonyymi",
+    "directMessage": "Suora viesti",
+    "deletedMessage": "Viesti poistettu",
+    "deleteMessageTitle": "Poistetaanko viesti?",
+    "deleteMessageDescription": "Tämä poistaa viestin pehmeästi ja säilyttää paikkamerkin keskusteluhistoriassa.",
+    "createInviteLink": "Luo kutsulinki",
+    "pendingInvites": "Odottavat kutsut",
+    "acceptInvite": "Hyväksy",
+    "inviteFriendToOrg": "Kutsu ystävä tähän organisaatioon",
+    "inviteLinkCopied": "Kutsulinki kopioitu",
+    "inviteSent": "Kutsu lähetetty",
+    "inviteAccepted": "Kutsu hyväksytty"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Ruudukkoasettelu",
+      "tight": "Tiivis",
+      "small": "Pieni",
+      "wide": "Leveä"
     }
   }
 }

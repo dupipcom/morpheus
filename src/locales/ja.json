@@ -57,7 +57,10 @@
     "copyLink": "リンクをコピー",
     "linkCopied": "リンクをクリップボードにコピーしました",
     "copyFailed": "リンクのコピーに失敗しました",
-    "saving": "保存中..."
+    "saving": "保存中...",
+    "decline": "拒否",
+    "friendRequest": "フレンドリクエスト",
+    "reverseOrder": "逆順"
   },
   "navigation": {
     "home": "ホーム",
@@ -83,7 +86,26 @@
     "yourMood": "あなたの気分。",
     "yourProductivity": "あなたの生産性。",
     "yourData": "あなたのデータ。",
-    "yourBalance": "あなたのお金。"
+    "yourBalance": "あなたのお金。",
+    "timeframe": {
+      "startDate": "開始日",
+      "endDate": "終了日"
+    },
+    "me": "自分のデータ",
+    "selectDelegatedUser": "委任されたユーザーを選択",
+    "analysis": {
+      "alltimeAnalysis": "全期間分析",
+      "dayAnalysis": "今日の分析",
+      "last3daysAnalysis": "直近3日間の分析",
+      "weekAnalysis": "週次分析",
+      "yearAnalysis": "年次分析",
+      "gratitudeAnalysis": "感謝の分析",
+      "optimismAnalysis": "楽観性の分析",
+      "restednessAnalysis": "休息度の分析",
+      "toleranceAnalysis": "寛容さの分析",
+      "selfEsteemAnalysis": "自尊心の分析",
+      "trustAnalysis": "信頼の分析"
+    }
   },
   "mood": {
     "title": "{date}です。",
@@ -106,7 +128,26 @@
         "AI_ENABLED": "AI有効"
       },
       "action": "ノートを公開",
-      "publishing": "公開中..."
+      "publishing": "公開中...",
+      "embedHint": "{provider} 埋め込み。再生できない場合は、以下の元のリンクを開いてください。"
+    },
+    "thirdParty": {
+      "title": "サードパーティ",
+      "settings": "委任設定",
+      "activeDelegations": "有効な委任",
+      "empty": "有効な委任はありません。",
+      "identifierPlaceholder": "ユーザー名、メールアドレス、またはユーザーID",
+      "noFriendsFound": "一致する友達関係が見つかりませんでした。",
+      "friendsHint": "候補にはあなたの友達が含まれます。任意のメールアドレスを入力することもできます。",
+      "scope": "データ範囲",
+      "allScopes": "すべての範囲",
+      "scopesSelected": "選択された範囲",
+      "minimumOneScope": "少なくとも1つの範囲を選択したままにする必要があります。",
+      "scopeResolutionHint": "複数の範囲が選択されている場合は、最も広い選択範囲が適用されます。",
+      "addDelegatedAnalyst": "委任されたアナリストを追加",
+      "adding": "追加中...",
+      "addError": "委任されたアナリストを追加できませんでした",
+      "invitationDraft": "このメールアドレス用の招待下書きを準備しました。"
     }
   },
   "week": {
@@ -135,7 +176,10 @@
       "done": "完了",
       "ignored": "無視"
     },
-    "edit": "編集"
+    "edit": "編集",
+    "loadingForDate": "選択した日付のタスクを読み込んでいます...",
+    "initializingTasks": "タスクを設定しています...",
+    "noTasksForDate": "この日付にスケジュールされたタスクはありません"
   },
   "settings": {
     "title": "設定",
@@ -359,7 +403,8 @@
     "closeFriend": "親しい友達",
     "friends": "友達",
     "signInToAdd": "友達を追加するにはサインイン",
-    "editProfile": "プロフィールを編集"
+    "editProfile": "プロフィールを編集",
+    "message": "メッセージ"
   },
   "profile": {
     "editProfile": "プロフィール編集",
@@ -395,7 +440,48 @@
     "saving": "保存中...",
     "pleaseSignIn": "プロフィールを編集するにはサインインしてください",
     "goToDashboard": "ダッシュボードに移動",
-    "createProfile": "Create Profile"
+    "createProfile": "Create Profile",
+    "meetMe": {
+      "title": "ミーティング予約",
+      "description": "希望するミーティング時間を設定",
+      "morning": "午前",
+      "afternoon": "午後",
+      "evening": "夕方",
+      "pickTime": "時間を選択",
+      "duration": "所要時間",
+      "selectDuration": "所要時間を選択",
+      "minutes": "分",
+      "availability": "空き状況",
+      "selectAvailability": "空き状況を選択",
+      "weekdays": "平日",
+      "weekends": "週末",
+      "everyday": "毎日",
+      "window": "対応可能時間帯",
+      "noWindowSet": "時間帯未設定",
+      "timezoneNote": "{timezone}で表示",
+      "bookMeeting": "ミーティングを予約",
+      "selectDate": "日付を選択",
+      "message": "メッセージ（任意）",
+      "messagePlaceholder": "ミーティングへのメモを追加...",
+      "bookingSuccess": "ミーティングを予約しました！カレンダー招待を送信しました。",
+      "booking": "予約中...",
+      "confirmBooking": "予約を確定",
+      "calendarAvailability": "空き状況",
+      "calendarUnavailable": "カレンダーは利用できません",
+      "dayFree": "予定なし — 終日空き",
+      "busySlot": "予定あり {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "ソーシャル・カスタムリンク",
+      "description": "ソーシャルメディアのプロフィールやカスタムリンクを追加して、公開プロフィールに表示します",
+      "visibility": "リンクの公開設定",
+      "addLink": "リンクを追加",
+      "customLink": "カスタムリンク",
+      "labelPlaceholder": "リンクのラベル（例：マイブログ）",
+      "urlPlaceholder": "https://"
+    }
   },
   "toast": {
     "sessionExtended": "セッションが正常に延長されました",
@@ -678,7 +764,9 @@
       "inProgress": "進行中",
       "validating": "検証中",
       "accepted": "承認済み",
-      "rejected": "却下"
+      "rejected": "却下",
+      "submitted": "送信済み",
+      "changesRequested": "変更が要求されました"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -791,6 +879,48 @@
         "submitted": "作業がレビュー用に提出されました",
         "resubmitted": "作業がレビュー用に再提出されました"
       }
+    }
+  },
+  "notes": {
+    "updated": "メモが正常に更新されました",
+    "updateFailed": "メモの更新に失敗しました",
+    "deleted": "メモが正常に削除されました",
+    "deleteFailed": "メモの削除に失敗しました",
+    "deleting": "削除中...",
+    "confirmDelete": "このメモを削除してもよろしいですか？",
+    "content": "メモの内容",
+    "visibilityUpdated": "表示設定が正常に更新されました",
+    "visibilityUpdateFailed": "表示設定の更新に失敗しました",
+    "changeVisibility": "表示設定を変更",
+    "filters": {
+      "sort": "並び替え",
+      "date": "日付",
+      "mostRelevant": "最も関連性が高い",
+      "all": "すべて"
+    }
+  },
+  "chat": {
+    "title": "チャット",
+    "subtitle": "組織、チャンネル、ダイレクトメッセージ、スレッド。",
+    "anonymous": "匿名",
+    "directMessage": "ダイレクトメッセージ",
+    "deletedMessage": "メッセージが削除されました",
+    "deleteMessageTitle": "メッセージを削除しますか？",
+    "deleteMessageDescription": "これはメッセージをソフト削除し、会話履歴にプレースホルダーを残します。",
+    "createInviteLink": "招待リンクを作成",
+    "pendingInvites": "保留中の招待",
+    "acceptInvite": "承認",
+    "inviteFriendToOrg": "この組織に友達を招待",
+    "inviteLinkCopied": "招待リンクをコピーしました",
+    "inviteSent": "招待を送信しました",
+    "inviteAccepted": "招待を承認しました"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "グリッドレイアウト",
+      "tight": "高密度",
+      "small": "小",
+      "wide": "広い"
     }
   }
 }

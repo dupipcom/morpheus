@@ -56,7 +56,11 @@
     "noNotifications": "Jakinarazpenik ez",
     "copyLink": "Kopiatu esteka",
     "linkCopied": "Esteka arbelean kopiatu da",
-    "copyFailed": "Esteka kopiatzeak huts egin du"
+    "copyFailed": "Esteka kopiatzeak huts egin du",
+    "decline": "Ukatu",
+    "friendRequest": "Lagun eskaera",
+    "reverseOrder": "Ordenaren alderantzizkoa",
+    "saving": "Gordetzen..."
   },
   "navigation": {
     "home": "Hasiera",
@@ -85,7 +89,26 @@
     "yourMood": "Zure humorra.",
     "yourProductivity": "Zure produktibitatea.",
     "yourData": "Zure datuak.",
-    "yourBalance": "Zure dirua."
+    "yourBalance": "Zure dirua.",
+    "timeframe": {
+      "startDate": "Hasiera data",
+      "endDate": "Amaiera data"
+    },
+    "me": "Nire datuak",
+    "selectDelegatedUser": "Hautatu eskuordetutako erabiltzailea",
+    "analysis": {
+      "alltimeAnalysis": "Denbora osoko analisia",
+      "dayAnalysis": "Gaurko analisia",
+      "last3daysAnalysis": "Azken 3 egunetako analisia",
+      "weekAnalysis": "Asteko analisia",
+      "yearAnalysis": "Urteko analisia",
+      "gratitudeAnalysis": "Esker onaren analisia",
+      "optimismAnalysis": "Baikortasunaren analisia",
+      "restednessAnalysis": "Atsedenaren analisia",
+      "toleranceAnalysis": "Tolerantziaren analisia",
+      "selfEsteemAnalysis": "Autoestimaren analisia",
+      "trustAnalysis": "Konfiantzaren analisia"
+    }
   },
   "mood": {
     "title": "Erregistratu zure humorra {date} egunerako",
@@ -108,7 +131,26 @@
         "AI_ENABLED": "AI gaituta"
       },
       "action": "Argitaratu oharra",
-      "publishing": "Argitaratzen..."
+      "publishing": "Argitaratzen...",
+      "embedHint": "{provider} txertaketa. Erreprodukzioa erabilgarri ez badago, ireki beheko jatorrizko esteka."
+    },
+    "thirdParty": {
+      "title": "Hirugarrena",
+      "settings": "Eskuordetze ezarpenak",
+      "activeDelegations": "Eskuordetze aktiboak",
+      "empty": "Ez dago eskuordetze aktiborik.",
+      "identifierPlaceholder": "Erabiltzaile-izena, posta elektronikoa edo erabiltzaile ID-a",
+      "noFriendsFound": "Ez da bat datorren adiskidetasunik aurkitu.",
+      "friendsHint": "Iradokizunek zure lagunak barne hartzen dituzte. Edozein helbide elektroniko ere sar dezakezu.",
+      "scope": "Datuen esparrua",
+      "allScopes": "Esparru guztiak",
+      "scopesSelected": "hautatutako esparruak",
+      "minimumOneScope": "Gutxienez esparru batek hautatuta jarraitu behar du.",
+      "scopeResolutionHint": "Hainbat esparru hautatzen badira, hautatutako esparru zabalena aplikatzen da.",
+      "addDelegatedAnalyst": "Gehitu eskuordetutako analista",
+      "adding": "Gehitzen...",
+      "addError": "Ezin izan da eskuordetutako analista gehitu",
+      "invitationDraft": "Gonbidapen-zirriborroa helbide elektroniko honetarako prestatu da."
     }
   },
   "week": {
@@ -137,7 +179,10 @@
       "done": "Eginda",
       "ignored": "Ezikusia"
     },
-    "edit": "Editatu"
+    "edit": "Editatu",
+    "loadingForDate": "Hautatutako datarako zereginak kargatzen...",
+    "initializingTasks": "Zure zereginak konfiguratzen...",
+    "noTasksForDate": "Data honetarako ez dago zereginik programatuta"
   },
   "actions": {
     "drankWater": "Ura edan zuen",
@@ -344,7 +389,8 @@
     "closeFriend": "Lagun hurbila",
     "friends": "Lagunak",
     "signInToAdd": "Hasi saioa lagun bat gehitzeko",
-    "editProfile": "Profila editatu"
+    "editProfile": "Profila editatu",
+    "message": "Mezua"
   },
   "profile": {
     "editProfile": "Profila editatu",
@@ -380,7 +426,48 @@
     "saving": "Gordetzen...",
     "pleaseSignIn": "Mesedez, hasi saioa zure profila editatzeko",
     "goToDashboard": "Aginte-panela joan",
-    "createProfile": "Create Profile"
+    "createProfile": "Create Profile",
+    "meetMe": {
+      "title": "Elkar ezazu nirekin",
+      "description": "Ezarri zure bilera-ordu gogokoenak",
+      "morning": "Goiza",
+      "afternoon": "Arratsaldea",
+      "evening": "Ilunabarra",
+      "pickTime": "Aukeratu ordua",
+      "duration": "Iraupena",
+      "selectDuration": "Aukeratu iraupena",
+      "minutes": "min",
+      "availability": "Erabilgarritasuna",
+      "selectAvailability": "Aukeratu erabilgarritasuna",
+      "weekdays": "Astegunak",
+      "weekends": "Asteburuak",
+      "everyday": "Egunero",
+      "window": "Leiho erabilgarria",
+      "noWindowSet": "Ez da leihorik ezarri",
+      "timezoneNote": "Orduak {timezone} ordu-eremuan",
+      "bookMeeting": "Erreserbatu bilera",
+      "selectDate": "Aukeratu data bat",
+      "message": "Mezua (aukerakoa)",
+      "messagePlaceholder": "Gehitu ohar bat bilerarako...",
+      "bookingSuccess": "Bilera erreserbatuta! Egutegi-gonbidapena bidalita.",
+      "booking": "Erreserba egiten...",
+      "confirmBooking": "Berretsi erreserba",
+      "calendarAvailability": "Erabilgarritasuna",
+      "calendarUnavailable": "Egutegia ez dago erabilgarri",
+      "dayFree": "Ekitaldirik ez — eguna libre dago",
+      "busySlot": "Okupatuta {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "Sare sozialak eta esteka pertsonalizatuak",
+      "description": "Gehitu zure sare sozialen profilak eta esteka pertsonalizatuak zure profil publikoan erakusteko",
+      "visibility": "Esteken ikusgarritasuna",
+      "addLink": "Esteka gehitu",
+      "customLink": "Esteka pertsonalizatua",
+      "labelPlaceholder": "Estekaren etiketa (adib. Nire bloga)",
+      "urlPlaceholder": "https://"
+    }
   },
   "toast": {
     "sessionExtended": "Saioa arrakastaz luzatu da",
@@ -680,7 +767,9 @@
       "inProgress": "Abian",
       "validating": "Balioztatzen",
       "accepted": "Onartua",
-      "rejected": "Baztertua"
+      "rejected": "Baztertua",
+      "submitted": "Bidalita",
+      "changesRequested": "Aldaketak eskatuta"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -793,6 +882,48 @@
         "submitted": "Lana berrikusteko bidali da",
         "resubmitted": "Lana berrikusteko birbidali da"
       }
+    }
+  },
+  "notes": {
+    "updated": "Oharra eguneratuta",
+    "updateFailed": "Ezin izan da oharra eguneratu",
+    "deleted": "Oharra ezabatuta",
+    "deleteFailed": "Ezin izan da oharra ezabatu",
+    "deleting": "Ezabatzen...",
+    "confirmDelete": "Ziur zaude ohar hau ezabatu nahi duzula?",
+    "content": "Oharraren edukia",
+    "visibilityUpdated": "Ikusgarritasuna eguneratuta",
+    "visibilityUpdateFailed": "Ezin izan da ikusgarritasuna eguneratu",
+    "changeVisibility": "Aldatu ikusgarritasuna",
+    "filters": {
+      "sort": "Ordenatu",
+      "date": "Data",
+      "mostRelevant": "Garrantzitsuena",
+      "all": "Guztiak"
+    }
+  },
+  "chat": {
+    "title": "Txata",
+    "subtitle": "Erakundeak, kanalak, mezu zuzenak eta hariak.",
+    "anonymous": "Anonimoa",
+    "directMessage": "Mezu zuzena",
+    "deletedMessage": "Mezua ezabatuta",
+    "deleteMessageTitle": "Ezabatu mezua?",
+    "deleteMessageDescription": "Honek mezua modu leunean ezabatuko du eta elkarrizketaren historian leku-gordailu bat gordeko du.",
+    "createInviteLink": "Sortu gonbidapen esteka",
+    "pendingInvites": "Gonbidapen zain",
+    "acceptInvite": "Onartu",
+    "inviteFriendToOrg": "Gonbidatu lagun bat erakunde honetara",
+    "inviteLinkCopied": "Gonbidapen esteka kopiatuta",
+    "inviteSent": "Gonbidapena bidalita",
+    "inviteAccepted": "Gonbidapena onartuta"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Sareta diseinua",
+      "tight": "Trinkoa",
+      "small": "Txikia",
+      "wide": "Zabala"
     }
   }
 }

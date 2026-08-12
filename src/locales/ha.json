@@ -56,7 +56,11 @@
     "noNotifications": "Babu sanarwa",
     "copyLink": "Kwafi hanyar haɗi",
     "linkCopied": "An kwafi hanyar haɗi zuwa allon kwafi",
-    "copyFailed": "An gaza kwafi hanyar haɗi"
+    "copyFailed": "An gaza kwafi hanyar haɗi",
+    "decline": "Ƙi",
+    "friendRequest": "Buƙatar abokantaka",
+    "reverseOrder": "Juya tsari",
+    "saving": "Ana adanawa..."
   },
   "navigation": {
     "home": "Gida",
@@ -82,7 +86,26 @@
     "yourMood": "Yanayin zuciyarka.",
     "yourProductivity": "Ayyukanka.",
     "yourData": "Bayananka.",
-    "yourBalance": "Kuɗinka."
+    "yourBalance": "Kuɗinka.",
+    "timeframe": {
+      "startDate": "Ranar farawa",
+      "endDate": "Ranar ƙarshe"
+    },
+    "me": "Bayanan na",
+    "selectDelegatedUser": "Zaɓi mai amfani da aka wakilta",
+    "analysis": {
+      "alltimeAnalysis": "Binciken duk lokaci",
+      "dayAnalysis": "Binciken yau",
+      "last3daysAnalysis": "Binciken kwanaki 3 da suka gabata",
+      "weekAnalysis": "Binciken mako",
+      "yearAnalysis": "Binciken shekara",
+      "gratitudeAnalysis": "Binciken godiya",
+      "optimismAnalysis": "Binciken kyakkyawan fata",
+      "restednessAnalysis": "Binciken hutawa",
+      "toleranceAnalysis": "Binciken juriya",
+      "selfEsteemAnalysis": "Binciken kimar kai",
+      "trustAnalysis": "Binciken amana"
+    }
   },
   "mood": {
     "title": "Yau {date} ne.",
@@ -105,7 +128,26 @@
         "AI_ENABLED": "AI Ana Kunna"
       },
       "action": "Buga Bayani",
-      "publishing": "Ana bugawa..."
+      "publishing": "Ana bugawa...",
+      "embedHint": "Shigar {provider}. Idan sake kunna ba shi da amfani, buɗe haɗin asali a ƙasa."
+    },
+    "thirdParty": {
+      "title": "Na ɓangare na uku",
+      "settings": "Saitunan wakilci",
+      "activeDelegations": "Wakilce-wakilce masu aiki",
+      "empty": "Babu wakilci mai aiki.",
+      "identifierPlaceholder": "Sunan mai amfani, imel, ko ID na mai amfani",
+      "noFriendsFound": "Ba a sami abokantaka masu dacewa ba.",
+      "friendsHint": "Shawarwari sun haɗa da abokanka. Hakanan za ka iya shigar da kowace adireshin imel.",
+      "scope": "Iyakar bayanai",
+      "allScopes": "Duk iyakoki",
+      "scopesSelected": "iyakoki da aka zaɓa",
+      "minimumOneScope": "Aƙalla iyaka ɗaya dole ne ya ci gaba da kasancewa a zaɓe.",
+      "scopeResolutionHint": "Idan an zaɓi iyakoki da yawa, za a yi amfani da mafi faɗin iyakar da aka zaɓa.",
+      "addDelegatedAnalyst": "Ƙara manazarcin da aka wakilta",
+      "adding": "Ana ƙara...",
+      "addError": "Ba a iya ƙara manazarcin da aka wakilta ba",
+      "invitationDraft": "An shirya daftarin gayyata don wannan imel."
     }
   },
   "week": {
@@ -134,7 +176,10 @@
       "done": "An Gama",
       "ignored": "An Yi Watsi"
     },
-    "edit": "Gyara"
+    "edit": "Gyara",
+    "loadingForDate": "Ana loda ayyuka ga ranar da aka zaɓa...",
+    "initializingTasks": "Ana saita ayyukanku...",
+    "noTasksForDate": "Babu ayyuka da aka tsara don wannan ranar"
   },
   "settings": {
     "title": "Saiti",
@@ -355,7 +400,8 @@
     "closeFriend": "Aboki na kusa",
     "friends": "Abokai",
     "signInToAdd": "Shiga don ƙara aboki",
-    "editProfile": "Gyara Bayanan Martaba"
+    "editProfile": "Gyara Bayanan Martaba",
+    "message": "Saƙo"
   },
   "profile": {
     "editProfile": "Gyara bayanan martaba",
@@ -391,7 +437,48 @@
     "saving": "Ana adanawa...",
     "pleaseSignIn": "Don Allah shiga don gyara bayanan martaba",
     "goToDashboard": "Je zuwa dashboard",
-    "createProfile": "Create Profile"
+    "createProfile": "Create Profile",
+    "meetMe": {
+      "title": "Haɗu da ni",
+      "description": "Saita lokutan taron da ka fi so",
+      "morning": "Safiya",
+      "afternoon": "La'asar",
+      "evening": "Maraice",
+      "pickTime": "Zaɓi lokaci",
+      "duration": "Tsawon lokaci",
+      "selectDuration": "Zaɓi tsawon lokaci",
+      "minutes": "minti",
+      "availability": "Samuwa",
+      "selectAvailability": "Zaɓi samuwa",
+      "weekdays": "Ranakun aiki",
+      "weekends": "Ƙarshen mako",
+      "everyday": "Kowace rana",
+      "window": "Tagar samuwa",
+      "noWindowSet": "Ba a saita taga ba",
+      "timezoneNote": "Ana nuna lokutan a {timezone}",
+      "bookMeeting": "Yi wa taro rajista",
+      "selectDate": "Zaɓi kwanan wata",
+      "message": "Saƙo (na zaɓi)",
+      "messagePlaceholder": "Ƙara bayani don taron...",
+      "bookingSuccess": "An yi rajistan taro! An aika gayyatar kalanda.",
+      "booking": "Ana yin rajista...",
+      "confirmBooking": "Tabbatar da rajista",
+      "calendarAvailability": "Samuwa",
+      "calendarUnavailable": "Kalanda ba ya samuwa",
+      "dayFree": "Babu taron — ranar yana da kyauta",
+      "busySlot": "Mai aiki {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "Hanyoyin Sadarwar Jama'a da Na Musamman",
+      "description": "Ƙara bayanan bayanin ku na kafar sada zumunta da hanyoyin haɗi na musamman don nuna su akan bayanin ku na jama'a",
+      "visibility": "Nuna Hanyoyin Haɗi",
+      "addLink": "Ƙara Hanyar Haɗi",
+      "customLink": "Hanyar Haɗi ta Musamman",
+      "labelPlaceholder": "Taken hanyar haɗi (misali: Blog na)",
+      "urlPlaceholder": "https://"
+    }
   },
   "toast": {
     "sessionExtended": "Zangon ya ci nasara",
@@ -674,7 +761,9 @@
       "inProgress": "Ana Ci Gaba",
       "validating": "Ana Tantancewa",
       "accepted": "An Karɓa",
-      "rejected": "An Ki"
+      "rejected": "An Ki",
+      "submitted": "An tura",
+      "changesRequested": "An nemi canje-canje"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -787,6 +876,48 @@
         "submitted": "An ƙaddamar da aiki don bita",
         "resubmitted": "An sake ƙaddamar da aiki don bita"
       }
+    }
+  },
+  "notes": {
+    "updated": "An sabunta bayanin kula cikin nasara",
+    "updateFailed": "Kuskure wajen sabunta bayanin kula",
+    "deleted": "An share bayanin kula cikin nasara",
+    "deleteFailed": "Kuskure wajen share bayanin kula",
+    "deleting": "Ana share...",
+    "confirmDelete": "Shin kun tabbata kuna son share wannan bayanin kula?",
+    "content": "Abubuwan bayanin kula",
+    "visibilityUpdated": "An sabunta bayyanuwar cikin nasara",
+    "visibilityUpdateFailed": "Kuskure wajen sabunta bayyanuwar",
+    "changeVisibility": "Canza bayyanuwar",
+    "filters": {
+      "sort": "Ƙididdiga",
+      "date": "Kwanan wata",
+      "mostRelevant": "Mafi dacewa",
+      "all": "Duka"
+    }
+  },
+  "chat": {
+    "title": "Hira",
+    "subtitle": "Ƙungiyoyi, tasoshin, saƙonnin kai tsaye, da zaren tattaunawa.",
+    "anonymous": "Ba a sani ba",
+    "directMessage": "Saƙo kai tsaye",
+    "deletedMessage": "An share saƙo",
+    "deleteMessageTitle": "Share saƙo?",
+    "deleteMessageDescription": "Wannan zai share saƙo a hankali kuma zai adana alamar wurin a tarihin tattaunawar.",
+    "createInviteLink": "Ƙirƙiri haɗin gayyata",
+    "pendingInvites": "Gayyata masu jiran gado",
+    "acceptInvite": "Karɓa",
+    "inviteFriendToOrg": "Gayyaci aboki zuwa wannan ƙungiya",
+    "inviteLinkCopied": "An kwafi haɗin gayyata",
+    "inviteSent": "An aika gayyata",
+    "inviteAccepted": "An karɓi gayyata"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Tsarin grid",
+      "tight": "Matse",
+      "small": "Ƙarami",
+      "wide": "Fadi"
     }
   }
 }

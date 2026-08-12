@@ -1,13 +1,19 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
+import Link from 'next/link'
+import { Edit } from 'lucide-react'
 
 import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { PublicChartsView } from "@/components/publicChartsView"
 import { AddFriendButtonOrSignIn } from "@/components/addFriendButtonOrSignIn"
 import { PublicNotesViewer } from "@/components/publicNotesViewer"
+import { MeetMeRow } from "@/components/meetMeRow"
 import ActivityCard, { ActivityItem } from "@/components/activityCard"
+import { SocialLinkIcon, getSocialLabel } from "@/components/socialLinkIcon"
+import type { ProfileLink } from "@/lib/utils/profileUtils"
 
 interface ProfileData {
   userId?: string
@@ -17,8 +23,16 @@ interface ProfileData {
   bio?: string
   profilePicture?: string
   publicCharts?: any
+  links?: ProfileLink[]
   templates?: any[]
   taskLists?: any[]
+  meetMe?: {
+    preferredTime?: string
+    duration?: string
+    availability?: string
+    startDate?: string | null
+    endDate?: string | null
+  } | null
   data?: {
     firstName?: { value?: string; visibility?: boolean }
     lastName?: { value?: string; visibility?: boolean }
@@ -26,6 +40,7 @@ interface ProfileData {
     bio?: { value?: string; visibility?: boolean }
     profilePicture?: { value?: string; visibility?: boolean }
     charts?: { value?: any; visibility?: boolean }
+    links?: { value?: ProfileLink[]; visibility?: boolean }
   }
 }
 
@@ -79,12 +94,21 @@ export function ProfileView({
   const bio = profile.bio || profileData.bio?.value
   const profilePicture = profile.profilePicture || profileData.profilePicture?.value
   const publicCharts = profile.publicCharts || profileData.charts?.value
+  const links = profile.links || (Array.isArray(profileData.links?.value) ? profileData.links.value : null)
+  const meetMe = profile.meetMe
 
   const fullName = [firstName, lastName].filter(Boolean).join(' ')
   const hasAnyPublicData = firstName || lastName || profileUserName || bio || profilePicture
   const isOwnProfile = currentUserUsername === userName
   const showAddFriendButton = !isOwnProfile && profileUserName
+  const showMobileEditProfileButton = isOwnProfile && profileUserName
   const displayName = fullName || profileUserName || 'Anonymous User'
+
+  // Show MeetMe booking row when: not own profile, and meetMe is configured (logged in or not)
+  const showMeetMe = !isOwnProfile && meetMe && meetMe.preferredTime
+
+  // MeetMe state for the read-only booking row (settings come from profile owner)
+  const [meetMePreferredTime, setMeetMePreferredTime] = useState(meetMe?.preferredTime || '')
 
   return (
     <main className="p-2 flex bg-background overflow-x-hidden">
@@ -111,6 +135,22 @@ export function ProfileView({
                   {bio && (
                     <p className="mt-2 text-sm break-words">{bio}</p>
                   )}
+                  {links && links.length > 0 && (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {links.map((link, idx) => (
+                        <a
+                          key={idx}
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
+                        >
+                          <SocialLinkIcon type={link.type} />
+                          <span>{link.type === 'custom' ? (link.label || link.url) : getSocialLabel(link.type)}</span>
+                        </a>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
               {showAddFriendButton && profileUserName && (
@@ -122,9 +162,38 @@ export function ProfileView({
                   />
                 </div>
               )}
+              {showMobileEditProfileButton && (
+                <div className="flex justify-center">
+                  <Link href={`/${locale}/app/profile/edit`}>
+                    <Button>
+                      <Edit className="w-4 h-4 mr-2" />
+                      {(translations as any)?.profile?.editProfile || 'Edit Profile'}
+                    </Button>
+                  </Link>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
+
+        {/* Meet Me booking row */}
+        {showMeetMe && (
+          <div className="mb-6">
+            <MeetMeRow
+              preferredTime={meetMePreferredTime}
+              duration={meetMe?.duration || '30'}
+              availability={meetMe?.availability || ''}
+              startDate={meetMe?.startDate ? new Date(meetMe.startDate) : undefined}
+              endDate={meetMe?.endDate ? new Date(meetMe.endDate) : undefined}
+              onPreferredTimeChange={setMeetMePreferredTime}
+              onDurationChange={() => {}}
+              onAvailabilityChange={() => {}}
+              onDateRangeChange={() => {}}
+              bookingTargetUsername={userName}
+              isLoggedIn={isLoggedIn}
+            />
+          </div>
+        )}
 
         {/* Tabbed Content Section */}
         <div className="mb-6 w-full min-w-0">
@@ -165,7 +234,7 @@ export function ProfileView({
             </TabsContent>
             
             <TabsContent value="notes" className="mt-4 min-w-0">
-              <PublicNotesViewer userName={userName} showCard={false} gridLayout={true} />
+              <PublicNotesViewer userName={userName} showCard={false} gridLayout={true} isOwnProfileHint={isOwnProfile} />
             </TabsContent>
             
             <TabsContent value="templates" className="mt-4 min-w-0">

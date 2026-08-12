@@ -221,7 +221,12 @@ export async function POST(req: NextRequest) {
             charts: existingProfileData.charts || {
               value: data.publicCharts,
               visibility: toVisibility(data.publicChartsVisible, 'publicCharts') === 'PUBLIC'
-            }
+            },
+            links: {
+              value: Array.isArray(data.links) ? data.links : (existingProfileData.links?.value ?? []),
+              visibility: toVisibility(data.linksVisible, 'links') === 'PUBLIC'
+            },
+            ...(data.meetMe ? { meetMe: data.meetMe } : {})
           }
         }
       })
@@ -255,7 +260,12 @@ export async function POST(req: NextRequest) {
             charts: {
               value: data.publicCharts,
               visibility: toVisibility(data.publicChartsVisible, 'publicCharts') === 'PUBLIC'
-            }
+            },
+            links: {
+              value: Array.isArray(data.links) ? data.links : [],
+              visibility: toVisibility(data.linksVisible, 'links') === 'PUBLIC'
+            },
+            ...(data.meetMe ? { meetMe: data.meetMe } : {})
           }
         }
       })

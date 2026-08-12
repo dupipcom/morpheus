@@ -57,7 +57,10 @@
     "copyLink": "Nakili kiungo",
     "linkCopied": "Kiungo kimenakiliwa kwenye ubao wa kunakili",
     "copyFailed": "Imeshindwa kunakili kiungo",
-    "saving": "Inahifadhi..."
+    "saving": "Inahifadhi...",
+    "decline": "Kataa",
+    "friendRequest": "Ombi la urafiki",
+    "reverseOrder": "Geuza mpangilio"
   },
   "navigation": {
     "home": "Nyumbani",
@@ -83,7 +86,26 @@
     "yourMood": "Hali yako ya moyo.",
     "yourProductivity": "Uzalishaji wako.",
     "yourData": "Data yako.",
-    "yourBalance": "Pesa yako."
+    "yourBalance": "Pesa yako.",
+    "timeframe": {
+      "startDate": "Tarehe ya kuanza",
+      "endDate": "Tarehe ya mwisho"
+    },
+    "me": "Data zangu",
+    "selectDelegatedUser": "Chagua mtumiaji aliyekabidhiwa",
+    "analysis": {
+      "alltimeAnalysis": "Uchambuzi wa muda wote",
+      "dayAnalysis": "Uchambuzi wa leo",
+      "last3daysAnalysis": "Uchambuzi wa siku 3 zilizopita",
+      "weekAnalysis": "Uchambuzi wa wiki",
+      "yearAnalysis": "Uchambuzi wa mwaka",
+      "gratitudeAnalysis": "Uchambuzi wa shukrani",
+      "optimismAnalysis": "Uchambuzi wa matumaini",
+      "restednessAnalysis": "Uchambuzi wa mapumziko",
+      "toleranceAnalysis": "Uchambuzi wa uvumilivu",
+      "selfEsteemAnalysis": "Uchambuzi wa kujithamini",
+      "trustAnalysis": "Uchambuzi wa uaminifu"
+    }
   },
   "mood": {
     "title": "Ni {date}.",
@@ -106,7 +128,26 @@
         "AI_ENABLED": "AI Imewezeshwa"
       },
       "action": "Chapisha Maelezo",
-      "publishing": "Inachapisha..."
+      "publishing": "Inachapisha...",
+      "embedHint": "Ingizo la {provider}. Ikiwa urejeshaji hauwezekani, fungua kiungo asili hapa chini."
+    },
+    "thirdParty": {
+      "title": "Mhusika wa tatu",
+      "settings": "Mipangilio ya ukabidhi",
+      "activeDelegations": "Ukabidhi amilifu",
+      "empty": "Hakuna ukabidhi amilifu.",
+      "identifierPlaceholder": "Jina la mtumiaji, barua pepe, au kitambulisho cha mtumiaji",
+      "noFriendsFound": "Hakuna urafiki unaolingana uliopatikana.",
+      "friendsHint": "Mapendekezo yanajumuisha marafiki zako. Unaweza pia kuingiza anuani yoyote ya barua pepe.",
+      "scope": "Wigo wa data",
+      "allScopes": "Miwigo yote",
+      "scopesSelected": "miwigo iliyochaguliwa",
+      "minimumOneScope": "Angalau wigo mmoja lazima ubaki umechaguliwa.",
+      "scopeResolutionHint": "Iwapo miwigo mingi imechaguliwa, wigo mpana zaidi uliyochaguliwa ndio utatumika.",
+      "addDelegatedAnalyst": "Ongeza mchambuzi aliyekabidhiwa",
+      "adding": "Inaongezwa...",
+      "addError": "Haikuwezekana kuongeza mchambuzi aliyekabidhiwa",
+      "invitationDraft": "Rasimu ya mwaliko imeandaliwa kwa barua pepe hii."
     }
   },
   "week": {
@@ -135,7 +176,10 @@
       "done": "Imekamilika",
       "ignored": "Imepuuzwa"
     },
-    "edit": "Hariri"
+    "edit": "Hariri",
+    "loadingForDate": "Inapakia kazi kwa tarehe iliyochaguliwa...",
+    "initializingTasks": "Inasanidi kazi zako...",
+    "noTasksForDate": "Hakuna kazi zilizopangwa kwa tarehe hii"
   },
   "settings": {
     "title": "Mipangilio",
@@ -357,7 +401,8 @@
     "closeFriend": "Rafiki wa karibu",
     "friends": "Marafiki",
     "signInToAdd": "Ingia ili kuongeza rafiki",
-    "editProfile": "Hariri wasifu"
+    "editProfile": "Hariri wasifu",
+    "message": "Ujumbe"
   },
   "profile": {
     "editProfile": "Hariri wasifu",
@@ -393,7 +438,48 @@
     "saving": "Inahifadhi...",
     "pleaseSignIn": "Tafadhali ingia ili kuhariri wasifu wako",
     "goToDashboard": "Nenda kwenye dashibodi",
-    "createProfile": "Create Profile"
+    "createProfile": "Create Profile",
+    "meetMe": {
+      "title": "Kutana nami",
+      "description": "Weka nyakati zako za mkutano unazopenda",
+      "morning": "Asubuhi",
+      "afternoon": "Mchana",
+      "evening": "Jioni",
+      "pickTime": "Chagua wakati",
+      "duration": "Muda",
+      "selectDuration": "Chagua muda",
+      "minutes": "dakika",
+      "availability": "Upatikanaji",
+      "selectAvailability": "Chagua upatikanaji",
+      "weekdays": "Siku za kazi",
+      "weekends": "Wikendi",
+      "everyday": "Kila siku",
+      "window": "Dirisha linalopatikana",
+      "noWindowSet": "Hakuna dirisha lililowekwa",
+      "timezoneNote": "Nyakati zinaonyeshwa katika {timezone}",
+      "bookMeeting": "Hifadhi mkutano",
+      "selectDate": "Chagua tarehe",
+      "message": "Ujumbe (hiari)",
+      "messagePlaceholder": "Ongeza maelezo ya mkutano...",
+      "bookingSuccess": "Mkutano umehifadhiwa! Mwaliko wa kalenda umetumwa.",
+      "booking": "Inahifadhi...",
+      "confirmBooking": "Thibitisha uhifadhi",
+      "calendarAvailability": "Upatikanaji",
+      "calendarUnavailable": "Kalenda haipatikani",
+      "dayFree": "Hakuna matukio — siku ni huru",
+      "busySlot": "Shughuli {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "Viungo vya Mitandao ya Kijamii na Maalum",
+      "description": "Ongeza wasifu wako wa mitandao ya kijamii na viungo maalum ili kuonyesha kwenye wasifu wako wa umma",
+      "visibility": "Mwonekano wa Viungo",
+      "addLink": "Ongeza Kiungo",
+      "customLink": "Kiungo Maalum",
+      "labelPlaceholder": "Lebo ya kiungo (mf. Blogu yangu)",
+      "urlPlaceholder": "https://"
+    }
   },
   "toast": {
     "sessionExtended": "Kipindi kimeongezwa kwa mafanikio",
@@ -676,7 +762,9 @@
       "inProgress": "Inaendelea",
       "validating": "Inathibitisha",
       "accepted": "Imekubaliwa",
-      "rejected": "Imekataliwa"
+      "rejected": "Imekataliwa",
+      "submitted": "Imewasilishwa",
+      "changesRequested": "Mabadiliko yameombwa"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -789,6 +877,48 @@
         "submitted": "Kazi imewasilishwa kwa ukaguzi",
         "resubmitted": "Kazi imewasilishwa tena kwa ukaguzi"
       }
+    }
+  },
+  "notes": {
+    "updated": "Dokezo limesasishwa kwa mafanikio",
+    "updateFailed": "Imeshindwa kusasisha dokezo",
+    "deleted": "Dokezo limefutwa kwa mafanikio",
+    "deleteFailed": "Imeshindwa kufuta dokezo",
+    "deleting": "Inafuta...",
+    "confirmDelete": "Je, una uhakika unataka kufuta dokezo hili?",
+    "content": "Maudhui ya dokezo",
+    "visibilityUpdated": "Uonekano umesasishwa kwa mafanikio",
+    "visibilityUpdateFailed": "Imeshindwa kusasisha uonekano",
+    "changeVisibility": "Badilisha uonekano",
+    "filters": {
+      "sort": "Panga",
+      "date": "Tarehe",
+      "mostRelevant": "Inayohusiana zaidi",
+      "all": "Zote"
+    }
+  },
+  "chat": {
+    "title": "Mazungumzo",
+    "subtitle": "Mashirika, njia, ujumbe wa moja kwa moja, na nyuzi.",
+    "anonymous": "Bila jina",
+    "directMessage": "Ujumbe wa moja kwa moja",
+    "deletedMessage": "Ujumbe umefutwa",
+    "deleteMessageTitle": "Futa ujumbe?",
+    "deleteMessageDescription": "Hii itafuta ujumbe kwa upole na kuhifadhi kiashiria katika historia ya mazungumzo.",
+    "createInviteLink": "Unda kiungo cha mwaliko",
+    "pendingInvites": "Mialiko inayosubiri",
+    "acceptInvite": "Kubali",
+    "inviteFriendToOrg": "Alika rafiki katika shirika hili",
+    "inviteLinkCopied": "Kiungo cha mwaliko kimenakiliwa",
+    "inviteSent": "Mwaliko umetumwa",
+    "inviteAccepted": "Mwaliko umekubaliwa"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Mpangilio wa gridi",
+      "tight": "Bana",
+      "small": "Ndogo",
+      "wide": "Pana"
     }
   }
 }

@@ -280,6 +280,19 @@ type ProfileChartField {
   visibility Boolean
 }
 
+type ProfileMeetMe {
+  preferredTime String?
+  duration      String?
+  availability  String?
+  startDate     String?
+  endDate       String?
+}
+
+type ProfileLinksField {
+  value      Json?
+  visibility Boolean
+}
+
 type ProfileData {
   username       ProfileField?
   firstName      ProfileField?
@@ -287,6 +300,8 @@ type ProfileData {
   bio            ProfileField?
   profilePicture ProfileField?
   charts         ProfileChartField?
+  meetMe         ProfileMeetMe?
+  links          ProfileLinksField?
 }
 
 type ProfileField {
@@ -419,6 +434,24 @@ model User {
   reviewerJobs       Job[]     @relation("JobReviewers", fields: [reviewerJobIds], references: [id])
   delegatedAccessGranted Delegation[] @relation("Delegator")
   delegatedAccessReceived Delegation[] @relation("Delegated")
+  emailNotifications EmailNotification[]
+}
+
+model EmailNotification {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  type            String
+  scopeKey        String
+  recipientUserId String   @db.ObjectId
+  recipientUser   User     @relation(fields: [recipientUserId], references: [id], onDelete: Cascade)
+  chatMessageId   String?  @db.ObjectId
+  sentAt          DateTime?
+  payload         Json?
+
+  @@unique([recipientUserId, scopeKey])
+  @@index([recipientUserId, type, sentAt])
+  @@index([chatMessageId])
 }
 
 model Profile {

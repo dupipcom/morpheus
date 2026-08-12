@@ -57,7 +57,10 @@
     "copyLink": "Bağlantıyı kopyala",
     "linkCopied": "Bağlantı panoya kopyalandı",
     "copyFailed": "Bağlantı kopyalanamadı",
-    "saving": "Kaydediliyor..."
+    "saving": "Kaydediliyor...",
+    "decline": "Reddet",
+    "friendRequest": "Arkadaşlık isteği",
+    "reverseOrder": "Sırayı tersine çevir"
   },
   "navigation": {
     "dashboard": "Gösterge Paneli",
@@ -87,7 +90,26 @@
     "yourMood": "Ruh haliniz.",
     "yourProductivity": "Verimliliğiniz.",
     "yourData": "Verileriniz.",
-    "yourBalance": "Paranız."
+    "yourBalance": "Paranız.",
+    "timeframe": {
+      "startDate": "Başlangıç tarihi",
+      "endDate": "Bitiş tarihi"
+    },
+    "me": "Verilerim",
+    "selectDelegatedUser": "Yetkilendirilen kullanıcıyı seç",
+    "analysis": {
+      "alltimeAnalysis": "Tüm zamanların analizi",
+      "dayAnalysis": "Bugünün analizi",
+      "last3daysAnalysis": "Son 3 günün analizi",
+      "weekAnalysis": "Haftalık analiz",
+      "yearAnalysis": "Yıllık analiz",
+      "gratitudeAnalysis": "Minnettarlık analizi",
+      "optimismAnalysis": "İyimserlik analizi",
+      "restednessAnalysis": "Dinlenmişlik analizi",
+      "toleranceAnalysis": "Hoşgörü analizi",
+      "selfEsteemAnalysis": "Özsaygı analizi",
+      "trustAnalysis": "Güven analizi"
+    }
   },
   "mood": {
     "title": "{date} için ruh halinizi kaydedin",
@@ -110,7 +132,26 @@
         "AI_ENABLED": "Yapay Zeka Etkin"
       },
       "action": "Not Yayınla",
-      "publishing": "Yayınlanıyor..."
+      "publishing": "Yayınlanıyor...",
+      "embedHint": "{provider} yerleştirmesi. Oynatma kullanılamıyorsa aşağıdaki orijinal bağlantıyı açın."
+    },
+    "thirdParty": {
+      "title": "Üçüncü taraf",
+      "settings": "Yetkilendirme ayarları",
+      "activeDelegations": "Etkin yetkilendirmeler",
+      "empty": "Etkin yetkilendirme yok.",
+      "identifierPlaceholder": "Kullanıcı adı, e-posta veya kullanıcı kimliği",
+      "noFriendsFound": "Eşleşen arkadaşlık bulunamadı.",
+      "friendsHint": "Öneriler arkadaşlarınızı içerir. Ayrıca herhangi bir e-posta adresi de girebilirsiniz.",
+      "scope": "Veri kapsamı",
+      "allScopes": "Tüm kapsamlar",
+      "scopesSelected": "kapsam seçildi",
+      "minimumOneScope": "En az bir kapsam seçili kalmalıdır.",
+      "scopeResolutionHint": "Birden fazla kapsam seçilirse, seçilen en geniş kapsam uygulanır.",
+      "addDelegatedAnalyst": "Yetkilendirilmiş analist ekle",
+      "adding": "Ekleniyor...",
+      "addError": "Yetkilendirilmiş analist eklenemedi",
+      "invitationDraft": "Bu e-posta için davet taslağı hazırlandı."
     }
   },
   "week": {
@@ -139,7 +180,10 @@
       "done": "Tamamlandı",
       "ignored": "Yoksayıldı"
     },
-    "edit": "Düzenle"
+    "edit": "Düzenle",
+    "loadingForDate": "Seçilen tarih için görevler yükleniyor...",
+    "initializingTasks": "Görevleriniz ayarlanıyor...",
+    "noTasksForDate": "Bu tarih için planlanmış görev yok"
   },
   "actions": {
     "drankWater": "Su içti",
@@ -363,7 +407,8 @@
     "closeFriend": "Yakın arkadaş",
     "friends": "Arkadaşlar",
     "signInToAdd": "Arkadaş eklemek için giriş yapın",
-    "editProfile": "Profili düzenle"
+    "editProfile": "Profili düzenle",
+    "message": "Mesaj"
   },
   "profile": {
     "editProfile": "Profili düzenle",
@@ -399,7 +444,48 @@
     "saving": "Kaydediliyor...",
     "pleaseSignIn": "Lütfen profilinizi düzenlemek için giriş yapın",
     "goToDashboard": "Kontrol paneline git",
-    "createProfile": "Create Profile"
+    "createProfile": "Create Profile",
+    "meetMe": {
+      "title": "Benimle buluş",
+      "description": "Tercih ettiğiniz toplantı saatlerini ayarlayın",
+      "morning": "Sabah",
+      "afternoon": "Öğleden sonra",
+      "evening": "Akşam",
+      "pickTime": "Saat seç",
+      "duration": "Süre",
+      "selectDuration": "Süre seç",
+      "minutes": "dk",
+      "availability": "Uygunluk",
+      "selectAvailability": "Uygunluk seç",
+      "weekdays": "Hafta içi",
+      "weekends": "Hafta sonu",
+      "everyday": "Her gün",
+      "window": "Uygun zaman dilimi",
+      "noWindowSet": "Zaman dilimi ayarlanmadı",
+      "timezoneNote": "Saatler {timezone} olarak gösterilmektedir",
+      "bookMeeting": "Toplantı rezerve et",
+      "selectDate": "Tarih seçin",
+      "message": "Mesaj (isteğe bağlı)",
+      "messagePlaceholder": "Toplantı için bir not ekleyin...",
+      "bookingSuccess": "Toplantı rezerve edildi! Takvim daveti gönderildi.",
+      "booking": "Rezerve ediliyor...",
+      "confirmBooking": "Rezervasyonu onayla",
+      "calendarAvailability": "Uygunluk",
+      "calendarUnavailable": "Takvim kullanılamıyor",
+      "dayFree": "Etkinlik yok — gün boş",
+      "busySlot": "Meşgul {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "Sosyal ve Özel Bağlantılar",
+      "description": "Sosyal medya profillerinizi ve özel bağlantılarınızı herkese açık profilinizde görüntülemek için ekleyin",
+      "visibility": "Bağlantı Görünürlüğü",
+      "addLink": "Bağlantı Ekle",
+      "customLink": "Özel Bağlantı",
+      "labelPlaceholder": "Bağlantı etiketi (ör. Blogum)",
+      "urlPlaceholder": "https://"
+    }
   },
   "toast": {
     "sessionExtended": "Oturum başarıyla uzatıldı",
@@ -682,7 +768,9 @@
       "inProgress": "Devam Ediyor",
       "validating": "Doğrulanıyor",
       "accepted": "Kabul Edildi",
-      "rejected": "Reddedildi"
+      "rejected": "Reddedildi",
+      "submitted": "Gönderildi",
+      "changesRequested": "Değişiklikler talep edildi"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -795,6 +883,48 @@
         "submitted": "Çalışma inceleme için gönderildi",
         "resubmitted": "Çalışma inceleme için yeniden gönderildi"
       }
+    }
+  },
+  "notes": {
+    "updated": "Not başarıyla güncellendi",
+    "updateFailed": "Not güncellenemedi",
+    "deleted": "Not başarıyla silindi",
+    "deleteFailed": "Not silinemedi",
+    "deleting": "Siliniyor...",
+    "confirmDelete": "Bu notu silmek istediğinizden emin misiniz?",
+    "content": "Not içeriği",
+    "visibilityUpdated": "Görünürlük başarıyla güncellendi",
+    "visibilityUpdateFailed": "Görünürlük güncellenemedi",
+    "changeVisibility": "Görünürlüğü değiştir",
+    "filters": {
+      "sort": "Sırala",
+      "date": "Tarih",
+      "mostRelevant": "En ilgili",
+      "all": "Tümü"
+    }
+  },
+  "chat": {
+    "title": "Sohbet",
+    "subtitle": "Organizasyonlar, kanallar, doğrudan mesajlar ve konular.",
+    "anonymous": "Anonim",
+    "directMessage": "Doğrudan mesaj",
+    "deletedMessage": "Mesaj silindi",
+    "deleteMessageTitle": "Mesajı sil?",
+    "deleteMessageDescription": "Bu, mesajı geçici olarak siler ve konuşma geçmişinde bir yer tutucu bırakır.",
+    "createInviteLink": "Davet bağlantısı oluştur",
+    "pendingInvites": "Bekleyen davetler",
+    "acceptInvite": "Kabul et",
+    "inviteFriendToOrg": "Bu organizasyona bir arkadaş davet et",
+    "inviteLinkCopied": "Davet bağlantısı kopyalandı",
+    "inviteSent": "Davet gönderildi",
+    "inviteAccepted": "Davet kabul edildi"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Izgara düzeni",
+      "tight": "Sıkı",
+      "small": "Küçük",
+      "wide": "Geniş"
     }
   }
 }

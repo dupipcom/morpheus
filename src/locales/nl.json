@@ -57,7 +57,10 @@
     "copyLink": "Link kopiëren",
     "linkCopied": "Link gekopieerd naar klembord",
     "copyFailed": "Link kopiëren mislukt",
-    "saving": "Opslaan..."
+    "saving": "Opslaan...",
+    "decline": "Weigeren",
+    "friendRequest": "Vriendschapsverzoek",
+    "reverseOrder": "Volgorde omkeren"
   },
   "navigation": {
     "home": "Home",
@@ -83,7 +86,26 @@
     "yourMood": "Je stemming.",
     "yourProductivity": "Je productiviteit.",
     "yourData": "Je gegevens.",
-    "yourBalance": "Je geld."
+    "yourBalance": "Je geld.",
+    "timeframe": {
+      "startDate": "Startdatum",
+      "endDate": "Einddatum"
+    },
+    "me": "Mijn gegevens",
+    "selectDelegatedUser": "Gedelegeerde gebruiker selecteren",
+    "analysis": {
+      "alltimeAnalysis": "Analyse van alle tijd",
+      "dayAnalysis": "Analyse van vandaag",
+      "last3daysAnalysis": "Analyse van de afgelopen 3 dagen",
+      "weekAnalysis": "Weekanalyse",
+      "yearAnalysis": "Jaaranalyse",
+      "gratitudeAnalysis": "Dankbaarheidsanalyse",
+      "optimismAnalysis": "Optimismeanalyse",
+      "restednessAnalysis": "Rustanalyse",
+      "toleranceAnalysis": "Tolerantieanalyse",
+      "selfEsteemAnalysis": "Zelfwaarderingsanalyse",
+      "trustAnalysis": "Vertrouwensanalyse"
+    }
   },
   "mood": {
     "title": "Registreer je stemming voor {date}",
@@ -106,7 +128,26 @@
         "AI_ENABLED": "AI-ingeschakeld"
       },
       "action": "Publiceer notitie",
-      "publishing": "Publiceren..."
+      "publishing": "Publiceren...",
+      "embedHint": "{provider}-insluiting. Als afspelen niet beschikbaar is, open dan de originele link hieronder."
+    },
+    "thirdParty": {
+      "title": "Derde partij",
+      "settings": "Delegatie-instellingen",
+      "activeDelegations": "Actieve delegaties",
+      "empty": "Geen actieve delegaties.",
+      "identifierPlaceholder": "Gebruikersnaam, e-mail of gebruikers-ID",
+      "noFriendsFound": "Geen overeenkomende vriendschappen gevonden.",
+      "friendsHint": "Suggesties bevatten je vrienden. Je kunt ook elk e-mailadres invoeren.",
+      "scope": "Gegevensbereik",
+      "allScopes": "Alle bereiken",
+      "scopesSelected": "bereiken geselecteerd",
+      "minimumOneScope": "Minstens één bereik moet geselecteerd blijven.",
+      "scopeResolutionHint": "Als meerdere bereiken zijn geselecteerd, wordt het breedste geselecteerde bereik toegepast.",
+      "addDelegatedAnalyst": "Gedelegeerde analist toevoegen",
+      "adding": "Toevoegen...",
+      "addError": "Gedelegeerde analist kon niet worden toegevoegd",
+      "invitationDraft": "Er is een uitnodigingsconcept voorbereid voor dit e-mailadres."
     }
   },
   "week": {
@@ -135,7 +176,10 @@
       "done": "Voltooid",
       "ignored": "Genegeerd"
     },
-    "edit": "Bewerken"
+    "edit": "Bewerken",
+    "loadingForDate": "Taken laden voor geselecteerde datum...",
+    "initializingTasks": "Uw taken instellen...",
+    "noTasksForDate": "Geen taken gepland voor deze datum"
   },
   "actions": {
     "drankWater": "Heeft water gedronken",
@@ -342,7 +386,8 @@
     "closeFriend": "Dichte vriend",
     "friends": "Vrienden",
     "signInToAdd": "Log in om een vriend toe te voegen",
-    "editProfile": "Profiel bewerken"
+    "editProfile": "Profiel bewerken",
+    "message": "Bericht"
   },
   "profile": {
     "editProfile": "Profiel bewerken",
@@ -378,7 +423,48 @@
     "saving": "Opslaan...",
     "pleaseSignIn": "Log in om je profiel te bewerken",
     "goToDashboard": "Ga naar dashboard",
-    "createProfile": "Create Profile"
+    "createProfile": "Create Profile",
+    "meetMe": {
+      "title": "Ontmoet mij",
+      "description": "Stel je voorkeurstijden voor vergaderingen in",
+      "morning": "Ochtend",
+      "afternoon": "Middag",
+      "evening": "Avond",
+      "pickTime": "Kies tijd",
+      "duration": "Duur",
+      "selectDuration": "Selecteer duur",
+      "minutes": "min",
+      "availability": "Beschikbaarheid",
+      "selectAvailability": "Selecteer beschikbaarheid",
+      "weekdays": "Werkdagen",
+      "weekends": "Weekenden",
+      "everyday": "Elke dag",
+      "window": "Beschikbaar venster",
+      "noWindowSet": "Geen venster ingesteld",
+      "timezoneNote": "Tijden weergegeven in {timezone}",
+      "bookMeeting": "Vergadering boeken",
+      "selectDate": "Selecteer een datum",
+      "message": "Bericht (optioneel)",
+      "messagePlaceholder": "Voeg een notitie toe aan de vergadering...",
+      "bookingSuccess": "Vergadering geboekt! Agendauitnodiging verzonden.",
+      "booking": "Boeken...",
+      "confirmBooking": "Boeking bevestigen",
+      "calendarAvailability": "Beschikbaarheid",
+      "calendarUnavailable": "Agenda niet beschikbaar",
+      "dayFree": "Geen afspraken — dag is vrij",
+      "busySlot": "Bezet {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "Sociale en aangepaste links",
+      "description": "Voeg uw sociale mediaprofielen en aangepaste links toe om weer te geven op uw openbaar profiel",
+      "visibility": "Zichtbaarheid van links",
+      "addLink": "Link toevoegen",
+      "customLink": "Aangepaste link",
+      "labelPlaceholder": "Linkbeschrijving (bijv. Mijn blog)",
+      "urlPlaceholder": "https://"
+    }
   },
   "toast": {
     "sessionExtended": "Sessie succesvol verlengd",
@@ -678,7 +764,9 @@
       "inProgress": "In Uitvoering",
       "validating": "Valideren",
       "accepted": "Geaccepteerd",
-      "rejected": "Afgewezen"
+      "rejected": "Afgewezen",
+      "submitted": "Ingediend",
+      "changesRequested": "Wijzigingen gevraagd"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -791,6 +879,48 @@
         "submitted": "Werk ingediend ter beoordeling",
         "resubmitted": "Werk opnieuw ingediend ter beoordeling"
       }
+    }
+  },
+  "notes": {
+    "updated": "Notitie succesvol bijgewerkt",
+    "updateFailed": "Bijwerken van notitie mislukt",
+    "deleted": "Notitie succesvol verwijderd",
+    "deleteFailed": "Verwijderen van notitie mislukt",
+    "deleting": "Verwijderen...",
+    "confirmDelete": "Weet u zeker dat u deze notitie wilt verwijderen?",
+    "content": "Notitie-inhoud",
+    "visibilityUpdated": "Zichtbaarheid succesvol bijgewerkt",
+    "visibilityUpdateFailed": "Bijwerken van zichtbaarheid mislukt",
+    "changeVisibility": "Zichtbaarheid wijzigen",
+    "filters": {
+      "sort": "Sorteren",
+      "date": "Datum",
+      "mostRelevant": "Meest relevant",
+      "all": "Alles"
+    }
+  },
+  "chat": {
+    "title": "Gesprek",
+    "subtitle": "Organisaties, kanalen, directe berichten en threads.",
+    "anonymous": "Anoniem",
+    "directMessage": "Direct bericht",
+    "deletedMessage": "Bericht verwijderd",
+    "deleteMessageTitle": "Bericht verwijderen?",
+    "deleteMessageDescription": "Dit verwijdert het bericht zacht en behoudt een tijdelijke aanduiding in de gespreksgeschiedenis.",
+    "createInviteLink": "Uitnodigingslink aanmaken",
+    "pendingInvites": "Openstaande uitnodigingen",
+    "acceptInvite": "Accepteren",
+    "inviteFriendToOrg": "Een vriend uitnodigen voor deze organisatie",
+    "inviteLinkCopied": "Uitnodigingslink gekopieerd",
+    "inviteSent": "Uitnodiging verzonden",
+    "inviteAccepted": "Uitnodiging geaccepteerd"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Rasterindeling",
+      "tight": "Compact",
+      "small": "Klein",
+      "wide": "Breed"
     }
   }
 }

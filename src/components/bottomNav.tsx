@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import { useContext, useState, useRef, useEffect, useMemo, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Heart, CheckSquare, Users, Coins, Eye, EyeOff, Globe, Hourglass, Search, Gauge, X, Play, Square as Stop, CircleUser, BookOpen } from 'lucide-react'
+import { Heart, CheckSquare, Users, Coins, Eye, EyeOff, Globe, Hourglass, Search, Gauge, X, Play, Square as Stop, CircleUser, BookOpen, Mail } from 'lucide-react'
 import { GlobalContext } from '@/lib/contexts'
 import { useLocalStorage } from 'usehooks-ts'
 import { useI18n } from '@/lib/contexts/i18n'
@@ -377,6 +377,19 @@ export function BottomNav() {
 
             {/* Chat Button */}
             <ChatNavButton isActive={isActive('chat')} onClick={() => handleNavLinkClick('/app/chat')} size="icon" className="h-9 w-9" />
+
+            {/* Mail Button */}
+            <Button
+              asChild
+              variant="outline"
+              size="icon"
+              className="h-9 w-9"
+              aria-label="Mail"
+            >
+              <a href="https://mail.dupip.com" target="_blank" rel="noopener noreferrer">
+                <Mail className="h-4 w-4" />
+              </a>
+            </Button>
 
             {/* Space/Time Toggle */}
             <Button

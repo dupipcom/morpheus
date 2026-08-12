@@ -1,9 +1,10 @@
-import { getWeekNumber } from "@/app/helpers"
+import { getWeekNumber, getWeekDateRange, formatDateRange } from "@/app/helpers"
 
 export interface PublicChartsData {
   moodCharts?: {
     weeksData: Array<{
       week: number
+      dateRange: string
       moodAverage: number
       gratitude: number
       optimism: number
@@ -16,12 +17,14 @@ export interface PublicChartsData {
   simplifiedMoodChart?: {
     weeksData: Array<{
       week: number
+      dateRange: string
       moodAverage: number
     }>
   }
   productivityCharts?: {
     weeksData: Array<{
       week: number
+      dateRange: string
       progress: number
       moodAverage: number
     }>
@@ -29,6 +32,7 @@ export interface PublicChartsData {
   earningsCharts?: {
     weeksData: Array<{
       week: number
+      dateRange: string
       earnings: number
       balance: number
       moodAverage: number
@@ -106,8 +110,15 @@ export function generatePublicChartsData(
       const earnings = parseFloat(week.earnings) || 0
       const balance = parseFloat(week.availableBalance) || 0
 
+      // Compute human-readable date range for this week
+      const weekDates = weekDays.map((d: any) => d.date).filter(Boolean).sort()
+      const dateRange = weekDates.length > 0
+        ? formatDateRange(weekDates[0], weekDates[weekDates.length - 1])
+        : getWeekDateRange(currentYear, week.week)
+
       return {
         week: week.week,
+        dateRange,
         moodAverage: Math.round(moodAverage * 10) / 10,
         gratitude: Math.round(gratitude * 10) / 10,
         optimism: Math.round(optimism * 10) / 10,
@@ -171,6 +182,7 @@ export function generatePublicChartsData(
     result.moodCharts = {
       weeksData: weeksData.map(week => ({
         week: week.week,
+        dateRange: week.dateRange,
         moodAverage: week.moodAverage,
         gratitude: week.gratitude,
         optimism: week.optimism,
@@ -186,6 +198,7 @@ export function generatePublicChartsData(
     result.simplifiedMoodChart = {
       weeksData: weeksData.map(week => ({
         week: week.week,
+        dateRange: week.dateRange,
         moodAverage: week.moodAverage
       }))
     }
@@ -195,6 +208,7 @@ export function generatePublicChartsData(
     result.productivityCharts = {
       weeksData: weeksData.map(week => ({
         week: week.week,
+        dateRange: week.dateRange,
         progress: week.progress,
         moodAverage: week.moodAverage
       }))
@@ -205,6 +219,7 @@ export function generatePublicChartsData(
     result.earningsCharts = {
       weeksData: weeksData.map(week => ({
         week: week.week,
+        dateRange: week.dateRange,
         earnings: week.earnings,
         balance: week.balance,
         moodAverage: week.moodAverage
@@ -280,6 +295,27 @@ export function sanitizeUserEntriesForPublic(
 }
 
 /**
+ * Supported social platform types for profile links
+ */
+export type SocialPlatform = 'instagram' | 'facebook' | 'twitter' | 'tiktok' | 'linkedin' | 'youtube' | 'discord' | 'telegram' | 'custom'
+
+/**
+ * Default visibility used for newly added links and as a backward-compatible
+ * fallback when a stored link has no visibility field.
+ */
+export const DEFAULT_LINK_VISIBILITY = 'PUBLIC' as const
+
+/**
+ * Represents a single social or custom link on a profile
+ */
+export interface ProfileLink {
+  type: SocialPlatform
+  url: string
+  label?: string // used for custom links
+  visibility?: string // per-link visibility; see DEFAULT_LINK_VISIBILITY for the fallback
+}
+
+/**
  * Interface for profile data with visibility fields
  */
 export interface ProfileWithVisibility {
@@ -288,12 +324,14 @@ export interface ProfileWithVisibility {
   lastName?: string | null
   bio?: string | null
   profilePicture?: string | null
+  links?: ProfileLink[] | null
   firstNameVisibility?: string | null
   lastNameVisibility?: string | null
   userNameVisibility?: string | null
   bioVisibility?: string | null
   profilePictureVisibility?: string | null
   publicChartsVisibility?: string | null
+  linksVisibility?: string | null
 }
 
 /**
@@ -367,6 +405,18 @@ export function filterProfileFields(
   }
   if (isFieldVisible(profilePictureVis, relationship.isOwner, relationship.isFriend, relationship.isCloseFriend) && profile.profilePicture) {
     filteredProfile.profilePicture = profile.profilePicture
+  }
+
+  const linksVis = (profile.linksVisibility as string) || 'PRIVATE'
+  if (isFieldVisible(linksVis, relationship.isOwner, relationship.isFriend, relationship.isCloseFriend) && profile.links && profile.links.length > 0) {
+    // Additionally filter each link by its own per-link visibility (defaults to 'PUBLIC' for backward compatibility)
+    const visibleLinks = profile.links.filter(link => {
+      const linkVis = link.visibility || DEFAULT_LINK_VISIBILITY
+      return isFieldVisible(linkVis, relationship.isOwner, relationship.isFriend, relationship.isCloseFriend)
+    })
+    if (visibleLinks.length > 0) {
+      filteredProfile.links = visibleLinks
+    }
   }
 
   return filteredProfile

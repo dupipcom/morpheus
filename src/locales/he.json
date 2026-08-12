@@ -57,7 +57,10 @@
     "copyLink": "העתק קישור",
     "linkCopied": "קישור הועתק ללוח",
     "copyFailed": "העתקת הקישור נכשלה",
-    "saving": "שומר..."
+    "saving": "שומר...",
+    "decline": "דחה",
+    "friendRequest": "בקשת חברות",
+    "reverseOrder": "סדר הפוך"
   },
   "navigation": {
     "home": "בית",
@@ -83,7 +86,26 @@
     "yourMood": "מצב הרוח שלך.",
     "yourProductivity": "הפרודוקטיביות שלך.",
     "yourData": "הנתונים שלך.",
-    "yourBalance": "הכסף שלך."
+    "yourBalance": "הכסף שלך.",
+    "timeframe": {
+      "startDate": "תאריך התחלה",
+      "endDate": "תאריך סיום"
+    },
+    "me": "הנתונים שלי",
+    "selectDelegatedUser": "בחר משתמש מואצל",
+    "analysis": {
+      "alltimeAnalysis": "ניתוח כולל",
+      "dayAnalysis": "הניתוח של היום",
+      "last3daysAnalysis": "ניתוח 3 הימים האחרונים",
+      "weekAnalysis": "ניתוח שבועי",
+      "yearAnalysis": "ניתוח שנתי",
+      "gratitudeAnalysis": "ניתוח הכרת תודה",
+      "optimismAnalysis": "ניתוח אופטימיות",
+      "restednessAnalysis": "ניתוח מנוחה",
+      "toleranceAnalysis": "ניתוח סובלנות",
+      "selfEsteemAnalysis": "ניתוח הערכה עצמית",
+      "trustAnalysis": "ניתוח אמון"
+    }
   },
   "mood": {
     "title": "תעד את מצב הרוח שלך עבור {date}",
@@ -106,7 +128,26 @@
         "AI_ENABLED": "בינה מלאכותית מופעלת"
       },
       "action": "פרסם הערה",
-      "publishing": "מפרסם..."
+      "publishing": "מפרסם...",
+      "embedHint": "הטמעת {provider}. אם ההפעלה אינה זמינה, פתח את הקישור המקורי למטה."
+    },
+    "thirdParty": {
+      "title": "צד שלישי",
+      "settings": "הגדרות האצלה",
+      "activeDelegations": "האצלות פעילות",
+      "empty": "אין האצלות פעילות.",
+      "identifierPlaceholder": "שם משתמש, אימייל או מזהה משתמש",
+      "noFriendsFound": "לא נמצאו חברויות תואמות.",
+      "friendsHint": "ההצעות כוללות את החברים שלך. אפשר גם להזין כל כתובת אימייל.",
+      "scope": "טווח נתונים",
+      "allScopes": "כל הטווחים",
+      "scopesSelected": "טווחים נבחרו",
+      "minimumOneScope": "לפחות טווח אחד חייב להישאר נבחר.",
+      "scopeResolutionHint": "אם נבחרים כמה טווחים, יחול הטווח הרחב ביותר שנבחר.",
+      "addDelegatedAnalyst": "הוסף אנליסט מואצל",
+      "adding": "מוסיף...",
+      "addError": "לא ניתן היה להוסיף אנליסט מואצל",
+      "invitationDraft": "הוכנה טיוטת הזמנה עבור כתובת האימייל הזו."
     }
   },
   "week": {
@@ -135,7 +176,10 @@
       "done": "הושלם",
       "ignored": "התעלם"
     },
-    "edit": "ערוך"
+    "edit": "ערוך",
+    "loadingForDate": "טוען משימות לתאריך שנבחר...",
+    "initializingTasks": "מגדיר את המשימות שלך...",
+    "noTasksForDate": "אין משימות מתוכננות לתאריך זה"
   },
   "actions": {
     "drankWater": "שתה מים",
@@ -342,7 +386,8 @@
     "closeFriend": "חבר קרוב",
     "friends": "חברים",
     "signInToAdd": "התחבר כדי להוסיף חבר",
-    "editProfile": "ערוך פרופיל"
+    "editProfile": "ערוך פרופיל",
+    "message": "הודעה"
   },
   "profile": {
     "editProfile": "ערוך פרופיל",
@@ -378,7 +423,48 @@
     "saving": "שומר...",
     "pleaseSignIn": "אנא התחבר כדי לערוך את הפרופיל שלך",
     "goToDashboard": "עבור ללוח הבקרה",
-    "createProfile": "Create Profile"
+    "createProfile": "Create Profile",
+    "meetMe": {
+      "title": "פגוש אותי",
+      "description": "הגדר את זמני הפגישות המועדפים עליך",
+      "morning": "בוקר",
+      "afternoon": "צהריים",
+      "evening": "ערב",
+      "pickTime": "בחר שעה",
+      "duration": "משך",
+      "selectDuration": "בחר משך",
+      "minutes": "דק'",
+      "availability": "זמינות",
+      "selectAvailability": "בחר זמינות",
+      "weekdays": "ימי חול",
+      "weekends": "סופי שבוע",
+      "everyday": "כל יום",
+      "window": "חלון זמינות",
+      "noWindowSet": "לא הוגדר חלון",
+      "timezoneNote": "הזמנים מוצגים באזור {timezone}",
+      "bookMeeting": "הזמן פגישה",
+      "selectDate": "בחר תאריך",
+      "message": "הודעה (אופציונלי)",
+      "messagePlaceholder": "הוסף הערה לפגישה...",
+      "bookingSuccess": "הפגישה הוזמנה! הזמנת יומן נשלחה.",
+      "booking": "מזמין...",
+      "confirmBooking": "אשר הזמנה",
+      "calendarAvailability": "זמינות",
+      "calendarUnavailable": "היומן אינו זמין",
+      "dayFree": "אין אירועים — היום פנוי",
+      "busySlot": "תפוס {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "קישורים לרשתות חברתיות ומותאמים אישית",
+      "description": "הוסף את פרופילי הרשתות החברתיות שלך וקישורים מותאמים אישית להצגה בפרופיל הציבורי שלך",
+      "visibility": "נראות קישורים",
+      "addLink": "הוסף קישור",
+      "customLink": "קישור מותאם אישית",
+      "labelPlaceholder": "תווית הקישור (לדוגמה: הבלוג שלי)",
+      "urlPlaceholder": "https://"
+    }
   },
   "toast": {
     "sessionExtended": "הפגישה הורחבה בהצלחה",
@@ -678,7 +764,9 @@
       "inProgress": "בתהליך",
       "validating": "מאמת",
       "accepted": "התקבל",
-      "rejected": "נדחה"
+      "rejected": "נדחה",
+      "submitted": "הוגש",
+      "changesRequested": "התבקשו שינויים"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -791,6 +879,48 @@
         "submitted": "עבודה נשלחה לבדיקה",
         "resubmitted": "עבודה נשלחה מחדש לבדיקה"
       }
+    }
+  },
+  "notes": {
+    "updated": "הפתק עודכן בהצלחה",
+    "updateFailed": "עדכון הפתק נכשל",
+    "deleted": "הפתק נמחק בהצלחה",
+    "deleteFailed": "מחיקת הפתק נכשלה",
+    "deleting": "מוחק...",
+    "confirmDelete": "האם אתה בטוח שברצונך למחוק את הפתק הזה?",
+    "content": "תוכן הפתק",
+    "visibilityUpdated": "הנראות עודכנה בהצלחה",
+    "visibilityUpdateFailed": "עדכון הנראות נכשל",
+    "changeVisibility": "שנה נראות",
+    "filters": {
+      "sort": "מיין",
+      "date": "תאריך",
+      "mostRelevant": "הרלוונטי ביותר",
+      "all": "הכל"
+    }
+  },
+  "chat": {
+    "title": "צ'אט",
+    "subtitle": "ארגונים, ערוצים, הודעות ישירות ושרשורים.",
+    "anonymous": "אנונימי",
+    "directMessage": "הודעה ישירה",
+    "deletedMessage": "ההודעה נמחקה",
+    "deleteMessageTitle": "למחוק הודעה?",
+    "deleteMessageDescription": "פעולה זו תמחק את ההודעה בצורה רכה ותשמור מציין מיקום בהיסטוריית השיחה.",
+    "createInviteLink": "צור קישור הזמנה",
+    "pendingInvites": "הזמנות ממתינות",
+    "acceptInvite": "קבל",
+    "inviteFriendToOrg": "הזמן חבר לארגון זה",
+    "inviteLinkCopied": "קישור ההזמנה הועתק",
+    "inviteSent": "ההזמנה נשלחה",
+    "inviteAccepted": "ההזמנה התקבלה"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "פריסת רשת",
+      "tight": "צפוף",
+      "small": "קטן",
+      "wide": "רחב"
     }
   }
 }

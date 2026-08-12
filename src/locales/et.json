@@ -57,7 +57,10 @@
     "copyLink": "Kopeeri link",
     "linkCopied": "Link kopeeritud lõikelauale",
     "copyFailed": "Linki kopeerimine ebaõnnestus",
-    "saving": "Salvestamine..."
+    "saving": "Salvestamine...",
+    "decline": "Lükka tagasi",
+    "friendRequest": "Sõbrakutse",
+    "reverseOrder": "Pööratud järjekord"
   },
   "navigation": {
     "home": "Avaleht",
@@ -83,7 +86,26 @@
     "yourMood": "Sinu tuju.",
     "yourProductivity": "Sinu produktiivsus.",
     "yourData": "Sinu andmed.",
-    "yourBalance": "Sinu raha."
+    "yourBalance": "Sinu raha.",
+    "timeframe": {
+      "startDate": "Alguskuupäev",
+      "endDate": "Lõppkuupäev"
+    },
+    "me": "Minu andmed",
+    "selectDelegatedUser": "Vali delegeeritud kasutaja",
+    "analysis": {
+      "alltimeAnalysis": "Kogu aja analüüs",
+      "dayAnalysis": "Tänane analüüs",
+      "last3daysAnalysis": "Viimase 3 päeva analüüs",
+      "weekAnalysis": "Nädala analüüs",
+      "yearAnalysis": "Aasta analüüs",
+      "gratitudeAnalysis": "Tänulikkuse analüüs",
+      "optimismAnalysis": "Optimismi analüüs",
+      "restednessAnalysis": "Väljapuhanuse analüüs",
+      "toleranceAnalysis": "Sallivuse analüüs",
+      "selfEsteemAnalysis": "Enesehinnangu analüüs",
+      "trustAnalysis": "Usalduse analüüs"
+    }
   },
   "mood": {
     "title": "Täna on {date}.",
@@ -106,7 +128,26 @@
         "AI_ENABLED": "AI lubatud"
       },
       "action": "Avalda märkme",
-      "publishing": "Avaldamine..."
+      "publishing": "Avaldamine...",
+      "embedHint": "{provider} manustus. Kui taasesitus pole saadaval, ava allpool olev algne link."
+    },
+    "thirdParty": {
+      "title": "Kolmas osapool",
+      "settings": "Delegeerimise seaded",
+      "activeDelegations": "Aktiivsed delegeerimised",
+      "empty": "Aktiivseid delegeerimisi pole.",
+      "identifierPlaceholder": "Kasutajanimi, e-post või kasutaja ID",
+      "noFriendsFound": "Sobivaid sõprussuhteid ei leitud.",
+      "friendsHint": "Soovitused sisaldavad sinu sõpru. Võid sisestada ka mis tahes e-posti aadressi.",
+      "scope": "Andmeulatus",
+      "allScopes": "Kõik ulatused",
+      "scopesSelected": "ulatust valitud",
+      "minimumOneScope": "Vähemalt üks ulatus peab jääma valituks.",
+      "scopeResolutionHint": "Kui valitud on mitu ulatust, rakendatakse kõige laiemat valitud ulatust.",
+      "addDelegatedAnalyst": "Lisa delegeeritud analüütik",
+      "adding": "Lisamine...",
+      "addError": "Delegeeritud analüütiku lisamine ei õnnestunud",
+      "invitationDraft": "Selle e-posti jaoks valmis kutse mustand."
     }
   },
   "week": {
@@ -135,7 +176,10 @@
       "done": "Tehtud",
       "ignored": "Ignoreeritud"
     },
-    "edit": "Muuda"
+    "edit": "Muuda",
+    "loadingForDate": "Ülesannete laadimine valitud kuupäevale...",
+    "initializingTasks": "Ülesannete seadistamine...",
+    "noTasksForDate": "Sellel kuupäeval pole ülesandeid planeeritud"
   },
   "actions": {
     "drankWater": "Jõi vett",
@@ -342,7 +386,8 @@
     "closeFriend": "Lähedane sõber",
     "friends": "Sõbrad",
     "signInToAdd": "Logi sisse, et lisada sõber",
-    "editProfile": "Muuda profiili"
+    "editProfile": "Muuda profiili",
+    "message": "Sõnum"
   },
   "profile": {
     "editProfile": "Redigeeri profiili",
@@ -378,7 +423,48 @@
     "saving": "Salvestamine...",
     "pleaseSignIn": "Palun logi sisse, et redigeerida oma profiili",
     "goToDashboard": "Mine armatuurlauale",
-    "createProfile": "Create Profile"
+    "createProfile": "Create Profile",
+    "meetMe": {
+      "title": "Kohtu minuga",
+      "description": "Määra oma eelistatud kohtumisajad",
+      "morning": "Hommik",
+      "afternoon": "Pärastlõuna",
+      "evening": "Õhtu",
+      "pickTime": "Vali aeg",
+      "duration": "Kestus",
+      "selectDuration": "Vali kestus",
+      "minutes": "min",
+      "availability": "Saadavus",
+      "selectAvailability": "Vali saadavus",
+      "weekdays": "Tööpäevad",
+      "weekends": "Nädalavahetused",
+      "everyday": "Iga päev",
+      "window": "Saadaval ajaaken",
+      "noWindowSet": "Ajaakent pole määratud",
+      "timezoneNote": "Ajad näidatud ajavööndis {timezone}",
+      "bookMeeting": "Broneeri kohtumine",
+      "selectDate": "Vali kuupäev",
+      "message": "Sõnum (valikuline)",
+      "messagePlaceholder": "Lisa märkus kohtumise kohta...",
+      "bookingSuccess": "Kohtumine broneeritud! Kalendrikutse saadetud.",
+      "booking": "Broneerimine...",
+      "confirmBooking": "Kinnita broneering",
+      "calendarAvailability": "Saadavus",
+      "calendarUnavailable": "Kalender pole saadaval",
+      "dayFree": "Sündmusi pole — päev on vaba",
+      "busySlot": "Hõivatud {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "Sotsiaalmeedia ja kohandatud lingid",
+      "description": "Lisa oma sotsiaalmeedia profiilid ja kohandatud lingid, mida kuvatakse sinu avalikul profiilil",
+      "visibility": "Linkide nähtavus",
+      "addLink": "Lisa link",
+      "customLink": "Kohandatud link",
+      "labelPlaceholder": "Lingi silt (nt Minu blogi)",
+      "urlPlaceholder": "https://"
+    }
   },
   "toast": {
     "sessionExtended": "Sessioon pikendatud edukalt",
@@ -678,7 +764,9 @@
       "inProgress": "Pooleli",
       "validating": "Kontrollimine",
       "accepted": "Vastu Võetud",
-      "rejected": "Tagasi Lükatud"
+      "rejected": "Tagasi Lükatud",
+      "submitted": "Esitatud",
+      "changesRequested": "Muudatusi soovitakse"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -791,6 +879,48 @@
         "submitted": "Töö esitatud ülevaatuseks",
         "resubmitted": "Töö uuesti esitatud ülevaatuseks"
       }
+    }
+  },
+  "notes": {
+    "updated": "Märkus edukalt uuendatud",
+    "updateFailed": "Märkuse uuendamine ebaõnnestus",
+    "deleted": "Märkus edukalt kustutatud",
+    "deleteFailed": "Märkuse kustutamine ebaõnnestus",
+    "deleting": "Kustutamine...",
+    "confirmDelete": "Kas olete kindel, et soovite selle märkuse kustutada?",
+    "content": "Märkuse sisu",
+    "visibilityUpdated": "Nähtavus edukalt uuendatud",
+    "visibilityUpdateFailed": "Nähtavuse uuendamine ebaõnnestus",
+    "changeVisibility": "Muuda nähtavust",
+    "filters": {
+      "sort": "Sorteeri",
+      "date": "Kuupäev",
+      "mostRelevant": "Asjakohaseimad",
+      "all": "Kõik"
+    }
+  },
+  "chat": {
+    "title": "Vestlus",
+    "subtitle": "Organisatsioonid, kanalid, otsesõnumid ja lõimed.",
+    "anonymous": "Anonüümne",
+    "directMessage": "Otsesõnum",
+    "deletedMessage": "Sõnum kustutatud",
+    "deleteMessageTitle": "Kustuta sõnum?",
+    "deleteMessageDescription": "See kustutab sõnumi pehmelt ja jätab vestlusajalukku kohatäite.",
+    "createInviteLink": "Loo kutselink",
+    "pendingInvites": "Ootel kutsed",
+    "acceptInvite": "Võta vastu",
+    "inviteFriendToOrg": "Kutsu sõber sellesse organisatsiooni",
+    "inviteLinkCopied": "Kutselink kopeeritud",
+    "inviteSent": "Kutse saadetud",
+    "inviteAccepted": "Kutse vastu võetud"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Ruudustiku paigutus",
+      "tight": "Tihe",
+      "small": "Väike",
+      "wide": "Lai"
     }
   }
 }

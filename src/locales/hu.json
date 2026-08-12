@@ -56,7 +56,11 @@
     "noNotifications": "Nincs értesítés",
     "copyLink": "Link másolása",
     "linkCopied": "Link a vágólapra másolva",
-    "copyFailed": "A link másolása sikertelen"
+    "copyFailed": "A link másolása sikertelen",
+    "decline": "Elutasítás",
+    "friendRequest": "Barátkozási kérés",
+    "reverseOrder": "Fordított sorrend",
+    "saving": "Mentés..."
   },
   "navigation": {
     "home": "Kezdőlap",
@@ -82,7 +86,26 @@
     "yourMood": "A hangulatod.",
     "yourProductivity": "A termelékenységed.",
     "yourData": "Az adataid.",
-    "yourBalance": "A pénzed."
+    "yourBalance": "A pénzed.",
+    "timeframe": {
+      "startDate": "Kezdő dátum",
+      "endDate": "Befejező dátum"
+    },
+    "me": "Adataim",
+    "selectDelegatedUser": "Delegált felhasználó kiválasztása",
+    "analysis": {
+      "alltimeAnalysis": "Teljes időszak elemzése",
+      "dayAnalysis": "Mai elemzés",
+      "last3daysAnalysis": "Az elmúlt 3 nap elemzése",
+      "weekAnalysis": "Heti elemzés",
+      "yearAnalysis": "Éves elemzés",
+      "gratitudeAnalysis": "Hálaelemzés",
+      "optimismAnalysis": "Optimizmuselemzés",
+      "restednessAnalysis": "Pihentség elemzése",
+      "toleranceAnalysis": "Toleranciaelemzés",
+      "selfEsteemAnalysis": "Önbecsülés-elemzés",
+      "trustAnalysis": "Bizalomelemzés"
+    }
   },
   "mood": {
     "title": "Ma {date} van.",
@@ -105,7 +128,26 @@
         "AI_ENABLED": "Mesterséges intelligencia engedélyezve"
       },
       "action": "Jegyzet közzététele",
-      "publishing": "Közzététel..."
+      "publishing": "Közzététel...",
+      "embedHint": "{provider} beágyazás. Ha a lejátszás nem elérhető, nyisd meg az eredeti linket lent."
+    },
+    "thirdParty": {
+      "title": "Harmadik fél",
+      "settings": "Delegálási beállítások",
+      "activeDelegations": "Aktív delegálások",
+      "empty": "Nincsenek aktív delegálások.",
+      "identifierPlaceholder": "Felhasználónév, e-mail vagy felhasználói azonosító",
+      "noFriendsFound": "Nem találhatók egyező barátságok.",
+      "friendsHint": "A javaslatok tartalmazzák a barátaidat. Bármilyen e-mail-címet is megadhatsz.",
+      "scope": "Adatkör",
+      "allScopes": "Minden kör",
+      "scopesSelected": "kör kiválasztva",
+      "minimumOneScope": "Legalább egy körnek kiválasztva kell maradnia.",
+      "scopeResolutionHint": "Ha több kör van kiválasztva, a legszélesebb kiválasztott kör kerül alkalmazásra.",
+      "addDelegatedAnalyst": "Delegált elemző hozzáadása",
+      "adding": "Hozzáadás...",
+      "addError": "Nem sikerült hozzáadni a delegált elemzőt",
+      "invitationDraft": "Ehhez az e-mailhez meghívóvázlat készült."
     }
   },
   "week": {
@@ -134,7 +176,10 @@
     },
     "markAsSensitive": "Mark as sensitive",
     "markAsNotSensitive": "Mark as not sensitive",
-    "edit": "Szerkesztés"
+    "edit": "Szerkesztés",
+    "loadingForDate": "Feladatok betöltése a kiválasztott dátumhoz...",
+    "initializingTasks": "Feladataid beállítása...",
+    "noTasksForDate": "Erre a dátumra nincsenek feladatok ütemezve"
   },
   "actions": {
     "drankWater": "Vizet ivott",
@@ -341,7 +386,8 @@
     "closeFriend": "Közeli barát",
     "friends": "Barátok",
     "signInToAdd": "Jelentkezz be barát hozzáadásához",
-    "editProfile": "Profil szerkesztése"
+    "editProfile": "Profil szerkesztése",
+    "message": "Üzenet"
   },
   "profile": {
     "editProfile": "Profil szerkesztése",
@@ -377,7 +423,48 @@
     "saving": "Mentés...",
     "pleaseSignIn": "Kérjük, jelentkezzen be a profil szerkesztéséhez",
     "goToDashboard": "Irányítópultra lépés",
-    "createProfile": "Create Profile"
+    "createProfile": "Create Profile",
+    "meetMe": {
+      "title": "Találkozz velem",
+      "description": "Állítsd be a preferált találkozó időpontokat",
+      "morning": "Reggel",
+      "afternoon": "Délután",
+      "evening": "Este",
+      "pickTime": "Válassz időpontot",
+      "duration": "Időtartam",
+      "selectDuration": "Válassz időtartamot",
+      "minutes": "perc",
+      "availability": "Elérhetőség",
+      "selectAvailability": "Válassz elérhetőséget",
+      "weekdays": "Hétköznapok",
+      "weekends": "Hétvégék",
+      "everyday": "Minden nap",
+      "window": "Elérhető időablak",
+      "noWindowSet": "Nincs időablak beállítva",
+      "timezoneNote": "Időpontok {timezone} időzónában",
+      "bookMeeting": "Találkozó foglalása",
+      "selectDate": "Válassz dátumot",
+      "message": "Üzenet (opcionális)",
+      "messagePlaceholder": "Adj hozzá megjegyzést a találkozóhoz...",
+      "bookingSuccess": "Találkozó lefoglalva! Naptár meghívó elküldve.",
+      "booking": "Foglalás...",
+      "confirmBooking": "Foglalás megerősítése",
+      "calendarAvailability": "Elérhetőség",
+      "calendarUnavailable": "Naptár nem elérhető",
+      "dayFree": "Nincsenek események — a nap szabad",
+      "busySlot": "Foglalt {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "Közösségi és egyéni hivatkozások",
+      "description": "Adja hozzá közösségi médiás profiljait és egyéni hivatkozásait, hogy megjelenjenek a nyilvános profilján",
+      "visibility": "Hivatkozások láthatósága",
+      "addLink": "Hivatkozás hozzáadása",
+      "customLink": "Egyéni hivatkozás",
+      "labelPlaceholder": "Hivatkozás felirata (pl. Blogom)",
+      "urlPlaceholder": "https://"
+    }
   },
   "toast": {
     "sessionExtended": "Munkamenet sikeresen meghosszabbítva",
@@ -677,7 +764,9 @@
       "inProgress": "Folyamatban",
       "validating": "Ellenőrzés",
       "accepted": "Elfogadva",
-      "rejected": "Elutasítva"
+      "rejected": "Elutasítva",
+      "submitted": "Beküldve",
+      "changesRequested": "Változtatások kérve"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -790,6 +879,48 @@
         "submitted": "Munka elküldve felülvizsgálatra",
         "resubmitted": "Munka újraküldve felülvizsgálatra"
       }
+    }
+  },
+  "notes": {
+    "updated": "Megjegyzés sikeresen frissítve",
+    "updateFailed": "Nem sikerült frissíteni a megjegyzést",
+    "deleted": "Megjegyzés sikeresen törölve",
+    "deleteFailed": "Nem sikerült törölni a megjegyzést",
+    "deleting": "Törlés...",
+    "confirmDelete": "Biztosan törölni szeretnéd ezt a megjegyzést?",
+    "content": "Megjegyzés tartalma",
+    "visibilityUpdated": "Láthatóság sikeresen frissítve",
+    "visibilityUpdateFailed": "Nem sikerült frissíteni a láthatóságot",
+    "changeVisibility": "Láthatóság módosítása",
+    "filters": {
+      "sort": "Rendezés",
+      "date": "Dátum",
+      "mostRelevant": "Legrelevánsabb",
+      "all": "Összes"
+    }
+  },
+  "chat": {
+    "title": "Csevegés",
+    "subtitle": "Szervezetek, csatornák, közvetlen üzenetek és témák.",
+    "anonymous": "Névtelen",
+    "directMessage": "Közvetlen üzenet",
+    "deletedMessage": "Üzenet törölve",
+    "deleteMessageTitle": "Törli az üzenetet?",
+    "deleteMessageDescription": "Ez puhán törli az üzenetet, és megőriz egy helyőrzőt a beszélgetési előzményekben.",
+    "createInviteLink": "Meghívólink létrehozása",
+    "pendingInvites": "Függőben lévő meghívók",
+    "acceptInvite": "Elfogadás",
+    "inviteFriendToOrg": "Barát meghívása ebbe a szervezetbe",
+    "inviteLinkCopied": "Meghívólink másolva",
+    "inviteSent": "Meghívó elküldve",
+    "inviteAccepted": "Meghívó elfogadva"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Rácselrendezés",
+      "tight": "Sűrű",
+      "small": "Kicsi",
+      "wide": "Széles"
     }
   }
 }

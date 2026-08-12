@@ -57,7 +57,10 @@
     "copyLink": "Copia l'enllaç",
     "linkCopied": "Enllaç copiat al porta-retalls",
     "copyFailed": "Error en copiar l'enllaç",
-    "saving": "Desant..."
+    "saving": "Desant...",
+    "decline": "Declinar",
+    "friendRequest": "Sol·licitud d'amistat",
+    "reverseOrder": "Invertir ordre"
   },
   "navigation": {
     "home": "Inici",
@@ -83,7 +86,26 @@
     "yourMood": "El teu estat d'ànim.",
     "yourProductivity": "La teva productivitat.",
     "yourData": "Les teves dades.",
-    "yourBalance": "Els teus diners."
+    "yourBalance": "Els teus diners.",
+    "timeframe": {
+      "startDate": "Data d'inici",
+      "endDate": "Data de fi"
+    },
+    "me": "Les meves dades",
+    "selectDelegatedUser": "Selecciona l'usuari delegat",
+    "analysis": {
+      "alltimeAnalysis": "Anàlisi de tot el temps",
+      "dayAnalysis": "Anàlisi d'avui",
+      "last3daysAnalysis": "Anàlisi dels últims 3 dies",
+      "weekAnalysis": "Anàlisi setmanal",
+      "yearAnalysis": "Anàlisi anual",
+      "gratitudeAnalysis": "Anàlisi de gratitud",
+      "optimismAnalysis": "Anàlisi d'optimisme",
+      "restednessAnalysis": "Anàlisi del descans",
+      "toleranceAnalysis": "Anàlisi de tolerància",
+      "selfEsteemAnalysis": "Anàlisi d'autoestima",
+      "trustAnalysis": "Anàlisi de confiança"
+    }
   },
   "mood": {
     "title": "Registra el teu estat d'ànim per a {date}",
@@ -106,7 +128,26 @@
         "AI_ENABLED": "Activat per IA"
       },
       "action": "Publicar nota",
-      "publishing": "Publicant..."
+      "publishing": "Publicant...",
+      "embedHint": "Incrustació de {provider}. Si la reproducció no està disponible, obre l'enllaç original a continuació."
+    },
+    "thirdParty": {
+      "title": "Tercers",
+      "settings": "Configuració de delegació",
+      "activeDelegations": "Delegacions actives",
+      "empty": "No hi ha delegacions actives.",
+      "identifierPlaceholder": "Nom d'usuari, correu electrònic o ID d'usuari",
+      "noFriendsFound": "No s'han trobat amistats coincidents.",
+      "friendsHint": "Els suggeriments inclouen els teus amics. També pots introduir qualsevol adreça de correu electrònic.",
+      "scope": "Abast de dades",
+      "allScopes": "Tots els àmbits",
+      "scopesSelected": "àmbits seleccionats",
+      "minimumOneScope": "Com a mínim, ha de continuar seleccionat un àmbit.",
+      "scopeResolutionHint": "Si se seleccionen diversos àmbits, s'aplica l'àmbit seleccionat més ampli.",
+      "addDelegatedAnalyst": "Afegeix analista delegat",
+      "adding": "Afegint...",
+      "addError": "No s'ha pogut afegir l'analista delegat",
+      "invitationDraft": "S'ha preparat un esborrany d'invitació per a aquest correu electrònic."
     }
   },
   "week": {
@@ -135,7 +176,10 @@
       "done": "Fet",
       "ignored": "Ignorat"
     },
-    "edit": "Editar"
+    "edit": "Editar",
+    "loadingForDate": "Carregant tasques per a la data seleccionada...",
+    "initializingTasks": "Configurant les teves tasques...",
+    "noTasksForDate": "No hi ha tasques programades per a aquesta data"
   },
   "actions": {
     "drankWater": "Ha begut aigua",
@@ -342,7 +386,8 @@
     "closeFriend": "Amic proper",
     "friends": "Amics",
     "signInToAdd": "Inicia sessió per afegir un amic",
-    "editProfile": "Editar perfil"
+    "editProfile": "Editar perfil",
+    "message": "Missatge"
   },
   "toast": {
     "sessionExtended": "Sessió estesa amb èxit",
@@ -593,7 +638,48 @@
     "saving": "Saving...",
     "pleaseSignIn": "Please sign in to edit your profile",
     "goToDashboard": "Go to Dashboard",
-    "createProfile": "Create Profile"
+    "createProfile": "Create Profile",
+    "meetMe": {
+      "title": "Reuneix-te amb mi",
+      "description": "Estableix els teus horaris de reunió preferits",
+      "morning": "Matí",
+      "afternoon": "Tarda",
+      "evening": "Vespre",
+      "pickTime": "Tria l'hora",
+      "duration": "Durada",
+      "selectDuration": "Selecciona la durada",
+      "minutes": "min",
+      "availability": "Disponibilitat",
+      "selectAvailability": "Selecciona la disponibilitat",
+      "weekdays": "Dies feiners",
+      "weekends": "Caps de setmana",
+      "everyday": "Cada dia",
+      "window": "Finestra disponible",
+      "noWindowSet": "Cap finestra establerta",
+      "timezoneNote": "Horaris mostrats en {timezone}",
+      "bookMeeting": "Reservar reunió",
+      "selectDate": "Selecciona una data",
+      "message": "Missatge (opcional)",
+      "messagePlaceholder": "Afegeix una nota per a la reunió...",
+      "bookingSuccess": "Reunió reservada! Invitació de calendari enviada.",
+      "booking": "Reservant...",
+      "confirmBooking": "Confirmar reserva",
+      "calendarAvailability": "Disponibilitat",
+      "calendarUnavailable": "Calendari no disponible",
+      "dayFree": "Sense esdeveniments — dia lliure",
+      "busySlot": "Ocupat {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "Enllaços socials i personalitzats",
+      "description": "Afegiu els vostres perfils de xarxes socials i enllaços personalitzats per mostrar-los al vostre perfil públic",
+      "visibility": "Visibilitat dels enllaços",
+      "addLink": "Afegir enllaç",
+      "customLink": "Enllaç personalitzat",
+      "labelPlaceholder": "Etiqueta de l'enllaç (p. ex. El meu bloc)",
+      "urlPlaceholder": "https://"
+    }
   },
   "socialView": {
     "activity": "Activitat",
@@ -678,7 +764,9 @@
       "inProgress": "En Progrés",
       "validating": "Validant",
       "accepted": "Acceptat",
-      "rejected": "Rebutjat"
+      "rejected": "Rebutjat",
+      "submitted": "Enviat",
+      "changesRequested": "Canvis sol·licitats"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -791,6 +879,48 @@
         "submitted": "Treball enviat per a revisió",
         "resubmitted": "Treball tornat a enviar per a revisió"
       }
+    }
+  },
+  "notes": {
+    "updated": "Nota actualitzada correctament",
+    "updateFailed": "No s'ha pogut actualitzar la nota",
+    "deleted": "Nota eliminada correctament",
+    "deleteFailed": "No s'ha pogut eliminar la nota",
+    "deleting": "Eliminant...",
+    "confirmDelete": "Esteu segur que voleu eliminar aquesta nota?",
+    "content": "Contingut de la nota",
+    "visibilityUpdated": "Visibilitat actualitzada correctament",
+    "visibilityUpdateFailed": "No s'ha pogut actualitzar la visibilitat",
+    "changeVisibility": "Canviar visibilitat",
+    "filters": {
+      "sort": "Ordenar",
+      "date": "Data",
+      "mostRelevant": "Més rellevant",
+      "all": "Tot"
+    }
+  },
+  "chat": {
+    "title": "Xat",
+    "subtitle": "Organitzacions, canals, missatges directes i fils.",
+    "anonymous": "Anònim",
+    "directMessage": "Missatge directe",
+    "deletedMessage": "Missatge eliminat",
+    "deleteMessageTitle": "Eliminar missatge?",
+    "deleteMessageDescription": "Això eliminarà el missatge de manera suau i mantindrà un marcador a l'historial de conversa.",
+    "createInviteLink": "Crear enllaç d'invitació",
+    "pendingInvites": "Invitacions pendents",
+    "acceptInvite": "Acceptar",
+    "inviteFriendToOrg": "Convidar un amic a aquesta organització",
+    "inviteLinkCopied": "Enllaç d'invitació copiat",
+    "inviteSent": "Invitació enviada",
+    "inviteAccepted": "Invitació acceptada"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Disposició de la graella",
+      "tight": "Atapeït",
+      "small": "Petit",
+      "wide": "Ample"
     }
   }
 }

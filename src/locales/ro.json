@@ -57,7 +57,10 @@
     "copyLink": "Copiază linkul",
     "linkCopied": "Linkul a fost copiat în clipboard",
     "copyFailed": "Nu s-a putut copia linkul",
-    "saving": "Se salvează..."
+    "saving": "Se salvează...",
+    "decline": "Refuză",
+    "friendRequest": "Cerere de prietenie",
+    "reverseOrder": "Ordine inversă"
   },
   "navigation": {
     "home": "Acasă",
@@ -83,7 +86,26 @@
     "yourMood": "Dispoziția ta.",
     "yourProductivity": "Productivitatea ta.",
     "yourData": "Datele tale.",
-    "yourBalance": "Banii tăi."
+    "yourBalance": "Banii tăi.",
+    "timeframe": {
+      "startDate": "Data de început",
+      "endDate": "Data de sfârșit"
+    },
+    "me": "Datele mele",
+    "selectDelegatedUser": "Selectați utilizatorul delegat",
+    "analysis": {
+      "alltimeAnalysis": "Analiză pentru tot intervalul",
+      "dayAnalysis": "Analiza de astăzi",
+      "last3daysAnalysis": "Analiza ultimelor 3 zile",
+      "weekAnalysis": "Analiza săptămânii",
+      "yearAnalysis": "Analiza anului",
+      "gratitudeAnalysis": "Analiza recunoștinței",
+      "optimismAnalysis": "Analiza optimismului",
+      "restednessAnalysis": "Analiza odihnei",
+      "toleranceAnalysis": "Analiza toleranței",
+      "selfEsteemAnalysis": "Analiza stimei de sine",
+      "trustAnalysis": "Analiza încrederii"
+    }
   },
   "mood": {
     "title": "Înregistrează-ți dispoziția pentru {date}",
@@ -106,7 +128,26 @@
         "AI_ENABLED": "AI activat"
       },
       "action": "Publică nota",
-      "publishing": "Publicare..."
+      "publishing": "Publicare...",
+      "embedHint": "Incorporare {provider}. Dacă redarea nu este disponibilă, deschide linkul original de mai jos."
+    },
+    "thirdParty": {
+      "title": "Terță parte",
+      "settings": "Setări de delegare",
+      "activeDelegations": "Delegări active",
+      "empty": "Nu există delegări active.",
+      "identifierPlaceholder": "Nume de utilizator, e-mail sau ID utilizator",
+      "noFriendsFound": "Nu au fost găsite prietenii corespunzătoare.",
+      "friendsHint": "Sugestiile includ prietenii tăi. De asemenea, poți introduce orice adresă de e-mail.",
+      "scope": "Domeniu de date",
+      "allScopes": "Toate domeniile",
+      "scopesSelected": "domenii selectate",
+      "minimumOneScope": "Cel puțin un domeniu trebuie să rămână selectat.",
+      "scopeResolutionHint": "Dacă sunt selectate mai multe domenii, se aplică domeniul selectat cel mai larg.",
+      "addDelegatedAnalyst": "Adaugă analist delegat",
+      "adding": "Se adaugă...",
+      "addError": "Nu s-a putut adăuga analistul delegat",
+      "invitationDraft": "A fost pregătit un draft de invitație pentru acest e-mail."
     }
   },
   "week": {
@@ -135,7 +176,10 @@
       "done": "Finalizat",
       "ignored": "Ignorat"
     },
-    "edit": "Editare"
+    "edit": "Editare",
+    "loadingForDate": "Se încarcă sarcinile pentru data selectată...",
+    "initializingTasks": "Se configurează sarcinile tale...",
+    "noTasksForDate": "Nu există sarcini programate pentru această dată"
   },
   "actions": {
     "drankWater": "A băut apă",
@@ -342,7 +386,8 @@
     "closeFriend": "Prieten apropiat",
     "friends": "Prieteni",
     "signInToAdd": "Autentifică-te pentru a adăuga prieten",
-    "editProfile": "Editează profilul"
+    "editProfile": "Editează profilul",
+    "message": "Mesaj"
   },
   "profile": {
     "editProfile": "Editează profilul",
@@ -378,7 +423,48 @@
     "saving": "Se salvează...",
     "pleaseSignIn": "Vă rugăm să vă autentificați pentru a edita profilul",
     "goToDashboard": "Mergi la panoul de control",
-    "createProfile": "Create Profile"
+    "createProfile": "Create Profile",
+    "meetMe": {
+      "title": "Întâlnește-mă",
+      "description": "Setează orele preferate pentru întâlniri",
+      "morning": "Dimineață",
+      "afternoon": "După-amiază",
+      "evening": "Seară",
+      "pickTime": "Alege ora",
+      "duration": "Durată",
+      "selectDuration": "Selectează durata",
+      "minutes": "min",
+      "availability": "Disponibilitate",
+      "selectAvailability": "Selectează disponibilitatea",
+      "weekdays": "Zile lucrătoare",
+      "weekends": "Weekend-uri",
+      "everyday": "Zilnic",
+      "window": "Fereastră disponibilă",
+      "noWindowSet": "Nicio fereastră setată",
+      "timezoneNote": "Orele afișate în {timezone}",
+      "bookMeeting": "Rezervă întâlnire",
+      "selectDate": "Selectează o dată",
+      "message": "Mesaj (opțional)",
+      "messagePlaceholder": "Adaugă o notă pentru întâlnire...",
+      "bookingSuccess": "Întâlnire rezervată! Invitație de calendar trimisă.",
+      "booking": "Se rezervă...",
+      "confirmBooking": "Confirmă rezervarea",
+      "calendarAvailability": "Disponibilitate",
+      "calendarUnavailable": "Calendar indisponibil",
+      "dayFree": "Fără evenimente — ziua este liberă",
+      "busySlot": "Ocupat {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "Linkuri sociale și personalizate",
+      "description": "Adăugați profilele dvs. de social media și linkuri personalizate pentru a fi afișate în profilul dvs. public",
+      "visibility": "Vizibilitate linkuri",
+      "addLink": "Adaugă link",
+      "customLink": "Link personalizat",
+      "labelPlaceholder": "Etichetă link (ex. Blogul meu)",
+      "urlPlaceholder": "https://"
+    }
   },
   "toast": {
     "sessionExtended": "Sesiunea a fost prelungită cu succes",
@@ -678,7 +764,9 @@
       "inProgress": "În Desfășurare",
       "validating": "Validare",
       "accepted": "Acceptat",
-      "rejected": "Respins"
+      "rejected": "Respins",
+      "submitted": "Trimis",
+      "changesRequested": "Modificări solicitate"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -791,6 +879,48 @@
         "submitted": "Munca trimisă pentru revizuire",
         "resubmitted": "Munca retrimisă pentru revizuire"
       }
+    }
+  },
+  "notes": {
+    "updated": "Notă actualizată cu succes",
+    "updateFailed": "Actualizarea notei a eșuat",
+    "deleted": "Notă ștearsă cu succes",
+    "deleteFailed": "Ștergerea notei a eșuat",
+    "deleting": "Se șterge...",
+    "confirmDelete": "Ești sigur că dorești să ștergi această notă?",
+    "content": "Conținut notă",
+    "visibilityUpdated": "Vizibilitate actualizată cu succes",
+    "visibilityUpdateFailed": "Actualizarea vizibilității a eșuat",
+    "changeVisibility": "Schimbă vizibilitatea",
+    "filters": {
+      "sort": "Sortare",
+      "date": "Dată",
+      "mostRelevant": "Cele mai relevante",
+      "all": "Toate"
+    }
+  },
+  "chat": {
+    "title": "Conversație",
+    "subtitle": "Organizații, canale, mesaje directe și fire de discuție.",
+    "anonymous": "Anonim",
+    "directMessage": "Mesaj direct",
+    "deletedMessage": "Mesaj șters",
+    "deleteMessageTitle": "Ștergi mesajul?",
+    "deleteMessageDescription": "Aceasta va șterge mesajul în mod soft și va păstra un marcator în istoricul conversației.",
+    "createInviteLink": "Creează link de invitație",
+    "pendingInvites": "Invitații în așteptare",
+    "acceptInvite": "Acceptă",
+    "inviteFriendToOrg": "Invită un prieten în această organizație",
+    "inviteLinkCopied": "Link de invitație copiat",
+    "inviteSent": "Invitație trimisă",
+    "inviteAccepted": "Invitație acceptată"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Aspect grilă",
+      "tight": "Compact",
+      "small": "Mic",
+      "wide": "Lat"
     }
   }
 }

@@ -57,7 +57,10 @@
     "copyLink": "Kopiera länk",
     "linkCopied": "Länk kopierad till urklipp",
     "copyFailed": "Kunde inte kopiera länk",
-    "saving": "Sparar..."
+    "saving": "Sparar...",
+    "decline": "Avvisa",
+    "friendRequest": "Vänskapsförfrågan",
+    "reverseOrder": "Omvänd ordning"
   },
   "navigation": {
     "home": "Hem",
@@ -86,7 +89,26 @@
     "yourMood": "Ditt humör.",
     "yourProductivity": "Din produktivitet.",
     "yourData": "Din data.",
-    "yourBalance": "Dina pengar."
+    "yourBalance": "Dina pengar.",
+    "timeframe": {
+      "startDate": "Startdatum",
+      "endDate": "Slutdatum"
+    },
+    "me": "Mina data",
+    "selectDelegatedUser": "Välj delegerad användare",
+    "analysis": {
+      "alltimeAnalysis": "Analys för hela perioden",
+      "dayAnalysis": "Dagens analys",
+      "last3daysAnalysis": "Analys av de senaste 3 dagarna",
+      "weekAnalysis": "Veckoanalys",
+      "yearAnalysis": "Årsanalys",
+      "gratitudeAnalysis": "Tacksamhetsanalys",
+      "optimismAnalysis": "Optimismanalys",
+      "restednessAnalysis": "Vilanalys",
+      "toleranceAnalysis": "Toleransanalys",
+      "selfEsteemAnalysis": "Självkänsloanalys",
+      "trustAnalysis": "Förtroendeanalys"
+    }
   },
   "mood": {
     "title": "Registrera ditt humör för {date}",
@@ -109,7 +131,26 @@
         "AI_ENABLED": "AI aktiverad"
       },
       "action": "Publicera anteckning",
-      "publishing": "Publicerar..."
+      "publishing": "Publicerar...",
+      "embedHint": "{provider}-inbäddning. Om uppspelning inte är tillgänglig, öppna originallänken nedan."
+    },
+    "thirdParty": {
+      "title": "Tredjepart",
+      "settings": "Delegationsinställningar",
+      "activeDelegations": "Aktiva delegationer",
+      "empty": "Inga aktiva delegationer.",
+      "identifierPlaceholder": "Användarnamn, e-post eller användar-ID",
+      "noFriendsFound": "Inga matchande vänskaper hittades.",
+      "friendsHint": "Förslagen inkluderar dina vänner. Du kan också ange valfri e-postadress.",
+      "scope": "Dataomfång",
+      "allScopes": "Alla omfång",
+      "scopesSelected": "omfång valda",
+      "minimumOneScope": "Minst ett omfång måste förbli valt.",
+      "scopeResolutionHint": "Om flera omfång är valda används det bredaste valda omfånget.",
+      "addDelegatedAnalyst": "Lägg till delegerad analytiker",
+      "adding": "Lägger till...",
+      "addError": "Det gick inte att lägga till delegerad analytiker",
+      "invitationDraft": "Ett utkast till inbjudan har förberetts för denna e-postadress."
     }
   },
   "week": {
@@ -138,7 +179,10 @@
       "done": "Klar",
       "ignored": "Ignorerad"
     },
-    "edit": "Redigera"
+    "edit": "Redigera",
+    "loadingForDate": "Laddar uppgifter för valt datum...",
+    "initializingTasks": "Konfigurerar dina uppgifter...",
+    "noTasksForDate": "Inga uppgifter schemalagda för detta datum"
   },
   "actions": {
     "drankWater": "Drack vatten",
@@ -345,7 +389,8 @@
     "closeFriend": "Nära vän",
     "friends": "Vänner",
     "signInToAdd": "Logga in för att lägga till vän",
-    "editProfile": "Redigera profil"
+    "editProfile": "Redigera profil",
+    "message": "Meddelande"
   },
   "profile": {
     "editProfile": "Redigera profil",
@@ -381,7 +426,48 @@
     "saving": "Sparar...",
     "pleaseSignIn": "Vänligen logga in för att redigera din profil",
     "goToDashboard": "Gå till instrumentpanel",
-    "createProfile": "Create Profile"
+    "createProfile": "Create Profile",
+    "meetMe": {
+      "title": "Möt mig",
+      "description": "Ange dina föredragna mötestider",
+      "morning": "Morgon",
+      "afternoon": "Eftermiddag",
+      "evening": "Kväll",
+      "pickTime": "Välj tid",
+      "duration": "Varaktighet",
+      "selectDuration": "Välj varaktighet",
+      "minutes": "min",
+      "availability": "Tillgänglighet",
+      "selectAvailability": "Välj tillgänglighet",
+      "weekdays": "Vardagar",
+      "weekends": "Helger",
+      "everyday": "Varje dag",
+      "window": "Tillgängligt fönster",
+      "noWindowSet": "Inget fönster inställt",
+      "timezoneNote": "Tider visas i {timezone}",
+      "bookMeeting": "Boka möte",
+      "selectDate": "Välj ett datum",
+      "message": "Meddelande (valfritt)",
+      "messagePlaceholder": "Lägg till en anteckning för mötet...",
+      "bookingSuccess": "Möte bokat! Kalenderinbjudan skickad.",
+      "booking": "Bokar...",
+      "confirmBooking": "Bekräfta bokning",
+      "calendarAvailability": "Tillgänglighet",
+      "calendarUnavailable": "Kalendern är inte tillgänglig",
+      "dayFree": "Inga händelser — dagen är ledig",
+      "busySlot": "Upptagen {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "Sociala och anpassade länkar",
+      "description": "Lägg till dina profiler på sociala medier och anpassade länkar för att visa dem på din offentliga profil",
+      "visibility": "Länkars synlighet",
+      "addLink": "Lägg till länk",
+      "customLink": "Anpassad länk",
+      "labelPlaceholder": "Länketikett (t.ex. Min blogg)",
+      "urlPlaceholder": "https://"
+    }
   },
   "toast": {
     "sessionExtended": "Session förlängd framgångsrikt",
@@ -681,7 +767,9 @@
       "inProgress": "Pågående",
       "validating": "Validerar",
       "accepted": "Accepterad",
-      "rejected": "Avvisad"
+      "rejected": "Avvisad",
+      "submitted": "Inskickat",
+      "changesRequested": "Ändringar begärda"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -794,6 +882,48 @@
         "submitted": "Arbete inskickat för granskning",
         "resubmitted": "Arbete inskickat igen för granskning"
       }
+    }
+  },
+  "notes": {
+    "updated": "Anteckning uppdaterades",
+    "updateFailed": "Det gick inte att uppdatera anteckning",
+    "deleted": "Anteckning raderades",
+    "deleteFailed": "Det gick inte att radera anteckning",
+    "deleting": "Raderar...",
+    "confirmDelete": "Är du säker på att du vill radera denna anteckning?",
+    "content": "Anteckningsinnehåll",
+    "visibilityUpdated": "Synlighet uppdaterades",
+    "visibilityUpdateFailed": "Det gick inte att uppdatera synlighet",
+    "changeVisibility": "Ändra synlighet",
+    "filters": {
+      "sort": "Sortera",
+      "date": "Datum",
+      "mostRelevant": "Mest relevant",
+      "all": "Alla"
+    }
+  },
+  "chat": {
+    "title": "Chatt",
+    "subtitle": "Organisationer, kanaler, direktmeddelanden och trådar.",
+    "anonymous": "Anonym",
+    "directMessage": "Direktmeddelande",
+    "deletedMessage": "Meddelande raderat",
+    "deleteMessageTitle": "Radera meddelande?",
+    "deleteMessageDescription": "Detta tar bort meddelandet mjukt och behåller en platshållare i konversationshistoriken.",
+    "createInviteLink": "Skapa inbjudningslänk",
+    "pendingInvites": "Väntande inbjudningar",
+    "acceptInvite": "Acceptera",
+    "inviteFriendToOrg": "Bjud in en vän till denna organisation",
+    "inviteLinkCopied": "Inbjudningslänk kopierad",
+    "inviteSent": "Inbjudan skickad",
+    "inviteAccepted": "Inbjudan accepterad"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Rutnätslayout",
+      "tight": "Tät",
+      "small": "Liten",
+      "wide": "Bred"
     }
   }
 }

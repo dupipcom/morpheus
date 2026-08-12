@@ -57,7 +57,10 @@
     "copyLink": "Копировать ссылку",
     "linkCopied": "Ссылка скопирована в буфер обмена",
     "copyFailed": "Не удалось скопировать ссылку",
-    "saving": "Сохранение..."
+    "saving": "Сохранение...",
+    "decline": "Отклонить",
+    "friendRequest": "Запрос в друзья",
+    "reverseOrder": "Обратный порядок"
   },
   "navigation": {
     "home": "Главная",
@@ -83,7 +86,26 @@
     "yourMood": "Ваше настроение.",
     "yourProductivity": "Ваша продуктивность.",
     "yourData": "Ваши данные.",
-    "yourBalance": "Ваши деньги."
+    "yourBalance": "Ваши деньги.",
+    "timeframe": {
+      "startDate": "Дата начала",
+      "endDate": "Дата окончания"
+    },
+    "me": "Мои данные",
+    "selectDelegatedUser": "Выбрать делегированного пользователя",
+    "analysis": {
+      "alltimeAnalysis": "Анализ за всё время",
+      "dayAnalysis": "Анализ за сегодня",
+      "last3daysAnalysis": "Анализ за последние 3 дня",
+      "weekAnalysis": "Анализ недели",
+      "yearAnalysis": "Анализ года",
+      "gratitudeAnalysis": "Анализ благодарности",
+      "optimismAnalysis": "Анализ оптимизма",
+      "restednessAnalysis": "Анализ отдыха",
+      "toleranceAnalysis": "Анализ терпимости",
+      "selfEsteemAnalysis": "Анализ самооценки",
+      "trustAnalysis": "Анализ доверия"
+    }
   },
   "mood": {
     "title": "Сегодня {date}.",
@@ -106,7 +128,26 @@
         "AI_ENABLED": "AI Enabled"
       },
       "action": "Опубликовать заметку",
-      "publishing": "Публикация..."
+      "publishing": "Публикация...",
+      "embedHint": "Встроенный контент {provider}. Если воспроизведение недоступно, откройте исходную ссылку ниже."
+    },
+    "thirdParty": {
+      "title": "Третья сторона",
+      "settings": "Настройки делегирования",
+      "activeDelegations": "Активные делегирования",
+      "empty": "Нет активных делегирований.",
+      "identifierPlaceholder": "Имя пользователя, e-mail или ID пользователя",
+      "noFriendsFound": "Подходящих дружеских связей не найдено.",
+      "friendsHint": "В подсказках есть ваши друзья. Вы также можете ввести любой адрес электронной почты.",
+      "scope": "Область данных",
+      "allScopes": "Все области",
+      "scopesSelected": "областей выбрано",
+      "minimumOneScope": "Должна оставаться выбрана как минимум одна область.",
+      "scopeResolutionHint": "Если выбрано несколько областей, применяется самая широкая из выбранных.",
+      "addDelegatedAnalyst": "Добавить делегированного аналитика",
+      "adding": "Добавление...",
+      "addError": "Не удалось добавить делегированного аналитика",
+      "invitationDraft": "Для этого адреса электронной почты подготовлен черновик приглашения."
     }
   },
   "week": {
@@ -135,7 +176,10 @@
       "done": "Выполнено",
       "ignored": "Игнорировано"
     },
-    "edit": "Редактировать"
+    "edit": "Редактировать",
+    "loadingForDate": "Загрузка задач для выбранной даты...",
+    "initializingTasks": "Настройка ваших задач...",
+    "noTasksForDate": "На эту дату задач не запланировано"
   },
   "actions": {
     "drankWater": "Пил воду",
@@ -359,7 +403,8 @@
     "closeFriend": "Близкий друг",
     "friends": "Друзья",
     "signInToAdd": "Войдите, чтобы добавить в друзья",
-    "editProfile": "Редактировать профиль"
+    "editProfile": "Редактировать профиль",
+    "message": "Сообщение"
   },
   "profile": {
     "editProfile": "Редактировать профиль",
@@ -395,7 +440,48 @@
     "saving": "Сохранение...",
     "pleaseSignIn": "Пожалуйста, войдите, чтобы редактировать ваш профиль",
     "goToDashboard": "Перейти к панели управления",
-    "createProfile": "Create Profile"
+    "createProfile": "Create Profile",
+    "meetMe": {
+      "title": "Встреча со мной",
+      "description": "Настройте предпочтительное время встреч",
+      "morning": "Утро",
+      "afternoon": "День",
+      "evening": "Вечер",
+      "pickTime": "Выбрать время",
+      "duration": "Длительность",
+      "selectDuration": "Выберите длительность",
+      "minutes": "мин",
+      "availability": "Доступность",
+      "selectAvailability": "Выберите доступность",
+      "weekdays": "Будни",
+      "weekends": "Выходные",
+      "everyday": "Каждый день",
+      "window": "Доступное окно",
+      "noWindowSet": "Окно не установлено",
+      "timezoneNote": "Время указано в {timezone}",
+      "bookMeeting": "Забронировать встречу",
+      "selectDate": "Выберите дату",
+      "message": "Сообщение (необязательно)",
+      "messagePlaceholder": "Добавьте заметку к встрече...",
+      "bookingSuccess": "Встреча забронирована! Приглашение отправлено.",
+      "booking": "Бронирование...",
+      "confirmBooking": "Подтвердить бронирование",
+      "calendarAvailability": "Доступность",
+      "calendarUnavailable": "Календарь недоступен",
+      "dayFree": "Нет событий — день свободен",
+      "busySlot": "Занято {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "Социальные и пользовательские ссылки",
+      "description": "Добавьте свои профили в социальных сетях и пользовательские ссылки для отображения в вашем публичном профиле",
+      "visibility": "Видимость ссылок",
+      "addLink": "Добавить ссылку",
+      "customLink": "Пользовательская ссылка",
+      "labelPlaceholder": "Метка ссылки (напр. Мой блог)",
+      "urlPlaceholder": "https://"
+    }
   },
   "toast": {
     "sessionExtended": "Сессия успешно продлена",
@@ -678,7 +764,9 @@
       "inProgress": "В Процессе",
       "validating": "Проверка",
       "accepted": "Принято",
-      "rejected": "Отклонено"
+      "rejected": "Отклонено",
+      "submitted": "Отправлено",
+      "changesRequested": "Запрошены изменения"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -791,6 +879,48 @@
         "submitted": "Работа отправлена на проверку",
         "resubmitted": "Работа отправлена снова на проверку"
       }
+    }
+  },
+  "notes": {
+    "updated": "Заметка успешно обновлена",
+    "updateFailed": "Не удалось обновить заметку",
+    "deleted": "Заметка успешно удалена",
+    "deleteFailed": "Не удалось удалить заметку",
+    "deleting": "Удаление...",
+    "confirmDelete": "Вы уверены, что хотите удалить эту заметку?",
+    "content": "Содержимое заметки",
+    "visibilityUpdated": "Видимость успешно обновлена",
+    "visibilityUpdateFailed": "Не удалось обновить видимость",
+    "changeVisibility": "Изменить видимость",
+    "filters": {
+      "sort": "Сортировка",
+      "date": "Дата",
+      "mostRelevant": "Наиболее релевантные",
+      "all": "Все"
+    }
+  },
+  "chat": {
+    "title": "Чат",
+    "subtitle": "Организации, каналы, личные сообщения и обсуждения.",
+    "anonymous": "Анонимный",
+    "directMessage": "Личное сообщение",
+    "deletedMessage": "Сообщение удалено",
+    "deleteMessageTitle": "Удалить сообщение?",
+    "deleteMessageDescription": "Это мягко удалит сообщение и оставит заполнитель в истории переписки.",
+    "createInviteLink": "Создать ссылку-приглашение",
+    "pendingInvites": "Ожидающие приглашения",
+    "acceptInvite": "Принять",
+    "inviteFriendToOrg": "Пригласить друга в эту организацию",
+    "inviteLinkCopied": "Ссылка-приглашение скопирована",
+    "inviteSent": "Приглашение отправлено",
+    "inviteAccepted": "Приглашение принято"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Макет сетки",
+      "tight": "Плотно",
+      "small": "Маленький",
+      "wide": "Широко"
     }
   }
 }

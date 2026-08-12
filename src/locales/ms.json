@@ -57,7 +57,10 @@
     "copyLink": "Salin pautan",
     "linkCopied": "Pautan disalin ke papan klip",
     "copyFailed": "Gagal menyalin pautan",
-    "saving": "Menyimpan..."
+    "saving": "Menyimpan...",
+    "decline": "Tolak",
+    "friendRequest": "Permintaan kawan",
+    "reverseOrder": "Terbalikkan urutan"
   },
   "navigation": {
     "dashboard": "Papan Pemuka",
@@ -87,7 +90,26 @@
     "yourMood": "Mood anda.",
     "yourProductivity": "Produktiviti anda.",
     "yourData": "Data anda.",
-    "yourBalance": "Wang anda."
+    "yourBalance": "Wang anda.",
+    "timeframe": {
+      "startDate": "Tarikh mula",
+      "endDate": "Tarikh tamat"
+    },
+    "me": "Data saya",
+    "selectDelegatedUser": "Pilih pengguna yang diwakilkan",
+    "analysis": {
+      "alltimeAnalysis": "Analisis sepanjang masa",
+      "dayAnalysis": "Analisis hari ini",
+      "last3daysAnalysis": "Analisis 3 hari lalu",
+      "weekAnalysis": "Analisis mingguan",
+      "yearAnalysis": "Analisis tahunan",
+      "gratitudeAnalysis": "Analisis kesyukuran",
+      "optimismAnalysis": "Analisis optimisme",
+      "restednessAnalysis": "Analisis tahap rehat",
+      "toleranceAnalysis": "Analisis toleransi",
+      "selfEsteemAnalysis": "Analisis harga diri",
+      "trustAnalysis": "Analisis kepercayaan"
+    }
   },
   "mood": {
     "title": "Rekod mood anda untuk {date}",
@@ -110,7 +132,26 @@
         "AI_ENABLED": "AI Enabled"
       },
       "action": "Publish Note",
-      "publishing": "Menerbitkan..."
+      "publishing": "Menerbitkan...",
+      "embedHint": "Sematan {provider}. Jika main balik tidak tersedia, buka pautan asal di bawah."
+    },
+    "thirdParty": {
+      "title": "Pihak ketiga",
+      "settings": "Tetapan delegasi",
+      "activeDelegations": "Delegasi aktif",
+      "empty": "Tiada delegasi aktif.",
+      "identifierPlaceholder": "Nama pengguna, e-mel, atau ID pengguna",
+      "noFriendsFound": "Tiada persahabatan sepadan ditemui.",
+      "friendsHint": "Cadangan termasuk rakan anda. Anda juga boleh memasukkan mana-mana alamat e-mel.",
+      "scope": "Skop data",
+      "allScopes": "Semua skop",
+      "scopesSelected": "skop dipilih",
+      "minimumOneScope": "Sekurang-kurangnya satu skop mesti kekal dipilih.",
+      "scopeResolutionHint": "Jika berbilang skop dipilih, skop terluas yang dipilih akan digunakan.",
+      "addDelegatedAnalyst": "Tambah penganalisis yang diwakilkan",
+      "adding": "Menambah...",
+      "addError": "Tidak dapat menambah penganalisis yang diwakilkan",
+      "invitationDraft": "Draf jemputan disediakan untuk e-mel ini."
     }
   },
   "week": {
@@ -139,7 +180,10 @@
       "done": "Selesai",
       "ignored": "Diabaikan"
     },
-    "edit": "Sunting"
+    "edit": "Sunting",
+    "loadingForDate": "Memuatkan tugasan untuk tarikh yang dipilih...",
+    "initializingTasks": "Menyediakan tugasan anda...",
+    "noTasksForDate": "Tiada tugasan dijadualkan untuk tarikh ini"
   },
   "actions": {
     "drankWater": "Minum air",
@@ -346,7 +390,8 @@
     "closeFriend": "Rakan rapat",
     "friends": "Rakan-rakan",
     "signInToAdd": "Log masuk untuk menambah rakan",
-    "editProfile": "Edit profil"
+    "editProfile": "Edit profil",
+    "message": "Mesej"
   },
   "profile": {
     "editProfile": "Edit profil",
@@ -382,7 +427,48 @@
     "saving": "Menyimpan...",
     "pleaseSignIn": "Sila log masuk untuk mengedit profil anda",
     "goToDashboard": "Pergi ke dashboard",
-    "createProfile": "Create Profile"
+    "createProfile": "Create Profile",
+    "meetMe": {
+      "title": "Jumpa saya",
+      "description": "Tetapkan waktu mesyuarat pilihan anda",
+      "morning": "Pagi",
+      "afternoon": "Petang",
+      "evening": "Malam",
+      "pickTime": "Pilih masa",
+      "duration": "Tempoh",
+      "selectDuration": "Pilih tempoh",
+      "minutes": "min",
+      "availability": "Ketersediaan",
+      "selectAvailability": "Pilih ketersediaan",
+      "weekdays": "Hari bekerja",
+      "weekends": "Hujung minggu",
+      "everyday": "Setiap hari",
+      "window": "Tetingkap tersedia",
+      "noWindowSet": "Tiada tetingkap ditetapkan",
+      "timezoneNote": "Masa ditunjukkan dalam {timezone}",
+      "bookMeeting": "Tempah mesyuarat",
+      "selectDate": "Pilih tarikh",
+      "message": "Mesej (pilihan)",
+      "messagePlaceholder": "Tambah nota untuk mesyuarat...",
+      "bookingSuccess": "Mesyuarat ditempah! Jemputan kalendar dihantar.",
+      "booking": "Menempah...",
+      "confirmBooking": "Sahkan tempahan",
+      "calendarAvailability": "Ketersediaan",
+      "calendarUnavailable": "Kalendar tidak tersedia",
+      "dayFree": "Tiada acara — hari kosong",
+      "busySlot": "Sibuk {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "Pautan Media Sosial & Tersuai",
+      "description": "Tambah profil media sosial dan pautan tersuai anda untuk dipaparkan pada profil awam anda",
+      "visibility": "Keterlihatan Pautan",
+      "addLink": "Tambah Pautan",
+      "customLink": "Pautan Tersuai",
+      "labelPlaceholder": "Label pautan (cth. Blog saya)",
+      "urlPlaceholder": "https://"
+    }
   },
   "toast": {
     "sessionExtended": "Sesi berjaya dipanjangkan",
@@ -682,7 +768,9 @@
       "inProgress": "Dalam Proses",
       "validating": "Mengesahkan",
       "accepted": "Diterima",
-      "rejected": "Ditolak"
+      "rejected": "Ditolak",
+      "submitted": "Dihantar",
+      "changesRequested": "Perubahan Diminta"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -795,6 +883,48 @@
         "submitted": "Kerja diserahkan untuk semakan",
         "resubmitted": "Kerja diserahkan semula untuk semakan"
       }
+    }
+  },
+  "notes": {
+    "updated": "Nota berjaya dikemaskini",
+    "updateFailed": "Gagal mengemaskini nota",
+    "deleted": "Nota berjaya dipadam",
+    "deleteFailed": "Gagal memadam nota",
+    "deleting": "Memadam...",
+    "confirmDelete": "Adakah anda pasti mahu memadam nota ini?",
+    "content": "Kandungan nota",
+    "visibilityUpdated": "Keterlihatan berjaya dikemaskini",
+    "visibilityUpdateFailed": "Gagal mengemaskini keterlihatan",
+    "changeVisibility": "Tukar keterlihatan",
+    "filters": {
+      "sort": "Isih",
+      "date": "Tarikh",
+      "mostRelevant": "Paling Relevan",
+      "all": "Semua"
+    }
+  },
+  "chat": {
+    "title": "Sembang",
+    "subtitle": "Organisasi, saluran, mesej langsung, dan utas.",
+    "anonymous": "Tanpa nama",
+    "directMessage": "Mesej langsung",
+    "deletedMessage": "Mesej dipadam",
+    "deleteMessageTitle": "Padam mesej?",
+    "deleteMessageDescription": "Ini akan memadam mesej secara lembut dan menyimpan pemegang tempat dalam sejarah perbualan.",
+    "createInviteLink": "Cipta pautan jemputan",
+    "pendingInvites": "Jemputan tertunda",
+    "acceptInvite": "Terima",
+    "inviteFriendToOrg": "Jemput rakan ke organisasi ini",
+    "inviteLinkCopied": "Pautan jemputan disalin",
+    "inviteSent": "Jemputan dihantar",
+    "inviteAccepted": "Jemputan diterima"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "Susun atur grid",
+      "tight": "Padat",
+      "small": "Kecil",
+      "wide": "Luas"
     }
   }
 }

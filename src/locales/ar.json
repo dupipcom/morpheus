@@ -57,7 +57,10 @@
     "copyLink": "نسخ الرابط",
     "linkCopied": "تم نسخ الرابط إلى الحافظة",
     "copyFailed": "فشل نسخ الرابط",
-    "saving": "جاري الحفظ..."
+    "saving": "جاري الحفظ...",
+    "decline": "رفض",
+    "friendRequest": "طلب صداقة",
+    "reverseOrder": "عكس الترتيب"
   },
   "navigation": {
     "dashboard": "لوحة التحكم",
@@ -87,7 +90,26 @@
     "yourMood": "مزاجك.",
     "yourProductivity": "إنتاجيتك.",
     "yourData": "بياناتك.",
-    "yourBalance": "أموالك."
+    "yourBalance": "أموالك.",
+    "timeframe": {
+      "startDate": "تاريخ البدء",
+      "endDate": "تاريخ الانتهاء"
+    },
+    "me": "بياناتي",
+    "selectDelegatedUser": "اختر المستخدم المفوض",
+    "analysis": {
+      "alltimeAnalysis": "تحليل كل الأوقات",
+      "dayAnalysis": "تحليل اليوم",
+      "last3daysAnalysis": "تحليل آخر 3 أيام",
+      "weekAnalysis": "تحليل الأسبوع",
+      "yearAnalysis": "تحليل السنة",
+      "gratitudeAnalysis": "تحليل الامتنان",
+      "optimismAnalysis": "تحليل التفاؤل",
+      "restednessAnalysis": "تحليل الراحة",
+      "toleranceAnalysis": "تحليل التسامح",
+      "selfEsteemAnalysis": "تحليل تقدير الذات",
+      "trustAnalysis": "تحليل الثقة"
+    }
   },
   "mood": {
     "title": "سجل مزاجك لـ {date}",
@@ -110,7 +132,26 @@
         "AI_ENABLED": "تمكين الذكاء الاصطناعي"
       },
       "action": "نشر المذكرة",
-      "publishing": "جاري النشر..."
+      "publishing": "جاري النشر...",
+      "embedHint": "تضمين {provider}. إذا لم يكن التشغيل متاحًا، افتح الرابط الأصلي أدناه."
+    },
+    "thirdParty": {
+      "title": "الجهات الخارجية",
+      "settings": "إعدادات التفويض",
+      "activeDelegations": "التفويضات النشطة",
+      "empty": "لا توجد تفويضات نشطة.",
+      "identifierPlaceholder": "اسم المستخدم أو البريد الإلكتروني أو معرّف المستخدم",
+      "noFriendsFound": "لم يتم العثور على صداقات مطابقة.",
+      "friendsHint": "تتضمن الاقتراحات أصدقاءك. يمكنك أيضًا إدخال أي عنوان بريد إلكتروني.",
+      "scope": "نطاق البيانات",
+      "allScopes": "كل النطاقات",
+      "scopesSelected": "نطاقات محددة",
+      "minimumOneScope": "يجب أن يبقى نطاق واحد على الأقل محددًا.",
+      "scopeResolutionHint": "إذا تم تحديد عدة نطاقات، فسيتم تطبيق أوسع نطاق محدد.",
+      "addDelegatedAnalyst": "إضافة محلل مفوض",
+      "adding": "جارٍ الإضافة...",
+      "addError": "تعذر إضافة المحلل المفوض",
+      "invitationDraft": "تم إعداد مسودة دعوة لهذا البريد الإلكتروني."
     }
   },
   "week": {
@@ -139,7 +180,10 @@
       "done": "مكتمل",
       "ignored": "متجاهل"
     },
-    "edit": "تعديل"
+    "edit": "تعديل",
+    "loadingForDate": "جاري تحميل المهام للتاريخ المحدد...",
+    "initializingTasks": "جاري إعداد مهامك...",
+    "noTasksForDate": "لا توجد مهام مجدولة لهذا التاريخ"
   },
   "settings": {
     "title": "الإعدادات",
@@ -363,7 +407,8 @@
     "closeFriend": "صديق مقرّب",
     "friends": "أصدقاء",
     "signInToAdd": "سجّل الدخول لإضافة صديق",
-    "editProfile": "تحرير الملف الشخصي"
+    "editProfile": "تحرير الملف الشخصي",
+    "message": "رسالة"
   },
   "profile": {
     "editProfile": "تعديل الملف الشخصي",
@@ -399,7 +444,48 @@
     "saving": "جارٍ الحفظ...",
     "pleaseSignIn": "يرجى تسجيل الدخول لتعديل ملفك الشخصي",
     "goToDashboard": "الذهاب إلى لوحة التحكم",
-    "createProfile": "Create Profile"
+    "createProfile": "Create Profile",
+    "meetMe": {
+      "title": "قابلني",
+      "description": "حدد أوقات اجتماعاتك المفضلة",
+      "morning": "صباحاً",
+      "afternoon": "بعد الظهر",
+      "evening": "مساءً",
+      "pickTime": "اختر الوقت",
+      "duration": "المدة",
+      "selectDuration": "اختر المدة",
+      "minutes": "دقيقة",
+      "availability": "التوفر",
+      "selectAvailability": "اختر التوفر",
+      "weekdays": "أيام الأسبوع",
+      "weekends": "عطلة نهاية الأسبوع",
+      "everyday": "كل يوم",
+      "window": "نافذة التوفر",
+      "noWindowSet": "لم يتم تحديد نافذة",
+      "timezoneNote": "الأوقات معروضة بتوقيت {timezone}",
+      "bookMeeting": "حجز اجتماع",
+      "selectDate": "اختر تاريخاً",
+      "message": "رسالة (اختياري)",
+      "messagePlaceholder": "أضف ملاحظة للاجتماع...",
+      "bookingSuccess": "تم حجز الاجتماع! تم إرسال دعوة التقويم.",
+      "booking": "جاري الحجز...",
+      "confirmBooking": "تأكيد الحجز",
+      "calendarAvailability": "التوفر",
+      "calendarUnavailable": "التقويم غير متاح",
+      "dayFree": "لا أحداث — اليوم متاح",
+      "busySlot": "مشغول {start} – {end}",
+      "availableSlots": "Available times",
+      "noSlotsAvailable": "No available time slots for this day"
+    },
+    "links": {
+      "title": "روابط التواصل الاجتماعي والمخصصة",
+      "description": "أضف ملفات وسائل التواصل الاجتماعي الخاصة بك والروابط المخصصة لعرضها على ملفك الشخصي العام",
+      "visibility": "رؤية الروابط",
+      "addLink": "إضافة رابط",
+      "customLink": "رابط مخصص",
+      "labelPlaceholder": "تسمية الرابط (مثل: مدونتي)",
+      "urlPlaceholder": "https://"
+    }
   },
   "toast": {
     "sessionExtended": "تم تمديد الجلسة بنجاح",
@@ -682,7 +768,9 @@
       "inProgress": "قيد التنفيذ",
       "validating": "جاري التحقق",
       "accepted": "مقبول",
-      "rejected": "مرفوض"
+      "rejected": "مرفوض",
+      "submitted": "مُقدَّم",
+      "changesRequested": "تغييرات مطلوبة"
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
@@ -795,6 +883,48 @@
         "submitted": "تم إرسال العمل للمراجعة",
         "resubmitted": "تم إعادة إرسال العمل للمراجعة"
       }
+    }
+  },
+  "notes": {
+    "updated": "تم تحديث الملاحظة بنجاح",
+    "updateFailed": "فشل تحديث الملاحظة",
+    "deleted": "تم حذف الملاحظة بنجاح",
+    "deleteFailed": "فشل حذف الملاحظة",
+    "deleting": "جاري الحذف...",
+    "confirmDelete": "هل أنت متأكد أنك تريد حذف هذه الملاحظة؟",
+    "content": "محتوى الملاحظة",
+    "visibilityUpdated": "تم تحديث الخصوصية بنجاح",
+    "visibilityUpdateFailed": "فشل تحديث الخصوصية",
+    "changeVisibility": "تغيير الخصوصية",
+    "filters": {
+      "sort": "ترتيب",
+      "date": "التاريخ",
+      "mostRelevant": "الأكثر صلة",
+      "all": "الكل"
+    }
+  },
+  "chat": {
+    "title": "المحادثة",
+    "subtitle": "المنظمات والقنوات والرسائل المباشرة والمواضيع.",
+    "anonymous": "مجهول",
+    "directMessage": "رسالة مباشرة",
+    "deletedMessage": "تم حذف الرسالة",
+    "deleteMessageTitle": "حذف الرسالة؟",
+    "deleteMessageDescription": "سيؤدي هذا إلى حذف الرسالة بشكل مؤقت والاحتفاظ بعنصر نائب في سجل المحادثة.",
+    "createInviteLink": "إنشاء رابط دعوة",
+    "pendingInvites": "الدعوات المعلقة",
+    "acceptInvite": "قبول",
+    "inviteFriendToOrg": "دعوة صديق إلى هذه المنظمة",
+    "inviteLinkCopied": "تم نسخ رابط الدعوة",
+    "inviteSent": "تم إرسال الدعوة",
+    "inviteAccepted": "تم قبول الدعوة"
+  },
+  "notesList": {
+    "gridOption": {
+      "label": "تخطيط الشبكة",
+      "tight": "محكم",
+      "small": "صغير",
+      "wide": "واسع"
     }
   }
 }
