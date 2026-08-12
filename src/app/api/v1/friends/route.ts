@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
             } as any
           },
           include: {
-            profile: true
+            profiles: true
           }
         })
       } catch (error: any) {

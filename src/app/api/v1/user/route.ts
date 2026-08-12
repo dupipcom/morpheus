@@ -162,8 +162,11 @@ export async function GET(req: Request) {
         }
       }
     }
-  } catch (error) {
-    console.error('Error syncing username from Clerk:', error)
+  } catch (error: any) {
+    // Clerk API errors are transient; the request already handles missing Clerk data
+    if (!error?.clerkError) {
+      console.error('Error syncing username from Clerk:', error)
+    }
   }
 
   // Initialize budget fields if needed

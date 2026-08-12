@@ -73,6 +73,112 @@ const jobFullInclude = {
   }
 }
 
+const MAX_TRANSACTION_RETRIES = 3
+const TRANSACTION_RETRY_BASE_DELAY_MS = 200
+
+interface JobUpdateTransactionParams {
+  jobId: string
+  existingJob: {
+    taskId: string
+    status: string
+    occurrenceDate?: string | null
+  }
+  updateData: Record<string, unknown>
+  newRequesterNoteId: string | null
+  newReviewerNoteId: string | null
+  newStatus?: string
+}
+
+/**
+ * Run the job update transaction with retries for transient MongoDB write
+ * conflicts/deadlocks (Prisma error code P2034). The callback only performs
+ * writes, so it is safe to retry without duplicating data.
+ */
+async function updateJobWithRetry({
+  jobId,
+  existingJob,
+  updateData,
+  newRequesterNoteId,
+  newReviewerNoteId,
+  newStatus,
+}: JobUpdateTransactionParams) {
+  // Build note ID updates once outside the retry loop to avoid duplicate pushes
+  // if a transaction attempt is retried.
+  const jobUpdateData: Record<string, unknown> = { ...updateData }
+  if (newRequesterNoteId) {
+    jobUpdateData.requesterNoteIds = { push: newRequesterNoteId }
+  }
+  if (newReviewerNoteId) {
+    jobUpdateData.reviewersNoteIds = { push: newReviewerNoteId }
+  }
+
+  let lastError: unknown = null
+
+  for (let attempt = 1; attempt <= MAX_TRANSACTION_RETRIES; attempt++) {
+    try {
+      return await prisma.$transaction(async (tx) => {
+        // Update job
+        const updatedJob = await tx.job.update({
+          where: { id: jobId },
+          data: jobUpdateData,
+          include: {
+            ...jobFullInclude,
+            requesterNotes: true,
+            reviewersNotes: {
+              include: {
+                user: { select: { id: true, profiles: true } }
+              }
+            },
+          }
+        })
+
+        // Sync task status based on job status
+        let taskUpdate: { id: string; status: string } | null = null
+        if (newStatus && newStatus !== existingJob.status) {
+          const newTaskStatus = TASK_STATUS_MAP[newStatus]
+          if (newTaskStatus) {
+            taskUpdate = await tx.task.update({
+              where: { id: existingJob.taskId },
+              data: { status: newTaskStatus as 'OPEN' | 'IN_PROGRESS' | 'READY' | 'DONE' },
+              select: { id: true, status: true }
+            })
+          }
+        }
+
+        // Auto-reject all competing jobs when one is accepted (for the same date)
+        if (newStatus === 'ACCEPTED') {
+          const rejectWhereClause: any = {
+            taskId: existingJob.taskId,
+            id: { not: jobId },
+            status: { notIn: ['ACCEPTED', 'REJECTED'] }
+          }
+
+          // If this job has an occurrenceDate, only reject competing jobs on the same date
+          if (existingJob.occurrenceDate) {
+            rejectWhereClause.occurrenceDate = existingJob.occurrenceDate
+          }
+
+          await tx.job.updateMany({
+            where: rejectWhereClause,
+            data: { status: 'REJECTED' }
+          })
+        }
+
+        return { job: updatedJob, task: taskUpdate }
+      })
+    } catch (error) {
+      lastError = error
+      const code = (error as { code?: string })?.code
+      if (code !== 'P2034' || attempt === MAX_TRANSACTION_RETRIES) {
+        throw error
+      }
+      await new Promise(resolve => setTimeout(resolve, TRANSACTION_RETRY_BASE_DELAY_MS * attempt))
+    }
+  }
+
+  throw lastError instanceof Error ? lastError : new Error('Job update transaction failed')
+}
+
 export async function GET(
   request: NextRequest,
   { params }: { params: { jobId: string } }
@@ -344,68 +450,14 @@ export async function PUT(
       newReviewerNoteId = reviewerNote.id
     }
 
-    // Update job with transaction for atomicity
-    const result = await prisma.$transaction(async (tx) => {
-      // Build note ID updates
-      if (newRequesterNoteId) {
-        updateData.requesterNoteIds = {
-          push: newRequesterNoteId
-        }
-      }
-      if (newReviewerNoteId) {
-        updateData.reviewersNoteIds = {
-          push: newReviewerNoteId
-        }
-      }
-
-      // Update job
-      const updatedJob = await tx.job.update({
-        where: { id: jobId },
-        data: updateData,
-        include: {
-          ...jobFullInclude,
-          requesterNotes: true,
-          reviewersNotes: {
-            include: {
-              user: { select: { id: true, profiles: true } }
-            }
-          },
-        }
-      })
-
-      // Sync task status based on job status
-      let taskUpdate: { id: string; status: string } | null = null
-      if (newStatus && newStatus !== existingJob.status) {
-        const newTaskStatus = TASK_STATUS_MAP[newStatus]
-        if (newTaskStatus) {
-          taskUpdate = await tx.task.update({
-            where: { id: existingJob.taskId },
-            data: { status: newTaskStatus as 'OPEN' | 'IN_PROGRESS' | 'READY' | 'DONE' },
-            select: { id: true, status: true }
-          })
-        }
-      }
-
-      // Auto-reject all competing jobs when one is accepted (for the same date)
-      if (newStatus === 'ACCEPTED') {
-        const rejectWhereClause: any = {
-          taskId: existingJob.taskId,
-          id: { not: jobId },
-          status: { notIn: ['ACCEPTED', 'REJECTED'] }
-        }
-
-        // If this job has an occurrenceDate, only reject competing jobs on the same date
-        if (existingJob.occurrenceDate) {
-          rejectWhereClause.occurrenceDate = existingJob.occurrenceDate
-        }
-
-        await tx.job.updateMany({
-          where: rejectWhereClause,
-          data: { status: 'REJECTED' }
-        })
-      }
-
-      return { job: updatedJob, task: taskUpdate }
+    // Update job with transaction for atomicity, retrying transient write conflicts
+    const result = await updateJobWithRetry({
+      jobId,
+      existingJob,
+      updateData,
+      newRequesterNoteId,
+      newReviewerNoteId,
+      newStatus,
     })
 
     // Audit log status change

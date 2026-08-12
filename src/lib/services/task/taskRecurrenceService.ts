@@ -204,11 +204,6 @@ export async function getTasksForDate(
       relevantJobs = task.jobs.filter(j =>
         j.occurrenceDate && weekRange.allDates.includes(j.occurrenceDate)
       )
-
-      // Debug logging for weekly tasks
-      if (process.env.NODE_ENV === 'development' && relevantJobs.length > 0) {
-        console.log(`[Weekly Task] ${task.name}: Found ${relevantJobs.length} jobs in week ${weekRange.weekStart} - ${weekRange.weekEnd}`)
-      }
     } else {
       // For non-weekly tasks, only get jobs for the specific date
       relevantJobs = task.jobs.filter(j => j.occurrenceDate === targetDate)
