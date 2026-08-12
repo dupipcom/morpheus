@@ -6,7 +6,7 @@ import { AddTaskForm } from '@/views/forms/addTaskForm'
 import { AddListForm } from '@/views/forms/addListForm'
 import { AddTemplateForm } from '@/views/forms/addTemplateForm'
 import { useOptimisticUpdates } from '@/lib/hooks/useOptimisticUpdates'
-import { ListView } from './listView'
+import { ListView } from '@/views/list/listView'
 
 export const DoView = ({
   selectedTaskListId,

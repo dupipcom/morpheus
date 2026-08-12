@@ -4,7 +4,7 @@ import { I18nProvider } from '@/lib/contexts/i18n'
 import { loadTranslations } from '@/lib/i18n'
 import { auth } from '@clerk/nextjs/server'
 import prisma from "@/lib/prisma"
-import { ProfileView } from '@/views/profileView'
+import { ProfileView } from '@/views/profile/profileView'
 import { cache } from 'react'
 
 

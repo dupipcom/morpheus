@@ -8,7 +8,7 @@ import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 
 import Link from 'next/link'
 
-import { DoView } from "@/views/doView"
+import { DoView } from "@/views/do/doView"
 import { ViewMenu } from "@/components/viewMenu"
 import { Button } from "@/components/ui/button"
 import { DoToolbar } from '@/components/doToolbar'
