@@ -4,10 +4,9 @@
  */
 
 import { Productivity, ListProductivity } from '@/lib/types'
-import { BudgetDistribution } from '@/lib/utils/budgetDistributionUtils'
 
 // Re-export for convenience
-export type { Productivity, ListProductivity, BudgetDistribution }
+export type { Productivity, ListProductivity }
 
 /**
  * User balance values extracted from database
@@ -194,8 +193,6 @@ export interface TaskListPostBody {
   name?: string
   budget?: number | string
   premiumPercentage?: number
-  premiumPercentage?: number
-  budgetDistribution?: BudgetDistribution
   dueDate?: string | Date
   create?: boolean
   collaborators?: string[]

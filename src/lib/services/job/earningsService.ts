@@ -5,15 +5,11 @@
 
 import prisma from '@/lib/prisma'
 import {
-  calculateTaskEarnings,
-  getPerCompleterPremium,
-  getPerCompleterEarnings,
   calculateStashAndEarningsDeltas,
   calculateUpdatedUserValues,
-  applyPremiumFactors,
   PremiumFactorSettings
 } from '@/lib/utils/earningsUtils'
-import { calculateTaskBudgetFromDistribution } from '@/lib/services/task/taskMigrationService'
+import { resolveListBudget, resolveTaskFinancials } from '@/lib/services/finance/premiumService'
 
 // Helper to safely parse a number
 function safeParseFloat(value: unknown): number {
@@ -58,7 +54,7 @@ async function calculateTotalEarningsFromJobs(
     select: { premium: true, earnings: true }
   })
 
-  const totals = jobs.reduce(
+  const totals = jobs.reduce<{ premium: number; earnings: number }>(
     (acc, job) => ({
       premium: acc.premium + safeParseFloat(job.premium),
       earnings: acc.earnings + safeParseFloat(job.earnings)
@@ -178,10 +174,10 @@ async function updateUserFinancials(
   await prisma.user.update({
     where: { id: workerId },
     data: {
-      stash: updatedValues.newStash as any,
-      profit: updatedValues.newProfit as any,
-      equity: updatedValues.newEquity as any,
-      totalGains: updatedValues.newTotalGains as any
+      stash: updatedValues.newStash,
+      profit: updatedValues.newProfit,
+      equity: updatedValues.newEquity,
+      totalGains: updatedValues.newTotalGains
     }
   })
 
@@ -211,32 +207,53 @@ async function updateDaySnapshot(
 }
 
 /**
- * Get task financial values for invoice creation
+ * Fetch the data needed to resolve a task's financials for a job:
+ * the list budget (with sources), the task premium, and the worker's settings
  */
-export async function getTaskInvoiceValues(taskId: string, listId: string): Promise<{
-  earnings: number | null
-  premium: number | null
-  totalGains: number | null
-}> {
-  const task = await prisma.task.findUnique({
-    where: { id: taskId },
-    select: { earnings: true, premium: true, totalGains: true, budget: true }
-  })
+async function fetchJobFinancialContext(
+  taskId: string,
+  listId: string,
+  workerId: string
+): Promise<{ financials: { earnings: number; premium: number; totalGains: number } | null }> {
+  const [list, task, worker] = await Promise.all([
+    prisma.list.findUnique({
+      where: { id: listId },
+      select: {
+        budget: true,
+        budgetType: true,
+        budgetPercent: true,
+        budgetSources: { select: { remainingAmount: true } },
+        _count: { select: { tasks: true } }
+      }
+    }),
+    prisma.task.findUnique({
+      where: { id: taskId },
+      select: { premium: true, premiumType: true, rrule: true }
+    }),
+    prisma.user.findUnique({
+      where: { id: workerId },
+      select: { settings: true }
+    })
+  ])
 
-  if (!task) {
-    return { earnings: null, premium: null, totalGains: null }
+  if (!list || !task) {
+    return { financials: null }
   }
 
-  // earnings field or budget as fallback for backwards compatibility
-  const earnings = task.earnings ?? task.budget ?? null
-  const premium = task.premium ?? null
-  const totalGains = task.totalGains ?? (earnings != null && premium != null ? earnings + premium : null)
+  const listBudget = resolveListBudget(list)
+  const premiumFactorSettings: PremiumFactorSettings | null = worker?.settings as PremiumFactorSettings | null
+  const financials = resolveTaskFinancials(
+    task,
+    listBudget,
+    list._count.tasks,
+    premiumFactorSettings
+  )
 
-  return { earnings, premium, totalGains }
+  return { financials }
 }
 
 /**
- * Update job invoice with latest task values
+ * Update job invoice with the task's financial values
  * Called when job transitions to IN_PROGRESS (job initiation)
  */
 export async function initializeJobInvoice(
@@ -244,71 +261,23 @@ export async function initializeJobInvoice(
   taskId: string,
   listId: string
 ): Promise<void> {
-  // Try to calculate allocation from list budget distribution first,
-  // falling back to stored task values when distribution is not configured.
-  const [list, task, job] = await Promise.all([
-    prisma.list.findUnique({
-      where: { id: listId },
-      select: { budget: true, budgetDistribution: true, premiumPercentage: true, remainingBudget: true, tasks: true }
-    }),
-    prisma.task.findUnique({ where: { id: taskId } }),
-    prisma.job.findUnique({ where: { id: jobId }, select: { workerId: true } })
-  ])
+  const job = await prisma.job.findUnique({
+    where: { id: jobId },
+    select: { workerId: true }
+  })
 
+  if (!job) return
 
-  // Fallback to simple task values if list or task missing
-  if (!task) {
-    const { earnings, premium, totalGains } = await getTaskInvoiceValues(taskId, listId)
-    await prisma.job.update({
-      where: { id: jobId },
-      data: {
-        invoice: {
-          quote: earnings,
-          premium: premium,
-          exposure: totalGains
-        }
-      }
-    })
-    return
-  }
-
-  let alloc: { budget: number | null; premium: number | null; totalGains: number | null } | null = null
-
-  if (list && list.budgetDistribution) {
-    // Try to obtain worker equity if possible (safety scaling)
-    let worker: any = null
-    if (job?.workerId) {
-      worker = await prisma.user.findUnique({ where: { id: job.workerId }, select: { equity: true } })
-    }
-    const remainingBudget = list.remainingBudget ? parseFloat(list.remainingBudget) : list.budget
-
-    alloc = calculateTaskBudgetFromDistribution({
-      task: task as any,
-      list: {
-        budget: list.budget,
-        budgetDistribution: list.budgetDistribution as any,
-        premiumPercentage: list.premiumPercentage,
-        tasks: list.tasks as any
-      },
-      userEquity: worker?.equity,
-      remainingBudget
-    })
-
-    // Allocation calculated from budget distribution
-  }
-
-  // Build invoice fields using allocation or fallback to stored task values
-  const quote = alloc?.budget ?? (task as any).earnings ?? (task as any).budget ?? null
-  const premium = alloc?.premium ?? (task as any).premium ?? null
-  const exposure = alloc?.totalGains ?? ((quote != null && premium != null) ? (quote + premium) : null)
+  const { financials } = await fetchJobFinancialContext(taskId, listId, job.workerId)
+  if (!financials) return
 
   await prisma.job.update({
     where: { id: jobId },
     data: {
       invoice: {
-        quote: quote as any,
-        premium: premium as any,
-        exposure: exposure as any
+        quote: financials.earnings,
+        premium: financials.premium,
+        exposure: financials.totalGains
       }
     }
   })
@@ -329,49 +298,18 @@ export async function updateJobWithTaskValues(
     where: { id: jobId },
     select: { workerId: true }
   })
-  
+
   if (!job) return
-  
-  // Use budget distribution (if available) to compute current task values,
-  // otherwise fall back to stored task values.
-  const [list, task, worker] = await Promise.all([
-    prisma.list.findUnique({ where: { id: listId }, select: { role: true, budget: true, budgetDistribution: true, premiumPercentage: true, remainingBudget: true, tasks: true } }),
-    prisma.task.findUnique({ where: { id: taskId } }),
-    prisma.user.findUnique({ where: { id: job.workerId }, select: { settings: true } })
-  ])
 
-  if (!task) return
-
-  let alloc: { budget: number | null; premium: number | null; totalGains: number | null } | null = null
-  if (list && list.budgetDistribution) {
-    const remainingBudget = list.remainingBudget ? parseFloat(list.remainingBudget) : list.budget
-    alloc = calculateTaskBudgetFromDistribution({
-      task: task as any,
-      list: {
-        budget: list.budget,
-        budgetDistribution: list.budgetDistribution as any,
-        premiumPercentage: list.premiumPercentage,
-        tasks: list.tasks as any
-      },
-      userEquity: null,
-      remainingBudget
-    })
-  }
-
-  const earnings = alloc?.budget ?? (task as any).earnings ?? (task as any).budget ?? 0
-  const rawPremium = alloc?.premium ?? (task as any).premium ?? 0
-  
-  // Apply premium factors based on list role and worker's settings
-  const premiumFactorSettings: PremiumFactorSettings | null = worker?.settings as PremiumFactorSettings | null
-  const premium = applyPremiumFactors(rawPremium, list?.role, premiumFactorSettings)
-  const totalGains = premium + earnings
+  const { financials } = await fetchJobFinancialContext(taskId, listId, job.workerId)
+  if (!financials) return
 
   await prisma.job.update({
     where: { id: jobId },
     data: {
-      earnings: earnings as any,
-      premium: premium as any,
-      totalGains: totalGains as any
+      earnings: financials.earnings,
+      premium: financials.premium,
+      totalGains: financials.totalGains
     }
   })
 }
@@ -391,33 +329,29 @@ export async function calculateAndApplyJobEarnings({
     const [list, task, worker] = await Promise.all([
       prisma.list.findUnique({
         where: { id: listId },
-        select: { 
-          role: true, 
-          budget: true, 
-          premiumPercentage: true, 
-          budgetDistribution: true,
-          remainingBudget: true,
-          tasks: true
-          // templateTasks is deprecated - using Task collection only
+        select: {
+          budget: true,
+          budgetType: true,
+          budgetPercent: true,
+          budgetSources: { select: { remainingAmount: true } },
+          _count: { select: { tasks: true } }
         }
       }),
       prisma.task.findUnique({
         where: { id: taskId },
-        select: { 
+        select: {
           id: true,
           name: true,
           area: true,
           categories: true,
-          budget: true,
-          earnings: true,
           premium: true,
-          totalGains: true
+          premiumType: true,
+          rrule: true
         }
       }),
       prisma.user.findUnique({
         where: { id: workerId },
         select: {
-          equity: true,
           settings: true
         }
       })
@@ -427,36 +361,14 @@ export async function calculateAndApplyJobEarnings({
     if (!task) throw new Error('Task not found')
     if (!worker) throw new Error('Worker not found')
 
-    // Parse remainingBudget (it's stored as String in DB)
-    const remainingBudget = list.remainingBudget ? parseFloat(list.remainingBudget) : list.budget
-
-    // Use budget distribution to calculate task-specific earnings with all safety checks
-    // templateTasks is deprecated - using Task collection only
-    const taskBudgetAllocation = calculateTaskBudgetFromDistribution({
-      task,
-      list: {
-        budget: list.budget,
-        budgetDistribution: list.budgetDistribution,
-        premiumPercentage: list.premiumPercentage,
-        tasks: list.tasks
-      },
-      userEquity: worker.equity,
-      remainingBudget
-    })
-
-    // Use the calculated budget and premium from distribution, falling back to task values
-    // These are already capped by task.totalGains in calculateTaskBudgetFromDistribution
-    const earnings = taskBudgetAllocation.budget ?? task.earnings ?? task.budget ?? 0
-    const rawPremium = taskBudgetAllocation.premium ?? task.premium ?? 0
-    
-    // Apply premium factors based on list role and user settings
-    // NOTE: Premium is calculated based on factors and is NOT limited by list budget or task.totalGains.
-    // The list budget only represents the amount available for earnings, not a hard limit for premium.
+    // Resolve simplified financials: premium (fiat or % of list budget, factored
+    // by worker settings) + equal share of the list budget as earnings
+    const listBudget = resolveListBudget(list)
     const premiumFactorSettings: PremiumFactorSettings | null = worker.settings as PremiumFactorSettings | null
-    const premium = applyPremiumFactors(rawPremium, list.role, premiumFactorSettings)
-    const totalGains = premium + earnings
-
-    // Premium factors may increase totalGains above stored task.totalGains — this is expected
+    const financials = resolveTaskFinancials(task, listBudget, list._count.tasks, premiumFactorSettings)
+    const earnings = financials.earnings
+    const premium = financials.premium
+    const totalGains = financials.totalGains
 
     // Save the exact factored premium to the Job collection
     const { stashDelta, profitDelta } = calculateStashAndEarningsDeltas(premium, earnings, true)
@@ -464,7 +376,7 @@ export async function calculateAndApplyJobEarnings({
 
     await prisma.job.update({
       where: { id: jobId },
-      data: { totalGains: totalGains as any, premium: premium as any, earnings: earnings as any }
+      data: { totalGains, premium, earnings }
     })
 
     await updateDayTickerFromJobs(workerId, listId, taskId, occurrenceDate, {

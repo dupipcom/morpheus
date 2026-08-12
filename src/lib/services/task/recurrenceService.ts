@@ -1,3 +1,4 @@
+import { rrulestr } from 'rrule'
 import prisma from '@/lib/prisma'
 import type { Task, Job, TaskStatus } from '@/generated/prisma'
 
@@ -12,26 +13,71 @@ export interface TaskForDate {
 }
 
 /**
+ * Parse a task's RRULE string into an RRule instance, returning null when unparseable.
+ *
+ * Always injects an explicit DTSTART at UTC midnight: rrulestr() otherwise
+ * defaults dtstart to the current moment AND inherits the current time-of-day
+ * into byhour/byminute/bysecond, which breaks date-only occurrence checks.
+ */
+function parseRuleForTask(
+  rrule: string,
+  dtstart: string | null | undefined,
+  fallbackDate: string | null
+): RRule | null {
+  if (!rrule) return null
+  try {
+    const effectiveStart = dtstart || fallbackDate
+    if (!effectiveStart) return null
+
+    // Strip any existing DTSTART line and the RRULE prefix
+    const ruleBody = rrule
+      .split('\n')
+      .map((line) => line.replace(/^RRULE:/i, ''))
+      .filter((line) => !/^DTSTART/i.test(line))
+      .join('\n')
+
+    return rrulestr(`DTSTART:${effectiveStart.replace(/-/g, '')}T000000Z\nRRULE:${ruleBody}`)
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Extract the FREQ value from an RRULE string (e.g. "WEEKLY"), or null
+ */
+export function rruleFrequency(rrule: string | null | undefined): string | null {
+  const match = (rrule || '').match(/FREQ=([A-Z]+)/i)
+  return match ? match[1].toUpperCase() : null
+}
+
+/**
+ * Parse a YYYY-MM-DD date as UTC midnight to avoid timezone/DST drift
+ */
+function toUtcMidnight(dateStr: string): Date {
+  return new Date(`${dateStr}T00:00:00.000Z`)
+}
+
+/**
  * Get the week range (Monday-Sunday) for a given date in YYYY-MM-DD format
  */
 export function getWeekRange(dateStr: string): { weekStart: string; weekEnd: string; allDates: string[] } {
-  const date = new Date(dateStr)
+  const date = toUtcMidnight(dateStr)
 
   // Get Monday of the week (start of week)
-  const day = date.getDay()
-  const diff = date.getDate() - day + (day === 0 ? -6 : 1) // adjust when day is sunday
+  const day = date.getUTCDay()
+  const diff = day === 0 ? -6 : 1 - day // adjust when day is sunday
   const monday = new Date(date)
-  monday.setDate(diff)
+  monday.setUTCDate(date.getUTCDate() + diff)
 
   // Get Sunday of the week (end of week)
   const sunday = new Date(monday)
-  sunday.setDate(monday.getDate() + 6)
+  sunday.setUTCDate(monday.getUTCDate() + 6)
 
   // Format as YYYY-MM-DD
   const formatDate = (d: Date) => {
-    const year = d.getFullYear()
-    const month = String(d.getMonth() + 1).padStart(2, '0')
-    const day = String(d.getDate()).padStart(2, '0')
+    const year = d.getUTCFullYear()
+    const month = String(d.getUTCMonth() + 1).padStart(2, '0')
+    const day = String(d.getUTCDate()).padStart(2, '0')
     return `${year}-${month}-${day}`
   }
 
@@ -39,7 +85,7 @@ export function getWeekRange(dateStr: string): { weekStart: string; weekEnd: str
   const allDates: string[] = []
   for (let i = 0; i < 7; i++) {
     const weekDate = new Date(monday)
-    weekDate.setDate(monday.getDate() + i)
+    weekDate.setUTCDate(monday.getUTCDate() + i)
     allDates.push(formatDate(weekDate))
   }
 
@@ -51,87 +97,40 @@ export function getWeekRange(dateStr: string): { weekStart: string; weekEnd: str
 }
 
 /**
- * Check if a task should appear on a specific date based on its recurrence rule
- * @param task - The task to check
- * @param targetDate - The date to check against
- * @param isOneOffList - Whether the task belongs to a one-off list (if true, COMPLETED tasks still appear)
+ * Check if a task should appear on a specific date based on its RRULE
+ * - Tasks without an rrule are one-off tasks: they appear on all dates
+ * - Tasks with COMPLETED status only appear in one-off lists (as done)
+ * @param task - The task to check (needs rrule, dtstart, status)
+ * @param targetDate - The date to check against (YYYY-MM-DD)
+ * @param isOneOffList - Whether the task belongs to a one-off list
  */
-export function shouldTaskAppearOnDate(task: Task, targetDate: Date, isOneOffList: boolean = false): boolean {
+export function taskOccursOnDate(
+  task: { rrule: string | null; dtstart: string | null; status: TaskStatus; createdAt?: Date | null },
+  targetDate: string,
+  isOneOffList: boolean = false
+): boolean {
   // Tasks with COMPLETED status should not appear in recurring lists
   // But in one-off lists, COMPLETED tasks should still appear (as done)
   if (task.status === 'COMPLETED' && !isOneOffList) {
     return false
   }
 
-  // Tasks without recurrence rules are one-time tasks
-  // They appear on all dates (or until completed/archived for recurring lists)
-  if (!task.recurrence) {
+  // Tasks without recurrence rules are one-time tasks: appear on all dates
+  if (!task.rrule) {
     return true
   }
 
-  const recurrence = task.recurrence as any
-  const frequency = recurrence.frequency
-
-  // Handle NONE frequency (one-time tasks)
-  if (frequency === 'NONE') {
+  const fallbackDate = task.createdAt ? task.createdAt.toISOString().slice(0, 10) : null
+  const rule = parseRuleForTask(task.rrule, task.dtstart, fallbackDate)
+  // Unparseable rule: keep appearing (matches legacy default behavior)
+  if (!rule) {
     return true
   }
 
-  // Check if task has started (firstOccurrence)
-  if (task.firstOccurrence && targetDate < task.firstOccurrence) {
-    return false
-  }
+  const target = toUtcMidnight(targetDate)
 
-  // Check if recurrence has ended
-  if (recurrence.endDate && targetDate > new Date(recurrence.endDate)) {
-    return false
-  }
-
-  const interval = recurrence.interval || 1
-  const targetTime = targetDate.getTime()
-  const startTime = task.firstOccurrence ? task.firstOccurrence.getTime() : 0
-
-  switch (frequency) {
-    case 'DAILY': {
-      if (!task.firstOccurrence) return true
-      const daysSinceStart = Math.floor((targetTime - startTime) / (1000 * 60 * 60 * 24))
-      return daysSinceStart % interval === 0
-    }
-
-    case 'WEEKLY': {
-      const targetDay = targetDate.getDay() // 0 = Sunday, 6 = Saturday
-      const byWeekday = recurrence.byWeekday || []
-
-      // If no specific weekdays specified, appear on all days
-      if (byWeekday.length === 0) return true
-
-      // Check if target day is in the allowed weekdays
-      return byWeekday.includes(targetDay)
-    }
-
-    case 'MONTHLY': {
-      const targetDay = targetDate.getDate()
-      const byMonthDay = recurrence.byMonthDay || []
-
-      // If no specific days specified, appear on all days
-      if (byMonthDay.length === 0) return true
-
-      return byMonthDay.includes(targetDay)
-    }
-
-    case 'YEARLY': {
-      if (!task.firstOccurrence) return true
-      const targetMonth = targetDate.getMonth()
-      const targetDay = targetDate.getDate()
-      const startMonth = task.firstOccurrence.getMonth()
-      const startDay = task.firstOccurrence.getDate()
-
-      return targetMonth === startMonth && targetDay === startDay
-    }
-
-    default:
-      return true
-  }
+  // Inclusive check for an occurrence landing exactly on the target date
+  return rule.between(target, target, true).length > 0
 }
 
 /**
@@ -146,7 +145,6 @@ export async function getTasksForDate(
   targetDate: string,
   listRole?: string | null
 ): Promise<TaskForDate[]> {
-  const targetDateObj = new Date(targetDate)
   const weekRange = getWeekRange(targetDate)
 
   // Determine if this is a one-off list (should show all tasks including COMPLETED)
@@ -159,7 +157,7 @@ export async function getTasksForDate(
     })
     role = list?.role
   }
-  
+
   const rolePrefix = role?.split('.')[0] || ''
   const isOneOffList = rolePrefix === 'one-off' || rolePrefix === 'oneoff'
 
@@ -188,14 +186,12 @@ export async function getTasksForDate(
 
   for (const task of tasks) {
     // Check if this task should appear on the target date
-    // Pass isOneOffList so COMPLETED tasks still appear in one-off lists
-    if (!shouldTaskAppearOnDate(task, targetDateObj, isOneOffList)) {
+    if (!taskOccursOnDate(task, targetDate, isOneOffList)) {
       continue
     }
 
-    // Determine if this is a weekly task
-    const recurrence = task.recurrence as any
-    const isWeeklyTask = recurrence?.frequency === 'WEEKLY'
+    // Weekly tasks aggregate jobs across the whole week
+    const isWeeklyTask = rruleFrequency(task.rrule) === 'WEEKLY'
 
     // Filter jobs based on task type
     let relevantJobs: Job[]
@@ -215,8 +211,8 @@ export async function getTasksForDate(
     const times = task.times || 1
 
     let dateStatus: TaskStatus = 'OPEN'
-    
-    // IMPORTANT: Tasks with COMPLETED or DONE status should always show as completed
+
+    // Tasks with COMPLETED or DONE status should always show as completed
     // regardless of date or job records. This is for tasks that were marked as
     // permanently completed (e.g., one-time tasks that are done)
     if (task.status === 'COMPLETED' || task.status === 'DONE') {
@@ -243,47 +239,4 @@ export async function getTasksForDate(
   }
 
   return result
-}
-
-/**
- * Calculate next occurrence date for a task based on its recurrence rule
- */
-export function calculateNextOccurrence(task: Task, fromDate: Date): Date | null {
-  if (!task.recurrence) return null
-
-  const recurrence = task.recurrence as any
-  const frequency = recurrence.frequency
-
-  if (frequency === 'NONE') return null
-
-  const interval = recurrence.interval || 1
-  const nextDate = new Date(fromDate)
-
-  switch (frequency) {
-    case 'DAILY':
-      nextDate.setDate(nextDate.getDate() + interval)
-      break
-
-    case 'WEEKLY':
-      nextDate.setDate(nextDate.getDate() + (7 * interval))
-      break
-
-    case 'MONTHLY':
-      nextDate.setMonth(nextDate.getMonth() + interval)
-      break
-
-    case 'YEARLY':
-      nextDate.setFullYear(nextDate.getFullYear() + interval)
-      break
-
-    default:
-      return null
-  }
-
-  // Check if we've exceeded the end date
-  if (recurrence.endDate && nextDate > new Date(recurrence.endDate)) {
-    return null
-  }
-
-  return nextDate
 }

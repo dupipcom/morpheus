@@ -73,6 +73,9 @@ export interface JobWithRelations {
 // Request body for updating job
 export interface UpdateJobRequest {
   status?: JobStatus
+  justification?: string
+  location?: Record<string, unknown> | null
+  documentIds?: string[]
   requesterNoteContent?: string
   reviewerNoteContent?: string
   selfReview?: number

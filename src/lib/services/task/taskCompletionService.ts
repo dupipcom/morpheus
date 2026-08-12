@@ -1,6 +1,5 @@
 import prisma from '@/lib/prisma'
-import type { Task, TaskStatus, Job } from '@/generated/prisma'
-import { calculateNextOccurrence } from './taskRecurrenceService'
+import type { TaskStatus } from '@/generated/prisma'
 
 /**
  * Task completion data for a specific date
@@ -83,29 +82,24 @@ export function calculateStatusFromCount(count: number, times: number): TaskStat
 }
 
 /**
- * Check if a task is non-recurring (no recurrence rule or frequency is NONE)
- */
-function isNonRecurringTask(recurrence: { frequency?: string } | null): boolean {
-  return !recurrence || recurrence.frequency === 'NONE'
-}
-
-/**
  * Calculate the status for a non-recurring task based on completion count
  * Returns COMPLETED if done, OPEN if not done, or null if task is recurring
  */
 function calculateNonRecurringTaskStatus(
-  recurrence: { frequency?: string } | null,
+  rrule: string | null | undefined,
   completedCount: number,
   requiredTimes: number
 ): 'OPEN' | 'COMPLETED' | null {
-  if (!isNonRecurringTask(recurrence)) {
+  if (rrule) {
     return null
   }
   return completedCount >= requiredTimes ? 'COMPLETED' : 'OPEN'
 }
 
 /**
- * Update task occurrence dates after a completion or deletion
+ * Update a task's status after a completion or deletion.
+ * One-off tasks (no rrule) that reach their counter become COMPLETED; when
+ * completions drop below the counter they reset to OPEN.
  */
 export async function updateTaskOccurrenceDates(
   taskId: string,
@@ -116,17 +110,11 @@ export async function updateTaskOccurrenceDates(
     where: { id: taskId },
     select: {
       id: true,
-      firstOccurrence: true,
-      lastOccurrence: true,
-      recurrence: true,
+      rrule: true,
       times: true,
       jobs: {
         where: { status: 'ACCEPTED' },
-        select: {
-          occurrenceDate: true,
-          createdAt: true
-        },
-        orderBy: { createdAt: 'asc' }
+        select: { id: true }
       }
     }
   })
@@ -135,81 +123,17 @@ export async function updateTaskOccurrenceDates(
     throw new Error(`Task not found: ${taskId}`)
   }
 
-  const updateData: {
-    firstOccurrence?: Date | null
-    lastOccurrence?: Date | null
-    nextOccurrence?: Date | null
-    status?: 'OPEN' | 'COMPLETED'
-  } = {}
+  const newStatus = calculateNonRecurringTaskStatus(task.rrule, task.jobs.length, task.times || 1)
 
-  if (operation === 'complete') {
-    // Set firstOccurrence if this is the first completion ever
-    if (!task.firstOccurrence && task.jobs.length > 0) {
-      const firstJob = task.jobs[0]
-      if (firstJob.occurrenceDate) {
-        updateData.firstOccurrence = new Date(firstJob.occurrenceDate)
-      }
-    }
-
-    // Update lastOccurrence to the most recent completion date
-    const lastJob = task.jobs[task.jobs.length - 1]
-    if (lastJob?.occurrenceDate) {
-      updateData.lastOccurrence = new Date(lastJob.occurrenceDate)
-
-      // Calculate next occurrence if task has recurrence
-      if (task.recurrence) {
-        const nextOccurrence = calculateNextOccurrence(task as Task, updateData.lastOccurrence)
-        updateData.nextOccurrence = nextOccurrence
-      }
-    }
-
-    // Check if this is a non-recurring task that is now complete
-    // If so, mark it as COMPLETED so it won't appear on future days
-    const recurrence = task.recurrence as { frequency?: string } | null
-    const newStatus = calculateNonRecurringTaskStatus(recurrence, task.jobs.length, task.times || 1)
-    if (newStatus === 'COMPLETED') {
-      updateData.status = newStatus
-    }
-  } else if (operation === 'delete') {
-    // Recalculate lastOccurrence from remaining jobs
-    if (task.jobs.length === 0) {
-      // No more completions
-      updateData.lastOccurrence = null
-      updateData.firstOccurrence = null
-      updateData.nextOccurrence = null
-    } else {
-      // Set first and last from remaining jobs
-      const firstJob = task.jobs[0]
-      const lastJob = task.jobs[task.jobs.length - 1]
-
-      if (firstJob?.occurrenceDate) {
-        updateData.firstOccurrence = new Date(firstJob.occurrenceDate)
-      }
-
-      if (lastJob?.occurrenceDate) {
-        updateData.lastOccurrence = new Date(lastJob.occurrenceDate)
-
-        // Calculate next occurrence if task has recurrence
-        if (task.recurrence) {
-          const nextOccurrence = calculateNextOccurrence(task as Task, updateData.lastOccurrence)
-          updateData.nextOccurrence = nextOccurrence
-        }
-      }
-    }
-
-    // If this is a non-recurring task that is no longer complete, reset to OPEN
-    const recurrence = task.recurrence as { frequency?: string } | null
-    const newStatus = calculateNonRecurringTaskStatus(recurrence, task.jobs.length, task.times || 1)
-    if (newStatus === 'OPEN') {
-      updateData.status = newStatus
-    }
-  }
-
-  // Only update if there are changes
-  if (Object.keys(updateData).length > 0) {
+  if (operation === 'complete' && newStatus === 'COMPLETED') {
     await prisma.task.update({
       where: { id: taskId },
-      data: updateData
+      data: { status: 'COMPLETED', completedOn: occurrenceDate }
+    })
+  } else if (operation === 'delete' && newStatus === 'OPEN') {
+    await prisma.task.update({
+      where: { id: taskId },
+      data: { status: 'OPEN', completedOn: null }
     })
   }
 }

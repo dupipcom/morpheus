@@ -4,26 +4,58 @@
  */
 
 import prisma from '@/lib/prisma'
+import type { List, Prisma } from '@/generated/prisma'
+import { DAILY_ACTIONS, WEEKLY_ACTIONS } from '@/app/constants'
 import { recalculateUserBudget } from '@/lib/utils/budgetUtils'
-import { getProfitPerTask } from '@/lib/utils/earningsUtils'
-import { BudgetDistribution } from '@/lib/utils/budgetDistributionUtils'
-import type { Task, TaskList, TaskListMembership, CompletedTasks } from './types'
+import { buildRRuleFromLegacy, rruleFromListRole, slugifyList } from '@/lib/utils/rruleUtils'
 import {
   ensureUniqueTaskIds,
   translateTemplateTasks,
-  getLocalizedListName,
-  parseNumericValue
+  getLocalizedListName
 } from './helpers'
+import type { TaskList } from './types'
+
+/** Shape of a task entry in DAILY_ACTIONS / WEEKLY_ACTIONS */
+interface DefaultAction {
+  name: string
+  localeKey?: string | null
+  times?: number | null
+  categories?: string[]
+  area?: string | null
+  recurrence?: {
+    frequency?: string | null
+    interval?: number | null
+    byWeekday?: number[]
+    byMonthDay?: number[]
+    byMonth?: number[]
+  } | null
+}
+
+/** Input shape for a task created together with a list */
+export interface NewTaskInput {
+  name: string
+  rrule?: string | null
+  dtstart?: string | null
+  times?: number | null
+  premium?: number | null
+  premiumType?: string | null
+  localeKey?: string | null
+  categories?: string[]
+  area?: string
+  visibility?: string | null
+  quality?: number | null
+  redacted?: boolean | null
+}
 
 /**
- * Get task lists for a user
- * Includes tasks from the Task collection (templateTasks is deprecated)
+ * Get task lists for a user (owned, managed, or collaborated)
+ * Includes tasks from the Task collection
  */
 export async function getTaskListsForUser(params: {
   userId: string
   role?: string | null
-}): Promise<TaskList[]> {
-  const { userId, role } = await params
+}): Promise<List[]> {
+  const { userId, role } = params
 
   // Find user by userId
   const user = await prisma.user.findUnique({
@@ -45,244 +77,123 @@ export async function getTaskListsForUser(params: {
 
   const whereClause = role ? { role, ...membershipClause } : membershipClause
 
-  const taskLists = await prisma.list?.findMany({
-    where: whereClause,
+  return prisma.list.findMany({
+    where: whereClause as Prisma.ListWhereInput,
     include: {
-      template: true,
-      tasks: true  // Include tasks from Task collection
+      tasks: true // Tasks from the Task collection
     },
     orderBy: {
       createdAt: 'asc'
-    }
-  })
-
-  return taskLists as unknown as TaskList[]
-}
-
-/**
- * Calculate collaborator earnings for task lists
- * Optimized to batch user profile fetching to avoid N+1 queries
- */
-export async function calculateCollaboratorEarnings(
-  taskLists: TaskList[]
-): Promise<(TaskList & { collaboratorEarnings: Record<string, number> })[]> {
-  // Batch all user IDs from all task lists to avoid N+1 queries
-  const allUserIds = new Set<string>()
-  taskLists.forEach((taskList) => {
-    const users = (taskList.users as TaskListMembership[]) || []
-    const collaborators = users
-      .filter((u) => u.role === 'COLLABORATOR' || u.role === 'MANAGER')
-      .map((u) => u.userId)
-    const owners = users.filter((u) => u.role === 'OWNER').map((u) => u.userId)
-    
-    if (collaborators.length > 0) {
-      [...owners, ...collaborators].forEach((id) => allUserIds.add(id))
-    }
-  })
-
-  // Single batched query for all user profiles
-  let userIdToUserName: Record<string, string> = {}
-  if (allUserIds.size > 0) {
-    const userProfiles = await prisma.user.findMany({
-      where: {
-        id: { in: Array.from(allUserIds) }
-      },
-      include: {
-        profiles: true
-      }
-    })
-
-    userProfiles.forEach((u) => {
-      const profile = Array.isArray(u.profiles) && u.profiles.length > 0 ? u.profiles[0] : null
-      userIdToUserName[u.id] = (profile?.data as Record<string, { value?: string }>)?.username?.value || u.id
-    })
-  }
-
-  // Now process each task list without additional database queries
-  return taskLists.map((taskList) => {
-    const collaboratorEarnings: Record<string, number> = {}
-
-    const users = (taskList.users as TaskListMembership[]) || []
-    const collaborators = users
-      .filter((u) => u.role === 'COLLABORATOR' || u.role === 'MANAGER')
-      .map((u) => u.userId)
-
-    if (collaborators.length > 0) {
-      const completedTasks = (taskList.completedTasks as CompletedTasks) || {}
-
-      // Calculate profit per task (templateTasks is deprecated)
-      const listBudget = taskList.budget
-      const listRole = taskList.role
-      const totalTasks = (taskList.tasks as Task[])?.length || 1
-      const profitPerTask = getProfitPerTask(listBudget as number | string | null, totalTasks, listRole)
-
-      // Iterate through all completed tasks to sum earnings per user
-      for (const year in completedTasks) {
-        const yearData = completedTasks[Number(year)]
-        for (const date in yearData) {
-          const dateBucket = yearData[date]
-          let tasksForDate: Task[] = []
-
-          // Support both old structure (array) and new structure
-          if (Array.isArray(dateBucket)) {
-            tasksForDate = dateBucket
-          } else if (dateBucket && ('openTasks' in dateBucket || 'closedTasks' in dateBucket)) {
-            const bucket = dateBucket as { openTasks?: Task[]; closedTasks?: Task[] }
-            tasksForDate = [
-              ...(Array.isArray(bucket.openTasks) ? bucket.openTasks : []),
-              ...(Array.isArray(bucket.closedTasks) ? bucket.closedTasks : [])
-            ]
-          }
-
-          tasksForDate.forEach((task) => {
-            if (Array.isArray(task.completers)) {
-              task.completers.forEach((completer) => {
-                const cUserId = completer.id
-                const userName = userIdToUserName[cUserId] || cUserId
-
-                if (!collaboratorEarnings[userName]) {
-                  collaboratorEarnings[userName] = 0
-                }
-                collaboratorEarnings[userName] += profitPerTask
-              })
-            }
-          })
-        }
-      }
-    }
-
-    return {
-      ...taskList,
-      collaboratorEarnings
     }
   })
 }
 
 /**
  * Ensure default task lists exist for a user
- * Creates Task records in the Task collection (no longer uses templateTasks)
+ * Creates the daily/weekly lists and their Task records directly from the
+ * DAILY_ACTIONS / WEEKLY_ACTIONS constants (no Template dependency).
+ * Idempotent: only creates a list when the user does not own one with that role.
  */
 export async function ensureDefaultTaskLists(params: {
-  userId: string
   userInternalId: string
   translations: Record<string, unknown>
 }): Promise<void> {
-  const { userId, userInternalId, translations } = await params
+  const { userInternalId, translations } = params
 
-  const ensureDefault = async (role: string): Promise<void> => {
+  const defaults: Array<{ role: string; actions: Array<Record<string, unknown>> }> = [
+    { role: 'daily.default', actions: DAILY_ACTIONS },
+    { role: 'weekly.default', actions: WEEKLY_ACTIONS }
+  ]
+
+  for (const { role, actions } of defaults) {
     const existing = await prisma.list.findFirst({
-      where: { users: { some: { userId: userInternalId, role: 'OWNER' } }, role: role }
+      where: { users: { some: { userId: userInternalId, role: 'OWNER' } }, role }
+    })
+    if (existing) continue
+
+    const localizedName = getLocalizedListName(role, translations)
+
+    // Localize task names via their localeKey
+    const translatedTasks = translateTemplateTasks(
+      ensureUniqueTaskIds(actions as never[], true),
+      translations
+    ) as unknown as DefaultAction[]
+
+    const defaultRRule = rruleFromListRole(role)
+
+    const newList = await prisma.list.create({
+      data: {
+        role,
+        name: localizedName,
+        visibility: 'PRIVATE',
+        users: [{ userId: userInternalId, role: 'OWNER' }]
+      }
     })
 
-    if (!existing) {
-      const tpl = await prisma.template.findFirst({ where: { role: role } })
-      const localizedName = getLocalizedListName(role, translations)
-
-      // Translate template tasks if they exist
-      let translatedTasks = (tpl?.tasks as Task[]) || []
-      if (translatedTasks.length > 0) {
-        translatedTasks = translateTemplateTasks(translatedTasks, translations)
-        translatedTasks = ensureUniqueTaskIds(translatedTasks, true)
-      }
-
-      // Create the list first (without templateTasks - deprecated)
-      const newList = await prisma.list.create({
+    const taskCreatePromises = translatedTasks.map((task) =>
+      prisma.task.create({
         data: {
-          role: role,
-          name: localizedName,
-          visibility: 'PRIVATE',
-          users: [{ userId: userInternalId, role: 'OWNER' }],
-          templateId: tpl?.id || null,
-          // templateTasks is deprecated - we create Task records instead
-        } as Record<string, unknown>
+          name: task.name,
+          categories: (task.categories || []) as never,
+          area: (task.area || 'self') as never,
+          status: 'OPEN',
+          listId: newList.id,
+          rrule: buildRRuleFromLegacy(task.recurrence) || defaultRRule,
+          times: task.times || 1,
+          localeKey: task.localeKey
+        }
       })
-
-      // Build recurrence rule based on role
-      let recurrence: { frequency: string; interval: number; byWeekday: number[]; byMonthDay: number[]; byMonth: number[] } | undefined = undefined
-      if (role.startsWith('daily')) {
-        recurrence = { frequency: 'DAILY', interval: 1, byWeekday: [], byMonthDay: [], byMonth: [] }
-      } else if (role.startsWith('weekly')) {
-        recurrence = { frequency: 'WEEKLY', interval: 1, byWeekday: [], byMonthDay: [], byMonth: [] }
-      }
-
-      // Create Task records in the Task collection
-      if (translatedTasks.length > 0) {
-        const taskCreatePromises = translatedTasks.map((task) =>
-          prisma.task.create({
-            data: {
-              name: task.name,
-              categories: task.categories || [],
-              area: task.area || 'self',
-              status: 'OPEN',
-              listId: newList.id,
-              recurrence: recurrence,
-              times: task.times || 1,
-              localeKey: task.localeKey,
-              budget: task.budget,
-              visibility: task.visibility,
-              quality: task.quality,
-              redacted: task.redacted || false,
-              persons: task.persons || [],
-              things: task.things || [],
-              events: task.events || [],
-              notes: task.notes || [],
-              documents: task.documents || [],
-            }
-          })
-        )
-        await Promise.all(taskCreatePromises)
-      }
-    }
+    )
+    await Promise.all(taskCreatePromises)
   }
-
-  await ensureDefault('daily.default')
-  await ensureDefault('weekly.default')
 }
 
 /**
- * Delete a task list
+ * Generate a unique public URL slug for a list (retries on collision)
  */
-export async function deleteTaskList(params: {
-  taskListId: string
-  userId: string
-}): Promise<void> {
-  const { taskListId, userId } = await params
-
-  const existing = await prisma.list.findUnique({ where: { id: taskListId } })
-  if (!existing) {
-    throw new Error('TaskList not found')
+export async function generatePublicUrl(name: string | null | undefined, id: string): Promise<string> {
+  const suffix = id.slice(-4)
+  let slug = slugifyList(name, suffix)
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const existing = await prisma.list.findFirst({ where: { publicUrl: slug }, select: { id: true } })
+    if (!existing || existing.id === id) return slug
+    slug = slugifyList(name, `${suffix}-${attempt + 1}`)
   }
-
-  await prisma.list.delete({ where: { id: taskListId } })
-
-  // Recalculate user's budget after deleting a list
-  await recalculateUserBudget(userId)
+  return `${slug}-${Date.now()}`
 }
 
 /**
- * Create a new task list
- * Creates Task records in the Task collection (no longer uses templateTasks)
+ * Create a new task list (plus its initial tasks)
  */
 export async function createTaskList(params: {
-  userId: string
-  role?: string
-  name?: string
-  budget?: number
-  premiumPercentage?: number
-  budgetDistribution?: BudgetDistribution
-  dueDate?: string | Date
-  templateId?: string | null
-  tasks?: Task[]
+  userInternalId: string
+  role?: string | null
+  name?: string | null
+  visibility?: string
+  categories?: string[]
+  area?: string | null
   collaborators?: string[]
-}): Promise<TaskList> {
-  const { userId, role, name, budget, premiumPercentage, budgetDistribution, dueDate, templateId, tasks, collaborators } = await params
+  budget?: number | null
+  budgetType?: string | null
+  budgetPercent?: number | null
+  budgetSourceIds?: string[]
+  bio?: string | null
+  profilePhoto?: string | null
+  links?: unknown
+  tasks?: NewTaskInput[]
+}): Promise<List> {
+  const {
+    userInternalId, role, name, visibility, categories, area, collaborators,
+    budget, budgetType, budgetPercent, budgetSourceIds,
+    bio, profilePhoto, links, tasks
+  } = params
 
-  // If creating a new default list, demote existing default to custom
+  // If creating a new default list, demote the existing default to custom
   if (role && role.endsWith('.default')) {
     const existingDefault = await prisma.list.findFirst({
       where: {
-        users: { some: { userId: userId, role: 'OWNER' } },
-        role: role
+        users: { some: { userId: userInternalId, role: 'OWNER' } },
+        role
       }
     })
 
@@ -294,277 +205,157 @@ export async function createTaskList(params: {
     }
   }
 
-  // Create the list first (without templateTasks - deprecated)
   const taskList = await prisma.list.create({
     data: {
-      role: role,
-      name: name,
-      budget: budget,
-      premiumPercentage: premiumPercentage || 0,
-      budgetDistribution: budgetDistribution,
-      dueDate: dueDate,
-      visibility: 'PRIVATE',
+      role: role || 'custom',
+      name: name || null,
+      visibility: (visibility as List['visibility']) || 'PRIVATE',
+      categories: (categories || []) as never,
+      area: (area || null) as never,
       users: [
-        { userId: userId, role: 'OWNER' },
+        { userId: userInternalId, role: 'OWNER' },
         ...(Array.isArray(collaborators) ? collaborators.map((id) => ({ userId: id, role: 'COLLABORATOR' as const })) : [])
-      ],
-      // templateTasks is deprecated - we create Task records instead
-      templateId: templateId
-    } as Record<string, unknown>,
-    include: { template: true, tasks: true }
+      ] as never,
+      budget: budget || null,
+      budgetType: budgetType || null,
+      budgetPercent: budgetPercent || null,
+      budgetSourceIds: budgetSourceIds || [],
+      bio: bio || null,
+      profilePhoto: profilePhoto || null,
+      links: links ?? null
+    }
   })
 
-  // Create Task records in the Task collection
-  if (Array.isArray(tasks) && tasks.length > 0) {
-    const taskCreatePromises = tasks.map((task) => {
-      // Build recurrence rule based on list cadence
-      let recurrence: { frequency: string; interval: number; byWeekday: number[]; byMonthDay: number[]; byMonth: number[] } | undefined = undefined
-      if (role) {
-        if (role.startsWith('daily')) {
-          recurrence = { frequency: 'DAILY', interval: 1, byWeekday: [], byMonthDay: [], byMonth: [] }
-        } else if (role.startsWith('weekly')) {
-          recurrence = { frequency: 'WEEKLY', interval: 1, byWeekday: [], byMonthDay: [], byMonth: [] }
-        }
-      }
+  // Assign a unique public slug
+  const publicUrl = await generatePublicUrl(taskList.name, taskList.id)
+  const finalList = await prisma.list.update({
+    where: { id: taskList.id },
+    data: { publicUrl }
+  })
 
-      return prisma.task.create({
+  // Create initial Task records
+  if (Array.isArray(tasks) && tasks.length > 0) {
+    const defaultRRule = rruleFromListRole(role)
+    const taskCreatePromises = tasks.map((task) =>
+      prisma.task.create({
         data: {
           name: task.name,
-          categories: task.categories || [],
-          area: task.area || 'self',
+          categories: (task.categories || []) as never,
+          area: (task.area || 'self') as never,
           status: 'OPEN',
-          listId: taskList.id,
-          recurrence: recurrence,
+          listId: finalList.id,
+          rrule: task.rrule ?? defaultRRule,
+          dtstart: task.dtstart || null,
           times: task.times || 1,
-          localeKey: task.localeKey,
-          budget: task.budget,
-          visibility: task.visibility,
-          quality: task.quality,
-          redacted: task.redacted || false,
-          persons: task.persons || [],
-          things: task.things || [],
-          events: task.events || [],
-          notes: task.notes || [],
-          documents: task.documents || [],
+          premium: task.premium || null,
+          premiumType: task.premiumType || null,
+          localeKey: task.localeKey || null,
+          visibility: (task.visibility as never) || null,
+          quality: task.quality || null,
+          redacted: task.redacted || false
         }
       })
-    })
-
+    )
     await Promise.all(taskCreatePromises)
-
-    // Re-fetch the list with tasks
-    const updatedList = await prisma.list.findUnique({
-      where: { id: taskList.id },
-      include: { template: true, tasks: true }
-    })
-
-    if (!updatedList) {
-      throw new Error('Failed to fetch created TaskList')
-    }
-
-    // Recalculate user's budget if premiumPercentage was set
-    if (premiumPercentage) {
-      await recalculateUserBudget(userId)
-    }
-
-    return updatedList as unknown as TaskList
   }
 
-  // Recalculate user's budget if premiumPercentage was set
-  if (premiumPercentage) {
-    await recalculateUserBudget(userId)
-  }
+  await recalculateUserBudget(userInternalId)
 
-  return taskList as unknown as TaskList
+  return prisma.list.findUnique({
+    where: { id: finalList.id },
+    include: { tasks: true }
+  }) as Promise<List>
 }
 
 /**
  * Update an existing task list
- * Updates Task records in the Task collection (no longer uses templateTasks)
  */
 export async function updateTaskList(params: {
   taskListId: string
-  userId: string
-  role?: string
-  name?: string
-  budget?: number
-  premiumPercentage?: number
-  budgetDistribution?: BudgetDistribution
-  dueDate?: string | Date
-  templateId?: string | null
-  tasks?: Task[]
+  role?: string | null
+  name?: string | null
+  visibility?: string
+  categories?: string[]
+  area?: string | null
   collaborators?: string[]
-}): Promise<TaskList> {
-  const { taskListId, userId, role, name, budget, premiumPercentage, budgetDistribution, dueDate, tasks, collaborators } = await params
+  budget?: number | null
+  budgetType?: string | null
+  budgetPercent?: number | null
+  budgetSourceIds?: string[]
+  bio?: string | null
+  profilePhoto?: string | null
+  links?: unknown
+}): Promise<List> {
+  const {
+    taskListId, role, name, visibility, categories, area, collaborators,
+    budget, budgetType, budgetPercent, budgetSourceIds,
+    bio, profilePhoto, links
+  } = params
 
-  const existing = await prisma.list.findUnique({ 
-    where: { id: taskListId },
-    include: { tasks: true }
+  const existing = await prisma.list.findUnique({
+    where: { id: taskListId }
   })
   if (!existing) {
     throw new Error('TaskList not found')
   }
 
-  // Update the list (no longer updating templateTasks - deprecated)
   const updated = await prisma.list.update({
     where: { id: existing.id },
     data: {
-      // templateTasks is deprecated - we use Task collection instead
-      role: typeof role === 'string' ? role : existing.role,
+      role: role !== undefined ? role : existing.role,
       name: name !== undefined ? name : existing.name,
-      budget: budget !== undefined ? budget : existing.budget,
-      premiumPercentage: premiumPercentage !== undefined ? premiumPercentage : (existing as Record<string, unknown>).premiumPercentage,
-      budgetDistribution: budgetDistribution !== undefined ? budgetDistribution : (existing as Record<string, unknown>).budgetDistribution,
-      dueDate: dueDate !== undefined ? dueDate : existing.dueDate,
-      users: Array.isArray(collaborators)
+      visibility: visibility !== undefined ? (visibility as List['visibility']) : existing.visibility,
+      categories: categories !== undefined ? (categories as never) : existing.categories,
+      area: area !== undefined ? (area as never) : existing.area,
+      users: (Array.isArray(collaborators)
         ? [
-            ...((existing.users as TaskListMembership[]) || []).filter((u) => u.role === 'OWNER'),
+            ...((existing.users as Array<{ userId: string; role: string }>) || []).filter((u) => u.role === 'OWNER'),
             ...collaborators.map((id) => ({ userId: id, role: 'COLLABORATOR' as const }))
           ]
-        : existing.users
-    } as Record<string, unknown>,
-    include: { template: true, tasks: true }
+        : existing.users) as never,
+      budget: budget !== undefined ? budget : existing.budget,
+      budgetType: budgetType !== undefined ? budgetType : existing.budgetType,
+      budgetPercent: budgetPercent !== undefined ? budgetPercent : existing.budgetPercent,
+      budgetSourceIds: budgetSourceIds !== undefined ? budgetSourceIds : existing.budgetSourceIds,
+      bio: bio !== undefined ? bio : existing.bio,
+      profilePhoto: profilePhoto !== undefined ? profilePhoto : existing.profilePhoto,
+      links: links !== undefined ? links : existing.links
+    },
+    include: { tasks: true }
   })
 
-  // Handle Task collection updates if tasks were provided
-  if (Array.isArray(tasks)) {
-    // existing.tasks is available from the include: { tasks: true } query
-    const existingTasks = existing.tasks || []
-    const existingTaskIds = new Set(existingTasks.map((t) => t.id))
-    const incomingTaskIds = new Set(tasks.filter(t => t.id).map(t => t.id))
-
-    // Find tasks to delete (exist in DB but not in incoming)
-    const tasksToDelete = existingTasks.filter((t) => !incomingTaskIds.has(t.id))
-
-    // Find tasks to create (new tasks without ID or with non-existing ID)
-    const tasksToCreate = tasks.filter(t => !t.id || !existingTaskIds.has(t.id))
-
-    // Find tasks to update (exist in both)
-    const tasksToUpdate = tasks.filter(t => t.id && existingTaskIds.has(t.id))
-
-    // Delete removed tasks
-    if (tasksToDelete.length > 0) {
-      await prisma.task.deleteMany({
-        where: { id: { in: tasksToDelete.map((t) => t.id) } }
-      })
-    }
-
-    // Create new tasks
-    if (tasksToCreate.length > 0) {
-      // Build recurrence rule based on list role/cadence
-      const listRole = typeof role === 'string' ? role : existing.role
-      let recurrence: { frequency: string; interval: number; byWeekday: number[]; byMonthDay: number[]; byMonth: number[] } | undefined = undefined
-      if (listRole) {
-        if (listRole.startsWith('daily')) {
-          recurrence = { frequency: 'DAILY', interval: 1, byWeekday: [], byMonthDay: [], byMonth: [] }
-        } else if (listRole.startsWith('weekly')) {
-          recurrence = { frequency: 'WEEKLY', interval: 1, byWeekday: [], byMonthDay: [], byMonth: [] }
-        }
-      }
-
-      const createPromises = tasksToCreate.map((task) =>
-        prisma.task.create({
-          data: {
-            name: task.name,
-            categories: task.categories || [],
-            area: task.area || 'self',
-            status: 'OPEN',
-            listId: taskListId,
-            recurrence: recurrence,
-            times: task.times || 1,
-            localeKey: task.localeKey,
-            budget: task.budget,
-            visibility: task.visibility,
-            quality: task.quality,
-            redacted: task.redacted || false,
-            persons: task.persons || [],
-            things: task.things || [],
-            events: task.events || [],
-            notes: task.notes || [],
-            documents: task.documents || [],
-          }
-        })
-      )
-      await Promise.all(createPromises)
-    }
-
-    // Update existing tasks
-    if (tasksToUpdate.length > 0) {
-      const updatePromises = tasksToUpdate.map((task) =>
-        prisma.task.update({
-          where: { id: task.id },
-          data: {
-            name: task.name,
-            categories: task.categories || [],
-            area: task.area || 'self',
-            times: task.times || 1,
-            localeKey: task.localeKey,
-            budget: task.budget,
-            visibility: task.visibility,
-            quality: task.quality,
-            redacted: task.redacted,
-            persons: task.persons || [],
-            things: task.things || [],
-            events: task.events || [],
-            notes: task.notes || [],
-            documents: task.documents || [],
-          }
-        })
-      )
-      await Promise.all(updatePromises)
-    }
-
-    // Re-fetch with updated tasks
-    const finalList = await prisma.list.findUnique({
-      where: { id: taskListId },
-      include: { template: true, tasks: true }
-    })
-
-    if (!finalList) {
-      throw new Error('Failed to fetch updated TaskList')
-    }
-
-    // Recalculate user's budget if premiumPercentage was updated
-    if (premiumPercentage !== undefined) {
-      await recalculateUserBudget(userId)
-    }
-
-    return finalList as unknown as TaskList
-  }
-
-  // Recalculate user's budget if premiumPercentage was updated
-  if (premiumPercentage !== undefined) {
-    await recalculateUserBudget(userId)
-  }
-
-  return updated as unknown as TaskList
+  return updated
 }
 
 /**
- * Update template with tasks
+ * Delete a task list
  */
-export async function updateTemplateWithTasks(params: {
-  templateId: string
-  tasks: Task[]
+export async function deleteTaskList(params: {
+  taskListId: string
+  userInternalId: string
 }): Promise<void> {
-  const { templateId, tasks } = await params
+  const { taskListId, userInternalId } = params
 
-  await prisma.template.update({
-    where: { id: templateId },
-    data: {
-      tasks: tasks
-    }
-  })
+  const existing = await prisma.list.findUnique({ where: { id: taskListId } })
+  if (!existing) {
+    throw new Error('TaskList not found')
+  }
+
+  await prisma.list.delete({ where: { id: taskListId } })
+
+  // Recalculate the owner's budget usage after deleting a list
+  await recalculateUserBudget(userInternalId)
 }
 
 /**
- * Get a task list with its template and tasks
+ * Get a task list with its tasks
  */
-export async function getTaskListWithTemplate(taskListId: string): Promise<TaskList | null> {
-  const taskList = await prisma.list.findUnique({
+export async function getTaskListWithTasks(taskListId: string): Promise<List | null> {
+  return prisma.list.findUnique({
     where: { id: taskListId },
-    include: { template: true, tasks: true }
+    include: { tasks: true }
   })
-
-  return taskList as unknown as TaskList | null
 }
+
+// Type re-export keeps other modules compiling until they are reworked
+export type { TaskList }
