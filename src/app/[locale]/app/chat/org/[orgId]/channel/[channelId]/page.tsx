@@ -1,7 +1,7 @@
 'use client'
 
 import { use } from 'react'
-import { ChatView } from '@/views/chatView'
+import { ChatView } from '@/views/chat/chatView'
 
 interface Props {
   params: Promise<{ orgId: string; channelId: string }>

@@ -9,6 +9,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
+import { sanitizeText } from '@/lib/utils/sanitize'
 import {
   getUserLocale,
   loadTranslationsForLocale,
@@ -37,6 +38,8 @@ import { recordCompletions } from '@/lib/services/tasklist'
 import { updateTaskStatus, updateTaskRedacted } from '@/lib/services/tasklist'
 import { processEphemeralTasks } from '@/lib/services/tasklist'
 import { updateTaskCompletionHandler } from './handlers/updateTaskCompletion'
+import { applyPremiumFactors, PremiumFactorSettings } from '@/lib/utils/earningsUtils'
+import { calculateTaskBudgetFromDistribution } from '@/lib/services/task/taskMigrationService'
 
 /**
  * GET /api/v1/tasklists
@@ -53,14 +56,21 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const { searchParams } = new URL(request.url)
     const role = searchParams.get('role')
 
-    // Find user by userId
+    // Find user by userId (include settings for premium factor calculations)
     const user = await prisma.user.findUnique({
-      where: { userId: userId }
+      where: { userId: userId },
+      select: {
+        id: true,
+        settings: true
+      }
     })
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
+    
+    // Extract premium factor settings
+    const premiumFactorSettings = user.settings as PremiumFactorSettings | null
 
     // Get user's locale and translations
     const userLocale = getUserLocale(request)
@@ -101,7 +111,42 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       })
     )
 
-    return NextResponse.json({ taskLists: taskListsWithCompletion })
+    // Apply premium factors and calculate financial values from budget distribution for all tasks in each list
+    const taskListsWithFactoredPremiums = taskListsWithCompletion.map((list: any) => {
+      const listRole = list.role
+      
+      // Calculate financial values from budget distribution for tasks in Task collection
+      const factoredTasks = (list.tasks || []).map((task: any) => {
+        // Calculate financial values from budget distribution (not from task fields)
+        const budgetAllocation = calculateTaskBudgetFromDistribution({
+          task,
+          list: {
+            budget: list.budget,
+            budgetDistribution: list.budgetDistribution,
+            premiumPercentage: list.premiumPercentage,
+            tasks: list.tasks,
+            role: list.role
+          }
+        })
+        
+        const rawPremium = budgetAllocation.premium || 0
+        const factoredPremium = applyPremiumFactors(rawPremium, listRole, premiumFactorSettings)
+        const earnings = budgetAllocation.budget || 0
+        
+        return {
+          ...task,
+          premium: factoredPremium,
+          totalGains: earnings + factoredPremium
+        }
+      })
+      
+      return {
+        ...list,
+        tasks: factoredTasks
+      }
+    })
+
+    return NextResponse.json({ taskLists: taskListsWithFactoredPremiums })
   } catch (error) {
     console.error('Error fetching task lists:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
@@ -128,7 +173,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       updateTemplate,
       name,
       budget: budgetRaw,
-      budgetPercentage,
+      premiumPercentage,
+      budgetDistribution,
       dueDate,
       create,
       collaborators
@@ -136,6 +182,19 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     // Parse budget as float
     const budget = parseBudget(budgetRaw)
+
+    // Sanitize user input to prevent XSS attacks
+    const sanitizedName = name ? sanitizeText(name) : undefined
+    
+    // Sanitize task names if tasks are provided
+    const sanitizeTasks = (taskArray: Task[] | undefined): Task[] | undefined => {
+      if (!Array.isArray(taskArray)) return taskArray
+      return taskArray.map(task => ({
+        ...task,
+        name: task.name ? sanitizeText(task.name) : task.name
+      }))
+    }
+    const sanitizedTasks = sanitizeTasks(tasks as Task[] | undefined)
 
     // Find user by userId
     const user = await prisma.user.findUnique({
@@ -151,17 +210,17 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const userLocale = getUserLocale(request)
     const translations = loadTranslationsForLocale(userLocale)
 
-    // Translate tasks if provided
-    let translatedTasks = tasks
-    if (Array.isArray(tasks) && tasks.length > 0) {
-      translatedTasks = translateTemplateTasks(tasks as Task[], translations)
+    // Translate tasks if provided (use sanitized tasks)
+    let translatedTasks = sanitizedTasks
+    if (Array.isArray(sanitizedTasks) && sanitizedTasks.length > 0) {
+      translatedTasks = translateTemplateTasks(sanitizedTasks as Task[], translations)
       translatedTasks = ensureUniqueTaskIds(translatedTasks, !!templateId)
     }
 
-    // Get localized name if not provided and creating a default list
-    let localizedName = name
+    // Get localized name if not provided and creating a default list (use sanitized name)
+    let localizedName = sanitizedName
     if (!localizedName && role && role.endsWith('.default')) {
-      localizedName = getLocalizedListName(role, translations, name)
+      localizedName = getLocalizedListName(role, translations, sanitizedName)
     }
 
     // Handle delete task list
@@ -255,9 +314,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         taskListId: body.taskListId,
         userId: user.id,
         role,
-        name,
+        name: sanitizedName,
         budget,
-        budgetPercentage,
+        premiumPercentage,
+        budgetDistribution,
         dueDate,
         templateId,
         tasks: translatedTasks as Task[],
@@ -289,7 +349,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         role,
         name: localizedName,
         budget,
-        budgetPercentage,
+        premiumPercentage,
+        budgetDistribution,
         dueDate,
         templateId,
         tasks: translatedTasks as Task[],
@@ -301,9 +362,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         taskListId: existingTaskList.id,
         userId: user.id,
         role,
-        name,
+        name: sanitizedName,
         budget,
-        budgetPercentage,
+        premiumPercentage,
+        budgetDistribution,
         dueDate,
         templateId,
         tasks: translatedTasks as Task[],
@@ -316,7 +378,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         role,
         name: localizedName,
         budget,
-        budgetPercentage,
+        premiumPercentage,
+        budgetDistribution,
         dueDate,
         templateId,
         tasks: translatedTasks as Task[],

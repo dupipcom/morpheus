@@ -163,11 +163,11 @@ export const AddTaskForm = ({
           })
         })
       } else if (isEditMode) {
-        // Update source task in list.tasks - legacy path for old embedded tasks
+        // Update source task in list.tasks - use Task collection only (templateTasks is deprecated)
         if (selectedList) {
           const blueprint = (Array.isArray((selectedList as any).tasks) && (selectedList as any).tasks.length > 0)
             ? (selectedList as any).tasks
-            : ((selectedList as any).templateTasks || [])
+            : []
           const updatedTasks = blueprint.map((t: any) => {
             const isMatch = t.id === editTask.id ||
                             t.localeKey === editTask.localeKey ||
@@ -186,10 +186,10 @@ export const AddTaskForm = ({
           })
         }
       } else if (newTask.saveToTemplate && selectedList) {
-        // Add new template task - legacy path
+        // Add new task to Task collection (templateTasks is deprecated)
         const blueprint = (Array.isArray((selectedList as any).tasks) && (selectedList as any).tasks.length > 0)
           ? (selectedList as any).tasks
-          : ((selectedList as any).templateTasks || [])
+          : []
         const updatedTasks = [ { ...baseTask }, ...(blueprint || []) ]
         await fetch('/api/v1/tasklists', {
           method: 'POST',

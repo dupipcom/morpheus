@@ -13,13 +13,25 @@ async function getOrCreateUser(clerkUserId: string) {
   })
 
   if (!user) {
-    user = await prisma.user.create({
-      data: {
-        userId: clerkUserId,
-        settings: { currency: null, speed: null }
-      },
-      include: { profiles: true }
-    })
+    try {
+      user = await prisma.user.create({
+        data: {
+          userId: clerkUserId,
+          settings: { currency: null, speed: null }
+        },
+        include: { profiles: true }
+      })
+    } catch (error: any) {
+      if (error?.code === 'P2002') {
+        // User was just created by another concurrent request
+        user = await prisma.user.findUnique({
+          where: { userId: clerkUserId },
+          include: { profiles: true }
+        })
+      } else {
+        throw error
+      }
+    }
   }
 
   return user
@@ -44,10 +56,6 @@ async function updateDayWithBalance(
   equity: number,
   withdrawn?: number
 ): Promise<void> {
-  const existingDay = await prisma.day.findFirst({
-    where: { userId, date: dateISO }
-  })
-
   const periods = calculateDatePeriods(dateISO)
   const updateData: Record<string, unknown> = {
     balance,
@@ -60,20 +68,15 @@ async function updateDayWithBalance(
     updateData.withdrawn = withdrawn
   }
 
-  if (existingDay) {
-    await prisma.day.update({
-      where: { id: existingDay.id },
-      data: updateData
-    })
-  } else {
-    await prisma.day.create({
-      data: {
-        userId,
-        date: dateISO,
-        ...updateData
-      }
-    })
-  }
+  await prisma.day.upsert({
+    where: { userId_date: { userId, date: dateISO } },
+    update: updateData,
+    create: {
+      userId,
+      date: dateISO,
+      ...updateData
+    }
+  })
 }
 
 export async function GET(req: Request) {
@@ -87,39 +90,47 @@ export async function GET(req: Request) {
 
   // Ensure user has a profile - create one if missing
   if (user && (!user.profiles || user.profiles.length === 0)) {
-    try {
-      const clerkUser = await currentUser()
-      await prisma.profile.create({
-        data: {
-          userId: user.id,
-          data: {
-            username: { value: clerkUser?.username || null, visibility: true },
-            firstName: { value: null, visibility: false },
-            lastName: { value: null, visibility: false },
-            bio: { value: null, visibility: false },
-            profilePicture: { value: null, visibility: false }
-          }
-        }
-      })
-      user = await getOrCreateUser(userId)
-
-      // Revalidate public profile path
+    const clerkUser = await currentUser()
+    const existing = await prisma.profile.findUnique({ where: { userId: user.id } })
+    if (!existing) {
       try {
+        await prisma.profile.create({
+          data: {
+            userId: user.id,
+            // Only set root-level username when available — null violates MongoDB unique index
+            ...(clerkUser?.username ? { username: clerkUser.username } : {}),
+            data: {
+              username: { value: clerkUser?.username || null, visibility: true },
+              firstName: { value: null, visibility: false },
+              lastName: { value: null, visibility: false },
+              bio: { value: null, visibility: false },
+              profilePicture: { value: null, visibility: false }
+            }
+          }
+        })
+        // Revalidate public profile path
         const username = clerkUser?.username
         if (username) {
-          const origin = new URL(req.url).origin
-          await fetch(`${origin}/api/v1/revalidate`, {
-            method: 'POST',
-            headers: { 'content-type': 'application/json' },
-            body: JSON.stringify({ paths: [`/@${username}`] })
-          })
+          try {
+            const origin = new URL(req.url).origin
+            await fetch(`${origin}/api/v1/revalidate`, {
+              method: 'POST',
+              headers: { 'content-type': 'application/json' },
+              body: JSON.stringify({ paths: [`/@${username}`] })
+            })
+          } catch (revalidateError) {
+            console.error('Error calling v1 revalidate for profile path:', revalidateError)
+          }
         }
-      } catch (revalidateError) {
-        console.error('Error calling v1 revalidate for profile path:', revalidateError)
+      } catch (error: any) {
+        if (error?.code === 'P2002') {
+          // Profile was just created by another concurrent request
+        } else {
+          console.error('Error creating profile:', error)
+        }
       }
-    } catch (error) {
-      console.error('Error creating profile:', error)
     }
+    user = await getOrCreateUser(userId)
   }
 
   // Sync username from Clerk
@@ -127,22 +138,35 @@ export async function GET(req: Request) {
     const clerkUser = await currentUser()
     if (clerkUser?.username && user?.profiles?.length) {
       const existingData = (user.profiles[0].data || {}) as Record<string, unknown>
-      await prisma.profile.update({
-        where: { userId: user.id },
-        data: {
-          data: {
-            ...existingData,
-            username: {
-              value: clerkUser.username,
-              visibility: (existingData.username as Record<string, unknown>)?.visibility ?? true
+      const currentUsername = (existingData.username as Record<string, unknown>)?.value
+      if (currentUsername !== clerkUser.username) {
+        try {
+          await prisma.profile.update({
+            where: { userId: user.id },
+            data: {
+              data: {
+                ...existingData,
+                username: {
+                  value: clerkUser.username,
+                  visibility: (existingData.username as Record<string, unknown>)?.visibility ?? true
+                }
+              }
             }
+          })
+          user = await getOrCreateUser(userId)
+        } catch (updateError: any) {
+          // P2034 = write conflict/deadlock: another concurrent request already synced
+          if (updateError?.code !== 'P2034') {
+            throw updateError
           }
         }
-      })
-      user = await getOrCreateUser(userId)
+      }
     }
-  } catch (error) {
-    console.error('Error syncing username from Clerk:', error)
+  } catch (error: any) {
+    // Clerk API errors are transient; the request already handles missing Clerk data
+    if (!error?.clerkError) {
+      console.error('Error syncing username from Clerk:', error)
+    }
   }
 
   // Initialize budget fields if needed
@@ -169,12 +193,20 @@ export async function POST(req: Request) {
   let user = await prisma.user.findUnique({ where: { userId } })
 
   if (!user) {
-    user = await prisma.user.create({
-      data: {
-        userId,
-        settings: { currency: null, speed: null }
+    try {
+      user = await prisma.user.create({
+        data: {
+          userId,
+          settings: { currency: null, speed: null }
+        }
+      })
+    } catch (error: any) {
+      if (error?.code === 'P2002') {
+        user = await prisma.user.findUnique({ where: { userId } })
+      } else {
+        throw error
       }
-    })
+    }
   }
 
   // Handle availableBalance update

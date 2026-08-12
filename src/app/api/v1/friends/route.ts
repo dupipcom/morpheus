@@ -22,58 +22,59 @@ export async function GET(req: NextRequest) {
 
     if (!currentUser) {
       // Create user if they don't exist in database
-      currentUser = await prisma.user.create({
-        data: {
-          userId,
-          settings: {
-            currency: null,
-            speed: null
-          } as any
-        },
-        include: {
-          profile: true
+      try {
+        currentUser = await prisma.user.create({
+          data: {
+            userId,
+            settings: {
+              currency: null,
+              speed: null
+            } as any
+          },
+          include: {
+            profiles: true
+          }
+        })
+      } catch (error: any) {
+        if (error?.code === 'P2002') {
+          currentUser = await prisma.user.findUnique({
+            where: { userId },
+            include: { profiles: true }
+          })
+        } else {
+          throw error
         }
-      })
+      }
     }
 
     // Ensure current user has a profile - create one if missing
     if (currentUser && (!currentUser.profiles || currentUser.profiles.length === 0)) {
-      try {
-        await prisma.profile.create({
-          data: {
-            userId: currentUser.id,
+      const existing = await prisma.profile.findUnique({ where: { userId: currentUser.id } })
+      if (!existing) {
+        try {
+          await prisma.profile.create({
             data: {
-              username: {
-                value: null,
-                visibility: true
-              },
-              firstName: {
-                value: null,
-                visibility: false
-              },
-              lastName: {
-                value: null,
-                visibility: false
-              },
-              bio: {
-                value: null,
-                visibility: false
-              },
-              profilePicture: {
-                value: null,
-                visibility: false
+              userId: currentUser.id,
+              data: {
+                username: { value: null, visibility: true },
+                firstName: { value: null, visibility: false },
+                lastName: { value: null, visibility: false },
+                bio: { value: null, visibility: false },
+                profilePicture: { value: null, visibility: false }
               }
             }
+          })
+        } catch (error: any) {
+          if (error?.code !== 'P2002') {
+            console.error('Error creating profile in friends endpoint:', error)
           }
-        })
-        // Refetch user with new profile
-        currentUser = await prisma.user.findUnique({
-          where: { userId },
-          include: { profiles: true }
-        })
-      } catch (error) {
-        console.error('Error creating profile in friends endpoint:', error)
+        }
       }
+      // Refetch user with new profile
+      currentUser = await prisma.user.findUnique({
+        where: { userId },
+        include: { profiles: true }
+      })
     }
 
     // Get friends with user details

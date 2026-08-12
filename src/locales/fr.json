@@ -562,7 +562,7 @@
       "templateOrListLabel": "Modèle ou Liste",
       "chooseTemplatePlaceholder": "Choisir un modèle",
       "budgetLabel": "Budget",
-      "budgetPercentageLabel": "Allocation du budget personnel",
+      "premiumPercentageLabel": "Allocation du budget personnel",
       "dueDateLabel": "Date d'échéance",
       "pickDatePlaceholder": "Choisir une date",
       "cadenceLabel": "Cadence",
@@ -597,7 +597,24 @@
       "save": "Enregistrer",
       "cancel": "Annuler",
       "deleteListConfirm": "Supprimer cette liste ? Cela ne peut pas être annulé.",
-      "deleteList": "Supprimer la liste"
+      "deleteList": "Supprimer la liste",
+      "manageTasks": "Gérer les tâches",
+      "manageBudgetAllocation": "Répartition du budget",
+      "distributionModeLabel": "Répartition",
+      "distributionMode": {
+        "equal": "Égal",
+        "area": "Par zone",
+        "category": "Par catégorie",
+        "task": "Par tâche"
+      },
+      "areaDistributionLabel": "Budget de zone",
+      "areaPrizeDistributionLabel": "Prix de zone",
+      "categoryDistributionLabel": "Budget de catégorie",
+      "categoryPrizeDistributionLabel": "Prix de catégorie",
+      "taskDistributionLabel": "Budget",
+      "premiumLabel": "Prix",
+      "totalLabel": "Total",
+      "addTaskTitle": "Ajouter une tâche"
     },
     "addTemplateForm": {
       "title": "Créer un Nouveau Modèle",

@@ -3,6 +3,7 @@
  */
 
 import type { Task as PrismaTask, Job as PrismaJob, RecurrenceFrequency } from '@/generated/prisma'
+import type { BudgetDistribution } from '@/lib/utils/budgetDistributionUtils'
 
 /**
  * Migration metadata stored on List model
@@ -31,7 +32,7 @@ export interface MigrationResult {
 export interface EmbeddedCompleter {
   id: string
   earnings?: number
-  prize?: number
+  premium?: number
   time?: number
   completedAt?: Date | string
 }
@@ -61,6 +62,9 @@ export interface EmbeddedTask {
   completedOn?: string
   dueDate?: Date | string | null
   budget?: number
+  earnings?: number
+  premium?: number
+  totalGains?: number
   visibility?: string
   quality?: number
   redacted?: boolean
@@ -97,6 +101,15 @@ export interface MigrateEmbeddedTaskParams {
   listId: string
   listRole: string | null
   userId: string
+  list?: ListForBudgetCalculation // Optional list object for budget calculations
+}
+
+interface ListForBudgetCalculation {
+  budget?: number | null
+  budgetDistribution?: BudgetDistribution | null
+  premiumPercentage?: number | null
+  tasks?: any[]
+  // templateTasks is deprecated - using Task collection only
 }
 
 /**

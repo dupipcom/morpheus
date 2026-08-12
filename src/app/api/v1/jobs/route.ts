@@ -4,7 +4,7 @@ import prisma from '@/lib/prisma'
 import { updateTaskOccurrenceDates } from '@/lib/services/task'
 import { updateDayProgress } from '@/lib/services/day'
 import { formatDateLocal } from '@/lib/utils/taskUtils'
-import { calculateAndApplyJobEarnings } from '@/lib/services/job/earningsService'
+import { calculateAndApplyJobEarnings, initializeJobInvoice, updateJobWithTaskValues } from '@/lib/services/job/earningsService'
 import type { ListUser } from '@/lib/services/job/types'
 
 // Standard job include clause for consistent responses
@@ -50,19 +50,38 @@ async function getUserListRole(userId: string, listId: string): Promise<string |
 }
 
 // Build where clause from search params
-function buildJobWhereClause(searchParams: URLSearchParams): Record<string, string> {
-  const where: Record<string, string> = {}
+function buildJobWhereClause(searchParams: URLSearchParams): Record<string, any> {
+  const where: Record<string, any> = {}
+  
+  // Simple field mappings
   const paramMap = [
     ['listId', 'listId'],
     ['taskId', 'taskId'],
     ['workerId', 'workerId'],
-    ['status', 'status'],
-    ['date', 'occurrenceDate']
+    ['status', 'status']
   ]
   paramMap.forEach(([param, field]) => {
     const value = searchParams.get(param)
     if (value) where[field] = value
   })
+  
+  // Handle date filtering - date range takes precedence over single date
+  const dateStart = searchParams.get('dateStart')
+  const dateEnd = searchParams.get('dateEnd')
+  const singleDate = searchParams.get('date')
+  
+  if (dateStart && dateEnd) {
+    // Date range filter for weekly lists
+    where.occurrenceDate = {
+      gte: dateStart,
+      lte: dateEnd
+    }
+  } else if (singleDate) {
+    // Exact date match for daily lists
+    where.occurrenceDate = singleDate
+  }
+  // No date filter for one-off lists (neither date nor dateStart/dateEnd provided)
+  
   return where
 }
 
@@ -200,9 +219,24 @@ export async function POST(request: NextRequest) {
       include: JOB_INCLUDE
     })
 
-    // Process accepted jobs
+    // Process accepted jobs - initialize invoice and calculate earnings
     if (job.status === 'ACCEPTED') {
       const dateToUse = job.occurrenceDate || formatDateLocal(new Date())
+      
+      // Initialize invoice with task financial values
+      try {
+        await initializeJobInvoice(job.id, taskId, listId)
+      } catch (invoiceError) {
+        console.error('Error initializing job invoice:', invoiceError)
+      }
+      
+      // Update job with current task values
+      try {
+        await updateJobWithTaskValues(job.id, taskId, listId)
+      } catch (taskValuesError) {
+        console.error('Error updating job with task values:', taskValuesError)
+      }
+      
       await updateTaskOccurrenceDates(taskId, 'complete', dateToUse)
       await updateDayProgress(workerId, dateToUse)
 

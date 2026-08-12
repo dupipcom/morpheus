@@ -31,7 +31,7 @@ Created a new service to handle all financial calculations for jobs:
 
 1. **`calculateAndApplyJobEarnings()`**
    - Calculates earnings for a completed job
-   - Fetches list details (role, budget, budgetPercentage)
+   - Fetches list details (role, budget, premiumPercentage)
    - Fetches worker's equity
    - Calculates prize and profit based on list cadence (daily/weekly/one-off)
    - Updates user's stash and profit
@@ -122,9 +122,9 @@ Created reusable hook for optimistic earnings (for future use):
 
 ### Financial Calculations
 
-**Prize (from budgetPercentage)**:
+**Prize (from premiumPercentage)**:
 - Based on user's equity (availableBalance - stash)
-- Formula: `(budgetPercentage / 100) × equity ÷ numTasks`
+- Formula: `(premiumPercentage / 100) × equity ÷ numTasks`
 - For daily: divide by 30
 - For weekly: divide by 4
 
@@ -168,7 +168,7 @@ ticker: [
 
 ## Testing Checklist
 
-- [ ] Complete a task in a list with budgetPercentage set
+- [ ] Complete a task in a list with premiumPercentage set
 - [ ] Verify prize calculation is correct
 - [ ] Complete a task in a list with listBudget set
 - [ ] Verify profit calculation is correct

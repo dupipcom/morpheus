@@ -545,7 +545,7 @@
       "templateOrListLabel": "Šablona nebo seznam",
       "chooseTemplatePlaceholder": "Vyberte šablonu",
       "budgetLabel": "Rozpočet",
-      "budgetPercentageLabel": "Přidělení osobního rozpočtu",
+      "premiumPercentageLabel": "Přidělení osobního rozpočtu",
       "dueDateLabel": "Datum splatnosti",
       "pickDatePlaceholder": "Vyberte datum",
       "cadenceLabel": "Kadence",
@@ -580,7 +580,24 @@
       "save": "Uložit",
       "cancel": "Zrušit",
       "deleteListConfirm": "Smazat tento seznam? Toto nelze vrátit zpět.",
-      "deleteList": "Smazat seznam"
+      "deleteList": "Smazat seznam",
+      "manageTasks": "Spravovat úkoly",
+      "manageBudgetAllocation": "Distribuce rozpočtu",
+      "distributionModeLabel": "Distribuce",
+      "distributionMode": {
+        "equal": "Rovnoměrně",
+        "area": "Podle oblasti",
+        "category": "Podle kategorie",
+        "task": "Na úkol"
+      },
+      "areaDistributionLabel": "Rozpočet oblasti",
+      "areaPrizeDistributionLabel": "Cena oblasti",
+      "categoryDistributionLabel": "Rozpočet kategorie",
+      "categoryPrizeDistributionLabel": "Cena kategorie",
+      "taskDistributionLabel": "Rozpočet",
+      "premiumLabel": "Cena",
+      "totalLabel": "Celkem",
+      "addTaskTitle": "Přidat úkol"
     },
     "addTemplateForm": {
       "title": "Vytvořit novou šablonu",

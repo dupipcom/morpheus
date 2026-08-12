@@ -562,7 +562,7 @@
       "templateOrListLabel": "Шаблон или список",
       "chooseTemplatePlaceholder": "Выберите шаблон",
       "budgetLabel": "Бюджет",
-      "budgetPercentageLabel": "Распределение личного бюджета",
+      "premiumPercentageLabel": "Распределение личного бюджета",
       "dueDateLabel": "Срок исполнения",
       "pickDatePlaceholder": "Выберите дату",
       "cadenceLabel": "Каденс",
@@ -597,7 +597,24 @@
       "save": "Сохранить",
       "cancel": "Отмена",
       "deleteListConfirm": "Удалить этот список? Это нельзя отменить.",
-      "deleteList": "Удалить список"
+      "deleteList": "Удалить список",
+      "manageTasks": "Управление задачами",
+      "manageBudgetAllocation": "Распределение бюджета",
+      "distributionModeLabel": "Распределение",
+      "distributionMode": {
+        "equal": "Равно",
+        "area": "По области",
+        "category": "По категории",
+        "task": "На задачу"
+      },
+      "areaDistributionLabel": "Бюджет области",
+      "areaPrizeDistributionLabel": "Приз области",
+      "categoryDistributionLabel": "Бюджет категории",
+      "categoryPrizeDistributionLabel": "Приз категории",
+      "taskDistributionLabel": "Бюджет",
+      "premiumLabel": "Приз",
+      "totalLabel": "Всего",
+      "addTaskTitle": "Добавить задачу"
     },
     "addTemplateForm": {
       "title": "Создать новый шаблон",

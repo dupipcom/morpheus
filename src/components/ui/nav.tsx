@@ -430,7 +430,7 @@ export const Logo: TComponent = function ({
           to-[#f1cfffcc]
           to-50%
           dark:to-[#3e365ccc]
-          dark:from-[#563769cc] p-4 z-[999] relative">
+          dark:from-[#563769cc] p-4 z-[999] relative min-w-[100vw]">
           {/* <TickerStrip /> */}
           <div className="flex justify-between">
           <div className="md:flex hidden md:basis-1/3 items-center justify-start">

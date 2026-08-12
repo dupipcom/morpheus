@@ -5,7 +5,7 @@ import { useAuth } from '@clerk/nextjs'
 import { useSearchParams } from 'next/navigation'
 
 import { GlobalContext } from "@/lib/contexts"
-import { BeView } from "@/views/beView"
+import { BeView } from "@/views/be/beView"
 import { ViewMenu } from "@/components/viewMenu"
 import { PublishNote } from '@/components/publishNote'
 import { setLoginTime, getLoginTime } from '@/lib/utils/cookieManager'

@@ -8,7 +8,7 @@ import { useAuth } from '@clerk/nextjs';
 import Link from 'next/link'
 
 import { GlobalContext } from "@/lib/contexts"
-import { DashboardView } from "@/views/dashboardView"
+import { DashboardView } from "@/views/dashboard/dashboardView"
 import { ViewMenu } from "@/components/viewMenu"
 import { PublishNote } from '@/components/publishNote'
 import { setLoginTime, getLoginTime } from '@/lib/utils/cookieManager'

@@ -5,6 +5,11 @@
 
 import prisma from '@/lib/prisma'
 import type { Task as PrismaTask, Job as PrismaJob, Areas, Category, TaskStatus } from '@/generated/prisma'
+import type { BudgetDistribution } from '@/lib/utils/budgetDistributionUtils'
+import {
+  getTaskAllocationFromDistribution,
+  convertEntityAllocationsToMaps
+} from '@/lib/utils/budgetDistributionUtils'
 import type {
   MigrationMetadata,
   MigrationResult,
@@ -15,6 +20,18 @@ import type {
   MigrateEmbeddedTaskParams,
   MigrateCompletersParams
 } from './types'
+
+/**
+ * Partial list data needed for budget calculations
+ */
+interface ListForBudgetCalculation {
+  budget?: number | null
+  budgetDistribution?: BudgetDistribution | null
+  premiumPercentage?: number | null
+  prizePercentage?: number | null
+  tasks?: any[]
+  // templateTasks is deprecated - using Task collection only
+}
 
 /**
  * Get a unique key for task matching
@@ -139,16 +156,170 @@ function mapToCategories(categories: string[] | undefined): Category[] {
 }
 
 /**
+ * Calculate task budget allocations from list's budget distribution
+ * Returns { budget, premium, totalGains } for a specific task
+ */
+export function calculateTaskBudgetFromDistribution(params: {
+  task: EmbeddedTask | PrismaTask
+  list: ListForBudgetCalculation
+  taskIndex?: number
+  userEquity?: number
+  remainingBudget?: number
+}): { budget: number | null; premium: number | null; totalGains: number | null } {
+  const { task, list, taskIndex = 0, userEquity, remainingBudget } = params
+  const listBudget = list.budget || 0
+  const budgetDistribution = list.budgetDistribution
+  // Support both `premiumPercentage` (new) and `prizePercentage` (older/alternate name)
+  const premiumPercentage = (list.premiumPercentage ?? (list as any).prizePercentage) || 0
+
+  let earnings: number | null = null
+  let premium: number | null = null
+
+  // PRIORITY 1: Check for custom per-task allocation in budgetDistribution (array-based)
+  if (budgetDistribution && task.id) {
+    const premiumPool = listBudget * (premiumPercentage / 100)
+    const taskAlloc = getTaskAllocationFromDistribution(task.id, budgetDistribution as any, listBudget, premiumPool)
+    if (taskAlloc) {
+      earnings = taskAlloc.taskEarnings
+      premium = taskAlloc.taskPremium
+    }
+  }
+
+  // PRIORITY 2: Use area-based distribution (array-based allocations) - only fill missing fields
+  if (budgetDistribution && task.area) {
+    const premiumPool = listBudget * (premiumPercentage / 100)
+    const { budgets: areaBudgets, premiums: areaPremiums } = convertEntityAllocationsToMaps(budgetDistribution.areas as any, listBudget, premiumPool)
+    const areaBudget = areaBudgets[task.area] || 0
+    const tasksInArea = (list.tasks || []).filter((t: any) => t.area === task.area).length || 1
+    if (earnings == null && areaBudget > 0) {
+      earnings = areaBudget / tasksInArea
+    }
+    const areaPremiumBudget = areaPremiums[task.area] || 0
+    if (premium == null && areaPremiumBudget > 0) {
+      premium = areaPremiumBudget / tasksInArea
+    }
+  }
+
+  // PRIORITY 3: Use category-based distribution (array-based allocations) - only fill missing fields
+  if (budgetDistribution && task.categories && task.categories.length > 0) {
+    const premiumPool = listBudget * (premiumPercentage / 100)
+    const { budgets: categoryBudgets, premiums: categoryPremiums } = convertEntityAllocationsToMaps(budgetDistribution.categories as any, listBudget, premiumPool)
+    let totalBudget = 0
+    let totalPremium = 0
+    const taskCategories = Array.isArray(task.categories) ? task.categories : [task.categories]
+
+    taskCategories.forEach((category: any) => {
+      const categoryBudget = categoryBudgets[category] || 0
+      const tasksInCategory = (list.tasks || []).filter((t: any) => Array.isArray(t.categories) ? t.categories.includes(category) : t.categories === category).length || 1
+      totalBudget += categoryBudget / tasksInCategory
+
+      const categoryPremiumBudget = categoryPremiums[category] || 0
+      totalPremium += categoryPremiumBudget / tasksInCategory
+    })
+
+    if (taskCategories.length > 0) {
+      if (earnings == null) earnings = totalBudget / taskCategories.length
+      if (premium == null) premium = totalPremium / taskCategories.length
+    }
+  }
+
+  // PRIORITY 4: If budgetDistribution exists but task doesn't match any mode, use equal split for missing fields only
+  if (budgetDistribution && listBudget > 0) {
+    const totalTasks = (list.tasks || []).length || 1
+    const earningsBudget = listBudget * (1 - premiumPercentage / 100)
+    const premiumBudget = listBudget * (premiumPercentage / 100)
+    if (earnings == null) earnings = earningsBudget / totalTasks
+    if (premium == null) premium = premiumBudget / totalTasks
+  }
+  // PRIORITY 5: If task has stored budget/premium/earnings AND no budgetDistribution is configured, use stored values
+  // This is for backward compatibility with lists that don't have distribution configured yet
+  // Fallback order: earnings (new field) -> budget (legacy field) -> 0
+  else if ((task as any).budget != null || (task as any).premium != null || (task as any).earnings != null) {
+    // Prefer earnings field if available, fall back to budget for backward compatibility
+    earnings = (task as any).earnings != null ? (task as any).earnings : ((task as any).budget ?? 0)
+    premium = (task as any).premium ?? 0
+  }
+  // PRIORITY 6: Default equal distribution (legacy behavior)
+  else if (listBudget > 0) {
+    // templateTasks is deprecated - using Task collection only
+    const totalTasks = (list.tasks || []).length || 1
+    const earningsBudget = listBudget * (1 - premiumPercentage / 100)
+    const premiumBudget = listBudget * (premiumPercentage / 100)
+    earnings = earningsBudget / totalTasks
+    premium = premiumBudget / totalTasks
+  }
+  
+  // Calculate totalGains
+  // NOTE: Premium is NOT limited by list budget. List budget only limits earnings.
+  // Premium is calculated based on premium factors and equity at job time.
+  
+  // Keep originals for logging
+  const originalEarnings = earnings
+  
+  // SAFETY CHECK 1: If remaining budget is provided, ensure earnings don't exceed available funds
+  // IMPORTANT: This only applies to earnings, NOT to premium.
+  // Premium depends on factors and equity at job creation/completion time.
+  if (remainingBudget != null && earnings != null && earnings > 0) {
+    // Check if the list's remaining budget can cover this task's earnings allocation
+    if (remainingBudget < earnings) {
+      // If remainingBudget is zero, keep original allocation as a fallback so job invoices
+      // still carry the configured financial values instead of zeros.
+      if (remainingBudget === 0) {
+        earnings = originalEarnings != null ? originalEarnings : (task as any).earnings ?? (task as any).budget ?? null
+      } else {
+        // Scale down earnings to fit within remaining budget
+        earnings = remainingBudget
+      }
+    }
+  }
+  
+  // SAFETY CHECK 2: If user equity is provided, ensure earnings don't exceed it
+  // This is a sanity check - earnings shouldn't exceed user's total equity
+  // NOTE: Premium is NOT capped here - it depends on factors applied later
+  if (userEquity != null && earnings != null && earnings > userEquity) {
+    earnings = userEquity
+  }
+  
+  // SAFETY CHECK 3: If task has a stored earnings value, ensure we don't exceed it for earnings only
+  // Premium is not capped by stored values - it's calculated dynamically based on factors
+  if ((task as any).earnings != null && (task as any).earnings > 0 && earnings != null) {
+    const storedEarnings = (task as any).earnings
+    if (earnings > storedEarnings) {
+      earnings = storedEarnings
+    }
+  }
+  
+  // NOTE: Premium is NOT capped here. Premium factors are applied in earningsService.ts
+  // via applyPremiumFactors() when jobs are created/updated/completed. The Job collection
+  // stores the actual factored premium, not the Task model.
+  
+  const totalGains = (earnings || 0) + (premium || 0)
+  
+  return {
+    budget: earnings ? Math.round(earnings * 100) / 100 : null,
+    premium: premium ? Math.round(premium * 100) / 100 : null,
+    totalGains: totalGains > 0 ? Math.round(totalGains * 100) / 100 : null
+  }
+}
+
+/**
  * Migrate a single embedded task to the Task collection
  */
 export async function migrateEmbeddedTask({
   embeddedTask,
   listId,
   listRole,
-  userId
+  userId,
+  list
 }: MigrateEmbeddedTaskParams): Promise<{ task: PrismaTask; jobs: PrismaJob[] }> {
   // Determine recurrence based on list role
   const recurrence = embeddedTask.recurrence || getRecurrenceFromListRole(listRole)
+
+  // Calculate budget allocations from list's budget distribution
+  let budgetAllocation = { budget: null as number | null, premium: null as number | null, totalGains: null as number | null }
+  if (list) {
+    budgetAllocation = calculateTaskBudgetFromDistribution({ task: embeddedTask, list })
+  }
 
   // Create the Task record
   const task = await prisma.task.create({
@@ -172,7 +343,9 @@ export async function migrateEmbeddedTask({
       documents: (embeddedTask.documents || []) as any,
       completedOn: embeddedTask.completedOn || null,
       dueDate: embeddedTask.dueDate ? new Date(embeddedTask.dueDate) : null,
-      budget: embeddedTask.budget || null,
+      earnings: budgetAllocation.budget ?? embeddedTask.budget ?? null,
+      premium: budgetAllocation.premium ?? (embeddedTask as any).premium ?? null,
+      totalGains: budgetAllocation.totalGains ?? null,
       visibility: embeddedTask.visibility as any || null,
       quality: embeddedTask.quality || null,
       redacted: embeddedTask.redacted || false
@@ -334,7 +507,8 @@ export async function migrateListTasks({
         embeddedTask,
         listId,
         listRole: list.role,
-        userId
+        userId,
+        list
       })
 
       result.tasksCreated++

@@ -25,6 +25,11 @@ enum Areas {
   work
 }
 
+enum BudgetEntryType {
+  LIST_DEFAULT  // Default budget associated with a specific list
+  EXTERNAL      // External budget that can be shared/reused
+}
+
 enum Category {
   body
   spirituality
@@ -91,6 +96,7 @@ enum JobStatus {
   VALIDATING
   ACCEPTED
   REJECTED
+  CANCELLED
 }
 
 enum NoteVisibility {
@@ -117,6 +123,7 @@ enum TaskStatus {
   DONE
   IGNORED
   SKIPPED
+  COMPLETED
 }
 
 enum UserRole {
@@ -168,7 +175,7 @@ enum InviteStatus {
 type Completer {
   id          String    @db.ObjectId
   earnings    Float?
-  prize       Float?
+  premium     Float?
   time        Int
   completedAt DateTime
 }
@@ -203,6 +210,7 @@ type DocumentReference {
 type EmbeddedTask {
   id              String?
   name            String
+  cadence         String? //to-do replace with recurrence   
   categories      Category[]
   area            Areas
   status          String
@@ -225,6 +233,7 @@ type EmbeddedTask {
   visibility      Visibility?
   quality         Int?
   redacted        Boolean?          @default(false)
+  templateId      String?           // Optional reference to original template
 }
 
 type EventReference {
@@ -312,8 +321,11 @@ type RecurrenceRule {
 }
 
 type Settings {
-  currency Currency?
-  speed    Float?
+  currency             Currency?
+  speed                Float?
+  dailyPremiumFactor   Int?      @default(30)  // Minimum: 1. Divides premium for daily lists
+  weeklyPremiumFactor  Int?      @default(4)   // Minimum: 1. Divides premium for weekly lists
+  globalPremiumFactor  Int?      @default(1)   // Minimum: 1. Divides premium in all scenarios
 }
 
 type ThingReference {
@@ -321,16 +333,45 @@ type ThingReference {
   name String
 }
 
+type AllocationType {
+  nominal Float?   // Nominal (currency) amount
+  percent Float?   // Percentage value (0-100)
+}
+
+type EntityBudgetAllocation {
+  budget  AllocationType?  // Budget allocation for this entity
+  premium AllocationType?  // Premium allocation for this entity
+}
+
+type EntityAllocationsType {
+  entityId      String?                 // Entity ID (taskId, areaId, categoryId, etc.)
+  entityType    String?                 // Entity type: "tasks", "lists", "projects"
+  entitySubtype String?                 // Entity subtype: "area", "categories", "notes", or any string
+  allocation    EntityBudgetAllocation? // Allocation for this entity
+}
+
+type BudgetDistribution {
+  areas      EntityAllocationsType[]  // Area allocations (budget + premium)
+  categories EntityAllocationsType[]  // Category allocations (budget + premium)
+  tasks      EntityAllocationsType[]  // Per-task allocations (budget + premium)
+}
+
 type Ticker {
-  listId String?
-  taskId String?
-  profit Float?
-  prize  Float?
+  listId   String?
+  taskId   String?
+  earnings Float?
+  premium  Float?
 }
 
 type UserReference {
   userId String   @db.ObjectId
   role   UserRole
+}
+
+type JobInvoice {
+  quote    Float?  // Original task earnings at job initiation
+  premium  Float?  // Premium value at job initiation
+  exposure Float?  // totalGains value at job initiation
 }
 
 // =============================================================================
@@ -354,6 +395,7 @@ model User {
   equity             Float?    @default(0)
   availableBalance   Float?    @default(0)
   withdrawn          Float?    @default(0)
+  totalGains         Float?    @default(0)
   // Relations
   persons            Person[]
   things             Thing[]
@@ -365,6 +407,7 @@ model User {
   likes              Like[]
   profiles           Profile[]
   charts             Chart[]
+  budgets            Budget[]
   days               Day[]
   offers             Offer[]
   tokens             Token[]
@@ -610,10 +653,16 @@ model List {
   users                UserReference[]
   templateTasks        EmbeddedTask[]
   history              ListHistoryEntry[]
-  // Budget fields
+  // Budget fields (legacy - will be deprecated)
   budget               Float?
-  budgetPercentage     Float?             @default(0)
   remainingBudget      String?
+  premiumPercentage    Float?             @default(0)
+  budgetDistribution   BudgetDistribution?  // Budget allocation across areas/categories/tasks
+  // Budget relationships (new approach)
+  listBudgetId         String?            @db.ObjectId  // 1:1 with LIST_DEFAULT budget
+  listBudget           Budget?            @relation("ListDefaultBudget", fields: [listBudgetId], references: [id])
+  relatedBudgetIds     String[]           @default([]) @db.ObjectId  // 1:Many with EXTERNAL budgets
+  relatedBudgets       Budget[]           @relation("ListRelatedBudgets", fields: [relatedBudgetIds], references: [id])
   // Status fields
   publicUrl            String?
   ticker               String?
@@ -661,6 +710,9 @@ model Task {
   completedOn          String?
   dueDate              DateTime?
   budget               Float?
+  earnings             Float?              // Task earnings (was profit/budget consumption)
+  premium              Float?              // Premium allocation (was prize)
+  totalGains           Float?              // Total potential gains for this task
   visibility           Visibility?
   quality              Int?
   redacted             Boolean?            @default(false)
@@ -684,10 +736,10 @@ model Task {
 }
 
 model Job {
-  id               String    @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
-  status           JobStatus @default(REQUESTED)
+  id               String      @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  status           JobStatus   @default(REQUESTED)
   // The date this job applies to (YYYY-MM-DD format)
   // Allows same task to have different completion states on different days
   occurrenceDate   String?
@@ -696,22 +748,24 @@ model Job {
   peerReview       Float?
   managerReview    Float?
   // Financial fields
-  earnings         Float?
-  prize            Float?
-  profit           Float?
+  earnings         Float?      // Earnings from task budget
+  premium          Float?      // Premium from task premium (was prize)
+  totalGains       Float?      // Total gains (earnings + premium)
+  // Invoice - captures task values at job initiation (IN_PROGRESS)
+  invoice          JobInvoice?
   // Relations
-  workerId         String    @db.ObjectId
-  worker           User      @relation("JobWorker", fields: [workerId], references: [id], onDelete: Cascade)
-  taskId           String    @db.ObjectId
-  task             Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  listId           String    @db.ObjectId
-  list             List      @relation(fields: [listId], references: [id], onDelete: Cascade)
-  requesterNoteIds String[]  @default([]) @db.ObjectId
-  requesterNotes   Note[]    @relation("JobRequesterNotes", fields: [requesterNoteIds], references: [id])
-  reviewerIds      String[]  @default([]) @db.ObjectId
-  reviewers        User[]    @relation("JobReviewers", fields: [reviewerIds], references: [id])
-  reviewersNoteIds String[]  @default([]) @db.ObjectId
-  reviewersNotes   Note[]    @relation("JobReviewersNotes", fields: [reviewersNoteIds], references: [id])
+  workerId         String      @db.ObjectId
+  worker           User        @relation("JobWorker", fields: [workerId], references: [id], onDelete: Cascade)
+  taskId           String      @db.ObjectId
+  task             Task        @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  listId           String      @db.ObjectId
+  list             List        @relation(fields: [listId], references: [id], onDelete: Cascade)
+  requesterNoteIds String[]    @default([]) @db.ObjectId
+  requesterNotes   Note[]      @relation("JobRequesterNotes", fields: [requesterNoteIds], references: [id])
+  reviewerIds      String[]    @default([]) @db.ObjectId
+  reviewers        User[]      @relation("JobReviewers", fields: [reviewerIds], references: [id])
+  reviewersNoteIds String[]    @default([]) @db.ObjectId
+  reviewersNotes   Note[]      @relation("JobReviewersNotes", fields: [reviewersNoteIds], references: [id])
 
   @@index([workerId])
   @@index([taskId])
@@ -774,6 +828,33 @@ model Event {
   documentIds String[]   @default([]) @db.ObjectId
 
   @@index([userId])
+}
+
+model Budget {
+  id                String          @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  name              String
+  description       String?
+  type              BudgetEntryType
+  totalAmount       Float
+  remainingAmount   Float
+  // Task allocations - array of entityId to EntityBudgetAllocation mappings
+  taskAllocations   EntityAllocationsType[]
+  // Relations
+  ownerId           String          @db.ObjectId
+  owner             User            @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  // Lists that use this as their default budget (1:1 inverse relation - no array needed)
+  defaultForLists   List[]          @relation("ListDefaultBudget")
+  // Lists that reference this as a related budget (many-to-many)
+  relatedToListIds  String[]        @default([]) @db.ObjectId
+  relatedToLists    List[]          @relation("ListRelatedBudgets", fields: [relatedToListIds], references: [id])
+  // Wallets that reference this budget (many-to-many)
+  walletIds         String[]        @default([]) @db.ObjectId
+  wallets           Wallet[]        @relation("BudgetWallets", fields: [walletIds], references: [id])
+
+  @@index([ownerId])
+  @@index([type])
 }
 
 model Chart {
@@ -919,6 +1000,9 @@ model Wallet {
   user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   transactions Transaction[]
   lists        List[]
+  // Budget relationships (budgets can associate with multiple wallets)
+  budgetIds    String[]      @default([]) @db.ObjectId
+  budgets      Budget[]      @relation("BudgetWallets", fields: [budgetIds], references: [id])
   // Reference arrays
   noteIds      String[]      @default([]) @db.ObjectId
   documentIds  String[]      @default([]) @db.ObjectId

@@ -584,7 +584,24 @@
       "cancel": "ਰੱਦ ਕਰੋ",
       "deleteListConfirm": "ਇਹ ਸੂਚੀ ਮਿਟਾਓ? ਇਸਨੂੰ ਵਾਪਸ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ।",
       "deleteList": "ਸੂਚੀ ਮਿਟਾਓ",
-      "budgetPercentageLabel": "Personal budget allocation"
+      "premiumPercentageLabel": "Personal budget allocation",
+      "manageTasks": "ਕੰਮ ਪ੍ਰਬੰਧਿਤ ਕਰੋ",
+      "manageBudgetAllocation": "ਬਜਟ ਵੰਡ",
+      "distributionModeLabel": "ਵੰਡ",
+      "distributionMode": {
+        "equal": "ਬਰਾਬਰ",
+        "area": "ਖੇਤਰ ਦੁਆਰਾ",
+        "category": "ਸ਼੍ਰੇਣੀ ਦੁਆਰਾ",
+        "task": "ਪ੍ਰਤੀ ਕੰਮ"
+      },
+      "areaDistributionLabel": "ਖੇਤਰ ਬਜਟ",
+      "areaPrizeDistributionLabel": "ਖੇਤਰ ਇਨਾਮ",
+      "categoryDistributionLabel": "ਸ਼੍ਰੇਣੀ ਬਜਟ",
+      "categoryPrizeDistributionLabel": "ਸ਼੍ਰੇਣੀ ਇਨਾਮ",
+      "taskDistributionLabel": "ਬਜਟ",
+      "premiumLabel": "ਇਨਾਮ",
+      "totalLabel": "ਕੁੱਲ",
+      "addTaskTitle": "ਕੰਮ ਜੋੜੋ"
     },
     "addTemplateForm": {
       "title": "ਨਵਾਂ ਟੈਂਪਲੇਟ ਬਣਾਓ",

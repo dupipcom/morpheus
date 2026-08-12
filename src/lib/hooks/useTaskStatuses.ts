@@ -54,6 +54,7 @@ export function useTaskStatuses({
           'DONE': 'done',
           'IGNORED': 'ignored',
           'SKIPPED': 'ignored', // Map SKIPPED to ignored for UI
+          'COMPLETED': 'completed', // Map COMPLETED to completed
         }
 
         // If status is already in old format, use it; otherwise map from enum

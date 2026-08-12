@@ -24,19 +24,37 @@ export async function getOrCreateChatUser(clerkUserId: string): Promise<CurrentC
   })
 
   if (!user) {
-    user = await prisma.user.create({
-      data: {
-        userId: clerkUserId,
-        settings: { currency: null, speed: null },
-      },
-      select: {
-        id: true,
-        userId: true,
-        email: true,
-        friends: true,
-        closeFriends: true,
-      },
-    })
+    try {
+      user = await prisma.user.create({
+        data: {
+          userId: clerkUserId,
+          settings: { currency: null, speed: null },
+        },
+        select: {
+          id: true,
+          userId: true,
+          email: true,
+          friends: true,
+          closeFriends: true,
+        },
+      })
+    } catch (error: any) {
+      if (error?.code === 'P2002') {
+        // User was just created by another concurrent request
+        user = await prisma.user.findUnique({
+          where: { userId: clerkUserId },
+          select: {
+            id: true,
+            userId: true,
+            email: true,
+            friends: true,
+            closeFriends: true,
+          },
+        })
+      } else {
+        throw error
+      }
+    }
   }
 
   return {
