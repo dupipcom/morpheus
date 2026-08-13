@@ -282,7 +282,6 @@ export function DashboardView({ timeframe = "day", onDelegatedUserChange }: Dash
   
   // Message history state (weekly agentConversation)
   const [currentText, setCurrentText] = useState("")
-  const reverseMessages: string[] = []
   
   // Create chart configs with translations
   const moodChartConfig = createMoodChartConfig(t)
@@ -578,11 +577,14 @@ const aggregateDataByWeek = (dailyData: any[]) => {
             ))}
           </div>
           <AgentChat
+<<<<<<< Updated upstream
             key={reverseMessages}
             onMessageChange={(message) => {
               setCurrentText(message)
             }}
             history={reverseMessages}
+=======
+>>>>>>> Stashed changes
             initialMessage={currentText}
             filterContext={agentFilterContext}
             className="h-96"

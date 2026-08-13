@@ -20,7 +20,13 @@ export interface Message {
   content: string;
 }
 
+<<<<<<< Updated upstream
 export const AGENT_MODELS = ['deepseek', 'openai'] as const;
+=======
+// Internal-only: a "use server" module may only export async functions, so
+// this constant (and the runtime guard it feeds) can't be shared with the UI.
+const AGENT_MODELS = ['deepseek', 'openai'] as const;
+>>>>>>> Stashed changes
 export type AgentModel = typeof AGENT_MODELS[number];
 
 // OpenAI is preserved as an option but disabled in the chat UI for now.

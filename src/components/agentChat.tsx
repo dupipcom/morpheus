@@ -16,11 +16,10 @@ interface Message {
   id: string;
   content: string;
   role: 'user' | 'assistant';
-  timestamp: Date;
+  timestamp: string;
 }
 
 interface AgentChatProps {
-  onMessageChange?: (message: string) => void;
   initialMessage?: string;
   history?: Message[];
   className?: string;
@@ -30,9 +29,12 @@ interface AgentChatProps {
 // Allow streaming responses up to 60 seconds
 export const maxDuration = 60;
 
+<<<<<<< Updated upstream
 export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], className = "", filterContext }: AgentChatProps) => {
+=======
+export const AgentChat = ({ initialMessage = "", history = [], className = "", filterContext }: AgentChatProps) => {
+>>>>>>> Stashed changes
   const { t, locale } = useI18n()
-  const [conversation, setConversation] = useState<Message[]>([]);
   const [messages, setMessages] = useState<Message[]>(history)
   const [inputMessage, setInputMessage] = useState(initialMessage)
   const [isLoading, setIsLoading] = useState(false)
@@ -53,11 +55,17 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], 
     setInputMessage(initialMessage)
   }, [initialMessage])
 
+  // The list renders newest-first, so scroll to the top whenever a new
+  // exchange is appended.
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ block: 'start' })
+  }, [messages.length])
+
+  // Local-only state: reporting every keystroke to the parent re-renders the
+  // whole dashboard per keystroke. The parent can still set the input via the
+  // `initialMessage` prop (suggestion buttons).
   const handleInputChange = (value: string) => {
     setInputMessage(value)
-    if (onMessageChange) {
-      onMessageChange(value)
-    }
   }
 
   const handleSendMessage = async () => {
@@ -70,13 +78,20 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], 
       timestamp: new Date().toISOString()
     }
 
-    setMessages(prev => [...prev, userMessage])
+    // Placeholder for the streaming reply; filled in as deltas arrive.
+    const assistantMessage: Message = {
+      id: (Date.now() + 1).toString(),
+      content: '',
+      role: 'assistant',
+      timestamp: new Date().toISOString()
+    }
+
+    setMessages(prev => [...prev, userMessage, assistantMessage])
     setInputMessage('')
     setIsLoading(true)
 
-
-
     try {
+<<<<<<< Updated upstream
     //   const response = await fetch('/api/v1/chat', {
     //     method: 'POST',
     //     headers: {
@@ -96,6 +111,10 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], 
 
       const { messages, newMessage } = await continueConversation(
         [...conversation, userMessage],
+=======
+      const { newMessage } = await continueConversation(
+        [...messages, userMessage],
+>>>>>>> Stashed changes
         filterContext,
         selectedModel
       );
@@ -105,21 +124,29 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], 
       for await (const delta of readStreamableValue(newMessage)) {
         textContent = `${textContent}${delta}`;
 
-        setConversation([
-          { role: 'assistant', content: textContent, timestamp: new Date().toISOString()  },
-            ...messages,
-        ]);
+        // Stream into the assistant slot in place so the list stays in order.
+        setMessages(prev =>
+          prev.map(message =>
+            message.id === assistantMessage.id ? { ...message, content: textContent } : message
+          )
+        );
       }
 
-      const reply = { role: "assistant", content: textContent, timestamp: new Date().toISOString()}
+      // Finalize the slot with the last text (covers zero-delta responses).
+      setMessages(prev =>
+        prev.map(message =>
+          message.id === assistantMessage.id ? { ...message, content: textContent } : message
+        )
+      );
 
+      // Persist the week's conversation in chronological order.
       const response = await fetch('/api/v1/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          message: [reply, ...messages],
+          message: [...messages, userMessage, { role: 'assistant', content: textContent }],
           locale: locale
         })
       })
@@ -127,19 +154,11 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], 
       if (!response.ok) {
         throw new Error(t('agentChat.failedToSend'))
       }
-
-      // const assistantMessage: Message = {
-      //   id: (Date.now() + 1).toString(),
-      //   content: data.message,
-      //   role: 'assistant',
-      //   timestamp: new Date()
-      // }
-
-      setMessages(prev => [...prev, reply])
     } catch (error) {
       console.error('Chat error:', error)
       toast.error(t('agentChat.failedToSend'))
 
+<<<<<<< Updated upstream
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         content: t('agentChat.error'),
@@ -148,6 +167,17 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], 
       }
 
       setMessages(prev => [...prev, errorMessage])
+=======
+      // Replace the pending slot with the error text instead of appending a
+      // second assistant message.
+      setMessages(prev =>
+        prev.map(message =>
+          message.id === assistantMessage.id
+            ? { ...message, content: t('agentChat.error') }
+            : message
+        )
+      )
+>>>>>>> Stashed changes
     } finally {
       setIsLoading(false)
     }
@@ -160,6 +190,7 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], 
     }
   }
 
+  // Newest message first.
   const reversedMessages = [...messages].reverse()
 
   return (
@@ -168,17 +199,6 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], 
       <Card className="flex-1 overflow-hidden">
         <CardContent className="p-4 h-full">
           <div className="flex flex-col h-full">
-            {isLoading && (
-                  <div className="flex justify-start mb-4">
-                    <div className="bg-muted rounded-lg p-3 max-w-[80%]">
-                      <div className="flex items-center gap-2">
-                        <Bot className="h-4 w-4" />
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        <span className="text-sm text-muted-foreground">{t('agentChat.thinking')}</span>
-                      </div>
-                    </div>
-                  </div>
-            )}
             {messages.length === 0 ? (
               <div className="flex-1 flex items-center justify-center text-muted-foreground">
                 <div className="text-center">
@@ -189,7 +209,8 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], 
               </div>
             ) : (
               <div className="flex-1 overflow-y-auto space-y-4 pr-2 ">
-                {[...conversation, ...reversedMessages].map((message) => (
+                <div ref={messagesEndRef} />
+                {reversedMessages.map((message) => (
                   <div
                     key={message.id}
                     className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
@@ -209,7 +230,14 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], 
                           <User className="h-4 w-4 mt-0.5 flex-shrink-0" />
                         )}
                         <div className="flex-1">
-                          <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                          {message.role === 'assistant' && !message.content ? (
+                            <div className="flex items-center gap-2">
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                              <span className="text-sm text-muted-foreground">{t('agentChat.thinking')}</span>
+                            </div>
+                          ) : (
+                            <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                          )}
                           <p className="text-xs opacity-70 mt-1">
                             {new Date(message.timestamp).toLocaleTimeString()}
                           </p>
@@ -218,7 +246,6 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], 
                     </div>
                   </div>
                 ))}
-                <div ref={messagesEndRef} />
               </div>
             )}
           </div>
