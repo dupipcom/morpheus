@@ -4,9 +4,13 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent } from "@/components/ui/card"
 import { Send, Bot, User, Loader2 } from "lucide-react"
+import { toast } from 'sonner'
 import { useI18n } from "@/lib/contexts/i18n"
 import { continueConversation } from "./agentActions"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { readStreamableValue } from '@ai-sdk/rsc';
+import type { AgentModel } from "./agentActions"
+import type { AgentFilterContext } from '@/lib/services/agent';
 
 interface Message {
   id: string;
@@ -20,17 +24,19 @@ interface AgentChatProps {
   initialMessage?: string;
   history?: Message[];
   className?: string;
+  filterContext: AgentFilterContext;
 }
 
 // Allow streaming responses up to 60 seconds
 export const maxDuration = 60;
 
-export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], className = "" }: AgentChatProps) => {
+export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], className = "", filterContext }: AgentChatProps) => {
   const { t, locale } = useI18n()
   const [conversation, setConversation] = useState<Message[]>([]);
   const [messages, setMessages] = useState<Message[]>(history)
   const [inputMessage, setInputMessage] = useState(initialMessage)
   const [isLoading, setIsLoading] = useState(false)
+  const [selectedModel, setSelectedModel] = useState<AgentModel>('deepseek')
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
@@ -88,10 +94,11 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], 
 
     //   const data = await response.json()
 
-      const { messages, newMessage } = await continueConversation([
-        ...conversation,
-        userMessage,
-      ]);
+      const { messages, newMessage } = await continueConversation(
+        [...conversation, userMessage],
+        filterContext,
+        selectedModel
+      );
 
       let textContent = '';
 
@@ -131,16 +138,16 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], 
       setMessages(prev => [...prev, reply])
     } catch (error) {
       console.error('Chat error:', error)
-      // toast.error(t('agentChat.failedToSend'))
-      
-      // const errorMessage: Message = {
-      //   id: (Date.now() + 1).toString(),
-      //   content: t('agentChat.error'),
-      //   role: 'assistant',
-      //   timestamp: new Date()
-      // }
-      
-      // setMessages(prev => [...prev, errorMessage])
+      toast.error(t('agentChat.failedToSend'))
+
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        content: t('agentChat.error'),
+        role: 'assistant',
+        timestamp: new Date()
+      }
+
+      setMessages(prev => [...prev, errorMessage])
     } finally {
       setIsLoading(false)
     }
@@ -220,6 +227,21 @@ export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], 
 
       {/* Input Area */}
       <div className="mt-4 flex gap-2">
+        <Select
+          value={selectedModel}
+          onValueChange={(value) => setSelectedModel(value as AgentModel)}
+        >
+          <SelectTrigger
+            className="w-[140px] h-[60px]"
+            aria-label={t('agentChat.model') || 'Model'}
+          >
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="deepseek">DeepSeek</SelectItem>
+            <SelectItem value="openai" disabled>OpenAI</SelectItem>
+          </SelectContent>
+        </Select>
         <Textarea
           ref={textareaRef}
           value={inputMessage}

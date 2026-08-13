@@ -31,6 +31,7 @@ import { AgentChat } from "@/components/agentChat"
 import { useFeatureFlag } from "@/lib/hooks/useFeatureFlag"
 import { useDebounce } from "@/lib/hooks/useDebounce"
 import { normalizeDelegationScopes } from "@/lib/utils/delegation"
+import type { AgentDimension, AgentFilterContext } from '@/lib/services/agent'
 
 /** Returns a Date that is `n` days before today */
 function daysAgo(n: number): Date {
@@ -289,6 +290,22 @@ export function DashboardView({ timeframe = "day", onDelegatedUserChange }: Dash
   const moneyChartConfig = createMoneyChartConfig(t)
   
   const targetHintUserId = selectedDelegatedUserId || user?.id
+
+  // Filter context for the AI assistant — every chat prompt carries the
+  // current dashboard date range, dimension toggles, and target user so the
+  // backend parses it and queries MongoDB with only the selected fields.
+  const agentFilterContext = useMemo<AgentFilterContext>(() => ({
+    startDate: toISODate(rangeStart),
+    endDate: toISODate(rangeEnd),
+    userId: selectedDelegatedUserId || user?.id,
+    dimensions: Object.entries({
+      ...moodChartDimensions,
+      ...productivityChartDimensions,
+      ...moneyChartDimensions
+    })
+      .filter(([, visible]) => visible)
+      .map(([key]) => key as AgentDimension)
+  }), [rangeStart, rangeEnd, selectedDelegatedUserId, user?.id, moodChartDimensions, productivityChartDimensions, moneyChartDimensions])
 
   // Use shared hint hook and update local state when data changes
   const { data: hintData } = useHint(locale, 'hint', targetHintUserId)
@@ -560,13 +577,14 @@ const aggregateDataByWeek = (dailyData: any[]) => {
               </Button>
             ))}
           </div>
-          <AgentChat 
+          <AgentChat
             key={reverseMessages}
             onMessageChange={(message) => {
               setCurrentText(message)
             }}
             history={reverseMessages}
             initialMessage={currentText}
+            filterContext={agentFilterContext}
             className="h-96"
           />
         </div>
