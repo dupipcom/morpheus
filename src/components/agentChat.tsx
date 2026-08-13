@@ -57,11 +57,11 @@ export const AgentChat = ({ initialMessage = "", history = [], className = "", f
     messagesEndRef.current?.scrollIntoView({ block: 'start' })
   }, [messages.length])
 
+  // Local-only state: reporting every keystroke to the parent re-renders the
+  // whole dashboard per keystroke. The parent can still set the input via the
+  // `initialMessage` prop (suggestion buttons).
   const handleInputChange = (value: string) => {
     setInputMessage(value)
-    if (onMessageChange) {
-      onMessageChange(value)
-    }
   }
 
   const handleSendMessage = async () => {

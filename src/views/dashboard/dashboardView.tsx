@@ -577,9 +577,6 @@ const aggregateDataByWeek = (dailyData: any[]) => {
             ))}
           </div>
           <AgentChat
-            onMessageChange={(message) => {
-              setCurrentText(message)
-            }}
             initialMessage={currentText}
             filterContext={agentFilterContext}
             className="h-96"
