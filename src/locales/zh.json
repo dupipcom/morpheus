@@ -74,7 +74,8 @@
     "privacy": "隐私政策",
     "locale": "语言",
     "blog": "博客",
-    "agenda": "议程"
+    "agenda": "议程",
+    "upgrade": "升级"
   },
   "dashboard": {
     "title": "您的生活一目了然。",
@@ -300,7 +301,8 @@
     "cookies": "我们使用cookie，使用此应用程序即表示您同意。",
     "code": "代码",
     "terms": "服务条款",
-    "privacy": "隐私政策"
+    "privacy": "隐私政策",
+    "pricing": "定价"
   },
   "earningsTable": {
     "day": "日期",
@@ -714,7 +716,15 @@
     "notice": "此应用程序目前不管理任何实际资金。Dupip Invest 仍处于规划阶段。这只是一个用于演示目的的测试环境。",
     "consentTitle": "投资演示同意",
     "consentCheckbox": "我承认 Dupip 还不是投资平台，使用此功能时，我意识到在 Dupip Invest 正式发布之前，我的所有数据都可能被删除。",
-    "confirm": "确认"
+    "confirm": "确认",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "NFT生成已完成。",
@@ -922,5 +932,24 @@
       "small": "小",
       "wide": "宽"
     }
+  },
+  "pricing": {
+    "metaTitle": "定价",
+    "metaDescription": "Dupip 是一家在欧洲注册的网络电台，以身心福祉为使命。为支持我们的发展，我们为捐赠者提供福利。查看我们的方案以及 DPIP 的运作方式。",
+    "heroTitle": "重新构想的电台",
+    "heroSubtitle": "Dupip 围绕一个简单的挑战而建：身心福祉。我们在寻找能激发你最佳状态的频率。",
+    "siaeTitle": "关于音乐授权的说明",
+    "plansTitle": "方案",
+    "plansDescription": "选择适合你收听方式的方案。",
+    "dpipTitle": "关于 DPIP",
+    "dpipBody": "DPIP（Ð）是 Dupip 内部的价值单位。你的储备会随着你的活动随时间增长。DPIP 不是投资产品，可能没有货币价值——无论是现在还是将来。",
+    "consentTitle": "DPIP 同意",
+    "consentCheckbox": "我理解 DPIP 可能没有货币价值，无论是现在还是将来，并接受这一点。",
+    "consentSignedOut": "请登录以查看 DPIP 同意书并浏览我们的方案。",
+    "signInToConsent": "登录",
+    "consentSaved": "同意记录于 {date}",
+    "saveConsent": "保存同意",
+    "dpipNoValue": "DPIP（Ð）是 Dupip 内部的价值单位。你的储备会随着你的活动随时间增长。DPIP 不是投资产品，可能没有货币价值——无论是现在还是将来。",
+    "consentDescription": "DPIP（Ð）是 Dupip 内部的价值单位。你的储备会随着你的活动随时间增长。DPIP 不是投资产品，可能没有货币价值——无论是现在还是将来。 在查看我们的方案之前，请阅读并确认以下内容："
   }
 }

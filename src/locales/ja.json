@@ -74,7 +74,8 @@
     "privacy": "プライバシーポリシー",
     "locale": "言語",
     "blog": "ブログ",
-    "agenda": "アジェンダ"
+    "agenda": "アジェンダ",
+    "upgrade": "アップグレード"
   },
   "dashboard": {
     "title": "あなたの人生を一目で。",
@@ -300,7 +301,8 @@
     "cookies": "私たちはクッキーを使用しており、このアプリを使用することでそれに同意します。",
     "code": "コード",
     "terms": "利用規約",
-    "privacy": "プライバシーポリシー"
+    "privacy": "プライバシーポリシー",
+    "pricing": "料金"
   },
   "earningsTable": {
     "day": "日",
@@ -714,7 +716,15 @@
     "notice": "このアプリでは現在、実際の資金は管理されていません。Dupip Investはまだ計画段階にあります。これはデモンストレーション目的のテスト環境です。",
     "consentTitle": "投資デモの同意",
     "consentCheckbox": "Dupipはまだ投資プラットフォームではないことを認識し、この機能を使用することで、Dupip Investの正式リリース前にすべてのデータが削除される可能性があることを理解しています。",
-    "confirm": "確認"
+    "confirm": "確認",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "NFT生成が完了しました。",
@@ -922,5 +932,24 @@
       "small": "小",
       "wide": "広い"
     }
+  },
+  "pricing": {
+    "metaTitle": "料金",
+    "metaDescription": "Dupipは、ウェルビーイングを使命とするウェブラジオとしてヨーロッパで登録されています。私たちの成長を支えるため、寄付者には特典をご用意しています。プランとDPIPの仕組みをご覧ください。",
+    "heroTitle": "ラジオの再発明",
+    "heroSubtitle": "Dupipは、ウェルビーイングというシンプルな挑戦を軸に作られています。あなたの最高を引き出す周波数を探しています。",
+    "siaeTitle": "音楽ライセンスに関する注記",
+    "plansTitle": "プラン",
+    "plansDescription": "あなたの聴き方に合うプランを選んでください。",
+    "dpipTitle": "DPIPについて",
+    "dpipBody": "DPIP（Ð）はDupip内の価値の単位です。あなたのスタッシュは、活動とともに時間をかけて増えていきます。DPIPは投資商品ではなく、金銭的価値を持たない可能性があります——現在も将来も。",
+    "consentTitle": "DPIPへの同意",
+    "consentCheckbox": "DPIPに金銭的価値がない可能性があること（現在も将来も）を理解し、これに同意します。",
+    "consentSignedOut": "DPIPの同意を確認してプランをご覧になるには、サインインしてください。",
+    "signInToConsent": "サインイン",
+    "consentSaved": "同意を記録しました: {date}",
+    "saveConsent": "同意を保存",
+    "dpipNoValue": "DPIP（Ð）はDupip内の価値の単位です。あなたのスタッシュは、活動とともに時間をかけて増えていきます。DPIPは投資商品ではなく、金銭的価値を持たない可能性があります——現在も将来も。",
+    "consentDescription": "DPIP（Ð）はDupip内の価値の単位です。あなたのスタッシュは、活動とともに時間をかけて増えていきます。DPIPは投資商品ではなく、金銭的価値を持たない可能性があります——現在も将来も。 プランをご覧いただく前に、以下をご確認のうえ同意してください:"
   }
 }

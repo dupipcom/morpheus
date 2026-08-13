@@ -74,7 +74,8 @@
     "privacy": "Privacidad",
     "locale": "Idioma",
     "blog": "Blog",
-    "agenda": "Agenda"
+    "agenda": "Agenda",
+    "upgrade": "Mejorar"
   },
   "dashboard": {
     "title": "Tu vida de un vistazo.",
@@ -300,7 +301,8 @@
     "cookies": "Usamos cookies, y al usar esta aplicación aceptas esto.",
     "code": "Código",
     "terms": "Términos de Servicio",
-    "privacy": "Política de Privacidad"
+    "privacy": "Política de Privacidad",
+    "pricing": "Precios"
   },
   "earningsTable": {
     "day": "Día",
@@ -714,7 +716,15 @@
     "notice": "No hay dinero real gestionado actualmente en esta aplicación. Dupip Invest todavía está en fase de planificación. Esto es solo un espacio de pruebas con fines de demostración.",
     "consentTitle": "Consentimiento de Demostración de Inversión",
     "consentCheckbox": "Reconozco que Dupip aún no es una plataforma de inversión, y que al usar esta función, soy consciente de que todos mis datos pueden ser eliminados antes del lanzamiento oficial de Dupip Invest.",
-    "confirm": "Confirmar"
+    "confirm": "Confirmar",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "Generación de NFT completada.",
@@ -922,5 +932,24 @@
       "small": "Pequeño",
       "wide": "Amplio"
     }
+  },
+  "pricing": {
+    "metaTitle": "Precios",
+    "metaDescription": "Dupip está registrada en Europa como una radio web con una misión de bienestar. Para apoyar nuestro crecimiento, ofrecemos ventajas a los donantes. Consulta nuestros planes y cómo funciona DPIP.",
+    "heroTitle": "Radio, reinventada",
+    "heroSubtitle": "Dupip se construye alrededor de un reto sencillo: el bienestar. Buscamos las frecuencias que sacan lo mejor de ti.",
+    "siaeTitle": "Una nota sobre las licencias musicales",
+    "plansTitle": "Planes",
+    "plansDescription": "Elige el plan que se adapte a tu forma de escuchar.",
+    "dpipTitle": "Acerca de DPIP",
+    "dpipBody": "DPIP (Ð) es la unidad de valor dentro de Dupip. Tu stash crece con el tiempo gracias a tu actividad. DPIP no es un producto de inversión y puede no tener valor monetario — ni ahora ni en el futuro.",
+    "consentTitle": "Consentimiento de DPIP",
+    "consentCheckbox": "Entiendo que DPIP puede no tener valor monetario, ni ahora ni en el futuro, y lo acepto.",
+    "consentSignedOut": "Inicia sesión para revisar el consentimiento de DPIP y ver nuestros planes.",
+    "signInToConsent": "Iniciar sesión",
+    "consentSaved": "Consentimiento registrado el {date}",
+    "saveConsent": "Guardar consentimiento",
+    "dpipNoValue": "DPIP (Ð) es la unidad de valor dentro de Dupip. Tu stash crece con el tiempo gracias a tu actividad. DPIP no es un producto de inversión y puede no tener valor monetario — ni ahora ni en el futuro.",
+    "consentDescription": "DPIP (Ð) es la unidad de valor dentro de Dupip. Tu stash crece con el tiempo gracias a tu actividad. DPIP no es un producto de inversión y puede no tener valor monetario — ni ahora ni en el futuro. Antes de ver nuestros planes, revisa y confirma lo siguiente:"
   }
 }

@@ -78,7 +78,8 @@
     "privacy": "Tietosuojakäytäntö",
     "locale": "Kieli",
     "blog": "Blogi",
-    "agenda": "Esityslista"
+    "agenda": "Esityslista",
+    "upgrade": "Päivitä"
   },
   "dashboard": {
     "title": "Elämäsi yhdellä silmäyksellä.",
@@ -247,7 +248,8 @@
     "doraReady": "DORA Ready",
     "insights": "Insights are AI generated via RAG and prompt engineering.",
     "cookies": "We use cookies, and by using this app you agree to it.",
-    "code": "Code"
+    "code": "Code",
+    "pricing": "Hinnoittelu"
   },
   "earningsTable": {
     "day": "Päivä",
@@ -718,7 +720,15 @@
     "notice": "Tässä sovelluksessa ei tällä hetkellä hallinnoida todellista rahaa. Dupip Invest on vielä suunnitteluvaiheessa. Tämä on vain testiympäristö esittelytarkoituksiin.",
     "consentTitle": "Sijoitusdemot Suostumus",
     "consentCheckbox": "Tunnustan, että Dupip ei ole vielä sijoitusalusta ja että tätä ominaisuutta käyttämällä olen tietoinen siitä, että kaikki tietoni voidaan poistaa ennen Dupip Investin virallista käyttöönottoa.",
-    "confirm": "Vahvista"
+    "confirm": "Vahvista",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "NFT-generointi valmis.",
@@ -926,5 +936,24 @@
       "small": "Pieni",
       "wide": "Leveä"
     }
+  },
+  "pricing": {
+    "metaTitle": "Hinnoittelu",
+    "metaDescription": "Dupip on rekisteröity Eurooppaan verkkoradiona, jonka missio on hyvinvointi. Tukeaksemme kasvuamme tarjoamme etuja lahjoittajille. Katso tilauksemme ja miten DPIP toimii.",
+    "heroTitle": "Radio, uudelleen kuviteltuna",
+    "heroSubtitle": "Dupip on rakennettu yksinkertaisen haasteen ympärille: hyvinvointi. Etsimme taajuuksia, jotka tuovat sinusta parhaan esiin.",
+    "siaeTitle": "Huomautus musiikin lisensoinnista",
+    "plansTitle": "Tilaukset",
+    "plansDescription": "Valitse tilaus, joka sopii kuuntelutapaasi.",
+    "dpipTitle": "Tietoa DPIP:stä",
+    "dpipBody": "DPIP (Ð) on arvon yksikkö Dupipin sisällä. Stashisi kasvaa ajan myötä toimintasi mukana. DPIP ei ole sijoitustuote, eikä sillä välttämättä ole rahallista arvoa — ei nyt eikä tulevaisuudessa.",
+    "consentTitle": "DPIP-suostumus",
+    "consentCheckbox": "Ymmärrän, että DPIP:llä ei välttämättä ole rahallista arvoa, ei nyt eikä tulevaisuudessa, ja hyväksyn tämän.",
+    "consentSignedOut": "Kirjaudu sisään tarkistaaksesi DPIP-suostumuksen ja nähdäksesi tilauksemme.",
+    "signInToConsent": "Kirjaudu sisään",
+    "consentSaved": "Suostumus tallennettu {date}",
+    "saveConsent": "Tallenna suostumus",
+    "dpipNoValue": "DPIP (Ð) on arvon yksikkö Dupipin sisällä. Stashisi kasvaa ajan myötä toimintasi mukana. DPIP ei ole sijoitustuote, eikä sillä välttämättä ole rahallista arvoa — ei nyt eikä tulevaisuudessa.",
+    "consentDescription": "DPIP (Ð) on arvon yksikkö Dupipin sisällä. Stashisi kasvaa ajan myötä toimintasi mukana. DPIP ei ole sijoitustuote, eikä sillä välttämättä ole rahallista arvoa — ei nyt eikä tulevaisuudessa. Ennen kuin näet tilauksemme, käy läpi ja vahvista seuraava:"
   }
 }

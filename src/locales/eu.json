@@ -77,7 +77,8 @@
     "agenda": "Agenda",
     "profile": "Profila",
     "settings": "Ezarpenak",
-    "logout": "Saioa itxi"
+    "logout": "Saioa itxi",
+    "upgrade": "Hobetu"
   },
   "dashboard": {
     "title": "Zure bizitza begirada batean.",
@@ -246,7 +247,8 @@
     "cookies": "We use cookies, and by using this app you agree to it.",
     "code": "Code",
     "terms": "Zerbitzu-baldintzak",
-    "privacy": "Pribatutasun-politika"
+    "privacy": "Pribatutasun-politika",
+    "pricing": "Prezioak"
   },
   "earningsTable": {
     "day": "Eguna",
@@ -717,7 +719,15 @@
     "notice": "Ez dago benetako dirurik kudeatzen une honetan aplikazio honetan. Dupip Invest oraindik planifikazio fasean dago. Hau erakusteko helburuetarako proba ingurune bat besterik ez da.",
     "consentTitle": "Inbertsio Demo Baimena",
     "consentCheckbox": "Onartzen dut Dupip oraindik ez dela inbertsio plataforma, eta funtzio hau erabiliz, nire datu guztiak ezaba daitezkeela Dupip Invest-en jaurtiketa ofiziala baino lehen.",
-    "confirm": "Berretsi"
+    "confirm": "Berretsi",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "NFT generazioa osatua.",
@@ -925,5 +935,24 @@
       "small": "Txikia",
       "wide": "Zabala"
     }
+  },
+  "pricing": {
+    "metaTitle": "Prezioak",
+    "metaDescription": "Dupip Europan erregistratuta dago web irrati gisa, ongizate misio batekin. Gure hazkundea laguntzeko, abantailak eskaintzen dizkiegu emaileei. Ikusi gure planak eta DPIP nola funtzionatzen duen.",
+    "heroTitle": "Irratia, berrasmatua",
+    "heroSubtitle": "Dupip erronka soil baten inguruan eraikita dago: ongizatea. Zure onena ateratzen duten maiztasunak bilatzen ari gara.",
+    "siaeTitle": "Musika lizentziei buruzko ohar bat",
+    "plansTitle": "Planak",
+    "plansDescription": "Aukeratu zure entzuteko moduarekin bat datorren plana.",
+    "dpipTitle": "DPIP-i buruz",
+    "dpipBody": "DPIP (Ð) Dupip barruko balio-unitatea da. Zure stash-a denborarekin hazten da zure jarduerarekin. DPIP ez da inbertsio-produktu bat eta baliteke balio ekonomikorik ez izatea — ez orain, ez etorkizunean.",
+    "consentTitle": "DPIP adostasuna",
+    "consentCheckbox": "Ulertzen dut DPIP-ek balio ekonomikorik ez izatea posible dela, ez orain, ez etorkizunean, eta onartzen dut.",
+    "consentSignedOut": "Hasi saioa DPIP adostasuna berrikusteko eta gure planak ikusteko.",
+    "signInToConsent": "Hasi saioa",
+    "consentSaved": "Adostasuna erregistratuta: {date}",
+    "saveConsent": "Gorde adostasuna",
+    "dpipNoValue": "DPIP (Ð) Dupip barruko balio-unitatea da. Zure stash-a denborarekin hazten da zure jarduerarekin. DPIP ez da inbertsio-produktu bat eta baliteke balio ekonomikorik ez izatea — ez orain, ez etorkizunean.",
+    "consentDescription": "DPIP (Ð) Dupip barruko balio-unitatea da. Zure stash-a denborarekin hazten da zure jarduerarekin. DPIP ez da inbertsio-produktu bat eta baliteke balio ekonomikorik ez izatea — ez orain, ez etorkizunean. Gure planak ikusi aurretik, berrikusi eta berretsi, mesedez, honako hau:"
   }
 }

@@ -74,7 +74,8 @@
     "privacy": "Manufar Sirri",
     "locale": "Harshe",
     "blog": "Blog",
-    "agenda": "Ajanda"
+    "agenda": "Ajanda",
+    "upgrade": "Haɓaka"
   },
   "dashboard": {
     "title": "Rayuwarka a kallo ɗaya.",
@@ -260,7 +261,8 @@
     "cookies": "Muna amfani da kukis, kuma ta hanyar amfani da wannan app ɗin ka yarda da shi.",
     "code": "Lambar",
     "terms": "Sharuɗɗan Sabis",
-    "privacy": "Manufar Sirri"
+    "privacy": "Manufar Sirri",
+    "pricing": "Farashi"
   },
   "earningsTable": {
     "day": "Rana",
@@ -711,7 +713,15 @@
     "notice": "Babu kuɗi na gaske da ake sarrafa a halin yanzu a cikin wannan app. Dupip Invest har yanzu yana cikin lokacin tsarawa. Wannan kawai yanayin gwaji ne don dalilai na nunawa.",
     "consentTitle": "Yarda da Demo na Zuba Jari",
     "consentCheckbox": "Na yarda cewa Dupip har yanzu ba dandamali na zuba jari ba ne, kuma ta amfani da wannan fasalin, na san cewa duk bayanana za a iya share su kafin ƙaddamarwar hukuma ta Dupip Invest.",
-    "confirm": "Tabbatar"
+    "confirm": "Tabbatar",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "Samar da NFT ya kammala.",
@@ -919,5 +929,24 @@
       "small": "Ƙarami",
       "wide": "Fadi"
     }
+  },
+  "pricing": {
+    "metaTitle": "Farashi",
+    "metaDescription": "An yi rajistar Dupip a Turai a matsayin gidan rediyon yanar gizo mai manufar jin daɗi. Don tallafa wa ci gabanmu, muna ba da fa’idodi ga masu bayar da gudummawa. Duba shirye-shiryenmu da yadda DPIP ke aiki.",
+    "heroTitle": "Rediyo, da aka sake tunani",
+    "heroSubtitle": "An gina Dupip bisa ƙalubale mai sauƙi: jin daɗi. Muna neman mitocin da ke fitar da mafi kyau daga gare ku.",
+    "siaeTitle": "Bayanin kula game da lasisin kiɗa",
+    "plansTitle": "Shirye-shirye",
+    "plansDescription": "Zaɓi shirin da ya dace da yadda kuke sauraro.",
+    "dpipTitle": "Game da DPIP",
+    "dpipBody": "DPIP (Ð) ita ce ma’aunin ƙima a cikin Dupip. Ajiyarku na ƙaruwa tare da lokaci tare da ayyukanku. DPIP ba kayan saka jari ba ne kuma mai yiwuwa ba ta da ƙimar kuɗi — a yanzu ko a nan gaba.",
+    "consentTitle": "Yarjejeniyar DPIP",
+    "consentCheckbox": "Na fahimci cewa DPIP mai yiwuwa ba ta da ƙimar kuɗi, a yanzu ko a nan gaba, kuma na yarda da hakan.",
+    "consentSignedOut": "Shiga don duba yarjejeniyar DPIP da kuma duba shirye-shiryenmu.",
+    "signInToConsent": "Shiga",
+    "consentSaved": "An yi rikodin yarjejeniyar a ranar {date}",
+    "saveConsent": "Ajiye yarjejeniya",
+    "dpipNoValue": "DPIP (Ð) ita ce ma’aunin ƙima a cikin Dupip. Ajiyarku na ƙaruwa tare da lokaci tare da ayyukanku. DPIP ba kayan saka jari ba ne kuma mai yiwuwa ba ta da ƙimar kuɗi — a yanzu ko a nan gaba.",
+    "consentDescription": "DPIP (Ð) ita ce ma’aunin ƙima a cikin Dupip. Ajiyarku na ƙaruwa tare da lokaci tare da ayyukanku. DPIP ba kayan saka jari ba ne kuma mai yiwuwa ba ta da ƙimar kuɗi — a yanzu ko a nan gaba. Kafin duba shirye-shiryenmu, don Allah sake dubawa da tabbatar da wannan:"
   }
 }
