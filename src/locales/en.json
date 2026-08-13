@@ -180,7 +180,35 @@
       "open": "Open",
       "done": "Done",
       "ignored": "Ignored"
-    }
+    },
+    "delete": "Delete...",
+    "deleteTitle": "Delete task",
+    "deleteDescription": "How much of this task do you want to delete?",
+    "deleteScopes": {
+      "today": "Today only",
+      "onwards": "From today onwards",
+      "all": "All entries"
+    },
+    "requestTitle": "Request to work",
+    "requestDescription": "Explain why you want to take on this task. The list owner will review your request.",
+    "submitTitle": "Submit work",
+    "resubmitTitle": "Revise and resubmit",
+    "submitDescription": "Post evidence of your work. A photo or video can be attached here soon.",
+    "reviewTitle": "Review work",
+    "reviewDescription": "Accept the work, request changes, or reject it.",
+    "justificationLabel": "Justification",
+    "justificationPlaceholder": "Why should you do this task?",
+    "evidenceLabel": "Evidence / note",
+    "evidencePlaceholder": "Describe what you did...",
+    "selfReviewLabel": "Self-review (0-100)",
+    "managerReviewLabel": "Review score (0-100)",
+    "reviewNoteLabel": "Feedback (optional)",
+    "sendRequest": "Send request",
+    "resubmit": "Resubmit",
+    "submit": "Submit",
+    "accept": "Accept",
+    "requestChanges": "Request changes",
+    "reject": "Reject"
   },
   "forms": {
     "commonOptions": {
@@ -223,7 +251,34 @@
       "saveToTemplate": "Save task to template",
       "addTask": "Add Task",
       "saveTask": "Save Task",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "premiumLabel": "Premium (optional)",
+      "premiumPercentHint": "Percent of the list budget",
+      "cadenceLabel": "Repeats",
+      "cadence": {
+        "none": "Does not repeat",
+        "daily": "Daily",
+        "weekly": "Weekly",
+        "monthly": "Monthly",
+        "yearly": "Yearly",
+        "every": "Every",
+        "day": "day",
+        "days": "days",
+        "week": "week",
+        "weeks": "weeks",
+        "month": "month",
+        "months": "months",
+        "year": "year",
+        "years": "years",
+        "onDay": "On day",
+        "onThe": "On the",
+        "inMonth": "In month",
+        "ends": "Ends",
+        "never": "Never",
+        "after": "After",
+        "onDate": "On date",
+        "occurrences": "occurrences"
+      }
     },
     "recurrencePicker": {
       "frequency": "Repeat",
@@ -317,7 +372,15 @@
       "taskDistributionLabel": "Budget",
       "premiumLabel": "Prize",
       "totalLabel": "Total",
-      "addTaskTitle": "Add Task"
+      "addTaskTitle": "Add Task",
+      "editTitle": "Edit List",
+      "visibilityLabel": "Visibility",
+      "collaboratorsPlaceholder": "Search friends...",
+      "budgetSourcesLabel": "Percent of your budgets:",
+      "noBudgets": "No budgets yet — add one below.",
+      "newBudgetName": "Budget name",
+      "confirmDelete": "Delete this list and all its tasks? This cannot be undone.",
+      "delete": "Delete"
     },
     "addTemplateForm": {
       "title": "Create New Template",

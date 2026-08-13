@@ -13,6 +13,7 @@ Main REST API for the Dupip application. All routes are prefixed with `/api/v1`.
 
 | Resource | Doc | Endpoints (methods) |
 |---|---|---|
+| Budgets | `budgets/CLAUDE.md` | `GET/POST /budgets` (user's own budgets) |
 | Auth webhook | `auth/CLAUDE.md` | `POST /api/v1/auth` (Clerk user.created/session.created/user.updated/user.deleted) |
 | Chat | `chat/CLAUDE.md` | `POST /api/v1/chat`, `GET /chat/sidebar`, `POST /chat/token`, `GET /chat/unread-count`, `POST /chat/read-state`, `GET /chat/dm-candidates`, `GET/POST /chat/dms`, `GET/POST /chat/dms/{id}/messages`, `PATCH/DELETE /chat/channels/{id}`, `GET/POST /chat/channels/{id}/messages`, `PATCH/DELETE /chat/messages/{id}`, `GET /chat/messages/{id}/thread`, `GET/POST /chat/orgs`, `GET/POST /chat/orgs/{id}/channels`, `GET/POST /chat/orgs/{id}/invites`, `POST /chat/orgs/{id}/roles`, `DELETE /chat/invites/{id}`, `POST /chat/invites/{id}/accept` |
 | Comments | `comments/CLAUDE.md` | `GET/POST /comments`, `PUT/DELETE /comments/{commentId}` |

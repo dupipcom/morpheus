@@ -18,6 +18,7 @@ security:
 
 tags:
   - name: auth
+  - name: budgets
   - name: chat
   - name: comments
   - name: days
@@ -71,6 +72,18 @@ paths:
       responses:
         '200': { description: Fan-out result }
         '401': { description: Unauthorized cron request }
+
+  /api/v1/budgets:
+    get:
+      tags: [budgets]
+      summary: List the current user's budgets
+      responses:
+        '200': { description: Budgets }
+    post:
+      tags: [budgets]
+      summary: Create a budget (name, totalAmount)
+      responses:
+        '200': { description: Budget }
 
   /api/v1/chat:
     post:
