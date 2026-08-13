@@ -577,14 +577,6 @@ const aggregateDataByWeek = (dailyData: any[]) => {
             ))}
           </div>
           <AgentChat
-<<<<<<< Updated upstream
-            key={reverseMessages}
-            onMessageChange={(message) => {
-              setCurrentText(message)
-            }}
-            history={reverseMessages}
-=======
->>>>>>> Stashed changes
             initialMessage={currentText}
             filterContext={agentFilterContext}
             className="h-96"

@@ -29,11 +29,7 @@ interface AgentChatProps {
 // Allow streaming responses up to 60 seconds
 export const maxDuration = 60;
 
-<<<<<<< Updated upstream
-export const AgentChat = ({ onMessageChange, initialMessage = "", history = [], className = "", filterContext }: AgentChatProps) => {
-=======
 export const AgentChat = ({ initialMessage = "", history = [], className = "", filterContext }: AgentChatProps) => {
->>>>>>> Stashed changes
   const { t, locale } = useI18n()
   const [messages, setMessages] = useState<Message[]>(history)
   const [inputMessage, setInputMessage] = useState(initialMessage)
@@ -91,30 +87,8 @@ export const AgentChat = ({ initialMessage = "", history = [], className = "", f
     setIsLoading(true)
 
     try {
-<<<<<<< Updated upstream
-    //   const response = await fetch('/api/v1/chat', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify({
-    //       message: userMessage.content,
-    //       locale: locale
-    //     })
-    //   })
-
-    //   if (!response.ok) {
-    //     throw new Error('Failed to send message')
-    //   }
-
-    //   const data = await response.json()
-
-      const { messages, newMessage } = await continueConversation(
-        [...conversation, userMessage],
-=======
       const { newMessage } = await continueConversation(
         [...messages, userMessage],
->>>>>>> Stashed changes
         filterContext,
         selectedModel
       );
@@ -158,16 +132,6 @@ export const AgentChat = ({ initialMessage = "", history = [], className = "", f
       console.error('Chat error:', error)
       toast.error(t('agentChat.failedToSend'))
 
-<<<<<<< Updated upstream
-      const errorMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        content: t('agentChat.error'),
-        role: 'assistant',
-        timestamp: new Date()
-      }
-
-      setMessages(prev => [...prev, errorMessage])
-=======
       // Replace the pending slot with the error text instead of appending a
       // second assistant message.
       setMessages(prev =>
@@ -177,7 +141,6 @@ export const AgentChat = ({ initialMessage = "", history = [], className = "", f
             : message
         )
       )
->>>>>>> Stashed changes
     } finally {
       setIsLoading(false)
     }
