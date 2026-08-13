@@ -74,7 +74,8 @@
     "privacy": "गोपनीयता नीति",
     "locale": "भाषा",
     "blog": "ब्लॉग",
-    "agenda": "कार्यसूची"
+    "agenda": "कार्यसूची",
+    "upgrade": "अपग्रेड"
   },
   "dashboard": {
     "title": "एक नज़र में आपका जीवन।",
@@ -243,7 +244,8 @@
     "cookies": "हम कुकीज़ का उपयोग करते हैं, और इस ऐप का उपयोग करके आप इससे सहमत होते हैं।",
     "code": "कोड",
     "terms": "सेवा की शर्तें",
-    "privacy": "गोपनीयता नीति"
+    "privacy": "गोपनीयता नीति",
+    "pricing": "मूल्य निर्धारण"
   },
   "earningsTable": {
     "day": "दिन",
@@ -714,7 +716,15 @@
     "notice": "इस ऐप में वर्तमान में कोई वास्तविक धन प्रबंधित नहीं किया जा रहा है। Dupip Invest अभी भी योजना चरण में है। यह केवल प्रदर्शन उद्देश्यों के लिए एक परीक्षण वातावरण है।",
     "consentTitle": "निवेश डेमो सहमति",
     "consentCheckbox": "मैं स्वीकार करता हूं कि Dupip अभी तक एक निवेश प्लेटफॉर्म नहीं है, और इस सुविधा का उपयोग करके, मैं जानता हूं कि Dupip Invest के आधिकारिक लॉन्च से पहले मेरे सभी डेटा को हटाया जा सकता है।",
-    "confirm": "पुष्टि करें"
+    "confirm": "पुष्टि करें",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "NFT जेनरेशन पूर्ण हुआ।",
@@ -922,5 +932,24 @@
       "small": "छोटा",
       "wide": "चौड़ा"
     }
+  },
+  "pricing": {
+    "metaTitle": "मूल्य निर्धारण",
+    "metaDescription": "डुपिप यूरोप में एक वेबरेडियो के रूप में पंजीकृत है, जिसका मिशन कल्याण है। हमारे विकास में सहयोग के लिए हम दानदाताओं को लाभ प्रदान करते हैं। हमारी योजनाएँ और DPIP कैसे काम करता है, देखें।",
+    "heroTitle": "रेडियो, नई कल्पना के साथ",
+    "heroSubtitle": "डुपिप एक सरल चुनौती के इर्द-गिर्द बना है: कल्याण। हम उन आवृत्तियों की तलाश में हैं जो आपका सर्वश्रेष्ठ सामने लाती हैं।",
+    "siaeTitle": "संगीत लाइसेंसिंग पर एक नोट",
+    "plansTitle": "योजनाएँ",
+    "plansDescription": "ऐसी योजना चुनें जो आपके सुनने के तरीके से मेल खाती हो।",
+    "dpipTitle": "DPIP के बारे में",
+    "dpipBody": "DPIP (Ð) डुपिप के भीतर मूल्य की इकाई है। आपका स्टैश समय के साथ आपकी गतिविधि से बढ़ता है। DPIP कोई निवेश उत्पाद नहीं है और इसका कोई मौद्रिक मूल्य नहीं हो सकता — न अभी, न भविष्य में।",
+    "consentTitle": "DPIP सहमति",
+    "consentCheckbox": "मैं समझता/समझती हूँ कि DPIP का कोई मौद्रिक मूल्य नहीं हो सकता, न अभी और न भविष्य में, और मैं इसे स्वीकार करता/करती हूँ।",
+    "consentSignedOut": "DPIP सहमति की समीक्षा करने और हमारी योजनाएँ देखने के लिए साइन इन करें।",
+    "signInToConsent": "साइन इन करें",
+    "consentSaved": "सहमति {date} को दर्ज की गई",
+    "saveConsent": "सहमति सहेजें",
+    "dpipNoValue": "DPIP (Ð) डुपिप के भीतर मूल्य की इकाई है। आपका स्टैश समय के साथ आपकी गतिविधि से बढ़ता है। DPIP कोई निवेश उत्पाद नहीं है और इसका कोई मौद्रिक मूल्य नहीं हो सकता — न अभी, न भविष्य में।",
+    "consentDescription": "DPIP (Ð) डुपिप के भीतर मूल्य की इकाई है। आपका स्टैश समय के साथ आपकी गतिविधि से बढ़ता है। DPIP कोई निवेश उत्पाद नहीं है और इसका कोई मौद्रिक मूल्य नहीं हो सकता — न अभी, न भविष्य में। हमारी योजनाएँ देखने से पहले, कृपया निम्नलिखित की समीक्षा करें और पुष्टि करें:"
   }
 }

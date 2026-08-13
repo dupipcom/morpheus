@@ -74,7 +74,8 @@
     "privacy": "Zásady ochrany osobních údajů",
     "locale": "Jazyk",
     "blog": "Blog",
-    "agenda": "Program"
+    "agenda": "Program",
+    "upgrade": "Povýšit"
   },
   "dashboard": {
     "title": "Váš život na první pohled.",
@@ -243,7 +244,8 @@
     "cookies": "We use cookies, and by using this app you agree to it.",
     "code": "Code",
     "terms": "Podmínky služby",
-    "privacy": "Zásady ochrany osobních údajů"
+    "privacy": "Zásady ochrany osobních údajů",
+    "pricing": "Ceník"
   },
   "earningsTable": {
     "day": "Den",
@@ -714,7 +716,15 @@
     "notice": "V této aplikaci se momentálně nespravují žádné skutečné peníze. Dupip Invest je stále ve fázi plánování. Toto je pouze testovací prostředí pro demonstrační účely.",
     "consentTitle": "Souhlas s Investiční Demo",
     "consentCheckbox": "Uznávám, že Dupip ještě není investiční platformou a že používáním této funkce jsem si vědom, že všechna má data mohou být smazána před oficiálním spuštěním Dupip Invest.",
-    "confirm": "Potvrdit"
+    "confirm": "Potvrdit",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "Generování NFT dokončeno.",
@@ -922,5 +932,24 @@
       "small": "Malé",
       "wide": "Široké"
     }
+  },
+  "pricing": {
+    "metaTitle": "Ceník",
+    "metaDescription": "Dupip je v Evropě registrován jako webové rádio s posláním pro well-being. Na podporu našeho růstu nabízíme dárcům výhody. Podívejte se na naše plány a jak DPIP funguje.",
+    "heroTitle": "Rádio, znovu vymyšlené",
+    "heroSubtitle": "Dupip je postaven na jednoduché výzvě: well-being. Hledáme frekvence, které z vás dostanou to nejlepší.",
+    "siaeTitle": "Poznámka k hudebním licencím",
+    "plansTitle": "Plány",
+    "plansDescription": "Vyberte si plán, který odpovídá tomu, jak posloucháte.",
+    "dpipTitle": "O DPIP",
+    "dpipBody": "DPIP (Ð) je jednotka hodnoty uvnitř Dupip. Váš stash roste s časem díky vaší aktivitě. DPIP není investiční produkt a nemusí mít peněžní hodnotu — nyní ani v budoucnu.",
+    "consentTitle": "Souhlas s DPIP",
+    "consentCheckbox": "Rozumím, že DPIP nemusí mít peněžní hodnotu, nyní ani v budoucnu, a souhlasím s tím.",
+    "consentSignedOut": "Přihlaste se, abyste si mohli prohlédnout souhlas s DPIP a naše plány.",
+    "signInToConsent": "Přihlásit se",
+    "consentSaved": "Souhlas zaznamenán {date}",
+    "saveConsent": "Uložit souhlas",
+    "dpipNoValue": "DPIP (Ð) je jednotka hodnoty uvnitř Dupip. Váš stash roste s časem díky vaší aktivitě. DPIP není investiční produkt a nemusí mít peněžní hodnotu — nyní ani v budoucnu.",
+    "consentDescription": "DPIP (Ð) je jednotka hodnoty uvnitř Dupip. Váš stash roste s časem díky vaší aktivitě. DPIP není investiční produkt a nemusí mít peněžní hodnotu — nyní ani v budoucnu. Než si prohlédnete naše plány, přečtěte si prosím a potvrďte následující:"
   }
 }

@@ -57,6 +57,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })
   })
 
+  // Pricing page for all locales
+  locales.forEach(locale => {
+    sitemapEntries.push({
+      url: `${siteUrl}/${locale}/pricing`,
+      lastModified: new Date(),
+      alternates: {
+        languages: Object.fromEntries(
+          locales.map(altLocale => [altLocale, `${siteUrl}/${altLocale}/pricing`])
+        ),
+      },
+    })
+  })
+
   // Fetch all Payload CMS pages once, then create entries for all locales
   try {
     const pagesResult = await fetchAllPages()

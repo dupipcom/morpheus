@@ -74,7 +74,8 @@
     "privacy": "מדיניות פרטיות",
     "locale": "שפה",
     "blog": "בלוג",
-    "agenda": "סדר יום"
+    "agenda": "סדר יום",
+    "upgrade": "שדרוג"
   },
   "dashboard": {
     "title": "חייך במבט אחד.",
@@ -243,7 +244,8 @@
     "cookies": "אנו משתמשים בכרות, ובשימוש באפליקציה זו אתה מסכים לכך.",
     "code": "קוד",
     "terms": "תנאי שירות",
-    "privacy": "מדיניות פרטיות"
+    "privacy": "מדיניות פרטיות",
+    "pricing": "תמחור"
   },
   "earningsTable": {
     "day": "יום",
@@ -714,7 +716,15 @@
     "notice": "כרגע אין כסף אמיתי מנוהל באפליקציה זו. Dupip Invest עדיין בשלב התכנון. זהו רק סביבת בדיקה למטרות הדגמה.",
     "consentTitle": "הסכמה להדגמת השקעות",
     "consentCheckbox": "אני מכיר בכך ש-Dupip עדיין אינו פלטפורמת השקעות, ובשימוש בתכונה זו, אני מודע לכך שכל הנתונים שלי עלולים להימחק לפני השקה הרשמית של Dupip Invest.",
-    "confirm": "אישור"
+    "confirm": "אישור",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "יצירת NFT הושלמה.",
@@ -922,5 +932,24 @@
       "small": "קטן",
       "wide": "רחב"
     }
+  },
+  "pricing": {
+    "metaTitle": "תמחור",
+    "metaDescription": "דופיפ רשומה באירופה כרדיו אינטרנט עם שליחות של רווחה נפשית. כדי לתמוך בצמיחה שלנו, אנו מציעים הטבות לתורמים. הציגו את התוכניות שלנו ואיך DPIP עובד.",
+    "heroTitle": "רדיו, בדמיון מחדש",
+    "heroSubtitle": "דופיפ נבנתה סביב אתגר פשוט: רווחה. אנחנו מחפשים את התדרים שמוציאים ממך את הטוב ביותר.",
+    "siaeTitle": "הערה על רישוי מוזיקה",
+    "plansTitle": "תוכניות",
+    "plansDescription": "בחרו את התוכנית שמתאימה לאופן שבו אתם מאזינים.",
+    "dpipTitle": "על DPIP",
+    "dpipBody": "DPIP (Ð) הוא יחידת הערך בתוך דופיפ. המאגר שלך גדל עם הזמן יחד עם הפעילות שלך. DPIP אינו מוצר השקעה וייתכן שאין לו ערך כספי — לא עכשיו ולא בעתיד.",
+    "consentTitle": "הסכמת DPIP",
+    "consentCheckbox": "אני מבין/מבינה של-DPIP ייתכן שאין ערך כספי, לא עכשיו ולא בעתיד, ואני מקבל/ת זאת.",
+    "consentSignedOut": "היכנסו כדי לבדוק את הסכמת DPIP ולהציג את התוכניות שלנו.",
+    "signInToConsent": "כניסה",
+    "consentSaved": "ההסכמה נרשמה בתאריך {date}",
+    "saveConsent": "שמירת הסכמה",
+    "dpipNoValue": "DPIP (Ð) הוא יחידת הערך בתוך דופיפ. המאגר שלך גדל עם הזמן יחד עם הפעילות שלך. DPIP אינו מוצר השקעה וייתכן שאין לו ערך כספי — לא עכשיו ולא בעתיד.",
+    "consentDescription": "DPIP (Ð) הוא יחידת הערך בתוך דופיפ. המאגר שלך גדל עם הזמן יחד עם הפעילות שלך. DPIP אינו מוצר השקעה וייתכן שאין לו ערך כספי — לא עכשיו ולא בעתיד. לפני הצגת התוכניות שלנו, אנא עיינו ואשרו את הדברים הבאים:"
   }
 }

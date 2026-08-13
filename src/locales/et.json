@@ -74,7 +74,8 @@
     "privacy": "Privaatsuspoliitika",
     "locale": "Keel",
     "blog": "Blogi",
-    "agenda": "Päevakord"
+    "agenda": "Päevakord",
+    "upgrade": "Täienda"
   },
   "dashboard": {
     "title": "Sinu elu ühe pilguga.",
@@ -243,7 +244,8 @@
     "cookies": "Me kasutame küpsiseid ja selle rakenduse kasutamisega nõustute sellega.",
     "code": "Kood",
     "terms": "Kasutustingimused",
-    "privacy": "Privaatsuspoliitika"
+    "privacy": "Privaatsuspoliitika",
+    "pricing": "Hinnad"
   },
   "earningsTable": {
     "day": "Päev",
@@ -714,7 +716,15 @@
     "notice": "Selles rakenduses ei hallata praegu tegelikke rahasid. Dupip Invest on veel planeerimisfaasis. See on ainult testimiskeskkond demonstratsioonieesmärgil.",
     "consentTitle": "Investeeringu Demo Nõusolek",
     "consentCheckbox": "Tunnistan, et Dupip ei ole veel investeerimisplatvorm ja et selle funktsiooni kasutades olen teadlik, et kõik minu andmed võivad enne Dupip Investi ametlikku käivitamist kustutada.",
-    "confirm": "Kinnita"
+    "confirm": "Kinnita",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "NFT genereerimine lõpetatud.",
@@ -922,5 +932,24 @@
       "small": "Väike",
       "wide": "Lai"
     }
+  },
+  "pricing": {
+    "metaTitle": "Hinnad",
+    "metaDescription": "Dupip on registreeritud Euroopas veebiraadiona, mille missioon on heaolu. Meie kasvu toetamiseks pakume annetajatele hüvesid. Vaata meie pakette ja kuidas DPIP töötab.",
+    "heroTitle": "Raadio, uuesti kujutatud",
+    "heroSubtitle": "Dupip on üles ehitatud lihtsa väljakutse ümber: heaolu. Otsime sagedusi, mis toovad sinust esile parima.",
+    "siaeTitle": "Märkus muusikalitsentside kohta",
+    "plansTitle": "Paketid",
+    "plansDescription": "Vali pakett, mis sobib sinu kuulamisviisiga.",
+    "dpipTitle": "DPIP-st",
+    "dpipBody": "DPIP (Ð) on väärtusühik Dupipis. Sinu stash kasvab aja jooksul koos sinu tegevusega. DPIP ei ole investeerimistoode ja sellel ei pruugi olla rahalist väärtust — ei praegu ega tulevikus.",
+    "consentTitle": "DPIP nõusolek",
+    "consentCheckbox": "Mõistan, et DPIP-l ei pruugi olla rahalist väärtust, ei praegu ega tulevikus, ja nõustun sellega.",
+    "consentSignedOut": "Logi sisse, et vaadata DPIP nõusolek üle ja näha meie pakette.",
+    "signInToConsent": "Logi sisse",
+    "consentSaved": "Nõusolek salvestatud: {date}",
+    "saveConsent": "Salvesta nõusolek",
+    "dpipNoValue": "DPIP (Ð) on väärtusühik Dupipis. Sinu stash kasvab aja jooksul koos sinu tegevusega. DPIP ei ole investeerimistoode ja sellel ei pruugi olla rahalist väärtust — ei praegu ega tulevikus.",
+    "consentDescription": "DPIP (Ð) on väärtusühik Dupipis. Sinu stash kasvab aja jooksul koos sinu tegevusega. DPIP ei ole investeerimistoode ja sellel ei pruugi olla rahalist väärtust — ei praegu ega tulevikus. Enne meie pakettide vaatamist palun vaata üle ja kinnita järgmine:"
   }
 }

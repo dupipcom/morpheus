@@ -13,6 +13,7 @@ Feature-level view components under `src/views/`. Each view has its own `CLAUDE.
 | `InvestView` | `invest/investView.tsx` | Blockchain wallets, NFT, transfers, premium factors | `/api/v1/user` (direct), `/api/v1/wallet*` (via child components) |
 | `ListView` | `list/listView.tsx` | Task grid display, completion, jobs | `/api/v1/tasks`, `/api/v1/jobs`, `/api/v1/profiles/by-ids`, `/api/v1/tasklists`, `/api/v1/tasks/migrate` |
 | `MoodView` | `mood/moodView.tsx` | Mood tracking, notes, entities, delegation | `/api/v1/days`, `/api/v1/persons`, `/api/v1/things`, `/api/v1/events`, `/api/v1/notes`, `/api/v1/delegated-users` |
+| `PricingView` | `pricing/pricingView.tsx` | Public pricing grid (Clerk PricingTable) + DPIP consent | Clerk dashboard plans (via `<PricingTable />`), `/api/v1/user` (consents) |
 | `ProfileView` | `profile/profileView.tsx` | Public profile display (server-rendered) | No client calls; backed by `/api/v1/profile/{userName}` and `/api/v1/profile/{userName}/notes` |
 | `SettingsView` | `settings/settingsView.tsx` | Currency + daily/weekly task templates | `/api/v1/user` (GET/POST) |
 | `forms/` | `forms/*.tsx` | Task/list/template creation & editing forms | `/api/v1/tasklists`, `/api/v1/tasks`, `/api/v1/profiles/by-ids`, `/api/v1/templates` |
