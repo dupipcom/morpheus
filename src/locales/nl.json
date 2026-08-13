@@ -74,7 +74,8 @@
     "privacy": "Privacybeleid",
     "locale": "Taal",
     "blog": "Blog",
-    "agenda": "Agenda"
+    "agenda": "Agenda",
+    "upgrade": "Upgraden"
   },
   "dashboard": {
     "title": "Je leven in één oogopslag.",
@@ -243,7 +244,8 @@
     "cookies": "We use cookies, and by using this app you agree to it.",
     "code": "Code",
     "terms": "Servicevoorwaarden",
-    "privacy": "Privacybeleid"
+    "privacy": "Privacybeleid",
+    "pricing": "Prijzen"
   },
   "earningsTable": {
     "day": "Dag",
@@ -714,7 +716,15 @@
     "notice": "Er wordt momenteel geen echt geld beheerd in deze app. Dupip Invest bevindt zich nog in de planningsfase. Dit is slechts een testomgeving voor demonstratiedoeleinden.",
     "consentTitle": "Toestemming voor Investeringsdemo",
     "consentCheckbox": "Ik erken dat Dupip nog geen investeringsplatform is en dat door deze functie te gebruiken, ik me ervan bewust ben dat al mijn gegevens kunnen worden verwijderd vóór de officiële lancering van Dupip Invest.",
-    "confirm": "Bevestigen"
+    "confirm": "Bevestigen",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "NFT-generatie voltooid.",
@@ -922,5 +932,24 @@
       "small": "Klein",
       "wide": "Breed"
     }
+  },
+  "pricing": {
+    "metaTitle": "Prijzen",
+    "metaDescription": "Dupip is in Europa geregistreerd als webradio met een welzijnsmissie. Om onze groei te ondersteunen, bieden we voordelen aan donateurs. Bekijk onze abonnementen en hoe DPIP werkt.",
+    "heroTitle": "Radio, opnieuw uitgevonden",
+    "heroSubtitle": "Dupip is gebouwd rond een eenvoudige uitdaging: welzijn. We zoeken de frequenties die het beste uit je halen.",
+    "siaeTitle": "Een opmerking over muzieklicenties",
+    "plansTitle": "Abonnementen",
+    "plansDescription": "Kies het abonnement dat past bij hoe je luistert.",
+    "dpipTitle": "Over DPIP",
+    "dpipBody": "DPIP (Ð) is de waarde-eenheid binnen Dupip. Je stash groeit in de loop van de tijd met je activiteit. DPIP is geen beleggingsproduct en heeft mogelijk geen geldelijke waarde — nu niet en in de toekomst niet.",
+    "consentTitle": "DPIP-toestemming",
+    "consentCheckbox": "Ik begrijp dat DPIP mogelijk geen geldelijke waarde heeft, nu niet en in de toekomst niet, en ik accepteer dit.",
+    "consentSignedOut": "Log in om de DPIP-toestemming te bekijken en onze abonnementen te zien.",
+    "signInToConsent": "Inloggen",
+    "consentSaved": "Toestemming vastgelegd op {date}",
+    "saveConsent": "Toestemming opslaan",
+    "dpipNoValue": "DPIP (Ð) is de waarde-eenheid binnen Dupip. Je stash groeit in de loop van de tijd met je activiteit. DPIP is geen beleggingsproduct en heeft mogelijk geen geldelijke waarde — nu niet en in de toekomst niet.",
+    "consentDescription": "DPIP (Ð) is de waarde-eenheid binnen Dupip. Je stash groeit in de loop van de tijd met je activiteit. DPIP is geen beleggingsproduct en heeft mogelijk geen geldelijke waarde — nu niet en in de toekomst niet. Bekijk en bevestig het volgende voordat je onze abonnementen ziet:"
   }
 }

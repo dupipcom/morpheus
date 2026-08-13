@@ -74,7 +74,8 @@
     "privacy": "Adatvédelmi irányelvek",
     "locale": "Nyelv",
     "blog": "Blog",
-    "agenda": "Napirend"
+    "agenda": "Napirend",
+    "upgrade": "Frissítés"
   },
   "dashboard": {
     "title": "Az életed egy pillantásra.",
@@ -243,7 +244,8 @@
     "cookies": "Sütiket használunk, és az alkalmazás használatával hozzájárul ehhez.",
     "code": "Kód",
     "terms": "Szolgáltatási feltételek",
-    "privacy": "Adatvédelmi irányelvek"
+    "privacy": "Adatvédelmi irányelvek",
+    "pricing": "Árazás"
   },
   "earningsTable": {
     "day": "Nap",
@@ -714,7 +716,15 @@
     "notice": "Jelenleg nincs valódi pénz kezelve ebben az alkalmazásban. A Dupip Invest még a tervezési fázisban van. Ez csak egy tesztkörnyezet bemutatási célokra.",
     "consentTitle": "Befektetési Demo Hozzájárulás",
     "consentCheckbox": "Elismerem, hogy a Dupip még nem befektetési platform, és hogy ezt a funkciót használva tudomásul veszem, hogy az összes adatom törölhető a Dupip Invest hivatalos indítása előtt.",
-    "confirm": "Megerősítés"
+    "confirm": "Megerősítés",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "NFT generálás befejezve.",
@@ -922,5 +932,24 @@
       "small": "Kicsi",
       "wide": "Széles"
     }
+  },
+  "pricing": {
+    "metaTitle": "Árazás",
+    "metaDescription": "A Dupip Európában bejegyzett webes rádió, jóléti küldetéssel. Növekedésünk támogatásáért előnyöket kínálunk az adományozóknak. Tekintsd meg csomagjainkat, és hogy hogyan működik a DPIP.",
+    "heroTitle": "Rádió, újragondolva",
+    "heroSubtitle": "A Dupip egy egyszerű kihívás köré épült: a jóllét. Azokat a frekvenciákat keressük, amelyek a legjobbat hozzák ki belőled.",
+    "siaeTitle": "Megjegyzés a zenei licencelésről",
+    "plansTitle": "Csomagok",
+    "plansDescription": "Válaszd azt a csomagot, amely illik ahhoz, ahogyan hallgatsz.",
+    "dpipTitle": "A DPIP-ről",
+    "dpipBody": "A DPIP (Ð) a Dupip értékegysége. A tartalékod idővel növekszik a tevékenységeddel. A DPIP nem befektetési termék, és lehet, hogy nincs pénzbeli értéke — sem most, sem a jövőben.",
+    "consentTitle": "DPIP hozzájárulás",
+    "consentCheckbox": "Megértem, hogy a DPIP-nek lehet, hogy nincs pénzbeli értéke, sem most, sem a jövőben, és ezt elfogadom.",
+    "consentSignedOut": "Jelentkezz be a DPIP hozzájárulás áttekintéséhez és csomagjaink megtekintéséhez.",
+    "signInToConsent": "Bejelentkezés",
+    "consentSaved": "Hozzájárulás rögzítve: {date}",
+    "saveConsent": "Hozzájárulás mentése",
+    "dpipNoValue": "A DPIP (Ð) a Dupip értékegysége. A tartalékod idővel növekszik a tevékenységeddel. A DPIP nem befektetési termék, és lehet, hogy nincs pénzbeli értéke — sem most, sem a jövőben.",
+    "consentDescription": "A DPIP (Ð) a Dupip értékegysége. A tartalékod idővel növekszik a tevékenységeddel. A DPIP nem befektetési termék, és lehet, hogy nincs pénzbeli értéke — sem most, sem a jövőben. Mielőtt megnéznéd csomagjainkat, kérjük, tekintsd át és erősítsd meg a következőt:"
   }
 }

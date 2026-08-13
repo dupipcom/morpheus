@@ -74,7 +74,8 @@
     "privacy": "Ìlànà Ìpamọ́",
     "locale": "Èdè",
     "blog": "Blog",
-    "agenda": "Àkójọ"
+    "agenda": "Àkójọ",
+    "upgrade": "Igbega"
   },
   "dashboard": {
     "title": "Ìgbésí ayé rẹ̀ ní ìwojú kan.",
@@ -261,7 +262,8 @@
     "cookies": "A ń lo kúkì, àti nípasẹ̀ lílo app yìí o gbà.",
     "code": "Koodu",
     "terms": "Àwọn Òfin Ìṣẹ́",
-    "privacy": "Ìlànà Ìpamọ́"
+    "privacy": "Ìlànà Ìpamọ́",
+    "pricing": "Iye owó"
   },
   "earningsTable": {
     "day": "Ọjọ́",
@@ -712,7 +714,15 @@
     "notice": "Ko si owo ti ooto ti a n ṣakoso ni bayi ni app yii. Dupip Invest tun ti o wa ni ipolongo. Eyi jẹ ibi idanwo nikan fun awọn idi ifihan.",
     "consentTitle": "Igbasilẹ Demo Ifowopamọ",
     "consentCheckbox": "Mo jẹwo pe Dupip ko jẹ ibi ifowopamọ sibẹsibẹ, ati pe nipa lilo ẹya yii, mo mọ pe gbogbo data mi le jẹ pa kuro ṣaaju ifilọlẹ ofisiali ti Dupip Invest.",
-    "confirm": "Jẹrisi"
+    "confirm": "Jẹrisi",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "Iṣẹda NFT ti pari.",
@@ -920,5 +930,24 @@
       "small": "Kékèké",
       "wide": "Fẹ́"
     }
+  },
+  "pricing": {
+    "metaTitle": "Iye owó",
+    "metaDescription": "Dupip ti forukọsilẹ ni Yuroopu gẹgẹbi redio ayelujara pẹlu iṣẹ apinfunni alafia. Lati ṣe atilẹyin fun idagbasoke wa, a n funni ni awọn anfani fun awọn olùrànwọ. Wo awọn eto wa ati bii DPIP ṣe n ṣiṣẹ.",
+    "heroTitle": "Redio, ti a tun ronu",
+    "heroSubtitle": "Dupip ni a kọ ni ayika ipenija ti o rọrun: alafia. A n wa awọn igbohunsafẹfẹ ti o mu ohun ti o dara julọ jade ninu rẹ.",
+    "siaeTitle": "Akọsilẹ kan nipa iwe-aṣẹ orin",
+    "plansTitle": "Awọn eto",
+    "plansDescription": "Yan eto ti o baamu bi o ṣe n gbọ.",
+    "dpipTitle": "Nipa DPIP",
+    "dpipBody": "DPIP (Ð) ni ẹyọ iye inu Dupip. Ibi ipamọ rẹ n dagba pẹlu akoko pẹlu iṣẹ rẹ. DPIP kii ṣe ọja idoko-owo ati pe o le ma ni iye owo kankan — ni bayi tabi ni ọjọ iwaju.",
+    "consentTitle": "Ifọwọsi DPIP",
+    "consentCheckbox": "Mo loye pe DPIP le ma ni iye owo kankan, ni bayi tabi ni ọjọ iwaju, ati pe mo gba eyi.",
+    "consentSignedOut": "Wọle lati ṣayẹwo ifọwọsi DPIP ati lati wo awọn eto wa.",
+    "signInToConsent": "Wọle",
+    "consentSaved": "Ifọwọsi ti gbasilẹ ni {date}",
+    "saveConsent": "Fipamọ ifọwọsi",
+    "dpipNoValue": "DPIP (Ð) ni ẹyọ iye inu Dupip. Ibi ipamọ rẹ n dagba pẹlu akoko pẹlu iṣẹ rẹ. DPIP kii ṣe ọja idoko-owo ati pe o le ma ni iye owo kankan — ni bayi tabi ni ọjọ iwaju.",
+    "consentDescription": "DPIP (Ð) ni ẹyọ iye inu Dupip. Ibi ipamọ rẹ n dagba pẹlu akoko pẹlu iṣẹ rẹ. DPIP kii ṣe ọja idoko-owo ati pe o le ma ni iye owo kankan — ni bayi tabi ni ọjọ iwaju. Ṣaaju wiwo awọn eto wa, jọwọ ṣayẹwo ki o jẹrisi atẹle naa:"
   }
 }

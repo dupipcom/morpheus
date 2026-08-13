@@ -78,7 +78,8 @@
     "privacy": "سياسة الخصوصية",
     "locale": "اللغة",
     "blog": "المدونة",
-    "agenda": "الأجندة"
+    "agenda": "الأجندة",
+    "upgrade": "الترقية"
   },
   "dashboard": {
     "title": "حياتك في لمحة.",
@@ -304,7 +305,8 @@
     "cookies": "نحن نستخدم ملفات تعريف الارتباط، وباستخدام هذا التطبيق فإنك توافق على ذلك.",
     "code": "الكود",
     "terms": "شروط الخدمة",
-    "privacy": "سياسة الخصوصية"
+    "privacy": "سياسة الخصوصية",
+    "pricing": "الأسعار"
   },
   "earningsTable": {
     "day": "اليوم",
@@ -718,7 +720,15 @@
     "notice": "لا يوجد أموال حقيقية يتم إدارتها حاليًا في هذا التطبيق. Dupip Invest لا يزال في مرحلة التخطيط. هذا مجرد بيئة اختبار لأغراض العرض التوضيحي.",
     "consentTitle": "موافقة عرض الاستثمار",
     "consentCheckbox": "أعترف بأن Dupip ليست بعد منصة استثمار، وأنه باستخدام هذه الميزة، أنا على علم بأن جميع بياناتي قد يتم حذفها قبل الإطلاق الرسمي لـ Dupip Invest.",
-    "confirm": "تأكيد"
+    "confirm": "تأكيد",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "اكتمل إنشاء NFT.",
@@ -926,5 +936,24 @@
       "small": "صغير",
       "wide": "واسع"
     }
+  },
+  "pricing": {
+    "metaTitle": "الأسعار",
+    "metaDescription": "دوبيب مسجّلة في أوروبا كمحطة راديو على الويب مهمتها الرفاهية. لدعم نمونا، نقدّم مزايا للمتبرعين. اطّلع على خططنا وكيف يعمل DPIP.",
+    "heroTitle": "راديو، بمفهوم جديد",
+    "heroSubtitle": "بُنيت دوبيب حول تحدٍّ بسيط: الرفاهية. نبحث عن الترددات التي تُخرج أفضل ما فيك.",
+    "siaeTitle": "ملاحظة حول ترخيص الموسيقى",
+    "plansTitle": "الخطط",
+    "plansDescription": "اختر الخطة التي تناسب طريقة استماعك.",
+    "dpipTitle": "حول DPIP",
+    "dpipBody": "DPIP (Ð) هو وحدة القيمة داخل دوبيب. ينمو رصيدك بمرور الوقت مع نشاطك. DPIP ليس منتجًا استثماريًا وقد لا تكون له قيمة نقدية — الآن أو في المستقبل.",
+    "consentTitle": "موافقة DPIP",
+    "consentCheckbox": "أفهم أن DPIP قد لا تكون له قيمة نقدية، الآن أو في المستقبل، وأقبل ذلك.",
+    "consentSignedOut": "سجّل الدخول لمراجعة موافقة DPIP وعرض خططنا.",
+    "signInToConsent": "تسجيل الدخول",
+    "consentSaved": "تم تسجيل الموافقة في {date}",
+    "saveConsent": "حفظ الموافقة",
+    "dpipNoValue": "DPIP (Ð) هو وحدة القيمة داخل دوبيب. ينمو رصيدك بمرور الوقت مع نشاطك. DPIP ليس منتجًا استثماريًا وقد لا تكون له قيمة نقدية — الآن أو في المستقبل.",
+    "consentDescription": "DPIP (Ð) هو وحدة القيمة داخل دوبيب. ينمو رصيدك بمرور الوقت مع نشاطك. DPIP ليس منتجًا استثماريًا وقد لا تكون له قيمة نقدية — الآن أو في المستقبل. قبل عرض خططنا، يرجى المراجعة والتأكيد على ما يلي:"
   }
 }

@@ -70,6 +70,7 @@
     "events": "Events",
     "label": "Label",
     "supportUs": "Support Us",
+    "upgrade": "Upgrade",
     "about": "About us",
     "privacy": "Privacy Policy",
     "locale": "Language",
@@ -466,7 +467,8 @@
     "cookies": "We use cookies, and by using this app you agree to it.",
     "code": "Code",
     "terms": "Terms of Service",
-    "privacy": "Privacy Policy"
+    "privacy": "Privacy Policy",
+    "pricing": "Pricing"
   },
   "earningsTable": {
     "day": "Day",
@@ -720,6 +722,25 @@
     "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
     "globalPremiumFactor": "Global Premium Factor",
     "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
+  },
+  "pricing": {
+    "metaTitle": "Pricing",
+    "metaDescription": "Dupip is registered in Europe as a webradio with a well-being mission. To support our growth, we offer perks for donors. See our plans and how DPIP works.",
+    "heroTitle": "Radio, re-imagined",
+    "heroSubtitle": "Dupip is built around a simple challenge: well-being. We are seeking the frequencies that bring the best from you.",
+    "siaeTitle": "A note on music licensing",
+    "plansTitle": "Plans",
+    "plansDescription": "Choose the plan that fits how you listen.",
+    "dpipTitle": "About DPIP",
+    "dpipBody": "DPIP (Ð) is the unit of value inside Dupip. Your stash grows over time with your activity. DPIP is not an investment product and may have no monetary value — now or in the future.",
+    "dpipNoValue": "DPIP (Ð) is the unit of value inside Dupip. Your stash grows over time with your activity. DPIP is not an investment product and may have no monetary value — now or in the future.",
+    "consentTitle": "DPIP consent",
+    "consentDescription": "DPIP (Ð) is the unit of value inside Dupip. Your stash grows over time with your activity. DPIP is not an investment product and may have no monetary value — now or in the future. Before viewing our plans, please review and confirm the following:",
+    "consentCheckbox": "I understand that DPIP may have no monetary value, now or in the future, and I accept this.",
+    "consentSignedOut": "Sign in to review the DPIP consent and view our plans.",
+    "signInToConsent": "Sign in",
+    "consentSaved": "Consent recorded on {date}",
+    "saveConsent": "Save consent"
   },
   "wallet": {
     "nftGenerationCompleted": "NFT generation completed.",

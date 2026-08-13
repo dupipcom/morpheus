@@ -74,7 +74,8 @@
     "privacy": "Sera ya Faragha",
     "locale": "Lugha",
     "blog": "Blogu",
-    "agenda": "Ajenda"
+    "agenda": "Ajenda",
+    "upgrade": "Boresha"
   },
   "dashboard": {
     "title": "Maisha yako kwa mtazamo mmoja.",
@@ -261,7 +262,8 @@
     "cookies": "Tunatumia vidakuzi, na kwa kutumia programu hii unakubaliana nayo.",
     "code": "Msimbo",
     "terms": "Sheria za Huduma",
-    "privacy": "Sera ya Faragha"
+    "privacy": "Sera ya Faragha",
+    "pricing": "Bei"
   },
   "earningsTable": {
     "day": "Siku",
@@ -712,7 +714,15 @@
     "notice": "Hakuna pesa halisi zinazosimamiwa kwa sasa katika programu hii. Dupip Invest bado iko katika awamu ya kupanga. Hii ni mazingira ya majaribio tu kwa madhumuni ya maonyesho.",
     "consentTitle": "Idhini ya Maonyesho ya Uwekezaji",
     "consentCheckbox": "Ninakubali kuwa Dupip bado sio jukwaa la uwekezaji, na kwa kutumia kipengele hiki, ninafahamu kuwa data zangu zote zinaweza kufutwa kabla ya uzinduzi rasmi wa Dupip Invest.",
-    "confirm": "Thibitisha"
+    "confirm": "Thibitisha",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "Uundaji wa NFT umekamilika.",
@@ -920,5 +930,24 @@
       "small": "Ndogo",
       "wide": "Pana"
     }
+  },
+  "pricing": {
+    "metaTitle": "Bei",
+    "metaDescription": "Dupip imesajiliwa barani Ulaya kama redio ya mtandaoni yenye dhamira ya ustawi. Ili kuunga mkono ukuaji wetu, tunatoa manufaa kwa wafadhili. Tazama mipango yetu na jinsi DPIP inavyofanya kazi.",
+    "heroTitle": "Redio, iliyofikiriwa upya",
+    "heroSubtitle": "Dupip imejengwa kuzunguka changamoto rahisi: ustawi. Tunatafuta masafa yanayoleta bora kutoka kwako.",
+    "siaeTitle": "Kidokezo kuhusu leseni za muziki",
+    "plansTitle": "Mipango",
+    "plansDescription": "Chagua mpango unaolingana na jinsi unavyosikiliza.",
+    "dpipTitle": "Kuhusu DPIP",
+    "dpipBody": "DPIP (Ð) ni kitengo cha thamani ndani ya Dupip. Akiba yako hukua kadri muda unavyopita pamoja na shughuli zako. DPIP si bidhaa ya uwekezaji na huenda isiwe na thamani ya kifedha — si sasa wala baadaye.",
+    "consentTitle": "Idhini ya DPIP",
+    "consentCheckbox": "Ninaelewa kuwa DPIP huenda isiwe na thamani ya kifedha, si sasa wala baadaye, na ninakubali hili.",
+    "consentSignedOut": "Ingia ili kupitia idhini ya DPIP na kuona mipango yetu.",
+    "signInToConsent": "Ingia",
+    "consentSaved": "Idhini imerekodiwa tarehe {date}",
+    "saveConsent": "Hifadhi idhini",
+    "dpipNoValue": "DPIP (Ð) ni kitengo cha thamani ndani ya Dupip. Akiba yako hukua kadri muda unavyopita pamoja na shughuli zako. DPIP si bidhaa ya uwekezaji na huenda isiwe na thamani ya kifedha — si sasa wala baadaye.",
+    "consentDescription": "DPIP (Ð) ni kitengo cha thamani ndani ya Dupip. Akiba yako hukua kadri muda unavyopita pamoja na shughuli zako. DPIP si bidhaa ya uwekezaji na huenda isiwe na thamani ya kifedha — si sasa wala baadaye. Kabla ya kuona mipango yetu, tafadhali pitia na uthibitishe yafuatayo:"
   }
 }

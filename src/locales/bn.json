@@ -74,7 +74,8 @@
     "privacy": "গোপনীয়তা নীতি",
     "locale": "ভাষা",
     "blog": "ব্লগ",
-    "agenda": "এজেন্ডা"
+    "agenda": "এজেন্ডা",
+    "upgrade": "আপগ্রেড"
   },
   "dashboard": {
     "title": "এক নজরে আপনার জীবন।",
@@ -243,7 +244,8 @@
     "cookies": "আমরা কুকি ব্যবহার করি, এবং এই অ্যাপ ব্যবহার করে আপনি এতে সম্মত হন।",
     "code": "কোড",
     "terms": "সেবার শর্তাবলী",
-    "privacy": "গোপনীয়তা নীতি"
+    "privacy": "গোপনীয়তা নীতি",
+    "pricing": "প্রাইসিং"
   },
   "earningsTable": {
     "day": "দিন",
@@ -714,7 +716,15 @@
     "notice": "এই অ্যাপে বর্তমানে কোনও আসল অর্থ পরিচালনা করা হচ্ছে না। Dupip Invest এখনও পরিকল্পনার পর্যায়ে রয়েছে। এটি কেবল প্রদর্শনের উদ্দেশ্যে একটি পরীক্ষার পরিবেশ।",
     "consentTitle": "বিনিয়োগ ডেমো সম্মতি",
     "consentCheckbox": "আমি স্বীকার করি যে Dupip এখনও একটি বিনিয়োগ প্ল্যাটফর্ম নয়, এবং এই বৈশিষ্ট্যটি ব্যবহার করে, আমি সচেতন যে Dupip Invest-এর অফিসিয়াল লঞ্চের আগে আমার সমস্ত ডেটা মুছে ফেলা হতে পারে।",
-    "confirm": "নিশ্চিত করুন"
+    "confirm": "নিশ্চিত করুন",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "NFT জেনারেশন সম্পন্ন হয়েছে।",
@@ -922,5 +932,24 @@
       "small": "ছোট",
       "wide": "প্রশস্ত"
     }
+  },
+  "pricing": {
+    "metaTitle": "প্রাইসিং",
+    "metaDescription": "ডুপিপ ইউরোপে একটি ওয়েবরেডিও হিসেবে নিবন্ধিত, যার লক্ষ্য সুস্থতা। আমাদের বিকাশে সহায়তার জন্য আমরা দাতাদের জন্য সুবিধা দিই। আমাদের পরিকল্পনা এবং DPIP কীভাবে কাজ করে তা দেখুন।",
+    "heroTitle": "রেডিও, নতুনভাবে কল্পিত",
+    "heroSubtitle": "ডুপিপ একটি সহজ চ্যালেঞ্জ ঘিরে তৈরি: সুস্থতা। আমরা সেই ফ্রিকোয়েন্সিগুলো খুঁজছি যা আপনার সেরাটা বের করে আনে।",
+    "siaeTitle": "সংগীত লাইসেন্সিং সম্পর্কে একটি নোট",
+    "plansTitle": "পরিকল্পনাসমূহ",
+    "plansDescription": "আপনি যেভাবে শোনেন তার সঙ্গে মানানসই পরিকল্পনা বেছে নিন।",
+    "dpipTitle": "DPIP সম্পর্কে",
+    "dpipBody": "DPIP (Ð) হলো ডুপিপের ভেতরের মূল্যের একক। আপনার সঞ্চয় সময়ের সঙ্গে সঙ্গে আপনার কার্যকলাপের মাধ্যমে বাড়ে। DPIP কোনো বিনিয়োগ পণ্য নয় এবং এর কোনো আর্থিক মূল্য নাও থাকতে পারে — এখন বা ভবিষ্যতে।",
+    "consentTitle": "DPIP সম্মতি",
+    "consentCheckbox": "আমি বুঝতে পারছি যে DPIP-এর কোনো আর্থিক মূল্য নাও থাকতে পারে, এখন বা ভবিষ্যতে, এবং আমি এটি মেনে নিচ্ছি।",
+    "consentSignedOut": "DPIP সম্মতি পর্যালোচনা করতে এবং আমাদের পরিকল্পনা দেখতে সাইন ইন করুন।",
+    "signInToConsent": "সাইন ইন",
+    "consentSaved": "সম্মতি রেকর্ড করা হয়েছে {date}",
+    "saveConsent": "সম্মতি সংরক্ষণ করুন",
+    "dpipNoValue": "DPIP (Ð) হলো ডুপিপের ভেতরের মূল্যের একক। আপনার সঞ্চয় সময়ের সঙ্গে সঙ্গে আপনার কার্যকলাপের মাধ্যমে বাড়ে। DPIP কোনো বিনিয়োগ পণ্য নয় এবং এর কোনো আর্থিক মূল্য নাও থাকতে পারে — এখন বা ভবিষ্যতে।",
+    "consentDescription": "DPIP (Ð) হলো ডুপিপের ভেতরের মূল্যের একক। আপনার সঞ্চয় সময়ের সঙ্গে সঙ্গে আপনার কার্যকলাপের মাধ্যমে বাড়ে। DPIP কোনো বিনিয়োগ পণ্য নয় এবং এর কোনো আর্থিক মূল্য নাও থাকতে পারে — এখন বা ভবিষ্যতে। আমাদের পরিকল্পনা দেখার আগে, অনুগ্রহ করে নিচের বিষয়টি পর্যালোচনা করে নিশ্চিত করুন:"
   }
 }

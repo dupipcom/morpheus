@@ -89,9 +89,15 @@ ProfileView does not fetch data itself - it's a presentational component that re
 
 ## API Endpoints Used
 
-| Endpoint | Method | Used By |
+| Endpoint | Method | Why / How |
 |---|---|---|
-| All data is provided by the page server component — no client-side API calls | | |
+| (none client-side) | — | `ProfileView` is a server-rendered presentational component; it makes no `fetch`/SWR calls itself and receives all data as props. |
+| `/api/v1/profile/{userName}` | GET | Server-side/public API that returns the same public profile data (filtered fields, charts, templates, task lists) that the page server component supplies to this view. |
+| `/api/v1/profile/{userName}/notes` | GET | Public/relationship-filtered notes endpoint backing the Notes tab content. |
+
+Integration details:
+- The page server component resolves the username and passes `profile`, `userName`, `locale`, auth state, and translations down as props.
+- Child components (`PublicChartsView`, `PublicNotesViewer`, `ActivityCard`, `AddFriendButtonOrSignIn`, `MeetMeRow`) are also presentational; friend-request and meeting interactions are handled by their own client components/endpoints.
 
 ## Loading States
 

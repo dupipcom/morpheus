@@ -78,7 +78,8 @@
     "privacy": "Dasar privasi",
     "locale": "Bahasa",
     "blog": "Blog",
-    "agenda": "Agenda"
+    "agenda": "Agenda",
+    "upgrade": "Naik taraf"
   },
   "dashboard": {
     "title": "Hidup anda dalam sekilas.",
@@ -247,7 +248,8 @@
     "doraReady": "DORA Ready",
     "insights": "Insights are AI generated via RAG and prompt engineering.",
     "cookies": "We use cookies, and by using this app you agree to it.",
-    "code": "Code"
+    "code": "Code",
+    "pricing": "Harga"
   },
   "earningsTable": {
     "day": "Hari",
@@ -718,7 +720,15 @@
     "notice": "Tiada wang sebenar yang dikendalikan pada masa ini dalam aplikasi ini. Dupip Invest masih dalam fasa perancangan. Ini hanyalah persekitaran ujian untuk tujuan demonstrasi.",
     "consentTitle": "Persetujuan Demo Pelaburan",
     "consentCheckbox": "Saya mengakui bahawa Dupip belum lagi platform pelaburan, dan dengan menggunakan ciri ini, saya sedar bahawa semua data saya mungkin dipadam sebelum pelancaran rasmi Dupip Invest.",
-    "confirm": "Sahkan"
+    "confirm": "Sahkan",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "Penjanaan NFT selesai.",
@@ -926,5 +936,24 @@
       "small": "Kecil",
       "wide": "Luas"
     }
+  },
+  "pricing": {
+    "metaTitle": "Harga",
+    "metaDescription": "Dupip didaftarkan di Eropah sebagai radio web dengan misi kesejahteraan. Untuk menyokong pertumbuhan kami, kami menawarkan manfaat kepada penderma. Lihat pelan kami dan cara DPIP berfungsi.",
+    "heroTitle": "Radio, dibayangkan semula",
+    "heroSubtitle": "Dupip dibina berdasarkan cabaran yang mudah: kesejahteraan. Kami mencari frekuensi yang menonjolkan yang terbaik daripada anda.",
+    "siaeTitle": "Nota tentang pelesenan muzik",
+    "plansTitle": "Pelan",
+    "plansDescription": "Pilih pelan yang sesuai dengan cara anda mendengar.",
+    "dpipTitle": "Tentang DPIP",
+    "dpipBody": "DPIP (Ð) ialah unit nilai dalam Dupip. Stash anda bertambah dari semasa ke semasa dengan aktiviti anda. DPIP bukan produk pelaburan dan mungkin tidak mempunyai nilai kewangan — kini atau pada masa hadapan.",
+    "consentTitle": "Persetujuan DPIP",
+    "consentCheckbox": "Saya memahami bahawa DPIP mungkin tidak mempunyai nilai kewangan, kini atau pada masa hadapan, dan saya menerimanya.",
+    "consentSignedOut": "Daftar masuk untuk menyemak persetujuan DPIP dan melihat pelan kami.",
+    "signInToConsent": "Daftar masuk",
+    "consentSaved": "Persetujuan direkodkan pada {date}",
+    "saveConsent": "Simpan persetujuan",
+    "dpipNoValue": "DPIP (Ð) ialah unit nilai dalam Dupip. Stash anda bertambah dari semasa ke semasa dengan aktiviti anda. DPIP bukan produk pelaburan dan mungkin tidak mempunyai nilai kewangan — kini atau pada masa hadapan.",
+    "consentDescription": "DPIP (Ð) ialah unit nilai dalam Dupip. Stash anda bertambah dari semasa ke semasa dengan aktiviti anda. DPIP bukan produk pelaburan dan mungkin tidak mempunyai nilai kewangan — kini atau pada masa hadapan. Sebelum melihat pelan kami, sila semak dan sahkan perkara berikut:"
   }
 }

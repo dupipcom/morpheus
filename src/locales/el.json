@@ -74,7 +74,8 @@
     "privacy": "Πολιτική απορρήτου",
     "locale": "Γλώσσα",
     "blog": "Ιστολόγιο",
-    "agenda": "Ημερήσια διάταξη"
+    "agenda": "Ημερήσια διάταξη",
+    "upgrade": "Αναβάθμιση"
   },
   "dashboard": {
     "title": "Η ζωή σας με μια ματιά.",
@@ -240,7 +241,8 @@
     "cookies": "Χρησιμοποιούμε cookies και με τη χρήση αυτής της εφαρμογής συμφωνείτε σε αυτό.",
     "code": "Κώδικας",
     "terms": "Όροι υπηρεσίας",
-    "privacy": "Πολιτική απορρήτου"
+    "privacy": "Πολιτική απορρήτου",
+    "pricing": "Τιμολόγηση"
   },
   "earningsTable": {
     "day": "Ημέρα",
@@ -711,7 +713,15 @@
     "notice": "Δεν διαχειρίζονται πραγματικά χρήματα αυτή τη στιγμή σε αυτήν την εφαρμογή. Το Dupip Invest βρίσκεται ακόμα στη φάση σχεδιασμού. Αυτό είναι μόνο ένα περιβάλλον δοκιμών για επίδειξη.",
     "consentTitle": "Συναίνεση για Επίδειξη Επένδυσης",
     "consentCheckbox": "Αναγνωρίζω ότι το Dupip δεν είναι ακόμα μια πλατφόρμα επενδύσεων και ότι χρησιμοποιώντας αυτή τη λειτουργία, είμαι ενήμερος ότι όλα τα δεδομένα μου μπορεί να διαγραφούν πριν από την επίσημη έναρξη του Dupip Invest.",
-    "confirm": "Επιβεβαίωση"
+    "confirm": "Επιβεβαίωση",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "Η δημιουργία NFT ολοκληρώθηκε.",
@@ -919,5 +929,24 @@
       "small": "Μικρό",
       "wide": "Ευρύ"
     }
+  },
+  "pricing": {
+    "metaTitle": "Τιμολόγηση",
+    "metaDescription": "Το Dupip είναι καταχωρισμένο στην Ευρώπη ως διαδικτυακό ραδιόφωνο με αποστολή την ευεξία. Για να στηρίξουμε την ανάπτυξή μας, προσφέρουμε προνόμια στους δωρητές. Δείτε τα προγράμματά μας και πώς λειτουργεί το DPIP.",
+    "heroTitle": "Ραδιόφωνο, ανασχεδιασμένο",
+    "heroSubtitle": "Το Dupip χτίστηκε γύρω από μια απλή πρόκληση: την ευεξία. Αναζητούμε τις συχνότητες που αναδεικνύουν τον καλύτερο εαυτό σου.",
+    "siaeTitle": "Μια σημείωση για την αδειοδότηση μουσικής",
+    "plansTitle": "Προγράμματα",
+    "plansDescription": "Διάλεξε το πρόγραμμα που ταιριάζει στον τρόπο που ακούς.",
+    "dpipTitle": "Σχετικά με το DPIP",
+    "dpipBody": "Το DPIP (Ð) είναι η μονάδα αξίας μέσα στο Dupip. Το stash σου μεγαλώνει με τον χρόνο μέσω της δραστηριότητάς σου. Το DPIP δεν είναι επενδυτικό προϊόν και μπορεί να μην έχει χρηματική αξία — ούτε τώρα ούτε στο μέλλον.",
+    "consentTitle": "Συγκατάθεση DPIP",
+    "consentCheckbox": "Κατανοώ ότι το DPIP μπορεί να μην έχει χρηματική αξία, ούτε τώρα ούτε στο μέλλον, και το αποδέχομαι.",
+    "consentSignedOut": "Συνδέσου για να δεις τη συγκατάθεση DPIP και τα προγράμματά μας.",
+    "signInToConsent": "Σύνδεση",
+    "consentSaved": "Η συγκατάθεση καταγράφηκε στις {date}",
+    "saveConsent": "Αποθήκευση συγκατάθεσης",
+    "dpipNoValue": "Το DPIP (Ð) είναι η μονάδα αξίας μέσα στο Dupip. Το stash σου μεγαλώνει με τον χρόνο μέσω της δραστηριότητάς σου. Το DPIP δεν είναι επενδυτικό προϊόν και μπορεί να μην έχει χρηματική αξία — ούτε τώρα ούτε στο μέλλον.",
+    "consentDescription": "Το DPIP (Ð) είναι η μονάδα αξίας μέσα στο Dupip. Το stash σου μεγαλώνει με τον χρόνο μέσω της δραστηριότητάς σου. Το DPIP δεν είναι επενδυτικό προϊόν και μπορεί να μην έχει χρηματική αξία — ούτε τώρα ούτε στο μέλλον. Πριν δεις τα προγράμματά μας, διάβασε και επιβεβαίωσε τα εξής:"
   }
 }

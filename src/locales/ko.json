@@ -74,7 +74,8 @@
     "privacy": "개인정보 처리방침",
     "locale": "언어",
     "blog": "블로그",
-    "agenda": "의제"
+    "agenda": "의제",
+    "upgrade": "업그레이드"
   },
   "dashboard": {
     "title": "한눈에 보는 당신의 삶.",
@@ -243,7 +244,8 @@
     "cookies": "우리는 쿠키를 사용하며, 이 앱을 사용함으로써 이에 동의합니다.",
     "code": "코드",
     "terms": "서비스 약관",
-    "privacy": "개인정보 처리방침"
+    "privacy": "개인정보 처리방침",
+    "pricing": "요금"
   },
   "earningsTable": {
     "day": "일",
@@ -714,7 +716,15 @@
     "notice": "이 앱에서는 현재 실제 돈이 관리되지 않습니다. Dupip Invest는 아직 계획 단계에 있습니다. 이것은 시연 목적을 위한 테스트 환경일 뿐입니다.",
     "consentTitle": "투자 데모 동의",
     "consentCheckbox": "Dupip가 아직 투자 플랫폼이 아니며, 이 기능을 사용함으로써 Dupip Invest 공식 출시 전에 모든 데이터가 삭제될 수 있음을 인지합니다.",
-    "confirm": "확인"
+    "confirm": "확인",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "NFT 생성이 완료되었습니다.",
@@ -922,5 +932,24 @@
       "small": "작게",
       "wide": "넓게"
     }
+  },
+  "pricing": {
+    "metaTitle": "요금",
+    "metaDescription": "Dupip은 웰빙을 사명으로 하는 웹라디오로 유럽에 등록되어 있습니다. 성장을 지원하기 위해 후원자에게 혜택을 제공합니다. 요금제와 DPIP 작동 방식을 확인하세요.",
+    "heroTitle": "라디오, 다시 상상하다",
+    "heroSubtitle": "Dupip은 웰빙이라는 단순한 도전을 중심으로 만들어졌습니다. 우리는 당신의 최고를 이끌어내는 주파수를 찾고 있습니다.",
+    "siaeTitle": "음악 라이선스에 관한 참고",
+    "plansTitle": "요금제",
+    "plansDescription": "듣는 방식에 맞는 요금제를 선택하세요.",
+    "dpipTitle": "DPIP 정보",
+    "dpipBody": "DPIP(Ð)는 Dupip 내부의 가치 단위입니다. 스태시는 활동과 함께 시간이 지나며 늘어납니다. DPIP는 투자 상품이 아니며, 현재든 미래든 금전적 가치가 없을 수 있습니다.",
+    "consentTitle": "DPIP 동의",
+    "consentCheckbox": "DPIP에 현재든 미래든 금전적 가치가 없을 수 있음을 이해하며 이에 동의합니다.",
+    "consentSignedOut": "DPIP 동의를 검토하고 요금제를 보려면 로그인하세요.",
+    "signInToConsent": "로그인",
+    "consentSaved": "동의 기록일: {date}",
+    "saveConsent": "동의 저장",
+    "dpipNoValue": "DPIP(Ð)는 Dupip 내부의 가치 단위입니다. 스태시는 활동과 함께 시간이 지나며 늘어납니다. DPIP는 투자 상품이 아니며, 현재든 미래든 금전적 가치가 없을 수 있습니다.",
+    "consentDescription": "DPIP(Ð)는 Dupip 내부의 가치 단위입니다. 스태시는 활동과 함께 시간이 지나며 늘어납니다. DPIP는 투자 상품이 아니며, 현재든 미래든 금전적 가치가 없을 수 있습니다. 요금제를 보기 전에 다음 내용을 검토하고 확인해 주세요:"
   }
 }
