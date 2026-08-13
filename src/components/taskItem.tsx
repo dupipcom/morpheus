@@ -97,17 +97,17 @@ export const TaskItem = ({
   isPendingRequest = false,
 }: TaskItemProps) => {
   const key = task?.id || task?.localeKey || task?.name
-  const isDone = taskStatus === 'done' || taskStatus === 'completed' || (task?.count || 0) >= (task?.times || 1)
-  const earnings = (typeof taskEarningsProp === 'number')
-    ? taskEarningsProp
-    : (task?.earnings ?? task?.budget ?? 0)
+  const dateCount = task?.dateCount ?? 0
+  const isDone = taskStatus === 'done' || taskStatus === 'completed' || (task?.times || 0) > 0 && dateCount >= (task?.times || 1)
+  const earnings = typeof taskEarningsProp === 'number' ? taskEarningsProp : 0
 
   const premium = (typeof taskPremiumProp === 'number')
     ? taskPremiumProp
     : (task?.premium ?? 0)
 
-  const totalGains = (earnings || 0) + (premium || 0)
-  const displayedTotalGains = typeof taskTotalGains === 'number' ? taskTotalGains : totalGains
+  const displayedTotalGains = typeof taskTotalGains === 'number'
+    ? taskTotalGains
+    : (task?.totalGains ?? premium)
 
   return (
     <div key={`task__item--${key}`} className={`flex flex-col w-full ${className}`}>
@@ -126,7 +126,7 @@ export const TaskItem = ({
           align="start"
         />
         <span className="flex-1 text-left">
-          {task.times > 1 ? `${task.count || 0}/${task.times} ` : ''}
+          {task.times > 1 ? `${dateCount}/${task.times} ` : ''}
           {(task?.redacted === true && !revealRedacted) ? '·····' : (task.displayName || task.name)}
         </span>
         {/* Show premium badge if there's budget allocated */}

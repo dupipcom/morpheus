@@ -1,0 +1,214 @@
+'use client'
+
+import React, { useState, useEffect } from 'react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { useI18n } from '@/lib/contexts/i18n'
+
+export type JobDialogMode = 'request' | 'submit' | 'review'
+
+interface JobDialogProps {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  mode: JobDialogMode
+  taskName?: string
+  isResubmit?: boolean
+  isSubmitting?: boolean
+  onRequest: (justification: string) => Promise<void> | void
+  onSubmit: (data: { noteContent: string; selfReview: number }) => Promise<void> | void
+  onReview: (data: { action: 'accept' | 'validate' | 'reject'; reviewNoteContent?: string; managerReview?: number }) => Promise<void> | void
+}
+
+/**
+ * Unified job workflow dialog:
+ * - request: collaborator justifies their request to work on a task
+ * - submit: worker posts evidence (note + self-review; attachments come in Phase 3)
+ * - review: owner/manager accepts, requests changes, or rejects
+ */
+export const JobDialog = ({
+  open,
+  onOpenChange,
+  mode,
+  taskName,
+  isResubmit = false,
+  isSubmitting = false,
+  onRequest,
+  onSubmit,
+  onReview,
+}: JobDialogProps) => {
+  const { t } = useI18n()
+
+  const [justification, setJustification] = useState('')
+  const [noteContent, setNoteContent] = useState('')
+  const [selfReview, setSelfReview] = useState('5')
+  const [managerReview, setManagerReview] = useState('5')
+  const [reviewNoteContent, setReviewNoteContent] = useState('')
+
+  // Reset fields whenever the dialog (re)opens
+  useEffect(() => {
+    if (open) {
+      setJustification('')
+      setNoteContent('')
+      setSelfReview('5')
+      setManagerReview('5')
+      setReviewNoteContent('')
+    }
+  }, [open, mode])
+
+  const titles: Record<JobDialogMode, string> = {
+    request: t('tasks.requestTitle', { defaultValue: 'Request to work' }),
+    submit: isResubmit
+      ? t('tasks.resubmitTitle', { defaultValue: 'Revise and resubmit' })
+      : t('tasks.submitTitle', { defaultValue: 'Submit work' }),
+    review: t('tasks.reviewTitle', { defaultValue: 'Review work' }),
+  }
+
+  const descriptions: Record<JobDialogMode, string> = {
+    request: t('tasks.requestDescription', { defaultValue: 'Explain why you want to take on this task. The list owner will review your request.' }),
+    submit: t('tasks.submitDescription', { defaultValue: 'Post evidence of your work. A photo or video can be attached here soon.' }),
+    review: t('tasks.reviewDescription', { defaultValue: 'Accept the work, request changes, or reject it.' }),
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="w-[480px] max-w-[90vw] max-h-[70vh] z-[9980] flex flex-col">
+        <DialogHeader>
+          <DialogTitle>{titles[mode]}{taskName ? ` — ${taskName}` : ''}</DialogTitle>
+          <DialogDescription>{descriptions[mode]}</DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-3 overflow-y-auto flex-1 pr-1">
+          {mode === 'request' && (
+            <div>
+              <Label htmlFor="job-justification">{t('tasks.justificationLabel', { defaultValue: 'Justification' })}</Label>
+              <Textarea
+                id="job-justification"
+                value={justification}
+                onChange={(e) => setJustification(e.target.value)}
+                placeholder={t('tasks.justificationPlaceholder', { defaultValue: 'Why should you do this task?' })}
+              />
+            </div>
+          )}
+
+          {mode === 'submit' && (
+            <>
+              <div>
+                <Label htmlFor="job-note">{t('tasks.evidenceLabel', { defaultValue: 'Evidence / note' })}</Label>
+                <Textarea
+                  id="job-note"
+                  value={noteContent}
+                  onChange={(e) => setNoteContent(e.target.value)}
+                  placeholder={t('tasks.evidencePlaceholder', { defaultValue: 'Describe what you did...' })}
+                />
+              </div>
+              <div>
+                <Label htmlFor="job-self-review">{t('tasks.selfReviewLabel', { defaultValue: 'Self-review (0-100)' })}</Label>
+                <Input
+                  id="job-self-review"
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={selfReview}
+                  onChange={(e) => setSelfReview(e.target.value)}
+                />
+              </div>
+            </>
+          )}
+
+          {mode === 'review' && (
+            <>
+              <div>
+                <Label htmlFor="job-manager-review">{t('tasks.managerReviewLabel', { defaultValue: 'Review score (0-100)' })}</Label>
+                <Input
+                  id="job-manager-review"
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={managerReview}
+                  onChange={(e) => setManagerReview(e.target.value)}
+                />
+              </div>
+              <div>
+                <Label htmlFor="job-review-note">{t('tasks.reviewNoteLabel', { defaultValue: 'Feedback (optional)' })}</Label>
+                <Textarea
+                  id="job-review-note"
+                  value={reviewNoteContent}
+                  onChange={(e) => setReviewNoteContent(e.target.value)}
+                />
+              </div>
+            </>
+          )}
+        </div>
+
+        <div className="flex gap-2 pt-2 flex-wrap">
+          {mode === 'request' && (
+            <Button
+              disabled={!justification.trim() || isSubmitting}
+              onClick={async () => {
+                await onRequest(justification.trim())
+                onOpenChange(false)
+              }}
+            >
+              {t('tasks.sendRequest', { defaultValue: 'Send request' })}
+            </Button>
+          )}
+
+          {mode === 'submit' && (
+            <Button
+              disabled={!noteContent.trim() || isSubmitting}
+              onClick={async () => {
+                await onSubmit({ noteContent: noteContent.trim(), selfReview: Math.max(0, Math.min(100, Number(selfReview) || 0)) })
+                onOpenChange(false)
+              }}
+            >
+              {isResubmit
+                ? t('tasks.resubmit', { defaultValue: 'Resubmit' })
+                : t('tasks.submit', { defaultValue: 'Submit' })}
+            </Button>
+          )}
+
+          {mode === 'review' && (
+            <>
+              <Button
+                disabled={isSubmitting}
+                onClick={async () => {
+                  await onReview({ action: 'accept', reviewNoteContent: reviewNoteContent.trim() || undefined, managerReview: Math.max(0, Math.min(100, Number(managerReview) || 0)) })
+                  onOpenChange(false)
+                }}
+              >
+                {t('tasks.accept', { defaultValue: 'Accept' })}
+              </Button>
+              <Button
+                variant="outline"
+                disabled={isSubmitting}
+                onClick={async () => {
+                  await onReview({ action: 'validate', reviewNoteContent: reviewNoteContent.trim() || undefined })
+                  onOpenChange(false)
+                }}
+              >
+                {t('tasks.requestChanges', { defaultValue: 'Request changes' })}
+              </Button>
+              <Button
+                variant="destructive"
+                disabled={isSubmitting}
+                onClick={async () => {
+                  await onReview({ action: 'reject', reviewNoteContent: reviewNoteContent.trim() || undefined })
+                  onOpenChange(false)
+                }}
+              >
+                {t('tasks.reject', { defaultValue: 'Reject' })}
+              </Button>
+            </>
+          )}
+
+          <Button variant="ghost" disabled={isSubmitting} onClick={() => onOpenChange(false)}>
+            {t('forms.addTaskForm.cancel', { defaultValue: 'Cancel' })}
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
+}
