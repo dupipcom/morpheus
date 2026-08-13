@@ -74,7 +74,8 @@
     "privacy": "Politica de confidențialitate",
     "locale": "Limba",
     "blog": "Blog",
-    "agenda": "Agendă"
+    "agenda": "Agendă",
+    "upgrade": "Upgrade"
   },
   "dashboard": {
     "title": "Viața ta într-o privire.",
@@ -243,7 +244,8 @@
     "cookies": "Folosim cookie-uri, și prin utilizarea acestei aplicații, sunteți de acord cu asta.",
     "code": "Cod",
     "terms": "Termeni și condiții",
-    "privacy": "Politica de confidențialitate"
+    "privacy": "Politica de confidențialitate",
+    "pricing": "Prețuri"
   },
   "earningsTable": {
     "day": "Zi",
@@ -714,7 +716,15 @@
     "notice": "Nu există bani reali gestionați în prezent în această aplicație. Dupip Invest este încă în faza de planificare. Acesta este doar un mediu de testare în scopuri de demonstrație.",
     "consentTitle": "Consimțământ pentru Demo de Investiții",
     "consentCheckbox": "Recunosc că Dupip nu este încă o platformă de investiții și că, folosind această funcție, sunt conștient că toate datele mele pot fi șterse înainte de lansarea oficială a Dupip Invest.",
-    "confirm": "Confirmă"
+    "confirm": "Confirmă",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "Generarea NFT finalizată.",
@@ -922,5 +932,24 @@
       "small": "Mic",
       "wide": "Lat"
     }
+  },
+  "pricing": {
+    "metaTitle": "Prețuri",
+    "metaDescription": "Dupip este înregistrată în Europa ca radio web cu o misiune de bunăstare. Pentru a ne susține creșterea, oferim beneficii donatorilor. Vezi planurile noastre și cum funcționează DPIP.",
+    "heroTitle": "Radio, reimaginat",
+    "heroSubtitle": "Dupip este construit în jurul unei provocări simple: bunăstarea. Căutăm frecvențele care scot ce e mai bun din tine.",
+    "siaeTitle": "O notă despre licențele muzicale",
+    "plansTitle": "Planuri",
+    "plansDescription": "Alege planul care se potrivește modului în care asculți.",
+    "dpipTitle": "Despre DPIP",
+    "dpipBody": "DPIP (Ð) este unitatea de valoare din interiorul Dupip. Stash-ul tău crește în timp odată cu activitatea ta. DPIP nu este un produs de investiții și poate să nu aibă valoare monetară — nici acum, nici în viitor.",
+    "consentTitle": "Consimțământ DPIP",
+    "consentCheckbox": "Înțeleg că DPIP poate să nu aibă valoare monetară, nici acum, nici în viitor, și accept acest lucru.",
+    "consentSignedOut": "Conectează-te pentru a verifica consimțământul DPIP și a vedea planurile noastre.",
+    "signInToConsent": "Conectare",
+    "consentSaved": "Consimțământ înregistrat la {date}",
+    "saveConsent": "Salvează consimțământul",
+    "dpipNoValue": "DPIP (Ð) este unitatea de valoare din interiorul Dupip. Stash-ul tău crește în timp odată cu activitatea ta. DPIP nu este un produs de investiții și poate să nu aibă valoare monetară — nici acum, nici în viitor.",
+    "consentDescription": "DPIP (Ð) este unitatea de valoare din interiorul Dupip. Stash-ul tău crește în timp odată cu activitatea ta. DPIP nu este un produs de investiții și poate să nu aibă valoare monetară — nici acum, nici în viitor. Înainte de a vedea planurile noastre, te rugăm să verifici și să confirmi următoarele:"
   }
 }

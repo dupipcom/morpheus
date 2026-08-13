@@ -181,7 +181,8 @@ type Completer {
 }
 
 type Consents {
-  doInvestDemo DoInvestDemoConsent?
+  doInvestDemo        DoInvestDemoConsent?
+  dpipNoMonetaryValue DoInvestDemoConsent?
 }
 
 type Currency {

@@ -78,7 +78,8 @@
     "privacy": "Gizlilik politikası",
     "locale": "Dil",
     "blog": "Blog",
-    "agenda": "Gündem"
+    "agenda": "Gündem",
+    "upgrade": "Yükselt"
   },
   "dashboard": {
     "title": "Hayatınız bir bakışta.",
@@ -247,7 +248,8 @@
     "doraReady": "DORA Hazır",
     "insights": "İçgörüler RAG ve prompt mühendisliği yöntemleriyle AI tarafından oluşturulur.",
     "cookies": "Çerez kullanıyoruz ve bu uygulamayı kullanarak bunu kabul etmiş olursunuz.",
-    "code": "Kod"
+    "code": "Kod",
+    "pricing": "Fiyatlandırma"
   },
   "earningsTable": {
     "day": "Gün",
@@ -718,7 +720,15 @@
     "notice": "Bu uygulamada şu anda gerçek para yönetilmemektedir. Dupip Invest hala planlama aşamasındadır. Bu sadece gösterim amaçlı bir test ortamıdır.",
     "consentTitle": "Yatırım Demo Onayı",
     "consentCheckbox": "Dupip'in henüz bir yatırım platformu olmadığını ve bu özelliği kullanarak, Dupip Invest'in resmi lansmanından önce tüm verilerimin silinebileceğinin farkında olduğumu kabul ediyorum.",
-    "confirm": "Onayla"
+    "confirm": "Onayla",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "NFT oluşturma tamamlandı.",
@@ -926,5 +936,24 @@
       "small": "Küçük",
       "wide": "Geniş"
     }
+  },
+  "pricing": {
+    "metaTitle": "Fiyatlandırma",
+    "metaDescription": "Dupip, Avrupa’da iyi yaşam misyonuna sahip bir web radyosu olarak kayıtlıdır. Büyümemizi desteklemek için bağışçılara ayrıcalıklar sunuyoruz. Planlarımıza ve DPIP’in nasıl çalıştığına göz atın.",
+    "heroTitle": "Radyo, yeniden hayal edildi",
+    "heroSubtitle": "Dupip basit bir meydan okuma etrafında kuruludur: iyi yaşam. İçinizdeki en iyiyi ortaya çıkaran frekansları arıyoruz.",
+    "siaeTitle": "Müzik lisanslama hakkında bir not",
+    "plansTitle": "Planlar",
+    "plansDescription": "Dinleme şeklinize uygun planı seçin.",
+    "dpipTitle": "DPIP Hakkında",
+    "dpipBody": "DPIP (Ð), Dupip içindeki değer birimidir. Birikiminiz, etkinliğinizle birlikte zamanla büyür. DPIP bir yatırım ürünü değildir ve şimdi veya gelecekte parasal değeri olmayabilir.",
+    "consentTitle": "DPIP onayı",
+    "consentCheckbox": "DPIP’in şimdi veya gelecekte parasal değeri olmayabileceğini anlıyorum ve bunu kabul ediyorum.",
+    "consentSignedOut": "DPIP onayını incelemek ve planlarımızı görmek için oturum açın.",
+    "signInToConsent": "Oturum aç",
+    "consentSaved": "Onay {date} tarihinde kaydedildi",
+    "saveConsent": "Onayı kaydet",
+    "dpipNoValue": "DPIP (Ð), Dupip içindeki değer birimidir. Birikiminiz, etkinliğinizle birlikte zamanla büyür. DPIP bir yatırım ürünü değildir ve şimdi veya gelecekte parasal değeri olmayabilir.",
+    "consentDescription": "DPIP (Ð), Dupip içindeki değer birimidir. Birikiminiz, etkinliğinizle birlikte zamanla büyür. DPIP bir yatırım ürünü değildir ve şimdi veya gelecekte parasal değeri olmayabilir. Planlarımızı görüntülemeden önce lütfen aşağıdakileri inceleyin ve onaylayın:"
   }
 }

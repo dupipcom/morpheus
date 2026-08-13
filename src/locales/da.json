@@ -78,7 +78,8 @@
     "privacy": "Privatlivspolitik",
     "locale": "Sprog",
     "blog": "Blog",
-    "agenda": "Dagsorden"
+    "agenda": "Dagsorden",
+    "upgrade": "Opgrader"
   },
   "dashboard": {
     "title": "Dit liv på et øjeblik.",
@@ -247,7 +248,8 @@
     "doraReady": "DORA Ready",
     "insights": "Insights are AI generated via RAG and prompt engineering.",
     "cookies": "We use cookies, and by using this app you agree to it.",
-    "code": "Code"
+    "code": "Code",
+    "pricing": "Priser"
   },
   "earningsTable": {
     "day": "Dag",
@@ -718,7 +720,15 @@
     "notice": "Der administreres i øjeblikket ingen rigtige penge i denne app. Dupip Invest er stadig i planlægningsfasen. Dette er kun et testmiljø til demonstrationsformål.",
     "consentTitle": "Samtykke til Investeringsdemo",
     "consentCheckbox": "Jeg anerkender, at Dupip endnu ikke er en investeringsplatform, og at ved at bruge denne funktion er jeg opmærksom på, at alle mine data kan blive slettet før den officielle lancering af Dupip Invest.",
-    "confirm": "Bekræft"
+    "confirm": "Bekræft",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "NFT-generering fuldført.",
@@ -926,5 +936,24 @@
       "small": "Lille",
       "wide": "Bred"
     }
+  },
+  "pricing": {
+    "metaTitle": "Priser",
+    "metaDescription": "Dupip er registreret i Europa som webradio med en mission om velvære. For at støtte vores vækst tilbyder vi fordele til donorer. Se vores abonnementer, og hvordan DPIP fungerer.",
+    "heroTitle": "Radio, gentænkt",
+    "heroSubtitle": "Dupip er bygget omkring en enkel udfordring: velvære. Vi søger de frekvenser, der bringer det bedste frem i dig.",
+    "siaeTitle": "En bemærkning om musiklicenser",
+    "plansTitle": "Abonnementer",
+    "plansDescription": "Vælg det abonnement, der passer til den måde, du lytter på.",
+    "dpipTitle": "Om DPIP",
+    "dpipBody": "DPIP (Ð) er værdienheden i Dupip. Din stash vokser over tid med din aktivitet. DPIP er ikke et investeringsprodukt og har muligvis ingen pengeværdi — hverken nu eller i fremtiden.",
+    "consentTitle": "DPIP-samtykke",
+    "consentCheckbox": "Jeg forstår, at DPIP muligvis ikke har nogen pengeværdi, hverken nu eller i fremtiden, og jeg accepterer dette.",
+    "consentSignedOut": "Log ind for at gennemgå DPIP-samtykket og se vores abonnementer.",
+    "signInToConsent": "Log ind",
+    "consentSaved": "Samtykke registreret den {date}",
+    "saveConsent": "Gem samtykke",
+    "dpipNoValue": "DPIP (Ð) er værdienheden i Dupip. Din stash vokser over tid med din aktivitet. DPIP er ikke et investeringsprodukt og har muligvis ingen pengeværdi — hverken nu eller i fremtiden.",
+    "consentDescription": "DPIP (Ð) er værdienheden i Dupip. Din stash vokser over tid med din aktivitet. DPIP er ikke et investeringsprodukt og har muligvis ingen pengeværdi — hverken nu eller i fremtiden. Før du ser vores abonnementer, bedes du gennemgå og bekræfte følgende:"
   }
 }

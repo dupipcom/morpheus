@@ -74,7 +74,8 @@
     "privacy": "Política de privadesa",
     "locale": "Idioma",
     "blog": "Blog",
-    "agenda": "Agenda"
+    "agenda": "Agenda",
+    "upgrade": "Millora"
   },
   "dashboard": {
     "title": "La teva vida d'un cop d'ull.",
@@ -243,7 +244,8 @@
     "cookies": "Utilitzem galetes, i per utilitzar aquesta app estàs d'acord amb això.",
     "code": "Codi",
     "terms": "Termes de servei",
-    "privacy": "Política de privadesa"
+    "privacy": "Política de privadesa",
+    "pricing": "Preus"
   },
   "earningsTable": {
     "day": "Dia",
@@ -714,7 +716,15 @@
     "notice": "Actualment no hi ha diners reals gestionats en aquesta aplicació. Dupip Invest encara està en fase de planificació. Això és només un entorn de proves per a fins de demostració.",
     "consentTitle": "Consentiment de Demostració d'Inversió",
     "consentCheckbox": "Reconec que Dupip encara no és una plataforma d'inversió i que, en utilitzar aquesta funció, sóc conscient que totes les meves dades poden ser eliminades abans del llançament oficial de Dupip Invest.",
-    "confirm": "Confirmar"
+    "confirm": "Confirmar",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "Generació de NFT completada.",
@@ -922,5 +932,24 @@
       "small": "Petit",
       "wide": "Ample"
     }
+  },
+  "pricing": {
+    "metaTitle": "Preus",
+    "metaDescription": "Dupip està registrada a Europa com a ràdio web amb una missió de benestar. Per donar suport al nostre creixement, oferim avantatges als donants. Consulta els nostres plans i com funciona DPIP.",
+    "heroTitle": "Ràdio, reimaginada",
+    "heroSubtitle": "Dupip està construïda al voltant d’un repte senzill: el benestar. Busquem les freqüències que treuen el millor de tu.",
+    "siaeTitle": "Una nota sobre les llicències musicals",
+    "plansTitle": "Plans",
+    "plansDescription": "Tria el pla que s’adapti a com escoltes.",
+    "dpipTitle": "Sobre DPIP",
+    "dpipBody": "DPIP (Ð) és la unitat de valor dins de Dupip. El teu fons creix amb el temps gràcies a la teva activitat. DPIP no és un producte d’inversió i pot no tenir valor monetari — ni ara ni en el futur.",
+    "consentTitle": "Consentiment de DPIP",
+    "consentCheckbox": "Entenc que DPIP pot no tenir valor monetari, ni ara ni en el futur, i ho accepto.",
+    "consentSignedOut": "Inicia sessió per revisar el consentiment de DPIP i veure els nostres plans.",
+    "signInToConsent": "Inicia sessió",
+    "consentSaved": "Consentiment registrat el {date}",
+    "saveConsent": "Desa el consentiment",
+    "dpipNoValue": "DPIP (Ð) és la unitat de valor dins de Dupip. El teu fons creix amb el temps gràcies a la teva activitat. DPIP no és un producte d’inversió i pot no tenir valor monetari — ni ara ni en el futur.",
+    "consentDescription": "DPIP (Ð) és la unitat de valor dins de Dupip. El teu fons creix amb el temps gràcies a la teva activitat. DPIP no és un producte d’inversió i pot no tenir valor monetari — ni ara ni en el futur. Abans de veure els nostres plans, revisa i confirma el següent:"
   }
 }

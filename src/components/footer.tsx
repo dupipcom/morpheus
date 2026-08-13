@@ -1,10 +1,11 @@
 'use client'
 
+import Link from "next/link"
 import { useI18n } from "@/lib/contexts/i18n"
 import { LocaleSelector } from "./localeSelector"
 
 export function Footer() {
-  const { t } = useI18n()
+  const { t, locale } = useI18n()
   const currentYear = new Date().getFullYear()
 
   return (
@@ -38,9 +39,10 @@ export function Footer() {
         <div className="flex flex-col">
           <small className="">{t('footer.insights')}
           <br /><br />{t('footer.cookies')}<br /><br /></small>
-          <a href="/code" className=""><small>{t('footer.code')}</small></a>              
+          <a href="/code" className=""><small>{t('footer.code')}</small></a>
           <a href="/terms" className=""><small>{t('footer.terms')}</small></a>
           <a href="/privacy" className=""><small>{t('footer.privacy')}</small></a>
+          <Link href={`/${locale}/pricing`} className=""><small>{t('footer.pricing')}</small></Link>
         </div>
       </div>
     </footer>

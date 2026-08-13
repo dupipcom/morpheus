@@ -74,7 +74,8 @@
     "privacy": "Политика конфиденциальности",
     "locale": "Язык",
     "blog": "Блог",
-    "agenda": "Повестка дня"
+    "agenda": "Повестка дня",
+    "upgrade": "Улучшить"
   },
   "dashboard": {
     "title": "Ваша жизнь одним взглядом.",
@@ -243,7 +244,8 @@
     "doraReady": "DORA Ready",
     "insights": "Insights are AI generated via RAG and prompt engineering.",
     "cookies": "We use cookies, and by using this app you agree to it.",
-    "code": "Code"
+    "code": "Code",
+    "pricing": "Цены"
   },
   "earningsTable": {
     "day": "День",
@@ -714,7 +716,15 @@
     "notice": "В настоящее время в этом приложении не управляются реальные деньги. Dupip Invest все еще находится в стадии планирования. Это просто тестовая среда для демонстрационных целей.",
     "consentTitle": "Согласие на Демонстрацию Инвестиций",
     "consentCheckbox": "Я признаю, что Dupip еще не является инвестиционной платформой, и что, используя эту функцию, я осознаю, что все мои данные могут быть удалены до официального запуска Dupip Invest.",
-    "confirm": "Подтвердить"
+    "confirm": "Подтвердить",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "Генерация NFT завершена.",
@@ -922,5 +932,24 @@
       "small": "Маленький",
       "wide": "Широко"
     }
+  },
+  "pricing": {
+    "metaTitle": "Цены",
+    "metaDescription": "Dupip зарегистрирован в Европе как веб-радио с миссией благополучия. Чтобы поддержать наш рост, мы предлагаем преимущества донорам. Ознакомьтесь с нашими тарифами и тем, как работает DPIP.",
+    "heroTitle": "Радио, придуманное заново",
+    "heroSubtitle": "Dupip построен вокруг простого вызова: благополучие. Мы ищем частоты, которые раскрывают в вас лучшее.",
+    "siaeTitle": "Примечание о лицензировании музыки",
+    "plansTitle": "Тарифы",
+    "plansDescription": "Выберите тариф, который подходит вашему стилю прослушивания.",
+    "dpipTitle": "О DPIP",
+    "dpipBody": "DPIP (Ð) — единица ценности внутри Dupip. Ваш запас растёт со временем вместе с вашей активностью. DPIP не является инвестиционным продуктом и может не иметь денежной ценности — ни сейчас, ни в будущем.",
+    "consentTitle": "Согласие DPIP",
+    "consentCheckbox": "Я понимаю, что DPIP может не иметь денежной ценности — ни сейчас, ни в будущем, — и принимаю это.",
+    "consentSignedOut": "Войдите, чтобы ознакомиться с согласием DPIP и увидеть наши тарифы.",
+    "signInToConsent": "Войти",
+    "consentSaved": "Согласие записано {date}",
+    "saveConsent": "Сохранить согласие",
+    "dpipNoValue": "DPIP (Ð) — единица ценности внутри Dupip. Ваш запас растёт со временем вместе с вашей активностью. DPIP не является инвестиционным продуктом и может не иметь денежной ценности — ни сейчас, ни в будущем.",
+    "consentDescription": "DPIP (Ð) — единица ценности внутри Dupip. Ваш запас растёт со временем вместе с вашей активностью. DPIP не является инвестиционным продуктом и может не иметь денежной ценности — ни сейчас, ни в будущем. Прежде чем ознакомиться с нашими тарифами, пожалуйста, просмотрите и подтвердите следующее:"
   }
 }

@@ -78,7 +78,8 @@
     "privacy": "ਗੋਪਨੀਯਤਾ ਨੀਤੀ",
     "locale": "ਭਾਸ਼ਾ",
     "blog": "ਬਲੌਗ",
-    "agenda": "ਏਜੰਡਾ"
+    "agenda": "ਏਜੰਡਾ",
+    "upgrade": "ਅਪਗ੍ਰੇਡ"
   },
   "dashboard": {
     "title": "ਤੁਹਾਡੀ ਜ਼ਿੰਦਗੀ ਇੱਕ ਨਜ਼ਰ ਵਿੱਚ।",
@@ -247,7 +248,8 @@
     "doraReady": "DORA Ready",
     "insights": "Insights are AI generated via RAG and prompt engineering.",
     "cookies": "We use cookies, and by using this app you agree to it.",
-    "code": "Code"
+    "code": "Code",
+    "pricing": "ਕੀਮਤਾਂ"
   },
   "earningsTable": {
     "day": "ਦਿਨ",
@@ -718,7 +720,15 @@
     "notice": "ਇਸ ਐਪ ਵਿੱਚ ਇਸ ਸਮੇਂ ਕੋਈ ਅਸਲ ਪੈਸਾ ਪ੍ਰਬੰਧਿਤ ਨਹੀਂ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ। Dupip Invest ਅਜੇ ਵੀ ਯੋਜਨਾ ਦੇ ਪੜਾਅ ਵਿੱਚ ਹੈ। ਇਹ ਸਿਰਫ ਪ੍ਰਦਰਸ਼ਨ ਉਦੇਸ਼ਾਂ ਲਈ ਇੱਕ ਟੈਸਟ ਵਾਤਾਵਰਣ ਹੈ।",
     "consentTitle": "ਨਿਵੇਸ਼ ਡੈਮੋ ਸਹਿਮਤੀ",
     "consentCheckbox": "ਮੈਂ ਮੰਨਦਾ ਹਾਂ ਕਿ Dupip ਅਜੇ ਤੱਕ ਇੱਕ ਨਿਵੇਸ਼ ਪਲੇਟਫਾਰਮ ਨਹੀਂ ਹੈ, ਅਤੇ ਇਸ ਸੁਵਿਧਾ ਦੀ ਵਰਤੋਂ ਕਰਕੇ, ਮੈਂ ਜਾਣਦਾ ਹਾਂ ਕਿ Dupip Invest ਦੇ ਅਧਿਕਾਰਿਕ ਲਾਂਚ ਤੋਂ ਪਹਿਲਾਂ ਮੇਰੇ ਸਾਰੇ ਡੇਟਾ ਨੂੰ ਮਿਟਾਇਆ ਜਾ ਸਕਦਾ ਹੈ।",
-    "confirm": "ਪੁਸ਼ਟੀ ਕਰੋ"
+    "confirm": "ਪੁਸ਼ਟੀ ਕਰੋ",
+    "premiumFactors": "Premium Factors",
+    "premiumFactorsDescription": "Adjust how premium values are divided based on list cadence.",
+    "dailyPremiumFactor": "Daily Premium Factor",
+    "dailyPremiumFactorDescription": "Divides premium for daily lists (default: 30)",
+    "weeklyPremiumFactor": "Weekly Premium Factor",
+    "weeklyPremiumFactorDescription": "Divides premium for weekly lists (default: 4)",
+    "globalPremiumFactor": "Global Premium Factor",
+    "globalPremiumFactorDescription": "Divides premium in all scenarios (default: 1)"
   },
   "wallet": {
     "nftGenerationCompleted": "NFT ਜਨਰੇਸ਼ਨ ਪੂਰੀ ਹੋ ਗਈ।",
@@ -926,5 +936,24 @@
       "small": "ਛੋਟਾ",
       "wide": "ਚੌੜਾ"
     }
+  },
+  "pricing": {
+    "metaTitle": "ਕੀਮਤਾਂ",
+    "metaDescription": "ਡੂਪਿਪ ਯੂਰਪ ਵਿੱਚ ਇੱਕ ਵੈੱਬ ਰੇਡੀਓ ਵਜੋਂ ਰਜਿਸਟਰਡ ਹੈ ਜਿਸਦਾ ਮਿਸ਼ਨ ਤੰਦਰੁਸਤੀ ਹੈ। ਸਾਡੇ ਵਿਕਾਸ ਦਾ ਸਮਰਥਨ ਕਰਨ ਲਈ, ਅਸੀਂ ਦਾਨੀਆਂ ਨੂੰ ਲਾਭ ਦਿੰਦੇ ਹਾਂ। ਸਾਡੀਆਂ ਯੋਜਨਾਵਾਂ ਅਤੇ DPIP ਕਿਵੇਂ ਕੰਮ ਕਰਦਾ ਹੈ ਦੇਖੋ।",
+    "heroTitle": "ਰੇਡੀਓ, ਨਵੀਂ ਕਲਪਨਾ ਨਾਲ",
+    "heroSubtitle": "ਡੂਪਿਪ ਇੱਕ ਸਧਾਰਨ ਚੁਣੌਤੀ ਦੇ ਆਲੇ-ਦੁਆਲੇ ਬਣਿਆ ਹੈ: ਤੰਦਰੁਸਤੀ। ਅਸੀਂ ਉਨ੍ਹਾਂ ਫ੍ਰੀਕੁਐਂਸੀਆਂ ਦੀ ਭਾਲ ਕਰ ਰਹੇ ਹਾਂ ਜੋ ਤੁਹਾਡੇ ਵਿੱਚੋਂ ਸਭ ਤੋਂ ਵਧੀਆ ਕੱਢਦੀਆਂ ਹਨ।",
+    "siaeTitle": "ਸੰਗੀਤ ਲਾਇਸੈਂਸਿੰਗ ਬਾਰੇ ਇੱਕ ਨੋਟ",
+    "plansTitle": "ਯੋਜਨਾਵਾਂ",
+    "plansDescription": "ਉਹ ਯੋਜਨਾ ਚੁਣੋ ਜੋ ਤੁਹਾਡੇ ਸੁਣਨ ਦੇ ਤਰੀਕੇ ਨਾਲ ਮੇਲ ਖਾਂਦੀ ਹੋਵੇ।",
+    "dpipTitle": "DPIP ਬਾਰੇ",
+    "dpipBody": "DPIP (Ð) ਡੂਪਿਪ ਦੇ ਅੰਦਰ ਮੁੱਲ ਦੀ ਇਕਾਈ ਹੈ। ਤੁਹਾਡਾ ਸਟੈਸ਼ ਸਮੇਂ ਦੇ ਨਾਲ ਤੁਹਾਡੀ ਗਤੀਵਿਧੀ ਨਾਲ ਵਧਦਾ ਹੈ। DPIP ਕੋਈ ਨਿਵੇਸ਼ ਉਤਪਾਦ ਨਹੀਂ ਹੈ ਅਤੇ ਇਸਦਾ ਕੋਈ ਮੌਦਰਿਕ ਮੁੱਲ ਨਹੀਂ ਹੋ ਸਕਦਾ — ਨਾ ਹੁਣ, ਨਾ ਭਵਿੱਖ ਵਿੱਚ।",
+    "consentTitle": "DPIP ਸਹਿਮਤੀ",
+    "consentCheckbox": "ਮੈਂ ਸਮਝਦਾ/ਸਮਝਦੀ ਹਾਂ ਕਿ DPIP ਦਾ ਕੋਈ ਮੌਦਰਿਕ ਮੁੱਲ ਨਹੀਂ ਹੋ ਸਕਦਾ, ਨਾ ਹੁਣ ਅਤੇ ਨਾ ਭਵਿੱਖ ਵਿੱਚ, ਅਤੇ ਮੈਂ ਇਹ ਸਵੀਕਾਰ ਕਰਦਾ/ਕਰਦੀ ਹਾਂ।",
+    "consentSignedOut": "DPIP ਸਹਿਮਤੀ ਦੀ ਸਮੀਖਿਆ ਕਰਨ ਅਤੇ ਸਾਡੀਆਂ ਯੋਜਨਾਵਾਂ ਦੇਖਣ ਲਈ ਸਾਈਨ ਇਨ ਕਰੋ।",
+    "signInToConsent": "ਸਾਈਨ ਇਨ",
+    "consentSaved": "ਸਹਿਮਤੀ {date} ਨੂੰ ਦਰਜ ਕੀਤੀ ਗਈ",
+    "saveConsent": "ਸਹਿਮਤੀ ਸੇਵ ਕਰੋ",
+    "dpipNoValue": "DPIP (Ð) ਡੂਪਿਪ ਦੇ ਅੰਦਰ ਮੁੱਲ ਦੀ ਇਕਾਈ ਹੈ। ਤੁਹਾਡਾ ਸਟੈਸ਼ ਸਮੇਂ ਦੇ ਨਾਲ ਤੁਹਾਡੀ ਗਤੀਵਿਧੀ ਨਾਲ ਵਧਦਾ ਹੈ। DPIP ਕੋਈ ਨਿਵੇਸ਼ ਉਤਪਾਦ ਨਹੀਂ ਹੈ ਅਤੇ ਇਸਦਾ ਕੋਈ ਮੌਦਰਿਕ ਮੁੱਲ ਨਹੀਂ ਹੋ ਸਕਦਾ — ਨਾ ਹੁਣ, ਨਾ ਭਵਿੱਖ ਵਿੱਚ।",
+    "consentDescription": "DPIP (Ð) ਡੂਪਿਪ ਦੇ ਅੰਦਰ ਮੁੱਲ ਦੀ ਇਕਾਈ ਹੈ। ਤੁਹਾਡਾ ਸਟੈਸ਼ ਸਮੇਂ ਦੇ ਨਾਲ ਤੁਹਾਡੀ ਗਤੀਵਿਧੀ ਨਾਲ ਵਧਦਾ ਹੈ। DPIP ਕੋਈ ਨਿਵੇਸ਼ ਉਤਪਾਦ ਨਹੀਂ ਹੈ ਅਤੇ ਇਸਦਾ ਕੋਈ ਮੌਦਰਿਕ ਮੁੱਲ ਨਹੀਂ ਹੋ ਸਕਦਾ — ਨਾ ਹੁਣ, ਨਾ ਭਵਿੱਖ ਵਿੱਚ। ਸਾਡੀਆਂ ਯੋਜਨਾਵਾਂ ਦੇਖਣ ਤੋਂ ਪਹਿਲਾਂ, ਕਿਰਪਾ ਕਰਕੇ ਹੇਠ ਲਿਖਿਆਂ ਦੀ ਸਮੀਖਿਆ ਕਰੋ ਅਤੇ ਪੁਸ਼ਟੀ ਕਰੋ:"
   }
 }
