@@ -4,60 +4,46 @@ import { streamText } from 'ai';
 import { openai } from '@ai-sdk/openai';
 import { auth } from '@clerk/nextjs/server';
 import { createStreamableValue } from '@ai-sdk/rsc';
-import prisma from '@/lib/prisma';
 import { getWeekNumber } from "@/app/helpers"
-import { buildHistoricalEntriesByYear } from '@/lib/utils/dayHistory';
+import { deepseekChat } from '@/lib/deepseek';
+import {
+  buildAssistantSystemPrompt,
+  buildRagForQuery,
+  fetchCompactDays,
+  resolveAgentContext,
+  validateAndClampFilterContext
+} from '@/lib/services/agent';
+import type { AgentFilterContext } from '@/lib/services/agent';
 
 export interface Message {
   role: 'user' | 'assistant';
   content: string;
 }
 
-async function getHistoricalEntriesForCurrentUser(year: number) {
-  const { userId } = await auth()
+export const AGENT_MODELS = ['deepseek', 'openai'] as const;
+export type AgentModel = typeof AGENT_MODELS[number];
 
-  if (!userId) {
-    return {}
+// OpenAI is preserved as an option but disabled in the chat UI for now.
+const OPENAI_CHAT_MODEL = 'gpt-5-mini';
+
+const HISTORY_LOOKBACK = 10;
+const MAX_HISTORY_MESSAGE_CHARS = 2000;
+
+function resolveChatModel(model: AgentModel) {
+  switch (model) {
+    case 'openai':
+      return openai(OPENAI_CHAT_MODEL);
+    case 'deepseek':
+    default:
+      return deepseekChat;
   }
-
-  const user = await prisma.user.findUnique({
-    where: { userId },
-    select: { id: true }
-  })
-
-  if (!user) {
-    return {}
-  }
-
-  const days = await prisma.day.findMany({
-    where: {
-      userId: user.id,
-      date: {
-        gte: `${year}-01-01`,
-        lte: `${year}-12-31`
-      }
-    },
-    orderBy: { date: 'asc' },
-    select: {
-      date: true,
-      week: true,
-      tasks: true,
-      mood: true,
-      ticker: true,
-      average: true,
-      progress: true,
-      balance: true,
-      stash: true,
-      withdrawn: true,
-      analysis: true,
-      productivity: true
-    }
-  })
-
-  return buildHistoricalEntriesByYear(days)
 }
 
-export async function continueConversation(history: Message[]) {
+export async function continueConversation(
+  history: Message[],
+  filterContext: AgentFilterContext,
+  model: AgentModel = 'deepseek'
+) {
   'use server';
 
   const stream = createStreamableValue();
@@ -66,50 +52,56 @@ export async function continueConversation(history: Message[]) {
   const date = fullDate.toISOString().split('T')[0];
   const year = Number(date.split('-')[0]);
   const weekNumber = getWeekNumber(fullDate)[1];
-  const entries = await getHistoricalEntriesForCurrentUser(year)
-  const currentYearEntries = entries[String(year)] || { days: {}, weeks: {} }
-
-  const lookback = [...history].slice(0, 4)
 
   const startStream = async () => {
-    const { textStream } = streamText({
-      model: openai('gpt-5-mini'),
-      maxOutputTokens: 25000,
-      temperature: 0.3,
-      maxRetries: 5,
-      system: `You are a compassionate AI assistant understand their health data and make conscious, legal, responsible with a healthy mindset, and helping users with their mental health and habit tracking journey.
-            
-            You can't setup reminders or control the user IoT devices.
+    try {
+      const { userId: clerkUserId } = await auth();
+      if (!clerkUserId) {
+        throw new Error('Unauthorized');
+      }
 
-            You have access to the user's historical data and can reference the Cognitive Psychology books for guidance.
+      // Parse the prompt context server-side: validated dates/dimensions and a
+      // delegation-checked target user drive the minimal MongoDB query below.
+      const ctx = await resolveAgentContext(
+        validateAndClampFilterContext(filterContext),
+        clerkUserId
+      );
+      const compactDays = await fetchCompactDays(ctx);
 
-            Pease keep your answers under 250 words. Try to share tips for solving practical issues in the user's input.
-            
-            Today is ${date}.
+      const lookback = [...history].slice(-HISTORY_LOOKBACK).map((message) => ({
+        role: message.role,
+        content: message.content.slice(0, MAX_HISTORY_MESSAGE_CHARS)
+      }));
 
-            The year is ${year}
+      const lastUserMessage = [...history].reverse().find((message) => message.role === 'user');
+      const query = lastUserMessage?.content ?? '';
 
-            Current week number for the current year is ${weekNumber}.
+      const rag = await buildRagForQuery(compactDays, query, { dimensions: ctx.dimensions });
 
-            Please don't try to validate logical assumptions with the user, assume your solutions and suggestions are good.
+      const chatModel = AGENT_MODELS.includes(model) ? model : 'deepseek';
 
-            The definition of done for daily and weekly tasks is the count key-value matching times key-value in each object in the arrays. 
-            Otherwise, the count specifies the amount of times the task was completed in their respective period: daily or weekly.
-            User's historical daily data for ${year}:
-            ${JSON.stringify(currentYearEntries.days)}
+      const { textStream } = streamText({
+        model: resolveChatModel(chatModel),
+        maxOutputTokens: 4096,
+        temperature: 0.3,
+        maxRetries: 5,
+        system: buildAssistantSystemPrompt({ date, year, weekNumber, ctx, rag }),
+        messages: lookback,
+      });
 
-            User's historical weekly data for ${year}:
-            ${JSON.stringify(currentYearEntries.weeks)}
-            
-            Use this data to provide personalized insights and advice.`,
-      messages: lookback,
-    });
+      for await (const text of textStream) {
+        stream.update(text);
+      }
 
-    for await (const text of textStream) {
-      stream.update(text);
+      stream.done();
+    } catch (error) {
+      console.error('agent_generation_error', {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined,
+        operation: 'continueConversation'
+      });
+      stream.error(new Error('Failed to generate response'));
     }
-
-    stream.done();
   };
 
   startStream();
