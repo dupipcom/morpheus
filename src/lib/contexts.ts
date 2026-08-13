@@ -1,14 +1,13 @@
 import { createContext } from 'react'
 
+// GlobalContext was slimmed during the Do rebuild (#441 follow-up):
+// task lists/templates moved to SWR hooks (useTaskLists); the optimistic
+// earnings callbacks were removed with the budget distribution system.
 export const GlobalContext = createContext({
 	theme: 'light',
 	session: {
 		user: {}
 	},
-	taskLists: [] as any[],
-	refreshTaskLists: async () => {},
-	templates: [] as any[],
-	refreshTemplates: async () => {},
 	setGlobalContext: (context: any) => {},
 	revealRedacted: false,
 	selectedDate: undefined as Date | undefined,
@@ -17,10 +16,4 @@ export const GlobalContext = createContext({
 	setIsNavigating: (isNavigating: boolean) => {},
 	dayData: {} as Record<string, any>,
 	setDayData: (date: string, data: any) => {},
-	// Optimistic update callbacks
-	addOptimisticTaskEarnings: () => {},
-	addOptimisticCompletion: () => {},
-	handleTaskCompletionOptimistic: () => {},
-	// Task list initialization state - true while initially loading task lists for new users
-	isInitializingTaskLists: true,
 })
