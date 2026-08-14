@@ -49,8 +49,9 @@ Default locale: `en`
 
 - **Database**: MongoDB
 - **ORM**: Prisma (client generated to `generated/prisma/`)
-- **Prisma Client**: Import from `@/generated/prisma` (aliased path)
+- **Prisma Client**: Import from `@/generated/prisma/client` (aliased via `@/generated/*` → `./generated/*`)
 - **Connection**: Singleton pattern in `src/lib/prisma.ts`
+- **Prisma version**: Stay on v6.x (currently 6.19.2) — Prisma 7 does not support MongoDB yet; do not run `npm i prisma@latest`
 
 Key models:
 - `User`: Auth + financial data (stash, profit, equity, withdrawn)
