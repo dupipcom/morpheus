@@ -1,5 +1,5 @@
 import prisma from '@/lib/prisma'
-import type { Task, TaskStatus, Job } from '@/generated/prisma'
+import type { Task, TaskStatus, Job } from '@/generated/prisma/client'
 import { calculateNextOccurrence } from './taskRecurrenceService'
 
 /**

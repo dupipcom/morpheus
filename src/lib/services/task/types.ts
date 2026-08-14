@@ -2,7 +2,7 @@
  * TypeScript interfaces for the Task migration service layer
  */
 
-import type { Task as PrismaTask, Job as PrismaJob, RecurrenceFrequency } from '@/generated/prisma'
+import type { Task as PrismaTask, Job as PrismaJob, RecurrenceFrequency } from '@/generated/prisma/client'
 import type { BudgetDistribution } from '@/lib/utils/budgetDistributionUtils'
 
 /**

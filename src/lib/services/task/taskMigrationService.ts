@@ -4,7 +4,7 @@
  */
 
 import prisma from '@/lib/prisma'
-import type { Task as PrismaTask, Job as PrismaJob, Areas, Category, TaskStatus } from '@/generated/prisma'
+import type { Task as PrismaTask, Job as PrismaJob, Areas, Category, TaskStatus } from '@/generated/prisma/client'
 import type { BudgetDistribution } from '@/lib/utils/budgetDistributionUtils'
 import {
   getTaskAllocationFromDistribution,
