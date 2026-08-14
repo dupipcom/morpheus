@@ -6,7 +6,7 @@
  * contain the assistant's own output).
  */
 
-import type { Prisma } from '../../../../generated/prisma'
+import type { Prisma } from '@/generated/prisma/client'
 import type { MoodKey } from '@/lib/services/day'
 import { MOOD_DIMENSIONS } from './types'
 import type { AgentDimension, CompactDay, CompactTask } from './types'
