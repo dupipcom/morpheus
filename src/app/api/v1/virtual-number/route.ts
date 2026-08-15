@@ -3,9 +3,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getAuthenticatedUser } from '@/lib/services/auth'
 import {
   assignNumber,
-  getAssignedNumbers,
+  disableNumber,
+  getVirtualNumbers,
   getVirtualNumberEntitlement,
-  unassignNumber,
   VirtualNumberError
 } from '@/lib/services/virtual-number'
 import type { VirtualNumberErrorCode } from '@/lib/services/virtual-number'
@@ -35,7 +35,7 @@ export async function GET() {
     const user = authResult.user!
 
     const [assignments, entitlement] = await Promise.all([
-      getAssignedNumbers(user.id),
+      getVirtualNumbers(user.id),
       getVirtualNumberEntitlement(user.clerkUserId)
     ])
     return NextResponse.json({ assignments, quota: entitlement.quota })
@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
     }
 
     await assignNumber(user.id, body.phoneNumber, { quota: entitlement.quota })
-    const assignments = await getAssignedNumbers(user.id)
+    const assignments = await getVirtualNumbers(user.id)
     return NextResponse.json({ assignments })
   } catch (error) {
     if (error instanceof VirtualNumberError) {
@@ -99,14 +99,14 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'phoneNumber query parameter is required' }, { status: 400 })
     }
 
-    await unassignNumber(user.id, phoneNumber)
-    const assignments = await getAssignedNumbers(user.id)
+    await disableNumber(user.id, phoneNumber)
+    const assignments = await getVirtualNumbers(user.id)
     return NextResponse.json({ assignments })
   } catch (error) {
     if (error instanceof VirtualNumberError) {
       return errorResponse(error)
     }
-    console.error('Error unassigning virtual number:', error)
+    console.error('Error disabling virtual number:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

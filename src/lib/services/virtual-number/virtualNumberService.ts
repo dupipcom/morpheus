@@ -26,6 +26,7 @@ function toVirtualNumberAssignment(record: VirtualNumberRecord): VirtualNumberAs
   return {
     phoneNumber: record.phoneNumber,
     messagingProfileId: record.messagingProfileId,
+    enabled: record.messagingProfileId !== null,
     provider: record.provider,
     createdAt: record.createdAt.toISOString(),
     updatedAt: record.updatedAt.toISOString()
@@ -33,9 +34,10 @@ function toVirtualNumberAssignment(record: VirtualNumberRecord): VirtualNumberAs
 }
 
 /**
- * Get the virtual numbers currently assigned to the user (oldest first)
+ * Get the virtual numbers currently held by the user (oldest first).
+ * A held number is enabled when it still has a messaging profile attached.
  */
-export async function getAssignedNumbers(userId: string): Promise<VirtualNumberAssignment[]> {
+export async function getVirtualNumbers(userId: string): Promise<VirtualNumberAssignment[]> {
   const assignments = await prisma.virtualNumber.findMany({
     where: { userId },
     orderBy: { createdAt: 'asc' }
@@ -61,7 +63,7 @@ export async function getAvailableNumbers(): Promise<AvailableVirtualNumber[]> {
 }
 
 /**
- * Assign a Telnyx number to the user, or clear all assignments (null).
+ * Assign a Telnyx number to the user, or disable all current assignments (null).
  * When `quota` is provided, rejects assigns past the plan limit.
  * Throws VirtualNumberError for expected failures.
  */
@@ -71,7 +73,10 @@ export async function assignNumber(
   options?: { quota?: number }
 ): Promise<VirtualNumberAssignment | null> {
   if (phoneNumber === null) {
-    await prisma.virtualNumber.deleteMany({ where: { userId } })
+    await prisma.virtualNumber.updateMany({
+      where: { userId, messagingProfileId: { not: null } },
+      data: { messagingProfileId: null }
+    })
     return null
   }
 
@@ -80,7 +85,9 @@ export async function assignNumber(
   }
 
   if (options?.quota !== undefined) {
-    const count = await prisma.virtualNumber.count({ where: { userId } })
+    const count = await prisma.virtualNumber.count({
+      where: { userId, messagingProfileId: { not: null } }
+    })
     if (!isWithinQuota(count, options.quota)) {
       throw new VirtualNumberError('LIMIT_REACHED', 'You have reached your virtual number quota')
     }
@@ -99,6 +106,23 @@ export async function assignNumber(
     throw new VirtualNumberError('NUMBER_NOT_FOUND', 'Number not found in your Telnyx account')
   }
 
+  const existingAssignment = await prisma.virtualNumber.findUnique({
+    where: { phoneNumber }
+  })
+
+  if (existingAssignment) {
+    if (existingAssignment.userId !== userId) {
+      throw new VirtualNumberError('NUMBER_TAKEN', 'This number is already assigned to another user')
+    }
+
+    const assignment = await prisma.virtualNumber.update({
+      where: { phoneNumber },
+      data: { messagingProfileId: match.messagingProfileId }
+    })
+
+    return toVirtualNumberAssignment(assignment)
+  }
+
   try {
     const assignment = await prisma.virtualNumber.create({
       data: { userId, phoneNumber, messagingProfileId: match.messagingProfileId }
@@ -106,8 +130,7 @@ export async function assignNumber(
 
     return toVirtualNumberAssignment(assignment)
   } catch (error) {
-    // P2002: phoneNumber unique violation — this user already holds it, or
-    // another user claimed it concurrently
+    // P2002: another user claimed this number after the read above
     if (error && typeof error === 'object' && 'code' in error && error.code === 'P2002') {
       throw new VirtualNumberError('NUMBER_TAKEN', 'This number is already assigned to another user')
     }
@@ -116,11 +139,14 @@ export async function assignNumber(
 }
 
 /**
- * Remove one of the user's assigned numbers.
- * Throws NUMBER_NOT_FOUND when the number is not assigned to the user.
+ * Disable one of the user's assigned numbers while keeping the Telnyx number held.
+ * Throws NUMBER_NOT_FOUND when the number is not currently enabled for the user.
  */
-export async function unassignNumber(userId: string, phoneNumber: string): Promise<void> {
-  const result = await prisma.virtualNumber.deleteMany({ where: { userId, phoneNumber } })
+export async function disableNumber(userId: string, phoneNumber: string): Promise<void> {
+  const result = await prisma.virtualNumber.updateMany({
+    where: { userId, phoneNumber, messagingProfileId: { not: null } },
+    data: { messagingProfileId: null }
+  })
   if (result.count === 0) {
     throw new VirtualNumberError('NUMBER_NOT_FOUND', 'This number is not assigned to you')
   }

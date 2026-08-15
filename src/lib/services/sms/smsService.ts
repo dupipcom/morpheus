@@ -118,13 +118,17 @@ export async function sendSmsMessage(input: {
   let virtualNumber = conversation.virtualNumberId
     ? await prisma.virtualNumber.findUnique({
         where: { id: conversation.virtualNumberId },
-        select: { id: true, phoneNumber: true }
+        select: { id: true, phoneNumber: true, messagingProfileId: true }
       })
     : null
 
+  if (!virtualNumber || virtualNumber.messagingProfileId === null) {
+    virtualNumber = null
+  }
+
   if (!virtualNumber) {
     const first = await prisma.virtualNumber.findFirst({
-      where: { userId: input.userId },
+      where: { userId: input.userId, messagingProfileId: { not: null } },
       orderBy: { createdAt: 'asc' },
       select: { id: true, phoneNumber: true }
     })

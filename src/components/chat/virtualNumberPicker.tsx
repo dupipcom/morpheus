@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import useSWR from 'swr'
-import { Phone, Trash2 } from 'lucide-react'
+import { Phone, Plus, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
@@ -13,7 +13,7 @@ import { useFeatureFlag } from '@/lib/hooks/useFeatureFlag'
 import { jsonFetcher } from '@/lib/utils/utils'
 
 interface AssignmentResponse {
-  assignments: { phoneNumber: string; provider: string; createdAt: string; updatedAt: string }[]
+  assignments: { phoneNumber: string; enabled: boolean; provider: string; createdAt: string; updatedAt: string }[]
   quota: number
 }
 
@@ -58,8 +58,9 @@ export function VirtualNumberPicker() {
   )
 
   const assignments = assignmentData?.assignments ?? []
+  const activeAssignments = assignments.filter((assignment) => assignment.enabled)
   const quota = assignmentData?.quota ?? 0
-  const atQuota = quota > 0 && assignments.length >= quota
+  const atQuota = quota > 0 && activeAssignments.length >= quota
 
   const refresh = async () => {
     await Promise.all([mutateAssignment(), mutateNumbers()])
@@ -119,7 +120,7 @@ export function VirtualNumberPicker() {
 
         {quota > 0 && (
           <p className="text-xs text-muted-foreground">
-            {t('chat.virtualNumber.quotaLabel', { used: assignments.length, quota })}
+            {t('chat.virtualNumber.quotaLabel', { used: activeAssignments.length, quota })}
           </p>
         )}
 
@@ -128,19 +129,32 @@ export function VirtualNumberPicker() {
             {assignments.map((assignment) => (
               <li
                 key={assignment.phoneNumber}
-                className="flex items-center justify-between rounded-lg border px-3 py-1.5 text-sm"
+                className={`flex items-center justify-between rounded-lg border px-3 py-1.5 text-sm ${assignment.enabled ? '' : 'opacity-60'}`}
               >
                 <span>{assignment.phoneNumber}</span>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-7 w-7"
-                  aria-label={t('chat.virtualNumber.removeNumber')}
-                  disabled={isSaving}
-                  onClick={() => void remove(assignment.phoneNumber)}
-                >
-                  <Trash2 className="h-3.5 w-3.5" />
-                </Button>
+                {assignment.enabled ? (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-7 w-7"
+                    aria-label={t('chat.virtualNumber.removeNumber')}
+                    disabled={isSaving}
+                    onClick={() => void remove(assignment.phoneNumber)}
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </Button>
+                ) : (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-7 w-7"
+                    aria-label={t('chat.virtualNumber.addNumber')}
+                    disabled={isSaving || atQuota}
+                    onClick={() => void add(assignment.phoneNumber)}
+                  >
+                    <Plus className="h-3.5 w-3.5" />
+                  </Button>
+                )}
               </li>
             ))}
           </ul>
