@@ -201,7 +201,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { content, visibility, date, recipientId } = body
+    const { content, visibility, date, recipientId, aiEnabled } = body
 
     if (!content) {
       return NextResponse.json({ error: 'Content is required' }, { status: 400 })
@@ -263,6 +263,7 @@ export async function POST(request: NextRequest) {
         content: sanitizedContent,
         // New notes default PRIVATE unless the user set a preferred default
         visibility: visibility || user.defaultNoteVisibility || 'PRIVATE',
+        aiEnabled: aiEnabled === true,
         date: date || null,
         userId: user.id,
         senderId: user.id,

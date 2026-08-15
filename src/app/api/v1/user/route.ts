@@ -299,5 +299,14 @@ export async function POST(req: Request) {
     }
   }
 
+  // Handle default AI analysis preference
+  if (typeof data?.defaultAiEnabled === 'boolean' && user) {
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { defaultAiEnabled: data.defaultAiEnabled }
+    })
+    user = await prisma.user.findUnique({ where: { userId } })
+  }
+
   return Response.json(user)
 }
