@@ -2,62 +2,56 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { getNoteVisibilitiesForScope, resolveNoteVisibilityFilter } from '../noteAccess'
 
-test('PRIVATE scope grants full note access (undefined filter)', () => {
-  assert.equal(getNoteVisibilitiesForScope('PRIVATE'), undefined)
+// getNoteVisibilitiesForScope — direct 1:1 mapping, no hierarchical expansion
+
+test('AI_ENABLED scope (legacy delegation) maps to legacy AI_ENABLED visibility notes', () => {
+  assert.deepEqual(getNoteVisibilitiesForScope('AI_ENABLED'), ['AI_ENABLED'])
 })
 
-test('AI_ENABLED scope unlocks everything except PRIVATE notes', () => {
-  assert.deepEqual(getNoteVisibilitiesForScope('AI_ENABLED'), [
-    'AI_ENABLED',
-    'FRIENDS',
-    'CLOSE_FRIENDS',
-    'PUBLIC',
-    'DOC_ENABLED'
-  ])
+test('PRIVATE scope maps to PRIVATE notes only (plus legacy AI_ENABLED visibility)', () => {
+  assert.deepEqual(getNoteVisibilitiesForScope('PRIVATE'), ['PRIVATE', 'AI_ENABLED'])
 })
 
-test('FRIENDS scope unlocks friend tier plus DOC_ENABLED', () => {
-  assert.deepEqual(getNoteVisibilitiesForScope('FRIENDS'), [
-    'FRIENDS',
-    'CLOSE_FRIENDS',
-    'PUBLIC',
-    'DOC_ENABLED'
-  ])
+test('FRIENDS scope maps to FRIENDS notes only', () => {
+  assert.deepEqual(getNoteVisibilitiesForScope('FRIENDS'), ['FRIENDS'])
 })
 
-test('CLOSE_FRIENDS scope unlocks close-friend tier plus DOC_ENABLED', () => {
-  assert.deepEqual(getNoteVisibilitiesForScope('CLOSE_FRIENDS'), [
-    'CLOSE_FRIENDS',
-    'PUBLIC',
-    'DOC_ENABLED'
-  ])
+test('CLOSE_FRIENDS scope maps to CLOSE_FRIENDS notes only', () => {
+  assert.deepEqual(getNoteVisibilitiesForScope('CLOSE_FRIENDS'), ['CLOSE_FRIENDS'])
 })
 
-test('PUBLIC scope unlocks PUBLIC and DOC_ENABLED only', () => {
-  assert.deepEqual(getNoteVisibilitiesForScope('PUBLIC'), ['PUBLIC', 'DOC_ENABLED'])
+test('PUBLIC scope maps to PUBLIC notes only', () => {
+  assert.deepEqual(getNoteVisibilitiesForScope('PUBLIC'), ['PUBLIC'])
 })
 
-test('DOC_ENABLED scope is defensive least privilege: doc notes only', () => {
+test('DOC_ENABLED scope maps to DOC_ENABLED notes only', () => {
   assert.deepEqual(getNoteVisibilitiesForScope('DOC_ENABLED'), ['DOC_ENABLED'])
 })
 
-test('resolveNoteVisibilityFilter uses union of all granted scopes', () => {
-  assert.deepEqual(resolveNoteVisibilityFilter(['PUBLIC', 'FRIENDS'], null), [
-    'FRIENDS',
-    'CLOSE_FRIENDS',
-    'PUBLIC',
-    'DOC_ENABLED'
-  ])
+test('unknown scope returns empty list', () => {
+  assert.deepEqual(getNoteVisibilitiesForScope('BOGUS'), [])
 })
 
-test('resolveNoteVisibilityFilter returns full access when PRIVATE is among scopes', () => {
-  assert.equal(resolveNoteVisibilityFilter(['PRIVATE', 'DOC_ENABLED', 'AI_ENABLED'], null), undefined)
+// resolveNoteVisibilityFilter — union of direct scope mappings
+
+test('PRIVATE + FRIENDS delegates see PRIVATE, AI_ENABLED (legacy), and FRIENDS notes', () => {
+  assert.deepEqual(
+    resolveNoteVisibilityFilter(['PRIVATE', 'FRIENDS'], null)?.slice().sort(),
+    ['AI_ENABLED', 'FRIENDS', 'PRIVATE']
+  )
+})
+
+test('PUBLIC + FRIENDS delegates see only PUBLIC and FRIENDS notes', () => {
+  assert.deepEqual(
+    resolveNoteVisibilityFilter(['PUBLIC', 'FRIENDS'], null)?.slice().sort(),
+    ['FRIENDS', 'PUBLIC']
+  )
 })
 
 test('resolveNoteVisibilityFilter falls back to the legacy scope field', () => {
-  assert.deepEqual(resolveNoteVisibilityFilter([], 'PUBLIC'), ['PUBLIC', 'DOC_ENABLED'])
+  assert.deepEqual(resolveNoteVisibilityFilter([], 'PUBLIC'), ['PUBLIC'])
 })
 
-test('resolveNoteVisibilityFilter returns full access for empty scopes', () => {
+test('resolveNoteVisibilityFilter returns undefined (full owner access) for empty scopes', () => {
   assert.equal(resolveNoteVisibilityFilter([], null), undefined)
 })

@@ -50,6 +50,9 @@ export async function fetchCompactDays(ctx: ResolvedAgentContext): Promise<Compa
  * Fetch the target user's notes the requester is authorized to read.
  * `noteVisibilityFilter` is undefined for the owner (full access) and an
  * allow-list for delegated viewers (see resolveNoteVisibilityFilter).
+ * Only notes with `aiEnabled = true` (or the legacy `visibility = AI_ENABLED`)
+ * are ever surfaced to the RAG — notes without the AI toggle are excluded
+ * regardless of visibility or delegation scope.
  * Undated notes are included regardless of the date range — the range still
  * applies to dated notes; the result is bounded by MAX_COMPACT_NOTES.
  */
@@ -58,7 +61,12 @@ export async function fetchCompactNotes(ctx: ResolvedAgentContext): Promise<Comp
     where: {
       userId: ctx.targetUserId,
       ...(ctx.noteVisibilityFilter ? { visibility: { in: ctx.noteVisibilityFilter } } : {}),
-      OR: [{ date: { gte: ctx.startDate, lte: ctx.endDate } }, { date: null }]
+      AND: [
+        // Only notes the owner has opted into AI (new toggle) or legacy AI_ENABLED visibility
+        { OR: [{ aiEnabled: true }, { visibility: 'AI_ENABLED' }] },
+        // Date range filter: dated notes must fall within the window; undated are always included
+        { OR: [{ date: { gte: ctx.startDate, lte: ctx.endDate } }, { date: null }] }
+      ]
     },
     select: { id: true, date: true, content: true },
     orderBy: { createdAt: 'desc' },

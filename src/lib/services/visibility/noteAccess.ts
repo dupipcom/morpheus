@@ -1,45 +1,53 @@
 /**
  * Note-visibility access shared by the notes API and the agent RAG.
  * Resolves a delegation's scopes into the note visibilities the delegate
- * may read. Any delegation (any role, any scope) unlocks DOC_ENABLED notes;
- * PRIVATE notes require the PRIVATE scope. undefined = full access (owner or
- * PRIVATE-scope delegate).
+ * may read.
+ *
+ * Scope→visibility mapping is now direct (no hierarchical expansion):
+ * delegating PRIVATE grants access to PRIVATE notes only; delegating FRIENDS
+ * grants access to FRIENDS notes only, etc.
+ *
+ * Legacy: notes that were written with `visibility = AI_ENABLED` are treated
+ * as PRIVATE notes with the AI toggle on. When PRIVATE is delegated, the
+ * filter therefore also includes AI_ENABLED.
+ *
+ * undefined = full access (owner, not a delegated request).
  */
 
 import { getDelegationScopes } from '@/lib/utils/delegation'
 import type { NoteVisibility } from '@/generated/prisma/client'
 
-const SCOPE_PRIORITY = ['PRIVATE', 'AI_ENABLED', 'FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC', 'DOC_ENABLED'] as const
-
 /**
- * Note-visibility allow-list for a delegation scope.
- * Returning undefined means "no visibility filtering" (full access).
+ * Direct note-visibility allow-list for a single delegation scope.
+ * No hierarchical expansion — the delegated scope is the exact visibility
+ * bucket the delegate may read, plus legacy AI_ENABLED handling for PRIVATE.
  */
-export function getNoteVisibilitiesForScope(scope: string): NoteVisibility[] | undefined {
+export function getNoteVisibilitiesForScope(scope: string): NoteVisibility[] {
   switch (scope) {
     case 'PRIVATE':
-      return undefined
+      // Legacy: old AI_ENABLED-visibility notes are treated as PRIVATE+aiToggle
+      return ['PRIVATE', 'AI_ENABLED']
     case 'AI_ENABLED':
-      return ['AI_ENABLED', 'FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC', 'DOC_ENABLED']
+      // Legacy delegation scope: grants access to notes with the legacy AI_ENABLED visibility
+      return ['AI_ENABLED']
     case 'FRIENDS':
-      return ['FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC', 'DOC_ENABLED']
+      return ['FRIENDS']
     case 'CLOSE_FRIENDS':
-      return ['CLOSE_FRIENDS', 'PUBLIC', 'DOC_ENABLED']
+      return ['CLOSE_FRIENDS']
     case 'PUBLIC':
-      return ['PUBLIC', 'DOC_ENABLED']
+      return ['PUBLIC']
     case 'DOC_ENABLED':
-      // Defensive: not a grantable scope; least privilege = doc notes only
       return ['DOC_ENABLED']
     default:
-      return undefined
+      return []
   }
 }
 
 /**
  * Resolve a delegation (raw scopes + legacy fallback scope) into the note
- * visibility allow-list the delegate may read. Union semantics: all granted
- * scopes contribute their allowed visibilities. If any scope grants full
- * access (PRIVATE), undefined is returned (no filter = full access).
+ * visibility allow-list the delegate may read. Union semantics across all
+ * granted scopes; an empty result means the delegation grants no note access.
+ * Returns undefined (no filter = full owner access) when called with no scopes.
  */
 export function resolveNoteVisibilityFilter(
   scopes: string[] | null | undefined,
@@ -48,18 +56,9 @@ export function resolveNoteVisibilityFilter(
   const delegationScopes = getDelegationScopes(scopes, fallbackScope)
   if (delegationScopes.length === 0) return undefined
 
-  // Process scopes in priority order for deterministic output
-  const sortedScopes = [...delegationScopes].sort(
-    (a, b) => SCOPE_PRIORITY.indexOf(a as typeof SCOPE_PRIORITY[number]) - SCOPE_PRIORITY.indexOf(b as typeof SCOPE_PRIORITY[number])
-  )
-
   const allVisibilities = new Set<NoteVisibility>()
-  for (const scope of sortedScopes) {
-    const scopeVisibilities = getNoteVisibilitiesForScope(scope)
-    if (scopeVisibilities === undefined) {
-      return undefined
-    }
-    for (const v of scopeVisibilities) {
+  for (const scope of delegationScopes) {
+    for (const v of getNoteVisibilitiesForScope(scope)) {
       allVisibilities.add(v)
     }
   }
