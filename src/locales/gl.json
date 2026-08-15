@@ -342,7 +342,8 @@
     "getInsights": "Pregunta sobre o teu estado de ánimo, hábitos ou obtén perspectivas personalizadas",
     "placeholder": "Falemos...",
     "error": "Síntoo, atopei un erro. Por favor, inténtao de novo.",
-    "failedToSend": "Fallou o envío da mensaxe. Por favor, inténtao de novo."
+    "failedToSend": "Fallou o envío da mensaxe. Por favor, inténtao de novo.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Comeza a túa viaxe Dupip",
@@ -926,7 +927,31 @@
     "inviteFriendToOrg": "Convidar un amigo a esta organización",
     "inviteLinkCopied": "Ligazón de convite copiada",
     "inviteSent": "Convite enviado",
-    "inviteAccepted": "Convite aceptado"
+    "inviteAccepted": "Convite aceptado",
+    "virtualNumber": {
+      "label": "Número virtual",
+      "hint": "Escolle un dos teus números de teléfono. Os SMS entrantes a este número aparecerán no teu chat.",
+      "none": "Sen número",
+      "loading": "Cargando números…",
+      "empty": "Non hai números dispoñibles",
+      "error": "Non se puideron cargar os teus números",
+      "assignError": "Non se puido gardar este número",
+      "assigned": "Número asignado",
+      "cleared": "Número eliminado"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "Cargando SMS…",
+      "empty": "Aínda non hai conversas de SMS",
+      "noNumberHint": "Asigna un número virtual para comezar a recibir SMS aquí",
+      "composerPlaceholder": "Escribe un SMS…",
+      "sendError": "Non se puido enviar esta mensaxe",
+      "you": "Ti",
+      "statusSent": "Enviado",
+      "statusDelivered": "Entregado",
+      "statusFailed": "Fallou",
+      "error": "Non se puideron cargar os SMS"
+    }
   },
   "notesList": {
     "gridOption": {

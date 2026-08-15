@@ -345,7 +345,8 @@
     "getInsights": "Tambayi game da yanayin zuciyarka, halaye ko sami fahimta ta keɓance",
     "placeholder": "Mu yi magana...",
     "error": "Yi hakuri, na sami kuskure. Don Allah sake gwadawa.",
-    "failedToSend": "Aika saƙo ya gaza. Don Allah sake gwadawa."
+    "failedToSend": "Aika saƙo ya gaza. Don Allah sake gwadawa.",
+    "model": "Model"
   },
   "errors": {
     "notFound": "Ops! Ba za a iya samun wannan mitar ba.",
@@ -920,7 +921,31 @@
     "inviteFriendToOrg": "Gayyaci aboki zuwa wannan ƙungiya",
     "inviteLinkCopied": "An kwafi haɗin gayyata",
     "inviteSent": "An aika gayyata",
-    "inviteAccepted": "An karɓi gayyata"
+    "inviteAccepted": "An karɓi gayyata",
+    "virtualNumber": {
+      "label": "Lamba na musamman",
+      "hint": "Zaɓi ɗaya daga cikin lambobin wayarka. Saƙonnin SMS da ke shiga wannan lambar za su bayyana a cikin taɗin ka.",
+      "none": "Babu lamba",
+      "loading": "Ana ɗaukar lambobi…",
+      "empty": "Babu lambobi da ake da su",
+      "error": "Ba a iya ɗaukar lambobinka ba",
+      "assignError": "Ba a iya ajiye wannan lambar ba",
+      "assigned": "An haɗa lambar",
+      "cleared": "An cire lambar"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "Ana ɗaukar SMS…",
+      "empty": "Babu tattaunawar SMS tukuna",
+      "noNumberHint": "Haɗa lamba na musamman don fara karɓar SMS a nan",
+      "composerPlaceholder": "Rubuta SMS…",
+      "sendError": "Ba a iya aika wannan saƙon ba",
+      "you": "Kai",
+      "statusSent": "An aika",
+      "statusDelivered": "An isar",
+      "statusFailed": "An kasa",
+      "error": "Ba a iya ɗaukar SMS ba"
+    }
   },
   "notesList": {
     "gridOption": {

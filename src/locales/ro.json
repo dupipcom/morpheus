@@ -339,7 +339,8 @@
     "getInsights": "Întreabă despre dispoziția ta, obiceiuri sau obține perspective personalizate",
     "placeholder": "Să vorbim...",
     "error": "Îmi pare rău, am întâlnit o eroare. Te rog încearcă din nou.",
-    "failedToSend": "Trimiterea mesajului a eșuat. Te rog încearcă din nou."
+    "failedToSend": "Trimiterea mesajului a eșuat. Te rog încearcă din nou.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Începe-ți propria călătorie Dupip",
@@ -923,7 +924,31 @@
     "inviteFriendToOrg": "Invită un prieten în această organizație",
     "inviteLinkCopied": "Link de invitație copiat",
     "inviteSent": "Invitație trimisă",
-    "inviteAccepted": "Invitație acceptată"
+    "inviteAccepted": "Invitație acceptată",
+    "virtualNumber": {
+      "label": "Număr virtual",
+      "hint": "Alege unul dintre numerele tale de telefon. SMS-urile primite la acest număr vor apărea în chatul tău.",
+      "none": "Niciun număr",
+      "loading": "Se încarcă numerele…",
+      "empty": "Nu sunt numere disponibile",
+      "error": "Numerele tale nu au putut fi încărcate",
+      "assignError": "Acest număr nu a putut fi salvat",
+      "assigned": "Număr atribuit",
+      "cleared": "Număr eliminat"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "Se încarcă SMS-urile…",
+      "empty": "Nu există încă conversații SMS",
+      "noNumberHint": "Atribuie un număr virtual pentru a începe să primești SMS aici",
+      "composerPlaceholder": "Scrie un SMS…",
+      "sendError": "Acest mesaj nu a putut fi trimis",
+      "you": "Tu",
+      "statusSent": "Trimis",
+      "statusDelivered": "Livrat",
+      "statusFailed": "Eșuat",
+      "error": "SMS-urile nu au putut fi încărcate"
+    }
   },
   "notesList": {
     "gridOption": {

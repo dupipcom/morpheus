@@ -339,7 +339,8 @@
     "getInsights": "Küsi oma tuju, harjumuste kohta või saa personaliseeritud teadmisi",
     "placeholder": "Räägime...",
     "error": "Vabandust, kohtasin viga. Palun proovi uuesti.",
-    "failedToSend": "Sõnumi saatmine ebaõnnestus. Palun proovi uuesti."
+    "failedToSend": "Sõnumi saatmine ebaõnnestus. Palun proovi uuesti.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Alusta oma Dupip teekonda",
@@ -923,7 +924,31 @@
     "inviteFriendToOrg": "Kutsu sõber sellesse organisatsiooni",
     "inviteLinkCopied": "Kutselink kopeeritud",
     "inviteSent": "Kutse saadetud",
-    "inviteAccepted": "Kutse vastu võetud"
+    "inviteAccepted": "Kutse vastu võetud",
+    "virtualNumber": {
+      "label": "Virtuaalnumber",
+      "hint": "Vali üks oma telefoninumbritest. Sellele numbrile saabuvad SMS-id kuvatakse sinu vestluses.",
+      "none": "Numbrit pole",
+      "loading": "Numbrite laadimine…",
+      "empty": "Ühtegi numbrit pole saadaval",
+      "error": "Sinu numbreid ei õnnestunud laadida",
+      "assignError": "Seda numbrit ei õnnestunud salvestada",
+      "assigned": "Number määratud",
+      "cleared": "Number eemaldatud"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "SMS-ide laadimine…",
+      "empty": "SMS-vestlusi veel pole",
+      "noNumberHint": "Määra virtuaalnumber, et hakata siin SMS-e vastu võtma",
+      "composerPlaceholder": "Kirjuta SMS…",
+      "sendError": "Seda sõnumit ei õnnestunud saata",
+      "you": "Sina",
+      "statusSent": "Saadetud",
+      "statusDelivered": "Kohale toimetatud",
+      "statusFailed": "Nurjus",
+      "error": "SMS-e ei õnnestunud laadida"
+    }
   },
   "notesList": {
     "gridOption": {

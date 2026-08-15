@@ -343,7 +343,8 @@
     "getInsights": "Spørg om dit humør, vaner eller få personaliserede indsigter",
     "placeholder": "Lad os chatte...",
     "error": "Undskyld, jeg stødte på en fejl. Prøv igen.",
-    "failedToSend": "Beskeden kunne ikke sendes. Prøv igen."
+    "failedToSend": "Beskeden kunne ikke sendes. Prøv igen.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Start din egen Dupip-rejse",
@@ -927,7 +928,31 @@
     "inviteFriendToOrg": "Inviter en ven til denne organisation",
     "inviteLinkCopied": "Invitationslink kopieret",
     "inviteSent": "Invitation sendt",
-    "inviteAccepted": "Invitation accepteret"
+    "inviteAccepted": "Invitation accepteret",
+    "virtualNumber": {
+      "label": "Virtuelt nummer",
+      "hint": "Vælg et af dine telefonnumre. Indgående SMS’er til dette nummer vises i din chat.",
+      "none": "Intet nummer",
+      "loading": "Indlæser numre…",
+      "empty": "Ingen numre tilgængelige",
+      "error": "Kunne ikke indlæse dine numre",
+      "assignError": "Kunne ikke gemme dette nummer",
+      "assigned": "Nummer tildelt",
+      "cleared": "Nummer fjernet"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "Indlæser SMS…",
+      "empty": "Ingen SMS-samtaler endnu",
+      "noNumberHint": "Tildel et virtuelt nummer for at begynde at modtage SMS her",
+      "composerPlaceholder": "Skriv en SMS…",
+      "sendError": "Kunne ikke sende denne besked",
+      "you": "Dig",
+      "statusSent": "Sendt",
+      "statusDelivered": "Leveret",
+      "statusFailed": "Mislykkedes",
+      "error": "Kunne ikke indlæse SMS"
+    }
   },
   "notesList": {
     "gridOption": {

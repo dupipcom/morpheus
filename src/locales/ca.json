@@ -339,7 +339,8 @@
     "getInsights": "Pregunta sobre el teu estat d'ànim, hàbits o obtén perspectives personalitzades",
     "placeholder": "Parlem...",
     "error": "Ho sento, he trobat un error. Si us plau, torna-ho a intentar.",
-    "failedToSend": "L'enviament del missatge ha fallat. Si us plau, torna-ho a intentar."
+    "failedToSend": "L'enviament del missatge ha fallat. Si us plau, torna-ho a intentar.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Comença el teu propi viatge Dupip",
@@ -923,7 +924,31 @@
     "inviteFriendToOrg": "Convidar un amic a aquesta organització",
     "inviteLinkCopied": "Enllaç d'invitació copiat",
     "inviteSent": "Invitació enviada",
-    "inviteAccepted": "Invitació acceptada"
+    "inviteAccepted": "Invitació acceptada",
+    "virtualNumber": {
+      "label": "Número virtual",
+      "hint": "Tria un dels teus números de telèfon. Els SMS entrants a aquest número apareixeran al teu xat.",
+      "none": "Cap número",
+      "loading": "S'estan carregant els números…",
+      "empty": "No hi ha números disponibles",
+      "error": "No s'han pogut carregar els teus números",
+      "assignError": "No s'ha pogut desar aquest número",
+      "assigned": "Número assignat",
+      "cleared": "Número suprimit"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "S'estan carregant els SMS…",
+      "empty": "Encara no hi ha converses d'SMS",
+      "noNumberHint": "Assigna un número virtual per començar a rebre SMS aquí",
+      "composerPlaceholder": "Escriu un SMS…",
+      "sendError": "No s'ha pogut enviar aquest missatge",
+      "you": "Tu",
+      "statusSent": "Enviat",
+      "statusDelivered": "Lliurat",
+      "statusFailed": "Ha fallat",
+      "error": "No s'han pogut carregar els SMS"
+    }
   },
   "notesList": {
     "gridOption": {

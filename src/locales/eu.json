@@ -342,7 +342,8 @@
     "getInsights": "Galde zure humurrari, ohiturei buruz edo lortu ikuspegi pertsonalizatuak",
     "placeholder": "Hitz egin dezagun...",
     "error": "Barkatu, errore bat aurkitu dut. Mesedez, saiatu berriro.",
-    "failedToSend": "Mezuaren bidalketak huts egin du. Mesedez, saiatu berriro."
+    "failedToSend": "Mezuaren bidalketak huts egin du. Mesedez, saiatu berriro.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Hasi zure Dupip bidaia",
@@ -926,7 +927,31 @@
     "inviteFriendToOrg": "Gonbidatu lagun bat erakunde honetara",
     "inviteLinkCopied": "Gonbidapen esteka kopiatuta",
     "inviteSent": "Gonbidapena bidalita",
-    "inviteAccepted": "Gonbidapena onartuta"
+    "inviteAccepted": "Gonbidapena onartuta",
+    "virtualNumber": {
+      "label": "Zenbaki birtuala",
+      "hint": "Aukeratu zure telefono-zenbakietako bat. Zenbaki horretara iristen diren SMSak zure txatean agertuko dira.",
+      "none": "Zenbakirik ez",
+      "loading": "Zenbakiak kargatzen…",
+      "empty": "Ez dago zenbakirik erabilgarri",
+      "error": "Ezin izan dira zure zenbakiak kargatu",
+      "assignError": "Ezin izan da zenbaki hau gorde",
+      "assigned": "Zenbakia esleitu da",
+      "cleared": "Zenbakia kendu da"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "SMSak kargatzen…",
+      "empty": "Oraindik ez dago SMS elkarrizketarik",
+      "noNumberHint": "Esleitu zenbaki birtual bat hemen SMSak jasotzen hasteko",
+      "composerPlaceholder": "Idatzi SMS bat…",
+      "sendError": "Ezin izan da mezu hau bidali",
+      "you": "Zu",
+      "statusSent": "Bidalita",
+      "statusDelivered": "Banatuta",
+      "statusFailed": "Huts egin du",
+      "error": "Ezin izan dira SMSak kargatu"
+    }
   },
   "notesList": {
     "gridOption": {

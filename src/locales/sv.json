@@ -342,7 +342,8 @@
     "getInsights": "Fråga om ditt humör, vanor eller få personaliserade insikter",
     "placeholder": "Låt oss chatta...",
     "error": "Ledsen, jag stötte på ett fel. Försök igen.",
-    "failedToSend": "Meddelandet kunde inte skickas. Försök igen."
+    "failedToSend": "Meddelandet kunde inte skickas. Försök igen.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Börja din egen Dupip-resa",
@@ -926,7 +927,31 @@
     "inviteFriendToOrg": "Bjud in en vän till denna organisation",
     "inviteLinkCopied": "Inbjudningslänk kopierad",
     "inviteSent": "Inbjudan skickad",
-    "inviteAccepted": "Inbjudan accepterad"
+    "inviteAccepted": "Inbjudan accepterad",
+    "virtualNumber": {
+      "label": "Virtuellt nummer",
+      "hint": "Välj ett av dina telefonnummer. Inkommande SMS till detta nummer visas i din chatt.",
+      "none": "Inget nummer",
+      "loading": "Laddar nummer…",
+      "empty": "Inga nummer tillgängliga",
+      "error": "Dina nummer kunde inte laddas",
+      "assignError": "Detta nummer kunde inte sparas",
+      "assigned": "Nummer tilldelat",
+      "cleared": "Nummer borttaget"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "Laddar SMS…",
+      "empty": "Inga SMS-konversationer ännu",
+      "noNumberHint": "Tilldela ett virtuellt nummer för att börja ta emot SMS här",
+      "composerPlaceholder": "Skriv ett SMS…",
+      "sendError": "Detta meddelande kunde inte skickas",
+      "you": "Du",
+      "statusSent": "Skickat",
+      "statusDelivered": "Levererat",
+      "statusFailed": "Misslyckades",
+      "error": "SMS kunde inte laddas"
+    }
   },
   "notesList": {
     "gridOption": {

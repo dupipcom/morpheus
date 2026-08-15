@@ -346,7 +346,8 @@
     "getInsights": "Béèrè nípa ìwà rẹ̀, àwọn ìhùwà rẹ̀ tàbí gba ìmọ̀ tí ó jẹ́ ti ara rẹ̀",
     "placeholder": "Jẹ́ ká sọrọ...",
     "error": "Ẹ má bínú, mo rí àṣìṣe kan. Jọwọ gbìyànjú lẹ́ẹ̀kan sí i.",
-    "failedToSend": "Kò lè rán ìròyìn. Jọwọ gbìyànjú lẹ́ẹ̀kan sí i."
+    "failedToSend": "Kò lè rán ìròyìn. Jọwọ gbìyànjú lẹ́ẹ̀kan sí i.",
+    "model": "Model"
   },
   "errors": {
     "notFound": "Ops! Kò le tọ́ ìwọ̀n yìí.",
@@ -921,7 +922,31 @@
     "inviteFriendToOrg": "Pe ọrẹ wa si ajọ yii",
     "inviteLinkCopied": "Ọna asopọ ìdẹ ti daakọ",
     "inviteSent": "Ìdẹ ti fi ranṣẹ",
-    "inviteAccepted": "Ìdẹ ti gba"
+    "inviteAccepted": "Ìdẹ ti gba",
+    "virtualNumber": {
+      "label": "Nọ́mbà àkànṣe",
+      "hint": "Yan ọ̀kan lára àwọn nọ́mbà fóònù rẹ. Àwọn SMS tó dé sí nọ́mbà yìí yóò hàn nínú ìjíròrò rẹ.",
+      "none": "Kò sí nọ́mbà",
+      "loading": "Ń kó nọ́mbà…",
+      "empty": "Kò sí nọ́mbà tó wà",
+      "error": "Kò ṣeé ṣe láti kó àwọn nọ́mbà rẹ",
+      "assignError": "Kò ṣeé ṣe láti fipamọ́ nọ́mbà yìí",
+      "assigned": "A ti fi nọ́mbà sí",
+      "cleared": "A ti yọ nọ́mbà kúrò"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "Ń kó SMS…",
+      "empty": "Kò sí ìjíròrò SMS kankan",
+      "noNumberHint": "Fi nọ́mbà àkànṣe sí láti bẹ̀rẹ̀ sí gba SMS níbí",
+      "composerPlaceholder": "Kọ SMS…",
+      "sendError": "Kò ṣeé ṣe láti fi ìfiránṣẹ́ yìí ránṣẹ́",
+      "you": "Ìwọ",
+      "statusSent": "A ti fi ránṣẹ́",
+      "statusDelivered": "Ó ti dé",
+      "statusFailed": "Kùnà",
+      "error": "Kò ṣeé ṣe láti kó SMS"
+    }
   },
   "notesList": {
     "gridOption": {

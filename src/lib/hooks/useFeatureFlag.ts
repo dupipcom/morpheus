@@ -45,8 +45,21 @@ export function useFeatureFlag() {
     return isPremium || has({ feature: 'ai_assistant' })
   }, [isLoaded, isSignedIn, has, isPremium])
 
+  const isVirtualNumberEnabled = useMemo(() => {
+    // Wait for auth to load
+    if (!isLoaded) return false
+
+    // Check if user is signed in
+    if (!isSignedIn) return false
+
+    // Internal org members are always premium; otherwise require the
+    // `virtual_number` feature from the user's Clerk subscription plan.
+    return isPremium || has({ feature: 'virtual_number' })
+  }, [isLoaded, isSignedIn, has, isPremium])
+
   return {
     isAgentChatEnabled,
+    isVirtualNumberEnabled,
     isPremium,
     isLoaded,
     isSignedIn

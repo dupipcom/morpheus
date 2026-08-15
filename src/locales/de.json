@@ -348,7 +348,8 @@
     "getInsights": "Fragen Sie nach Ihrer Stimmung, Gewohnheiten oder erhalten Sie personalisierte Einblicke",
     "placeholder": "Lassen Sie uns chatten...",
     "error": "Entschuldigung, ich bin auf einen Fehler gestoßen. Bitte versuchen Sie es erneut.",
-    "failedToSend": "Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es erneut."
+    "failedToSend": "Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es erneut.",
+    "model": "Model"
   },
   "errors": {
     "notFound": "Ops! Could not tune to this frequency.",
@@ -923,7 +924,31 @@
     "inviteFriendToOrg": "Einen Freund zu dieser Organisation einladen",
     "inviteLinkCopied": "Einladungslink kopiert",
     "inviteSent": "Einladung gesendet",
-    "inviteAccepted": "Einladung angenommen"
+    "inviteAccepted": "Einladung angenommen",
+    "virtualNumber": {
+      "label": "Virtuelle Nummer",
+      "hint": "Wähle eine deiner Telefonnummern. Eingehende SMS an diese Nummer erscheinen in deinem Chat.",
+      "none": "Keine Nummer",
+      "loading": "Nummern werden geladen…",
+      "empty": "Keine Nummern verfügbar",
+      "error": "Deine Nummern konnten nicht geladen werden",
+      "assignError": "Diese Nummer konnte nicht gespeichert werden",
+      "assigned": "Nummer zugewiesen",
+      "cleared": "Nummer entfernt"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "SMS werden geladen…",
+      "empty": "Noch keine SMS-Unterhaltungen",
+      "noNumberHint": "Weise eine virtuelle Nummer zu, um hier SMS zu empfangen",
+      "composerPlaceholder": "SMS schreiben…",
+      "sendError": "Diese Nachricht konnte nicht gesendet werden",
+      "you": "Du",
+      "statusSent": "Gesendet",
+      "statusDelivered": "Zugestellt",
+      "statusFailed": "Fehlgeschlagen",
+      "error": "SMS konnten nicht geladen werden"
+    }
   },
   "notesList": {
     "gridOption": {

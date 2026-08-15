@@ -343,7 +343,8 @@
     "getInsights": "Kysy mielialastasi, tavoista tai saa henkilökohtaisia oivalluksia",
     "placeholder": "Chatataan...",
     "error": "Anteeksi, kohtasimme virheen. Yritä uudelleen.",
-    "failedToSend": "Viestin lähettäminen epäonnistui. Yritä uudelleen."
+    "failedToSend": "Viestin lähettäminen epäonnistui. Yritä uudelleen.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Aloita oma Dupip-matkasi",
@@ -927,7 +928,31 @@
     "inviteFriendToOrg": "Kutsu ystävä tähän organisaatioon",
     "inviteLinkCopied": "Kutsulinki kopioitu",
     "inviteSent": "Kutsu lähetetty",
-    "inviteAccepted": "Kutsu hyväksytty"
+    "inviteAccepted": "Kutsu hyväksytty",
+    "virtualNumber": {
+      "label": "Virtuaalinumero",
+      "hint": "Valitse yksi puhelinnumeroistasi. Tähän numeroon saapuvat tekstiviestit näkyvät chatissasi.",
+      "none": "Ei numeroa",
+      "loading": "Ladataan numeroita…",
+      "empty": "Numeroita ei ole saatavilla",
+      "error": "Numeroitasi ei voitu ladata",
+      "assignError": "Tätä numeroa ei voitu tallentaa",
+      "assigned": "Numero liitetty",
+      "cleared": "Numero poistettu"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "Ladataan tekstiviestejä…",
+      "empty": "Ei tekstiviestikeskusteluja vielä",
+      "noNumberHint": "Liitä virtuaalinumero aloittaaksesi tekstiviestien vastaanottamisen täällä",
+      "composerPlaceholder": "Kirjoita tekstiviesti…",
+      "sendError": "Tätä viestiä ei voitu lähettää",
+      "you": "Sinä",
+      "statusSent": "Lähetetty",
+      "statusDelivered": "Toimitettu",
+      "statusFailed": "Epäonnistui",
+      "error": "Tekstiviestejä ei voitu ladata"
+    }
   },
   "notesList": {
     "gridOption": {

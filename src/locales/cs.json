@@ -339,7 +339,8 @@
     "getInsights": "Zeptejte se na svou náladu, zvyky nebo získejte personalizované poznatky",
     "placeholder": "Pojďme si povídat...",
     "error": "Promiňte, narazil jsem na chybu. Zkuste to znovu.",
-    "failedToSend": "Zpráva se nepodařila odeslat. Zkuste to znovu."
+    "failedToSend": "Zpráva se nepodařila odeslat. Zkuste to znovu.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Začněte svou vlastní cestu s Dupip",
@@ -923,7 +924,31 @@
     "inviteFriendToOrg": "Pozvat přítele do této organizace",
     "inviteLinkCopied": "Odkaz pro pozvání zkopírován",
     "inviteSent": "Pozvánka odeslána",
-    "inviteAccepted": "Pozvánka přijata"
+    "inviteAccepted": "Pozvánka přijata",
+    "virtualNumber": {
+      "label": "Virtuální číslo",
+      "hint": "Vyberte si jedno ze svých telefonních čísel. Příchozí SMS na toto číslo se zobrazí ve vašem chatu.",
+      "none": "Žádné číslo",
+      "loading": "Načítání čísel…",
+      "empty": "Žádná dostupná čísla",
+      "error": "Vaše čísla se nepodařilo načíst",
+      "assignError": "Toto číslo se nepodařilo uložit",
+      "assigned": "Číslo přiřazeno",
+      "cleared": "Číslo odebráno"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "Načítání SMS…",
+      "empty": "Zatím žádné SMS konverzace",
+      "noNumberHint": "Přiřaďte virtuální číslo, abyste zde začali přijímat SMS",
+      "composerPlaceholder": "Napište SMS…",
+      "sendError": "Tuto zprávu se nepodařilo odeslat",
+      "you": "Vy",
+      "statusSent": "Odesláno",
+      "statusDelivered": "Doručeno",
+      "statusFailed": "Nezdařilo se",
+      "error": "SMS se nepodařilo načíst"
+    }
   },
   "notesList": {
     "gridOption": {

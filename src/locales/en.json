@@ -940,7 +940,31 @@
     "inviteFriendToOrg": "Invite a friend to this org",
     "inviteLinkCopied": "Invite link copied",
     "inviteSent": "Invite sent",
-    "inviteAccepted": "Invite accepted"
+    "inviteAccepted": "Invite accepted",
+    "virtualNumber": {
+      "label": "Virtual number",
+      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
+      "none": "No number",
+      "loading": "Loading numbers…",
+      "empty": "No numbers available",
+      "error": "Could not load your numbers",
+      "assignError": "Could not save this number",
+      "assigned": "Number assigned",
+      "cleared": "Number cleared"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "Loading SMS…",
+      "empty": "No SMS conversations yet",
+      "noNumberHint": "Assign a virtual number to start receiving SMS here",
+      "composerPlaceholder": "Write an SMS…",
+      "sendError": "Could not send this message",
+      "you": "You",
+      "statusSent": "Sent",
+      "statusDelivered": "Delivered",
+      "statusFailed": "Failed",
+      "error": "Could not load SMS"
+    }
   },
   "notesList": {
     "gridOption": {

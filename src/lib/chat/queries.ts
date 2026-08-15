@@ -239,7 +239,7 @@ export async function getPendingChatInvites(userId: string) {
 }
 
 export async function getUnreadCount(userId: string) {
-  const [channels, dms, pendingInvites] = await Promise.all([
+  const [channels, dms, pendingInvites, smsUnreadCount] = await Promise.all([
     prisma.chatChannel.findMany({
       where: {
         archived: false,
@@ -256,6 +256,7 @@ export async function getUnreadCount(userId: string) {
       select: { id: true },
     }),
     getPendingChatInvites(userId),
+    getSmsUnreadCount(userId),
   ])
 
   const roomCounts = await Promise.all([
@@ -263,7 +264,32 @@ export async function getUnreadCount(userId: string) {
     ...dms.map((conversation) => getUnreadCountForRoom(userId, { dmConversationId: conversation.id })),
   ])
 
-  return roomCounts.reduce((total, count) => total + count, 0) + pendingInvites.length
+  return roomCounts.reduce((total, count) => total + count, 0) + pendingInvites.length + smsUnreadCount
+}
+
+/**
+ * Unread inbound SMS across all of the user's SMS conversations.
+ * Read tracking lives on SmsConversation.lastReadAt (ChatReadState is chat-only).
+ */
+export async function getSmsUnreadCount(userId: string) {
+  const conversations = await prisma.smsConversation.findMany({
+    where: { userId },
+    select: { id: true, lastReadAt: true },
+  })
+
+  const counts = await Promise.all(
+    conversations.map((conversation) =>
+      prisma.smsMessage.count({
+        where: {
+          conversationId: conversation.id,
+          direction: 'INBOUND',
+          ...(conversation.lastReadAt ? { createdAt: { gt: conversation.lastReadAt } } : {})
+        }
+      })
+    )
+  )
+
+  return counts.reduce((total, count) => total + count, 0)
 }
 
 export async function getChatSidebar(userId: string) {
@@ -272,7 +298,7 @@ export async function getChatSidebar(userId: string) {
     orderBy: { createdAt: 'asc' },
   })
   const orgIds = memberships.map((membership) => membership.clerkOrgId)
-  const [orgs, channels, dms, pendingInvites] = await Promise.all([
+  const [orgs, channels, dms, pendingInvites, smsUnreadCount] = await Promise.all([
     getClerkOrganizations(orgIds).catch(() => []),
     prisma.chatChannel.findMany({
       where: { clerkOrgId: { in: orgIds }, archived: false },
@@ -283,6 +309,7 @@ export async function getChatSidebar(userId: string) {
       orderBy: [{ lastMessageAt: 'desc' }, { updatedAt: 'desc' }],
     }),
     getPendingChatInvites(userId),
+    getSmsUnreadCount(userId),
   ])
 
   const orgMeta = new Map((orgs as ClerkOrgSummary[]).map((org) => [org.id, org]))
@@ -330,7 +357,7 @@ export async function getChatSidebar(userId: string) {
 
   return {
     currentUserId: userId,
-    totalUnreadCount: totalUnreadCount + pendingInvites.length,
+    totalUnreadCount: totalUnreadCount + pendingInvites.length + smsUnreadCount,
     messageUnreadCount: totalUnreadCount,
     pendingInvitesCount: pendingInvites.length,
     pendingInvites,

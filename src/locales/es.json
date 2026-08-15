@@ -348,7 +348,8 @@
     "getInsights": "Pregunta sobre tu estado de ánimo, hábitos u obtén insights personalizados",
     "placeholder": "Hablemos...",
     "error": "Lo siento, encontré un error. Por favor, inténtalo de nuevo.",
-    "failedToSend": "Error al enviar mensaje. Por favor, inténtalo de nuevo."
+    "failedToSend": "Error al enviar mensaje. Por favor, inténtalo de nuevo.",
+    "model": "Model"
   },
   "errors": {
     "notFound": "¡Ups! No se pudo sintonizar esta frecuencia.",
@@ -923,7 +924,31 @@
     "inviteFriendToOrg": "Invitar a un amigo a esta organización",
     "inviteLinkCopied": "Enlace de invitación copiado",
     "inviteSent": "Invitación enviada",
-    "inviteAccepted": "Invitación aceptada"
+    "inviteAccepted": "Invitación aceptada",
+    "virtualNumber": {
+      "label": "Número virtual",
+      "hint": "Elige uno de tus números de teléfono. Los SMS entrantes a este número aparecerán en tu chat.",
+      "none": "Sin número",
+      "loading": "Cargando números…",
+      "empty": "No hay números disponibles",
+      "error": "No se pudieron cargar tus números",
+      "assignError": "No se pudo guardar este número",
+      "assigned": "Número asignado",
+      "cleared": "Número eliminado"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "Cargando SMS…",
+      "empty": "Aún no hay conversaciones de SMS",
+      "noNumberHint": "Asigna un número virtual para empezar a recibir SMS aquí",
+      "composerPlaceholder": "Escribe un SMS…",
+      "sendError": "No se pudo enviar este mensaje",
+      "you": "Tú",
+      "statusSent": "Enviado",
+      "statusDelivered": "Entregado",
+      "statusFailed": "Fallido",
+      "error": "No se pudieron cargar los SMS"
+    }
   },
   "notesList": {
     "gridOption": {
