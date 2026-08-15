@@ -126,11 +126,13 @@
         "FRIENDS": "Друзья",
         "CLOSE_FRIENDS": "Близкие друзья",
         "PUBLIC": "Общественность",
-        "AI_ENABLED": "AI Enabled"
+        "AI_ENABLED": "AI Enabled",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Опубликовать заметку",
       "publishing": "Публикация...",
-      "embedHint": "Встроенный контент {provider}. Если воспроизведение недоступно, откройте исходную ссылку ниже."
+      "embedHint": "Встроенный контент {provider}. Если воспроизведение недоступно, откройте исходную ссылку ниже.",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "Третья сторона",
@@ -148,7 +150,9 @@
       "addDelegatedAnalyst": "Добавить делегированного аналитика",
       "adding": "Добавление...",
       "addError": "Не удалось добавить делегированного аналитика",
-      "invitationDraft": "Для этого адреса электронной почты подготовлен черновик приглашения."
+      "invitationDraft": "Для этого адреса электронной почты подготовлен черновик приглашения.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -356,7 +360,8 @@
     "getInsights": "Спрашивайте о своем настроении, привычках или получайте персонализированные инсайты",
     "placeholder": "Давайте поговорим...",
     "error": "Извините, произошла ошибка. Попробуйте еще раз.",
-    "failedToSend": "Не удалось отправить сообщение. Попробуйте еще раз."
+    "failedToSend": "Не удалось отправить сообщение. Попробуйте еще раз.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Начните свое путешествие с Dupip",
@@ -951,5 +956,20 @@
     "saveConsent": "Сохранить согласие",
     "dpipNoValue": "DPIP (Ð) — единица ценности внутри Dupip. Ваш запас растёт со временем вместе с вашей активностью. DPIP не является инвестиционным продуктом и может не иметь денежной ценности — ни сейчас, ни в будущем.",
     "consentDescription": "DPIP (Ð) — единица ценности внутри Dupip. Ваш запас растёт со временем вместе с вашей активностью. DPIP не является инвестиционным продуктом и может не иметь денежной ценности — ни сейчас, ни в будущем. Прежде чем ознакомиться с нашими тарифами, пожалуйста, просмотрите и подтвердите следующее:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

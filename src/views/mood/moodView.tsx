@@ -25,9 +25,11 @@ import {
 } from '@/components/ui/command'
 import { useDebounce } from "@/lib/hooks/useDebounce"
 import { normalizeDelegationScopes } from "@/lib/utils/delegation"
+import { ROLE_KEYS } from "@/lib/constants/roles"
+import type { RoleKey } from "@/lib/constants/roles"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Check, Lock, Users, UserCheck, Globe, Sparkles } from 'lucide-react'
+import { Check, Lock, Users, UserCheck, Globe, Sparkles, FileText } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -206,9 +208,12 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
   const [delegationError, setDelegationError] = useState('')
   const [delegationInfo, setDelegationInfo] = useState('')
   const [isSubmittingDelegation, setIsSubmittingDelegation] = useState(false)
-  // Selectable visibility options for the filter UI (HIDDEN is a system-only state, not user-selectable)
-  const SELECTABLE_NOTE_VISIBILITIES: NoteVisibility[] = ['PRIVATE', 'AI_ENABLED', 'FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC']
-  const [delegationScopes, setDelegationScopes] = useState<NoteVisibility[]>(SELECTABLE_NOTE_VISIBILITIES)
+  // Selectable visibility options for the notes filter (HIDDEN is a system-only state, not user-selectable)
+  const SELECTABLE_NOTE_VISIBILITIES: NoteVisibility[] = ['PRIVATE', 'AI_ENABLED', 'FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC', 'DOC_ENABLED']
+  // Grantable delegation scopes — DOC_ENABLED is not a scope: any delegation unlocks doc notes
+  const GRANTABLE_DELEGATION_SCOPES: NoteVisibility[] = ['PRIVATE', 'AI_ENABLED', 'FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC']
+  const [delegationScopes, setDelegationScopes] = useState<NoteVisibility[]>(GRANTABLE_DELEGATION_SCOPES)
+  const [delegationRoleKeys, setDelegationRoleKeys] = useState<RoleKey[]>([])
   const [notesVisibilityFilter, setNotesVisibilityFilter] = useState<NoteVisibility[]>(SELECTABLE_NOTE_VISIBILITIES)
 
   // Initialize mood contacts from server data
@@ -323,7 +328,7 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
 
   const outgoingDelegations = delegationsData?.outgoingDelegations || []
   const friendSuggestions: FriendSuggestion[] = delegationsData?.friendSuggestions || []
-  const allScopesSelected = delegationScopes.length === SELECTABLE_NOTE_VISIBILITIES.length
+  const allScopesSelected = delegationScopes.length === GRANTABLE_DELEGATION_SCOPES.length
   const minimumOneScopeText = t('mood.thirdParty.minimumOneScope') || MINIMUM_ONE_SCOPE_FALLBACK
   const filteredFriendSuggestions = useMemo(() => {
     const query = delegationIdentifier.trim().toLowerCase()
@@ -511,7 +516,8 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           identifier: delegationIdentifier.trim(),
-          scopes: delegationScopes
+          scopes: delegationScopes,
+          roleKeys: delegationRoleKeys
         })
       })
       const data = await response.json().catch(() => null)
@@ -525,6 +531,7 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
         return
       }
       setDelegationIdentifier('')
+      setDelegationRoleKeys([])
       setIsDelegationSuggestionsOpen(false)
       await mutateDelegations()
     } catch (error) {
@@ -780,6 +787,7 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
                       FRIENDS: <Users className="h-4 w-4" />,
                       CLOSE_FRIENDS: <UserCheck className="h-4 w-4" />,
                       PUBLIC: <Globe className="h-4 w-4" />,
+                      DOC_ENABLED: <FileText className="h-4 w-4" />,
                     }
                     const label = t(`mood.publish.visibility.${v}`) || v
                     return (
@@ -895,7 +903,7 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start">
-                    {SELECTABLE_NOTE_VISIBILITIES.map((visibility) => {
+                    {GRANTABLE_DELEGATION_SCOPES.map((visibility) => {
                       const isSingleSelectedScope = delegationScopes.length === 1 && delegationScopes.includes(visibility)
                       return (
                         <DropdownMenuCheckboxItem
@@ -919,6 +927,33 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
                 </DropdownMenu>
                 <p className="text-xs text-muted-foreground">
                   {t('mood.thirdParty.scopeResolutionHint') || 'If multiple scopes are selected, the broadest selected scope is applied.'}
+                </p>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="justify-start gap-2 w-full sm:w-auto" aria-label={t('mood.thirdParty.roles') || 'Relationship roles'}>
+                      <span className="truncate">
+                        {delegationRoleKeys.length === 0
+                          ? (t('mood.thirdParty.roles') || 'Roles')
+                          : delegationRoleKeys.map(key => t(`roles.${key}`) || key).join(', ')}
+                      </span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start">
+                    {ROLE_KEYS.map((roleKey) => (
+                      <DropdownMenuCheckboxItem
+                        key={roleKey}
+                        checked={delegationRoleKeys.includes(roleKey)}
+                        onCheckedChange={() => {
+                          setDelegationRoleKeys(prev => prev.includes(roleKey) ? prev.filter(item => item !== roleKey) : [...prev, roleKey])
+                        }}
+                      >
+                        {t(`roles.${roleKey}`) || roleKey}
+                      </DropdownMenuCheckboxItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <p className="text-xs text-muted-foreground">
+                  {t('mood.thirdParty.rolesHint') || 'Roles describe your relationship with the delegated analyst (e.g. Doctor, Therapist). Delegates can read your DOC_ENABLED notes.'}
                 </p>
                 {delegationScopes.length === 1 && (
                   <p className="text-xs text-muted-foreground">
@@ -955,6 +990,11 @@ export function MoodView({ timeframe = "day", date: propDate = null, defaultTab 
                       <div>
                         <p className="font-medium">{delegation.delegatedUser?.displayName || delegation.delegatedUser?.userName || delegation.delegatedUser?.email}</p>
                         <p className="text-xs text-muted-foreground">{normalizeDelegationScopes(delegation.scopes, delegation.scope)}</p>
+                        {Array.isArray(delegation.roles) && delegation.roles.length > 0 && (
+                          <p className="text-xs text-muted-foreground">
+                            {(delegation.roles as string[]).map(key => t(`roles.${key}`) || key).join(', ')}
+                          </p>
+                        )}
                       </div>
                       <Button variant="outline" size="sm" onClick={() => handleRemoveDelegation(delegation.id)}>
                         {t('common.remove') || 'Remove'}

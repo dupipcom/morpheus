@@ -129,11 +129,13 @@
         "FRIENDS": "Amigos",
         "CLOSE_FRIENDS": "Amigos próximos",
         "PUBLIC": "Público",
-        "AI_ENABLED": "IA habilitada"
+        "AI_ENABLED": "IA habilitada",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Publicar nota",
       "publishing": "Publicando...",
-      "embedHint": "Inserción de {provider}. Se a reprodución non está dispoñible, abre a ligazón orixinal a continuación."
+      "embedHint": "Inserción de {provider}. Se a reprodución non está dispoñible, abre a ligazón orixinal a continuación.",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "Terceiros",
@@ -151,7 +153,9 @@
       "addDelegatedAnalyst": "Engadir analista delegado",
       "adding": "Engadindo...",
       "addError": "Non se puido engadir o analista delegado",
-      "invitationDraft": "Preparouse un borrador de invitación para este correo electrónico."
+      "invitationDraft": "Preparouse un borrador de invitación para este correo electrónico.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -342,7 +346,8 @@
     "getInsights": "Pregunta sobre o teu estado de ánimo, hábitos ou obtén perspectivas personalizadas",
     "placeholder": "Falemos...",
     "error": "Síntoo, atopei un erro. Por favor, inténtao de novo.",
-    "failedToSend": "Fallou o envío da mensaxe. Por favor, inténtao de novo."
+    "failedToSend": "Fallou o envío da mensaxe. Por favor, inténtao de novo.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Comeza a túa viaxe Dupip",
@@ -954,5 +959,20 @@
     "saveConsent": "Gardar consentimento",
     "dpipNoValue": "DPIP (Ð) é a unidade de valor dentro de Dupip. O teu stash medra co tempo coa túa actividade. DPIP non é un produto de investimento e pode non ter valor monetario — nin agora nin no futuro.",
     "consentDescription": "DPIP (Ð) é a unidade de valor dentro de Dupip. O teu stash medra co tempo coa túa actividade. DPIP non é un produto de investimento e pode non ter valor monetario — nin agora nin no futuro. Antes de ver os nosos plans, revisa e confirma o seguinte:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

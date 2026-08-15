@@ -126,11 +126,13 @@
         "FRIENDS": "Amigos",
         "CLOSE_FRIENDS": "Amigos Próximos",
         "PUBLIC": "Público",
-        "AI_ENABLED": "Habilitado para IA"
+        "AI_ENABLED": "Habilitado para IA",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Publicar Nota",
       "publishing": "Publicando...",
-      "embedHint": "Incorporação de {provider}. Se a reprodução não estiver disponível, abra o link original abaixo."
+      "embedHint": "Incorporação de {provider}. Se a reprodução não estiver disponível, abra o link original abaixo.",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "Terceiros",
@@ -148,7 +150,9 @@
       "addDelegatedAnalyst": "Adicionar analista delegado",
       "adding": "Adicionando...",
       "addError": "Não foi possível adicionar o analista delegado",
-      "invitationDraft": "Rascunho de convite preparado para este e-mail."
+      "invitationDraft": "Rascunho de convite preparado para este e-mail.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -348,7 +352,8 @@
     "getInsights": "Pergunte sobre seu humor, hábitos ou obtenha insights personalizados",
     "placeholder": "Vamos conversar...",
     "error": "Desculpe, encontrei um erro. Tente novamente.",
-    "failedToSend": "Falha ao enviar mensagem. Tente novamente."
+    "failedToSend": "Falha ao enviar mensagem. Tente novamente.",
+    "model": "Model"
   },
   "errors": {
     "notFound": "Ops! Não foi possível sintonizar esta frequência.",
@@ -951,5 +956,20 @@
     "saveConsent": "Salvar consentimento",
     "dpipNoValue": "O DPIP (Ð) é a unidade de valor dentro da Dupip. Seu stash cresce com o tempo junto com sua atividade. O DPIP não é um produto de investimento e pode não ter valor monetário — nem agora, nem no futuro.",
     "consentDescription": "O DPIP (Ð) é a unidade de valor dentro da Dupip. Seu stash cresce com o tempo junto com sua atividade. O DPIP não é um produto de investimento e pode não ter valor monetário — nem agora, nem no futuro. Antes de ver nossos planos, revise e confirme o seguinte:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

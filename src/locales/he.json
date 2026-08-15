@@ -126,11 +126,13 @@
         "FRIENDS": "חברים",
         "CLOSE_FRIENDS": "חברים קרובים",
         "PUBLIC": "ציבורי",
-        "AI_ENABLED": "בינה מלאכותית מופעלת"
+        "AI_ENABLED": "בינה מלאכותית מופעלת",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "פרסם הערה",
       "publishing": "מפרסם...",
-      "embedHint": "הטמעת {provider}. אם ההפעלה אינה זמינה, פתח את הקישור המקורי למטה."
+      "embedHint": "הטמעת {provider}. אם ההפעלה אינה זמינה, פתח את הקישור המקורי למטה.",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "צד שלישי",
@@ -148,7 +150,9 @@
       "addDelegatedAnalyst": "הוסף אנליסט מואצל",
       "adding": "מוסיף...",
       "addError": "לא ניתן היה להוסיף אנליסט מואצל",
-      "invitationDraft": "הוכנה טיוטת הזמנה עבור כתובת האימייל הזו."
+      "invitationDraft": "הוכנה טיוטת הזמנה עבור כתובת האימייל הזו.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -339,7 +343,8 @@
     "getInsights": "שאל על מצב הרוח שלך, הרגלים או קבל תובנות מותאמות אישית",
     "placeholder": "בואו נשוחח...",
     "error": "סליחה, נתקלתי בשגיאה. אנא נסה שוב.",
-    "failedToSend": "שליחת הודעה נכשלה. אנא נסה שוב."
+    "failedToSend": "שליחת הודעה נכשלה. אנא נסה שוב.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "התחל את המסע שלך עם Dupip",
@@ -951,5 +956,20 @@
     "saveConsent": "שמירת הסכמה",
     "dpipNoValue": "DPIP (Ð) הוא יחידת הערך בתוך דופיפ. המאגר שלך גדל עם הזמן יחד עם הפעילות שלך. DPIP אינו מוצר השקעה וייתכן שאין לו ערך כספי — לא עכשיו ולא בעתיד.",
     "consentDescription": "DPIP (Ð) הוא יחידת הערך בתוך דופיפ. המאגר שלך גדל עם הזמן יחד עם הפעילות שלך. DPIP אינו מוצר השקעה וייתכן שאין לו ערך כספי — לא עכשיו ולא בעתיד. לפני הצגת התוכניות שלנו, אנא עיינו ואשרו את הדברים הבאים:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

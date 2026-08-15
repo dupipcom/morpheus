@@ -126,11 +126,13 @@
         "FRIENDS": "Amis",
         "CLOSE_FRIENDS": "Amis Proches",
         "PUBLIC": "Public",
-        "AI_ENABLED": "Activé par IA"
+        "AI_ENABLED": "Activé par IA",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Publier la Note",
       "publishing": "Publication...",
-      "embedHint": "Intégration {provider}. Si la lecture n'est pas disponible, ouvrez le lien original ci-dessous."
+      "embedHint": "Intégration {provider}. Si la lecture n'est pas disponible, ouvrez le lien original ci-dessous.",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "Tiers",
@@ -148,7 +150,9 @@
       "addDelegatedAnalyst": "Ajouter un analyste délégué",
       "adding": "Ajout en cours...",
       "addError": "Impossible d'ajouter l'analyste délégué",
-      "invitationDraft": "Un brouillon d'invitation a été préparé pour cet e-mail."
+      "invitationDraft": "Un brouillon d'invitation a été préparé pour cet e-mail.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -348,7 +352,8 @@
     "getInsights": "Demandez des informations sur votre humeur, vos habitudes ou obtenez des insights personnalisés",
     "placeholder": "Discutons...",
     "error": "Désolé, j'ai rencontré une erreur. Veuillez réessayer.",
-    "failedToSend": "Échec de l'envoi du message. Veuillez réessayer."
+    "failedToSend": "Échec de l'envoi du message. Veuillez réessayer.",
+    "model": "Model"
   },
   "errors": {
     "notFound": "Oups ! Impossible de s'accorder sur cette fréquence.",
@@ -951,5 +956,20 @@
     "saveConsent": "Enregistrer le consentement",
     "dpipNoValue": "Le DPIP (Ð) est l’unité de valeur au sein de Dupip. Votre réserve grandit au fil du temps avec votre activité. Le DPIP n’est pas un produit d’investissement et peut ne pas avoir de valeur monétaire — ni maintenant ni à l’avenir.",
     "consentDescription": "Le DPIP (Ð) est l’unité de valeur au sein de Dupip. Votre réserve grandit au fil du temps avec votre activité. Le DPIP n’est pas un produit d’investissement et peut ne pas avoir de valeur monétaire — ni maintenant ni à l’avenir. Avant de consulter nos offres, veuillez examiner et confirmer ce qui suit :"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

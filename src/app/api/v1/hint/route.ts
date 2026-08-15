@@ -75,6 +75,9 @@ function resolveDelegationVisibilityAccess(scope: string): DelegationVisibilityA
       return { kind: 'restricted', visibilities: ['PUBLIC', 'CLOSE_FRIENDS'] }
     case 'FRIENDS':
       return { kind: 'restricted', visibilities: ['PUBLIC', 'FRIENDS', 'CLOSE_FRIENDS'] }
+    case 'DOC_ENABLED':
+      // Defensive: DOC_ENABLED is not a grantable scope; least privilege = no days
+      return { kind: 'restricted', visibilities: [] }
     default:
       return { kind: 'invalid' }
   }

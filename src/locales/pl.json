@@ -130,11 +130,13 @@
         "FRIENDS": "Przyjaciele",
         "CLOSE_FRIENDS": "Bliscy przyjaciele",
         "PUBLIC": "Publiczny",
-        "AI_ENABLED": "Obsługiwane przez sztuczną inteligencję"
+        "AI_ENABLED": "Obsługiwane przez sztuczną inteligencję",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Opublikuj notatkę",
       "publishing": "Publikowanie...",
-      "embedHint": "Osadzenie {provider}. Jeśli odtwarzanie jest niedostępne, otwórz oryginalny link poniżej."
+      "embedHint": "Osadzenie {provider}. Jeśli odtwarzanie jest niedostępne, otwórz oryginalny link poniżej.",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "Strona trzecia",
@@ -152,7 +154,9 @@
       "addDelegatedAnalyst": "Dodaj delegowanego analityka",
       "adding": "Dodawanie...",
       "addError": "Nie udało się dodać delegowanego analityka",
-      "invitationDraft": "Przygotowano szkic zaproszenia dla tego adresu e-mail."
+      "invitationDraft": "Przygotowano szkic zaproszenia dla tego adresu e-mail.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -360,7 +364,8 @@
     "getInsights": "Zapytaj o swój nastrój, nawyki lub uzyskaj spersonalizowane spostrzeżenia",
     "placeholder": "Porozmawiajmy...",
     "error": "Przepraszam, napotkałem błąd. Spróbuj ponownie.",
-    "failedToSend": "Nie udało się wysłać wiadomości. Spróbuj ponownie."
+    "failedToSend": "Nie udało się wysłać wiadomości. Spróbuj ponownie.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Rozpocznij swoją przygodę z Dupip",
@@ -955,5 +960,20 @@
     "saveConsent": "Zapisz zgodę",
     "dpipNoValue": "DPIP (Ð) to jednostka wartości w Dupip. Twój stash rośnie z czasem wraz z Twoją aktywnością. DPIP nie jest produktem inwestycyjnym i może nie mieć wartości pieniężnej — ani teraz, ani w przyszłości.",
     "consentDescription": "DPIP (Ð) to jednostka wartości w Dupip. Twój stash rośnie z czasem wraz z Twoją aktywnością. DPIP nie jest produktem inwestycyjnym i może nie mieć wartości pieniężnej — ani teraz, ani w przyszłości. Zanim zobaczysz nasze plany, zapoznaj się z poniższym i potwierdź:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

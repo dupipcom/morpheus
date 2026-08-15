@@ -126,11 +126,13 @@
         "FRIENDS": "Vrienden",
         "CLOSE_FRIENDS": "Dichte vrienden",
         "PUBLIC": "Openbaar",
-        "AI_ENABLED": "AI-ingeschakeld"
+        "AI_ENABLED": "AI-ingeschakeld",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Publiceer notitie",
       "publishing": "Publiceren...",
-      "embedHint": "{provider}-insluiting. Als afspelen niet beschikbaar is, open dan de originele link hieronder."
+      "embedHint": "{provider}-insluiting. Als afspelen niet beschikbaar is, open dan de originele link hieronder.",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "Derde partij",
@@ -148,7 +150,9 @@
       "addDelegatedAnalyst": "Gedelegeerde analist toevoegen",
       "adding": "Toevoegen...",
       "addError": "Gedelegeerde analist kon niet worden toegevoegd",
-      "invitationDraft": "Er is een uitnodigingsconcept voorbereid voor dit e-mailadres."
+      "invitationDraft": "Er is een uitnodigingsconcept voorbereid voor dit e-mailadres.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -339,7 +343,8 @@
     "getInsights": "Vraag over je stemming, gewoonten of krijg gepersonaliseerde inzichten",
     "placeholder": "Laten we chatten...",
     "error": "Sorry, ik ben een fout tegengekomen. Probeer opnieuw.",
-    "failedToSend": "Bericht verzenden mislukt. Probeer opnieuw."
+    "failedToSend": "Bericht verzenden mislukt. Probeer opnieuw.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Begin je eigen Dupip reis",
@@ -951,5 +956,20 @@
     "saveConsent": "Toestemming opslaan",
     "dpipNoValue": "DPIP (Ð) is de waarde-eenheid binnen Dupip. Je stash groeit in de loop van de tijd met je activiteit. DPIP is geen beleggingsproduct en heeft mogelijk geen geldelijke waarde — nu niet en in de toekomst niet.",
     "consentDescription": "DPIP (Ð) is de waarde-eenheid binnen Dupip. Je stash groeit in de loop van de tijd met je activiteit. DPIP is geen beleggingsproduct en heeft mogelijk geen geldelijke waarde — nu niet en in de toekomst niet. Bekijk en bevestig het volgende voordat je onze abonnementen ziet:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

@@ -126,11 +126,13 @@
         "FRIENDS": "Àwọn ọ̀rẹ́",
         "CLOSE_FRIENDS": "Àwọn ọ̀rẹ́ tímọ́tímọ́",
         "PUBLIC": "Gbogbo ènìyàn",
-        "AI_ENABLED": "AI tí ó ń ṣiṣẹ́"
+        "AI_ENABLED": "AI tí ó ń ṣiṣẹ́",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Tẹ àkọsílẹ̀ jáde",
       "publishing": "Nigbagbọgbọ...",
-      "embedHint": "Ifibọ {provider}. Ti ifaworanhan ko ba ṣeeṣe, ṣii ọna asopọ atilẹba ni isalẹ."
+      "embedHint": "Ifibọ {provider}. Ti ifaworanhan ko ba ṣeeṣe, ṣii ọna asopọ atilẹba ni isalẹ.",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "Ẹgbẹ́ kẹta",
@@ -148,7 +150,9 @@
       "addDelegatedAnalyst": "Ṣafikun olùtúpalẹ aṣojú",
       "adding": "Ń ṣafikun...",
       "addError": "Kò le ṣafikun olùtúpalẹ aṣojú",
-      "invitationDraft": "A ti pèsè àkọsílẹ ìpè fún ímeèlì yìí."
+      "invitationDraft": "A ti pèsè àkọsílẹ ìpè fún ímeèlì yìí.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -346,7 +350,8 @@
     "getInsights": "Béèrè nípa ìwà rẹ̀, àwọn ìhùwà rẹ̀ tàbí gba ìmọ̀ tí ó jẹ́ ti ara rẹ̀",
     "placeholder": "Jẹ́ ká sọrọ...",
     "error": "Ẹ má bínú, mo rí àṣìṣe kan. Jọwọ gbìyànjú lẹ́ẹ̀kan sí i.",
-    "failedToSend": "Kò lè rán ìròyìn. Jọwọ gbìyànjú lẹ́ẹ̀kan sí i."
+    "failedToSend": "Kò lè rán ìròyìn. Jọwọ gbìyànjú lẹ́ẹ̀kan sí i.",
+    "model": "Model"
   },
   "errors": {
     "notFound": "Ops! Kò le tọ́ ìwọ̀n yìí.",
@@ -949,5 +954,20 @@
     "saveConsent": "Fipamọ ifọwọsi",
     "dpipNoValue": "DPIP (Ð) ni ẹyọ iye inu Dupip. Ibi ipamọ rẹ n dagba pẹlu akoko pẹlu iṣẹ rẹ. DPIP kii ṣe ọja idoko-owo ati pe o le ma ni iye owo kankan — ni bayi tabi ni ọjọ iwaju.",
     "consentDescription": "DPIP (Ð) ni ẹyọ iye inu Dupip. Ibi ipamọ rẹ n dagba pẹlu akoko pẹlu iṣẹ rẹ. DPIP kii ṣe ọja idoko-owo ati pe o le ma ni iye owo kankan — ni bayi tabi ni ọjọ iwaju. Ṣaaju wiwo awọn eto wa, jọwọ ṣayẹwo ki o jẹrisi atẹle naa:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

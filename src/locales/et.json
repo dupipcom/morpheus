@@ -126,11 +126,13 @@
         "FRIENDS": "Sõbrad",
         "CLOSE_FRIENDS": "Lähedased sõbrad",
         "PUBLIC": "Avalik",
-        "AI_ENABLED": "AI lubatud"
+        "AI_ENABLED": "AI lubatud",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Avalda märkme",
       "publishing": "Avaldamine...",
-      "embedHint": "{provider} manustus. Kui taasesitus pole saadaval, ava allpool olev algne link."
+      "embedHint": "{provider} manustus. Kui taasesitus pole saadaval, ava allpool olev algne link.",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "Kolmas osapool",
@@ -148,7 +150,9 @@
       "addDelegatedAnalyst": "Lisa delegeeritud analüütik",
       "adding": "Lisamine...",
       "addError": "Delegeeritud analüütiku lisamine ei õnnestunud",
-      "invitationDraft": "Selle e-posti jaoks valmis kutse mustand."
+      "invitationDraft": "Selle e-posti jaoks valmis kutse mustand.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -339,7 +343,8 @@
     "getInsights": "Küsi oma tuju, harjumuste kohta või saa personaliseeritud teadmisi",
     "placeholder": "Räägime...",
     "error": "Vabandust, kohtasin viga. Palun proovi uuesti.",
-    "failedToSend": "Sõnumi saatmine ebaõnnestus. Palun proovi uuesti."
+    "failedToSend": "Sõnumi saatmine ebaõnnestus. Palun proovi uuesti.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Alusta oma Dupip teekonda",
@@ -951,5 +956,20 @@
     "saveConsent": "Salvesta nõusolek",
     "dpipNoValue": "DPIP (Ð) on väärtusühik Dupipis. Sinu stash kasvab aja jooksul koos sinu tegevusega. DPIP ei ole investeerimistoode ja sellel ei pruugi olla rahalist väärtust — ei praegu ega tulevikus.",
     "consentDescription": "DPIP (Ð) on väärtusühik Dupipis. Sinu stash kasvab aja jooksul koos sinu tegevusega. DPIP ei ole investeerimistoode ja sellel ei pruugi olla rahalist väärtust — ei praegu ega tulevikus. Enne meie pakettide vaatamist palun vaata üle ja kinnita järgmine:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

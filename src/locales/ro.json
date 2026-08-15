@@ -126,11 +126,13 @@
         "FRIENDS": "Prieteni",
         "CLOSE_FRIENDS": "Prieteni apropiați",
         "PUBLIC": "Public",
-        "AI_ENABLED": "AI activat"
+        "AI_ENABLED": "AI activat",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Publică nota",
       "publishing": "Publicare...",
-      "embedHint": "Incorporare {provider}. Dacă redarea nu este disponibilă, deschide linkul original de mai jos."
+      "embedHint": "Incorporare {provider}. Dacă redarea nu este disponibilă, deschide linkul original de mai jos.",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "Terță parte",
@@ -148,7 +150,9 @@
       "addDelegatedAnalyst": "Adaugă analist delegat",
       "adding": "Se adaugă...",
       "addError": "Nu s-a putut adăuga analistul delegat",
-      "invitationDraft": "A fost pregătit un draft de invitație pentru acest e-mail."
+      "invitationDraft": "A fost pregătit un draft de invitație pentru acest e-mail.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -339,7 +343,8 @@
     "getInsights": "Întreabă despre dispoziția ta, obiceiuri sau obține perspective personalizate",
     "placeholder": "Să vorbim...",
     "error": "Îmi pare rău, am întâlnit o eroare. Te rog încearcă din nou.",
-    "failedToSend": "Trimiterea mesajului a eșuat. Te rog încearcă din nou."
+    "failedToSend": "Trimiterea mesajului a eșuat. Te rog încearcă din nou.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Începe-ți propria călătorie Dupip",
@@ -951,5 +956,20 @@
     "saveConsent": "Salvează consimțământul",
     "dpipNoValue": "DPIP (Ð) este unitatea de valoare din interiorul Dupip. Stash-ul tău crește în timp odată cu activitatea ta. DPIP nu este un produs de investiții și poate să nu aibă valoare monetară — nici acum, nici în viitor.",
     "consentDescription": "DPIP (Ð) este unitatea de valoare din interiorul Dupip. Stash-ul tău crește în timp odată cu activitatea ta. DPIP nu este un produs de investiții și poate să nu aibă valoare monetară — nici acum, nici în viitor. Înainte de a vedea planurile noastre, te rugăm să verifici și să confirmi următoarele:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

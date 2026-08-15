@@ -126,11 +126,13 @@
         "FRIENDS": "Abokai",
         "CLOSE_FRIENDS": "Abokai na kusa",
         "PUBLIC": "Jama'a",
-        "AI_ENABLED": "AI Ana Kunna"
+        "AI_ENABLED": "AI Ana Kunna",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Buga Bayani",
       "publishing": "Ana bugawa...",
-      "embedHint": "Shigar {provider}. Idan sake kunna ba shi da amfani, buɗe haɗin asali a ƙasa."
+      "embedHint": "Shigar {provider}. Idan sake kunna ba shi da amfani, buɗe haɗin asali a ƙasa.",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "Na ɓangare na uku",
@@ -148,7 +150,9 @@
       "addDelegatedAnalyst": "Ƙara manazarcin da aka wakilta",
       "adding": "Ana ƙara...",
       "addError": "Ba a iya ƙara manazarcin da aka wakilta ba",
-      "invitationDraft": "An shirya daftarin gayyata don wannan imel."
+      "invitationDraft": "An shirya daftarin gayyata don wannan imel.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -345,7 +349,8 @@
     "getInsights": "Tambayi game da yanayin zuciyarka, halaye ko sami fahimta ta keɓance",
     "placeholder": "Mu yi magana...",
     "error": "Yi hakuri, na sami kuskure. Don Allah sake gwadawa.",
-    "failedToSend": "Aika saƙo ya gaza. Don Allah sake gwadawa."
+    "failedToSend": "Aika saƙo ya gaza. Don Allah sake gwadawa.",
+    "model": "Model"
   },
   "errors": {
     "notFound": "Ops! Ba za a iya samun wannan mitar ba.",
@@ -948,5 +953,20 @@
     "saveConsent": "Ajiye yarjejeniya",
     "dpipNoValue": "DPIP (Ð) ita ce ma’aunin ƙima a cikin Dupip. Ajiyarku na ƙaruwa tare da lokaci tare da ayyukanku. DPIP ba kayan saka jari ba ne kuma mai yiwuwa ba ta da ƙimar kuɗi — a yanzu ko a nan gaba.",
     "consentDescription": "DPIP (Ð) ita ce ma’aunin ƙima a cikin Dupip. Ajiyarku na ƙaruwa tare da lokaci tare da ayyukanku. DPIP ba kayan saka jari ba ne kuma mai yiwuwa ba ta da ƙimar kuɗi — a yanzu ko a nan gaba. Kafin duba shirye-shiryenmu, don Allah sake dubawa da tabbatar da wannan:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

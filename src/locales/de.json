@@ -126,11 +126,13 @@
         "FRIENDS": "Freunde",
         "CLOSE_FRIENDS": "Enge Freunde",
         "PUBLIC": "Öffentlich",
-        "AI_ENABLED": "KI-aktiviert"
+        "AI_ENABLED": "KI-aktiviert",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Notiz veröffentlichen",
       "publishing": "Veröffentlichen...",
-      "embedHint": "{provider}-Einbettung. Falls die Wiedergabe nicht verfügbar ist, öffne den Originallink unten."
+      "embedHint": "{provider}-Einbettung. Falls die Wiedergabe nicht verfügbar ist, öffne den Originallink unten.",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "Drittanbieter",
@@ -148,7 +150,9 @@
       "addDelegatedAnalyst": "Delegierten Analysten hinzufügen",
       "adding": "Wird hinzugefügt...",
       "addError": "Delegierter Analyst konnte nicht hinzugefügt werden",
-      "invitationDraft": "Ein Einladungsentwurf für diese E-Mail wurde vorbereitet."
+      "invitationDraft": "Ein Einladungsentwurf für diese E-Mail wurde vorbereitet.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -348,7 +352,8 @@
     "getInsights": "Fragen Sie nach Ihrer Stimmung, Gewohnheiten oder erhalten Sie personalisierte Einblicke",
     "placeholder": "Lassen Sie uns chatten...",
     "error": "Entschuldigung, ich bin auf einen Fehler gestoßen. Bitte versuchen Sie es erneut.",
-    "failedToSend": "Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es erneut."
+    "failedToSend": "Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es erneut.",
+    "model": "Model"
   },
   "errors": {
     "notFound": "Ops! Could not tune to this frequency.",
@@ -951,5 +956,20 @@
     "saveConsent": "Einwilligung speichern",
     "dpipNoValue": "DPIP (Ð) ist die Werteinheit innerhalb von Dupip. Dein Stash wächst mit der Zeit durch deine Aktivität. DPIP ist kein Anlageprodukt und hat möglicherweise keinen Geldwert — weder jetzt noch in Zukunft.",
     "consentDescription": "DPIP (Ð) ist die Werteinheit innerhalb von Dupip. Dein Stash wächst mit der Zeit durch deine Aktivität. DPIP ist kein Anlageprodukt und hat möglicherweise keinen Geldwert — weder jetzt noch in Zukunft. Bevor du unsere Pläne siehst, lies bitte und bestätige Folgendes:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

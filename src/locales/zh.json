@@ -126,11 +126,13 @@
         "FRIENDS": "朋友",
         "CLOSE_FRIENDS": "亲密朋友",
         "PUBLIC": "公众",
-        "AI_ENABLED": "支持人工智能"
+        "AI_ENABLED": "支持人工智能",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "出版说明",
       "publishing": "发布中...",
-      "embedHint": "{provider} 嵌入。如果无法播放，请点击下方原始链接。"
+      "embedHint": "{provider} 嵌入。如果无法播放，请点击下方原始链接。",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "第三方",
@@ -148,7 +150,9 @@
       "addDelegatedAnalyst": "添加委托分析员",
       "adding": "正在添加...",
       "addError": "无法添加委托分析员",
-      "invitationDraft": "已为该邮箱准备邀请草稿。"
+      "invitationDraft": "已为该邮箱准备邀请草稿。",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -348,7 +352,8 @@
     "getInsights": "询问您的心情、习惯或获取个性化洞察",
     "placeholder": "让我们聊天...",
     "error": "抱歉，我遇到了错误。请重试。",
-    "failedToSend": "发送消息失败。请重试。"
+    "failedToSend": "发送消息失败。请重试。",
+    "model": "Model"
   },
   "errors": {
     "notFound": "哎呀！无法调谐到此频率。",
@@ -951,5 +956,20 @@
     "saveConsent": "保存同意",
     "dpipNoValue": "DPIP（Ð）是 Dupip 内部的价值单位。你的储备会随着你的活动随时间增长。DPIP 不是投资产品，可能没有货币价值——无论是现在还是将来。",
     "consentDescription": "DPIP（Ð）是 Dupip 内部的价值单位。你的储备会随着你的活动随时间增长。DPIP 不是投资产品，可能没有货币价值——无论是现在还是将来。 在查看我们的方案之前，请阅读并确认以下内容："
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }
