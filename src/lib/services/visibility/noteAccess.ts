@@ -6,8 +6,10 @@
  * PRIVATE-scope delegate).
  */
 
-import { resolveEffectiveDelegationScope } from '@/lib/utils/delegation'
+import { getDelegationScopes } from '@/lib/utils/delegation'
 import type { NoteVisibility } from '@/generated/prisma/client'
+
+const SCOPE_PRIORITY = ['PRIVATE', 'AI_ENABLED', 'FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC', 'DOC_ENABLED'] as const
 
 /**
  * Note-visibility allow-list for a delegation scope.
@@ -35,13 +37,31 @@ export function getNoteVisibilitiesForScope(scope: string): NoteVisibility[] | u
 
 /**
  * Resolve a delegation (raw scopes + legacy fallback scope) into the note
- * visibility allow-list the delegate may read.
+ * visibility allow-list the delegate may read. Union semantics: all granted
+ * scopes contribute their allowed visibilities. If any scope grants full
+ * access (PRIVATE), undefined is returned (no filter = full access).
  */
 export function resolveNoteVisibilityFilter(
   scopes: string[] | null | undefined,
   fallbackScope?: string | null
 ): NoteVisibility[] | undefined {
-  const effective = resolveEffectiveDelegationScope(scopes, fallbackScope)
-  if (!effective) return undefined
-  return getNoteVisibilitiesForScope(effective)
+  const delegationScopes = getDelegationScopes(scopes, fallbackScope)
+  if (delegationScopes.length === 0) return undefined
+
+  // Process scopes in priority order for deterministic output
+  const sortedScopes = [...delegationScopes].sort(
+    (a, b) => SCOPE_PRIORITY.indexOf(a as typeof SCOPE_PRIORITY[number]) - SCOPE_PRIORITY.indexOf(b as typeof SCOPE_PRIORITY[number])
+  )
+
+  const allVisibilities = new Set<NoteVisibility>()
+  for (const scope of sortedScopes) {
+    const scopeVisibilities = getNoteVisibilitiesForScope(scope)
+    if (scopeVisibilities === undefined) {
+      return undefined
+    }
+    for (const v of scopeVisibilities) {
+      allVisibilities.add(v)
+    }
+  }
+  return Array.from(allVisibilities)
 }

@@ -2,7 +2,8 @@ import { NextRequest } from 'next/server';
 import { auth } from '@clerk/nextjs/server'
 import prisma from "@/lib/prisma";
 import { getWeekNumber } from '@/app/helpers'
-import { getDelegationScopes, resolveEffectiveDelegationScope } from '@/lib/utils/delegation'
+import { getDelegationScopes } from '@/lib/utils/delegation'
+import { resolveNoteVisibilityFilter } from '@/lib/services/visibility/noteAccess'
 import { z } from 'zod'
 import { DEEPSEEK_CHAT_MODEL, getDeepseekOpenAI } from '@/lib/deepseek'
 import {
@@ -11,7 +12,9 @@ import {
   buildDayWhere,
   buildHintMessages,
   buildRagForQuery,
+  chunkNotes,
   compactDay,
+  fetchCompactNotes,
   HINT_ANALYSIS_KEYS
 } from '@/lib/services/agent'
 import type { AgentDayRecord, CompactDay } from '@/lib/services/agent'
@@ -64,23 +67,36 @@ type DelegationVisibilityAccess =
   | { kind: 'restricted'; visibilities: Array<'PUBLIC' | 'FRIENDS' | 'CLOSE_FRIENDS'> }
   | { kind: 'invalid' }
 
-function resolveDelegationVisibilityAccess(scope: string): DelegationVisibilityAccess {
-  switch (scope) {
-    case 'PRIVATE':
-    case 'AI_ENABLED':
-      return { kind: 'full' }
-    case 'PUBLIC':
-      return { kind: 'restricted', visibilities: ['PUBLIC'] }
-    case 'CLOSE_FRIENDS':
-      return { kind: 'restricted', visibilities: ['PUBLIC', 'CLOSE_FRIENDS'] }
-    case 'FRIENDS':
-      return { kind: 'restricted', visibilities: ['PUBLIC', 'FRIENDS', 'CLOSE_FRIENDS'] }
-    case 'DOC_ENABLED':
-      // Defensive: DOC_ENABLED is not a grantable scope; least privilege = no days
-      return { kind: 'restricted', visibilities: [] }
-    default:
-      return { kind: 'invalid' }
+function resolveDelegationVisibilityAccess(scopes: string[]): DelegationVisibilityAccess {
+  if (scopes.length === 0) return { kind: 'invalid' }
+
+  const allVisibilities = new Set<'PUBLIC' | 'FRIENDS' | 'CLOSE_FRIENDS'>()
+  for (const scope of scopes) {
+    switch (scope) {
+      case 'PRIVATE':
+      case 'AI_ENABLED':
+        return { kind: 'full' }
+      case 'PUBLIC':
+        allVisibilities.add('PUBLIC')
+        break
+      case 'CLOSE_FRIENDS':
+        allVisibilities.add('PUBLIC')
+        allVisibilities.add('CLOSE_FRIENDS')
+        break
+      case 'FRIENDS':
+        allVisibilities.add('PUBLIC')
+        allVisibilities.add('FRIENDS')
+        allVisibilities.add('CLOSE_FRIENDS')
+        break
+      case 'DOC_ENABLED':
+        // Defensive: DOC_ENABLED is not a grantable scope; grants no day access
+        break
+      default:
+        // Skip unrecognized scopes rather than discarding accumulated access
+        break
+    }
   }
+  return { kind: 'restricted', visibilities: Array.from(allVisibilities) }
 }
 
 /**
@@ -167,6 +183,7 @@ export async function GET(req: NextRequest) {
 
   const targetUserId = requestedUserId || requestingUser.id
   let delegationAccess: DelegationVisibilityAccess = { kind: 'full' }
+  let noteVisibilityFilter: ReturnType<typeof resolveNoteVisibilityFilter> = undefined
 
   if (targetUserId !== requestingUser.id) {
     const delegation = await prisma.delegation.findUnique({
@@ -184,16 +201,17 @@ export async function GET(req: NextRequest) {
     }
 
     const delegationScopes = getDelegationScopes(delegation.scopes, delegation.scope)
-    const delegationScope = resolveEffectiveDelegationScope(delegationScopes, delegation.scope)
 
-    if (!delegationScope) {
+    if (delegationScopes.length === 0) {
       return Response.json({ error: 'Delegation exists but has no valid scope configured' }, { status: 403 })
     }
 
-    delegationAccess = resolveDelegationVisibilityAccess(delegationScope)
+    delegationAccess = resolveDelegationVisibilityAccess(delegationScopes)
     if (delegationAccess.kind === 'invalid') {
       return Response.json({ error: 'Delegation scope contains an unrecognized value' }, { status: 403 })
     }
+
+    noteVisibilityFilter = resolveNoteVisibilityFilter(delegation.scopes, delegation.scope)
   }
 
   const targetUser = await prisma.user.findUnique({
@@ -247,10 +265,21 @@ export async function GET(req: NextRequest) {
       const startDate = compactDays.length > 0 ? compactDays[0].date : date
       const endDate = compactDays.length > 0 ? compactDays[compactDays.length - 1].date : date
 
+      const compactNotes = await fetchCompactNotes({
+        targetUserId: targetUser.id,
+        userLabel: targetUserId === requestingUser.id ? 'you' : 'the delegated user',
+        startDate,
+        endDate,
+        dimensions,
+        noteVisibilityFilter,
+        isRestricted: delegationAccess.kind !== 'full'
+      })
+
       const rag = await buildRagForQuery(compactDays, HINT_QUERY, {
         dimensions,
         userChunkTopK: 12,
-        docChunkTopK: 4
+        docChunkTopK: 4,
+        noteChunks: chunkNotes(compactNotes)
       })
 
       const parsedOutput = await generateHintAnalysis(

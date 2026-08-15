@@ -41,13 +41,17 @@ test('DOC_ENABLED scope is defensive least privilege: doc notes only', () => {
   assert.deepEqual(getNoteVisibilitiesForScope('DOC_ENABLED'), ['DOC_ENABLED'])
 })
 
-test('resolveNoteVisibilityFilter uses the broadest granted scope', () => {
+test('resolveNoteVisibilityFilter uses union of all granted scopes', () => {
   assert.deepEqual(resolveNoteVisibilityFilter(['PUBLIC', 'FRIENDS'], null), [
     'FRIENDS',
     'CLOSE_FRIENDS',
     'PUBLIC',
     'DOC_ENABLED'
   ])
+})
+
+test('resolveNoteVisibilityFilter returns full access when PRIVATE is among scopes', () => {
+  assert.equal(resolveNoteVisibilityFilter(['PRIVATE', 'DOC_ENABLED', 'AI_ENABLED'], null), undefined)
 })
 
 test('resolveNoteVisibilityFilter falls back to the legacy scope field', () => {
