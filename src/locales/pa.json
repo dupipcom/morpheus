@@ -931,7 +931,7 @@
     "inviteAccepted": "ਸੱਦਾ ਸਵੀਕਾਰ ਕੀਤਾ ਗਿਆ",
     "virtualNumber": {
       "label": "ਵਰਚੁਅਲ ਨੰਬਰ",
-      "hint": "ਆਪਣੇ ਫ਼ੋਨ ਨੰਬਰਾਂ ਵਿੱਚੋਂ ਇੱਕ ਚੁਣੋ। ਇਸ ਨੰਬਰ ’ਤੇ ਆਉਣ ਵਾਲੇ SMS ਤੁਹਾਡੀ ਚੈਟ ਵਿੱਚ ਦਿਖਾਈ ਦੇਣਗੇ।",
+      "hint": "ਆਪਣੇ ਫ਼ੋਨ ਨੰਬਰ ਚੁਣੋ। ਇਨ੍ਹਾਂ ਨੰਬਰਾਂ ’ਤੇ ਆਉਣ ਵਾਲੇ SMS ਤੁਹਾਡੀ ਚੈਟ ਵਿੱਚ ਦਿਖਾਈ ਦੇਣਗੇ।",
       "none": "ਕੋਈ ਨੰਬਰ ਨਹੀਂ",
       "loading": "ਨੰਬਰ ਲੋਡ ਹੋ ਰਹੇ ਹਨ…",
       "empty": "ਕੋਈ ਨੰਬਰ ਉਪਲਬਧ ਨਹੀਂ",
@@ -939,15 +939,15 @@
       "assignError": "ਇਹ ਨੰਬਰ ਸੰਭਾਲਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ",
       "assigned": "ਨੰਬਰ ਨਿਰਧਾਰਤ ਕੀਤਾ ਗਿਆ",
       "cleared": "ਨੰਬਰ ਹਟਾਇਆ ਗਿਆ",
-      "addNumber": "Add number…",
-      "removeNumber": "Remove number",
-      "quotaLabel": "{used} of {quota} numbers used",
-      "limitReached": "You have reached the maximum number of virtual numbers for your plan",
-      "buyCta": "Buy virtual number",
-      "gateHint": "Virtual numbers require a Donator plan. Buy a number to receive SMS in chat.",
-      "buyDialogTitle": "Donator plan required",
-      "buyDialogDescription": "Virtual numbers are included with the Donator plans. Choose a plan on the pricing page to get started.",
-      "buyDialogGoToPricing": "Go to pricing"
+      "addNumber": "ਨੰਬਰ ਜੋੜੋ…",
+      "removeNumber": "ਨੰਬਰ ਹਟਾਓ",
+      "quotaLabel": "{quota} ਵਿੱਚੋਂ {used} ਨੰਬਰ ਵਰਤੇ ਗਏ",
+      "limitReached": "ਤੁਸੀਂ ਆਪਣੇ ਪਲਾਨ ਦੇ ਵਰਚੁਅਲ ਨੰਬਰਾਂ ਦੀ ਵੱਧ ਤੋਂ ਵੱਧ ਗਿਣਤੀ ’ਤੇ ਪਹੁੰਚ ਗਏ ਹੋ",
+      "buyCta": "ਵਰਚੁਅਲ ਨੰਬਰ ਖਰੀਦੋ",
+      "gateHint": "ਵਰਚੁਅਲ ਨੰਬਰਾਂ ਲਈ Donator ਪਲਾਨ ਦੀ ਲੋੜ ਹੈ। ਚੈਟ ਵਿੱਚ SMS ਪ੍ਰਾਪਤ ਕਰਨ ਲਈ ਇੱਕ ਨੰਬਰ ਖਰੀਦੋ।",
+      "buyDialogTitle": "Donator ਪਲਾਨ ਦੀ ਲੋੜ ਹੈ",
+      "buyDialogDescription": "ਵਰਚੁਅਲ ਨੰਬਰ Donator ਪਲਾਨਾਂ ਵਿੱਚ ਸ਼ਾਮਲ ਹਨ। ਸ਼ੁਰੂ ਕਰਨ ਲਈ ਕੀਮਤ ਪੰਨੇ ’ਤੇ ਇੱਕ ਪਲਾਨ ਚੁਣੋ।",
+      "buyDialogGoToPricing": "ਕੀਮਤਾਂ ’ਤੇ ਜਾਓ"
     },
     "sms": {
       "label": "SMS",

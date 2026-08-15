@@ -924,7 +924,7 @@
     "inviteAccepted": "Η πρόσκληση έγινε αποδεκτή",
     "virtualNumber": {
       "label": "Εικονικός αριθμός",
-      "hint": "Επίλεξε έναν από τους αριθμούς τηλεφώνου σου. Τα εισερχόμενα SMS σε αυτόν τον αριθμό θα εμφανίζονται στη συνομιλία σου.",
+      "hint": "Επίλεξε τους αριθμούς τηλεφώνου σου. Τα εισερχόμενα SMS σε αυτούς τους αριθμούς θα εμφανίζονται στη συνομιλία σου.",
       "none": "Κανένας αριθμός",
       "loading": "Φόρτωση αριθμών…",
       "empty": "Δεν υπάρχουν διαθέσιμοι αριθμοί",
@@ -932,15 +932,15 @@
       "assignError": "Δεν ήταν δυνατή η αποθήκευση αυτού του αριθμού",
       "assigned": "Ο αριθμός αντιστοιχίστηκε",
       "cleared": "Ο αριθμός αφαιρέθηκε",
-      "addNumber": "Add number…",
-      "removeNumber": "Remove number",
-      "quotaLabel": "{used} of {quota} numbers used",
-      "limitReached": "You have reached the maximum number of virtual numbers for your plan",
-      "buyCta": "Buy virtual number",
-      "gateHint": "Virtual numbers require a Donator plan. Buy a number to receive SMS in chat.",
-      "buyDialogTitle": "Donator plan required",
-      "buyDialogDescription": "Virtual numbers are included with the Donator plans. Choose a plan on the pricing page to get started.",
-      "buyDialogGoToPricing": "Go to pricing"
+      "addNumber": "Προσθήκη αριθμού…",
+      "removeNumber": "Αφαίρεση αριθμού",
+      "quotaLabel": "Χρησιμοποιούνται {used} από {quota} αριθμούς",
+      "limitReached": "Έφτασες τον μέγιστο αριθμό εικονικών αριθμών για το πρόγραμμά σου",
+      "buyCta": "Αγορά εικονικού αριθμού",
+      "gateHint": "Οι εικονικοί αριθμοί απαιτούν πρόγραμμα Donator. Αγόρασε έναν αριθμό για να λαμβάνεις SMS στη συνομιλία.",
+      "buyDialogTitle": "Απαιτείται πρόγραμμα Donator",
+      "buyDialogDescription": "Οι εικονικοί αριθμοί περιλαμβάνονται στα προγράμματα Donator. Επίλεξε ένα πρόγραμμα στη σελίδα τιμών για να ξεκινήσεις.",
+      "buyDialogGoToPricing": "Μετάβαση στις τιμές"
     },
     "sms": {
       "label": "SMS",

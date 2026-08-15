@@ -931,7 +931,7 @@
     "inviteAccepted": "تم قبول الدعوة",
     "virtualNumber": {
       "label": "رقم افتراضي",
-      "hint": "اختر أحد أرقام هاتفك. ستظهر الرسائل النصية الواردة إلى هذا الرقم في محادثتك.",
+      "hint": "اختر أرقام هاتفك. ستظهر الرسائل النصية الواردة إلى هذه الأرقام في محادثتك.",
       "none": "بدون رقم",
       "loading": "جارٍ تحميل الأرقام…",
       "empty": "لا توجد أرقام متاحة",
@@ -939,15 +939,15 @@
       "assignError": "تعذّر حفظ هذا الرقم",
       "assigned": "تم تعيين الرقم",
       "cleared": "تم إلغاء الرقم",
-      "addNumber": "Add number…",
-      "removeNumber": "Remove number",
-      "quotaLabel": "{used} of {quota} numbers used",
-      "limitReached": "You have reached the maximum number of virtual numbers for your plan",
-      "buyCta": "Buy virtual number",
-      "gateHint": "Virtual numbers require a Donator plan. Buy a number to receive SMS in chat.",
-      "buyDialogTitle": "Donator plan required",
-      "buyDialogDescription": "Virtual numbers are included with the Donator plans. Choose a plan on the pricing page to get started.",
-      "buyDialogGoToPricing": "Go to pricing"
+      "addNumber": "أضف رقمًا…",
+      "removeNumber": "إزالة الرقم",
+      "quotaLabel": "{used} من أصل {quota} أرقام مستخدمة",
+      "limitReached": "لقد وصلت إلى الحد الأقصى لعدد الأرقام الافتراضية في خطتك",
+      "buyCta": "اشترِ رقمًا افتراضيًا",
+      "gateHint": "تتطلب الأرقام الافتراضية خطة Donator. اشترِ رقمًا لاستقبال الرسائل النصية في المحادثة.",
+      "buyDialogTitle": "خطة Donator مطلوبة",
+      "buyDialogDescription": "الأرقام الافتراضية مشمولة في خطط Donator. اختر خطة من صفحة الأسعار للبدء.",
+      "buyDialogGoToPricing": "الانتقال إلى الأسعار"
     },
     "sms": {
       "label": "رسائل نصية",

@@ -930,7 +930,7 @@
     "inviteAccepted": "Inbjudan accepterad",
     "virtualNumber": {
       "label": "Virtuellt nummer",
-      "hint": "Välj ett av dina telefonnummer. Inkommande SMS till detta nummer visas i din chatt.",
+      "hint": "Välj dina telefonnummer. Inkommande SMS till dessa nummer visas i din chatt.",
       "none": "Inget nummer",
       "loading": "Laddar nummer…",
       "empty": "Inga nummer tillgängliga",
@@ -938,15 +938,15 @@
       "assignError": "Detta nummer kunde inte sparas",
       "assigned": "Nummer tilldelat",
       "cleared": "Nummer borttaget",
-      "addNumber": "Add number…",
-      "removeNumber": "Remove number",
-      "quotaLabel": "{used} of {quota} numbers used",
-      "limitReached": "You have reached the maximum number of virtual numbers for your plan",
-      "buyCta": "Buy virtual number",
-      "gateHint": "Virtual numbers require a Donator plan. Buy a number to receive SMS in chat.",
-      "buyDialogTitle": "Donator plan required",
-      "buyDialogDescription": "Virtual numbers are included with the Donator plans. Choose a plan on the pricing page to get started.",
-      "buyDialogGoToPricing": "Go to pricing"
+      "addNumber": "Lägg till nummer…",
+      "removeNumber": "Ta bort nummer",
+      "quotaLabel": "{used} av {quota} nummer använda",
+      "limitReached": "Du har nått maxantalet virtuella nummer för ditt abonnemang",
+      "buyCta": "Köp virtuellt nummer",
+      "gateHint": "Virtuella nummer kräver ett Donator-abonnemang. Köp ett nummer för att ta emot SMS i chatten.",
+      "buyDialogTitle": "Donator-abonnemang krävs",
+      "buyDialogDescription": "Virtuella nummer ingår i Donator-abonnemangen. Välj ett abonnemang på prissidan för att komma igång.",
+      "buyDialogGoToPricing": "Gå till priser"
     },
     "sms": {
       "label": "SMS",

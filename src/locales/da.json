@@ -931,7 +931,7 @@
     "inviteAccepted": "Invitation accepteret",
     "virtualNumber": {
       "label": "Virtuelt nummer",
-      "hint": "Vælg et af dine telefonnumre. Indgående SMS’er til dette nummer vises i din chat.",
+      "hint": "Vælg dine telefonnumre. Indgående SMS’er til disse numre vises i din chat.",
       "none": "Intet nummer",
       "loading": "Indlæser numre…",
       "empty": "Ingen numre tilgængelige",
@@ -939,15 +939,15 @@
       "assignError": "Kunne ikke gemme dette nummer",
       "assigned": "Nummer tildelt",
       "cleared": "Nummer fjernet",
-      "addNumber": "Add number…",
-      "removeNumber": "Remove number",
-      "quotaLabel": "{used} of {quota} numbers used",
-      "limitReached": "You have reached the maximum number of virtual numbers for your plan",
-      "buyCta": "Buy virtual number",
-      "gateHint": "Virtual numbers require a Donator plan. Buy a number to receive SMS in chat.",
-      "buyDialogTitle": "Donator plan required",
-      "buyDialogDescription": "Virtual numbers are included with the Donator plans. Choose a plan on the pricing page to get started.",
-      "buyDialogGoToPricing": "Go to pricing"
+      "addNumber": "Tilføj nummer…",
+      "removeNumber": "Fjern nummer",
+      "quotaLabel": "{used} af {quota} numre brugt",
+      "limitReached": "Du har nået det maksimale antal virtuelle numre for dit abonnement",
+      "buyCta": "Køb virtuelt nummer",
+      "gateHint": "Virtuelle numre kræver et Donator-abonnement. Køb et nummer for at modtage SMS i chatten.",
+      "buyDialogTitle": "Donator-abonnement påkrævet",
+      "buyDialogDescription": "Virtuelle numre er inkluderet i Donator-abonnementerne. Vælg et abonnement på prissiden for at komme i gang.",
+      "buyDialogGoToPricing": "Gå til priser"
     },
     "sms": {
       "label": "SMS",

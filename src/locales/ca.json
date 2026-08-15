@@ -927,7 +927,7 @@
     "inviteAccepted": "Invitació acceptada",
     "virtualNumber": {
       "label": "Número virtual",
-      "hint": "Tria un dels teus números de telèfon. Els SMS entrants a aquest número apareixeran al teu xat.",
+      "hint": "Tria els teus números de telèfon. Els SMS entrants a aquests números apareixeran al teu xat.",
       "none": "Cap número",
       "loading": "S'estan carregant els números…",
       "empty": "No hi ha números disponibles",
@@ -935,15 +935,15 @@
       "assignError": "No s'ha pogut desar aquest número",
       "assigned": "Número assignat",
       "cleared": "Número suprimit",
-      "addNumber": "Add number…",
-      "removeNumber": "Remove number",
-      "quotaLabel": "{used} of {quota} numbers used",
-      "limitReached": "You have reached the maximum number of virtual numbers for your plan",
-      "buyCta": "Buy virtual number",
-      "gateHint": "Virtual numbers require a Donator plan. Buy a number to receive SMS in chat.",
-      "buyDialogTitle": "Donator plan required",
-      "buyDialogDescription": "Virtual numbers are included with the Donator plans. Choose a plan on the pricing page to get started.",
-      "buyDialogGoToPricing": "Go to pricing"
+      "addNumber": "Afegeix un número…",
+      "removeNumber": "Elimina el número",
+      "quotaLabel": "{used} de {quota} números utilitzats",
+      "limitReached": "Has arribat al nombre màxim de números virtuals per al teu pla",
+      "buyCta": "Compra un número virtual",
+      "gateHint": "Els números virtuals requereixen un pla Donator. Compra un número per rebre SMS al xat.",
+      "buyDialogTitle": "Cal un pla Donator",
+      "buyDialogDescription": "Els números virtuals estan inclosos als plans Donator. Tria un pla a la pàgina de preus per començar.",
+      "buyDialogGoToPricing": "Ves als preus"
     },
     "sms": {
       "label": "SMS",

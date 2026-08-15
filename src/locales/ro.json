@@ -927,7 +927,7 @@
     "inviteAccepted": "Invitație acceptată",
     "virtualNumber": {
       "label": "Număr virtual",
-      "hint": "Alege unul dintre numerele tale de telefon. SMS-urile primite la acest număr vor apărea în chatul tău.",
+      "hint": "Alege numerele tale de telefon. SMS-urile primite la aceste numere vor apărea în chatul tău.",
       "none": "Niciun număr",
       "loading": "Se încarcă numerele…",
       "empty": "Nu sunt numere disponibile",
@@ -935,15 +935,15 @@
       "assignError": "Acest număr nu a putut fi salvat",
       "assigned": "Număr atribuit",
       "cleared": "Număr eliminat",
-      "addNumber": "Add number…",
-      "removeNumber": "Remove number",
-      "quotaLabel": "{used} of {quota} numbers used",
-      "limitReached": "You have reached the maximum number of virtual numbers for your plan",
-      "buyCta": "Buy virtual number",
-      "gateHint": "Virtual numbers require a Donator plan. Buy a number to receive SMS in chat.",
-      "buyDialogTitle": "Donator plan required",
-      "buyDialogDescription": "Virtual numbers are included with the Donator plans. Choose a plan on the pricing page to get started.",
-      "buyDialogGoToPricing": "Go to pricing"
+      "addNumber": "Adaugă număr…",
+      "removeNumber": "Elimină numărul",
+      "quotaLabel": "{used} din {quota} numere utilizate",
+      "limitReached": "Ai atins numărul maxim de numere virtuale pentru planul tău",
+      "buyCta": "Cumpără număr virtual",
+      "gateHint": "Numerele virtuale necesită un plan Donator. Cumpără un număr pentru a primi SMS în chat.",
+      "buyDialogTitle": "Este necesar un plan Donator",
+      "buyDialogDescription": "Numerele virtuale sunt incluse în planurile Donator. Alege un plan din pagina de prețuri pentru a începe.",
+      "buyDialogGoToPricing": "Mergi la prețuri"
     },
     "sms": {
       "label": "SMS",
