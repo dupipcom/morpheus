@@ -40,7 +40,7 @@ export const VisibilitySelect = ({
   className = "w-full min-h-[40px] sm:w-48 sm:h-auto justify-center md:justify-between",
   showIconOnMobile = true,
   iconOnly = false,
-  availableOptions = ['PRIVATE', 'FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC', 'AI_ENABLED', 'DOC_ENABLED']
+  availableOptions = ['PRIVATE', 'FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC', 'DOC_ENABLED']
 }: VisibilitySelectProps) => {
   const { t } = useI18n()
 

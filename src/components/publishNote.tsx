@@ -13,6 +13,7 @@ import { DatePickerButton } from "@/components/ui/datePickerButton"
 import { LinkPreview } from "@/components/linkPreview"
 import { extractUrls } from "@/lib/utils/linkPreview"
 import { Input } from "@/components/ui/input"
+import { Switch } from "@/components/ui/switch"
 
 interface PublishNoteProps {
   onNotePublished?: () => void
@@ -33,7 +34,9 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
   const [noteVisibility, setNoteVisibility] = useState(
     defaultVisibility || (session?.user as { defaultNoteVisibility?: string } | undefined)?.defaultNoteVisibility || 'PRIVATE'
   )
-  const [saveAsDefault, setSaveAsDefault] = useState(false)
+  const [aiEnabled, setAiEnabled] = useState(
+    (session?.user as { defaultAiEnabled?: boolean } | undefined)?.defaultAiEnabled ?? false
+  )
   const [isPublishing, setIsPublishing] = useState(false)
   const previewUrls = useMemo(() => extractUrls(noteContent), [noteContent])
   
@@ -103,23 +106,22 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
         body: JSON.stringify({
           content: noteContent.trim(),
           visibility: noteVisibility,
+          aiEnabled,
           date: noteDate,
           recipientId
         }),
       })
 
       if (response.ok) {
-        // Persist the chosen visibility as the user's default for future notes
-        if (saveAsDefault) {
-          try {
-            await fetch('/api/v1/user', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ defaultNoteVisibility: noteVisibility })
-            })
-          } catch (error) {
-            console.error('Error saving default note visibility:', error)
-          }
+        // Persist the AI analysis preference
+        try {
+          await fetch('/api/v1/user', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ defaultAiEnabled: aiEnabled })
+          })
+        } catch (error) {
+          console.error('Error saving AI analysis preference:', error)
         }
         // Clear the note content after successful publish
         setNoteContent('')
@@ -179,13 +181,11 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
           </Button>
         </div>
         <label className="flex items-center gap-2 text-xs text-muted-foreground cursor-pointer">
-          <input
-            type="checkbox"
-            checked={saveAsDefault}
-            onChange={(e) => setSaveAsDefault(e.target.checked)}
-            className="h-3.5 w-3.5"
+          <Switch
+            checked={aiEnabled}
+            onCheckedChange={setAiEnabled}
           />
-          <span>{t('mood.publish.useAsDefault') || 'Use as my default visibility'}</span>
+          <span>{t('mood.publish.enableAiAnalysis') || 'Enable AI analysis'}</span>
         </label>
       </div>
       {previewUrls.length > 0 && (

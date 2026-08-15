@@ -267,6 +267,10 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
     // the dedicated deep-link effects will handle the selection instead.
     if (initialUsername || initialOrgId || initialChannelId || initialSmsConversationId) return
 
+    // On mobile, don't auto-select a room — show the sidebar/rooms list instead.
+    // Only auto-select on desktop (md breakpoint = 768px).
+    if (typeof window !== 'undefined' && window.innerWidth < 768) return
+
     const defaultChannel = sidebar.orgs?.[0]?.channels?.[0]
     if (defaultChannel) {
       const room: ActiveRoom = { type: 'channel', id: defaultChannel.id, orgId: defaultChannel.clerkOrgId, name: defaultChannel.name }
@@ -791,7 +795,7 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
                 </div>
               ) : null}
               <div className="space-y-2">
-                {sidebar?.dms?.map((dm) => (
+                {[...(sidebar?.dms ?? [])].sort((a, b) => b.unreadCount - a.unreadCount).map((dm) => (
                   <button
                     key={dm.id}
                     type="button"
