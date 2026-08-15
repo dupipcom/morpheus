@@ -4,6 +4,7 @@ import prisma from '@/lib/prisma';
 import type { WebhookEvent } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache'
+import { ensureUserAndProfile } from '@/lib/services/user/ensureUserAndProfile'
 
 export async function POST(req: Request) {
     try {
@@ -34,114 +35,26 @@ export async function POST(req: Request) {
         let user = null;
         switch (evt.type) {
             case 'user.created': {
-                user = await prisma.user.upsert({
-                    where: {
-                        userId: clerkUserId,
-                    },
-                    update: {
-                        userId: clerkUserId,
-                        settings: {
-                            set: {
-                                currency: null,
-                                speed: null
-                            } as any
-                        }
-                    },
-                    create: {
-                        userId: clerkUserId,
-                        settings: {
-                            currency: null,
-                            speed: null
-                        } as any
-                    },
+                const webhookData: any = evt.data;
+                const clerkUsername: string | null = webhookData?.username ?? null;
+                const clerkImageUrl: string | null = webhookData?.image_url ?? webhookData?.imageUrl ?? null;
+
+                await ensureUserAndProfile(clerkUserId, {
+                    username: clerkUsername,
+                    imageUrl: clerkImageUrl,
                 });
 
-                // Always create a public profile for every new user
-                try {
-                    const webhookData: any = evt.data;
-                    const clerkUsername: string | null = webhookData?.username ?? null;
-                    const clerkImageUrl: string | null = webhookData?.image_url ?? webhookData?.imageUrl ?? null;
-
-                    const existingProfile = await prisma.profile.findUnique({
-                        where: { userId: user.id }
-                    });
-                    if (!existingProfile) {
-                        const createData: any = {
-                            userId: user.id,
-                            data: {
-                                username: {
-                                    value: clerkUsername,
-                                    visibility: true
-                                }
-                            }
-                        };
-                        // Only set root-level username when available — null violates MongoDB unique index
-                        if (clerkUsername) {
-                            createData.username = clerkUsername;
-                        }
-                        if (clerkImageUrl) {
-                            createData.data.profilePicture = {
-                                value: clerkImageUrl,
-                                visibility: false
-                            };
-                        }
-                        try {
-                            await prisma.profile.create({ data: createData });
-                            if (clerkUsername) {
-                                revalidatePath(`/@${clerkUsername}`);
-                            }
-                        } catch (createError: any) {
-                            if (createError?.code !== 'P2002') {
-                                throw createError;
-                            }
-                            // P2002: profile was just created by a concurrent handler — that's fine
-                        }
-                    }
-                } catch (error) {
-                    console.error('Error creating profile on user creation:', error);
+                user = await prisma.user.findUnique({ where: { userId: clerkUserId } });
+                if (clerkUsername) {
+                    revalidatePath(`/@${clerkUsername}`);
                 }
                 break;
             }
             case 'session.created': {
-                // When a new session is created (actual login), ensure profile exists
                 const sessionData: any = evt.data;
                 const sessionUserId: string | undefined = sessionData?.user_id || sessionData?.userId || clerkUserId;
                 if (sessionUserId) {
-                    try {
-                        const dbUser = await prisma.user.findUnique({
-                            where: { userId: sessionUserId },
-                            include: { profiles: true }
-                        });
-
-                        if (dbUser && (!dbUser.profiles || dbUser.profiles.length === 0)) {
-                            // Profile missing — create if still missing, handle race gracefully
-                            const existingProfile = await prisma.profile.findUnique({
-                                where: { userId: dbUser.id }
-                            });
-                            if (!existingProfile) {
-                                try {
-                                    await prisma.profile.create({
-                                        data: {
-                                            userId: dbUser.id,
-                                            data: {
-                                                username: {
-                                                    value: null,
-                                                    visibility: true
-                                                }
-                                            }
-                                        }
-                                    });
-                                } catch (createError: any) {
-                                    if (createError?.code !== 'P2002') {
-                                        throw createError;
-                                    }
-                                    // P2002: profile was just created by another handler
-                                }
-                            }
-                        }
-                    } catch (usernameError) {
-                        console.error('Error ensuring profile on session creation:', usernameError);
-                    }
+                    await ensureUserAndProfile(sessionUserId);
                 }
                 break;
             }
@@ -150,6 +63,12 @@ export async function POST(req: Request) {
                 try {
                     const webhookData: any = evt.data;
                     const clerkUsername: string | null = webhookData?.username ?? null;
+
+                    // Make sure the User + Profile exist before we try to sync the username.
+                    await ensureUserAndProfile(clerkUserId, {
+                        username: clerkUsername,
+                        imageUrl: webhookData?.image_url ?? webhookData?.imageUrl ?? null,
+                    });
 
                     if (clerkUsername) {
                         const dbUser = await prisma.user.findUnique({
