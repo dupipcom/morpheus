@@ -122,7 +122,7 @@ export async function sendSmsMessage(input: {
       })
     : null
 
-  if (virtualNumber?.messagingProfileId == null) {
+  if (!virtualNumber || virtualNumber.messagingProfileId === null) {
     virtualNumber = null
   }
 

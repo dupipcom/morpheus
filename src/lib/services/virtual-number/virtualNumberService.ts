@@ -37,7 +37,7 @@ function toVirtualNumberAssignment(record: VirtualNumberRecord): VirtualNumberAs
  * Get the virtual numbers currently held by the user (oldest first).
  * A held number is enabled when it still has a messaging profile attached.
  */
-export async function getAssignedNumbers(userId: string): Promise<VirtualNumberAssignment[]> {
+export async function getVirtualNumbers(userId: string): Promise<VirtualNumberAssignment[]> {
   const assignments = await prisma.virtualNumber.findMany({
     where: { userId },
     orderBy: { createdAt: 'asc' }
@@ -123,11 +123,19 @@ export async function assignNumber(
     return toVirtualNumberAssignment(assignment)
   }
 
-  const assignment = await prisma.virtualNumber.create({
-    data: { userId, phoneNumber, messagingProfileId: match.messagingProfileId }
-  })
+  try {
+    const assignment = await prisma.virtualNumber.create({
+      data: { userId, phoneNumber, messagingProfileId: match.messagingProfileId }
+    })
 
-  return toVirtualNumberAssignment(assignment)
+    return toVirtualNumberAssignment(assignment)
+  } catch (error) {
+    // P2002: another user claimed this number after the read above
+    if (error && typeof error === 'object' && 'code' in error && error.code === 'P2002') {
+      throw new VirtualNumberError('NUMBER_TAKEN', 'This number is already assigned to another user')
+    }
+    throw error
+  }
 }
 
 /**
