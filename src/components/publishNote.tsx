@@ -113,15 +113,18 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
       })
 
       if (response.ok) {
-        // Persist the AI analysis preference
-        try {
-          await fetch('/api/v1/user', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ defaultAiEnabled: aiEnabled })
-          })
-        } catch (error) {
-          console.error('Error saving AI analysis preference:', error)
+        // Persist the AI analysis preference only if it changed
+        const storedAiEnabled = (session?.user as { defaultAiEnabled?: boolean } | undefined)?.defaultAiEnabled ?? false
+        if (aiEnabled !== storedAiEnabled) {
+          try {
+            await fetch('/api/v1/user', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ defaultAiEnabled: aiEnabled })
+            })
+          } catch (error) {
+            console.error('Error saving AI analysis preference:', error)
+          }
         }
         // Clear the note content after successful publish
         setNoteContent('')
