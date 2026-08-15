@@ -41,6 +41,45 @@ function shouldFlagBotForEnglish(headers: Headers): boolean {
   return false
 }
 
+const PROFILE_OK_COOKIE = 'dpip_profile_ok'
+const PROFILE_OK_TTL_SECONDS = 60 * 60 * 24 // 24h
+
+/**
+ * Fire-and-forget call to the Node-runtime bootstrap route so a `User` +
+ * `Profile` are guaranteed to exist for a freshly signed-in Clerk user.
+ * Prisma cannot run in edge middleware, so we hop to a Node route while
+ * forwarding the caller's cookies so Clerk `auth()` resolves the same user.
+ */
+function ensureProfileBootstrap(request: Request) {
+  try {
+    const origin = new URL(request.url).origin
+    const cookie = request.headers.get('cookie') || ''
+    // No await: we set the cookie synchronously so subsequent requests skip.
+    // The layout backstop covers the race for this same request.
+    void fetch(`${origin}/api/v1/user/ensure`, {
+      method: 'POST',
+      headers: {
+        cookie,
+        'content-type': 'application/json',
+      },
+      // Node runtime routes are fine with keepalive here.
+      keepalive: true,
+    }).catch(() => {})
+  } catch {
+    // Never let bootstrap failures block a request.
+  }
+}
+
+function withProfileOkCookie(response: NextResponse): NextResponse {
+  response.cookies.set(PROFILE_OK_COOKIE, '1', {
+    path: '/',
+    httpOnly: false,
+    sameSite: 'lax',
+    maxAge: PROFILE_OK_TTL_SECONDS,
+  })
+  return response
+}
+
 async function middleware(request: Request, auth: any) {
   const { pathname } = new URL(request.url)
 
@@ -55,6 +94,16 @@ async function middleware(request: Request, auth: any) {
 
   // Check if user is logged in for root and locale paths
   const { userId } = await auth()
+
+  // Middleware-layer enforcement: guarantee a User + Profile exist for every
+  // authenticated visitor. Cookie-gated so we only pay the round-trip once
+  // per session (or until the TTL expires).
+  const cookieHeaderForBootstrap = request.headers.get('cookie') || ''
+  const parsedForBootstrap = parseCookies(cookieHeaderForBootstrap)
+  const needsProfileBootstrap = !!userId && parsedForBootstrap[PROFILE_OK_COOKIE] !== '1'
+  if (needsProfileBootstrap) {
+    ensureProfileBootstrap(request)
+  }
   
   // Handle root path "/" - redirect authenticated users to app profile
   if (pathname === '/') {
@@ -64,7 +113,8 @@ async function middleware(request: Request, auth: any) {
       const locale = getLocale(request.headers, cookies)
       const url = new URL(request.url)
       url.pathname = `/${locale}/app/profile`
-      return NextResponse.redirect(url)
+      const res = NextResponse.redirect(url)
+      return needsProfileBootstrap ? withProfileOkCookie(res) : res
     }
   }
 
@@ -73,7 +123,8 @@ async function middleware(request: Request, auth: any) {
     if (userId) {
       const url = new URL(request.url)
       url.pathname = `${pathname}/app/profile`
-      return NextResponse.redirect(url)
+      const res = NextResponse.redirect(url)
+      return needsProfileBootstrap ? withProfileOkCookie(res) : res
     }
   }
 
@@ -85,7 +136,8 @@ async function middleware(request: Request, auth: any) {
     const locale = getLocale(request.headers, cookies)
     const url = new URL(request.url)
     url.pathname = `/${locale}/profile/${username}`
-    return NextResponse.redirect(url)
+    const res = NextResponse.redirect(url)
+    return needsProfileBootstrap ? withProfileOkCookie(res) : res
   }
 
   const hasLocale = pathHasLocale(pathname)
@@ -96,7 +148,10 @@ async function middleware(request: Request, auth: any) {
     if (shouldFlagBotForEnglish(request.headers)) {
       const res = NextResponse.next()
       res.cookies.set('dpip_bot_en', '1', { path: '/', httpOnly: false })
-      return res
+      return needsProfileBootstrap ? withProfileOkCookie(res) : res
+    }
+    if (needsProfileBootstrap) {
+      return withProfileOkCookie(NextResponse.next())
     }
     return
   }
@@ -114,7 +169,7 @@ async function middleware(request: Request, auth: any) {
     if (shouldFlagBotForEnglish(request.headers)) {
       res.cookies.set('dpip_bot_en', '1', { path: '/', httpOnly: false })
     }
-    return res
+    return needsProfileBootstrap ? withProfileOkCookie(res) : res
   }
 
   // For other routes, redirect to localized version
@@ -126,7 +181,7 @@ async function middleware(request: Request, auth: any) {
   if (shouldFlagBotForEnglish(request.headers)) {
     res.cookies.set('dpip_bot_en', '1', { path: '/', httpOnly: false })
   }
-  return res
+  return needsProfileBootstrap ? withProfileOkCookie(res) : res
 }
 
 const isProtectedRoute = createRouteMatcher(['app/(.*)'])

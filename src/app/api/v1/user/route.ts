@@ -3,39 +3,17 @@ import { currentUser, auth } from '@clerk/nextjs/server'
 import { recalculateUserBudget } from "@/lib/utils/budgetUtils"
 import { calculateDatePeriods, parseNumericValue } from "@/lib/services/day"
 import { WRITABLE_NOTE_VISIBILITIES } from '@/lib/constants/visibility'
+import { ensureUserAndProfile } from '@/lib/services/user/ensureUserAndProfile'
 
 /**
- * Helper to get or create user
+ * Helper to get user (with profiles) — assumes ensureUserAndProfile has already
+ * guaranteed both records exist upstream.
  */
-async function getOrCreateUser(clerkUserId: string) {
-  let user = await prisma.user.findUnique({
+async function getUserWithProfiles(clerkUserId: string) {
+  return prisma.user.findUnique({
     where: { userId: clerkUserId },
     include: { profiles: true }
   })
-
-  if (!user) {
-    try {
-      user = await prisma.user.create({
-        data: {
-          userId: clerkUserId,
-          settings: { currency: null, speed: null }
-        },
-        include: { profiles: true }
-      })
-    } catch (error: any) {
-      if (error?.code === 'P2002') {
-        // User was just created by another concurrent request
-        user = await prisma.user.findUnique({
-          where: { userId: clerkUserId },
-          include: { profiles: true }
-        })
-      } else {
-        throw error
-      }
-    }
-  }
-
-  return user
 }
 
 /**
@@ -80,58 +58,18 @@ async function updateDayWithBalance(
   })
 }
 
-export async function GET(req: Request) {
+export async function GET() {
   const { userId } = await auth()
 
   if (!userId) {
     return Response.json({ error: 'User not authenticated' }, { status: 401 })
   }
 
-  let user = await getOrCreateUser(userId)
-
-  // Ensure user has a profile - create one if missing
-  if (user && (!user.profiles || user.profiles.length === 0)) {
-    const clerkUser = await currentUser()
-    const existing = await prisma.profile.findUnique({ where: { userId: user.id } })
-    if (!existing) {
-      try {
-        await prisma.profile.create({
-          data: {
-            userId: user.id,
-            // Only set root-level username when available — null violates MongoDB unique index
-            ...(clerkUser?.username ? { username: clerkUser.username } : {}),
-            data: {
-              username: { value: clerkUser?.username || null, visibility: true },
-              firstName: { value: null, visibility: false },
-              lastName: { value: null, visibility: false },
-              bio: { value: null, visibility: false },
-              profilePicture: { value: null, visibility: false }
-            }
-          }
-        })
-        // Revalidate public profile path
-        const username = clerkUser?.username
-        if (username) {
-          try {
-            const origin = new URL(req.url).origin
-            await fetch(`${origin}/api/v1/revalidate`, {
-              method: 'POST',
-              headers: { 'content-type': 'application/json' },
-              body: JSON.stringify({ paths: [`/@${username}`] })
-            })
-          } catch (revalidateError) {
-            console.error('Error calling v1 revalidate for profile path:', revalidateError)
-          }
-        }
-      } catch (error: any) {
-        if (error?.code === 'P2002') {
-          // Profile was just created by another concurrent request
-        } else {
-          console.error('Error creating profile:', error)
-        }
-      }
-    }
-    user = await getOrCreateUser(userId)
+  // Guarantee User + Profile exist for the caller.
+  await ensureUserAndProfile(userId)
+  let user = await getUserWithProfiles(userId)
+  if (!user) {
+    return Response.json({ error: 'User not found' }, { status: 404 })
   }
 
   // Sync username from Clerk
@@ -154,7 +92,7 @@ export async function GET(req: Request) {
               }
             }
           })
-          user = await getOrCreateUser(userId)
+          user = await getUserWithProfiles(userId)
         } catch (updateError: any) {
           // P2034 = write conflict/deadlock: another concurrent request already synced
           if (updateError?.code !== 'P2034') {
@@ -174,7 +112,7 @@ export async function GET(req: Request) {
   if (user && (user.usedBudget === null || user.usedBudget === undefined)) {
     try {
       await recalculateUserBudget(user.id)
-      user = await getOrCreateUser(userId)
+      user = await getUserWithProfiles(userId)
     } catch (error) {
       console.error('Error initializing budget fields:', error)
     }
@@ -191,23 +129,10 @@ export async function POST(req: Request) {
     return Response.json({ error: 'User not authenticated' }, { status: 401 })
   }
 
+  await ensureUserAndProfile(userId)
   let user = await prisma.user.findUnique({ where: { userId } })
-
   if (!user) {
-    try {
-      user = await prisma.user.create({
-        data: {
-          userId,
-          settings: { currency: null, speed: null }
-        }
-      })
-    } catch (error: any) {
-      if (error?.code === 'P2002') {
-        user = await prisma.user.findUnique({ where: { userId } })
-      } else {
-        throw error
-      }
-    }
+    return Response.json({ error: 'User not found' }, { status: 404 })
   }
 
   // Handle availableBalance update
