@@ -3,9 +3,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getAuthenticatedUser } from '@/lib/services/auth'
 import {
   assignNumber,
+  disableNumber,
   getAssignedNumbers,
   getVirtualNumberEntitlement,
-  unassignNumber,
   VirtualNumberError
 } from '@/lib/services/virtual-number'
 import type { VirtualNumberErrorCode } from '@/lib/services/virtual-number'
@@ -99,14 +99,14 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'phoneNumber query parameter is required' }, { status: 400 })
     }
 
-    await unassignNumber(user.id, phoneNumber)
+    await disableNumber(user.id, phoneNumber)
     const assignments = await getAssignedNumbers(user.id)
     return NextResponse.json({ assignments })
   } catch (error) {
     if (error instanceof VirtualNumberError) {
       return errorResponse(error)
     }
-    console.error('Error unassigning virtual number:', error)
+    console.error('Error disabling virtual number:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

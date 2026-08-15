@@ -6,6 +6,7 @@
 export interface VirtualNumberAssignment {
   phoneNumber: string
   messagingProfileId: string | null
+  enabled: boolean
   provider: string
   createdAt: string
   updatedAt: string

@@ -45,7 +45,7 @@ async function handleInboundSms(payload: Record<string, unknown>): Promise<void>
   const virtualNumber = await prisma.virtualNumber.findUnique({
     where: { phoneNumber: input.toPhoneNumber }
   })
-  if (!virtualNumber) return // number not assigned to any user — no-op
+  if (!virtualNumber || virtualNumber.messagingProfileId == null) return // number not assigned/enabled for any user — no-op
 
   const userId = virtualNumber.userId
 

@@ -98,7 +98,7 @@ interface SmsConversationsResponse {
 }
 
 interface VirtualNumberAssignmentResponse {
-  assignments: { phoneNumber: string }[]
+  assignments: { phoneNumber: string; enabled: boolean }[]
   quota: number
 }
 
@@ -903,7 +903,7 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
               conversations={smsConversationsData?.conversations ?? []}
               isLoading={isSmsConversationsLoading}
               hasError={Boolean(smsConversationsError)}
-              hasAssignedNumber={Boolean(virtualNumberAssignmentData?.assignments?.length)}
+              hasAssignedNumber={Boolean(virtualNumberAssignmentData?.assignments?.some((assignment) => assignment.enabled))}
               onSelectConversation={openSmsConversation}
             />
           )}
