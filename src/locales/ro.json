@@ -17,6 +17,7 @@
     "save": "Salvează",
     "cancel": "Anulează",
     "delete": "Șterge",
+    "remove": "Elimină",
     "loading": "Se încarcă...",
     "error": "Eroare",
     "success": "Succes",
@@ -132,7 +133,8 @@
       "action": "Publică nota",
       "publishing": "Publicare...",
       "embedHint": "Incorporare {provider}. Dacă redarea nu este disponibilă, deschide linkul original de mai jos.",
-      "useAsDefault": "Use as my default visibility"
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Activează analiza AI"
     },
     "thirdParty": {
       "title": "Terță parte",
@@ -335,7 +337,9 @@
     "expectedNeedUtilities": "Media costuri utilități necesare estimate",
     "editAction": "Editează acțiunea",
     "save": "Salvează",
-    "cancel": "Anulează"
+    "cancel": "Anulează",
+    "currency": "Monedă",
+    "selectCurrency": "Selectează moneda"
   },
   "agentChat": {
     "thinking": "Gândesc...",
@@ -599,8 +603,10 @@
       },
       "areaDistributionLabel": "Buget zonă",
       "areaPrizeDistributionLabel": "Premiu zonă",
+      "areaPremiumDistributionLabel": "Distribuție premii pe zone",
       "categoryDistributionLabel": "Buget categorie",
       "categoryPrizeDistributionLabel": "Premiu categorie",
+      "categoryPremiumDistributionLabel": "Distribuție premii pe categorii",
       "taskDistributionLabel": "Buget",
       "premiumLabel": "Premiu",
       "totalLabel": "Total",
@@ -904,6 +910,7 @@
     "deleting": "Se șterge...",
     "confirmDelete": "Ești sigur că dorești să ștergi această notă?",
     "content": "Conținut notă",
+    "recipient": "Destinatar",
     "visibilityUpdated": "Vizibilitate actualizată cu succes",
     "visibilityUpdateFailed": "Actualizarea vizibilității a eșuat",
     "changeVisibility": "Schimbă vizibilitatea",

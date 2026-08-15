@@ -14,6 +14,7 @@
     "save": "Gem",
     "cancel": "Annuller",
     "delete": "Slet",
+    "remove": "Fjern",
     "loading": "Indlæser...",
     "error": "Fejl",
     "success": "Succes",
@@ -136,7 +137,8 @@
       "action": "Publicer note",
       "publishing": "Udgiver...",
       "embedHint": "{provider}-indlejring. Hvis afspilning ikke er tilgængelig, åbn det originale link nedenfor.",
-      "useAsDefault": "Use as my default visibility"
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Aktivér AI-analyse"
     },
     "thirdParty": {
       "title": "Tredjepart",
@@ -339,7 +341,9 @@
     "expectedNeedUtilities": "Forventet nødvendigt gennemsnit for forsyningsselskaber",
     "editAction": "Rediger handling",
     "save": "Gem",
-    "cancel": "Annuller"
+    "cancel": "Annuller",
+    "currency": "Valuta",
+    "selectCurrency": "Vælg valuta"
   },
   "agentChat": {
     "thinking": "Tænker...",
@@ -603,8 +607,10 @@
       },
       "areaDistributionLabel": "Områdebudget",
       "areaPrizeDistributionLabel": "Områdepræmie",
+      "areaPremiumDistributionLabel": "Præmiefordeling efter område",
       "categoryDistributionLabel": "Kategoribudget",
       "categoryPrizeDistributionLabel": "Kategoripræmie",
+      "categoryPremiumDistributionLabel": "Præmiefordeling efter kategori",
       "taskDistributionLabel": "Budget",
       "premiumLabel": "Præmie",
       "totalLabel": "Total",
@@ -908,6 +914,7 @@
     "deleting": "Sletter...",
     "confirmDelete": "Er du sikker på, at du vil slette denne note?",
     "content": "Noteindhold",
+    "recipient": "Modtager",
     "visibilityUpdated": "Synlighed opdateret",
     "visibilityUpdateFailed": "Kunne ikke opdatere synlighed",
     "changeVisibility": "Skift synlighed",

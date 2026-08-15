@@ -17,6 +17,7 @@
     "save": "保存",
     "cancel": "キャンセル",
     "delete": "削除",
+    "remove": "解除",
     "loading": "読み込み中...",
     "error": "エラー",
     "success": "成功",
@@ -132,7 +133,8 @@
       "action": "ノートを公開",
       "publishing": "公開中...",
       "embedHint": "{provider} 埋め込み。再生できない場合は、以下の元のリンクを開いてください。",
-      "useAsDefault": "Use as my default visibility"
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "AI分析を有効にする"
     },
     "thirdParty": {
       "title": "サードパーティ",
@@ -204,7 +206,9 @@
     "expectedNeedUtilities": "期待される必要公共料金の平均",
     "editAction": "アクションを編集",
     "save": "保存",
-    "cancel": "キャンセル"
+    "cancel": "キャンセル",
+    "currency": "通貨",
+    "selectCurrency": "通貨を選択"
   },
   "social": {
     "title": "ソーシャルコンタクト",
@@ -616,8 +620,10 @@
       },
       "areaDistributionLabel": "エリア予算",
       "areaPrizeDistributionLabel": "エリア賞金",
+      "areaPremiumDistributionLabel": "エリア別賞金配分",
       "categoryDistributionLabel": "カテゴリ予算",
       "categoryPrizeDistributionLabel": "カテゴリ賞金",
+      "categoryPremiumDistributionLabel": "カテゴリ別賞金配分",
       "taskDistributionLabel": "予算",
       "premiumLabel": "賞金",
       "totalLabel": "合計",
@@ -904,6 +910,7 @@
     "deleting": "削除中...",
     "confirmDelete": "このメモを削除してもよろしいですか？",
     "content": "メモの内容",
+    "recipient": "受取人",
     "visibilityUpdated": "表示設定が正常に更新されました",
     "visibilityUpdateFailed": "表示設定の更新に失敗しました",
     "changeVisibility": "表示設定を変更",

@@ -17,6 +17,7 @@
     "save": "Salva",
     "cancel": "Annulla",
     "delete": "Elimina",
+    "remove": "Rimuovi",
     "loading": "Caricamento...",
     "error": "Errore",
     "success": "Successo",
@@ -132,7 +133,8 @@
       "action": "Pubblica Nota",
       "publishing": "Pubblicazione...",
       "embedHint": "Incorporamento {provider}. Se la riproduzione non è disponibile, apri il link originale in basso.",
-      "useAsDefault": "Use as my default visibility"
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Abilita analisi IA"
     },
     "thirdParty": {
       "title": "Terze parti",
@@ -204,7 +206,9 @@
     "expectedNeedUtilities": "Media Attesa dei Servizi Pubblici",
     "editAction": "Modifica azione",
     "save": "Salva",
-    "cancel": "Annulla"
+    "cancel": "Annulla",
+    "currency": "Valuta",
+    "selectCurrency": "Seleziona valuta"
   },
   "social": {
     "title": "Contatti Sociali",
@@ -616,8 +620,10 @@
       },
       "areaDistributionLabel": "Budget area",
       "areaPrizeDistributionLabel": "Premio area",
+      "areaPremiumDistributionLabel": "Distribuzione premi per area",
       "categoryDistributionLabel": "Budget categoria",
       "categoryPrizeDistributionLabel": "Premio categoria",
+      "categoryPremiumDistributionLabel": "Distribuzione premi per categoria",
       "taskDistributionLabel": "Budget",
       "premiumLabel": "Premio",
       "totalLabel": "Totale",
@@ -904,6 +910,7 @@
     "deleting": "Eliminazione...",
     "confirmDelete": "Sei sicuro di voler eliminare questa nota?",
     "content": "Contenuto della nota",
+    "recipient": "Destinatario",
     "visibilityUpdated": "Visibilità aggiornata con successo",
     "visibilityUpdateFailed": "Aggiornamento visibilità non riuscito",
     "changeVisibility": "Cambia visibilità",

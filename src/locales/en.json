@@ -17,6 +17,7 @@
     "save": "Save",
     "cancel": "Cancel",
     "delete": "Delete",
+    "remove": "Remove",
     "loading": "Loading...",
     "error": "Error",
     "success": "Success",
@@ -132,7 +133,8 @@
         "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Publish Note",
-      "useAsDefault": "Use as my default visibility"
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Enable AI analysis"
     },
     "thirdParty": {
       "title": "Third-Party",
@@ -331,8 +333,10 @@
       },
       "areaDistributionLabel": "Area Budget",
       "areaPrizeDistributionLabel": "Area Prize",
+      "areaPremiumDistributionLabel": "Area Premium Distribution",
       "categoryDistributionLabel": "Category Budget",
       "categoryPrizeDistributionLabel": "Category Prize",
+      "categoryPremiumDistributionLabel": "Category Premium Distribution",
       "taskDistributionLabel": "Budget",
       "premiumLabel": "Prize",
       "totalLabel": "Total",
@@ -388,7 +392,9 @@
     "monthsFixedIncome": "Month's Recurring Income",
     "monthsVariableIncome": "Month's Variable Income",
     "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average"
+    "expectedNeedUtilities": "Expected Need Utilities Average",
+    "currency": "Currency",
+    "selectCurrency": "Select currency"
   },
   "social": {
     "title": "Social Contacts",
@@ -935,6 +941,7 @@
     "deleting": "Deleting...",
     "confirmDelete": "Are you sure you want to delete this note?",
     "content": "Note content",
+    "recipient": "Recipient",
     "visibilityUpdated": "Visibility updated successfully",
     "visibilityUpdateFailed": "Failed to update visibility",
     "changeVisibility": "Change visibility",

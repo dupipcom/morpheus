@@ -17,6 +17,7 @@
     "save": "Salvesta",
     "cancel": "Tühista",
     "delete": "Kustuta",
+    "remove": "Eemalda",
     "loading": "Laadimine...",
     "error": "Viga",
     "success": "Edu",
@@ -132,7 +133,8 @@
       "action": "Avalda märkme",
       "publishing": "Avaldamine...",
       "embedHint": "{provider} manustus. Kui taasesitus pole saadaval, ava allpool olev algne link.",
-      "useAsDefault": "Use as my default visibility"
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Luba AI analüüs"
     },
     "thirdParty": {
       "title": "Kolmas osapool",
@@ -335,7 +337,9 @@
     "expectedNeedUtilities": "Oodatav vajaduste kommunaalkulude keskmine",
     "editAction": "Redigeeri tegevust",
     "save": "Salvesta",
-    "cancel": "Tühista"
+    "cancel": "Tühista",
+    "currency": "Valuuta",
+    "selectCurrency": "Vali valuuta"
   },
   "agentChat": {
     "thinking": "Mõtlen...",
@@ -599,8 +603,10 @@
       },
       "areaDistributionLabel": "Valdkonna eelarve",
       "areaPrizeDistributionLabel": "Valdkonna auhind",
+      "areaPremiumDistributionLabel": "Auhindade jaotus valdkonna järgi",
       "categoryDistributionLabel": "Kategooria eelarve",
       "categoryPrizeDistributionLabel": "Kategooria auhind",
+      "categoryPremiumDistributionLabel": "Auhindade jaotus kategooria järgi",
       "taskDistributionLabel": "Eelarve",
       "premiumLabel": "Auhind",
       "totalLabel": "Kokku",
@@ -904,6 +910,7 @@
     "deleting": "Kustutamine...",
     "confirmDelete": "Kas olete kindel, et soovite selle märkuse kustutada?",
     "content": "Märkuse sisu",
+    "recipient": "Saaja",
     "visibilityUpdated": "Nähtavus edukalt uuendatud",
     "visibilityUpdateFailed": "Nähtavuse uuendamine ebaõnnestus",
     "changeVisibility": "Muuda nähtavust",

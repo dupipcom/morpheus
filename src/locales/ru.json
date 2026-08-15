@@ -17,6 +17,7 @@
     "save": "Сохранить",
     "cancel": "Отмена",
     "delete": "Удалить",
+    "remove": "Удалить",
     "loading": "Загрузка...",
     "error": "Ошибка",
     "success": "Успех",
@@ -132,7 +133,8 @@
       "action": "Опубликовать заметку",
       "publishing": "Публикация...",
       "embedHint": "Встроенный контент {provider}. Если воспроизведение недоступно, откройте исходную ссылку ниже.",
-      "useAsDefault": "Use as my default visibility"
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Включить AI-анализ"
     },
     "thirdParty": {
       "title": "Третья сторона",
@@ -352,7 +354,9 @@
     "expectedNeedUtilities": "Expected Need Utilities Average",
     "editAction": "Редактировать действие",
     "save": "Сохранить",
-    "cancel": "Отмена"
+    "cancel": "Отмена",
+    "currency": "Валюта",
+    "selectCurrency": "Выберите валюту"
   },
   "agentChat": {
     "thinking": "Думаю...",
@@ -616,8 +620,10 @@
       },
       "areaDistributionLabel": "Бюджет области",
       "areaPrizeDistributionLabel": "Приз области",
+      "areaPremiumDistributionLabel": "Распределение призов по областям",
       "categoryDistributionLabel": "Бюджет категории",
       "categoryPrizeDistributionLabel": "Приз категории",
+      "categoryPremiumDistributionLabel": "Распределение призов по категориям",
       "taskDistributionLabel": "Бюджет",
       "premiumLabel": "Приз",
       "totalLabel": "Всего",
@@ -904,6 +910,7 @@
     "deleting": "Удаление...",
     "confirmDelete": "Вы уверены, что хотите удалить эту заметку?",
     "content": "Содержимое заметки",
+    "recipient": "Получатель",
     "visibilityUpdated": "Видимость успешно обновлена",
     "visibilityUpdateFailed": "Не удалось обновить видимость",
     "changeVisibility": "Изменить видимость",

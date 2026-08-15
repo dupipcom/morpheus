@@ -17,6 +17,7 @@
     "save": "Desar",
     "cancel": "Cancel·lar",
     "delete": "Eliminar",
+    "remove": "Elimina",
     "loading": "Carregant...",
     "error": "Error",
     "success": "Èxit",
@@ -132,7 +133,8 @@
       "action": "Publicar nota",
       "publishing": "Publicant...",
       "embedHint": "Incrustació de {provider}. Si la reproducció no està disponible, obre l'enllaç original a continuació.",
-      "useAsDefault": "Use as my default visibility"
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Activa l'anàlisi d'IA"
     },
     "thirdParty": {
       "title": "Tercers",
@@ -335,7 +337,9 @@
     "expectedNeedUtilities": "Expected Need Utilities Average",
     "editAction": "Editar acció",
     "save": "Desar",
-    "cancel": "Cancel·lar"
+    "cancel": "Cancel·lar",
+    "currency": "Moneda",
+    "selectCurrency": "Selecciona la moneda"
   },
   "agentChat": {
     "thinking": "Pensant...",
@@ -522,8 +526,10 @@
       },
       "areaDistributionLabel": "Pressupost d'àrea",
       "areaPrizeDistributionLabel": "Premi d'àrea",
+      "areaPremiumDistributionLabel": "Distribució de premis per àrea",
       "categoryDistributionLabel": "Pressupost de categoria",
       "categoryPrizeDistributionLabel": "Premi de categoria",
+      "categoryPremiumDistributionLabel": "Distribució de premis per categoria",
       "taskDistributionLabel": "Pressupost",
       "premiumLabel": "Premi",
       "totalLabel": "Total",
@@ -904,6 +910,7 @@
     "deleting": "Eliminant...",
     "confirmDelete": "Esteu segur que voleu eliminar aquesta nota?",
     "content": "Contingut de la nota",
+    "recipient": "Destinatari",
     "visibilityUpdated": "Visibilitat actualitzada correctament",
     "visibilityUpdateFailed": "No s'ha pogut actualitzar la visibilitat",
     "changeVisibility": "Canviar visibilitat",

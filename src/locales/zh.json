@@ -17,6 +17,7 @@
     "save": "保存",
     "cancel": "取消",
     "delete": "删除",
+    "remove": "移除",
     "loading": "加载中...",
     "error": "错误",
     "success": "成功",
@@ -132,7 +133,8 @@
       "action": "出版说明",
       "publishing": "发布中...",
       "embedHint": "{provider} 嵌入。如果无法播放，请点击下方原始链接。",
-      "useAsDefault": "Use as my default visibility"
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "启用人工智能分析"
     },
     "thirdParty": {
       "title": "第三方",
@@ -204,7 +206,9 @@
     "expectedNeedUtilities": "预期需求公用事业平均值",
     "editAction": "编辑操作",
     "save": "保存",
-    "cancel": "取消"
+    "cancel": "取消",
+    "currency": "货币",
+    "selectCurrency": "选择货币"
   },
   "social": {
     "title": "社交联系人",
@@ -616,8 +620,10 @@
       },
       "areaDistributionLabel": "区域预算",
       "areaPrizeDistributionLabel": "区域奖金",
+      "areaPremiumDistributionLabel": "按区域分配奖金",
       "categoryDistributionLabel": "类别预算",
       "categoryPrizeDistributionLabel": "类别奖金",
+      "categoryPremiumDistributionLabel": "按类别分配奖金",
       "taskDistributionLabel": "预算",
       "premiumLabel": "奖金",
       "totalLabel": "总计",
@@ -904,6 +910,7 @@
     "deleting": "正在删除...",
     "confirmDelete": "确定要删除此笔记吗？",
     "content": "笔记内容",
+    "recipient": "收件人",
     "visibilityUpdated": "可见性更新成功",
     "visibilityUpdateFailed": "可见性更新失败",
     "changeVisibility": "更改可见性",

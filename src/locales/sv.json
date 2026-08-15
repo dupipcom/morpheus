@@ -17,6 +17,7 @@
     "save": "Spara",
     "cancel": "Avbryt",
     "delete": "Radera",
+    "remove": "Ta bort",
     "loading": "Laddar...",
     "error": "Fel",
     "success": "Framgång",
@@ -135,7 +136,8 @@
       "action": "Publicera anteckning",
       "publishing": "Publicerar...",
       "embedHint": "{provider}-inbäddning. Om uppspelning inte är tillgänglig, öppna originallänken nedan.",
-      "useAsDefault": "Use as my default visibility"
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Aktivera AI-analys"
     },
     "thirdParty": {
       "title": "Tredjepart",
@@ -338,7 +340,9 @@
     "expectedNeedUtilities": "Förväntat genomsnitt för nödvändiga tjänster",
     "editAction": "Redigera åtgärd",
     "save": "Spara",
-    "cancel": "Avbryt"
+    "cancel": "Avbryt",
+    "currency": "Valuta",
+    "selectCurrency": "Välj valuta"
   },
   "agentChat": {
     "thinking": "Tänker...",
@@ -602,8 +606,10 @@
       },
       "areaDistributionLabel": "Områdesbudget",
       "areaPrizeDistributionLabel": "Områdespris",
+      "areaPremiumDistributionLabel": "Prisfördelning per område",
       "categoryDistributionLabel": "Kategoribudget",
       "categoryPrizeDistributionLabel": "Kategoripris",
+      "categoryPremiumDistributionLabel": "Prisfördelning per kategori",
       "taskDistributionLabel": "Budget",
       "premiumLabel": "Pris",
       "totalLabel": "Totalt",
@@ -907,6 +913,7 @@
     "deleting": "Raderar...",
     "confirmDelete": "Är du säker på att du vill radera denna anteckning?",
     "content": "Anteckningsinnehåll",
+    "recipient": "Mottagare",
     "visibilityUpdated": "Synlighet uppdaterades",
     "visibilityUpdateFailed": "Det gick inte att uppdatera synlighet",
     "changeVisibility": "Ändra synlighet",

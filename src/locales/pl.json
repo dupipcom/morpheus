@@ -14,6 +14,7 @@
     "save": "Zapisz",
     "cancel": "Anuluj",
     "delete": "Usuń",
+    "remove": "Usuń",
     "loading": "Ładowanie...",
     "error": "Błąd",
     "success": "Sukces",
@@ -136,7 +137,8 @@
       "action": "Opublikuj notatkę",
       "publishing": "Publikowanie...",
       "embedHint": "Osadzenie {provider}. Jeśli odtwarzanie jest niedostępne, otwórz oryginalny link poniżej.",
-      "useAsDefault": "Use as my default visibility"
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Włącz analizę AI"
     },
     "thirdParty": {
       "title": "Strona trzecia",
@@ -356,7 +358,9 @@
     "expectedNeedUtilities": "Przewidywane średnie koszty niezbędne",
     "editAction": "Edytuj akcję",
     "save": "Zapisz",
-    "cancel": "Anuluj"
+    "cancel": "Anuluj",
+    "currency": "Waluta",
+    "selectCurrency": "Wybierz walutę"
   },
   "agentChat": {
     "thinking": "Myślę...",
@@ -620,8 +624,10 @@
       },
       "areaDistributionLabel": "Budżet obszaru",
       "areaPrizeDistributionLabel": "Nagroda obszaru",
+      "areaPremiumDistributionLabel": "Podział nagród według obszaru",
       "categoryDistributionLabel": "Budżet kategorii",
       "categoryPrizeDistributionLabel": "Nagroda kategorii",
+      "categoryPremiumDistributionLabel": "Podział nagród według kategorii",
       "taskDistributionLabel": "Budżet",
       "premiumLabel": "Nagroda",
       "totalLabel": "Łącznie",
@@ -908,6 +914,7 @@
     "deleting": "Usuwanie...",
     "confirmDelete": "Czy na pewno chcesz usunąć tę notatkę?",
     "content": "Treść notatki",
+    "recipient": "Odbiorca",
     "visibilityUpdated": "Widoczność zaktualizowana pomyślnie",
     "visibilityUpdateFailed": "Nie udało się zaktualizować widoczności",
     "changeVisibility": "Zmień widoczność",

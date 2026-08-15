@@ -17,6 +17,7 @@
     "save": "Hifadhi",
     "cancel": "Ghairi",
     "delete": "Futa",
+    "remove": "Ondoa",
     "loading": "Inapakia...",
     "error": "Hitilafu",
     "success": "Mafanikio",
@@ -132,7 +133,8 @@
       "action": "Chapisha Maelezo",
       "publishing": "Inachapisha...",
       "embedHint": "Ingizo la {provider}. Ikiwa urejeshaji hauwezekani, fungua kiungo asili hapa chini.",
-      "useAsDefault": "Use as my default visibility"
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Washa uchambuzi wa AI"
     },
     "thirdParty": {
       "title": "Mhusika wa tatu",
@@ -205,7 +207,9 @@
     "expectedNeedUtilities": "Wastani wa Matumizi ya Mahitaji ya Kutarajiwa",
     "editAction": "Hariri kitendo",
     "cancel": "Ghairi",
-    "save": "Hifadhi"
+    "save": "Hifadhi",
+    "currency": "Sarafu",
+    "selectCurrency": "Chagua sarafu"
   },
   "actions": {
     "drankWater": "Kunywa maji",
@@ -614,8 +618,10 @@
       },
       "areaDistributionLabel": "Bajeti ya eneo",
       "areaPrizeDistributionLabel": "Tuzo ya eneo",
+      "areaPremiumDistributionLabel": "Usambazaji wa tuzo kwa eneo",
       "categoryDistributionLabel": "Bajeti ya kategoria",
       "categoryPrizeDistributionLabel": "Tuzo ya kategoria",
+      "categoryPremiumDistributionLabel": "Usambazaji wa tuzo kwa kategoria",
       "taskDistributionLabel": "Bajeti",
       "premiumLabel": "Tuzo",
       "totalLabel": "Jumla",
@@ -902,6 +908,7 @@
     "deleting": "Inafuta...",
     "confirmDelete": "Je, una uhakika unataka kufuta dokezo hili?",
     "content": "Maudhui ya dokezo",
+    "recipient": "Mpokeaji",
     "visibilityUpdated": "Uonekano umesasishwa kwa mafanikio",
     "visibilityUpdateFailed": "Imeshindwa kusasisha uonekano",
     "changeVisibility": "Badilisha uonekano",
