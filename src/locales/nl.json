@@ -927,7 +927,7 @@
     "inviteAccepted": "Uitnodiging geaccepteerd",
     "virtualNumber": {
       "label": "Virtueel nummer",
-      "hint": "Kies een van je telefoonnummers. Inkomende sms’jes naar dit nummer verschijnen in je chat.",
+      "hint": "Kies je telefoonnummers. Inkomende sms’jes naar deze nummers verschijnen in je chat.",
       "none": "Geen nummer",
       "loading": "Nummers laden…",
       "empty": "Geen nummers beschikbaar",
@@ -935,15 +935,15 @@
       "assignError": "Dit nummer kon niet worden opgeslagen",
       "assigned": "Nummer toegewezen",
       "cleared": "Nummer verwijderd",
-      "addNumber": "Add number…",
-      "removeNumber": "Remove number",
-      "quotaLabel": "{used} of {quota} numbers used",
-      "limitReached": "You have reached the maximum number of virtual numbers for your plan",
-      "buyCta": "Buy virtual number",
-      "gateHint": "Virtual numbers require a Donator plan. Buy a number to receive SMS in chat.",
-      "buyDialogTitle": "Donator plan required",
-      "buyDialogDescription": "Virtual numbers are included with the Donator plans. Choose a plan on the pricing page to get started.",
-      "buyDialogGoToPricing": "Go to pricing"
+      "addNumber": "Nummer toevoegen…",
+      "removeNumber": "Nummer verwijderen",
+      "quotaLabel": "{used} van {quota} nummers gebruikt",
+      "limitReached": "Je hebt het maximale aantal virtuele nummers voor je abonnement bereikt",
+      "buyCta": "Koop virtueel nummer",
+      "gateHint": "Virtuele nummers vereisen een Donator-abonnement. Koop een nummer om sms’jes te ontvangen in de chat.",
+      "buyDialogTitle": "Donator-abonnement vereist",
+      "buyDialogDescription": "Virtuele nummers zijn inbegrepen bij de Donator-abonnementen. Kies een abonnement op de prijzenpagina om te beginnen.",
+      "buyDialogGoToPricing": "Naar prijzen"
     },
     "sms": {
       "label": "SMS",

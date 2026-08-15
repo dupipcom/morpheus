@@ -925,7 +925,7 @@
     "inviteAccepted": "Ìdẹ ti gba",
     "virtualNumber": {
       "label": "Nọ́mbà àkànṣe",
-      "hint": "Yan ọ̀kan lára àwọn nọ́mbà fóònù rẹ. Àwọn SMS tó dé sí nọ́mbà yìí yóò hàn nínú ìjíròrò rẹ.",
+      "hint": "Yan àwọn nọ́mbà fóònù rẹ. Àwọn SMS tó dé sí àwọn nọ́mbà yìí yóò hàn nínú ìjíròrò rẹ.",
       "none": "Kò sí nọ́mbà",
       "loading": "Ń kó nọ́mbà…",
       "empty": "Kò sí nọ́mbà tó wà",
@@ -933,15 +933,15 @@
       "assignError": "Kò ṣeé ṣe láti fipamọ́ nọ́mbà yìí",
       "assigned": "A ti fi nọ́mbà sí",
       "cleared": "A ti yọ nọ́mbà kúrò",
-      "addNumber": "Add number…",
-      "removeNumber": "Remove number",
-      "quotaLabel": "{used} of {quota} numbers used",
-      "limitReached": "You have reached the maximum number of virtual numbers for your plan",
-      "buyCta": "Buy virtual number",
-      "gateHint": "Virtual numbers require a Donator plan. Buy a number to receive SMS in chat.",
-      "buyDialogTitle": "Donator plan required",
-      "buyDialogDescription": "Virtual numbers are included with the Donator plans. Choose a plan on the pricing page to get started.",
-      "buyDialogGoToPricing": "Go to pricing"
+      "addNumber": "Fi nọ́mbà kún…",
+      "removeNumber": "Yọ nọ́mbà kúrò",
+      "quotaLabel": "{used} nínú {quota} nọ́mbà ti jẹ́ lílò",
+      "limitReached": "O ti dé iye nọ́mbà aláìníyè tó pọ̀ jù fún ètò rẹ",
+      "buyCta": "Ra nọ́mbà aláìníyè",
+      "gateHint": "Àwọn nọ́mbà aláìníyè ń béèrè ètò Donator. Ra nọ́mbà kan láti gba SMS nínú ìjíròrò.",
+      "buyDialogTitle": "A ń béèrè ètò Donator",
+      "buyDialogDescription": "Àwọn nọ́mbà aláìníyè wà nínú àwọn ètò Donator. Yan ètò kan ní ojú-ìwé iye owó láti bẹ̀rẹ̀.",
+      "buyDialogGoToPricing": "Lọ sí iye owó"
     },
     "sms": {
       "label": "SMS",

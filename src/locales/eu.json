@@ -930,7 +930,7 @@
     "inviteAccepted": "Gonbidapena onartuta",
     "virtualNumber": {
       "label": "Zenbaki birtuala",
-      "hint": "Aukeratu zure telefono-zenbakietako bat. Zenbaki horretara iristen diren SMSak zure txatean agertuko dira.",
+      "hint": "Aukeratu zure telefono-zenbakiak. Zenbaki horietara iristen diren SMSak zure txatean agertuko dira.",
       "none": "Zenbakirik ez",
       "loading": "Zenbakiak kargatzen…",
       "empty": "Ez dago zenbakirik erabilgarri",
@@ -938,15 +938,15 @@
       "assignError": "Ezin izan da zenbaki hau gorde",
       "assigned": "Zenbakia esleitu da",
       "cleared": "Zenbakia kendu da",
-      "addNumber": "Add number…",
-      "removeNumber": "Remove number",
-      "quotaLabel": "{used} of {quota} numbers used",
-      "limitReached": "You have reached the maximum number of virtual numbers for your plan",
-      "buyCta": "Buy virtual number",
-      "gateHint": "Virtual numbers require a Donator plan. Buy a number to receive SMS in chat.",
-      "buyDialogTitle": "Donator plan required",
-      "buyDialogDescription": "Virtual numbers are included with the Donator plans. Choose a plan on the pricing page to get started.",
-      "buyDialogGoToPricing": "Go to pricing"
+      "addNumber": "Gehitu zenbakia…",
+      "removeNumber": "Kendu zenbakia",
+      "quotaLabel": "{quota} zenbakitik {used} erabilita",
+      "limitReached": "Zure planaren zenbaki birtualen gehieneko kopurura iritsi zara",
+      "buyCta": "Erosi zenbaki birtuala",
+      "gateHint": "Zenbaki birtualek Donator plana behar dute. Erosi zenbaki bat txatean SMSak jasotzeko.",
+      "buyDialogTitle": "Donator plana beharrezkoa da",
+      "buyDialogDescription": "Zenbaki birtualak Donator planetan daude barne. Hasteko, aukeratu plan bat prezioen orrian.",
+      "buyDialogGoToPricing": "Joan prezioetara"
     },
     "sms": {
       "label": "SMS",

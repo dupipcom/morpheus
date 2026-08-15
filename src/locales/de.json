@@ -927,7 +927,7 @@
     "inviteAccepted": "Einladung angenommen",
     "virtualNumber": {
       "label": "Virtuelle Nummer",
-      "hint": "Wähle eine deiner Telefonnummern. Eingehende SMS an diese Nummer erscheinen in deinem Chat.",
+      "hint": "Wähle deine Telefonnummern. Eingehende SMS an diese Nummern erscheinen in deinem Chat.",
       "none": "Keine Nummer",
       "loading": "Nummern werden geladen…",
       "empty": "Keine Nummern verfügbar",
@@ -935,15 +935,15 @@
       "assignError": "Diese Nummer konnte nicht gespeichert werden",
       "assigned": "Nummer zugewiesen",
       "cleared": "Nummer entfernt",
-      "addNumber": "Add number…",
-      "removeNumber": "Remove number",
-      "quotaLabel": "{used} of {quota} numbers used",
-      "limitReached": "You have reached the maximum number of virtual numbers for your plan",
-      "buyCta": "Buy virtual number",
-      "gateHint": "Virtual numbers require a Donator plan. Buy a number to receive SMS in chat.",
-      "buyDialogTitle": "Donator plan required",
-      "buyDialogDescription": "Virtual numbers are included with the Donator plans. Choose a plan on the pricing page to get started.",
-      "buyDialogGoToPricing": "Go to pricing"
+      "addNumber": "Nummer hinzufügen…",
+      "removeNumber": "Nummer entfernen",
+      "quotaLabel": "{used} von {quota} Nummern verwendet",
+      "limitReached": "Du hast die maximale Anzahl virtueller Nummern für deinen Tarif erreicht",
+      "buyCta": "Virtuelle Nummer kaufen",
+      "gateHint": "Virtuelle Nummern erfordern einen Donator-Tarif. Kaufe eine Nummer, um SMS im Chat zu empfangen.",
+      "buyDialogTitle": "Donator-Tarif erforderlich",
+      "buyDialogDescription": "Virtuelle Nummern sind in den Donator-Tarifen enthalten. Wähle auf der Preisseite einen Tarif, um loszulegen.",
+      "buyDialogGoToPricing": "Zu den Preisen"
     },
     "sms": {
       "label": "SMS",

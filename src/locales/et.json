@@ -927,7 +927,7 @@
     "inviteAccepted": "Kutse vastu võetud",
     "virtualNumber": {
       "label": "Virtuaalnumber",
-      "hint": "Vali üks oma telefoninumbritest. Sellele numbrile saabuvad SMS-id kuvatakse sinu vestluses.",
+      "hint": "Vali oma telefoninumbrid. Nendele numbritele saabuvad SMS-id kuvatakse sinu vestluses.",
       "none": "Numbrit pole",
       "loading": "Numbrite laadimine…",
       "empty": "Ühtegi numbrit pole saadaval",
@@ -935,15 +935,15 @@
       "assignError": "Seda numbrit ei õnnestunud salvestada",
       "assigned": "Number määratud",
       "cleared": "Number eemaldatud",
-      "addNumber": "Add number…",
-      "removeNumber": "Remove number",
-      "quotaLabel": "{used} of {quota} numbers used",
-      "limitReached": "You have reached the maximum number of virtual numbers for your plan",
-      "buyCta": "Buy virtual number",
-      "gateHint": "Virtual numbers require a Donator plan. Buy a number to receive SMS in chat.",
-      "buyDialogTitle": "Donator plan required",
-      "buyDialogDescription": "Virtual numbers are included with the Donator plans. Choose a plan on the pricing page to get started.",
-      "buyDialogGoToPricing": "Go to pricing"
+      "addNumber": "Lisa number…",
+      "removeNumber": "Eemalda number",
+      "quotaLabel": "Kasutusel {used} numbrit {quota}-st",
+      "limitReached": "Oled jõudnud oma paketi maksimaalse virtuaalnumbrite arvuni",
+      "buyCta": "Osta virtuaalnumber",
+      "gateHint": "Virtuaalnumbrid nõuavad Donatori paketti. Osta number, et saada vestluses SMS-e.",
+      "buyDialogTitle": "Nõutav on Donatori pakett",
+      "buyDialogDescription": "Virtuaalnumbrid sisalduvad Donatori pakettides. Alustamiseks vali pakett hinnalehelt.",
+      "buyDialogGoToPricing": "Mine hindade juurde"
     },
     "sms": {
       "label": "SMS",

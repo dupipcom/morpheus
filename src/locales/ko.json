@@ -927,7 +927,7 @@
     "inviteAccepted": "초대가 수락되었습니다",
     "virtualNumber": {
       "label": "가상 번호",
-      "hint": "전화번호 중 하나를 선택하세요. 이 번호로 오는 SMS가 채팅에 표시됩니다.",
+      "hint": "전화번호를 선택하세요. 이 번호들로 오는 SMS가 채팅에 표시됩니다.",
       "none": "번호 없음",
       "loading": "번호 불러오는 중…",
       "empty": "사용 가능한 번호가 없습니다",
@@ -935,15 +935,15 @@
       "assignError": "이 번호를 저장하지 못했습니다",
       "assigned": "번호가 할당되었습니다",
       "cleared": "번호가 제거되었습니다",
-      "addNumber": "Add number…",
-      "removeNumber": "Remove number",
-      "quotaLabel": "{used} of {quota} numbers used",
-      "limitReached": "You have reached the maximum number of virtual numbers for your plan",
-      "buyCta": "Buy virtual number",
-      "gateHint": "Virtual numbers require a Donator plan. Buy a number to receive SMS in chat.",
-      "buyDialogTitle": "Donator plan required",
-      "buyDialogDescription": "Virtual numbers are included with the Donator plans. Choose a plan on the pricing page to get started.",
-      "buyDialogGoToPricing": "Go to pricing"
+      "addNumber": "번호 추가…",
+      "removeNumber": "번호 제거",
+      "quotaLabel": "{quota}개 중 {used}개 사용 중",
+      "limitReached": "요금제의 가상 번호 최대 개수에 도달했습니다",
+      "buyCta": "가상 번호 구매",
+      "gateHint": "가상 번호에는 Donator 요금제가 필요합니다. 채팅에서 SMS를 받으려면 번호를 구매하세요.",
+      "buyDialogTitle": "Donator 요금제 필요",
+      "buyDialogDescription": "가상 번호는 Donator 요금제에 포함되어 있습니다. 시작하려면 가격 페이지에서 요금제를 선택하세요.",
+      "buyDialogGoToPricing": "가격 보기"
     },
     "sms": {
       "label": "SMS",

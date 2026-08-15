@@ -927,7 +927,7 @@
     "inviteAccepted": "Meghívó elfogadva",
     "virtualNumber": {
       "label": "Virtuális szám",
-      "hint": "Válassz egyet a telefonszámaid közül. Az erre a számra érkező SMS-ek megjelennek a csevegésedben.",
+      "hint": "Válaszd ki a telefonszámaidat. Az ezekre a számokra érkező SMS-ek megjelennek a csevegésedben.",
       "none": "Nincs szám",
       "loading": "Számok betöltése…",
       "empty": "Nincs elérhető szám",
@@ -935,15 +935,15 @@
       "assignError": "Nem sikerült menteni ezt a számot",
       "assigned": "Szám hozzárendelve",
       "cleared": "Szám eltávolítva",
-      "addNumber": "Add number…",
-      "removeNumber": "Remove number",
-      "quotaLabel": "{used} of {quota} numbers used",
-      "limitReached": "You have reached the maximum number of virtual numbers for your plan",
-      "buyCta": "Buy virtual number",
-      "gateHint": "Virtual numbers require a Donator plan. Buy a number to receive SMS in chat.",
-      "buyDialogTitle": "Donator plan required",
-      "buyDialogDescription": "Virtual numbers are included with the Donator plans. Choose a plan on the pricing page to get started.",
-      "buyDialogGoToPricing": "Go to pricing"
+      "addNumber": "Szám hozzáadása…",
+      "removeNumber": "Szám eltávolítása",
+      "quotaLabel": "{quota} számból {used} használatban",
+      "limitReached": "Elérted a csomagodhoz tartozó virtuális számok maximális számát",
+      "buyCta": "Virtuális szám vásárlása",
+      "gateHint": "A virtuális számokhoz Donator csomag szükséges. Vásárolj számot, hogy SMS-eket fogadj a csevegésben.",
+      "buyDialogTitle": "Donator csomag szükséges",
+      "buyDialogDescription": "A virtuális számok a Donator csomagok részét képezik. A kezdéshez válassz csomagot az árazási oldalon.",
+      "buyDialogGoToPricing": "Ugrás az árazáshoz"
     },
     "sms": {
       "label": "SMS",

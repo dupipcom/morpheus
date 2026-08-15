@@ -931,7 +931,7 @@
     "inviteAccepted": "Davet kabul edildi",
     "virtualNumber": {
       "label": "Sanal numara",
-      "hint": "Telefon numaralarından birini seç. Bu numaraya gelen SMS’ler sohbetinde görünecek.",
+      "hint": "Telefon numaralarını seç. Bu numaralara gelen SMS’ler sohbetinde görünecek.",
       "none": "Numara yok",
       "loading": "Numaralar yükleniyor…",
       "empty": "Kullanılabilir numara yok",
@@ -939,15 +939,15 @@
       "assignError": "Bu numara kaydedilemedi",
       "assigned": "Numara atandı",
       "cleared": "Numara kaldırıldı",
-      "addNumber": "Add number…",
-      "removeNumber": "Remove number",
-      "quotaLabel": "{used} of {quota} numbers used",
-      "limitReached": "You have reached the maximum number of virtual numbers for your plan",
-      "buyCta": "Buy virtual number",
-      "gateHint": "Virtual numbers require a Donator plan. Buy a number to receive SMS in chat.",
-      "buyDialogTitle": "Donator plan required",
-      "buyDialogDescription": "Virtual numbers are included with the Donator plans. Choose a plan on the pricing page to get started.",
-      "buyDialogGoToPricing": "Go to pricing"
+      "addNumber": "Numara ekle…",
+      "removeNumber": "Numarayı kaldır",
+      "quotaLabel": "{quota} numaradan {used} tanesi kullanımda",
+      "limitReached": "Planın için maksimum sanal numara sayısına ulaştın",
+      "buyCta": "Sanal numara satın al",
+      "gateHint": "Sanal numaralar Donator planı gerektirir. Sohbette SMS almak için bir numara satın al.",
+      "buyDialogTitle": "Donator planı gerekli",
+      "buyDialogDescription": "Sanal numaralar Donator planlarına dahildir. Başlamak için fiyatlandırma sayfasından bir plan seç.",
+      "buyDialogGoToPricing": "Fiyatlandırmaya git"
     },
     "sms": {
       "label": "SMS",

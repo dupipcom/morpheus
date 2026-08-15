@@ -927,7 +927,7 @@
     "inviteAccepted": "邀请已接受",
     "virtualNumber": {
       "label": "虚拟号码",
-      "hint": "选择一个电话号码。发到此号码的短信会显示在你的聊天中。",
+      "hint": "选择你的电话号码。发到这些号码的短信会显示在你的聊天中。",
       "none": "无号码",
       "loading": "正在加载号码…",
       "empty": "没有可用号码",
@@ -935,15 +935,15 @@
       "assignError": "无法保存此号码",
       "assigned": "号码已分配",
       "cleared": "号码已清除",
-      "addNumber": "Add number…",
-      "removeNumber": "Remove number",
-      "quotaLabel": "{used} of {quota} numbers used",
-      "limitReached": "You have reached the maximum number of virtual numbers for your plan",
-      "buyCta": "Buy virtual number",
-      "gateHint": "Virtual numbers require a Donator plan. Buy a number to receive SMS in chat.",
-      "buyDialogTitle": "Donator plan required",
-      "buyDialogDescription": "Virtual numbers are included with the Donator plans. Choose a plan on the pricing page to get started.",
-      "buyDialogGoToPricing": "Go to pricing"
+      "addNumber": "添加号码…",
+      "removeNumber": "移除号码",
+      "quotaLabel": "已使用 {used} / {quota} 个号码",
+      "limitReached": "你已达到套餐的虚拟号码数量上限",
+      "buyCta": "购买虚拟号码",
+      "gateHint": "虚拟号码需要 Donator 套餐。购买号码即可在聊天中接收短信。",
+      "buyDialogTitle": "需要 Donator 套餐",
+      "buyDialogDescription": "虚拟号码包含在 Donator 套餐中。请在定价页面选择一个套餐开始使用。",
+      "buyDialogGoToPricing": "前往定价"
     },
     "sms": {
       "label": "短信",

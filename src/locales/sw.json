@@ -925,7 +925,7 @@
     "inviteAccepted": "Mwaliko umekubaliwa",
     "virtualNumber": {
       "label": "Namba pepe",
-      "hint": "Chagua mojawapo ya namba zako za simu. SMS zinazoingia kwenye namba hii zitaonekana kwenye mazungumzo yako.",
+      "hint": "Chagua namba zako za simu. SMS zinazoingia kwenye namba hizi zitaonekana kwenye mazungumzo yako.",
       "none": "Hakuna namba",
       "loading": "Inapakia namba…",
       "empty": "Hakuna namba zinazopatikana",
@@ -933,15 +933,15 @@
       "assignError": "Haikuwezekana kuhifadhi namba hii",
       "assigned": "Namba imepewa",
       "cleared": "Namba imeondolewa",
-      "addNumber": "Add number…",
-      "removeNumber": "Remove number",
-      "quotaLabel": "{used} of {quota} numbers used",
-      "limitReached": "You have reached the maximum number of virtual numbers for your plan",
-      "buyCta": "Buy virtual number",
-      "gateHint": "Virtual numbers require a Donator plan. Buy a number to receive SMS in chat.",
-      "buyDialogTitle": "Donator plan required",
-      "buyDialogDescription": "Virtual numbers are included with the Donator plans. Choose a plan on the pricing page to get started.",
-      "buyDialogGoToPricing": "Go to pricing"
+      "addNumber": "Ongeza namba…",
+      "removeNumber": "Ondoa namba",
+      "quotaLabel": "{used} kati ya {quota} namba zimetumika",
+      "limitReached": "Umefikia idadi ya juu ya namba pepe kwa mpango wako",
+      "buyCta": "Nunua namba pepe",
+      "gateHint": "Namba pepe zinahitaji mpango wa Donator. Nunua namba ili kupokea SMS kwenye mazungumzo.",
+      "buyDialogTitle": "Mpango wa Donator unahitajika",
+      "buyDialogDescription": "Namba pepe zinajumuishwa katika mipango ya Donator. Chagua mpango kwenye ukurasa wa bei ili kuanza.",
+      "buyDialogGoToPricing": "Nenda kwenye bei"
     },
     "sms": {
       "label": "SMS",

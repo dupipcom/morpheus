@@ -927,7 +927,7 @@
     "inviteAccepted": "ההזמנה התקבלה",
     "virtualNumber": {
       "label": "מספר וירטואלי",
-      "hint": "בחר אחד ממספרי הטלפון שלך. הודעות SMS נכנסות למספר זה יופיעו בצ’אט שלך.",
+      "hint": "בחר את מספרי הטלפון שלך. הודעות SMS נכנסות למספרים אלה יופיעו בצ’אט שלך.",
       "none": "ללא מספר",
       "loading": "טוען מספרים…",
       "empty": "אין מספרים זמינים",
@@ -935,15 +935,15 @@
       "assignError": "לא ניתן היה לשמור מספר זה",
       "assigned": "המספר שויך",
       "cleared": "המספר הוסר",
-      "addNumber": "Add number…",
-      "removeNumber": "Remove number",
-      "quotaLabel": "{used} of {quota} numbers used",
-      "limitReached": "You have reached the maximum number of virtual numbers for your plan",
-      "buyCta": "Buy virtual number",
-      "gateHint": "Virtual numbers require a Donator plan. Buy a number to receive SMS in chat.",
-      "buyDialogTitle": "Donator plan required",
-      "buyDialogDescription": "Virtual numbers are included with the Donator plans. Choose a plan on the pricing page to get started.",
-      "buyDialogGoToPricing": "Go to pricing"
+      "addNumber": "הוסף מספר…",
+      "removeNumber": "הסר מספר",
+      "quotaLabel": "בשימוש {used} מתוך {quota} מספרים",
+      "limitReached": "הגעת למספר המרבי של מספרים וירטואליים בתוכנית שלך",
+      "buyCta": "קנה מספר וירטואלי",
+      "gateHint": "מספרים וירטואליים דורשים תוכנית Donator. קנה מספר כדי לקבל SMS בצ’אט.",
+      "buyDialogTitle": "נדרשת תוכנית Donator",
+      "buyDialogDescription": "מספרים וירטואליים כלולים בתוכניות Donator. בחר תוכנית בדף התמחור כדי להתחיל.",
+      "buyDialogGoToPricing": "עבור לתמחור"
     },
     "sms": {
       "label": "SMS",

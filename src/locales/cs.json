@@ -927,7 +927,7 @@
     "inviteAccepted": "Pozvánka přijata",
     "virtualNumber": {
       "label": "Virtuální číslo",
-      "hint": "Vyberte si jedno ze svých telefonních čísel. Příchozí SMS na toto číslo se zobrazí ve vašem chatu.",
+      "hint": "Vyberte si svá telefonní čísla. Příchozí SMS na tato čísla se zobrazí ve vašem chatu.",
       "none": "Žádné číslo",
       "loading": "Načítání čísel…",
       "empty": "Žádná dostupná čísla",
@@ -935,15 +935,15 @@
       "assignError": "Toto číslo se nepodařilo uložit",
       "assigned": "Číslo přiřazeno",
       "cleared": "Číslo odebráno",
-      "addNumber": "Add number…",
-      "removeNumber": "Remove number",
-      "quotaLabel": "{used} of {quota} numbers used",
-      "limitReached": "You have reached the maximum number of virtual numbers for your plan",
-      "buyCta": "Buy virtual number",
-      "gateHint": "Virtual numbers require a Donator plan. Buy a number to receive SMS in chat.",
-      "buyDialogTitle": "Donator plan required",
-      "buyDialogDescription": "Virtual numbers are included with the Donator plans. Choose a plan on the pricing page to get started.",
-      "buyDialogGoToPricing": "Go to pricing"
+      "addNumber": "Přidat číslo…",
+      "removeNumber": "Odebrat číslo",
+      "quotaLabel": "Použito {used} z {quota} čísel",
+      "limitReached": "Dosáhli jste maximálního počtu virtuálních čísel pro váš tarif",
+      "buyCta": "Koupit virtuální číslo",
+      "gateHint": "Virtuální čísla vyžadují tarif Donator. Kupte si číslo pro příjem SMS v chatu.",
+      "buyDialogTitle": "Je vyžadován tarif Donator",
+      "buyDialogDescription": "Virtuální čísla jsou součástí tarifů Donator. Vyberte si tarif na stránce cen a začněte.",
+      "buyDialogGoToPricing": "Přejít na ceny"
     },
     "sms": {
       "label": "SMS",
