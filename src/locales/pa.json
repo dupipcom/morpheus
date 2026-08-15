@@ -14,6 +14,7 @@
     "save": "ਸੇਵ ਕਰੋ",
     "cancel": "ਰੱਦ ਕਰੋ",
     "delete": "ਮਿਟਾਓ",
+    "remove": "ਹਟਾਓ",
     "loading": "ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...",
     "error": "ਗਲਤੀ",
     "success": "ਸਫਲ",
@@ -136,7 +137,8 @@
       "action": "Publish Note",
       "publishing": "ਪ੍ਰਕਾਸ਼ਿਤ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ...",
       "embedHint": "{provider} ਐਂਬੈੱਡ। ਜੇਕਰ ਪਲੇਬੈੱਕ ਉਪਲਬਧ ਨਹੀਂ ਹੈ, ਤਾਂ ਹੇਠਾਂ ਅਸਲ ਲਿੰਕ ਖੋਲ੍ਹੋ।",
-      "useAsDefault": "Use as my default visibility"
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "AI ਵਿਸ਼ਲੇਸ਼ਣ ਚਾਲੂ ਕਰੋ"
     },
     "thirdParty": {
       "title": "ਤੀਜਾ ਪੱਖ",
@@ -339,7 +341,9 @@
     "expectedNeedUtilities": "ਲੋੜੀਂਦੇ ਉਪਯੋਗਤਾਵਾਂ ਦੀ ਔਸਤ",
     "editAction": "ਐਕਸ਼ਨ ਸੰਪਾਦਿਤ ਕਰੋ",
     "save": "ਸੇਵ ਕਰੋ",
-    "cancel": "ਰੱਦ ਕਰੋ"
+    "cancel": "ਰੱਦ ਕਰੋ",
+    "currency": "ਮੁਦਰਾ",
+    "selectCurrency": "ਮੁਦਰਾ ਚੁਣੋ"
   },
   "agentChat": {
     "thinking": "ਸੋਚ ਰਿਹਾ ਹਾਂ...",
@@ -603,8 +607,10 @@
       },
       "areaDistributionLabel": "ਖੇਤਰ ਬਜਟ",
       "areaPrizeDistributionLabel": "ਖੇਤਰ ਇਨਾਮ",
+      "areaPremiumDistributionLabel": "ਖੇਤਰ ਅਨੁਸਾਰ ਇਨਾਮ ਵੰਡ",
       "categoryDistributionLabel": "ਸ਼੍ਰੇਣੀ ਬਜਟ",
       "categoryPrizeDistributionLabel": "ਸ਼੍ਰੇਣੀ ਇਨਾਮ",
+      "categoryPremiumDistributionLabel": "ਸ਼੍ਰੇਣੀ ਅਨੁਸਾਰ ਇਨਾਮ ਵੰਡ",
       "taskDistributionLabel": "ਬਜਟ",
       "premiumLabel": "ਇਨਾਮ",
       "totalLabel": "ਕੁੱਲ",
@@ -908,6 +914,7 @@
     "deleting": "ਮਿਟਾਇਆ ਜਾ ਰਿਹਾ ਹੈ...",
     "confirmDelete": "ਕੀ ਤੁਸੀਂ ਸੱਚਮੁੱਚ ਇਸ ਨੋਟ ਨੂੰ ਮਿਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ?",
     "content": "ਨੋਟ ਦੀ ਸਮੱਗਰੀ",
+    "recipient": "ਪ੍ਰਾਪਤਕਰਤਾ",
     "visibilityUpdated": "ਦਿੱਖ ਸਫਲਤਾਪੂਰਵਕ ਅੱਪਡੇਟ ਕੀਤੀ ਗਈ",
     "visibilityUpdateFailed": "ਦਿੱਖ ਅੱਪਡੇਟ ਕਰਨ ਵਿੱਚ ਅਸਫਲ",
     "changeVisibility": "ਦਿੱਖ ਬਦਲੋ",

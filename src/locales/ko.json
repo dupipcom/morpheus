@@ -17,6 +17,7 @@
     "save": "저장",
     "cancel": "취소",
     "delete": "삭제",
+    "remove": "제거",
     "loading": "로딩 중...",
     "error": "오류",
     "success": "성공",
@@ -132,7 +133,8 @@
       "action": "노트 게시",
       "publishing": "게시 중...",
       "embedHint": "{provider} 임베드. 재생이 불가능한 경우 아래 원본 링크를 여세요.",
-      "useAsDefault": "Use as my default visibility"
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "AI 분석 활성화"
     },
     "thirdParty": {
       "title": "제3자",
@@ -344,7 +346,9 @@
     "expectedNeedUtilities": "예상 필수 공과금 평균",
     "editAction": "작업 편집",
     "save": "저장",
-    "cancel": "취소"
+    "cancel": "취소",
+    "currency": "통화",
+    "selectCurrency": "통화 선택"
   },
   "agentChat": {
     "thinking": "생각 중...",
@@ -616,8 +620,10 @@
       },
       "areaDistributionLabel": "영역 예산",
       "areaPrizeDistributionLabel": "영역 상금",
+      "areaPremiumDistributionLabel": "영역별 상금 분배",
       "categoryDistributionLabel": "카테고리 예산",
       "categoryPrizeDistributionLabel": "카테고리 상금",
+      "categoryPremiumDistributionLabel": "카테고리별 상금 분배",
       "taskDistributionLabel": "예산",
       "premiumLabel": "상금",
       "totalLabel": "합계",
@@ -904,6 +910,7 @@
     "deleting": "삭제 중...",
     "confirmDelete": "이 노트를 삭제하시겠습니까?",
     "content": "노트 내용",
+    "recipient": "수신자",
     "visibilityUpdated": "공개 설정이 성공적으로 업데이트되었습니다",
     "visibilityUpdateFailed": "공개 설정 업데이트에 실패했습니다",
     "changeVisibility": "공개 설정 변경",

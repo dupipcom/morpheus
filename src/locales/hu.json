@@ -17,6 +17,7 @@
     "save": "Mentés",
     "cancel": "Mégse",
     "delete": "Törlés",
+    "remove": "Eltávolítás",
     "loading": "Betöltés...",
     "error": "Hiba",
     "success": "Sikeres",
@@ -132,7 +133,8 @@
       "action": "Jegyzet közzététele",
       "publishing": "Közzététel...",
       "embedHint": "{provider} beágyazás. Ha a lejátszás nem elérhető, nyisd meg az eredeti linket lent.",
-      "useAsDefault": "Use as my default visibility"
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "AI-elemzés engedélyezése"
     },
     "thirdParty": {
       "title": "Harmadik fél",
@@ -335,7 +337,9 @@
     "expectedNeedUtilities": "Expected Need Utilities Average",
     "editAction": "Művelet szerkesztése",
     "save": "Mentés",
-    "cancel": "Mégse"
+    "cancel": "Mégse",
+    "currency": "Pénznem",
+    "selectCurrency": "Pénznem kiválasztása"
   },
   "agentChat": {
     "thinking": "Gondolkodom...",
@@ -599,8 +603,10 @@
       },
       "areaDistributionLabel": "Terület költségvetés",
       "areaPrizeDistributionLabel": "Terület díj",
+      "areaPremiumDistributionLabel": "Díjelosztás területenként",
       "categoryDistributionLabel": "Kategória költségvetés",
       "categoryPrizeDistributionLabel": "Kategória díj",
+      "categoryPremiumDistributionLabel": "Díjelosztás kategóriánként",
       "taskDistributionLabel": "Költségvetés",
       "premiumLabel": "Díj",
       "totalLabel": "Összesen",
@@ -904,6 +910,7 @@
     "deleting": "Törlés...",
     "confirmDelete": "Biztosan törölni szeretnéd ezt a megjegyzést?",
     "content": "Megjegyzés tartalma",
+    "recipient": "Címzett",
     "visibilityUpdated": "Láthatóság sikeresen frissítve",
     "visibilityUpdateFailed": "Nem sikerült frissíteni a láthatóságot",
     "changeVisibility": "Láthatóság módosítása",

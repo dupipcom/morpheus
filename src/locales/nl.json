@@ -17,6 +17,7 @@
     "save": "Opslaan",
     "cancel": "Annuleren",
     "delete": "Verwijderen",
+    "remove": "Verwijderen",
     "loading": "Laden...",
     "error": "Fout",
     "success": "Succes",
@@ -132,7 +133,8 @@
       "action": "Publiceer notitie",
       "publishing": "Publiceren...",
       "embedHint": "{provider}-insluiting. Als afspelen niet beschikbaar is, open dan de originele link hieronder.",
-      "useAsDefault": "Use as my default visibility"
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "AI-analyse inschakelen"
     },
     "thirdParty": {
       "title": "Derde partij",
@@ -335,7 +337,9 @@
     "expectedNeedUtilities": "Expected Need Utilities Average",
     "editAction": "Actie bewerken",
     "save": "Opslaan",
-    "cancel": "Annuleren"
+    "cancel": "Annuleren",
+    "currency": "Valuta",
+    "selectCurrency": "Valuta selecteren"
   },
   "agentChat": {
     "thinking": "Denken...",
@@ -599,8 +603,10 @@
       },
       "areaDistributionLabel": "Gebiedsbudget",
       "areaPrizeDistributionLabel": "Gebiedsprijs",
+      "areaPremiumDistributionLabel": "Prijsverdeling per gebied",
       "categoryDistributionLabel": "Categoriebudget",
       "categoryPrizeDistributionLabel": "Categorieprijs",
+      "categoryPremiumDistributionLabel": "Prijsverdeling per categorie",
       "taskDistributionLabel": "Budget",
       "premiumLabel": "Prijs",
       "totalLabel": "Totaal",
@@ -904,6 +910,7 @@
     "deleting": "Verwijderen...",
     "confirmDelete": "Weet u zeker dat u deze notitie wilt verwijderen?",
     "content": "Notitie-inhoud",
+    "recipient": "Ontvanger",
     "visibilityUpdated": "Zichtbaarheid succesvol bijgewerkt",
     "visibilityUpdateFailed": "Bijwerken van zichtbaarheid mislukt",
     "changeVisibility": "Zichtbaarheid wijzigen",
