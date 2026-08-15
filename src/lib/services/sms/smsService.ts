@@ -113,9 +113,35 @@ export async function sendSmsMessage(input: {
     throw new SmsError('MESSAGE_TOO_LONG', `Message content must be ${SMS_MAX_TEXT_LENGTH} characters or fewer`)
   }
 
-  const virtualNumber = await prisma.virtualNumber.findUnique({ where: { userId: input.userId } })
+  // From-number: the number that received the inbound that opened this
+  // conversation, else the user's first assigned number (backfilled lazily).
+  let virtualNumber = conversation.virtualNumberId
+    ? await prisma.virtualNumber.findUnique({
+        where: { id: conversation.virtualNumberId },
+        select: { id: true, phoneNumber: true, messagingProfileId: true }
+      })
+    : null
+
+  if (!virtualNumber || virtualNumber.messagingProfileId === null) {
+    virtualNumber = null
+  }
+
   if (!virtualNumber) {
-    throw new SmsError('NO_VIRTUAL_NUMBER', 'No virtual number assigned')
+    const first = await prisma.virtualNumber.findFirst({
+      where: { userId: input.userId, messagingProfileId: { not: null } },
+      orderBy: { createdAt: 'asc' },
+      select: { id: true, phoneNumber: true }
+    })
+    if (!first) {
+      throw new SmsError('NO_VIRTUAL_NUMBER', 'No virtual number assigned')
+    }
+    virtualNumber = first
+    if (conversation.virtualNumberId !== first.id) {
+      await prisma.smsConversation.update({
+        where: { id: conversation.id },
+        data: { virtualNumberId: first.id }
+      })
+    }
   }
 
   let result

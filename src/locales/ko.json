@@ -934,7 +934,16 @@
       "error": "번호를 불러오지 못했습니다",
       "assignError": "이 번호를 저장하지 못했습니다",
       "assigned": "번호가 할당되었습니다",
-      "cleared": "번호가 제거되었습니다"
+      "cleared": "번호가 제거되었습니다",
+      "addNumber": "Add number…",
+      "removeNumber": "Remove number",
+      "quotaLabel": "{used} of {quota} numbers used",
+      "limitReached": "You have reached the maximum number of virtual numbers for your plan",
+      "buyCta": "Buy virtual number",
+      "gateHint": "Virtual numbers require a Donator plan. Buy a number to receive SMS in chat.",
+      "buyDialogTitle": "Donator plan required",
+      "buyDialogDescription": "Virtual numbers are included with the Donator plans. Choose a plan on the pricing page to get started.",
+      "buyDialogGoToPricing": "Go to pricing"
     },
     "sms": {
       "label": "SMS",
