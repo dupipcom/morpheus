@@ -17,6 +17,7 @@
     "save": "Fipamọ́",
     "cancel": "Fagilé",
     "delete": "Pa",
+    "remove": "Yọ kúrò",
     "loading": "Ó ń gbé...",
     "error": "Àṣìṣe",
     "success": "Àṣeyọrí",
@@ -132,7 +133,8 @@
       "action": "Tẹ àkọsílẹ̀ jáde",
       "publishing": "Nigbagbọgbọ...",
       "embedHint": "Ifibọ {provider}. Ti ifaworanhan ko ba ṣeeṣe, ṣii ọna asopọ atilẹba ni isalẹ.",
-      "useAsDefault": "Use as my default visibility"
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Mú ìtúpalẹ̀ AI ṣiṣẹ́"
     },
     "thirdParty": {
       "title": "Ẹgbẹ́ kẹta",
@@ -205,7 +207,9 @@
     "expectedNeedUtilities": "Ìwọ̀n Ìnáwó Ìbẹ̀rù Tí A Rètí",
     "editAction": "Ṣàtúnṣe ìṣẹ́",
     "cancel": "Fagilé",
-    "save": "Fipamọ́"
+    "save": "Fipamọ́",
+    "currency": "Owó",
+    "selectCurrency": "Yan owó"
   },
   "actions": {
     "drankWater": "Mu omi",
@@ -614,8 +618,10 @@
       },
       "areaDistributionLabel": "Isuna agbegbe",
       "areaPrizeDistributionLabel": "Ẹbun agbegbe",
+      "areaPremiumDistributionLabel": "Pínpín ẹ̀bùn nípa agbègbè",
       "categoryDistributionLabel": "Isuna ẹka",
       "categoryPrizeDistributionLabel": "Ẹbun ẹka",
+      "categoryPremiumDistributionLabel": "Pínpín ẹ̀bùn nípa ẹ̀ka",
       "taskDistributionLabel": "Isuna",
       "premiumLabel": "Ẹbun",
       "totalLabel": "Lapapọ",
@@ -902,6 +908,7 @@
     "deleting": "Npaarẹ...",
     "confirmDelete": "Ṣe o da ọ loju pe o fẹ paarẹ akọsilẹ yii?",
     "content": "Akoonu akọsilẹ",
+    "recipient": "Olùgbà",
     "visibilityUpdated": "Iranwo ti ni imudojuiwọn ni aṣeyọri",
     "visibilityUpdateFailed": "Ko ṣe imudojuiwọn iranwo",
     "changeVisibility": "Ṣe iyipada iranwo",

@@ -14,6 +14,7 @@
     "save": "Simpan",
     "cancel": "Batal",
     "delete": "Padam",
+    "remove": "Buang",
     "loading": "Memuat...",
     "error": "Ralat",
     "success": "Berjaya",
@@ -136,7 +137,8 @@
       "action": "Publish Note",
       "publishing": "Menerbitkan...",
       "embedHint": "Sematan {provider}. Jika main balik tidak tersedia, buka pautan asal di bawah.",
-      "useAsDefault": "Use as my default visibility"
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Dayakan analisis AI"
     },
     "thirdParty": {
       "title": "Pihak ketiga",
@@ -339,7 +341,9 @@
     "expectedNeedUtilities": "Expected Need Utilities Average",
     "editAction": "Edit tindakan",
     "save": "Simpan",
-    "cancel": "Batal"
+    "cancel": "Batal",
+    "currency": "Mata wang",
+    "selectCurrency": "Pilih mata wang"
   },
   "agentChat": {
     "thinking": "Berfikir...",
@@ -603,8 +607,10 @@
       },
       "areaDistributionLabel": "Bajet kawasan",
       "areaPrizeDistributionLabel": "Hadiah kawasan",
+      "areaPremiumDistributionLabel": "Pengagihan hadiah mengikut kawasan",
       "categoryDistributionLabel": "Bajet kategori",
       "categoryPrizeDistributionLabel": "Hadiah kategori",
+      "categoryPremiumDistributionLabel": "Pengagihan hadiah mengikut kategori",
       "taskDistributionLabel": "Bajet",
       "premiumLabel": "Hadiah",
       "totalLabel": "Jumlah",
@@ -908,6 +914,7 @@
     "deleting": "Memadam...",
     "confirmDelete": "Adakah anda pasti mahu memadam nota ini?",
     "content": "Kandungan nota",
+    "recipient": "Penerima",
     "visibilityUpdated": "Keterlihatan berjaya dikemaskini",
     "visibilityUpdateFailed": "Gagal mengemaskini keterlihatan",
     "changeVisibility": "Tukar keterlihatan",

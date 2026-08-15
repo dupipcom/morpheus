@@ -17,6 +17,7 @@
     "save": "সংরক্ষণ",
     "cancel": "বাতিল",
     "delete": "মুছুন",
+    "remove": "সরান",
     "loading": "লোড হচ্ছে...",
     "error": "ত্রুটি",
     "success": "সফল",
@@ -132,7 +133,8 @@
       "action": "নোট প্রকাশ করুন",
       "publishing": "প্রকাশ করা হচ্ছে...",
       "embedHint": "{provider} এমবেড। প্লেব্যাক পাওয়া না গেলে নিচের মূল লিঙ্কটি খুলুন।",
-      "useAsDefault": "Use as my default visibility"
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "এআই বিশ্লেষণ সক্ষম করুন"
     },
     "thirdParty": {
       "title": "তৃতীয় পক্ষ",
@@ -335,7 +337,9 @@
     "deleteSelected": "Delete Selected ({count})",
     "noResults": "No results.",
     "cancel": "Cancel",
-    "save": "Save"
+    "save": "Save",
+    "currency": "মুদ্রা",
+    "selectCurrency": "মুদ্রা নির্বাচন করুন"
   },
   "agentChat": {
     "thinking": "চিন্তা করছি...",
@@ -599,8 +603,10 @@
       },
       "areaDistributionLabel": "এলাকা বাজেট",
       "areaPrizeDistributionLabel": "এলাকা পুরস্কার",
+      "areaPremiumDistributionLabel": "এলাকা অনুযায়ী পুরস্কার বিতরণ",
       "categoryDistributionLabel": "বিভাগ বাজেট",
       "categoryPrizeDistributionLabel": "বিভাগ পুরস্কার",
+      "categoryPremiumDistributionLabel": "বিভাগ অনুযায়ী পুরস্কার বিতরণ",
       "taskDistributionLabel": "বাজেট",
       "premiumLabel": "পুরস্কার",
       "totalLabel": "মোট",
@@ -904,6 +910,7 @@
     "deleting": "মুছে ফেলা হচ্ছে...",
     "confirmDelete": "আপনি কি এই নোটটি মুছে ফেলতে চান?",
     "content": "নোটের বিষয়বস্তু",
+    "recipient": "প্রাপক",
     "visibilityUpdated": "দৃশ্যমানতা সফলভাবে আপডেট হয়েছে",
     "visibilityUpdateFailed": "দৃশ্যমানতা আপডেট করতে ব্যর্থ",
     "changeVisibility": "দৃশ্যমানতা পরিবর্তন করুন",

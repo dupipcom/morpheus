@@ -17,6 +17,7 @@
     "save": "सहेजें",
     "cancel": "रद्द करें",
     "delete": "हटाएं",
+    "remove": "हटाएँ",
     "loading": "लोड हो रहा है...",
     "error": "त्रुटि",
     "success": "सफल",
@@ -132,7 +133,8 @@
       "action": "नोट प्रकाशित करें",
       "publishing": "प्रकाशन...",
       "embedHint": "{provider} एम्बेड। यदि प्लेबैक उपलब्ध नहीं है, तो नीचे मूल लिंक खोलें।",
-      "useAsDefault": "Use as my default visibility"
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "एआई विश्लेषण सक्षम करें"
     },
     "thirdParty": {
       "title": "तृतीय पक्ष",
@@ -335,7 +337,9 @@
     "expectedNeedUtilities": "अपेक्षित आवश्यक उपयोगिताओं का औसत",
     "editAction": "कार्य संपादित करें",
     "save": "सहेजें",
-    "cancel": "रद्द करें"
+    "cancel": "रद्द करें",
+    "currency": "मुद्रा",
+    "selectCurrency": "मुद्रा चुनें"
   },
   "agentChat": {
     "thinking": "सोच रहा हूं...",
@@ -599,8 +603,10 @@
       },
       "areaDistributionLabel": "क्षेत्र बजट",
       "areaPrizeDistributionLabel": "क्षेत्र पुरस्कार",
+      "areaPremiumDistributionLabel": "क्षेत्र के अनुसार पुरस्कार वितरण",
       "categoryDistributionLabel": "श्रेणी बजट",
       "categoryPrizeDistributionLabel": "श्रेणी पुरस्कार",
+      "categoryPremiumDistributionLabel": "श्रेणी के अनुसार पुरस्कार वितरण",
       "taskDistributionLabel": "बजट",
       "premiumLabel": "पुरस्कार",
       "totalLabel": "कुल",
@@ -904,6 +910,7 @@
     "deleting": "हटाया जा रहा है...",
     "confirmDelete": "क्या आप वाकई इस नोट को हटाना चाहते हैं?",
     "content": "नोट सामग्री",
+    "recipient": "प्राप्तकर्ता",
     "visibilityUpdated": "दृश्यता सफलतापूर्वक अपडेट की गई",
     "visibilityUpdateFailed": "दृश्यता अपडेट करने में विफल",
     "changeVisibility": "दृश्यता बदलें",

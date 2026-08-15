@@ -14,6 +14,7 @@
     "save": "Kaydet",
     "cancel": "İptal",
     "delete": "Sil",
+    "remove": "Kaldır",
     "loading": "Yükleniyor...",
     "error": "Hata",
     "success": "Başarılı",
@@ -136,7 +137,8 @@
       "action": "Not Yayınla",
       "publishing": "Yayınlanıyor...",
       "embedHint": "{provider} yerleştirmesi. Oynatma kullanılamıyorsa aşağıdaki orijinal bağlantıyı açın.",
-      "useAsDefault": "Use as my default visibility"
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Yapay zeka analizini etkinleştir"
     },
     "thirdParty": {
       "title": "Üçüncü taraf",
@@ -356,7 +358,9 @@
     "expectedNeedUtilities": "Beklenen İhtiyaç Yardımcı Programları Ortalaması",
     "editAction": "Eylemi düzenle",
     "save": "Kaydet",
-    "cancel": "İptal"
+    "cancel": "İptal",
+    "currency": "Para birimi",
+    "selectCurrency": "Para birimi seç"
   },
   "agentChat": {
     "thinking": "Düşünüyor...",
@@ -620,8 +624,10 @@
       },
       "areaDistributionLabel": "Alan bütçesi",
       "areaPrizeDistributionLabel": "Alan ödülü",
+      "areaPremiumDistributionLabel": "Alana göre ödül dağıtımı",
       "categoryDistributionLabel": "Kategori bütçesi",
       "categoryPrizeDistributionLabel": "Kategori ödülü",
+      "categoryPremiumDistributionLabel": "Kategoriye göre ödül dağıtımı",
       "taskDistributionLabel": "Bütçe",
       "premiumLabel": "Ödül",
       "totalLabel": "Toplam",
@@ -908,6 +914,7 @@
     "deleting": "Siliniyor...",
     "confirmDelete": "Bu notu silmek istediğinizden emin misiniz?",
     "content": "Not içeriği",
+    "recipient": "Alıcı",
     "visibilityUpdated": "Görünürlük başarıyla güncellendi",
     "visibilityUpdateFailed": "Görünürlük güncellenemedi",
     "changeVisibility": "Görünürlüğü değiştir",

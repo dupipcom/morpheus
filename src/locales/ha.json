@@ -17,6 +17,7 @@
     "save": "Ajiye",
     "cancel": "Soke",
     "delete": "Share",
+    "remove": "Cire",
     "loading": "Ana loda...",
     "error": "Kuskure",
     "success": "Nasara",
@@ -132,7 +133,8 @@
       "action": "Buga Bayani",
       "publishing": "Ana bugawa...",
       "embedHint": "Shigar {provider}. Idan sake kunna ba shi da amfani, buɗe haɗin asali a ƙasa.",
-      "useAsDefault": "Use as my default visibility"
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Kunna nazarin AI"
     },
     "thirdParty": {
       "title": "Na ɓangare na uku",
@@ -204,7 +206,9 @@
     "expectedNeedUtilities": "Matsakaicin Abubuwan da ake sa ran Buƙatun",
     "editAction": "Gyara aiki",
     "save": "Ajiye",
-    "cancel": "Soke"
+    "cancel": "Soke",
+    "currency": "Kuɗi",
+    "selectCurrency": "Zaɓi kuɗi"
   },
   "actions": {
     "drankWater": "Sha ruwa",
@@ -613,8 +617,10 @@
       },
       "areaDistributionLabel": "Kasafin yanki",
       "areaPrizeDistributionLabel": "Kyautar yanki",
+      "areaPremiumDistributionLabel": "Rarraba kyauta ta yanki",
       "categoryDistributionLabel": "Kasafin nau'i",
       "categoryPrizeDistributionLabel": "Kyautar nau'i",
+      "categoryPremiumDistributionLabel": "Rarraba kyauta ta nau'i",
       "taskDistributionLabel": "Kasafin kuɗi",
       "premiumLabel": "Kyauta",
       "totalLabel": "Jimla",
@@ -901,6 +907,7 @@
     "deleting": "Ana share...",
     "confirmDelete": "Shin kun tabbata kuna son share wannan bayanin kula?",
     "content": "Abubuwan bayanin kula",
+    "recipient": "Mai karɓa",
     "visibilityUpdated": "An sabunta bayyanuwar cikin nasara",
     "visibilityUpdateFailed": "Kuskure wajen sabunta bayyanuwar",
     "changeVisibility": "Canza bayyanuwar",

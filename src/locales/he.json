@@ -17,6 +17,7 @@
     "save": "שמירה",
     "cancel": "ביטול",
     "delete": "מחיקה",
+    "remove": "הסר",
     "loading": "טוען...",
     "error": "שגיאה",
     "success": "הצלחה",
@@ -132,7 +133,8 @@
       "action": "פרסם הערה",
       "publishing": "מפרסם...",
       "embedHint": "הטמעת {provider}. אם ההפעלה אינה זמינה, פתח את הקישור המקורי למטה.",
-      "useAsDefault": "Use as my default visibility"
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "הפעל ניתוח בינה מלאכותית"
     },
     "thirdParty": {
       "title": "צד שלישי",
@@ -335,7 +337,9 @@
     "expectedNeedUtilities": "ממוצע שירותים נדרשים צפוי",
     "editAction": "ערוך פעולה",
     "save": "שמור",
-    "cancel": "בטל"
+    "cancel": "בטל",
+    "currency": "מטבע",
+    "selectCurrency": "בחר מטבע"
   },
   "agentChat": {
     "thinking": "חושב...",
@@ -599,8 +603,10 @@
       },
       "areaDistributionLabel": "תקציב תחום",
       "areaPrizeDistributionLabel": "פרס תחום",
+      "areaPremiumDistributionLabel": "חלוקת פרסים לפי תחום",
       "categoryDistributionLabel": "תקציב קטגוריה",
       "categoryPrizeDistributionLabel": "פרס קטגוריה",
+      "categoryPremiumDistributionLabel": "חלוקת פרסים לפי קטגוריה",
       "taskDistributionLabel": "תקציב",
       "premiumLabel": "פרס",
       "totalLabel": "סה\"כ",
@@ -904,6 +910,7 @@
     "deleting": "מוחק...",
     "confirmDelete": "האם אתה בטוח שברצונך למחוק את הפתק הזה?",
     "content": "תוכן הפתק",
+    "recipient": "נמען",
     "visibilityUpdated": "הנראות עודכנה בהצלחה",
     "visibilityUpdateFailed": "עדכון הנראות נכשל",
     "changeVisibility": "שנה נראות",

@@ -17,6 +17,7 @@
     "save": "Gorde",
     "cancel": "Utzi",
     "delete": "Ezabatu",
+    "remove": "Kendu",
     "loading": "Kargatzen...",
     "error": "Errorea",
     "success": "Arrakasta",
@@ -135,7 +136,8 @@
       "action": "Argitaratu oharra",
       "publishing": "Argitaratzen...",
       "embedHint": "{provider} txertaketa. Erreprodukzioa erabilgarri ez badago, ireki beheko jatorrizko esteka.",
-      "useAsDefault": "Use as my default visibility"
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Gaitu AI analisia"
     },
     "thirdParty": {
       "title": "Hirugarrena",
@@ -338,7 +340,9 @@
     "expectedNeedUtilities": "Behar Zerbitzuen Batezbesteko Esperatua",
     "editAction": "Ekintza editatu",
     "save": "Gorde",
-    "cancel": "Utzi"
+    "cancel": "Utzi",
+    "currency": "Moneta",
+    "selectCurrency": "Hautatu moneta"
   },
   "agentChat": {
     "thinking": "Pentsatzen...",
@@ -602,8 +606,10 @@
       },
       "areaDistributionLabel": "Eremuaren aurrekontua",
       "areaPrizeDistributionLabel": "Eremuaren saria",
+      "areaPremiumDistributionLabel": "Sarien banaketa eremuaren arabera",
       "categoryDistributionLabel": "Kategoriaren aurrekontua",
       "categoryPrizeDistributionLabel": "Kategoriaren saria",
+      "categoryPremiumDistributionLabel": "Sarien banaketa kategoriaren arabera",
       "taskDistributionLabel": "Aurrekontua",
       "premiumLabel": "Saria",
       "totalLabel": "Guztira",
@@ -907,6 +913,7 @@
     "deleting": "Ezabatzen...",
     "confirmDelete": "Ziur zaude ohar hau ezabatu nahi duzula?",
     "content": "Oharraren edukia",
+    "recipient": "Hartzailea",
     "visibilityUpdated": "Ikusgarritasuna eguneratuta",
     "visibilityUpdateFailed": "Ezin izan da ikusgarritasuna eguneratu",
     "changeVisibility": "Aldatu ikusgarritasuna",

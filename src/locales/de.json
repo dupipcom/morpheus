@@ -17,6 +17,7 @@
     "save": "Speichern",
     "cancel": "Abbrechen",
     "delete": "Löschen",
+    "remove": "Entfernen",
     "loading": "Lädt...",
     "error": "Fehler",
     "success": "Erfolg",
@@ -132,7 +133,8 @@
       "action": "Notiz veröffentlichen",
       "publishing": "Veröffentlichen...",
       "embedHint": "{provider}-Einbettung. Falls die Wiedergabe nicht verfügbar ist, öffne den Originallink unten.",
-      "useAsDefault": "Use as my default visibility"
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "KI-Analyse aktivieren"
     },
     "thirdParty": {
       "title": "Drittanbieter",
@@ -204,7 +206,9 @@
     "expectedNeedUtilities": "Erwarteter Durchschnitt der Versorgungsunternehmen",
     "editAction": "Aktion bearbeiten",
     "save": "Speichern",
-    "cancel": "Abbrechen"
+    "cancel": "Abbrechen",
+    "currency": "Währung",
+    "selectCurrency": "Währung auswählen"
   },
   "social": {
     "title": "Soziale Kontakte",
@@ -616,8 +620,10 @@
       },
       "areaDistributionLabel": "Bereichsbudget",
       "areaPrizeDistributionLabel": "Bereichspreis",
+      "areaPremiumDistributionLabel": "Preisverteilung nach Bereich",
       "categoryDistributionLabel": "Kategoriebudget",
       "categoryPrizeDistributionLabel": "Kategoriepreis",
+      "categoryPremiumDistributionLabel": "Preisverteilung nach Kategorie",
       "taskDistributionLabel": "Budget",
       "premiumLabel": "Preis",
       "totalLabel": "Gesamt",
@@ -904,6 +910,7 @@
     "deleting": "Wird gelöscht...",
     "confirmDelete": "Bist du sicher, dass du diese Notiz löschen möchtest?",
     "content": "Notizinhalt",
+    "recipient": "Empfänger",
     "visibilityUpdated": "Sichtbarkeit erfolgreich aktualisiert",
     "visibilityUpdateFailed": "Sichtbarkeit konnte nicht aktualisiert werden",
     "changeVisibility": "Sichtbarkeit ändern",

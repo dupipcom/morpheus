@@ -14,6 +14,7 @@
     "save": "حفظ",
     "cancel": "إلغاء",
     "delete": "حذف",
+    "remove": "إزالة",
     "loading": "جاري التحميل...",
     "error": "خطأ",
     "success": "نجح",
@@ -136,7 +137,8 @@
       "action": "نشر المذكرة",
       "publishing": "جاري النشر...",
       "embedHint": "تضمين {provider}. إذا لم يكن التشغيل متاحًا، افتح الرابط الأصلي أدناه.",
-      "useAsDefault": "Use as my default visibility"
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "تمكين تحليل الذكاء الاصطناعي"
     },
     "thirdParty": {
       "title": "الجهات الخارجية",
@@ -208,7 +210,9 @@
     "expectedNeedUtilities": "متوسط المرافق المتوقع",
     "editAction": "تعديل الإجراء",
     "save": "حفظ",
-    "cancel": "إلغاء"
+    "cancel": "إلغاء",
+    "currency": "العملة",
+    "selectCurrency": "اختر العملة"
   },
   "social": {
     "title": "جهات الاتصال الاجتماعية",
@@ -620,8 +624,10 @@
       },
       "areaDistributionLabel": "ميزانية المنطقة",
       "areaPrizeDistributionLabel": "جائزة المنطقة",
+      "areaPremiumDistributionLabel": "توزيع الجوائز حسب المنطقة",
       "categoryDistributionLabel": "ميزانية الفئة",
       "categoryPrizeDistributionLabel": "جائزة الفئة",
+      "categoryPremiumDistributionLabel": "توزيع الجوائز حسب الفئة",
       "taskDistributionLabel": "الميزانية",
       "premiumLabel": "الجائزة",
       "totalLabel": "الإجمالي",
@@ -908,6 +914,7 @@
     "deleting": "جاري الحذف...",
     "confirmDelete": "هل أنت متأكد أنك تريد حذف هذه الملاحظة؟",
     "content": "محتوى الملاحظة",
+    "recipient": "المستلم",
     "visibilityUpdated": "تم تحديث الخصوصية بنجاح",
     "visibilityUpdateFailed": "فشل تحديث الخصوصية",
     "changeVisibility": "تغيير الخصوصية",

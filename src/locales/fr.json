@@ -17,6 +17,7 @@
     "save": "Enregistrer",
     "cancel": "Annuler",
     "delete": "Supprimer",
+    "remove": "Retirer",
     "loading": "Chargement...",
     "error": "Erreur",
     "success": "Succès",
@@ -132,7 +133,8 @@
       "action": "Publier la Note",
       "publishing": "Publication...",
       "embedHint": "Intégration {provider}. Si la lecture n'est pas disponible, ouvrez le lien original ci-dessous.",
-      "useAsDefault": "Use as my default visibility"
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Activer l'analyse IA"
     },
     "thirdParty": {
       "title": "Tiers",
@@ -204,7 +206,9 @@
     "expectedNeedUtilities": "Moyenne Attendue des Services Publics",
     "editAction": "Modifier l'action",
     "save": "Enregistrer",
-    "cancel": "Annuler"
+    "cancel": "Annuler",
+    "currency": "Devise",
+    "selectCurrency": "Sélectionner la devise"
   },
   "social": {
     "title": "Contacts Sociaux",
@@ -616,8 +620,10 @@
       },
       "areaDistributionLabel": "Budget de zone",
       "areaPrizeDistributionLabel": "Prix de zone",
+      "areaPremiumDistributionLabel": "Distribution des prix par zone",
       "categoryDistributionLabel": "Budget de catégorie",
       "categoryPrizeDistributionLabel": "Prix de catégorie",
+      "categoryPremiumDistributionLabel": "Distribution des prix par catégorie",
       "taskDistributionLabel": "Budget",
       "premiumLabel": "Prix",
       "totalLabel": "Total",
@@ -904,6 +910,7 @@
     "deleting": "Suppression...",
     "confirmDelete": "Êtes-vous sûr de vouloir supprimer cette note ?",
     "content": "Contenu de la note",
+    "recipient": "Destinataire",
     "visibilityUpdated": "Visibilité mise à jour avec succès",
     "visibilityUpdateFailed": "Échec de la mise à jour de la visibilité",
     "changeVisibility": "Modifier la visibilité",

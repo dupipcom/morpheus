@@ -14,6 +14,7 @@
     "save": "Tallenna",
     "cancel": "Peruuta",
     "delete": "Poista",
+    "remove": "Poista",
     "loading": "Ladataan...",
     "error": "Virhe",
     "success": "Onnistui",
@@ -136,7 +137,8 @@
       "action": "Julkaise muistiinpano",
       "publishing": "Julkaistaan...",
       "embedHint": "{provider}-upotus. Jos toisto ei ole käytettävissä, avaa alla oleva alkuperäinen linkki.",
-      "useAsDefault": "Use as my default visibility"
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Ota AI-analyysi käyttöön"
     },
     "thirdParty": {
       "title": "Kolmas osapuoli",
@@ -339,7 +341,9 @@
     "expectedNeedUtilities": "Odotettavissa olevat tarpeelliset palvelukustannukset",
     "editAction": "Muokkaa toimintoa",
     "save": "Tallenna",
-    "cancel": "Peruuta"
+    "cancel": "Peruuta",
+    "currency": "Valuutta",
+    "selectCurrency": "Valitse valuutta"
   },
   "agentChat": {
     "thinking": "Ajattelen...",
@@ -603,8 +607,10 @@
       },
       "areaDistributionLabel": "Alueen budjetti",
       "areaPrizeDistributionLabel": "Alueen palkinto",
+      "areaPremiumDistributionLabel": "Palkintojen jako alueittain",
       "categoryDistributionLabel": "Kategorian budjetti",
       "categoryPrizeDistributionLabel": "Kategorian palkinto",
+      "categoryPremiumDistributionLabel": "Palkintojen jako kategorioittain",
       "taskDistributionLabel": "Budjetti",
       "premiumLabel": "Palkinto",
       "totalLabel": "Yhteensä",
@@ -908,6 +914,7 @@
     "deleting": "Poistetaan...",
     "confirmDelete": "Haluatko varmasti poistaa tämän muistiinpanon?",
     "content": "Muistiinpanon sisältö",
+    "recipient": "Vastaanottaja",
     "visibilityUpdated": "Näkyvyys päivitetty onnistuneesti",
     "visibilityUpdateFailed": "Näkyvyyden päivittäminen epäonnistui",
     "changeVisibility": "Muuta näkyvyyttä",
