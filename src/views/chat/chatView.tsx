@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import useSWR from 'swr'
 import { useRouter } from 'next/navigation'
+import { useMediaQuery } from 'usehooks-ts'
 import { SignInButton, useAuth } from '@clerk/nextjs'
 import { Hash, Inbox, Mail, MessageSquareReply, Plus, RefreshCcw, Send, Trash2, UserPlus, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -137,6 +138,7 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
   const { isSignedIn } = useAuth()
   const { isVirtualNumberEnabled } = useFeatureFlag()
   const router = useRouter()
+  const isMobile = useMediaQuery('(max-width: 767px)')
   const [activeRoom, setActiveRoom] = useState<ActiveRoom>(null)
   const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null)
   const [mobileView, setMobileView] = useState<MobileView>('sidebar')
@@ -267,6 +269,9 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
     // the dedicated deep-link effects will handle the selection instead.
     if (initialUsername || initialOrgId || initialChannelId || initialSmsConversationId) return
 
+    // On mobile, don't auto-select a room — show the sidebar/rooms list instead.
+    if (isMobile) return
+
     const defaultChannel = sidebar.orgs?.[0]?.channels?.[0]
     if (defaultChannel) {
       const room: ActiveRoom = { type: 'channel', id: defaultChannel.id, orgId: defaultChannel.clerkOrgId, name: defaultChannel.name }
@@ -279,7 +284,7 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
       const room: ActiveRoom = { type: 'dm', id: defaultDm.id, name: getDisplayLabel(defaultDm.participant?.displayName, directMessageLabel) }
       openRoom(room)
     }
-  }, [activeRoom, directMessageLabel, openRoom, sidebar, initialUsername, initialOrgId, initialChannelId, initialSmsConversationId])
+  }, [activeRoom, isMobile, directMessageLabel, openRoom, sidebar, initialUsername, initialOrgId, initialChannelId, initialSmsConversationId])
 
   // Deep link: open DM for initialUsername when sidebar is ready
   useEffect(() => {
@@ -791,7 +796,7 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
                 </div>
               ) : null}
               <div className="space-y-2">
-                {sidebar?.dms?.map((dm) => (
+                {[...(sidebar?.dms ?? [])].sort((a, b) => b.unreadCount - a.unreadCount).map((dm) => (
                   <button
                     key={dm.id}
                     type="button"

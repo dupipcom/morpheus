@@ -571,7 +571,7 @@ const aggregateDataByWeek = (dailyData: any[]) => {
               'What should we focus on during therapy today?',
               "What were the user's major life events this week?"
             ].map((question) => (
-              <Button key={question} variant="outline" size="sm" onClick={() => setCurrentText(question)}>
+              <Button key={question} variant="outline" size="sm" className="whitespace-normal text-left h-auto" onClick={() => setCurrentText(question)}>
                 {question}
               </Button>
             ))}

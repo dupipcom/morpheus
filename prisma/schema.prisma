@@ -403,6 +403,7 @@ model User {
   consents           Consents?
   // Default visibility for new notes (user preference, PRIVATE unless changed)
   defaultNoteVisibility NoteVisibility @default(PRIVATE)
+  defaultAiEnabled      Boolean        @default(false)
   // Financial fields
   usedBudget         Float?    @default(0)
   remainingBudget    Float?    @default(100)
