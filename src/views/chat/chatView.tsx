@@ -801,9 +801,12 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
                     )}
                     onClick={() => {
                       const room: ActiveRoom = { type: 'dm', id: dm.id, name: getDisplayLabel(dm.participant?.displayName, directMessageLabel) }
-                      openRoom(room, {
-                        navigationTarget: dm.participant?.username ? { type: 'dm', username: dm.participant.username } : null,
-                      })
+                      openRoom(
+                        room,
+                        dm.participant?.username
+                          ? { navigationTarget: { type: 'dm', username: dm.participant.username } }
+                          : undefined,
+                      )
                     }}
                   >
                     <span>{getDisplayLabel(dm.participant?.displayName, directMessageLabel)}</span>
