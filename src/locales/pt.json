@@ -934,7 +934,16 @@
       "error": "Não foi possível carregar os teus números",
       "assignError": "Não foi possível guardar este número",
       "assigned": "Número atribuído",
-      "cleared": "Número removido"
+      "cleared": "Número removido",
+      "addNumber": "Add number…",
+      "removeNumber": "Remove number",
+      "quotaLabel": "{used} of {quota} numbers used",
+      "limitReached": "You have reached the maximum number of virtual numbers for your plan",
+      "buyCta": "Buy virtual number",
+      "gateHint": "Virtual numbers require a Donator plan. Buy a number to receive SMS in chat.",
+      "buyDialogTitle": "Donator plan required",
+      "buyDialogDescription": "Virtual numbers are included with the Donator plans. Choose a plan on the pricing page to get started.",
+      "buyDialogGoToPricing": "Go to pricing"
     },
     "sms": {
       "label": "SMS",

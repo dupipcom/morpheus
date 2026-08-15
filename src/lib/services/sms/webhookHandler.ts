@@ -45,7 +45,7 @@ async function handleInboundSms(payload: Record<string, unknown>): Promise<void>
   const virtualNumber = await prisma.virtualNumber.findUnique({
     where: { phoneNumber: input.toPhoneNumber }
   })
-  if (!virtualNumber) return // number not assigned to any user — no-op
+  if (!virtualNumber || virtualNumber.messagingProfileId == null) return // number not assigned/enabled for any user — no-op
 
   const userId = virtualNumber.userId
 
@@ -55,7 +55,11 @@ async function handleInboundSms(payload: Record<string, unknown>): Promise<void>
   if (!conversation) {
     try {
       conversation = await prisma.smsConversation.create({
-        data: { userId, counterpartPhoneNumber: input.fromPhoneNumber }
+        data: {
+          userId,
+          counterpartPhoneNumber: input.fromPhoneNumber,
+          virtualNumberId: virtualNumber.id
+        }
       })
     } catch (error) {
       // A concurrent inbound message created the conversation first — fetch it

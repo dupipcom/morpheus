@@ -919,14 +919,14 @@ paths:
   /api/v1/virtual-number:
     get:
       tags: [virtual-number]
-      summary: Fetch the current user's virtual number assignment
+      summary: Fetch the current user's virtual number assignments and plan quota
       responses:
-        '200': { description: Current assignment (or null) }
+        '200': { description: 'Current assignments and plan quota: { assignments: [...], quota: number }' }
         '401': { description: Unauthorized }
     post:
       tags: [virtual-number]
-      summary: Assign or unassign a virtual number
-      description: Premium feature (Clerk feature `virtual_number`). Pass `phoneNumber: null` to unassign.
+      summary: Assign a virtual number (or clear all assignments)
+      description: Premium feature (Clerk feature `virtual_number`). Assigns are bounded by the plan quota (Clerk plan slug `dupip_pro`/`dupip_ultra`/`dupip_max` → 1/3/5). Pass `phoneNumber: null` to clear all assignments.
       requestBody:
         content:
           application/json:
@@ -935,14 +935,25 @@ paths:
               properties:
                 phoneNumber:
                   type: [string, 'null']
-                  description: E.164 phone number to assign, or null to clear
+                  description: E.164 phone number to assign, or null to clear all
       responses:
-        '200': { description: Updated assignment }
+        '200': { description: Updated assignments }
         '400': { description: Invalid phoneNumber }
         '401': { description: Unauthorized }
         '403': { description: Not entitled }
         '404': { description: Number not in Telnyx account }
-        '409': { description: Number already assigned }
+        '409': { description: Number already assigned, or plan quota reached }
+    delete:
+      tags: [virtual-number]
+      summary: Unassign one of the user's virtual numbers
+      parameters:
+        - { name: phoneNumber, in: query, required: true, schema: { type: string }, description: E.164 phone number to unassign }
+      responses:
+        '200': { description: Updated assignments }
+        '400': { description: Missing phoneNumber }
+        '401': { description: Unauthorized }
+        '403': { description: Not entitled }
+        '404': { description: Number not assigned to the user }
 
   /api/v1/virtual-number/numbers:
     get:

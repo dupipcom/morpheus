@@ -16,6 +16,14 @@ Telnyx SMS conversations for the premium `virtual_number` feature. Conversations
 - Clerk auth via `getCurrentChatUser()`. Ownership of the conversation is verified on every route.
 - No server entitlement check on these routes (client gating via `useFeatureFlag` parity); sending requires an assigned `VirtualNumber`.
 
+## From-Number Resolution (multi-number users)
+
+Users can hold several virtual numbers (plan quota 1/3/5). Outbound SMS from-number resolution in `sendSmsMessage`:
+
+1. `SmsConversation.virtualNumberId` — the number that received the inbound that opened the conversation (set by `webhookHandler`).
+2. Fallback: the user's first assigned number (oldest), lazily backfilled into `virtualNumberId`.
+3. Otherwise 409 `NO_VIRTUAL_NUMBER`.
+
 ## Errors
 
 | Status | Meaning |

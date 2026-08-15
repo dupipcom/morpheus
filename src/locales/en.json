@@ -943,14 +943,23 @@
     "inviteAccepted": "Invite accepted",
     "virtualNumber": {
       "label": "Virtual number",
-      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
+      "hint": "Choose your phone numbers. Incoming SMS to these numbers will appear in your chat.",
       "none": "No number",
       "loading": "Loading numbers…",
       "empty": "No numbers available",
       "error": "Could not load your numbers",
       "assignError": "Could not save this number",
       "assigned": "Number assigned",
-      "cleared": "Number cleared"
+      "cleared": "Number cleared",
+      "addNumber": "Add number…",
+      "removeNumber": "Remove number",
+      "quotaLabel": "{used} of {quota} numbers used",
+      "limitReached": "You have reached the maximum number of virtual numbers for your plan",
+      "buyCta": "Buy virtual number",
+      "gateHint": "Virtual numbers require a Donator plan. Buy a number to receive SMS in chat.",
+      "buyDialogTitle": "Donator plan required",
+      "buyDialogDescription": "Virtual numbers are included with the Donator plans. Choose a plan on the pricing page to get started.",
+      "buyDialogGoToPricing": "Go to pricing"
     },
     "sms": {
       "label": "SMS",

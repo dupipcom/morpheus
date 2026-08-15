@@ -6,6 +6,7 @@
 export interface VirtualNumberAssignment {
   phoneNumber: string
   messagingProfileId: string | null
+  enabled: boolean
   provider: string
   createdAt: string
   updatedAt: string
@@ -21,6 +22,7 @@ export type VirtualNumberErrorCode =
   | 'E164_INVALID'
   | 'NUMBER_NOT_FOUND'
   | 'NUMBER_TAKEN'
+  | 'LIMIT_REACHED'
   | 'TELNYX_UNAVAILABLE'
 
 /**
