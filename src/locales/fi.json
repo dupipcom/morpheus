@@ -130,11 +130,13 @@
         "FRIENDS": "Ystävät",
         "CLOSE_FRIENDS": "Läheiset ystävät",
         "PUBLIC": "Julkinen",
-        "AI_ENABLED": "AI käytössä"
+        "AI_ENABLED": "AI käytössä",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Julkaise muistiinpano",
       "publishing": "Julkaistaan...",
-      "embedHint": "{provider}-upotus. Jos toisto ei ole käytettävissä, avaa alla oleva alkuperäinen linkki."
+      "embedHint": "{provider}-upotus. Jos toisto ei ole käytettävissä, avaa alla oleva alkuperäinen linkki.",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "Kolmas osapuoli",
@@ -152,7 +154,9 @@
       "addDelegatedAnalyst": "Lisää delegoitu analyytikko",
       "adding": "Lisätään...",
       "addError": "Delegoidun analyytikon lisääminen ei onnistunut",
-      "invitationDraft": "Tälle sähköpostille valmisteltiin kutsuluonnos."
+      "invitationDraft": "Tälle sähköpostille valmisteltiin kutsuluonnos.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -931,7 +935,7 @@
     "inviteAccepted": "Kutsu hyväksytty",
     "virtualNumber": {
       "label": "Virtuaalinumero",
-      "hint": "Valitse yksi puhelinnumeroistasi. Tähän numeroon saapuvat tekstiviestit näkyvät chatissasi.",
+      "hint": "Valitse puhelinnumerosi. Näihin numeroihin saapuvat tekstiviestit näkyvät chatissasi.",
       "none": "Ei numeroa",
       "loading": "Ladataan numeroita…",
       "empty": "Numeroita ei ole saatavilla",
@@ -939,15 +943,15 @@
       "assignError": "Tätä numeroa ei voitu tallentaa",
       "assigned": "Numero liitetty",
       "cleared": "Numero poistettu",
-      "addNumber": "Add number…",
-      "removeNumber": "Remove number",
-      "quotaLabel": "{used} of {quota} numbers used",
-      "limitReached": "You have reached the maximum number of virtual numbers for your plan",
-      "buyCta": "Buy virtual number",
-      "gateHint": "Virtual numbers require a Donator plan. Buy a number to receive SMS in chat.",
-      "buyDialogTitle": "Donator plan required",
-      "buyDialogDescription": "Virtual numbers are included with the Donator plans. Choose a plan on the pricing page to get started.",
-      "buyDialogGoToPricing": "Go to pricing"
+      "addNumber": "Lisää numero…",
+      "removeNumber": "Poista numero",
+      "quotaLabel": "{used} / {quota} numeroa käytössä",
+      "limitReached": "Olet saavuttanut pakettisi virtuaalinumeroiden enimmäismäärän",
+      "buyCta": "Osta virtuaalinumero",
+      "gateHint": "Virtuaalinumerot vaativat Donator-paketin. Osta numero vastaanottaaksesi tekstiviestejä chatissa.",
+      "buyDialogTitle": "Donator-paketti vaaditaan",
+      "buyDialogDescription": "Virtuaalinumerot sisältyvät Donator-paketteihin. Valitse paketti hintasivulta aloittaaksesi.",
+      "buyDialogGoToPricing": "Siirry hintoihin"
     },
     "sms": {
       "label": "SMS",
@@ -989,5 +993,20 @@
     "saveConsent": "Tallenna suostumus",
     "dpipNoValue": "DPIP (Ð) on arvon yksikkö Dupipin sisällä. Stashisi kasvaa ajan myötä toimintasi mukana. DPIP ei ole sijoitustuote, eikä sillä välttämättä ole rahallista arvoa — ei nyt eikä tulevaisuudessa.",
     "consentDescription": "DPIP (Ð) on arvon yksikkö Dupipin sisällä. Stashisi kasvaa ajan myötä toimintasi mukana. DPIP ei ole sijoitustuote, eikä sillä välttämättä ole rahallista arvoa — ei nyt eikä tulevaisuudessa. Ennen kuin näet tilauksemme, käy läpi ja vahvista seuraava:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

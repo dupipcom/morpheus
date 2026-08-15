@@ -2,6 +2,7 @@ import prisma from "@/lib/prisma";
 import { currentUser, auth } from '@clerk/nextjs/server'
 import { recalculateUserBudget } from "@/lib/utils/budgetUtils"
 import { calculateDatePeriods, parseNumericValue } from "@/lib/services/day"
+import { WRITABLE_NOTE_VISIBILITIES } from '@/lib/constants/visibility'
 
 /**
  * Helper to get or create user
@@ -285,6 +286,17 @@ export async function POST(req: Request) {
       }
     })
     user = await prisma.user.findUnique({ where: { userId } })
+  }
+
+  // Handle default note visibility preference
+  if (typeof data?.defaultNoteVisibility === 'string' && user) {
+    if ((WRITABLE_NOTE_VISIBILITIES as readonly string[]).includes(data.defaultNoteVisibility)) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { defaultNoteVisibility: data.defaultNoteVisibility }
+      })
+      user = await prisma.user.findUnique({ where: { userId } })
+    }
   }
 
   return Response.json(user)

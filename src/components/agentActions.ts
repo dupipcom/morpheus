@@ -9,7 +9,9 @@ import { deepseekChat } from '@/lib/deepseek';
 import {
   buildAssistantSystemPrompt,
   buildRagForQuery,
+  chunkNotes,
   fetchCompactDays,
+  fetchCompactNotes,
   resolveAgentContext,
   validateAndClampFilterContext
 } from '@/lib/services/agent';
@@ -70,6 +72,7 @@ export async function continueConversation(
         clerkUserId
       );
       const compactDays = await fetchCompactDays(ctx);
+      const compactNotes = await fetchCompactNotes(ctx);
 
       const lookback = [...history].slice(-HISTORY_LOOKBACK).map((message) => ({
         role: message.role,
@@ -79,7 +82,10 @@ export async function continueConversation(
       const lastUserMessage = [...history].reverse().find((message) => message.role === 'user');
       const query = lastUserMessage?.content ?? '';
 
-      const rag = await buildRagForQuery(compactDays, query, { dimensions: ctx.dimensions });
+      const rag = await buildRagForQuery(compactDays, query, {
+        dimensions: ctx.dimensions,
+        noteChunks: chunkNotes(compactNotes)
+      });
 
       const chatModel = AGENT_MODELS.includes(model) ? model : 'deepseek';
 

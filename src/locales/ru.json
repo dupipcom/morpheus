@@ -126,11 +126,13 @@
         "FRIENDS": "Друзья",
         "CLOSE_FRIENDS": "Близкие друзья",
         "PUBLIC": "Общественность",
-        "AI_ENABLED": "AI Enabled"
+        "AI_ENABLED": "AI Enabled",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Опубликовать заметку",
       "publishing": "Публикация...",
-      "embedHint": "Встроенный контент {provider}. Если воспроизведение недоступно, откройте исходную ссылку ниже."
+      "embedHint": "Встроенный контент {provider}. Если воспроизведение недоступно, откройте исходную ссылку ниже.",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "Третья сторона",
@@ -148,7 +150,9 @@
       "addDelegatedAnalyst": "Добавить делегированного аналитика",
       "adding": "Добавление...",
       "addError": "Не удалось добавить делегированного аналитика",
-      "invitationDraft": "Для этого адреса электронной почты подготовлен черновик приглашения."
+      "invitationDraft": "Для этого адреса электронной почты подготовлен черновик приглашения.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -927,7 +931,7 @@
     "inviteAccepted": "Приглашение принято",
     "virtualNumber": {
       "label": "Виртуальный номер",
-      "hint": "Выберите один из ваших номеров телефона. Входящие SMS на этот номер появятся в вашем чате.",
+      "hint": "Выберите ваши номера телефона. Входящие SMS на эти номера появятся в вашем чате.",
       "none": "Нет номера",
       "loading": "Загрузка номеров…",
       "empty": "Нет доступных номеров",
@@ -935,15 +939,15 @@
       "assignError": "Не удалось сохранить этот номер",
       "assigned": "Номер назначен",
       "cleared": "Номер удалён",
-      "addNumber": "Add number…",
-      "removeNumber": "Remove number",
-      "quotaLabel": "{used} of {quota} numbers used",
-      "limitReached": "You have reached the maximum number of virtual numbers for your plan",
-      "buyCta": "Buy virtual number",
-      "gateHint": "Virtual numbers require a Donator plan. Buy a number to receive SMS in chat.",
-      "buyDialogTitle": "Donator plan required",
-      "buyDialogDescription": "Virtual numbers are included with the Donator plans. Choose a plan on the pricing page to get started.",
-      "buyDialogGoToPricing": "Go to pricing"
+      "addNumber": "Добавить номер…",
+      "removeNumber": "Удалить номер",
+      "quotaLabel": "Использовано номеров: {used} из {quota}",
+      "limitReached": "Вы достигли максимального количества виртуальных номеров для вашего тарифа",
+      "buyCta": "Купить виртуальный номер",
+      "gateHint": "Виртуальные номера требуют тариф Donator. Купите номер, чтобы получать SMS в чате.",
+      "buyDialogTitle": "Требуется тариф Donator",
+      "buyDialogDescription": "Виртуальные номера включены в тарифы Donator. Выберите тариф на странице цен, чтобы начать.",
+      "buyDialogGoToPricing": "Перейти к ценам"
     },
     "sms": {
       "label": "SMS",
@@ -985,5 +989,20 @@
     "saveConsent": "Сохранить согласие",
     "dpipNoValue": "DPIP (Ð) — единица ценности внутри Dupip. Ваш запас растёт со временем вместе с вашей активностью. DPIP не является инвестиционным продуктом и может не иметь денежной ценности — ни сейчас, ни в будущем.",
     "consentDescription": "DPIP (Ð) — единица ценности внутри Dupip. Ваш запас растёт со временем вместе с вашей активностью. DPIP не является инвестиционным продуктом и может не иметь денежной ценности — ни сейчас, ни в будущем. Прежде чем ознакомиться с нашими тарифами, пожалуйста, просмотрите и подтвердите следующее:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

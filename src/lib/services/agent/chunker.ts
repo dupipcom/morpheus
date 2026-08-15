@@ -7,12 +7,14 @@
 
 import { getWeekNumber } from '@/app/helpers'
 import { dayChunkText } from './daySelect'
-import type { CompactDay, DayChunk } from './types'
+import type { CompactDay, CompactNote, DayChunk } from './types'
 
 export const MAX_CHUNKS = 150
 /** Per-chunk token budget (≈375 tokens ≈ 1,500 chars via the chars/4 heuristic) */
 export const MAX_CHUNK_TOKENS = 375
 export const MAX_SPLIT_DEPTH = 3
+/** Cap for note chunks inside the shared MAX_CHUNKS budget (days come first) */
+export const MAX_NOTE_CHUNKS = 40
 
 /** Rough English heuristic — no tokenizer dependency */
 export function estimateTokens(text: string): number {
@@ -83,6 +85,36 @@ function splitGroup(
     ...splitGroup(key, group.slice(0, mid), grouping, depth + 1),
     ...splitGroup(key, group.slice(mid), grouping, depth + 1)
   ]
+}
+
+/**
+ * Chunk the requester's authorized notes for the shared RAG pool.
+ * One chunk per note (split when oversized), prefixed with the note date so
+ * the assistant can reason about when the note was written. Undated notes
+ * sort last in the recency fallback.
+ */
+export function chunkNotes(notes: CompactNote[]): DayChunk[] {
+  if (notes.length === 0) return []
+
+  const chunks: DayChunk[] = []
+  for (const note of notes) {
+    const dateLabel = note.date ?? 'undated'
+    const parts = chunkRawText(note.content)
+    const texts = parts.length > 0 ? parts : [note.content]
+
+    texts.slice(0, MAX_NOTE_CHUNKS - chunks.length).forEach((text, index) => {
+      if (chunks.length >= MAX_NOTE_CHUNKS) return
+      chunks.push({
+        id: `note-${note.id}${index > 0 ? `-${index}` : ''}`,
+        text: `[${dateLabel}] ${text}`,
+        startDate: dateLabel,
+        endDate: dateLabel,
+        level: 'note'
+      })
+    })
+  }
+
+  return chunks
 }
 
 /**

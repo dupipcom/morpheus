@@ -129,11 +129,13 @@
         "FRIENDS": "Vänner",
         "CLOSE_FRIENDS": "Nära vänner",
         "PUBLIC": "Allmänheten",
-        "AI_ENABLED": "AI aktiverad"
+        "AI_ENABLED": "AI aktiverad",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Publicera anteckning",
       "publishing": "Publicerar...",
-      "embedHint": "{provider}-inbäddning. Om uppspelning inte är tillgänglig, öppna originallänken nedan."
+      "embedHint": "{provider}-inbäddning. Om uppspelning inte är tillgänglig, öppna originallänken nedan.",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "Tredjepart",
@@ -151,7 +153,9 @@
       "addDelegatedAnalyst": "Lägg till delegerad analytiker",
       "adding": "Lägger till...",
       "addError": "Det gick inte att lägga till delegerad analytiker",
-      "invitationDraft": "Ett utkast till inbjudan har förberetts för denna e-postadress."
+      "invitationDraft": "Ett utkast till inbjudan har förberetts för denna e-postadress.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -930,7 +934,7 @@
     "inviteAccepted": "Inbjudan accepterad",
     "virtualNumber": {
       "label": "Virtuellt nummer",
-      "hint": "Välj ett av dina telefonnummer. Inkommande SMS till detta nummer visas i din chatt.",
+      "hint": "Välj dina telefonnummer. Inkommande SMS till dessa nummer visas i din chatt.",
       "none": "Inget nummer",
       "loading": "Laddar nummer…",
       "empty": "Inga nummer tillgängliga",
@@ -938,15 +942,15 @@
       "assignError": "Detta nummer kunde inte sparas",
       "assigned": "Nummer tilldelat",
       "cleared": "Nummer borttaget",
-      "addNumber": "Add number…",
-      "removeNumber": "Remove number",
-      "quotaLabel": "{used} of {quota} numbers used",
-      "limitReached": "You have reached the maximum number of virtual numbers for your plan",
-      "buyCta": "Buy virtual number",
-      "gateHint": "Virtual numbers require a Donator plan. Buy a number to receive SMS in chat.",
-      "buyDialogTitle": "Donator plan required",
-      "buyDialogDescription": "Virtual numbers are included with the Donator plans. Choose a plan on the pricing page to get started.",
-      "buyDialogGoToPricing": "Go to pricing"
+      "addNumber": "Lägg till nummer…",
+      "removeNumber": "Ta bort nummer",
+      "quotaLabel": "{used} av {quota} nummer använda",
+      "limitReached": "Du har nått maxantalet virtuella nummer för ditt abonnemang",
+      "buyCta": "Köp virtuellt nummer",
+      "gateHint": "Virtuella nummer kräver ett Donator-abonnemang. Köp ett nummer för att ta emot SMS i chatten.",
+      "buyDialogTitle": "Donator-abonnemang krävs",
+      "buyDialogDescription": "Virtuella nummer ingår i Donator-abonnemangen. Välj ett abonnemang på prissidan för att komma igång.",
+      "buyDialogGoToPricing": "Gå till priser"
     },
     "sms": {
       "label": "SMS",
@@ -988,5 +992,20 @@
     "saveConsent": "Spara samtycke",
     "dpipNoValue": "DPIP (Ð) är värdeenheten inom Dupip. Din stash växer över tid med din aktivitet. DPIP är inte en investeringsprodukt och kan sakna penningvärde — varken nu eller i framtiden.",
     "consentDescription": "DPIP (Ð) är värdeenheten inom Dupip. Din stash växer över tid med din aktivitet. DPIP är inte en investeringsprodukt och kan sakna penningvärde — varken nu eller i framtiden. Innan du ser våra abonnemang, granska och bekräfta följande:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

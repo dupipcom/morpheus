@@ -128,9 +128,11 @@
         "FRIENDS": "Friends",
         "CLOSE_FRIENDS": "Close Friends",
         "PUBLIC": "Public",
-        "AI_ENABLED": "AI Enabled"
+        "AI_ENABLED": "AI Enabled",
+        "DOC_ENABLED": "Doc Enabled"
       },
-      "action": "Publish Note"
+      "action": "Publish Note",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "Third-Party",
@@ -148,8 +150,25 @@
       "addDelegatedAnalyst": "Add delegated analyst",
       "adding": "Adding...",
       "addError": "Could not add delegated analyst",
-      "invitationDraft": "Invitation draft prepared for this email."
+      "invitationDraft": "Invitation draft prepared for this email.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "HOUSEHOLD": "Household",
+    "THERAPIST": "Therapist"
   },
   "week": {
     "weekNumber": "Week {number}",

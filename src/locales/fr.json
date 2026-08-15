@@ -126,11 +126,13 @@
         "FRIENDS": "Amis",
         "CLOSE_FRIENDS": "Amis Proches",
         "PUBLIC": "Public",
-        "AI_ENABLED": "Activé par IA"
+        "AI_ENABLED": "Activé par IA",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Publier la Note",
       "publishing": "Publication...",
-      "embedHint": "Intégration {provider}. Si la lecture n'est pas disponible, ouvrez le lien original ci-dessous."
+      "embedHint": "Intégration {provider}. Si la lecture n'est pas disponible, ouvrez le lien original ci-dessous.",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "Tiers",
@@ -148,7 +150,9 @@
       "addDelegatedAnalyst": "Ajouter un analyste délégué",
       "adding": "Ajout en cours...",
       "addError": "Impossible d'ajouter l'analyste délégué",
-      "invitationDraft": "Un brouillon d'invitation a été préparé pour cet e-mail."
+      "invitationDraft": "Un brouillon d'invitation a été préparé pour cet e-mail.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -927,7 +931,7 @@
     "inviteAccepted": "Invitation acceptée",
     "virtualNumber": {
       "label": "Numéro virtuel",
-      "hint": "Choisissez l’un de vos numéros de téléphone. Les SMS entrants vers ce numéro apparaîtront dans votre chat.",
+      "hint": "Choisissez vos numéros de téléphone. Les SMS entrants vers ces numéros apparaîtront dans votre chat.",
       "none": "Aucun numéro",
       "loading": "Chargement des numéros…",
       "empty": "Aucun numéro disponible",
@@ -935,15 +939,15 @@
       "assignError": "Impossible d’enregistrer ce numéro",
       "assigned": "Numéro attribué",
       "cleared": "Numéro supprimé",
-      "addNumber": "Add number…",
-      "removeNumber": "Remove number",
-      "quotaLabel": "{used} of {quota} numbers used",
-      "limitReached": "You have reached the maximum number of virtual numbers for your plan",
-      "buyCta": "Buy virtual number",
-      "gateHint": "Virtual numbers require a Donator plan. Buy a number to receive SMS in chat.",
-      "buyDialogTitle": "Donator plan required",
-      "buyDialogDescription": "Virtual numbers are included with the Donator plans. Choose a plan on the pricing page to get started.",
-      "buyDialogGoToPricing": "Go to pricing"
+      "addNumber": "Ajouter un numéro…",
+      "removeNumber": "Supprimer le numéro",
+      "quotaLabel": "{used} numéros utilisés sur {quota}",
+      "limitReached": "Vous avez atteint le nombre maximal de numéros virtuels de votre formule",
+      "buyCta": "Acheter un numéro virtuel",
+      "gateHint": "Les numéros virtuels nécessitent une formule Donator. Achetez un numéro pour recevoir des SMS dans le chat.",
+      "buyDialogTitle": "Formule Donator requise",
+      "buyDialogDescription": "Les numéros virtuels sont inclus dans les formules Donator. Choisissez une formule sur la page des tarifs pour commencer.",
+      "buyDialogGoToPricing": "Voir les tarifs"
     },
     "sms": {
       "label": "SMS",
@@ -985,5 +989,20 @@
     "saveConsent": "Enregistrer le consentement",
     "dpipNoValue": "Le DPIP (Ð) est l’unité de valeur au sein de Dupip. Votre réserve grandit au fil du temps avec votre activité. Le DPIP n’est pas un produit d’investissement et peut ne pas avoir de valeur monétaire — ni maintenant ni à l’avenir.",
     "consentDescription": "Le DPIP (Ð) est l’unité de valeur au sein de Dupip. Votre réserve grandit au fil du temps avec votre activité. Le DPIP n’est pas un produit d’investissement et peut ne pas avoir de valeur monétaire — ni maintenant ni à l’avenir. Avant de consulter nos offres, veuillez examiner et confirmer ce qui suit :"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

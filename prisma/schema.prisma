@@ -106,6 +106,7 @@ enum NoteVisibility {
   CLOSE_FRIENDS
   PUBLIC
   AI_ENABLED
+  DOC_ENABLED
 }
 
 enum RecurrenceFrequency {
@@ -400,6 +401,8 @@ model User {
   lastLogin          DateTime?
   settings           Settings?
   consents           Consents?
+  // Default visibility for new notes (user preference, PRIVATE unless changed)
+  defaultNoteVisibility NoteVisibility @default(PRIVATE)
   // Financial fields
   usedBudget         Float?    @default(0)
   remainingBudget    Float?    @default(100)
@@ -552,6 +555,7 @@ model Note {
   content        String
   date           String?
   visibility     NoteVisibility @default(PRIVATE)
+  aiEnabled      Boolean        @default(false)
   // Relations
   userId         String         @db.ObjectId
   user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -590,12 +594,21 @@ model Delegation {
   delegatedId String         @db.ObjectId
   scope       NoteVisibility @default(AI_ENABLED)
   scopes      NoteVisibility[] @default([AI_ENABLED])
+  // Relationship labels (Doctor, Tutor, Mentor, ...) — see Role model
+  roleIds     String[]       @default([]) @db.ObjectId
   delegator   User           @relation("Delegator", fields: [delegatorId], references: [id], onDelete: Cascade)
   delegated   User           @relation("Delegated", fields: [delegatedId], references: [id], onDelete: Cascade)
 
   @@unique([delegatorId, delegatedId])
   @@index([delegatorId])
   @@index([delegatedId])
+}
+
+model Role {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  key       String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Comment {

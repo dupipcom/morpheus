@@ -6,7 +6,7 @@ interface ProfileData {
   profile?: unknown
 }
 
-export type NoteVisibility = 'PUBLIC' | 'PRIVATE' | 'FRIENDS' | 'CLOSE_FRIENDS' | 'AI_ENABLED' | 'HIDDEN'
+export type NoteVisibility = 'PUBLIC' | 'PRIVATE' | 'FRIENDS' | 'CLOSE_FRIENDS' | 'AI_ENABLED' | 'HIDDEN' | 'DOC_ENABLED'
 
 interface NotesData {
   notes?: unknown[]

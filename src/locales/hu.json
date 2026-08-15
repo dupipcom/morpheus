@@ -126,11 +126,13 @@
         "FRIENDS": "Barátok",
         "CLOSE_FRIENDS": "Közeli barátok",
         "PUBLIC": "Nyilvános",
-        "AI_ENABLED": "Mesterséges intelligencia engedélyezve"
+        "AI_ENABLED": "Mesterséges intelligencia engedélyezve",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Jegyzet közzététele",
       "publishing": "Közzététel...",
-      "embedHint": "{provider} beágyazás. Ha a lejátszás nem elérhető, nyisd meg az eredeti linket lent."
+      "embedHint": "{provider} beágyazás. Ha a lejátszás nem elérhető, nyisd meg az eredeti linket lent.",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "Harmadik fél",
@@ -148,7 +150,9 @@
       "addDelegatedAnalyst": "Delegált elemző hozzáadása",
       "adding": "Hozzáadás...",
       "addError": "Nem sikerült hozzáadni a delegált elemzőt",
-      "invitationDraft": "Ehhez az e-mailhez meghívóvázlat készült."
+      "invitationDraft": "Ehhez az e-mailhez meghívóvázlat készült.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -927,7 +931,7 @@
     "inviteAccepted": "Meghívó elfogadva",
     "virtualNumber": {
       "label": "Virtuális szám",
-      "hint": "Válassz egyet a telefonszámaid közül. Az erre a számra érkező SMS-ek megjelennek a csevegésedben.",
+      "hint": "Válaszd ki a telefonszámaidat. Az ezekre a számokra érkező SMS-ek megjelennek a csevegésedben.",
       "none": "Nincs szám",
       "loading": "Számok betöltése…",
       "empty": "Nincs elérhető szám",
@@ -935,15 +939,15 @@
       "assignError": "Nem sikerült menteni ezt a számot",
       "assigned": "Szám hozzárendelve",
       "cleared": "Szám eltávolítva",
-      "addNumber": "Add number…",
-      "removeNumber": "Remove number",
-      "quotaLabel": "{used} of {quota} numbers used",
-      "limitReached": "You have reached the maximum number of virtual numbers for your plan",
-      "buyCta": "Buy virtual number",
-      "gateHint": "Virtual numbers require a Donator plan. Buy a number to receive SMS in chat.",
-      "buyDialogTitle": "Donator plan required",
-      "buyDialogDescription": "Virtual numbers are included with the Donator plans. Choose a plan on the pricing page to get started.",
-      "buyDialogGoToPricing": "Go to pricing"
+      "addNumber": "Szám hozzáadása…",
+      "removeNumber": "Szám eltávolítása",
+      "quotaLabel": "{quota} számból {used} használatban",
+      "limitReached": "Elérted a csomagodhoz tartozó virtuális számok maximális számát",
+      "buyCta": "Virtuális szám vásárlása",
+      "gateHint": "A virtuális számokhoz Donator csomag szükséges. Vásárolj számot, hogy SMS-eket fogadj a csevegésben.",
+      "buyDialogTitle": "Donator csomag szükséges",
+      "buyDialogDescription": "A virtuális számok a Donator csomagok részét képezik. A kezdéshez válassz csomagot az árazási oldalon.",
+      "buyDialogGoToPricing": "Ugrás az árazáshoz"
     },
     "sms": {
       "label": "SMS",
@@ -985,5 +989,20 @@
     "saveConsent": "Hozzájárulás mentése",
     "dpipNoValue": "A DPIP (Ð) a Dupip értékegysége. A tartalékod idővel növekszik a tevékenységeddel. A DPIP nem befektetési termék, és lehet, hogy nincs pénzbeli értéke — sem most, sem a jövőben.",
     "consentDescription": "A DPIP (Ð) a Dupip értékegysége. A tartalékod idővel növekszik a tevékenységeddel. A DPIP nem befektetési termék, és lehet, hogy nincs pénzbeli értéke — sem most, sem a jövőben. Mielőtt megnéznéd csomagjainkat, kérjük, tekintsd át és erősítsd meg a következőt:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

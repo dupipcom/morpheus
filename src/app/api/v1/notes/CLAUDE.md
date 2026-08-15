@@ -16,14 +16,16 @@
 ## GET `/notes`
 Lists notes where the current user is owner or recipient. Supports `visibility` (comma-separated) and `noteId` (prioritized filter). Includes sorted comments, sender/recipient summaries, and like/comment counts.
 
+When `userId` targets another user, requires a `Delegation` from that user to the caller (403 otherwise) and returns the target's notes filtered to the visibilities the delegation unlocks (scope allow-list plus `DOC_ENABLED`, which any delegation unlocks).
+
 ## POST `/notes`
-Creates a note. Body: `{ content, visibility?, date?, recipientId? }`. Sanitizes `content`. If `recipientId` is supplied, validates a delegation exists from the recipient to the sender.
+Creates a note. Body: `{ content, visibility?, date?, recipientId? }`. Sanitizes `content`. `visibility` is validated against `WRITABLE_NOTE_VISIBILITIES` and defaults to the user's `defaultNoteVisibility`, then `PRIVATE`. If `recipientId` is supplied, validates a delegation exists from the recipient to the sender.
 
 ## PUT `[noteId]`
 Updates own note content/visibility/date. Enforces ownership.
 
 ## PATCH `[noteId]`
-Updates own note visibility only. Validates visibility against the allowed set.
+Updates own note visibility only. Validates visibility against `WRITABLE_NOTE_VISIBILITIES` (includes `DOC_ENABLED`).
 
 ## DELETE `[noteId]`
 Deletes own note. Enforces ownership.

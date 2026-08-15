@@ -129,11 +129,13 @@
         "FRIENDS": "Lagunak",
         "CLOSE_FRIENDS": "Lagun hurbilak",
         "PUBLIC": "Publikoa",
-        "AI_ENABLED": "AI gaituta"
+        "AI_ENABLED": "AI gaituta",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Argitaratu oharra",
       "publishing": "Argitaratzen...",
-      "embedHint": "{provider} txertaketa. Erreprodukzioa erabilgarri ez badago, ireki beheko jatorrizko esteka."
+      "embedHint": "{provider} txertaketa. Erreprodukzioa erabilgarri ez badago, ireki beheko jatorrizko esteka.",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "Hirugarrena",
@@ -151,7 +153,9 @@
       "addDelegatedAnalyst": "Gehitu eskuordetutako analista",
       "adding": "Gehitzen...",
       "addError": "Ezin izan da eskuordetutako analista gehitu",
-      "invitationDraft": "Gonbidapen-zirriborroa helbide elektroniko honetarako prestatu da."
+      "invitationDraft": "Gonbidapen-zirriborroa helbide elektroniko honetarako prestatu da.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -930,7 +934,7 @@
     "inviteAccepted": "Gonbidapena onartuta",
     "virtualNumber": {
       "label": "Zenbaki birtuala",
-      "hint": "Aukeratu zure telefono-zenbakietako bat. Zenbaki horretara iristen diren SMSak zure txatean agertuko dira.",
+      "hint": "Aukeratu zure telefono-zenbakiak. Zenbaki horietara iristen diren SMSak zure txatean agertuko dira.",
       "none": "Zenbakirik ez",
       "loading": "Zenbakiak kargatzen…",
       "empty": "Ez dago zenbakirik erabilgarri",
@@ -938,15 +942,15 @@
       "assignError": "Ezin izan da zenbaki hau gorde",
       "assigned": "Zenbakia esleitu da",
       "cleared": "Zenbakia kendu da",
-      "addNumber": "Add number…",
-      "removeNumber": "Remove number",
-      "quotaLabel": "{used} of {quota} numbers used",
-      "limitReached": "You have reached the maximum number of virtual numbers for your plan",
-      "buyCta": "Buy virtual number",
-      "gateHint": "Virtual numbers require a Donator plan. Buy a number to receive SMS in chat.",
-      "buyDialogTitle": "Donator plan required",
-      "buyDialogDescription": "Virtual numbers are included with the Donator plans. Choose a plan on the pricing page to get started.",
-      "buyDialogGoToPricing": "Go to pricing"
+      "addNumber": "Gehitu zenbakia…",
+      "removeNumber": "Kendu zenbakia",
+      "quotaLabel": "{quota} zenbakitik {used} erabilita",
+      "limitReached": "Zure planaren zenbaki birtualen gehieneko kopurura iritsi zara",
+      "buyCta": "Erosi zenbaki birtuala",
+      "gateHint": "Zenbaki birtualek Donator plana behar dute. Erosi zenbaki bat txatean SMSak jasotzeko.",
+      "buyDialogTitle": "Donator plana beharrezkoa da",
+      "buyDialogDescription": "Zenbaki birtualak Donator planetan daude barne. Hasteko, aukeratu plan bat prezioen orrian.",
+      "buyDialogGoToPricing": "Joan prezioetara"
     },
     "sms": {
       "label": "SMS",
@@ -988,5 +992,20 @@
     "saveConsent": "Gorde adostasuna",
     "dpipNoValue": "DPIP (Ð) Dupip barruko balio-unitatea da. Zure stash-a denborarekin hazten da zure jarduerarekin. DPIP ez da inbertsio-produktu bat eta baliteke balio ekonomikorik ez izatea — ez orain, ez etorkizunean.",
     "consentDescription": "DPIP (Ð) Dupip barruko balio-unitatea da. Zure stash-a denborarekin hazten da zure jarduerarekin. DPIP ez da inbertsio-produktu bat eta baliteke balio ekonomikorik ez izatea — ez orain, ez etorkizunean. Gure planak ikusi aurretik, berrikusi eta berretsi, mesedez, honako hau:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

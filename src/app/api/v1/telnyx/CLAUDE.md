@@ -12,7 +12,7 @@ Inbound Telnyx messaging webhook (webhook_api_version "2"). Receives `message.re
 
 Intentionally unauthenticated by Clerk — this endpoint is called server-to-server by Telnyx. Requests are verified by:
 
-- **Signature**: `telnyx-signature-ed25519` header (base64) over `"{telnyx-timestamp}|{raw body}"`, verified with the account Ed25519 public key (`TELNYX_WEBHOOK_PUBLIC_KEY` env, PEM — Mission Control → Keys & Credentials → Public Key).
+- **Signature**: `telnyx-signature-ed25519` header (base64) over `"{telnyx-timestamp}|{raw body}"`, verified with the account Ed25519 public key (`TELNYX_WEBHOOK_PUBLIC_KEY` env — Mission Control → Account Settings → Keys & Credentials → Public Key; Telnyx provides the raw 32-byte key as base64, e.g. `eu2zvPjhY6odxV34Z/...=`; a PEM key is also accepted for local testing).
 - **Replay protection**: `telnyx-timestamp` (unix seconds) must be within ±5 minutes.
 
 ## Behavior

@@ -4,6 +4,7 @@
  */
 
 import type { MoodKey } from '@/lib/services/day'
+import type { NoteVisibility } from '@/generated/prisma/client'
 
 /** All dimensions the assistant can be asked about (mirrors the dashboard charts) */
 export const AGENT_DIMENSIONS = [
@@ -46,6 +47,8 @@ export interface ResolvedAgentContext {
   endDate: string
   dimensions: AgentDimension[]
   visibilityFilter?: Array<'PUBLIC' | 'FRIENDS' | 'CLOSE_FRIENDS'> // restricted delegation scopes
+  /** Note visibility allow-list for the requester; undefined = full (owner) */
+  noteVisibilityFilter?: NoteVisibility[]
   isRestricted: boolean
 }
 
@@ -77,7 +80,14 @@ export interface DayChunk {
   text: string
   startDate: string
   endDate: string
-  level: 'week' | 'month' | 'year'
+  level: 'week' | 'month' | 'year' | 'note'
+}
+
+/** Compact note payload fed to the note chunker */
+export interface CompactNote {
+  id: string
+  date: string | null
+  content: string
 }
 
 export interface DocChunk {
