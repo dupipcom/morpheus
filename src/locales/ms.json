@@ -130,11 +130,13 @@
         "FRIENDS": "Friends",
         "CLOSE_FRIENDS": "Close Friends",
         "PUBLIC": "Public",
-        "AI_ENABLED": "AI Enabled"
+        "AI_ENABLED": "AI Enabled",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Publish Note",
       "publishing": "Menerbitkan...",
-      "embedHint": "Sematan {provider}. Jika main balik tidak tersedia, buka pautan asal di bawah."
+      "embedHint": "Sematan {provider}. Jika main balik tidak tersedia, buka pautan asal di bawah.",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "Pihak ketiga",
@@ -152,7 +154,9 @@
       "addDelegatedAnalyst": "Tambah penganalisis yang diwakilkan",
       "adding": "Menambah...",
       "addError": "Tidak dapat menambah penganalisis yang diwakilkan",
-      "invitationDraft": "Draf jemputan disediakan untuk e-mel ini."
+      "invitationDraft": "Draf jemputan disediakan untuk e-mel ini.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -989,5 +993,20 @@
     "saveConsent": "Simpan persetujuan",
     "dpipNoValue": "DPIP (Ð) ialah unit nilai dalam Dupip. Stash anda bertambah dari semasa ke semasa dengan aktiviti anda. DPIP bukan produk pelaburan dan mungkin tidak mempunyai nilai kewangan — kini atau pada masa hadapan.",
     "consentDescription": "DPIP (Ð) ialah unit nilai dalam Dupip. Stash anda bertambah dari semasa ke semasa dengan aktiviti anda. DPIP bukan produk pelaburan dan mungkin tidak mempunyai nilai kewangan — kini atau pada masa hadapan. Sebelum melihat pelan kami, sila semak dan sahkan perkara berikut:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

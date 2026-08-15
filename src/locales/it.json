@@ -126,11 +126,13 @@
         "FRIENDS": "Amici",
         "CLOSE_FRIENDS": "Amici Stretti",
         "PUBLIC": "Pubblico",
-        "AI_ENABLED": "Abilitato IA"
+        "AI_ENABLED": "Abilitato IA",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Pubblica Nota",
       "publishing": "Pubblicazione...",
-      "embedHint": "Incorporamento {provider}. Se la riproduzione non è disponibile, apri il link originale in basso."
+      "embedHint": "Incorporamento {provider}. Se la riproduzione non è disponibile, apri il link originale in basso.",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "Terze parti",
@@ -148,7 +150,9 @@
       "addDelegatedAnalyst": "Aggiungi analista delegato",
       "adding": "Aggiunta in corso...",
       "addError": "Impossibile aggiungere l'analista delegato",
-      "invitationDraft": "Bozza di invito preparata per questa email."
+      "invitationDraft": "Bozza di invito preparata per questa email.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -985,5 +989,20 @@
     "saveConsent": "Salva consenso",
     "dpipNoValue": "DPIP (Ð) è l’unità di valore all’interno di Dupip. Il tuo stash cresce nel tempo con la tua attività. DPIP non è un prodotto di investimento e potrebbe non avere valore monetario — né ora né in futuro.",
     "consentDescription": "DPIP (Ð) è l’unità di valore all’interno di Dupip. Il tuo stash cresce nel tempo con la tua attività. DPIP non è un prodotto di investimento e potrebbe non avere valore monetario — né ora né in futuro. Prima di vedere i nostri piani, leggi e conferma quanto segue:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

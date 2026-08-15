@@ -129,11 +129,13 @@
         "FRIENDS": "Vänner",
         "CLOSE_FRIENDS": "Nära vänner",
         "PUBLIC": "Allmänheten",
-        "AI_ENABLED": "AI aktiverad"
+        "AI_ENABLED": "AI aktiverad",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Publicera anteckning",
       "publishing": "Publicerar...",
-      "embedHint": "{provider}-inbäddning. Om uppspelning inte är tillgänglig, öppna originallänken nedan."
+      "embedHint": "{provider}-inbäddning. Om uppspelning inte är tillgänglig, öppna originallänken nedan.",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "Tredjepart",
@@ -151,7 +153,9 @@
       "addDelegatedAnalyst": "Lägg till delegerad analytiker",
       "adding": "Lägger till...",
       "addError": "Det gick inte att lägga till delegerad analytiker",
-      "invitationDraft": "Ett utkast till inbjudan har förberetts för denna e-postadress."
+      "invitationDraft": "Ett utkast till inbjudan har förberetts för denna e-postadress.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -988,5 +992,20 @@
     "saveConsent": "Spara samtycke",
     "dpipNoValue": "DPIP (Ð) är värdeenheten inom Dupip. Din stash växer över tid med din aktivitet. DPIP är inte en investeringsprodukt och kan sakna penningvärde — varken nu eller i framtiden.",
     "consentDescription": "DPIP (Ð) är värdeenheten inom Dupip. Din stash växer över tid med din aktivitet. DPIP är inte en investeringsprodukt och kan sakna penningvärde — varken nu eller i framtiden. Innan du ser våra abonnemang, granska och bekräfta följande:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

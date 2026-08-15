@@ -130,11 +130,13 @@
         "FRIENDS": "Venner",
         "CLOSE_FRIENDS": "Nære venner",
         "PUBLIC": "Offentlig",
-        "AI_ENABLED": "AI-aktiveret"
+        "AI_ENABLED": "AI-aktiveret",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Publicer note",
       "publishing": "Udgiver...",
-      "embedHint": "{provider}-indlejring. Hvis afspilning ikke er tilgængelig, åbn det originale link nedenfor."
+      "embedHint": "{provider}-indlejring. Hvis afspilning ikke er tilgængelig, åbn det originale link nedenfor.",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "Tredjepart",
@@ -152,7 +154,9 @@
       "addDelegatedAnalyst": "Tilføj delegeret analytiker",
       "adding": "Tilføjer...",
       "addError": "Kunne ikke tilføje delegeret analytiker",
-      "invitationDraft": "Invitationsudkast for denne e-mail er klargjort."
+      "invitationDraft": "Invitationsudkast for denne e-mail er klargjort.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -989,5 +993,20 @@
     "saveConsent": "Gem samtykke",
     "dpipNoValue": "DPIP (Ð) er værdienheden i Dupip. Din stash vokser over tid med din aktivitet. DPIP er ikke et investeringsprodukt og har muligvis ingen pengeværdi — hverken nu eller i fremtiden.",
     "consentDescription": "DPIP (Ð) er værdienheden i Dupip. Din stash vokser over tid med din aktivitet. DPIP er ikke et investeringsprodukt og har muligvis ingen pengeværdi — hverken nu eller i fremtiden. Før du ser vores abonnementer, bedes du gennemgå og bekræfte følgende:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

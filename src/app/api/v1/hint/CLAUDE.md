@@ -12,7 +12,7 @@ Generates (or returns cached) cognitive-psychology insights across mood and task
 ## Behavior
 - `locale` defaults to `en`.
 - `userId` defaults to the requesting user's internal id.
-- For delegated target access, resolves the effective delegation scope and restricts visible `Day` visibilities.
+- For delegated target access, resolves the effective delegation scope and restricts visible `Day` visibilities (a defensive `DOC_ENABLED` scope maps to no days — it is not grantable). Notes are never part of the hint context.
 - If a persisted `analysis.hint` exists for today (full access only), returns it directly.
 - Otherwise fetches the minimal Day payload via the shared agent services (`src/lib/services/agent/`), chunks it, retrieves the most relevant chunks, calls DeepSeek Chat Completions with `response_format: {type:'json_object'}`, validates the 11-field output with zod (one corrective retry on invalid output), and persists it into today's `Day.analysis.hint`.
 

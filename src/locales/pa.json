@@ -130,11 +130,13 @@
         "FRIENDS": "Friends",
         "CLOSE_FRIENDS": "Close Friends",
         "PUBLIC": "Public",
-        "AI_ENABLED": "AI Enabled"
+        "AI_ENABLED": "AI Enabled",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Publish Note",
       "publishing": "ਪ੍ਰਕਾਸ਼ਿਤ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ...",
-      "embedHint": "{provider} ਐਂਬੈੱਡ। ਜੇਕਰ ਪਲੇਬੈੱਕ ਉਪਲਬਧ ਨਹੀਂ ਹੈ, ਤਾਂ ਹੇਠਾਂ ਅਸਲ ਲਿੰਕ ਖੋਲ੍ਹੋ।"
+      "embedHint": "{provider} ਐਂਬੈੱਡ। ਜੇਕਰ ਪਲੇਬੈੱਕ ਉਪਲਬਧ ਨਹੀਂ ਹੈ, ਤਾਂ ਹੇਠਾਂ ਅਸਲ ਲਿੰਕ ਖੋਲ੍ਹੋ।",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "ਤੀਜਾ ਪੱਖ",
@@ -152,7 +154,9 @@
       "addDelegatedAnalyst": "ਪ੍ਰਤੀਨਿਧੀ ਵਿਸ਼ਲੇਸ਼ਕ ਸ਼ਾਮਲ ਕਰੋ",
       "adding": "ਸ਼ਾਮਲ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ...",
       "addError": "ਪ੍ਰਤੀਨਿਧੀ ਵਿਸ਼ਲੇਸ਼ਕ ਸ਼ਾਮਲ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ",
-      "invitationDraft": "ਇਸ ਈਮੇਲ ਲਈ ਨਿਮੰਤਰਣ ਦਾ ਮਸੌਦਾ ਤਿਆਰ ਕੀਤਾ ਗਿਆ ਹੈ।"
+      "invitationDraft": "ਇਸ ਈਮੇਲ ਲਈ ਨਿਮੰਤਰਣ ਦਾ ਮਸੌਦਾ ਤਿਆਰ ਕੀਤਾ ਗਿਆ ਹੈ।",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -989,5 +993,20 @@
     "saveConsent": "ਸਹਿਮਤੀ ਸੇਵ ਕਰੋ",
     "dpipNoValue": "DPIP (Ð) ਡੂਪਿਪ ਦੇ ਅੰਦਰ ਮੁੱਲ ਦੀ ਇਕਾਈ ਹੈ। ਤੁਹਾਡਾ ਸਟੈਸ਼ ਸਮੇਂ ਦੇ ਨਾਲ ਤੁਹਾਡੀ ਗਤੀਵਿਧੀ ਨਾਲ ਵਧਦਾ ਹੈ। DPIP ਕੋਈ ਨਿਵੇਸ਼ ਉਤਪਾਦ ਨਹੀਂ ਹੈ ਅਤੇ ਇਸਦਾ ਕੋਈ ਮੌਦਰਿਕ ਮੁੱਲ ਨਹੀਂ ਹੋ ਸਕਦਾ — ਨਾ ਹੁਣ, ਨਾ ਭਵਿੱਖ ਵਿੱਚ।",
     "consentDescription": "DPIP (Ð) ਡੂਪਿਪ ਦੇ ਅੰਦਰ ਮੁੱਲ ਦੀ ਇਕਾਈ ਹੈ। ਤੁਹਾਡਾ ਸਟੈਸ਼ ਸਮੇਂ ਦੇ ਨਾਲ ਤੁਹਾਡੀ ਗਤੀਵਿਧੀ ਨਾਲ ਵਧਦਾ ਹੈ। DPIP ਕੋਈ ਨਿਵੇਸ਼ ਉਤਪਾਦ ਨਹੀਂ ਹੈ ਅਤੇ ਇਸਦਾ ਕੋਈ ਮੌਦਰਿਕ ਮੁੱਲ ਨਹੀਂ ਹੋ ਸਕਦਾ — ਨਾ ਹੁਣ, ਨਾ ਭਵਿੱਖ ਵਿੱਚ। ਸਾਡੀਆਂ ਯੋਜਨਾਵਾਂ ਦੇਖਣ ਤੋਂ ਪਹਿਲਾਂ, ਕਿਰਪਾ ਕਰਕੇ ਹੇਠ ਲਿਖਿਆਂ ਦੀ ਸਮੀਖਿਆ ਕਰੋ ਅਤੇ ਪੁਸ਼ਟੀ ਕਰੋ:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

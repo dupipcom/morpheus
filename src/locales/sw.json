@@ -126,11 +126,13 @@
         "FRIENDS": "Marafiki",
         "CLOSE_FRIENDS": "Marafiki wa Karibu",
         "PUBLIC": "Umma",
-        "AI_ENABLED": "AI Imewezeshwa"
+        "AI_ENABLED": "AI Imewezeshwa",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Chapisha Maelezo",
       "publishing": "Inachapisha...",
-      "embedHint": "Ingizo la {provider}. Ikiwa urejeshaji hauwezekani, fungua kiungo asili hapa chini."
+      "embedHint": "Ingizo la {provider}. Ikiwa urejeshaji hauwezekani, fungua kiungo asili hapa chini.",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "Mhusika wa tatu",
@@ -148,7 +150,9 @@
       "addDelegatedAnalyst": "Ongeza mchambuzi aliyekabidhiwa",
       "adding": "Inaongezwa...",
       "addError": "Haikuwezekana kuongeza mchambuzi aliyekabidhiwa",
-      "invitationDraft": "Rasimu ya mwaliko imeandaliwa kwa barua pepe hii."
+      "invitationDraft": "Rasimu ya mwaliko imeandaliwa kwa barua pepe hii.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -983,5 +987,20 @@
     "saveConsent": "Hifadhi idhini",
     "dpipNoValue": "DPIP (Ð) ni kitengo cha thamani ndani ya Dupip. Akiba yako hukua kadri muda unavyopita pamoja na shughuli zako. DPIP si bidhaa ya uwekezaji na huenda isiwe na thamani ya kifedha — si sasa wala baadaye.",
     "consentDescription": "DPIP (Ð) ni kitengo cha thamani ndani ya Dupip. Akiba yako hukua kadri muda unavyopita pamoja na shughuli zako. DPIP si bidhaa ya uwekezaji na huenda isiwe na thamani ya kifedha — si sasa wala baadaye. Kabla ya kuona mipango yetu, tafadhali pitia na uthibitishe yafuatayo:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

@@ -126,11 +126,13 @@
         "FRIENDS": "友達",
         "CLOSE_FRIENDS": "親しい友達",
         "PUBLIC": "公開",
-        "AI_ENABLED": "AI有効"
+        "AI_ENABLED": "AI有効",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "ノートを公開",
       "publishing": "公開中...",
-      "embedHint": "{provider} 埋め込み。再生できない場合は、以下の元のリンクを開いてください。"
+      "embedHint": "{provider} 埋め込み。再生できない場合は、以下の元のリンクを開いてください。",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "サードパーティ",
@@ -148,7 +150,9 @@
       "addDelegatedAnalyst": "委任されたアナリストを追加",
       "adding": "追加中...",
       "addError": "委任されたアナリストを追加できませんでした",
-      "invitationDraft": "このメールアドレス用の招待下書きを準備しました。"
+      "invitationDraft": "このメールアドレス用の招待下書きを準備しました。",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -985,5 +989,20 @@
     "saveConsent": "同意を保存",
     "dpipNoValue": "DPIP（Ð）はDupip内の価値の単位です。あなたのスタッシュは、活動とともに時間をかけて増えていきます。DPIPは投資商品ではなく、金銭的価値を持たない可能性があります——現在も将来も。",
     "consentDescription": "DPIP（Ð）はDupip内の価値の単位です。あなたのスタッシュは、活動とともに時間をかけて増えていきます。DPIPは投資商品ではなく、金銭的価値を持たない可能性があります——現在も将来も。 プランをご覧いただく前に、以下をご確認のうえ同意してください:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

@@ -126,11 +126,13 @@
         "FRIENDS": "বন্ধুরা",
         "CLOSE_FRIENDS": "ঘনিষ্ঠ বন্ধুরা",
         "PUBLIC": "সর্বজনীন",
-        "AI_ENABLED": "এআই সক্রিয়"
+        "AI_ENABLED": "এআই সক্রিয়",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "নোট প্রকাশ করুন",
       "publishing": "প্রকাশ করা হচ্ছে...",
-      "embedHint": "{provider} এমবেড। প্লেব্যাক পাওয়া না গেলে নিচের মূল লিঙ্কটি খুলুন।"
+      "embedHint": "{provider} এমবেড। প্লেব্যাক পাওয়া না গেলে নিচের মূল লিঙ্কটি খুলুন।",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "তৃতীয় পক্ষ",
@@ -148,7 +150,9 @@
       "addDelegatedAnalyst": "প্রতিনিধি বিশ্লেষক যোগ করুন",
       "adding": "যোগ করা হচ্ছে...",
       "addError": "প্রতিনিধি বিশ্লেষক যোগ করা যায়নি",
-      "invitationDraft": "এই ইমেলটির জন্য আমন্ত্রণের খসড়া প্রস্তুত করা হয়েছে।"
+      "invitationDraft": "এই ইমেলটির জন্য আমন্ত্রণের খসড়া প্রস্তুত করা হয়েছে।",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -985,5 +989,20 @@
     "saveConsent": "সম্মতি সংরক্ষণ করুন",
     "dpipNoValue": "DPIP (Ð) হলো ডুপিপের ভেতরের মূল্যের একক। আপনার সঞ্চয় সময়ের সঙ্গে সঙ্গে আপনার কার্যকলাপের মাধ্যমে বাড়ে। DPIP কোনো বিনিয়োগ পণ্য নয় এবং এর কোনো আর্থিক মূল্য নাও থাকতে পারে — এখন বা ভবিষ্যতে।",
     "consentDescription": "DPIP (Ð) হলো ডুপিপের ভেতরের মূল্যের একক। আপনার সঞ্চয় সময়ের সঙ্গে সঙ্গে আপনার কার্যকলাপের মাধ্যমে বাড়ে। DPIP কোনো বিনিয়োগ পণ্য নয় এবং এর কোনো আর্থিক মূল্য নাও থাকতে পারে — এখন বা ভবিষ্যতে। আমাদের পরিকল্পনা দেখার আগে, অনুগ্রহ করে নিচের বিষয়টি পর্যালোচনা করে নিশ্চিত করুন:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

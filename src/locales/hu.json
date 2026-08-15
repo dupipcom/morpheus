@@ -126,11 +126,13 @@
         "FRIENDS": "Barátok",
         "CLOSE_FRIENDS": "Közeli barátok",
         "PUBLIC": "Nyilvános",
-        "AI_ENABLED": "Mesterséges intelligencia engedélyezve"
+        "AI_ENABLED": "Mesterséges intelligencia engedélyezve",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Jegyzet közzététele",
       "publishing": "Közzététel...",
-      "embedHint": "{provider} beágyazás. Ha a lejátszás nem elérhető, nyisd meg az eredeti linket lent."
+      "embedHint": "{provider} beágyazás. Ha a lejátszás nem elérhető, nyisd meg az eredeti linket lent.",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "Harmadik fél",
@@ -148,7 +150,9 @@
       "addDelegatedAnalyst": "Delegált elemző hozzáadása",
       "adding": "Hozzáadás...",
       "addError": "Nem sikerült hozzáadni a delegált elemzőt",
-      "invitationDraft": "Ehhez az e-mailhez meghívóvázlat készült."
+      "invitationDraft": "Ehhez az e-mailhez meghívóvázlat készült.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -985,5 +989,20 @@
     "saveConsent": "Hozzájárulás mentése",
     "dpipNoValue": "A DPIP (Ð) a Dupip értékegysége. A tartalékod idővel növekszik a tevékenységeddel. A DPIP nem befektetési termék, és lehet, hogy nincs pénzbeli értéke — sem most, sem a jövőben.",
     "consentDescription": "A DPIP (Ð) a Dupip értékegysége. A tartalékod idővel növekszik a tevékenységeddel. A DPIP nem befektetési termék, és lehet, hogy nincs pénzbeli értéke — sem most, sem a jövőben. Mielőtt megnéznéd csomagjainkat, kérjük, tekintsd át és erősítsd meg a következőt:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

@@ -126,11 +126,13 @@
         "FRIENDS": "Amics",
         "CLOSE_FRIENDS": "Amics propers",
         "PUBLIC": "Públic",
-        "AI_ENABLED": "Activat per IA"
+        "AI_ENABLED": "Activat per IA",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Publicar nota",
       "publishing": "Publicant...",
-      "embedHint": "Incrustació de {provider}. Si la reproducció no està disponible, obre l'enllaç original a continuació."
+      "embedHint": "Incrustació de {provider}. Si la reproducció no està disponible, obre l'enllaç original a continuació.",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "Tercers",
@@ -148,7 +150,9 @@
       "addDelegatedAnalyst": "Afegeix analista delegat",
       "adding": "Afegint...",
       "addError": "No s'ha pogut afegir l'analista delegat",
-      "invitationDraft": "S'ha preparat un esborrany d'invitació per a aquest correu electrònic."
+      "invitationDraft": "S'ha preparat un esborrany d'invitació per a aquest correu electrònic.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -985,5 +989,20 @@
     "saveConsent": "Desa el consentiment",
     "dpipNoValue": "DPIP (Ð) és la unitat de valor dins de Dupip. El teu fons creix amb el temps gràcies a la teva activitat. DPIP no és un producte d’inversió i pot no tenir valor monetari — ni ara ni en el futur.",
     "consentDescription": "DPIP (Ð) és la unitat de valor dins de Dupip. El teu fons creix amb el temps gràcies a la teva activitat. DPIP no és un producte d’inversió i pot no tenir valor monetari — ni ara ni en el futur. Abans de veure els nostres plans, revisa i confirma el següent:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

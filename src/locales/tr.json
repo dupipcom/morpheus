@@ -130,11 +130,13 @@
         "FRIENDS": "Arkadaşlar",
         "CLOSE_FRIENDS": "Yakın Arkadaşlar",
         "PUBLIC": "Kamu",
-        "AI_ENABLED": "Yapay Zeka Etkin"
+        "AI_ENABLED": "Yapay Zeka Etkin",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Not Yayınla",
       "publishing": "Yayınlanıyor...",
-      "embedHint": "{provider} yerleştirmesi. Oynatma kullanılamıyorsa aşağıdaki orijinal bağlantıyı açın."
+      "embedHint": "{provider} yerleştirmesi. Oynatma kullanılamıyorsa aşağıdaki orijinal bağlantıyı açın.",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "Üçüncü taraf",
@@ -152,7 +154,9 @@
       "addDelegatedAnalyst": "Yetkilendirilmiş analist ekle",
       "adding": "Ekleniyor...",
       "addError": "Yetkilendirilmiş analist eklenemedi",
-      "invitationDraft": "Bu e-posta için davet taslağı hazırlandı."
+      "invitationDraft": "Bu e-posta için davet taslağı hazırlandı.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -989,5 +993,20 @@
     "saveConsent": "Onayı kaydet",
     "dpipNoValue": "DPIP (Ð), Dupip içindeki değer birimidir. Birikiminiz, etkinliğinizle birlikte zamanla büyür. DPIP bir yatırım ürünü değildir ve şimdi veya gelecekte parasal değeri olmayabilir.",
     "consentDescription": "DPIP (Ð), Dupip içindeki değer birimidir. Birikiminiz, etkinliğinizle birlikte zamanla büyür. DPIP bir yatırım ürünü değildir ve şimdi veya gelecekte parasal değeri olmayabilir. Planlarımızı görüntülemeden önce lütfen aşağıdakileri inceleyin ve onaylayın:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

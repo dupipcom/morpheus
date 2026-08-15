@@ -130,11 +130,13 @@
         "FRIENDS": "الأصدقاء",
         "CLOSE_FRIENDS": "الأصدقاء المقربون",
         "PUBLIC": "عام",
-        "AI_ENABLED": "تمكين الذكاء الاصطناعي"
+        "AI_ENABLED": "تمكين الذكاء الاصطناعي",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "نشر المذكرة",
       "publishing": "جاري النشر...",
-      "embedHint": "تضمين {provider}. إذا لم يكن التشغيل متاحًا، افتح الرابط الأصلي أدناه."
+      "embedHint": "تضمين {provider}. إذا لم يكن التشغيل متاحًا، افتح الرابط الأصلي أدناه.",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "الجهات الخارجية",
@@ -152,7 +154,9 @@
       "addDelegatedAnalyst": "إضافة محلل مفوض",
       "adding": "جارٍ الإضافة...",
       "addError": "تعذر إضافة المحلل المفوض",
-      "invitationDraft": "تم إعداد مسودة دعوة لهذا البريد الإلكتروني."
+      "invitationDraft": "تم إعداد مسودة دعوة لهذا البريد الإلكتروني.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -989,5 +993,20 @@
     "saveConsent": "حفظ الموافقة",
     "dpipNoValue": "DPIP (Ð) هو وحدة القيمة داخل دوبيب. ينمو رصيدك بمرور الوقت مع نشاطك. DPIP ليس منتجًا استثماريًا وقد لا تكون له قيمة نقدية — الآن أو في المستقبل.",
     "consentDescription": "DPIP (Ð) هو وحدة القيمة داخل دوبيب. ينمو رصيدك بمرور الوقت مع نشاطك. DPIP ليس منتجًا استثماريًا وقد لا تكون له قيمة نقدية — الآن أو في المستقبل. قبل عرض خططنا، يرجى المراجعة والتأكيد على ما يلي:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

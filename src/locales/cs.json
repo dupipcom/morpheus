@@ -126,11 +126,13 @@
         "FRIENDS": "Přátelé",
         "CLOSE_FRIENDS": "Blízcí přátelé",
         "PUBLIC": "Veřejné",
-        "AI_ENABLED": "Povoleno umělou inteligencí"
+        "AI_ENABLED": "Povoleno umělou inteligencí",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Publikovat poznámku",
       "publishing": "Zveřejňování...",
-      "embedHint": "Vložení {provider}. Pokud přehrávání není dostupné, otevřete původní odkaz níže."
+      "embedHint": "Vložení {provider}. Pokud přehrávání není dostupné, otevřete původní odkaz níže.",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "Třetí strana",
@@ -148,7 +150,9 @@
       "addDelegatedAnalyst": "Přidat delegovaného analytika",
       "adding": "Přidávání...",
       "addError": "Delegovaného analytika se nepodařilo přidat",
-      "invitationDraft": "Pro tento e-mail byl připraven návrh pozvánky."
+      "invitationDraft": "Pro tento e-mail byl připraven návrh pozvánky.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -985,5 +989,20 @@
     "saveConsent": "Uložit souhlas",
     "dpipNoValue": "DPIP (Ð) je jednotka hodnoty uvnitř Dupip. Váš stash roste s časem díky vaší aktivitě. DPIP není investiční produkt a nemusí mít peněžní hodnotu — nyní ani v budoucnu.",
     "consentDescription": "DPIP (Ð) je jednotka hodnoty uvnitř Dupip. Váš stash roste s časem díky vaší aktivitě. DPIP není investiční produkt a nemusí mít peněžní hodnotu — nyní ani v budoucnu. Než si prohlédnete naše plány, přečtěte si prosím a potvrďte následující:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

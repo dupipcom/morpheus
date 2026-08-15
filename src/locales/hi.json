@@ -126,11 +126,13 @@
         "FRIENDS": "मित्र",
         "CLOSE_FRIENDS": "नजदीकी मित्र",
         "PUBLIC": "सार्वजनिक",
-        "AI_ENABLED": "एआई सक्षम"
+        "AI_ENABLED": "एआई सक्षम",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "नोट प्रकाशित करें",
       "publishing": "प्रकाशन...",
-      "embedHint": "{provider} एम्बेड। यदि प्लेबैक उपलब्ध नहीं है, तो नीचे मूल लिंक खोलें।"
+      "embedHint": "{provider} एम्बेड। यदि प्लेबैक उपलब्ध नहीं है, तो नीचे मूल लिंक खोलें।",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "तृतीय पक्ष",
@@ -148,7 +150,9 @@
       "addDelegatedAnalyst": "प्रतिनिधि विश्लेषक जोड़ें",
       "adding": "जोड़ा जा रहा है...",
       "addError": "प्रतिनिधि विश्लेषक जोड़ा नहीं जा सका",
-      "invitationDraft": "इस ईमेल के लिए निमंत्रण मसौदा तैयार किया गया है।"
+      "invitationDraft": "इस ईमेल के लिए निमंत्रण मसौदा तैयार किया गया है।",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -985,5 +989,20 @@
     "saveConsent": "सहमति सहेजें",
     "dpipNoValue": "DPIP (Ð) डुपिप के भीतर मूल्य की इकाई है। आपका स्टैश समय के साथ आपकी गतिविधि से बढ़ता है। DPIP कोई निवेश उत्पाद नहीं है और इसका कोई मौद्रिक मूल्य नहीं हो सकता — न अभी, न भविष्य में।",
     "consentDescription": "DPIP (Ð) डुपिप के भीतर मूल्य की इकाई है। आपका स्टैश समय के साथ आपकी गतिविधि से बढ़ता है। DPIP कोई निवेश उत्पाद नहीं है और इसका कोई मौद्रिक मूल्य नहीं हो सकता — न अभी, न भविष्य में। हमारी योजनाएँ देखने से पहले, कृपया निम्नलिखित की समीक्षा करें और पुष्टि करें:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }
