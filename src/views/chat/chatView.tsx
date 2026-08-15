@@ -27,6 +27,7 @@ import {
   getChatSmsChannelName,
   getChatUserChannelName,
 } from '@/lib/chat/realtime/channelNames'
+import { buildChatRoomPath, type ChatRoomRouteTarget } from '@/lib/chat/routes'
 import { cn } from '@/lib/utils/utils'
 import type { ChatMessageSummary, ChatPendingInviteSummary, ChatUserProfile } from '@/lib/chat/types'
 import type { SmsConversationSummary, SmsMessageStatusValue, SmsMessageSummary } from '@/lib/services/sms'
@@ -128,9 +129,10 @@ interface ChatViewProps {
   initialMessageId?: string
   initialOrgId?: string
   initialChannelId?: string
+  initialSmsConversationId?: string
 }
 
-export function ChatView({ initialUsername, initialMessageId, initialOrgId, initialChannelId }: ChatViewProps = {}) {
+export function ChatView({ initialUsername, initialMessageId, initialOrgId, initialChannelId, initialSmsConversationId }: ChatViewProps = {}) {
   const { t, hasTranslation, locale } = useI18n()
   const { isSignedIn } = useAuth()
   const { isVirtualNumberEnabled } = useFeatureFlag()
@@ -154,40 +156,43 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
   const deepLinkHandledRef = useRef(false)
   const deepLinkOrgHandledRef = useRef(false)
   const deepLinkThreadHandledRef = useRef(false)
+  const deepLinkSmsHandledRef = useRef(false)
   const sidebarRef = useRef<SidebarResponse | undefined>(undefined)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
   const threadContainerRef = useRef<HTMLDivElement>(null)
 
-  /**
-   * Push a URL that reflects the current room selection.
-   * For DMs: /chat/{username}[/message/{messageId}]
-   * For channels: /chat/org/{orgId}/channel/{channelId}
-   * For no room: /chat
-   */
-  const navigateToRoom = useCallback(
-    (room: ActiveRoom, threadMessageId?: string | null) => {
-      if (room?.type === 'dm') {
-        const dm = sidebarRef.current?.dms?.find((d) => d.id === room.id)
-        const username = dm?.participant?.username
-        if (username) {
-          const threadSuffix = threadMessageId ? `/message/${threadMessageId}` : ''
-          router.push(`/${locale}/app/chat/${username}${threadSuffix}`)
-          return
-        }
-      }
-      if (room?.type === 'channel') {
-        const threadSuffix = threadMessageId ? `/message/${threadMessageId}` : ''
-        router.push(`/${locale}/app/chat/org/${room.orgId}/channel/${room.id}${threadSuffix}`)
-        return
-      }
-      if (room?.type === 'sms') {
-        // SMS rooms are not deep-linkable yet (follow-up)
-        router.push(`/${locale}/app/chat`)
-        return
-      }
-      router.push(`/${locale}/app/chat`)
+  const getNavigationTargetForRoom = useCallback((room: Exclude<ActiveRoom, null>) => {
+    if (room.type === 'channel') {
+      return { type: 'channel', orgId: room.orgId, channelId: room.id } satisfies ChatRoomRouteTarget
+    }
+
+    if (room.type === 'sms') {
+      return { type: 'sms', conversationId: room.id } satisfies ChatRoomRouteTarget
+    }
+
+    const dm = sidebarRef.current?.dms?.find((candidate) => candidate.id === room.id)
+    const username = dm?.participant?.username
+    return username ? ({ type: 'dm', username } satisfies ChatRoomRouteTarget) : null
+  }, [])
+
+  const openRoom = useCallback(
+    (
+      room: Exclude<ActiveRoom, null>,
+      options: {
+        mobileView?: MobileView
+        threadMessageId?: string | null
+        navigationTarget?: ChatRoomRouteTarget
+      } = {},
+    ) => {
+      const threadMessageId = options.threadMessageId ?? null
+      const navigationTarget = options.navigationTarget ?? getNavigationTargetForRoom(room)
+
+      setActiveRoom(room)
+      setMobileView(options.mobileView ?? 'room')
+      setSelectedThreadId(threadMessageId)
+      router.push(buildChatRoomPath(locale, navigationTarget, threadMessageId))
     },
-    [locale, router],
+    [getNavigationTargetForRoom, locale, router],
   )
 
   const sidebarKey = '/api/v1/chat/sidebar'
@@ -260,23 +265,21 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
     if (activeRoom || !sidebar) return
     // Don't auto-select a default room when deep-link props are present —
     // the dedicated deep-link effects will handle the selection instead.
-    if (initialUsername || initialOrgId || initialChannelId) return
+    if (initialUsername || initialOrgId || initialChannelId || initialSmsConversationId) return
 
     const defaultChannel = sidebar.orgs?.[0]?.channels?.[0]
     if (defaultChannel) {
       const room: ActiveRoom = { type: 'channel', id: defaultChannel.id, orgId: defaultChannel.clerkOrgId, name: defaultChannel.name }
-      setActiveRoom(room)
-      navigateToRoom(room)
+      openRoom(room)
       return
     }
 
     const defaultDm = sidebar.dms?.[0]
     if (defaultDm) {
       const room: ActiveRoom = { type: 'dm', id: defaultDm.id, name: getDisplayLabel(defaultDm.participant?.displayName, directMessageLabel) }
-      setActiveRoom(room)
-      navigateToRoom(room)
+      openRoom(room)
     }
-  }, [activeRoom, directMessageLabel, navigateToRoom, sidebar, initialUsername, initialOrgId, initialChannelId])
+  }, [activeRoom, directMessageLabel, openRoom, sidebar, initialUsername, initialOrgId, initialChannelId, initialSmsConversationId])
 
   // Deep link: open DM for initialUsername when sidebar is ready
   useEffect(() => {
@@ -286,9 +289,7 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
     if (existingDm) {
       deepLinkHandledRef.current = true
       const room: ActiveRoom = { type: 'dm', id: existingDm.id, name: getDisplayLabel(existingDm.participant?.displayName, directMessageLabel) }
-      setActiveRoom(room)
-      setMobileView('room')
-      navigateToRoom(room, initialMessageId)
+      openRoom(room, { threadMessageId: initialMessageId, navigationTarget: { type: 'dm', username: initialUsername } })
       return
     }
 
@@ -307,14 +308,19 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
           body: JSON.stringify({ participantUserId: candidate.id }),
         })
         if (!dmResponse.ok) return
+        const payload = await dmResponse.json() as { conversation?: { id?: string } }
 
         deepLinkHandledRef.current = true
+        if (payload.conversation?.id) {
+          const room: ActiveRoom = { type: 'dm', id: payload.conversation.id, name: getDisplayLabel(candidate.displayName, directMessageLabel) }
+          openRoom(room, { threadMessageId: initialMessageId, navigationTarget: { type: 'dm', username: initialUsername } })
+        }
         await mutateSidebar()
       } catch {
         // ignore
       }
     })()
-  }, [directMessageLabel, initialMessageId, initialUsername, mutateSidebar, navigateToRoom, sidebar])
+  }, [directMessageLabel, initialMessageId, initialUsername, mutateSidebar, openRoom, sidebar])
 
   // Deep link: open org channel when initialOrgId + initialChannelId are provided
   useEffect(() => {
@@ -325,11 +331,20 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
     if (org && channel) {
       deepLinkOrgHandledRef.current = true
       const room: ActiveRoom = { type: 'channel', id: channel.id, orgId: org.id, name: channel.name }
-      setActiveRoom(room)
-      setMobileView('room')
-      navigateToRoom(room)
+      openRoom(room, { threadMessageId: initialMessageId })
     }
-  }, [initialChannelId, initialOrgId, navigateToRoom, sidebar])
+  }, [initialChannelId, initialMessageId, initialOrgId, openRoom, sidebar])
+
+  useEffect(() => {
+    if (!initialSmsConversationId || !smsConversationsData || deepLinkSmsHandledRef.current) return
+
+    const conversation = smsConversationsData.conversations.find((candidate) => candidate.id === initialSmsConversationId)
+    if (!conversation) return
+
+    deepLinkSmsHandledRef.current = true
+    const room: ActiveRoom = { type: 'sms', id: conversation.id, name: conversation.counterpartPhoneNumber }
+    openRoom(room)
+  }, [initialSmsConversationId, openRoom, smsConversationsData])
 
   // Deep link: scroll to initialMessageId and open thread panel when messages are loaded
   useEffect(() => {
@@ -640,10 +655,7 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
 
   const openSmsConversation = (conversation: SmsConversationSummary) => {
     const room: ActiveRoom = { type: 'sms', id: conversation.id, name: conversation.counterpartPhoneNumber }
-    setActiveRoom(room)
-    setMobileView('room')
-    setSelectedThreadId(null)
-    navigateToRoom(room)
+    openRoom(room)
   }
 
   const smsStatusLabel = (status: SmsMessageStatusValue | null) => {
@@ -683,9 +695,8 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
           )}
           <Button variant="ghost" size="sm" onClick={() => {
             const threadId = message.threadRootMessageId || message.id
-            setSelectedThreadId(threadId)
-            setMobileView('thread')
-            navigateToRoom(activeRoom, threadId)
+            if (!activeRoom) return
+            openRoom(activeRoom, { mobileView: 'thread', threadMessageId: threadId })
           }}>
             <MessageSquareReply className="h-4 w-4" />
             Thread
@@ -747,10 +758,7 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
                 const firstChannel = org.channels?.[0]
                 if (firstChannel) {
                   const room: ActiveRoom = { type: 'channel', id: firstChannel.id, orgId: org.id, name: firstChannel.name }
-                  setActiveRoom(room)
-                  setMobileView('room')
-                  setSelectedThreadId(null)
-                  navigateToRoom(room)
+                  openRoom(room)
                 }
               }}
             >
@@ -793,10 +801,9 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
                     )}
                     onClick={() => {
                       const room: ActiveRoom = { type: 'dm', id: dm.id, name: getDisplayLabel(dm.participant?.displayName, directMessageLabel) }
-                      setActiveRoom(room)
-                      setMobileView('room')
-                      setSelectedThreadId(null)
-                      navigateToRoom(room)
+                      openRoom(room, {
+                        navigationTarget: dm.participant?.username ? { type: 'dm', username: dm.participant.username } : null,
+                      })
                     }}
                   >
                     <span>{getDisplayLabel(dm.participant?.displayName, directMessageLabel)}</span>
@@ -862,10 +869,7 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
                       )}
                       onClick={() => {
                         const room: ActiveRoom = { type: 'channel', id: channel.id, orgId: channel.clerkOrgId, name: channel.name }
-                        setActiveRoom(room)
-                        setMobileView('room')
-                        setSelectedThreadId(null)
-                        navigateToRoom(room)
+                        openRoom(room)
                       }}
                     >
                       <span className="flex items-center gap-2"><Hash className="h-4 w-4 text-muted-foreground" />{channel.name}</span>
@@ -962,9 +966,8 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
           <h3 className="text-base font-semibold">Replies</h3>
         </div>
         <Button variant="ghost" size="sm" onClick={() => {
-          setSelectedThreadId(null)
-          setMobileView('room')
-          navigateToRoom(activeRoom)
+          if (!activeRoom) return
+          openRoom(activeRoom)
         }}>
           Close
         </Button>
