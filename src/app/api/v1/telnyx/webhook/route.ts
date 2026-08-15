@@ -12,8 +12,14 @@ export async function POST(request: NextRequest) {
   // The signature covers the raw body — read it first, never request.json()
   const rawBody = await request.text()
 
-  const signature = request.headers.get('telnyx-signature-ed25519')
-  const timestamp = request.headers.get('telnyx-timestamp')
+  // Telnyx sends telnyx-signature-ed25519 / telnyx-timestamp; per their docs
+  // these are compatible with the Standard Webhooks spec, so also accept the
+  // webhook-signature / webhook-timestamp header names.
+  const signature =
+    request.headers.get('telnyx-signature-ed25519') ??
+    request.headers.get('webhook-signature')
+  const timestamp =
+    request.headers.get('telnyx-timestamp') ?? request.headers.get('webhook-timestamp')
   const publicKey = process.env.TELNYX_WEBHOOK_PUBLIC_KEY
 
   if (!signature || !timestamp || !publicKey) {
@@ -21,13 +27,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Missing signature' }, { status: 401 })
   }
 
-  const valid = verifyTelnyxWebhookSignature({
-    publicKeyPem: publicKey,
+  const verification = verifyTelnyxWebhookSignature({
+    publicKey,
     timestamp,
     signatureBase64: signature,
     rawBody
   })
-  if (!valid) {
+  if (!verification.ok) {
+    console.error('[telnyx-webhook] invalid signature', { reason: verification.reason })
     return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
   }
 
