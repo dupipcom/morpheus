@@ -339,7 +339,8 @@
     "getInsights": "Vraag over je stemming, gewoonten of krijg gepersonaliseerde inzichten",
     "placeholder": "Laten we chatten...",
     "error": "Sorry, ik ben een fout tegengekomen. Probeer opnieuw.",
-    "failedToSend": "Bericht verzenden mislukt. Probeer opnieuw."
+    "failedToSend": "Bericht verzenden mislukt. Probeer opnieuw.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Begin je eigen Dupip reis",
@@ -923,7 +924,18 @@
     "inviteFriendToOrg": "Een vriend uitnodigen voor deze organisatie",
     "inviteLinkCopied": "Uitnodigingslink gekopieerd",
     "inviteSent": "Uitnodiging verzonden",
-    "inviteAccepted": "Uitnodiging geaccepteerd"
+    "inviteAccepted": "Uitnodiging geaccepteerd",
+    "virtualNumber": {
+      "label": "Virtual number",
+      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
+      "none": "No number",
+      "loading": "Loading numbers…",
+      "empty": "No numbers available",
+      "error": "Could not load your numbers",
+      "assignError": "Could not save this number",
+      "assigned": "Number assigned",
+      "cleared": "Number cleared"
+    }
   },
   "notesList": {
     "gridOption": {

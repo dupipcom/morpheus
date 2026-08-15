@@ -348,7 +348,8 @@
     "getInsights": "询问您的心情、习惯或获取个性化洞察",
     "placeholder": "让我们聊天...",
     "error": "抱歉，我遇到了错误。请重试。",
-    "failedToSend": "发送消息失败。请重试。"
+    "failedToSend": "发送消息失败。请重试。",
+    "model": "Model"
   },
   "errors": {
     "notFound": "哎呀！无法调谐到此频率。",
@@ -923,7 +924,18 @@
     "inviteFriendToOrg": "邀请好友加入此组织",
     "inviteLinkCopied": "邀请链接已复制",
     "inviteSent": "邀请已发送",
-    "inviteAccepted": "邀请已接受"
+    "inviteAccepted": "邀请已接受",
+    "virtualNumber": {
+      "label": "Virtual number",
+      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
+      "none": "No number",
+      "loading": "Loading numbers…",
+      "empty": "No numbers available",
+      "error": "Could not load your numbers",
+      "assignError": "Could not save this number",
+      "assigned": "Number assigned",
+      "cleared": "Number cleared"
+    }
   },
   "notesList": {
     "gridOption": {

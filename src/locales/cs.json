@@ -339,7 +339,8 @@
     "getInsights": "Zeptejte se na svou náladu, zvyky nebo získejte personalizované poznatky",
     "placeholder": "Pojďme si povídat...",
     "error": "Promiňte, narazil jsem na chybu. Zkuste to znovu.",
-    "failedToSend": "Zpráva se nepodařila odeslat. Zkuste to znovu."
+    "failedToSend": "Zpráva se nepodařila odeslat. Zkuste to znovu.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Začněte svou vlastní cestu s Dupip",
@@ -923,7 +924,18 @@
     "inviteFriendToOrg": "Pozvat přítele do této organizace",
     "inviteLinkCopied": "Odkaz pro pozvání zkopírován",
     "inviteSent": "Pozvánka odeslána",
-    "inviteAccepted": "Pozvánka přijata"
+    "inviteAccepted": "Pozvánka přijata",
+    "virtualNumber": {
+      "label": "Virtual number",
+      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
+      "none": "No number",
+      "loading": "Loading numbers…",
+      "empty": "No numbers available",
+      "error": "Could not load your numbers",
+      "assignError": "Could not save this number",
+      "assigned": "Number assigned",
+      "cleared": "Number cleared"
+    }
   },
   "notesList": {
     "gridOption": {

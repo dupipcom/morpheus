@@ -437,6 +437,17 @@ model User {
   delegatedAccessGranted Delegation[] @relation("Delegator")
   delegatedAccessReceived Delegation[] @relation("Delegated")
   emailNotifications EmailNotification[]
+  virtualNumber     VirtualNumber?
+}
+
+model VirtualNumber {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String   @unique @db.ObjectId
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  phoneNumber String   @unique
+  provider    String   @default("TELNYX")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model EmailNotification {

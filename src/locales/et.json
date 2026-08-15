@@ -339,7 +339,8 @@
     "getInsights": "Küsi oma tuju, harjumuste kohta või saa personaliseeritud teadmisi",
     "placeholder": "Räägime...",
     "error": "Vabandust, kohtasin viga. Palun proovi uuesti.",
-    "failedToSend": "Sõnumi saatmine ebaõnnestus. Palun proovi uuesti."
+    "failedToSend": "Sõnumi saatmine ebaõnnestus. Palun proovi uuesti.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Alusta oma Dupip teekonda",
@@ -923,7 +924,18 @@
     "inviteFriendToOrg": "Kutsu sõber sellesse organisatsiooni",
     "inviteLinkCopied": "Kutselink kopeeritud",
     "inviteSent": "Kutse saadetud",
-    "inviteAccepted": "Kutse vastu võetud"
+    "inviteAccepted": "Kutse vastu võetud",
+    "virtualNumber": {
+      "label": "Virtual number",
+      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
+      "none": "No number",
+      "loading": "Loading numbers…",
+      "empty": "No numbers available",
+      "error": "Could not load your numbers",
+      "assignError": "Could not save this number",
+      "assigned": "Number assigned",
+      "cleared": "Number cleared"
+    }
   },
   "notesList": {
     "gridOption": {

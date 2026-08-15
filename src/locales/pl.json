@@ -360,7 +360,8 @@
     "getInsights": "Zapytaj o swój nastrój, nawyki lub uzyskaj spersonalizowane spostrzeżenia",
     "placeholder": "Porozmawiajmy...",
     "error": "Przepraszam, napotkałem błąd. Spróbuj ponownie.",
-    "failedToSend": "Nie udało się wysłać wiadomości. Spróbuj ponownie."
+    "failedToSend": "Nie udało się wysłać wiadomości. Spróbuj ponownie.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Rozpocznij swoją przygodę z Dupip",
@@ -927,7 +928,18 @@
     "inviteFriendToOrg": "Zaproś znajomego do tej organizacji",
     "inviteLinkCopied": "Skopiowano link zaproszenia",
     "inviteSent": "Zaproszenie wysłane",
-    "inviteAccepted": "Zaproszenie przyjęte"
+    "inviteAccepted": "Zaproszenie przyjęte",
+    "virtualNumber": {
+      "label": "Virtual number",
+      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
+      "none": "No number",
+      "loading": "Loading numbers…",
+      "empty": "No numbers available",
+      "error": "Could not load your numbers",
+      "assignError": "Could not save this number",
+      "assigned": "Number assigned",
+      "cleared": "Number cleared"
+    }
   },
   "notesList": {
     "gridOption": {

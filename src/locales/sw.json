@@ -346,7 +346,8 @@
     "getInsights": "Uliza kuhusu hali yako ya moyo, tabia au pata maarifa ya kibinafsi",
     "placeholder": "Tuzungumze...",
     "error": "Samahani, nilikumbana na hitilafu. Tafadhali jaribu tena.",
-    "failedToSend": "Kutuma ujumbe hakufanikiwa. Tafadhali jaribu tena."
+    "failedToSend": "Kutuma ujumbe hakufanikiwa. Tafadhali jaribu tena.",
+    "model": "Model"
   },
   "errors": {
     "notFound": "Ops! Haikuweza kufikia mzunguko huu.",
@@ -921,7 +922,18 @@
     "inviteFriendToOrg": "Alika rafiki katika shirika hili",
     "inviteLinkCopied": "Kiungo cha mwaliko kimenakiliwa",
     "inviteSent": "Mwaliko umetumwa",
-    "inviteAccepted": "Mwaliko umekubaliwa"
+    "inviteAccepted": "Mwaliko umekubaliwa",
+    "virtualNumber": {
+      "label": "Virtual number",
+      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
+      "none": "No number",
+      "loading": "Loading numbers…",
+      "empty": "No numbers available",
+      "error": "Could not load your numbers",
+      "assignError": "Could not save this number",
+      "assigned": "Number assigned",
+      "cleared": "Number cleared"
+    }
   },
   "notesList": {
     "gridOption": {

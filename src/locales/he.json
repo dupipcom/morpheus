@@ -339,7 +339,8 @@
     "getInsights": "שאל על מצב הרוח שלך, הרגלים או קבל תובנות מותאמות אישית",
     "placeholder": "בואו נשוחח...",
     "error": "סליחה, נתקלתי בשגיאה. אנא נסה שוב.",
-    "failedToSend": "שליחת הודעה נכשלה. אנא נסה שוב."
+    "failedToSend": "שליחת הודעה נכשלה. אנא נסה שוב.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "התחל את המסע שלך עם Dupip",
@@ -923,7 +924,18 @@
     "inviteFriendToOrg": "הזמן חבר לארגון זה",
     "inviteLinkCopied": "קישור ההזמנה הועתק",
     "inviteSent": "ההזמנה נשלחה",
-    "inviteAccepted": "ההזמנה התקבלה"
+    "inviteAccepted": "ההזמנה התקבלה",
+    "virtualNumber": {
+      "label": "Virtual number",
+      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
+      "none": "No number",
+      "loading": "Loading numbers…",
+      "empty": "No numbers available",
+      "error": "Could not load your numbers",
+      "assignError": "Could not save this number",
+      "assigned": "Number assigned",
+      "cleared": "Number cleared"
+    }
   },
   "notesList": {
     "gridOption": {

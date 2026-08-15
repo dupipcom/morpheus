@@ -342,7 +342,8 @@
     "getInsights": "Pregunta sobre o teu estado de ánimo, hábitos ou obtén perspectivas personalizadas",
     "placeholder": "Falemos...",
     "error": "Síntoo, atopei un erro. Por favor, inténtao de novo.",
-    "failedToSend": "Fallou o envío da mensaxe. Por favor, inténtao de novo."
+    "failedToSend": "Fallou o envío da mensaxe. Por favor, inténtao de novo.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Comeza a túa viaxe Dupip",
@@ -926,7 +927,18 @@
     "inviteFriendToOrg": "Convidar un amigo a esta organización",
     "inviteLinkCopied": "Ligazón de convite copiada",
     "inviteSent": "Convite enviado",
-    "inviteAccepted": "Convite aceptado"
+    "inviteAccepted": "Convite aceptado",
+    "virtualNumber": {
+      "label": "Virtual number",
+      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
+      "none": "No number",
+      "loading": "Loading numbers…",
+      "empty": "No numbers available",
+      "error": "Could not load your numbers",
+      "assignError": "Could not save this number",
+      "assigned": "Number assigned",
+      "cleared": "Number cleared"
+    }
   },
   "notesList": {
     "gridOption": {

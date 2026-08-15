@@ -348,7 +348,8 @@
     "getInsights": "気分、習慣について質問したり、パーソナライズされたインサイトを取得したりできます",
     "placeholder": "チャットしましょう...",
     "error": "申し訳ありません。エラーが発生しました。再試行してください。",
-    "failedToSend": "メッセージの送信に失敗しました。再試行してください。"
+    "failedToSend": "メッセージの送信に失敗しました。再試行してください。",
+    "model": "Model"
   },
   "errors": {
     "notFound": "おっと！この周波数にチューニングできませんでした。",
@@ -923,7 +924,18 @@
     "inviteFriendToOrg": "この組織に友達を招待",
     "inviteLinkCopied": "招待リンクをコピーしました",
     "inviteSent": "招待を送信しました",
-    "inviteAccepted": "招待を承認しました"
+    "inviteAccepted": "招待を承認しました",
+    "virtualNumber": {
+      "label": "Virtual number",
+      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
+      "none": "No number",
+      "loading": "Loading numbers…",
+      "empty": "No numbers available",
+      "error": "Could not load your numbers",
+      "assignError": "Could not save this number",
+      "assigned": "Number assigned",
+      "cleared": "Number cleared"
+    }
   },
   "notesList": {
     "gridOption": {

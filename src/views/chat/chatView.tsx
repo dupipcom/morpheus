@@ -13,6 +13,7 @@ import { Badge } from '@/components/ui/badge'
 import { ChatComposer } from '@/components/chat/chatComposer'
 import { ChatMessageContent } from '@/components/chat/chatMessageContent'
 import { ChatUnreadBadge } from '@/components/chat/chatUnreadBadge'
+import { VirtualNumberPicker } from '@/components/chat/virtualNumberPicker'
 import { useI18n } from '@/lib/contexts/i18n'
 import { MOBILE_CONTENT_BOTTOM_PADDING_CLASS } from '@/lib/constants/mobileNav'
 import { getAblyRealtimeClient } from '@/lib/chat/realtime/ablyClient'
@@ -770,6 +771,8 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
               {inviteFeedback && <p className="text-xs text-muted-foreground">{inviteFeedback}</p>}
             </CardContent>
           </Card>
+
+          <VirtualNumberPicker />
         </div>
       </div>
     </div>

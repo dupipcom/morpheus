@@ -339,7 +339,8 @@
     "getInsights": "Kérdezzen a hangulatáról, szokásairól vagy szerezzen személyre szabott betekintéseket",
     "placeholder": "Beszéljünk...",
     "error": "Sajnálom, hibába ütköztem. Próbálja újra.",
-    "failedToSend": "Az üzenet küldése sikertelen. Próbálja újra."
+    "failedToSend": "Az üzenet küldése sikertelen. Próbálja újra.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Kezdje el a saját Dupip útját",
@@ -923,7 +924,18 @@
     "inviteFriendToOrg": "Barát meghívása ebbe a szervezetbe",
     "inviteLinkCopied": "Meghívólink másolva",
     "inviteSent": "Meghívó elküldve",
-    "inviteAccepted": "Meghívó elfogadva"
+    "inviteAccepted": "Meghívó elfogadva",
+    "virtualNumber": {
+      "label": "Virtual number",
+      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
+      "none": "No number",
+      "loading": "Loading numbers…",
+      "empty": "No numbers available",
+      "error": "Could not load your numbers",
+      "assignError": "Could not save this number",
+      "assigned": "Number assigned",
+      "cleared": "Number cleared"
+    }
   },
   "notesList": {
     "gridOption": {

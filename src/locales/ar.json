@@ -352,7 +352,8 @@
     "getInsights": "اسأل عن مزاجك أو عاداتك أو احصل على رؤى شخصية",
     "placeholder": "دعنا نتحدث...",
     "error": "عذراً، واجهت خطأ. يرجى المحاولة مرة أخرى.",
-    "failedToSend": "فشل في إرسال الرسالة. يرجى المحاولة مرة أخرى."
+    "failedToSend": "فشل في إرسال الرسالة. يرجى المحاولة مرة أخرى.",
+    "model": "Model"
   },
   "errors": {
     "notFound": "عذراً! لا يمكن ضبط هذه التردد.",
@@ -927,7 +928,18 @@
     "inviteFriendToOrg": "دعوة صديق إلى هذه المنظمة",
     "inviteLinkCopied": "تم نسخ رابط الدعوة",
     "inviteSent": "تم إرسال الدعوة",
-    "inviteAccepted": "تم قبول الدعوة"
+    "inviteAccepted": "تم قبول الدعوة",
+    "virtualNumber": {
+      "label": "Virtual number",
+      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
+      "none": "No number",
+      "loading": "Loading numbers…",
+      "empty": "No numbers available",
+      "error": "Could not load your numbers",
+      "assignError": "Could not save this number",
+      "assigned": "Number assigned",
+      "cleared": "Number cleared"
+    }
   },
   "notesList": {
     "gridOption": {

@@ -339,7 +339,8 @@
     "getInsights": "अपनी मनोदशा, आदतों के बारे में पूछें या व्यक्तिगत अंतर्दृष्टि प्राप्त करें",
     "placeholder": "आइए चैट करें...",
     "error": "क्षमा करें, मुझे एक त्रुटि मिली। कृपया पुनः प्रयास करें।",
-    "failedToSend": "संदेश भेजने में विफल। कृपया पुनः प्रयास करें।"
+    "failedToSend": "संदेश भेजने में विफल। कृपया पुनः प्रयास करें।",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "अपनी खुद की Dupip यात्रा शुरू करें",
@@ -923,7 +924,18 @@
     "inviteFriendToOrg": "इस संगठन में एक मित्र को आमंत्रित करें",
     "inviteLinkCopied": "आमंत्रण लिंक कॉपी किया गया",
     "inviteSent": "आमंत्रण भेजा गया",
-    "inviteAccepted": "आमंत्रण स्वीकार किया गया"
+    "inviteAccepted": "आमंत्रण स्वीकार किया गया",
+    "virtualNumber": {
+      "label": "Virtual number",
+      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
+      "none": "No number",
+      "loading": "Loading numbers…",
+      "empty": "No numbers available",
+      "error": "Could not load your numbers",
+      "assignError": "Could not save this number",
+      "assigned": "Number assigned",
+      "cleared": "Number cleared"
+    }
   },
   "notesList": {
     "gridOption": {

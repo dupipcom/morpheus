@@ -342,7 +342,8 @@
     "getInsights": "Fråga om ditt humör, vanor eller få personaliserade insikter",
     "placeholder": "Låt oss chatta...",
     "error": "Ledsen, jag stötte på ett fel. Försök igen.",
-    "failedToSend": "Meddelandet kunde inte skickas. Försök igen."
+    "failedToSend": "Meddelandet kunde inte skickas. Försök igen.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Börja din egen Dupip-resa",
@@ -926,7 +927,18 @@
     "inviteFriendToOrg": "Bjud in en vän till denna organisation",
     "inviteLinkCopied": "Inbjudningslänk kopierad",
     "inviteSent": "Inbjudan skickad",
-    "inviteAccepted": "Inbjudan accepterad"
+    "inviteAccepted": "Inbjudan accepterad",
+    "virtualNumber": {
+      "label": "Virtual number",
+      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
+      "none": "No number",
+      "loading": "Loading numbers…",
+      "empty": "No numbers available",
+      "error": "Could not load your numbers",
+      "assignError": "Could not save this number",
+      "assigned": "Number assigned",
+      "cleared": "Number cleared"
+    }
   },
   "notesList": {
     "gridOption": {

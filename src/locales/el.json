@@ -336,7 +336,8 @@
     "getInsights": "Ρωτήστε για τη συγκίνησή σας, συνήθειες ή λάβετε εξατομικευμένες πληροφορίες",
     "placeholder": "Ας συζητήσουμε...",
     "error": "Συγγνώμη, συνάντησα ένα σφάλμα. Παρακαλώ δοκιμάστε ξανά.",
-    "failedToSend": "Αποτυχία αποστολής μηνύματος. Παρακαλώ δοκιμάστε ξανά."
+    "failedToSend": "Αποτυχία αποστολής μηνύματος. Παρακαλώ δοκιμάστε ξανά.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Ξεκινήστε το Δικό σας Ταξίδι με το Dupip",
@@ -920,7 +921,18 @@
     "inviteFriendToOrg": "Πρόσκληση φίλου σε αυτόν τον οργανισμό",
     "inviteLinkCopied": "Ο σύνδεσμος πρόσκλησης αντιγράφηκε",
     "inviteSent": "Η πρόσκληση στάλθηκε",
-    "inviteAccepted": "Η πρόσκληση έγινε αποδεκτή"
+    "inviteAccepted": "Η πρόσκληση έγινε αποδεκτή",
+    "virtualNumber": {
+      "label": "Virtual number",
+      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
+      "none": "No number",
+      "loading": "Loading numbers…",
+      "empty": "No numbers available",
+      "error": "Could not load your numbers",
+      "assignError": "Could not save this number",
+      "assigned": "Number assigned",
+      "cleared": "Number cleared"
+    }
   },
   "notesList": {
     "gridOption": {

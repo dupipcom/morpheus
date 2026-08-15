@@ -339,7 +339,8 @@
     "getInsights": "Pregunta sobre el teu estat d'ànim, hàbits o obtén perspectives personalitzades",
     "placeholder": "Parlem...",
     "error": "Ho sento, he trobat un error. Si us plau, torna-ho a intentar.",
-    "failedToSend": "L'enviament del missatge ha fallat. Si us plau, torna-ho a intentar."
+    "failedToSend": "L'enviament del missatge ha fallat. Si us plau, torna-ho a intentar.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Comença el teu propi viatge Dupip",
@@ -923,7 +924,18 @@
     "inviteFriendToOrg": "Convidar un amic a aquesta organització",
     "inviteLinkCopied": "Enllaç d'invitació copiat",
     "inviteSent": "Invitació enviada",
-    "inviteAccepted": "Invitació acceptada"
+    "inviteAccepted": "Invitació acceptada",
+    "virtualNumber": {
+      "label": "Virtual number",
+      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
+      "none": "No number",
+      "loading": "Loading numbers…",
+      "empty": "No numbers available",
+      "error": "Could not load your numbers",
+      "assignError": "Could not save this number",
+      "assigned": "Number assigned",
+      "cleared": "Number cleared"
+    }
   },
   "notesList": {
     "gridOption": {

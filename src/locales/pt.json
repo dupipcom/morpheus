@@ -348,7 +348,8 @@
     "getInsights": "Pergunte sobre seu humor, hábitos ou obtenha insights personalizados",
     "placeholder": "Vamos conversar...",
     "error": "Desculpe, encontrei um erro. Tente novamente.",
-    "failedToSend": "Falha ao enviar mensagem. Tente novamente."
+    "failedToSend": "Falha ao enviar mensagem. Tente novamente.",
+    "model": "Model"
   },
   "errors": {
     "notFound": "Ops! Não foi possível sintonizar esta frequência.",
@@ -923,7 +924,18 @@
     "inviteFriendToOrg": "Convidar um amigo para esta organização",
     "inviteLinkCopied": "Link de convite copiado",
     "inviteSent": "Convite enviado",
-    "inviteAccepted": "Convite aceite"
+    "inviteAccepted": "Convite aceite",
+    "virtualNumber": {
+      "label": "Virtual number",
+      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
+      "none": "No number",
+      "loading": "Loading numbers…",
+      "empty": "No numbers available",
+      "error": "Could not load your numbers",
+      "assignError": "Could not save this number",
+      "assigned": "Number assigned",
+      "cleared": "Number cleared"
+    }
   },
   "notesList": {
     "gridOption": {

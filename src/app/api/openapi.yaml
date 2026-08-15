@@ -33,6 +33,7 @@ tags:
   - name: tasks
   - name: templates
   - name: user
+  - name: virtual-number
   - name: wallet
 
 paths:
@@ -912,6 +913,43 @@ paths:
       summary: Transfer tokens from a wallet
       responses:
         '200': { description: Transaction hash }
+
+  /api/v1/virtual-number:
+    get:
+      tags: [virtual-number]
+      summary: Fetch the current user's virtual number assignment
+      responses:
+        '200': { description: Current assignment (or null) }
+        '401': { description: Unauthorized }
+    post:
+      tags: [virtual-number]
+      summary: Assign or unassign a virtual number
+      description: Premium feature (Clerk feature `virtual_number`). Pass `phoneNumber: null` to unassign.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                phoneNumber:
+                  type: [string, 'null']
+                  description: E.164 phone number to assign, or null to clear
+      responses:
+        '200': { description: Updated assignment }
+        '400': { description: Invalid phoneNumber }
+        '401': { description: Unauthorized }
+        '403': { description: Not entitled }
+        '404': { description: Number not in Telnyx account }
+        '409': { description: Number already assigned }
+
+  /api/v1/virtual-number/numbers:
+    get:
+      tags: [virtual-number]
+      summary: List Telnyx numbers available for assignment
+      responses:
+        '200': { description: Available numbers }
+        '401': { description: Unauthorized }
+        '403': { description: Not entitled }
 
 components:
   securitySchemes:

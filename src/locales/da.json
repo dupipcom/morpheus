@@ -343,7 +343,8 @@
     "getInsights": "Spørg om dit humør, vaner eller få personaliserede indsigter",
     "placeholder": "Lad os chatte...",
     "error": "Undskyld, jeg stødte på en fejl. Prøv igen.",
-    "failedToSend": "Beskeden kunne ikke sendes. Prøv igen."
+    "failedToSend": "Beskeden kunne ikke sendes. Prøv igen.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Start din egen Dupip-rejse",
@@ -927,7 +928,18 @@
     "inviteFriendToOrg": "Inviter en ven til denne organisation",
     "inviteLinkCopied": "Invitationslink kopieret",
     "inviteSent": "Invitation sendt",
-    "inviteAccepted": "Invitation accepteret"
+    "inviteAccepted": "Invitation accepteret",
+    "virtualNumber": {
+      "label": "Virtual number",
+      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
+      "none": "No number",
+      "loading": "Loading numbers…",
+      "empty": "No numbers available",
+      "error": "Could not load your numbers",
+      "assignError": "Could not save this number",
+      "assigned": "Number assigned",
+      "cleared": "Number cleared"
+    }
   },
   "notesList": {
     "gridOption": {

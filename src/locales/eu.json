@@ -342,7 +342,8 @@
     "getInsights": "Galde zure humurrari, ohiturei buruz edo lortu ikuspegi pertsonalizatuak",
     "placeholder": "Hitz egin dezagun...",
     "error": "Barkatu, errore bat aurkitu dut. Mesedez, saiatu berriro.",
-    "failedToSend": "Mezuaren bidalketak huts egin du. Mesedez, saiatu berriro."
+    "failedToSend": "Mezuaren bidalketak huts egin du. Mesedez, saiatu berriro.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Hasi zure Dupip bidaia",
@@ -926,7 +927,18 @@
     "inviteFriendToOrg": "Gonbidatu lagun bat erakunde honetara",
     "inviteLinkCopied": "Gonbidapen esteka kopiatuta",
     "inviteSent": "Gonbidapena bidalita",
-    "inviteAccepted": "Gonbidapena onartuta"
+    "inviteAccepted": "Gonbidapena onartuta",
+    "virtualNumber": {
+      "label": "Virtual number",
+      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
+      "none": "No number",
+      "loading": "Loading numbers…",
+      "empty": "No numbers available",
+      "error": "Could not load your numbers",
+      "assignError": "Could not save this number",
+      "assigned": "Number assigned",
+      "cleared": "Number cleared"
+    }
   },
   "notesList": {
     "gridOption": {

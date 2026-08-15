@@ -21,7 +21,8 @@ ChatView (three-panel layout)
 │   │   ├── Invite link generation (admin/superuser)
 │   │   ├── Member invite input (admin/superuser)
 │   │   └── Channel list
-│   └── Organization Creation Card
+│   ├── Organization Creation Card
+│   └── Virtual Number Card (premium, `virtual_number` feature flag)
 ├── Room Panel (messages)
 │   ├── Room header (back buttons on mobile)
 │   ├── Message list
@@ -89,6 +90,7 @@ Subscribes to Ably channels for real-time message delivery:
 11. **As a user**, I can soft-delete messages
 12. **As a user**, I can deep-link to specific DMs, channels, or messages
 13. **As a user**, I can navigate the chat on mobile with tabbed views
+14. **As a premium user**, I can associate one of my Telnyx phone numbers with my account to receive SMS in chat later
 
 ## API Endpoints
 
@@ -106,6 +108,8 @@ Subscribes to Ably channels for real-time message delivery:
 | `/api/v1/chat/invites/{id}/accept` | POST | Accept org invite |
 | `/api/v1/chat/read-state` | POST | Mark messages as read |
 | `/api/v1/chat/messages/{id}` | DELETE | Soft-delete message |
+| `/api/v1/virtual-number` | GET/POST | Fetch/assign the user's Telnyx virtual number (premium) |
+| `/api/v1/virtual-number/numbers` | GET | List available Telnyx numbers (premium) |
 
 ## Loading States
 

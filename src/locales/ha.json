@@ -345,7 +345,8 @@
     "getInsights": "Tambayi game da yanayin zuciyarka, halaye ko sami fahimta ta keɓance",
     "placeholder": "Mu yi magana...",
     "error": "Yi hakuri, na sami kuskure. Don Allah sake gwadawa.",
-    "failedToSend": "Aika saƙo ya gaza. Don Allah sake gwadawa."
+    "failedToSend": "Aika saƙo ya gaza. Don Allah sake gwadawa.",
+    "model": "Model"
   },
   "errors": {
     "notFound": "Ops! Ba za a iya samun wannan mitar ba.",
@@ -920,7 +921,18 @@
     "inviteFriendToOrg": "Gayyaci aboki zuwa wannan ƙungiya",
     "inviteLinkCopied": "An kwafi haɗin gayyata",
     "inviteSent": "An aika gayyata",
-    "inviteAccepted": "An karɓi gayyata"
+    "inviteAccepted": "An karɓi gayyata",
+    "virtualNumber": {
+      "label": "Virtual number",
+      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
+      "none": "No number",
+      "loading": "Loading numbers…",
+      "empty": "No numbers available",
+      "error": "Could not load your numbers",
+      "assignError": "Could not save this number",
+      "assigned": "Number assigned",
+      "cleared": "Number cleared"
+    }
   },
   "notesList": {
     "gridOption": {

@@ -348,7 +348,8 @@
     "getInsights": "Fragen Sie nach Ihrer Stimmung, Gewohnheiten oder erhalten Sie personalisierte Einblicke",
     "placeholder": "Lassen Sie uns chatten...",
     "error": "Entschuldigung, ich bin auf einen Fehler gestoßen. Bitte versuchen Sie es erneut.",
-    "failedToSend": "Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es erneut."
+    "failedToSend": "Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es erneut.",
+    "model": "Model"
   },
   "errors": {
     "notFound": "Ops! Could not tune to this frequency.",
@@ -923,7 +924,18 @@
     "inviteFriendToOrg": "Einen Freund zu dieser Organisation einladen",
     "inviteLinkCopied": "Einladungslink kopiert",
     "inviteSent": "Einladung gesendet",
-    "inviteAccepted": "Einladung angenommen"
+    "inviteAccepted": "Einladung angenommen",
+    "virtualNumber": {
+      "label": "Virtual number",
+      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
+      "none": "No number",
+      "loading": "Loading numbers…",
+      "empty": "No numbers available",
+      "error": "Could not load your numbers",
+      "assignError": "Could not save this number",
+      "assigned": "Number assigned",
+      "cleared": "Number cleared"
+    }
   },
   "notesList": {
     "gridOption": {

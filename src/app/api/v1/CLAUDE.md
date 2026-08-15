@@ -42,6 +42,7 @@ Main REST API for the Dupip application. All routes are prefixed with `/api/v1`.
 | Things | `things/CLAUDE.md` | `GET/POST /things` |
 | User | `user/CLAUDE.md` | `GET/POST /user`, `POST /user/login` |
 | User dashboard data | `user-dashboard-data/CLAUDE.md` | `GET /user-dashboard-data` |
+| Virtual number | `virtual-number/CLAUDE.md` | `GET/POST /virtual-number`, `GET /virtual-number/numbers` |
 | Wallet | `wallet/CLAUDE.md` | `GET/POST /wallet`, `GET/DELETE /wallet/{walletId}`, `POST /wallet/nft`, `GET /wallet/nft/list`, `POST /wallet/transfer` |
 
 ## Notable Cross-Cutting Behaviors

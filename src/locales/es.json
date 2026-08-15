@@ -348,7 +348,8 @@
     "getInsights": "Pregunta sobre tu estado de ánimo, hábitos u obtén insights personalizados",
     "placeholder": "Hablemos...",
     "error": "Lo siento, encontré un error. Por favor, inténtalo de nuevo.",
-    "failedToSend": "Error al enviar mensaje. Por favor, inténtalo de nuevo."
+    "failedToSend": "Error al enviar mensaje. Por favor, inténtalo de nuevo.",
+    "model": "Model"
   },
   "errors": {
     "notFound": "¡Ups! No se pudo sintonizar esta frecuencia.",
@@ -923,7 +924,18 @@
     "inviteFriendToOrg": "Invitar a un amigo a esta organización",
     "inviteLinkCopied": "Enlace de invitación copiado",
     "inviteSent": "Invitación enviada",
-    "inviteAccepted": "Invitación aceptada"
+    "inviteAccepted": "Invitación aceptada",
+    "virtualNumber": {
+      "label": "Virtual number",
+      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
+      "none": "No number",
+      "loading": "Loading numbers…",
+      "empty": "No numbers available",
+      "error": "Could not load your numbers",
+      "assignError": "Could not save this number",
+      "assigned": "Number assigned",
+      "cleared": "Number cleared"
+    }
   },
   "notesList": {
     "gridOption": {

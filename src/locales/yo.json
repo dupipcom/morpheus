@@ -346,7 +346,8 @@
     "getInsights": "Béèrè nípa ìwà rẹ̀, àwọn ìhùwà rẹ̀ tàbí gba ìmọ̀ tí ó jẹ́ ti ara rẹ̀",
     "placeholder": "Jẹ́ ká sọrọ...",
     "error": "Ẹ má bínú, mo rí àṣìṣe kan. Jọwọ gbìyànjú lẹ́ẹ̀kan sí i.",
-    "failedToSend": "Kò lè rán ìròyìn. Jọwọ gbìyànjú lẹ́ẹ̀kan sí i."
+    "failedToSend": "Kò lè rán ìròyìn. Jọwọ gbìyànjú lẹ́ẹ̀kan sí i.",
+    "model": "Model"
   },
   "errors": {
     "notFound": "Ops! Kò le tọ́ ìwọ̀n yìí.",
@@ -921,7 +922,18 @@
     "inviteFriendToOrg": "Pe ọrẹ wa si ajọ yii",
     "inviteLinkCopied": "Ọna asopọ ìdẹ ti daakọ",
     "inviteSent": "Ìdẹ ti fi ranṣẹ",
-    "inviteAccepted": "Ìdẹ ti gba"
+    "inviteAccepted": "Ìdẹ ti gba",
+    "virtualNumber": {
+      "label": "Virtual number",
+      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
+      "none": "No number",
+      "loading": "Loading numbers…",
+      "empty": "No numbers available",
+      "error": "Could not load your numbers",
+      "assignError": "Could not save this number",
+      "assigned": "Number assigned",
+      "cleared": "Number cleared"
+    }
   },
   "notesList": {
     "gridOption": {
