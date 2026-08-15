@@ -930,28 +930,28 @@
     "inviteSent": "تم إرسال الدعوة",
     "inviteAccepted": "تم قبول الدعوة",
     "virtualNumber": {
-      "label": "Virtual number",
-      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
-      "none": "No number",
-      "loading": "Loading numbers…",
-      "empty": "No numbers available",
-      "error": "Could not load your numbers",
-      "assignError": "Could not save this number",
-      "assigned": "Number assigned",
-      "cleared": "Number cleared"
+      "label": "رقم افتراضي",
+      "hint": "اختر أحد أرقام هاتفك. ستظهر الرسائل النصية الواردة إلى هذا الرقم في محادثتك.",
+      "none": "بدون رقم",
+      "loading": "جارٍ تحميل الأرقام…",
+      "empty": "لا توجد أرقام متاحة",
+      "error": "تعذّر تحميل أرقامك",
+      "assignError": "تعذّر حفظ هذا الرقم",
+      "assigned": "تم تعيين الرقم",
+      "cleared": "تم إلغاء الرقم"
     },
     "sms": {
-      "label": "SMS",
-      "loading": "Loading SMS…",
-      "empty": "No SMS conversations yet",
-      "noNumberHint": "Assign a virtual number to start receiving SMS here",
-      "composerPlaceholder": "Write an SMS…",
-      "sendError": "Could not send this message",
-      "you": "You",
-      "statusSent": "Sent",
-      "statusDelivered": "Delivered",
-      "statusFailed": "Failed",
-      "error": "Could not load SMS"
+      "label": "رسائل نصية",
+      "loading": "جارٍ تحميل الرسائل النصية…",
+      "empty": "لا توجد محادثات رسائل نصية بعد",
+      "noNumberHint": "عيِّن رقمًا افتراضيًا لبدء استقبال الرسائل النصية هنا",
+      "composerPlaceholder": "اكتب رسالة نصية…",
+      "sendError": "تعذّر إرسال هذه الرسالة",
+      "you": "أنت",
+      "statusSent": "تم الإرسال",
+      "statusDelivered": "تم التسليم",
+      "statusFailed": "فشل",
+      "error": "تعذّر تحميل الرسائل النصية"
     }
   },
   "notesList": {

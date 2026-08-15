@@ -926,28 +926,28 @@
     "inviteSent": "Uitnodiging verzonden",
     "inviteAccepted": "Uitnodiging geaccepteerd",
     "virtualNumber": {
-      "label": "Virtual number",
-      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
-      "none": "No number",
-      "loading": "Loading numbers…",
-      "empty": "No numbers available",
-      "error": "Could not load your numbers",
-      "assignError": "Could not save this number",
-      "assigned": "Number assigned",
-      "cleared": "Number cleared"
+      "label": "Virtueel nummer",
+      "hint": "Kies een van je telefoonnummers. Inkomende sms’jes naar dit nummer verschijnen in je chat.",
+      "none": "Geen nummer",
+      "loading": "Nummers laden…",
+      "empty": "Geen nummers beschikbaar",
+      "error": "Je nummers konden niet worden geladen",
+      "assignError": "Dit nummer kon niet worden opgeslagen",
+      "assigned": "Nummer toegewezen",
+      "cleared": "Nummer verwijderd"
     },
     "sms": {
       "label": "SMS",
-      "loading": "Loading SMS…",
-      "empty": "No SMS conversations yet",
-      "noNumberHint": "Assign a virtual number to start receiving SMS here",
-      "composerPlaceholder": "Write an SMS…",
-      "sendError": "Could not send this message",
-      "you": "You",
-      "statusSent": "Sent",
-      "statusDelivered": "Delivered",
-      "statusFailed": "Failed",
-      "error": "Could not load SMS"
+      "loading": "SMS laden…",
+      "empty": "Nog geen sms-gesprekken",
+      "noNumberHint": "Wijs een virtueel nummer toe om hier sms’jes te ontvangen",
+      "composerPlaceholder": "Schrijf een sms…",
+      "sendError": "Dit bericht kon niet worden verzonden",
+      "you": "Jij",
+      "statusSent": "Verzonden",
+      "statusDelivered": "Afgeleverd",
+      "statusFailed": "Mislukt",
+      "error": "SMS kon niet worden geladen"
     }
   },
   "notesList": {

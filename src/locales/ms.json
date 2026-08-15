@@ -930,28 +930,28 @@
     "inviteSent": "Jemputan dihantar",
     "inviteAccepted": "Jemputan diterima",
     "virtualNumber": {
-      "label": "Virtual number",
-      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
-      "none": "No number",
-      "loading": "Loading numbers…",
-      "empty": "No numbers available",
-      "error": "Could not load your numbers",
-      "assignError": "Could not save this number",
-      "assigned": "Number assigned",
-      "cleared": "Number cleared"
+      "label": "Nombor maya",
+      "hint": "Pilih salah satu nombor telefon anda. SMS masuk ke nombor ini akan muncul dalam sembang anda.",
+      "none": "Tiada nombor",
+      "loading": "Memuatkan nombor…",
+      "empty": "Tiada nombor tersedia",
+      "error": "Nombor anda tidak dapat dimuatkan",
+      "assignError": "Nombor ini tidak dapat disimpan",
+      "assigned": "Nombor ditetapkan",
+      "cleared": "Nombor dialih keluar"
     },
     "sms": {
       "label": "SMS",
-      "loading": "Loading SMS…",
-      "empty": "No SMS conversations yet",
-      "noNumberHint": "Assign a virtual number to start receiving SMS here",
-      "composerPlaceholder": "Write an SMS…",
-      "sendError": "Could not send this message",
-      "you": "You",
-      "statusSent": "Sent",
-      "statusDelivered": "Delivered",
-      "statusFailed": "Failed",
-      "error": "Could not load SMS"
+      "loading": "Memuatkan SMS…",
+      "empty": "Tiada perbualan SMS lagi",
+      "noNumberHint": "Tetapkan nombor maya untuk mula menerima SMS di sini",
+      "composerPlaceholder": "Tulis SMS…",
+      "sendError": "Mesej ini tidak dapat dihantar",
+      "you": "Anda",
+      "statusSent": "Dihantar",
+      "statusDelivered": "Diterima",
+      "statusFailed": "Gagal",
+      "error": "SMS tidak dapat dimuatkan"
     }
   },
   "notesList": {

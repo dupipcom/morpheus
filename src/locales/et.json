@@ -926,28 +926,28 @@
     "inviteSent": "Kutse saadetud",
     "inviteAccepted": "Kutse vastu võetud",
     "virtualNumber": {
-      "label": "Virtual number",
-      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
-      "none": "No number",
-      "loading": "Loading numbers…",
-      "empty": "No numbers available",
-      "error": "Could not load your numbers",
-      "assignError": "Could not save this number",
-      "assigned": "Number assigned",
-      "cleared": "Number cleared"
+      "label": "Virtuaalnumber",
+      "hint": "Vali üks oma telefoninumbritest. Sellele numbrile saabuvad SMS-id kuvatakse sinu vestluses.",
+      "none": "Numbrit pole",
+      "loading": "Numbrite laadimine…",
+      "empty": "Ühtegi numbrit pole saadaval",
+      "error": "Sinu numbreid ei õnnestunud laadida",
+      "assignError": "Seda numbrit ei õnnestunud salvestada",
+      "assigned": "Number määratud",
+      "cleared": "Number eemaldatud"
     },
     "sms": {
       "label": "SMS",
-      "loading": "Loading SMS…",
-      "empty": "No SMS conversations yet",
-      "noNumberHint": "Assign a virtual number to start receiving SMS here",
-      "composerPlaceholder": "Write an SMS…",
-      "sendError": "Could not send this message",
-      "you": "You",
-      "statusSent": "Sent",
-      "statusDelivered": "Delivered",
-      "statusFailed": "Failed",
-      "error": "Could not load SMS"
+      "loading": "SMS-ide laadimine…",
+      "empty": "SMS-vestlusi veel pole",
+      "noNumberHint": "Määra virtuaalnumber, et hakata siin SMS-e vastu võtma",
+      "composerPlaceholder": "Kirjuta SMS…",
+      "sendError": "Seda sõnumit ei õnnestunud saata",
+      "you": "Sina",
+      "statusSent": "Saadetud",
+      "statusDelivered": "Kohale toimetatud",
+      "statusFailed": "Nurjus",
+      "error": "SMS-e ei õnnestunud laadida"
     }
   },
   "notesList": {

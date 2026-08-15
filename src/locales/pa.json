@@ -930,28 +930,28 @@
     "inviteSent": "ਸੱਦਾ ਭੇਜਿਆ ਗਿਆ",
     "inviteAccepted": "ਸੱਦਾ ਸਵੀਕਾਰ ਕੀਤਾ ਗਿਆ",
     "virtualNumber": {
-      "label": "Virtual number",
-      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
-      "none": "No number",
-      "loading": "Loading numbers…",
-      "empty": "No numbers available",
-      "error": "Could not load your numbers",
-      "assignError": "Could not save this number",
-      "assigned": "Number assigned",
-      "cleared": "Number cleared"
+      "label": "ਵਰਚੁਅਲ ਨੰਬਰ",
+      "hint": "ਆਪਣੇ ਫ਼ੋਨ ਨੰਬਰਾਂ ਵਿੱਚੋਂ ਇੱਕ ਚੁਣੋ। ਇਸ ਨੰਬਰ ’ਤੇ ਆਉਣ ਵਾਲੇ SMS ਤੁਹਾਡੀ ਚੈਟ ਵਿੱਚ ਦਿਖਾਈ ਦੇਣਗੇ।",
+      "none": "ਕੋਈ ਨੰਬਰ ਨਹੀਂ",
+      "loading": "ਨੰਬਰ ਲੋਡ ਹੋ ਰਹੇ ਹਨ…",
+      "empty": "ਕੋਈ ਨੰਬਰ ਉਪਲਬਧ ਨਹੀਂ",
+      "error": "ਤੁਹਾਡੇ ਨੰਬਰ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕੇ",
+      "assignError": "ਇਹ ਨੰਬਰ ਸੰਭਾਲਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ",
+      "assigned": "ਨੰਬਰ ਨਿਰਧਾਰਤ ਕੀਤਾ ਗਿਆ",
+      "cleared": "ਨੰਬਰ ਹਟਾਇਆ ਗਿਆ"
     },
     "sms": {
       "label": "SMS",
-      "loading": "Loading SMS…",
-      "empty": "No SMS conversations yet",
-      "noNumberHint": "Assign a virtual number to start receiving SMS here",
-      "composerPlaceholder": "Write an SMS…",
-      "sendError": "Could not send this message",
-      "you": "You",
-      "statusSent": "Sent",
-      "statusDelivered": "Delivered",
-      "statusFailed": "Failed",
-      "error": "Could not load SMS"
+      "loading": "SMS ਲੋਡ ਹੋ ਰਹੇ ਹਨ…",
+      "empty": "ਅਜੇ ਕੋਈ SMS ਗੱਲਬਾਤ ਨਹੀਂ",
+      "noNumberHint": "ਇੱਥੇ SMS ਪ੍ਰਾਪਤ ਕਰਨ ਲਈ ਵਰਚੁਅਲ ਨੰਬਰ ਨਿਰਧਾਰਤ ਕਰੋ",
+      "composerPlaceholder": "SMS ਲਿਖੋ…",
+      "sendError": "ਇਹ ਸੁਨੇਹਾ ਭੇਜਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ",
+      "you": "ਤੁਸੀਂ",
+      "statusSent": "ਭੇਜਿਆ ਗਿਆ",
+      "statusDelivered": "ਪਹੁੰਚਾਇਆ ਗਿਆ",
+      "statusFailed": "ਅਸਫ਼ਲ",
+      "error": "SMS ਲੋਡ ਨਹੀਂ ਹੋ ਸਕੇ"
     }
   },
   "notesList": {

@@ -926,28 +926,28 @@
     "inviteSent": "Meghívó elküldve",
     "inviteAccepted": "Meghívó elfogadva",
     "virtualNumber": {
-      "label": "Virtual number",
-      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
-      "none": "No number",
-      "loading": "Loading numbers…",
-      "empty": "No numbers available",
-      "error": "Could not load your numbers",
-      "assignError": "Could not save this number",
-      "assigned": "Number assigned",
-      "cleared": "Number cleared"
+      "label": "Virtuális szám",
+      "hint": "Válassz egyet a telefonszámaid közül. Az erre a számra érkező SMS-ek megjelennek a csevegésedben.",
+      "none": "Nincs szám",
+      "loading": "Számok betöltése…",
+      "empty": "Nincs elérhető szám",
+      "error": "Nem sikerült betölteni a számaidat",
+      "assignError": "Nem sikerült menteni ezt a számot",
+      "assigned": "Szám hozzárendelve",
+      "cleared": "Szám eltávolítva"
     },
     "sms": {
       "label": "SMS",
-      "loading": "Loading SMS…",
-      "empty": "No SMS conversations yet",
-      "noNumberHint": "Assign a virtual number to start receiving SMS here",
-      "composerPlaceholder": "Write an SMS…",
-      "sendError": "Could not send this message",
-      "you": "You",
-      "statusSent": "Sent",
-      "statusDelivered": "Delivered",
-      "statusFailed": "Failed",
-      "error": "Could not load SMS"
+      "loading": "SMS-ek betöltése…",
+      "empty": "Még nincsenek SMS-beszélgetések",
+      "noNumberHint": "Rendelj hozzá virtuális számot, hogy itt SMS-eket fogadhass",
+      "composerPlaceholder": "Írj egy SMS-t…",
+      "sendError": "Nem sikerült elküldeni ezt az üzenetet",
+      "you": "Te",
+      "statusSent": "Elküldve",
+      "statusDelivered": "Kézbesítve",
+      "statusFailed": "Sikertelen",
+      "error": "Nem sikerült betölteni az SMS-eket"
     }
   },
   "notesList": {

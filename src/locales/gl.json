@@ -929,28 +929,28 @@
     "inviteSent": "Convite enviado",
     "inviteAccepted": "Convite aceptado",
     "virtualNumber": {
-      "label": "Virtual number",
-      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
-      "none": "No number",
-      "loading": "Loading numbers…",
-      "empty": "No numbers available",
-      "error": "Could not load your numbers",
-      "assignError": "Could not save this number",
-      "assigned": "Number assigned",
-      "cleared": "Number cleared"
+      "label": "Número virtual",
+      "hint": "Escolle un dos teus números de teléfono. Os SMS entrantes a este número aparecerán no teu chat.",
+      "none": "Sen número",
+      "loading": "Cargando números…",
+      "empty": "Non hai números dispoñibles",
+      "error": "Non se puideron cargar os teus números",
+      "assignError": "Non se puido gardar este número",
+      "assigned": "Número asignado",
+      "cleared": "Número eliminado"
     },
     "sms": {
       "label": "SMS",
-      "loading": "Loading SMS…",
-      "empty": "No SMS conversations yet",
-      "noNumberHint": "Assign a virtual number to start receiving SMS here",
-      "composerPlaceholder": "Write an SMS…",
-      "sendError": "Could not send this message",
-      "you": "You",
-      "statusSent": "Sent",
-      "statusDelivered": "Delivered",
-      "statusFailed": "Failed",
-      "error": "Could not load SMS"
+      "loading": "Cargando SMS…",
+      "empty": "Aínda non hai conversas de SMS",
+      "noNumberHint": "Asigna un número virtual para comezar a recibir SMS aquí",
+      "composerPlaceholder": "Escribe un SMS…",
+      "sendError": "Non se puido enviar esta mensaxe",
+      "you": "Ti",
+      "statusSent": "Enviado",
+      "statusDelivered": "Entregado",
+      "statusFailed": "Fallou",
+      "error": "Non se puideron cargar os SMS"
     }
   },
   "notesList": {

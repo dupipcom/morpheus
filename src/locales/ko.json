@@ -926,28 +926,28 @@
     "inviteSent": "초대가 전송되었습니다",
     "inviteAccepted": "초대가 수락되었습니다",
     "virtualNumber": {
-      "label": "Virtual number",
-      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
-      "none": "No number",
-      "loading": "Loading numbers…",
-      "empty": "No numbers available",
-      "error": "Could not load your numbers",
-      "assignError": "Could not save this number",
-      "assigned": "Number assigned",
-      "cleared": "Number cleared"
+      "label": "가상 번호",
+      "hint": "전화번호 중 하나를 선택하세요. 이 번호로 오는 SMS가 채팅에 표시됩니다.",
+      "none": "번호 없음",
+      "loading": "번호 불러오는 중…",
+      "empty": "사용 가능한 번호가 없습니다",
+      "error": "번호를 불러오지 못했습니다",
+      "assignError": "이 번호를 저장하지 못했습니다",
+      "assigned": "번호가 할당되었습니다",
+      "cleared": "번호가 제거되었습니다"
     },
     "sms": {
       "label": "SMS",
-      "loading": "Loading SMS…",
-      "empty": "No SMS conversations yet",
-      "noNumberHint": "Assign a virtual number to start receiving SMS here",
-      "composerPlaceholder": "Write an SMS…",
-      "sendError": "Could not send this message",
-      "you": "You",
-      "statusSent": "Sent",
-      "statusDelivered": "Delivered",
-      "statusFailed": "Failed",
-      "error": "Could not load SMS"
+      "loading": "SMS 불러오는 중…",
+      "empty": "아직 SMS 대화가 없습니다",
+      "noNumberHint": "여기에서 SMS를 받으려면 가상 번호를 할당하세요",
+      "composerPlaceholder": "SMS 작성…",
+      "sendError": "이 메시지를 보내지 못했습니다",
+      "you": "나",
+      "statusSent": "전송됨",
+      "statusDelivered": "전달됨",
+      "statusFailed": "실패",
+      "error": "SMS를 불러오지 못했습니다"
     }
   },
   "notesList": {

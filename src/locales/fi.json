@@ -930,28 +930,28 @@
     "inviteSent": "Kutsu lähetetty",
     "inviteAccepted": "Kutsu hyväksytty",
     "virtualNumber": {
-      "label": "Virtual number",
-      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
-      "none": "No number",
-      "loading": "Loading numbers…",
-      "empty": "No numbers available",
-      "error": "Could not load your numbers",
-      "assignError": "Could not save this number",
-      "assigned": "Number assigned",
-      "cleared": "Number cleared"
+      "label": "Virtuaalinumero",
+      "hint": "Valitse yksi puhelinnumeroistasi. Tähän numeroon saapuvat tekstiviestit näkyvät chatissasi.",
+      "none": "Ei numeroa",
+      "loading": "Ladataan numeroita…",
+      "empty": "Numeroita ei ole saatavilla",
+      "error": "Numeroitasi ei voitu ladata",
+      "assignError": "Tätä numeroa ei voitu tallentaa",
+      "assigned": "Numero liitetty",
+      "cleared": "Numero poistettu"
     },
     "sms": {
       "label": "SMS",
-      "loading": "Loading SMS…",
-      "empty": "No SMS conversations yet",
-      "noNumberHint": "Assign a virtual number to start receiving SMS here",
-      "composerPlaceholder": "Write an SMS…",
-      "sendError": "Could not send this message",
-      "you": "You",
-      "statusSent": "Sent",
-      "statusDelivered": "Delivered",
-      "statusFailed": "Failed",
-      "error": "Could not load SMS"
+      "loading": "Ladataan tekstiviestejä…",
+      "empty": "Ei tekstiviestikeskusteluja vielä",
+      "noNumberHint": "Liitä virtuaalinumero aloittaaksesi tekstiviestien vastaanottamisen täällä",
+      "composerPlaceholder": "Kirjoita tekstiviesti…",
+      "sendError": "Tätä viestiä ei voitu lähettää",
+      "you": "Sinä",
+      "statusSent": "Lähetetty",
+      "statusDelivered": "Toimitettu",
+      "statusFailed": "Epäonnistui",
+      "error": "Tekstiviestejä ei voitu ladata"
     }
   },
   "notesList": {

@@ -926,28 +926,28 @@
     "inviteSent": "Приглашение отправлено",
     "inviteAccepted": "Приглашение принято",
     "virtualNumber": {
-      "label": "Virtual number",
-      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
-      "none": "No number",
-      "loading": "Loading numbers…",
-      "empty": "No numbers available",
-      "error": "Could not load your numbers",
-      "assignError": "Could not save this number",
-      "assigned": "Number assigned",
-      "cleared": "Number cleared"
+      "label": "Виртуальный номер",
+      "hint": "Выберите один из ваших номеров телефона. Входящие SMS на этот номер появятся в вашем чате.",
+      "none": "Нет номера",
+      "loading": "Загрузка номеров…",
+      "empty": "Нет доступных номеров",
+      "error": "Не удалось загрузить ваши номера",
+      "assignError": "Не удалось сохранить этот номер",
+      "assigned": "Номер назначен",
+      "cleared": "Номер удалён"
     },
     "sms": {
       "label": "SMS",
-      "loading": "Loading SMS…",
-      "empty": "No SMS conversations yet",
-      "noNumberHint": "Assign a virtual number to start receiving SMS here",
-      "composerPlaceholder": "Write an SMS…",
-      "sendError": "Could not send this message",
-      "you": "You",
-      "statusSent": "Sent",
-      "statusDelivered": "Delivered",
-      "statusFailed": "Failed",
-      "error": "Could not load SMS"
+      "loading": "Загрузка SMS…",
+      "empty": "Пока нет SMS-переписок",
+      "noNumberHint": "Назначьте виртуальный номер, чтобы получать SMS здесь",
+      "composerPlaceholder": "Напишите SMS…",
+      "sendError": "Не удалось отправить это сообщение",
+      "you": "Вы",
+      "statusSent": "Отправлено",
+      "statusDelivered": "Доставлено",
+      "statusFailed": "Не удалось",
+      "error": "Не удалось загрузить SMS"
     }
   },
   "notesList": {

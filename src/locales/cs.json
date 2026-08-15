@@ -926,28 +926,28 @@
     "inviteSent": "Pozvánka odeslána",
     "inviteAccepted": "Pozvánka přijata",
     "virtualNumber": {
-      "label": "Virtual number",
-      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
-      "none": "No number",
-      "loading": "Loading numbers…",
-      "empty": "No numbers available",
-      "error": "Could not load your numbers",
-      "assignError": "Could not save this number",
-      "assigned": "Number assigned",
-      "cleared": "Number cleared"
+      "label": "Virtuální číslo",
+      "hint": "Vyberte si jedno ze svých telefonních čísel. Příchozí SMS na toto číslo se zobrazí ve vašem chatu.",
+      "none": "Žádné číslo",
+      "loading": "Načítání čísel…",
+      "empty": "Žádná dostupná čísla",
+      "error": "Vaše čísla se nepodařilo načíst",
+      "assignError": "Toto číslo se nepodařilo uložit",
+      "assigned": "Číslo přiřazeno",
+      "cleared": "Číslo odebráno"
     },
     "sms": {
       "label": "SMS",
-      "loading": "Loading SMS…",
-      "empty": "No SMS conversations yet",
-      "noNumberHint": "Assign a virtual number to start receiving SMS here",
-      "composerPlaceholder": "Write an SMS…",
-      "sendError": "Could not send this message",
-      "you": "You",
-      "statusSent": "Sent",
-      "statusDelivered": "Delivered",
-      "statusFailed": "Failed",
-      "error": "Could not load SMS"
+      "loading": "Načítání SMS…",
+      "empty": "Zatím žádné SMS konverzace",
+      "noNumberHint": "Přiřaďte virtuální číslo, abyste zde začali přijímat SMS",
+      "composerPlaceholder": "Napište SMS…",
+      "sendError": "Tuto zprávu se nepodařilo odeslat",
+      "you": "Vy",
+      "statusSent": "Odesláno",
+      "statusDelivered": "Doručeno",
+      "statusFailed": "Nezdařilo se",
+      "error": "SMS se nepodařilo načíst"
     }
   },
   "notesList": {

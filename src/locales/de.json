@@ -926,28 +926,28 @@
     "inviteSent": "Einladung gesendet",
     "inviteAccepted": "Einladung angenommen",
     "virtualNumber": {
-      "label": "Virtual number",
-      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
-      "none": "No number",
-      "loading": "Loading numbers…",
-      "empty": "No numbers available",
-      "error": "Could not load your numbers",
-      "assignError": "Could not save this number",
-      "assigned": "Number assigned",
-      "cleared": "Number cleared"
+      "label": "Virtuelle Nummer",
+      "hint": "Wähle eine deiner Telefonnummern. Eingehende SMS an diese Nummer erscheinen in deinem Chat.",
+      "none": "Keine Nummer",
+      "loading": "Nummern werden geladen…",
+      "empty": "Keine Nummern verfügbar",
+      "error": "Deine Nummern konnten nicht geladen werden",
+      "assignError": "Diese Nummer konnte nicht gespeichert werden",
+      "assigned": "Nummer zugewiesen",
+      "cleared": "Nummer entfernt"
     },
     "sms": {
       "label": "SMS",
-      "loading": "Loading SMS…",
-      "empty": "No SMS conversations yet",
-      "noNumberHint": "Assign a virtual number to start receiving SMS here",
-      "composerPlaceholder": "Write an SMS…",
-      "sendError": "Could not send this message",
-      "you": "You",
-      "statusSent": "Sent",
-      "statusDelivered": "Delivered",
-      "statusFailed": "Failed",
-      "error": "Could not load SMS"
+      "loading": "SMS werden geladen…",
+      "empty": "Noch keine SMS-Unterhaltungen",
+      "noNumberHint": "Weise eine virtuelle Nummer zu, um hier SMS zu empfangen",
+      "composerPlaceholder": "SMS schreiben…",
+      "sendError": "Diese Nachricht konnte nicht gesendet werden",
+      "you": "Du",
+      "statusSent": "Gesendet",
+      "statusDelivered": "Zugestellt",
+      "statusFailed": "Fehlgeschlagen",
+      "error": "SMS konnten nicht geladen werden"
     }
   },
   "notesList": {

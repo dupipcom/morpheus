@@ -924,28 +924,28 @@
     "inviteSent": "Mwaliko umetumwa",
     "inviteAccepted": "Mwaliko umekubaliwa",
     "virtualNumber": {
-      "label": "Virtual number",
-      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
-      "none": "No number",
-      "loading": "Loading numbers…",
-      "empty": "No numbers available",
-      "error": "Could not load your numbers",
-      "assignError": "Could not save this number",
-      "assigned": "Number assigned",
-      "cleared": "Number cleared"
+      "label": "Namba pepe",
+      "hint": "Chagua mojawapo ya namba zako za simu. SMS zinazoingia kwenye namba hii zitaonekana kwenye mazungumzo yako.",
+      "none": "Hakuna namba",
+      "loading": "Inapakia namba…",
+      "empty": "Hakuna namba zinazopatikana",
+      "error": "Haikuwezekana kupakia namba zako",
+      "assignError": "Haikuwezekana kuhifadhi namba hii",
+      "assigned": "Namba imepewa",
+      "cleared": "Namba imeondolewa"
     },
     "sms": {
       "label": "SMS",
-      "loading": "Loading SMS…",
-      "empty": "No SMS conversations yet",
-      "noNumberHint": "Assign a virtual number to start receiving SMS here",
-      "composerPlaceholder": "Write an SMS…",
-      "sendError": "Could not send this message",
-      "you": "You",
-      "statusSent": "Sent",
-      "statusDelivered": "Delivered",
-      "statusFailed": "Failed",
-      "error": "Could not load SMS"
+      "loading": "Inapakia SMS…",
+      "empty": "Bado hakuna mazungumzo ya SMS",
+      "noNumberHint": "Pewa namba pepe ili uanze kupokea SMS hapa",
+      "composerPlaceholder": "Andika SMS…",
+      "sendError": "Haikuwezekana kutuma ujumbe huu",
+      "you": "Wewe",
+      "statusSent": "Imetumwa",
+      "statusDelivered": "Imewasilishwa",
+      "statusFailed": "Imeshindikana",
+      "error": "Haikuwezekana kupakia SMS"
     }
   },
   "notesList": {

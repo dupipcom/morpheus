@@ -926,28 +926,28 @@
     "inviteSent": "邀请已发送",
     "inviteAccepted": "邀请已接受",
     "virtualNumber": {
-      "label": "Virtual number",
-      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
-      "none": "No number",
-      "loading": "Loading numbers…",
-      "empty": "No numbers available",
-      "error": "Could not load your numbers",
-      "assignError": "Could not save this number",
-      "assigned": "Number assigned",
-      "cleared": "Number cleared"
+      "label": "虚拟号码",
+      "hint": "选择一个电话号码。发到此号码的短信会显示在你的聊天中。",
+      "none": "无号码",
+      "loading": "正在加载号码…",
+      "empty": "没有可用号码",
+      "error": "无法加载你的号码",
+      "assignError": "无法保存此号码",
+      "assigned": "号码已分配",
+      "cleared": "号码已清除"
     },
     "sms": {
-      "label": "SMS",
-      "loading": "Loading SMS…",
-      "empty": "No SMS conversations yet",
-      "noNumberHint": "Assign a virtual number to start receiving SMS here",
-      "composerPlaceholder": "Write an SMS…",
-      "sendError": "Could not send this message",
-      "you": "You",
-      "statusSent": "Sent",
-      "statusDelivered": "Delivered",
-      "statusFailed": "Failed",
-      "error": "Could not load SMS"
+      "label": "短信",
+      "loading": "正在加载短信…",
+      "empty": "暂无短信对话",
+      "noNumberHint": "分配一个虚拟号码以在此接收短信",
+      "composerPlaceholder": "编写短信…",
+      "sendError": "无法发送此消息",
+      "you": "你",
+      "statusSent": "已发送",
+      "statusDelivered": "已送达",
+      "statusFailed": "失败",
+      "error": "无法加载短信"
     }
   },
   "notesList": {

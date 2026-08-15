@@ -929,28 +929,28 @@
     "inviteSent": "Inbjudan skickad",
     "inviteAccepted": "Inbjudan accepterad",
     "virtualNumber": {
-      "label": "Virtual number",
-      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
-      "none": "No number",
-      "loading": "Loading numbers…",
-      "empty": "No numbers available",
-      "error": "Could not load your numbers",
-      "assignError": "Could not save this number",
-      "assigned": "Number assigned",
-      "cleared": "Number cleared"
+      "label": "Virtuellt nummer",
+      "hint": "Välj ett av dina telefonnummer. Inkommande SMS till detta nummer visas i din chatt.",
+      "none": "Inget nummer",
+      "loading": "Laddar nummer…",
+      "empty": "Inga nummer tillgängliga",
+      "error": "Dina nummer kunde inte laddas",
+      "assignError": "Detta nummer kunde inte sparas",
+      "assigned": "Nummer tilldelat",
+      "cleared": "Nummer borttaget"
     },
     "sms": {
       "label": "SMS",
-      "loading": "Loading SMS…",
-      "empty": "No SMS conversations yet",
-      "noNumberHint": "Assign a virtual number to start receiving SMS here",
-      "composerPlaceholder": "Write an SMS…",
-      "sendError": "Could not send this message",
-      "you": "You",
-      "statusSent": "Sent",
-      "statusDelivered": "Delivered",
-      "statusFailed": "Failed",
-      "error": "Could not load SMS"
+      "loading": "Laddar SMS…",
+      "empty": "Inga SMS-konversationer ännu",
+      "noNumberHint": "Tilldela ett virtuellt nummer för att börja ta emot SMS här",
+      "composerPlaceholder": "Skriv ett SMS…",
+      "sendError": "Detta meddelande kunde inte skickas",
+      "you": "Du",
+      "statusSent": "Skickat",
+      "statusDelivered": "Levererat",
+      "statusFailed": "Misslyckades",
+      "error": "SMS kunde inte laddas"
     }
   },
   "notesList": {

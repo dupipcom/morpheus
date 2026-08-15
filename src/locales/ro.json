@@ -926,28 +926,28 @@
     "inviteSent": "Invitație trimisă",
     "inviteAccepted": "Invitație acceptată",
     "virtualNumber": {
-      "label": "Virtual number",
-      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
-      "none": "No number",
-      "loading": "Loading numbers…",
-      "empty": "No numbers available",
-      "error": "Could not load your numbers",
-      "assignError": "Could not save this number",
-      "assigned": "Number assigned",
-      "cleared": "Number cleared"
+      "label": "Număr virtual",
+      "hint": "Alege unul dintre numerele tale de telefon. SMS-urile primite la acest număr vor apărea în chatul tău.",
+      "none": "Niciun număr",
+      "loading": "Se încarcă numerele…",
+      "empty": "Nu sunt numere disponibile",
+      "error": "Numerele tale nu au putut fi încărcate",
+      "assignError": "Acest număr nu a putut fi salvat",
+      "assigned": "Număr atribuit",
+      "cleared": "Număr eliminat"
     },
     "sms": {
       "label": "SMS",
-      "loading": "Loading SMS…",
-      "empty": "No SMS conversations yet",
-      "noNumberHint": "Assign a virtual number to start receiving SMS here",
-      "composerPlaceholder": "Write an SMS…",
-      "sendError": "Could not send this message",
-      "you": "You",
-      "statusSent": "Sent",
-      "statusDelivered": "Delivered",
-      "statusFailed": "Failed",
-      "error": "Could not load SMS"
+      "loading": "Se încarcă SMS-urile…",
+      "empty": "Nu există încă conversații SMS",
+      "noNumberHint": "Atribuie un număr virtual pentru a începe să primești SMS aici",
+      "composerPlaceholder": "Scrie un SMS…",
+      "sendError": "Acest mesaj nu a putut fi trimis",
+      "you": "Tu",
+      "statusSent": "Trimis",
+      "statusDelivered": "Livrat",
+      "statusFailed": "Eșuat",
+      "error": "SMS-urile nu au putut fi încărcate"
     }
   },
   "notesList": {

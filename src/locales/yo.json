@@ -924,28 +924,28 @@
     "inviteSent": "Ìdẹ ti fi ranṣẹ",
     "inviteAccepted": "Ìdẹ ti gba",
     "virtualNumber": {
-      "label": "Virtual number",
-      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
-      "none": "No number",
-      "loading": "Loading numbers…",
-      "empty": "No numbers available",
-      "error": "Could not load your numbers",
-      "assignError": "Could not save this number",
-      "assigned": "Number assigned",
-      "cleared": "Number cleared"
+      "label": "Nọ́mbà àkànṣe",
+      "hint": "Yan ọ̀kan lára àwọn nọ́mbà fóònù rẹ. Àwọn SMS tó dé sí nọ́mbà yìí yóò hàn nínú ìjíròrò rẹ.",
+      "none": "Kò sí nọ́mbà",
+      "loading": "Ń kó nọ́mbà…",
+      "empty": "Kò sí nọ́mbà tó wà",
+      "error": "Kò ṣeé ṣe láti kó àwọn nọ́mbà rẹ",
+      "assignError": "Kò ṣeé ṣe láti fipamọ́ nọ́mbà yìí",
+      "assigned": "A ti fi nọ́mbà sí",
+      "cleared": "A ti yọ nọ́mbà kúrò"
     },
     "sms": {
       "label": "SMS",
-      "loading": "Loading SMS…",
-      "empty": "No SMS conversations yet",
-      "noNumberHint": "Assign a virtual number to start receiving SMS here",
-      "composerPlaceholder": "Write an SMS…",
-      "sendError": "Could not send this message",
-      "you": "You",
-      "statusSent": "Sent",
-      "statusDelivered": "Delivered",
-      "statusFailed": "Failed",
-      "error": "Could not load SMS"
+      "loading": "Ń kó SMS…",
+      "empty": "Kò sí ìjíròrò SMS kankan",
+      "noNumberHint": "Fi nọ́mbà àkànṣe sí láti bẹ̀rẹ̀ sí gba SMS níbí",
+      "composerPlaceholder": "Kọ SMS…",
+      "sendError": "Kò ṣeé ṣe láti fi ìfiránṣẹ́ yìí ránṣẹ́",
+      "you": "Ìwọ",
+      "statusSent": "A ti fi ránṣẹ́",
+      "statusDelivered": "Ó ti dé",
+      "statusFailed": "Kùnà",
+      "error": "Kò ṣeé ṣe láti kó SMS"
     }
   },
   "notesList": {

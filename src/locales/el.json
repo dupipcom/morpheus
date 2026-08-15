@@ -923,28 +923,28 @@
     "inviteSent": "Η πρόσκληση στάλθηκε",
     "inviteAccepted": "Η πρόσκληση έγινε αποδεκτή",
     "virtualNumber": {
-      "label": "Virtual number",
-      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
-      "none": "No number",
-      "loading": "Loading numbers…",
-      "empty": "No numbers available",
-      "error": "Could not load your numbers",
-      "assignError": "Could not save this number",
-      "assigned": "Number assigned",
-      "cleared": "Number cleared"
+      "label": "Εικονικός αριθμός",
+      "hint": "Επίλεξε έναν από τους αριθμούς τηλεφώνου σου. Τα εισερχόμενα SMS σε αυτόν τον αριθμό θα εμφανίζονται στη συνομιλία σου.",
+      "none": "Κανένας αριθμός",
+      "loading": "Φόρτωση αριθμών…",
+      "empty": "Δεν υπάρχουν διαθέσιμοι αριθμοί",
+      "error": "Δεν ήταν δυνατή η φόρτωση των αριθμών σου",
+      "assignError": "Δεν ήταν δυνατή η αποθήκευση αυτού του αριθμού",
+      "assigned": "Ο αριθμός αντιστοιχίστηκε",
+      "cleared": "Ο αριθμός αφαιρέθηκε"
     },
     "sms": {
       "label": "SMS",
-      "loading": "Loading SMS…",
-      "empty": "No SMS conversations yet",
-      "noNumberHint": "Assign a virtual number to start receiving SMS here",
-      "composerPlaceholder": "Write an SMS…",
-      "sendError": "Could not send this message",
-      "you": "You",
-      "statusSent": "Sent",
-      "statusDelivered": "Delivered",
-      "statusFailed": "Failed",
-      "error": "Could not load SMS"
+      "loading": "Φόρτωση SMS…",
+      "empty": "Δεν υπάρχουν ακόμα συνομιλίες SMS",
+      "noNumberHint": "Αντιστοίχισε έναν εικονικό αριθμό για να λαμβάνεις SMS εδώ",
+      "composerPlaceholder": "Γράψε ένα SMS…",
+      "sendError": "Δεν ήταν δυνατή η αποστολή αυτού του μηνύματος",
+      "you": "Εσύ",
+      "statusSent": "Απεστάλη",
+      "statusDelivered": "Παραδόθηκε",
+      "statusFailed": "Απέτυχε",
+      "error": "Δεν ήταν δυνατή η φόρτωση των SMS"
     }
   },
   "notesList": {

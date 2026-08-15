@@ -930,28 +930,28 @@
     "inviteSent": "Invitation sendt",
     "inviteAccepted": "Invitation accepteret",
     "virtualNumber": {
-      "label": "Virtual number",
-      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
-      "none": "No number",
-      "loading": "Loading numbers…",
-      "empty": "No numbers available",
-      "error": "Could not load your numbers",
-      "assignError": "Could not save this number",
-      "assigned": "Number assigned",
-      "cleared": "Number cleared"
+      "label": "Virtuelt nummer",
+      "hint": "Vælg et af dine telefonnumre. Indgående SMS’er til dette nummer vises i din chat.",
+      "none": "Intet nummer",
+      "loading": "Indlæser numre…",
+      "empty": "Ingen numre tilgængelige",
+      "error": "Kunne ikke indlæse dine numre",
+      "assignError": "Kunne ikke gemme dette nummer",
+      "assigned": "Nummer tildelt",
+      "cleared": "Nummer fjernet"
     },
     "sms": {
       "label": "SMS",
-      "loading": "Loading SMS…",
-      "empty": "No SMS conversations yet",
-      "noNumberHint": "Assign a virtual number to start receiving SMS here",
-      "composerPlaceholder": "Write an SMS…",
-      "sendError": "Could not send this message",
-      "you": "You",
-      "statusSent": "Sent",
-      "statusDelivered": "Delivered",
-      "statusFailed": "Failed",
-      "error": "Could not load SMS"
+      "loading": "Indlæser SMS…",
+      "empty": "Ingen SMS-samtaler endnu",
+      "noNumberHint": "Tildel et virtuelt nummer for at begynde at modtage SMS her",
+      "composerPlaceholder": "Skriv en SMS…",
+      "sendError": "Kunne ikke sende denne besked",
+      "you": "Dig",
+      "statusSent": "Sendt",
+      "statusDelivered": "Leveret",
+      "statusFailed": "Mislykkedes",
+      "error": "Kunne ikke indlæse SMS"
     }
   },
   "notesList": {

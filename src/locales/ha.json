@@ -923,28 +923,28 @@
     "inviteSent": "An aika gayyata",
     "inviteAccepted": "An karɓi gayyata",
     "virtualNumber": {
-      "label": "Virtual number",
-      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
-      "none": "No number",
-      "loading": "Loading numbers…",
-      "empty": "No numbers available",
-      "error": "Could not load your numbers",
-      "assignError": "Could not save this number",
-      "assigned": "Number assigned",
-      "cleared": "Number cleared"
+      "label": "Lamba na musamman",
+      "hint": "Zaɓi ɗaya daga cikin lambobin wayarka. Saƙonnin SMS da ke shiga wannan lambar za su bayyana a cikin taɗin ka.",
+      "none": "Babu lamba",
+      "loading": "Ana ɗaukar lambobi…",
+      "empty": "Babu lambobi da ake da su",
+      "error": "Ba a iya ɗaukar lambobinka ba",
+      "assignError": "Ba a iya ajiye wannan lambar ba",
+      "assigned": "An haɗa lambar",
+      "cleared": "An cire lambar"
     },
     "sms": {
       "label": "SMS",
-      "loading": "Loading SMS…",
-      "empty": "No SMS conversations yet",
-      "noNumberHint": "Assign a virtual number to start receiving SMS here",
-      "composerPlaceholder": "Write an SMS…",
-      "sendError": "Could not send this message",
-      "you": "You",
-      "statusSent": "Sent",
-      "statusDelivered": "Delivered",
-      "statusFailed": "Failed",
-      "error": "Could not load SMS"
+      "loading": "Ana ɗaukar SMS…",
+      "empty": "Babu tattaunawar SMS tukuna",
+      "noNumberHint": "Haɗa lamba na musamman don fara karɓar SMS a nan",
+      "composerPlaceholder": "Rubuta SMS…",
+      "sendError": "Ba a iya aika wannan saƙon ba",
+      "you": "Kai",
+      "statusSent": "An aika",
+      "statusDelivered": "An isar",
+      "statusFailed": "An kasa",
+      "error": "Ba a iya ɗaukar SMS ba"
     }
   },
   "notesList": {

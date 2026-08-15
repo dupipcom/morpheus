@@ -926,28 +926,28 @@
     "inviteSent": "招待を送信しました",
     "inviteAccepted": "招待を承認しました",
     "virtualNumber": {
-      "label": "Virtual number",
-      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
-      "none": "No number",
-      "loading": "Loading numbers…",
-      "empty": "No numbers available",
-      "error": "Could not load your numbers",
-      "assignError": "Could not save this number",
-      "assigned": "Number assigned",
-      "cleared": "Number cleared"
+      "label": "バーチャル番号",
+      "hint": "電話番号を1つ選んでください。この番号に届くSMSがチャットに表示されます。",
+      "none": "番号なし",
+      "loading": "番号を読み込み中…",
+      "empty": "利用できる番号がありません",
+      "error": "番号を読み込めませんでした",
+      "assignError": "この番号を保存できませんでした",
+      "assigned": "番号を割り当てました",
+      "cleared": "番号を削除しました"
     },
     "sms": {
       "label": "SMS",
-      "loading": "Loading SMS…",
-      "empty": "No SMS conversations yet",
-      "noNumberHint": "Assign a virtual number to start receiving SMS here",
-      "composerPlaceholder": "Write an SMS…",
-      "sendError": "Could not send this message",
-      "you": "You",
-      "statusSent": "Sent",
-      "statusDelivered": "Delivered",
-      "statusFailed": "Failed",
-      "error": "Could not load SMS"
+      "loading": "SMSを読み込み中…",
+      "empty": "SMSの会話はまだありません",
+      "noNumberHint": "ここでSMSを受信するにはバーチャル番号を割り当ててください",
+      "composerPlaceholder": "SMSを入力…",
+      "sendError": "このメッセージを送信できませんでした",
+      "you": "あなた",
+      "statusSent": "送信済み",
+      "statusDelivered": "配信済み",
+      "statusFailed": "失敗",
+      "error": "SMSを読み込めませんでした"
     }
   },
   "notesList": {

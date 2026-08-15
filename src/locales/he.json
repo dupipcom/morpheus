@@ -926,28 +926,28 @@
     "inviteSent": "ההזמנה נשלחה",
     "inviteAccepted": "ההזמנה התקבלה",
     "virtualNumber": {
-      "label": "Virtual number",
-      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
-      "none": "No number",
-      "loading": "Loading numbers…",
-      "empty": "No numbers available",
-      "error": "Could not load your numbers",
-      "assignError": "Could not save this number",
-      "assigned": "Number assigned",
-      "cleared": "Number cleared"
+      "label": "מספר וירטואלי",
+      "hint": "בחר אחד ממספרי הטלפון שלך. הודעות SMS נכנסות למספר זה יופיעו בצ’אט שלך.",
+      "none": "ללא מספר",
+      "loading": "טוען מספרים…",
+      "empty": "אין מספרים זמינים",
+      "error": "לא ניתן היה לטעון את המספרים שלך",
+      "assignError": "לא ניתן היה לשמור מספר זה",
+      "assigned": "המספר שויך",
+      "cleared": "המספר הוסר"
     },
     "sms": {
       "label": "SMS",
-      "loading": "Loading SMS…",
-      "empty": "No SMS conversations yet",
-      "noNumberHint": "Assign a virtual number to start receiving SMS here",
-      "composerPlaceholder": "Write an SMS…",
-      "sendError": "Could not send this message",
-      "you": "You",
-      "statusSent": "Sent",
-      "statusDelivered": "Delivered",
-      "statusFailed": "Failed",
-      "error": "Could not load SMS"
+      "loading": "טוען SMS…",
+      "empty": "אין עדיין שיחות SMS",
+      "noNumberHint": "שייך מספר וירטואלי כדי להתחיל לקבל SMS כאן",
+      "composerPlaceholder": "כתוב SMS…",
+      "sendError": "לא ניתן היה לשלוח הודעה זו",
+      "you": "אתה",
+      "statusSent": "נשלח",
+      "statusDelivered": "נמסר",
+      "statusFailed": "נכשל",
+      "error": "לא ניתן היה לטעון SMS"
     }
   },
   "notesList": {

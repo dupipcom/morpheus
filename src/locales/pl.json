@@ -930,28 +930,28 @@
     "inviteSent": "Zaproszenie wysłane",
     "inviteAccepted": "Zaproszenie przyjęte",
     "virtualNumber": {
-      "label": "Virtual number",
-      "hint": "Choose one of your phone numbers. Incoming SMS to this number will appear in your chat.",
-      "none": "No number",
-      "loading": "Loading numbers…",
-      "empty": "No numbers available",
-      "error": "Could not load your numbers",
-      "assignError": "Could not save this number",
-      "assigned": "Number assigned",
-      "cleared": "Number cleared"
+      "label": "Numer wirtualny",
+      "hint": "Wybierz jeden ze swoich numerów telefonu. Przychodzące SMS-y na ten numer pojawią się na czacie.",
+      "none": "Brak numeru",
+      "loading": "Ładowanie numerów…",
+      "empty": "Brak dostępnych numerów",
+      "error": "Nie udało się załadować Twoich numerów",
+      "assignError": "Nie udało się zapisać tego numeru",
+      "assigned": "Numer przypisany",
+      "cleared": "Numer usunięty"
     },
     "sms": {
       "label": "SMS",
-      "loading": "Loading SMS…",
-      "empty": "No SMS conversations yet",
-      "noNumberHint": "Assign a virtual number to start receiving SMS here",
-      "composerPlaceholder": "Write an SMS…",
-      "sendError": "Could not send this message",
-      "you": "You",
-      "statusSent": "Sent",
-      "statusDelivered": "Delivered",
-      "statusFailed": "Failed",
-      "error": "Could not load SMS"
+      "loading": "Ładowanie SMS-ów…",
+      "empty": "Nie ma jeszcze rozmów SMS",
+      "noNumberHint": "Przypisz numer wirtualny, aby zacząć odbierać SMS-y tutaj",
+      "composerPlaceholder": "Napisz SMS…",
+      "sendError": "Nie udało się wysłać tej wiadomości",
+      "you": "Ty",
+      "statusSent": "Wysłano",
+      "statusDelivered": "Dostarczono",
+      "statusFailed": "Nie powiodło się",
+      "error": "Nie udało się załadować SMS-ów"
     }
   },
   "notesList": {
