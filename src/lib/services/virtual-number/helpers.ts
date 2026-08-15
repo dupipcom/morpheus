@@ -110,3 +110,55 @@ export function claimsAllowVirtualNumber(claims: unknown): boolean {
 
   return planFeatures || nestedPlanFeatures || topLevelFeatures
 }
+
+/**
+ * Plan slugs are set in the Clerk dashboard. The app mirrors ONLY slugs and
+ * number quotas — plan names/prices live in Clerk (see the pricing view).
+ */
+export const VIRTUAL_NUMBER_QUOTA_BY_PLAN: Record<string, number> = {
+  dupip_pro: 1,
+  dupip_ultra: 3,
+  dupip_max: 5
+}
+
+// Internal org members bypass the plan gate and get the max quota.
+export const MAX_VIRTUAL_NUMBER_QUOTA = 5
+
+/**
+ * Defensively read the Clerk plan slug from sessionClaims. Mirrors the
+ * `claimsAllowVirtualNumber` shape-varies-by-version approach: prefer the
+ * nested `plan.slug`, fall back to a top-level `planSlug`. Never throws.
+ */
+export function getPlanSlugFromClaims(claims: unknown): string | null {
+  if (typeof claims !== 'object' || claims === null) return null
+  const record = claims as Record<string, unknown>
+
+  const plan = record.plan
+  const planRecord = typeof plan === 'object' && plan !== null ? (plan as Record<string, unknown>) : null
+  const nestedSlug = planRecord !== null && typeof planRecord.slug === 'string' ? planRecord.slug : null
+  const topLevelSlug = typeof record.planSlug === 'string' ? record.planSlug : null
+
+  // Dev aid: surface the real claim shape once so the helper can be pinned to it
+  if (planRecord !== null && nestedSlug === null) {
+    console.info('[virtual-number] unrecognized sessionClaims plan slug shape:', Object.keys(planRecord))
+  }
+
+  return nestedSlug ?? topLevelSlug
+}
+
+/**
+ * Number quota for the plan in the claims (0 when the plan is unknown or
+ * absent — fail closed).
+ */
+export function getVirtualNumberQuota(claims: unknown): number {
+  const slug = getPlanSlugFromClaims(claims)
+  if (!slug) return 0
+  return VIRTUAL_NUMBER_QUOTA_BY_PLAN[slug] ?? 0
+}
+
+/**
+ * Quota predicate — currentCount must be strictly below quota.
+ */
+export function isWithinQuota(currentCount: number, quota: number): boolean {
+  return quota > 0 && currentCount < quota
+}

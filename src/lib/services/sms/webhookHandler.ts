@@ -55,7 +55,11 @@ async function handleInboundSms(payload: Record<string, unknown>): Promise<void>
   if (!conversation) {
     try {
       conversation = await prisma.smsConversation.create({
-        data: { userId, counterpartPhoneNumber: input.fromPhoneNumber }
+        data: {
+          userId,
+          counterpartPhoneNumber: input.fromPhoneNumber,
+          virtualNumberId: virtualNumber.id
+        }
       })
     } catch (error) {
       // A concurrent inbound message created the conversation first — fetch it

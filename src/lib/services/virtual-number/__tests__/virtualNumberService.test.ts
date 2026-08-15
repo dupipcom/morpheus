@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 
-import { filterAvailableNumbers, isValidE164 } from '../helpers.ts'
+import { filterAvailableNumbers, isWithinQuota, isValidE164 } from '../helpers.ts'
 
 test('isValidE164 accepts valid E.164 numbers', () => {
   assert.equal(isValidE164('+15551234567'), true)
@@ -37,4 +37,22 @@ test('filterAvailableNumbers keeps active, profile-attached, unassigned numbers'
 
 test('filterAvailableNumbers returns an empty list for empty input', () => {
   assert.deepEqual(filterAvailableNumbers([], new Set()), [])
+})
+
+test('isWithinQuota is true strictly below quota', () => {
+  assert.equal(isWithinQuota(0, 1), true)
+  assert.equal(isWithinQuota(2, 3), true)
+  assert.equal(isWithinQuota(4, 5), true)
+})
+
+test('isWithinQuota is false at or above quota', () => {
+  assert.equal(isWithinQuota(1, 1), false)
+  assert.equal(isWithinQuota(3, 3), false)
+  assert.equal(isWithinQuota(5, 5), false)
+})
+
+test('isWithinQuota is false for zero or negative quotas', () => {
+  assert.equal(isWithinQuota(0, 0), false)
+  assert.equal(isWithinQuota(2, 0), false)
+  assert.equal(isWithinQuota(2, -1), false)
 })

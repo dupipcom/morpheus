@@ -13,6 +13,7 @@ import { Badge } from '@/components/ui/badge'
 import { ChatComposer } from '@/components/chat/chatComposer'
 import { ChatMessageContent } from '@/components/chat/chatMessageContent'
 import { ChatUnreadBadge } from '@/components/chat/chatUnreadBadge'
+import { VirtualNumberGate } from '@/components/chat/virtualNumberGate'
 import { VirtualNumberPicker } from '@/components/chat/virtualNumberPicker'
 import { SmsSidebarCard } from '@/components/chat/smsSidebarCard'
 import { useI18n } from '@/lib/contexts/i18n'
@@ -97,7 +98,8 @@ interface SmsConversationsResponse {
 }
 
 interface VirtualNumberAssignmentResponse {
-  assignment: { phoneNumber: string } | null
+  assignments: { phoneNumber: string }[]
+  quota: number
 }
 
 interface RelationshipCandidate {
@@ -901,11 +903,12 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
               conversations={smsConversationsData?.conversations ?? []}
               isLoading={isSmsConversationsLoading}
               hasError={Boolean(smsConversationsError)}
-              hasAssignedNumber={Boolean(virtualNumberAssignmentData?.assignment)}
+              hasAssignedNumber={Boolean(virtualNumberAssignmentData?.assignments?.length)}
               onSelectConversation={openSmsConversation}
             />
           )}
 
+          <VirtualNumberGate />
           <VirtualNumberPicker />
         </div>
       </div>

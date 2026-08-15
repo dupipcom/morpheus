@@ -1,9 +1,11 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import useSWR from 'swr'
-import { Phone } from 'lucide-react'
+import { Phone, Trash2 } from 'lucide-react'
+import { toast } from 'sonner'
 
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useI18n } from '@/lib/contexts/i18n'
@@ -11,7 +13,8 @@ import { useFeatureFlag } from '@/lib/hooks/useFeatureFlag'
 import { jsonFetcher } from '@/lib/utils/utils'
 
 interface AssignmentResponse {
-  assignment: { phoneNumber: string; provider: string; createdAt: string; updatedAt: string } | null
+  assignments: { phoneNumber: string; provider: string; createdAt: string; updatedAt: string }[]
+  quota: number
 }
 
 interface NumbersResponse {
@@ -24,15 +27,14 @@ const NONE_VALUE = 'none'
 
 /**
  * Premium-gated Telnyx virtual number picker (Clerk feature `virtual_number`).
- * Rendered in the chat sidebar; lets the user associate one of the Telnyx
- * account's available numbers with their Dupip account. Incoming SMS to that
- * number will later appear in chat.
+ * Rendered in the chat sidebar; lets the user assign several of the Telnyx
+ * account's available numbers to their Dupip account, up to their plan quota.
+ * Incoming SMS to those numbers will later appear in chat.
  */
 export function VirtualNumberPicker() {
   const { t } = useI18n()
   const { isVirtualNumberEnabled } = useFeatureFlag()
   const [isSaving, setIsSaving] = useState(false)
-  const [feedback, setFeedback] = useState<string | null>(null)
 
   const { data: assignmentData, mutate: mutateAssignment } = useSWR<AssignmentResponse>(
     isVirtualNumberEnabled ? ASSIGNMENT_KEY : null,
@@ -55,21 +57,16 @@ export function VirtualNumberPicker() {
     }
   )
 
-  const currentPhoneNumber = assignmentData?.assignment?.phoneNumber ?? null
+  const assignments = assignmentData?.assignments ?? []
+  const quota = assignmentData?.quota ?? 0
+  const atQuota = quota > 0 && assignments.length >= quota
 
-  // The current number is assigned, so /numbers excludes it — append it so the
-  // Select value always matches an item (Radix renders nothing otherwise).
-  const optionNumbers = useMemo(() => {
-    const list = numbersData?.numbers ?? []
-    if (currentPhoneNumber && !list.some((number) => number.phoneNumber === currentPhoneNumber)) {
-      return [...list, { id: 'current', phoneNumber: currentPhoneNumber, friendlyName: null }]
-    }
-    return list
-  }, [numbersData, currentPhoneNumber])
+  const refresh = async () => {
+    await Promise.all([mutateAssignment(), mutateNumbers()])
+  }
 
-  const save = async (phoneNumber: string | null) => {
+  const add = async (phoneNumber: string) => {
     setIsSaving(true)
-    setFeedback(null)
     try {
       const response = await fetch(ASSIGNMENT_KEY, {
         method: 'POST',
@@ -79,10 +76,29 @@ export function VirtualNumberPicker() {
       const payload = await response.json().catch(() => ({ error: 'Request failed' }))
       if (!response.ok) throw new Error(payload.error || 'Request failed')
 
-      await Promise.all([mutateAssignment(), mutateNumbers()])
-      setFeedback(phoneNumber ? t('chat.virtualNumber.assigned') : t('chat.virtualNumber.cleared'))
+      await refresh()
+      toast.success(t('chat.virtualNumber.assigned'))
     } catch (err) {
-      setFeedback(err instanceof Error ? err.message : t('chat.virtualNumber.assignError'))
+      toast.error(err instanceof Error ? err.message : t('chat.virtualNumber.assignError'))
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  const remove = async (phoneNumber: string) => {
+    setIsSaving(true)
+    try {
+      const response = await fetch(
+        `${ASSIGNMENT_KEY}?phoneNumber=${encodeURIComponent(phoneNumber)}`,
+        { method: 'DELETE' }
+      )
+      const payload = await response.json().catch(() => ({ error: 'Request failed' }))
+      if (!response.ok) throw new Error(payload.error || 'Request failed')
+
+      await refresh()
+      toast.success(t('chat.virtualNumber.cleared'))
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : t('chat.virtualNumber.assignError'))
     } finally {
       setIsSaving(false)
     }
@@ -100,17 +116,49 @@ export function VirtualNumberPicker() {
       </CardHeader>
       <CardContent className="space-y-2">
         <p className="text-xs text-muted-foreground">{t('chat.virtualNumber.hint')}</p>
+
+        {quota > 0 && (
+          <p className="text-xs text-muted-foreground">
+            {t('chat.virtualNumber.quotaLabel', { used: assignments.length, quota })}
+          </p>
+        )}
+
+        {assignments.length > 0 && (
+          <ul className="space-y-1">
+            {assignments.map((assignment) => (
+              <li
+                key={assignment.phoneNumber}
+                className="flex items-center justify-between rounded-lg border px-3 py-1.5 text-sm"
+              >
+                <span>{assignment.phoneNumber}</span>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7"
+                  aria-label={t('chat.virtualNumber.removeNumber')}
+                  disabled={isSaving}
+                  onClick={() => void remove(assignment.phoneNumber)}
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                </Button>
+              </li>
+            ))}
+          </ul>
+        )}
+
         <Select
-          value={currentPhoneNumber ?? NONE_VALUE}
-          onValueChange={(value) => void save(value === NONE_VALUE ? null : value)}
-          disabled={isSaving || isLoading || Boolean(error)}
+          value={NONE_VALUE}
+          onValueChange={(value) => {
+            if (value !== NONE_VALUE) void add(value)
+          }}
+          disabled={isSaving || isLoading || Boolean(error) || atQuota}
         >
           <SelectTrigger className="w-full" aria-label={t('chat.virtualNumber.label')}>
-            <SelectValue placeholder={t('chat.virtualNumber.none')} />
+            <SelectValue placeholder={t('chat.virtualNumber.addNumber')} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value={NONE_VALUE}>{t('chat.virtualNumber.none')}</SelectItem>
-            {optionNumbers.map((number) => (
+            <SelectItem value={NONE_VALUE}>{t('chat.virtualNumber.addNumber')}</SelectItem>
+            {(numbersData?.numbers ?? []).map((number) => (
               <SelectItem key={number.id} value={number.phoneNumber}>
                 {number.friendlyName
                   ? `${number.friendlyName} (${number.phoneNumber})`
@@ -119,12 +167,13 @@ export function VirtualNumberPicker() {
             ))}
           </SelectContent>
         </Select>
+
         {isLoading && <p className="text-xs text-muted-foreground">{t('chat.virtualNumber.loading')}</p>}
         {error && <p className="text-xs text-destructive">{t('chat.virtualNumber.error')}</p>}
-        {!isLoading && !error && optionNumbers.length === 0 && (
+        {!isLoading && !error && (numbersData?.numbers ?? []).length === 0 && (
           <p className="text-xs text-muted-foreground">{t('chat.virtualNumber.empty')}</p>
         )}
-        {feedback && <p className="text-xs text-muted-foreground">{feedback}</p>}
+        {atQuota && <p className="text-xs text-muted-foreground">{t('chat.virtualNumber.limitReached')}</p>}
       </CardContent>
     </Card>
   )

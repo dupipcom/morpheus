@@ -21,6 +21,7 @@ export type VirtualNumberErrorCode =
   | 'E164_INVALID'
   | 'NUMBER_NOT_FOUND'
   | 'NUMBER_TAKEN'
+  | 'LIMIT_REACHED'
   | 'TELNYX_UNAVAILABLE'
 
 /**
