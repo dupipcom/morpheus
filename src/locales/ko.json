@@ -348,7 +348,8 @@
     "getInsights": "당신의 기분, 습관에 대해 질문하거나 개인화된 인사이트를 얻으세요",
     "placeholder": "채팅해요...",
     "error": "죄송합니다. 오류가 발생했습니다. 다시 시도해주세요.",
-    "failedToSend": "메시지 전송에 실패했습니다. 다시 시도해주세요."
+    "failedToSend": "메시지 전송에 실패했습니다. 다시 시도해주세요.",
+    "model": "Model"
   },
   "errors": {
     "notFound": "앗! 이 주파수에 맞출 수 없습니다.",
@@ -923,7 +924,31 @@
     "inviteFriendToOrg": "이 조직에 친구 초대",
     "inviteLinkCopied": "초대 링크가 복사되었습니다",
     "inviteSent": "초대가 전송되었습니다",
-    "inviteAccepted": "초대가 수락되었습니다"
+    "inviteAccepted": "초대가 수락되었습니다",
+    "virtualNumber": {
+      "label": "가상 번호",
+      "hint": "전화번호 중 하나를 선택하세요. 이 번호로 오는 SMS가 채팅에 표시됩니다.",
+      "none": "번호 없음",
+      "loading": "번호 불러오는 중…",
+      "empty": "사용 가능한 번호가 없습니다",
+      "error": "번호를 불러오지 못했습니다",
+      "assignError": "이 번호를 저장하지 못했습니다",
+      "assigned": "번호가 할당되었습니다",
+      "cleared": "번호가 제거되었습니다"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "SMS 불러오는 중…",
+      "empty": "아직 SMS 대화가 없습니다",
+      "noNumberHint": "여기에서 SMS를 받으려면 가상 번호를 할당하세요",
+      "composerPlaceholder": "SMS 작성…",
+      "sendError": "이 메시지를 보내지 못했습니다",
+      "you": "나",
+      "statusSent": "전송됨",
+      "statusDelivered": "전달됨",
+      "statusFailed": "실패",
+      "error": "SMS를 불러오지 못했습니다"
+    }
   },
   "notesList": {
     "gridOption": {

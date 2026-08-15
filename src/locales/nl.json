@@ -339,7 +339,8 @@
     "getInsights": "Vraag over je stemming, gewoonten of krijg gepersonaliseerde inzichten",
     "placeholder": "Laten we chatten...",
     "error": "Sorry, ik ben een fout tegengekomen. Probeer opnieuw.",
-    "failedToSend": "Bericht verzenden mislukt. Probeer opnieuw."
+    "failedToSend": "Bericht verzenden mislukt. Probeer opnieuw.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Begin je eigen Dupip reis",
@@ -923,7 +924,31 @@
     "inviteFriendToOrg": "Een vriend uitnodigen voor deze organisatie",
     "inviteLinkCopied": "Uitnodigingslink gekopieerd",
     "inviteSent": "Uitnodiging verzonden",
-    "inviteAccepted": "Uitnodiging geaccepteerd"
+    "inviteAccepted": "Uitnodiging geaccepteerd",
+    "virtualNumber": {
+      "label": "Virtueel nummer",
+      "hint": "Kies een van je telefoonnummers. Inkomende sms’jes naar dit nummer verschijnen in je chat.",
+      "none": "Geen nummer",
+      "loading": "Nummers laden…",
+      "empty": "Geen nummers beschikbaar",
+      "error": "Je nummers konden niet worden geladen",
+      "assignError": "Dit nummer kon niet worden opgeslagen",
+      "assigned": "Nummer toegewezen",
+      "cleared": "Nummer verwijderd"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "SMS laden…",
+      "empty": "Nog geen sms-gesprekken",
+      "noNumberHint": "Wijs een virtueel nummer toe om hier sms’jes te ontvangen",
+      "composerPlaceholder": "Schrijf een sms…",
+      "sendError": "Dit bericht kon niet worden verzonden",
+      "you": "Jij",
+      "statusSent": "Verzonden",
+      "statusDelivered": "Afgeleverd",
+      "statusFailed": "Mislukt",
+      "error": "SMS kon niet worden geladen"
+    }
   },
   "notesList": {
     "gridOption": {

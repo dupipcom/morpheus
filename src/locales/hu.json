@@ -339,7 +339,8 @@
     "getInsights": "Kérdezzen a hangulatáról, szokásairól vagy szerezzen személyre szabott betekintéseket",
     "placeholder": "Beszéljünk...",
     "error": "Sajnálom, hibába ütköztem. Próbálja újra.",
-    "failedToSend": "Az üzenet küldése sikertelen. Próbálja újra."
+    "failedToSend": "Az üzenet küldése sikertelen. Próbálja újra.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Kezdje el a saját Dupip útját",
@@ -923,7 +924,31 @@
     "inviteFriendToOrg": "Barát meghívása ebbe a szervezetbe",
     "inviteLinkCopied": "Meghívólink másolva",
     "inviteSent": "Meghívó elküldve",
-    "inviteAccepted": "Meghívó elfogadva"
+    "inviteAccepted": "Meghívó elfogadva",
+    "virtualNumber": {
+      "label": "Virtuális szám",
+      "hint": "Válassz egyet a telefonszámaid közül. Az erre a számra érkező SMS-ek megjelennek a csevegésedben.",
+      "none": "Nincs szám",
+      "loading": "Számok betöltése…",
+      "empty": "Nincs elérhető szám",
+      "error": "Nem sikerült betölteni a számaidat",
+      "assignError": "Nem sikerült menteni ezt a számot",
+      "assigned": "Szám hozzárendelve",
+      "cleared": "Szám eltávolítva"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "SMS-ek betöltése…",
+      "empty": "Még nincsenek SMS-beszélgetések",
+      "noNumberHint": "Rendelj hozzá virtuális számot, hogy itt SMS-eket fogadhass",
+      "composerPlaceholder": "Írj egy SMS-t…",
+      "sendError": "Nem sikerült elküldeni ezt az üzenetet",
+      "you": "Te",
+      "statusSent": "Elküldve",
+      "statusDelivered": "Kézbesítve",
+      "statusFailed": "Sikertelen",
+      "error": "Nem sikerült betölteni az SMS-eket"
+    }
   },
   "notesList": {
     "gridOption": {

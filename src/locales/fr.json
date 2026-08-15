@@ -348,7 +348,8 @@
     "getInsights": "Demandez des informations sur votre humeur, vos habitudes ou obtenez des insights personnalisés",
     "placeholder": "Discutons...",
     "error": "Désolé, j'ai rencontré une erreur. Veuillez réessayer.",
-    "failedToSend": "Échec de l'envoi du message. Veuillez réessayer."
+    "failedToSend": "Échec de l'envoi du message. Veuillez réessayer.",
+    "model": "Model"
   },
   "errors": {
     "notFound": "Oups ! Impossible de s'accorder sur cette fréquence.",
@@ -923,7 +924,31 @@
     "inviteFriendToOrg": "Inviter un ami dans cette organisation",
     "inviteLinkCopied": "Lien d'invitation copié",
     "inviteSent": "Invitation envoyée",
-    "inviteAccepted": "Invitation acceptée"
+    "inviteAccepted": "Invitation acceptée",
+    "virtualNumber": {
+      "label": "Numéro virtuel",
+      "hint": "Choisissez l’un de vos numéros de téléphone. Les SMS entrants vers ce numéro apparaîtront dans votre chat.",
+      "none": "Aucun numéro",
+      "loading": "Chargement des numéros…",
+      "empty": "Aucun numéro disponible",
+      "error": "Impossible de charger vos numéros",
+      "assignError": "Impossible d’enregistrer ce numéro",
+      "assigned": "Numéro attribué",
+      "cleared": "Numéro supprimé"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "Chargement des SMS…",
+      "empty": "Aucune conversation SMS pour l’instant",
+      "noNumberHint": "Attribuez un numéro virtuel pour commencer à recevoir des SMS ici",
+      "composerPlaceholder": "Écrivez un SMS…",
+      "sendError": "Impossible d’envoyer ce message",
+      "you": "Vous",
+      "statusSent": "Envoyé",
+      "statusDelivered": "Livré",
+      "statusFailed": "Échec",
+      "error": "Impossible de charger les SMS"
+    }
   },
   "notesList": {
     "gridOption": {

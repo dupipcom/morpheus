@@ -339,7 +339,8 @@
     "getInsights": "שאל על מצב הרוח שלך, הרגלים או קבל תובנות מותאמות אישית",
     "placeholder": "בואו נשוחח...",
     "error": "סליחה, נתקלתי בשגיאה. אנא נסה שוב.",
-    "failedToSend": "שליחת הודעה נכשלה. אנא נסה שוב."
+    "failedToSend": "שליחת הודעה נכשלה. אנא נסה שוב.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "התחל את המסע שלך עם Dupip",
@@ -923,7 +924,31 @@
     "inviteFriendToOrg": "הזמן חבר לארגון זה",
     "inviteLinkCopied": "קישור ההזמנה הועתק",
     "inviteSent": "ההזמנה נשלחה",
-    "inviteAccepted": "ההזמנה התקבלה"
+    "inviteAccepted": "ההזמנה התקבלה",
+    "virtualNumber": {
+      "label": "מספר וירטואלי",
+      "hint": "בחר אחד ממספרי הטלפון שלך. הודעות SMS נכנסות למספר זה יופיעו בצ’אט שלך.",
+      "none": "ללא מספר",
+      "loading": "טוען מספרים…",
+      "empty": "אין מספרים זמינים",
+      "error": "לא ניתן היה לטעון את המספרים שלך",
+      "assignError": "לא ניתן היה לשמור מספר זה",
+      "assigned": "המספר שויך",
+      "cleared": "המספר הוסר"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "טוען SMS…",
+      "empty": "אין עדיין שיחות SMS",
+      "noNumberHint": "שייך מספר וירטואלי כדי להתחיל לקבל SMS כאן",
+      "composerPlaceholder": "כתוב SMS…",
+      "sendError": "לא ניתן היה לשלוח הודעה זו",
+      "you": "אתה",
+      "statusSent": "נשלח",
+      "statusDelivered": "נמסר",
+      "statusFailed": "נכשל",
+      "error": "לא ניתן היה לטעון SMS"
+    }
   },
   "notesList": {
     "gridOption": {
