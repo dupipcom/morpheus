@@ -65,3 +65,55 @@ export async function listPhoneNumbers(): Promise<TelnyxPhoneNumber[]> {
 
   return numbers
 }
+
+export interface TelnyxMessageSendResult {
+  id: string
+  toStatus: string | null
+}
+
+/**
+ * Send an SMS via Telnyx. The messaging profile is inferred from the `from`
+ * number (which must be attached to one). `auto_detect` lets Telnyx split
+ * long messages into segments safely.
+ */
+export async function sendTelnyxMessage(input: {
+  from: string
+  to: string
+  text: string
+}): Promise<TelnyxMessageSendResult> {
+  const apiKey = getTelnyxApiKey()
+
+  const response = await fetch(`${TELNYX_API_BASE}/messages`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      from: input.from,
+      to: input.to,
+      text: input.text,
+      type: 'SMS',
+      auto_detect: true
+    })
+  })
+
+  if (!response.ok) {
+    const errorText = await response.text().catch(() => '')
+    throw new Error(`Telnyx send message failed: ${response.status} ${errorText}`)
+  }
+
+  const payload: {
+    data?: { id?: unknown; to?: Array<{ status?: unknown }> }
+  } = await response.json()
+
+  const id = typeof payload.data?.id === 'string' ? payload.data.id : ''
+  if (!id) {
+    throw new Error('Telnyx send message returned no message id')
+  }
+
+  const toStatus =
+    typeof payload.data?.to?.[0]?.status === 'string' ? payload.data.to[0].status : null
+
+  return { id, toStatus }
+}

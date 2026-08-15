@@ -36,9 +36,11 @@ Main REST API for the Dupip application. All routes are prefixed with `/api/v1`.
 | Profile | `profile/CLAUDE.md` | `GET/POST /profile`, `GET /profile/{userName}`, `GET /profile/{userName}/notes` |
 | Profiles | `profiles/CLAUDE.md` | `GET /profiles`, `GET /profiles/by-ids` |
 | Search | `search/CLAUDE.md` | `GET /search` |
+| SMS | `sms/CLAUDE.md` | `GET /sms/conversations`, `GET/POST /sms/conversations/{id}/messages`, `POST /sms/conversations/{id}/read` |
 | Task lists | `tasklists/CLAUDE.md` | `GET/POST /tasklists`, `POST /tasklists/{taskListId}/clone` |
 | Tasks | `tasks/CLAUDE.md` | `GET/POST /tasks`, `GET/PUT/DELETE /tasks/{taskId}`, `GET/POST /tasks/migrate` |
 | Templates | `templates/CLAUDE.md` | `GET/POST /templates`, `POST /templates/{templateId}/clone`, `GET /templates/public` |
+| Telnyx webhook | `telnyx/CLAUDE.md` | `POST /telnyx/webhook` (Ed25519 + 5-min timestamp) |
 | Things | `things/CLAUDE.md` | `GET/POST /things` |
 | User | `user/CLAUDE.md` | `GET/POST /user`, `POST /user/login` |
 | User dashboard data | `user-dashboard-data/CLAUDE.md` | `GET /user-dashboard-data` |

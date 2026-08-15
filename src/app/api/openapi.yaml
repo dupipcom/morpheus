@@ -29,8 +29,10 @@ tags:
   - name: notes
   - name: profile
   - name: search
+  - name: sms
   - name: tasklists
   - name: tasks
+  - name: telnyx
   - name: templates
   - name: user
   - name: virtual-number
@@ -950,6 +952,71 @@ paths:
         '200': { description: Available numbers }
         '401': { description: Unauthorized }
         '403': { description: Not entitled }
+
+  /api/v1/sms/conversations:
+    get:
+      tags: [sms]
+      summary: List the current user's SMS conversations
+      responses:
+        '200': { description: SMS conversations with unread counts }
+        '401': { description: Unauthorized }
+
+  /api/v1/sms/conversations/{conversationId}/messages:
+    get:
+      tags: [sms]
+      summary: List SMS messages in a conversation
+      parameters:
+        - { name: conversationId, in: path, required: true, schema: { type: string } }
+        - { name: limit, in: query, schema: { type: integer } }
+      responses:
+        '200': { description: SMS messages (newest last) }
+        '401': { description: Unauthorized }
+        '403': { description: Not the conversation owner }
+        '404': { description: Conversation not found }
+    post:
+      tags: [sms]
+      summary: Send an SMS from the user's virtual number
+      parameters:
+        - { name: conversationId, in: path, required: true, schema: { type: string } }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                  description: SMS text (max 1600 characters)
+      responses:
+        '201': { description: Message sent }
+        '400': { description: Invalid content }
+        '401': { description: Unauthorized }
+        '403': { description: Not the conversation owner }
+        '404': { description: Conversation not found }
+        '409': { description: No virtual number assigned }
+        '502': { description: Telnyx send failed }
+
+  /api/v1/sms/conversations/{conversationId}/read:
+    post:
+      tags: [sms]
+      summary: Mark an SMS conversation as read
+      parameters:
+        - { name: conversationId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Marked read }
+        '401': { description: Unauthorized }
+        '404': { description: Conversation not found }
+
+  /api/v1/telnyx/webhook:
+    post:
+      tags: [telnyx]
+      summary: Telnyx messaging webhook (Ed25519-signed)
+      description: Receives message.received, message.sent, and message.finalized events. Verified with the Telnyx account Ed25519 public key over `{timestamp}|{raw body}` plus a 5-minute timestamp window.
+      security: []
+      responses:
+        '200': { description: Processed }
+        '400': { description: Invalid JSON }
+        '401': { description: Invalid signature or expired timestamp }
 
 components:
   securitySchemes:

@@ -938,6 +938,19 @@
       "assignError": "Could not save this number",
       "assigned": "Number assigned",
       "cleared": "Number cleared"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "Loading SMS…",
+      "empty": "No SMS conversations yet",
+      "noNumberHint": "Assign a virtual number to start receiving SMS here",
+      "composerPlaceholder": "Write an SMS…",
+      "sendError": "Could not send this message",
+      "you": "You",
+      "statusSent": "Sent",
+      "statusDelivered": "Delivered",
+      "statusFailed": "Failed",
+      "error": "Could not load SMS"
     }
   },
   "notesList": {

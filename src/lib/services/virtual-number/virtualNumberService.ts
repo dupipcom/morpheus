@@ -22,6 +22,7 @@ export async function getAssignedNumber(userId: string): Promise<VirtualNumberAs
 
   return {
     phoneNumber: assignment.phoneNumber,
+    messagingProfileId: assignment.messagingProfileId,
     provider: assignment.provider,
     createdAt: assignment.createdAt.toISOString(),
     updatedAt: assignment.updatedAt.toISOString()
@@ -70,19 +71,20 @@ export async function assignNumber(
   }
 
   const match = telnyxNumbers.find((number) => number.phoneNumber === phoneNumber)
-  if (!match || match.status !== 'purchased' || !isMessagingCapable(match)) {
+  if (!match || !isMessagingCapable(match)) {
     throw new VirtualNumberError('NUMBER_NOT_FOUND', 'Number not found in Telnyx account')
   }
 
   try {
     const assignment = await prisma.virtualNumber.upsert({
       where: { userId },
-      create: { userId, phoneNumber },
-      update: { phoneNumber }
+      create: { userId, phoneNumber, messagingProfileId: match.messagingProfileId },
+      update: { phoneNumber, messagingProfileId: match.messagingProfileId }
     })
 
     return {
       phoneNumber: assignment.phoneNumber,
+      messagingProfileId: assignment.messagingProfileId,
       provider: assignment.provider,
       createdAt: assignment.createdAt.toISOString(),
       updatedAt: assignment.updatedAt.toISOString()

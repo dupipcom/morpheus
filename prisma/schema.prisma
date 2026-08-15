@@ -169,6 +169,17 @@ enum InviteStatus {
   EXPIRED
 }
 
+enum SmsDirection {
+  INBOUND
+  OUTBOUND
+}
+
+enum SmsMessageStatus {
+  SENT
+  DELIVERED
+  FAILED
+}
+
 // =============================================================================
 // EMBEDDED TYPES
 // =============================================================================
@@ -441,13 +452,14 @@ model User {
 }
 
 model VirtualNumber {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId      String   @unique @db.ObjectId
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  phoneNumber String   @unique
-  provider    String   @default("TELNYX")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                 String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId             String   @unique @db.ObjectId
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  phoneNumber        String   @unique
+  messagingProfileId String?
+  provider           String   @default("TELNYX")
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 }
 
 model EmailNotification {
@@ -1120,4 +1132,34 @@ model ChatReadState {
   @@unique([userId, roomKey])
   @@index([channelId])
   @@index([dmConversationId])
+}
+
+model SmsConversation {
+  id                     String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId                 String    @db.ObjectId
+  counterpartPhoneNumber String
+  lastMessageAt          DateTime?
+  lastReadAt             DateTime?
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+
+  @@unique([userId, counterpartPhoneNumber])
+  @@index([userId, lastMessageAt])
+}
+
+model SmsMessage {
+  id              String             @id @default(auto()) @map("_id") @db.ObjectId
+  conversationId  String             @db.ObjectId
+  userId          String             @db.ObjectId
+  direction       SmsDirection
+  fromPhoneNumber String
+  toPhoneNumber   String
+  text            String
+  status          SmsMessageStatus?
+  telnyxMessageId String?            @unique
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  @@index([conversationId, createdAt])
+  @@index([userId, createdAt])
 }

@@ -8,7 +8,8 @@ test('mapTelnyxPhoneNumber maps a full Telnyx v2 record to the DTO', () => {
     id: 'nr_123',
     phone_number: '+15105550123',
     nickname: 'Support',
-    status: 'purchased',
+    status: 'active',
+    messaging_profile_id: 'mp_456',
     features: ['sms', 'voice']
   })
 
@@ -16,13 +17,14 @@ test('mapTelnyxPhoneNumber maps a full Telnyx v2 record to the DTO', () => {
     id: 'nr_123',
     phoneNumber: '+15105550123',
     friendlyName: 'Support',
-    status: 'purchased',
+    status: 'active',
+    messagingProfileId: 'mp_456',
     features: ['sms', 'voice']
   })
 })
 
 test('mapTelnyxPhoneNumber returns null when required fields are missing', () => {
-  assert.equal(mapTelnyxPhoneNumber({ id: 'nr_123', status: 'purchased' }), null)
+  assert.equal(mapTelnyxPhoneNumber({ id: 'nr_123', status: 'active' }), null)
   assert.equal(mapTelnyxPhoneNumber({ phone_number: '+15105550123' }), null)
   assert.equal(mapTelnyxPhoneNumber(null), null)
   assert.equal(mapTelnyxPhoneNumber('not-an-object'), null)
@@ -33,12 +35,15 @@ test('mapTelnyxPhoneNumber defaults missing optional fields', () => {
 
   assert.equal(dto?.friendlyName, null)
   assert.equal(dto?.status, '')
+  assert.equal(dto?.messagingProfileId, null)
   assert.deepEqual(dto?.features, [])
 })
 
-test('isMessagingCapable accepts sms or mms features', () => {
-  assert.equal(isMessagingCapable({ id: 'a', phoneNumber: '+1', friendlyName: null, status: 'purchased', features: ['sms', 'mms', 'voice'] }), true)
-  assert.equal(isMessagingCapable({ id: 'a', phoneNumber: '+1', friendlyName: null, status: 'purchased', features: ['mms'] }), true)
-  assert.equal(isMessagingCapable({ id: 'a', phoneNumber: '+1', friendlyName: null, status: 'purchased', features: ['voice'] }), false)
-  assert.equal(isMessagingCapable({ id: 'a', phoneNumber: '+1', friendlyName: null, status: 'purchased', features: [] }), false)
+test('isMessagingCapable requires status active AND a messaging profile', () => {
+  const base = { id: 'a', phoneNumber: '+1', friendlyName: null, features: [] }
+
+  assert.equal(isMessagingCapable({ ...base, status: 'active', messagingProfileId: 'mp_1' }), true)
+  assert.equal(isMessagingCapable({ ...base, status: 'active', messagingProfileId: null }), false)
+  assert.equal(isMessagingCapable({ ...base, status: 'purchased', messagingProfileId: 'mp_1' }), false)
+  assert.equal(isMessagingCapable({ ...base, status: 'deleted', messagingProfileId: 'mp_1' }), false)
 })

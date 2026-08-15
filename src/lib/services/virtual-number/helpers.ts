@@ -10,6 +10,7 @@ export interface TelnyxPhoneNumber {
   phoneNumber: string
   friendlyName: string | null
   status: string
+  messagingProfileId: string | null
   features: string[]
 }
 
@@ -49,26 +50,30 @@ export function mapTelnyxPhoneNumber(raw: unknown): TelnyxPhoneNumber | null {
     phoneNumber,
     friendlyName: asString(record.nickname),
     status: asString(record.status) ?? '',
+    messagingProfileId: asString(record.messaging_profile_id),
     features: asStringArray(record.features)
   }
 }
 
 /**
- * A number can carry SMS when its features include `sms` or `mms`
+ * A number can carry SMS when it is active and attached to a messaging
+ * profile. NOTE: the base `GET /v2/phone_numbers` payload has no `features`
+ * field and reports purchased numbers with status `active` — SMS capability
+ * is expressed by `messaging_profile_id` being set.
  */
 export function isMessagingCapable(number: TelnyxPhoneNumber): boolean {
-  return number.features.includes('sms') || number.features.includes('mms')
+  return number.status === 'active' && number.messagingProfileId != null
 }
 
 /**
- * Purchased, messaging-capable Telnyx numbers that no Dupip user has claimed
+ * Active, messaging-capable Telnyx numbers that no Dupip user has claimed
  */
 export function filterAvailableNumbers(
   numbers: TelnyxPhoneNumber[],
   assignedPhoneNumbers: Set<string>
 ): AvailableVirtualNumber[] {
   return numbers
-    .filter((number) => number.status === 'purchased' && isMessagingCapable(number))
+    .filter(isMessagingCapable)
     .filter((number) => !assignedPhoneNumbers.has(number.phoneNumber))
     .map((number) => ({
       id: number.id,

@@ -6,6 +6,7 @@ import {
   getChatDmChannelName,
   getChatOrgChannelName,
   getChatOrgMetaChannelName,
+  getChatSmsChannelName,
   getChatUserChannelName,
 } from '@/lib/chat/realtime/channelNames'
 import { chatErrorResponse, jsonError } from '@/lib/chat/api'
@@ -23,7 +24,7 @@ export async function POST(request: NextRequest) {
     if (!user) return jsonError('Unauthorized', 401)
 
     const body = await request.json().catch(() => ({}))
-    const [memberships, orgChannels, directMessages] = await Promise.all([
+    const [memberships, orgChannels, directMessages, smsConversations] = await Promise.all([
       prisma.chatOrgMembership.findMany({
         where: { userId: user.id },
         select: { clerkOrgId: true },
@@ -46,6 +47,10 @@ export async function POST(request: NextRequest) {
         where: { participantUserIds: { has: user.id } },
         select: { id: true },
       }),
+      prisma.smsConversation.findMany({
+        where: { userId: user.id },
+        select: { id: true },
+      }),
     ])
 
     const capability: Record<string, string[]> = {
@@ -62,6 +67,10 @@ export async function POST(request: NextRequest) {
 
     for (const directMessage of directMessages) {
       capability[getChatDmChannelName(directMessage.id)] = ['subscribe']
+    }
+
+    for (const smsConversation of smsConversations) {
+      capability[getChatSmsChannelName(smsConversation.id)] = ['subscribe']
     }
 
     if (body?.channelId) {

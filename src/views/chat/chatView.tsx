@@ -14,17 +14,21 @@ import { ChatComposer } from '@/components/chat/chatComposer'
 import { ChatMessageContent } from '@/components/chat/chatMessageContent'
 import { ChatUnreadBadge } from '@/components/chat/chatUnreadBadge'
 import { VirtualNumberPicker } from '@/components/chat/virtualNumberPicker'
+import { SmsSidebarCard } from '@/components/chat/smsSidebarCard'
 import { useI18n } from '@/lib/contexts/i18n'
+import { useFeatureFlag } from '@/lib/hooks/useFeatureFlag'
 import { MOBILE_CONTENT_BOTTOM_PADDING_CLASS } from '@/lib/constants/mobileNav'
 import { getAblyRealtimeClient } from '@/lib/chat/realtime/ablyClient'
 import {
   getChatDmChannelName,
   getChatOrgChannelName,
   getChatOrgMetaChannelName,
+  getChatSmsChannelName,
   getChatUserChannelName,
 } from '@/lib/chat/realtime/channelNames'
 import { cn } from '@/lib/utils/utils'
 import type { ChatMessageSummary, ChatPendingInviteSummary, ChatUserProfile } from '@/lib/chat/types'
+import type { SmsConversationSummary, SmsMessageStatusValue, SmsMessageSummary } from '@/lib/services/sms'
 import { CHAT_ANONYMOUS_MARKER, CHAT_POLL_INTERVAL_MS, getChatAppBaseUrl } from '@/lib/chat/constants'
 import { buildChatInviteUrl } from '@/lib/chat/invites'
 
@@ -40,6 +44,7 @@ const fetcher = async (url: string) => {
 type ActiveRoom =
   | { type: 'channel'; id: string; orgId: string; name: string }
   | { type: 'dm'; id: string; name: string }
+  | { type: 'sms'; id: string; name: string }
   | null
 
 type MobileView = 'sidebar' | 'room' | 'thread'
@@ -83,6 +88,18 @@ interface ThreadResponse {
   replies: ChatMessageSummary[]
 }
 
+interface SmsMessagesResponse {
+  messages: SmsMessageSummary[]
+}
+
+interface SmsConversationsResponse {
+  conversations: SmsConversationSummary[]
+}
+
+interface VirtualNumberAssignmentResponse {
+  assignment: { phoneNumber: string } | null
+}
+
 interface RelationshipCandidate {
   id: string
   displayName: string
@@ -114,6 +131,7 @@ interface ChatViewProps {
 export function ChatView({ initialUsername, initialMessageId, initialOrgId, initialChannelId }: ChatViewProps = {}) {
   const { t, hasTranslation, locale } = useI18n()
   const { isSignedIn } = useAuth()
+  const { isVirtualNumberEnabled } = useFeatureFlag()
   const router = useRouter()
   const [activeRoom, setActiveRoom] = useState<ActiveRoom>(null)
   const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null)
@@ -160,6 +178,11 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
         router.push(`/${locale}/app/chat/org/${room.orgId}/channel/${room.id}${threadSuffix}`)
         return
       }
+      if (room?.type === 'sms') {
+        // SMS rooms are not deep-linkable yet (follow-up)
+        router.push(`/${locale}/app/chat`)
+        return
+      }
       router.push(`/${locale}/app/chat`)
     },
     [locale, router],
@@ -173,12 +196,33 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
 
   const activeRoomKey = useMemo(() => {
     if (!activeRoom) return null
-    return activeRoom.type === 'channel'
-      ? `/api/v1/chat/channels/${activeRoom.id}/messages`
-      : `/api/v1/chat/dms/${activeRoom.id}/messages`
+    if (activeRoom.type === 'channel') return `/api/v1/chat/channels/${activeRoom.id}/messages`
+    if (activeRoom.type === 'sms') return `/api/v1/sms/conversations/${activeRoom.id}/messages`
+    return `/api/v1/chat/dms/${activeRoom.id}/messages`
   }, [activeRoom])
 
-  const { data: messagesData, mutate: mutateMessages, isLoading: isMessagesLoading } = useSWR<MessagesResponse>(activeRoomKey, fetcher)
+  const { data: messagesData, mutate: mutateMessages, isLoading: isMessagesLoading } = useSWR<MessagesResponse>(
+    activeRoom && activeRoom.type !== 'sms' ? activeRoomKey : null,
+    fetcher,
+  )
+  const { data: smsMessagesData, mutate: mutateSmsMessages, isLoading: isSmsMessagesLoading } = useSWR<SmsMessagesResponse>(
+    activeRoom?.type === 'sms' ? activeRoomKey : null,
+    fetcher,
+  )
+
+  const smsConversationsKey = isVirtualNumberEnabled ? '/api/v1/sms/conversations' : null
+  const {
+    data: smsConversationsData,
+    error: smsConversationsError,
+    isLoading: isSmsConversationsLoading,
+    mutate: mutateSmsConversations,
+  } = useSWR<SmsConversationsResponse>(smsConversationsKey, fetcher, {
+    refreshInterval: CHAT_POLL_INTERVAL_MS,
+  })
+
+  const virtualNumberAssignmentKey = isVirtualNumberEnabled ? '/api/v1/virtual-number' : null
+  // Shares SWR cache with VirtualNumberPicker
+  const { data: virtualNumberAssignmentData } = useSWR<VirtualNumberAssignmentResponse>(virtualNumberAssignmentKey, fetcher)
   const threadKey = selectedThreadId ? `/api/v1/chat/messages/${selectedThreadId}/thread` : null
   const { data: threadData, mutate: mutateThread, isLoading: isThreadLoading } = useSWR<ThreadResponse>(threadKey, fetcher)
 
@@ -201,6 +245,14 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
   const inviteLinkCopiedLabel = hasTranslation('chat.inviteLinkCopied') ? t('chat.inviteLinkCopied') : 'Invite link copied'
   const inviteSentLabel = hasTranslation('chat.inviteSent') ? t('chat.inviteSent') : 'Invite sent'
   const inviteAcceptedLabel = hasTranslation('chat.inviteAccepted') ? t('chat.inviteAccepted') : 'Invite accepted'
+  const smsLabel = hasTranslation('chat.sms.label') ? t('chat.sms.label') : 'SMS'
+  const smsEmptyLabel = hasTranslation('chat.sms.empty') ? t('chat.sms.empty') : 'No SMS conversations yet'
+  const smsComposerPlaceholder = hasTranslation('chat.sms.composerPlaceholder') ? t('chat.sms.composerPlaceholder') : 'Write an SMS…'
+  const smsSendErrorLabel = hasTranslation('chat.sms.sendError') ? t('chat.sms.sendError') : 'Could not send this message'
+  const smsYouLabel = hasTranslation('chat.sms.you') ? t('chat.sms.you') : 'You'
+  const smsStatusSentLabel = hasTranslation('chat.sms.statusSent') ? t('chat.sms.statusSent') : 'Sent'
+  const smsStatusDeliveredLabel = hasTranslation('chat.sms.statusDelivered') ? t('chat.sms.statusDelivered') : 'Delivered'
+  const smsStatusFailedLabel = hasTranslation('chat.sms.statusFailed') ? t('chat.sms.statusFailed') : 'Failed'
 
   useEffect(() => {
     if (activeRoom || !sidebar) return
@@ -291,7 +343,25 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
   }, [initialMessageId, messagesData])
 
   useEffect(() => {
-    if (!activeRoom || !messagesData?.messages?.length) return
+    if (!activeRoom) return
+
+    if (activeRoom.type === 'sms') {
+      const smsMessages = smsMessagesData?.messages ?? []
+      const lastMessageId = smsMessages[smsMessages.length - 1]?.id
+      if (!lastMessageId) return
+
+      void fetch(`/api/v1/sms/conversations/${activeRoom.id}/read`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ lastReadMessageId: lastMessageId }),
+      }).then(() => {
+        void mutateSidebar()
+        void mutateSmsConversations()
+      })
+      return
+    }
+
+    if (!messagesData?.messages?.length) return
 
     const lastMessageId = messagesData.messages[messagesData.messages.length - 1]?.id
     if (!lastMessageId) return
@@ -305,7 +375,7 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     }).then(() => mutateSidebar())
-  }, [activeRoom, messagesData, mutateSidebar])
+  }, [activeRoom, messagesData, smsMessagesData, mutateSidebar, mutateSmsConversations])
 
   useEffect(() => {
     const currentUserId = sidebar?.currentUserId
@@ -326,6 +396,7 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
     const invalidate = () => {
       void mutateSidebar()
       void mutateMessages()
+      void mutateSmsConversations()
       if (selectedThreadId) {
         void mutateThread()
       }
@@ -342,10 +413,14 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
       void subscribe(getChatDmChannelName(activeRoom.id), invalidate)
     }
 
+    if (activeRoom?.type === 'sms') {
+      void subscribe(getChatSmsChannelName(activeRoom.id), invalidate)
+    }
+
     return () => {
       unsubscribers.forEach((unsubscribe) => unsubscribe())
     }
-  }, [activeRoom, mutateMessages, mutateSidebar, mutateThread, selectedThreadId, sidebar?.currentUserId])
+  }, [activeRoom, mutateMessages, mutateSidebar, mutateSmsConversations, mutateThread, selectedThreadId, sidebar?.currentUserId])
 
   const activeOrg = useMemo(() => {
     if (!activeRoom || activeRoom.type !== 'channel') return sidebar?.orgs?.[0] ?? null
@@ -353,12 +428,13 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
   }, [activeRoom, sidebar])
 
   const messages = useMemo(() => messagesData?.messages ?? [], [messagesData?.messages])
+  const smsMessages = useMemo(() => smsMessagesData?.messages ?? [], [smsMessagesData?.messages])
 
   useEffect(() => {
     if (messagesContainerRef.current) {
       messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight
     }
-  }, [messages])
+  }, [messages, smsMessages])
 
   useEffect(() => {
     if (threadData && threadContainerRef.current) {
@@ -368,6 +444,22 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
 
   const sendMessage = useCallback(async (content: string) => {
     if (!activeRoom) return
+
+    if (activeRoom.type === 'sms') {
+      const response = await fetch(`/api/v1/sms/conversations/${activeRoom.id}/messages`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content }),
+      })
+
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({ error: smsSendErrorLabel }))
+        throw new Error(payload.error || smsSendErrorLabel)
+      }
+
+      await Promise.all([mutateSmsMessages(), mutateSmsConversations(), mutateSidebar()])
+      return
+    }
 
     const response = await fetch(
       activeRoom.type === 'channel'
@@ -386,7 +478,7 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
     }
 
     await Promise.all([mutateMessages(), mutateSidebar()])
-  }, [activeRoom, mutateMessages, mutateSidebar])
+  }, [activeRoom, mutateMessages, mutateSidebar, mutateSmsConversations, mutateSmsMessages, smsSendErrorLabel])
 
   const sendThreadReply = useCallback(async (content: string) => {
     if (!activeRoom || !threadData?.root?.id) return
@@ -543,6 +635,38 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
     setMessagePendingDelete(null)
     await Promise.all([mutateMessages(), mutateThread(), mutateSidebar()])
   }
+
+  const openSmsConversation = (conversation: SmsConversationSummary) => {
+    const room: ActiveRoom = { type: 'sms', id: conversation.id, name: conversation.counterpartPhoneNumber }
+    setActiveRoom(room)
+    setMobileView('room')
+    setSelectedThreadId(null)
+    navigateToRoom(room)
+  }
+
+  const smsStatusLabel = (status: SmsMessageStatusValue | null) => {
+    if (status === 'DELIVERED') return smsStatusDeliveredLabel
+    if (status === 'FAILED') return smsStatusFailedLabel
+    if (status === 'SENT') return smsStatusSentLabel
+    return null
+  }
+
+  const renderSmsMessage = (message: SmsMessageSummary) => (
+    <div key={message.id} className="space-y-3 rounded-xl border border-border/60 bg-card p-4 shadow-sm">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="text-sm font-semibold">
+            {message.direction === 'INBOUND' ? message.fromPhoneNumber : smsYouLabel}
+          </p>
+          <p className="text-xs text-muted-foreground">{new Date(message.createdAt).toLocaleString()}</p>
+        </div>
+        {message.direction === 'OUTBOUND' && smsStatusLabel(message.status) && (
+          <Badge variant="outline">{smsStatusLabel(message.status)}</Badge>
+        )}
+      </div>
+      <ChatMessageContent content={message.text} />
+    </div>
+  )
 
   const renderMessage = (message: ChatMessageSummary) => (
     <div key={message.id} data-message-id={message.id} className="space-y-3 rounded-xl border border-border/60 bg-card p-4 shadow-sm">
@@ -772,6 +896,16 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
             </CardContent>
           </Card>
 
+          {isVirtualNumberEnabled && (
+            <SmsSidebarCard
+              conversations={smsConversationsData?.conversations ?? []}
+              isLoading={isSmsConversationsLoading}
+              hasError={Boolean(smsConversationsError)}
+              hasAssignedNumber={Boolean(virtualNumberAssignmentData?.assignment)}
+              onSelectConversation={openSmsConversation}
+            />
+          )}
+
           <VirtualNumberPicker />
         </div>
       </div>
@@ -782,7 +916,7 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
     <div className="flex h-full min-w-0 flex-1 flex-col bg-background">
       <div className="flex items-center justify-between border-b border-border px-4 py-3">
         <div>
-          <p className="text-sm text-muted-foreground">{activeRoom?.type === 'channel' ? 'Channel' : activeRoom?.type === 'dm' ? directMessageLabel : 'Select a room'}</p>
+          <p className="text-sm text-muted-foreground">{activeRoom?.type === 'channel' ? 'Channel' : activeRoom?.type === 'dm' ? directMessageLabel : activeRoom?.type === 'sms' ? smsLabel : 'Select a room'}</p>
           <h2 className="text-lg font-semibold">{activeRoom?.name || chatTitle}</h2>
         </div>
         <div className="flex gap-2 md:hidden">
@@ -792,7 +926,17 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
       </div>
 
       <div ref={messagesContainerRef} className={`flex-1 space-y-4 overflow-y-auto p-4 ${MOBILE_CONTENT_BOTTOM_PADDING_CLASS} md:pb-4`}>
-        {isMessagesLoading ? (
+        {activeRoom?.type === 'sms' ? (
+          isSmsMessagesLoading ? (
+            <p className="text-sm text-muted-foreground">Loading messages…</p>
+          ) : smsMessages.length > 0 ? (
+            smsMessages.map(renderSmsMessage)
+          ) : (
+            <Card>
+              <CardContent className="pt-6 text-sm text-muted-foreground">{smsEmptyLabel}</CardContent>
+            </Card>
+          )
+        ) : isMessagesLoading ? (
           <p className="text-sm text-muted-foreground">Loading messages…</p>
         ) : messages.length > 0 ? (
           messages.map((message) => renderMessage(message))
@@ -803,7 +947,7 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
         )}
       </div>
 
-      {activeRoom && <ChatComposer placeholder="Write a message…" onSubmit={sendMessage} collapsible />}
+      {activeRoom && <ChatComposer placeholder={activeRoom.type === 'sms' ? smsComposerPlaceholder : 'Write a message…'} onSubmit={sendMessage} collapsible />}
     </div>
   )
 
