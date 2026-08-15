@@ -98,6 +98,7 @@ const getVisibilityIcon = (visibility: string) => {
     case 'CLOSE_FRIENDS': return <UserCheck className="h-3 w-3" />
     case 'PUBLIC': return <Globe className="h-3 w-3" />
     case 'AI_ENABLED': return <Sparkles className="h-3 w-3" />
+    case 'DOC_ENABLED': return <FileText className="h-3 w-3" />
     default: return <Lock className="h-3 w-3" />
   }
 }
@@ -108,6 +109,7 @@ const visibilityOptions = [
   { value: 'CLOSE_FRIENDS', label: 'Close Friends', icon: <UserCheck className="h-4 w-4" /> },
   { value: 'PUBLIC', label: 'Public', icon: <Globe className="h-4 w-4" /> },
   { value: 'AI_ENABLED', label: 'AI Enabled', icon: <Sparkles className="h-4 w-4" /> },
+  { value: 'DOC_ENABLED', label: 'Doc Enabled', icon: <FileText className="h-4 w-4" /> },
 ]
 
 function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, isLoggedIn = false, currentUserId, onNoteUpdated, isHighlighted = false }: ActivityCardProps) {

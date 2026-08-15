@@ -127,10 +127,12 @@
         "FRIENDS": "Amigos",
         "CLOSE_FRIENDS": "Amigos cercanos",
         "PUBLIC": "Público",
-        "AI_ENABLED": "IA habilitada"
+        "AI_ENABLED": "IA habilitada",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Publicar nota",
-      "embedHint": "Inserción de {provider}. Si la reproducción no está disponible, abre el enlace original a continuación."
+      "embedHint": "Inserción de {provider}. Si la reproducción no está disponible, abre el enlace original a continuación.",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "Terceros",
@@ -148,7 +150,9 @@
       "addDelegatedAnalyst": "Agregar analista delegado",
       "adding": "Agregando...",
       "addError": "No se pudo agregar el analista delegado",
-      "invitationDraft": "Borrador de invitación preparado para este correo."
+      "invitationDraft": "Borrador de invitación preparado para este correo.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -927,7 +931,7 @@
     "inviteAccepted": "Invitación aceptada",
     "virtualNumber": {
       "label": "Número virtual",
-      "hint": "Elige uno de tus números de teléfono. Los SMS entrantes a este número aparecerán en tu chat.",
+      "hint": "Elige tus números de teléfono. Los SMS entrantes a estos números aparecerán en tu chat.",
       "none": "Sin número",
       "loading": "Cargando números…",
       "empty": "No hay números disponibles",
@@ -935,15 +939,15 @@
       "assignError": "No se pudo guardar este número",
       "assigned": "Número asignado",
       "cleared": "Número eliminado",
-      "addNumber": "Add number…",
-      "removeNumber": "Remove number",
-      "quotaLabel": "{used} of {quota} numbers used",
-      "limitReached": "You have reached the maximum number of virtual numbers for your plan",
-      "buyCta": "Buy virtual number",
-      "gateHint": "Virtual numbers require a Donator plan. Buy a number to receive SMS in chat.",
-      "buyDialogTitle": "Donator plan required",
-      "buyDialogDescription": "Virtual numbers are included with the Donator plans. Choose a plan on the pricing page to get started.",
-      "buyDialogGoToPricing": "Go to pricing"
+      "addNumber": "Añadir número…",
+      "removeNumber": "Eliminar número",
+      "quotaLabel": "{used} de {quota} números utilizados",
+      "limitReached": "Has alcanzado el número máximo de números virtuales de tu plan",
+      "buyCta": "Comprar número virtual",
+      "gateHint": "Los números virtuales requieren un plan Donator. Compra un número para recibir SMS en el chat.",
+      "buyDialogTitle": "Se requiere un plan Donator",
+      "buyDialogDescription": "Los números virtuales están incluidos en los planes Donator. Elige un plan en la página de precios para empezar.",
+      "buyDialogGoToPricing": "Ir a precios"
     },
     "sms": {
       "label": "SMS",
@@ -985,5 +989,20 @@
     "saveConsent": "Guardar consentimiento",
     "dpipNoValue": "DPIP (Ð) es la unidad de valor dentro de Dupip. Tu stash crece con el tiempo gracias a tu actividad. DPIP no es un producto de inversión y puede no tener valor monetario — ni ahora ni en el futuro.",
     "consentDescription": "DPIP (Ð) es la unidad de valor dentro de Dupip. Tu stash crece con el tiempo gracias a tu actividad. DPIP no es un producto de inversión y puede no tener valor monetario — ni ahora ni en el futuro. Antes de ver nuestros planes, revisa y confirma lo siguiente:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

@@ -40,11 +40,12 @@ export function buildAssistantSystemPrompt(input: AssistantPromptInput): string 
     'DATA SCOPE',
     `The data below covers ${ctx.startDate} to ${ctx.endDate} for ${ctx.userLabel}.`,
     `Dimensions included: ${rag.dimensionList.length > 0 ? rag.dimensionList.join(', ') : 'none (tasks only)'}.`,
+    'Notes the requester is authorized to read may be included as chunks prefixed with [date].',
     'Only reference data present in this prompt; never claim to see data outside it.'
   ]
 
   if (ctx.isRestricted) {
-    sections.push('Access to this data is restricted by a delegation scope; only days visible under that scope are included.')
+    sections.push('Access to this data is restricted by a delegation scope; only days and notes visible under that scope are included.')
   }
 
   if (rag.userChunks.length > 0) {

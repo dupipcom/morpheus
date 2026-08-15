@@ -12,7 +12,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
     const { userName } = await params
     const { userId } = await auth()
     const searchParams = req.nextUrl.searchParams
-    const VALID_NOTE_VISIBILITIES = ['PRIVATE', 'FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC', 'HIDDEN', 'AI_ENABLED'] as const
+    const VALID_NOTE_VISIBILITIES = ['PRIVATE', 'FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC', 'HIDDEN', 'AI_ENABLED', 'DOC_ENABLED'] as const
     type NoteVisibility = typeof VALID_NOTE_VISIBILITIES[number]
     const requestedVisibility = searchParams.get('visibility') || 'PUBLIC'
     const selectedVisibility = requestedVisibility
@@ -76,7 +76,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
 
       if (isOwnProfile) {
         // User can see all their own notes
-        visibilityFilter = ['PRIVATE', 'FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC', 'AI_ENABLED']
+        visibilityFilter = ['PRIVATE', 'FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC', 'AI_ENABLED', 'DOC_ENABLED']
       } else if (isCloseFriend) {
         // Close friends can see close friends and public notes
         visibilityFilter = ['CLOSE_FRIENDS', 'PUBLIC']

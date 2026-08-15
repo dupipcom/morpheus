@@ -6,7 +6,7 @@
  */
 
 import prisma from '@/lib/prisma'
-import { chunkCompactDays } from './chunker'
+import { chunkCompactDays, MAX_CHUNKS } from './chunker'
 import { buildDaySelectForDimensions, buildDayWhere, compactDay } from './daySelect'
 import type { AgentDayRecord } from './daySelect'
 import { retrieveTopK } from './embeddings'
@@ -14,6 +14,7 @@ import { pickDocChunksForQuery } from './psychDoc'
 import type {
   AgentDimension,
   CompactDay,
+  CompactNote,
   DayChunk,
   DocChunk,
   RagResult,
@@ -22,11 +23,14 @@ import type {
 
 const DEFAULT_USER_TOP_K = 10
 const DEFAULT_DOC_TOP_K = 4
+const MAX_COMPACT_NOTES = 100
 
 export interface BuildRagOptions {
   dimensions?: AgentDimension[]
   userChunkTopK?: number
   docChunkTopK?: number
+  /** Pre-chunked notes (from chunkNotes) to pool with day chunks */
+  noteChunks?: DayChunk[]
 }
 
 /** Fetch the minimal Day payload for the resolved context and compact it */
@@ -40,6 +44,36 @@ export async function fetchCompactDays(ctx: ResolvedAgentContext): Promise<Compa
   return days
     .map((day) => compactDay(day as AgentDayRecord, ctx.dimensions))
     .filter((day): day is CompactDay => day !== null)
+}
+
+/**
+ * Fetch the target user's notes the requester is authorized to read.
+ * `noteVisibilityFilter` is undefined for the owner (full access) and an
+ * allow-list for delegated viewers (see resolveNoteVisibilityFilter).
+ * Only notes with `aiEnabled = true` (or the legacy `visibility = AI_ENABLED`)
+ * are ever surfaced to the RAG — notes without the AI toggle are excluded
+ * regardless of visibility or delegation scope.
+ * Undated notes are included regardless of the date range — the range still
+ * applies to dated notes; the result is bounded by MAX_COMPACT_NOTES.
+ */
+export async function fetchCompactNotes(ctx: ResolvedAgentContext): Promise<CompactNote[]> {
+  const notes = await prisma.note.findMany({
+    where: {
+      userId: ctx.targetUserId,
+      ...(ctx.noteVisibilityFilter ? { visibility: { in: ctx.noteVisibilityFilter } } : {}),
+      AND: [
+        // Only notes the owner has opted into AI (new toggle) or legacy AI_ENABLED visibility
+        { OR: [{ aiEnabled: true }, { visibility: 'AI_ENABLED' }] },
+        // Date range filter: dated notes must fall within the window; undated are always included
+        { OR: [{ date: { gte: ctx.startDate, lte: ctx.endDate } }, { date: null }] }
+      ]
+    },
+    select: { id: true, date: true, content: true },
+    orderBy: { createdAt: 'desc' },
+    take: MAX_COMPACT_NOTES
+  })
+
+  return notes.map((note) => ({ id: note.id, date: note.date, content: note.content }))
 }
 
 /**
@@ -57,7 +91,11 @@ export async function buildRagForQuery(
   const userChunkTopK = options.userChunkTopK ?? DEFAULT_USER_TOP_K
   const docChunkTopK = options.docChunkTopK ?? DEFAULT_DOC_TOP_K
 
-  const allChunks = chunkCompactDays(compactDays)
+  // Day chunks come first; note chunks fill the remainder of the budget
+  const allChunks = [...chunkCompactDays(compactDays), ...(options.noteChunks ?? [])].slice(
+    0,
+    MAX_CHUNKS
+  )
   let userChunks: DayChunk[] = []
   let docChunks: DocChunk[] = []
   let usedEmbeddings = false

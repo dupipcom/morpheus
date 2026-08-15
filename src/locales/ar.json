@@ -130,11 +130,13 @@
         "FRIENDS": "الأصدقاء",
         "CLOSE_FRIENDS": "الأصدقاء المقربون",
         "PUBLIC": "عام",
-        "AI_ENABLED": "تمكين الذكاء الاصطناعي"
+        "AI_ENABLED": "تمكين الذكاء الاصطناعي",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "نشر المذكرة",
       "publishing": "جاري النشر...",
-      "embedHint": "تضمين {provider}. إذا لم يكن التشغيل متاحًا، افتح الرابط الأصلي أدناه."
+      "embedHint": "تضمين {provider}. إذا لم يكن التشغيل متاحًا، افتح الرابط الأصلي أدناه.",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "الجهات الخارجية",
@@ -152,7 +154,9 @@
       "addDelegatedAnalyst": "إضافة محلل مفوض",
       "adding": "جارٍ الإضافة...",
       "addError": "تعذر إضافة المحلل المفوض",
-      "invitationDraft": "تم إعداد مسودة دعوة لهذا البريد الإلكتروني."
+      "invitationDraft": "تم إعداد مسودة دعوة لهذا البريد الإلكتروني.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -931,7 +935,7 @@
     "inviteAccepted": "تم قبول الدعوة",
     "virtualNumber": {
       "label": "رقم افتراضي",
-      "hint": "اختر أحد أرقام هاتفك. ستظهر الرسائل النصية الواردة إلى هذا الرقم في محادثتك.",
+      "hint": "اختر أرقام هاتفك. ستظهر الرسائل النصية الواردة إلى هذه الأرقام في محادثتك.",
       "none": "بدون رقم",
       "loading": "جارٍ تحميل الأرقام…",
       "empty": "لا توجد أرقام متاحة",
@@ -939,15 +943,15 @@
       "assignError": "تعذّر حفظ هذا الرقم",
       "assigned": "تم تعيين الرقم",
       "cleared": "تم إلغاء الرقم",
-      "addNumber": "Add number…",
-      "removeNumber": "Remove number",
-      "quotaLabel": "{used} of {quota} numbers used",
-      "limitReached": "You have reached the maximum number of virtual numbers for your plan",
-      "buyCta": "Buy virtual number",
-      "gateHint": "Virtual numbers require a Donator plan. Buy a number to receive SMS in chat.",
-      "buyDialogTitle": "Donator plan required",
-      "buyDialogDescription": "Virtual numbers are included with the Donator plans. Choose a plan on the pricing page to get started.",
-      "buyDialogGoToPricing": "Go to pricing"
+      "addNumber": "أضف رقمًا…",
+      "removeNumber": "إزالة الرقم",
+      "quotaLabel": "{used} من أصل {quota} أرقام مستخدمة",
+      "limitReached": "لقد وصلت إلى الحد الأقصى لعدد الأرقام الافتراضية في خطتك",
+      "buyCta": "اشترِ رقمًا افتراضيًا",
+      "gateHint": "تتطلب الأرقام الافتراضية خطة Donator. اشترِ رقمًا لاستقبال الرسائل النصية في المحادثة.",
+      "buyDialogTitle": "خطة Donator مطلوبة",
+      "buyDialogDescription": "الأرقام الافتراضية مشمولة في خطط Donator. اختر خطة من صفحة الأسعار للبدء.",
+      "buyDialogGoToPricing": "الانتقال إلى الأسعار"
     },
     "sms": {
       "label": "رسائل نصية",
@@ -989,5 +993,20 @@
     "saveConsent": "حفظ الموافقة",
     "dpipNoValue": "DPIP (Ð) هو وحدة القيمة داخل دوبيب. ينمو رصيدك بمرور الوقت مع نشاطك. DPIP ليس منتجًا استثماريًا وقد لا تكون له قيمة نقدية — الآن أو في المستقبل.",
     "consentDescription": "DPIP (Ð) هو وحدة القيمة داخل دوبيب. ينمو رصيدك بمرور الوقت مع نشاطك. DPIP ليس منتجًا استثماريًا وقد لا تكون له قيمة نقدية — الآن أو في المستقبل. قبل عرض خططنا، يرجى المراجعة والتأكيد على ما يلي:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

@@ -130,11 +130,13 @@
         "FRIENDS": "Przyjaciele",
         "CLOSE_FRIENDS": "Bliscy przyjaciele",
         "PUBLIC": "Publiczny",
-        "AI_ENABLED": "Obsługiwane przez sztuczną inteligencję"
+        "AI_ENABLED": "Obsługiwane przez sztuczną inteligencję",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Opublikuj notatkę",
       "publishing": "Publikowanie...",
-      "embedHint": "Osadzenie {provider}. Jeśli odtwarzanie jest niedostępne, otwórz oryginalny link poniżej."
+      "embedHint": "Osadzenie {provider}. Jeśli odtwarzanie jest niedostępne, otwórz oryginalny link poniżej.",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "Strona trzecia",
@@ -152,7 +154,9 @@
       "addDelegatedAnalyst": "Dodaj delegowanego analityka",
       "adding": "Dodawanie...",
       "addError": "Nie udało się dodać delegowanego analityka",
-      "invitationDraft": "Przygotowano szkic zaproszenia dla tego adresu e-mail."
+      "invitationDraft": "Przygotowano szkic zaproszenia dla tego adresu e-mail.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -931,7 +935,7 @@
     "inviteAccepted": "Zaproszenie przyjęte",
     "virtualNumber": {
       "label": "Numer wirtualny",
-      "hint": "Wybierz jeden ze swoich numerów telefonu. Przychodzące SMS-y na ten numer pojawią się na czacie.",
+      "hint": "Wybierz swoje numery telefonu. Przychodzące SMS-y na te numery pojawią się na czacie.",
       "none": "Brak numeru",
       "loading": "Ładowanie numerów…",
       "empty": "Brak dostępnych numerów",
@@ -939,15 +943,15 @@
       "assignError": "Nie udało się zapisać tego numeru",
       "assigned": "Numer przypisany",
       "cleared": "Numer usunięty",
-      "addNumber": "Add number…",
-      "removeNumber": "Remove number",
-      "quotaLabel": "{used} of {quota} numbers used",
-      "limitReached": "You have reached the maximum number of virtual numbers for your plan",
-      "buyCta": "Buy virtual number",
-      "gateHint": "Virtual numbers require a Donator plan. Buy a number to receive SMS in chat.",
-      "buyDialogTitle": "Donator plan required",
-      "buyDialogDescription": "Virtual numbers are included with the Donator plans. Choose a plan on the pricing page to get started.",
-      "buyDialogGoToPricing": "Go to pricing"
+      "addNumber": "Dodaj numer…",
+      "removeNumber": "Usuń numer",
+      "quotaLabel": "Wykorzystano {used} z {quota} numerów",
+      "limitReached": "Osiągnąłeś maksymalną liczbę numerów wirtualnych dla swojego planu",
+      "buyCta": "Kup numer wirtualny",
+      "gateHint": "Numery wirtualne wymagają planu Donator. Kup numer, aby odbierać SMS-y na czacie.",
+      "buyDialogTitle": "Wymagany plan Donator",
+      "buyDialogDescription": "Numery wirtualne są dostępne w planach Donator. Wybierz plan na stronie cen, aby zacząć.",
+      "buyDialogGoToPricing": "Przejdź do cennika"
     },
     "sms": {
       "label": "SMS",
@@ -989,5 +993,20 @@
     "saveConsent": "Zapisz zgodę",
     "dpipNoValue": "DPIP (Ð) to jednostka wartości w Dupip. Twój stash rośnie z czasem wraz z Twoją aktywnością. DPIP nie jest produktem inwestycyjnym i może nie mieć wartości pieniężnej — ani teraz, ani w przyszłości.",
     "consentDescription": "DPIP (Ð) to jednostka wartości w Dupip. Twój stash rośnie z czasem wraz z Twoją aktywnością. DPIP nie jest produktem inwestycyjnym i może nie mieć wartości pieniężnej — ani teraz, ani w przyszłości. Zanim zobaczysz nasze plany, zapoznaj się z poniższym i potwierdź:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

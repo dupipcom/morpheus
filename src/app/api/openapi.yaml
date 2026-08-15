@@ -391,7 +391,7 @@ paths:
         '200': { description: Delegations }
     post:
       tags: [delegation]
-      summary: Create or update a delegation
+      summary: Create or update a delegation (scopes + roleKeys relationship labels)
       responses:
         '200': { description: Delegation }
         '202': { description: Invitation draft for non-user email }
@@ -574,12 +574,17 @@ paths:
   /api/v1/notes:
     get:
       tags: [notes]
-      summary: List current user notes (and received notes)
+      summary: List current user notes (and received notes); with userId, list a delegated user's notes
+      parameters:
+        - { name: userId, in: query, schema: { type: string }, description: Target delegator's user id (requires a delegation from them) }
+        - { name: visibility, in: query, schema: { type: string }, description: Comma-separated visibility filter }
+        - { name: noteId, in: query, schema: { type: string } }
       responses:
         '200': { description: Notes }
+        '403': { description: Not authorized for selected user data }
     post:
       tags: [notes]
-      summary: Create a note
+      summary: Create a note (visibility defaults to the user's defaultNoteVisibility, then PRIVATE)
       responses:
         '200': { description: Note }
 

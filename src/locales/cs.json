@@ -126,11 +126,13 @@
         "FRIENDS": "Přátelé",
         "CLOSE_FRIENDS": "Blízcí přátelé",
         "PUBLIC": "Veřejné",
-        "AI_ENABLED": "Povoleno umělou inteligencí"
+        "AI_ENABLED": "Povoleno umělou inteligencí",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Publikovat poznámku",
       "publishing": "Zveřejňování...",
-      "embedHint": "Vložení {provider}. Pokud přehrávání není dostupné, otevřete původní odkaz níže."
+      "embedHint": "Vložení {provider}. Pokud přehrávání není dostupné, otevřete původní odkaz níže.",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "Třetí strana",
@@ -148,7 +150,9 @@
       "addDelegatedAnalyst": "Přidat delegovaného analytika",
       "adding": "Přidávání...",
       "addError": "Delegovaného analytika se nepodařilo přidat",
-      "invitationDraft": "Pro tento e-mail byl připraven návrh pozvánky."
+      "invitationDraft": "Pro tento e-mail byl připraven návrh pozvánky.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -927,7 +931,7 @@
     "inviteAccepted": "Pozvánka přijata",
     "virtualNumber": {
       "label": "Virtuální číslo",
-      "hint": "Vyberte si jedno ze svých telefonních čísel. Příchozí SMS na toto číslo se zobrazí ve vašem chatu.",
+      "hint": "Vyberte si svá telefonní čísla. Příchozí SMS na tato čísla se zobrazí ve vašem chatu.",
       "none": "Žádné číslo",
       "loading": "Načítání čísel…",
       "empty": "Žádná dostupná čísla",
@@ -935,15 +939,15 @@
       "assignError": "Toto číslo se nepodařilo uložit",
       "assigned": "Číslo přiřazeno",
       "cleared": "Číslo odebráno",
-      "addNumber": "Add number…",
-      "removeNumber": "Remove number",
-      "quotaLabel": "{used} of {quota} numbers used",
-      "limitReached": "You have reached the maximum number of virtual numbers for your plan",
-      "buyCta": "Buy virtual number",
-      "gateHint": "Virtual numbers require a Donator plan. Buy a number to receive SMS in chat.",
-      "buyDialogTitle": "Donator plan required",
-      "buyDialogDescription": "Virtual numbers are included with the Donator plans. Choose a plan on the pricing page to get started.",
-      "buyDialogGoToPricing": "Go to pricing"
+      "addNumber": "Přidat číslo…",
+      "removeNumber": "Odebrat číslo",
+      "quotaLabel": "Použito {used} z {quota} čísel",
+      "limitReached": "Dosáhli jste maximálního počtu virtuálních čísel pro váš tarif",
+      "buyCta": "Koupit virtuální číslo",
+      "gateHint": "Virtuální čísla vyžadují tarif Donator. Kupte si číslo pro příjem SMS v chatu.",
+      "buyDialogTitle": "Je vyžadován tarif Donator",
+      "buyDialogDescription": "Virtuální čísla jsou součástí tarifů Donator. Vyberte si tarif na stránce cen a začněte.",
+      "buyDialogGoToPricing": "Přejít na ceny"
     },
     "sms": {
       "label": "SMS",
@@ -985,5 +989,20 @@
     "saveConsent": "Uložit souhlas",
     "dpipNoValue": "DPIP (Ð) je jednotka hodnoty uvnitř Dupip. Váš stash roste s časem díky vaší aktivitě. DPIP není investiční produkt a nemusí mít peněžní hodnotu — nyní ani v budoucnu.",
     "consentDescription": "DPIP (Ð) je jednotka hodnoty uvnitř Dupip. Váš stash roste s časem díky vaší aktivitě. DPIP není investiční produkt a nemusí mít peněžní hodnotu — nyní ani v budoucnu. Než si prohlédnete naše plány, přečtěte si prosím a potvrďte následující:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

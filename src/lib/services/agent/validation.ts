@@ -7,8 +7,10 @@
 
 import prisma from '@/lib/prisma'
 import { getDelegationScopes, resolveEffectiveDelegationScope } from '@/lib/utils/delegation'
+import { resolveNoteVisibilityFilter } from '@/lib/services/visibility/noteAccess'
 import { AGENT_DIMENSIONS } from './types'
 import type { AgentDimension, AgentFilterContext, ResolvedAgentContext } from './types'
+import type { NoteVisibility } from '@/generated/prisma/client'
 
 export type DayVisibilityFilter = 'PUBLIC' | 'FRIENDS' | 'CLOSE_FRIENDS'
 
@@ -31,6 +33,9 @@ export function getAllowedDayVisibilities(scope: string): DayVisibilityFilter[] 
       return ['PUBLIC', 'CLOSE_FRIENDS']
     case 'FRIENDS':
       return ['PUBLIC', 'FRIENDS', 'CLOSE_FRIENDS']
+    case 'DOC_ENABLED':
+      // Defensive: DOC_ENABLED is not a grantable scope; least privilege = no days
+      return []
     default:
       return undefined
   }
@@ -109,6 +114,7 @@ export async function resolveAgentContext(
   const targetUserId = filter.userId || requestingUser.id
   let userLabel = 'you'
   let visibilityFilter: DayVisibilityFilter[] | undefined
+  let noteVisibilityFilter: NoteVisibility[] | undefined
 
   if (targetUserId !== requestingUser.id) {
     const delegation = await prisma.delegation.findUnique({
@@ -132,6 +138,7 @@ export async function resolveAgentContext(
     }
 
     visibilityFilter = getAllowedDayVisibilities(effectiveScope)
+    noteVisibilityFilter = resolveNoteVisibilityFilter(delegationScopes, delegation.scope)
     userLabel = 'the delegated user'
   }
 
@@ -150,6 +157,7 @@ export async function resolveAgentContext(
     endDate: filter.endDate,
     dimensions: filter.dimensions ?? [],
     visibilityFilter,
-    isRestricted: visibilityFilter !== undefined
+    noteVisibilityFilter,
+    isRestricted: visibilityFilter !== undefined || noteVisibilityFilter !== undefined
   }
 }

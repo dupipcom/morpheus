@@ -126,11 +126,13 @@
         "FRIENDS": "বন্ধুরা",
         "CLOSE_FRIENDS": "ঘনিষ্ঠ বন্ধুরা",
         "PUBLIC": "সর্বজনীন",
-        "AI_ENABLED": "এআই সক্রিয়"
+        "AI_ENABLED": "এআই সক্রিয়",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "নোট প্রকাশ করুন",
       "publishing": "প্রকাশ করা হচ্ছে...",
-      "embedHint": "{provider} এমবেড। প্লেব্যাক পাওয়া না গেলে নিচের মূল লিঙ্কটি খুলুন।"
+      "embedHint": "{provider} এমবেড। প্লেব্যাক পাওয়া না গেলে নিচের মূল লিঙ্কটি খুলুন।",
+      "useAsDefault": "Use as my default visibility"
     },
     "thirdParty": {
       "title": "তৃতীয় পক্ষ",
@@ -148,7 +150,9 @@
       "addDelegatedAnalyst": "প্রতিনিধি বিশ্লেষক যোগ করুন",
       "adding": "যোগ করা হচ্ছে...",
       "addError": "প্রতিনিধি বিশ্লেষক যোগ করা যায়নি",
-      "invitationDraft": "এই ইমেলটির জন্য আমন্ত্রণের খসড়া প্রস্তুত করা হয়েছে।"
+      "invitationDraft": "এই ইমেলটির জন্য আমন্ত্রণের খসড়া প্রস্তুত করা হয়েছে।",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -927,7 +931,7 @@
     "inviteAccepted": "আমন্ত্রণ গৃহীত হয়েছে",
     "virtualNumber": {
       "label": "ভার্চুয়াল নম্বর",
-      "hint": "আপনার ফোন নম্বরগুলির একটি বেছে নিন। এই নম্বরে আসা SMS আপনার চ্যাটে দেখা যাবে।",
+      "hint": "আপনার ফোন নম্বরগুলো বেছে নিন। এই নম্বরগুলোতে আসা SMS আপনার চ্যাটে দেখা যাবে।",
       "none": "কোনো নম্বর নেই",
       "loading": "নম্বর লোড হচ্ছে…",
       "empty": "কোনো নম্বর উপলব্ধ নেই",
@@ -935,15 +939,15 @@
       "assignError": "এই নম্বরটি সংরক্ষণ করা যায়নি",
       "assigned": "নম্বর নির্ধারিত হয়েছে",
       "cleared": "নম্বর সরানো হয়েছে",
-      "addNumber": "Add number…",
-      "removeNumber": "Remove number",
-      "quotaLabel": "{used} of {quota} numbers used",
-      "limitReached": "You have reached the maximum number of virtual numbers for your plan",
-      "buyCta": "Buy virtual number",
-      "gateHint": "Virtual numbers require a Donator plan. Buy a number to receive SMS in chat.",
-      "buyDialogTitle": "Donator plan required",
-      "buyDialogDescription": "Virtual numbers are included with the Donator plans. Choose a plan on the pricing page to get started.",
-      "buyDialogGoToPricing": "Go to pricing"
+      "addNumber": "নম্বর যোগ করুন…",
+      "removeNumber": "নম্বর সরান",
+      "quotaLabel": "{quota}টির মধ্যে {used}টি নম্বর ব্যবহৃত",
+      "limitReached": "আপনি আপনার প্ল্যানের সর্বোচ্চ সংখ্যক ভার্চুয়াল নম্বরের সীমায় পৌঁছেছেন",
+      "buyCta": "ভার্চুয়াল নম্বর কিনুন",
+      "gateHint": "ভার্চুয়াল নম্বরের জন্য Donator প্ল্যান প্রয়োজন। চ্যাটে SMS পেতে একটি নম্বর কিনুন।",
+      "buyDialogTitle": "Donator প্ল্যান প্রয়োজন",
+      "buyDialogDescription": "Donator প্ল্যানগুলোর সাথে ভার্চুয়াল নম্বর অন্তর্ভুক্ত। শুরু করতে প্রাইসিং পেজে একটি প্ল্যান বেছে নিন।",
+      "buyDialogGoToPricing": "প্রাইসিং-এ যান"
     },
     "sms": {
       "label": "SMS",
@@ -985,5 +989,20 @@
     "saveConsent": "সম্মতি সংরক্ষণ করুন",
     "dpipNoValue": "DPIP (Ð) হলো ডুপিপের ভেতরের মূল্যের একক। আপনার সঞ্চয় সময়ের সঙ্গে সঙ্গে আপনার কার্যকলাপের মাধ্যমে বাড়ে। DPIP কোনো বিনিয়োগ পণ্য নয় এবং এর কোনো আর্থিক মূল্য নাও থাকতে পারে — এখন বা ভবিষ্যতে।",
     "consentDescription": "DPIP (Ð) হলো ডুপিপের ভেতরের মূল্যের একক। আপনার সঞ্চয় সময়ের সঙ্গে সঙ্গে আপনার কার্যকলাপের মাধ্যমে বাড়ে। DPIP কোনো বিনিয়োগ পণ্য নয় এবং এর কোনো আর্থিক মূল্য নাও থাকতে পারে — এখন বা ভবিষ্যতে। আমাদের পরিকল্পনা দেখার আগে, অনুগ্রহ করে নিচের বিষয়টি পর্যালোচনা করে নিশ্চিত করুন:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }
