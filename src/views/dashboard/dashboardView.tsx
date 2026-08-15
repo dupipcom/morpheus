@@ -565,14 +565,22 @@ const aggregateDataByWeek = (dailyData: any[]) => {
       
       {isAgentChatEnabled && user?.id ? (
         <div className="mb-16">
-          <div className="flex flex-wrap gap-2 mb-4">
+          <div className="mb-4 grid w-full min-w-0 max-w-full grid-cols-1 gap-2 lg:grid-cols-3">
             {[
               'How did the user progress last week?',
               'What should we focus on during therapy today?',
               "What were the user's major life events this week?"
             ].map((question) => (
-              <Button key={question} variant="outline" size="sm" className="whitespace-normal text-left h-auto" onClick={() => setCurrentText(question)}>
-                {question}
+              <Button
+                key={question}
+                variant="outline"
+                size="sm"
+                className="h-auto w-full min-w-0 max-w-full flex-wrap justify-start whitespace-normal px-3 py-2 text-left"
+                onClick={() => setCurrentText(question)}
+              >
+                <span className="min-w-0 flex-1 whitespace-normal break-words [overflow-wrap:anywhere]">
+                  {question}
+                </span>
               </Button>
             ))}
           </div>

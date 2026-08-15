@@ -216,39 +216,23 @@ export const AgentChat = ({ initialMessage = "", history = [], className = "", f
       </Card>
 
       {/* Input Area */}
-      <div className="mt-4 relative">
-        <div className="flex gap-2">
-          <Textarea
-            ref={textareaRef}
-            value={inputMessage}
-            onChange={(e) => handleInputChange(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder={t('agentChat.placeholder')}
-            className="flex-1 min-h-[60px] max-h-[120px] resize-none pb-8"
-            disabled={isLoading}
-          />
-          <Button
-            onClick={handleSendMessage}
-            disabled={!inputMessage.trim() || isLoading}
-            size="icon"
-            className="h-[60px] w-[60px] shrink-0"
-          >
-            {isLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Send className="h-4 w-4" />
-            )}
-          </Button>
-        </div>
-        <div className="absolute bottom-1 right-16">
+      <div className="mt-4 rounded-md border bg-background shadow-xs transition-[color,box-shadow] focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50">
+        <Textarea
+          ref={textareaRef}
+          value={inputMessage}
+          onChange={(e) => handleInputChange(e.target.value)}
+          onKeyPress={handleKeyPress}
+          placeholder={t('agentChat.placeholder')}
+          className="max-h-[120px] min-h-[60px] resize-none border-0 shadow-none focus-visible:border-transparent focus-visible:ring-0"
+          disabled={isLoading}
+        />
+        <div className="flex items-center justify-between gap-2 px-2 pb-2">
           <Select
             value={selectedModel}
             onValueChange={(value) => setSelectedModel(value as AgentModel)}
+            disabled={isLoading}
           >
-            <SelectTrigger
-              className="h-6 text-xs px-2 border-none bg-muted/50 hover:bg-muted"
-              aria-label={t('agentChat.model') || 'Model'}
-            >
+            <SelectTrigger className="h-8 w-auto max-w-full border-0 bg-muted/50 px-2 text-xs shadow-none hover:bg-muted" aria-label={t('agentChat.model') || 'Model'}>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -256,6 +240,18 @@ export const AgentChat = ({ initialMessage = "", history = [], className = "", f
               <SelectItem value="openai" disabled>OpenAI</SelectItem>
             </SelectContent>
           </Select>
+          <Button
+            onClick={handleSendMessage}
+            disabled={!inputMessage.trim() || isLoading}
+            size="icon"
+            className="shrink-0"
+          >
+            {isLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Send className="h-4 w-4" />
+            )}
+          </Button>
         </div>
       </div>
     </div>
