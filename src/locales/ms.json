@@ -940,6 +940,18 @@
     "inviteLinkCopied": "Pautan jemputan disalin",
     "inviteSent": "Jemputan dihantar",
     "inviteAccepted": "Jemputan diterima",
+    "sidebar": {
+      "directMessages": "Mesej terus",
+      "organizations": "Organisasi",
+      "sms": "SMS",
+      "virtualNumber": "Nombor maya",
+      "searchDmPlaceholder": "Cari rakan untuk memulakan DM",
+      "createChannelPlaceholder": "Cipta saluran",
+      "createOrgPlaceholder": "Cipta organisasi",
+      "refresh": "Muat semula",
+      "noOrgs": "Tiada organisasi lagi",
+      "noDms": "Tiada mesej terus lagi"
+    },
     "virtualNumber": {
       "label": "Nombor maya",
       "hint": "Pilih nombor telefon anda. SMS masuk ke nombor-nombor ini akan muncul dalam sembang anda.",

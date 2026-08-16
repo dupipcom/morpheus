@@ -936,6 +936,18 @@
     "inviteLinkCopied": "קישור ההזמנה הועתק",
     "inviteSent": "ההזמנה נשלחה",
     "inviteAccepted": "ההזמנה התקבלה",
+    "sidebar": {
+      "directMessages": "הודעות ישירות",
+      "organizations": "ארגונים",
+      "sms": "SMS",
+      "virtualNumber": "מספר וירטואלי",
+      "searchDmPlaceholder": "חפש חברים כדי להתחיל הודעה ישירה",
+      "createChannelPlaceholder": "צור ערוץ",
+      "createOrgPlaceholder": "צור ארגון",
+      "refresh": "רענן",
+      "noOrgs": "אין עדיין ארגונים",
+      "noDms": "אין עדיין הודעות ישירות"
+    },
     "virtualNumber": {
       "label": "מספר וירטואלי",
       "hint": "בחר את מספרי הטלפון שלך. הודעות SMS נכנסות למספרים אלה יופיעו בצ’אט שלך.",

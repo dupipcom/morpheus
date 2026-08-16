@@ -4,19 +4,16 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import useSWR from 'swr'
 import { useRouter } from 'next/navigation'
 import { useMediaQuery } from 'usehooks-ts'
-import { SignInButton, useAuth } from '@clerk/nextjs'
-import { Hash, Inbox, Mail, MessageSquareReply, Plus, RefreshCcw, Send, Trash2, UserPlus, Users } from 'lucide-react'
+import { useAuth } from '@clerk/nextjs'
+import { MessageSquareReply, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
+import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 import { ChatComposer } from '@/components/chat/chatComposer'
 import { ChatMessageContent } from '@/components/chat/chatMessageContent'
-import { ChatUnreadBadge } from '@/components/chat/chatUnreadBadge'
-import { VirtualNumberGate } from '@/components/chat/virtualNumberGate'
-import { VirtualNumberPicker } from '@/components/chat/virtualNumberPicker'
-import { SmsSidebarCard } from '@/components/chat/smsSidebarCard'
+import { ChatSidebar, type ChatActiveRoom, type ChatSidebarChannel, type ChatSidebarDm, type ChatSidebarResponse } from '@/components/chat/chatSidebar'
 import { useI18n } from '@/lib/contexts/i18n'
 import { useFeatureFlag } from '@/lib/hooks/useFeatureFlag'
 import { MOBILE_CONTENT_BOTTOM_PADDING_CLASS } from '@/lib/constants/mobileNav'
@@ -30,7 +27,7 @@ import {
 } from '@/lib/chat/realtime/channelNames'
 import { buildChatRoomPath, type ChatRoomRouteTarget } from '@/lib/chat/routes'
 import { cn } from '@/lib/utils/utils'
-import type { ChatMessageSummary, ChatPendingInviteSummary, ChatUserProfile } from '@/lib/chat/types'
+import type { ChatMessageSummary, ChatPendingInviteSummary } from '@/lib/chat/types'
 import type { SmsConversationSummary, SmsMessageStatusValue, SmsMessageSummary } from '@/lib/services/sms'
 import { CHAT_ANONYMOUS_MARKER, CHAT_POLL_INTERVAL_MS, getChatAppBaseUrl } from '@/lib/chat/constants'
 import { buildChatInviteUrl } from '@/lib/chat/invites'
@@ -44,43 +41,13 @@ const fetcher = async (url: string) => {
   return response.json()
 }
 
-type ActiveRoom =
-  | { type: 'channel'; id: string; orgId: string; name: string }
-  | { type: 'dm'; id: string; name: string }
-  | { type: 'sms'; id: string; name: string }
-  | null
+type ActiveRoom = ChatActiveRoom
 
 type MobileView = 'sidebar' | 'room' | 'thread'
 
-interface SidebarChannel {
-  id: string
-  clerkOrgId: string
-  name: string
-  unreadCount: number
-}
-
-interface SidebarOrg {
-  id: string
-  name: string
-  role: 'SUPERUSER' | 'ADMIN' | 'MODERATOR' | 'USER'
-  channels: SidebarChannel[]
-}
-
-interface SidebarDm {
-  id: string
-  unreadCount: number
-  participant: ChatUserProfile | null
-}
-
-interface SidebarResponse {
-  currentUserId: string
-  totalUnreadCount: number
-  messageUnreadCount: number
-  pendingInvitesCount: number
-  pendingInvites: ChatPendingInviteSummary[]
-  orgs: SidebarOrg[]
-  dms: SidebarDm[]
-}
+type SidebarChannel = ChatSidebarChannel
+type SidebarDm = ChatSidebarDm
+type SidebarResponse = ChatSidebarResponse
 
 interface MessagesResponse {
   messages: ChatMessageSummary[]
@@ -242,15 +209,10 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
   const { data: memberInviteCandidatesData } = useSWR<RelationshipCandidatesResponse>(memberInviteCandidatesKey, fetcher)
 
   const chatTitle = hasTranslation('chat.title') ? t('chat.title') : 'Chat'
-  const chatSubtitle = hasTranslation('chat.subtitle') ? t('chat.subtitle') : 'Organizations, channels, direct messages, and threads.'
   const anonymousLabel = hasTranslation('chat.anonymous') ? t('chat.anonymous') : 'Anonymous'
   const directMessageLabel = hasTranslation('chat.directMessage') ? t('chat.directMessage') : 'Direct message'
   const deletedMessageTitle = hasTranslation('chat.deleteMessageTitle') ? t('chat.deleteMessageTitle') : 'Delete message?'
   const deletedMessageDescription = hasTranslation('chat.deleteMessageDescription') ? t('chat.deleteMessageDescription') : 'This will soft-delete the message and keep a placeholder in the conversation history.'
-  const createInviteLabel = hasTranslation('chat.createInviteLink') ? t('chat.createInviteLink') : 'Create invite link'
-  const pendingInvitesTitle = hasTranslation('chat.pendingInvites') ? t('chat.pendingInvites') : 'Pending invites'
-  const acceptInviteLabel = hasTranslation('chat.acceptInvite') ? t('chat.acceptInvite') : 'Accept'
-  const inviteFriendLabel = hasTranslation('chat.inviteFriendToOrg') ? t('chat.inviteFriendToOrg') : 'Invite a friend to this org'
   const inviteLinkCopiedLabel = hasTranslation('chat.inviteLinkCopied') ? t('chat.inviteLinkCopied') : 'Invite link copied'
   const inviteSentLabel = hasTranslation('chat.inviteSent') ? t('chat.inviteSent') : 'Invite sent'
   const inviteAcceptedLabel = hasTranslation('chat.inviteAccepted') ? t('chat.inviteAccepted') : 'Invite accepted'
@@ -715,227 +677,33 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
     </div>
   )
 
-  const pendingInvitesCard = sidebar?.pendingInvites?.length ? (
-    <Card>
-      <CardHeader className="space-y-2">
-        <CardTitle className="flex items-center justify-between gap-2 text-base">
-          <span>{pendingInvitesTitle}</span>
-          <ChatUnreadBadge count={sidebar.pendingInvitesCount} />
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-2">
-        {sidebar.pendingInvites.map((invite) => (
-          <div key={invite.id} className="flex items-center justify-between gap-3 rounded-lg border border-border/60 p-3">
-            <div className="min-w-0">
-              <p className="truncate text-sm font-medium">{invite.orgName}</p>
-              <p className="text-xs text-muted-foreground">/{invite.orgSlug}</p>
-            </div>
-            {isSignedIn ? (
-              <Button size="sm" onClick={() => void acceptPendingInvite(invite)} disabled={isAcceptingInviteId === invite.id}>
-                {acceptInviteLabel}
-              </Button>
-            ) : (
-              <SignInButton>
-                <Button size="sm">{acceptInviteLabel}</Button>
-              </SignInButton>
-            )}
-          </div>
-        ))}
-      </CardContent>
-    </Card>
-  ) : null
+  const openChannelFromSidebar = useCallback((channel: SidebarChannel) => {
+    const room: ActiveRoom = { type: 'channel', id: channel.id, orgId: channel.clerkOrgId, name: channel.name }
+    openRoom(room)
+  }, [openRoom])
 
-  const sidebarPanel = (
-    <div className="flex h-full min-h-0 flex-col gap-4 border-r border-border bg-background/95 p-4 md:min-w-[320px] md:max-w-[360px]">
-      {pendingInvitesCard}
+  const openDmFromSidebar = useCallback((dm: SidebarDm) => {
+    const room: ActiveRoom = { type: 'dm', id: dm.id, name: getDisplayLabel(dm.participant?.displayName, directMessageLabel) }
+    openRoom(
+      room,
+      dm.participant?.username
+        ? { navigationTarget: { type: 'dm', username: dm.participant.username } }
+        : undefined,
+    )
+  }, [directMessageLabel, openRoom])
 
-      <div className="grid min-h-0 flex-1 gap-4 md:grid-cols-[72px_minmax(0,1fr)]">
-        <div className="flex gap-2 overflow-x-auto md:flex-col md:overflow-visible">
-          {sidebar?.orgs?.map((org) => (
-            <button
-              key={org.id}
-              type="button"
-              className={cn(
-                'flex h-14 min-w-14 items-center justify-center rounded-2xl border border-border bg-card text-sm font-semibold transition hover:border-primary hover:text-primary',
-                activeRoom?.type === 'channel' && activeRoom.orgId === org.id && 'border-primary bg-primary/10 text-primary',
-              )}
-              onClick={() => {
-                const firstChannel = org.channels?.[0]
-                if (firstChannel) {
-                  const room: ActiveRoom = { type: 'channel', id: firstChannel.id, orgId: org.id, name: firstChannel.name }
-                  openRoom(room)
-                }
-              }}
-            >
-              {org.name.slice(0, 2).toUpperCase()}
-            </button>
-          ))}
-        </div>
-
-        <div className="min-h-0 flex-1 space-y-4 overflow-y-auto pr-1">
-          <Card>
-            <CardHeader className="space-y-2">
-              <CardTitle className="flex items-center gap-2 text-base"><Inbox className="h-4 w-4" />Direct messages</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <Input value={dmQuery} onChange={(event) => setDmQuery(event.target.value)} placeholder="Search friends to start a DM" />
-              {dmCandidatesData?.candidates?.length ? (
-                <div className="space-y-2 rounded-lg border border-border/60 p-2">
-                  {dmCandidatesData.candidates.map((candidate) => (
-                    <button
-                      key={candidate.id}
-                      type="button"
-                      className="flex w-full items-center justify-between rounded-md px-2 py-2 text-left text-sm hover:bg-muted/40"
-                      onClick={() => void startDm(candidate.id)}
-                      disabled={isCreatingDm}
-                    >
-                      <span>{getDisplayLabel(candidate.displayName, anonymousLabel)}</span>
-                      <Plus className="h-4 w-4" />
-                    </button>
-                  ))}
-                </div>
-              ) : null}
-              <div className="space-y-2">
-                {[...(sidebar?.dms ?? [])].sort((a, b) => b.unreadCount - a.unreadCount).map((dm) => (
-                  <button
-                    key={dm.id}
-                    type="button"
-                    className={cn(
-                      'flex w-full items-center justify-between rounded-lg border border-transparent px-3 py-2 text-left text-sm hover:border-border hover:bg-muted/40',
-                      activeRoom?.type === 'dm' && activeRoom.id === dm.id && 'border-primary bg-primary/10',
-                    )}
-                    onClick={() => {
-                      const room: ActiveRoom = { type: 'dm', id: dm.id, name: getDisplayLabel(dm.participant?.displayName, directMessageLabel) }
-                      openRoom(
-                        room,
-                        dm.participant?.username
-                          ? { navigationTarget: { type: 'dm', username: dm.participant.username } }
-                          : undefined,
-                      )
-                    }}
-                  >
-                    <span>{getDisplayLabel(dm.participant?.displayName, directMessageLabel)}</span>
-                    <ChatUnreadBadge count={dm.unreadCount} />
-                  </button>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {activeOrg && (
-            <Card>
-              <CardHeader className="space-y-2">
-                <CardTitle className="flex items-center justify-between gap-3 text-base">
-                  <span className="flex items-center gap-2"><Users className="h-4 w-4" />{activeOrg.name}</span>
-                  <Button variant="ghost" size="sm" onClick={() => void mutateSidebar()}>
-                    <RefreshCcw className="h-4 w-4" />
-                  </Button>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {(activeOrg.role === 'ADMIN' || activeOrg.role === 'SUPERUSER') && (
-                  <>
-                    <div className="flex gap-2">
-                      <Input value={newChannelName} onChange={(event) => setNewChannelName(event.target.value)} placeholder="Create a channel" />
-                      <Button onClick={() => void createChannel()} disabled={isCreatingChannel || !newChannelName.trim()}>
-                        <Plus className="h-4 w-4" />
-                      </Button>
-                    </div>
-                    <Button variant="outline" className="w-full" onClick={() => void createInviteLink()} disabled={isCreatingInvite}>
-                      <Send className="h-4 w-4" />
-                      {createInviteLabel}
-                    </Button>
-                    <div className="space-y-2">
-                      <Input value={memberInviteQuery} onChange={(event) => setMemberInviteQuery(event.target.value)} placeholder={inviteFriendLabel} />
-                      {memberInviteCandidatesData?.candidates?.length ? (
-                        <div className="space-y-2 rounded-lg border border-border/60 p-2">
-                          {memberInviteCandidatesData.candidates.map((candidate) => (
-                            <button
-                              key={candidate.id}
-                              type="button"
-                              className="flex w-full items-center justify-between rounded-md px-2 py-2 text-left text-sm hover:bg-muted/40"
-                              onClick={() => void inviteMemberToOrg(candidate.id)}
-                              disabled={isInvitingMember}
-                            >
-                              <span>{getDisplayLabel(candidate.displayName, anonymousLabel)}</span>
-                              <UserPlus className="h-4 w-4" />
-                            </button>
-                          ))}
-                        </div>
-                      ) : null}
-                    </div>
-                  </>
-                )}
-                <div className="space-y-2">
-                  {activeOrg.channels?.map((channel) => (
-                    <button
-                      key={channel.id}
-                      type="button"
-                      className={cn(
-                        'flex w-full items-center justify-between rounded-lg border border-transparent px-3 py-2 text-left text-sm hover:border-border hover:bg-muted/40',
-                        activeRoom?.type === 'channel' && activeRoom.id === channel.id && 'border-primary bg-primary/10',
-                      )}
-                      onClick={() => {
-                        const room: ActiveRoom = { type: 'channel', id: channel.id, orgId: channel.clerkOrgId, name: channel.name }
-                        openRoom(room)
-                      }}
-                    >
-                      <span className="flex items-center gap-2"><Hash className="h-4 w-4 text-muted-foreground" />{channel.name}</span>
-                      <ChatUnreadBadge count={channel.unreadCount} />
-                    </button>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          <Card>
-            <CardHeader className="space-y-2">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Mail className="h-5 w-5" />
-                {chatTitle}
-                <ChatUnreadBadge count={sidebar?.totalUnreadCount ?? 0} />
-              </CardTitle>
-              <p className="text-sm text-muted-foreground">{chatSubtitle}</p>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex gap-2">
-                <Input value={newOrgName} onChange={(event) => setNewOrgName(event.target.value)} placeholder="Create an organization" />
-                <Button onClick={() => void createOrg()} disabled={isCreatingOrg || !newOrgName.trim()}>
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
-              {inviteLink && <p className="text-xs text-muted-foreground break-all">{inviteLink}</p>}
-              {inviteFeedback && <p className="text-xs text-muted-foreground">{inviteFeedback}</p>}
-            </CardContent>
-          </Card>
-
-          {isVirtualNumberEnabled && (
-            <SmsSidebarCard
-              conversations={smsConversationsData?.conversations ?? []}
-              isLoading={isSmsConversationsLoading}
-              hasError={Boolean(smsConversationsError)}
-              hasAssignedNumber={Boolean(virtualNumberAssignmentData?.assignments?.some((assignment) => assignment.enabled))}
-              onSelectConversation={openSmsConversation}
-            />
-          )}
-
-          <VirtualNumberGate />
-          <VirtualNumberPicker />
-        </div>
-      </div>
-    </div>
-  )
 
   const roomPanel = (
     <div className="flex h-full min-w-0 flex-1 flex-col bg-background">
       <div className="flex items-center justify-between border-b border-border px-4 py-3">
-        <div>
-          <p className="text-sm text-muted-foreground">{activeRoom?.type === 'channel' ? 'Channel' : activeRoom?.type === 'dm' ? directMessageLabel : activeRoom?.type === 'sms' ? smsLabel : 'Select a room'}</p>
-          <h2 className="text-lg font-semibold">{activeRoom?.name || chatTitle}</h2>
+        <div className="flex min-w-0 items-center gap-2">
+          <SidebarTrigger className="md:hidden" />
+          <div className="min-w-0">
+            <p className="text-sm text-muted-foreground">{activeRoom?.type === 'channel' ? 'Channel' : activeRoom?.type === 'dm' ? directMessageLabel : activeRoom?.type === 'sms' ? smsLabel : 'Select a room'}</p>
+            <h2 className="truncate text-lg font-semibold">{activeRoom?.name || chatTitle}</h2>
+          </div>
         </div>
         <div className="flex gap-2 md:hidden">
-          <Button variant="outline" size="sm" onClick={() => setMobileView('sidebar')}>Rooms</Button>
           {selectedThreadId && <Button variant="outline" size="sm" onClick={() => setMobileView('thread')}>Thread</Button>}
         </div>
       </div>
@@ -997,7 +765,7 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
   )
 
   return (
-    <main className="mx-auto flex h-[calc(100dvh-160px)] w-full max-w-[1400px] flex-col overflow-hidden px-4 py-2 md:px-6">
+    <main className="z-[9999] mx-auto flex h-[calc(100dvh-160px)] w-full max-w-[1400px] flex-col overflow-hidden px-4 py-2 md:px-6">
       <Dialog open={Boolean(messagePendingDelete)} onOpenChange={(open) => { if (!open) setMessagePendingDelete(null) }}>
         <DialogContent>
           <DialogHeader>
@@ -1019,17 +787,57 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
           <CardContent className="pt-6 text-sm text-muted-foreground">Loading chat…</CardContent>
         </Card>
       ) : (
-        <div className="flex h-full overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
-          <div className={cn('h-full w-full md:flex md:w-auto', mobileView === 'sidebar' ? 'flex' : 'hidden md:flex')}>
-            {sidebarPanel}
-          </div>
-          <div className={cn('h-full min-w-0 flex-1', mobileView === 'room' ? 'flex' : 'hidden md:flex')}>
-            {roomPanel}
-          </div>
-          <div className={cn('h-full md:flex xl:w-[420px] xl:min-w-[420px] xl:flex-none', selectedThreadId ? 'flex' : 'hidden', mobileView === 'thread' ? 'w-full' : 'hidden xl:flex')}>
-            {threadPanel}
-          </div>
-        </div>
+        <SidebarProvider className="relative h-full min-h-0 flex-1 overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
+          <ChatSidebar
+            sidebar={sidebar}
+            activeRoom={activeRoom}
+            activeOrgId={activeOrg?.id ?? null}
+            isSignedIn={isSignedIn ?? undefined}
+            isVirtualNumberEnabled={isVirtualNumberEnabled}
+            smsConversations={smsConversationsData?.conversations ?? []}
+            isSmsConversationsLoading={isSmsConversationsLoading}
+            smsConversationsHasError={Boolean(smsConversationsError)}
+            hasAssignedVirtualNumber={Boolean(
+              virtualNumberAssignmentData?.assignments?.some((assignment) => assignment.enabled),
+            )}
+            dmQuery={dmQuery}
+            onDmQueryChange={setDmQuery}
+            dmCandidates={dmCandidatesData?.candidates ?? []}
+            memberInviteQuery={memberInviteQuery}
+            onMemberInviteQueryChange={setMemberInviteQuery}
+            memberInviteCandidates={memberInviteCandidatesData?.candidates ?? []}
+            newOrgName={newOrgName}
+            onNewOrgNameChange={setNewOrgName}
+            newChannelName={newChannelName}
+            onNewChannelNameChange={setNewChannelName}
+            onSelectDm={openDmFromSidebar}
+            onSelectChannel={openChannelFromSidebar}
+            onSelectSmsConversation={openSmsConversation}
+            onStartDm={(id) => { void startDm(id) }}
+            onCreateOrg={() => { void createOrg() }}
+            onCreateChannel={() => { void createChannel() }}
+            onCreateInviteLink={() => { void createInviteLink() }}
+            onInviteMemberToOrg={(id) => { void inviteMemberToOrg(id) }}
+            onAcceptPendingInvite={(invite) => { void acceptPendingInvite(invite) }}
+            onRefresh={() => { void mutateSidebar() }}
+            isCreatingOrg={isCreatingOrg}
+            isCreatingChannel={isCreatingChannel}
+            isCreatingDm={isCreatingDm}
+            isCreatingInvite={isCreatingInvite}
+            isInvitingMember={isInvitingMember}
+            isAcceptingInviteId={isAcceptingInviteId}
+            inviteLink={inviteLink}
+            inviteFeedback={inviteFeedback}
+          />
+          <SidebarInset className="flex min-w-0 flex-1 flex-row overflow-hidden bg-background">
+            <div className={cn('h-full min-w-0 flex-1', mobileView === 'thread' ? 'hidden md:flex' : 'flex')}>
+              {roomPanel}
+            </div>
+            <div className={cn('h-full md:flex xl:w-[420px] xl:min-w-[420px] xl:flex-none', selectedThreadId ? 'flex' : 'hidden', mobileView === 'thread' ? 'w-full' : 'hidden xl:flex')}>
+              {threadPanel}
+            </div>
+          </SidebarInset>
+        </SidebarProvider>
       )}
     </main>
   )

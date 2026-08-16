@@ -940,6 +940,18 @@
     "inviteLinkCopied": "Invitationslink kopieret",
     "inviteSent": "Invitation sendt",
     "inviteAccepted": "Invitation accepteret",
+    "sidebar": {
+      "directMessages": "Direkte beskeder",
+      "organizations": "Organisationer",
+      "sms": "SMS",
+      "virtualNumber": "Virtuelt nummer",
+      "searchDmPlaceholder": "Søg venner for at starte en DM",
+      "createChannelPlaceholder": "Opret en kanal",
+      "createOrgPlaceholder": "Opret en organisation",
+      "refresh": "Opdater",
+      "noOrgs": "Ingen organisationer endnu",
+      "noDms": "Ingen direkte beskeder endnu"
+    },
     "virtualNumber": {
       "label": "Virtuelt nummer",
       "hint": "Vælg dine telefonnumre. Indgående SMS’er til disse numre vises i din chat.",

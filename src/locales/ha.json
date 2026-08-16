@@ -933,6 +933,18 @@
     "inviteLinkCopied": "An kwafi haɗin gayyata",
     "inviteSent": "An aika gayyata",
     "inviteAccepted": "An karɓi gayyata",
+    "sidebar": {
+      "directMessages": "Saƙon kai tsaye",
+      "organizations": "Ƙungiyoyi",
+      "sms": "SMS",
+      "virtualNumber": "Lambar farko",
+      "searchDmPlaceholder": "Nemi abokai don fara saƙon kai tsaye",
+      "createChannelPlaceholder": "Ƙirƙiri tashar",
+      "createOrgPlaceholder": "Ƙirƙiri ƙungiya",
+      "refresh": "Sabunta",
+      "noOrgs": "Babu ƙungiyoyi tukuna",
+      "noDms": "Babu saƙon kai tsaye tukuna"
+    },
     "virtualNumber": {
       "label": "Lamba na musamman",
       "hint": "Zaɓi lambobin wayarka. Saƙonnin SMS da ke shiga waɗannan lambobin za su bayyana a cikin taɗin ka.",

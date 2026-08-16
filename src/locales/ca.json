@@ -936,6 +936,18 @@
     "inviteLinkCopied": "Enllaç d'invitació copiat",
     "inviteSent": "Invitació enviada",
     "inviteAccepted": "Invitació acceptada",
+    "sidebar": {
+      "directMessages": "Missatges directes",
+      "organizations": "Organitzacions",
+      "sms": "SMS",
+      "virtualNumber": "Número virtual",
+      "searchDmPlaceholder": "Cerca amics per iniciar un MD",
+      "createChannelPlaceholder": "Crea un canal",
+      "createOrgPlaceholder": "Crea una organització",
+      "refresh": "Actualitzar",
+      "noOrgs": "Encara no hi ha organitzacions",
+      "noDms": "Encara no hi ha missatges directes"
+    },
     "virtualNumber": {
       "label": "Número virtual",
       "hint": "Tria els teus números de telèfon. Els SMS entrants a aquests números apareixeran al teu xat.",

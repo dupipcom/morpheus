@@ -939,6 +939,18 @@
     "inviteLinkCopied": "Inbjudningslänk kopierad",
     "inviteSent": "Inbjudan skickad",
     "inviteAccepted": "Inbjudan accepterad",
+    "sidebar": {
+      "directMessages": "Direktmeddelanden",
+      "organizations": "Organisationer",
+      "sms": "SMS",
+      "virtualNumber": "Virtuellt nummer",
+      "searchDmPlaceholder": "Sök vänner för att starta ett DM",
+      "createChannelPlaceholder": "Skapa en kanal",
+      "createOrgPlaceholder": "Skapa en organisation",
+      "refresh": "Uppdatera",
+      "noOrgs": "Inga organisationer ännu",
+      "noDms": "Inga direktmeddelanden ännu"
+    },
     "virtualNumber": {
       "label": "Virtuellt nummer",
       "hint": "Välj dina telefonnummer. Inkommande SMS till dessa nummer visas i din chatt.",
