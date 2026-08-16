@@ -51,7 +51,7 @@ export async function buildMetadata({
   title?: string
   description?: string
   image?: string | null
-  type?: 'website' | 'profile' | 'article'
+  type?: 'website' | 'profile' | 'article' | 'list' | 'event'
   locale?: string
 } = {}): Promise<Metadata> {
   // If middleware flagged this request as a bot without a preferred locale, force English metadata
@@ -84,6 +84,9 @@ export async function buildMetadata({
   const resolvedImage = image ? [image] : defaultImage
   const images = image ? [image] : ['/images/logo-social.jpg']
 
+  // 'list' and 'event' are app-level types; fall back to the generic 'website' OG type
+  const ogType = type === 'profile' || type === 'article' ? type : 'website'
+
   return {
     title: resolvedTitle,
     description: resolvedDescription,
@@ -92,7 +95,7 @@ export async function buildMetadata({
       description: resolvedDescription,
       siteName: localizedSiteName,
       images,
-      type,
+      type: ogType,
     },
     twitter: {
       card: 'summary_large_image',

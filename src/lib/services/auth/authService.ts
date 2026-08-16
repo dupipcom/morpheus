@@ -6,11 +6,11 @@
 
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
+import { getViewerRole } from '@/lib/services/ownership'
+import type { ViewerRole } from '@/lib/services/ownership'
 import type {
-  AuthenticatedUser,
   AuthResult,
   ListRole,
-  ListMembership,
   AuthorizationResult
 } from './types'
 
@@ -133,24 +133,33 @@ export async function getAuthenticatedUserWithFields<T extends Record<string, bo
 }
 
 /**
+ * The ownership kit canonicalises the legacy FOLLOWER list role to VIEWER; map back
+ * to the legacy ListRole set so existing callers see unchanged values. MEMBER
+ * (Phase 7 org role) is not a ListRole and maps to null.
+ */
+function viewerRoleToListRole(role: ViewerRole | null): ListRole | null {
+  switch (role) {
+    case 'OWNER':
+    case 'MANAGER':
+    case 'COLLABORATOR':
+      return role
+    case 'VIEWER':
+      return 'FOLLOWER'
+    default:
+      return null
+  }
+}
+
+/**
  * Get user's role in a specific list
+ * Thin wrapper over the ownership kit (getViewerRole) keeping the legacy
+ * ListRole return shape for existing callers.
  */
 export async function getUserListRole(
   userId: string,
   listId: string
 ): Promise<ListRole | null> {
-  const list = await prisma.list.findUnique({
-    where: { id: listId },
-    select: { users: true }
-  })
-
-  if (!list) {
-    return null
-  }
-
-  const users = list.users as ListMembership[]
-  const userRef = users.find((ref) => ref.userId === userId)
-  return userRef?.role || null
+  return viewerRoleToListRole(await getViewerRole(userId, 'list', listId))
 }
 
 /**
@@ -168,13 +177,14 @@ export async function checkListMembership(
 /**
  * Authorize user for list operations
  * Returns detailed authorization result
+ * Thin wrapper over the ownership kit preserving the legacy response shape.
  */
 export async function authorizeListAccess(
   userId: string,
   listId: string,
   requiredRoles: ListRole[] = ['OWNER', 'MANAGER', 'COLLABORATOR']
 ): Promise<AuthorizationResult> {
-  const role = await getUserListRole(userId, listId)
+  const role = viewerRoleToListRole(await getViewerRole(userId, 'list', listId))
 
   if (role === null) {
     return {

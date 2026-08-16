@@ -31,7 +31,8 @@ function acquireMigrationLock(listId: string, migrationFn: () => Promise<any>): 
 
 /**
  * POST /api/v1/tasks/migrate
- * Migrate old embedded tasks to the new Task collection
+ * DEPRECATED: legacy embedded tasks were converted by one-time data migrations
+ * 0017-0019. Kept for API compatibility; always reports migration complete.
  *
  * Body: { listId: string, taskKeys?: string[] }
  */

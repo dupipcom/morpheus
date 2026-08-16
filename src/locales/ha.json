@@ -61,7 +61,8 @@
     "decline": "Ƙi",
     "friendRequest": "Buƙatar abokantaka",
     "reverseOrder": "Juya tsari",
-    "saving": "Ana adanawa..."
+    "saving": "Ana adanawa...",
+    "noFriendRequests": "No friend requests"
   },
   "navigation": {
     "home": "Gida",
@@ -181,12 +182,68 @@
       "ready": "Shirye",
       "open": "A Buɗe",
       "done": "An Gama",
-      "ignored": "An Yi Watsi"
+      "ignored": "An Yi Watsi",
+      "completed": "Completed"
     },
     "edit": "Gyara",
     "loadingForDate": "Ana loda ayyuka ga ranar da aka zaɓa...",
     "initializingTasks": "Ana saita ayyukanku...",
-    "noTasksForDate": "Babu ayyuka da aka tsara don wannan ranar"
+    "noTasksForDate": "Babu ayyuka da aka tsara don wannan ranar",
+    "delete": "Share...",
+    "deleteTitle": "Share aiki",
+    "deleteDescription": "Nawa daga wannan aikin kake son sharewa?",
+    "deleteScopes": {
+      "today": "Yau kawai",
+      "onwards": "Daga yau zuwa gaba",
+      "all": "Duk shigarwar"
+    },
+    "requestTitle": "Nemi aiki",
+    "requestDescription": "Bayyana dalilin da yasa kake son ɗaukar wannan aikin. Mai jerin zai duba buƙatarka.",
+    "submitTitle": "Ƙaddamar da aiki",
+    "resubmitTitle": "Gyara ka sake ƙaddamarwa",
+    "submitDescription": "Saka shaidar aikinka. Nan ba da jimawa za ka iya haɗa hoto ko bidiyo.",
+    "reviewTitle": "Duba aiki",
+    "reviewDescription": "Karɓi aikin, nemi canje-canje ko ƙi.",
+    "justificationLabel": "Hujja",
+    "justificationPlaceholder": "Me yasa ya kamata ka yi wannan aikin?",
+    "evidenceLabel": "Shaida / rubutu",
+    "evidencePlaceholder": "Bayyana abin da ka yi...",
+    "selfReviewLabel": "Kimanta kai (0-100)",
+    "managerReviewLabel": "Makin dubawa (0-100)",
+    "reviewNoteLabel": "Ra'ayi (na zaɓi)",
+    "sendRequest": "Aika buƙata",
+    "resubmit": "Sake ƙaddamarwa",
+    "submit": "Ƙaddamar",
+    "accept": "Karɓa",
+    "requestChanges": "Nemi canje-canje",
+    "reject": "Ƙi",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided.",
+    "cv": {
+      "label": "CV (optional)",
+      "reuseLabel": "Your CVs",
+      "reusePlaceholder": "Reuse a previous CV...",
+      "uploading": "Uploading attachment...",
+      "attachedDocuments": "Attached documents",
+      "attachedCount": "{count} attached document(s)",
+      "attachedNote": "Links to the attached documents will be available with the documents API.",
+      "viewDocument": "View document"
+    },
+    "pastBadge": "Past · {date}",
+    "loadOlder": "Load older tasks",
+    "loadingOlder": "Loading...",
+    "evidenceAttachmentsLabel": "Evidence attachments (photos, videos, documents)",
+    "evidenceAttachmentsUnavailable": "Attachments are available once the job exists.",
+    "review": "Review",
+    "decline": "Decline"
   },
   "settings": {
     "title": "Saiti",
@@ -561,7 +618,34 @@
       "addTask": "Ƙara Aiki",
       "cancel": "Soke",
       "editTitle": "Gyara aiki",
-      "saveTask": "Ajiye aiki"
+      "saveTask": "Ajiye aiki",
+      "premiumLabel": "Ƙari (na zaɓi)",
+      "premiumPercentHint": "Kashi na kasafin jerin",
+      "cadenceLabel": "Yana maimaitawa",
+      "cadence": {
+        "none": "Ba ya maimaitawa",
+        "daily": "Kullum",
+        "weekly": "Kowane mako",
+        "monthly": "Kowane wata",
+        "yearly": "Kowace shekara",
+        "every": "Kowane",
+        "day": "rana",
+        "days": "kwanaki",
+        "week": "mako",
+        "weeks": "makonni",
+        "month": "wata",
+        "months": "watanni",
+        "year": "shekara",
+        "years": "shekaru",
+        "onDay": "A rana",
+        "onThe": "",
+        "inMonth": "A wata",
+        "ends": "Yana ƙarewa",
+        "never": "Ba zai taɓa ba",
+        "after": "Bayan",
+        "onDate": "A rana",
+        "occurrences": "sau"
+      }
     },
     "addListForm": {
       "titleCreate": "Ƙirƙiri Sabon Jeri",
@@ -624,7 +708,17 @@
       "taskDistributionLabel": "Kasafin kuɗi",
       "premiumLabel": "Kyauta",
       "totalLabel": "Jimla",
-      "addTaskTitle": "Ƙara aiki"
+      "addTaskTitle": "Ƙara aiki",
+      "editTitle": "Gyara jerin",
+      "visibilityLabel": "Gani",
+      "collaboratorsPlaceholder": "Nemo abokai...",
+      "budgetSourcesLabel": "Kashi na kasafinka:",
+      "noBudgets": "Babu kasafi tukuna — ƙara ɗaya a ƙasa.",
+      "newBudgetName": "Sunan kasafi",
+      "confirmDelete": "Share wannan jerin da duk ayyukansa? Ba za a iya komawa ba.",
+      "delete": "Share",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Ƙirƙiri Sabon Samfurin",
@@ -689,6 +783,36 @@
       "after": "Bayan",
       "pickDate": "Zaɓi kwanan wata",
       "occurrences": "lokuta"
+    },
+    "attachmentPicker": {
+      "browse": "Add files",
+      "dropHere": "Drop files here",
+      "orClick": "or click to choose",
+      "maxReached": "Maximum {max} files",
+      "remove": "Remove",
+      "compress": "Compressing…",
+      "uploading": "Uploading {percent}%",
+      "saving": "Saving…",
+      "usePhotoLocation": "Attach location from this photo?",
+      "locationAttached": "Location attached",
+      "error": {
+        "unsupported": "This file type is not supported",
+        "tooLarge": "This file is too large",
+        "tooLargeAfterCompression": "Still too large after compression",
+        "compressFailed": "Could not compress this file",
+        "compressionUnavailable": "Video compression is unavailable right now",
+        "presignFailed": "Could not start the upload",
+        "uploadFailed": "Upload failed",
+        "saveFailed": "Could not save the attachment",
+        "generic": "Could not add this file"
+      }
+    },
+    "imageCropper": {
+      "title": "Crop image",
+      "apply": "Apply",
+      "cancel": "Cancel",
+      "dragHint": "Drag the image to position it in the frame",
+      "error": "Could not load this image"
     }
   },
   "socialView": {
@@ -897,7 +1021,10 @@
         "submitted": "An ƙaddamar da aiki don bita",
         "resubmitted": "An sake ƙaddamar da aiki don bita"
       }
-    }
+    },
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "An sabunta bayanin kula cikin nasara",
@@ -916,7 +1043,17 @@
       "date": "Kwanan wata",
       "mostRelevant": "Mafi dacewa",
       "all": "Duka"
-    }
+    },
+    "taskTags": "Tagged tasks",
+    "extensions": {
+      "attach": "Attachments",
+      "location": "Location",
+      "people": "Tag people",
+      "lists": "Tag lists",
+      "tasks": "Tag tasks",
+      "events": "Tag events"
+    },
+    "editing": "Editing note"
   },
   "chat": {
     "title": "Hira",
@@ -1020,5 +1157,44 @@
     "FAMILY": "Family",
     "THERAPIST": "Therapist",
     "HOUSEHOLD": "Household"
+  },
+  "notifications": {
+    "types": {
+      "JOB_REQUESTED": "{{actorName}} requested to work on one of your tasks",
+      "JOB_ACCEPTED": "{{actorName}} approved your work request",
+      "JOB_REJECTED": "{{actorName}} declined your work request",
+      "LIST_INVITE": "{{actorName}} added you to a list"
+    }
+  },
+  "components": {
+    "placePicker": {
+      "searchError": "Search failed. Try again.",
+      "detailsError": "Could not load this place.",
+      "geolocationError": "Location is not available on this device.",
+      "invalidCoordinates": "Enter valid latitude and longitude.",
+      "removeLocation": "Remove location",
+      "placeholder": "Search for a place...",
+      "searching": "Searching...",
+      "noResults": "No results found",
+      "resultsLabel": "Place results",
+      "locating": "Locating...",
+      "useCurrentLocation": "Use my current location",
+      "enterCoordinates": "Enter coordinates",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "applyCoordinates": "Apply",
+      "coordinates": "{lat}, {lng}"
+    },
+    "locationMap": {
+      "mapAlt": "Map",
+      "openInMaps": "Open in Maps"
+    },
+    "entityTagPicker": {
+      "searchPlaceholder": "Search",
+      "noResults": "No results found",
+      "removeTag": "Remove tag",
+      "maxTagsReached": "Maximum of 10 tags",
+      "searching": "Searching…"
+    }
   }
 }

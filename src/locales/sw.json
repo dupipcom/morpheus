@@ -61,7 +61,8 @@
     "saving": "Inahifadhi...",
     "decline": "Kataa",
     "friendRequest": "Ombi la urafiki",
-    "reverseOrder": "Geuza mpangilio"
+    "reverseOrder": "Geuza mpangilio",
+    "noFriendRequests": "No friend requests"
   },
   "navigation": {
     "home": "Nyumbani",
@@ -181,12 +182,68 @@
       "ready": "Tayari",
       "open": "Wazi",
       "done": "Imekamilika",
-      "ignored": "Imepuuzwa"
+      "ignored": "Imepuuzwa",
+      "completed": "Completed"
     },
     "edit": "Hariri",
     "loadingForDate": "Inapakia kazi kwa tarehe iliyochaguliwa...",
     "initializingTasks": "Inasanidi kazi zako...",
-    "noTasksForDate": "Hakuna kazi zilizopangwa kwa tarehe hii"
+    "noTasksForDate": "Hakuna kazi zilizopangwa kwa tarehe hii",
+    "delete": "Futa...",
+    "deleteTitle": "Futa kazi",
+    "deleteDescription": "Ni sehemu gani ya kazi hii unataka kufuta?",
+    "deleteScopes": {
+      "today": "Leo tu",
+      "onwards": "Kuanzia leo",
+      "all": "Maingizo yote"
+    },
+    "requestTitle": "Omba kazi",
+    "requestDescription": "Eleza kwa nini unataka kuchukua kazi hii. Mmiliki wa orodha atakagua ombi lako.",
+    "submitTitle": "Wasilisha kazi",
+    "resubmitTitle": "Rekebisha na uwasilishe tena",
+    "submitDescription": "Chapisha uthibitisho wa kazi yako. Hivi karibuni utaweza kuambatisha picha au video.",
+    "reviewTitle": "Kagua kazi",
+    "reviewDescription": "Kubali kazi, omba mabadiliko au ikataa.",
+    "justificationLabel": "Uhalali",
+    "justificationPlaceholder": "Kwa nini ufanye kazi hii?",
+    "evidenceLabel": "Uthibitisho / noti",
+    "evidencePlaceholder": "Eleza ulichofanya...",
+    "selfReviewLabel": "Tathmini binafsi (0-100)",
+    "managerReviewLabel": "Alama ya ukaguzi (0-100)",
+    "reviewNoteLabel": "Maoni (hiari)",
+    "sendRequest": "Tuma ombi",
+    "resubmit": "Wasilisha tena",
+    "submit": "Wasilisha",
+    "accept": "Kubali",
+    "requestChanges": "Omba mabadiliko",
+    "reject": "Kataa",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided.",
+    "cv": {
+      "label": "CV (optional)",
+      "reuseLabel": "Your CVs",
+      "reusePlaceholder": "Reuse a previous CV...",
+      "uploading": "Uploading attachment...",
+      "attachedDocuments": "Attached documents",
+      "attachedCount": "{count} attached document(s)",
+      "attachedNote": "Links to the attached documents will be available with the documents API.",
+      "viewDocument": "View document"
+    },
+    "pastBadge": "Past · {date}",
+    "loadOlder": "Load older tasks",
+    "loadingOlder": "Loading...",
+    "evidenceAttachmentsLabel": "Evidence attachments (photos, videos, documents)",
+    "evidenceAttachmentsUnavailable": "Attachments are available once the job exists.",
+    "review": "Review",
+    "decline": "Decline"
   },
   "settings": {
     "title": "Mipangilio",
@@ -562,7 +619,34 @@
       "addTask": "Ongeza Kazi",
       "cancel": "Ghairi",
       "editTitle": "Hariri kazi",
-      "saveTask": "Hifadhi kazi"
+      "saveTask": "Hifadhi kazi",
+      "premiumLabel": "Ziada (hiari)",
+      "premiumPercentHint": "Asilimia ya bajeti ya orodha",
+      "cadenceLabel": "Inajirudia",
+      "cadence": {
+        "none": "Haijirudii",
+        "daily": "Kila siku",
+        "weekly": "Kila wiki",
+        "monthly": "Kila mwezi",
+        "yearly": "Kila mwaka",
+        "every": "Kila",
+        "day": "siku",
+        "days": "siku",
+        "week": "wiki",
+        "weeks": "wiki",
+        "month": "mwezi",
+        "months": "miezi",
+        "year": "mwaka",
+        "years": "miaka",
+        "onDay": "Siku",
+        "onThe": "",
+        "inMonth": "Mwezini",
+        "ends": "Inaisha",
+        "never": "Kamwe",
+        "after": "Baada ya",
+        "onDate": "Tarehe",
+        "occurrences": "mara"
+      }
     },
     "addListForm": {
       "titleCreate": "Unda Orodha Mpya",
@@ -625,7 +709,17 @@
       "taskDistributionLabel": "Bajeti",
       "premiumLabel": "Tuzo",
       "totalLabel": "Jumla",
-      "addTaskTitle": "Ongeza kazi"
+      "addTaskTitle": "Ongeza kazi",
+      "editTitle": "Hariri orodha",
+      "visibilityLabel": "Mwonekano",
+      "collaboratorsPlaceholder": "Tafuta marafiki...",
+      "budgetSourcesLabel": "Asilimia ya bajeti zako:",
+      "noBudgets": "Hakuna bajeti bado — ongeza moja hapa chini.",
+      "newBudgetName": "Jina la bajeti",
+      "confirmDelete": "Futa orodha hii na kazi zake zote? Haiwezi kutenduliwa.",
+      "delete": "Futa",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Unda Kiolezo Kipya",
@@ -690,6 +784,36 @@
       "after": "Baada ya",
       "pickDate": "Chagua tarehe",
       "occurrences": "mara"
+    },
+    "attachmentPicker": {
+      "browse": "Add files",
+      "dropHere": "Drop files here",
+      "orClick": "or click to choose",
+      "maxReached": "Maximum {max} files",
+      "remove": "Remove",
+      "compress": "Compressing…",
+      "uploading": "Uploading {percent}%",
+      "saving": "Saving…",
+      "usePhotoLocation": "Attach location from this photo?",
+      "locationAttached": "Location attached",
+      "error": {
+        "unsupported": "This file type is not supported",
+        "tooLarge": "This file is too large",
+        "tooLargeAfterCompression": "Still too large after compression",
+        "compressFailed": "Could not compress this file",
+        "compressionUnavailable": "Video compression is unavailable right now",
+        "presignFailed": "Could not start the upload",
+        "uploadFailed": "Upload failed",
+        "saveFailed": "Could not save the attachment",
+        "generic": "Could not add this file"
+      }
+    },
+    "imageCropper": {
+      "title": "Crop image",
+      "apply": "Apply",
+      "cancel": "Cancel",
+      "dragHint": "Drag the image to position it in the frame",
+      "error": "Could not load this image"
     }
   },
   "socialView": {
@@ -898,7 +1022,10 @@
         "submitted": "Kazi imewasilishwa kwa ukaguzi",
         "resubmitted": "Kazi imewasilishwa tena kwa ukaguzi"
       }
-    }
+    },
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "Dokezo limesasishwa kwa mafanikio",
@@ -917,7 +1044,17 @@
       "date": "Tarehe",
       "mostRelevant": "Inayohusiana zaidi",
       "all": "Zote"
-    }
+    },
+    "taskTags": "Tagged tasks",
+    "extensions": {
+      "attach": "Attachments",
+      "location": "Location",
+      "people": "Tag people",
+      "lists": "Tag lists",
+      "tasks": "Tag tasks",
+      "events": "Tag events"
+    },
+    "editing": "Editing note"
   },
   "chat": {
     "title": "Mazungumzo",
@@ -1021,5 +1158,44 @@
     "FAMILY": "Family",
     "THERAPIST": "Therapist",
     "HOUSEHOLD": "Household"
+  },
+  "notifications": {
+    "types": {
+      "JOB_REQUESTED": "{{actorName}} requested to work on one of your tasks",
+      "JOB_ACCEPTED": "{{actorName}} approved your work request",
+      "JOB_REJECTED": "{{actorName}} declined your work request",
+      "LIST_INVITE": "{{actorName}} added you to a list"
+    }
+  },
+  "components": {
+    "placePicker": {
+      "searchError": "Search failed. Try again.",
+      "detailsError": "Could not load this place.",
+      "geolocationError": "Location is not available on this device.",
+      "invalidCoordinates": "Enter valid latitude and longitude.",
+      "removeLocation": "Remove location",
+      "placeholder": "Search for a place...",
+      "searching": "Searching...",
+      "noResults": "No results found",
+      "resultsLabel": "Place results",
+      "locating": "Locating...",
+      "useCurrentLocation": "Use my current location",
+      "enterCoordinates": "Enter coordinates",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "applyCoordinates": "Apply",
+      "coordinates": "{lat}, {lng}"
+    },
+    "locationMap": {
+      "mapAlt": "Map",
+      "openInMaps": "Open in Maps"
+    },
+    "entityTagPicker": {
+      "searchPlaceholder": "Search",
+      "noResults": "No results found",
+      "removeTag": "Remove tag",
+      "maxTagsReached": "Maximum of 10 tags",
+      "searching": "Searching…"
+    }
   }
 }

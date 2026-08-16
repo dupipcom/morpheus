@@ -13,6 +13,7 @@ import { GlobalContext } from '@/lib/contexts'
 import { useI18n } from '@/lib/contexts/i18n'
 import { cn } from '@/lib/utils/utils'
 import { getWeekNumber } from '@/app/helpers'
+import { formatDateForLocale } from '@/lib/utils/date'
 
 interface DatePickerButtonProps {
   /**
@@ -61,11 +62,11 @@ export const DatePickerButton = ({
       
       // For weekly lists, show week number
       if (role && role.startsWith('weekly.')) {
-        const [, weekNum] = getWeekNumber(date)
+        const { week: weekNum } = getWeekNumber(date)
         return `Week ${weekNum}, ${date.getFullYear()}`
       }
-      
-      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+
+      return formatDateForLocale(date, 'en-US')
     }
   }, [customFormatDate, role, t])
 

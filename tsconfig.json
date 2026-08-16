@@ -22,7 +22,8 @@
     "paths": {
       "@/generated/*": ["./generated/*"],
       "@/*": ["./src/*"],
-      "@/views/*": ["./src/views/*"]
+      "@/views/*": ["./src/views/*"],
+      "@/generated/*": ["./generated/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

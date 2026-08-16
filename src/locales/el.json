@@ -61,7 +61,8 @@
     "saving": "Αποθήκευση...",
     "decline": "Απόρριψη",
     "friendRequest": "Αίτημα φιλίας",
-    "reverseOrder": "Αντίστροφη σειρά"
+    "reverseOrder": "Αντίστροφη σειρά",
+    "noFriendRequests": "No friend requests"
   },
   "navigation": {
     "home": "Αρχική",
@@ -181,12 +182,68 @@
       "ready": "Έτοιμο",
       "open": "Ανοιχτό",
       "done": "Ολοκληρώθηκε",
-      "ignored": "Αγνοήθηκε"
+      "ignored": "Αγνοήθηκε",
+      "completed": "Completed"
     },
     "edit": "Επεξεργασία",
     "loadingForDate": "Φόρτωση εργασιών για την επιλεγμένη ημερομηνία...",
     "initializingTasks": "Ρύθμιση των εργασιών σας...",
-    "noTasksForDate": "Δεν υπάρχουν εργασίες προγραμματισμένες για αυτήν την ημερομηνία"
+    "noTasksForDate": "Δεν υπάρχουν εργασίες προγραμματισμένες για αυτήν την ημερομηνία",
+    "delete": "Διαγραφή...",
+    "deleteTitle": "Διαγραφή εργασίας",
+    "deleteDescription": "Πόσο από αυτή την εργασία θέλεις να διαγράψεις;",
+    "deleteScopes": {
+      "today": "Μόνο σήμερα",
+      "onwards": "Από σήμερα και μετά",
+      "all": "Όλες οι καταχωρήσεις"
+    },
+    "requestTitle": "Αίτημα για εργασία",
+    "requestDescription": "Εξήγησε γιατί θέλεις να αναλάβεις αυτή την εργασία. Ο κάτοχος της λίστας θα εξετάσει το αίτημά σου.",
+    "submitTitle": "Υποβολή εργασίας",
+    "resubmitTitle": "Αναθεώρηση και εκ νέου υποβολή",
+    "submitDescription": "Δημοσίευσε αποδεικτικό της εργασίας σου. Σύντομα θα μπορείς να επισυνάψεις φωτογραφία ή βίντεο.",
+    "reviewTitle": "Έλεγχος εργασίας",
+    "reviewDescription": "Αποδέξου την εργασία, ζήτησε αλλαγές ή απόρριψέ την.",
+    "justificationLabel": "Αιτιολόγηση",
+    "justificationPlaceholder": "Γιατί πρέπει να κάνεις αυτή την εργασία;",
+    "evidenceLabel": "Αποδεικτικό / σημείωση",
+    "evidencePlaceholder": "Περίγραψε τι έκανες...",
+    "selfReviewLabel": "Αυτοαξιολόγηση (0-100)",
+    "managerReviewLabel": "Βαθμολογία ελέγχου (0-100)",
+    "reviewNoteLabel": "Σχόλια (προαιρετικά)",
+    "sendRequest": "Αποστολή αιτήματος",
+    "resubmit": "Εκ νέου υποβολή",
+    "submit": "Υποβολή",
+    "accept": "Αποδοχή",
+    "requestChanges": "Αίτημα αλλαγών",
+    "reject": "Απόρριψη",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided.",
+    "cv": {
+      "label": "CV (optional)",
+      "reuseLabel": "Your CVs",
+      "reusePlaceholder": "Reuse a previous CV...",
+      "uploading": "Uploading attachment...",
+      "attachedDocuments": "Attached documents",
+      "attachedCount": "{count} attached document(s)",
+      "attachedNote": "Links to the attached documents will be available with the documents API.",
+      "viewDocument": "View document"
+    },
+    "pastBadge": "Past · {date}",
+    "loadOlder": "Load older tasks",
+    "loadingOlder": "Loading...",
+    "evidenceAttachmentsLabel": "Evidence attachments (photos, videos, documents)",
+    "evidenceAttachmentsUnavailable": "Attachments are available once the job exists.",
+    "review": "Review",
+    "decline": "Decline"
   },
   "actions": {
     "drankWater": "Έπινε νερό",
@@ -544,7 +601,34 @@
       "addTask": "Προσθήκη Εργασίας",
       "cancel": "Ακύρωση",
       "editTitle": "Επεξεργασία εργασίας",
-      "saveTask": "Αποθήκευση εργασίας"
+      "saveTask": "Αποθήκευση εργασίας",
+      "premiumLabel": "Πριμ (προαιρετικό)",
+      "premiumPercentHint": "Ποσοστό του προϋπολογισμού της λίστας",
+      "cadenceLabel": "Επαναλαμβάνεται",
+      "cadence": {
+        "none": "Δεν επαναλαμβάνεται",
+        "daily": "Καθημερινά",
+        "weekly": "Εβδομαδιαία",
+        "monthly": "Μηνιαία",
+        "yearly": "Ετήσια",
+        "every": "Κάθε",
+        "day": "ημέρα",
+        "days": "ημέρες",
+        "week": "εβδομάδα",
+        "weeks": "εβδομάδες",
+        "month": "μήνα",
+        "months": "μήνες",
+        "year": "χρόνο",
+        "years": "χρόνια",
+        "onDay": "Την ημέρα",
+        "onThe": "Τον/Την",
+        "inMonth": "Τον μήνα",
+        "ends": "Λήγει",
+        "never": "Ποτέ",
+        "after": "Μετά από",
+        "onDate": "Σε ημερομηνία",
+        "occurrences": "φορές"
+      }
     },
     "addListForm": {
       "titleCreate": "Δημιουργία Νέας Λίστας",
@@ -607,7 +691,17 @@
       "taskDistributionLabel": "Προϋπολογισμός",
       "premiumLabel": "Βραβείο",
       "totalLabel": "Σύνολο",
-      "addTaskTitle": "Προσθήκη εργασίας"
+      "addTaskTitle": "Προσθήκη εργασίας",
+      "editTitle": "Επεξεργασία λίστας",
+      "visibilityLabel": "Ορατότητα",
+      "collaboratorsPlaceholder": "Αναζήτηση φίλων...",
+      "budgetSourcesLabel": "Ποσοστό των προϋπολογισμών σου:",
+      "noBudgets": "Δεν υπάρχουν ακόμη προϋπολογισμοί — πρόσθεσε έναν παρακάτω.",
+      "newBudgetName": "Όνομα προϋπολογισμού",
+      "confirmDelete": "Διαγραφή αυτής της λίστας και όλων των εργασιών της; Δεν μπορεί να αναιρεθεί.",
+      "delete": "Διαγραφή",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Δημιουργία Νέου Προτύπου",
@@ -672,6 +766,36 @@
       "after": "Μετά",
       "pickDate": "Επιλέξτε ημερομηνία",
       "occurrences": "επαναλήψεις"
+    },
+    "attachmentPicker": {
+      "browse": "Add files",
+      "dropHere": "Drop files here",
+      "orClick": "or click to choose",
+      "maxReached": "Maximum {max} files",
+      "remove": "Remove",
+      "compress": "Compressing…",
+      "uploading": "Uploading {percent}%",
+      "saving": "Saving…",
+      "usePhotoLocation": "Attach location from this photo?",
+      "locationAttached": "Location attached",
+      "error": {
+        "unsupported": "This file type is not supported",
+        "tooLarge": "This file is too large",
+        "tooLargeAfterCompression": "Still too large after compression",
+        "compressFailed": "Could not compress this file",
+        "compressionUnavailable": "Video compression is unavailable right now",
+        "presignFailed": "Could not start the upload",
+        "uploadFailed": "Upload failed",
+        "saveFailed": "Could not save the attachment",
+        "generic": "Could not add this file"
+      }
+    },
+    "imageCropper": {
+      "title": "Crop image",
+      "apply": "Apply",
+      "cancel": "Cancel",
+      "dragHint": "Drag the image to position it in the frame",
+      "error": "Could not load this image"
     }
   },
   "charts": {
@@ -897,7 +1021,10 @@
         "submitted": "Η εργασία υποβλήθηκε για έλεγχο",
         "resubmitted": "Η εργασία επανυποβλήθηκε για έλεγχο"
       }
-    }
+    },
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "Η σημείωση ενημερώθηκε επιτυχώς",
@@ -916,7 +1043,17 @@
       "date": "Ημερομηνία",
       "mostRelevant": "Πιο σχετικό",
       "all": "Όλα"
-    }
+    },
+    "taskTags": "Tagged tasks",
+    "extensions": {
+      "attach": "Attachments",
+      "location": "Location",
+      "people": "Tag people",
+      "lists": "Tag lists",
+      "tasks": "Tag tasks",
+      "events": "Tag events"
+    },
+    "editing": "Editing note"
   },
   "chat": {
     "title": "Συνομιλία",
@@ -1020,5 +1157,44 @@
     "FAMILY": "Family",
     "THERAPIST": "Therapist",
     "HOUSEHOLD": "Household"
+  },
+  "notifications": {
+    "types": {
+      "JOB_REQUESTED": "{{actorName}} requested to work on one of your tasks",
+      "JOB_ACCEPTED": "{{actorName}} approved your work request",
+      "JOB_REJECTED": "{{actorName}} declined your work request",
+      "LIST_INVITE": "{{actorName}} added you to a list"
+    }
+  },
+  "components": {
+    "placePicker": {
+      "searchError": "Search failed. Try again.",
+      "detailsError": "Could not load this place.",
+      "geolocationError": "Location is not available on this device.",
+      "invalidCoordinates": "Enter valid latitude and longitude.",
+      "removeLocation": "Remove location",
+      "placeholder": "Search for a place...",
+      "searching": "Searching...",
+      "noResults": "No results found",
+      "resultsLabel": "Place results",
+      "locating": "Locating...",
+      "useCurrentLocation": "Use my current location",
+      "enterCoordinates": "Enter coordinates",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "applyCoordinates": "Apply",
+      "coordinates": "{lat}, {lng}"
+    },
+    "locationMap": {
+      "mapAlt": "Map",
+      "openInMaps": "Open in Maps"
+    },
+    "entityTagPicker": {
+      "searchPlaceholder": "Search",
+      "noResults": "No results found",
+      "removeTag": "Remove tag",
+      "maxTagsReached": "Maximum of 10 tags",
+      "searching": "Searching…"
+    }
   }
 }

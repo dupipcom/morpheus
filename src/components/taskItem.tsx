@@ -33,6 +33,8 @@ interface TaskItemProps {
   userJobStatus?: JobStatus | null
   isCurrentUserWorker?: boolean
   isPendingRequest?: boolean
+  /** Shown as a badge when the card represents a past occurrence (e.g. "Past · 2026-08-10") */
+  dateBadge?: string
 }
 
 // Get job status badge configuration
@@ -95,19 +97,20 @@ export const TaskItem = ({
   userJobStatus,
   isCurrentUserWorker = false,
   isPendingRequest = false,
+  dateBadge,
 }: TaskItemProps) => {
   const key = task?.id || task?.localeKey || task?.name
-  const isDone = taskStatus === 'done' || taskStatus === 'completed' || (task?.count || 0) >= (task?.times || 1)
-  const earnings = (typeof taskEarningsProp === 'number')
-    ? taskEarningsProp
-    : (task?.earnings ?? task?.budget ?? 0)
+  const dateCount = task?.dateCount ?? 0
+  const isDone = taskStatus === 'done' || taskStatus === 'completed' || (task?.times || 0) > 0 && dateCount >= (task?.times || 1)
+  const earnings = typeof taskEarningsProp === 'number' ? taskEarningsProp : 0
 
   const premium = (typeof taskPremiumProp === 'number')
     ? taskPremiumProp
     : (task?.premium ?? 0)
 
-  const totalGains = (earnings || 0) + (premium || 0)
-  const displayedTotalGains = typeof taskTotalGains === 'number' ? taskTotalGains : totalGains
+  const displayedTotalGains = typeof taskTotalGains === 'number'
+    ? taskTotalGains
+    : (task?.totalGains ?? premium)
 
   return (
     <div key={`task__item--${key}`} className={`flex flex-col w-full ${className}`}>
@@ -126,7 +129,7 @@ export const TaskItem = ({
           align="start"
         />
         <span className="flex-1 text-left">
-          {task.times > 1 ? `${task.count || 0}/${task.times} ` : ''}
+          {task.times > 1 ? `${dateCount}/${task.times} ` : ''}
           {(task?.redacted === true && !revealRedacted) ? '·····' : (task.displayName || task.name)}
         </span>
         {/* Show premium badge if there's budget allocated */}
@@ -139,6 +142,12 @@ export const TaskItem = ({
 
       {/* Status Badges Section - appears below button */}
       <div className="flex flex-col gap-1 mt-1.5 pl-1">
+        {/* Past-occurrence date badge */}
+        {dateBadge && (
+          <Badge variant="secondary" className="w-fit bg-muted text-muted-foreground border-muted">
+            {dateBadge}
+          </Badge>
+        )}
         {/* Completer badge for completed tasks */}
         {showCompleterBadge && isDone && hasCollaborators && completerName && (
           <Badge variant="secondary" className="w-fit bg-muted text-muted-foreground border-muted">

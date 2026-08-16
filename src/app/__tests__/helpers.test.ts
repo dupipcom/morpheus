@@ -42,16 +42,16 @@ test('getWeekDateRange handles week 1 of year', () => {
   assert.equal(getWeekDateRange(2024, 1), 'Jan 1–7')
 })
 
-test('getWeekNumber returns [isoYear, weekNumber] tuple', () => {
+test('getWeekNumber returns { week, year } object', () => {
   // Apr 8, 2024 is in ISO week 15 of 2024
-  const [year, week] = getWeekNumber(new Date('2024-04-08'))
+  const { year, week } = getWeekNumber(new Date('2024-04-08'))
   assert.equal(year, 2024)
   assert.equal(week, 15)
 })
 
 test('getWeekNumber returns correct ISO year for late-December date in next year week', () => {
   // Dec 30, 2024 falls in ISO week 1 of 2025
-  const [year, week] = getWeekNumber(new Date('2024-12-30'))
+  const { year, week } = getWeekNumber(new Date('2024-12-30'))
   assert.equal(year, 2025)
   assert.equal(week, 1)
 })

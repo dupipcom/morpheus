@@ -61,7 +61,8 @@
     "saving": "Ukládání...",
     "decline": "Odmítnout",
     "friendRequest": "Žádost o přátelství",
-    "reverseOrder": "Obrátit pořadí"
+    "reverseOrder": "Obrátit pořadí",
+    "noFriendRequests": "No friend requests"
   },
   "navigation": {
     "home": "Domů",
@@ -181,12 +182,68 @@
       "ready": "Připraveno",
       "open": "Otevřeno",
       "done": "Hotovo",
-      "ignored": "Ignorováno"
+      "ignored": "Ignorováno",
+      "completed": "Completed"
     },
     "edit": "Upravit",
     "loadingForDate": "Načítání úkolů pro vybrané datum...",
     "initializingTasks": "Nastavování vašich úkolů...",
-    "noTasksForDate": "Pro toto datum nejsou naplánované žádné úkoly"
+    "noTasksForDate": "Pro toto datum nejsou naplánované žádné úkoly",
+    "delete": "Smazat...",
+    "deleteTitle": "Smazat úkol",
+    "deleteDescription": "Kolik z tohoto úkolu chcete smazat?",
+    "deleteScopes": {
+      "today": "Pouze dnes",
+      "onwards": "Od dneška dále",
+      "all": "Všechny záznamy"
+    },
+    "requestTitle": "Požádat o práci",
+    "requestDescription": "Vysvětlete, proč chcete tento úkol vzít. Vlastník seznamu žádost zkontroluje.",
+    "submitTitle": "Odevzdat práci",
+    "resubmitTitle": "Upravit a znovu odevzdat",
+    "submitDescription": "Zveřejněte důkaz o své práci. Brzy bude možné připojit fotografii nebo video.",
+    "reviewTitle": "Zkontrolovat práci",
+    "reviewDescription": "Přijměte práci, požádejte o změny nebo ji odmítněte.",
+    "justificationLabel": "Zdůvodnění",
+    "justificationPlaceholder": "Proč byste měli tento úkol dělat?",
+    "evidenceLabel": "Důkaz / poznámka",
+    "evidencePlaceholder": "Popište, co jste udělali...",
+    "selfReviewLabel": "Sebehodnocení (0-100)",
+    "managerReviewLabel": "Hodnocení kontroly (0-100)",
+    "reviewNoteLabel": "Zpětná vazba (volitelné)",
+    "sendRequest": "Odeslat žádost",
+    "resubmit": "Znovu odevzdat",
+    "submit": "Odevzdat",
+    "accept": "Přijmout",
+    "requestChanges": "Požádat o změny",
+    "reject": "Odmítnout",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided.",
+    "cv": {
+      "label": "CV (optional)",
+      "reuseLabel": "Your CVs",
+      "reusePlaceholder": "Reuse a previous CV...",
+      "uploading": "Uploading attachment...",
+      "attachedDocuments": "Attached documents",
+      "attachedCount": "{count} attached document(s)",
+      "attachedNote": "Links to the attached documents will be available with the documents API.",
+      "viewDocument": "View document"
+    },
+    "pastBadge": "Past · {date}",
+    "loadOlder": "Load older tasks",
+    "loadingOlder": "Loading...",
+    "evidenceAttachmentsLabel": "Evidence attachments (photos, videos, documents)",
+    "evidenceAttachmentsUnavailable": "Attachments are available once the job exists.",
+    "review": "Review",
+    "decline": "Decline"
   },
   "actions": {
     "drankWater": "Vypil vodu",
@@ -547,7 +604,34 @@
       "addTask": "Přidat úkol",
       "cancel": "Zrušit",
       "editTitle": "Upravit úkol",
-      "saveTask": "Uložit úkol"
+      "saveTask": "Uložit úkol",
+      "premiumLabel": "Prémie (volitelné)",
+      "premiumPercentHint": "Procento z rozpočtu seznamu",
+      "cadenceLabel": "Opakuje se",
+      "cadence": {
+        "none": "Neopakuje se",
+        "daily": "Denně",
+        "weekly": "Týdně",
+        "monthly": "Měsíčně",
+        "yearly": "Ročně",
+        "every": "Každý/každé",
+        "day": "den",
+        "days": "dny",
+        "week": "týden",
+        "weeks": "týdny",
+        "month": "měsíc",
+        "months": "měsíce",
+        "year": "rok",
+        "years": "roky",
+        "onDay": "V den",
+        "onThe": "",
+        "inMonth": "V měsíci",
+        "ends": "Končí",
+        "never": "Nikdy",
+        "after": "Po",
+        "onDate": "K datu",
+        "occurrences": "opakování"
+      }
     },
     "addListForm": {
       "titleCreate": "Vytvořit nový seznam",
@@ -610,7 +694,17 @@
       "taskDistributionLabel": "Rozpočet",
       "premiumLabel": "Cena",
       "totalLabel": "Celkem",
-      "addTaskTitle": "Přidat úkol"
+      "addTaskTitle": "Přidat úkol",
+      "editTitle": "Upravit seznam",
+      "visibilityLabel": "Viditelnost",
+      "collaboratorsPlaceholder": "Hledat přátele...",
+      "budgetSourcesLabel": "Procento z vašich rozpočtů:",
+      "noBudgets": "Zatím žádné rozpočty — přidejte jeden níže.",
+      "newBudgetName": "Název rozpočtu",
+      "confirmDelete": "Smazat tento seznam a všechny jeho úkoly? Nelze vrátit zpět.",
+      "delete": "Smazat",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Vytvořit novou šablonu",
@@ -675,6 +769,36 @@
       "after": "Po",
       "pickDate": "Vyberte datum",
       "occurrences": "opakování"
+    },
+    "attachmentPicker": {
+      "browse": "Add files",
+      "dropHere": "Drop files here",
+      "orClick": "or click to choose",
+      "maxReached": "Maximum {max} files",
+      "remove": "Remove",
+      "compress": "Compressing…",
+      "uploading": "Uploading {percent}%",
+      "saving": "Saving…",
+      "usePhotoLocation": "Attach location from this photo?",
+      "locationAttached": "Location attached",
+      "error": {
+        "unsupported": "This file type is not supported",
+        "tooLarge": "This file is too large",
+        "tooLargeAfterCompression": "Still too large after compression",
+        "compressFailed": "Could not compress this file",
+        "compressionUnavailable": "Video compression is unavailable right now",
+        "presignFailed": "Could not start the upload",
+        "uploadFailed": "Upload failed",
+        "saveFailed": "Could not save the attachment",
+        "generic": "Could not add this file"
+      }
+    },
+    "imageCropper": {
+      "title": "Crop image",
+      "apply": "Apply",
+      "cancel": "Cancel",
+      "dragHint": "Drag the image to position it in the frame",
+      "error": "Could not load this image"
     }
   },
   "charts": {
@@ -900,7 +1024,10 @@
         "submitted": "Práce odeslána k posouzení",
         "resubmitted": "Práce znovu odeslána k posouzení"
       }
-    }
+    },
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "Poznámka úspěšně aktualizována",
@@ -919,7 +1046,17 @@
       "date": "Datum",
       "mostRelevant": "Nejrelevantnější",
       "all": "Vše"
-    }
+    },
+    "taskTags": "Tagged tasks",
+    "extensions": {
+      "attach": "Attachments",
+      "location": "Location",
+      "people": "Tag people",
+      "lists": "Tag lists",
+      "tasks": "Tag tasks",
+      "events": "Tag events"
+    },
+    "editing": "Editing note"
   },
   "chat": {
     "title": "Konverzace",
@@ -1023,5 +1160,44 @@
     "FAMILY": "Family",
     "THERAPIST": "Therapist",
     "HOUSEHOLD": "Household"
+  },
+  "notifications": {
+    "types": {
+      "JOB_REQUESTED": "{{actorName}} requested to work on one of your tasks",
+      "JOB_ACCEPTED": "{{actorName}} approved your work request",
+      "JOB_REJECTED": "{{actorName}} declined your work request",
+      "LIST_INVITE": "{{actorName}} added you to a list"
+    }
+  },
+  "components": {
+    "placePicker": {
+      "searchError": "Search failed. Try again.",
+      "detailsError": "Could not load this place.",
+      "geolocationError": "Location is not available on this device.",
+      "invalidCoordinates": "Enter valid latitude and longitude.",
+      "removeLocation": "Remove location",
+      "placeholder": "Search for a place...",
+      "searching": "Searching...",
+      "noResults": "No results found",
+      "resultsLabel": "Place results",
+      "locating": "Locating...",
+      "useCurrentLocation": "Use my current location",
+      "enterCoordinates": "Enter coordinates",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "applyCoordinates": "Apply",
+      "coordinates": "{lat}, {lng}"
+    },
+    "locationMap": {
+      "mapAlt": "Map",
+      "openInMaps": "Open in Maps"
+    },
+    "entityTagPicker": {
+      "searchPlaceholder": "Search",
+      "noResults": "No results found",
+      "removeTag": "Remove tag",
+      "maxTagsReached": "Maximum of 10 tags",
+      "searching": "Searching…"
+    }
   }
 }

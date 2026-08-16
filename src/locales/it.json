@@ -61,7 +61,8 @@
     "saving": "Salvataggio...",
     "decline": "Rifiuta",
     "friendRequest": "Richiesta di amicizia",
-    "reverseOrder": "Ordine inverso"
+    "reverseOrder": "Ordine inverso",
+    "noFriendRequests": "No friend requests"
   },
   "navigation": {
     "home": "Inizio",
@@ -181,12 +182,68 @@
       "ready": "Pronto",
       "open": "Aperto",
       "done": "Completato",
-      "ignored": "Ignorato"
+      "ignored": "Ignorato",
+      "completed": "Completed"
     },
     "edit": "Modifica",
     "loadingForDate": "Caricamento attività per la data selezionata...",
     "initializingTasks": "Configurazione delle tue attività...",
-    "noTasksForDate": "Nessuna attività programmata per questa data"
+    "noTasksForDate": "Nessuna attività programmata per questa data",
+    "delete": "Elimina...",
+    "deleteTitle": "Elimina attività",
+    "deleteDescription": "Quanto di questa attività vuoi eliminare?",
+    "deleteScopes": {
+      "today": "Solo oggi",
+      "onwards": "Da oggi in poi",
+      "all": "Tutte le voci"
+    },
+    "requestTitle": "Richiedi lavoro",
+    "requestDescription": "Spiega perché vuoi occuparti di questa attività. Il proprietario esaminerà la tua richiesta.",
+    "submitTitle": "Consegna il lavoro",
+    "resubmitTitle": "Correggi e riconsegna",
+    "submitDescription": "Pubblica una prova del tuo lavoro. Presto potrai allegare una foto o un video.",
+    "reviewTitle": "Esamina il lavoro",
+    "reviewDescription": "Accetta il lavoro, richiedi modifiche o rifiutalo.",
+    "justificationLabel": "Giustificazione",
+    "justificationPlaceholder": "Perché dovresti svolgere questa attività?",
+    "evidenceLabel": "Prova / nota",
+    "evidencePlaceholder": "Descrivi cosa hai fatto...",
+    "selfReviewLabel": "Autovalutazione (0-100)",
+    "managerReviewLabel": "Punteggio di revisione (0-100)",
+    "reviewNoteLabel": "Commenti (facoltativo)",
+    "sendRequest": "Invia richiesta",
+    "resubmit": "Riconsegna",
+    "submit": "Consegna",
+    "accept": "Accetta",
+    "requestChanges": "Richiedi modifiche",
+    "reject": "Rifiuta",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided.",
+    "cv": {
+      "label": "CV (optional)",
+      "reuseLabel": "Your CVs",
+      "reusePlaceholder": "Reuse a previous CV...",
+      "uploading": "Uploading attachment...",
+      "attachedDocuments": "Attached documents",
+      "attachedCount": "{count} attached document(s)",
+      "attachedNote": "Links to the attached documents will be available with the documents API.",
+      "viewDocument": "View document"
+    },
+    "pastBadge": "Past · {date}",
+    "loadOlder": "Load older tasks",
+    "loadingOlder": "Loading...",
+    "evidenceAttachmentsLabel": "Evidence attachments (photos, videos, documents)",
+    "evidenceAttachmentsUnavailable": "Attachments are available once the job exists.",
+    "review": "Review",
+    "decline": "Decline"
   },
   "settings": {
     "title": "Impostazioni",
@@ -564,7 +621,34 @@
       "addTask": "Aggiungi Attività",
       "cancel": "Annulla",
       "editTitle": "Modifica attività",
-      "saveTask": "Salva attività"
+      "saveTask": "Salva attività",
+      "premiumLabel": "Premio (facoltativo)",
+      "premiumPercentHint": "Percentuale del budget della lista",
+      "cadenceLabel": "Si ripete",
+      "cadence": {
+        "none": "Non si ripete",
+        "daily": "Ogni giorno",
+        "weekly": "Ogni settimana",
+        "monthly": "Ogni mese",
+        "yearly": "Ogni anno",
+        "every": "Ogni",
+        "day": "giorno",
+        "days": "giorni",
+        "week": "settimana",
+        "weeks": "settimane",
+        "month": "mese",
+        "months": "mesi",
+        "year": "anno",
+        "years": "anni",
+        "onDay": "Il giorno",
+        "onThe": "Il",
+        "inMonth": "Nel mese",
+        "ends": "Termina",
+        "never": "Mai",
+        "after": "Dopo",
+        "onDate": "Alla data",
+        "occurrences": "volte"
+      }
     },
     "addListForm": {
       "titleCreate": "Crea Nuovo Elenco",
@@ -627,7 +711,17 @@
       "taskDistributionLabel": "Budget",
       "premiumLabel": "Premio",
       "totalLabel": "Totale",
-      "addTaskTitle": "Aggiungi attività"
+      "addTaskTitle": "Aggiungi attività",
+      "editTitle": "Modifica lista",
+      "visibilityLabel": "Visibilità",
+      "collaboratorsPlaceholder": "Cerca amici...",
+      "budgetSourcesLabel": "Percentuale dei tuoi budget:",
+      "noBudgets": "Nessun budget ancora — aggiungine uno qui sotto.",
+      "newBudgetName": "Nome del budget",
+      "confirmDelete": "Eliminare questa lista e tutte le sue attività? Non si può annullare.",
+      "delete": "Elimina",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Crea Nuovo Modello",
@@ -692,6 +786,36 @@
       "after": "Dopo",
       "pickDate": "Scegli una data",
       "occurrences": "occorrenze"
+    },
+    "attachmentPicker": {
+      "browse": "Add files",
+      "dropHere": "Drop files here",
+      "orClick": "or click to choose",
+      "maxReached": "Maximum {max} files",
+      "remove": "Remove",
+      "compress": "Compressing…",
+      "uploading": "Uploading {percent}%",
+      "saving": "Saving…",
+      "usePhotoLocation": "Attach location from this photo?",
+      "locationAttached": "Location attached",
+      "error": {
+        "unsupported": "This file type is not supported",
+        "tooLarge": "This file is too large",
+        "tooLargeAfterCompression": "Still too large after compression",
+        "compressFailed": "Could not compress this file",
+        "compressionUnavailable": "Video compression is unavailable right now",
+        "presignFailed": "Could not start the upload",
+        "uploadFailed": "Upload failed",
+        "saveFailed": "Could not save the attachment",
+        "generic": "Could not add this file"
+      }
+    },
+    "imageCropper": {
+      "title": "Crop image",
+      "apply": "Apply",
+      "cancel": "Cancel",
+      "dragHint": "Drag the image to position it in the frame",
+      "error": "Could not load this image"
     }
   },
   "socialView": {
@@ -900,7 +1024,10 @@
         "submitted": "Lavoro inviato per revisione",
         "resubmitted": "Lavoro inviato nuovamente per revisione"
       }
-    }
+    },
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "Nota aggiornata con successo",
@@ -919,7 +1046,17 @@
       "date": "Data",
       "mostRelevant": "Più rilevante",
       "all": "Tutti"
-    }
+    },
+    "taskTags": "Tagged tasks",
+    "extensions": {
+      "attach": "Attachments",
+      "location": "Location",
+      "people": "Tag people",
+      "lists": "Tag lists",
+      "tasks": "Tag tasks",
+      "events": "Tag events"
+    },
+    "editing": "Editing note"
   },
   "chat": {
     "title": "Conversazione",
@@ -1023,5 +1160,44 @@
     "FAMILY": "Family",
     "THERAPIST": "Therapist",
     "HOUSEHOLD": "Household"
+  },
+  "notifications": {
+    "types": {
+      "JOB_REQUESTED": "{{actorName}} requested to work on one of your tasks",
+      "JOB_ACCEPTED": "{{actorName}} approved your work request",
+      "JOB_REJECTED": "{{actorName}} declined your work request",
+      "LIST_INVITE": "{{actorName}} added you to a list"
+    }
+  },
+  "components": {
+    "placePicker": {
+      "searchError": "Search failed. Try again.",
+      "detailsError": "Could not load this place.",
+      "geolocationError": "Location is not available on this device.",
+      "invalidCoordinates": "Enter valid latitude and longitude.",
+      "removeLocation": "Remove location",
+      "placeholder": "Search for a place...",
+      "searching": "Searching...",
+      "noResults": "No results found",
+      "resultsLabel": "Place results",
+      "locating": "Locating...",
+      "useCurrentLocation": "Use my current location",
+      "enterCoordinates": "Enter coordinates",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "applyCoordinates": "Apply",
+      "coordinates": "{lat}, {lng}"
+    },
+    "locationMap": {
+      "mapAlt": "Map",
+      "openInMaps": "Open in Maps"
+    },
+    "entityTagPicker": {
+      "searchPlaceholder": "Search",
+      "noResults": "No results found",
+      "removeTag": "Remove tag",
+      "maxTagsReached": "Maximum of 10 tags",
+      "searching": "Searching…"
+    }
   }
 }

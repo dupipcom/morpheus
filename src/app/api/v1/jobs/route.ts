@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
+import { ApiError, toResponse } from '@/lib/services/errors'
+import { getViewerRole } from '@/lib/services/ownership'
 import { updateTaskOccurrenceDates } from '@/lib/services/task'
 import { updateDayProgress } from '@/lib/services/day'
 import { formatDateLocal } from '@/lib/utils/taskUtils'
+import { sanitizeText } from '@/lib/utils/sanitize'
 import { calculateAndApplyJobEarnings, initializeJobInvoice, updateJobWithTaskValues } from '@/lib/services/job/earningsService'
+import { notifyUser } from '@/lib/services/notification'
 import type { ListUser } from '@/lib/services/job/types'
 
 // Standard job include clause for consistent responses
@@ -36,18 +40,6 @@ const JOB_INCLUDE = {
 // Valid roles for job creation and viewing
 const JOB_CREATION_ROLES = ['OWNER', 'MANAGER', 'COLLABORATOR']
 const JOB_VIEW_ROLES = ['OWNER', 'MANAGER', 'COLLABORATOR', 'FOLLOWER']
-
-// Helper function to get user's role in a list
-async function getUserListRole(userId: string, listId: string): Promise<string | null> {
-  const list = await prisma.list.findUnique({
-    where: { id: listId },
-    select: { users: true }
-  })
-
-  if (!list) return null
-  const userRef = list.users.find((ref: any) => ref.userId === userId)
-  return userRef?.role || null
-}
 
 // Build where clause from search params
 function buildJobWhereClause(searchParams: URLSearchParams): Record<string, any> {
@@ -151,6 +143,9 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ jobs: processedJobs })
   } catch (error) {
+    if (error instanceof ApiError) {
+      return toResponse(error)
+    }
     console.error('Error fetching jobs:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
@@ -169,7 +164,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { taskId, listId, workerId, status, occurrenceDate, selfReview, peerReview, managerReview, reviewerIds, reviewersNoteIds } = body
+    const { taskId, listId, workerId, status, occurrenceDate, justification, location, selfReview, peerReview, managerReview, reviewerIds, reviewersNoteIds, documentIds } = body
 
     // Validate required fields
     if (!taskId || !listId || !workerId) {
@@ -180,14 +175,33 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid occurrenceDate format. Use YYYY-MM-DD' }, { status: 400 })
     }
 
+    // Evidence attachments: only the worker may attach documents when creating a job
+    if (documentIds !== undefined && workerId !== user.id) {
+      return NextResponse.json({ error: 'Unauthorized: Only the worker can attach evidence documents' }, { status: 403 })
+    }
+
+    if (documentIds !== undefined) {
+      if (!Array.isArray(documentIds) || !documentIds.every((v: unknown) => typeof v === 'string' && /^[a-f0-9]{24}$/i.test(v))) {
+        return NextResponse.json({ error: 'documentIds must be an array of document IDs' }, { status: 400 })
+      }
+      if (documentIds.length > 10) {
+        return NextResponse.json({ error: 'documentIds can contain at most 10 documents' }, { status: 400 })
+      }
+    }
+
     // Authorization checks
-    const role = await getUserListRole(user.id, listId)
+    const role = await getViewerRole(user.id, 'list', listId)
     if (!role || !JOB_CREATION_ROLES.includes(role)) {
       return NextResponse.json({ error: 'Unauthorized: You must be a member of the list to create jobs' }, { status: 403 })
     }
 
     if (role === 'COLLABORATOR' && workerId !== user.id) {
       return NextResponse.json({ error: 'Unauthorized: Collaborators can only create jobs for themselves' }, { status: 403 })
+    }
+
+    // Collaborators must justify their job request (owners/managers don't have to)
+    if (role === 'COLLABORATOR' && (!justification || !String(justification).trim())) {
+      return NextResponse.json({ error: 'A justification is required to request a job' }, { status: 400 })
     }
 
     // Verify task belongs to list
@@ -210,11 +224,14 @@ export async function POST(request: NextRequest) {
         workerId,
         status: status || 'REQUESTED',
         occurrenceDate: occurrenceDate || null,
+        justification: justification !== undefined ? sanitizeText(String(justification)) : null,
+        location: location && typeof location === 'object' ? location : null,
         selfReview,
         peerReview,
         managerReview,
         reviewerIds: reviewerIds || [],
-        reviewersNoteIds: reviewersNoteIds || []
+        reviewersNoteIds: reviewersNoteIds || [],
+        documentIds: documentIds || []
       },
       include: JOB_INCLUDE
     })
@@ -247,8 +264,26 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Notify the list's owners/managers when a collaborator requests a job
+    if (job.status === 'REQUESTED') {
+      const recipients = (job.list?.users || [])
+        .filter((ref: ListUser) => ['OWNER', 'MANAGER'].includes(ref.role))
+        .filter((ref: ListUser) => ref.userId !== user.id)
+      for (const recipient of recipients) {
+        void notifyUser({
+          userId: recipient.userId,
+          type: 'JOB_REQUESTED',
+          actorId: user.id,
+          resourceId: job.id
+        }).catch((error) => console.error('Error creating job request notification:', error))
+      }
+    }
+
     return NextResponse.json({ job })
   } catch (error) {
+    if (error instanceof ApiError) {
+      return toResponse(error)
+    }
     console.error('Error creating job:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }

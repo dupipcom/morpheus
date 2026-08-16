@@ -361,7 +361,7 @@ const aggregateDataByWeek = (dailyData: any[]) => {
   
   dailyData.forEach((day: any) => {
     const date = new Date(day.date)
-    const [isoYear, weekNumber] = getWeekNumber(date)
+    const { year: isoYear, week: weekNumber } = getWeekNumber(date)
     // Use year-aware key to prevent merging weeks from different years (e.g. week 1 of 2024 vs 2025)
     const weekKey = `${isoYear}-W${weekNumber}`
     if (!weeklyGroups[weekKey]) {
