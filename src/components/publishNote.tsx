@@ -7,7 +7,8 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { useI18n } from "@/lib/contexts/i18n"
 import { useNotesRefresh } from "@/lib/contexts/notesRefresh"
 import { GlobalContext } from "@/lib/contexts"
-import { Send, Loader2 } from "lucide-react"
+import { Send, Loader2, Paperclip, MapPin, Users, ListChecks, CheckSquare, Calendar, X } from "lucide-react"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { VisibilitySelect } from "@/components/visibilitySelect"
 import { DatePickerButton } from "@/components/ui/datePickerButton"
 import { LinkPreview } from "@/components/linkPreview"
@@ -48,6 +49,9 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
   const [profileTags, setProfileTags] = useState<EntityTag[]>([])
   const [listTags, setListTags] = useState<EntityTag[]>([])
   const [taskTags, setTaskTags] = useState<EntityTag[]>([])
+  const [eventTags, setEventTags] = useState<EntityTag[]>([])
+  // Which extension popover is open (attach | place | profile | list | task | event)
+  const [openPicker, setOpenPicker] = useState<string | null>(null)
   
   // Use ref to track if we're updating from props to prevent loops
   const isUpdatingFromProps = useRef(false)
@@ -125,6 +129,7 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
       if (profileTags.length > 0) body.profileIds = profileTags.map((tag) => tag.id)
       if (listTags.length > 0) body.listIds = listTags.map((tag) => tag.id)
       if (taskTags.length > 0) body.taskIds = taskTags.map((tag) => tag.id)
+      if (eventTags.length > 0) body.eventIds = eventTags.map((tag) => tag.id)
 
       const response = await fetch('/api/v1/notes', {
         method: 'POST',
@@ -182,6 +187,7 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
         setProfileTags([])
         setListTags([])
         setTaskTags([])
+        setEventTags([])
         // Refresh all registered note lists
         refreshAll()
         if (onNotePublished) {
@@ -245,19 +251,113 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
           <span>{t('mood.publish.enableAiAnalysis') || 'Enable AI analysis'}</span>
         </label>
       </div>
-      {/* Composer extensions: attachments, place, and entity tags */}
-      <div className="flex flex-col gap-3 mt-3">
-        <AttachmentPicker
-          entityType="note"
-          kind="any"
-          max={4}
-          value={attachments}
-          onChange={setAttachments}
-        />
-        <PlacePicker value={location} onChange={setLocation} compact />
-        <EntityTagPicker kind="profile" value={profileTags} onChange={setProfileTags} />
-        <EntityTagPicker kind="list" value={listTags} onChange={setListTags} />
-        <EntityTagPicker kind="task" value={taskTags} onChange={setTaskTags} />
+      {/* Composer extensions: compact icon toolbar (each opens its picker in a popover) */}
+      <div className="mt-3 space-y-2">
+        {(attachments.length > 0 || location || profileTags.length > 0 || listTags.length > 0 || taskTags.length > 0 || eventTags.length > 0) && (
+          <div className="flex flex-wrap items-center gap-1">
+            {attachments.map((a) => (
+              <span key={a.key} className="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs text-muted-foreground">
+                <Paperclip className="h-3 w-3" />
+                {a.fileName}
+              </span>
+            ))}
+            {location && (
+              <span className="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs text-muted-foreground">
+                <MapPin className="h-3 w-3" />
+                {location.name || location.address || `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}`}
+                <button type="button" onClick={() => setLocation(null)} aria-label={t('components.placePicker.removeLocation') || 'Remove location'}>
+                  <X className="h-3 w-3" />
+                </button>
+              </span>
+            )}
+            {[
+              ...profileTags.map((tag) => ({ tag, remove: () => setProfileTags(profileTags.filter((t) => t.id !== tag.id)) })),
+              ...listTags.map((tag) => ({ tag, remove: () => setListTags(listTags.filter((t) => t.id !== tag.id)) })),
+              ...taskTags.map((tag) => ({ tag, remove: () => setTaskTags(taskTags.filter((t) => t.id !== tag.id)) })),
+              ...eventTags.map((tag) => ({ tag, remove: () => setEventTags(eventTags.filter((t) => t.id !== tag.id)) })),
+            ].map(({ tag, remove }) => (
+              <span key={tag.id} className="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs text-muted-foreground">
+                {tag.label}
+                <button type="button" onClick={remove} aria-label={t('components.entityTagPicker.removeTag') || 'Remove tag'}>
+                  <X className="h-3 w-3" />
+                </button>
+              </span>
+            ))}
+          </div>
+        )}
+
+        <div className="flex flex-wrap items-center gap-1">
+          <Popover open={openPicker === 'attach'} onOpenChange={(open) => setOpenPicker(open ? 'attach' : null)}>
+            <PopoverTrigger asChild>
+              <Button type="button" variant="ghost" size="sm" className="px-2" title={t('notes.extensions.attach') || 'Attachments'}>
+                <Paperclip className="h-4 w-4" />
+                {attachments.length > 0 && <span className="ml-1 text-xs text-muted-foreground">{attachments.length}</span>}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[340px] p-3" align="start">
+              <AttachmentPicker compact entityType="note" kind="any" max={4} value={attachments} onChange={setAttachments} />
+            </PopoverContent>
+          </Popover>
+
+          <Popover open={openPicker === 'place'} onOpenChange={(open) => setOpenPicker(open ? 'place' : null)}>
+            <PopoverTrigger asChild>
+              <Button type="button" variant={location ? 'secondary' : 'ghost'} size="sm" className="px-2" title={t('notes.extensions.location') || 'Location'}>
+                <MapPin className="h-4 w-4" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[340px] p-3" align="start">
+              <PlacePicker value={location} onChange={setLocation} compact />
+            </PopoverContent>
+          </Popover>
+
+          <Popover open={openPicker === 'profile'} onOpenChange={(open) => setOpenPicker(open ? 'profile' : null)}>
+            <PopoverTrigger asChild>
+              <Button type="button" variant={profileTags.length > 0 ? 'secondary' : 'ghost'} size="sm" className="px-2" title={t('notes.extensions.people') || 'Tag people'}>
+                <Users className="h-4 w-4" />
+                {profileTags.length > 0 && <span className="ml-1 text-xs text-muted-foreground">{profileTags.length}</span>}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[340px] p-3" align="start">
+              <EntityTagPicker kind="profile" value={profileTags} onChange={setProfileTags} />
+            </PopoverContent>
+          </Popover>
+
+          <Popover open={openPicker === 'list'} onOpenChange={(open) => setOpenPicker(open ? 'list' : null)}>
+            <PopoverTrigger asChild>
+              <Button type="button" variant={listTags.length > 0 ? 'secondary' : 'ghost'} size="sm" className="px-2" title={t('notes.extensions.lists') || 'Tag lists'}>
+                <ListChecks className="h-4 w-4" />
+                {listTags.length > 0 && <span className="ml-1 text-xs text-muted-foreground">{listTags.length}</span>}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[340px] p-3" align="start">
+              <EntityTagPicker kind="list" value={listTags} onChange={setListTags} />
+            </PopoverContent>
+          </Popover>
+
+          <Popover open={openPicker === 'task'} onOpenChange={(open) => setOpenPicker(open ? 'task' : null)}>
+            <PopoverTrigger asChild>
+              <Button type="button" variant={taskTags.length > 0 ? 'secondary' : 'ghost'} size="sm" className="px-2" title={t('notes.extensions.tasks') || 'Tag tasks'}>
+                <CheckSquare className="h-4 w-4" />
+                {taskTags.length > 0 && <span className="ml-1 text-xs text-muted-foreground">{taskTags.length}</span>}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[340px] p-3" align="start">
+              <EntityTagPicker kind="task" value={taskTags} onChange={setTaskTags} />
+            </PopoverContent>
+          </Popover>
+
+          <Popover open={openPicker === 'event'} onOpenChange={(open) => setOpenPicker(open ? 'event' : null)}>
+            <PopoverTrigger asChild>
+              <Button type="button" variant={eventTags.length > 0 ? 'secondary' : 'ghost'} size="sm" className="px-2" title={t('notes.extensions.events') || 'Tag events'}>
+                <Calendar className="h-4 w-4" />
+                {eventTags.length > 0 && <span className="ml-1 text-xs text-muted-foreground">{eventTags.length}</span>}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[340px] p-3" align="start">
+              <EntityTagPicker kind="event" value={eventTags} onChange={setEventTags} />
+            </PopoverContent>
+          </Popover>
+        </div>
       </div>
       {previewUrls.length > 0 && (
         <div className="mt-3">

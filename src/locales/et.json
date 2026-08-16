@@ -1047,7 +1047,15 @@
       "mostRelevant": "Asjakohaseimad",
       "all": "Kõik"
     },
-    "taskTags": "Tagged tasks"
+    "taskTags": "Tagged tasks",
+    "extensions": {
+      "attach": "Attachments",
+      "location": "Location",
+      "people": "Tag people",
+      "lists": "Tag lists",
+      "tasks": "Tag tasks",
+      "events": "Tag events"
+    }
   },
   "chat": {
     "title": "Vestlus",

@@ -1047,7 +1047,15 @@
       "mostRelevant": "最相关",
       "all": "全部"
     },
-    "taskTags": "Tagged tasks"
+    "taskTags": "Tagged tasks",
+    "extensions": {
+      "attach": "Attachments",
+      "location": "Location",
+      "people": "Tag people",
+      "lists": "Tag lists",
+      "tasks": "Tag tasks",
+      "events": "Tag events"
+    }
   },
   "chat": {
     "title": "聊天",

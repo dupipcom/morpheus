@@ -1047,7 +1047,15 @@
       "mostRelevant": "가장 관련성 높은",
       "all": "전체"
     },
-    "taskTags": "Tagged tasks"
+    "taskTags": "Tagged tasks",
+    "extensions": {
+      "attach": "Attachments",
+      "location": "Location",
+      "people": "Tag people",
+      "lists": "Tag lists",
+      "tasks": "Tag tasks",
+      "events": "Tag events"
+    }
   },
   "chat": {
     "title": "채팅",

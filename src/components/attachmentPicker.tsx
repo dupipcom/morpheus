@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useReducer, useRef, useState } from 'rea
 import { Film, FileText, Image as ImageIcon, Loader, MapPin, Upload, X } from 'lucide-react'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Progress } from '@/components/ui/progress'
+import { Button } from '@/components/ui/button'
 import { useI18n } from '@/lib/contexts/i18n'
 import { cn } from '@/lib/utils/utils'
 import { PlacePicker, type PlaceLocation } from '@/components/placePicker'
@@ -59,6 +60,8 @@ interface AttachmentPickerProps {
   max?: number
   /** HTML accept string; defaults to the allowlist for the `kind` prop. */
   accept?: string
+  /** Compact mode: a small "Add files" button instead of the drag/drop clipboard zone */
+  compact?: boolean
   value: PickedAttachment[]
   onChange: (attachments: PickedAttachment[]) => void
 }
@@ -89,6 +92,7 @@ export const AttachmentPicker = ({
   role,
   max = 4,
   accept,
+  compact = false,
   value,
   onChange,
 }: AttachmentPickerProps) => {
@@ -464,40 +468,52 @@ export const AttachmentPicker = ({
         }}
       />
       {canAdd ? (
-        <div
-          role="button"
-          tabIndex={0}
-          aria-label={t('forms.attachmentPicker.browse', { defaultValue: 'Add files' })}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
+        compact ? (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => inputRef.current?.click()}
+          >
+            <Upload className="h-3.5 w-3.5 mr-1" />
+            {t('forms.attachmentPicker.browse', { defaultValue: 'Add files' })}
+          </Button>
+        ) : (
+          <div
+            role="button"
+            tabIndex={0}
+            aria-label={t('forms.attachmentPicker.browse', { defaultValue: 'Add files' })}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                inputRef.current?.click()
+              }
+            }}
+            onClick={() => inputRef.current?.click()}
+            onDragOver={(e) => {
               e.preventDefault()
-              inputRef.current?.click()
-            }
-          }}
-          onClick={() => inputRef.current?.click()}
-          onDragOver={(e) => {
-            e.preventDefault()
-            setIsDragging(true)
-          }}
-          onDragLeave={() => setIsDragging(false)}
-          onDrop={(e) => {
-            e.preventDefault()
-            setIsDragging(false)
-            handleFiles(Array.from(e.dataTransfer.files))
-          }}
-          className={cn(
-            'flex cursor-pointer flex-col items-center justify-center gap-1 rounded-md border border-dashed px-3 py-4 text-center transition-colors',
-            isDragging ? 'border-primary bg-primary/5' : 'border-input hover:bg-muted/50'
-          )}
-        >
-          <Upload className="h-4 w-4 text-muted-foreground" />
-          <span className="text-sm text-muted-foreground">
-            {t('forms.attachmentPicker.dropHere', { defaultValue: 'Drop files here' })}
-          </span>
-          <span className="text-xs text-muted-foreground/70">
-            {t('forms.attachmentPicker.orClick', { defaultValue: 'or click to choose' })}
-          </span>
-        </div>
+              setIsDragging(true)
+            }}
+            onDragLeave={() => setIsDragging(false)}
+            onDrop={(e) => {
+              e.preventDefault()
+              setIsDragging(false)
+              handleFiles(Array.from(e.dataTransfer.files))
+            }}
+            className={cn(
+              'flex cursor-pointer flex-col items-center justify-center gap-1 rounded-md border border-dashed px-3 py-4 text-center transition-colors',
+              isDragging ? 'border-primary bg-primary/5' : 'border-input hover:bg-muted/50'
+            )}
+          >
+            <Upload className="h-4 w-4 text-muted-foreground" />
+            <span className="text-sm text-muted-foreground">
+              {t('forms.attachmentPicker.dropHere', { defaultValue: 'Drop files here' })}
+            </span>
+            <span className="text-xs text-muted-foreground/70">
+              {t('forms.attachmentPicker.orClick', { defaultValue: 'or click to choose' })}
+            </span>
+          </div>
+        )
       ) : (
         <p className="text-xs text-muted-foreground">
           {t('forms.attachmentPicker.maxReached', { defaultValue: 'Maximum {max} files', max })}

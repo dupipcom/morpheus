@@ -13,7 +13,7 @@ export interface EntityTag {
 }
 
 interface EntityTagPickerProps {
-  kind: 'profile' | 'list' | 'task'
+  kind: 'profile' | 'list' | 'task' | 'event'
   value: EntityTag[]
   onChange: (tags: EntityTag[]) => void
   /** Lists already attached to the note elsewhere (e.g. the reposted list) — excluded from selectable lists */
@@ -38,6 +38,11 @@ interface TaskListResult {
 }
 
 interface TaskResult {
+  id: string
+  name?: string | null
+}
+
+interface EventResult {
   id: string
   name?: string | null
 }
@@ -162,9 +167,31 @@ export function EntityTagPicker({ kind, value, onChange, currentNoteListIds }: E
       .map((task) => ({ id: task.id, label: task.name || task.id }))
   }, [kind, tasksData, query, selectedIds])
 
-  const results = kind === 'profile' ? profileResults : kind === 'list' ? listResults : taskResults
-  const isLoading = kind === 'profile' ? profilesLoading : kind === 'list' ? listsLoading : tasksLoading
-  // Profiles need a query (server-side search); lists/tasks show on focus and filter locally
+  // ---- events: the user's own life events, fetched once and filtered locally ----
+  const { data: eventsData, isLoading: eventsLoading } = useSWR<{ lifeEvents?: EventResult[] }>(
+    kind === 'event' ? '/api/v1/events' : null,
+    jsonFetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      shouldRetryOnError: false,
+      dedupingInterval: 15000
+    }
+  )
+
+  const eventResults = useMemo(() => {
+    if (kind !== 'event') return []
+    const q = query.trim().toLowerCase()
+    return (eventsData?.lifeEvents || [])
+      .filter((event) => event.id && !selectedIds.has(event.id))
+      .filter((event) => !q || (event.name || '').toLowerCase().includes(q))
+      .slice(0, MAX_RESULTS)
+      .map((event) => ({ id: event.id, label: event.name || event.id }))
+  }, [kind, eventsData, query, selectedIds])
+
+  const results = kind === 'profile' ? profileResults : kind === 'list' ? listResults : kind === 'task' ? taskResults : eventResults
+  const isLoading = kind === 'profile' ? profilesLoading : kind === 'list' ? listsLoading : kind === 'task' ? tasksLoading : eventsLoading
+  // Profiles need a query (server-side search); lists/tasks/events show on focus and filter locally
   const showResults = kind === 'profile' ? isFocused && query.trim().length > 0 : isFocused
 
   const addTag = (tag: EntityTag) => {
