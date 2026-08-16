@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { AttachmentPicker } from '@/components/attachmentPicker'
+import { AttachmentPicker, attachmentFileUrl } from '@/components/attachmentPicker'
 import type { PickedAttachment } from '@/components/attachmentPicker'
 import { useI18n } from '@/lib/contexts/i18n'
 
@@ -115,7 +115,7 @@ export const JobDialog = ({
     setPickedAttachments([
       {
         key: doc.id,
-        publicUrl: doc.fileUrl,
+        publicUrl: attachmentFileUrl(doc.id),
         fileName: doc.fileName,
         mimeType: doc.mimeType || 'application/pdf',
         kind: 'cv',
@@ -267,12 +267,19 @@ export const JobDialog = ({
               {Array.isArray(requestJob.documentIds) && requestJob.documentIds.length > 0 && (
                 <div>
                   <Label>{t('tasks.cv.attachedDocuments', { defaultValue: 'Attached documents' })}</Label>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {t('tasks.cv.attachedCount', { count: requestJob.documentIds.length, defaultValue: '{count} attached document(s)' })}
-                  </p>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    {t('tasks.cv.attachedNote', { defaultValue: 'Links to the attached documents will be available with the documents API.' })}
-                  </p>
+                  <div className="mt-1 space-y-1">
+                    {requestJob.documentIds.map((id: string, index: number) => (
+                      <a
+                        key={id}
+                        href={attachmentFileUrl(id)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block text-sm text-primary underline underline-offset-2 hover:no-underline"
+                      >
+                        {t('tasks.cv.viewDocument', { defaultValue: 'View document' })} {index + 1}
+                      </a>
+                    ))}
+                  </div>
                 </div>
               )}
             </>

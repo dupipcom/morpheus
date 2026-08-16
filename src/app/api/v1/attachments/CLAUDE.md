@@ -5,10 +5,28 @@
 - `POST /api/v1/attachments` — confirm upload, inspect real bytes, create + link `Document`
 - `GET /api/v1/attachments` — list own documents (`?kind=cv&mine=true`)
 - `DELETE /api/v1/attachments/[documentId]` — unlink, delete object, delete row
+- `GET /api/v1/attachments/[documentId]/file` — authenticated media pipe (see below)
 
 ## Auth
 All routes require Clerk auth. The caller's internal `User.id` is resolved from the Clerk
 `userId` and used for key prefixes, ownership and self-only checks — never a client-provided id.
+
+## GET `/attachments/[documentId]/file` — media pipe
+The iDrive e2 bucket is **private** (requires credentials), so `<img>`/`<video>`/link `src`
+attributes point at this route instead of the bucket URL. It authenticates via the Clerk
+session cookie and streams the object bytes with the sniffed `Content-Type`; `Range` headers
+are forwarded so video seeking works (206 responses).
+
+Authorization:
+- `Document.visibility === PUBLIC` → anyone (including anonymous).
+- Otherwise the viewer must be the owner, or be linked to the document via a job (worker or
+  list member), task (list member), list (member), or note (author or public note). Linked
+  checks query the forward `documentIds` arrays, so rows created before the Document
+  back-references were populated still authorize correctly.
+
+Headers: `X-Content-Type-Options: nosniff`, `Accept-Ranges: bytes`, private caching for
+private documents; `Content-Disposition: attachment` for anything that is not
+image/video/PDF.
 
 ## POST `/attachments/presign`
 Body: `{ fileName, mimeType, kind, size, role? }`. Validates extension allowlist per kind

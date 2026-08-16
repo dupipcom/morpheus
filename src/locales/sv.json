@@ -237,7 +237,8 @@
       "uploading": "Uploading attachment...",
       "attachedDocuments": "Attached documents",
       "attachedCount": "{count} attached document(s)",
-      "attachedNote": "Links to the attached documents will be available with the documents API."
+      "attachedNote": "Links to the attached documents will be available with the documents API.",
+      "viewDocument": "View document"
     },
     "pastBadge": "Past · {date}",
     "loadOlder": "Load older tasks",

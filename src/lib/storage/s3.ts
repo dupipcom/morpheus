@@ -14,6 +14,7 @@
  */
 
 import { randomUUID } from 'crypto'
+import { Readable } from 'stream'
 import {
   DeleteObjectCommand,
   GetObjectCommand,
@@ -84,6 +85,46 @@ export async function presignPut(
 /** Public (media-origin) URL for an object key. */
 export function publicUrlFor(key: string): string {
   return `${PUBLIC_BASE_URL}/${key}`
+}
+
+/**
+ * Server-side read of an object's bytes. The bucket is never exposed publicly:
+ * only this authenticated path (and presigned uploads) reach it.
+ *
+ * Range is passed through for video seeking (browsers send `Range: bytes=...`);
+ * the caller maps a non-null contentRange to a 206 response.
+ */
+export async function getObjectStream(
+  key: string,
+  range?: string | null
+): Promise<{
+  stream: ReadableStream
+  contentType: string
+  contentLength: number
+  contentRange?: string
+} | null> {
+  try {
+    const command = new GetObjectCommand({
+      Bucket: BUCKET,
+      Key: key,
+      ...(range ? { Range: range } : {})
+    })
+    const output = await getClient().send(command)
+    if (!output.Body) return null
+
+    const nodeStream = output.Body as Readable
+    const stream = Readable.toWeb(nodeStream) as unknown as ReadableStream
+
+    return {
+      stream,
+      contentType: output.ContentType || 'application/octet-stream',
+      contentLength: output.ContentLength ?? 0,
+      ...(output.ContentRange ? { contentRange: output.ContentRange } : {})
+    }
+  } catch {
+    // NoSuchKey, access errors, etc. — treat as "object missing" for the caller
+    return null
+  }
 }
 
 /** Delete an object; NoSuchKey is swallowed so deletes are idempotent. */

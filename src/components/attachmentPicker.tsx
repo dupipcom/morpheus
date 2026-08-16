@@ -40,6 +40,16 @@ export interface PickedAttachment {
 
 export type AttachmentRole = 'cover' | 'flier' | 'evidence' | 'inline' | 'cv'
 
+/**
+ * In-app URL for a committed Document. The storage bucket is private (iDrive e2
+ * requires credentials), so rendering goes through the authenticated pipe at
+ * GET /api/v1/attachments/[documentId]/file. Path-relative: works on any origin.
+ * (Client-safe: no storage SDK imports in this module.)
+ */
+export function attachmentFileUrl(documentId: string): string {
+  return `/api/v1/attachments/${documentId}/file`
+}
+
 interface AttachmentPickerProps {
   entityType: 'task' | 'list' | 'job' | 'note' | 'user'
   entityId?: string | null
@@ -308,6 +318,11 @@ export const AttachmentPicker = ({
       // 4. Commit when the entity already exists; otherwise the parent commits later.
       if (entityId) {
         descriptor.documentId = await commitAttachment(descriptor, posterPublicUrl)
+        if (descriptor.documentId) {
+          // The bucket URL requires credentials; rendering goes through the
+          // authenticated in-app pipe instead.
+          descriptor.publicUrl = attachmentFileUrl(descriptor.documentId)
+        }
         item.descriptor = descriptor
       }
 
@@ -650,7 +665,12 @@ function posterFileName(fileName: string): string {
 function renderThumb(item: ItemPipeline, done: boolean) {
   const className = 'h-14 w-14 shrink-0 overflow-hidden rounded-md border object-cover'
   if (item.kind === 'image') {
-    const src = done ? item.descriptor?.publicUrl : item.previewUrl
+    // Prefer the committed in-app URL; while uploading (or before the parent
+    // commits a create-flow attachment) fall back to the local blob preview —
+    // the bucket URL is not directly renderable.
+    const src = done && item.descriptor?.documentId
+      ? item.descriptor?.publicUrl
+      : item.previewUrl
     if (src) return <img src={src} alt={item.file?.name ?? item.descriptor?.fileName ?? ''} className={className} />
     return (
       <div className={cn(className, 'flex items-center justify-center bg-muted text-muted-foreground')}>
@@ -659,7 +679,9 @@ function renderThumb(item: ItemPipeline, done: boolean) {
     )
   }
   if (item.kind === 'video') {
-    const src = done ? item.descriptor?.posterPublicUrl : item.posterUrl
+    // Poster thumbnails use the local blob; the stored poster object has no
+    // Document row (no in-app URL).
+    const src = item.posterUrl
     if (src) return <img src={src} alt={item.file?.name ?? ''} className={className} />
     return (
       <div className={cn(className, 'flex items-center justify-center bg-muted text-muted-foreground')}>

@@ -610,6 +610,19 @@ paths:
       responses:
         '200': { description: '{ message: Attachment deleted }' }
 
+  /api/v1/attachments/{documentId}/file:
+    get:
+      tags: [attachments]
+      summary: Authenticated media pipe from the private storage bucket (streams bytes; Range supported)
+      parameters:
+        - { name: documentId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Object bytes with sniffed Content-Type }
+        '206': { description: Partial content (video seeking) }
+        '401': { description: Authentication required for non-public documents }
+        '403': { description: Not linked to the document }
+        '404': { description: Attachment or object not found }
+
   /api/v1/notifications:
     get:
       tags: [notifications]

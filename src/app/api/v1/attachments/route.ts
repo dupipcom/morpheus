@@ -214,9 +214,12 @@ export async function POST(request: NextRequest) {
         fileDuration: durationValue,
         location: locationValue as Prisma.InputJsonValue | undefined,
         userId: user.id,
-        // Keep both sides of the Task/Job <-> Document reference arrays in sync.
+        // Keep both sides of the Task/Job/List/Note <-> Document reference
+        // arrays in sync.
         ...(entityType === 'task' ? { taskIds: [entityId] } : {}),
-        ...(entityType === 'job' ? { jobIds: [entityId] } : {})
+        ...(entityType === 'job' ? { jobIds: [entityId] } : {}),
+        ...(entityType === 'list' ? { listIds: [entityId] } : {}),
+        ...(entityType === 'note' ? { noteIds: [entityId] } : {})
       }
     })
 
