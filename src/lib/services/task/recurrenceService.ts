@@ -42,13 +42,9 @@ function parseRuleForTask(
   }
 }
 
-/**
- * Extract the FREQ value from an RRULE string (e.g. "WEEKLY"), or null
- */
-export function rruleFrequency(rrule: string | null | undefined): string | null {
-  const match = (rrule || '').match(/FREQ=([A-Z]+)/i)
-  return match ? match[1].toUpperCase() : null
-}
+// Shared with client handlers via taskUtils (pure); re-exported for API stability
+import { rruleFrequency } from '@/lib/utils/taskUtils'
+export { rruleFrequency } from '@/lib/utils/taskUtils'
 
 /**
  * Parse a YYYY-MM-DD date as UTC midnight to avoid timezone/DST drift
