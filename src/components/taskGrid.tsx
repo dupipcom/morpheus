@@ -6,7 +6,7 @@ import { Circle, Minus, Plus, Eye, EyeOff, Edit, Send, Clock, Trash2 } from 'luc
 import { useI18n } from '@/lib/contexts/i18n'
 import { GlobalContext } from '@/lib/contexts'
 import { TaskItem } from '@/components/taskItem'
-import { TaskStatus, STATUS_OPTIONS, getStatusColor, getIconColor, getTaskKey, getTaskStatus } from '@/lib/utils/taskUtils'
+import { TaskStatus, STATUS_OPTIONS, getStatusColor, getIconColor, getTaskKey, getTaskEntryKey, getTaskStatus } from '@/lib/utils/taskUtils'
 import { useTaskStatuses } from '@/lib/hooks/useTaskStatuses'
 import { useTaskHandlers } from '@/lib/hooks/useTaskHandlers'
 import { AddTaskForm } from '@/views/forms/addTaskForm'
@@ -102,7 +102,7 @@ export const TaskGrid = ({
   // Sort tasks by status order
   const sortedTasks = useMemo(() => {
     const getStatusForSort = (task: any): TaskStatus => {
-      const key = getTaskKey(task)
+      const key = getTaskEntryKey(task, date)
       return taskStatuses[key] || getTaskStatus(task) || 'open'
     }
 
@@ -252,9 +252,18 @@ export const TaskGrid = ({
     const hasApprovedJob = isWorker && activeJob && approvedJobStatuses.includes(activeJob.status)
     const canChangeStatus = isOwnerOrManager || hasApprovedJob
 
+    // Past occurrences of recurring tasks only offer occurrence-scoped
+    // statuses: a global status write would change every other date's entry
+    // of the task, including today's.
+    const isPastCard = !!occurrenceDate
+    const isRecurringTask = !!task.rrule
+    const statusMenuOptions = isPastCard && isRecurringTask
+      ? STATUS_OPTIONS.filter((status) => status === 'open' || status === 'done')
+      : STATUS_OPTIONS
+
     // Build the options menu
     const optionsMenuItems: OptionsMenuItem[] = [
-      ...(canChangeStatus ? STATUS_OPTIONS.map((status) => ({
+      ...(canChangeStatus ? statusMenuOptions.map((status) => ({
         label: (
           <>
             <Circle
@@ -440,7 +449,7 @@ export const TaskGrid = ({
       />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 w-full">
         {sortedTasks.map((task: any) => {
-          const key = getTaskKey(task)
+          const key = getTaskEntryKey(task, date)
           const taskStatus = taskStatuses[key] || getTaskStatus(task)
           // Jobs for this task (API returns them newest-first)
           const taskJobs = jobs.filter((j: any) => j.taskId === task.id)
