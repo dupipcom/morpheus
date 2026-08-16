@@ -2,7 +2,6 @@
 
 import React, { useCallback, useEffect, useReducer, useRef, useState } from 'react'
 import { Film, FileText, Image as ImageIcon, Loader, MapPin, Upload, X } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Progress } from '@/components/ui/progress'
 import { useI18n } from '@/lib/contexts/i18n'
@@ -140,8 +139,9 @@ export const AttachmentPicker = ({
 
   // Revoke every object URL this component created.
   useEffect(() => {
+    const pipeline = pipelineRef.current
     return () => {
-      for (const item of pipelineRef.current.values()) {
+      for (const item of pipeline.values()) {
         if (item.previewUrl) URL.revokeObjectURL(item.previewUrl)
         if (item.posterUrl) URL.revokeObjectURL(item.posterUrl)
       }
@@ -249,9 +249,10 @@ export const AttachmentPicker = ({
       })
 
       // 3. Video poster as a SECOND object; its URL goes into Document.posterUrl.
+      // The key is server-generated (no key-hint in the presign contract), so the
+      // poster object simply gets its own key and the Document.posterUrl links them.
       let posterPublicUrl: string | undefined
       if (kind === 'video' && poster) {
-        const posterKey = presign.key.replace(/\.[^./]+$/, '') + '-poster.jpg'
         const posterPresign = await presignObject({
           fileName: posterFileName(item.file.name),
           mimeType: 'image/jpeg',

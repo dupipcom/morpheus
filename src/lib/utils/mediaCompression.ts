@@ -361,7 +361,7 @@ function canvasToBlob(canvas: HTMLCanvasElement, type: string, quality: number):
 }
 
 async function fetchAsBlobUrl(url: string, mimeType: string): Promise<string> {
-  const res = await fetch(url)
+  const res = await fetch(url, { headers: { Accept: mimeType } })
   if (!res.ok) throw new Error(`Failed to fetch ${url}`)
   return URL.createObjectURL(await res.blob())
 }

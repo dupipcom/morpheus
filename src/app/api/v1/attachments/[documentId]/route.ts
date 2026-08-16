@@ -3,6 +3,7 @@ import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
 import { ApiError, toResponse } from '@/lib/services/errors'
 import { PUBLIC_BASE_URL, deleteObject } from '@/lib/storage/s3'
+import type { Prisma } from '@/generated/prisma/client'
 
 const OBJECT_ID_PATTERN = /^[0-9a-fA-F]{24}$/
 
@@ -64,26 +65,46 @@ export async function DELETE(
     }
 
     // Task/Job/List/Note hold documentIds as plain scalar arrays without an
-    // onDelete cascade, so pull the id out of each before deleting the row.
-    await prisma.$transaction([
-      prisma.task.updateMany({
-        where: { documentIds: { has: documentId } },
-        data: { documentIds: { pull: documentId } }
-      }),
-      prisma.job.updateMany({
-        where: { documentIds: { has: documentId } },
-        data: { documentIds: { pull: documentId } }
-      }),
-      prisma.list.updateMany({
-        where: { documentIds: { has: documentId } },
-        data: { documentIds: { pull: documentId } }
-      }),
-      prisma.note.updateMany({
-        where: { documentIds: { has: documentId } },
-        data: { documentIds: { pull: documentId } }
-      }),
-      prisma.document.delete({ where: { id: documentId } })
+    // onDelete cascade, and the generated client exposes only set/push on
+    // those arrays, so pull the id out by read-modify-write before deleting
+    // the row.
+    const [taskRows, jobRows, listRows, noteRows] = await Promise.all([
+      prisma.task.findMany({ where: { documentIds: { has: documentId } }, select: { id: true, documentIds: true } }),
+      prisma.job.findMany({ where: { documentIds: { has: documentId } }, select: { id: true, documentIds: true } }),
+      prisma.list.findMany({ where: { documentIds: { has: documentId } }, select: { id: true, documentIds: true } }),
+      prisma.note.findMany({ where: { documentIds: { has: documentId } }, select: { id: true, documentIds: true } })
     ])
+
+    const withoutDocumentId = (ids: string[]) => ids.filter((id) => id !== documentId)
+
+    const operations: Prisma.PrismaPromise<unknown>[] = [
+      ...taskRows.map((row) =>
+        prisma.task.update({
+          where: { id: row.id },
+          data: { documentIds: { set: withoutDocumentId(row.documentIds) } }
+        })
+      ),
+      ...jobRows.map((row) =>
+        prisma.job.update({
+          where: { id: row.id },
+          data: { documentIds: { set: withoutDocumentId(row.documentIds) } }
+        })
+      ),
+      ...listRows.map((row) =>
+        prisma.list.update({
+          where: { id: row.id },
+          data: { documentIds: { set: withoutDocumentId(row.documentIds) } }
+        })
+      ),
+      ...noteRows.map((row) =>
+        prisma.note.update({
+          where: { id: row.id },
+          data: { documentIds: { set: withoutDocumentId(row.documentIds) } }
+        })
+      ),
+      prisma.document.delete({ where: { id: documentId } })
+    ]
+    await prisma.$transaction(operations)
 
     return NextResponse.json({ message: 'Attachment deleted' })
   } catch (error) {

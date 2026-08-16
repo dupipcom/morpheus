@@ -55,8 +55,10 @@ newest first, `limit` ≤ 50. Returns `{ documents }`.
 Owner-only (`Document.userId` === caller, else 403). Storage object is deleted first
 (deriving the key from `fileUrl` by stripping `STORAGE_PUBLIC_BASE_URL`; best-effort — a
 storage failure logs and does not block). `Task`/`Job`/`List`/`Note` `documentIds` arrays
-have no onDelete cascade (plain MongoDB scalar arrays), so the id is pulled from each in a
-transaction before the row is deleted. Returns `{ message: 'Attachment deleted' }`.
+have no onDelete cascade (plain MongoDB scalar arrays) and the generated client only
+exposes `set`/`push` on them, so the id is removed from each affected row by
+read-modify-write (`set` of the filtered array) inside a transaction that ends with the
+row delete. Returns `{ message: 'Attachment deleted' }`.
 
 ## Dependencies
 - `src/lib/storage/s3.ts` — S3 client singleton, presign/head/range-get/delete, media policy
