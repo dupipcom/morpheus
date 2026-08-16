@@ -71,6 +71,13 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
     setNoteVisibility(editingNote.visibility || 'PRIVATE')
     setAiEnabled(editingNote.aiEnabled ?? false)
     setLocation(editingNote.location || null)
+    // Prefill the note's date too (local midnight — the note date is YYYY-MM-DD)
+    if (editingNote.date) {
+      const [year, month, day] = editingNote.date.split('-').map(Number)
+      if (year && month && day) {
+        setSelectedDate(new Date(year, month - 1, day))
+      }
+    }
     setAttachments((editingNote.documents || []).map((doc) => ({
       key: doc.id,
       publicUrl: attachmentFileUrl(doc.id),
