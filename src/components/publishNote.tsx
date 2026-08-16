@@ -305,24 +305,27 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
           />
           <span>{t('mood.publish.enableAiAnalysis') || 'Enable AI analysis'}</span>
         </label>
-        <VisibilitySelect
-          value={noteVisibility}
-          onValueChange={setNoteVisibility}
-        />
-        <Button
-          onClick={handlePublishNote}
-          disabled={!noteContent.trim() || isPublishing}
-          className="ml-auto"
-        >
-          {isPublishing ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <Send className="h-4 w-4" />
-          )}
-          <span className="ml-1 hidden md:inline">
-            {isPublishing ? t('mood.publish.publishing') : t('mood.publish.action')}
-          </span>
-        </Button>
+        {/* Visibility + publish stay together as one group (ml-auto pushes the
+            pair to the row end; they wrap as a unit, never separately). */}
+        <div className="ml-auto flex flex-shrink-0 items-center gap-2">
+          <VisibilitySelect
+            value={noteVisibility}
+            onValueChange={setNoteVisibility}
+          />
+          <Button
+            onClick={handlePublishNote}
+            disabled={!noteContent.trim() || isPublishing}
+          >
+            {isPublishing ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Send className="h-4 w-4" />
+            )}
+            <span className="ml-1 hidden md:inline">
+              {isPublishing ? t('mood.publish.publishing') : t('mood.publish.action')}
+            </span>
+          </Button>
+        </div>
       </div>
       {/* Selected attachment/location/tag chips */}
       <div className="space-y-2">
