@@ -201,48 +201,103 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
     }
   }
 
+  // Extension icon buttons (each opens its picker in a popover)
+  const extensionIcons = (
+    <>
+      <Popover open={openPicker === 'attach'} onOpenChange={(open) => setOpenPicker(open ? 'attach' : null)}>
+        <PopoverTrigger asChild>
+          <Button type="button" variant="ghost" size="sm" className="px-2" title={t('notes.extensions.attach') || 'Attachments'}>
+            <Paperclip className="h-4 w-4" />
+            {attachments.length > 0 && <span className="ml-1 text-xs text-muted-foreground">{attachments.length}</span>}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-[340px] p-3" align="start">
+          <AttachmentPicker compact inlineResults entityType="note" kind="any" max={4} value={attachments} onChange={setAttachments} />
+        </PopoverContent>
+      </Popover>
+
+      <Popover open={openPicker === 'place'} onOpenChange={(open) => setOpenPicker(open ? 'place' : null)}>
+        <PopoverTrigger asChild>
+          <Button type="button" variant={location ? 'secondary' : 'ghost'} size="sm" className="px-2" title={t('notes.extensions.location') || 'Location'}>
+            <MapPin className="h-4 w-4" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-[340px] p-3" align="start">
+          <PlacePicker value={location} onChange={setLocation} compact inlineResults />
+        </PopoverContent>
+      </Popover>
+
+      <Popover open={openPicker === 'profile'} onOpenChange={(open) => setOpenPicker(open ? 'profile' : null)}>
+        <PopoverTrigger asChild>
+          <Button type="button" variant={profileTags.length > 0 ? 'secondary' : 'ghost'} size="sm" className="px-2" title={t('notes.extensions.people') || 'Tag people'}>
+            <Users className="h-4 w-4" />
+            {profileTags.length > 0 && <span className="ml-1 text-xs text-muted-foreground">{profileTags.length}</span>}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-[340px] p-3" align="start">
+          <EntityTagPicker kind="profile" value={profileTags} onChange={setProfileTags} />
+        </PopoverContent>
+      </Popover>
+
+      <Popover open={openPicker === 'list'} onOpenChange={(open) => setOpenPicker(open ? 'list' : null)}>
+        <PopoverTrigger asChild>
+          <Button type="button" variant={listTags.length > 0 ? 'secondary' : 'ghost'} size="sm" className="px-2" title={t('notes.extensions.lists') || 'Tag lists'}>
+            <ListChecks className="h-4 w-4" />
+            {listTags.length > 0 && <span className="ml-1 text-xs text-muted-foreground">{listTags.length}</span>}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-[340px] p-3" align="start">
+          <EntityTagPicker kind="list" value={listTags} onChange={setListTags} />
+        </PopoverContent>
+      </Popover>
+
+      <Popover open={openPicker === 'task'} onOpenChange={(open) => setOpenPicker(open ? 'task' : null)}>
+        <PopoverTrigger asChild>
+          <Button type="button" variant={taskTags.length > 0 ? 'secondary' : 'ghost'} size="sm" className="px-2" title={t('notes.extensions.tasks') || 'Tag tasks'}>
+            <CheckSquare className="h-4 w-4" />
+            {taskTags.length > 0 && <span className="ml-1 text-xs text-muted-foreground">{taskTags.length}</span>}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-[340px] p-3" align="start">
+          <EntityTagPicker kind="task" value={taskTags} onChange={setTaskTags} />
+        </PopoverContent>
+      </Popover>
+
+      <Popover open={openPicker === 'event'} onOpenChange={(open) => setOpenPicker(open ? 'event' : null)}>
+        <PopoverTrigger asChild>
+          <Button type="button" variant={eventTags.length > 0 ? 'secondary' : 'ghost'} size="sm" className="px-2" title={t('notes.extensions.events') || 'Tag events'}>
+            <Calendar className="h-4 w-4" />
+            {eventTags.length > 0 && <span className="ml-1 text-xs text-muted-foreground">{eventTags.length}</span>}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-[340px] p-3" align="start">
+          <EntityTagPicker kind="event" value={eventTags} onChange={setEventTags} />
+        </PopoverContent>
+      </Popover>
+    </>
+  )
+
   const formContent = (
     <>
-      {/* Mobile: 4-column grid (textarea 3/4, controls 1/4 stacked), Desktop: stacked */}
-      <div className="grid grid-cols-4 gap-2 sm:grid-cols-1 sm:gap-0 mb-0">
-        {recipientId && (
-          <div className="col-span-4 mb-2">
-            <label htmlFor="publish-note-recipient" className="text-xs text-muted-foreground block mb-1">
-              {t('notes.recipient') || 'Recipient'}
-            </label>
-            <Input id="publish-note-recipient" value={recipientLabel || recipientId} readOnly />
-          </div>
-        )}
-        <Textarea 
-          className="col-span-3 sm:col-span-1 mb-0 sm:mb-3 sm:mb-4 w-full" 
-          placeholder={t('mood.publish.placeholder') || 'Write your note here...'}
-          value={noteContent} 
-          onChange={(e) => {
-            setNoteContent(e.target.value)
-          }}
-        />
-        <div className="col-span-1 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4 min-w-0">
-          <VisibilitySelect
-            value={noteVisibility}
-            onValueChange={setNoteVisibility}
-          />
-          <Button
-            onClick={handlePublishNote}
-            disabled={!noteContent.trim() || isPublishing}
-            className="bg-primary text-primary-foreground hover:bg-primary/90 w-full min-h-[40px] sm:w-auto sm:min-h-0 justify-center items-center md:justify-start"
-          >
-            <span className="md:hidden flex items-center justify-center">
-              {isPublishing ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Send className="h-4 w-4" />
-              )}
-            </span>
-            <span className="hidden md:inline">
-              {isPublishing ? t('mood.publish.publishing') : t('mood.publish.action')}
-            </span>
-          </Button>
+      {recipientId && (
+        <div className="mb-2">
+          <label htmlFor="publish-note-recipient" className="text-xs text-muted-foreground block mb-1">
+            {t('notes.recipient') || 'Recipient'}
+          </label>
+          <Input id="publish-note-recipient" value={recipientLabel || recipientId} readOnly />
         </div>
+      )}
+      <Textarea
+        className="mb-3 w-full"
+        placeholder={t('mood.publish.placeholder') || 'Write your note here...'}
+        value={noteContent}
+        onChange={(e) => {
+          setNoteContent(e.target.value)
+        }}
+      />
+      {/* Controls row: extension icons → AI toggle → visibility → publish */}
+      <div className="flex flex-wrap items-center gap-2 mb-2">
+        {extensionIcons}
         <label className="flex items-center gap-2 text-xs text-muted-foreground cursor-pointer">
           <Switch
             checked={aiEnabled}
@@ -250,9 +305,27 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
           />
           <span>{t('mood.publish.enableAiAnalysis') || 'Enable AI analysis'}</span>
         </label>
+        <VisibilitySelect
+          value={noteVisibility}
+          onValueChange={setNoteVisibility}
+        />
+        <Button
+          onClick={handlePublishNote}
+          disabled={!noteContent.trim() || isPublishing}
+          className="ml-auto"
+        >
+          {isPublishing ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Send className="h-4 w-4" />
+          )}
+          <span className="ml-1 hidden md:inline">
+            {isPublishing ? t('mood.publish.publishing') : t('mood.publish.action')}
+          </span>
+        </Button>
       </div>
-      {/* Composer extensions: compact icon toolbar (each opens its picker in a popover) */}
-      <div className="mt-3 space-y-2">
+      {/* Selected attachment/location/tag chips */}
+      <div className="space-y-2">
         {(attachments.length > 0 || location || profileTags.length > 0 || listTags.length > 0 || taskTags.length > 0 || eventTags.length > 0) && (
           <div className="flex flex-wrap items-center gap-1">
             {attachments.map((a) => (
@@ -285,79 +358,6 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
             ))}
           </div>
         )}
-
-        <div className="flex flex-wrap items-center gap-1">
-          <Popover open={openPicker === 'attach'} onOpenChange={(open) => setOpenPicker(open ? 'attach' : null)}>
-            <PopoverTrigger asChild>
-              <Button type="button" variant="ghost" size="sm" className="px-2" title={t('notes.extensions.attach') || 'Attachments'}>
-                <Paperclip className="h-4 w-4" />
-                {attachments.length > 0 && <span className="ml-1 text-xs text-muted-foreground">{attachments.length}</span>}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-[340px] p-3" align="start">
-              <AttachmentPicker compact inlineResults entityType="note" kind="any" max={4} value={attachments} onChange={setAttachments} />
-            </PopoverContent>
-          </Popover>
-
-          <Popover open={openPicker === 'place'} onOpenChange={(open) => setOpenPicker(open ? 'place' : null)}>
-            <PopoverTrigger asChild>
-              <Button type="button" variant={location ? 'secondary' : 'ghost'} size="sm" className="px-2" title={t('notes.extensions.location') || 'Location'}>
-                <MapPin className="h-4 w-4" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-[340px] p-3" align="start">
-              <PlacePicker value={location} onChange={setLocation} compact inlineResults />
-            </PopoverContent>
-          </Popover>
-
-          <Popover open={openPicker === 'profile'} onOpenChange={(open) => setOpenPicker(open ? 'profile' : null)}>
-            <PopoverTrigger asChild>
-              <Button type="button" variant={profileTags.length > 0 ? 'secondary' : 'ghost'} size="sm" className="px-2" title={t('notes.extensions.people') || 'Tag people'}>
-                <Users className="h-4 w-4" />
-                {profileTags.length > 0 && <span className="ml-1 text-xs text-muted-foreground">{profileTags.length}</span>}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-[340px] p-3" align="start">
-              <EntityTagPicker kind="profile" value={profileTags} onChange={setProfileTags} />
-            </PopoverContent>
-          </Popover>
-
-          <Popover open={openPicker === 'list'} onOpenChange={(open) => setOpenPicker(open ? 'list' : null)}>
-            <PopoverTrigger asChild>
-              <Button type="button" variant={listTags.length > 0 ? 'secondary' : 'ghost'} size="sm" className="px-2" title={t('notes.extensions.lists') || 'Tag lists'}>
-                <ListChecks className="h-4 w-4" />
-                {listTags.length > 0 && <span className="ml-1 text-xs text-muted-foreground">{listTags.length}</span>}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-[340px] p-3" align="start">
-              <EntityTagPicker kind="list" value={listTags} onChange={setListTags} />
-            </PopoverContent>
-          </Popover>
-
-          <Popover open={openPicker === 'task'} onOpenChange={(open) => setOpenPicker(open ? 'task' : null)}>
-            <PopoverTrigger asChild>
-              <Button type="button" variant={taskTags.length > 0 ? 'secondary' : 'ghost'} size="sm" className="px-2" title={t('notes.extensions.tasks') || 'Tag tasks'}>
-                <CheckSquare className="h-4 w-4" />
-                {taskTags.length > 0 && <span className="ml-1 text-xs text-muted-foreground">{taskTags.length}</span>}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-[340px] p-3" align="start">
-              <EntityTagPicker kind="task" value={taskTags} onChange={setTaskTags} />
-            </PopoverContent>
-          </Popover>
-
-          <Popover open={openPicker === 'event'} onOpenChange={(open) => setOpenPicker(open ? 'event' : null)}>
-            <PopoverTrigger asChild>
-              <Button type="button" variant={eventTags.length > 0 ? 'secondary' : 'ghost'} size="sm" className="px-2" title={t('notes.extensions.events') || 'Tag events'}>
-                <Calendar className="h-4 w-4" />
-                {eventTags.length > 0 && <span className="ml-1 text-xs text-muted-foreground">{eventTags.length}</span>}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-[340px] p-3" align="start">
-              <EntityTagPicker kind="event" value={eventTags} onChange={setEventTags} />
-            </PopoverContent>
-          </Popover>
-        </div>
       </div>
       {previewUrls.length > 0 && (
         <div className="mt-3">
