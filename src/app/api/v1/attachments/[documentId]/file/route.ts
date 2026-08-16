@@ -93,7 +93,9 @@ export async function GET(
       'Content-Length': String(object.contentLength),
       'Accept-Ranges': 'bytes',
       'X-Content-Type-Options': 'nosniff',
-      'Cache-Control': document.visibility === 'PUBLIC' ? 'public, max-age=300' : 'private, max-age=60'
+      'Cache-Control': document.visibility === 'PUBLIC'
+        ? 'public, max-age=14400'
+        : 'private, max-age=14400'
     })
     if (object.contentRange) {
       headers.set('Content-Range', object.contentRange)
