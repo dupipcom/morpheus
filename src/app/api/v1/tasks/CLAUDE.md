@@ -3,6 +3,7 @@
 ## Routes
 - `GET /api/v1/tasks`
 - `POST /api/v1/tasks`
+- `GET /api/v1/tasks/past-pending`
 - `GET /api/v1/tasks/[taskId]`
 - `PUT /api/v1/tasks/[taskId]`
 - `DELETE /api/v1/tasks/[taskId]`
@@ -21,6 +22,15 @@ Date-aware mode only: requires `date` (YYYY-MM-DD) and `listId`.
 Creates a `Task`. Requires `name` and `listId`; only OWNER/MANAGER. Sanitizes `name`.
 Body fields: `{ name, listId, rrule?, dtstart?, times?, premium?, premiumType?, location?, categories?, area?, status?, visibility?, quality?, redacted?, candidateIds?, localeKey? }`.
 `rrule` is an RFC-5545 string (null = one-off task that appears on every date).
+
+## GET `tasks/past-pending`
+Past occurrences of the list's tasks that are still pending or under review (jobs in
+REQUESTED/IN_PROGRESS/SUBMITTED/VALIDATING), newest occurrence first.
+- Params: `listId` (required), `before` (YYYY-MM-DD, default today, exclusive upper bound),
+  `windowStart` (YYYY-MM-DD, lower bound — applied only on the first page), `cursorDate` +
+  `cursorId` (composite cursor for older pages), `limit` (default 20, max 50).
+- Returns `{ entries, nextCursor }`; each entry is a task enriched like GET `/tasks` plus
+  `jobs`, `occurrenceDate`, `dateStatus`, `dateCount`. One entry per (taskId, occurrenceDate).
 
 ## GET `[taskId]`
 Returns a task with jobs/candidates and simplified financials if the current user is a list member.

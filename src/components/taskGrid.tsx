@@ -27,6 +27,17 @@ interface TaskGridProps {
   onRefresh: () => Promise<void>
   onRefreshUser: () => Promise<void>
   onRefreshTasks?: () => Promise<void>
+  /** Past-day occurrences still pending/under review, newest first */
+  pastEntries?: Array<{
+    task: any
+    jobs: any[]
+    occurrenceDate: string
+    dateStatus?: string
+    dateCount?: number
+  }>
+  hasMorePast?: boolean
+  isLoadingPast?: boolean
+  onLoadPastOlder?: () => void
 }
 
 interface JobDialogState {
@@ -45,6 +56,10 @@ export const TaskGrid = ({
   onRefresh,
   onRefreshUser,
   onRefreshTasks,
+  pastEntries = [],
+  hasMorePast = false,
+  isLoadingPast = false,
+  onLoadPastOlder,
 }: TaskGridProps) => {
   const { t } = useI18n()
   const { revealRedacted } = useContext(GlobalContext)
@@ -112,7 +127,7 @@ export const TaskGrid = ({
         taskId: jobDialog.task.id,
         listId: selectedTaskList?.id,
         workerId: userId,
-        occurrenceDate: date,
+        occurrenceDate: jobDialog.task.pastOccurrenceDate || date,
         justification,
       }
       if (documentIds.length > 0) body.documentIds = documentIds
@@ -193,6 +208,224 @@ export const TaskGrid = ({
     [requestReviewDialog, updateJob]
   )
 
+  // Renders one task card (today's or a past occurrence). Past cards pass
+  // their own occurrence-scoped jobs and a date badge.
+  const renderTaskCard = (
+    task: any,
+    key: string,
+    taskJobs: any[],
+    taskStatus: TaskStatus,
+    occurrenceDate?: string
+  ) => {
+    const isDone = taskStatus === 'done' || taskStatus === 'completed'
+
+    const activeJob = taskJobs.find(
+      (j: any) => !['ACCEPTED', 'REJECTED', 'CANCELLED'].includes(j.status)
+    ) || null
+    const latestJob = taskJobs[0] || null
+    const acceptedJob = taskJobs.find((j: any) => j.status === 'ACCEPTED') || null
+    // All pending work requests (several users may request the same task)
+    const pendingRequests = taskJobs.filter((j: any) => j.status === 'REQUESTED')
+
+    // Financials come from the accepted job (factored) or the API task payload
+    const taskPremium = acceptedJob?.premium ?? task.premium ?? 0
+    const taskTotalGains = acceptedJob?.totalGains ?? task.totalGains ?? taskPremium
+
+    const lastCompleter = Array.isArray(task?.completers) && task.completers.length > 0
+      ? task.completers[task.completers.length - 1]
+      : undefined
+
+    const users = Array.isArray(selectedTaskList?.users) ? selectedTaskList.users : []
+    const collaborators = users.filter((u: any) => u.role === 'COLLABORATOR' || u.role === 'MANAGER')
+    const hasCollaborators = collaborators.length > 0
+
+    const completerName = latestJob
+      ? (latestJob.worker?.profiles?.[0]?.username || collabProfiles[String(latestJob.workerId)] || String(latestJob.workerId))
+      : lastCompleter
+        ? (collabProfiles[String(lastCompleter.id)] || String(lastCompleter.id))
+        : null
+
+    const userRole = getUserRole()
+    const isOwnerOrManager = userRole === 'OWNER' || userRole === 'MANAGER'
+    const isWorker = activeJob?.workerId === userId
+    const approvedJobStatuses = ['IN_PROGRESS', 'SUBMITTED', 'VALIDATING', 'ACCEPTED']
+    const hasApprovedJob = isWorker && activeJob && approvedJobStatuses.includes(activeJob.status)
+    const canChangeStatus = isOwnerOrManager || hasApprovedJob
+
+    // Build the options menu
+    const optionsMenuItems: OptionsMenuItem[] = [
+      ...(canChangeStatus ? STATUS_OPTIONS.map((status) => ({
+        label: (
+          <>
+            <Circle
+              className="h-4 w-4"
+              style={{ fill: getStatusColor(status), color: getStatusColor(status) }}
+            />
+            <span className="ml-2">{t(`tasks.status.${status}`)}</span>
+          </>
+        ),
+        onClick: () => handleStatusChange(task, status),
+        icon: null,
+      })) : []),
+      {
+        label: t('tasks.edit', { defaultValue: 'Edit' }),
+        onClick: () => setEditingTask(task),
+        icon: <Edit className="h-4 w-4" />,
+        separator: true,
+      },
+      {
+        label: t('tasks.incrementTimes', { defaultValue: 'Increment times' }),
+        onClick: () => handleIncrementTimes(task),
+        icon: <Plus className="h-4 w-4" />,
+      },
+      {
+        label: t('tasks.decrementTimes', { defaultValue: 'Decrement times' }),
+        onClick: () => handleDecrementTimes(task),
+        icon: <Minus className="h-4 w-4" />,
+      },
+      {
+        label: task?.redacted ? t('tasks.markAsNotSensitive', { defaultValue: 'Mark as not sensitive' }) : t('tasks.markAsSensitive', { defaultValue: 'Mark as sensitive' }),
+        onClick: () => handleToggleRedacted(task),
+        icon: task?.redacted ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />,
+        separator: true,
+      },
+      ...((task.times || 1) > 1 && (task.dateCount || 0) > 0
+        ? [
+            {
+              label: t('tasks.decrementCount', { defaultValue: 'Decrement count' }),
+              onClick: () => handleDecrementCount(task),
+              icon: <Minus className="h-4 w-4" />,
+            },
+          ]
+        : []),
+      {
+        label: t('tasks.delete', { defaultValue: 'Delete...' }),
+        onClick: () => setDeleteTask(task),
+        icon: <Trash2 className="h-4 w-4" />,
+        separator: true,
+      },
+    ]
+
+    // Job workflow menu items
+    const jobMenuItems: OptionsMenuItem[] = []
+    if (userRole === 'COLLABORATOR' && !activeJob && !isDone) {
+      jobMenuItems.push({
+        label: t('tasks.requestToWork', { defaultValue: 'Request to Work' }),
+        onClick: () => setJobDialog({ mode: 'request', task }),
+        icon: <Send className="h-4 w-4" />,
+        separator: true,
+      })
+    }
+    if (isWorker && (activeJob?.status === 'IN_PROGRESS' || activeJob?.status === 'VALIDATING')) {
+      jobMenuItems.push({
+        label: activeJob.status === 'VALIDATING'
+          ? t('tasks.resubmitWork', { defaultValue: 'Revise and Resubmit' })
+          : t('tasks.submitForReview', { defaultValue: 'Submit for Review' }),
+        onClick: () => setJobDialog({ mode: 'submit', job: activeJob, task }),
+        icon: <Send className="h-4 w-4" />,
+        separator: true,
+      })
+    }
+    if (isWorker && activeJob?.status === 'REQUESTED') {
+      jobMenuItems.push({
+        label: t('tasks.requestPending', { defaultValue: 'Request Pending...' }),
+        onClick: () => {},
+        icon: <Clock className="h-4 w-4" />,
+        disabled: true,
+      })
+    }
+
+    const finalOptionsMenuItems = [...optionsMenuItems, ...jobMenuItems]
+
+    return (
+      <div key={`task__container--${key}`} className="flex flex-col">
+        <TaskItem
+          key={`task__item--${key}`}
+          task={task}
+          taskStatus={taskStatus}
+          statusColor={getStatusColor(taskStatus, 'css')}
+          iconColor={getIconColor(taskStatus)}
+          optionsMenuItems={finalOptionsMenuItems}
+          onClick={() => {
+            // Collaborators must justify their request first
+            if (userRole === 'COLLABORATOR' && !activeJob && !isDone) {
+              setJobDialog({ mode: 'request', task })
+            } else {
+              handleTaskClick(task, occurrenceDate)
+            }
+          }}
+          revealRedacted={revealRedacted}
+          showCompleterBadge={true}
+          completerName={completerName}
+          taskPremium={taskPremium}
+          taskTotalGains={taskTotalGains}
+          hasCollaborators={hasCollaborators}
+          variant={isDone ? 'default' : 'outline'}
+          latestJob={latestJob}
+          isOwnerOrManager={isOwnerOrManager}
+          isCurrentUserWorker={isWorker}
+          dateBadge={occurrenceDate
+            ? t('tasks.pastBadge', { date: occurrenceDate, defaultValue: `Past · ${occurrenceDate}` })
+            : undefined}
+        />
+        {/* Pending work requests: owners/managers see every request as a
+            collapsible accordion item and review it in a detail dialog */}
+        {isOwnerOrManager && pendingRequests.length > 0 && (
+          <Accordion type="multiple" className="mt-2 border rounded-md px-3">
+            {pendingRequests.map((reqJob: any) => {
+              const requesterName =
+                reqJob.worker?.profiles?.[0]?.username ||
+                collabProfiles[String(reqJob.workerId)] ||
+                String(reqJob.workerId)
+              return (
+                <AccordionItem key={reqJob.id} value={reqJob.id} className="border-b last:border-b-0">
+                  <AccordionTrigger className="py-2 text-sm hover:no-underline">
+                    <span className="flex items-center gap-2">
+                      <span className="font-medium">@{requesterName}</span>
+                      {reqJob.occurrenceDate && (
+                        <span className="text-muted-foreground">{reqJob.occurrenceDate}</span>
+                      )}
+                    </span>
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-2 space-y-2">
+                    {reqJob.justification && (
+                      <p className="text-sm text-muted-foreground whitespace-pre-wrap break-words">
+                        {reqJob.justification}
+                      </p>
+                    )}
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setRequestReviewDialog({ job: reqJob, task })}
+                    >
+                      {t('tasks.reviewRequest', { defaultValue: 'Review request' })}
+                    </Button>
+                  </AccordionContent>
+                </AccordionItem>
+              )
+            })}
+          </Accordion>
+        )}
+
+        {activeJob && !(isOwnerOrManager && activeJob.status === 'REQUESTED') && (
+          <JobDetailsCard
+            job={activeJob}
+            userRole={userRole}
+            isParticipant={isOwnerOrManager || isWorker || activeJob.reviewerIds?.includes(userId)}
+            isWorker={isWorker}
+            isRefreshing={refreshingJobId === activeJob.id}
+            onApprove={() => handleWithdraw(activeJob.id)}
+            onReject={() => updateJob(activeJob.id, { status: 'REJECTED' })}
+            onValidate={() => setJobDialog({ mode: 'review', job: activeJob })}
+            onWithdraw={() => handleWithdraw(activeJob.id)}
+            onRequestChanges={() => setJobDialog({ mode: 'review', job: activeJob })}
+            onSubmitWork={() => setJobDialog({ mode: 'submit', job: activeJob, task })}
+          />
+        )}
+      </div>
+    )
+  }
+
   return (
     <>
       <AddTaskForm
@@ -209,214 +442,35 @@ export const TaskGrid = ({
         {sortedTasks.map((task: any) => {
           const key = getTaskKey(task)
           const taskStatus = taskStatuses[key] || getTaskStatus(task)
-          const isDone = taskStatus === 'done' || taskStatus === 'completed'
-
           // Jobs for this task (API returns them newest-first)
           const taskJobs = jobs.filter((j: any) => j.taskId === task.id)
-          const activeJob = taskJobs.find(
-            (j: any) => !['ACCEPTED', 'REJECTED', 'CANCELLED'].includes(j.status)
-          ) || null
-          const latestJob = taskJobs[0] || null
-          const acceptedJob = taskJobs.find((j: any) => j.status === 'ACCEPTED') || null
-          // All pending work requests (several users may request the same task)
-          const pendingRequests = taskJobs.filter((j: any) => j.status === 'REQUESTED')
+          return renderTaskCard(task, key, taskJobs, taskStatus)
+        })}
 
-          // Financials come from the accepted job (factored) or the API task payload
-          const taskPremium = acceptedJob?.premium ?? task.premium ?? 0
-          const taskTotalGains = acceptedJob?.totalGains ?? task.totalGains ?? taskPremium
-
-          const lastCompleter = Array.isArray(task?.completers) && task.completers.length > 0
-            ? task.completers[task.completers.length - 1]
-            : undefined
-
-          const users = Array.isArray(selectedTaskList?.users) ? selectedTaskList.users : []
-          const collaborators = users.filter((u: any) => u.role === 'COLLABORATOR' || u.role === 'MANAGER')
-          const hasCollaborators = collaborators.length > 0
-
-          const completerName = latestJob
-            ? (latestJob.worker?.profiles?.[0]?.username || collabProfiles[String(latestJob.workerId)] || String(latestJob.workerId))
-            : lastCompleter
-              ? (collabProfiles[String(lastCompleter.id)] || String(lastCompleter.id))
-              : null
-
-          const userRole = getUserRole()
-          const isOwnerOrManager = userRole === 'OWNER' || userRole === 'MANAGER'
-          const isWorker = activeJob?.workerId === userId
-          const approvedJobStatuses = ['IN_PROGRESS', 'SUBMITTED', 'VALIDATING', 'ACCEPTED']
-          const hasApprovedJob = isWorker && activeJob && approvedJobStatuses.includes(activeJob.status)
-          const canChangeStatus = isOwnerOrManager || hasApprovedJob
-
-          // Build the options menu
-          const optionsMenuItems: OptionsMenuItem[] = [
-            ...(canChangeStatus ? STATUS_OPTIONS.map((status) => ({
-              label: (
-                <>
-                  <Circle
-                    className="h-4 w-4"
-                    style={{ fill: getStatusColor(status), color: getStatusColor(status) }}
-                  />
-                  <span className="ml-2">{t(`tasks.status.${status}`)}</span>
-                </>
-              ),
-              onClick: () => handleStatusChange(task, status),
-              icon: null,
-            })) : []),
-            {
-              label: t('tasks.edit', { defaultValue: 'Edit' }),
-              onClick: () => setEditingTask(task),
-              icon: <Edit className="h-4 w-4" />,
-              separator: true,
-            },
-            {
-              label: t('tasks.incrementTimes', { defaultValue: 'Increment times' }),
-              onClick: () => handleIncrementTimes(task),
-              icon: <Plus className="h-4 w-4" />,
-            },
-            {
-              label: t('tasks.decrementTimes', { defaultValue: 'Decrement times' }),
-              onClick: () => handleDecrementTimes(task),
-              icon: <Minus className="h-4 w-4" />,
-            },
-            {
-              label: task?.redacted ? t('tasks.markAsNotSensitive', { defaultValue: 'Mark as not sensitive' }) : t('tasks.markAsSensitive', { defaultValue: 'Mark as sensitive' }),
-              onClick: () => handleToggleRedacted(task),
-              icon: task?.redacted ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />,
-              separator: true,
-            },
-            ...((task.times || 1) > 1 && (task.dateCount || 0) > 0
-              ? [
-                  {
-                    label: t('tasks.decrementCount', { defaultValue: 'Decrement count' }),
-                    onClick: () => handleDecrementCount(task),
-                    icon: <Minus className="h-4 w-4" />,
-                  },
-                ]
-              : []),
-            {
-              label: t('tasks.delete', { defaultValue: 'Delete...' }),
-              onClick: () => setDeleteTask(task),
-              icon: <Trash2 className="h-4 w-4" />,
-              separator: true,
-            },
-          ]
-
-          // Job workflow menu items
-          const jobMenuItems: OptionsMenuItem[] = []
-          if (userRole === 'COLLABORATOR' && !activeJob && !isDone) {
-            jobMenuItems.push({
-              label: t('tasks.requestToWork', { defaultValue: 'Request to Work' }),
-              onClick: () => setJobDialog({ mode: 'request', task }),
-              icon: <Send className="h-4 w-4" />,
-              separator: true,
-            })
+        {/* Past-day occurrences still pending / under review, merged into
+            the same grid after today's tasks */}
+        {pastEntries.map((entry: any) => {
+          const pastTask = {
+            ...entry.task,
+            pastOccurrenceDate: entry.occurrenceDate,
+            dateStatus: entry.dateStatus,
+            dateCount: entry.dateCount,
           }
-          if (isWorker && (activeJob?.status === 'IN_PROGRESS' || activeJob?.status === 'VALIDATING')) {
-            jobMenuItems.push({
-              label: activeJob.status === 'VALIDATING'
-                ? t('tasks.resubmitWork', { defaultValue: 'Revise and Resubmit' })
-                : t('tasks.submitForReview', { defaultValue: 'Submit for Review' }),
-              onClick: () => setJobDialog({ mode: 'submit', job: activeJob, task }),
-              icon: <Send className="h-4 w-4" />,
-              separator: true,
-            })
-          }
-          if (isWorker && activeJob?.status === 'REQUESTED') {
-            jobMenuItems.push({
-              label: t('tasks.requestPending', { defaultValue: 'Request Pending...' }),
-              onClick: () => {},
-              icon: <Clock className="h-4 w-4" />,
-              disabled: true,
-            })
-          }
-
-          const finalOptionsMenuItems = [...optionsMenuItems, ...jobMenuItems]
-
-          return (
-            <div key={`task__container--${key}`} className="flex flex-col">
-              <TaskItem
-                key={`task__item--${key}`}
-                task={task}
-                taskStatus={taskStatus}
-                statusColor={getStatusColor(taskStatus, 'css')}
-                iconColor={getIconColor(taskStatus)}
-                optionsMenuItems={finalOptionsMenuItems}
-                onClick={() => {
-                  // Collaborators must justify their request first
-                  if (userRole === 'COLLABORATOR' && !activeJob && !isDone) {
-                    setJobDialog({ mode: 'request', task })
-                  } else {
-                    handleTaskClick(task)
-                  }
-                }}
-                revealRedacted={revealRedacted}
-                showCompleterBadge={true}
-                completerName={completerName}
-                taskPremium={taskPremium}
-                taskTotalGains={taskTotalGains}
-                hasCollaborators={hasCollaborators}
-                variant={isDone ? 'default' : 'outline'}
-                latestJob={latestJob}
-                isOwnerOrManager={isOwnerOrManager}
-                isCurrentUserWorker={isWorker}
-              />
-              {/* Pending work requests: owners/managers see every request as a
-                  collapsible accordion item and review it in a detail dialog */}
-              {isOwnerOrManager && pendingRequests.length > 0 && (
-                <Accordion type="multiple" className="mt-2 border rounded-md px-3">
-                  {pendingRequests.map((reqJob: any) => {
-                    const requesterName =
-                      reqJob.worker?.profiles?.[0]?.username ||
-                      collabProfiles[String(reqJob.workerId)] ||
-                      String(reqJob.workerId)
-                    return (
-                      <AccordionItem key={reqJob.id} value={reqJob.id} className="border-b last:border-b-0">
-                        <AccordionTrigger className="py-2 text-sm hover:no-underline">
-                          <span className="flex items-center gap-2">
-                            <span className="font-medium">@{requesterName}</span>
-                            {reqJob.occurrenceDate && (
-                              <span className="text-muted-foreground">{reqJob.occurrenceDate}</span>
-                            )}
-                          </span>
-                        </AccordionTrigger>
-                        <AccordionContent className="pb-2 space-y-2">
-                          {reqJob.justification && (
-                            <p className="text-sm text-muted-foreground whitespace-pre-wrap break-words">
-                              {reqJob.justification}
-                            </p>
-                          )}
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => setRequestReviewDialog({ job: reqJob, task })}
-                          >
-                            {t('tasks.reviewRequest', { defaultValue: 'Review request' })}
-                          </Button>
-                        </AccordionContent>
-                      </AccordionItem>
-                    )
-                  })}
-                </Accordion>
-              )}
-
-              {activeJob && !(isOwnerOrManager && activeJob.status === 'REQUESTED') && (
-                <JobDetailsCard
-                  job={activeJob}
-                  userRole={userRole}
-                  isParticipant={isOwnerOrManager || isWorker || activeJob.reviewerIds?.includes(userId)}
-                  isWorker={isWorker}
-                  isRefreshing={refreshingJobId === activeJob.id}
-                  onApprove={() => handleWithdraw(activeJob.id)}
-                  onReject={() => updateJob(activeJob.id, { status: 'REJECTED' })}
-                  onValidate={() => setJobDialog({ mode: 'review', job: activeJob })}
-                  onWithdraw={() => handleWithdraw(activeJob.id)}
-                  onRequestChanges={() => setJobDialog({ mode: 'review', job: activeJob })}
-                  onSubmitWork={() => setJobDialog({ mode: 'submit', job: activeJob, task })}
-                />
-              )}
-            </div>
-          )
+          const key = `past:${pastTask.id}:${entry.occurrenceDate}`
+          const taskStatus = getTaskStatus(pastTask)
+          return renderTaskCard(pastTask, key, entry.jobs || [], taskStatus, entry.occurrenceDate)
         })}
       </div>
+
+      {hasMorePast && (
+        <div className="flex justify-center py-4">
+          <Button variant="outline" onClick={onLoadPastOlder} disabled={isLoadingPast}>
+            {isLoadingPast
+              ? t('tasks.loadingOlder', { defaultValue: 'Loading...' })
+              : t('tasks.loadOlder', { defaultValue: 'Load older tasks' })}
+          </Button>
+        </div>
+      )}
 
       <JobDialog
         open={jobDialog !== null}
@@ -448,7 +502,7 @@ export const TaskGrid = ({
         open={deleteTask !== null}
         onOpenChange={(open) => { if (!open) setDeleteTask(null) }}
         task={deleteTask}
-        date={date}
+        date={deleteTask?.pastOccurrenceDate || date}
         onDeleted={async () => {
           await onRefresh()
           await onRefreshUser()
