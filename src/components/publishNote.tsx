@@ -155,7 +155,22 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
                   const commitResponse = await fetch('/api/v1/attachments', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ entityType: 'note', entityId: createdNoteId, key: attachment.key })
+                    // The route requires the full descriptor (key, fileName, kind,
+                    // entityType, entityId) — the picker stores it all on the
+                    // pending attachment for exactly this create-flow commit.
+                    body: JSON.stringify({
+                      entityType: 'note',
+                      entityId: createdNoteId,
+                      key: attachment.key,
+                      fileName: attachment.fileName,
+                      kind: attachment.kind,
+                      mimeType: attachment.mimeType,
+                      ...(attachment.width !== undefined ? { width: attachment.width } : {}),
+                      ...(attachment.height !== undefined ? { height: attachment.height } : {}),
+                      ...(attachment.duration !== undefined ? { duration: attachment.duration } : {}),
+                      ...(attachment.location ? { location: attachment.location } : {}),
+                      ...(attachment.posterPublicUrl ? { posterUrl: attachment.posterPublicUrl } : {})
+                    })
                   })
                   if (!commitResponse.ok) {
                     console.error('Error committing attachment:', await commitResponse.text())
