@@ -146,6 +146,10 @@ export function NotesList({
       isLiked: note.isLiked,
       documents: note.documents,
       taskIds: note.taskIds,
+      profileIds: (note as any).profileIds,
+      listIds: (note as any).listIds,
+      eventIds: (note as any).eventIds,
+      location: (note as any).location,
       _count: note._count
     })),
     [sortedNotes]

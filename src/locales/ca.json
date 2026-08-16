@@ -845,7 +845,12 @@
     "unlikeComment": "No m'agrada el comentari",
     "addComment": "Afegeix un comentari...",
     "showMore": "Mostrar més",
-    "showLess": "Mostrar menys"
+    "showLess": "Mostrar menys",
+    "updated": "Comment updated successfully",
+    "updateFailed": "Failed to update comment",
+    "confirmDelete": "Are you sure you want to delete this comment?",
+    "deleted": "Comment deleted successfully",
+    "deleteFailed": "Failed to delete comment"
   },
   "invest": {
     "notice": "Actualment no hi ha diners reals gestionats en aquesta aplicació. Dupip Invest encara està en fase de planificació. Això és només un entorn de proves per a fins de demostració.",
@@ -1167,6 +1172,13 @@
       "JOB_ACCEPTED": "{{actorName}} approved your work request",
       "JOB_REJECTED": "{{actorName}} declined your work request",
       "LIST_INVITE": "{{actorName}} added you to a list"
+    },
+    "relativeTime": {
+      "justNow": "Just now",
+      "minutesAgo": "{m}m ago",
+      "hoursAgo": "{h}h ago",
+      "daysAgo": "{d}d ago",
+      "weeksAgo": "{w}w ago"
     }
   },
   "components": {

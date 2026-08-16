@@ -845,7 +845,12 @@
     "unlikeComment": "댓글 좋아요 취소",
     "addComment": "댓글 추가...",
     "showMore": "더 보기",
-    "showLess": "접기"
+    "showLess": "접기",
+    "updated": "Comment updated successfully",
+    "updateFailed": "Failed to update comment",
+    "confirmDelete": "Are you sure you want to delete this comment?",
+    "deleted": "Comment deleted successfully",
+    "deleteFailed": "Failed to delete comment"
   },
   "invest": {
     "notice": "이 앱에서는 현재 실제 돈이 관리되지 않습니다. Dupip Invest는 아직 계획 단계에 있습니다. 이것은 시연 목적을 위한 테스트 환경일 뿐입니다.",
@@ -1167,6 +1172,13 @@
       "JOB_ACCEPTED": "{{actorName}} approved your work request",
       "JOB_REJECTED": "{{actorName}} declined your work request",
       "LIST_INVITE": "{{actorName}} added you to a list"
+    },
+    "relativeTime": {
+      "justNow": "Just now",
+      "minutesAgo": "{m}m ago",
+      "hoursAgo": "{h}h ago",
+      "daysAgo": "{d}d ago",
+      "weeksAgo": "{w}w ago"
     }
   },
   "components": {
