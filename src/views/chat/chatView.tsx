@@ -765,7 +765,7 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
   )
 
   return (
-    <main className="mx-auto flex h-[calc(100dvh-160px)] w-full max-w-[1400px] flex-col overflow-hidden px-4 py-2 md:px-6">
+    <main className="z-[9999] mx-auto flex h-[calc(100dvh-160px)] w-full max-w-[1400px] flex-col overflow-hidden px-4 py-2 md:px-6">
       <Dialog open={Boolean(messagePendingDelete)} onOpenChange={(open) => { if (!open) setMessagePendingDelete(null) }}>
         <DialogContent>
           <DialogHeader>
