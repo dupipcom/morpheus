@@ -1023,7 +1023,9 @@
         "resubmitted": "Munca retrimisă pentru revizuire"
       }
     },
-    "justification": "Justification"
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "Notă actualizată cu succes",

@@ -1023,7 +1023,9 @@
         "resubmitted": "Töö uuesti esitatud ülevaatuseks"
       }
     },
-    "justification": "Justification"
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "Märkus edukalt uuendatud",

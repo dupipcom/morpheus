@@ -1054,7 +1054,9 @@
         "submitted": "Work submitted for review",
         "resubmitted": "Work resubmitted for review"
       }
-    }
+    },
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "Note updated successfully",

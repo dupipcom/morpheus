@@ -1027,7 +1027,9 @@
         "resubmitted": "Praca przesłana ponownie do weryfikacji"
       }
     },
-    "justification": "Justification"
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "Notatka zaktualizowana pomyślnie",

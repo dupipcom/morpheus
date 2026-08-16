@@ -1023,7 +1023,9 @@
         "resubmitted": "পর্যালোচনার জন্য কাজ পুনরায় জমা দেওয়া হয়েছে"
       }
     },
-    "justification": "Justification"
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "নোট সফলভাবে আপডেট হয়েছে",

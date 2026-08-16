@@ -1027,7 +1027,9 @@
         "resubmitted": "Arbejde indsendt igen til gennemgang"
       }
     },
-    "justification": "Justification"
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "Note opdateret",

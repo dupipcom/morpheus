@@ -1023,7 +1023,9 @@
         "resubmitted": "Travail resoumis pour révision"
       }
     },
-    "justification": "Justification"
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "Note mise à jour avec succès",

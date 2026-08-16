@@ -10,6 +10,7 @@ import { Lock, User, AlertCircle, CheckCircle, Send, XCircle, Hourglass, Loader2
 import type { JobWithRelations, UserRole } from '@/lib/services/job/types'
 import { useI18n } from '@/lib/contexts/i18n'
 import { sanitizeHTML } from '@/lib/utils/sanitize'
+import { attachmentFileUrl } from '@/components/attachmentPicker'
 
 type JobStatus = 'REQUESTED' | 'IN_PROGRESS' | 'SUBMITTED' | 'VALIDATING' | 'ACCEPTED' | 'REJECTED'
 
@@ -228,6 +229,27 @@ export function JobDetailsCard({
                 </div>
               </div>
             ))}
+          </div>
+        )}
+
+        {/* Attached evidence documents (photos, videos, CV) — streamed through
+            the authenticated media pipe */}
+        {Array.isArray(job.documentIds) && job.documentIds.length > 0 && (
+          <div>
+            <Label className="text-sm font-semibold">{t('jobs.attachedDocuments', { defaultValue: 'Attached documents' })}</Label>
+            <div className="mt-2 space-y-1">
+              {job.documentIds.map((id: string, index: number) => (
+                <a
+                  key={id}
+                  href={attachmentFileUrl(id)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-sm text-primary underline underline-offset-2 hover:no-underline"
+                >
+                  {t('jobs.viewDocument', { defaultValue: 'View document' })} {index + 1}
+                </a>
+              ))}
+            </div>
           </div>
         )}
 

@@ -1027,7 +1027,9 @@
         "resubmitted": "ਕੰਮ ਸਮੀਖਿਆ ਲਈ ਦੁਬਾਰਾ ਜਮ੍ਹਾਂ ਕੀਤਾ ਗਿਆ"
       }
     },
-    "justification": "Justification"
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "ਨੋਟ ਸਫਲਤਾਪੂਰਵਕ ਅੱਪਡੇਟ ਕੀਤਾ ਗਿਆ",

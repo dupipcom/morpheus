@@ -1026,7 +1026,9 @@
         "resubmitted": "Arbete inskickat igen för granskning"
       }
     },
-    "justification": "Justification"
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "Anteckning uppdaterades",

@@ -1027,7 +1027,9 @@
         "resubmitted": "تم إعادة إرسال العمل للمراجعة"
       }
     },
-    "justification": "Justification"
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "تم تحديث الملاحظة بنجاح",

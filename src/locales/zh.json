@@ -1023,7 +1023,9 @@
         "resubmitted": "工作已重新提交审核"
       }
     },
-    "justification": "Justification"
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "笔记更新成功",

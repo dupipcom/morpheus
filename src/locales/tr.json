@@ -1027,7 +1027,9 @@
         "resubmitted": "Çalışma inceleme için yeniden gönderildi"
       }
     },
-    "justification": "Justification"
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "Not başarıyla güncellendi",

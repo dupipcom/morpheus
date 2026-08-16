@@ -256,6 +256,10 @@ export const TaskGrid = ({
 
     const userRole = getUserRole()
     const isOwnerOrManager = userRole === 'OWNER' || userRole === 'MANAGER'
+    // REQUESTED jobs are surfaced to owners/managers in the pending-requests
+    // accordion below; the TaskItem's job badge must not duplicate that entry.
+    const taskItemLatestJob =
+      isOwnerOrManager && latestJob?.status === 'REQUESTED' ? null : latestJob
     const isWorker = activeJob?.workerId === userId
     const approvedJobStatuses = ['IN_PROGRESS', 'SUBMITTED', 'VALIDATING', 'ACCEPTED']
     const hasApprovedJob = isWorker && activeJob && approvedJobStatuses.includes(activeJob.status)
@@ -379,7 +383,7 @@ export const TaskGrid = ({
           taskTotalGains={taskTotalGains}
           hasCollaborators={hasCollaborators}
           variant={isDone ? 'default' : 'outline'}
-          latestJob={latestJob}
+          latestJob={taskItemLatestJob}
           isOwnerOrManager={isOwnerOrManager}
           isCurrentUserWorker={isWorker}
           dateBadge={occurrenceDate

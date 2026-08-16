@@ -1023,7 +1023,9 @@
         "resubmitted": "Werk opnieuw ingediend ter beoordeling"
       }
     },
-    "justification": "Justification"
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "Notitie succesvol bijgewerkt",

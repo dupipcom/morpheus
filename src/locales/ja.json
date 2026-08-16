@@ -1023,7 +1023,9 @@
         "resubmitted": "作業がレビュー用に再提出されました"
       }
     },
-    "justification": "Justification"
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "メモが正常に更新されました",

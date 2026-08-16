@@ -1021,7 +1021,9 @@
         "resubmitted": "Kazi imewasilishwa tena kwa ukaguzi"
       }
     },
-    "justification": "Justification"
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "Dokezo limesasishwa kwa mafanikio",

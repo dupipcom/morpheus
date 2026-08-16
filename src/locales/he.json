@@ -1023,7 +1023,9 @@
         "resubmitted": "עבודה נשלחה מחדש לבדיקה"
       }
     },
-    "justification": "Justification"
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "הפתק עודכן בהצלחה",

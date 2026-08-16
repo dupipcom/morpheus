@@ -1023,7 +1023,9 @@
         "resubmitted": "काम समीक्षा के लिए पुनः जमा किया गया"
       }
     },
-    "justification": "Justification"
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "नोट सफलतापूर्वक अपडेट किया गया",

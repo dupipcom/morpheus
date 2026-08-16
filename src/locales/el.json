@@ -1020,7 +1020,9 @@
         "resubmitted": "Η εργασία επανυποβλήθηκε για έλεγχο"
       }
     },
-    "justification": "Justification"
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "Η σημείωση ενημερώθηκε επιτυχώς",

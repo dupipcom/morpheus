@@ -1023,7 +1023,9 @@
         "resubmitted": "Munka újraküldve felülvizsgálatra"
       }
     },
-    "justification": "Justification"
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "Megjegyzés sikeresen frissítve",

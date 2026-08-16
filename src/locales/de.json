@@ -1023,7 +1023,9 @@
         "resubmitted": "Arbeit erneut zur Überprüfung eingereicht"
       }
     },
-    "justification": "Justification"
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "Notiz erfolgreich aktualisiert",

@@ -1027,7 +1027,9 @@
         "resubmitted": "Kerja diserahkan semula untuk semakan"
       }
     },
-    "justification": "Justification"
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "Nota berjaya dikemaskini",

@@ -1023,7 +1023,9 @@
         "resubmitted": "Trabajo reenviado para revisión"
       }
     },
-    "justification": "Justification"
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "Nota actualizada correctamente",

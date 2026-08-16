@@ -1027,7 +1027,9 @@
         "resubmitted": "Työ lähetetty uudelleen tarkistettavaksi"
       }
     },
-    "justification": "Justification"
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "Muistiinpano päivitetty onnistuneesti",

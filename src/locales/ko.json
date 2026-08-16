@@ -1023,7 +1023,9 @@
         "resubmitted": "작업이 검토를 위해 다시 제출되었습니다"
       }
     },
-    "justification": "Justification"
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "노트가 성공적으로 업데이트되었습니다",
