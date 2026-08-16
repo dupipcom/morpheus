@@ -189,6 +189,29 @@ export const AttachmentPicker = ({
     [kindProp, max, value, enqueue]
   )
 
+  // Canonical extension for a MIME type. Compression can change the output
+  // format (HEIC→JPEG, PNG→WebP, MOV→MP4), and the presign endpoint requires
+  // the declared mimeType to match the fileName extension — so the name must
+  // follow the FINAL blob, not the original file.
+  const EXTENSION_BY_MIME: Record<string, string> = {
+    'image/jpeg': 'jpg',
+    'image/png': 'png',
+    'image/webp': 'webp',
+    'image/gif': 'gif',
+    'image/heic': 'heic',
+    'image/heif': 'heif',
+    'video/mp4': 'mp4',
+    'video/quicktime': 'mov',
+    'video/webm': 'webm',
+    'application/pdf': 'pdf',
+  }
+
+  const fileNameForMime = (fileName: string, mimeType: string): string => {
+    const ext = EXTENSION_BY_MIME[mimeType]
+    if (!ext) return fileName
+    return `${fileName.replace(/\.[^/.]+$/, '')}.${ext}`
+  }
+
   const processItem = async (id: string): Promise<void> => {
     const item = pipelineRef.current.get(id)
     if (!item?.file) return
@@ -233,10 +256,13 @@ export const AttachmentPicker = ({
       if (blob.size > cap) throw new Error('TOO_LARGE_AFTER')
 
       const mimeType = blob.type || item.file.type
+      // The presign endpoint requires mimeType and fileName extension to match;
+      // after compression the blob's format may differ from the original file's.
+      const uploadFileName = fileNameForMime(item.file.name, mimeType)
 
       // 1. Presign the main object.
       const presign = await presignObject({
-        fileName: item.file.name,
+        fileName: uploadFileName,
         mimeType,
         kind,
         size: blob.size,
@@ -266,7 +292,7 @@ export const AttachmentPicker = ({
       const descriptor: PickedAttachment = {
         key: presign.key,
         publicUrl: presign.publicUrl,
-        fileName: item.file.name,
+        fileName: uploadFileName,
         mimeType,
         kind,
         size: blob.size,

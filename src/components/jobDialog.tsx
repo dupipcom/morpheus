@@ -22,9 +22,11 @@ interface JobDialogProps {
   isResubmit?: boolean
   isSubmitting?: boolean
   requestJob?: any
+  /** The active job for submit/review modes (attachments link to it) */
+  job?: any
   userId?: string
   onRequest: (justification: string, documentIds: string[]) => Promise<void> | void
-  onSubmit: (data: { noteContent: string; selfReview: number }) => Promise<void> | void
+  onSubmit: (data: { noteContent: string; selfReview: number; documentIds?: string[]; location?: any }) => Promise<void> | void
   onReview: (data: { action: 'accept' | 'validate' | 'reject'; reviewNoteContent?: string; managerReview?: number }) => Promise<void> | void
   onRequestReview?: (action: 'approve' | 'reject') => Promise<void> | void
 }
@@ -32,7 +34,7 @@ interface JobDialogProps {
 /**
  * Unified job workflow dialog:
  * - request: collaborator justifies their request to work on a task (optionally attaching or reusing a CV)
- * - submit: worker posts evidence (note + self-review; attachments come in Phase 3)
+ * - submit: worker posts evidence — note, self-review, and photo/video/document attachments
  * - review: owner/manager accepts, requests changes, or rejects
  * - requestReview: owner/manager reads a request's justification and approves/rejects
  */
@@ -44,6 +46,7 @@ export const JobDialog = ({
   isResubmit = false,
   isSubmitting = false,
   requestJob = null,
+  job = null,
   userId,
   onRequest,
   onSubmit,
@@ -58,6 +61,7 @@ export const JobDialog = ({
   const [managerReview, setManagerReview] = useState('5')
   const [reviewNoteContent, setReviewNoteContent] = useState('')
   const [pickedAttachments, setPickedAttachments] = useState<PickedAttachment[]>([])
+  const [pickedEvidence, setPickedEvidence] = useState<PickedAttachment[]>([])
   const [previousCvs, setPreviousCvs] = useState<any[]>([])
 
   // Reset fields whenever the dialog (re)opens
@@ -69,6 +73,7 @@ export const JobDialog = ({
       setManagerReview('5')
       setReviewNoteContent('')
       setPickedAttachments([])
+      setPickedEvidence([])
       setPreviousCvs([])
       // Load the caller's previously stored CVs for the reuse picker
       if (mode === 'request') {
@@ -100,6 +105,8 @@ export const JobDialog = ({
 
   // A picked CV counts as "uploading" until the picker commits it (documentId set)
   const isUploadingCv = pickedAttachments.some((a) => a.documentId == null)
+  // Evidence attachments are uploading until the picker commits them
+  const isUploadingEvidence = pickedEvidence.some((a) => a.documentId == null)
 
   // Reuse a previously stored CV: it already has a documentId, so it is submit-ready
   const handleReuseCv = (docId: string) => {
@@ -195,6 +202,24 @@ export const JobDialog = ({
                   onChange={(e) => setSelfReview(e.target.value)}
                 />
               </div>
+              <div className="space-y-2">
+                <Label>{t('tasks.evidenceAttachmentsLabel', { defaultValue: 'Evidence attachments (photos, videos, documents)' })}</Label>
+                {job?.id ? (
+                  <AttachmentPicker
+                    entityType="job"
+                    entityId={job.id}
+                    role="evidence"
+                    kind="any"
+                    max={4}
+                    value={pickedEvidence}
+                    onChange={setPickedEvidence}
+                  />
+                ) : (
+                  <p className="text-xs text-muted-foreground">
+                    {t('tasks.evidenceAttachmentsUnavailable', { defaultValue: 'Attachments are available once the job exists.' })}
+                  </p>
+                )}
+              </div>
             </>
           )}
 
@@ -279,17 +304,32 @@ export const JobDialog = ({
           )}
 
           {mode === 'submit' && (
-            <Button
-              disabled={!noteContent.trim() || isSubmitting}
-              onClick={async () => {
-                await onSubmit({ noteContent: noteContent.trim(), selfReview: Math.max(0, Math.min(100, Number(selfReview) || 0)) })
-                onOpenChange(false)
-              }}
-            >
-              {isResubmit
-                ? t('tasks.resubmit', { defaultValue: 'Resubmit' })
-                : t('tasks.submit', { defaultValue: 'Submit' })}
-            </Button>
+            <>
+              <Button
+                disabled={!noteContent.trim() || isSubmitting || isUploadingEvidence}
+                onClick={async () => {
+                  await onSubmit({
+                    noteContent: noteContent.trim(),
+                    selfReview: Math.max(0, Math.min(100, Number(selfReview) || 0)),
+                    documentIds: pickedEvidence
+                      .map((a) => a.documentId)
+                      .filter((id): id is string => Boolean(id)),
+                    location: pickedEvidence.find((a) => a.location)?.location ?? undefined,
+                  })
+                  onOpenChange(false)
+                }}
+              >
+                {isResubmit
+                  ? t('tasks.resubmit', { defaultValue: 'Resubmit' })
+                  : t('tasks.submit', { defaultValue: 'Submit' })}
+              </Button>
+              {isUploadingEvidence && (
+                <span className="flex items-center gap-1 text-xs text-muted-foreground self-center">
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                  {t('tasks.cv.uploading', { defaultValue: 'Uploading attachment...' })}
+                </span>
+              )}
+            </>
           )}
 
           {mode === 'review' && (

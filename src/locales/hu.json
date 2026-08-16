@@ -235,7 +235,12 @@
       "attachedDocuments": "Attached documents",
       "attachedCount": "{count} attached document(s)",
       "attachedNote": "Links to the attached documents will be available with the documents API."
-    }
+    },
+    "pastBadge": "Past · {date}",
+    "loadOlder": "Load older tasks",
+    "loadingOlder": "Loading...",
+    "evidenceAttachmentsLabel": "Evidence attachments (photos, videos, documents)",
+    "evidenceAttachmentsUnavailable": "Attachments are available once the job exists."
   },
   "actions": {
     "drankWater": "Vizet ivott",

@@ -253,7 +253,9 @@
     },
     "pastBadge": "Past · {date}",
     "loadOlder": "Load older tasks",
-    "loadingOlder": "Loading..."
+    "loadingOlder": "Loading...",
+    "evidenceAttachmentsLabel": "Evidence attachments (photos, videos, documents)",
+    "evidenceAttachmentsUnavailable": "Attachments are available once the job exists."
   },
   "forms": {
     "commonOptions": {

@@ -6,7 +6,7 @@ import { Circle, Minus, Plus, Eye, EyeOff, Edit, Send, Clock, Trash2 } from 'luc
 import { useI18n } from '@/lib/contexts/i18n'
 import { GlobalContext } from '@/lib/contexts'
 import { TaskItem } from '@/components/taskItem'
-import { TaskStatus, STATUS_OPTIONS, getStatusColor, getIconColor, getTaskKey, getTaskEntryKey, getTaskStatus } from '@/lib/utils/taskUtils'
+import { TaskStatus, STATUS_OPTIONS, getStatusColor, getIconColor, getTaskEntryKey, getTaskStatus } from '@/lib/utils/taskUtils'
 import { useTaskStatuses } from '@/lib/hooks/useTaskStatuses'
 import { useTaskHandlers } from '@/lib/hooks/useTaskHandlers'
 import { AddTaskForm } from '@/views/forms/addTaskForm'
@@ -70,7 +70,7 @@ export const TaskGrid = ({
   const [deleteTask, setDeleteTask] = useState<any>(null)
   const [refreshingJobId, setRefreshingJobId] = useState<string | null>(null)
 
-  const { taskStatuses, setTaskStatuses } = useTaskStatuses({
+  const { taskStatuses } = useTaskStatuses({
     tasks,
     selectedTaskListId: selectedTaskList?.id,
     date,
@@ -142,15 +142,24 @@ export const TaskGrid = ({
   )
 
   const handleSubmitWork = useCallback(
-    async (data: { noteContent: string; selfReview: number }) => {
+    async (data: { noteContent: string; selfReview: number; documentIds?: string[]; location?: any }) => {
       if (!jobDialog?.job) return
       setRefreshingJobId(jobDialog.job.id)
       try {
-        await updateJob(jobDialog.job.id, {
+        // Evidence documents replace the job's documentIds (PUT semantics), so
+        // merge with the existing ones (e.g. the CV attached at request time).
+        const existingIds = Array.isArray(jobDialog.job.documentIds) ? jobDialog.job.documentIds : []
+        const mergedIds = Array.from(new Set([...existingIds, ...(data.documentIds || [])]))
+
+        const update: Record<string, unknown> = {
           status: 'SUBMITTED',
           requesterNoteContent: data.noteContent,
           selfReview: data.selfReview,
-        })
+        }
+        if (mergedIds.length > 0) update.documentIds = mergedIds
+        if (data.location) update.location = data.location
+
+        await updateJob(jobDialog.job.id, update)
       } finally {
         setRefreshingJobId(null)
       }
@@ -488,6 +497,7 @@ export const TaskGrid = ({
         taskName={jobDialog?.task?.name}
         isResubmit={jobDialog?.job?.status === 'VALIDATING'}
         isSubmitting={refreshingJobId !== null}
+        job={jobDialog?.job}
         userId={userId}
         onRequest={handleRequestSubmit}
         onSubmit={handleSubmitWork}
