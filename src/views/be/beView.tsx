@@ -12,7 +12,8 @@ import { Badge } from "@/components/ui/badge"
 import { User, UserMinus, Loader2 } from "lucide-react"
 import { Skeleton } from "@/components/ui/skeleton"
 import { toast } from 'sonner'
-import ActivityCard, { ActivityItem as ActivityItemType } from "@/components/activityCard"
+import ActivityCard from "@/components/activityCard"
+import type { ActivityItem } from "@/components/activityCard"
 import { OptionsButton, OptionsMenuItem } from "@/components/optionsButton"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { GlobalContext } from "@/lib/contexts"
@@ -503,7 +504,8 @@ export function BeView({
               userId: (noteData as any)?.userId || noteData?.user?.id || undefined, // Add userId for notes
               user: noteData?.user || templateData?.user || undefined,
               comments: (noteData as any)?.comments || (templateData as any)?.comments || undefined,
-              _count: noteData?._count || templateData?._count
+              _count: noteData?._count || templateData?._count,
+              documents: (noteData as any)?.documents || undefined
             }
             
             const currentUserId = session?.user?.id || null

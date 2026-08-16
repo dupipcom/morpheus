@@ -11,6 +11,7 @@ import { OptionsButton, OptionsMenuItem } from "@/components/optionsButton"
 import { toast } from "sonner"
 import { Popover, PopoverContent, PopoverAnchor } from "@/components/ui/popover"
 import { NoteContent } from "@/components/noteContent"
+import type { NoteDocumentRef } from "@/components/noteAttachments"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdownMenu"
 
 export interface Comment {
@@ -50,6 +51,7 @@ export interface ActivityItem {
   date?: string
   budget?: string | null // For tasklists
   dueDate?: string | null // For tasklists
+  documents?: NoteDocumentRef[] | null // Attached documents for notes
   isLiked?: boolean // Whether current user has liked this item (if provided, skip fetching)
   userId?: string // User ID who owns this item (for checking ownership)
   user?: {
@@ -883,6 +885,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
             content={noteContent}
             truncate={!isExpanded && noteContent.length > 150}
             maxLength={150}
+            documents={item.documents}
           >
             {/* Expand button – centred horizontally below the text, above link previews */}
             {(noteContent.length > 150 || commentCount > 0) && (
