@@ -62,6 +62,8 @@ interface AttachmentPickerProps {
   accept?: string
   /** Compact mode: a small "Add files" button instead of the drag/drop clipboard zone */
   compact?: boolean
+  /** Forwarded to the embedded PlacePicker (required when this picker sits inside a Popover) */
+  inlineResults?: boolean
   value: PickedAttachment[]
   onChange: (attachments: PickedAttachment[]) => void
 }
@@ -93,6 +95,7 @@ export const AttachmentPicker = ({
   max = 4,
   accept,
   compact = false,
+  inlineResults = false,
   value,
   onChange,
 }: AttachmentPickerProps) => {
@@ -593,6 +596,7 @@ export const AttachmentPicker = ({
                       value={item.location}
                       onChange={(loc) => setLocation(item, loc)}
                       compact
+                      inlineResults={inlineResults}
                     />
                   )}
 

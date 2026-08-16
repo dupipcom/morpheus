@@ -26,6 +26,13 @@ interface PlacePickerProps {
   value?: PlaceLocation | null
   onChange: (loc: PlaceLocation | null) => void
   compact?: boolean
+  /**
+   * Render results as a plain absolute dropdown instead of a Radix Popover.
+   * REQUIRED when this picker lives inside another Popover: a nested Radix
+   * layer portals outside the outer popover, and every interaction with it
+   * dismisses the outer popover (making the search box unusable).
+   */
+  inlineResults?: boolean
 }
 
 const MIN_QUERY_LENGTH = 3
@@ -36,7 +43,7 @@ const DEBOUNCE_MS = 300
  * keyboard navigable, with "use my current location" and a manual
  * lat/lng escape hatch. Emits the canonical PlaceLocation shape.
  */
-export const PlacePicker = ({ value, onChange, compact = false }: PlacePickerProps) => {
+export const PlacePicker = ({ value, onChange, compact = false, inlineResults = false }: PlacePickerProps) => {
   const { t } = useI18n()
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<PlacePrediction[]>([])
@@ -207,8 +214,16 @@ export const PlacePicker = ({ value, onChange, compact = false }: PlacePickerPro
         </div>
       ) : (
         <>
-          <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild>
+          {inlineResults ? (
+            <div
+              className="relative"
+              onBlur={(e) => {
+                // Close when focus leaves both the input and the results list
+                if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
+                  setOpen(false)
+                }
+              }}
+            >
               <Input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
@@ -223,44 +238,99 @@ export const PlacePicker = ({ value, onChange, compact = false }: PlacePickerPro
                 aria-autocomplete="list"
                 aria-label={t('components.placePicker.placeholder', { defaultValue: 'Search for a place...' })}
               />
-            </PopoverTrigger>
-            <PopoverContent
-              id="place-picker-results"
-              align="start"
-              className="w-(--radix-popover-trigger-width) p-1"
-              onOpenAutoFocus={(e) => e.preventDefault()}
-            >
-              {searching ? (
-                <p className="px-3 py-2 text-sm text-muted-foreground">
-                  {t('components.placePicker.searching', { defaultValue: 'Searching...' })}
-                </p>
-              ) : results.length === 0 ? (
-                <p className="px-3 py-2 text-sm text-muted-foreground">
-                  {t('components.placePicker.noResults', { defaultValue: 'No results found' })}
-                </p>
-              ) : (
-                <ul className="max-h-60 overflow-y-auto" role="listbox" aria-label={t('components.placePicker.resultsLabel', { defaultValue: 'Place results' })}>
-                  {results.map((r, i) => (
-                    <li key={r.placeId}>
-                      <button
-                        type="button"
-                        role="option"
-                        aria-selected={i === highlighted}
-                        className={cn(
-                          'w-full rounded-sm px-3 py-2 text-left text-sm transition-colors',
-                          i === highlighted ? 'bg-muted' : 'hover:bg-muted'
-                        )}
-                        onMouseEnter={() => setHighlighted(i)}
-                        onClick={() => pickResult(r)}
-                      >
-                        {r.description}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
+              {open && (
+                <div
+                  id="place-picker-results"
+                  className="absolute left-0 right-0 top-full z-10 mt-1 max-h-60 overflow-y-auto rounded-md border bg-popover p-1 shadow-md"
+                >
+                  {searching ? (
+                    <p className="px-3 py-2 text-sm text-muted-foreground">
+                      {t('components.placePicker.searching', { defaultValue: 'Searching...' })}
+                    </p>
+                  ) : results.length === 0 ? (
+                    <p className="px-3 py-2 text-sm text-muted-foreground">
+                      {t('components.placePicker.noResults', { defaultValue: 'No results found' })}
+                    </p>
+                  ) : (
+                    <ul role="listbox" aria-label={t('components.placePicker.resultsLabel', { defaultValue: 'Place results' })}>
+                      {results.map((r, i) => (
+                        <li key={r.placeId}>
+                          <button
+                            type="button"
+                            role="option"
+                            aria-selected={i === highlighted}
+                            className={cn(
+                              'w-full rounded-sm px-3 py-2 text-left text-sm transition-colors',
+                              i === highlighted ? 'bg-muted' : 'hover:bg-muted'
+                            )}
+                            onMouseEnter={() => setHighlighted(i)}
+                            onClick={() => pickResult(r)}
+                          >
+                            {r.description}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
               )}
-            </PopoverContent>
-          </Popover>
+            </div>
+          ) : (
+            <Popover open={open} onOpenChange={setOpen}>
+              <PopoverTrigger asChild>
+                <Input
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  onFocus={() => {
+                    if (results.length > 0) setOpen(true)
+                  }}
+                  placeholder={t('components.placePicker.placeholder', { defaultValue: 'Search for a place...' })}
+                  role="combobox"
+                  aria-expanded={open}
+                  aria-controls="place-picker-results"
+                  aria-autocomplete="list"
+                  aria-label={t('components.placePicker.placeholder', { defaultValue: 'Search for a place...' })}
+                />
+              </PopoverTrigger>
+              <PopoverContent
+                id="place-picker-results"
+                align="start"
+                className="w-(--radix-popover-trigger-width) p-1"
+                onOpenAutoFocus={(e) => e.preventDefault()}
+              >
+                {searching ? (
+                  <p className="px-3 py-2 text-sm text-muted-foreground">
+                    {t('components.placePicker.searching', { defaultValue: 'Searching...' })}
+                  </p>
+                ) : results.length === 0 ? (
+                  <p className="px-3 py-2 text-sm text-muted-foreground">
+                    {t('components.placePicker.noResults', { defaultValue: 'No results found' })}
+                  </p>
+                ) : (
+                  <ul className="max-h-60 overflow-y-auto" role="listbox" aria-label={t('components.placePicker.resultsLabel', { defaultValue: 'Place results' })}>
+                    {results.map((r, i) => (
+                      <li key={r.placeId}>
+                        <button
+                          type="button"
+                          role="option"
+                          aria-selected={i === highlighted}
+                          className={cn(
+                            'w-full rounded-sm px-3 py-2 text-left text-sm transition-colors',
+                            i === highlighted ? 'bg-muted' : 'hover:bg-muted'
+                          )}
+                          onMouseEnter={() => setHighlighted(i)}
+                          onClick={() => pickResult(r)}
+                        >
+                          {r.description}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </PopoverContent>
+            </Popover>
+          )}
 
           {error && <p className="text-xs text-destructive">{error}</p>}
 

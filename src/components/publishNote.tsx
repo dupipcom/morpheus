@@ -295,7 +295,7 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-[340px] p-3" align="start">
-              <AttachmentPicker compact entityType="note" kind="any" max={4} value={attachments} onChange={setAttachments} />
+              <AttachmentPicker compact inlineResults entityType="note" kind="any" max={4} value={attachments} onChange={setAttachments} />
             </PopoverContent>
           </Popover>
 
@@ -306,7 +306,7 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-[340px] p-3" align="start">
-              <PlacePicker value={location} onChange={setLocation} compact />
+              <PlacePicker value={location} onChange={setLocation} compact inlineResults />
             </PopoverContent>
           </Popover>
 
