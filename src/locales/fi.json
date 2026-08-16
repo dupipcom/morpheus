@@ -185,7 +185,8 @@
       "ready": "Valmis",
       "open": "Avoin",
       "done": "Valmis",
-      "ignored": "Sivuutettu"
+      "ignored": "Sivuutettu",
+      "completed": "Completed"
     },
     "edit": "Muokkaa",
     "loadingForDate": "Ladataan tehtäviä valitulle päivämäärälle...",
@@ -218,7 +219,17 @@
     "submit": "Palauta",
     "accept": "Hyväksy",
     "requestChanges": "Pyydä muutoksia",
-    "reject": "Hylkää"
+    "reject": "Hylkää",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided."
   },
   "actions": {
     "drankWater": "Joi vettä",
@@ -677,7 +688,9 @@
       "noBudgets": "Ei vielä budjetteja — lisää yksi alle.",
       "newBudgetName": "Budjetin nimi",
       "confirmDelete": "Poista tämä lista ja kaikki sen tehtävät? Tätä ei voi peruuttaa.",
-      "delete": "Poista"
+      "delete": "Poista",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Luo uusi malli",
@@ -967,7 +980,8 @@
         "submitted": "Työ lähetetty tarkistettavaksi",
         "resubmitted": "Työ lähetetty uudelleen tarkistettavaksi"
       }
-    }
+    },
+    "justification": "Justification"
   },
   "notes": {
     "updated": "Muistiinpano päivitetty onnistuneesti",

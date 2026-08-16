@@ -181,7 +181,8 @@
       "ready": "Tayari",
       "open": "Wazi",
       "done": "Imekamilika",
-      "ignored": "Imepuuzwa"
+      "ignored": "Imepuuzwa",
+      "completed": "Completed"
     },
     "edit": "Hariri",
     "loadingForDate": "Inapakia kazi kwa tarehe iliyochaguliwa...",
@@ -214,7 +215,17 @@
     "submit": "Wasilisha",
     "accept": "Kubali",
     "requestChanges": "Omba mabadiliko",
-    "reject": "Kataa"
+    "reject": "Kataa",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided."
   },
   "settings": {
     "title": "Mipangilio",
@@ -688,7 +699,9 @@
       "noBudgets": "Hakuna bajeti bado — ongeza moja hapa chini.",
       "newBudgetName": "Jina la bajeti",
       "confirmDelete": "Futa orodha hii na kazi zake zote? Haiwezi kutenduliwa.",
-      "delete": "Futa"
+      "delete": "Futa",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Unda Kiolezo Kipya",
@@ -961,7 +974,8 @@
         "submitted": "Kazi imewasilishwa kwa ukaguzi",
         "resubmitted": "Kazi imewasilishwa tena kwa ukaguzi"
       }
-    }
+    },
+    "justification": "Justification"
   },
   "notes": {
     "updated": "Dokezo limesasishwa kwa mafanikio",

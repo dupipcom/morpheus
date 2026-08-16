@@ -181,7 +181,8 @@
       "ready": "Připraveno",
       "open": "Otevřeno",
       "done": "Hotovo",
-      "ignored": "Ignorováno"
+      "ignored": "Ignorováno",
+      "completed": "Completed"
     },
     "edit": "Upravit",
     "loadingForDate": "Načítání úkolů pro vybrané datum...",
@@ -214,7 +215,17 @@
     "submit": "Odevzdat",
     "accept": "Přijmout",
     "requestChanges": "Požádat o změny",
-    "reject": "Odmítnout"
+    "reject": "Odmítnout",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided."
   },
   "actions": {
     "drankWater": "Vypil vodu",
@@ -673,7 +684,9 @@
       "noBudgets": "Zatím žádné rozpočty — přidejte jeden níže.",
       "newBudgetName": "Název rozpočtu",
       "confirmDelete": "Smazat tento seznam a všechny jeho úkoly? Nelze vrátit zpět.",
-      "delete": "Smazat"
+      "delete": "Smazat",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Vytvořit novou šablonu",
@@ -963,7 +976,8 @@
         "submitted": "Práce odeslána k posouzení",
         "resubmitted": "Práce znovu odeslána k posouzení"
       }
-    }
+    },
+    "justification": "Justification"
   },
   "notes": {
     "updated": "Poznámka úspěšně aktualizována",

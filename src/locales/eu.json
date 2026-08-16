@@ -184,7 +184,8 @@
       "ready": "Prest",
       "open": "Ireki",
       "done": "Eginda",
-      "ignored": "Ezikusia"
+      "ignored": "Ezikusia",
+      "completed": "Completed"
     },
     "edit": "Editatu",
     "loadingForDate": "Hautatutako datarako zereginak kargatzen...",
@@ -217,7 +218,17 @@
     "submit": "Entregatu",
     "accept": "Onartu",
     "requestChanges": "Aldaketak eskatu",
-    "reject": "Baztertu"
+    "reject": "Baztertu",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided."
   },
   "actions": {
     "drankWater": "Ura edan zuen",
@@ -676,7 +687,9 @@
       "noBudgets": "Oraindik ez dago aurrekonturik — gehitu bat behean.",
       "newBudgetName": "Aurrekontuaren izena",
       "confirmDelete": "Zerrenda hau eta bere zeregin guztiak ezabatu? Ezin da desegin.",
-      "delete": "Ezabatu"
+      "delete": "Ezabatu",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Txantiloi berria sortu",
@@ -966,7 +979,8 @@
         "submitted": "Lana berrikusteko bidali da",
         "resubmitted": "Lana berrikusteko birbidali da"
       }
-    }
+    },
+    "justification": "Justification"
   },
   "notes": {
     "updated": "Oharra eguneratuta",

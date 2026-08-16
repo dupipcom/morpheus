@@ -184,7 +184,8 @@
       "ready": "Listo",
       "open": "Aberto",
       "done": "Feito",
-      "ignored": "Ignorado"
+      "ignored": "Ignorado",
+      "completed": "Completed"
     },
     "edit": "Editar",
     "loadingForDate": "Cargando tarefas para a data seleccionada...",
@@ -217,7 +218,17 @@
     "submit": "Entregar",
     "accept": "Aceptar",
     "requestChanges": "Pedir cambios",
-    "reject": "Rexeitar"
+    "reject": "Rexeitar",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided."
   },
   "actions": {
     "drankWater": "Bebeu auga",
@@ -676,7 +687,9 @@
       "noBudgets": "Aínda non hai orzamentos — engade un abaixo.",
       "newBudgetName": "Nome do orzamento",
       "confirmDelete": "Eliminar esta lista e todas as súas tarefas? Non se pode desfacer.",
-      "delete": "Eliminar"
+      "delete": "Eliminar",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Crear novo modelo",
@@ -966,7 +979,8 @@
         "submitted": "Traballo enviado para revisión",
         "resubmitted": "Traballo reenviado para revisión"
       }
-    }
+    },
+    "justification": "Justification"
   },
   "notes": {
     "updated": "Nota actualizada correctamente",

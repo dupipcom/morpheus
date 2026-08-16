@@ -185,7 +185,8 @@
       "ready": "ਤਿਆਰ",
       "open": "ਖੁੱਲ੍ਹਾ",
       "done": "ਪੂਰਾ",
-      "ignored": "ਅਣਡਿੱਠ"
+      "ignored": "ਅਣਡਿੱਠ",
+      "completed": "Completed"
     },
     "edit": "ਸੰਪਾਦਿਤ ਕਰੋ",
     "loadingForDate": "ਚੁਣੀ ਗਈ ਤਾਰੀਖ਼ ਲਈ ਕੰਮ ਲੋਡ ਹੋ ਰਹੇ ਹਨ...",
@@ -218,7 +219,17 @@
     "submit": "ਜਮ੍ਹਾਂ ਕਰੋ",
     "accept": "ਸਵੀਕਾਰ ਕਰੋ",
     "requestChanges": "ਬਦਲਾਅ ਮੰਗੋ",
-    "reject": "ਰੱਦ ਕਰੋ"
+    "reject": "ਰੱਦ ਕਰੋ",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided."
   },
   "actions": {
     "drankWater": "ਪਾਣੀ ਪੀਤਾ",
@@ -677,7 +688,9 @@
       "noBudgets": "ਅਜੇ ਕੋਈ ਬਜਟ ਨਹੀਂ — ਹੇਠਾਂ ਇੱਕ ਜੋੜੋ।",
       "newBudgetName": "ਬਜਟ ਦਾ ਨਾਮ",
       "confirmDelete": "ਇਹ ਸੂਚੀ ਅਤੇ ਇਸਦੇ ਸਾਰੇ ਕੰਮ ਮਿਟਾਓ? ਵਾਪਸ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ।",
-      "delete": "ਮਿਟਾਓ"
+      "delete": "ਮਿਟਾਓ",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "ਨਵਾਂ ਟੈਂਪਲੇਟ ਬਣਾਓ",
@@ -967,7 +980,8 @@
         "submitted": "ਕੰਮ ਸਮੀਖਿਆ ਲਈ ਜਮ੍ਹਾਂ ਕੀਤਾ ਗਿਆ",
         "resubmitted": "ਕੰਮ ਸਮੀਖਿਆ ਲਈ ਦੁਬਾਰਾ ਜਮ੍ਹਾਂ ਕੀਤਾ ਗਿਆ"
       }
-    }
+    },
+    "justification": "Justification"
   },
   "notes": {
     "updated": "ਨੋਟ ਸਫਲਤਾਪੂਰਵਕ ਅੱਪਡੇਟ ਕੀਤਾ ਗਿਆ",

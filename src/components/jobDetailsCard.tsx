@@ -79,9 +79,11 @@ function StatusBanner({ status, variant, workerName }: StatusBannerProps) {
     ? { ...baseConfig, ...OWNER_STYLE_OVERRIDES[jobStatus] }
     : baseConfig
 
+  // Locale keys are camelCase (e.g. jobs.worker.statusBanner.inProgress)
+  const statusKey = status === 'IN_PROGRESS' ? 'inProgress' : status.toLowerCase()
   const translationKey = variant === 'worker'
-    ? `jobs.worker.statusBanner.${status.toLowerCase()}`
-    : `jobs.owner.statusBanner.${status.toLowerCase()}`
+    ? `jobs.worker.statusBanner.${statusKey}`
+    : `jobs.owner.statusBanner.${statusKey}`
 
   const message = variant === 'owner' && workerName
     ? t(translationKey, { workerName: `@${workerName}` })
@@ -135,7 +137,9 @@ export function JobDetailsCard({
   }
 
   function getStatusLabel(status: string): string {
-    const key = status === 'VALIDATING' ? 'changesRequested' : status.toLowerCase().replace('_', '')
+    if (status === 'VALIDATING') return t('jobs.status.changesRequested') || status
+    // Locale keys are camelCase (e.g. jobs.status.inProgress)
+    const key = status === 'IN_PROGRESS' ? 'inProgress' : status.toLowerCase()
     return t(`jobs.status.${key}`) || status
   }
 
@@ -195,6 +199,16 @@ export function JobDetailsCard({
           />
         )}
 
+        {/* Request justification (requesters explain why they want the task) */}
+        {job.status === 'REQUESTED' && job.justification && (
+          <div>
+            <Label className="text-sm font-semibold">{t('jobs.justification', { defaultValue: 'Justification' })}</Label>
+            <div className="mt-2 p-3 bg-muted rounded-md">
+              <p className="text-sm whitespace-pre-wrap break-words">{job.justification}</p>
+            </div>
+          </div>
+        )}
+
         {/* Worker's Submission Notes */}
         {job.requesterNotes && job.requesterNotes.length > 0 && (
           <div>
@@ -206,7 +220,7 @@ export function JobDetailsCard({
               >
                 <div
                   className="prose prose-sm dark:prose-invert max-w-none"
-                  dangerouslySetInnerHTML={{ __html: note.content }}
+                  dangerouslySetInnerHTML={{ __html: sanitizeHTML(note.content) }}
                 />
                 <div className="text-xs text-muted-foreground">
                   {new Date(note.createdAt).toLocaleDateString()} at{' '}

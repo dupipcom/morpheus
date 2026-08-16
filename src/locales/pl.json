@@ -185,7 +185,8 @@
       "ready": "Gotowy",
       "open": "Otwarty",
       "done": "Ukończony",
-      "ignored": "Zignorowany"
+      "ignored": "Zignorowany",
+      "completed": "Completed"
     },
     "edit": "Edytuj",
     "loadingForDate": "Ładowanie zadań dla wybranej daty...",
@@ -218,7 +219,17 @@
     "submit": "Oddaj",
     "accept": "Zaakceptuj",
     "requestChanges": "Poproś o zmiany",
-    "reject": "Odrzuć"
+    "reject": "Odrzuć",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided."
   },
   "actions": {
     "drankWater": "Wypił wodę",
@@ -694,7 +705,9 @@
       "noBudgets": "Brak budżetów — dodaj jeden poniżej.",
       "newBudgetName": "Nazwa budżetu",
       "confirmDelete": "Usunąć tę listę i wszystkie jej zadania? Nie można cofnąć.",
-      "delete": "Usuń"
+      "delete": "Usuń",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Utwórz nowy szablon",
@@ -967,7 +980,8 @@
         "submitted": "Praca przesłana do weryfikacji",
         "resubmitted": "Praca przesłana ponownie do weryfikacji"
       }
-    }
+    },
+    "justification": "Justification"
   },
   "notes": {
     "updated": "Notatka zaktualizowana pomyślnie",

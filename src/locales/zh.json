@@ -181,7 +181,8 @@
       "ready": "就绪",
       "open": "待办",
       "done": "完成",
-      "ignored": "已忽略"
+      "ignored": "已忽略",
+      "completed": "Completed"
     },
     "edit": "编辑",
     "loadingForDate": "正在加载所选日期的任务...",
@@ -214,7 +215,17 @@
     "submit": "提交",
     "accept": "接受",
     "requestChanges": "要求修改",
-    "reject": "拒绝"
+    "reject": "拒绝",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided."
   },
   "settings": {
     "title": "设置",
@@ -690,7 +701,9 @@
       "noBudgets": "还没有预算 — 在下面添加一个。",
       "newBudgetName": "预算名称",
       "confirmDelete": "删除此列表及其所有任务？无法撤销。",
-      "delete": "删除"
+      "delete": "删除",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "创建新模板",
@@ -963,7 +976,8 @@
         "submitted": "工作已提交审核",
         "resubmitted": "工作已重新提交审核"
       }
-    }
+    },
+    "justification": "Justification"
   },
   "notes": {
     "updated": "笔记更新成功",

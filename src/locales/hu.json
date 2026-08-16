@@ -179,7 +179,8 @@
       "ready": "Kész",
       "open": "Nyitott",
       "done": "Kész",
-      "ignored": "Figyelmen kívül hagyva"
+      "ignored": "Figyelmen kívül hagyva",
+      "completed": "Completed"
     },
     "markAsSensitive": "Mark as sensitive",
     "markAsNotSensitive": "Mark as not sensitive",
@@ -214,7 +215,17 @@
     "submit": "Leadás",
     "accept": "Elfogadás",
     "requestChanges": "Módosítás kérése",
-    "reject": "Elutasítás"
+    "reject": "Elutasítás",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided."
   },
   "actions": {
     "drankWater": "Vizet ivott",
@@ -673,7 +684,9 @@
       "noBudgets": "Még nincs költségvetés — adj hozzá egyet lent.",
       "newBudgetName": "Költségvetés neve",
       "confirmDelete": "Törlöd ezt a listát és minden feladatát? Nem vonható vissza.",
-      "delete": "Törlés"
+      "delete": "Törlés",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Új sablon létrehozása",
@@ -963,7 +976,8 @@
         "submitted": "Munka elküldve felülvizsgálatra",
         "resubmitted": "Munka újraküldve felülvizsgálatra"
       }
-    }
+    },
+    "justification": "Justification"
   },
   "notes": {
     "updated": "Megjegyzés sikeresen frissítve",

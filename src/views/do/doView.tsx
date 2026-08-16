@@ -148,18 +148,16 @@ export const DoView = ({
 
   return (
     <>
-      {showAddTask && (
-        <div className="mb-4">
-          <AddTaskForm
-            selectedTaskListId={selectedTaskListId}
-            onCancel={onCloseAddTask || (() => {})}
-            onCreated={async () => {
-              await handleRefreshJobData()
-              if (onCloseAddTask) onCloseAddTask()
-            }}
-          />
-        </div>
-      )}
+      <AddTaskForm
+        open={showAddTask || false}
+        onOpenChange={(open) => {
+          if (!open && onCloseAddTask) onCloseAddTask()
+        }}
+        selectedTaskListId={selectedTaskListId}
+        onCreated={async () => {
+          await handleRefreshJobData()
+        }}
+      />
 
       <AddListForm
         open={showAddList || false}

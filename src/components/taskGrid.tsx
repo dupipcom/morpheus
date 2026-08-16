@@ -13,6 +13,8 @@ import { AddTaskForm } from '@/views/forms/addTaskForm'
 import { JobDetailsCard } from '@/components/jobDetailsCard'
 import { JobDialog, JobDialogMode } from '@/components/jobDialog'
 import { DeleteTaskDialog } from '@/components/deleteTaskDialog'
+import { Button } from '@/components/ui/button'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import type { JobWithRelations, UserRole } from '@/lib/services/job/types'
 
 interface TaskGridProps {
@@ -49,6 +51,7 @@ export const TaskGrid = ({
 
   const [editingTask, setEditingTask] = useState<any>(null)
   const [jobDialog, setJobDialog] = useState<JobDialogState | null>(null)
+  const [requestReviewDialog, setRequestReviewDialog] = useState<{ job: any; task: any } | null>(null)
   const [deleteTask, setDeleteTask] = useState<any>(null)
   const [refreshingJobId, setRefreshingJobId] = useState<string | null>(null)
 
@@ -172,20 +175,34 @@ export const TaskGrid = ({
     [updateJob]
   )
 
+  // Approve/reject a pending work request from the request-review dialog
+  const handleRequestReview = useCallback(
+    async (action: 'approve' | 'reject') => {
+      if (!requestReviewDialog?.job) return
+      setRefreshingJobId(requestReviewDialog.job.id)
+      try {
+        await updateJob(requestReviewDialog.job.id, {
+          status: action === 'approve' ? 'IN_PROGRESS' : 'REJECTED'
+        })
+      } finally {
+        setRefreshingJobId(null)
+      }
+    },
+    [requestReviewDialog, updateJob]
+  )
+
   return (
     <>
-      {editingTask && (
-        <AddTaskForm
-          selectedTaskListId={selectedTaskList?.id}
-          editTask={editingTask}
-          onCancel={() => setEditingTask(null)}
-          onCreated={async () => {
-            await onRefresh()
-            if (onRefreshTasks) await onRefreshTasks()
-            setEditingTask(null)
-          }}
-        />
-      )}
+      <AddTaskForm
+        open={editingTask !== null}
+        onOpenChange={(open) => { if (!open) setEditingTask(null) }}
+        selectedTaskListId={selectedTaskList?.id}
+        editTask={editingTask}
+        onCreated={async () => {
+          await onRefresh()
+          if (onRefreshTasks) await onRefreshTasks()
+        }}
+      />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 w-full">
         {sortedTasks.map((task: any) => {
           const key = getTaskKey(task)
@@ -199,6 +216,8 @@ export const TaskGrid = ({
           ) || null
           const latestJob = taskJobs[0] || null
           const acceptedJob = taskJobs.find((j: any) => j.status === 'ACCEPTED') || null
+          // All pending work requests (several users may request the same task)
+          const pendingRequests = taskJobs.filter((j: any) => j.status === 'REQUESTED')
 
           // Financials come from the accepted job (factored) or the API task payload
           const taskPremium = acceptedJob?.premium ?? task.premium ?? 0
@@ -338,7 +357,46 @@ export const TaskGrid = ({
                 isOwnerOrManager={isOwnerOrManager}
                 isCurrentUserWorker={isWorker}
               />
-              {activeJob && (
+              {/* Pending work requests: owners/managers see every request as a
+                  collapsible accordion item and review it in a detail dialog */}
+              {isOwnerOrManager && pendingRequests.length > 0 && (
+                <Accordion type="multiple" className="mt-2 border rounded-md px-3">
+                  {pendingRequests.map((reqJob: any) => {
+                    const requesterName =
+                      reqJob.worker?.profiles?.[0]?.username ||
+                      collabProfiles[String(reqJob.workerId)] ||
+                      String(reqJob.workerId)
+                    return (
+                      <AccordionItem key={reqJob.id} value={reqJob.id} className="border-b last:border-b-0">
+                        <AccordionTrigger className="py-2 text-sm hover:no-underline">
+                          <span className="flex items-center gap-2">
+                            <span className="font-medium">@{requesterName}</span>
+                            {reqJob.occurrenceDate && (
+                              <span className="text-muted-foreground">{reqJob.occurrenceDate}</span>
+                            )}
+                          </span>
+                        </AccordionTrigger>
+                        <AccordionContent className="pb-2 space-y-2">
+                          {reqJob.justification && (
+                            <p className="text-sm text-muted-foreground whitespace-pre-wrap break-words">
+                              {reqJob.justification}
+                            </p>
+                          )}
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setRequestReviewDialog({ job: reqJob, task })}
+                          >
+                            {t('tasks.reviewRequest', { defaultValue: 'Review request' })}
+                          </Button>
+                        </AccordionContent>
+                      </AccordionItem>
+                    )
+                  })}
+                </Accordion>
+              )}
+
+              {activeJob && !(isOwnerOrManager && activeJob.status === 'REQUESTED') && (
                 <JobDetailsCard
                   job={activeJob}
                   userRole={userRole}
@@ -368,6 +426,19 @@ export const TaskGrid = ({
         onRequest={handleRequestSubmit}
         onSubmit={handleSubmitWork}
         onReview={handleReviewWork}
+      />
+
+      <JobDialog
+        open={requestReviewDialog !== null}
+        onOpenChange={(open) => { if (!open) setRequestReviewDialog(null) }}
+        mode="requestReview"
+        taskName={requestReviewDialog?.task?.name}
+        requestJob={requestReviewDialog?.job}
+        isSubmitting={refreshingJobId !== null}
+        onRequest={handleRequestSubmit}
+        onSubmit={handleSubmitWork}
+        onReview={handleReviewWork}
+        onRequestReview={handleRequestReview}
       />
 
       <DeleteTaskDialog

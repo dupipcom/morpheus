@@ -181,7 +181,8 @@
       "ready": "Klaar",
       "open": "Open",
       "done": "Voltooid",
-      "ignored": "Genegeerd"
+      "ignored": "Genegeerd",
+      "completed": "Completed"
     },
     "edit": "Bewerken",
     "loadingForDate": "Taken laden voor geselecteerde datum...",
@@ -214,7 +215,17 @@
     "submit": "Inleveren",
     "accept": "Accepteren",
     "requestChanges": "Wijzigingen aanvragen",
-    "reject": "Afwijzen"
+    "reject": "Afwijzen",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided."
   },
   "actions": {
     "drankWater": "Heeft water gedronken",
@@ -673,7 +684,9 @@
       "noBudgets": "Nog geen budgetten — voeg er hieronder een toe.",
       "newBudgetName": "Budgetnaam",
       "confirmDelete": "Deze lijst en alle taken verwijderen? Dit kan niet ongedaan worden gemaakt.",
-      "delete": "Verwijderen"
+      "delete": "Verwijderen",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Nieuwe sjabloon maken",
@@ -963,7 +976,8 @@
         "submitted": "Werk ingediend ter beoordeling",
         "resubmitted": "Werk opnieuw ingediend ter beoordeling"
       }
-    }
+    },
+    "justification": "Justification"
   },
   "notes": {
     "updated": "Notitie succesvol bijgewerkt",

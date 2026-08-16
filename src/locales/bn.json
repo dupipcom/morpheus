@@ -181,7 +181,8 @@
       "ready": "প্রস্তুত",
       "open": "খোলা",
       "done": "সম্পন্ন",
-      "ignored": "উপেক্ষিত"
+      "ignored": "উপেক্ষিত",
+      "completed": "Completed"
     },
     "edit": "সম্পাদনা",
     "loadingForDate": "নির্বাচিত তারিখের জন্য কাজগুলি লোড হচ্ছে...",
@@ -214,7 +215,17 @@
     "submit": "জমা দিন",
     "accept": "গ্রহণ করুন",
     "requestChanges": "পরিবর্তনের অনুরোধ",
-    "reject": "প্রত্যাখ্যান"
+    "reject": "প্রত্যাখ্যান",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided."
   },
   "actions": {
     "drankWater": "পানি পান করেছে",
@@ -673,7 +684,9 @@
       "noBudgets": "এখনও কোনো বাজেট নেই — নিচে একটি যোগ করুন।",
       "newBudgetName": "বাজেটের নাম",
       "confirmDelete": "এই তালিকা এবং এর সব কাজ মুছবেন? এটি ফেরানো যাবে না।",
-      "delete": "মুছুন"
+      "delete": "মুছুন",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "নতুন টেমপ্লেট তৈরি করুন",
@@ -963,7 +976,8 @@
         "submitted": "পর্যালোচনার জন্য কাজ জমা দেওয়া হয়েছে",
         "resubmitted": "পর্যালোচনার জন্য কাজ পুনরায় জমা দেওয়া হয়েছে"
       }
-    }
+    },
+    "justification": "Justification"
   },
   "notes": {
     "updated": "নোট সফলভাবে আপডেট হয়েছে",

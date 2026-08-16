@@ -181,7 +181,8 @@
       "ready": "준비됨",
       "open": "열림",
       "done": "완료",
-      "ignored": "무시됨"
+      "ignored": "무시됨",
+      "completed": "Completed"
     },
     "edit": "편집",
     "loadingForDate": "선택한 날짜의 작업을 불러오는 중...",
@@ -214,7 +215,17 @@
     "submit": "제출",
     "accept": "승인",
     "requestChanges": "변경 요청",
-    "reject": "거부"
+    "reject": "거부",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided."
   },
   "actions": {
     "drankWater": "물을 마셨습니다",
@@ -690,7 +701,9 @@
       "noBudgets": "아직 예산이 없습니다 — 아래에서 추가하세요.",
       "newBudgetName": "예산 이름",
       "confirmDelete": "이 목록과 모든 작업을 삭제할까요? 되돌릴 수 없습니다.",
-      "delete": "삭제"
+      "delete": "삭제",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "새 템플릿 만들기",
@@ -963,7 +976,8 @@
         "submitted": "작업이 검토를 위해 제출되었습니다",
         "resubmitted": "작업이 검토를 위해 다시 제출되었습니다"
       }
-    }
+    },
+    "justification": "Justification"
   },
   "notes": {
     "updated": "노트가 성공적으로 업데이트되었습니다",

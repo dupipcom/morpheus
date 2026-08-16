@@ -246,7 +246,7 @@ export const DoToolbar = ({
                     const users = Array.isArray(selectedList.users) ? selectedList.users : []
                     const owners = users.filter((u: UserReference) => u.role === 'OWNER')
                     const collaborators = users.filter((u: UserReference) => u.role === 'COLLABORATOR' || u.role === 'MANAGER')
-                    const renderUserBadge = (ref: UserReference, isOwner: boolean) => (
+                    const renderUserBadge = (ref: UserReference & { userName?: string | null }, isOwner: boolean) => (
                       <Badge
                         key={`${isOwner ? 'owner' : 'collab'}-${ref.userId}`}
                         variant={isOwner ? 'default' : undefined}
@@ -256,7 +256,7 @@ export const DoToolbar = ({
                         }
                       >
                         <UserIcon className="h-3 w-3 mr-1" />
-                        @{ref.userId.slice(0, 8)}...
+                        @{ref.userName || ref.userId.slice(0, 8)}...
                       </Badge>
                     )
                     return (

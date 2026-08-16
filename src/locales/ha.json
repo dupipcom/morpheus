@@ -181,7 +181,8 @@
       "ready": "Shirye",
       "open": "A Buɗe",
       "done": "An Gama",
-      "ignored": "An Yi Watsi"
+      "ignored": "An Yi Watsi",
+      "completed": "Completed"
     },
     "edit": "Gyara",
     "loadingForDate": "Ana loda ayyuka ga ranar da aka zaɓa...",
@@ -214,7 +215,17 @@
     "submit": "Ƙaddamar",
     "accept": "Karɓa",
     "requestChanges": "Nemi canje-canje",
-    "reject": "Ƙi"
+    "reject": "Ƙi",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided."
   },
   "settings": {
     "title": "Saiti",
@@ -687,7 +698,9 @@
       "noBudgets": "Babu kasafi tukuna — ƙara ɗaya a ƙasa.",
       "newBudgetName": "Sunan kasafi",
       "confirmDelete": "Share wannan jerin da duk ayyukansa? Ba za a iya komawa ba.",
-      "delete": "Share"
+      "delete": "Share",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Ƙirƙiri Sabon Samfurin",
@@ -960,7 +973,8 @@
         "submitted": "An ƙaddamar da aiki don bita",
         "resubmitted": "An sake ƙaddamar da aiki don bita"
       }
-    }
+    },
+    "justification": "Justification"
   },
   "notes": {
     "updated": "An sabunta bayanin kula cikin nasara",

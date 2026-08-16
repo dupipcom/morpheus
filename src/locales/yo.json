@@ -181,7 +181,8 @@
       "ready": "Tán",
       "open": "Ṣíṣi",
       "done": "Ti Parí",
-      "ignored": "Ti Kọjú"
+      "ignored": "Ti Kọjú",
+      "completed": "Completed"
     },
     "edit": "Ṣatunkọ",
     "loadingForDate": "Mimu awọn iṣẹ-ṣiṣe fun ọjọ ti a yan...",
@@ -214,7 +215,17 @@
     "submit": "Fi sílẹ̀",
     "accept": "Gba",
     "requestChanges": "Béèrè àwọn àyípadà",
-    "reject": "Kọ̀"
+    "reject": "Kọ̀",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided."
   },
   "settings": {
     "title": "Ètò",
@@ -688,7 +699,9 @@
       "noBudgets": "Kò sí ìnáwó síbẹ̀síbẹ̀ — fi ọ̀kan kún ní ìsàlẹ̀.",
       "newBudgetName": "Orúkọ ìnáwó",
       "confirmDelete": "Pa àkọjọ yii àti gbogbo àwọn iṣẹ́ rẹ̀ rẹ́? Kò ṣeé yí padà.",
-      "delete": "Pa rẹ́"
+      "delete": "Pa rẹ́",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Ṣẹ̀dá Àwòwé Tuntun",
@@ -961,7 +974,8 @@
         "submitted": "A ti fi iṣẹ́ ránṣẹ́ fún àyẹ̀wò",
         "resubmitted": "A ti fi iṣẹ́ ránṣẹ́ padà fún àyẹ̀wò"
       }
-    }
+    },
+    "justification": "Justification"
   },
   "notes": {
     "updated": "Akọsilẹ ti ni imudojuiwọn ni aṣeyọri",

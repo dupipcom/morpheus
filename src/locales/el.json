@@ -181,7 +181,8 @@
       "ready": "Έτοιμο",
       "open": "Ανοιχτό",
       "done": "Ολοκληρώθηκε",
-      "ignored": "Αγνοήθηκε"
+      "ignored": "Αγνοήθηκε",
+      "completed": "Completed"
     },
     "edit": "Επεξεργασία",
     "loadingForDate": "Φόρτωση εργασιών για την επιλεγμένη ημερομηνία...",
@@ -214,7 +215,17 @@
     "submit": "Υποβολή",
     "accept": "Αποδοχή",
     "requestChanges": "Αίτημα αλλαγών",
-    "reject": "Απόρριψη"
+    "reject": "Απόρριψη",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided."
   },
   "actions": {
     "drankWater": "Έπινε νερό",
@@ -670,7 +681,9 @@
       "noBudgets": "Δεν υπάρχουν ακόμη προϋπολογισμοί — πρόσθεσε έναν παρακάτω.",
       "newBudgetName": "Όνομα προϋπολογισμού",
       "confirmDelete": "Διαγραφή αυτής της λίστας και όλων των εργασιών της; Δεν μπορεί να αναιρεθεί.",
-      "delete": "Διαγραφή"
+      "delete": "Διαγραφή",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Δημιουργία Νέου Προτύπου",
@@ -960,7 +973,8 @@
         "submitted": "Η εργασία υποβλήθηκε για έλεγχο",
         "resubmitted": "Η εργασία επανυποβλήθηκε για έλεγχο"
       }
-    }
+    },
+    "justification": "Justification"
   },
   "notes": {
     "updated": "Η σημείωση ενημερώθηκε επιτυχώς",

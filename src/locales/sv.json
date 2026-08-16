@@ -184,7 +184,8 @@
       "ready": "Redo",
       "open": "Öppen",
       "done": "Klar",
-      "ignored": "Ignorerad"
+      "ignored": "Ignorerad",
+      "completed": "Completed"
     },
     "edit": "Redigera",
     "loadingForDate": "Laddar uppgifter för valt datum...",
@@ -217,7 +218,17 @@
     "submit": "Lämna in",
     "accept": "Godkänn",
     "requestChanges": "Begär ändringar",
-    "reject": "Avvisa"
+    "reject": "Avvisa",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided."
   },
   "actions": {
     "drankWater": "Drack vatten",
@@ -676,7 +687,9 @@
       "noBudgets": "Inga budgetar än — lägg till en nedan.",
       "newBudgetName": "Budgetens namn",
       "confirmDelete": "Ta bort denna lista och alla dess uppgifter? Kan inte ångras.",
-      "delete": "Ta bort"
+      "delete": "Ta bort",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Skapa ny mall",
@@ -966,7 +979,8 @@
         "submitted": "Arbete inskickat för granskning",
         "resubmitted": "Arbete inskickat igen för granskning"
       }
-    }
+    },
+    "justification": "Justification"
   },
   "notes": {
     "updated": "Anteckning uppdaterades",

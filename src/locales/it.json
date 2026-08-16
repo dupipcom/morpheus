@@ -181,7 +181,8 @@
       "ready": "Pronto",
       "open": "Aperto",
       "done": "Completato",
-      "ignored": "Ignorato"
+      "ignored": "Ignorato",
+      "completed": "Completed"
     },
     "edit": "Modifica",
     "loadingForDate": "Caricamento attività per la data selezionata...",
@@ -214,7 +215,17 @@
     "submit": "Consegna",
     "accept": "Accetta",
     "requestChanges": "Richiedi modifiche",
-    "reject": "Rifiuta"
+    "reject": "Rifiuta",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided."
   },
   "settings": {
     "title": "Impostazioni",
@@ -690,7 +701,9 @@
       "noBudgets": "Nessun budget ancora — aggiungine uno qui sotto.",
       "newBudgetName": "Nome del budget",
       "confirmDelete": "Eliminare questa lista e tutte le sue attività? Non si può annullare.",
-      "delete": "Elimina"
+      "delete": "Elimina",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Crea Nuovo Modello",
@@ -963,7 +976,8 @@
         "submitted": "Lavoro inviato per revisione",
         "resubmitted": "Lavoro inviato nuovamente per revisione"
       }
-    }
+    },
+    "justification": "Justification"
   },
   "notes": {
     "updated": "Nota aggiornata con successo",

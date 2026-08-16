@@ -185,7 +185,8 @@
       "ready": "Sedia",
       "open": "Terbuka",
       "done": "Selesai",
-      "ignored": "Diabaikan"
+      "ignored": "Diabaikan",
+      "completed": "Completed"
     },
     "edit": "Sunting",
     "loadingForDate": "Memuatkan tugasan untuk tarikh yang dipilih...",
@@ -218,7 +219,17 @@
     "submit": "Hantar",
     "accept": "Terima",
     "requestChanges": "Minta perubahan",
-    "reject": "Tolak"
+    "reject": "Tolak",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided."
   },
   "actions": {
     "drankWater": "Minum air",
@@ -677,7 +688,9 @@
       "noBudgets": "Tiada belanjawan lagi — tambah satu di bawah.",
       "newBudgetName": "Nama belanjawan",
       "confirmDelete": "Padam senarai ini dan semua tugasnya? Tidak boleh dibatalkan.",
-      "delete": "Padam"
+      "delete": "Padam",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Cipta Templat Baru",
@@ -967,7 +980,8 @@
         "submitted": "Kerja diserahkan untuk semakan",
         "resubmitted": "Kerja diserahkan semula untuk semakan"
       }
-    }
+    },
+    "justification": "Justification"
   },
   "notes": {
     "updated": "Nota berjaya dikemaskini",

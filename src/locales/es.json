@@ -182,7 +182,8 @@
       "ready": "Listo",
       "open": "Abierto",
       "done": "Completado",
-      "ignored": "Ignorado"
+      "ignored": "Ignorado",
+      "completed": "Completed"
     },
     "loadingForDate": "Cargando tareas para la fecha seleccionada...",
     "initializingTasks": "Configurando tus tareas...",
@@ -214,7 +215,17 @@
     "submit": "Entregar",
     "accept": "Aceptar",
     "requestChanges": "Pedir cambios",
-    "reject": "Rechazar"
+    "reject": "Rechazar",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided."
   },
   "settings": {
     "title": "Configuración",
@@ -723,7 +734,9 @@
       "noBudgets": "Aún no hay presupuestos — añade uno abajo.",
       "newBudgetName": "Nombre del presupuesto",
       "confirmDelete": "¿Eliminar esta lista y todas sus tareas? No se puede deshacer.",
-      "delete": "Eliminar"
+      "delete": "Eliminar",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Crear nueva plantilla",
@@ -963,7 +976,8 @@
         "submitted": "Trabajo enviado para revisión",
         "resubmitted": "Trabajo reenviado para revisión"
       }
-    }
+    },
+    "justification": "Justification"
   },
   "notes": {
     "updated": "Nota actualizada correctamente",

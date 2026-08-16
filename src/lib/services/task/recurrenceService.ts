@@ -120,6 +120,15 @@ export function taskOccursOnDate(
     return true
   }
 
+  // Legacy weekly rules with no explicit BYDAY (signup default lists, migrated
+  // templates) must appear on every day of the week: the old engine treated
+  // "no weekdays specified" as "all days", and the default lists rely on it.
+  // The rrule lib instead anchors on the DTSTART weekday, which would hide
+  // these tasks on 6 of 7 days.
+  if (rruleFrequency(task.rrule) === 'WEEKLY' && !/BYDAY=/i.test(task.rrule)) {
+    return true
+  }
+
   const fallbackDate = task.createdAt ? task.createdAt.toISOString().slice(0, 10) : null
   const rule = parseRuleForTask(task.rrule, task.dtstart, fallbackDate)
   // Unparseable rule: keep appearing (matches legacy default behavior)

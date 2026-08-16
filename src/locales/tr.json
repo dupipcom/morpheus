@@ -185,7 +185,8 @@
       "ready": "Hazır",
       "open": "Açık",
       "done": "Tamamlandı",
-      "ignored": "Yoksayıldı"
+      "ignored": "Yoksayıldı",
+      "completed": "Completed"
     },
     "edit": "Düzenle",
     "loadingForDate": "Seçilen tarih için görevler yükleniyor...",
@@ -218,7 +219,17 @@
     "submit": "Teslim et",
     "accept": "Kabul et",
     "requestChanges": "Değişiklik iste",
-    "reject": "Reddet"
+    "reject": "Reddet",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided."
   },
   "actions": {
     "drankWater": "Su içti",
@@ -694,7 +705,9 @@
       "noBudgets": "Henüz bütçe yok — aşağıdan bir tane ekle.",
       "newBudgetName": "Bütçe adı",
       "confirmDelete": "Bu liste ve tüm görevleri silinsin mi? Geri alınamaz.",
-      "delete": "Sil"
+      "delete": "Sil",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Yeni Şablon Oluştur",
@@ -967,7 +980,8 @@
         "submitted": "Çalışma inceleme için gönderildi",
         "resubmitted": "Çalışma inceleme için yeniden gönderildi"
       }
-    }
+    },
+    "justification": "Justification"
   },
   "notes": {
     "updated": "Not başarıyla güncellendi",

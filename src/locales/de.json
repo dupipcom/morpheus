@@ -181,7 +181,8 @@
       "ready": "Bereit",
       "open": "Offen",
       "done": "Erledigt",
-      "ignored": "Ignoriert"
+      "ignored": "Ignoriert",
+      "completed": "Completed"
     },
     "edit": "Bearbeiten",
     "loadingForDate": "Aufgaben für das gewählte Datum werden geladen...",
@@ -214,7 +215,17 @@
     "submit": "Einreichen",
     "accept": "Annehmen",
     "requestChanges": "Änderungen anfordern",
-    "reject": "Ablehnen"
+    "reject": "Ablehnen",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided."
   },
   "settings": {
     "title": "Einstellungen",
@@ -690,7 +701,9 @@
       "noBudgets": "Noch keine Budgets — füge unten eins hinzu.",
       "newBudgetName": "Budgetname",
       "confirmDelete": "Diese Liste und alle ihre Aufgaben löschen? Kann nicht rückgängig gemacht werden.",
-      "delete": "Löschen"
+      "delete": "Löschen",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Neue Vorlage erstellen",
@@ -963,7 +976,8 @@
         "submitted": "Arbeit zur Überprüfung eingereicht",
         "resubmitted": "Arbeit erneut zur Überprüfung eingereicht"
       }
-    }
+    },
+    "justification": "Justification"
   },
   "notes": {
     "updated": "Notiz erfolgreich aktualisiert",

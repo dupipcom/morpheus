@@ -181,7 +181,8 @@
       "ready": "準備完了",
       "open": "オープン",
       "done": "完了",
-      "ignored": "無視"
+      "ignored": "無視",
+      "completed": "Completed"
     },
     "edit": "編集",
     "loadingForDate": "選択した日付のタスクを読み込んでいます...",
@@ -214,7 +215,17 @@
     "submit": "提出",
     "accept": "承認",
     "requestChanges": "変更を依頼",
-    "reject": "却下"
+    "reject": "却下",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided."
   },
   "settings": {
     "title": "設定",
@@ -690,7 +701,9 @@
       "noBudgets": "まだ予算がありません — 下で追加してください。",
       "newBudgetName": "予算名",
       "confirmDelete": "このリストとすべてのタスクを削除しますか？取り消せません。",
-      "delete": "削除"
+      "delete": "削除",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "新しいテンプレートを作成",
@@ -963,7 +976,8 @@
         "submitted": "作業がレビュー用に提出されました",
         "resubmitted": "作業がレビュー用に再提出されました"
       }
-    }
+    },
+    "justification": "Justification"
   },
   "notes": {
     "updated": "メモが正常に更新されました",

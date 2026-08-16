@@ -181,7 +181,8 @@
       "ready": "तैयार",
       "open": "खुला",
       "done": "पूर्ण",
-      "ignored": "अनदेखा"
+      "ignored": "अनदेखा",
+      "completed": "Completed"
     },
     "edit": "संपादित करें",
     "loadingForDate": "चयनित तिथि के लिए कार्य लोड हो रहे हैं...",
@@ -214,7 +215,17 @@
     "submit": "जमा करें",
     "accept": "स्वीकार करें",
     "requestChanges": "बदलाव मांगें",
-    "reject": "अस्वीकार करें"
+    "reject": "अस्वीकार करें",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided."
   },
   "actions": {
     "drankWater": "पानी पिया",
@@ -673,7 +684,9 @@
       "noBudgets": "अभी कोई बजट नहीं — नीचे एक जोड़ें।",
       "newBudgetName": "बजट का नाम",
       "confirmDelete": "यह सूची और इसके सभी कार्य हटाएं? इसे वापस नहीं किया जा सकता।",
-      "delete": "हटाएं"
+      "delete": "हटाएं",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "नया टेम्प्लेट बनाएं",
@@ -963,7 +976,8 @@
         "submitted": "काम समीक्षा के लिए जमा किया गया",
         "resubmitted": "काम समीक्षा के लिए पुनः जमा किया गया"
       }
-    }
+    },
+    "justification": "Justification"
   },
   "notes": {
     "updated": "नोट सफलतापूर्वक अपडेट किया गया",

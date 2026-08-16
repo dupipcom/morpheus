@@ -200,7 +200,8 @@
       "ready": "Ready",
       "open": "Open",
       "done": "Done",
-      "ignored": "Ignored"
+      "ignored": "Ignored",
+      "completed": "Completed"
     },
     "delete": "Delete...",
     "deleteTitle": "Delete task",
@@ -229,7 +230,17 @@
     "submit": "Submit",
     "accept": "Accept",
     "requestChanges": "Request changes",
-    "reject": "Reject"
+    "reject": "Reject",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided."
   },
   "forms": {
     "commonOptions": {
@@ -335,9 +346,11 @@
       "occurrences": "occurrences"
     },
     "addListForm": {
+      "title": "New List",
       "titleCreate": "Create New List",
       "titleEdit": "Edit List",
       "nameLabel": "Name",
+      "namePlaceholder": "List name...",
       "templateOrListLabel": "Template or List",
       "chooseTemplatePlaceholder": "Choose a template",
       "budgetLabel": "Budget",
@@ -885,6 +898,7 @@
     },
     "jobStatus": "Job Status",
     "refreshing": "Refreshing...",
+    "justification": "Justification",
     "workerSubmission": "Worker's Submission:",
     "selfReview": "Self-Review:",
     "reviewerFeedback": "Reviewer's Feedback:",

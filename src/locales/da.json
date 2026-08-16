@@ -185,7 +185,8 @@
       "ready": "Klar",
       "open": "Åben",
       "done": "Færdig",
-      "ignored": "Ignoreret"
+      "ignored": "Ignoreret",
+      "completed": "Completed"
     },
     "edit": "Rediger",
     "loadingForDate": "Indlæser opgaver for valgt dato...",
@@ -218,7 +219,17 @@
     "submit": "Indsend",
     "accept": "Accepter",
     "requestChanges": "Bed om ændringer",
-    "reject": "Afvis"
+    "reject": "Afvis",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided."
   },
   "actions": {
     "drankWater": "Drak vand",
@@ -677,7 +688,9 @@
       "noBudgets": "Ingen budgetter endnu — tilføj et nedenfor.",
       "newBudgetName": "Budgetnavn",
       "confirmDelete": "Slet denne liste og alle dens opgaver? Kan ikke fortrydes.",
-      "delete": "Slet"
+      "delete": "Slet",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Opret ny skabelon",
@@ -967,7 +980,8 @@
         "submitted": "Arbejde indsendt til gennemgang",
         "resubmitted": "Arbejde indsendt igen til gennemgang"
       }
-    }
+    },
+    "justification": "Justification"
   },
   "notes": {
     "updated": "Note opdateret",

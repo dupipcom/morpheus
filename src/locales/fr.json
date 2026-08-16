@@ -181,7 +181,8 @@
       "ready": "Prêt",
       "open": "Ouvert",
       "done": "Terminé",
-      "ignored": "Ignoré"
+      "ignored": "Ignoré",
+      "completed": "Completed"
     },
     "edit": "Modifier",
     "loadingForDate": "Chargement des tâches pour la date sélectionnée...",
@@ -214,7 +215,17 @@
     "submit": "Soumettre",
     "accept": "Accepter",
     "requestChanges": "Demander des modifications",
-    "reject": "Rejeter"
+    "reject": "Rejeter",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided."
   },
   "settings": {
     "title": "Paramètres",
@@ -690,7 +701,9 @@
       "noBudgets": "Pas encore de budgets — ajoutez-en un ci-dessous.",
       "newBudgetName": "Nom du budget",
       "confirmDelete": "Supprimer cette liste et toutes ses tâches ? Impossible à annuler.",
-      "delete": "Supprimer"
+      "delete": "Supprimer",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Créer un Nouveau Modèle",
@@ -963,7 +976,8 @@
         "submitted": "Travail soumis pour révision",
         "resubmitted": "Travail resoumis pour révision"
       }
-    }
+    },
+    "justification": "Justification"
   },
   "notes": {
     "updated": "Note mise à jour avec succès",

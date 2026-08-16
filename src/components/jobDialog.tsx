@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { useI18n } from '@/lib/contexts/i18n'
 
-export type JobDialogMode = 'request' | 'submit' | 'review'
+export type JobDialogMode = 'request' | 'submit' | 'review' | 'requestReview'
 
 interface JobDialogProps {
   open: boolean
@@ -17,9 +17,11 @@ interface JobDialogProps {
   taskName?: string
   isResubmit?: boolean
   isSubmitting?: boolean
+  requestJob?: any
   onRequest: (justification: string) => Promise<void> | void
   onSubmit: (data: { noteContent: string; selfReview: number }) => Promise<void> | void
   onReview: (data: { action: 'accept' | 'validate' | 'reject'; reviewNoteContent?: string; managerReview?: number }) => Promise<void> | void
+  onRequestReview?: (action: 'approve' | 'reject') => Promise<void> | void
 }
 
 /**
@@ -27,6 +29,7 @@ interface JobDialogProps {
  * - request: collaborator justifies their request to work on a task
  * - submit: worker posts evidence (note + self-review; attachments come in Phase 3)
  * - review: owner/manager accepts, requests changes, or rejects
+ * - requestReview: owner/manager reads a request's justification and approves/rejects
  */
 export const JobDialog = ({
   open,
@@ -35,9 +38,11 @@ export const JobDialog = ({
   taskName,
   isResubmit = false,
   isSubmitting = false,
+  requestJob = null,
   onRequest,
   onSubmit,
   onReview,
+  onRequestReview,
 }: JobDialogProps) => {
   const { t } = useI18n()
 
@@ -64,12 +69,14 @@ export const JobDialog = ({
       ? t('tasks.resubmitTitle', { defaultValue: 'Revise and resubmit' })
       : t('tasks.submitTitle', { defaultValue: 'Submit work' }),
     review: t('tasks.reviewTitle', { defaultValue: 'Review work' }),
+    requestReview: t('tasks.requestReviewTitle', { defaultValue: 'Review request' }),
   }
 
   const descriptions: Record<JobDialogMode, string> = {
     request: t('tasks.requestDescription', { defaultValue: 'Explain why you want to take on this task. The list owner will review your request.' }),
     submit: t('tasks.submitDescription', { defaultValue: 'Post evidence of your work. A photo or video can be attached here soon.' }),
     review: t('tasks.reviewDescription', { defaultValue: 'Accept the work, request changes, or reject it.' }),
+    requestReview: t('tasks.requestReviewDescription', { defaultValue: 'Review the request and decide whether to let this user work on the task.' }),
   }
 
   return (
@@ -141,6 +148,26 @@ export const JobDialog = ({
               </div>
             </>
           )}
+
+          {mode === 'requestReview' && requestJob && (
+            <>
+              <div className="text-sm">
+                <span className="text-muted-foreground">{t('tasks.requestedBy', { defaultValue: 'Requested by' })} </span>
+                <span className="font-medium">@{requestJob.worker?.profiles?.[0]?.username || t('tasks.unknownWorker', { defaultValue: 'Unknown' })}</span>
+                {requestJob.occurrenceDate && (
+                  <span className="text-muted-foreground"> · {requestJob.occurrenceDate}</span>
+                )}
+              </div>
+              <div>
+                <Label>{t('tasks.justificationLabel', { defaultValue: 'Justification' })}</Label>
+                <div className="mt-1 p-3 bg-muted rounded-md">
+                  <p className="text-sm whitespace-pre-wrap break-words">
+                    {requestJob.justification || t('tasks.noJustification', { defaultValue: 'No justification provided.' })}
+                  </p>
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
         <div className="flex gap-2 pt-2 flex-wrap">
@@ -200,6 +227,30 @@ export const JobDialog = ({
                 }}
               >
                 {t('tasks.reject', { defaultValue: 'Reject' })}
+              </Button>
+            </>
+          )}
+
+          {mode === 'requestReview' && (
+            <>
+              <Button
+                disabled={isSubmitting}
+                onClick={async () => {
+                  if (onRequestReview) await onRequestReview('approve')
+                  onOpenChange(false)
+                }}
+              >
+                {t('jobs.actions.approveRequest', { defaultValue: 'Approve request' })}
+              </Button>
+              <Button
+                variant="destructive"
+                disabled={isSubmitting}
+                onClick={async () => {
+                  if (onRequestReview) await onRequestReview('reject')
+                  onOpenChange(false)
+                }}
+              >
+                {t('jobs.actions.rejectRequest', { defaultValue: 'Reject request' })}
               </Button>
             </>
           )}

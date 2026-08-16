@@ -181,7 +181,8 @@
       "ready": "Llest",
       "open": "Obert",
       "done": "Fet",
-      "ignored": "Ignorat"
+      "ignored": "Ignorat",
+      "completed": "Completed"
     },
     "edit": "Editar",
     "loadingForDate": "Carregant tasques per a la data seleccionada...",
@@ -214,7 +215,17 @@
     "submit": "Entrega",
     "accept": "Accepta",
     "requestChanges": "Demana canvis",
-    "reject": "Rebutja"
+    "reject": "Rebutja",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided."
   },
   "actions": {
     "drankWater": "Ha begut aigua",
@@ -596,7 +607,9 @@
       "noBudgets": "Encara no hi ha pressupostos — afegeix-ne un a sota.",
       "newBudgetName": "Nom del pressupost",
       "confirmDelete": "Vols suprimir aquesta llista i totes les seves tasques? No es pot desfer.",
-      "delete": "Suprimeix"
+      "delete": "Suprimeix",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Crear nou template",
@@ -963,7 +976,8 @@
         "submitted": "Treball enviat per a revisió",
         "resubmitted": "Treball tornat a enviar per a revisió"
       }
-    }
+    },
+    "justification": "Justification"
   },
   "notes": {
     "updated": "Nota actualitzada correctament",

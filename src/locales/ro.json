@@ -181,7 +181,8 @@
       "ready": "Gata",
       "open": "Deschis",
       "done": "Finalizat",
-      "ignored": "Ignorat"
+      "ignored": "Ignorat",
+      "completed": "Completed"
     },
     "edit": "Editare",
     "loadingForDate": "Se încarcă sarcinile pentru data selectată...",
@@ -214,7 +215,17 @@
     "submit": "Predă",
     "accept": "Acceptă",
     "requestChanges": "Cere modificări",
-    "reject": "Respinge"
+    "reject": "Respinge",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided."
   },
   "actions": {
     "drankWater": "A băut apă",
@@ -673,7 +684,9 @@
       "noBudgets": "Încă nu există bugete — adaugă unul mai jos.",
       "newBudgetName": "Numele bugetului",
       "confirmDelete": "Ștergi această listă și toate sarcinile ei? Nu se poate anula.",
-      "delete": "Șterge"
+      "delete": "Șterge",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Creați un șablon nou",
@@ -963,7 +976,8 @@
         "submitted": "Munca trimisă pentru revizuire",
         "resubmitted": "Munca retrimisă pentru revizuire"
       }
-    }
+    },
+    "justification": "Justification"
   },
   "notes": {
     "updated": "Notă actualizată cu succes",

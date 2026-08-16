@@ -185,7 +185,8 @@
       "ready": "جاهز",
       "open": "مفتوح",
       "done": "مكتمل",
-      "ignored": "متجاهل"
+      "ignored": "متجاهل",
+      "completed": "Completed"
     },
     "edit": "تعديل",
     "loadingForDate": "جاري تحميل المهام للتاريخ المحدد...",
@@ -218,7 +219,17 @@
     "submit": "تسليم",
     "accept": "قبول",
     "requestChanges": "طلب تعديلات",
-    "reject": "رفض"
+    "reject": "رفض",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided."
   },
   "settings": {
     "title": "الإعدادات",
@@ -694,7 +705,9 @@
       "noBudgets": "لا ميزانيات بعد — أضف واحدة أدناه.",
       "newBudgetName": "اسم الميزانية",
       "confirmDelete": "حذف هذه القائمة وجميع مهامها؟ لا يمكن التراجع.",
-      "delete": "حذف"
+      "delete": "حذف",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "إنشاء قالب جديد",
@@ -967,7 +980,8 @@
         "submitted": "تم إرسال العمل للمراجعة",
         "resubmitted": "تم إعادة إرسال العمل للمراجعة"
       }
-    }
+    },
+    "justification": "Justification"
   },
   "notes": {
     "updated": "تم تحديث الملاحظة بنجاح",

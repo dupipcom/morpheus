@@ -181,7 +181,8 @@
       "ready": "מוכן",
       "open": "פתוח",
       "done": "הושלם",
-      "ignored": "התעלם"
+      "ignored": "התעלם",
+      "completed": "Completed"
     },
     "edit": "ערוך",
     "loadingForDate": "טוען משימות לתאריך שנבחר...",
@@ -214,7 +215,17 @@
     "submit": "הגש",
     "accept": "אשר",
     "requestChanges": "בקש שינויים",
-    "reject": "דחה"
+    "reject": "דחה",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided."
   },
   "actions": {
     "drankWater": "שתה מים",
@@ -673,7 +684,9 @@
       "noBudgets": "אין עדיין תקציבים — הוסף אחד למטה.",
       "newBudgetName": "שם התקציב",
       "confirmDelete": "למחוק רשימה זו ואת כל המשימות שלה? לא ניתן לבטל.",
-      "delete": "מחק"
+      "delete": "מחק",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "צור תבנית חדשה",
@@ -963,7 +976,8 @@
         "submitted": "עבודה נשלחה לבדיקה",
         "resubmitted": "עבודה נשלחה מחדש לבדיקה"
       }
-    }
+    },
+    "justification": "Justification"
   },
   "notes": {
     "updated": "הפתק עודכן בהצלחה",

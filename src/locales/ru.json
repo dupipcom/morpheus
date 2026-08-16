@@ -181,7 +181,8 @@
       "ready": "Готово",
       "open": "Открыто",
       "done": "Выполнено",
-      "ignored": "Игнорировано"
+      "ignored": "Игнорировано",
+      "completed": "Completed"
     },
     "edit": "Редактировать",
     "loadingForDate": "Загрузка задач для выбранной даты...",
@@ -214,7 +215,17 @@
     "submit": "Сдать",
     "accept": "Принять",
     "requestChanges": "Запросить изменения",
-    "reject": "Отклонить"
+    "reject": "Отклонить",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided."
   },
   "actions": {
     "drankWater": "Пил воду",
@@ -690,7 +701,9 @@
       "noBudgets": "Пока нет бюджетов — добавьте один ниже.",
       "newBudgetName": "Название бюджета",
       "confirmDelete": "Удалить этот список и все его задачи? Это нельзя отменить.",
-      "delete": "Удалить"
+      "delete": "Удалить",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "Создать новый шаблон",
@@ -963,7 +976,8 @@
         "submitted": "Работа отправлена на проверку",
         "resubmitted": "Работа отправлена снова на проверку"
       }
-    }
+    },
+    "justification": "Justification"
   },
   "notes": {
     "updated": "Заметка успешно обновлена",
