@@ -52,6 +52,7 @@ export interface ActivityItem {
   budget?: string | null // For tasklists
   dueDate?: string | null // For tasklists
   documents?: NoteDocumentRef[] | null // Attached documents for notes
+  taskIds?: string[] | null // Tagged task ids (chips render inside the card)
   isLiked?: boolean // Whether current user has liked this item (if provided, skip fetching)
   userId?: string // User ID who owns this item (for checking ownership)
   user?: {
@@ -885,6 +886,7 @@ function ActivityCard({ item, onCommentAdded, showUserInfo = false, getTimeAgo, 
             content={noteContent}
             truncate={!isExpanded && noteContent.length > 150}
             maxLength={150}
+            taskIds={item.taskIds}
             documents={item.documents}
           >
             {/* Expand button – centred horizontally below the text, above link previews */}

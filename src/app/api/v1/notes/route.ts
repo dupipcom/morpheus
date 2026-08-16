@@ -5,7 +5,7 @@ import { sanitizeText } from '@/lib/utils/sanitize'
 import { NOTE_VISIBILITIES, WRITABLE_NOTE_VISIBILITIES } from '@/lib/constants/visibility'
 import { getDelegationScopes } from '@/lib/utils/delegation'
 import { resolveNoteVisibilityFilter } from '@/lib/services/visibility/noteAccess'
-import { resolveNoteTags } from '@/lib/services/visibility'
+import { resolveNoteTags, getCurrentUser, batchEnrichUserProfiles } from '@/lib/services/visibility'
 
 const OBJECT_ID_PATTERN = /^[a-f0-9]{24}$/i
 
@@ -189,6 +189,21 @@ export async function GET(request: NextRequest) {
             .map((id) => docsById.get(id))
             .filter(Boolean)
         }
+      }
+    }
+
+    // Attach the author's profile in the same shape the Be feed uses
+    // ({ id, profile: { userName, profilePicture, firstName, lastName } }), so
+    // every note renderer shares one card contract (avatar + username header).
+    const authorIds = Array.from(
+      new Set(sortedNotes.map((note) => note.userId).filter((id): id is string => Boolean(id)))
+    )
+    if (authorIds.length > 0) {
+      const viewer = await getCurrentUser(userId)
+      const profilesMap = await batchEnrichUserProfiles(authorIds, viewer)
+      for (const note of sortedNotes) {
+        ;(note as { user?: unknown }).user =
+          profilesMap.get(note.userId) || { id: note.userId, profile: { userName: null } }
       }
     }
 
