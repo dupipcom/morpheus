@@ -116,11 +116,9 @@ export const DoToolbar = ({
     return typeof bucket[dateISO]?.completion === 'number' ? bucket[dateISO].completion : 0
   }
 
-  // Determine if we should show the date picker (only for daily.* or weekly.* lists)
-  const shouldShowDatePicker = useMemo(() => {
-    if (!selectedList?.role) return false
-    return selectedList.role.startsWith('daily.') || selectedList.role.startsWith('weekly.')
-  }, [selectedList])
+  // Always show the Date / Day selector whenever a list is selected, so newly
+  // created (custom) lists expose date navigation just like daily/weekly lists
+  const shouldShowDatePicker = useMemo(() => Boolean(selectedList), [selectedList])
 
   const selectedListTitle = selectedList ? (selectedList.name || selectedList.role || selectedList.id) : (t('tasks.selectList') || 'Select list')
 

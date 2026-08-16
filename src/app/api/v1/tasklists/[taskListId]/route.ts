@@ -15,6 +15,7 @@ import { authorizeListAccess } from '@/lib/services/auth/authService'
 import { ApiError, toResponse } from '@/lib/services/errors'
 import { getViewerRole } from '@/lib/services/ownership'
 import { updateTaskList, deleteTaskList, getTaskListWithTasks } from '@/lib/services/list'
+import { notifyUser } from '@/lib/services/notification'
 
 const ALLOWED_VISIBILITIES: Visibility[] = ['PUBLIC', 'PRIVATE', 'FRIENDS', 'CLOSE_FRIENDS', 'HIDDEN']
 
@@ -155,6 +156,17 @@ export async function PUT(
       parsedBudgetSourceIds = budgetSourceIds as string[]
     }
 
+    // Track current collaborators so newly added ones can be notified after the update
+    const existingList = await prisma.list.findUnique({
+      where: { id: taskListId },
+      select: { users: true }
+    })
+    const existingCollaboratorIds = new Set(
+      (existingList?.users || [])
+        .filter((ref) => ref.role === 'COLLABORATOR')
+        .map((ref) => ref.userId)
+    )
+
     const taskList = await updateTaskList({
       taskListId,
       role: typeof newRole === 'string' ? newRole : undefined,
@@ -171,6 +183,19 @@ export async function PUT(
       profilePhoto: typeof profilePhoto === 'string' ? sanitizeText(profilePhoto) : undefined,
       links: links !== undefined ? (typeof links === 'object' ? links : null) : undefined
     })
+
+    // Notify newly added collaborators (list invite)
+    if (parsedCollaborators) {
+      const addedCollaboratorIds = parsedCollaborators.filter((id) => !existingCollaboratorIds.has(id))
+      for (const collaboratorId of addedCollaboratorIds) {
+        void notifyUser({
+          userId: collaboratorId,
+          type: 'LIST_INVITE',
+          actorId: user.id,
+          resourceId: taskListId
+        }).catch((error) => console.error('Error creating list invite notification:', error))
+      }
+    }
 
     return NextResponse.json({ taskList })
   } catch (error) {

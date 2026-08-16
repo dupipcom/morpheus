@@ -3,6 +3,7 @@
  * Handles create, read, update, delete operations for task lists
  */
 
+import { randomUUID } from 'crypto'
 import prisma from '@/lib/prisma'
 import type { List, Prisma } from '@/generated/prisma'
 import { DAILY_ACTIONS, WEEKLY_ACTIONS } from '@/app/constants'
@@ -147,9 +148,15 @@ export async function ensureDefaultTaskLists(params: {
         role,
         name: localizedName,
         visibility: 'PRIVATE',
-        users: [{ userId: userInternalId, role: 'OWNER' }]
+        users: [{ userId: userInternalId, role: 'OWNER' }],
+        // Placeholder avoids the null-collision on the unique publicUrl index;
+        // the real slug is assigned below.
+        publicUrl: temporaryPublicUrl()
       }
     })
+
+    const publicUrl = await generatePublicUrl(localizedName, newList.id)
+    await prisma.list.update({ where: { id: newList.id }, data: { publicUrl } })
 
     const taskCreatePromises = translatedTasks.map((task) =>
       prisma.task.create({
@@ -167,6 +174,18 @@ export async function ensureDefaultTaskLists(params: {
     )
     await Promise.all(taskCreatePromises)
   }
+}
+
+/**
+ * Unique placeholder for a List.publicUrl at creation time.
+ *
+ * MongoDB unique indexes treat missing/null values as ONE key, so two lists
+ * created with an unset publicUrl violate List_publicUrl_key. Every create
+ * therefore stores a guaranteed-unique placeholder and the real slug
+ * (name + last 4 chars of the id) is generated right after the row exists.
+ */
+export function temporaryPublicUrl(): string {
+  return `pending-${randomUUID()}`
 }
 
 /**
@@ -242,7 +261,10 @@ export async function createTaskList(params: {
       budgetSourceIds: budgetSourceIds || [],
       bio: bio || null,
       profilePhoto: profilePhoto || null,
-      links: links ?? null
+      links: links ?? null,
+      // Placeholder avoids the null-collision on the unique publicUrl index;
+      // the real slug is generated right after the row exists.
+      publicUrl: temporaryPublicUrl()
     }
   })
 

@@ -1,11 +1,15 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import { Loader2 } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { AttachmentPicker, attachmentFileUrl } from '@/components/attachmentPicker'
+import type { PickedAttachment } from '@/components/attachmentPicker'
 import { useI18n } from '@/lib/contexts/i18n'
 
 export type JobDialogMode = 'request' | 'submit' | 'review' | 'requestReview'
@@ -18,16 +22,19 @@ interface JobDialogProps {
   isResubmit?: boolean
   isSubmitting?: boolean
   requestJob?: any
-  onRequest: (justification: string) => Promise<void> | void
-  onSubmit: (data: { noteContent: string; selfReview: number }) => Promise<void> | void
+  /** The active job for submit/review modes (attachments link to it) */
+  job?: any
+  userId?: string
+  onRequest: (justification: string, documentIds: string[]) => Promise<void> | void
+  onSubmit: (data: { noteContent: string; selfReview: number; documentIds?: string[]; location?: any }) => Promise<void> | void
   onReview: (data: { action: 'accept' | 'validate' | 'reject'; reviewNoteContent?: string; managerReview?: number }) => Promise<void> | void
   onRequestReview?: (action: 'approve' | 'reject') => Promise<void> | void
 }
 
 /**
  * Unified job workflow dialog:
- * - request: collaborator justifies their request to work on a task
- * - submit: worker posts evidence (note + self-review; attachments come in Phase 3)
+ * - request: collaborator justifies their request to work on a task (optionally attaching or reusing a CV)
+ * - submit: worker posts evidence — note, self-review, and photo/video/document attachments
  * - review: owner/manager accepts, requests changes, or rejects
  * - requestReview: owner/manager reads a request's justification and approves/rejects
  */
@@ -39,6 +46,8 @@ export const JobDialog = ({
   isResubmit = false,
   isSubmitting = false,
   requestJob = null,
+  job = null,
+  userId,
   onRequest,
   onSubmit,
   onReview,
@@ -51,6 +60,9 @@ export const JobDialog = ({
   const [selfReview, setSelfReview] = useState('5')
   const [managerReview, setManagerReview] = useState('5')
   const [reviewNoteContent, setReviewNoteContent] = useState('')
+  const [pickedAttachments, setPickedAttachments] = useState<PickedAttachment[]>([])
+  const [pickedEvidence, setPickedEvidence] = useState<PickedAttachment[]>([])
+  const [previousCvs, setPreviousCvs] = useState<any[]>([])
 
   // Reset fields whenever the dialog (re)opens
   useEffect(() => {
@@ -60,6 +72,18 @@ export const JobDialog = ({
       setSelfReview('5')
       setManagerReview('5')
       setReviewNoteContent('')
+      setPickedAttachments([])
+      setPickedEvidence([])
+      setPreviousCvs([])
+      // Load the caller's previously stored CVs for the reuse picker
+      if (mode === 'request') {
+        fetch('/api/v1/attachments?kind=cv&mine=true')
+          .then((res) => (res.ok ? res.json() : { documents: [] }))
+          .then((data) => {
+            if (Array.isArray(data?.documents)) setPreviousCvs(data.documents)
+          })
+          .catch(() => setPreviousCvs([]))
+      }
     }
   }, [open, mode])
 
@@ -79,6 +103,28 @@ export const JobDialog = ({
     requestReview: t('tasks.requestReviewDescription', { defaultValue: 'Review the request and decide whether to let this user work on the task.' }),
   }
 
+  // A picked CV counts as "uploading" until the picker commits it (documentId set)
+  const isUploadingCv = pickedAttachments.some((a) => a.documentId == null)
+  // Evidence attachments are uploading until the picker commits them
+  const isUploadingEvidence = pickedEvidence.some((a) => a.documentId == null)
+
+  // Reuse a previously stored CV: it already has a documentId, so it is submit-ready
+  const handleReuseCv = (docId: string) => {
+    const doc = previousCvs.find((d: any) => d.id === docId)
+    if (!doc) return
+    setPickedAttachments([
+      {
+        key: doc.id,
+        publicUrl: attachmentFileUrl(doc.id),
+        fileName: doc.fileName,
+        mimeType: doc.mimeType || 'application/pdf',
+        kind: 'cv',
+        size: doc.fileSize ?? 0,
+        documentId: doc.id,
+      },
+    ])
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-[480px] max-w-[90vw] max-h-[70vh] z-[9980] flex flex-col">
@@ -89,15 +135,49 @@ export const JobDialog = ({
 
         <div className="space-y-3 overflow-y-auto flex-1 pr-1">
           {mode === 'request' && (
-            <div>
-              <Label htmlFor="job-justification">{t('tasks.justificationLabel', { defaultValue: 'Justification' })}</Label>
-              <Textarea
-                id="job-justification"
-                value={justification}
-                onChange={(e) => setJustification(e.target.value)}
-                placeholder={t('tasks.justificationPlaceholder', { defaultValue: 'Why should you do this task?' })}
-              />
-            </div>
+            <>
+              <div>
+                <Label htmlFor="job-justification">{t('tasks.justificationLabel', { defaultValue: 'Justification' })}</Label>
+                <Textarea
+                  id="job-justification"
+                  value={justification}
+                  onChange={(e) => setJustification(e.target.value)}
+                  placeholder={t('tasks.justificationPlaceholder', { defaultValue: 'Why should you do this task?' })}
+                />
+              </div>
+              {userId && (
+                <div className="space-y-2">
+                  <Label>{t('tasks.cv.label', { defaultValue: 'CV (optional)' })}</Label>
+                  <AttachmentPicker
+                    entityType="user"
+                    entityId={userId}
+                    kind="cv"
+                    role="cv"
+                    max={1}
+                    accept=".pdf"
+                    value={pickedAttachments}
+                    onChange={setPickedAttachments}
+                  />
+                  {previousCvs.length > 0 && (
+                    <div>
+                      <Label>{t('tasks.cv.reuseLabel', { defaultValue: 'Your CVs' })}</Label>
+                      <Select value="" onValueChange={handleReuseCv}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder={t('tasks.cv.reusePlaceholder', { defaultValue: 'Reuse a previous CV...' })} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {previousCvs.map((doc: any) => (
+                            <SelectItem key={doc.id} value={doc.id}>
+                              {doc.fileName}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+                </div>
+              )}
+            </>
           )}
 
           {mode === 'submit' && (
@@ -121,6 +201,24 @@ export const JobDialog = ({
                   value={selfReview}
                   onChange={(e) => setSelfReview(e.target.value)}
                 />
+              </div>
+              <div className="space-y-2">
+                <Label>{t('tasks.evidenceAttachmentsLabel', { defaultValue: 'Evidence attachments (photos, videos, documents)' })}</Label>
+                {job?.id ? (
+                  <AttachmentPicker
+                    entityType="job"
+                    entityId={job.id}
+                    role="evidence"
+                    kind="any"
+                    max={4}
+                    value={pickedEvidence}
+                    onChange={setPickedEvidence}
+                  />
+                ) : (
+                  <p className="text-xs text-muted-foreground">
+                    {t('tasks.evidenceAttachmentsUnavailable', { defaultValue: 'Attachments are available once the job exists.' })}
+                  </p>
+                )}
               </div>
             </>
           )}
@@ -166,35 +264,79 @@ export const JobDialog = ({
                   </p>
                 </div>
               </div>
+              {Array.isArray(requestJob.documentIds) && requestJob.documentIds.length > 0 && (
+                <div>
+                  <Label>{t('tasks.cv.attachedDocuments', { defaultValue: 'Attached documents' })}</Label>
+                  <div className="mt-1 space-y-1">
+                    {requestJob.documentIds.map((id: string, index: number) => (
+                      <a
+                        key={id}
+                        href={attachmentFileUrl(id)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block text-sm text-primary underline underline-offset-2 hover:no-underline"
+                      >
+                        {t('tasks.cv.viewDocument', { defaultValue: 'View document' })} {index + 1}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
             </>
           )}
         </div>
 
         <div className="flex gap-2 pt-2 flex-wrap">
           {mode === 'request' && (
-            <Button
-              disabled={!justification.trim() || isSubmitting}
-              onClick={async () => {
-                await onRequest(justification.trim())
-                onOpenChange(false)
-              }}
-            >
-              {t('tasks.sendRequest', { defaultValue: 'Send request' })}
-            </Button>
+            <>
+              <Button
+                disabled={!justification.trim() || isSubmitting || isUploadingCv}
+                onClick={async () => {
+                  await onRequest(
+                    justification.trim(),
+                    pickedAttachments.map((a) => a.documentId).filter((id): id is string => Boolean(id))
+                  )
+                  onOpenChange(false)
+                }}
+              >
+                {t('tasks.sendRequest', { defaultValue: 'Send request' })}
+              </Button>
+              {isUploadingCv && (
+                <span className="flex items-center gap-1 text-xs text-muted-foreground self-center">
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                  {t('tasks.cv.uploading', { defaultValue: 'Uploading attachment...' })}
+                </span>
+              )}
+            </>
           )}
 
           {mode === 'submit' && (
-            <Button
-              disabled={!noteContent.trim() || isSubmitting}
-              onClick={async () => {
-                await onSubmit({ noteContent: noteContent.trim(), selfReview: Math.max(0, Math.min(100, Number(selfReview) || 0)) })
-                onOpenChange(false)
-              }}
-            >
-              {isResubmit
-                ? t('tasks.resubmit', { defaultValue: 'Resubmit' })
-                : t('tasks.submit', { defaultValue: 'Submit' })}
-            </Button>
+            <>
+              <Button
+                disabled={!noteContent.trim() || isSubmitting || isUploadingEvidence}
+                onClick={async () => {
+                  await onSubmit({
+                    noteContent: noteContent.trim(),
+                    selfReview: Math.max(0, Math.min(100, Number(selfReview) || 0)),
+                    documentIds: pickedEvidence
+                      .map((a) => a.documentId)
+                      .filter((id): id is string => Boolean(id)),
+                    location: pickedEvidence.find((a) => a.location)?.location ?? undefined,
+                  })
+                  onOpenChange(false)
+                }}
+              >
+                {isResubmit
+                  ? t('tasks.resubmit', { defaultValue: 'Resubmit' })
+                  : t('tasks.submit', { defaultValue: 'Submit' })}
+              </Button>
+              {isUploadingEvidence && (
+                <span className="flex items-center gap-1 text-xs text-muted-foreground self-center">
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                  {t('tasks.cv.uploading', { defaultValue: 'Uploading attachment...' })}
+                </span>
+              )}
+            </>
           )}
 
           {mode === 'review' && (

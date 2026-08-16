@@ -17,6 +17,7 @@ security:
   - cookieAuth: []
 
 tags:
+  - name: attachments
   - name: auth
   - name: budgets
   - name: chat
@@ -28,6 +29,8 @@ tags:
   - name: jobs
   - name: likes
   - name: notes
+  - name: notifications
+  - name: places
   - name: profile
   - name: search
   - name: sms
@@ -506,6 +509,17 @@ paths:
     post:
       tags: [jobs]
       summary: Create a job (justification required for collaborators)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                documentIds:
+                  type: array
+                  maxItems: 10
+                  items: { type: string }
+                  description: Attached Document ids (e.g. a CV uploaded via /api/v1/attachments)
       responses:
         '200': { description: Job }
 
@@ -531,6 +545,134 @@ paths:
         - { name: jobId, in: path, required: true, schema: { type: string } }
       responses:
         '200': { description: Cancelled }
+
+  /api/v1/attachments/presign:
+    post:
+      tags: [attachments]
+      summary: Presign a direct upload (extension allowlist + per-kind cap; SVG rejected)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [fileName, mimeType, kind, size]
+              properties:
+                fileName: { type: string }
+                mimeType: { type: string }
+                kind: { type: string, enum: [image, video, document, cv] }
+                size: { type: integer }
+                role: { type: string, enum: [cover, flier, evidence, inline, cv] }
+      responses:
+        '200': { description: '{ uploadUrl, key, publicUrl, expiresIn }' }
+        '503': { description: Storage not configured }
+
+  /api/v1/attachments:
+    get:
+      tags: [attachments]
+      summary: List the caller's own documents (?kind=cv&mine=true, newest first, take <= 50)
+      parameters:
+        - { name: mine, in: query, required: true, schema: { type: string } }
+        - { name: kind, in: query, schema: { type: string } }
+        - { name: limit, in: query, schema: { type: integer } }
+      responses:
+        '200': { description: '{ documents }' }
+    post:
+      tags: [attachments]
+      summary: Confirm upload (key prefix, HEAD cap, magic-byte sniff) and create+link Document
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [key, fileName, kind, entityType, entityId]
+              properties:
+                key: { type: string }
+                fileName: { type: string }
+                kind: { type: string, enum: [image, video, document, cv] }
+                entityType: { type: string, enum: [task, list, job, note, user] }
+                entityId: { type: string }
+                role: { type: string, enum: [cover, flier, evidence, inline, cv] }
+                width: { type: integer }
+                height: { type: integer }
+                duration: { type: number }
+                location: { type: object }
+      responses:
+        '200': { description: '{ document }' }
+        '403': { description: Key outside caller prefix / not permitted on entity }
+        '400': { description: Cap exceeded or content/type mismatch (object deleted) }
+
+  /api/v1/attachments/{documentId}:
+    delete:
+      tags: [attachments]
+      summary: Delete attachment (owner only; unlink arrays, delete object, delete row)
+      parameters:
+        - { name: documentId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: '{ message: Attachment deleted }' }
+
+  /api/v1/attachments/{documentId}/file:
+    get:
+      tags: [attachments]
+      summary: Authenticated media pipe from the private storage bucket (streams bytes; Range supported)
+      parameters:
+        - { name: documentId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Object bytes with sniffed Content-Type }
+        '206': { description: Partial content (video seeking) }
+        '401': { description: Authentication required for non-public documents }
+        '403': { description: Not linked to the document }
+        '404': { description: Attachment or object not found }
+
+  /api/v1/notifications:
+    get:
+      tags: [notifications]
+      summary: List the current user's notifications (newest first, last 30, with unread count)
+      responses:
+        '200': { description: '{ notifications, unreadCount }' }
+    post:
+      tags: [notifications]
+      summary: Mark notifications as read (given ids, or all when omitted)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids: { type: array, items: { type: string } }
+      responses:
+        '200': { description: '{ updated }' }
+
+  /api/v1/places/autocomplete:
+    get:
+      tags: [places]
+      summary: Google Places autocomplete proxy (5 results, 5-min LRU, per-user rate limit)
+      parameters:
+        - { name: input, in: query, required: true, schema: { type: string } }
+        - { name: sessionToken, in: query, schema: { type: string } }
+      responses:
+        '200': { description: '{ predictions: [{ placeId, description }] }' }
+        '503': { description: Places not configured }
+
+  /api/v1/places/details:
+    get:
+      tags: [places]
+      summary: Google Places details proxy (canonical 5-field location)
+      parameters:
+        - { name: placeId, in: query, required: true, schema: { type: string } }
+        - { name: sessionToken, in: query, schema: { type: string } }
+      responses:
+        '200': { description: '{ location: { lat, lng, placeId, name, address } }' }
+
+  /api/v1/places/staticmap:
+    get:
+      tags: [places]
+      summary: Google Static Maps image proxy (API key stays server-side)
+      parameters:
+        - { name: lat, in: query, required: true, schema: { type: number } }
+        - { name: lng, in: query, required: true, schema: { type: number } }
+        - { name: zoom, in: query, schema: { type: number } }
+      responses:
+        '200': { description: Static map image (cached 24h) }
 
   /api/v1/likes:
     get:
@@ -797,6 +939,20 @@ paths:
       summary: Create a task (name, listId, rrule, dtstart, times, premium, premiumType, location)
       responses:
         '200': { description: Task }
+
+  /api/v1/tasks/past-pending:
+    get:
+      tags: [tasks]
+      summary: Past occurrences still pending or under review (infinite-scroll pages)
+      parameters:
+        - { name: listId, in: query, required: true, schema: { type: string } }
+        - { name: before, in: query, schema: { type: string, format: date } }
+        - { name: windowStart, in: query, schema: { type: string, format: date } }
+        - { name: cursorDate, in: query, schema: { type: string, format: date } }
+        - { name: cursorId, in: query, schema: { type: string } }
+        - { name: limit, in: query, schema: { type: integer, default: 20, maximum: 50 } }
+      responses:
+        '200': { description: Past pending entries with nextCursor }
 
   /api/v1/tasks/{taskId}:
     get:

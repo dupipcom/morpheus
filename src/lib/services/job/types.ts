@@ -1,4 +1,4 @@
-import type { Job, Task, List, Note, User, Profile } from '@/generated/prisma/client'
+import type { Note, Profile } from '@/generated/prisma/client'
 
 // User role in a list
 export type UserRole = 'OWNER' | 'MANAGER' | 'COLLABORATOR' | 'FOLLOWER'
@@ -68,6 +68,9 @@ export interface JobWithRelations {
       profiles: Profile[]
     }
   })[]
+  justification?: string | null
+  location?: Record<string, unknown> | null
+  documentIds?: string[]
 }
 
 // Request body for updating job

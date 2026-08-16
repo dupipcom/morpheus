@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { getTaskKey, getTaskStatus, STATUS_OPTIONS } from '@/lib/utils/taskUtils'
+import { getTaskEntryKey, getTaskStatus, STATUS_OPTIONS } from '@/lib/utils/taskUtils'
 import type { TaskStatus } from '@/lib/utils/taskUtils'
 
 interface Task {
@@ -37,7 +37,9 @@ export function useTaskStatuses({
     const statuses: Record<string, TaskStatus> = {}
 
     tasks.forEach((task) => {
-      const key = getTaskKey(task)
+      // Occurrence-scoped: one recurring task row appears on many dates, so
+      // each (task, date) entry gets its own status slot.
+      const key = getTaskEntryKey(task, date)
 
       // IMPORTANT: For date views, prefer dateStatus (job-based) over task.status (global)
       // This ensures the UI reflects the actual job completion state for the specific date
@@ -85,10 +87,10 @@ export function useTaskStatuses({
   // Get effective task status (considering optimistic updates)
   const getEffectiveStatus = useMemo(() => {
     return (task: any): TaskStatus => {
-      const key = getTaskKey(task)
+      const key = getTaskEntryKey(task, date)
       return optimisticStatuses?.[key] || taskStatuses[key] || getTaskStatus(task)
     }
-  }, [taskStatuses, optimisticStatuses])
+  }, [taskStatuses, optimisticStatuses, date])
 
   return {
     taskStatuses,

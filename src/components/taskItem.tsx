@@ -33,6 +33,8 @@ interface TaskItemProps {
   userJobStatus?: JobStatus | null
   isCurrentUserWorker?: boolean
   isPendingRequest?: boolean
+  /** Shown as a badge when the card represents a past occurrence (e.g. "Past · 2026-08-10") */
+  dateBadge?: string
 }
 
 // Get job status badge configuration
@@ -95,6 +97,7 @@ export const TaskItem = ({
   userJobStatus,
   isCurrentUserWorker = false,
   isPendingRequest = false,
+  dateBadge,
 }: TaskItemProps) => {
   const key = task?.id || task?.localeKey || task?.name
   const dateCount = task?.dateCount ?? 0
@@ -139,6 +142,12 @@ export const TaskItem = ({
 
       {/* Status Badges Section - appears below button */}
       <div className="flex flex-col gap-1 mt-1.5 pl-1">
+        {/* Past-occurrence date badge */}
+        {dateBadge && (
+          <Badge variant="secondary" className="w-fit bg-muted text-muted-foreground border-muted">
+            {dateBadge}
+          </Badge>
+        )}
         {/* Completer badge for completed tasks */}
         {showCompleterBadge && isDone && hasCollaborators && completerName && (
           <Badge variant="secondary" className="w-fit bg-muted text-muted-foreground border-muted">

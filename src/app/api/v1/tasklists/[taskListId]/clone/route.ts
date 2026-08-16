@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
 import { sanitizeText } from '@/lib/utils/sanitize'
-import { generatePublicUrl } from '@/lib/services/list/taskListCrudService'
+import { generatePublicUrl, temporaryPublicUrl } from '@/lib/services/list/taskListCrudService'
 import { resolveListBudget } from '@/lib/services/finance/premiumService'
 
 export async function POST(
@@ -74,7 +74,10 @@ export async function POST(
         budgetPercent: isPercentBudget ? null : taskList.budgetPercent,
         bio: taskList.bio,
         profilePhoto: taskList.profilePhoto,
-        links: taskList.links
+        links: taskList.links,
+        // Placeholder avoids the null-collision on the unique publicUrl index;
+        // the real slug is assigned right below.
+        publicUrl: temporaryPublicUrl()
       }
     })
 

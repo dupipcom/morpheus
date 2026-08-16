@@ -8,6 +8,7 @@ import { updateDayProgress } from '@/lib/services/day'
 import { formatDateLocal } from '@/lib/utils/taskUtils'
 import { sanitizeText } from '@/lib/utils/sanitize'
 import { calculateAndApplyJobEarnings, initializeJobInvoice, updateJobWithTaskValues } from '@/lib/services/job/earningsService'
+import { notifyUser } from '@/lib/services/notification'
 import type { ListUser } from '@/lib/services/job/types'
 
 // Standard job include clause for consistent responses
@@ -163,7 +164,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { taskId, listId, workerId, status, occurrenceDate, justification, location, selfReview, peerReview, managerReview, reviewerIds, reviewersNoteIds } = body
+    const { taskId, listId, workerId, status, occurrenceDate, justification, location, selfReview, peerReview, managerReview, reviewerIds, reviewersNoteIds, documentIds } = body
 
     // Validate required fields
     if (!taskId || !listId || !workerId) {
@@ -172,6 +173,20 @@ export async function POST(request: NextRequest) {
 
     if (occurrenceDate && !/^\d{4}-\d{2}-\d{2}$/.test(occurrenceDate)) {
       return NextResponse.json({ error: 'Invalid occurrenceDate format. Use YYYY-MM-DD' }, { status: 400 })
+    }
+
+    // Evidence attachments: only the worker may attach documents when creating a job
+    if (documentIds !== undefined && workerId !== user.id) {
+      return NextResponse.json({ error: 'Unauthorized: Only the worker can attach evidence documents' }, { status: 403 })
+    }
+
+    if (documentIds !== undefined) {
+      if (!Array.isArray(documentIds) || !documentIds.every((v: unknown) => typeof v === 'string' && /^[a-f0-9]{24}$/i.test(v))) {
+        return NextResponse.json({ error: 'documentIds must be an array of document IDs' }, { status: 400 })
+      }
+      if (documentIds.length > 10) {
+        return NextResponse.json({ error: 'documentIds can contain at most 10 documents' }, { status: 400 })
+      }
     }
 
     // Authorization checks
@@ -215,7 +230,8 @@ export async function POST(request: NextRequest) {
         peerReview,
         managerReview,
         reviewerIds: reviewerIds || [],
-        reviewersNoteIds: reviewersNoteIds || []
+        reviewersNoteIds: reviewersNoteIds || [],
+        documentIds: documentIds || []
       },
       include: JOB_INCLUDE
     })
@@ -245,6 +261,21 @@ export async function POST(request: NextRequest) {
         await calculateAndApplyJobEarnings({ jobId: job.id, taskId, listId, workerId, occurrenceDate: dateToUse })
       } catch (earningsError) {
         console.error('Error calculating job earnings:', earningsError)
+      }
+    }
+
+    // Notify the list's owners/managers when a collaborator requests a job
+    if (job.status === 'REQUESTED') {
+      const recipients = (job.list?.users || [])
+        .filter((ref: ListUser) => ['OWNER', 'MANAGER'].includes(ref.role))
+        .filter((ref: ListUser) => ref.userId !== user.id)
+      for (const recipient of recipients) {
+        void notifyUser({
+          userId: recipient.userId,
+          type: 'JOB_REQUESTED',
+          actorId: user.id,
+          resourceId: job.id
+        }).catch((error) => console.error('Error creating job request notification:', error))
       }
     }
 
