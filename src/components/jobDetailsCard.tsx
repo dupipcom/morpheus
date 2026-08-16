@@ -10,6 +10,7 @@ import { Lock, User, AlertCircle, CheckCircle, Send, XCircle, Hourglass, Loader2
 import type { JobWithRelations, UserRole } from '@/lib/services/job/types'
 import { useI18n } from '@/lib/contexts/i18n'
 import { sanitizeHTML } from '@/lib/utils/sanitize'
+import { attachmentFileUrl } from '@/components/attachmentPicker'
 
 type JobStatus = 'REQUESTED' | 'IN_PROGRESS' | 'SUBMITTED' | 'VALIDATING' | 'ACCEPTED' | 'REJECTED'
 
@@ -79,9 +80,11 @@ function StatusBanner({ status, variant, workerName }: StatusBannerProps) {
     ? { ...baseConfig, ...OWNER_STYLE_OVERRIDES[jobStatus] }
     : baseConfig
 
+  // Locale keys are camelCase (e.g. jobs.worker.statusBanner.inProgress)
+  const statusKey = status === 'IN_PROGRESS' ? 'inProgress' : status.toLowerCase()
   const translationKey = variant === 'worker'
-    ? `jobs.worker.statusBanner.${status.toLowerCase()}`
-    : `jobs.owner.statusBanner.${status.toLowerCase()}`
+    ? `jobs.worker.statusBanner.${statusKey}`
+    : `jobs.owner.statusBanner.${statusKey}`
 
   const message = variant === 'owner' && workerName
     ? t(translationKey, { workerName: `@${workerName}` })
@@ -135,7 +138,9 @@ export function JobDetailsCard({
   }
 
   function getStatusLabel(status: string): string {
-    const key = status === 'VALIDATING' ? 'changesRequested' : status.toLowerCase().replace('_', '')
+    if (status === 'VALIDATING') return t('jobs.status.changesRequested') || status
+    // Locale keys are camelCase (e.g. jobs.status.inProgress)
+    const key = status === 'IN_PROGRESS' ? 'inProgress' : status.toLowerCase()
     return t(`jobs.status.${key}`) || status
   }
 
@@ -195,6 +200,16 @@ export function JobDetailsCard({
           />
         )}
 
+        {/* Request justification (requesters explain why they want the task) */}
+        {job.status === 'REQUESTED' && job.justification && (
+          <div>
+            <Label className="text-sm font-semibold">{t('jobs.justification', { defaultValue: 'Justification' })}</Label>
+            <div className="mt-2 p-3 bg-muted rounded-md">
+              <p className="text-sm whitespace-pre-wrap break-words">{job.justification}</p>
+            </div>
+          </div>
+        )}
+
         {/* Worker's Submission Notes */}
         {job.requesterNotes && job.requesterNotes.length > 0 && (
           <div>
@@ -206,7 +221,7 @@ export function JobDetailsCard({
               >
                 <div
                   className="prose prose-sm dark:prose-invert max-w-none"
-                  dangerouslySetInnerHTML={{ __html: note.content }}
+                  dangerouslySetInnerHTML={{ __html: sanitizeHTML(note.content) }}
                 />
                 <div className="text-xs text-muted-foreground">
                   {new Date(note.createdAt).toLocaleDateString()} at{' '}
@@ -214,6 +229,27 @@ export function JobDetailsCard({
                 </div>
               </div>
             ))}
+          </div>
+        )}
+
+        {/* Attached evidence documents (photos, videos, CV) — streamed through
+            the authenticated media pipe */}
+        {Array.isArray(job.documentIds) && job.documentIds.length > 0 && (
+          <div>
+            <Label className="text-sm font-semibold">{t('jobs.attachedDocuments', { defaultValue: 'Attached documents' })}</Label>
+            <div className="mt-2 space-y-1">
+              {job.documentIds.map((id: string, index: number) => (
+                <a
+                  key={id}
+                  href={attachmentFileUrl(id)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-sm text-primary underline underline-offset-2 hover:no-underline"
+                >
+                  {t('jobs.viewDocument', { defaultValue: 'View document' })} {index + 1}
+                </a>
+              ))}
+            </div>
           </div>
         )}
 

@@ -18,7 +18,11 @@ Toggles like/unlike:
 - If a like exists (unique `userId_entityType_entityId`), deletes it and returns `{ liked: false, likeCount }`.
 - Otherwise creates a like and returns `{ liked: true, likeCount }`.
 
-Verifies the entity exists before toggling. Sets legacy relation field (`noteId`/`templateId`/`commentId`/`taskListId`) for backwards compatibility.
+Verifies the entity exists before toggling. Sets the legacy relation field (`noteId`/`templateId`/`commentId`) for backwards compatibility; `tasklist` likes persist with `entityType`/`entityId` only (the `Like` schema has no `taskListId` relation field).
+
+## Dependencies
+- `src/lib/services/social` (`toggleLike`, `getLikeState`, `getCounts`) — single registry of likeable/commentable entities (`normalizeEntityType` maps the `list`↔`tasklist` alias).
+- Prisma models: `Like`, `Note`, `Template`, `List`, `Comment`.
 
 ## Errors
 - `400`: missing/invalid `entityType`/`entityId`.

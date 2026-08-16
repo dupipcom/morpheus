@@ -3,11 +3,13 @@
  * Handles create, read, update, delete operations for task lists
  */
 
+import { randomUUID } from 'crypto'
 import prisma from '@/lib/prisma'
 import type { List, Prisma } from '@/generated/prisma'
 import { DAILY_ACTIONS, WEEKLY_ACTIONS } from '@/app/constants'
 import { recalculateUserBudget } from '@/lib/utils/budgetUtils'
-import { buildRRuleFromLegacy, rruleFromListRole, slugifyList } from '@/lib/utils/rruleUtils'
+import { buildRRuleFromLegacy, rruleFromListRole } from '@/lib/utils/rruleUtils'
+import { buildPublicSlug } from '@/lib/public/slug'
 import {
   ensureUniqueTaskIds,
   translateTemplateTasks,
@@ -77,7 +79,7 @@ export async function getTaskListsForUser(params: {
 
   const whereClause = role ? { role, ...membershipClause } : membershipClause
 
-  return prisma.list.findMany({
+  const lists = await prisma.list.findMany({
     where: whereClause as Prisma.ListWhereInput,
     include: {
       tasks: true // Tasks from the Task collection
@@ -86,6 +88,26 @@ export async function getTaskListsForUser(params: {
       createdAt: 'asc'
     }
   })
+
+  // Enrich user references with public usernames so clients can render real
+  // handles instead of internal ids (Profile.username is the public name)
+  const listUserIds = Array.from(
+    new Set(lists.flatMap((list) => (list.users || []).map((u) => u.userId)))
+  )
+  if (listUserIds.length > 0) {
+    const profiles = await prisma.profile.findMany({
+      where: { userId: { in: listUserIds } },
+      select: { userId: true, username: true }
+    })
+    const userNameById = new Map(profiles.map((p) => [p.userId, p.username || null]))
+    for (const list of lists) {
+      for (const ref of list.users || []) {
+        ;(ref as { userName?: string | null }).userName = userNameById.get(ref.userId) || null
+      }
+    }
+  }
+
+  return lists
 }
 
 /**
@@ -126,9 +148,15 @@ export async function ensureDefaultTaskLists(params: {
         role,
         name: localizedName,
         visibility: 'PRIVATE',
-        users: [{ userId: userInternalId, role: 'OWNER' }]
+        users: [{ userId: userInternalId, role: 'OWNER' }],
+        // Placeholder avoids the null-collision on the unique publicUrl index;
+        // the real slug is assigned below.
+        publicUrl: temporaryPublicUrl()
       }
     })
+
+    const publicUrl = await generatePublicUrl(localizedName, newList.id)
+    await prisma.list.update({ where: { id: newList.id }, data: { publicUrl } })
 
     const taskCreatePromises = translatedTasks.map((task) =>
       prisma.task.create({
@@ -149,15 +177,26 @@ export async function ensureDefaultTaskLists(params: {
 }
 
 /**
+ * Unique placeholder for a List.publicUrl at creation time.
+ *
+ * MongoDB unique indexes treat missing/null values as ONE key, so two lists
+ * created with an unset publicUrl violate List_publicUrl_key. Every create
+ * therefore stores a guaranteed-unique placeholder and the real slug
+ * (name + last 4 chars of the id) is generated right after the row exists.
+ */
+export function temporaryPublicUrl(): string {
+  return `pending-${randomUUID()}`
+}
+
+/**
  * Generate a unique public URL slug for a list (retries on collision)
  */
 export async function generatePublicUrl(name: string | null | undefined, id: string): Promise<string> {
-  const suffix = id.slice(-4)
-  let slug = slugifyList(name, suffix)
+  let slug = buildPublicSlug(name, id)
   for (let attempt = 0; attempt < 5; attempt++) {
     const existing = await prisma.list.findFirst({ where: { publicUrl: slug }, select: { id: true } })
     if (!existing || existing.id === id) return slug
-    slug = slugifyList(name, `${suffix}-${attempt + 1}`)
+    slug = `${buildPublicSlug(name, id)}-${attempt + 1}`
   }
   return `${slug}-${Date.now()}`
 }
@@ -222,7 +261,10 @@ export async function createTaskList(params: {
       budgetSourceIds: budgetSourceIds || [],
       bio: bio || null,
       profilePhoto: profilePhoto || null,
-      links: links ?? null
+      links: links ?? null,
+      // Placeholder avoids the null-collision on the unique publicUrl index;
+      // the real slug is generated right after the row exists.
+      publicUrl: temporaryPublicUrl()
     }
   })
 

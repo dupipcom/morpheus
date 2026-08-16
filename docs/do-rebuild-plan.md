@@ -1,5 +1,11 @@
 # Do Module Rebuild — Follow-up on #441
 
+> **Superseded.** Phases 1 and 2 of this document are implemented and merged. The remaining work
+> (Phases 3 and 4) has been folded into the consolidated program plan at
+> [`docs/plans/README.md`](./plans/README.md), which also covers the Be module (events, ticketing,
+> DPIP ledger, organizations, subscription allowances). Keep this file for the Phase 1–2 rationale
+> and findings; do not plan new work from it.
+
 ## Context
 
 Issue #441 ("r0.1.0") merged the Do module as it stands: budgets with distribution modes (#298/#299), Task-collection integration replacing templateTasks/ephemeralTasks (#302/#310), job earnings/invoice (#307/#315), CANCELLED-status compliance (#313). Those incremental PRs left the module overly complex: a 951-line addListForm with area/category/per-task budget distributions, a multiplexed `tasklists` POST, legacy fallbacks, duplicated loading paths, and **two parallel completion systems** (legacy embedded completers vs job-based) both mutating user money.

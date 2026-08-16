@@ -10,6 +10,22 @@ export function getTaskKey(task: any): string {
 }
 
 /**
+ * Occurrence-scoped key for a task entry on a given day.
+ *
+ * A recurring task is ONE Task row materialized on many dates, so per-date UI
+ * state (status, counters) must be keyed by (task id, occurrence date) — never
+ * by task name or by the bare task id, which would leak one day's state into
+ * every other day's entry of the same task.
+ *
+ * Date precedence: pastOccurrenceDate (past-day cards), occurrenceDate (entry
+ * payloads), then the dateKey the caller supplies (the selected day).
+ */
+export function getTaskEntryKey(task: any, dateKey?: string): string {
+  const occurrenceDate = task?.pastOccurrenceDate || task?.occurrenceDate || dateKey || ''
+  return `${getTaskKey(task)}:${occurrenceDate}`
+}
+
+/**
  * Get status color for CSS or Tailwind
  */
 export function getStatusColor(status: TaskStatus, format: 'css' | 'tailwind' = 'css'): string {

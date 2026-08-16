@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useMemo, useState, useEffect } from 'react'
-import { RRule, rrulestr } from 'rrule'
+import { RRule, Weekday, rrulestr } from 'rrule'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -75,7 +75,10 @@ function buildRuleFromState(state: CadenceState): string | null {
     if (state.monthMode === 'day') {
       options.bymonthday = [Math.min(31, Math.max(1, state.monthDay))]
     } else {
-      options.bynweekday = [[state.ordinal, state.ordinalWeekday]]
+      // Nth-weekday rules must use byweekday with a Weekday that carries `n`
+      // (serializes to BYDAY=+1MO). The internal `bynweekday` option is not
+      // RFC 5545 and produces an RRULE that rrulestr() cannot parse back.
+      options.byweekday = [new Weekday(state.ordinalWeekday, state.ordinal)]
     }
   }
   if (state.frequency === 'yearly') {
@@ -122,15 +125,19 @@ export const CadencePicker = ({ value, onChange }: CadencePickerProps) => {
       next.interval = rule.options.interval || 1
       if (Array.isArray(rule.options.byweekday) && rule.options.byweekday.length > 0) {
         next.weekdays = rule.options.byweekday as number[]
+      } else if (Array.isArray(rule.origOptions.byweekday) && rule.origOptions.byweekday.length > 0) {
+        // Nth-weekday rules (BYDAY=+1MO): the lib keeps these Weekday
+        // instances in origOptions and leaves options.byweekday null.
+        const first = rule.origOptions.byweekday[0] as { weekday: number; n?: number }
+        if (typeof first.n === 'number' && first.n !== 0) {
+          next.monthMode = 'nth'
+          next.ordinal = first.n
+          next.ordinalWeekday = first.weekday
+        }
       }
       if (Array.isArray(rule.options.bymonthday) && rule.options.bymonthday.length > 0) {
         next.monthMode = 'day'
         next.monthDay = rule.options.bymonthday[0] as number
-      }
-      if (Array.isArray(rule.options.bynweekday) && rule.options.bynweekday.length > 0) {
-        next.monthMode = 'nth'
-        next.ordinal = rule.options.bynweekday[0][0] as number
-        next.ordinalWeekday = rule.options.bynweekday[0][1] as number
       }
       if (Array.isArray(rule.options.bymonth) && rule.options.bymonth.length > 0) {
         next.yearMonth = rule.options.bymonth[0] as number

@@ -88,7 +88,7 @@ export function mergeMoodUpdates(
  */
 export function calculateDatePeriods(date: Date | string): DatePeriods {
   const dateObj = typeof date === 'string' ? new Date(date) : date
-  const [, weekNumber] = getWeekNumber(dateObj)
+  const { week: weekNumber } = getWeekNumber(dateObj)
   const month = dateObj.getMonth() + 1
   const quarter = Math.ceil(month / 3)
   const semester = month <= 6 ? 1 : 2
@@ -175,7 +175,7 @@ export function calculateProfitFromTicker(ticker: unknown[] | null | undefined):
  */
 export function transformDayForAnalytics(day: DayRecord): DayAnalytics {
   const dayDate = day.date ? new Date(day.date) : new Date(day.createdAt)
-  const [, weekNumber] = getWeekNumber(dayDate)
+  const { week: weekNumber } = getWeekNumber(dayDate)
 
   const mood = normalizeMood(day.mood)
   const moodAverage = typeof day.average === 'number'

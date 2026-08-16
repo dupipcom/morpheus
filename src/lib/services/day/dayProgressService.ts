@@ -4,6 +4,8 @@
  */
 
 import prisma from '@/lib/prisma'
+import { getWeekNumber } from '@/lib/utils/date'
+import { taskOccursOnDate } from '@/lib/services/task'
 
 /**
  * List-level productivity data
@@ -86,17 +88,35 @@ export async function calculateDayProgressFromJobs(
   // Calculate productivity for each list
   const productivity: Productivity = {}
 
+  // List roles needed for the one-off prefix in taskOccursOnDate
+  const productivityListIds = Object.keys(jobsByList)
+  const roleRows = productivityListIds.length > 0
+    ? await prisma.list.findMany({
+        where: { id: { in: productivityListIds } },
+        select: { id: true, role: true }
+      })
+    : []
+  const roleByListId = new Map(roleRows.map((l) => [l.id, l.role]))
+
   for (const [listId, listJobs] of Object.entries(jobsByList)) {
     // Get unique task IDs that were completed (have ACCEPTED jobs)
     const completedTaskIds = new Set(listJobs.map(j => j.taskId))
     const completedTasks = completedTaskIds.size
 
-    // Get total tasks for this list
-    // For now, use simple count of all tasks in the list
-    // This provides a baseline completion percentage
-    const totalTasks = await prisma.task.count({
-      where: { listId }
+    // Count tasks occurring on this date instead of all tasks in the list:
+    // materialized occurrence rows accumulate over time, so a raw list-wide
+    // count would distort the completion percentage
+    const role = roleByListId.get(listId)
+    const rolePrefix = role?.split('.')[0] || ''
+    const isOneOffList = rolePrefix === 'one-off' || rolePrefix === 'oneoff'
+
+    const listTasks = await prisma.task.findMany({
+      where: { listId },
+      select: { id: true, rrule: true, dtstart: true, status: true, completedOn: true, createdAt: true }
     })
+    const totalTasks = listTasks.filter(t =>
+      taskOccursOnDate(t, occurrenceDate, isOneOffList)
+    ).length
 
     const percentage = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0
 
@@ -155,7 +175,7 @@ export async function updateDayProgress(
   } else {
     // Create new Day record
     const date = new Date(occurrenceDate)
-    const week = getWeekNumber(date)
+    const week = getWeekNumber(date).week
     const month = date.getMonth() + 1
     const quarter = Math.ceil(month / 3)
     const semester = month <= 6 ? 1 : 2
@@ -175,21 +195,6 @@ export async function updateDayProgress(
       }
     })
   }
-}
-
-/**
- * Get week number from date (ISO 8601)
- */
-function getWeekNumber(date: Date): number {
-  const tempDate = new Date(date.valueOf())
-  const dayNum = (date.getDay() + 6) % 7
-  tempDate.setDate(tempDate.getDate() - dayNum + 3)
-  const firstThursday = tempDate.valueOf()
-  tempDate.setMonth(0, 1)
-  if (tempDate.getDay() !== 4) {
-    tempDate.setMonth(0, 1 + ((4 - tempDate.getDay()) + 7) % 7)
-  }
-  return 1 + Math.ceil((firstThursday - tempDate.valueOf()) / 604800000)
 }
 
 /**

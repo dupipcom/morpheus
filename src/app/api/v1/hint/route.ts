@@ -225,7 +225,7 @@ export async function GET(req: NextRequest) {
 
   const fullDate = new Date()
   const date = fullDate.toISOString().split('T')[0]
-  const week = Number(getWeekNumber(fullDate)[1])
+  const week = Number(getWeekNumber(fullDate).week)
   const month = fullDate.getMonth() + 1
   const quarter = Math.floor((month - 1) / 3) + 1
   const semester = month <= 6 ? 1 : 2

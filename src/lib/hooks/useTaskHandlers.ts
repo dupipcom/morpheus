@@ -31,7 +31,7 @@ export function useTaskHandlers({
   onRequestWork,
 }: UseTaskHandlersOptions) {
   const createJob = useCallback(
-    async (taskId: string, status: string, justification?: string) => {
+    async (taskId: string, status: string, justification?: string, occurrenceDate?: string) => {
       await fetch('/api/v1/jobs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -40,7 +40,7 @@ export function useTaskHandlers({
           listId: taskListId,
           workerId: userId,
           status,
-          occurrenceDate: date,
+          occurrenceDate: occurrenceDate || date,
           justification,
         }),
       })
@@ -53,8 +53,13 @@ export function useTaskHandlers({
    * Jobs are never deleted — they are set to CANCELLED (financial history).
    */
   const cancelMostRecentJob = useCallback(
-    async (taskId: string) => {
-      const params = new URLSearchParams({ taskId, workerId: userId, date, status: 'ACCEPTED' })
+    async (taskId: string, occurrenceDate?: string) => {
+      const params = new URLSearchParams({
+        taskId,
+        workerId: userId,
+        date: occurrenceDate || date,
+        status: 'ACCEPTED'
+      })
       const response = await fetch(`/api/v1/jobs?${params.toString()}`)
       if (!response.ok) return
       const data = await response.json()
@@ -77,7 +82,7 @@ export function useTaskHandlers({
    * - Tapping a completed task cancels the most recent accepted job.
    */
   const handleTaskClick = useCallback(
-    async (task: any) => {
+    async (task: any, occurrenceDate?: string) => {
       if (!taskListId || !userId) return
 
       const role = getUserRole(selectedTaskList, userId)
@@ -90,13 +95,13 @@ export function useTaskHandlers({
         dateCount >= times
 
       if (isDone) {
-        await cancelMostRecentJob(task.id)
+        await cancelMostRecentJob(task.id, occurrenceDate)
       } else if (role === 'COLLABORATOR') {
         // Collaborators must justify their request (unless owner/manager)
         onRequestWork?.(task)
         return
       } else {
-        await createJob(task.id, 'ACCEPTED')
+        await createJob(task.id, 'ACCEPTED', undefined, occurrenceDate)
       }
 
       await onRefresh()
@@ -107,31 +112,52 @@ export function useTaskHandlers({
   /**
    * Set a task's status directly (criterion 5: setting to completed completes it).
    * Setting 'done' also creates the missing accepted jobs for the date.
+   *
+   * Occurrence scoping: a recurring task is ONE Task row materialized on many
+   * dates. Status changes from a past-day card must operate on that
+   * occurrence's jobs only — writing the task row globally would change the
+   * status of every other date's entry, including today's.
    */
   const handleStatusChange = useCallback(
     async (task: any, newStatus: TaskStatus) => {
       if (!taskListId) return
 
       const dbStatus = mapStatusToEnum(newStatus)
+      const occurrenceDate = task.pastOccurrenceDate
+      const isPastCard = !!occurrenceDate
+      const isRecurring = !!task.rrule
 
       if (newStatus === 'done' && userId) {
         const dateCount = task.dateCount ?? 0
         const times = task.times || 1
         const jobsNeeded = times - dateCount
+        // Past-day cards carry their own occurrence date
         for (let i = 0; i < jobsNeeded; i++) {
-          await createJob(task.id, 'ACCEPTED')
+          await createJob(task.id, 'ACCEPTED', undefined, occurrenceDate)
         }
+      } else if (newStatus === 'open' && isPastCard) {
+        // Un-completing a past occurrence: cancel its accepted jobs for that
+        // date instead of touching the shared task row.
+        await cancelMostRecentJob(task.id, occurrenceDate)
       }
 
-      await fetch(`/api/v1/tasks/${task.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: dbStatus }),
-      })
+      // Global status writes are only safe when the card represents the task
+      // itself (one-off tasks, or a recurring task's current-day card).
+      // Recurring tasks also materialize their next occurrence through the
+      // job acceptances above (updateTaskOccurrenceDates marks the completed
+      // row COMPLETED); a global status write would override that and make
+      // the completed row appear done on every future date again.
+      if (!(newStatus === 'done' && isRecurring) && !(isRecurring && isPastCard)) {
+        await fetch(`/api/v1/tasks/${task.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: dbStatus }),
+        })
+      }
 
       await onRefresh()
     },
-    [taskListId, userId, onRefresh, createJob]
+    [taskListId, userId, onRefresh, createJob, cancelMostRecentJob]
   )
 
   /** Increase the per-day counter target */
@@ -165,11 +191,11 @@ export function useTaskHandlers({
     [onRefresh]
   )
 
-  /** Undo one completion for the current date */
+  /** Undo one completion for the task's occurrence date */
   const handleDecrementCount = useCallback(
     async (task: any) => {
       if (!task.id) return
-      await cancelMostRecentJob(task.id)
+      await cancelMostRecentJob(task.id, task.pastOccurrenceDate)
       await onRefresh()
     },
     [cancelMostRecentJob, onRefresh]

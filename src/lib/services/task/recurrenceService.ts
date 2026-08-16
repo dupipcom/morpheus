@@ -53,8 +53,23 @@ export function rruleFrequency(rrule: string | null | undefined): string | null 
 /**
  * Parse a YYYY-MM-DD date as UTC midnight to avoid timezone/DST drift
  */
-function toUtcMidnight(dateStr: string): Date {
+export function toUtcMidnight(dateStr: string): Date {
   return new Date(`${dateStr}T00:00:00.000Z`)
+}
+
+/** Format a Date as YYYY-MM-DD using UTC components */
+function formatYmdUtc(date: Date): string {
+  const year = date.getUTCFullYear()
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0')
+  const day = String(date.getUTCDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+/** Add days to a YYYY-MM-DD date (UTC) and return the result as YYYY-MM-DD */
+function addDaysUtc(dateStr: string, days: number): string {
+  const date = toUtcMidnight(dateStr)
+  date.setUTCDate(date.getUTCDate() + days)
+  return formatYmdUtc(date)
 }
 
 /**
@@ -97,26 +112,95 @@ export function getWeekRange(dateStr: string): { weekStart: string; weekEnd: str
 }
 
 /**
+ * Compute the next occurrence strictly after completedDate for a recurring task.
+ * Returns YYYY-MM-DD, or null when the series is exhausted (UNTIL/COUNT) or the
+ * task is one-off. Mirrors taskOccursOnDate's legacy-quirk handling so the
+ * materialized row starts where the engine would next show the task.
+ */
+export function nextOccurrenceAfter(
+  task: { rrule: string | null; dtstart: string | null; createdAt?: Date | null },
+  completedDate: string
+): string | null {
+  if (!task.rrule) return null
+
+  // Legacy WEEKLY rules with no BYDAY appear on every day (see taskOccursOnDate):
+  // the next occurrence is simply tomorrow.
+  if (rruleFrequency(task.rrule) === 'WEEKLY' && !/BYDAY=/i.test(task.rrule)) {
+    return addDaysUtc(completedDate, 1)
+  }
+
+  const fallbackDate = task.createdAt ? task.createdAt.toISOString().slice(0, 10) : null
+  const rule = parseRuleForTask(task.rrule, task.dtstart, fallbackDate)
+  // Unparseable rule: the task appears on all dates, so advance one day
+  if (!rule) return addDaysUtc(completedDate, 1)
+
+  const next = rule.after(toUtcMidnight(completedDate)) // exclusive of completedDate
+  return next ? formatYmdUtc(next) : null
+}
+
+/**
+ * Derive the date-scoped status for a task from its accepted-job count.
+ * Extracted from getTasksForDate so materialization and past-pending paths
+ * derive status identically. Only ACCEPTED jobs count.
+ */
+export function deriveDateStatus(
+  task: { status: TaskStatus },
+  acceptedCount: number,
+  times?: number | null
+): TaskStatus {
+  // Tasks with COMPLETED or DONE status should always show as completed
+  // regardless of date or job records. This is for tasks that were marked as
+  // permanently completed (e.g., one-time tasks that are done)
+  if (task.status === 'COMPLETED' || task.status === 'DONE') {
+    return task.status
+  }
+
+  const required = times || 1
+  if (acceptedCount >= required) {
+    return 'DONE'
+  } else if (acceptedCount > 0) {
+    return 'IN_PROGRESS'
+  } else if (task.status && ['READY', 'STEADY', 'IN_PROGRESS'].includes(task.status)) {
+    // When no jobs exist for this date, respect manually-set task status
+    // This allows users to mark tasks as "ready" or "steady" before completion
+    return task.status
+  }
+
+  return 'OPEN'
+}
+
+/**
  * Check if a task should appear on a specific date based on its RRULE
  * - Tasks without an rrule are one-off tasks: they appear on all dates
- * - Tasks with COMPLETED status only appear in one-off lists (as done)
+ * - Tasks with COMPLETED status only appear in one-off lists (as done), or in
+ *   recurring lists on the day they were completed (completedOn)
  * @param task - The task to check (needs rrule, dtstart, status)
  * @param targetDate - The date to check against (YYYY-MM-DD)
  * @param isOneOffList - Whether the task belongs to a one-off list
  */
 export function taskOccursOnDate(
-  task: { rrule: string | null; dtstart: string | null; status: TaskStatus; createdAt?: Date | null },
+  task: { rrule: string | null; dtstart: string | null; status: TaskStatus; completedOn?: string | null; createdAt?: Date | null },
   targetDate: string,
   isOneOffList: boolean = false
 ): boolean {
-  // Tasks with COMPLETED status should not appear in recurring lists
-  // But in one-off lists, COMPLETED tasks should still appear (as done)
-  if (task.status === 'COMPLETED' && !isOneOffList) {
+  // Tasks with COMPLETED status should not appear in recurring lists, except
+  // on their own completion day (materialized occurrences stay visible as done)
+  // In one-off lists, COMPLETED tasks always appear (as done)
+  if (task.status === 'COMPLETED' && !isOneOffList && task.completedOn !== targetDate) {
     return false
   }
 
   // Tasks without recurrence rules are one-time tasks: appear on all dates
   if (!task.rrule) {
+    return true
+  }
+
+  // Legacy weekly rules with no explicit BYDAY (signup default lists, migrated
+  // templates) must appear on every day of the week: the old engine treated
+  // "no weekdays specified" as "all days", and the default lists rely on it.
+  // The rrule lib instead anchors on the DTSTART weekday, which would hide
+  // these tasks on 6 of 7 days.
+  if (rruleFrequency(task.rrule) === 'WEEKLY' && !/BYDAY=/i.test(task.rrule)) {
     return true
   }
 
@@ -163,12 +247,21 @@ export async function getTasksForDate(
 
   // 1. Fetch all tasks for the list with all jobs
   // For one-off lists, include COMPLETED tasks (they should appear as done)
-  // For recurring lists (daily/weekly), filter out COMPLETED tasks
+  // For recurring lists (daily/weekly), filter out COMPLETED tasks except those
+  // completed on the target date itself (materialized occurrences stay visible
+  // as done on their completion day)
   const tasks = await prisma.task.findMany({
     where: {
       listId,
       // Only filter out COMPLETED tasks for non-one-off lists
-      ...(isOneOffList ? {} : { status: { not: 'COMPLETED' } })
+      ...(isOneOffList
+        ? {}
+        : {
+            OR: [
+              { status: { not: 'COMPLETED' } },
+              { status: 'COMPLETED', completedOn: targetDate }
+            ]
+          })
     },
     include: {
       jobs: {
@@ -208,24 +301,7 @@ export async function getTasksForDate(
     // Calculate status based on relevant jobs
     const acceptedJobs = relevantJobs.filter(j => j.status === 'ACCEPTED')
     const count = acceptedJobs.length
-    const times = task.times || 1
-
-    let dateStatus: TaskStatus = 'OPEN'
-
-    // Tasks with COMPLETED or DONE status should always show as completed
-    // regardless of date or job records. This is for tasks that were marked as
-    // permanently completed (e.g., one-time tasks that are done)
-    if (task.status === 'COMPLETED' || task.status === 'DONE') {
-      dateStatus = task.status
-    } else if (count >= times) {
-      dateStatus = 'DONE'
-    } else if (count > 0) {
-      dateStatus = 'IN_PROGRESS'
-    } else if (count === 0 && task.status && ['READY', 'STEADY', 'IN_PROGRESS'].includes(task.status)) {
-      // When no jobs exist for this date, respect manually-set task status
-      // This allows users to mark tasks as "ready" or "steady" before completion
-      dateStatus = task.status
-    }
+    const dateStatus = deriveDateStatus(task, count, task.times)
 
     result.push({
       task,

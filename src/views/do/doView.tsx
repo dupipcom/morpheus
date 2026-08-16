@@ -2,6 +2,7 @@
 
 import React, { useMemo, useState, useEffect, useCallback } from 'react'
 import useSWR from 'swr'
+import useSWRInfinite from 'swr/infinite'
 
 import { Skeleton } from '@/components/ui/skeleton'
 import { TaskGrid } from '@/components/taskGrid'
@@ -84,6 +85,47 @@ export const DoView = ({
   )
   const jobsFromApi = jobsData?.jobs || []
 
+  // Past-day pending/under-review entries (infinite scroll, 7-day default window).
+  // Weekly lists are skipped: their cards already surface every non-terminal
+  // job of the week (the jobs fetch above is date-unfiltered for weekly lists).
+  const windowStart = useMemo(() => {
+    const d = new Date(selectedDate || new Date())
+    d.setDate(d.getDate() - 7)
+    return formatDateLocal(d)
+  }, [selectedDate])
+
+  const pastBaseUrl = useMemo(() => {
+    if (!selectedTaskListId || isWeeklyList) return null
+    return `/api/v1/tasks/past-pending?listId=${selectedTaskListId}&before=${date}&windowStart=${windowStart}`
+  }, [selectedTaskListId, isWeeklyList, date, windowStart])
+
+  const {
+    data: pastPages,
+    size,
+    setSize,
+    isLoading: isLoadingPast,
+    mutate: mutatePast,
+  } = useSWRInfinite<{ entries: any[]; nextCursor: { occurrenceDate: string; id: string } | null }>(
+    (pageIndex, previousPageData) => {
+      if (!pastBaseUrl) return null
+      if (pageIndex === 0) return pastBaseUrl
+      if (!previousPageData?.nextCursor) return null
+      const cursor = previousPageData.nextCursor
+      return `${pastBaseUrl}&cursorDate=${cursor.occurrenceDate}&cursorId=${cursor.id}`
+    },
+    jsonFetcher,
+    { revalidateOnFocus: false }
+  )
+
+  const pastEntries = useMemo(
+    () => (pastPages || []).flatMap((page) => page?.entries || []),
+    [pastPages]
+  )
+  const hasMorePast = useMemo(
+    () => (pastPages?.at(-1)?.nextCursor ?? null) !== null && (pastPages?.length ?? 0) > 0,
+    [pastPages]
+  )
+
   // Profiles cache (userId -> userName) for owners, collaborators and job workers
   const [collabProfiles, setCollabProfiles] = useState<Record<string, string>>({})
   useEffect(() => {
@@ -120,9 +162,10 @@ export const DoView = ({
     await Promise.all([
       mutateTasks(),
       mutateJobs(),
+      mutatePast(),
       refreshTaskLists(),
     ])
-  }, [mutateTasks, mutateJobs, refreshTaskLists])
+  }, [mutateTasks, mutateJobs, mutatePast, refreshTaskLists])
 
   // Loading state: still waiting for the list (first load) or tasks for the date
   const isWaitingForList = taskLists.length === 0 && !selectedTaskList
@@ -148,18 +191,16 @@ export const DoView = ({
 
   return (
     <>
-      {showAddTask && (
-        <div className="mb-4">
-          <AddTaskForm
-            selectedTaskListId={selectedTaskListId}
-            onCancel={onCloseAddTask || (() => {})}
-            onCreated={async () => {
-              await handleRefreshJobData()
-              if (onCloseAddTask) onCloseAddTask()
-            }}
-          />
-        </div>
-      )}
+      <AddTaskForm
+        open={showAddTask || false}
+        onOpenChange={(open) => {
+          if (!open && onCloseAddTask) onCloseAddTask()
+        }}
+        selectedTaskListId={selectedTaskListId}
+        onCreated={async () => {
+          await handleRefreshJobData()
+        }}
+      />
 
       <AddListForm
         open={showAddList || false}
@@ -184,6 +225,10 @@ export const DoView = ({
           onRefresh={handleRefreshJobData}
           onRefreshUser={refreshUser}
           onRefreshTasks={async () => { await mutateTasks() }}
+          pastEntries={pastEntries}
+          hasMorePast={hasMorePast}
+          isLoadingPast={isLoadingPast}
+          onLoadPastOlder={() => setSize(size + 1)}
         />
       </div>
     </>

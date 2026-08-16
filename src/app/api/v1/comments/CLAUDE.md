@@ -22,6 +22,10 @@ Creates a comment for the given entity. Body: `{ content, entityType, entityId }
 ## PUT/DELETE `[commentId]`
 Updates (own) or deletes (own) a comment. Both enforce `comment.userId === user.id`.
 
+## Dependencies
+- `src/lib/services/social` (`listComments`, `createComment`, `deleteComment`) — shared with the likes route via the same entity registry.
+- Prisma models: `Comment`, `Note`, `Template`, `List`, `Profile`, `Event`.
+
 ## Errors
 - `400`: missing/invalid `entityType`, `entityId`, or `content`.
 - `401`: unauthorized.

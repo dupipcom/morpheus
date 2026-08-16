@@ -1,22 +1,28 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useI18n } from '@/lib/contexts/i18n'
 import { CadencePicker } from '@/components/cadencePicker'
 
+/**
+ * Create/edit task dialog (mirrors the AddListForm dialog pattern).
+ * Controlled via `open` / `onOpenChange`.
+ */
 export const AddTaskForm = ({
+  open,
+  onOpenChange,
   selectedTaskListId,
-  onCancel,
   onCreated,
   editTask,
 }: {
+  open: boolean
+  onOpenChange: (open: boolean) => void
   selectedTaskListId?: string
-  onCancel: () => void
   onCreated: () => Promise<void> | void
   editTask?: any
 }) => {
@@ -30,22 +36,25 @@ export const AddTaskForm = ({
   const [premiumType, setPremiumType] = useState<string>(editTask?.premiumType || 'FIAT')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  // Sync form state when editTask changes
+  // Reset/sync form state whenever the dialog opens (create or edit)
   useEffect(() => {
-    if (editTask) {
-      setName(editTask.name || '')
-      setRRule(editTask.rrule || null)
-      setTimes(editTask.times || 1)
-      setPremium(editTask.premium != null ? String(editTask.premium) : '')
-      setPremiumType(editTask.premiumType || 'FIAT')
-    } else {
-      setName('')
-      setRRule(null)
-      setTimes(1)
-      setPremium('')
-      setPremiumType('FIAT')
+    if (open) {
+      if (editTask) {
+        setName(editTask.name || '')
+        setRRule(editTask.rrule || null)
+        setTimes(editTask.times || 1)
+        setPremium(editTask.premium != null ? String(editTask.premium) : '')
+        setPremiumType(editTask.premiumType || 'FIAT')
+      } else {
+        setName('')
+        setRRule(null)
+        setTimes(1)
+        setPremium('')
+        setPremiumType('FIAT')
+      }
+      setIsSubmitting(false)
     }
-  }, [editTask])
+  }, [open, editTask])
 
   const handleSubmit = async () => {
     if (!selectedTaskListId || !name.trim() || isSubmitting) return
@@ -87,81 +96,83 @@ export const AddTaskForm = ({
       }
 
       await onCreated()
+      onOpenChange(false)
     } catch (error) {
       console.error('Error saving task:', error)
     } finally {
       setIsSubmitting(false)
-      onCancel()
     }
   }
 
   return (
-    <Card className="mb-2 p-4">
-      <CardHeader>
-        <CardTitle className="text-sm">
-          {isEditMode
-            ? (t('forms.addTaskForm.editTitle') || 'Edit Task')
-            : (t('forms.addTaskForm.title') || 'Add Task')}
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        <div>
-          <Label htmlFor="task-name">{t('forms.addTaskForm.taskNameLabel') || 'Task Name'}</Label>
-          <Input
-            id="task-name"
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder={t('forms.addTaskForm.taskNamePlaceholder') || 'Enter task name...'}
-          />
-        </div>
-        <CadencePicker value={rrule} onChange={setRRule} />
-        <div>
-          <Label htmlFor="task-times">{t('forms.addTaskForm.timesLabel') || '# of times per day'}</Label>
-          <Input
-            id="task-times"
-            type="number"
-            min={1}
-            value={times}
-            onChange={(e) => setTimes(Math.max(1, Number(e.target.value) || 1))}
-          />
-        </div>
-        <div className="space-y-1">
-          <Label htmlFor="task-premium">{t('forms.addTaskForm.premiumLabel', { defaultValue: 'Premium (optional)' })}</Label>
-          <div className="flex gap-2">
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="w-[480px] max-w-[90vw] max-h-[70vh] z-[9980] flex flex-col">
+        <DialogHeader>
+          <DialogTitle>
+            {isEditMode
+              ? (t('forms.addTaskForm.editTitle') || 'Edit Task')
+              : (t('forms.addTaskForm.title') || 'Add Task')}
+          </DialogTitle>
+        </DialogHeader>
+        <div className="space-y-3 overflow-y-auto flex-1 pr-1">
+          <div>
+            <Label htmlFor="task-name">{t('forms.addTaskForm.taskNameLabel') || 'Task Name'}</Label>
             <Input
-              id="task-premium"
-              type="number"
-              min={0}
-              step="0.01"
-              className="flex-1"
-              value={premium}
-              placeholder="0"
-              onChange={(e) => setPremium(e.target.value)}
+              id="task-name"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder={t('forms.addTaskForm.taskNamePlaceholder') || 'Enter task name...'}
             />
-            <Select value={premiumType} onValueChange={setPremiumType}>
-              <SelectTrigger className="w-[130px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="FIAT">$</SelectItem>
-                <SelectItem value="PERCENT">%</SelectItem>
-              </SelectContent>
-            </Select>
           </div>
-          {premiumType === 'PERCENT' && (
-            <p className="text-xs text-muted-foreground">{t('forms.addTaskForm.premiumPercentHint', { defaultValue: 'Percent of the list budget' })}</p>
-          )}
+          <CadencePicker value={rrule} onChange={setRRule} />
+          <div>
+            <Label htmlFor="task-times">{t('forms.addTaskForm.timesLabel') || '# of times per day'}</Label>
+            <Input
+              id="task-times"
+              type="number"
+              min={1}
+              value={times}
+              onChange={(e) => setTimes(Math.max(1, Number(e.target.value) || 1))}
+            />
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="task-premium">{t('forms.addTaskForm.premiumLabel', { defaultValue: 'Premium (optional)' })}</Label>
+            <div className="flex gap-2">
+              <Input
+                id="task-premium"
+                type="number"
+                min={0}
+                step="0.01"
+                className="flex-1"
+                value={premium}
+                placeholder="0"
+                onChange={(e) => setPremium(e.target.value)}
+              />
+              <Select value={premiumType} onValueChange={setPremiumType}>
+                <SelectTrigger className="w-[130px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="FIAT">$</SelectItem>
+                  <SelectItem value="PERCENT">%</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            {premiumType === 'PERCENT' && (
+              <p className="text-xs text-muted-foreground">{t('forms.addTaskForm.premiumPercentHint', { defaultValue: 'Percent of the list budget' })}</p>
+            )}
+          </div>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 pt-2">
           <Button onClick={handleSubmit} disabled={!name.trim() || isSubmitting} size="sm">
             {isEditMode
               ? (t('forms.addTaskForm.saveTask') || 'Save Task')
               : (t('forms.addTaskForm.addTask') || 'Add Task')}
           </Button>
-          <Button variant="outline" onClick={onCancel} size="sm">{t('forms.addTaskForm.cancel') || 'Cancel'}</Button>
+          <Button variant="outline" onClick={() => onOpenChange(false)} size="sm">{t('forms.addTaskForm.cancel') || 'Cancel'}</Button>
         </div>
-      </CardContent>
-    </Card>
+      </DialogContent>
+    </Dialog>
   )
 }

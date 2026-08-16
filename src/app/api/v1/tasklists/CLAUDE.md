@@ -36,7 +36,7 @@ Deletes the list (tasks/jobs cascade). OWNER only. Recalculates the owner's budg
 Clones a public or owned task list into a new private list. Clones the Task collection records (reset to OPEN), budget fields, and profile fields; generates a new `publicUrl`.
 
 ## Dependencies
-- `src/lib/services/tasklist` (CRUD service, helpers, list completion)
+- `src/lib/services/list` (CRUD service, helpers, list completion)
 - `src/lib/services/auth` (role checks)
 - Prisma models: `List`, `Task`, `ListRequest`, `Budget`, `User`
 

@@ -81,7 +81,7 @@ export const AddListForm = ({
         setCollaborators(
           (initialList.users || [])
             .filter((u: any) => u.role === 'COLLABORATOR' || u.role === 'MANAGER')
-            .map((u: any) => ({ userId: u.userId, userName: u.userId }))
+            .map((u: any) => ({ userId: u.userId, userName: u.userName || u.userId }))
         )
       } else {
         setName('')

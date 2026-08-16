@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
 import { sanitizeText } from '@/lib/utils/sanitize'
-import { generatePublicUrl } from '@/lib/services/tasklist/taskListCrudService'
+import { generatePublicUrl, temporaryPublicUrl } from '@/lib/services/list/taskListCrudService'
+import { resolveListBudget } from '@/lib/services/finance/premiumService'
 
 export async function POST(
   request: NextRequest,
@@ -24,7 +25,10 @@ export async function POST(
     // Fetch the tasklist to clone (with Task collection records)
     const taskList = await prisma.list.findUnique({
       where: { id: taskListId },
-      include: { tasks: true }
+      include: {
+        tasks: true,
+        budgetSources: { select: { remainingAmount: true } }
+      }
     })
 
     if (!taskList) {
@@ -44,6 +48,20 @@ export async function POST(
     const body = await request.json().catch(() => ({}))
     const customName = typeof body?.name === 'string' ? sanitizeText(body.name) : null
 
+    // PERCENT budgets reference the original owner's Budget sources, which the
+    // cloner has no claim to. Resolve the effective fiat amount so the clone
+    // keeps its financial meaning (previously the sources were dropped and a
+    // cloned PERCENT list resolved every earning to 0).
+    const isPercentBudget = taskList.budgetType === 'PERCENT'
+    const cloneBudget = isPercentBudget
+      ? resolveListBudget({
+          budget: taskList.budget,
+          budgetType: taskList.budgetType,
+          budgetPercent: taskList.budgetPercent,
+          budgetSources: taskList.budgetSources || []
+        })
+      : (taskList.budget ?? 0)
+
     // Create the cloned list
     const clonedTaskList = await prisma.list.create({
       data: {
@@ -51,12 +69,15 @@ export async function POST(
         visibility: 'PRIVATE', // Cloned lists are private by default
         role: 'custom', // Cloned lists are custom
         users: [{ userId: user.id, role: 'OWNER' }],
-        budget: taskList.budget,
-        budgetType: taskList.budgetType,
-        budgetPercent: taskList.budgetPercent,
+        budget: cloneBudget,
+        budgetType: isPercentBudget ? 'FIAT' : taskList.budgetType,
+        budgetPercent: isPercentBudget ? null : taskList.budgetPercent,
         bio: taskList.bio,
         profilePhoto: taskList.profilePhoto,
-        links: taskList.links
+        links: taskList.links,
+        // Placeholder avoids the null-collision on the unique publicUrl index;
+        // the real slug is assigned right below.
+        publicUrl: temporaryPublicUrl()
       }
     })
 
