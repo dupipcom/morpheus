@@ -11,7 +11,7 @@ One file per phase. Each phase is one PR unless stated otherwise.
 |---|-------|-------|--------|------|
 | 1 | Do — model + API + migrations | RRULE cadence, simplified budgets, thin routes, migrations 0017–0019 | ✅ done | `../do-rebuild-plan.md` §Phase 1 |
 | 2 | Do — frontend rebuild | doPage/doView/taskGrid/forms rebuilt on plain SWR | ✅ done | `../do-rebuild-plan.md` §Phase 2 |
-| 3 | Do dry-out + shared primitives | Kill remaining duplication, extract ownership/social/public-page/date kits | ⬜ planned | `phase-03-do-dry-out.md` |
+| 3 | Do dry-out + shared primitives | Kill remaining duplication, extract ownership/social/public-page/date kits | ✅ done (PR stacked on #483) | `phase-03-do-dry-out.md` |
 | 4 | Media, storage & geolocation foundation | iDrive e2 uploads, compression, EXIF, Google Places, map, Write composer | ⬜ planned | `phase-04-media-geo-foundation.md` |
 | 5 | Public list profiles + job board | Public list pages, public tasks as job posts, applications | ⬜ planned | `phase-05-public-lists-job-board.md` |
 | 6 | DPIP ledger & wallets | Off-chain authoritative balances, atomic transfers, wallet at signup | ⬜ planned | `phase-06-dpip-ledger.md` |
