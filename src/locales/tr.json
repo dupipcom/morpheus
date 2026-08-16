@@ -245,7 +245,9 @@
     "loadOlder": "Load older tasks",
     "loadingOlder": "Loading...",
     "evidenceAttachmentsLabel": "Evidence attachments (photos, videos, documents)",
-    "evidenceAttachmentsUnavailable": "Attachments are available once the job exists."
+    "evidenceAttachmentsUnavailable": "Attachments are available once the job exists.",
+    "review": "Review",
+    "decline": "Decline"
   },
   "actions": {
     "drankWater": "Su içti",

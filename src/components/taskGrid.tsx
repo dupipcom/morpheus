@@ -15,6 +15,7 @@ import { JobDialog, JobDialogMode } from '@/components/jobDialog'
 import { DeleteTaskDialog } from '@/components/deleteTaskDialog'
 import { Button } from '@/components/ui/button'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
+import { attachmentFileUrl } from '@/components/attachmentPicker'
 import type { JobWithRelations, UserRole } from '@/lib/services/job/types'
 
 interface TaskGridProps {
@@ -415,13 +416,48 @@ export const TaskGrid = ({
                         {reqJob.justification}
                       </p>
                     )}
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => setRequestReviewDialog({ job: reqJob, task })}
-                    >
-                      {t('tasks.reviewRequest', { defaultValue: 'Review request' })}
-                    </Button>
+                    {Array.isArray(reqJob.documentIds) && reqJob.documentIds.length > 0 && (
+                      <div className="space-y-1">
+                        <span className="text-xs font-medium text-muted-foreground">
+                          {t('jobs.attachedDocuments', { defaultValue: 'Attached documents' })}
+                        </span>
+                        {reqJob.documentIds.map((docId: string, index: number) => (
+                          <a
+                            key={docId}
+                            href={attachmentFileUrl(docId)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block text-sm text-primary underline underline-offset-2 hover:no-underline"
+                          >
+                            {t('jobs.viewDocument', { defaultValue: 'View document' })} {index + 1}
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setRequestReviewDialog({ job: reqJob, task })}
+                      >
+                        {t('tasks.review', { defaultValue: 'Review' })}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        disabled={refreshingJobId === reqJob.id}
+                        onClick={async () => {
+                          setRefreshingJobId(reqJob.id)
+                          try {
+                            await updateJob(reqJob.id, { status: 'REJECTED' })
+                          } finally {
+                            setRefreshingJobId(null)
+                          }
+                        }}
+                      >
+                        {t('tasks.decline', { defaultValue: 'Decline' })}
+                      </Button>
+                    </div>
                   </AccordionContent>
                 </AccordionItem>
               )
