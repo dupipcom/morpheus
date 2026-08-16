@@ -105,6 +105,7 @@ interface DmCandidate {
 interface ChatSidebarProps {
   sidebar: ChatSidebarResponse | undefined
   activeRoom: ChatActiveRoom
+  activeOrgId: string | null
   isSignedIn: boolean | undefined
   isVirtualNumberEnabled: boolean
   smsConversations: SmsConversationSummary[]
@@ -186,6 +187,7 @@ function writePersistedOrgState(state: Record<string, boolean>) {
 export function ChatSidebar({
   sidebar,
   activeRoom,
+  activeOrgId,
   isSignedIn,
   isVirtualNumberEnabled,
   smsConversations,
@@ -300,7 +302,14 @@ export function ChatSidebar({
   const pendingInvitesCount = sidebar?.pendingInvitesCount ?? 0
 
   return (
-    <Sidebar collapsible="icon" side="left">
+    <Sidebar
+      collapsible="icon"
+      side="left"
+      // Override the shadcn default `fixed inset-y-0 h-svh` so the sidebar is
+      // anchored to the bounded chat card (a `relative` ancestor supplied by
+      // the parent SidebarProvider wrapper) instead of the viewport.
+      className="absolute inset-y-0 h-full"
+    >
       <SidebarHeader>
         <div className="flex items-center gap-2 px-1">
           <Mail className="h-5 w-5 shrink-0" />
@@ -462,6 +471,11 @@ export function ChatSidebar({
                 sortedOrgs.map((org) => {
                   const orgUnread = org.channels.reduce((sum, c) => sum + c.unreadCount, 0)
                   const isAdmin = org.role === 'ADMIN' || org.role === 'SUPERUSER'
+                  // Only show the create-channel / invite-member admin UI inside the
+                  // currently-active org so that the shared `newChannelName` and
+                  // `memberInviteQuery` state cannot be reused across multiple
+                  // expanded org groups by mistake.
+                  const showAdminPanel = isAdmin && activeOrgId === org.id
                   const orgOpen = isOrgOpen(org.id)
                   return (
                     <Collapsible
@@ -489,7 +503,7 @@ export function ChatSidebar({
                           </SidebarMenuButton>
                         </CollapsibleTrigger>
                         <CollapsibleContent>
-                          {isAdmin && (
+                          {showAdminPanel && (
                             <div className="mx-3.5 mt-1 space-y-2 border-l border-sidebar-border px-2.5 py-1">
                               <form
                                 className="flex gap-2"

@@ -936,6 +936,18 @@
     "inviteLinkCopied": "Kutselink kopeeritud",
     "inviteSent": "Kutse saadetud",
     "inviteAccepted": "Kutse vastu võetud",
+    "sidebar": {
+      "directMessages": "Otsesõnumid",
+      "organizations": "Organisatsioonid",
+      "sms": "SMS",
+      "virtualNumber": "Virtuaalne number",
+      "searchDmPlaceholder": "Otsi sõpru, et alustada otsesõnumit",
+      "createChannelPlaceholder": "Loo kanal",
+      "createOrgPlaceholder": "Loo organisatsioon",
+      "refresh": "Värskenda",
+      "noOrgs": "Veel pole organisatsioone",
+      "noDms": "Veel pole otsesõnumeid"
+    },
     "virtualNumber": {
       "label": "Virtuaalnumber",
       "hint": "Vali oma telefoninumbrid. Nendele numbritele saabuvad SMS-id kuvatakse sinu vestluses.",

@@ -936,6 +936,18 @@
     "inviteLinkCopied": "招待リンクをコピーしました",
     "inviteSent": "招待を送信しました",
     "inviteAccepted": "招待を承認しました",
+    "sidebar": {
+      "directMessages": "ダイレクトメッセージ",
+      "organizations": "組織",
+      "sms": "SMS",
+      "virtualNumber": "仮想番号",
+      "searchDmPlaceholder": "DMを始める友達を検索",
+      "createChannelPlaceholder": "チャンネルを作成",
+      "createOrgPlaceholder": "組織を作成",
+      "refresh": "更新",
+      "noOrgs": "組織はまだありません",
+      "noDms": "ダイレクトメッセージはまだありません"
+    },
     "virtualNumber": {
       "label": "バーチャル番号",
       "hint": "電話番号を選んでください。これらの番号に届くSMSがチャットに表示されます。",

@@ -787,10 +787,11 @@ export function ChatView({ initialUsername, initialMessageId, initialOrgId, init
           <CardContent className="pt-6 text-sm text-muted-foreground">Loading chat…</CardContent>
         </Card>
       ) : (
-        <SidebarProvider className="h-full min-h-0 flex-1 overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
+        <SidebarProvider className="relative h-full min-h-0 flex-1 overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
           <ChatSidebar
             sidebar={sidebar}
             activeRoom={activeRoom}
+            activeOrgId={activeOrg?.id ?? null}
             isSignedIn={isSignedIn ?? undefined}
             isVirtualNumberEnabled={isVirtualNumberEnabled}
             smsConversations={smsConversationsData?.conversations ?? []}

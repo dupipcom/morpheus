@@ -940,6 +940,18 @@
     "inviteLinkCopied": "Kutsulinki kopioitu",
     "inviteSent": "Kutsu lähetetty",
     "inviteAccepted": "Kutsu hyväksytty",
+    "sidebar": {
+      "directMessages": "Yksityisviestit",
+      "organizations": "Organisaatiot",
+      "sms": "SMS",
+      "virtualNumber": "Virtuaalinumero",
+      "searchDmPlaceholder": "Etsi kavereita aloittaaksesi yksityisviestin",
+      "createChannelPlaceholder": "Luo kanava",
+      "createOrgPlaceholder": "Luo organisaatio",
+      "refresh": "Päivitä",
+      "noOrgs": "Ei vielä organisaatioita",
+      "noDms": "Ei vielä yksityisviestejä"
+    },
     "virtualNumber": {
       "label": "Virtuaalinumero",
       "hint": "Valitse puhelinnumerosi. Näihin numeroihin saapuvat tekstiviestit näkyvät chatissasi.",

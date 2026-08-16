@@ -934,6 +934,18 @@
     "inviteLinkCopied": "Ọna asopọ ìdẹ ti daakọ",
     "inviteSent": "Ìdẹ ti fi ranṣẹ",
     "inviteAccepted": "Ìdẹ ti gba",
+    "sidebar": {
+      "directMessages": "Awọn ifiranṣẹ taara",
+      "organizations": "Awọn agbari",
+      "sms": "SMS",
+      "virtualNumber": "Nọmba foju",
+      "searchDmPlaceholder": "Wa awọn ọrẹ lati bẹrẹ DM kan",
+      "createChannelPlaceholder": "Ṣẹda ikanni",
+      "createOrgPlaceholder": "Ṣẹda agbari",
+      "refresh": "Sọ di tuntun",
+      "noOrgs": "Ko si agbari sibẹsibẹ",
+      "noDms": "Ko si ifiranṣẹ taara sibẹsibẹ"
+    },
     "virtualNumber": {
       "label": "Nọ́mbà àkànṣe",
       "hint": "Yan àwọn nọ́mbà fóònù rẹ. Àwọn SMS tó dé sí àwọn nọ́mbà yìí yóò hàn nínú ìjíròrò rẹ.",

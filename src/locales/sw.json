@@ -934,6 +934,18 @@
     "inviteLinkCopied": "Kiungo cha mwaliko kimenakiliwa",
     "inviteSent": "Mwaliko umetumwa",
     "inviteAccepted": "Mwaliko umekubaliwa",
+    "sidebar": {
+      "directMessages": "Ujumbe wa moja kwa moja",
+      "organizations": "Mashirika",
+      "sms": "SMS",
+      "virtualNumber": "Nambari ya kawaida",
+      "searchDmPlaceholder": "Tafuta marafiki ili kuanza DM",
+      "createChannelPlaceholder": "Unda kituo",
+      "createOrgPlaceholder": "Unda shirika",
+      "refresh": "Onyesha upya",
+      "noOrgs": "Bado hakuna mashirika",
+      "noDms": "Bado hakuna ujumbe wa moja kwa moja"
+    },
     "virtualNumber": {
       "label": "Namba pepe",
       "hint": "Chagua namba zako za simu. SMS zinazoingia kwenye namba hizi zitaonekana kwenye mazungumzo yako.",

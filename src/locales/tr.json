@@ -940,6 +940,18 @@
     "inviteLinkCopied": "Davet bağlantısı kopyalandı",
     "inviteSent": "Davet gönderildi",
     "inviteAccepted": "Davet kabul edildi",
+    "sidebar": {
+      "directMessages": "Doğrudan mesajlar",
+      "organizations": "Kuruluşlar",
+      "sms": "SMS",
+      "virtualNumber": "Sanal numara",
+      "searchDmPlaceholder": "DM başlatmak için arkadaş ara",
+      "createChannelPlaceholder": "Kanal oluştur",
+      "createOrgPlaceholder": "Kuruluş oluştur",
+      "refresh": "Yenile",
+      "noOrgs": "Henüz kuruluş yok",
+      "noDms": "Henüz doğrudan mesaj yok"
+    },
     "virtualNumber": {
       "label": "Sanal numara",
       "hint": "Telefon numaralarını seç. Bu numaralara gelen SMS’ler sohbetinde görünecek.",

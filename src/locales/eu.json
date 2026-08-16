@@ -939,6 +939,18 @@
     "inviteLinkCopied": "Gonbidapen esteka kopiatuta",
     "inviteSent": "Gonbidapena bidalita",
     "inviteAccepted": "Gonbidapena onartuta",
+    "sidebar": {
+      "directMessages": "Mezu zuzenak",
+      "organizations": "Erakundeak",
+      "sms": "SMS",
+      "virtualNumber": "Zenbaki birtuala",
+      "searchDmPlaceholder": "Bilatu lagunak MD bat hasteko",
+      "createChannelPlaceholder": "Sortu kanala",
+      "createOrgPlaceholder": "Sortu erakundea",
+      "refresh": "Freskatu",
+      "noOrgs": "Oraindik ez dago erakunderik",
+      "noDms": "Oraindik ez dago mezu zuzenik"
+    },
     "virtualNumber": {
       "label": "Zenbaki birtuala",
       "hint": "Aukeratu zure telefono-zenbakiak. Zenbaki horietara iristen diren SMSak zure txatean agertuko dira.",

@@ -936,6 +936,18 @@
     "inviteLinkCopied": "Link de invitație copiat",
     "inviteSent": "Invitație trimisă",
     "inviteAccepted": "Invitație acceptată",
+    "sidebar": {
+      "directMessages": "Mesaje directe",
+      "organizations": "Organizații",
+      "sms": "SMS",
+      "virtualNumber": "Număr virtual",
+      "searchDmPlaceholder": "Caută prieteni pentru a începe un MD",
+      "createChannelPlaceholder": "Creează un canal",
+      "createOrgPlaceholder": "Creează o organizație",
+      "refresh": "Reîmprospătează",
+      "noOrgs": "Nicio organizație încă",
+      "noDms": "Niciun mesaj direct încă"
+    },
     "virtualNumber": {
       "label": "Număr virtual",
       "hint": "Alege numerele tale de telefon. SMS-urile primite la aceste numere vor apărea în chatul tău.",

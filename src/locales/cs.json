@@ -936,6 +936,18 @@
     "inviteLinkCopied": "Odkaz pro pozvání zkopírován",
     "inviteSent": "Pozvánka odeslána",
     "inviteAccepted": "Pozvánka přijata",
+    "sidebar": {
+      "directMessages": "Přímé zprávy",
+      "organizations": "Organizace",
+      "sms": "SMS",
+      "virtualNumber": "Virtuální číslo",
+      "searchDmPlaceholder": "Najděte přátele a začněte přímou zprávu",
+      "createChannelPlaceholder": "Vytvořit kanál",
+      "createOrgPlaceholder": "Vytvořit organizaci",
+      "refresh": "Obnovit",
+      "noOrgs": "Zatím žádné organizace",
+      "noDms": "Zatím žádné přímé zprávy"
+    },
     "virtualNumber": {
       "label": "Virtuální číslo",
       "hint": "Vyberte si svá telefonní čísla. Příchozí SMS na tato čísla se zobrazí ve vašem chatu.",

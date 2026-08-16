@@ -936,6 +936,18 @@
     "inviteLinkCopied": "আমন্ত্রণ লিঙ্ক কপি করা হয়েছে",
     "inviteSent": "আমন্ত্রণ পাঠানো হয়েছে",
     "inviteAccepted": "আমন্ত্রণ গৃহীত হয়েছে",
+    "sidebar": {
+      "directMessages": "সরাসরি বার্তা",
+      "organizations": "সংস্থাগুলি",
+      "sms": "SMS",
+      "virtualNumber": "ভার্চুয়াল নম্বর",
+      "searchDmPlaceholder": "DM শুরু করতে বন্ধু খুঁজুন",
+      "createChannelPlaceholder": "একটি চ্যানেল তৈরি করুন",
+      "createOrgPlaceholder": "একটি সংস্থা তৈরি করুন",
+      "refresh": "রিফ্রেশ",
+      "noOrgs": "এখনও কোনো সংস্থা নেই",
+      "noDms": "এখনও কোনো সরাসরি বার্তা নেই"
+    },
     "virtualNumber": {
       "label": "ভার্চুয়াল নম্বর",
       "hint": "আপনার ফোন নম্বরগুলো বেছে নিন। এই নম্বরগুলোতে আসা SMS আপনার চ্যাটে দেখা যাবে।",
