@@ -31,6 +31,7 @@ import { AgentChat } from "@/components/agentChat"
 import { useFeatureFlag } from "@/lib/hooks/useFeatureFlag"
 import { useDebounce } from "@/lib/hooks/useDebounce"
 import { normalizeDelegationScopes } from "@/lib/utils/delegation"
+import type { AgentDimension, AgentFilterContext } from '@/lib/services/agent'
 
 /** Returns a Date that is `n` days before today */
 function daysAgo(n: number): Date {
@@ -281,7 +282,6 @@ export function DashboardView({ timeframe = "day", onDelegatedUserChange }: Dash
   
   // Message history state (weekly agentConversation)
   const [currentText, setCurrentText] = useState("")
-  const reverseMessages: string[] = []
   
   // Create chart configs with translations
   const moodChartConfig = createMoodChartConfig(t)
@@ -289,6 +289,22 @@ export function DashboardView({ timeframe = "day", onDelegatedUserChange }: Dash
   const moneyChartConfig = createMoneyChartConfig(t)
   
   const targetHintUserId = selectedDelegatedUserId || user?.id
+
+  // Filter context for the AI assistant — every chat prompt carries the
+  // current dashboard date range, dimension toggles, and target user so the
+  // backend parses it and queries MongoDB with only the selected fields.
+  const agentFilterContext = useMemo<AgentFilterContext>(() => ({
+    startDate: toISODate(rangeStart),
+    endDate: toISODate(rangeEnd),
+    userId: selectedDelegatedUserId || user?.id,
+    dimensions: Object.entries({
+      ...moodChartDimensions,
+      ...productivityChartDimensions,
+      ...moneyChartDimensions
+    })
+      .filter(([, visible]) => visible)
+      .map(([key]) => key as AgentDimension)
+  }), [rangeStart, rangeEnd, selectedDelegatedUserId, user?.id, moodChartDimensions, productivityChartDimensions, moneyChartDimensions])
 
   // Use shared hint hook and update local state when data changes
   const { data: hintData } = useHint(locale, 'hint', targetHintUserId)
@@ -549,24 +565,28 @@ const aggregateDataByWeek = (dailyData: any[]) => {
       
       {isAgentChatEnabled && user?.id ? (
         <div className="mb-16">
-          <div className="flex flex-wrap gap-2 mb-4">
+          <div className="mb-4 grid w-full min-w-0 max-w-full grid-cols-1 gap-2 lg:grid-cols-3">
             {[
               'How did the user progress last week?',
               'What should we focus on during therapy today?',
               "What were the user's major life events this week?"
             ].map((question) => (
-              <Button key={question} variant="outline" size="sm" onClick={() => setCurrentText(question)}>
-                {question}
+              <Button
+                key={question}
+                variant="outline"
+                size="sm"
+                className="h-auto w-full min-w-0 max-w-full flex-wrap justify-start whitespace-normal px-3 py-2 text-left"
+                onClick={() => setCurrentText(question)}
+              >
+                <span className="min-w-0 flex-1 whitespace-normal break-words [overflow-wrap:anywhere]">
+                  {question}
+                </span>
               </Button>
             ))}
           </div>
-          <AgentChat 
-            key={reverseMessages}
-            onMessageChange={(message) => {
-              setCurrentText(message)
-            }}
-            history={reverseMessages}
+          <AgentChat
             initialMessage={currentText}
+            filterContext={agentFilterContext}
             className="h-96"
           />
         </div>

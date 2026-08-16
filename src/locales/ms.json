@@ -14,6 +14,7 @@
     "save": "Simpan",
     "cancel": "Batal",
     "delete": "Padam",
+    "remove": "Buang",
     "loading": "Memuat...",
     "error": "Ralat",
     "success": "Berjaya",
@@ -130,11 +131,14 @@
         "FRIENDS": "Friends",
         "CLOSE_FRIENDS": "Close Friends",
         "PUBLIC": "Public",
-        "AI_ENABLED": "AI Enabled"
+        "AI_ENABLED": "AI Enabled",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Publish Note",
       "publishing": "Menerbitkan...",
-      "embedHint": "Sematan {provider}. Jika main balik tidak tersedia, buka pautan asal di bawah."
+      "embedHint": "Sematan {provider}. Jika main balik tidak tersedia, buka pautan asal di bawah.",
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Dayakan analisis AI"
     },
     "thirdParty": {
       "title": "Pihak ketiga",
@@ -152,7 +156,9 @@
       "addDelegatedAnalyst": "Tambah penganalisis yang diwakilkan",
       "adding": "Menambah...",
       "addError": "Tidak dapat menambah penganalisis yang diwakilkan",
-      "invitationDraft": "Draf jemputan disediakan untuk e-mel ini."
+      "invitationDraft": "Draf jemputan disediakan untuk e-mel ini.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -363,7 +369,9 @@
     "expectedNeedUtilities": "Expected Need Utilities Average",
     "editAction": "Edit tindakan",
     "save": "Simpan",
-    "cancel": "Batal"
+    "cancel": "Batal",
+    "currency": "Mata wang",
+    "selectCurrency": "Pilih mata wang"
   },
   "agentChat": {
     "thinking": "Berfikir...",
@@ -371,7 +379,8 @@
     "getInsights": "Tanya tentang mood, tabiat anda atau dapatkan pandangan peribadi",
     "placeholder": "Mari berbual...",
     "error": "Maaf, saya menghadapi ralat. Sila cuba lagi.",
-    "failedToSend": "Gagal menghantar mesej. Sila cuba lagi."
+    "failedToSend": "Gagal menghantar mesej. Sila cuba lagi.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Mulakan Perjalanan Dupip Anda Sendiri",
@@ -653,8 +662,10 @@
       },
       "areaDistributionLabel": "Bajet kawasan",
       "areaPrizeDistributionLabel": "Hadiah kawasan",
+      "areaPremiumDistributionLabel": "Pengagihan hadiah mengikut kawasan",
       "categoryDistributionLabel": "Bajet kategori",
       "categoryPrizeDistributionLabel": "Hadiah kategori",
+      "categoryPremiumDistributionLabel": "Pengagihan hadiah mengikut kategori",
       "taskDistributionLabel": "Bajet",
       "premiumLabel": "Hadiah",
       "totalLabel": "Jumlah",
@@ -966,6 +977,7 @@
     "deleting": "Memadam...",
     "confirmDelete": "Adakah anda pasti mahu memadam nota ini?",
     "content": "Kandungan nota",
+    "recipient": "Penerima",
     "visibilityUpdated": "Keterlihatan berjaya dikemaskini",
     "visibilityUpdateFailed": "Gagal mengemaskini keterlihatan",
     "changeVisibility": "Tukar keterlihatan",
@@ -990,7 +1002,52 @@
     "inviteFriendToOrg": "Jemput rakan ke organisasi ini",
     "inviteLinkCopied": "Pautan jemputan disalin",
     "inviteSent": "Jemputan dihantar",
-    "inviteAccepted": "Jemputan diterima"
+    "inviteAccepted": "Jemputan diterima",
+    "sidebar": {
+      "directMessages": "Mesej terus",
+      "organizations": "Organisasi",
+      "sms": "SMS",
+      "virtualNumber": "Nombor maya",
+      "searchDmPlaceholder": "Cari rakan untuk memulakan DM",
+      "createChannelPlaceholder": "Cipta saluran",
+      "createOrgPlaceholder": "Cipta organisasi",
+      "refresh": "Muat semula",
+      "noOrgs": "Tiada organisasi lagi",
+      "noDms": "Tiada mesej terus lagi"
+    },
+    "virtualNumber": {
+      "label": "Nombor maya",
+      "hint": "Pilih nombor telefon anda. SMS masuk ke nombor-nombor ini akan muncul dalam sembang anda.",
+      "none": "Tiada nombor",
+      "loading": "Memuatkan nombor…",
+      "empty": "Tiada nombor tersedia",
+      "error": "Nombor anda tidak dapat dimuatkan",
+      "assignError": "Nombor ini tidak dapat disimpan",
+      "assigned": "Nombor ditetapkan",
+      "cleared": "Nombor dialih keluar",
+      "addNumber": "Tambah nombor…",
+      "removeNumber": "Buang nombor",
+      "quotaLabel": "{used} daripada {quota} nombor digunakan",
+      "limitReached": "Anda telah mencapai bilangan maksimum nombor maya untuk pelan anda",
+      "buyCta": "Beli nombor maya",
+      "gateHint": "Nombor maya memerlukan pelan Donator. Beli nombor untuk menerima SMS dalam sembang.",
+      "buyDialogTitle": "Pelan Donator diperlukan",
+      "buyDialogDescription": "Nombor maya disertakan dalam pelan-pelan Donator. Pilih pelan di halaman harga untuk bermula.",
+      "buyDialogGoToPricing": "Pergi ke harga"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "Memuatkan SMS…",
+      "empty": "Tiada perbualan SMS lagi",
+      "noNumberHint": "Tetapkan nombor maya untuk mula menerima SMS di sini",
+      "composerPlaceholder": "Tulis SMS…",
+      "sendError": "Mesej ini tidak dapat dihantar",
+      "you": "Anda",
+      "statusSent": "Dihantar",
+      "statusDelivered": "Diterima",
+      "statusFailed": "Gagal",
+      "error": "SMS tidak dapat dimuatkan"
+    }
   },
   "notesList": {
     "gridOption": {
@@ -1018,5 +1075,20 @@
     "saveConsent": "Simpan persetujuan",
     "dpipNoValue": "DPIP (Ð) ialah unit nilai dalam Dupip. Stash anda bertambah dari semasa ke semasa dengan aktiviti anda. DPIP bukan produk pelaburan dan mungkin tidak mempunyai nilai kewangan — kini atau pada masa hadapan.",
     "consentDescription": "DPIP (Ð) ialah unit nilai dalam Dupip. Stash anda bertambah dari semasa ke semasa dengan aktiviti anda. DPIP bukan produk pelaburan dan mungkin tidak mempunyai nilai kewangan — kini atau pada masa hadapan. Sebelum melihat pelan kami, sila semak dan sahkan perkara berikut:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

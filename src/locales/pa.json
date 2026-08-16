@@ -14,6 +14,7 @@
     "save": "ਸੇਵ ਕਰੋ",
     "cancel": "ਰੱਦ ਕਰੋ",
     "delete": "ਮਿਟਾਓ",
+    "remove": "ਹਟਾਓ",
     "loading": "ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...",
     "error": "ਗਲਤੀ",
     "success": "ਸਫਲ",
@@ -130,11 +131,14 @@
         "FRIENDS": "Friends",
         "CLOSE_FRIENDS": "Close Friends",
         "PUBLIC": "Public",
-        "AI_ENABLED": "AI Enabled"
+        "AI_ENABLED": "AI Enabled",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Publish Note",
       "publishing": "ਪ੍ਰਕਾਸ਼ਿਤ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ...",
-      "embedHint": "{provider} ਐਂਬੈੱਡ। ਜੇਕਰ ਪਲੇਬੈੱਕ ਉਪਲਬਧ ਨਹੀਂ ਹੈ, ਤਾਂ ਹੇਠਾਂ ਅਸਲ ਲਿੰਕ ਖੋਲ੍ਹੋ।"
+      "embedHint": "{provider} ਐਂਬੈੱਡ। ਜੇਕਰ ਪਲੇਬੈੱਕ ਉਪਲਬਧ ਨਹੀਂ ਹੈ, ਤਾਂ ਹੇਠਾਂ ਅਸਲ ਲਿੰਕ ਖੋਲ੍ਹੋ।",
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "AI ਵਿਸ਼ਲੇਸ਼ਣ ਚਾਲੂ ਕਰੋ"
     },
     "thirdParty": {
       "title": "ਤੀਜਾ ਪੱਖ",
@@ -152,7 +156,9 @@
       "addDelegatedAnalyst": "ਪ੍ਰਤੀਨਿਧੀ ਵਿਸ਼ਲੇਸ਼ਕ ਸ਼ਾਮਲ ਕਰੋ",
       "adding": "ਸ਼ਾਮਲ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ...",
       "addError": "ਪ੍ਰਤੀਨਿਧੀ ਵਿਸ਼ਲੇਸ਼ਕ ਸ਼ਾਮਲ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ",
-      "invitationDraft": "ਇਸ ਈਮੇਲ ਲਈ ਨਿਮੰਤਰਣ ਦਾ ਮਸੌਦਾ ਤਿਆਰ ਕੀਤਾ ਗਿਆ ਹੈ।"
+      "invitationDraft": "ਇਸ ਈਮੇਲ ਲਈ ਨਿਮੰਤਰਣ ਦਾ ਮਸੌਦਾ ਤਿਆਰ ਕੀਤਾ ਗਿਆ ਹੈ।",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -363,7 +369,9 @@
     "expectedNeedUtilities": "ਲੋੜੀਂਦੇ ਉਪਯੋਗਤਾਵਾਂ ਦੀ ਔਸਤ",
     "editAction": "ਐਕਸ਼ਨ ਸੰਪਾਦਿਤ ਕਰੋ",
     "save": "ਸੇਵ ਕਰੋ",
-    "cancel": "ਰੱਦ ਕਰੋ"
+    "cancel": "ਰੱਦ ਕਰੋ",
+    "currency": "ਮੁਦਰਾ",
+    "selectCurrency": "ਮੁਦਰਾ ਚੁਣੋ"
   },
   "agentChat": {
     "thinking": "ਸੋਚ ਰਿਹਾ ਹਾਂ...",
@@ -371,7 +379,8 @@
     "getInsights": "ਆਪਣੇ ਮੂਡ, ਆਦਤਾਂ ਬਾਰੇ ਪੁੱਛੋ ਜਾਂ ਨਿੱਜੀ ਸੂਝ ਪ੍ਰਾਪਤ ਕਰੋ",
     "placeholder": "ਆਓ ਚੈਟ ਕਰੀਏ...",
     "error": "ਮਾਫ਼ ਕਰਨਾ, ਮੈਨੂੰ ਇੱਕ ਗਲਤੀ ਮਿਲੀ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
-    "failedToSend": "ਸੁਨੇਹਾ ਭੇਜਣ ਵਿੱਚ ਅਸਫਲ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
+    "failedToSend": "ਸੁਨੇਹਾ ਭੇਜਣ ਵਿੱਚ ਅਸਫਲ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "ਆਪਣਾ ਖੁਦ ਦਾ Dupip ਸਫ਼ਰ ਸ਼ੁਰੂ ਕਰੋ",
@@ -653,8 +662,10 @@
       },
       "areaDistributionLabel": "ਖੇਤਰ ਬਜਟ",
       "areaPrizeDistributionLabel": "ਖੇਤਰ ਇਨਾਮ",
+      "areaPremiumDistributionLabel": "ਖੇਤਰ ਅਨੁਸਾਰ ਇਨਾਮ ਵੰਡ",
       "categoryDistributionLabel": "ਸ਼੍ਰੇਣੀ ਬਜਟ",
       "categoryPrizeDistributionLabel": "ਸ਼੍ਰੇਣੀ ਇਨਾਮ",
+      "categoryPremiumDistributionLabel": "ਸ਼੍ਰੇਣੀ ਅਨੁਸਾਰ ਇਨਾਮ ਵੰਡ",
       "taskDistributionLabel": "ਬਜਟ",
       "premiumLabel": "ਇਨਾਮ",
       "totalLabel": "ਕੁੱਲ",
@@ -966,6 +977,7 @@
     "deleting": "ਮਿਟਾਇਆ ਜਾ ਰਿਹਾ ਹੈ...",
     "confirmDelete": "ਕੀ ਤੁਸੀਂ ਸੱਚਮੁੱਚ ਇਸ ਨੋਟ ਨੂੰ ਮਿਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ?",
     "content": "ਨੋਟ ਦੀ ਸਮੱਗਰੀ",
+    "recipient": "ਪ੍ਰਾਪਤਕਰਤਾ",
     "visibilityUpdated": "ਦਿੱਖ ਸਫਲਤਾਪੂਰਵਕ ਅੱਪਡੇਟ ਕੀਤੀ ਗਈ",
     "visibilityUpdateFailed": "ਦਿੱਖ ਅੱਪਡੇਟ ਕਰਨ ਵਿੱਚ ਅਸਫਲ",
     "changeVisibility": "ਦਿੱਖ ਬਦਲੋ",
@@ -990,7 +1002,52 @@
     "inviteFriendToOrg": "ਇਸ ਸੰਗਠਨ ਵਿੱਚ ਦੋਸਤ ਨੂੰ ਸੱਦਾ ਦਿਓ",
     "inviteLinkCopied": "ਸੱਦਾ ਲਿੰਕ ਕਾਪੀ ਕੀਤਾ ਗਿਆ",
     "inviteSent": "ਸੱਦਾ ਭੇਜਿਆ ਗਿਆ",
-    "inviteAccepted": "ਸੱਦਾ ਸਵੀਕਾਰ ਕੀਤਾ ਗਿਆ"
+    "inviteAccepted": "ਸੱਦਾ ਸਵੀਕਾਰ ਕੀਤਾ ਗਿਆ",
+    "sidebar": {
+      "directMessages": "ਸਿੱਧੇ ਸੁਨੇਹੇ",
+      "organizations": "ਸੰਗਠਨ",
+      "sms": "SMS",
+      "virtualNumber": "ਵਰਚੁਅਲ ਨੰਬਰ",
+      "searchDmPlaceholder": "DM ਸ਼ੁਰੂ ਕਰਨ ਲਈ ਦੋਸਤਾਂ ਦੀ ਖੋਜ ਕਰੋ",
+      "createChannelPlaceholder": "ਚੈਨਲ ਬਣਾਓ",
+      "createOrgPlaceholder": "ਸੰਗਠਨ ਬਣਾਓ",
+      "refresh": "ਰਿਫ੍ਰੈਸ਼",
+      "noOrgs": "ਅਜੇ ਕੋਈ ਸੰਗਠਨ ਨਹੀਂ",
+      "noDms": "ਅਜੇ ਕੋਈ ਸਿੱਧੇ ਸੁਨੇਹੇ ਨਹੀਂ"
+    },
+    "virtualNumber": {
+      "label": "ਵਰਚੁਅਲ ਨੰਬਰ",
+      "hint": "ਆਪਣੇ ਫ਼ੋਨ ਨੰਬਰ ਚੁਣੋ। ਇਨ੍ਹਾਂ ਨੰਬਰਾਂ ’ਤੇ ਆਉਣ ਵਾਲੇ SMS ਤੁਹਾਡੀ ਚੈਟ ਵਿੱਚ ਦਿਖਾਈ ਦੇਣਗੇ।",
+      "none": "ਕੋਈ ਨੰਬਰ ਨਹੀਂ",
+      "loading": "ਨੰਬਰ ਲੋਡ ਹੋ ਰਹੇ ਹਨ…",
+      "empty": "ਕੋਈ ਨੰਬਰ ਉਪਲਬਧ ਨਹੀਂ",
+      "error": "ਤੁਹਾਡੇ ਨੰਬਰ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕੇ",
+      "assignError": "ਇਹ ਨੰਬਰ ਸੰਭਾਲਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ",
+      "assigned": "ਨੰਬਰ ਨਿਰਧਾਰਤ ਕੀਤਾ ਗਿਆ",
+      "cleared": "ਨੰਬਰ ਹਟਾਇਆ ਗਿਆ",
+      "addNumber": "ਨੰਬਰ ਜੋੜੋ…",
+      "removeNumber": "ਨੰਬਰ ਹਟਾਓ",
+      "quotaLabel": "{quota} ਵਿੱਚੋਂ {used} ਨੰਬਰ ਵਰਤੇ ਗਏ",
+      "limitReached": "ਤੁਸੀਂ ਆਪਣੇ ਪਲਾਨ ਦੇ ਵਰਚੁਅਲ ਨੰਬਰਾਂ ਦੀ ਵੱਧ ਤੋਂ ਵੱਧ ਗਿਣਤੀ ’ਤੇ ਪਹੁੰਚ ਗਏ ਹੋ",
+      "buyCta": "ਵਰਚੁਅਲ ਨੰਬਰ ਖਰੀਦੋ",
+      "gateHint": "ਵਰਚੁਅਲ ਨੰਬਰਾਂ ਲਈ Donator ਪਲਾਨ ਦੀ ਲੋੜ ਹੈ। ਚੈਟ ਵਿੱਚ SMS ਪ੍ਰਾਪਤ ਕਰਨ ਲਈ ਇੱਕ ਨੰਬਰ ਖਰੀਦੋ।",
+      "buyDialogTitle": "Donator ਪਲਾਨ ਦੀ ਲੋੜ ਹੈ",
+      "buyDialogDescription": "ਵਰਚੁਅਲ ਨੰਬਰ Donator ਪਲਾਨਾਂ ਵਿੱਚ ਸ਼ਾਮਲ ਹਨ। ਸ਼ੁਰੂ ਕਰਨ ਲਈ ਕੀਮਤ ਪੰਨੇ ’ਤੇ ਇੱਕ ਪਲਾਨ ਚੁਣੋ।",
+      "buyDialogGoToPricing": "ਕੀਮਤਾਂ ’ਤੇ ਜਾਓ"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "SMS ਲੋਡ ਹੋ ਰਹੇ ਹਨ…",
+      "empty": "ਅਜੇ ਕੋਈ SMS ਗੱਲਬਾਤ ਨਹੀਂ",
+      "noNumberHint": "ਇੱਥੇ SMS ਪ੍ਰਾਪਤ ਕਰਨ ਲਈ ਵਰਚੁਅਲ ਨੰਬਰ ਨਿਰਧਾਰਤ ਕਰੋ",
+      "composerPlaceholder": "SMS ਲਿਖੋ…",
+      "sendError": "ਇਹ ਸੁਨੇਹਾ ਭੇਜਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ",
+      "you": "ਤੁਸੀਂ",
+      "statusSent": "ਭੇਜਿਆ ਗਿਆ",
+      "statusDelivered": "ਪਹੁੰਚਾਇਆ ਗਿਆ",
+      "statusFailed": "ਅਸਫ਼ਲ",
+      "error": "SMS ਲੋਡ ਨਹੀਂ ਹੋ ਸਕੇ"
+    }
   },
   "notesList": {
     "gridOption": {
@@ -1018,5 +1075,20 @@
     "saveConsent": "ਸਹਿਮਤੀ ਸੇਵ ਕਰੋ",
     "dpipNoValue": "DPIP (Ð) ਡੂਪਿਪ ਦੇ ਅੰਦਰ ਮੁੱਲ ਦੀ ਇਕਾਈ ਹੈ। ਤੁਹਾਡਾ ਸਟੈਸ਼ ਸਮੇਂ ਦੇ ਨਾਲ ਤੁਹਾਡੀ ਗਤੀਵਿਧੀ ਨਾਲ ਵਧਦਾ ਹੈ। DPIP ਕੋਈ ਨਿਵੇਸ਼ ਉਤਪਾਦ ਨਹੀਂ ਹੈ ਅਤੇ ਇਸਦਾ ਕੋਈ ਮੌਦਰਿਕ ਮੁੱਲ ਨਹੀਂ ਹੋ ਸਕਦਾ — ਨਾ ਹੁਣ, ਨਾ ਭਵਿੱਖ ਵਿੱਚ।",
     "consentDescription": "DPIP (Ð) ਡੂਪਿਪ ਦੇ ਅੰਦਰ ਮੁੱਲ ਦੀ ਇਕਾਈ ਹੈ। ਤੁਹਾਡਾ ਸਟੈਸ਼ ਸਮੇਂ ਦੇ ਨਾਲ ਤੁਹਾਡੀ ਗਤੀਵਿਧੀ ਨਾਲ ਵਧਦਾ ਹੈ। DPIP ਕੋਈ ਨਿਵੇਸ਼ ਉਤਪਾਦ ਨਹੀਂ ਹੈ ਅਤੇ ਇਸਦਾ ਕੋਈ ਮੌਦਰਿਕ ਮੁੱਲ ਨਹੀਂ ਹੋ ਸਕਦਾ — ਨਾ ਹੁਣ, ਨਾ ਭਵਿੱਖ ਵਿੱਚ। ਸਾਡੀਆਂ ਯੋਜਨਾਵਾਂ ਦੇਖਣ ਤੋਂ ਪਹਿਲਾਂ, ਕਿਰਪਾ ਕਰਕੇ ਹੇਠ ਲਿਖਿਆਂ ਦੀ ਸਮੀਖਿਆ ਕਰੋ ਅਤੇ ਪੁਸ਼ਟੀ ਕਰੋ:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

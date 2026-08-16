@@ -1,12 +1,23 @@
 import { NextRequest } from 'next/server';
 import { auth } from '@clerk/nextjs/server'
-import openai from '@/lib/openai';
 import prisma from "@/lib/prisma";
 import { getWeekNumber } from '@/app/helpers'
-import { buildHistoricalEntriesByYear } from '@/lib/utils/dayHistory'
-import { getDelegationScopes, resolveEffectiveDelegationScope } from '@/lib/utils/delegation'
-import fs from 'node:fs'
-import path from 'node:path'
+import { getDelegationScopes } from '@/lib/utils/delegation'
+import { resolveNoteVisibilityFilter } from '@/lib/services/visibility/noteAccess'
+import { z } from 'zod'
+import { DEEPSEEK_CHAT_MODEL, getDeepseekOpenAI } from '@/lib/deepseek'
+import {
+  AGENT_DIMENSIONS,
+  buildDaySelectForDimensions,
+  buildDayWhere,
+  buildHintMessages,
+  buildRagForQuery,
+  chunkNotes,
+  compactDay,
+  fetchCompactNotes,
+  HINT_ANALYSIS_KEYS
+} from '@/lib/services/agent'
+import type { AgentDayRecord, CompactDay } from '@/lib/services/agent'
 
 // Logger helper function for consistent console logging format
 const logger = (str: string, originalMessage?: unknown) => {
@@ -48,84 +59,105 @@ const logger = (str: string, originalMessage?: unknown) => {
 export const revalidate = 86400;
 export const maxDuration = 120;
 
-const HINT_VECTOR_STORE_NAME = 'morpheus-hint-rag'
-const HINT_VECTOR_STORE_ID = process.env.OPENAI_HINT_VECTOR_STORE_ID?.trim() || null
-const HINT_RAG_FILE_PATH = path.join(process.cwd(), 'src/app/api/v1/hint/rag/cognitive-psychology-archiveorg.md')
-const HINT_RAG_FILE_NAME = path.basename(HINT_RAG_FILE_PATH)
+/** Fixed retrieval query — the hint always analyzes the same dimensions */
+const HINT_QUERY = 'mood trends, gratitude, optimism, restedness, tolerance, selfEsteem, trust, task completion, progress, correlations with mood and money';
 
 type DelegationVisibilityAccess =
   | { kind: 'full' }
   | { kind: 'restricted'; visibilities: Array<'PUBLIC' | 'FRIENDS' | 'CLOSE_FRIENDS'> }
   | { kind: 'invalid' }
 
-function resolveDelegationVisibilityAccess(scope: string): DelegationVisibilityAccess {
-  switch (scope) {
-    case 'PRIVATE':
-    case 'AI_ENABLED':
-      return { kind: 'full' }
-    case 'PUBLIC':
-      return { kind: 'restricted', visibilities: ['PUBLIC'] }
-    case 'CLOSE_FRIENDS':
-      return { kind: 'restricted', visibilities: ['PUBLIC', 'CLOSE_FRIENDS'] }
-    case 'FRIENDS':
-      return { kind: 'restricted', visibilities: ['PUBLIC', 'FRIENDS', 'CLOSE_FRIENDS'] }
-    default:
-      return { kind: 'invalid' }
+function resolveDelegationVisibilityAccess(scopes: string[]): DelegationVisibilityAccess {
+  if (scopes.length === 0) return { kind: 'invalid' }
+
+  const allVisibilities = new Set<'PUBLIC' | 'FRIENDS' | 'CLOSE_FRIENDS'>()
+  for (const scope of scopes) {
+    switch (scope) {
+      case 'PRIVATE':
+      case 'AI_ENABLED':
+        return { kind: 'full' }
+      case 'PUBLIC':
+        allVisibilities.add('PUBLIC')
+        break
+      case 'CLOSE_FRIENDS':
+        allVisibilities.add('PUBLIC')
+        allVisibilities.add('CLOSE_FRIENDS')
+        break
+      case 'FRIENDS':
+        allVisibilities.add('PUBLIC')
+        allVisibilities.add('FRIENDS')
+        allVisibilities.add('CLOSE_FRIENDS')
+        break
+      case 'DOC_ENABLED':
+        // Defensive: DOC_ENABLED is not a grantable scope; grants no day access
+        break
+      default:
+        // Skip unrecognized scopes rather than discarding accumulated access
+        break
+    }
+  }
+  return { kind: 'restricted', visibilities: Array.from(allVisibilities) }
+}
+
+/**
+ * DeepSeek offers JSON mode via response_format {type:'json_object'} (not
+ * json_schema), so the output contract is validated here with zod.
+ */
+const HINT_SCHEMA = z.object({
+  alltimeAnalysis: z.string().min(10),
+  dayAnalysis: z.string().min(10),
+  last3daysAnalysis: z.string().min(10),
+  weekAnalysis: z.string().min(10),
+  yearAnalysis: z.string().min(10),
+  gratitudeAnalysis: z.string().min(10),
+  optimismAnalysis: z.string().min(10),
+  restednessAnalysis: z.string().min(10),
+  toleranceAnalysis: z.string().min(10),
+  selfEsteemAnalysis: z.string().min(10),
+  trustAnalysis: z.string().min(10)
+})
+
+type HintAnalysis = z.infer<typeof HINT_SCHEMA>
+
+function parseHintOutput(raw: string | null | undefined): HintAnalysis | null {
+  if (!raw) return null
+  try {
+    const result = HINT_SCHEMA.safeParse(JSON.parse(raw))
+    return result.success ? result.data : null
+  } catch {
+    return null
   }
 }
 
-async function getOrCreateHintVectorStore() {
-  if (HINT_VECTOR_STORE_ID) {
-    try {
-      return await openai.vectorStores.retrieve(HINT_VECTOR_STORE_ID)
-    } catch {
-      logger('hint_rag_vector_store_lookup_failed', `Could not retrieve configured vector store id: ${HINT_VECTOR_STORE_ID}`)
+async function generateHintAnalysis(
+  messages: Array<{ role: 'system' | 'user'; content: string }>
+): Promise<HintAnalysis> {
+  let currentMessages = messages
+
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const completion = await getDeepseekOpenAI().chat.completions.create({
+      model: DEEPSEEK_CHAT_MODEL,
+      messages: currentMessages,
+      response_format: { type: 'json_object' },
+      max_tokens: 8192,
+      temperature: 0.3
+    })
+
+    const parsed = parseHintOutput(completion.choices[0]?.message?.content)
+    if (parsed) return parsed
+
+    if (attempt === 0) {
+      currentMessages = [
+        ...currentMessages,
+        {
+          role: 'user',
+          content: `Your previous output was not a valid JSON object with the required keys. Return ONLY a JSON object with exactly these keys: ${HINT_ANALYSIS_KEYS.join(', ')}`
+        }
+      ]
     }
   }
 
-  const vectorStores = await openai.vectorStores.list({ limit: 100 })
-  const existingVectorStore = vectorStores.data.find((store) => store.name === HINT_VECTOR_STORE_NAME)
-
-  if (existingVectorStore) {
-    return existingVectorStore
-  }
-
-  return openai.vectorStores.create({
-    name: HINT_VECTOR_STORE_NAME,
-  })
-}
-
-async function ensureHintRagFileInVectorStore(vectorStoreId: string): Promise<void> {
-  if (!fs.existsSync(HINT_RAG_FILE_PATH)) {
-    throw new Error(`RAG source file not found at ${HINT_RAG_FILE_PATH}`)
-  }
-
-  const vectorStoreFiles = await openai.vectorStores.files.list(vectorStoreId, { limit: 100 })
-
-  const fileNames = await Promise.all(
-    vectorStoreFiles.data.map(async (vectorFile) => {
-      try {
-        const file = await openai.files.retrieve(vectorFile.id)
-        return file.filename
-      } catch {
-        return null
-      }
-    })
-  )
-
-  const hasRequiredFile = fileNames.includes(HINT_RAG_FILE_NAME)
-  if (hasRequiredFile) {
-    return
-  }
-
-  const file = await openai.files.create({
-    file: fs.createReadStream(HINT_RAG_FILE_PATH),
-    purpose: 'assistants'
-  })
-
-  await openai.vectorStores.files.create(vectorStoreId, {
-    file_id: file.id
-  })
+  throw new Error('Hint output validation failed after retry')
 }
 
 export async function GET(req: NextRequest) {
@@ -134,16 +166,12 @@ export async function GET(req: NextRequest) {
   if (!clerkUserId) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
-  
+
   // Extract locale from request headers or query parameters
   const url = new URL(req.url)
   const locale = url.searchParams.get('locale') || 'en'
   const requestedUserId = url.searchParams.get('userId')
 
-  // if (!data.prompt) {
-  //   return Response.json({ error: "Prompt is required" }, { status: 400 });
-  // }
-  
   const requestingUser = await prisma.user.findUnique({
     where: { userId: clerkUserId },
     select: { id: true }
@@ -155,6 +183,7 @@ export async function GET(req: NextRequest) {
 
   const targetUserId = requestedUserId || requestingUser.id
   let delegationAccess: DelegationVisibilityAccess = { kind: 'full' }
+  let noteVisibilityFilter: ReturnType<typeof resolveNoteVisibilityFilter> = undefined
 
   if (targetUserId !== requestingUser.id) {
     const delegation = await prisma.delegation.findUnique({
@@ -172,16 +201,17 @@ export async function GET(req: NextRequest) {
     }
 
     const delegationScopes = getDelegationScopes(delegation.scopes, delegation.scope)
-    const delegationScope = resolveEffectiveDelegationScope(delegationScopes, delegation.scope)
 
-    if (!delegationScope) {
+    if (delegationScopes.length === 0) {
       return Response.json({ error: 'Delegation exists but has no valid scope configured' }, { status: 403 })
     }
 
-    delegationAccess = resolveDelegationVisibilityAccess(delegationScope)
+    delegationAccess = resolveDelegationVisibilityAccess(delegationScopes)
     if (delegationAccess.kind === 'invalid') {
       return Response.json({ error: 'Delegation scope contains an unrecognized value' }, { status: 403 })
     }
+
+    noteVisibilityFilter = resolveNoteVisibilityFilter(delegation.scopes, delegation.scope)
   }
 
   const targetUser = await prisma.user.findUnique({
@@ -199,31 +229,7 @@ export async function GET(req: NextRequest) {
   const month = fullDate.getMonth() + 1
   const quarter = Math.floor((month - 1) / 3) + 1
   const semester = month <= 6 ? 1 : 2
-  const dayWhere: Record<string, unknown> = { userId: targetUser.id }
-  if (delegationAccess.kind === 'restricted') {
-    dayWhere.visibility = { in: delegationAccess.visibilities }
-  }
-  const days = targetUser
-    ? await prisma.day.findMany({
-        where: dayWhere,
-        orderBy: { date: 'asc' },
-        select: {
-          date: true,
-          week: true,
-          tasks: true,
-          mood: true,
-          ticker: true,
-          average: true,
-          progress: true,
-          balance: true,
-          stash: true,
-          withdrawn: true,
-          analysis: true,
-          productivity: true
-        }
-      })
-    : []
-  const entries = buildHistoricalEntriesByYear(days)
+
   const canReadPersistedHint = delegationAccess.kind === 'full'
   const existingDay = canReadPersistedHint
     ? await prisma.day.findFirst({
@@ -238,59 +244,47 @@ export async function GET(req: NextRequest) {
 
   if (!existingHint) {
     try {
-      const vectorStore = await getOrCreateHintVectorStore()
-      await ensureHintRagFileInVectorStore(vectorStore.id)
+      // Minimal MongoDB payload: only the fields the hint dimensions need.
+      // `analysis` and `productivity` are never selected (recursion guard).
+      const dimensions = [...AGENT_DIMENSIONS]
+      const days = await prisma.day.findMany({
+        where: buildDayWhere(
+          targetUser.id,
+          undefined,
+          undefined,
+          delegationAccess.kind === 'restricted' ? delegationAccess.visibilities : undefined
+        ),
+        select: buildDaySelectForDimensions(dimensions),
+        orderBy: { date: 'asc' }
+      })
 
-      const response = await openai.responses.create({
-        model: "gpt-5.4-mini",
-        tools: [{ type: 'file_search', vector_store_ids: [vectorStore.id] }],
-        instructions: `
-          Please use file_search for this analysis.
+      const compactDays = days
+        .map((day) => compactDay(day as AgentDayRecord, dimensions))
+        .filter((day): day is CompactDay => day !== null)
 
-          You are a cognitive psychologist data assistant talking to a user. You should use the pronoun 'you' while generating the output.
-          
-          You reference the cognitive psychology archive in the file_search vector store to provide improvement suggestions to the user routine.
+      const startDate = compactDays.length > 0 ? compactDays[0].date : date
+      const endDate = compactDays.length > 0 ? compactDays[compactDays.length - 1].date : date
 
-          You analyse how indicators like gratitude, optimism, restedness, tolerance and trust progress over time, finding correlations with weekly and daily task completions.
+      const compactNotes = await fetchCompactNotes({
+        targetUserId: targetUser.id,
+        userLabel: targetUserId === requestingUser.id ? 'you' : 'the delegated user',
+        startDate,
+        endDate,
+        dimensions,
+        noteVisibilityFilter,
+        isRestricted: delegationAccess.kind !== 'full'
+      })
 
-          Please generate the insights in this locale: ${locale}
+      const rag = await buildRagForQuery(compactDays, HINT_QUERY, {
+        dimensions,
+        userChunkTopK: 12,
+        docChunkTopK: 4,
+        noteChunks: chunkNotes(compactNotes)
+      })
 
-          This is the user historical data set:
-
-          \`\`\`
-          ${JSON.stringify(entries)}
-          \`\`\`
-
-          `,
-        text: {
-          format: {
-            name: "mood_analysis",
-            type: "json_schema",
-            schema: {
-              type: "object",
-              properties: {
-                alltimeAnalysis: { type: "string" },
-                dayAnalysis: { type: "string" },
-                last3daysAnalysis: { type: "string" },
-                weekAnalysis: { type: "string" },
-                yearAnalysis: { type: "string" },
-                gratitudeAnalysis: { type: "string" },
-                optimismAnalysis: { type: "string" },
-                restednessAnalysis: { type: "string" },
-                toleranceAnalysis: { type: "string" },
-                selfEsteemAnalysis: { type: "string" },
-                trustAnalysis: { type: "string" },
-              },
-              required: ["alltimeAnalysis", "dayAnalysis", "last3daysAnalysis", "weekAnalysis", "yearAnalysis", "gratitudeAnalysis", "optimismAnalysis", "restednessAnalysis", "toleranceAnalysis", "selfEsteemAnalysis", "trustAnalysis"],
-              additionalProperties: false,
-            },
-            strict: true,
-          },
-        },
-        input: 'Please provide a series of 500 words analysis for the provided format',
-      });
-
-      const parsedOutput = JSON.parse(response.output_text)
+      const parsedOutput = await generateHintAnalysis(
+        buildHintMessages({ locale, startDate, endDate, rag })
+      )
 
       if (canReadPersistedHint) {
         if (existingDay) {
@@ -320,8 +314,12 @@ export async function GET(req: NextRequest) {
                 }
               }
             })
-          } catch (createError: any) {
-            if (createError?.code === 'P2002') {
+          } catch (createError: unknown) {
+            const errorCode =
+              createError && typeof createError === 'object' && 'code' in createError
+                ? (createError as { code?: unknown }).code
+                : undefined
+            if (errorCode === 'P2002') {
               // Day was just created by a concurrent request — merge the hint into it
               const createdDay = await prisma.day.findFirst({
                 where: { userId: targetUser.id, date }
@@ -354,6 +352,6 @@ export async function GET(req: NextRequest) {
   }} else {
     return Response.json({ result: existingHint });
   }
-  
+
   return Response.json(targetUser)
 }

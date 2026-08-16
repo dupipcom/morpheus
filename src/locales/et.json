@@ -17,6 +17,7 @@
     "save": "Salvesta",
     "cancel": "Tühista",
     "delete": "Kustuta",
+    "remove": "Eemalda",
     "loading": "Laadimine...",
     "error": "Viga",
     "success": "Edu",
@@ -126,11 +127,14 @@
         "FRIENDS": "Sõbrad",
         "CLOSE_FRIENDS": "Lähedased sõbrad",
         "PUBLIC": "Avalik",
-        "AI_ENABLED": "AI lubatud"
+        "AI_ENABLED": "AI lubatud",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Avalda märkme",
       "publishing": "Avaldamine...",
-      "embedHint": "{provider} manustus. Kui taasesitus pole saadaval, ava allpool olev algne link."
+      "embedHint": "{provider} manustus. Kui taasesitus pole saadaval, ava allpool olev algne link.",
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Luba AI analüüs"
     },
     "thirdParty": {
       "title": "Kolmas osapool",
@@ -148,7 +152,9 @@
       "addDelegatedAnalyst": "Lisa delegeeritud analüütik",
       "adding": "Lisamine...",
       "addError": "Delegeeritud analüütiku lisamine ei õnnestunud",
-      "invitationDraft": "Selle e-posti jaoks valmis kutse mustand."
+      "invitationDraft": "Selle e-posti jaoks valmis kutse mustand.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -359,7 +365,9 @@
     "expectedNeedUtilities": "Oodatav vajaduste kommunaalkulude keskmine",
     "editAction": "Redigeeri tegevust",
     "save": "Salvesta",
-    "cancel": "Tühista"
+    "cancel": "Tühista",
+    "currency": "Valuuta",
+    "selectCurrency": "Vali valuuta"
   },
   "agentChat": {
     "thinking": "Mõtlen...",
@@ -367,7 +375,8 @@
     "getInsights": "Küsi oma tuju, harjumuste kohta või saa personaliseeritud teadmisi",
     "placeholder": "Räägime...",
     "error": "Vabandust, kohtasin viga. Palun proovi uuesti.",
-    "failedToSend": "Sõnumi saatmine ebaõnnestus. Palun proovi uuesti."
+    "failedToSend": "Sõnumi saatmine ebaõnnestus. Palun proovi uuesti.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Alusta oma Dupip teekonda",
@@ -649,8 +658,10 @@
       },
       "areaDistributionLabel": "Valdkonna eelarve",
       "areaPrizeDistributionLabel": "Valdkonna auhind",
+      "areaPremiumDistributionLabel": "Auhindade jaotus valdkonna järgi",
       "categoryDistributionLabel": "Kategooria eelarve",
       "categoryPrizeDistributionLabel": "Kategooria auhind",
+      "categoryPremiumDistributionLabel": "Auhindade jaotus kategooria järgi",
       "taskDistributionLabel": "Eelarve",
       "premiumLabel": "Auhind",
       "totalLabel": "Kokku",
@@ -962,6 +973,7 @@
     "deleting": "Kustutamine...",
     "confirmDelete": "Kas olete kindel, et soovite selle märkuse kustutada?",
     "content": "Märkuse sisu",
+    "recipient": "Saaja",
     "visibilityUpdated": "Nähtavus edukalt uuendatud",
     "visibilityUpdateFailed": "Nähtavuse uuendamine ebaõnnestus",
     "changeVisibility": "Muuda nähtavust",
@@ -986,7 +998,52 @@
     "inviteFriendToOrg": "Kutsu sõber sellesse organisatsiooni",
     "inviteLinkCopied": "Kutselink kopeeritud",
     "inviteSent": "Kutse saadetud",
-    "inviteAccepted": "Kutse vastu võetud"
+    "inviteAccepted": "Kutse vastu võetud",
+    "sidebar": {
+      "directMessages": "Otsesõnumid",
+      "organizations": "Organisatsioonid",
+      "sms": "SMS",
+      "virtualNumber": "Virtuaalne number",
+      "searchDmPlaceholder": "Otsi sõpru, et alustada otsesõnumit",
+      "createChannelPlaceholder": "Loo kanal",
+      "createOrgPlaceholder": "Loo organisatsioon",
+      "refresh": "Värskenda",
+      "noOrgs": "Veel pole organisatsioone",
+      "noDms": "Veel pole otsesõnumeid"
+    },
+    "virtualNumber": {
+      "label": "Virtuaalnumber",
+      "hint": "Vali oma telefoninumbrid. Nendele numbritele saabuvad SMS-id kuvatakse sinu vestluses.",
+      "none": "Numbrit pole",
+      "loading": "Numbrite laadimine…",
+      "empty": "Ühtegi numbrit pole saadaval",
+      "error": "Sinu numbreid ei õnnestunud laadida",
+      "assignError": "Seda numbrit ei õnnestunud salvestada",
+      "assigned": "Number määratud",
+      "cleared": "Number eemaldatud",
+      "addNumber": "Lisa number…",
+      "removeNumber": "Eemalda number",
+      "quotaLabel": "Kasutusel {used} numbrit {quota}-st",
+      "limitReached": "Oled jõudnud oma paketi maksimaalse virtuaalnumbrite arvuni",
+      "buyCta": "Osta virtuaalnumber",
+      "gateHint": "Virtuaalnumbrid nõuavad Donatori paketti. Osta number, et saada vestluses SMS-e.",
+      "buyDialogTitle": "Nõutav on Donatori pakett",
+      "buyDialogDescription": "Virtuaalnumbrid sisalduvad Donatori pakettides. Alustamiseks vali pakett hinnalehelt.",
+      "buyDialogGoToPricing": "Mine hindade juurde"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "SMS-ide laadimine…",
+      "empty": "SMS-vestlusi veel pole",
+      "noNumberHint": "Määra virtuaalnumber, et hakata siin SMS-e vastu võtma",
+      "composerPlaceholder": "Kirjuta SMS…",
+      "sendError": "Seda sõnumit ei õnnestunud saata",
+      "you": "Sina",
+      "statusSent": "Saadetud",
+      "statusDelivered": "Kohale toimetatud",
+      "statusFailed": "Nurjus",
+      "error": "SMS-e ei õnnestunud laadida"
+    }
   },
   "notesList": {
     "gridOption": {
@@ -1014,5 +1071,20 @@
     "saveConsent": "Salvesta nõusolek",
     "dpipNoValue": "DPIP (Ð) on väärtusühik Dupipis. Sinu stash kasvab aja jooksul koos sinu tegevusega. DPIP ei ole investeerimistoode ja sellel ei pruugi olla rahalist väärtust — ei praegu ega tulevikus.",
     "consentDescription": "DPIP (Ð) on väärtusühik Dupipis. Sinu stash kasvab aja jooksul koos sinu tegevusega. DPIP ei ole investeerimistoode ja sellel ei pruugi olla rahalist väärtust — ei praegu ega tulevikus. Enne meie pakettide vaatamist palun vaata üle ja kinnita järgmine:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

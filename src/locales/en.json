@@ -17,6 +17,7 @@
     "save": "Save",
     "cancel": "Cancel",
     "delete": "Delete",
+    "remove": "Remove",
     "loading": "Loading...",
     "error": "Error",
     "success": "Success",
@@ -128,9 +129,12 @@
         "FRIENDS": "Friends",
         "CLOSE_FRIENDS": "Close Friends",
         "PUBLIC": "Public",
-        "AI_ENABLED": "AI Enabled"
+        "AI_ENABLED": "AI Enabled",
+        "DOC_ENABLED": "Doc Enabled"
       },
-      "action": "Publish Note"
+      "action": "Publish Note",
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Enable AI analysis"
     },
     "thirdParty": {
       "title": "Third-Party",
@@ -148,8 +152,25 @@
       "addDelegatedAnalyst": "Add delegated analyst",
       "adding": "Adding...",
       "addError": "Could not add delegated analyst",
-      "invitationDraft": "Invitation draft prepared for this email."
+      "invitationDraft": "Invitation draft prepared for this email.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "HOUSEHOLD": "Household",
+    "THERAPIST": "Therapist"
   },
   "week": {
     "weekNumber": "Week {number}",
@@ -367,8 +388,10 @@
       },
       "areaDistributionLabel": "Area Budget",
       "areaPrizeDistributionLabel": "Area Prize",
+      "areaPremiumDistributionLabel": "Area Premium Distribution",
       "categoryDistributionLabel": "Category Budget",
       "categoryPrizeDistributionLabel": "Category Prize",
+      "categoryPremiumDistributionLabel": "Category Premium Distribution",
       "taskDistributionLabel": "Budget",
       "premiumLabel": "Prize",
       "totalLabel": "Total",
@@ -432,7 +455,9 @@
     "monthsFixedIncome": "Month's Recurring Income",
     "monthsVariableIncome": "Month's Variable Income",
     "fixedNeedCosts": "Fixed Need Costs",
-    "expectedNeedUtilities": "Expected Need Utilities Average"
+    "expectedNeedUtilities": "Expected Need Utilities Average",
+    "currency": "Currency",
+    "selectCurrency": "Select currency"
   },
   "social": {
     "title": "Social Contacts",
@@ -577,7 +602,8 @@
     "getInsights": "Ask about your mood, habits, or get personalized insights",
     "placeholder": "Let's chat...",
     "error": "Sorry, I encountered an error. Please try again.",
-    "failedToSend": "Failed to send message. Please try again."
+    "failedToSend": "Failed to send message. Please try again.",
+    "model": "Model"
   },
   "errors": {
     "notFound": "Ops! Could not tune to this frequency.",
@@ -978,6 +1004,7 @@
     "deleting": "Deleting...",
     "confirmDelete": "Are you sure you want to delete this note?",
     "content": "Note content",
+    "recipient": "Recipient",
     "visibilityUpdated": "Visibility updated successfully",
     "visibilityUpdateFailed": "Failed to update visibility",
     "changeVisibility": "Change visibility",
@@ -1002,7 +1029,52 @@
     "inviteFriendToOrg": "Invite a friend to this org",
     "inviteLinkCopied": "Invite link copied",
     "inviteSent": "Invite sent",
-    "inviteAccepted": "Invite accepted"
+    "inviteAccepted": "Invite accepted",
+    "sidebar": {
+      "directMessages": "Direct messages",
+      "organizations": "Organizations",
+      "sms": "SMS",
+      "virtualNumber": "Virtual number",
+      "searchDmPlaceholder": "Search friends to start a DM",
+      "createChannelPlaceholder": "Create a channel",
+      "createOrgPlaceholder": "Create an organization",
+      "refresh": "Refresh",
+      "noOrgs": "No organizations yet",
+      "noDms": "No direct messages yet"
+    },
+    "virtualNumber": {
+      "label": "Virtual number",
+      "hint": "Choose your phone numbers. Incoming SMS to these numbers will appear in your chat.",
+      "none": "No number",
+      "loading": "Loading numbers…",
+      "empty": "No numbers available",
+      "error": "Could not load your numbers",
+      "assignError": "Could not save this number",
+      "assigned": "Number assigned",
+      "cleared": "Number cleared",
+      "addNumber": "Add number…",
+      "removeNumber": "Remove number",
+      "quotaLabel": "{used} of {quota} numbers used",
+      "limitReached": "You have reached the maximum number of virtual numbers for your plan",
+      "buyCta": "Buy virtual number",
+      "gateHint": "Virtual numbers require a Donator plan. Buy a number to receive SMS in chat.",
+      "buyDialogTitle": "Donator plan required",
+      "buyDialogDescription": "Virtual numbers are included with the Donator plans. Choose a plan on the pricing page to get started.",
+      "buyDialogGoToPricing": "Go to pricing"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "Loading SMS…",
+      "empty": "No SMS conversations yet",
+      "noNumberHint": "Assign a virtual number to start receiving SMS here",
+      "composerPlaceholder": "Write an SMS…",
+      "sendError": "Could not send this message",
+      "you": "You",
+      "statusSent": "Sent",
+      "statusDelivered": "Delivered",
+      "statusFailed": "Failed",
+      "error": "Could not load SMS"
+    }
   },
   "notesList": {
     "gridOption": {

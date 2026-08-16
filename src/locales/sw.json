@@ -17,6 +17,7 @@
     "save": "Hifadhi",
     "cancel": "Ghairi",
     "delete": "Futa",
+    "remove": "Ondoa",
     "loading": "Inapakia...",
     "error": "Hitilafu",
     "success": "Mafanikio",
@@ -126,11 +127,14 @@
         "FRIENDS": "Marafiki",
         "CLOSE_FRIENDS": "Marafiki wa Karibu",
         "PUBLIC": "Umma",
-        "AI_ENABLED": "AI Imewezeshwa"
+        "AI_ENABLED": "AI Imewezeshwa",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Chapisha Maelezo",
       "publishing": "Inachapisha...",
-      "embedHint": "Ingizo la {provider}. Ikiwa urejeshaji hauwezekani, fungua kiungo asili hapa chini."
+      "embedHint": "Ingizo la {provider}. Ikiwa urejeshaji hauwezekani, fungua kiungo asili hapa chini.",
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Washa uchambuzi wa AI"
     },
     "thirdParty": {
       "title": "Mhusika wa tatu",
@@ -148,7 +152,9 @@
       "addDelegatedAnalyst": "Ongeza mchambuzi aliyekabidhiwa",
       "adding": "Inaongezwa...",
       "addError": "Haikuwezekana kuongeza mchambuzi aliyekabidhiwa",
-      "invitationDraft": "Rasimu ya mwaliko imeandaliwa kwa barua pepe hii."
+      "invitationDraft": "Rasimu ya mwaliko imeandaliwa kwa barua pepe hii.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -229,7 +235,9 @@
     "expectedNeedUtilities": "Wastani wa Matumizi ya Mahitaji ya Kutarajiwa",
     "editAction": "Hariri kitendo",
     "cancel": "Ghairi",
-    "save": "Hifadhi"
+    "save": "Hifadhi",
+    "currency": "Sarafu",
+    "selectCurrency": "Chagua sarafu"
   },
   "actions": {
     "drankWater": "Kunywa maji",
@@ -374,7 +382,8 @@
     "getInsights": "Uliza kuhusu hali yako ya moyo, tabia au pata maarifa ya kibinafsi",
     "placeholder": "Tuzungumze...",
     "error": "Samahani, nilikumbana na hitilafu. Tafadhali jaribu tena.",
-    "failedToSend": "Kutuma ujumbe hakufanikiwa. Tafadhali jaribu tena."
+    "failedToSend": "Kutuma ujumbe hakufanikiwa. Tafadhali jaribu tena.",
+    "model": "Model"
   },
   "errors": {
     "notFound": "Ops! Haikuweza kufikia mzunguko huu.",
@@ -664,8 +673,10 @@
       },
       "areaDistributionLabel": "Bajeti ya eneo",
       "areaPrizeDistributionLabel": "Tuzo ya eneo",
+      "areaPremiumDistributionLabel": "Usambazaji wa tuzo kwa eneo",
       "categoryDistributionLabel": "Bajeti ya kategoria",
       "categoryPrizeDistributionLabel": "Tuzo ya kategoria",
+      "categoryPremiumDistributionLabel": "Usambazaji wa tuzo kwa kategoria",
       "taskDistributionLabel": "Bajeti",
       "premiumLabel": "Tuzo",
       "totalLabel": "Jumla",
@@ -960,6 +971,7 @@
     "deleting": "Inafuta...",
     "confirmDelete": "Je, una uhakika unataka kufuta dokezo hili?",
     "content": "Maudhui ya dokezo",
+    "recipient": "Mpokeaji",
     "visibilityUpdated": "Uonekano umesasishwa kwa mafanikio",
     "visibilityUpdateFailed": "Imeshindwa kusasisha uonekano",
     "changeVisibility": "Badilisha uonekano",
@@ -984,7 +996,52 @@
     "inviteFriendToOrg": "Alika rafiki katika shirika hili",
     "inviteLinkCopied": "Kiungo cha mwaliko kimenakiliwa",
     "inviteSent": "Mwaliko umetumwa",
-    "inviteAccepted": "Mwaliko umekubaliwa"
+    "inviteAccepted": "Mwaliko umekubaliwa",
+    "sidebar": {
+      "directMessages": "Ujumbe wa moja kwa moja",
+      "organizations": "Mashirika",
+      "sms": "SMS",
+      "virtualNumber": "Nambari ya kawaida",
+      "searchDmPlaceholder": "Tafuta marafiki ili kuanza DM",
+      "createChannelPlaceholder": "Unda kituo",
+      "createOrgPlaceholder": "Unda shirika",
+      "refresh": "Onyesha upya",
+      "noOrgs": "Bado hakuna mashirika",
+      "noDms": "Bado hakuna ujumbe wa moja kwa moja"
+    },
+    "virtualNumber": {
+      "label": "Namba pepe",
+      "hint": "Chagua namba zako za simu. SMS zinazoingia kwenye namba hizi zitaonekana kwenye mazungumzo yako.",
+      "none": "Hakuna namba",
+      "loading": "Inapakia namba…",
+      "empty": "Hakuna namba zinazopatikana",
+      "error": "Haikuwezekana kupakia namba zako",
+      "assignError": "Haikuwezekana kuhifadhi namba hii",
+      "assigned": "Namba imepewa",
+      "cleared": "Namba imeondolewa",
+      "addNumber": "Ongeza namba…",
+      "removeNumber": "Ondoa namba",
+      "quotaLabel": "{used} kati ya {quota} namba zimetumika",
+      "limitReached": "Umefikia idadi ya juu ya namba pepe kwa mpango wako",
+      "buyCta": "Nunua namba pepe",
+      "gateHint": "Namba pepe zinahitaji mpango wa Donator. Nunua namba ili kupokea SMS kwenye mazungumzo.",
+      "buyDialogTitle": "Mpango wa Donator unahitajika",
+      "buyDialogDescription": "Namba pepe zinajumuishwa katika mipango ya Donator. Chagua mpango kwenye ukurasa wa bei ili kuanza.",
+      "buyDialogGoToPricing": "Nenda kwenye bei"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "Inapakia SMS…",
+      "empty": "Bado hakuna mazungumzo ya SMS",
+      "noNumberHint": "Pewa namba pepe ili uanze kupokea SMS hapa",
+      "composerPlaceholder": "Andika SMS…",
+      "sendError": "Haikuwezekana kutuma ujumbe huu",
+      "you": "Wewe",
+      "statusSent": "Imetumwa",
+      "statusDelivered": "Imewasilishwa",
+      "statusFailed": "Imeshindikana",
+      "error": "Haikuwezekana kupakia SMS"
+    }
   },
   "notesList": {
     "gridOption": {
@@ -1012,5 +1069,20 @@
     "saveConsent": "Hifadhi idhini",
     "dpipNoValue": "DPIP (Ð) ni kitengo cha thamani ndani ya Dupip. Akiba yako hukua kadri muda unavyopita pamoja na shughuli zako. DPIP si bidhaa ya uwekezaji na huenda isiwe na thamani ya kifedha — si sasa wala baadaye.",
     "consentDescription": "DPIP (Ð) ni kitengo cha thamani ndani ya Dupip. Akiba yako hukua kadri muda unavyopita pamoja na shughuli zako. DPIP si bidhaa ya uwekezaji na huenda isiwe na thamani ya kifedha — si sasa wala baadaye. Kabla ya kuona mipango yetu, tafadhali pitia na uthibitishe yafuatayo:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

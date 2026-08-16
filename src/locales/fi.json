@@ -14,6 +14,7 @@
     "save": "Tallenna",
     "cancel": "Peruuta",
     "delete": "Poista",
+    "remove": "Poista",
     "loading": "Ladataan...",
     "error": "Virhe",
     "success": "Onnistui",
@@ -130,11 +131,14 @@
         "FRIENDS": "Ystävät",
         "CLOSE_FRIENDS": "Läheiset ystävät",
         "PUBLIC": "Julkinen",
-        "AI_ENABLED": "AI käytössä"
+        "AI_ENABLED": "AI käytössä",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Julkaise muistiinpano",
       "publishing": "Julkaistaan...",
-      "embedHint": "{provider}-upotus. Jos toisto ei ole käytettävissä, avaa alla oleva alkuperäinen linkki."
+      "embedHint": "{provider}-upotus. Jos toisto ei ole käytettävissä, avaa alla oleva alkuperäinen linkki.",
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Ota AI-analyysi käyttöön"
     },
     "thirdParty": {
       "title": "Kolmas osapuoli",
@@ -152,7 +156,9 @@
       "addDelegatedAnalyst": "Lisää delegoitu analyytikko",
       "adding": "Lisätään...",
       "addError": "Delegoidun analyytikon lisääminen ei onnistunut",
-      "invitationDraft": "Tälle sähköpostille valmisteltiin kutsuluonnos."
+      "invitationDraft": "Tälle sähköpostille valmisteltiin kutsuluonnos.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -363,7 +369,9 @@
     "expectedNeedUtilities": "Odotettavissa olevat tarpeelliset palvelukustannukset",
     "editAction": "Muokkaa toimintoa",
     "save": "Tallenna",
-    "cancel": "Peruuta"
+    "cancel": "Peruuta",
+    "currency": "Valuutta",
+    "selectCurrency": "Valitse valuutta"
   },
   "agentChat": {
     "thinking": "Ajattelen...",
@@ -371,7 +379,8 @@
     "getInsights": "Kysy mielialastasi, tavoista tai saa henkilökohtaisia oivalluksia",
     "placeholder": "Chatataan...",
     "error": "Anteeksi, kohtasimme virheen. Yritä uudelleen.",
-    "failedToSend": "Viestin lähettäminen epäonnistui. Yritä uudelleen."
+    "failedToSend": "Viestin lähettäminen epäonnistui. Yritä uudelleen.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Aloita oma Dupip-matkasi",
@@ -653,8 +662,10 @@
       },
       "areaDistributionLabel": "Alueen budjetti",
       "areaPrizeDistributionLabel": "Alueen palkinto",
+      "areaPremiumDistributionLabel": "Palkintojen jako alueittain",
       "categoryDistributionLabel": "Kategorian budjetti",
       "categoryPrizeDistributionLabel": "Kategorian palkinto",
+      "categoryPremiumDistributionLabel": "Palkintojen jako kategorioittain",
       "taskDistributionLabel": "Budjetti",
       "premiumLabel": "Palkinto",
       "totalLabel": "Yhteensä",
@@ -966,6 +977,7 @@
     "deleting": "Poistetaan...",
     "confirmDelete": "Haluatko varmasti poistaa tämän muistiinpanon?",
     "content": "Muistiinpanon sisältö",
+    "recipient": "Vastaanottaja",
     "visibilityUpdated": "Näkyvyys päivitetty onnistuneesti",
     "visibilityUpdateFailed": "Näkyvyyden päivittäminen epäonnistui",
     "changeVisibility": "Muuta näkyvyyttä",
@@ -990,7 +1002,52 @@
     "inviteFriendToOrg": "Kutsu ystävä tähän organisaatioon",
     "inviteLinkCopied": "Kutsulinki kopioitu",
     "inviteSent": "Kutsu lähetetty",
-    "inviteAccepted": "Kutsu hyväksytty"
+    "inviteAccepted": "Kutsu hyväksytty",
+    "sidebar": {
+      "directMessages": "Yksityisviestit",
+      "organizations": "Organisaatiot",
+      "sms": "SMS",
+      "virtualNumber": "Virtuaalinumero",
+      "searchDmPlaceholder": "Etsi kavereita aloittaaksesi yksityisviestin",
+      "createChannelPlaceholder": "Luo kanava",
+      "createOrgPlaceholder": "Luo organisaatio",
+      "refresh": "Päivitä",
+      "noOrgs": "Ei vielä organisaatioita",
+      "noDms": "Ei vielä yksityisviestejä"
+    },
+    "virtualNumber": {
+      "label": "Virtuaalinumero",
+      "hint": "Valitse puhelinnumerosi. Näihin numeroihin saapuvat tekstiviestit näkyvät chatissasi.",
+      "none": "Ei numeroa",
+      "loading": "Ladataan numeroita…",
+      "empty": "Numeroita ei ole saatavilla",
+      "error": "Numeroitasi ei voitu ladata",
+      "assignError": "Tätä numeroa ei voitu tallentaa",
+      "assigned": "Numero liitetty",
+      "cleared": "Numero poistettu",
+      "addNumber": "Lisää numero…",
+      "removeNumber": "Poista numero",
+      "quotaLabel": "{used} / {quota} numeroa käytössä",
+      "limitReached": "Olet saavuttanut pakettisi virtuaalinumeroiden enimmäismäärän",
+      "buyCta": "Osta virtuaalinumero",
+      "gateHint": "Virtuaalinumerot vaativat Donator-paketin. Osta numero vastaanottaaksesi tekstiviestejä chatissa.",
+      "buyDialogTitle": "Donator-paketti vaaditaan",
+      "buyDialogDescription": "Virtuaalinumerot sisältyvät Donator-paketteihin. Valitse paketti hintasivulta aloittaaksesi.",
+      "buyDialogGoToPricing": "Siirry hintoihin"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "Ladataan tekstiviestejä…",
+      "empty": "Ei tekstiviestikeskusteluja vielä",
+      "noNumberHint": "Liitä virtuaalinumero aloittaaksesi tekstiviestien vastaanottamisen täällä",
+      "composerPlaceholder": "Kirjoita tekstiviesti…",
+      "sendError": "Tätä viestiä ei voitu lähettää",
+      "you": "Sinä",
+      "statusSent": "Lähetetty",
+      "statusDelivered": "Toimitettu",
+      "statusFailed": "Epäonnistui",
+      "error": "Tekstiviestejä ei voitu ladata"
+    }
   },
   "notesList": {
     "gridOption": {
@@ -1018,5 +1075,20 @@
     "saveConsent": "Tallenna suostumus",
     "dpipNoValue": "DPIP (Ð) on arvon yksikkö Dupipin sisällä. Stashisi kasvaa ajan myötä toimintasi mukana. DPIP ei ole sijoitustuote, eikä sillä välttämättä ole rahallista arvoa — ei nyt eikä tulevaisuudessa.",
     "consentDescription": "DPIP (Ð) on arvon yksikkö Dupipin sisällä. Stashisi kasvaa ajan myötä toimintasi mukana. DPIP ei ole sijoitustuote, eikä sillä välttämättä ole rahallista arvoa — ei nyt eikä tulevaisuudessa. Ennen kuin näet tilauksemme, käy läpi ja vahvista seuraava:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

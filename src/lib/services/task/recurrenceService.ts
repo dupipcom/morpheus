@@ -1,6 +1,6 @@
-import { rrulestr } from 'rrule'
+import { rrulestr, type RRule } from 'rrule'
 import prisma from '@/lib/prisma'
-import type { Task, Job, TaskStatus } from '@/generated/prisma'
+import type { Task, Job, TaskStatus } from '@/generated/prisma/client'
 
 /**
  * Task with date-specific status and completion data

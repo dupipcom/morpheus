@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
+import { WRITABLE_NOTE_VISIBILITIES } from '@/lib/constants/visibility'
 
 // PUT /api/v1/notes/[noteId] - Update a note
 export async function PUT(
@@ -81,8 +82,7 @@ export async function PATCH(
       return NextResponse.json({ error: 'Visibility is required' }, { status: 400 })
     }
 
-    const validVisibilities = ['PRIVATE', 'FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC', 'AI_ENABLED']
-    if (!validVisibilities.includes(visibility)) {
+    if (!(WRITABLE_NOTE_VISIBILITIES as readonly string[]).includes(visibility)) {
       return NextResponse.json({ error: 'Invalid visibility value' }, { status: 400 })
     }
 

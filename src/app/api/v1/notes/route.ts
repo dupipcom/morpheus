@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
 import { sanitizeText } from '@/lib/utils/sanitize'
-import { NOTE_VISIBILITIES } from '@/lib/constants/visibility'
+import { NOTE_VISIBILITIES, WRITABLE_NOTE_VISIBILITIES } from '@/lib/constants/visibility'
 import { getDelegationScopes } from '@/lib/utils/delegation'
+import { resolveNoteVisibilityFilter } from '@/lib/services/visibility/noteAccess'
 
 function toUserSummary(user: {
   id: string
@@ -30,6 +31,7 @@ export async function GET(request: NextRequest) {
 
     const searchParams = request.nextUrl.searchParams
     const filterNoteId = searchParams.get('noteId')
+    const requestedUserId = searchParams.get('userId')
     const requestedVisibility = searchParams.get('visibility')
     const selectedVisibility = requestedVisibility
       ? requestedVisibility.split(',').map(v => v.trim().toUpperCase()).filter(v => NOTE_VISIBILITIES.includes(v as typeof NOTE_VISIBILITIES[number]))
@@ -43,13 +45,39 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    let sortedNotes = await prisma.note.findMany({
-      where: {
+    // Own notes (owner + received) by default; a delegated target requires a
+    // delegation record and is filtered to the visibilities it unlocks.
+    let where: Record<string, unknown>
+    if (requestedUserId && requestedUserId !== user.id) {
+      const delegation = await prisma.delegation.findUnique({
+        where: {
+          delegatorId_delegatedId: {
+            delegatorId: requestedUserId,
+            delegatedId: user.id
+          }
+        }
+      })
+
+      if (!delegation) {
+        return NextResponse.json({ error: 'Not authorized for selected user data' }, { status: 403 })
+      }
+
+      const noteVisibilityFilter = resolveNoteVisibilityFilter(delegation.scopes, delegation.scope)
+      where = {
+        userId: requestedUserId,
+        ...(noteVisibilityFilter ? { visibility: { in: noteVisibilityFilter } } : {})
+      }
+    } else {
+      where = {
         OR: [
           { userId: user.id },
           { recipientId: user.id }
         ]
-      },
+      }
+    }
+
+    let sortedNotes = await prisma.note.findMany({
+      where,
       include: {
         _count: {
           select: {
@@ -173,7 +201,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { content, visibility, date, recipientId } = body
+    const { content, visibility, date, recipientId, aiEnabled } = body
 
     if (!content) {
       return NextResponse.json({ error: 'Content is required' }, { status: 400 })
@@ -187,6 +215,10 @@ export async function POST(request: NextRequest) {
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
+    }
+
+    if (visibility && !(WRITABLE_NOTE_VISIBILITIES as readonly string[]).includes(visibility)) {
+      return NextResponse.json({ error: 'Invalid visibility value' }, { status: 400 })
     }
 
     let validRecipientId: string | null = null
@@ -229,7 +261,9 @@ export async function POST(request: NextRequest) {
     const note = await prisma.note.create({
       data: {
         content: sanitizedContent,
-        visibility: visibility || 'PRIVATE',
+        // New notes default PRIVATE unless the user set a preferred default
+        visibility: visibility || user.defaultNoteVisibility || 'PRIVATE',
+        aiEnabled: aiEnabled === true,
         date: date || null,
         userId: user.id,
         senderId: user.id,

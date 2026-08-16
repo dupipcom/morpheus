@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { getAuthenticatedUser } from '@/lib/services/auth'
 import { DELEGATION_SCOPES } from '@/lib/constants/visibility'
+import { isRoleKey } from '@/lib/constants/roles'
+import type { RoleKey } from '@/lib/constants/roles'
 import {
   getDelegationScopes,
   resolveEffectiveDelegationScope
@@ -34,6 +36,23 @@ function parseDelegationScopes(body: unknown): DelegationScope[] {
     .filter(isDelegationScope)
 
   return scopes.length > 0 ? Array.from(new Set(scopes)) : ['AI_ENABLED']
+}
+
+function parseRoleKeys(body: unknown): RoleKey[] {
+  if (!body || typeof body !== 'object') {
+    return []
+  }
+
+  const record = body as Record<string, unknown>
+  const rawRoleKeys = Array.isArray(record.roleKeys) ? record.roleKeys : []
+
+  return Array.from(
+    new Set(
+      rawRoleKeys
+        .map((roleKey) => String(roleKey).trim().toUpperCase())
+        .filter(isRoleKey)
+    )
+  )
 }
 
 function buildUserSummary(user: {
@@ -195,6 +214,17 @@ export async function GET() {
       }
     })
 
+    // Batch-resolve the Role documents referenced by both delegation sets
+    // (|| [] guards: older Mongo docs predate the roleIds field)
+    const referencedRoleIds = [...outgoing, ...incoming].flatMap((delegation) => delegation.roleIds || [])
+    const roleDocs = referencedRoleIds.length > 0
+      ? await prisma.role.findMany({ where: { id: { in: referencedRoleIds } } })
+      : []
+    const roleKeyById = new Map(roleDocs.map((role) => [role.id, role.key]))
+
+    const resolveRoleKeys = (roleIds: string[] | undefined) =>
+      (roleIds || []).map((roleId) => roleKeyById.get(roleId)).filter((key): key is string => Boolean(key))
+
     return NextResponse.json({
       outgoingDelegations: outgoing.map((delegation) => {
         const scopes = getDelegationScopes(delegation.scopes, delegation.scope)
@@ -203,6 +233,7 @@ export async function GET() {
           id: delegation.id,
           scope: delegation.scope,
           scopes,
+          roles: resolveRoleKeys(delegation.roleIds),
           createdAt: delegation.createdAt,
           delegatedUser: buildUserSummary(delegation.delegated)
         }
@@ -214,6 +245,7 @@ export async function GET() {
           id: delegation.id,
           scope: delegation.scope,
           scopes,
+          roles: resolveRoleKeys(delegation.roleIds),
           createdAt: delegation.createdAt,
           delegatorUser: buildUserSummary(delegation.delegator)
         }
@@ -238,6 +270,7 @@ export async function POST(request: NextRequest) {
     const identifier = String(body?.identifier || '').trim()
     const scopes = parseDelegationScopes(body)
     const scope = resolveEffectiveDelegationScope(scopes) || 'AI_ENABLED'
+    const roleKeys = parseRoleKeys(body)
 
     if (!identifier) {
       return NextResponse.json({ error: 'Identifier is required' }, { status: 400 })
@@ -269,6 +302,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'You cannot delegate to yourself' }, { status: 400 })
     }
 
+    const roleDocs = roleKeys.length > 0
+      ? await prisma.role.findMany({ where: { key: { in: roleKeys } } })
+      : []
+    const roleIds = roleDocs.map((role) => role.id)
+
     const delegation = await prisma.delegation.upsert({
       where: {
         delegatorId_delegatedId: {
@@ -278,13 +316,15 @@ export async function POST(request: NextRequest) {
       },
       update: {
         scope,
-        scopes
+        scopes,
+        roleIds
       },
       create: {
         delegatorId: currentUserId,
         delegatedId: targetUser.id,
         scope,
-        scopes
+        scopes,
+        roleIds
       }
     })
 
@@ -293,6 +333,7 @@ export async function POST(request: NextRequest) {
         id: delegation.id,
         scope: delegation.scope,
         scopes: getDelegationScopes(delegation.scopes, delegation.scope),
+        roles: roleDocs.map((role) => role.key),
         createdAt: delegation.createdAt,
         delegatedUser: buildUserSummary(targetUser)
       }

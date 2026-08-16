@@ -1,4 +1,4 @@
-import type { Job, Task, List, Note, User, Profile } from '@/generated/prisma'
+import type { Job, Task, List, Note, User, Profile } from '@/generated/prisma/client'
 
 // User role in a list
 export type UserRole = 'OWNER' | 'MANAGER' | 'COLLABORATOR' | 'FOLLOWER'

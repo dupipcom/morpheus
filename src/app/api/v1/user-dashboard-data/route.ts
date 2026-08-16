@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { getAuthenticatedUser } from '@/lib/services/auth'
 import { transformDayForAnalytics } from '@/lib/services/day'
+import { getAllowedDayVisibilities } from '@/lib/services/agent'
 import {
   getDelegationScopes,
   resolveEffectiveDelegationScope
@@ -26,24 +27,6 @@ const dayListSelect = {
   createdAt: true,
   updatedAt: true,
   visibility: true
-}
-
-function getAllowedDayVisibilities(scope: string): Array<'PUBLIC' | 'FRIENDS' | 'CLOSE_FRIENDS'> | undefined {
-  // Returning undefined means "no visibility filtering" (full delegated access for PRIVATE/AI_ENABLED scopes).
-  // Returning an array applies an allow-list filter for more restrictive delegated scopes.
-  switch (scope) {
-    case 'PRIVATE':
-    case 'AI_ENABLED':
-      return undefined
-    case 'PUBLIC':
-      return ['PUBLIC']
-    case 'CLOSE_FRIENDS':
-      return ['PUBLIC', 'CLOSE_FRIENDS']
-    case 'FRIENDS':
-      return ['PUBLIC', 'FRIENDS', 'CLOSE_FRIENDS']
-    default:
-      return undefined
-  }
 }
 
 export async function GET(req: NextRequest) {

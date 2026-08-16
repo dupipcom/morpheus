@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import { withBotId } from "botid/next/config";
+import { PrismaPlugin } from "@prisma/nextjs-monorepo-workaround-plugin";
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -30,6 +31,12 @@ const nextConfig: NextConfig = {
     // your project has type errors.
     // !! WARN !!
     ignoreBuildErrors: true,
+  },
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.plugins = [...config.plugins, new PrismaPlugin()]
+    }
+    return config
   },
   async rewrites() {
     return [

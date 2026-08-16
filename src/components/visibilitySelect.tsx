@@ -1,10 +1,10 @@
 'use client'
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Lock, Users, UserCheck, Globe, Sparkles } from "lucide-react"
+import { Lock, Users, UserCheck, Globe, Sparkles, FileText } from "lucide-react"
 import { useI18n } from "@/lib/contexts/i18n"
 
-export type VisibilityOption = 'PRIVATE' | 'FRIENDS' | 'CLOSE_FRIENDS' | 'PUBLIC' | 'AI_ENABLED'
+export type VisibilityOption = 'PRIVATE' | 'FRIENDS' | 'CLOSE_FRIENDS' | 'PUBLIC' | 'AI_ENABLED' | 'DOC_ENABLED'
 
 interface VisibilitySelectProps {
   value: VisibilityOption | string
@@ -27,6 +27,8 @@ const getVisibilityIcon = (visibility: string) => {
       return <Globe className="h-4 w-4" />
     case 'AI_ENABLED':
       return <Sparkles className="h-4 w-4" />
+    case 'DOC_ENABLED':
+      return <FileText className="h-4 w-4" />
     default:
       return <Lock className="h-4 w-4" />
   }
@@ -38,7 +40,7 @@ export const VisibilitySelect = ({
   className = "w-full min-h-[40px] sm:w-48 sm:h-auto justify-center md:justify-between",
   showIconOnMobile = true,
   iconOnly = false,
-  availableOptions = ['PRIVATE', 'FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC', 'AI_ENABLED']
+  availableOptions = ['PRIVATE', 'FRIENDS', 'CLOSE_FRIENDS', 'PUBLIC', 'DOC_ENABLED']
 }: VisibilitySelectProps) => {
   const { t } = useI18n()
 
@@ -67,6 +69,11 @@ export const VisibilitySelect = ({
       value: 'AI_ENABLED',
       label: t('mood.publish.visibility.AI_ENABLED') || 'AI Enabled',
       icon: <Sparkles className="h-4 w-4" />
+    },
+    {
+      value: 'DOC_ENABLED',
+      label: t('mood.publish.visibility.DOC_ENABLED') || 'Doc Enabled',
+      icon: <FileText className="h-4 w-4" />
     }
   ]
 

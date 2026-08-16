@@ -14,6 +14,7 @@
     "save": "Kaydet",
     "cancel": "İptal",
     "delete": "Sil",
+    "remove": "Kaldır",
     "loading": "Yükleniyor...",
     "error": "Hata",
     "success": "Başarılı",
@@ -130,11 +131,14 @@
         "FRIENDS": "Arkadaşlar",
         "CLOSE_FRIENDS": "Yakın Arkadaşlar",
         "PUBLIC": "Kamu",
-        "AI_ENABLED": "Yapay Zeka Etkin"
+        "AI_ENABLED": "Yapay Zeka Etkin",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Not Yayınla",
       "publishing": "Yayınlanıyor...",
-      "embedHint": "{provider} yerleştirmesi. Oynatma kullanılamıyorsa aşağıdaki orijinal bağlantıyı açın."
+      "embedHint": "{provider} yerleştirmesi. Oynatma kullanılamıyorsa aşağıdaki orijinal bağlantıyı açın.",
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Yapay zeka analizini etkinleştir"
     },
     "thirdParty": {
       "title": "Üçüncü taraf",
@@ -152,7 +156,9 @@
       "addDelegatedAnalyst": "Yetkilendirilmiş analist ekle",
       "adding": "Ekleniyor...",
       "addError": "Yetkilendirilmiş analist eklenemedi",
-      "invitationDraft": "Bu e-posta için davet taslağı hazırlandı."
+      "invitationDraft": "Bu e-posta için davet taslağı hazırlandı.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -380,7 +386,9 @@
     "expectedNeedUtilities": "Beklenen İhtiyaç Yardımcı Programları Ortalaması",
     "editAction": "Eylemi düzenle",
     "save": "Kaydet",
-    "cancel": "İptal"
+    "cancel": "İptal",
+    "currency": "Para birimi",
+    "selectCurrency": "Para birimi seç"
   },
   "agentChat": {
     "thinking": "Düşünüyor...",
@@ -388,7 +396,8 @@
     "getInsights": "Ruh haliniz, alışkanlıklarınız hakkında sorular sorun veya kişiselleştirilmiş içgörüler alın",
     "placeholder": "Sohbet edelim...",
     "error": "Üzgünüm, bir hata ile karşılaştım. Lütfen tekrar deneyin.",
-    "failedToSend": "Mesaj gönderilemedi. Lütfen tekrar deneyin."
+    "failedToSend": "Mesaj gönderilemedi. Lütfen tekrar deneyin.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Kendi Dupip Yolculuğunuzu Başlatın",
@@ -670,8 +679,10 @@
       },
       "areaDistributionLabel": "Alan bütçesi",
       "areaPrizeDistributionLabel": "Alan ödülü",
+      "areaPremiumDistributionLabel": "Alana göre ödül dağıtımı",
       "categoryDistributionLabel": "Kategori bütçesi",
       "categoryPrizeDistributionLabel": "Kategori ödülü",
+      "categoryPremiumDistributionLabel": "Kategoriye göre ödül dağıtımı",
       "taskDistributionLabel": "Bütçe",
       "premiumLabel": "Ödül",
       "totalLabel": "Toplam",
@@ -966,6 +977,7 @@
     "deleting": "Siliniyor...",
     "confirmDelete": "Bu notu silmek istediğinizden emin misiniz?",
     "content": "Not içeriği",
+    "recipient": "Alıcı",
     "visibilityUpdated": "Görünürlük başarıyla güncellendi",
     "visibilityUpdateFailed": "Görünürlük güncellenemedi",
     "changeVisibility": "Görünürlüğü değiştir",
@@ -990,7 +1002,52 @@
     "inviteFriendToOrg": "Bu organizasyona bir arkadaş davet et",
     "inviteLinkCopied": "Davet bağlantısı kopyalandı",
     "inviteSent": "Davet gönderildi",
-    "inviteAccepted": "Davet kabul edildi"
+    "inviteAccepted": "Davet kabul edildi",
+    "sidebar": {
+      "directMessages": "Doğrudan mesajlar",
+      "organizations": "Kuruluşlar",
+      "sms": "SMS",
+      "virtualNumber": "Sanal numara",
+      "searchDmPlaceholder": "DM başlatmak için arkadaş ara",
+      "createChannelPlaceholder": "Kanal oluştur",
+      "createOrgPlaceholder": "Kuruluş oluştur",
+      "refresh": "Yenile",
+      "noOrgs": "Henüz kuruluş yok",
+      "noDms": "Henüz doğrudan mesaj yok"
+    },
+    "virtualNumber": {
+      "label": "Sanal numara",
+      "hint": "Telefon numaralarını seç. Bu numaralara gelen SMS’ler sohbetinde görünecek.",
+      "none": "Numara yok",
+      "loading": "Numaralar yükleniyor…",
+      "empty": "Kullanılabilir numara yok",
+      "error": "Numaraların yüklenemedi",
+      "assignError": "Bu numara kaydedilemedi",
+      "assigned": "Numara atandı",
+      "cleared": "Numara kaldırıldı",
+      "addNumber": "Numara ekle…",
+      "removeNumber": "Numarayı kaldır",
+      "quotaLabel": "{quota} numaradan {used} tanesi kullanımda",
+      "limitReached": "Planın için maksimum sanal numara sayısına ulaştın",
+      "buyCta": "Sanal numara satın al",
+      "gateHint": "Sanal numaralar Donator planı gerektirir. Sohbette SMS almak için bir numara satın al.",
+      "buyDialogTitle": "Donator planı gerekli",
+      "buyDialogDescription": "Sanal numaralar Donator planlarına dahildir. Başlamak için fiyatlandırma sayfasından bir plan seç.",
+      "buyDialogGoToPricing": "Fiyatlandırmaya git"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "SMS’ler yükleniyor…",
+      "empty": "Henüz SMS sohbeti yok",
+      "noNumberHint": "Burada SMS almak için sanal numara ata",
+      "composerPlaceholder": "SMS yaz…",
+      "sendError": "Bu mesaj gönderilemedi",
+      "you": "Sen",
+      "statusSent": "Gönderildi",
+      "statusDelivered": "İletildi",
+      "statusFailed": "Başarısız",
+      "error": "SMS’ler yüklenemedi"
+    }
   },
   "notesList": {
     "gridOption": {
@@ -1018,5 +1075,20 @@
     "saveConsent": "Onayı kaydet",
     "dpipNoValue": "DPIP (Ð), Dupip içindeki değer birimidir. Birikiminiz, etkinliğinizle birlikte zamanla büyür. DPIP bir yatırım ürünü değildir ve şimdi veya gelecekte parasal değeri olmayabilir.",
     "consentDescription": "DPIP (Ð), Dupip içindeki değer birimidir. Birikiminiz, etkinliğinizle birlikte zamanla büyür. DPIP bir yatırım ürünü değildir ve şimdi veya gelecekte parasal değeri olmayabilir. Planlarımızı görüntülemeden önce lütfen aşağıdakileri inceleyin ve onaylayın:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

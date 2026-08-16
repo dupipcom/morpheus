@@ -17,6 +17,7 @@
     "save": "保存",
     "cancel": "キャンセル",
     "delete": "削除",
+    "remove": "解除",
     "loading": "読み込み中...",
     "error": "エラー",
     "success": "成功",
@@ -126,11 +127,14 @@
         "FRIENDS": "友達",
         "CLOSE_FRIENDS": "親しい友達",
         "PUBLIC": "公開",
-        "AI_ENABLED": "AI有効"
+        "AI_ENABLED": "AI有効",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "ノートを公開",
       "publishing": "公開中...",
-      "embedHint": "{provider} 埋め込み。再生できない場合は、以下の元のリンクを開いてください。"
+      "embedHint": "{provider} 埋め込み。再生できない場合は、以下の元のリンクを開いてください。",
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "AI分析を有効にする"
     },
     "thirdParty": {
       "title": "サードパーティ",
@@ -148,7 +152,9 @@
       "addDelegatedAnalyst": "委任されたアナリストを追加",
       "adding": "追加中...",
       "addError": "委任されたアナリストを追加できませんでした",
-      "invitationDraft": "このメールアドレス用の招待下書きを準備しました。"
+      "invitationDraft": "このメールアドレス用の招待下書きを準備しました。",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -228,7 +234,9 @@
     "expectedNeedUtilities": "期待される必要公共料金の平均",
     "editAction": "アクションを編集",
     "save": "保存",
-    "cancel": "キャンセル"
+    "cancel": "キャンセル",
+    "currency": "通貨",
+    "selectCurrency": "通貨を選択"
   },
   "social": {
     "title": "ソーシャルコンタクト",
@@ -376,7 +384,8 @@
     "getInsights": "気分、習慣について質問したり、パーソナライズされたインサイトを取得したりできます",
     "placeholder": "チャットしましょう...",
     "error": "申し訳ありません。エラーが発生しました。再試行してください。",
-    "failedToSend": "メッセージの送信に失敗しました。再試行してください。"
+    "failedToSend": "メッセージの送信に失敗しました。再試行してください。",
+    "model": "Model"
   },
   "errors": {
     "notFound": "おっと！この周波数にチューニングできませんでした。",
@@ -666,8 +675,10 @@
       },
       "areaDistributionLabel": "エリア予算",
       "areaPrizeDistributionLabel": "エリア賞金",
+      "areaPremiumDistributionLabel": "エリア別賞金配分",
       "categoryDistributionLabel": "カテゴリ予算",
       "categoryPrizeDistributionLabel": "カテゴリ賞金",
+      "categoryPremiumDistributionLabel": "カテゴリ別賞金配分",
       "taskDistributionLabel": "予算",
       "premiumLabel": "賞金",
       "totalLabel": "合計",
@@ -962,6 +973,7 @@
     "deleting": "削除中...",
     "confirmDelete": "このメモを削除してもよろしいですか？",
     "content": "メモの内容",
+    "recipient": "受取人",
     "visibilityUpdated": "表示設定が正常に更新されました",
     "visibilityUpdateFailed": "表示設定の更新に失敗しました",
     "changeVisibility": "表示設定を変更",
@@ -986,7 +998,52 @@
     "inviteFriendToOrg": "この組織に友達を招待",
     "inviteLinkCopied": "招待リンクをコピーしました",
     "inviteSent": "招待を送信しました",
-    "inviteAccepted": "招待を承認しました"
+    "inviteAccepted": "招待を承認しました",
+    "sidebar": {
+      "directMessages": "ダイレクトメッセージ",
+      "organizations": "組織",
+      "sms": "SMS",
+      "virtualNumber": "仮想番号",
+      "searchDmPlaceholder": "DMを始める友達を検索",
+      "createChannelPlaceholder": "チャンネルを作成",
+      "createOrgPlaceholder": "組織を作成",
+      "refresh": "更新",
+      "noOrgs": "組織はまだありません",
+      "noDms": "ダイレクトメッセージはまだありません"
+    },
+    "virtualNumber": {
+      "label": "バーチャル番号",
+      "hint": "電話番号を選んでください。これらの番号に届くSMSがチャットに表示されます。",
+      "none": "番号なし",
+      "loading": "番号を読み込み中…",
+      "empty": "利用できる番号がありません",
+      "error": "番号を読み込めませんでした",
+      "assignError": "この番号を保存できませんでした",
+      "assigned": "番号を割り当てました",
+      "cleared": "番号を削除しました",
+      "addNumber": "番号を追加…",
+      "removeNumber": "番号を削除",
+      "quotaLabel": "{quota}件中{used}件使用中",
+      "limitReached": "プランの仮想番号の上限に達しました",
+      "buyCta": "仮想番号を購入",
+      "gateHint": "仮想番号にはDonatorプランが必要です。チャットでSMSを受け取るには番号を購入してください。",
+      "buyDialogTitle": "Donatorプランが必要です",
+      "buyDialogDescription": "仮想番号はDonatorプランに含まれています。料金ページでプランを選択して始めましょう。",
+      "buyDialogGoToPricing": "料金ページへ"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "SMSを読み込み中…",
+      "empty": "SMSの会話はまだありません",
+      "noNumberHint": "ここでSMSを受信するにはバーチャル番号を割り当ててください",
+      "composerPlaceholder": "SMSを入力…",
+      "sendError": "このメッセージを送信できませんでした",
+      "you": "あなた",
+      "statusSent": "送信済み",
+      "statusDelivered": "配信済み",
+      "statusFailed": "失敗",
+      "error": "SMSを読み込めませんでした"
+    }
   },
   "notesList": {
     "gridOption": {
@@ -1014,5 +1071,20 @@
     "saveConsent": "同意を保存",
     "dpipNoValue": "DPIP（Ð）はDupip内の価値の単位です。あなたのスタッシュは、活動とともに時間をかけて増えていきます。DPIPは投資商品ではなく、金銭的価値を持たない可能性があります——現在も将来も。",
     "consentDescription": "DPIP（Ð）はDupip内の価値の単位です。あなたのスタッシュは、活動とともに時間をかけて増えていきます。DPIPは投資商品ではなく、金銭的価値を持たない可能性があります——現在も将来も。 プランをご覧いただく前に、以下をご確認のうえ同意してください:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

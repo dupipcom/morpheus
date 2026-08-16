@@ -30,10 +30,13 @@ tags:
   - name: notes
   - name: profile
   - name: search
+  - name: sms
   - name: tasklists
   - name: tasks
+  - name: telnyx
   - name: templates
   - name: user
+  - name: virtual-number
   - name: wallet
 
 paths:
@@ -401,7 +404,7 @@ paths:
         '200': { description: Delegations }
     post:
       tags: [delegation]
-      summary: Create or update a delegation
+      summary: Create or update a delegation (scopes + roleKeys relationship labels)
       responses:
         '200': { description: Delegation }
         '202': { description: Invitation draft for non-user email }
@@ -584,12 +587,17 @@ paths:
   /api/v1/notes:
     get:
       tags: [notes]
-      summary: List current user notes (and received notes)
+      summary: List current user notes (and received notes); with userId, list a delegated user's notes
+      parameters:
+        - { name: userId, in: query, schema: { type: string }, description: Target delegator's user id (requires a delegation from them) }
+        - { name: visibility, in: query, schema: { type: string }, description: Comma-separated visibility filter }
+        - { name: noteId, in: query, schema: { type: string } }
       responses:
         '200': { description: Notes }
+        '403': { description: Not authorized for selected user data }
     post:
       tags: [notes]
-      summary: Create a note
+      summary: Create a note (visibility defaults to the user's defaultNoteVisibility, then PRIVATE)
       responses:
         '200': { description: Note }
 
@@ -950,6 +958,119 @@ paths:
       summary: Transfer tokens from a wallet
       responses:
         '200': { description: Transaction hash }
+
+  /api/v1/virtual-number:
+    get:
+      tags: [virtual-number]
+      summary: Fetch the current user's virtual number assignments and plan quota
+      responses:
+        '200': { description: 'Current assignments and plan quota: { assignments: [...], quota: number }' }
+        '401': { description: Unauthorized }
+    post:
+      tags: [virtual-number]
+      summary: Assign a virtual number (or clear all assignments)
+      description: Premium feature (Clerk feature `virtual_number`). Assigns are bounded by the plan quota (Clerk plan slug `dupip_pro`/`dupip_ultra`/`dupip_max` → 1/3/5). Pass `phoneNumber: null` to clear all assignments.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                phoneNumber:
+                  type: [string, 'null']
+                  description: E.164 phone number to assign, or null to clear all
+      responses:
+        '200': { description: Updated assignments }
+        '400': { description: Invalid phoneNumber }
+        '401': { description: Unauthorized }
+        '403': { description: Not entitled }
+        '404': { description: Number not in Telnyx account }
+        '409': { description: Number already assigned, or plan quota reached }
+    delete:
+      tags: [virtual-number]
+      summary: Unassign one of the user's virtual numbers
+      parameters:
+        - { name: phoneNumber, in: query, required: true, schema: { type: string }, description: E.164 phone number to unassign }
+      responses:
+        '200': { description: Updated assignments }
+        '400': { description: Missing phoneNumber }
+        '401': { description: Unauthorized }
+        '403': { description: Not entitled }
+        '404': { description: Number not assigned to the user }
+
+  /api/v1/virtual-number/numbers:
+    get:
+      tags: [virtual-number]
+      summary: List Telnyx numbers available for assignment
+      responses:
+        '200': { description: Available numbers }
+        '401': { description: Unauthorized }
+        '403': { description: Not entitled }
+
+  /api/v1/sms/conversations:
+    get:
+      tags: [sms]
+      summary: List the current user's SMS conversations
+      responses:
+        '200': { description: SMS conversations with unread counts }
+        '401': { description: Unauthorized }
+
+  /api/v1/sms/conversations/{conversationId}/messages:
+    get:
+      tags: [sms]
+      summary: List SMS messages in a conversation
+      parameters:
+        - { name: conversationId, in: path, required: true, schema: { type: string } }
+        - { name: limit, in: query, schema: { type: integer } }
+      responses:
+        '200': { description: SMS messages (newest last) }
+        '401': { description: Unauthorized }
+        '403': { description: Not the conversation owner }
+        '404': { description: Conversation not found }
+    post:
+      tags: [sms]
+      summary: Send an SMS from the user's virtual number
+      parameters:
+        - { name: conversationId, in: path, required: true, schema: { type: string } }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                  description: SMS text (max 1600 characters)
+      responses:
+        '201': { description: Message sent }
+        '400': { description: Invalid content }
+        '401': { description: Unauthorized }
+        '403': { description: Not the conversation owner }
+        '404': { description: Conversation not found }
+        '409': { description: No virtual number assigned }
+        '502': { description: Telnyx send failed }
+
+  /api/v1/sms/conversations/{conversationId}/read:
+    post:
+      tags: [sms]
+      summary: Mark an SMS conversation as read
+      parameters:
+        - { name: conversationId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Marked read }
+        '401': { description: Unauthorized }
+        '404': { description: Conversation not found }
+
+  /api/v1/telnyx/webhook:
+    post:
+      tags: [telnyx]
+      summary: Telnyx messaging webhook (Ed25519-signed)
+      description: Receives message.received, message.sent, and message.finalized events. Verified with the Telnyx account Ed25519 public key over `{timestamp}|{raw body}` plus a 5-minute timestamp window.
+      security: []
+      responses:
+        '200': { description: Processed }
+        '400': { description: Invalid JSON }
+        '401': { description: Invalid signature or expired timestamp }
 
 components:
   securitySchemes:

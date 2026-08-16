@@ -17,6 +17,7 @@
     "save": "שמירה",
     "cancel": "ביטול",
     "delete": "מחיקה",
+    "remove": "הסר",
     "loading": "טוען...",
     "error": "שגיאה",
     "success": "הצלחה",
@@ -126,11 +127,14 @@
         "FRIENDS": "חברים",
         "CLOSE_FRIENDS": "חברים קרובים",
         "PUBLIC": "ציבורי",
-        "AI_ENABLED": "בינה מלאכותית מופעלת"
+        "AI_ENABLED": "בינה מלאכותית מופעלת",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "פרסם הערה",
       "publishing": "מפרסם...",
-      "embedHint": "הטמעת {provider}. אם ההפעלה אינה זמינה, פתח את הקישור המקורי למטה."
+      "embedHint": "הטמעת {provider}. אם ההפעלה אינה זמינה, פתח את הקישור המקורי למטה.",
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "הפעל ניתוח בינה מלאכותית"
     },
     "thirdParty": {
       "title": "צד שלישי",
@@ -148,7 +152,9 @@
       "addDelegatedAnalyst": "הוסף אנליסט מואצל",
       "adding": "מוסיף...",
       "addError": "לא ניתן היה להוסיף אנליסט מואצל",
-      "invitationDraft": "הוכנה טיוטת הזמנה עבור כתובת האימייל הזו."
+      "invitationDraft": "הוכנה טיוטת הזמנה עבור כתובת האימייל הזו.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -359,7 +365,9 @@
     "expectedNeedUtilities": "ממוצע שירותים נדרשים צפוי",
     "editAction": "ערוך פעולה",
     "save": "שמור",
-    "cancel": "בטל"
+    "cancel": "בטל",
+    "currency": "מטבע",
+    "selectCurrency": "בחר מטבע"
   },
   "agentChat": {
     "thinking": "חושב...",
@@ -367,7 +375,8 @@
     "getInsights": "שאל על מצב הרוח שלך, הרגלים או קבל תובנות מותאמות אישית",
     "placeholder": "בואו נשוחח...",
     "error": "סליחה, נתקלתי בשגיאה. אנא נסה שוב.",
-    "failedToSend": "שליחת הודעה נכשלה. אנא נסה שוב."
+    "failedToSend": "שליחת הודעה נכשלה. אנא נסה שוב.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "התחל את המסע שלך עם Dupip",
@@ -649,8 +658,10 @@
       },
       "areaDistributionLabel": "תקציב תחום",
       "areaPrizeDistributionLabel": "פרס תחום",
+      "areaPremiumDistributionLabel": "חלוקת פרסים לפי תחום",
       "categoryDistributionLabel": "תקציב קטגוריה",
       "categoryPrizeDistributionLabel": "פרס קטגוריה",
+      "categoryPremiumDistributionLabel": "חלוקת פרסים לפי קטגוריה",
       "taskDistributionLabel": "תקציב",
       "premiumLabel": "פרס",
       "totalLabel": "סה\"כ",
@@ -962,6 +973,7 @@
     "deleting": "מוחק...",
     "confirmDelete": "האם אתה בטוח שברצונך למחוק את הפתק הזה?",
     "content": "תוכן הפתק",
+    "recipient": "נמען",
     "visibilityUpdated": "הנראות עודכנה בהצלחה",
     "visibilityUpdateFailed": "עדכון הנראות נכשל",
     "changeVisibility": "שנה נראות",
@@ -986,7 +998,52 @@
     "inviteFriendToOrg": "הזמן חבר לארגון זה",
     "inviteLinkCopied": "קישור ההזמנה הועתק",
     "inviteSent": "ההזמנה נשלחה",
-    "inviteAccepted": "ההזמנה התקבלה"
+    "inviteAccepted": "ההזמנה התקבלה",
+    "sidebar": {
+      "directMessages": "הודעות ישירות",
+      "organizations": "ארגונים",
+      "sms": "SMS",
+      "virtualNumber": "מספר וירטואלי",
+      "searchDmPlaceholder": "חפש חברים כדי להתחיל הודעה ישירה",
+      "createChannelPlaceholder": "צור ערוץ",
+      "createOrgPlaceholder": "צור ארגון",
+      "refresh": "רענן",
+      "noOrgs": "אין עדיין ארגונים",
+      "noDms": "אין עדיין הודעות ישירות"
+    },
+    "virtualNumber": {
+      "label": "מספר וירטואלי",
+      "hint": "בחר את מספרי הטלפון שלך. הודעות SMS נכנסות למספרים אלה יופיעו בצ’אט שלך.",
+      "none": "ללא מספר",
+      "loading": "טוען מספרים…",
+      "empty": "אין מספרים זמינים",
+      "error": "לא ניתן היה לטעון את המספרים שלך",
+      "assignError": "לא ניתן היה לשמור מספר זה",
+      "assigned": "המספר שויך",
+      "cleared": "המספר הוסר",
+      "addNumber": "הוסף מספר…",
+      "removeNumber": "הסר מספר",
+      "quotaLabel": "בשימוש {used} מתוך {quota} מספרים",
+      "limitReached": "הגעת למספר המרבי של מספרים וירטואליים בתוכנית שלך",
+      "buyCta": "קנה מספר וירטואלי",
+      "gateHint": "מספרים וירטואליים דורשים תוכנית Donator. קנה מספר כדי לקבל SMS בצ’אט.",
+      "buyDialogTitle": "נדרשת תוכנית Donator",
+      "buyDialogDescription": "מספרים וירטואליים כלולים בתוכניות Donator. בחר תוכנית בדף התמחור כדי להתחיל.",
+      "buyDialogGoToPricing": "עבור לתמחור"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "טוען SMS…",
+      "empty": "אין עדיין שיחות SMS",
+      "noNumberHint": "שייך מספר וירטואלי כדי להתחיל לקבל SMS כאן",
+      "composerPlaceholder": "כתוב SMS…",
+      "sendError": "לא ניתן היה לשלוח הודעה זו",
+      "you": "אתה",
+      "statusSent": "נשלח",
+      "statusDelivered": "נמסר",
+      "statusFailed": "נכשל",
+      "error": "לא ניתן היה לטעון SMS"
+    }
   },
   "notesList": {
     "gridOption": {
@@ -1014,5 +1071,20 @@
     "saveConsent": "שמירת הסכמה",
     "dpipNoValue": "DPIP (Ð) הוא יחידת הערך בתוך דופיפ. המאגר שלך גדל עם הזמן יחד עם הפעילות שלך. DPIP אינו מוצר השקעה וייתכן שאין לו ערך כספי — לא עכשיו ולא בעתיד.",
     "consentDescription": "DPIP (Ð) הוא יחידת הערך בתוך דופיפ. המאגר שלך גדל עם הזמן יחד עם הפעילות שלך. DPIP אינו מוצר השקעה וייתכן שאין לו ערך כספי — לא עכשיו ולא בעתיד. לפני הצגת התוכניות שלנו, אנא עיינו ואשרו את הדברים הבאים:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

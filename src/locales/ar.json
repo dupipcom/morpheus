@@ -14,6 +14,7 @@
     "save": "حفظ",
     "cancel": "إلغاء",
     "delete": "حذف",
+    "remove": "إزالة",
     "loading": "جاري التحميل...",
     "error": "خطأ",
     "success": "نجح",
@@ -130,11 +131,14 @@
         "FRIENDS": "الأصدقاء",
         "CLOSE_FRIENDS": "الأصدقاء المقربون",
         "PUBLIC": "عام",
-        "AI_ENABLED": "تمكين الذكاء الاصطناعي"
+        "AI_ENABLED": "تمكين الذكاء الاصطناعي",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "نشر المذكرة",
       "publishing": "جاري النشر...",
-      "embedHint": "تضمين {provider}. إذا لم يكن التشغيل متاحًا، افتح الرابط الأصلي أدناه."
+      "embedHint": "تضمين {provider}. إذا لم يكن التشغيل متاحًا، افتح الرابط الأصلي أدناه.",
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "تمكين تحليل الذكاء الاصطناعي"
     },
     "thirdParty": {
       "title": "الجهات الخارجية",
@@ -152,7 +156,9 @@
       "addDelegatedAnalyst": "إضافة محلل مفوض",
       "adding": "جارٍ الإضافة...",
       "addError": "تعذر إضافة المحلل المفوض",
-      "invitationDraft": "تم إعداد مسودة دعوة لهذا البريد الإلكتروني."
+      "invitationDraft": "تم إعداد مسودة دعوة لهذا البريد الإلكتروني.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -232,7 +238,9 @@
     "expectedNeedUtilities": "متوسط المرافق المتوقع",
     "editAction": "تعديل الإجراء",
     "save": "حفظ",
-    "cancel": "إلغاء"
+    "cancel": "إلغاء",
+    "currency": "العملة",
+    "selectCurrency": "اختر العملة"
   },
   "social": {
     "title": "جهات الاتصال الاجتماعية",
@@ -380,7 +388,8 @@
     "getInsights": "اسأل عن مزاجك أو عاداتك أو احصل على رؤى شخصية",
     "placeholder": "دعنا نتحدث...",
     "error": "عذراً، واجهت خطأ. يرجى المحاولة مرة أخرى.",
-    "failedToSend": "فشل في إرسال الرسالة. يرجى المحاولة مرة أخرى."
+    "failedToSend": "فشل في إرسال الرسالة. يرجى المحاولة مرة أخرى.",
+    "model": "Model"
   },
   "errors": {
     "notFound": "عذراً! لا يمكن ضبط هذه التردد.",
@@ -670,8 +679,10 @@
       },
       "areaDistributionLabel": "ميزانية المنطقة",
       "areaPrizeDistributionLabel": "جائزة المنطقة",
+      "areaPremiumDistributionLabel": "توزيع الجوائز حسب المنطقة",
       "categoryDistributionLabel": "ميزانية الفئة",
       "categoryPrizeDistributionLabel": "جائزة الفئة",
+      "categoryPremiumDistributionLabel": "توزيع الجوائز حسب الفئة",
       "taskDistributionLabel": "الميزانية",
       "premiumLabel": "الجائزة",
       "totalLabel": "الإجمالي",
@@ -966,6 +977,7 @@
     "deleting": "جاري الحذف...",
     "confirmDelete": "هل أنت متأكد أنك تريد حذف هذه الملاحظة؟",
     "content": "محتوى الملاحظة",
+    "recipient": "المستلم",
     "visibilityUpdated": "تم تحديث الخصوصية بنجاح",
     "visibilityUpdateFailed": "فشل تحديث الخصوصية",
     "changeVisibility": "تغيير الخصوصية",
@@ -990,7 +1002,52 @@
     "inviteFriendToOrg": "دعوة صديق إلى هذه المنظمة",
     "inviteLinkCopied": "تم نسخ رابط الدعوة",
     "inviteSent": "تم إرسال الدعوة",
-    "inviteAccepted": "تم قبول الدعوة"
+    "inviteAccepted": "تم قبول الدعوة",
+    "sidebar": {
+      "directMessages": "الرسائل المباشرة",
+      "organizations": "المنظمات",
+      "sms": "رسائل SMS",
+      "virtualNumber": "رقم افتراضي",
+      "searchDmPlaceholder": "ابحث عن أصدقاء لبدء محادثة",
+      "createChannelPlaceholder": "إنشاء قناة",
+      "createOrgPlaceholder": "إنشاء منظمة",
+      "refresh": "تحديث",
+      "noOrgs": "لا توجد منظمات بعد",
+      "noDms": "لا توجد رسائل مباشرة بعد"
+    },
+    "virtualNumber": {
+      "label": "رقم افتراضي",
+      "hint": "اختر أرقام هاتفك. ستظهر الرسائل النصية الواردة إلى هذه الأرقام في محادثتك.",
+      "none": "بدون رقم",
+      "loading": "جارٍ تحميل الأرقام…",
+      "empty": "لا توجد أرقام متاحة",
+      "error": "تعذّر تحميل أرقامك",
+      "assignError": "تعذّر حفظ هذا الرقم",
+      "assigned": "تم تعيين الرقم",
+      "cleared": "تم إلغاء الرقم",
+      "addNumber": "أضف رقمًا…",
+      "removeNumber": "إزالة الرقم",
+      "quotaLabel": "{used} من أصل {quota} أرقام مستخدمة",
+      "limitReached": "لقد وصلت إلى الحد الأقصى لعدد الأرقام الافتراضية في خطتك",
+      "buyCta": "اشترِ رقمًا افتراضيًا",
+      "gateHint": "تتطلب الأرقام الافتراضية خطة Donator. اشترِ رقمًا لاستقبال الرسائل النصية في المحادثة.",
+      "buyDialogTitle": "خطة Donator مطلوبة",
+      "buyDialogDescription": "الأرقام الافتراضية مشمولة في خطط Donator. اختر خطة من صفحة الأسعار للبدء.",
+      "buyDialogGoToPricing": "الانتقال إلى الأسعار"
+    },
+    "sms": {
+      "label": "رسائل نصية",
+      "loading": "جارٍ تحميل الرسائل النصية…",
+      "empty": "لا توجد محادثات رسائل نصية بعد",
+      "noNumberHint": "عيِّن رقمًا افتراضيًا لبدء استقبال الرسائل النصية هنا",
+      "composerPlaceholder": "اكتب رسالة نصية…",
+      "sendError": "تعذّر إرسال هذه الرسالة",
+      "you": "أنت",
+      "statusSent": "تم الإرسال",
+      "statusDelivered": "تم التسليم",
+      "statusFailed": "فشل",
+      "error": "تعذّر تحميل الرسائل النصية"
+    }
   },
   "notesList": {
     "gridOption": {
@@ -1018,5 +1075,20 @@
     "saveConsent": "حفظ الموافقة",
     "dpipNoValue": "DPIP (Ð) هو وحدة القيمة داخل دوبيب. ينمو رصيدك بمرور الوقت مع نشاطك. DPIP ليس منتجًا استثماريًا وقد لا تكون له قيمة نقدية — الآن أو في المستقبل.",
     "consentDescription": "DPIP (Ð) هو وحدة القيمة داخل دوبيب. ينمو رصيدك بمرور الوقت مع نشاطك. DPIP ليس منتجًا استثماريًا وقد لا تكون له قيمة نقدية — الآن أو في المستقبل. قبل عرض خططنا، يرجى المراجعة والتأكيد على ما يلي:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

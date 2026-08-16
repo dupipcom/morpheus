@@ -17,6 +17,7 @@
     "save": "Salva",
     "cancel": "Annulla",
     "delete": "Elimina",
+    "remove": "Rimuovi",
     "loading": "Caricamento...",
     "error": "Errore",
     "success": "Successo",
@@ -126,11 +127,14 @@
         "FRIENDS": "Amici",
         "CLOSE_FRIENDS": "Amici Stretti",
         "PUBLIC": "Pubblico",
-        "AI_ENABLED": "Abilitato IA"
+        "AI_ENABLED": "Abilitato IA",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Pubblica Nota",
       "publishing": "Pubblicazione...",
-      "embedHint": "Incorporamento {provider}. Se la riproduzione non è disponibile, apri il link originale in basso."
+      "embedHint": "Incorporamento {provider}. Se la riproduzione non è disponibile, apri il link originale in basso.",
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Abilita analisi IA"
     },
     "thirdParty": {
       "title": "Terze parti",
@@ -148,7 +152,9 @@
       "addDelegatedAnalyst": "Aggiungi analista delegato",
       "adding": "Aggiunta in corso...",
       "addError": "Impossibile aggiungere l'analista delegato",
-      "invitationDraft": "Bozza di invito preparata per questa email."
+      "invitationDraft": "Bozza di invito preparata per questa email.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -228,7 +234,9 @@
     "expectedNeedUtilities": "Media Attesa dei Servizi Pubblici",
     "editAction": "Modifica azione",
     "save": "Salva",
-    "cancel": "Annulla"
+    "cancel": "Annulla",
+    "currency": "Valuta",
+    "selectCurrency": "Seleziona valuta"
   },
   "social": {
     "title": "Contatti Sociali",
@@ -376,7 +384,8 @@
     "getInsights": "Chiedi del tuo umore, abitudini o ottieni insights personalizzati",
     "placeholder": "Chattiamo...",
     "error": "Scusa, ho riscontrato un errore. Riprova.",
-    "failedToSend": "Invio messaggio fallito. Riprova."
+    "failedToSend": "Invio messaggio fallito. Riprova.",
+    "model": "Model"
   },
   "errors": {
     "notFound": "Ops! Non è stato possibile sintonizzarsi su questa frequenza.",
@@ -666,8 +675,10 @@
       },
       "areaDistributionLabel": "Budget area",
       "areaPrizeDistributionLabel": "Premio area",
+      "areaPremiumDistributionLabel": "Distribuzione premi per area",
       "categoryDistributionLabel": "Budget categoria",
       "categoryPrizeDistributionLabel": "Premio categoria",
+      "categoryPremiumDistributionLabel": "Distribuzione premi per categoria",
       "taskDistributionLabel": "Budget",
       "premiumLabel": "Premio",
       "totalLabel": "Totale",
@@ -962,6 +973,7 @@
     "deleting": "Eliminazione...",
     "confirmDelete": "Sei sicuro di voler eliminare questa nota?",
     "content": "Contenuto della nota",
+    "recipient": "Destinatario",
     "visibilityUpdated": "Visibilità aggiornata con successo",
     "visibilityUpdateFailed": "Aggiornamento visibilità non riuscito",
     "changeVisibility": "Cambia visibilità",
@@ -986,7 +998,52 @@
     "inviteFriendToOrg": "Invita un amico in questa organizzazione",
     "inviteLinkCopied": "Link di invito copiato",
     "inviteSent": "Invito inviato",
-    "inviteAccepted": "Invito accettato"
+    "inviteAccepted": "Invito accettato",
+    "sidebar": {
+      "directMessages": "Messaggi diretti",
+      "organizations": "Organizzazioni",
+      "sms": "SMS",
+      "virtualNumber": "Numero virtuale",
+      "searchDmPlaceholder": "Cerca amici per avviare un MD",
+      "createChannelPlaceholder": "Crea un canale",
+      "createOrgPlaceholder": "Crea un'organizzazione",
+      "refresh": "Aggiorna",
+      "noOrgs": "Nessuna organizzazione ancora",
+      "noDms": "Nessun messaggio diretto ancora"
+    },
+    "virtualNumber": {
+      "label": "Numero virtuale",
+      "hint": "Scegli i tuoi numeri di telefono. Gli SMS in arrivo a questi numeri appariranno nella tua chat.",
+      "none": "Nessun numero",
+      "loading": "Caricamento numeri…",
+      "empty": "Nessun numero disponibile",
+      "error": "Impossibile caricare i tuoi numeri",
+      "assignError": "Impossibile salvare questo numero",
+      "assigned": "Numero assegnato",
+      "cleared": "Numero rimosso",
+      "addNumber": "Aggiungi numero…",
+      "removeNumber": "Rimuovi numero",
+      "quotaLabel": "{used} di {quota} numeri utilizzati",
+      "limitReached": "Hai raggiunto il numero massimo di numeri virtuali per il tuo piano",
+      "buyCta": "Acquista numero virtuale",
+      "gateHint": "I numeri virtuali richiedono un piano Donator. Acquista un numero per ricevere SMS in chat.",
+      "buyDialogTitle": "È richiesto un piano Donator",
+      "buyDialogDescription": "I numeri virtuali sono inclusi nei piani Donator. Scegli un piano nella pagina dei prezzi per iniziare.",
+      "buyDialogGoToPricing": "Vai ai prezzi"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "Caricamento SMS…",
+      "empty": "Ancora nessuna conversazione SMS",
+      "noNumberHint": "Assegna un numero virtuale per iniziare a ricevere SMS qui",
+      "composerPlaceholder": "Scrivi un SMS…",
+      "sendError": "Impossibile inviare questo messaggio",
+      "you": "Tu",
+      "statusSent": "Inviato",
+      "statusDelivered": "Consegnato",
+      "statusFailed": "Non riuscito",
+      "error": "Impossibile caricare gli SMS"
+    }
   },
   "notesList": {
     "gridOption": {
@@ -1014,5 +1071,20 @@
     "saveConsent": "Salva consenso",
     "dpipNoValue": "DPIP (Ð) è l’unità di valore all’interno di Dupip. Il tuo stash cresce nel tempo con la tua attività. DPIP non è un prodotto di investimento e potrebbe non avere valore monetario — né ora né in futuro.",
     "consentDescription": "DPIP (Ð) è l’unità di valore all’interno di Dupip. Il tuo stash cresce nel tempo con la tua attività. DPIP non è un prodotto di investimento e potrebbe non avere valore monetario — né ora né in futuro. Prima di vedere i nostri piani, leggi e conferma quanto segue:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

@@ -17,6 +17,7 @@
     "save": "Spara",
     "cancel": "Avbryt",
     "delete": "Radera",
+    "remove": "Ta bort",
     "loading": "Laddar...",
     "error": "Fel",
     "success": "Framgång",
@@ -129,11 +130,14 @@
         "FRIENDS": "Vänner",
         "CLOSE_FRIENDS": "Nära vänner",
         "PUBLIC": "Allmänheten",
-        "AI_ENABLED": "AI aktiverad"
+        "AI_ENABLED": "AI aktiverad",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Publicera anteckning",
       "publishing": "Publicerar...",
-      "embedHint": "{provider}-inbäddning. Om uppspelning inte är tillgänglig, öppna originallänken nedan."
+      "embedHint": "{provider}-inbäddning. Om uppspelning inte är tillgänglig, öppna originallänken nedan.",
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Aktivera AI-analys"
     },
     "thirdParty": {
       "title": "Tredjepart",
@@ -151,7 +155,9 @@
       "addDelegatedAnalyst": "Lägg till delegerad analytiker",
       "adding": "Lägger till...",
       "addError": "Det gick inte att lägga till delegerad analytiker",
-      "invitationDraft": "Ett utkast till inbjudan har förberetts för denna e-postadress."
+      "invitationDraft": "Ett utkast till inbjudan har förberetts för denna e-postadress.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -362,7 +368,9 @@
     "expectedNeedUtilities": "Förväntat genomsnitt för nödvändiga tjänster",
     "editAction": "Redigera åtgärd",
     "save": "Spara",
-    "cancel": "Avbryt"
+    "cancel": "Avbryt",
+    "currency": "Valuta",
+    "selectCurrency": "Välj valuta"
   },
   "agentChat": {
     "thinking": "Tänker...",
@@ -370,7 +378,8 @@
     "getInsights": "Fråga om ditt humör, vanor eller få personaliserade insikter",
     "placeholder": "Låt oss chatta...",
     "error": "Ledsen, jag stötte på ett fel. Försök igen.",
-    "failedToSend": "Meddelandet kunde inte skickas. Försök igen."
+    "failedToSend": "Meddelandet kunde inte skickas. Försök igen.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Börja din egen Dupip-resa",
@@ -652,8 +661,10 @@
       },
       "areaDistributionLabel": "Områdesbudget",
       "areaPrizeDistributionLabel": "Områdespris",
+      "areaPremiumDistributionLabel": "Prisfördelning per område",
       "categoryDistributionLabel": "Kategoribudget",
       "categoryPrizeDistributionLabel": "Kategoripris",
+      "categoryPremiumDistributionLabel": "Prisfördelning per kategori",
       "taskDistributionLabel": "Budget",
       "premiumLabel": "Pris",
       "totalLabel": "Totalt",
@@ -965,6 +976,7 @@
     "deleting": "Raderar...",
     "confirmDelete": "Är du säker på att du vill radera denna anteckning?",
     "content": "Anteckningsinnehåll",
+    "recipient": "Mottagare",
     "visibilityUpdated": "Synlighet uppdaterades",
     "visibilityUpdateFailed": "Det gick inte att uppdatera synlighet",
     "changeVisibility": "Ändra synlighet",
@@ -989,7 +1001,52 @@
     "inviteFriendToOrg": "Bjud in en vän till denna organisation",
     "inviteLinkCopied": "Inbjudningslänk kopierad",
     "inviteSent": "Inbjudan skickad",
-    "inviteAccepted": "Inbjudan accepterad"
+    "inviteAccepted": "Inbjudan accepterad",
+    "sidebar": {
+      "directMessages": "Direktmeddelanden",
+      "organizations": "Organisationer",
+      "sms": "SMS",
+      "virtualNumber": "Virtuellt nummer",
+      "searchDmPlaceholder": "Sök vänner för att starta ett DM",
+      "createChannelPlaceholder": "Skapa en kanal",
+      "createOrgPlaceholder": "Skapa en organisation",
+      "refresh": "Uppdatera",
+      "noOrgs": "Inga organisationer ännu",
+      "noDms": "Inga direktmeddelanden ännu"
+    },
+    "virtualNumber": {
+      "label": "Virtuellt nummer",
+      "hint": "Välj dina telefonnummer. Inkommande SMS till dessa nummer visas i din chatt.",
+      "none": "Inget nummer",
+      "loading": "Laddar nummer…",
+      "empty": "Inga nummer tillgängliga",
+      "error": "Dina nummer kunde inte laddas",
+      "assignError": "Detta nummer kunde inte sparas",
+      "assigned": "Nummer tilldelat",
+      "cleared": "Nummer borttaget",
+      "addNumber": "Lägg till nummer…",
+      "removeNumber": "Ta bort nummer",
+      "quotaLabel": "{used} av {quota} nummer använda",
+      "limitReached": "Du har nått maxantalet virtuella nummer för ditt abonnemang",
+      "buyCta": "Köp virtuellt nummer",
+      "gateHint": "Virtuella nummer kräver ett Donator-abonnemang. Köp ett nummer för att ta emot SMS i chatten.",
+      "buyDialogTitle": "Donator-abonnemang krävs",
+      "buyDialogDescription": "Virtuella nummer ingår i Donator-abonnemangen. Välj ett abonnemang på prissidan för att komma igång.",
+      "buyDialogGoToPricing": "Gå till priser"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "Laddar SMS…",
+      "empty": "Inga SMS-konversationer ännu",
+      "noNumberHint": "Tilldela ett virtuellt nummer för att börja ta emot SMS här",
+      "composerPlaceholder": "Skriv ett SMS…",
+      "sendError": "Detta meddelande kunde inte skickas",
+      "you": "Du",
+      "statusSent": "Skickat",
+      "statusDelivered": "Levererat",
+      "statusFailed": "Misslyckades",
+      "error": "SMS kunde inte laddas"
+    }
   },
   "notesList": {
     "gridOption": {
@@ -1017,5 +1074,20 @@
     "saveConsent": "Spara samtycke",
     "dpipNoValue": "DPIP (Ð) är värdeenheten inom Dupip. Din stash växer över tid med din aktivitet. DPIP är inte en investeringsprodukt och kan sakna penningvärde — varken nu eller i framtiden.",
     "consentDescription": "DPIP (Ð) är värdeenheten inom Dupip. Din stash växer över tid med din aktivitet. DPIP är inte en investeringsprodukt och kan sakna penningvärde — varken nu eller i framtiden. Innan du ser våra abonnemang, granska och bekräfta följande:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

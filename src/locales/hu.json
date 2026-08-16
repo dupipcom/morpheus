@@ -17,6 +17,7 @@
     "save": "Mentés",
     "cancel": "Mégse",
     "delete": "Törlés",
+    "remove": "Eltávolítás",
     "loading": "Betöltés...",
     "error": "Hiba",
     "success": "Sikeres",
@@ -126,11 +127,14 @@
         "FRIENDS": "Barátok",
         "CLOSE_FRIENDS": "Közeli barátok",
         "PUBLIC": "Nyilvános",
-        "AI_ENABLED": "Mesterséges intelligencia engedélyezve"
+        "AI_ENABLED": "Mesterséges intelligencia engedélyezve",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Jegyzet közzététele",
       "publishing": "Közzététel...",
-      "embedHint": "{provider} beágyazás. Ha a lejátszás nem elérhető, nyisd meg az eredeti linket lent."
+      "embedHint": "{provider} beágyazás. Ha a lejátszás nem elérhető, nyisd meg az eredeti linket lent.",
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "AI-elemzés engedélyezése"
     },
     "thirdParty": {
       "title": "Harmadik fél",
@@ -148,7 +152,9 @@
       "addDelegatedAnalyst": "Delegált elemző hozzáadása",
       "adding": "Hozzáadás...",
       "addError": "Nem sikerült hozzáadni a delegált elemzőt",
-      "invitationDraft": "Ehhez az e-mailhez meghívóvázlat készült."
+      "invitationDraft": "Ehhez az e-mailhez meghívóvázlat készült.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -359,7 +365,9 @@
     "expectedNeedUtilities": "Expected Need Utilities Average",
     "editAction": "Művelet szerkesztése",
     "save": "Mentés",
-    "cancel": "Mégse"
+    "cancel": "Mégse",
+    "currency": "Pénznem",
+    "selectCurrency": "Pénznem kiválasztása"
   },
   "agentChat": {
     "thinking": "Gondolkodom...",
@@ -367,7 +375,8 @@
     "getInsights": "Kérdezzen a hangulatáról, szokásairól vagy szerezzen személyre szabott betekintéseket",
     "placeholder": "Beszéljünk...",
     "error": "Sajnálom, hibába ütköztem. Próbálja újra.",
-    "failedToSend": "Az üzenet küldése sikertelen. Próbálja újra."
+    "failedToSend": "Az üzenet küldése sikertelen. Próbálja újra.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Kezdje el a saját Dupip útját",
@@ -649,8 +658,10 @@
       },
       "areaDistributionLabel": "Terület költségvetés",
       "areaPrizeDistributionLabel": "Terület díj",
+      "areaPremiumDistributionLabel": "Díjelosztás területenként",
       "categoryDistributionLabel": "Kategória költségvetés",
       "categoryPrizeDistributionLabel": "Kategória díj",
+      "categoryPremiumDistributionLabel": "Díjelosztás kategóriánként",
       "taskDistributionLabel": "Költségvetés",
       "premiumLabel": "Díj",
       "totalLabel": "Összesen",
@@ -962,6 +973,7 @@
     "deleting": "Törlés...",
     "confirmDelete": "Biztosan törölni szeretnéd ezt a megjegyzést?",
     "content": "Megjegyzés tartalma",
+    "recipient": "Címzett",
     "visibilityUpdated": "Láthatóság sikeresen frissítve",
     "visibilityUpdateFailed": "Nem sikerült frissíteni a láthatóságot",
     "changeVisibility": "Láthatóság módosítása",
@@ -986,7 +998,52 @@
     "inviteFriendToOrg": "Barát meghívása ebbe a szervezetbe",
     "inviteLinkCopied": "Meghívólink másolva",
     "inviteSent": "Meghívó elküldve",
-    "inviteAccepted": "Meghívó elfogadva"
+    "inviteAccepted": "Meghívó elfogadva",
+    "sidebar": {
+      "directMessages": "Közvetlen üzenetek",
+      "organizations": "Szervezetek",
+      "sms": "SMS",
+      "virtualNumber": "Virtuális szám",
+      "searchDmPlaceholder": "Barátok keresése közvetlen üzenet indításához",
+      "createChannelPlaceholder": "Csatorna létrehozása",
+      "createOrgPlaceholder": "Szervezet létrehozása",
+      "refresh": "Frissítés",
+      "noOrgs": "Még nincsenek szervezetek",
+      "noDms": "Még nincsenek közvetlen üzenetek"
+    },
+    "virtualNumber": {
+      "label": "Virtuális szám",
+      "hint": "Válaszd ki a telefonszámaidat. Az ezekre a számokra érkező SMS-ek megjelennek a csevegésedben.",
+      "none": "Nincs szám",
+      "loading": "Számok betöltése…",
+      "empty": "Nincs elérhető szám",
+      "error": "Nem sikerült betölteni a számaidat",
+      "assignError": "Nem sikerült menteni ezt a számot",
+      "assigned": "Szám hozzárendelve",
+      "cleared": "Szám eltávolítva",
+      "addNumber": "Szám hozzáadása…",
+      "removeNumber": "Szám eltávolítása",
+      "quotaLabel": "{quota} számból {used} használatban",
+      "limitReached": "Elérted a csomagodhoz tartozó virtuális számok maximális számát",
+      "buyCta": "Virtuális szám vásárlása",
+      "gateHint": "A virtuális számokhoz Donator csomag szükséges. Vásárolj számot, hogy SMS-eket fogadj a csevegésben.",
+      "buyDialogTitle": "Donator csomag szükséges",
+      "buyDialogDescription": "A virtuális számok a Donator csomagok részét képezik. A kezdéshez válassz csomagot az árazási oldalon.",
+      "buyDialogGoToPricing": "Ugrás az árazáshoz"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "SMS-ek betöltése…",
+      "empty": "Még nincsenek SMS-beszélgetések",
+      "noNumberHint": "Rendelj hozzá virtuális számot, hogy itt SMS-eket fogadhass",
+      "composerPlaceholder": "Írj egy SMS-t…",
+      "sendError": "Nem sikerült elküldeni ezt az üzenetet",
+      "you": "Te",
+      "statusSent": "Elküldve",
+      "statusDelivered": "Kézbesítve",
+      "statusFailed": "Sikertelen",
+      "error": "Nem sikerült betölteni az SMS-eket"
+    }
   },
   "notesList": {
     "gridOption": {
@@ -1014,5 +1071,20 @@
     "saveConsent": "Hozzájárulás mentése",
     "dpipNoValue": "A DPIP (Ð) a Dupip értékegysége. A tartalékod idővel növekszik a tevékenységeddel. A DPIP nem befektetési termék, és lehet, hogy nincs pénzbeli értéke — sem most, sem a jövőben.",
     "consentDescription": "A DPIP (Ð) a Dupip értékegysége. A tartalékod idővel növekszik a tevékenységeddel. A DPIP nem befektetési termék, és lehet, hogy nincs pénzbeli értéke — sem most, sem a jövőben. Mielőtt megnéznéd csomagjainkat, kérjük, tekintsd át és erősítsd meg a következőt:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

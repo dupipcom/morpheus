@@ -17,6 +17,7 @@
     "save": "Enregistrer",
     "cancel": "Annuler",
     "delete": "Supprimer",
+    "remove": "Retirer",
     "loading": "Chargement...",
     "error": "Erreur",
     "success": "Succès",
@@ -126,11 +127,14 @@
         "FRIENDS": "Amis",
         "CLOSE_FRIENDS": "Amis Proches",
         "PUBLIC": "Public",
-        "AI_ENABLED": "Activé par IA"
+        "AI_ENABLED": "Activé par IA",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Publier la Note",
       "publishing": "Publication...",
-      "embedHint": "Intégration {provider}. Si la lecture n'est pas disponible, ouvrez le lien original ci-dessous."
+      "embedHint": "Intégration {provider}. Si la lecture n'est pas disponible, ouvrez le lien original ci-dessous.",
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Activer l'analyse IA"
     },
     "thirdParty": {
       "title": "Tiers",
@@ -148,7 +152,9 @@
       "addDelegatedAnalyst": "Ajouter un analyste délégué",
       "adding": "Ajout en cours...",
       "addError": "Impossible d'ajouter l'analyste délégué",
-      "invitationDraft": "Un brouillon d'invitation a été préparé pour cet e-mail."
+      "invitationDraft": "Un brouillon d'invitation a été préparé pour cet e-mail.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -228,7 +234,9 @@
     "expectedNeedUtilities": "Moyenne Attendue des Services Publics",
     "editAction": "Modifier l'action",
     "save": "Enregistrer",
-    "cancel": "Annuler"
+    "cancel": "Annuler",
+    "currency": "Devise",
+    "selectCurrency": "Sélectionner la devise"
   },
   "social": {
     "title": "Contacts Sociaux",
@@ -376,7 +384,8 @@
     "getInsights": "Demandez des informations sur votre humeur, vos habitudes ou obtenez des insights personnalisés",
     "placeholder": "Discutons...",
     "error": "Désolé, j'ai rencontré une erreur. Veuillez réessayer.",
-    "failedToSend": "Échec de l'envoi du message. Veuillez réessayer."
+    "failedToSend": "Échec de l'envoi du message. Veuillez réessayer.",
+    "model": "Model"
   },
   "errors": {
     "notFound": "Oups ! Impossible de s'accorder sur cette fréquence.",
@@ -666,8 +675,10 @@
       },
       "areaDistributionLabel": "Budget de zone",
       "areaPrizeDistributionLabel": "Prix de zone",
+      "areaPremiumDistributionLabel": "Distribution des prix par zone",
       "categoryDistributionLabel": "Budget de catégorie",
       "categoryPrizeDistributionLabel": "Prix de catégorie",
+      "categoryPremiumDistributionLabel": "Distribution des prix par catégorie",
       "taskDistributionLabel": "Budget",
       "premiumLabel": "Prix",
       "totalLabel": "Total",
@@ -962,6 +973,7 @@
     "deleting": "Suppression...",
     "confirmDelete": "Êtes-vous sûr de vouloir supprimer cette note ?",
     "content": "Contenu de la note",
+    "recipient": "Destinataire",
     "visibilityUpdated": "Visibilité mise à jour avec succès",
     "visibilityUpdateFailed": "Échec de la mise à jour de la visibilité",
     "changeVisibility": "Modifier la visibilité",
@@ -986,7 +998,52 @@
     "inviteFriendToOrg": "Inviter un ami dans cette organisation",
     "inviteLinkCopied": "Lien d'invitation copié",
     "inviteSent": "Invitation envoyée",
-    "inviteAccepted": "Invitation acceptée"
+    "inviteAccepted": "Invitation acceptée",
+    "sidebar": {
+      "directMessages": "Messages directs",
+      "organizations": "Organisations",
+      "sms": "SMS",
+      "virtualNumber": "Numéro virtuel",
+      "searchDmPlaceholder": "Rechercher des amis pour démarrer un MP",
+      "createChannelPlaceholder": "Créer un canal",
+      "createOrgPlaceholder": "Créer une organisation",
+      "refresh": "Actualiser",
+      "noOrgs": "Aucune organisation pour le moment",
+      "noDms": "Aucun message direct pour le moment"
+    },
+    "virtualNumber": {
+      "label": "Numéro virtuel",
+      "hint": "Choisissez vos numéros de téléphone. Les SMS entrants vers ces numéros apparaîtront dans votre chat.",
+      "none": "Aucun numéro",
+      "loading": "Chargement des numéros…",
+      "empty": "Aucun numéro disponible",
+      "error": "Impossible de charger vos numéros",
+      "assignError": "Impossible d’enregistrer ce numéro",
+      "assigned": "Numéro attribué",
+      "cleared": "Numéro supprimé",
+      "addNumber": "Ajouter un numéro…",
+      "removeNumber": "Supprimer le numéro",
+      "quotaLabel": "{used} numéros utilisés sur {quota}",
+      "limitReached": "Vous avez atteint le nombre maximal de numéros virtuels de votre formule",
+      "buyCta": "Acheter un numéro virtuel",
+      "gateHint": "Les numéros virtuels nécessitent une formule Donator. Achetez un numéro pour recevoir des SMS dans le chat.",
+      "buyDialogTitle": "Formule Donator requise",
+      "buyDialogDescription": "Les numéros virtuels sont inclus dans les formules Donator. Choisissez une formule sur la page des tarifs pour commencer.",
+      "buyDialogGoToPricing": "Voir les tarifs"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "Chargement des SMS…",
+      "empty": "Aucune conversation SMS pour l’instant",
+      "noNumberHint": "Attribuez un numéro virtuel pour commencer à recevoir des SMS ici",
+      "composerPlaceholder": "Écrivez un SMS…",
+      "sendError": "Impossible d’envoyer ce message",
+      "you": "Vous",
+      "statusSent": "Envoyé",
+      "statusDelivered": "Livré",
+      "statusFailed": "Échec",
+      "error": "Impossible de charger les SMS"
+    }
   },
   "notesList": {
     "gridOption": {
@@ -1014,5 +1071,20 @@
     "saveConsent": "Enregistrer le consentement",
     "dpipNoValue": "Le DPIP (Ð) est l’unité de valeur au sein de Dupip. Votre réserve grandit au fil du temps avec votre activité. Le DPIP n’est pas un produit d’investissement et peut ne pas avoir de valeur monétaire — ni maintenant ni à l’avenir.",
     "consentDescription": "Le DPIP (Ð) est l’unité de valeur au sein de Dupip. Votre réserve grandit au fil du temps avec votre activité. Le DPIP n’est pas un produit d’investissement et peut ne pas avoir de valeur monétaire — ni maintenant ni à l’avenir. Avant de consulter nos offres, veuillez examiner et confirmer ce qui suit :"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

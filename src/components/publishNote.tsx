@@ -13,6 +13,7 @@ import { DatePickerButton } from "@/components/ui/datePickerButton"
 import { LinkPreview } from "@/components/linkPreview"
 import { extractUrls } from "@/lib/utils/linkPreview"
 import { Input } from "@/components/ui/input"
+import { Switch } from "@/components/ui/switch"
 
 interface PublishNoteProps {
   onNotePublished?: () => void
@@ -24,12 +25,18 @@ interface PublishNoteProps {
 }
 
 
-export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibility = 'AI_ENABLED', recipientId = null, recipientLabel = null }: PublishNoteProps) => {
+export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibility, recipientId = null, recipientLabel = null }: PublishNoteProps) => {
   const { t } = useI18n()
   const { refreshAll } = useNotesRefresh()
-  const { selectedDate: contextSelectedDate, setSelectedDate } = useContext(GlobalContext)
+  const { selectedDate: contextSelectedDate, setSelectedDate, session } = useContext(GlobalContext)
   const [noteContent, setNoteContent] = useState('')
-  const [noteVisibility, setNoteVisibility] = useState(defaultVisibility)
+  // Explicit per-page prop wins, then the user's persisted default, then PRIVATE
+  const [noteVisibility, setNoteVisibility] = useState(
+    defaultVisibility || (session?.user as { defaultNoteVisibility?: string } | undefined)?.defaultNoteVisibility || 'PRIVATE'
+  )
+  const [aiEnabled, setAiEnabled] = useState(
+    (session?.user as { defaultAiEnabled?: boolean } | undefined)?.defaultAiEnabled ?? false
+  )
   const [isPublishing, setIsPublishing] = useState(false)
   const previewUrls = useMemo(() => extractUrls(noteContent), [noteContent])
   
@@ -99,12 +106,26 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
         body: JSON.stringify({
           content: noteContent.trim(),
           visibility: noteVisibility,
+          aiEnabled,
           date: noteDate,
           recipientId
         }),
       })
 
       if (response.ok) {
+        // Persist the AI analysis preference only if it changed
+        const storedAiEnabled = (session?.user as { defaultAiEnabled?: boolean } | undefined)?.defaultAiEnabled ?? false
+        if (aiEnabled !== storedAiEnabled) {
+          try {
+            await fetch('/api/v1/user', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ defaultAiEnabled: aiEnabled })
+            })
+          } catch (error) {
+            console.error('Error saving AI analysis preference:', error)
+          }
+        }
         // Clear the note content after successful publish
         setNoteContent('')
         // Refresh all registered note lists
@@ -141,11 +162,11 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
           }}
         />
         <div className="col-span-1 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4 min-w-0">
-          <VisibilitySelect 
-            value={noteVisibility} 
+          <VisibilitySelect
+            value={noteVisibility}
             onValueChange={setNoteVisibility}
           />
-          <Button 
+          <Button
             onClick={handlePublishNote}
             disabled={!noteContent.trim() || isPublishing}
             className="bg-primary text-primary-foreground hover:bg-primary/90 w-full min-h-[40px] sm:w-auto sm:min-h-0 justify-center items-center md:justify-start"
@@ -162,6 +183,13 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
             </span>
           </Button>
         </div>
+        <label className="flex items-center gap-2 text-xs text-muted-foreground cursor-pointer">
+          <Switch
+            checked={aiEnabled}
+            onCheckedChange={setAiEnabled}
+          />
+          <span>{t('mood.publish.enableAiAnalysis') || 'Enable AI analysis'}</span>
+        </label>
       </div>
       {previewUrls.length > 0 && (
         <div className="mt-3">

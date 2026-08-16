@@ -14,6 +14,7 @@
     "save": "Αποθήκευση",
     "cancel": "Ακύρωση",
     "delete": "Διαγραφή",
+    "remove": "Αφαίρεση",
     "loading": "Φόρτωση...",
     "error": "Σφάλμα",
     "success": "Επιτυχία",
@@ -126,11 +127,14 @@
         "FRIENDS": "Φίλοι",
         "CLOSE_FRIENDS": "Στενοί Φίλοι",
         "PUBLIC": "Δημόσιο",
-        "AI_ENABLED": "AI Ενεργοποιημένο"
+        "AI_ENABLED": "AI Ενεργοποιημένο",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Δημοσίευση Σημείωσης",
       "publishing": "Δημοσίευση...",
-      "embedHint": "Ενσωμάτωση {provider}. Εάν η αναπαραγωγή δεν είναι διαθέσιμη, ανοίξτε τον αρχικό σύνδεσμο παρακάτω."
+      "embedHint": "Ενσωμάτωση {provider}. Εάν η αναπαραγωγή δεν είναι διαθέσιμη, ανοίξτε τον αρχικό σύνδεσμο παρακάτω.",
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Ενεργοποίηση ανάλυσης AI"
     },
     "thirdParty": {
       "title": "Τρίτο μέρος",
@@ -148,7 +152,9 @@
       "addDelegatedAnalyst": "Προσθήκη εξουσιοδοτημένου αναλυτή",
       "adding": "Προσθήκη...",
       "addError": "Δεν ήταν δυνατή η προσθήκη εξουσιοδοτημένου αναλυτή",
-      "invitationDraft": "Ετοιμάστηκε πρόχειρο πρόσκλησης για αυτό το email."
+      "invitationDraft": "Ετοιμάστηκε πρόχειρο πρόσκλησης για αυτό το email.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -356,7 +362,9 @@
     "expectedNeedUtilities": "Μέσος Όρος Εκτιμώμενων Δαπανών Ανάγκης",
     "editAction": "Επεξεργασία ενέργειας",
     "save": "Αποθήκευση",
-    "cancel": "Ακύρωση"
+    "cancel": "Ακύρωση",
+    "currency": "Νόμισμα",
+    "selectCurrency": "Επιλογή νομίσματος"
   },
   "agentChat": {
     "thinking": "Σκέφτομαι...",
@@ -364,7 +372,8 @@
     "getInsights": "Ρωτήστε για τη συγκίνησή σας, συνήθειες ή λάβετε εξατομικευμένες πληροφορίες",
     "placeholder": "Ας συζητήσουμε...",
     "error": "Συγγνώμη, συνάντησα ένα σφάλμα. Παρακαλώ δοκιμάστε ξανά.",
-    "failedToSend": "Αποτυχία αποστολής μηνύματος. Παρακαλώ δοκιμάστε ξανά."
+    "failedToSend": "Αποτυχία αποστολής μηνύματος. Παρακαλώ δοκιμάστε ξανά.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Ξεκινήστε το Δικό σας Ταξίδι με το Dupip",
@@ -646,8 +655,10 @@
       },
       "areaDistributionLabel": "Προϋπολογισμός περιοχής",
       "areaPrizeDistributionLabel": "Βραβείο περιοχής",
+      "areaPremiumDistributionLabel": "Διανομή βραβείων ανά περιοχή",
       "categoryDistributionLabel": "Προϋπολογισμός κατηγορίας",
       "categoryPrizeDistributionLabel": "Βραβείο κατηγορίας",
+      "categoryPremiumDistributionLabel": "Διανομή βραβείων ανά κατηγορία",
       "taskDistributionLabel": "Προϋπολογισμός",
       "premiumLabel": "Βραβείο",
       "totalLabel": "Σύνολο",
@@ -959,6 +970,7 @@
     "deleting": "Διαγραφή...",
     "confirmDelete": "Είστε σίγουροι ότι θέλετε να διαγράψετε αυτή τη σημείωση;",
     "content": "Περιεχόμενο σημείωσης",
+    "recipient": "Παραλήπτης",
     "visibilityUpdated": "Η ορατότητα ενημερώθηκε επιτυχώς",
     "visibilityUpdateFailed": "Αποτυχία ενημέρωσης ορατότητας",
     "changeVisibility": "Αλλαγή ορατότητας",
@@ -983,7 +995,52 @@
     "inviteFriendToOrg": "Πρόσκληση φίλου σε αυτόν τον οργανισμό",
     "inviteLinkCopied": "Ο σύνδεσμος πρόσκλησης αντιγράφηκε",
     "inviteSent": "Η πρόσκληση στάλθηκε",
-    "inviteAccepted": "Η πρόσκληση έγινε αποδεκτή"
+    "inviteAccepted": "Η πρόσκληση έγινε αποδεκτή",
+    "sidebar": {
+      "directMessages": "Άμεσα μηνύματα",
+      "organizations": "Οργανισμοί",
+      "sms": "SMS",
+      "virtualNumber": "Εικονικός αριθμός",
+      "searchDmPlaceholder": "Αναζήτηση φίλων για να ξεκινήσετε ένα άμεσο μήνυμα",
+      "createChannelPlaceholder": "Δημιουργία καναλιού",
+      "createOrgPlaceholder": "Δημιουργία οργανισμού",
+      "refresh": "Ανανέωση",
+      "noOrgs": "Δεν υπάρχουν ακόμη οργανισμοί",
+      "noDms": "Δεν υπάρχουν ακόμη άμεσα μηνύματα"
+    },
+    "virtualNumber": {
+      "label": "Εικονικός αριθμός",
+      "hint": "Επίλεξε τους αριθμούς τηλεφώνου σου. Τα εισερχόμενα SMS σε αυτούς τους αριθμούς θα εμφανίζονται στη συνομιλία σου.",
+      "none": "Κανένας αριθμός",
+      "loading": "Φόρτωση αριθμών…",
+      "empty": "Δεν υπάρχουν διαθέσιμοι αριθμοί",
+      "error": "Δεν ήταν δυνατή η φόρτωση των αριθμών σου",
+      "assignError": "Δεν ήταν δυνατή η αποθήκευση αυτού του αριθμού",
+      "assigned": "Ο αριθμός αντιστοιχίστηκε",
+      "cleared": "Ο αριθμός αφαιρέθηκε",
+      "addNumber": "Προσθήκη αριθμού…",
+      "removeNumber": "Αφαίρεση αριθμού",
+      "quotaLabel": "Χρησιμοποιούνται {used} από {quota} αριθμούς",
+      "limitReached": "Έφτασες τον μέγιστο αριθμό εικονικών αριθμών για το πρόγραμμά σου",
+      "buyCta": "Αγορά εικονικού αριθμού",
+      "gateHint": "Οι εικονικοί αριθμοί απαιτούν πρόγραμμα Donator. Αγόρασε έναν αριθμό για να λαμβάνεις SMS στη συνομιλία.",
+      "buyDialogTitle": "Απαιτείται πρόγραμμα Donator",
+      "buyDialogDescription": "Οι εικονικοί αριθμοί περιλαμβάνονται στα προγράμματα Donator. Επίλεξε ένα πρόγραμμα στη σελίδα τιμών για να ξεκινήσεις.",
+      "buyDialogGoToPricing": "Μετάβαση στις τιμές"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "Φόρτωση SMS…",
+      "empty": "Δεν υπάρχουν ακόμα συνομιλίες SMS",
+      "noNumberHint": "Αντιστοίχισε έναν εικονικό αριθμό για να λαμβάνεις SMS εδώ",
+      "composerPlaceholder": "Γράψε ένα SMS…",
+      "sendError": "Δεν ήταν δυνατή η αποστολή αυτού του μηνύματος",
+      "you": "Εσύ",
+      "statusSent": "Απεστάλη",
+      "statusDelivered": "Παραδόθηκε",
+      "statusFailed": "Απέτυχε",
+      "error": "Δεν ήταν δυνατή η φόρτωση των SMS"
+    }
   },
   "notesList": {
     "gridOption": {
@@ -1011,5 +1068,20 @@
     "saveConsent": "Αποθήκευση συγκατάθεσης",
     "dpipNoValue": "Το DPIP (Ð) είναι η μονάδα αξίας μέσα στο Dupip. Το stash σου μεγαλώνει με τον χρόνο μέσω της δραστηριότητάς σου. Το DPIP δεν είναι επενδυτικό προϊόν και μπορεί να μην έχει χρηματική αξία — ούτε τώρα ούτε στο μέλλον.",
     "consentDescription": "Το DPIP (Ð) είναι η μονάδα αξίας μέσα στο Dupip. Το stash σου μεγαλώνει με τον χρόνο μέσω της δραστηριότητάς σου. Το DPIP δεν είναι επενδυτικό προϊόν και μπορεί να μην έχει χρηματική αξία — ούτε τώρα ούτε στο μέλλον. Πριν δεις τα προγράμματά μας, διάβασε και επιβεβαίωσε τα εξής:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }

@@ -17,6 +17,7 @@
     "save": "Salvează",
     "cancel": "Anulează",
     "delete": "Șterge",
+    "remove": "Elimină",
     "loading": "Se încarcă...",
     "error": "Eroare",
     "success": "Succes",
@@ -126,11 +127,14 @@
         "FRIENDS": "Prieteni",
         "CLOSE_FRIENDS": "Prieteni apropiați",
         "PUBLIC": "Public",
-        "AI_ENABLED": "AI activat"
+        "AI_ENABLED": "AI activat",
+        "DOC_ENABLED": "Doc Enabled"
       },
       "action": "Publică nota",
       "publishing": "Publicare...",
-      "embedHint": "Incorporare {provider}. Dacă redarea nu este disponibilă, deschide linkul original de mai jos."
+      "embedHint": "Incorporare {provider}. Dacă redarea nu este disponibilă, deschide linkul original de mai jos.",
+      "useAsDefault": "Use as my default visibility",
+      "enableAiAnalysis": "Activează analiza AI"
     },
     "thirdParty": {
       "title": "Terță parte",
@@ -148,7 +152,9 @@
       "addDelegatedAnalyst": "Adaugă analist delegat",
       "adding": "Se adaugă...",
       "addError": "Nu s-a putut adăuga analistul delegat",
-      "invitationDraft": "A fost pregătit un draft de invitație pentru acest e-mail."
+      "invitationDraft": "A fost pregătit un draft de invitație pentru acest e-mail.",
+      "roles": "Roles",
+      "rolesHint": "Roles describe your relationship with the delegated analyst. Delegates can read your DOC_ENABLED notes."
     }
   },
   "week": {
@@ -359,7 +365,9 @@
     "expectedNeedUtilities": "Media costuri utilități necesare estimate",
     "editAction": "Editează acțiunea",
     "save": "Salvează",
-    "cancel": "Anulează"
+    "cancel": "Anulează",
+    "currency": "Monedă",
+    "selectCurrency": "Selectează moneda"
   },
   "agentChat": {
     "thinking": "Gândesc...",
@@ -367,7 +375,8 @@
     "getInsights": "Întreabă despre dispoziția ta, obiceiuri sau obține perspective personalizate",
     "placeholder": "Să vorbim...",
     "error": "Îmi pare rău, am întâlnit o eroare. Te rog încearcă din nou.",
-    "failedToSend": "Trimiterea mesajului a eșuat. Te rog încearcă din nou."
+    "failedToSend": "Trimiterea mesajului a eșuat. Te rog încearcă din nou.",
+    "model": "Model"
   },
   "publicProfile": {
     "ctaTitle": "Începe-ți propria călătorie Dupip",
@@ -649,8 +658,10 @@
       },
       "areaDistributionLabel": "Buget zonă",
       "areaPrizeDistributionLabel": "Premiu zonă",
+      "areaPremiumDistributionLabel": "Distribuție premii pe zone",
       "categoryDistributionLabel": "Buget categorie",
       "categoryPrizeDistributionLabel": "Premiu categorie",
+      "categoryPremiumDistributionLabel": "Distribuție premii pe categorii",
       "taskDistributionLabel": "Buget",
       "premiumLabel": "Premiu",
       "totalLabel": "Total",
@@ -962,6 +973,7 @@
     "deleting": "Se șterge...",
     "confirmDelete": "Ești sigur că dorești să ștergi această notă?",
     "content": "Conținut notă",
+    "recipient": "Destinatar",
     "visibilityUpdated": "Vizibilitate actualizată cu succes",
     "visibilityUpdateFailed": "Actualizarea vizibilității a eșuat",
     "changeVisibility": "Schimbă vizibilitatea",
@@ -986,7 +998,52 @@
     "inviteFriendToOrg": "Invită un prieten în această organizație",
     "inviteLinkCopied": "Link de invitație copiat",
     "inviteSent": "Invitație trimisă",
-    "inviteAccepted": "Invitație acceptată"
+    "inviteAccepted": "Invitație acceptată",
+    "sidebar": {
+      "directMessages": "Mesaje directe",
+      "organizations": "Organizații",
+      "sms": "SMS",
+      "virtualNumber": "Număr virtual",
+      "searchDmPlaceholder": "Caută prieteni pentru a începe un MD",
+      "createChannelPlaceholder": "Creează un canal",
+      "createOrgPlaceholder": "Creează o organizație",
+      "refresh": "Reîmprospătează",
+      "noOrgs": "Nicio organizație încă",
+      "noDms": "Niciun mesaj direct încă"
+    },
+    "virtualNumber": {
+      "label": "Număr virtual",
+      "hint": "Alege numerele tale de telefon. SMS-urile primite la aceste numere vor apărea în chatul tău.",
+      "none": "Niciun număr",
+      "loading": "Se încarcă numerele…",
+      "empty": "Nu sunt numere disponibile",
+      "error": "Numerele tale nu au putut fi încărcate",
+      "assignError": "Acest număr nu a putut fi salvat",
+      "assigned": "Număr atribuit",
+      "cleared": "Număr eliminat",
+      "addNumber": "Adaugă număr…",
+      "removeNumber": "Elimină numărul",
+      "quotaLabel": "{used} din {quota} numere utilizate",
+      "limitReached": "Ai atins numărul maxim de numere virtuale pentru planul tău",
+      "buyCta": "Cumpără număr virtual",
+      "gateHint": "Numerele virtuale necesită un plan Donator. Cumpără un număr pentru a primi SMS în chat.",
+      "buyDialogTitle": "Este necesar un plan Donator",
+      "buyDialogDescription": "Numerele virtuale sunt incluse în planurile Donator. Alege un plan din pagina de prețuri pentru a începe.",
+      "buyDialogGoToPricing": "Mergi la prețuri"
+    },
+    "sms": {
+      "label": "SMS",
+      "loading": "Se încarcă SMS-urile…",
+      "empty": "Nu există încă conversații SMS",
+      "noNumberHint": "Atribuie un număr virtual pentru a începe să primești SMS aici",
+      "composerPlaceholder": "Scrie un SMS…",
+      "sendError": "Acest mesaj nu a putut fi trimis",
+      "you": "Tu",
+      "statusSent": "Trimis",
+      "statusDelivered": "Livrat",
+      "statusFailed": "Eșuat",
+      "error": "SMS-urile nu au putut fi încărcate"
+    }
   },
   "notesList": {
     "gridOption": {
@@ -1014,5 +1071,20 @@
     "saveConsent": "Salvează consimțământul",
     "dpipNoValue": "DPIP (Ð) este unitatea de valoare din interiorul Dupip. Stash-ul tău crește în timp odată cu activitatea ta. DPIP nu este un produs de investiții și poate să nu aibă valoare monetară — nici acum, nici în viitor.",
     "consentDescription": "DPIP (Ð) este unitatea de valoare din interiorul Dupip. Stash-ul tău crește în timp odată cu activitatea ta. DPIP nu este un produs de investiții și poate să nu aibă valoare monetară — nici acum, nici în viitor. Înainte de a vedea planurile noastre, te rugăm să verifici și să confirmi următoarele:"
+  },
+  "roles": {
+    "DOCTOR": "Doctor",
+    "TUTOR": "Tutor",
+    "MENTOR": "Mentor",
+    "TEACHER": "Teacher",
+    "GUIDE": "Guide",
+    "ASSISTANT": "Assistant",
+    "FRIEND": "Friend",
+    "CLOSE_FRIEND": "Close Friend",
+    "LAWYER": "Lawyer",
+    "SOLICITOR": "Solicitor",
+    "FAMILY": "Family",
+    "THERAPIST": "Therapist",
+    "HOUSEHOLD": "Household"
   }
 }
