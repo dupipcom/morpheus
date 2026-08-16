@@ -170,6 +170,28 @@ export async function GET(request: NextRequest) {
       }
     })
 
+    // Attach document metadata (id/fileName/mimeType/kind) so clients can render
+    // attachments inline (images/videos/audio/links through the authenticated
+    // media pipe). Note has no `documents` relation, so this is one batched
+    // query over every note's documentIds.
+    const allDocumentIds = Array.from(
+      new Set(sortedNotes.flatMap((note) => note.documentIds || []))
+    )
+    if (allDocumentIds.length > 0) {
+      const documents = await prisma.document.findMany({
+        where: { id: { in: allDocumentIds } },
+        select: { id: true, fileName: true, mimeType: true, kind: true }
+      })
+      const docsById = new Map(documents.map((doc) => [doc.id, doc]))
+      for (const note of sortedNotes) {
+        if (note.documentIds.length > 0) {
+          ;(note as { documents?: unknown[] }).documents = note.documentIds
+            .map((id) => docsById.get(id))
+            .filter(Boolean)
+        }
+      }
+    }
+
     if (selectedVisibility && selectedVisibility.length > 0) {
       sortedNotes = sortedNotes.filter(note => selectedVisibility.includes(note.visibility))
     }

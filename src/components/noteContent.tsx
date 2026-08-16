@@ -5,6 +5,7 @@ import type { ReactNode } from 'react'
 import useSWR from 'swr'
 import { useRouter } from 'next/navigation'
 import { LinkPreview } from '@/components/linkPreview'
+import { NoteAttachments, type NoteDocumentRef } from '@/components/noteAttachments'
 import { createUrlRegex, extractUrls } from '@/lib/utils/linkPreview'
 import { jsonFetcher } from '@/lib/utils/utils'
 import { useI18n } from '@/lib/contexts/i18n'
@@ -17,6 +18,8 @@ interface NoteContentProps {
   children?: ReactNode
   /** Tagged task ids; chips render only for tasks resolvable from the viewer's own lists */
   taskIds?: string[] | null
+  /** Attached documents (metadata from the notes API); renders images/videos/audio inline */
+  documents?: NoteDocumentRef[] | null
 }
 
 /**
@@ -162,7 +165,7 @@ export function NoteTaskChips({ taskIds }: { taskIds?: string[] | null }) {
   )
 }
 
-export function NoteContent({ content, truncate = false, maxLength = 150, children, taskIds }: NoteContentProps) {
+export function NoteContent({ content, truncate = false, maxLength = 150, children, taskIds, documents }: NoteContentProps) {
   const displayContent = useMemo(() => {
     if (!truncate || content.length <= maxLength) return content
     return `${content.slice(0, maxLength)}...`
@@ -179,6 +182,7 @@ export function NoteContent({ content, truncate = false, maxLength = 150, childr
       </p>
       {children}
       <NoteTaskChips taskIds={taskIds} />
+      <NoteAttachments documents={documents} />
       {urls.map((url) => (
         <LinkPreview key={url} url={url} />
       ))}

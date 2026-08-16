@@ -7,6 +7,7 @@ import { useI18n } from '@/lib/contexts/i18n'
 import ActivityCard, { ActivityItem } from './activityCard'
 import type { Comment } from './activityCard'
 import { NoteTaskChips } from './noteContent'
+import { NoteAttachments } from './noteAttachments'
 import { cn } from '@/lib/utils/utils'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
@@ -254,6 +255,8 @@ export function NotesList({
               {/* Tagged-task chips: client-side resolution — only tasks from the
                   viewer's own lists render (see noteContent.tsx). */}
               {isLoggedIn && <NoteTaskChips taskIds={note.taskIds} />}
+              {/* Attached media (images/videos/audio/links) rendered inline */}
+              {isLoggedIn && <NoteAttachments documents={note.documents} />}
             </div>
           )
         })}
