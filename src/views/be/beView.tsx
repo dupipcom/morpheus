@@ -12,7 +12,9 @@ import { Badge } from "@/components/ui/badge"
 import { User, UserMinus, Loader2 } from "lucide-react"
 import { Skeleton } from "@/components/ui/skeleton"
 import { toast } from 'sonner'
-import ActivityCard, { ActivityItem as ActivityItemType } from "@/components/activityCard"
+import type { ActivityItem } from "@/components/activityCard"
+import { ActivityGrid } from "@/components/activityGrid"
+import { requestEditNote } from "@/lib/editNoteStore"
 import { OptionsButton, OptionsMenuItem } from "@/components/optionsButton"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { GlobalContext } from "@/lib/contexts"
@@ -487,8 +489,8 @@ export function BeView({
             </SelectContent>
           </Select>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
-          {activityItems.map((item) => {
+        <ActivityGrid
+          items={activityItems.map((item) => {
             const noteData = item.type === 'note' ? (item.data as PublicNote) : null
             const templateData = item.type === 'template' ? (item.data as PublicTemplate) : null
             const activityItem: ActivityItem = {
@@ -503,39 +505,33 @@ export function BeView({
               userId: (noteData as any)?.userId || noteData?.user?.id || undefined, // Add userId for notes
               user: noteData?.user || templateData?.user || undefined,
               comments: (noteData as any)?.comments || (templateData as any)?.comments || undefined,
-              _count: noteData?._count || templateData?._count
+              _count: noteData?._count || templateData?._count,
+              documents: (noteData as any)?.documents || undefined,
+              taskIds: (noteData as any)?.taskIds || undefined,
+              profileIds: (noteData as any)?.profileIds || undefined,
+              listIds: (noteData as any)?.listIds || undefined,
+              eventIds: (noteData as any)?.eventIds || undefined,
+              location: (noteData as any)?.location || undefined
             }
-            
-            const currentUserId = session?.user?.id || null
-            
-            // Check if this item should be highlighted based on filter parameters
-            const isHighlighted = 
-              (filterNoteId && item.type === 'note' && noteData?.id === filterNoteId) ||
-              (filterTemplateId && item.type === 'template' && templateData?.id === filterTemplateId) ||
-              (filterListId && item.type === 'tasklist' && activityItem.id === filterListId) ||
-              (filterProfileId && (
-                (noteData?.user?.id === filterProfileId) ||
-                (templateData?.user?.id === filterProfileId)
-              ))
-            
-            return (
-              <ActivityCard
-                key={item.id}
-                item={activityItem}
-                showUserInfo={true}
-                getTimeAgo={getTimeAgo}
-                isLoggedIn={!!session?.user}
-                currentUserId={currentUserId}
-                isHighlighted={isHighlighted}
-                onNoteUpdated={() => {
-                  // Refresh the activity feed when a note is updated/deleted
-                  fetchPublicNotes(1, false)
-                  fetchPublicTemplates(1, false)
-                }}
-              />
-            )
+            return activityItem
           })}
-        </div>
+          isLoggedIn={!!session?.user}
+          currentUserId={session?.user?.id || null}
+          getTimeAgo={getTimeAgo}
+          showUserInfo={true}
+          isHighlighted={(activityItem) =>
+            (!!filterNoteId && activityItem.type === 'note' && activityItem.id === filterNoteId) ||
+            (!!filterTemplateId && activityItem.type === 'template' && activityItem.id === filterTemplateId) ||
+            (!!filterListId && activityItem.id === filterListId) ||
+            (!!filterProfileId && activityItem.user?.id === filterProfileId)
+          }
+          onNoteUpdated={() => {
+            // Refresh the activity feed when a note is updated/deleted
+            fetchPublicNotes(1, false)
+            fetchPublicTemplates(1, false)
+          }}
+          onEditNote={(item) => requestEditNote({ ...item, content: item.content || '' })}
+        />
         {(hasMoreNotes || hasMoreTemplates) && (
           <div className="flex justify-center mt-6">
             <Button 

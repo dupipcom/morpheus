@@ -5,7 +5,7 @@ import { loadTranslations } from '@/lib/i18n'
 import { auth } from '@clerk/nextjs/server'
 import prisma from "@/lib/prisma"
 import { ProfileView } from '@/views/profile/profileView'
-import { cache } from 'react'
+import { cachedInternalGet } from '@/lib/public/internalFetch'
 
 
 interface ProfileData {
@@ -18,40 +18,12 @@ interface ProfileData {
   publicCharts?: any
 }
 
-// Cache the profile fetch to avoid duplicate requests between generateMetadata and page component
-const getProfile = cache(async (userName: string): Promise<ProfileData | null> => {
-  try {
-    const fetchHeaders: Record<string, string> = {
-      'Accept': 'application/json',
-    }
-    if (process.env.INTERNAL_FETCH_SECRET) {
-      fetchHeaders['x-internal-fetch-secret'] = process.env.INTERNAL_FETCH_SECRET
-    }
-
-    const response = await fetch(`${process.env.VERCEL_URL ? "https://" + process.env.VERCEL_URL : 'http://localhost:3000'}/api/v1/profile/${userName}`, {
-      headers: fetchHeaders,
-    })
-    
-    if (!response.ok) {
-      return null
-    }
-    
-    // Check if response is actually JSON before parsing
-    const contentType = response.headers.get('content-type');
-    if (!contentType || !contentType.includes('application/json')) {
-      return null
-    }
-    
-    const data = await response.json()
-    return data.profile
-  } catch (error) {
-    // Silently fail during build - profile data is optional
-    if (process.env.NODE_ENV === 'development') {
-      console.error('Error fetching profile:', error)
-    }
-    return null
-  }
-})
+// Profile fetch is cached by cachedInternalGet (React.cache) to avoid duplicate
+// requests between generateMetadata and the page component
+const getProfile = async (userName: string): Promise<ProfileData | null> => {
+  const data = await cachedInternalGet<{ profile?: ProfileData }>(`/api/v1/profile/${userName}`)
+  return data?.profile ?? null
+}
 
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string; userName: string }> }): Promise<Metadata> {

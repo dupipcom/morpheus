@@ -26,11 +26,6 @@ enum Areas {
   work
 }
 
-enum BudgetEntryType {
-  LIST_DEFAULT  // Default budget associated with a specific list
-  EXTERNAL      // External budget that can be shared/reused
-}
-
 enum Category {
   body
   spirituality
@@ -449,10 +444,13 @@ model User {
   candidateTasks     Task[]    @relation("TaskCandidates", fields: [candidateTaskIds], references: [id])
   reviewerJobIds     String[]  @default([]) @db.ObjectId
   reviewerJobs       Job[]     @relation("JobReviewers", fields: [reviewerJobIds], references: [id])
+  documents          Document[] @relation("UserDocuments")
+  listRequests       ListRequest[] @relation("ListRequests")
   delegatedAccessGranted Delegation[] @relation("Delegator")
   delegatedAccessReceived Delegation[] @relation("Delegated")
   emailNotifications EmailNotification[]
   virtualNumbers    VirtualNumber[]
+  notifications     Notification[] @relation("UserNotifications")
 }
 
 model VirtualNumber {
@@ -483,6 +481,31 @@ model EmailNotification {
   @@unique([recipientUserId, scopeKey])
   @@index([recipientUserId, type, sentAt])
   @@index([chatMessageId])
+}
+
+// In-app bell notifications. `type` is a structured key the client localizes
+// (JOB_REQUESTED, JOB_ACCEPTED, JOB_REJECTED, LIST_INVITE, ...); `message` is an
+// optional pre-rendered fallback. `actorId`/`resourceId` are display references,
+// deliberately not relations (a deleted actor must not delete the notification).
+model Notification {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  // Recipient (internal User id)
+  userId     String    @db.ObjectId
+  user       User      @relation("UserNotifications", fields: [userId], references: [id], onDelete: Cascade)
+
+  type       String
+  // Internal User id of whoever triggered the notification (optional)
+  actorId    String?   @db.ObjectId
+  // Related resource id (job, list, note, ...)
+  resourceId String?   @db.ObjectId
+  message    String?
+  readAt     DateTime?
+
+  @@index([userId, createdAt])
+  @@index([userId, readAt])
 }
 
 model Profile {
@@ -575,16 +598,22 @@ model Note {
   listIds         String[]       @default([]) @db.ObjectId
   documentIds     String[]       @default([]) @db.ObjectId
   chartIds        String[]       @default([]) @db.ObjectId
+  taskIds         String[]       @default([]) @db.ObjectId
   requesterJobIds String[]       @default([]) @db.ObjectId
   requesterJobs   Job[]          @relation("JobRequesterNotes", fields: [requesterJobIds], references: [id])
   reviewerJobIds  String[]       @default([]) @db.ObjectId
   reviewerJobs    Job[]          @relation("JobReviewersNotes", fields: [reviewerJobIds], references: [id])
+  // Geolocation
+  location        Json?
+  // Reposted list (repost = note about a list)
+  repostedListId  String?        @db.ObjectId
 
   @@index([userId])
   @@index([senderId])
   @@index([recipientId])
   @@index([date])
   @@index([visibility])
+  @@index([taskIds])
 }
 
 model Delegation {
@@ -692,24 +721,25 @@ model List {
   categories           Category[]
   area                 Areas?
   users                UserReference[]
-  templateTasks        EmbeddedTask[]
   history              ListHistoryEntry[]
-  // Budget fields (legacy - will be deprecated)
-  budget               Float?
-  remainingBudget      String?
-  premiumPercentage    Float?             @default(0)
-  budgetDistribution   BudgetDistribution?  // Budget allocation across areas/categories/tasks
-  // Budget relationships (new approach)
-  listBudgetId         String?            @db.ObjectId  // 1:1 with LIST_DEFAULT budget
-  listBudget           Budget?            @relation("ListDefaultBudget", fields: [listBudgetId], references: [id])
-  relatedBudgetIds     String[]           @default([]) @db.ObjectId  // 1:Many with EXTERNAL budgets
-  relatedBudgets       Budget[]           @relation("ListRelatedBudgets", fields: [relatedBudgetIds], references: [id])
+  // Budget (simplified)
+  budget               Float?             // Fiat budget
+  budgetType           String?            // "FIAT" | "PERCENT" (percent of budget sources)
+  budgetPercent        Float?             // 0-100 when budgetType is PERCENT
+  budgetSourceIds      String[]           @default([]) @db.ObjectId  // User Budget records this list draws from
+  budgetSources        Budget[]           @relation("ListBudgetSources", fields: [budgetSourceIds], references: [id])
+  // Public profile
+  bio                  String?
+  profilePhoto         String?
+  links                Json?              // [{ label, url }]
+  publicUrl            String?            @unique // Unique public slug
   // Status fields
-  publicUrl            String?
   ticker               String?
   progress             String?
   completion           Float?
   dueDate              String?
+  // Legacy snapshot of removed fields (preserved for data integrity)
+  legacy               Json?
   // Migration tracking
   migrationMetadata    Json?
   // Relations
@@ -720,6 +750,7 @@ model List {
   tasks                Task[]
   jobs                 Job[]
   comments             Comment[]
+  requests             ListRequest[]
   // Reference arrays
   taskIds              String[]           @default([]) @db.ObjectId
   noteIds              String[]           @default([]) @db.ObjectId
@@ -731,6 +762,21 @@ model List {
   @@index([templateId])
 }
 
+model ListRequest {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status    String   @default("PENDING")   // PENDING | ACCEPTED | DECLINED
+  message   String?
+  listId    String   @db.ObjectId
+  list      List     @relation(fields: [listId], references: [id], onDelete: Cascade)
+  userId    String   @db.ObjectId
+  user      User     @relation("ListRequests", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([listId, userId])
+  @@index([listId])
+}
+
 model Task {
   id                   String              @id @default(auto()) @map("_id") @db.ObjectId
   createdAt            DateTime            @default(now())
@@ -739,34 +785,37 @@ model Task {
   categories           Category[]
   area                 Areas
   status               TaskStatus          @default(OPEN)
-  // Recurrence fields
-  recurrence           RecurrenceRule?
-  nextOccurrence       DateTime?
-  lastOccurrence       DateTime?
-  firstOccurrence      DateTime?
+  // Recurrence (RRULE - RFC 5545 string, e.g. "FREQ=WEEKLY;INTERVAL=1;BYDAY=TH"; null = one-off task)
+  rrule                String?
+  dtstart              String?             // YYYY-MM-DD start date
+  // Materialized recurrence chain: root task id for occurrence rows created at completion
+  recurringTaskId      String?             @db.ObjectId
   // Progress fields
-  times                Int?
-  count                Int?
+  times                Int?                // Target completions per occurrence (counter)
   localeKey            String?
   completedOn          String?
   dueDate              DateTime?
-  budget               Float?
-  earnings             Float?              // Task earnings (was profit/budget consumption)
-  premium              Float?              // Premium allocation (was prize)
-  totalGains           Float?              // Total potential gains for this task
+  // Budget/premium (simplified)
+  premiumType          String?             // "FIAT" | "PERCENT" (percent of list budget)
+  premium              Float?              // Premium value: fiat amount, or percent (0-100) when premiumType is PERCENT
+  // Geolocation
+  location             Json?               // { lat, lng, placeId?, name?, address? }
   visibility           Visibility?
   quality              Int?
   redacted             Boolean?            @default(false)
+  // Legacy snapshot of removed fields (preserved for data integrity)
+  legacy               Json?
   // Embedded references
   persons              PersonReference[]
   things               ThingReference[]
   events               EventReference[]
   notes                NoteReference[]
-  documents            DocumentReference[]
   // Relations
   listId               String?             @db.ObjectId
   list                 List?               @relation(fields: [listId], references: [id], onDelete: Cascade)
   jobs                 Job[]
+  documentIds          String[]            @default([]) @db.ObjectId
+  documents            Document[]          @relation("TaskDocuments", fields: [documentIds], references: [id])
   candidateIds         String[]            @default([]) @db.ObjectId
   candidates           User[]              @relation("TaskCandidates", fields: [candidateIds], references: [id])
   raisedTransactionIds String[]            @default([]) @db.ObjectId
@@ -774,6 +823,8 @@ model Task {
 
   @@index([listId])
   @@index([status])
+  @@index([listId, status])
+  @@index([recurringTaskId])
 }
 
 model Job {
@@ -784,6 +835,10 @@ model Job {
   // The date this job applies to (YYYY-MM-DD format)
   // Allows same task to have different completion states on different days
   occurrenceDate   String?
+  // Justification for requesting the job (required for collaborators, optional for owners/managers)
+  justification    String?
+  // Geolocation (auto-extracted from evidence EXIF when available)
+  location         Json?
   // Review fields
   selfReview       Float?
   peerReview       Float?
@@ -807,6 +862,9 @@ model Job {
   reviewers        User[]      @relation("JobReviewers", fields: [reviewerIds], references: [id])
   reviewersNoteIds String[]    @default([]) @db.ObjectId
   reviewersNotes   Note[]      @relation("JobReviewersNotes", fields: [reviewersNoteIds], references: [id])
+  // Evidence attachments
+  documentIds      String[]    @default([]) @db.ObjectId
+  documents        Document[]  @relation("JobDocuments", fields: [documentIds], references: [id])
 
   @@index([workerId])
   @@index([taskId])
@@ -815,6 +873,7 @@ model Job {
   @@index([occurrenceDate])
   @@index([taskId, occurrenceDate])
   @@index([workerId, occurrenceDate])
+  @@index([listId, occurrenceDate])
 }
 
 model Person {
@@ -872,30 +931,24 @@ model Event {
 }
 
 model Budget {
-  id                String          @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt         DateTime        @default(now())
-  updatedAt         DateTime        @updatedAt
-  name              String
-  description       String?
-  type              BudgetEntryType
-  totalAmount       Float
-  remainingAmount   Float
-  // Task allocations - array of entityId to EntityBudgetAllocation mappings
-  taskAllocations   EntityAllocationsType[]
+  id                     String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+  name                   String
+  description            String?
+  totalAmount            Float
+  remainingAmount        Float
   // Relations
-  ownerId           String          @db.ObjectId
-  owner             User            @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  // Lists that use this as their default budget (1:1 inverse relation - no array needed)
-  defaultForLists   List[]          @relation("ListDefaultBudget")
-  // Lists that reference this as a related budget (many-to-many)
-  relatedToListIds  String[]        @default([]) @db.ObjectId
-  relatedToLists    List[]          @relation("ListRelatedBudgets", fields: [relatedToListIds], references: [id])
+  ownerId                String   @db.ObjectId
+  owner                  User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  // Lists that draw from this budget (many-to-many)
+  budgetSourceForListIds String[] @default([]) @db.ObjectId
+  lists                  List[]   @relation("ListBudgetSources", fields: [budgetSourceForListIds], references: [id])
   // Wallets that reference this budget (many-to-many)
-  walletIds         String[]        @default([]) @db.ObjectId
-  wallets           Wallet[]        @relation("BudgetWallets", fields: [walletIds], references: [id])
+  walletIds              String[] @default([]) @db.ObjectId
+  wallets                Wallet[] @relation("BudgetWallets", fields: [walletIds], references: [id])
 
   @@index([ownerId])
-  @@index([type])
 }
 
 model Chart {
@@ -925,7 +978,17 @@ model Document {
   fileSize     Float?
   fileFormat   String?
   fileDuration Float?
+  mimeType     String?
+  kind         String?         // "image" | "video" | "document"
+  thumbnailUrl String?
+  posterUrl    String?
+  width        Int?
+  height       Int?
+  location     Json?           // { lat, lng, placeId?, name?, address? }
   visibility   Visibility      @default(PRIVATE)
+  // Relations
+  userId       String          @db.ObjectId
+  user         User            @relation("UserDocuments", fields: [userId], references: [id], onDelete: Cascade)
   // Embedded data
   users        UserReference[]
   // Reference arrays
@@ -937,6 +1000,14 @@ model Document {
   personIds    String[]        @default([]) @db.ObjectId
   profileIds   String[]        @default([]) @db.ObjectId
   chartIds     String[]        @default([]) @db.ObjectId
+  taskIds      String[]        @default([]) @db.ObjectId
+  tasks        Task[]          @relation("TaskDocuments", fields: [taskIds], references: [id])
+  jobIds       String[]        @default([]) @db.ObjectId
+  jobs         Job[]           @relation("JobDocuments", fields: [jobIds], references: [id])
+
+  @@index([userId])
+  @@index([taskIds])
+  @@index([jobIds])
 }
 
 model Offer {

@@ -61,7 +61,8 @@
     "saving": "সংরক্ষণ করা হচ্ছে...",
     "decline": "প্রত্যাখ্যান",
     "friendRequest": "বন্ধুত্বের অনুরোধ",
-    "reverseOrder": "ক্রম উল্টানো"
+    "reverseOrder": "ক্রম উল্টানো",
+    "noFriendRequests": "No friend requests"
   },
   "navigation": {
     "home": "হোম",
@@ -181,12 +182,68 @@
       "ready": "প্রস্তুত",
       "open": "খোলা",
       "done": "সম্পন্ন",
-      "ignored": "উপেক্ষিত"
+      "ignored": "উপেক্ষিত",
+      "completed": "Completed"
     },
     "edit": "সম্পাদনা",
     "loadingForDate": "নির্বাচিত তারিখের জন্য কাজগুলি লোড হচ্ছে...",
     "initializingTasks": "আপনার কাজগুলি সেট আপ করা হচ্ছে...",
-    "noTasksForDate": "এই তারিখের জন্য কোনো কাজ নির্ধারিত নেই"
+    "noTasksForDate": "এই তারিখের জন্য কোনো কাজ নির্ধারিত নেই",
+    "delete": "মুছুন...",
+    "deleteTitle": "কাজ মুছুন",
+    "deleteDescription": "এই কাজের কতটুকু মুছতে চান?",
+    "deleteScopes": {
+      "today": "শুধু আজ",
+      "onwards": "আজ থেকে পরবর্তী",
+      "all": "সব এন্ট্রি"
+    },
+    "requestTitle": "কাজের অনুরোধ",
+    "requestDescription": "আপনি কেন এই কাজটি করতে চান তা ব্যাখ্যা করুন। তালিকার মালিক আপনার অনুরোধ পর্যালোচনা করবেন।",
+    "submitTitle": "কাজ জমা দিন",
+    "resubmitTitle": "সংশোধন করে পুনরায় জমা দিন",
+    "submitDescription": "আপনার কাজের প্রমাণ পোস্ট করুন। শীঘ্রই ছবি বা ভিডিও সংযুক্ত করা যাবে।",
+    "reviewTitle": "কাজ পর্যালোচনা",
+    "reviewDescription": "কাজটি গ্রহণ করুন, পরিবর্তনের অনুরোধ করুন বা প্রত্যাখ্যান করুন।",
+    "justificationLabel": "যুক্তি",
+    "justificationPlaceholder": "কেন আপনি এই কাজটি করবেন?",
+    "evidenceLabel": "প্রমাণ / নোট",
+    "evidencePlaceholder": "আপনি কী করেছেন তা বর্ণনা করুন...",
+    "selfReviewLabel": "স্ব-পর্যালোচনা (০-১০০)",
+    "managerReviewLabel": "পর্যালোচনা স্কোর (০-১০০)",
+    "reviewNoteLabel": "মতামত (ঐচ্ছিক)",
+    "sendRequest": "অনুরোধ পাঠান",
+    "resubmit": "পুনরায় জমা দিন",
+    "submit": "জমা দিন",
+    "accept": "গ্রহণ করুন",
+    "requestChanges": "পরিবর্তনের অনুরোধ",
+    "reject": "প্রত্যাখ্যান",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided.",
+    "cv": {
+      "label": "CV (optional)",
+      "reuseLabel": "Your CVs",
+      "reusePlaceholder": "Reuse a previous CV...",
+      "uploading": "Uploading attachment...",
+      "attachedDocuments": "Attached documents",
+      "attachedCount": "{count} attached document(s)",
+      "attachedNote": "Links to the attached documents will be available with the documents API.",
+      "viewDocument": "View document"
+    },
+    "pastBadge": "Past · {date}",
+    "loadOlder": "Load older tasks",
+    "loadingOlder": "Loading...",
+    "evidenceAttachmentsLabel": "Evidence attachments (photos, videos, documents)",
+    "evidenceAttachmentsUnavailable": "Attachments are available once the job exists.",
+    "review": "Review",
+    "decline": "Decline"
   },
   "actions": {
     "drankWater": "পানি পান করেছে",
@@ -547,7 +604,34 @@
       "addTask": "কাজ যোগ করুন",
       "cancel": "বাতিল",
       "editTitle": "টাস্ক সম্পাদনা",
-      "saveTask": "টাস্ক সংরক্ষণ করুন"
+      "saveTask": "টাস্ক সংরক্ষণ করুন",
+      "premiumLabel": "প্রিমিয়াম (ঐচ্ছিক)",
+      "premiumPercentHint": "তালিকার বাজেটের শতাংশ",
+      "cadenceLabel": "পুনরাবৃত্তি",
+      "cadence": {
+        "none": "পুনরাবৃত্তি নেই",
+        "daily": "দৈনিক",
+        "weekly": "সাপ্তাহিক",
+        "monthly": "মাসিক",
+        "yearly": "বার্ষিক",
+        "every": "প্রতি",
+        "day": "দিন",
+        "days": "দিন",
+        "week": "সপ্তাহ",
+        "weeks": "সপ্তাহ",
+        "month": "মাস",
+        "months": "মাস",
+        "year": "বছর",
+        "years": "বছর",
+        "onDay": "দিনে",
+        "onThe": "",
+        "inMonth": "মাসে",
+        "ends": "শেষ",
+        "never": "কখনো না",
+        "after": "পরে",
+        "onDate": "তারিখে",
+        "occurrences": "বার"
+      }
     },
     "addListForm": {
       "titleCreate": "নতুন তালিকা তৈরি করুন",
@@ -610,7 +694,17 @@
       "taskDistributionLabel": "বাজেট",
       "premiumLabel": "পুরস্কার",
       "totalLabel": "মোট",
-      "addTaskTitle": "কাজ যোগ করুন"
+      "addTaskTitle": "কাজ যোগ করুন",
+      "editTitle": "তালিকা সম্পাদনা",
+      "visibilityLabel": "দৃশ্যমানতা",
+      "collaboratorsPlaceholder": "বন্ধু খুঁজুন...",
+      "budgetSourcesLabel": "আপনার বাজেটের শতাংশ:",
+      "noBudgets": "এখনও কোনো বাজেট নেই — নিচে একটি যোগ করুন।",
+      "newBudgetName": "বাজেটের নাম",
+      "confirmDelete": "এই তালিকা এবং এর সব কাজ মুছবেন? এটি ফেরানো যাবে না।",
+      "delete": "মুছুন",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "নতুন টেমপ্লেট তৈরি করুন",
@@ -675,6 +769,36 @@
       "after": "পরে",
       "pickDate": "একটি তারিখ নির্বাচন করুন",
       "occurrences": "বার"
+    },
+    "attachmentPicker": {
+      "browse": "Add files",
+      "dropHere": "Drop files here",
+      "orClick": "or click to choose",
+      "maxReached": "Maximum {max} files",
+      "remove": "Remove",
+      "compress": "Compressing…",
+      "uploading": "Uploading {percent}%",
+      "saving": "Saving…",
+      "usePhotoLocation": "Attach location from this photo?",
+      "locationAttached": "Location attached",
+      "error": {
+        "unsupported": "This file type is not supported",
+        "tooLarge": "This file is too large",
+        "tooLargeAfterCompression": "Still too large after compression",
+        "compressFailed": "Could not compress this file",
+        "compressionUnavailable": "Video compression is unavailable right now",
+        "presignFailed": "Could not start the upload",
+        "uploadFailed": "Upload failed",
+        "saveFailed": "Could not save the attachment",
+        "generic": "Could not add this file"
+      }
+    },
+    "imageCropper": {
+      "title": "Crop image",
+      "apply": "Apply",
+      "cancel": "Cancel",
+      "dragHint": "Drag the image to position it in the frame",
+      "error": "Could not load this image"
     }
   },
   "charts": {
@@ -900,7 +1024,10 @@
         "submitted": "পর্যালোচনার জন্য কাজ জমা দেওয়া হয়েছে",
         "resubmitted": "পর্যালোচনার জন্য কাজ পুনরায় জমা দেওয়া হয়েছে"
       }
-    }
+    },
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "নোট সফলভাবে আপডেট হয়েছে",
@@ -919,7 +1046,17 @@
       "date": "তারিখ",
       "mostRelevant": "সবচেয়ে প্রাসঙ্গিক",
       "all": "সব"
-    }
+    },
+    "taskTags": "Tagged tasks",
+    "extensions": {
+      "attach": "Attachments",
+      "location": "Location",
+      "people": "Tag people",
+      "lists": "Tag lists",
+      "tasks": "Tag tasks",
+      "events": "Tag events"
+    },
+    "editing": "Editing note"
   },
   "chat": {
     "title": "চ্যাট",
@@ -1023,5 +1160,44 @@
     "FAMILY": "Family",
     "THERAPIST": "Therapist",
     "HOUSEHOLD": "Household"
+  },
+  "notifications": {
+    "types": {
+      "JOB_REQUESTED": "{{actorName}} requested to work on one of your tasks",
+      "JOB_ACCEPTED": "{{actorName}} approved your work request",
+      "JOB_REJECTED": "{{actorName}} declined your work request",
+      "LIST_INVITE": "{{actorName}} added you to a list"
+    }
+  },
+  "components": {
+    "placePicker": {
+      "searchError": "Search failed. Try again.",
+      "detailsError": "Could not load this place.",
+      "geolocationError": "Location is not available on this device.",
+      "invalidCoordinates": "Enter valid latitude and longitude.",
+      "removeLocation": "Remove location",
+      "placeholder": "Search for a place...",
+      "searching": "Searching...",
+      "noResults": "No results found",
+      "resultsLabel": "Place results",
+      "locating": "Locating...",
+      "useCurrentLocation": "Use my current location",
+      "enterCoordinates": "Enter coordinates",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "applyCoordinates": "Apply",
+      "coordinates": "{lat}, {lng}"
+    },
+    "locationMap": {
+      "mapAlt": "Map",
+      "openInMaps": "Open in Maps"
+    },
+    "entityTagPicker": {
+      "searchPlaceholder": "Search",
+      "noResults": "No results found",
+      "removeTag": "Remove tag",
+      "maxTagsReached": "Maximum of 10 tags",
+      "searching": "Searching…"
+    }
   }
 }

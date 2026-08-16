@@ -56,7 +56,7 @@ export async function continueConversation(
   const fullDate = new Date();
   const date = fullDate.toISOString().split('T')[0];
   const year = Number(date.split('-')[0]);
-  const weekNumber = getWeekNumber(fullDate)[1];
+  const weekNumber = getWeekNumber(fullDate).week;
 
   const startStream = async () => {
     try {

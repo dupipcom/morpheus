@@ -13,7 +13,6 @@ import { Switch } from "@/components/ui/switch"
 
 import { SlidersVertical, LogIn, DoorOpen, User, LogOut, Users, Sparkles } from "lucide-react"
 import { NavSkeleton } from "./skeletonLoader"
-import { TickerStrip } from "@/components/tickerStrip"
 
 // UserButtonMenu component to handle translations properly
 const UserButtonMenu = () => {

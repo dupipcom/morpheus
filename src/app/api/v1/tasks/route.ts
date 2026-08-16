@@ -1,12 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
-import { getUserListRole } from '@/lib/services/auth'
+import { ApiError, toResponse } from '@/lib/services/errors'
+import { getViewerRole } from '@/lib/services/ownership'
 import { getTasksForDate } from '@/lib/services/task'
+import { resolveListBudget, resolveTaskFinancials } from '@/lib/services/finance/premiumService'
 import { sanitizeText } from '@/lib/utils/sanitize'
-import { applyPremiumFactors, PremiumFactorSettings } from '@/lib/utils/earningsUtils'
-import { calculateTaskBudgetFromDistribution } from '@/lib/services/task/taskMigrationService'
+import { PremiumFactorSettings } from '@/lib/utils/earningsUtils'
 
+const TASK_STATUSES = ['OPEN', 'IN_PROGRESS', 'STEADY', 'READY', 'DONE', 'IGNORED', 'SKIPPED', 'COMPLETED']
+const AREAS = ['self', 'home', 'social', 'work']
+const OBJECT_ID_PATTERN = /^[a-f0-9]{24}$/i
+
+/**
+ * GET /api/v1/tasks?date=YYYY-MM-DD&listId=...
+ * Date-aware mode: returns the tasks that occur on the given date with
+ * date-specific status/count/completers and simplified financials.
+ */
 export async function GET(request: NextRequest) {
   try {
     const { userId } = await auth()
@@ -27,221 +37,71 @@ export async function GET(request: NextRequest) {
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
-    
-    // Extract premium factor settings
+
     const premiumFactorSettings = user.settings as PremiumFactorSettings | null
 
     const { searchParams } = new URL(request.url)
     const listId = searchParams.get('listId')
     const date = searchParams.get('date')
-    const status = searchParams.get('status')
-    const area = searchParams.get('area')
 
-    // NEW: If date is provided with listId, use date-aware service
-    if (date && listId) {
-      // Verify user has access to this list and get budget info
-      const list = await prisma.list.findUnique({
-        where: { id: listId },
-        select: { 
-          users: true, 
-          role: true,
-          budget: true,
-          budgetDistribution: true,
-          premiumPercentage: true,
-          tasks: {
-            select: {
-              id: true,
-              area: true,
-              categories: true
-            }
-          }
-        }
-      })
-
-      if (!list) {
-        return NextResponse.json({ error: 'List not found' }, { status: 404 })
-      }
-
-      const hasAccess = list.users.some(
-        (userRef: any) =>
-          userRef.userId === user.id &&
-          ['OWNER', 'MANAGER', 'COLLABORATOR', 'FOLLOWER'].includes(userRef.role)
-      )
-
-      if (!hasAccess) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
-      }
-
-      // Get tasks for the specific date with recurrence filtering
-      // Pass list.role to avoid an extra DB query in getTasksForDate
-      const tasksForDate = await getTasksForDate(listId, date, list.role)
-
-      // Map to response format and calculate financial values from budget distribution
-      const tasks = tasksForDate.map(({ task, dateStatus, dateCount, completers }) => {
-        // Calculate financial values from budget distribution (not from task fields)
-        const budgetAllocation = calculateTaskBudgetFromDistribution({
-          task,
-          list: {
-            budget: list.budget,
-            budgetDistribution: list.budgetDistribution,
-            premiumPercentage: list.premiumPercentage,
-            tasks: list.tasks,
-            role: list.role
-          }
-        })
-        
-        const rawPremium = budgetAllocation.premium || 0
-        const factoredPremium = applyPremiumFactors(rawPremium, list.role, premiumFactorSettings)
-        const earnings = budgetAllocation.budget || 0
-        
-        return {
-          ...task,
-          premium: factoredPremium,
-          totalGains: earnings + factoredPremium,
-          dateStatus,      // Date-specific status
-          dateCount,       // Date-specific count
-          completers,      // Date-specific completers
-          taskStatus: task.status  // Keep original task status for reference
-        }
-      })
-
-      return NextResponse.json({ tasks, date })
+    if (!date || !listId) {
+      return NextResponse.json({ error: 'Missing required parameters: date and listId' }, { status: 400 })
     }
 
-    // EXISTING: Non-date-filtered query (for backwards compatibility)
-    // Build where clause
-    const whereClause: any = {}
-
-    if (listId) {
-      whereClause.listId = listId
-    }
-    if (status) {
-      // Support multiple statuses separated by comma
-      const statuses = status.split(',').map(s => s.trim()).filter(Boolean)
-      if (statuses.length === 1) {
-        whereClause.status = statuses[0]
-      } else if (statuses.length > 1) {
-        whereClause.status = { in: statuses }
-      }
-    }
-    if (area) {
-      whereClause.area = area
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !OBJECT_ID_PATTERN.test(listId)) {
+      return NextResponse.json({ error: 'Invalid date or listId format' }, { status: 400 })
     }
 
-    // Fetch tasks
-    const tasks = await prisma.task.findMany({
-      where: whereClause,
-      include: {
-        list: {
-          select: {
-            id: true,
-            name: true,
-            users: true,
-            role: true,
-            budget: true,
-            budgetDistribution: true,
-            premiumPercentage: true,
-            tasks: {
-              select: {
-                id: true,
-                area: true,
-                categories: true
-              }
-            }
-          }
-        },
-        jobs: {
-          include: {
-            worker: {
-              select: {
-                id: true,
-                userId: true,
-                profiles: {
-                  select: {
-                    username: true,
-                    data: true
-                  }
-                }
-              }
-            }
-          }
-        },
-        candidates: {
-          select: {
-            id: true,
-            userId: true,
-            profiles: {
-              select: {
-                username: true,
-                data: true
-              }
-            }
-          }
-        },
-        raisedTransactions: true
-      },
-      orderBy: {
-        createdAt: 'desc'
+    // Verify user has access to this list and get budget info
+    const list = await prisma.list.findUnique({
+      where: { id: listId },
+      select: {
+        users: true,
+        role: true,
+        budget: true,
+        budgetType: true,
+        budgetPercent: true,
+        budgetSources: { select: { remainingAmount: true } },
+        _count: { select: { tasks: true } }
       }
     })
 
-    // Filter tasks by membership - user must be a member of the list
-    const authorizedTasks = tasks.filter((task: any) => {
-      if (!task.list) {
-        return false
-      }
-      return task.list.users.some(
-        (userRef: any) =>
-          userRef.userId === user.id &&
-          ['OWNER', 'MANAGER', 'COLLABORATOR', 'FOLLOWER'].includes(userRef.role)
-      )
-    })
+    if (!list) {
+      return NextResponse.json({ error: 'List not found' }, { status: 404 })
+    }
 
-    // Calculate count from ACCEPTED jobs (global total across all dates)
-    // and calculate financial values from budget distribution
-    const enrichedTasks = authorizedTasks.map((task: any) => {
-      const acceptedJobs = task.jobs?.filter((job: any) => job.status === 'ACCEPTED') || []
-      const count = acceptedJobs.length
-      const times = task.times || 1
+    const viewerRole = await getViewerRole(user.id, 'list', list)
 
-      // Calculate global status based on count
-      let status = task.status
-      if (count >= times) {
-        status = 'DONE'
-      } else if (count > 0) {
-        status = 'IN_PROGRESS'
-      } else {
-        status = 'OPEN'
-      }
-      
-      // Calculate financial values from budget distribution (not from task fields)
-      const budgetAllocation = calculateTaskBudgetFromDistribution({
-        task,
-        list: {
-          budget: task.list?.budget,
-          budgetDistribution: task.list?.budgetDistribution,
-          premiumPercentage: task.list?.premiumPercentage,
-          tasks: task.list?.tasks,
-          role: task.list?.role
-        }
-      })
-      
-      const listRole = task.list?.role
-      const rawPremium = budgetAllocation.premium || 0
-      const factoredPremium = applyPremiumFactors(rawPremium, listRole, premiumFactorSettings)
-      const earnings = budgetAllocation.budget || 0
+    if (viewerRole === null) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
+    }
+
+    // Get tasks for the specific date with RRULE filtering
+    const tasksForDate = await getTasksForDate(listId, date, list.role)
+
+    // Map to response format with simplified financials
+    const listBudget = resolveListBudget(list)
+    const numTasks = list._count.tasks
+
+    const tasks = tasksForDate.map(({ task, dateStatus, dateCount, completers }) => {
+      const financials = resolveTaskFinancials(task, listBudget, numTasks, premiumFactorSettings)
 
       return {
         ...task,
-        count,
-        status,  // Override with calculated status
-        premium: factoredPremium,
-        totalGains: earnings + factoredPremium
+        premium: financials.premium,
+        totalGains: financials.totalGains,
+        dateStatus,      // Date-specific status
+        dateCount,       // Date-specific count
+        completers,      // Date-specific completers
+        taskStatus: task.status  // Keep original task status for reference
       }
     })
 
-    return NextResponse.json({ tasks: enrichedTasks })
+    return NextResponse.json({ tasks, date })
   } catch (error) {
+    if (error instanceof ApiError) {
+      return toResponse(error)
+    }
     console.error('Error fetching tasks:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
@@ -264,50 +124,52 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    const body = await request.json()
+    const body = await request.json().catch(() => null)
+    if (!body || typeof body !== 'object') {
+      return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
+    }
+
     const {
-      name,
-      categories,
-      area,
-      status,
-      listId,
-      recurrence,
-      nextOccurrence,
-      lastOccurrence,
-      firstOccurrence,
-      times,
-      count,
-      localeKey,
-      persons,
-      things,
-      events,
-      notes,
-      documents,
-      completedOn,
-      dueDate,
-      budget,
-      visibility,
-      quality,
-      redacted,
-      candidateIds,
-      raisedTransactionIds
-    } = body
+      name, listId, rrule, dtstart, times, premium, premiumType, location,
+      categories, area, status, visibility, quality, redacted, candidateIds, localeKey
+    } = body as Record<string, unknown>
 
     // Validate required fields
-    if (!name || !area || !listId) {
-      return NextResponse.json(
-        { error: 'Missing required fields: name, area, and listId are required' },
-        { status: 400 }
-      )
+    if (typeof name !== 'string' || !name.trim()) {
+      return NextResponse.json({ error: 'Missing required field: name' }, { status: 400 })
+    }
+    if (typeof listId !== 'string' || !OBJECT_ID_PATTERN.test(listId)) {
+      return NextResponse.json({ error: 'Missing required field: listId' }, { status: 400 })
     }
 
     // Sanitize user input to prevent XSS attacks
     const sanitizedName = sanitizeText(name)
 
-    // Check authorization - user must be OWNER or MANAGER of the list
-    const role = await getUserListRole(user.id, listId)
+    if (status !== undefined && (typeof status !== 'string' || !TASK_STATUSES.includes(status))) {
+      return NextResponse.json({ error: 'Invalid status' }, { status: 400 })
+    }
+    if (area !== undefined && (typeof area !== 'string' || !AREAS.includes(area))) {
+      return NextResponse.json({ error: 'Invalid area' }, { status: 400 })
+    }
+    if (premiumType !== undefined && premiumType !== null && !['FIAT', 'PERCENT'].includes(String(premiumType))) {
+      return NextResponse.json({ error: 'Invalid premiumType' }, { status: 400 })
+    }
+    if (rrule !== undefined && rrule !== null && typeof rrule !== 'string') {
+      return NextResponse.json({ error: 'rrule must be a string' }, { status: 400 })
+    }
 
-    if (!role || !['OWNER', 'MANAGER'].includes(role)) {
+    let parsedCandidateIds: string[] = []
+    if (candidateIds !== undefined) {
+      if (!Array.isArray(candidateIds) || !candidateIds.every((v) => typeof v === 'string' && OBJECT_ID_PATTERN.test(v))) {
+        return NextResponse.json({ error: 'candidateIds must be an array of user IDs' }, { status: 400 })
+      }
+      parsedCandidateIds = candidateIds as string[]
+    }
+
+    // Check authorization - user must be OWNER or MANAGER of the list
+    const role = await getViewerRole(user.id, 'list', listId)
+
+    if (role !== 'OWNER' && role !== 'MANAGER') {
       return NextResponse.json(
         { error: 'Unauthorized: Only list owners and managers can create tasks' },
         { status: 403 }
@@ -318,30 +180,21 @@ export async function POST(request: NextRequest) {
     const task = await prisma.task.create({
       data: {
         name: sanitizedName,
-        categories: categories || [],
-        area,
-        status: status || 'OPEN',
+        categories: (Array.isArray(categories) && categories.every((c) => typeof c === 'string') ? categories as string[] : []) as never,
+        area: (typeof area === 'string' ? area : 'self') as never,
+        status: typeof status === 'string' ? status as never : 'OPEN',
         listId,
-        recurrence,
-        nextOccurrence: nextOccurrence ? new Date(nextOccurrence) : undefined,
-        lastOccurrence: lastOccurrence ? new Date(lastOccurrence) : undefined,
-        firstOccurrence: firstOccurrence ? new Date(firstOccurrence) : undefined,
-        times,
-        count,
-        localeKey,
-        persons: persons || [],
-        things: things || [],
-        events: events || [],
-        notes: notes || [],
-        documents: documents || [],
-        completedOn,
-        dueDate: dueDate ? new Date(dueDate) : undefined,
-        budget,
-        visibility,
-        quality,
-        redacted,
-        candidateIds: candidateIds || [],
-        raisedTransactionIds: raisedTransactionIds || []
+        rrule: rrule !== undefined ? (rrule as string | null) : null,
+        dtstart: typeof dtstart === 'string' ? dtstart : null,
+        times: typeof times === 'number' && times > 0 ? times : null,
+        premium: typeof premium === 'number' ? premium : null,
+        premiumType: typeof premiumType === 'string' ? premiumType : null,
+        location: location && typeof location === 'object' ? location : null,
+        localeKey: typeof localeKey === 'string' ? localeKey : null,
+        visibility: visibility as never,
+        quality: typeof quality === 'number' ? quality : null,
+        redacted: typeof redacted === 'boolean' ? redacted : false,
+        candidateIds: parsedCandidateIds
       },
       include: {
         list: {
@@ -370,6 +223,9 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ task })
   } catch (error) {
+    if (error instanceof ApiError) {
+      return toResponse(error)
+    }
     console.error('Error creating task:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }

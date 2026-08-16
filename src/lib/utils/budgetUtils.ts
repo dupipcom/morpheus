@@ -6,6 +6,7 @@ import prisma from '@/lib/prisma'
 
 /**
  * Recalculates and updates the user's budget allocation based on all their task lists
+ * Sums the budgetPercent of owned PERCENT-budget lists.
  * @param userId - The MongoDB ObjectId of the user
  */
 export async function recalculateUserBudget(userId: string): Promise<void> {
@@ -21,13 +22,15 @@ export async function recalculateUserBudget(userId: string): Promise<void> {
         }
       },
       select: {
-        premiumPercentage: true
+        budgetType: true,
+        budgetPercent: true
       }
     })
 
-    // Calculate total used budget (sum of all premiumPercentage values)
+    // Calculate total used budget (sum of budgetPercent for PERCENT-budget lists)
     const usedBudget = taskLists.reduce((sum, list) => {
-      return sum + (list.premiumPercentage || 0)
+      if (list.budgetType !== 'PERCENT') return sum
+      return sum + (list.budgetPercent || 0)
     }, 0)
 
     // Calculate remaining budget
@@ -98,13 +101,15 @@ export async function validateBudgetAllocation(
     const taskLists = await prisma.list.findMany({
       where,
       select: {
-        premiumPercentage: true
+        budgetType: true,
+        budgetPercent: true
       }
     })
 
     // Calculate total used budget (excluding current list)
     const usedBudget = taskLists.reduce((sum, list) => {
-      return sum + (list.premiumPercentage || 0)
+      if (list.budgetType !== 'PERCENT') return sum
+      return sum + (list.budgetPercent || 0)
     }, 0)
 
     // Check if new allocation would exceed 100%

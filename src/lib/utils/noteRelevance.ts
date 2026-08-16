@@ -85,10 +85,10 @@ export function normalizeNoteSortBy(rawSort: string | null | undefined): NoteSor
   return rawSort === 'most_relevant' ? 'most_relevant' : 'date'
 }
 
-export function sortNotes(
-  notes: Array<{ createdAt: string | Date; relevanceScore?: number }>,
+export function sortNotes<T extends { createdAt: string | Date; relevanceScore?: number }>(
+  notes: T[],
   sortBy: NoteSortBy
-) {
+): T[] {
   if (sortBy === 'most_relevant') {
     return [...notes].sort((a, b) => {
       const scoreDiff = (b.relevanceScore || 0) - (a.relevanceScore || 0)

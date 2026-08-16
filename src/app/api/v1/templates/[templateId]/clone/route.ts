@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
+import type { EmbeddedTask } from '@/generated/prisma'
+import { buildRRuleFromLegacy } from '@/lib/utils/rruleUtils'
+import { generatePublicUrl, temporaryPublicUrl } from '@/lib/services/list/taskListCrudService'
 
 export async function POST(
   request: NextRequest,
@@ -51,10 +54,38 @@ export async function POST(
         role: 'custom', // Cloned lists are custom
         users: [{ userId: user.id, role: 'OWNER' }],
         templateId: template.id,
-        templateTasks: template.tasks as any,
-        // Note: tasks relation is not set here - the migration system will create Task records from templateTasks
+        // Placeholder avoids the null-collision on the unique publicUrl index;
+        // the real slug is assigned below.
+        publicUrl: temporaryPublicUrl()
       },
     })
+
+    // Assign the real slug now that the row (and its id suffix) exists
+    const publicUrl = await generatePublicUrl(taskList.name, taskList.id)
+    await prisma.list.update({ where: { id: taskList.id }, data: { publicUrl } })
+
+    // Create Task records from the template's embedded tasks
+    const templateTasks = (template.tasks as EmbeddedTask[]) || []
+    if (templateTasks.length > 0) {
+      const taskCreatePromises = templateTasks.map((t) =>
+        prisma.task.create({
+          data: {
+            name: t.name,
+            categories: (t.categories || []) as never,
+            area: (t.area || 'self') as never,
+            status: 'OPEN',
+            listId: taskList.id,
+            rrule: buildRRuleFromLegacy(t.recurrence),
+            times: t.times || 1,
+            localeKey: t.localeKey || null,
+            visibility: (t.visibility || null) as never,
+            quality: t.quality || null,
+            redacted: t.redacted || false
+          }
+        })
+      )
+      await Promise.all(taskCreatePromises)
+    }
 
     // Update the template to track who cloned it
     await prisma.template.update({

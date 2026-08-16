@@ -2,84 +2,44 @@
 
 ## Purpose
 
-The DoView is the task management hub of the application. It orchestrates the creation of tasks, task lists, and templates, then delegates rendering to the `ListView` component. It serves as the primary interface for users to manage their daily/weekly tasks and track progress.
+The DoView is the task management hub. It orchestrates task/list creation forms and delegates rendering to the TaskGrid. Rebuilt during the Do rebuild (#441 follow-up): plain SWR data fetching, no legacy completedTasks merging, no auto-migration.
 
-## File: `doView.tsx`
+## Files
 
-## Component Architecture
+- `doView.tsx` — orchestrator: SWR tasks-for-date + jobs, collaborator profiles, forms, TaskGrid
+- `doPage.tsx` — shared client page (list selection, date URL param, redirect logic); used by both `/app/do` and `/app/do/[listId]` routes
+
+## Data Flow
 
 ```
-DoView
-├── AddTaskForm (conditional, from forms/)
-├── AddListForm (conditional, from forms/)
-├── AddTemplateForm (conditional, from forms/)
-└── ListView (from list/)
+DoPage ── DoToolbar (useTaskLists, ?date= URL param, plus menu)
+       └─ DoView
+          ├─ AddListForm / AddTaskForm dialogs
+          └─ TaskGrid ← SWR /api/v1/tasks?date&listId
+               ├─ TaskItem (tap = POST /api/v1/jobs; counter; status menu)
+               └─ JobDialog (request+justification / submit evidence / review)
 ```
 
 ## State Management
-
-### GlobalContext Integration
-- Reads `taskLists` and `templates` from `GlobalContext` via `useContext`
-- Uses `refreshTaskLists()` and `refreshTemplates()` to trigger re-fetches
-- Maintains `stableTaskLists` and `stableTemplates` local state to prevent flashing (never clears once data is loaded)
-- Auto-refreshes task lists every 30 seconds via `setInterval`
-
-### Optimistic Updates
-- Uses `useOptimisticUpdates()` hook for `pendingTaskCreationsRef` - tracks tasks being created optimistically
-- Passes `mutateTasksRef` to `ListView` via `onMutateTasksReady` callback for coordinated mutation after actions
-
-### Props (Controlled Pattern)
-```typescript
-{
-  selectedTaskListId?: string    // Which list is selected
-  selectedDate?: Date            // Which date to show tasks for
-  onDateChange?: (date: Date | undefined) => void
-  onAddEphemeral?: () => Promise<void> | void
-  showAddTask?: boolean          // Toggle add task form
-  showAddList?: boolean          // Toggle add list form
-  showAddTemplate?: boolean      // Toggle add template form
-  isEditingList?: boolean        // Edit mode for list
-  onCloseAddTask?: () => void
-  onCloseAddList?: () => void
-  onCloseAddTemplate?: () => void
-  onTaskCreated?: () => Promise<void> | void
-  onListCreated?: (newListId?: string) => Promise<void> | void
-  onTemplateCreated?: () => Promise<void> | void
-}
-```
-
-## Correlations
-
-| Related To | Relationship |
-|---|---|
-| **ListView** | Parent component - orchestrates forms, delegates task grid rendering |
-| **AddTaskForm** | Modal form for creating new tasks (from forms/) |
-| **AddListForm** | Modal form for creating/editing task lists (from forms/) |
-| **AddTemplateForm** | Modal form for creating task templates (from forms/) |
-| **GlobalContext** | Reads taskLists, templates; calls refresh functions |
-| **useOptimisticUpdates** | Tracks pending task creation operations |
-| **DashboardView** | Navigated to alongside DoView in the app shell |
-
-## User Stories
-
-1. **As a user**, I can see all my task lists so I can switch between different contexts
-2. **As a user**, I can create a new task within a list to track what I need to do
-3. **As a user**, I can create a new task list to organize tasks by project or area
-4. **As a user**, I can create task templates for recurring task structures
-5. **As a user**, I can edit an existing task list to change its name, tasks, or settings
-6. **As a user**, I can add ephemeral (one-time, non-template) tasks to a list
-7. **As a user**, I can navigate between dates to see past or planned task completion
+- `useTaskLists` — SWR `/api/v1/tasklists` (replaces GlobalContext taskLists + 30s polling)
+- `useUserData` — internal user id + refresh
+- SWR tasks/jobs with 60s jobs refresh
 
 ## API Endpoints
 
-| Endpoint | Method | Used By | Purpose |
-|---|---|---|---|
-| `/api/v1/tasks?listId=&date=` | GET | ListView (child) | Fetch tasks for a list on a date |
-| `/api/v1/jobs?listId=&date=` | GET | ListView (child) | Fetch jobs for task list |
-| `/api/v1/profiles/by-ids` | GET | ListView (child) | Fetch collaborator profiles |
+| Endpoint | Method | Purpose |
+|---|---|---|
+| `/api/v1/tasks?listId=&date=` | GET | Date-aware tasks (RRULE) |
+| `/api/v1/jobs?listId=&date=` | GET | Jobs for the grid |
+| `/api/v1/jobs` | POST | Complete/request tasks |
+| `/api/v1/jobs/{id}` | PUT | Status transitions, evidence, reviews |
+| `/api/v1/tasks/{id}` | PUT/DELETE | Edit / scoped delete |
+| `/api/v1/tasklists` | GET/POST | Lists |
+| `/api/v1/tasklists/{id}` | GET/PUT/DELETE | List detail/update/delete |
+| `/api/v1/profiles/by-ids` | GET | Collaborator names |
 
-## Key Behaviors
-
-- **Stable state pattern**: Once task lists/templates are loaded, they never clear (avoids UI flash during refetches)
-- **Controlled/uncontrolled hybrid**: Accepts props for parent control, falls back to internal state
-- **30-second polling**: Auto-refreshes task lists periodically to show collaborator changes
+## User Stories
+1. **As a user**, I can see my tasks for any date with completion status and counters
+2. **As a collaborator**, I can request work on a task with a justification, and submit evidence for review
+3. **As an owner/manager**, I can accept, request changes, or reject submitted work
+4. **As a user**, I can delete tasks for today only, from today onwards, or entirely

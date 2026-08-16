@@ -1,4 +1,20 @@
-# Template Migration Scripts
+# Migration Scripts
+
+## Do Rebuild Migrations (run in order)
+
+These migrations accompany the Do module rebuild (follow-up on #441, PR A). They convert legacy data onto the simplified schema while preserving everything in `legacy` JSON snapshots. All are idempotent — safe to re-run.
+
+| # | File | What it does |
+|---|---|---|
+| 1 | `node src/migrations/0017-convert-task-recurrence-to-rrule.js` | Task: `recurrence` → `rrule` RRULE string (+ `dtstart`); snapshots removed recurrence/financial fields into `Task.legacy`; maps `premium` → `premiumType: FIAT`; derives `FREQ=DAILY`/`FREQ=WEEKLY` from list role prefix for tasks without a rule; unsets removed fields |
+| 2 | `node src/migrations/0018-simplify-list-budgets.js` | List: snapshots `templateTasks`/`remainingBudget`/`premiumPercentage`/`budgetDistribution`/`listBudgetId`/`relatedBudgetIds` into `List.legacy`; maps `premiumPercentage` → `budgetType: PERCENT`/`budgetPercent`, `budget` → `budgetType: FIAT`; unsets removed fields |
+| 3 | `node src/migrations/0019-convert-task-documents.js` | Task: embedded `documents` (DocumentReference[]) → real `Document` records (owned by the list owner) + `Task.documentIds`; unsets the embedded array |
+
+**Before running**: `npx prisma generate` (the scripts use the new client), backup the database, and run against staging first. Migrations 0017-0019 must complete before deploying the new API routes.
+
+---
+
+## Template Migration Scripts (legacy)
 
 This directory contains scripts to migrate daily and weekly templates from user settings to the new Templates collection.
 

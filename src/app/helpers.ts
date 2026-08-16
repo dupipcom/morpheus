@@ -26,20 +26,11 @@ export const getLocaleFromPath= (pathname: string) => {
   return defaultLocale
 }
 
-export function getWeekNumber(d: Date): [number, number] {
-    // Copy date so don't modify original
-    d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-    // Set to nearest Thursday: current date + 4 - current day number
-    // Make Sunday's day number 7
-    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
-    // Get first day of year (ISO year = year of the Thursday)
-    const isoYear = d.getUTCFullYear();
-    const yearStart = new Date(Date.UTC(isoYear,0,1));
-    // Calculate full weeks to nearest Thursday
-    const weekNo = Math.ceil(( ( (d.getTime() - yearStart.getTime()) / 86400000) + 1)/7);
-    // Return array of [ISO year, week number]
-    return [isoYear, weekNo];
-}
+/**
+ * @deprecated Use `getWeekNumber` from `src/lib/utils/date.ts` instead.
+ * Re-exported here for one release so imports can migrate gradually.
+ */
+export { getWeekNumber } from '../lib/utils/date'
 
 /**
  * Formats two ISO date strings (YYYY-MM-DD) as a human-readable date range.

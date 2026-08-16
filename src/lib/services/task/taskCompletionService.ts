@@ -1,6 +1,6 @@
 import prisma from '@/lib/prisma'
-import type { Task, TaskStatus, Job } from '@/generated/prisma/client'
-import { calculateNextOccurrence } from './taskRecurrenceService'
+import type { Task, TaskStatus } from '@/generated/prisma/client'
+import { getWeekRange, nextOccurrenceAfter, rruleFrequency } from './recurrenceService'
 
 /**
  * Task completion data for a specific date
@@ -83,29 +83,46 @@ export function calculateStatusFromCount(count: number, times: number): TaskStat
 }
 
 /**
- * Check if a task is non-recurring (no recurrence rule or frequency is NONE)
- */
-function isNonRecurringTask(recurrence: { frequency?: string } | null): boolean {
-  return !recurrence || recurrence.frequency === 'NONE'
-}
-
-/**
  * Calculate the status for a non-recurring task based on completion count
  * Returns COMPLETED if done, OPEN if not done, or null if task is recurring
  */
 function calculateNonRecurringTaskStatus(
-  recurrence: { frequency?: string } | null,
+  rrule: string | null | undefined,
   completedCount: number,
   requiredTimes: number
 ): 'OPEN' | 'COMPLETED' | null {
-  if (!isNonRecurringTask(recurrence)) {
+  if (rrule) {
     return null
   }
   return completedCount >= requiredTimes ? 'COMPLETED' : 'OPEN'
 }
 
 /**
- * Update task occurrence dates after a completion or deletion
+ * Count ACCEPTED jobs for a specific occurrence of a task.
+ * Weekly tasks aggregate across the whole Monday-Sunday week (same rule as
+ * getTasksForDate); all others match the exact occurrence date.
+ */
+export async function countAcceptedForOccurrence(
+  taskId: string,
+  rrule: string | null,
+  occurrenceDate: string
+): Promise<number> {
+  const dates =
+    rruleFrequency(rrule) === 'WEEKLY'
+      ? getWeekRange(occurrenceDate).allDates
+      : [occurrenceDate]
+  return prisma.job.count({
+    where: { taskId, status: 'ACCEPTED', occurrenceDate: { in: dates } }
+  })
+}
+
+/**
+ * Update a task's status after a completion or deletion.
+ * One-off tasks (no rrule) that reach their counter become COMPLETED; when
+ * completions drop below the counter they reset to OPEN.
+ * Recurring tasks (rrule) materialize their next occurrence as a new Task row
+ * once the occurrence's accepted count reaches times; un-accepting rolls the
+ * materialization back.
  */
 export async function updateTaskOccurrenceDates(
   taskId: string,
@@ -114,19 +131,10 @@ export async function updateTaskOccurrenceDates(
 ): Promise<void> {
   const task = await prisma.task.findUnique({
     where: { id: taskId },
-    select: {
-      id: true,
-      firstOccurrence: true,
-      lastOccurrence: true,
-      recurrence: true,
-      times: true,
+    include: {
       jobs: {
         where: { status: 'ACCEPTED' },
-        select: {
-          occurrenceDate: true,
-          createdAt: true
-        },
-        orderBy: { createdAt: 'asc' }
+        select: { id: true }
       }
     }
   })
@@ -135,83 +143,98 @@ export async function updateTaskOccurrenceDates(
     throw new Error(`Task not found: ${taskId}`)
   }
 
-  const updateData: {
-    firstOccurrence?: Date | null
-    lastOccurrence?: Date | null
-    nextOccurrence?: Date | null
-    status?: 'OPEN' | 'COMPLETED'
-  } = {}
-
-  if (operation === 'complete') {
-    // Set firstOccurrence if this is the first completion ever
-    if (!task.firstOccurrence && task.jobs.length > 0) {
-      const firstJob = task.jobs[0]
-      if (firstJob.occurrenceDate) {
-        updateData.firstOccurrence = new Date(firstJob.occurrenceDate)
+  // Recurring tasks: advance the series on completion
+  if (task.rrule) {
+    if (operation === 'complete') {
+      const count = await countAcceptedForOccurrence(taskId, task.rrule, occurrenceDate)
+      if (count >= (task.times || 1)) {
+        await materializeOccurrence(task, occurrenceDate)
       }
-    }
-
-    // Update lastOccurrence to the most recent completion date
-    const lastJob = task.jobs[task.jobs.length - 1]
-    if (lastJob?.occurrenceDate) {
-      updateData.lastOccurrence = new Date(lastJob.occurrenceDate)
-
-      // Calculate next occurrence if task has recurrence
-      if (task.recurrence) {
-        const nextOccurrence = calculateNextOccurrence(task as Task, updateData.lastOccurrence)
-        updateData.nextOccurrence = nextOccurrence
-      }
-    }
-
-    // Check if this is a non-recurring task that is now complete
-    // If so, mark it as COMPLETED so it won't appear on future days
-    const recurrence = task.recurrence as { frequency?: string } | null
-    const newStatus = calculateNonRecurringTaskStatus(recurrence, task.jobs.length, task.times || 1)
-    if (newStatus === 'COMPLETED') {
-      updateData.status = newStatus
-    }
-  } else if (operation === 'delete') {
-    // Recalculate lastOccurrence from remaining jobs
-    if (task.jobs.length === 0) {
-      // No more completions
-      updateData.lastOccurrence = null
-      updateData.firstOccurrence = null
-      updateData.nextOccurrence = null
-    } else {
-      // Set first and last from remaining jobs
-      const firstJob = task.jobs[0]
-      const lastJob = task.jobs[task.jobs.length - 1]
-
-      if (firstJob?.occurrenceDate) {
-        updateData.firstOccurrence = new Date(firstJob.occurrenceDate)
-      }
-
-      if (lastJob?.occurrenceDate) {
-        updateData.lastOccurrence = new Date(lastJob.occurrenceDate)
-
-        // Calculate next occurrence if task has recurrence
-        if (task.recurrence) {
-          const nextOccurrence = calculateNextOccurrence(task as Task, updateData.lastOccurrence)
-          updateData.nextOccurrence = nextOccurrence
+    } else if (task.status === 'COMPLETED' && task.completedOn === occurrenceDate) {
+      // Un-accept after a materialized completion: restore the occurrence and
+      // remove the child only if nothing has attached to it yet
+      const count = await countAcceptedForOccurrence(taskId, task.rrule, occurrenceDate)
+      if (count < (task.times || 1)) {
+        await prisma.task.update({
+          where: { id: taskId },
+          data: { status: 'OPEN', completedOn: null }
+        })
+        const next = nextOccurrenceAfter(task, occurrenceDate)
+        if (next) {
+          const child = await prisma.task.findFirst({
+            where: { recurringTaskId: taskId, dtstart: next },
+            select: { id: true }
+          })
+          if (child && (await prisma.job.count({ where: { taskId: child.id } })) === 0) {
+            await prisma.task.delete({ where: { id: child.id } })
+          }
         }
       }
     }
-
-    // If this is a non-recurring task that is no longer complete, reset to OPEN
-    const recurrence = task.recurrence as { frequency?: string } | null
-    const newStatus = calculateNonRecurringTaskStatus(recurrence, task.jobs.length, task.times || 1)
-    if (newStatus === 'OPEN') {
-      updateData.status = newStatus
-    }
+    return
   }
 
-  // Only update if there are changes
-  if (Object.keys(updateData).length > 0) {
+  const newStatus = calculateNonRecurringTaskStatus(task.rrule, task.jobs.length, task.times || 1)
+
+  if (operation === 'complete' && newStatus === 'COMPLETED') {
     await prisma.task.update({
       where: { id: taskId },
-      data: updateData
+      data: { status: 'COMPLETED', completedOn: occurrenceDate }
+    })
+  } else if (operation === 'delete' && newStatus === 'OPEN') {
+    await prisma.task.update({
+      where: { id: taskId },
+      data: { status: 'OPEN', completedOn: null }
     })
   }
+}
+
+/**
+ * Materialize the next occurrence of a recurring task as a new Task row with
+ * status and counters reset (OPEN, no jobs, completedOn null, times copied),
+ * and mark the completed occurrence COMPLETED so it stops appearing on future
+ * dates (taskOccursOnDate keeps it visible on its own completion day).
+ * Idempotent: a retried acceptance reuses the existing child row.
+ */
+async function materializeOccurrence(task: Task, occurrenceDate: string): Promise<void> {
+  const next = nextOccurrenceAfter(task, occurrenceDate)
+
+  await prisma.$transaction(async (tx) => {
+    if (next) {
+      const existing = await tx.task.findFirst({
+        where: { recurringTaskId: task.id, dtstart: next },
+        select: { id: true }
+      })
+      if (!existing) {
+        await tx.task.create({
+          data: {
+            name: task.name,
+            categories: task.categories as never,
+            area: task.area as never,
+            times: task.times,
+            localeKey: task.localeKey,
+            premiumType: task.premiumType,
+            premium: task.premium,
+            location: task.location as never,
+            visibility: task.visibility as never,
+            quality: task.quality,
+            redacted: task.redacted ?? false,
+            rrule: task.rrule,
+            dtstart: next,
+            status: 'OPEN',
+            completedOn: null,
+            recurringTaskId: task.id,
+            listId: task.listId
+          }
+        })
+      }
+    }
+
+    await tx.task.update({
+      where: { id: task.id },
+      data: { status: 'COMPLETED', completedOn: occurrenceDate }
+    })
+  })
 }
 
 /**

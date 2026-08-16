@@ -61,7 +61,8 @@
     "saving": "保存中...",
     "decline": "拒绝",
     "friendRequest": "好友请求",
-    "reverseOrder": "反转顺序"
+    "reverseOrder": "反转顺序",
+    "noFriendRequests": "No friend requests"
   },
   "navigation": {
     "home": "首页",
@@ -181,12 +182,68 @@
       "ready": "就绪",
       "open": "待办",
       "done": "完成",
-      "ignored": "已忽略"
+      "ignored": "已忽略",
+      "completed": "Completed"
     },
     "edit": "编辑",
     "loadingForDate": "正在加载所选日期的任务...",
     "initializingTasks": "正在设置您的任务...",
-    "noTasksForDate": "该日期暂无任务"
+    "noTasksForDate": "该日期暂无任务",
+    "delete": "删除...",
+    "deleteTitle": "删除任务",
+    "deleteDescription": "你想删除此任务的哪部分？",
+    "deleteScopes": {
+      "today": "仅今天",
+      "onwards": "从今天起",
+      "all": "所有条目"
+    },
+    "requestTitle": "申请工作",
+    "requestDescription": "说明你为什么想承担此任务。列表所有者将审核你的申请。",
+    "submitTitle": "提交工作",
+    "resubmitTitle": "修改后重新提交",
+    "submitDescription": "发布你的工作证明。很快就能附上照片或视频。",
+    "reviewTitle": "审核工作",
+    "reviewDescription": "接受工作、要求修改或拒绝。",
+    "justificationLabel": "理由",
+    "justificationPlaceholder": "为什么你应该做这个任务？",
+    "evidenceLabel": "证明 / 备注",
+    "evidencePlaceholder": "描述你做了什么...",
+    "selfReviewLabel": "自我评价（0-100）",
+    "managerReviewLabel": "审核分数（0-100）",
+    "reviewNoteLabel": "反馈（可选）",
+    "sendRequest": "发送申请",
+    "resubmit": "重新提交",
+    "submit": "提交",
+    "accept": "接受",
+    "requestChanges": "要求修改",
+    "reject": "拒绝",
+    "requestToWork": "Request to Work",
+    "requestPending": "Request Pending...",
+    "resubmitWork": "Revise and Resubmit",
+    "submitForReview": "Submit for Review",
+    "reviewRequest": "Review request",
+    "requestReviewTitle": "Review request",
+    "requestReviewDescription": "Review the request and decide whether to let this user work on the task.",
+    "requestedBy": "Requested by",
+    "unknownWorker": "Unknown",
+    "noJustification": "No justification provided.",
+    "cv": {
+      "label": "CV (optional)",
+      "reuseLabel": "Your CVs",
+      "reusePlaceholder": "Reuse a previous CV...",
+      "uploading": "Uploading attachment...",
+      "attachedDocuments": "Attached documents",
+      "attachedCount": "{count} attached document(s)",
+      "attachedNote": "Links to the attached documents will be available with the documents API.",
+      "viewDocument": "View document"
+    },
+    "pastBadge": "Past · {date}",
+    "loadOlder": "Load older tasks",
+    "loadingOlder": "Loading...",
+    "evidenceAttachmentsLabel": "Evidence attachments (photos, videos, documents)",
+    "evidenceAttachmentsUnavailable": "Attachments are available once the job exists.",
+    "review": "Review",
+    "decline": "Decline"
   },
   "settings": {
     "title": "设置",
@@ -564,7 +621,34 @@
       "addTask": "添加任务",
       "cancel": "取消",
       "editTitle": "编辑任务",
-      "saveTask": "保存任务"
+      "saveTask": "保存任务",
+      "premiumLabel": "奖励（可选）",
+      "premiumPercentHint": "列表预算的百分比",
+      "cadenceLabel": "重复",
+      "cadence": {
+        "none": "不重复",
+        "daily": "每天",
+        "weekly": "每周",
+        "monthly": "每月",
+        "yearly": "每年",
+        "every": "每",
+        "day": "天",
+        "days": "天",
+        "week": "周",
+        "weeks": "周",
+        "month": "个月",
+        "months": "个月",
+        "year": "年",
+        "years": "年",
+        "onDay": "在第",
+        "onThe": "第",
+        "inMonth": "月份",
+        "ends": "结束",
+        "never": "永不",
+        "after": "次后",
+        "onDate": "到日期",
+        "occurrences": "次"
+      }
     },
     "addListForm": {
       "titleCreate": "创建新列表",
@@ -627,7 +711,17 @@
       "taskDistributionLabel": "预算",
       "premiumLabel": "奖金",
       "totalLabel": "总计",
-      "addTaskTitle": "添加任务"
+      "addTaskTitle": "添加任务",
+      "editTitle": "编辑列表",
+      "visibilityLabel": "可见性",
+      "collaboratorsPlaceholder": "搜索好友...",
+      "budgetSourcesLabel": "你的预算的百分比：",
+      "noBudgets": "还没有预算 — 在下面添加一个。",
+      "newBudgetName": "预算名称",
+      "confirmDelete": "删除此列表及其所有任务？无法撤销。",
+      "delete": "删除",
+      "title": "New List",
+      "namePlaceholder": "List name..."
     },
     "addTemplateForm": {
       "title": "创建新模板",
@@ -692,6 +786,36 @@
       "after": "之后",
       "pickDate": "选择日期",
       "occurrences": "次"
+    },
+    "attachmentPicker": {
+      "browse": "Add files",
+      "dropHere": "Drop files here",
+      "orClick": "or click to choose",
+      "maxReached": "Maximum {max} files",
+      "remove": "Remove",
+      "compress": "Compressing…",
+      "uploading": "Uploading {percent}%",
+      "saving": "Saving…",
+      "usePhotoLocation": "Attach location from this photo?",
+      "locationAttached": "Location attached",
+      "error": {
+        "unsupported": "This file type is not supported",
+        "tooLarge": "This file is too large",
+        "tooLargeAfterCompression": "Still too large after compression",
+        "compressFailed": "Could not compress this file",
+        "compressionUnavailable": "Video compression is unavailable right now",
+        "presignFailed": "Could not start the upload",
+        "uploadFailed": "Upload failed",
+        "saveFailed": "Could not save the attachment",
+        "generic": "Could not add this file"
+      }
+    },
+    "imageCropper": {
+      "title": "Crop image",
+      "apply": "Apply",
+      "cancel": "Cancel",
+      "dragHint": "Drag the image to position it in the frame",
+      "error": "Could not load this image"
     }
   },
   "socialView": {
@@ -900,7 +1024,10 @@
         "submitted": "工作已提交审核",
         "resubmitted": "工作已重新提交审核"
       }
-    }
+    },
+    "justification": "Justification",
+    "attachedDocuments": "Attached documents",
+    "viewDocument": "View document"
   },
   "notes": {
     "updated": "笔记更新成功",
@@ -919,7 +1046,17 @@
       "date": "日期",
       "mostRelevant": "最相关",
       "all": "全部"
-    }
+    },
+    "taskTags": "Tagged tasks",
+    "extensions": {
+      "attach": "Attachments",
+      "location": "Location",
+      "people": "Tag people",
+      "lists": "Tag lists",
+      "tasks": "Tag tasks",
+      "events": "Tag events"
+    },
+    "editing": "Editing note"
   },
   "chat": {
     "title": "聊天",
@@ -1023,5 +1160,44 @@
     "FAMILY": "Family",
     "THERAPIST": "Therapist",
     "HOUSEHOLD": "Household"
+  },
+  "notifications": {
+    "types": {
+      "JOB_REQUESTED": "{{actorName}} requested to work on one of your tasks",
+      "JOB_ACCEPTED": "{{actorName}} approved your work request",
+      "JOB_REJECTED": "{{actorName}} declined your work request",
+      "LIST_INVITE": "{{actorName}} added you to a list"
+    }
+  },
+  "components": {
+    "placePicker": {
+      "searchError": "Search failed. Try again.",
+      "detailsError": "Could not load this place.",
+      "geolocationError": "Location is not available on this device.",
+      "invalidCoordinates": "Enter valid latitude and longitude.",
+      "removeLocation": "Remove location",
+      "placeholder": "Search for a place...",
+      "searching": "Searching...",
+      "noResults": "No results found",
+      "resultsLabel": "Place results",
+      "locating": "Locating...",
+      "useCurrentLocation": "Use my current location",
+      "enterCoordinates": "Enter coordinates",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "applyCoordinates": "Apply",
+      "coordinates": "{lat}, {lng}"
+    },
+    "locationMap": {
+      "mapAlt": "Map",
+      "openInMaps": "Open in Maps"
+    },
+    "entityTagPicker": {
+      "searchPlaceholder": "Search",
+      "noResults": "No results found",
+      "removeTag": "Remove tag",
+      "maxTagsReached": "Maximum of 10 tags",
+      "searching": "Searching…"
+    }
   }
 }

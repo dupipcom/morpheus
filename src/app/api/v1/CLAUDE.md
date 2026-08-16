@@ -13,6 +13,8 @@ Main REST API for the Dupip application. All routes are prefixed with `/api/v1`.
 
 | Resource | Doc | Endpoints (methods) |
 |---|---|---|
+| Attachments | `attachments/CLAUDE.md` | `POST /attachments/presign`, `GET/POST /attachments`, `DELETE /attachments/{documentId}` |
+| Budgets | `budgets/CLAUDE.md` | `GET/POST /budgets` (user's own budgets) |
 | Auth webhook | `auth/CLAUDE.md` | `POST /api/v1/auth` (Clerk user.created/session.created/user.updated/user.deleted) |
 | Chat | `chat/CLAUDE.md` | `POST /api/v1/chat`, `GET /chat/sidebar`, `POST /chat/token`, `GET /chat/unread-count`, `POST /chat/read-state`, `GET /chat/dm-candidates`, `GET/POST /chat/dms`, `GET/POST /chat/dms/{id}/messages`, `PATCH/DELETE /chat/channels/{id}`, `GET/POST /chat/channels/{id}/messages`, `PATCH/DELETE /chat/messages/{id}`, `GET /chat/messages/{id}/thread`, `GET/POST /chat/orgs`, `GET/POST /chat/orgs/{id}/channels`, `GET/POST /chat/orgs/{id}/invites`, `POST /chat/orgs/{id}/roles`, `DELETE /chat/invites/{id}`, `POST /chat/invites/{id}/accept` |
 | Comments | `comments/CLAUDE.md` | `GET/POST /comments`, `PUT/DELETE /comments/{commentId}` |
@@ -32,13 +34,15 @@ Main REST API for the Dupip application. All routes are prefixed with `/api/v1`.
 | Magazine | `magazine/CLAUDE.md` | `GET /magazine` |
 | Meet me | `meet-me/CLAUDE.md` | `POST /meet-me`, `GET /meet-me/availability` |
 | Notes | `notes/CLAUDE.md` | `GET/POST /notes`, `PUT/PATCH/DELETE /notes/{noteId}`, `GET/POST /notes/{noteId}/comments`, `GET /notes/public` |
+| Notifications | `notifications/CLAUDE.md` | `GET /notifications` (last 30 + unread), `POST /notifications` (mark read) |
 | Persons | `persons/CLAUDE.md` | `GET/POST /persons`, `PUT/DELETE /persons/{id}` |
+| Places | `places/CLAUDE.md` | `GET /places/autocomplete`, `GET /places/details`, `GET /places/staticmap` |
 | Profile | `profile/CLAUDE.md` | `GET/POST /profile`, `GET /profile/{userName}`, `GET /profile/{userName}/notes` |
 | Profiles | `profiles/CLAUDE.md` | `GET /profiles`, `GET /profiles/by-ids` |
 | Search | `search/CLAUDE.md` | `GET /search` |
 | SMS | `sms/CLAUDE.md` | `GET /sms/conversations`, `GET/POST /sms/conversations/{id}/messages`, `POST /sms/conversations/{id}/read` |
-| Task lists | `tasklists/CLAUDE.md` | `GET/POST /tasklists`, `POST /tasklists/{taskListId}/clone` |
-| Tasks | `tasks/CLAUDE.md` | `GET/POST /tasks`, `GET/PUT/DELETE /tasks/{taskId}`, `GET/POST /tasks/migrate` |
+| Task lists | `tasklists/CLAUDE.md` | `GET/POST /tasklists`, `GET/PUT/DELETE /tasklists/{taskListId}`, `POST /tasklists/{taskListId}/clone` |
+| Tasks | `tasks/CLAUDE.md` | `GET/POST /tasks`, `GET/PUT/DELETE /tasks/{taskId}` (DELETE with scope), `GET/POST /tasks/migrate` (deprecated no-op) |
 | Templates | `templates/CLAUDE.md` | `GET/POST /templates`, `POST /templates/{templateId}/clone`, `GET /templates/public` |
 | Telnyx webhook | `telnyx/CLAUDE.md` | `POST /telnyx/webhook` (Ed25519 + 5-min timestamp) |
 | Things | `things/CLAUDE.md` | `GET/POST /things` |
