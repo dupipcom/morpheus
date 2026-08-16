@@ -31,35 +31,37 @@ export function VirtualNumberGate() {
   if (isVirtualNumberEnabled) return null
 
   return (
-    <Card>
-      <CardHeader className="space-y-2">
-        <CardTitle className="flex items-center gap-2 text-base">
-          <Phone className="h-4 w-4" />
-          {t('chat.virtualNumber.label')}
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        <p className="text-xs text-muted-foreground">{t('chat.virtualNumber.gateHint')}</p>
-        <Button size="sm" className="w-full" onClick={() => setOpen(true)}>
-          {t('chat.virtualNumber.buyCta')}
-        </Button>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{t('chat.virtualNumber.buyDialogTitle')}</DialogTitle>
-              <DialogDescription>{t('chat.virtualNumber.buyDialogDescription')}</DialogDescription>
-            </DialogHeader>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setOpen(false)}>
-                {t('common.cancel')}
-              </Button>
-              <Button onClick={() => router.push(`/${locale}/pricing`)}>
-                {t('chat.virtualNumber.buyDialogGoToPricing')}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </CardContent>
-    </Card>
+    <>
+      <Card>
+        <CardHeader className="space-y-2">
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Phone className="h-4 w-4" />
+            {t('chat.virtualNumber.label')}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <p className="text-xs text-muted-foreground">{t('chat.virtualNumber.gateHint')}</p>
+          <Button size="sm" className="w-full" onClick={() => setOpen(true)}>
+            {t('chat.virtualNumber.buyCta')}
+          </Button>
+        </CardContent>
+      </Card>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('chat.virtualNumber.buyDialogTitle')}</DialogTitle>
+            <DialogDescription>{t('chat.virtualNumber.buyDialogDescription')}</DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setOpen(false)}>
+              {t('common.cancel')}
+            </Button>
+            <Button onClick={() => router.push(`/${locale}/pricing`)}>
+              {t('chat.virtualNumber.buyDialogGoToPricing')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }
