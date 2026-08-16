@@ -936,6 +936,18 @@
     "inviteLinkCopied": "邀请链接已复制",
     "inviteSent": "邀请已发送",
     "inviteAccepted": "邀请已接受",
+    "sidebar": {
+      "directMessages": "私信",
+      "organizations": "组织",
+      "sms": "短信",
+      "virtualNumber": "虚拟号码",
+      "searchDmPlaceholder": "搜索好友开始私信",
+      "createChannelPlaceholder": "创建频道",
+      "createOrgPlaceholder": "创建组织",
+      "refresh": "刷新",
+      "noOrgs": "暂无组织",
+      "noDms": "暂无私信"
+    },
     "virtualNumber": {
       "label": "虚拟号码",
       "hint": "选择你的电话号码。发到这些号码的短信会显示在你的聊天中。",

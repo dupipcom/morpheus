@@ -936,6 +936,18 @@
     "inviteLinkCopied": "Ссылка-приглашение скопирована",
     "inviteSent": "Приглашение отправлено",
     "inviteAccepted": "Приглашение принято",
+    "sidebar": {
+      "directMessages": "Личные сообщения",
+      "organizations": "Организации",
+      "sms": "SMS",
+      "virtualNumber": "Виртуальный номер",
+      "searchDmPlaceholder": "Найдите друзей, чтобы начать личное сообщение",
+      "createChannelPlaceholder": "Создать канал",
+      "createOrgPlaceholder": "Создать организацию",
+      "refresh": "Обновить",
+      "noOrgs": "Пока нет организаций",
+      "noDms": "Пока нет личных сообщений"
+    },
     "virtualNumber": {
       "label": "Виртуальный номер",
       "hint": "Выберите ваши номера телефона. Входящие SMS на эти номера появятся в вашем чате.",

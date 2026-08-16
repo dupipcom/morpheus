@@ -940,6 +940,18 @@
     "inviteLinkCopied": "تم نسخ رابط الدعوة",
     "inviteSent": "تم إرسال الدعوة",
     "inviteAccepted": "تم قبول الدعوة",
+    "sidebar": {
+      "directMessages": "الرسائل المباشرة",
+      "organizations": "المنظمات",
+      "sms": "رسائل SMS",
+      "virtualNumber": "رقم افتراضي",
+      "searchDmPlaceholder": "ابحث عن أصدقاء لبدء محادثة",
+      "createChannelPlaceholder": "إنشاء قناة",
+      "createOrgPlaceholder": "إنشاء منظمة",
+      "refresh": "تحديث",
+      "noOrgs": "لا توجد منظمات بعد",
+      "noDms": "لا توجد رسائل مباشرة بعد"
+    },
     "virtualNumber": {
       "label": "رقم افتراضي",
       "hint": "اختر أرقام هاتفك. ستظهر الرسائل النصية الواردة إلى هذه الأرقام في محادثتك.",

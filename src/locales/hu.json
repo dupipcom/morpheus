@@ -936,6 +936,18 @@
     "inviteLinkCopied": "Meghívólink másolva",
     "inviteSent": "Meghívó elküldve",
     "inviteAccepted": "Meghívó elfogadva",
+    "sidebar": {
+      "directMessages": "Közvetlen üzenetek",
+      "organizations": "Szervezetek",
+      "sms": "SMS",
+      "virtualNumber": "Virtuális szám",
+      "searchDmPlaceholder": "Barátok keresése közvetlen üzenet indításához",
+      "createChannelPlaceholder": "Csatorna létrehozása",
+      "createOrgPlaceholder": "Szervezet létrehozása",
+      "refresh": "Frissítés",
+      "noOrgs": "Még nincsenek szervezetek",
+      "noDms": "Még nincsenek közvetlen üzenetek"
+    },
     "virtualNumber": {
       "label": "Virtuális szám",
       "hint": "Válaszd ki a telefonszámaidat. Az ezekre a számokra érkező SMS-ek megjelennek a csevegésedben.",

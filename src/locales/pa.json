@@ -940,6 +940,18 @@
     "inviteLinkCopied": "ਸੱਦਾ ਲਿੰਕ ਕਾਪੀ ਕੀਤਾ ਗਿਆ",
     "inviteSent": "ਸੱਦਾ ਭੇਜਿਆ ਗਿਆ",
     "inviteAccepted": "ਸੱਦਾ ਸਵੀਕਾਰ ਕੀਤਾ ਗਿਆ",
+    "sidebar": {
+      "directMessages": "ਸਿੱਧੇ ਸੁਨੇਹੇ",
+      "organizations": "ਸੰਗਠਨ",
+      "sms": "SMS",
+      "virtualNumber": "ਵਰਚੁਅਲ ਨੰਬਰ",
+      "searchDmPlaceholder": "DM ਸ਼ੁਰੂ ਕਰਨ ਲਈ ਦੋਸਤਾਂ ਦੀ ਖੋਜ ਕਰੋ",
+      "createChannelPlaceholder": "ਚੈਨਲ ਬਣਾਓ",
+      "createOrgPlaceholder": "ਸੰਗਠਨ ਬਣਾਓ",
+      "refresh": "ਰਿਫ੍ਰੈਸ਼",
+      "noOrgs": "ਅਜੇ ਕੋਈ ਸੰਗਠਨ ਨਹੀਂ",
+      "noDms": "ਅਜੇ ਕੋਈ ਸਿੱਧੇ ਸੁਨੇਹੇ ਨਹੀਂ"
+    },
     "virtualNumber": {
       "label": "ਵਰਚੁਅਲ ਨੰਬਰ",
       "hint": "ਆਪਣੇ ਫ਼ੋਨ ਨੰਬਰ ਚੁਣੋ। ਇਨ੍ਹਾਂ ਨੰਬਰਾਂ ’ਤੇ ਆਉਣ ਵਾਲੇ SMS ਤੁਹਾਡੀ ਚੈਟ ਵਿੱਚ ਦਿਖਾਈ ਦੇਣਗੇ।",

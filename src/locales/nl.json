@@ -936,6 +936,18 @@
     "inviteLinkCopied": "Uitnodigingslink gekopieerd",
     "inviteSent": "Uitnodiging verzonden",
     "inviteAccepted": "Uitnodiging geaccepteerd",
+    "sidebar": {
+      "directMessages": "Directe berichten",
+      "organizations": "Organisaties",
+      "sms": "SMS",
+      "virtualNumber": "Virtueel nummer",
+      "searchDmPlaceholder": "Zoek vrienden om een DM te starten",
+      "createChannelPlaceholder": "Kanaal aanmaken",
+      "createOrgPlaceholder": "Organisatie aanmaken",
+      "refresh": "Vernieuwen",
+      "noOrgs": "Nog geen organisaties",
+      "noDms": "Nog geen directe berichten"
+    },
     "virtualNumber": {
       "label": "Virtueel nummer",
       "hint": "Kies je telefoonnummers. Inkomende sms’jes naar deze nummers verschijnen in je chat.",

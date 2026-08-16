@@ -936,6 +936,18 @@
     "inviteLinkCopied": "Link di invito copiato",
     "inviteSent": "Invito inviato",
     "inviteAccepted": "Invito accettato",
+    "sidebar": {
+      "directMessages": "Messaggi diretti",
+      "organizations": "Organizzazioni",
+      "sms": "SMS",
+      "virtualNumber": "Numero virtuale",
+      "searchDmPlaceholder": "Cerca amici per avviare un MD",
+      "createChannelPlaceholder": "Crea un canale",
+      "createOrgPlaceholder": "Crea un'organizzazione",
+      "refresh": "Aggiorna",
+      "noOrgs": "Nessuna organizzazione ancora",
+      "noDms": "Nessun messaggio diretto ancora"
+    },
     "virtualNumber": {
       "label": "Numero virtuale",
       "hint": "Scegli i tuoi numeri di telefono. Gli SMS in arrivo a questi numeri appariranno nella tua chat.",

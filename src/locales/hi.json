@@ -936,6 +936,18 @@
     "inviteLinkCopied": "आमंत्रण लिंक कॉपी किया गया",
     "inviteSent": "आमंत्रण भेजा गया",
     "inviteAccepted": "आमंत्रण स्वीकार किया गया",
+    "sidebar": {
+      "directMessages": "प्रत्यक्ष संदेश",
+      "organizations": "संगठन",
+      "sms": "SMS",
+      "virtualNumber": "वर्चुअल नंबर",
+      "searchDmPlaceholder": "DM शुरू करने के लिए मित्र खोजें",
+      "createChannelPlaceholder": "चैनल बनाएं",
+      "createOrgPlaceholder": "संगठन बनाएं",
+      "refresh": "रीफ्रेश",
+      "noOrgs": "अभी तक कोई संगठन नहीं",
+      "noDms": "अभी तक कोई प्रत्यक्ष संदेश नहीं"
+    },
     "virtualNumber": {
       "label": "वर्चुअल नंबर",
       "hint": "अपने फ़ोन नंबर चुनें। इन नंबरों पर आने वाले SMS आपकी चैट में दिखेंगे।",

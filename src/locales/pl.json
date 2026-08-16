@@ -940,6 +940,18 @@
     "inviteLinkCopied": "Skopiowano link zaproszenia",
     "inviteSent": "Zaproszenie wysłane",
     "inviteAccepted": "Zaproszenie przyjęte",
+    "sidebar": {
+      "directMessages": "Wiadomości bezpośrednie",
+      "organizations": "Organizacje",
+      "sms": "SMS",
+      "virtualNumber": "Numer wirtualny",
+      "searchDmPlaceholder": "Wyszukaj znajomych, aby rozpocząć DM",
+      "createChannelPlaceholder": "Utwórz kanał",
+      "createOrgPlaceholder": "Utwórz organizację",
+      "refresh": "Odśwież",
+      "noOrgs": "Brak organizacji",
+      "noDms": "Brak wiadomości bezpośrednich"
+    },
     "virtualNumber": {
       "label": "Numer wirtualny",
       "hint": "Wybierz swoje numery telefonu. Przychodzące SMS-y na te numery pojawią się na czacie.",
