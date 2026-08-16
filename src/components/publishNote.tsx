@@ -418,14 +418,6 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
           setNoteContent(e.target.value)
         }}
       />
-      {editingNote && (
-        <div className="flex items-center gap-2 mb-2">
-          <span className="text-xs font-medium text-primary">{t('notes.editing') || 'Editing note'}</span>
-          <Button type="button" variant="ghost" size="sm" onClick={cancelEditing}>
-            {t('common.cancel') || 'Cancel'}
-          </Button>
-        </div>
-      )}
       {/* Controls row: extension icons → AI toggle → visibility → publish */}
       <div className="flex flex-wrap items-center gap-2 mb-2">
         {extensionIcons}
@@ -443,6 +435,11 @@ export const PublishNote = ({ onNotePublished, date, onDateChange, defaultVisibi
             value={noteVisibility}
             onValueChange={setNoteVisibility}
           />
+          {editingNote && (
+            <Button type="button" variant="ghost" size="sm" onClick={cancelEditing}>
+              {t('common.cancel') || 'Cancel'}
+            </Button>
+          )}
           <Button
             onClick={handlePublishNote}
             disabled={!noteContent.trim() || isPublishing}
