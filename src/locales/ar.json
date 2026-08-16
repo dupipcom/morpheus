@@ -247,7 +247,11 @@
     "evidenceAttachmentsLabel": "Evidence attachments (photos, videos, documents)",
     "evidenceAttachmentsUnavailable": "Attachments are available once the job exists.",
     "review": "Review",
-    "decline": "Decline"
+    "decline": "Decline",
+    "error": {
+      "updateFailed": "Couldn't update the task"
+    },
+    "updating": "Updating…"
   },
   "settings": {
     "title": "الإعدادات",
